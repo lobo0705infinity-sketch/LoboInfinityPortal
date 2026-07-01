@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lobo Infinity League Portal 3.0</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<h2>LOBO</h2>
+<button>Dashboard</button>
+<button>Standings</button>
+<button>Players</button>
+<button>Factions</button>
+<button>Missions</button>
+<button>Analytics</button>
+<button>Rules</button>
+</aside>
+
+<main class="content">
+<header class="topbar">
+<h1>Lobo Infinity League</h1>
+<p>Survive the Ride</p>
+</header>
+
+<section class="cards">
+<div class="card"><h3>Leader</h3><span id="leaderName">Loading...</span></div>
+<div class="card"><h3>Games</h3><span id="gamesPlayed">-</span></div>
+<div class="card"><h3>Players</h3><span id="activePlayers">-</span></div>
+<div class="card"><h3>Top Faction</h3><span id="topFaction">-</span></div>
+</section>
+
+<section class="grid">
+<div class="panel">
+<h2>Main Man Standings</h2>
+<table id="standingsTable">
+<thead><tr><th>#</th><th>Player</th><th>TP</th><th>OP</th><th>VP</th></tr></thead>
+<tbody></tbody>
+</table>
+</div>
+
+<div class="panel">
+<h2>Recent Games</h2>
+<p class="placeholder">API endpoint coming next.</p>
+</div>
+</section>
+
+<footer>© Lobo Infinity League</footer>
+</main>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
