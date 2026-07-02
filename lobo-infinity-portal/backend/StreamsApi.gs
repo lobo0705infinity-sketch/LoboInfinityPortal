@@ -17,18 +17,6 @@ const STREAM_HEADERS = [
   "Featured"
 ];
 
-const LEGACY_STREAM_HEADERS = [
-  "Date",
-  "Division",
-  "Mission",
-  "Player 1",
-  "Player 2",
-  "Winner",
-  "YouTube URL",
-  "Featured",
-  "Notes"
-];
-
 function getStreams() {
 
   const sheet =
@@ -143,13 +131,6 @@ function migrateLegacyStreamsSheet(sheet) {
 
       });
 
-  const hasLegacyHeaders =
-    LEGACY_STREAM_HEADERS.every(function(header, index) {
-
-      return headers[index] === header;
-
-    });
-
   const hasNewHeaders =
     STREAM_HEADERS.every(function(header, index) {
 
@@ -157,8 +138,17 @@ function migrateLegacyStreamsSheet(sheet) {
 
     });
 
+  const hasLegacyLayout =
+    headers[0] === STREAM_HEADERS[0] &&
+    headers[1] === STREAM_HEADERS[1] &&
+    headers[2] === STREAM_HEADERS[2] &&
+    headers[3] === STREAM_HEADERS[3] &&
+    headers[4] === STREAM_HEADERS[5] &&
+    headers[6] === STREAM_HEADERS[7] &&
+    headers[7] === STREAM_HEADERS[8];
+
   if (
-    !hasLegacyHeaders ||
+    !hasLegacyLayout ||
     hasNewHeaders ||
     sheet.getLastRow() <= 1
   )
@@ -166,7 +156,7 @@ function migrateLegacyStreamsSheet(sheet) {
 
   const rows =
     sheet
-      .getRange(2, 1, sheet.getLastRow() - 1, LEGACY_STREAM_HEADERS.length)
+      .getRange(2, 1, sheet.getLastRow() - 1, STREAM_HEADERS.length)
       .getValues()
       .map(function(row) {
 
