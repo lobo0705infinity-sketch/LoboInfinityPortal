@@ -9,7 +9,7 @@ import type {
 } from '../types/dashboard'
 
 const API_URL =
-  'https://script.google.com/macros/s/AKfycbxju6iQP2aejD0dB2nVx3fm2n_UyTyy2ol0XdVU6tb5zOZ1M3Iu01spAsq34dTLf5A5wg/exec'
+  'https://script.google.com/macros/s/AKfycbwVmtbnFl0IcqViWhO5j13c_Z5dZ95KRDpFbFQEqY2UQVO-RSg0bPMk1Kn6EDIbb271AA/exec'
 
 type ApiOptions = {
   signal?: AbortSignal
@@ -402,6 +402,90 @@ export type PortalSettings = {
   googleFormUrl: string
   discordInvite: string
   leagueWebsite: string
+  submissionEnabled: string
+  submissionButtonText: string
+  submissionButtonVisible: string
+  bannerImage: string
+  leagueLogo: string
+  commissionerContact: string
+  themeAccentColor: string
+  seasonStartDate: string
+  seasonEndDate: string
+  registrationOpen: string
+}
+
+export type AuditIssue = {
+  severity: 'critical' | 'warning' | 'info'
+  description: string
+  suggestedFix: string
+  link: string
+}
+
+export type LeagueAudit = {
+  summary: {
+    critical: number
+    warning: number
+    informational: number
+  }
+  issues: AuditIssue[]
+}
+
+export type OperationsNewsItem = CommissionerNewsItem & {
+  pinned: boolean
+  archived: boolean
+}
+
+export type SeasonStatus = {
+  currentSeasonName: string
+  startDate: string
+  endDate: string
+  weeksCompleted: number
+  matchesPlayed: number
+  remainingMatches: number
+  registrationOpen: boolean
+}
+
+export type OperationsDashboardData = {
+  summary: {
+    pendingArmyLists: number
+    pendingStreams: number
+    pendingNews: number
+    recentMatchSubmissions: RecentGame[]
+    leagueStatistics: {
+      games: number
+      activePlayers: number
+      factions: number
+      missions: number
+    }
+    cacheStatus: {
+      status: string
+      version: string
+      lastRefresh: string
+      cacheAge: string
+    }
+    systemHealth: Record<string, string>
+    leagueAuditSummary: LeagueAudit['summary']
+    seasonStatus: SeasonStatus
+  }
+  pendingArmyLists: ArmyList[]
+  streams: StreamedGame[]
+  news: OperationsNewsItem[]
+  settings: PortalSettings
+  audit: LeagueAudit
+}
+
+export type OperationsSeasonData = {
+  season: SeasonStatus
+  promotionRelegation: {
+    relegatedFromMain: Standing[]
+    promotedFromProvingGroundsA: Standing[]
+    promotedFromProvingGroundsB: Standing[]
+  }
+  archive: Array<{
+    date: string
+    operation: string
+    snapshot: string
+  }>
 }
 
 export type StreamedGame = {
@@ -466,6 +550,14 @@ export type ApiClient = {
   voteArmyList: (
     id: number,
     vote: 'up' | 'down',
+    options?: ApiOptions,
+  ) => Promise<void>
+  getOperations: (options?: ApiOptions) => Promise<OperationsDashboardData>
+  getOperationsAudit: (options?: ApiOptions) => Promise<LeagueAudit>
+  getOperationsSeason: (options?: ApiOptions) => Promise<OperationsSeasonData>
+  operationsAction: (
+    action: string,
+    params?: Record<string, string | number | boolean>,
     options?: ApiOptions,
   ) => Promise<void>
 }
@@ -685,6 +777,48 @@ export async function voteArmyList(
   normalizeMutationPayload(payload, 'Army list vote failed.')
 }
 
+export async function getOperations(
+  options: ApiOptions = {},
+): Promise<OperationsDashboardData> {
+  const payload = await request('operations', options)
+  return normalizeOperationsPayload(payload)
+}
+
+export async function getOperationsAudit(
+  options: ApiOptions = {},
+): Promise<LeagueAudit> {
+  const payload = await request('operationsAudit', options)
+  const record = asRecord(payload, 'Operations audit response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'League audit failed.')
+  }
+
+  return normalizeLeagueAudit(getRequiredRecord(record, 'audit'))
+}
+
+export async function getOperationsSeason(
+  options: ApiOptions = {},
+): Promise<OperationsSeasonData> {
+  const payload = await request('operationsSeason', options)
+  return normalizeOperationsSeasonPayload(payload)
+}
+
+export async function operationsAction(
+  action: string,
+  params: Record<string, string | number | boolean> = {},
+  options: ApiOptions = {},
+): Promise<void> {
+  const payload = await postRequest(
+    action,
+    options,
+    Object.fromEntries(
+      Object.entries(params).map(([key, value]) => [key, String(value)]),
+    ),
+  )
+  normalizeMutationPayload(payload, `${action} failed.`)
+}
+
 export const apiClient: ApiClient = {
   getHome,
   getDashboard,
@@ -711,6 +845,10 @@ export const apiClient: ApiClient = {
   getArmyLists,
   submitArmyList,
   voteArmyList,
+  getOperations,
+  getOperationsAudit,
+  getOperationsSeason,
+  operationsAction,
 }
 
 async function request(
@@ -1399,6 +1537,16 @@ function normalizeSettingsRecord(settings: Record<string, unknown>): PortalSetti
     googleFormUrl: getString(settings, 'googleFormUrl'),
     discordInvite: getString(settings, 'discordInvite'),
     leagueWebsite: getString(settings, 'leagueWebsite'),
+    submissionEnabled: getString(settings, 'submissionEnabled'),
+    submissionButtonText: getString(settings, 'submissionButtonText'),
+    submissionButtonVisible: getString(settings, 'submissionButtonVisible'),
+    bannerImage: getString(settings, 'bannerImage'),
+    leagueLogo: getString(settings, 'leagueLogo'),
+    commissionerContact: getString(settings, 'commissionerContact'),
+    themeAccentColor: getString(settings, 'themeAccentColor'),
+    seasonStartDate: getString(settings, 'seasonStartDate'),
+    seasonEndDate: getString(settings, 'seasonEndDate'),
+    registrationOpen: getString(settings, 'registrationOpen'),
   }
 }
 
@@ -1422,6 +1570,160 @@ function normalizeArmyListsPayload(payload: unknown): ArmyListsData {
   return {
     lists: getRequiredArray(record, 'lists').map(normalizeArmyList),
     community: normalizeArmyListCommunity(record.community),
+  }
+}
+
+function normalizeOperationsPayload(payload: unknown): OperationsDashboardData {
+  const record = asRecord(payload, 'Operations response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Operations failed.')
+  }
+
+  const summary = getRequiredRecord(record, 'summary')
+  const leagueStatistics = getRequiredRecord(summary, 'leagueStatistics')
+  const cacheStatus = getRequiredRecord(summary, 'cacheStatus')
+
+  return {
+    summary: {
+      pendingArmyLists: getRequiredNumber(summary, 'pendingArmyLists'),
+      pendingStreams: getRequiredNumber(summary, 'pendingStreams'),
+      pendingNews: getRequiredNumber(summary, 'pendingNews'),
+      recentMatchSubmissions: getRequiredArray(
+        summary,
+        'recentMatchSubmissions',
+      ).map(normalizeRecentGame),
+      leagueStatistics: {
+        games: getRequiredNumber(leagueStatistics, 'games'),
+        activePlayers: getRequiredNumber(leagueStatistics, 'activePlayers'),
+        factions: getRequiredNumber(leagueStatistics, 'factions'),
+        missions: getRequiredNumber(leagueStatistics, 'missions'),
+      },
+      cacheStatus: normalizeCacheStatus(cacheStatus),
+      systemHealth: normalizeStringRecord(getRequiredRecord(summary, 'systemHealth')),
+      leagueAuditSummary: normalizeAuditSummary(
+        getRequiredRecord(summary, 'leagueAuditSummary'),
+      ),
+      seasonStatus: normalizeSeasonStatus(getRequiredRecord(summary, 'seasonStatus')),
+    },
+    pendingArmyLists: getRequiredArray(record, 'pendingArmyLists').map(
+      normalizeArmyList,
+    ),
+    streams: getRequiredArray(record, 'streams').map(normalizeStreamedGame),
+    news: getRequiredArray(record, 'news').map(normalizeOperationsNewsItem),
+    settings: normalizeSettingsRecord(getRequiredRecord(record, 'settings')),
+    audit: normalizeLeagueAudit(getRequiredRecord(record, 'audit')),
+  }
+}
+
+function normalizeOperationsSeasonPayload(payload: unknown): OperationsSeasonData {
+  const record = asRecord(payload, 'Operations season response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Season data failed.')
+  }
+
+  const promotionRelegation = getRequiredRecord(record, 'promotionRelegation')
+
+  return {
+    season: normalizeSeasonStatus(getRequiredRecord(record, 'season')),
+    promotionRelegation: {
+      relegatedFromMain: getRequiredArray(
+        promotionRelegation,
+        'relegatedFromMain',
+      ).map(normalizeStanding),
+      promotedFromProvingGroundsA: getRequiredArray(
+        promotionRelegation,
+        'promotedFromProvingGroundsA',
+      ).map(normalizeStanding),
+      promotedFromProvingGroundsB: getRequiredArray(
+        promotionRelegation,
+        'promotedFromProvingGroundsB',
+      ).map(normalizeStanding),
+    },
+    archive: getRequiredArray(record, 'archive').map((item) => {
+      const archive = asRecord(item, 'Season archive item')
+      return {
+        date: getString(archive, 'date'),
+        operation: getString(archive, 'operation'),
+        snapshot: getString(archive, 'snapshot'),
+      }
+    }),
+  }
+}
+
+function normalizeLeagueAudit(record: Record<string, unknown>): LeagueAudit {
+  return {
+    summary: normalizeAuditSummary(getRequiredRecord(record, 'summary')),
+    issues: getRequiredArray(record, 'issues').map(normalizeAuditIssue),
+  }
+}
+
+function normalizeAuditSummary(record: Record<string, unknown>) {
+  return {
+    critical: getRequiredNumber(record, 'critical'),
+    warning: getRequiredNumber(record, 'warning'),
+    informational: getRequiredNumber(record, 'informational'),
+  }
+}
+
+function normalizeAuditIssue(item: unknown): AuditIssue {
+  const record = asRecord(item, 'Audit issue')
+  const severity = getRequiredString(record, 'severity')
+
+  return {
+    severity:
+      severity === 'critical' || severity === 'warning' ? severity : 'info',
+    description: getRequiredString(record, 'description'),
+    suggestedFix: getRequiredString(record, 'suggestedFix'),
+    link: getString(record, 'link'),
+  }
+}
+
+function normalizeSeasonStatus(record: Record<string, unknown>): SeasonStatus {
+  return {
+    currentSeasonName: getString(record, 'currentSeasonName'),
+    startDate: getString(record, 'startDate'),
+    endDate: getString(record, 'endDate'),
+    weeksCompleted: getRequiredNumber(record, 'weeksCompleted'),
+    matchesPlayed: getRequiredNumber(record, 'matchesPlayed'),
+    remainingMatches: getRequiredNumber(record, 'remainingMatches'),
+    registrationOpen: getBoolean(record, 'registrationOpen'),
+  }
+}
+
+function normalizeCacheStatus(record: Record<string, unknown>) {
+  return {
+    status: getString(record, 'status'),
+    version: getString(record, 'version'),
+    lastRefresh: getString(record, 'lastRefresh'),
+    cacheAge: getString(record, 'cacheAge'),
+  }
+}
+
+function normalizeStringRecord(record: Record<string, unknown>) {
+  return Object.fromEntries(
+    Object.entries(record).map(([key, value]) => [
+      key,
+      typeof value === 'string' ? value : String(value ?? ''),
+    ]),
+  )
+}
+
+function normalizeOperationsNewsItem(item: unknown): OperationsNewsItem {
+  const record = asRecord(item, 'Operations news item')
+
+  return {
+    body: getString(record, 'body'),
+    id: getRequiredNumber(record, 'id'),
+    date: getString(record, 'date'),
+    link: getString(record, 'link'),
+    relatedFaction: getString(record, 'relatedFaction'),
+    relatedMission: getString(record, 'relatedMission'),
+    relatedPlayer: getString(record, 'relatedPlayer'),
+    title: getString(record, 'title'),
+    pinned: getBoolean(record, 'pinned'),
+    archived: getBoolean(record, 'archived'),
   }
 }
 

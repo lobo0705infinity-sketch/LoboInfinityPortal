@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 const labels: Record<string, string> = {
   analytics: 'League Intelligence',
   'army-lists': 'Army List Vault',
+  commissioner: 'Commissioner Dashboard',
   compare: 'Player Comparison',
   factions: 'Factions',
   games: 'Match Details',

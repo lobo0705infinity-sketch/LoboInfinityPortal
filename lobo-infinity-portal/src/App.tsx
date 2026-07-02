@@ -4,6 +4,7 @@ import Header from './components/Header'
 import Sidebar from './components/Sidebar'
 import Analytics from './pages/Analytics'
 import ArmyLists from './pages/ArmyLists'
+import CommissionerDashboard from './pages/CommissionerDashboard'
 import CommissionerNews from './pages/CommissionerNews'
 import Dashboard from './pages/Dashboard'
 import FactionProfile from './pages/FactionProfile'
@@ -45,6 +46,7 @@ function App() {
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/hall-of-fame" element={<HallOfFame />} />
             <Route path="/news" element={<CommissionerNews />} />
+            <Route path="/commissioner" element={<CommissionerDashboard />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/timeline" element={<Timeline />} />
             <Route path="/streams" element={<StreamedGames />} />

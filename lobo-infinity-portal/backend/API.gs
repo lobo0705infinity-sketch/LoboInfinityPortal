@@ -124,11 +124,56 @@ function doGet(e) {
         return getArmyLists();
       });
 
+    case "operations":
+      return getOperationsDashboard();
+
+    case "operationsAudit":
+      return getOperationsAudit();
+
+    case "operationsSeason":
+      return getOperationsSeason();
+
+    case "operationsStatus":
+      return getOperationsStatus();
+
     case "voteArmyList":
       return voteArmyList(e);
 
     case "submitArmyList":
       return submitArmyList(e);
+
+    case "updateSettings":
+      return updateOperationsSettings(e);
+
+    case "approveArmyList":
+      return approveArmyList(e);
+
+    case "rejectArmyList":
+      return rejectArmyList(e);
+
+    case "updateArmyList":
+      return updateArmyList(e);
+
+    case "saveStream":
+      return saveOperationsStream(e);
+
+    case "deleteStream":
+      return deleteOperationsStream(e);
+
+    case "saveNews":
+      return saveOperationsNews(e);
+
+    case "deleteNews":
+      return deleteOperationsNews(e);
+
+    case "clearCache":
+      return clearOperationsCache();
+
+    case "rebuildStatistics":
+      return rebuildOperationsStatistics();
+
+    case "seasonOperation":
+      return executeSeasonOperation(e);
 
     default:
       return jsonOutput({
@@ -154,6 +199,39 @@ function doPost(e) {
 
     case "voteArmyList":
       return voteArmyList(e);
+
+    case "updateSettings":
+      return updateOperationsSettings(e);
+
+    case "approveArmyList":
+      return approveArmyList(e);
+
+    case "rejectArmyList":
+      return rejectArmyList(e);
+
+    case "updateArmyList":
+      return updateArmyList(e);
+
+    case "saveStream":
+      return saveOperationsStream(e);
+
+    case "deleteStream":
+      return deleteOperationsStream(e);
+
+    case "saveNews":
+      return saveOperationsNews(e);
+
+    case "deleteNews":
+      return deleteOperationsNews(e);
+
+    case "clearCache":
+      return clearOperationsCache();
+
+    case "rebuildStatistics":
+      return rebuildOperationsStatistics();
+
+    case "seasonOperation":
+      return executeSeasonOperation(e);
 
     default:
       return doGet(e);

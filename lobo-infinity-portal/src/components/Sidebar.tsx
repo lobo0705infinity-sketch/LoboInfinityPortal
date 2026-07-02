@@ -38,6 +38,11 @@ const navigationItems: Array<{
     to: '/notifications',
   },
   {
+    icon: 'submit',
+    label: 'Operations',
+    to: '/commissioner',
+  },
+  {
     icon: 'standings',
     label: 'Standings',
     to: '/standings',

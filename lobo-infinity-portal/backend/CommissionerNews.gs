@@ -27,7 +27,7 @@ function getManualCommissionerNews() {
   const sheet =
     SpreadsheetApp
       .getActive()
-      .getSheetByName(CONFIG.SHEETS.SETTINGS);
+      .getSheetByName(CONFIG.SHEETS.COMMISSIONER_NEWS);
 
   if (!sheet)
     return [];

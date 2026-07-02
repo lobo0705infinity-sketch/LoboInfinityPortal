@@ -40,7 +40,11 @@ const CONFIG = {
 
     STREAMS: "Streams",
 
-    ARMY_LISTS: "Army Lists"
+    ARMY_LISTS: "Army Lists",
+
+    COMMISSIONER_NEWS: "Commissioner News",
+
+    SEASON_ARCHIVE: "Season Archive"
 
   },
 

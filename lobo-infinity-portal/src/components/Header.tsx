@@ -4,10 +4,10 @@ import LeagueCrest from './LeagueCrest'
 import NotificationCenter from './NotificationCenter'
 import PortalIcon from './PortalIcon'
 import QuickJump from './QuickJump'
-import { apiClient } from '../services/api'
+import { apiClient, type PortalSettings } from '../services/api'
 
 function Header() {
-  const [matchSubmissionUrl, setMatchSubmissionUrl] = useState('')
+  const [settings, setSettings] = useState<PortalSettings | null>(null)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -17,11 +17,11 @@ function Header() {
         signal: controller.signal,
       })
       .then((settings) => {
-        setMatchSubmissionUrl(settings.googleFormUrl)
+        setSettings(settings)
       })
       .catch(() => {
         if (!controller.signal.aborted) {
-          setMatchSubmissionUrl('')
+          setSettings(null)
         }
       })
 
@@ -29,6 +29,11 @@ function Header() {
       controller.abort()
     }
   }, [])
+
+  const matchSubmissionUrl = settings?.googleFormUrl ?? ''
+  const submissionsEnabled = settings?.submissionEnabled !== 'false'
+  const buttonVisible = settings?.submissionButtonVisible !== 'false'
+  const buttonText = settings?.submissionButtonText || 'Submit Match'
 
   return (
     <header className="portal-header">
@@ -41,7 +46,7 @@ function Header() {
       </div>
 
       <div className="header-actions">
-        {matchSubmissionUrl ? (
+        {matchSubmissionUrl && submissionsEnabled && buttonVisible ? (
           <a
             className="submit-match-button"
             href={matchSubmissionUrl}
@@ -49,7 +54,7 @@ function Header() {
             target="_blank"
           >
             <PortalIcon name="submit" />
-            Submit Match
+            {buttonText}
           </a>
         ) : null}
         <GlobalSearch />

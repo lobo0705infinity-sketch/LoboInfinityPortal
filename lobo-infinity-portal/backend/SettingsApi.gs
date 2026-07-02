@@ -36,6 +36,56 @@ const DEFAULT_SETTINGS = [
     "leagueWebsite",
     "",
     "Primary league website URL."
+  ],
+  [
+    "submissionEnabled",
+    "true",
+    "Whether match submissions are enabled."
+  ],
+  [
+    "submissionButtonText",
+    "Submit Match",
+    "Header button text for match submissions."
+  ],
+  [
+    "submissionButtonVisible",
+    "true",
+    "Whether the match submission button is visible."
+  ],
+  [
+    "bannerImage",
+    "",
+    "Optional league banner image URL."
+  ],
+  [
+    "leagueLogo",
+    "",
+    "Optional league logo URL."
+  ],
+  [
+    "commissionerContact",
+    "",
+    "Commissioner contact email or URL."
+  ],
+  [
+    "themeAccentColor",
+    "#C1121F",
+    "Portal accent color."
+  ],
+  [
+    "seasonStartDate",
+    "",
+    "Current season start date."
+  ],
+  [
+    "seasonEndDate",
+    "",
+    "Current season end date."
+  ],
+  [
+    "registrationOpen",
+    "false",
+    "Whether registration is currently open."
   ]
 ];
 
