@@ -3,6 +3,7 @@ import GlobalSearch from './GlobalSearch'
 import LeagueCrest from './LeagueCrest'
 import NotificationCenter from './NotificationCenter'
 import PortalIcon from './PortalIcon'
+import ProfileMenu from './ProfileMenu'
 import QuickJump from './QuickJump'
 import { apiClient, type PortalSettings } from '../services/api'
 
@@ -60,6 +61,7 @@ function Header() {
         <GlobalSearch />
         <QuickJump />
         <NotificationCenter />
+        <ProfileMenu />
         <div className="header-status" aria-label="Portal status">
           <span className="status-light" />
           <span>Live</span>

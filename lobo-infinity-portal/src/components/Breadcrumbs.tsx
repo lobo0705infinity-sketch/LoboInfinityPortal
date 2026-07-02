@@ -11,6 +11,7 @@ const labels: Record<string, string> = {
   missions: 'Missions',
   news: 'Commissioner News',
   notifications: 'Notifications',
+  profile: 'My Profile',
   players: 'Players',
   rules: 'Rules',
   standings: 'Standings',

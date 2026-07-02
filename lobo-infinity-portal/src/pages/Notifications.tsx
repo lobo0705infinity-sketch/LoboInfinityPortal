@@ -21,35 +21,55 @@ function Notifications() {
     status: 'idle',
   })
 
+  async function loadNotifications(signal?: AbortSignal) {
+    try {
+      const notifications = await apiClient.getNotifications({ signal })
+      setState({
+        notifications,
+        status: 'success',
+      })
+    } catch (error) {
+      if (!signal?.aborted) {
+        setState({
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Notifications could not be loaded.',
+          status: 'error',
+        })
+      }
+    }
+  }
+
   useEffect(() => {
     const controller = new AbortController()
 
-    apiClient
-      .getNotifications({
-        signal: controller.signal,
-      })
-      .then((notifications) => {
-        setState({
-          notifications,
-          status: 'success',
-        })
-      })
-      .catch((error: unknown) => {
-        if (!controller.signal.aborted) {
-          setState({
-            error:
-              error instanceof Error
-                ? error.message
-                : 'Notifications could not be loaded.',
-            status: 'error',
-          })
-        }
-      })
+    void Promise.resolve().then(() => loadNotifications(controller.signal))
 
     return () => {
       controller.abort()
     }
   }, [])
+
+  async function updateNotification(
+    notificationId: string,
+    status: 'dismissed' | 'read',
+  ) {
+    await apiClient.updateNotificationState({
+      notificationId,
+      state: status,
+    })
+    await loadNotifications()
+  }
+
+  async function markAllRead(notifications: LeagueNotification[]) {
+    await apiClient.updateNotificationState({
+      notificationId: 'all',
+      notificationIds: notifications.map((notification) => notification.id),
+      state: 'read',
+    })
+    await loadNotifications()
+  }
 
   if (state.status === 'idle') {
     return (
@@ -76,22 +96,49 @@ function Notifications() {
   return (
     <main className="portal-shell">
       <PageHeader />
+      <div className="notification-page-actions">
+        <button
+          onClick={() => void markAllRead(state.notifications)}
+          type="button"
+        >
+          Mark All Read
+        </button>
+      </div>
       <section className="experience-grid" aria-label="Notifications">
         {state.notifications.map((notification) => (
-          <Link
+          <article
             className={
               notification.priority === 'high'
                 ? 'experience-card priority'
                 : 'experience-card'
             }
             key={notification.id}
-            to={notification.link || '/notifications'}
           >
-            <span>{notification.type}</span>
-            <h2>{notification.title}</h2>
-            <p>{notification.body}</p>
-            <small>{notification.timestamp}</small>
-          </Link>
+            <Link to={notification.link || '/notifications'}>
+              {notification.unread ? <span>Unread</span> : <span>Read</span>}
+              <h2>{notification.title}</h2>
+              <p>{notification.body}</p>
+              <small>{notification.timestamp}</small>
+            </Link>
+            <div className="notification-actions">
+              {notification.unread ? (
+                <button
+                  onClick={() => void updateNotification(notification.id, 'read')}
+                  type="button"
+                >
+                  Mark Read
+                </button>
+              ) : null}
+              <button
+                onClick={() =>
+                  void updateNotification(notification.id, 'dismissed')
+                }
+                type="button"
+              >
+                Dismiss
+              </button>
+            </div>
+          </article>
         ))}
       </section>
     </main>

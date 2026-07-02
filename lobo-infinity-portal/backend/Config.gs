@@ -44,7 +44,9 @@ const CONFIG = {
 
     COMMISSIONER_NEWS: "Commissioner News",
 
-    SEASON_ARCHIVE: "Season Archive"
+    SEASON_ARCHIVE: "Season Archive",
+
+    USERS: "Users"
 
   },
 

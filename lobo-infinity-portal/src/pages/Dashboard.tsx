@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../auth/AuthContext'
 import BarChart from '../components/BarChart'
 import Loading from '../components/Loading'
 import RecentGames from '../components/RecentGames'
@@ -128,6 +129,13 @@ function Dashboard() {
   return (
     <main className="portal-shell">
       <DashboardHeader lastUpdated={lastUpdated} />
+      <MemberWelcomeBanner
+        googleFormUrl={homeState.data.settings.googleFormUrl}
+        submissionsEnabled={
+          homeState.data.settings.submissionEnabled !== 'false' &&
+          homeState.data.settings.submissionButtonVisible !== 'false'
+        }
+      />
 
       <section className="league-command-hero" aria-label="League command center">
         <div>
@@ -294,6 +302,49 @@ function Dashboard() {
         <strong>Lobo Infinity League API</strong>
       </footer>
     </main>
+  )
+}
+
+function MemberWelcomeBanner({
+  googleFormUrl,
+  submissionsEnabled,
+}: {
+  googleFormUrl: string
+  submissionsEnabled: boolean
+}) {
+  const auth = useAuth()
+
+  if (!auth.authenticated) {
+    return null
+  }
+
+  return (
+    <section className="member-welcome-banner" aria-label="Member dashboard">
+      <div>
+        <p className="eyebrow">Welcome Back</p>
+        <h2>{auth.user.displayName}</h2>
+        <p>
+          {auth.user.favoriteFaction
+            ? `Favorite faction: ${auth.user.favoriteFaction}`
+            : 'Set your favorite faction from My Profile.'}
+        </p>
+      </div>
+      <div className="member-welcome-actions">
+        {auth.user.favoriteFaction ? (
+          <Link to={`/factions/${encodeURIComponent(auth.user.favoriteFaction)}`}>
+            Favorite Faction
+          </Link>
+        ) : null}
+        {auth.user.lastPage ? <Link to={auth.user.lastPage}>Continue</Link> : null}
+        <Link to="/notifications">Notifications</Link>
+        <Link to="/army-lists">My Army Lists</Link>
+        {googleFormUrl && submissionsEnabled ? (
+          <a href={googleFormUrl} rel="noreferrer" target="_blank">
+            Submit Match
+          </a>
+        ) : null}
+      </div>
+    </section>
   )
 }
 

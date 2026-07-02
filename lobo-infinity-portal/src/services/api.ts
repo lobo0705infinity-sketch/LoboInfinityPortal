@@ -9,13 +9,19 @@ import type {
 } from '../types/dashboard'
 
 const API_URL =
-  'https://script.google.com/macros/s/AKfycbwVmtbnFl0IcqViWhO5j13c_Z5dZ95KRDpFbFQEqY2UQVO-RSg0bPMk1Kn6EDIbb271AA/exec'
+  'https://script.google.com/macros/s/AKfycbzGHeN2kzQaoVGCMULOkaMY8GBDQ9j53unSVdRpK4vZZnNhNV_9anZnaNamXfucLqHLQg/exec'
 
 type ApiOptions = {
   signal?: AbortSignal
 }
 
 type RequestParams = Record<string, string>
+
+let activeAuthToken = ''
+
+export function setApiAuthToken(token: string) {
+  activeAuthToken = token
+}
 
 export type ArmyList = {
   id: number
@@ -53,6 +59,50 @@ export type ArmyListCommunitySummary = {
   mostPopularFaction: string
   trendingLists: ArmyList[]
   mostListsSubmitted: Array<{ count: number; name: string }>
+}
+
+export type UserRole =
+  | 'Guest'
+  | 'League Member'
+  | 'Assistant Commissioner'
+  | 'Commissioner'
+
+export type PortalUser = {
+  email: string
+  displayName: string
+  role: UserRole
+  enabled: boolean
+  favoriteFaction: string
+  avatarUrl: string
+  created: string
+  lastLogin: string
+  lastSeen: string
+  notificationPreferences: Record<string, unknown>
+  themePreference: string
+  dismissedAlerts: string[]
+  readAlerts: string[]
+  archivedAlerts: string[]
+  lastPage: string
+  searchHistory: string[]
+}
+
+export type PortalPermissions = Record<string, boolean>
+
+export type AuthSession = {
+  authenticated: boolean
+  user: PortalUser
+  permissions: PortalPermissions
+  oauthConfigured: boolean
+  error: string
+}
+
+export type MyProfileData = {
+  user: PortalUser
+  submittedLists: ArmyList[]
+  votesCast: number
+  recentActivity: LeagueTimelineItem[]
+  leagueStatistics: PlayerProfileData | null
+  futureSections: string[]
 }
 
 export type ArmyListsData = {
@@ -412,6 +462,10 @@ export type PortalSettings = {
   seasonStartDate: string
   seasonEndDate: string
   registrationOpen: string
+  googleOAuthClientId: string
+  portalVersion: string
+  gitCommit: string
+  deploymentUrl: string
 }
 
 export type AuditIssue = {
@@ -504,6 +558,20 @@ export type StreamedGame = {
 export type LeaderData = Pick<DashboardSummary, 'leagueLeader'>
 
 export type ApiClient = {
+  getSession: (options?: ApiOptions) => Promise<AuthSession>
+  getMyProfile: (options?: ApiOptions) => Promise<MyProfileData>
+  updateProfile: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<MyProfileData>
+  updateNotificationState: (
+    params: {
+      notificationId: string
+      notificationIds?: string[]
+      state: 'archived' | 'dismissed' | 'read'
+    },
+    options?: ApiOptions,
+  ) => Promise<void>
   getHome: (options?: ApiOptions) => Promise<HomeData>
   getDashboard: (options?: ApiOptions) => Promise<DashboardData>
   getLeader: (options?: ApiOptions) => Promise<LeaderData>
@@ -563,6 +631,44 @@ export type ApiClient = {
 }
 
 const divisionKeys: DivisionKey[] = ['main', 'pga', 'pgb']
+
+export async function getSession(
+  options: ApiOptions = {},
+): Promise<AuthSession> {
+  const payload = await request('session', options)
+  return normalizeAuthSessionPayload(payload)
+}
+
+export async function getMyProfile(
+  options: ApiOptions = {},
+): Promise<MyProfileData> {
+  const payload = await request('myProfile', options)
+  return normalizeMyProfilePayload(payload)
+}
+
+export async function updateProfile(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<MyProfileData> {
+  const payload = await postRequest('updateProfile', options, params)
+  return normalizeMyProfilePayload(payload)
+}
+
+export async function updateNotificationState(
+  params: {
+    notificationId: string
+    notificationIds?: string[]
+    state: 'archived' | 'dismissed' | 'read'
+  },
+  options: ApiOptions = {},
+): Promise<void> {
+  const payload = await postRequest('notificationState', options, {
+    notificationId: params.notificationId,
+    notificationIds: params.notificationIds?.join(',') ?? '',
+    state: params.state,
+  })
+  normalizeMutationPayload(payload, 'Notification update failed.')
+}
 
 export async function getDashboard(
   options: ApiOptions = {},
@@ -820,6 +926,10 @@ export async function operationsAction(
 }
 
 export const apiClient: ApiClient = {
+  getSession,
+  getMyProfile,
+  updateProfile,
+  updateNotificationState,
   getHome,
   getDashboard,
   getLeader,
@@ -863,6 +973,10 @@ async function request(
     url.searchParams.set(key, value)
   })
 
+  if (activeAuthToken) {
+    url.searchParams.set('authToken', activeAuthToken)
+  }
+
   const response = await fetch(url, {
     signal: options.signal,
   })
@@ -887,6 +1001,10 @@ async function postRequest(
   Object.entries(params).forEach(([key, value]) => {
     body.set(key, value)
   })
+
+  if (activeAuthToken) {
+    body.set('authToken', activeAuthToken)
+  }
 
   const response = await fetch(url, {
     body,
@@ -940,6 +1058,76 @@ function normalizeHomePayload(payload: unknown): HomeData {
     armyLists: getArray(record, 'armyLists').map(normalizeArmyList),
     armyListCommunity: normalizeArmyListCommunity(record.armyListCommunity),
   }
+}
+
+function normalizeAuthSessionPayload(payload: unknown): AuthSession {
+  const record = asRecord(payload, 'Auth session response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Session failed.')
+  }
+
+  return {
+    authenticated: getBoolean(record, 'authenticated'),
+    user: normalizePortalUser(getRequiredRecord(record, 'user')),
+    permissions: normalizeBooleanRecord(getRequiredRecord(record, 'permissions')),
+    oauthConfigured: getBoolean(record, 'oauthConfigured'),
+    error: getString(record, 'error'),
+  }
+}
+
+function normalizeMyProfilePayload(payload: unknown): MyProfileData {
+  const record = asRecord(payload, 'My profile response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Profile failed.')
+  }
+
+  const profile = getRequiredRecord(record, 'profile')
+
+  return {
+    user: normalizePortalUser(getRequiredRecord(profile, 'user')),
+    submittedLists: getArray(profile, 'submittedLists').map(normalizeArmyList),
+    votesCast: getNumber(profile, 'votesCast'),
+    recentActivity: getArray(profile, 'recentActivity').map(normalizeTimelineItem),
+    leagueStatistics: profile.leagueStatistics
+      ? normalizePlayerProfileRecord(asRecord(profile.leagueStatistics, 'Profile stats'))
+      : null,
+    futureSections: normalizeStringArray(profile.futureSections),
+  }
+}
+
+function normalizePortalUser(record: Record<string, unknown>): PortalUser {
+  return {
+    email: getString(record, 'email'),
+    displayName: getString(record, 'displayName') || 'Guest',
+    role: normalizeUserRole(getString(record, 'role')),
+    enabled: getBoolean(record, 'enabled'),
+    favoriteFaction: getString(record, 'favoriteFaction'),
+    avatarUrl: getString(record, 'avatarUrl'),
+    created: getString(record, 'created'),
+    lastLogin: getString(record, 'lastLogin'),
+    lastSeen: getString(record, 'lastSeen'),
+    notificationPreferences: getOptionalRecord(record, 'notificationPreferences') ?? {},
+    themePreference: getString(record, 'themePreference') || 'system',
+    dismissedAlerts: normalizeStringArray(record.dismissedAlerts),
+    readAlerts: normalizeStringArray(record.readAlerts),
+    archivedAlerts: normalizeStringArray(record.archivedAlerts),
+    lastPage: getString(record, 'lastPage'),
+    searchHistory: normalizeStringArray(record.searchHistory),
+  }
+}
+
+function normalizeUserRole(role: string): UserRole {
+  if (
+    role === 'League Member' ||
+    role === 'Assistant Commissioner' ||
+    role === 'Commissioner'
+  ) {
+    return role
+  }
+
+  return 'Guest'
 }
 
 function parseDashboardApiResponse(payload: unknown): DashboardApiResponse {
@@ -1031,6 +1219,12 @@ function normalizePlayerPayload(payload: unknown): PlayerProfileData {
 
   const player = getRequiredRecord(record, 'player')
 
+  return normalizePlayerProfileRecord(player)
+}
+
+function normalizePlayerProfileRecord(
+  player: Record<string, unknown>,
+): PlayerProfileData {
   return {
     name: getRequiredString(player, 'name'),
     division: getString(player, 'division'),
@@ -1547,6 +1741,10 @@ function normalizeSettingsRecord(settings: Record<string, unknown>): PortalSetti
     seasonStartDate: getString(settings, 'seasonStartDate'),
     seasonEndDate: getString(settings, 'seasonEndDate'),
     registrationOpen: getString(settings, 'registrationOpen'),
+    googleOAuthClientId: getString(settings, 'googleOAuthClientId'),
+    portalVersion: getString(settings, 'portalVersion'),
+    gitCommit: getString(settings, 'gitCommit'),
+    deploymentUrl: getString(settings, 'deploymentUrl'),
   }
 }
 
@@ -1708,6 +1906,22 @@ function normalizeStringRecord(record: Record<string, unknown>) {
       typeof value === 'string' ? value : String(value ?? ''),
     ]),
   )
+}
+
+function normalizeBooleanRecord(record: Record<string, unknown>) {
+  return Object.fromEntries(
+    Object.entries(record).map(([key, value]) => [key, value === true]),
+  )
+}
+
+function normalizeStringArray(value: unknown) {
+  if (!Array.isArray(value)) {
+    return []
+  }
+
+  return value
+    .map((item) => (typeof item === 'string' ? item : String(item ?? '')))
+    .filter((item) => item.trim().length > 0)
 }
 
 function normalizeOperationsNewsItem(item: unknown): OperationsNewsItem {

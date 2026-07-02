@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type KeyboardEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../auth/AuthContext'
 import { apiClient } from '../services/api'
 
 type SearchItem = {
@@ -22,6 +23,7 @@ type SearchState =
     }
 
 function GlobalSearch() {
+  const auth = useAuth()
   const navigate = useNavigate()
   const [query, setQuery] = useState('')
   const [activeIndex, setActiveIndex] = useState(0)
@@ -127,6 +129,21 @@ function GlobalSearch() {
     setActiveIndex(0)
   }
 
+  function rememberSearch(item: SearchItem) {
+    if (!auth.authenticated) {
+      return
+    }
+
+    const history = [
+      item.label,
+      ...auth.user.searchHistory.filter((entry) => entry !== item.label),
+    ].slice(0, 12)
+
+    void apiClient.updateProfile({
+      searchHistory: JSON.stringify(history),
+    })
+  }
+
   function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
     if (event.key === 'Escape') {
       closeSearch()
@@ -151,6 +168,7 @@ function GlobalSearch() {
 
     if (event.key === 'Enter') {
       event.preventDefault()
+      rememberSearch(results[activeIndex])
       navigate(results[activeIndex].to)
       closeSearch()
     }
@@ -194,7 +212,10 @@ function GlobalSearch() {
                 }
                 id={`search-result-${index}`}
                 key={`${result.category}-${result.to}`}
-                onClick={closeSearch}
+                onClick={() => {
+                  rememberSearch(result)
+                  closeSearch()
+                }}
                 onMouseEnter={() => setActiveIndex(index)}
                 role="option"
                 to={result.to}

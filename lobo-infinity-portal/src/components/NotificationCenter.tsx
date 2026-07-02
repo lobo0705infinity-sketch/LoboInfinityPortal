@@ -23,9 +23,17 @@ function NotificationCenter() {
   useEffect(() => {
     const controller = new AbortController()
 
+    void loadNotifications(controller.signal)
+
+    return () => {
+      controller.abort()
+    }
+  }, [])
+
+  async function loadNotifications(signal?: AbortSignal) {
     apiClient
       .getNotifications({
-        signal: controller.signal,
+        signal,
       })
       .then((notifications) => {
         setState({
@@ -34,17 +42,26 @@ function NotificationCenter() {
         })
       })
       .catch(() => {
-        if (!controller.signal.aborted) {
+        if (!signal?.aborted) {
           setState({
             status: 'error',
           })
         }
       })
+  }
 
-    return () => {
-      controller.abort()
+  async function markAllRead() {
+    if (state.status !== 'success') {
+      return
     }
-  }, [])
+
+    await apiClient.updateNotificationState({
+      notificationId: 'all',
+      notificationIds: state.notifications.map((notification) => notification.id),
+      state: 'read',
+    })
+    await loadNotifications()
+  }
 
   const unreadCount = useMemo(() => {
     if (state.status !== 'success') {
@@ -72,6 +89,11 @@ function NotificationCenter() {
         <div className="notification-menu" role="dialog" aria-label="Notifications">
           <div className="notification-menu-heading">
             <strong>Notification Center</strong>
+            {unreadCount > 0 ? (
+              <button onClick={() => void markAllRead()} type="button">
+                Mark read
+              </button>
+            ) : null}
             <Link onClick={() => setIsOpen(false)} to="/notifications">
               View all
             </Link>

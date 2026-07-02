@@ -180,6 +180,9 @@ function voteArmyList(e) {
       currentValue + 1
     );
 
+  if (typeof incrementUserVotesCast === "function")
+    incrementUserVotesCast(e);
+
   clearPortalCache();
 
   return jsonOutput({

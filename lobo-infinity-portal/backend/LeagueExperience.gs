@@ -8,13 +8,74 @@
 
 const EXPERIENCE_LIMIT = 20;
 
-function getNotifications() {
+function getNotifications(e) {
+
+  const auth =
+    getRequestUser(e);
+
+  const notifications =
+    applyUserNotificationState(
+      buildLeagueNotifications(),
+      auth.user
+    );
 
   return jsonOutput({
     success: true,
-    notifications:
-      buildLeagueNotifications()
+    notifications: notifications
   });
+
+}
+
+function applyUserNotificationState(notifications, user) {
+
+  if (
+    !user ||
+    !user.email
+  )
+    return notifications;
+
+  const dismissed =
+    listToLookup(user.dismissedAlerts || []);
+
+  const archived =
+    listToLookup(user.archivedAlerts || []);
+
+  const read =
+    listToLookup(user.readAlerts || []);
+
+  return notifications
+    .filter(function(notification) {
+      return (
+        !dismissed[notification.id] &&
+        !archived[notification.id]
+      );
+    })
+    .map(function(notification) {
+
+      notification.unread =
+        !read[notification.id];
+
+      return notification;
+
+    });
+
+}
+
+function listToLookup(items) {
+
+  const lookup = {};
+
+  items.forEach(function(item) {
+
+    const key =
+      String(item || "").trim();
+
+    if (key !== "")
+      lookup[key] = true;
+
+  });
+
+  return lookup;
 
 }
 

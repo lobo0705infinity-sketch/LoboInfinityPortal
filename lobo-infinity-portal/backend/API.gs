@@ -95,9 +95,7 @@ function doGet(e) {
       });
 
     case "notifications":
-      return getCachedApiResponse(e, action, function() {
-        return getNotifications();
-      });
+      return getNotifications(e);
 
     case "timeline":
       return getCachedApiResponse(e, action, function() {
@@ -108,6 +106,12 @@ function doGet(e) {
       return getCachedApiResponse(e, action, function() {
         return getSettings();
       });
+
+    case "session":
+      return getAuthSession(e);
+
+    case "myProfile":
+      return getMyProfile(e);
 
     case "streams":
       return getCachedApiResponse(e, action, function() {
@@ -125,55 +129,95 @@ function doGet(e) {
       });
 
     case "operations":
-      return getOperationsDashboard();
+      return requireApiPermission(e, "viewOperations", function() {
+        return getOperationsDashboard();
+      });
 
     case "operationsAudit":
-      return getOperationsAudit();
+      return requireApiPermission(e, "runLeagueAudit", function() {
+        return getOperationsAudit();
+      });
 
     case "operationsSeason":
-      return getOperationsSeason();
+      return requireApiPermission(e, "runSeasonControl", function() {
+        return getOperationsSeason();
+      });
 
     case "operationsStatus":
-      return getOperationsStatus();
+      return requireApiPermission(e, "viewOperations", function(auth) {
+        return getOperationsStatus(auth);
+      });
 
     case "voteArmyList":
-      return voteArmyList(e);
+      return requireApiPermission(e, "vote", function() {
+        return voteArmyList(e);
+      });
 
     case "submitArmyList":
-      return submitArmyList(e);
+      return requireApiPermission(e, "submitLists", function() {
+        return submitArmyList(e);
+      });
+
+    case "updateProfile":
+      return updateMyProfile(e);
+
+    case "notificationState":
+      return updateNotificationState(e);
 
     case "updateSettings":
-      return updateOperationsSettings(e);
+      return requireApiPermission(e, "manageSettings", function() {
+        return updateOperationsSettings(e);
+      });
 
     case "approveArmyList":
-      return approveArmyList(e);
+      return requireApiPermission(e, "approveLists", function() {
+        return approveArmyList(e);
+      });
 
     case "rejectArmyList":
-      return rejectArmyList(e);
+      return requireApiPermission(e, "approveLists", function() {
+        return rejectArmyList(e);
+      });
 
     case "updateArmyList":
-      return updateArmyList(e);
+      return requireApiPermission(e, "approveLists", function() {
+        return updateArmyList(e);
+      });
 
     case "saveStream":
-      return saveOperationsStream(e);
+      return requireApiPermission(e, "manageStreams", function() {
+        return saveOperationsStream(e);
+      });
 
     case "deleteStream":
-      return deleteOperationsStream(e);
+      return requireApiPermission(e, "manageStreams", function() {
+        return deleteOperationsStream(e);
+      });
 
     case "saveNews":
-      return saveOperationsNews(e);
+      return requireApiPermission(e, "manageNews", function() {
+        return saveOperationsNews(e);
+      });
 
     case "deleteNews":
-      return deleteOperationsNews(e);
+      return requireApiPermission(e, "manageNews", function() {
+        return deleteOperationsNews(e);
+      });
 
     case "clearCache":
-      return clearOperationsCache();
+      return requireApiPermission(e, "manageCache", function() {
+        return clearOperationsCache();
+      });
 
     case "rebuildStatistics":
-      return rebuildOperationsStatistics();
+      return requireApiPermission(e, "manageCache", function() {
+        return rebuildOperationsStatistics();
+      });
 
     case "seasonOperation":
-      return executeSeasonOperation(e);
+      return requireApiPermission(e, "runSeasonControl", function() {
+        return executeSeasonOperation(e);
+      });
 
     default:
       return jsonOutput({
@@ -195,43 +239,75 @@ function doPost(e) {
   switch (action) {
 
     case "submitArmyList":
-      return submitArmyList(e);
+      return requireApiPermission(e, "submitLists", function() {
+        return submitArmyList(e);
+      });
 
     case "voteArmyList":
-      return voteArmyList(e);
+      return requireApiPermission(e, "vote", function() {
+        return voteArmyList(e);
+      });
+
+    case "updateProfile":
+      return updateMyProfile(e);
+
+    case "notificationState":
+      return updateNotificationState(e);
 
     case "updateSettings":
-      return updateOperationsSettings(e);
+      return requireApiPermission(e, "manageSettings", function() {
+        return updateOperationsSettings(e);
+      });
 
     case "approveArmyList":
-      return approveArmyList(e);
+      return requireApiPermission(e, "approveLists", function() {
+        return approveArmyList(e);
+      });
 
     case "rejectArmyList":
-      return rejectArmyList(e);
+      return requireApiPermission(e, "approveLists", function() {
+        return rejectArmyList(e);
+      });
 
     case "updateArmyList":
-      return updateArmyList(e);
+      return requireApiPermission(e, "approveLists", function() {
+        return updateArmyList(e);
+      });
 
     case "saveStream":
-      return saveOperationsStream(e);
+      return requireApiPermission(e, "manageStreams", function() {
+        return saveOperationsStream(e);
+      });
 
     case "deleteStream":
-      return deleteOperationsStream(e);
+      return requireApiPermission(e, "manageStreams", function() {
+        return deleteOperationsStream(e);
+      });
 
     case "saveNews":
-      return saveOperationsNews(e);
+      return requireApiPermission(e, "manageNews", function() {
+        return saveOperationsNews(e);
+      });
 
     case "deleteNews":
-      return deleteOperationsNews(e);
+      return requireApiPermission(e, "manageNews", function() {
+        return deleteOperationsNews(e);
+      });
 
     case "clearCache":
-      return clearOperationsCache();
+      return requireApiPermission(e, "manageCache", function() {
+        return clearOperationsCache();
+      });
 
     case "rebuildStatistics":
-      return rebuildOperationsStatistics();
+      return requireApiPermission(e, "manageCache", function() {
+        return rebuildOperationsStatistics();
+      });
 
     case "seasonOperation":
-      return executeSeasonOperation(e);
+      return requireApiPermission(e, "runSeasonControl", function() {
+        return executeSeasonOperation(e);
+      });
 
     default:
       return doGet(e);

@@ -86,6 +86,26 @@ const DEFAULT_SETTINGS = [
     "registrationOpen",
     "false",
     "Whether registration is currently open."
+  ],
+  [
+    "googleOAuthClientId",
+    "",
+    "Google Identity Services OAuth web client ID."
+  ],
+  [
+    "portalVersion",
+    "1.2.1",
+    "Portal release version."
+  ],
+  [
+    "gitCommit",
+    "",
+    "Latest deployed Git commit hash."
+  ],
+  [
+    "deploymentUrl",
+    "",
+    "Current production deployment URL."
   ]
 ];
 

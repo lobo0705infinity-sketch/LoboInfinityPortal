@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom'
+import { useAuth } from '../auth/AuthContext'
 import LeagueCrest from './LeagueCrest'
 import PortalIcon, { type PortalIconName } from './PortalIcon'
 
@@ -36,11 +37,6 @@ const navigationItems: Array<{
     icon: 'bell',
     label: 'Alerts',
     to: '/notifications',
-  },
-  {
-    icon: 'submit',
-    label: 'Operations',
-    to: '/commissioner',
   },
   {
     icon: 'standings',
@@ -85,6 +81,30 @@ const navigationItems: Array<{
 ]
 
 function Sidebar() {
+  const auth = useAuth()
+  const visibleNavigation = [
+    ...navigationItems.slice(0, 6),
+    ...(auth.authenticated
+      ? [
+          {
+            icon: 'players' as PortalIconName,
+            label: 'My Profile',
+            to: '/profile',
+          },
+        ]
+      : []),
+    ...(auth.isAtLeastRole('Assistant Commissioner')
+      ? [
+          {
+            icon: 'submit' as PortalIconName,
+            label: 'Operations',
+            to: '/commissioner',
+          },
+        ]
+      : []),
+    ...navigationItems.slice(6),
+  ]
+
   return (
     <aside className="sidebar" aria-label="League navigation">
       <div className="sidebar-brand">
@@ -96,7 +116,7 @@ function Sidebar() {
       </div>
 
       <nav className="sidebar-nav" aria-label="Portal sections">
-        {navigationItems.map((item) => (
+        {visibleNavigation.map((item) => (
           <NavLink
             className={({ isActive }) =>
               isActive ? 'sidebar-button active' : 'sidebar-button'

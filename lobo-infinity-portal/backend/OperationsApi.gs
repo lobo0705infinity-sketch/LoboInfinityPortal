@@ -95,19 +95,34 @@ function getOperationsSeason() {
 
 }
 
-function getOperationsStatus() {
+function getOperationsStatus(auth) {
+
+  const settings =
+    getSettingsObject();
 
   return jsonOutput({
     success: true,
     status: {
+      currentUser:
+        auth && auth.user
+          ? auth.user
+          : buildGuestUser(),
+      authenticationStatus:
+        auth && auth.authenticated
+          ? "Authenticated"
+          : "Guest",
+      role:
+        auth && auth.user
+          ? auth.user.role
+          : USER_ROLES.GUEST,
       appsScript: "Online",
       googleSheets: "Online",
       cache: getOperationsCacheStatus(),
       lastSync: getOperationsTimestamp(),
-      portalVersion: "1.2",
-      appsScriptVersion: "Version 1.2",
-      vercelDeployment: "",
-      gitCommit: ""
+      portalVersion: settings.portalVersion || "1.2.1",
+      appsScriptVersion: "Version 1.2.1",
+      vercelDeployment: settings.deploymentUrl || "",
+      gitCommit: settings.gitCommit || ""
     }
   });
 
@@ -137,8 +152,25 @@ function updateOperationsSettings(e) {
       "bannerImage",
       "leagueLogo",
       "commissionerContact",
-      "themeAccentColor"
+      "themeAccentColor",
+      "seasonStartDate",
+      "seasonEndDate",
+      "registrationOpen",
+      "googleOAuthClientId",
+      "portalVersion",
+      "gitCommit",
+      "deploymentUrl"
     ];
+
+  if (
+    params.googleFormUrl !== undefined &&
+    String(params.googleFormUrl).trim() !== "" &&
+    !isOperationsValidUrl(params.googleFormUrl)
+  )
+    return jsonOutput({
+      success: false,
+      error: "Google Form URL must be a valid http or https URL."
+    });
 
   keys.forEach(function(key) {
 
@@ -157,6 +189,15 @@ function updateOperationsSettings(e) {
   return jsonOutput({
     success: true
   });
+
+}
+
+function isOperationsValidUrl(value) {
+
+  const text =
+    String(value || "").trim();
+
+  return /^https?:\/\/[^\s]+$/i.test(text);
 
 }
 

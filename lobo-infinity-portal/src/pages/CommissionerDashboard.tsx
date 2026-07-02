@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../auth/AuthContext'
 import Loading from '../components/Loading'
 import {
   apiClient,
@@ -50,15 +51,10 @@ const defaultNews: OperationsNewsItem = {
 }
 
 function CommissionerDashboard() {
+  const auth = useAuth()
   const [state, setState] = useState<OperationsState>({
     status: 'loading',
   })
-  const [accessEmail, setAccessEmail] = useState(
-    () => window.localStorage.getItem('lobo-commissioner-email') ?? '',
-  )
-  const [isUnlocked, setIsUnlocked] = useState(
-    () => window.localStorage.getItem('lobo-commissioner-unlocked') === 'true',
-  )
   const [workingAction, setWorkingAction] = useState('')
 
   async function loadOperations() {
@@ -80,7 +76,7 @@ function CommissionerDashboard() {
   }
 
   useEffect(() => {
-    if (!isUnlocked) {
+    if (!auth.isAtLeastRole('Assistant Commissioner')) {
       return
     }
 
@@ -111,14 +107,7 @@ function CommissionerDashboard() {
     return () => {
       controller.abort()
     }
-  }, [isUnlocked])
-
-  function unlockAccess(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    window.localStorage.setItem('lobo-commissioner-email', accessEmail)
-    window.localStorage.setItem('lobo-commissioner-unlocked', 'true')
-    setIsUnlocked(true)
-  }
+  }, [auth])
 
   async function runAction(
     action: string,
@@ -133,31 +122,18 @@ function CommissionerDashboard() {
     }
   }
 
-  if (!isUnlocked) {
+  if (!auth.isAtLeastRole('Assistant Commissioner')) {
     return (
       <main className="portal-shell">
         <PageHeader />
         <section className="panel operations-access-card">
           <p className="eyebrow">Commissioner Access</p>
-          <h2>Google Sign-In Pending</h2>
+          <h2>Authorized League Staff Only</h2>
           <p>
-            Google OAuth requires a production client ID. Until that credential is
-            configured, this local commissioner access gate keeps the operations
-            tools out of the standard navigation flow.
+            Sign in with an enabled Assistant Commissioner or Commissioner
+            account to use operations tools. Privileged Apps Script endpoints
+            enforce the same role checks server-side.
           </p>
-          <form onSubmit={unlockAccess}>
-            <label>
-              <span>Commissioner Email</span>
-              <input
-                onChange={(event) => setAccessEmail(event.target.value)}
-                placeholder="commissioner@example.com"
-                required
-                type="email"
-                value={accessEmail}
-              />
-            </label>
-            <button type="submit">Unlock Operations Center</button>
-          </form>
         </section>
       </main>
     )
@@ -418,6 +394,10 @@ function SettingsPanel({
         <Input label="Theme Accent" onChange={(value) => setDraft({ ...draft, themeAccentColor: value })} type="color" value={draft.themeAccentColor || '#C1121F'} />
         <Input label="Season Start" onChange={(value) => setDraft({ ...draft, seasonStartDate: value })} type="date" value={draft.seasonStartDate} />
         <Input label="Season End" onChange={(value) => setDraft({ ...draft, seasonEndDate: value })} type="date" value={draft.seasonEndDate} />
+        <Input label="Google OAuth Client ID" onChange={(value) => setDraft({ ...draft, googleOAuthClientId: value })} value={draft.googleOAuthClientId} />
+        <Input label="Portal Version" onChange={(value) => setDraft({ ...draft, portalVersion: value })} value={draft.portalVersion} />
+        <Input label="Git Commit" onChange={(value) => setDraft({ ...draft, gitCommit: value })} value={draft.gitCommit} />
+        <Input label="Deployment URL" onChange={(value) => setDraft({ ...draft, deploymentUrl: value })} value={draft.deploymentUrl} />
         <label className="operations-check">
           <input checked={draft.submissionEnabled !== 'false'} onChange={(event) => setDraft({ ...draft, submissionEnabled: String(event.target.checked) })} type="checkbox" />
           Enable submissions
@@ -425,6 +405,10 @@ function SettingsPanel({
         <label className="operations-check">
           <input checked={draft.submissionButtonVisible !== 'false'} onChange={(event) => setDraft({ ...draft, submissionButtonVisible: String(event.target.checked) })} type="checkbox" />
           Show submit button
+        </label>
+        <label className="operations-check">
+          <input checked={draft.registrationOpen === 'true'} onChange={(event) => setDraft({ ...draft, registrationOpen: String(event.target.checked) })} type="checkbox" />
+          Registration open
         </label>
         <button type="submit">Save Settings</button>
       </form>
@@ -463,15 +447,25 @@ function CachePanel({
 }
 
 function SystemHealthPanel({ data }: { data: OperationsDashboardData }) {
+  const auth = useAuth()
+
   return (
     <section className="panel operations-panel">
       <PanelTitle eyebrow="Status" title="System Health" />
       <dl className="operations-metrics">
+        <Metric label="Current User" value={auth.user.displayName} />
+        <Metric
+          label="Authentication"
+          value={auth.authenticated ? 'Authenticated' : 'Guest'}
+        />
+        <Metric label="Role" value={auth.user.role} />
         {Object.entries(data.summary.systemHealth).map(([key, value]) => (
           <Metric key={key} label={key} value={value} />
         ))}
-        <Metric label="Portal Version" value="1.2" />
-        <Metric label="Apps Script" value="Version 1.2" />
+        <Metric label="Portal Version" value={data.settings.portalVersion || '1.2.1'} />
+        <Metric label="Apps Script" value="Version 1.2.1" />
+        <Metric label="Git Commit" value={data.settings.gitCommit || 'Not recorded'} />
+        <Metric label="Deployment" value={data.settings.deploymentUrl || 'Not recorded'} />
       </dl>
     </section>
   )
