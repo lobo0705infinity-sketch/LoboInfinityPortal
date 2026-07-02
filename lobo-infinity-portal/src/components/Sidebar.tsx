@@ -22,6 +22,11 @@ const navigationItems = [
     to: '/streams',
   },
   {
+    icon: 'L',
+    label: 'Army Lists',
+    to: '/army-lists',
+  },
+  {
     icon: '!',
     label: 'Alerts',
     to: '/notifications',

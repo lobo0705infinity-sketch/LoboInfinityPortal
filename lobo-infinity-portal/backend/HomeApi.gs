@@ -37,6 +37,11 @@ function getHome() {
       getSettings().getContent()
     );
 
+  const armyLists =
+    JSON.parse(
+      getArmyLists().getContent()
+    );
+
   return jsonOutput({
     success: true,
     dashboard: dashboard,
@@ -45,7 +50,9 @@ function getHome() {
     intelligence: intelligence,
     records: intelligence.records || {},
     hallOfFame: hallOfFame,
-    settings: settings.settings || {}
+    settings: settings.settings || {},
+    armyLists: armyLists.lists || [],
+    armyListCommunity: armyLists.community || {}
   });
 
 }

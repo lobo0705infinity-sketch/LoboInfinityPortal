@@ -2891,6 +2891,305 @@
   font-weight: 760;
 }
 
+.community-summary-grid,
+.army-list-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  padding: 0 clamp(18px, 4vw, 46px) 22px;
+}
+
+.community-card,
+.army-list-card,
+.army-list-form,
+.faction-matchup-panel,
+.profile-army-list-panel {
+  animation: dashboard-fade 240ms ease both;
+}
+
+.community-card {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+}
+
+.community-card h2,
+.army-list-card h2,
+.army-list-mini-card h3 {
+  margin: 0;
+  color: var(--text);
+}
+
+.community-card-stack {
+  display: grid;
+  gap: 10px;
+}
+
+.community-card-stack a,
+.community-card-stack > span {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  color: var(--text);
+  background: var(--panel-strong);
+  text-decoration: none;
+}
+
+.community-card-stack span {
+  color: var(--text-soft);
+  font-weight: 850;
+}
+
+.army-list-controls {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.4fr) repeat(5, minmax(130px, 1fr));
+  gap: 12px;
+  padding: 0 clamp(18px, 4vw, 46px) 20px;
+}
+
+.army-list-controls label,
+.army-list-form label {
+  display: grid;
+  gap: 7px;
+}
+
+.army-list-controls span,
+.army-list-form span {
+  color: var(--text-muted);
+  font-size: 0.74rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.army-list-controls input,
+.army-list-controls select,
+.army-list-form input,
+.army-list-form textarea {
+  min-height: 42px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  color: var(--text);
+  background: var(--panel);
+  font: inherit;
+  font-weight: 800;
+}
+
+.army-list-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0 clamp(18px, 4vw, 46px) 56px;
+  padding: 20px;
+}
+
+.army-list-form-wide,
+.army-list-form-actions {
+  grid-column: 1 / -1;
+}
+
+.army-list-form textarea {
+  resize: vertical;
+}
+
+.army-list-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+
+.army-list-form-actions button,
+.army-list-actions button {
+  min-height: 42px;
+  border: 1px solid rgba(76, 201, 240, 0.45);
+  border-radius: 12px;
+  padding: 10px 12px;
+  color: var(--blue);
+  background: var(--panel-strong);
+  font: inherit;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.army-list-form-actions button:disabled,
+.army-list-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.army-list-form-actions p {
+  margin: 0;
+  color: var(--text-soft);
+  font-weight: 800;
+}
+
+.army-list-card {
+  display: grid;
+  gap: 14px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  background: var(--panel);
+  box-shadow: var(--shadow-panel);
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    transform 180ms ease;
+}
+
+.army-list-card:hover {
+  border-color: var(--border-strong);
+  background: var(--panel-strong);
+  transform: translateY(-2px);
+}
+
+.army-list-card-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.army-list-card-heading > strong {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: var(--blue);
+  background: var(--panel-muted);
+  font-size: 1.35rem;
+}
+
+.army-list-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.army-list-meta div,
+.matchup-summary-strip div {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  background: var(--panel-muted);
+}
+
+.army-list-meta dt,
+.matchup-summary-strip dt {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.army-list-meta dd,
+.matchup-summary-strip dd {
+  margin: 5px 0 0;
+  color: var(--text);
+  font-weight: 900;
+  overflow-wrap: anywhere;
+}
+
+.army-list-card p {
+  margin: 0;
+  color: var(--text-soft);
+  font-weight: 760;
+  line-height: 1.5;
+}
+
+.army-list-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.army-list-actions a,
+.army-list-mini-card a {
+  border: 1px solid rgba(76, 201, 240, 0.45);
+  border-radius: 12px;
+  padding: 10px 12px;
+  color: var(--blue);
+  font-weight: 950;
+  text-decoration: none;
+}
+
+.army-list-actions code,
+.army-list-mini-card code {
+  max-width: 100%;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  color: var(--text-soft);
+  background: var(--panel-muted);
+}
+
+.army-list-mini-grid {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+}
+
+.profile-army-list-panel {
+  margin: 0 clamp(18px, 4vw, 46px) 22px;
+}
+
+.army-list-mini-card {
+  display: grid;
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  background: var(--panel-strong);
+}
+
+.army-list-mini-card span {
+  color: var(--blue);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.army-list-mini-card p {
+  margin: 0;
+  color: var(--text-soft);
+  font-weight: 760;
+}
+
+.army-list-mini-card strong {
+  color: var(--text);
+}
+
+.faction-matchup-panel {
+  margin: 0 clamp(18px, 4vw, 46px) 22px;
+  overflow: hidden;
+}
+
+.matchup-summary-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  padding: 0 16px 16px;
+}
+
+.matchup-controls {
+  grid-template-columns: minmax(220px, 1fr) minmax(180px, 0.4fr);
+  padding: 0 16px 16px;
+}
+
+.faction-matchup-table {
+  margin: 0;
+}
+
 @keyframes portal-spin {
   to {
     transform: rotate(360deg);
@@ -2983,7 +3282,9 @@
 
   .experience-grid,
   .news-grid,
-  .stream-grid {
+  .stream-grid,
+  .army-list-grid,
+  .community-summary-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -2997,6 +3298,14 @@
   }
 
   .stream-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .army-list-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .matchup-summary-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -3123,12 +3432,19 @@
 
   .experience-grid,
   .news-grid,
-  .stream-grid {
+  .stream-grid,
+  .army-list-grid,
+  .community-summary-grid {
     grid-template-columns: 1fr;
   }
 
   .stream-filters,
-  .stream-meta {
+  .stream-meta,
+  .army-list-controls,
+  .army-list-form,
+  .army-list-meta,
+  .matchup-summary-strip,
+  .matchup-controls {
     grid-template-columns: 1fr;
   }
 

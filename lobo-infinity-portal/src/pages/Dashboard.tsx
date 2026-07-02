@@ -109,6 +109,7 @@ function Dashboard() {
   const records = homeState.data.records
   const hallOfFame = homeState.data.hallOfFame
   const intelligence = homeState.data.intelligence
+  const armyListCommunity = homeState.data.armyListCommunity
   const featuredGame = games[0]
   const hottestPlayer = intelligence?.winStreaks[0]
   const strongestFaction =
@@ -195,6 +196,7 @@ function Dashboard() {
 
       <DashboardHighlights
         games={games}
+        armyListCommunity={armyListCommunity}
         hallOfFame={hallOfFame}
         intelligence={intelligence}
         news={news}
@@ -486,6 +488,7 @@ function HeadlineStack({
 }
 
 function DashboardHighlights({
+  armyListCommunity,
   games,
   hallOfFame,
   intelligence,
@@ -493,6 +496,7 @@ function DashboardHighlights({
   overview,
   records,
 }: {
+  armyListCommunity: HomeData['armyListCommunity']
   games: RecentGame[]
   hallOfFame: HallOfFameData | null
   intelligence: LeagueIntelligenceData | null
@@ -580,6 +584,55 @@ function DashboardHighlights({
               ) : (
                 'Live data pending'
               )}
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <section className="panel dashboard-metrics-widget">
+        <div className="panel-heading">
+          <p className="eyebrow">Community</p>
+          <h2>Army List Vault</h2>
+        </div>
+        <dl className="dashboard-metric-list">
+          <div>
+            <dt>Most Popular Faction</dt>
+            <dd>
+              {armyListCommunity.mostPopularFaction ? (
+                <Link
+                  to={`/factions/${encodeURIComponent(
+                    armyListCommunity.mostPopularFaction,
+                  )}`}
+                >
+                  {armyListCommunity.mostPopularFaction}
+                </Link>
+              ) : (
+                'Live data pending'
+              )}
+            </dd>
+          </div>
+          <div>
+            <dt>Highest Rated Designer</dt>
+            <dd>
+              {armyListCommunity.highestRatedDesigner ? (
+                <Link
+                  to={`/players/${encodeURIComponent(
+                    armyListCommunity.highestRatedDesigner.name,
+                  )}`}
+                >
+                  {armyListCommunity.highestRatedDesigner.name}
+                </Link>
+              ) : (
+                'Live data pending'
+              )}
+            </dd>
+          </div>
+          <div>
+            <dt>Trending Lists</dt>
+            <dd>
+              <Link to="/army-lists">
+                {armyListCommunity.trendingLists.length} approved lists
+              </Link>
             </dd>
           </div>
         </dl>

@@ -53,6 +53,16 @@ function getFaction(e) {
       faction.name
     );
 
+  const armyLists =
+    getFactionArmyLists(
+      faction.name
+    );
+
+  const matchups =
+    getFactionMatchups(
+      faction.name
+    );
+
   return jsonOutput({
     success: true,
     faction: {
@@ -78,7 +88,13 @@ function getFaction(e) {
       bestMoments:
         getFactionBestMoments(
           recentGames
-        )
+        ),
+      matchups:
+        matchups.rows,
+      matchupSummary:
+        matchups.overall,
+      armyLists:
+        armyLists
     }
   });
 

@@ -119,11 +119,44 @@ function doGet(e) {
         return getSearchData();
       });
 
+    case "armyLists":
+      return getCachedApiResponse(e, action, function() {
+        return getArmyLists();
+      });
+
+    case "voteArmyList":
+      return voteArmyList(e);
+
+    case "submitArmyList":
+      return submitArmyList(e);
+
     default:
       return jsonOutput({
         success: false,
         error: "Unknown API action."
       });
+
+  }
+
+}
+
+function doPost(e) {
+
+  const action =
+    (e && e.parameter && e.parameter.action)
+      ? e.parameter.action
+      : "";
+
+  switch (action) {
+
+    case "submitArmyList":
+      return submitArmyList(e);
+
+    case "voteArmyList":
+      return voteArmyList(e);
+
+    default:
+      return doGet(e);
 
   }
 

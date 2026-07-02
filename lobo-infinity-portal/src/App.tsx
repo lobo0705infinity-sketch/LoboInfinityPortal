@@ -3,6 +3,7 @@ import Breadcrumbs from './components/Breadcrumbs'
 import Header from './components/Header'
 import Sidebar from './components/Sidebar'
 import Analytics from './pages/Analytics'
+import ArmyLists from './pages/ArmyLists'
 import CommissionerNews from './pages/CommissionerNews'
 import Dashboard from './pages/Dashboard'
 import FactionProfile from './pages/FactionProfile'
@@ -18,6 +19,7 @@ import Players from './pages/Players'
 import Rules from './pages/Rules'
 import Standings from './pages/Standings'
 import StreamedGames from './pages/StreamedGames'
+import SubmitArmyList from './pages/SubmitArmyList'
 import Timeline from './pages/Timeline'
 import './App.css'
 
@@ -46,6 +48,8 @@ function App() {
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/timeline" element={<Timeline />} />
             <Route path="/streams" element={<StreamedGames />} />
+            <Route path="/army-lists" element={<ArmyLists />} />
+            <Route path="/army-lists/submit" element={<SubmitArmyList />} />
             <Route path="/rules" element={<Rules />} />
           </Routes>
         </div>

@@ -9,13 +9,90 @@ import type {
 } from '../types/dashboard'
 
 const API_URL =
-  'https://script.google.com/macros/s/AKfycby5eIa971vhsBtlf0e1NKGUhtVCjIsQPx4sz88n-8p6PAfXaZ8Djc3T4oqsBhlGscoRtg/exec'
+  'https://script.google.com/macros/s/AKfycbxju6iQP2aejD0dB2nVx3fm2n_UyTyy2ol0XdVU6tb5zOZ1M3Iu01spAsq34dTLf5A5wg/exec'
 
 type ApiOptions = {
   signal?: AbortSignal
 }
 
 type RequestParams = Record<string, string>
+
+export type ArmyList = {
+  id: number
+  submissionDate: string
+  player: string
+  faction: string
+  sectorial: string
+  mission: string
+  event: string
+  armyCode: string
+  armyLink: string
+  armyName: string
+  description: string
+  upvotes: number
+  downvotes: number
+  score: number
+  approved: boolean
+}
+
+export type ArmyListSubmission = {
+  player: string
+  faction: string
+  sectorial: string
+  mission: string
+  event: string
+  armyCode: string
+  armyLink: string
+  armyName: string
+  description: string
+}
+
+export type ArmyListCommunitySummary = {
+  topContributors: Array<{ count: number; name: string }>
+  highestRatedDesigner: { lists: number; name: string; score: number } | null
+  mostPopularFaction: string
+  trendingLists: ArmyList[]
+  mostListsSubmitted: Array<{ count: number; name: string }>
+}
+
+export type ArmyListsData = {
+  lists: ArmyList[]
+  community: ArmyListCommunitySummary
+}
+
+export type PlayerArmyListSummary = {
+  submitted: number
+  highestRated: ArmyList | null
+  newest: ArmyList | null
+  averageRating: number
+  favoriteFaction: string
+}
+
+export type FactionMatchup = {
+  opponent: string
+  games: number
+  wins: number
+  losses: number
+  winRate: number
+  averageTP: number
+  averageOP: number
+  averageVP: number
+}
+
+export type FactionMatchupSummary = {
+  opponents: number
+  games: number
+  wins: number
+  losses: number
+  winRate: number
+  bestOpponent: string
+}
+
+export type FactionArmyLists = {
+  mostPopular: ArmyList[]
+  highestRated: ArmyList[]
+  newest: ArmyList[]
+}
 
 type DashboardApiResponse = {
   success?: boolean
@@ -46,6 +123,8 @@ export type PlayerProfileData = {
   bestFaction: string
   rival: string
   nemesis: string
+  armyLists: ArmyList[]
+  armyListSummary: PlayerArmyListSummary
 }
 
 export type RecentGame = {
@@ -94,6 +173,9 @@ export type FactionProfileData = FactionSummary & {
   mostPlayedMission: string
   recentGames: RecentGame[]
   bestMoments: FactionBestMoment[]
+  matchups: FactionMatchup[]
+  matchupSummary: FactionMatchupSummary
+  armyLists: FactionArmyLists
 }
 
 export type MissionDivisionBreakdown = {
@@ -299,6 +381,7 @@ export type SearchData = {
   factions: FactionSummary[]
   missions: MissionSummary[]
   games: RecentGame[]
+  armyLists: ArmyList[]
 }
 
 export type HomeData = {
@@ -309,6 +392,8 @@ export type HomeData = {
   records: Record<string, LeagueRecordValue>
   hallOfFame: HallOfFameData
   settings: PortalSettings
+  armyLists: ArmyList[]
+  armyListCommunity: ArmyListCommunitySummary
 }
 
 export type PortalSettings = {
@@ -373,6 +458,16 @@ export type ApiClient = {
   ) => Promise<PlayerComparisonData>
   getSettings: (options?: ApiOptions) => Promise<PortalSettings>
   getStreams: (options?: ApiOptions) => Promise<StreamedGame[]>
+  getArmyLists: (options?: ApiOptions) => Promise<ArmyListsData>
+  submitArmyList: (
+    submission: ArmyListSubmission,
+    options?: ApiOptions,
+  ) => Promise<void>
+  voteArmyList: (
+    id: number,
+    vote: 'up' | 'down',
+    options?: ApiOptions,
+  ) => Promise<void>
 }
 
 const divisionKeys: DivisionKey[] = ['main', 'pga', 'pgb']
@@ -563,6 +658,33 @@ export async function getStreams(
   return normalizeStreamsPayload(payload)
 }
 
+export async function getArmyLists(
+  options: ApiOptions = {},
+): Promise<ArmyListsData> {
+  const payload = await request('armyLists', options)
+  return normalizeArmyListsPayload(payload)
+}
+
+export async function submitArmyList(
+  submission: ArmyListSubmission,
+  options: ApiOptions = {},
+): Promise<void> {
+  const payload = await postRequest('submitArmyList', options, submission)
+  normalizeMutationPayload(payload, 'Army list submission failed.')
+}
+
+export async function voteArmyList(
+  id: number,
+  vote: 'up' | 'down',
+  options: ApiOptions = {},
+): Promise<void> {
+  const payload = await postRequest('voteArmyList', options, {
+    id: String(id),
+    vote,
+  })
+  normalizeMutationPayload(payload, 'Army list vote failed.')
+}
+
 export const apiClient: ApiClient = {
   getHome,
   getDashboard,
@@ -586,6 +708,9 @@ export const apiClient: ApiClient = {
   getPlayerComparison,
   getSettings,
   getStreams,
+  getArmyLists,
+  submitArmyList,
+  voteArmyList,
 }
 
 async function request(
@@ -601,6 +726,33 @@ async function request(
   })
 
   const response = await fetch(url, {
+    signal: options.signal,
+  })
+
+  if (!response.ok) {
+    throw new Error(`${action} request failed with status ${response.status}`)
+  }
+
+  return response.json()
+}
+
+async function postRequest(
+  action: string,
+  options: ApiOptions,
+  params: RequestParams,
+): Promise<unknown> {
+  const url = new URL(API_URL)
+  url.searchParams.set('action', action)
+
+  const body = new URLSearchParams()
+
+  Object.entries(params).forEach(([key, value]) => {
+    body.set(key, value)
+  })
+
+  const response = await fetch(url, {
+    body,
+    method: 'POST',
     signal: options.signal,
   })
 
@@ -647,6 +799,8 @@ function normalizeHomePayload(payload: unknown): HomeData {
     records: normalizeLeagueRecords(getRequiredRecord(record, 'records')),
     hallOfFame: normalizeHallOfFamePayload(getRequiredRecord(record, 'hallOfFame')),
     settings: normalizeSettingsRecord(getRequiredRecord(record, 'settings')),
+    armyLists: getArray(record, 'armyLists').map(normalizeArmyList),
+    armyListCommunity: normalizeArmyListCommunity(record.armyListCommunity),
   }
 }
 
@@ -758,6 +912,8 @@ function normalizePlayerPayload(payload: unknown): PlayerProfileData {
     bestFaction: getString(player, 'bestFaction'),
     rival: getString(player, 'rival'),
     nemesis: getString(player, 'nemesis'),
+    armyLists: getArray(player, 'armyLists').map(normalizeArmyList),
+    armyListSummary: normalizePlayerArmyListSummary(player.armyListSummary),
   }
 }
 
@@ -783,6 +939,7 @@ function normalizeSearchDataPayload(payload: unknown): SearchData {
     factions: getRequiredArray(record, 'factions').map(normalizeFactionSummary),
     missions: getRequiredArray(record, 'missions').map(normalizeMissionSummary),
     games: getRequiredArray(record, 'games').map(normalizeRecentGame),
+    armyLists: getArray(record, 'armyLists').map(normalizeArmyList),
   }
 }
 
@@ -822,6 +979,9 @@ function normalizeFactionPayload(payload: unknown): FactionProfileData {
     bestMoments: getRequiredArray(faction, 'bestMoments').map(
       normalizeFactionBestMoment,
     ),
+    matchups: getArray(faction, 'matchups').map(normalizeFactionMatchup),
+    matchupSummary: normalizeFactionMatchupSummary(faction.matchupSummary),
+    armyLists: normalizeFactionArmyLists(faction.armyLists),
   }
 }
 
@@ -1210,6 +1370,14 @@ function normalizeComparisonPlayer(item: unknown): PlayerComparisonPlayer {
     bestFaction: getString(record, 'bestFaction'),
     rival: '',
     nemesis: '',
+    armyLists: [],
+    armyListSummary: {
+      submitted: 0,
+      highestRated: null,
+      newest: null,
+      averageRating: 0,
+      favoriteFaction: '',
+    },
   }
 }
 
@@ -1242,6 +1410,173 @@ function normalizeStreamsPayload(payload: unknown): StreamedGame[] {
   }
 
   return getRequiredArray(record, 'streams').map(normalizeStreamedGame)
+}
+
+function normalizeArmyListsPayload(payload: unknown): ArmyListsData {
+  const record = asRecord(payload, 'Army lists response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Army lists failed.')
+  }
+
+  return {
+    lists: getRequiredArray(record, 'lists').map(normalizeArmyList),
+    community: normalizeArmyListCommunity(record.community),
+  }
+}
+
+function normalizeMutationPayload(payload: unknown, fallbackMessage: string) {
+  const record = asRecord(payload, 'Mutation response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || fallbackMessage)
+  }
+}
+
+function normalizeArmyList(item: unknown): ArmyList {
+  const record = asRecord(item, 'Army list')
+
+  return {
+    id: getRequiredNumber(record, 'id'),
+    submissionDate: getString(record, 'submissionDate'),
+    player: getRequiredString(record, 'player'),
+    faction: getRequiredString(record, 'faction'),
+    sectorial: getString(record, 'sectorial'),
+    mission: getString(record, 'mission'),
+    event: getString(record, 'event'),
+    armyCode: getString(record, 'armyCode'),
+    armyLink: getString(record, 'armyLink'),
+    armyName: getRequiredString(record, 'armyName'),
+    description: getString(record, 'description'),
+    upvotes: getRequiredNumber(record, 'upvotes'),
+    downvotes: getRequiredNumber(record, 'downvotes'),
+    score: getRequiredNumber(record, 'score'),
+    approved: getBoolean(record, 'approved'),
+  }
+}
+
+function normalizePlayerArmyListSummary(value: unknown): PlayerArmyListSummary {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return {
+      submitted: 0,
+      highestRated: null,
+      newest: null,
+      averageRating: 0,
+      favoriteFaction: '',
+    }
+  }
+
+  const record = value as Record<string, unknown>
+
+  return {
+    submitted: getNumber(record, 'submitted'),
+    highestRated: record.highestRated ? normalizeArmyList(record.highestRated) : null,
+    newest: record.newest ? normalizeArmyList(record.newest) : null,
+    averageRating: getNumber(record, 'averageRating'),
+    favoriteFaction: getString(record, 'favoriteFaction'),
+  }
+}
+
+function normalizeFactionArmyLists(value: unknown): FactionArmyLists {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return {
+      mostPopular: [],
+      highestRated: [],
+      newest: [],
+    }
+  }
+
+  const record = value as Record<string, unknown>
+
+  return {
+    mostPopular: getArray(record, 'mostPopular').map(normalizeArmyList),
+    highestRated: getArray(record, 'highestRated').map(normalizeArmyList),
+    newest: getArray(record, 'newest').map(normalizeArmyList),
+  }
+}
+
+function normalizeFactionMatchup(item: unknown): FactionMatchup {
+  const record = asRecord(item, 'Faction matchup')
+
+  return {
+    opponent: getRequiredString(record, 'opponent'),
+    games: getRequiredNumber(record, 'games'),
+    wins: getRequiredNumber(record, 'wins'),
+    losses: getRequiredNumber(record, 'losses'),
+    winRate: getRequiredNumber(record, 'winRate'),
+    averageTP: getRequiredNumber(record, 'averageTP'),
+    averageOP: getRequiredNumber(record, 'averageOP'),
+    averageVP: getRequiredNumber(record, 'averageVP'),
+  }
+}
+
+function normalizeFactionMatchupSummary(value: unknown): FactionMatchupSummary {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return {
+      opponents: 0,
+      games: 0,
+      wins: 0,
+      losses: 0,
+      winRate: 0,
+      bestOpponent: '',
+    }
+  }
+
+  const record = value as Record<string, unknown>
+
+  return {
+    opponents: getNumber(record, 'opponents'),
+    games: getNumber(record, 'games'),
+    wins: getNumber(record, 'wins'),
+    losses: getNumber(record, 'losses'),
+    winRate: getNumber(record, 'winRate'),
+    bestOpponent: getString(record, 'bestOpponent'),
+  }
+}
+
+function normalizeArmyListCommunity(value: unknown): ArmyListCommunitySummary {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return {
+      topContributors: [],
+      highestRatedDesigner: null,
+      mostPopularFaction: '',
+      trendingLists: [],
+      mostListsSubmitted: [],
+    }
+  }
+
+  const record = value as Record<string, unknown>
+
+  return {
+    topContributors: getArray(record, 'topContributors').map(normalizeNameCount),
+    highestRatedDesigner: record.highestRatedDesigner
+      ? normalizeDesigner(record.highestRatedDesigner)
+      : null,
+    mostPopularFaction: getString(record, 'mostPopularFaction'),
+    trendingLists: getArray(record, 'trendingLists').map(normalizeArmyList),
+    mostListsSubmitted: getArray(record, 'mostListsSubmitted').map(
+      normalizeNameCount,
+    ),
+  }
+}
+
+function normalizeNameCount(item: unknown) {
+  const record = asRecord(item, 'Name count')
+
+  return {
+    count: getRequiredNumber(record, 'count'),
+    name: getRequiredString(record, 'name'),
+  }
+}
+
+function normalizeDesigner(item: unknown) {
+  const record = asRecord(item, 'Designer')
+
+  return {
+    lists: getRequiredNumber(record, 'lists'),
+    name: getRequiredString(record, 'name'),
+    score: getRequiredNumber(record, 'score'),
+  }
 }
 
 function normalizeStreamedGame(item: unknown): StreamedGame {
@@ -1476,6 +1811,11 @@ function getRequiredArray(record: Record<string, unknown>, key: string) {
   throw new Error(`API response is missing ${key}.`)
 }
 
+function getArray(record: Record<string, unknown>, key: string) {
+  const value = record[key]
+  return Array.isArray(value) ? value : []
+}
+
 function getRequiredString(record: Record<string, unknown>, key: string) {
   const value = record[key]
 
@@ -1499,6 +1839,11 @@ function getRequiredNumber(record: Record<string, unknown>, key: string) {
   }
 
   throw new Error(`API response is missing ${key}.`)
+}
+
+function getNumber(record: Record<string, unknown>, key: string) {
+  const value = record[key]
+  return typeof value === 'number' && Number.isFinite(value) ? value : 0
 }
 
 function getRequiredBoolean(record: Record<string, unknown>, key: string) {

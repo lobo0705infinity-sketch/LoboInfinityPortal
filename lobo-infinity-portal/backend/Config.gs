@@ -38,7 +38,9 @@ const CONFIG = {
 
     SETTINGS: "Settings",
 
-    STREAMS: "Streams"
+    STREAMS: "Streams",
+
+    ARMY_LISTS: "Army Lists"
 
   },
 

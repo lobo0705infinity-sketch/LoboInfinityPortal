@@ -5,6 +5,7 @@ import EntityPreviousNext from '../components/EntityPreviousNext'
 import Loading from '../components/Loading'
 import {
   apiClient,
+  type ArmyList,
   type PlayerProfileData,
   type RecentGame,
 } from '../services/api'
@@ -270,8 +271,94 @@ function PlayerProfile() {
         ) : null}
       </section>
 
+      <section className="profile-card-grid" aria-label="Player army lists">
+        <ProfileCard title="Submitted Army Lists">
+          <Metric
+            label="Lists Submitted"
+            value={profileState.player.armyListSummary.submitted}
+          />
+          <Metric
+            label="Average List Rating"
+            value={profileState.player.armyListSummary.averageRating}
+          />
+          <Metric
+            label="Favorite Faction"
+            value={
+              profileState.player.armyListSummary.favoriteFaction ||
+              profileState.player.favoriteFaction
+            }
+          />
+        </ProfileCard>
+        <ArmyListSummaryCard
+          list={profileState.player.armyListSummary.highestRated}
+          title="Highest Rated List"
+        />
+        <ArmyListSummaryCard
+          list={profileState.player.armyListSummary.newest}
+          title="Newest List"
+        />
+      </section>
+
+      {profileState.player.armyLists.length > 0 ? (
+        <section className="panel faction-report-panel profile-army-list-panel">
+          <div className="panel-heading">
+            <p className="eyebrow">Community</p>
+            <h2>Player Army Lists</h2>
+          </div>
+          <div className="army-list-mini-grid">
+            {profileState.player.armyLists.map((list) => (
+              <ArmyListMiniCard key={list.id} list={list} />
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       <EntityPreviousNext current={profileState.player.name} type="player" />
     </main>
+  )
+}
+
+function ArmyListSummaryCard({
+  list,
+  title,
+}: {
+  list: ArmyList | null
+  title: string
+}) {
+  return (
+    <ProfileCard title={title}>
+      {list ? (
+        <>
+          <Metric label="Army Name" value={list.armyName} />
+          <Metric label="Faction" value={list.faction} />
+          <Metric label="Mission" value={list.mission} />
+          <Metric label="Score" value={list.score} />
+        </>
+      ) : (
+        <Metric label="Army List" value="Not recorded" />
+      )}
+    </ProfileCard>
+  )
+}
+
+function ArmyListMiniCard({ list }: { list: ArmyList }) {
+  return (
+    <article className="army-list-mini-card">
+      <span>{list.submissionDate || 'Date not recorded'}</span>
+      <h3>{list.armyName}</h3>
+      <p>
+        {list.faction}
+        {list.sectorial ? ` - ${list.sectorial}` : ''}
+      </p>
+      <strong>Score {list.score}</strong>
+      {list.armyLink ? (
+        <a href={list.armyLink} rel="noreferrer" target="_blank">
+          View in Infinity Army
+        </a>
+      ) : list.armyCode ? (
+        <code>{list.armyCode}</code>
+      ) : null}
+    </article>
   )
 }
 

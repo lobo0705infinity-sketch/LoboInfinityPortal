@@ -68,6 +68,11 @@ function getPlayer(e) {
       registeredPlayer.player
     );
 
+  const armyLists =
+    getPlayerArmyLists(
+      registeredPlayer.player
+    );
+
   return jsonOutput({
 
     success: true,
@@ -131,7 +136,13 @@ function getPlayer(e) {
       nemesis:
         NEMESIS(
           registeredPlayer.player
-        )
+        ),
+
+      armyLists:
+        armyLists.lists,
+
+      armyListSummary:
+        armyLists.summary
 
     }
 

@@ -5,7 +5,9 @@ import EntityPreviousNext from '../components/EntityPreviousNext'
 import Loading from '../components/Loading'
 import {
   apiClient,
+  type ArmyList,
   type FactionBestMoment,
+  type FactionMatchup,
   type FactionProfileData,
   type RecentGame,
 } from '../services/api'
@@ -199,6 +201,17 @@ function FactionProfile() {
         <BestMomentsPanel moments={profileState.faction.bestMoments} />
       </section>
 
+      <FactionMatchupsPanel
+        matchups={profileState.faction.matchups}
+        summary={profileState.faction.matchupSummary}
+      />
+
+      <FactionArmyListsPanel
+        highestRated={profileState.faction.armyLists.highestRated}
+        mostPopular={profileState.faction.armyLists.mostPopular}
+        newest={profileState.faction.armyLists.newest}
+      />
+
       <EntityPreviousNext current={profileState.faction.name} type="faction" />
     </main>
   )
@@ -332,6 +345,160 @@ function BestMomentsPanel({ moments }: { moments: FactionBestMoment[] }) {
               </span>
               <blockquote>“{moment.moment}”</blockquote>
             </Link>
+          ))}
+        </div>
+      )}
+    </section>
+  )
+}
+
+function FactionMatchupsPanel({
+  matchups,
+  summary,
+}: {
+  matchups: FactionMatchup[]
+  summary: FactionProfileData['matchupSummary']
+}) {
+  const [query, setQuery] = useState('')
+  const [sortKey, setSortKey] = useState<keyof FactionMatchup>('games')
+
+  const visibleMatchups = matchups
+    .filter((matchup) =>
+      matchup.opponent.toLowerCase().includes(query.trim().toLowerCase()),
+    )
+    .sort((left, right) => {
+      if (sortKey === 'opponent') {
+        return left.opponent.localeCompare(right.opponent)
+      }
+
+      return Number(right[sortKey]) - Number(left[sortKey])
+    })
+
+  return (
+    <section className="panel faction-matchup-panel" aria-labelledby="faction-matchups">
+      <div className="panel-heading">
+        <div>
+          <p className="eyebrow">Faction Insights</p>
+          <h2 id="faction-matchups">Faction Matchups</h2>
+        </div>
+      </div>
+      <div className="matchup-summary-strip">
+        <Metric label="Opponents" value={summary.opponents} />
+        <Metric label="Overall Record" value={`${summary.wins}-${summary.losses}`} />
+        <Metric label="Win Rate" value={formatPercent(summary.winRate)} />
+        <Metric label="Best Opponent" value={summary.bestOpponent} />
+      </div>
+      <div className="army-list-controls matchup-controls">
+        <label>
+          <span>Search Opponent</span>
+          <input
+            onChange={(event) => setQuery(event.target.value)}
+            type="search"
+            value={query}
+          />
+        </label>
+        <label>
+          <span>Sort</span>
+          <select
+            onChange={(event) =>
+              setSortKey(event.target.value as keyof FactionMatchup)
+            }
+            value={sortKey}
+          >
+            <option value="games">Games</option>
+            <option value="wins">Wins</option>
+            <option value="losses">Losses</option>
+            <option value="winRate">Win %</option>
+            <option value="averageTP">Average TP</option>
+            <option value="averageOP">Average OP</option>
+            <option value="averageVP">Average VP</option>
+            <option value="opponent">Opponent</option>
+          </select>
+        </label>
+      </div>
+      {visibleMatchups.length === 0 ? (
+        <div className="recent-games-empty">
+          <strong>No faction matchups have been recorded yet.</strong>
+        </div>
+      ) : (
+        <div className="standings-table faction-matchup-table" role="table">
+          <div className="table-row table-head" role="row">
+            <span role="columnheader">Opponent</span>
+            <span role="columnheader">Games</span>
+            <span role="columnheader">Wins</span>
+            <span role="columnheader">Losses</span>
+            <span role="columnheader">Win %</span>
+            <span role="columnheader">Avg TP</span>
+            <span role="columnheader">Avg OP</span>
+            <span role="columnheader">Avg VP</span>
+          </div>
+          {visibleMatchups.map((matchup) => (
+            <div className="table-row" key={matchup.opponent} role="row">
+              <strong role="cell">
+                <Link to={`/factions/${encodeURIComponent(matchup.opponent)}`}>
+                  {matchup.opponent}
+                </Link>
+              </strong>
+              <span role="cell">{matchup.games}</span>
+              <span role="cell">{matchup.wins}</span>
+              <span role="cell">{matchup.losses}</span>
+              <span role="cell">{formatPercent(matchup.winRate)}</span>
+              <span role="cell">{formatNumber(matchup.averageTP)}</span>
+              <span role="cell">{formatNumber(matchup.averageOP)}</span>
+              <span role="cell">{formatNumber(matchup.averageVP)}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  )
+}
+
+function FactionArmyListsPanel({
+  highestRated,
+  mostPopular,
+  newest,
+}: {
+  highestRated: ArmyList[]
+  mostPopular: ArmyList[]
+  newest: ArmyList[]
+}) {
+  return (
+    <section className="profile-card-grid" aria-label="Faction army lists">
+      <ArmyListStack title="Most Popular Lists" lists={mostPopular} />
+      <ArmyListStack title="Highest Rated Lists" lists={highestRated} />
+      <ArmyListStack title="Newest Lists" lists={newest} />
+    </section>
+  )
+}
+
+function ArmyListStack({ lists, title }: { lists: ArmyList[]; title: string }) {
+  return (
+    <section className="panel profile-card">
+      <div className="panel-heading">
+        <p className="eyebrow">Army List Vault</p>
+        <h2>{title}</h2>
+      </div>
+      {lists.length === 0 ? (
+        <div className="recent-games-empty">
+          <strong>No approved lists yet.</strong>
+        </div>
+      ) : (
+        <div className="army-list-mini-grid">
+          {lists.map((list) => (
+            <article className="army-list-mini-card" key={list.id}>
+              <span>{list.player}</span>
+              <h3>{list.armyName}</h3>
+              <p>{list.mission || 'Mission not recorded'}</p>
+              <strong>Score {list.score}</strong>
+              {list.armyLink ? (
+                <a href={list.armyLink} rel="noreferrer" target="_blank">
+                  View in Infinity Army
+                </a>
+              ) : list.armyCode ? (
+                <code>{list.armyCode}</code>
+              ) : null}
+            </article>
           ))}
         </div>
       )}

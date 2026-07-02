@@ -13,7 +13,13 @@ function getSearchData() {
     factions: buildFactionApiSummaries(),
     missions: buildMissionApiSummaries(),
     games: getAllRecentGameObjects()
-      .slice(0, RECENT_GAMES_LIMIT)
+      .slice(0, RECENT_GAMES_LIMIT),
+    armyLists: getArmyListObjects()
+      .filter(function(list) {
+
+        return list.approved;
+
+      })
   });
 
 }

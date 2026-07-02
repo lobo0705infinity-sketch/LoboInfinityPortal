@@ -34,7 +34,7 @@ function GlobalSearch() {
 
     async function loadSearchData() {
       try {
-        const { players, factions, missions, games } =
+        const { players, factions, missions, games, armyLists } =
           await apiClient.getSearchData({
             signal: controller.signal,
           })
@@ -69,8 +69,21 @@ function GlobalSearch() {
           to: `/games/${game.id}`,
         }))
 
+        const armyListItems = armyLists.map((list) => ({
+          category: 'Army List',
+          label: list.armyName,
+          meta: `${list.player} - ${list.faction} - ${list.mission || 'Mission not recorded'}`,
+          to: '/army-lists',
+        }))
+
         setSearchState({
-          items: [...playerItems, ...factionItems, ...missionItems, ...matchItems],
+          items: [
+            ...playerItems,
+            ...factionItems,
+            ...missionItems,
+            ...matchItems,
+            ...armyListItems,
+          ],
           status: 'success',
         })
       } catch {

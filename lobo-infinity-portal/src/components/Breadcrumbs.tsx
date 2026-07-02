@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom'
 
 const labels: Record<string, string> = {
   analytics: 'League Intelligence',
+  'army-lists': 'Army List Vault',
   compare: 'Player Comparison',
   factions: 'Factions',
   games: 'Match Details',
@@ -13,6 +14,7 @@ const labels: Record<string, string> = {
   rules: 'Rules',
   standings: 'Standings',
   timeline: 'Timeline',
+  submit: 'Submit Army List',
 }
 
 function Breadcrumbs() {

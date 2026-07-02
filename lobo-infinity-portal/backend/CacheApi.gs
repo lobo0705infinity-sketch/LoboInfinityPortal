@@ -29,7 +29,8 @@ const PORTAL_CACHE_SECONDS = {
   news: 120,
   settings: 60,
   streams: 60,
-  searchData: 300
+  searchData: 300,
+  armyLists: 120
 };
 
 function getCachedApiResponse(e, action, producer) {
