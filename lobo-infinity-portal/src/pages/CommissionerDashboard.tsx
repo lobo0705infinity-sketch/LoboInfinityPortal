@@ -425,6 +425,20 @@ function CachePanel({
   onAction: (action: string, params?: Record<string, string | number | boolean>) => Promise<void>
   workingAction: string
 }) {
+  const refreshGroups = [
+    ['Refresh All', 'all'],
+    ['Refresh Dashboard', 'dashboard'],
+    ['Refresh Standings', 'standings'],
+    ['Refresh Players', 'players'],
+    ['Refresh Factions', 'factions'],
+    ['Refresh Missions', 'missions'],
+    ['Refresh Hall of Fame', 'hallOfFame'],
+    ['Refresh Analytics', 'analytics'],
+    ['Refresh Army Lists', 'armyLists'],
+    ['Refresh Streams', 'streams'],
+    ['Refresh Search', 'search'],
+  ] as const
+
   return (
     <section className="panel operations-panel">
       <PanelTitle eyebrow="System" title="Cache Management" />
@@ -433,14 +447,49 @@ function CachePanel({
         <Metric label="Version" value={cache.version} />
         <Metric label="Last Refresh" value={cache.lastRefresh || 'Not recorded'} />
         <Metric label="Cache Age" value={cache.cacheAge} />
+        <Metric label="Avg API Response" value={cache.performance.averageApiResponse || '0ms'} />
+        <Metric label="Slowest Endpoint" value={cache.performance.slowestEndpoint || 'Not measured'} />
+        <Metric label="Fastest Endpoint" value={cache.performance.fastestEndpoint || 'Not measured'} />
+        <Metric label="Cache Hit Rate" value={`${cache.performance.cacheHitRate}%`} />
+        <Metric label="Cache Miss Rate" value={`${cache.performance.cacheMissRate}%`} />
+        <Metric label="Refreshes" value={cache.performance.totalCacheRefreshes} />
+        <Metric label="Sheets Reads" value={cache.performance.googleSheetsReads} />
+        <Metric label="Improvement" value={cache.performance.estimatedPerformanceImprovement || 'Awaiting traffic'} />
       </dl>
-      <div className="operations-actions">
+      <div className="operations-actions wrap">
+        {refreshGroups.map(([label, group]) => (
+          <button
+            disabled={workingAction !== ''}
+            key={group}
+            onClick={() => void onAction('refreshCache', { group })}
+            type="button"
+          >
+            {label}
+          </button>
+        ))}
         <button disabled={workingAction !== ''} onClick={() => void onAction('clearCache')} type="button">
-          Clear Cache
+          Clear All Cache
         </button>
         <button disabled={workingAction !== ''} onClick={() => void onAction('rebuildStatistics')} type="button">
           Rebuild Statistics
         </button>
+      </div>
+      <div className="operations-stack">
+        {cache.entries.length > 0 ? (
+          cache.entries.slice(0, 12).map((entry) => (
+            <article className="operations-record" key={`${entry.action}-${entry.version}`}>
+              <span>{entry.group}</span>
+              <h3>{entry.action}</h3>
+              <p>
+                {entry.health} - age {entry.ageSeconds}s - expires in{' '}
+                {entry.timeRemainingSeconds}s - {entry.size} bytes
+              </p>
+              <small>Last refresh: {entry.lastRefresh || 'Not recorded'}</small>
+            </article>
+          ))
+        ) : (
+          <p className="operations-empty">Cache is cold. It will warm as pages are requested.</p>
+        )}
       </div>
     </section>
   )
@@ -462,8 +511,8 @@ function SystemHealthPanel({ data }: { data: OperationsDashboardData }) {
         {Object.entries(data.summary.systemHealth).map(([key, value]) => (
           <Metric key={key} label={key} value={value} />
         ))}
-        <Metric label="Portal Version" value={data.settings.portalVersion || '1.2.1'} />
-        <Metric label="Apps Script" value="Version 1.2.1" />
+        <Metric label="Portal Version" value={data.settings.portalVersion || '1.2.2'} />
+        <Metric label="Apps Script" value="Version 1.2.2" />
         <Metric label="Git Commit" value={data.settings.gitCommit || 'Not recorded'} />
         <Metric label="Deployment" value={data.settings.deploymentUrl || 'Not recorded'} />
       </dl>

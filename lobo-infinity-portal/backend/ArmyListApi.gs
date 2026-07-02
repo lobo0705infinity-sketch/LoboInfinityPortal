@@ -102,7 +102,7 @@ function submitArmyList(e) {
     false
   ]);
 
-  clearPortalCache();
+  invalidatePortalCacheGroup("armyLists");
 
   return jsonOutput({
     success: true
@@ -183,7 +183,7 @@ function voteArmyList(e) {
   if (typeof incrementUserVotesCast === "function")
     incrementUserVotesCast(e);
 
-  clearPortalCache();
+  invalidatePortalCacheGroup("armyLists");
 
   return jsonOutput({
     success: true

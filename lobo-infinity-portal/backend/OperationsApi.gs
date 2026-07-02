@@ -119,8 +119,8 @@ function getOperationsStatus(auth) {
       googleSheets: "Online",
       cache: getOperationsCacheStatus(),
       lastSync: getOperationsTimestamp(),
-      portalVersion: settings.portalVersion || "1.2.1",
-      appsScriptVersion: "Version 1.2.1",
+      portalVersion: settings.portalVersion || "1.2.2",
+      appsScriptVersion: "Version 1.2.2",
       vercelDeployment: settings.deploymentUrl || "",
       gitCommit: settings.gitCommit || ""
     }
@@ -184,7 +184,7 @@ function updateOperationsSettings(e) {
 
   });
 
-  clearPortalCache();
+  invalidatePortalCacheGroup("settings");
 
   return jsonOutput({
     success: true
@@ -268,7 +268,7 @@ function updateArmyList(e) {
 
   }
 
-  clearPortalCache();
+  invalidatePortalCacheGroup("armyLists");
 
   return jsonOutput({
     success: true
@@ -305,7 +305,7 @@ function setArmyListApproval(e, approved) {
     )
     .setValue(approved);
 
-  clearPortalCache();
+  invalidatePortalCacheGroup("armyLists");
 
   return jsonOutput({
     success: true
@@ -351,7 +351,7 @@ function saveOperationsStream(e) {
     )
     .setValues([row]);
 
-  clearPortalCache();
+  invalidatePortalCacheGroup("streams");
 
   return jsonOutput({
     success: true
@@ -379,7 +379,7 @@ function deleteOperationsStream(e) {
     });
 
   sheet.deleteRow(id + 1);
-  clearPortalCache();
+  invalidatePortalCacheGroup("streams");
 
   return jsonOutput({
     success: true
@@ -425,7 +425,7 @@ function saveOperationsNews(e) {
     )
     .setValues([row]);
 
-  clearPortalCache();
+  invalidatePortalCacheGroup("news");
 
   return jsonOutput({
     success: true
@@ -453,7 +453,7 @@ function deleteOperationsNews(e) {
     });
 
   sheet.deleteRow(id + 1);
-  clearPortalCache();
+  invalidatePortalCacheGroup("news");
 
   return jsonOutput({
     success: true
@@ -463,11 +463,28 @@ function deleteOperationsNews(e) {
 
 function clearOperationsCache() {
 
-  clearPortalCache();
+  invalidatePortalCacheGroup("all");
 
   return jsonOutput({
     success: true,
     cache: getOperationsCacheStatus()
+  });
+
+}
+
+function refreshOperationsCache(e) {
+
+  const group =
+    String(
+      getOperationsParams(e).group || "all"
+    ).trim();
+
+  invalidatePortalCacheGroup(group);
+
+  return jsonOutput({
+    success: true,
+    cache: getOperationsCacheStatus(),
+    group: group
   });
 
 }
@@ -480,7 +497,7 @@ function rebuildOperationsStatistics() {
       rebuildEverything();
 
     clearLeagueData();
-    clearPortalCache();
+    invalidatePortalCacheGroup("all");
 
     return jsonOutput({
       success: true
@@ -514,7 +531,7 @@ function executeSeasonOperation(e) {
     JSON.stringify(getSeasonStatusObject())
   ]);
 
-  clearPortalCache();
+  invalidatePortalCacheGroup("all");
 
   return jsonOutput({
     success: true
@@ -765,18 +782,7 @@ function getOperationsActivePlayers() {
 
 function getOperationsCacheStatus() {
 
-  const properties =
-    PropertiesService.getScriptProperties();
-
-  const version =
-    properties.getProperty(PORTAL_CACHE_VERSION_KEY) || "1";
-
-  return {
-    status: "Ready",
-    version: version,
-    lastRefresh: version === "1" ? "" : version,
-    cacheAge: version === "1" ? "Unknown" : "Versioned"
-  };
+  return getPortalCacheStatus();
 
 }
 

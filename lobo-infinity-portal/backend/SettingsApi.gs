@@ -94,7 +94,7 @@ const DEFAULT_SETTINGS = [
   ],
   [
     "portalVersion",
-    "1.2.1",
+    "1.2.2",
     "Portal release version."
   ],
   [

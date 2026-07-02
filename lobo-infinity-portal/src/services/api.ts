@@ -9,7 +9,7 @@ import type {
 } from '../types/dashboard'
 
 const API_URL =
-  'https://script.google.com/macros/s/AKfycbzGHeN2kzQaoVGCMULOkaMY8GBDQ9j53unSVdRpK4vZZnNhNV_9anZnaNamXfucLqHLQg/exec'
+  'https://script.google.com/macros/s/AKfycbx8BKoG4PwfvvNTybwgUy9ZSwNc-iFKZcuVgAoHA3_QPS48aTOq1wuhSu7FwmZtX6v-Lg/exec'
 
 type ApiOptions = {
   signal?: AbortSignal
@@ -18,9 +18,20 @@ type ApiOptions = {
 type RequestParams = Record<string, string>
 
 let activeAuthToken = ''
+const frontendCacheTtlMs = 30_000
+const frontendResponseCache = new Map<
+  string,
+  {
+    expiresAt: number
+    payload: unknown
+  }
+>()
+const inFlightRequests = new Map<string, Promise<unknown>>()
 
 export function setApiAuthToken(token: string) {
   activeAuthToken = token
+  frontendResponseCache.clear()
+  inFlightRequests.clear()
 }
 
 export type ArmyList = {
@@ -442,8 +453,17 @@ export type HomeData = {
   records: Record<string, LeagueRecordValue>
   hallOfFame: HallOfFameData
   settings: PortalSettings
+  streams: StreamedGame[]
   armyLists: ArmyList[]
   armyListCommunity: ArmyListCommunitySummary
+  quickStats: {
+    activePlayers: number
+    armyLists: number
+    games: number
+    news: number
+    recentGames: number
+    streams: number
+  }
 }
 
 export type PortalSettings = {
@@ -516,6 +536,31 @@ export type OperationsDashboardData = {
       version: string
       lastRefresh: string
       cacheAge: string
+      entries: Array<{
+        action: string
+        ageSeconds: number
+        createdAt: string
+        expiresAt: string
+        group: string
+        health: string
+        lastRefresh: string
+        size: number
+        status: string
+        timeRemainingSeconds: number
+        version: string
+      }>
+      performance: {
+        averageApiResponse: string
+        cacheHitRate: number
+        cacheMissRate: number
+        errors: number
+        estimatedPerformanceImprovement: string
+        fastestEndpoint: string
+        googleSheetsReads: number
+        slowestEndpoint: string
+        staleFallbacks: number
+        totalCacheRefreshes: number
+      }
     }
     systemHealth: Record<string, string>
     leagueAuditSummary: LeagueAudit['summary']
@@ -977,15 +1022,41 @@ async function request(
     url.searchParams.set('authToken', activeAuthToken)
   }
 
-  const response = await fetch(url, {
-    signal: options.signal,
-  })
+  const cacheKey = url.toString()
+  const cached = frontendResponseCache.get(cacheKey)
 
-  if (!response.ok) {
-    throw new Error(`${action} request failed with status ${response.status}`)
+  if (cached && cached.expiresAt > Date.now()) {
+    return cached.payload
   }
 
-  return response.json()
+  const inFlight = inFlightRequests.get(cacheKey)
+
+  if (inFlight) {
+    return inFlight
+  }
+
+  const pending = fetch(url, {
+    signal: options.signal,
+  }).then(async (response) => {
+    if (!response.ok) {
+      throw new Error(`${action} request failed with status ${response.status}`)
+    }
+
+    const payload = (await response.json()) as unknown
+
+    frontendResponseCache.set(cacheKey, {
+      expiresAt: Date.now() + frontendCacheTtlMs,
+      payload,
+    })
+
+    return payload
+  }).finally(() => {
+    inFlightRequests.delete(cacheKey)
+  })
+
+  inFlightRequests.set(cacheKey, pending)
+
+  return pending
 }
 
 async function postRequest(
@@ -1005,6 +1076,9 @@ async function postRequest(
   if (activeAuthToken) {
     body.set('authToken', activeAuthToken)
   }
+
+  frontendResponseCache.clear()
+  inFlightRequests.clear()
 
   const response = await fetch(url, {
     body,
@@ -1055,8 +1129,34 @@ function normalizeHomePayload(payload: unknown): HomeData {
     records: normalizeLeagueRecords(getRequiredRecord(record, 'records')),
     hallOfFame: normalizeHallOfFamePayload(getRequiredRecord(record, 'hallOfFame')),
     settings: normalizeSettingsRecord(getRequiredRecord(record, 'settings')),
+    streams: getArray(record, 'streams').map(normalizeStreamedGame),
     armyLists: getArray(record, 'armyLists').map(normalizeArmyList),
     armyListCommunity: normalizeArmyListCommunity(record.armyListCommunity),
+    quickStats: normalizeHomeQuickStats(record.quickStats),
+  }
+}
+
+function normalizeHomeQuickStats(value: unknown): HomeData['quickStats'] {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return {
+      activePlayers: 0,
+      armyLists: 0,
+      games: 0,
+      news: 0,
+      recentGames: 0,
+      streams: 0,
+    }
+  }
+
+  const record = value as Record<string, unknown>
+
+  return {
+    activePlayers: getNumber(record, 'activePlayers'),
+    armyLists: getNumber(record, 'armyLists'),
+    games: getNumber(record, 'games'),
+    news: getNumber(record, 'news'),
+    recentGames: getNumber(record, 'recentGames'),
+    streams: getNumber(record, 'streams'),
   }
 }
 
@@ -1891,11 +1991,44 @@ function normalizeSeasonStatus(record: Record<string, unknown>): SeasonStatus {
 }
 
 function normalizeCacheStatus(record: Record<string, unknown>) {
+  const performance = getOptionalRecord(record, 'performance') ?? {}
+
   return {
     status: getString(record, 'status'),
     version: getString(record, 'version'),
     lastRefresh: getString(record, 'lastRefresh'),
     cacheAge: getString(record, 'cacheAge'),
+    entries: getArray(record, 'entries').map((item) => {
+      const entry = asRecord(item, 'Cache entry')
+      return {
+        action: getString(entry, 'action'),
+        ageSeconds: getNumber(entry, 'ageSeconds'),
+        createdAt: getString(entry, 'createdAt'),
+        expiresAt: getString(entry, 'expiresAt'),
+        group: getString(entry, 'group'),
+        health: getString(entry, 'health'),
+        lastRefresh: getString(entry, 'lastRefresh'),
+        size: getNumber(entry, 'size'),
+        status: getString(entry, 'status'),
+        timeRemainingSeconds: getNumber(entry, 'timeRemainingSeconds'),
+        version: getString(entry, 'version'),
+      }
+    }),
+    performance: {
+      averageApiResponse: getString(performance, 'averageApiResponse'),
+      cacheHitRate: getNumber(performance, 'cacheHitRate'),
+      cacheMissRate: getNumber(performance, 'cacheMissRate'),
+      errors: getNumber(performance, 'errors'),
+      estimatedPerformanceImprovement: getString(
+        performance,
+        'estimatedPerformanceImprovement',
+      ),
+      fastestEndpoint: getString(performance, 'fastestEndpoint'),
+      googleSheetsReads: getNumber(performance, 'googleSheetsReads'),
+      slowestEndpoint: getString(performance, 'slowestEndpoint'),
+      staleFallbacks: getNumber(performance, 'staleFallbacks'),
+      totalCacheRefreshes: getNumber(performance, 'totalCacheRefreshes'),
+    },
   }
 }
 

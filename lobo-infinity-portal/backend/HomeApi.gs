@@ -37,6 +37,11 @@ function getHome() {
       getSettings().getContent()
     );
 
+  const streams =
+    JSON.parse(
+      getStreams().getContent()
+    );
+
   const armyLists =
     JSON.parse(
       getArmyLists().getContent()
@@ -51,8 +56,17 @@ function getHome() {
     records: intelligence.records || {},
     hallOfFame: hallOfFame,
     settings: settings.settings || {},
+    streams: streams.streams || [],
     armyLists: armyLists.lists || [],
-    armyListCommunity: armyLists.community || {}
+    armyListCommunity: armyLists.community || {},
+    quickStats: {
+      games: dashboard.gamesPlayed || 0,
+      activePlayers: dashboard.activePlayers || 0,
+      recentGames: (recentGames.games || []).length,
+      streams: (streams.streams || []).length,
+      news: (news.news || []).length,
+      armyLists: (armyLists.lists || []).length
+    }
   });
 
 }

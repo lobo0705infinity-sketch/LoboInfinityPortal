@@ -209,6 +209,11 @@ function doGet(e) {
         return clearOperationsCache();
       });
 
+    case "refreshCache":
+      return requireApiPermission(e, "manageCache", function() {
+        return refreshOperationsCache(e);
+      });
+
     case "rebuildStatistics":
       return requireApiPermission(e, "manageCache", function() {
         return rebuildOperationsStatistics();
@@ -297,6 +302,11 @@ function doPost(e) {
     case "clearCache":
       return requireApiPermission(e, "manageCache", function() {
         return clearOperationsCache();
+      });
+
+    case "refreshCache":
+      return requireApiPermission(e, "manageCache", function() {
+        return refreshOperationsCache(e);
       });
 
     case "rebuildStatistics":
