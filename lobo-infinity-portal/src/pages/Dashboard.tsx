@@ -334,8 +334,8 @@ function FeaturedMatchHero({ game }: { game: RecentGame }) {
           <dd>{game.mission}</dd>
         </div>
         <div>
-          <dt>VP</dt>
-          <dd>{game.vp}</dd>
+          <dt>OP</dt>
+          <dd>{game.op}</dd>
         </div>
         <div>
           <dt>Division</dt>

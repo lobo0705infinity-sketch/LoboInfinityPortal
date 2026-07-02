@@ -306,7 +306,7 @@ function RecentGamesPanel({ games }: { games: RecentGame[] }) {
                   {game.winnerFaction} vs {game.loserFaction}
                 </p>
               </div>
-              <strong>{game.vp}</strong>
+              <strong>OP {game.op}</strong>
             </Link>
           ))}
         </div>

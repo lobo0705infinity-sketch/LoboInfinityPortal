@@ -193,12 +193,13 @@ function DivisionPanel({
                 {formatDivisionLabel(standingsState.data.division)}
               </h2>
             </div>
-            {standingsState.data.division === 'main' ? <MovementLegend /> : null}
+            <MovementLegend division={standingsState.data.division} />
           </div>
 
           <StandingsTable
+            division={standingsState.data.division}
             standings={standingsState.data.standings}
-            showMovementZones={standingsState.data.division === 'main'}
+            showMovementZones
           />
         </section>
       </section>
@@ -206,12 +207,14 @@ function DivisionPanel({
   )
 }
 
-function MovementLegend() {
+function MovementLegend({ division }: { division: DivisionKey }) {
+  const greenLabel = division === 'main' ? 'Safe' : 'Promotion'
+
   return (
     <dl className="movement-legend" aria-label="Promotion and relegation legend">
       <div>
-        <dt className="legend-dot legend-safe" aria-label="Safe" />
-        <dd>Safe</dd>
+        <dt className="legend-dot legend-safe" aria-label={greenLabel} />
+        <dd>{greenLabel}</dd>
       </div>
       <div>
         <dt className="legend-dot legend-relegation" aria-label="Relegation" />

@@ -17,6 +17,7 @@ import PlayerProfile from './pages/PlayerProfile'
 import Players from './pages/Players'
 import Rules from './pages/Rules'
 import Standings from './pages/Standings'
+import StreamedGames from './pages/StreamedGames'
 import Timeline from './pages/Timeline'
 import './App.css'
 
@@ -44,6 +45,7 @@ function App() {
             <Route path="/news" element={<CommissionerNews />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/timeline" element={<Timeline />} />
+            <Route path="/streams" element={<StreamedGames />} />
             <Route path="/rules" element={<Rules />} />
           </Routes>
         </div>

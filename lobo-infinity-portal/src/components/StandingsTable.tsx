@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom'
-import type { MainManStanding } from '../types/dashboard'
+import type { DivisionKey, MainManStanding } from '../types/dashboard'
 
 type StandingsTableProps = {
+  division?: DivisionKey
   standings: MainManStanding[]
   showMovementZones?: boolean
 }
 
 function StandingsTable({
+  division = 'main',
   standings,
   showMovementZones = false,
 }: StandingsTableProps) {
@@ -25,7 +27,12 @@ function StandingsTable({
 
       {standings.map((standing) => (
         <div
-          className={`table-row ${getRankClass(standing.rank, showMovementZones)}`}
+          className={`table-row ${getRankClass(
+            standing.rank,
+            standings.length,
+            division,
+            showMovementZones,
+          )}`}
           role="row"
           key={standing.rank}
         >
@@ -50,16 +57,33 @@ function StandingsTable({
   )
 }
 
-function getRankClass(rank: number, showMovementZones: boolean) {
+function getRankClass(
+  rank: number,
+  totalPlayers: number,
+  division: DivisionKey,
+  showMovementZones: boolean,
+) {
   if (!showMovementZones) {
     return ''
   }
 
-  if (rank <= 8) {
+  if (division === 'main') {
+    if (rank <= Math.max(0, totalPlayers - 2)) {
+      return 'zone-safe'
+    }
+
+    return 'zone-relegation'
+  }
+
+  if (rank <= 2) {
     return 'zone-safe'
   }
 
-  return 'zone-relegation'
+  if (rank > Math.max(0, totalPlayers - 2)) {
+    return 'zone-relegation'
+  }
+
+  return ''
 }
 
 export default StandingsTable

@@ -62,6 +62,12 @@ function doGet(e) {
     case "timeline":
       return getTimeline();
 
+    case "settings":
+      return getSettings();
+
+    case "streams":
+      return getStreams();
+
     default:
       return jsonOutput({
         success: false,

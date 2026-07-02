@@ -99,8 +99,8 @@ function RecentGames({
                   <dd>{game.winnerFaction}</dd>
                 </div>
                 <div>
-                  <dt>VP Score</dt>
-                  <dd>{game.vp}</dd>
+                  <dt>OP Score</dt>
+                  <dd>{game.op}</dd>
                 </div>
               </dl>
             </Link>

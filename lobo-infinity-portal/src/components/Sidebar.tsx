@@ -17,6 +17,11 @@ const navigationItems = [
     to: '/timeline',
   },
   {
+    icon: 'W',
+    label: 'Streams',
+    to: '/streams',
+  },
+  {
     icon: '!',
     label: 'Alerts',
     to: '/notifications',

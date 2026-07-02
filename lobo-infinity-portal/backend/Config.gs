@@ -36,7 +36,9 @@ const CONFIG = {
 
     DASHBOARD: "Dashboard",
 
-    SETTINGS: "Settings"
+    SETTINGS: "Settings",
+
+    STREAMS: "Streams"
 
   },
 

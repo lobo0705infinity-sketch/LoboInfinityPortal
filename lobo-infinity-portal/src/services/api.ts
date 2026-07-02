@@ -9,7 +9,7 @@ import type {
 } from '../types/dashboard'
 
 const API_URL =
-  'https://script.google.com/macros/s/AKfycbzZpoWuP_g5tJXpsspcGpr9esskwmH1reLNRk5oN_Y6632rgnhfb3fZI_TGXKTUH9ErwQ/exec'
+  'https://script.google.com/macros/s/AKfycbw48_4ClzipFkkdSfnDIHi6Ee9tSztZUCwtE9uelJMFgWxLOJvULtaPcMUISItHrRgQwg/exec'
 
 type ApiOptions = {
   signal?: AbortSignal
@@ -294,6 +294,27 @@ export type PlayerComparisonData = {
   players: PlayerComparisonPlayer[]
 }
 
+export type PortalSettings = {
+  currentSeason: string
+  leagueName: string
+  googleFormUrl: string
+  discordInvite: string
+  leagueWebsite: string
+}
+
+export type StreamedGame = {
+  id: number
+  date: string
+  division: string
+  mission: string
+  player1: string
+  player2: string
+  winner: string
+  youtubeUrl: string
+  featured: boolean
+  notes: string
+}
+
 export type LeaderData = Pick<DashboardSummary, 'leagueLeader'>
 
 export type ApiClient = {
@@ -331,6 +352,8 @@ export type ApiClient = {
     right: string,
     options?: ApiOptions,
   ) => Promise<PlayerComparisonData>
+  getSettings: (options?: ApiOptions) => Promise<PortalSettings>
+  getStreams: (options?: ApiOptions) => Promise<StreamedGame[]>
 }
 
 const divisionKeys: DivisionKey[] = ['main', 'pga', 'pgb']
@@ -494,6 +517,20 @@ export async function getPlayerComparison(
   return normalizePlayerComparisonPayload(payload)
 }
 
+export async function getSettings(
+  options: ApiOptions = {},
+): Promise<PortalSettings> {
+  const payload = await request('settings', options)
+  return normalizeSettingsPayload(payload)
+}
+
+export async function getStreams(
+  options: ApiOptions = {},
+): Promise<StreamedGame[]> {
+  const payload = await request('streams', options)
+  return normalizeStreamsPayload(payload)
+}
+
 export const apiClient: ApiClient = {
   getDashboard,
   getLeader,
@@ -513,6 +550,8 @@ export const apiClient: ApiClient = {
   getRecords,
   getHallOfFame,
   getPlayerComparison,
+  getSettings,
+  getStreams,
 }
 
 async function request(
@@ -1095,6 +1134,51 @@ function normalizeComparisonPlayer(item: unknown): PlayerComparisonPlayer {
   }
 }
 
+function normalizeSettingsPayload(payload: unknown): PortalSettings {
+  const record = asRecord(payload, 'Settings response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Settings failed.')
+  }
+
+  const settings = getRequiredRecord(record, 'settings')
+
+  return {
+    currentSeason: getString(settings, 'currentSeason'),
+    leagueName: getString(settings, 'leagueName'),
+    googleFormUrl: getString(settings, 'googleFormUrl'),
+    discordInvite: getString(settings, 'discordInvite'),
+    leagueWebsite: getString(settings, 'leagueWebsite'),
+  }
+}
+
+function normalizeStreamsPayload(payload: unknown): StreamedGame[] {
+  const record = asRecord(payload, 'Streams response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Streams failed.')
+  }
+
+  return getRequiredArray(record, 'streams').map(normalizeStreamedGame)
+}
+
+function normalizeStreamedGame(item: unknown): StreamedGame {
+  const record = asRecord(item, 'Streamed game')
+
+  return {
+    id: getRequiredNumber(record, 'id'),
+    date: getString(record, 'date'),
+    division: getString(record, 'division'),
+    mission: getString(record, 'mission'),
+    player1: getString(record, 'player1'),
+    player2: getString(record, 'player2'),
+    winner: getString(record, 'winner'),
+    youtubeUrl: getRequiredString(record, 'youtubeUrl'),
+    featured: getBoolean(record, 'featured'),
+    notes: getString(record, 'notes'),
+  }
+}
+
 function normalizeIntelligenceStreak(item: unknown): IntelligenceStreak {
   const record = asRecord(item, 'Intelligence streak')
 
@@ -1343,6 +1427,11 @@ function getRequiredBoolean(record: Record<string, unknown>, key: string) {
   }
 
   throw new Error(`API response is missing ${key}.`)
+}
+
+function getBoolean(record: Record<string, unknown>, key: string) {
+  const value = record[key]
+  return typeof value === 'boolean' ? value : false
 }
 
 function getDivisionKey(

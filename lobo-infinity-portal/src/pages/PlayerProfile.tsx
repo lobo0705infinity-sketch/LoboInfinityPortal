@@ -262,7 +262,7 @@ function PlayerProfile() {
                     </h3>
                     <p>{game.mission}</p>
                   </div>
-                  <strong>{game.vp}</strong>
+                  <strong>OP {game.op}</strong>
                 </Link>
               ))}
             </div>

@@ -67,7 +67,7 @@ function GlobalSearch() {
         const matchItems = games.map((game) => ({
           category: 'Match',
           label: `${game.winner} defeated ${game.loser}`,
-          meta: `${game.mission} - ${game.vp}`,
+          meta: `${game.mission} - OP ${game.op}`,
           to: `/games/${game.id}`,
         }))
 
