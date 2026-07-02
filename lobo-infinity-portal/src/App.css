@@ -456,6 +456,8 @@
 }
 
 .featured-match-result {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(92px, auto) minmax(0, 0.72fr);
   align-items: center;
 }
 
@@ -477,15 +479,16 @@
   margin: 0;
   color: var(--text);
   line-height: 0.96;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 .featured-match-result h2 {
-  font-size: clamp(2.5rem, 6vw, 5.6rem);
+  font-size: clamp(2.2rem, 4.1vw, 3.55rem);
 }
 
 .featured-match-result h3 {
-  font-size: clamp(1.6rem, 4vw, 3.1rem);
+  font-size: clamp(1.5rem, 3vw, 2.35rem);
 }
 
 .featured-match-result > strong {
@@ -494,6 +497,7 @@
   font-size: 0.86rem;
   font-weight: 900;
   letter-spacing: 0.08em;
+  text-align: center;
   text-transform: uppercase;
 }
 
@@ -1920,6 +1924,7 @@
   .featured-match-result,
   .featured-match-kicker {
     align-items: flex-start;
+    display: flex;
     flex-direction: column;
   }
 

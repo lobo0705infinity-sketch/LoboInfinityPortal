@@ -7,13 +7,26 @@ type RecentGamesState = {
   isLoading: boolean
 }
 
-function RecentGames() {
+type RecentGamesProps = {
+  games?: RecentGame[]
+  isLoading?: boolean
+}
+
+function RecentGames({
+  games: controlledGames,
+  isLoading: controlledIsLoading,
+}: RecentGamesProps) {
   const [{ games, isLoading }, setState] = useState<RecentGamesState>({
     games: [],
     isLoading: true,
   })
+  const hasControlledGames = controlledGames !== undefined
 
   useEffect(() => {
+    if (hasControlledGames) {
+      return
+    }
+
     const controller = new AbortController()
 
     async function loadRecentGames() {
@@ -41,7 +54,10 @@ function RecentGames() {
     return () => {
       controller.abort()
     }
-  }, [])
+  }, [hasControlledGames])
+
+  const displayGames = controlledGames ?? games
+  const displayIsLoading = controlledIsLoading ?? isLoading
 
   return (
     <section
@@ -54,13 +70,13 @@ function RecentGames() {
         <h2 id="recent-games-title">Recent Games</h2>
       </div>
 
-      {isLoading ? (
+      {displayIsLoading ? (
         <div className="recent-games-empty" aria-live="polite">
           <p>Loading recent games...</p>
         </div>
-      ) : games.length > 0 ? (
+      ) : displayGames.length > 0 ? (
         <div className="recent-games-list">
-          {games.map((game) => (
+          {displayGames.map((game) => (
             <Link
               className="recent-game-card"
               key={game.id}

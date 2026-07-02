@@ -239,7 +239,14 @@ function Dashboard() {
             </dl>
           </aside>
 
-          <RecentGames />
+          <RecentGames
+            games={
+              experienceState.status === 'success'
+                ? experienceState.games
+                : undefined
+            }
+            isLoading={experienceState.status !== 'success'}
+          />
         </div>
       </section>
 

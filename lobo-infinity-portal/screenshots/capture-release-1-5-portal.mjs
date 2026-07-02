@@ -6,7 +6,7 @@ const edgePath = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.
 const debugPort = 9231
 const root = 'C:\\Users\\19734\\Documents\\LoboInfinityLeague\\lobo-infinity-portal'
 const userDataDir = `${root}\\screenshots\\edge-release-1-5-profile`
-const baseUrl = 'http://127.0.0.1:4175'
+const baseUrl = 'http://127.0.0.1:4178'
 
 await rm(userDataDir, {
   force: true,
@@ -32,16 +32,16 @@ try {
   await client.send('Runtime.enable')
 
   await setViewport(client, 1440, 1100)
-  await capture(client, '/', 'Featured Match', 'release-1-5-dashboard-desktop.png')
+  await capture(client, '/', 'FEATURED MATCH', 'release-1-5-dashboard-desktop.png')
 
   await setViewport(client, 900, 1100)
-  await capture(client, '/', 'Featured Match', 'release-1-5-dashboard-tablet.png')
+  await capture(client, '/', 'FEATURED MATCH', 'release-1-5-dashboard-tablet.png')
 
   await setViewport(client, 390, 900)
-  await capture(client, '/', 'Featured Match', 'release-1-5-dashboard-mobile.png')
+  await capture(client, '/', 'FEATURED MATCH', 'release-1-5-dashboard-mobile.png')
 
   await setViewport(client, 1440, 1000)
-  await navigate(client, '/', 'Featured Match')
+  await navigate(client, '/', 'FEATURED MATCH')
   await typeSearch(client, 'Lobo')
   await waitForText(client, 'Player')
   await saveScreenshot(client, 'release-1-5-search.png')
@@ -50,16 +50,16 @@ try {
   await capture(
     client,
     '/factions/Tartary%20Army%20Corps',
-    'Faction Profile',
+    'Tartary Army Corps',
     'release-1-5-faction.png',
   )
   await capture(
     client,
     '/missions/Corporate%20Appropriation',
-    'Mission Profile',
+    'Corporate Appropriation',
     'release-1-5-mission.png',
   )
-  await capture(client, '/games/1', 'Match Result', 'release-1-5-match.png')
+  await capture(client, '/games/1', 'SCORE', 'release-1-5-match.png')
   await capture(client, '/analytics', 'League Intelligence', 'release-1-5-analytics.png')
 
   await client.close()
