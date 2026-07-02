@@ -15,58 +15,104 @@ function doGet(e) {
   switch (action) {
 
     case "leader":
-      return getLeader();
+      return getCachedApiResponse(e, action, function() {
+        return getLeader();
+      });
 
     case "dashboard":
-      return getDashboard();
+      return getCachedApiResponse(e, action, function() {
+        return getDashboard();
+      });
+
+    case "players":
+      return getCachedApiResponse(e, action, function() {
+        return getPlayers();
+      });
 
     case "player":
-      return getPlayer(e);
+      return getCachedApiResponse(e, action, function() {
+        return getPlayer(e);
+      });
 
     case "recentGames":
-      return getRecentGames();
+      return getCachedApiResponse(e, action, function() {
+        return getRecentGames();
+      });
 
     case "standings":
-      return getStandings(e);
+      return getCachedApiResponse(e, action, function() {
+        return getStandings(e);
+      });
 
     case "factions":
-      return getFactions();
+      return getCachedApiResponse(e, action, function() {
+        return getFactions();
+      });
 
     case "faction":
-      return getFaction(e);
+      return getCachedApiResponse(e, action, function() {
+        return getFaction(e);
+      });
 
     case "missions":
-      return getMissions();
+      return getCachedApiResponse(e, action, function() {
+        return getMissions();
+      });
 
     case "mission":
-      return getMission(e);
+      return getCachedApiResponse(e, action, function() {
+        return getMission(e);
+      });
 
     case "intelligence":
-      return getIntelligence();
+      return getCachedApiResponse(e, action, function() {
+        return getIntelligence();
+      });
 
     case "news":
-      return getCommissionerNews();
+      return getCachedApiResponse(e, action, function() {
+        return getCommissionerNews();
+      });
 
     case "records":
-      return getRecords();
+      return getCachedApiResponse(e, action, function() {
+        return getRecords();
+      });
 
     case "hallOfFame":
-      return getHallOfFame();
+      return getCachedApiResponse(e, action, function() {
+        return getHallOfFame();
+      });
 
     case "comparison":
-      return getPlayerComparison(e);
+      return getCachedApiResponse(e, action, function() {
+        return getPlayerComparison(e);
+      });
 
     case "notifications":
-      return getNotifications();
+      return getCachedApiResponse(e, action, function() {
+        return getNotifications();
+      });
 
     case "timeline":
-      return getTimeline();
+      return getCachedApiResponse(e, action, function() {
+        return getTimeline();
+      });
 
     case "settings":
-      return getSettings();
+      return getCachedApiResponse(e, action, function() {
+        return getSettings();
+      });
 
     case "streams":
-      return getStreams();
+      return getCachedApiResponse(e, action, function() {
+        return getStreams();
+      });
+
+    case "searchData":
+      return getCachedApiResponse(e, action, function() {
+        return getSearchData();
+      });
 
     default:
       return jsonOutput({

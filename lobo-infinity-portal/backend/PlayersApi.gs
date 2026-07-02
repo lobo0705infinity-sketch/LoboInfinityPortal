@@ -5,6 +5,25 @@
  * Player profile API endpoint.
  *******************************************************/
 
+function getPlayers() {
+
+  return jsonOutput({
+    success: true,
+    divisions: [
+      buildStandingsResponse(
+        getStandingsDivisionConfig("main")
+      ),
+      buildStandingsResponse(
+        getStandingsDivisionConfig("pga")
+      ),
+      buildStandingsResponse(
+        getStandingsDivisionConfig("pgb")
+      )
+    ]
+  });
+
+}
+
 function getPlayer(e) {
 
   const requestedName =

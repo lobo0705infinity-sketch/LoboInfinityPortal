@@ -170,7 +170,7 @@ function StreamedGames() {
               <button
                 className="stream-card"
                 key={stream.id}
-                onClick={() => setSelectedStreamId(stream.id)}
+                onClick={() => handleStreamSelection(stream, setSelectedStreamId)}
                 type="button"
               >
                 <StreamThumbnail stream={stream} />
@@ -186,14 +186,29 @@ function StreamedGames() {
 
 function FeaturedStream({ stream }: { stream: StreamedGame }) {
   const embedUrl = getYouTubeEmbedUrl(stream.youtubeUrl)
+  const [embedFailure, setEmbedFailure] = useState<{
+    failed: boolean
+    streamId: number
+  }>({
+    failed: false,
+    streamId: 0,
+  })
+  const embedFailed =
+    embedFailure.streamId === stream.id && embedFailure.failed
 
   return (
     <section className="featured-stream panel" aria-labelledby="featured-stream-title">
       <div className="stream-player">
-        {embedUrl ? (
+        {embedUrl && !embedFailed ? (
           <iframe
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
+            onError={() =>
+              setEmbedFailure({
+                failed: true,
+                streamId: stream.id,
+              })
+            }
             src={embedUrl}
             title={`${stream.player1} vs ${stream.player2}`}
           />
@@ -370,19 +385,37 @@ function matchesFilters(
 }
 
 function getYouTubeVideoId(url: string) {
+  const trimmedUrl = url.trim()
+
+  if (/^[a-zA-Z0-9_-]{11}$/.test(trimmedUrl)) {
+    return trimmedUrl
+  }
+
   try {
-    const parsed = new URL(url)
+    const parsed = new URL(trimmedUrl)
+    const pathParts = parsed.pathname
+      .split('/')
+      .map((part) => part.trim())
+      .filter(Boolean)
 
     if (parsed.hostname.includes('youtu.be')) {
-      return parsed.pathname.replace('/', '')
+      return normalizeYouTubeVideoId(pathParts[0] ?? '')
     }
 
     if (parsed.searchParams.has('v')) {
-      return parsed.searchParams.get('v')
+      return normalizeYouTubeVideoId(parsed.searchParams.get('v') ?? '')
     }
 
-    const embedMatch = parsed.pathname.match(/\/embed\/([^/]+)/)
-    return embedMatch?.[1] ?? ''
+    const videoPathKeys = ['embed', 'live', 'shorts']
+    const videoPathIndex = pathParts.findIndex((part) =>
+      videoPathKeys.includes(part),
+    )
+
+    if (videoPathIndex !== -1) {
+      return normalizeYouTubeVideoId(pathParts[videoPathIndex + 1] ?? '')
+    }
+
+    return ''
   } catch {
     return ''
   }
@@ -391,6 +424,25 @@ function getYouTubeVideoId(url: string) {
 function getYouTubeEmbedUrl(url: string) {
   const videoId = getYouTubeVideoId(url)
   return videoId ? `https://www.youtube.com/embed/${videoId}` : ''
+}
+
+function normalizeYouTubeVideoId(value: string) {
+  const match = value.match(/[a-zA-Z0-9_-]{11}/)
+  return match?.[0] ?? ''
+}
+
+function handleStreamSelection(
+  stream: StreamedGame,
+  setSelectedStreamId: (id: number) => void,
+) {
+  if (getYouTubeEmbedUrl(stream.youtubeUrl)) {
+    setSelectedStreamId(stream.id)
+    return
+  }
+
+  if (stream.youtubeUrl.trim()) {
+    window.open(stream.youtubeUrl, '_blank', 'noopener,noreferrer')
+  }
 }
 
 function getTime(dateText: string) {

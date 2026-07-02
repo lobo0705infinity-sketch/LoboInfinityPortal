@@ -9,7 +9,7 @@ import type {
 } from '../types/dashboard'
 
 const API_URL =
-  'https://script.google.com/macros/s/AKfycbzDLyHCetqNwRL4zgQx3TdInvBTIOHhCrI2rBJukwzQzUgCiYoCnSyb3K_Jkk0uzyyQjw/exec'
+  'https://script.google.com/macros/s/AKfycbwyZcPqOYzdmSnc4zMSyYmXU1-EOL1QtOb0v_lv7HC3b_cXtNxvcUCGS1rZhW6VqyxNtA/exec'
 
 type ApiOptions = {
   signal?: AbortSignal
@@ -294,6 +294,13 @@ export type PlayerComparisonData = {
   players: PlayerComparisonPlayer[]
 }
 
+export type SearchData = {
+  players: DivisionStandings[]
+  factions: FactionSummary[]
+  missions: MissionSummary[]
+  games: RecentGame[]
+}
+
 export type PortalSettings = {
   currentSeason: string
   leagueName: string
@@ -327,6 +334,7 @@ export type ApiClient = {
   ) => Promise<DivisionStandings>
   getAllStandings: (options?: ApiOptions) => Promise<DivisionStandings[]>
   getPlayers: (options?: ApiOptions) => Promise<DivisionStandings[]>
+  getSearchData: (options?: ApiOptions) => Promise<SearchData>
   getPlayer: (
     playerName: string,
     options?: ApiOptions,
@@ -412,7 +420,15 @@ export async function getAllStandings(
 export async function getPlayers(
   options: ApiOptions = {},
 ): Promise<DivisionStandings[]> {
-  return getAllStandings(options)
+  const payload = await request('players', options)
+  return normalizePlayersPayload(payload)
+}
+
+export async function getSearchData(
+  options: ApiOptions = {},
+): Promise<SearchData> {
+  const payload = await request('searchData', options)
+  return normalizeSearchDataPayload(payload)
 }
 
 export async function getPlayer(
@@ -538,6 +554,7 @@ export const apiClient: ApiClient = {
   getStandings,
   getAllStandings,
   getPlayers,
+  getSearchData,
   getPlayer,
   getFactions,
   getFaction,
@@ -704,6 +721,31 @@ function normalizePlayerPayload(payload: unknown): PlayerProfileData {
     bestFaction: getString(player, 'bestFaction'),
     rival: getString(player, 'rival'),
     nemesis: getString(player, 'nemesis'),
+  }
+}
+
+function normalizePlayersPayload(payload: unknown): DivisionStandings[] {
+  const record = asRecord(payload, 'Players response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Players failed.')
+  }
+
+  return getRequiredArray(record, 'divisions').map(normalizeStandingsPayload)
+}
+
+function normalizeSearchDataPayload(payload: unknown): SearchData {
+  const record = asRecord(payload, 'Search response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Search failed.')
+  }
+
+  return {
+    players: getRequiredArray(record, 'players').map(normalizeStandingsPayload),
+    factions: getRequiredArray(record, 'factions').map(normalizeFactionSummary),
+    missions: getRequiredArray(record, 'missions').map(normalizeMissionSummary),
+    games: getRequiredArray(record, 'games').map(normalizeRecentGame),
   }
 }
 

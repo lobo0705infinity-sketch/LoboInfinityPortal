@@ -34,12 +34,10 @@ function GlobalSearch() {
 
     async function loadSearchData() {
       try {
-        const [players, factions, missions, games] = await Promise.all([
-          apiClient.getPlayers({ signal: controller.signal }),
-          apiClient.getFactions({ signal: controller.signal }),
-          apiClient.getMissions({ signal: controller.signal }),
-          apiClient.getRecentGames({ signal: controller.signal }),
-        ])
+        const { players, factions, missions, games } =
+          await apiClient.getSearchData({
+            signal: controller.signal,
+          })
 
         const playerItems = players.flatMap((division) =>
           division.standings.map((player) => ({

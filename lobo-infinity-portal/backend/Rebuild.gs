@@ -10,6 +10,7 @@
 function rebuildEverything() {
 
   const start = new Date();
+  clearPortalCache();
 
   Logger.log("====================================");
   Logger.log("LOBO INFINITY LEAGUE REBUILD");
@@ -35,6 +36,7 @@ function rebuildEverything() {
     // rebuildDashboard();
 
     SpreadsheetApp.flush();
+    clearPortalCache();
 
     const end = new Date();
 
@@ -76,6 +78,8 @@ function runLeague() {
 
 function runStandings() {
 
+  clearPortalCache();
+
   clearLeagueData();
 
   loadLeagueData();
@@ -86,11 +90,15 @@ function runStandings() {
 
 function runGameEngine() {
 
+  clearPortalCache();
+
   rebuildGameEngine();
 
 }
 
 function runPlayerAnalytics() {
+
+  clearPortalCache();
 
   clearLeagueData();
 
@@ -102,6 +110,8 @@ function runPlayerAnalytics() {
 
 function runFactionAnalytics() {
 
+  clearPortalCache();
+
   clearLeagueData();
 
   loadLeagueData();
@@ -112,10 +122,29 @@ function runFactionAnalytics() {
 
 function runMissionAnalytics() {
 
+  clearPortalCache();
+
   clearLeagueData();
 
   loadLeagueData();
 
   rebuildMissionAnalytics();
+
+}
+
+function onEdit(e) {
+
+  const sheetName =
+    e &&
+    e.range &&
+    e.range.getSheet
+      ? e.range.getSheet().getName()
+      : "";
+
+  if (
+    sheetName === CONFIG.SHEETS.SETTINGS ||
+    sheetName === CONFIG.SHEETS.STREAMS
+  )
+    clearPortalCache();
 
 }
