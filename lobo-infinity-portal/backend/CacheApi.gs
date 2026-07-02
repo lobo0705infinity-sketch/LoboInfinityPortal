@@ -5,7 +5,7 @@
  * Lightweight API response caching.
  *******************************************************/
 
-const PORTAL_CACHE_PREFIX = "portal:v1.0.3:";
+const PORTAL_CACHE_PREFIX = "portal:v1.0.3.1:";
 const PORTAL_CACHE_VERSION_KEY = "portalCacheVersion";
 
 const PORTAL_CACHE_SECONDS = {

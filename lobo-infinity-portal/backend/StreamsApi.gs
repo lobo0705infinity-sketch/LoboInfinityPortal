@@ -216,7 +216,7 @@ function buildStream(
   const sortDate =
     getStreamDate(rawDate);
 
-  return {
+  const stream = {
     sourceIndex: sourceIndex,
     sortDate: sortDate,
     date: formatStreamDate(rawDate, sortDate),
@@ -226,9 +226,11 @@ function buildStream(
     player1Faction: getStreamString(row[columns.player1Faction]),
     player2: getStreamString(row[columns.player2]),
     player2Faction: getStreamString(row[columns.player2Faction]),
-    youtubeUrl: getStreamString(row[columns.youtubeUrl]),
+    youtubeUrl: getStreamYoutubeUrl(row, columns.youtubeUrl),
     featured: getStreamBoolean(row[columns.featured])
   };
+
+  return enrichStreamFromRecentGames(stream);
 
 }
 
@@ -247,6 +249,108 @@ function getStreamString(value) {
     return "";
 
   return String(value).trim();
+
+}
+
+function getStreamYoutubeUrl(row, preferredColumn) {
+
+  const preferred =
+    getStreamString(row[preferredColumn]);
+
+  if (isStreamYoutubeUrl(preferred))
+    return preferred;
+
+  for (
+    let index = 0;
+    index < row.length;
+    index++
+  ) {
+
+    const value =
+      getStreamString(row[index]);
+
+    if (isStreamYoutubeUrl(value))
+      return value;
+
+  }
+
+  return preferred;
+
+}
+
+function isStreamYoutubeUrl(value) {
+
+  return (
+    value.indexOf("youtube.com/watch") !== -1 ||
+    value.indexOf("youtube.com/live") !== -1 ||
+    value.indexOf("youtube.com/embed") !== -1 ||
+    value.indexOf("youtube.com/shorts") !== -1 ||
+    value.indexOf("youtu.be/") !== -1
+  );
+
+}
+
+function enrichStreamFromRecentGames(stream) {
+
+  if (
+    stream.player1Faction !== "" &&
+    stream.player2 !== "" &&
+    stream.player2Faction !== ""
+  )
+    return stream;
+
+  const matchingGame =
+    getAllRecentGameObjects()
+      .filter(function(game) {
+
+        return (
+          game.date === stream.date &&
+          game.mission === stream.mission &&
+          (
+            game.winner === stream.player1 ||
+            game.loser === stream.player1 ||
+            game.winner === stream.player2 ||
+            game.loser === stream.player2
+          )
+        );
+
+      })[0];
+
+  if (!matchingGame)
+    return stream;
+
+  const playerOneIsWinner =
+    matchingGame.winner === stream.player1;
+
+  const playerOneIsLoser =
+    matchingGame.loser === stream.player1;
+
+  if (playerOneIsWinner) {
+
+    stream.player1Faction =
+      matchingGame.winnerFaction;
+
+    stream.player2 =
+      matchingGame.loser;
+
+    stream.player2Faction =
+      matchingGame.loserFaction;
+
+  }
+  else if (playerOneIsLoser) {
+
+    stream.player1Faction =
+      matchingGame.loserFaction;
+
+    stream.player2 =
+      matchingGame.winner;
+
+    stream.player2Faction =
+      matchingGame.winnerFaction;
+
+  }
+
+  return stream;
 
 }
 
