@@ -2827,6 +2827,31 @@
   font-weight: 780;
 }
 
+.stream-card-matchup {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 0;
+}
+
+.stream-card-matchup div {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  background: var(--panel-strong);
+}
+
+.stream-card-matchup dt {
+  color: var(--text);
+  font-weight: 950;
+}
+
+.stream-card-matchup dd {
+  margin: 4px 0 0;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
 .stream-thumbnail {
   display: grid;
   width: 100%;

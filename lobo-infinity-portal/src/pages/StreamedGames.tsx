@@ -13,7 +13,7 @@ type StreamsState =
   | {
       error: string
       status: 'error'
-  }
+    }
 
 const emptyStreams: StreamedGame[] = []
 
@@ -40,7 +40,9 @@ function StreamedGames() {
           streams,
           status: 'success',
         })
-        setSelectedStreamId(streams.find((stream) => stream.featured)?.id ?? streams[0]?.id ?? null)
+        setSelectedStreamId(
+          streams.find((stream) => stream.featured)?.id ?? streams[0]?.id ?? null,
+        )
       })
       .catch((error: unknown) => {
         if (!controller.signal.aborted) {
@@ -65,12 +67,14 @@ function StreamedGames() {
   const filteredStreams = useMemo(
     () =>
       streams
-        .filter((stream) => matchesFilters(stream, {
-          divisionFilter,
-          missionFilter,
-          playerFilter,
-          query,
-        }))
+        .filter((stream) =>
+          matchesFilters(stream, {
+            divisionFilter,
+            missionFilter,
+            playerFilter,
+            query,
+          }),
+        )
         .sort((a, b) =>
           sortOrder === 'newest'
             ? getTime(b.date) - getTime(a.date)
@@ -92,7 +96,7 @@ function StreamedGames() {
       <section className="page-header" aria-labelledby="streams-title">
         <p className="eyebrow">Video Archive</p>
         <h1 id="streams-title">Streamed Games</h1>
-        <p>Featured broadcasts and recorded league matches</p>
+        <p>Watch league matches without result spoilers</p>
       </section>
 
       {streamsState.status === 'loading' ? (
@@ -116,7 +120,7 @@ function StreamedGames() {
               <span>Search</span>
               <input
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search players, missions, notes"
+                placeholder="Search players, factions, missions"
                 type="search"
                 value={query}
               />
@@ -170,14 +174,7 @@ function StreamedGames() {
                 type="button"
               >
                 <StreamThumbnail stream={stream} />
-                <div>
-                  <span className="eyebrow">{stream.date || 'Stream'}</span>
-                  <h2>
-                    {stream.player1} vs {stream.player2}
-                  </h2>
-                  <p>{stream.mission}</p>
-                  <small>{stream.division}</small>
-                </div>
+                <StreamSummary stream={stream} />
               </button>
             ))}
           </section>
@@ -211,8 +208,20 @@ function FeaturedStream({ stream }: { stream: StreamedGame }) {
         </h2>
         <dl className="stream-meta">
           <div>
-            <dt>Winner</dt>
-            <dd>{stream.winner || 'Not reported'}</dd>
+            <dt>Player 1</dt>
+            <dd>{stream.player1 || 'Not reported'}</dd>
+          </div>
+          <div>
+            <dt>Player 1 Faction</dt>
+            <dd>{stream.player1Faction || 'Not reported'}</dd>
+          </div>
+          <div>
+            <dt>Player 2</dt>
+            <dd>{stream.player2 || 'Not reported'}</dd>
+          </div>
+          <div>
+            <dt>Player 2 Faction</dt>
+            <dd>{stream.player2Faction || 'Not reported'}</dd>
           </div>
           <div>
             <dt>Mission</dt>
@@ -227,12 +236,31 @@ function FeaturedStream({ stream }: { stream: StreamedGame }) {
             <dd>{stream.date || 'Not reported'}</dd>
           </div>
         </dl>
-        {stream.notes ? <p>{stream.notes}</p> : null}
         <a href={stream.youtubeUrl} rel="noreferrer" target="_blank">
           Open on YouTube
         </a>
       </div>
     </section>
+  )
+}
+
+function StreamSummary({ stream }: { stream: StreamedGame }) {
+  return (
+    <div>
+      <span className="eyebrow">{stream.date || 'Stream'}</span>
+      <h2>{stream.mission || 'League Stream'}</h2>
+      <p>{stream.division}</p>
+      <dl className="stream-card-matchup">
+        <div>
+          <dt>{stream.player1 || 'Player 1'}</dt>
+          <dd>{stream.player1Faction || 'Faction not reported'}</dd>
+        </div>
+        <div>
+          <dt>{stream.player2 || 'Player 2'}</dt>
+          <dd>{stream.player2Faction || 'Faction not reported'}</dd>
+        </div>
+      </dl>
+    </div>
   )
 }
 
@@ -324,9 +352,9 @@ function matchesFilters(
     stream.division,
     stream.mission,
     stream.player1,
+    stream.player1Faction,
     stream.player2,
-    stream.winner,
-    stream.notes,
+    stream.player2Faction,
   ]
     .join(' ')
     .toLowerCase()

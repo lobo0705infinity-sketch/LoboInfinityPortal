@@ -9,7 +9,7 @@ import type {
 } from '../types/dashboard'
 
 const API_URL =
-  'https://script.google.com/macros/s/AKfycbw48_4ClzipFkkdSfnDIHi6Ee9tSztZUCwtE9uelJMFgWxLOJvULtaPcMUISItHrRgQwg/exec'
+  'https://script.google.com/macros/s/AKfycbzGQg-ypanFMMYLQzcJ7ljmH2Skf4DBraFF-HyKV2WFIPnQkL41HIseXGwj-gpd4tj53Q/exec'
 
 type ApiOptions = {
   signal?: AbortSignal
@@ -308,11 +308,11 @@ export type StreamedGame = {
   division: string
   mission: string
   player1: string
+  player1Faction: string
   player2: string
-  winner: string
+  player2Faction: string
   youtubeUrl: string
   featured: boolean
-  notes: string
 }
 
 export type LeaderData = Pick<DashboardSummary, 'leagueLeader'>
@@ -1171,11 +1171,11 @@ function normalizeStreamedGame(item: unknown): StreamedGame {
     division: getString(record, 'division'),
     mission: getString(record, 'mission'),
     player1: getString(record, 'player1'),
+    player1Faction: getString(record, 'player1Faction'),
     player2: getString(record, 'player2'),
-    winner: getString(record, 'winner'),
+    player2Faction: getString(record, 'player2Faction'),
     youtubeUrl: getRequiredString(record, 'youtubeUrl'),
     featured: getBoolean(record, 'featured'),
-    notes: getString(record, 'notes'),
   }
 }
 

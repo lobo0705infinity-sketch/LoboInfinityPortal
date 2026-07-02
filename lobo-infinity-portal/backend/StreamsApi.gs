@@ -2,10 +2,22 @@
  * LOBO INFINITY LEAGUE 3.0
  * StreamsApi.gs
  *
- * Streamed games API endpoint.
+ * Spoiler-free streamed games API endpoint.
  *******************************************************/
 
 const STREAM_HEADERS = [
+  "Date",
+  "Division",
+  "Mission",
+  "Player 1",
+  "Player 1 Faction",
+  "Player 2",
+  "Player 2 Faction",
+  "YouTube URL",
+  "Featured"
+];
+
+const LEGACY_STREAM_HEADERS = [
   "Date",
   "Division",
   "Mission",
@@ -57,6 +69,9 @@ function getStreams() {
       })
       .sort(function(a, b) {
 
+        if (a.featured !== b.featured)
+          return a.featured ? -1 : 1;
+
         const dateOrder =
           b.sortDate.getTime() -
           a.sortDate.getTime();
@@ -78,11 +93,11 @@ function getStreams() {
           division: stream.division,
           mission: stream.mission,
           player1: stream.player1,
+          player1Faction: stream.player1Faction,
           player2: stream.player2,
-          winner: stream.winner,
+          player2Faction: stream.player2Faction,
           youtubeUrl: stream.youtubeUrl,
-          featured: stream.featured,
-          notes: stream.notes
+          featured: stream.featured
         };
 
       });
@@ -106,23 +121,80 @@ function ensureStreamsSheet() {
     sheet =
       spreadsheet.insertSheet(CONFIG.SHEETS.STREAMS);
 
-  const headerRange =
-    sheet.getRange(1, 1, 1, STREAM_HEADERS.length);
+  migrateLegacyStreamsSheet(sheet);
+  ensureStreamsHeaders(sheet);
+
+  return sheet;
+
+}
+
+function migrateLegacyStreamsSheet(sheet) {
+
+  const lastColumn =
+    Math.max(sheet.getLastColumn(), STREAM_HEADERS.length);
 
   const headers =
-    headerRange.getValues()[0];
+    sheet
+      .getRange(1, 1, 1, lastColumn)
+      .getValues()[0]
+      .map(function(header) {
 
-  const hasHeaders =
+        return getStreamString(header);
+
+      });
+
+  const hasLegacyHeaders =
+    LEGACY_STREAM_HEADERS.every(function(header, index) {
+
+      return headers[index] === header;
+
+    });
+
+  const hasNewHeaders =
     STREAM_HEADERS.every(function(header, index) {
 
       return headers[index] === header;
 
     });
 
-  if (!hasHeaders)
-    headerRange.setValues([STREAM_HEADERS]);
+  if (
+    !hasLegacyHeaders ||
+    hasNewHeaders ||
+    sheet.getLastRow() <= 1
+  )
+    return;
 
-  return sheet;
+  const rows =
+    sheet
+      .getRange(2, 1, sheet.getLastRow() - 1, LEGACY_STREAM_HEADERS.length)
+      .getValues()
+      .map(function(row) {
+
+        return [
+          row[0],
+          row[1],
+          row[2],
+          row[3],
+          "",
+          row[4],
+          "",
+          row[6],
+          row[7]
+        ];
+
+      });
+
+  sheet
+    .getRange(2, 1, rows.length, STREAM_HEADERS.length)
+    .setValues(rows);
+
+}
+
+function ensureStreamsHeaders(sheet) {
+
+  sheet
+    .getRange(1, 1, 1, STREAM_HEADERS.length)
+    .setValues([STREAM_HEADERS]);
 
 }
 
@@ -133,11 +205,11 @@ function getStreamColumns(headers) {
     division: getStreamColumn(headers, "Division"),
     mission: getStreamColumn(headers, "Mission"),
     player1: getStreamColumn(headers, "Player 1"),
+    player1Faction: getStreamColumn(headers, "Player 1 Faction"),
     player2: getStreamColumn(headers, "Player 2"),
-    winner: getStreamColumn(headers, "Winner"),
+    player2Faction: getStreamColumn(headers, "Player 2 Faction"),
     youtubeUrl: getStreamColumn(headers, "YouTube URL"),
-    featured: getStreamColumn(headers, "Featured"),
-    notes: getStreamColumn(headers, "Notes")
+    featured: getStreamColumn(headers, "Featured")
   };
 
 }
@@ -161,11 +233,11 @@ function buildStream(
     division: getStreamString(row[columns.division]),
     mission: getStreamString(row[columns.mission]),
     player1: getStreamString(row[columns.player1]),
+    player1Faction: getStreamString(row[columns.player1Faction]),
     player2: getStreamString(row[columns.player2]),
-    winner: getStreamString(row[columns.winner]),
+    player2Faction: getStreamString(row[columns.player2Faction]),
     youtubeUrl: getStreamString(row[columns.youtubeUrl]),
-    featured: getStreamBoolean(row[columns.featured]),
-    notes: getStreamString(row[columns.notes])
+    featured: getStreamBoolean(row[columns.featured])
   };
 
 }
