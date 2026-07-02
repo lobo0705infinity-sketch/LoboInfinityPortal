@@ -1,0 +1,342 @@
+import { useEffect, useState, type ReactNode } from 'react'
+import { Link, useParams } from 'react-router-dom'
+import EntityPreviousNext from '../components/EntityPreviousNext'
+import Loading from '../components/Loading'
+import {
+  apiClient,
+  type MissionBestMoment,
+  type MissionProfileData,
+  type RecentGame,
+} from '../services/api'
+
+type MissionProfileState =
+  | {
+      status: 'idle'
+    }
+  | {
+      error: string
+      missionName: string
+      status: 'error'
+    }
+  | {
+      mission: MissionProfileData
+      missionName: string
+      status: 'success'
+    }
+
+function MissionProfile() {
+  const { missionName } = useParams<{ missionName: string }>()
+  const decodedMissionName = decodeMissionName(missionName)
+  const [profileState, setProfileState] = useState<MissionProfileState>({
+    status: 'idle',
+  })
+
+  useEffect(() => {
+    if (!decodedMissionName) {
+      return
+    }
+
+    const controller = new AbortController()
+
+    apiClient
+      .getMission(decodedMissionName, {
+        signal: controller.signal,
+      })
+      .then((mission) => {
+        setProfileState({
+          mission,
+          missionName: decodedMissionName,
+          status: 'success',
+        })
+      })
+      .catch((error: unknown) => {
+        if (controller.signal.aborted) {
+          return
+        }
+
+        setProfileState({
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Mission profile could not be loaded.',
+          missionName: decodedMissionName,
+          status: 'error',
+        })
+      })
+
+    return () => {
+      controller.abort()
+    }
+  }, [decodedMissionName])
+
+  if (!decodedMissionName) {
+    return (
+      <main className="portal-shell">
+        <MissionHeaderFallback missionName="" />
+        <section className="dashboard-state" aria-label="Mission error">
+          <p role="alert">Mission name is missing.</p>
+        </section>
+      </main>
+    )
+  }
+
+  const isCurrentProfile =
+    profileState.status !== 'idle' &&
+    profileState.missionName === decodedMissionName
+
+  if (!isCurrentProfile) {
+    return (
+      <main className="portal-shell">
+        <MissionHeaderFallback missionName={decodedMissionName} />
+        <section className="dashboard-state" aria-label="Mission loading">
+          <Loading />
+        </section>
+      </main>
+    )
+  }
+
+  if (profileState.status === 'error') {
+    return (
+      <main className="portal-shell">
+        <MissionHeaderFallback missionName={decodedMissionName} />
+        <section className="dashboard-state" aria-label="Mission error">
+          <p role="alert">{profileState.error}</p>
+        </section>
+      </main>
+    )
+  }
+
+  return (
+    <main className="portal-shell">
+      <MissionHero mission={profileState.mission} />
+
+      <section className="profile-card-grid" aria-label="Mission statistics">
+        <ProfileCard title="Key Metrics">
+          <Metric label="Games Played" value={profileState.mission.games} />
+          <Metric
+            label="First Turn Win %"
+            value={formatPercent(profileState.mission.firstTurnWinRate)}
+          />
+          <Metric
+            label="Average TP"
+            value={formatNumber(profileState.mission.averageTP)}
+          />
+          <Metric
+            label="Average OP"
+            value={formatNumber(profileState.mission.averageOP)}
+          />
+          <Metric
+            label="Average VP"
+            value={formatNumber(profileState.mission.averageVP)}
+          />
+        </ProfileCard>
+
+        <ProfileCard title="Division Breakdown">
+          {profileState.mission.divisionBreakdown.map((division) => (
+            <Metric
+              key={division.division}
+              label={division.division}
+              value={`${division.games} games`}
+            />
+          ))}
+          <Metric label="Last Played" value={profileState.mission.lastPlayed} />
+        </ProfileCard>
+
+        <ProfileCard title="League Intelligence">
+          <Metric
+            label="Most Successful Faction"
+            value={profileState.mission.mostSuccessfulFaction}
+          />
+          <Metric
+            label="Most Played Faction"
+            value={profileState.mission.mostPlayedFaction}
+          />
+        </ProfileCard>
+      </section>
+
+      <section className="faction-profile-grid" aria-label="Mission reports">
+        <RecentGamesPanel games={profileState.mission.recentGames} />
+        <BestMomentsPanel moments={profileState.mission.bestMoments} />
+      </section>
+
+      <EntityPreviousNext current={profileState.mission.mission} type="mission" />
+    </main>
+  )
+}
+
+function MissionHero({ mission }: { mission: MissionProfileData }) {
+  return (
+    <section className="player-profile-hero profile-hero-focus faction-profile-hero mission-profile-hero">
+      <div className="profile-hero-main">
+        <p className="eyebrow">Mission Profile</p>
+        <h1>{mission.mission}</h1>
+        <div className="profile-badges" aria-label="Mission status">
+          <span>{mission.games} Games Played</span>
+          <span>{formatPercent(mission.firstTurnWinRate)} First Turn Win</span>
+          <span>{mission.lastPlayed || 'No date recorded'}</span>
+        </div>
+      </div>
+
+      <div className="profile-hero-record" aria-label="First turn win rate">
+        <span>First Turn</span>
+        <strong>{formatPercent(mission.firstTurnWinRate)}</strong>
+      </div>
+
+      <dl className="profile-hero-score" aria-label="Mission key metrics">
+        <div>
+          <dt>Avg TP</dt>
+          <dd>{formatNumber(mission.averageTP)}</dd>
+        </div>
+        <div>
+          <dt>Avg OP</dt>
+          <dd>{formatNumber(mission.averageOP)}</dd>
+        </div>
+        <div>
+          <dt>Avg VP</dt>
+          <dd>{formatNumber(mission.averageVP)}</dd>
+        </div>
+      </dl>
+    </section>
+  )
+}
+
+function MissionHeaderFallback({ missionName }: { missionName: string }) {
+  return (
+    <section className="player-profile-hero" aria-labelledby="mission-title">
+      <div>
+        <p className="eyebrow">Mission Profile</p>
+        <h1 id="mission-title">{missionName || 'Mission'}</h1>
+      </div>
+    </section>
+  )
+}
+
+function ProfileCard({
+  children,
+  title,
+}: {
+  children: ReactNode
+  title: string
+}) {
+  return (
+    <section className="panel profile-card" aria-labelledby={titleToId(title)}>
+      <div className="panel-heading">
+        <p className="eyebrow">Mission</p>
+        <h2 id={titleToId(title)}>{title}</h2>
+      </div>
+      <dl className="profile-metric-list">{children}</dl>
+    </section>
+  )
+}
+
+function RecentGamesPanel({ games }: { games: RecentGame[] }) {
+  return (
+    <section className="panel faction-report-panel" aria-labelledby="mission-games">
+      <div className="panel-heading">
+        <p className="eyebrow">Battle Reports</p>
+        <h2 id="mission-games">Recent Games</h2>
+      </div>
+      {games.length === 0 ? (
+        <div className="recent-games-empty">
+          <strong>No games have been reported yet.</strong>
+        </div>
+      ) : (
+        <div className="faction-match-list">
+          {games.map((game) => (
+            <Link
+              className="faction-match-card"
+              key={game.id}
+              to={`/games/${game.id}`}
+            >
+              <div>
+                <span>{game.date}</span>
+                <h3>
+                  {game.winner} defeated {game.loser}
+                </h3>
+                <p>
+                  {game.winnerFaction} vs {game.loserFaction}
+                </p>
+              </div>
+              <strong>{game.vp}</strong>
+            </Link>
+          ))}
+        </div>
+      )}
+    </section>
+  )
+}
+
+function BestMomentsPanel({ moments }: { moments: MissionBestMoment[] }) {
+  return (
+    <section
+      className="panel faction-report-panel"
+      aria-labelledby="mission-moments"
+    >
+      <div className="panel-heading">
+        <p className="eyebrow">Best Moments</p>
+        <h2 id="mission-moments">Best Moments</h2>
+      </div>
+      {moments.length === 0 ? (
+        <div className="recent-games-empty">
+          <strong>No memorable moments have been submitted yet.</strong>
+        </div>
+      ) : (
+        <div className="faction-moment-list">
+          {moments.map((moment) => (
+            <Link
+              className="faction-moment-card"
+              key={`${moment.gameId}-${moment.moment}`}
+              to={`/games/${moment.gameId}`}
+            >
+              <span>
+                {moment.date} · {moment.mission}
+              </span>
+              <blockquote>“{moment.moment}”</blockquote>
+            </Link>
+          ))}
+        </div>
+      )}
+    </section>
+  )
+}
+
+function Metric({
+  label,
+  value,
+}: {
+  label: string
+  value: number | string
+}) {
+  return (
+    <div>
+      <dt>{label}</dt>
+      <dd>{value === '' ? 'Not recorded' : value}</dd>
+    </div>
+  )
+}
+
+function decodeMissionName(missionName: string | undefined) {
+  if (!missionName) {
+    return ''
+  }
+
+  try {
+    return decodeURIComponent(missionName)
+  } catch {
+    return missionName
+  }
+}
+
+function formatPercent(value: number) {
+  return `${formatNumber(value)}%`
+}
+
+function formatNumber(value: number) {
+  return Number.isInteger(value) ? String(value) : value.toFixed(2)
+}
+
+function titleToId(title: string) {
+  return title.toLowerCase().replaceAll(' ', '-')
+}
+
+export default MissionProfile

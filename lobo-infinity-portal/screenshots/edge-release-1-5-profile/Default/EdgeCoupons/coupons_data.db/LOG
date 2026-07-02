@@ -1,0 +1,5 @@
+2026/07/01-21:48:26.043 7970 Creating DB C:\Users\19734\Documents\LoboInfinityLeague\lobo-infinity-portal\screenshots\edge-release-1-5-profile\Default\EdgeCoupons/coupons_data.db since it was missing.
+2026/07/01-21:48:26.048 7970 Reusing MANIFEST C:\Users\19734\Documents\LoboInfinityLeague\lobo-infinity-portal\screenshots\edge-release-1-5-profile\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
+2026/07/01-21:48:26.169 7ec8 Level-0 table #5: started
+2026/07/01-21:48:26.172 7ec8 Level-0 table #5: 682897 bytes OK
+2026/07/01-21:48:26.174 7ec8 Delete type=0 #3
