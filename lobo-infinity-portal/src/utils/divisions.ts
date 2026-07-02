@@ -22,14 +22,14 @@ const identities: Record<DivisionKey, DivisionIdentity> = {
     icon: '⚔',
     key: 'pga',
     label: 'Proving Grounds A',
-    shortLabel: 'PGA',
+    shortLabel: 'Proving Grounds A',
   },
   pgb: {
     accent: '#2DC653',
     icon: '🛡',
     key: 'pgb',
     label: 'Proving Grounds B',
-    shortLabel: 'PGB',
+    shortLabel: 'Proving Grounds B',
   },
 }
 

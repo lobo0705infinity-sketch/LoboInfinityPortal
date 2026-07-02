@@ -5,11 +5,11 @@ import Loading from '../components/Loading'
 import RecentGames from '../components/RecentGames'
 import Skeleton from '../components/Skeleton'
 import StatCard from '../components/StatCard'
-import useDashboard from '../hooks/useDashboard'
 import {
   apiClient,
   type CommissionerNewsItem,
   type HallOfFameData,
+  type HomeData,
   type IntelligenceGame,
   type LeagueIntelligenceData,
   type LeagueRecordValue,
@@ -23,23 +23,22 @@ import {
 } from '../utils/divisions'
 import '../App.css'
 
-type CommandCenterState =
+type HomeState =
   | {
-      status: 'idle'
+      status: 'loading'
     }
   | {
-      games: RecentGame[]
-      hallOfFame: HallOfFameData | null
-      intelligence: LeagueIntelligenceData | null
-      news: CommissionerNewsItem[]
-      records: Record<string, LeagueRecordValue>
+      data: HomeData
       status: 'success'
+    }
+  | {
+      error: string
+      status: 'error'
     }
 
 function Dashboard() {
-  const { data, error, isLoading } = useDashboard()
-  const [commandState, setCommandState] = useState<CommandCenterState>({
-    status: 'idle',
+  const [homeState, setHomeState] = useState<HomeState>({
+    status: 'loading',
   })
   const lastUpdated = new Date().toLocaleTimeString([], {
     hour: 'numeric',
@@ -50,37 +49,26 @@ function Dashboard() {
     const controller = new AbortController()
 
     async function loadCommandCenter() {
-      const [
-        gamesResult,
-        newsResult,
-        intelligenceResult,
-        recordsResult,
-        hallOfFameResult,
-      ] =
-        await Promise.allSettled([
-          apiClient.getRecentGames({ signal: controller.signal }),
-          apiClient.getNews({ signal: controller.signal }),
-          apiClient.getAnalytics({ signal: controller.signal }),
-          apiClient.getRecords({ signal: controller.signal }),
-          apiClient.getHallOfFame({ signal: controller.signal }),
-        ])
+      try {
+        const data = await apiClient.getHome({
+          signal: controller.signal,
+        })
 
-      if (controller.signal.aborted) {
-        return
+        setHomeState({
+          data,
+          status: 'success',
+        })
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          setHomeState({
+            error:
+              error instanceof Error
+                ? error.message
+                : 'Dashboard data could not be loaded.',
+            status: 'error',
+          })
+        }
       }
-
-      setCommandState({
-        games: gamesResult.status === 'fulfilled' ? gamesResult.value : [],
-        hallOfFame:
-          hallOfFameResult.status === 'fulfilled' ? hallOfFameResult.value : null,
-        intelligence:
-          intelligenceResult.status === 'fulfilled'
-            ? intelligenceResult.value
-            : null,
-        news: newsResult.status === 'fulfilled' ? newsResult.value : [],
-        records: recordsResult.status === 'fulfilled' ? recordsResult.value : {},
-        status: 'success',
-      })
     }
 
     void loadCommandCenter()
@@ -90,7 +78,7 @@ function Dashboard() {
     }
   }, [])
 
-  if (isLoading) {
+  if (homeState.status === 'loading') {
     return (
       <main className="portal-shell">
         <DashboardHeader lastUpdated={lastUpdated} />
@@ -104,24 +92,23 @@ function Dashboard() {
     )
   }
 
-  if (error || !data) {
+  if (homeState.status === 'error') {
     return (
       <main className="portal-shell">
         <DashboardHeader lastUpdated={lastUpdated} />
         <section className="dashboard-state" aria-label="Dashboard error">
-          <p role="alert">{error ?? 'Dashboard data could not be loaded.'}</p>
+          <p role="alert">{homeState.error}</p>
         </section>
       </main>
     )
   }
 
-  const games = commandState.status === 'success' ? commandState.games : []
-  const news = commandState.status === 'success' ? commandState.news : []
-  const records = commandState.status === 'success' ? commandState.records : {}
-  const hallOfFame =
-    commandState.status === 'success' ? commandState.hallOfFame : null
-  const intelligence =
-    commandState.status === 'success' ? commandState.intelligence : null
+  const data = homeState.data.dashboard
+  const games = homeState.data.recentGames
+  const news = homeState.data.news
+  const records = homeState.data.records
+  const hallOfFame = homeState.data.hallOfFame
+  const intelligence = homeState.data.intelligence
   const featuredGame = games[0]
   const hottestPlayer = intelligence?.winStreaks[0]
   const strongestFaction =
@@ -294,8 +281,8 @@ function Dashboard() {
             closestMatch={intelligence?.closestGames[0]}
           />
           <RecentGames
-            games={commandState.status === 'success' ? games : undefined}
-            isLoading={commandState.status !== 'success'}
+            games={games}
+            isLoading={false}
           />
         </div>
       </section>

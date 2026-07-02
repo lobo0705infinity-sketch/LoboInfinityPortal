@@ -9,7 +9,7 @@ import type {
 } from '../types/dashboard'
 
 const API_URL =
-  'https://script.google.com/macros/s/AKfycbxN54GH-76D_8MpcwXY-y983zGgPpRcZcrSc2cahpneoWZit8iymFtYhUvR6aKF0rysWA/exec'
+  'https://script.google.com/macros/s/AKfycby5eIa971vhsBtlf0e1NKGUhtVCjIsQPx4sz88n-8p6PAfXaZ8Djc3T4oqsBhlGscoRtg/exec'
 
 type ApiOptions = {
   signal?: AbortSignal
@@ -301,6 +301,16 @@ export type SearchData = {
   games: RecentGame[]
 }
 
+export type HomeData = {
+  dashboard: DashboardData
+  recentGames: RecentGame[]
+  news: CommissionerNewsItem[]
+  intelligence: LeagueIntelligenceData
+  records: Record<string, LeagueRecordValue>
+  hallOfFame: HallOfFameData
+  settings: PortalSettings
+}
+
 export type PortalSettings = {
   currentSeason: string
   leagueName: string
@@ -325,6 +335,7 @@ export type StreamedGame = {
 export type LeaderData = Pick<DashboardSummary, 'leagueLeader'>
 
 export type ApiClient = {
+  getHome: (options?: ApiOptions) => Promise<HomeData>
   getDashboard: (options?: ApiOptions) => Promise<DashboardData>
   getLeader: (options?: ApiOptions) => Promise<LeaderData>
   getRecentGames: (options?: ApiOptions) => Promise<RecentGame[]>
@@ -371,6 +382,11 @@ export async function getDashboard(
 ): Promise<DashboardData> {
   const payload = await request('dashboard', options)
   return normalizeDashboardPayload(payload)
+}
+
+export async function getHome(options: ApiOptions = {}): Promise<HomeData> {
+  const payload = await request('home', options)
+  return normalizeHomePayload(payload)
 }
 
 export async function getLeader(
@@ -548,6 +564,7 @@ export async function getStreams(
 }
 
 export const apiClient: ApiClient = {
+  getHome,
   getDashboard,
   getLeader,
   getRecentGames,
@@ -610,6 +627,26 @@ function normalizeDashboardPayload(payload: unknown): DashboardData {
       buildFallbackLeagueOverview(
         response.mainManStandings.map(normalizeStanding),
       ),
+  }
+}
+
+function normalizeHomePayload(payload: unknown): HomeData {
+  const record = asRecord(payload, 'Home response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Home failed.')
+  }
+
+  return {
+    dashboard: normalizeDashboardPayload(getRequiredRecord(record, 'dashboard')),
+    recentGames: getRequiredArray(record, 'recentGames').map(normalizeRecentGame),
+    news: getRequiredArray(record, 'news').map(normalizeNewsItem),
+    intelligence: normalizeIntelligencePayload(
+      getRequiredRecord(record, 'intelligence'),
+    ),
+    records: normalizeLeagueRecords(getRequiredRecord(record, 'records')),
+    hallOfFame: normalizeHallOfFamePayload(getRequiredRecord(record, 'hallOfFame')),
+    settings: normalizeSettingsRecord(getRequiredRecord(record, 'settings')),
   }
 }
 
@@ -1184,7 +1221,10 @@ function normalizeSettingsPayload(payload: unknown): PortalSettings {
   }
 
   const settings = getRequiredRecord(record, 'settings')
+  return normalizeSettingsRecord(settings)
+}
 
+function normalizeSettingsRecord(settings: Record<string, unknown>): PortalSettings {
   return {
     currentSeason: getString(settings, 'currentSeason'),
     leagueName: getString(settings, 'leagueName'),

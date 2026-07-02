@@ -24,6 +24,11 @@ function doGet(e) {
         return getDashboard();
       });
 
+    case "home":
+      return getCachedApiResponse(e, action, function() {
+        return getHome();
+      });
+
     case "players":
       return getCachedApiResponse(e, action, function() {
         return getPlayers();
