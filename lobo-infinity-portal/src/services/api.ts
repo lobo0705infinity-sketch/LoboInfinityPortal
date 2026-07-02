@@ -9,7 +9,7 @@ import type {
 } from '../types/dashboard'
 
 const API_URL =
-  'https://script.google.com/macros/s/AKfycbzvmgIUvjO1LIA2qVvnxQr6R90JL3p4zaz6_vSaNWhIWOyu_VufOsb7PCCZeekOdxmNbg/exec'
+  'https://script.google.com/macros/s/AKfycbzZpoWuP_g5tJXpsspcGpr9esskwmH1reLNRk5oN_Y6632rgnhfb3fZI_TGXKTUH9ErwQ/exec'
 
 type ApiOptions = {
   signal?: AbortSignal

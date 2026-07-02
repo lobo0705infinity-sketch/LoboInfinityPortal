@@ -301,7 +301,7 @@ function getGeneratedCommissionerNews() {
         title: "League data is online",
         body: "The portal is connected to the live Lobo Infinity League sheets and waiting for the next reported result.",
         date: timestamp,
-        link: "/dashboard"
+        link: "/"
       })
     );
 

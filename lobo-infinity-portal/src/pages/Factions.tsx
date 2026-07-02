@@ -105,7 +105,7 @@ function FactionCard({ faction }: { faction: FactionSummary }) {
           <h2>{faction.name}</h2>
         </div>
         <span className="faction-card-chevron" aria-hidden="true">
-          ›
+          &gt;
         </span>
       </div>
 

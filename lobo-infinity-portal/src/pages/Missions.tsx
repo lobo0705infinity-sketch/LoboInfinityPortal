@@ -105,7 +105,7 @@ function MissionCard({ mission }: { mission: MissionSummary }) {
           <h2>{mission.mission}</h2>
         </div>
         <span className="faction-card-chevron" aria-hidden="true">
-          ›
+          &gt;
         </span>
       </div>
 

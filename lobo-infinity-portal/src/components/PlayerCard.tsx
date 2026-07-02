@@ -29,7 +29,7 @@ function PlayerCard({ divisionLabel, player }: PlayerCardProps) {
           <h2>{player.player}</h2>
         </div>
         <span className="player-card-chevron" aria-hidden="true">
-          ›
+          &gt;
         </span>
       </div>
 
