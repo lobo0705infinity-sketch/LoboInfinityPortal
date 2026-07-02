@@ -31,6 +31,7 @@ function ProfileMenu() {
             <small>OAuth pending</small>
           </div>
         )}
+        {auth.error ? <small className="auth-inline-error">{auth.error}</small> : null}
       </div>
     )
   }

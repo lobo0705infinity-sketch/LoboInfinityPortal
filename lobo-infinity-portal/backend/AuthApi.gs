@@ -66,7 +66,9 @@ function getAuthSession(e) {
     authenticated: auth.authenticated,
     user: auth.user,
     permissions: getRolePermissions(auth.user.role),
-    oauthConfigured: isGoogleOAuthConfigured(),
+    oauthConfigured:
+      getRequestOAuthClientId(e) !== "" ||
+      isGoogleOAuthConfigured(),
     error: auth.error || ""
   });
 
@@ -261,6 +263,7 @@ function requireApiPermission(e, permission, handler) {
   if (!auth.authenticated)
     return jsonOutput({
       success: false,
+      code: "AUTH_REQUIRED",
       error: auth.error || "Authentication is required.",
       requiredRole: PERMISSION_MIN_ROLE[permission] || USER_ROLES.MEMBER
     });
@@ -268,6 +271,7 @@ function requireApiPermission(e, permission, handler) {
   if (!auth.user.enabled)
     return jsonOutput({
       success: false,
+      code: "USER_DISABLED",
       error: "This Google account is not enabled for league access.",
       requiredRole: PERMISSION_MIN_ROLE[permission] || USER_ROLES.MEMBER
     });
@@ -275,6 +279,7 @@ function requireApiPermission(e, permission, handler) {
   if (!userHasPermission(auth.user.role, permission))
     return jsonOutput({
       success: false,
+      code: "PERMISSION_DENIED",
       error: "You do not have permission to perform this action.",
       requiredRole: PERMISSION_MIN_ROLE[permission] || USER_ROLES.MEMBER,
       role: auth.user.role
@@ -297,7 +302,10 @@ function getRequestUser(e) {
     };
 
   const verified =
-    verifyGoogleIdentityToken(token);
+    verifyGoogleIdentityToken(
+      token,
+      getRequestOAuthClientId(e)
+    );
 
   if (!verified.valid)
     return {
@@ -315,6 +323,9 @@ function getRequestUser(e) {
   const bootstrap =
     sheet.getLastRow() <= 1;
 
+  const configuredCommissioner =
+    isConfiguredCommissionerEmail(verified.email);
+
   let rowNumber =
     getUserRowNumber(
       sheet,
@@ -328,12 +339,22 @@ function getRequestUser(e) {
         sheet,
         columns,
         verified,
-        bootstrap
+        bootstrap || configuredCommissioner
           ? USER_ROLES.COMMISSIONER
           : USER_ROLES.MEMBER,
-        bootstrap
+        bootstrap || configuredCommissioner
       );
   }
+
+  if (
+    rowNumber !== -1 &&
+    configuredCommissioner
+  )
+    promoteConfiguredCommissioner(
+      sheet,
+      columns,
+      rowNumber
+    );
 
   const user =
     readUserRow(
@@ -368,7 +389,19 @@ function getRequestUser(e) {
 
 }
 
-function verifyGoogleIdentityToken(token) {
+function promoteConfiguredCommissioner(sheet, columns, rowNumber) {
+
+  sheet
+    .getRange(rowNumber, columns.role + 1)
+    .setValue(USER_ROLES.COMMISSIONER);
+
+  sheet
+    .getRange(rowNumber, columns.enabled + 1)
+    .setValue(true);
+
+}
+
+function verifyGoogleIdentityToken(token, requestClientId) {
 
   const cache =
     CacheService.getScriptCache();
@@ -378,7 +411,7 @@ function verifyGoogleIdentityToken(token) {
     Utilities.base64EncodeWebSafe(
       Utilities.computeDigest(
         Utilities.DigestAlgorithm.SHA_256,
-        token
+        token + ":" + getAuthString(requestClientId)
       )
     ).slice(0, 48);
 
@@ -412,10 +445,18 @@ function verifyGoogleIdentityToken(token) {
       getSettingsObjectSafe();
 
     const configuredClientId =
+      getAuthString(requestClientId) ||
       getAuthString(settings.googleOAuthClientId);
 
     if (
-      configuredClientId !== "" &&
+      configuredClientId === ""
+    )
+      return {
+        valid: false,
+        error: "Google OAuth Client ID is not configured."
+      };
+
+    if (
       payload.aud !== configuredClientId
     )
       return {
@@ -935,6 +976,15 @@ function getRequestAuthToken(e) {
 
 }
 
+function getRequestOAuthClientId(e) {
+
+  const params =
+    getAuthParams(e);
+
+  return getAuthString(params.oauthClientId);
+
+}
+
 function getAuthParams(e) {
 
   if (
@@ -964,6 +1014,30 @@ function isGoogleOAuthConfigured() {
     getSettingsObjectSafe();
 
   return getAuthString(settings.googleOAuthClientId) !== "";
+
+}
+
+function isConfiguredCommissionerEmail(email) {
+
+  const settings =
+    getSettingsObjectSafe();
+
+  const normalized =
+    getAuthString(email)
+      .toLowerCase();
+
+  if (normalized === "")
+    return false;
+
+  return getAuthString(settings.commissionerEmails)
+    .split(",")
+    .map(function(item) {
+      return item.trim().toLowerCase();
+    })
+    .filter(function(item) {
+      return item !== "";
+    })
+    .indexOf(normalized) !== -1;
 
 }
 

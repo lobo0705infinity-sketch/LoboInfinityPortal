@@ -9,7 +9,7 @@ import type {
 } from '../types/dashboard'
 
 const API_URL =
-  'https://script.google.com/macros/s/AKfycbx8BKoG4PwfvvNTybwgUy9ZSwNc-iFKZcuVgAoHA3_QPS48aTOq1wuhSu7FwmZtX6v-Lg/exec'
+  'https://script.google.com/macros/s/AKfycbxBzo57XHrxiBy1EJq4f_VS026uTXnCYHSXrWT6c2uU__zSB2Dzeixx3rFHQahXQycCng/exec'
 
 type ApiOptions = {
   signal?: AbortSignal
@@ -18,6 +18,7 @@ type ApiOptions = {
 type RequestParams = Record<string, string>
 
 let activeAuthToken = ''
+let activeOAuthClientId = ''
 const frontendCacheTtlMs = 30_000
 const frontendResponseCache = new Map<
   string,
@@ -34,6 +35,10 @@ export function setApiAuthToken(token: string) {
   inFlightRequests.clear()
 }
 
+export function setApiOAuthClientId(clientId: string) {
+  activeOAuthClientId = clientId
+}
+
 export type ArmyList = {
   id: number
   submissionDate: string
@@ -46,6 +51,7 @@ export type ArmyList = {
   armyLink: string
   armyName: string
   description: string
+  submitterEmail: string
   upvotes: number
   downvotes: number
   score: number
@@ -62,6 +68,7 @@ export type ArmyListSubmission = {
   armyLink: string
   armyName: string
   description: string
+  submitterEmail?: string
 }
 
 export type ArmyListCommunitySummary = {
@@ -483,6 +490,7 @@ export type PortalSettings = {
   seasonEndDate: string
   registrationOpen: string
   googleOAuthClientId: string
+  commissionerEmails: string
   portalVersion: string
   gitCommit: string
   deploymentUrl: string
@@ -1022,6 +1030,10 @@ async function request(
     url.searchParams.set('authToken', activeAuthToken)
   }
 
+  if (activeOAuthClientId) {
+    url.searchParams.set('oauthClientId', activeOAuthClientId)
+  }
+
   const cacheKey = url.toString()
   const cached = frontendResponseCache.get(cacheKey)
 
@@ -1075,6 +1087,10 @@ async function postRequest(
 
   if (activeAuthToken) {
     body.set('authToken', activeAuthToken)
+  }
+
+  if (activeOAuthClientId) {
+    body.set('oauthClientId', activeOAuthClientId)
   }
 
   frontendResponseCache.clear()
@@ -1842,6 +1858,7 @@ function normalizeSettingsRecord(settings: Record<string, unknown>): PortalSetti
     seasonEndDate: getString(settings, 'seasonEndDate'),
     registrationOpen: getString(settings, 'registrationOpen'),
     googleOAuthClientId: getString(settings, 'googleOAuthClientId'),
+    commissionerEmails: getString(settings, 'commissionerEmails'),
     portalVersion: getString(settings, 'portalVersion'),
     gitCommit: getString(settings, 'gitCommit'),
     deploymentUrl: getString(settings, 'deploymentUrl'),
@@ -2097,6 +2114,7 @@ function normalizeArmyList(item: unknown): ArmyList {
     armyLink: getString(record, 'armyLink'),
     armyName: getRequiredString(record, 'armyName'),
     description: getString(record, 'description'),
+    submitterEmail: getString(record, 'submitterEmail'),
     upvotes: getRequiredNumber(record, 'upvotes'),
     downvotes: getRequiredNumber(record, 'downvotes'),
     score: getRequiredNumber(record, 'score'),

@@ -93,8 +93,13 @@ const DEFAULT_SETTINGS = [
     "Google Identity Services OAuth web client ID."
   ],
   [
+    "commissionerEmails",
+    "",
+    "Comma-separated Google emails that should automatically receive Commissioner access."
+  ],
+  [
     "portalVersion",
-    "1.2.2",
+    "1.2.3",
     "Portal release version."
   ],
   [

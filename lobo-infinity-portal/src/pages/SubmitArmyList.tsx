@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../auth/AuthContext'
 import { apiClient, type ArmyListSubmission } from '../services/api'
 
 type SubmissionState =
@@ -30,6 +31,7 @@ const initialSubmission: ArmyListSubmission = {
 }
 
 function SubmitArmyList() {
+  const auth = useAuth()
   const [submission, setSubmission] =
     useState<ArmyListSubmission>(initialSubmission)
   const [state, setState] = useState<SubmissionState>({
@@ -43,7 +45,11 @@ function SubmitArmyList() {
     })
 
     try {
-      await apiClient.submitArmyList(submission)
+      await apiClient.submitArmyList({
+        ...submission,
+        player: submission.player.trim() || auth.user.displayName,
+        submitterEmail: auth.user.email,
+      })
       setSubmission(initialSubmission)
       setState({
         status: 'success',
@@ -77,12 +83,26 @@ function SubmitArmyList() {
         </Link>
       </section>
 
+      {!auth.authenticated ? (
+        <section className="dashboard-state" aria-label="Authentication required">
+          <p role="alert">
+            Sign in with an enabled league account to submit an army list.
+          </p>
+        </section>
+      ) : null}
+
       <form className="army-list-form panel" onSubmit={(event) => void handleSubmit(event)}>
         <FormField
           label="Player"
           onChange={(value) => updateField('player', value)}
           required
-          value={submission.player}
+          value={submission.player || auth.user.displayName}
+        />
+        <FormField
+          label="Google Email"
+          onChange={() => undefined}
+          type="email"
+          value={auth.user.email}
         />
         <FormField
           label="Faction"
@@ -135,7 +155,10 @@ function SubmitArmyList() {
         </label>
 
         <div className="army-list-form-actions">
-          <button disabled={state.status === 'submitting'} type="submit">
+          <button
+            disabled={state.status === 'submitting' || !auth.authenticated}
+            type="submit"
+          >
             {state.status === 'submitting' ? 'Submitting...' : 'Submit Army List'}
           </button>
           {state.status === 'success' ? (

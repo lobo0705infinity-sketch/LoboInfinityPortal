@@ -320,6 +320,16 @@
   font-size: 0.7rem;
 }
 
+.auth-inline-error {
+  display: block;
+  max-width: 220px;
+  margin-top: 6px;
+  color: var(--amber);
+  font-size: 0.72rem;
+  font-weight: 850;
+  line-height: 1.3;
+}
+
 .profile-trigger {
   cursor: pointer;
 }

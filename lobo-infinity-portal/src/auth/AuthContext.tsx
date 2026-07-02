@@ -12,6 +12,7 @@ import {
 import {
   apiClient,
   setApiAuthToken,
+  setApiOAuthClientId,
   type AuthSession,
   type PortalPermissions,
   type PortalUser,
@@ -113,6 +114,12 @@ function AuthProvider({ children }: { children: ReactNode }) {
     window.localStorage.setItem(authStorageKey, credential)
     setApiAuthToken(credential)
     const nextSession = await apiClient.getSession()
+
+    if (!nextSession.authenticated) {
+      window.localStorage.removeItem(authStorageKey)
+      setApiAuthToken('')
+    }
+
     setSession(nextSession)
   }, [])
 
@@ -149,8 +156,10 @@ function AuthProvider({ children }: { children: ReactNode }) {
         const settings = await apiClient.getSettings()
         clientIdRef.current =
           clientIdRef.current || settings.googleOAuthClientId || ''
+        setApiOAuthClientId(clientIdRef.current)
       } catch {
         clientIdRef.current = clientIdRef.current || ''
+        setApiOAuthClientId(clientIdRef.current)
       }
 
       await refreshSession()

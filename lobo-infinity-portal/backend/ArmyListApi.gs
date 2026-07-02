@@ -18,7 +18,8 @@ const ARMY_LIST_HEADERS = [
   "Description",
   "Upvotes",
   "Downvotes",
-  "Approved"
+  "Approved",
+  "Submitter Email"
 ];
 
 const ARMY_LIST_COLUMNS = {
@@ -34,7 +35,8 @@ const ARMY_LIST_COLUMNS = {
   DESCRIPTION: 9,
   UPVOTES: 10,
   DOWNVOTES: 11,
-  APPROVED: 12
+  APPROVED: 12,
+  SUBMITTER_EMAIL: 13
 };
 
 function getArmyLists() {
@@ -60,8 +62,16 @@ function submitArmyList(e) {
   const parameters =
     getApiParameters(e);
 
+  const auth =
+    getRequestUser(e);
+
   const player =
-    getApiParameter(parameters, "player");
+    getApiParameter(parameters, "player") ||
+    (
+      auth.authenticated
+        ? auth.user.displayName
+        : ""
+    );
 
   const faction =
     getApiParameter(parameters, "faction");
@@ -99,7 +109,10 @@ function submitArmyList(e) {
     getApiParameter(parameters, "description"),
     0,
     0,
-    false
+    false,
+    auth.authenticated
+      ? auth.user.email
+      : getApiParameter(parameters, "submitterEmail")
   ]);
 
   invalidatePortalCacheGroup("armyLists");
@@ -546,6 +559,10 @@ function buildArmyListObject(row, id) {
     approved:
       getArmyListApproved(
         row[ARMY_LIST_COLUMNS.APPROVED]
+      ),
+    submitterEmail:
+      getArmyListString(
+        row[ARMY_LIST_COLUMNS.SUBMITTER_EMAIL]
       )
   };
 

@@ -5,7 +5,7 @@
 1. React loads Google Identity Services when a Google OAuth Client ID exists in `VITE_GOOGLE_CLIENT_ID` or the Settings sheet key `googleOAuthClientId`.
 2. Google returns an ID token to the browser after sign in.
 3. The API client stores the ID token locally for session restoration and sends it to Apps Script as `authToken`.
-4. Apps Script verifies the token with Google tokeninfo.
+4. Apps Script verifies the token with Google tokeninfo and checks the token audience against the selected OAuth Client ID. The selected ID comes from `VITE_GOOGLE_CLIENT_ID` when present, otherwise the Settings sheet key `googleOAuthClientId`.
 5. Apps Script looks up the verified email in the `Users` sheet.
 6. Only enabled users receive an authenticated session.
 7. The first verified user in an empty `Users` sheet is bootstrapped as enabled `Commissioner`.
@@ -48,6 +48,8 @@ React stores the Google ID token under `lobo-google-id-token` for restoration. O
 2. Add the Vercel production domain to Authorized JavaScript origins.
 3. Add the local development origin when needed, usually `http://localhost:5173`.
 4. Enter the client ID in the Settings sheet as `googleOAuthClientId`, or expose it as `VITE_GOOGLE_CLIENT_ID` at build time.
-5. Redeploy the frontend after changing build-time environment variables.
+5. If both exist, the frontend and backend token-audience check use `VITE_GOOGLE_CLIENT_ID`.
+6. Enter comma-separated commissioner emails in Settings as `commissionerEmails`.
+7. Redeploy the frontend after changing build-time environment variables.
 
 No OAuth client secret is required for Google Identity Services ID-token sign in.

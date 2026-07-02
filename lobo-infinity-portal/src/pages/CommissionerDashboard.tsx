@@ -395,6 +395,7 @@ function SettingsPanel({
         <Input label="Season Start" onChange={(value) => setDraft({ ...draft, seasonStartDate: value })} type="date" value={draft.seasonStartDate} />
         <Input label="Season End" onChange={(value) => setDraft({ ...draft, seasonEndDate: value })} type="date" value={draft.seasonEndDate} />
         <Input label="Google OAuth Client ID" onChange={(value) => setDraft({ ...draft, googleOAuthClientId: value })} value={draft.googleOAuthClientId} />
+        <Input label="Commissioner Emails" onChange={(value) => setDraft({ ...draft, commissionerEmails: value })} value={draft.commissionerEmails} />
         <Input label="Portal Version" onChange={(value) => setDraft({ ...draft, portalVersion: value })} value={draft.portalVersion} />
         <Input label="Git Commit" onChange={(value) => setDraft({ ...draft, gitCommit: value })} value={draft.gitCommit} />
         <Input label="Deployment URL" onChange={(value) => setDraft({ ...draft, deploymentUrl: value })} value={draft.deploymentUrl} />

@@ -157,6 +157,7 @@ function updateOperationsSettings(e) {
       "seasonEndDate",
       "registrationOpen",
       "googleOAuthClientId",
+      "commissionerEmails",
       "portalVersion",
       "gitCommit",
       "deploymentUrl"
