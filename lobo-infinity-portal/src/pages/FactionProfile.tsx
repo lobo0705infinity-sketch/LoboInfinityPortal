@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import BarChart from '../components/BarChart'
 import EntityPreviousNext from '../components/EntityPreviousNext'
@@ -219,7 +219,10 @@ function FactionProfile() {
 
 function FactionHero({ faction }: { faction: FactionProfileData }) {
   return (
-    <section className="player-profile-hero profile-hero-focus faction-profile-hero">
+    <section
+      className="player-profile-hero profile-hero-focus faction-profile-hero"
+      style={{ '--division-accent': getFactionAccent(faction.name) } as CSSProperties}
+    >
       <div className="profile-hero-main">
         <p className="eyebrow">Faction Profile</p>
         <h1>{faction.name}</h1>
@@ -539,6 +542,24 @@ function formatPercent(value: number) {
 
 function formatNumber(value: number) {
   return Number.isInteger(value) ? String(value) : value.toFixed(2)
+}
+
+function getFactionAccent(factionName: string) {
+  const accents = [
+    '#C1121F',
+    '#4CC9F0',
+    '#F0B13E',
+    '#2DC653',
+    '#8A5CFF',
+    '#FF6B35',
+    '#00A6A6',
+    '#E84855',
+  ]
+  const index = factionName
+    .split('')
+    .reduce((total, letter) => total + letter.charCodeAt(0), 0)
+
+  return accents[index % accents.length]
 }
 
 function titleToId(title: string) {

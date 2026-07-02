@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 300" role="img" aria-labelledby="title desc">
+  <title id="title">Lobo Infinity League crest</title>
+  <desc id="desc">Original hexagonal sci-fi wolf tournament shield.</desc>
+  <defs>
+    <linearGradient id="steel" x1="38" x2="218" y1="20" y2="274" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2A3442"/>
+      <stop offset="0.58" stop-color="#111820"/>
+      <stop offset="1" stop-color="#070A0E"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="50" x2="206" y1="18" y2="282" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#74DDF6"/>
+      <stop offset="0.45" stop-color="#C1121F"/>
+      <stop offset="1" stop-color="#F0B13E"/>
+    </linearGradient>
+  </defs>
+  <path fill="#05070A" d="M128 4 237 66v126l-109 104L19 192V66L128 4Z"/>
+  <path fill="url(#edge)" d="M128 13 229 70v118L128 285 27 188V70L128 13Z"/>
+  <path fill="url(#steel)" d="M128 26 217 77v105l-89 86-89-86V77l89-51Z"/>
+  <path fill="none" stroke="#4CC9F0" stroke-opacity=".45" stroke-width="4" d="M128 43 202 85v88l-74 72-74-72V85l74-42Z"/>
+  <path fill="#0A1017" stroke="#313B49" stroke-width="3" d="M75 103 99 74h58l24 29-12 70-41 39-41-39-12-70Z"/>
+  <path fill="#DDE8EF" d="m82 102 42-19-14 35 18-12 18 12-14-35 42 19-15 55-31 31-31-31-15-55Z"/>
+  <path fill="#111820" d="m98 117 20 13-23 13 3-26Zm60 0-20 13 23 13-3-26ZM111 155h34l-17 24-17-24Z"/>
+  <path fill="#C1121F" d="m117 134 11-8 11 8-11 8-11-8Z"/>
+  <path fill="#4CC9F0" d="M81 205h94v13H81z"/>
+  <path fill="#F0B13E" d="M101 229h54v9h-54z"/>
+  <path fill="#C1121F" d="M54 82h26v8H54zm122 0h26v8h-26z"/>
+  <path fill="#4CC9F0" fill-opacity=".28" d="M59 61h9v142h-9zm129 0h9v142h-9z"/>
+  <text x="128" y="218" fill="#071018" font-family="Arial, sans-serif" font-size="12" font-weight="900" letter-spacing="3" text-anchor="middle">LOBO</text>
+  <text x="128" y="238" fill="#DDE8EF" font-family="Arial, sans-serif" font-size="9" font-weight="900" letter-spacing="2.6" text-anchor="middle">INFINITY LEAGUE</text>
+</svg>

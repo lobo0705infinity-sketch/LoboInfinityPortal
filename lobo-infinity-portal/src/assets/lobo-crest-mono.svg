@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 300" role="img" aria-labelledby="title desc">
+  <title id="title">Lobo Infinity League monochrome crest</title>
+  <desc id="desc">Monochrome tactical wolf shield.</desc>
+  <path fill="#EEF3F8" d="M128 4 237 66v126l-109 104L19 192V66L128 4Z"/>
+  <path fill="#05070A" d="M128 24 216 75v107l-88 84-88-84V75l88-51Z"/>
+  <path fill="#EEF3F8" d="m82 102 42-19-14 35 18-12 18 12-14-35 42 19-15 55-31 31-31-31-15-55Z"/>
+  <path fill="#05070A" d="m98 117 20 13-23 13 3-26Zm60 0-20 13 23 13-3-26ZM111 155h34l-17 24-17-24Z"/>
+  <path fill="#EEF3F8" d="M81 205h94v13H81zM101 229h54v9h-54z"/>
+</svg>

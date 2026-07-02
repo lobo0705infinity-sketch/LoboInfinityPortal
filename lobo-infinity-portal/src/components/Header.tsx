@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import GlobalSearch from './GlobalSearch'
+import LeagueCrest from './LeagueCrest'
 import NotificationCenter from './NotificationCenter'
+import PortalIcon from './PortalIcon'
 import QuickJump from './QuickJump'
 import { apiClient } from '../services/api'
 
@@ -31,7 +33,11 @@ function Header() {
   return (
     <header className="portal-header">
       <div className="header-title">
-        <p className="header-kicker">Portal 3.0</p>
+        <LeagueCrest compact />
+        <div>
+          <p className="header-kicker">League Command Network</p>
+          <strong>Lobo Infinity League</strong>
+        </div>
       </div>
 
       <div className="header-actions">
@@ -42,6 +48,7 @@ function Header() {
             rel="noreferrer"
             target="_blank"
           >
+            <PortalIcon name="submit" />
             Submit Match
           </a>
         ) : null}

@@ -1,27 +1,52 @@
 .app-shell {
-  --portal-bg: #050608;
-  --panel: #12161d;
-  --panel-strong: #171c24;
-  --panel-soft: #1d232d;
-  --panel-muted: #0c0f14;
-  --border: #2a313d;
-  --border-strong: #384252;
-  --text: #eef3f8;
-  --text-soft: #aab5c2;
-  --text-muted: #778291;
+  --portal-bg: #040609;
+  --panel: #10161d;
+  --panel-strong: #151d27;
+  --panel-soft: #1d2733;
+  --panel-muted: #090d12;
+  --border: #25303d;
+  --border-strong: #445162;
+  --text: #f2f7fb;
+  --text-soft: #b8c4cf;
+  --text-muted: #84909d;
   --crimson: #c1121f;
   --blue: #4cc9f0;
+  --amber: #f0b13e;
+  --promotion: #2dc653;
+  --relegation: #ef233c;
   --division-accent: #c1121f;
   --gold: #d7a93b;
   --silver: #bfc7d5;
   --bronze: #c47b42;
-  --shadow-soft: 0 18px 42px rgba(0, 0, 0, 0.34);
-  --shadow-panel: 0 12px 28px rgba(0, 0, 0, 0.28);
+  --shadow-soft: 0 24px 58px rgba(0, 0, 0, 0.42);
+  --shadow-panel: 0 14px 34px rgba(0, 0, 0, 0.32);
+  --shadow-glow: 0 0 0 1px rgba(76, 201, 240, 0.18), 0 18px 44px rgba(0, 0, 0, 0.38);
   display: grid;
   grid-template-columns: 300px minmax(0, 1fr);
   min-height: 100vh;
   color: var(--text);
-  background: var(--portal-bg);
+  background:
+    radial-gradient(circle at 16% 0%, rgba(76, 201, 240, 0.08), transparent 31%),
+    linear-gradient(135deg, rgba(193, 18, 31, 0.08), transparent 34%),
+    var(--portal-bg);
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  letter-spacing: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+
+::selection {
+  color: #05070a;
+  background: var(--blue);
 }
 
 .app-main {
@@ -38,7 +63,9 @@
   min-height: 100vh;
   padding: 24px 20px;
   border-right: 1px solid var(--border);
-  background: #090c11;
+  background:
+    linear-gradient(180deg, rgba(76, 201, 240, 0.06), transparent 22%),
+    #070b10;
   box-shadow: 14px 0 30px rgba(0, 0, 0, 0.24);
 }
 
@@ -46,8 +73,20 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  min-height: 54px;
+  min-height: 64px;
   padding: 8px;
+}
+
+.league-crest {
+  display: block;
+  width: 74px;
+  height: auto;
+  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.42));
+}
+
+.league-crest.compact {
+  width: 48px;
+  min-width: 48px;
 }
 
 .sidebar-brand strong,
@@ -58,7 +97,7 @@
 .sidebar-brand strong {
   color: var(--text);
   font-size: 1.05rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
@@ -82,7 +121,7 @@
   align-items: center;
   gap: 12px;
   border: 1px solid transparent;
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 12px 14px;
   color: var(--text-soft);
   background: transparent;
@@ -107,19 +146,25 @@
 .sidebar-button.active {
   border-color: rgba(193, 18, 31, 0.52);
   color: #ffffff;
-  background: var(--panel-strong);
-  box-shadow: inset 3px 0 0 var(--crimson), var(--shadow-panel);
+  background:
+    linear-gradient(90deg, rgba(193, 18, 31, 0.28), transparent 76%),
+    var(--panel-strong);
+  box-shadow: inset 3px 0 0 var(--crimson), var(--shadow-glow);
 }
 
 .sidebar-icon {
   display: grid;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   place-items: center;
-  border-radius: 8px;
+  border-radius: 10px;
   color: var(--blue);
   background: var(--panel-muted);
-  font-size: 0.9rem;
+}
+
+.portal-icon {
+  width: 18px;
+  height: 18px;
 }
 
 .portal-shell {
@@ -139,13 +184,26 @@
   gap: 18px;
   padding: 10px clamp(18px, 4vw, 46px);
   border-bottom: 1px solid var(--border);
-  background: #090c11;
+  background:
+    linear-gradient(90deg, rgba(76, 201, 240, 0.07), transparent 48%),
+    #070b10;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
 }
 
 .header-title {
   display: flex;
   align-items: center;
+  gap: 12px;
+  min-width: 220px;
+}
+
+.header-title strong {
+  display: block;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .header-actions {
@@ -384,17 +442,61 @@
 }
 
 .page-header {
+  position: relative;
   align-items: flex-start;
   flex-direction: column;
   gap: 8px;
+  margin: 0 clamp(18px, 4vw, 46px) 22px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: clamp(22px, 4vw, 34px);
+  background:
+    url("./assets/tactical-banner.svg") center / cover,
+    linear-gradient(135deg, rgba(76, 201, 240, 0.14), transparent 34%),
+    linear-gradient(315deg, rgba(193, 18, 31, 0.16), transparent 38%),
+    var(--panel);
+  box-shadow: var(--shadow-soft);
+  isolation: isolate;
+}
+
+.page-header::before,
+.league-command-hero::before,
+.player-profile-hero::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.38;
+  background-image:
+    linear-gradient(rgba(76, 201, 240, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(76, 201, 240, 0.12) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: linear-gradient(90deg, #000, transparent 82%);
+  content: "";
+}
+
+.page-header::after,
+.league-command-hero::after,
+.player-profile-hero::after {
+  position: absolute;
+  right: clamp(18px, 4vw, 42px);
+  bottom: -48px;
+  z-index: -1;
+  width: 210px;
+  height: 210px;
+  border: 1px solid rgba(76, 201, 240, 0.22);
+  clip-path: polygon(50% 0, 94% 25%, 94% 75%, 50% 100%, 6% 75%, 6% 25%);
+  background: rgba(76, 201, 240, 0.04);
+  content: "";
 }
 
 .dashboard-header h1,
 .page-header h1 {
   margin: 5px 0 0;
   color: var(--text);
-  font-size: clamp(1.55rem, 3vw, 2.3rem);
+  font-size: clamp(1.65rem, 3.2vw, 2.7rem);
   line-height: 1.05;
+  letter-spacing: 0.02em;
 }
 
 .dashboard-header > p,
@@ -423,25 +525,34 @@
 }
 
 .league-command-hero {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
   gap: 22px;
   align-items: end;
   margin: 0 clamp(18px, 4vw, 46px) 18px;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  overflow: hidden;
+  border-radius: 20px;
   padding: clamp(24px, 4vw, 42px);
-  background: var(--panel);
+  background:
+    url("./assets/tactical-banner.svg") center / cover,
+    linear-gradient(135deg, rgba(76, 201, 240, 0.16), transparent 34%),
+    linear-gradient(315deg, rgba(240, 177, 62, 0.1), transparent 36%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent),
+    var(--panel);
   box-shadow: var(--shadow-soft);
   animation: dashboard-fade 240ms ease both;
 }
 
 .league-command-hero h1 {
-  max-width: 12ch;
+  max-width: 13ch;
   margin: 6px 0 10px;
   color: var(--text);
-  font-size: clamp(2.4rem, 7vw, 5.4rem);
+  font-size: clamp(2.7rem, 7.5vw, 6rem);
   line-height: 0.92;
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
 }
 
 .league-command-hero p:last-child {
@@ -461,7 +572,7 @@
 .quick-nav a {
   min-height: 44px;
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 12px;
   color: var(--text);
   background: var(--panel-strong);
@@ -1349,15 +1460,22 @@
 }
 
 .profile-hero-focus {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(140px, 0.42fr) minmax(280px, 0.78fr);
+  grid-template-columns: minmax(0, 1fr) minmax(118px, 0.28fr) minmax(240px, 0.52fr);
   align-items: end;
   margin: 0 clamp(18px, 4vw, 46px) 18px;
   border: 1px solid color-mix(in srgb, var(--division-accent) 38%, var(--border));
-  border-radius: 14px;
+  overflow: hidden;
+  border-radius: 20px;
   padding: clamp(22px, 4vw, 34px);
-  background: var(--panel);
+  background:
+    url("./assets/profile-banner.svg") center / cover,
+    linear-gradient(135deg, color-mix(in srgb, var(--division-accent) 18%, transparent), transparent 34%),
+    linear-gradient(315deg, rgba(76, 201, 240, 0.1), transparent 38%),
+    var(--panel);
   box-shadow: var(--shadow-soft);
+  isolation: isolate;
 }
 
 .profile-hero-main {
@@ -1368,9 +1486,15 @@
 .player-profile-hero h1 {
   margin: 0;
   color: var(--text);
-  font-size: clamp(2.8rem, 7vw, 6rem);
+  font-size: clamp(2.4rem, 5.8vw, 5.15rem);
   line-height: 0.95;
+  letter-spacing: 0.01em;
   overflow-wrap: anywhere;
+}
+
+.faction-profile-hero h1,
+.mission-profile-hero h1 {
+  font-size: clamp(2.2rem, 5vw, 4.55rem);
 }
 
 .profile-badges {
@@ -1385,7 +1509,7 @@
   min-height: 38px;
   align-items: center;
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: 14px;
   padding: 9px 13px;
   color: var(--text);
   background: var(--panel);
@@ -3188,6 +3312,140 @@
 
 .faction-matchup-table {
   margin: 0;
+}
+
+.faction-matchup-table a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.faction-matchup-table a:hover,
+.faction-matchup-table a:focus-visible {
+  color: var(--blue);
+}
+
+/* Version 1.1.1 visual remaster */
+.panel,
+.rules-toc,
+.rules-card,
+.featured-stream,
+.streams-empty,
+.dashboard-state {
+  border-radius: 16px;
+}
+
+.panel {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 42%),
+    var(--panel);
+  box-shadow: var(--shadow-panel);
+}
+
+.panel-heading {
+  background:
+    linear-gradient(90deg, rgba(76, 201, 240, 0.06), transparent 58%),
+    var(--panel-strong);
+}
+
+.panel-heading h2 {
+  letter-spacing: 0.02em;
+}
+
+.stat-card,
+.faction-card,
+.player-card,
+.mission-card,
+.army-list-card,
+.stream-card,
+.experience-card,
+.news-article,
+.commissioner-news-card,
+.intelligence-pulse-card,
+.dashboard-news-item,
+.faction-match-card,
+.faction-moment-card,
+.leader-row,
+.search-result {
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before,
+.faction-card::before,
+.player-card::before,
+.mission-card::before,
+.army-list-card::before,
+.stream-card::before,
+.experience-card::before,
+.news-article::before,
+.leader-row::before {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg, var(--division-accent), var(--blue));
+  opacity: 0.72;
+  content: "";
+}
+
+.stat-card:hover,
+.faction-card:hover,
+.player-card:hover,
+.mission-card:hover,
+.army-list-card:hover,
+.stream-card:hover,
+.experience-card:hover,
+.news-article:hover,
+.leader-row:hover,
+.search-result:hover,
+.search-result:focus-visible {
+  box-shadow: var(--shadow-glow);
+}
+
+.stat-card,
+.faction-card,
+.player-card,
+.mission-card,
+.stream-card,
+.army-list-card {
+  border-radius: 16px;
+}
+
+.table-row {
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.table-row:not(.table-head):nth-child(even) {
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.table-row:not(.table-head):hover {
+  border-color: rgba(76, 201, 240, 0.32);
+  background: rgba(76, 201, 240, 0.07);
+}
+
+.rank-safe,
+.promotion-zone {
+  box-shadow: inset 4px 0 0 var(--promotion);
+}
+
+.rank-relegation,
+.relegation-zone {
+  box-shadow: inset 4px 0 0 var(--relegation);
+}
+
+.rank-gold {
+  box-shadow: inset 4px 0 0 var(--gold);
+}
+
+.rank-silver {
+  box-shadow: inset 4px 0 0 var(--silver);
+}
+
+.rank-bronze {
+  box-shadow: inset 4px 0 0 var(--bronze);
 }
 
 @keyframes portal-spin {

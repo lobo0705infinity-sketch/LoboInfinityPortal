@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title id="title">Lobo mobile mark</title>
+  <path fill="#05070A" d="M64 4 116 34v60l-52 30-52-30V34L64 4Z"/>
+  <path fill="#C1121F" d="M64 12 108 38v51l-44 26-44-26V38l44-26Z"/>
+  <path fill="#101821" d="M64 20 99 41v43l-35 21-35-21V41l35-21Z"/>
+  <path fill="#EEF3F8" d="m33 48 26-12-8 22 13-8 13 8-8-22 26 12-10 33-21 20-21-20-10-33Z"/>
+  <path fill="#111820" d="m45 58 13 8-15 8 2-16Zm38 0-13 8 15 8-2-16ZM54 82h20l-10 13-10-13Z"/>
+  <path fill="#4CC9F0" d="M36 101h56v7H36z"/>
+</svg>
