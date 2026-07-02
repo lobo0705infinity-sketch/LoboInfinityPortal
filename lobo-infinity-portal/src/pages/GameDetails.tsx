@@ -97,20 +97,22 @@ function MatchReport({ game }: { game: RecentGame }) {
     <main className="portal-shell">
       <div className="match-report">
         <nav className="match-nav" aria-label="Match navigation">
-          <Link to="/">← Back to Dashboard</Link>
-          <Link to="/#recent-games">← Back to Recent Games</Link>
+          <Link to="/">Back to Dashboard</Link>
+          <Link to="/#recent-games">Back to Recent Games</Link>
         </nav>
 
         <section className="match-hero" aria-labelledby="match-result-title">
           <p className="match-kicker" id="match-result-title">
-            🏆 Match Result
+            Match Result
           </p>
 
           <div className="match-result">
             <div className="match-player winner">
               <span>Winner</span>
               <h1>{game.winner}</h1>
-              <p>{game.winnerFaction}</p>
+              <Link to={`/factions/${encodeURIComponent(game.winnerFaction)}`}>
+                {game.winnerFaction}
+              </Link>
             </div>
 
             <div className="match-defeated">Defeated</div>
@@ -118,14 +120,20 @@ function MatchReport({ game }: { game: RecentGame }) {
             <div className="match-player loser">
               <span>Loser</span>
               <h2>{game.loser}</h2>
-              <p>{game.loserFaction}</p>
+              <Link to={`/factions/${encodeURIComponent(game.loserFaction)}`}>
+                {game.loserFaction}
+              </Link>
             </div>
           </div>
 
           <dl className="match-meta-strip" aria-label="Match summary">
             <div>
               <dt>Mission</dt>
-              <dd>{game.mission}</dd>
+              <dd>
+                <Link to={`/missions/${encodeURIComponent(game.mission)}`}>
+                  {game.mission}
+                </Link>
+              </dd>
             </div>
             <div>
               <dt>Division</dt>
@@ -149,11 +157,34 @@ function MatchReport({ game }: { game: RecentGame }) {
           </div>
         </section>
 
+        <section className="battle-timeline" aria-labelledby="timeline-title">
+          <div className="panel-heading">
+            <p className="eyebrow">Timeline</p>
+            <h2 id="timeline-title">Battle Report Timeline</h2>
+          </div>
+          <ol>
+            <li>
+              <span>First Turn</span>
+              <strong>{game.firstTurn || 'Not recorded'}</strong>
+            </li>
+            <li>
+              <span>Mission Briefing</span>
+              <strong>{game.mission}</strong>
+            </li>
+            <li>
+              <span>Final Result</span>
+              <strong>
+                {game.winner} defeated {game.loser}
+              </strong>
+            </li>
+          </ol>
+        </section>
+
         <section className="best-moment-card" aria-labelledby="best-moment-title">
           <p className="eyebrow">Best Moment</p>
-          <h2 id="best-moment-title">Best Moment</h2>
+          <h2 id="best-moment-title">Best Moment Hero</h2>
           <blockquote>
-            “{game.bestMoment || 'No Best Moment was submitted for this match.'}”
+            "{game.bestMoment || 'No Best Moment was submitted for this match.'}"
           </blockquote>
         </section>
 
@@ -162,8 +193,24 @@ function MatchReport({ game }: { game: RecentGame }) {
           aria-labelledby="match-information-title"
         >
           <p className="eyebrow">Match Information</p>
-          <h2 id="match-information-title">Match Information</h2>
+          <h2 id="match-information-title">Mission Briefing</h2>
           <dl>
+            <div>
+              <dt>Winner</dt>
+              <dd>
+                <Link to={`/players/${encodeURIComponent(game.winner)}`}>
+                  {game.winner}
+                </Link>
+              </dd>
+            </div>
+            <div>
+              <dt>Loser</dt>
+              <dd>
+                <Link to={`/players/${encodeURIComponent(game.loser)}`}>
+                  {game.loser}
+                </Link>
+              </dd>
+            </div>
             <div>
               <dt>Mission</dt>
               <dd>{game.mission}</dd>
@@ -171,14 +218,6 @@ function MatchReport({ game }: { game: RecentGame }) {
             <div>
               <dt>Division</dt>
               <dd>{game.division}</dd>
-            </div>
-            <div>
-              <dt>Date</dt>
-              <dd>{game.date}</dd>
-            </div>
-            <div>
-              <dt>First Turn</dt>
-              <dd>{game.firstTurn}</dd>
             </div>
           </dl>
         </section>
@@ -196,7 +235,7 @@ function ScoreLane({ label, value }: { label: string; value: string }) {
     <div className="score-lane">
       <span>{label}</span>
       <strong>
-        <b>{winnerScore}</b>–{loserScore}
+        <b>{winnerScore}</b>-{loserScore}
       </strong>
     </div>
   )
@@ -207,8 +246,8 @@ function GameNotFound() {
     <main className="portal-shell">
       <div className="match-report">
         <nav className="match-nav" aria-label="Match navigation">
-          <Link to="/">← Back to Dashboard</Link>
-          <Link to="/#recent-games">← Back to Recent Games</Link>
+          <Link to="/">Back to Dashboard</Link>
+          <Link to="/#recent-games">Back to Recent Games</Link>
         </nav>
         <section className="dashboard-state" aria-label="Game not found">
           <p role="alert">Game not found.</p>

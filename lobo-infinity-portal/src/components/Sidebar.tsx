@@ -2,37 +2,62 @@ import { NavLink } from 'react-router-dom'
 
 const navigationItems = [
   {
-    icon: '▣',
+    icon: 'D',
     label: 'Dashboard',
     to: '/',
   },
   {
-    icon: '≡',
+    icon: 'N',
+    label: 'News',
+    to: '/news',
+  },
+  {
+    icon: 'T',
+    label: 'Timeline',
+    to: '/timeline',
+  },
+  {
+    icon: '!',
+    label: 'Alerts',
+    to: '/notifications',
+  },
+  {
+    icon: 'S',
     label: 'Standings',
     to: '/standings',
   },
   {
-    icon: '◎',
+    icon: 'P',
     label: 'Players',
     to: '/players',
   },
   {
-    icon: '⬟',
+    icon: 'F',
     label: 'Factions',
     to: '/factions',
   },
   {
-    icon: '✦',
+    icon: 'M',
     label: 'Missions',
     to: '/missions',
   },
   {
-    icon: '⌁',
+    icon: 'A',
     label: 'Analytics',
     to: '/analytics',
   },
   {
-    icon: '◇',
+    icon: 'H',
+    label: 'Hall of Fame',
+    to: '/hall-of-fame',
+  },
+  {
+    icon: 'V',
+    label: 'Compare',
+    to: '/compare',
+  },
+  {
+    icon: 'R',
     label: 'Rules',
     to: '/rules',
   },

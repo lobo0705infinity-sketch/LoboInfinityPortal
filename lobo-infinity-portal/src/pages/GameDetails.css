@@ -39,6 +39,7 @@
 
 .match-hero,
 .match-scoreboard,
+.battle-timeline,
 .best-moment-card,
 .match-info-card {
   border: 1px solid var(--border);
@@ -102,12 +103,22 @@
   font-size: clamp(2rem, 5vw, 3.7rem);
 }
 
-.match-player p {
+.match-player a {
   margin: 0;
   color: var(--text-soft);
   font-size: clamp(1rem, 2vw, 1.25rem);
   font-weight: 900;
+  text-decoration: none;
   overflow-wrap: anywhere;
+}
+
+.match-player a:hover,
+.match-player a:focus-visible,
+.match-meta-strip a:hover,
+.match-meta-strip a:focus-visible,
+.match-info-card a:hover,
+.match-info-card a:focus-visible {
+  color: var(--blue);
 }
 
 .match-player.winner {
@@ -158,6 +169,12 @@
   overflow-wrap: anywhere;
 }
 
+.match-meta-strip a,
+.match-info-card a {
+  color: var(--text);
+  text-decoration: none;
+}
+
 .match-scoreboard {
   display: grid;
   justify-items: center;
@@ -205,6 +222,41 @@
   display: grid;
   gap: 10px;
   padding: 22px;
+}
+
+.battle-timeline {
+  overflow: hidden;
+  animation-delay: 80ms;
+}
+
+.battle-timeline ol {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 18px;
+  list-style: none;
+}
+
+.battle-timeline li {
+  display: grid;
+  gap: 6px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 15px;
+  background: var(--panel-muted);
+}
+
+.battle-timeline span {
+  color: var(--blue);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.battle-timeline strong {
+  color: var(--text);
+  overflow-wrap: anywhere;
 }
 
 .best-moment-card {

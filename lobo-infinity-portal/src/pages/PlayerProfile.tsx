@@ -1,8 +1,13 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
+import BarChart from '../components/BarChart'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Loading from '../components/Loading'
-import { apiClient, type PlayerProfileData } from '../services/api'
+import {
+  apiClient,
+  type PlayerProfileData,
+  type RecentGame,
+} from '../services/api'
 import {
   formatDivisionLabel,
   getDivisionStyle,
@@ -29,6 +34,7 @@ function PlayerProfile() {
   const [profileState, setProfileState] = useState<ProfileState>({
     status: 'idle',
   })
+  const [recentGames, setRecentGames] = useState<RecentGame[]>([])
 
   useEffect(() => {
     if (!decodedPlayerName) {
@@ -37,16 +43,27 @@ function PlayerProfile() {
 
     const controller = new AbortController()
 
-    apiClient
-      .getPlayer(decodedPlayerName, {
+    Promise.all([
+      apiClient.getPlayer(decodedPlayerName, {
         signal: controller.signal,
-      })
-      .then((profile) => {
+      }),
+      apiClient.getRecentGames({
+        signal: controller.signal,
+      }),
+    ])
+      .then(([profile, games]) => {
         setProfileState({
           player: profile,
           playerName: decodedPlayerName,
           status: 'success',
         })
+        setRecentGames(
+          games.filter(
+            (game) =>
+              game.winner === decodedPlayerName ||
+              game.loser === decodedPlayerName,
+          ),
+        )
       })
       .catch((profileError: unknown) => {
         if (controller.signal.aborted) {
@@ -196,6 +213,61 @@ function PlayerProfile() {
             value={profileState.player.secondTurnGames}
           />
         </ProfileCard>
+      </section>
+
+      <section className="command-center-grid" aria-label="Player charts">
+        <section className="panel command-card">
+          <div className="panel-heading">
+            <p className="eyebrow">Graphs</p>
+            <h2>Season Score Profile</h2>
+          </div>
+          <div className="intelligence-card-body">
+            <BarChart
+              points={[
+                {
+                  label: 'TP',
+                  value: profileState.player.tp,
+                },
+                {
+                  label: 'OP',
+                  value: profileState.player.op,
+                },
+                {
+                  label: 'VP',
+                  value: profileState.player.vp,
+                },
+                {
+                  label: 'Wins',
+                  value: profileState.player.wins,
+                },
+              ]}
+              title="Player score profile"
+            />
+          </div>
+        </section>
+
+        {recentGames.length > 0 ? (
+          <section className="panel command-card">
+            <div className="panel-heading">
+              <p className="eyebrow">Recent Form</p>
+              <h2>Recent Matches</h2>
+            </div>
+            <div className="faction-match-list">
+              {recentGames.slice(0, 5).map((game) => (
+                <Link className="faction-match-card" key={game.id} to={`/games/${game.id}`}>
+                  <div>
+                    <span>{game.date}</span>
+                    <h3>
+                      {game.winner} defeated {game.loser}
+                    </h3>
+                    <p>{game.mission}</p>
+                  </div>
+                  <strong>{game.vp}</strong>
+                </Link>
+              ))}
+            </div>
+          </section>
+        ) : null}
       </section>
 
       <EntityPreviousNext current={profileState.player.name} type="player" />

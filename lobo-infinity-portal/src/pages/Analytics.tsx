@@ -236,7 +236,7 @@ function MissionMetaCard({ missions }: { missions: IntelligenceMissionTrend[] })
         {missions.map((mission) => (
           <StoryLink
             key={mission.mission}
-            meta={`${mission.games} games · ${formatNumber(
+            meta={`${mission.games} games / ${formatNumber(
               mission.firstTurnWinRate,
             )}% first-turn wins`}
             title={mission.mission}
@@ -288,7 +288,7 @@ function BattleCard({
         {items.map((item) => (
           <StoryLink
             key={`${item.division}-${item.rank}-${item.player}`}
-            meta={`${item.division} · Rank #${item.rank}`}
+            meta={`${item.division} / Rank #${item.rank}`}
             title={item.player}
             to={playerPath(item.player)}
           >
@@ -317,7 +317,7 @@ function GameListCard({
         {games.map((game) => (
           <StoryLink
             key={`${title}-${game.id}`}
-            meta={`${game.value}${metricSuffix} · ${game.date}`}
+            meta={`${game.value}${metricSuffix} / ${game.date}`}
             title={`${game.winner} vs ${game.loser}`}
             to={`/games/${game.id}`}
           >

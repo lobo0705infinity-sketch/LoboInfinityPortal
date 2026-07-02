@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import BarChart from '../components/BarChart'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Loading from '../components/Loading'
 import {
@@ -154,6 +155,54 @@ function MissionProfile() {
         </ProfileCard>
       </section>
 
+      <section className="command-center-grid" aria-label="Mission charts">
+        <section className="panel command-card">
+          <div className="panel-heading">
+            <p className="eyebrow">Mission Charts</p>
+            <h2>Difficulty and Tempo</h2>
+          </div>
+          <div className="intelligence-card-body">
+            <BarChart
+              points={[
+                {
+                  label: 'Average TP',
+                  value: profileState.mission.averageTP,
+                },
+                {
+                  label: 'Average OP',
+                  value: profileState.mission.averageOP,
+                },
+                {
+                  label: 'Average VP',
+                  value: profileState.mission.averageVP,
+                },
+                {
+                  label: 'First Turn Win %',
+                  value: profileState.mission.firstTurnWinRate,
+                },
+              ]}
+              title="Mission difficulty and tempo"
+            />
+          </div>
+        </section>
+
+        <section className="panel command-card">
+          <div className="panel-heading">
+            <p className="eyebrow">Pick Rate</p>
+            <h2>Division Breakdown</h2>
+          </div>
+          <div className="intelligence-card-body">
+            <BarChart
+              points={profileState.mission.divisionBreakdown.map((division) => ({
+                label: division.division,
+                value: division.games,
+              }))}
+              title="Mission division breakdown"
+            />
+          </div>
+        </section>
+      </section>
+
       <section className="faction-profile-grid" aria-label="Mission reports">
         <RecentGamesPanel games={profileState.mission.recentGames} />
         <BestMomentsPanel moments={profileState.mission.bestMoments} />
@@ -289,9 +338,9 @@ function BestMomentsPanel({ moments }: { moments: MissionBestMoment[] }) {
               to={`/games/${moment.gameId}`}
             >
               <span>
-                {moment.date} · {moment.mission}
+                {moment.date} / {moment.mission}
               </span>
-              <blockquote>“{moment.moment}”</blockquote>
+              <blockquote>"{moment.moment}"</blockquote>
             </Link>
           ))}
         </div>

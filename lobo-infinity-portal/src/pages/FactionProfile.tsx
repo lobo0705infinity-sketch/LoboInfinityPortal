@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import BarChart from '../components/BarChart'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Loading from '../components/Loading'
 import {
@@ -143,6 +144,54 @@ function FactionProfile() {
           <Metric label="Losses" value={profileState.faction.losses} />
           <Metric label="Win Rate" value={formatPercent(profileState.faction.winRate)} />
         </ProfileCard>
+      </section>
+
+      <section className="command-center-grid" aria-label="Faction charts">
+        <section className="panel command-card">
+          <div className="panel-heading">
+            <p className="eyebrow">Faction Charts</p>
+            <h2>Popularity and Win Profile</h2>
+          </div>
+          <div className="intelligence-card-body">
+            <BarChart
+              points={[
+                {
+                  label: 'Games',
+                  value: profileState.faction.games,
+                },
+                {
+                  label: 'Wins',
+                  value: profileState.faction.wins,
+                },
+                {
+                  label: 'Losses',
+                  value: profileState.faction.losses,
+                },
+                {
+                  label: 'Win Rate',
+                  value: profileState.faction.winRate,
+                },
+              ]}
+              title="Faction popularity and win profile"
+            />
+          </div>
+        </section>
+
+        <section className="panel command-card">
+          <div className="panel-heading">
+            <p className="eyebrow">Mission Breakdown</p>
+            <h2>Division Activity</h2>
+          </div>
+          <div className="intelligence-card-body">
+            <BarChart
+              points={profileState.faction.divisionBreakdown.map((division) => ({
+                label: division.division,
+                value: division.games,
+              }))}
+              title="Faction division breakdown"
+            />
+          </div>
+        </section>
       </section>
 
       <section className="faction-profile-grid" aria-label="Faction reports">

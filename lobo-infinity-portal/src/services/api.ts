@@ -9,7 +9,7 @@ import type {
 } from '../types/dashboard'
 
 const API_URL =
-  'https://script.google.com/macros/s/AKfycbwnPTI9IoVdIpM2jT532stTOarKnpmR6tfpkQcqrT6yvMYCLp6DLVTB5gidH3BkXoFzkA/exec'
+  'https://script.google.com/macros/s/AKfycbzvmgIUvjO1LIA2qVvnxQr6R90JL3p4zaz6_vSaNWhIWOyu_VufOsb7PCCZeekOdxmNbg/exec'
 
 type ApiOptions = {
   signal?: AbortSignal
@@ -223,11 +223,75 @@ export type LeagueIntelligenceData = {
 }
 
 export type CommissionerNewsItem = {
-  id: number
-  title: string
   body: string
+  id: number
   date: string
   link: string
+  relatedFaction: string
+  relatedMission: string
+  relatedPlayer: string
+  title: string
+}
+
+export type LeagueNotification = {
+  body: string
+  id: string
+  link: string
+  priority: string
+  timestamp: string
+  title: string
+  type: string
+  unread: boolean
+}
+
+export type LeagueTimelineItem = {
+  body: string
+  id: string
+  link: string
+  relatedFaction: string
+  relatedMission: string
+  relatedPlayer: string
+  timestamp: string
+  title: string
+  type: string
+}
+
+export type HallOfFameLeader = {
+  division: string
+  player: string
+  rank: number
+  games: number
+  wins: number
+  losses: number
+  tp: number
+  op: number
+  vp: number
+}
+
+export type HallOfFameData = {
+  leaders: {
+    games: HallOfFameLeader[]
+    objectivePoints: HallOfFameLeader[]
+    tournamentPoints: HallOfFameLeader[]
+    victoryPoints: HallOfFameLeader[]
+    wins: HallOfFameLeader[]
+  }
+  records: Record<string, LeagueRecordValue>
+}
+
+export type PlayerComparisonPlayer = PlayerProfileData & {
+  favoriteFaction: string
+  favoriteMission: string
+  bestFaction: string
+}
+
+export type PlayerComparisonData = {
+  headToHead: {
+    games: number
+    leftWins: number
+    rightWins: number
+  }
+  players: PlayerComparisonPlayer[]
 }
 
 export type LeaderData = Pick<DashboardSummary, 'leagueLeader'>
@@ -258,6 +322,15 @@ export type ApiClient = {
   ) => Promise<MissionProfileData>
   getAnalytics: (options?: ApiOptions) => Promise<LeagueIntelligenceData>
   getNews: (options?: ApiOptions) => Promise<CommissionerNewsItem[]>
+  getNotifications: (options?: ApiOptions) => Promise<LeagueNotification[]>
+  getTimeline: (options?: ApiOptions) => Promise<LeagueTimelineItem[]>
+  getRecords: (options?: ApiOptions) => Promise<Record<string, LeagueRecordValue>>
+  getHallOfFame: (options?: ApiOptions) => Promise<HallOfFameData>
+  getPlayerComparison: (
+    left: string,
+    right: string,
+    options?: ApiOptions,
+  ) => Promise<PlayerComparisonData>
 }
 
 const divisionKeys: DivisionKey[] = ['main', 'pga', 'pgb']
@@ -380,6 +453,47 @@ export async function getNews(
   return normalizeNewsPayload(payload)
 }
 
+export async function getNotifications(
+  options: ApiOptions = {},
+): Promise<LeagueNotification[]> {
+  const payload = await request('notifications', options)
+  return normalizeNotificationsPayload(payload)
+}
+
+export async function getTimeline(
+  options: ApiOptions = {},
+): Promise<LeagueTimelineItem[]> {
+  const payload = await request('timeline', options)
+  return normalizeTimelinePayload(payload)
+}
+
+export async function getRecords(
+  options: ApiOptions = {},
+): Promise<Record<string, LeagueRecordValue>> {
+  const payload = await request('records', options)
+  return normalizeRecordsPayload(payload)
+}
+
+export async function getHallOfFame(
+  options: ApiOptions = {},
+): Promise<HallOfFameData> {
+  const payload = await request('hallOfFame', options)
+  return normalizeHallOfFamePayload(payload)
+}
+
+export async function getPlayerComparison(
+  left: string,
+  right: string,
+  options: ApiOptions = {},
+): Promise<PlayerComparisonData> {
+  const payload = await request('comparison', options, {
+    left,
+    right,
+  })
+
+  return normalizePlayerComparisonPayload(payload)
+}
+
 export const apiClient: ApiClient = {
   getDashboard,
   getLeader,
@@ -394,6 +508,11 @@ export const apiClient: ApiClient = {
   getMission,
   getAnalytics,
   getNews,
+  getNotifications,
+  getTimeline,
+  getRecords,
+  getHallOfFame,
+  getPlayerComparison,
 }
 
 async function request(
@@ -813,11 +932,166 @@ function normalizeNewsItem(item: unknown): CommissionerNewsItem {
   const record = asRecord(item, 'News item')
 
   return {
-    id: getRequiredNumber(record, 'id'),
-    title: getRequiredString(record, 'title'),
     body: getRequiredString(record, 'body'),
+    id: getRequiredNumber(record, 'id'),
     date: getString(record, 'date'),
     link: getString(record, 'link'),
+    relatedFaction: getString(record, 'relatedFaction'),
+    relatedMission: getString(record, 'relatedMission'),
+    relatedPlayer: getString(record, 'relatedPlayer'),
+    title: getRequiredString(record, 'title'),
+  }
+}
+
+function normalizeNotificationsPayload(payload: unknown): LeagueNotification[] {
+  const record = asRecord(payload, 'Notifications response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Notifications failed.')
+  }
+
+  return getRequiredArray(record, 'notifications').map(normalizeNotification)
+}
+
+function normalizeNotification(item: unknown): LeagueNotification {
+  const record = asRecord(item, 'Notification')
+
+  return {
+    body: getRequiredString(record, 'body'),
+    id: getRequiredString(record, 'id'),
+    link: getString(record, 'link'),
+    priority: getString(record, 'priority') || 'normal',
+    timestamp: getString(record, 'timestamp'),
+    title: getRequiredString(record, 'title'),
+    type: getRequiredString(record, 'type'),
+    unread: getRequiredBoolean(record, 'unread'),
+  }
+}
+
+function normalizeTimelinePayload(payload: unknown): LeagueTimelineItem[] {
+  const record = asRecord(payload, 'Timeline response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Timeline failed.')
+  }
+
+  return getRequiredArray(record, 'timeline').map(normalizeTimelineItem)
+}
+
+function normalizeTimelineItem(item: unknown): LeagueTimelineItem {
+  const record = asRecord(item, 'Timeline item')
+
+  return {
+    body: getRequiredString(record, 'body'),
+    id: getRequiredString(record, 'id'),
+    link: getString(record, 'link'),
+    relatedFaction: getString(record, 'relatedFaction'),
+    relatedMission: getString(record, 'relatedMission'),
+    relatedPlayer: getString(record, 'relatedPlayer'),
+    timestamp: getString(record, 'timestamp'),
+    title: getRequiredString(record, 'title'),
+    type: getRequiredString(record, 'type'),
+  }
+}
+
+function normalizeRecordsPayload(
+  payload: unknown,
+): Record<string, LeagueRecordValue> {
+  const record = asRecord(payload, 'Records response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Records failed.')
+  }
+
+  return normalizeLeagueRecords(getRequiredRecord(record, 'records'))
+}
+
+function normalizeHallOfFamePayload(payload: unknown): HallOfFameData {
+  const record = asRecord(payload, 'Hall of Fame response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Hall of Fame failed.')
+  }
+
+  const leaders = getRequiredRecord(record, 'leaders')
+
+  return {
+    leaders: {
+      games: getRequiredArray(leaders, 'games').map(normalizeHallOfFameLeader),
+      objectivePoints: getRequiredArray(leaders, 'objectivePoints').map(
+        normalizeHallOfFameLeader,
+      ),
+      tournamentPoints: getRequiredArray(leaders, 'tournamentPoints').map(
+        normalizeHallOfFameLeader,
+      ),
+      victoryPoints: getRequiredArray(leaders, 'victoryPoints').map(
+        normalizeHallOfFameLeader,
+      ),
+      wins: getRequiredArray(leaders, 'wins').map(normalizeHallOfFameLeader),
+    },
+    records: normalizeLeagueRecords(getRequiredRecord(record, 'records')),
+  }
+}
+
+function normalizeHallOfFameLeader(item: unknown): HallOfFameLeader {
+  const record = asRecord(item, 'Hall of Fame leader')
+
+  return {
+    division: getRequiredString(record, 'division'),
+    player: getRequiredString(record, 'player'),
+    rank: getRequiredNumber(record, 'rank'),
+    games: getRequiredNumber(record, 'games'),
+    wins: getRequiredNumber(record, 'wins'),
+    losses: getRequiredNumber(record, 'losses'),
+    tp: getRequiredNumber(record, 'tp'),
+    op: getRequiredNumber(record, 'op'),
+    vp: getRequiredNumber(record, 'vp'),
+  }
+}
+
+function normalizePlayerComparisonPayload(
+  payload: unknown,
+): PlayerComparisonData {
+  const record = asRecord(payload, 'Player comparison response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Comparison failed.')
+  }
+
+  const headToHead = getRequiredRecord(record, 'headToHead')
+
+  return {
+    headToHead: {
+      games: getRequiredNumber(headToHead, 'games'),
+      leftWins: getRequiredNumber(headToHead, 'leftWins'),
+      rightWins: getRequiredNumber(headToHead, 'rightWins'),
+    },
+    players: getRequiredArray(record, 'players').map(normalizeComparisonPlayer),
+  }
+}
+
+function normalizeComparisonPlayer(item: unknown): PlayerComparisonPlayer {
+  const record = asRecord(item, 'Comparison player')
+
+  return {
+    name: getRequiredString(record, 'name'),
+    division: getString(record, 'division'),
+    rank: getRequiredNumber(record, 'rank'),
+    games: getRequiredNumber(record, 'games'),
+    wins: getRequiredNumber(record, 'wins'),
+    losses: getRequiredNumber(record, 'losses'),
+    tp: getRequiredNumber(record, 'tp'),
+    op: getRequiredNumber(record, 'op'),
+    vp: getRequiredNumber(record, 'vp'),
+    favoriteFaction: getString(record, 'favoriteFaction'),
+    favoriteMission: getString(record, 'favoriteMission'),
+    firstTurnGames: 0,
+    secondTurnGames: 0,
+    firstTurnWinRate: 0,
+    secondTurnWinRate: 0,
+    bestFaction: getString(record, 'bestFaction'),
+    rival: '',
+    nemesis: '',
   }
 }
 

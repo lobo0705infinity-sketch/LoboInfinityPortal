@@ -1,0 +1,111 @@
+import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { apiClient, type LeagueNotification } from '../services/api'
+
+type NotificationState =
+  | {
+      status: 'idle'
+    }
+  | {
+      notifications: LeagueNotification[]
+      status: 'success'
+    }
+  | {
+      status: 'error'
+    }
+
+function NotificationCenter() {
+  const [isOpen, setIsOpen] = useState(false)
+  const [state, setState] = useState<NotificationState>({
+    status: 'idle',
+  })
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    apiClient
+      .getNotifications({
+        signal: controller.signal,
+      })
+      .then((notifications) => {
+        setState({
+          notifications,
+          status: 'success',
+        })
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) {
+          setState({
+            status: 'error',
+          })
+        }
+      })
+
+    return () => {
+      controller.abort()
+    }
+  }, [])
+
+  const unreadCount = useMemo(() => {
+    if (state.status !== 'success') {
+      return 0
+    }
+
+    return state.notifications.filter((notification) => notification.unread)
+      .length
+  }, [state])
+
+  return (
+    <div className="notification-center">
+      <button
+        aria-expanded={isOpen}
+        aria-label={`${unreadCount} live notifications`}
+        className="notification-trigger"
+        onClick={() => setIsOpen((open) => !open)}
+        type="button"
+      >
+        <span>Alerts</span>
+        {unreadCount > 0 ? <b>{unreadCount}</b> : null}
+      </button>
+
+      {isOpen ? (
+        <div className="notification-menu" role="dialog" aria-label="Notifications">
+          <div className="notification-menu-heading">
+            <strong>Notification Center</strong>
+            <Link onClick={() => setIsOpen(false)} to="/notifications">
+              View all
+            </Link>
+          </div>
+
+          {state.status === 'idle' ? (
+            <p>Loading live notifications...</p>
+          ) : state.status === 'error' ? (
+            <p>Notifications are unavailable.</p>
+          ) : (
+            <div className="notification-list">
+              {state.notifications.slice(0, 6).map((notification) => (
+                <Link
+                  className={
+                    notification.priority === 'high'
+                      ? 'notification-item priority'
+                      : 'notification-item'
+                  }
+                  key={notification.id}
+                  onClick={() => setIsOpen(false)}
+                  to={notification.link || '/notifications'}
+                >
+                  {notification.unread ? <span aria-hidden="true" /> : null}
+                  <small>{notification.type}</small>
+                  <strong>{notification.title}</strong>
+                  <p>{notification.body}</p>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
+export default NotificationCenter

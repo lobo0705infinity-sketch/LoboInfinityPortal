@@ -324,12 +324,12 @@ function addFactionMomentumGame(
 function getFactionTrend(wins, losses) {
 
   if (wins >= losses + 2)
-    return "▲ Rising";
+    return "Rising";
 
   if (losses >= wins + 2)
-    return "▼ Falling";
+    return "Falling";
 
-  return "■ Stable";
+  return "Stable";
 
 }
 

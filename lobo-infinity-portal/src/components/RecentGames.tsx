@@ -85,8 +85,7 @@ function RecentGames({
               <div>
                 <span className="eyebrow">{formatRelativeDate(game.date)}</span>
                 <h3>
-                  <span aria-hidden="true">🏆</span> {game.winner} defeated{' '}
-                  {game.loser}
+                  {game.winner} defeated {game.loser}
                 </h3>
               </div>
 

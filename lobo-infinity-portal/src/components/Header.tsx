@@ -1,4 +1,6 @@
 import GlobalSearch from './GlobalSearch'
+import NotificationCenter from './NotificationCenter'
+import QuickJump from './QuickJump'
 
 function Header() {
   return (
@@ -9,6 +11,8 @@ function Header() {
 
       <div className="header-actions">
         <GlobalSearch />
+        <QuickJump />
+        <NotificationCenter />
         <div className="header-status" aria-label="Portal status">
           <span className="status-light" />
           <span>Live</span>

@@ -1,14 +1,20 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import BarChart from '../components/BarChart'
 import Loading from '../components/Loading'
 import RecentGames from '../components/RecentGames'
+import Skeleton from '../components/Skeleton'
 import StatCard from '../components/StatCard'
 import useDashboard from '../hooks/useDashboard'
 import {
   apiClient,
   type CommissionerNewsItem,
+  type HallOfFameData,
+  type IntelligenceGame,
   type LeagueIntelligenceData,
+  type LeagueRecordValue,
   type RecentGame,
+  type StandingsBattle,
 } from '../services/api'
 import type { LeagueOverview } from '../types/dashboard'
 import {
@@ -17,23 +23,24 @@ import {
 } from '../utils/divisions'
 import '../App.css'
 
-type DashboardExperienceState =
+type CommandCenterState =
   | {
       status: 'idle'
     }
   | {
       games: RecentGame[]
+      hallOfFame: HallOfFameData | null
       intelligence: LeagueIntelligenceData | null
       news: CommissionerNewsItem[]
+      records: Record<string, LeagueRecordValue>
       status: 'success'
     }
 
 function Dashboard() {
   const { data, error, isLoading } = useDashboard()
-  const [experienceState, setExperienceState] =
-    useState<DashboardExperienceState>({
-      status: 'idle',
-    })
+  const [commandState, setCommandState] = useState<CommandCenterState>({
+    status: 'idle',
+  })
   const lastUpdated = new Date().toLocaleTimeString([], {
     hour: 'numeric',
     minute: '2-digit',
@@ -42,31 +49,41 @@ function Dashboard() {
   useEffect(() => {
     const controller = new AbortController()
 
-    async function loadExperience() {
-      const [gamesResult, newsResult, intelligenceResult] =
+    async function loadCommandCenter() {
+      const [
+        gamesResult,
+        newsResult,
+        intelligenceResult,
+        recordsResult,
+        hallOfFameResult,
+      ] =
         await Promise.allSettled([
           apiClient.getRecentGames({ signal: controller.signal }),
           apiClient.getNews({ signal: controller.signal }),
           apiClient.getAnalytics({ signal: controller.signal }),
+          apiClient.getRecords({ signal: controller.signal }),
+          apiClient.getHallOfFame({ signal: controller.signal }),
         ])
 
       if (controller.signal.aborted) {
         return
       }
 
-      setExperienceState({
-        games:
-          gamesResult.status === 'fulfilled' ? gamesResult.value : [],
+      setCommandState({
+        games: gamesResult.status === 'fulfilled' ? gamesResult.value : [],
+        hallOfFame:
+          hallOfFameResult.status === 'fulfilled' ? hallOfFameResult.value : null,
         intelligence:
           intelligenceResult.status === 'fulfilled'
             ? intelligenceResult.value
             : null,
         news: newsResult.status === 'fulfilled' ? newsResult.value : [],
+        records: recordsResult.status === 'fulfilled' ? recordsResult.value : {},
         status: 'success',
       })
     }
 
-    void loadExperience()
+    void loadCommandCenter()
 
     return () => {
       controller.abort()
@@ -77,9 +94,12 @@ function Dashboard() {
     return (
       <main className="portal-shell">
         <DashboardHeader lastUpdated={lastUpdated} />
-        <section className="dashboard-state" aria-label="Dashboard loading">
-          <Loading />
-        </section>
+        <div className="portal-grid">
+          <Skeleton label="Dashboard loading" rows={8} />
+          <section className="dashboard-state" aria-label="Dashboard loading">
+            <Loading />
+          </section>
+        </div>
       </main>
     )
   }
@@ -95,57 +115,121 @@ function Dashboard() {
     )
   }
 
-  const featuredGame =
-    experienceState.status === 'success' ? experienceState.games[0] : undefined
-  const news = experienceState.status === 'success' ? experienceState.news : []
+  const games = commandState.status === 'success' ? commandState.games : []
+  const news = commandState.status === 'success' ? commandState.news : []
+  const records = commandState.status === 'success' ? commandState.records : {}
+  const hallOfFame =
+    commandState.status === 'success' ? commandState.hallOfFame : null
   const intelligence =
-    experienceState.status === 'success' ? experienceState.intelligence : null
+    commandState.status === 'success' ? commandState.intelligence : null
+  const featuredGame = games[0]
+  const hottestPlayer = intelligence?.winStreaks[0]
+  const strongestFaction =
+    intelligence?.records.bestFirstTurnFaction &&
+    !('winner' in intelligence.records.bestFirstTurnFaction)
+      ? intelligence.records.bestFirstTurnFaction.faction ||
+        intelligence.records.bestFirstTurnFaction.name ||
+        data.summary.topFaction
+      : data.summary.topFaction
+  const mostPlayedMission =
+    intelligence?.records.mostActiveMission &&
+    !('winner' in intelligence.records.mostActiveMission)
+      ? intelligence.records.mostActiveMission.name || ''
+      : ''
 
   return (
     <main className="portal-shell">
       <DashboardHeader lastUpdated={lastUpdated} />
 
-      {featuredGame || news.length > 0 || intelligence ? (
-        <section
-          className="dashboard-experience-grid"
-          aria-label="Portal experience"
-        >
-          {featuredGame ? <FeaturedMatchHero game={featuredGame} /> : null}
-          <div className="dashboard-experience-side">
-            <CommissionerNews news={news} />
-            <IntelligencePulse intelligence={intelligence} />
-          </div>
-        </section>
-      ) : null}
+      <section className="league-command-hero" aria-label="League command center">
+        <div>
+          <p className="eyebrow">League Command Center</p>
+          <h1>Lobo Infinity Portal 2.0</h1>
+          <p>
+            Live standings, battle reports, records, meta pressure, and league
+            movement from Google Sheets.
+          </p>
+        </div>
+        <QuickNavigation />
+      </section>
 
       <section className="league-stats" aria-label="Dashboard summary">
         <StatCard
-          icon="C"
-          label="League Leader"
-          subtitle="Current Leader"
+          icon="L"
+          label="Current Leader"
+          subtitle="Main Man leader"
           value={data.summary.leagueLeader}
         />
         <StatCard
-          icon="G"
-          label="Games Played"
-          subtitle="Main Man Games"
-          value={data.summary.gamesPlayed}
-        />
-        <StatCard
-          icon="P"
-          label="Active Players"
-          subtitle="Main Man Reporting"
-          value={data.summary.activePlayers}
+          icon="H"
+          label="Hottest Player"
+          subtitle={hottestPlayer ? `${hottestPlayer.games} game streak` : 'Live streaks'}
+          value={hottestPlayer?.player ?? data.summary.leagueLeader}
         />
         <StatCard
           icon="F"
-          label="Top Faction"
-          subtitle="Current Meta Leader"
-          value={data.summary.topFaction}
+          label="Strongest Faction"
+          subtitle="Live meta signal"
+          value={strongestFaction}
+        />
+        <StatCard
+          icon="M"
+          label="Most Played Mission"
+          subtitle="League activity"
+          value={mostPlayedMission || data.summary.topFaction}
         />
       </section>
 
       <LeagueOverviewStrip overview={data.leagueOverview} />
+
+      <section className="command-center-grid" aria-label="Command charts">
+        <CommandPanel eyebrow="Division Activity" title="Games by Division">
+          <BarChart
+            points={data.leagueOverview.divisions.map((division) => ({
+              label: getDivisionIdentity(division.division).shortLabel,
+              meta: `${division.players} players`,
+              to: '/standings',
+              value: division.gamesPlayed,
+            }))}
+            title="Games by Division"
+          />
+        </CommandPanel>
+        <CommandPanel eyebrow="Games per Week" title="Recent Game Tempo">
+          <BarChart points={getGamesPerWeek(games)} title="Games per week" />
+        </CommandPanel>
+        <CommandPanel eyebrow="Quick Scan" title="League Headlines">
+          <HeadlineStack
+            intelligence={intelligence}
+            news={news}
+            strongestFaction={strongestFaction}
+          />
+        </CommandPanel>
+      </section>
+
+      <DashboardHighlights
+        games={games}
+        hallOfFame={hallOfFame}
+        intelligence={intelligence}
+        news={news}
+        overview={data.leagueOverview}
+        records={records}
+      />
+
+      <section className="dashboard-experience-grid" aria-label="League reports">
+        {featuredGame ? <FeaturedMatchHero game={featuredGame} /> : null}
+        <div className="dashboard-experience-side">
+          <WatchCard
+            eyebrow="Promotion Watch"
+            items={intelligence?.promotionBattle ?? []}
+            title="Promotion Watch"
+          />
+          <WatchCard
+            eyebrow="Relegation Watch"
+            items={intelligence?.relegationBattle ?? []}
+            title="Relegation Watch"
+          />
+        </div>
+      </section>
 
       <section className="dashboard-grid">
         <section
@@ -183,7 +267,7 @@ function Dashboard() {
                 role="row"
                 key={standing.rank}
               >
-                <span role="cell">{formatRank(standing.rank)}</span>
+                <span role="cell">{standing.rank}</span>
                 <strong role="cell">
                   <Link
                     className="table-player-link"
@@ -204,48 +288,14 @@ function Dashboard() {
         </section>
 
         <div className="dashboard-side-column">
-          <aside className="panel summary-panel" aria-labelledby="summary-title">
-            <div className="panel-heading">
-              <p className="eyebrow">League Summary</p>
-              <h2 id="summary-title">Live Snapshot</h2>
-            </div>
-
-            <dl className="summary-list">
-              <div>
-                <dt>Leader</dt>
-                <dd>
-                  <Link
-                    className="summary-player-link"
-                    to={`/players/${encodeURIComponent(
-                      data.summary.leagueLeader,
-                    )}`}
-                  >
-                    {data.summary.leagueLeader}
-                  </Link>
-                </dd>
-              </div>
-              <div>
-                <dt>Top Faction</dt>
-                <dd>{data.summary.topFaction}</dd>
-              </div>
-              <div>
-                <dt>Main Man Games</dt>
-                <dd>{data.summary.gamesPlayed}</dd>
-              </div>
-              <div>
-                <dt>Main Man Reporting</dt>
-                <dd>{data.summary.activePlayers}</dd>
-              </div>
-            </dl>
-          </aside>
-
+          <RecordPulse
+            biggestBlowout={intelligence?.biggestVictories[0]}
+            biggestUpset={intelligence?.recentUpsets[0]}
+            closestMatch={intelligence?.closestGames[0]}
+          />
           <RecentGames
-            games={
-              experienceState.status === 'success'
-                ? experienceState.games
-                : undefined
-            }
-            isLoading={experienceState.status !== 'success'}
+            games={commandState.status === 'success' ? games : undefined}
+            isLoading={commandState.status !== 'success'}
           />
         </div>
       </section>
@@ -296,118 +346,389 @@ function FeaturedMatchHero({ game }: { game: RecentGame }) {
   )
 }
 
-function CommissionerNews({ news }: { news: CommissionerNewsItem[] }) {
-  if (news.length === 0) {
+function WatchCard({
+  eyebrow,
+  items,
+  title,
+}: {
+  eyebrow: string
+  items: StandingsBattle[]
+  title: string
+}) {
+  if (items.length === 0) {
     return null
   }
 
   return (
-    <section className="panel commissioner-news" aria-labelledby="news-title">
+    <section className="panel intelligence-pulse" aria-labelledby={titleToId(title)}>
       <div className="panel-heading">
-        <p className="eyebrow">Commissioner News</p>
-        <h2 id="news-title">League Desk</h2>
+        <p className="eyebrow">{eyebrow}</p>
+        <h2 id={titleToId(title)}>{title}</h2>
       </div>
-      <div className="commissioner-news-list">
-        {news.slice(0, 3).map((item) => {
-          const content = (
-            <>
-              <span>{item.date}</span>
-              <strong>{item.title}</strong>
-              <p>{item.body}</p>
-            </>
-          )
-
-          return item.link ? (
-            <a
-              className="commissioner-news-card"
-              href={item.link}
-              key={item.id}
-              rel="noreferrer"
-              target="_blank"
-            >
-              {content}
-            </a>
-          ) : (
-            <article className="commissioner-news-card" key={item.id}>
-              {content}
-            </article>
-          )
-        })}
+      <div className="intelligence-pulse-list">
+        {items.slice(0, 3).map((item) => (
+          <Link
+            className="intelligence-pulse-card"
+            key={`${title}-${item.division}-${item.player}`}
+            to={`/players/${encodeURIComponent(item.player)}`}
+          >
+            <span>
+              {item.division} - Rank #{item.rank}
+            </span>
+            <strong>{item.player}</strong>
+            <p>{item.story}</p>
+          </Link>
+        ))}
       </div>
     </section>
   )
 }
 
-function IntelligencePulse({
-  intelligence,
+function RecordPulse({
+  biggestBlowout,
+  biggestUpset,
+  closestMatch,
 }: {
-  intelligence: LeagueIntelligenceData | null
+  biggestBlowout?: IntelligenceGame
+  biggestUpset?: { id: number; story: string; winner: string; loser: string }
+  closestMatch?: IntelligenceGame
 }) {
-  if (!intelligence) {
+  const records = [
+    biggestUpset
+      ? {
+          label: 'Biggest Upset',
+          story: biggestUpset.story,
+          title: `${biggestUpset.winner} over ${biggestUpset.loser}`,
+          to: `/games/${biggestUpset.id}`,
+        }
+      : null,
+    closestMatch
+      ? {
+          label: 'Closest Match',
+          story: closestMatch.story,
+          title: `${closestMatch.winner} vs ${closestMatch.loser}`,
+          to: `/games/${closestMatch.id}`,
+        }
+      : null,
+    biggestBlowout
+      ? {
+          label: 'Biggest Blowout',
+          story: biggestBlowout.story,
+          title: `${biggestBlowout.winner} vs ${biggestBlowout.loser}`,
+          to: `/games/${biggestBlowout.id}`,
+        }
+      : null,
+  ].filter((record): record is NonNullable<typeof record> => record !== null)
+
+  if (records.length === 0) {
     return null
   }
 
-  const stories = [
-    intelligence.winStreaks[0]
+  return (
+    <section className="panel intelligence-pulse" aria-labelledby="record-pulse">
+      <div className="panel-heading">
+        <p className="eyebrow">Records Engine</p>
+        <h2 id="record-pulse">Record Pulse</h2>
+      </div>
+      <div className="intelligence-pulse-list">
+        {records.map((record) => (
+          <Link className="intelligence-pulse-card" key={record.label} to={record.to}>
+            <span>{record.label}</span>
+            <strong>{record.title}</strong>
+            <p>{record.story}</p>
+          </Link>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function HeadlineStack({
+  intelligence,
+  news,
+  strongestFaction,
+}: {
+  intelligence: LeagueIntelligenceData | null
+  news: CommissionerNewsItem[]
+  strongestFaction: string
+}) {
+  const headlines = [
+    ...news.slice(0, 2).map((item) => ({
+      label: item.date || 'Commissioner News',
+      story: item.body,
+      title: item.title,
+      to: item.link || '/analytics',
+    })),
+    intelligence?.winStreaks[0]
       ? {
-          label: 'Hot Streak',
+          label: 'Hottest Player',
           story: intelligence.winStreaks[0].story,
           title: intelligence.winStreaks[0].player,
           to: `/players/${encodeURIComponent(intelligence.winStreaks[0].player)}`,
         }
       : null,
-    intelligence.factionMomentum[0]
+    intelligence?.missionTrends[0]
       ? {
-          label: 'Faction Momentum',
-          story: intelligence.factionMomentum[0].story,
-          title: intelligence.factionMomentum[0].faction,
-          to: `/factions/${encodeURIComponent(
-            intelligence.factionMomentum[0].faction,
-          )}`,
-        }
-      : null,
-    intelligence.missionTrends[0]
-      ? {
-          label: 'Mission Meta',
+          label: 'Most Played Mission',
           story: intelligence.missionTrends[0].story,
           title: intelligence.missionTrends[0].mission,
-          to: `/missions/${encodeURIComponent(
-            intelligence.missionTrends[0].mission,
-          )}`,
+          to: `/missions/${encodeURIComponent(intelligence.missionTrends[0].mission)}`,
         }
       : null,
-    intelligence.closestGames[0]
+    strongestFaction
       ? {
-          label: 'Closest Match',
-          story: intelligence.closestGames[0].story,
-          title: intelligence.closestGames[0].label,
-          to: `/games/${intelligence.closestGames[0].id}`,
+          label: 'Strongest Faction',
+          story: `${strongestFaction} is the current headline faction signal.`,
+          title: strongestFaction,
+          to: `/factions/${encodeURIComponent(strongestFaction)}`,
         }
       : null,
-  ].filter((story): story is NonNullable<typeof story> => story !== null)
-
-  if (stories.length === 0) {
-    return null
-  }
+  ].filter((item): item is NonNullable<typeof item> => item !== null)
 
   return (
-    <section
-      className="panel intelligence-pulse"
-      aria-labelledby="intelligence-pulse-title"
-    >
+    <div className="intelligence-story-stack">
+      {headlines.map((headline) => (
+        <Link className="intelligence-story" key={headline.label} to={headline.to}>
+          <span>{headline.label}</span>
+          <strong>{headline.title}</strong>
+          <p>{headline.story}</p>
+        </Link>
+      ))}
+    </div>
+  )
+}
+
+function DashboardHighlights({
+  games,
+  hallOfFame,
+  intelligence,
+  news,
+  overview,
+  records,
+}: {
+  games: RecentGame[]
+  hallOfFame: HallOfFameData | null
+  intelligence: LeagueIntelligenceData | null
+  news: CommissionerNewsItem[]
+  overview: LeagueOverview
+  records: Record<string, LeagueRecordValue>
+}) {
+  const activeDivision = overview.divisions
+    .slice()
+    .sort((a, b) => b.gamesPlayed - a.gamesPlayed)[0]
+  const activePlayer = records.mostActivePlayer
+  const activePlayerName =
+    activePlayer && !('winner' in activePlayer) ? activePlayer.name : ''
+  const latestRecord = getLatestRecord(records)
+  const hallLeader = hallOfFame?.leaders.tournamentPoints[0]
+  const todayGames = games.filter((game) => isToday(game.date)).length
+  const milestoneItems = buildMilestoneItems({
+    games,
+    hallLeader,
+    intelligence,
+    overview,
+  })
+
+  return (
+    <section className="dashboard-highlight-grid" aria-label="League highlights">
+      <section className="panel dashboard-news-widget">
+        <div className="panel-heading">
+          <p className="eyebrow">Commissioner News</p>
+          <h2>League News</h2>
+        </div>
+        <div className="dashboard-news-list">
+          {news.slice(0, 3).map((item) => (
+            <Link className="dashboard-news-item" key={item.id} to={item.link || '/news'}>
+              <span>{item.date || 'Live'}</span>
+              <strong>{item.title}</strong>
+              <p>{item.body}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="panel dashboard-metrics-widget">
+        <div className="panel-heading">
+          <p className="eyebrow">Today</p>
+          <h2>League Snapshot</h2>
+        </div>
+        <dl className="dashboard-metric-list">
+          <div>
+            <dt>Games Today</dt>
+            <dd>{todayGames}</dd>
+          </div>
+          <div>
+            <dt>Most Active Division</dt>
+            <dd>{activeDivision?.divisionLabel ?? 'League'}</dd>
+          </div>
+          <div>
+            <dt>Most Active Player</dt>
+            <dd>
+              {activePlayerName ? (
+                <Link to={`/players/${encodeURIComponent(activePlayerName)}`}>
+                  {activePlayerName}
+                </Link>
+              ) : (
+                'Live data pending'
+              )}
+            </dd>
+          </div>
+          <div>
+            <dt>Latest Record</dt>
+            <dd>
+              {latestRecord ? (
+                <Link to={latestRecord.to}>{latestRecord.label}</Link>
+              ) : (
+                'Live data pending'
+              )}
+            </dd>
+          </div>
+          <div>
+            <dt>Hall of Fame</dt>
+            <dd>
+              {hallLeader ? (
+                <Link to={`/players/${encodeURIComponent(hallLeader.player)}`}>
+                  {hallLeader.player}
+                </Link>
+              ) : (
+                'Live data pending'
+              )}
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <section className="panel dashboard-milestone-widget">
+        <div className="panel-heading">
+          <p className="eyebrow">Upcoming Milestones</p>
+          <h2>Milestone Watch</h2>
+        </div>
+        <div className="dashboard-news-list">
+          {milestoneItems.map((item) => (
+            <Link className="dashboard-news-item" key={item.title} to={item.to}>
+              <span>{item.label}</span>
+              <strong>{item.title}</strong>
+              <p>{item.body}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+    </section>
+  )
+}
+
+function getLatestRecord(records: Record<string, LeagueRecordValue>) {
+  const candidates = [
+    ['Biggest VP Margin', records.largestVPMargin],
+    ['Biggest OP Margin', records.largestOPMargin],
+    ['Highest Scoring Game', records.highestScoringGame],
+    ['Closest Match', records.closestVPGame],
+  ] as const
+
+  for (const [label, record] of candidates) {
+    if (record && 'winner' in record) {
+      return {
+        label,
+        to: `/games/${record.id}`,
+      }
+    }
+  }
+
+  return null
+}
+
+function buildMilestoneItems({
+  games,
+  hallLeader,
+  intelligence,
+  overview,
+}: {
+  games: RecentGame[]
+  hallLeader?: { player: string; tp: number }
+  intelligence: LeagueIntelligenceData | null
+  overview: LeagueOverview
+}) {
+  const totalGames = overview.totalLeagueGames
+  const nextGameMilestone = Math.ceil((totalGames + 1) / 5) * 5
+  const items = [
+    {
+      body: `${nextGameMilestone - totalGames} games until the league reaches ${nextGameMilestone} completed games.`,
+      label: 'League Games',
+      title: `${nextGameMilestone} Game Mark`,
+      to: '/timeline',
+    },
+  ]
+
+  if (hallLeader) {
+    items.push({
+      body: `${hallLeader.player} is ${Math.max(0, 25 - hallLeader.tp)} TP away from the 25 TP threshold.`,
+      label: 'Hall of Fame',
+      title: `${hallLeader.player} chasing 25 TP`,
+      to: `/players/${encodeURIComponent(hallLeader.player)}`,
+    })
+  }
+
+  if (intelligence?.winStreaks[0]) {
+    const streak = intelligence.winStreaks[0]
+
+    items.push({
+      body: `${streak.player} needs one more win to extend the streak to ${streak.games + 1}.`,
+      label: 'Streak Watch',
+      title: `${streak.player} on a run`,
+      to: `/players/${encodeURIComponent(streak.player)}`,
+    })
+  }
+
+  if (games[0]) {
+    items.push({
+      body: `The next reported match will follow ${games[0].winner} vs ${games[0].loser}.`,
+      label: 'Next Report',
+      title: 'Awaiting next battle report',
+      to: '/timeline',
+    })
+  }
+
+  return items.slice(0, 4)
+}
+
+function QuickNavigation() {
+  const links = [
+    ['Standings', '/standings'],
+    ['Players', '/players'],
+    ['Factions', '/factions'],
+    ['Missions', '/missions'],
+    ['Intelligence', '/analytics'],
+    ['Hall of Fame', '/hall-of-fame'],
+    ['Compare', '/compare'],
+  ] as const
+
+  return (
+    <nav className="quick-nav" aria-label="Dashboard quick navigation">
+      {links.map(([label, to]) => (
+        <Link key={to} to={to}>
+          {label}
+        </Link>
+      ))}
+    </nav>
+  )
+}
+
+function CommandPanel({
+  children,
+  eyebrow,
+  title,
+}: {
+  children: ReactNode
+  eyebrow: string
+  title: string
+}) {
+  return (
+    <section className="panel command-card" aria-labelledby={titleToId(title)}>
       <div className="panel-heading">
-        <p className="eyebrow">League Intelligence</p>
-        <h2 id="intelligence-pulse-title">Live Signals</h2>
+        <p className="eyebrow">{eyebrow}</p>
+        <h2 id={titleToId(title)}>{title}</h2>
       </div>
-      <div className="intelligence-pulse-list">
-        {stories.slice(0, 3).map((story) => (
-          <Link className="intelligence-pulse-card" key={story.to} to={story.to}>
-            <span>{story.label}</span>
-            <strong>{story.title}</strong>
-            <p>{story.story}</p>
-          </Link>
-        ))}
-      </div>
+      <div className="intelligence-card-body">{children}</div>
     </section>
   )
 }
@@ -456,6 +777,52 @@ function DashboardHeader({ lastUpdated }: { lastUpdated: string }) {
   )
 }
 
+function getGamesPerWeek(games: RecentGame[]) {
+  const counts = new Map<string, number>()
+
+  games.forEach((game) => {
+    const week = getWeekLabel(game.date)
+    counts.set(week, (counts.get(week) ?? 0) + 1)
+  })
+
+  return Array.from(counts.entries()).map(([label, value]) => ({
+    label,
+    value,
+  }))
+}
+
+function getWeekLabel(dateText: string) {
+  const date = new Date(dateText)
+
+  if (Number.isNaN(date.getTime())) {
+    return dateText || 'Unknown'
+  }
+
+  const weekStart = new Date(date)
+  weekStart.setDate(date.getDate() - date.getDay())
+
+  return weekStart.toLocaleDateString([], {
+    month: 'short',
+    day: 'numeric',
+  })
+}
+
+function isToday(dateText: string) {
+  const parsed = new Date(dateText)
+
+  if (Number.isNaN(parsed.getTime())) {
+    return false
+  }
+
+  const today = new Date()
+
+  return (
+    parsed.getFullYear() === today.getFullYear() &&
+    parsed.getMonth() === today.getMonth() &&
+    parsed.getDate() === today.getDate()
+  )
+}
+
 function getRankClass(rank: number) {
   if (rank === 1) {
     return 'rank-gold'
@@ -472,8 +839,8 @@ function getRankClass(rank: number) {
   return ''
 }
 
-function formatRank(rank: number) {
-  return rank
+function titleToId(title: string) {
+  return title.toLowerCase().replaceAll(' ', '-')
 }
 
 export default Dashboard

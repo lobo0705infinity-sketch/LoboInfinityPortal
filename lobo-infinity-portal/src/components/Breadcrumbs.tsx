@@ -2,12 +2,17 @@ import { Link, useLocation } from 'react-router-dom'
 
 const labels: Record<string, string> = {
   analytics: 'League Intelligence',
+  compare: 'Player Comparison',
   factions: 'Factions',
   games: 'Match Details',
+  'hall-of-fame': 'Hall of Fame',
   missions: 'Missions',
+  news: 'Commissioner News',
+  notifications: 'Notifications',
   players: 'Players',
   rules: 'Rules',
   standings: 'Standings',
+  timeline: 'Timeline',
 }
 
 function Breadcrumbs() {

@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useMemo, useState, type KeyboardEvent } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { apiClient } from '../services/api'
 
 type SearchItem = {
@@ -22,7 +22,9 @@ type SearchState =
     }
 
 function GlobalSearch() {
+  const navigate = useNavigate()
   const [query, setQuery] = useState('')
+  const [activeIndex, setActiveIndex] = useState(0)
   const [searchState, setSearchState] = useState<SearchState>({
     status: 'idle',
   })
@@ -43,7 +45,7 @@ function GlobalSearch() {
           division.standings.map((player) => ({
             category: 'Player',
             label: player.player,
-            meta: `${division.divisionLabel} · Rank #${player.rank}`,
+            meta: `${division.divisionLabel} - Rank #${player.rank}`,
             to: `/players/${encodeURIComponent(player.player)}`,
           })),
         )
@@ -51,21 +53,21 @@ function GlobalSearch() {
         const factionItems = factions.map((faction) => ({
           category: 'Faction',
           label: faction.name,
-          meta: `${faction.games} games · ${faction.winRate}% win rate`,
+          meta: `${faction.games} games - ${faction.winRate}% win rate`,
           to: `/factions/${encodeURIComponent(faction.name)}`,
         }))
 
         const missionItems = missions.map((mission) => ({
           category: 'Mission',
           label: mission.mission,
-          meta: `${mission.games} games · ${mission.firstTurnWinRate}% first turn`,
+          meta: `${mission.games} games - ${mission.firstTurnWinRate}% first turn`,
           to: `/missions/${encodeURIComponent(mission.mission)}`,
         }))
 
         const matchItems = games.map((game) => ({
           category: 'Match',
           label: `${game.winner} defeated ${game.loser}`,
-          meta: `${game.mission} · ${game.vp}`,
+          meta: `${game.mission} - ${game.vp}`,
           to: `/games/${game.id}`,
         }))
 
@@ -109,29 +111,81 @@ function GlobalSearch() {
       .slice(0, 8)
   }, [query, searchState])
 
+  function closeSearch() {
+    setQuery('')
+    setActiveIndex(0)
+  }
+
+  function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.key === 'Escape') {
+      closeSearch()
+      return
+    }
+
+    if (results.length === 0) {
+      return
+    }
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault()
+      setActiveIndex((index) => (index + 1) % results.length)
+      return
+    }
+
+    if (event.key === 'ArrowUp') {
+      event.preventDefault()
+      setActiveIndex((index) => (index - 1 + results.length) % results.length)
+      return
+    }
+
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      navigate(results[activeIndex].to)
+      closeSearch()
+    }
+  }
+
   return (
     <div className="global-search">
       <label className="search-label" htmlFor="global-search">
         Search
       </label>
       <input
+        aria-activedescendant={
+          results[activeIndex] ? `search-result-${activeIndex}` : undefined
+        }
+        aria-controls="global-search-results"
+        aria-expanded={query.trim().length >= 2}
         autoComplete="off"
         id="global-search"
-        onChange={(event) => setQuery(event.target.value)}
+        onChange={(event) => {
+          setQuery(event.target.value)
+          setActiveIndex(0)
+        }}
+        onKeyDown={handleKeyDown}
         placeholder="Search league"
+        role="combobox"
         type="search"
         value={query}
       />
       {query.trim().length >= 2 ? (
-        <div className="search-results" role="listbox">
+        <div className="search-results" id="global-search-results" role="listbox">
           {searchState.status === 'error' ? (
             <p>Search is unavailable.</p>
           ) : results.length > 0 ? (
-            results.map((result) => (
+            results.map((result, index) => (
               <Link
-                className="search-result"
+                aria-selected={index === activeIndex}
+                className={
+                  index === activeIndex
+                    ? 'search-result active'
+                    : 'search-result'
+                }
+                id={`search-result-${index}`}
                 key={`${result.category}-${result.to}`}
-                onClick={() => setQuery('')}
+                onClick={closeSearch}
+                onMouseEnter={() => setActiveIndex(index)}
+                role="option"
                 to={result.to}
               >
                 <span>{result.category}</span>

@@ -47,6 +47,21 @@ function doGet(e) {
     case "news":
       return getCommissionerNews();
 
+    case "records":
+      return getRecords();
+
+    case "hallOfFame":
+      return getHallOfFame();
+
+    case "comparison":
+      return getPlayerComparison(e);
+
+    case "notifications":
+      return getNotifications();
+
+    case "timeline":
+      return getTimeline();
+
     default:
       return jsonOutput({
         success: false,
