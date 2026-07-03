@@ -3983,15 +3983,13 @@
   }
 
   .sidebar-nav {
-    grid-auto-flow: column;
-    grid-auto-columns: max-content;
-    grid-template-columns: none;
-    overflow-x: auto;
-    padding-bottom: 4px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    overflow-x: visible;
+    padding-bottom: 0;
   }
 
   .sidebar-button {
-    white-space: nowrap;
+    white-space: normal;
   }
 
   .league-stats {
@@ -4270,5 +4268,814 @@
 
   .previous-next-nav a:last-child {
     text-align: left;
+  }
+}
+
+/* Version 1.3 visual remaster */
+.app-shell {
+  --portal-bg: #030609;
+  --panel: #0d141c;
+  --panel-strong: #121b25;
+  --panel-soft: #192433;
+  --panel-muted: #080d13;
+  --border: #233244;
+  --border-strong: #506174;
+  --text: #f5f8fb;
+  --text-soft: #c4d0da;
+  --text-muted: #90a0af;
+  --crimson: #c1121f;
+  --blue: #4cc9f0;
+  --amber: #f0b13e;
+  --promotion: #2dc653;
+  --relegation: #ef233c;
+  --shadow-soft: 0 28px 70px rgba(0, 0, 0, 0.52);
+  --shadow-panel: 0 18px 42px rgba(0, 0, 0, 0.38);
+  --shadow-strong: 0 30px 68px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 0 1px rgba(76, 201, 240, 0.2), 0 20px 54px rgba(0, 0, 0, 0.44);
+  background:
+    linear-gradient(rgba(76, 201, 240, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(76, 201, 240, 0.025) 1px, transparent 1px),
+    radial-gradient(circle at 15% -8%, rgba(76, 201, 240, 0.16), transparent 34%),
+    radial-gradient(circle at 95% 14%, rgba(193, 18, 31, 0.16), transparent 28%),
+    var(--portal-bg);
+  background-attachment: fixed;
+  background-size:
+    42px 42px,
+    42px 42px,
+    auto,
+    auto,
+    auto;
+}
+
+.portal-shell,
+.app-main {
+  background: transparent;
+}
+
+.sidebar {
+  background:
+    url("./assets/industrial-banner.svg") center / cover,
+    linear-gradient(180deg, rgba(76, 201, 240, 0.07), transparent 28%),
+    #05080c;
+}
+
+.sidebar-brand {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(76, 201, 240, 0.14);
+  border-radius: 18px;
+  background: rgba(8, 13, 19, 0.82);
+}
+
+.sidebar-brand::after {
+  position: absolute;
+  inset: auto 12px 10px 92px;
+  height: 2px;
+  background: var(--crimson);
+  content: "";
+}
+
+.league-crest {
+  width: 86px;
+}
+
+.league-crest.compact {
+  width: 52px;
+  min-width: 52px;
+}
+
+.sidebar-brand strong,
+.header-title strong,
+.dashboard-header h1,
+.page-header h1,
+.league-command-hero h1,
+.player-profile-hero h1,
+.comparison-player h2,
+.match-player h1,
+.match-player h2 {
+  font-family:
+    "Arial Narrow", "Rajdhani", "Segoe UI Condensed", Impact, ui-sans-serif,
+    system-ui, sans-serif;
+  font-stretch: condensed;
+  letter-spacing: 0.035em;
+}
+
+.sidebar-button {
+  position: relative;
+  min-height: 52px;
+  border-radius: 16px;
+  isolation: isolate;
+}
+
+.sidebar-button::after {
+  position: absolute;
+  inset: 9px auto 9px 0;
+  width: 3px;
+  border-radius: 999px;
+  background: transparent;
+  content: "";
+  transition: background 180ms ease;
+}
+
+.sidebar-button:hover::after,
+.sidebar-button:focus-visible::after {
+  background: rgba(76, 201, 240, 0.54);
+}
+
+.sidebar-button.active::after {
+  background: var(--crimson);
+}
+
+.sidebar-icon {
+  border: 1px solid rgba(76, 201, 240, 0.14);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(76, 201, 240, 0.08), transparent), var(--panel-muted);
+}
+
+.portal-icon {
+  width: 20px;
+  height: 20px;
+  filter: drop-shadow(0 0 8px rgba(76, 201, 240, 0.12));
+}
+
+.portal-header {
+  border-bottom-color: rgba(76, 201, 240, 0.16);
+  background:
+    linear-gradient(90deg, rgba(5, 8, 12, 0.96), rgba(8, 13, 19, 0.9)),
+    #060a0f;
+  backdrop-filter: blur(14px);
+}
+
+.header-title {
+  min-width: min(280px, 100%);
+}
+
+.header-actions {
+  gap: 10px;
+}
+
+.submit-match-button,
+.member-welcome-actions a,
+.notification-page-actions button,
+.notification-actions button,
+.member-profile-form button,
+.army-list-form-actions button,
+.army-list-actions button,
+.operations-access-card button,
+.operations-form button,
+.operations-actions button,
+.quick-nav a {
+  min-height: 44px;
+  border-radius: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.submit-match-button {
+  gap: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent),
+    rgba(193, 18, 31, 0.24);
+}
+
+.header-status {
+  min-height: 38px;
+  background: rgba(13, 20, 28, 0.82);
+}
+
+.status-light {
+  animation: live-pulse 1.8s ease-in-out infinite;
+}
+
+.global-search input,
+.quick-jump select,
+.army-list-controls input,
+.army-list-controls select,
+.army-list-form input,
+.army-list-form textarea,
+.stream-filters input,
+.stream-filters select,
+.comparison-controls select,
+.operations-access-card input,
+.operations-form input,
+.operations-form textarea,
+.member-profile-form input,
+.member-profile-form select {
+  border-color: rgba(76, 201, 240, 0.18);
+  background: rgba(8, 13, 19, 0.84);
+}
+
+.global-search input:focus,
+.quick-jump select:focus,
+.army-list-controls input:focus,
+.army-list-controls select:focus,
+.army-list-form input:focus,
+.army-list-form textarea:focus,
+.stream-filters input:focus,
+.stream-filters select:focus,
+.comparison-controls select:focus,
+.operations-access-card input:focus,
+.operations-form input:focus,
+.operations-form textarea:focus,
+.member-profile-form input:focus,
+.member-profile-form select:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 4px rgba(76, 201, 240, 0.12);
+  outline: 0;
+}
+
+.breadcrumbs {
+  opacity: 0.9;
+}
+
+.dashboard-header,
+.page-header {
+  padding-top: clamp(18px, 3vw, 28px);
+}
+
+.page-header,
+.league-command-hero,
+.player-profile-hero,
+.member-profile-hero,
+.comparison-hero,
+.match-hero {
+  border-color: rgba(76, 201, 240, 0.18);
+  background:
+    url("./assets/command-hero.svg") center / cover,
+    linear-gradient(135deg, rgba(76, 201, 240, 0.14), transparent 36%),
+    linear-gradient(315deg, rgba(193, 18, 31, 0.16), transparent 40%),
+    var(--panel);
+}
+
+.league-command-hero {
+  min-height: clamp(360px, 48vw, 540px);
+}
+
+.player-profile-hero,
+.member-profile-hero,
+.comparison-hero {
+  background:
+    url("./assets/profile-hero.svg") center / cover,
+    linear-gradient(135deg, rgba(76, 201, 240, 0.12), transparent 40%),
+    var(--panel);
+}
+
+.faction-profile-hero,
+.faction-card,
+.faction-matchup-panel {
+  background-image:
+    url("./assets/faction-banner.svg"),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 42%);
+  background-position: center;
+  background-size: cover;
+}
+
+.dashboard-header h1,
+.page-header h1 {
+  text-wrap: balance;
+}
+
+.league-command-hero h1 {
+  max-width: 12ch;
+  text-shadow: 0 14px 36px rgba(0, 0, 0, 0.58);
+}
+
+.eyebrow,
+.header-kicker,
+.match-kicker,
+.division-badge,
+.rank-badge {
+  color: var(--blue);
+  letter-spacing: 0.12em;
+}
+
+.panel,
+.stat-card,
+.faction-card,
+.player-card,
+.mission-card,
+.army-list-card,
+.stream-card,
+.experience-card,
+.news-article,
+.commissioner-news-card,
+.intelligence-pulse-card,
+.dashboard-news-item,
+.faction-match-card,
+.faction-moment-card,
+.search-result,
+.profile-menu-panel,
+.notification-menu,
+.match-hero,
+.match-scoreboard,
+.battle-timeline,
+.best-moment-card,
+.match-info-card {
+  border-color: rgba(76, 201, 240, 0.14);
+  background-color: rgba(13, 20, 28, 0.9);
+  box-shadow: var(--shadow-panel);
+}
+
+.panel,
+.stat-card,
+.faction-card,
+.player-card,
+.mission-card,
+.army-list-card,
+.stream-card,
+.experience-card,
+.news-article,
+.commissioner-news-card,
+.intelligence-pulse-card,
+.dashboard-news-item,
+.faction-match-card,
+.faction-moment-card {
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease,
+    background 180ms ease;
+}
+
+.stat-card:hover,
+.faction-card:hover,
+.player-card:hover,
+.mission-card:hover,
+.army-list-card:hover,
+.stream-card:hover,
+.experience-card:hover,
+.news-article:hover,
+.commissioner-news-card:hover,
+.intelligence-pulse-card:hover,
+.dashboard-news-item:hover,
+.faction-match-card:hover,
+.faction-moment-card:hover {
+  border-color: rgba(76, 201, 240, 0.42);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-3px);
+}
+
+.panel-heading {
+  border-bottom-color: rgba(76, 201, 240, 0.12);
+  background:
+    linear-gradient(90deg, rgba(76, 201, 240, 0.08), transparent 62%),
+    rgba(18, 27, 37, 0.92);
+}
+
+.panel-heading h2,
+.stat-card strong,
+.dashboard-news-item strong,
+.intelligence-pulse-card strong,
+.experience-card strong,
+.army-list-card h2,
+.stream-card h2,
+.faction-card h2,
+.mission-card h2,
+.player-card h2 {
+  text-wrap: balance;
+}
+
+.stat-card {
+  min-height: 152px;
+  padding: 18px;
+}
+
+.stat-icon,
+.army-list-card-heading > strong {
+  border-color: rgba(76, 201, 240, 0.2);
+  background:
+    radial-gradient(circle at 50% 25%, rgba(76, 201, 240, 0.16), transparent 58%),
+    var(--panel-muted);
+}
+
+.league-overview-strip {
+  border-color: rgba(76, 201, 240, 0.16);
+  background:
+    linear-gradient(90deg, rgba(76, 201, 240, 0.08), transparent 32%),
+    rgba(13, 20, 28, 0.9);
+}
+
+.league-overview-strip-item strong,
+.division-tab,
+.player-filter-button {
+  letter-spacing: 0.03em;
+}
+
+.table-row,
+.standings-table .table-row {
+  min-width: 0;
+  border-color: rgba(76, 201, 240, 0.1);
+}
+
+.table-row.table-head {
+  position: sticky;
+  top: 58px;
+  z-index: 3;
+  border-color: rgba(76, 201, 240, 0.24);
+  background:
+    linear-gradient(90deg, rgba(76, 201, 240, 0.1), transparent 70%),
+    #101823;
+  backdrop-filter: blur(10px);
+}
+
+.table-row:not(.table-head):hover {
+  color: var(--text);
+  transform: translateX(2px);
+}
+
+.zone-safe,
+.rank-safe,
+.promotion-zone {
+  background: rgba(45, 198, 83, 0.11);
+}
+
+.zone-relegation,
+.rank-relegation,
+.relegation-zone {
+  background: rgba(239, 35, 60, 0.12);
+}
+
+.rank-gold,
+.rank-silver,
+.rank-bronze {
+  background: rgba(240, 177, 62, 0.055);
+}
+
+.search-results,
+.profile-menu-panel,
+.notification-menu {
+  max-width: calc(100vw - 24px);
+}
+
+.featured-match-hero,
+.featured-stream,
+.best-moment-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.featured-match-hero::after,
+.featured-stream::after,
+.best-moment-card::after {
+  position: absolute;
+  inset: auto 18px 14px auto;
+  width: 92px;
+  height: 92px;
+  border: 1px solid rgba(76, 201, 240, 0.16);
+  clip-path: polygon(50% 0, 94% 25%, 94% 75%, 50% 100%, 6% 75%, 6% 25%);
+  content: "";
+  pointer-events: none;
+}
+
+.stream-thumbnail,
+.featured-stream-frame iframe,
+.featured-stream-frame {
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.notification-trigger,
+.profile-trigger,
+.quick-jump select,
+.division-tab,
+.player-filter-button,
+.stream-card,
+.army-list-actions button,
+.army-list-actions a {
+  min-height: 44px;
+}
+
+.rules-layout {
+  align-items: start;
+}
+
+.rules-toc {
+  top: 74px;
+}
+
+.rules-card h2,
+.rules-card h3 {
+  scroll-margin-top: 88px;
+}
+
+.match-report {
+  background:
+    radial-gradient(circle at 12% 0, rgba(76, 201, 240, 0.08), transparent 28%),
+    transparent;
+}
+
+.match-scoreboard,
+.score-lane {
+  background:
+    linear-gradient(180deg, rgba(76, 201, 240, 0.05), transparent),
+    rgba(13, 20, 28, 0.94);
+}
+
+.score-lane strong {
+  letter-spacing: 0.02em;
+}
+
+@keyframes live-pulse {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: scale(0.92);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  .sidebar {
+    padding: 14px clamp(14px, 3vw, 24px);
+  }
+
+  .sidebar-brand {
+    min-height: 58px;
+  }
+
+  .portal-header {
+    top: 0;
+  }
+}
+
+@media (max-width: 920px) {
+  .portal-header {
+    flex-wrap: wrap;
+  }
+
+  .header-actions {
+    flex-wrap: wrap;
+  }
+
+  .global-search {
+    flex: 1 1 320px;
+  }
+
+  .page-header,
+  .league-command-hero,
+  .player-profile-hero,
+  .member-profile-hero {
+    border-radius: 18px;
+  }
+
+  .table-row.table-head {
+    top: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .app-shell {
+    background-size:
+      34px 34px,
+      34px 34px,
+      auto,
+      auto,
+      auto;
+  }
+
+  .sidebar {
+    gap: 12px;
+  }
+
+  .sidebar-brand {
+    padding: 10px;
+  }
+
+  .sidebar-brand small {
+    font-size: 0.7rem;
+  }
+
+  .sidebar-button {
+    min-height: 46px;
+    padding: 10px 12px;
+  }
+
+  .sidebar-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .portal-header {
+    gap: 12px;
+    padding: 12px 14px;
+  }
+
+  .header-title {
+    width: 100%;
+  }
+
+  .header-actions {
+    align-items: stretch;
+    flex: 0 0 auto;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .submit-match-button,
+  .header-status,
+  .notification-trigger,
+  .quick-jump,
+  .quick-jump select,
+  .profile-menu,
+  .profile-trigger,
+  .global-search {
+    width: 100%;
+  }
+
+  .header-status,
+  .submit-match-button {
+    justify-content: center;
+  }
+
+  .portal-header .quick-jump {
+    display: grid;
+    gap: 6px;
+  }
+
+  .portal-header .quick-jump span {
+    line-height: 1;
+  }
+
+  .portal-header .global-search,
+  .portal-header .quick-jump,
+  .portal-header .notification-center,
+  .portal-header .profile-menu,
+  .portal-header .header-status {
+    flex: 0 0 auto;
+  }
+
+  .dashboard-header,
+  .page-header,
+  .league-command-hero,
+  .member-welcome-banner,
+  .league-stats,
+  .league-overview-strip,
+  .command-center-grid,
+  .dashboard-highlight-grid,
+  .dashboard-experience-grid,
+  .dashboard-grid,
+  .portal-grid,
+  .experience-grid,
+  .news-grid,
+  .stream-grid,
+  .army-list-grid,
+  .community-summary-grid,
+  .operations-summary,
+  .operations-grid,
+  .operations-grid.two-column,
+  .comparison-controls,
+  .comparison-hero,
+  .profile-card-grid,
+  .faction-profile-grid,
+  .game-detail-grid,
+  .match-report {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .page-header,
+  .league-command-hero,
+  .member-welcome-banner,
+  .league-overview-strip,
+  .panel,
+  .stat-card,
+  .faction-card,
+  .player-card,
+  .mission-card,
+  .army-list-card,
+  .stream-card,
+  .experience-card,
+  .news-article,
+  .commissioner-news-card,
+  .intelligence-pulse-card,
+  .dashboard-news-item,
+  .match-hero,
+  .match-scoreboard,
+  .best-moment-card,
+  .match-info-card {
+    border-radius: 14px;
+  }
+
+  .league-command-hero {
+    min-height: auto;
+    padding-top: 28px;
+    padding-bottom: 28px;
+  }
+
+  .league-command-hero h1 {
+    max-width: 100%;
+    font-size: clamp(2.35rem, 16vw, 4.4rem);
+  }
+
+  .dashboard-header h1,
+  .page-header h1 {
+    font-size: clamp(1.75rem, 10vw, 2.7rem);
+  }
+
+  .panel-heading {
+    padding: 14px;
+  }
+
+  .stat-card {
+    min-height: 132px;
+  }
+
+  .standings-table {
+    display: grid;
+    gap: 10px;
+  }
+
+  .standings-table .table-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    border: 1px solid rgba(76, 201, 240, 0.14);
+    border-radius: 14px;
+    padding: 12px;
+  }
+
+  .standings-table .table-row.table-head {
+    display: none;
+  }
+
+  .standings-table .table-row span,
+  .standings-table .table-row strong {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .standings-table .table-row span:first-child::before {
+    content: "Rank ";
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+
+  .standings-table .table-row strong {
+    grid-column: 1 / -1;
+    font-size: 1.06rem;
+  }
+
+  .score-grid,
+  .match-meta-strip,
+  .match-info-card dl,
+  .operations-metrics.compact {
+    gap: 10px;
+  }
+
+  .best-moment-card blockquote {
+    font-size: clamp(1.25rem, 7vw, 1.8rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .league-crest.compact {
+    width: 44px;
+    min-width: 44px;
+  }
+
+  .sidebar-brand strong,
+  .header-title strong {
+    font-size: 0.85rem;
+  }
+
+  .sidebar-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .sidebar-button span:last-child {
+    font-size: 0.82rem;
+  }
+
+  .quick-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-news-item,
+  .intelligence-pulse-card,
+  .experience-card,
+  .community-card-stack a,
+  .community-card-stack > span {
+    padding: 12px;
   }
 }

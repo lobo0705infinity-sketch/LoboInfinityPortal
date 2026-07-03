@@ -1,9 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
-  <title id="title">Lobo mobile mark</title>
-  <path fill="#05070A" d="M64 4 116 34v60l-52 30-52-30V34L64 4Z"/>
-  <path fill="#C1121F" d="M64 12 108 38v51l-44 26-44-26V38l44-26Z"/>
-  <path fill="#101821" d="M64 20 99 41v43l-35 21-35-21V41l35-21Z"/>
-  <path fill="#EEF3F8" d="m33 48 26-12-8 22 13-8 13 8-8-22 26 12-10 33-21 20-21-20-10-33Z"/>
-  <path fill="#111820" d="m45 58 13 8-15 8 2-16Zm38 0-13 8 15 8-2-16ZM54 82h20l-10 13-10-13Z"/>
-  <path fill="#4CC9F0" d="M36 101h56v7H36z"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">Lobo shield mark</title>
+  <desc id="desc">Simplified hexagonal Lobo Infinity League shield logo.</desc>
+  <path fill="#030507" d="M64 3 118 34v61l-54 30-54-30V34L64 3Z"/>
+  <path fill="#4CC9F0" d="M64 9 112 37v55l-48 27-48-27V37L64 9Z"/>
+  <path fill="#C1121F" d="M64 15 106 40v49l-42 24-42-24V40l42-25Z"/>
+  <path fill="#101823" d="M64 23 98 44v41l-34 20-34-20V44l34-21Z"/>
+  <path fill="#EEF6FA" d="m33 49 27-12-9 23 13-8 13 8-9-23 27 12-11 34-20 19-20-19-11-34Z"/>
+  <path fill="#121A23" d="m45 59 14 8-16 8 2-16Zm38 0-14 8 16 8-2-16ZM54 83h20l-10 13-10-13Z"/>
+  <path fill="#4CC9F0" d="M36 103h56v7H36z"/>
 </svg>

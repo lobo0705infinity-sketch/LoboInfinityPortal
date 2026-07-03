@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-labelledby="title">
+  <title id="title">Lobo Infinity League mobile icon</title>
+  <rect width="192" height="192" rx="42" fill="#05080C"/>
+  <path fill="#111A24" d="M96 18 164 58v76l-68 40-68-40V58l68-40Z"/>
+  <path fill="#C1121F" d="M96 29 153 63v66l-57 34-57-34V63l57-34Z"/>
+  <path fill="#EAF4FA" d="m51 75 39-17-13 33 19-12 19 12-13-33 39 17-14 49-31 29-31-29-14-49Z"/>
+  <path fill="#101823" d="m66 91 21 12-24 12 3-24Zm60 0-21 12 24 12-3-24ZM80 127h32l-16 20-16-20Z"/>
+  <path fill="#4CC9F0" d="M61 159h70v10H61z"/>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 220" role="img" aria-labelledby="title desc">
+  <title id="title">Lobo shield logo</title>
+  <desc id="desc">Original simplified tactical shield for the Lobo Infinity League.</desc>
+  <path fill="#05080C" d="M90 6 166 50v88l-76 76-76-76V50L90 6Z"/>
+  <path fill="#C1121F" d="M90 18 154 56v76l-64 64-64-64V56l64-38Z"/>
+  <path fill="#111A24" d="M90 31 142 62v64l-52 52-52-52V62l52-31Z"/>
+  <path fill="#EAF4FA" d="m45 76 39-17-13 33 19-12 19 12-13-33 39 17-15 51-30 30-30-30-15-51Z"/>
+  <path fill="#111A24" d="m61 92 20 12-23 12 3-24Zm58 0-20 12 23 12-3-24ZM75 128h30l-15 21-15-21Z"/>
+  <path fill="#4CC9F0" d="M53 169h74v9H53z"/>
+</svg>

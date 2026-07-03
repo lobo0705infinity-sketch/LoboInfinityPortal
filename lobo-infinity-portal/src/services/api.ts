@@ -1041,7 +1041,8 @@ async function request(
     return cached.payload
   }
 
-  const inFlight = inFlightRequests.get(cacheKey)
+  const shouldShareInFlight = !options.signal
+  const inFlight = shouldShareInFlight ? inFlightRequests.get(cacheKey) : null
 
   if (inFlight) {
     return inFlight
@@ -1066,7 +1067,9 @@ async function request(
     inFlightRequests.delete(cacheKey)
   })
 
-  inFlightRequests.set(cacheKey, pending)
+  if (shouldShareInFlight) {
+    inFlightRequests.set(cacheKey, pending)
+  }
 
   return pending
 }

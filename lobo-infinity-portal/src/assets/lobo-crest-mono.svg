@@ -1,9 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 300" role="img" aria-labelledby="title desc">
-  <title id="title">Lobo Infinity League monochrome crest</title>
-  <desc id="desc">Monochrome tactical wolf shield.</desc>
-  <path fill="#EEF3F8" d="M128 4 237 66v126l-109 104L19 192V66L128 4Z"/>
-  <path fill="#05070A" d="M128 24 216 75v107l-88 84-88-84V75l88-51Z"/>
-  <path fill="#EEF3F8" d="m82 102 42-19-14 35 18-12 18 12-14-35 42 19-15 55-31 31-31-31-15-55Z"/>
-  <path fill="#05070A" d="m98 117 20 13-23 13 3-26Zm60 0-20 13 23 13-3-26ZM111 155h34l-17 24-17-24Z"/>
-  <path fill="#EEF3F8" d="M81 205h94v13H81zM101 229h54v9h-54z"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 220" role="img" aria-labelledby="title desc">
+  <title id="title">Lobo monochrome crest</title>
+  <desc id="desc">Single color Lobo Infinity League crest.</desc>
+  <path fill="#EEF6FA" d="M90 6 166 50v88l-76 76-76-76V50L90 6Zm0 18L30 60v70l60 60 60-60V60L90 24Z"/>
+  <path fill="#EEF6FA" d="m45 76 39-17-13 33 19-12 19 12-13-33 39 17-15 51-30 30-30-30-15-51Z"/>
+  <path fill="#05080C" d="m61 92 20 12-23 12 3-24Zm58 0-20 12 23 12-3-24ZM75 128h30l-15 21-15-21Z"/>
+  <path fill="#EEF6FA" d="M53 169h74v9H53z"/>
 </svg>

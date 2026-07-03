@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 620" preserveAspectRatio="none">
+  <rect width="1600" height="620" fill="#070B10"/>
+  <path fill="#0D141D" d="M0 0h1600v620H0z"/>
+  <g opacity=".28" stroke="#4CC9F0" stroke-width="1">
+    <path d="M0 96h1600M0 192h1600M0 288h1600M0 384h1600M0 480h1600"/>
+    <path d="M120 0v620M240 0v620M360 0v620M480 0v620M600 0v620M720 0v620M840 0v620M960 0v620M1080 0v620M1200 0v620M1320 0v620M1440 0v620"/>
+  </g>
+  <g opacity=".5">
+    <path fill="#101B26" d="m1110 70 240 0 120 208-120 208h-240L990 278z"/>
+    <path fill="none" stroke="#4CC9F0" stroke-width="3" d="m1132 108 196 0 98 170-98 170h-196l-98-170z"/>
+    <path fill="none" stroke="#C1121F" stroke-width="6" d="M1038 278h385M1230 108v340"/>
+  </g>
+  <g opacity=".78">
+    <path fill="#121B24" stroke="#2E3D4D" stroke-width="3" d="M96 98h400l72 72v252l-72 72H96z"/>
+    <path fill="#C1121F" d="M96 98h16v396H96z"/>
+    <path fill="#4CC9F0" d="M138 145h254v12H138zm0 44h340v10H138zm0 44h214v10H138zm0 94h320v10H138zm0 44h244v10H138z"/>
+    <path fill="#F0B13E" d="M138 277h166v13H138z"/>
+  </g>
+  <path fill="none" stroke="#4CC9F0" stroke-opacity=".28" stroke-width="2" d="M660 142h212l106 184-106 184H660L554 326z"/>
+  <path fill="#C1121F" fill-opacity=".14" d="M0 0h520L0 620z"/>
+  <path fill="#4CC9F0" fill-opacity=".08" d="M1600 0v620H980z"/>
+</svg>
