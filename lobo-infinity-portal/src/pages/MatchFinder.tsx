@@ -85,6 +85,19 @@ type MatchFinderDebugSnapshot = {
     visible: boolean
     width: number
   }
+  domButton: {
+    boundingRect: Record<string, number>
+    computed: Record<string, string>
+    disabled: boolean
+    exists: boolean
+    formAttribute: string
+    id: string
+    outerHTML: string
+    parentClassName: string
+    parentInnerHTML: string
+    selector: string
+    textContent: string
+  }
   css: {
     clippingAncestors: Array<Record<string, string>>
     matchedRules: Array<Record<string, string>>
@@ -1419,8 +1432,15 @@ function buildMatchFinderDebugSnapshot({
   submitState: string
   validation: MatchRequestValidation
 }): MatchFinderDebugSnapshot {
+  const queriedButton = document.querySelector<HTMLButtonElement>(
+    '.match-request-action-bar button',
+  )
   const buttonStyles = button ? window.getComputedStyle(button) : null
+  const queriedButtonStyles = queriedButton
+    ? window.getComputedStyle(queriedButton)
+    : null
   const rect = button?.getBoundingClientRect()
+  const queriedRect = queriedButton?.getBoundingClientRect()
   const boundingRect = rect
     ? {
         bottom: Math.round(rect.bottom),
@@ -1429,6 +1449,23 @@ function buildMatchFinderDebugSnapshot({
         right: Math.round(rect.right),
         top: Math.round(rect.top),
         width: Math.round(rect.width),
+      }
+    : {
+        bottom: 0,
+        height: 0,
+        left: 0,
+        right: 0,
+        top: 0,
+        width: 0,
+      }
+  const queriedBoundingRect = queriedRect
+    ? {
+        bottom: Math.round(queriedRect.bottom),
+        height: Math.round(queriedRect.height),
+        left: Math.round(queriedRect.left),
+        right: Math.round(queriedRect.right),
+        top: Math.round(queriedRect.top),
+        width: Math.round(queriedRect.width),
       }
     : {
         bottom: 0,
@@ -1451,6 +1488,33 @@ function buildMatchFinderDebugSnapshot({
         visibility: buttonStyles.visibility,
         width: buttonStyles.width,
         zIndex: buttonStyles.zIndex,
+      }
+    : {
+        clipPath: '',
+        display: '',
+        height: '',
+        opacity: '',
+        overflow: '',
+        pointerEvents: '',
+        position: '',
+        transform: '',
+        visibility: '',
+        width: '',
+        zIndex: '',
+      }
+  const queriedComputed = queriedButtonStyles
+    ? {
+        clipPath: queriedButtonStyles.clipPath,
+        display: queriedButtonStyles.display,
+        height: queriedButtonStyles.height,
+        opacity: queriedButtonStyles.opacity,
+        overflow: queriedButtonStyles.overflow,
+        pointerEvents: queriedButtonStyles.pointerEvents,
+        position: queriedButtonStyles.position,
+        transform: queriedButtonStyles.transform,
+        visibility: queriedButtonStyles.visibility,
+        width: queriedButtonStyles.width,
+        zIndex: queriedButtonStyles.zIndex,
       }
     : {
         clipPath: '',
@@ -1532,9 +1596,23 @@ function buildMatchFinderDebugSnapshot({
       visible,
       width: boundingRect.width,
     },
+    domButton: {
+      boundingRect: queriedBoundingRect,
+      computed: queriedComputed,
+      disabled: queriedButton?.disabled ?? false,
+      exists: Boolean(queriedButton),
+      formAttribute: queriedButton?.getAttribute('form') ?? '',
+      id: queriedButton?.id ?? '',
+      outerHTML: queriedButton?.outerHTML.slice(0, 3000) ?? '',
+      parentClassName: queriedButton?.parentElement?.className.toString() ?? '',
+      parentInnerHTML:
+        queriedButton?.parentElement?.innerHTML.slice(0, 5000) ?? '',
+      selector: '.match-request-action-bar button',
+      textContent: queriedButton?.textContent?.trim() ?? '',
+    },
     css: {
-      clippingAncestors: getClippingAncestors(button),
-      matchedRules: getMatchedDebugCssRules(button),
+      clippingAncestors: getClippingAncestors(queriedButton ?? button),
+      matchedRules: getMatchedDebugCssRules(queriedButton ?? button),
     },
     eventTrace,
     form: {
@@ -1684,6 +1762,7 @@ function MatchFinderDebugPanel({
       </div>
       <div className="match-finder-debug-grid">
         <DebugBlock title="React Runtime" value={snapshot.react} />
+        <DebugBlock title="Actual Button Selector" value={snapshot.domButton} />
         <DebugBlock title="Button DOM" value={snapshot.button} />
         <DebugBlock title="Form State" value={snapshot.form} />
         <DebugBlock title="Invariant Checks" value={snapshot.invariants} />
