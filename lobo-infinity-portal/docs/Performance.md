@@ -119,6 +119,8 @@ Community scheduling preserves the Version 3.x performance model:
 
 The scheduling route adds a small lazy chunk and does not add startup API requests for signed-out users.
 
+Version 4.0.1 keeps this model. Availability saves explicitly invalidate the scheduling cache group as well as the season command cache group so returning to Match Finder shows the saved scheduling profile without a stale cached response.
+
 ## Version 4.1 Mobile Performance
 
 Version 4.1 keeps the Version 4.0 JavaScript route model intact.

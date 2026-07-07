@@ -1213,7 +1213,20 @@ function CommissionerSchedulingPanel() {
     <div className="operations-stack">
       <PanelTitle eyebrow="Scheduling" title="Commissioner Scheduling" />
       <dl className="operations-metrics">
-        <Metric label="Pending Requests" value={state.data.requests.length} />
+        <Metric
+          label="Unanswered Requests"
+          value={
+            state.data.requests.filter((request) => request.status === 'Pending')
+              .length
+          }
+        />
+        <Metric
+          label="Upcoming Matches"
+          value={
+            state.data.requests.filter((request) => request.status === 'Accepted')
+              .length
+          }
+        />
         <Metric label="Generated" value={state.data.generatedAt} />
       </dl>
       <div className="operations-grid">
@@ -1234,11 +1247,27 @@ function CommissionerSchedulingPanel() {
                 value={division.playersBehind.length}
               />
               <Metric
+                label="No Availability"
+                value={division.inactivePlayers.length}
+              />
+              <Metric
                 label="Outstanding Matchups"
                 value={division.outstandingMatchups.length}
               />
             </dl>
             <div className="dashboard-news-list">
+              {division.outstandingMatchups.slice(0, 3).map((matchup) => (
+                <article
+                  className="dashboard-news-item"
+                  key={`${division.division}-${matchup.left}-${matchup.right}`}
+                >
+                  <span>Outstanding Match</span>
+                  <strong>
+                    {matchup.left} vs {matchup.right}
+                  </strong>
+                  <p>Required league game has not been completed.</p>
+                </article>
+              ))}
               {division.suggestedReminderRecipients.slice(0, 4).map((player) => (
                 <Link
                   className="dashboard-news-item"

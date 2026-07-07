@@ -640,6 +640,8 @@ Reliability actions must write reliability audit entries and must not bypass exi
 
 Version 4.0 adds authenticated scheduling APIs without changing game, standings, identity, Event Engine, lifecycle, integrity, automation, or notification-state contracts.
 
+Version 4.0.1 keeps the same response schema for backward compatibility, but the player-facing scheduling workflow is online-only. Physical venue fields such as `location`, `homeStore`, `city`, `maxTravelDistance`, and `preferredLocations` are deprecated presentation fields and should not be used for recommendations or new UI.
+
 ### Scheduling Center
 
 Action:
@@ -709,6 +711,8 @@ Actions:
 - `POST action=respondSchedulingRequest`
 
 All mutations require an authenticated league player. Scheduling request responses require the signed-in player to be a participant or an authorized operations user.
+
+`createSchedulingRequest` requires `opponent`, `proposedDate`, and `proposedTime`. `message` is optional. `location` remains accepted for legacy compatibility but is ignored by the online league workflow.
 
 ### Calendar Export
 

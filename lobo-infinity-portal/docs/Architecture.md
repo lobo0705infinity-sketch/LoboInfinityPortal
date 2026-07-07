@@ -112,6 +112,8 @@ The scheduling model extends existing systems:
 
 Scheduling does not modify game results, standings formulas, Event Lifecycle, Integrity validation, Discord automation, or authentication.
 
+Version 4.0.1 narrows scheduling to the league's online model. Player-facing availability and match requests use status, preferred days, preferred time window, Discord handle, and optional notes. Physical location metadata remains backward-compatible in the data model but is not used for recommendations or player-facing scheduling decisions.
+
 ## Mobile Experience Architecture
 
 Version 4.1 makes the portal mobile-first at the presentation layer.

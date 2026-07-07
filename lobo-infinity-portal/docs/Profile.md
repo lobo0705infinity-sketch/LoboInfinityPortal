@@ -13,10 +13,8 @@ The portal may display a player display name, but all statistics, games, achieve
 Profiles may display:
 
 - Availability status.
+- Preferred days.
 - Preferred times.
-- Home store.
-- City.
-- Preferred locations.
 - Discord handle.
 - Schedule Match link.
 

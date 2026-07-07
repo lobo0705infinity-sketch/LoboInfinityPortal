@@ -4833,6 +4833,17 @@
   margin-bottom: 1rem;
 }
 
+.scheduling-save-confirmation {
+  align-self: center;
+  border: 1px solid rgba(46, 204, 113, 0.36);
+  border-radius: 999px;
+  color: #8ff0bd;
+  font-size: 0.76rem;
+  font-weight: 900;
+  padding: 7px 10px;
+  text-transform: uppercase;
+}
+
 .scheduling-form {
   display: grid;
   gap: 0.85rem;
@@ -4933,7 +4944,9 @@
 
 .scheduling-card dd {
   margin: 0;
+  max-width: 62%;
   text-align: right;
+  overflow-wrap: anywhere;
 }
 
 .scheduling-card-actions {

@@ -76,7 +76,12 @@ function getMatchFinder(e) {
 
 function updateSchedulingAvailability(e) {
 
-  return updateSeasonAvailability(e);
+  const result =
+    updateSeasonAvailability(e);
+
+  invalidatePortalCacheGroup("scheduling");
+
+  return result;
 
 }
 
@@ -116,7 +121,7 @@ function createSchedulingRequest(e) {
     proposedTime:
       getSchedulingString(params.proposedTime),
     location:
-      getSchedulingString(params.location),
+      "",
     message:
       getSchedulingString(params.message),
     status:
@@ -405,11 +410,8 @@ function getSchedulingRecommendationScore(context, opponent, overlap, pending) {
   if (overlap)
     score += 30;
 
-  if (getSchedulingString(opponent.preferredStore) !== "")
-    score += 10;
-
   if (opponent.games < context.standing.games)
-    score += 10;
+    score += 15;
 
   if (pending)
     score -= 25;
@@ -428,14 +430,6 @@ function buildSchedulingRecommendationReason(context, opponent, overlap, pending
       "You and " +
       opponent.displayName +
       " have overlapping availability. This is a high-priority remaining league match."
-    );
-
-  if (getSchedulingString(opponent.preferredStore) !== "")
-    return (
-      opponent.displayName +
-      " has a preferred store recorded: " +
-      opponent.preferredStore +
-      "."
     );
 
   if (opponent.games < context.standing.games)
@@ -552,8 +546,10 @@ function buildSchedulingActivity(requests) {
             request.fromPlayer +
             " -> " +
             request.toPlayer +
+            " on " +
+            request.proposedDate +
             " at " +
-            (request.location || "location TBD"),
+            request.proposedTime,
           timestamp:
             request.updatedAt,
           link:
@@ -864,9 +860,7 @@ function addSchedulingNotifications(notifications, user) {
           body:
             request.proposedDate +
             " " +
-            request.proposedTime +
-            " at " +
-            (request.location || "location TBD"),
+            request.proposedTime,
           timestamp:
             request.updatedAt || request.createdAt,
           link:
@@ -904,7 +898,7 @@ function buildSchedulingIcs(request) {
     "DTSTAMP:" + Utilities.formatDate(new Date(), "GMT", "yyyyMMdd'T'HHmmss'Z'"),
     "DTSTART:" + start,
     "SUMMARY:Lobo League Match: " + request.fromPlayer + " vs " + request.toPlayer,
-    "LOCATION:" + request.location,
+    "LOCATION:Online",
     "DESCRIPTION:" + request.message,
     "END:VEVENT",
     "END:VCALENDAR"

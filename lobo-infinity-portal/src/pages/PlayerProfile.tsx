@@ -202,17 +202,17 @@ function PlayerProfile() {
         <ProfileCard title="Scheduling">
           <Metric
             label="Availability"
-            value={profileState.player.availability.status || 'Not set'}
+            value={
+              profileState.player.availability.status || 'No availability added yet.'
+            }
           />
           <Metric
-            label="Preferred Times"
+            label="Preferred Days"
+            value={profileState.player.availability.preferredDays}
+          />
+          <Metric
+            label="Preferred Time Window"
             value={profileState.player.availability.preferredTimes}
-          />
-          <Metric label="Home Store" value={profileState.player.homeStore} />
-          <Metric label="City" value={profileState.player.city} />
-          <Metric
-            label="Preferred Locations"
-            value={profileState.player.preferredLocations}
           />
           <Metric label="Discord" value={profileState.player.discordHandle} />
           <Link

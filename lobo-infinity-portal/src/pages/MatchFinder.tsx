@@ -23,22 +23,13 @@ type MatchFinderState =
       status: 'error'
     }
 
-const dayFields = [
-  ['monday', 'Monday'],
-  ['tuesday', 'Tuesday'],
-  ['wednesday', 'Wednesday'],
-  ['thursday', 'Thursday'],
-  ['friday', 'Friday'],
-  ['saturday', 'Saturday'],
-  ['sunday', 'Sunday'],
-] as const
-
 function MatchFinder() {
   const auth = useAuth()
   const [searchParams] = useSearchParams()
   const preferredOpponent = searchParams.get('opponent') ?? ''
   const [state, setState] = useState<MatchFinderState>({ status: 'loading' })
   const [working, setWorking] = useState('')
+  const [availabilityMessage, setAvailabilityMessage] = useState('')
 
   useEffect(() => {
     if (auth.status !== 'ready') {
@@ -75,10 +66,12 @@ function MatchFinder() {
 
   async function updateAvailability(params: Record<string, string>) {
     setWorking('availability')
+    setAvailabilityMessage('')
     try {
       await apiClient.updateSchedulingAvailability(params)
       const data = await apiClient.getSchedulingCenter()
       setState({ data, status: 'success' })
+      setAvailabilityMessage('Availability Saved')
     } finally {
       setWorking('')
     }
@@ -188,6 +181,7 @@ function MatchFinder() {
 
       <section className="scheduling-grid">
         <AvailabilityEditor
+          confirmation={availabilityMessage}
           data={state.data}
           disabled={working !== ''}
           onSubmit={updateAvailability}
@@ -294,16 +288,18 @@ function MatchFinderHeader() {
     <section className="page-header">
       <p className="eyebrow">Community Scheduling</p>
       <h1>Match Finder</h1>
-      <p>Find remaining opponents, compare availability, and send scheduling requests.</p>
+      <p>Find online league opponents, compare availability, and send a request in seconds.</p>
     </section>
   )
 }
 
 function AvailabilityEditor({
+  confirmation,
   data,
   disabled,
   onSubmit,
 }: {
+  confirmation: string
   data: SchedulingCenterData
   disabled: boolean
   onSubmit: (params: Record<string, string>) => Promise<void>
@@ -324,7 +320,10 @@ function AvailabilityEditor({
     <section className="panel scheduling-panel" id="availability">
       <div className="panel-heading">
         <p className="eyebrow">Availability</p>
-        <h2>My Availability</h2>
+        <h2>My Scheduling Profile</h2>
+        {confirmation ? (
+          <span className="scheduling-save-confirmation">✓ {confirmation}</span>
+        ) : null}
       </div>
       <form className="scheduling-form" onSubmit={(event) => void submit(event)}>
         <label>
@@ -337,52 +336,38 @@ function AvailabilityEditor({
         </label>
         <label>
           Preferred Days
-          <input defaultValue={availability.preferredDays} name="preferredDays" />
+          <input
+            defaultValue={availability.preferredDays}
+            name="preferredDays"
+            placeholder="Example: Tuesday, Thursday, Sunday"
+          />
         </label>
         <label>
-          Preferred Times
-          <input defaultValue={availability.preferredTimes} name="preferredTimes" />
-        </label>
-        <div className="scheduling-days">
-          {dayFields.map(([field, label]) => (
-            <label key={field}>
-              {label}
-              <select defaultValue={availability[field] || ''} name={field}>
-                <option value="">Not Set</option>
-                <option>Morning</option>
-                <option>Afternoon</option>
-                <option>Evening</option>
-                <option>Unavailable</option>
-              </select>
-            </label>
-          ))}
-        </div>
-        <label>
-          Home Store
-          <input defaultValue={availability.homeStore} name="homeStore" />
-        </label>
-        <label>
-          City
-          <input defaultValue={availability.city} name="city" />
-        </label>
-        <label>
-          Max Travel Distance
-          <input defaultValue={availability.maxTravelDistance} name="maxTravelDistance" />
-        </label>
-        <label>
-          Preferred Locations
-          <input defaultValue={availability.preferredLocations} name="preferredLocations" />
+          Preferred Time Window
+          <input
+            defaultValue={availability.preferredTimes}
+            name="preferredTimes"
+            placeholder="Example: after 7 PM Eastern"
+          />
         </label>
         <label>
           Discord Handle
-          <input defaultValue={availability.discordHandle} name="discordHandle" />
+          <input
+            defaultValue={availability.discordHandle}
+            name="discordHandle"
+            placeholder="Example: lobo0705"
+          />
         </label>
         <label className="scheduling-form-wide">
-          Notes
-          <textarea defaultValue={availability.notes} name="notes" />
+          Optional Notes
+          <textarea
+            defaultValue={availability.notes}
+            name="notes"
+            placeholder="Anything opponents should know before messaging you."
+          />
         </label>
         <button disabled={disabled} type="submit">
-          Save Availability
+          {disabled ? 'Saving...' : 'Save Availability'}
         </button>
       </form>
     </section>
@@ -441,13 +426,9 @@ function ScheduleRequestForm({
           Time
           <input name="proposedTime" type="time" required />
         </label>
-        <label>
-          Location
-          <input name="location" placeholder="Store or table location" />
-        </label>
         <label className="scheduling-form-wide">
           Message
-          <textarea name="message" placeholder="Optional scheduling note" />
+          <textarea name="message" placeholder="Optional note for your opponent" />
         </label>
         <button disabled={disabled || recommendations.length === 0} type="submit">
           Send Request
@@ -462,26 +443,38 @@ function RecommendationCard({
 }: {
   recommendation: SchedulingRecommendation
 }) {
+  const recommendationLabel = getRecommendationLabel(recommendation)
+  const availabilityText =
+    recommendation.availabilitySummary || 'No availability added yet.'
+  const discordText =
+    recommendation.discordHandle || 'Discord handle not provided.'
+
   return (
     <article className="scheduling-card">
       <div>
-        <span>{recommendation.priority}</span>
+        <span>{recommendationLabel}</span>
         <h3>{formatPlayerName(recommendation.player, recommendation.displayName)}</h3>
         <p>{recommendation.reason}</p>
       </div>
       <dl>
-        <Metric label="Score" value={recommendation.score} />
-        <Metric label="Games" value={recommendation.gamesCompleted} />
-        <Metric label="Availability" value={recommendation.availabilitySummary || 'Not set'} />
-        <Metric label="Store" value={recommendation.preferredStore || 'Not set'} />
-        <Metric label="Discord" value={recommendation.discordHandle || 'Not set'} />
+        <Metric label="Division" value={recommendation.division} />
+        <Metric
+          label="Remaining League Match"
+          value={
+            recommendation.gamesRemainingBetweenPlayers > 0
+              ? 'Required'
+              : 'Completed'
+          }
+        />
+        <Metric label="Availability" value={availabilityText} />
+        <Metric label="Discord" value={discordText} />
       </dl>
       <div className="scheduling-card-actions">
         <Link to={recommendation.profileLink || `/players/${encodeURIComponent(recommendation.player)}`}>
           Profile
         </Link>
         <Link to={`/match-finder?opponent=${encodeURIComponent(recommendation.player)}`}>
-          Schedule
+          Request Match
         </Link>
       </div>
     </article>
@@ -520,8 +513,7 @@ function RequestList({
               {request.fromPlayer} vs {request.toPlayer}
             </strong>
             <p>
-              {request.proposedDate} {request.proposedTime} at{' '}
-              {request.location || 'location TBD'}
+              {request.proposedDate} at {request.proposedTime}
             </p>
             {request.message ? <p>{request.message}</p> : null}
             <div className="scheduling-card-actions">
@@ -571,9 +563,25 @@ function Metric({ label, value }: { label: string; value: number | string }) {
   return (
     <div>
       <dt>{label}</dt>
-      <dd>{value === '' ? 'Not set' : value}</dd>
+      <dd>{value === '' ? 'Not provided yet.' : value}</dd>
     </div>
   )
+}
+
+function getRecommendationLabel(recommendation: SchedulingRecommendation) {
+  if (recommendation.priority === 'High') {
+    return 'Priority Opponent'
+  }
+
+  if (recommendation.priority === 'Recommended') {
+    return 'Excellent Match'
+  }
+
+  if (recommendation.reason.toLowerCase().includes('pending')) {
+    return 'Request Pending'
+  }
+
+  return 'Good Match'
 }
 
 export default MatchFinder

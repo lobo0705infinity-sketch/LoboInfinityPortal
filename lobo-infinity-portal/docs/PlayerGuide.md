@@ -22,18 +22,15 @@ The page shows:
 
 From Match Finder or My Profile, update:
 
-- Weekly availability.
+- Status.
 - Preferred days.
-- Preferred times.
-- Home store.
-- City.
-- Travel distance.
-- Preferred locations.
+- Preferred time window.
 - Discord handle.
+- Optional notes.
 
 ## Sending a Request
 
-Choose an opponent, date, time, location, and optional message.
+Choose an opponent, date, time, and optional message.
 
 The opponent receives a portal notification and can accept, decline, or suggest another time.
 

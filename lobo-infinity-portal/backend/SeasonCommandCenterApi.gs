@@ -471,8 +471,6 @@ function buildNextOpponentRecommendations(context, opponents) {
         reason:
           overlap
             ? "Availability overlap"
-            : getSeasonCommandString(opponent.availability.homeStore) !== ""
-              ? "Preferred store recorded"
             : opponent.games < context.standing.games
               ? "Opponent needs games"
               : "Remaining division pairing",
@@ -1022,9 +1020,6 @@ function buildSeasonAvailabilitySummary(availability) {
 
   if (availability.preferredTimes)
     pieces.push(availability.preferredTimes);
-
-  if (availability.homeStore)
-    pieces.push(availability.homeStore);
 
   return pieces.join(" - ");
 
