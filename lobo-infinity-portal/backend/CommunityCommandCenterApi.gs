@@ -37,6 +37,9 @@ function getCommunityCommandCenter(e) {
   const currentEvent =
     getCurrentLeagueEvent();
 
+  const activity =
+    buildCommunityActivity(context.games);
+
   return jsonOutput({
     success: true,
     commandCenter: {
@@ -57,14 +60,35 @@ function getCommunityCommandCenter(e) {
           seasonCommand,
           context.games
         ),
+      today:
+        buildCommunityTodayActions(
+          auth.user,
+          seasonCommand,
+          currentEvent,
+          context.settings
+        ),
       nextActions:
         buildCommunityNextActions(
           auth.user,
           seasonCommand,
-          currentEvent
+          currentEvent,
+          context.settings,
+          activity
         ),
       communityActivity:
-        buildCommunityActivity(context.games),
+        activity,
+      nudgeEngine:
+        buildCommunityNudges(
+          auth.user,
+          seasonCommand,
+          currentEvent,
+          activity
+        ),
+      eventSwitcher:
+        buildCommunityEventSwitcher(
+          events,
+          currentEvent
+        ),
       promotion:
         seasonCommand.promotion,
       schedule:
@@ -78,7 +102,7 @@ function getCommunityCommandCenter(e) {
           seasonCommand
         ),
       quickActions:
-        buildCommunityQuickActions()
+        buildCommunityQuickActions(context.settings)
     }
   });
 
@@ -135,6 +159,10 @@ function buildCommunityActiveEvents(events, seasonCommand) {
           seasonCommand.nextOpponents[0]
             ? "Schedule Next Match"
             : "View Event",
+        statusDetail:
+          event.id === EVENT_ENGINE_DEFAULT_EVENT_ID
+            ? "Week " + seasonCommand.deadlines.currentWeek
+            : getCommunityCommandString(event.lifecycleStage || event.status),
         link:
           event.id === EVENT_ENGINE_DEFAULT_EVENT_ID
             ? "/standings"
@@ -146,14 +174,31 @@ function buildCommunityActiveEvents(events, seasonCommand) {
 
 function buildCommunityOpponentTracker(seasonCommand, games) {
 
+  const divisionLookup = {};
+
+  seasonCommand.divisionStatus.forEach(function(row) {
+    divisionLookup[getCommunityCommandString(row.player).toLowerCase()] = row;
+  });
+
   return {
+    progress: {
+      gamesCompleted: seasonCommand.progress.gamesCompleted,
+      gamesRequired: seasonCommand.progress.gamesRequired,
+      gamesRemaining: seasonCommand.progress.gamesRemaining,
+      completionPercentage: seasonCommand.progress.completionPercentage
+    },
     completed:
       seasonCommand.opponents
         .filter(function(opponent) {
           return opponent.status === "Already Played";
         })
         .map(function(opponent) {
-          return buildCommunityOpponentCard(opponent, games);
+          return buildCommunityOpponentCard(
+            opponent,
+            games,
+            divisionLookup,
+            seasonCommand.player.division
+          );
         }),
     remaining:
       seasonCommand.opponents
@@ -161,7 +206,12 @@ function buildCommunityOpponentTracker(seasonCommand, games) {
           return opponent.status !== "Already Played";
         })
         .map(function(opponent) {
-          return buildCommunityOpponentCard(opponent, games);
+          return buildCommunityOpponentCard(
+            opponent,
+            games,
+            divisionLookup,
+            seasonCommand.player.division
+          );
         }),
     suggested:
       seasonCommand.nextOpponents[0] || null
@@ -169,7 +219,7 @@ function buildCommunityOpponentTracker(seasonCommand, games) {
 
 }
 
-function buildCommunityOpponentCard(opponent, games) {
+function buildCommunityOpponentCard(opponent, games, divisionLookup, playerDivision) {
 
   const recent =
     games.filter(function(game) {
@@ -182,11 +232,16 @@ function buildCommunityOpponentCard(opponent, games) {
       );
     })[0] || null;
 
+  const standingsRow =
+    divisionLookup[getCommunityCommandString(opponent.player).toLowerCase()] || {};
+
   return {
     player: opponent.player,
     displayName:
       opponent.displayName ||
       opponent.player,
+    division:
+      standingsRow.division || playerDivision || "",
     status: opponent.status,
     rank: opponent.rank,
     gamesCompleted: opponent.games,
@@ -197,14 +252,46 @@ function buildCommunityOpponentCard(opponent, games) {
     availability:
       opponent.availability || {
         status: "Not Set"
-      },
+    },
     quickMessage:
-      "Message"
+      "Message",
+    suggestedPriority:
+      opponent.games < 3
+        ? "High"
+        : opponent.status === "Scheduled"
+          ? "Ready"
+          : "Normal",
+    reason:
+      opponent.games < 3
+        ? "Needs games"
+        : opponent.status === "Scheduled"
+          ? "Availability set"
+          : "Remaining pairing"
   };
 
 }
 
-function buildCommunityNextActions(user, seasonCommand, currentEvent) {
+function buildCommunityTodayActions(user, seasonCommand, currentEvent, settings) {
+
+  return buildCommunityNextActions(
+    user,
+    seasonCommand,
+    currentEvent,
+    settings,
+    null
+  )
+    .filter(function(action) {
+      return (
+        action.priority === "Critical" ||
+        action.priority === "High" ||
+        action.priority === "Normal"
+      );
+    })
+    .slice(0, 3);
+
+}
+
+function buildCommunityNextActions(user, seasonCommand, currentEvent, settings, activity) {
 
   const actions = [];
 
@@ -236,7 +323,7 @@ function buildCommunityNextActions(user, seasonCommand, currentEvent) {
         seasonCommand.deadlines.lateStatus === "On Schedule"
           ? "Normal"
           : "High",
-      link: "/"
+      link: "/standings"
     });
 
   if (seasonCommand.deadlines.seasonEndDeadline)
@@ -246,7 +333,7 @@ function buildCommunityNextActions(user, seasonCommand, currentEvent) {
         seasonCommand.deadlines.seasonEndDeadline +
         ".",
       priority: "Normal",
-      link: "/"
+      link: "/standings"
     });
 
   if (currentEvent && currentEvent.registration === "Registration Open")
@@ -256,7 +343,7 @@ function buildCommunityNextActions(user, seasonCommand, currentEvent) {
         currentEvent.name +
         ".",
       priority: "Normal",
-      link: "/"
+      link: "/standings"
     });
 
   if (getCommunityPlayerArmyListCount(user.leaguePlayer) === 0)
@@ -264,6 +351,30 @@ function buildCommunityNextActions(user, seasonCommand, currentEvent) {
       label: "Submit your first Army List.",
       priority: "Normal",
       link: "/army-lists/submit"
+    });
+
+  if (activity && activity.news[0])
+    actions.push({
+      label: "Read the latest commissioner news.",
+      priority: "Normal",
+      link: activity.news[0].link || "/news"
+    });
+
+  if (activity && activity.streams[0])
+    actions.push({
+      label: "Watch the latest stream.",
+      priority: "Low",
+      link: activity.streams[0].youtubeUrl || "/streams"
+    });
+
+  const submitUrl =
+    getCommunityCommandString(settings && settings.googleFormUrl);
+
+  if (submitUrl !== "")
+    actions.push({
+      label: "Submit a completed game.",
+      priority: "Low",
+      link: submitUrl
     });
 
   return actions.slice(0, 5);
@@ -301,6 +412,142 @@ function buildCommunityActivity(games) {
     featuredBattle:
       games[0] || null
   };
+
+}
+
+function buildCommunityNudges(user, seasonCommand, currentEvent, activity) {
+
+  const nudges = [];
+  const recommended =
+    seasonCommand.nextOpponents[0];
+
+  if (recommended)
+    nudges.push({
+      category: "Priority",
+      priority:
+        recommended.urgency === "High"
+          ? "High"
+          : "Normal",
+      reason:
+        "You still have an unplayed division pairing with " +
+        recommended.displayName +
+        ".",
+      suggestedAction:
+        "Schedule " +
+        recommended.displayName,
+      deepLink:
+        "/players/" +
+        encodeURIComponent(recommended.player)
+    });
+
+  if (seasonCommand.deadlines.gamesNeededBeforeMidseason > 0)
+    nudges.push({
+      category: "Deadline",
+      priority:
+        seasonCommand.deadlines.lateStatus === "On Schedule"
+          ? "Normal"
+          : "High",
+      reason:
+        "You need " +
+        seasonCommand.deadlines.gamesNeededBeforeMidseason +
+        " more games before the Midseason Deadline.",
+      suggestedAction: "Review remaining games",
+      deepLink: "/standings"
+    });
+
+  if (seasonCommand.promotion.status !== "Safe")
+    nudges.push({
+      category:
+        seasonCommand.promotion.promotionZone
+          ? "Promotion"
+          : "Relegation",
+      priority: "High",
+      reason:
+        "Your current rank is #" +
+        seasonCommand.promotion.currentRank +
+        " and your table status is " +
+        seasonCommand.promotion.status +
+        ".",
+      suggestedAction: "Review promotion tracker",
+      deepLink: "/standings"
+    });
+
+  if (
+    activity &&
+    activity.latestAchievements &&
+    activity.latestAchievements[0]
+  )
+    nudges.push({
+      category: "Achievement",
+      priority: "Normal",
+      reason:
+        activity.latestAchievements[0].title,
+      suggestedAction: "View achievements",
+      deepLink:
+        activity.latestAchievements[0].link || "/profile"
+    });
+
+  if (currentEvent && currentEvent.registration === "Registration Open")
+    nudges.push({
+      category: "Tournament",
+      priority: "Normal",
+      reason:
+        "Registration is open for " +
+        currentEvent.name +
+        ".",
+      suggestedAction: "Review event details",
+      deepLink: "/standings"
+    });
+
+  if (
+    seasonCommand.leagueActivity &&
+    seasonCommand.leagueActivity.playersCatchingUp &&
+    seasonCommand.leagueActivity.playersCatchingUp.length > 0
+  )
+    nudges.push({
+      category: "Community",
+      priority: "Low",
+      reason:
+        seasonCommand.leagueActivity.playersCatchingUp.length +
+        " players in your division are still building season progress.",
+      suggestedAction: "Find an active opponent",
+      deepLink: "/players"
+    });
+
+  if (nudges.length === 0)
+    nudges.push({
+      category: "Status",
+      priority: "Low",
+      reason: "Not enough information yet.",
+      suggestedAction: "Check back after more league activity",
+      deepLink: "/"
+    });
+
+  return nudges.slice(0, 5);
+
+}
+
+function buildCommunityEventSwitcher(events, currentEvent) {
+
+  return events
+    .filter(function(event) {
+      return getCommunityCommandString(event.status) !== "";
+    })
+    .map(function(event) {
+      return {
+        eventId: event.id,
+        label: event.name,
+        type: event.type,
+        status: event.status,
+        active:
+          currentEvent &&
+          event.id === currentEvent.id,
+        link:
+          event.id === EVENT_ENGINE_DEFAULT_EVENT_ID
+            ? "/standings"
+            : "/"
+      };
+    });
 
 }
 
@@ -366,12 +613,15 @@ function buildCommunityIntelligenceSummary(user, seasonCommand) {
 
 }
 
-function buildCommunityQuickActions() {
+function buildCommunityQuickActions(settings) {
+
+  const submitUrl =
+    getCommunityCommandString(settings && settings.googleFormUrl) || "/";
 
   return [
     {
       label: "Submit Game",
-      link: "/"
+      link: submitUrl
     },
     {
       label: "Submit Army List",
@@ -388,6 +638,10 @@ function buildCommunityQuickActions() {
     {
       label: "View My Profile",
       link: "/profile"
+    },
+    {
+      label: "Player Intelligence",
+      link: "/analytics"
     }
   ];
 

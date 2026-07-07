@@ -28,6 +28,8 @@ Do not perform historical data migration in this release unless explicitly re-sc
 
 Version 3.1 ships the authenticated Community Command Center as the first Community Home surface. The broader public event directory remains future work.
 
+Version 3.1.1 completes the first player workflow pass by turning the Community Command Center into a personal mission briefing with Today, My Remaining Games, Nudge Engine, event switching, and prioritized next actions.
+
 ### 3.2 Event Migration
 
 Add explicit event scope to historical data after migration validation has passed.

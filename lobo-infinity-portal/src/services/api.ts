@@ -759,17 +759,21 @@ export type CommunityCommandEvent = {
   name: string
   primaryAction: string
   status: string
+  statusDetail: string
   type: string
 }
 
 export type CommunityOpponentCard = {
   availability: SeasonAvailability
   displayName: string
+  division: string
   gamesCompleted: number
   lastActivity: string
   player: string
   quickMessage: string
   rank: number
+  reason: string
+  suggestedPriority: string
   status: string
 }
 
@@ -803,13 +807,38 @@ export type CommunityCommandSchedule = {
   upcomingEventDates: string[]
 }
 
+export type CommunityNudge = {
+  category: string
+  deepLink: string
+  priority: string
+  reason: string
+  suggestedAction: string
+}
+
+export type CommunityEventSwitcherItem = {
+  active: boolean
+  eventId: string
+  label: string
+  link: string
+  status: string
+  type: string
+}
+
 export type CommunityCommandCenterData = {
   activeEvents: CommunityCommandEvent[]
   communityActivity: CommunityCommandActivity
+  eventSwitcher: CommunityEventSwitcherItem[]
   intelligence: string[]
+  nudgeEngine: CommunityNudge[]
   nextActions: CommunityCommandAction[]
   opponentTracker: {
     completed: CommunityOpponentCard[]
+    progress: {
+      completionPercentage: number
+      gamesCompleted: number
+      gamesRemaining: number
+      gamesRequired: number
+    }
     remaining: CommunityOpponentCard[]
     suggested: SeasonRecommendation | null
   }
@@ -819,6 +848,7 @@ export type CommunityCommandCenterData = {
     link: string
   }>
   schedule: CommunityCommandSchedule
+  today: CommunityCommandAction[]
   welcome: CommunityCommandWelcome
 }
 
@@ -2918,8 +2948,14 @@ function normalizeCommunityCommandCenterPayload(
     communityActivity: normalizeCommunityCommandActivity(
       getRequiredRecord(commandCenter, 'communityActivity'),
     ),
+    eventSwitcher: getRequiredArray(commandCenter, 'eventSwitcher').map(
+      normalizeCommunityEventSwitcherItem,
+    ),
     intelligence: getRequiredArray(commandCenter, 'intelligence').map((item) =>
       typeof item === 'string' ? item : String(item ?? ''),
+    ),
+    nudgeEngine: getRequiredArray(commandCenter, 'nudgeEngine').map(
+      normalizeCommunityNudge,
     ),
     nextActions: getRequiredArray(commandCenter, 'nextActions').map(
       normalizeCommunityCommandAction,
@@ -2940,6 +2976,9 @@ function normalizeCommunityCommandCenterPayload(
     }),
     schedule: normalizeCommunityCommandSchedule(
       getRequiredRecord(commandCenter, 'schedule'),
+    ),
+    today: getRequiredArray(commandCenter, 'today').map(
+      normalizeCommunityCommandAction,
     ),
     welcome: normalizeCommunityCommandWelcome(
       getRequiredRecord(commandCenter, 'welcome'),
@@ -2973,6 +3012,7 @@ function normalizeCommunityCommandEvent(
     name: getRequiredString(record, 'name'),
     primaryAction: getRequiredString(record, 'primaryAction'),
     status: getRequiredString(record, 'status'),
+    statusDetail: getString(record, 'statusDetail'),
     type: getRequiredString(record, 'type'),
   }
 }
@@ -2986,6 +3026,9 @@ function normalizeCommunityOpponentTracker(
     completed: getRequiredArray(record, 'completed').map(
       normalizeCommunityOpponentCard,
     ),
+    progress: normalizeCommunityOpponentProgress(
+      getRequiredRecord(record, 'progress'),
+    ),
     remaining: getRequiredArray(record, 'remaining').map(
       normalizeCommunityOpponentCard,
     ),
@@ -2993,6 +3036,17 @@ function normalizeCommunityOpponentTracker(
       suggested && typeof suggested === 'object' && !Array.isArray(suggested)
         ? normalizeSeasonRecommendation(suggested)
         : null,
+  }
+}
+
+function normalizeCommunityOpponentProgress(
+  record: Record<string, unknown>,
+) {
+  return {
+    completionPercentage: getRequiredNumber(record, 'completionPercentage'),
+    gamesCompleted: getRequiredNumber(record, 'gamesCompleted'),
+    gamesRemaining: getRequiredNumber(record, 'gamesRemaining'),
+    gamesRequired: getRequiredNumber(record, 'gamesRequired'),
   }
 }
 
@@ -3006,11 +3060,14 @@ function normalizeCommunityOpponentCard(
       getRequiredRecord(record, 'availability'),
     ),
     displayName: getString(record, 'displayName') || getRequiredString(record, 'player'),
+    division: getString(record, 'division'),
     gamesCompleted: getRequiredNumber(record, 'gamesCompleted'),
     lastActivity: getString(record, 'lastActivity'),
     player: getRequiredString(record, 'player'),
     quickMessage: getString(record, 'quickMessage') || 'Message',
     rank: getRequiredNumber(record, 'rank'),
+    reason: getString(record, 'reason'),
+    suggestedPriority: getString(record, 'suggestedPriority') || 'Normal',
     status: getRequiredString(record, 'status'),
   }
 }
@@ -3060,6 +3117,33 @@ function normalizeCommunityCommandSchedule(
     upcomingEventDates: getRequiredArray(record, 'upcomingEventDates').map(
       (item) => (typeof item === 'string' ? item : String(item ?? '')),
     ),
+  }
+}
+
+function normalizeCommunityNudge(item: unknown): CommunityNudge {
+  const record = asRecord(item, 'Community nudge')
+
+  return {
+    category: getRequiredString(record, 'category'),
+    deepLink: getRequiredString(record, 'deepLink'),
+    priority: getRequiredString(record, 'priority'),
+    reason: getRequiredString(record, 'reason'),
+    suggestedAction: getRequiredString(record, 'suggestedAction'),
+  }
+}
+
+function normalizeCommunityEventSwitcherItem(
+  item: unknown,
+): CommunityEventSwitcherItem {
+  const record = asRecord(item, 'Community event switcher item')
+
+  return {
+    active: Boolean(record.active),
+    eventId: getRequiredString(record, 'eventId'),
+    label: getRequiredString(record, 'label'),
+    link: getRequiredString(record, 'link'),
+    status: getRequiredString(record, 'status'),
+    type: getRequiredString(record, 'type'),
   }
 }
 

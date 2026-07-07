@@ -80,7 +80,7 @@ Version 3.0B adds Event Engine foundation actions without changing legacy API be
 
 ## Season Command Center Actions
 
-- `communityCommandCenter`: authenticated read. Returns the signed-in player's Community Command Center aggregate, including welcome context, active events, opponent tracker, next actions, community activity, promotion tracker, schedule, intelligence summary, and quick actions. The lookup key is `leaguePlayer`, never Google display name.
+- `communityCommandCenter`: authenticated read. Returns the signed-in player's Community Command Center aggregate, including welcome context, Today mission briefing, active events, event switcher, opponent tracker, Nudge Engine, next actions, community activity, promotion tracker, schedule, intelligence summary, and quick actions. The lookup key is `leaguePlayer`, never Google display name.
 - `seasonCommandCenter`: authenticated read. Returns the signed-in player's season progress, opponent tracker, promotion tracker, deadline status, availability, division status, and commissioner summary. The lookup key is `leaguePlayer`, never Google display name.
 - `seasonAvailability`: authenticated mutation. Updates the signed-in player's match availability metadata in the Season Availability sheet and returns the refreshed `seasonCommandCenter` payload.
 

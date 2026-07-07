@@ -175,4 +175,8 @@ The command center reuses existing backend services:
 
 No new dependencies, startup requests, or public page-load blockers are introduced.
 
+Version 3.1.1 keeps the same request model.
+
+Today, My Remaining Games, Event Switcher, and Nudge Engine are derived inside the existing authenticated `communityCommandCenter` response. The frontend does not add a second workflow request, and signed-out users continue to avoid the authenticated command-center call.
+
 This avoids new anonymous startup requests and avoids duplicate statistics calculations.

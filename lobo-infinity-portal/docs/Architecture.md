@@ -374,3 +374,24 @@ Until Event Migration is completed, active Event data resolves through the Curre
 ```text
 event-current-league
 ```
+
+Version 3.1.1 refines the Community Command Center into a player workflow surface.
+
+It adds:
+
+- Today mission briefing.
+- Event switcher.
+- My Remaining Games with league progress.
+- What Should I Do Next recommendations.
+- Nudge Engine recommendations grounded in existing league data.
+
+The Nudge Engine is not a separate automation or statistics system. It is a Community Command Center subsystem that derives participation nudges from Season Command Center progress, Event Engine state, player army list state, community activity, and promotion/relegation position.
+
+Every nudge includes:
+
+- Priority.
+- Reason.
+- Suggested action.
+- Deep link.
+
+If the existing production services do not provide enough evidence for a useful recommendation, the Nudge Engine returns `Not enough information yet.`

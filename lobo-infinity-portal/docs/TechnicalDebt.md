@@ -14,6 +14,16 @@ Estimated impact: Medium.
 
 Suggested future release: 3.1.x or 3.2, depending on Event Migration sequencing.
 
+### Event-Specific Workflow Destinations
+
+Description: Version 3.1.1 supports event switching and workflow nudges, but non-league event detail pages still resolve to placeholder routes until future Event Dashboard work begins.
+
+Reason: The release scope improves the authenticated player workflow without implementing Event Dashboard, Campaign Dashboard, Tournament registration, or public Event Directory pages.
+
+Estimated impact: Medium.
+
+Suggested future release: 3.2 or 3.4, depending on Event Migration and Event Automation sequencing.
+
 ### Organization Persistence
 
 Description: Version 3.0D freezes Organization as the architectural parent above Community, but runtime persistence still begins at the Event Engine foundation sheets introduced in Version 3.0B.

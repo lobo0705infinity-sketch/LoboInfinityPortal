@@ -6220,19 +6220,57 @@
   grid-template-columns: minmax(0, 1.25fr) minmax(140px, 0.35fr) minmax(0, 1fr);
 }
 
+.community-mission-briefing {
+  background:
+    linear-gradient(135deg, rgba(193, 18, 31, 0.18), rgba(76, 201, 240, 0.08)),
+    rgba(8, 14, 22, 0.88);
+  border: 1px solid rgba(76, 201, 240, 0.2);
+  border-radius: 16px;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(0, 1.4fr) minmax(140px, 0.35fr) minmax(0, 0.85fr);
+  padding: 18px;
+}
+
+.community-event-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.community-event-tab {
+  background: rgba(8, 14, 22, 0.72);
+  border: 1px solid rgba(76, 201, 240, 0.14);
+  border-radius: 12px;
+  color: var(--text);
+  display: grid;
+  min-width: 148px;
+  padding: 12px 14px;
+  text-decoration: none;
+}
+
+.community-event-tab.active {
+  border-color: rgba(76, 201, 240, 0.48);
+  box-shadow: 0 0 0 1px rgba(76, 201, 240, 0.12);
+}
+
 .community-command-hero > div,
 .community-event-card,
 .community-action-row,
-.community-insight {
+.community-insight,
+.community-nudge-card {
   background: rgba(8, 14, 22, 0.72);
   border: 1px solid rgba(76, 201, 240, 0.14);
   border-radius: 14px;
   padding: 16px;
 }
 
+.community-mission-briefing span,
 .community-command-hero span,
+.community-event-tab span,
 .community-event-card span,
 .community-action-row span,
+.community-nudge-card span,
 .community-opponent-columns h4 {
   color: var(--text-muted);
   font-size: 0.72rem;
@@ -6241,6 +6279,11 @@
 }
 
 .community-command-hero h3 {
+  margin: 6px 0;
+}
+
+.community-mission-briefing h3 {
+  font-size: clamp(1.4rem, 3vw, 2.35rem);
   margin: 6px 0;
 }
 
@@ -6267,9 +6310,24 @@
 }
 
 .community-event-card,
-.community-action-row {
+.community-action-row,
+.community-nudge-card {
   color: var(--text);
   text-decoration: none;
+}
+
+.community-nudge-card {
+  display: grid;
+  gap: 8px;
+}
+
+.community-nudge-card.high,
+.community-nudge-card.critical {
+  border-color: rgba(255, 184, 77, 0.44);
+}
+
+.community-nudge-card p {
+  margin: 0;
 }
 
 .community-event-card {
@@ -6287,13 +6345,18 @@
 .community-event-card:hover,
 .community-event-card:focus-visible,
 .community-action-row:hover,
-.community-action-row:focus-visible {
+.community-action-row:focus-visible,
+.community-nudge-card:hover,
+.community-nudge-card:focus-visible,
+.community-event-tab:hover,
+.community-event-tab:focus-visible {
   border-color: rgba(193, 18, 31, 0.45);
   transform: translateY(-1px);
 }
 
 .community-event-card b,
-.community-action-row strong {
+.community-action-row strong,
+.community-nudge-card strong {
   color: var(--accent);
 }
 
@@ -6499,6 +6562,7 @@
 
 @media (max-width: 920px) {
   .season-command-hero,
+  .community-mission-briefing,
   .community-command-hero,
   .community-command-grid,
   .community-command-grid.wide,

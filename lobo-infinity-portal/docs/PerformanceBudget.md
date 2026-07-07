@@ -156,3 +156,18 @@ Version 3.1 adds an authenticated Community Command Center to the Dashboard.
 - New dependencies: none.
 
 Justification: The added bytes replace the authenticated Season Command panel with the Community Command Center and reuse the same deferred authenticated request pattern. No public startup requests are added.
+
+## Version 3.1.1 Player Workflow Budget Result
+
+Version 3.1.1 adds workflow prioritization and Nudge Engine presentation to the existing authenticated Community Command Center request.
+
+- Initial JavaScript bundle: `index-CQE0sL5_.js`, 309,830 bytes.
+- JavaScript delta from Version 3.1: approximately +810 bytes.
+- CSS bundle: `index-Dkr_EScm.css`, 105,860 bytes.
+- CSS delta from Version 3.1: approximately +1,110 bytes.
+- Dashboard route chunk: `Dashboard-CozPq_eZ.js`, 32,730 bytes.
+- Startup API requests for signed-out users: unchanged.
+- Authenticated Dashboard: still uses one deferred `communityCommandCenter` request after the Dashboard critical path.
+- New dependencies: none.
+
+Justification: The added bytes render Today, Event Switcher, My Remaining Games, and Nudge Engine inside the existing Community Command Center surface. No additional frontend request or new backend service path is introduced.

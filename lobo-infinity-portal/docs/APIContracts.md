@@ -336,8 +336,11 @@ Response:
     "welcome": {},
     "activeEvents": [],
     "opponentTracker": {},
+    "today": [],
     "nextActions": [],
     "communityActivity": {},
+    "nudgeEngine": [],
+    "eventSwitcher": [],
     "promotion": {},
     "schedule": {},
     "intelligence": [],
@@ -366,6 +369,7 @@ Required `activeEvents[]` fields:
 - `gamesRemaining`
 - `completionPercentage`
 - `primaryAction`
+- `statusDetail`
 - `link`
 
 Required `opponentTracker` fields:
@@ -373,17 +377,51 @@ Required `opponentTracker` fields:
 - `completed`
 - `remaining`
 - `suggested`
+- `progress`
 
 Required opponent fields:
 
 - `player`
 - `displayName`
+- `division`
 - `status`
 - `rank`
 - `gamesCompleted`
 - `lastActivity`
 - `availability`
 - `quickMessage`
+- `suggestedPriority`
+- `reason`
+
+Required `opponentTracker.progress` fields:
+
+- `gamesCompleted`
+- `gamesRequired`
+- `gamesRemaining`
+- `completionPercentage`
+
+Required `today[]` and `nextActions[]` fields:
+
+- `label`
+- `priority`
+- `link`
+
+Required `nudgeEngine[]` fields:
+
+- `category`
+- `priority`
+- `reason`
+- `suggestedAction`
+- `deepLink`
+
+Required `eventSwitcher[]` fields:
+
+- `eventId`
+- `label`
+- `type`
+- `status`
+- `active`
+- `link`
 
 Required `schedule` fields:
 

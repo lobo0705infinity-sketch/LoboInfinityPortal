@@ -539,6 +539,7 @@ function CommunityCommandCenter() {
 
   const data = state.data
   const suggested = data.opponentTracker.suggested
+  const primaryToday = data.today[0]
 
   return (
     <section className="community-command-center panel" aria-labelledby="community-command-title">
@@ -552,25 +553,38 @@ function CommunityCommandCenter() {
         </span>
       </div>
 
-      <div className="community-command-hero">
+      <div className="community-event-switcher" aria-label="Event switcher">
+        {data.eventSwitcher.map((event) => (
+          <CommandActionLink
+            className={event.active ? 'community-event-tab active' : 'community-event-tab'}
+            key={event.eventId}
+            to={event.link}
+          >
+            <span>{event.type}</span>
+            <strong>{event.label}</strong>
+            <small>{event.status}</small>
+          </CommandActionLink>
+        ))}
+      </div>
+
+      <section className="community-mission-briefing" aria-labelledby="today-briefing-title">
         <div>
-          <span>Welcome</span>
-          <h3>{data.welcome.displayName}</h3>
+          <span>Today</span>
+          <h3 id="today-briefing-title">
+            {primaryToday ? primaryToday.label : 'You are caught up for now.'}
+          </h3>
           <p>
-            {formatPlayerName(
-              data.welcome.leaguePlayer,
-              data.welcome.playerDisplayName,
-            )}{' '}
-            is rank #{data.welcome.currentRank || '-'} in{' '}
-            {data.welcome.currentLeague}.
+            {data.welcome.displayName}, your current league identity is{' '}
+            {formatPlayerName(data.welcome.leaguePlayer, data.welcome.playerDisplayName)}.
+            You are rank #{data.welcome.currentRank || '-'} in {data.welcome.currentLeague}.
           </p>
         </div>
         <div className="season-progress-ring" aria-label="Season completion">
-          <strong>{data.activeEvents[0]?.completionPercentage ?? 0}%</strong>
+          <strong>{data.opponentTracker.progress.completionPercentage}%</strong>
           <span>Complete</span>
         </div>
         <div>
-          <span>Suggested Next Opponent</span>
+          <span>Primary Target</span>
           <h3>
             {suggested
               ? formatPlayerName(suggested.player, suggested.displayName)
@@ -578,7 +592,7 @@ function CommunityCommandCenter() {
           </h3>
           <p>{suggested?.reason || 'You are caught up for now.'}</p>
         </div>
-      </div>
+      </section>
 
       <div className="season-progress-grid">
         <SeasonMetric label="Active Events" value={data.welcome.currentActiveEvents} />
@@ -587,30 +601,42 @@ function CommunityCommandCenter() {
         <SeasonMetric label="Magic Number" value={data.promotion.magicNumber} />
       </div>
 
+      <section className="season-command-card" aria-labelledby="today-actions-title">
+        <h3 id="today-actions-title">Highest Priority</h3>
+        <div className="community-action-list">
+          {data.today.map((action) => (
+            <CommandActionLink className="community-action-row" key={action.label} to={action.link}>
+              <span>{action.priority}</span>
+              <strong>{action.label}</strong>
+            </CommandActionLink>
+          ))}
+        </div>
+      </section>
+
       <div className="community-command-grid">
         <section className="season-command-card" aria-labelledby="active-events-title">
           <h3 id="active-events-title">My Active Events</h3>
           <div className="community-event-list">
             {data.activeEvents.map((event) => (
-              <Link className="community-event-card" key={event.eventId} to={event.link}>
+              <CommandActionLink className="community-event-card" key={event.eventId} to={event.link}>
                 <span>{event.type}</span>
                 <strong>{event.name}</strong>
-                <small>{event.status}</small>
+                <small>{event.statusDetail || event.status}</small>
                 <ProgressBar label="Completion" value={event.completionPercentage} />
                 <b>{event.primaryAction}</b>
-              </Link>
+              </CommandActionLink>
             ))}
           </div>
         </section>
 
         <section className="season-command-card" aria-labelledby="next-actions-title">
-          <h3 id="next-actions-title">My Next Actions</h3>
+          <h3 id="next-actions-title">What Should I Do Next?</h3>
           <div className="community-action-list">
             {data.nextActions.map((action) => (
-              <Link className="community-action-row" key={action.label} to={action.link}>
+              <CommandActionLink className="community-action-row" key={action.label} to={action.link}>
                 <span>{action.priority}</span>
                 <strong>{action.label}</strong>
-              </Link>
+              </CommandActionLink>
             ))}
           </div>
         </section>
@@ -618,7 +644,11 @@ function CommunityCommandCenter() {
 
       <div className="community-command-grid wide">
         <section className="season-command-card" aria-labelledby="opponent-tracker-title">
-          <h3 id="opponent-tracker-title">Opponent Tracker</h3>
+          <h3 id="opponent-tracker-title">My Remaining Games</h3>
+          <ProgressBar
+            label={`${data.opponentTracker.progress.gamesCompleted} / ${data.opponentTracker.progress.gamesRequired} Games`}
+            value={data.opponentTracker.progress.completionPercentage}
+          />
           <div className="community-opponent-columns">
             <div>
               <h4>Completed Opponents</h4>
@@ -645,9 +675,9 @@ function CommunityCommandCenter() {
                   <span>{getOpponentStatusSymbol(opponent.status)}</span>
                   <strong>{formatPlayerName(opponent.player, opponent.displayName)}</strong>
                   <small>
-                    {opponent.gamesCompleted} GP - {opponent.availability.status || 'No availability'}
+                    {opponent.division} - {opponent.gamesCompleted} GP
                   </small>
-                  <b>{opponent.quickMessage}</b>
+                  <b>{opponent.suggestedPriority}: {opponent.reason}</b>
                 </Link>
               ))}
             </div>
@@ -678,6 +708,23 @@ function CommunityCommandCenter() {
       </div>
 
       <div className="community-command-grid">
+        <section className="season-command-card" aria-labelledby="nudge-engine-title">
+          <h3 id="nudge-engine-title">Nudge Engine</h3>
+          <div className="community-action-list">
+            {data.nudgeEngine.map((nudge) => (
+              <CommandActionLink
+                className={`community-nudge-card ${nudge.priority.toLowerCase()}`}
+                key={`${nudge.category}-${nudge.reason}`}
+                to={nudge.deepLink}
+              >
+                <span>{nudge.category} - {nudge.priority}</span>
+                <strong>{nudge.suggestedAction}</strong>
+                <p>{nudge.reason}</p>
+              </CommandActionLink>
+            ))}
+          </div>
+        </section>
+
         <section className="season-command-card" aria-labelledby="schedule-title">
           <h3 id="schedule-title">My Schedule</h3>
           <dl className="season-command-list">
@@ -747,14 +794,38 @@ function CommunityCommandCenter() {
           <h3 id="quick-actions-title">Quick Actions</h3>
           <nav className="quick-nav community-quick-actions" aria-label="Community quick actions">
             {data.quickActions.map((action) => (
-              <Link key={action.label} to={action.link}>
+              <CommandActionLink key={action.label} to={action.link}>
                 {action.label}
-              </Link>
+              </CommandActionLink>
             ))}
           </nav>
         </section>
       </div>
     </section>
+  )
+}
+
+function CommandActionLink({
+  children,
+  className,
+  to,
+}: {
+  children: ReactNode
+  className?: string
+  to: string
+}) {
+  if (/^https?:\/\//i.test(to)) {
+    return (
+      <a className={className} href={to} rel="noreferrer" target="_blank">
+        {children}
+      </a>
+    )
+  }
+
+  return (
+    <Link className={className} to={to}>
+      {children}
+    </Link>
   )
 }
 
