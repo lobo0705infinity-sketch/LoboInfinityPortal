@@ -1158,7 +1158,7 @@
 
 .featured-match-result > strong {
   flex: 0 0 auto;
-  color: var(--crimson);
+  color: #ff6b76;
   font-size: 0.86rem;
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -5737,6 +5737,19 @@ a {
   .dashboard-highlight-grid,
   .dashboard-experience-grid {
     animation: none;
+  }
+}
+
+@supports (content-visibility: auto) {
+  .command-card,
+  .dashboard-milestone-widget,
+  .faction-report-panel,
+  .hall-trophy-card,
+  .intelligence-card,
+  .operations-panel,
+  .profile-card {
+    contain-intrinsic-size: auto 320px;
+    content-visibility: auto;
   }
 }
 

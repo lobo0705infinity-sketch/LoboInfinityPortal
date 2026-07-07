@@ -130,6 +130,28 @@ Performance notes:
 - The verification request runs only after an explicit save.
 - Client diagnostics record save timing without sending additional telemetry requests.
 
+Version 4.0.2b changes the scheduling save mutation response to return the refreshed scheduling payload directly. This removes the extra post-save `schedulingCenter` request while preserving backend write verification and cache invalidation.
+
+## Version 5.0.1 Performance Excellence
+
+Version 5.0.1 focuses on perceived speed and real-user measurement without changing product behavior.
+
+Implemented optimizations:
+
+- The dashboard loading state now paints the existing League Command Center hero and quick navigation immediately instead of waiting for the `home` endpoint before meaningful content appears.
+- The browser shell adds preconnect/dns-prefetch hints for the Apps Script API, Google Identity Services, and token verification origins.
+- Repeated heavy panels opt into `content-visibility: auto` where supported so offscreen cards defer rendering work until needed.
+- The background `lastPage` profile update waits for idle time when the browser supports `requestIdleCallback`.
+- Real User Monitoring now tracks FCP, LCP, CLS, INP approximation, route-transition timing, JS/CSS transfer size, resource count, API timing, and frontend cache behavior.
+
+Measurement notes:
+
+- Baseline Lighthouse before Version 5.0.1: Desktop Performance 88, Mobile Performance 79.
+- Baseline Core Web Vitals from Lighthouse: Desktop FCP 0.4s, LCP 0.5s, CLS 0.093; Mobile FCP 1.6s, LCP 5.4s, CLS 0.
+- The mobile LCP bottleneck was dominated by delayed meaningful dashboard content while Apps Script data was in flight, not long main-thread blocking.
+
+No startup API request was added. RUM data remains browser-local and is visible only in Commissioner Diagnostics.
+
 ## Version 4.1 Mobile Performance
 
 Version 4.1 keeps the Version 4.0 JavaScript route model intact.

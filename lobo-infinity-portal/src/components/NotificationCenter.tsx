@@ -92,8 +92,10 @@ function NotificationCenter({ compact = false }: { compact?: boolean }) {
   const panelId = compact ? 'compact-notification-menu' : 'notification-menu'
   const triggerLabel =
     unreadCount > 0
-      ? `${unreadCount} unread live notifications`
-      : 'Open notifications'
+      ? `Alerts, ${unreadCount} unread live notifications`
+      : compact
+        ? 'Open notifications'
+        : 'Alerts, open notifications'
 
   useEffect(() => {
     if (!isOpen) {

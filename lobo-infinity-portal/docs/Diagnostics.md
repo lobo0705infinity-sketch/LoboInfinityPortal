@@ -45,3 +45,16 @@ Diagnostics must not bypass:
 The Diagnostics page uses existing services and returns refreshed Platform Health after each action.
 
 Version 4.0.2 adds read-only Availability Save diagnostics. These records are browser-local diagnostics surfaced to Commissioners and include event name, status, duration, and non-sensitive detail. They do not change scheduling permissions, do not expose OAuth tokens, and do not replace backend audit logging.
+
+Version 5.0.1 expands browser-local Real User Monitoring. Commissioner Diagnostics now exposes:
+
+- First Contentful Paint.
+- Largest Contentful Paint.
+- Cumulative Layout Shift.
+- Interaction to Next Paint approximation.
+- Route transition timing.
+- JavaScript and CSS transfer size.
+- Resource count.
+- Existing API timing and cache metrics.
+
+These metrics are collected through passive browser performance APIs and are not sent to a backend endpoint.

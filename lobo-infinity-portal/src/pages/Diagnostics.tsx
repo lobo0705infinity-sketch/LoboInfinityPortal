@@ -97,7 +97,13 @@ function Diagnostics() {
         <MetricCard label="Page Load" value={`${snapshot.pageLoad} ms`} />
         <MetricCard label="FCP" value={`${snapshot.firstContentfulPaint} ms`} />
         <MetricCard label="LCP" value={`${snapshot.largestContentfulPaint} ms`} />
+        <MetricCard label="INP" value={`${snapshot.interactionToNextPaint} ms`} />
+        <MetricCard label="CLS" value={snapshot.cumulativeLayoutShift} />
         <MetricCard label="TTI" value={`${snapshot.timeToInteractive} ms`} />
+        <MetricCard
+          label="Route Change"
+          value={`${snapshot.routeTransitionMs} ms`}
+        />
         <MetricCard label="API Requests" value={snapshot.api.requestCount} />
         <MetricCard label="Cache Hits" value={snapshot.api.cacheHits} />
         <MetricCard label="Cache Misses" value={snapshot.api.cacheMisses} />
@@ -105,6 +111,15 @@ function Diagnostics() {
           label="Average API"
           value={`${Math.round(snapshot.api.averageDurationMs)} ms`}
         />
+        <MetricCard
+          label="JS Transfer"
+          value={formatBytes(snapshot.javascriptTransferBytes)}
+        />
+        <MetricCard
+          label="CSS Transfer"
+          value={formatBytes(snapshot.stylesheetTransferBytes)}
+        />
+        <MetricCard label="Resources" value={snapshot.resourceCount} />
       </section>
 
       {platform ? (
@@ -319,6 +334,33 @@ function Diagnostics() {
 
       <section className="panel operations-panel">
         <div className="panel-heading">
+          <p className="eyebrow">Real User Monitoring</p>
+          <h2>Route Transitions</h2>
+        </div>
+        <div className="operations-table-wrap">
+          <table className="operations-table">
+            <thead>
+              <tr>
+                <th>Route</th>
+                <th>Duration</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody>
+              {snapshot.routeTransitions.map((route, index) => (
+                <tr key={`${route.path}-${route.timestamp}-${index}`}>
+                  <td>{route.path}</td>
+                  <td>{Math.round(route.durationMs)} ms</td>
+                  <td>{new Date(route.timestamp).toLocaleTimeString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="panel operations-panel">
+        <div className="panel-heading">
           <p className="eyebrow">Client Diagnostics</p>
           <h2>Availability Saves</h2>
         </div>
@@ -394,6 +436,18 @@ function MetricCard({
       <h2>{value}</h2>
     </article>
   )
+}
+
+function formatBytes(value: number) {
+  if (value <= 0) {
+    return '0 B'
+  }
+
+  if (value < 1024) {
+    return `${value} B`
+  }
+
+  return `${Math.round(value / 1024)} KB`
 }
 
 export default Diagnostics

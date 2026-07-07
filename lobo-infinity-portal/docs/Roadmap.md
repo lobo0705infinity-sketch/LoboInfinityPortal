@@ -36,6 +36,8 @@ Version 4.3 refines the authenticated Dashboard into the Player Home Dashboard. 
 
 Version 4.4 adds League Personality as an engagement layer. It reuses existing Dashboard, Community Command Center, Scheduling, News, Achievements, and Recent Games data to produce dynamic hero messages, league headlines, featured match cards, season story timeline, spotlights, and Rivalry Room summaries without adding backend endpoints or changing API contracts.
 
+Version 5.0.1 is a Performance Excellence hardening release. It preserves the completed feature set and focuses on Core Web Vitals, perceived dashboard speed, passive RUM, offscreen rendering efficiency, and repeatable Lighthouse measurement.
+
 ### 3.2 Event Migration
 
 Add explicit event scope to historical data after migration validation has passed.

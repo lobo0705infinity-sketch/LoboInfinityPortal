@@ -158,6 +158,17 @@ function Dashboard() {
     return (
       <main className="portal-shell">
         <DashboardHeader lastUpdated={lastUpdated} />
+        <section className="league-command-hero" aria-label="League command center">
+          <div>
+            <p className="eyebrow">League Command Center</p>
+            <h1>Lobo Infinity Portal 2.0</h1>
+            <p>
+              Live standings, battle reports, records, meta pressure, and league
+              movement from Google Sheets.
+            </p>
+          </div>
+          <QuickNavigation />
+        </section>
         <div className="portal-grid">
           <Skeleton label="Dashboard loading" rows={8} />
           <section className="dashboard-state" aria-label="Dashboard loading">

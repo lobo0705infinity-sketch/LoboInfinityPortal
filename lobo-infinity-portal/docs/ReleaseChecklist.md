@@ -15,6 +15,10 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] Apps Script syntax validation
 - [ ] API Contract Validation
 - [ ] Performance Budget Validation
+- [ ] Lighthouse Desktop Audit
+- [ ] Lighthouse Mobile Audit
+- [ ] Core Web Vitals Review
+- [ ] Real User Monitoring Review
 - [ ] Security Validation
 - [ ] UX Audit
 - [ ] Desktop Experience Audit

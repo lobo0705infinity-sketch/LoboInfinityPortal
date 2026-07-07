@@ -490,6 +490,16 @@ League Personality generates:
 
 This layer must never fabricate statistics. If the required source data is missing, the card is omitted or displays an explicit empty state. Version 4.4 does not add backend endpoints, change API contracts, alter league calculations, or create a new notification system.
 
+Version 5.0.1 adds Performance Excellence hardening. It does not introduce product functionality or new backend services. The performance layer consists of:
+
+- Immediate dashboard loading-state hero paint for better perceived LCP.
+- Browser-native network hints for known external origins.
+- Passive browser-local Real User Monitoring for Core Web Vitals, route transitions, resource counts, and transfer sizes.
+- Offscreen render deferral through supported CSS `content-visibility`.
+- Idle scheduling for non-critical profile activity writes.
+
+RUM is surfaced only in Commissioner Diagnostics and does not send a new telemetry request or alter existing API contracts.
+
 ## Event Lifecycle Controls
 
 Version 3.1.2 adds commissioner-facing Event Lifecycle Controls on top of the existing Event Engine foundation.
