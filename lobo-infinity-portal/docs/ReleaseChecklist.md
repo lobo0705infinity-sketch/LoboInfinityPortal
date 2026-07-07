@@ -55,6 +55,13 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] Verify Event Lifecycle Discord
 - [ ] Verify Event Lifecycle Rollback
 - [ ] Verify Event Lifecycle Repair Blocks Unsafe Advance
+- [ ] Verify Platform Health
+- [ ] Verify Snapshot Manager
+- [ ] Verify Job Queue
+- [ ] Verify Cache Manager
+- [ ] Verify Recovery Center
+- [ ] Verify Performance History
+- [ ] Verify Reliability Audit Log
 - [ ] Verify Community Command Center
 - [ ] Verify Active Events
 - [ ] Verify Opponent Tracker

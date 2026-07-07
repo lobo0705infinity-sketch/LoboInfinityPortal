@@ -1,10 +1,60 @@
+import { useEffect, useState } from 'react'
 import { useAuth } from '../auth/AuthContext'
+import {
+  getPlatformReliability,
+  runReliabilityAction,
+  type PlatformReliabilityData,
+} from '../services/lightApi'
 import { getFrontendPerformanceDiagnostics } from '../services/performanceDiagnostics'
 
 function Diagnostics() {
   const auth = useAuth()
+  const [platform, setPlatform] = useState<PlatformReliabilityData | null>(null)
+  const [workingAction, setWorkingAction] = useState('')
   const canView = auth.isAtLeastRole('Commissioner')
+  const canManage = auth.hasPermission('manageCache')
   const snapshot = canView ? getFrontendPerformanceDiagnostics() : null
+
+  useEffect(() => {
+    if (!canView) {
+      return
+    }
+
+    const controller = new AbortController()
+
+    getPlatformReliability({
+      signal: controller.signal,
+    })
+      .then(setPlatform)
+      .catch(() => {
+        if (!controller.signal.aborted) {
+          setPlatform(null)
+        }
+      })
+
+    return () => {
+      controller.abort()
+    }
+  }, [canView])
+
+  async function executeAction(action: string, target: string, label: string) {
+    if (!canManage || workingAction) {
+      return
+    }
+
+    if (!window.confirm(`${label}?`)) {
+      return
+    }
+
+    setWorkingAction(`${action}:${target}`)
+
+    try {
+      const nextPlatform = await runReliabilityAction(action, target)
+      setPlatform(nextPlatform)
+    } finally {
+      setWorkingAction('')
+    }
+  }
 
   if (!canView) {
     return (
@@ -30,11 +80,19 @@ function Diagnostics() {
     <main className="portal-shell">
       <section className="page-header">
         <p className="eyebrow">Commissioner Diagnostics</p>
-        <h1>Performance Diagnostics</h1>
-        <p>Read-only browser and endpoint timing telemetry.</p>
+        <h1>Platform Health</h1>
+        <p>Browser telemetry, snapshots, job queue, cache health, and recovery.</p>
       </section>
 
       <section className="operations-grid">
+        <MetricCard
+          label="Platform"
+          value={platform?.health.status ?? 'Loading'}
+        />
+        <MetricCard
+          label="Health Score"
+          value={platform ? `${platform.health.score}%` : '...'}
+        />
         <MetricCard label="Bundle" value={snapshot.bundleVersion} />
         <MetricCard label="Page Load" value={`${snapshot.pageLoad} ms`} />
         <MetricCard label="FCP" value={`${snapshot.firstContentfulPaint} ms`} />
@@ -48,6 +106,187 @@ function Diagnostics() {
           value={`${Math.round(snapshot.api.averageDurationMs)} ms`}
         />
       </section>
+
+      {platform ? (
+        <>
+          <section className="panel operations-panel">
+            <div className="panel-heading">
+              <p className="eyebrow">Snapshot Manager</p>
+              <h2>Snapshot Freshness</h2>
+            </div>
+            <div className="operations-table-wrap">
+              <table className="operations-table">
+                <thead>
+                  <tr>
+                    <th>Snapshot</th>
+                    <th>Status</th>
+                    <th>Age</th>
+                    <th>Records</th>
+                    <th>Duration</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {platform.snapshots.map((item) => (
+                    <tr key={item.id}>
+                      <td>{item.label}</td>
+                      <td>{item.status}</td>
+                      <td>{item.ageMinutes}m</td>
+                      <td>{item.recordCount}</td>
+                      <td>{item.durationMs} ms</td>
+                      <td>
+                        <button
+                          disabled={!canManage || workingAction !== ''}
+                          onClick={() =>
+                            void executeAction(
+                              'rebuildSnapshot',
+                              item.id,
+                              `Rebuild ${item.label}`,
+                            )
+                          }
+                          type="button"
+                        >
+                          Rebuild
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section className="operations-grid two-column">
+            <section className="panel operations-panel">
+              <div className="panel-heading">
+                <p className="eyebrow">Job Queue</p>
+                <h2>Background Jobs</h2>
+              </div>
+              <div className="operations-actions wrap">
+                <button
+                  disabled={!canManage || workingAction !== ''}
+                  onClick={() =>
+                    void executeAction(
+                      'processNextJob',
+                      'next',
+                      'Process next queued job',
+                    )
+                  }
+                  type="button"
+                >
+                  Process Next Job
+                </button>
+              </div>
+              <ul className="operations-list">
+                {platform.jobs.slice(-8).map((job) => (
+                  <li key={job.id}>
+                    <strong>{job.type}</strong>
+                    <span>{job.status}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+
+            <section className="panel operations-panel">
+              <div className="panel-heading">
+                <p className="eyebrow">Recovery Center</p>
+                <h2>Safe Rebuilds</h2>
+              </div>
+              <div className="operations-actions wrap">
+                {platform.recoveryActions.map((action) => (
+                  <button
+                    disabled={!canManage || workingAction !== ''}
+                    key={action.id}
+                    onClick={() =>
+                      void executeAction(
+                        action.id === 'rebuildEverything'
+                          ? 'queueJob'
+                          : 'rebuildSnapshot',
+                        action.id,
+                        action.label,
+                      )
+                    }
+                    type="button"
+                  >
+                    {action.label}
+                  </button>
+                ))}
+              </div>
+            </section>
+          </section>
+
+          <section className="panel operations-panel">
+            <div className="panel-heading">
+              <p className="eyebrow">Cache Manager</p>
+              <h2>Cache Groups</h2>
+            </div>
+            <dl className="operations-metrics">
+              <Metric label="Cache Status" value={platform.cache.status} />
+              <Metric
+                label="Hit Rate"
+                value={`${platform.cache.performance.cacheHitRate}%`}
+              />
+              <Metric
+                label="Miss Rate"
+                value={`${platform.cache.performance.cacheMissRate}%`}
+              />
+              <Metric
+                label="Average API"
+                value={platform.cache.performance.averageApiResponse}
+              />
+            </dl>
+            <div className="operations-actions wrap">
+              {platform.cacheActions.map((cacheAction) => (
+                <button
+                  disabled={!canManage || workingAction !== ''}
+                  key={cacheAction.id}
+                  onClick={() =>
+                    void executeAction(
+                      'invalidateCache',
+                      cacheAction.id,
+                      `Invalidate ${cacheAction.label} cache`,
+                    )
+                  }
+                  type="button"
+                >
+                  Invalidate {cacheAction.label}
+                </button>
+              ))}
+              <button
+                disabled={!canManage || workingAction !== ''}
+                onClick={() =>
+                  void executeAction(
+                    'clearExpiredCache',
+                    'expired',
+                    'Clear expired cache entries',
+                  )
+                }
+                type="button"
+              >
+                Clear Expired
+              </button>
+            </div>
+          </section>
+
+          <section className="panel operations-panel">
+            <div className="panel-heading">
+              <p className="eyebrow">Health Monitoring</p>
+              <h2>Warnings</h2>
+            </div>
+            {platform.health.warnings.length === 0 ? (
+              <p>No operational warnings.</p>
+            ) : (
+              <ul className="operations-list">
+                {platform.health.warnings.map((warning) => (
+                  <li key={warning}>
+                    <strong>{warning}</strong>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </>
+      ) : null}
 
       <section className="panel operations-panel">
         <div className="panel-heading">
@@ -93,6 +332,21 @@ function Diagnostics() {
         </ul>
       </section>
     </main>
+  )
+}
+
+function Metric({
+  label,
+  value,
+}: {
+  label: string
+  value: number | string
+}) {
+  return (
+    <div>
+      <dt>{label}</dt>
+      <dd>{value}</dd>
+    </div>
   )
 }
 

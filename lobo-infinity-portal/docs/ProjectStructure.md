@@ -36,6 +36,7 @@
 - `backend/EventLifecycleApi.gs`: commissioner Event Lifecycle Controls, health, warnings, transition automation, rollback safety, and audit log.
 - `backend/IntegrityApi.gs`: league integrity audits and repairs.
 - `backend/OperationsApi.gs`: commissioner operations.
+- `backend/ReliabilityApi.gs`: Version 3.4 Snapshot Manager, background job queue metadata, Platform Health, Cache Manager, and Recovery Center services.
 - `backend/*Api.gs`: feature-specific Apps Script services.
 
 ## Data
@@ -61,6 +62,9 @@ Google Sheets is the source of truth for:
 - `docs/APIContracts.md`: API schema and compatibility contracts.
 - `docs/EngineeringStandards.md`: permanent engineering rules and gates.
 - `docs/EventEngine.md`: Event Engine foundation and migration validation.
+- `docs/Operations.md`: Platform Health, Snapshot Manager, Job Queue, Cache Manager, and audit workflow.
+- `docs/Diagnostics.md`: Commissioner diagnostics surface and safety model.
+- `docs/Recovery.md`: recovery actions and failure handling.
 - `docs/Roadmap.md`: frozen Version 3 roadmap.
 - `docs/TechnicalDebt.md`: known debt and deferred work.
 

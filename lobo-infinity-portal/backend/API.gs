@@ -222,6 +222,11 @@ function doGet(e) {
         return getOperationsStatus(auth);
       });
 
+    case "reliability":
+      return requireApiPermission(e, "viewOperations", function() {
+        return getReliabilityDashboard();
+      });
+
     case "integrity":
       return requireApiPermission(e, "viewOperations", function() {
         return getIntegrityDashboard();
@@ -476,6 +481,11 @@ function doGet(e) {
         return repairLeagueIntegrity(e);
       });
 
+    case "reliabilityAction":
+      return requireApiPermission(e, "manageCache", function(auth) {
+        return executeReliabilityAction(e, auth);
+      });
+
     case "awardAchievement":
       return awardAchievement(e);
 
@@ -706,6 +716,11 @@ function doPost(e) {
     case "integrityRepair":
       return requireApiPermission(e, "runLeagueAudit", function() {
         return repairLeagueIntegrity(e);
+      });
+
+    case "reliabilityAction":
+      return requireApiPermission(e, "manageCache", function(auth) {
+        return executeReliabilityAction(e, auth);
       });
 
     case "awardAchievement":

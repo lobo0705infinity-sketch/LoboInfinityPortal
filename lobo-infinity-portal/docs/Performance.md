@@ -80,6 +80,33 @@ For each performance release, record:
 - Cached navigation under 300 ms from frontend cache.
 - No global Search, Quick Jump, or Notification data requests on initial page load.
 
+## Version 3.4 Reliability Strategy
+
+Version 3.4 moves expensive operational maintenance away from user-facing request paths.
+
+The Snapshot Manager tracks freshness and rebuild duration for derived views that are expensive or operationally important:
+
+- League
+- Operations
+- Integrity
+- Lifecycle
+- Standings
+- Records
+- Hall of Fame
+- Analytics
+- Search
+
+Background jobs queue snapshot rebuilds and recovery actions. Commissioner diagnostics read snapshot metadata first, then expose explicit rebuild actions for expensive work.
+
+The intended performance behavior is:
+
+- Normal navigation reads cached endpoint responses and existing snapshots.
+- Commissioner diagnostics load Platform Health in a lightweight read.
+- Recovery actions queue or rebuild targeted snapshots without clearing unrelated caches.
+- Failed or stale snapshots produce warnings and safe recovery actions instead of blank pages.
+
+The reliability target is a cache hit rate above 90 percent during normal usage. Targeted cache invalidation should be preferred over global clears.
+
 ## Mobile Performance Strategy
 
 Version 2.5.3 keeps the Version 2.5.1 loading model intact.

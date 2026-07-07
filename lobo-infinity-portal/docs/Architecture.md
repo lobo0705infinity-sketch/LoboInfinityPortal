@@ -79,6 +79,22 @@ Global header controls defer network work until interaction:
 - Quick Jump data loads on menu focus.
 - Notifications load when the notification menu opens.
 
+## Platform Reliability Architecture
+
+Version 3.4 adds a reliability layer without changing league rules, player workflows, Event Engine behavior, or Google Sheets schema.
+
+The reliability layer is organized around read-only snapshots and asynchronous recovery jobs:
+
+- Snapshot Manager tracks League, Operations, Integrity, Lifecycle, Standings, Records, Hall of Fame, Analytics, and Search snapshots.
+- Job Queue records queued, running, completed, and failed background work in Apps Script properties.
+- Platform Health exposes snapshot freshness, job failures, cache health, endpoint timing, and recovery status to Commissioners.
+- Recovery Center queues rebuilds for expensive derived data instead of performing those rebuilds during normal user requests.
+- Cache Manager supports targeted invalidation and rebuilds rather than global cache clearing.
+
+Reliability services extend the existing Apps Script cache, diagnostics, operations, integrity, lifecycle, Hall of Fame, and search systems. They do not replace those systems or bypass permission checks.
+
+Reliability mutations are Commissioner-gated, write audit entries, and return the same Platform Health payload so the Commissioner interface can refresh without issuing follow-up requests.
+
 Frontend GET responses are cached for five minutes per authenticated URL. Backend Apps Script cached endpoints use a fifteen-minute cache TTL with stale fallback support.
 
 ## Deep-Link Architecture

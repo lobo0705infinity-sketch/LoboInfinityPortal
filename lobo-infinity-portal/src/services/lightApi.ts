@@ -7,6 +7,70 @@ import type {
 } from './api'
 import { postRequest, request, type ApiOptions } from './apiCore'
 
+export type PlatformReliabilityData = {
+  appsScriptVersion: string
+  audit: Array<Record<string, unknown>>
+  cache: {
+    entries: Array<Record<string, unknown>>
+    performance: {
+      averageApiResponse: string
+      cacheHitRate: number
+      cacheMissRate: number
+      errors: number
+      staleFallbacks: number
+    }
+    status: string
+    version: string
+  }
+  cacheActions: Array<{
+    entries: number
+    id: string
+    label: string
+  }>
+  frontendVersion: string
+  generatedAt: string
+  health: {
+    averageApiResponse: string
+    cacheHitRate: number
+    failedJobs: number
+    lastSuccessfulRebuild: string
+    runningJobs: number
+    score: number
+    status: string
+    warnings: string[]
+  }
+  history: Array<Record<string, unknown>>
+  jobs: Array<{
+    completedAt: string
+    durationMs: number
+    error: string
+    id: string
+    queuedAt: string
+    requestedBy: string
+    retries: number
+    startedAt: string
+    status: string
+    type: string
+  }>
+  recoveryActions: Array<{
+    id: string
+    label: string
+  }>
+  snapshots: Array<{
+    ageMinutes: number
+    dependencies: string[]
+    durationMs: number
+    error: string
+    generatedAt: string
+    id: string
+    label: string
+    recordCount: number
+    status: string
+    version: string
+  }>
+  version: string
+}
+
 export async function getSession(options: ApiOptions = {}): Promise<AuthSession> {
   const payload = await request('session', options)
   const record = asRecord(payload)
@@ -83,6 +147,26 @@ export async function updateNotificationState(
     notificationIds: JSON.stringify(params.notificationIds ?? []),
     state: params.state,
   })
+}
+
+export async function getPlatformReliability(
+  options: ApiOptions = {},
+): Promise<PlatformReliabilityData> {
+  const payload = await request('reliability', options)
+  return getRecord(asRecord(payload), 'reliability') as PlatformReliabilityData
+}
+
+export async function runReliabilityAction(
+  reliabilityAction: string,
+  target: string,
+  options: ApiOptions = {},
+): Promise<PlatformReliabilityData> {
+  const payload = await postRequest('reliabilityAction', options, {
+    reliabilityAction,
+    target,
+  })
+
+  return getRecord(asRecord(payload), 'reliability') as PlatformReliabilityData
 }
 
 function normalizePortalUser(record: Record<string, unknown>): PortalUser {

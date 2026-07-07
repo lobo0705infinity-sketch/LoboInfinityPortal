@@ -46,6 +46,7 @@ Apps Script verifies the token and maps Google Email to the permanent League Pla
 - `eventSeasons`: seasons for an event.
 - `eventRounds`: rounds for an event or season.
 - `eventLifecycle`: operations-gated Event Lifecycle Control payload.
+- `reliability`: operations-gated Platform Health payload for Commissioners. Returns snapshot status, job queue status, cache health, recovery actions, reliability audit entries, and performance history.
 
 ## Commissioner Actions
 
@@ -67,6 +68,34 @@ Examples:
 - `eventMigrationRollback`
 - `eventMigrationValidation`
 - `eventLifecycleTransition`
+- `reliabilityAction`
+
+## Platform Reliability Actions
+
+Version 3.4 adds a Commissioner-gated reliability action endpoint.
+
+`POST action=reliabilityAction`
+
+Parameters:
+
+- `reliabilityAction`: one of `queueJob`, `processNextJob`, `rebuildSnapshot`, `rebuildAllSnapshots`, `invalidateCache`, `rebuildCache`, or `clearExpiredCache`.
+- `target`: snapshot ID, cache group ID, job type, or `next`.
+
+The response preserves the read contract used by `action=reliability`:
+
+- `success`
+- `reliability.version`
+- `reliability.generatedAt`
+- `reliability.snapshots`
+- `reliability.jobs`
+- `reliability.cache`
+- `reliability.health`
+- `reliability.history`
+- `reliability.audit`
+- `reliability.recoveryActions`
+- `reliability.cacheActions`
+
+All reliability actions require Commissioner cache-management permission and create reliability audit entries.
 
 ## Event Engine Actions
 

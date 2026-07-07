@@ -542,3 +542,96 @@ Required `schedule` fields:
 - New top-level architectural concepts require API contract review and documentation updates before implementation.
 - Community Command Center extends existing Event Engine and Season Command Center contracts without changing legacy dashboard, standings, profile, Hall of Fame, notification, or automation responses.
 - Event Lifecycle Controls extend existing Event Engine, Automation Center, Discord, and Commissioner Dashboard contracts without changing public Event Engine reads.
+
+## Platform Reliability
+
+Version 3.4 adds operational reliability APIs without changing player, Event Engine, lifecycle, integrity, automation, authentication, or Google Sheets contracts.
+
+### Reliability Dashboard
+
+Action:
+
+`GET action=reliability`
+
+Permission:
+
+Operations view permission.
+
+Response:
+
+```json
+{
+  "success": true,
+  "reliability": {
+    "version": "3.4",
+    "generatedAt": "",
+    "frontendVersion": "",
+    "appsScriptVersion": "",
+    "snapshots": [],
+    "jobs": [],
+    "cache": {},
+    "health": {},
+    "history": [],
+    "audit": [],
+    "recoveryActions": [],
+    "cacheActions": []
+  }
+}
+```
+
+Required snapshot fields:
+
+- `id`
+- `label`
+- `generatedAt`
+- `durationMs`
+- `version`
+- `dependencies`
+- `status`
+- `recordCount`
+- `ageMinutes`
+- `error`
+
+Required job fields:
+
+- `id`
+- `type`
+- `status`
+- `queuedAt`
+- `startedAt`
+- `completedAt`
+- `durationMs`
+- `retries`
+- `requestedBy`
+- `error`
+
+### Reliability Action
+
+Action:
+
+`POST action=reliabilityAction`
+
+Permission:
+
+Commissioner cache-management permission.
+
+Parameters:
+
+- `reliabilityAction`
+- `target`
+
+Supported `reliabilityAction` values:
+
+- `queueJob`
+- `processNextJob`
+- `rebuildSnapshot`
+- `rebuildAllSnapshots`
+- `invalidateCache`
+- `rebuildCache`
+- `clearExpiredCache`
+
+Response:
+
+Same contract as `GET action=reliability`.
+
+Reliability actions must write reliability audit entries and must not bypass existing Event Lifecycle, Integrity, Automation, OAuth, or Commissioner permission behavior.

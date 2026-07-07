@@ -4,6 +4,26 @@ Version 2.5.4 LTS documents known technical debt without implementing new featur
 
 ## High Priority
 
+### Reliability Queue Persistence Limits
+
+Description: Version 3.4 stores lightweight background job metadata, snapshot metadata, reliability history, and reliability audit entries in Apps Script properties.
+
+Reason: This avoids Google Sheets schema changes during a reliability release, but Script Properties are not a long-term high-volume queue store.
+
+Estimated impact: Medium as operational history grows.
+
+Suggested future release: 3.5 Reliability Storage Hardening.
+
+### Automated Reliability Contract Tests
+
+Description: Platform Health and Recovery Center actions are permission-gated and currently verified through release checks instead of authenticated CI contract tests.
+
+Reason: The release does not introduce new credential automation for Commissioner-only Apps Script mutations.
+
+Estimated impact: Medium.
+
+Suggested future release: 3.5 Operations CI.
+
 ### Public Event Directory
 
 Description: Version 3.1 ships the authenticated Community Command Center, but the broader public Current Events, Upcoming Events, and Completed Events directory remains unimplemented.
