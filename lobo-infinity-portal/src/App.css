@@ -4974,6 +4974,55 @@
   grid-column: 1 / -1;
 }
 
+.match-request-form {
+  align-items: start;
+}
+
+.match-request-field-error {
+  color: #ffb2ba;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: none;
+}
+
+.match-request-action-bar {
+  align-items: center;
+  background: rgba(8, 14, 22, 0.96);
+  border: 1px solid rgba(76, 201, 240, 0.2);
+  border-radius: 14px;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+  bottom: 12px;
+  display: grid;
+  gap: 0.75rem;
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(0, 1fr) auto;
+  margin-top: 0.25rem;
+  padding: 0.75rem;
+  position: sticky;
+  z-index: 76;
+}
+
+.match-request-action-bar span {
+  color: var(--text-soft);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.match-request-action-bar.error span {
+  color: #ffb2ba;
+}
+
+.match-request-action-bar.success span {
+  color: #8ff0bd;
+}
+
+.match-request-action-bar button[type="submit"] {
+  min-height: 48px;
+  min-width: 200px;
+  position: static;
+  white-space: nowrap;
+}
+
 .scheduling-days {
   display: grid;
   gap: 0.75rem;
@@ -5572,6 +5621,19 @@ a {
 
   .availability-save-bar .scheduling-save-confirmation {
     justify-self: start;
+  }
+
+  .match-request-action-bar {
+    align-items: stretch;
+    bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom, 0px) + 16px);
+    grid-template-columns: 1fr;
+    z-index: 94;
+  }
+
+  .match-request-action-bar button[type="submit"] {
+    min-width: 0;
+    position: static;
+    width: 100%;
   }
 
   .scheduling-card-actions,

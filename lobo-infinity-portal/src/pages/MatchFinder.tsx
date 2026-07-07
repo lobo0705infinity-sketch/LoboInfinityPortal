@@ -39,6 +39,17 @@ type AvailabilitySaveResult = {
   verified: boolean
 }
 
+type MatchRequestFormState = {
+  message: string
+  opponent: string
+  proposedDate: string
+  proposedTime: string
+}
+
+type MatchRequestValidation = Partial<
+  Record<'opponent' | 'proposedDate' | 'proposedTime', string>
+>
+
 function MatchFinder() {
   const auth = useAuth()
   const [searchParams] = useSearchParams()
@@ -234,6 +245,7 @@ function MatchFinder() {
         <ScheduleRequestForm
           disabled={working !== ''}
           initialOpponent={preferredOpponent}
+          key={preferredOpponent || state.data.recommendations[0]?.player || 'request'}
           recommendations={state.data.recommendations}
           onSubmit={createRequest}
         />
@@ -729,21 +741,194 @@ function ScheduleRequestForm({
   recommendations: SchedulingRecommendation[]
   onSubmit: (params: Record<string, string>) => Promise<void>
 }) {
+  const navigate = useNavigate()
   const defaultOpponent = useMemo(
     () => initialOpponent || recommendations[0]?.player || '',
     [initialOpponent, recommendations],
   )
+  const initialForm = useMemo<MatchRequestFormState>(
+    () => ({
+      message: '',
+      opponent: defaultOpponent,
+      proposedDate: '',
+      proposedTime: '',
+    }),
+    [defaultOpponent],
+  )
+  const [form, setForm] = useState(initialForm)
+  const [submitState, setSubmitState] = useState<
+    'error' | 'idle' | 'submitting' | 'success'
+  >('idle')
+  const [validation, setValidation] = useState<MatchRequestValidation>({})
+  const [pendingNavigation, setPendingNavigation] = useState('')
+  const isSubmitting = submitState === 'submitting'
+  const hasDraft = Boolean(
+    form.message.trim() ||
+      form.proposedDate ||
+      form.proposedTime ||
+      form.opponent !== defaultOpponent,
+  )
+
+  useEffect(() => {
+    if (!hasDraft || submitState === 'success') {
+      return undefined
+    }
+
+    const onBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault()
+      event.returnValue = ''
+    }
+
+    window.addEventListener('beforeunload', onBeforeUnload)
+
+    return () => {
+      window.removeEventListener('beforeunload', onBeforeUnload)
+    }
+  }, [hasDraft, submitState])
+
+  useEffect(() => {
+    if (!hasDraft || submitState === 'success') {
+      return undefined
+    }
+
+    const onClick = (event: MouseEvent) => {
+      const anchor = (event.target as Element | null)?.closest('a[href]')
+
+      if (!(anchor instanceof HTMLAnchorElement)) {
+        return
+      }
+
+      if (
+        anchor.target ||
+        anchor.download ||
+        anchor.href === window.location.href
+      ) {
+        return
+      }
+
+      event.preventDefault()
+      event.stopPropagation()
+      setPendingNavigation(anchor.href)
+    }
+
+    document.addEventListener('click', onClick, true)
+
+    return () => {
+      document.removeEventListener('click', onClick, true)
+    }
+  }, [hasDraft, submitState])
+
+  useEffect(() => {
+    if (submitState !== 'success') {
+      return undefined
+    }
+
+    const timeout = window.setTimeout(() => {
+      setSubmitState('idle')
+    }, 3000)
+
+    return () => {
+      window.clearTimeout(timeout)
+    }
+  }, [submitState])
+
+  function validate(current: MatchRequestFormState): MatchRequestValidation {
+    const nextValidation: MatchRequestValidation = {}
+
+    if (!current.opponent) {
+      nextValidation.opponent = 'Choose an opponent.'
+    }
+
+    if (!current.proposedDate) {
+      nextValidation.proposedDate = 'Choose a date.'
+    }
+
+    if (!current.proposedTime) {
+      nextValidation.proposedTime = 'Choose a time.'
+    }
+
+    return nextValidation
+  }
+
+  function updateField(field: keyof MatchRequestFormState, value: string) {
+    setForm((current) => ({
+      ...current,
+      [field]: value,
+    }))
+    setValidation((current) => {
+      if (!(field in current)) {
+        return current
+      }
+
+      const next = { ...current }
+      delete next[field as keyof MatchRequestValidation]
+      return next
+    })
+
+    if (submitState !== 'submitting') {
+      setSubmitState('idle')
+    }
+  }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    const formData = new FormData(event.currentTarget)
-    const params = Object.fromEntries(
-      Array.from(formData.entries()).map(([key, value]) => [key, String(value)]),
-    )
 
-    await onSubmit(params)
-    event.currentTarget.reset()
+    const nextValidation = validate(form)
+    setValidation(nextValidation)
+
+    if (Object.keys(nextValidation).length > 0) {
+      setSubmitState('idle')
+      return
+    }
+
+    setSubmitState('submitting')
+
+    try {
+      await onSubmit(form)
+      setForm({
+        ...initialForm,
+        opponent: form.opponent,
+      })
+      setValidation({})
+      setSubmitState('success')
+    } catch {
+      setSubmitState('error')
+    }
   }
+
+  function discardAndNavigate() {
+    if (!pendingNavigation) {
+      return
+    }
+
+    const target = new URL(pendingNavigation)
+    setPendingNavigation('')
+
+    if (target.origin === window.location.origin) {
+      navigate(`${target.pathname}${target.search}${target.hash}`)
+      return
+    }
+
+    window.location.href = target.href
+  }
+
+  const requestDisabled = disabled || recommendations.length === 0 || isSubmitting
+  const actionLabel =
+    submitState === 'submitting'
+      ? 'Sending Request...'
+      : submitState === 'success'
+        ? 'Match Request Sent'
+        : 'Send Match Request'
+  const actionStatus =
+    submitState === 'success'
+      ? 'Match Request Sent'
+      : submitState === 'error'
+        ? 'Unable to send request. Please try again.'
+        : recommendations.length === 0
+          ? 'No remaining opponents are available for requests.'
+          : Object.keys(validation).length > 0
+            ? 'Complete the required fields to send your request.'
+            : 'Ready to send your request.'
 
   return (
     <section className="panel scheduling-panel">
@@ -751,33 +936,123 @@ function ScheduleRequestForm({
         <p className="eyebrow">Schedule</p>
         <h2>Send Match Request</h2>
       </div>
-      <form className="scheduling-form" onSubmit={(event) => void submit(event)}>
+      <form
+        className="scheduling-form match-request-form"
+        noValidate
+        onSubmit={(event) => void submit(event)}
+      >
         <label>
           Opponent
-          <select defaultValue={defaultOpponent} name="opponent" required>
+          <select
+            aria-describedby={
+              validation.opponent ? 'match-request-opponent-error' : undefined
+            }
+            aria-invalid={validation.opponent ? 'true' : undefined}
+            disabled={isSubmitting}
+            name="opponent"
+            onChange={(event) => updateField('opponent', event.target.value)}
+            required
+            value={form.opponent}
+          >
             {recommendations.map((recommendation) => (
               <option key={recommendation.player} value={recommendation.player}>
                 {formatPlayerName(recommendation.player, recommendation.displayName)}
               </option>
             ))}
           </select>
+          {validation.opponent ? (
+            <span
+              className="match-request-field-error"
+              id="match-request-opponent-error"
+            >
+              {validation.opponent}
+            </span>
+          ) : null}
         </label>
         <label>
           Date
-          <input name="proposedDate" type="date" required />
+          <input
+            aria-describedby={
+              validation.proposedDate ? 'match-request-date-error' : undefined
+            }
+            aria-invalid={validation.proposedDate ? 'true' : undefined}
+            disabled={isSubmitting}
+            name="proposedDate"
+            onChange={(event) => updateField('proposedDate', event.target.value)}
+            required
+            type="date"
+            value={form.proposedDate}
+          />
+          {validation.proposedDate ? (
+            <span
+              className="match-request-field-error"
+              id="match-request-date-error"
+            >
+              {validation.proposedDate}
+            </span>
+          ) : null}
         </label>
         <label>
           Time
-          <input name="proposedTime" type="time" required />
+          <input
+            aria-describedby={
+              validation.proposedTime ? 'match-request-time-error' : undefined
+            }
+            aria-invalid={validation.proposedTime ? 'true' : undefined}
+            disabled={isSubmitting}
+            name="proposedTime"
+            onChange={(event) => updateField('proposedTime', event.target.value)}
+            required
+            type="time"
+            value={form.proposedTime}
+          />
+          {validation.proposedTime ? (
+            <span
+              className="match-request-field-error"
+              id="match-request-time-error"
+            >
+              {validation.proposedTime}
+            </span>
+          ) : null}
         </label>
         <label className="scheduling-form-wide">
           Message
-          <textarea name="message" placeholder="Optional note for your opponent" />
+          <textarea
+            disabled={isSubmitting}
+            name="message"
+            onChange={(event) => updateField('message', event.target.value)}
+            placeholder="Optional note for your opponent"
+            value={form.message}
+          />
         </label>
-        <button disabled={disabled || recommendations.length === 0} type="submit">
-          Send Request
-        </button>
+        <div className={`match-request-action-bar ${submitState}`}>
+          <span aria-live="polite">{actionStatus}</span>
+          <button disabled={requestDisabled} type="submit">
+            {submitState === 'success' ? '✓ ' : ''}
+            {actionLabel}
+          </button>
+        </div>
       </form>
+      {pendingNavigation ? (
+        <div
+          aria-labelledby="match-request-leave-title"
+          className="availability-leave-dialog"
+          role="dialog"
+        >
+          <div>
+            <h3 id="match-request-leave-title">Unfinished Match Request</h3>
+            <p>You have an unfinished match request. Leave without sending?</p>
+            <div className="scheduling-card-actions">
+              <button type="button" onClick={() => setPendingNavigation('')}>
+                Stay
+              </button>
+              <button type="button" onClick={discardAndNavigate}>
+                Discard
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </section>
   )
 }
