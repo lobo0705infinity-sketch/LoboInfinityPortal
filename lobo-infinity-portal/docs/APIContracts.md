@@ -2,6 +2,154 @@
 
 API contracts are strict. Frontend normalization in `src/services/api.ts` requires the fields documented here.
 
+## Event Engine Foundation
+
+Version 3.0B introduces Event Engine foundation APIs without changing existing endpoint contracts.
+
+### Events
+
+Action:
+
+`GET action=events`
+
+Response:
+
+```json
+{
+  "success": true,
+  "community": {},
+  "series": [],
+  "currentEvent": {},
+  "events": []
+}
+```
+
+Required `event` fields:
+
+- `id`
+- `communityId`
+- `seriesId`
+- `templateId`
+- `name`
+- `description`
+- `type`
+- `lifecycleStage`
+- `status`
+- `owner`
+- `commissioners`
+- `startDate`
+- `endDate`
+- `registration`
+- `participants`
+- `rules`
+- `scoringModel`
+- `standingsModel`
+- `automation`
+- `discord`
+- `achievements`
+- `history`
+- `archive`
+- `createdAt`
+- `updatedAt`
+
+### Event
+
+Action:
+
+`GET action=event&eventId=event-current-league`
+
+If `eventId` is omitted, the backend resolves to `event-current-league`.
+
+Response:
+
+```json
+{
+  "success": true,
+  "event": {}
+}
+```
+
+### Event Templates
+
+Action:
+
+`GET action=eventTemplates`
+
+Response:
+
+```json
+{
+  "success": true,
+  "templates": []
+}
+```
+
+Required template fields:
+
+- `id`
+- `name`
+- `description`
+- `eventType`
+- `version`
+- `active`
+- `rules`
+- `scoringModel`
+- `standingsModel`
+- `roundModel`
+- `automation`
+- `discord`
+- `achievements`
+- `registration`
+- `permissions`
+- `defaultTimeline`
+- `defaultNotifications`
+- `createdAt`
+- `updatedAt`
+
+### Event Seasons
+
+Action:
+
+`GET action=eventSeasons&eventId=event-current-league`
+
+Response:
+
+```json
+{
+  "success": true,
+  "eventId": "event-current-league",
+  "seasons": []
+}
+```
+
+### Event Rounds
+
+Action:
+
+`GET action=eventRounds&eventId=event-current-league&seasonId=season-current-league`
+
+Response:
+
+```json
+{
+  "success": true,
+  "eventId": "event-current-league",
+  "seasonId": "season-current-league",
+  "rounds": []
+}
+```
+
+### Migration Tooling
+
+The migration endpoints are read-only in Version 3.0B and require operations permission.
+
+- `eventMigrationAudit`
+- `eventMigrationPreview`
+- `eventMigrationReport`
+- `eventMigrationRollback`
+
+Version 3.0B does not migrate historical production data automatically.
+
 ## Season Command Center
 
 Action:
@@ -120,3 +268,4 @@ The same `seasonCommandCenter` payload after saving.
 - Season Command Center derives league identity from `leaguePlayer`.
 - Player display names are presentation-only.
 - Availability is stored separately from league identity and standings.
+- Missing `eventId`, `seasonId`, and `roundId` resolve to the Current League Event during the Version 3 migration window.

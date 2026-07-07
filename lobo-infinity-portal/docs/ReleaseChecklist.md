@@ -9,6 +9,8 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] API Contract Validation
 - [ ] Performance Budget Validation
 - [ ] Security Validation
+- [ ] Migration Preview
+- [ ] Rollback Verification
 - [ ] `clasp push`
 - [ ] `clasp deploy`
 - [ ] `vercel deploy`
@@ -27,5 +29,7 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] Verify Season Command Center
 - [ ] Verify Opponent Tracker
 - [ ] Verify Promotion Tracker
+- [ ] Verify Legacy APIs
+- [ ] Verify Current League Event
 - [ ] Tag Release
 - [ ] Push Git Tag

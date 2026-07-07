@@ -62,7 +62,17 @@ const CONFIG = {
 
     AUTOMATION_QUEUE: "Automation Queue",
 
-    SEASON_AVAILABILITY: "Season Availability"
+    SEASON_AVAILABILITY: "Season Availability",
+
+    EVENTS: "Events",
+
+    EVENT_TEMPLATES: "Event Templates",
+
+    EVENT_PARTICIPANTS: "Event Participants",
+
+    EVENT_SEASONS: "Event Seasons",
+
+    EVENT_ROUNDS: "Event Rounds"
 
   },
 

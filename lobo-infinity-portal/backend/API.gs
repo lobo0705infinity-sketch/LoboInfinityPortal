@@ -107,6 +107,31 @@ function doGet(e) {
         return getSettings();
       });
 
+    case "events":
+      return getCachedApiResponse(e, action, function() {
+        return getEvents(e);
+      });
+
+    case "event":
+      return getCachedApiResponse(e, action, function() {
+        return getEvent(e);
+      });
+
+    case "eventTemplates":
+      return getCachedApiResponse(e, action, function() {
+        return getEventTemplates();
+      });
+
+    case "eventSeasons":
+      return getCachedApiResponse(e, action, function() {
+        return getEventSeasons(e);
+      });
+
+    case "eventRounds":
+      return getCachedApiResponse(e, action, function() {
+        return getEventRounds(e);
+      });
+
     case "session":
       return getAuthSession(e);
 
@@ -167,6 +192,26 @@ function doGet(e) {
     case "automation":
       return requireApiPermission(e, "viewOperations", function() {
         return getAutomationCenter();
+      });
+
+    case "eventMigrationAudit":
+      return requireApiPermission(e, "viewOperations", function() {
+        return getEventMigrationAudit();
+      });
+
+    case "eventMigrationPreview":
+      return requireApiPermission(e, "viewOperations", function() {
+        return getEventMigrationPreview();
+      });
+
+    case "eventMigrationReport":
+      return requireApiPermission(e, "viewOperations", function() {
+        return getEventMigrationReport();
+      });
+
+    case "eventMigrationRollback":
+      return requireApiPermission(e, "viewOperations", function() {
+        return getEventMigrationRollback();
       });
 
     case "voteArmyList":

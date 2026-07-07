@@ -39,6 +39,11 @@ Apps Script verifies the token and maps Google Email to the permanent League Pla
 - `automation`: automation center data.
 - `integrity`: league integrity report.
 - `seasonCommandCenter`: authenticated Season Command Center payload for the signed-in league player.
+- `events`: Event Engine event list and current default event.
+- `event`: single Event Engine event.
+- `eventTemplates`: reusable Event Template definitions.
+- `eventSeasons`: seasons for an event.
+- `eventRounds`: rounds for an event or season.
 
 ## Commissioner Actions
 
@@ -54,6 +59,21 @@ Examples:
 - `integrityRepair`
 - `clearCache`
 - `refreshCache`
+- `eventMigrationAudit`
+- `eventMigrationPreview`
+- `eventMigrationReport`
+- `eventMigrationRollback`
+
+## Event Engine Actions
+
+Version 3.0B adds Event Engine foundation actions without changing legacy API behavior.
+
+- `events`: public read. Ensures Event Engine foundation sheets exist and returns community metadata, series metadata, Current League, and all events.
+- `event`: public read. Returns one event. Missing `eventId` resolves to Current League.
+- `eventTemplates`: public read. Returns reusable event templates such as League Season, Army Roulette, Team Tournament, Aurora VII Campaign, Escalation League, and Narrative Weekend.
+- `eventSeasons`: public read. Returns seasons for an event. Missing `eventId` resolves to Current League.
+- `eventRounds`: public read. Returns rounds for an event or season. Missing event scope resolves to Current League.
+- `eventMigrationAudit`, `eventMigrationPreview`, `eventMigrationReport`, `eventMigrationRollback`: operations-gated read-only migration tooling. These endpoints do not mutate historical game data.
 
 ## Season Command Center Actions
 

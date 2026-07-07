@@ -115,3 +115,17 @@ Version 2.6 adds the Season Command Center to the authenticated Dashboard withou
 - Apps Script startup model: unchanged.
 
 Justification: The added bytes support the player-facing Season Command Center, including opponent tracker, progress bars, deadlines, promotion tracker, availability editing, and division status. The request is deferred behind authentication so it does not affect the first public dashboard render.
+
+## Version 3.0B Event Engine Foundation Budget Result
+
+Version 3.0B is a backend and documentation foundation release.
+
+- Initial JavaScript bundle: `index-C29BNeTM.js`, 306,620 bytes.
+- CSS bundle: `index-CBPfAd4y.css`, 102,960 bytes.
+- Dashboard route chunk: `Dashboard-CnP7aXy2.js`, 30,400 bytes.
+- Frontend bundle delta from Version 2.6: 0 bytes.
+- Startup API requests: unchanged.
+- New dependencies: none.
+- Apps Script startup model: unchanged for existing legacy endpoints.
+
+Justification: Event Engine foundation APIs are backend-only and are not called by the current frontend startup path. New Event Engine reads are cached under the `events` cache group.

@@ -4,6 +4,16 @@ Version 2.5.4 LTS documents known technical debt without implementing new featur
 
 ## High Priority
 
+### Event Engine Scope Migration
+
+Description: Version 3.0B installs Event Engine foundation sheets and default scope resolution, but historical Game Engine rows are not migrated to explicit `eventId`, `seasonId`, and `roundId` columns yet.
+
+Reason: Production data migration is intentionally deferred until the foundation can be audited and previewed.
+
+Estimated impact: High for Version 3.1+ event-aware statistics.
+
+Suggested future release: 3.0C Event Scope Migration.
+
 ### Apps Script Cold Start Measurement
 
 Description: Direct Apps Script endpoint timing is intermittently blocked from the current sandbox, which limits release-time measurement confidence.

@@ -26,8 +26,9 @@ const PORTAL_CACHE_GROUPS = {
   search: ["searchData"],
   news: ["news", "home", "notifications", "timeline"],
   settings: ["settings", "home"],
+  events: ["events", "event", "eventTemplates", "eventSeasons", "eventRounds"],
   seasonCommand: ["seasonCommandCenter"],
-  all: ["dashboard", "home", "leader", "recentGames", "standings", "players", "player", "factions", "faction", "missions", "mission", "intelligence", "records", "hallOfFame", "comparison", "timeline", "news", "settings", "seasonCommandCenter", "streams", "searchData", "armyLists"]
+  all: ["dashboard", "home", "leader", "recentGames", "standings", "players", "player", "factions", "faction", "missions", "mission", "intelligence", "records", "hallOfFame", "comparison", "timeline", "news", "settings", "events", "event", "eventTemplates", "eventSeasons", "eventRounds", "seasonCommandCenter", "streams", "searchData", "armyLists"]
 };
 
 const PORTAL_CACHE_ENDPOINT_GROUP = {
@@ -49,6 +50,11 @@ const PORTAL_CACHE_ENDPOINT_GROUP = {
   timeline: "analytics",
   news: "news",
   settings: "settings",
+  events: "events",
+  event: "events",
+  eventTemplates: "events",
+  eventSeasons: "events",
+  eventRounds: "events",
   seasonCommandCenter: "seasonCommand",
   streams: "streams",
   searchData: "search",

@@ -32,6 +32,7 @@ Stable production subsystems:
 - Player Intelligence and My Profile.
 - Hall of Fame snapshot architecture.
 - Season Command Center derived from standings, game analytics, settings, and availability.
+- Event Engine foundation with Current League as the backward-compatible default Event.
 - Apps Script cache manager.
 - Vercel source-based deployment pipeline.
 
@@ -260,3 +261,37 @@ It derives opponent status, progress, promotion/relegation position, deadline st
 - Dedicated Season Availability metadata.
 
 Availability is scheduling metadata only. It never changes league statistics, standings, achievements, history, or identity.
+
+## Event Engine Foundation
+
+Version 3.0B introduces the approved Version 3 Event Engine foundation without replacing production league systems.
+
+The permanent hierarchy is:
+
+```text
+Community -> Series -> Event -> Season -> Round -> Game
+```
+
+The Current League is seeded as the default Event:
+
+```text
+event-current-league
+```
+
+During the migration window, missing event scope resolves to:
+
+```text
+event-current-league
+season-current-league
+round-current-league
+```
+
+The foundation creates only these sheets:
+
+- Events
+- Event Templates
+- Event Participants
+- Event Seasons
+- Event Rounds
+
+Existing endpoints continue to operate through legacy league data. Future Version 3 milestones will make statistics, automation, achievements, Player Intelligence, Hall of Fame, and deep links Event-aware by extending their existing services with explicit scope rather than creating parallel implementations.

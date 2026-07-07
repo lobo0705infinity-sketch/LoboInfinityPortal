@@ -30,6 +30,7 @@
 - `backend/RecordsApi.gs`: records and Hall of Fame APIs.
 - `backend/AutomationApi.gs`: event automation center.
 - `backend/DiscordApi.gs`: Discord destination service.
+- `backend/EventEngineApi.gs`: Version 3 Event Engine foundation objects, default Current League event, and migration preview tooling.
 - `backend/IntegrityApi.gs`: league integrity audits and repairs.
 - `backend/OperationsApi.gs`: commissioner operations.
 - `backend/*Api.gs`: feature-specific Apps Script services.
@@ -49,6 +50,7 @@ Google Sheets is the source of truth for:
 - News
 - Streams
 - Settings
+- Event Engine foundation sheets: Events, Event Templates, Event Participants, Event Seasons, Event Rounds
 
 ## Generated Output
 
