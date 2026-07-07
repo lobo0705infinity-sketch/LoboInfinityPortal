@@ -67,6 +67,7 @@ Google Sheets is the source of truth for:
 - `docs/Operations.md`: Platform Health, Snapshot Manager, Job Queue, Cache Manager, and audit workflow.
 - `docs/Diagnostics.md`: Commissioner diagnostics surface and safety model.
 - `docs/Recovery.md`: recovery actions and failure handling.
+- `docs/MobileUXAudit.md`: Version 4.1 mobile UX audit, scores, implemented improvements, and remaining recommendations.
 - `docs/Roadmap.md`: frozen Version 3 roadmap.
 - `docs/TechnicalDebt.md`: known debt and deferred work.
 

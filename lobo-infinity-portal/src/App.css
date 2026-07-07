@@ -5143,6 +5143,494 @@
   }
 }
 
+/* Version 4.1 Mobile Experience Overhaul */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+button,
+input,
+select,
+textarea,
+a {
+  touch-action: manipulation;
+}
+
+@media (max-width: 1024px) {
+  .portal-shell {
+    overflow-x: hidden;
+  }
+
+  .page-header,
+  .dashboard-header,
+  .league-command-hero,
+  .member-welcome-banner,
+  .community-command-center,
+  .panel,
+  .profile-card,
+  .operations-panel,
+  .scheduling-panel {
+    max-width: 100%;
+  }
+
+  .portal-grid,
+  .dashboard-grid,
+  .dashboard-highlight-grid,
+  .dashboard-experience-grid,
+  .profile-card-grid,
+  .profile-command-grid,
+  .profile-stat-grid,
+  .profile-section-grid,
+  .profile-chart-grid,
+  .profile-wide-grid,
+  .faction-profile-grid,
+  .mission-profile-grid,
+  .operations-grid,
+  .operations-grid.two-column,
+  .operations-summary,
+  .scheduling-grid,
+  .scheduling-card-grid,
+  .command-center-grid,
+  .community-command-grid,
+  .community-command-grid.wide,
+  .community-opponent-columns,
+  .season-progress-grid,
+  .league-stats,
+  .stream-grid,
+  .news-grid,
+  .army-list-grid,
+  .community-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .operations-table-wrap,
+  .standings-table {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 760px) {
+  .app-shell {
+    --mobile-nav-height: 88px;
+    grid-template-columns: 1fr;
+  }
+
+  .portal-shell {
+    min-height: calc(100vh - 64px);
+  }
+
+  .app-main {
+    min-width: 0;
+    padding-bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom, 0px) + 22px);
+  }
+
+  .portal-header {
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .header-title {
+    min-height: 44px;
+  }
+
+  .header-actions {
+    grid-template-columns: 1fr auto auto;
+  }
+
+  .submit-match-button {
+    grid-column: 1 / -1;
+  }
+
+  .header-status {
+    display: none;
+  }
+
+  .quick-jump {
+    min-width: 0;
+  }
+
+  .quick-jump span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .global-search {
+    grid-column: 1 / -1;
+  }
+
+  .global-search input {
+    min-height: 52px;
+    padding-left: 44px;
+  }
+
+  .global-search::before {
+    content: "Search";
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    color: var(--blue);
+    font-size: 0.7rem;
+    font-weight: 950;
+    pointer-events: none;
+    transform: translateY(-50%);
+    text-transform: uppercase;
+  }
+
+  .sidebar {
+    min-height: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom, 0px));
+  }
+
+  .sidebar-nav {
+    grid-auto-columns: minmax(74px, 88px);
+  }
+
+  .sidebar-button {
+    min-height: 62px;
+    outline-offset: -2px;
+  }
+
+  .sidebar-button[data-nav="/match-finder"] {
+    order: 2;
+  }
+
+  .sidebar-button[data-nav="/profile"] {
+    order: 5;
+  }
+
+  .sidebar-button[data-nav="/notifications"] {
+    order: 4;
+  }
+
+  .sidebar-button[data-nav="/standings"] {
+    order: 3;
+  }
+
+  .sidebar-button[data-nav="/news"],
+  .sidebar-button[data-nav="/streams"],
+  .sidebar-button[data-nav="/factions"],
+  .sidebar-button[data-nav="/missions"],
+  .sidebar-button[data-nav="/compare"],
+  .sidebar-button[data-nav="/rules"] {
+    order: 30;
+  }
+
+  .page-header,
+  .dashboard-header,
+  .league-command-hero,
+  .member-welcome-banner,
+  .community-command-center,
+  .panel,
+  .scheduling-hero,
+  .scheduling-panel {
+    border-radius: 12px;
+  }
+
+  .page-header,
+  .dashboard-header {
+    padding: 18px 14px;
+  }
+
+  .page-header h1,
+  .dashboard-header h1,
+  .league-command-hero h1 {
+    font-size: clamp(1.75rem, 9vw, 2.6rem);
+    line-height: 0.98;
+  }
+
+  .panel-heading {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .operations-table,
+  .operations-table tbody,
+  .operations-table tr,
+  .operations-table td,
+  .operations-table th {
+    display: block;
+    width: 100%;
+  }
+
+  .operations-table thead {
+    display: none;
+  }
+
+  .operations-table tr {
+    border: 1px solid rgba(76, 201, 240, 0.14);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+
+  .operations-table td {
+    border: 0;
+    min-height: 34px;
+    overflow-wrap: anywhere;
+    padding: 6px 0;
+  }
+
+  .standings-table .table-row {
+    box-shadow: var(--shadow-panel);
+  }
+
+  .standings-table .table-row span:nth-child(3)::before {
+    content: "Games ";
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+
+  .standings-table .table-row span:nth-child(4)::before {
+    content: "Wins ";
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+
+  .standings-table .table-row span:nth-child(5)::before {
+    content: "Losses ";
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+
+  .standings-table .table-row span:nth-child(6)::before {
+    content: "TP ";
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+
+  .standings-table .table-row span:nth-child(7)::before {
+    content: "OP ";
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+
+  .standings-table .table-row span:nth-child(8)::before {
+    content: "VP ";
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+
+  .scheduling-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .scheduling-form,
+  .operations-form,
+  .army-list-form,
+  .comparison-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .scheduling-form input,
+  .scheduling-form select,
+  .scheduling-form textarea,
+  .operations-form input,
+  .operations-form select,
+  .operations-form textarea,
+  .army-list-form input,
+  .army-list-form select,
+  .army-list-form textarea,
+  .comparison-controls input,
+  .comparison-controls select {
+    min-height: 52px;
+    font-size: 16px;
+  }
+
+  .scheduling-form button[type="submit"],
+  .army-list-form button[type="submit"],
+  .operations-form button[type="submit"] {
+    position: sticky;
+    bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom, 0px) + 10px);
+    z-index: 20;
+    min-height: 52px;
+    box-shadow: var(--shadow-glow);
+  }
+
+  .scheduling-card-actions,
+  .member-welcome-actions,
+  .quick-nav,
+  .notification-actions,
+  .notification-page-actions,
+  .operations-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .scheduling-card-actions a,
+  .scheduling-card-actions button,
+  .member-welcome-actions a,
+  .quick-nav a,
+  .notification-actions button,
+  .notification-page-actions button,
+  .operations-actions button,
+  .operations-actions a {
+    min-height: 48px;
+  }
+
+  .scheduling-card,
+  .dashboard-news-item,
+  .notification-card,
+  .army-list-card,
+  .stream-card,
+  .player-card,
+  .mission-card,
+  .faction-card {
+    padding: 14px;
+  }
+
+  .notification-menu,
+  .profile-menu-panel,
+  .search-results {
+    border-radius: 14px;
+  }
+
+  .profile-hero-record,
+  .profile-hero-score,
+  .profile-badges {
+    width: 100%;
+  }
+
+  .profile-badges {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 412px) {
+  .portal-header,
+  .page-header,
+  .dashboard-header,
+  .panel,
+  .scheduling-panel {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .sidebar-nav {
+    grid-auto-columns: minmax(66px, 78px);
+  }
+
+  .sidebar-button {
+    font-size: 0.64rem;
+    min-height: 58px;
+  }
+
+  .sidebar-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .portal-icon {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (max-width: 360px) {
+  .header-title strong {
+    font-size: 0.76rem;
+  }
+
+  .league-crest.compact {
+    width: 38px;
+    min-width: 38px;
+  }
+
+  .sidebar-button span:last-child {
+    display: block;
+    font-size: 0.6rem;
+  }
+
+  .scheduling-days {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 340px) {
+  .header-title strong {
+    font-size: 0.7rem;
+  }
+
+  .sidebar-nav {
+    grid-auto-columns: minmax(62px, 72px);
+  }
+}
+
+@media (max-width: 920px) and (orientation: landscape) and (max-height: 540px) {
+  .portal-header {
+    position: static;
+  }
+
+  .global-search:focus-within .search-results,
+  .notification-menu,
+  .profile-menu-panel {
+    top: 12px;
+    bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .scheduling-form button[type="submit"],
+  .army-list-form button[type="submit"],
+  .operations-form button[type="submit"] {
+    bottom: calc(66px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (min-width: 761px) and (max-width: 1024px) {
+  .app-shell {
+    grid-template-columns: 92px minmax(0, 1fr);
+  }
+
+  .sidebar {
+    padding: 18px 10px;
+  }
+
+  .sidebar-brand div,
+  .sidebar-button span:last-child {
+    display: none;
+  }
+
+  .sidebar-button {
+    justify-content: center;
+    min-height: 54px;
+    padding: 12px;
+  }
+
+  .sidebar-icon {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scheduling-hero,
+  .scheduling-grid,
+  .scheduling-card-grid,
+  .community-command-center,
+  .dashboard-highlight-grid,
+  .dashboard-experience-grid {
+    animation: none;
+  }
+}
+
 @media (max-width: 720px) {
   .portal-header {
     position: static;

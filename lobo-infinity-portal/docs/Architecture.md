@@ -112,6 +112,23 @@ The scheduling model extends existing systems:
 
 Scheduling does not modify game results, standings formulas, Event Lifecycle, Integrity validation, Discord automation, or authentication.
 
+## Mobile Experience Architecture
+
+Version 4.1 makes the portal mobile-first at the presentation layer.
+
+The mobile shell keeps existing routes, APIs, authentication, permissions, and business logic unchanged while improving:
+
+- Bottom safe-area navigation for phones.
+- Compact tablet sidebar for 768px to 1024px widths.
+- Mobile overlays for search, notifications, and profile controls.
+- Card-based table presentation for standings and operations tables.
+- Large touch targets for forms, scheduling requests, notifications, and commissioner actions.
+- Sticky submit actions for long mobile forms.
+- Safe-area viewport support for iOS and Android browsers.
+- PWA readiness through manifest metadata and mobile app-capable tags.
+
+The mobile layer is CSS-first and route-compatible. It does not add startup API requests or change data contracts.
+
 Frontend GET responses are cached for five minutes per authenticated URL. Backend Apps Script cached endpoints use a fifteen-minute cache TTL with stale fallback support.
 
 ## Deep-Link Architecture

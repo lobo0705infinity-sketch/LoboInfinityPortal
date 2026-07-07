@@ -1,0 +1,19 @@
+{
+  "name": "Lobo Infinity League Portal",
+  "short_name": "Lobo League",
+  "description": "League standings, scheduling, profiles, operations, and community tools.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#05080C",
+  "theme_color": "#05080C",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

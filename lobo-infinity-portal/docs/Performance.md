@@ -119,6 +119,20 @@ Community scheduling preserves the Version 3.x performance model:
 
 The scheduling route adds a small lazy chunk and does not add startup API requests for signed-out users.
 
+## Version 4.1 Mobile Performance
+
+Version 4.1 keeps the Version 4.0 JavaScript route model intact.
+
+Performance notes:
+
+- No new frontend route bundle was added.
+- Initial JavaScript remains unchanged from Version 4.0.
+- The primary increase is CSS for responsive behavior, touch targets, and mobile card layouts.
+- Search, notifications, Quick Jump, Match Finder, Commissioner Dashboard, Diagnostics, Integrity, and Operations continue to lazy-load or defer data until interaction.
+- Motion-heavy sections respect `prefers-reduced-motion`.
+
+The mobile changes prioritize lower interaction cost and reduced layout overflow without adding network requests.
+
 ## Mobile Performance Strategy
 
 Version 2.5.3 keeps the Version 2.5.1 loading model intact.
