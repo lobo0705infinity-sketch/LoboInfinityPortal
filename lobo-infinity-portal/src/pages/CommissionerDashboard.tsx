@@ -5,6 +5,7 @@ import Loading from '../components/Loading'
 import {
   apiClient,
   type ArmyList,
+  type EventLifecycleData,
   type OperationsDashboardData,
   type OperationsIdentityRecord,
   type OperationsNewsItem,
@@ -74,6 +75,7 @@ const permissionRows = [
   ['Restore', 'Commissioner', 'Record restore operation'],
   ['Discord settings', 'Commissioner', 'Configure webhook and automation limits'],
   ['Discord announcements', 'Assistant Commissioner', 'Preview, send, and resend announcements'],
+  ['Event lifecycle', 'Commissioner', 'Advance or rollback Event lifecycle stages'],
 ] as const
 
 function CommissionerDashboard() {
@@ -210,6 +212,12 @@ function CommissionerDashboard() {
         <StreamManager streams={data.streams} onAction={runAction} />
         <ArmyListApproval lists={data.pendingArmyLists} onAction={runAction} />
         <PlayerManagementPanel data={data} />
+        <EventLifecyclePanel
+          canManage={auth.hasPermission('runSeasonControl')}
+          lifecycle={data.eventLifecycle}
+          onAction={runAction}
+          workingAction={workingAction}
+        />
         <PromotionRelegationPanel
           canRun={auth.hasPermission('runSeasonControl')}
           onAction={runAction}
@@ -251,6 +259,139 @@ function CommissionerDashboard() {
         <PermissionMatrix />
       </section>
     </main>
+  )
+}
+
+function EventLifecyclePanel({
+  canManage,
+  lifecycle,
+  onAction,
+  workingAction,
+}: {
+  canManage: boolean
+  lifecycle: EventLifecycleData
+  onAction: OperationsAction
+  workingAction: string
+}) {
+  const transition = lifecycle.nextTransition
+  const rollback = lifecycle.rollback
+
+  return (
+    <section className="panel operations-panel event-lifecycle-panel">
+      <PanelTitle eyebrow="Event Management" title="Event Lifecycle" />
+      <div className="event-lifecycle-heading">
+        <div>
+          <span>{lifecycle.event.type}</span>
+          <h3>{lifecycle.event.name}</h3>
+          <p>{lifecycle.event.description}</p>
+        </div>
+        <strong>{lifecycle.currentStage}</strong>
+      </div>
+      <dl className="operations-metrics compact">
+        <Metric label="Status" value={lifecycle.status} />
+        <Metric label="Participants" value={lifecycle.participants} />
+        <Metric label="Registration" value={lifecycle.registration} />
+        <Metric label="Rounds" value={lifecycle.rounds} />
+        <Metric label="Automation" value={lifecycle.health.automationHealth} />
+        <Metric label="Discord" value={lifecycle.discord.status} />
+        <Metric label="Start" value={lifecycle.startDate || 'Not set'} />
+        <Metric label="End" value={lifecycle.endDate || 'Not set'} />
+        <Metric label="Current Season" value={lifecycle.currentSeason || 'Not set'} />
+        <Metric label="Current Round" value={lifecycle.currentRound || 'Not set'} />
+      </dl>
+      <EventLifecycleStageTrack lifecycle={lifecycle} />
+      <div className="operations-actions wrap">
+        <button
+          disabled={!canManage || !transition.available || workingAction !== ''}
+          onClick={() => void confirmEventLifecycleTransition(lifecycle, onAction)}
+          type="button"
+        >
+          {transition.label}
+        </button>
+        <button
+          disabled={!canManage || !rollback.available || workingAction !== ''}
+          onClick={() => void confirmEventLifecycleRollback(lifecycle, onAction)}
+          type="button"
+        >
+          {rollback.label}
+        </button>
+      </div>
+      <div className="operations-grid two-column event-lifecycle-subgrid">
+        <section className="operations-record">
+          <span>Event Health</span>
+          <h3>{lifecycle.health.registrationProgress}</h3>
+          <p>
+            {lifecycle.health.gamesCompleted} games completed,{' '}
+            {lifecycle.health.gamesRemaining} remaining,{' '}
+            {lifecycle.health.missingPairings} missing pairings.
+          </p>
+          <small>
+            {lifecycle.health.playersWithoutIdentity} identity warnings -{' '}
+            {lifecycle.health.latePlayers.length} late players
+          </small>
+        </section>
+        <section className="operations-record">
+          <span>Automation Preview</span>
+          <h3>{lifecycle.automation.template.title || 'Event lifecycle updated'}</h3>
+          <p>{lifecycle.automation.template.body || '{{message}}'}</p>
+          <small>
+            Destinations: {lifecycle.automation.destinations.join(', ') || 'None configured'}
+          </small>
+        </section>
+      </div>
+      <div className="operations-stack">
+        {lifecycle.warnings.length === 0 ? (
+          <EmptyState text="No event lifecycle warnings." />
+        ) : (
+          lifecycle.warnings.map((warning) => (
+            <article
+              className={`operations-record ${warning.severity}`}
+              key={`${warning.severity}-${warning.message}`}
+            >
+              <span>{warning.severity}</span>
+              <h3>{warning.message}</h3>
+              <p>{warning.suggestedFix}</p>
+            </article>
+          ))
+        )}
+      </div>
+      <div className="operations-stack">
+        {lifecycle.auditLog.length === 0 ? (
+          <EmptyState text="No lifecycle transitions have been recorded yet." />
+        ) : (
+          lifecycle.auditLog.slice(0, 5).map((entry) => (
+            <article className="operations-record" key={`${entry.timestamp}-${entry.newStage}`}>
+              <span>{entry.timestamp}</span>
+              <h3>{entry.previousStage} to {entry.newStage}</h3>
+              <p>{entry.reason || 'Lifecycle transition recorded.'}</p>
+              <small>{entry.commissioner || 'Unknown commissioner'}</small>
+            </article>
+          ))
+        )}
+      </div>
+      {!rollback.available && rollback.reason ? (
+        <p className="operations-empty">{rollback.reason}</p>
+      ) : null}
+    </section>
+  )
+}
+
+function EventLifecycleStageTrack({
+  lifecycle,
+}: {
+  lifecycle: EventLifecycleData
+}) {
+  return (
+    <ol className="event-lifecycle-track" aria-label="Event lifecycle stages">
+      {lifecycle.supportedStages.map((stage) => (
+        <li
+          className={stage === lifecycle.currentStage ? 'active' : ''}
+          key={stage}
+        >
+          {stage}
+        </li>
+      ))}
+    </ol>
   )
 }
 
@@ -1323,6 +1464,48 @@ function confirmSeasonOperation(operation: string, onAction: OperationsAction) {
 
   if (accepted) {
     return onAction('seasonOperation', { operation })
+  }
+
+  return Promise.resolve()
+}
+
+function confirmEventLifecycleTransition(
+  lifecycle: EventLifecycleData,
+  onAction: OperationsAction,
+) {
+  const transition = lifecycle.nextTransition
+  const accepted = window.confirm(
+    `${transition.confirmationTitle || transition.label}\n\nThis will:\n${transition.confirmationBody
+      .map((item) => `- ${item}`)
+      .join('\n')}\n\nContinue?`,
+  )
+
+  if (accepted) {
+    return onAction('eventLifecycleTransition', {
+      direction: 'advance',
+      eventId: lifecycle.event.id,
+      reason: transition.label,
+    })
+  }
+
+  return Promise.resolve()
+}
+
+function confirmEventLifecycleRollback(
+  lifecycle: EventLifecycleData,
+  onAction: OperationsAction,
+) {
+  const rollback = lifecycle.rollback
+  const accepted = window.confirm(
+    `${rollback.label}?\n\n${rollback.reason}\n\nThis will create an audit entry and trigger configured lifecycle automation.\n\nContinue?`,
+  )
+
+  if (accepted) {
+    return onAction('eventLifecycleTransition', {
+      direction: 'rollback',
+      eventId: lifecycle.event.id,
+      reason: rollback.label,
+    })
   }
 
   return Promise.resolve()

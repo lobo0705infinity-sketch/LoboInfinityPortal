@@ -132,6 +132,11 @@ function doGet(e) {
         return getEventRounds(e);
       });
 
+    case "eventLifecycle":
+      return requireApiPermission(e, "viewOperations", function() {
+        return getEventLifecycle(e);
+      });
+
     case "session":
       return getAuthSession(e);
 
@@ -220,6 +225,11 @@ function doGet(e) {
     case "eventMigrationValidation":
       return requireApiPermission(e, "viewOperations", function() {
         return getEventMigrationValidation();
+      });
+
+    case "eventLifecycleTransition":
+      return requireApiPermission(e, "runSeasonControl", function(auth) {
+        return transitionEventLifecycle(e, auth);
       });
 
     case "voteArmyList":

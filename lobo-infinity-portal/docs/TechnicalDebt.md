@@ -24,6 +24,16 @@ Estimated impact: Medium.
 
 Suggested future release: 3.2 or 3.4, depending on Event Migration and Event Automation sequencing.
 
+### Event Lifecycle Transition Contract Tests
+
+Description: Version 3.1.2 adds Event Lifecycle Controls, but automated authenticated contract tests for transition and rollback mutations are not available in CI.
+
+Reason: Lifecycle changes require Commissioner authentication and mutate production Event Engine sheets, so release verification uses syntax/build checks, unauthenticated permission checks, and manual Commissioner operation checks.
+
+Estimated impact: Medium.
+
+Suggested future release: 3.2 API Contract Testing.
+
 ### Organization Persistence
 
 Description: Version 3.0D freezes Organization as the architectural parent above Community, but runtime persistence still begins at the Event Engine foundation sheets introduced in Version 3.0B.

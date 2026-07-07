@@ -30,6 +30,8 @@ Version 3.1 ships the authenticated Community Command Center as the first Commun
 
 Version 3.1.1 completes the first player workflow pass by turning the Community Command Center into a personal mission briefing with Today, My Remaining Games, Nudge Engine, event switching, and prioritized next actions.
 
+Version 3.1.2 adds Event Lifecycle Controls so Commissioners can operate the Current League Event from the portal without editing Google Sheets.
+
 ### 3.2 Event Migration
 
 Add explicit event scope to historical data after migration validation has passed.

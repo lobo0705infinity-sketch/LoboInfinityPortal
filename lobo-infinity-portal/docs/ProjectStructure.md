@@ -33,6 +33,7 @@
 - `backend/DiscordApi.gs`: Discord destination service.
 - `backend/CommunityCommandCenterApi.gs`: authenticated Community Command Center aggregate, player workflow, and Nudge Engine built from Event Engine and existing player services.
 - `backend/EventEngineApi.gs`: Version 3 Event Engine foundation objects, default Current League event, and migration preview tooling.
+- `backend/EventLifecycleApi.gs`: commissioner Event Lifecycle Controls, health, warnings, transition automation, rollback safety, and audit log.
 - `backend/IntegrityApi.gs`: league integrity audits and repairs.
 - `backend/OperationsApi.gs`: commissioner operations.
 - `backend/*Api.gs`: feature-specific Apps Script services.

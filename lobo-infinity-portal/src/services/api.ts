@@ -962,9 +962,121 @@ export type OperationsDashboardData = {
   news: OperationsNewsItem[]
   players: OperationsPlayer[]
   identity: OperationsIdentityManagement
+  eventLifecycle: EventLifecycleData
   discord: OperationsDiscordStatus
   settings: PortalSettings
   audit: LeagueAudit
+}
+
+export type EventLifecycleEvent = {
+  achievements: string
+  archive: string
+  automation: string
+  commissioners: string
+  communityId: string
+  createdAt: string
+  description: string
+  discord: string
+  endDate: string
+  history: string
+  id: string
+  lifecycleStage: string
+  name: string
+  owner: string
+  participants: string
+  registration: string
+  rules: string
+  scoringModel: string
+  seriesId: string
+  standingsModel: string
+  startDate: string
+  status: string
+  templateId: string
+  type: string
+  updatedAt: string
+}
+
+export type EventLifecycleTransition = {
+  available: boolean
+  confirmationBody: string[]
+  confirmationTitle: string
+  label: string
+  targetStage: string
+}
+
+export type EventLifecycleRollback = {
+  available: boolean
+  label: string
+  reason: string
+  targetStage: string
+}
+
+export type EventLifecycleWarning = {
+  message: string
+  severity: string
+  suggestedFix: string
+}
+
+export type EventLifecycleAuditEntry = {
+  automationResult: string
+  commissioner: string
+  eventId: string
+  eventName: string
+  newStage: string
+  previousStage: string
+  reason: string
+  timestamp: string
+}
+
+export type EventLifecycleData = {
+  auditLog: EventLifecycleAuditEntry[]
+  automation: {
+    destinations: string[]
+    enabled: boolean
+    eventType: string
+    template: {
+      body: string
+      enabled: boolean
+      title: string
+    }
+  }
+  currentRound: string
+  currentSeason: string
+  currentStage: string
+  discord: {
+    configured: boolean
+    enabled: boolean
+    preview: OperationsDiscordPreview
+    status: string
+    webhookMasked: string
+  }
+  endDate: string
+  event: EventLifecycleEvent
+  health: {
+    automationHealth: string
+    discordStatus: string
+    gamesCompleted: number
+    gamesRemaining: number
+    latePlayers: Array<{
+      displayName: string
+      games: number
+      player: string
+    }>
+    missingPairings: number
+    participants: number
+    playersWithoutIdentity: number
+    registrationProgress: string
+    rounds: number
+  }
+  nextTransition: EventLifecycleTransition
+  participants: number
+  registration: string
+  rollback: EventLifecycleRollback
+  rounds: number
+  startDate: string
+  status: string
+  supportedStages: string[]
+  warnings: EventLifecycleWarning[]
 }
 
 export type OperationsIdentityStatus = {
@@ -3501,11 +3613,168 @@ function normalizeOperationsPayload(payload: unknown): OperationsDashboardData {
     identity: normalizeOperationsIdentityManagement(
       getRequiredRecord(record, 'identity'),
     ),
+    eventLifecycle: normalizeEventLifecycleData(
+      getRequiredRecord(record, 'eventLifecycle'),
+    ),
     discord: normalizeOperationsDiscordStatus(
       getOptionalRecord(record, 'discord') ?? discordStatus,
     ),
     settings: normalizeSettingsRecord(getRequiredRecord(record, 'settings')),
     audit: normalizeLeagueAudit(getRequiredRecord(record, 'audit')),
+  }
+}
+
+function normalizeEventLifecycleData(
+  record: Record<string, unknown>,
+): EventLifecycleData {
+  const automation = getRequiredRecord(record, 'automation')
+  const template = getRequiredRecord(automation, 'template')
+  const discord = getRequiredRecord(record, 'discord')
+  const health = getRequiredRecord(record, 'health')
+
+  return {
+    auditLog: getRequiredArray(record, 'auditLog').map(
+      normalizeEventLifecycleAuditEntry,
+    ),
+    automation: {
+      destinations: getRequiredArray(automation, 'destinations').map(String),
+      enabled: getBoolean(automation, 'enabled'),
+      eventType: getRequiredString(automation, 'eventType'),
+      template: {
+        body: getString(template, 'body'),
+        enabled: getBoolean(template, 'enabled'),
+        title: getString(template, 'title'),
+      },
+    },
+    currentRound: getString(record, 'currentRound'),
+    currentSeason: getString(record, 'currentSeason'),
+    currentStage: getRequiredString(record, 'currentStage'),
+    discord: {
+      configured: getBoolean(discord, 'configured'),
+      enabled: getBoolean(discord, 'enabled'),
+      preview: normalizeOperationsDiscordPreview(
+        getOptionalRecord(discord, 'preview') ?? {},
+      ),
+      status: getRequiredString(discord, 'status'),
+      webhookMasked: getString(discord, 'webhookMasked'),
+    },
+    endDate: getString(record, 'endDate'),
+    event: normalizeEventLifecycleEvent(getRequiredRecord(record, 'event')),
+    health: {
+      automationHealth: getRequiredString(health, 'automationHealth'),
+      discordStatus: getRequiredString(health, 'discordStatus'),
+      gamesCompleted: getRequiredNumber(health, 'gamesCompleted'),
+      gamesRemaining: getRequiredNumber(health, 'gamesRemaining'),
+      latePlayers: getRequiredArray(health, 'latePlayers').map((item) => {
+        const latePlayer = asRecord(item, 'Event lifecycle late player')
+
+        return {
+          displayName: getString(latePlayer, 'displayName'),
+          games: getNumber(latePlayer, 'games'),
+          player: getRequiredString(latePlayer, 'player'),
+        }
+      }),
+      missingPairings: getRequiredNumber(health, 'missingPairings'),
+      participants: getRequiredNumber(health, 'participants'),
+      playersWithoutIdentity: getRequiredNumber(health, 'playersWithoutIdentity'),
+      registrationProgress: getRequiredString(health, 'registrationProgress'),
+      rounds: getRequiredNumber(health, 'rounds'),
+    },
+    nextTransition: normalizeEventLifecycleTransition(
+      getRequiredRecord(record, 'nextTransition'),
+    ),
+    participants: getRequiredNumber(record, 'participants'),
+    registration: getString(record, 'registration'),
+    rollback: normalizeEventLifecycleRollback(getRequiredRecord(record, 'rollback')),
+    rounds: getRequiredNumber(record, 'rounds'),
+    startDate: getString(record, 'startDate'),
+    status: getString(record, 'status'),
+    supportedStages: getRequiredArray(record, 'supportedStages').map(String),
+    warnings: getRequiredArray(record, 'warnings').map(
+      normalizeEventLifecycleWarning,
+    ),
+  }
+}
+
+function normalizeEventLifecycleEvent(
+  record: Record<string, unknown>,
+): EventLifecycleEvent {
+  return {
+    achievements: getString(record, 'achievements'),
+    archive: getString(record, 'archive'),
+    automation: getString(record, 'automation'),
+    commissioners: getString(record, 'commissioners'),
+    communityId: getString(record, 'communityId'),
+    createdAt: getString(record, 'createdAt'),
+    description: getString(record, 'description'),
+    discord: getString(record, 'discord'),
+    endDate: getString(record, 'endDate'),
+    history: getString(record, 'history'),
+    id: getRequiredString(record, 'id'),
+    lifecycleStage: getRequiredString(record, 'lifecycleStage'),
+    name: getRequiredString(record, 'name'),
+    owner: getString(record, 'owner'),
+    participants: getString(record, 'participants'),
+    registration: getString(record, 'registration'),
+    rules: getString(record, 'rules'),
+    scoringModel: getString(record, 'scoringModel'),
+    seriesId: getString(record, 'seriesId'),
+    standingsModel: getString(record, 'standingsModel'),
+    startDate: getString(record, 'startDate'),
+    status: getString(record, 'status'),
+    templateId: getString(record, 'templateId'),
+    type: getString(record, 'type'),
+    updatedAt: getString(record, 'updatedAt'),
+  }
+}
+
+function normalizeEventLifecycleTransition(
+  record: Record<string, unknown>,
+): EventLifecycleTransition {
+  return {
+    available: getBoolean(record, 'available'),
+    confirmationBody: getArray(record, 'confirmationBody').map(String),
+    confirmationTitle: getString(record, 'confirmationTitle'),
+    label: getRequiredString(record, 'label'),
+    targetStage: getString(record, 'targetStage'),
+  }
+}
+
+function normalizeEventLifecycleRollback(
+  record: Record<string, unknown>,
+): EventLifecycleRollback {
+  return {
+    available: getBoolean(record, 'available'),
+    label: getRequiredString(record, 'label'),
+    reason: getString(record, 'reason'),
+    targetStage: getString(record, 'targetStage'),
+  }
+}
+
+function normalizeEventLifecycleWarning(item: unknown): EventLifecycleWarning {
+  const record = asRecord(item, 'Event lifecycle warning')
+
+  return {
+    message: getRequiredString(record, 'message'),
+    severity: getRequiredString(record, 'severity'),
+    suggestedFix: getRequiredString(record, 'suggestedFix'),
+  }
+}
+
+function normalizeEventLifecycleAuditEntry(
+  item: unknown,
+): EventLifecycleAuditEntry {
+  const record = asRecord(item, 'Event lifecycle audit entry')
+
+  return {
+    automationResult: getString(record, 'automationResult'),
+    commissioner: getString(record, 'commissioner'),
+    eventId: getRequiredString(record, 'eventId'),
+    eventName: getString(record, 'eventName'),
+    newStage: getRequiredString(record, 'newStage'),
+    previousStage: getRequiredString(record, 'previousStage'),
+    reason: getString(record, 'reason'),
+    timestamp: getRequiredString(record, 'timestamp'),
   }
 }
 

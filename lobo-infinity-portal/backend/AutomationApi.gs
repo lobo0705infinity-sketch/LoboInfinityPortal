@@ -78,6 +78,7 @@ const AUTOMATION_EVENT_DEFINITIONS = [
   ["streamScheduled", "Streams", "normal", "Stream Scheduled"],
   ["systemWarning", "System", "high", "System Warning"],
   ["integrityAlert", "Integrity", "critical", "Integrity Alert"],
+  ["eventLifecycleTransition", "Event Lifecycle", "high", "Event Lifecycle Transition"],
   ["weeklyRecap", "Weekly Automation", "normal", "Weekly Recap"]
 ];
 
@@ -90,6 +91,7 @@ const AUTOMATION_DEFAULT_TEMPLATES = [
   ["weeklyRecap", "Weekly Recap", "Weekly League Recap", "{{message}}", "embed"],
   ["seasonSummary", "Season Summary", "Season Summary", "{{message}}", "embed"],
   ["hallOfFame", "Hall of Fame", "{{player}} enters the Hall of Fame", "{{message}}", "embed"],
+  ["eventLifecycleTransition", "Event Lifecycle", "Event lifecycle updated", "{{message}}", "embed"],
   ["commissionerNews", "Commissioner News", "{{message}}", "{{message}}", "embed"]
 ];
 
@@ -1078,6 +1080,7 @@ function buildDefaultAutomationRule(eventType) {
       "streamScheduled",
       "systemWarning",
       "integrityAlert",
+      "eventLifecycleTransition",
       "weeklyRecap"
     ].indexOf(eventType) !== -1;
 
@@ -1095,6 +1098,7 @@ function buildDefaultAutomationRule(eventType) {
         "recordBroken",
         "commissionerNews",
         "streamScheduled",
+        "eventLifecycleTransition",
         "weeklyRecap"
       ].indexOf(eventType) !== -1,
     timeline:
@@ -1104,13 +1108,15 @@ function buildDefaultAutomationRule(eventType) {
         "promotion",
         "relegation",
         "hallOfFame",
-        "recordBroken"
+        "recordBroken",
+        "eventLifecycleTransition"
       ].indexOf(eventType) !== -1,
     news:
       [
         "commissionerNews",
         "seasonStarted",
         "seasonEnded",
+        "eventLifecycleTransition",
         "leagueChampion",
         "divisionChampion"
       ].indexOf(eventType) !== -1,

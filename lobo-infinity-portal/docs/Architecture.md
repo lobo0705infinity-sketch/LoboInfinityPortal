@@ -395,3 +395,25 @@ Every nudge includes:
 - Deep link.
 
 If the existing production services do not provide enough evidence for a useful recommendation, the Nudge Engine returns `Not enough information yet.`
+
+## Event Lifecycle Controls
+
+Version 3.1.2 adds commissioner-facing Event Lifecycle Controls on top of the existing Event Engine foundation.
+
+The lifecycle system operates existing Event Engine records. It does not introduce a new event model.
+
+Supported stages:
+
+```text
+Planning -> Registration Open -> Registration Closed -> Roster Locked -> Schedule Generated -> Active -> Midseason -> Final Week -> Awards -> Archived
+```
+
+Lifecycle transitions:
+
+- Update the existing `Events` row lifecycle stage, status, registration state, and timestamp.
+- Synchronize related `Event Seasons` and `Event Rounds` status fields.
+- Publish one `eventLifecycleTransition` Automation event through the existing Automation Center.
+- Write an immutable row to the `Event Lifecycle Audit` sheet.
+- Refresh event and operations caches.
+
+Commissioners can advance lifecycle stages and perform safe rollbacks from the Commissioner Dashboard. Assistant Commissioners may view lifecycle health, warnings, automation status, Discord status, and audit history but cannot change lifecycle state.

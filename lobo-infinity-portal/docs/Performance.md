@@ -180,3 +180,16 @@ Version 3.1.1 keeps the same request model.
 Today, My Remaining Games, Event Switcher, and Nudge Engine are derived inside the existing authenticated `communityCommandCenter` response. The frontend does not add a second workflow request, and signed-out users continue to avoid the authenticated command-center call.
 
 This avoids new anonymous startup requests and avoids duplicate statistics calculations.
+
+## Event Lifecycle Performance
+
+Version 3.1.2 embeds Event Lifecycle state in the existing Commissioner Dashboard operations response.
+
+Lifecycle controls are operations-only:
+
+- They do not add public startup requests.
+- They do not change authenticated player Dashboard requests.
+- They do not add package dependencies.
+- Transition mutations refresh event and operations caches after updating Event Engine rows.
+
+The lifecycle card reuses Event Engine, Season Command Center commissioner status, Identity status, Discord status, and Automation rules instead of creating duplicate health calculations.

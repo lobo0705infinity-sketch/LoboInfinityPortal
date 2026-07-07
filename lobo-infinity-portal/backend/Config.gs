@@ -72,7 +72,9 @@ const CONFIG = {
 
     EVENT_SEASONS: "Event Seasons",
 
-    EVENT_ROUNDS: "Event Rounds"
+    EVENT_ROUNDS: "Event Rounds",
+
+    EVENT_LIFECYCLE_AUDIT: "Event Lifecycle Audit"
 
   },
 

@@ -147,6 +147,83 @@ Response:
 }
 ```
 
+### Event Lifecycle
+
+Action:
+
+`GET action=eventLifecycle&eventId=event-current-league`
+
+Authentication:
+
+Requires operations view permission.
+
+Response:
+
+```json
+{
+  "success": true,
+  "lifecycle": {
+    "event": {},
+    "currentStage": "Active",
+    "status": "Active",
+    "registration": "Registration Closed",
+    "participants": 30,
+    "rounds": 1,
+    "currentSeason": "Current League Season",
+    "currentRound": "Current League",
+    "health": {},
+    "warnings": [],
+    "nextTransition": {},
+    "rollback": {},
+    "automation": {},
+    "discord": {},
+    "auditLog": []
+  }
+}
+```
+
+Required lifecycle fields:
+
+- `event`
+- `currentStage`
+- `status`
+- `registration`
+- `participants`
+- `rounds`
+- `startDate`
+- `endDate`
+- `currentSeason`
+- `currentRound`
+- `health`
+- `warnings`
+- `nextTransition`
+- `rollback`
+- `automation`
+- `discord`
+- `auditLog`
+- `supportedStages`
+
+Action:
+
+`POST action=eventLifecycleTransition`
+
+Authentication:
+
+Requires Commissioner-level `runSeasonControl` permission.
+
+Accepted fields:
+
+- `eventId`
+- `direction`: `advance` or `rollback`
+- `reason`
+
+Transition behavior:
+
+- Updates existing Event Engine rows.
+- Publishes `eventLifecycleTransition` through the Automation Center.
+- Writes `Event Lifecycle Audit`.
+- Refreshes event and operations caches.
+
 ### Migration Tooling
 
 The migration endpoints are read-only in Version 3.0B and require operations permission.
@@ -439,3 +516,4 @@ Required `schedule` fields:
 - Missing `eventId`, `seasonId`, and `roundId` resolve to the Current League Event during the Version 3 migration window.
 - New top-level architectural concepts require API contract review and documentation updates before implementation.
 - Community Command Center extends existing Event Engine and Season Command Center contracts without changing legacy dashboard, standings, profile, Hall of Fame, notification, or automation responses.
+- Event Lifecycle Controls extend existing Event Engine, Automation Center, Discord, and Commissioner Dashboard contracts without changing public Event Engine reads.

@@ -3721,6 +3721,68 @@
   gap: 10px;
 }
 
+.event-lifecycle-panel {
+  grid-column: 1 / -1;
+}
+
+.event-lifecycle-heading {
+  align-items: start;
+  background: rgba(8, 14, 22, 0.72);
+  border: 1px solid rgba(76, 201, 240, 0.14);
+  border-radius: 14px;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 16px;
+}
+
+.event-lifecycle-heading span,
+.event-lifecycle-track li {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.event-lifecycle-heading h3,
+.event-lifecycle-heading p {
+  margin: 0;
+}
+
+.event-lifecycle-heading strong {
+  border: 1px solid rgba(76, 201, 240, 0.32);
+  border-radius: 999px;
+  color: var(--accent);
+  padding: 8px 12px;
+  white-space: nowrap;
+}
+
+.event-lifecycle-track {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.event-lifecycle-track li {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.event-lifecycle-track li.active {
+  border-color: rgba(76, 201, 240, 0.48);
+  box-shadow: 0 0 0 1px rgba(76, 201, 240, 0.12);
+  color: var(--accent);
+}
+
+.event-lifecycle-subgrid {
+  gap: 12px;
+}
+
 .hall-museum {
   gap: clamp(18px, 3vw, 28px);
 }

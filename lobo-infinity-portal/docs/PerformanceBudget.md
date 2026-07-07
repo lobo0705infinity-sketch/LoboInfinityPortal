@@ -171,3 +171,19 @@ Version 3.1.1 adds workflow prioritization and Nudge Engine presentation to the 
 - New dependencies: none.
 
 Justification: The added bytes render Today, Event Switcher, My Remaining Games, and Nudge Engine inside the existing Community Command Center surface. No additional frontend request or new backend service path is introduced.
+
+## Version 3.1.2 Event Lifecycle Controls Budget Result
+
+Version 3.1.2 adds Event Lifecycle Controls to the existing Commissioner Dashboard and operations payload.
+
+- Initial JavaScript bundle: `index-CkAAgr90.js`, 312,730 bytes.
+- JavaScript delta from Version 3.1.1: approximately +2,900 bytes.
+- CSS bundle: `index-wpfwuCwz.css`, 106,810 bytes.
+- CSS delta from Version 3.1.1: approximately +950 bytes.
+- Commissioner Dashboard route chunk: `CommissionerDashboard-CqsvW_8M.js`, 37,200 bytes.
+- Startup API requests for signed-out users: unchanged.
+- Public Dashboard request model: unchanged.
+- Commissioner Dashboard: still uses the existing operations request; lifecycle state is embedded in the operations payload.
+- New dependencies: none.
+
+Justification: The added bytes are isolated to the lazy Commissioner Dashboard route and operations-only backend payload. Player startup, public dashboard, authentication, and Community Command Center request counts do not change.

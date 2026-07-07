@@ -83,6 +83,8 @@ function getOperationsDashboard() {
     news: news,
     players: getOperationsPlayers(),
     identity: getOperationsIdentityManagement(),
+    eventLifecycle:
+      buildEventLifecycleDashboard(EVENT_ENGINE_DEFAULT_EVENT_ID),
     discord: getDiscordOperationsStatus(),
     settings: settings,
     audit: audit

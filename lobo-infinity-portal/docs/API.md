@@ -45,6 +45,7 @@ Apps Script verifies the token and maps Google Email to the permanent League Pla
 - `eventTemplates`: reusable Event Template definitions.
 - `eventSeasons`: seasons for an event.
 - `eventRounds`: rounds for an event or season.
+- `eventLifecycle`: operations-gated Event Lifecycle Control payload.
 
 ## Commissioner Actions
 
@@ -65,6 +66,7 @@ Examples:
 - `eventMigrationReport`
 - `eventMigrationRollback`
 - `eventMigrationValidation`
+- `eventLifecycleTransition`
 
 ## Event Engine Actions
 
@@ -77,6 +79,8 @@ Version 3.0B adds Event Engine foundation actions without changing legacy API be
 - `eventRounds`: public read. Returns rounds for an event or season. Missing event scope resolves to Current League.
 - `eventMigrationAudit`, `eventMigrationPreview`, `eventMigrationReport`, `eventMigrationRollback`: operations-gated read-only migration tooling. These endpoints do not mutate historical game data.
 - `eventMigrationValidation`: operations-gated read-only validation. Compares legacy outputs to Event Engine default-scope outputs for standings, statistics, Hall of Fame, achievements, intelligence, timeline, automation, notifications, Discord events, army lists, recent games, deep links, career, promotion, and relegation.
+- `eventLifecycle`: operations-gated read. Returns the Event Lifecycle card payload for the requested Event.
+- `eventLifecycleTransition`: commissioner-only mutation. Advances or safely rolls back an Event lifecycle stage, publishes an Automation event, writes the lifecycle audit log, and refreshes caches.
 
 ## Season Command Center Actions
 

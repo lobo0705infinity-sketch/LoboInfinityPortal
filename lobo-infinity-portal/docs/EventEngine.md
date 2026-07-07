@@ -171,6 +171,33 @@ Legacy endpoints remain the production surface:
 
 Future milestones will make these endpoints Event-aware through scope parameters while preserving current defaults.
 
+## Event Lifecycle Controls
+
+Version 3.1.2 adds operational lifecycle controls for Events.
+
+Supported lifecycle stages:
+
+```text
+Planning -> Registration Open -> Registration Closed -> Roster Locked -> Schedule Generated -> Active -> Midseason -> Final Week -> Awards -> Archived
+```
+
+Lifecycle controls operate the existing `Events`, `Event Seasons`, `Event Rounds`, and `Event Participants` sheets.
+
+They do not create a parallel event model.
+
+Commissioner Dashboard reads lifecycle state from the operations payload. Commissioners can advance or safely roll back lifecycle stages through `eventLifecycleTransition`.
+
+Every successful transition:
+
+- Updates the Event lifecycle stage.
+- Updates Event status and registration state.
+- Synchronizes Season and Round status.
+- Publishes `eventLifecycleTransition` through Automation Center.
+- Writes `Event Lifecycle Audit`.
+- Refreshes event and operations caches.
+
+Rollback is intentionally limited. It is safe only before schedule generation or submitted games make the previous state operationally ambiguous.
+
 ## Baseline Freeze
 
 Version 3.0D freezes the Event Engine baseline.
