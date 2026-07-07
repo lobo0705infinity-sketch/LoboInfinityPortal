@@ -81,6 +81,10 @@ function getPlayer(e) {
 
       name: registeredPlayer.player,
 
+      displayName:
+        registeredPlayer.displayName ||
+        registeredPlayer.player,
+
       division: registeredPlayer.division,
 
       rank: standing.rank,

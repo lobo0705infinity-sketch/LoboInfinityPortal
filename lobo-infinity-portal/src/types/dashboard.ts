@@ -10,6 +10,7 @@ export type DashboardSummary = {
 export type Standing = {
   rank: number
   player: string
+  displayName: string
   games: number
   wins: number
   losses: number

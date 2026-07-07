@@ -16,7 +16,7 @@ function UserActivityTracker() {
       void apiClient.updateProfile({
         lastPage: `${location.pathname}${location.search}`,
       })
-    }, 800)
+    }, 10000)
 
     return () => {
       window.clearTimeout(timeout)

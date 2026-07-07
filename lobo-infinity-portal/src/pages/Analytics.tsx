@@ -12,6 +12,7 @@ import {
   type RecentUpset,
   type StandingsBattle,
 } from '../services/api'
+import { formatObjectiveScore, formatPlayerName } from '../services/formatting'
 
 type IntelligenceState =
   | {
@@ -113,13 +114,11 @@ function Analytics() {
         <GameListCard
           eyebrow="Biggest Blowouts"
           games={data.biggestVictories}
-          metricSuffix=" VP"
           title="Biggest Blowouts"
         />
         <GameListCard
           eyebrow="Closest Matches"
           games={data.closestGames}
-          metricSuffix=" VP"
           title="Closest Matches"
         />
         {data.recentUpsets.length > 0 ? (
@@ -174,7 +173,7 @@ function HotStreaksCard({
           <StoryLink
             key={`win-${streak.player}`}
             meta={`${streak.games} games`}
-            title={streak.player}
+            title={formatPlayerName(streak.player, streak.displayName)}
             to={playerPath(streak.player)}
           >
             {streak.story}
@@ -184,7 +183,7 @@ function HotStreaksCard({
           <StoryLink
             key={`loss-${streak.player}`}
             meta={`${streak.games} games`}
-            title={streak.player}
+            title={formatPlayerName(streak.player, streak.displayName)}
             to={playerPath(streak.player)}
           >
             {streak.story}
@@ -197,11 +196,11 @@ function HotStreaksCard({
 
 function RecordsCard({ records }: { records: Record<string, LeagueRecordValue> }) {
   const recordItems = [
-    ['Largest VP Margin', records.largestVPMargin],
+    ['Largest OP Scoreline Margin', records.largestVPMargin],
     ['Largest OP Margin', records.largestOPMargin],
     ['Highest Scoring Game', records.highestScoringGame],
     ['Lowest Scoring Game', records.lowestScoringGame],
-    ['Closest VP Game', records.closestVPGame],
+    ['Closest OP Game', records.closestVPGame],
     ['Most Active Player', records.mostActivePlayer],
     ['Most Active Faction', records.mostActiveFaction],
     ['Most Active Mission', records.mostActiveMission],
@@ -289,7 +288,7 @@ function BattleCard({
           <StoryLink
             key={`${item.division}-${item.rank}-${item.player}`}
             meta={`${item.division} / Rank #${item.rank}`}
-            title={item.player}
+            title={formatPlayerName(item.player, item.displayName)}
             to={playerPath(item.player)}
           >
             {item.story}
@@ -303,12 +302,10 @@ function BattleCard({
 function GameListCard({
   eyebrow,
   games,
-  metricSuffix,
   title,
 }: {
   eyebrow: string
   games: IntelligenceGame[]
-  metricSuffix: string
   title: string
 }) {
   return (
@@ -317,8 +314,8 @@ function GameListCard({
         {games.map((game) => (
           <StoryLink
             key={`${title}-${game.id}`}
-            meta={`${game.value}${metricSuffix} / ${game.date}`}
-            title={`${game.winner} vs ${game.loser}`}
+            meta={`${formatObjectiveScore({ op: game.value })} / ${game.date}`}
+            title={`${formatPlayerName(game.winner, game.winnerDisplayName)} vs ${formatPlayerName(game.loser, game.loserDisplayName)}`}
             to={`/games/${game.id}`}
           >
             {game.story}
@@ -337,7 +334,7 @@ function UpsetsCard({ upsets }: { upsets: RecentUpset[] }) {
           <StoryLink
             key={`upset-${upset.id}`}
             meta={`Rank #${upset.winnerRank} over #${upset.loserRank}`}
-            title={`${upset.winner} over ${upset.loser}`}
+            title={`${formatPlayerName(upset.winner, upset.winnerDisplayName)} over ${formatPlayerName(upset.loser, upset.loserDisplayName)}`}
             to={`/games/${upset.id}`}
           >
             {upset.story}
@@ -374,10 +371,10 @@ function StoryLink({
 
 function getRecordTitle(record: NonNullable<LeagueRecordValue>) {
   if ('winner' in record) {
-    return `${record.winner} vs ${record.loser}`
+    return `${formatPlayerName(record.winner, record.winnerDisplayName)} vs ${formatPlayerName(record.loser, record.loserDisplayName)}`
   }
 
-  return record.name || record.faction || record.type || 'League Record'
+  return record.displayName || record.name || record.faction || record.type || 'League Record'
 }
 
 function getRecordPath(record: NonNullable<LeagueRecordValue>) {

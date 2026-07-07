@@ -326,6 +326,9 @@ function getRequestUser(e) {
   const configuredCommissioner =
     isConfiguredCommissionerEmail(verified.email);
 
+  const leagueIdentity =
+    getAuthLeagueIdentityByEmail(verified.email);
+
   let rowNumber =
     getUserRowNumber(
       sheet,
@@ -342,7 +345,9 @@ function getRequestUser(e) {
         bootstrap || configuredCommissioner
           ? USER_ROLES.COMMISSIONER
           : USER_ROLES.MEMBER,
-        bootstrap || configuredCommissioner
+        bootstrap ||
+          configuredCommissioner ||
+          leagueIdentity.player !== ""
       );
   }
 
@@ -351,6 +356,16 @@ function getRequestUser(e) {
     configuredCommissioner
   )
     promoteConfiguredCommissioner(
+      sheet,
+      columns,
+      rowNumber
+    );
+
+  if (
+    rowNumber !== -1 &&
+    leagueIdentity.player !== ""
+  )
+    activateLinkedLeagueMember(
       sheet,
       columns,
       rowNumber
@@ -389,6 +404,26 @@ function getRequestUser(e) {
 
 }
 
+function activateLinkedLeagueMember(sheet, columns, rowNumber) {
+
+  const role =
+    normalizeUserRole(
+      sheet
+        .getRange(rowNumber, columns.role + 1)
+        .getValue()
+    );
+
+  if (getRoleRank(role) < getRoleRank(USER_ROLES.MEMBER))
+    sheet
+      .getRange(rowNumber, columns.role + 1)
+      .setValue(USER_ROLES.MEMBER);
+
+  sheet
+    .getRange(rowNumber, columns.enabled + 1)
+    .setValue(true);
+
+}
+
 function promoteConfiguredCommissioner(sheet, columns, rowNumber) {
 
   sheet
@@ -403,6 +438,13 @@ function promoteConfiguredCommissioner(sheet, columns, rowNumber) {
 
 function verifyGoogleIdentityToken(token, requestClientId) {
 
+  const settings =
+    getSettingsObjectSafe();
+
+  const configuredClientId =
+    getAuthString(requestClientId) ||
+    getAuthString(settings.googleOAuthClientId);
+
   const cache =
     CacheService.getScriptCache();
 
@@ -411,7 +453,7 @@ function verifyGoogleIdentityToken(token, requestClientId) {
     Utilities.base64EncodeWebSafe(
       Utilities.computeDigest(
         Utilities.DigestAlgorithm.SHA_256,
-        token + ":" + getAuthString(requestClientId)
+        token + ":" + configuredClientId
       )
     ).slice(0, 48);
 
@@ -440,13 +482,6 @@ function verifyGoogleIdentityToken(token, requestClientId) {
 
     const payload =
       JSON.parse(response.getContentText());
-
-    const settings =
-      getSettingsObjectSafe();
-
-    const configuredClientId =
-      getAuthString(requestClientId) ||
-      getAuthString(settings.googleOAuthClientId);
 
     if (
       configuredClientId === ""
@@ -676,9 +711,19 @@ function readUserRow(sheet, columns, rowNumber) {
       .getRange(rowNumber, 1, 1, sheet.getLastColumn())
       .getValues()[0];
 
+  const leagueIdentity =
+    getAuthLeagueIdentityByEmail(
+      getAuthString(row[columns.email])
+    );
+
   return {
     email: getAuthString(row[columns.email]).toLowerCase(),
     displayName: getAuthString(row[columns.displayName]),
+    leaguePlayer: leagueIdentity.player,
+    playerDisplayName:
+      leagueIdentity.displayName ||
+      leagueIdentity.player,
+    leagueDivision: leagueIdentity.division,
     role: normalizeUserRole(row[columns.role]),
     enabled: getAuthBoolean(row[columns.enabled]),
     favoriteFaction: getAuthString(row[columns.favoriteFaction]),
@@ -718,6 +763,105 @@ function syncUserIdentity(sheet, columns, rowNumber, verified) {
     columns,
     rowNumber
   );
+
+}
+
+function getAuthLeagueIdentityByEmail(email) {
+
+  const normalized =
+    getAuthString(email)
+      .toLowerCase();
+
+  if (normalized === "")
+    return {
+      player: "",
+      displayName: "",
+      division: ""
+    };
+
+  const spreadsheet =
+    SpreadsheetApp.getActive();
+
+  const sheet =
+    spreadsheet.getSheetByName(CONFIG.SHEETS.PLAYERS);
+
+  if (!sheet)
+    return {
+      player: "",
+      displayName: "",
+      division: ""
+    };
+
+  const values =
+    sheet
+      .getDataRange()
+      .getValues();
+
+  if (values.length === 0)
+    return {
+      player: "",
+      displayName: "",
+      division: ""
+    };
+
+  const headers =
+    values[0]
+      .map(function(header) {
+        return getAuthString(header);
+      });
+
+  const playerCol =
+    headers.indexOf("Player");
+
+  const divisionCol =
+    headers.indexOf("Division");
+
+  const displayNameCol =
+    headers.indexOf("Display Name");
+
+  const emailCol =
+    headers.indexOf("Google Email");
+
+  if (
+    playerCol === -1 ||
+    emailCol === -1
+  )
+    return {
+      player: "",
+      displayName: "",
+      division: ""
+    };
+
+  for (
+    let index = 1;
+    index < values.length;
+    index++
+  ) {
+
+    if (
+      getAuthString(values[index][emailCol])
+        .toLowerCase() === normalized
+    )
+      return {
+        player: getAuthString(values[index][playerCol]),
+        displayName:
+          displayNameCol === -1
+            ? getAuthString(values[index][playerCol])
+            : getAuthString(values[index][displayNameCol]) ||
+              getAuthString(values[index][playerCol]),
+        division:
+          divisionCol === -1
+            ? ""
+            : getAuthString(values[index][divisionCol])
+      };
+
+  }
+
+  return {
+    player: "",
+    displayName: "",
+    division: ""
+  };
 
 }
 
@@ -768,18 +912,68 @@ function buildUserProfile(user) {
   const playerStats =
     getUserLeagueStatistics(user);
 
+  const recentGames =
+    getUserRecentGames(user);
+
+  const allGames =
+    getUserAllLeagueGames(user);
+
   return {
     user: user,
     submittedLists: armyLists,
     votesCast: getUserVotesCast(user),
     recentActivity: activity,
+    recentGames: recentGames,
     leagueStatistics: playerStats,
-    futureSections: [
-      "Achievements",
-      "Badges",
-      "Season Goals"
-    ]
+    currentSeasonStatistics:
+      buildProfileStatisticsSnapshot(playerStats),
+    careerStatistics:
+      buildProfileStatisticsSnapshot(playerStats),
+    leaguePerformance:
+      buildProfileLeaguePerformance(
+        user,
+        playerStats,
+        allGames
+      ),
+    intelligence:
+      buildProfileIntelligenceContext(
+        user,
+        playerStats
+      ),
+    achievements:
+      typeof buildLeaguePlayerAchievements === "function"
+        ? buildLeaguePlayerAchievements(user.leaguePlayer)
+        : buildProfileAchievements(
+            user,
+            playerStats,
+            armyLists
+          ),
+    futureSections: []
   };
+
+}
+
+function getUserAllLeagueGames(user) {
+
+  if (typeof getAllRecentGameObjects !== "function")
+    return [];
+
+  const leaguePlayer =
+    getAuthString(user.leaguePlayer);
+
+  if (leaguePlayer === "")
+    return [];
+
+  const normalizedPlayer =
+    leaguePlayer.toLowerCase();
+
+  return getAllRecentGameObjects()
+    .filter(function(game) {
+      return (
+        getAuthString(game.winner).toLowerCase() === normalizedPlayer ||
+        getAuthString(game.loser).toLowerCase() === normalizedPlayer
+      );
+    });
 
 }
 
@@ -788,11 +982,17 @@ function getUserSubmittedLists(user) {
   if (typeof getArmyListObjects !== "function")
     return [];
 
+  const leaguePlayer =
+    getAuthString(user.leaguePlayer);
+
+  if (leaguePlayer === "")
+    return [];
+
   return getArmyListObjects()
     .filter(function(list) {
       return (
-        list.player === user.displayName ||
-        list.player === user.email
+        getAuthString(list.player)
+          .toLowerCase() === leaguePlayer.toLowerCase()
       );
     });
 
@@ -854,14 +1054,40 @@ function getUserRecentActivity(user) {
   if (typeof buildLeagueTimeline !== "function")
     return [];
 
+  const leaguePlayer =
+    getAuthString(user.leaguePlayer);
+
+  if (leaguePlayer === "")
+    return [];
+
   return buildLeagueTimeline()
     .filter(function(item) {
       return (
-        item.body.indexOf(user.displayName) !== -1 ||
-        item.title.indexOf(user.displayName) !== -1
+        item.body.indexOf(leaguePlayer) !== -1 ||
+        item.title.indexOf(leaguePlayer) !== -1 ||
+        item.relatedPlayer === leaguePlayer
       );
     })
     .slice(0, 6);
+
+}
+
+function getUserRecentGames(user) {
+
+  if (typeof getAllRecentGameObjects !== "function")
+    return [];
+
+  const leaguePlayer =
+    getAuthString(user.leaguePlayer);
+
+  if (leaguePlayer === "")
+    return [];
+
+  const normalizedPlayer =
+    leaguePlayer.toLowerCase();
+
+  return getUserAllLeagueGames(user)
+    .slice(0, 12);
 
 }
 
@@ -870,12 +1096,18 @@ function getUserLeagueStatistics(user) {
   if (typeof getPlayer !== "function")
     return null;
 
+  const leaguePlayer =
+    getAuthString(user.leaguePlayer);
+
+  if (leaguePlayer === "")
+    return null;
+
   try {
     const response =
       JSON.parse(
         getPlayer({
           parameter: {
-            name: user.displayName
+            name: leaguePlayer
           }
         }).getContent()
       );
@@ -885,6 +1117,659 @@ function getUserLeagueStatistics(user) {
   catch (err) {
     return null;
   }
+
+}
+
+function buildProfileStatisticsSnapshot(playerStats) {
+
+  if (!playerStats)
+    return null;
+
+  const games =
+    Number(playerStats.games) || 0;
+
+  const wins =
+    Number(playerStats.wins) || 0;
+
+  return {
+    division: getAuthString(playerStats.division),
+    rank: Number(playerStats.rank) || 0,
+    games: games,
+    wins: wins,
+    losses: Number(playerStats.losses) || 0,
+    tp: Number(playerStats.tp) || 0,
+    op: Number(playerStats.op) || 0,
+    vp: Number(playerStats.vp) || 0,
+    winPercentage:
+      games === 0
+        ? 0
+        : Math.round((wins / games) * 1000) / 10,
+    averageTournamentPoints:
+      getProfileAverage(Number(playerStats.tp) || 0, games),
+    averageObjectivePoints:
+      getProfileAverage(Number(playerStats.op) || 0, games),
+    averageVictoryPoints:
+      getProfileAverage(Number(playerStats.vp) || 0, games),
+    promotionStatus:
+      getProfilePromotionStatus(
+        getAuthString(playerStats.division),
+        Number(playerStats.rank) || 0
+      ),
+    seasonProgress:
+      games
+  };
+
+}
+
+function buildProfileIntelligenceContext(user, playerStats) {
+
+  const leaguePlayer =
+    getAuthString(user.leaguePlayer);
+
+  const division =
+    playerStats
+      ? getAuthString(playerStats.division)
+      : getAuthString(user.leagueDivision);
+
+  const rows =
+    getProfileIntelligenceStandingsRows();
+
+  const activeRows =
+    rows.filter(function(row) {
+      return Number(row.games) > 0;
+    });
+
+  const divisionRows =
+    activeRows.filter(function(row) {
+      return getAuthString(row.division) === division;
+    });
+
+  const playerRow =
+    activeRows.filter(function(row) {
+      return getAuthString(row.player) === leaguePlayer;
+    })[0] || null;
+
+  return {
+    player: leaguePlayer,
+    division: division,
+    divisionAverage:
+      buildProfileIntelligenceAverage(divisionRows),
+    leagueAverage:
+      buildProfileIntelligenceAverage(activeRows),
+    topThreeAverage:
+      buildProfileIntelligenceAverage(
+        activeRows
+          .slice()
+          .sort(function(a, b) {
+            if (Number(b.tp) !== Number(a.tp))
+              return Number(b.tp) - Number(a.tp);
+
+            if (Number(b.op) !== Number(a.op))
+              return Number(b.op) - Number(a.op);
+
+            return Number(b.vp) - Number(a.vp);
+          })
+          .slice(0, 3)
+      ),
+    ranks:
+      buildProfileIntelligenceRanks(
+        activeRows,
+        playerRow
+      )
+  };
+
+}
+
+function getProfileIntelligenceStandingsRows() {
+
+  const rows = [];
+
+  [
+    getStandingsDivisionConfig("main"),
+    getStandingsDivisionConfig("pga"),
+    getStandingsDivisionConfig("pgb")
+  ].forEach(function(config) {
+
+    if (!config)
+      return;
+
+    buildStandingsResponse(config)
+      .standings
+      .forEach(function(row) {
+
+        rows.push({
+          division: config.label,
+          rank: Number(row.rank) || 0,
+          player: getAuthString(row.player),
+          games: Number(row.games) || 0,
+          wins: Number(row.wins) || 0,
+          losses: Number(row.losses) || 0,
+          tp: Number(row.tp) || 0,
+          op: Number(row.op) || 0,
+          vp: Number(row.vp) || 0
+        });
+
+      });
+
+  });
+
+  return rows;
+
+}
+
+function buildProfileIntelligenceAverage(rows) {
+
+  const games =
+    rows.reduce(function(total, row) {
+      return total + (Number(row.games) || 0);
+    }, 0);
+
+  const wins =
+    rows.reduce(function(total, row) {
+      return total + (Number(row.wins) || 0);
+    }, 0);
+
+  const tp =
+    rows.reduce(function(total, row) {
+      return total + (Number(row.tp) || 0);
+    }, 0);
+
+  const op =
+    rows.reduce(function(total, row) {
+      return total + (Number(row.op) || 0);
+    }, 0);
+
+  const vp =
+    rows.reduce(function(total, row) {
+      return total + (Number(row.vp) || 0);
+    }, 0);
+
+  return {
+    players: rows.length,
+    games: games,
+    averageTP:
+      getProfileAverage(tp, games),
+    averageOP:
+      getProfileAverage(op, games),
+    averageVP:
+      getProfileAverage(vp, games),
+    winPercentage:
+      games === 0
+        ? 0
+        : Math.round((wins / games) * 1000) / 10
+  };
+
+}
+
+function buildProfileIntelligenceRanks(rows, playerRow) {
+
+  if (!playerRow)
+    return {
+      objectivePoints: 0,
+      tournamentPoints: 0,
+      victoryPoints: 0,
+      winPercentage: 0
+    };
+
+  return {
+    objectivePoints:
+      getProfileMetricRank(rows, playerRow, "op"),
+    tournamentPoints:
+      getProfileMetricRank(rows, playerRow, "tp"),
+    victoryPoints:
+      getProfileMetricRank(rows, playerRow, "vp"),
+    winPercentage:
+      getProfileMetricRank(rows, playerRow, "winPercentage")
+  };
+
+}
+
+function getProfileMetricRank(rows, playerRow, metric) {
+
+  const sorted =
+    rows
+      .slice()
+      .sort(function(a, b) {
+
+        const left =
+          metric === "winPercentage"
+            ? getProfileWinPercentage(a)
+            : Number(a[metric]) || 0;
+
+        const right =
+          metric === "winPercentage"
+            ? getProfileWinPercentage(b)
+            : Number(b[metric]) || 0;
+
+        return right - left;
+
+      });
+
+  for (let index = 0; index < sorted.length; index++) {
+    if (sorted[index].player === playerRow.player)
+      return index + 1;
+  }
+
+  return 0;
+
+}
+
+function getProfileWinPercentage(row) {
+
+  const games =
+    Number(row.games) || 0;
+
+  if (games === 0)
+    return 0;
+
+  return (
+    (Number(row.wins) || 0) /
+    games
+  );
+
+}
+
+function getProfileAverage(total, games) {
+
+  return games === 0
+    ? 0
+    : Math.round((total / games) * 10) / 10;
+
+}
+
+function getProfilePromotionStatus(division, rank) {
+
+  if (rank <= 0)
+    return "Unranked";
+
+  const normalized =
+    getAuthString(division).toLowerCase();
+
+  if (normalized.indexOf("main") !== -1)
+    return rank >= 7
+      ? "Relegation Watch"
+      : "Safe";
+
+  return rank <= 2
+    ? "Promotion Zone"
+    : "Chasing Promotion";
+
+}
+
+function buildProfileLeaguePerformance(
+  user,
+  playerStats,
+  games
+) {
+
+  const leaguePlayer =
+    getAuthString(user.leaguePlayer);
+
+  const opponents = {};
+  const chronological =
+    games.slice().reverse();
+  let longestWinStreak = 0;
+  let longestLosingStreak = 0;
+  let currentWinStreak = 0;
+  let currentLosingStreak = 0;
+  let runningResult = "";
+  let runningCount = 0;
+  let closestVictory = null;
+  let worstDefeat = null;
+
+  chronological.forEach(function(game) {
+
+    const result =
+      getProfileGameResult(
+        game,
+        leaguePlayer
+      );
+
+    if (result === "")
+      return;
+
+    if (runningResult === result)
+      runningCount++;
+    else {
+      runningResult = result;
+      runningCount = 1;
+    }
+
+    if (result === "Win")
+      longestWinStreak =
+        Math.max(
+          longestWinStreak,
+          runningCount
+        );
+
+    if (result === "Loss")
+      longestLosingStreak =
+        Math.max(
+          longestLosingStreak,
+          runningCount
+        );
+
+  });
+
+  games.forEach(function(game, index) {
+
+    const result =
+      getProfileGameResult(
+        game,
+        leaguePlayer
+      );
+
+    const opponent =
+      getProfileGameOpponent(
+        game,
+        leaguePlayer
+      );
+
+    if (opponent !== "") {
+      if (!opponents[opponent])
+        opponents[opponent] = {
+          opponent: opponent,
+          games: 0,
+          wins: 0,
+          losses: 0
+        };
+
+      opponents[opponent].games++;
+
+      if (result === "Win")
+        opponents[opponent].wins++;
+
+      if (result === "Loss")
+        opponents[opponent].losses++;
+    }
+
+    if (index === 0)
+      currentWinStreak =
+        result === "Win"
+          ? 1
+          : 0;
+    else if (
+      currentWinStreak === index &&
+      result === "Win"
+    )
+      currentWinStreak++;
+
+    if (index === 0)
+      currentLosingStreak =
+        result === "Loss"
+          ? 1
+          : 0;
+    else if (
+      currentLosingStreak === index &&
+      result === "Loss"
+    )
+      currentLosingStreak++;
+
+    const margin =
+      getProfileVictoryPointMargin(game);
+
+    if (
+      result === "Win" &&
+      margin !== null &&
+      (
+        closestVictory === null ||
+        margin < closestVictory.margin
+      )
+    )
+      closestVictory =
+        buildProfileGameSummary(
+          game,
+          opponent,
+          margin
+        );
+
+    if (
+      result === "Loss" &&
+      margin !== null &&
+      (
+        worstDefeat === null ||
+        margin > worstDefeat.margin
+      )
+    )
+      worstDefeat =
+        buildProfileGameSummary(
+          game,
+          opponent,
+          margin
+        );
+
+  });
+
+  const opponentRows =
+    Object.keys(opponents)
+      .map(function(key) {
+        return opponents[key];
+      });
+
+  return {
+    bestOpponent:
+      getProfileBestOpponent(opponentRows),
+    worstOpponent:
+      getProfileWorstOpponent(opponentRows),
+    longestWinStreak: longestWinStreak,
+    longestLosingStreak: longestLosingStreak,
+    currentStreak:
+      getProfileCurrentStreak(
+        currentWinStreak,
+        currentLosingStreak
+      ),
+    mostPlayedOpponent:
+      getProfileMostPlayedOpponent(opponentRows),
+    closestVictory: closestVictory,
+    worstDefeat: worstDefeat,
+    fallbackBestOpponent:
+      playerStats
+        ? getAuthString(playerStats.rival)
+        : "",
+    fallbackWorstOpponent:
+      playerStats
+        ? getAuthString(playerStats.nemesis)
+        : ""
+  };
+
+}
+
+function getProfileGameResult(game, leaguePlayer) {
+
+  const normalizedPlayer =
+    getAuthString(leaguePlayer).toLowerCase();
+
+  if (
+    getAuthString(game.winner).toLowerCase() ===
+    normalizedPlayer
+  )
+    return "Win";
+
+  if (
+    getAuthString(game.loser).toLowerCase() ===
+    normalizedPlayer
+  )
+    return "Loss";
+
+  return "";
+
+}
+
+function getProfileGameOpponent(game, leaguePlayer) {
+
+  return getProfileGameResult(
+    game,
+    leaguePlayer
+  ) === "Win"
+    ? getAuthString(game.loser)
+    : getAuthString(game.winner);
+
+}
+
+function getProfileVictoryPointMargin(game) {
+
+  const score =
+    getAuthString(game.vp)
+      .split("-")
+      .map(function(value) {
+        return Number(value) || 0;
+      });
+
+  if (score.length < 2)
+    return null;
+
+  return Math.abs(score[0] - score[1]);
+
+}
+
+function buildProfileGameSummary(game, opponent, margin) {
+
+  return {
+    gameId: Number(game.id) || 0,
+    date: getAuthString(game.date),
+    opponent: opponent,
+    mission: getAuthString(game.mission),
+    margin: margin,
+    score: getAuthString(game.vp)
+  };
+
+}
+
+function getProfileBestOpponent(opponents) {
+
+  const sorted =
+    opponents
+      .filter(function(opponent) {
+        return opponent.wins > 0;
+      })
+      .sort(function(a, b) {
+        if (b.wins !== a.wins)
+          return b.wins - a.wins;
+        return b.games - a.games;
+      });
+
+  return sorted.length === 0
+    ? ""
+    : sorted[0].opponent;
+
+}
+
+function getProfileWorstOpponent(opponents) {
+
+  const sorted =
+    opponents
+      .filter(function(opponent) {
+        return opponent.losses > 0;
+      })
+      .sort(function(a, b) {
+        if (b.losses !== a.losses)
+          return b.losses - a.losses;
+        return b.games - a.games;
+      });
+
+  return sorted.length === 0
+    ? ""
+    : sorted[0].opponent;
+
+}
+
+function getProfileMostPlayedOpponent(opponents) {
+
+  const sorted =
+    opponents
+      .slice()
+      .sort(function(a, b) {
+        return b.games - a.games;
+      });
+
+  return sorted.length === 0
+    ? ""
+    : sorted[0].opponent;
+
+}
+
+function getProfileCurrentStreak(winStreak, losingStreak) {
+
+  if (winStreak > 0)
+    return winStreak + "W";
+
+  if (losingStreak > 0)
+    return losingStreak + "L";
+
+  return "None";
+
+}
+
+function buildProfileAchievements(
+  user,
+  playerStats,
+  armyLists
+) {
+
+  const achievements = [];
+
+  if (!playerStats)
+    return achievements;
+
+  const games =
+    Number(playerStats.games) || 0;
+
+  const wins =
+    Number(playerStats.wins) || 0;
+
+  const losses =
+    Number(playerStats.losses) || 0;
+
+  if (Number(playerStats.rank) > 0)
+    achievements.push({
+      title: "Ranked Competitor",
+      description: "Current division ranking is active.",
+      value: "#" + playerStats.rank
+    });
+
+  if (games > 0)
+    achievements.push({
+      title: "Season Campaigner",
+      description: "Recorded league games this season.",
+      value: String(games)
+    });
+
+  if (wins > losses)
+    achievements.push({
+      title: "Winning Record",
+      description: "Wins currently exceed losses.",
+      value: wins + "-" + losses
+    });
+
+  if (getAuthString(playerStats.favoriteFaction) !== "")
+    achievements.push({
+      title: "Faction Specialist",
+      description: "Most-played faction profile is established.",
+      value: getAuthString(playerStats.favoriteFaction)
+    });
+
+  if (Number(playerStats.firstTurnGames) > 0)
+    achievements.push({
+      title: "First Turn Ledger",
+      description: "First-turn win rate is tracked.",
+      value: (Number(playerStats.firstTurnWinRate) || 0) + "%"
+    });
+
+  if (armyLists.length > 0)
+    achievements.push({
+      title: "List Architect",
+      description: "Approved army lists are attached to this player.",
+      value: String(armyLists.length)
+    });
+
+  if (achievements.length === 0)
+    achievements.push({
+      title: "League Profile Linked",
+      description: "Google account is mapped to the league player record.",
+      value: getAuthString(user.leaguePlayer)
+    });
+
+  return achievements.slice(0, 6);
 
 }
 
@@ -945,6 +1830,9 @@ function buildGuestUser() {
   return {
     email: "",
     displayName: "Guest",
+    leaguePlayer: "",
+    playerDisplayName: "",
+    leagueDivision: "",
     role: USER_ROLES.GUEST,
     enabled: false,
     favoriteFaction: "",

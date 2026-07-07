@@ -35,4 +35,44 @@ function rebuildGameEngine() {
     " games processed."
   );
 
+  try {
+
+    if (
+      typeof publishLeagueAutomationEvent === "function" &&
+      analytics.length > 1
+    ) {
+      const latestGame =
+        getDiscordLatestGame();
+
+      publishLeagueAutomationEvent({
+        eventType: "gameSubmitted",
+        category: "Match Results",
+        priority: "high",
+        player:
+          latestGame && latestGame.winner
+            ? latestGame.winner
+            : "",
+        division:
+          latestGame && latestGame.division
+            ? latestGame.division
+            : "",
+        message:
+          latestGame && latestGame.summary
+            ? latestGame.summary
+            : "A league game was submitted.",
+        payload:
+          JSON.stringify(latestGame || {})
+      });
+    }
+
+  }
+  catch (err) {
+
+    Logger.log(
+      "Discord game announcement failed: " +
+      String(err && err.message ? err.message : err)
+    );
+
+  }
+
 }

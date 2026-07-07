@@ -21,6 +21,10 @@ function NotificationCenter() {
   })
 
   useEffect(() => {
+    if (!isOpen) {
+      return
+    }
+
     const controller = new AbortController()
 
     void loadNotifications(controller.signal)
@@ -28,7 +32,7 @@ function NotificationCenter() {
     return () => {
       controller.abort()
     }
-  }, [])
+  }, [isOpen])
 
   async function loadNotifications(signal?: AbortSignal) {
     apiClient
@@ -55,12 +59,25 @@ function NotificationCenter() {
       return
     }
 
-    await apiClient.updateNotificationState({
-      notificationId: 'all',
-      notificationIds: state.notifications.map((notification) => notification.id),
-      state: 'read',
+    const notifications = state.notifications
+
+    setState({
+      notifications: [],
+      status: 'success',
     })
-    await loadNotifications()
+
+    try {
+      await apiClient.updateNotificationState({
+        notificationId: 'all',
+        notificationIds: notifications.map((notification) => notification.id),
+        state: 'read',
+      })
+      await loadNotifications()
+    } catch {
+      setState({
+        status: 'error',
+      })
+    }
   }
 
   const unreadCount = useMemo(() => {

@@ -1,0 +1,246 @@
+# Lobo Infinity League Portal Architecture
+
+## Core Systems
+
+The portal is organized around stable, reusable services:
+
+- Portal Identity authenticates Google users and stores portal preferences in the Users sheet.
+- League Identity maps Google Email to the permanent Player key in the Players sheet.
+- Formatting centralizes league presentation such as TP, OP, VP, records, dates, and summaries.
+- Integrity monitors formulas, standings, game engine data, identity, divisions, army lists, streams, and news.
+- Achievements persist player milestones by permanent league player.
+- Hall of Fame and Career preserve historical league records.
+- Discord Automation publishes league events without duplicating league business logic.
+
+League lookups must use the permanent player key. Google display names and player display names are presentation-only.
+
+## LTS Baseline
+
+Version 2.5.4 is the first Long-Term Support baseline.
+
+Stable production subsystems:
+
+- Google authentication and Portal Identity.
+- League Identity through permanent Players sheet keys.
+- Player Display Names as presentation-only aliases.
+- Formatting service for TP, OP, VP, records, dates, and summaries.
+- Integrity System for commissioner health audits.
+- Automation Center with event, queue, template, and destination architecture.
+- Discord as the first automation destination.
+- Deep links for permanent navigation.
+- Achievements tied to permanent league players.
+- Player Intelligence and My Profile.
+- Hall of Fame snapshot architecture.
+- Apps Script cache manager.
+- Vercel source-based deployment pipeline.
+
+Future releases should extend these systems instead of replacing them.
+
+## Performance Architecture
+
+The portal uses route-level code splitting so large player, commissioner, integrity, automation, Hall of Fame, and analytics pages load only when opened.
+
+The Dashboard uses a fast critical path:
+
+- First render comes from the lightweight `dashboard` endpoint.
+- Secondary widgets hydrate in parallel after first paint.
+- Hall of Fame is page-specific and does not block Dashboard.
+
+Global header controls defer network work until interaction:
+
+- Search index loads on search focus.
+- Quick Jump data loads on menu focus.
+- Notifications load when the notification menu opens.
+
+Frontend GET responses are cached for five minutes per authenticated URL. Backend Apps Script cached endpoints use a fifteen-minute cache TTL with stale fallback support.
+
+## Deep-Link Architecture
+
+Permanent portal routes are now part of the League Operating System contract. Discord, Automation, Timeline, and future Open Graph features should request URLs from `DeepLinkApi.gs` instead of manually building links.
+
+Canonical route examples:
+
+- `/game/{gameId}`
+- `/player/{leaguePlayer}`
+- `/career/{leaguePlayer}`
+- `/achievement/{achievementId}`
+- `/hall-of-fame`
+- `/faction/{faction}`
+- `/mission/{mission}`
+- `/season/{season}`
+- `/weekly-report`
+- `/news/{newsId}`
+- `/stream/{streamId}`
+- `/army-list/{listId}`
+
+Plural legacy routes remain supported for existing navigation. Singular routes are preferred for event and Discord links.
+
+## League Automation Center
+
+The League Automation Center is the portal communication layer.
+
+Every important league event should be published once as a League Event. The event then drives configured destinations such as Portal, Discord, Timeline, News, Commissioner Feed, future Email, future Push, and future Public API.
+
+The backend service is implemented in `AutomationApi.gs` and owns:
+
+- Event definitions.
+- Automation rules.
+- Message templates.
+- Queue state.
+- Replay operations.
+- Weekly automation.
+- Season automation entry points.
+- Destination dispatch.
+
+Automation storage sheets:
+
+- `Automation Events`
+- `Automation Rules`
+- `Automation Templates`
+- `Automation Queue`
+
+Existing mutation points publish events rather than directly sending destination-specific messages. This keeps game submission, achievements, streams, commissioner news, army list approvals, and season operations independent from Discord delivery.
+
+Automation failures are recorded in the queue and must not interrupt league operations.
+
+## Discord Automation
+
+Discord integration is implemented as a backend Apps Script destination service in `DiscordApi.gs`.
+
+The service owns:
+
+- Discord configuration in the `Discord Config` sheet.
+- Discord automation history in the `Discord Automation Log` sheet.
+- Webhook delivery through `UrlFetchApp`.
+- Message preview, send, resend, test, and disable operations.
+- Duplicate prevention for already-sent event/title pairs.
+- Rate limiting by configured messages per hour.
+- Failure logging and retry queue state.
+
+Webhook URLs are never returned to public frontend payloads. The Commissioner Dashboard receives only masked webhook state.
+
+## Discord Configuration
+
+The `Discord Config` sheet stores:
+
+- `enabled`
+- `webhookUrl`
+- `announcementChannel`
+- `adminChannel`
+- `rateLimitPerHour`
+- `automationEvents`
+- `retryLimit`
+- `brandingColor`
+- `thumbnailUrl`
+- `lastAutomationRun`
+
+If the sheet or keys are missing, the backend creates safe defaults automatically. Automation is disabled by default until a Commissioner configures and enables it.
+
+## Discord Events
+
+Supported automation events include:
+
+- Game Submitted
+- Achievement Unlocked
+- Promotion
+- Relegation
+- Season Start
+- Season End
+- League News
+- Commissioner News
+- New Stream
+- Army List of the Week
+- Player of the Week
+- Mission Rotation
+- Faction Leader Changes
+- Hall of Fame Induction
+- League Records Broken
+- Weekly Standings
+- Upcoming Games Reminder
+- Season Countdown
+- Manual Announcement
+- Test Connection
+
+Automatic hooks are best-effort. A Discord failure is logged but does not stop game rebuilds, news saves, stream saves, achievement unlocks, army list approvals, or season operations.
+
+## Commissioner Tools
+
+The League Automation Center exposes:
+
+- Automation status.
+- Discord health.
+- Queue size.
+- Last message.
+- Last failure.
+- Retry queue.
+- Per-event destination rules.
+- Editable templates.
+- Manual event publishing.
+- Run, pause, resume, replay, retry, and clear controls.
+
+The Commissioner Dashboard also shows Discord operational status.
+
+## Discord Tools
+
+The Commissioner Dashboard exposes:
+
+- Webhook configuration.
+- Enable/disable automation.
+- Rate and retry limits.
+- Event list configuration.
+- Test webhook.
+- Send announcement.
+- Run weekly automation.
+- Preview latest generated message.
+- Automation log.
+- Manual resend for failed messages.
+
+Assistant Commissioners can view operations and send announcements where their existing permissions allow it. Commissioners manage webhook settings.
+
+## Troubleshooting
+
+If Discord messages are not posted:
+
+1. Confirm `enabled` is `true`.
+2. Confirm the webhook URL is configured in the Commissioner Dashboard.
+3. Use Test Webhook.
+4. Check the Discord Automation Log sheet for failure, retry count, response, and status.
+5. Confirm the event is included in `automationEvents`.
+6. Confirm rate limit has not been reached.
+7. Use Resend on failed log entries after correcting the configuration.
+
+Webhook failures should never interrupt normal league operation.
+
+## Mobile Experience
+
+Version 2.5.3 treats the mobile shell as a first-class application surface.
+
+The responsive architecture keeps the existing route and data systems:
+
+- Authentication, Identity, Formatting, Integrity, Automation, Achievements, and Player Intelligence remain unchanged.
+- Mobile navigation is handled by the existing `Sidebar` route list with route metadata for small-screen ordering.
+- The most common mobile destinations are promoted in the bottom navigation: Dashboard, My Profile, Standings, Notifications, and Timeline.
+- Global Search remains lazy-loaded, but opens as a mobile overlay when focused.
+- Notifications and profile actions use the existing menus with mobile overlay sizing.
+- Tables, cards, and forms adapt through responsive CSS rather than duplicate mobile pages.
+- Safe-area spacing is applied so controls do not collide with mobile browser or operating-system gestures.
+
+The mobile layer must not add startup requests. New mobile behavior should be implemented with existing cached APIs and interaction-triggered fetches wherever possible.
+
+## Hall of Fame Snapshot Architecture
+
+Version 2.5.4 makes Hall of Fame a snapshot-driven endpoint.
+
+The Hall of Fame API keeps the existing response contract, but its backend construction now runs through one optimized context:
+
+- `RecordsApi.gs` builds a single player registry and applies statistics once.
+- Division standings are derived from that registry instead of rebuilding every division independently.
+- Game analytics are read once.
+- Achievement records are read once and indexed by permanent league player.
+- Army lists are read once and indexed by permanent league player.
+- Player display names are derived from the loaded registry.
+- The final Hall of Fame payload is cached as a snapshot using the current portal cache version.
+
+This preserves Identity, Achievements, Formatting, My Profile, and Player Intelligence behavior while removing repeated spreadsheet scans from the Hall of Fame request path.
+
+Snapshot invalidation follows the existing portal cache version model. Full cache invalidation advances the version and naturally abandons old Hall of Fame snapshots.

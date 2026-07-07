@@ -8,20 +8,22 @@ import Skeleton from '../components/Skeleton'
 import StatCard from '../components/StatCard'
 import {
   apiClient,
+  type ArmyListCommunitySummary,
   type CommissionerNewsItem,
   type HallOfFameData,
-  type HomeData,
   type IntelligenceGame,
   type LeagueIntelligenceData,
   type LeagueRecordValue,
+  type PortalSettings,
   type RecentGame,
   type StandingsBattle,
 } from '../services/api'
-import type { LeagueOverview } from '../types/dashboard'
+import type { DashboardData, LeagueOverview } from '../types/dashboard'
 import {
   getDivisionIdentity,
   getDivisionStyle,
 } from '../utils/divisions'
+import { formatObjectiveScore, formatPlayerName } from '../services/formatting'
 import '../App.css'
 
 type HomeState =
@@ -29,13 +31,120 @@ type HomeState =
       status: 'loading'
     }
   | {
-      data: HomeData
+      data: DashboardPageData
       status: 'success'
     }
   | {
       error: string
       status: 'error'
     }
+
+type DashboardPageData = {
+  armyListCommunity: ArmyListCommunitySummary
+  dashboard: DashboardData
+  hallOfFame: HallOfFameData | null
+  intelligence: LeagueIntelligenceData | null
+  news: CommissionerNewsItem[]
+  records: Record<string, LeagueRecordValue>
+  recentGames: RecentGame[]
+  settings: PortalSettings
+}
+
+const defaultArmyListCommunity: ArmyListCommunitySummary = {
+  highestRatedDesigner: null,
+  mostListsSubmitted: [],
+  mostPopularFaction: '',
+  topContributors: [],
+  trendingLists: [],
+}
+
+const defaultPortalSettings: PortalSettings = {
+  bannerImage: '',
+  commissionerContact: '',
+  commissionerEmails: '',
+  currentSeason: '',
+  deploymentUrl: '',
+  discordInvite: '',
+  gitCommit: '',
+  googleFormUrl: '',
+  googleOAuthClientId: '',
+  leagueLogo: '',
+  leagueName: 'Lobo Infinity League',
+  leagueWebsite: '',
+  portalVersion: '',
+  registrationOpen: '',
+  seasonEndDate: '',
+  seasonStartDate: '',
+  submissionButtonText: 'Submit Match',
+  submissionButtonVisible: 'true',
+  submissionEnabled: 'true',
+  themeAccentColor: '',
+}
+
+function buildDashboardPageData(dashboard: DashboardData): DashboardPageData {
+  return {
+    armyListCommunity: defaultArmyListCommunity,
+    dashboard,
+    hallOfFame: null,
+    intelligence: null,
+    news: [],
+    records: {},
+    recentGames: [],
+    settings: defaultPortalSettings,
+  }
+}
+
+async function hydrateDashboardSecondaryData(
+  initialData: DashboardPageData,
+  signal: AbortSignal,
+  setHomeState: (state: HomeState) => void,
+) {
+  const [recentGames, news, intelligence, settings, armyLists] =
+    await Promise.allSettled([
+      apiClient.getRecentGames({ signal }),
+      apiClient.getNews({ signal }),
+      apiClient.getAnalytics({ signal }),
+      apiClient.getSettings({ signal }),
+      apiClient.getArmyLists({ signal }),
+    ])
+
+  if (signal.aborted) {
+    return
+  }
+
+  const nextData: DashboardPageData = {
+    ...initialData,
+    armyListCommunity:
+      armyLists.status === 'fulfilled'
+        ? armyLists.value.community
+        : initialData.armyListCommunity,
+    intelligence:
+      intelligence.status === 'fulfilled'
+        ? intelligence.value
+        : initialData.intelligence,
+    news:
+      news.status === 'fulfilled'
+        ? news.value
+        : initialData.news,
+    records:
+      intelligence.status === 'fulfilled'
+        ? intelligence.value.records
+        : initialData.records,
+    recentGames:
+      recentGames.status === 'fulfilled'
+        ? recentGames.value
+        : initialData.recentGames,
+    settings:
+      settings.status === 'fulfilled'
+        ? settings.value
+        : initialData.settings,
+  }
+
+  setHomeState({
+    data: nextData,
+    status: 'success',
+  })
+}
 
 function Dashboard() {
   const [homeState, setHomeState] = useState<HomeState>({
@@ -51,14 +160,18 @@ function Dashboard() {
 
     async function loadCommandCenter() {
       try {
-        const data = await apiClient.getHome({
+        const dashboard = await apiClient.getDashboard({
           signal: controller.signal,
         })
 
+        const initialData = buildDashboardPageData(dashboard)
+
         setHomeState({
-          data,
+          data: initialData,
           status: 'success',
         })
+
+        void hydrateDashboardSecondaryData(initialData, controller.signal, setHomeState)
       } catch (error) {
         if (!controller.signal.aborted) {
           setHomeState({
@@ -160,7 +273,11 @@ function Dashboard() {
           icon="H"
           label="Hottest Player"
           subtitle={hottestPlayer ? `${hottestPlayer.games} game streak` : 'Live streaks'}
-          value={hottestPlayer?.player ?? data.summary.leagueLeader}
+          value={
+            hottestPlayer
+              ? formatPlayerName(hottestPlayer.player, hottestPlayer.displayName)
+              : data.summary.leagueLeader
+          }
         />
         <StatCard
           icon="F"
@@ -270,7 +387,7 @@ function Dashboard() {
                     className="table-player-link"
                     to={`/players/${encodeURIComponent(standing.player)}`}
                   >
-                    {standing.player}
+                    {formatPlayerName(standing.player, standing.displayName)}
                   </Link>
                 </strong>
                 <span role="cell">{standing.games}</span>
@@ -358,13 +475,13 @@ function FeaturedMatchHero({ game }: { game: RecentGame }) {
       <div className="featured-match-result">
         <div>
           <p>Winner</p>
-          <h2>{game.winner}</h2>
+          <h2>{formatPlayerName(game.winner, game.winnerDisplayName)}</h2>
           <span>{game.winnerFaction}</span>
         </div>
         <strong>defeated</strong>
         <div>
           <p>Loser</p>
-          <h3>{game.loser}</h3>
+          <h3>{formatPlayerName(game.loser, game.loserDisplayName)}</h3>
           <span>{game.loserFaction}</span>
         </div>
       </div>
@@ -375,7 +492,7 @@ function FeaturedMatchHero({ game }: { game: RecentGame }) {
         </div>
         <div>
           <dt>OP</dt>
-          <dd>{game.op}</dd>
+          <dd>{formatObjectiveScore(game)}</dd>
         </div>
         <div>
           <dt>Division</dt>
@@ -415,7 +532,7 @@ function WatchCard({
             <span>
               {item.division} - Rank #{item.rank}
             </span>
-            <strong>{item.player}</strong>
+            <strong>{formatPlayerName(item.player, item.displayName)}</strong>
             <p>{item.story}</p>
           </Link>
         ))}
@@ -430,7 +547,14 @@ function RecordPulse({
   closestMatch,
 }: {
   biggestBlowout?: IntelligenceGame
-  biggestUpset?: { id: number; story: string; winner: string; loser: string }
+  biggestUpset?: {
+    id: number
+    loser: string
+    loserDisplayName?: string
+    story: string
+    winner: string
+    winnerDisplayName?: string
+  }
   closestMatch?: IntelligenceGame
 }) {
   const records = [
@@ -438,7 +562,7 @@ function RecordPulse({
       ? {
           label: 'Biggest Upset',
           story: biggestUpset.story,
-          title: `${biggestUpset.winner} over ${biggestUpset.loser}`,
+          title: `${formatPlayerName(biggestUpset.winner, biggestUpset.winnerDisplayName)} over ${formatPlayerName(biggestUpset.loser, biggestUpset.loserDisplayName)}`,
           to: `/games/${biggestUpset.id}`,
         }
       : null,
@@ -446,7 +570,7 @@ function RecordPulse({
       ? {
           label: 'Closest Match',
           story: closestMatch.story,
-          title: `${closestMatch.winner} vs ${closestMatch.loser}`,
+          title: `${formatPlayerName(closestMatch.winner, closestMatch.winnerDisplayName)} vs ${formatPlayerName(closestMatch.loser, closestMatch.loserDisplayName)}`,
           to: `/games/${closestMatch.id}`,
         }
       : null,
@@ -454,7 +578,7 @@ function RecordPulse({
       ? {
           label: 'Biggest Blowout',
           story: biggestBlowout.story,
-          title: `${biggestBlowout.winner} vs ${biggestBlowout.loser}`,
+          title: `${formatPlayerName(biggestBlowout.winner, biggestBlowout.winnerDisplayName)} vs ${formatPlayerName(biggestBlowout.loser, biggestBlowout.loserDisplayName)}`,
           to: `/games/${biggestBlowout.id}`,
         }
       : null,
@@ -503,7 +627,10 @@ function HeadlineStack({
       ? {
           label: 'Hottest Player',
           story: intelligence.winStreaks[0].story,
-          title: intelligence.winStreaks[0].player,
+          title: formatPlayerName(
+            intelligence.winStreaks[0].player,
+            intelligence.winStreaks[0].displayName,
+          ),
           to: `/players/${encodeURIComponent(intelligence.winStreaks[0].player)}`,
         }
       : null,
@@ -547,7 +674,7 @@ function DashboardHighlights({
   overview,
   records,
 }: {
-  armyListCommunity: HomeData['armyListCommunity']
+  armyListCommunity: ArmyListCommunitySummary
   games: RecentGame[]
   hallOfFame: HallOfFameData | null
   intelligence: LeagueIntelligenceData | null
@@ -561,6 +688,10 @@ function DashboardHighlights({
   const activePlayer = records.mostActivePlayer
   const activePlayerName =
     activePlayer && !('winner' in activePlayer) ? activePlayer.name : ''
+  const activePlayerDisplayName =
+    activePlayer && !('winner' in activePlayer)
+      ? activePlayer.displayName || activePlayer.name || ''
+      : ''
   const latestRecord = getLatestRecord(records)
   const hallLeader = hallOfFame?.leaders.tournamentPoints[0]
   const todayGames = games.filter((game) => isToday(game.date)).length
@@ -608,7 +739,7 @@ function DashboardHighlights({
             <dd>
               {activePlayerName ? (
                 <Link to={`/players/${encodeURIComponent(activePlayerName)}`}>
-                  {activePlayerName}
+                  {activePlayerDisplayName || activePlayerName}
                 </Link>
               ) : (
                 'Live data pending'
@@ -630,7 +761,7 @@ function DashboardHighlights({
             <dd>
               {hallLeader ? (
                 <Link to={`/players/${encodeURIComponent(hallLeader.player)}`}>
-                  {hallLeader.player}
+                  {formatPlayerName(hallLeader.player, hallLeader.displayName)}
                 </Link>
               ) : (
                 'Live data pending'
@@ -710,7 +841,7 @@ function DashboardHighlights({
 
 function getLatestRecord(records: Record<string, LeagueRecordValue>) {
   const candidates = [
-    ['Biggest VP Margin', records.largestVPMargin],
+    ['Biggest OP Scoreline Margin', records.largestVPMargin],
     ['Biggest OP Margin', records.largestOPMargin],
     ['Highest Scoring Game', records.highestScoringGame],
     ['Closest Match', records.closestVPGame],
@@ -735,7 +866,7 @@ function buildMilestoneItems({
   overview,
 }: {
   games: RecentGame[]
-  hallLeader?: { player: string; tp: number }
+  hallLeader?: { displayName: string; player: string; tp: number }
   intelligence: LeagueIntelligenceData | null
   overview: LeagueOverview
 }) {
@@ -752,9 +883,9 @@ function buildMilestoneItems({
 
   if (hallLeader) {
     items.push({
-      body: `${hallLeader.player} is ${Math.max(0, 25 - hallLeader.tp)} TP away from the 25 TP threshold.`,
+      body: `${formatPlayerName(hallLeader.player, hallLeader.displayName)} is ${Math.max(0, 25 - hallLeader.tp)} TP away from the 25 TP threshold.`,
       label: 'Hall of Fame',
-      title: `${hallLeader.player} chasing 25 TP`,
+      title: `${formatPlayerName(hallLeader.player, hallLeader.displayName)} chasing 25 TP`,
       to: `/players/${encodeURIComponent(hallLeader.player)}`,
     })
   }
@@ -763,16 +894,16 @@ function buildMilestoneItems({
     const streak = intelligence.winStreaks[0]
 
     items.push({
-      body: `${streak.player} needs one more win to extend the streak to ${streak.games + 1}.`,
+      body: `${formatPlayerName(streak.player, streak.displayName)} needs one more win to extend the streak to ${streak.games + 1}.`,
       label: 'Streak Watch',
-      title: `${streak.player} on a run`,
+      title: `${formatPlayerName(streak.player, streak.displayName)} on a run`,
       to: `/players/${encodeURIComponent(streak.player)}`,
     })
   }
 
   if (games[0]) {
     items.push({
-      body: `The next reported match will follow ${games[0].winner} vs ${games[0].loser}.`,
+      body: `The next reported match will follow ${formatPlayerName(games[0].winner, games[0].winnerDisplayName)} vs ${formatPlayerName(games[0].loser, games[0].loserDisplayName)}.`,
       label: 'Next Report',
       title: 'Awaiting next battle report',
       to: '/timeline',

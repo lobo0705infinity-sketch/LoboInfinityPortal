@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { apiClient } from '../services/api'
+import { formatPlayerName } from '../services/formatting'
 import PreviousNextNav from './PreviousNextNav'
 
 type EntityType = 'faction' | 'match' | 'mission' | 'player'
@@ -83,7 +84,7 @@ async function getEntities(type: EntityType, signal: AbortSignal) {
 
     return divisions.flatMap((division) =>
       division.standings.map((player) => ({
-        label: player.player,
+        label: formatPlayerName(player.player, player.displayName),
         to: `/players/${encodeURIComponent(player.player)}`,
       })),
     )
@@ -110,7 +111,7 @@ async function getEntities(type: EntityType, signal: AbortSignal) {
   const games = await apiClient.getRecentGames({ signal })
 
   return games.map((game) => ({
-    label: `${game.winner} defeated ${game.loser}`,
+    label: `${formatPlayerName(game.winner, game.winnerDisplayName)} defeated ${formatPlayerName(game.loser, game.loserDisplayName)}`,
     to: `/games/${game.id}`,
   }))
 }

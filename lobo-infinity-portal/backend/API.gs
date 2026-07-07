@@ -113,6 +113,9 @@ function doGet(e) {
     case "myProfile":
       return getMyProfile(e);
 
+    case "achievements":
+      return getAchievements(e);
+
     case "streams":
       return getCachedApiResponse(e, action, function() {
         return getStreams();
@@ -148,6 +151,21 @@ function doGet(e) {
         return getOperationsStatus(auth);
       });
 
+    case "integrity":
+      return requireApiPermission(e, "viewOperations", function() {
+        return getIntegrityDashboard();
+      });
+
+    case "integrityReport":
+      return requireApiPermission(e, "viewOperations", function() {
+        return getIntegrityReport();
+      });
+
+    case "automation":
+      return requireApiPermission(e, "viewOperations", function() {
+        return getAutomationCenter();
+      });
+
     case "voteArmyList":
       return requireApiPermission(e, "vote", function() {
         return voteArmyList(e);
@@ -223,6 +241,137 @@ function doGet(e) {
       return requireApiPermission(e, "runSeasonControl", function() {
         return executeSeasonOperation(e);
       });
+
+    case "operationsCommand":
+      return requireApiPermission(e, "runSeasonControl", function() {
+        return executeOperationsCommand(e);
+      });
+
+    case "identityBulkEnable":
+      return requireApiPermission(e, "manageSettings", function() {
+        return bulkEnableIdentityUsers(e);
+      });
+
+    case "identityBulkDisable":
+      return requireApiPermission(e, "manageSettings", function() {
+        return bulkDisableIdentityUsers(e);
+      });
+
+    case "repairIdentity":
+      return requireApiPermission(e, "manageSettings", function() {
+        return repairIdentityMappings();
+      });
+
+    case "repairUsersSheet":
+      return requireApiPermission(e, "manageSettings", function() {
+        return repairUsersSheet();
+      });
+
+    case "repairMissingAccounts":
+      return requireApiPermission(e, "manageSettings", function() {
+        return repairMissingAccounts();
+      });
+
+    case "updateDiscordSettings":
+      return requireApiPermission(e, "manageSettings", function() {
+        return updateDiscordSettings(e);
+      });
+
+    case "testDiscordWebhook":
+      return requireApiPermission(e, "manageSettings", function() {
+        return testDiscordWebhook(e);
+      });
+
+    case "previewDiscordAnnouncement":
+      return requireApiPermission(e, "viewOperations", function() {
+        return jsonOutput(previewDiscordAnnouncement(e));
+      });
+
+    case "sendDiscordAnnouncement":
+      return requireApiPermission(e, "manageNews", function() {
+        return sendDiscordAnnouncement(e);
+      });
+
+    case "resendDiscordAnnouncement":
+      return requireApiPermission(e, "manageNews", function() {
+        return resendDiscordAnnouncement(e);
+      });
+
+    case "disableDiscordAutomation":
+      return requireApiPermission(e, "manageSettings", function() {
+        return disableDiscordAutomation();
+      });
+
+    case "runDiscordAutomationJob":
+      return requireApiPermission(e, "manageNews", function() {
+        return runDiscordAutomationJob(e);
+      });
+
+    case "publishAutomationEvent":
+      return requireApiPermission(e, "manageNews", function() {
+        return publishAutomationEvent(e);
+      });
+
+    case "updateAutomationRule":
+      return requireApiPermission(e, "manageSettings", function() {
+        return updateAutomationRule(e);
+      });
+
+    case "updateAutomationTemplate":
+      return requireApiPermission(e, "manageSettings", function() {
+        return updateAutomationTemplate(e);
+      });
+
+    case "runAutomation":
+      return requireApiPermission(e, "manageNews", function() {
+        return runAutomation(e);
+      });
+
+    case "pauseAutomation":
+      return requireApiPermission(e, "manageSettings", function() {
+        return pauseAutomation();
+      });
+
+    case "resumeAutomation":
+      return requireApiPermission(e, "manageSettings", function() {
+        return resumeAutomation();
+      });
+
+    case "replayLastAutomationEvent":
+      return requireApiPermission(e, "manageNews", function() {
+        return replayLastAutomationEvent();
+      });
+
+    case "replayAutomationWeek":
+      return requireApiPermission(e, "manageNews", function() {
+        return replayAutomationWeek();
+      });
+
+    case "replayAutomationSeason":
+      return requireApiPermission(e, "manageNews", function() {
+        return replayAutomationSeason();
+      });
+
+    case "clearAutomationQueue":
+      return requireApiPermission(e, "manageSettings", function() {
+        return clearAutomationQueue();
+      });
+
+    case "retryAutomationFailed":
+      return requireApiPermission(e, "manageNews", function() {
+        return retryAutomationFailed();
+      });
+
+    case "integrityRepair":
+      return requireApiPermission(e, "runLeagueAudit", function() {
+        return repairLeagueIntegrity(e);
+      });
+
+    case "awardAchievement":
+      return awardAchievement(e);
+
+    case "rebuildAchievements":
+      return rebuildAchievements(e);
 
     default:
       return jsonOutput({
@@ -243,6 +392,9 @@ function doPost(e) {
 
   switch (action) {
 
+    case "session":
+      return getAuthSession(e);
+
     case "submitArmyList":
       return requireApiPermission(e, "submitLists", function() {
         return submitArmyList(e);
@@ -318,6 +470,137 @@ function doPost(e) {
       return requireApiPermission(e, "runSeasonControl", function() {
         return executeSeasonOperation(e);
       });
+
+    case "operationsCommand":
+      return requireApiPermission(e, "runSeasonControl", function() {
+        return executeOperationsCommand(e);
+      });
+
+    case "identityBulkEnable":
+      return requireApiPermission(e, "manageSettings", function() {
+        return bulkEnableIdentityUsers(e);
+      });
+
+    case "identityBulkDisable":
+      return requireApiPermission(e, "manageSettings", function() {
+        return bulkDisableIdentityUsers(e);
+      });
+
+    case "repairIdentity":
+      return requireApiPermission(e, "manageSettings", function() {
+        return repairIdentityMappings();
+      });
+
+    case "repairUsersSheet":
+      return requireApiPermission(e, "manageSettings", function() {
+        return repairUsersSheet();
+      });
+
+    case "repairMissingAccounts":
+      return requireApiPermission(e, "manageSettings", function() {
+        return repairMissingAccounts();
+      });
+
+    case "updateDiscordSettings":
+      return requireApiPermission(e, "manageSettings", function() {
+        return updateDiscordSettings(e);
+      });
+
+    case "testDiscordWebhook":
+      return requireApiPermission(e, "manageSettings", function() {
+        return testDiscordWebhook(e);
+      });
+
+    case "previewDiscordAnnouncement":
+      return requireApiPermission(e, "viewOperations", function() {
+        return jsonOutput(previewDiscordAnnouncement(e));
+      });
+
+    case "sendDiscordAnnouncement":
+      return requireApiPermission(e, "manageNews", function() {
+        return sendDiscordAnnouncement(e);
+      });
+
+    case "resendDiscordAnnouncement":
+      return requireApiPermission(e, "manageNews", function() {
+        return resendDiscordAnnouncement(e);
+      });
+
+    case "disableDiscordAutomation":
+      return requireApiPermission(e, "manageSettings", function() {
+        return disableDiscordAutomation();
+      });
+
+    case "runDiscordAutomationJob":
+      return requireApiPermission(e, "manageNews", function() {
+        return runDiscordAutomationJob(e);
+      });
+
+    case "publishAutomationEvent":
+      return requireApiPermission(e, "manageNews", function() {
+        return publishAutomationEvent(e);
+      });
+
+    case "updateAutomationRule":
+      return requireApiPermission(e, "manageSettings", function() {
+        return updateAutomationRule(e);
+      });
+
+    case "updateAutomationTemplate":
+      return requireApiPermission(e, "manageSettings", function() {
+        return updateAutomationTemplate(e);
+      });
+
+    case "runAutomation":
+      return requireApiPermission(e, "manageNews", function() {
+        return runAutomation(e);
+      });
+
+    case "pauseAutomation":
+      return requireApiPermission(e, "manageSettings", function() {
+        return pauseAutomation();
+      });
+
+    case "resumeAutomation":
+      return requireApiPermission(e, "manageSettings", function() {
+        return resumeAutomation();
+      });
+
+    case "replayLastAutomationEvent":
+      return requireApiPermission(e, "manageNews", function() {
+        return replayLastAutomationEvent();
+      });
+
+    case "replayAutomationWeek":
+      return requireApiPermission(e, "manageNews", function() {
+        return replayAutomationWeek();
+      });
+
+    case "replayAutomationSeason":
+      return requireApiPermission(e, "manageNews", function() {
+        return replayAutomationSeason();
+      });
+
+    case "clearAutomationQueue":
+      return requireApiPermission(e, "manageSettings", function() {
+        return clearAutomationQueue();
+      });
+
+    case "retryAutomationFailed":
+      return requireApiPermission(e, "manageNews", function() {
+        return retryAutomationFailed();
+      });
+
+    case "integrityRepair":
+      return requireApiPermission(e, "runLeagueAudit", function() {
+        return repairLeagueIntegrity(e);
+      });
+
+    case "awardAchievement":
+      return awardAchievement(e);
+
+    case "rebuildAchievements":
+      return rebuildAchievements(e);
 
     default:
       return doGet(e);

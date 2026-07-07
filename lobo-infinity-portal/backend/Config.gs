@@ -46,7 +46,21 @@ const CONFIG = {
 
     SEASON_ARCHIVE: "Season Archive",
 
-    USERS: "Users"
+    USERS: "Users",
+
+    ACHIEVEMENTS: "Achievements",
+
+    DISCORD_CONFIG: "Discord Config",
+
+    DISCORD_LOG: "Discord Automation Log",
+
+    AUTOMATION_EVENTS: "Automation Events",
+
+    AUTOMATION_RULES: "Automation Rules",
+
+    AUTOMATION_TEMPLATES: "Automation Templates",
+
+    AUTOMATION_QUEUE: "Automation Queue"
 
   },
 

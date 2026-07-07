@@ -32,6 +32,7 @@ const initialSubmission: ArmyListSubmission = {
 
 function SubmitArmyList() {
   const auth = useAuth()
+  const playerName = auth.user.leaguePlayer
   const [submission, setSubmission] =
     useState<ArmyListSubmission>(initialSubmission)
   const [state, setState] = useState<SubmissionState>({
@@ -47,7 +48,7 @@ function SubmitArmyList() {
     try {
       await apiClient.submitArmyList({
         ...submission,
-        player: submission.player.trim() || auth.user.displayName,
+        player: submission.player.trim() || playerName,
         submitterEmail: auth.user.email,
       })
       setSubmission(initialSubmission)
@@ -96,7 +97,7 @@ function SubmitArmyList() {
           label="Player"
           onChange={(value) => updateField('player', value)}
           required
-          value={submission.player || auth.user.displayName}
+          value={submission.player || playerName}
         />
         <FormField
           label="Google Email"

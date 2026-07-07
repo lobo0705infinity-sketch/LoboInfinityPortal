@@ -3,11 +3,18 @@ import { Link, useLocation } from 'react-router-dom'
 const labels: Record<string, string> = {
   analytics: 'League Intelligence',
   'army-lists': 'Army List Vault',
+  'army-list': 'Army List',
+  automation: 'League Automation Center',
+  achievement: 'Achievement',
+  career: 'Career',
   commissioner: 'Commissioner Dashboard',
   compare: 'Player Comparison',
+  faction: 'Faction',
   factions: 'Factions',
+  game: 'Match Details',
   games: 'Match Details',
   'hall-of-fame': 'Hall of Fame',
+  mission: 'Mission',
   missions: 'Missions',
   news: 'Commissioner News',
   notifications: 'Notifications',
@@ -15,7 +22,9 @@ const labels: Record<string, string> = {
   players: 'Players',
   rules: 'Rules',
   standings: 'Standings',
+  stream: 'Stream',
   timeline: 'Timeline',
+  'weekly-report': 'Weekly Report',
   submit: 'Submit Army List',
 }
 

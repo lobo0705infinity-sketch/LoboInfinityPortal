@@ -3,6 +3,12 @@ import { Link, useParams } from 'react-router-dom'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Loading from '../components/Loading'
 import { apiClient, type RecentGame } from '../services/api'
+import {
+  formatObjectiveScore,
+  formatPlayerName,
+  formatTournamentScore,
+  formatVictoryScore,
+} from '../services/formatting'
 import './GameDetails.css'
 
 type GameDetailsState =
@@ -93,6 +99,8 @@ function GameDetails() {
 }
 
 function MatchReport({ game }: { game: RecentGame }) {
+  const firstTurnPlayer = formatGameParticipant(game, game.firstTurn)
+
   return (
     <main className="portal-shell">
       <div className="match-report">
@@ -109,7 +117,7 @@ function MatchReport({ game }: { game: RecentGame }) {
           <div className="match-result">
             <div className="match-player winner">
               <span>Winner</span>
-              <h1>{game.winner}</h1>
+              <h1>{formatPlayerName(game.winner, game.winnerDisplayName)}</h1>
               <Link to={`/factions/${encodeURIComponent(game.winnerFaction)}`}>
                 {game.winnerFaction}
               </Link>
@@ -119,7 +127,7 @@ function MatchReport({ game }: { game: RecentGame }) {
 
             <div className="match-player loser">
               <span>Loser</span>
-              <h2>{game.loser}</h2>
+              <h2>{formatPlayerName(game.loser, game.loserDisplayName)}</h2>
               <Link to={`/factions/${encodeURIComponent(game.loserFaction)}`}>
                 {game.loserFaction}
               </Link>
@@ -151,9 +159,9 @@ function MatchReport({ game }: { game: RecentGame }) {
             Score
           </p>
           <div className="score-grid">
-            <ScoreLane label="TP" value={game.tp} />
-            <ScoreLane label="OP" value={game.op} />
-            <ScoreLane label="VP" value={game.vp} />
+            <ScoreLane score={formatTournamentScore(game)} />
+            <ScoreLane score={formatObjectiveScore(game)} />
+            <ScoreLane score={formatVictoryScore(game)} />
           </div>
         </section>
 
@@ -165,7 +173,7 @@ function MatchReport({ game }: { game: RecentGame }) {
           <ol>
             <li>
               <span>First Turn</span>
-              <strong>{game.firstTurn || 'Not recorded'}</strong>
+              <strong>{firstTurnPlayer || 'Not recorded'}</strong>
             </li>
             <li>
               <span>Mission Briefing</span>
@@ -174,7 +182,8 @@ function MatchReport({ game }: { game: RecentGame }) {
             <li>
               <span>Final Result</span>
               <strong>
-                {game.winner} defeated {game.loser}
+                {formatPlayerName(game.winner, game.winnerDisplayName)} defeated{' '}
+                {formatPlayerName(game.loser, game.loserDisplayName)}
               </strong>
             </li>
           </ol>
@@ -199,7 +208,7 @@ function MatchReport({ game }: { game: RecentGame }) {
               <dt>Winner</dt>
               <dd>
                 <Link to={`/players/${encodeURIComponent(game.winner)}`}>
-                  {game.winner}
+                  {formatPlayerName(game.winner, game.winnerDisplayName)}
                 </Link>
               </dd>
             </div>
@@ -207,7 +216,7 @@ function MatchReport({ game }: { game: RecentGame }) {
               <dt>Loser</dt>
               <dd>
                 <Link to={`/players/${encodeURIComponent(game.loser)}`}>
-                  {game.loser}
+                  {formatPlayerName(game.loser, game.loserDisplayName)}
                 </Link>
               </dd>
             </div>
@@ -228,7 +237,20 @@ function MatchReport({ game }: { game: RecentGame }) {
   )
 }
 
-function ScoreLane({ label, value }: { label: string; value: string }) {
+function formatGameParticipant(game: RecentGame, player: string) {
+  if (player === game.winner) {
+    return formatPlayerName(game.winner, game.winnerDisplayName)
+  }
+
+  if (player === game.loser) {
+    return formatPlayerName(game.loser, game.loserDisplayName)
+  }
+
+  return player
+}
+
+function ScoreLane({ score }: { score: string }) {
+  const { label, value } = splitFormattedScore(score)
   const [winnerScore, loserScore] = splitScore(value)
 
   return (
@@ -260,6 +282,11 @@ function GameNotFound() {
 function splitScore(value: string) {
   const [winnerScore = '0', loserScore = '0'] = value.split('-')
   return [winnerScore, loserScore]
+}
+
+function splitFormattedScore(score: string) {
+  const [value = '0-0', label = ''] = score.split(' ')
+  return { label, value }
 }
 
 export default GameDetails

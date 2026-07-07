@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import type { DivisionKey, MainManStanding } from '../types/dashboard'
+import { formatPlayerName } from '../services/formatting'
 
 type StandingsTableProps = {
   division?: DivisionKey
@@ -42,7 +43,7 @@ function StandingsTable({
               className="table-player-link"
               to={`/players/${encodeURIComponent(standing.player)}`}
             >
-              {standing.player}
+              {formatPlayerName(standing.player, standing.displayName)}
             </Link>
           </strong>
           <span role="cell">{standing.games}</span>

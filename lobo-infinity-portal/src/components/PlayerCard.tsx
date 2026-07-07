@@ -5,6 +5,7 @@ import {
   getDivisionIdentity,
   getDivisionStyle,
 } from '../utils/divisions'
+import { formatPlayerName } from '../services/formatting'
 
 type PlayerCardProps = {
   divisionLabel?: string
@@ -14,6 +15,7 @@ type PlayerCardProps = {
 function PlayerCard({ divisionLabel, player }: PlayerCardProps) {
   const profilePath = `/players/${encodeURIComponent(player.player)}`
   const identity = getDivisionIdentity(divisionLabel)
+  const playerName = formatPlayerName(player.player, player.displayName)
 
   return (
     <Link
@@ -26,7 +28,7 @@ function PlayerCard({ divisionLabel, player }: PlayerCardProps) {
           <span className="division-badge player-card-division">
             {formatDivisionLabel(divisionLabel)}
           </span>
-          <h2>{player.player}</h2>
+          <h2>{playerName}</h2>
         </div>
         <span className="player-card-chevron" aria-hidden="true">
           &gt;

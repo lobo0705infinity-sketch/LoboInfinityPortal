@@ -50,6 +50,10 @@ function getDashboard() {
     mainManStandings.push({
       rank: r[CONFIG.STANDINGS.RANK],
       player: r[CONFIG.STANDINGS.PLAYER],
+      displayName:
+        getPlayerDisplayName(
+          r[CONFIG.STANDINGS.PLAYER]
+        ),
       games: r[CONFIG.STANDINGS.GAMES],
       wins: r[CONFIG.STANDINGS.WINS],
       losses: r[CONFIG.STANDINGS.LOSSES],
@@ -87,6 +91,10 @@ function getDashboard() {
     leader: {
       rank: leader[CONFIG.STANDINGS.RANK],
       player: leader[CONFIG.STANDINGS.PLAYER],
+      displayName:
+        getPlayerDisplayName(
+          leader[CONFIG.STANDINGS.PLAYER]
+        ),
       games: leader[CONFIG.STANDINGS.GAMES],
       wins: leader[CONFIG.STANDINGS.WINS],
       losses: leader[CONFIG.STANDINGS.LOSSES],
@@ -190,6 +198,10 @@ function getLeader() {
     success: true,
     rank: l[CONFIG.STANDINGS.RANK],
     player: l[CONFIG.STANDINGS.PLAYER],
+    displayName:
+      getPlayerDisplayName(
+        l[CONFIG.STANDINGS.PLAYER]
+      ),
     games: l[CONFIG.STANDINGS.GAMES],
     wins: l[CONFIG.STANDINGS.WINS],
     losses: l[CONFIG.STANDINGS.LOSSES],

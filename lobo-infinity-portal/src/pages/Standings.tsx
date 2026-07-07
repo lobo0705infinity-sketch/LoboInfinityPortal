@@ -3,6 +3,7 @@ import Loading from '../components/Loading'
 import StandingsTable from '../components/StandingsTable'
 import StatCard from '../components/StatCard'
 import { apiClient } from '../services/api'
+import { formatPlayerName } from '../services/formatting'
 import type { DivisionKey, DivisionStandings } from '../types/dashboard'
 import {
   formatDivisionLabel,
@@ -158,7 +159,14 @@ function DivisionPanel({
           icon={getDivisionIdentity(standingsState.data.division).icon}
           label="League Leader"
           subtitle="Current Leader"
-          value={standingsState.data.summary.leader?.player ?? 'None'}
+          value={
+            standingsState.data.summary.leader
+              ? formatPlayerName(
+                  standingsState.data.summary.leader.player,
+                  standingsState.data.summary.leader.displayName,
+                )
+              : 'None'
+          }
         />
         <StatCard
           icon="G"

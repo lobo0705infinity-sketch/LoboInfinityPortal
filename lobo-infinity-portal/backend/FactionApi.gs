@@ -75,6 +75,8 @@ function getFaction(e) {
       averageOP: faction.averageOP,
       averageVP: faction.averageVP,
       topPlayer: faction.topPlayer,
+      topPlayerDisplayName:
+        getPlayerDisplayName(faction.topPlayer),
       lastPlayed: faction.lastPlayed,
       mostPlayedMission:
         getFactionMostPlayedMission(
@@ -164,6 +166,12 @@ function buildFactionApiSummary(
     topPlayer:
       getFactionTopPlayer(
         games
+      ),
+    topPlayerDisplayName:
+      getPlayerDisplayName(
+        getFactionTopPlayer(
+          games
+        )
       ),
     lastPlayed:
       getFactionLastPlayed(
@@ -591,21 +599,7 @@ function getAllRecentGameObjects() {
     })
     .map(function(game, index) {
 
-      return {
-        id: index + 1,
-        date: game.date,
-        division: game.division,
-        winner: game.winner,
-        loser: game.loser,
-        winnerFaction: game.winnerFaction,
-        loserFaction: game.loserFaction,
-        mission: game.mission,
-        tp: game.tp,
-        op: game.op,
-        vp: game.vp,
-        bestMoment: game.bestMoment,
-        firstTurn: game.firstTurn
-      };
+      return buildRecentGameResponse(game, index + 1);
 
     });
 

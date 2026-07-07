@@ -69,7 +69,7 @@ function submitArmyList(e) {
     getApiParameter(parameters, "player") ||
     (
       auth.authenticated
-        ? auth.user.displayName
+        ? auth.user.leaguePlayer
         : ""
     );
 
@@ -116,6 +116,9 @@ function submitArmyList(e) {
   ]);
 
   invalidatePortalCacheGroup("armyLists");
+
+  if (typeof evaluateAchievementsForPlayer === "function")
+    evaluateAchievementsForPlayer(player);
 
   return jsonOutput({
     success: true
@@ -520,6 +523,10 @@ function buildArmyListObject(row, id) {
       getArmyListString(
         row[ARMY_LIST_COLUMNS.PLAYER]
       ),
+    playerDisplayName:
+      getPlayerDisplayName(
+        row[ARMY_LIST_COLUMNS.PLAYER]
+      ),
     faction:
       getArmyListString(
         row[ARMY_LIST_COLUMNS.FACTION]
@@ -662,6 +669,10 @@ function buildArmyListCountLeaders(lists, field) {
 
       return {
         name: name,
+        displayName:
+          field === "player"
+            ? getPlayerDisplayName(name)
+            : name,
         count: counts[name]
       };
 
@@ -687,6 +698,8 @@ function buildHighestRatedDesigner(lists) {
     if (!designers[list.player])
       designers[list.player] = {
         name: list.player,
+        displayName:
+          getPlayerDisplayName(list.player),
         score: 0,
         lists: 0
       };

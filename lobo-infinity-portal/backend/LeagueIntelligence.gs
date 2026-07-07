@@ -103,15 +103,20 @@ function getLeagueWinStreaks(result) {
     if (count === 0)
       continue;
 
+    const playerDisplayName =
+      getPlayerDisplayName(player);
+
     streaks.push({
       player: player,
+      displayName:
+        playerDisplayName,
       games: count,
       type:
         result === "W"
           ? "Win Streak"
           : "Losing Streak",
       story:
-        player +
+        playerDisplayName +
         " is riding a " +
         count +
         "-game " +
@@ -146,13 +151,13 @@ function getHighestScoringGames(games) {
 
       const score =
         getLeagueScoreParts(
-          game.vp
+          game.op
         );
 
       return buildGameInsight(
         game,
         score.winner + score.loser,
-        "Total VP"
+        "Total OP"
       );
 
     })
@@ -182,9 +187,9 @@ function getBiggestVictories(games) {
 
       return buildGameInsight(
         game,
-        Math.abs(vp.winner - vp.loser),
-        "VP Margin",
-        Math.abs(op.winner - op.loser)
+        Math.abs(op.winner - op.loser),
+        "OP Margin",
+        Math.abs(vp.winner - vp.loser)
       );
 
     })
@@ -207,13 +212,13 @@ function getClosestGames(games) {
 
       const score =
         getLeagueScoreParts(
-          game.vp
+          game.op
         );
 
       return buildGameInsight(
         game,
         Math.abs(score.winner - score.loser),
-        "VP Margin"
+        "OP Margin"
       );
 
     })
@@ -385,19 +390,29 @@ function getRecentUpsets(games, rankMap) {
           game.loser
         );
 
+      const winnerDisplayName =
+        getPlayerDisplayName(game.winner);
+
+      const loserDisplayName =
+        getPlayerDisplayName(game.loser);
+
       return {
         id: game.id,
         date: game.date,
         division: game.division,
         winner: game.winner,
+        winnerDisplayName:
+          winnerDisplayName,
         loser: game.loser,
+        loserDisplayName:
+          loserDisplayName,
         winnerRank: winnerRank,
         loserRank: loserRank,
         mission: game.mission,
         story:
-          game.winner +
+          winnerDisplayName +
           " knocked off " +
-          game.loser +
+          loserDisplayName +
           " in " +
           game.mission +
           "."
@@ -434,9 +449,20 @@ function getPromotionBattle(divisions) {
           const next =
             standings[index + 1];
 
+          const playerDisplayName =
+            player.displayName ||
+            getPlayerDisplayName(player.player);
+
+          const chaserDisplayName =
+            next
+              ? next.displayName || getPlayerDisplayName(next.player)
+              : "";
+
           battle.push({
             division: division,
             player: player.player,
+            displayName:
+              playerDisplayName,
             rank: player.rank,
             tp: player.tp,
             op: player.op,
@@ -445,19 +471,21 @@ function getPromotionBattle(divisions) {
               next
                 ? next.player
                 : "",
+            chaserDisplayName:
+              chaserDisplayName,
             withinOneGame:
               next
                 ? player.tp - next.tp <= 5
                 : false,
             story:
-              player.player +
+              playerDisplayName +
               " is rank #" +
               player.rank +
               " in " +
               division +
               (
                 next && player.tp - next.tp <= 5
-                  ? ", with " + next.player + " within one win."
+                  ? ", with " + chaserDisplayName + " within one win."
                   : "."
               )
           });
@@ -489,9 +517,20 @@ function getRelegationBattle(divisions) {
         players[index - 1] ||
         standings[player.rank - 2];
 
+      const playerDisplayName =
+        player.displayName ||
+        getPlayerDisplayName(player.player);
+
+      const targetDisplayName =
+        target
+          ? target.displayName || getPlayerDisplayName(target.player)
+          : "";
+
       return {
         division: CONFIG.DIVISIONS.MAIN_MAN,
         player: player.player,
+        displayName:
+          playerDisplayName,
         rank: player.rank,
         tp: player.tp,
         op: player.op,
@@ -500,17 +539,19 @@ function getRelegationBattle(divisions) {
           target
             ? target.player
             : "",
+        targetDisplayName:
+          targetDisplayName,
         withinOneGame:
           target
             ? target.tp - player.tp <= 5
             : false,
         story:
-          player.player +
+          playerDisplayName +
           " is rank #" +
           player.rank +
           (
             target && target.tp - player.tp <= 5
-              ? " and can pressure " + target.player + " with one result."
+              ? " and can pressure " + targetDisplayName + " with one result."
               : " in the Main Man danger zone."
           )
       };
@@ -593,13 +634,13 @@ function getLowestScoringGame(games) {
 
       const score =
         getLeagueScoreParts(
-          game.vp
+          game.op
         );
 
       return buildGameInsight(
         game,
         score.winner + score.loser,
-        "Total VP"
+        "Total OP"
       );
 
     })
@@ -700,12 +741,18 @@ function getMostActiveEngineValue(column, label) {
 
   }
 
+  const displayName =
+    label === "player"
+      ? getPlayerDisplayName(topValue)
+      : topValue;
+
   return {
     type: label,
     name: topValue,
+    displayName: displayName,
     games: topCount,
     story:
-      topValue +
+      displayName +
       " is the most active " +
       label +
       " with " +
@@ -855,7 +902,11 @@ function buildGameInsight(
     division: game.division,
     mission: game.mission,
     winner: game.winner,
+    winnerDisplayName:
+      getPlayerDisplayName(game.winner),
     loser: game.loser,
+    loserDisplayName:
+      getPlayerDisplayName(game.loser),
     winnerFaction: game.winnerFaction,
     loserFaction: game.loserFaction,
     vp: game.vp,
@@ -865,13 +916,15 @@ function buildGameInsight(
     label: label,
     secondary: secondary || 0,
     story:
-      game.winner +
-      " defeated " +
-      game.loser +
-      " in " +
-      game.mission +
-      " (" +
-      game.vp +
+      formatGameSummary(game)
+        .replace(
+          "\non ",
+          " in "
+        )
+        .replace(
+          "\n",
+          " ("
+        ) +
       ")."
   };
 

@@ -101,22 +101,25 @@ function getGeneratedCommissionerNews() {
   const latestGame =
     games[0];
 
-  if (latestGame)
+  if (latestGame) {
+    const latestResult =
+      formatLeagueResult(latestGame);
+
     stories.push(
       buildGeneratedNewsArticle({
         id: 1001,
         title:
-          latestGame.winner +
+          latestResult.winner +
           " claims the latest result",
         body:
-          latestGame.winner +
+          latestResult.winner +
           " defeated " +
-          latestGame.loser +
+          latestResult.loser +
           " on " +
-          latestGame.mission +
+          latestResult.mission +
           " with a " +
-          latestGame.vp +
-          " VP scoreline.",
+          latestResult.op +
+          " scoreline.",
         date: latestGame.date,
         relatedPlayer: latestGame.winner,
         relatedFaction: latestGame.winnerFaction,
@@ -124,6 +127,8 @@ function getGeneratedCommissionerNews() {
         link: "/games/" + latestGame.id
       })
     );
+
+  }
 
   const leader =
     getTopLeagueLeader(
@@ -135,19 +140,19 @@ function getGeneratedCommissionerNews() {
       buildGeneratedNewsArticle({
         id: 1002,
         title:
-          leader.player +
+          (leader.displayName || leader.player) +
           " sets the pace",
         body:
-          leader.player +
+          (leader.displayName || leader.player) +
           " leads " +
           leader.division +
           " with " +
-          leader.tp +
-          " TP, " +
-          leader.op +
-          " OP, and " +
-          leader.vp +
-          " VP.",
+          formatTournamentScore(leader) +
+          ", " +
+          formatObjectiveScore(leader) +
+          ", and " +
+          formatVictoryScore(leader) +
+          ".",
         date: timestamp,
         relatedPlayer: leader.player,
         link:
@@ -164,7 +169,7 @@ function getGeneratedCommissionerNews() {
       buildGeneratedNewsArticle({
         id: 1003,
         title:
-          streak.player +
+          (streak.displayName || streak.player) +
           " is running hot",
         body: streak.story,
         date: timestamp,

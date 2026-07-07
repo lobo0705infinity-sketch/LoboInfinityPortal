@@ -9,6 +9,7 @@ import {
   type MissionProfileData,
   type RecentGame,
 } from '../services/api'
+import { formatObjectiveScore, formatPlayerName } from '../services/formatting'
 
 type MissionProfileState =
   | {
@@ -300,13 +301,14 @@ function RecentGamesPanel({ games }: { games: RecentGame[] }) {
               <div>
                 <span>{game.date}</span>
                 <h3>
-                  {game.winner} defeated {game.loser}
+                  {formatPlayerName(game.winner, game.winnerDisplayName)} defeated{' '}
+                  {formatPlayerName(game.loser, game.loserDisplayName)}
                 </h3>
                 <p>
                   {game.winnerFaction} vs {game.loserFaction}
                 </p>
               </div>
-              <strong>OP {game.op}</strong>
+              <strong>{formatObjectiveScore(game)}</strong>
             </Link>
           ))}
         </div>

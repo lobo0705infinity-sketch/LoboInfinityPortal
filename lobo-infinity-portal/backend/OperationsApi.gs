@@ -44,6 +44,12 @@ function getOperationsDashboard() {
   const audit =
     buildLeagueAudit();
 
+  const identityStatus =
+    getOperationsIdentityStatus();
+
+  const notificationStatus =
+    getOperationsNotificationStatus();
+
   return jsonOutput({
     success: true,
     summary: {
@@ -64,11 +70,20 @@ function getOperationsDashboard() {
       cacheStatus: getOperationsCacheStatus(),
       systemHealth: getOperationsSystemHealth(),
       leagueAuditSummary: audit.summary,
-      seasonStatus: getSeasonStatusObject()
+      seasonStatus: getSeasonStatusObject(),
+      identityStatus: identityStatus,
+      notificationStatus: notificationStatus,
+      deploymentStatus:
+        getOperationsDeploymentStatus(settings),
+      discordStatus:
+        getDiscordOperationsStatus()
     },
     pendingArmyLists: pendingArmyLists,
     streams: streams,
     news: news,
+    players: getOperationsPlayers(),
+    identity: getOperationsIdentityManagement(),
+    discord: getDiscordOperationsStatus(),
     settings: settings,
     audit: audit
   });
@@ -308,6 +323,14 @@ function setArmyListApproval(e, approved) {
 
   invalidatePortalCacheGroup("armyLists");
 
+  if (approved)
+    triggerDiscordAutomation(
+      "armyListApproved",
+      {
+        message: "An army list was approved for league publication."
+      }
+    );
+
   return jsonOutput({
     success: true
   });
@@ -353,6 +376,20 @@ function saveOperationsStream(e) {
     .setValues([row]);
 
   invalidatePortalCacheGroup("streams");
+
+  triggerDiscordAutomation(
+    "streamScheduled",
+    {
+      message:
+        (params.player1 || "Player 1") +
+        " vs " +
+        (params.player2 || "Player 2") +
+        " stream scheduled on " +
+        (params.mission || "an unrecorded mission") +
+        ".",
+      division: params.division || ""
+    }
+  );
 
   return jsonOutput({
     success: true
@@ -427,6 +464,15 @@ function saveOperationsNews(e) {
     .setValues([row]);
 
   invalidatePortalCacheGroup("news");
+
+  triggerDiscordAutomation(
+    "commissionerNews",
+    {
+      message:
+        params.title ||
+        "Commissioner news published."
+    }
+  );
 
   return jsonOutput({
     success: true
@@ -534,9 +580,293 @@ function executeSeasonOperation(e) {
 
   invalidatePortalCacheGroup("all");
 
+  if (operation === "Promotion")
+    triggerDiscordAutomation(
+      "promotion",
+      {}
+    );
+
+  if (operation === "Relegation")
+    triggerDiscordAutomation(
+      "relegation",
+      {}
+    );
+
+  if (operation === "Season Start")
+    triggerDiscordAutomation(
+      "seasonStarted",
+      {}
+    );
+
+  if (operation === "Season End")
+    triggerDiscordAutomation(
+      "seasonEnded",
+      {}
+    );
+
   return jsonOutput({
     success: true
   });
+
+}
+
+function triggerDiscordAutomation(event, params) {
+
+  try {
+
+    if (typeof publishLeagueAutomationEvent !== "function")
+      return;
+
+    publishLeagueAutomationEvent({
+      eventType: event,
+      category:
+        params && params.category
+          ? params.category
+          : "",
+      priority:
+        params && params.priority
+          ? params.priority
+          : "",
+      player:
+        params && params.player
+          ? params.player
+          : "",
+      division:
+        params && params.division
+          ? params.division
+          : "",
+      message:
+        params && params.message
+          ? params.message
+          : "",
+      payload:
+        JSON.stringify(params || {})
+    });
+
+  }
+  catch (err) {
+
+    Logger.log(
+      "Discord automation failed for " +
+      event +
+      ": " +
+      String(err && err.message ? err.message : err)
+    );
+
+  }
+
+}
+
+function executeOperationsCommand(e) {
+
+  const params =
+    getOperationsParams(e);
+
+  const command =
+    getOperationsString(params.command);
+
+  const sheet =
+    ensureSeasonArchiveSheet();
+
+  sheet.appendRow([
+    getOperationsTimestamp(),
+    command,
+    JSON.stringify({
+      status: "recorded",
+      requestedBy: getOperationsString(params.requestedBy),
+      snapshot: getSeasonStatusObject()
+    })
+  ]);
+
+  if (
+    command === "Backup" ||
+    command === "Export"
+  )
+    return jsonOutput({
+      success: true,
+      export: {
+        generatedAt: getOperationsTimestamp(),
+        settings: getSettingsObject(),
+        players: getOperationsPlayers(),
+        audit: buildLeagueAudit()
+      }
+    });
+
+  invalidatePortalCacheGroup("all");
+
+  return jsonOutput({
+    success: true
+  });
+
+}
+
+function bulkEnableIdentityUsers(e) {
+
+  return setIdentityUsersEnabled(
+    e,
+    true
+  );
+
+}
+
+function bulkDisableIdentityUsers(e) {
+
+  return setIdentityUsersEnabled(
+    e,
+    false
+  );
+
+}
+
+function setIdentityUsersEnabled(e, enabled) {
+
+  const emails =
+    getOperationsString(getOperationsParams(e).emails)
+      .split(",")
+      .map(function(email) {
+        return getOperationsString(email).toLowerCase();
+      })
+      .filter(function(email) {
+        return email !== "";
+      });
+
+  const sheet =
+    ensureUsersSheet();
+
+  const columns =
+    getUsersColumns(sheet);
+
+  emails.forEach(function(email) {
+
+    const rowNumber =
+      getUserRowNumber(
+        sheet,
+        columns,
+        email
+      );
+
+    if (rowNumber !== -1)
+      sheet
+        .getRange(rowNumber, columns.enabled + 1)
+        .setValue(enabled);
+
+  });
+
+  invalidatePortalCacheGroup("all");
+
+  return jsonOutput({
+    success: true
+  });
+
+}
+
+function repairIdentityMappings() {
+
+  repairUsersSheet();
+  repairMissingIdentityAccounts();
+  enableLinkedIdentityUsers();
+
+  invalidatePortalCacheGroup("all");
+
+  return jsonOutput({
+    success: true
+  });
+
+}
+
+function repairUsersSheet() {
+
+  ensureUsersSheet();
+
+  return jsonOutput({
+    success: true
+  });
+
+}
+
+function repairMissingAccounts() {
+
+  repairMissingIdentityAccounts();
+  invalidatePortalCacheGroup("all");
+
+  return jsonOutput({
+    success: true
+  });
+
+}
+
+function repairMissingIdentityAccounts() {
+
+  const sheet =
+    ensureUsersSheet();
+
+  const columns =
+    getUsersColumns(sheet);
+
+  const players =
+    getOperationsLeagueIdentityRows();
+
+  players.forEach(function(player) {
+
+    if (player.email === "")
+      return;
+
+    if (
+      getUserRowNumber(
+        sheet,
+        columns,
+        player.email
+      ) !== -1
+    )
+      return;
+
+    createUserRow(
+      sheet,
+      columns,
+      {
+        email: player.email,
+        displayName: player.player,
+        avatarUrl: ""
+      },
+      USER_ROLES.MEMBER,
+      true
+    );
+
+  });
+
+}
+
+function enableLinkedIdentityUsers() {
+
+  const sheet =
+    ensureUsersSheet();
+
+  const columns =
+    getUsersColumns(sheet);
+
+  getOperationsLeagueIdentityRows()
+    .forEach(function(player) {
+
+      if (player.email === "")
+        return;
+
+      const rowNumber =
+        getUserRowNumber(
+          sheet,
+          columns,
+          player.email
+        );
+
+      if (rowNumber === -1)
+        return;
+
+      activateLinkedLeagueMember(
+        sheet,
+        columns,
+        rowNumber
+      );
+
+    });
 
 }
 
@@ -553,6 +883,8 @@ function buildLeagueAudit() {
     getArmyListObjects();
   const settings =
     getSettingsObject();
+  const identity =
+    getOperationsIdentityStatus();
 
   players.forEach(function(player) {
 
@@ -600,6 +932,15 @@ function buildLeagueAudit() {
   if (!settings.googleFormUrl)
     issues.push(buildAuditIssue("info", "Match submission form URL is blank.", "Set a Google Form URL or keep submissions hidden.", "/commissioner"));
 
+  if (identity.unlinkedUsers > 0)
+    issues.push(buildAuditIssue("warning", identity.unlinkedUsers + " portal users are not linked to league players.", "Add Google Email values to the Players sheet or remove stale Users rows.", "/commissioner"));
+
+  if (identity.playersWithoutEmail > 0)
+    issues.push(buildAuditIssue("warning", identity.playersWithoutEmail + " league players do not have Google Email values.", "Populate the Google Email column on the Players sheet.", "/commissioner"));
+
+  if (identity.playersWithoutUser > 0)
+    issues.push(buildAuditIssue("info", identity.playersWithoutUser + " league players have not signed in yet.", "No action required unless access is expected now.", "/commissioner"));
+
   return {
     summary: {
       critical: issues.filter(function(issue) { return issue.severity === "critical"; }).length,
@@ -607,6 +948,442 @@ function buildLeagueAudit() {
       informational: issues.filter(function(issue) { return issue.severity === "info"; }).length
     },
     issues: issues
+  };
+
+}
+
+function getOperationsIdentityStatus() {
+
+  const users =
+    getOperationsUsers();
+
+  const players =
+    getOperationsLeagueIdentityRows();
+
+  const playerEmails = {};
+
+  players.forEach(function(player) {
+    if (player.email !== "")
+      playerEmails[player.email] = true;
+  });
+
+  const userEmails = {};
+
+  users.forEach(function(user) {
+    if (user.email !== "")
+      userEmails[user.email] = true;
+  });
+
+  return {
+    totalUsers: users.length,
+    enabledUsers:
+      users.filter(function(user) {
+        return user.enabled;
+      }).length,
+    disabledUsers:
+      users.filter(function(user) {
+        return !user.enabled;
+      }).length,
+    linkedUsers:
+      users.filter(function(user) {
+        return user.email !== "" && playerEmails[user.email];
+      }).length,
+    unlinkedUsers:
+      users.filter(function(user) {
+        return user.email !== "" && !playerEmails[user.email];
+      }).length,
+    commissionerUsers:
+      users.filter(function(user) {
+        return user.role === USER_ROLES.COMMISSIONER;
+      }).length,
+    assistantUsers:
+      users.filter(function(user) {
+        return user.role === USER_ROLES.ASSISTANT;
+      }).length,
+    playersWithEmail:
+      players.filter(function(player) {
+        return player.email !== "";
+      }).length,
+    playersWithoutEmail:
+      players.filter(function(player) {
+        return player.email === "";
+      }).length,
+    playersWithoutUser:
+      players.filter(function(player) {
+        return player.email !== "" && !userEmails[player.email];
+      }).length
+  };
+
+}
+
+function getOperationsIdentityManagement() {
+
+  const users =
+    getOperationsUsers();
+
+  const players =
+    getOperationsLeagueIdentityRows();
+
+  const usersByEmail =
+    getOperationsRowsByEmail(users);
+
+  const playersByEmail =
+    getOperationsRowsByEmail(players);
+
+  const playerNameCounts = {};
+
+  players.forEach(function(player) {
+    const key =
+      player.player.toLowerCase();
+    playerNameCounts[key] =
+      (playerNameCounts[key] || 0) + 1;
+  });
+
+  const playerEmailCounts =
+    getOperationsEmailCounts(players);
+
+  const userEmailCounts =
+    getOperationsEmailCounts(users);
+
+  const records =
+    players.map(function(player) {
+
+      const user =
+        usersByEmail[player.email] || null;
+
+      return buildOperationsIdentityRecord(
+        player,
+        user,
+        playerEmailCounts,
+        userEmailCounts,
+        playerNameCounts
+      );
+
+    });
+
+  users.forEach(function(user) {
+
+    if (
+      user.email !== "" &&
+      !playersByEmail[user.email]
+    )
+      records.push(
+        buildOperationsIdentityRecord(
+          {
+            player: "",
+            division: "",
+            email: user.email
+          },
+          user,
+          playerEmailCounts,
+          userEmailCounts,
+          playerNameCounts
+        )
+      );
+
+  });
+
+  return {
+    records: records,
+    audits: buildOperationsIdentityAudits(records)
+  };
+
+}
+
+function buildOperationsIdentityRecord(
+  player,
+  user,
+  playerEmailCounts,
+  userEmailCounts,
+  playerNameCounts
+) {
+
+  const email =
+    player.email || (user ? user.email : "");
+
+  const playerName =
+    player.player || "";
+
+  const linked =
+    playerName !== "" &&
+    email !== "" &&
+    !!user;
+
+  return {
+    id:
+      (playerName || "Portal User") +
+      "|" +
+      email,
+    player: playerName,
+    displayName:
+      player.displayName ||
+      playerName,
+    division: player.division || "",
+    googleEmail: email,
+    portalUser:
+      user
+        ? user.displayName || user.email
+        : "",
+    role:
+      user
+        ? user.role
+        : "",
+    lastLogin:
+      user
+        ? user.lastLogin
+        : "",
+    lastSeen:
+      user
+        ? user.lastSeen
+        : "",
+    linked: linked,
+    enabled:
+      user
+        ? user.enabled
+        : false,
+    missingEmail:
+      playerName !== "" &&
+      email === "",
+    duplicateEmail:
+      email !== "" &&
+      (
+        playerEmailCounts[email] > 1 ||
+        userEmailCounts[email] > 1
+      ),
+    duplicatePlayer:
+      playerName !== "" &&
+      playerNameCounts[playerName.toLowerCase()] > 1,
+    neverLoggedIn:
+      !user ||
+      user.lastLogin === "",
+    brokenMapping:
+      playerName === "" ||
+      (
+        email !== "" &&
+        !user
+      )
+  };
+
+}
+
+function getOperationsEmailCounts(rows) {
+
+  const counts = {};
+
+  rows.forEach(function(row) {
+    if (row.email === "")
+      return;
+    counts[row.email] =
+      (counts[row.email] || 0) + 1;
+  });
+
+  return counts;
+
+}
+
+function buildOperationsIdentityAudits(records) {
+
+  const audits = [];
+
+  records.forEach(function(record) {
+
+    if (record.duplicateEmail)
+      audits.push(buildOperationsIdentityAudit("critical", "Duplicate Email", record));
+
+    if (record.duplicatePlayer)
+      audits.push(buildOperationsIdentityAudit("critical", "Duplicate Player", record));
+
+    if (record.player === "")
+      audits.push(buildOperationsIdentityAudit("warning", "Missing Player", record));
+
+    if (record.missingEmail)
+      audits.push(buildOperationsIdentityAudit("warning", "Missing Email", record));
+
+    if (record.brokenMapping)
+      audits.push(buildOperationsIdentityAudit("warning", "Broken Mapping", record));
+
+    if (record.neverLoggedIn)
+      audits.push(buildOperationsIdentityAudit("info", "Never Logged In", record));
+
+  });
+
+  return audits;
+
+}
+
+function buildOperationsIdentityAudit(severity, type, record) {
+
+  return {
+    severity: severity,
+    type: type,
+    player: record.player,
+    googleEmail: record.googleEmail,
+    message:
+      type +
+      ": " +
+      (
+        record.player ||
+        record.googleEmail ||
+        "Unknown identity"
+      )
+  };
+
+}
+
+function getOperationsRowsByEmail(rows) {
+
+  const byEmail = {};
+
+  rows.forEach(function(row) {
+    if (row.email !== "")
+      byEmail[row.email] = row;
+  });
+
+  return byEmail;
+
+}
+
+function getOperationsUsers() {
+
+  const sheet =
+    ensureUsersSheet();
+
+  const columns =
+    getUsersColumns(sheet);
+
+  const values =
+    sheet
+      .getDataRange()
+      .getValues();
+
+  if (values.length <= 1)
+    return [];
+
+  return values
+    .slice(1)
+    .map(function(row) {
+      return {
+        email:
+          getOperationsString(row[columns.email])
+            .toLowerCase(),
+        displayName:
+          getOperationsString(row[columns.displayName]),
+        role:
+          normalizeUserRole(row[columns.role]),
+        enabled:
+          getOperationsBoolean(row[columns.enabled]),
+        lastLogin:
+          getOperationsString(row[columns.lastLogin]),
+        lastSeen:
+          getOperationsString(row[columns.lastSeen])
+      };
+    })
+    .filter(function(user) {
+      return user.email !== "";
+    });
+
+}
+
+function getOperationsLeagueIdentityRows() {
+
+  const spreadsheet =
+    SpreadsheetApp.getActive();
+
+  const sheet =
+    spreadsheet.getSheetByName(CONFIG.SHEETS.PLAYERS);
+
+  if (!sheet)
+    return [];
+
+  const values =
+    sheet
+      .getDataRange()
+      .getValues();
+
+  if (values.length <= 1)
+    return [];
+
+  const headers =
+    values[0]
+      .map(function(header) {
+        return getOperationsString(header);
+      });
+
+  const playerCol =
+    headers.indexOf("Player");
+
+  const divisionCol =
+    headers.indexOf("Division");
+
+  const displayNameCol =
+    headers.indexOf("Display Name");
+
+  const emailCol =
+    headers.indexOf("Google Email");
+
+  if (playerCol === -1)
+    return [];
+
+  return values
+    .slice(1)
+    .map(function(row) {
+      return {
+        player:
+          getOperationsString(row[playerCol]),
+        displayName:
+          displayNameCol === -1
+            ? getOperationsString(row[playerCol])
+            : getOperationsString(row[displayNameCol]) ||
+              getOperationsString(row[playerCol]),
+        division:
+          divisionCol === -1
+            ? ""
+            : getOperationsString(row[divisionCol]),
+        email:
+          emailCol === -1
+            ? ""
+            : getOperationsString(row[emailCol]).toLowerCase()
+      };
+    })
+    .filter(function(player) {
+      return player.player !== "";
+    });
+
+}
+
+function getOperationsNotificationStatus() {
+
+  const notifications =
+    typeof buildLeagueNotifications === "function"
+      ? buildLeagueNotifications()
+      : [];
+
+  return {
+    total: notifications.length,
+    highPriority:
+      notifications.filter(function(notification) {
+        return notification.priority === "high";
+      }).length,
+    normalPriority:
+      notifications.filter(function(notification) {
+        return notification.priority !== "high";
+      }).length
+  };
+
+}
+
+function getOperationsDeploymentStatus(settings) {
+
+  return {
+    portalVersion:
+      settings.portalVersion || "Not recorded",
+    appsScriptVersion: "Version 2.0",
+    deploymentUrl:
+      settings.deploymentUrl || "",
+    gitCommit:
+      settings.gitCommit || "Not recorded",
+    checkedAt:
+      getOperationsTimestamp()
   };
 
 }
@@ -759,6 +1536,9 @@ function getOperationsPlayers() {
           return {
             division: division.divisionLabel,
             player: player.player,
+            displayName:
+              player.displayName ||
+              player.player,
             games: player.games,
             rank: player.rank
           };

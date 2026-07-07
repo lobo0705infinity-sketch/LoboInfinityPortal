@@ -78,6 +78,9 @@ const roleOrder: UserRole[] = [
 const guestUser: PortalUser = {
   email: '',
   displayName: 'Guest',
+  leaguePlayer: '',
+  playerDisplayName: '',
+  leagueDivision: '',
   role: 'Guest',
   enabled: false,
   favoriteFaction: '',
@@ -109,6 +112,9 @@ function AuthProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<'loading' | 'ready'>('loading')
   const [googleReady, setGoogleReady] = useState(false)
   const clientIdRef = useRef(import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '')
+  const googleInitializedClientIdRef = useRef('')
+  const googlePromptedRef = useRef(false)
+  const googleScriptRequestedRef = useRef(false)
 
   const applyCredential = useCallback(async (credential: string) => {
     window.localStorage.setItem(authStorageKey, credential)
@@ -178,28 +184,48 @@ function AuthProvider({ children }: { children: ReactNode }) {
     )
 
     function initializeGoogle() {
-      if (!window.google || !clientIdRef.current) {
+      const clientId = clientIdRef.current
+
+      if (!window.google || !clientId) {
         return
       }
 
-      window.google.accounts.id.initialize({
-        auto_select: true,
-        callback: (response) => {
-          if (response.credential) {
-            void applyCredential(response.credential)
-          }
-        },
-        client_id: clientIdRef.current,
-      })
+      if (googleInitializedClientIdRef.current !== clientId) {
+        window.google.accounts.id.initialize({
+          auto_select: true,
+          callback: (response) => {
+            if (response.credential) {
+              void applyCredential(response.credential)
+            }
+          },
+          client_id: clientId,
+        })
+        googleInitializedClientIdRef.current = clientId
+      }
+
       setGoogleReady(true)
-      window.google.accounts.id.prompt()
+
+      if (!googlePromptedRef.current) {
+        googlePromptedRef.current = true
+        window.google.accounts.id.prompt()
+      }
     }
 
-    if (existing) {
+    if (window.google) {
       initializeGoogle()
       return
     }
 
+    if (existing) {
+      existing.addEventListener('load', initializeGoogle, { once: true })
+      return
+    }
+
+    if (googleScriptRequestedRef.current) {
+      return
+    }
+
+    googleScriptRequestedRef.current = true
     const script = document.createElement('script')
     script.async = true
     script.defer = true

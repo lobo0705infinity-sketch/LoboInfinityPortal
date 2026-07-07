@@ -1,0 +1,136 @@
+# Performance
+
+Version 2.5.1 makes performance a first-class release concern.
+
+## Baseline Findings
+
+The main performance bottleneck was not payload size. It was blocking Apps Script execution and eager frontend work:
+
+- The Dashboard depended on the monolithic `home` endpoint.
+- `home` synchronously generated Dashboard, Recent Games, News, Intelligence, Hall of Fame, Settings, Streams, and Army Lists.
+- Hall of Fame could exceed 25 seconds because it built player careers and achievement history per player.
+- The app shipped every page in one initial JavaScript bundle.
+- Header controls fetched search, quick jump, and notification data on every route.
+
+## Frontend Strategy
+
+The frontend now uses route-level code splitting through `React.lazy` and `Suspense`.
+
+Large routes such as My Profile, Commissioner Dashboard, Automation Center, Integrity, Hall of Fame, Analytics, Player Profile, Mission Profile, and Faction Profile load only when opened.
+
+Global header controls defer network work:
+
+- Global Search loads its index on focus or first input.
+- Quick Jump loads options on focus.
+- Notification Center loads notifications when opened.
+
+The frontend GET cache TTL is five minutes to avoid repeated Apps Script calls during normal navigation.
+
+## Dashboard Strategy
+
+Dashboard first paint now uses the lightweight `dashboard` endpoint.
+
+Secondary dashboard widgets hydrate in parallel after first render:
+
+- Recent Games
+- News
+- League Intelligence
+- Settings
+- Army List community data
+
+The page no longer blocks on Hall of Fame.
+
+## Backend Strategy
+
+Apps Script cache TTL is now fifteen minutes for public cached endpoints.
+
+The `home` endpoint has been made compatible but slim. It no longer synchronously computes Hall of Fame and League Intelligence.
+
+Heavy systems should remain page-specific:
+
+- Hall of Fame
+- Integrity
+- Automation
+- Commissioner Operations
+- League Intelligence
+
+## Stability Notes
+
+Activity tracking now waits longer before writing `lastPage`, reducing cache invalidation immediately after navigation.
+
+POST requests still clear frontend cache because they may mutate backend state. That behavior is intentional.
+
+## Measurement Checklist
+
+For each performance release, record:
+
+- Initial JavaScript bundle size.
+- Largest route chunk.
+- Largest CSS file.
+- Slowest public Apps Script endpoint.
+- Dashboard first useful render endpoint timing.
+- Largest JSON payload.
+- Number of startup API requests.
+- Mobile layout shift checks.
+
+## Current Targets
+
+- Initial load under 2 seconds where Apps Script cold start is not involved.
+- Dashboard first data under 2 seconds.
+- Cached navigation under 300 ms from frontend cache.
+- No global Search, Quick Jump, or Notification data requests on initial page load.
+
+## Mobile Performance Strategy
+
+Version 2.5.3 keeps the Version 2.5.1 loading model intact.
+
+The mobile release is primarily responsive CSS:
+
+- The sidebar becomes a fixed bottom navigation on small screens without adding JavaScript state.
+- Search, notifications, and profile menus become touch-friendly overlays using existing lazy-loaded data paths.
+- Dense tables collapse into stacked cards through CSS rather than duplicate mobile components.
+- Form controls use larger touch targets and mobile-safe font sizing without extra dependencies.
+- Safe-area spacing protects iOS and Android gesture areas.
+
+This release must not add startup API requests or eager Apps Script calls. Search, Quick Jump, and Notifications still load only on interaction.
+
+## Mobile Budget Checks
+
+For every mobile release, compare:
+
+- Initial JavaScript bundle before and after.
+- CSS asset before and after.
+- Startup API request count before and after.
+- Apps Script calls on first render before and after.
+- Mobile layout overflow checks for phone portrait, phone landscape, tablet portrait, and tablet landscape.
+
+## Hall of Fame Performance
+
+Version 2.5.4 optimizes the Hall of Fame endpoint as a dedicated scalability release.
+
+Before optimization, Hall of Fame cold builds were dominated by repeated Apps Script and spreadsheet work:
+
+- Standings rebuilt the player registry and league statistics once per division.
+- Achievement records were read from the Achievements sheet once per player.
+- Army lists were read from the Army Lists sheet once per player.
+- Display names could rebuild the player registry during Hall of Fame construction.
+- Career leaderboards repeatedly sorted the same career array.
+- The API returned more career rows than the current page renders.
+
+The optimized path builds one request-local Hall of Fame context:
+
+- Player registry is loaded once.
+- League statistics are applied once.
+- Standings for all divisions are derived from the same registry.
+- Game analytics are read once.
+- Achievement records are read once and indexed by player.
+- Army lists are read once and counted by player.
+- Display names are derived from the loaded registry.
+- The Hall of Fame snapshot is cached using the portal cache version.
+- Secondary frontend sections render after first paint without issuing another request.
+
+Performance target:
+
+- Hall of Fame cold Apps Script build under 2 seconds.
+- Cached Hall of Fame response under 300 ms where Apps Script cache is warm.
+- No increase to Dashboard, authentication, or profile startup work.

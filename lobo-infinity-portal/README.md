@@ -1,75 +1,57 @@
-# React + TypeScript + Vite
+# Lobo Infinity League Operating System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The Lobo Infinity League Operating System is the production portal for league standings, player identity, profiles, achievements, automation, Hall of Fame history, commissioner operations, and Discord-driven league communication.
 
-Currently, two official plugins are available:
+Version 2.5.4 is the first Long-Term Support baseline. It prioritizes stability, documentation, validation, and repeatable deployment over new feature work.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Stack
 
-## React Compiler
+- Frontend: React, TypeScript, Vite
+- Backend: Google Apps Script
+- Data store: Google Sheets
+- Hosting: Vercel
+- Deployment: `clasp` for Apps Script, Vercel CLI for frontend
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Quick Start
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```powershell
+npm install
+npm run lint
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Apps Script commands run from `backend`:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```powershell
+cd backend
+clasp push
+clasp deploy -i AKfycbxBzo57XHrxiBy1EJq4f_VS026uTXnCYHSXrWT6c2uU__zSB2Dzeixx3rFHQahXQycCng -d "Release description"
 ```
+
+Frontend production deployment runs from the repository root:
+
+```powershell
+npx.cmd --yes vercel deploy --prod
+```
+
+## Core Documentation
+
+- [Architecture](docs/Architecture.md)
+- [API](docs/API.md)
+- [Deployment](docs/Deployment.md)
+- [Development Setup](docs/DevelopmentSetup.md)
+- [Project Structure](docs/ProjectStructure.md)
+- [Performance](docs/Performance.md)
+- [Performance Budget](docs/PerformanceBudget.md)
+- [Release Checklist](docs/ReleaseChecklist.md)
+- [Troubleshooting](docs/Troubleshooting.md)
+- [Technical Debt](docs/TechnicalDebt.md)
+
+## Production Rules
+
+- Google Identity is presentation identity.
+- League Identity is authoritative for league data.
+- `leaguePlayer` is used for league lookups.
+- `displayName` and player display names are presentation only.
+- Discord webhook URLs and other secrets must never be exposed to public payloads.
+- Apps Script deployment ID `AKfycbxBzo57XHrxiBy1EJq4f_VS026uTXnCYHSXrWT6c2uU__zSB2Dzeixx3rFHQahXQycCng` is the production backend.

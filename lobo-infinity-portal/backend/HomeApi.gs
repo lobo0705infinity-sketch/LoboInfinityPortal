@@ -22,16 +22,6 @@ function getHome() {
       getCommissionerNews().getContent()
     );
 
-  const intelligence =
-    JSON.parse(
-      getIntelligence().getContent()
-    );
-
-  const hallOfFame =
-    JSON.parse(
-      getHallOfFame().getContent()
-    );
-
   const settings =
     JSON.parse(
       getSettings().getContent()
@@ -52,9 +42,9 @@ function getHome() {
     dashboard: dashboard,
     recentGames: recentGames.games || [],
     news: news.news || [],
-    intelligence: intelligence,
-    records: intelligence.records || {},
-    hallOfFame: hallOfFame,
+    intelligence: null,
+    records: {},
+    hallOfFame: null,
     settings: settings.settings || {},
     streams: streams.streams || [],
     armyLists: armyLists.lists || [],

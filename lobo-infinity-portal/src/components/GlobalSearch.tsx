@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type KeyboardEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { apiClient } from '../services/api'
+import { formatObjectiveScore, formatPlayerName } from '../services/formatting'
 
 type SearchItem = {
   category: string
@@ -30,8 +31,13 @@ function GlobalSearch() {
   const [searchState, setSearchState] = useState<SearchState>({
     status: 'idle',
   })
+  const [hasRequestedSearchData, setHasRequestedSearchData] = useState(false)
 
   useEffect(() => {
+    if (!hasRequestedSearchData) {
+      return
+    }
+
     const controller = new AbortController()
 
     async function loadSearchData() {
@@ -44,7 +50,7 @@ function GlobalSearch() {
         const playerItems = players.flatMap((division) =>
           division.standings.map((player) => ({
             category: 'Player',
-            label: player.player,
+            label: formatPlayerName(player.player, player.displayName),
             meta: `${division.divisionLabel} - Rank #${player.rank}`,
             to: `/players/${encodeURIComponent(player.player)}`,
           })),
@@ -66,15 +72,15 @@ function GlobalSearch() {
 
         const matchItems = games.map((game) => ({
           category: 'Match',
-          label: `${game.winner} defeated ${game.loser}`,
-          meta: `${game.mission} - OP ${game.op}`,
+          label: `${formatPlayerName(game.winner, game.winnerDisplayName)} defeated ${formatPlayerName(game.loser, game.loserDisplayName)}`,
+          meta: `${game.mission} - ${formatObjectiveScore(game)}`,
           to: `/games/${game.id}`,
         }))
 
         const armyListItems = armyLists.map((list) => ({
           category: 'Army List',
           label: list.armyName,
-          meta: `${list.player} - ${list.faction} - ${list.mission || 'Mission not recorded'}`,
+          meta: `${formatPlayerName(list.player, list.playerDisplayName)} - ${list.faction} - ${list.mission || 'Mission not recorded'}`,
           to: '/army-lists',
         }))
 
@@ -102,7 +108,7 @@ function GlobalSearch() {
     return () => {
       controller.abort()
     }
-  }, [])
+  }, [hasRequestedSearchData])
 
   const results = useMemo(() => {
     if (searchState.status !== 'success') {
@@ -187,7 +193,9 @@ function GlobalSearch() {
         aria-expanded={query.trim().length >= 2}
         autoComplete="off"
         id="global-search"
+        onFocus={() => setHasRequestedSearchData(true)}
         onChange={(event) => {
+          setHasRequestedSearchData(true)
           setQuery(event.target.value)
           setActiveIndex(0)
         }}

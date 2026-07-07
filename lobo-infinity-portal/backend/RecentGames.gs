@@ -94,21 +94,7 @@ function getRecentGames() {
       .slice(0, RECENT_GAMES_LIMIT)
       .map(function(game, index) {
 
-        return {
-          id: index + 1,
-          date: game.date,
-          division: game.division,
-          winner: game.winner,
-          loser: game.loser,
-          winnerFaction: game.winnerFaction,
-          loserFaction: game.loserFaction,
-          mission: game.mission,
-          tp: game.tp,
-          op: game.op,
-          vp: game.vp,
-          bestMoment: game.bestMoment,
-          firstTurn: game.firstTurn
-        };
+        return buildRecentGameResponse(game, index + 1);
 
       });
 
@@ -116,6 +102,30 @@ function getRecentGames() {
     success: true,
     games: games
   });
+
+}
+
+function buildRecentGameResponse(game, id) {
+
+  return {
+    id: id,
+    date: game.date,
+    division: game.division,
+    winner: game.winner,
+    winnerDisplayName:
+      getPlayerDisplayName(game.winner),
+    loser: game.loser,
+    loserDisplayName:
+      getPlayerDisplayName(game.loser),
+    winnerFaction: game.winnerFaction,
+    loserFaction: game.loserFaction,
+    mission: game.mission,
+    tp: game.tp,
+    op: game.op,
+    vp: game.vp,
+    bestMoment: game.bestMoment,
+    firstTurn: game.firstTurn
+  };
 
 }
 

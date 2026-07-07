@@ -6,6 +6,7 @@ import {
   type ArmyList,
   type ArmyListCommunitySummary,
 } from '../services/api'
+import { formatPlayerName } from '../services/formatting'
 
 type SortMode = 'newest' | 'popular' | 'rated' | 'downloaded'
 
@@ -99,7 +100,7 @@ function ArmyLists() {
       .filter((list) => matchesFilter(list.mission, mission))
       .filter((list) => matchesFilter(list.player, player))
       .filter((list) =>
-        `${list.player} ${list.faction} ${list.sectorial} ${list.mission} ${list.armyName} ${list.description}`
+        `${list.player} ${list.playerDisplayName} ${list.faction} ${list.sectorial} ${list.mission} ${list.armyName} ${list.description}`
           .toLowerCase()
           .includes(normalizedQuery),
       )
@@ -168,7 +169,7 @@ function ArmyLists() {
         <CommunityCard title="Top Contributors">
           {state.community.topContributors.map((contributor) => (
             <Link key={contributor.name} to={`/players/${encodeURIComponent(contributor.name)}`}>
-              <strong>{contributor.name}</strong>
+              <strong>{formatPlayerName(contributor.name, contributor.displayName)}</strong>
               <span>{contributor.count} lists</span>
             </Link>
           ))}
@@ -180,7 +181,12 @@ function ArmyLists() {
                 state.community.highestRatedDesigner.name,
               )}`}
             >
-              <strong>{state.community.highestRatedDesigner.name}</strong>
+              <strong>
+                {formatPlayerName(
+                  state.community.highestRatedDesigner.name,
+                  state.community.highestRatedDesigner.displayName,
+                )}
+              </strong>
               <span>{state.community.highestRatedDesigner.score} score</span>
             </Link>
           ) : null}
@@ -327,7 +333,7 @@ function ArmyListCard({
           <dt>Player</dt>
           <dd>
             <Link to={`/players/${encodeURIComponent(list.player)}`}>
-              {list.player}
+              {formatPlayerName(list.player, list.playerDisplayName)}
             </Link>
           </dd>
         </div>

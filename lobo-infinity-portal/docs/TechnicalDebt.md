@@ -1,0 +1,119 @@
+# Technical Debt
+
+Version 2.5.4 LTS documents known technical debt without implementing new feature work.
+
+## High Priority
+
+### Apps Script Cold Start Measurement
+
+Description: Direct Apps Script endpoint timing is intermittently blocked from the current sandbox, which limits release-time measurement confidence.
+
+Reason: Performance claims need repeatable production measurement.
+
+Estimated impact: High for future performance releases.
+
+Suggested future release: 2.5.5 Performance Observability.
+
+### Hall of Fame Observability
+
+Description: Hall of Fame has optimized snapshot caching, but endpoint-level telemetry is not exposed in a dedicated performance report.
+
+Reason: The page is historically expensive and should remain watched.
+
+Estimated impact: High if league history grows quickly.
+
+Suggested future release: 2.5.5 Performance Observability.
+
+### Search Index Precomputation
+
+Description: Search data is loaded lazily, but the backend still assembles the index from live service reads.
+
+Reason: Larger leagues may make search generation slower.
+
+Estimated impact: Medium to high as data grows.
+
+Suggested future release: 2.6 Search and Navigation Hardening.
+
+## Medium Priority
+
+### Accessibility Pass
+
+Description: The portal has accessible labels in key areas, but it has not had a complete WCAG audit.
+
+Reason: Keyboard navigation, focus visibility, and screen reader flow should be verified across every page.
+
+Estimated impact: Medium.
+
+Suggested future release: 2.6 Accessibility.
+
+### Mobile Visual QA
+
+Description: Mobile responsive rules exist, but automated screenshot regression tests are not installed.
+
+Reason: Visual regressions are hard to catch with lint/build only.
+
+Estimated impact: Medium.
+
+Suggested future release: 2.6 Mobile QA.
+
+### Apps Script Integration Tests
+
+Description: Apps Script syntax validation exists, but there is no automated contract test suite for deployed API responses.
+
+Reason: API contract mismatches can reach production.
+
+Estimated impact: Medium.
+
+Suggested future release: 2.5.5 API Contract Testing.
+
+### Bundle Analysis Automation
+
+Description: Bundle sizes are manually read from Vite output.
+
+Reason: Performance budgets should fail automatically when exceeded.
+
+Estimated impact: Medium.
+
+Suggested future release: 2.5.5 CI Budget Checks.
+
+### Dependency Patch Updates
+
+Description: `npm outdated` reports patch/minor candidates: `vite` 8.1.2 to 8.1.3, `typescript-eslint` 8.62.1 to 8.63.0, and `@types/node` 24.13.2 with newer major type definitions available.
+
+Reason: LTS should avoid unnecessary upgrades, but routine maintenance should keep tooling current.
+
+Estimated impact: Low to medium.
+
+Suggested future release: 2.5.5 Maintenance.
+
+## Low Priority
+
+### CSS Organization
+
+Description: Most styling is centralized in `src/App.css`.
+
+Reason: The file is large and harder to audit, though stable.
+
+Estimated impact: Low.
+
+Suggested future release: 2.7 CSS Maintenance.
+
+### README Historical Context
+
+Description: README now reflects production setup, but release history remains spread across docs.
+
+Reason: New maintainers may benefit from a concise changelog.
+
+Estimated impact: Low.
+
+Suggested future release: 2.6 Documentation Polish.
+
+### Generated Reference Artifacts
+
+Description: Historical Apps Script reference clones and screenshot folders exist in the working tree.
+
+Reason: They may be useful for audit history but should be reviewed before committing or deleting.
+
+Estimated impact: Low.
+
+Suggested future release: Repository cleanup after LTS tag.

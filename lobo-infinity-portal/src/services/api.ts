@@ -19,7 +19,7 @@ type RequestParams = Record<string, string>
 
 let activeAuthToken = ''
 let activeOAuthClientId = ''
-const frontendCacheTtlMs = 30_000
+const frontendCacheTtlMs = 300_000
 const frontendResponseCache = new Map<
   string,
   {
@@ -43,6 +43,7 @@ export type ArmyList = {
   id: number
   submissionDate: string
   player: string
+  playerDisplayName: string
   faction: string
   sectorial: string
   mission: string
@@ -72,11 +73,16 @@ export type ArmyListSubmission = {
 }
 
 export type ArmyListCommunitySummary = {
-  topContributors: Array<{ count: number; name: string }>
-  highestRatedDesigner: { lists: number; name: string; score: number } | null
+  topContributors: Array<{ count: number; displayName?: string; name: string }>
+  highestRatedDesigner: {
+    displayName?: string
+    lists: number
+    name: string
+    score: number
+  } | null
   mostPopularFaction: string
   trendingLists: ArmyList[]
-  mostListsSubmitted: Array<{ count: number; name: string }>
+  mostListsSubmitted: Array<{ count: number; displayName?: string; name: string }>
 }
 
 export type UserRole =
@@ -88,6 +94,9 @@ export type UserRole =
 export type PortalUser = {
   email: string
   displayName: string
+  leaguePlayer: string
+  playerDisplayName: string
+  leagueDivision: string
   role: UserRole
   enabled: boolean
   favoriteFaction: string
@@ -119,8 +128,96 @@ export type MyProfileData = {
   submittedLists: ArmyList[]
   votesCast: number
   recentActivity: LeagueTimelineItem[]
+  recentGames: RecentGame[]
   leagueStatistics: PlayerProfileData | null
+  currentSeasonStatistics: ProfileStatisticsSnapshot | null
+  careerStatistics: ProfileStatisticsSnapshot | null
+  leaguePerformance: ProfileLeaguePerformance
+  intelligence: ProfileIntelligenceContext
+  achievements: ProfileAchievement[]
   futureSections: string[]
+}
+
+export type ProfileStatisticsSnapshot = {
+  division: string
+  rank: number
+  games: number
+  wins: number
+  losses: number
+  tp: number
+  op: number
+  vp: number
+  winPercentage: number
+  averageTournamentPoints: number
+  averageObjectivePoints: number
+  averageVictoryPoints: number
+  promotionStatus: string
+  seasonProgress: number
+}
+
+export type ProfileAchievement = {
+  id: string
+  name: string
+  title: string
+  description: string
+  category: string
+  tier: string
+  icon: string
+  points: number
+  unlocked: boolean
+  dateEarned: string
+  seasonEarned: string
+  visibility: string
+  automatic: boolean
+  commissionerAward: boolean
+  progress: number
+  requirement: string
+  value: string
+}
+
+export type ProfileGameSummary = {
+  gameId: number
+  date: string
+  opponent: string
+  mission: string
+  margin: number
+  score: string
+}
+
+export type ProfileLeaguePerformance = {
+  bestOpponent: string
+  worstOpponent: string
+  longestWinStreak: number
+  longestLosingStreak: number
+  currentStreak: string
+  mostPlayedOpponent: string
+  closestVictory: ProfileGameSummary | null
+  worstDefeat: ProfileGameSummary | null
+  fallbackBestOpponent: string
+  fallbackWorstOpponent: string
+}
+
+export type ProfileIntelligenceAverage = {
+  players: number
+  games: number
+  averageTP: number
+  averageOP: number
+  averageVP: number
+  winPercentage: number
+}
+
+export type ProfileIntelligenceContext = {
+  player: string
+  division: string
+  divisionAverage: ProfileIntelligenceAverage
+  leagueAverage: ProfileIntelligenceAverage
+  topThreeAverage: ProfileIntelligenceAverage
+  ranks: {
+    objectivePoints: number
+    tournamentPoints: number
+    victoryPoints: number
+    winPercentage: number
+  }
 }
 
 export type ArmyListsData = {
@@ -174,6 +271,7 @@ type DashboardApiResponse = {
 
 export type PlayerProfileData = {
   name: string
+  displayName: string
   division: string
   rank: number
   games: number
@@ -200,7 +298,9 @@ export type RecentGame = {
   date: string
   division: string
   winner: string
+  winnerDisplayName: string
   loser: string
+  loserDisplayName: string
   winnerFaction: string
   loserFaction: string
   mission: string
@@ -226,6 +326,7 @@ export type FactionSummary = {
   averageOP: number
   averageVP: number
   topPlayer: string
+  topPlayerDisplayName: string
   lastPlayed: string
   divisionBreakdown: FactionDivisionBreakdown[]
 }
@@ -282,7 +383,9 @@ export type IntelligenceGame = {
   division: string
   mission: string
   winner: string
+  winnerDisplayName: string
   loser: string
+  loserDisplayName: string
   winnerFaction: string
   loserFaction: string
   vp: string
@@ -295,6 +398,7 @@ export type IntelligenceGame = {
 
 export type IntelligenceStreak = {
   player: string
+  displayName: string
   games: number
   type: string
   story: string
@@ -323,12 +427,15 @@ export type IntelligenceMissionTrend = {
 export type StandingsBattle = {
   division: string
   player: string
+  displayName: string
   rank: number
   tp: number
   op: number
   vp: number
   chaser?: string
+  chaserDisplayName?: string
   target?: string
+  targetDisplayName?: string
   withinOneGame: boolean
   story: string
 }
@@ -338,7 +445,9 @@ export type RecentUpset = {
   date: string
   division: string
   winner: string
+  winnerDisplayName: string
   loser: string
+  loserDisplayName: string
   winnerRank: number
   loserRank: number
   mission: string
@@ -349,6 +458,7 @@ export type LeagueRecordValue =
   | IntelligenceGame
   | {
       faction?: string
+      displayName?: string
       games: number
       name?: string
       story: string
@@ -409,6 +519,7 @@ export type LeagueTimelineItem = {
 export type HallOfFameLeader = {
   division: string
   player: string
+  displayName: string
   rank: number
   games: number
   wins: number
@@ -416,6 +527,52 @@ export type HallOfFameLeader = {
   tp: number
   op: number
   vp: number
+}
+
+export type HallOfFameCareer = HallOfFameLeader & {
+  achievementPoints: number
+  seasonsPlayed: number
+  promotions: number
+  relegations: number
+  championships: number
+  awards: number
+  achievements: number
+  winPercentage: number
+  seasons: HallOfFameSeason[]
+  hallOfFameEntries: string[]
+  timeline: HallOfFameTimelineItem[]
+}
+
+export type HallOfFameSeason = {
+  season: string
+  division: string
+  finalRank: number | string
+  record: string
+  tp: number
+  op: number
+  vp: number
+  movement: string
+  achievementsEarned: number
+  armyListsSubmitted: number
+  specialAwards: number
+  date: string
+  details: string
+}
+
+export type HallOfFameRecordBookItem = {
+  title: string
+  value: string
+  holder: string
+  story: string
+}
+
+export type HallOfFameTimelineItem = {
+  id?: string
+  type: string
+  title: string
+  body: string
+  timestamp: string
+  relatedPlayer?: string
 }
 
 export type HallOfFameData = {
@@ -427,6 +584,18 @@ export type HallOfFameData = {
     wins: HallOfFameLeader[]
   }
   records: Record<string, LeagueRecordValue>
+  careerLeaders: {
+    achievementPoints: HallOfFameCareer[]
+    championships: HallOfFameCareer[]
+    communityAwards: HallOfFameCareer[]
+    promotions: HallOfFameCareer[]
+    seasonsPlayed: HallOfFameCareer[]
+    winPercentage: HallOfFameCareer[]
+  }
+  recordBook: HallOfFameRecordBookItem[]
+  leagueHistory: HallOfFameTimelineItem[]
+  seasonHistory: HallOfFameSeason[]
+  playerCareers: HallOfFameCareer[]
 }
 
 export type PlayerComparisonPlayer = PlayerProfileData & {
@@ -573,12 +742,222 @@ export type OperationsDashboardData = {
     systemHealth: Record<string, string>
     leagueAuditSummary: LeagueAudit['summary']
     seasonStatus: SeasonStatus
+    identityStatus: OperationsIdentityStatus
+    notificationStatus: OperationsNotificationStatus
+    discordStatus: OperationsDiscordStatus
+    deploymentStatus: OperationsDeploymentStatus
   }
   pendingArmyLists: ArmyList[]
   streams: StreamedGame[]
   news: OperationsNewsItem[]
+  players: OperationsPlayer[]
+  identity: OperationsIdentityManagement
+  discord: OperationsDiscordStatus
   settings: PortalSettings
   audit: LeagueAudit
+}
+
+export type OperationsIdentityStatus = {
+  totalUsers: number
+  enabledUsers: number
+  disabledUsers: number
+  linkedUsers: number
+  unlinkedUsers: number
+  commissionerUsers: number
+  assistantUsers: number
+  playersWithEmail: number
+  playersWithoutEmail: number
+  playersWithoutUser: number
+}
+
+export type OperationsNotificationStatus = {
+  total: number
+  highPriority: number
+  normalPriority: number
+}
+
+export type OperationsDeploymentStatus = {
+  portalVersion: string
+  appsScriptVersion: string
+  deploymentUrl: string
+  gitCommit: string
+  checkedAt: string
+}
+
+export type OperationsDiscordField = {
+  inline: boolean
+  name: string
+  value: string
+}
+
+export type OperationsDiscordEmbed = {
+  description: string
+  fields: OperationsDiscordField[]
+  title: string
+  url: string
+}
+
+export type OperationsDiscordLogEntry = {
+  rowNumber: number
+  timestamp: string
+  event: string
+  title: string
+  webhook: string
+  success: boolean
+  failure: string
+  retryCount: number
+  payload: string
+  response: string
+  status: string
+}
+
+export type OperationsDiscordPreview = {
+  event: string
+  label: string
+  content: string
+  embeds: OperationsDiscordEmbed[]
+}
+
+export type OperationsDiscordStatus = {
+  enabled: boolean
+  configured: boolean
+  webhookMasked: string
+  announcementChannel: string
+  adminChannel: string
+  rateLimitPerHour: number
+  retryLimit: number
+  automationEvents: string[]
+  lastAutomationRun: string
+  queueDepth: number
+  failures: number
+  lastResult: OperationsDiscordLogEntry | null
+  log: OperationsDiscordLogEntry[]
+  preview: OperationsDiscordPreview
+}
+
+export type AutomationDestination =
+  | 'commissionerFeed'
+  | 'discord'
+  | 'email'
+  | 'news'
+  | 'portal'
+  | 'publicApi'
+  | 'push'
+  | 'timeline'
+
+export type AutomationRule = Record<AutomationDestination, boolean> & {
+  enabled: boolean
+  eventType: string
+  priority: string
+  templateId: string
+}
+
+export type AutomationEventType = {
+  category: string
+  eventType: string
+  label: string
+  priority: string
+  rule: AutomationRule
+}
+
+export type AutomationTemplate = {
+  body: string
+  discordFormat: string
+  enabled: boolean
+  eventType: string
+  name: string
+  templateId: string
+  title: string
+}
+
+export type AutomationQueueItem = {
+  attempts: number
+  destination: string
+  eventId: string
+  eventType: string
+  lastAttempt: string
+  payload: string
+  queueId: string
+  reason: string
+  status: string
+  timestamp: string
+}
+
+export type AutomationEventRecord = {
+  category: string
+  destinations: string
+  division: string
+  eventId: string
+  eventType: string
+  message: string
+  payload: string
+  player: string
+  priority: string
+  status: string
+  timestamp: string
+}
+
+export type AutomationStatus = {
+  discordConnected: boolean
+  enabled: boolean
+  health: string
+  lastAutomationRun: string
+  lastFailure: string
+  lastMessage: string
+  queueSize: number
+  retryQueue: number
+  webhookHealthy: boolean
+}
+
+export type AutomationCenterData = {
+  destinations: AutomationDestination[]
+  discord: OperationsDiscordStatus
+  events: AutomationEventRecord[]
+  eventTypes: AutomationEventType[]
+  queue: AutomationQueueItem[]
+  rules: Record<string, AutomationRule>
+  status: AutomationStatus
+  templates: AutomationTemplate[]
+}
+
+export type OperationsPlayer = {
+  division: string
+  displayName: string
+  games: number
+  player: string
+  rank: number
+}
+
+export type OperationsIdentityRecord = {
+  id: string
+  player: string
+  displayName: string
+  division: string
+  googleEmail: string
+  portalUser: string
+  role: string
+  lastLogin: string
+  lastSeen: string
+  linked: boolean
+  enabled: boolean
+  missingEmail: boolean
+  duplicateEmail: boolean
+  duplicatePlayer: boolean
+  neverLoggedIn: boolean
+  brokenMapping: boolean
+}
+
+export type OperationsIdentityAudit = {
+  severity: 'critical' | 'warning' | 'info'
+  type: string
+  player: string
+  googleEmail: string
+  message: string
+}
+
+export type OperationsIdentityManagement = {
+  records: OperationsIdentityRecord[]
+  audits: OperationsIdentityAudit[]
 }
 
 export type OperationsSeasonData = {
@@ -593,6 +972,71 @@ export type OperationsSeasonData = {
     operation: string
     snapshot: string
   }>
+}
+
+export type IntegritySeverity = 'error' | 'info' | 'warning'
+
+export type IntegrityIssue = {
+  detail: string
+  id: string
+  repairAction: string
+  repairable: boolean
+  severity: IntegritySeverity
+  target: string
+  title: string
+}
+
+export type IntegrityCheck = {
+  data: unknown[]
+  detail: string
+  status: string
+  target: string
+}
+
+export type IntegritySection = {
+  checks: IntegrityCheck[]
+  description: string
+  errors: number
+  id: string
+  issues: IntegrityIssue[]
+  repairAction: string
+  repairable: boolean
+  status: string
+  title: string
+  warnings: number
+}
+
+export type IntegrityData = {
+  durationMs: number
+  healthScore: number
+  healthStatus: string
+  lastAudit: string
+  lastRepair: string
+  sections: IntegritySection[]
+  summary: {
+    errors: number
+    repairable: number
+    sections: number
+    warnings: number
+  }
+  timestamp: string
+  version: string
+}
+
+export type IntegrityReport = {
+  durationMs: number
+  errors: number
+  healthScore: number
+  leagueVersion: string
+  portalVersion: string
+  repairs: Array<{
+    issue: string
+    repairAction: string
+    section: string
+  }>
+  sections: IntegritySection[]
+  timestamp: string
+  warnings: number
 }
 
 export type StreamedGame = {
@@ -676,6 +1120,18 @@ export type ApiClient = {
   getOperations: (options?: ApiOptions) => Promise<OperationsDashboardData>
   getOperationsAudit: (options?: ApiOptions) => Promise<LeagueAudit>
   getOperationsSeason: (options?: ApiOptions) => Promise<OperationsSeasonData>
+  getIntegrity: (options?: ApiOptions) => Promise<IntegrityData>
+  getIntegrityReport: (options?: ApiOptions) => Promise<IntegrityReport>
+  repairIntegrity: (
+    repair: string,
+    options?: ApiOptions,
+  ) => Promise<IntegrityData>
+  getAutomation: (options?: ApiOptions) => Promise<AutomationCenterData>
+  automationAction: (
+    action: string,
+    params?: Record<string, string | number | boolean>,
+    options?: ApiOptions,
+  ) => Promise<void>
   operationsAction: (
     action: string,
     params?: Record<string, string | number | boolean>,
@@ -688,7 +1144,7 @@ const divisionKeys: DivisionKey[] = ['main', 'pga', 'pgb']
 export async function getSession(
   options: ApiOptions = {},
 ): Promise<AuthSession> {
-  const payload = await request('session', options)
+  const payload = await postRequest('session', options, {})
   return normalizeAuthSessionPayload(payload)
 }
 
@@ -943,6 +1399,64 @@ export async function getOperations(
   return normalizeOperationsPayload(payload)
 }
 
+export async function getIntegrity(
+  options: ApiOptions = {},
+): Promise<IntegrityData> {
+  const payload = await request('integrity', options)
+  return normalizeIntegrityPayload(payload)
+}
+
+export async function getIntegrityReport(
+  options: ApiOptions = {},
+): Promise<IntegrityReport> {
+  const payload = await request('integrityReport', options)
+  const record = asRecord(payload, 'Integrity report response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Integrity report failed.')
+  }
+
+  return normalizeIntegrityReport(getRequiredRecord(record, 'report'))
+}
+
+export async function repairIntegrity(
+  repair: string,
+  options: ApiOptions = {},
+): Promise<IntegrityData> {
+  const payload = await postRequest('integrityRepair', options, {
+    repair,
+  })
+  const record = asRecord(payload, 'Integrity repair response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Integrity repair failed.')
+  }
+
+  return normalizeIntegrityRecord(getRequiredRecord(record, 'integrity'))
+}
+
+export async function getAutomation(
+  options: ApiOptions = {},
+): Promise<AutomationCenterData> {
+  const payload = await request('automation', options)
+  return normalizeAutomationPayload(payload)
+}
+
+export async function automationAction(
+  action: string,
+  params: Record<string, string | number | boolean> = {},
+  options: ApiOptions = {},
+): Promise<void> {
+  const payload = await postRequest(
+    action,
+    options,
+    Object.fromEntries(
+      Object.entries(params).map(([key, value]) => [key, String(value)]),
+    ),
+  )
+  normalizeMutationPayload(payload, `${action} failed.`)
+}
+
 export async function getOperationsAudit(
   options: ApiOptions = {},
 ): Promise<LeagueAudit> {
@@ -1009,6 +1523,11 @@ export const apiClient: ApiClient = {
   submitArmyList,
   voteArmyList,
   getOperations,
+  getIntegrity,
+  getIntegrityReport,
+  repairIntegrity,
+  getAutomation,
+  automationAction,
   getOperationsAudit,
   getOperationsSeason,
   operationsAction,
@@ -1117,7 +1636,7 @@ function normalizeDashboardPayload(payload: unknown): DashboardData {
 
   return {
     summary: {
-      leagueLeader: response.leader.player,
+      leagueLeader: response.leader.displayName || response.leader.player,
       gamesPlayed: response.gamesPlayed,
       activePlayers: response.activePlayers,
       topFaction: response.topFaction,
@@ -1142,11 +1661,13 @@ function normalizeHomePayload(payload: unknown): HomeData {
     dashboard: normalizeDashboardPayload(getRequiredRecord(record, 'dashboard')),
     recentGames: getRequiredArray(record, 'recentGames').map(normalizeRecentGame),
     news: getRequiredArray(record, 'news').map(normalizeNewsItem),
-    intelligence: normalizeIntelligencePayload(
-      getRequiredRecord(record, 'intelligence'),
-    ),
+    intelligence: getOptionalRecord(record, 'intelligence')
+      ? normalizeIntelligencePayload(getRequiredRecord(record, 'intelligence'))
+      : buildEmptyIntelligenceData(),
     records: normalizeLeagueRecords(getRequiredRecord(record, 'records')),
-    hallOfFame: normalizeHallOfFamePayload(getRequiredRecord(record, 'hallOfFame')),
+    hallOfFame: getOptionalRecord(record, 'hallOfFame')
+      ? normalizeHallOfFamePayload(getRequiredRecord(record, 'hallOfFame'))
+      : buildEmptyHallOfFameData(),
     settings: normalizeSettingsRecord(getRequiredRecord(record, 'settings')),
     streams: getArray(record, 'streams').map(normalizeStreamedGame),
     armyLists: getArray(record, 'armyLists').map(normalizeArmyList),
@@ -1176,6 +1697,47 @@ function normalizeHomeQuickStats(value: unknown): HomeData['quickStats'] {
     news: getNumber(record, 'news'),
     recentGames: getNumber(record, 'recentGames'),
     streams: getNumber(record, 'streams'),
+  }
+}
+
+function buildEmptyIntelligenceData(): LeagueIntelligenceData {
+  return {
+    biggestVictories: [],
+    closestGames: [],
+    factionMomentum: [],
+    highestVPGames: [],
+    losingStreaks: [],
+    missionTrends: [],
+    promotionBattle: [],
+    recentUpsets: [],
+    records: {},
+    relegationBattle: [],
+    winStreaks: [],
+  }
+}
+
+function buildEmptyHallOfFameData(): HallOfFameData {
+  return {
+    careerLeaders: {
+      achievementPoints: [],
+      championships: [],
+      communityAwards: [],
+      promotions: [],
+      seasonsPlayed: [],
+      winPercentage: [],
+    },
+    leaders: {
+      games: [],
+      objectivePoints: [],
+      tournamentPoints: [],
+      victoryPoints: [],
+      wins: [],
+    },
+    leagueHistory: [],
+    playerCareers: [],
+    recordBook: [],
+    records: {},
+    seasonHistory: [],
   }
 }
 
@@ -1209,10 +1771,149 @@ function normalizeMyProfilePayload(payload: unknown): MyProfileData {
     submittedLists: getArray(profile, 'submittedLists').map(normalizeArmyList),
     votesCast: getNumber(profile, 'votesCast'),
     recentActivity: getArray(profile, 'recentActivity').map(normalizeTimelineItem),
+    recentGames: getArray(profile, 'recentGames').map(normalizeRecentGame),
     leagueStatistics: profile.leagueStatistics
       ? normalizePlayerProfileRecord(asRecord(profile.leagueStatistics, 'Profile stats'))
       : null,
+    currentSeasonStatistics: profile.currentSeasonStatistics
+      ? normalizeProfileStatisticsSnapshot(
+          asRecord(profile.currentSeasonStatistics, 'Current season profile stats'),
+        )
+      : null,
+    careerStatistics: profile.careerStatistics
+      ? normalizeProfileStatisticsSnapshot(
+          asRecord(profile.careerStatistics, 'Career profile stats'),
+        )
+      : null,
+    leaguePerformance: normalizeProfileLeaguePerformance(
+      getOptionalRecord(profile, 'leaguePerformance') ?? {},
+    ),
+    intelligence: normalizeProfileIntelligenceContext(
+      getOptionalRecord(profile, 'intelligence') ?? {},
+    ),
+    achievements: getArray(profile, 'achievements').map(normalizeProfileAchievement),
     futureSections: normalizeStringArray(profile.futureSections),
+  }
+}
+
+function normalizeProfileStatisticsSnapshot(
+  record: Record<string, unknown>,
+): ProfileStatisticsSnapshot {
+  return {
+    division: getString(record, 'division'),
+    rank: getNumber(record, 'rank'),
+    games: getNumber(record, 'games'),
+    wins: getNumber(record, 'wins'),
+    losses: getNumber(record, 'losses'),
+    tp: getNumber(record, 'tp'),
+    op: getNumber(record, 'op'),
+    vp: getNumber(record, 'vp'),
+    winPercentage: getNumber(record, 'winPercentage'),
+    averageTournamentPoints: getNumber(record, 'averageTournamentPoints'),
+    averageObjectivePoints: getNumber(record, 'averageObjectivePoints'),
+    averageVictoryPoints: getNumber(record, 'averageVictoryPoints'),
+    promotionStatus: getString(record, 'promotionStatus'),
+    seasonProgress: getNumber(record, 'seasonProgress'),
+  }
+}
+
+function normalizeProfileLeaguePerformance(
+  record: Record<string, unknown>,
+): ProfileLeaguePerformance {
+  return {
+    bestOpponent: getString(record, 'bestOpponent'),
+    worstOpponent: getString(record, 'worstOpponent'),
+    longestWinStreak: getNumber(record, 'longestWinStreak'),
+    longestLosingStreak: getNumber(record, 'longestLosingStreak'),
+    currentStreak: getString(record, 'currentStreak') || 'None',
+    mostPlayedOpponent: getString(record, 'mostPlayedOpponent'),
+    closestVictory: record.closestVictory
+      ? normalizeProfileGameSummary(
+          asRecord(record.closestVictory, 'Closest victory'),
+        )
+      : null,
+    worstDefeat: record.worstDefeat
+      ? normalizeProfileGameSummary(asRecord(record.worstDefeat, 'Worst defeat'))
+      : null,
+    fallbackBestOpponent: getString(record, 'fallbackBestOpponent'),
+    fallbackWorstOpponent: getString(record, 'fallbackWorstOpponent'),
+  }
+}
+
+function normalizeProfileIntelligenceContext(
+  record: Record<string, unknown>,
+): ProfileIntelligenceContext {
+  const ranks = getOptionalRecord(record, 'ranks') ?? {}
+
+  return {
+    player: getString(record, 'player'),
+    division: getString(record, 'division'),
+    divisionAverage: normalizeProfileIntelligenceAverage(
+      getOptionalRecord(record, 'divisionAverage') ?? {},
+    ),
+    leagueAverage: normalizeProfileIntelligenceAverage(
+      getOptionalRecord(record, 'leagueAverage') ?? {},
+    ),
+    topThreeAverage: normalizeProfileIntelligenceAverage(
+      getOptionalRecord(record, 'topThreeAverage') ?? {},
+    ),
+    ranks: {
+      objectivePoints: getNumber(ranks, 'objectivePoints'),
+      tournamentPoints: getNumber(ranks, 'tournamentPoints'),
+      victoryPoints: getNumber(ranks, 'victoryPoints'),
+      winPercentage: getNumber(ranks, 'winPercentage'),
+    },
+  }
+}
+
+function normalizeProfileIntelligenceAverage(
+  record: Record<string, unknown>,
+): ProfileIntelligenceAverage {
+  return {
+    players: getNumber(record, 'players'),
+    games: getNumber(record, 'games'),
+    averageTP: getNumber(record, 'averageTP'),
+    averageOP: getNumber(record, 'averageOP'),
+    averageVP: getNumber(record, 'averageVP'),
+    winPercentage: getNumber(record, 'winPercentage'),
+  }
+}
+
+function normalizeProfileGameSummary(
+  record: Record<string, unknown>,
+): ProfileGameSummary {
+  return {
+    gameId: getNumber(record, 'gameId'),
+    date: getString(record, 'date'),
+    opponent: getString(record, 'opponent'),
+    mission: getString(record, 'mission'),
+    margin: getNumber(record, 'margin'),
+    score: getString(record, 'score'),
+  }
+}
+
+function normalizeProfileAchievement(item: unknown): ProfileAchievement {
+  const record = asRecord(item, 'Profile achievement')
+  const name = getString(record, 'name') || getString(record, 'title')
+
+  return {
+    id: getString(record, 'id'),
+    name,
+    title: name,
+    description: getString(record, 'description'),
+    category: getString(record, 'category'),
+    tier: getString(record, 'tier') || 'Common',
+    icon: getString(record, 'icon'),
+    points: getNumber(record, 'points'),
+    unlocked: getBoolean(record, 'unlocked'),
+    dateEarned: getString(record, 'dateEarned'),
+    seasonEarned: getString(record, 'seasonEarned'),
+    visibility: getString(record, 'visibility') || 'Visible',
+    automatic: getBoolean(record, 'automatic'),
+    commissionerAward: getBoolean(record, 'commissionerAward'),
+    progress: getNumber(record, 'progress'),
+    requirement: getString(record, 'requirement'),
+    value: getString(record, 'value'),
   }
 }
 
@@ -1220,6 +1921,10 @@ function normalizePortalUser(record: Record<string, unknown>): PortalUser {
   return {
     email: getString(record, 'email'),
     displayName: getString(record, 'displayName') || 'Guest',
+    leaguePlayer: getString(record, 'leaguePlayer'),
+    playerDisplayName:
+      getString(record, 'playerDisplayName') || getString(record, 'leaguePlayer'),
+    leagueDivision: getString(record, 'leagueDivision'),
     role: normalizeUserRole(getString(record, 'role')),
     enabled: getBoolean(record, 'enabled'),
     favoriteFaction: getString(record, 'favoriteFaction'),
@@ -1320,6 +2025,7 @@ function normalizeStanding(item: unknown): Standing {
   return {
     rank: getRequiredNumber(record, 'rank'),
     player: getRequiredString(record, 'player'),
+    displayName: getString(record, 'displayName') || getRequiredString(record, 'player'),
     games: getRequiredNumber(record, 'games'),
     wins: getRequiredNumber(record, 'wins'),
     losses: getRequiredNumber(record, 'losses'),
@@ -1346,6 +2052,7 @@ function normalizePlayerProfileRecord(
 ): PlayerProfileData {
   return {
     name: getRequiredString(player, 'name'),
+    displayName: getString(player, 'displayName') || getRequiredString(player, 'name'),
     division: getString(player, 'division'),
     rank: getRequiredNumber(player, 'rank'),
     games: getRequiredNumber(player, 'games'),
@@ -1449,6 +2156,7 @@ function normalizeFactionSummary(item: unknown): FactionSummary {
     averageOP: getRequiredNumber(record, 'averageOP'),
     averageVP: getRequiredNumber(record, 'averageVP'),
     topPlayer: getString(record, 'topPlayer'),
+    topPlayerDisplayName: getString(record, 'topPlayerDisplayName') || getString(record, 'topPlayer'),
     lastPlayed: getString(record, 'lastPlayed'),
     divisionBreakdown: normalizeFactionDivisionBreakdownList(
       record.divisionBreakdown,
@@ -1759,6 +2467,13 @@ function normalizeHallOfFamePayload(payload: unknown): HallOfFameData {
       wins: getRequiredArray(leaders, 'wins').map(normalizeHallOfFameLeader),
     },
     records: normalizeLeagueRecords(getRequiredRecord(record, 'records')),
+    careerLeaders: normalizeHallOfFameCareerLeaders(
+      getOptionalRecord(record, 'careerLeaders') ?? {},
+    ),
+    recordBook: getArray(record, 'recordBook').map(normalizeHallOfFameRecordBookItem),
+    leagueHistory: getArray(record, 'leagueHistory').map(normalizeHallOfFameTimelineItem),
+    seasonHistory: getArray(record, 'seasonHistory').map(normalizeHallOfFameSeason),
+    playerCareers: getArray(record, 'playerCareers').map(normalizeHallOfFameCareer),
   }
 }
 
@@ -1768,6 +2483,7 @@ function normalizeHallOfFameLeader(item: unknown): HallOfFameLeader {
   return {
     division: getRequiredString(record, 'division'),
     player: getRequiredString(record, 'player'),
+    displayName: getString(record, 'displayName') || getRequiredString(record, 'player'),
     rank: getRequiredNumber(record, 'rank'),
     games: getRequiredNumber(record, 'games'),
     wins: getRequiredNumber(record, 'wins'),
@@ -1775,6 +2491,83 @@ function normalizeHallOfFameLeader(item: unknown): HallOfFameLeader {
     tp: getRequiredNumber(record, 'tp'),
     op: getRequiredNumber(record, 'op'),
     vp: getRequiredNumber(record, 'vp'),
+  }
+}
+
+function normalizeHallOfFameCareer(item: unknown): HallOfFameCareer {
+  const record = asRecord(item, 'Hall of Fame career')
+  const leader = normalizeHallOfFameLeader(record)
+
+  return {
+    ...leader,
+    achievementPoints: getNumber(record, 'achievementPoints'),
+    seasonsPlayed: getNumber(record, 'seasonsPlayed'),
+    promotions: getNumber(record, 'promotions'),
+    relegations: getNumber(record, 'relegations'),
+    championships: getNumber(record, 'championships'),
+    awards: getNumber(record, 'awards'),
+    achievements: getNumber(record, 'achievements'),
+    winPercentage: getNumber(record, 'winPercentage'),
+    seasons: getArray(record, 'seasons').map(normalizeHallOfFameSeason),
+    hallOfFameEntries: normalizeStringArray(record.hallOfFameEntries),
+    timeline: getArray(record, 'timeline').map(normalizeHallOfFameTimelineItem),
+  }
+}
+
+function normalizeHallOfFameCareerLeaders(
+  record: Record<string, unknown>,
+): HallOfFameData['careerLeaders'] {
+  return {
+    achievementPoints: getArray(record, 'achievementPoints').map(normalizeHallOfFameCareer),
+    championships: getArray(record, 'championships').map(normalizeHallOfFameCareer),
+    communityAwards: getArray(record, 'communityAwards').map(normalizeHallOfFameCareer),
+    promotions: getArray(record, 'promotions').map(normalizeHallOfFameCareer),
+    seasonsPlayed: getArray(record, 'seasonsPlayed').map(normalizeHallOfFameCareer),
+    winPercentage: getArray(record, 'winPercentage').map(normalizeHallOfFameCareer),
+  }
+}
+
+function normalizeHallOfFameSeason(item: unknown): HallOfFameSeason {
+  const record = asRecord(item, 'Hall of Fame season')
+
+  return {
+    season: getString(record, 'season'),
+    division: getString(record, 'division'),
+    finalRank: getString(record, 'finalRank') || getNumber(record, 'finalRank'),
+    record: getString(record, 'record'),
+    tp: getNumber(record, 'tp'),
+    op: getNumber(record, 'op'),
+    vp: getNumber(record, 'vp'),
+    movement: getString(record, 'movement'),
+    achievementsEarned: getNumber(record, 'achievementsEarned'),
+    armyListsSubmitted: getNumber(record, 'armyListsSubmitted'),
+    specialAwards: getNumber(record, 'specialAwards'),
+    date: getString(record, 'date'),
+    details: getString(record, 'details'),
+  }
+}
+
+function normalizeHallOfFameRecordBookItem(item: unknown): HallOfFameRecordBookItem {
+  const record = asRecord(item, 'Hall of Fame record book item')
+
+  return {
+    title: getString(record, 'title'),
+    value: getString(record, 'value'),
+    holder: getString(record, 'holder'),
+    story: getString(record, 'story'),
+  }
+}
+
+function normalizeHallOfFameTimelineItem(item: unknown): HallOfFameTimelineItem {
+  const record = asRecord(item, 'Hall of Fame timeline item')
+
+  return {
+    id: getString(record, 'id'),
+    type: getString(record, 'type'),
+    title: getString(record, 'title'),
+    body: getString(record, 'body'),
+    timestamp: getString(record, 'timestamp'),
+    relatedPlayer: getString(record, 'relatedPlayer'),
   }
 }
 
@@ -1804,6 +2597,7 @@ function normalizeComparisonPlayer(item: unknown): PlayerComparisonPlayer {
 
   return {
     name: getRequiredString(record, 'name'),
+    displayName: getString(record, 'displayName') || getRequiredString(record, 'name'),
     division: getString(record, 'division'),
     rank: getRequiredNumber(record, 'rank'),
     games: getRequiredNumber(record, 'games'),
@@ -1891,6 +2685,106 @@ function normalizeArmyListsPayload(payload: unknown): ArmyListsData {
   }
 }
 
+function normalizeIntegrityPayload(payload: unknown): IntegrityData {
+  const record = asRecord(payload, 'Integrity response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Integrity audit failed.')
+  }
+
+  return normalizeIntegrityRecord(getRequiredRecord(record, 'integrity'))
+}
+
+function normalizeIntegrityRecord(record: Record<string, unknown>): IntegrityData {
+  const summary = getRequiredRecord(record, 'summary')
+
+  return {
+    durationMs: getNumber(record, 'durationMs'),
+    healthScore: getRequiredNumber(record, 'healthScore'),
+    healthStatus: getString(record, 'healthStatus'),
+    lastAudit: getString(record, 'lastAudit'),
+    lastRepair: getString(record, 'lastRepair'),
+    sections: getRequiredArray(record, 'sections').map(normalizeIntegritySection),
+    summary: {
+      errors: getRequiredNumber(summary, 'errors'),
+      repairable: getRequiredNumber(summary, 'repairable'),
+      sections: getRequiredNumber(summary, 'sections'),
+      warnings: getRequiredNumber(summary, 'warnings'),
+    },
+    timestamp: getString(record, 'timestamp'),
+    version: getString(record, 'version'),
+  }
+}
+
+function normalizeIntegrityReport(
+  record: Record<string, unknown>,
+): IntegrityReport {
+  return {
+    durationMs: getNumber(record, 'durationMs'),
+    errors: getRequiredNumber(record, 'errors'),
+    healthScore: getRequiredNumber(record, 'healthScore'),
+    leagueVersion: getString(record, 'leagueVersion'),
+    portalVersion: getString(record, 'portalVersion'),
+    repairs: getArray(record, 'repairs').map((item) => {
+      const repair = asRecord(item, 'Integrity repair item')
+      return {
+        issue: getString(repair, 'issue'),
+        repairAction: getString(repair, 'repairAction'),
+        section: getString(repair, 'section'),
+      }
+    }),
+    sections: getRequiredArray(record, 'sections').map(normalizeIntegritySection),
+    timestamp: getString(record, 'timestamp'),
+    warnings: getRequiredNumber(record, 'warnings'),
+  }
+}
+
+function normalizeIntegritySection(item: unknown): IntegritySection {
+  const record = asRecord(item, 'Integrity section')
+
+  return {
+    checks: getArray(record, 'checks').map(normalizeIntegrityCheck),
+    description: getString(record, 'description'),
+    errors: getNumber(record, 'errors'),
+    id: getRequiredString(record, 'id'),
+    issues: getArray(record, 'issues').map(normalizeIntegrityIssue),
+    repairAction: getString(record, 'repairAction'),
+    repairable: getBoolean(record, 'repairable'),
+    status: getString(record, 'status'),
+    title: getRequiredString(record, 'title'),
+    warnings: getNumber(record, 'warnings'),
+  }
+}
+
+function normalizeIntegrityCheck(item: unknown): IntegrityCheck {
+  const record = asRecord(item, 'Integrity check')
+
+  return {
+    data: getArray(record, 'data'),
+    detail: getString(record, 'detail'),
+    status: getString(record, 'status'),
+    target: getRequiredString(record, 'target'),
+  }
+}
+
+function normalizeIntegrityIssue(item: unknown): IntegrityIssue {
+  const record = asRecord(item, 'Integrity issue')
+  const severity = getString(record, 'severity')
+
+  return {
+    detail: getString(record, 'detail'),
+    id: getRequiredString(record, 'id'),
+    repairAction: getString(record, 'repairAction'),
+    repairable: getBoolean(record, 'repairable'),
+    severity:
+      severity === 'error' || severity === 'warning' || severity === 'info'
+        ? severity
+        : 'info',
+    target: getString(record, 'target'),
+    title: getRequiredString(record, 'title'),
+  }
+}
+
 function normalizeOperationsPayload(payload: unknown): OperationsDashboardData {
   const record = asRecord(payload, 'Operations response')
 
@@ -1901,6 +2795,11 @@ function normalizeOperationsPayload(payload: unknown): OperationsDashboardData {
   const summary = getRequiredRecord(record, 'summary')
   const leagueStatistics = getRequiredRecord(summary, 'leagueStatistics')
   const cacheStatus = getRequiredRecord(summary, 'cacheStatus')
+  const discordStatus = normalizeOperationsDiscordStatus(
+    getOptionalRecord(summary, 'discordStatus') ??
+      getOptionalRecord(record, 'discord') ??
+      {},
+  )
 
   return {
     summary: {
@@ -1923,14 +2822,364 @@ function normalizeOperationsPayload(payload: unknown): OperationsDashboardData {
         getRequiredRecord(summary, 'leagueAuditSummary'),
       ),
       seasonStatus: normalizeSeasonStatus(getRequiredRecord(summary, 'seasonStatus')),
+      identityStatus: normalizeOperationsIdentityStatus(
+        getRequiredRecord(summary, 'identityStatus'),
+      ),
+      notificationStatus: normalizeOperationsNotificationStatus(
+        getRequiredRecord(summary, 'notificationStatus'),
+      ),
+      discordStatus,
+      deploymentStatus: normalizeOperationsDeploymentStatus(
+        getRequiredRecord(summary, 'deploymentStatus'),
+      ),
     },
     pendingArmyLists: getRequiredArray(record, 'pendingArmyLists').map(
       normalizeArmyList,
     ),
     streams: getRequiredArray(record, 'streams').map(normalizeStreamedGame),
     news: getRequiredArray(record, 'news').map(normalizeOperationsNewsItem),
+    players: getRequiredArray(record, 'players').map(normalizeOperationsPlayer),
+    identity: normalizeOperationsIdentityManagement(
+      getRequiredRecord(record, 'identity'),
+    ),
+    discord: normalizeOperationsDiscordStatus(
+      getOptionalRecord(record, 'discord') ?? discordStatus,
+    ),
     settings: normalizeSettingsRecord(getRequiredRecord(record, 'settings')),
     audit: normalizeLeagueAudit(getRequiredRecord(record, 'audit')),
+  }
+}
+
+function normalizeOperationsDiscordStatus(
+  record: Record<string, unknown>,
+): OperationsDiscordStatus {
+  return {
+    enabled: getBoolean(record, 'enabled'),
+    configured: getBoolean(record, 'configured'),
+    webhookMasked: getString(record, 'webhookMasked'),
+    announcementChannel: getString(record, 'announcementChannel'),
+    adminChannel: getString(record, 'adminChannel'),
+    rateLimitPerHour: getNumber(record, 'rateLimitPerHour'),
+    retryLimit: getNumber(record, 'retryLimit'),
+    automationEvents: getArray(record, 'automationEvents').map(String),
+    lastAutomationRun: getString(record, 'lastAutomationRun'),
+    queueDepth: getNumber(record, 'queueDepth'),
+    failures: getNumber(record, 'failures'),
+    lastResult: getOptionalRecord(record, 'lastResult')
+      ? normalizeOperationsDiscordLogEntry(
+          getRequiredRecord(record, 'lastResult'),
+        )
+      : null,
+    log: getArray(record, 'log').map(normalizeOperationsDiscordLogEntry),
+    preview: normalizeOperationsDiscordPreview(
+      getOptionalRecord(record, 'preview') ?? {},
+    ),
+  }
+}
+
+function normalizeOperationsDiscordLogEntry(
+  item: unknown,
+): OperationsDiscordLogEntry {
+  const record = asRecord(item, 'Discord log entry')
+
+  return {
+    rowNumber: getNumber(record, 'rowNumber'),
+    timestamp: getString(record, 'timestamp'),
+    event: getString(record, 'event'),
+    title: getString(record, 'title'),
+    webhook: getString(record, 'webhook'),
+    success: getBoolean(record, 'success'),
+    failure: getString(record, 'failure'),
+    retryCount: getNumber(record, 'retryCount'),
+    payload: getString(record, 'payload'),
+    response: getString(record, 'response'),
+    status: getString(record, 'status'),
+  }
+}
+
+function normalizeOperationsDiscordPreview(
+  record: Record<string, unknown>,
+): OperationsDiscordPreview {
+  return {
+    event: getString(record, 'event'),
+    label: getString(record, 'label'),
+    content: getString(record, 'content'),
+    embeds: getArray(record, 'embeds').map(normalizeOperationsDiscordEmbed),
+  }
+}
+
+function normalizeOperationsDiscordEmbed(
+  item: unknown,
+): OperationsDiscordEmbed {
+  const record = asRecord(item, 'Discord preview embed')
+
+  return {
+    description: getString(record, 'description'),
+    fields: getArray(record, 'fields').map(normalizeOperationsDiscordField),
+    title: getString(record, 'title'),
+    url: getString(record, 'url'),
+  }
+}
+
+function normalizeOperationsDiscordField(
+  item: unknown,
+): OperationsDiscordField {
+  const record = asRecord(item, 'Discord preview field')
+
+  return {
+    inline: getBoolean(record, 'inline'),
+    name: getString(record, 'name'),
+    value: getString(record, 'value'),
+  }
+}
+
+function normalizeAutomationPayload(payload: unknown): AutomationCenterData {
+  const record = asRecord(payload, 'Automation response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Automation Center failed.')
+  }
+
+  const automation = getRequiredRecord(record, 'automation')
+
+  return {
+    destinations: getArray(automation, 'destinations').map(
+      normalizeAutomationDestination,
+    ),
+    discord: normalizeOperationsDiscordStatus(
+      getRequiredRecord(automation, 'discord'),
+    ),
+    events: getArray(automation, 'events').map(normalizeAutomationEventRecord),
+    eventTypes: getArray(automation, 'eventTypes').map(
+      normalizeAutomationEventType,
+    ),
+    queue: getArray(automation, 'queue').map(normalizeAutomationQueueItem),
+    rules: normalizeAutomationRules(getRequiredRecord(automation, 'rules')),
+    status: normalizeAutomationStatus(getRequiredRecord(automation, 'status')),
+    templates: getArray(automation, 'templates').map(normalizeAutomationTemplate),
+  }
+}
+
+function normalizeAutomationEventType(item: unknown): AutomationEventType {
+  const record = asRecord(item, 'Automation event type')
+
+  return {
+    category: getString(record, 'category'),
+    eventType: getString(record, 'eventType'),
+    label: getString(record, 'label'),
+    priority: getString(record, 'priority'),
+    rule: normalizeAutomationRule(getRequiredRecord(record, 'rule')),
+  }
+}
+
+function normalizeAutomationRules(
+  record: Record<string, unknown>,
+): Record<string, AutomationRule> {
+  return Object.fromEntries(
+    Object.entries(record).map(([key, value]) => [
+      key,
+      normalizeAutomationRule(asRecord(value, 'Automation rule')),
+    ]),
+  )
+}
+
+function normalizeAutomationRule(record: Record<string, unknown>): AutomationRule {
+  return {
+    commissionerFeed: getBoolean(record, 'commissionerFeed'),
+    discord: getBoolean(record, 'discord'),
+    email: getBoolean(record, 'email'),
+    enabled: getBoolean(record, 'enabled'),
+    eventType: getString(record, 'eventType'),
+    news: getBoolean(record, 'news'),
+    portal: getBoolean(record, 'portal'),
+    priority: getString(record, 'priority'),
+    publicApi: getBoolean(record, 'publicApi'),
+    push: getBoolean(record, 'push'),
+    templateId: getString(record, 'templateId'),
+    timeline: getBoolean(record, 'timeline'),
+  }
+}
+
+function normalizeAutomationTemplate(item: unknown): AutomationTemplate {
+  const record = asRecord(item, 'Automation template')
+
+  return {
+    body: getString(record, 'body'),
+    discordFormat: getString(record, 'discordFormat'),
+    enabled: getBoolean(record, 'enabled'),
+    eventType: getString(record, 'eventType'),
+    name: getString(record, 'name'),
+    templateId: getString(record, 'templateId'),
+    title: getString(record, 'title'),
+  }
+}
+
+function normalizeAutomationQueueItem(item: unknown): AutomationQueueItem {
+  const record = asRecord(item, 'Automation queue item')
+
+  return {
+    attempts: getNumber(record, 'attempts'),
+    destination: getString(record, 'destination'),
+    eventId: getString(record, 'eventId'),
+    eventType: getString(record, 'eventType'),
+    lastAttempt: getString(record, 'lastAttempt'),
+    payload: getString(record, 'payload'),
+    queueId: getString(record, 'queueId'),
+    reason: getString(record, 'reason'),
+    status: getString(record, 'status'),
+    timestamp: getString(record, 'timestamp'),
+  }
+}
+
+function normalizeAutomationEventRecord(item: unknown): AutomationEventRecord {
+  const record = asRecord(item, 'Automation event record')
+
+  return {
+    category: getString(record, 'category'),
+    destinations: getString(record, 'destinations'),
+    division: getString(record, 'division'),
+    eventId: getString(record, 'eventId'),
+    eventType: getString(record, 'eventType'),
+    message: getString(record, 'message'),
+    payload: getString(record, 'payload'),
+    player: getString(record, 'player'),
+    priority: getString(record, 'priority'),
+    status: getString(record, 'status'),
+    timestamp: getString(record, 'timestamp'),
+  }
+}
+
+function normalizeAutomationStatus(record: Record<string, unknown>): AutomationStatus {
+  return {
+    discordConnected: getBoolean(record, 'discordConnected'),
+    enabled: getBoolean(record, 'enabled'),
+    health: getString(record, 'health'),
+    lastAutomationRun: getString(record, 'lastAutomationRun'),
+    lastFailure: getString(record, 'lastFailure'),
+    lastMessage: getString(record, 'lastMessage'),
+    queueSize: getNumber(record, 'queueSize'),
+    retryQueue: getNumber(record, 'retryQueue'),
+    webhookHealthy: getBoolean(record, 'webhookHealthy'),
+  }
+}
+
+function normalizeAutomationDestination(value: unknown): AutomationDestination {
+  const destination = String(value)
+
+  if (
+    destination === 'commissionerFeed' ||
+    destination === 'discord' ||
+    destination === 'email' ||
+    destination === 'news' ||
+    destination === 'portal' ||
+    destination === 'publicApi' ||
+    destination === 'push' ||
+    destination === 'timeline'
+  ) {
+    return destination
+  }
+
+  return 'portal'
+}
+
+function normalizeOperationsIdentityStatus(
+  record: Record<string, unknown>,
+): OperationsIdentityStatus {
+  return {
+    totalUsers: getNumber(record, 'totalUsers'),
+    enabledUsers: getNumber(record, 'enabledUsers'),
+    disabledUsers: getNumber(record, 'disabledUsers'),
+    linkedUsers: getNumber(record, 'linkedUsers'),
+    unlinkedUsers: getNumber(record, 'unlinkedUsers'),
+    commissionerUsers: getNumber(record, 'commissionerUsers'),
+    assistantUsers: getNumber(record, 'assistantUsers'),
+    playersWithEmail: getNumber(record, 'playersWithEmail'),
+    playersWithoutEmail: getNumber(record, 'playersWithoutEmail'),
+    playersWithoutUser: getNumber(record, 'playersWithoutUser'),
+  }
+}
+
+function normalizeOperationsNotificationStatus(
+  record: Record<string, unknown>,
+): OperationsNotificationStatus {
+  return {
+    total: getNumber(record, 'total'),
+    highPriority: getNumber(record, 'highPriority'),
+    normalPriority: getNumber(record, 'normalPriority'),
+  }
+}
+
+function normalizeOperationsDeploymentStatus(
+  record: Record<string, unknown>,
+): OperationsDeploymentStatus {
+  return {
+    portalVersion: getString(record, 'portalVersion'),
+    appsScriptVersion: getString(record, 'appsScriptVersion'),
+    deploymentUrl: getString(record, 'deploymentUrl'),
+    gitCommit: getString(record, 'gitCommit'),
+    checkedAt: getString(record, 'checkedAt'),
+  }
+}
+
+function normalizeOperationsPlayer(item: unknown): OperationsPlayer {
+  const record = asRecord(item, 'Operations player')
+
+  return {
+    division: getString(record, 'division'),
+    displayName: getString(record, 'displayName') || getString(record, 'player'),
+    games: getNumber(record, 'games'),
+    player: getString(record, 'player'),
+    rank: getNumber(record, 'rank'),
+  }
+}
+
+function normalizeOperationsIdentityManagement(
+  record: Record<string, unknown>,
+): OperationsIdentityManagement {
+  return {
+    records: getRequiredArray(record, 'records').map(normalizeOperationsIdentityRecord),
+    audits: getRequiredArray(record, 'audits').map(normalizeOperationsIdentityAudit),
+  }
+}
+
+function normalizeOperationsIdentityRecord(
+  item: unknown,
+): OperationsIdentityRecord {
+  const record = asRecord(item, 'Operations identity record')
+
+  return {
+    id: getString(record, 'id'),
+    player: getString(record, 'player'),
+    displayName: getString(record, 'displayName') || getString(record, 'player'),
+    division: getString(record, 'division'),
+    googleEmail: getString(record, 'googleEmail'),
+    portalUser: getString(record, 'portalUser'),
+    role: getString(record, 'role'),
+    lastLogin: getString(record, 'lastLogin'),
+    lastSeen: getString(record, 'lastSeen'),
+    linked: getBoolean(record, 'linked'),
+    enabled: getBoolean(record, 'enabled'),
+    missingEmail: getBoolean(record, 'missingEmail'),
+    duplicateEmail: getBoolean(record, 'duplicateEmail'),
+    duplicatePlayer: getBoolean(record, 'duplicatePlayer'),
+    neverLoggedIn: getBoolean(record, 'neverLoggedIn'),
+    brokenMapping: getBoolean(record, 'brokenMapping'),
+  }
+}
+
+function normalizeOperationsIdentityAudit(
+  item: unknown,
+): OperationsIdentityAudit {
+  const record = asRecord(item, 'Operations identity audit')
+  const severity = getString(record, 'severity')
+
+  return {
+    severity:
+      severity === 'critical' || severity === 'warning' ? severity : 'info',
+    type: getString(record, 'type'),
+    player: getString(record, 'player'),
+    googleEmail: getString(record, 'googleEmail'),
+    message: getString(record, 'message'),
   }
 }
 
@@ -2109,6 +3358,8 @@ function normalizeArmyList(item: unknown): ArmyList {
     id: getRequiredNumber(record, 'id'),
     submissionDate: getString(record, 'submissionDate'),
     player: getRequiredString(record, 'player'),
+    playerDisplayName:
+      getString(record, 'playerDisplayName') || getRequiredString(record, 'player'),
     faction: getRequiredString(record, 'faction'),
     sectorial: getString(record, 'sectorial'),
     mission: getString(record, 'mission'),
@@ -2235,6 +3486,7 @@ function normalizeNameCount(item: unknown) {
 
   return {
     count: getRequiredNumber(record, 'count'),
+    displayName: getString(record, 'displayName') || undefined,
     name: getRequiredString(record, 'name'),
   }
 }
@@ -2243,6 +3495,7 @@ function normalizeDesigner(item: unknown) {
   const record = asRecord(item, 'Designer')
 
   return {
+    displayName: getString(record, 'displayName') || undefined,
     lists: getRequiredNumber(record, 'lists'),
     name: getRequiredString(record, 'name'),
     score: getRequiredNumber(record, 'score'),
@@ -2271,6 +3524,7 @@ function normalizeIntelligenceStreak(item: unknown): IntelligenceStreak {
 
   return {
     player: getRequiredString(record, 'player'),
+    displayName: getString(record, 'displayName') || getRequiredString(record, 'player'),
     games: getRequiredNumber(record, 'games'),
     type: getString(record, 'type'),
     story: getRequiredString(record, 'story'),
@@ -2286,7 +3540,11 @@ function normalizeIntelligenceGame(item: unknown): IntelligenceGame {
     division: getString(record, 'division'),
     mission: getRequiredString(record, 'mission'),
     winner: getRequiredString(record, 'winner'),
+    winnerDisplayName:
+      getString(record, 'winnerDisplayName') || getRequiredString(record, 'winner'),
     loser: getRequiredString(record, 'loser'),
+    loserDisplayName:
+      getString(record, 'loserDisplayName') || getRequiredString(record, 'loser'),
     winnerFaction: getString(record, 'winnerFaction'),
     loserFaction: getString(record, 'loserFaction'),
     vp: getString(record, 'vp'),
@@ -2336,7 +3594,11 @@ function normalizeRecentUpset(item: unknown): RecentUpset {
     date: getString(record, 'date'),
     division: getString(record, 'division'),
     winner: getRequiredString(record, 'winner'),
+    winnerDisplayName:
+      getString(record, 'winnerDisplayName') || getRequiredString(record, 'winner'),
     loser: getRequiredString(record, 'loser'),
+    loserDisplayName:
+      getString(record, 'loserDisplayName') || getRequiredString(record, 'loser'),
     winnerRank: getRequiredNumber(record, 'winnerRank'),
     loserRank: getRequiredNumber(record, 'loserRank'),
     mission: getRequiredString(record, 'mission'),
@@ -2350,12 +3612,15 @@ function normalizeStandingsBattle(item: unknown): StandingsBattle {
   return {
     division: getRequiredString(record, 'division'),
     player: getRequiredString(record, 'player'),
+    displayName: getString(record, 'displayName') || getRequiredString(record, 'player'),
     rank: getRequiredNumber(record, 'rank'),
     tp: getRequiredNumber(record, 'tp'),
     op: getRequiredNumber(record, 'op'),
     vp: getRequiredNumber(record, 'vp'),
     chaser: getString(record, 'chaser') || undefined,
+    chaserDisplayName: getString(record, 'chaserDisplayName') || undefined,
     target: getString(record, 'target') || undefined,
+    targetDisplayName: getString(record, 'targetDisplayName') || undefined,
     withinOneGame: getRequiredBoolean(record, 'withinOneGame'),
     story: getRequiredString(record, 'story'),
   }
@@ -2385,6 +3650,7 @@ function normalizeLeagueRecordValue(value: unknown): LeagueRecordValue {
 
   return {
     faction: getString(record, 'faction') || undefined,
+    displayName: getString(record, 'displayName') || undefined,
     games: getRequiredNumber(record, 'games'),
     name: getString(record, 'name') || undefined,
     story: getRequiredString(record, 'story'),
@@ -2408,7 +3674,11 @@ function normalizeRecentGame(item: unknown): RecentGame {
     date: getRequiredString(record, 'date'),
     division: getString(record, 'division'),
     winner: getRequiredString(record, 'winner'),
+    winnerDisplayName:
+      getString(record, 'winnerDisplayName') || getRequiredString(record, 'winner'),
     loser: getRequiredString(record, 'loser'),
+    loserDisplayName:
+      getString(record, 'loserDisplayName') || getRequiredString(record, 'loser'),
     winnerFaction: getString(record, 'winnerFaction'),
     loserFaction: getString(record, 'loserFaction'),
     mission: getRequiredString(record, 'mission'),

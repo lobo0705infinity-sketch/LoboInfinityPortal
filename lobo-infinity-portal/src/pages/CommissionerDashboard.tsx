@@ -6,10 +6,12 @@ import {
   apiClient,
   type ArmyList,
   type OperationsDashboardData,
+  type OperationsIdentityRecord,
   type OperationsNewsItem,
   type PortalSettings,
   type StreamedGame,
 } from '../services/api'
+import { formatPlayerName } from '../services/formatting'
 
 type OperationsState =
   | {
@@ -23,6 +25,11 @@ type OperationsState =
       error: string
       status: 'error'
     }
+
+type OperationsAction = (
+  action: string,
+  params?: Record<string, string | number | boolean>,
+) => Promise<void>
 
 const defaultStream: StreamedGame = {
   id: 0,
@@ -50,64 +57,69 @@ const defaultNews: OperationsNewsItem = {
   archived: false,
 }
 
+const permissionRows = [
+  ['View operations', 'Assistant Commissioner', 'Assistant Commissioner and Commissioner'],
+  ['News', 'Assistant Commissioner', 'Create, edit, archive, and delete news'],
+  ['Streams', 'Assistant Commissioner', 'Create, edit, feature, and delete streams'],
+  ['Player audit', 'Commissioner', 'Run full league data audit'],
+  ['Identity audit', 'Commissioner', 'Audit Google Email to Players sheet mapping'],
+  ['Season reset', 'Commissioner', 'Record reset operation and refresh caches'],
+  ['Promotion', 'Commissioner', 'Record promotion operation'],
+  ['Relegation', 'Commissioner', 'Record relegation operation'],
+  ['Cache clear', 'Commissioner', 'Clear all Apps Script cache groups'],
+  ['Statistics rebuild', 'Commissioner', 'Run backend statistics rebuild'],
+  ['Import', 'Commissioner', 'Record import operation'],
+  ['Export', 'Commissioner', 'Generate operations export payload'],
+  ['Backup', 'Commissioner', 'Generate backup payload'],
+  ['Restore', 'Commissioner', 'Record restore operation'],
+  ['Discord settings', 'Commissioner', 'Configure webhook and automation limits'],
+  ['Discord announcements', 'Assistant Commissioner', 'Preview, send, and resend announcements'],
+] as const
+
 function CommissionerDashboard() {
   const auth = useAuth()
   const [state, setState] = useState<OperationsState>({
     status: 'loading',
   })
   const [workingAction, setWorkingAction] = useState('')
+  const canViewOperations = auth.isAtLeastRole('Assistant Commissioner')
 
-  async function loadOperations() {
+  async function loadOperations(signal?: AbortSignal) {
     try {
-      const data = await apiClient.getOperations()
+      const data = await apiClient.getOperations({ signal })
       setState({
         data,
         status: 'success',
       })
     } catch (error) {
-      setState({
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Commissioner operations could not be loaded.',
-        status: 'error',
-      })
+      if (!signal?.aborted) {
+        setState({
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Commissioner operations could not be loaded.',
+          status: 'error',
+        })
+      }
     }
   }
 
   useEffect(() => {
-    if (!auth.isAtLeastRole('Assistant Commissioner')) {
+    if (
+      auth.status !== 'ready' ||
+      !auth.authenticated ||
+      !canViewOperations
+    ) {
       return
     }
 
     const controller = new AbortController()
-
-    apiClient
-      .getOperations({
-        signal: controller.signal,
-      })
-      .then((data) => {
-        setState({
-          data,
-          status: 'success',
-        })
-      })
-      .catch((error: unknown) => {
-        if (!controller.signal.aborted) {
-          setState({
-            error:
-              error instanceof Error
-                ? error.message
-                : 'Commissioner operations could not be loaded.',
-            status: 'error',
-          })
-        }
-      })
+    void Promise.resolve().then(() => loadOperations(controller.signal))
 
     return () => {
       controller.abort()
     }
-  }, [auth])
+  }, [auth.authenticated, auth.status, canViewOperations])
 
   async function runAction(
     action: string,
@@ -122,7 +134,18 @@ function CommissionerDashboard() {
     }
   }
 
-  if (!auth.isAtLeastRole('Assistant Commissioner')) {
+  if (auth.status === 'loading') {
+    return (
+      <main className="portal-shell">
+        <PageHeader />
+        <section className="dashboard-state" aria-label="Operations loading">
+          <Loading />
+        </section>
+      </main>
+    )
+  }
+
+  if (!auth.authenticated || !canViewOperations) {
     return (
       <main className="portal-shell">
         <PageHeader />
@@ -131,8 +154,8 @@ function CommissionerDashboard() {
           <h2>Authorized League Staff Only</h2>
           <p>
             Sign in with an enabled Assistant Commissioner or Commissioner
-            account to use operations tools. Privileged Apps Script endpoints
-            enforce the same role checks server-side.
+            account to use operations tools. Apps Script enforces the same role
+            checks server-side.
           </p>
         </section>
       </main>
@@ -167,21 +190,65 @@ function CommissionerDashboard() {
     <main className="portal-shell">
       <PageHeader />
       <OperationsSummary data={data} />
-      <section className="operations-grid" aria-label="Commissioner tools">
-        <ArmyListApproval lists={data.pendingArmyLists} onAction={runAction} />
-        <StreamManager streams={data.streams} onAction={runAction} />
-        <NewsManager news={data.news} onAction={runAction} />
-        <SettingsPanel settings={data.settings} onAction={runAction} />
-        <CachePanel
-          cache={data.summary.cacheStatus}
+      <section className="operations-grid" aria-label="Operations status">
+        <LeagueHealthPanel data={data} />
+        <SeasonStatusPanel data={data} />
+        <IdentityStatusPanel data={data} />
+        <NotificationStatusPanel data={data} />
+        <DiscordStatusPanel data={data} />
+        <StatisticsPanel data={data} />
+        <DeploymentPanel data={data} />
+      </section>
+      <section className="operations-grid" aria-label="Commissioner workflows">
+        <IdentityManagementPanel
+          canManage={auth.hasPermission('manageSettings')}
+          data={data}
           onAction={runAction}
           workingAction={workingAction}
         />
-        <SystemHealthPanel data={data} />
+        <NewsManager news={data.news} onAction={runAction} />
+        <StreamManager streams={data.streams} onAction={runAction} />
+        <ArmyListApproval lists={data.pendingArmyLists} onAction={runAction} />
+        <PlayerManagementPanel data={data} />
+        <PromotionRelegationPanel
+          canRun={auth.hasPermission('runSeasonControl')}
+          onAction={runAction}
+          workingAction={workingAction}
+        />
+        <CachePanel
+          cache={data.summary.cacheStatus}
+          canManage={auth.hasPermission('manageCache')}
+          onAction={runAction}
+          workingAction={workingAction}
+        />
+        <DiscordAutomationPanel
+          canManage={auth.hasPermission('manageSettings')}
+          canSend={auth.hasPermission('manageNews')}
+          data={data}
+          onAction={runAction}
+          workingAction={workingAction}
+        />
       </section>
-      <section className="operations-grid two-column" aria-label="Audit and season">
-        <AuditPanel audit={data.audit} />
-        <SeasonPanel data={data} onAction={runAction} />
+      <section className="operations-grid two-column" aria-label="Audit and one-click operations">
+        <AuditPanel
+          audit={data.audit}
+          canRun={auth.hasPermission('runLeagueAudit')}
+          onAction={runAction}
+          workingAction={workingAction}
+        />
+        <OperationsCommandPanel
+          canRun={auth.hasPermission('runSeasonControl')}
+          onAction={runAction}
+          workingAction={workingAction}
+        />
+      </section>
+      <section className="operations-grid two-column" aria-label="Settings and permissions">
+        <SettingsPanel
+          canManage={auth.hasPermission('manageSettings')}
+          onAction={runAction}
+          settings={data.settings}
+        />
+        <PermissionMatrix />
       </section>
     </main>
   )
@@ -192,21 +259,21 @@ function PageHeader() {
     <section className="page-header" aria-labelledby="commissioner-title">
       <p className="eyebrow">League Operations</p>
       <h1 id="commissioner-title">Commissioner Dashboard</h1>
-      <p>Approvals, settings, health checks, cache tools, and season control.</p>
+      <p>Operations console for identity, content, season control, cache, audit, and deployment status.</p>
     </section>
   )
 }
 
 function OperationsSummary({ data }: { data: OperationsDashboardData }) {
   const cards = [
-    ['Pending Army Lists', data.summary.pendingArmyLists],
-    ['Pending Streams', data.summary.pendingStreams],
-    ['Pending News', data.summary.pendingNews],
-    ['Recent Matches', data.summary.recentMatchSubmissions.length],
-    ['Active Players', data.summary.leagueStatistics.activePlayers],
-    ['Audit Warnings', data.summary.leagueAuditSummary.warning],
-    ['Critical Issues', data.summary.leagueAuditSummary.critical],
-    ['Matches Played', data.summary.seasonStatus.matchesPlayed],
+    ['League Health', healthLabel(data)],
+    ['Season', data.summary.seasonStatus.currentSeasonName],
+    ['Linked Users', data.summary.identityStatus.linkedUsers],
+    ['Notifications', data.summary.notificationStatus.total],
+    ['Streams', data.streams.length],
+    ['News', data.news.length],
+    ['Players', data.players.length],
+    ['Audit Issues', data.audit.issues.length],
   ] as const
 
   return (
@@ -218,9 +285,321 @@ function OperationsSummary({ data }: { data: OperationsDashboardData }) {
             <span className="stat-card-label">{label}</span>
           </div>
           <strong>{value}</strong>
-          <p>Live from Google Sheets</p>
+          <p>Live operations signal</p>
         </article>
       ))}
+    </section>
+  )
+}
+
+function LeagueHealthPanel({ data }: { data: OperationsDashboardData }) {
+  return (
+    <section className="panel operations-panel">
+      <PanelTitle eyebrow="League Health" title="Operational Status" />
+      <dl className="operations-metrics">
+        <Metric label="Overall" value={healthLabel(data)} />
+        <Metric label="Critical Issues" value={data.audit.summary.critical} />
+        <Metric label="Warnings" value={data.audit.summary.warning} />
+        <Metric label="Apps Script" value={data.summary.systemHealth.appsScript || 'Unknown'} />
+        <Metric label="Sheets" value={data.summary.systemHealth.sheets || 'Unknown'} />
+        <Metric label="Endpoints" value={data.summary.systemHealth.endpoints || 'Unknown'} />
+      </dl>
+      <div className="operations-actions">
+        <Link to="/integrity">Open Integrity System</Link>
+      </div>
+    </section>
+  )
+}
+
+function SeasonStatusPanel({ data }: { data: OperationsDashboardData }) {
+  const season = data.summary.seasonStatus
+
+  return (
+    <section className="panel operations-panel">
+      <PanelTitle eyebrow="Season Status" title={season.currentSeasonName} />
+      <dl className="operations-metrics">
+        <Metric label="Start" value={season.startDate || 'Not set'} />
+        <Metric label="End" value={season.endDate || 'Not set'} />
+        <Metric label="Weeks Completed" value={season.weeksCompleted} />
+        <Metric label="Matches Played" value={season.matchesPlayed} />
+        <Metric label="Remaining Matches" value={season.remainingMatches} />
+        <Metric label="Registration" value={season.registrationOpen ? 'Open' : 'Closed'} />
+      </dl>
+    </section>
+  )
+}
+
+function IdentityStatusPanel({ data }: { data: OperationsDashboardData }) {
+  const identity = data.summary.identityStatus
+
+  return (
+    <section className="panel operations-panel">
+      <PanelTitle eyebrow="Identity Status" title="Portal to League Mapping" />
+      <dl className="operations-metrics">
+        <Metric label="Portal Users" value={identity.totalUsers} />
+        <Metric label="Enabled Users" value={identity.enabledUsers} />
+        <Metric label="Disabled Users" value={identity.disabledUsers} />
+        <Metric label="Linked Users" value={identity.linkedUsers} />
+        <Metric label="Unlinked Users" value={identity.unlinkedUsers} />
+        <Metric label="Players Without Email" value={identity.playersWithoutEmail} />
+        <Metric label="Players Without User" value={identity.playersWithoutUser} />
+        <Metric label="Staff Users" value={identity.commissionerUsers + identity.assistantUsers} />
+      </dl>
+    </section>
+  )
+}
+
+function IdentityManagementPanel({
+  canManage,
+  data,
+  onAction,
+  workingAction,
+}: {
+  canManage: boolean
+  data: OperationsDashboardData
+  onAction: OperationsAction
+  workingAction: string
+}) {
+  const [query, setQuery] = useState('')
+  const [filter, setFilter] = useState('all')
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const records = data.identity.records.filter((record) =>
+    identityRecordMatches(record, query, filter),
+  )
+  const selectedEmails = data.identity.records
+    .filter((record) => selectedIds.includes(record.id) && record.googleEmail)
+    .map((record) => record.googleEmail)
+  const allVisibleSelected =
+    records.length > 0 &&
+    records.every((record) => selectedIds.includes(record.id))
+
+  function toggleRecord(record: OperationsIdentityRecord) {
+    setSelectedIds((current) =>
+      current.includes(record.id)
+        ? current.filter((id) => id !== record.id)
+        : [...current, record.id],
+    )
+  }
+
+  function toggleVisible() {
+    if (allVisibleSelected) {
+      setSelectedIds((current) =>
+        current.filter((id) => !records.some((record) => record.id === id)),
+      )
+      return
+    }
+
+    setSelectedIds((current) =>
+      Array.from(new Set([...current, ...records.map((record) => record.id)])),
+    )
+  }
+
+  function bulkEmail() {
+    if (selectedEmails.length === 0) {
+      return
+    }
+
+    window.location.href = `mailto:${selectedEmails.join(',')}`
+  }
+
+  async function runBulk(action: string) {
+    await onAction(action, {
+      emails: selectedEmails.join(','),
+    })
+    setSelectedIds([])
+  }
+
+  return (
+    <section className="panel operations-panel">
+      <PanelTitle eyebrow="Identity Management" title="Google Email Mapping" />
+      <div className="operations-form">
+        <Input label="Search" onChange={setQuery} type="search" value={query} />
+        <label>
+          <span>Filter</span>
+          <select onChange={(event) => setFilter(event.target.value)} value={filter}>
+            <option value="all">All identities</option>
+            <option value="linked">Linked</option>
+            <option value="enabled">Enabled</option>
+            <option value="disabled">Disabled</option>
+            <option value="missingEmail">Missing Email</option>
+            <option value="duplicateEmail">Duplicate Email</option>
+            <option value="duplicatePlayer">Duplicate Player</option>
+            <option value="neverLoggedIn">Never Logged In</option>
+            <option value="brokenMapping">Broken Mapping</option>
+          </select>
+        </label>
+      </div>
+      <div className="operations-actions wrap">
+        <button
+          disabled={!canManage || selectedEmails.length === 0 || workingAction !== ''}
+          onClick={() => void runBulk('identityBulkEnable')}
+          type="button"
+        >
+          Bulk Enable
+        </button>
+        <button
+          disabled={!canManage || selectedEmails.length === 0 || workingAction !== ''}
+          onClick={() => void runBulk('identityBulkDisable')}
+          type="button"
+        >
+          Bulk Disable
+        </button>
+        <button disabled={selectedEmails.length === 0} onClick={bulkEmail} type="button">
+          Bulk Email
+        </button>
+        <button
+          disabled={!canManage || workingAction !== ''}
+          onClick={() => void onAction('repairIdentity')}
+          type="button"
+        >
+          Repair Identity
+        </button>
+        <button
+          disabled={!canManage || workingAction !== ''}
+          onClick={() => void onAction('repairUsersSheet')}
+          type="button"
+        >
+          Repair Users Sheet
+        </button>
+        <button
+          disabled={!canManage || workingAction !== ''}
+          onClick={() => void onAction('repairMissingAccounts')}
+          type="button"
+        >
+          Repair Missing Accounts
+        </button>
+      </div>
+      <dl className="operations-metrics compact">
+        <Metric label="Records" value={records.length} />
+        <Metric label="Selected" value={selectedEmails.length} />
+        <Metric label="Audits" value={data.identity.audits.length} />
+      </dl>
+      <div className="standings-table" role="table" aria-label="Identity management">
+        <div className="table-row table-head" role="row">
+          <span>
+            <input
+              checked={allVisibleSelected}
+              onChange={toggleVisible}
+              type="checkbox"
+            />
+          </span>
+          <span>League Player</span>
+          <span>Display Name</span>
+          <span>Division</span>
+          <span>Google Email</span>
+          <span>Portal User</span>
+          <span>Role</span>
+          <span>Last Login</span>
+          <span>Last Seen</span>
+          <span>Linked</span>
+          <span>Enabled</span>
+          <span>Flags</span>
+        </div>
+        {records.map((record) => (
+          <div className="table-row" key={record.id} role="row">
+            <span>
+              <input
+                checked={selectedIds.includes(record.id)}
+                disabled={!record.googleEmail}
+                onChange={() => toggleRecord(record)}
+                type="checkbox"
+              />
+            </span>
+            <strong>{record.player || 'Missing player'}</strong>
+            <span>{formatPlayerName(record.player, record.displayName) || 'Missing display name'}</span>
+            <span>{record.division || 'No division'}</span>
+            <span>{record.googleEmail || 'Missing email'}</span>
+            <span>{record.portalUser || 'Never logged in'}</span>
+            <span>{record.role || 'No role'}</span>
+            <span>{record.lastLogin || 'Never'}</span>
+            <span>{record.lastSeen || 'Never'}</span>
+            <span>{record.linked ? 'Yes' : 'No'}</span>
+            <span>{record.enabled ? 'Yes' : 'No'}</span>
+            <span>{identityFlags(record).join(', ') || 'Clean'}</span>
+          </div>
+        ))}
+      </div>
+      <div className="operations-stack">
+        {data.identity.audits.slice(0, 10).map((audit) => (
+          <article className={`operations-record ${audit.severity}`} key={`${audit.type}-${audit.player}-${audit.googleEmail}`}>
+            <span>{audit.severity}</span>
+            <h3>{audit.type}</h3>
+            <p>{audit.message}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function NotificationStatusPanel({ data }: { data: OperationsDashboardData }) {
+  const notifications = data.summary.notificationStatus
+
+  return (
+    <section className="panel operations-panel">
+      <PanelTitle eyebrow="Notifications" title="League Alert Status" />
+      <dl className="operations-metrics">
+        <Metric label="Generated Alerts" value={notifications.total} />
+        <Metric label="High Priority" value={notifications.highPriority} />
+        <Metric label="Normal Priority" value={notifications.normalPriority} />
+        <Metric label="Unread For You" value={data.summary.notificationStatus.total} />
+      </dl>
+      <div className="operations-actions">
+        <Link to="/notifications">Open Notifications</Link>
+      </div>
+    </section>
+  )
+}
+
+function DiscordStatusPanel({ data }: { data: OperationsDashboardData }) {
+  const discord = data.discord
+
+  return (
+    <section className="panel operations-panel">
+      <PanelTitle eyebrow="Discord" title="Automation Status" />
+      <dl className="operations-metrics">
+        <Metric label="Enabled" value={discord.enabled ? 'Yes' : 'No'} />
+        <Metric label="Webhook" value={discord.configured ? discord.webhookMasked : 'Not configured'} />
+        <Metric label="Queue" value={discord.queueDepth} />
+        <Metric label="Failures" value={discord.failures} />
+        <Metric label="Rate Limit" value={`${discord.rateLimitPerHour}/hour`} />
+        <Metric label="Last Run" value={discord.lastAutomationRun || 'Never'} />
+      </dl>
+    </section>
+  )
+}
+
+function StatisticsPanel({ data }: { data: OperationsDashboardData }) {
+  const stats = data.summary.leagueStatistics
+
+  return (
+    <section className="panel operations-panel">
+      <PanelTitle eyebrow="Statistics" title="League Data Volume" />
+      <dl className="operations-metrics">
+        <Metric label="Games" value={stats.games} />
+        <Metric label="Active Players" value={stats.activePlayers} />
+        <Metric label="Players" value={data.players.length} />
+        <Metric label="Factions" value={stats.factions} />
+        <Metric label="Missions" value={stats.missions} />
+        <Metric label="Recent Matches" value={data.summary.recentMatchSubmissions.length} />
+      </dl>
+    </section>
+  )
+}
+
+function DeploymentPanel({ data }: { data: OperationsDashboardData }) {
+  const deployment = data.summary.deploymentStatus
+
+  return (
+    <section className="panel operations-panel">
+      <PanelTitle eyebrow="Deployment" title="Release Status" />
+      <dl className="operations-metrics">
+        <Metric label="Portal Version" value={deployment.portalVersion} />
+        <Metric label="Apps Script" value={deployment.appsScriptVersion} />
+        <Metric label="Git Commit" value={deployment.gitCommit} />
+        <Metric label="Checked At" value={deployment.checkedAt} />
+        <Metric label="Deployment URL" value={deployment.deploymentUrl || 'Not recorded'} />
+      </dl>
     </section>
   )
 }
@@ -230,7 +609,7 @@ function ArmyListApproval({
   onAction,
 }: {
   lists: ArmyList[]
-  onAction: (action: string, params?: Record<string, string | number | boolean>) => Promise<void>
+  onAction: OperationsAction
 }) {
   return (
     <section className="panel operations-panel">
@@ -243,7 +622,10 @@ function ArmyListApproval({
             <article className="operations-record" key={list.id}>
               <span>{list.faction}</span>
               <h3>{list.armyName}</h3>
-              <p>{list.player} · {list.mission || 'Mission not recorded'}</p>
+              <p>
+                {formatPlayerName(list.player, list.playerDisplayName)} -{' '}
+                {list.mission || 'Mission not recorded'}
+              </p>
               <small>{list.description || 'No description submitted.'}</small>
               <div className="operations-actions">
                 <button onClick={() => void onAction('approveArmyList', { id: list.id })} type="button">
@@ -265,7 +647,7 @@ function StreamManager({
   onAction,
   streams,
 }: {
-  onAction: (action: string, params?: Record<string, string | number | boolean>) => Promise<void>
+  onAction: OperationsAction
   streams: StreamedGame[]
 }) {
   const [draft, setDraft] = useState(defaultStream)
@@ -317,7 +699,7 @@ function NewsManager({
   onAction,
 }: {
   news: OperationsNewsItem[]
-  onAction: (action: string, params?: Record<string, string | number | boolean>) => Promise<void>
+  onAction: OperationsAction
 }) {
   const [draft, setDraft] = useState(defaultNews)
 
@@ -328,7 +710,7 @@ function NewsManager({
 
   return (
     <section className="panel operations-panel">
-      <PanelTitle eyebrow="Newsroom" title="Commissioner News Manager" />
+      <PanelTitle eyebrow="News" title="Commissioner News" />
       <form className="operations-form" onSubmit={submit}>
         <Input label="Title" onChange={(value) => setDraft({ ...draft, title: value })} value={draft.title} />
         <Input label="Date" onChange={(value) => setDraft({ ...draft, date: value })} type="date" value={draft.date} />
@@ -366,126 +748,109 @@ function NewsManager({
   )
 }
 
-function SettingsPanel({
-  onAction,
-  settings,
-}: {
-  onAction: (action: string, params?: Record<string, string | number | boolean>) => Promise<void>
-  settings: PortalSettings
-}) {
-  const [draft, setDraft] = useState(settings)
+function PlayerManagementPanel({ data }: { data: OperationsDashboardData }) {
+  return (
+    <section className="panel operations-panel">
+      <PanelTitle eyebrow="Player Management" title="Roster Operations" />
+      <dl className="operations-metrics compact">
+        <Metric label="Players" value={data.players.length} />
+        <Metric label="Active" value={data.summary.leagueStatistics.activePlayers} />
+        <Metric label="Linked Users" value={data.summary.identityStatus.linkedUsers} />
+      </dl>
+      <div className="operations-stack">
+        {data.players.slice(0, 12).map((player) => (
+          <Link
+            className="operations-record"
+            key={`${player.division}-${player.player}`}
+            to={`/players/${encodeURIComponent(player.player)}`}
+          >
+            <span>{player.division}</span>
+            <h3>{formatPlayerName(player.player, player.displayName)}</h3>
+            <p>Rank #{player.rank} - {player.games} games</p>
+          </Link>
+        ))}
+      </div>
+    </section>
+  )
+}
 
-  function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    void onAction('updateSettings', draft)
-  }
+function PromotionRelegationPanel({
+  canRun,
+  onAction,
+  workingAction,
+}: {
+  canRun: boolean
+  onAction: OperationsAction
+  workingAction: string
+}) {
+  const actions = [
+    ['Promotion', 'Promotion'],
+    ['Relegation', 'Relegation'],
+    ['Season Reset', 'Season Reset'],
+  ] as const
 
   return (
     <section className="panel operations-panel">
-      <PanelTitle eyebrow="Configuration" title="League Settings" />
-      <form className="operations-form" onSubmit={submit}>
-        <Input label="League Name" onChange={(value) => setDraft({ ...draft, leagueName: value })} value={draft.leagueName} />
-        <Input label="Current Season" onChange={(value) => setDraft({ ...draft, currentSeason: value })} value={draft.currentSeason} />
-        <Input label="Google Form URL" onChange={(value) => setDraft({ ...draft, googleFormUrl: value })} value={draft.googleFormUrl} />
-        <Input label="Button Text" onChange={(value) => setDraft({ ...draft, submissionButtonText: value })} value={draft.submissionButtonText} />
-        <Input label="Discord Invite" onChange={(value) => setDraft({ ...draft, discordInvite: value })} value={draft.discordInvite} />
-        <Input label="League Website" onChange={(value) => setDraft({ ...draft, leagueWebsite: value })} value={draft.leagueWebsite} />
-        <Input label="Commissioner Contact" onChange={(value) => setDraft({ ...draft, commissionerContact: value })} value={draft.commissionerContact} />
-        <Input label="Theme Accent" onChange={(value) => setDraft({ ...draft, themeAccentColor: value })} type="color" value={draft.themeAccentColor || '#C1121F'} />
-        <Input label="Season Start" onChange={(value) => setDraft({ ...draft, seasonStartDate: value })} type="date" value={draft.seasonStartDate} />
-        <Input label="Season End" onChange={(value) => setDraft({ ...draft, seasonEndDate: value })} type="date" value={draft.seasonEndDate} />
-        <Input label="Google OAuth Client ID" onChange={(value) => setDraft({ ...draft, googleOAuthClientId: value })} value={draft.googleOAuthClientId} />
-        <Input label="Commissioner Emails" onChange={(value) => setDraft({ ...draft, commissionerEmails: value })} value={draft.commissionerEmails} />
-        <Input label="Portal Version" onChange={(value) => setDraft({ ...draft, portalVersion: value })} value={draft.portalVersion} />
-        <Input label="Git Commit" onChange={(value) => setDraft({ ...draft, gitCommit: value })} value={draft.gitCommit} />
-        <Input label="Deployment URL" onChange={(value) => setDraft({ ...draft, deploymentUrl: value })} value={draft.deploymentUrl} />
-        <label className="operations-check">
-          <input checked={draft.submissionEnabled !== 'false'} onChange={(event) => setDraft({ ...draft, submissionEnabled: String(event.target.checked) })} type="checkbox" />
-          Enable submissions
-        </label>
-        <label className="operations-check">
-          <input checked={draft.submissionButtonVisible !== 'false'} onChange={(event) => setDraft({ ...draft, submissionButtonVisible: String(event.target.checked) })} type="checkbox" />
-          Show submit button
-        </label>
-        <label className="operations-check">
-          <input checked={draft.registrationOpen === 'true'} onChange={(event) => setDraft({ ...draft, registrationOpen: String(event.target.checked) })} type="checkbox" />
-          Registration open
-        </label>
-        <button type="submit">Save Settings</button>
-      </form>
+      <PanelTitle eyebrow="Promotion/Relegation" title="Season Movement" />
+      <p className="operations-empty">
+        These controls record commissioner season operations and refresh league caches.
+      </p>
+      <div className="operations-actions wrap">
+        {actions.map(([label, operation]) => (
+          <button
+            disabled={!canRun || workingAction !== ''}
+            key={operation}
+            onClick={() => void confirmSeasonOperation(operation, onAction)}
+            type="button"
+          >
+            {label}
+          </button>
+        ))}
+      </div>
     </section>
   )
 }
 
 function CachePanel({
   cache,
+  canManage,
   onAction,
   workingAction,
 }: {
   cache: OperationsDashboardData['summary']['cacheStatus']
-  onAction: (action: string, params?: Record<string, string | number | boolean>) => Promise<void>
+  canManage: boolean
+  onAction: OperationsAction
   workingAction: string
 }) {
-  const refreshGroups = [
-    ['Refresh All', 'all'],
-    ['Refresh Dashboard', 'dashboard'],
-    ['Refresh Standings', 'standings'],
-    ['Refresh Players', 'players'],
-    ['Refresh Factions', 'factions'],
-    ['Refresh Missions', 'missions'],
-    ['Refresh Hall of Fame', 'hallOfFame'],
-    ['Refresh Analytics', 'analytics'],
-    ['Refresh Army Lists', 'armyLists'],
-    ['Refresh Streams', 'streams'],
-    ['Refresh Search', 'search'],
-  ] as const
-
   return (
     <section className="panel operations-panel">
-      <PanelTitle eyebrow="System" title="Cache Management" />
+      <PanelTitle eyebrow="Cache" title="Cache and Rebuild" />
       <dl className="operations-metrics">
         <Metric label="Status" value={cache.status} />
         <Metric label="Version" value={cache.version} />
         <Metric label="Last Refresh" value={cache.lastRefresh || 'Not recorded'} />
         <Metric label="Cache Age" value={cache.cacheAge} />
         <Metric label="Avg API Response" value={cache.performance.averageApiResponse || '0ms'} />
-        <Metric label="Slowest Endpoint" value={cache.performance.slowestEndpoint || 'Not measured'} />
-        <Metric label="Fastest Endpoint" value={cache.performance.fastestEndpoint || 'Not measured'} />
         <Metric label="Cache Hit Rate" value={`${cache.performance.cacheHitRate}%`} />
-        <Metric label="Cache Miss Rate" value={`${cache.performance.cacheMissRate}%`} />
-        <Metric label="Refreshes" value={cache.performance.totalCacheRefreshes} />
-        <Metric label="Sheets Reads" value={cache.performance.googleSheetsReads} />
-        <Metric label="Improvement" value={cache.performance.estimatedPerformanceImprovement || 'Awaiting traffic'} />
       </dl>
       <div className="operations-actions wrap">
-        {refreshGroups.map(([label, group]) => (
-          <button
-            disabled={workingAction !== ''}
-            key={group}
-            onClick={() => void onAction('refreshCache', { group })}
-            type="button"
-          >
-            {label}
-          </button>
-        ))}
-        <button disabled={workingAction !== ''} onClick={() => void onAction('clearCache')} type="button">
-          Clear All Cache
+        <button disabled={!canManage || workingAction !== ''} onClick={() => void onAction('clearCache')} type="button">
+          Cache Clear
         </button>
-        <button disabled={workingAction !== ''} onClick={() => void onAction('rebuildStatistics')} type="button">
-          Rebuild Statistics
+        <button disabled={!canManage || workingAction !== ''} onClick={() => void onAction('refreshCache', { group: 'all' })} type="button">
+          Refresh All Cache
+        </button>
+        <button disabled={!canManage || workingAction !== ''} onClick={() => void onAction('rebuildStatistics')} type="button">
+          Statistics Rebuild
         </button>
       </div>
       <div className="operations-stack">
         {cache.entries.length > 0 ? (
-          cache.entries.slice(0, 12).map((entry) => (
+          cache.entries.slice(0, 8).map((entry) => (
             <article className="operations-record" key={`${entry.action}-${entry.version}`}>
               <span>{entry.group}</span>
               <h3>{entry.action}</h3>
-              <p>
-                {entry.health} - age {entry.ageSeconds}s - expires in{' '}
-                {entry.timeRemainingSeconds}s - {entry.size} bytes
-              </p>
-              <small>Last refresh: {entry.lastRefresh || 'Not recorded'}</small>
+              <p>{entry.health} - age {entry.ageSeconds}s - expires in {entry.timeRemainingSeconds}s</p>
             </article>
           ))
         ) : (
@@ -496,40 +861,33 @@ function CachePanel({
   )
 }
 
-function SystemHealthPanel({ data }: { data: OperationsDashboardData }) {
-  const auth = useAuth()
-
+function AuditPanel({
+  audit,
+  canRun,
+  onAction,
+  workingAction,
+}: {
+  audit: OperationsDashboardData['audit']
+  canRun: boolean
+  onAction: OperationsAction
+  workingAction: string
+}) {
   return (
     <section className="panel operations-panel">
-      <PanelTitle eyebrow="Status" title="System Health" />
-      <dl className="operations-metrics">
-        <Metric label="Current User" value={auth.user.displayName} />
-        <Metric
-          label="Authentication"
-          value={auth.authenticated ? 'Authenticated' : 'Guest'}
-        />
-        <Metric label="Role" value={auth.user.role} />
-        {Object.entries(data.summary.systemHealth).map(([key, value]) => (
-          <Metric key={key} label={key} value={value} />
-        ))}
-        <Metric label="Portal Version" value={data.settings.portalVersion || '1.2.2'} />
-        <Metric label="Apps Script" value="Version 1.2.2" />
-        <Metric label="Git Commit" value={data.settings.gitCommit || 'Not recorded'} />
-        <Metric label="Deployment" value={data.settings.deploymentUrl || 'Not recorded'} />
-      </dl>
-    </section>
-  )
-}
-
-function AuditPanel({ audit }: { audit: OperationsDashboardData['audit'] }) {
-  return (
-    <section className="panel operations-panel">
-      <PanelTitle eyebrow="League Audit" title="Data Quality Audit" />
+      <PanelTitle eyebrow="Audit" title="League Audit" />
       <dl className="operations-metrics compact">
         <Metric label="Critical" value={audit.summary.critical} />
         <Metric label="Warnings" value={audit.summary.warning} />
         <Metric label="Info" value={audit.summary.informational} />
       </dl>
+      <div className="operations-actions wrap">
+        <button disabled={!canRun || workingAction !== ''} onClick={() => void runOperationsCommand('Player Audit', onAction)} type="button">
+          Player Audit
+        </button>
+        <button disabled={!canRun || workingAction !== ''} onClick={() => void runOperationsCommand('Identity Audit', onAction)} type="button">
+          Identity Audit
+        </button>
+      </div>
       <div className="operations-stack">
         {audit.issues.slice(0, 10).map((issue) => (
           <Link className={`operations-record ${issue.severity}`} key={`${issue.severity}-${issue.description}`} to={issue.link || '/commissioner'}>
@@ -543,50 +901,255 @@ function AuditPanel({ audit }: { audit: OperationsDashboardData['audit'] }) {
   )
 }
 
-function SeasonPanel({
+function OperationsCommandPanel({
+  canRun,
+  onAction,
+  workingAction,
+}: {
+  canRun: boolean
+  onAction: OperationsAction
+  workingAction: string
+}) {
+  const commands = ['Import', 'Export', 'Backup', 'Restore'] as const
+
+  return (
+    <section className="panel operations-panel">
+      <PanelTitle eyebrow="Operations" title="Data Operations" />
+      <p className="operations-empty">
+        Data operations are commissioner-only and are recorded to the season archive.
+      </p>
+      <div className="operations-actions wrap">
+        {commands.map((command) => (
+          <button
+            disabled={!canRun || workingAction !== ''}
+            key={command}
+            onClick={() => void runOperationsCommand(command, onAction)}
+            type="button"
+          >
+            {command}
+          </button>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function DiscordAutomationPanel({
+  canManage,
+  canSend,
   data,
   onAction,
+  workingAction,
 }: {
+  canManage: boolean
+  canSend: boolean
   data: OperationsDashboardData
-  onAction: (action: string, params?: Record<string, string | number | boolean>) => Promise<void>
+  onAction: OperationsAction
+  workingAction: string
 }) {
-  const season = data.summary.seasonStatus
-  const operations = [
-    'Start New Season',
-    'Finalize Current Season',
-    'Archive Current Season',
-    'Clone Current Season Configuration',
-    'Open Registration for Next Season',
-    'Close Registration',
-    'Execute Promotion/Relegation',
-    'Reset Season Statistics',
-  ]
+  const discord = data.discord
+  const [settingsDraft, setSettingsDraft] = useState({
+    adminChannel: discord.adminChannel,
+    announcementChannel: discord.announcementChannel,
+    automationEvents: discord.automationEvents.join(','),
+    enabled: discord.enabled,
+    rateLimitPerHour: String(discord.rateLimitPerHour || 12),
+    retryLimit: String(discord.retryLimit || 3),
+    webhookUrl: '',
+  })
+  const [announcementDraft, setAnnouncementDraft] = useState({
+    content: '',
+    event: 'manual',
+    message: '',
+    title: '',
+  })
 
-  function confirmOperation(operation: string) {
-    const accepted = window.confirm(
-      `${operation}\n\nThis will write an operation record to the Season Archive. Destructive season actions should be reviewed before execution.`,
-    )
+  function saveSettings(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    void onAction('updateDiscordSettings', {
+      ...settingsDraft,
+      enabled: settingsDraft.enabled,
+    })
+  }
 
-    if (accepted) {
-      void onAction('seasonOperation', { operation })
-    }
+  function sendAnnouncement(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    void onAction('sendDiscordAnnouncement', announcementDraft)
+  }
+
+  const preview = discord.preview.embeds[0]
+  const failedEntries = discord.log.filter((entry) => !entry.success)
+
+  return (
+    <section className="panel operations-panel">
+      <PanelTitle eyebrow="Discord" title="League Automation" />
+      <dl className="operations-metrics compact">
+        <Metric label="Enabled" value={discord.enabled ? 'Yes' : 'No'} />
+        <Metric label="Webhook" value={discord.configured ? discord.webhookMasked : 'Not configured'} />
+        <Metric label="Announcements" value={discord.announcementChannel || 'Not set'} />
+        <Metric label="Admin" value={discord.adminChannel || 'Not set'} />
+        <Metric label="Queued" value={discord.queueDepth} />
+        <Metric label="Failures" value={discord.failures} />
+      </dl>
+      <form className="operations-form" onSubmit={saveSettings}>
+        <Input disabled={!canManage} label="Webhook URL" onChange={(value) => setSettingsDraft({ ...settingsDraft, webhookUrl: value })} value={settingsDraft.webhookUrl} />
+        <Input disabled={!canManage} label="Announcement Channel" onChange={(value) => setSettingsDraft({ ...settingsDraft, announcementChannel: value })} value={settingsDraft.announcementChannel} />
+        <Input disabled={!canManage} label="Admin Channel" onChange={(value) => setSettingsDraft({ ...settingsDraft, adminChannel: value })} value={settingsDraft.adminChannel} />
+        <Input disabled={!canManage} label="Rate Limit Per Hour" onChange={(value) => setSettingsDraft({ ...settingsDraft, rateLimitPerHour: value })} type="number" value={settingsDraft.rateLimitPerHour} />
+        <Input disabled={!canManage} label="Retry Limit" onChange={(value) => setSettingsDraft({ ...settingsDraft, retryLimit: value })} type="number" value={settingsDraft.retryLimit} />
+        <label className="operations-form-wide">
+          <span>Automation Events</span>
+          <textarea
+            disabled={!canManage}
+            onChange={(event) => setSettingsDraft({ ...settingsDraft, automationEvents: event.target.value })}
+            rows={3}
+            value={settingsDraft.automationEvents}
+          />
+        </label>
+        <label className="operations-check">
+          <input
+            checked={settingsDraft.enabled}
+            disabled={!canManage}
+            onChange={(event) => setSettingsDraft({ ...settingsDraft, enabled: event.target.checked })}
+            type="checkbox"
+          />
+          Enable automation
+        </label>
+        <button disabled={!canManage || workingAction !== ''} type="submit">Save Discord Settings</button>
+      </form>
+      <form className="operations-form" onSubmit={sendAnnouncement}>
+        <label>
+          <span>Announcement Type</span>
+          <select
+            disabled={!canSend}
+            onChange={(event) => setAnnouncementDraft({ ...announcementDraft, event: event.target.value })}
+            value={announcementDraft.event}
+          >
+            <option value="manual">Manual</option>
+            <option value="weeklyStandings">Weekly Standings</option>
+            <option value="playerOfTheWeek">Player of the Week</option>
+            <option value="leagueRecordsBroken">Records Broken</option>
+            <option value="gameSubmitted">Latest Game</option>
+            <option value="achievementUnlocked">Achievement</option>
+            <option value="hallOfFameInduction">Hall of Fame</option>
+          </select>
+        </label>
+        <Input disabled={!canSend} label="Title" onChange={(value) => setAnnouncementDraft({ ...announcementDraft, title: value })} value={announcementDraft.title} />
+        <label className="operations-form-wide">
+          <span>Message</span>
+          <textarea
+            disabled={!canSend}
+            onChange={(event) => setAnnouncementDraft({ ...announcementDraft, message: event.target.value, content: event.target.value })}
+            rows={4}
+            value={announcementDraft.message}
+          />
+        </label>
+        <button disabled={!canSend || workingAction !== ''} type="submit">Send Announcement</button>
+      </form>
+      <div className="operations-actions wrap">
+        <button disabled={!canManage || workingAction !== ''} onClick={() => void onAction('testDiscordWebhook', { message: 'Discord automation test from Commissioner Dashboard.' })} type="button">
+          Test Webhook
+        </button>
+        <button disabled={!canSend || workingAction !== ''} onClick={() => void onAction('runDiscordAutomationJob', { cadence: 'weekly' })} type="button">
+          Run Weekly Automation
+        </button>
+        <button disabled={!canManage || workingAction !== ''} onClick={() => void onAction('disableDiscordAutomation')} type="button">
+          Disable Automation
+        </button>
+      </div>
+      {preview ? (
+        <article className="operations-record">
+          <span>{discord.preview.label || 'Preview'}</span>
+          <h3>{preview.title || discord.preview.content || 'Discord preview'}</h3>
+          <p>{preview.description || 'Preview updates from current league data.'}</p>
+          <small>{preview.fields.map((field) => `${field.name}: ${field.value}`).join(' | ')}</small>
+        </article>
+      ) : (
+        <EmptyState text="No Discord preview is available yet." />
+      )}
+      <div className="operations-stack">
+        {discord.log.length === 0 ? (
+          <EmptyState text="No Discord automation log entries." />
+        ) : (
+          discord.log.slice(0, 8).map((entry) => (
+            <article className={`operations-record ${entry.success ? '' : 'warning'}`} key={`${entry.rowNumber}-${entry.timestamp}`}>
+              <span>{entry.status || (entry.success ? 'Sent' : 'Retry')}</span>
+              <h3>{entry.title || entry.event}</h3>
+              <p>{entry.timestamp || 'No timestamp'} - {entry.failure || 'Delivered'}</p>
+              {!entry.success && (
+                <button
+                  disabled={!canSend || workingAction !== ''}
+                  onClick={() => void onAction('resendDiscordAnnouncement', { rowNumber: entry.rowNumber })}
+                  type="button"
+                >
+                  Resend
+                </button>
+              )}
+            </article>
+          ))
+        )}
+      </div>
+      {failedEntries.length > 0 && (
+        <p className="operations-empty">
+          {failedEntries.length} Discord messages need attention.
+        </p>
+      )}
+    </section>
+  )
+}
+
+function SettingsPanel({
+  canManage,
+  onAction,
+  settings,
+}: {
+  canManage: boolean
+  onAction: OperationsAction
+  settings: PortalSettings
+}) {
+  const [draft, setDraft] = useState(settings)
+
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    void onAction('updateSettings', draft)
   }
 
   return (
     <section className="panel operations-panel">
-      <PanelTitle eyebrow="Season Control" title="Season Administration" />
-      <dl className="operations-metrics">
-        <Metric label="Season" value={season.currentSeasonName} />
-        <Metric label="Weeks Completed" value={season.weeksCompleted} />
-        <Metric label="Matches Played" value={season.matchesPlayed} />
-        <Metric label="Remaining Matches" value={season.remainingMatches} />
-        <Metric label="Registration" value={season.registrationOpen ? 'Open' : 'Closed'} />
-      </dl>
-      <div className="operations-actions wrap">
-        {operations.map((operation) => (
-          <button key={operation} onClick={() => confirmOperation(operation)} type="button">
-            {operation}
-          </button>
+      <PanelTitle eyebrow="Configuration" title="League Settings" />
+      <form className="operations-form" onSubmit={submit}>
+        <Input disabled={!canManage} label="League Name" onChange={(value) => setDraft({ ...draft, leagueName: value })} value={draft.leagueName} />
+        <Input disabled={!canManage} label="Current Season" onChange={(value) => setDraft({ ...draft, currentSeason: value })} value={draft.currentSeason} />
+        <Input disabled={!canManage} label="Google Form URL" onChange={(value) => setDraft({ ...draft, googleFormUrl: value })} value={draft.googleFormUrl} />
+        <Input disabled={!canManage} label="Portal Version" onChange={(value) => setDraft({ ...draft, portalVersion: value })} value={draft.portalVersion} />
+        <Input disabled={!canManage} label="Git Commit" onChange={(value) => setDraft({ ...draft, gitCommit: value })} value={draft.gitCommit} />
+        <Input disabled={!canManage} label="Deployment URL" onChange={(value) => setDraft({ ...draft, deploymentUrl: value })} value={draft.deploymentUrl} />
+        <label className="operations-check">
+          <input checked={draft.registrationOpen === 'true'} disabled={!canManage} onChange={(event) => setDraft({ ...draft, registrationOpen: String(event.target.checked) })} type="checkbox" />
+          Registration open
+        </label>
+        <button disabled={!canManage} type="submit">Save Settings</button>
+      </form>
+    </section>
+  )
+}
+
+function PermissionMatrix() {
+  return (
+    <section className="panel operations-panel">
+      <PanelTitle eyebrow="Security" title="Permission Matrix" />
+      <div className="standings-table" role="table" aria-label="Permission matrix">
+        <div className="table-row table-head" role="row">
+          <span>Operation</span>
+          <span>Minimum Role</span>
+          <span>Access</span>
+        </div>
+        {permissionRows.map(([operation, role, access]) => (
+          <div className="table-row" key={operation} role="row">
+            <strong>{operation}</strong>
+            <span>{role}</span>
+            <span>{access}</span>
+          </div>
         ))}
       </div>
     </section>
@@ -607,11 +1170,13 @@ function EmptyState({ text }: { text: string }) {
 }
 
 function Input({
+  disabled = false,
   label,
   onChange,
   type = 'text',
   value,
 }: {
+  disabled?: boolean
   label: string
   onChange: (value: string) => void
   type?: string
@@ -620,7 +1185,7 @@ function Input({
   return (
     <label>
       <span>{label}</span>
-      <input onChange={(event) => onChange(event.target.value)} type={type} value={value} />
+      <input disabled={disabled} onChange={(event) => onChange(event.target.value)} type={type} value={value} />
     </label>
   )
 }
@@ -660,13 +1225,111 @@ function RecordList({
   )
 }
 
-function Metric({ label, value }: { label: string; value: number | string }) {
+function Metric({ label, value }: { label: number | string; value: number | string }) {
   return (
     <div>
       <dt>{label}</dt>
       <dd>{value}</dd>
     </div>
   )
+}
+
+function healthLabel(data: OperationsDashboardData) {
+  if (data.audit.summary.critical > 0) {
+    return 'Critical'
+  }
+
+  if (data.audit.summary.warning > 0 || data.summary.identityStatus.unlinkedUsers > 0) {
+    return 'Needs Review'
+  }
+
+  return 'Healthy'
+}
+
+function identityRecordMatches(
+  record: OperationsIdentityRecord,
+  query: string,
+  filter: string,
+) {
+  const searchText = [
+    record.player,
+    record.division,
+    record.googleEmail,
+    record.portalUser,
+    record.role,
+  ]
+    .join(' ')
+    .toLowerCase()
+  const normalizedQuery = query.trim().toLowerCase()
+  const matchesSearch =
+    normalizedQuery === '' || searchText.includes(normalizedQuery)
+
+  if (!matchesSearch) {
+    return false
+  }
+
+  switch (filter) {
+    case 'linked':
+      return record.linked
+    case 'enabled':
+      return record.enabled
+    case 'disabled':
+      return !record.enabled
+    case 'missingEmail':
+      return record.missingEmail
+    case 'duplicateEmail':
+      return record.duplicateEmail
+    case 'duplicatePlayer':
+      return record.duplicatePlayer
+    case 'neverLoggedIn':
+      return record.neverLoggedIn
+    case 'brokenMapping':
+      return record.brokenMapping
+    default:
+      return true
+  }
+}
+
+function identityFlags(record: OperationsIdentityRecord) {
+  const flags: string[] = []
+
+  if (record.missingEmail) {
+    flags.push('Missing Email')
+  }
+
+  if (record.duplicateEmail) {
+    flags.push('Duplicate Email')
+  }
+
+  if (record.duplicatePlayer) {
+    flags.push('Duplicate Player')
+  }
+
+  if (record.neverLoggedIn) {
+    flags.push('Never Logged In')
+  }
+
+  if (record.brokenMapping) {
+    flags.push('Broken Mapping')
+  }
+
+  return flags
+}
+
+function confirmSeasonOperation(operation: string, onAction: OperationsAction) {
+  const accepted = window.confirm(
+    `${operation}\n\nThis is a commissioner-only operation and will be recorded in the season archive.`,
+  )
+
+  if (accepted) {
+    return onAction('seasonOperation', { operation })
+  }
+
+  return Promise.resolve()
+}
+
+function runOperationsCommand(command: string, onAction: OperationsAction) {
+  return onAction('operationsCommand', { command })
 }
 
 export default CommissionerDashboard

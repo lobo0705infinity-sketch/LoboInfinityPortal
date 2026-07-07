@@ -100,6 +100,16 @@ function Sidebar() {
             label: 'Operations',
             to: '/commissioner',
           },
+          {
+            icon: 'bell' as PortalIconName,
+            label: 'Automation',
+            to: '/automation',
+          },
+          {
+            icon: 'analytics' as PortalIconName,
+            label: 'Integrity',
+            to: '/integrity',
+          },
         ]
       : []),
     ...navigationItems.slice(6),
@@ -121,6 +131,7 @@ function Sidebar() {
             className={({ isActive }) =>
               isActive ? 'sidebar-button active' : 'sidebar-button'
             }
+            data-nav={item.to}
             end={item.to === '/'}
             key={item.to}
             to={item.to}

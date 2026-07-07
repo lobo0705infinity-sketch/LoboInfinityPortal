@@ -47,7 +47,8 @@ function applyUserNotificationState(notifications, user) {
     .filter(function(notification) {
       return (
         !dismissed[notification.id] &&
-        !archived[notification.id]
+        !archived[notification.id] &&
+        !read[notification.id]
       );
     })
     .map(function(notification) {
@@ -104,24 +105,29 @@ function buildLeagueNotifications() {
 
   const notifications = [];
 
+  addAchievementNotifications(notifications);
+
   games
     .slice(0, 5)
     .forEach(function(game, index) {
 
+      const result =
+        formatLeagueResult(game);
+
       notifications.push(
         buildLeagueNotification({
-          id: "game-" + game.id,
+          id: "game-" + getLeagueExperienceGameKey(game),
           type: "New Game",
           title:
-            game.winner +
+            result.winner +
             " defeated " +
-            game.loser,
+            result.loser,
           body:
-            game.mission +
+            result.mission +
             " ended " +
-            game.vp +
+            result.op +
             " in " +
-            game.division +
+            result.division +
             ".",
           timestamp: game.date,
           link: "/games/" + game.id,
@@ -140,7 +146,7 @@ function buildLeagueNotifications() {
           id: "win-streak-" + streak.player,
           type: "Winning Streak",
           title:
-            streak.player +
+            (streak.displayName || streak.player) +
             " has momentum",
           body: streak.story,
           timestamp: getLeagueExperienceTimestamp(),
@@ -162,7 +168,7 @@ function buildLeagueNotifications() {
           id: "loss-streak-" + streak.player,
           type: "Losing Streak",
           title:
-            streak.player +
+            (streak.displayName || streak.player) +
             " needs a response",
           body: streak.story,
           timestamp: getLeagueExperienceTimestamp(),
@@ -230,7 +236,7 @@ function buildLeagueNotifications() {
   addRecordNotification(
     notifications,
     "record-vp-margin",
-    "New VP margin record",
+    "New OP margin record",
     records.largestVPMargin
   );
 
@@ -257,13 +263,13 @@ function buildLeagueNotifications() {
         id: "hall-of-fame-" + hallLeader.player,
         type: "Hall of Fame",
         title:
-          hallLeader.player +
+          (hallLeader.displayName || hallLeader.player) +
           " headlines the Hall of Fame",
         body:
-          hallLeader.player +
+          (hallLeader.displayName || hallLeader.player) +
           " is currently among the league leaders with " +
-          hallLeader.tp +
-          " TP.",
+          formatTournamentScore(hallLeader) +
+          ".",
         timestamp: getLeagueExperienceTimestamp(),
         link: "/hall-of-fame",
         priority: "normal"
@@ -271,6 +277,14 @@ function buildLeagueNotifications() {
     );
 
   return notifications
+    .sort(function(a, b) {
+
+      return (
+        getRecentGameDate(b.timestamp).getTime() -
+        getRecentGameDate(a.timestamp).getTime()
+      );
+
+    })
     .slice(0, EXPERIENCE_LIMIT);
 
 }
@@ -296,20 +310,23 @@ function buildLeagueTimeline() {
   games
     .forEach(function(game) {
 
+      const result =
+        formatLeagueResult(game);
+
       timeline.push(
         buildTimelineItem({
           id: "game-" + game.id,
           type: "Game Played",
           title:
-            game.winner +
+            result.winner +
             " defeated " +
-            game.loser,
+            result.loser,
           body:
-            game.mission +
+            result.mission +
             " finished " +
-            game.vp +
+            result.op +
             " in " +
-            game.division +
+            result.division +
             ".",
           timestamp: game.date,
           link: "/games/" + game.id,
@@ -343,7 +360,7 @@ function buildLeagueTimeline() {
   addRecordTimelineItem(
     timeline,
     "record-vp-margin",
-    "Largest VP margin",
+    "Largest OP margin",
     records.largestVPMargin
   );
 
@@ -418,10 +435,10 @@ function buildLeagueTimeline() {
         body:
           hallLeader.player +
           " owns " +
-          hallLeader.tp +
-          " TP and " +
-          hallLeader.vp +
-          " VP in " +
+          formatTournamentScore(hallLeader) +
+          " and " +
+          formatVictoryScore(hallLeader) +
+          " in " +
           hallLeader.division +
           ".",
         timestamp: getLeagueExperienceTimestamp(),
@@ -429,6 +446,8 @@ function buildLeagueTimeline() {
         relatedPlayer: hallLeader.player
       })
     );
+
+  addAchievementTimelineItems(timeline);
 
   return timeline
     .sort(function(a, b) {
@@ -440,6 +459,91 @@ function buildLeagueTimeline() {
 
     })
     .slice(0, EXPERIENCE_LIMIT);
+
+}
+
+function addAchievementNotifications(notifications) {
+
+  if (typeof getRecentAchievementUnlocks !== "function")
+    return;
+
+  getRecentAchievementUnlocks(5)
+    .forEach(function(achievement) {
+
+      notifications.push(
+        buildLeagueNotification({
+          id:
+            "achievement-" +
+            achievement.player +
+            "-" +
+            achievement.id,
+          type: "Achievement Unlocked",
+          title:
+            achievement.player +
+            " unlocked " +
+            achievement.name,
+          body:
+            achievement.description +
+            " (" +
+            achievement.tier +
+            ", " +
+            achievement.points +
+            " pts)",
+          timestamp:
+            achievement.dateEarned ||
+            getLeagueExperienceTimestamp(),
+          link:
+            "/players/" +
+            encodeURIComponent(achievement.player),
+          priority:
+            achievement.tier === "Legendary"
+              ? "high"
+              : "normal"
+        })
+      );
+
+    });
+
+}
+
+function addAchievementTimelineItems(timeline) {
+
+  if (typeof getRecentAchievementUnlocks !== "function")
+    return;
+
+  getRecentAchievementUnlocks(12)
+    .forEach(function(achievement) {
+
+      timeline.push(
+        buildTimelineItem({
+          id:
+            "achievement-" +
+            achievement.player +
+            "-" +
+            achievement.id,
+          type: "Achievement Unlocked",
+          title:
+            achievement.player +
+            " earned " +
+            achievement.name,
+          body:
+            achievement.description +
+            " (" +
+            achievement.tier +
+            ", " +
+            achievement.points +
+            " pts)",
+          timestamp:
+            achievement.dateEarned ||
+            getLeagueExperienceTimestamp(),
+          link:
+            "/players/" +
+            encodeURIComponent(achievement.player),
+          relatedPlayer: achievement.player
+        })
+      );
+
+    });
 
 }
 
@@ -531,5 +635,21 @@ function getLeagueExperienceTimestamp() {
     Session.getScriptTimeZone(),
     "yyyy-MM-dd"
   );
+
+}
+
+function getLeagueExperienceGameKey(game) {
+
+  return [
+    game.date,
+    game.division,
+    game.mission,
+    game.winner,
+    game.loser
+  ]
+    .join("-")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 
 }

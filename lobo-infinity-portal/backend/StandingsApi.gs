@@ -59,13 +59,22 @@ function buildStandingsResponse(divisionConfig) {
 
 function standingsRowsToObjects(rows) {
 
+  const displayNames =
+    getPlayerDisplayNameMap();
+
   return rows
     .slice(1)
     .map(function(row) {
 
+      const player =
+        row[CONFIG.STANDINGS.PLAYER];
+
       return {
         rank: row[CONFIG.STANDINGS.RANK],
-        player: row[CONFIG.STANDINGS.PLAYER],
+        player: player,
+        displayName:
+          displayNames[player] ||
+          player,
         games: row[CONFIG.STANDINGS.GAMES],
         wins: row[CONFIG.STANDINGS.WINS],
         losses: row[CONFIG.STANDINGS.LOSSES],

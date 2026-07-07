@@ -13,6 +13,7 @@ import {
   formatDivisionLabel,
   getDivisionStyle,
 } from '../utils/divisions'
+import { formatObjectiveScore, formatPlayerName } from '../services/formatting'
 
 type ProfileState =
   | {
@@ -134,7 +135,9 @@ function PlayerProfile() {
       >
         <div className="profile-hero-main">
           <p className="eyebrow">Player Profile</p>
-          <h1 id="player-title">{profileState.player.name}</h1>
+          <h1 id="player-title">
+            {formatPlayerName(profileState.player.name, profileState.player.displayName)}
+          </h1>
           <div className="profile-badges" aria-label="Player league status">
             <span className="division-badge">
               {formatDivisionLabel(profileState.player.division)}
@@ -259,11 +262,12 @@ function PlayerProfile() {
                   <div>
                     <span>{game.date}</span>
                     <h3>
-                      {game.winner} defeated {game.loser}
+                      {formatPlayerName(game.winner, game.winnerDisplayName)} defeated{' '}
+                      {formatPlayerName(game.loser, game.loserDisplayName)}
                     </h3>
                     <p>{game.mission}</p>
                   </div>
-                  <strong>OP {game.op}</strong>
+                  <strong>{formatObjectiveScore(game)}</strong>
                 </Link>
               ))}
             </div>

@@ -55,20 +55,58 @@ function Notifications() {
     notificationId: string,
     status: 'dismissed' | 'read',
   ) {
-    await apiClient.updateNotificationState({
-      notificationId,
-      state: status,
+    if (state.status !== 'success') {
+      return
+    }
+
+    const previousNotifications = state.notifications
+
+    setState({
+      notifications: previousNotifications.filter(
+        (notification) => notification.id !== notificationId,
+      ),
+      status: 'success',
     })
-    await loadNotifications()
+
+    try {
+      await apiClient.updateNotificationState({
+        notificationId,
+        state: status,
+      })
+      await loadNotifications()
+    } catch (error) {
+      setState({
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Notifications could not be updated.',
+        status: 'error',
+      })
+    }
   }
 
   async function markAllRead(notifications: LeagueNotification[]) {
-    await apiClient.updateNotificationState({
-      notificationId: 'all',
-      notificationIds: notifications.map((notification) => notification.id),
-      state: 'read',
+    setState({
+      notifications: [],
+      status: 'success',
     })
-    await loadNotifications()
+
+    try {
+      await apiClient.updateNotificationState({
+        notificationId: 'all',
+        notificationIds: notifications.map((notification) => notification.id),
+        state: 'read',
+      })
+      await loadNotifications()
+    } catch (error) {
+      setState({
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Notifications could not be updated.',
+        status: 'error',
+      })
+    }
   }
 
   if (state.status === 'idle') {

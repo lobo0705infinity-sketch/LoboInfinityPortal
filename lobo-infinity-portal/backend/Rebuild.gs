@@ -33,6 +33,9 @@ function rebuildEverything() {
 
     rebuildMissionAnalytics();
 
+    if (typeof evaluateAchievementsForAllPlayers === "function")
+      evaluateAchievementsForAllPlayers();
+
     // rebuildDashboard();
 
     SpreadsheetApp.flush();

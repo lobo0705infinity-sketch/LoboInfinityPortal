@@ -5,12 +5,12 @@
  * Central cache manager for cache-first API delivery.
  *******************************************************/
 
-const PORTAL_CACHE_PREFIX = "portal:v1.2.2:";
+const PORTAL_CACHE_PREFIX = "portal:v2.0.1:";
 const PORTAL_CACHE_VERSION_KEY = "portalCacheVersion";
 const PORTAL_CACHE_STATS_KEY = "portalCacheStats";
 const PORTAL_CACHE_MANIFEST_KEY = "portalCacheManifest";
 const PORTAL_CACHE_METADATA_KEY = "portalCacheMetadata";
-const PORTAL_CACHE_TTL_SECONDS = 300;
+const PORTAL_CACHE_TTL_SECONDS = 900;
 const PORTAL_STALE_CACHE_TTL_SECONDS = 21600;
 
 const PORTAL_CACHE_GROUPS = {
@@ -433,6 +433,9 @@ function getPortalCacheKey(e, action) {
           encodeURIComponent(parameters[key])
         );
       });
+
+  if (action === "hallOfFame")
+    parts.push("schema=2.5.4.1");
 
   return (
     PORTAL_CACHE_PREFIX +

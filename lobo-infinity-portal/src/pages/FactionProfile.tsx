@@ -11,6 +11,7 @@ import {
   type FactionProfileData,
   type RecentGame,
 } from '../services/api'
+import { formatObjectiveScore, formatPlayerName } from '../services/formatting'
 
 type FactionProfileState =
   | {
@@ -118,7 +119,13 @@ function FactionProfile() {
           <Metric label="Average TP" value={formatNumber(profileState.faction.averageTP)} />
           <Metric label="Average OP" value={formatNumber(profileState.faction.averageOP)} />
           <Metric label="Average VP" value={formatNumber(profileState.faction.averageVP)} />
-          <Metric label="Top Player" value={profileState.faction.topPlayer} />
+          <Metric
+            label="Top Player"
+            value={formatPlayerName(
+              profileState.faction.topPlayer,
+              profileState.faction.topPlayerDisplayName,
+            )}
+          />
           <Metric
             label="Most Played Mission"
             value={profileState.faction.mostPlayedMission}
@@ -311,11 +318,12 @@ function RecentGamesPanel({ games }: { games: RecentGame[] }) {
               <div>
                 <span>{game.date}</span>
                 <h3>
-                  {game.winner} defeated {game.loser}
+                  {formatPlayerName(game.winner, game.winnerDisplayName)} defeated{' '}
+                  {formatPlayerName(game.loser, game.loserDisplayName)}
                 </h3>
                 <p>{game.mission}</p>
               </div>
-              <strong>OP {game.op}</strong>
+              <strong>{formatObjectiveScore(game)}</strong>
             </Link>
           ))}
         </div>
@@ -490,7 +498,7 @@ function ArmyListStack({ lists, title }: { lists: ArmyList[]; title: string }) {
         <div className="army-list-mini-grid">
           {lists.map((list) => (
             <article className="army-list-mini-card" key={list.id}>
-              <span>{list.player}</span>
+              <span>{formatPlayerName(list.player, list.playerDisplayName)}</span>
               <h3>{list.armyName}</h3>
               <p>{list.mission || 'Mission not recorded'}</p>
               <strong>Score {list.score}</strong>

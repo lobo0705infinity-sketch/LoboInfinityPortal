@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { apiClient, type RecentGame } from '../services/api'
+import { formatObjectiveScore, formatPlayerName } from '../services/formatting'
 
 type RecentGamesState = {
   games: RecentGame[]
@@ -85,7 +86,8 @@ function RecentGames({
               <div>
                 <span className="eyebrow">{formatRelativeDate(game.date)}</span>
                 <h3>
-                  {game.winner} defeated {game.loser}
+                  {formatPlayerName(game.winner, game.winnerDisplayName)} defeated{' '}
+                  {formatPlayerName(game.loser, game.loserDisplayName)}
                 </h3>
               </div>
 
@@ -100,7 +102,7 @@ function RecentGames({
                 </div>
                 <div>
                   <dt>OP Score</dt>
-                  <dd>{game.op}</dd>
+                  <dd>{formatObjectiveScore(game)}</dd>
                 </div>
               </dl>
             </Link>

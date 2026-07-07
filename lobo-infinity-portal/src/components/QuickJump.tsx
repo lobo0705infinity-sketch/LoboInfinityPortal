@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { apiClient } from '../services/api'
+import { formatPlayerName } from '../services/formatting'
 
 type JumpItem = {
   label: string
@@ -10,8 +11,13 @@ type JumpItem = {
 function QuickJump() {
   const navigate = useNavigate()
   const [items, setItems] = useState<JumpItem[]>([])
+  const [hasRequestedItems, setHasRequestedItems] = useState(false)
 
   useEffect(() => {
+    if (!hasRequestedItems) {
+      return
+    }
+
     const controller = new AbortController()
 
     async function loadJumpItems() {
@@ -30,7 +36,7 @@ function QuickJump() {
         players.status === 'fulfilled'
           ? players.value.flatMap((division) =>
               division.standings.slice(0, 4).map((player) => ({
-                label: `Player: ${player.player}`,
+                label: `Player: ${formatPlayerName(player.player, player.displayName)}`,
                 to: `/players/${encodeURIComponent(player.player)}`,
               })),
             )
@@ -55,7 +61,7 @@ function QuickJump() {
       const gameItems =
         games.status === 'fulfilled'
           ? games.value.slice(0, 3).map((game) => ({
-              label: `Match: ${game.winner} vs ${game.loser}`,
+              label: `Match: ${formatPlayerName(game.winner, game.winnerDisplayName)} vs ${formatPlayerName(game.loser, game.loserDisplayName)}`,
               to: `/games/${game.id}`,
             }))
           : []
@@ -77,7 +83,7 @@ function QuickJump() {
     return () => {
       controller.abort()
     }
-  }, [])
+  }, [hasRequestedItems])
 
   return (
     <label className="quick-jump">
@@ -85,7 +91,9 @@ function QuickJump() {
       <select
         aria-label="Quick jump menu"
         defaultValue=""
+        onFocus={() => setHasRequestedItems(true)}
         onChange={(event) => {
+          setHasRequestedItems(true)
           const nextPath = event.target.value
 
           if (nextPath) {
