@@ -5017,10 +5017,22 @@
 }
 
 .match-request-action-bar button[type="submit"] {
+  border: 0;
+  border-radius: 10px;
+  color: #061014;
+  background: var(--accent);
+  cursor: pointer;
+  font-weight: 900;
   min-height: 48px;
   min-width: 200px;
+  padding: 0.7rem 1rem;
   position: static;
   white-space: nowrap;
+}
+
+.match-request-action-bar button[type="submit"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .diagnostics-json {

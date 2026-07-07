@@ -1,4 +1,12 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent,
+} from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import Loading from '../components/Loading'
@@ -41,7 +49,6 @@ type AvailabilitySaveResult = {
 
 type MatchRequestFormState = {
   message: string
-  opponent: string
   proposedDate: string
   proposedTime: string
 }
@@ -50,12 +57,18 @@ type MatchRequestValidation = Partial<
   Record<'opponent' | 'proposedDate' | 'proposedTime', string>
 >
 
+type ScheduleRequestFormHandle = {
+  focusDate: () => void
+}
+
 function MatchFinder() {
   const auth = useAuth()
   const [searchParams] = useSearchParams()
   const preferredOpponent = searchParams.get('opponent') ?? ''
   const [state, setState] = useState<MatchFinderState>({ status: 'loading' })
   const [working, setWorking] = useState('')
+  const [selectedOpponent, setSelectedOpponent] = useState(preferredOpponent)
+  const requestFormRef = useRef<ScheduleRequestFormHandle>(null)
 
   useEffect(() => {
     if (auth.status !== 'ready') {
@@ -135,12 +148,47 @@ function MatchFinder() {
 
   async function createRequest(params: Record<string, string>) {
     setWorking('request')
+    const start = performance.now()
+    recordClientDiagnostic(
+      'matchRequest',
+      'attempt',
+      0,
+      `submit started for ${params.opponent || 'unknown opponent'}`,
+    )
+
     try {
       const data = await apiClient.createSchedulingRequest(params)
       setState({ data, status: 'success' })
+      recordClientDiagnostic(
+        'matchRequest',
+        'success',
+        performance.now() - start,
+        `request created for ${params.opponent || 'unknown opponent'}`,
+      )
+    } catch (error) {
+      recordClientDiagnostic(
+        'matchRequest',
+        'failure',
+        performance.now() - start,
+        error instanceof Error ? error.message : 'unknown error',
+      )
+      throw error
     } finally {
       setWorking('')
     }
+  }
+
+  function requestOpponent(opponent: string) {
+    setSelectedOpponent(opponent)
+    recordClientDiagnostic(
+      'matchRequest',
+      'attempt',
+      0,
+      `opponent selected from recommendation card: ${opponent}`,
+    )
+    window.setTimeout(() => {
+      requestFormRef.current?.focusDate()
+    }, 0)
   }
 
   async function respondToRequest(requestId: string, status: string) {
@@ -243,10 +291,11 @@ function MatchFinder() {
           onSubmit={updateAvailability}
         />
         <ScheduleRequestForm
+          ref={requestFormRef}
           disabled={working !== ''}
-          initialOpponent={preferredOpponent}
-          key={preferredOpponent || state.data.recommendations[0]?.player || 'request'}
+          selectedOpponent={selectedOpponent || preferredOpponent}
           recommendations={state.data.recommendations}
+          onOpponentChange={setSelectedOpponent}
           onSubmit={createRequest}
         />
       </section>
@@ -260,6 +309,7 @@ function MatchFinder() {
           {state.data.recommendations.map((recommendation) => (
             <RecommendationCard
               key={recommendation.player}
+              onRequest={requestOpponent}
               recommendation={recommendation}
             />
           ))}
@@ -730,30 +780,38 @@ function getAvailabilitySaveStatus(
   }
 }
 
-function ScheduleRequestForm({
-  disabled,
-  initialOpponent,
-  recommendations,
-  onSubmit,
-}: {
-  disabled: boolean
-  initialOpponent: string
-  recommendations: SchedulingRecommendation[]
-  onSubmit: (params: Record<string, string>) => Promise<void>
-}) {
+const MATCH_REQUEST_FORM_ID = 'match-request-form'
+
+const ScheduleRequestForm = forwardRef<
+  ScheduleRequestFormHandle,
+  {
+    disabled: boolean
+    selectedOpponent: string
+    recommendations: SchedulingRecommendation[]
+    onOpponentChange: (opponent: string) => void
+    onSubmit: (params: Record<string, string>) => Promise<void>
+  }
+>(function ScheduleRequestForm(
+  {
+    disabled,
+    selectedOpponent,
+    recommendations,
+    onOpponentChange,
+    onSubmit,
+  },
+  ref,
+) {
   const navigate = useNavigate()
-  const defaultOpponent = useMemo(
-    () => initialOpponent || recommendations[0]?.player || '',
-    [initialOpponent, recommendations],
-  )
+  const sectionRef = useRef<HTMLElement>(null)
+  const dateInputRef = useRef<HTMLInputElement>(null)
+  const activeOpponent = selectedOpponent || recommendations[0]?.player || ''
   const initialForm = useMemo<MatchRequestFormState>(
     () => ({
       message: '',
-      opponent: defaultOpponent,
       proposedDate: '',
       proposedTime: '',
     }),
-    [defaultOpponent],
+    [],
   )
   const [form, setForm] = useState(initialForm)
   const [submitState, setSubmitState] = useState<
@@ -765,8 +823,23 @@ function ScheduleRequestForm({
   const hasDraft = Boolean(
     form.message.trim() ||
       form.proposedDate ||
-      form.proposedTime ||
-      form.opponent !== defaultOpponent,
+      form.proposedTime,
+  )
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      focusDate() {
+        sectionRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        })
+        window.setTimeout(() => {
+          dateInputRef.current?.focus({ preventScroll: true })
+        }, 250)
+      },
+    }),
+    [],
   )
 
   useEffect(() => {
@@ -835,7 +908,7 @@ function ScheduleRequestForm({
   function validate(current: MatchRequestFormState): MatchRequestValidation {
     const nextValidation: MatchRequestValidation = {}
 
-    if (!current.opponent) {
+    if (!activeOpponent) {
       nextValidation.opponent = 'Choose an opponent.'
     }
 
@@ -870,6 +943,23 @@ function ScheduleRequestForm({
     }
   }
 
+  function updateOpponent(opponent: string) {
+    onOpponentChange(opponent)
+    setValidation((current) => {
+      if (!current.opponent) {
+        return current
+      }
+
+      const next = { ...current }
+      delete next.opponent
+      return next
+    })
+
+    if (submitState !== 'submitting') {
+      setSubmitState('idle')
+    }
+  }
+
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
@@ -884,10 +974,12 @@ function ScheduleRequestForm({
     setSubmitState('submitting')
 
     try {
-      await onSubmit(form)
+      await onSubmit({
+        ...form,
+        opponent: activeOpponent,
+      })
       setForm({
         ...initialForm,
-        opponent: form.opponent,
       })
       setValidation({})
       setSubmitState('success')
@@ -924,20 +1016,34 @@ function ScheduleRequestForm({
       ? 'Match Request Sent'
       : submitState === 'error'
         ? 'Unable to send request. Please try again.'
-        : recommendations.length === 0
+        : disabled && !isSubmitting
+          ? 'Another scheduling action is in progress.'
+          : recommendations.length === 0
           ? 'No remaining opponents are available for requests.'
           : Object.keys(validation).length > 0
             ? 'Complete the required fields to send your request.'
             : 'Ready to send your request.'
 
   return (
-    <section className="panel scheduling-panel">
+    <section className="panel scheduling-panel" ref={sectionRef}>
       <div className="panel-heading">
         <p className="eyebrow">Schedule</p>
         <h2>Send Match Request</h2>
       </div>
+      <div className={`match-request-action-bar ${submitState}`}>
+        <span aria-live="polite">{actionStatus}</span>
+        <button
+          disabled={requestDisabled}
+          form={MATCH_REQUEST_FORM_ID}
+          type="submit"
+        >
+          {submitState === 'success' ? 'Sent: ' : ''}
+          {actionLabel}
+        </button>
+      </div>
       <form
         className="scheduling-form match-request-form"
+        id={MATCH_REQUEST_FORM_ID}
         noValidate
         onSubmit={(event) => void submit(event)}
       >
@@ -950,9 +1056,9 @@ function ScheduleRequestForm({
             aria-invalid={validation.opponent ? 'true' : undefined}
             disabled={isSubmitting}
             name="opponent"
-            onChange={(event) => updateField('opponent', event.target.value)}
+            onChange={(event) => updateOpponent(event.target.value)}
             required
-            value={form.opponent}
+            value={activeOpponent}
           >
             {recommendations.map((recommendation) => (
               <option key={recommendation.player} value={recommendation.player}>
@@ -978,6 +1084,7 @@ function ScheduleRequestForm({
             aria-invalid={validation.proposedDate ? 'true' : undefined}
             disabled={isSubmitting}
             name="proposedDate"
+            ref={dateInputRef}
             onChange={(event) => updateField('proposedDate', event.target.value)}
             required
             type="date"
@@ -1025,13 +1132,6 @@ function ScheduleRequestForm({
             value={form.message}
           />
         </label>
-        <div className={`match-request-action-bar ${submitState}`}>
-          <span aria-live="polite">{actionStatus}</span>
-          <button disabled={requestDisabled} type="submit">
-            {submitState === 'success' ? '✓ ' : ''}
-            {actionLabel}
-          </button>
-        </div>
       </form>
       {pendingNavigation ? (
         <div
@@ -1055,11 +1155,13 @@ function ScheduleRequestForm({
       ) : null}
     </section>
   )
-}
+})
 
 function RecommendationCard({
+  onRequest,
   recommendation,
 }: {
+  onRequest: (opponent: string) => void
   recommendation: SchedulingRecommendation
 }) {
   const recommendationLabel = getRecommendationLabel(recommendation)
@@ -1092,9 +1194,9 @@ function RecommendationCard({
         <Link to={recommendation.profileLink || `/players/${encodeURIComponent(recommendation.player)}`}>
           Profile
         </Link>
-        <Link to={`/match-finder?opponent=${encodeURIComponent(recommendation.player)}`}>
+        <button onClick={() => onRequest(recommendation.player)} type="button">
           Request Match
-        </Link>
+        </button>
       </div>
     </article>
   )
