@@ -78,6 +78,13 @@ function getRouteMeta(pathname: string) {
     }
   }
 
+  if (pathname.startsWith('/rivalries')) {
+    return {
+      title: 'Rivalry Room | Lobo Infinity League',
+      description: 'Open league head-to-head stories built from submitted games.',
+    }
+  }
+
   return {
     title: 'Lobo Infinity League Portal',
     description: 'The Lobo Infinity League Operating System.',

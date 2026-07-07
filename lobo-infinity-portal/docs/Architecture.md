@@ -477,6 +477,19 @@ It uses the existing `communityCommandCenter` payload plus additive scheduling r
 
 It does not add a new Event Engine concept, scheduling system, standings calculation, notification system, or identity lookup. All league data continues to use permanent `leaguePlayer` identity. Display names remain presentation-only.
 
+Version 4.4 adds League Personality as a presentation layer over the same data.
+
+League Personality generates:
+
+- Dynamic hero messages from pending requests, remaining games, scheduling overlap, current week, or existing intelligence.
+- League headlines from commissioner news, submitted game results, achievements, progress, and promotion status.
+- Featured matches from accepted scheduling requests, recommended remaining opponents, or latest submitted battles.
+- Season story timeline entries from current week, latest results, commissioner news, and progress.
+- Spotlight cards from achievements, latest battle reports, and remaining opponents.
+- Rivalry summaries from repeated submitted head-to-head games.
+
+This layer must never fabricate statistics. If the required source data is missing, the card is omitted or displays an explicit empty state. Version 4.4 does not add backend endpoints, change API contracts, alter league calculations, or create a new notification system.
+
 ## Event Lifecycle Controls
 
 Version 3.1.2 adds commissioner-facing Event Lifecycle Controls on top of the existing Event Engine foundation.

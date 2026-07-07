@@ -17,6 +17,7 @@
 - `src/components`: shared UI components, navigation, search, notifications, route metadata.
 - `src/hooks`: shared React hooks.
 - `src/pages`: route-level pages.
+- `src/pages/Rivalries.tsx`: League Personality Rivalry Room generated from existing recent game data.
 - `src/services/api.ts`: API client, request cache, response normalization.
 - `src/services/formatting.ts`: frontend formatting service.
 - `src/types`: shared TypeScript data types.
@@ -66,6 +67,7 @@ Google Sheets is the source of truth for:
 - `docs/EventEngine.md`: Event Engine foundation and migration validation.
 - `docs/Operations.md`: Platform Health, Snapshot Manager, Job Queue, Cache Manager, and audit workflow.
 - `docs/Diagnostics.md`: Commissioner diagnostics surface and safety model.
+- `docs/CommunityGuide.md`: community-facing League Personality and Rivalry Room behavior.
 - `docs/Recovery.md`: recovery actions and failure handling.
 - `docs/MobileUXAudit.md`: Version 4.1 mobile UX audit, scores, implemented improvements, and remaining recommendations.
 - `docs/Roadmap.md`: frozen Version 3 roadmap.

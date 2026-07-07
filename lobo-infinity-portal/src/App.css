@@ -8063,6 +8063,76 @@ a {
   grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
 }
 
+.league-personality-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+}
+
+.league-headlines-card {
+  grid-row: span 2;
+}
+
+.league-featured-match {
+  color: var(--text);
+  min-height: 190px;
+  text-decoration: none;
+}
+
+.league-featured-match span,
+.league-storyline span {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.league-featured-match strong {
+  font-size: clamp(1.55rem, 4vw, 2.5rem);
+  line-height: 1;
+}
+
+.league-featured-match p {
+  color: var(--text-soft);
+  font-weight: 850;
+  margin: 0;
+}
+
+.league-storyline {
+  display: grid;
+  gap: 10px;
+}
+
+.league-storyline a {
+  border-left: 3px solid rgba(76, 201, 240, 0.42);
+  color: var(--text);
+  display: grid;
+  gap: 4px;
+  padding: 4px 0 10px 12px;
+  text-decoration: none;
+}
+
+.league-storyline strong {
+  overflow-wrap: anywhere;
+}
+
+.league-storyline p {
+  color: var(--text-soft);
+  font-weight: 800;
+  margin: 0;
+}
+
+.rivalry-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.rivalry-card {
+  display: grid;
+  gap: 14px;
+}
+
 .player-home-card {
   display: grid;
   gap: 14px;
@@ -8138,7 +8208,8 @@ a {
   .player-home-hero,
   .player-home-priority,
   .player-home-grid,
-  .player-home-grid.wide {
+  .player-home-grid.wide,
+  .league-personality-grid {
     grid-template-columns: 1fr;
   }
 

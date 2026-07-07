@@ -34,6 +34,8 @@ Version 3.1.2 adds Event Lifecycle Controls so Commissioners can operate the Cur
 
 Version 4.3 refines the authenticated Dashboard into the Player Home Dashboard. This remains within the Community Home boundary by reusing the existing Community Command Center aggregate and scheduling services instead of introducing a new player dashboard architecture.
 
+Version 4.4 adds League Personality as an engagement layer. It reuses existing Dashboard, Community Command Center, Scheduling, News, Achievements, and Recent Games data to produce dynamic hero messages, league headlines, featured match cards, season story timeline, spotlights, and Rivalry Room summaries without adding backend endpoints or changing API contracts.
+
 ### 3.2 Event Migration
 
 Add explicit event scope to historical data after migration validation has passed.

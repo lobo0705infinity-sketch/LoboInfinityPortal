@@ -53,6 +53,22 @@ type DashboardPageData = {
   settings: PortalSettings
 }
 
+type LeaguePersonalityItem = {
+  body: string
+  label: string
+  title: string
+  to: string
+}
+
+type LeaguePersonality = {
+  featuredMatch: LeaguePersonalityItem | null
+  headlines: LeaguePersonalityItem[]
+  heroMessage: string
+  recordSpotlight: LeaguePersonalityItem | null
+  seasonTimeline: LeaguePersonalityItem[]
+  spotlight: LeaguePersonalityItem | null
+}
+
 function buildDashboardPageDataFromHome(home: HomeData): DashboardPageData {
   return {
     armyListCommunity: home.armyListCommunity,
@@ -433,15 +449,16 @@ function CommunityCommandCenter() {
 
   const data = state.data
   const suggested = data.opponentTracker.suggested
+  const personality = buildLeaguePersonality(data)
   const priority = getPlayerHomePriority(data)
   const nextMatch = data.matchRequests.upcoming[0]
   const remainingOpponents = data.opponentTracker.remaining
   const actionableNotifications = [
     ...data.matchRequests.incoming.map((request) => ({
-      body: `${request.fromPlayer} wants to play on ${request.proposedDate} at ${request.proposedTime}.`,
+      body: `${request.fromPlayer} challenged you for ${request.proposedDate} at ${request.proposedTime}.`,
       id: request.id,
       link: '/match-finder',
-      title: `Match request from ${request.fromPlayer}`,
+      title: `${request.fromPlayer} is calling for battle`,
       type: 'Scheduling',
     })),
     ...data.communityActivity.latestAchievements.slice(0, 2).map((item) => ({
@@ -466,10 +483,7 @@ function CommunityCommandCenter() {
         <div>
           <p className="eyebrow">Player Home</p>
           <h1 id="player-home-title">Welcome back, {data.welcome.displayName}</h1>
-          <p>
-            {data.welcome.currentLeague} - {data.welcome.currentDivision || 'League'} -
-            Week {data.welcome.currentWeek || data.schedule.deadlines.currentWeek}
-          </p>
+          <p>{personality.heroMessage}</p>
         </div>
         <dl className="player-home-hero-stats">
           <div>
@@ -486,6 +500,8 @@ function CommunityCommandCenter() {
           </div>
         </dl>
       </section>
+
+      <LeaguePersonalityShowcase personality={personality} />
 
       <section className="player-home-priority" aria-labelledby="next-priority-title">
         <div>
@@ -542,8 +558,8 @@ function CommunityCommandCenter() {
           data.matchRequests.incoming.length === 0 &&
           data.matchRequests.outgoing.length === 0 ? (
             <CommandActionLink className="player-home-empty-action" to="/match-finder">
-              <strong>No matches scheduled</strong>
-              <span>Schedule your next league game.</span>
+              <strong>No battles scheduled</strong>
+              <span>Find your next opponent.</span>
             </CommandActionLink>
           ) : null}
         </section>
@@ -620,8 +636,8 @@ function CommunityCommandCenter() {
             ))}
             {actionableNotifications.length === 0 ? (
               <CommandActionLink className="player-home-empty-action" to="/notifications">
-                <strong>No urgent alerts</strong>
-                <span>View all notifications when you want the full feed.</span>
+                <strong>No urgent league updates</strong>
+                <span>Open the full feed when you want the whole story.</span>
               </CommandActionLink>
             ) : null}
           </div>
@@ -724,6 +740,323 @@ function ProgressBar({ label, value }: { label: string; value: number }) {
       <meter max={100} min={0} value={value} />
     </div>
   )
+}
+
+function LeaguePersonalityShowcase({
+  personality,
+}: {
+  personality: LeaguePersonality
+}) {
+  return (
+    <section className="league-personality-grid" aria-label="League story">
+      <section className="player-home-card league-headlines-card" aria-labelledby="league-headlines-title">
+        <div className="player-home-card-heading">
+          <p className="eyebrow">League Headlines</p>
+          <h2 id="league-headlines-title">What Everyone Is Talking About</h2>
+        </div>
+        <div className="player-home-feed">
+          {personality.headlines.map((headline) => (
+            <CommandActionLink
+              className="player-home-feed-item"
+              key={`${headline.label}-${headline.title}`}
+              to={headline.to}
+            >
+              <span>{headline.label}</span>
+              <strong>{headline.title}</strong>
+              <p>{headline.body}</p>
+            </CommandActionLink>
+          ))}
+        </div>
+      </section>
+
+      {personality.featuredMatch ? (
+        <CommandActionLink
+          className="player-home-card league-featured-match"
+          to={personality.featuredMatch.to}
+        >
+          <span>{personality.featuredMatch.label}</span>
+          <strong>{personality.featuredMatch.title}</strong>
+          <p>{personality.featuredMatch.body}</p>
+        </CommandActionLink>
+      ) : null}
+
+      <section className="player-home-card" aria-labelledby="season-story-title">
+        <div className="player-home-card-heading">
+          <p className="eyebrow">Season Story</p>
+          <h2 id="season-story-title">How the Week Is Moving</h2>
+        </div>
+        <div className="league-storyline">
+          {personality.seasonTimeline.map((item) => (
+            <CommandActionLink key={`${item.label}-${item.title}`} to={item.to}>
+              <span>{item.label}</span>
+              <strong>{item.title}</strong>
+              <p>{item.body}</p>
+            </CommandActionLink>
+          ))}
+        </div>
+      </section>
+
+      <section className="player-home-card" aria-labelledby="league-spotlight-title">
+        <div className="player-home-card-heading">
+          <p className="eyebrow">Spotlight</p>
+          <h2 id="league-spotlight-title">League Pulse</h2>
+        </div>
+        <div className="player-home-feed compact">
+          {personality.recordSpotlight ? (
+            <CommandActionLink className="player-home-feed-item" to={personality.recordSpotlight.to}>
+              <span>{personality.recordSpotlight.label}</span>
+              <strong>{personality.recordSpotlight.title}</strong>
+              <p>{personality.recordSpotlight.body}</p>
+            </CommandActionLink>
+          ) : null}
+          {personality.spotlight ? (
+            <CommandActionLink className="player-home-feed-item" to={personality.spotlight.to}>
+              <span>{personality.spotlight.label}</span>
+              <strong>{personality.spotlight.title}</strong>
+              <p>{personality.spotlight.body}</p>
+            </CommandActionLink>
+          ) : null}
+          <CommandActionLink className="player-home-secondary-action" to="/rivalries">
+            Rivalry Room
+          </CommandActionLink>
+        </div>
+      </section>
+    </section>
+  )
+}
+
+function buildLeaguePersonality(
+  data: CommunityCommandCenterData,
+): LeaguePersonality {
+  return {
+    featuredMatch: buildFeaturedLeagueMatch(data),
+    headlines: buildLeagueHeadlines(data),
+    heroMessage: buildDynamicHeroMessage(data),
+    recordSpotlight: buildRecordSpotlight(data),
+    seasonTimeline: buildSeasonTimeline(data),
+    spotlight: buildCommunitySpotlight(data),
+  }
+}
+
+function buildDynamicHeroMessage(data: CommunityCommandCenterData) {
+  const incoming = data.matchRequests.incoming[0]
+
+  if (incoming) {
+    return `${incoming.fromPlayer} is waiting on your match response.`
+  }
+
+  const suggested = data.opponentTracker.suggested
+  const suggestedCard = suggested
+    ? data.opponentTracker.remaining.find(
+        (opponent) => opponent.player === suggested.player,
+      )
+    : null
+
+  if (suggested && suggestedCard?.availabilitySummary) {
+    return `You and ${formatPlayerName(suggested.player, suggested.displayName)} have a scheduling window: ${suggestedCard.availabilitySummary}.`
+  }
+
+  const remaining = data.opponentTracker.progress.gamesRemaining
+
+  if (remaining > 0) {
+    return `Only ${remaining} ${remaining === 1 ? 'league game remains' : 'league games remain'}.`
+  }
+
+  if (data.intelligence[0]) {
+    return data.intelligence[0]
+  }
+
+  return `${data.welcome.currentLeague} - Week ${data.welcome.currentWeek || data.schedule.deadlines.currentWeek}.`
+}
+
+function buildLeagueHeadlines(data: CommunityCommandCenterData) {
+  const headlines: LeaguePersonalityItem[] = []
+
+  data.communityActivity.news.slice(0, 2).forEach((item) => {
+    headlines.push({
+      body: item.body,
+      label: item.date || 'Commissioner Briefing',
+      title: item.title,
+      to: item.link || '/news',
+    })
+  })
+
+  data.communityActivity.latestResults.slice(0, 2).forEach((game) => {
+    headlines.push({
+      body: `${game.mission} ended ${formatObjectiveScore(game)}.`,
+      label: game.division || 'Latest Result',
+      title: `${formatPlayerName(game.winner, game.winnerDisplayName)} defeated ${formatPlayerName(game.loser, game.loserDisplayName)}`,
+      to: `/games/${game.id}`,
+    })
+  })
+
+  data.communityActivity.latestAchievements.slice(0, 2).forEach((item) => {
+    headlines.push({
+      body: item.body,
+      label: item.type || 'Achievement',
+      title: item.title,
+      to: item.link || '/notifications',
+    })
+  })
+
+  if (data.welcome.leagueCompletion > 0) {
+    headlines.push({
+      body: `${data.welcome.currentLeague} is ${data.welcome.leagueCompletion}% complete.`,
+      label: 'Season Progress',
+      title: `${data.welcome.currentDivision || 'League'} reaches ${data.welcome.leagueCompletion}%`,
+      to: '/standings',
+    })
+  }
+
+  if (data.promotion.status && data.promotion.status !== 'Safe') {
+    headlines.push({
+      body: `Rank #${data.promotion.currentRank} keeps you in the ${data.promotion.status}.`,
+      label: 'Promotion Watch',
+      title: data.promotion.status,
+      to: '/standings',
+    })
+  }
+
+  return headlines.slice(0, 5)
+}
+
+function buildFeaturedLeagueMatch(
+  data: CommunityCommandCenterData,
+): LeaguePersonalityItem | null {
+  const upcoming = data.matchRequests.upcoming[0]
+
+  if (upcoming) {
+    const opponent = getOtherRequestPlayer(upcoming, data.welcome.leaguePlayer)
+
+    return {
+      body: `${upcoming.proposedDate} at ${upcoming.proposedTime}. This one matters because it moves your season progress forward.`,
+      label: 'Featured Match',
+      title: `${data.welcome.displayName} vs ${opponent}`,
+      to: '/match-finder',
+    }
+  }
+
+  const suggested = data.opponentTracker.suggested
+
+  if (suggested) {
+    return {
+      body: `${suggested.reason} Schedule it before the week gets away from the division.`,
+      label: 'Featured Match',
+      title: `${data.welcome.displayName} vs ${formatPlayerName(suggested.player, suggested.displayName)}`,
+      to: `/match-finder?opponent=${encodeURIComponent(suggested.player)}`,
+    }
+  }
+
+  const latest = data.communityActivity.latestResults[0]
+
+  if (latest) {
+    return {
+      body: `${latest.mission} finished ${formatObjectiveScore(latest)}. Latest completed battles shape the table while new matchups get scheduled.`,
+      label: 'Featured Battle',
+      title: `${formatPlayerName(latest.winner, latest.winnerDisplayName)} vs ${formatPlayerName(latest.loser, latest.loserDisplayName)}`,
+      to: `/games/${latest.id}`,
+    }
+  }
+
+  return null
+}
+
+function buildSeasonTimeline(data: CommunityCommandCenterData) {
+  const timeline: LeaguePersonalityItem[] = [
+    {
+      body: `${data.welcome.currentLeague} is active with ${data.opponentTracker.progress.gamesCompleted} of ${data.opponentTracker.progress.gamesRequired} required games completed for you.`,
+      label: `Week ${data.welcome.currentWeek || data.schedule.deadlines.currentWeek}`,
+      title: 'Your season is in motion',
+      to: '/match-finder',
+    },
+  ]
+
+  if (data.communityActivity.latestResults[0]) {
+    const game = data.communityActivity.latestResults[0]
+    timeline.push({
+      body: `${game.mission} - ${formatObjectiveScore(game)}.`,
+      label: game.date || 'Latest Result',
+      title: `${formatPlayerName(game.winner, game.winnerDisplayName)} reports a win`,
+      to: `/games/${game.id}`,
+    })
+  }
+
+  if (data.communityActivity.news[0]) {
+    const news = data.communityActivity.news[0]
+    timeline.push({
+      body: news.body,
+      label: news.date || 'Commissioner News',
+      title: news.title,
+      to: news.link || '/news',
+    })
+  }
+
+  if (data.opponentTracker.progress.completionPercentage > 0) {
+    timeline.push({
+      body: `${data.opponentTracker.progress.gamesRemaining} games remain on your slate.`,
+      label: 'Season Progress',
+      title: `${data.opponentTracker.progress.completionPercentage}% complete`,
+      to: '/match-finder',
+    })
+  }
+
+  return timeline.slice(0, 4)
+}
+
+function buildRecordSpotlight(
+  data: CommunityCommandCenterData,
+): LeaguePersonalityItem | null {
+  const achievement = data.communityActivity.latestAchievements[0]
+
+  if (achievement) {
+    return {
+      body: achievement.body,
+      label: achievement.type || 'Achievement',
+      title: achievement.title,
+      to: achievement.link || '/notifications',
+    }
+  }
+
+  const result = data.communityActivity.latestResults[0]
+
+  if (!result) {
+    return null
+  }
+
+  return {
+    body: `${result.mission} produced a ${formatObjectiveScore(result)} result.`,
+    label: 'Record Spotlight',
+    title: 'Latest completed battle',
+    to: `/games/${result.id}`,
+  }
+}
+
+function buildCommunitySpotlight(
+  data: CommunityCommandCenterData,
+): LeaguePersonalityItem | null {
+  const result = data.communityActivity.latestResults[0]
+
+  if (result) {
+    return {
+      body: `${formatPlayerName(result.winner, result.winnerDisplayName)} was the latest player to report a result.`,
+      label: 'Community Spotlight',
+      title: formatPlayerName(result.winner, result.winnerDisplayName),
+      to: `/players/${encodeURIComponent(result.winner)}`,
+    }
+  }
+
+  if (data.opponentTracker.remaining[0]) {
+    const opponent = data.opponentTracker.remaining[0]
+
+    return {
+      body: opponent.availabilitySummary || 'No availability added yet.',
+      label: 'Opponent Spotlight',
+      title: formatPlayerName(opponent.player, opponent.displayName),
+      to: opponent.scheduleLink || `/match-finder?opponent=${encodeURIComponent(opponent.player)}`,
+    }
+  }
+
+  return null
 }
 
 function getPlayerHomePriority(data: CommunityCommandCenterData) {
@@ -1305,6 +1638,7 @@ function QuickNavigation() {
   const links = [
     ['Standings', '/standings'],
     ['Match Finder', '/match-finder'],
+    ['Rivalries', '/rivalries'],
     ['Players', '/players'],
     ['Factions', '/factions'],
     ['Missions', '/missions'],

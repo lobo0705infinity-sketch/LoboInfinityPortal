@@ -7,6 +7,11 @@ Open the Dashboard after signing in to see your daily league home screen.
 The Player Home Dashboard highlights:
 
 - Your next priority.
+- A dynamic league briefing.
+- League headlines.
+- Featured battle or recommended matchup.
+- Season story timeline.
+- Record and community spotlights.
 - Upcoming accepted matches.
 - Pending match requests.
 - Season progress.
@@ -16,6 +21,14 @@ The Player Home Dashboard highlights:
 - Quick actions for submitting games, scheduling matches, updating availability, standings, Match Finder, and your profile.
 
 If no match is scheduled, use the next priority or remaining opponents cards to open Match Finder and send a request. If your availability is missing, update it so recommendations can use your preferred days and time window.
+
+## Rivalry Room
+
+Open:
+
+`/rivalries`
+
+Rivalries are generated only from submitted league games. A matchup appears once it has enough repeated head-to-head history in the current data feed. The page shows head-to-head record, TP, OP, VP, average VP margin, and recent meetings.
 
 ## Match Finder
 

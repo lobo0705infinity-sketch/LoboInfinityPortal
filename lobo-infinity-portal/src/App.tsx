@@ -30,6 +30,7 @@ const MyProfile = lazy(() => import('./pages/MyProfile'))
 const PlayerComparison = lazy(() => import('./pages/PlayerComparison'))
 const PlayerProfile = lazy(() => import('./pages/PlayerProfile'))
 const Players = lazy(() => import('./pages/Players'))
+const Rivalries = lazy(() => import('./pages/Rivalries'))
 const Rules = lazy(() => import('./pages/Rules'))
 const Standings = lazy(() => import('./pages/Standings'))
 const StreamedGames = lazy(() => import('./pages/StreamedGames'))
@@ -52,6 +53,7 @@ function App() {
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/standings" element={<Standings />} />
                 <Route path="/players" element={<Players />} />
+                <Route path="/rivalries" element={<Rivalries />} />
                 <Route path="/match-finder" element={<MatchFinder />} />
                 <Route path="/compare" element={<PlayerComparison />} />
                 <Route path="/players/:playerName" element={<PlayerProfile />} />

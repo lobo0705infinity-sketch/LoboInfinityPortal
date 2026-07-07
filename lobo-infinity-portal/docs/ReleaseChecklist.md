@@ -94,6 +94,12 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] Verify Player Home Upcoming Requests
 - [ ] Verify Player Home Remaining Opponents
 - [ ] Verify Player Home Quick Actions
+- [ ] Verify League Personality Hero
+- [ ] Verify League Headlines
+- [ ] Verify Featured Match
+- [ ] Verify Season Story Timeline
+- [ ] Verify Rivalry Room
+- [ ] Verify No Fabricated Statistics
 - [ ] Verify Community Command Center
 - [ ] Verify Active Events
 - [ ] Verify Opponent Tracker
