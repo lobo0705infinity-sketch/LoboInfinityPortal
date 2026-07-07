@@ -132,7 +132,37 @@ function Diagnostics() {
             <tbody>
               <tr>
                 <th>Status</th>
-                <td>{auth.authenticated ? 'Authenticated' : 'Not authenticated'}</td>
+                <td>
+                  {auth.authState === 'initializing'
+                    ? 'Initializing'
+                    : auth.authenticated
+                      ? 'Authenticated'
+                      : 'Not authenticated'}
+                </td>
+              </tr>
+              <tr>
+                <th>Initialization Duration</th>
+                <td>{auth.initialization.totalMs || 0} ms</td>
+              </tr>
+              <tr>
+                <th>Settings Load</th>
+                <td>{auth.initialization.settingsMs || 0} ms</td>
+              </tr>
+              <tr>
+                <th>Google Ready</th>
+                <td>{auth.initialization.googleReadyMs || 0} ms</td>
+              </tr>
+              <tr>
+                <th>Credential Restore</th>
+                <td>{auth.initialization.googleCredentialMs || 0} ms</td>
+              </tr>
+              <tr>
+                <th>Session Verification</th>
+                <td>{auth.initialization.sessionVerificationMs || 0} ms</td>
+              </tr>
+              <tr>
+                <th>Initialization Completed</th>
+                <td>{auth.initialization.completedAt || 'Not reported'}</td>
               </tr>
               <tr>
                 <th>Stage</th>

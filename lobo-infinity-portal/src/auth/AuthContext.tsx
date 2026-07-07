@@ -58,11 +58,13 @@ declare global {
 
 type AuthContextValue = {
   authenticated: boolean
+  authState: 'authenticated' | 'initializing' | 'unauthenticated'
   code: string
   diagnostics: Record<string, unknown>
   error: string
   googleReady: boolean
   hasPermission: (permission: string) => boolean
+  initialization: AuthInitializationMetrics
   isAtLeastRole: (role: UserRole) => boolean
   oauthConfigured: boolean
   permissions: PortalPermissions
@@ -72,6 +74,15 @@ type AuthContextValue = {
   stage: string
   status: 'loading' | 'ready'
   user: PortalUser
+}
+
+type AuthInitializationMetrics = {
+  completedAt: string
+  googleCredentialMs: number
+  googleReadyMs: number
+  sessionVerificationMs: number
+  settingsMs: number
+  totalMs: number
 }
 
 const roleOrder: UserRole[] = [
@@ -106,6 +117,16 @@ const guestUser: PortalUser = {
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 const authStorageKey = 'lobo-google-id-token'
+const googleInitializationTimeoutMs = 1200
+
+const initialInitializationMetrics: AuthInitializationMetrics = {
+  completedAt: '',
+  googleCredentialMs: 0,
+  googleReadyMs: 0,
+  sessionVerificationMs: 0,
+  settingsMs: 0,
+  totalMs: 0,
+}
 
 const terminalAuthCodes = new Set([
   'AUTH_EMAIL_UNVERIFIED',
@@ -134,6 +155,9 @@ function AuthProvider({ children }: { children: ReactNode }) {
   })
   const [status, setStatus] = useState<'loading' | 'ready'>('loading')
   const [googleReady, setGoogleReady] = useState(false)
+  const [initialization, setInitialization] = useState<AuthInitializationMetrics>(
+    initialInitializationMetrics,
+  )
   const clientIdRef = useRef(import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '')
   const googleInitializedClientIdRef = useRef('')
   const googlePromptedRef = useRef(false)
@@ -141,30 +165,138 @@ function AuthProvider({ children }: { children: ReactNode }) {
 
   const applyCredential = useCallback(async (credential: string) => {
     const start = performance.now()
+    setStatus('loading')
     recordClientDiagnostic('oauth', 'attempt', 0, 'credential_received')
     window.localStorage.setItem(authStorageKey, credential)
     setApiAuthToken(credential)
-    const nextSession = await getSession()
-    recordClientDiagnostic(
-      'oauth',
-      nextSession.authenticated ? 'success' : 'failure',
-      performance.now() - start,
-      `${nextSession.stage || 'session'}:${nextSession.code || 'NO_CODE'}`,
-    )
 
-    if (
-      !nextSession.authenticated &&
-      shouldClearStoredAuthToken(nextSession.code)
-    ) {
+    try {
+      const nextSession = await getSession()
+      recordClientDiagnostic(
+        'oauth',
+        nextSession.authenticated ? 'success' : 'failure',
+        performance.now() - start,
+        `${nextSession.stage || 'session'}:${nextSession.code || 'NO_CODE'}`,
+      )
+
+      if (
+        !nextSession.authenticated &&
+        shouldClearStoredAuthToken(nextSession.code)
+      ) {
+        window.localStorage.removeItem(authStorageKey)
+        setApiAuthToken('')
+      }
+
+      setSession(nextSession)
+    } catch (error) {
+      recordClientDiagnostic(
+        'oauth',
+        'failure',
+        performance.now() - start,
+        error instanceof Error ? error.message : 'session_request_failed',
+      )
       window.localStorage.removeItem(authStorageKey)
       setApiAuthToken('')
+      setSession((current) => ({
+        ...current,
+        authenticated: false,
+        code: 'AUTH_SESSION_REQUEST_FAILED',
+        diagnostics: {},
+        error: error instanceof Error ? error.message : 'Session unavailable.',
+        permissions: {},
+        stage: 'frontendSession',
+        user: guestUser,
+      }))
+    } finally {
+      setInitialization((current) => ({
+        ...current,
+        completedAt: new Date().toISOString(),
+        googleCredentialMs: Math.round(performance.now() - start),
+      }))
+      setStatus('ready')
+    }
+  }, [])
+
+  const ensureGoogleClientReady = useCallback(async () => {
+    const start = performance.now()
+    const clientId = clientIdRef.current
+
+    if (!clientId) {
+      return 0
     }
 
-    setSession(nextSession)
-  }, [])
+    function initializeGoogle() {
+      if (!window.google || !clientId) {
+        return false
+      }
+
+      if (googleInitializedClientIdRef.current !== clientId) {
+        window.google.accounts.id.initialize({
+          auto_select: true,
+          callback: (response) => {
+            if (response.credential) {
+              void applyCredential(response.credential)
+            }
+          },
+          client_id: clientId,
+        })
+        googleInitializedClientIdRef.current = clientId
+      }
+
+      setGoogleReady(true)
+
+      if (!googlePromptedRef.current) {
+        googlePromptedRef.current = true
+        window.google.accounts.id.prompt()
+      }
+
+      return true
+    }
+
+    if (initializeGoogle()) {
+      return performance.now() - start
+    }
+
+    const existing = document.querySelector<HTMLScriptElement>(
+      'script[src="https://accounts.google.com/gsi/client"]',
+    )
+
+    await new Promise<void>((resolve) => {
+      const timeout = window.setTimeout(resolve, googleInitializationTimeoutMs)
+
+      function finish() {
+        window.clearTimeout(timeout)
+        resolve()
+      }
+
+      if (existing) {
+        existing.addEventListener('load', finish, { once: true })
+        existing.addEventListener('error', finish, { once: true })
+        return
+      }
+
+      if (googleScriptRequestedRef.current) {
+        return
+      }
+
+      googleScriptRequestedRef.current = true
+      const script = document.createElement('script')
+      script.async = true
+      script.defer = true
+      script.onload = finish
+      script.onerror = finish
+      script.src = 'https://accounts.google.com/gsi/client'
+      document.head.appendChild(script)
+    })
+
+    initializeGoogle()
+
+    return performance.now() - start
+  }, [applyCredential])
 
   const refreshSession = useCallback(async () => {
     const start = performance.now()
+    setStatus('loading')
     const storedToken = window.localStorage.getItem(authStorageKey) ?? ''
     setApiAuthToken(storedToken)
 
@@ -177,6 +309,11 @@ function AuthProvider({ children }: { children: ReactNode }) {
         `${nextSession.stage || 'session'}:${nextSession.code || 'NO_CODE'}`,
       )
       setSession(nextSession)
+      setInitialization((current) => ({
+        ...current,
+        completedAt: new Date().toISOString(),
+        sessionVerificationMs: Math.round(performance.now() - start),
+      }))
 
       if (
         !nextSession.authenticated &&
@@ -211,8 +348,15 @@ function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     async function bootstrap() {
+      const startedAt = performance.now()
+      let settingsMs = 0
+      let googleReadyMs = 0
+      let sessionVerificationMs = 0
+
       try {
+        const settingsStartedAt = performance.now()
         const settings = await getSettings()
+        settingsMs = performance.now() - settingsStartedAt
         clientIdRef.current =
           clientIdRef.current || settings.googleOAuthClientId || ''
         setApiOAuthClientId(clientIdRef.current)
@@ -221,71 +365,33 @@ function AuthProvider({ children }: { children: ReactNode }) {
         setApiOAuthClientId(clientIdRef.current)
       }
 
+      googleReadyMs = await ensureGoogleClientReady()
+
+      const sessionStartedAt = performance.now()
       await refreshSession()
+      sessionVerificationMs = performance.now() - sessionStartedAt
+
+      const totalMs = performance.now() - startedAt
+      setInitialization((current) => ({
+        ...current,
+        completedAt: new Date().toISOString(),
+        googleReadyMs: Math.round(googleReadyMs),
+        sessionVerificationMs: Math.round(sessionVerificationMs),
+        settingsMs: Math.round(settingsMs),
+        totalMs: Math.round(totalMs),
+      }))
+      recordClientDiagnostic(
+        'authInitialization',
+        'success',
+        totalMs,
+        `settings:${Math.round(settingsMs)} google:${Math.round(
+          googleReadyMs,
+        )} session:${Math.round(sessionVerificationMs)}`,
+      )
     }
 
     void bootstrap()
-  }, [refreshSession])
-
-  useEffect(() => {
-    if (!clientIdRef.current) {
-      return
-    }
-
-    const existing = document.querySelector<HTMLScriptElement>(
-      'script[src="https://accounts.google.com/gsi/client"]',
-    )
-
-    function initializeGoogle() {
-      const clientId = clientIdRef.current
-
-      if (!window.google || !clientId) {
-        return
-      }
-
-      if (googleInitializedClientIdRef.current !== clientId) {
-        window.google.accounts.id.initialize({
-          auto_select: true,
-          callback: (response) => {
-            if (response.credential) {
-              void applyCredential(response.credential)
-            }
-          },
-          client_id: clientId,
-        })
-        googleInitializedClientIdRef.current = clientId
-      }
-
-      setGoogleReady(true)
-
-      if (!googlePromptedRef.current) {
-        googlePromptedRef.current = true
-        window.google.accounts.id.prompt()
-      }
-    }
-
-    if (window.google) {
-      initializeGoogle()
-      return
-    }
-
-    if (existing) {
-      existing.addEventListener('load', initializeGoogle, { once: true })
-      return
-    }
-
-    if (googleScriptRequestedRef.current) {
-      return
-    }
-
-    googleScriptRequestedRef.current = true
-    const script = document.createElement('script')
-    script.async = true
-    script.defer = true
-    script.onload = initializeGoogle
-    script.src = 'https://accounts.google.com/gsi/client'
-    document.head.appendChild(script)
-  }, [applyCredential, status])
+  }, [ensureGoogleClientReady, refreshSession])
 
   const signOut = useCallback(() => {
     window.localStorage.removeItem(authStorageKey)
@@ -321,11 +427,18 @@ function AuthProvider({ children }: { children: ReactNode }) {
   const value = useMemo<AuthContextValue>(
     () => ({
       authenticated: session.authenticated,
+      authState:
+        status === 'loading'
+          ? 'initializing'
+          : session.authenticated
+            ? 'authenticated'
+            : 'unauthenticated',
       code: session.code,
       diagnostics: session.diagnostics,
       error: session.error,
       googleReady,
       hasPermission: (permission) => session.permissions[permission] === true,
+      initialization,
       isAtLeastRole: (role) =>
         roleOrder.indexOf(session.user.role) >= roleOrder.indexOf(role),
       oauthConfigured: Boolean(clientIdRef.current) || session.oauthConfigured,
@@ -337,7 +450,15 @@ function AuthProvider({ children }: { children: ReactNode }) {
       status,
       user: session.user,
     }),
-    [googleReady, refreshSession, renderSignInButton, session, signOut, status],
+    [
+      googleReady,
+      initialization,
+      refreshSession,
+      renderSignInButton,
+      session,
+      signOut,
+      status,
+    ],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

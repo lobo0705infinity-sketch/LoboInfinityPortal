@@ -1,6 +1,6 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import AuthProvider from './auth/AuthContext'
+import AuthProvider, { useAuth } from './auth/AuthContext'
 import Breadcrumbs from './components/Breadcrumbs'
 import DeepLinkRedirect from './components/DeepLinkRedirect'
 import Header from './components/Header'
@@ -41,58 +41,116 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <div className="app-shell">
-          <RouteMeta />
-          <UserActivityTracker />
-          <Sidebar />
-          <div className="app-main">
-            <Header />
-            <Breadcrumbs />
-            <Suspense fallback={<RouteLoading />}>
-              <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/standings" element={<Standings />} />
-                <Route path="/players" element={<Players />} />
-                <Route path="/rivalries" element={<Rivalries />} />
-                <Route path="/match-finder" element={<MatchFinder />} />
-                <Route path="/compare" element={<PlayerComparison />} />
-                <Route path="/players/:playerName" element={<PlayerProfile />} />
-                <Route path="/player/:playerName" element={<PlayerProfile />} />
-                <Route path="/career/:playerName" element={<DeepLinkRedirect target="career" />} />
-                <Route path="/games/:id" element={<GameDetails />} />
-                <Route path="/game/:id" element={<GameDetails />} />
-                <Route path="/factions" element={<Factions />} />
-                <Route path="/factions/:name" element={<FactionProfile />} />
-                <Route path="/faction/:name" element={<FactionProfile />} />
-                <Route path="/missions" element={<Missions />} />
-                <Route path="/missions/:missionName" element={<MissionProfile />} />
-                <Route path="/mission/:missionName" element={<MissionProfile />} />
-                <Route path="/season/:seasonName" element={<DeepLinkRedirect target="season" />} />
-                <Route path="/weekly-report" element={<DeepLinkRedirect target="weeklyReport" />} />
-                <Route path="/analytics" element={<Analytics />} />
-                <Route path="/hall-of-fame" element={<HallOfFame />} />
-                <Route path="/news" element={<CommissionerNews />} />
-                <Route path="/news/:id" element={<DeepLinkRedirect target="news" />} />
-                <Route path="/commissioner" element={<CommissionerDashboard />} />
-                <Route path="/diagnostics" element={<Diagnostics />} />
-                <Route path="/automation" element={<AutomationCenter />} />
-                <Route path="/integrity" element={<LeagueIntegrity />} />
-                <Route path="/notifications" element={<Notifications />} />
-                <Route path="/profile" element={<MyProfile />} />
-                <Route path="/achievement/:achievementId" element={<DeepLinkRedirect target="achievement" />} />
-                <Route path="/timeline" element={<Timeline />} />
-                <Route path="/streams" element={<StreamedGames />} />
-                <Route path="/stream/:id" element={<DeepLinkRedirect target="stream" />} />
-                <Route path="/army-lists" element={<ArmyLists />} />
-                <Route path="/army-list/:id" element={<DeepLinkRedirect target="armyLists" />} />
-                <Route path="/army-lists/submit" element={<SubmitArmyList />} />
-                <Route path="/rules" element={<Rules />} />
-              </Routes>
-            </Suspense>
-          </div>
-        </div>
+        <AuthShell />
       </BrowserRouter>
     </AuthProvider>
+  )
+}
+
+function AuthShell() {
+  const auth = useAuth()
+
+  if (auth.authState === 'initializing') {
+    return <AuthInitializationScreen />
+  }
+
+  return (
+    <div className="app-shell auth-ready">
+      <RouteMeta />
+      <UserActivityTracker />
+      <Sidebar />
+      <div className="app-main">
+        <Header />
+        <Breadcrumbs />
+        <Suspense fallback={<RouteLoading />}>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/standings" element={<Standings />} />
+            <Route path="/players" element={<Players />} />
+            <Route path="/rivalries" element={<Rivalries />} />
+            <Route path="/match-finder" element={<MatchFinder />} />
+            <Route path="/compare" element={<PlayerComparison />} />
+            <Route path="/players/:playerName" element={<PlayerProfile />} />
+            <Route path="/player/:playerName" element={<PlayerProfile />} />
+            <Route path="/career/:playerName" element={<DeepLinkRedirect target="career" />} />
+            <Route path="/games/:id" element={<GameDetails />} />
+            <Route path="/game/:id" element={<GameDetails />} />
+            <Route path="/factions" element={<Factions />} />
+            <Route path="/factions/:name" element={<FactionProfile />} />
+            <Route path="/faction/:name" element={<FactionProfile />} />
+            <Route path="/missions" element={<Missions />} />
+            <Route path="/missions/:missionName" element={<MissionProfile />} />
+            <Route path="/mission/:missionName" element={<MissionProfile />} />
+            <Route path="/season/:seasonName" element={<DeepLinkRedirect target="season" />} />
+            <Route path="/weekly-report" element={<DeepLinkRedirect target="weeklyReport" />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/hall-of-fame" element={<HallOfFame />} />
+            <Route path="/news" element={<CommissionerNews />} />
+            <Route path="/news/:id" element={<DeepLinkRedirect target="news" />} />
+            <Route path="/commissioner" element={<CommissionerDashboard />} />
+            <Route path="/diagnostics" element={<Diagnostics />} />
+            <Route path="/automation" element={<AutomationCenter />} />
+            <Route path="/integrity" element={<LeagueIntegrity />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/profile" element={<MyProfile />} />
+            <Route path="/achievement/:achievementId" element={<DeepLinkRedirect target="achievement" />} />
+            <Route path="/timeline" element={<Timeline />} />
+            <Route path="/streams" element={<StreamedGames />} />
+            <Route path="/stream/:id" element={<DeepLinkRedirect target="stream" />} />
+            <Route path="/army-lists" element={<ArmyLists />} />
+            <Route path="/army-list/:id" element={<DeepLinkRedirect target="armyLists" />} />
+            <Route path="/army-lists/submit" element={<SubmitArmyList />} />
+            <Route path="/rules" element={<Rules />} />
+          </Routes>
+        </Suspense>
+      </div>
+    </div>
+  )
+}
+
+function AuthInitializationScreen() {
+  const auth = useAuth()
+  const [isDelayed, setIsDelayed] = useState(false)
+
+  useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      setIsDelayed(true)
+    }, 4500)
+
+    return () => {
+      window.clearTimeout(timeout)
+    }
+  }, [])
+
+  return (
+    <main
+      aria-busy="true"
+      aria-live="polite"
+      className="auth-initialization-screen"
+    >
+      <section className="auth-initialization-card">
+        <p className="eyebrow">Lobo Command Network</p>
+        <h1>Authenticating Operative...</h1>
+        <div className="auth-initialization-meter" aria-hidden="true">
+          <span />
+        </div>
+        <p>
+          {isDelayed
+            ? 'Still connecting. This is taking longer than expected.'
+            : 'Checking League Credentials...'}
+        </p>
+        {isDelayed ? (
+          <div className="auth-initialization-actions">
+            <button onClick={() => void auth.refreshSession()} type="button">
+              Retry
+            </button>
+            <button onClick={auth.signOut} type="button">
+              Sign Out
+            </button>
+          </div>
+        ) : null}
+      </section>
+    </main>
   )
 }
 
