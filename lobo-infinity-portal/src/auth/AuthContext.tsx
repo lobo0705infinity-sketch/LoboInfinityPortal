@@ -16,7 +16,11 @@ import {
   type UserRole,
 } from '../services/api'
 import { getSession, getSettings } from '../services/lightApi'
-import { setApiAuthToken, setApiOAuthClientId } from '../services/apiCore'
+import {
+  recordClientDiagnostic,
+  setApiAuthToken,
+  setApiOAuthClientId,
+} from '../services/apiCore'
 
 type GoogleCredentialResponse = {
   credential?: string
@@ -54,6 +58,8 @@ declare global {
 
 type AuthContextValue = {
   authenticated: boolean
+  code: string
+  diagnostics: Record<string, unknown>
   error: string
   googleReady: boolean
   hasPermission: (permission: string) => boolean
@@ -63,6 +69,7 @@ type AuthContextValue = {
   refreshSession: () => Promise<void>
   renderSignInButton: (element: HTMLElement) => void
   signOut: () => void
+  stage: string
   status: 'loading' | 'ready'
   user: PortalUser
 }
@@ -100,12 +107,29 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 
 const authStorageKey = 'lobo-google-id-token'
 
+const terminalAuthCodes = new Set([
+  'AUTH_EMAIL_UNVERIFIED',
+  'AUTH_GOOGLE_TOKEN_AUDIENCE_MISMATCH',
+  'AUTH_GOOGLE_TOKEN_EXPIRED',
+  'AUTH_GOOGLE_TOKEN_INVALID',
+  'AUTH_GOOGLE_TOKEN_MISSING',
+  'AUTH_GOOGLE_TOKEN_MALFORMED',
+  'AUTH_OAUTH_CLIENT_MISSING',
+])
+
+function shouldClearStoredAuthToken(code: string) {
+  return code === '' || terminalAuthCodes.has(code)
+}
+
 function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<AuthSession>({
     authenticated: false,
+    code: '',
+    diagnostics: {},
     error: '',
     oauthConfigured: false,
     permissions: {},
+    stage: '',
     user: guestUser,
   })
   const [status, setStatus] = useState<'loading' | 'ready'>('loading')
@@ -116,11 +140,22 @@ function AuthProvider({ children }: { children: ReactNode }) {
   const googleScriptRequestedRef = useRef(false)
 
   const applyCredential = useCallback(async (credential: string) => {
+    const start = performance.now()
+    recordClientDiagnostic('oauth', 'attempt', 0, 'credential_received')
     window.localStorage.setItem(authStorageKey, credential)
     setApiAuthToken(credential)
     const nextSession = await getSession()
+    recordClientDiagnostic(
+      'oauth',
+      nextSession.authenticated ? 'success' : 'failure',
+      performance.now() - start,
+      `${nextSession.stage || 'session'}:${nextSession.code || 'NO_CODE'}`,
+    )
 
-    if (!nextSession.authenticated) {
+    if (
+      !nextSession.authenticated &&
+      shouldClearStoredAuthToken(nextSession.code)
+    ) {
       window.localStorage.removeItem(authStorageKey)
       setApiAuthToken('')
     }
@@ -129,25 +164,44 @@ function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const refreshSession = useCallback(async () => {
+    const start = performance.now()
     const storedToken = window.localStorage.getItem(authStorageKey) ?? ''
     setApiAuthToken(storedToken)
 
     try {
       const nextSession = await getSession()
+      recordClientDiagnostic(
+        'oauthRefresh',
+        nextSession.authenticated ? 'success' : 'failure',
+        performance.now() - start,
+        `${nextSession.stage || 'session'}:${nextSession.code || 'NO_CODE'}`,
+      )
       setSession(nextSession)
 
-      if (!nextSession.authenticated) {
+      if (
+        !nextSession.authenticated &&
+        shouldClearStoredAuthToken(nextSession.code)
+      ) {
         window.localStorage.removeItem(authStorageKey)
         setApiAuthToken('')
       }
     } catch (error) {
+      recordClientDiagnostic(
+        'oauthRefresh',
+        'failure',
+        performance.now() - start,
+        error instanceof Error ? error.message : 'session_request_failed',
+      )
       window.localStorage.removeItem(authStorageKey)
       setApiAuthToken('')
       setSession((current) => ({
         ...current,
         authenticated: false,
+        code: 'AUTH_SESSION_REQUEST_FAILED',
+        diagnostics: {},
         error: error instanceof Error ? error.message : 'Session unavailable.',
         permissions: {},
+        stage: 'frontendSession',
         user: guestUser,
       }))
     } finally {
@@ -240,8 +294,11 @@ function AuthProvider({ children }: { children: ReactNode }) {
     setSession((current) => ({
       ...current,
       authenticated: false,
+      code: '',
+      diagnostics: {},
       error: '',
       permissions: {},
+      stage: '',
       user: guestUser,
     }))
   }, [])
@@ -264,6 +321,8 @@ function AuthProvider({ children }: { children: ReactNode }) {
   const value = useMemo<AuthContextValue>(
     () => ({
       authenticated: session.authenticated,
+      code: session.code,
+      diagnostics: session.diagnostics,
       error: session.error,
       googleReady,
       hasPermission: (permission) => session.permissions[permission] === true,
@@ -274,6 +333,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
       refreshSession,
       renderSignInButton,
       signOut,
+      stage: session.stage,
       status,
       user: session.user,
     }),

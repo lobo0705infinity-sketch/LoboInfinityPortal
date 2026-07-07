@@ -64,6 +64,9 @@ function getAuthSession(e) {
   return jsonOutput({
     success: true,
     authenticated: auth.authenticated,
+    code: auth.code || "",
+    stage: auth.stage || "",
+    diagnostics: auth.diagnostics || {},
     user: auth.user,
     permissions: getRolePermissions(auth.user.role),
     oauthConfigured:
@@ -264,6 +267,9 @@ function requireApiPermission(e, permission, handler) {
     return jsonOutput({
       success: false,
       code: "AUTH_REQUIRED",
+      authCode: auth.code || "AUTH_REQUIRED",
+      stage: auth.stage || "authentication",
+      diagnostics: auth.diagnostics || {},
       error: auth.error || "Authentication is required.",
       requiredRole: PERMISSION_MIN_ROLE[permission] || USER_ROLES.MEMBER
     });
@@ -272,6 +278,9 @@ function requireApiPermission(e, permission, handler) {
     return jsonOutput({
       success: false,
       code: "USER_DISABLED",
+      authCode: auth.code || "AUTH_USER_DISABLED",
+      stage: "playerAuthorization",
+      diagnostics: auth.diagnostics || {},
       error: "This Google account is not enabled for league access.",
       requiredRole: PERMISSION_MIN_ROLE[permission] || USER_ROLES.MEMBER
     });
@@ -297,8 +306,17 @@ function getRequestUser(e) {
   if (token === "")
     return {
       authenticated: false,
+      code: "AUTH_GOOGLE_TOKEN_MISSING",
+      stage: "frontendCredential",
       user: buildGuestUser(),
-      error: "Sign in with Google to continue."
+      error: "Sign in with Google to continue.",
+      diagnostics:
+        buildAuthDiagnostics(
+          "frontendCredential",
+          "AUTH_GOOGLE_TOKEN_MISSING",
+          "No Google credential was provided with the session request.",
+          {}
+        )
     };
 
   const verified =
@@ -310,8 +328,11 @@ function getRequestUser(e) {
   if (!verified.valid)
     return {
       authenticated: false,
+      code: verified.code || "AUTH_GOOGLE_TOKEN_INVALID",
+      stage: verified.stage || "googleTokenVerification",
       user: buildGuestUser(),
-      error: verified.error || "Google identity could not be verified."
+      error: verified.error || "Google identity could not be verified.",
+      diagnostics: verified.diagnostics || {}
     };
 
   const sheet =
@@ -378,11 +399,48 @@ function getRequestUser(e) {
       rowNumber
     );
 
+  if (
+    !user.enabled &&
+    getAuthString(user.leaguePlayer) === ""
+  )
+    return {
+      authenticated: false,
+      code: "AUTH_EMAIL_NOT_REGISTERED",
+      stage: "leaguePlayerResolution",
+      user: user,
+      error: "Your Google account is not currently linked to a league player. Please contact the Commissioner.",
+      diagnostics:
+        buildAuthDiagnostics(
+          "leaguePlayerResolution",
+          "AUTH_EMAIL_NOT_REGISTERED",
+          "The Google email did not match an active Players sheet row.",
+          {
+            email: verified.email,
+            playerLookup: leagueIdentity,
+            userRow: rowNumber
+          }
+        )
+    };
+
   if (!user.enabled)
     return {
       authenticated: false,
+      code: "AUTH_USER_DISABLED",
+      stage: "playerAuthorization",
       user: user,
-      error: "This Google account exists but is not enabled."
+      error: "This Google account exists but is not enabled.",
+      diagnostics:
+        buildAuthDiagnostics(
+          "playerAuthorization",
+          "AUTH_USER_DISABLED",
+          "The user row exists but is disabled.",
+          {
+            email: verified.email,
+            leaguePlayer: user.leaguePlayer || "",
+            userRow: rowNumber,
+            playerLookup: leagueIdentity
+          }
+        )
     };
 
   syncUserIdentity(
@@ -394,6 +452,27 @@ function getRequestUser(e) {
 
   return {
     authenticated: true,
+    code: "AUTH_OK",
+    stage: "sessionValidation",
+    diagnostics:
+      buildAuthDiagnostics(
+        "sessionValidation",
+        "AUTH_OK",
+        "Google credential verified and league user resolved.",
+        {
+          email: verified.email,
+          leaguePlayer:
+            getAuthString(
+              readUserRow(
+                sheet,
+                columns,
+                rowNumber
+              ).leaguePlayer
+            ),
+          userRow: rowNumber,
+          playerLookup: leagueIdentity
+        }
+      ),
     user:
       readUserRow(
         sheet,
@@ -445,6 +524,43 @@ function verifyGoogleIdentityToken(token, requestClientId) {
     getAuthString(requestClientId) ||
     getAuthString(settings.googleOAuthClientId);
 
+  const tokenDiagnostics =
+    getGoogleTokenDiagnostics(token);
+
+  if (configuredClientId === "")
+    return buildAuthVerificationFailure(
+      "AUTH_OAUTH_CLIENT_MISSING",
+      "Google OAuth Client ID is not configured.",
+      tokenDiagnostics,
+      {
+        correctiveAction: "Configure the Google OAuth Client ID in portal settings."
+      }
+    );
+
+  if (tokenDiagnostics.malformed)
+    return buildAuthVerificationFailure(
+      "AUTH_GOOGLE_TOKEN_MALFORMED",
+      "Google credential could not be decoded.",
+      tokenDiagnostics,
+      {
+        correctiveAction: "Sign out, refresh the page, and sign in with Google again."
+      }
+    );
+
+  if (
+    tokenDiagnostics.exp !== "" &&
+    Number(tokenDiagnostics.exp) + 120 <
+      Math.floor(Date.now() / 1000)
+  )
+    return buildAuthVerificationFailure(
+      "AUTH_GOOGLE_TOKEN_EXPIRED",
+      "Google credential has expired.",
+      tokenDiagnostics,
+      {
+        correctiveAction: "Refresh the page and sign in again."
+      }
+    );
+
   const cache =
     CacheService.getScriptCache();
 
@@ -475,44 +591,85 @@ function verifyGoogleIdentityToken(token, requestClientId) {
       );
 
     if (response.getResponseCode() !== 200)
-      return {
-        valid: false,
-        error: "Google token verification failed."
-      };
+      return buildAuthVerificationFailure(
+        response.getResponseCode() >= 500
+          ? "AUTH_GOOGLE_TOKENINFO_UNAVAILABLE"
+          : "AUTH_GOOGLE_TOKEN_INVALID",
+        response.getResponseCode() >= 500
+          ? "Google token verification service is temporarily unavailable."
+          : "Google credential could not be verified.",
+        tokenDiagnostics,
+        {
+          httpStatus: response.getResponseCode(),
+          tokenInfoError:
+            getAuthTokenInfoError(response.getContentText()),
+          correctiveAction:
+            response.getResponseCode() >= 500
+              ? "Refresh the page and try signing in again."
+              : "Sign out, refresh the page, and sign in with Google again."
+        }
+      );
 
     const payload =
       JSON.parse(response.getContentText());
 
     if (
-      configuredClientId === ""
-    )
-      return {
-        valid: false,
-        error: "Google OAuth Client ID is not configured."
-      };
-
-    if (
       payload.aud !== configuredClientId
     )
-      return {
-        valid: false,
-        error: "Google token audience does not match the configured OAuth client."
-      };
+      return buildAuthVerificationFailure(
+        "AUTH_GOOGLE_TOKEN_AUDIENCE_MISMATCH",
+        "Google token audience does not match the configured OAuth client.",
+        getGoogleTokenPayloadDiagnostics(payload),
+        {
+          configuredAudienceHash:
+            hashAuthDiagnosticValue(configuredClientId),
+          correctiveAction:
+            "Confirm the deployed frontend and portal settings use the same Google OAuth Client ID."
+        }
+      );
+
+    if (
+      getAuthString(payload.iss) !== "" &&
+      getAuthString(payload.iss) !== "accounts.google.com" &&
+      getAuthString(payload.iss) !== "https://accounts.google.com"
+    )
+      return buildAuthVerificationFailure(
+        "AUTH_GOOGLE_TOKEN_ISSUER_INVALID",
+        "Google token issuer is invalid.",
+        getGoogleTokenPayloadDiagnostics(payload),
+        {
+          correctiveAction: "Sign in again with Google."
+        }
+      );
 
     if (
       getAuthString(payload.email) === "" ||
       payload.email_verified === "false"
     )
-      return {
-        valid: false,
-        error: "Google email is missing or unverified."
-      };
+      return buildAuthVerificationFailure(
+        "AUTH_EMAIL_UNVERIFIED",
+        "Google email is missing or unverified.",
+        getGoogleTokenPayloadDiagnostics(payload),
+        {
+          correctiveAction:
+            "Use a Google account with a verified email address."
+        }
+      );
 
     const verified = {
       valid: true,
+      code: "AUTH_GOOGLE_TOKEN_VERIFIED",
+      stage: "googleTokenVerification",
       email: getAuthString(payload.email).toLowerCase(),
       displayName: getAuthString(payload.name),
-      avatarUrl: getAuthString(payload.picture)
+      avatarUrl: getAuthString(payload.picture),
+      diagnostics:
+        buildAuthDiagnostics(
+          "googleTokenVerification",
+          "AUTH_GOOGLE_TOKEN_VERIFIED",
+          "Google token verified successfully.",
+          getGoogleTokenPayloadDiagnostics(payload)
+        )
     };
 
     cache.put(
@@ -528,10 +685,142 @@ function verifyGoogleIdentityToken(token, requestClientId) {
 
     return {
       valid: false,
-      error: String(err)
+      code: "AUTH_GOOGLE_TOKEN_VERIFICATION_EXCEPTION",
+      stage: "googleTokenVerification",
+      error: "Google credential verification failed unexpectedly.",
+      diagnostics:
+        buildAuthDiagnostics(
+          "googleTokenVerification",
+          "AUTH_GOOGLE_TOKEN_VERIFICATION_EXCEPTION",
+          "Google token verification threw an exception.",
+          {
+            exception: String(err),
+            token: tokenDiagnostics
+          }
+        )
     };
 
   }
+
+}
+
+function buildAuthVerificationFailure(code, message, tokenDiagnostics, details) {
+
+  return {
+    valid: false,
+    code: code,
+    stage: "googleTokenVerification",
+    error: message,
+    diagnostics:
+      buildAuthDiagnostics(
+        "googleTokenVerification",
+        code,
+        message,
+        Object.assign(
+          {
+            token: tokenDiagnostics || {}
+          },
+          details || {}
+        )
+      )
+  };
+
+}
+
+function buildAuthDiagnostics(stage, code, message, details) {
+
+  return {
+    timestamp: getAuthTimestamp(),
+    stage: stage,
+    code: code,
+    message: message,
+    details: details || {}
+  };
+
+}
+
+function getGoogleTokenDiagnostics(token) {
+
+  const parts =
+    getAuthString(token).split(".");
+
+  if (parts.length < 2)
+    return {
+      malformed: true
+    };
+
+  try {
+    const payloadText =
+      Utilities.newBlob(
+        Utilities.base64DecodeWebSafe(parts[1])
+      ).getDataAsString();
+
+    return getGoogleTokenPayloadDiagnostics(
+      JSON.parse(payloadText)
+    );
+  }
+  catch (err) {
+    return {
+      malformed: true,
+      exception: String(err)
+    };
+  }
+
+}
+
+function getGoogleTokenPayloadDiagnostics(payload) {
+
+  return {
+    audHash:
+      hashAuthDiagnosticValue(
+        getAuthString(payload.aud)
+      ),
+    email:
+      getAuthString(payload.email)
+        .toLowerCase(),
+    emailVerified:
+      String(payload.email_verified) === "true" ||
+      payload.email_verified === true,
+    exp: getAuthString(payload.exp),
+    hd: getAuthString(payload.hd),
+    iss: getAuthString(payload.iss),
+    subHash:
+      hashAuthDiagnosticValue(
+        getAuthString(payload.sub)
+      )
+  };
+
+}
+
+function getAuthTokenInfoError(content) {
+
+  try {
+    const payload =
+      JSON.parse(content);
+
+    return getAuthString(payload.error_description) ||
+      getAuthString(payload.error);
+  }
+  catch (err) {
+    return "";
+  }
+
+}
+
+function hashAuthDiagnosticValue(value) {
+
+  const text =
+    getAuthString(value);
+
+  if (text === "")
+    return "";
+
+  return Utilities.base64EncodeWebSafe(
+    Utilities.computeDigest(
+      Utilities.DigestAlgorithm.SHA_256,
+      text
+    )
+  ).slice(0, 16);
 
 }
 
@@ -776,7 +1065,9 @@ function getAuthLeagueIdentityByEmail(email) {
     return {
       player: "",
       displayName: "",
-      division: ""
+      division: "",
+      matches: 0,
+      status: "NO_EMAIL"
     };
 
   const spreadsheet =
@@ -789,7 +1080,9 @@ function getAuthLeagueIdentityByEmail(email) {
     return {
       player: "",
       displayName: "",
-      division: ""
+      division: "",
+      matches: 0,
+      status: "PLAYERS_SHEET_MISSING"
     };
 
   const values =
@@ -801,7 +1094,9 @@ function getAuthLeagueIdentityByEmail(email) {
     return {
       player: "",
       displayName: "",
-      division: ""
+      division: "",
+      matches: 0,
+      status: "PLAYERS_SHEET_EMPTY"
     };
 
   const headers =
@@ -829,8 +1124,12 @@ function getAuthLeagueIdentityByEmail(email) {
     return {
       player: "",
       displayName: "",
-      division: ""
+      division: "",
+      matches: 0,
+      status: "PLAYERS_HEADERS_MISSING"
     };
+
+  const matches = [];
 
   for (
     let index = 1;
@@ -842,7 +1141,7 @@ function getAuthLeagueIdentityByEmail(email) {
       getAuthString(values[index][emailCol])
         .toLowerCase() === normalized
     )
-      return {
+      matches.push({
         player: getAuthString(values[index][playerCol]),
         displayName:
           displayNameCol === -1
@@ -852,15 +1151,33 @@ function getAuthLeagueIdentityByEmail(email) {
         division:
           divisionCol === -1
             ? ""
-            : getAuthString(values[index][divisionCol])
-      };
+            : getAuthString(values[index][divisionCol]),
+        row: index + 1
+      });
 
   }
+
+  if (matches.length > 0)
+    return {
+      player: matches[0].player,
+      displayName: matches[0].displayName,
+      division: matches[0].division,
+      matchRows:
+        matches.map(function(match) {
+          return match.row;
+        }),
+      matches: matches.length,
+      status:
+        matches.length > 1
+          ? "DUPLICATE_MATCH"
+          : "MATCH"
+    };
 
   return {
     player: "",
     displayName: "",
-    division: ""
+    matches: 0,
+    status: "NO_MATCH"
   };
 
 }

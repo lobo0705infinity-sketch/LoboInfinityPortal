@@ -122,6 +122,51 @@ function Diagnostics() {
         <MetricCard label="Resources" value={snapshot.resourceCount} />
       </section>
 
+      <section className="panel operations-panel">
+        <div className="panel-heading">
+          <p className="eyebrow">OAuth Diagnostics</p>
+          <h2>Current Authentication Session</h2>
+        </div>
+        <div className="operations-table-wrap">
+          <table className="operations-table">
+            <tbody>
+              <tr>
+                <th>Status</th>
+                <td>{auth.authenticated ? 'Authenticated' : 'Not authenticated'}</td>
+              </tr>
+              <tr>
+                <th>Stage</th>
+                <td>{auth.stage || 'Not reported'}</td>
+              </tr>
+              <tr>
+                <th>Code</th>
+                <td>{auth.code || 'Not reported'}</td>
+              </tr>
+              <tr>
+                <th>League Player</th>
+                <td>{auth.user.leaguePlayer || 'Not linked'}</td>
+              </tr>
+              <tr>
+                <th>Email</th>
+                <td>{auth.user.email || 'Not available'}</td>
+              </tr>
+              <tr>
+                <th>Error</th>
+                <td>{auth.error || 'None'}</td>
+              </tr>
+              <tr>
+                <th>Diagnostics</th>
+                <td>
+                  <pre className="diagnostics-json">
+                    {JSON.stringify(auth.diagnostics || {}, null, 2)}
+                  </pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       {platform ? (
         <>
           <section className="panel operations-panel">

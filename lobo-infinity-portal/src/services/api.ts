@@ -95,10 +95,13 @@ export type PortalPermissions = Record<string, boolean>
 
 export type AuthSession = {
   authenticated: boolean
+  code: string
+  diagnostics: Record<string, unknown>
   user: PortalUser
   permissions: PortalPermissions
   oauthConfigured: boolean
   error: string
+  stage: string
 }
 
 export type MyProfileData = {
@@ -2376,10 +2379,13 @@ function normalizeAuthSessionPayload(payload: unknown): AuthSession {
 
   return {
     authenticated: getBoolean(record, 'authenticated'),
+    code: getString(record, 'code'),
+    diagnostics: getOptionalRecord(record, 'diagnostics') ?? {},
     user: normalizePortalUser(getRequiredRecord(record, 'user')),
     permissions: normalizeBooleanRecord(getRequiredRecord(record, 'permissions')),
     oauthConfigured: getBoolean(record, 'oauthConfigured'),
     error: getString(record, 'error'),
+    stage: getString(record, 'stage'),
   }
 }
 

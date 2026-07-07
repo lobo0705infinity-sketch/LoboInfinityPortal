@@ -72,14 +72,17 @@ export type PlatformReliabilityData = {
 }
 
 export async function getSession(options: ApiOptions = {}): Promise<AuthSession> {
-  const payload = await request('session', options)
+  const payload = await postRequest('session', options, {})
   const record = asRecord(payload)
 
   return {
     authenticated: getBoolean(record, 'authenticated'),
+    code: getString(record, 'code'),
+    diagnostics: getRecord(record, 'diagnostics'),
     error: getString(record, 'error'),
     oauthConfigured: getBoolean(record, 'oauthConfigured'),
     permissions: normalizeBooleanRecord(getRecord(record, 'permissions')),
+    stage: getString(record, 'stage'),
     user: normalizePortalUser(getRecord(record, 'user')),
   }
 }
