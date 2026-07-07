@@ -417,3 +417,5 @@ Lifecycle transitions:
 - Refresh event and operations caches.
 
 Commissioners can advance lifecycle stages and perform safe rollbacks from the Commissioner Dashboard. Assistant Commissioners may view lifecycle health, warnings, automation status, Discord status, and audit history but cannot change lifecycle state.
+
+Version 3.1.2.1 adds self-healing lifecycle validation. The lifecycle service validates Event stage, status, registration, schedule readiness, participants, awards readiness, and archive state before allowing transitions. Invalid states are returned as health issues with problem, reason, impact, recommended action, repair action, and blocking status. Repairs reuse `eventLifecycleTransition` with `direction=repair`, write the same audit log, publish the same automation event, and invalidate the same caches.

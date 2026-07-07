@@ -41,6 +41,7 @@ Every release must satisfy all four gates.
 - Avoids duplicate business logic.
 - Fits the frozen Version 3 Event Engine architecture.
 - Extends the architecture rather than redesigning it.
+- Lifecycle and operational repairs reuse existing mutation, automation, audit, and cache paths.
 
 ### Compatibility Gate
 
@@ -49,6 +50,7 @@ Every release must satisfy all four gates.
 - Existing player data remains valid.
 - Existing URLs remain valid.
 - Backward compatibility is documented when behavior changes.
+- Invalid operational states are blocked or repaired through documented one-click flows instead of manual sheet edits.
 
 ### Performance Gate
 

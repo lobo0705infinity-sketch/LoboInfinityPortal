@@ -172,6 +172,14 @@ Response:
     "currentSeason": "Current League Season",
     "currentRound": "Current League",
     "health": {},
+    "validation": {
+      "healthScore": 100,
+      "overallStatus": "Healthy",
+      "color": "Green",
+      "blockingIssues": [],
+      "issues": [],
+      "repairable": 0
+    },
     "warnings": [],
     "nextTransition": {},
     "rollback": {},
@@ -195,6 +203,7 @@ Required lifecycle fields:
 - `currentSeason`
 - `currentRound`
 - `health`
+- `validation`
 - `warnings`
 - `nextTransition`
 - `rollback`
@@ -214,15 +223,31 @@ Requires Commissioner-level `runSeasonControl` permission.
 Accepted fields:
 
 - `eventId`
-- `direction`: `advance` or `rollback`
+- `direction`: `advance`, `rollback`, or `repair`
 - `reason`
+- `repairAction` when `direction=repair`
 
 Transition behavior:
 
 - Updates existing Event Engine rows.
+- Blocks unsafe advances when lifecycle validation reports blocking issues.
+- Applies self-healing repairs when `direction=repair`.
 - Publishes `eventLifecycleTransition` through the Automation Center.
 - Writes `Event Lifecycle Audit`.
 - Refreshes event and operations caches.
+
+Validation issue fields:
+
+- `id`
+- `severity`
+- `problem`
+- `reason`
+- `impact`
+- `recommendedAction`
+- `repairAction`
+- `repairLabel`
+- `targetStage`
+- `blocksTransition`
 
 ### Migration Tooling
 

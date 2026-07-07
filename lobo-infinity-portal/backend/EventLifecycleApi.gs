@@ -26,7 +26,9 @@ const EVENT_LIFECYCLE_AUDIT_HEADERS = [
   "Previous Stage",
   "New Stage",
   "Reason",
-  "Automation Result"
+  "Automation Result",
+  "Problem",
+  "Repair"
 ];
 
 function getEventLifecycle(e) {
@@ -62,6 +64,14 @@ function transitionEventLifecycle(e, auth) {
 
   const lifecycle =
     buildEventLifecycleDashboard(eventId);
+
+  if (direction === "repair")
+    return repairEventLifecycle(
+      eventId,
+      params,
+      auth,
+      lifecycle
+    );
 
   const transition =
     direction === "rollback"
@@ -160,6 +170,15 @@ function buildEventLifecycleDashboard(eventId) {
   const currentStage =
     normalizeEventLifecycleStage(event.lifecycleStage || event.status);
 
+  const validation =
+    buildEventLifecycleValidation(
+      event,
+      participants,
+      rounds,
+      health,
+      currentStage
+    );
+
   return {
     auditLog:
       getEventLifecycleAuditRows(event.id).slice(0, 10),
@@ -180,7 +199,10 @@ function buildEventLifecycleDashboard(eventId) {
     event: event,
     health: health,
     nextTransition:
-      buildEventLifecycleNextTransition(currentStage),
+      buildEventLifecycleNextTransition(
+        currentStage,
+        validation
+      ),
     participants: participants.length,
     registration: event.registration,
     rollback:
@@ -190,13 +212,42 @@ function buildEventLifecycleDashboard(eventId) {
     status: event.status,
     supportedStages:
       EVENT_LIFECYCLE_STAGES,
+    validation: validation,
     warnings:
       buildEventLifecycleWarnings(event, participants, rounds, health)
   };
 
 }
 
-function buildEventLifecycleNextTransition(stage) {
+function buildEventLifecycleNextTransition(stage, validation) {
+
+  if (
+    validation &&
+    validation.blockingIssues &&
+    validation.blockingIssues.length > 0
+  ) {
+    const issue =
+      validation.blockingIssues[0];
+
+    return {
+      available: false,
+      label:
+        issue.repairLabel || "Repair Lifecycle First",
+      targetStage:
+        issue.targetStage || "",
+      confirmationTitle: "",
+      confirmationBody: [
+        issue.problem,
+        issue.recommendedAction
+      ],
+      blockedReason:
+        issue.problem +
+        " " +
+        issue.recommendedAction,
+      repairAction:
+        issue.repairAction || ""
+    };
+  }
 
   const index =
     EVENT_LIFECYCLE_STAGES.indexOf(stage);
@@ -210,7 +261,9 @@ function buildEventLifecycleNextTransition(stage) {
       label: "No Transition Available",
       targetStage: "",
       confirmationTitle: "",
-      confirmationBody: []
+      confirmationBody: [],
+      blockedReason: "",
+      repairAction: ""
     };
 
   const target =
@@ -224,8 +277,387 @@ function buildEventLifecycleNextTransition(stage) {
     confirmationTitle:
       getEventLifecycleTransitionLabel(stage, target) + "?",
     confirmationBody:
-      getEventLifecycleConfirmationBody(stage, target)
+      getEventLifecycleConfirmationBody(stage, target),
+    blockedReason: "",
+    repairAction: ""
   };
+
+}
+
+function buildEventLifecycleValidation(event, participants, rounds, health, currentStage) {
+
+  const issues = [];
+  const registration =
+    getEventLifecycleString(event.registration);
+  const status =
+    getEventLifecycleString(event.status);
+
+  if (
+    registration === "Registration Open" &&
+    [
+      "Active",
+      "Midseason",
+      "Final Week",
+      "Awards",
+      "Archived",
+      "Roster Locked",
+      "Schedule Generated"
+    ].indexOf(currentStage) !== -1
+  )
+    issues.push(
+      buildEventLifecycleValidationIssue(
+        "critical",
+        "Registration is open while the event is " + currentStage + ".",
+        "Registration should close before rosters lock, schedules generate, or games begin.",
+        "Players may register after operational play has already started.",
+        "Close registration for this event.",
+        "syncRegistration",
+        "Close Registration",
+        "",
+        true
+      )
+    );
+
+  if (
+    currentStage === "Archived" &&
+    registration !== "Registration Closed"
+  )
+    issues.push(
+      buildEventLifecycleValidationIssue(
+        "critical",
+        "Archived event has an invalid registration state.",
+        "Archived events must be immutable and closed.",
+        "Historical records may continue to appear operational.",
+        "Close registration and synchronize the archived state.",
+        "syncRegistration",
+        "Synchronize Archive",
+        "",
+        true
+      )
+    );
+
+  if (
+    currentStage === "Awards" &&
+    health.gamesRemaining > 0
+  )
+    issues.push(
+      buildEventLifecycleValidationIssue(
+        "critical",
+        "Awards stage reached before the season is complete.",
+        "Awards should not generate while games remain outstanding.",
+        "Awards, achievements, and Hall of Fame records may be premature.",
+        "Return the event to Final Week until remaining games are resolved.",
+        "returnFinalWeek",
+        "Return to Final Week",
+        "Final Week",
+        true
+      )
+    );
+
+  if (
+    currentStage === "Schedule Generated" &&
+    participants.length === 0
+  )
+    issues.push(
+      buildEventLifecycleValidationIssue(
+        "critical",
+        "Schedule generated without participants.",
+        "A schedule cannot be valid without a participant roster.",
+        "Pairings and notifications cannot be trusted.",
+        "Reopen registration and build a participant roster.",
+        "reopenRegistration",
+        "Reopen Registration",
+        "Registration Open",
+        true
+      )
+    );
+
+  if (
+    [
+      "Active",
+      "Midseason",
+      "Final Week",
+      "Awards"
+    ].indexOf(currentStage) !== -1 &&
+    rounds.length === 0
+  )
+    issues.push(
+      buildEventLifecycleValidationIssue(
+        "critical",
+        "Event is active without a generated schedule.",
+        "Active play requires generated rounds or verified pairings.",
+        "Players may not know which games are valid.",
+        "Return to Schedule Generated and verify pairings.",
+        "returnScheduleGenerated",
+        "Return to Schedule Generated",
+        "Schedule Generated",
+        true
+      )
+    );
+
+  if (
+    status === "Active" &&
+    [
+      "Planning",
+      "Registration Open",
+      "Registration Closed",
+      "Roster Locked",
+      "Schedule Generated"
+    ].indexOf(currentStage) !== -1
+  )
+    issues.push(
+      buildEventLifecycleValidationIssue(
+        "warning",
+        "Event status is Active before lifecycle play begins.",
+        "Status should reflect the lifecycle stage.",
+        "Dashboards may show this event as playable too early.",
+        "Synchronize status with the current lifecycle stage.",
+        "syncStatus",
+        "Synchronize Status",
+        "",
+        false
+      )
+    );
+
+  const critical =
+    issues.filter(function(issue) {
+      return issue.severity === "critical";
+    }).length;
+
+  const warnings =
+    issues.filter(function(issue) {
+      return issue.severity === "warning";
+    }).length;
+
+  const score =
+    Math.max(
+      0,
+      100 - critical * 25 - warnings * 10
+    );
+
+  return {
+    healthScore: score,
+    overallStatus:
+      score >= 95
+        ? "Healthy"
+        : score >= 75
+          ? "Needs Attention"
+          : score >= 50
+            ? "Action Required"
+            : "Critical",
+    color:
+      score >= 95
+        ? "Green"
+        : score >= 75
+          ? "Yellow"
+          : score >= 50
+            ? "Orange"
+            : "Red",
+    blockingIssues:
+      issues.filter(function(issue) {
+        return issue.blocksTransition;
+      }),
+    issues: issues,
+    repairable:
+      issues.filter(function(issue) {
+        return issue.repairAction !== "";
+      }).length
+  };
+
+}
+
+function buildEventLifecycleValidationIssue(
+  severity,
+  problem,
+  reason,
+  impact,
+  recommendedAction,
+  repairAction,
+  repairLabel,
+  targetStage,
+  blocksTransition
+) {
+
+  return {
+    id:
+      [
+        severity,
+        problem,
+        repairAction
+      ]
+        .join("|")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, ""),
+    severity: severity,
+    problem: problem,
+    reason: reason,
+    impact: impact,
+    recommendedAction: recommendedAction,
+    repairAction: repairAction,
+    repairLabel: repairLabel,
+    targetStage: targetStage,
+    blocksTransition: blocksTransition === true
+  };
+
+}
+
+function repairEventLifecycle(eventId, params, auth, lifecycle) {
+
+  const repairAction =
+    getEventLifecycleString(params.repairAction);
+
+  const issue =
+    lifecycle.validation.issues.filter(function(item) {
+      return item.repairAction === repairAction;
+    })[0];
+
+  if (!issue)
+    return jsonOutput({
+      success: false,
+      error: "Lifecycle repair is not available for the current event state."
+    });
+
+  const previousEvent =
+    lifecycle.event;
+
+  const updated =
+    applyEventLifecycleRepair(
+      eventId,
+      issue
+    );
+
+  const automationResult =
+    publishEventLifecycleAutomation(
+      updated,
+      lifecycle.currentStage,
+      normalizeEventLifecycleStage(updated.lifecycleStage || updated.status),
+      issue.recommendedAction
+    );
+
+  appendEventLifecycleAudit({
+    automationResult: automationResult,
+    commissioner:
+      auth && auth.user
+        ? auth.user.email || auth.user.displayName
+        : "",
+    event: updated,
+    newStage:
+      normalizeEventLifecycleStage(updated.lifecycleStage || updated.status),
+    previousStage: lifecycle.currentStage,
+    problem: issue.problem,
+    reason:
+      getEventLifecycleString(params.reason) ||
+      issue.recommendedAction,
+    repair: issue.repairLabel,
+    previousState:
+      JSON.stringify({
+        lifecycleStage: previousEvent.lifecycleStage,
+        status: previousEvent.status,
+        registration: previousEvent.registration
+      }),
+    newState:
+      JSON.stringify({
+        lifecycleStage: updated.lifecycleStage,
+        status: updated.status,
+        registration: updated.registration
+      })
+  });
+
+  invalidatePortalCacheGroup("events");
+  invalidatePortalCacheGroup("operations");
+  invalidatePortalCacheGroup("integrity");
+  invalidatePortalCacheGroup("all");
+
+  return jsonOutput({
+    success: true,
+    lifecycle:
+      buildEventLifecycleDashboard(eventId),
+    repair: {
+      action: repairAction,
+      problem: issue.problem,
+      automationResult: automationResult
+    }
+  });
+
+}
+
+function applyEventLifecycleRepair(eventId, issue) {
+
+  if (
+    issue.repairAction === "syncRegistration" ||
+    issue.repairAction === "syncStatus"
+  )
+    return synchronizeEventLifecycleState(eventId);
+
+  if (issue.targetStage)
+    return updateEventLifecycleStage(
+      eventId,
+      issue.targetStage
+    );
+
+  return synchronizeEventLifecycleState(eventId);
+
+}
+
+function synchronizeEventLifecycleState(eventId) {
+
+  const event =
+    getEventById(eventId);
+
+  const stage =
+    normalizeEventLifecycleStage(
+      event.lifecycleStage || event.status
+    );
+
+  const sheet =
+    ensureEventEngineSheet(
+      CONFIG.SHEETS.EVENTS,
+      EVENT_ENGINE_EVENT_HEADERS
+    );
+
+  const values =
+    sheet
+      .getDataRange()
+      .getValues();
+
+  const idColumn =
+    EVENT_ENGINE_EVENT_HEADERS.indexOf("ID");
+
+  const statusColumn =
+    EVENT_ENGINE_EVENT_HEADERS.indexOf("Status");
+
+  const registrationColumn =
+    EVENT_ENGINE_EVENT_HEADERS.indexOf("Registration");
+
+  const updatedAtColumn =
+    EVENT_ENGINE_EVENT_HEADERS.indexOf("Updated At");
+
+  for (let index = 1; index < values.length; index++) {
+    if (getEventLifecycleString(values[index][idColumn]) !== eventId)
+      continue;
+
+    sheet
+      .getRange(index + 1, statusColumn + 1)
+      .setValue(getEventLifecycleStatus(stage));
+
+    sheet
+      .getRange(index + 1, registrationColumn + 1)
+      .setValue(getEventLifecycleRegistration(stage));
+
+    sheet
+      .getRange(index + 1, updatedAtColumn + 1)
+      .setValue(getEventLifecycleTimestamp());
+
+    break;
+  }
+
+  synchronizeEventLifecycleSeasonAndRound(
+    eventId,
+    stage
+  );
+
+  return getEventById(eventId);
 
 }
 
@@ -674,7 +1106,9 @@ function appendEventLifecycleAudit(record) {
     record.previousStage,
     record.newStage,
     record.reason,
-    JSON.stringify(record.automationResult || {})
+    JSON.stringify(record.automationResult || {}),
+    record.problem || "",
+    record.repair || ""
   ]);
 
 }
@@ -701,7 +1135,9 @@ function getEventLifecycleAuditRows(eventId) {
         eventId: getEventLifecycleString(row[2]),
         eventName: getEventLifecycleString(row[3]),
         newStage: getEventLifecycleString(row[5]),
+        problem: getEventLifecycleString(row[8]),
         previousStage: getEventLifecycleString(row[4]),
+        repair: getEventLifecycleString(row[9]),
         reason: getEventLifecycleString(row[6]),
         timestamp: getEventLifecycleString(row[0])
       };

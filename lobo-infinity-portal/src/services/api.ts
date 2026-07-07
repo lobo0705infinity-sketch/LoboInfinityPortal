@@ -998,9 +998,11 @@ export type EventLifecycleEvent = {
 
 export type EventLifecycleTransition = {
   available: boolean
+  blockedReason: string
   confirmationBody: string[]
   confirmationTitle: string
   label: string
+  repairAction: string
   targetStage: string
 }
 
@@ -1023,9 +1025,33 @@ export type EventLifecycleAuditEntry = {
   eventId: string
   eventName: string
   newStage: string
+  problem: string
   previousStage: string
+  repair: string
   reason: string
   timestamp: string
+}
+
+export type EventLifecycleValidationIssue = {
+  blocksTransition: boolean
+  id: string
+  impact: string
+  problem: string
+  reason: string
+  recommendedAction: string
+  repairAction: string
+  repairLabel: string
+  severity: string
+  targetStage: string
+}
+
+export type EventLifecycleValidation = {
+  blockingIssues: EventLifecycleValidationIssue[]
+  color: string
+  healthScore: number
+  issues: EventLifecycleValidationIssue[]
+  overallStatus: string
+  repairable: number
 }
 
 export type EventLifecycleData = {
@@ -1076,6 +1102,7 @@ export type EventLifecycleData = {
   startDate: string
   status: string
   supportedStages: string[]
+  validation: EventLifecycleValidation
   warnings: EventLifecycleWarning[]
 }
 
@@ -3631,6 +3658,7 @@ function normalizeEventLifecycleData(
   const template = getRequiredRecord(automation, 'template')
   const discord = getRequiredRecord(record, 'discord')
   const health = getRequiredRecord(record, 'health')
+  const validation = getRequiredRecord(record, 'validation')
 
   return {
     auditLog: getRequiredArray(record, 'auditLog').map(
@@ -3690,6 +3718,18 @@ function normalizeEventLifecycleData(
     startDate: getString(record, 'startDate'),
     status: getString(record, 'status'),
     supportedStages: getRequiredArray(record, 'supportedStages').map(String),
+    validation: {
+      blockingIssues: getRequiredArray(validation, 'blockingIssues').map(
+        normalizeEventLifecycleValidationIssue,
+      ),
+      color: getRequiredString(validation, 'color'),
+      healthScore: getRequiredNumber(validation, 'healthScore'),
+      issues: getRequiredArray(validation, 'issues').map(
+        normalizeEventLifecycleValidationIssue,
+      ),
+      overallStatus: getRequiredString(validation, 'overallStatus'),
+      repairable: getRequiredNumber(validation, 'repairable'),
+    },
     warnings: getRequiredArray(record, 'warnings').map(
       normalizeEventLifecycleWarning,
     ),
@@ -3733,9 +3773,30 @@ function normalizeEventLifecycleTransition(
 ): EventLifecycleTransition {
   return {
     available: getBoolean(record, 'available'),
+    blockedReason: getString(record, 'blockedReason'),
     confirmationBody: getArray(record, 'confirmationBody').map(String),
     confirmationTitle: getString(record, 'confirmationTitle'),
     label: getRequiredString(record, 'label'),
+    repairAction: getString(record, 'repairAction'),
+    targetStage: getString(record, 'targetStage'),
+  }
+}
+
+function normalizeEventLifecycleValidationIssue(
+  item: unknown,
+): EventLifecycleValidationIssue {
+  const record = asRecord(item, 'Event lifecycle validation issue')
+
+  return {
+    blocksTransition: getBoolean(record, 'blocksTransition'),
+    id: getRequiredString(record, 'id'),
+    impact: getRequiredString(record, 'impact'),
+    problem: getRequiredString(record, 'problem'),
+    reason: getRequiredString(record, 'reason'),
+    recommendedAction: getRequiredString(record, 'recommendedAction'),
+    repairAction: getString(record, 'repairAction'),
+    repairLabel: getString(record, 'repairLabel'),
+    severity: getRequiredString(record, 'severity'),
     targetStage: getString(record, 'targetStage'),
   }
 }
@@ -3772,7 +3833,9 @@ function normalizeEventLifecycleAuditEntry(
     eventId: getRequiredString(record, 'eventId'),
     eventName: getString(record, 'eventName'),
     newStage: getRequiredString(record, 'newStage'),
+    problem: getString(record, 'problem'),
     previousStage: getRequiredString(record, 'previousStage'),
+    repair: getString(record, 'repair'),
     reason: getString(record, 'reason'),
     timestamp: getRequiredString(record, 'timestamp'),
   }

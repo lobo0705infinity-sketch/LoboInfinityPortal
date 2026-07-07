@@ -39,6 +39,9 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] Verify Legacy APIs
 - [ ] Verify Event APIs
 - [ ] Verify Event Lifecycle
+- [ ] Verify Lifecycle Validation
+- [ ] Verify Self-Healing Repairs
+- [ ] Verify Event Lifecycle Audit Log
 - [ ] Verify Registration Open
 - [ ] Verify Registration Closed
 - [ ] Verify Roster Locked
@@ -51,6 +54,7 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] Verify Event Lifecycle Automation
 - [ ] Verify Event Lifecycle Discord
 - [ ] Verify Event Lifecycle Rollback
+- [ ] Verify Event Lifecycle Repair Blocks Unsafe Advance
 - [ ] Verify Community Command Center
 - [ ] Verify Active Events
 - [ ] Verify Opponent Tracker

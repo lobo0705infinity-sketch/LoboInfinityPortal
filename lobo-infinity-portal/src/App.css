@@ -3783,6 +3783,14 @@
   gap: 12px;
 }
 
+.event-lifecycle-panel .operations-record.critical {
+  border-color: rgba(239, 68, 68, 0.42);
+}
+
+.event-lifecycle-panel .operations-record.warning {
+  border-color: rgba(245, 158, 11, 0.36);
+}
+
 .hall-museum {
   gap: clamp(18px, 3vw, 28px);
 }

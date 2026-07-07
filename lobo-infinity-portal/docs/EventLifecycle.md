@@ -51,6 +51,47 @@ Every successful transition:
 - Writes an audit row with timestamp, commissioner, event, previous stage, new stage, reason, and automation result.
 - Refreshes event and operations caches.
 
+## Lifecycle Validation
+
+Version 3.1.2.1 adds a self-healing validation layer to the existing lifecycle service. Validation runs whenever lifecycle data is loaded and before any Commissioner transition is allowed.
+
+Validation checks:
+
+- Registration state versus lifecycle stage.
+- Event status versus lifecycle stage.
+- Awards stage versus incomplete season games.
+- Archived events with open registration.
+- Schedule-generated or active events without participants or rounds.
+
+The validation report returns:
+
+- Overall status.
+- Health score.
+- Blocking issues.
+- Warnings.
+- Problem, reason, impact, and recommended action.
+- Repair action metadata for one-click Commissioner repair.
+
+Health score bands:
+
+- `95-100`: Green, Healthy.
+- `75-94`: Yellow, Needs Attention.
+- `50-74`: Orange, Action Required.
+- `<50`: Red, Critical.
+
+## Self-Healing Repairs
+
+Repairs use the same `eventLifecycleTransition` endpoint with `direction=repair`. Repairs are not a separate lifecycle system. They update existing Event Engine rows, publish lifecycle automation, write audit entries, invalidate cache, and refresh the dashboard.
+
+Supported repair patterns:
+
+- Synchronize registration with lifecycle stage.
+- Synchronize event status with lifecycle stage.
+- Return an event to a safe stage when prerequisites are incomplete.
+- Reopen registration if a schedule exists without participants.
+
+Unsafe advances are blocked. For example, an `Active` event with `Registration Open` cannot advance to `Midseason`; the Commissioner receives the validation problem and a `Close Registration` repair action instead.
+
 ## Rollback
 
 Rollback is available only when it is safe.
@@ -85,6 +126,9 @@ It shows:
 - Current Round
 - Current Season
 - Event health
+- Health score
+- Blocking lifecycle issues
+- Self-healing repair actions
 - Commissioner warnings
 - Automation template preview
 - Audit log

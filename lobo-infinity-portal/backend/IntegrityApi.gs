@@ -152,6 +152,7 @@ function buildLeagueIntegrityAudit(includeSamples) {
     auditIntegrityGameEngine(context),
     auditIntegrityIdentity(context),
     auditIntegrityDivisions(context),
+    auditIntegrityEventLifecycle(),
     auditIntegrityArmyLists(context),
     auditIntegrityStreams(context),
     auditIntegrityNews(context)
@@ -183,6 +184,52 @@ function buildLeagueIntegrityAudit(includeSamples) {
     summary: summary,
     sections: sections
   };
+
+}
+
+function auditIntegrityEventLifecycle() {
+
+  const lifecycle =
+    buildEventLifecycleDashboard(EVENT_ENGINE_DEFAULT_EVENT_ID);
+
+  const issues =
+    lifecycle.validation.issues.map(function(issue) {
+      return buildIntegrityIssue(
+        issue.severity === "critical"
+          ? "error"
+          : "warning",
+        issue.problem,
+        issue.reason + " Impact: " + issue.impact,
+        lifecycle.event.name,
+        issue.repairAction,
+        issue.repairAction !== ""
+      );
+    });
+
+  const checks = [
+    buildIntegrityCheck(
+      lifecycle.event.name,
+      lifecycle.validation.overallStatus,
+      lifecycle.validation.healthScore + "% lifecycle health",
+      [
+        {
+          currentStage: lifecycle.currentStage,
+          registration: lifecycle.registration,
+          status: lifecycle.status,
+          repairable: lifecycle.validation.repairable
+        }
+      ]
+    )
+  ];
+
+  return buildIntegritySection(
+    "eventLifecycle",
+    "Event Lifecycle",
+    "Validates lifecycle stage, event status, registration state, schedule readiness, and archive safety.",
+    checks,
+    issues,
+    "eventLifecycleTransition"
+  );
 
 }
 

@@ -187,3 +187,20 @@ Version 3.1.2 adds Event Lifecycle Controls to the existing Commissioner Dashboa
 - New dependencies: none.
 
 Justification: The added bytes are isolated to the lazy Commissioner Dashboard route and operations-only backend payload. Player startup, public dashboard, authentication, and Community Command Center request counts do not change.
+
+## Version 3.1.2.1 Self-Healing Lifecycle Budget Result
+
+Version 3.1.2.1 adds lifecycle validation and repair presentation to the existing Commissioner Dashboard lifecycle card.
+
+- Initial JavaScript bundle: `index-D2UcTBkx.js`, 313,400 bytes.
+- JavaScript delta from Version 3.1.2: approximately +670 bytes.
+- CSS bundle: `index-Dugisy3G.css`, 106,960 bytes.
+- CSS delta from Version 3.1.2: approximately +150 bytes.
+- Commissioner Dashboard route chunk: `CommissionerDashboard-DGvGHIns.js`, 38,650 bytes.
+- Commissioner Dashboard chunk delta from Version 3.1.2: approximately +1,450 bytes.
+- Startup API requests for signed-out users: unchanged.
+- Public Dashboard request model: unchanged.
+- Commissioner Dashboard: still uses the existing operations request; validation is embedded in the lifecycle payload.
+- New dependencies: none.
+
+Justification: The validation UI is isolated to the lazy Commissioner Dashboard route and uses the existing operations payload. No player-facing startup path or public API request count changes.

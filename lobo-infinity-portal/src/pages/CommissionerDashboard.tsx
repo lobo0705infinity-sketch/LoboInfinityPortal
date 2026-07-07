@@ -288,6 +288,11 @@ function EventLifecyclePanel({
         <strong>{lifecycle.currentStage}</strong>
       </div>
       <dl className="operations-metrics compact">
+        <Metric
+          label="Health Score"
+          value={`${lifecycle.validation.healthScore}% ${lifecycle.validation.color}`}
+        />
+        <Metric label="Health" value={lifecycle.validation.overallStatus} />
         <Metric label="Status" value={lifecycle.status} />
         <Metric label="Participants" value={lifecycle.participants} />
         <Metric label="Registration" value={lifecycle.registration} />
@@ -308,6 +313,21 @@ function EventLifecyclePanel({
         >
           {transition.label}
         </button>
+        {!transition.available && transition.repairAction ? (
+          <button
+            disabled={!canManage || workingAction !== ''}
+            onClick={() =>
+              void confirmEventLifecycleRepair(
+                lifecycle,
+                transition.repairAction,
+                onAction,
+              )
+            }
+            type="button"
+          >
+            Repair: {transition.label}
+          </button>
+        ) : null}
         <button
           disabled={!canManage || !rollback.available || workingAction !== ''}
           onClick={() => void confirmEventLifecycleRollback(lifecycle, onAction)}
@@ -319,15 +339,15 @@ function EventLifecyclePanel({
       <div className="operations-grid two-column event-lifecycle-subgrid">
         <section className="operations-record">
           <span>Event Health</span>
-          <h3>{lifecycle.health.registrationProgress}</h3>
+          <h3>{lifecycle.validation.overallStatus}</h3>
           <p>
             {lifecycle.health.gamesCompleted} games completed,{' '}
             {lifecycle.health.gamesRemaining} remaining,{' '}
             {lifecycle.health.missingPairings} missing pairings.
           </p>
           <small>
-            {lifecycle.health.playersWithoutIdentity} identity warnings -{' '}
-            {lifecycle.health.latePlayers.length} late players
+            {lifecycle.validation.blockingIssues.length} blocking issues -{' '}
+            {lifecycle.validation.repairable} repairs available
           </small>
         </section>
         <section className="operations-record">
@@ -338,6 +358,40 @@ function EventLifecyclePanel({
             Destinations: {lifecycle.automation.destinations.join(', ') || 'None configured'}
           </small>
         </section>
+      </div>
+      <div className="operations-stack">
+        {lifecycle.validation.issues.length === 0 ? (
+          <EmptyState text="Lifecycle validation is healthy." />
+        ) : (
+          lifecycle.validation.issues.map((issue) => (
+            <article
+              className={`operations-record ${issue.severity}`}
+              key={issue.id}
+            >
+              <span>{issue.severity}</span>
+              <h3>{issue.problem}</h3>
+              <p>{issue.reason}</p>
+              <small>{issue.impact}</small>
+              <div className="operations-actions wrap">
+                {issue.repairAction ? (
+                  <button
+                    disabled={!canManage || workingAction !== ''}
+                    onClick={() =>
+                      void confirmEventLifecycleRepair(
+                        lifecycle,
+                        issue.repairAction,
+                        onAction,
+                      )
+                    }
+                    type="button"
+                  >
+                    {issue.repairLabel || 'Repair'}
+                  </button>
+                ) : null}
+              </div>
+            </article>
+          ))
+        )}
       </div>
       <div className="operations-stack">
         {lifecycle.warnings.length === 0 ? (
@@ -363,7 +417,11 @@ function EventLifecyclePanel({
             <article className="operations-record" key={`${entry.timestamp}-${entry.newStage}`}>
               <span>{entry.timestamp}</span>
               <h3>{entry.previousStage} to {entry.newStage}</h3>
-              <p>{entry.reason || 'Lifecycle transition recorded.'}</p>
+              <p>
+                {entry.problem
+                  ? `${entry.problem} ${entry.repair ? `Repair: ${entry.repair}.` : ''}`
+                  : entry.reason || 'Lifecycle transition recorded.'}
+              </p>
               <small>{entry.commissioner || 'Unknown commissioner'}</small>
             </article>
           ))
@@ -1505,6 +1563,35 @@ function confirmEventLifecycleRollback(
       direction: 'rollback',
       eventId: lifecycle.event.id,
       reason: rollback.label,
+    })
+  }
+
+  return Promise.resolve()
+}
+
+function confirmEventLifecycleRepair(
+  lifecycle: EventLifecycleData,
+  repairAction: string,
+  onAction: OperationsAction,
+) {
+  const issue = lifecycle.validation.issues.find(
+    (item) => item.repairAction === repairAction,
+  )
+
+  if (!issue) {
+    return Promise.resolve()
+  }
+
+  const accepted = window.confirm(
+    `${issue.repairLabel || 'Repair Lifecycle'}?\n\nProblem:\n${issue.problem}\n\nImpact:\n${issue.impact}\n\nThis will:\n- ${issue.recommendedAction}\n- Trigger automation\n- Create an audit entry\n- Refresh event and operations cache\n\nContinue?`,
+  )
+
+  if (accepted) {
+    return onAction('eventLifecycleTransition', {
+      direction: 'repair',
+      eventId: lifecycle.event.id,
+      reason: issue.recommendedAction,
+      repairAction,
     })
   }
 
