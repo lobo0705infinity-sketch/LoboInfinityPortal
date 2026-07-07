@@ -490,7 +490,26 @@ function AvailabilityEditor({
           {status.label}
         </span>
       </div>
-      <form className="scheduling-form" onSubmit={(event) => void submit(event)}>
+      <div className="availability-save-bar">
+        <span
+          aria-live="polite"
+          className={`scheduling-save-confirmation ${status.tone}`}
+        >
+          {status.label}
+        </span>
+        <button
+          disabled={!isDirty || controlsDisabled}
+          form="availability-profile-form"
+          type="submit"
+        >
+          {isSaving ? 'Saving Availability...' : 'Save Availability'}
+        </button>
+      </div>
+      <form
+        className="scheduling-form"
+        id="availability-profile-form"
+        onSubmit={(event) => void submit(event)}
+      >
         <label>
           Status
           <select
@@ -560,14 +579,6 @@ function AvailabilityEditor({
             Unable to verify saved availability. Please try again.
           </p>
         ) : null}
-        <div className="availability-save-bar">
-          <span className={`scheduling-save-confirmation ${status.tone}`}>
-            {status.label}
-          </span>
-          <button disabled={!isDirty || controlsDisabled} type="submit">
-            {isSaving ? 'Saving Availability...' : 'Save Availability'}
-          </button>
-        </div>
       </form>
       {pendingNavigation ? (
         <div

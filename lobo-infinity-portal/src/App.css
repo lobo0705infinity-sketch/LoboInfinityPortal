@@ -4872,16 +4872,25 @@
 
 .availability-save-bar {
   align-items: center;
-  border-top: 1px solid rgba(148, 163, 184, 0.14);
-  display: flex;
+  background: rgba(8, 14, 22, 0.95);
+  border: 1px solid rgba(76, 201, 240, 0.18);
+  border-radius: 14px;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+  bottom: 12px;
+  display: grid;
   gap: 0.75rem;
   grid-column: 1 / -1;
-  justify-content: space-between;
-  padding-top: 0.75rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+  margin: 0 0 0.9rem;
+  padding: 0.75rem;
+  position: sticky;
+  z-index: 75;
 }
 
 .availability-save-bar button {
+  min-height: 48px;
   min-width: 190px;
+  white-space: nowrap;
 }
 
 .availability-leave-dialog {
@@ -5548,14 +5557,11 @@ a {
 
   .availability-save-bar {
     align-items: stretch;
-    background: rgba(8, 14, 22, 0.94);
-    border: 1px solid rgba(76, 201, 240, 0.18);
-    border-radius: 14px;
-    bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom, 0px) + 10px);
-    display: grid;
+    bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom, 0px) + 16px);
+    grid-template-columns: 1fr;
+    margin-bottom: 1rem;
     padding: 0.75rem;
-    position: sticky;
-    z-index: 22;
+    z-index: 95;
   }
 
   .availability-save-bar button {
