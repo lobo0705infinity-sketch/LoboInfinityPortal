@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import Loading from '../components/Loading'
 import {
   apiClient,
+  type SeasonAvailability,
   type SchedulingCenterData,
   type SchedulingRecommendation,
   type SchedulingRequest,
 } from '../services/api'
+import { recordClientDiagnostic } from '../services/apiCore'
 import { formatPlayerName } from '../services/formatting'
 
 type MatchFinderState =
@@ -23,13 +25,26 @@ type MatchFinderState =
       status: 'error'
     }
 
+type AvailabilityFormState = {
+  discordHandle: string
+  notes: string
+  preferredDays: string
+  preferredTimes: string
+  status: string
+}
+
+type AvailabilitySaveResult = {
+  data: SchedulingCenterData
+  durationMs: number
+  verified: boolean
+}
+
 function MatchFinder() {
   const auth = useAuth()
   const [searchParams] = useSearchParams()
   const preferredOpponent = searchParams.get('opponent') ?? ''
   const [state, setState] = useState<MatchFinderState>({ status: 'loading' })
   const [working, setWorking] = useState('')
-  const [availabilityMessage, setAvailabilityMessage] = useState('')
 
   useEffect(() => {
     if (auth.status !== 'ready') {
@@ -64,14 +79,45 @@ function MatchFinder() {
     }
   }, [auth.authenticated, auth.status])
 
-  async function updateAvailability(params: Record<string, string>) {
+  async function updateAvailability(
+    params: AvailabilityFormState,
+  ): Promise<AvailabilitySaveResult> {
     setWorking('availability')
-    setAvailabilityMessage('')
+    recordClientDiagnostic('availabilitySave', 'attempt', 0, 'started')
+    const start = performance.now()
+
     try {
       await apiClient.updateSchedulingAvailability(params)
       const data = await apiClient.getSchedulingCenter()
       setState({ data, status: 'success' })
-      setAvailabilityMessage('Availability Saved')
+      const durationMs = performance.now() - start
+      const verified = isAvailabilityPersistenceVerified(
+        params,
+        data.availability,
+      )
+
+      recordClientDiagnostic(
+        'availabilitySave',
+        verified ? 'success' : 'verification_failed',
+        durationMs,
+        verified
+          ? 'saved profile matched refreshed scheduling payload'
+          : 'refreshed scheduling payload did not match submitted profile',
+      )
+
+      return {
+        data,
+        durationMs,
+        verified,
+      }
+    } catch (error) {
+      recordClientDiagnostic(
+        'availabilitySave',
+        'failure',
+        performance.now() - start,
+        error instanceof Error ? error.message : 'unknown error',
+      )
+      throw error
     } finally {
       setWorking('')
     }
@@ -181,9 +227,9 @@ function MatchFinder() {
 
       <section className="scheduling-grid">
         <AvailabilityEditor
-          confirmation={availabilityMessage}
           data={state.data}
           disabled={working !== ''}
+          key={state.data.availability.updatedAt || state.data.player.player}
           onSubmit={updateAvailability}
         />
         <ScheduleRequestForm
@@ -294,41 +340,165 @@ function MatchFinderHeader() {
 }
 
 function AvailabilityEditor({
-  confirmation,
   data,
   disabled,
   onSubmit,
 }: {
-  confirmation: string
   data: SchedulingCenterData
   disabled: boolean
-  onSubmit: (params: Record<string, string>) => Promise<void>
+  onSubmit: (params: AvailabilityFormState) => Promise<AvailabilitySaveResult>
 }) {
-  const availability = data.availability
+  const navigate = useNavigate()
+  const initialForm = useMemo(
+    () => normalizeAvailabilityForm(data.availability),
+    [data.availability],
+  )
+  const [savedForm, setSavedForm] = useState(initialForm)
+  const [form, setForm] = useState(initialForm)
+  const [saveState, setSaveState] = useState<
+    'error' | 'saved' | 'saving' | 'success' | 'verifyError'
+  >('saved')
+  const [pendingNavigation, setPendingNavigation] = useState('')
+  const isDirty = !areAvailabilityFormsEqual(form, savedForm)
+  const isSaving = saveState === 'saving'
+
+  useEffect(() => {
+    if (saveState !== 'success') {
+      return undefined
+    }
+
+    const timeout = window.setTimeout(() => {
+      setSaveState('saved')
+    }, 3000)
+
+    return () => {
+      window.clearTimeout(timeout)
+    }
+  }, [saveState])
+
+  useEffect(() => {
+    if (!isDirty) {
+      return undefined
+    }
+
+    const onBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault()
+      event.returnValue = ''
+    }
+
+    window.addEventListener('beforeunload', onBeforeUnload)
+
+    return () => {
+      window.removeEventListener('beforeunload', onBeforeUnload)
+    }
+  }, [isDirty])
+
+  useEffect(() => {
+    if (!isDirty) {
+      return undefined
+    }
+
+    const onClick = (event: MouseEvent) => {
+      const anchor = (event.target as Element | null)?.closest('a[href]')
+
+      if (!(anchor instanceof HTMLAnchorElement)) {
+        return
+      }
+
+      if (
+        anchor.target ||
+        anchor.download ||
+        anchor.href === window.location.href
+      ) {
+        return
+      }
+
+      event.preventDefault()
+      event.stopPropagation()
+      setPendingNavigation(anchor.href)
+    }
+
+    document.addEventListener('click', onClick, true)
+
+    return () => {
+      document.removeEventListener('click', onClick, true)
+    }
+  }, [isDirty])
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    const formData = new FormData(event.currentTarget)
-    const params = Object.fromEntries(
-      Array.from(formData.entries()).map(([key, value]) => [key, String(value)]),
-    )
 
-    await onSubmit(params)
+    if (!isDirty || isSaving) {
+      return
+    }
+
+    setSaveState('saving')
+
+    try {
+      const result = await onSubmit(form)
+
+      if (!result.verified) {
+        setSaveState('verifyError')
+        return
+      }
+
+      const verifiedForm = normalizeAvailabilityForm(result.data.availability)
+      setSavedForm(verifiedForm)
+      setForm(verifiedForm)
+      setSaveState('success')
+    } catch {
+      setSaveState('error')
+    }
   }
+
+  function updateField(field: keyof AvailabilityFormState, value: string) {
+    setForm((current) => ({
+      ...current,
+      [field]: value,
+    }))
+
+    if (saveState !== 'saving') {
+      setSaveState('saved')
+    }
+  }
+
+  function discardAndNavigate() {
+    if (!pendingNavigation) {
+      return
+    }
+
+    const target = new URL(pendingNavigation)
+    setPendingNavigation('')
+
+    if (target.origin === window.location.origin) {
+      navigate(`${target.pathname}${target.search}${target.hash}`)
+      return
+    }
+
+    window.location.href = target.href
+  }
+
+  const status = getAvailabilitySaveStatus(saveState, isDirty)
+  const controlsDisabled = disabled || isSaving
 
   return (
     <section className="panel scheduling-panel" id="availability">
       <div className="panel-heading">
         <p className="eyebrow">Availability</p>
         <h2>My Scheduling Profile</h2>
-        {confirmation ? (
-          <span className="scheduling-save-confirmation">✓ {confirmation}</span>
-        ) : null}
+        <span className={`scheduling-save-confirmation ${status.tone}`}>
+          {status.label}
+        </span>
       </div>
       <form className="scheduling-form" onSubmit={(event) => void submit(event)}>
         <label>
           Status
-          <select defaultValue={availability.status || 'Available'} name="status">
+          <select
+            disabled={controlsDisabled}
+            name="status"
+            value={form.status}
+            onChange={(event) => updateField('status', event.target.value)}
+          >
             <option>Available</option>
             <option>Limited</option>
             <option>Unavailable</option>
@@ -337,41 +507,180 @@ function AvailabilityEditor({
         <label>
           Preferred Days
           <input
-            defaultValue={availability.preferredDays}
+            disabled={controlsDisabled}
             name="preferredDays"
             placeholder="Example: Tuesday, Thursday, Sunday"
+            value={form.preferredDays}
+            onChange={(event) =>
+              updateField('preferredDays', event.target.value)
+            }
           />
         </label>
         <label>
           Preferred Time Window
           <input
-            defaultValue={availability.preferredTimes}
+            disabled={controlsDisabled}
             name="preferredTimes"
             placeholder="Example: after 7 PM Eastern"
+            value={form.preferredTimes}
+            onChange={(event) =>
+              updateField('preferredTimes', event.target.value)
+            }
           />
         </label>
         <label>
           Discord Handle
           <input
-            defaultValue={availability.discordHandle}
+            disabled={controlsDisabled}
             name="discordHandle"
             placeholder="Example: lobo0705"
+            value={form.discordHandle}
+            onChange={(event) =>
+              updateField('discordHandle', event.target.value)
+            }
           />
         </label>
         <label className="scheduling-form-wide">
           Optional Notes
           <textarea
-            defaultValue={availability.notes}
+            disabled={controlsDisabled}
             name="notes"
             placeholder="Anything opponents should know before messaging you."
+            value={form.notes}
+            onChange={(event) => updateField('notes', event.target.value)}
           />
         </label>
-        <button disabled={disabled} type="submit">
-          {disabled ? 'Saving...' : 'Save Availability'}
-        </button>
+        {saveState === 'error' ? (
+          <p className="scheduling-save-error" role="alert">
+            Unable to save availability. Please try again.
+          </p>
+        ) : null}
+        {saveState === 'verifyError' ? (
+          <p className="scheduling-save-error" role="alert">
+            Unable to verify saved availability. Please try again.
+          </p>
+        ) : null}
+        <div className="availability-save-bar">
+          <span className={`scheduling-save-confirmation ${status.tone}`}>
+            {status.label}
+          </span>
+          <button disabled={!isDirty || controlsDisabled} type="submit">
+            {isSaving ? 'Saving Availability...' : 'Save Availability'}
+          </button>
+        </div>
       </form>
+      {pendingNavigation ? (
+        <div
+          aria-labelledby="availability-leave-title"
+          aria-modal="true"
+          className="availability-leave-dialog"
+          role="dialog"
+        >
+          <div>
+            <h3 id="availability-leave-title">
+              You have unsaved availability changes.
+            </h3>
+            <p>Leave without saving?</p>
+            <div className="scheduling-card-actions">
+              <button onClick={() => setPendingNavigation('')} type="button">
+                Stay
+              </button>
+              <button onClick={discardAndNavigate} type="button">
+                Discard Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </section>
   )
+}
+
+function normalizeAvailabilityForm(
+  availability: SeasonAvailability,
+): AvailabilityFormState {
+  return {
+    discordHandle: availability.discordHandle || '',
+    notes: availability.notes || '',
+    preferredDays: availability.preferredDays || '',
+    preferredTimes: availability.preferredTimes || '',
+    status: availability.status || 'Available',
+  }
+}
+
+function areAvailabilityFormsEqual(
+  left: AvailabilityFormState,
+  right: AvailabilityFormState,
+) {
+  return (
+    normalizeAvailabilityValue(left.discordHandle) ===
+      normalizeAvailabilityValue(right.discordHandle) &&
+    normalizeAvailabilityValue(left.notes) ===
+      normalizeAvailabilityValue(right.notes) &&
+    normalizeAvailabilityValue(left.preferredDays) ===
+      normalizeAvailabilityValue(right.preferredDays) &&
+    normalizeAvailabilityValue(left.preferredTimes) ===
+      normalizeAvailabilityValue(right.preferredTimes) &&
+    normalizeAvailabilityValue(left.status) ===
+      normalizeAvailabilityValue(right.status)
+  )
+}
+
+function isAvailabilityPersistenceVerified(
+  submitted: AvailabilityFormState,
+  reloaded: SeasonAvailability,
+) {
+  return areAvailabilityFormsEqual(submitted, normalizeAvailabilityForm(reloaded))
+}
+
+function normalizeAvailabilityValue(value: string) {
+  return value.trim()
+}
+
+function getAvailabilitySaveStatus(
+  saveState: 'error' | 'saved' | 'saving' | 'success' | 'verifyError',
+  isDirty: boolean,
+) {
+  const statusLabels = {
+    dirty: '\u25cf Unsaved Changes',
+    error: 'Save Needs Attention',
+    saved: '\u2713 All Changes Saved',
+    saving: 'Saving Availability...',
+    success: '\u2713 Availability Saved',
+  }
+
+  if (saveState === 'saving') {
+    return {
+      label: statusLabels.saving,
+      tone: 'saving',
+    }
+  }
+
+  if (saveState === 'success') {
+    return {
+      label: statusLabels.success,
+      tone: 'saved',
+    }
+  }
+
+  if (saveState === 'error' || saveState === 'verifyError') {
+    return {
+      label: statusLabels.error,
+      tone: 'error',
+    }
+  }
+
+  if (isDirty) {
+    return {
+      label: statusLabels.dirty,
+      tone: 'dirty',
+    }
+  }
+
+  return {
+    label: statusLabels.saved,
+    tone: 'saved',
+  }
 }
 
 function ScheduleRequestForm({
@@ -585,3 +894,4 @@ function getRecommendationLabel(recommendation: SchedulingRecommendation) {
 }
 
 export default MatchFinder
+

@@ -121,6 +121,15 @@ The scheduling route adds a small lazy chunk and does not add startup API reques
 
 Version 4.0.1 keeps this model. Availability saves explicitly invalidate the scheduling cache group as well as the season command cache group so returning to Match Finder shows the saved scheduling profile without a stale cached response.
 
+Version 4.0.2 keeps the same API and cache architecture. Availability saves still use the existing `schedulingAvailability` mutation, then immediately reload `schedulingCenter` to verify persistence and refresh Match Finder recommendations in place.
+
+Performance notes:
+
+- No new startup request was added.
+- No backend endpoint was added.
+- The verification request runs only after an explicit save.
+- Client diagnostics record save timing without sending additional telemetry requests.
+
 ## Version 4.1 Mobile Performance
 
 Version 4.1 keeps the Version 4.0 JavaScript route model intact.

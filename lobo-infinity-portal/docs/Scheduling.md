@@ -32,7 +32,16 @@ Players can publish:
 
 Availability is stored in the Season Availability sheet and can be edited from Match Finder. My Profile links directly to the availability editor.
 
-After saving, the UI confirms `Availability Saved`. The scheduling cache group is invalidated so refreshed Match Finder data reflects the saved values.
+Version 4.0.2 makes the save state explicit:
+
+- `✓ All Changes Saved` means the form matches the loaded backend profile.
+- `● Unsaved Changes` appears immediately after any editable field changes.
+- `Saving Availability...` appears while the save request is in flight.
+- `✓ Availability Saved` appears for approximately three seconds after a verified save.
+
+After saving, Match Finder reloads the scheduling profile from the backend and compares status, preferred days, preferred time window, Discord handle, and notes against the submitted values. If the refreshed values do not match, the editor shows `Unable to verify saved availability. Please try again.` and does not silently discard the player's edits.
+
+The scheduling cache group and season command cache group are invalidated by the existing backend mutation path, and the frontend refreshes Match Finder recommendations, opponent cards, scheduling summaries, and the player scheduling profile without requiring a full page reload.
 
 ## Match Finder
 

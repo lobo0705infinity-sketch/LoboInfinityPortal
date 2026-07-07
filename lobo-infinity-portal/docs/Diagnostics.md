@@ -18,6 +18,7 @@ Diagnostics answers:
 Diagnostics combines:
 
 - Frontend performance telemetry from the browser.
+- Frontend client workflow telemetry, including availability save attempts, successes, failures, and verification failures.
 - Apps Script reliability metadata.
 - Snapshot Manager records.
 - Job Queue records.
@@ -42,3 +43,5 @@ Diagnostics must not bypass:
 - Cache invalidation rules.
 
 The Diagnostics page uses existing services and returns refreshed Platform Health after each action.
+
+Version 4.0.2 adds read-only Availability Save diagnostics. These records are browser-local diagnostics surfaced to Commissioners and include event name, status, duration, and non-sensitive detail. They do not change scheduling permissions, do not expose OAuth tokens, and do not replace backend audit logging.

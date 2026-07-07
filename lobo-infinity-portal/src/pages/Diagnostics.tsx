@@ -319,6 +319,37 @@ function Diagnostics() {
 
       <section className="panel operations-panel">
         <div className="panel-heading">
+          <p className="eyebrow">Client Diagnostics</p>
+          <h2>Availability Saves</h2>
+        </div>
+        <div className="operations-table-wrap">
+          <table className="operations-table">
+            <thead>
+              <tr>
+                <th>Event</th>
+                <th>Status</th>
+                <th>Duration</th>
+                <th>Detail</th>
+              </tr>
+            </thead>
+            <tbody>
+              {snapshot.api.client.recent
+                .filter((metric) => metric.event === 'availabilitySave')
+                .map((metric, index) => (
+                  <tr key={`${metric.event}-${metric.timestamp}-${index}`}>
+                    <td>{metric.event}</td>
+                    <td>{metric.status}</td>
+                    <td>{metric.durationMs} ms</td>
+                    <td>{metric.detail}</td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="panel operations-panel">
+        <div className="panel-heading">
           <p className="eyebrow">Slow Endpoint Warnings</p>
           <h2>Top Five</h2>
         </div>

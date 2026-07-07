@@ -4844,6 +4844,74 @@
   text-transform: uppercase;
 }
 
+.scheduling-save-confirmation.dirty {
+  border-color: rgba(240, 177, 62, 0.5);
+  color: #f0c96f;
+}
+
+.scheduling-save-confirmation.saving {
+  border-color: rgba(76, 201, 240, 0.48);
+  color: #9be8ff;
+}
+
+.scheduling-save-confirmation.error {
+  border-color: rgba(255, 95, 109, 0.5);
+  color: #ff9aa4;
+}
+
+.scheduling-save-error {
+  border: 1px solid rgba(255, 95, 109, 0.35);
+  border-radius: 10px;
+  background: rgba(255, 95, 109, 0.1);
+  color: #ffb2ba;
+  font-weight: 800;
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 0.75rem 0.9rem;
+}
+
+.availability-save-bar {
+  align-items: center;
+  border-top: 1px solid rgba(148, 163, 184, 0.14);
+  display: flex;
+  gap: 0.75rem;
+  grid-column: 1 / -1;
+  justify-content: space-between;
+  padding-top: 0.75rem;
+}
+
+.availability-save-bar button {
+  min-width: 190px;
+}
+
+.availability-leave-dialog {
+  align-items: center;
+  background: rgba(1, 4, 8, 0.72);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 1rem;
+  position: fixed;
+  z-index: 80;
+}
+
+.availability-leave-dialog > div {
+  background: rgba(8, 14, 22, 0.98);
+  border: 1px solid rgba(76, 201, 240, 0.26);
+  border-radius: 14px;
+  box-shadow: var(--shadow-panel);
+  display: grid;
+  gap: 0.75rem;
+  max-width: 420px;
+  padding: 1.2rem;
+  width: min(420px, 100%);
+}
+
+.availability-leave-dialog h3,
+.availability-leave-dialog p {
+  margin: 0;
+}
+
 .scheduling-form {
   display: grid;
   gap: 0.85rem;
@@ -5476,6 +5544,28 @@ a {
     z-index: 20;
     min-height: 52px;
     box-shadow: var(--shadow-glow);
+  }
+
+  .availability-save-bar {
+    align-items: stretch;
+    background: rgba(8, 14, 22, 0.94);
+    border: 1px solid rgba(76, 201, 240, 0.18);
+    border-radius: 14px;
+    bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom, 0px) + 10px);
+    display: grid;
+    padding: 0.75rem;
+    position: sticky;
+    z-index: 22;
+  }
+
+  .availability-save-bar button {
+    min-width: 0;
+    position: static;
+    width: 100%;
+  }
+
+  .availability-save-bar .scheduling-save-confirmation {
+    justify-self: start;
   }
 
   .scheduling-card-actions,

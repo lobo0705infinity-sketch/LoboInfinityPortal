@@ -17,6 +17,14 @@ export type ApiTimingMetric = {
   timestamp: number
 }
 
+export type ClientDiagnosticMetric = {
+  detail: string
+  durationMs: number
+  event: string
+  status: 'attempt' | 'failure' | 'success' | 'verification_failed'
+  timestamp: number
+}
+
 export const API_URL =
   'https://script.google.com/macros/s/AKfycbxBzo57XHrxiBy1EJq4f_VS026uTXnCYHSXrWT6c2uU__zSB2Dzeixx3rFHQahXQycCng/exec'
 
@@ -27,6 +35,7 @@ const frontendCacheTtlMs = 300_000
 const frontendResponseCache = new Map<string, CacheEntry>()
 const inFlightRequests = new Map<string, Promise<unknown>>()
 const apiTimingMetrics: ApiTimingMetric[] = []
+const clientDiagnosticMetrics: ClientDiagnosticMetric[] = []
 
 export function setApiAuthToken(token: string) {
   activeAuthToken = token
@@ -155,6 +164,9 @@ export function getApiDiagnostics() {
   return {
     cacheHits,
     cacheMisses,
+    client: {
+      recent: clientDiagnosticMetrics.slice(-25),
+    },
     recent: metrics.slice(-25),
     requestCount: metrics.length,
     averageDurationMs:
@@ -166,6 +178,25 @@ export function getApiDiagnostics() {
       .slice()
       .sort((left, right) => right.durationMs - left.durationMs)
       .slice(0, 5),
+  }
+}
+
+export function recordClientDiagnostic(
+  event: string,
+  status: ClientDiagnosticMetric['status'],
+  durationMs: number,
+  detail = '',
+) {
+  clientDiagnosticMetrics.push({
+    detail,
+    durationMs: Math.round(durationMs),
+    event,
+    status,
+    timestamp: Date.now(),
+  })
+
+  if (clientDiagnosticMetrics.length > 100) {
+    clientDiagnosticMetrics.splice(0, clientDiagnosticMetrics.length - 100)
   }
 }
 

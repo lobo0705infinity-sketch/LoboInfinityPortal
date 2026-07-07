@@ -45,6 +45,8 @@ From Match Finder or My Profile, update:
 - Discord handle.
 - Optional notes.
 
+The editor shows whether your changes are saved. Use `Save Availability` after editing. The page confirms `Availability Saved` only after it reloads your scheduling profile and verifies the saved values.
+
 ## Sending a Request
 
 Choose an opponent, date, time, and optional message.
