@@ -162,6 +162,11 @@ function doGet(e) {
         return getSearchData();
       });
 
+    case "searchIndex":
+      return getCachedApiResponse(e, action, function() {
+        return getSearchData();
+      });
+
     case "armyLists":
       return getCachedApiResponse(e, action, function() {
         return getArmyLists();
@@ -170,6 +175,36 @@ function doGet(e) {
     case "operations":
       return requireApiPermission(e, "viewOperations", function() {
         return getOperationsDashboard();
+      });
+
+    case "operationsSummary":
+      return requireApiPermission(e, "viewOperations", function() {
+        return getOperationsSummaryDashboard();
+      });
+
+    case "operationsLifecycle":
+      return requireApiPermission(e, "viewOperations", function() {
+        return getOperationsLifecycleDashboard();
+      });
+
+    case "operationsIdentity":
+      return requireApiPermission(e, "viewOperations", function() {
+        return getOperationsIdentityDashboard();
+      });
+
+    case "operationsContent":
+      return requireApiPermission(e, "viewOperations", function() {
+        return getOperationsContentDashboard();
+      });
+
+    case "operationsDiscord":
+      return requireApiPermission(e, "viewOperations", function() {
+        return getOperationsDiscordDashboard();
+      });
+
+    case "operationsNotifications":
+      return requireApiPermission(e, "viewOperations", function() {
+        return getOperationsNotificationsDashboard();
       });
 
     case "operationsAudit":
@@ -190,6 +225,11 @@ function doGet(e) {
     case "integrity":
       return requireApiPermission(e, "viewOperations", function() {
         return getIntegrityDashboard();
+      });
+
+    case "integrityFreshAudit":
+      return requireApiPermission(e, "runLeagueAudit", function() {
+        return runFreshIntegrityAudit();
       });
 
     case "integrityReport":

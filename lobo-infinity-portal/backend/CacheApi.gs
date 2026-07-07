@@ -23,12 +23,13 @@ const PORTAL_CACHE_GROUPS = {
   analytics: ["intelligence", "records", "home", "notifications", "timeline"],
   armyLists: ["armyLists", "player", "faction", "searchData", "home"],
   streams: ["streams", "home"],
-  search: ["searchData"],
+  search: ["searchData", "searchIndex"],
   news: ["news", "home", "notifications", "timeline"],
   settings: ["settings", "home"],
   events: ["events", "event", "eventTemplates", "eventSeasons", "eventRounds", "eventMigrationValidation"],
   seasonCommand: ["seasonCommandCenter"],
-  all: ["dashboard", "home", "leader", "recentGames", "standings", "players", "player", "factions", "faction", "missions", "mission", "intelligence", "records", "hallOfFame", "comparison", "timeline", "news", "settings", "events", "event", "eventTemplates", "eventSeasons", "eventRounds", "eventMigrationValidation", "seasonCommandCenter", "streams", "searchData", "armyLists"]
+  operations: ["operationsSummary", "operationsLifecycle", "operationsIdentity", "operationsContent", "operationsDiscord", "operationsNotifications", "operationsAudit", "integrity"],
+  all: ["dashboard", "home", "leader", "recentGames", "standings", "players", "player", "factions", "faction", "missions", "mission", "intelligence", "records", "hallOfFame", "comparison", "timeline", "news", "settings", "events", "event", "eventTemplates", "eventSeasons", "eventRounds", "eventMigrationValidation", "seasonCommandCenter", "streams", "searchData", "searchIndex", "armyLists", "operationsSummary", "operationsLifecycle", "operationsIdentity", "operationsContent", "operationsDiscord", "operationsNotifications", "operationsAudit", "integrity"]
 };
 
 const PORTAL_CACHE_ENDPOINT_GROUP = {
@@ -59,6 +60,7 @@ const PORTAL_CACHE_ENDPOINT_GROUP = {
   seasonCommandCenter: "seasonCommand",
   streams: "streams",
   searchData: "search",
+  searchIndex: "search",
   armyLists: "armyLists"
 };
 

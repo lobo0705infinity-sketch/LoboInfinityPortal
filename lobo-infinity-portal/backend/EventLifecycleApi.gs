@@ -219,6 +219,92 @@ function buildEventLifecycleDashboard(eventId) {
 
 }
 
+function buildEventLifecycleSummaryDashboard(eventId) {
+
+  const engine =
+    getEventEngineSnapshot();
+
+  const event =
+    getEventByIdSnapshot(eventId) ||
+    getCurrentLeagueEventSnapshot(engine);
+
+  const participants =
+    getEventParticipantObjectsNoEnsure(event.id);
+
+  const rounds =
+    engine.rounds.filter(function(round) {
+      return round.eventId === event.id;
+    });
+
+  const seasons =
+    engine.seasons.filter(function(season) {
+      return season.eventId === event.id;
+    });
+
+  const currentSeason =
+    seasons[0] || null;
+
+  const currentRound =
+    rounds.filter(function(round) {
+      return round.status === "Active";
+    })[0] ||
+    rounds[0] ||
+    null;
+
+  const currentStage =
+    normalizeEventLifecycleStage(event.lifecycleStage || event.status);
+
+  const health =
+    buildEventLifecycleSummaryHealth(event, participants, rounds);
+
+  const validation =
+    buildEventLifecycleValidation(
+      event,
+      participants,
+      rounds,
+      health,
+      currentStage
+    );
+
+  return {
+    auditLog: [],
+    automation:
+      buildEventLifecycleEmptyAutomationStatus(),
+    currentRound:
+      currentRound
+        ? currentRound.name
+        : "",
+    currentSeason:
+      currentSeason
+        ? currentSeason.name
+        : "",
+    currentStage: currentStage,
+    discord:
+      buildEventLifecycleEmptyDiscordStatus(),
+    endDate: event.endDate,
+    event: event,
+    health: health,
+    nextTransition:
+      buildEventLifecycleNextTransition(
+        currentStage,
+        validation
+      ),
+    participants: participants.length,
+    registration: event.registration,
+    rollback:
+      buildEventLifecycleRollback(currentStage, health),
+    rounds: rounds.length,
+    startDate: event.startDate,
+    status: event.status,
+    supportedStages:
+      EVENT_LIFECYCLE_STAGES,
+    validation: validation,
+    warnings:
+      buildEventLifecycleWarnings(event, participants, rounds, health)
+  };
+
+}
+
 function buildEventLifecycleNextTransition(stage, validation) {
 
   if (
@@ -752,6 +838,64 @@ function buildEventLifecycleHealth(event, participants, rounds) {
 
 }
 
+function buildEventLifecycleSummaryHealth(event, participants, rounds) {
+
+  const games =
+    getAllRecentGameObjects();
+
+  return {
+    automationHealth:
+      event.automation || "Enabled",
+    discordStatus:
+      event.discord || "Enabled",
+    gamesCompleted:
+      games.length,
+    gamesRemaining: 0,
+    latePlayers: [],
+    missingPairings: 0,
+    participants:
+      participants.length,
+    registrationProgress:
+      event.registration,
+    rounds:
+      rounds.length,
+    playersWithoutIdentity: 0
+  };
+
+}
+
+function buildEventLifecycleEmptyAutomationStatus() {
+
+  return {
+    destinations: [],
+    enabled: false,
+    eventType: "eventLifecycleTransition",
+    template: {
+      body: "",
+      enabled: false,
+      title: ""
+    }
+  };
+
+}
+
+function buildEventLifecycleEmptyDiscordStatus() {
+
+  return {
+    configured: false,
+    enabled: false,
+    preview: {
+      event: "",
+      label: "",
+      content: "",
+      embeds: []
+    },
+    status: "Not Loaded",
+    webhookMasked: ""
+  };
+
+}
+
 function buildEventLifecycleCommissionerStatus() {
 
   try {
@@ -1182,6 +1326,26 @@ function getEventParticipantObjects(eventId) {
     );
 
   return getEventEngineRows(sheet)
+    .filter(function(row) {
+      return row["Event ID"] === eventId;
+    })
+    .map(function(row) {
+      return {
+        displayName: row["Display Name"],
+        eventId: row["Event ID"],
+        player: row["Player"],
+        role: row["Role"],
+        status: row["Status"]
+      };
+    });
+
+}
+
+function getEventParticipantObjectsNoEnsure(eventId) {
+
+  return getEventEngineRowsNoEnsure(
+    CONFIG.SHEETS.EVENT_PARTICIPANTS
+  )
     .filter(function(row) {
       return row["Event ID"] === eventId;
     })

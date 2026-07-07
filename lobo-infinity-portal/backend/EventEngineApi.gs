@@ -110,13 +110,13 @@ const EVENT_ENGINE_ROUND_HEADERS = [
 function getEvents(e) {
 
   const engine =
-    ensureEventEngine();
+    getEventEngineSnapshot();
 
   return jsonOutput({
     success: true,
     community: getEventEngineCommunity(),
     series: [getEventEngineDefaultSeries()],
-    currentEvent: getCurrentLeagueEvent(),
+    currentEvent: getCurrentLeagueEventSnapshot(engine),
     events: engine.events
   });
 
@@ -132,8 +132,8 @@ function getEvent(e) {
     EVENT_ENGINE_DEFAULT_EVENT_ID;
 
   const event =
-    getEventById(eventId) ||
-    getCurrentLeagueEvent();
+    getEventByIdSnapshot(eventId) ||
+    getCurrentLeagueEventSnapshot();
 
   return jsonOutput({
     success: true,
@@ -144,11 +144,12 @@ function getEvent(e) {
 
 function getEventTemplates() {
 
-  ensureEventEngine();
+  const engine =
+    getEventEngineSnapshot();
 
   return jsonOutput({
     success: true,
-    templates: getEventTemplateObjects()
+    templates: engine.templates
   });
 
 }
@@ -161,13 +162,14 @@ function getEventSeasons(e) {
   const eventId =
     resolveEventId(params.eventId);
 
-  ensureEventEngine();
+  const engine =
+    getEventEngineSnapshot();
 
   return jsonOutput({
     success: true,
     eventId: eventId,
     seasons:
-      getEventSeasonObjects()
+      engine.seasons
         .filter(function(season) {
           return season.eventId === eventId;
         })
@@ -186,7 +188,8 @@ function getEventRounds(e) {
   const seasonId =
     getEventEngineString(params.seasonId);
 
-  ensureEventEngine();
+  const engine =
+    getEventEngineSnapshot();
 
   return jsonOutput({
     success: true,
@@ -195,7 +198,7 @@ function getEventRounds(e) {
       seasonId ||
       EVENT_ENGINE_DEFAULT_SEASON_ID,
     rounds:
-      getEventRoundObjects()
+      engine.rounds
         .filter(function(round) {
           return (
             round.eventId === eventId &&
@@ -206,6 +209,21 @@ function getEventRounds(e) {
           );
         })
   });
+
+}
+
+function getEventEngineSnapshot() {
+
+  return {
+    events:
+      getEventObjectsNoEnsure(),
+    templates:
+      getEventTemplateObjectsNoEnsure(),
+    seasons:
+      getEventSeasonObjectsNoEnsure(),
+    rounds:
+      getEventRoundObjectsNoEnsure()
+  };
 
 }
 
@@ -660,6 +678,143 @@ function getEventObjects() {
 
 }
 
+function getEventObjectsNoEnsure() {
+
+  return getEventEngineRowsNoEnsure(
+    CONFIG.SHEETS.EVENTS
+  ).map(function(row) {
+    return mapEventEngineEventRow(row);
+  });
+
+}
+
+function getEventTemplateObjectsNoEnsure() {
+
+  return getEventEngineRowsNoEnsure(
+    CONFIG.SHEETS.EVENT_TEMPLATES
+  ).map(function(row) {
+    return mapEventEngineTemplateRow(row);
+  });
+
+}
+
+function getEventSeasonObjectsNoEnsure() {
+
+  return getEventEngineRowsNoEnsure(
+    CONFIG.SHEETS.EVENT_SEASONS
+  ).map(function(row) {
+    return mapEventEngineSeasonRow(row);
+  });
+
+}
+
+function getEventRoundObjectsNoEnsure() {
+
+  return getEventEngineRowsNoEnsure(
+    CONFIG.SHEETS.EVENT_ROUNDS
+  ).map(function(row) {
+    return mapEventEngineRoundRow(row);
+  });
+
+}
+
+function mapEventEngineEventRow(row) {
+
+  return {
+    id: row["ID"],
+    communityId: row["Community ID"],
+    seriesId: row["Series ID"],
+    templateId: row["Template ID"],
+    name: row["Name"],
+    description: row["Description"],
+    type: row["Type"],
+    lifecycleStage: row["Lifecycle Stage"],
+    status: row["Status"],
+    owner: row["Owner"],
+    commissioners: row["Commissioners"],
+    startDate: row["Start Date"],
+    endDate: row["End Date"],
+    registration: row["Registration"],
+    participants: row["Participants"],
+    rules: row["Rules"],
+    scoringModel: row["Scoring Model"],
+    standingsModel: row["Standings Model"],
+    automation: row["Automation"],
+    discord: row["Discord"],
+    achievements: row["Achievements"],
+    history: row["History"],
+    archive: row["Archive"],
+    createdAt: row["Created At"],
+    updatedAt: row["Updated At"]
+  };
+
+}
+
+function mapEventEngineTemplateRow(row) {
+
+  return {
+    id: row["ID"],
+    name: row["Name"],
+    description: row["Description"],
+    eventType: row["Event Type"],
+    version: row["Version"],
+    active: getEventEngineBoolean(row["Active"]),
+    rules: row["Rules"],
+    scoringModel: row["Scoring Model"],
+    standingsModel: row["Standings Model"],
+    roundModel: row["Round Model"],
+    automation: row["Automation"],
+    discord: row["Discord"],
+    achievements: row["Achievements"],
+    registration: row["Registration"],
+    permissions: row["Permissions"],
+    defaultTimeline: row["Default Timeline"],
+    defaultNotifications: row["Default Notifications"],
+    createdAt: row["Created At"],
+    updatedAt: row["Updated At"]
+  };
+
+}
+
+function mapEventEngineSeasonRow(row) {
+
+  return {
+    id: row["ID"],
+    eventId: row["Event ID"],
+    name: row["Name"],
+    number: Number(row["Number"]) || 0,
+    startDate: row["Start Date"],
+    endDate: row["End Date"],
+    status: row["Status"],
+    lifecycleStage: row["Lifecycle Stage"],
+    rules: row["Rules"],
+    automation: row["Automation"],
+    createdAt: row["Created At"],
+    updatedAt: row["Updated At"]
+  };
+
+}
+
+function mapEventEngineRoundRow(row) {
+
+  return {
+    id: row["ID"],
+    eventId: row["Event ID"],
+    seasonId: row["Season ID"],
+    name: row["Name"],
+    number: Number(row["Number"]) || 0,
+    type: row["Type"],
+    startDate: row["Start Date"],
+    endDate: row["End Date"],
+    status: row["Status"],
+    games: row["Games"],
+    automation: row["Automation"],
+    createdAt: row["Created At"],
+    updatedAt: row["Updated At"]
+  };
+
+}
+
 function getEventTemplateObjects() {
 
   const sheet =
@@ -1007,6 +1162,78 @@ function getEventEngineRows(sheet) {
     .filter(function(record) {
       return record[headers[0]] !== "";
     });
+
+}
+
+function getEventEngineRowsNoEnsure(sheetName) {
+
+  const sheet =
+    SpreadsheetApp
+      .getActive()
+      .getSheetByName(sheetName);
+
+  if (!sheet)
+    return [];
+
+  return getEventEngineRows(sheet);
+
+}
+
+function getEventByIdSnapshot(eventId) {
+
+  const target =
+    getEventEngineString(eventId);
+
+  return getEventEngineSnapshot()
+    .events
+    .filter(function(event) {
+      return event.id === target;
+    })[0] || null;
+
+}
+
+function getCurrentLeagueEventSnapshot(engine) {
+
+  const snapshot =
+    engine || getEventEngineSnapshot();
+
+  return snapshot
+    .events
+    .filter(function(event) {
+      return event.id === EVENT_ENGINE_DEFAULT_EVENT_ID;
+    })[0] || buildDefaultCurrentLeagueEventObject();
+
+}
+
+function buildDefaultCurrentLeagueEventObject() {
+
+  return {
+    id: EVENT_ENGINE_DEFAULT_EVENT_ID,
+    communityId: EVENT_ENGINE_COMMUNITY_ID,
+    seriesId: EVENT_ENGINE_DEFAULT_SERIES_ID,
+    templateId: EVENT_ENGINE_DEFAULT_TEMPLATE_ID,
+    name: "Current League",
+    description: "Backward-compatible default Event for existing league data.",
+    type: "League",
+    lifecycleStage: "Active",
+    status: "Active",
+    owner: "Commissioner",
+    commissioners: "Commissioner",
+    startDate: "",
+    endDate: "",
+    registration: "Registration Closed",
+    participants: "",
+    rules: "Legacy league rules",
+    scoringModel: "TP/OP/VP",
+    standingsModel: "Division standings",
+    automation: "Enabled",
+    discord: "Enabled",
+    achievements: "Enabled",
+    history: "Legacy League",
+    archive: "",
+    createdAt: "",
+    updatedAt: ""
+  };
 
 }
 

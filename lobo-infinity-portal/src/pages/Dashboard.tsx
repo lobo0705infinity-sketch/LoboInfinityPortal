@@ -12,6 +12,7 @@ import {
   type CommissionerNewsItem,
   type CommunityCommandCenterData,
   type HallOfFameData,
+  type HomeData,
   type IntelligenceGame,
   type LeagueIntelligenceData,
   type LeagueRecordValue,
@@ -51,98 +52,36 @@ type DashboardPageData = {
   settings: PortalSettings
 }
 
-const defaultArmyListCommunity: ArmyListCommunitySummary = {
-  highestRatedDesigner: null,
-  mostListsSubmitted: [],
-  mostPopularFaction: '',
-  topContributors: [],
-  trendingLists: [],
-}
-
-const defaultPortalSettings: PortalSettings = {
-  bannerImage: '',
-  commissionerContact: '',
-  commissionerEmails: '',
-  currentSeason: '',
-  deploymentUrl: '',
-  discordInvite: '',
-  gitCommit: '',
-  googleFormUrl: '',
-  googleOAuthClientId: '',
-  leagueLogo: '',
-  leagueName: 'Lobo Infinity League',
-  leagueWebsite: '',
-  portalVersion: '',
-  registrationOpen: '',
-  seasonEndDate: '',
-  seasonStartDate: '',
-  submissionButtonText: 'Submit Match',
-  submissionButtonVisible: 'true',
-  submissionEnabled: 'true',
-  themeAccentColor: '',
-}
-
-function buildDashboardPageData(dashboard: DashboardData): DashboardPageData {
+function buildDashboardPageDataFromHome(home: HomeData): DashboardPageData {
   return {
-    armyListCommunity: defaultArmyListCommunity,
-    dashboard,
-    hallOfFame: null,
-    intelligence: null,
-    news: [],
-    records: {},
-    recentGames: [],
-    settings: defaultPortalSettings,
+    armyListCommunity: home.armyListCommunity,
+    dashboard: home.dashboard,
+    hallOfFame: home.hallOfFame,
+    intelligence: home.intelligence,
+    news: home.news,
+    records: home.records,
+    recentGames: home.recentGames,
+    settings: home.settings,
   }
 }
 
-async function hydrateDashboardSecondaryData(
+async function hydrateDashboardAnalytics(
   initialData: DashboardPageData,
   signal: AbortSignal,
   setHomeState: (state: HomeState) => void,
 ) {
-  const [recentGames, news, intelligence, settings, armyLists] =
-    await Promise.allSettled([
-      apiClient.getRecentGames({ signal }),
-      apiClient.getNews({ signal }),
-      apiClient.getAnalytics({ signal }),
-      apiClient.getSettings({ signal }),
-      apiClient.getArmyLists({ signal }),
-    ])
+  const intelligence = await apiClient.getAnalytics({ signal })
 
   if (signal.aborted) {
     return
   }
 
-  const nextData: DashboardPageData = {
-    ...initialData,
-    armyListCommunity:
-      armyLists.status === 'fulfilled'
-        ? armyLists.value.community
-        : initialData.armyListCommunity,
-    intelligence:
-      intelligence.status === 'fulfilled'
-        ? intelligence.value
-        : initialData.intelligence,
-    news:
-      news.status === 'fulfilled'
-        ? news.value
-        : initialData.news,
-    records:
-      intelligence.status === 'fulfilled'
-        ? intelligence.value.records
-        : initialData.records,
-    recentGames:
-      recentGames.status === 'fulfilled'
-        ? recentGames.value
-        : initialData.recentGames,
-    settings:
-      settings.status === 'fulfilled'
-        ? settings.value
-        : initialData.settings,
-  }
-
   setHomeState({
-    data: nextData,
+    data: {
+      ...initialData,
+      intelligence,
+      records: intelligence.records,
+    },
     status: 'success',
   })
 }
@@ -162,18 +101,22 @@ function Dashboard() {
 
     async function loadCommandCenter() {
       try {
-        const dashboard = await apiClient.getDashboard({
+        const home = await apiClient.getHome({
           signal: controller.signal,
         })
 
-        const initialData = buildDashboardPageData(dashboard)
+        const initialData = buildDashboardPageDataFromHome(home)
 
         setHomeState({
           data: initialData,
           status: 'success',
         })
 
-        void hydrateDashboardSecondaryData(initialData, controller.signal, setHomeState)
+        void hydrateDashboardAnalytics(
+          initialData,
+          controller.signal,
+          setHomeState,
+        ).catch(() => undefined)
       } catch (error) {
         if (!controller.signal.aborted) {
           setHomeState({

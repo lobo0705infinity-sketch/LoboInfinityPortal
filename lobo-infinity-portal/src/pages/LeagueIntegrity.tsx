@@ -74,6 +74,20 @@ function LeagueIntegrity() {
     }
   }
 
+  async function runFreshAudit() {
+    if (!canRepair) {
+      return
+    }
+
+    setWorkingAction('fresh-audit')
+    try {
+      const data = await apiClient.getIntegrityFreshAudit()
+      setState({ data, status: 'success' })
+    } finally {
+      setWorkingAction('')
+    }
+  }
+
   async function exportReport() {
     const report = await apiClient.getIntegrityReport()
     const blob = new Blob([JSON.stringify(report, null, 2)], {
@@ -139,7 +153,7 @@ function LeagueIntegrity() {
       <HealthOverview data={state.data} />
       <IntegrityActions
         canRepair={canRepair}
-        onAudit={() => loadIntegrity()}
+        onAudit={() => void runFreshAudit()}
         onExport={() => void exportReport()}
         onRepair={(repair) => void runRepair(repair)}
         workingAction={workingAction}
@@ -210,8 +224,8 @@ function IntegrityActions({
   return (
     <section className="panel operations-panel">
       <div className="operations-actions wrap">
-        <button disabled={disabled} onClick={onAudit} type="button">
-          Run Full Audit
+        <button disabled={!canRepair || disabled} onClick={onAudit} type="button">
+          Run Fresh Audit
         </button>
         <button
           disabled={!canRepair || disabled}

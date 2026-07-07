@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import Loading from '../components/Loading'
@@ -86,13 +86,45 @@ function CommissionerDashboard() {
   const [workingAction, setWorkingAction] = useState('')
   const canViewOperations = auth.isAtLeastRole('Assistant Commissioner')
 
-  async function loadOperations(signal?: AbortSignal) {
+  const hydrateOperationsPanels = useCallback(async (signal?: AbortSignal) => {
+    const results = await Promise.allSettled([
+      apiClient.getOperationsIdentity({ signal }),
+      apiClient.getOperationsContent({ signal }),
+      apiClient.getOperationsLifecycle({ signal }),
+      apiClient.getOperationsDiscord({ signal }),
+      apiClient.getOperationsNotifications({ signal }),
+    ])
+
+    if (signal?.aborted) {
+      return
+    }
+
+    results.forEach((result) => {
+      if (result.status !== 'fulfilled') {
+        return
+      }
+
+      setState((current) => {
+        if (current.status !== 'success') {
+          return current
+        }
+
+        return {
+          data: mergeOperationsData(current.data, result.value),
+          status: 'success',
+        }
+      })
+    })
+  }, [])
+
+  const loadOperations = useCallback(async (signal?: AbortSignal) => {
     try {
-      const data = await apiClient.getOperations({ signal })
+      const data = await apiClient.getOperationsSummary({ signal })
       setState({
         data,
         status: 'success',
       })
+      void hydrateOperationsPanels(signal)
     } catch (error) {
       if (!signal?.aborted) {
         setState({
@@ -104,7 +136,7 @@ function CommissionerDashboard() {
         })
       }
     }
-  }
+  }, [hydrateOperationsPanels])
 
   useEffect(() => {
     if (
@@ -121,7 +153,7 @@ function CommissionerDashboard() {
     return () => {
       controller.abort()
     }
-  }, [auth.authenticated, auth.status, canViewOperations])
+  }, [auth.authenticated, auth.status, canViewOperations, loadOperations])
 
   async function runAction(
     action: string,
@@ -260,6 +292,43 @@ function CommissionerDashboard() {
       </section>
     </main>
   )
+}
+
+function mergeOperationsData(
+  current: OperationsDashboardData,
+  next: OperationsDashboardData,
+): OperationsDashboardData {
+  return {
+    ...current,
+    summary: {
+      ...current.summary,
+      ...next.summary,
+    },
+    pendingArmyLists:
+      next.pendingArmyLists.length > 0 ? next.pendingArmyLists : current.pendingArmyLists,
+    streams: next.streams.length > 0 ? next.streams : current.streams,
+    news: next.news.length > 0 ? next.news : current.news,
+    players: next.players.length > 0 ? next.players : current.players,
+    identity:
+      next.identity.records.length > 0 || next.identity.audits.length > 0
+        ? next.identity
+        : current.identity,
+    eventLifecycle:
+      next.eventLifecycle.auditLog.length > 0 ||
+      next.eventLifecycle.discord.status !== 'Not Loaded'
+        ? next.eventLifecycle
+        : current.eventLifecycle,
+    discord:
+      next.discord.configured || next.discord.log.length > 0
+        ? next.discord
+        : current.discord,
+    settings: {
+      ...current.settings,
+      ...next.settings,
+    },
+    audit:
+      next.audit.issues.length > 0 ? next.audit : current.audit,
+  }
 }
 
 function EventLifecyclePanel({

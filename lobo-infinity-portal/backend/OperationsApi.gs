@@ -92,12 +92,91 @@ function getOperationsDashboard() {
 
 }
 
+function getOperationsSummaryDashboard() {
+
+  return jsonOutput(buildOperationsDashboardPayload({
+    eventLifecycle:
+      buildEventLifecycleSummaryDashboard(EVENT_ENGINE_DEFAULT_EVENT_ID)
+  }));
+
+}
+
+function getOperationsLifecycleDashboard() {
+
+  return jsonOutput(buildOperationsDashboardPayload({
+    eventLifecycle:
+      buildEventLifecycleDashboard(EVENT_ENGINE_DEFAULT_EVENT_ID)
+  }));
+
+}
+
+function getOperationsIdentityDashboard() {
+
+  return jsonOutput(buildOperationsDashboardPayload({
+    identity:
+      getOperationsIdentityManagement(),
+    players:
+      getOperationsPlayers()
+  }));
+
+}
+
+function getOperationsContentDashboard() {
+
+  const armyLists =
+    getArmyListObjects();
+
+  return jsonOutput(buildOperationsDashboardPayload({
+    pendingArmyLists:
+      armyLists.filter(function(list) {
+        return !list.approved;
+      }),
+    streams:
+      getOperationsStreams(),
+    news:
+      getOperationsNews()
+  }));
+
+}
+
+function getOperationsDiscordDashboard() {
+
+  const discord =
+    getDiscordOperationsStatus();
+
+  return jsonOutput(buildOperationsDashboardPayload({
+    discord: discord,
+    summaryOverrides: {
+      discordStatus: discord
+    }
+  }));
+
+}
+
+function getOperationsNotificationsDashboard() {
+
+  const notificationStatus =
+    getOperationsNotificationStatus();
+
+  return jsonOutput(buildOperationsDashboardPayload({
+    summaryOverrides: {
+      notificationStatus: notificationStatus
+    }
+  }));
+
+}
+
 function getOperationsAudit() {
 
-  return jsonOutput({
-    success: true,
-    audit: buildLeagueAudit()
-  });
+  const audit =
+    buildLeagueAudit();
+
+  return jsonOutput(buildOperationsDashboardPayload({
+    audit: audit,
+    summaryOverrides: {
+      leagueAuditSummary: audit.summary
+    }
+  }));
 
 }
 
@@ -109,6 +188,158 @@ function getOperationsSeason() {
     promotionRelegation: buildPromotionRelegationProposal(),
     archive: getSeasonArchiveRows()
   });
+
+}
+
+function buildOperationsDashboardPayload(overrides) {
+
+  const options =
+    overrides || {};
+
+  const settings =
+    options.settings || getSettingsObject();
+
+  const summary =
+    buildOperationsSummaryPayload(settings);
+
+  const summaryOverrides =
+    options.summaryOverrides || {};
+
+  Object.keys(summaryOverrides).forEach(function(key) {
+    summary[key] = summaryOverrides[key];
+  });
+
+  return {
+    success: true,
+    summary: summary,
+    pendingArmyLists:
+      options.pendingArmyLists || [],
+    streams:
+      options.streams || [],
+    news:
+      options.news || [],
+    players:
+      options.players || [],
+    identity:
+      options.identity || buildEmptyOperationsIdentityManagement(),
+    eventLifecycle:
+      options.eventLifecycle ||
+      buildEventLifecycleSummaryDashboard(EVENT_ENGINE_DEFAULT_EVENT_ID),
+    discord:
+      options.discord || buildEmptyOperationsDiscordStatus(),
+    settings: settings,
+    audit:
+      options.audit || buildEmptyOperationsAudit()
+  };
+
+}
+
+function buildOperationsSummaryPayload(settings) {
+
+  const recentGames =
+    getAllRecentGameObjects();
+
+  const streams =
+    getOperationsStreams();
+
+  const news =
+    getOperationsNews();
+
+  const armyLists =
+    getArmyListObjects();
+
+  const auditSummary =
+    getIntegritySnapshotAuditSummary();
+
+  return {
+    pendingArmyLists:
+      armyLists.filter(function(list) {
+        return !list.approved;
+      }).length,
+    pendingStreams:
+      streams.filter(function(stream) {
+        return stream.youtubeUrl === "";
+      }).length,
+    pendingNews:
+      news.filter(function(item) {
+        return !item.archived;
+      }).length,
+    recentMatchSubmissions:
+      recentGames.slice(0, 5),
+    leagueStatistics: {
+      games: recentGames.length,
+      activePlayers:
+        getOperationsActivePlayers(),
+      factions:
+        buildFactionApiSummaries().length,
+      missions:
+        buildMissionApiSummaries().length
+    },
+    cacheStatus:
+      getOperationsCacheStatus(),
+    systemHealth:
+      getOperationsSystemHealth(),
+    leagueAuditSummary:
+      auditSummary,
+    seasonStatus:
+      getSeasonStatusObject(),
+    identityStatus:
+      getOperationsIdentityStatus(),
+    notificationStatus:
+      getOperationsNotificationStatus(),
+    deploymentStatus:
+      getOperationsDeploymentStatus(settings),
+    discordStatus:
+      buildEmptyOperationsDiscordStatus()
+  };
+
+}
+
+function buildEmptyOperationsIdentityManagement() {
+
+  return {
+    records: [],
+    audits: []
+  };
+
+}
+
+function buildEmptyOperationsDiscordStatus() {
+
+  return {
+    enabled: false,
+    configured: false,
+    webhookMasked: "",
+    announcementChannel: "",
+    adminChannel: "",
+    rateLimitPerHour: 0,
+    retryLimit: 0,
+    automationEvents: [],
+    lastAutomationRun: "",
+    queueDepth: 0,
+    failures: 0,
+    lastResult: null,
+    log: [],
+    preview: {
+      event: "",
+      label: "",
+      content: "",
+      embeds: []
+    }
+  };
+
+}
+
+function buildEmptyOperationsAudit() {
+
+  return {
+    summary: {
+      critical: 0,
+      warning: 0,
+      informational: 0
+    },
+    issues: []
+  };
 
 }
 

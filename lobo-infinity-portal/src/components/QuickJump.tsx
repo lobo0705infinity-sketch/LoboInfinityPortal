@@ -21,50 +21,35 @@ function QuickJump() {
     const controller = new AbortController()
 
     async function loadJumpItems() {
-      const [players, factions, missions, games] = await Promise.allSettled([
-        apiClient.getPlayers({ signal: controller.signal }),
-        apiClient.getFactions({ signal: controller.signal }),
-        apiClient.getMissions({ signal: controller.signal }),
-        apiClient.getRecentGames({ signal: controller.signal }),
-      ])
+      const searchIndex = await apiClient.getSearchIndex({
+        signal: controller.signal,
+      })
 
       if (controller.signal.aborted) {
         return
       }
 
-      const playerItems =
-        players.status === 'fulfilled'
-          ? players.value.flatMap((division) =>
-              division.standings.slice(0, 4).map((player) => ({
-                label: `Player: ${formatPlayerName(player.player, player.displayName)}`,
-                to: `/players/${encodeURIComponent(player.player)}`,
-              })),
-            )
-          : []
+      const playerItems = searchIndex.players.flatMap((division) =>
+        division.standings.slice(0, 4).map((player) => ({
+          label: `Player: ${formatPlayerName(player.player, player.displayName)}`,
+          to: `/players/${encodeURIComponent(player.player)}`,
+        })),
+      )
 
-      const factionItems =
-        factions.status === 'fulfilled'
-          ? factions.value.slice(0, 4).map((faction) => ({
-              label: `Faction: ${faction.name}`,
-              to: `/factions/${encodeURIComponent(faction.name)}`,
-            }))
-          : []
+      const factionItems = searchIndex.factions.slice(0, 4).map((faction) => ({
+        label: `Faction: ${faction.name}`,
+        to: `/factions/${encodeURIComponent(faction.name)}`,
+      }))
 
-      const missionItems =
-        missions.status === 'fulfilled'
-          ? missions.value.slice(0, 4).map((mission) => ({
-              label: `Mission: ${mission.mission}`,
-              to: `/missions/${encodeURIComponent(mission.mission)}`,
-            }))
-          : []
+      const missionItems = searchIndex.missions.slice(0, 4).map((mission) => ({
+        label: `Mission: ${mission.mission}`,
+        to: `/missions/${encodeURIComponent(mission.mission)}`,
+      }))
 
-      const gameItems =
-        games.status === 'fulfilled'
-          ? games.value.slice(0, 3).map((game) => ({
-              label: `Match: ${formatPlayerName(game.winner, game.winnerDisplayName)} vs ${formatPlayerName(game.loser, game.loserDisplayName)}`,
-              to: `/games/${game.id}`,
-            }))
-          : []
+      const gameItems = searchIndex.games.slice(0, 3).map((game) => ({
+        label: `Match: ${formatPlayerName(game.winner, game.winnerDisplayName)} vs ${formatPlayerName(game.loser, game.loserDisplayName)}`,
+        to: `/games/${game.id}`,
+      }))
 
       setItems([
         { label: 'Dashboard', to: '/' },

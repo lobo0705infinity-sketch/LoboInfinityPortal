@@ -1429,6 +1429,7 @@ export type ApiClient = {
   getAllStandings: (options?: ApiOptions) => Promise<DivisionStandings[]>
   getPlayers: (options?: ApiOptions) => Promise<DivisionStandings[]>
   getSearchData: (options?: ApiOptions) => Promise<SearchData>
+  getSearchIndex: (options?: ApiOptions) => Promise<SearchData>
   getPlayer: (
     playerName: string,
     options?: ApiOptions,
@@ -1475,9 +1476,16 @@ export type ApiClient = {
     options?: ApiOptions,
   ) => Promise<void>
   getOperations: (options?: ApiOptions) => Promise<OperationsDashboardData>
+  getOperationsSummary: (options?: ApiOptions) => Promise<OperationsDashboardData>
+  getOperationsLifecycle: (options?: ApiOptions) => Promise<OperationsDashboardData>
+  getOperationsIdentity: (options?: ApiOptions) => Promise<OperationsDashboardData>
+  getOperationsContent: (options?: ApiOptions) => Promise<OperationsDashboardData>
+  getOperationsDiscord: (options?: ApiOptions) => Promise<OperationsDashboardData>
+  getOperationsNotifications: (options?: ApiOptions) => Promise<OperationsDashboardData>
   getOperationsAudit: (options?: ApiOptions) => Promise<LeagueAudit>
   getOperationsSeason: (options?: ApiOptions) => Promise<OperationsSeasonData>
   getIntegrity: (options?: ApiOptions) => Promise<IntegrityData>
+  getIntegrityFreshAudit: (options?: ApiOptions) => Promise<IntegrityData>
   getIntegrityReport: (options?: ApiOptions) => Promise<IntegrityReport>
   repairIntegrity: (
     repair: string,
@@ -1603,6 +1611,13 @@ export async function getSearchData(
   options: ApiOptions = {},
 ): Promise<SearchData> {
   const payload = await request('searchData', options)
+  return normalizeSearchDataPayload(payload)
+}
+
+export async function getSearchIndex(
+  options: ApiOptions = {},
+): Promise<SearchData> {
+  const payload = await request('searchIndex', options)
   return normalizeSearchDataPayload(payload)
 }
 
@@ -1778,10 +1793,59 @@ export async function getOperations(
   return normalizeOperationsPayload(payload)
 }
 
+export async function getOperationsSummary(
+  options: ApiOptions = {},
+): Promise<OperationsDashboardData> {
+  const payload = await request('operationsSummary', options)
+  return normalizeOperationsPayload(payload)
+}
+
+export async function getOperationsLifecycle(
+  options: ApiOptions = {},
+): Promise<OperationsDashboardData> {
+  const payload = await request('operationsLifecycle', options)
+  return normalizeOperationsPayload(payload)
+}
+
+export async function getOperationsIdentity(
+  options: ApiOptions = {},
+): Promise<OperationsDashboardData> {
+  const payload = await request('operationsIdentity', options)
+  return normalizeOperationsPayload(payload)
+}
+
+export async function getOperationsContent(
+  options: ApiOptions = {},
+): Promise<OperationsDashboardData> {
+  const payload = await request('operationsContent', options)
+  return normalizeOperationsPayload(payload)
+}
+
+export async function getOperationsDiscord(
+  options: ApiOptions = {},
+): Promise<OperationsDashboardData> {
+  const payload = await request('operationsDiscord', options)
+  return normalizeOperationsPayload(payload)
+}
+
+export async function getOperationsNotifications(
+  options: ApiOptions = {},
+): Promise<OperationsDashboardData> {
+  const payload = await request('operationsNotifications', options)
+  return normalizeOperationsPayload(payload)
+}
+
 export async function getIntegrity(
   options: ApiOptions = {},
 ): Promise<IntegrityData> {
   const payload = await request('integrity', options)
+  return normalizeIntegrityPayload(payload)
+}
+
+export async function getIntegrityFreshAudit(
+  options: ApiOptions = {},
+): Promise<IntegrityData> {
+  const payload = await request('integrityFreshAudit', options)
   return normalizeIntegrityPayload(payload)
 }
 
@@ -1884,6 +1948,7 @@ export const apiClient: ApiClient = {
   getAllStandings,
   getPlayers,
   getSearchData,
+  getSearchIndex,
   getPlayer,
   getFactions,
   getFaction,
@@ -1905,7 +1970,14 @@ export const apiClient: ApiClient = {
   submitArmyList,
   voteArmyList,
   getOperations,
+  getOperationsSummary,
+  getOperationsLifecycle,
+  getOperationsIdentity,
+  getOperationsContent,
+  getOperationsDiscord,
+  getOperationsNotifications,
   getIntegrity,
+  getIntegrityFreshAudit,
   getIntegrityReport,
   repairIntegrity,
   getAutomation,

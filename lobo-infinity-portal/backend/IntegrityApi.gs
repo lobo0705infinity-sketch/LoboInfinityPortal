@@ -8,8 +8,23 @@
 const INTEGRITY_VERSION = "2.0.2";
 const INTEGRITY_LAST_AUDIT_KEY = "integrityLastAudit";
 const INTEGRITY_LAST_REPAIR_KEY = "integrityLastRepair";
+const INTEGRITY_SNAPSHOT_CACHE_KEY = "integrity:snapshot:v3.2";
+const INTEGRITY_SNAPSHOT_TTL_SECONDS = 21600;
 
 function getIntegrityDashboard() {
+
+  const audit =
+    getIntegritySnapshot() ||
+    buildIntegritySnapshotPlaceholder();
+
+  return jsonOutput({
+    success: true,
+    integrity: audit
+  });
+
+}
+
+function runFreshIntegrityAudit() {
 
   const audit =
     buildLeagueIntegrityAudit(false);
@@ -18,6 +33,8 @@ function getIntegrityDashboard() {
     INTEGRITY_LAST_AUDIT_KEY,
     audit.timestamp
   );
+
+  cacheIntegritySnapshot(audit);
 
   return jsonOutput({
     success: true,
@@ -84,6 +101,8 @@ function repairLeagueIntegrity(e) {
   const audit =
     buildLeagueIntegrityAudit(false);
 
+  cacheIntegritySnapshot(audit);
+
   return jsonOutput({
     success: true,
     repairedAt: timestamp,
@@ -98,12 +117,8 @@ function repairLeagueIntegrity(e) {
 function getIntegrityReport() {
 
   const audit =
-    buildLeagueIntegrityAudit(false);
-
-  setIntegrityProperty(
-    INTEGRITY_LAST_AUDIT_KEY,
-    audit.timestamp
-  );
+    getIntegritySnapshot() ||
+    buildIntegritySnapshotPlaceholder();
 
   return jsonOutput({
     success: true,
@@ -135,6 +150,115 @@ function getIntegrityReport() {
       sections: audit.sections
     }
   });
+
+}
+
+function getIntegritySnapshot() {
+
+  const cached =
+    CacheService
+      .getScriptCache()
+      .get(INTEGRITY_SNAPSHOT_CACHE_KEY);
+
+  if (!cached)
+    return null;
+
+  try {
+    return JSON.parse(cached);
+  }
+  catch (err) {
+    return null;
+  }
+
+}
+
+function cacheIntegritySnapshot(audit) {
+
+  try {
+    CacheService
+      .getScriptCache()
+      .put(
+        INTEGRITY_SNAPSHOT_CACHE_KEY,
+        JSON.stringify(audit),
+        INTEGRITY_SNAPSHOT_TTL_SECONDS
+      );
+  }
+  catch (err) {
+    // Snapshot caching is an optimization and must never block integrity repairs.
+  }
+
+}
+
+function getIntegritySnapshotAuditSummary() {
+
+  const snapshot =
+    getIntegritySnapshot();
+
+  if (!snapshot || !snapshot.summary)
+    return {
+      critical: 0,
+      warning: 0,
+      informational: 0
+    };
+
+  return {
+    critical:
+      Number(snapshot.summary.errors) || 0,
+    warning:
+      Number(snapshot.summary.warnings) || 0,
+    informational: 0
+  };
+
+}
+
+function buildIntegritySnapshotPlaceholder() {
+
+  const timestamp =
+    getIntegrityTimestamp();
+
+  return {
+    version: INTEGRITY_VERSION,
+    timestamp: timestamp,
+    lastAudit:
+      getIntegrityProperty(INTEGRITY_LAST_AUDIT_KEY) || "Never",
+    lastRepair:
+      getIntegrityProperty(INTEGRITY_LAST_REPAIR_KEY) || "Never",
+    durationMs: 0,
+    healthScore: 100,
+    healthStatus:
+      "Snapshot Pending",
+    summary: {
+      errors: 0,
+      warnings: 1,
+      repairable: 0,
+      sections: 1
+    },
+    sections: [
+      buildIntegritySection(
+        "integrity-snapshot",
+        "Integrity Snapshot",
+        "Cached integrity snapshots load immediately. Run a fresh audit for current validation.",
+        [
+          buildIntegrityCheck(
+            "Integrity Snapshot",
+            "Warning",
+            "No cached snapshot is available yet."
+          )
+        ],
+        [
+          buildIntegrityIssue(
+            "warning",
+            "No cached integrity snapshot",
+            "Run Fresh Audit to generate a cached integrity snapshot.",
+            "League Integrity",
+            "",
+            false
+          )
+        ],
+        ""
+      )
+    ]
+  };
 
 }
 
