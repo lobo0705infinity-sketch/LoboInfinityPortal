@@ -7835,3 +7835,265 @@ a {
     padding-bottom: 18px;
   }
 }
+
+/* Version 4.3 Player Home Dashboard */
+.player-home {
+  display: grid;
+  gap: 16px;
+  margin: 0 clamp(14px, 4vw, 46px) 24px;
+  padding-top: 18px;
+}
+
+.player-home-hero,
+.player-home-priority,
+.player-home-card {
+  border: 1px solid rgba(76, 201, 240, 0.16);
+  background:
+    linear-gradient(180deg, rgba(76, 201, 240, 0.06), transparent),
+    rgba(8, 14, 22, 0.82);
+  border-radius: 20px;
+  box-shadow: var(--shadow-panel);
+}
+
+.player-home-hero {
+  align-items: end;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.62fr);
+  padding: clamp(20px, 4vw, 34px);
+}
+
+.player-home-hero h1 {
+  font-size: clamp(2.1rem, 6vw, 4.6rem);
+  line-height: 0.95;
+  margin: 6px 0 10px;
+  max-width: 13ch;
+}
+
+.player-home-hero p {
+  color: var(--text-soft);
+  font-weight: 850;
+  margin: 0;
+}
+
+.player-home-hero-stats,
+.player-home-mini-stats {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.player-home-hero-stats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.player-home-hero-stats div,
+.player-home-mini-stats div {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  background: rgba(5, 8, 12, 0.58);
+  padding: 12px;
+}
+
+.player-home-hero-stats dt,
+.player-home-mini-stats dt,
+.player-home-card-heading .eyebrow,
+.player-home-match span,
+.player-home-opponent small,
+.player-home-feed-item span {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.player-home-hero-stats dd,
+.player-home-mini-stats dd {
+  color: var(--text);
+  font-size: clamp(1.35rem, 4vw, 2.15rem);
+  font-weight: 950;
+  margin: 4px 0 0;
+}
+
+.player-home-priority {
+  align-items: center;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 20px;
+}
+
+.player-home-priority h2 {
+  font-size: clamp(1.8rem, 5vw, 3.4rem);
+  line-height: 1;
+  margin: 5px 0 8px;
+}
+
+.player-home-priority p,
+.player-home-priority small {
+  color: var(--text-soft);
+  font-weight: 850;
+}
+
+.player-home-primary-action,
+.player-home-secondary-action,
+.player-home-actions a,
+.player-home-empty-action {
+  align-items: center;
+  border-radius: 14px;
+  display: inline-flex;
+  font-weight: 950;
+  justify-content: center;
+  min-height: 48px;
+  padding: 12px 16px;
+  text-decoration: none;
+}
+
+.player-home-primary-action {
+  background: linear-gradient(135deg, rgba(193, 18, 31, 0.94), rgba(240, 177, 62, 0.86));
+  color: #ffffff;
+  min-width: 180px;
+}
+
+.player-home-secondary-action,
+.player-home-actions a,
+.player-home-empty-action {
+  border: 1px solid rgba(76, 201, 240, 0.18);
+  color: var(--text);
+  background: rgba(76, 201, 240, 0.08);
+}
+
+.player-home-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.player-home-grid.wide {
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+}
+
+.player-home-card {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+}
+
+.player-home-card-heading h2 {
+  margin: 4px 0 0;
+}
+
+.player-home-match,
+.player-home-opponent,
+.player-home-feed-item {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  color: var(--text);
+  background: rgba(5, 8, 12, 0.48);
+  display: grid;
+  gap: 5px;
+  padding: 13px;
+  text-decoration: none;
+}
+
+.player-home-match.action,
+.player-home-opponent:hover,
+.player-home-opponent:focus-visible,
+.player-home-feed-item:hover,
+.player-home-feed-item:focus-visible {
+  border-color: rgba(76, 201, 240, 0.32);
+  background: rgba(76, 201, 240, 0.08);
+}
+
+.player-home-match strong,
+.player-home-opponent strong,
+.player-home-feed-item strong {
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.player-home-match p,
+.player-home-opponent span,
+.player-home-feed-item p,
+.player-home-empty-action span {
+  color: var(--text-soft);
+  font-weight: 800;
+  margin: 0;
+}
+
+.player-home-opponents,
+.player-home-feed {
+  display: grid;
+  gap: 10px;
+}
+
+.player-home-opponent {
+  align-items: center;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.player-home-actions {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.player-home-empty-action {
+  align-items: flex-start;
+  display: grid;
+  justify-items: start;
+}
+
+@media (max-width: 920px) {
+  .player-home-hero,
+  .player-home-priority,
+  .player-home-grid,
+  .player-home-grid.wide {
+    grid-template-columns: 1fr;
+  }
+
+  .player-home-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .player-home {
+    gap: 12px;
+    margin: 0 12px 18px;
+    padding-top: 12px;
+  }
+
+  .player-home-hero,
+  .player-home-priority,
+  .player-home-card {
+    border-radius: 18px;
+    padding: 14px;
+  }
+
+  .player-home-hero h1 {
+    font-size: clamp(1.95rem, 12vw, 3rem);
+  }
+
+  .player-home-hero-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .player-home-priority {
+    align-items: stretch;
+  }
+
+  .player-home-primary-action {
+    width: 100%;
+  }
+
+  .player-home-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 380px) {
+  .player-home-hero-stats {
+    grid-template-columns: 1fr;
+  }
+}

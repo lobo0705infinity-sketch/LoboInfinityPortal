@@ -31,7 +31,7 @@
 - `backend/RecordsApi.gs`: records and Hall of Fame APIs.
 - `backend/AutomationApi.gs`: event automation center.
 - `backend/DiscordApi.gs`: Discord destination service.
-- `backend/CommunityCommandCenterApi.gs`: authenticated Community Command Center aggregate, player workflow, and Nudge Engine built from Event Engine and existing player services.
+- `backend/CommunityCommandCenterApi.gs`: authenticated Community Command Center aggregate, Player Home Dashboard data, player workflow, scheduling request summary, and Nudge Engine built from Event Engine and existing player services.
 - `backend/SchedulingApi.gs`: Version 4.0 Match Finder, scheduling requests, calendar export, scheduling notifications, and commissioner scheduling status.
 - `backend/EventEngineApi.gs`: Version 3 Event Engine foundation objects, default Current League event, and migration preview tooling.
 - `backend/EventLifecycleApi.gs`: commissioner Event Lifecycle Controls, health, warnings, transition automation, rollback safety, and audit log.

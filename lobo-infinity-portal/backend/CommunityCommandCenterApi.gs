@@ -40,6 +40,9 @@ function getCommunityCommandCenter(e) {
   const activity =
     buildCommunityActivity(context.games);
 
+  const requests =
+    getSchedulingRequestsForPlayer(player);
+
   return jsonOutput({
     success: true,
     commandCenter: {
@@ -77,6 +80,11 @@ function getCommunityCommandCenter(e) {
         ),
       communityActivity:
         activity,
+      matchRequests:
+        buildCommunityMatchRequests(
+          requests,
+          player
+        ),
       nudgeEngine:
         buildCommunityNudges(
           auth.user,
@@ -122,6 +130,16 @@ function buildCommunityCommandWelcome(user, currentEvent, events, seasonCommand)
       user.leaguePlayer,
     currentRank:
       seasonCommand.player.rank,
+    currentDivision:
+      seasonCommand.player.division,
+    currentRecord:
+      seasonCommand.player.wins +
+      "-" +
+      seasonCommand.player.losses,
+    currentWeek:
+      seasonCommand.deadlines.currentWeek,
+    leagueCompletion:
+      seasonCommand.progress.completionPercentage,
     currentLeague:
       currentEvent
         ? currentEvent.name
@@ -130,6 +148,34 @@ function buildCommunityCommandWelcome(user, currentEvent, events, seasonCommand)
       events.filter(function(event) {
         return getCommunityCommandString(event.status).toLowerCase() === "active";
       }).length
+  };
+
+}
+
+function buildCommunityMatchRequests(requests, playerName) {
+
+  const key =
+    getCommunityCommandString(playerName).toLowerCase();
+
+  return {
+    incoming:
+      requests.filter(function(request) {
+        return (
+          getCommunityCommandString(request.toPlayer).toLowerCase() === key &&
+          request.status === "Pending"
+        );
+      }).slice(0, 3),
+    outgoing:
+      requests.filter(function(request) {
+        return (
+          getCommunityCommandString(request.fromPlayer).toLowerCase() === key &&
+          request.status === "Pending"
+        );
+      }).slice(0, 3),
+    upcoming:
+      requests.filter(function(request) {
+        return request.status === "Accepted";
+      }).slice(0, 3)
   };
 
 }

@@ -907,7 +907,11 @@ export type CommunityCommandAction = {
 
 export type CommunityCommandWelcome = {
   currentActiveEvents: number
+  currentDivision: string
   currentLeague: string
+  currentRecord: string
+  currentWeek: number
+  leagueCompletion: number
   currentRank: number
   displayName: string
   leaguePlayer: string
@@ -951,6 +955,11 @@ export type CommunityCommandCenterData = {
   communityActivity: CommunityCommandActivity
   eventSwitcher: CommunityEventSwitcherItem[]
   intelligence: string[]
+  matchRequests: {
+    incoming: SchedulingRequest[]
+    outgoing: SchedulingRequest[]
+    upcoming: SchedulingRequest[]
+  }
   nudgeEngine: CommunityNudge[]
   nextActions: CommunityCommandAction[]
   opponentTracker: {
@@ -3344,6 +3353,9 @@ function normalizeCommunityCommandCenterPayload(
     intelligence: getRequiredArray(commandCenter, 'intelligence').map((item) =>
       typeof item === 'string' ? item : String(item ?? ''),
     ),
+    matchRequests: normalizeCommunityMatchRequests(
+      getOptionalRecord(commandCenter, 'matchRequests') ?? {},
+    ),
     nudgeEngine: getRequiredArray(commandCenter, 'nudgeEngine').map(
       normalizeCommunityNudge,
     ),
@@ -3381,11 +3393,23 @@ function normalizeCommunityCommandWelcome(
 ): CommunityCommandWelcome {
   return {
     currentActiveEvents: getRequiredNumber(record, 'currentActiveEvents'),
+    currentDivision: getString(record, 'currentDivision'),
     currentLeague: getRequiredString(record, 'currentLeague'),
+    currentRecord: getString(record, 'currentRecord'),
+    currentWeek: getNumber(record, 'currentWeek'),
+    leagueCompletion: getNumber(record, 'leagueCompletion'),
     currentRank: getRequiredNumber(record, 'currentRank'),
     displayName: getRequiredString(record, 'displayName'),
     leaguePlayer: getRequiredString(record, 'leaguePlayer'),
     playerDisplayName: getRequiredString(record, 'playerDisplayName'),
+  }
+}
+
+function normalizeCommunityMatchRequests(record: Record<string, unknown>) {
+  return {
+    incoming: getArray(record, 'incoming').map(normalizeSchedulingRequest),
+    outgoing: getArray(record, 'outgoing').map(normalizeSchedulingRequest),
+    upcoming: getArray(record, 'upcoming').map(normalizeSchedulingRequest),
   }
 }
 

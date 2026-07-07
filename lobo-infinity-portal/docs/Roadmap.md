@@ -32,6 +32,8 @@ Version 3.1.1 completes the first player workflow pass by turning the Community 
 
 Version 3.1.2 adds Event Lifecycle Controls so Commissioners can operate the Current League Event from the portal without editing Google Sheets.
 
+Version 4.3 refines the authenticated Dashboard into the Player Home Dashboard. This remains within the Community Home boundary by reusing the existing Community Command Center aggregate and scheduling services instead of introducing a new player dashboard architecture.
+
 ### 3.2 Event Migration
 
 Add explicit event scope to historical data after migration validation has passed.

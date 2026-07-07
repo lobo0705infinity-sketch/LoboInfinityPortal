@@ -441,6 +441,11 @@ Response:
     "today": [],
     "nextActions": [],
     "communityActivity": {},
+    "matchRequests": {
+      "incoming": [],
+      "outgoing": [],
+      "upcoming": []
+    },
     "nudgeEngine": [],
     "eventSwitcher": [],
     "promotion": {},
@@ -459,6 +464,10 @@ Required `welcome` fields:
 - `leaguePlayer`
 - `playerDisplayName`
 - `currentRank`
+- `currentDivision`
+- `currentRecord`
+- `currentWeek`
+- `leagueCompletion`
 - `currentLeague`
 - `currentActiveEvents`
 
@@ -501,6 +510,14 @@ Required `opponentTracker.progress` fields:
 - `gamesRequired`
 - `gamesRemaining`
 - `completionPercentage`
+
+Required `matchRequests` fields:
+
+- `incoming`
+- `outgoing`
+- `upcoming`
+
+Each array contains normalized scheduling request objects from the existing Scheduling Requests contract. `incoming` contains pending requests awaiting the authenticated player, `outgoing` contains pending requests sent by the authenticated player, and `upcoming` contains accepted matches for the authenticated player.
 
 Required `today[]` and `nextActions[]` fields:
 

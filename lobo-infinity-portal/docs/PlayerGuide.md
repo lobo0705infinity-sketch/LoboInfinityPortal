@@ -1,5 +1,22 @@
 # Player Guide
 
+## Player Home Dashboard
+
+Open the Dashboard after signing in to see your daily league home screen.
+
+The Player Home Dashboard highlights:
+
+- Your next priority.
+- Upcoming accepted matches.
+- Pending match requests.
+- Season progress.
+- Remaining required opponents.
+- Actionable notifications.
+- Recent league activity.
+- Quick actions for submitting games, scheduling matches, updating availability, standings, Match Finder, and your profile.
+
+If no match is scheduled, use the next priority or remaining opponents cards to open Match Finder and send a request. If your availability is missing, update it so recommendations can use your preferred days and time window.
+
 ## Match Finder
 
 Use Match Finder to see who you still need to play and who is easiest to schedule.

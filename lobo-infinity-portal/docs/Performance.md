@@ -252,6 +252,18 @@ Today, My Remaining Games, Event Switcher, and Nudge Engine are derived inside t
 
 This avoids new anonymous startup requests and avoids duplicate statistics calculations.
 
+Version 4.3 keeps the same request model while redesigning the authenticated Dashboard presentation into the Player Home Dashboard.
+
+Performance notes:
+
+- No new backend endpoint was added.
+- No new startup request was added.
+- Scheduling requests are included as additive fields in the existing authenticated `communityCommandCenter` aggregate.
+- The Dashboard still loads public league data through the optimized home flow and loads authenticated player workflow data through one deferred authenticated request.
+- The redesign adds scoped CSS and small route-local rendering logic only.
+
+This preserves the Dashboard request budget while making the first authenticated screen more actionable.
+
 ## Event Lifecycle Performance
 
 Version 3.1.2 embeds Event Lifecycle state in the existing Commissioner Dashboard operations response.

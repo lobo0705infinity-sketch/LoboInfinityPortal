@@ -460,6 +460,23 @@ Every nudge includes:
 
 If the existing production services do not provide enough evidence for a useful recommendation, the Nudge Engine returns `Not enough information yet.`
 
+Version 4.3 presents the authenticated Dashboard as the Player Home Dashboard. It is a presentation refinement of the existing Community Command Center aggregate, not a new dashboard service.
+
+The Player Home Dashboard answers:
+
+```text
+What should I do next?
+```
+
+It uses the existing `communityCommandCenter` payload plus additive scheduling request fields to show:
+
+- Player greeting, current league, division, record, week, and league completion.
+- Highest priority action derived from pending match requests, suggested remaining opponents, and existing next actions.
+- Upcoming accepted matches and pending scheduling requests.
+- Season progress, remaining opponents, actionable notifications, league activity, quick actions, and evidence-based motivation.
+
+It does not add a new Event Engine concept, scheduling system, standings calculation, notification system, or identity lookup. All league data continues to use permanent `leaguePlayer` identity. Display names remain presentation-only.
+
 ## Event Lifecycle Controls
 
 Version 3.1.2 adds commissioner-facing Event Lifecycle Controls on top of the existing Event Engine foundation.

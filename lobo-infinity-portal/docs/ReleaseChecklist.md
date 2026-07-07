@@ -84,6 +84,11 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] Verify Mobile Slide-Down Menu
 - [ ] Verify Mobile Profile Controls
 - [ ] Verify One-Handed Scheduling Flow
+- [ ] Verify Player Home Dashboard
+- [ ] Verify Player Home Next Priority
+- [ ] Verify Player Home Upcoming Requests
+- [ ] Verify Player Home Remaining Opponents
+- [ ] Verify Player Home Quick Actions
 - [ ] Verify Community Command Center
 - [ ] Verify Active Events
 - [ ] Verify Opponent Tracker

@@ -18,6 +18,7 @@ import {
   type LeagueRecordValue,
   type PortalSettings,
   type RecentGame,
+  type SchedulingRequest,
   type StandingsBattle,
 } from '../services/api'
 import type { DashboardData, LeagueOverview } from '../types/dashboard'
@@ -186,14 +187,7 @@ function Dashboard() {
 
   return (
     <main className="portal-shell">
-      <DashboardHeader lastUpdated={lastUpdated} />
-      <MemberWelcomeBanner
-        googleFormUrl={homeState.data.settings.googleFormUrl}
-        submissionsEnabled={
-          homeState.data.settings.submissionEnabled !== 'false' &&
-          homeState.data.settings.submissionButtonVisible !== 'false'
-        }
-      />
+      {!auth.authenticated ? <DashboardHeader lastUpdated={lastUpdated} /> : null}
       {auth.authenticated ? <CommunityCommandCenter /> : null}
 
       <section className="league-command-hero" aria-label="League command center">
@@ -368,49 +362,6 @@ function Dashboard() {
   )
 }
 
-function MemberWelcomeBanner({
-  googleFormUrl,
-  submissionsEnabled,
-}: {
-  googleFormUrl: string
-  submissionsEnabled: boolean
-}) {
-  const auth = useAuth()
-
-  if (!auth.authenticated) {
-    return null
-  }
-
-  return (
-    <section className="member-welcome-banner" aria-label="Member dashboard">
-      <div>
-        <p className="eyebrow">Welcome Back</p>
-        <h2>{auth.user.displayName}</h2>
-        <p>
-          {auth.user.favoriteFaction
-            ? `Favorite faction: ${auth.user.favoriteFaction}`
-            : 'Set your favorite faction from My Profile.'}
-        </p>
-      </div>
-      <div className="member-welcome-actions">
-        {auth.user.favoriteFaction ? (
-          <Link to={`/factions/${encodeURIComponent(auth.user.favoriteFaction)}`}>
-            Favorite Faction
-          </Link>
-        ) : null}
-        {auth.user.lastPage ? <Link to={auth.user.lastPage}>Continue</Link> : null}
-        <Link to="/notifications">Notifications</Link>
-        <Link to="/army-lists">My Army Lists</Link>
-        {googleFormUrl && submissionsEnabled ? (
-          <a href={googleFormUrl} rel="noreferrer" target="_blank">
-            Submit Match
-          </a>
-        ) : null}
-      </div>
-    </section>
-  )
-}
-
 type CommunityCommandState =
   | {
       status: 'idle'
@@ -482,268 +433,259 @@ function CommunityCommandCenter() {
 
   const data = state.data
   const suggested = data.opponentTracker.suggested
-  const primaryToday = data.today[0]
+  const priority = getPlayerHomePriority(data)
+  const nextMatch = data.matchRequests.upcoming[0]
+  const remainingOpponents = data.opponentTracker.remaining
+  const actionableNotifications = [
+    ...data.matchRequests.incoming.map((request) => ({
+      body: `${request.fromPlayer} wants to play on ${request.proposedDate} at ${request.proposedTime}.`,
+      id: request.id,
+      link: '/match-finder',
+      title: `Match request from ${request.fromPlayer}`,
+      type: 'Scheduling',
+    })),
+    ...data.communityActivity.latestAchievements.slice(0, 2).map((item) => ({
+      body: item.body,
+      id: item.id,
+      link: item.link || '/notifications',
+      title: item.title,
+      type: item.type,
+    })),
+    ...data.communityActivity.news.slice(0, 2).map((item) => ({
+      body: item.body,
+      id: String(item.id),
+      link: item.link || '/news',
+      title: item.title,
+      type: 'Commissioner News',
+    })),
+  ].slice(0, 4)
 
   return (
-    <section className="community-command-center panel" aria-labelledby="community-command-title">
-      <div className="panel-heading">
+    <section className="player-home" aria-labelledby="player-home-title">
+      <section className="player-home-hero">
         <div>
-          <p className="eyebrow">Community Command Center</p>
-          <h2 id="community-command-title">What should I do today?</h2>
-        </div>
-        <span className={`season-status-pill ${data.schedule.deadlines.lateStatus === 'On Schedule' ? 'good' : 'warning'}`}>
-          {data.schedule.deadlines.lateStatus}
-        </span>
-      </div>
-
-      <div className="community-event-switcher" aria-label="Event switcher">
-        {data.eventSwitcher.map((event) => (
-          <CommandActionLink
-            className={event.active ? 'community-event-tab active' : 'community-event-tab'}
-            key={event.eventId}
-            to={event.link}
-          >
-            <span>{event.type}</span>
-            <strong>{event.label}</strong>
-            <small>{event.status}</small>
-          </CommandActionLink>
-        ))}
-      </div>
-
-      <section className="community-mission-briefing" aria-labelledby="today-briefing-title">
-        <div>
-          <span>Today</span>
-          <h3 id="today-briefing-title">
-            {primaryToday ? primaryToday.label : 'You are caught up for now.'}
-          </h3>
+          <p className="eyebrow">Player Home</p>
+          <h1 id="player-home-title">Welcome back, {data.welcome.displayName}</h1>
           <p>
-            {data.welcome.displayName}, your current league identity is{' '}
-            {formatPlayerName(data.welcome.leaguePlayer, data.welcome.playerDisplayName)}.
-            You are rank #{data.welcome.currentRank || '-'} in {data.welcome.currentLeague}.
+            {data.welcome.currentLeague} - {data.welcome.currentDivision || 'League'} -
+            Week {data.welcome.currentWeek || data.schedule.deadlines.currentWeek}
           </p>
         </div>
-        <div className="season-progress-ring" aria-label="Season completion">
-          <strong>{data.opponentTracker.progress.completionPercentage}%</strong>
-          <span>Complete</span>
-        </div>
-        <div>
-          <span>Primary Target</span>
-          <h3>
-            {suggested
-              ? formatPlayerName(suggested.player, suggested.displayName)
-              : 'No remaining opponent'}
-          </h3>
-          <p>{suggested?.reason || 'You are caught up for now.'}</p>
-        </div>
+        <dl className="player-home-hero-stats">
+          <div>
+            <dt>Record</dt>
+            <dd>{data.welcome.currentRecord || '0-0'}</dd>
+          </div>
+          <div>
+            <dt>Rank</dt>
+            <dd>#{data.welcome.currentRank || '-'}</dd>
+          </div>
+          <div>
+            <dt>League</dt>
+            <dd>{data.welcome.leagueCompletion || data.opponentTracker.progress.completionPercentage}%</dd>
+          </div>
+        </dl>
       </section>
 
-      <div className="season-progress-grid">
-        <SeasonMetric label="Active Events" value={data.welcome.currentActiveEvents} />
-        <SeasonMetric label="Games Remaining" value={data.schedule.gamesRemaining} />
-        <SeasonMetric label="Current Rank" value={data.promotion.currentRank} />
-        <SeasonMetric label="Magic Number" value={data.promotion.magicNumber} />
-      </div>
+      <section className="player-home-priority" aria-labelledby="next-priority-title">
+        <div>
+          <p className="eyebrow">Next Priority</p>
+          <h2 id="next-priority-title">{priority.title}</h2>
+          <p>{priority.reason}</p>
+          {suggested ? (
+            <small>
+              {suggested.reason}
+              {data.opponentTracker.remaining[0]?.availabilitySummary
+                ? ` - ${data.opponentTracker.remaining[0].availabilitySummary}`
+                : ''}
+            </small>
+          ) : null}
+        </div>
+        <CommandActionLink className="player-home-primary-action" to={priority.link}>
+          {priority.action}
+        </CommandActionLink>
+      </section>
 
-      <section className="season-command-card" aria-labelledby="today-actions-title">
-        <h3 id="today-actions-title">Highest Priority</h3>
-        <div className="community-action-list">
-          {data.today.map((action) => (
-            <CommandActionLink className="community-action-row" key={action.label} to={action.link}>
-              <span>{action.priority}</span>
-              <strong>{action.label}</strong>
+      <section className="player-home-grid">
+        <section className="player-home-card player-home-upcoming" aria-labelledby="upcoming-title">
+          <div className="player-home-card-heading">
+            <p className="eyebrow">Upcoming</p>
+            <h2 id="upcoming-title">Matches & Requests</h2>
+          </div>
+          {nextMatch ? (
+            <article className="player-home-match">
+              <span>Accepted</span>
+              <strong>
+                {getOtherRequestPlayer(nextMatch, data.welcome.leaguePlayer)}
+              </strong>
+              <p>
+                {nextMatch.proposedDate} - {nextMatch.proposedTime}
+                {getCountdownLabel(nextMatch.proposedDate)}
+              </p>
+            </article>
+          ) : null}
+          {data.matchRequests.incoming.map((request) => (
+            <CommandActionLink className="player-home-match action" key={request.id} to="/match-finder">
+              <span>Waiting for your response</span>
+              <strong>{request.fromPlayer}</strong>
+              <p>{request.proposedDate} - {request.proposedTime}</p>
             </CommandActionLink>
           ))}
-        </div>
-      </section>
-
-      <div className="community-command-grid">
-        <section className="season-command-card" aria-labelledby="active-events-title">
-          <h3 id="active-events-title">My Active Events</h3>
-          <div className="community-event-list">
-            {data.activeEvents.map((event) => (
-              <CommandActionLink className="community-event-card" key={event.eventId} to={event.link}>
-                <span>{event.type}</span>
-                <strong>{event.name}</strong>
-                <small>{event.statusDetail || event.status}</small>
-                <ProgressBar label="Completion" value={event.completionPercentage} />
-                <b>{event.primaryAction}</b>
-              </CommandActionLink>
-            ))}
-          </div>
+          {data.matchRequests.outgoing.map((request) => (
+            <article className="player-home-match" key={request.id}>
+              <span>Pending</span>
+              <strong>{request.toPlayer}</strong>
+              <p>{request.proposedDate} - {request.proposedTime}</p>
+            </article>
+          ))}
+          {!nextMatch &&
+          data.matchRequests.incoming.length === 0 &&
+          data.matchRequests.outgoing.length === 0 ? (
+            <CommandActionLink className="player-home-empty-action" to="/match-finder">
+              <strong>No matches scheduled</strong>
+              <span>Schedule your next league game.</span>
+            </CommandActionLink>
+          ) : null}
         </section>
 
-        <section className="season-command-card" aria-labelledby="next-actions-title">
-          <h3 id="next-actions-title">What Should I Do Next?</h3>
-          <div className="community-action-list">
-            {data.nextActions.map((action) => (
-              <CommandActionLink className="community-action-row" key={action.label} to={action.link}>
-                <span>{action.priority}</span>
-                <strong>{action.label}</strong>
-              </CommandActionLink>
-            ))}
+        <section className="player-home-card" aria-labelledby="progress-title">
+          <div className="player-home-card-heading">
+            <p className="eyebrow">Season Progress</p>
+            <h2 id="progress-title">{data.promotion.status}</h2>
           </div>
-        </section>
-      </div>
-
-      <div className="community-command-grid wide">
-        <section className="season-command-card" aria-labelledby="opponent-tracker-title">
-          <h3 id="opponent-tracker-title">My Remaining Games</h3>
           <ProgressBar
             label={`${data.opponentTracker.progress.gamesCompleted} / ${data.opponentTracker.progress.gamesRequired} Games`}
             value={data.opponentTracker.progress.completionPercentage}
           />
-          <div className="community-opponent-columns">
+          <dl className="player-home-mini-stats">
             <div>
-              <h4>Completed Opponents</h4>
-              {data.opponentTracker.completed.map((opponent) => (
-                <Link
-                  className="season-opponent-row"
-                  key={opponent.player}
-                  to={opponent.profileLink || `/players/${encodeURIComponent(opponent.player)}`}
-                >
-                  <span>{getOpponentStatusSymbol(opponent.status)}</span>
-                  <strong>{formatPlayerName(opponent.player, opponent.displayName)}</strong>
-                  <small>{opponent.lastActivity || 'Completed'}</small>
-                </Link>
-              ))}
+              <dt>Remaining</dt>
+              <dd>{data.opponentTracker.progress.gamesRemaining}</dd>
             </div>
             <div>
-              <h4>Remaining Opponents</h4>
-              {data.opponentTracker.remaining.map((opponent) => (
-                <Link
-                  className="season-opponent-row"
-                  key={opponent.player}
-                  to={opponent.scheduleLink || `/match-finder?opponent=${encodeURIComponent(opponent.player)}`}
-                >
-                  <span>{getOpponentStatusSymbol(opponent.status)}</span>
-                  <strong>{formatPlayerName(opponent.player, opponent.displayName)}</strong>
-                  <small>
-                    {opponent.availabilitySummary || `${opponent.division} - ${opponent.gamesCompleted} GP`}
-                  </small>
-                  <b>{opponent.suggestedPriority}: {opponent.reason}</b>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="season-command-card" aria-labelledby="promotion-tracker-title">
-          <h3 id="promotion-tracker-title">Promotion Tracker</h3>
-          <dl className="season-command-list">
-            <div>
-              <dt>Status</dt>
-              <dd>{data.promotion.status}</dd>
+              <dt>Place</dt>
+              <dd>#{data.promotion.currentRank}</dd>
             </div>
             <div>
-              <dt>Projected Finish</dt>
-              <dd>#{data.promotion.projectedFinish}</dd>
-            </div>
-            <div>
-              <dt>Games Needed</dt>
-              <dd>{data.promotion.gamesNeeded}</dd>
-            </div>
-            <div>
-              <dt>Magic Number</dt>
+              <dt>Magic #</dt>
               <dd>{data.promotion.magicNumber}</dd>
             </div>
           </dl>
         </section>
-      </div>
+      </section>
 
-      <div className="community-command-grid">
-        <section className="season-command-card" aria-labelledby="nudge-engine-title">
-          <h3 id="nudge-engine-title">Nudge Engine</h3>
-          <div className="community-action-list">
-            {data.nudgeEngine.map((nudge) => (
+      <section className="player-home-grid wide">
+        <section className="player-home-card" aria-labelledby="remaining-opponents-title">
+          <div className="player-home-card-heading">
+            <p className="eyebrow">Remaining Opponents</p>
+            <h2 id="remaining-opponents-title">Who Still Needs a Game?</h2>
+          </div>
+          <div className="player-home-opponents">
+            {remainingOpponents.slice(0, 5).map((opponent) => (
               <CommandActionLink
-                className={`community-nudge-card ${nudge.priority.toLowerCase()}`}
-                key={`${nudge.category}-${nudge.reason}`}
-                to={nudge.deepLink}
+                className="player-home-opponent"
+                key={opponent.player}
+                to={opponent.scheduleLink || `/match-finder?opponent=${encodeURIComponent(opponent.player)}`}
               >
-                <span>{nudge.category} - {nudge.priority}</span>
-                <strong>{nudge.suggestedAction}</strong>
-                <p>{nudge.reason}</p>
+                <div>
+                  <strong>{formatPlayerName(opponent.player, opponent.displayName)}</strong>
+                  <span>
+                    {opponent.availabilitySummary || 'No availability added yet.'}
+                  </span>
+                </div>
+                <small>{opponent.suggestedPriority}</small>
               </CommandActionLink>
             ))}
+            {remainingOpponents.length === 0 ? (
+              <div className="player-home-empty-action">
+                <strong>Season complete</strong>
+                <span>Enjoy the rest of the season and cheer on the remaining players.</span>
+              </div>
+            ) : null}
           </div>
         </section>
 
-        <section className="season-command-card" aria-labelledby="schedule-title">
-          <h3 id="schedule-title">My Schedule</h3>
-          <dl className="season-command-list">
-            <div>
-              <dt>Games Remaining</dt>
-              <dd>{data.schedule.gamesRemaining}</dd>
-            </div>
-            <div>
-              <dt>Midseason</dt>
-              <dd>{data.schedule.deadlines.midseasonDeadline || 'Not set'}</dd>
-            </div>
-            <div>
-              <dt>Season End</dt>
-              <dd>{data.schedule.deadlines.seasonEndDeadline || 'Not set'}</dd>
-            </div>
-            <div>
-              <dt>Current Round</dt>
-              <dd>{data.schedule.currentRound}</dd>
-            </div>
-          </dl>
-        </section>
-
-        <section className="season-command-card" aria-labelledby="intelligence-summary-title">
-          <h3 id="intelligence-summary-title">Player Intelligence Summary</h3>
-          <div className="community-action-list">
-            {data.intelligence.map((insight) => (
-              <p className="community-insight" key={insight}>
-                {insight}
-              </p>
+        <section className="player-home-card" aria-labelledby="notifications-title">
+          <div className="player-home-card-heading">
+            <p className="eyebrow">Actionable</p>
+            <h2 id="notifications-title">Notifications</h2>
+          </div>
+          <div className="player-home-feed compact">
+            {actionableNotifications.map((item) => (
+              <CommandActionLink className="player-home-feed-item" key={item.id} to={item.link}>
+                <span>{item.type}</span>
+                <strong>{item.title}</strong>
+                <p>{item.body}</p>
+              </CommandActionLink>
             ))}
+            {actionableNotifications.length === 0 ? (
+              <CommandActionLink className="player-home-empty-action" to="/notifications">
+                <strong>No urgent alerts</strong>
+                <span>View all notifications when you want the full feed.</span>
+              </CommandActionLink>
+            ) : null}
           </div>
+          <CommandActionLink className="player-home-secondary-action" to="/notifications">
+            View All
+          </CommandActionLink>
         </section>
-      </div>
+      </section>
 
-      <div className="community-command-grid wide">
-        <section className="season-command-card" aria-labelledby="activity-title">
-          <h3 id="activity-title">Community Activity</h3>
-          <div className="community-activity-grid">
-            {data.communityActivity.latestResults.slice(0, 2).map((game) => (
-              <Link className="dashboard-news-item" key={game.id} to={`/games/${game.id}`}>
+      <section className="player-home-card" aria-labelledby="quick-actions-title">
+        <div className="player-home-card-heading">
+          <p className="eyebrow">Fast Actions</p>
+          <h2 id="quick-actions-title">Quick Actions</h2>
+        </div>
+        <nav className="player-home-actions" aria-label="Player quick actions">
+          {buildPlayerHomeQuickActions(data).map((action) => (
+            <CommandActionLink key={action.label} to={action.link}>
+              {action.label}
+            </CommandActionLink>
+          ))}
+        </nav>
+      </section>
+
+      <section className="player-home-grid wide">
+        <section className="player-home-card" aria-labelledby="activity-title">
+          <div className="player-home-card-heading">
+            <p className="eyebrow">League Activity</p>
+            <h2 id="activity-title">What Changed?</h2>
+          </div>
+          <div className="player-home-feed">
+            {data.communityActivity.latestResults.slice(0, 3).map((game) => (
+              <CommandActionLink className="player-home-feed-item" key={game.id} to={`/games/${game.id}`}>
                 <span>Latest Result</span>
                 <strong>
                   {formatPlayerName(game.winner, game.winnerDisplayName)} defeated{' '}
                   {formatPlayerName(game.loser, game.loserDisplayName)}
                 </strong>
-                <p>{game.mission}</p>
-              </Link>
-            ))}
-            {data.communityActivity.latestAchievements.slice(0, 2).map((item) => (
-              <Link className="dashboard-news-item" key={item.id} to={item.link || '/notifications'}>
-                <span>{item.type}</span>
-                <strong>{item.title}</strong>
-                <p>{item.body}</p>
-              </Link>
+                <p>{game.mission} - {formatObjectiveScore(game)}</p>
+              </CommandActionLink>
             ))}
             {data.communityActivity.news.slice(0, 2).map((item) => (
-              <Link className="dashboard-news-item" key={item.id} to={item.link || '/news'}>
-                <span>Community News</span>
+              <CommandActionLink className="player-home-feed-item" key={item.id} to={item.link || '/news'}>
+                <span>Commissioner News</span>
                 <strong>{item.title}</strong>
                 <p>{item.body}</p>
-              </Link>
+              </CommandActionLink>
             ))}
           </div>
         </section>
 
-        <section className="season-command-card" aria-labelledby="quick-actions-title">
-          <h3 id="quick-actions-title">Quick Actions</h3>
-          <nav className="quick-nav community-quick-actions" aria-label="Community quick actions">
-            {data.quickActions.map((action) => (
-              <CommandActionLink key={action.label} to={action.link}>
-                {action.label}
-              </CommandActionLink>
+        <section className="player-home-card" aria-labelledby="motivation-title">
+          <div className="player-home-card-heading">
+            <p className="eyebrow">Momentum</p>
+            <h2 id="motivation-title">Keep Moving</h2>
+          </div>
+          <div className="player-home-feed compact">
+            {buildMotivationMessages(data).map((message) => (
+              <p className="community-insight" key={message}>
+                {message}
+              </p>
             ))}
-          </nav>
+          </div>
         </section>
-      </div>
+      </section>
     </section>
   )
 }
@@ -772,15 +714,6 @@ function CommandActionLink({
   )
 }
 
-function SeasonMetric({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="season-metric">
-      <span>{label}</span>
-      <strong>{value}</strong>
-    </div>
-  )
-}
-
 function ProgressBar({ label, value }: { label: string; value: number }) {
   return (
     <div className="season-progress-bar">
@@ -793,16 +726,131 @@ function ProgressBar({ label, value }: { label: string; value: number }) {
   )
 }
 
-function getOpponentStatusSymbol(status: string) {
-  if (status === 'Already Played') {
-    return 'Done'
+function getPlayerHomePriority(data: CommunityCommandCenterData) {
+  const incoming = data.matchRequests.incoming[0]
+
+  if (incoming) {
+    return {
+      action: 'Respond Now',
+      link: '/match-finder',
+      reason: `${incoming.fromPlayer} is waiting for your response.`,
+      title: `Respond to ${incoming.fromPlayer}`,
+    }
   }
 
-  if (status === 'Scheduled') {
-    return 'Next'
+  const suggested = data.opponentTracker.suggested
+
+  if (suggested) {
+    return {
+      action: 'Schedule Match',
+      link: `/match-finder?opponent=${encodeURIComponent(suggested.player)}`,
+      reason: 'You still need this league game.',
+      title: `Play ${formatPlayerName(suggested.player, suggested.displayName)}`,
+    }
   }
 
-  return 'Open'
+  const action = data.today[0] || data.nextActions[0]
+
+  if (action) {
+    return {
+      action: action.label.toLowerCase().includes('availability')
+        ? 'Update Availability'
+        : 'Open',
+      link: action.link,
+      reason: 'This is the most useful league action available right now.',
+      title: action.label,
+    }
+  }
+
+  return {
+    action: 'View Standings',
+    link: '/standings',
+    reason: 'You are caught up for now.',
+    title: 'Check League Status',
+  }
+}
+
+function getOtherRequestPlayer(request: SchedulingRequest, playerName: string) {
+  return request.fromPlayer === playerName ? request.toPlayer : request.fromPlayer
+}
+
+function getCountdownLabel(dateText: string) {
+  const date = new Date(dateText)
+
+  if (Number.isNaN(date.getTime())) {
+    return ''
+  }
+
+  const today = new Date()
+  const diffDays = Math.ceil(
+    (date.setHours(0, 0, 0, 0) - today.setHours(0, 0, 0, 0)) /
+      86_400_000,
+  )
+
+  if (diffDays === 0) {
+    return ' - Today'
+  }
+
+  if (diffDays === 1) {
+    return ' - Tomorrow'
+  }
+
+  if (diffDays > 1) {
+    return ` - In ${diffDays} days`
+  }
+
+  return ''
+}
+
+function buildPlayerHomeQuickActions(data: CommunityCommandCenterData) {
+  const actions = [
+    ...data.quickActions,
+    { label: 'Schedule Match', link: '/match-finder' },
+    { label: 'Update Availability', link: '/match-finder#availability' },
+    { label: 'View Standings', link: '/standings' },
+    { label: 'Player Profile', link: '/profile' },
+  ]
+
+  const unique = new Map<string, { label: string; link: string }>()
+
+  actions.forEach((action) => {
+    if (!unique.has(action.label)) {
+      unique.set(action.label, action)
+    }
+  })
+
+  return Array.from(unique.values()).slice(0, 6)
+}
+
+function buildMotivationMessages(data: CommunityCommandCenterData) {
+  const messages = []
+  const remaining = data.opponentTracker.progress.gamesRemaining
+
+  if (remaining === 0) {
+    messages.push(
+      'Season complete. Enjoy the rest of the season and cheer on the remaining players.',
+    )
+  } else {
+    messages.push(
+      `Only ${remaining} ${remaining === 1 ? 'game' : 'games'} remaining.`,
+    )
+  }
+
+  if (data.promotion.status !== 'Safe') {
+    messages.push(`You are currently in the ${data.promotion.status}.`)
+  }
+
+  if (data.opponentTracker.progress.completionPercentage > 0) {
+    messages.push(
+      `You are ${data.opponentTracker.progress.completionPercentage}% through your required games.`,
+    )
+  }
+
+  if (data.intelligence[0]) {
+    messages.push(data.intelligence[0])
+  }
+
+  return messages.slice(0, 4)
 }
 
 function FeaturedMatchHero({ game }: { game: RecentGame }) {
