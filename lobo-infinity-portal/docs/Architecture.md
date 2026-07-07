@@ -129,6 +129,18 @@ The mobile shell keeps existing routes, APIs, authentication, permissions, and b
 
 The mobile layer is CSS-first and route-compatible. It does not add startup API requests or change data contracts.
 
+Version 4.2 replaces the phone shell with a native-app style interaction model while keeping desktop behavior largely unchanged.
+
+Phone navigation uses:
+
+- A compact app bar with menu, brand, search, and notification controls.
+- A slide-down mobile menu for secondary destinations and commissioner-only routes.
+- A fixed bottom navigation bar for Home, Match Finder, Standings, Notifications, and Profile.
+- A floating Submit Match action sourced from the same portal settings as the desktop submit button.
+- A full-screen mobile search surface that also contains quick-jump destinations.
+
+The v4.2 shell preserves existing routes, permissions, authentication, scheduling, notifications, diagnostics, operations, and API contracts. It does not introduce a new mobile backend or parallel routing system.
+
 Frontend GET responses are cached for five minutes per authenticated URL. Backend Apps Script cached endpoints use a fifteen-minute cache TTL with stale fallback support.
 
 ## Deep-Link Architecture

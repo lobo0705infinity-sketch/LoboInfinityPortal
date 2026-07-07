@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { useAuth } from '../auth/AuthContext'
 import GlobalSearch from './GlobalSearch'
 import LeagueCrest from './LeagueCrest'
 import NotificationCenter from './NotificationCenter'
@@ -9,6 +11,8 @@ import type { PortalSettings } from '../services/api'
 import { getSettings } from '../services/lightApi'
 
 function Header() {
+  const auth = useAuth()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [settings, setSettings] = useState<PortalSettings | null>(null)
 
   useEffect(() => {
@@ -35,9 +39,90 @@ function Header() {
   const submissionsEnabled = settings?.submissionEnabled !== 'false'
   const buttonVisible = settings?.submissionButtonVisible !== 'false'
   const buttonText = settings?.submissionButtonText || 'Submit Match'
+  const submitEnabled = Boolean(matchSubmissionUrl && submissionsEnabled && buttonVisible)
+
+  const mobileMenuItems = [
+    { label: 'Dashboard', to: '/' },
+    { label: 'Match Finder', to: '/match-finder' },
+    { label: 'Standings', to: '/standings' },
+    { label: 'Notifications', to: '/notifications' },
+    ...(auth.authenticated
+      ? [
+          { label: 'My Profile', to: '/profile' },
+          { label: 'Army Lists', to: '/army-lists' },
+          { label: 'Timeline', to: '/timeline' },
+        ]
+      : []),
+    { label: 'Players', to: '/players' },
+    { label: 'Factions', to: '/factions' },
+    { label: 'Missions', to: '/missions' },
+    { label: 'Hall of Fame', to: '/hall-of-fame' },
+    ...(auth.isAtLeastRole('Assistant Commissioner')
+      ? [
+          { label: 'Commissioner', to: '/commissioner' },
+          { label: 'Automation', to: '/automation' },
+          { label: 'Integrity', to: '/integrity' },
+          { label: 'Diagnostics', to: '/diagnostics' },
+        ]
+      : []),
+  ]
 
   return (
     <header className="portal-header">
+      <div className="mobile-app-bar">
+        <button
+          aria-expanded={isMobileMenuOpen}
+          aria-label="Open navigation menu"
+          className="mobile-menu-button"
+          onClick={() => setIsMobileMenuOpen((open) => !open)}
+          type="button"
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+        <Link
+          aria-label="Dashboard"
+          className="mobile-app-brand"
+          onClick={() => setIsMobileMenuOpen(false)}
+          to="/"
+        >
+          <LeagueCrest compact />
+          <span>Lobo</span>
+        </Link>
+        <div className="mobile-app-actions">
+          <GlobalSearch mode="mobile" />
+          <NotificationCenter compact />
+        </div>
+      </div>
+
+      {isMobileMenuOpen ? (
+        <div className="mobile-menu-sheet" role="dialog" aria-label="Mobile navigation">
+          <div className="mobile-menu-heading">
+            <strong>Menu</strong>
+            <button
+              aria-label="Close navigation menu"
+              onClick={() => setIsMobileMenuOpen(false)}
+              type="button"
+            >
+              Close
+            </button>
+          </div>
+          <nav aria-label="Mobile portal sections">
+            {mobileMenuItems.map((item) => (
+              <Link
+                key={item.to}
+                onClick={() => setIsMobileMenuOpen(false)}
+                to={item.to}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+          <ProfileMenu mobile />
+        </div>
+      ) : null}
+
       <div className="header-title">
         <LeagueCrest compact />
         <div>
@@ -47,7 +132,7 @@ function Header() {
       </div>
 
       <div className="header-actions">
-        {matchSubmissionUrl && submissionsEnabled && buttonVisible ? (
+        {submitEnabled ? (
           <a
             className="submit-match-button"
             href={matchSubmissionUrl}
@@ -67,6 +152,17 @@ function Header() {
           <span>Live</span>
         </div>
       </div>
+      {submitEnabled ? (
+        <a
+          aria-label={buttonText}
+          className="mobile-submit-fab"
+          href={matchSubmissionUrl}
+          rel="noreferrer"
+          target="_blank"
+        >
+          <PortalIcon name="submit" />
+        </a>
+      ) : null}
     </header>
   )
 }

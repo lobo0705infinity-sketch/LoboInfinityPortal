@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { LeagueNotification } from '../services/api'
 import { getNotifications, updateNotificationState } from '../services/lightApi'
+import PortalIcon from './PortalIcon'
 
 type NotificationState =
   | {
@@ -15,7 +16,7 @@ type NotificationState =
       status: 'error'
     }
 
-function NotificationCenter() {
+function NotificationCenter({ compact = false }: { compact?: boolean }) {
   const [isOpen, setIsOpen] = useState(false)
   const [state, setState] = useState<NotificationState>({
     status: 'idle',
@@ -90,7 +91,11 @@ function NotificationCenter() {
   }, [state])
 
   return (
-    <div className="notification-center">
+    <div
+      className={
+        compact ? 'notification-center notification-center-compact' : 'notification-center'
+      }
+    >
       <button
         aria-expanded={isOpen}
         aria-label={`${unreadCount} live notifications`}
@@ -98,7 +103,7 @@ function NotificationCenter() {
         onClick={() => setIsOpen((open) => !open)}
         type="button"
       >
-        <span>Alerts</span>
+        {compact ? <PortalIcon name="bell" /> : <span>Alerts</span>}
         {unreadCount > 0 ? <b>{unreadCount}</b> : null}
       </button>
 

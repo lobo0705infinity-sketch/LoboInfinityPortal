@@ -133,6 +133,22 @@ Performance notes:
 
 The mobile changes prioritize lower interaction cost and reduced layout overflow without adding network requests.
 
+## Version 4.2 Native Mobile Performance
+
+Version 4.2 keeps the Version 4.1 performance model intact.
+
+Performance notes:
+
+- No backend endpoint changed.
+- No API contract changed.
+- No startup Apps Script request was added.
+- The mobile menu uses static route links and existing role checks.
+- Mobile search continues to request the search index only after the search control is opened or typed into.
+- Notifications continue to request data only after the notification control opens.
+- Submit Match uses the already-loaded portal settings response and does not add another request.
+
+The release increases CSS and a small amount of shell JavaScript to remove permanent desktop chrome from phone viewports. The tradeoff improves usable content area, touch speed, and one-handed workflows without changing data loading behavior.
+
 ## Mobile Performance Strategy
 
 Version 2.5.3 keeps the Version 2.5.1 loading model intact.

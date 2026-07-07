@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { formatObjectiveScore, formatPlayerName } from '../services/formatting'
 import { getSearchIndex, updateProfile } from '../services/lightApi'
+import PortalIcon from './PortalIcon'
 
 type SearchItem = {
   category: string
@@ -23,15 +24,19 @@ type SearchState =
       status: 'error'
     }
 
-function GlobalSearch() {
+function GlobalSearch({ mode = 'desktop' }: { mode?: 'desktop' | 'mobile' }) {
   const auth = useAuth()
   const navigate = useNavigate()
   const [query, setQuery] = useState('')
+  const [isMobileOpen, setIsMobileOpen] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
   const [searchState, setSearchState] = useState<SearchState>({
     status: 'idle',
   })
   const [hasRequestedSearchData, setHasRequestedSearchData] = useState(false)
+  const inputId = mode === 'mobile' ? 'mobile-global-search' : 'global-search'
+  const resultsId =
+    mode === 'mobile' ? 'mobile-global-search-results' : 'global-search-results'
 
   useEffect(() => {
     if (!hasRequestedSearchData) {
@@ -133,6 +138,7 @@ function GlobalSearch() {
   function closeSearch() {
     setQuery('')
     setActiveIndex(0)
+    setIsMobileOpen(false)
   }
 
   function rememberSearch(item: SearchItem) {
@@ -180,19 +186,61 @@ function GlobalSearch() {
     }
   }
 
+  const quickJumpItems = [
+    { label: 'Dashboard', to: '/' },
+    { label: 'Match Finder', to: '/match-finder' },
+    { label: 'Standings', to: '/standings' },
+    { label: 'Notifications', to: '/notifications' },
+    { label: 'My Profile', to: '/profile' },
+    { label: 'Army Lists', to: '/army-lists' },
+  ]
+
   return (
-    <div className="global-search">
-      <label className="search-label" htmlFor="global-search">
+    <div
+      className={
+        mode === 'mobile' && isMobileOpen
+          ? 'global-search mobile-search-open'
+          : mode === 'mobile'
+            ? 'global-search mobile-search'
+            : 'global-search'
+      }
+    >
+      {mode === 'mobile' ? (
+        <button
+          aria-expanded={isMobileOpen}
+          aria-label="Open search"
+          className="mobile-search-trigger"
+          onClick={() => {
+            setIsMobileOpen(true)
+            setHasRequestedSearchData(true)
+          }}
+          type="button"
+        >
+          <PortalIcon name="search" />
+        </button>
+      ) : null}
+      <div className="global-search-surface">
+        {mode === 'mobile' ? (
+          <div className="mobile-search-heading">
+            <strong>Search League</strong>
+            <button onClick={closeSearch} type="button">
+              Close
+            </button>
+          </div>
+        ) : null}
+      <label className="search-label" htmlFor={inputId}>
         Search
       </label>
       <input
         aria-activedescendant={
-          results[activeIndex] ? `search-result-${activeIndex}` : undefined
+          results[activeIndex]
+            ? `${mode}-search-result-${activeIndex}`
+            : undefined
         }
-        aria-controls="global-search-results"
+        aria-controls={resultsId}
         aria-expanded={query.trim().length >= 2}
         autoComplete="off"
-        id="global-search"
+        id={inputId}
         onFocus={() => setHasRequestedSearchData(true)}
         onChange={(event) => {
           setHasRequestedSearchData(true)
@@ -205,8 +253,17 @@ function GlobalSearch() {
         type="search"
         value={query}
       />
+      {mode === 'mobile' && query.trim().length < 2 ? (
+        <div className="mobile-quick-jump" aria-label="Quick jump">
+          {quickJumpItems.map((item) => (
+            <Link key={item.to} onClick={closeSearch} to={item.to}>
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      ) : null}
       {query.trim().length >= 2 ? (
-        <div className="search-results" id="global-search-results" role="listbox">
+        <div className="search-results" id={resultsId} role="listbox">
           {searchState.status === 'error' ? (
             <p>Search is unavailable.</p>
           ) : results.length > 0 ? (
@@ -218,7 +275,7 @@ function GlobalSearch() {
                     ? 'search-result active'
                     : 'search-result'
                 }
-                id={`search-result-${index}`}
+                id={`${mode}-search-result-${index}`}
                 key={`${result.category}-${result.to}`}
                 onClick={() => {
                   rememberSearch(result)
@@ -238,6 +295,7 @@ function GlobalSearch() {
           )}
         </div>
       ) : null}
+      </div>
     </div>
   )
 }

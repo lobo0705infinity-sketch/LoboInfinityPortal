@@ -77,6 +77,13 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] Verify Tablet 1024 px
 - [ ] Verify Mobile Landscape
 - [ ] Verify PWA Manifest
+- [ ] Verify Native Mobile App Bar
+- [ ] Verify Mobile Bottom Navigation
+- [ ] Verify Mobile Submit Match FAB
+- [ ] Verify Full-Screen Mobile Search
+- [ ] Verify Mobile Slide-Down Menu
+- [ ] Verify Mobile Profile Controls
+- [ ] Verify One-Handed Scheduling Flow
 - [ ] Verify Community Command Center
 - [ ] Verify Active Events
 - [ ] Verify Opponent Tracker

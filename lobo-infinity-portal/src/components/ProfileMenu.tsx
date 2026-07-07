@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 
-function ProfileMenu() {
+function ProfileMenu({ mobile = false }: { mobile?: boolean }) {
   const auth = useAuth()
   const [isOpen, setIsOpen] = useState(false)
   const buttonRef = useRef<HTMLDivElement | null>(null)
@@ -22,7 +22,7 @@ function ProfileMenu() {
 
   if (!auth.authenticated) {
     return (
-      <div className="profile-menu signed-out">
+      <div className={mobile ? 'profile-menu signed-out mobile-profile-menu' : 'profile-menu signed-out'}>
         {auth.oauthConfigured ? (
           <div ref={buttonRef} className="google-signin-slot" />
         ) : (
@@ -37,7 +37,7 @@ function ProfileMenu() {
   }
 
   return (
-    <div className="profile-menu">
+    <div className={mobile ? 'profile-menu mobile-profile-menu' : 'profile-menu'}>
       <button
         aria-expanded={isOpen}
         className="profile-trigger"
@@ -49,7 +49,7 @@ function ProfileMenu() {
         ) : (
           <span>{auth.user.displayName.slice(0, 1).toUpperCase()}</span>
         )}
-        <strong>{auth.user.displayName}</strong>
+        <strong>{mobile ? 'Account' : auth.user.displayName}</strong>
       </button>
 
       {isOpen ? (
