@@ -6,6 +6,9 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] Compatibility Gate
 - [ ] Performance Gate
 - [ ] Quality Gate
+- [ ] Engineering Rule #1 reviewed
+- [ ] Engineering Rule #2 reviewed
+- [ ] Top-level concept changes documented in Architecture, APIContracts, ProjectStructure, TechnicalDebt, and ReleaseChecklist
 - [ ] `npm install`
 - [ ] `npm run lint`
 - [ ] `npm run build`

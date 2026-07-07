@@ -9,21 +9,24 @@ This release does not build Community Home, Event Dashboard, Event Statistics, o
 The permanent object hierarchy is:
 
 ```text
-Community
+Organization
   |
-  |-- Series
+  |-- Community
         |
-        |-- Event
+        |-- Series
               |
-              |-- Season
+              |-- Event
                     |
-                    |-- Round
+                    |-- Season
                           |
-                          |-- Game
+                          |-- Round
+                                |
+                                |-- Game
 ```
 
 Version 3.0B creates the foundation objects:
 
+- Organization
 - Community
 - Series
 - Event
@@ -33,6 +36,13 @@ Version 3.0B creates the foundation objects:
 - EventParticipant
 
 ## Default Community
+
+The default organization is:
+
+```text
+organization-lobo-infinity
+Lobo Infinity
+```
 
 The default community is:
 
@@ -160,3 +170,15 @@ Legacy endpoints remain the production surface:
 - `deep links`
 
 Future milestones will make these endpoints Event-aware through scope parameters while preserving current defaults.
+
+## Baseline Freeze
+
+Version 3.0D freezes the Event Engine baseline.
+
+Future releases extend this hierarchy rather than redesigning it:
+
+```text
+Organization -> Community -> Series -> Event -> Season -> Round -> Game
+```
+
+No new top-level architectural concept may be introduced without updating Architecture, API Contracts, Project Structure, Technical Debt, and Release Checklist documentation.

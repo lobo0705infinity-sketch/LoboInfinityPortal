@@ -4,6 +4,26 @@ Version 2.5.4 LTS documents known technical debt without implementing new featur
 
 ## High Priority
 
+### Organization Persistence
+
+Description: Version 3.0D freezes Organization as the architectural parent above Community, but runtime persistence still begins at the Event Engine foundation sheets introduced in Version 3.0B.
+
+Reason: 3.0D is a documentation baseline release only. Implementing Organization persistence would change backend behavior and is intentionally deferred until a future release requires multiple communities or operating groups.
+
+Estimated impact: Medium.
+
+Suggested future release: Future multi-community expansion.
+
+### Engineering Rule #2 Enforcement
+
+Description: Engineering Rule #2 is documented, but there is no automated CI check requiring Architecture, APIContracts, ProjectStructure, TechnicalDebt, and ReleaseChecklist updates when a top-level concept changes.
+
+Reason: Governance is currently enforced through release process and review.
+
+Estimated impact: Medium.
+
+Suggested future release: 3.1 Release Automation.
+
 ### Event Engine Scope Migration
 
 Description: Version 3.0B installs Event Engine foundation sheets and default scope resolution, but historical Game Engine rows are not migrated to explicit `eventId`, `seasonId`, and `roundId` columns yet.

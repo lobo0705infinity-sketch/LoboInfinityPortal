@@ -7,6 +7,7 @@
 - `vercel.json`: Vercel routing and deployment configuration.
 - `.nvmrc`: supported Node version.
 - `README.md`: project overview.
+- `docs`: architecture, API contracts, release process, roadmap, engineering standards, and operational documentation.
 
 ## Frontend
 
@@ -51,6 +52,17 @@ Google Sheets is the source of truth for:
 - Streams
 - Settings
 - Event Engine foundation sheets: Events, Event Templates, Event Participants, Event Seasons, Event Rounds
+
+## Architecture Documentation
+
+- `docs/Architecture.md`: frozen Version 3 architecture baseline.
+- `docs/APIContracts.md`: API schema and compatibility contracts.
+- `docs/EngineeringStandards.md`: permanent engineering rules and gates.
+- `docs/EventEngine.md`: Event Engine foundation and migration validation.
+- `docs/Roadmap.md`: frozen Version 3 roadmap.
+- `docs/TechnicalDebt.md`: known debt and deferred work.
+
+No new top-level architectural concept may be introduced without updating the required governance documents.
 
 ## Generated Output
 

@@ -1,4 +1,29 @@
-# Lobo Infinity League Portal Architecture
+# Lobo Infinity Community Operating System Architecture
+
+## Version 3 Event Engine Baseline
+
+Version 3.0D establishes the permanent Event Engine Baseline.
+
+The Version 3 Event Engine architecture is frozen.
+
+Future releases extend this architecture rather than redesign it.
+
+The permanent top-level hierarchy is:
+
+```text
+Organization -> Community -> Series -> Event -> Season -> Round -> Game
+```
+
+The current production system operates one Organization and one Community:
+
+```text
+Organization: Lobo Infinity
+Community: Lobo Infinity Community
+```
+
+The Organization layer is the governance boundary above Community. It exists so future communities, venues, brands, or operating groups can be added without changing the Event Engine root model.
+
+Version 3.0D is an architecture baseline release only. It does not change runtime behavior, production data, APIs, UI, authentication, or player functionality.
 
 ## Core Systems
 
@@ -269,8 +294,10 @@ Version 3.0B introduces the approved Version 3 Event Engine foundation without r
 The permanent hierarchy is:
 
 ```text
-Community -> Series -> Event -> Season -> Round -> Game
+Organization -> Community -> Series -> Event -> Season -> Round -> Game
 ```
+
+The Organization layer owns one or more Communities. A Community owns player identity, global career, global automation, and all Event Engine data for that community.
 
 The Current League is seeded as the default Event:
 
@@ -295,6 +322,22 @@ The foundation creates only these sheets:
 - Event Rounds
 
 Existing endpoints continue to operate through legacy league data. Future Version 3 milestones will make statistics, automation, achievements, Player Intelligence, Hall of Fame, and deep links Event-aware by extending their existing services with explicit scope rather than creating parallel implementations.
+
+## Engineering Rules
+
+Engineering Rule #1:
+
+Reuse existing services. Prefer extending Identity, Formatting, Integrity, Automation, Statistics, Achievements, Player Intelligence, and Deep Linking instead of introducing parallel systems.
+
+Engineering Rule #2:
+
+No new top-level architectural concept may be introduced without updating:
+
+- `docs/Architecture.md`
+- `docs/APIContracts.md`
+- `docs/ProjectStructure.md`
+- `docs/TechnicalDebt.md`
+- `docs/ReleaseChecklist.md`
 
 ## Engineering Gates
 

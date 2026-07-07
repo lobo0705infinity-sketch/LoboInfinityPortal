@@ -6,6 +6,14 @@ API contracts are strict. Frontend normalization in `src/services/api.ts` requir
 
 Version 3.0B introduces Event Engine foundation APIs without changing existing endpoint contracts.
 
+The frozen Version 3 hierarchy is:
+
+```text
+Organization -> Community -> Series -> Event -> Season -> Round -> Game
+```
+
+Version 3.0D does not add or rename API fields. The Organization layer is an architectural parent above Community. Future APIs that expose Organization scope must preserve backward compatibility and must update this document before implementation.
+
 ### Events
 
 Action:
@@ -316,3 +324,4 @@ The same `seasonCommandCenter` payload after saving.
 - Player display names are presentation-only.
 - Availability is stored separately from league identity and standings.
 - Missing `eventId`, `seasonId`, and `roundId` resolve to the Current League Event during the Version 3 migration window.
+- New top-level architectural concepts require API contract review and documentation updates before implementation.
