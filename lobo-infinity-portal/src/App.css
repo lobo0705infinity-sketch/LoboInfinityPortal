@@ -6203,3 +6203,203 @@
     height: 20px;
   }
 }
+
+.season-command-center {
+  display: grid;
+  gap: 18px;
+}
+
+.season-status-pill {
+  align-self: center;
+  border: 1px solid rgba(76, 201, 240, 0.24);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  padding: 8px 12px;
+  text-transform: uppercase;
+}
+
+.season-status-pill.good {
+  border-color: rgba(46, 204, 113, 0.34);
+  color: #8ff0bd;
+}
+
+.season-status-pill.warning {
+  border-color: rgba(255, 184, 77, 0.34);
+  color: #ffd391;
+}
+
+.season-command-hero,
+.season-progress-grid,
+.season-command-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.season-command-hero {
+  align-items: stretch;
+}
+
+.season-command-hero > div,
+.season-command-card,
+.season-metric {
+  border: 1px solid rgba(76, 201, 240, 0.14);
+  border-radius: 14px;
+  background: rgba(8, 14, 22, 0.72);
+  padding: 16px;
+}
+
+.season-command-hero span,
+.season-command-card h3,
+.season-metric span,
+.season-progress-bar span,
+.season-command-list dt {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.season-command-hero h3 {
+  margin: 6px 0;
+}
+
+.season-progress-ring {
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.season-progress-ring strong {
+  color: var(--accent);
+  font-size: clamp(2rem, 7vw, 3.5rem);
+  line-height: 1;
+}
+
+.season-progress-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.season-metric strong {
+  display: block;
+  font-size: 1.8rem;
+  margin-top: 6px;
+}
+
+.season-progress-bars {
+  display: grid;
+  gap: 12px;
+}
+
+.season-progress-bar {
+  display: grid;
+  gap: 8px;
+}
+
+.season-progress-bar > div {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.season-progress-bar meter {
+  width: 100%;
+  height: 12px;
+}
+
+.season-command-card {
+  display: grid;
+  gap: 12px;
+}
+
+.season-command-grid.wide {
+  grid-template-columns: 1.4fr 0.8fr;
+}
+
+.season-opponent-list,
+.season-division-list,
+.season-command-list,
+.season-availability-form {
+  display: grid;
+  gap: 10px;
+}
+
+.season-opponent-row,
+.season-division-row {
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: inherit;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  padding: 10px 12px;
+  text-decoration: none;
+}
+
+.season-division-row {
+  grid-template-columns: 52px minmax(0, 1fr) auto 64px;
+}
+
+.season-opponent-row:hover,
+.season-division-row:hover {
+  border-color: rgba(76, 201, 240, 0.32);
+  background: rgba(76, 201, 240, 0.06);
+}
+
+.season-opponent-row span,
+.season-division-row span,
+.season-opponent-row small,
+.season-division-row small {
+  color: var(--text-muted);
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.season-command-list div {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.season-command-list dd,
+.season-command-list dt {
+  margin: 0;
+}
+
+.season-availability-form label {
+  display: grid;
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.season-availability-form input,
+.season-availability-form select {
+  min-height: 42px;
+}
+
+.season-availability-form button {
+  min-height: 44px;
+}
+
+@media (max-width: 920px) {
+  .season-command-hero,
+  .season-progress-grid,
+  .season-command-grid,
+  .season-command-grid.wide {
+    grid-template-columns: 1fr;
+  }
+
+  .season-opponent-row,
+  .season-division-row {
+    grid-template-columns: 1fr;
+  }
+}

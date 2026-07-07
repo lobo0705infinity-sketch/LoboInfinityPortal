@@ -6,6 +6,9 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] `npm run lint`
 - [ ] `npm run build`
 - [ ] Apps Script syntax validation
+- [ ] API Contract Validation
+- [ ] Performance Budget Validation
+- [ ] Security Validation
 - [ ] `clasp push`
 - [ ] `clasp deploy`
 - [ ] `vercel deploy`
@@ -17,12 +20,12 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] Verify Hall of Fame
 - [ ] Verify Automation Center
 - [ ] Verify Deep Links
+- [ ] Verify Automation
 - [ ] Verify Notifications
 - [ ] Verify Timeline
 - [ ] Verify Mobile
-- [ ] Verify Responsive Layout
-- [ ] Verify Performance Budget
-- [ ] Verify Security
-- [ ] Verify Documentation
+- [ ] Verify Season Command Center
+- [ ] Verify Opponent Tracker
+- [ ] Verify Promotion Tracker
 - [ ] Tag Release
 - [ ] Push Git Tag

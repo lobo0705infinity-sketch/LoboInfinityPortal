@@ -99,3 +99,19 @@ Build measurements:
 - Hall of Fame route chunk delta from Version 2.5.3: approximately +363 bytes.
 - Startup API requests: unchanged.
 - Apps Script calls before first interaction: unchanged.
+
+## Version 2.6 Season Command Center Budget Result
+
+Version 2.6 adds the Season Command Center to the authenticated Dashboard without increasing the unauthenticated startup request model.
+
+- Initial JavaScript bundle: `index-C29BNeTM.js`, 306,620 bytes.
+- JavaScript delta from Version 2.5.4 LTS: +3,178 bytes.
+- CSS bundle: `index-CBPfAd4y.css`, 102,960 bytes.
+- CSS delta from Version 2.5.4 LTS: +2,844 bytes.
+- Dashboard route chunk: `Dashboard-CnP7aXy2.js`, 30,400 bytes.
+- Startup API requests: unchanged for signed-out users.
+- Authenticated Dashboard: adds one deferred `seasonCommandCenter` request after the Dashboard critical path.
+- New dependencies: none.
+- Apps Script startup model: unchanged.
+
+Justification: The added bytes support the player-facing Season Command Center, including opponent tracker, progress bars, deadlines, promotion tracker, availability editing, and division status. The request is deferred behind authentication so it does not affect the first public dashboard render.

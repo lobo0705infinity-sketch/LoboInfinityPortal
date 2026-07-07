@@ -31,6 +31,7 @@ Stable production subsystems:
 - Achievements tied to permanent league players.
 - Player Intelligence and My Profile.
 - Hall of Fame snapshot architecture.
+- Season Command Center derived from standings, game analytics, settings, and availability.
 - Apps Script cache manager.
 - Vercel source-based deployment pipeline.
 
@@ -244,3 +245,18 @@ The Hall of Fame API keeps the existing response contract, but its backend const
 This preserves Identity, Achievements, Formatting, My Profile, and Player Intelligence behavior while removing repeated spreadsheet scans from the Hall of Fame request path.
 
 Snapshot invalidation follows the existing portal cache version model. Full cache invalidation advances the version and naturally abandons old Hall of Fame snapshots.
+
+## Season Command Center
+
+Season Command Center is a player-facing season status layer, not a duplicate standings system.
+
+It derives opponent status, progress, promotion/relegation position, deadline status, and division completion from:
+
+- Authenticated `leaguePlayer`.
+- Existing player registry.
+- Existing standings calculations.
+- Existing Game Analytics.
+- Existing Settings season dates.
+- Dedicated Season Availability metadata.
+
+Availability is scheduling metadata only. It never changes league statistics, standings, achievements, history, or identity.

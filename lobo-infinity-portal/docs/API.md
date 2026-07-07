@@ -38,6 +38,7 @@ Apps Script verifies the token and maps Google Email to the permanent League Pla
 - `streams`: streamed games.
 - `automation`: automation center data.
 - `integrity`: league integrity report.
+- `seasonCommandCenter`: authenticated Season Command Center payload for the signed-in league player.
 
 ## Commissioner Actions
 
@@ -53,6 +54,11 @@ Examples:
 - `integrityRepair`
 - `clearCache`
 - `refreshCache`
+
+## Season Command Center Actions
+
+- `seasonCommandCenter`: authenticated read. Returns the signed-in player's season progress, opponent tracker, promotion tracker, deadline status, availability, division status, and commissioner summary. The lookup key is `leaguePlayer`, never Google display name.
+- `seasonAvailability`: authenticated mutation. Updates the signed-in player's match availability metadata in the Season Availability sheet and returns the refreshed `seasonCommandCenter` payload.
 
 ## Response Contract
 

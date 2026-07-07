@@ -113,6 +113,9 @@ function doGet(e) {
     case "myProfile":
       return getMyProfile(e);
 
+    case "seasonCommandCenter":
+      return getSeasonCommandCenter(e);
+
     case "achievements":
       return getAchievements(e);
 
@@ -181,6 +184,9 @@ function doGet(e) {
 
     case "notificationState":
       return updateNotificationState(e);
+
+    case "seasonAvailability":
+      return updateSeasonAvailability(e);
 
     case "updateSettings":
       return requireApiPermission(e, "manageSettings", function() {
@@ -410,6 +416,9 @@ function doPost(e) {
 
     case "notificationState":
       return updateNotificationState(e);
+
+    case "seasonAvailability":
+      return updateSeasonAvailability(e);
 
     case "updateSettings":
       return requireApiPermission(e, "manageSettings", function() {

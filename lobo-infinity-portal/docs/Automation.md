@@ -29,6 +29,7 @@ Supported event types include:
 - Achievement Unlocked
 - Promotion
 - Relegation
+- Season Reminder
 - Season Started
 - Season Ended
 - Division Champion

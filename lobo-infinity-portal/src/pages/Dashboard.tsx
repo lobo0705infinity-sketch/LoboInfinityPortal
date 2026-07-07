@@ -16,6 +16,7 @@ import {
   type LeagueRecordValue,
   type PortalSettings,
   type RecentGame,
+  type SeasonCommandCenterData,
   type StandingsBattle,
 } from '../services/api'
 import type { DashboardData, LeagueOverview } from '../types/dashboard'
@@ -147,6 +148,7 @@ async function hydrateDashboardSecondaryData(
 }
 
 function Dashboard() {
+  const auth = useAuth()
   const [homeState, setHomeState] = useState<HomeState>({
     status: 'loading',
   })
@@ -249,6 +251,7 @@ function Dashboard() {
           homeState.data.settings.submissionButtonVisible !== 'false'
         }
       />
+      {auth.authenticated ? <SeasonCommandCenter /> : null}
 
       <section className="league-command-hero" aria-label="League command center">
         <div>
@@ -463,6 +466,358 @@ function MemberWelcomeBanner({
       </div>
     </section>
   )
+}
+
+type SeasonCommandState =
+  | {
+      status: 'idle'
+    }
+  | {
+      data: SeasonCommandCenterData
+      status: 'success'
+    }
+  | {
+      error: string
+      status: 'error'
+    }
+
+function SeasonCommandCenter() {
+  const [state, setState] = useState<SeasonCommandState>({ status: 'idle' })
+  const [availabilityDraft, setAvailabilityDraft] = useState({
+    notes: '',
+    preferredDays: '',
+    preferredTimes: '',
+    status: 'Available',
+  })
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    apiClient
+      .getSeasonCommandCenter({ signal: controller.signal })
+      .then((data) => {
+        setState({ data, status: 'success' })
+        setAvailabilityDraft({
+          notes: data.availability.notes,
+          preferredDays: data.availability.preferredDays,
+          preferredTimes: data.availability.preferredTimes,
+          status: data.availability.status || 'Available',
+        })
+      })
+      .catch((error: unknown) => {
+        if (controller.signal.aborted) {
+          return
+        }
+
+        setState({
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Season command center could not be loaded.',
+          status: 'error',
+        })
+      })
+
+    return () => {
+      controller.abort()
+    }
+  }, [])
+
+  async function saveAvailability() {
+    try {
+      const data = await apiClient.updateSeasonAvailability(availabilityDraft)
+      setState({ data, status: 'success' })
+    } catch (error) {
+      setState({
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Availability could not be saved.',
+        status: 'error',
+      })
+    }
+  }
+
+  if (state.status === 'idle') {
+    return (
+      <section className="season-command-center panel" aria-label="Season Command Center loading">
+        <div className="panel-heading">
+          <p className="eyebrow">Season Command Center</p>
+          <h2>Your Season Home</h2>
+        </div>
+        <Skeleton label="Season command center loading" rows={4} />
+      </section>
+    )
+  }
+
+  if (state.status === 'error') {
+    return (
+      <section className="season-command-center panel" aria-label="Season Command Center error">
+        <div className="panel-heading">
+          <p className="eyebrow">Season Command Center</p>
+          <h2>Your Season Home</h2>
+        </div>
+        <p className="operations-empty" role="alert">
+          {state.error}
+        </p>
+      </section>
+    )
+  }
+
+  const data = state.data
+  const recommended = data.nextOpponents[0]
+
+  return (
+    <section className="season-command-center panel" aria-labelledby="season-command-title">
+      <div className="panel-heading">
+        <div>
+          <p className="eyebrow">Season Command Center</p>
+          <h2 id="season-command-title">Your Season Home</h2>
+        </div>
+        <span className={`season-status-pill ${data.deadlines.lateStatus === 'On Schedule' ? 'good' : 'warning'}`}>
+          {data.deadlines.lateStatus}
+        </span>
+      </div>
+
+      <div className="season-command-hero">
+        <div>
+          <span>{data.player.division}</span>
+          <h3>{formatPlayerName(data.player.player, data.player.displayName)}</h3>
+          <p>
+            Rank #{data.player.rank || '-'} with {data.progress.gamesRemaining}{' '}
+            games remaining.
+          </p>
+        </div>
+        <div className="season-progress-ring" aria-label="Season completion">
+          <strong>{data.progress.seasonProgress}%</strong>
+          <span>Complete</span>
+        </div>
+        <div>
+          <span>Recommended Next Match</span>
+          <h3>
+            {recommended
+              ? formatPlayerName(recommended.player, recommended.displayName)
+              : 'Season complete'}
+          </h3>
+          <p>{recommended?.reason || 'No remaining opponents.'}</p>
+        </div>
+      </div>
+
+      <div className="season-progress-grid">
+        <SeasonMetric label="Games Required" value={data.progress.gamesRequired} />
+        <SeasonMetric label="Games Completed" value={data.progress.gamesCompleted} />
+        <SeasonMetric label="Games Remaining" value={data.progress.gamesRemaining} />
+        <SeasonMetric label="Current Week" value={data.deadlines.currentWeek} />
+      </div>
+
+      <div className="season-progress-bars">
+        <ProgressBar label="Midseason Progress" value={data.progress.midseasonProgress} />
+        <ProgressBar label="Season Progress" value={data.progress.seasonProgress} />
+        <ProgressBar label="Opponent Completion" value={data.progress.completionPercentage} />
+      </div>
+
+      <div className="season-command-grid">
+        <section className="season-command-card" aria-labelledby="opponent-tracker-title">
+          <h3 id="opponent-tracker-title">Opponent Tracker</h3>
+          <div className="season-opponent-list">
+            {data.opponents.map((opponent) => (
+              <Link
+                className="season-opponent-row"
+                key={opponent.player}
+                to={`/players/${encodeURIComponent(opponent.player)}`}
+              >
+                <span>{getOpponentStatusSymbol(opponent.status)}</span>
+                <strong>{formatPlayerName(opponent.player, opponent.displayName)}</strong>
+                <small>{opponent.status}</small>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section className="season-command-card" aria-labelledby="promotion-tracker-title">
+          <h3 id="promotion-tracker-title">Promotion Tracker</h3>
+          <dl className="season-command-list">
+            <div>
+              <dt>Status</dt>
+              <dd>{data.promotion.status}</dd>
+            </div>
+            <div>
+              <dt>Projected Finish</dt>
+              <dd>#{data.promotion.projectedFinish}</dd>
+            </div>
+            <div>
+              <dt>Games Needed</dt>
+              <dd>{data.promotion.gamesNeeded}</dd>
+            </div>
+            <div>
+              <dt>Magic Number</dt>
+              <dd>{data.promotion.magicNumber}</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section className="season-command-card" aria-labelledby="deadline-title">
+          <h3 id="deadline-title">Deadlines</h3>
+          <dl className="season-command-list">
+            <div>
+              <dt>Midseason</dt>
+              <dd>{data.deadlines.midseasonDeadline || 'Not set'}</dd>
+            </div>
+            <div>
+              <dt>Season End</dt>
+              <dd>{data.deadlines.seasonEndDeadline || 'Not set'}</dd>
+            </div>
+            <div>
+              <dt>Needed Before Midseason</dt>
+              <dd>{data.deadlines.gamesNeededBeforeMidseason}</dd>
+            </div>
+            <div>
+              <dt>Needed Before End</dt>
+              <dd>{data.deadlines.gamesNeededBeforeEnd}</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section className="season-command-card" aria-labelledby="availability-title">
+          <h3 id="availability-title">Match Availability</h3>
+          <div className="season-availability-form">
+            <label>
+              Status
+              <select
+                onChange={(event) =>
+                  setAvailabilityDraft({
+                    ...availabilityDraft,
+                    status: event.target.value,
+                  })
+                }
+                value={availabilityDraft.status}
+              >
+                <option>Available</option>
+                <option>Unavailable</option>
+              </select>
+            </label>
+            <label>
+              Preferred Days
+              <input
+                onChange={(event) =>
+                  setAvailabilityDraft({
+                    ...availabilityDraft,
+                    preferredDays: event.target.value,
+                  })
+                }
+                placeholder="Tuesday, Thursday"
+                value={availabilityDraft.preferredDays}
+              />
+            </label>
+            <label>
+              Preferred Times
+              <input
+                onChange={(event) =>
+                  setAvailabilityDraft({
+                    ...availabilityDraft,
+                    preferredTimes: event.target.value,
+                  })
+                }
+                placeholder="Evenings"
+                value={availabilityDraft.preferredTimes}
+              />
+            </label>
+            <label>
+              Notes
+              <input
+                onChange={(event) =>
+                  setAvailabilityDraft({
+                    ...availabilityDraft,
+                    notes: event.target.value,
+                  })
+                }
+                placeholder="Best contact window"
+                value={availabilityDraft.notes}
+              />
+            </label>
+            <button type="button" onClick={() => void saveAvailability()}>
+              Save Availability
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <div className="season-command-grid wide">
+        <section className="season-command-card" aria-labelledby="division-status-title">
+          <h3 id="division-status-title">Division Status</h3>
+          <div className="season-division-list">
+            {data.divisionStatus.map((player) => (
+              <Link
+                className="season-division-row"
+                key={player.player}
+                to={`/players/${encodeURIComponent(player.player)}`}
+              >
+                <span>#{player.rank}</span>
+                <strong>{formatPlayerName(player.player, player.displayName)}</strong>
+                <small>{player.pairingStatus}</small>
+                <b>{player.games} GP</b>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section className="season-command-card" aria-labelledby="activity-title">
+          <h3 id="activity-title">League Activity</h3>
+          <dl className="season-command-list">
+            <div>
+              <dt>Players Behind Pace</dt>
+              <dd>{data.commissioner.behind}</dd>
+            </div>
+            <div>
+              <dt>Players Finished</dt>
+              <dd>{data.commissioner.finished}</dd>
+            </div>
+            <div>
+              <dt>Missing Pairings</dt>
+              <dd>{data.commissioner.missingPairings}</dd>
+            </div>
+            <div>
+              <dt>Promotion Race</dt>
+              <dd>{data.leagueActivity.promotionRace.length} players</dd>
+            </div>
+          </dl>
+        </section>
+      </div>
+    </section>
+  )
+}
+
+function SeasonMetric({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="season-metric">
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </div>
+  )
+}
+
+function ProgressBar({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="season-progress-bar">
+      <div>
+        <span>{label}</span>
+        <strong>{value}%</strong>
+      </div>
+      <meter max={100} min={0} value={value} />
+    </div>
+  )
+}
+
+function getOpponentStatusSymbol(status: string) {
+  if (status === 'Already Played') {
+    return 'Done'
+  }
+
+  if (status === 'Scheduled') {
+    return 'Next'
+  }
+
+  return 'Open'
 }
 
 function FeaturedMatchHero({ game }: { game: RecentGame }) {

@@ -642,6 +642,115 @@ export type HomeData = {
   }
 }
 
+export type SeasonAvailability = {
+  notes: string
+  player: string
+  preferredDays: string
+  preferredTimes: string
+  status: string
+  updatedAt: string
+}
+
+export type SeasonOpponent = {
+  availability: SeasonAvailability
+  displayName: string
+  gameId: number
+  games: number
+  lastResult: string
+  player: string
+  rank: number
+  status: string
+}
+
+export type SeasonCommandPlayer = {
+  displayName: string
+  division: string
+  games: number
+  losses: number
+  op: number
+  player: string
+  rank: number
+  tp: number
+  vp: number
+  wins: number
+}
+
+export type SeasonProgress = {
+  completionPercentage: number
+  gamesCompleted: number
+  gamesRemaining: number
+  gamesRequired: number
+  midseasonProgress: number
+  opponentsCompleted: number
+  opponentsRemaining: number
+  seasonProgress: number
+}
+
+export type SeasonRecommendation = {
+  availability: SeasonAvailability
+  displayName: string
+  player: string
+  rank: number
+  reason: string
+  urgency: string
+}
+
+export type SeasonDeadlines = {
+  currentWeek: number
+  gamesNeededBeforeEnd: number
+  gamesNeededBeforeMidseason: number
+  lateStatus: string
+  midseasonDeadline: string
+  seasonEndDeadline: string
+}
+
+export type SeasonPromotionTracker = {
+  currentRank: number
+  gamesNeeded: number
+  magicNumber: number
+  projectedFinish: number
+  promotionZone: boolean
+  relegationZone: boolean
+  safe: boolean
+  status: string
+}
+
+export type SeasonDivisionStatus = SeasonCommandPlayer & {
+  pairingStatus: string
+}
+
+export type SeasonLeagueActivity = {
+  playersCatchingUp: SeasonCommandPlayer[]
+  promotionRace: SeasonCommandPlayer[]
+  recentDivisionGames: RecentGame[]
+  relegationRace: SeasonCommandPlayer[]
+}
+
+export type SeasonCommissionerStatus = {
+  behind: number
+  division: string
+  finished: number
+  latePlayers: Array<{
+    displayName: string
+    games: number
+    player: string
+  }>
+  missingPairings: number
+}
+
+export type SeasonCommandCenterData = {
+  availability: SeasonAvailability
+  commissioner: SeasonCommissionerStatus
+  deadlines: SeasonDeadlines
+  divisionStatus: SeasonDivisionStatus[]
+  leagueActivity: SeasonLeagueActivity
+  nextOpponents: SeasonRecommendation[]
+  opponents: SeasonOpponent[]
+  player: SeasonCommandPlayer
+  progress: SeasonProgress
+  promotion: SeasonPromotionTracker
+}
+
 export type PortalSettings = {
   currentSeason: string
   leagueName: string
@@ -1108,6 +1217,11 @@ export type ApiClient = {
   getSettings: (options?: ApiOptions) => Promise<PortalSettings>
   getStreams: (options?: ApiOptions) => Promise<StreamedGame[]>
   getArmyLists: (options?: ApiOptions) => Promise<ArmyListsData>
+  getSeasonCommandCenter: (options?: ApiOptions) => Promise<SeasonCommandCenterData>
+  updateSeasonAvailability: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<SeasonCommandCenterData>
   submitArmyList: (
     submission: ArmyListSubmission,
     options?: ApiOptions,
@@ -1372,6 +1486,21 @@ export async function getArmyLists(
   return normalizeArmyListsPayload(payload)
 }
 
+export async function getSeasonCommandCenter(
+  options: ApiOptions = {},
+): Promise<SeasonCommandCenterData> {
+  const payload = await request('seasonCommandCenter', options)
+  return normalizeSeasonCommandCenterPayload(payload)
+}
+
+export async function updateSeasonAvailability(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<SeasonCommandCenterData> {
+  const payload = await postRequest('seasonAvailability', options, params)
+  return normalizeSeasonCommandCenterPayload(payload)
+}
+
 export async function submitArmyList(
   submission: ArmyListSubmission,
   options: ApiOptions = {},
@@ -1520,6 +1649,8 @@ export const apiClient: ApiClient = {
   getSettings,
   getStreams,
   getArmyLists,
+  getSeasonCommandCenter,
+  updateSeasonAvailability,
   submitArmyList,
   voteArmyList,
   getOperations,
@@ -2682,6 +2813,203 @@ function normalizeArmyListsPayload(payload: unknown): ArmyListsData {
   return {
     lists: getRequiredArray(record, 'lists').map(normalizeArmyList),
     community: normalizeArmyListCommunity(record.community),
+  }
+}
+
+function normalizeSeasonCommandCenterPayload(
+  payload: unknown,
+): SeasonCommandCenterData {
+  const record = asRecord(payload, 'Season command center response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Season command center failed.')
+  }
+
+  return normalizeSeasonCommandCenter(
+    getRequiredRecord(record, 'seasonCommand'),
+  )
+}
+
+function normalizeSeasonCommandCenter(
+  record: Record<string, unknown>,
+): SeasonCommandCenterData {
+  return {
+    availability: normalizeSeasonAvailability(
+      getRequiredRecord(record, 'availability'),
+    ),
+    commissioner: normalizeSeasonCommissionerStatus(
+      getRequiredRecord(record, 'commissioner'),
+    ),
+    deadlines: normalizeSeasonDeadlines(getRequiredRecord(record, 'deadlines')),
+    divisionStatus: getRequiredArray(record, 'divisionStatus').map(
+      normalizeSeasonDivisionStatus,
+    ),
+    leagueActivity: normalizeSeasonLeagueActivity(
+      getRequiredRecord(record, 'leagueActivity'),
+    ),
+    nextOpponents: getRequiredArray(record, 'nextOpponents').map(
+      normalizeSeasonRecommendation,
+    ),
+    opponents: getRequiredArray(record, 'opponents').map(normalizeSeasonOpponent),
+    player: normalizeSeasonCommandPlayer(getRequiredRecord(record, 'player')),
+    progress: normalizeSeasonProgress(getRequiredRecord(record, 'progress')),
+    promotion: normalizeSeasonPromotionTracker(
+      getRequiredRecord(record, 'promotion'),
+    ),
+  }
+}
+
+function normalizeSeasonAvailability(item: unknown): SeasonAvailability {
+  const record = asRecord(item, 'Season availability')
+
+  return {
+    notes: getString(record, 'notes'),
+    player: getString(record, 'player'),
+    preferredDays: getString(record, 'preferredDays'),
+    preferredTimes: getString(record, 'preferredTimes'),
+    status: getString(record, 'status'),
+    updatedAt: getString(record, 'updatedAt'),
+  }
+}
+
+function normalizeSeasonOpponent(item: unknown): SeasonOpponent {
+  const record = asRecord(item, 'Season opponent')
+
+  return {
+    availability: normalizeSeasonAvailability(
+      getRequiredRecord(record, 'availability'),
+    ),
+    displayName: getString(record, 'displayName') || getRequiredString(record, 'player'),
+    gameId: getNumber(record, 'gameId'),
+    games: getRequiredNumber(record, 'games'),
+    lastResult: getString(record, 'lastResult'),
+    player: getRequiredString(record, 'player'),
+    rank: getRequiredNumber(record, 'rank'),
+    status: getRequiredString(record, 'status'),
+  }
+}
+
+function normalizeSeasonCommandPlayer(
+  item: unknown,
+): SeasonCommandPlayer {
+  const record = asRecord(item, 'Season command player')
+
+  return {
+    displayName: getString(record, 'displayName') || getRequiredString(record, 'player'),
+    division: getString(record, 'division'),
+    games: getRequiredNumber(record, 'games'),
+    losses: getRequiredNumber(record, 'losses'),
+    op: getRequiredNumber(record, 'op'),
+    player: getRequiredString(record, 'player'),
+    rank: getRequiredNumber(record, 'rank'),
+    tp: getRequiredNumber(record, 'tp'),
+    vp: getRequiredNumber(record, 'vp'),
+    wins: getRequiredNumber(record, 'wins'),
+  }
+}
+
+function normalizeSeasonProgress(record: Record<string, unknown>): SeasonProgress {
+  return {
+    completionPercentage: getRequiredNumber(record, 'completionPercentage'),
+    gamesCompleted: getRequiredNumber(record, 'gamesCompleted'),
+    gamesRemaining: getRequiredNumber(record, 'gamesRemaining'),
+    gamesRequired: getRequiredNumber(record, 'gamesRequired'),
+    midseasonProgress: getRequiredNumber(record, 'midseasonProgress'),
+    opponentsCompleted: getRequiredNumber(record, 'opponentsCompleted'),
+    opponentsRemaining: getRequiredNumber(record, 'opponentsRemaining'),
+    seasonProgress: getRequiredNumber(record, 'seasonProgress'),
+  }
+}
+
+function normalizeSeasonRecommendation(item: unknown): SeasonRecommendation {
+  const record = asRecord(item, 'Season recommendation')
+
+  return {
+    availability: normalizeSeasonAvailability(
+      getRequiredRecord(record, 'availability'),
+    ),
+    displayName: getString(record, 'displayName') || getRequiredString(record, 'player'),
+    player: getRequiredString(record, 'player'),
+    rank: getRequiredNumber(record, 'rank'),
+    reason: getRequiredString(record, 'reason'),
+    urgency: getString(record, 'urgency'),
+  }
+}
+
+function normalizeSeasonDeadlines(record: Record<string, unknown>): SeasonDeadlines {
+  return {
+    currentWeek: getRequiredNumber(record, 'currentWeek'),
+    gamesNeededBeforeEnd: getRequiredNumber(record, 'gamesNeededBeforeEnd'),
+    gamesNeededBeforeMidseason: getRequiredNumber(
+      record,
+      'gamesNeededBeforeMidseason',
+    ),
+    lateStatus: getString(record, 'lateStatus'),
+    midseasonDeadline: getString(record, 'midseasonDeadline'),
+    seasonEndDeadline: getString(record, 'seasonEndDeadline'),
+  }
+}
+
+function normalizeSeasonPromotionTracker(
+  record: Record<string, unknown>,
+): SeasonPromotionTracker {
+  return {
+    currentRank: getRequiredNumber(record, 'currentRank'),
+    gamesNeeded: getRequiredNumber(record, 'gamesNeeded'),
+    magicNumber: getRequiredNumber(record, 'magicNumber'),
+    projectedFinish: getRequiredNumber(record, 'projectedFinish'),
+    promotionZone: getBoolean(record, 'promotionZone'),
+    relegationZone: getBoolean(record, 'relegationZone'),
+    safe: getBoolean(record, 'safe'),
+    status: getString(record, 'status'),
+  }
+}
+
+function normalizeSeasonDivisionStatus(item: unknown): SeasonDivisionStatus {
+  const record = asRecord(item, 'Season division status')
+
+  return {
+    ...normalizeSeasonCommandPlayer(record),
+    pairingStatus: getString(record, 'pairingStatus'),
+  }
+}
+
+function normalizeSeasonLeagueActivity(
+  record: Record<string, unknown>,
+): SeasonLeagueActivity {
+  return {
+    playersCatchingUp: getRequiredArray(record, 'playersCatchingUp').map(
+      normalizeSeasonCommandPlayer,
+    ),
+    promotionRace: getRequiredArray(record, 'promotionRace').map(
+      normalizeSeasonCommandPlayer,
+    ),
+    recentDivisionGames: getRequiredArray(record, 'recentDivisionGames').map(
+      normalizeRecentGame,
+    ),
+    relegationRace: getRequiredArray(record, 'relegationRace').map(
+      normalizeSeasonCommandPlayer,
+    ),
+  }
+}
+
+function normalizeSeasonCommissionerStatus(
+  record: Record<string, unknown>,
+): SeasonCommissionerStatus {
+  return {
+    behind: getRequiredNumber(record, 'behind'),
+    division: getString(record, 'division'),
+    finished: getRequiredNumber(record, 'finished'),
+    latePlayers: getRequiredArray(record, 'latePlayers').map((item) => {
+      const player = asRecord(item, 'Late player')
+
+      return {
+        displayName: getString(player, 'displayName') || getRequiredString(player, 'player'),
+        games: getRequiredNumber(player, 'games'),
+        player: getRequiredString(player, 'player'),
+      }
+    }),
+    missingPairings: getRequiredNumber(record, 'missingPairings'),
   }
 }
 

@@ -66,6 +66,16 @@ Estimated impact: Medium.
 
 Suggested future release: 2.5.5 API Contract Testing.
 
+### Season Command Center Contract Tests
+
+Description: Version 2.6 documents the `seasonCommandCenter` and `seasonAvailability` contracts, but there is no automated deployed-response contract test for authenticated players.
+
+Reason: The endpoint is authenticated and player-specific, so release validation currently combines build-time TypeScript normalization with manual signed-in verification.
+
+Estimated impact: Medium.
+
+Suggested future release: 2.6.1 API Contract Testing.
+
 ### Bundle Analysis Automation
 
 Description: Bundle sizes are manually read from Vite output.

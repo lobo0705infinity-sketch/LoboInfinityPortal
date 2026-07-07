@@ -14,14 +14,21 @@ function getNotifications(e) {
     getRequestUser(e);
 
   const notifications =
-    applyUserNotificationState(
-      buildLeagueNotifications(),
+    buildLeagueNotifications();
+
+  if (typeof addSeasonCommandNotifications === "function")
+    addSeasonCommandNotifications(
+      notifications,
       auth.user
     );
 
   return jsonOutput({
     success: true,
-    notifications: notifications
+    notifications:
+      applyUserNotificationState(
+        notifications,
+        auth.user
+      )
   });
 
 }

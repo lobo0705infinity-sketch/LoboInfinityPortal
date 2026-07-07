@@ -60,7 +60,9 @@ const CONFIG = {
 
     AUTOMATION_TEMPLATES: "Automation Templates",
 
-    AUTOMATION_QUEUE: "Automation Queue"
+    AUTOMATION_QUEUE: "Automation Queue",
+
+    SEASON_AVAILABILITY: "Season Availability"
 
   },
 

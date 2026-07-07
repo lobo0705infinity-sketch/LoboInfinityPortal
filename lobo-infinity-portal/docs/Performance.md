@@ -134,3 +134,19 @@ Performance target:
 - Hall of Fame cold Apps Script build under 2 seconds.
 - Cached Hall of Fame response under 300 ms where Apps Script cache is warm.
 - No increase to Dashboard, authentication, or profile startup work.
+
+## Season Command Center Performance
+
+Version 2.6 adds Season Command Center without changing the Dashboard critical path.
+
+The Dashboard still loads first from the lightweight `dashboard` endpoint. Season Command Center loads only for authenticated users after the page mounts.
+
+Backend performance strategy:
+
+- Reuse the existing player registry.
+- Reuse existing standings calculations.
+- Read Game Analytics once for opponent pairings.
+- Keep availability in a dedicated small sheet.
+- Invalidate only the `seasonCommand` cache group when availability changes.
+
+This avoids new anonymous startup requests and avoids duplicate statistics calculations.
