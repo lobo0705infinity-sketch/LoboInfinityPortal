@@ -87,8 +87,7 @@ function MatchFinder() {
     const start = performance.now()
 
     try {
-      await apiClient.updateSchedulingAvailability(params)
-      const data = await apiClient.getSchedulingCenter()
+      const data = await apiClient.updateSchedulingAvailability(params)
       setState({ data, status: 'success' })
       const durationMs = performance.now() - start
       const verified = isAvailabilityPersistenceVerified(
@@ -102,7 +101,7 @@ function MatchFinder() {
         durationMs,
         verified
           ? 'saved profile matched refreshed scheduling payload'
-          : 'refreshed scheduling payload did not match submitted profile',
+          : getAvailabilityMismatchDetail(params, data.availability),
       )
 
       return {
@@ -327,6 +326,31 @@ function MatchFinder() {
       </section>
     </main>
   )
+}
+
+function getAvailabilityMismatchDetail(
+  expected: AvailabilityFormState,
+  actual: SeasonAvailability,
+) {
+  const fields: Array<keyof AvailabilityFormState> = [
+    'discordHandle',
+    'notes',
+    'preferredDays',
+    'preferredTimes',
+    'status',
+  ]
+
+  const mismatches = fields
+    .filter(
+      (field) =>
+        normalizeAvailabilityValue(expected[field]) !==
+        normalizeAvailabilityValue(actual[field]),
+    )
+    .map((field) => `${field}: expected "${expected[field]}", received "${actual[field]}"`)
+
+  return mismatches.length > 0
+    ? `verification mismatch: ${mismatches.join('; ')}`
+    : 'verification failed without a field mismatch'
 }
 
 function MatchFinderHeader() {

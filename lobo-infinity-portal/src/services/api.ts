@@ -1602,7 +1602,7 @@ export type ApiClient = {
   updateSchedulingAvailability: (
     params: Record<string, string>,
     options?: ApiOptions,
-  ) => Promise<SeasonCommandCenterData>
+  ) => Promise<SchedulingCenterData>
   createSchedulingRequest: (
     params: Record<string, string>,
     options?: ApiOptions,
@@ -1935,9 +1935,9 @@ export async function getMatchFinder(
 export async function updateSchedulingAvailability(
   params: Record<string, string>,
   options: ApiOptions = {},
-): Promise<SeasonCommandCenterData> {
+): Promise<SchedulingCenterData> {
   const payload = await postRequest('schedulingAvailability', options, params)
-  return normalizeSeasonCommandCenterPayload(payload)
+  return normalizeSchedulingCenterPayload(payload)
 }
 
 export async function createSchedulingRequest(

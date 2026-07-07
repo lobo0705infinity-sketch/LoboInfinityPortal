@@ -76,12 +76,110 @@ function getMatchFinder(e) {
 
 function updateSchedulingAvailability(e) {
 
-  const result =
-    updateSeasonAvailability(e);
+  const startedAt =
+    new Date();
 
-  invalidatePortalCacheGroup("scheduling");
+  try {
 
-  return result;
+    const auth =
+      getRequestUser(e);
+
+    if (!auth.authenticated || !auth.user.leaguePlayer)
+      return jsonOutput({
+        success: false,
+        code: "SCHEDULING_AVAILABILITY_AUTH_FAILED",
+        error: auth.error || "Authentication is required.",
+        diagnostics: {
+          stage: "leaguePlayerResolution",
+          authenticated: Boolean(auth.authenticated),
+          hasLeaguePlayer: Boolean(auth.user && auth.user.leaguePlayer),
+          elapsedMs: new Date().getTime() - startedAt.getTime()
+        }
+      });
+
+    const record =
+      buildSeasonAvailabilityRecordFromRequest(e, auth);
+
+    saveSeasonAvailabilityRecord(record);
+
+    const saved =
+      getSeasonAvailabilityForPlayer(
+        getSeasonAvailabilityMap(),
+        auth.user.leaguePlayer
+      );
+
+    const verified =
+      getSchedulingKey(saved.player) === getSchedulingKey(record.player) &&
+      getSchedulingString(saved.status) === getSchedulingString(record.status) &&
+      getSchedulingString(saved.preferredDays) === getSchedulingString(record.preferredDays) &&
+      getSchedulingString(saved.preferredTimes) === getSchedulingString(record.preferredTimes) &&
+      getSchedulingString(saved.discordHandle) === getSchedulingString(record.discordHandle) &&
+      getSchedulingString(saved.notes) === getSchedulingString(record.notes);
+
+    if (!verified)
+      return jsonOutput({
+        success: false,
+        code: "SCHEDULING_AVAILABILITY_VERIFY_FAILED",
+        error: "Unable to verify saved availability.",
+        diagnostics: {
+          stage: "spreadsheetVerification",
+          player: auth.user.leaguePlayer,
+          expected: {
+            status: record.status,
+            preferredDays: record.preferredDays,
+            preferredTimes: record.preferredTimes,
+            discordHandle: record.discordHandle,
+            notes: record.notes
+          },
+          actual: {
+            status: saved.status,
+            preferredDays: saved.preferredDays,
+            preferredTimes: saved.preferredTimes,
+            discordHandle: saved.discordHandle,
+            notes: saved.notes
+          },
+          elapsedMs: new Date().getTime() - startedAt.getTime()
+        }
+      });
+
+    invalidatePortalCacheGroup("seasonCommand");
+    invalidatePortalCacheGroup("scheduling");
+
+    return jsonOutput({
+      success: true,
+      scheduling:
+        buildSchedulingPayload(
+          auth.user.leaguePlayer,
+          auth.user
+        ),
+      diagnostics: {
+        stage: "complete",
+        player: auth.user.leaguePlayer,
+        updatedAt: saved.updatedAt,
+        elapsedMs: new Date().getTime() - startedAt.getTime()
+      }
+    });
+
+  }
+  catch (err) {
+    return jsonOutput({
+      success: false,
+      code: "SCHEDULING_AVAILABILITY_EXCEPTION",
+      error:
+        err && err.message
+          ? err.message
+          : "Unable to save availability.",
+      diagnostics: {
+        stage: "exception",
+        stack:
+          err && err.stack
+            ? String(err.stack).slice(0, 1200)
+            : "",
+        elapsedMs: new Date().getTime() - startedAt.getTime()
+      }
+    });
+  }
+
 
 }
 

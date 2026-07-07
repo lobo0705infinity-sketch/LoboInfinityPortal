@@ -68,10 +68,23 @@ function updateSeasonAvailability(e) {
       error: "Authentication is required."
     });
 
+  const record =
+    buildSeasonAvailabilityRecordFromRequest(e, auth);
+
+  saveSeasonAvailabilityRecord(record);
+
+  invalidatePortalCacheGroup("seasonCommand");
+
+  return getSeasonCommandCenter(e);
+
+}
+
+function buildSeasonAvailabilityRecordFromRequest(e, auth) {
+
   const params =
     getApiParameters(e);
 
-  const record = {
+  return {
     player: auth.user.leaguePlayer,
     status:
       getSeasonCommandString(params.status) ||
@@ -109,12 +122,6 @@ function updateSeasonAvailability(e) {
     discordHandle:
       getSeasonCommandString(params.discordHandle)
   };
-
-  saveSeasonAvailabilityRecord(record);
-
-  invalidatePortalCacheGroup("seasonCommand");
-
-  return getSeasonCommandCenter(e);
 
 }
 
