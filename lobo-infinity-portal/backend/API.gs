@@ -149,6 +149,18 @@ function doGet(e) {
     case "seasonCommandCenter":
       return getSeasonCommandCenter(e);
 
+    case "schedulingCenter":
+      return getSchedulingCenter(e);
+
+    case "matchFinder":
+      return getMatchFinder(e);
+
+    case "schedulingCalendar":
+      return getSchedulingCalendarExport(e);
+
+    case "commissionerScheduling":
+      return getCommissionerScheduling(e);
+
     case "achievements":
       return getAchievements(e);
 
@@ -295,6 +307,15 @@ function doGet(e) {
 
     case "seasonAvailability":
       return updateSeasonAvailability(e);
+
+    case "schedulingAvailability":
+      return updateSchedulingAvailability(e);
+
+    case "createSchedulingRequest":
+      return createSchedulingRequest(e);
+
+    case "respondSchedulingRequest":
+      return respondSchedulingRequest(e);
 
     case "updateSettings":
       return requireApiPermission(e, "manageSettings", function() {
@@ -532,6 +553,15 @@ function doPost(e) {
 
     case "seasonAvailability":
       return updateSeasonAvailability(e);
+
+    case "schedulingAvailability":
+      return updateSchedulingAvailability(e);
+
+    case "createSchedulingRequest":
+      return createSchedulingRequest(e);
+
+    case "respondSchedulingRequest":
+      return respondSchedulingRequest(e);
 
     case "updateSettings":
       return requireApiPermission(e, "manageSettings", function() {

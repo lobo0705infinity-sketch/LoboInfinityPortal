@@ -22,6 +22,7 @@ const Factions = lazy(() => import('./pages/Factions'))
 const GameDetails = lazy(() => import('./pages/GameDetails'))
 const HallOfFame = lazy(() => import('./pages/HallOfFame'))
 const LeagueIntegrity = lazy(() => import('./pages/LeagueIntegrity'))
+const MatchFinder = lazy(() => import('./pages/MatchFinder'))
 const MissionProfile = lazy(() => import('./pages/MissionProfile'))
 const Missions = lazy(() => import('./pages/Missions'))
 const Notifications = lazy(() => import('./pages/Notifications'))
@@ -51,6 +52,7 @@ function App() {
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/standings" element={<Standings />} />
                 <Route path="/players" element={<Players />} />
+                <Route path="/match-finder" element={<MatchFinder />} />
                 <Route path="/compare" element={<PlayerComparison />} />
                 <Route path="/players/:playerName" element={<PlayerProfile />} />
                 <Route path="/player/:playerName" element={<PlayerProfile />} />

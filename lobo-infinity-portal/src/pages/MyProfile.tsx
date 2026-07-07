@@ -293,6 +293,13 @@ function ProfileDashboard({ data }: { data: MyProfileData }) {
           meta={seasonStats?.promotionStatus || 'Unranked'}
           status="Division movement"
         />
+        <PlayerAnswerCard
+          title="Schedule"
+          value="Match Finder"
+          meta="Update availability and request games"
+          status="Community"
+          to="/match-finder#availability"
+        />
       </section>
 
       <section className="profile-stat-grid" aria-label="Core statistics">
@@ -477,20 +484,30 @@ function PlayerAnswerCard({
   meta,
   status,
   title,
+  to,
   value,
 }: {
   meta: string
   status: string
   title: string
+  to?: string
   value: ReactNode
 }) {
-  return (
+  const content = (
     <article className="panel player-answer-card">
       <span>{status}</span>
       <h2>{title}</h2>
       <strong>{value}</strong>
       <p>{meta}</p>
     </article>
+  )
+
+  return to ? (
+    <Link className="player-answer-link" to={to}>
+      {content}
+    </Link>
+  ) : (
+    content
   )
 }
 

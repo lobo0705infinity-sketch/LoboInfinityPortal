@@ -64,6 +64,8 @@ const CONFIG = {
 
     SEASON_AVAILABILITY: "Season Availability",
 
+    SCHEDULING_REQUESTS: "Scheduling Requests",
+
     EVENTS: "Events",
 
     EVENT_TEMPLATES: "Event Templates",

@@ -91,6 +91,11 @@ function Sidebar() {
             label: 'My Profile',
             to: '/profile',
           },
+          {
+            icon: 'compare' as PortalIconName,
+            label: 'Match Finder',
+            to: '/match-finder',
+          },
         ]
       : []),
     ...(auth.isAtLeastRole('Assistant Commissioner')

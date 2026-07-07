@@ -107,6 +107,18 @@ The intended performance behavior is:
 
 The reliability target is a cache hit rate above 90 percent during normal usage. Targeted cache invalidation should be preferred over global clears.
 
+## Version 4.0 Scheduling Performance
+
+Community scheduling preserves the Version 3.x performance model:
+
+- Match Finder is a lazy route and is not part of the initial dashboard bundle.
+- Dashboard continues to use the existing Community Command Center aggregate.
+- Scheduling data is fetched through one authenticated aggregate request.
+- Commissioner scheduling status loads only when the Scheduling panel is opened.
+- Availability and scheduling request mutations invalidate only the scheduling and season command cache groups.
+
+The scheduling route adds a small lazy chunk and does not add startup API requests for signed-out users.
+
 ## Mobile Performance Strategy
 
 Version 2.5.3 keeps the Version 2.5.1 loading model intact.

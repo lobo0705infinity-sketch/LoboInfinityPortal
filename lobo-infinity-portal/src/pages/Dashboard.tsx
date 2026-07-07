@@ -599,7 +599,7 @@ function CommunityCommandCenter() {
                 <Link
                   className="season-opponent-row"
                   key={opponent.player}
-                  to={`/players/${encodeURIComponent(opponent.player)}`}
+                  to={opponent.profileLink || `/players/${encodeURIComponent(opponent.player)}`}
                 >
                   <span>{getOpponentStatusSymbol(opponent.status)}</span>
                   <strong>{formatPlayerName(opponent.player, opponent.displayName)}</strong>
@@ -613,12 +613,12 @@ function CommunityCommandCenter() {
                 <Link
                   className="season-opponent-row"
                   key={opponent.player}
-                  to={`/players/${encodeURIComponent(opponent.player)}`}
+                  to={opponent.scheduleLink || `/match-finder?opponent=${encodeURIComponent(opponent.player)}`}
                 >
                   <span>{getOpponentStatusSymbol(opponent.status)}</span>
                   <strong>{formatPlayerName(opponent.player, opponent.displayName)}</strong>
                   <small>
-                    {opponent.division} - {opponent.gamesCompleted} GP
+                    {opponent.availabilitySummary || `${opponent.division} - ${opponent.gamesCompleted} GP`}
                   </small>
                   <b>{opponent.suggestedPriority}: {opponent.reason}</b>
                 </Link>
@@ -1256,6 +1256,7 @@ function buildMilestoneItems({
 function QuickNavigation() {
   const links = [
     ['Standings', '/standings'],
+    ['Match Finder', '/match-finder'],
     ['Players', '/players'],
     ['Factions', '/factions'],
     ['Missions', '/missions'],

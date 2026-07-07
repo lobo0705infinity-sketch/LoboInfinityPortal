@@ -22,6 +22,12 @@ function getNotifications(e) {
       auth.user
     );
 
+  if (typeof addSchedulingNotifications === "function")
+    addSchedulingNotifications(
+      notifications,
+      auth.user
+    );
+
   return jsonOutput({
     success: true,
     notifications:

@@ -250,6 +250,7 @@ type DashboardApiResponse = {
 export type PlayerProfileData = {
   name: string
   displayName: string
+  profilePicture: string
   division: string
   rank: number
   games: number
@@ -267,6 +268,12 @@ export type PlayerProfileData = {
   bestFaction: string
   rival: string
   nemesis: string
+  availability: SeasonAvailability
+  city: string
+  discordHandle: string
+  homeStore: string
+  preferredLocations: string
+  scheduleLink: string
   armyLists: ArmyList[]
   armyListSummary: PlayerArmyListSummary
 }
@@ -621,22 +628,40 @@ export type HomeData = {
 }
 
 export type SeasonAvailability = {
+  city: string
+  discordHandle: string
+  friday: string
+  homeStore: string
+  maxTravelDistance: string
+  monday: string
   notes: string
   player: string
   preferredDays: string
+  preferredLocations: string
   preferredTimes: string
+  saturday: string
   status: string
+  sunday: string
+  thursday: string
+  tuesday: string
   updatedAt: string
+  wednesday: string
 }
 
 export type SeasonOpponent = {
   availability: SeasonAvailability
+  availabilitySummary: string
+  discordHandle: string
   displayName: string
   gameId: number
   games: number
+  gamesRemainingBetweenPlayers: number
   lastResult: string
   player: string
+  preferredStore: string
+  profileLink: string
   rank: number
+  scheduleLink: string
   status: string
 }
 
@@ -743,16 +768,135 @@ export type CommunityCommandEvent = {
 
 export type CommunityOpponentCard = {
   availability: SeasonAvailability
+  availabilitySummary: string
+  discordHandle: string
   displayName: string
   division: string
   gamesCompleted: number
+  gamesRemainingBetweenPlayers: number
   lastActivity: string
   player: string
+  preferredStore: string
+  profileLink: string
   quickMessage: string
   rank: number
   reason: string
+  scheduleLink: string
   suggestedPriority: string
   status: string
+}
+
+export type SchedulingRequest = {
+  createdAt: string
+  fromPlayer: string
+  id: string
+  location: string
+  message: string
+  proposedDate: string
+  proposedTime: string
+  responseMessage: string
+  status: string
+  toPlayer: string
+  updatedAt: string
+}
+
+export type SchedulingRecommendation = {
+  availability: SeasonAvailability
+  availabilitySummary: string
+  discordHandle: string
+  displayName: string
+  division: string
+  gamesCompleted: number
+  gamesRemainingBetweenPlayers: number
+  player: string
+  preferredStore: string
+  priority: string
+  profileLink: string
+  rank: number
+  reason: string
+  scheduleLink: string
+  score: number
+}
+
+export type SchedulingCenterData = {
+  activity: Array<{
+    body: string
+    link: string
+    timestamp: string
+    title: string
+    type: string
+  }>
+  availability: SeasonAvailability
+  commissioner: SeasonCommissionerStatus
+  completedOpponents: SeasonOpponent[]
+  currentSeason: string
+  opponents: SeasonOpponent[]
+  player: SeasonCommandPlayer
+  progress: SeasonProgress
+  quickActions: Array<{
+    label: string
+    link: string
+  }>
+  recommendations: SchedulingRecommendation[]
+  remainingOpponents: SeasonOpponent[]
+  requests: {
+    history: SchedulingRequest[]
+    incoming: SchedulingRequest[]
+    outgoing: SchedulingRequest[]
+    pending: SchedulingRequest[]
+    upcoming: SchedulingRequest[]
+  }
+  seasonProgress: {
+    division: {
+      completionPercentage: number
+      gamesCompleted: number
+      gamesRemaining: number
+      players: number
+    }
+    league: Array<{
+      completionPercentage: number
+      gamesCompleted: number
+      gamesRemaining: number
+      players: number
+    }>
+    player: Record<string, unknown>
+  }
+}
+
+export type MatchFinderData = {
+  availability: SeasonAvailability
+  currentSeason: string
+  pendingRequests: SchedulingRequest[]
+  player: SeasonCommandPlayer
+  progress: SeasonProgress
+  recommendations: SchedulingRecommendation[]
+  upcomingMatches: SchedulingRequest[]
+}
+
+export type CommissionerSchedulingData = {
+  divisions: Array<{
+    division: string
+    inactivePlayers: SeasonCommandPlayer[]
+    outstandingMatchups: Array<{
+      left: string
+      right: string
+    }>
+    playersBehind: SeasonCommandPlayer[]
+    progress: {
+      completionPercentage: number
+      gamesCompleted: number
+      gamesRemaining: number
+      players: number
+    }
+    suggestedReminderRecipients: Array<{
+      displayName: string
+      games: number
+      player: string
+      profileLink: string
+    }>
+  }>
+  generatedAt: string
+  requests: SchedulingRequest[]
 }
 
 export type CommunityCommandAction = {
@@ -1444,6 +1588,27 @@ export type ApiClient = {
     params: Record<string, string>,
     options?: ApiOptions,
   ) => Promise<SeasonCommandCenterData>
+  getSchedulingCenter: (options?: ApiOptions) => Promise<SchedulingCenterData>
+  getMatchFinder: (options?: ApiOptions) => Promise<MatchFinderData>
+  updateSchedulingAvailability: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<SeasonCommandCenterData>
+  createSchedulingRequest: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<SchedulingCenterData>
+  respondSchedulingRequest: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<SchedulingCenterData>
+  getSchedulingCalendar: (
+    requestId: string,
+    options?: ApiOptions,
+  ) => Promise<{ filename: string; ics: string }>
+  getCommissionerScheduling: (
+    options?: ApiOptions,
+  ) => Promise<CommissionerSchedulingData>
   submitArmyList: (
     submission: ArmyListSubmission,
     options?: ApiOptions,
@@ -1744,6 +1909,117 @@ export async function updateSeasonAvailability(
   return normalizeSeasonCommandCenterPayload(payload)
 }
 
+export async function getSchedulingCenter(
+  options: ApiOptions = {},
+): Promise<SchedulingCenterData> {
+  const payload = await request('schedulingCenter', options)
+  return normalizeSchedulingCenterPayload(payload)
+}
+
+export async function getMatchFinder(
+  options: ApiOptions = {},
+): Promise<MatchFinderData> {
+  const payload = await request('matchFinder', options)
+  return normalizeMatchFinderPayload(payload)
+}
+
+export async function updateSchedulingAvailability(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<SeasonCommandCenterData> {
+  const payload = await postRequest('schedulingAvailability', options, params)
+  return normalizeSeasonCommandCenterPayload(payload)
+}
+
+export async function createSchedulingRequest(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<SchedulingCenterData> {
+  const payload = await postRequest('createSchedulingRequest', options, params)
+  return normalizeSchedulingCenterPayload(payload)
+}
+
+export async function respondSchedulingRequest(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<SchedulingCenterData> {
+  const payload = await postRequest('respondSchedulingRequest', options, params)
+  return normalizeSchedulingCenterPayload(payload)
+}
+
+export async function getSchedulingCalendar(
+  requestId: string,
+  options: ApiOptions = {},
+): Promise<{ filename: string; ics: string }> {
+  const payload = await request('schedulingCalendar', options, { requestId })
+  const calendar = getRequiredRecord(
+    asRecord(payload, 'Scheduling calendar response'),
+    'calendar',
+  )
+
+  return {
+    filename: getString(calendar, 'filename'),
+    ics: getString(calendar, 'ics'),
+  }
+}
+
+export async function getCommissionerScheduling(
+  options: ApiOptions = {},
+): Promise<CommissionerSchedulingData> {
+  const payload = await request('commissionerScheduling', options)
+  const record = asRecord(payload, 'Commissioner scheduling response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Commissioner scheduling failed.')
+  }
+
+  const scheduling = getRequiredRecord(record, 'scheduling')
+
+  return {
+    divisions: getArray(scheduling, 'divisions').map((item) => {
+      const division = asRecord(item, 'Commissioner scheduling division')
+
+      return {
+        division: getString(division, 'division'),
+        inactivePlayers: getArray(division, 'inactivePlayers').map(
+          normalizeSeasonCommandPlayer,
+        ),
+        outstandingMatchups: getArray(division, 'outstandingMatchups').map(
+          (matchup) => {
+            const record = asRecord(matchup, 'Outstanding matchup')
+
+            return {
+              left: getString(record, 'left'),
+              right: getString(record, 'right'),
+            }
+          },
+        ),
+        playersBehind: getArray(division, 'playersBehind').map(
+          normalizeSeasonCommandPlayer,
+        ),
+        progress: normalizeSchedulingProgressBlock(
+          getRequiredRecord(division, 'progress'),
+        ),
+        suggestedReminderRecipients: getArray(
+          division,
+          'suggestedReminderRecipients',
+        ).map((recipient) => {
+          const record = asRecord(recipient, 'Reminder recipient')
+
+          return {
+            displayName: getString(record, 'displayName'),
+            games: getNumber(record, 'games'),
+            player: getString(record, 'player'),
+            profileLink: getString(record, 'profileLink'),
+          }
+        }),
+      }
+    }),
+    generatedAt: getString(scheduling, 'generatedAt'),
+    requests: getArray(scheduling, 'requests').map(normalizeSchedulingRequest),
+  }
+}
+
 export async function submitArmyList(
   submission: ArmyListSubmission,
   options: ApiOptions = {},
@@ -1945,6 +2221,13 @@ export const apiClient: ApiClient = {
   getCommunityCommandCenter,
   getSeasonCommandCenter,
   updateSeasonAvailability,
+  getSchedulingCenter,
+  getMatchFinder,
+  updateSchedulingAvailability,
+  createSchedulingRequest,
+  respondSchedulingRequest,
+  getSchedulingCalendar,
+  getCommissionerScheduling,
   submitArmyList,
   voteArmyList,
   getOperations,
@@ -2387,6 +2670,7 @@ function normalizePlayerProfileRecord(
   return {
     name: getRequiredString(player, 'name'),
     displayName: getString(player, 'displayName') || getRequiredString(player, 'name'),
+    profilePicture: getString(player, 'profilePicture'),
     division: getString(player, 'division'),
     rank: getRequiredNumber(player, 'rank'),
     games: getRequiredNumber(player, 'games'),
@@ -2404,6 +2688,14 @@ function normalizePlayerProfileRecord(
     bestFaction: getString(player, 'bestFaction'),
     rival: getString(player, 'rival'),
     nemesis: getString(player, 'nemesis'),
+    availability: normalizeSeasonAvailability(
+      getOptionalRecord(player, 'availability') ?? {},
+    ),
+    city: getString(player, 'city'),
+    discordHandle: getString(player, 'discordHandle'),
+    homeStore: getString(player, 'homeStore'),
+    preferredLocations: getString(player, 'preferredLocations'),
+    scheduleLink: getString(player, 'scheduleLink'),
     armyLists: getArray(player, 'armyLists').map(normalizeArmyList),
     armyListSummary: normalizePlayerArmyListSummary(player.armyListSummary),
   }
@@ -2932,6 +3224,7 @@ function normalizeComparisonPlayer(item: unknown): PlayerComparisonPlayer {
   return {
     name: getRequiredString(record, 'name'),
     displayName: getString(record, 'displayName') || getRequiredString(record, 'name'),
+    profilePicture: '',
     division: getString(record, 'division'),
     rank: getRequiredNumber(record, 'rank'),
     games: getRequiredNumber(record, 'games'),
@@ -2949,6 +3242,12 @@ function normalizeComparisonPlayer(item: unknown): PlayerComparisonPlayer {
     bestFaction: getString(record, 'bestFaction'),
     rival: '',
     nemesis: '',
+    availability: normalizeSeasonAvailability({}),
+    city: '',
+    discordHandle: '',
+    homeStore: '',
+    preferredLocations: '',
+    scheduleLink: '',
     armyLists: [],
     armyListSummary: {
       submitted: 0,
@@ -3150,14 +3449,20 @@ function normalizeCommunityOpponentCard(
     availability: normalizeSeasonAvailability(
       getRequiredRecord(record, 'availability'),
     ),
+    availabilitySummary: getString(record, 'availabilitySummary'),
+    discordHandle: getString(record, 'discordHandle'),
     displayName: getString(record, 'displayName') || getRequiredString(record, 'player'),
     division: getString(record, 'division'),
     gamesCompleted: getRequiredNumber(record, 'gamesCompleted'),
+    gamesRemainingBetweenPlayers: getNumber(record, 'gamesRemainingBetweenPlayers'),
     lastActivity: getString(record, 'lastActivity'),
     player: getRequiredString(record, 'player'),
+    preferredStore: getString(record, 'preferredStore'),
+    profileLink: getString(record, 'profileLink'),
     quickMessage: getString(record, 'quickMessage') || 'Message',
     rank: getRequiredNumber(record, 'rank'),
     reason: getString(record, 'reason'),
+    scheduleLink: getString(record, 'scheduleLink'),
     suggestedPriority: getString(record, 'suggestedPriority') || 'Normal',
     status: getRequiredString(record, 'status'),
   }
@@ -3238,6 +3543,168 @@ function normalizeCommunityEventSwitcherItem(
   }
 }
 
+function normalizeSchedulingCenterPayload(payload: unknown): SchedulingCenterData {
+  const record = asRecord(payload, 'Scheduling center response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Scheduling center failed.')
+  }
+
+  return normalizeSchedulingCenter(getRequiredRecord(record, 'scheduling'))
+}
+
+function normalizeMatchFinderPayload(payload: unknown): MatchFinderData {
+  const record = asRecord(payload, 'Match finder response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Match finder failed.')
+  }
+
+  const matchFinder = getRequiredRecord(record, 'matchFinder')
+
+  return {
+    availability: normalizeSeasonAvailability(
+      getRequiredRecord(matchFinder, 'availability'),
+    ),
+    currentSeason: getString(matchFinder, 'currentSeason'),
+    pendingRequests: getArray(matchFinder, 'pendingRequests').map(
+      normalizeSchedulingRequest,
+    ),
+    player: normalizeSeasonCommandPlayer(getRequiredRecord(matchFinder, 'player')),
+    progress: normalizeSeasonProgress(getRequiredRecord(matchFinder, 'progress')),
+    recommendations: getArray(matchFinder, 'recommendations').map(
+      normalizeSchedulingRecommendation,
+    ),
+    upcomingMatches: getArray(matchFinder, 'upcomingMatches').map(
+      normalizeSchedulingRequest,
+    ),
+  }
+}
+
+function normalizeSchedulingCenter(
+  record: Record<string, unknown>,
+): SchedulingCenterData {
+  const requests = getRequiredRecord(record, 'requests')
+
+  return {
+    activity: getArray(record, 'activity').map(normalizeSchedulingActivityItem),
+    availability: normalizeSeasonAvailability(
+      getRequiredRecord(record, 'availability'),
+    ),
+    commissioner: normalizeSeasonCommissionerStatus(
+      getRequiredRecord(record, 'commissioner'),
+    ),
+    completedOpponents: getArray(record, 'completedOpponents').map(
+      normalizeSeasonOpponent,
+    ),
+    currentSeason: getString(record, 'currentSeason'),
+    opponents: getArray(record, 'opponents').map(normalizeSeasonOpponent),
+    player: normalizeSeasonCommandPlayer(getRequiredRecord(record, 'player')),
+    progress: normalizeSeasonProgress(getRequiredRecord(record, 'progress')),
+    quickActions: getArray(record, 'quickActions').map((item) => {
+      const action = asRecord(item, 'Scheduling quick action')
+
+      return {
+        label: getString(action, 'label'),
+        link: getString(action, 'link'),
+      }
+    }),
+    recommendations: getArray(record, 'recommendations').map(
+      normalizeSchedulingRecommendation,
+    ),
+    remainingOpponents: getArray(record, 'remainingOpponents').map(
+      normalizeSeasonOpponent,
+    ),
+    requests: {
+      history: getArray(requests, 'history').map(normalizeSchedulingRequest),
+      incoming: getArray(requests, 'incoming').map(normalizeSchedulingRequest),
+      outgoing: getArray(requests, 'outgoing').map(normalizeSchedulingRequest),
+      pending: getArray(requests, 'pending').map(normalizeSchedulingRequest),
+      upcoming: getArray(requests, 'upcoming').map(normalizeSchedulingRequest),
+    },
+    seasonProgress: normalizeSchedulingSeasonProgress(
+      getRequiredRecord(record, 'seasonProgress'),
+    ),
+  }
+}
+
+function normalizeSchedulingRecommendation(
+  item: unknown,
+): SchedulingRecommendation {
+  const record = asRecord(item, 'Scheduling recommendation')
+
+  return {
+    availability: normalizeSeasonAvailability(
+      getRequiredRecord(record, 'availability'),
+    ),
+    availabilitySummary: getString(record, 'availabilitySummary'),
+    discordHandle: getString(record, 'discordHandle'),
+    displayName: getString(record, 'displayName') || getRequiredString(record, 'player'),
+    division: getString(record, 'division'),
+    gamesCompleted: getNumber(record, 'gamesCompleted'),
+    gamesRemainingBetweenPlayers: getNumber(record, 'gamesRemainingBetweenPlayers'),
+    player: getRequiredString(record, 'player'),
+    preferredStore: getString(record, 'preferredStore'),
+    priority: getString(record, 'priority') || 'Normal',
+    profileLink: getString(record, 'profileLink'),
+    rank: getNumber(record, 'rank'),
+    reason: getString(record, 'reason'),
+    scheduleLink: getString(record, 'scheduleLink'),
+    score: getNumber(record, 'score'),
+  }
+}
+
+function normalizeSchedulingRequest(item: unknown): SchedulingRequest {
+  const record = asRecord(item, 'Scheduling request')
+
+  return {
+    createdAt: getString(record, 'createdAt'),
+    fromPlayer: getString(record, 'fromPlayer'),
+    id: getString(record, 'id'),
+    location: getString(record, 'location'),
+    message: getString(record, 'message'),
+    proposedDate: getString(record, 'proposedDate'),
+    proposedTime: getString(record, 'proposedTime'),
+    responseMessage: getString(record, 'responseMessage'),
+    status: getString(record, 'status'),
+    toPlayer: getString(record, 'toPlayer'),
+    updatedAt: getString(record, 'updatedAt'),
+  }
+}
+
+function normalizeSchedulingActivityItem(item: unknown) {
+  const record = asRecord(item, 'Scheduling activity')
+
+  return {
+    body: getString(record, 'body'),
+    link: getString(record, 'link'),
+    timestamp: getString(record, 'timestamp'),
+    title: getString(record, 'title'),
+    type: getString(record, 'type'),
+  }
+}
+
+function normalizeSchedulingSeasonProgress(record: Record<string, unknown>) {
+  return {
+    division: normalizeSchedulingProgressBlock(
+      getRequiredRecord(record, 'division'),
+    ),
+    league: getArray(record, 'league').map(normalizeSchedulingProgressBlock),
+    player: getOptionalRecord(record, 'player') ?? {},
+  }
+}
+
+function normalizeSchedulingProgressBlock(item: unknown) {
+  const record = asRecord(item, 'Scheduling progress block')
+
+  return {
+    completionPercentage: getNumber(record, 'completionPercentage'),
+    gamesCompleted: getNumber(record, 'gamesCompleted'),
+    gamesRemaining: getNumber(record, 'gamesRemaining'),
+    players: getNumber(record, 'players'),
+  }
+}
+
 function normalizeSeasonCommandCenterPayload(
   payload: unknown,
 ): SeasonCommandCenterData {
@@ -3285,12 +3752,24 @@ function normalizeSeasonAvailability(item: unknown): SeasonAvailability {
   const record = asRecord(item, 'Season availability')
 
   return {
+    city: getString(record, 'city'),
+    discordHandle: getString(record, 'discordHandle'),
+    friday: getString(record, 'friday'),
+    homeStore: getString(record, 'homeStore'),
+    maxTravelDistance: getString(record, 'maxTravelDistance'),
+    monday: getString(record, 'monday'),
     notes: getString(record, 'notes'),
     player: getString(record, 'player'),
     preferredDays: getString(record, 'preferredDays'),
+    preferredLocations: getString(record, 'preferredLocations'),
     preferredTimes: getString(record, 'preferredTimes'),
+    saturday: getString(record, 'saturday'),
     status: getString(record, 'status'),
+    sunday: getString(record, 'sunday'),
+    thursday: getString(record, 'thursday'),
+    tuesday: getString(record, 'tuesday'),
     updatedAt: getString(record, 'updatedAt'),
+    wednesday: getString(record, 'wednesday'),
   }
 }
 
@@ -3301,12 +3780,18 @@ function normalizeSeasonOpponent(item: unknown): SeasonOpponent {
     availability: normalizeSeasonAvailability(
       getRequiredRecord(record, 'availability'),
     ),
+    availabilitySummary: getString(record, 'availabilitySummary'),
+    discordHandle: getString(record, 'discordHandle'),
     displayName: getString(record, 'displayName') || getRequiredString(record, 'player'),
     gameId: getNumber(record, 'gameId'),
     games: getRequiredNumber(record, 'games'),
+    gamesRemainingBetweenPlayers: getNumber(record, 'gamesRemainingBetweenPlayers'),
     lastResult: getString(record, 'lastResult'),
     player: getRequiredString(record, 'player'),
+    preferredStore: getString(record, 'preferredStore'),
+    profileLink: getString(record, 'profileLink'),
     rank: getRequiredNumber(record, 'rank'),
+    scheduleLink: getString(record, 'scheduleLink'),
     status: getRequiredString(record, 'status'),
   }
 }

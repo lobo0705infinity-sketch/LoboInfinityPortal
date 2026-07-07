@@ -253,6 +253,18 @@ function buildCommunityOpponentCard(opponent, games, divisionLookup, playerDivis
       opponent.availability || {
         status: "Not Set"
     },
+    availabilitySummary:
+      opponent.availabilitySummary || "",
+    preferredStore:
+      opponent.preferredStore || "",
+    discordHandle:
+      opponent.discordHandle || "",
+    gamesRemainingBetweenPlayers:
+      opponent.gamesRemainingBetweenPlayers || 0,
+    profileLink:
+      opponent.profileLink || "/players/" + encodeURIComponent(opponent.player),
+    scheduleLink:
+      opponent.scheduleLink || "/match-finder?opponent=" + encodeURIComponent(opponent.player),
     quickMessage:
       "Message",
     suggestedPriority:
@@ -309,7 +321,7 @@ function buildCommunityNextActions(user, seasonCommand, currentEvent, settings, 
           ? "High"
           : "Normal",
       link:
-        "/players/" +
+        "/match-finder?opponent=" +
         encodeURIComponent(recommended.player)
     });
 
@@ -436,7 +448,7 @@ function buildCommunityNudges(user, seasonCommand, currentEvent, activity) {
         "Schedule " +
         recommended.displayName,
       deepLink:
-        "/players/" +
+        "/match-finder?opponent=" +
         encodeURIComponent(recommended.player)
     });
 
@@ -626,6 +638,10 @@ function buildCommunityQuickActions(settings) {
     {
       label: "Submit Army List",
       link: "/army-lists/submit"
+    },
+    {
+      label: "Match Finder",
+      link: "/match-finder"
     },
     {
       label: "View Standings",

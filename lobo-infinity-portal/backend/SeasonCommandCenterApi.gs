@@ -13,7 +13,19 @@ const SEASON_AVAILABILITY_HEADERS = [
   "Preferred Days",
   "Preferred Times",
   "Notes",
-  "Updated At"
+  "Updated At",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+  "Home Store",
+  "City",
+  "Max Travel Distance",
+  "Preferred Locations",
+  "Discord Handle"
 ];
 
 function getSeasonCommandCenter(e) {
@@ -71,7 +83,31 @@ function updateSeasonAvailability(e) {
     notes:
       getSeasonCommandString(params.notes),
     updatedAt:
-      getSeasonCommandTimestamp()
+      getSeasonCommandTimestamp(),
+    monday:
+      getSeasonCommandString(params.monday),
+    tuesday:
+      getSeasonCommandString(params.tuesday),
+    wednesday:
+      getSeasonCommandString(params.wednesday),
+    thursday:
+      getSeasonCommandString(params.thursday),
+    friday:
+      getSeasonCommandString(params.friday),
+    saturday:
+      getSeasonCommandString(params.saturday),
+    sunday:
+      getSeasonCommandString(params.sunday),
+    homeStore:
+      getSeasonCommandString(params.homeStore),
+    city:
+      getSeasonCommandString(params.city),
+    maxTravelDistance:
+      getSeasonCommandString(params.maxTravelDistance),
+    preferredLocations:
+      getSeasonCommandString(params.preferredLocations),
+    discordHandle:
+      getSeasonCommandString(params.discordHandle)
   };
 
   saveSeasonAvailabilityRecord(record);
@@ -346,6 +382,10 @@ function buildOpponentTracker(context) {
             : availability.status === "Available"
               ? "Scheduled"
               : "Not Played",
+        gamesRemainingBetweenPlayers:
+          game
+            ? 0
+            : 1,
         gameId:
           game
             ? game.id
@@ -355,9 +395,19 @@ function buildOpponentTracker(context) {
             ? buildSeasonGameResult(
                 game,
                 context.player.player
-              )
+          )
             : "",
-        availability: availability
+        availability: availability,
+        availabilitySummary:
+          buildSeasonAvailabilitySummary(availability),
+        preferredStore:
+          availability.homeStore,
+        discordHandle:
+          availability.discordHandle,
+        profileLink:
+          "/players/" + encodeURIComponent(opponent.player),
+        scheduleLink:
+          "/match-finder?opponent=" + encodeURIComponent(opponent.player)
       };
     });
 
@@ -421,6 +471,8 @@ function buildNextOpponentRecommendations(context, opponents) {
         reason:
           overlap
             ? "Availability overlap"
+            : getSeasonCommandString(opponent.availability.homeStore) !== ""
+              ? "Preferred store recorded"
             : opponent.games < context.standing.games
               ? "Opponent needs games"
               : "Remaining division pairing",
@@ -760,7 +812,19 @@ function getSeasonAvailabilityForPlayer(availabilityMap, playerName) {
     preferredDays: "",
     preferredTimes: "",
     notes: "",
-    updatedAt: ""
+    updatedAt: "",
+    monday: "",
+    tuesday: "",
+    wednesday: "",
+    thursday: "",
+    friday: "",
+    saturday: "",
+    sunday: "",
+    homeStore: "",
+    city: "",
+    maxTravelDistance: "",
+    preferredLocations: "",
+    discordHandle: ""
   };
 
 }
@@ -798,7 +862,31 @@ function getSeasonAvailabilityMap() {
         notes:
           getSeasonCommandString(row[4]),
         updatedAt:
-          getSeasonCommandString(row[5])
+          getSeasonCommandString(row[5]),
+        monday:
+          getSeasonCommandString(row[6]),
+        tuesday:
+          getSeasonCommandString(row[7]),
+        wednesday:
+          getSeasonCommandString(row[8]),
+        thursday:
+          getSeasonCommandString(row[9]),
+        friday:
+          getSeasonCommandString(row[10]),
+        saturday:
+          getSeasonCommandString(row[11]),
+        sunday:
+          getSeasonCommandString(row[12]),
+        homeStore:
+          getSeasonCommandString(row[13]),
+        city:
+          getSeasonCommandString(row[14]),
+        maxTravelDistance:
+          getSeasonCommandString(row[15]),
+        preferredLocations:
+          getSeasonCommandString(row[16]),
+        discordHandle:
+          getSeasonCommandString(row[17])
       };
     });
 
@@ -834,7 +922,19 @@ function saveSeasonAvailabilityRecord(record) {
     record.preferredDays,
     record.preferredTimes,
     record.notes,
-    record.updatedAt
+    record.updatedAt,
+    record.monday || "",
+    record.tuesday || "",
+    record.wednesday || "",
+    record.thursday || "",
+    record.friday || "",
+    record.saturday || "",
+    record.sunday || "",
+    record.homeStore || "",
+    record.city || "",
+    record.maxTravelDistance || "",
+    record.preferredLocations || "",
+    record.discordHandle || ""
   ];
 
   if (rowNumber === -1)
@@ -907,6 +1007,26 @@ function getSeasonCommandPercent(value, total) {
     100,
     Math.round((Number(value) / Number(total)) * 100)
   );
+
+}
+
+function buildSeasonAvailabilitySummary(availability) {
+
+  const pieces = [];
+
+  if (availability.status)
+    pieces.push(availability.status);
+
+  if (availability.preferredDays)
+    pieces.push(availability.preferredDays);
+
+  if (availability.preferredTimes)
+    pieces.push(availability.preferredTimes);
+
+  if (availability.homeStore)
+    pieces.push(availability.homeStore);
+
+  return pieces.join(" - ");
 
 }
 

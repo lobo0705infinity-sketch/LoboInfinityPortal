@@ -62,6 +62,12 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] Verify Recovery Center
 - [ ] Verify Performance History
 - [ ] Verify Reliability Audit Log
+- [ ] Verify Opponent Tracker
+- [ ] Verify Availability Editor
+- [ ] Verify Match Finder
+- [ ] Verify Scheduling Requests
+- [ ] Verify Calendar Export
+- [ ] Verify Commissioner Scheduling Dashboard
 - [ ] Verify Community Command Center
 - [ ] Verify Active Events
 - [ ] Verify Opponent Tracker

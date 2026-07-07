@@ -95,6 +95,23 @@ Reliability services extend the existing Apps Script cache, diagnostics, operati
 
 Reliability mutations are Commissioner-gated, write audit entries, and return the same Platform Health payload so the Commissioner interface can refresh without issuing follow-up requests.
 
+## Community Scheduling Architecture
+
+Version 4.0 adds community scheduling as a player-facing layer on top of the existing Season Command Center.
+
+Scheduling uses the permanent `leaguePlayer` key for every lookup. Google display name and player display name remain presentation-only.
+
+The scheduling model extends existing systems:
+
+- Opponent Tracker is derived from current division standings and Game Engine results.
+- Availability uses the existing Season Availability sheet with additional optional presentation fields.
+- Scheduling Requests are stored in a dedicated Scheduling Requests sheet.
+- Match Finder recommendations reuse Season Command Center opponent status, availability, division, and progress data.
+- Notifications reuse the existing notification state system and add scheduling-specific alerts.
+- Commissioner scheduling status reuses existing operations permissions and division progress calculations.
+
+Scheduling does not modify game results, standings formulas, Event Lifecycle, Integrity validation, Discord automation, or authentication.
+
 Frontend GET responses are cached for five minutes per authenticated URL. Backend Apps Script cached endpoints use a fifteen-minute cache TTL with stale fallback support.
 
 ## Deep-Link Architecture

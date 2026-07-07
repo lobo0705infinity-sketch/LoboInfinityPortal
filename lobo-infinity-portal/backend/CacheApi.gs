@@ -27,9 +27,10 @@ const PORTAL_CACHE_GROUPS = {
   news: ["news", "home", "notifications", "timeline"],
   settings: ["settings", "home"],
   events: ["events", "event", "eventTemplates", "eventSeasons", "eventRounds", "eventMigrationValidation"],
-  seasonCommand: ["seasonCommandCenter"],
+  seasonCommand: ["seasonCommandCenter", "communityCommandCenter", "schedulingCenter", "matchFinder"],
+  scheduling: ["seasonCommandCenter", "communityCommandCenter", "schedulingCenter", "matchFinder", "notifications"],
   operations: ["operationsSummary", "operationsLifecycle", "operationsIdentity", "operationsContent", "operationsDiscord", "operationsNotifications", "operationsAudit", "integrity"],
-  all: ["dashboard", "home", "leader", "recentGames", "standings", "players", "player", "factions", "faction", "missions", "mission", "intelligence", "records", "hallOfFame", "comparison", "timeline", "news", "settings", "events", "event", "eventTemplates", "eventSeasons", "eventRounds", "eventMigrationValidation", "seasonCommandCenter", "streams", "searchData", "searchIndex", "armyLists", "operationsSummary", "operationsLifecycle", "operationsIdentity", "operationsContent", "operationsDiscord", "operationsNotifications", "operationsAudit", "integrity"]
+  all: ["dashboard", "home", "leader", "recentGames", "standings", "players", "player", "factions", "faction", "missions", "mission", "intelligence", "records", "hallOfFame", "comparison", "timeline", "news", "settings", "events", "event", "eventTemplates", "eventSeasons", "eventRounds", "eventMigrationValidation", "seasonCommandCenter", "communityCommandCenter", "schedulingCenter", "matchFinder", "streams", "searchData", "searchIndex", "armyLists", "operationsSummary", "operationsLifecycle", "operationsIdentity", "operationsContent", "operationsDiscord", "operationsNotifications", "operationsAudit", "integrity"]
 };
 
 const PORTAL_CACHE_ENDPOINT_GROUP = {
@@ -58,6 +59,9 @@ const PORTAL_CACHE_ENDPOINT_GROUP = {
   eventRounds: "events",
   eventMigrationValidation: "events",
   seasonCommandCenter: "seasonCommand",
+  communityCommandCenter: "seasonCommand",
+  schedulingCenter: "scheduling",
+  matchFinder: "scheduling",
   streams: "streams",
   searchData: "search",
   searchIndex: "search",

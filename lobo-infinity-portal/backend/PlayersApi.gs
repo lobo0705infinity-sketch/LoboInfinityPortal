@@ -73,6 +73,12 @@ function getPlayer(e) {
       registeredPlayer.player
     );
 
+  const availability =
+    getSeasonAvailabilityForPlayer(
+      getSeasonAvailabilityMap(),
+      registeredPlayer.player
+    );
+
   return jsonOutput({
 
     success: true,
@@ -146,7 +152,28 @@ function getPlayer(e) {
         armyLists.lists,
 
       armyListSummary:
-        armyLists.summary
+        armyLists.summary,
+
+      availability:
+        availability,
+
+      profilePicture:
+        "",
+
+      discordHandle:
+        availability.discordHandle,
+
+      homeStore:
+        availability.homeStore,
+
+      city:
+        availability.city,
+
+      preferredLocations:
+        availability.preferredLocations,
+
+      scheduleLink:
+        "/match-finder?opponent=" + encodeURIComponent(registeredPlayer.player)
 
     }
 

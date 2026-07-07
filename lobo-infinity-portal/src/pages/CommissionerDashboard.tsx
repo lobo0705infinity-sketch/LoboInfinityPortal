@@ -5,6 +5,7 @@ import Loading from '../components/Loading'
 import {
   apiClient,
   type ArmyList,
+  type CommissionerSchedulingData,
   type EventLifecycleData,
   type OperationsDashboardData,
   type OperationsIdentityRecord,
@@ -280,6 +281,14 @@ function CommissionerDashboard() {
             onAction={runAction}
             workingAction={workingAction}
           />
+        </LazyOperationsPanel>
+        <LazyOperationsPanel
+          isLoading={loadingPanels.includes('scheduling')}
+          isOpen={openPanels.includes('scheduling')}
+          onToggle={() => togglePanel('scheduling')}
+          title="Scheduling"
+        >
+          <CommissionerSchedulingPanel />
         </LazyOperationsPanel>
         <PromotionRelegationPanel
           canRun={auth.hasPermission('runSeasonControl')}
@@ -1149,6 +1158,103 @@ function PlayerManagementPanel({ data }: { data: OperationsDashboardData }) {
         ))}
       </div>
     </section>
+  )
+}
+
+function CommissionerSchedulingPanel() {
+  const [state, setState] = useState<
+    | {
+        status: 'loading'
+      }
+    | {
+        data: CommissionerSchedulingData
+        status: 'success'
+      }
+    | {
+        error: string
+        status: 'error'
+      }
+  >({ status: 'loading' })
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    apiClient
+      .getCommissionerScheduling({ signal: controller.signal })
+      .then((data) => setState({ data, status: 'success' }))
+      .catch((error: unknown) => {
+        if (controller.signal.aborted) {
+          return
+        }
+
+        setState({
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Scheduling dashboard could not be loaded.',
+          status: 'error',
+        })
+      })
+
+    return () => {
+      controller.abort()
+    }
+  }, [])
+
+  if (state.status === 'loading') {
+    return <p>Loading scheduling status...</p>
+  }
+
+  if (state.status === 'error') {
+    return <p role="alert">{state.error}</p>
+  }
+
+  return (
+    <div className="operations-stack">
+      <PanelTitle eyebrow="Scheduling" title="Commissioner Scheduling" />
+      <dl className="operations-metrics">
+        <Metric label="Pending Requests" value={state.data.requests.length} />
+        <Metric label="Generated" value={state.data.generatedAt} />
+      </dl>
+      <div className="operations-grid">
+        {state.data.divisions.map((division) => (
+          <section className="panel operations-panel" key={division.division}>
+            <PanelTitle eyebrow="Division Completion" title={division.division} />
+            <dl className="operations-metrics">
+              <Metric
+                label="Complete"
+                value={`${division.progress.completionPercentage}%`}
+              />
+              <Metric
+                label="Games Remaining"
+                value={division.progress.gamesRemaining}
+              />
+              <Metric
+                label="Behind Pace"
+                value={division.playersBehind.length}
+              />
+              <Metric
+                label="Outstanding Matchups"
+                value={division.outstandingMatchups.length}
+              />
+            </dl>
+            <div className="dashboard-news-list">
+              {division.suggestedReminderRecipients.slice(0, 4).map((player) => (
+                <Link
+                  className="dashboard-news-item"
+                  key={player.player}
+                  to={player.profileLink || `/players/${encodeURIComponent(player.player)}`}
+                >
+                  <span>Reminder Candidate</span>
+                  <strong>{formatPlayerName(player.player, player.displayName)}</strong>
+                  <p>{player.games} games completed.</p>
+                </Link>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+    </div>
   )
 }
 

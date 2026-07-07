@@ -40,6 +40,10 @@ Apps Script verifies the token and maps Google Email to the permanent League Pla
 - `integrity`: league integrity report.
 - `communityCommandCenter`: authenticated Community Command Center payload for the signed-in league player.
 - `seasonCommandCenter`: authenticated Season Command Center payload for the signed-in league player.
+- `schedulingCenter`: authenticated scheduling aggregate for the signed-in league player.
+- `matchFinder`: authenticated Match Finder recommendation payload.
+- `schedulingCalendar`: authenticated `.ics` calendar export payload for one accepted scheduling request.
+- `commissionerScheduling`: operations-gated commissioner scheduling status.
 - `events`: Event Engine event list and current default event.
 - `event`: single Event Engine event.
 - `eventTemplates`: reusable Event Template definitions.
@@ -116,6 +120,9 @@ Version 3.0B adds Event Engine foundation actions without changing legacy API be
 - `communityCommandCenter`: authenticated read. Returns the signed-in player's Community Command Center aggregate, including welcome context, Today mission briefing, active events, event switcher, opponent tracker, Nudge Engine, next actions, community activity, promotion tracker, schedule, intelligence summary, and quick actions. The lookup key is `leaguePlayer`, never Google display name.
 - `seasonCommandCenter`: authenticated read. Returns the signed-in player's season progress, opponent tracker, promotion tracker, deadline status, availability, division status, and commissioner summary. The lookup key is `leaguePlayer`, never Google display name.
 - `seasonAvailability`: authenticated mutation. Updates the signed-in player's match availability metadata in the Season Availability sheet and returns the refreshed `seasonCommandCenter` payload.
+- `schedulingAvailability`: authenticated mutation. Alias for updating availability from scheduling screens.
+- `createSchedulingRequest`: authenticated mutation. Creates a pending scheduling request from the signed-in league player to an opponent.
+- `respondSchedulingRequest`: authenticated mutation. Allows a participant or authorized operations user to accept, decline, or suggest another time.
 
 ## Response Contract
 

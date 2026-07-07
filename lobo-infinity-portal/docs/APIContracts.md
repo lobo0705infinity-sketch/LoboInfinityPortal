@@ -635,3 +635,107 @@ Response:
 Same contract as `GET action=reliability`.
 
 Reliability actions must write reliability audit entries and must not bypass existing Event Lifecycle, Integrity, Automation, OAuth, or Commissioner permission behavior.
+
+## Community Scheduling
+
+Version 4.0 adds authenticated scheduling APIs without changing game, standings, identity, Event Engine, lifecycle, integrity, automation, or notification-state contracts.
+
+### Scheduling Center
+
+Action:
+
+`GET action=schedulingCenter`
+
+Permission:
+
+Authenticated league player.
+
+Response:
+
+```json
+{
+  "success": true,
+  "scheduling": {
+    "currentSeason": "",
+    "player": {},
+    "availability": {},
+    "progress": {},
+    "opponents": [],
+    "completedOpponents": [],
+    "remainingOpponents": [],
+    "recommendations": [],
+    "requests": {},
+    "seasonProgress": {},
+    "activity": [],
+    "commissioner": {},
+    "quickActions": []
+  }
+}
+```
+
+### Match Finder
+
+Action:
+
+`GET action=matchFinder`
+
+Permission:
+
+Authenticated league player.
+
+Response:
+
+```json
+{
+  "success": true,
+  "matchFinder": {
+    "currentSeason": "",
+    "player": {},
+    "availability": {},
+    "recommendations": [],
+    "pendingRequests": [],
+    "upcomingMatches": [],
+    "progress": {}
+  }
+}
+```
+
+### Scheduling Mutations
+
+Actions:
+
+- `POST action=schedulingAvailability`
+- `POST action=createSchedulingRequest`
+- `POST action=respondSchedulingRequest`
+
+All mutations require an authenticated league player. Scheduling request responses require the signed-in player to be a participant or an authorized operations user.
+
+### Calendar Export
+
+Action:
+
+`GET action=schedulingCalendar&requestId={id}`
+
+Response:
+
+```json
+{
+  "success": true,
+  "calendar": {
+    "filename": "",
+    "ics": ""
+  }
+}
+```
+
+### Commissioner Scheduling
+
+Action:
+
+`GET action=commissionerScheduling`
+
+Permission:
+
+Operations view permission.
+
+Returns division completion, players behind schedule, inactive players, outstanding matchups, reminder candidates, and current scheduling requests.
