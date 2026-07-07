@@ -16,6 +16,7 @@ const AutomationCenter = lazy(() => import('./pages/AutomationCenter'))
 const CommissionerDashboard = lazy(() => import('./pages/CommissionerDashboard'))
 const CommissionerNews = lazy(() => import('./pages/CommissionerNews'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
+const Diagnostics = lazy(() => import('./pages/Diagnostics'))
 const FactionProfile = lazy(() => import('./pages/FactionProfile'))
 const Factions = lazy(() => import('./pages/Factions'))
 const GameDetails = lazy(() => import('./pages/GameDetails'))
@@ -69,6 +70,7 @@ function App() {
                 <Route path="/news" element={<CommissionerNews />} />
                 <Route path="/news/:id" element={<DeepLinkRedirect target="news" />} />
                 <Route path="/commissioner" element={<CommissionerDashboard />} />
+                <Route path="/diagnostics" element={<Diagnostics />} />
                 <Route path="/automation" element={<AutomationCenter />} />
                 <Route path="/integrity" element={<LeagueIntegrity />} />
                 <Route path="/notifications" element={<Notifications />} />

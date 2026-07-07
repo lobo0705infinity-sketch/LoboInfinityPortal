@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { apiClient } from '../services/api'
 import { formatPlayerName } from '../services/formatting'
+import { getSearchIndex } from '../services/lightApi'
 
 type JumpItem = {
   label: string
@@ -21,7 +21,7 @@ function QuickJump() {
     const controller = new AbortController()
 
     async function loadJumpItems() {
-      const searchIndex = await apiClient.getSearchIndex({
+      const searchIndex = await getSearchIndex({
         signal: controller.signal,
       })
 

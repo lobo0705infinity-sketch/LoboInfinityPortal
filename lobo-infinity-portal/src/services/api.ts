@@ -7,37 +7,15 @@ import type {
   LeagueOverviewDivision,
   Standing,
 } from '../types/dashboard'
+import {
+  postRequest,
+  request,
+  setApiAuthToken,
+  setApiOAuthClientId,
+  type ApiOptions,
+} from './apiCore'
 
-const API_URL =
-  'https://script.google.com/macros/s/AKfycbxBzo57XHrxiBy1EJq4f_VS026uTXnCYHSXrWT6c2uU__zSB2Dzeixx3rFHQahXQycCng/exec'
-
-type ApiOptions = {
-  signal?: AbortSignal
-}
-
-type RequestParams = Record<string, string>
-
-let activeAuthToken = ''
-let activeOAuthClientId = ''
-const frontendCacheTtlMs = 300_000
-const frontendResponseCache = new Map<
-  string,
-  {
-    expiresAt: number
-    payload: unknown
-  }
->()
-const inFlightRequests = new Map<string, Promise<unknown>>()
-
-export function setApiAuthToken(token: string) {
-  activeAuthToken = token
-  frontendResponseCache.clear()
-  inFlightRequests.clear()
-}
-
-export function setApiOAuthClientId(clientId: string) {
-  activeOAuthClientId = clientId
-}
+export { setApiAuthToken, setApiOAuthClientId }
 
 export type ArmyList = {
   id: number
@@ -1985,104 +1963,6 @@ export const apiClient: ApiClient = {
   getOperationsAudit,
   getOperationsSeason,
   operationsAction,
-}
-
-async function request(
-  action: string,
-  options: ApiOptions,
-  params: RequestParams = {},
-): Promise<unknown> {
-  const url = new URL(API_URL)
-  url.searchParams.set('action', action)
-
-  Object.entries(params).forEach(([key, value]) => {
-    url.searchParams.set(key, value)
-  })
-
-  if (activeAuthToken) {
-    url.searchParams.set('authToken', activeAuthToken)
-  }
-
-  if (activeOAuthClientId) {
-    url.searchParams.set('oauthClientId', activeOAuthClientId)
-  }
-
-  const cacheKey = url.toString()
-  const cached = frontendResponseCache.get(cacheKey)
-
-  if (cached && cached.expiresAt > Date.now()) {
-    return cached.payload
-  }
-
-  const shouldShareInFlight = !options.signal
-  const inFlight = shouldShareInFlight ? inFlightRequests.get(cacheKey) : null
-
-  if (inFlight) {
-    return inFlight
-  }
-
-  const pending = fetch(url, {
-    signal: options.signal,
-  }).then(async (response) => {
-    if (!response.ok) {
-      throw new Error(`${action} request failed with status ${response.status}`)
-    }
-
-    const payload = (await response.json()) as unknown
-
-    frontendResponseCache.set(cacheKey, {
-      expiresAt: Date.now() + frontendCacheTtlMs,
-      payload,
-    })
-
-    return payload
-  }).finally(() => {
-    inFlightRequests.delete(cacheKey)
-  })
-
-  if (shouldShareInFlight) {
-    inFlightRequests.set(cacheKey, pending)
-  }
-
-  return pending
-}
-
-async function postRequest(
-  action: string,
-  options: ApiOptions,
-  params: RequestParams,
-): Promise<unknown> {
-  const url = new URL(API_URL)
-  url.searchParams.set('action', action)
-
-  const body = new URLSearchParams()
-
-  Object.entries(params).forEach(([key, value]) => {
-    body.set(key, value)
-  })
-
-  if (activeAuthToken) {
-    body.set('authToken', activeAuthToken)
-  }
-
-  if (activeOAuthClientId) {
-    body.set('oauthClientId', activeOAuthClientId)
-  }
-
-  frontendResponseCache.clear()
-  inFlightRequests.clear()
-
-  const response = await fetch(url, {
-    body,
-    method: 'POST',
-    signal: options.signal,
-  })
-
-  if (!response.ok) {
-    throw new Error(`${action} request failed with status ${response.status}`)
-  }
-
-  return response.json()
 }
 
 function normalizeDashboardPayload(payload: unknown): DashboardData {

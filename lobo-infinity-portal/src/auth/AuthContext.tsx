@@ -10,14 +10,13 @@ import {
   type ReactNode,
 } from 'react'
 import {
-  apiClient,
-  setApiAuthToken,
-  setApiOAuthClientId,
   type AuthSession,
   type PortalPermissions,
   type PortalUser,
   type UserRole,
 } from '../services/api'
+import { getSession, getSettings } from '../services/lightApi'
+import { setApiAuthToken, setApiOAuthClientId } from '../services/apiCore'
 
 type GoogleCredentialResponse = {
   credential?: string
@@ -119,7 +118,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
   const applyCredential = useCallback(async (credential: string) => {
     window.localStorage.setItem(authStorageKey, credential)
     setApiAuthToken(credential)
-    const nextSession = await apiClient.getSession()
+    const nextSession = await getSession()
 
     if (!nextSession.authenticated) {
       window.localStorage.removeItem(authStorageKey)
@@ -134,7 +133,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
     setApiAuthToken(storedToken)
 
     try {
-      const nextSession = await apiClient.getSession()
+      const nextSession = await getSession()
       setSession(nextSession)
 
       if (!nextSession.authenticated) {
@@ -159,7 +158,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     async function bootstrap() {
       try {
-        const settings = await apiClient.getSettings()
+        const settings = await getSettings()
         clientIdRef.current =
           clientIdRef.current || settings.googleOAuthClientId || ''
         setApiOAuthClientId(clientIdRef.current)

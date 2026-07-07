@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import Loading from '../components/Loading'
@@ -84,38 +84,10 @@ function CommissionerDashboard() {
     status: 'loading',
   })
   const [workingAction, setWorkingAction] = useState('')
+  const [openPanels, setOpenPanels] = useState<string[]>([])
+  const [loadedPanels, setLoadedPanels] = useState<string[]>([])
+  const [loadingPanels, setLoadingPanels] = useState<string[]>([])
   const canViewOperations = auth.isAtLeastRole('Assistant Commissioner')
-
-  const hydrateOperationsPanels = useCallback(async (signal?: AbortSignal) => {
-    const results = await Promise.allSettled([
-      apiClient.getOperationsIdentity({ signal }),
-      apiClient.getOperationsContent({ signal }),
-      apiClient.getOperationsLifecycle({ signal }),
-      apiClient.getOperationsDiscord({ signal }),
-      apiClient.getOperationsNotifications({ signal }),
-    ])
-
-    if (signal?.aborted) {
-      return
-    }
-
-    results.forEach((result) => {
-      if (result.status !== 'fulfilled') {
-        return
-      }
-
-      setState((current) => {
-        if (current.status !== 'success') {
-          return current
-        }
-
-        return {
-          data: mergeOperationsData(current.data, result.value),
-          status: 'success',
-        }
-      })
-    })
-  }, [])
 
   const loadOperations = useCallback(async (signal?: AbortSignal) => {
     try {
@@ -124,7 +96,6 @@ function CommissionerDashboard() {
         data,
         status: 'success',
       })
-      void hydrateOperationsPanels(signal)
     } catch (error) {
       if (!signal?.aborted) {
         setState({
@@ -136,7 +107,46 @@ function CommissionerDashboard() {
         })
       }
     }
-  }, [hydrateOperationsPanels])
+  }, [])
+
+  async function ensurePanel(panel: string) {
+    if (
+      loadedPanels.includes(panel) ||
+      loadingPanels.includes(panel) ||
+      state.status !== 'success'
+    ) {
+      return
+    }
+
+    setLoadingPanels((current) => [...current, panel])
+
+    try {
+      const nextData = await loadOperationsPanel(panel)
+
+      setState((current) => {
+        if (current.status !== 'success') {
+          return current
+        }
+
+        return {
+          data: mergeOperationsData(current.data, nextData),
+          status: 'success',
+        }
+      })
+      setLoadedPanels((current) => [...current, panel])
+    } finally {
+      setLoadingPanels((current) => current.filter((item) => item !== panel))
+    }
+  }
+
+  function togglePanel(panel: string) {
+    setOpenPanels((current) =>
+      current.includes(panel)
+        ? current.filter((item) => item !== panel)
+        : [...current, panel],
+    )
+    void ensurePanel(panel)
+  }
 
   useEffect(() => {
     if (
@@ -234,22 +244,43 @@ function CommissionerDashboard() {
         <DeploymentPanel data={data} />
       </section>
       <section className="operations-grid" aria-label="Commissioner workflows">
-        <IdentityManagementPanel
-          canManage={auth.hasPermission('manageSettings')}
-          data={data}
-          onAction={runAction}
-          workingAction={workingAction}
-        />
-        <NewsManager news={data.news} onAction={runAction} />
-        <StreamManager streams={data.streams} onAction={runAction} />
-        <ArmyListApproval lists={data.pendingArmyLists} onAction={runAction} />
-        <PlayerManagementPanel data={data} />
-        <EventLifecyclePanel
-          canManage={auth.hasPermission('runSeasonControl')}
-          lifecycle={data.eventLifecycle}
-          onAction={runAction}
-          workingAction={workingAction}
-        />
+        <LazyOperationsPanel
+          isLoading={loadingPanels.includes('identity')}
+          isOpen={openPanels.includes('identity')}
+          onToggle={() => togglePanel('identity')}
+          title="Identity Management"
+        >
+          <IdentityManagementPanel
+            canManage={auth.hasPermission('manageSettings')}
+            data={data}
+            onAction={runAction}
+            workingAction={workingAction}
+          />
+        </LazyOperationsPanel>
+        <LazyOperationsPanel
+          isLoading={loadingPanels.includes('content')}
+          isOpen={openPanels.includes('content')}
+          onToggle={() => togglePanel('content')}
+          title="Content Operations"
+        >
+          <NewsManager news={data.news} onAction={runAction} />
+          <StreamManager streams={data.streams} onAction={runAction} />
+          <ArmyListApproval lists={data.pendingArmyLists} onAction={runAction} />
+          <PlayerManagementPanel data={data} />
+        </LazyOperationsPanel>
+        <LazyOperationsPanel
+          isLoading={loadingPanels.includes('lifecycle')}
+          isOpen={openPanels.includes('lifecycle')}
+          onToggle={() => togglePanel('lifecycle')}
+          title="Event Lifecycle"
+        >
+          <EventLifecyclePanel
+            canManage={auth.hasPermission('runSeasonControl')}
+            lifecycle={data.eventLifecycle}
+            onAction={runAction}
+            workingAction={workingAction}
+          />
+        </LazyOperationsPanel>
         <PromotionRelegationPanel
           canRun={auth.hasPermission('runSeasonControl')}
           onAction={runAction}
@@ -261,21 +292,35 @@ function CommissionerDashboard() {
           onAction={runAction}
           workingAction={workingAction}
         />
-        <DiscordAutomationPanel
-          canManage={auth.hasPermission('manageSettings')}
-          canSend={auth.hasPermission('manageNews')}
-          data={data}
-          onAction={runAction}
-          workingAction={workingAction}
-        />
+        <LazyOperationsPanel
+          isLoading={loadingPanels.includes('discord')}
+          isOpen={openPanels.includes('discord')}
+          onToggle={() => togglePanel('discord')}
+          title="Discord Automation"
+        >
+          <DiscordAutomationPanel
+            canManage={auth.hasPermission('manageSettings')}
+            canSend={auth.hasPermission('manageNews')}
+            data={data}
+            onAction={runAction}
+            workingAction={workingAction}
+          />
+        </LazyOperationsPanel>
       </section>
       <section className="operations-grid two-column" aria-label="Audit and one-click operations">
-        <AuditPanel
-          audit={data.audit}
-          canRun={auth.hasPermission('runLeagueAudit')}
-          onAction={runAction}
-          workingAction={workingAction}
-        />
+        <LazyOperationsPanel
+          isLoading={loadingPanels.includes('audit')}
+          isOpen={openPanels.includes('audit')}
+          onToggle={() => togglePanel('audit')}
+          title="League Audit"
+        >
+          <AuditPanel
+            audit={data.audit}
+            canRun={auth.hasPermission('runLeagueAudit')}
+            onAction={runAction}
+            workingAction={workingAction}
+          />
+        </LazyOperationsPanel>
         <OperationsCommandPanel
           canRun={auth.hasPermission('runSeasonControl')}
           onAction={runAction}
@@ -329,6 +374,71 @@ function mergeOperationsData(
     audit:
       next.audit.issues.length > 0 ? next.audit : current.audit,
   }
+}
+
+async function loadOperationsPanel(panel: string): Promise<OperationsDashboardData> {
+  if (panel === 'identity') {
+    return apiClient.getOperationsIdentity()
+  }
+
+  if (panel === 'content') {
+    return apiClient.getOperationsContent()
+  }
+
+  if (panel === 'lifecycle') {
+    return apiClient.getOperationsLifecycle()
+  }
+
+  if (panel === 'discord') {
+    return apiClient.getOperationsDiscord()
+  }
+
+  if (panel === 'audit') {
+    const audit = await apiClient.getOperationsAudit()
+    const summary = await apiClient.getOperationsSummary()
+
+    return {
+      ...summary,
+      audit,
+      summary: {
+        ...summary.summary,
+        leagueAuditSummary: audit.summary,
+      },
+    }
+  }
+
+  return apiClient.getOperationsSummary()
+}
+
+function LazyOperationsPanel({
+  children,
+  isLoading,
+  isOpen,
+  onToggle,
+  title,
+}: {
+  children: ReactNode
+  isLoading: boolean
+  isOpen: boolean
+  onToggle: () => void
+  title: string
+}) {
+  return (
+    <section className="panel operations-panel">
+      <button className="integrity-card-button" onClick={onToggle} type="button">
+        <span className="eyebrow">Lazy Loaded</span>
+        <strong>{title}</strong>
+        <small>{isOpen ? 'Close panel' : 'Open panel'}</small>
+      </button>
+      {isOpen ? (
+        isLoading ? (
+          <p>Loading {title}...</p>
+        ) : (
+          <div className="lazy-panel-body">{children}</div>
+        )
+      ) : null}
+    </section>
+  )
 }
 
 function EventLifecyclePanel({

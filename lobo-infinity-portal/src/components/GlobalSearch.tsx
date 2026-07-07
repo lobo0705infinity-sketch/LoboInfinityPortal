@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState, type KeyboardEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
-import { apiClient } from '../services/api'
 import { formatObjectiveScore, formatPlayerName } from '../services/formatting'
+import { getSearchIndex, updateProfile } from '../services/lightApi'
 
 type SearchItem = {
   category: string
@@ -43,7 +43,7 @@ function GlobalSearch() {
     async function loadSearchData() {
       try {
         const { players, factions, missions, games, armyLists } =
-          await apiClient.getSearchData({
+          await getSearchIndex({
             signal: controller.signal,
           })
 
@@ -145,7 +145,7 @@ function GlobalSearch() {
       ...auth.user.searchHistory.filter((entry) => entry !== item.label),
     ].slice(0, 12)
 
-    void apiClient.updateProfile({
+    void updateProfile({
       searchHistory: JSON.stringify(history),
     })
   }

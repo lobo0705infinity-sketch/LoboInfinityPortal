@@ -5,7 +5,8 @@ import NotificationCenter from './NotificationCenter'
 import PortalIcon from './PortalIcon'
 import ProfileMenu from './ProfileMenu'
 import QuickJump from './QuickJump'
-import { apiClient, type PortalSettings } from '../services/api'
+import type { PortalSettings } from '../services/api'
+import { getSettings } from '../services/lightApi'
 
 function Header() {
   const [settings, setSettings] = useState<PortalSettings | null>(null)
@@ -13,10 +14,9 @@ function Header() {
   useEffect(() => {
     const controller = new AbortController()
 
-    apiClient
-      .getSettings({
-        signal: controller.signal,
-      })
+    getSettings({
+      signal: controller.signal,
+    })
       .then((settings) => {
         setSettings(settings)
       })

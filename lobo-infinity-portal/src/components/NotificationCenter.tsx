@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { apiClient, type LeagueNotification } from '../services/api'
+import type { LeagueNotification } from '../services/api'
+import { getNotifications, updateNotificationState } from '../services/lightApi'
 
 type NotificationState =
   | {
@@ -35,10 +36,9 @@ function NotificationCenter() {
   }, [isOpen])
 
   async function loadNotifications(signal?: AbortSignal) {
-    apiClient
-      .getNotifications({
-        signal,
-      })
+    getNotifications({
+      signal,
+    })
       .then((notifications) => {
         setState({
           notifications,
@@ -67,7 +67,7 @@ function NotificationCenter() {
     })
 
     try {
-      await apiClient.updateNotificationState({
+      await updateNotificationState({
         notificationId: 'all',
         notificationIds: notifications.map((notification) => notification.id),
         state: 'read',

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
-import { apiClient } from '../services/api'
+import { updateProfile } from '../services/lightApi'
 
 function UserActivityTracker() {
   const auth = useAuth()
@@ -13,7 +13,7 @@ function UserActivityTracker() {
     }
 
     const timeout = window.setTimeout(() => {
-      void apiClient.updateProfile({
+      void updateProfile({
         lastPage: `${location.pathname}${location.search}`,
       })
     }, 10000)
