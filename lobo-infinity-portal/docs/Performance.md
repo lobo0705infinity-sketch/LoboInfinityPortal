@@ -149,4 +149,16 @@ Backend performance strategy:
 - Keep availability in a dedicated small sheet.
 - Invalidate only the `seasonCommand` cache group when availability changes.
 
+## Event Migration Validation Performance
+
+Version 3.0C adds backend-only validation tooling. It is operations-gated and not called by the public frontend startup path.
+
+Performance characteristics:
+
+- No frontend bundle increase.
+- No new startup API requests.
+- No production data migration.
+- Validation reuses existing production services instead of duplicate calculations.
+- Validation may be heavier than normal read endpoints because it compares multiple subsystems in one report; it should be run intentionally during release validation, not on page load.
+
 This avoids new anonymous startup requests and avoids duplicate statistics calculations.

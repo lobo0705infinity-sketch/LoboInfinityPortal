@@ -12,7 +12,17 @@ Reason: Production data migration is intentionally deferred until the foundation
 
 Estimated impact: High for Version 3.1+ event-aware statistics.
 
-Suggested future release: 3.0C Event Scope Migration.
+Suggested future release: 3.1 Event Scope Migration.
+
+### Event Migration Production Contract Tests
+
+Description: Version 3.0C adds backend validation tooling, but automated CI cannot currently execute authenticated Apps Script validation against production with stable credentials.
+
+Reason: Release validation still depends on deployed Apps Script reachability and authenticated operations access.
+
+Estimated impact: Medium.
+
+Suggested future release: 3.1 CI Contract Validation.
 
 ### Apps Script Cold Start Measurement
 

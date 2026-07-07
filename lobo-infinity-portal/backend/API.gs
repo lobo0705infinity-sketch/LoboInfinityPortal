@@ -214,6 +214,11 @@ function doGet(e) {
         return getEventMigrationRollback();
       });
 
+    case "eventMigrationValidation":
+      return requireApiPermission(e, "viewOperations", function() {
+        return getEventMigrationValidation();
+      });
+
     case "voteArmyList":
       return requireApiPermission(e, "vote", function() {
         return voteArmyList(e);

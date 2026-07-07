@@ -92,14 +92,56 @@ Templates are blueprints only. Runtime event behavior should read copied Event c
 
 ## Migration Tooling
 
-Version 3.0B provides read-only tooling:
+Version 3.0B and 3.0C provide read-only tooling:
 
 - Migration Audit
 - Migration Preview
 - Migration Report
 - Rollback Strategy
+- Migration Validation
 
-The tooling identifies missing event scope columns and previews future game scoping, but it does not change historical Game Engine rows.
+The tooling identifies missing event scope columns, previews future game scoping, compares legacy and Event Engine default-scope outputs, and documents rollback behavior. It does not change historical Game Engine rows.
+
+## Event Migration Validation
+
+Version 3.0C validates that the Event Engine can replace the legacy League model without changing production results.
+
+The validation compares:
+
+- Standings
+- Player Statistics
+- Hall of Fame
+- Achievements
+- Player Intelligence
+- Timeline
+- Automation
+- Notifications
+- Discord Events
+- Army Lists
+- Recent Games
+- Deep Links
+- Career Statistics
+- Promotion
+- Relegation
+
+Each comparison reports:
+
+- Legacy Result summary
+- Event Result summary
+- Legacy hash
+- Event hash
+- Match status
+- PASS or FAIL
+
+The Event Result is produced through the default Event Engine scope:
+
+```text
+event-current-league
+season-current-league
+round-current-league
+```
+
+This is a validation release only. It does not migrate production data.
 
 ## Compatibility
 

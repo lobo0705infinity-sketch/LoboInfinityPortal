@@ -147,8 +147,55 @@ The migration endpoints are read-only in Version 3.0B and require operations per
 - `eventMigrationPreview`
 - `eventMigrationReport`
 - `eventMigrationRollback`
+- `eventMigrationValidation`
 
-Version 3.0B does not migrate historical production data automatically.
+Version 3.0B and 3.0C do not migrate historical production data automatically.
+
+### Event Migration Validation
+
+Action:
+
+`GET action=eventMigrationValidation`
+
+Authentication:
+
+Requires operations view permission.
+
+Response:
+
+```json
+{
+  "success": true,
+  "validation": {
+    "eventScope": {},
+    "summary": {},
+    "comparisons": [],
+    "migrationPreview": {},
+    "migrationAudit": {},
+    "migrationReport": {},
+    "rollbackPlan": {},
+    "historicalGames": {}
+  }
+}
+```
+
+Required comparison fields:
+
+- `subsystem`
+- `legacyResult`
+- `eventResult`
+- `match`
+- `status`
+- `legacyHash`
+- `eventHash`
+
+Required `summary` fields:
+
+- `total`
+- `passed`
+- `failed`
+- `status`
+- `durationMs`
 
 ## Season Command Center
 

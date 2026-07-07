@@ -129,3 +129,15 @@ Version 3.0B is a backend and documentation foundation release.
 - Apps Script startup model: unchanged for existing legacy endpoints.
 
 Justification: Event Engine foundation APIs are backend-only and are not called by the current frontend startup path. New Event Engine reads are cached under the `events` cache group.
+
+## Version 3.0C Event Migration Validation Budget Result
+
+Version 3.0C is a backend validation and documentation release.
+
+- Frontend bundle delta from Version 3.0B: 0 bytes.
+- Startup API requests: unchanged.
+- New dependencies: none.
+- Existing legacy endpoint request model: unchanged.
+- Validation endpoint: operations-gated and intentionally run during release validation only.
+
+Justification: The validation report compares multiple existing subsystems, so it is not part of any player-facing page load path.

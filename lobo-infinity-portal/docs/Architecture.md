@@ -295,3 +295,14 @@ The foundation creates only these sheets:
 - Event Rounds
 
 Existing endpoints continue to operate through legacy league data. Future Version 3 milestones will make statistics, automation, achievements, Player Intelligence, Hall of Fame, and deep links Event-aware by extending their existing services with explicit scope rather than creating parallel implementations.
+
+## Engineering Gates
+
+Every release must satisfy four permanent gates:
+
+- Architecture Gate: reuse existing services, avoid duplicate business logic, and fit the approved Version 3 architecture.
+- Compatibility Gate: preserve API contracts, existing URLs, existing player data, and legacy behavior.
+- Performance Gate: preserve the Performance Budget, avoid unnecessary requests, and avoid Apps Script regressions.
+- Quality Gate: pass lint, build, Apps Script validation, documentation updates, release checklist updates, and technical debt documentation.
+
+Version 3.0C adds Event Migration Validation to prove the Event Engine default scope produces identical results to the legacy League model before production migration.

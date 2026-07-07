@@ -63,6 +63,7 @@ Examples:
 - `eventMigrationPreview`
 - `eventMigrationReport`
 - `eventMigrationRollback`
+- `eventMigrationValidation`
 
 ## Event Engine Actions
 
@@ -74,6 +75,7 @@ Version 3.0B adds Event Engine foundation actions without changing legacy API be
 - `eventSeasons`: public read. Returns seasons for an event. Missing `eventId` resolves to Current League.
 - `eventRounds`: public read. Returns rounds for an event or season. Missing event scope resolves to Current League.
 - `eventMigrationAudit`, `eventMigrationPreview`, `eventMigrationReport`, `eventMigrationRollback`: operations-gated read-only migration tooling. These endpoints do not mutate historical game data.
+- `eventMigrationValidation`: operations-gated read-only validation. Compares legacy outputs to Event Engine default-scope outputs for standings, statistics, Hall of Fame, achievements, intelligence, timeline, automation, notifications, Discord events, army lists, recent games, deep links, career, promotion, and relegation.
 
 ## Season Command Center Actions
 

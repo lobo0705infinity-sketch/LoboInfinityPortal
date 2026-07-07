@@ -2,6 +2,10 @@
 
 Use this checklist for every Lobo Infinity League Portal release.
 
+- [ ] Architecture Gate
+- [ ] Compatibility Gate
+- [ ] Performance Gate
+- [ ] Quality Gate
 - [ ] `npm install`
 - [ ] `npm run lint`
 - [ ] `npm run build`
@@ -30,6 +34,14 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] Verify Opponent Tracker
 - [ ] Verify Promotion Tracker
 - [ ] Verify Legacy APIs
+- [ ] Verify Event APIs
 - [ ] Verify Current League Event
+- [ ] Verify Standings
+- [ ] Verify Hall of Fame
+- [ ] Verify Achievements
+- [ ] Verify Player Intelligence
+- [ ] Verify Automation
+- [ ] Verify Deep Links
+- [ ] Verify Notifications
 - [ ] Tag Release
 - [ ] Push Git Tag
