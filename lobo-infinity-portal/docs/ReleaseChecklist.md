@@ -16,6 +16,12 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] API Contract Validation
 - [ ] Performance Budget Validation
 - [ ] Security Validation
+- [ ] UX Audit
+- [ ] Desktop Experience Audit
+- [ ] Mobile Experience Audit
+- [ ] Accessibility Audit
+- [ ] Code Quality Audit
+- [ ] Release Candidate Regression Pass
 - [ ] Migration Preview
 - [ ] Rollback Verification
 - [ ] `clasp push`

@@ -6,6 +6,7 @@ function ProfileMenu({ mobile = false }: { mobile?: boolean }) {
   const auth = useAuth()
   const [isOpen, setIsOpen] = useState(false)
   const buttonRef = useRef<HTMLDivElement | null>(null)
+  const panelId = mobile ? 'mobile-profile-menu-panel' : 'profile-menu-panel'
 
   useEffect(() => {
     if (
@@ -19,6 +20,24 @@ function ProfileMenu({ mobile = false }: { mobile?: boolean }) {
 
     auth.renderSignInButton(buttonRef.current)
   }, [auth])
+
+  useEffect(() => {
+    if (!isOpen) {
+      return
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setIsOpen(false)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isOpen])
 
   if (!auth.authenticated) {
     return (
@@ -39,7 +58,10 @@ function ProfileMenu({ mobile = false }: { mobile?: boolean }) {
   return (
     <div className={mobile ? 'profile-menu mobile-profile-menu' : 'profile-menu'}>
       <button
+        aria-controls={panelId}
         aria-expanded={isOpen}
+        aria-haspopup="dialog"
+        aria-label="Open profile menu"
         className="profile-trigger"
         onClick={() => setIsOpen((open) => !open)}
         type="button"
@@ -53,7 +75,12 @@ function ProfileMenu({ mobile = false }: { mobile?: boolean }) {
       </button>
 
       {isOpen ? (
-        <div className="profile-menu-panel" role="dialog" aria-label="Profile menu">
+        <div
+          aria-label="Profile menu"
+          className="profile-menu-panel"
+          id={panelId}
+          role="dialog"
+        >
           <div className="profile-menu-card">
             {auth.user.avatarUrl ? <img alt="" src={auth.user.avatarUrl} /> : null}
             <strong>{auth.user.displayName}</strong>

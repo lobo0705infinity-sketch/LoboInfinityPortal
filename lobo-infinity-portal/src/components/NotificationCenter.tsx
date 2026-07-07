@@ -89,6 +89,29 @@ function NotificationCenter({ compact = false }: { compact?: boolean }) {
     return state.notifications.filter((notification) => notification.unread)
       .length
   }, [state])
+  const panelId = compact ? 'compact-notification-menu' : 'notification-menu'
+  const triggerLabel =
+    unreadCount > 0
+      ? `${unreadCount} unread live notifications`
+      : 'Open notifications'
+
+  useEffect(() => {
+    if (!isOpen) {
+      return
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setIsOpen(false)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isOpen])
 
   return (
     <div
@@ -97,8 +120,10 @@ function NotificationCenter({ compact = false }: { compact?: boolean }) {
       }
     >
       <button
+        aria-controls={panelId}
         aria-expanded={isOpen}
-        aria-label={`${unreadCount} live notifications`}
+        aria-haspopup="dialog"
+        aria-label={triggerLabel}
         className="notification-trigger"
         onClick={() => setIsOpen((open) => !open)}
         type="button"
@@ -108,7 +133,12 @@ function NotificationCenter({ compact = false }: { compact?: boolean }) {
       </button>
 
       {isOpen ? (
-        <div className="notification-menu" role="dialog" aria-label="Notifications">
+        <div
+          aria-label="Notifications"
+          className="notification-menu"
+          id={panelId}
+          role="dialog"
+        >
           <div className="notification-menu-heading">
             <strong>Notification Center</strong>
             {unreadCount > 0 ? (

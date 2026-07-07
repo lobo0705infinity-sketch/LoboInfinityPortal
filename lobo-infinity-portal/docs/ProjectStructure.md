@@ -70,6 +70,7 @@ Google Sheets is the source of truth for:
 - `docs/CommunityGuide.md`: community-facing League Personality and Rivalry Room behavior.
 - `docs/Recovery.md`: recovery actions and failure handling.
 - `docs/MobileUXAudit.md`: Version 4.1 mobile UX audit, scores, implemented improvements, and remaining recommendations.
+- `docs/ReleaseCandidate.md`: RC hardening audit scope, findings, and regression focus.
 - `docs/Roadmap.md`: frozen Version 3 roadmap.
 - `docs/TechnicalDebt.md`: known debt and deferred work.
 

@@ -41,6 +41,24 @@ function Header() {
   const buttonText = settings?.submissionButtonText || 'Submit Match'
   const submitEnabled = Boolean(matchSubmissionUrl && submissionsEnabled && buttonVisible)
 
+  useEffect(() => {
+    if (!isMobileMenuOpen) {
+      return
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setIsMobileMenuOpen(false)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isMobileMenuOpen])
+
   const mobileMenuItems = [
     { label: 'Dashboard', to: '/' },
     { label: 'Match Finder', to: '/match-finder' },
@@ -72,7 +90,8 @@ function Header() {
       <div className="mobile-app-bar">
         <button
           aria-expanded={isMobileMenuOpen}
-          aria-label="Open navigation menu"
+          aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          aria-controls="mobile-navigation-menu"
           className="mobile-menu-button"
           onClick={() => setIsMobileMenuOpen((open) => !open)}
           type="button"
@@ -97,7 +116,13 @@ function Header() {
       </div>
 
       {isMobileMenuOpen ? (
-        <div className="mobile-menu-sheet" role="dialog" aria-label="Mobile navigation">
+        <div
+          aria-label="Mobile navigation"
+          aria-modal="true"
+          className="mobile-menu-sheet"
+          id="mobile-navigation-menu"
+          role="dialog"
+        >
           <div className="mobile-menu-heading">
             <strong>Menu</strong>
             <button
