@@ -438,6 +438,9 @@ function Diagnostics() {
         <div className="panel-heading">
           <p className="eyebrow">Client Diagnostics</p>
           <h2>Scheduling Workflows</h2>
+          <a href="/match-finder?debug=matchfinder">
+            Open Match Finder Debug
+          </a>
         </div>
         <div className="operations-table-wrap">
           <table className="operations-table">

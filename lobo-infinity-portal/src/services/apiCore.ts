@@ -25,6 +25,7 @@ export type ClientDiagnosticMetric = {
     | 'attempt'
     | 'failure'
     | 'outgoing_refresh_failed'
+    | 'runtime_invariant_failed'
     | 'success'
     | 'verification_failed'
   timestamp: number

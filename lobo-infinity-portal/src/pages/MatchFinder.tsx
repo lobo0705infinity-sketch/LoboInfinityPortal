@@ -1,5 +1,6 @@
 import {
   forwardRef,
+  useCallback,
   useEffect,
   useImperativeHandle,
   useMemo,
@@ -71,10 +72,57 @@ type ScheduleRequestFormHandle = {
   focusDate: () => void
 }
 
+type MatchFinderDebugSnapshot = {
+  button: {
+    boundingRect: Record<string, number>
+    childCount: number
+    computed: Record<string, string>
+    currentHtml: string
+    exists: boolean
+    formAttribute: string
+    height: number
+    onClickAttached: boolean
+    visible: boolean
+    width: number
+  }
+  css: {
+    clippingAncestors: Array<Record<string, string>>
+    matchedRules: Array<Record<string, string>>
+  }
+  eventTrace: string[]
+  form: {
+    formExists: boolean
+    formValidity: boolean
+    validation: MatchRequestValidation
+  }
+  invariants: Array<{
+    message: string
+    pass: boolean
+    severity: 'error' | 'ok' | 'warning'
+  }>
+  react: {
+    actionLabel: string
+    actionStatus: string
+    activeOpponent: string
+    authenticatedPlayer: string
+    isSubmitting: boolean
+    recommendationsLength: number
+    renderPath: string
+    requestDisabled: boolean
+    schedulingCenterStatus: MatchFinderState['status']
+    selectedOpponent: string
+    submitState: string
+  }
+  timestamp: string
+}
+
 function MatchFinder() {
   const auth = useAuth()
   const [searchParams] = useSearchParams()
   const preferredOpponent = searchParams.get('opponent') ?? ''
+  const debugEnabled =
+    searchParams.get('debug') === 'matchfinder' &&
+    auth.isAtLeastRole('Commissioner')
   const [state, setState] = useState<MatchFinderState>({ status: 'loading' })
   const [availabilityWorking, setAvailabilityWorking] = useState(false)
   const [requestWorking, setRequestWorking] = useState(false)
@@ -316,9 +364,12 @@ function MatchFinder() {
         />
         <ScheduleRequestForm
           ref={requestFormRef}
+          authenticatedPlayer={state.data.player.player}
+          debugEnabled={debugEnabled}
           disabled={requestWorking}
           selectedOpponent={selectedOpponent || preferredOpponent}
           recommendations={state.data.recommendations}
+          schedulingCenterStatus={state.status}
           onOpponentChange={setSelectedOpponent}
           onSubmit={createRequest}
         />
@@ -855,9 +906,12 @@ const MATCH_REQUEST_FORM_ID = 'match-request-form'
 const ScheduleRequestForm = forwardRef<
   ScheduleRequestFormHandle,
   {
+    authenticatedPlayer: string
+    debugEnabled: boolean
     disabled: boolean
     selectedOpponent: string
     recommendations: SchedulingRecommendation[]
+    schedulingCenterStatus: MatchFinderState['status']
     onOpponentChange: (opponent: string) => void
     onSubmit: (
       params: MatchRequestSubmitParams,
@@ -865,9 +919,12 @@ const ScheduleRequestForm = forwardRef<
   }
 >(function ScheduleRequestForm(
   {
+    authenticatedPlayer,
+    debugEnabled,
     disabled,
     selectedOpponent,
     recommendations,
+    schedulingCenterStatus,
     onOpponentChange,
     onSubmit,
   },
@@ -875,6 +932,9 @@ const ScheduleRequestForm = forwardRef<
 ) {
   const navigate = useNavigate()
   const sectionRef = useRef<HTMLElement>(null)
+  const actionBarRef = useRef<HTMLDivElement>(null)
+  const formRef = useRef<HTMLFormElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
   const dateInputRef = useRef<HTMLInputElement>(null)
   const activeOpponent = selectedOpponent
   const initialForm = useMemo<MatchRequestFormState>(
@@ -891,6 +951,11 @@ const ScheduleRequestForm = forwardRef<
   >('idle')
   const [validation, setValidation] = useState<MatchRequestValidation>({})
   const [pendingNavigation, setPendingNavigation] = useState('')
+  const [eventTrace, setEventTrace] = useState<string[]>([
+    'Match request form mounted',
+  ])
+  const [debugSnapshot, setDebugSnapshot] =
+    useState<MatchFinderDebugSnapshot | null>(null)
   const isSubmitting = submitState === 'submitting'
   const hasDraft = Boolean(
     activeOpponent ||
@@ -899,20 +964,31 @@ const ScheduleRequestForm = forwardRef<
       form.proposedTime,
   )
 
+  const appendTrace = useCallback((message: string) => {
+    setEventTrace((current) => [
+      ...current.slice(-11),
+      `${new Date().toLocaleTimeString()} - ${message}`,
+    ])
+  }, [])
+
   useImperativeHandle(
     ref,
     () => ({
       focusDate() {
+        appendTrace('Request Match clicked')
+        appendTrace('Opponent selected')
+        appendTrace('Scheduling form updated')
         sectionRef.current?.scrollIntoView({
           behavior: 'smooth',
           block: 'start',
         })
         window.setTimeout(() => {
           dateInputRef.current?.focus({ preventScroll: true })
+          appendTrace('Date focused')
         }, 250)
       },
     }),
-    [],
+    [appendTrace],
   )
 
   useEffect(() => {
@@ -978,7 +1054,7 @@ const ScheduleRequestForm = forwardRef<
     }
   }, [submitState])
 
-  function validate(current: MatchRequestFormState): MatchRequestValidation {
+  const validate = useCallback((current: MatchRequestFormState): MatchRequestValidation => {
     const nextValidation: MatchRequestValidation = {}
 
     if (!activeOpponent) {
@@ -994,7 +1070,7 @@ const ScheduleRequestForm = forwardRef<
     }
 
     return nextValidation
-  }
+  }, [activeOpponent])
 
   function updateField(field: keyof MatchRequestFormState, value: string) {
     setForm((current) => ({
@@ -1014,10 +1090,12 @@ const ScheduleRequestForm = forwardRef<
     if (submitState !== 'submitting') {
       setSubmitState('idle')
     }
+    appendTrace(`${field} updated`)
   }
 
   function updateOpponent(opponent: string) {
     onOpponentChange(opponent)
+    appendTrace(`Opponent selected from form: ${opponent || 'none'}`)
     setValidation((current) => {
       if (!current.opponent) {
         return current
@@ -1035,25 +1113,30 @@ const ScheduleRequestForm = forwardRef<
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    appendTrace('Submit handler invoked')
 
     const nextValidation = validate(form)
     setValidation(nextValidation)
 
     if (Object.keys(nextValidation).length > 0) {
       setSubmitState('idle')
+      appendTrace('Validation blocked submit')
       return
     }
 
     setSubmitState('submitting')
+    appendTrace('Scheduling API request started')
 
     try {
       const result = await onSubmit({
         ...form,
         opponent: activeOpponent,
       })
+      appendTrace('Scheduling API response received')
 
       if (!result.outgoingVerified) {
         setSubmitState('error')
+        appendTrace('Outgoing refresh verification failed')
         return
       }
 
@@ -1063,8 +1146,11 @@ const ScheduleRequestForm = forwardRef<
       onOpponentChange('')
       setValidation({})
       setSubmitState('success')
+      appendTrace('Outgoing Requests refreshed')
+      appendTrace('Match request workflow complete')
     } catch {
       setSubmitState('error')
+      appendTrace('Scheduling API request failed')
     }
   }
 
@@ -1103,6 +1189,59 @@ const ScheduleRequestForm = forwardRef<
           : Object.keys(validation).length > 0
             ? 'Complete the required fields to send your request.'
             : 'Ready to send your request.'
+  const currentValidation = useMemo(() => validate(form), [form, validate])
+  const formValidity = Object.keys(currentValidation).length === 0
+
+  useEffect(() => {
+    if (!debugEnabled) {
+      return
+    }
+
+    const snapshot = buildMatchFinderDebugSnapshot({
+      actionBar: actionBarRef.current,
+      actionLabel,
+      actionStatus,
+      activeOpponent,
+      authenticatedPlayer,
+      button: buttonRef.current,
+      eventTrace,
+      form: formRef.current,
+      formValidity,
+      recommendationsLength: recommendations.length,
+      requestDisabled,
+      schedulingCenterStatus,
+      selectedOpponent,
+      submitState,
+      validation: currentValidation,
+    })
+
+    setDebugSnapshot(snapshot)
+
+    snapshot.invariants
+      .filter((invariant) => !invariant.pass)
+      .forEach((invariant) => {
+        recordClientDiagnostic(
+          'matchFinderDebug',
+          'runtime_invariant_failed',
+          0,
+          invariant.message,
+        )
+      })
+  }, [
+    actionLabel,
+    actionStatus,
+    activeOpponent,
+    authenticatedPlayer,
+    currentValidation,
+    debugEnabled,
+    eventTrace,
+    formValidity,
+    recommendations.length,
+    requestDisabled,
+    schedulingCenterStatus,
+    selectedOpponent,
+    submitState,
+  ])
 
   return (
     <section className="panel scheduling-panel" ref={sectionRef}>
@@ -1110,11 +1249,17 @@ const ScheduleRequestForm = forwardRef<
         <p className="eyebrow">Schedule</p>
         <h2>Send Match Request</h2>
       </div>
-      <div className={`match-request-action-bar ${submitState}`}>
+      <div
+        className={`match-request-action-bar ${submitState}`}
+        ref={actionBarRef}
+      >
         <span aria-live="polite">{actionStatus}</span>
         <button
+          data-match-request-click-handler="trace-submit"
           disabled={requestDisabled}
           form={MATCH_REQUEST_FORM_ID}
+          ref={buttonRef}
+          onClick={() => appendTrace('Send button clicked')}
           type="submit"
         >
           {actionLabel}
@@ -1123,6 +1268,7 @@ const ScheduleRequestForm = forwardRef<
       <form
         className="scheduling-form match-request-form"
         id={MATCH_REQUEST_FORM_ID}
+        ref={formRef}
         noValidate
         onSubmit={(event) => void submit(event)}
       >
@@ -1233,9 +1379,330 @@ const ScheduleRequestForm = forwardRef<
           </div>
         </div>
       ) : null}
+      {debugEnabled && debugSnapshot ? (
+        <MatchFinderDebugPanel snapshot={debugSnapshot} />
+      ) : null}
     </section>
   )
 })
+
+function buildMatchFinderDebugSnapshot({
+  actionBar,
+  actionLabel,
+  actionStatus,
+  activeOpponent,
+  authenticatedPlayer,
+  button,
+  eventTrace,
+  form,
+  formValidity,
+  recommendationsLength,
+  requestDisabled,
+  schedulingCenterStatus,
+  selectedOpponent,
+  submitState,
+  validation,
+}: {
+  actionBar: HTMLDivElement | null
+  actionLabel: string
+  actionStatus: string
+  activeOpponent: string
+  authenticatedPlayer: string
+  button: HTMLButtonElement | null
+  eventTrace: string[]
+  form: HTMLFormElement | null
+  formValidity: boolean
+  recommendationsLength: number
+  requestDisabled: boolean
+  schedulingCenterStatus: MatchFinderState['status']
+  selectedOpponent: string
+  submitState: string
+  validation: MatchRequestValidation
+}): MatchFinderDebugSnapshot {
+  const buttonStyles = button ? window.getComputedStyle(button) : null
+  const rect = button?.getBoundingClientRect()
+  const boundingRect = rect
+    ? {
+        bottom: Math.round(rect.bottom),
+        height: Math.round(rect.height),
+        left: Math.round(rect.left),
+        right: Math.round(rect.right),
+        top: Math.round(rect.top),
+        width: Math.round(rect.width),
+      }
+    : {
+        bottom: 0,
+        height: 0,
+        left: 0,
+        right: 0,
+        top: 0,
+        width: 0,
+      }
+  const computed = buttonStyles
+    ? {
+        clipPath: buttonStyles.clipPath,
+        display: buttonStyles.display,
+        height: buttonStyles.height,
+        opacity: buttonStyles.opacity,
+        overflow: buttonStyles.overflow,
+        pointerEvents: buttonStyles.pointerEvents,
+        position: buttonStyles.position,
+        transform: buttonStyles.transform,
+        visibility: buttonStyles.visibility,
+        width: buttonStyles.width,
+        zIndex: buttonStyles.zIndex,
+      }
+    : {
+        clipPath: '',
+        display: '',
+        height: '',
+        opacity: '',
+        overflow: '',
+        pointerEvents: '',
+        position: '',
+        transform: '',
+        visibility: '',
+        width: '',
+        zIndex: '',
+      }
+  const visible = Boolean(
+    button &&
+      computed.display !== 'none' &&
+      computed.visibility !== 'hidden' &&
+      computed.opacity !== '0' &&
+      computed.pointerEvents !== 'none' &&
+      boundingRect.width > 0 &&
+      boundingRect.height > 0,
+  )
+  const invariants = [
+    {
+      message:
+        'Ready status requires the Send Match Request button to be rendered.',
+      pass: actionStatus !== 'Ready to send your request.' || Boolean(button),
+      severity:
+        actionStatus !== 'Ready to send your request.' || button
+          ? 'ok'
+          : 'error',
+    },
+    {
+      message: 'Enabled request state requires the button to be visible.',
+      pass: requestDisabled || visible,
+      severity: requestDisabled || visible ? 'ok' : 'error',
+    },
+    {
+      message:
+        'Ready status should not be shown while the request button is disabled.',
+      pass: actionStatus !== 'Ready to send your request.' || !requestDisabled,
+      severity:
+        actionStatus !== 'Ready to send your request.' || !requestDisabled
+          ? 'ok'
+          : 'warning',
+    },
+    {
+      message: 'Button form attribute must target the match request form.',
+      pass:
+        !button ||
+        button.getAttribute('form') === MATCH_REQUEST_FORM_ID,
+      severity:
+        !button || button.getAttribute('form') === MATCH_REQUEST_FORM_ID
+          ? 'ok'
+          : 'error',
+    },
+    {
+      message: 'The target match request form must exist in the DOM.',
+      pass: Boolean(document.getElementById(MATCH_REQUEST_FORM_ID)),
+      severity: document.getElementById(MATCH_REQUEST_FORM_ID)
+        ? 'ok'
+        : 'error',
+    },
+  ] satisfies MatchFinderDebugSnapshot['invariants']
+
+  return {
+    button: {
+      boundingRect,
+      childCount: actionBar?.children.length ?? 0,
+      computed,
+      currentHtml: actionBar?.outerHTML.slice(0, 3000) ?? '',
+      exists: Boolean(button),
+      formAttribute: button?.getAttribute('form') ?? '',
+      height: boundingRect.height,
+      onClickAttached:
+        button?.getAttribute('data-match-request-click-handler') ===
+        'trace-submit',
+      visible,
+      width: boundingRect.width,
+    },
+    css: {
+      clippingAncestors: getClippingAncestors(button),
+      matchedRules: getMatchedDebugCssRules(button),
+    },
+    eventTrace,
+    form: {
+      formExists: Boolean(form),
+      formValidity,
+      validation,
+    },
+    invariants,
+    react: {
+      actionLabel,
+      actionStatus,
+      activeOpponent,
+      authenticatedPlayer,
+      isSubmitting: submitState === 'submitting',
+      recommendationsLength,
+      renderPath: 'MatchFinder > ScheduleRequestForm > action bar',
+      requestDisabled,
+      schedulingCenterStatus,
+      selectedOpponent,
+      submitState,
+    },
+    timestamp: new Date().toISOString(),
+  }
+}
+
+function getClippingAncestors(element: HTMLElement | null) {
+  const ancestors: Array<Record<string, string>> = []
+  let current = element?.parentElement ?? null
+
+  while (current && current !== document.body) {
+    const styles = window.getComputedStyle(current)
+    const isRelevant =
+      styles.overflow !== 'visible' ||
+      styles.overflowX !== 'visible' ||
+      styles.overflowY !== 'visible' ||
+      styles.transform !== 'none' ||
+      styles.position === 'sticky' ||
+      styles.position === 'fixed'
+
+    if (isRelevant) {
+      const rect = current.getBoundingClientRect()
+      ancestors.push({
+        className: current.className.toString(),
+        height: String(Math.round(rect.height)),
+        overflow: styles.overflow,
+        overflowX: styles.overflowX,
+        overflowY: styles.overflowY,
+        position: styles.position,
+        tagName: current.tagName.toLowerCase(),
+        transform: styles.transform,
+        width: String(Math.round(rect.width)),
+        zIndex: styles.zIndex,
+      })
+    }
+
+    current = current.parentElement
+  }
+
+  return ancestors
+}
+
+function getMatchedDebugCssRules(element: HTMLElement | null) {
+  if (!element) {
+    return []
+  }
+
+  const rules: Array<Record<string, string>> = []
+  const properties = [
+    'clip-path',
+    'display',
+    'height',
+    'opacity',
+    'overflow',
+    'pointer-events',
+    'position',
+    'transform',
+    'visibility',
+    'width',
+    'z-index',
+  ]
+
+  Array.from(document.styleSheets).forEach((sheet) => {
+    let cssRules: CSSRuleList
+
+    try {
+      cssRules = sheet.cssRules
+    } catch {
+      return
+    }
+
+    Array.from(cssRules).forEach((rule) => {
+      if (!(rule instanceof CSSStyleRule)) {
+        return
+      }
+
+      try {
+        if (!element.matches(rule.selectorText)) {
+          return
+        }
+      } catch {
+        return
+      }
+
+      const declarations = properties
+        .map((property) => {
+          const value = rule.style.getPropertyValue(property)
+          return value ? `${property}: ${value}` : ''
+        })
+        .filter(Boolean)
+
+      if (declarations.length === 0) {
+        return
+      }
+
+      rules.push({
+        css: declarations.join('; '),
+        selector: rule.selectorText,
+        source: sheet.href ?? 'inline stylesheet',
+      })
+    })
+  })
+
+  return rules.slice(0, 20)
+}
+
+function MatchFinderDebugPanel({
+  snapshot,
+}: {
+  snapshot: MatchFinderDebugSnapshot
+}) {
+  const [copied, setCopied] = useState(false)
+
+  async function copyDiagnostics() {
+    await navigator.clipboard.writeText(JSON.stringify(snapshot, null, 2))
+    setCopied(true)
+    window.setTimeout(() => setCopied(false), 2000)
+  }
+
+  return (
+    <section className="match-finder-debug-panel" aria-label="Match Finder debug">
+      <div className="panel-heading">
+        <p className="eyebrow">Commissioner Debug</p>
+        <h2>Match Finder Runtime Diagnostics</h2>
+        <button onClick={() => void copyDiagnostics()} type="button">
+          {copied ? 'Copied' : 'Copy Match Finder Diagnostics'}
+        </button>
+      </div>
+      <div className="match-finder-debug-grid">
+        <DebugBlock title="React Runtime" value={snapshot.react} />
+        <DebugBlock title="Button DOM" value={snapshot.button} />
+        <DebugBlock title="Form State" value={snapshot.form} />
+        <DebugBlock title="Invariant Checks" value={snapshot.invariants} />
+        <DebugBlock title="Clipping Ancestors" value={snapshot.css.clippingAncestors} />
+        <DebugBlock title="Matched CSS Rules" value={snapshot.css.matchedRules} />
+        <DebugBlock title="Event Trace" value={snapshot.eventTrace} />
+      </div>
+    </section>
+  )
+}
+
+function DebugBlock({ title, value }: { title: string; value: unknown }) {
+  return (
+    <article>
+      <h3>{title}</h3>
+      <pre>{JSON.stringify(value, null, 2)}</pre>
+    </article>
+  )
+}
 
 function RecommendationCard({
   onRequest,
