@@ -21,7 +21,12 @@ export type ClientDiagnosticMetric = {
   detail: string
   durationMs: number
   event: string
-  status: 'attempt' | 'failure' | 'success' | 'verification_failed'
+  status:
+    | 'attempt'
+    | 'failure'
+    | 'outgoing_refresh_failed'
+    | 'success'
+    | 'verification_failed'
   timestamp: number
 }
 

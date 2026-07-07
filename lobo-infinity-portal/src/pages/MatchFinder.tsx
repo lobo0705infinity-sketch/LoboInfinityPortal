@@ -47,6 +47,16 @@ type AvailabilitySaveResult = {
   verified: boolean
 }
 
+type MatchRequestSubmitParams = MatchRequestFormState & {
+  opponent: string
+}
+
+type MatchRequestSubmitResult = {
+  data: SchedulingCenterData
+  durationMs: number
+  outgoingVerified: boolean
+}
+
 type MatchRequestFormState = {
   message: string
   proposedDate: string
@@ -66,7 +76,9 @@ function MatchFinder() {
   const [searchParams] = useSearchParams()
   const preferredOpponent = searchParams.get('opponent') ?? ''
   const [state, setState] = useState<MatchFinderState>({ status: 'loading' })
-  const [working, setWorking] = useState('')
+  const [availabilityWorking, setAvailabilityWorking] = useState(false)
+  const [requestWorking, setRequestWorking] = useState(false)
+  const [responseWorking, setResponseWorking] = useState('')
   const [selectedOpponent, setSelectedOpponent] = useState(preferredOpponent)
   const requestFormRef = useRef<ScheduleRequestFormHandle>(null)
 
@@ -106,7 +118,7 @@ function MatchFinder() {
   async function updateAvailability(
     params: AvailabilityFormState,
   ): Promise<AvailabilitySaveResult> {
-    setWorking('availability')
+    setAvailabilityWorking(true)
     recordClientDiagnostic('availabilitySave', 'attempt', 0, 'started')
     const start = performance.now()
 
@@ -142,12 +154,14 @@ function MatchFinder() {
       )
       throw error
     } finally {
-      setWorking('')
+      setAvailabilityWorking(false)
     }
   }
 
-  async function createRequest(params: Record<string, string>) {
-    setWorking('request')
+  async function createRequest(
+    params: MatchRequestSubmitParams,
+  ): Promise<MatchRequestSubmitResult> {
+    setRequestWorking(true)
     const start = performance.now()
     recordClientDiagnostic(
       'matchRequest',
@@ -158,13 +172,23 @@ function MatchFinder() {
 
     try {
       const data = await apiClient.createSchedulingRequest(params)
+      const durationMs = performance.now() - start
+      const outgoingVerified = isOutgoingRequestRefreshed(params, data)
       setState({ data, status: 'success' })
       recordClientDiagnostic(
         'matchRequest',
-        'success',
-        performance.now() - start,
-        `request created for ${params.opponent || 'unknown opponent'}`,
+        outgoingVerified ? 'success' : 'outgoing_refresh_failed',
+        durationMs,
+        outgoingVerified
+          ? `request created and outgoing list refreshed for ${params.opponent}`
+          : getOutgoingRequestMismatchDetail(params, data),
       )
+
+      return {
+        data,
+        durationMs,
+        outgoingVerified,
+      }
     } catch (error) {
       recordClientDiagnostic(
         'matchRequest',
@@ -174,7 +198,7 @@ function MatchFinder() {
       )
       throw error
     } finally {
-      setWorking('')
+      setRequestWorking(false)
     }
   }
 
@@ -192,7 +216,7 @@ function MatchFinder() {
   }
 
   async function respondToRequest(requestId: string, status: string) {
-    setWorking(requestId)
+    setResponseWorking(requestId)
     try {
       const data = await apiClient.respondSchedulingRequest({
         requestId,
@@ -200,7 +224,7 @@ function MatchFinder() {
       })
       setState({ data, status: 'success' })
     } finally {
-      setWorking('')
+      setResponseWorking('')
     }
   }
 
@@ -286,13 +310,13 @@ function MatchFinder() {
       <section className="scheduling-grid">
         <AvailabilityEditor
           data={state.data}
-          disabled={working !== ''}
+          disabled={availabilityWorking}
           key={state.data.availability.updatedAt || state.data.player.player}
           onSubmit={updateAvailability}
         />
         <ScheduleRequestForm
           ref={requestFormRef}
-          disabled={working !== ''}
+          disabled={requestWorking}
           selectedOpponent={selectedOpponent || preferredOpponent}
           recommendations={state.data.recommendations}
           onOpponentChange={setSelectedOpponent}
@@ -324,7 +348,7 @@ function MatchFinder() {
           onRespond={respondToRequest}
           requests={state.data.requests.incoming}
           title="Incoming Requests"
-          working={working}
+          working={responseWorking}
         />
         <RequestList
           empty="No outgoing requests."
@@ -332,7 +356,7 @@ function MatchFinder() {
           onRespond={respondToRequest}
           requests={state.data.requests.outgoing}
           title="Outgoing Requests"
-          working={working}
+          working={responseWorking}
         />
       </section>
 
@@ -343,7 +367,7 @@ function MatchFinder() {
           onRespond={respondToRequest}
           requests={state.data.requests.upcoming}
           title="Upcoming Matches"
-          working={working}
+          working={responseWorking}
         />
         <section className="panel scheduling-panel">
           <div className="panel-heading">
@@ -413,6 +437,52 @@ function getAvailabilityMismatchDetail(
   return mismatches.length > 0
     ? `verification mismatch: ${mismatches.join('; ')}`
     : 'verification failed without a field mismatch'
+}
+
+function isOutgoingRequestRefreshed(
+  submitted: MatchRequestSubmitParams,
+  data: SchedulingCenterData,
+) {
+  return data.requests.outgoing.some((request) =>
+    isSchedulingRequestMatch(submitted, request),
+  )
+}
+
+function getOutgoingRequestMismatchDetail(
+  submitted: MatchRequestSubmitParams,
+  data: SchedulingCenterData,
+) {
+  const latestOutgoing = data.requests.outgoing[0]
+
+  if (!latestOutgoing) {
+    return `request submitted for ${submitted.opponent}, but refreshed outgoing list is empty`
+  }
+
+  return [
+    `request submitted for ${submitted.opponent}, but refreshed outgoing list did not include it`,
+    `latest outgoing: ${latestOutgoing.toPlayer} ${latestOutgoing.proposedDate} ${latestOutgoing.proposedTime}`,
+  ].join('; ')
+}
+
+function isSchedulingRequestMatch(
+  submitted: MatchRequestSubmitParams,
+  request: SchedulingRequest,
+) {
+  return (
+    normalizeSchedulingRequestValue(request.toPlayer) ===
+      normalizeSchedulingRequestValue(submitted.opponent) &&
+    normalizeSchedulingRequestValue(request.proposedDate) ===
+      normalizeSchedulingRequestValue(submitted.proposedDate) &&
+    normalizeSchedulingRequestValue(request.proposedTime) ===
+      normalizeSchedulingRequestValue(submitted.proposedTime) &&
+    normalizeSchedulingRequestValue(request.message) ===
+      normalizeSchedulingRequestValue(submitted.message) &&
+    normalizeSchedulingRequestValue(request.status) === 'pending'
+  )
+}
+
+function normalizeSchedulingRequestValue(value: string) {
+  return value.trim().toLowerCase()
 }
 
 function MatchFinderHeader() {
@@ -789,7 +859,9 @@ const ScheduleRequestForm = forwardRef<
     selectedOpponent: string
     recommendations: SchedulingRecommendation[]
     onOpponentChange: (opponent: string) => void
-    onSubmit: (params: Record<string, string>) => Promise<void>
+    onSubmit: (
+      params: MatchRequestSubmitParams,
+    ) => Promise<MatchRequestSubmitResult>
   }
 >(function ScheduleRequestForm(
   {
@@ -804,7 +876,7 @@ const ScheduleRequestForm = forwardRef<
   const navigate = useNavigate()
   const sectionRef = useRef<HTMLElement>(null)
   const dateInputRef = useRef<HTMLInputElement>(null)
-  const activeOpponent = selectedOpponent || recommendations[0]?.player || ''
+  const activeOpponent = selectedOpponent
   const initialForm = useMemo<MatchRequestFormState>(
     () => ({
       message: '',
@@ -821,7 +893,8 @@ const ScheduleRequestForm = forwardRef<
   const [pendingNavigation, setPendingNavigation] = useState('')
   const isSubmitting = submitState === 'submitting'
   const hasDraft = Boolean(
-    form.message.trim() ||
+    activeOpponent ||
+      form.message.trim() ||
       form.proposedDate ||
       form.proposedTime,
   )
@@ -974,13 +1047,20 @@ const ScheduleRequestForm = forwardRef<
     setSubmitState('submitting')
 
     try {
-      await onSubmit({
+      const result = await onSubmit({
         ...form,
         opponent: activeOpponent,
       })
+
+      if (!result.outgoingVerified) {
+        setSubmitState('error')
+        return
+      }
+
       setForm({
         ...initialForm,
       })
+      onOpponentChange('')
       setValidation({})
       setSubmitState('success')
     } catch {
@@ -1007,13 +1087,13 @@ const ScheduleRequestForm = forwardRef<
   const requestDisabled = disabled || recommendations.length === 0 || isSubmitting
   const actionLabel =
     submitState === 'submitting'
-      ? 'Sending Request...'
+      ? 'Sending Match Request...'
       : submitState === 'success'
-        ? 'Match Request Sent'
+        ? '\u2713 Match Request Sent'
         : 'Send Match Request'
   const actionStatus =
     submitState === 'success'
-      ? 'Match Request Sent'
+      ? '\u2713 Match Request Sent'
       : submitState === 'error'
         ? 'Unable to send request. Please try again.'
         : disabled && !isSubmitting
@@ -1037,7 +1117,6 @@ const ScheduleRequestForm = forwardRef<
           form={MATCH_REQUEST_FORM_ID}
           type="submit"
         >
-          {submitState === 'success' ? 'Sent: ' : ''}
           {actionLabel}
         </button>
       </div>
@@ -1060,6 +1139,7 @@ const ScheduleRequestForm = forwardRef<
             required
             value={activeOpponent}
           >
+            <option value="">Choose an opponent</option>
             {recommendations.map((recommendation) => (
               <option key={recommendation.player} value={recommendation.player}>
                 {formatPlayerName(recommendation.player, recommendation.displayName)}

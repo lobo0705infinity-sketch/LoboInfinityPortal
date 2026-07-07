@@ -437,7 +437,7 @@ function Diagnostics() {
       <section className="panel operations-panel">
         <div className="panel-heading">
           <p className="eyebrow">Client Diagnostics</p>
-          <h2>Availability Saves</h2>
+          <h2>Scheduling Workflows</h2>
         </div>
         <div className="operations-table-wrap">
           <table className="operations-table">
@@ -451,7 +451,9 @@ function Diagnostics() {
             </thead>
             <tbody>
               {snapshot.api.client.recent
-                .filter((metric) => metric.event === 'availabilitySave')
+                .filter((metric) =>
+                  ['availabilitySave', 'matchRequest'].includes(metric.event),
+                )
                 .map((metric, index) => (
                   <tr key={`${metric.event}-${metric.timestamp}-${index}`}>
                     <td>{metric.event}</td>

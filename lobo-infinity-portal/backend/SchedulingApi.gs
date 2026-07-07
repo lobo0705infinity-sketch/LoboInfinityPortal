@@ -185,13 +185,23 @@ function updateSchedulingAvailability(e) {
 
 function createSchedulingRequest(e) {
 
+  const startedAt =
+    new Date();
+
   const auth =
     getRequestUser(e);
 
   if (!auth.authenticated || !auth.user.leaguePlayer)
     return jsonOutput({
       success: false,
-      error: "Authentication is required."
+      code: "SCHEDULING_REQUEST_AUTH_FAILED",
+      error: "Authentication is required.",
+      diagnostics: {
+        stage: "leaguePlayerResolution",
+        authenticated: Boolean(auth.authenticated),
+        hasLeaguePlayer: Boolean(auth.user && auth.user.leaguePlayer),
+        elapsedMs: new Date().getTime() - startedAt.getTime()
+      }
     });
 
   const params =
@@ -199,11 +209,23 @@ function createSchedulingRequest(e) {
 
   const opponent =
     getSchedulingString(params.opponent);
+  const proposedDate =
+    getSchedulingString(params.proposedDate);
+  const proposedTime =
+    getSchedulingString(params.proposedTime);
 
-  if (opponent === "")
+  if (opponent === "" || proposedDate === "" || proposedTime === "")
     return jsonOutput({
       success: false,
-      error: "Opponent is required."
+      code: "SCHEDULING_REQUEST_VALIDATION_FAILED",
+      error: "Opponent, date, and time are required.",
+      diagnostics: {
+        stage: "requestValidation",
+        hasOpponent: opponent !== "",
+        hasProposedDate: proposedDate !== "",
+        hasProposedTime: proposedTime !== "",
+        elapsedMs: new Date().getTime() - startedAt.getTime()
+      }
     });
 
   const record = {
@@ -215,9 +237,9 @@ function createSchedulingRequest(e) {
     toPlayer:
       opponent,
     proposedDate:
-      getSchedulingString(params.proposedDate),
+      proposedDate,
     proposedTime:
-      getSchedulingString(params.proposedTime),
+      proposedTime,
     location:
       "",
     message:
@@ -233,6 +255,31 @@ function createSchedulingRequest(e) {
   };
 
   saveSchedulingRequestRecord(record);
+
+  const refreshedRequest =
+    getSchedulingRequestsForPlayer(auth.user.leaguePlayer)
+      .some(function(request) {
+        return (
+          getSchedulingKey(request.id) === getSchedulingKey(record.id) &&
+          getSchedulingKey(request.fromPlayer) === getSchedulingKey(record.fromPlayer) &&
+          getSchedulingKey(request.toPlayer) === getSchedulingKey(record.toPlayer)
+        );
+      });
+
+  if (!refreshedRequest)
+    return jsonOutput({
+      success: false,
+      code: "SCHEDULING_REQUEST_VERIFY_FAILED",
+      error: "Unable to verify created scheduling request.",
+      diagnostics: {
+        stage: "spreadsheetVerification",
+        requestId: record.id,
+        player: auth.user.leaguePlayer,
+        opponent: opponent,
+        elapsedMs: new Date().getTime() - startedAt.getTime()
+      }
+    });
+
   invalidatePortalCacheGroup("scheduling");
 
   return getSchedulingCenter(e);
