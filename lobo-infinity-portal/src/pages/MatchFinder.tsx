@@ -102,11 +102,26 @@ type MatchFinderDebugSnapshot = {
     clippingAncestors: Array<Record<string, string>>
     matchedRules: Array<Record<string, string>>
   }
+  componentTree: Array<Record<string, string>>
+  domAncestry: Array<Record<string, string>>
+  domAssertions: Array<{
+    message: string
+    pass: boolean
+    severity: 'error' | 'ok' | 'warning'
+  }>
   eventTrace: string[]
   form: {
     formExists: boolean
     formValidity: boolean
     validation: MatchRequestValidation
+  }
+  layout: Record<string, string | boolean>
+  ownership: Record<string, string>
+  parentHtml: {
+    actionBarOuterHTML: string
+    buttonOuterHTML: string
+    parentOuterHTML: string
+    grandparentOuterHTML: string
   }
   invariants: Array<{
     message: string
@@ -1538,6 +1553,52 @@ function buildMatchFinderDebugSnapshot({
       boundingRect.width > 0 &&
       boundingRect.height > 0,
   )
+  const queriedVisible = Boolean(
+    queriedButton &&
+      queriedComputed.display !== 'none' &&
+      queriedComputed.visibility !== 'hidden' &&
+      queriedComputed.opacity !== '0' &&
+      queriedComputed.pointerEvents !== 'none' &&
+      queriedBoundingRect.width > 0 &&
+      queriedBoundingRect.height > 0,
+  )
+  const schedulingPanel = queriedButton?.closest('.scheduling-panel')
+  const actionBarElement = queriedButton?.closest('.match-request-action-bar')
+  const formElement = document.getElementById(MATCH_REQUEST_FORM_ID)
+  const domAssertions = [
+    {
+      message: 'Actual button selector returns a DOM button.',
+      pass: Boolean(queriedButton),
+      severity: queriedButton ? 'ok' : 'error',
+    },
+    {
+      message: 'Actual button is visible by computed style and dimensions.',
+      pass: queriedVisible,
+      severity: queriedVisible ? 'ok' : 'error',
+    },
+    {
+      message: 'Actual button is inside the Match Request action bar.',
+      pass: Boolean(actionBarElement),
+      severity: actionBarElement ? 'ok' : 'error',
+    },
+    {
+      message: 'Actual button is inside a scheduling panel.',
+      pass: Boolean(schedulingPanel),
+      severity: schedulingPanel ? 'ok' : 'error',
+    },
+    {
+      message: 'Actual button targets the rendered match request form.',
+      pass:
+        Boolean(queriedButton) &&
+        queriedButton?.getAttribute('form') === MATCH_REQUEST_FORM_ID &&
+        Boolean(formElement),
+      severity:
+        queriedButton?.getAttribute('form') === MATCH_REQUEST_FORM_ID &&
+        Boolean(formElement)
+          ? 'ok'
+          : 'error',
+    },
+  ] satisfies MatchFinderDebugSnapshot['domAssertions']
   const invariants = [
     {
       message:
@@ -1614,13 +1675,83 @@ function buildMatchFinderDebugSnapshot({
       clippingAncestors: getClippingAncestors(queriedButton ?? button),
       matchedRules: getMatchedDebugCssRules(queriedButton ?? button),
     },
+    componentTree: [
+      {
+        component: 'MatchFinder',
+        dom: 'main.portal-shell',
+        role: 'page owner',
+      },
+      {
+        component: 'ScheduleRequestForm',
+        dom: 'section.panel.scheduling-panel',
+        parent: 'MatchFinder',
+        role: 'match request card owner',
+      },
+      {
+        component: 'MatchRequestActionBar',
+        dom: '.match-request-action-bar',
+        parent: 'ScheduleRequestForm',
+        role: 'status and submit action owner',
+      },
+      {
+        component: 'SendMatchRequestButton',
+        dom: '.match-request-action-bar button',
+        parent: 'MatchRequestActionBar',
+        role: 'submit control',
+      },
+      {
+        component: 'MatchRequestForm',
+        dom: `#${MATCH_REQUEST_FORM_ID}`,
+        parent: 'ScheduleRequestForm',
+        role: 'input owner',
+      },
+    ],
+    domAncestry: getDomAncestry(queriedButton),
+    domAssertions,
     eventTrace,
     form: {
       formExists: Boolean(form),
       formValidity,
       validation,
     },
+    layout: {
+      actionBarChildCount: String(actionBarElement?.children.length ?? 0),
+      buttonInsideSchedulingPanel: Boolean(schedulingPanel),
+      buttonPortaled: Boolean(
+        queriedButton && !queriedButton.closest('.scheduling-panel'),
+      ),
+      buttonRenderedBelowViewport: queriedBoundingRect.top > window.innerHeight,
+      buttonRenderedLeftOfViewport: queriedBoundingRect.right < 0,
+      buttonRenderedRightOfViewport: queriedBoundingRect.left > window.innerWidth,
+      buttonRenderedWithinViewport:
+        queriedBoundingRect.bottom >= 0 &&
+        queriedBoundingRect.right >= 0 &&
+        queriedBoundingRect.top <= window.innerHeight &&
+        queriedBoundingRect.left <= window.innerWidth,
+      buttonSelector: '.match-request-action-bar button',
+      formExistsById: Boolean(formElement),
+      viewportHeight: String(window.innerHeight),
+      viewportWidth: String(window.innerWidth),
+    },
     invariants,
+    ownership: {
+      actionBarOwner: 'ScheduleRequestForm',
+      buttonOwner: 'ScheduleRequestForm > MatchRequestActionBar',
+      parentComponent: 'ScheduleRequestForm',
+      parentDomElement:
+        queriedButton?.parentElement?.tagName.toLowerCase() ?? '',
+      readyTextOwner: 'ScheduleRequestForm > MatchRequestActionBar > span',
+      submitHandlerOwner: 'ScheduleRequestForm.submit',
+    },
+    parentHtml: {
+      actionBarOuterHTML: actionBarElement?.outerHTML.slice(0, 8000) ?? '',
+      buttonOuterHTML: queriedButton?.outerHTML.slice(0, 4000) ?? '',
+      grandparentOuterHTML:
+        queriedButton?.parentElement?.parentElement?.outerHTML.slice(0, 8000) ??
+        '',
+      parentOuterHTML:
+        queriedButton?.parentElement?.outerHTML.slice(0, 8000) ?? '',
+    },
     react: {
       actionLabel,
       actionStatus,
@@ -1672,6 +1803,48 @@ function getClippingAncestors(element: HTMLElement | null) {
   }
 
   return ancestors
+}
+
+function getDomAncestry(element: HTMLElement | null) {
+  const ancestry: Array<Record<string, string>> = []
+  let current: HTMLElement | null = element
+
+  while (current) {
+    const styles = window.getComputedStyle(current)
+    const rect = current.getBoundingClientRect()
+    const canClip =
+      styles.overflow !== 'visible' ||
+      styles.overflowX !== 'visible' ||
+      styles.overflowY !== 'visible' ||
+      styles.clipPath !== 'none' ||
+      styles.contain !== 'none'
+
+    ancestry.push({
+      canClipDescendants: String(canClip),
+      className: current.className.toString(),
+      display: styles.display,
+      height: String(Math.round(rect.height)),
+      id: current.id,
+      opacity: styles.opacity,
+      overflow: styles.overflow,
+      overflowX: styles.overflowX,
+      overflowY: styles.overflowY,
+      position: styles.position,
+      tag: current.tagName.toLowerCase(),
+      transform: styles.transform,
+      visibility: styles.visibility,
+      width: String(Math.round(rect.width)),
+      zIndex: styles.zIndex,
+    })
+
+    if (current === document.body) {
+      break
+    }
+
+    current = current.parentElement
+  }
+
+  return ancestry
 }
 
 function getMatchedDebugCssRules(element: HTMLElement | null) {
@@ -1744,6 +1917,7 @@ function MatchFinderDebugPanel({
   snapshot: MatchFinderDebugSnapshot
 }) {
   const [copied, setCopied] = useState(false)
+  const [highlighted, setHighlighted] = useState(false)
 
   async function copyDiagnostics() {
     await navigator.clipboard.writeText(JSON.stringify(snapshot, null, 2))
@@ -1751,21 +1925,73 @@ function MatchFinderDebugPanel({
     window.setTimeout(() => setCopied(false), 2000)
   }
 
+  function toggleButtonHighlight() {
+    const button = document.querySelector<HTMLElement>(
+      '.match-request-action-bar button',
+    )
+
+    if (!button) {
+      return
+    }
+
+    if (highlighted) {
+      button.removeAttribute('data-match-finder-debug-highlight')
+      button.style.removeProperty('outline')
+      button.style.removeProperty('background')
+      button.style.removeProperty('color')
+      button.style.removeProperty('position')
+      button.style.removeProperty('bottom')
+      button.style.removeProperty('right')
+      button.style.removeProperty('z-index')
+      button.style.removeProperty('min-width')
+      button.style.removeProperty('min-height')
+      button.style.removeProperty('box-shadow')
+      setHighlighted(false)
+      return
+    }
+
+    button.setAttribute('data-match-finder-debug-highlight', 'true')
+    button.style.setProperty('outline', '5px solid red', 'important')
+    button.style.setProperty('background', 'yellow', 'important')
+    button.style.setProperty('color', 'black', 'important')
+    button.style.setProperty('position', 'fixed', 'important')
+    button.style.setProperty('bottom', '20px', 'important')
+    button.style.setProperty('right', '20px', 'important')
+    button.style.setProperty('z-index', '999999', 'important')
+    button.style.setProperty('min-width', '220px', 'important')
+    button.style.setProperty('min-height', '56px', 'important')
+    button.style.setProperty(
+      'box-shadow',
+      '0 0 0 8px rgba(255, 0, 0, 0.35)',
+      'important',
+    )
+    setHighlighted(true)
+  }
+
   return (
     <section className="match-finder-debug-panel" aria-label="Match Finder debug">
       <div className="panel-heading">
         <p className="eyebrow">Commissioner Debug</p>
         <h2>Match Finder Runtime Diagnostics</h2>
+        <button onClick={toggleButtonHighlight} type="button">
+          {highlighted ? 'Remove Button Highlight' : 'Highlight Actual Button'}
+        </button>
         <button onClick={() => void copyDiagnostics()} type="button">
           {copied ? 'Copied' : 'Copy Match Finder Diagnostics'}
         </button>
       </div>
       <div className="match-finder-debug-grid">
         <DebugBlock title="React Runtime" value={snapshot.react} />
+        <DebugBlock title="Component Tree" value={snapshot.componentTree} />
+        <DebugBlock title="Button Ownership" value={snapshot.ownership} />
         <DebugBlock title="Actual Button Selector" value={snapshot.domButton} />
         <DebugBlock title="Button DOM" value={snapshot.button} />
+        <DebugBlock title="DOM Ancestry" value={snapshot.domAncestry} />
+        <DebugBlock title="Runtime Layout" value={snapshot.layout} />
+        <DebugBlock title="Parent HTML" value={snapshot.parentHtml} />
         <DebugBlock title="Form State" value={snapshot.form} />
         <DebugBlock title="Invariant Checks" value={snapshot.invariants} />
+        <DebugBlock title="DOM Assertions" value={snapshot.domAssertions} />
         <DebugBlock title="Clipping Ancestors" value={snapshot.css.clippingAncestors} />
         <DebugBlock title="Matched CSS Rules" value={snapshot.css.matchedRules} />
         <DebugBlock title="Event Trace" value={snapshot.eventTrace} />
