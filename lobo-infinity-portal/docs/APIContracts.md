@@ -317,6 +317,81 @@ Returns:
 
 The same `seasonCommandCenter` payload after saving.
 
+## Community Command Center
+
+Action:
+
+`GET action=communityCommandCenter`
+
+Authentication:
+
+Requires Google authentication. The frontend sends `authToken` and `oauthClientId`.
+
+Response:
+
+```json
+{
+  "success": true,
+  "commandCenter": {
+    "welcome": {},
+    "activeEvents": [],
+    "opponentTracker": {},
+    "nextActions": [],
+    "communityActivity": {},
+    "promotion": {},
+    "schedule": {},
+    "intelligence": [],
+    "quickActions": []
+  }
+}
+```
+
+The endpoint is player-specific and must not be treated as a public cached startup request.
+
+Required `welcome` fields:
+
+- `displayName`
+- `leaguePlayer`
+- `playerDisplayName`
+- `currentRank`
+- `currentLeague`
+- `currentActiveEvents`
+
+Required `activeEvents[]` fields:
+
+- `eventId`
+- `name`
+- `type`
+- `status`
+- `gamesRemaining`
+- `completionPercentage`
+- `primaryAction`
+- `link`
+
+Required `opponentTracker` fields:
+
+- `completed`
+- `remaining`
+- `suggested`
+
+Required opponent fields:
+
+- `player`
+- `displayName`
+- `status`
+- `rank`
+- `gamesCompleted`
+- `lastActivity`
+- `availability`
+- `quickMessage`
+
+Required `schedule` fields:
+
+- `gamesRemaining`
+- `deadlines`
+- `upcomingEventDates`
+- `currentRound`
+
 ## Compatibility Rules
 
 - Existing API actions are unchanged.
@@ -325,3 +400,4 @@ The same `seasonCommandCenter` payload after saving.
 - Availability is stored separately from league identity and standings.
 - Missing `eventId`, `seasonId`, and `roundId` resolve to the Current League Event during the Version 3 migration window.
 - New top-level architectural concepts require API contract review and documentation updates before implementation.
+- Community Command Center extends existing Event Engine and Season Command Center contracts without changing legacy dashboard, standings, profile, Hall of Fame, notification, or automation responses.

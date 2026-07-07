@@ -751,6 +751,77 @@ export type SeasonCommandCenterData = {
   promotion: SeasonPromotionTracker
 }
 
+export type CommunityCommandEvent = {
+  completionPercentage: number
+  eventId: string
+  gamesRemaining: number
+  link: string
+  name: string
+  primaryAction: string
+  status: string
+  type: string
+}
+
+export type CommunityOpponentCard = {
+  availability: SeasonAvailability
+  displayName: string
+  gamesCompleted: number
+  lastActivity: string
+  player: string
+  quickMessage: string
+  rank: number
+  status: string
+}
+
+export type CommunityCommandAction = {
+  label: string
+  link: string
+  priority: string
+}
+
+export type CommunityCommandWelcome = {
+  currentActiveEvents: number
+  currentLeague: string
+  currentRank: number
+  displayName: string
+  leaguePlayer: string
+  playerDisplayName: string
+}
+
+export type CommunityCommandActivity = {
+  featuredBattle: RecentGame | null
+  latestAchievements: LeagueNotification[]
+  latestResults: RecentGame[]
+  news: CommissionerNewsItem[]
+  streams: StreamedGame[]
+}
+
+export type CommunityCommandSchedule = {
+  currentRound: string
+  deadlines: SeasonDeadlines
+  gamesRemaining: number
+  upcomingEventDates: string[]
+}
+
+export type CommunityCommandCenterData = {
+  activeEvents: CommunityCommandEvent[]
+  communityActivity: CommunityCommandActivity
+  intelligence: string[]
+  nextActions: CommunityCommandAction[]
+  opponentTracker: {
+    completed: CommunityOpponentCard[]
+    remaining: CommunityOpponentCard[]
+    suggested: SeasonRecommendation | null
+  }
+  promotion: SeasonPromotionTracker
+  quickActions: Array<{
+    label: string
+    link: string
+  }>
+  schedule: CommunityCommandSchedule
+  welcome: CommunityCommandWelcome
+}
+
 export type PortalSettings = {
   currentSeason: string
   leagueName: string
@@ -1217,6 +1288,9 @@ export type ApiClient = {
   getSettings: (options?: ApiOptions) => Promise<PortalSettings>
   getStreams: (options?: ApiOptions) => Promise<StreamedGame[]>
   getArmyLists: (options?: ApiOptions) => Promise<ArmyListsData>
+  getCommunityCommandCenter: (
+    options?: ApiOptions,
+  ) => Promise<CommunityCommandCenterData>
   getSeasonCommandCenter: (options?: ApiOptions) => Promise<SeasonCommandCenterData>
   updateSeasonAvailability: (
     params: Record<string, string>,
@@ -1486,6 +1560,13 @@ export async function getArmyLists(
   return normalizeArmyListsPayload(payload)
 }
 
+export async function getCommunityCommandCenter(
+  options: ApiOptions = {},
+): Promise<CommunityCommandCenterData> {
+  const payload = await request('communityCommandCenter', options)
+  return normalizeCommunityCommandCenterPayload(payload)
+}
+
 export async function getSeasonCommandCenter(
   options: ApiOptions = {},
 ): Promise<SeasonCommandCenterData> {
@@ -1649,6 +1730,7 @@ export const apiClient: ApiClient = {
   getSettings,
   getStreams,
   getArmyLists,
+  getCommunityCommandCenter,
   getSeasonCommandCenter,
   updateSeasonAvailability,
   submitArmyList,
@@ -2813,6 +2895,171 @@ function normalizeArmyListsPayload(payload: unknown): ArmyListsData {
   return {
     lists: getRequiredArray(record, 'lists').map(normalizeArmyList),
     community: normalizeArmyListCommunity(record.community),
+  }
+}
+
+function normalizeCommunityCommandCenterPayload(
+  payload: unknown,
+): CommunityCommandCenterData {
+  const record = asRecord(payload, 'Community command center response')
+
+  if (record.success === false) {
+    throw new Error(
+      getString(record, 'error') || 'Community command center failed.',
+    )
+  }
+
+  const commandCenter = getRequiredRecord(record, 'commandCenter')
+
+  return {
+    activeEvents: getRequiredArray(commandCenter, 'activeEvents').map(
+      normalizeCommunityCommandEvent,
+    ),
+    communityActivity: normalizeCommunityCommandActivity(
+      getRequiredRecord(commandCenter, 'communityActivity'),
+    ),
+    intelligence: getRequiredArray(commandCenter, 'intelligence').map((item) =>
+      typeof item === 'string' ? item : String(item ?? ''),
+    ),
+    nextActions: getRequiredArray(commandCenter, 'nextActions').map(
+      normalizeCommunityCommandAction,
+    ),
+    opponentTracker: normalizeCommunityOpponentTracker(
+      getRequiredRecord(commandCenter, 'opponentTracker'),
+    ),
+    promotion: normalizeSeasonPromotionTracker(
+      getRequiredRecord(commandCenter, 'promotion'),
+    ),
+    quickActions: getRequiredArray(commandCenter, 'quickActions').map((item) => {
+      const action = asRecord(item, 'Community quick action')
+
+      return {
+        label: getRequiredString(action, 'label'),
+        link: getRequiredString(action, 'link'),
+      }
+    }),
+    schedule: normalizeCommunityCommandSchedule(
+      getRequiredRecord(commandCenter, 'schedule'),
+    ),
+    welcome: normalizeCommunityCommandWelcome(
+      getRequiredRecord(commandCenter, 'welcome'),
+    ),
+  }
+}
+
+function normalizeCommunityCommandWelcome(
+  record: Record<string, unknown>,
+): CommunityCommandWelcome {
+  return {
+    currentActiveEvents: getRequiredNumber(record, 'currentActiveEvents'),
+    currentLeague: getRequiredString(record, 'currentLeague'),
+    currentRank: getRequiredNumber(record, 'currentRank'),
+    displayName: getRequiredString(record, 'displayName'),
+    leaguePlayer: getRequiredString(record, 'leaguePlayer'),
+    playerDisplayName: getRequiredString(record, 'playerDisplayName'),
+  }
+}
+
+function normalizeCommunityCommandEvent(
+  item: unknown,
+): CommunityCommandEvent {
+  const record = asRecord(item, 'Community command event')
+
+  return {
+    completionPercentage: getRequiredNumber(record, 'completionPercentage'),
+    eventId: getRequiredString(record, 'eventId'),
+    gamesRemaining: getRequiredNumber(record, 'gamesRemaining'),
+    link: getRequiredString(record, 'link'),
+    name: getRequiredString(record, 'name'),
+    primaryAction: getRequiredString(record, 'primaryAction'),
+    status: getRequiredString(record, 'status'),
+    type: getRequiredString(record, 'type'),
+  }
+}
+
+function normalizeCommunityOpponentTracker(
+  record: Record<string, unknown>,
+) {
+  const suggested = record.suggested
+
+  return {
+    completed: getRequiredArray(record, 'completed').map(
+      normalizeCommunityOpponentCard,
+    ),
+    remaining: getRequiredArray(record, 'remaining').map(
+      normalizeCommunityOpponentCard,
+    ),
+    suggested:
+      suggested && typeof suggested === 'object' && !Array.isArray(suggested)
+        ? normalizeSeasonRecommendation(suggested)
+        : null,
+  }
+}
+
+function normalizeCommunityOpponentCard(
+  item: unknown,
+): CommunityOpponentCard {
+  const record = asRecord(item, 'Community opponent card')
+
+  return {
+    availability: normalizeSeasonAvailability(
+      getRequiredRecord(record, 'availability'),
+    ),
+    displayName: getString(record, 'displayName') || getRequiredString(record, 'player'),
+    gamesCompleted: getRequiredNumber(record, 'gamesCompleted'),
+    lastActivity: getString(record, 'lastActivity'),
+    player: getRequiredString(record, 'player'),
+    quickMessage: getString(record, 'quickMessage') || 'Message',
+    rank: getRequiredNumber(record, 'rank'),
+    status: getRequiredString(record, 'status'),
+  }
+}
+
+function normalizeCommunityCommandAction(
+  item: unknown,
+): CommunityCommandAction {
+  const record = asRecord(item, 'Community next action')
+
+  return {
+    label: getRequiredString(record, 'label'),
+    link: getRequiredString(record, 'link'),
+    priority: getString(record, 'priority') || 'Normal',
+  }
+}
+
+function normalizeCommunityCommandActivity(
+  record: Record<string, unknown>,
+): CommunityCommandActivity {
+  const featuredBattle = record.featuredBattle
+
+  return {
+    featuredBattle:
+      featuredBattle &&
+      typeof featuredBattle === 'object' &&
+      !Array.isArray(featuredBattle)
+        ? normalizeRecentGame(featuredBattle)
+        : null,
+    latestAchievements: getRequiredArray(record, 'latestAchievements').map(
+      normalizeNotification,
+    ),
+    latestResults: getRequiredArray(record, 'latestResults').map(
+      normalizeRecentGame,
+    ),
+    news: getRequiredArray(record, 'news').map(normalizeNewsItem),
+    streams: getRequiredArray(record, 'streams').map(normalizeStreamedGame),
+  }
+}
+
+function normalizeCommunityCommandSchedule(
+  record: Record<string, unknown>,
+): CommunityCommandSchedule {
+  return {
+    currentRound: getRequiredString(record, 'currentRound'),
+    deadlines: normalizeSeasonDeadlines(getRequiredRecord(record, 'deadlines')),
+    gamesRemaining: getRequiredNumber(record, 'gamesRemaining'),
+    upcomingEventDates: getRequiredArray(record, 'upcomingEventDates').map(
+      (item) => (typeof item === 'string' ? item : String(item ?? '')),
+    ),
   }
 }
 

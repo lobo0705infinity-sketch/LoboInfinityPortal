@@ -31,6 +31,7 @@
 - `backend/RecordsApi.gs`: records and Hall of Fame APIs.
 - `backend/AutomationApi.gs`: event automation center.
 - `backend/DiscordApi.gs`: Discord destination service.
+- `backend/CommunityCommandCenterApi.gs`: authenticated Community Command Center aggregate built from Event Engine and existing player services.
 - `backend/EventEngineApi.gs`: Version 3 Event Engine foundation objects, default Current League event, and migration preview tooling.
 - `backend/IntegrityApi.gs`: league integrity audits and repairs.
 - `backend/OperationsApi.gs`: commissioner operations.

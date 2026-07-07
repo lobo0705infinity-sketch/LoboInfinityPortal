@@ -161,4 +161,18 @@ Performance characteristics:
 - Validation reuses existing production services instead of duplicate calculations.
 - Validation may be heavier than normal read endpoints because it compares multiple subsystems in one report; it should be run intentionally during release validation, not on page load.
 
+## Community Command Center Performance
+
+Version 3.1 keeps the Dashboard critical path intact.
+
+The public Dashboard still loads first from the lightweight `dashboard` endpoint. For authenticated users, the Community Command Center loads through one deferred authenticated request after the first render.
+
+The command center reuses existing backend services:
+
+- Event Engine default Current League event.
+- Season Command Center calculations.
+- Existing notifications, news, streams, army lists, and recent games.
+
+No new dependencies, startup requests, or public page-load blockers are introduced.
+
 This avoids new anonymous startup requests and avoids duplicate statistics calculations.

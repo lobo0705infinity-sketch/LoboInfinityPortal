@@ -138,6 +138,9 @@ function doGet(e) {
     case "myProfile":
       return getMyProfile(e);
 
+    case "communityCommandCenter":
+      return getCommunityCommandCenter(e);
+
     case "seasonCommandCenter":
       return getSeasonCommandCenter(e);
 

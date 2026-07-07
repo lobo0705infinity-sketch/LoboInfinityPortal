@@ -12,7 +12,7 @@ Future releases should extend the frozen Event Engine architecture rather than r
 | 3.0B | Foundation | Completed |
 | 3.0C | Validation | Completed |
 | 3.0D | Baseline | Completed |
-| 3.1 | Community Home | Next |
+| 3.1 | Community Home | Completed |
 | 3.2 | Event Migration | Planned |
 | 3.3 | Event Statistics | Planned |
 | 3.4 | Event Automation | Planned |
@@ -25,6 +25,8 @@ Future releases should extend the frozen Event Engine architecture rather than r
 Build the Community Home and event directory experience on top of the existing Event Engine foundation.
 
 Do not perform historical data migration in this release unless explicitly re-scoped.
+
+Version 3.1 ships the authenticated Community Command Center as the first Community Home surface. The broader public event directory remains future work.
 
 ### 3.2 Event Migration
 

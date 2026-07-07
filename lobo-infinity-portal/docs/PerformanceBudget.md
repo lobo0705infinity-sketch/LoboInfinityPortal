@@ -141,3 +141,18 @@ Version 3.0C is a backend validation and documentation release.
 - Validation endpoint: operations-gated and intentionally run during release validation only.
 
 Justification: The validation report compares multiple existing subsystems, so it is not part of any player-facing page load path.
+
+## Version 3.1 Community Command Center Budget Result
+
+Version 3.1 adds an authenticated Community Command Center to the Dashboard.
+
+- Initial JavaScript bundle: `index-NjMmD_Wv.js`, 309,020 bytes.
+- JavaScript delta from Version 3.0C: approximately +2,400 bytes.
+- CSS bundle: `index-DONXp5TL.css`, 104,750 bytes.
+- CSS delta from Version 3.0C: approximately +1,790 bytes.
+- Dashboard route chunk: `Dashboard-DnfIYHAX.js`, 30,880 bytes.
+- Startup API requests for signed-out users: unchanged.
+- Authenticated Dashboard: continues to use one deferred command-center request after the Dashboard critical path.
+- New dependencies: none.
+
+Justification: The added bytes replace the authenticated Season Command panel with the Community Command Center and reuse the same deferred authenticated request pattern. No public startup requests are added.

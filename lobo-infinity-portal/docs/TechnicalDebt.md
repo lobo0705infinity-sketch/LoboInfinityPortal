@@ -4,6 +4,16 @@ Version 2.5.4 LTS documents known technical debt without implementing new featur
 
 ## High Priority
 
+### Public Event Directory
+
+Description: Version 3.1 ships the authenticated Community Command Center, but the broader public Current Events, Upcoming Events, and Completed Events directory remains unimplemented.
+
+Reason: The release scope prioritizes the daily authenticated player command center and avoids event migration or new public event surfaces.
+
+Estimated impact: Medium.
+
+Suggested future release: 3.1.x or 3.2, depending on Event Migration sequencing.
+
 ### Organization Persistence
 
 Description: Version 3.0D freezes Organization as the architectural parent above Community, but runtime persistence still begins at the Event Engine foundation sheets introduced in Version 3.0B.

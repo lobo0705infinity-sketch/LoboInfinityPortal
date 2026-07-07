@@ -6209,6 +6209,113 @@
   gap: 18px;
 }
 
+.community-command-center {
+  display: grid;
+  gap: 18px;
+}
+
+.community-command-hero {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(0, 1.25fr) minmax(140px, 0.35fr) minmax(0, 1fr);
+}
+
+.community-command-hero > div,
+.community-event-card,
+.community-action-row,
+.community-insight {
+  background: rgba(8, 14, 22, 0.72);
+  border: 1px solid rgba(76, 201, 240, 0.14);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.community-command-hero span,
+.community-event-card span,
+.community-action-row span,
+.community-opponent-columns h4 {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.community-command-hero h3 {
+  margin: 6px 0;
+}
+
+.community-command-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.community-command-grid.wide {
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+}
+
+.community-event-list,
+.community-action-list,
+.community-activity-grid,
+.community-opponent-columns {
+  display: grid;
+  gap: 10px;
+}
+
+.community-event-list {
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.community-event-card,
+.community-action-row {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.community-event-card {
+  display: grid;
+  gap: 8px;
+}
+
+.community-action-row {
+  align-items: center;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 72px minmax(0, 1fr);
+}
+
+.community-event-card:hover,
+.community-event-card:focus-visible,
+.community-action-row:hover,
+.community-action-row:focus-visible {
+  border-color: rgba(193, 18, 31, 0.45);
+  transform: translateY(-1px);
+}
+
+.community-event-card b,
+.community-action-row strong {
+  color: var(--accent);
+}
+
+.community-opponent-columns {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.community-insight {
+  color: var(--text);
+  margin: 0;
+}
+
+.community-activity-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.community-quick-actions {
+  align-content: start;
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .season-status-pill {
   align-self: center;
   border: 1px solid rgba(76, 201, 240, 0.24);
@@ -6392,6 +6499,10 @@
 
 @media (max-width: 920px) {
   .season-command-hero,
+  .community-command-hero,
+  .community-command-grid,
+  .community-command-grid.wide,
+  .community-opponent-columns,
   .season-progress-grid,
   .season-command-grid,
   .season-command-grid.wide {

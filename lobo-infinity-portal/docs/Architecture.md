@@ -349,3 +349,28 @@ Every release must satisfy four permanent gates:
 - Quality Gate: pass lint, build, Apps Script validation, documentation updates, release checklist updates, and technical debt documentation.
 
 Version 3.0C adds Event Migration Validation to prove the Event Engine default scope produces identical results to the legacy League model before production migration.
+
+## Community Command Center
+
+Version 3.1 introduces the authenticated Community Command Center as the first player-facing Event Engine experience.
+
+It answers:
+
+```text
+What should I do today?
+```
+
+The Community Command Center reuses:
+
+- Portal Identity and League Identity for the authenticated player.
+- Event Engine for Current League event scope.
+- Season Command Center for opponent tracking, deadlines, promotion/relegation, and schedule state.
+- Existing Notifications, News, Streams, Army Lists, Deep Links, and Formatting services.
+
+It does not create a parallel scheduling, standings, statistics, automation, or identity system.
+
+Until Event Migration is completed, active Event data resolves through the Current League Event:
+
+```text
+event-current-league
+```

@@ -38,6 +38,10 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] Verify Promotion Tracker
 - [ ] Verify Legacy APIs
 - [ ] Verify Event APIs
+- [ ] Verify Community Command Center
+- [ ] Verify Active Events
+- [ ] Verify Opponent Tracker
+- [ ] Verify Promotion Tracker
 - [ ] Verify Current League Event
 - [ ] Verify Standings
 - [ ] Verify Hall of Fame
