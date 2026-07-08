@@ -253,6 +253,119 @@ function Diagnostics() {
 
       <section className="panel operations-panel">
         <div className="panel-heading">
+          <p className="eyebrow">Firestore Bootstrap</p>
+          <h2>Connection & Schema</h2>
+        </div>
+        <div className="operations-table-wrap">
+          <table className="operations-table">
+            <tbody>
+              <tr>
+                <th>Overall Health</th>
+                <td>{providerDiagnostics?.bootstrap.overallHealth ?? 'Loading'}</td>
+              </tr>
+              <tr>
+                <th>Provider Mode</th>
+                <td>{providerDiagnostics?.bootstrap.provider ?? 'Loading'}</td>
+              </tr>
+              <tr>
+                <th>Project ID</th>
+                <td>{providerDiagnostics?.bootstrap.projectId || 'Not configured'}</td>
+              </tr>
+              <tr>
+                <th>Region</th>
+                <td>{providerDiagnostics?.bootstrap.region ?? 'Not reported'}</td>
+              </tr>
+              <tr>
+                <th>SDK</th>
+                <td>{formatBootstrapCheck(providerDiagnostics?.bootstrap.sdk)}</td>
+              </tr>
+              <tr>
+                <th>Authentication</th>
+                <td>{formatBootstrapCheck(providerDiagnostics?.bootstrap.authentication)}</td>
+              </tr>
+              <tr>
+                <th>Connection</th>
+                <td>{formatBootstrapCheck(providerDiagnostics?.bootstrap.connection)}</td>
+              </tr>
+              <tr>
+                <th>Read Test</th>
+                <td>{formatBootstrapCheck(providerDiagnostics?.bootstrap.readTest)}</td>
+              </tr>
+              <tr>
+                <th>Write Test</th>
+                <td>{formatBootstrapCheck(providerDiagnostics?.bootstrap.writeTest)}</td>
+              </tr>
+              <tr>
+                <th>Schema</th>
+                <td>
+                  {providerDiagnostics
+                    ? `${formatBootstrapCheck(providerDiagnostics.bootstrap.schema)} Version ${providerDiagnostics.bootstrap.schema.version}`
+                    : 'Loading'}
+                </td>
+              </tr>
+              <tr>
+                <th>Collections</th>
+                <td>{formatBootstrapCheck(providerDiagnostics?.bootstrap.collectionsInitialized)}</td>
+              </tr>
+              <tr>
+                <th>Seed Data</th>
+                <td>{formatBootstrapCheck(providerDiagnostics?.bootstrap.seed)}</td>
+              </tr>
+              <tr>
+                <th>Indexes</th>
+                <td>{formatBootstrapCheck(providerDiagnostics?.bootstrap.indexes)}</td>
+              </tr>
+              <tr>
+                <th>Security</th>
+                <td>{formatBootstrapCheck(providerDiagnostics?.bootstrap.security)}</td>
+              </tr>
+              <tr>
+                <th>Startup Safety</th>
+                <td>{providerDiagnostics?.bootstrap.fallback.message ?? 'Loading'}</td>
+              </tr>
+              <tr>
+                <th>Environment Variables</th>
+                <td>
+                  <pre className="diagnostics-json">
+                    {JSON.stringify(
+                      providerDiagnostics?.bootstrap.environment.variables ?? [],
+                      null,
+                      2,
+                    )}
+                  </pre>
+                </td>
+              </tr>
+              <tr>
+                <th>Missing Variables</th>
+                <td>
+                  {(providerDiagnostics?.bootstrap.environment.missing.length ?? 0) > 0
+                    ? providerDiagnostics?.bootstrap.environment.missing.join(', ')
+                    : 'None'}
+                </td>
+              </tr>
+              <tr>
+                <th>Bootstrap Errors</th>
+                <td>
+                  {(providerDiagnostics?.bootstrap.errors.length ?? 0) > 0
+                    ? providerDiagnostics?.bootstrap.errors.join('; ')
+                    : 'None'}
+                </td>
+              </tr>
+              <tr>
+                <th>Latency</th>
+                <td>
+                  {providerDiagnostics
+                    ? `${providerDiagnostics.bootstrap.latencyMs} ms`
+                    : 'Loading'}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="panel operations-panel">
+        <div className="panel-heading">
           <p className="eyebrow">OAuth Diagnostics</p>
           <h2>Current Authentication Session</h2>
         </div>
@@ -701,6 +814,21 @@ function formatBytes(value: number) {
   }
 
   return `${Math.round(value / 1024)} KB`
+}
+
+function formatBootstrapCheck(
+  check:
+    | {
+        detail: string
+        status: 'FAIL' | 'PASS' | 'WARN'
+      }
+    | undefined,
+) {
+  if (!check) {
+    return 'Loading'
+  }
+
+  return `${check.status}: ${check.detail}`
 }
 
 export default Diagnostics

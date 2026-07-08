@@ -661,3 +661,9 @@ creating required collection markers, seeding `event-current-league` when no
 Events exist, writing `settings/schema`, and surfacing provider health in
 Commissioner Diagnostics. `VITE_DATA_PROVIDER=dual` keeps Google Sheets as the
 source of truth while comparing Firestore reads in the background.
+
+Version 7.1.1 adds `FirestoreBootstrap` as the operational verification layer
+above the Firestore provider. Bootstrap validates Vercel/Firebase environment
+variables, initializes the Firebase SDK, verifies Firestore read/write access,
+checks schema and seed documents, and reports Google Sheets fallback status.
+Bootstrap does not migrate production data or switch the production provider.

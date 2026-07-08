@@ -8,12 +8,29 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (
-            id.includes('node_modules/firebase') ||
-            id.includes('node_modules/@firebase') ||
+            id.includes('node_modules/firebase/auth') ||
+            id.includes('node_modules/@firebase/auth')
+          ) {
+            return 'firebase-auth'
+          }
+
+          if (
+            id.includes('node_modules/firebase/app') ||
+            id.includes('node_modules/@firebase/app') ||
+            id.includes('node_modules/@firebase/component') ||
+            id.includes('node_modules/@firebase/logger') ||
+            id.includes('node_modules/@firebase/util')
+          ) {
+            return 'firebase-core'
+          }
+
+          if (
+            id.includes('node_modules/firebase/firestore') ||
+            id.includes('node_modules/@firebase/firestore') ||
             id.includes('node_modules/@grpc') ||
             id.includes('node_modules/protobufjs')
           ) {
-            return 'firebase'
+            return 'firebase-firestore'
           }
 
           if (id.includes('node_modules')) {

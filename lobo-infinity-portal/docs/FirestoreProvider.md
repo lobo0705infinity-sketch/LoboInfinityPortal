@@ -12,7 +12,7 @@ Set `VITE_DATA_PROVIDER` to choose the active provider:
 - `dual`: Google primary reads with Firestore comparison diagnostics.
 - `mock`: fixture provider.
 
-Firestore requires these Vite environment variables:
+Firestore bootstrap validates these Vite environment variables:
 
 ```text
 VITE_FIREBASE_API_KEY
@@ -21,7 +21,7 @@ VITE_FIREBASE_PROJECT_ID
 VITE_FIREBASE_STORAGE_BUCKET
 VITE_FIREBASE_MESSAGING_SENDER_ID
 VITE_FIREBASE_APP_ID
-VITE_FIREBASE_MEASUREMENT_ID optional
+VITE_FIREBASE_MEASUREMENT_ID
 VITE_FIREBASE_REGION optional
 ```
 
@@ -53,7 +53,8 @@ Schema metadata is written to `settings/schema`:
 {
   "schemaVersion": 1,
   "provider": "firestore",
-  "portalVersion": "7.1"
+  "portalVersion": "7.1.1",
+  "initializedBy": "bootstrap"
 }
 ```
 
@@ -69,6 +70,10 @@ Commissioner Diagnostics displays:
 - Provider latency.
 - Dual Compare mismatches.
 - Provider errors.
+
+Version 7.1.1 adds a dedicated Firestore Bootstrap diagnostics panel for
+environment validation, SDK initialization, read/write probes, schema status,
+seed documents, and startup fallback status.
 
 ## Dual Compare
 

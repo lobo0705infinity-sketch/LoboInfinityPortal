@@ -28,6 +28,11 @@ The active provider is selected by `VITE_DATA_PROVIDER`.
 - `dual`: Google primary reads with Firestore comparison diagnostics.
 - `mock`: stubbed provider reserved for test fixtures.
 
+If `firestore` is selected and Firestore cannot initialize, repository calls
+fall back to Google Sheets and Commissioner Diagnostics displays the bootstrap
+failure. This keeps the production portal available while Firestore is being
+prepared.
+
 Changing storage providers should be a configuration change after the target
 provider implements every repository contract.
 
@@ -63,10 +68,11 @@ the migration, but data reads and writes should move to repository methods.
 The Firestore migration path is intentionally narrow:
 
 1. Configure Firebase environment variables.
-2. Run `VITE_DATA_PROVIDER=dual` to compare Google and Firestore reads.
-3. Use the migration utility to seed Firestore.
-4. Keep repository interfaces unchanged.
-5. Set `VITE_DATA_PROVIDER=firestore` only after contract validation passes.
+2. Open Commissioner Diagnostics and verify Firestore Bootstrap health.
+3. Run `VITE_DATA_PROVIDER=dual` to compare Google and Firestore reads.
+4. Use the migration utility to seed Firestore.
+5. Keep repository interfaces unchanged.
+6. Set `VITE_DATA_PROVIDER=firestore` only after contract validation passes.
 
 Pages, Event Engine UI, scheduling workflows, and tournament operations should
 not require rewrites when the provider changes.

@@ -1,4 +1,5 @@
 import type { DataProvider, DataProviderHealth } from '../DataProvider'
+import { googleSheetsProvider } from './GoogleSheetsProvider'
 
 async function provider() {
   const module = await import('./FirestoreProviderImpl')
@@ -18,7 +19,25 @@ function callRepository<
       throw new Error(`Firestore provider does not implement ${String(method)}.`)
     }
 
-    return targetMethod(...args)
+    try {
+      return await targetMethod(...args)
+    } catch (error) {
+      if (String(import.meta.env.VITE_DATA_PROVIDER ?? 'google') !== 'firestore') {
+        throw error
+      }
+
+      const fallbackRepository = googleSheetsProvider[repository] as Record<
+        string,
+        unknown
+      >
+      const fallbackMethod = fallbackRepository[method as string]
+
+      if (typeof fallbackMethod !== 'function') {
+        throw error
+      }
+
+      return fallbackMethod(...args)
+    }
   }
 }
 

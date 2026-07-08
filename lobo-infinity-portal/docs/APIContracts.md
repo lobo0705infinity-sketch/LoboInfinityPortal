@@ -995,6 +995,12 @@ Firestore initialization writes managed schema metadata to `settings/schema`
 and creates required collection markers. This does not alter existing Apps
 Script API contracts.
 
+Version 7.1.1 adds Firestore Bootstrap diagnostics. Bootstrap performs
+environment validation, SDK initialization, Firestore read/write probes, schema
+verification, seed verification, and startup fallback reporting through the DAL
+diagnostics surface. No Apps Script endpoint or player-facing API contract is
+changed.
+
 ### Reliability Dashboard
 
 Action:

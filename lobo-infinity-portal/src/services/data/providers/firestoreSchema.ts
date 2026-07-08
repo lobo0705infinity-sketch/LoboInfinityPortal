@@ -12,7 +12,7 @@ import {
 } from 'firebase/firestore'
 
 export const firestoreSchemaVersion = 1
-export const firestorePortalVersion = '7.1'
+export const firestorePortalVersion = '7.1.1'
 
 export const requiredFirestoreCollections = [
   'events',
@@ -34,6 +34,8 @@ export type RequiredFirestoreCollection =
 export type FirestoreSchemaHealth = {
   collectionCounts: Record<string, number>
   collections: string[]
+  defaultAnalyticsExists: boolean
+  defaultSettingsExists: boolean
   initialized: boolean
   initializedAt: string
   latencyMs: number
@@ -49,6 +51,10 @@ const seedEventId = 'event-current-league'
 export async function initializeFirestoreSchema(
   db: Firestore,
   projectId: string,
+  options: {
+    initializedBy?: string
+    portalVersion?: string
+  } = {},
 ): Promise<FirestoreSchemaHealth> {
   const start = performance.now()
 
@@ -79,11 +85,37 @@ export async function initializeFirestoreSchema(
     })
   }
 
+  const defaultsRef = doc(db, 'settings', 'defaults')
+  const analyticsRef = doc(db, 'analytics', 'default')
+  const defaults = await getDoc(defaultsRef)
+  const analytics = await getDoc(analyticsRef)
+
+  if (!defaults.exists()) {
+    await setDoc(defaultsRef, {
+      activeProvider: 'google',
+      createdAt: serverTimestamp(),
+      managedBy: 'lobo-infinity-portal',
+      provider: 'firestore',
+      updatedAt: serverTimestamp(),
+    })
+  }
+
+  if (!analytics.exists()) {
+    await setDoc(analyticsRef, {
+      createdAt: serverTimestamp(),
+      games: 0,
+      managedBy: 'lobo-infinity-portal',
+      provider: 'firestore',
+      updatedAt: serverTimestamp(),
+    })
+  }
+
   await setDoc(
     doc(db, 'settings', 'schema'),
     {
       initializedAt: serverTimestamp(),
-      portalVersion: firestorePortalVersion,
+      initializedBy: options.initializedBy ?? 'provider',
+      portalVersion: options.portalVersion ?? firestorePortalVersion,
       provider: 'firestore',
       schemaVersion: firestoreSchemaVersion,
       updatedAt: serverTimestamp(),
@@ -93,11 +125,15 @@ export async function initializeFirestoreSchema(
 
   const schema = await getDoc(doc(db, 'settings', 'schema'))
   const seedEvent = await getDoc(seedEventRef)
+  const defaultSettings = await getDoc(defaultsRef)
+  const defaultAnalytics = await getDoc(analyticsRef)
   const collectionCounts = await getCollectionCounts(db)
 
   return {
     collectionCounts,
     collections: [...requiredFirestoreCollections],
+    defaultAnalyticsExists: defaultAnalytics.exists(),
+    defaultSettingsExists: defaultSettings.exists(),
     initialized: schema.exists(),
     initializedAt: readString(schema.data(), 'initializedAt'),
     latencyMs: Math.round(performance.now() - start),
@@ -105,7 +141,9 @@ export async function initializeFirestoreSchema(
     provider: 'firestore',
     schemaVersion: readNumber(schema.data(), 'schemaVersion'),
     seedEventExists: seedEvent.exists(),
-    status: schema.exists() && seedEvent.exists() ? 'healthy' : 'error',
+    status: schema.exists() && seedEvent.exists() && defaultSettings.exists() && defaultAnalytics.exists()
+      ? 'healthy'
+      : 'error',
   }
 }
 

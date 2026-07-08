@@ -17,6 +17,23 @@ export type FirebaseRuntime = {
   db: Firestore
 }
 
+export type FirebaseEnvironmentVariableStatus = {
+  configured: boolean
+  name: string
+  required: boolean
+}
+
+const firebaseEnvironmentVariables = [
+  'VITE_DATA_PROVIDER',
+  'VITE_FIREBASE_API_KEY',
+  'VITE_FIREBASE_AUTH_DOMAIN',
+  'VITE_FIREBASE_PROJECT_ID',
+  'VITE_FIREBASE_STORAGE_BUCKET',
+  'VITE_FIREBASE_MESSAGING_SENDER_ID',
+  'VITE_FIREBASE_APP_ID',
+  'VITE_FIREBASE_MEASUREMENT_ID',
+] as const
+
 export function getFirebaseRuntimeConfig(): FirebaseRuntimeConfig | null {
   const config = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY ?? '',
@@ -38,6 +55,25 @@ export function getFirebaseRuntimeConfig(): FirebaseRuntimeConfig | null {
   ]
 
   return requiredValues.every((value) => value.trim().length > 0) ? config : null
+}
+
+export function getFirebaseEnvironmentDiagnostics() {
+  const variables: FirebaseEnvironmentVariableStatus[] =
+    firebaseEnvironmentVariables.map((name) => ({
+      configured: String(import.meta.env[name] ?? '').trim().length > 0,
+      name,
+      required: true,
+    }))
+  const missing = variables
+    .filter((variable) => variable.required && !variable.configured)
+    .map((variable) => variable.name)
+
+  return {
+    configured: missing.length === 0,
+    missing,
+    provider: String(import.meta.env.VITE_DATA_PROVIDER ?? 'google'),
+    variables,
+  }
 }
 
 let runtime: FirebaseRuntime | null = null

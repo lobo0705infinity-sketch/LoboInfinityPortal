@@ -60,6 +60,10 @@ schema versioning, provider health diagnostics, Firestore security rules, and a
 repeatable migration utility. Google remains the active production provider
 until migration is explicitly enabled.
 
+Version 7.1.1 completes Firestore bootstrap readiness with environment
+validation, SDK/connectivity/read/write probes, required seed documents,
+Commissioner Bootstrap diagnostics, and Google Sheets startup fallback safety.
+
 ### 3.2 Event Migration
 
 Add explicit event scope to historical data after migration validation has passed.
