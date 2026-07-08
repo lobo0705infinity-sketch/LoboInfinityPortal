@@ -19,7 +19,10 @@ import {
   type SchedulingRequest,
 } from '../services/api'
 import { recordClientDiagnostic } from '../services/apiCore'
-import { formatPlayerName } from '../services/formatting'
+import {
+  formatPlayerName,
+  formatSchedulingDateTime,
+} from '../services/formatting'
 
 type MatchFinderState =
   | {
@@ -535,7 +538,7 @@ function isOutgoingRequestRefreshed(
   data: SchedulingCenterData,
 ) {
   return data.requests.outgoing.some((request) =>
-    isSchedulingRequestMatch(submitted, request),
+    isSchedulingRequestMatch(submitted, request, data.player),
   )
 }
 
@@ -551,29 +554,36 @@ function getOutgoingRequestMismatchDetail(
 
   return [
     `request submitted for ${submitted.opponent}, but refreshed outgoing list did not include it`,
-    `latest outgoing: ${latestOutgoing.toPlayer} ${latestOutgoing.proposedDate} ${latestOutgoing.proposedTime}`,
+    `current player: ${data.player.player}`,
+    `latest outgoing: ${latestOutgoing.fromPlayer} to ${latestOutgoing.toPlayer} ${latestOutgoing.status} ${latestOutgoing.proposedDate} ${latestOutgoing.proposedTime}`,
   ].join('; ')
 }
 
 function isSchedulingRequestMatch(
   submitted: MatchRequestSubmitParams,
   request: SchedulingRequest,
+  currentPlayer: SchedulingCenterData['player'],
 ) {
+  const fromPlayer = normalizeSchedulingRequestValue(request.fromPlayer)
+  const currentPlayerNames = [
+    currentPlayer.player,
+    currentPlayer.displayName,
+  ].map(normalizeSchedulingRequestValue)
+
   return (
+    currentPlayerNames.includes(fromPlayer) &&
     normalizeSchedulingRequestValue(request.toPlayer) ===
       normalizeSchedulingRequestValue(submitted.opponent) &&
-    normalizeSchedulingRequestValue(request.proposedDate) ===
-      normalizeSchedulingRequestValue(submitted.proposedDate) &&
-    normalizeSchedulingRequestValue(request.proposedTime) ===
-      normalizeSchedulingRequestValue(submitted.proposedTime) &&
-    normalizeSchedulingRequestValue(request.message) ===
-      normalizeSchedulingRequestValue(submitted.message) &&
-    normalizeSchedulingRequestValue(request.status) === 'pending'
+    isPendingSchedulingStatus(request.status)
   )
 }
 
 function normalizeSchedulingRequestValue(value: string) {
   return value.trim().toLowerCase()
+}
+
+function isPendingSchedulingStatus(status: string) {
+  return normalizeSchedulingRequestValue(status).includes('pending')
 }
 
 function MatchFinderHeader() {
@@ -2255,7 +2265,10 @@ function RequestList({
               {request.fromPlayer} vs {request.toPlayer}
             </strong>
             <p>
-              {request.proposedDate} at {request.proposedTime}
+              {formatSchedulingDateTime(
+                request.proposedDate,
+                request.proposedTime,
+              )}
             </p>
             {request.message ? <p>{request.message}</p> : null}
             <div className="scheduling-card-actions">

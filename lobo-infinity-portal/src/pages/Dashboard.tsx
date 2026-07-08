@@ -26,7 +26,11 @@ import {
   getDivisionIdentity,
   getDivisionStyle,
 } from '../utils/divisions'
-import { formatObjectiveScore, formatPlayerName } from '../services/formatting'
+import {
+  formatObjectiveScore,
+  formatPlayerName,
+  formatSchedulingDateTime,
+} from '../services/formatting'
 import '../App.css'
 
 type HomeState =
@@ -466,7 +470,10 @@ function CommunityCommandCenter() {
   const remainingOpponents = data.opponentTracker.remaining
   const actionableNotifications = [
     ...data.matchRequests.incoming.map((request) => ({
-      body: `${request.fromPlayer} challenged you for ${request.proposedDate} at ${request.proposedTime}.`,
+      body: `${request.fromPlayer} challenged you for ${formatSchedulingDateTime(
+        request.proposedDate,
+        request.proposedTime,
+      )}.`,
       id: request.id,
       link: '/match-finder',
       title: `${request.fromPlayer} is calling for battle`,
@@ -546,7 +553,10 @@ function CommunityCommandCenter() {
                 {getOtherRequestPlayer(nextMatch, data.welcome.leaguePlayer)}
               </strong>
               <p>
-                {nextMatch.proposedDate} - {nextMatch.proposedTime}
+                {formatSchedulingDateTime(
+                  nextMatch.proposedDate,
+                  nextMatch.proposedTime,
+                )}
                 {getCountdownLabel(nextMatch.proposedDate)}
               </p>
             </article>
@@ -555,14 +565,24 @@ function CommunityCommandCenter() {
             <CommandActionLink className="player-home-match action" key={request.id} to="/match-finder">
               <span>Waiting for your response</span>
               <strong>{request.fromPlayer}</strong>
-              <p>{request.proposedDate} - {request.proposedTime}</p>
+              <p>
+                {formatSchedulingDateTime(
+                  request.proposedDate,
+                  request.proposedTime,
+                )}
+              </p>
             </CommandActionLink>
           ))}
           {data.matchRequests.outgoing.map((request) => (
             <article className="player-home-match" key={request.id}>
               <span>Pending</span>
               <strong>{request.toPlayer}</strong>
-              <p>{request.proposedDate} - {request.proposedTime}</p>
+              <p>
+                {formatSchedulingDateTime(
+                  request.proposedDate,
+                  request.proposedTime,
+                )}
+              </p>
             </article>
           ))}
           {!nextMatch &&
@@ -940,7 +960,10 @@ function buildFeaturedLeagueMatch(
     const opponent = getOtherRequestPlayer(upcoming, data.welcome.leaguePlayer)
 
     return {
-      body: `${upcoming.proposedDate} at ${upcoming.proposedTime}. This one matters because it moves your season progress forward.`,
+      body: `${formatSchedulingDateTime(
+        upcoming.proposedDate,
+        upcoming.proposedTime,
+      )}. This one matters because it moves your season progress forward.`,
       label: 'Featured Match',
       title: `${data.welcome.displayName} vs ${opponent}`,
       to: '/match-finder',

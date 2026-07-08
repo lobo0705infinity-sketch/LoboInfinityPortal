@@ -86,6 +86,60 @@ export function formatDate(value: string) {
   return formatText(value)
 }
 
+export function formatSchedulingDate(value: string) {
+  const text = formatText(value)
+
+  if (!text) {
+    return ''
+  }
+
+  const inputDate = parseDateInput(text)
+  const parsedDate = inputDate ?? parseRuntimeDate(text)
+
+  if (!parsedDate) {
+    return text
+  }
+
+  return parsedDate.toLocaleDateString([], {
+    day: 'numeric',
+    month: 'long',
+    weekday: 'long',
+    year: 'numeric',
+  })
+}
+
+export function formatSchedulingTime(value: string) {
+  const text = formatText(value)
+
+  if (!text) {
+    return ''
+  }
+
+  const timeParts = parseTimeParts(text)
+
+  if (!timeParts) {
+    return text
+  }
+
+  const date = new Date(2000, 0, 1, timeParts.hours, timeParts.minutes)
+
+  return date.toLocaleTimeString([], {
+    hour: 'numeric',
+    minute: '2-digit',
+  })
+}
+
+export function formatSchedulingDateTime(dateValue: string, timeValue: string) {
+  const date = formatSchedulingDate(dateValue)
+  const time = formatSchedulingTime(timeValue)
+
+  if (date && time) {
+    return `${date} at ${time}`
+  }
+
+  return date || time || ''
+}
+
 export function formatRelativeTime(value: string) {
   return formatText(value)
 }
@@ -103,4 +157,46 @@ function formatText(value: number | string | undefined) {
 
 function formatNumber(value: number) {
   return Number.isInteger(value) ? String(value) : value.toFixed(2)
+}
+
+function parseDateInput(value: string) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value)
+
+  if (!match) {
+    return null
+  }
+
+  return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]))
+}
+
+function parseRuntimeDate(value: string) {
+  const parsed = new Date(value)
+
+  if (Number.isNaN(parsed.getTime())) {
+    return null
+  }
+
+  return parsed
+}
+
+function parseTimeParts(value: string) {
+  const timeMatch = /(?:^|\s)(\d{1,2}):(\d{2})(?::\d{2})?(?:\s|$)/.exec(value)
+
+  if (timeMatch) {
+    return {
+      hours: Number(timeMatch[1]),
+      minutes: Number(timeMatch[2]),
+    }
+  }
+
+  const parsed = parseRuntimeDate(value)
+
+  if (!parsed) {
+    return null
+  }
+
+  return {
+    hours: parsed.getHours(),
+    minutes: parsed.getMinutes(),
+  }
 }
