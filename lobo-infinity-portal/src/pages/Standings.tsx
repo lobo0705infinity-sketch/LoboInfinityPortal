@@ -1,10 +1,17 @@
 import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { useAuth } from '../auth/AuthContext'
 import Loading from '../components/Loading'
 import StandingsTable from '../components/StandingsTable'
 import StatCard from '../components/StatCard'
 import { apiClient } from '../services/api'
 import { formatPlayerName } from '../services/formatting'
-import { publishStandingsDiagnostics } from '../services/standingsDiagnostics'
+import {
+  collectAuthenticatedStandingsDebugReport,
+  publishStandingsDiagnostics,
+  setFirstStandingsRowPaintDiagnostic,
+  type AuthenticatedStandingsDebugReport,
+} from '../services/standingsDiagnostics'
 import type { DivisionKey, DivisionStandings } from '../types/dashboard'
 import {
   formatDivisionLabel,
@@ -47,10 +54,14 @@ type StandingsState =
     }
 
 function Standings() {
+  const auth = useAuth()
+  const [searchParams] = useSearchParams()
   const [activeDivision, setActiveDivision] = useState<DivisionKey>('main')
   const [standingsState, setStandingsState] = useState<StandingsState>({
     status: 'idle',
   })
+  const debugEnabled =
+    searchParams.get('debug') === 'standings' && auth.isAtLeastRole('Commissioner')
 
   useEffect(() => {
     const controller = new AbortController()
@@ -123,6 +134,7 @@ function Standings() {
 
       <DivisionPanel
         activeDivision={activeDivision}
+        debugEnabled={debugEnabled}
         standingsState={standingsState}
       />
     </main>
@@ -131,9 +143,11 @@ function Standings() {
 
 function DivisionPanel({
   activeDivision,
+  debugEnabled,
   standingsState,
 }: {
   activeDivision: DivisionKey
+  debugEnabled: boolean
   standingsState: StandingsState
 }) {
   const isCurrent =
@@ -220,7 +234,103 @@ function DivisionPanel({
           />
         </section>
       </section>
+
+      {debugEnabled ? <StandingsDebugPanel /> : null}
     </>
+  )
+}
+
+function StandingsDebugPanel() {
+  const [copied, setCopied] = useState(false)
+  const [paintApplied, setPaintApplied] = useState(false)
+  const [report, setReport] =
+    useState<AuthenticatedStandingsDebugReport | null>(null)
+
+  function captureReport(nextPaintApplied = paintApplied) {
+    setReport(collectAuthenticatedStandingsDebugReport(nextPaintApplied))
+    setCopied(false)
+  }
+
+  function togglePaintDiagnostic() {
+    const nextPaintApplied = !paintApplied
+    setFirstStandingsRowPaintDiagnostic(nextPaintApplied)
+    setPaintApplied(nextPaintApplied)
+    captureReport(nextPaintApplied)
+  }
+
+  async function copyDiagnostics() {
+    const nextReport =
+      report ?? collectAuthenticatedStandingsDebugReport(paintApplied)
+    setReport(nextReport)
+    await navigator.clipboard.writeText(JSON.stringify(nextReport, null, 2))
+    setCopied(true)
+  }
+
+  return (
+    <section className="panel standings-debug-panel">
+      <div className="panel-heading standings-panel-heading">
+        <div>
+          <p className="eyebrow">Commissioner Debug</p>
+          <h2>Standings Browser Diagnostics</h2>
+          <p>
+            Runtime capture from this authenticated browser session. This panel
+            is visible only to Commissioners using <code>?debug=standings</code>.
+          </p>
+        </div>
+        <div className="standings-debug-actions">
+          <button onClick={() => captureReport()} type="button">
+            Capture Runtime Diagnostics
+          </button>
+          <button onClick={togglePaintDiagnostic} type="button">
+            {paintApplied ? 'Remove Paint Test' : 'Apply Paint Test'}
+          </button>
+          <button onClick={() => void copyDiagnostics()} type="button">
+            {copied ? 'Copied' : 'Copy Standings Diagnostics'}
+          </button>
+        </div>
+      </div>
+
+      {report ? (
+        <div className="standings-debug-grid">
+          <DebugBlock title="Build Verification" value={report.build} />
+          <DebugBlock title="API Response" value={report.pipeline?.api ?? null} />
+          <DebugBlock
+            title="React State"
+            value={report.pipeline?.reactState ?? null}
+          />
+          <DebugBlock
+            title="StandingsTable Props"
+            value={report.pipeline?.tableProps ?? null}
+          />
+          <DebugBlock
+            title="Rendered DOM Rows"
+            value={report.pipeline?.renderedDom ?? null}
+          />
+          <DebugBlock
+            title="First Row DOM Inspection"
+            value={report.firstRowInspection}
+          />
+          <DebugBlock title="Cell Inspection" value={report.cellInspection} />
+          <DebugBlock title="Ancestor Inspection" value={report.ancestorInspection} />
+          <DebugBlock title="Paint Verification" value={report.paintInspection} />
+          <DebugBlock title="Loaded Assets" value={report.pipeline?.assets ?? null} />
+        </div>
+      ) : (
+        <p>
+          Click Capture Runtime Diagnostics after the standings table finishes
+          rendering.
+        </p>
+      )}
+    </section>
+  )
+}
+
+function DebugBlock({ title, value }: { title: string; value: unknown }) {
+  return (
+    <article className="standings-debug-card">
+      <h3>{title}</h3>
+      <pre className="diagnostics-json">{JSON.stringify(value, null, 2)}</pre>
+    </article>
   )
 }
 

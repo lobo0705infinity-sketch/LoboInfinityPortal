@@ -146,6 +146,58 @@
   font-weight: 900;
 }
 
+.standings-debug-panel {
+  margin: 0 clamp(18px, 4vw, 46px) 46px;
+}
+
+.standings-debug-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.standings-debug-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.standings-debug-card {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  background: var(--panel-muted);
+}
+
+.standings-debug-card h3 {
+  margin: 0 0 10px;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.standings-debug-card pre {
+  max-height: 360px;
+  margin: 0;
+  overflow: auto;
+}
+
+.standings-table .table-row[data-standings-paint-test="active"] {
+  background: #ffea00 !important;
+  color: #000000 !important;
+  outline: 5px solid #ff0000 !important;
+  position: relative !important;
+  z-index: 999999 !important;
+}
+
+.standings-table .table-row[data-standings-paint-test="active"] *,
+.standings-table .table-row[data-standings-paint-test="active"] a {
+  color: #000000 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
 @media (max-width: 720px) {
   .standings-panel-heading {
     align-items: flex-start;
@@ -154,5 +206,13 @@
 
   .movement-legend {
     justify-content: flex-start;
+  }
+
+  .standings-debug-actions {
+    width: 100%;
+  }
+
+  .standings-debug-actions button {
+    width: 100%;
   }
 }
