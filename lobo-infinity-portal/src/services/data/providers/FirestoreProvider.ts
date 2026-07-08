@@ -1,85 +1,108 @@
-import type { DataProvider } from '../DataProvider'
+import type { DataProvider, DataProviderHealth } from '../DataProvider'
 
-function unavailable(method: string): never {
-  throw new Error(
-    `Firestore data provider is not configured. Implement ${method} before setting VITE_DATA_PROVIDER=firestore.`,
-  )
+async function provider() {
+  const module = await import('./FirestoreProviderImpl')
+  return module.firestoreProviderImpl
+}
+
+function callRepository<
+  TRepository extends keyof DataProvider,
+  TMethod extends keyof DataProvider[TRepository],
+>(repository: TRepository, method: TMethod) {
+  return async (...args: unknown[]) => {
+    const activeProvider = await provider()
+    const targetRepository = activeProvider[repository] as Record<string, unknown>
+    const targetMethod = targetRepository[method as string]
+
+    if (typeof targetMethod !== 'function') {
+      throw new Error(`Firestore provider does not implement ${String(method)}.`)
+    }
+
+    return targetMethod(...args)
+  }
 }
 
 export const firestoreProvider: DataProvider = {
   analytics: {
-    getAnalytics: () => unavailable('AnalyticsRepository.getAnalytics'),
-    getFaction: () => unavailable('AnalyticsRepository.getFaction'),
-    getFactions: () => unavailable('AnalyticsRepository.getFactions'),
-    getHallOfFame: () => unavailable('AnalyticsRepository.getHallOfFame'),
-    getMission: () => unavailable('AnalyticsRepository.getMission'),
-    getMissions: () => unavailable('AnalyticsRepository.getMissions'),
-    getRecords: () => unavailable('AnalyticsRepository.getRecords'),
+    getAnalytics: callRepository('analytics', 'getAnalytics'),
+    getFaction: callRepository('analytics', 'getFaction'),
+    getFactions: callRepository('analytics', 'getFactions'),
+    getHallOfFame: callRepository('analytics', 'getHallOfFame'),
+    getMission: callRepository('analytics', 'getMission'),
+    getMissions: callRepository('analytics', 'getMissions'),
+    getRecords: callRepository('analytics', 'getRecords'),
   },
   dashboard: {
-    getCommunityCommandCenter: () =>
-      unavailable('DashboardRepository.getCommunityCommandCenter'),
-    getDashboard: () => unavailable('DashboardRepository.getDashboard'),
-    getHome: () => unavailable('DashboardRepository.getHome'),
+    getCommunityCommandCenter: callRepository(
+      'dashboard',
+      'getCommunityCommandCenter',
+    ),
+    getDashboard: callRepository('dashboard', 'getDashboard'),
+    getHome: callRepository('dashboard', 'getHome'),
   },
   events: {
-    getEventHome: () => unavailable('EventRepository.getEventHome'),
-    getEventManager: () => unavailable('EventRepository.getEventManager'),
-    getEvents: () => unavailable('EventRepository.getEvents'),
-    saveEvent: () => unavailable('EventRepository.saveEvent'),
-    savePairing: () => unavailable('EventRepository.savePairing'),
-    saveParticipant: () => unavailable('EventRepository.saveParticipant'),
-    saveTeam: () => unavailable('EventRepository.saveTeam'),
-    setCurrentEvent: () => unavailable('EventRepository.setCurrentEvent'),
-    setLifecycle: () => unavailable('EventRepository.setLifecycle'),
-    setRegistration: () => unavailable('EventRepository.setRegistration'),
+    getEventHome: callRepository('events', 'getEventHome'),
+    getEventManager: callRepository('events', 'getEventManager'),
+    getEvents: callRepository('events', 'getEvents'),
+    saveEvent: callRepository('events', 'saveEvent'),
+    savePairing: callRepository('events', 'savePairing'),
+    saveParticipant: callRepository('events', 'saveParticipant'),
+    saveTeam: callRepository('events', 'saveTeam'),
+    setCurrentEvent: callRepository('events', 'setCurrentEvent'),
+    setLifecycle: callRepository('events', 'setLifecycle'),
+    setRegistration: callRepository('events', 'setRegistration'),
   },
   games: {
-    getRecentGames: () => unavailable('GameRepository.getRecentGames'),
-    submitArmyList: () => unavailable('GameRepository.submitArmyList'),
+    getRecentGames: callRepository('games', 'getRecentGames'),
+    submitArmyList: callRepository('games', 'submitArmyList'),
   },
   notifications: {
-    getNotifications: () => unavailable('NotificationRepository.getNotifications'),
-    updateNotificationState: () =>
-      unavailable('NotificationRepository.updateNotificationState'),
+    getNotifications: callRepository('notifications', 'getNotifications'),
+    updateNotificationState: callRepository(
+      'notifications',
+      'updateNotificationState',
+    ),
   },
   players: {
-    comparePlayers: () => unavailable('PlayerRepository.comparePlayers'),
-    getAllPlayers: () => unavailable('PlayerRepository.getAllPlayers'),
-    getCurrentPlayer: () => unavailable('PlayerRepository.getCurrentPlayer'),
-    getPlayer: () => unavailable('PlayerRepository.getPlayer'),
-    updateProfile: () => unavailable('PlayerRepository.updateProfile'),
+    comparePlayers: callRepository('players', 'comparePlayers'),
+    getAllPlayers: callRepository('players', 'getAllPlayers'),
+    getCurrentPlayer: callRepository('players', 'getCurrentPlayer'),
+    getPlayer: callRepository('players', 'getPlayer'),
+    updateProfile: callRepository('players', 'updateProfile'),
   },
   registrations: {
-    getRegistration: () => unavailable('RegistrationRepository.getRegistration'),
-    manage: () => unavailable('RegistrationRepository.manage'),
-    register: () => unavailable('RegistrationRepository.register'),
-    withdraw: () => unavailable('RegistrationRepository.withdraw'),
+    getRegistration: callRepository('registrations', 'getRegistration'),
+    manage: callRepository('registrations', 'manage'),
+    register: callRepository('registrations', 'register'),
+    withdraw: callRepository('registrations', 'withdraw'),
   },
   scheduling: {
-    createRequest: () => unavailable('SchedulingRepository.createRequest'),
-    getCommissionerScheduling: () =>
-      unavailable('SchedulingRepository.getCommissionerScheduling'),
-    getMatchFinder: () => unavailable('SchedulingRepository.getMatchFinder'),
-    getSchedulingCalendar: () =>
-      unavailable('SchedulingRepository.getSchedulingCalendar'),
-    getSchedulingCenter: () =>
-      unavailable('SchedulingRepository.getSchedulingCenter'),
-    respondToRequest: () => unavailable('SchedulingRepository.respondToRequest'),
-    updateAvailability: () =>
-      unavailable('SchedulingRepository.updateAvailability'),
+    createRequest: callRepository('scheduling', 'createRequest'),
+    getCommissionerScheduling: callRepository(
+      'scheduling',
+      'getCommissionerScheduling',
+    ),
+    getMatchFinder: callRepository('scheduling', 'getMatchFinder'),
+    getSchedulingCalendar: callRepository('scheduling', 'getSchedulingCalendar'),
+    getSchedulingCenter: callRepository('scheduling', 'getSchedulingCenter'),
+    respondToRequest: callRepository('scheduling', 'respondToRequest'),
+    updateAvailability: callRepository('scheduling', 'updateAvailability'),
   },
   standings: {
-    getAllStandings: () => unavailable('StandingsRepository.getAllStandings'),
-    getStandings: () => unavailable('StandingsRepository.getStandings'),
+    getAllStandings: callRepository('standings', 'getAllStandings'),
+    getStandings: callRepository('standings', 'getStandings'),
   },
   teams: {
-    advanceRound: () => unavailable('TeamRepository.advanceRound'),
-    getTeamTournament: () => unavailable('TeamRepository.getTeamTournament'),
-    saveInvitation: () => unavailable('TeamRepository.saveInvitation'),
-    savePairing: () => unavailable('TeamRepository.savePairing'),
-    saveResult: () => unavailable('TeamRepository.saveResult'),
-    saveTeam: () => unavailable('TeamRepository.saveTeam'),
+    advanceRound: callRepository('teams', 'advanceRound'),
+    getTeamTournament: callRepository('teams', 'getTeamTournament'),
+    saveInvitation: callRepository('teams', 'saveInvitation'),
+    savePairing: callRepository('teams', 'savePairing'),
+    saveResult: callRepository('teams', 'saveResult'),
+    saveTeam: callRepository('teams', 'saveTeam'),
+  },
+  getHealth: async (): Promise<DataProviderHealth> => {
+    const activeProvider = await provider()
+    return activeProvider.getHealth()
   },
   metadata: {
     kind: 'firestore',

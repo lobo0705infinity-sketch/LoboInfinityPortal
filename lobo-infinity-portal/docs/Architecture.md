@@ -655,3 +655,9 @@ The production provider remains Google Apps Script and Google Sheets through
 `GoogleSheetsProvider`, preserving all current API contracts and sheet schema.
 Future providers implement the same repository contracts and are selected by
 `VITE_DATA_PROVIDER`.
+
+Version 7.1 implements the Firestore provider. Firestore initializes itself by
+creating required collection markers, seeding `event-current-league` when no
+Events exist, writing `settings/schema`, and surfacing provider health in
+Commissioner Diagnostics. `VITE_DATA_PROVIDER=dual` keeps Google Sheets as the
+source of truth while comparing Firestore reads in the background.

@@ -1,0 +1,100 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function role() {
+      return signedIn() && request.auth.token.role is string
+        ? request.auth.token.role
+        : 'Anonymous';
+    }
+
+    function isPlayer() {
+      return signedIn() &&
+        ['League Member', 'Assistant Commissioner', 'Commissioner']
+          .hasAny([role()]);
+    }
+
+    function isAssistantCommissioner() {
+      return signedIn() &&
+        ['Assistant Commissioner', 'Commissioner'].hasAny([role()]);
+    }
+
+    function isCommissioner() {
+      return signedIn() && role() == 'Commissioner';
+    }
+
+    function ownsPlayer(playerId) {
+      return signedIn() &&
+        request.auth.token.leaguePlayer is string &&
+        request.auth.token.leaguePlayer == playerId;
+    }
+
+    match /settings/{document=**} {
+      allow read: if true;
+      allow create, update, delete: if isCommissioner();
+    }
+
+    match /events/{eventId} {
+      allow read: if true;
+      allow create, update, delete: if isCommissioner();
+    }
+
+    match /players/{playerId} {
+      allow read: if true;
+      allow create, update: if isCommissioner() || ownsPlayer(playerId);
+      allow delete: if isCommissioner();
+    }
+
+    match /games/{gameId} {
+      allow read: if true;
+      allow create: if isPlayer();
+      allow update: if isAssistantCommissioner();
+      allow delete: if isCommissioner();
+    }
+
+    match /registrations/{registrationId} {
+      allow read: if true;
+      allow create: if isPlayer();
+      allow update: if isAssistantCommissioner() ||
+        (isPlayer() && resource.data.player == request.auth.token.leaguePlayer);
+      allow delete: if isCommissioner();
+    }
+
+    match /teams/{teamId} {
+      allow read: if true;
+      allow create, update, delete: if isAssistantCommissioner();
+    }
+
+    match /pairings/{pairingId} {
+      allow read: if true;
+      allow create, update, delete: if isAssistantCommissioner();
+    }
+
+    match /notifications/{notificationId} {
+      allow read: if isPlayer();
+      allow create: if isAssistantCommissioner();
+      allow update: if isAssistantCommissioner() ||
+        (isPlayer() && resource.data.player == request.auth.token.leaguePlayer);
+      allow delete: if isCommissioner();
+    }
+
+    match /missions/{missionId} {
+      allow read: if true;
+      allow create, update, delete: if isAssistantCommissioner();
+    }
+
+    match /factions/{factionId} {
+      allow read: if true;
+      allow create, update, delete: if isAssistantCommissioner();
+    }
+
+    match /analytics/{documentId} {
+      allow read: if true;
+      allow create, update, delete: if isAssistantCommissioner();
+    }
+  }
+}

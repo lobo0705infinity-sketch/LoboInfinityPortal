@@ -7,6 +7,15 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
+          if (
+            id.includes('node_modules/firebase') ||
+            id.includes('node_modules/@firebase') ||
+            id.includes('node_modules/@grpc') ||
+            id.includes('node_modules/protobufjs')
+          ) {
+            return 'firebase'
+          }
+
           if (id.includes('node_modules')) {
             return 'vendor'
           }

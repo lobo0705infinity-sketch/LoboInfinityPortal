@@ -7,10 +7,14 @@ import {
   type PlatformReliabilityData,
 } from '../services/lightApi'
 import { getFrontendPerformanceDiagnostics } from '../services/performanceDiagnostics'
+import { getDataProviderDiagnostics } from '../services/data'
 
 function Diagnostics() {
   const auth = useAuth()
   const [platform, setPlatform] = useState<PlatformReliabilityData | null>(null)
+  const [providerDiagnostics, setProviderDiagnostics] = useState<Awaited<
+    ReturnType<typeof getDataProviderDiagnostics>
+  > | null>(null)
   const [workingAction, setWorkingAction] = useState('')
   const canView = auth.isAtLeastRole('Commissioner')
   const canManage = auth.hasPermission('manageCache')
@@ -32,6 +36,10 @@ function Diagnostics() {
           setPlatform(null)
         }
       })
+
+    getDataProviderDiagnostics()
+      .then(setProviderDiagnostics)
+      .catch(() => setProviderDiagnostics(null))
 
     return () => {
       controller.abort()
@@ -161,6 +169,82 @@ function Diagnostics() {
               <tr>
                 <th>Vercel URL</th>
                 <td>{buildInfo.vercelUrl || 'Not reported'}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="panel operations-panel">
+        <div className="panel-heading">
+          <p className="eyebrow">Data Access Layer</p>
+          <h2>Storage Provider</h2>
+        </div>
+        <div className="operations-table-wrap">
+          <table className="operations-table">
+            <tbody>
+              <tr>
+                <th>Provider</th>
+                <td>{providerDiagnostics?.active.name ?? 'Loading'}</td>
+              </tr>
+              <tr>
+                <th>Storage</th>
+                <td>{providerDiagnostics?.active.storage ?? 'Loading'}</td>
+              </tr>
+              <tr>
+                <th>Status</th>
+                <td>{providerDiagnostics?.health.status ?? 'Loading'}</td>
+              </tr>
+              <tr>
+                <th>Project</th>
+                <td>{providerDiagnostics?.health.projectId ?? 'Not configured'}</td>
+              </tr>
+              <tr>
+                <th>Region</th>
+                <td>{providerDiagnostics?.health.region ?? 'Not reported'}</td>
+              </tr>
+              <tr>
+                <th>Schema Version</th>
+                <td>{providerDiagnostics?.health.schemaVersion ?? 'Not initialized'}</td>
+              </tr>
+              <tr>
+                <th>Latency</th>
+                <td>{providerDiagnostics ? `${providerDiagnostics.health.latencyMs} ms` : 'Loading'}</td>
+              </tr>
+              <tr>
+                <th>Collections</th>
+                <td>
+                  {providerDiagnostics?.health.collections?.join(', ') ??
+                    'Not reported'}
+                </td>
+              </tr>
+              <tr>
+                <th>Document Counts</th>
+                <td>
+                  <pre className="diagnostics-json">
+                    {JSON.stringify(
+                      providerDiagnostics?.health.collectionCounts ?? {},
+                      null,
+                      2,
+                    )}
+                  </pre>
+                </td>
+              </tr>
+              <tr>
+                <th>Dual Compare</th>
+                <td>
+                  {providerDiagnostics
+                    ? `${providerDiagnostics.comparison.mismatches} mismatches across ${providerDiagnostics.comparison.total} comparisons`
+                    : 'Loading'}
+                </td>
+              </tr>
+              <tr>
+                <th>Errors</th>
+                <td>
+                  {(providerDiagnostics?.health.errors.length ?? 0) > 0
+                    ? providerDiagnostics?.health.errors.join('; ')
+                    : 'None'}
+                </td>
               </tr>
             </tbody>
           </table>

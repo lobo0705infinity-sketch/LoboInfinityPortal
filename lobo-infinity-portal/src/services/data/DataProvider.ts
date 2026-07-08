@@ -9,7 +9,21 @@ import type { SchedulingRepository } from './repositories/SchedulingRepository'
 import type { StandingsRepository } from './repositories/StandingsRepository'
 import type { TeamRepository } from './repositories/TeamRepository'
 
-export type DataProviderKind = 'google' | 'firestore' | 'mock'
+export type DataProviderKind = 'dual' | 'firestore' | 'google' | 'mock'
+
+export type DataProviderHealth = {
+  collectionCounts?: Record<string, number>
+  collections?: string[]
+  errors: string[]
+  initialized: boolean
+  latencyMs: number
+  mode?: string
+  projectId?: string
+  provider: DataProviderKind
+  region?: string
+  schemaVersion?: number
+  status: 'configured' | 'error' | 'healthy' | 'unconfigured'
+}
 
 export type DataProviderMetadata = {
   kind: DataProviderKind
@@ -28,5 +42,6 @@ export interface DataProvider {
   scheduling: SchedulingRepository
   standings: StandingsRepository
   teams: TeamRepository
+  getHealth(): Promise<DataProviderHealth>
   metadata: DataProviderMetadata
 }

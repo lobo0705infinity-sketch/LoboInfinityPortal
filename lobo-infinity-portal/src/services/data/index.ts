@@ -1,4 +1,8 @@
 import type { DataProvider, DataProviderKind } from './DataProvider'
+import {
+  dualCompareProvider,
+  getProviderComparisonDiagnostics,
+} from './providers/DualCompareProvider'
 import { firestoreProvider } from './providers/FirestoreProvider'
 import { googleSheetsProvider } from './providers/GoogleSheetsProvider'
 import { mockProvider } from './providers/MockProvider'
@@ -8,6 +12,10 @@ const configuredProvider = (
 ).toLowerCase() as DataProviderKind
 
 function selectDataProvider(provider: DataProviderKind): DataProvider {
+  if (provider === 'dual') {
+    return dualCompareProvider
+  }
+
   if (provider === 'firestore') {
     return firestoreProvider
   }
@@ -31,6 +39,14 @@ export const registrationRepository = dataProvider.registrations
 export const schedulingRepository = dataProvider.scheduling
 export const standingsRepository = dataProvider.standings
 export const teamRepository = dataProvider.teams
+
+export async function getDataProviderDiagnostics() {
+  return {
+    active: dataProvider.metadata,
+    comparison: getProviderComparisonDiagnostics(),
+    health: await dataProvider.getHealth(),
+  }
+}
 
 export type { DataProvider, DataProviderKind } from './DataProvider'
 export type { AnalyticsRepository } from './repositories/AnalyticsRepository'

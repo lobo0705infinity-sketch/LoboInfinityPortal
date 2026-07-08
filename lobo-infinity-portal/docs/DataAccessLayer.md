@@ -24,7 +24,8 @@ cache behavior, Event Engine behavior, or Google Sheets schema.
 The active provider is selected by `VITE_DATA_PROVIDER`.
 
 - `google`: Apps Script and Google Sheets, current production default.
-- `firestore`: stubbed provider that fails fast until implemented.
+- `firestore`: Firebase Firestore provider with automatic schema initialization and health reporting.
+- `dual`: Google primary reads with Firestore comparison diagnostics.
 - `mock`: stubbed provider reserved for test fixtures.
 
 Changing storage providers should be a configuration change after the target
@@ -61,10 +62,11 @@ the migration, but data reads and writes should move to repository methods.
 
 The Firestore migration path is intentionally narrow:
 
-1. Implement `FirestoreProvider`.
-2. Keep repository interfaces unchanged.
-3. Set `VITE_DATA_PROVIDER=firestore`.
-4. Run contract and production validation against the same UI.
+1. Configure Firebase environment variables.
+2. Run `VITE_DATA_PROVIDER=dual` to compare Google and Firestore reads.
+3. Use the migration utility to seed Firestore.
+4. Keep repository interfaces unchanged.
+5. Set `VITE_DATA_PROVIDER=firestore` only after contract validation passes.
 
 Pages, Event Engine UI, scheduling workflows, and tournament operations should
 not require rewrites when the provider changes.

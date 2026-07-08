@@ -13,6 +13,9 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] `npm run lint`
 - [ ] `npm run build`
 - [ ] Data Access Layer boundary check for changed pages
+- [ ] Firestore provider health check
+- [ ] Firestore schema initialization check
+- [ ] Dual provider comparison review
 - [ ] Apps Script syntax validation
 - [ ] API Contract Validation
 - [ ] Performance Budget Validation

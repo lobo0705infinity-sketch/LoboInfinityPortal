@@ -55,6 +55,11 @@ from page-level API calls to repository contracts with provider selection via
 `VITE_DATA_PROVIDER`. Google Sheets remains the production provider until a
 Firestore or database provider is implemented and contract-tested.
 
+Version 7.1 adds the Firestore provider, automatic schema initialization,
+schema versioning, provider health diagnostics, Firestore security rules, and a
+repeatable migration utility. Google remains the active production provider
+until migration is explicitly enabled.
+
 ### 3.2 Event Migration
 
 Add explicit event scope to historical data after migration validation has passed.

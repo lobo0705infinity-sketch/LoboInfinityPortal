@@ -978,6 +978,23 @@ Required `schedule` fields:
 
 Version 3.4 adds operational reliability APIs without changing player, Event Engine, lifecycle, integrity, automation, authentication, or Google Sheets contracts.
 
+## Data Provider Contract
+
+Version 7.0 introduces a frontend Data Access Layer. Version 7.1 adds the
+Firestore provider. Page-level contracts remain unchanged: pages consume
+repositories, and providers satisfy the same repository interfaces.
+
+Provider selection is controlled by `VITE_DATA_PROVIDER`:
+
+- `google`: existing Apps Script and Google Sheets contracts.
+- `firestore`: Firestore repository implementation.
+- `dual`: Google primary reads with Firestore comparison diagnostics.
+- `mock`: fixture provider.
+
+Firestore initialization writes managed schema metadata to `settings/schema`
+and creates required collection markers. This does not alter existing Apps
+Script API contracts.
+
 ### Reliability Dashboard
 
 Action:

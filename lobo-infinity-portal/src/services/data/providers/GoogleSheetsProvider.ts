@@ -70,6 +70,14 @@ export const googleSheetsProvider: DataProvider = {
     saveResult: apiClient.saveTeamTournamentResult,
     saveTeam: apiClient.saveTeamTournamentTeam,
   },
+  getHealth: async () => ({
+    errors: [],
+    initialized: true,
+    latencyMs: 0,
+    mode: 'google-only',
+    provider: 'google',
+    status: 'healthy',
+  }),
   metadata: {
     kind: 'google',
     name: 'Google Sheets Provider',
