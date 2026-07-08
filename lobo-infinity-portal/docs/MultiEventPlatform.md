@@ -86,6 +86,38 @@ The Event Home composes Event Engine data, Event Registration, rounds, event-sco
 
 Event-specific pages such as Team Tournament remain specialized views, but the Event Home is the default landing page for understanding the selected competition.
 
+## Event Experience Router
+
+Version 6.0.4 separates the Event Engine from Event Experiences.
+
+The Event Engine remains responsible for Event identity, lifecycle, registration, participants, rounds, and event-scoped data. It does not decide which player interface should be shown.
+
+The frontend Event Experience Router reads `event.type` and loads the matching experience:
+
+- `League` -> League Event Home, League standings, Match Finder, division rankings, promotion, and relegation.
+- `Team Tournament` -> Team Tournament experience with registration, teams, pairings, team standings, results, and tournament operations.
+- Future Event types -> purpose-built experiences can be added without changing the Event Engine.
+
+Team Tournament Events opened through `/event/{eventId}` now render the Team Tournament experience. League pages are not reused for Team Tournament presentation.
+
+## Experience Navigation
+
+Event navigation is type-aware.
+
+League Events may link to League standings, players, Match Finder, and League statistics.
+
+Team Tournament Events link to:
+
+- Registration
+- Teams
+- Pairings
+- Team standings
+- Results
+- Rules
+- News
+
+The generic `/standings` page refuses to render League division tables for non-League Events and directs users to the appropriate Event experience instead.
+
 ## Commissioner Event Manager
 
 Version 6.0.3 also adds the Commissioner Event Manager.

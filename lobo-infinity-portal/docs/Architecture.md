@@ -600,3 +600,28 @@ Lifecycle transitions:
 Commissioners can advance lifecycle stages and perform safe rollbacks from the Commissioner Dashboard. Assistant Commissioners may view lifecycle health, warnings, automation status, Discord status, and audit history but cannot change lifecycle state.
 
 Version 3.1.2.1 adds self-healing lifecycle validation. The lifecycle service validates Event stage, status, registration, schedule readiness, participants, awards readiness, and archive state before allowing transitions. Invalid states are returned as health issues with problem, reason, impact, recommended action, repair action, and blocking status. Repairs reuse `eventLifecycleTransition` with `direction=repair`, write the same audit log, publish the same automation event, and invalidate the same caches.
+
+## Event Experience Separation
+
+Version 6.0.4 separates Event Engine data from Event Experience presentation.
+
+The Event Engine answers:
+
+```text
+What Event is this?
+What type is it?
+What lifecycle, registration, participants, rounds, and scoped data belong to it?
+```
+
+The Event Experience layer answers:
+
+```text
+Which portal experience should players and Commissioners see for this Event Type?
+```
+
+Current experience mapping:
+
+- `League` -> League Event Home, League standings, Match Finder, division rankings, promotion, relegation, and League statistics.
+- `Team Tournament` -> Tournament header, registration, teams, pairings, team standings, results, news, quick actions, and tournament operations.
+
+Non-League Events must not render League-specific standings, promotion, relegation, division rankings, or remaining League games. Future Event types should add purpose-built experiences behind the same Event Experience Router rather than filtering League pages by `eventId`.

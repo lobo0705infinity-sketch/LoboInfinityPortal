@@ -216,6 +216,13 @@ Version 6.0 promotes Event scope from foundation metadata to an operational read
 
 The Event Engine remains the single source of truth. No separate tournament, campaign, or scheduling engine is introduced.
 
+Version 6.0.4 clarifies the boundary between Event Engine and Event Experience:
+
+- Event Engine owns Event records, type, lifecycle, registration, participants, rounds, and event-scoped data.
+- Event Experience owns presentation, navigation, workflows, and terminology.
+
+The Event Engine never forces a League interface onto non-League Events. The frontend routes by Event Type so a `Team Tournament` Event loads the Team Tournament experience rather than filtered League standings.
+
 Each rebuilt game row carries:
 
 ```text
