@@ -804,12 +804,6 @@ function buildTeamTournamentQuickActions(eventId, event) {
 
   return [
     {
-      label: "Register",
-      action: "register",
-      eventId: eventId,
-      enabled: event.registration === "Registration Open"
-    },
-    {
       label: "View Pairings",
       action: "pairings",
       eventId: eventId,
