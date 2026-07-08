@@ -394,7 +394,11 @@ function MatchFinder() {
                 )
               : 'No remaining opponent'}
           </h3>
-          <p>{state.data.recommendations[0]?.reason ?? 'You are caught up.'}</p>
+          <p>
+            {state.data.recommendations[0]
+              ? getRecommendationReason(state.data.recommendations[0])
+              : 'You are caught up.'}
+          </p>
         </div>
       </section>
 
@@ -2196,28 +2200,24 @@ function RecommendationCard({
   recommendation: SchedulingRecommendation
 }) {
   const recommendationLabel = getRecommendationLabel(recommendation)
+  const recommendationReason = getRecommendationReason(recommendation)
   const availabilityText =
     recommendation.availabilitySummary || 'No availability added yet.'
   const discordText =
     recommendation.discordHandle || 'Discord handle not provided.'
+  const matchStatus =
+    recommendation.gamesRemainingBetweenPlayers > 0 ? 'Required' : 'Complete'
 
   return (
     <article className="scheduling-card">
       <div>
         <span>{recommendationLabel}</span>
         <h3>{formatPlayerName(recommendation.player, recommendation.displayName)}</h3>
-        <p>{recommendation.reason}</p>
+        <p>{recommendationReason}</p>
       </div>
       <dl>
         <Metric label="Division" value={recommendation.division} />
-        <Metric
-          label="Remaining League Match"
-          value={
-            recommendation.gamesRemainingBetweenPlayers > 0
-              ? 'Required'
-              : 'Completed'
-          }
-        />
+        <Metric label="Remaining League Match" value={matchStatus} />
         <Metric label="Availability" value={availabilityText} />
         <Metric label="Discord" value={discordText} />
       </dl>
@@ -2326,10 +2326,15 @@ function RequestList({
 }
 
 function Metric({ label, value }: { label: string; value: number | string }) {
+  const displayValue = value === '' ? 'Not provided yet.' : String(value)
+  const isShortStatus = isNonWrappingStatus(displayValue)
+
   return (
     <div>
       <dt>{label}</dt>
-      <dd>{value === '' ? 'Not provided yet.' : value}</dd>
+      <dd className={isShortStatus ? 'scheduling-status-value' : undefined}>
+        {displayValue}
+      </dd>
     </div>
   )
 }
@@ -2348,6 +2353,49 @@ function getRecommendationLabel(recommendation: SchedulingRecommendation) {
   }
 
   return 'Good Match'
+}
+
+function getRecommendationReason(recommendation: SchedulingRecommendation) {
+  const reason = recommendation.reason.trim().toLowerCase()
+
+  if (reason.includes('pending')) {
+    return 'Scheduling request already pending.'
+  }
+
+  if (
+    recommendation.gamesRemainingBetweenPlayers <= 0 ||
+    reason.includes('completed')
+  ) {
+    return 'League game already completed.'
+  }
+
+  if (
+    reason.includes('required') ||
+    reason.includes('division pairing') ||
+    reason.includes('remaining')
+  ) {
+    return 'Remaining required division opponent.'
+  }
+
+  if (reason.includes('needs games') || recommendation.priority === 'High') {
+    return 'Both players still need league games.'
+  }
+
+  return 'Remaining required division opponent.'
+}
+
+function isNonWrappingStatus(value: string) {
+  return [
+    'Accepted',
+    'Available',
+    'Complete',
+    'Completed',
+    'Declined',
+    'Not Set',
+    'Pending',
+    'Required',
+    'Suggested',
+  ].includes(value)
 }
 
 export default MatchFinder

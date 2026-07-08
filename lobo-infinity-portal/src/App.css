@@ -5347,11 +5347,20 @@
   border-radius: 8px;
   display: grid;
   gap: 1rem;
+  grid-template-rows: auto 1fr auto;
+  min-width: 0;
   padding: 1rem;
 }
 
 .scheduling-card h3 {
   margin: 0.25rem 0;
+  overflow-wrap: break-word;
+}
+
+.scheduling-card p {
+  margin: 0.45rem 0 0;
+  color: var(--text-soft);
+  line-height: 1.45;
 }
 
 .scheduling-card > div > span,
@@ -5370,21 +5379,29 @@
 
 .scheduling-card dl div {
   border-top: 1px solid rgba(148, 163, 184, 0.14);
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) fit-content(58%);
   gap: 0.8rem;
-  justify-content: space-between;
+  min-width: 0;
   padding-top: 0.55rem;
 }
 
 .scheduling-card dt {
   color: var(--muted);
+  min-width: 0;
 }
 
 .scheduling-card dd {
   margin: 0;
-  max-width: 62%;
   text-align: right;
-  overflow-wrap: anywhere;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.scheduling-card dd.scheduling-status-value {
+  overflow-wrap: normal;
+  white-space: nowrap;
+  word-break: keep-all;
 }
 
 .scheduling-card-actions {
@@ -6061,6 +6078,15 @@ a {
   .profile-menu-panel,
   .search-results {
     border-radius: 14px;
+  }
+
+  .scheduling-card dl div {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+
+  .scheduling-card dd {
+    text-align: left;
   }
 
   .profile-hero-record,
