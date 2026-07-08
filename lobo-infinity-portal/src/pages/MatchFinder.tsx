@@ -109,6 +109,18 @@ type MatchFinderDebugSnapshot = {
     pass: boolean
     severity: 'error' | 'ok' | 'warning'
   }>
+  duplicateAudit: {
+    actionBars: Array<Record<string, string | number | boolean>>
+    actionBarCount: number
+    buttonCount: number
+    buttons: Array<Record<string, string | number | boolean>>
+    duplicateWarnings: string[]
+    formClassCount: number
+    formClasses: Array<Record<string, string | number | boolean>>
+    formIdCount: number
+    formIds: Array<Record<string, string | number | boolean>>
+    visibleButtonIndex: number
+  }
   eventTrace: string[]
   form: {
     formExists: boolean
@@ -1450,6 +1462,7 @@ function buildMatchFinderDebugSnapshot({
   const queriedButton = document.querySelector<HTMLButtonElement>(
     '.match-request-action-bar button',
   )
+  const duplicateAudit = getMatchRequestDuplicateAudit()
   const buttonStyles = button ? window.getComputedStyle(button) : null
   const queriedButtonStyles = queriedButton
     ? window.getComputedStyle(queriedButton)
@@ -1601,6 +1614,26 @@ function buildMatchFinderDebugSnapshot({
   ] satisfies MatchFinderDebugSnapshot['domAssertions']
   const invariants = [
     {
+      message: 'There must be exactly one Match Request action bar.',
+      pass: duplicateAudit.actionBarCount === 1,
+      severity: duplicateAudit.actionBarCount === 1 ? 'ok' : 'error',
+    },
+    {
+      message: 'There must be exactly one Match Request button.',
+      pass: duplicateAudit.buttonCount === 1,
+      severity: duplicateAudit.buttonCount === 1 ? 'ok' : 'error',
+    },
+    {
+      message: 'There must be exactly one .match-request-form.',
+      pass: duplicateAudit.formClassCount === 1,
+      severity: duplicateAudit.formClassCount === 1 ? 'ok' : 'error',
+    },
+    {
+      message: 'There must be exactly one #match-request-form.',
+      pass: duplicateAudit.formIdCount === 1,
+      severity: duplicateAudit.formIdCount === 1 ? 'ok' : 'error',
+    },
+    {
       message:
         'Ready status requires the Send Match Request button to be rendered.',
       pass: actionStatus !== 'Ready to send your request.' || Boolean(button),
@@ -1708,6 +1741,7 @@ function buildMatchFinderDebugSnapshot({
     ],
     domAncestry: getDomAncestry(queriedButton),
     domAssertions,
+    duplicateAudit,
     eventTrace,
     form: {
       formExists: Boolean(form),
@@ -1847,6 +1881,140 @@ function getDomAncestry(element: HTMLElement | null) {
   return ancestry
 }
 
+function getMatchRequestDuplicateAudit(): MatchFinderDebugSnapshot['duplicateAudit'] {
+  const actionBars = Array.from(
+    document.querySelectorAll<HTMLElement>('.match-request-action-bar'),
+  )
+  const buttons = Array.from(
+    document.querySelectorAll<HTMLButtonElement>(
+      '.match-request-action-bar button',
+    ),
+  )
+  const formClasses = Array.from(
+    document.querySelectorAll<HTMLFormElement>('.match-request-form'),
+  )
+  const formIds = Array.from(
+    document.querySelectorAll<HTMLFormElement>('#match-request-form'),
+  )
+  const visibleButtonIndex = buttons.findIndex((button) =>
+    isDomElementVisible(button),
+  )
+  const duplicateWarnings = [
+    actionBars.length > 1
+      ? `Expected 1 action bar, found ${actionBars.length}.`
+      : '',
+    buttons.length > 1
+      ? `Expected 1 Send Match Request button, found ${buttons.length}.`
+      : '',
+    formClasses.length > 1
+      ? `Expected 1 .match-request-form, found ${formClasses.length}.`
+      : '',
+    formIds.length > 1
+      ? `Expected 1 #match-request-form, found ${formIds.length}.`
+      : '',
+  ].filter(Boolean)
+
+  return {
+    actionBarCount: actionBars.length,
+    actionBars: actionBars.map((element, index) =>
+      describeDebugElement(element, index),
+    ),
+    buttonCount: buttons.length,
+    buttons: buttons.map((element, index) => ({
+      ...describeDebugElement(element, index),
+      disabled: element.disabled,
+      formAttribute: element.getAttribute('form') ?? '',
+      parentElement: getElementLabel(element.parentElement),
+      text: element.textContent?.trim() ?? '',
+    })),
+    duplicateWarnings,
+    formClassCount: formClasses.length,
+    formClasses: formClasses.map((element, index) =>
+      describeDebugElement(element, index),
+    ),
+    formIdCount: formIds.length,
+    formIds: formIds.map((element, index) =>
+      describeDebugElement(element, index),
+    ),
+    visibleButtonIndex,
+  }
+}
+
+function describeDebugElement(element: HTMLElement, index: number) {
+  const styles = window.getComputedStyle(element)
+  const rect = element.getBoundingClientRect()
+
+  return {
+    className: element.className.toString(),
+    display: styles.display,
+    domPath: getElementDomPath(element),
+    height: Math.round(rect.height),
+    index,
+    opacity: styles.opacity,
+    overflow: styles.overflow,
+    position: styles.position,
+    tag: element.tagName.toLowerCase(),
+    transform: styles.transform,
+    visible: isDomElementVisible(element),
+    visibility: styles.visibility,
+    width: Math.round(rect.width),
+    zIndex: styles.zIndex,
+  }
+}
+
+function getElementDomPath(element: HTMLElement) {
+  const parts: string[] = []
+  let current: HTMLElement | null = element
+
+  while (current && current !== document.body) {
+    const tag = current.tagName.toLowerCase()
+    const id = current.id ? `#${current.id}` : ''
+    const className =
+      typeof current.className === 'string' && current.className
+        ? `.${current.className.trim().split(/\s+/).join('.')}`
+        : ''
+    const parent = current.parentElement
+    const siblings = parent
+      ? Array.from(parent.children).filter(
+          (child) => child.tagName === current?.tagName,
+        )
+      : []
+    const nth =
+      siblings.length > 1 ? `:nth-of-type(${siblings.indexOf(current) + 1})` : ''
+
+    parts.unshift(`${tag}${id}${className}${nth}`)
+    current = current.parentElement
+  }
+
+  return `body > ${parts.join(' > ')}`
+}
+
+function getElementLabel(element: HTMLElement | null) {
+  if (!element) {
+    return ''
+  }
+
+  const className =
+    typeof element.className === 'string' && element.className
+      ? `.${element.className.trim().split(/\s+/).join('.')}`
+      : ''
+
+  return `${element.tagName.toLowerCase()}${element.id ? `#${element.id}` : ''}${className}`
+}
+
+function isDomElementVisible(element: HTMLElement) {
+  const styles = window.getComputedStyle(element)
+  const rect = element.getBoundingClientRect()
+
+  return (
+    styles.display !== 'none' &&
+    styles.visibility !== 'hidden' &&
+    styles.opacity !== '0' &&
+    rect.width > 0 &&
+    rect.height > 0
+  )
+}
+
 function getMatchedDebugCssRules(element: HTMLElement | null) {
   if (!element) {
     return []
@@ -1982,6 +2150,7 @@ function MatchFinderDebugPanel({
       </div>
       <div className="match-finder-debug-grid">
         <DebugBlock title="React Runtime" value={snapshot.react} />
+        <DebugBlock title="Duplicate DOM Audit" value={snapshot.duplicateAudit} />
         <DebugBlock title="Component Tree" value={snapshot.componentTree} />
         <DebugBlock title="Button Ownership" value={snapshot.ownership} />
         <DebugBlock title="Actual Button Selector" value={snapshot.domButton} />
