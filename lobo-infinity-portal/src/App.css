@@ -5131,22 +5131,57 @@
 }
 
 .match-request-action-bar button[type="submit"] {
-  border: 0;
+  border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 10px;
-  color: #061014;
-  background: var(--accent);
+  color: #ffffff;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent),
+    var(--crimson);
+  box-shadow: 0 12px 28px rgba(193, 18, 31, 0.32);
   cursor: pointer;
   font-weight: 900;
   min-height: 48px;
   min-width: 200px;
   padding: 0.7rem 1rem;
   position: static;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.32);
+  transition:
+    background 170ms ease,
+    border-color 170ms ease,
+    box-shadow 170ms ease,
+    transform 170ms ease;
   white-space: nowrap;
+}
+
+.match-request-action-bar button[type="submit"]:hover,
+.match-request-action-bar button[type="submit"]:focus-visible {
+  border-color: rgba(255, 255, 255, 0.42);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent),
+    #e11d2e;
+  box-shadow:
+    0 0 0 1px rgba(76, 201, 240, 0.24),
+    0 16px 34px rgba(193, 18, 31, 0.42);
+  transform: translateY(-1px);
+}
+
+.match-request-action-bar button[type="submit"]:active {
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.08), transparent),
+    #9f101a;
+  box-shadow: 0 8px 20px rgba(193, 18, 31, 0.28);
+  transform: translateY(0);
 }
 
 .match-request-action-bar button[type="submit"]:disabled {
   cursor: not-allowed;
-  opacity: 0.5;
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(132, 144, 157, 0.36);
+  border-color: rgba(148, 163, 184, 0.22);
+  box-shadow: none;
+  opacity: 1;
+  text-shadow: none;
+  transform: none;
 }
 
 .match-finder-debug-panel {
