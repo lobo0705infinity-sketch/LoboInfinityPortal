@@ -38,6 +38,8 @@ Version 4.4 adds League Personality as an engagement layer. It reuses existing D
 
 Version 5.0.1 is a Performance Excellence hardening release. It preserves the completed feature set and focuses on Core Web Vitals, perceived dashboard speed, passive RUM, offscreen rendering efficiency, and repeatable Lighthouse measurement.
 
+Version 5.1 is a Runtime Performance and User Experience release. It preserves completed workflows and adds route preloading on navigation intent, route mount timing, long task capture, API cache ratio visibility, and shared search-index normalization to improve perceived responsiveness without changing business logic or backend contracts.
+
 ### 3.2 Event Migration
 
 Add explicit event scope to historical data after migration validation has passed.

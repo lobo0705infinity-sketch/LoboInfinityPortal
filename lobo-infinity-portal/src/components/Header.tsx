@@ -9,6 +9,7 @@ import ProfileMenu from './ProfileMenu'
 import QuickJump from './QuickJump'
 import type { PortalSettings } from '../services/api'
 import { getSettings } from '../services/lightApi'
+import { preloadRoute } from '../services/routePreload'
 
 function Header() {
   const auth = useAuth()
@@ -138,6 +139,9 @@ function Header() {
               <Link
                 key={item.to}
                 onClick={() => setIsMobileMenuOpen(false)}
+                onFocus={() => preloadRoute(item.to)}
+                onMouseEnter={() => preloadRoute(item.to)}
+                onTouchStart={() => preloadRoute(item.to)}
                 to={item.to}
               >
                 {item.label}

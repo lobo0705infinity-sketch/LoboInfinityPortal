@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
+import { preloadRoute } from '../services/routePreload'
 import LeagueCrest from './LeagueCrest'
 import PortalIcon, { type PortalIconName } from './PortalIcon'
 
@@ -139,6 +140,9 @@ function Sidebar() {
             data-nav={item.to}
             end={item.to === '/'}
             key={item.to}
+            onFocus={() => preloadRoute(item.to)}
+            onMouseEnter={() => preloadRoute(item.to)}
+            onTouchStart={() => preloadRoute(item.to)}
             to={item.to}
           >
             <span className="sidebar-icon" aria-hidden="true">

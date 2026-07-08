@@ -58,3 +58,13 @@ Version 5.0.1 expands browser-local Real User Monitoring. Commissioner Diagnosti
 - Existing API timing and cache metrics.
 
 These metrics are collected through passive browser performance APIs and are not sent to a backend endpoint.
+
+Version 5.1 expands runtime diagnostics for Commissioner-only review:
+
+- API cache hit ratio.
+- Shared in-flight request count.
+- Recent route component mount durations.
+- Slowest captured route mount.
+- Recent browser long tasks where supported.
+
+These metrics remain browser-local and passive. They do not create new backend telemetry writes and do not expose player credentials or OAuth tokens.

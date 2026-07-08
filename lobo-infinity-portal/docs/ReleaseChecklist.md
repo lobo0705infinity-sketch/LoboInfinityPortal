@@ -19,6 +19,10 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] Lighthouse Mobile Audit
 - [ ] Core Web Vitals Review
 - [ ] Real User Monitoring Review
+- [ ] Route Transition Timing Review
+- [ ] Component Mount Timing Review
+- [ ] Long Task Review
+- [ ] API Cache Hit Ratio Review
 - [ ] Security Validation
 - [ ] UX Audit
 - [ ] Desktop Experience Audit

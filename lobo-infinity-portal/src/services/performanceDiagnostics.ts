@@ -13,11 +13,14 @@ export function getFrontendPerformanceDiagnostics() {
   return {
     api: getApiDiagnostics(),
     bundleVersion: getBundleVersion(),
+    componentMounts: rum.componentMounts,
     cumulativeLayoutShift: roundMetric(rum.cumulativeLayoutShift, 3),
     firstContentfulPaint: Math.round(getFirstContentfulPaint()),
     interactionToNextPaint: Math.round(rum.interactionToNextPaint),
     javascriptTransferBytes: resources.javascriptTransferBytes,
     largestContentfulPaint: Math.round(getLargestContentfulPaint()),
+    longestComponentMount: rum.longestComponentMount,
+    longTasks: rum.longTasks,
     pageLoad:
       navigation && navigation.loadEventEnd > 0
         ? Math.round(navigation.loadEventEnd - navigation.startTime)

@@ -1,4 +1,10 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import {
+  lazy,
+  Suspense,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import AuthProvider, { useAuth } from './auth/AuthContext'
 import Breadcrumbs from './components/Breadcrumbs'
@@ -8,6 +14,7 @@ import Loading from './components/Loading'
 import RouteMeta from './components/RouteMeta'
 import Sidebar from './components/Sidebar'
 import UserActivityTracker from './components/UserActivityTracker'
+import { recordComponentMount } from './services/rumMetrics'
 import './App.css'
 
 const Analytics = lazy(() => import('./pages/Analytics'))
@@ -64,48 +71,56 @@ function AuthShell() {
         <Breadcrumbs />
         <Suspense fallback={<RouteLoading />}>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/standings" element={<Standings />} />
-            <Route path="/players" element={<Players />} />
-            <Route path="/rivalries" element={<Rivalries />} />
-            <Route path="/match-finder" element={<MatchFinder />} />
-            <Route path="/compare" element={<PlayerComparison />} />
-            <Route path="/players/:playerName" element={<PlayerProfile />} />
-            <Route path="/player/:playerName" element={<PlayerProfile />} />
+            <Route path="/" element={<MeasuredRoute name="Dashboard"><Dashboard /></MeasuredRoute>} />
+            <Route path="/standings" element={<MeasuredRoute name="Standings"><Standings /></MeasuredRoute>} />
+            <Route path="/players" element={<MeasuredRoute name="Players"><Players /></MeasuredRoute>} />
+            <Route path="/rivalries" element={<MeasuredRoute name="Rivalries"><Rivalries /></MeasuredRoute>} />
+            <Route path="/match-finder" element={<MeasuredRoute name="MatchFinder"><MatchFinder /></MeasuredRoute>} />
+            <Route path="/compare" element={<MeasuredRoute name="PlayerComparison"><PlayerComparison /></MeasuredRoute>} />
+            <Route path="/players/:playerName" element={<MeasuredRoute name="PlayerProfile"><PlayerProfile /></MeasuredRoute>} />
+            <Route path="/player/:playerName" element={<MeasuredRoute name="PlayerProfile"><PlayerProfile /></MeasuredRoute>} />
             <Route path="/career/:playerName" element={<DeepLinkRedirect target="career" />} />
-            <Route path="/games/:id" element={<GameDetails />} />
-            <Route path="/game/:id" element={<GameDetails />} />
-            <Route path="/factions" element={<Factions />} />
-            <Route path="/factions/:name" element={<FactionProfile />} />
-            <Route path="/faction/:name" element={<FactionProfile />} />
-            <Route path="/missions" element={<Missions />} />
-            <Route path="/missions/:missionName" element={<MissionProfile />} />
-            <Route path="/mission/:missionName" element={<MissionProfile />} />
+            <Route path="/games/:id" element={<MeasuredRoute name="GameDetails"><GameDetails /></MeasuredRoute>} />
+            <Route path="/game/:id" element={<MeasuredRoute name="GameDetails"><GameDetails /></MeasuredRoute>} />
+            <Route path="/factions" element={<MeasuredRoute name="Factions"><Factions /></MeasuredRoute>} />
+            <Route path="/factions/:name" element={<MeasuredRoute name="FactionProfile"><FactionProfile /></MeasuredRoute>} />
+            <Route path="/faction/:name" element={<MeasuredRoute name="FactionProfile"><FactionProfile /></MeasuredRoute>} />
+            <Route path="/missions" element={<MeasuredRoute name="Missions"><Missions /></MeasuredRoute>} />
+            <Route path="/missions/:missionName" element={<MeasuredRoute name="MissionProfile"><MissionProfile /></MeasuredRoute>} />
+            <Route path="/mission/:missionName" element={<MeasuredRoute name="MissionProfile"><MissionProfile /></MeasuredRoute>} />
             <Route path="/season/:seasonName" element={<DeepLinkRedirect target="season" />} />
             <Route path="/weekly-report" element={<DeepLinkRedirect target="weeklyReport" />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/hall-of-fame" element={<HallOfFame />} />
-            <Route path="/news" element={<CommissionerNews />} />
+            <Route path="/analytics" element={<MeasuredRoute name="Analytics"><Analytics /></MeasuredRoute>} />
+            <Route path="/hall-of-fame" element={<MeasuredRoute name="HallOfFame"><HallOfFame /></MeasuredRoute>} />
+            <Route path="/news" element={<MeasuredRoute name="CommissionerNews"><CommissionerNews /></MeasuredRoute>} />
             <Route path="/news/:id" element={<DeepLinkRedirect target="news" />} />
-            <Route path="/commissioner" element={<CommissionerDashboard />} />
-            <Route path="/diagnostics" element={<Diagnostics />} />
-            <Route path="/automation" element={<AutomationCenter />} />
-            <Route path="/integrity" element={<LeagueIntegrity />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/profile" element={<MyProfile />} />
+            <Route path="/commissioner" element={<MeasuredRoute name="CommissionerDashboard"><CommissionerDashboard /></MeasuredRoute>} />
+            <Route path="/diagnostics" element={<MeasuredRoute name="Diagnostics"><Diagnostics /></MeasuredRoute>} />
+            <Route path="/automation" element={<MeasuredRoute name="AutomationCenter"><AutomationCenter /></MeasuredRoute>} />
+            <Route path="/integrity" element={<MeasuredRoute name="LeagueIntegrity"><LeagueIntegrity /></MeasuredRoute>} />
+            <Route path="/notifications" element={<MeasuredRoute name="Notifications"><Notifications /></MeasuredRoute>} />
+            <Route path="/profile" element={<MeasuredRoute name="MyProfile"><MyProfile /></MeasuredRoute>} />
             <Route path="/achievement/:achievementId" element={<DeepLinkRedirect target="achievement" />} />
-            <Route path="/timeline" element={<Timeline />} />
-            <Route path="/streams" element={<StreamedGames />} />
+            <Route path="/timeline" element={<MeasuredRoute name="Timeline"><Timeline /></MeasuredRoute>} />
+            <Route path="/streams" element={<MeasuredRoute name="StreamedGames"><StreamedGames /></MeasuredRoute>} />
             <Route path="/stream/:id" element={<DeepLinkRedirect target="stream" />} />
-            <Route path="/army-lists" element={<ArmyLists />} />
+            <Route path="/army-lists" element={<MeasuredRoute name="ArmyLists"><ArmyLists /></MeasuredRoute>} />
             <Route path="/army-list/:id" element={<DeepLinkRedirect target="armyLists" />} />
-            <Route path="/army-lists/submit" element={<SubmitArmyList />} />
-            <Route path="/rules" element={<Rules />} />
+            <Route path="/army-lists/submit" element={<MeasuredRoute name="SubmitArmyList"><SubmitArmyList /></MeasuredRoute>} />
+            <Route path="/rules" element={<MeasuredRoute name="Rules"><Rules /></MeasuredRoute>} />
           </Routes>
         </Suspense>
       </div>
     </div>
   )
+}
+
+function MeasuredRoute({ children, name }: { children: ReactNode; name: string }) {
+  useEffect(() => {
+    recordComponentMount(name)
+  }, [name])
+
+  return children
 }
 
 function AuthInitializationScreen() {

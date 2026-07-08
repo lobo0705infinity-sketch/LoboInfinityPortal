@@ -108,10 +108,21 @@ function Diagnostics() {
         <MetricCard label="API Requests" value={snapshot.api.requestCount} />
         <MetricCard label="Cache Hits" value={snapshot.api.cacheHits} />
         <MetricCard label="Cache Misses" value={snapshot.api.cacheMisses} />
+        <MetricCard label="Cache Hit Ratio" value={`${snapshot.api.cacheHitRatio}%`} />
+        <MetricCard label="Shared Requests" value={snapshot.api.sharedRequests} />
         <MetricCard
           label="Average API"
           value={`${Math.round(snapshot.api.averageDurationMs)} ms`}
         />
+        <MetricCard
+          label="Slowest Mount"
+          value={
+            snapshot.longestComponentMount
+              ? `${snapshot.longestComponentMount.name} ${snapshot.longestComponentMount.durationMs} ms`
+              : 'None'
+          }
+        />
+        <MetricCard label="Long Tasks" value={snapshot.longTasks.length} />
         <MetricCard
           label="JS Transfer"
           value={formatBytes(snapshot.javascriptTransferBytes)}
@@ -517,6 +528,50 @@ function Diagnostics() {
             </li>
           ))}
         </ul>
+      </section>
+
+      <section className="operations-grid two-column">
+        <section className="panel operations-panel">
+          <div className="panel-heading">
+            <p className="eyebrow">Runtime Rendering</p>
+            <h2>Recent Route Mounts</h2>
+          </div>
+          <ul className="operations-list">
+            {snapshot.componentMounts.length === 0 ? (
+              <li>
+                <strong>No route mounts captured yet.</strong>
+              </li>
+            ) : (
+              snapshot.componentMounts.slice(-8).map((metric) => (
+                <li key={`${metric.name}-${metric.timestamp}`}>
+                  <strong>{metric.name}</strong>
+                  <span>{metric.durationMs} ms</span>
+                </li>
+              ))
+            )}
+          </ul>
+        </section>
+
+        <section className="panel operations-panel">
+          <div className="panel-heading">
+            <p className="eyebrow">Main Thread</p>
+            <h2>Recent Long Tasks</h2>
+          </div>
+          <ul className="operations-list">
+            {snapshot.longTasks.length === 0 ? (
+              <li>
+                <strong>No long tasks captured.</strong>
+              </li>
+            ) : (
+              snapshot.longTasks.map((task) => (
+                <li key={`${task.startTime}-${task.timestamp}`}>
+                  <strong>{task.name || 'Browser task'}</strong>
+                  <span>{task.durationMs} ms</span>
+                </li>
+              ))
+            )}
+          </ul>
+        </section>
       </section>
     </main>
   )

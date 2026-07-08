@@ -166,8 +166,12 @@ export function getApiDiagnostics() {
   const completed = metrics.filter((metric) => metric.durationMs > 0)
   const cacheHits = metrics.filter((metric) => metric.cache === 'hit').length
   const cacheMisses = metrics.filter((metric) => metric.cache === 'miss').length
+  const sharedRequests = metrics.filter((metric) => metric.cache === 'shared').length
+  const readRequestCount = metrics.filter((metric) => metric.cache !== 'mutation').length
 
   return {
+    cacheHitRatio:
+      readRequestCount > 0 ? Math.round((cacheHits / readRequestCount) * 100) : 0,
     cacheHits,
     cacheMisses,
     client: {
@@ -175,6 +179,7 @@ export function getApiDiagnostics() {
     },
     recent: metrics.slice(-25),
     requestCount: metrics.length,
+    sharedRequests,
     averageDurationMs:
       completed.length > 0
         ? completed.reduce((total, metric) => total + metric.durationMs, 0) /

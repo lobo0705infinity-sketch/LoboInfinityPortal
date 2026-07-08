@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { formatPlayerName } from '../services/formatting'
 import { getSearchIndex } from '../services/lightApi'
+import { preloadRoute } from '../services/routePreload'
 
 type JumpItem = {
   label: string
@@ -82,6 +83,7 @@ function QuickJump() {
           const nextPath = event.target.value
 
           if (nextPath) {
+            preloadRoute(nextPath)
             navigate(nextPath)
             event.target.value = ''
           }

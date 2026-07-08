@@ -79,6 +79,13 @@ Global header controls defer network work until interaction:
 - Quick Jump data loads on menu focus.
 - Notifications load when the notification menu opens.
 
+Version 5.1 adds runtime performance instrumentation and route preloading without changing application architecture:
+
+- Route chunks may preload after explicit navigation intent such as hover, focus, touch, or Quick Jump selection.
+- Preloading is limited to JavaScript route chunks and does not fetch page data early.
+- Route mount timing, long tasks, API cache ratio, and shared in-flight requests are exposed through Commissioner Diagnostics.
+- Browser-local telemetry remains passive and does not add backend writes or bypass authentication.
+
 ## Platform Reliability Architecture
 
 Version 3.4 adds a reliability layer without changing league rules, player workflows, Event Engine behavior, or Google Sheets schema.

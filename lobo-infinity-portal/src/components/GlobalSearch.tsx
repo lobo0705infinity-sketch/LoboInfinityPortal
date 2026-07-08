@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { formatObjectiveScore, formatPlayerName } from '../services/formatting'
 import { getSearchIndex, updateProfile } from '../services/lightApi'
+import { preloadRoute } from '../services/routePreload'
 import PortalIcon from './PortalIcon'
 
 type SearchItem = {
@@ -23,6 +24,9 @@ type SearchState =
   | {
       status: 'error'
     }
+
+let cachedSearchItems: SearchItem[] | null = null
+let searchItemsPromise: Promise<SearchItem[]> | null = null
 
 function GlobalSearch({ mode = 'desktop' }: { mode?: 'desktop' | 'mobile' }) {
   const auth = useAuth()
@@ -47,56 +51,14 @@ function GlobalSearch({ mode = 'desktop' }: { mode?: 'desktop' | 'mobile' }) {
 
     async function loadSearchData() {
       try {
-        const { players, factions, missions, games, armyLists } =
-          await getSearchIndex({
-            signal: controller.signal,
-          })
+        const items = await getSearchItems()
 
-        const playerItems = players.flatMap((division) =>
-          division.standings.map((player) => ({
-            category: 'Player',
-            label: formatPlayerName(player.player, player.displayName),
-            meta: `${division.divisionLabel} - Rank #${player.rank}`,
-            to: `/players/${encodeURIComponent(player.player)}`,
-          })),
-        )
-
-        const factionItems = factions.map((faction) => ({
-          category: 'Faction',
-          label: faction.name,
-          meta: `${faction.games} games - ${faction.winRate}% win rate`,
-          to: `/factions/${encodeURIComponent(faction.name)}`,
-        }))
-
-        const missionItems = missions.map((mission) => ({
-          category: 'Mission',
-          label: mission.mission,
-          meta: `${mission.games} games - ${mission.firstTurnWinRate}% first turn`,
-          to: `/missions/${encodeURIComponent(mission.mission)}`,
-        }))
-
-        const matchItems = games.map((game) => ({
-          category: 'Match',
-          label: `${formatPlayerName(game.winner, game.winnerDisplayName)} defeated ${formatPlayerName(game.loser, game.loserDisplayName)}`,
-          meta: `${game.mission} - ${formatObjectiveScore(game)}`,
-          to: `/games/${game.id}`,
-        }))
-
-        const armyListItems = armyLists.map((list) => ({
-          category: 'Army List',
-          label: list.armyName,
-          meta: `${formatPlayerName(list.player, list.playerDisplayName)} - ${list.faction} - ${list.mission || 'Mission not recorded'}`,
-          to: '/army-lists',
-        }))
+        if (controller.signal.aborted) {
+          return
+        }
 
         setSearchState({
-          items: [
-            ...playerItems,
-            ...factionItems,
-            ...missionItems,
-            ...matchItems,
-            ...armyListItems,
-          ],
+          items,
           status: 'success',
         })
       } catch {
@@ -256,7 +218,14 @@ function GlobalSearch({ mode = 'desktop' }: { mode?: 'desktop' | 'mobile' }) {
       {mode === 'mobile' && query.trim().length < 2 ? (
         <div className="mobile-quick-jump" aria-label="Quick jump">
           {quickJumpItems.map((item) => (
-            <Link key={item.to} onClick={closeSearch} to={item.to}>
+            <Link
+              key={item.to}
+              onClick={closeSearch}
+              onFocus={() => preloadRoute(item.to)}
+              onMouseEnter={() => preloadRoute(item.to)}
+              onTouchStart={() => preloadRoute(item.to)}
+              to={item.to}
+            >
               {item.label}
             </Link>
           ))}
@@ -281,7 +250,9 @@ function GlobalSearch({ mode = 'desktop' }: { mode?: 'desktop' | 'mobile' }) {
                   rememberSearch(result)
                   closeSearch()
                 }}
+                onFocus={() => preloadRoute(result.to)}
                 onMouseEnter={() => setActiveIndex(index)}
+                onPointerEnter={() => preloadRoute(result.to)}
                 role="option"
                 to={result.to}
               >
@@ -298,6 +269,67 @@ function GlobalSearch({ mode = 'desktop' }: { mode?: 'desktop' | 'mobile' }) {
       </div>
     </div>
   )
+}
+
+async function getSearchItems() {
+  if (cachedSearchItems) {
+    return cachedSearchItems
+  }
+
+  searchItemsPromise ??= getSearchIndex()
+    .then(({ players, factions, missions, games, armyLists }) => {
+      const playerItems = players.flatMap((division) =>
+        division.standings.map((player) => ({
+          category: 'Player',
+          label: formatPlayerName(player.player, player.displayName),
+          meta: `${division.divisionLabel} - Rank #${player.rank}`,
+          to: `/players/${encodeURIComponent(player.player)}`,
+        })),
+      )
+
+      const factionItems = factions.map((faction) => ({
+        category: 'Faction',
+        label: faction.name,
+        meta: `${faction.games} games - ${faction.winRate}% win rate`,
+        to: `/factions/${encodeURIComponent(faction.name)}`,
+      }))
+
+      const missionItems = missions.map((mission) => ({
+        category: 'Mission',
+        label: mission.mission,
+        meta: `${mission.games} games - ${mission.firstTurnWinRate}% first turn`,
+        to: `/missions/${encodeURIComponent(mission.mission)}`,
+      }))
+
+      const matchItems = games.map((game) => ({
+        category: 'Match',
+        label: `${formatPlayerName(game.winner, game.winnerDisplayName)} defeated ${formatPlayerName(game.loser, game.loserDisplayName)}`,
+        meta: `${game.mission} - ${formatObjectiveScore(game)}`,
+        to: `/games/${game.id}`,
+      }))
+
+      const armyListItems = armyLists.map((list) => ({
+        category: 'Army List',
+        label: list.armyName,
+        meta: `${formatPlayerName(list.player, list.playerDisplayName)} - ${list.faction} - ${list.mission || 'Mission not recorded'}`,
+        to: '/army-lists',
+      }))
+
+      cachedSearchItems = [
+        ...playerItems,
+        ...factionItems,
+        ...missionItems,
+        ...matchItems,
+        ...armyListItems,
+      ]
+
+      return cachedSearchItems
+    })
+    .finally(() => {
+      searchItemsPromise = null
+    })
+
+  return searchItemsPromise
 }
 
 export default GlobalSearch

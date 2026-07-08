@@ -307,3 +307,21 @@ Lifecycle controls are operations-only:
 - Transition mutations refresh event and operations caches after updating Event Engine rows.
 
 The lifecycle card reuses Event Engine, Season Command Center commissioner status, Identity status, Discord status, and Automation rules instead of creating duplicate health calculations.
+
+## Version 5.1 Runtime Performance
+
+Version 5.1 focuses on runtime feel rather than new functionality.
+
+Implemented optimizations:
+
+- Route chunks preload on navigation intent from Sidebar, mobile menu, breadcrumbs, global search results, and Quick Jump selections.
+- Route pages are wrapped with lightweight mount timing so Commissioner Diagnostics can identify slow route mounts.
+- Browser Real User Monitoring records recent long tasks where the browser supports the `longtask` PerformanceObserver entry type.
+- Global Search shares its transformed search-index records between desktop and mobile search instances, avoiding duplicate client-side normalization.
+- Existing frontend request caching and in-flight request sharing remain the network strategy. No new startup request is introduced.
+
+Operational guidance:
+
+- Use Commissioner Diagnostics to compare route transition timing, route mount timing, long tasks, API cache hit ratio, shared request count, and slow endpoint timing.
+- Preload only route chunks on user intent. Do not eagerly fetch page data before the user opens the page.
+- Keep route components side-effect-light; page data should continue to load through the existing cached API layer.
