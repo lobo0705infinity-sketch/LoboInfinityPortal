@@ -28,7 +28,7 @@ function StandingsTable({
 
       {standings.map((standing) => (
         <div
-          className={`table-row ${getRankClass(
+          className={`table-row ${standing.rank === 1 ? 'rank-leader' : ''} ${getRankClass(
             standing.rank,
             standings.length,
             division,

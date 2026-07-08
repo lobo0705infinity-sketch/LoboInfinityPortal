@@ -4,7 +4,7 @@ import StandingsTable from '../components/StandingsTable'
 import StatCard from '../components/StatCard'
 import { apiClient } from '../services/api'
 import { formatPlayerName } from '../services/formatting'
-import type { DivisionKey, DivisionStandings } from '../types/dashboard'
+import type { DivisionKey, DivisionStandings, MainManStanding } from '../types/dashboard'
 import {
   formatDivisionLabel,
   getDivisionIdentity,
@@ -149,6 +149,8 @@ function DivisionPanel({
     )
   }
 
+  const completeStandings = getCompleteStandings(standingsState.data)
+
   return (
     <>
       <section
@@ -206,13 +208,38 @@ function DivisionPanel({
 
           <StandingsTable
             division={standingsState.data.division}
-            standings={standingsState.data.standings}
+            standings={completeStandings}
             showMovementZones
           />
         </section>
       </section>
     </>
   )
+}
+
+function getCompleteStandings(data: DivisionStandings): MainManStanding[] {
+  const leader = data.summary.leader
+
+  if (!leader) {
+    return data.standings
+  }
+
+  const leaderKey = normalizeStandingPlayerKey(leader)
+  const hasLeader = data.standings.some(
+    (standing) => normalizeStandingPlayerKey(standing) === leaderKey,
+  )
+
+  if (hasLeader) {
+    return data.standings
+  }
+
+  return [leader, ...data.standings].sort((left, right) => left.rank - right.rank)
+}
+
+function normalizeStandingPlayerKey(standing: MainManStanding) {
+  return String(standing.player || standing.displayName || '')
+    .trim()
+    .toLowerCase()
 }
 
 function MovementLegend({ division }: { division: DivisionKey }) {
