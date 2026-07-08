@@ -88,6 +88,11 @@ records the first differing field, compares latency, checks Firestore
 collection completeness, and reports whether the portal is ready for provider
 cutover.
 
+Version 7.3 adds the Commissioner-run Firestore Data Migration action. It
+copies Google-backed repository data into Firestore collections with stable
+document ids, then reruns parity verification. Google Sheets remains
+authoritative.
+
 ## Security Rules
 
 Production rules live in `firestore.rules` and are referenced by

@@ -75,5 +75,9 @@ The Firestore migration path is intentionally narrow:
 6. Open Commissioner Diagnostics and verify Migration Readiness.
 7. Set `VITE_DATA_PROVIDER=firestore` only after contract validation passes.
 
+Version 7.3 exposes the migration utility in Commissioner Diagnostics as
+`Run Firestore Migration`. It writes Firestore mirror documents only; it does
+not mutate Google Sheets.
+
 Pages, Event Engine UI, scheduling workflows, and tournament operations should
 not require rewrites when the provider changes.

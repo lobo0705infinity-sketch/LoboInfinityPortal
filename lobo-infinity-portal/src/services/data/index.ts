@@ -5,6 +5,10 @@ import {
 } from './providers/DualCompareProvider'
 import { firestoreProvider } from './providers/FirestoreProvider'
 import { getFirestoreBootstrapReport } from './providers/FirestoreBootstrap'
+import {
+  getLastFirestoreDataMigrationReport,
+  runFirestoreDataMigration,
+} from './providers/FirestoreMigrationService'
 import { getMigrationVerificationReport } from './providers/FirestoreMigrationVerification'
 import { googleSheetsProvider } from './providers/GoogleSheetsProvider'
 import { mockProvider } from './providers/MockProvider'
@@ -54,8 +58,13 @@ export async function getDataProviderDiagnostics() {
     bootstrap,
     comparison: getProviderComparisonDiagnostics(),
     health,
+    migrationRun: getLastFirestoreDataMigrationReport(),
     migration,
   }
+}
+
+export async function runDataMigrationToFirestore() {
+  return runFirestoreDataMigration()
 }
 
 export type { DataProvider, DataProviderKind } from './DataProvider'

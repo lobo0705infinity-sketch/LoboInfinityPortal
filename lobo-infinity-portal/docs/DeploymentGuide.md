@@ -72,6 +72,20 @@ Before switching to Firestore:
 Do not set `VITE_DATA_PROVIDER=firestore` until Diagnostics reports
 `READY FOR FIRESTORE`.
 
+## Data Migration
+
+To populate Firestore while keeping Google authoritative:
+
+1. Deploy with Firebase environment variables configured.
+2. Sign in as a Commissioner.
+3. Open Diagnostics.
+4. Click `Run Firestore Migration`.
+5. Wait for all collections to report `PASS`.
+6. Review Migration Verification and Difference Viewer.
+
+If migration fails, leave `VITE_DATA_PROVIDER=google`, fix the reported issue,
+and rerun migration.
+
 ## Rollback
 
 Set:

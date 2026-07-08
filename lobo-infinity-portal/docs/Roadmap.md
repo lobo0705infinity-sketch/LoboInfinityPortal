@@ -69,6 +69,10 @@ compare repository outputs from Google Sheets and Firestore, show field-level
 differences, summarize provider latency, verify collection completeness, and
 compute readiness before any provider cutover.
 
+Version 7.3 adds Firestore Data Migration. Commissioners can run an idempotent
+mirror migration from Diagnostics to populate Firestore with Google-backed data
+while keeping Google Sheets authoritative.
+
 ### 3.2 Event Migration
 
 Add explicit event scope to historical data after migration validation has passed.

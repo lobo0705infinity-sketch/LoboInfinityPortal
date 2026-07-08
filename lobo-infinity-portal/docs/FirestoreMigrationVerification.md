@@ -6,6 +6,9 @@ Google Sheets to Firestore.
 This release does not migrate production data and does not switch the production
 provider.
 
+Version 7.3 adds the migration step that populates Firestore. Verification still
+remains mandatory after migration and Google Sheets remains authoritative.
+
 ## Dual Provider Verification
 
 Use:
@@ -22,6 +25,9 @@ Commissioners.
 
 Commissioner Diagnostics includes:
 
+- Firestore migration run status.
+- Documents written and verified.
+- Per-collection migration progress.
 - Overall readiness.
 - Migration progress.
 - Repository parity status.

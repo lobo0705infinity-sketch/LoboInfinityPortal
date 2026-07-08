@@ -24,6 +24,9 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] Repository parity review
 - [ ] Difference Viewer review
 - [ ] Migration readiness score review
+- [ ] Firestore data migration run status review
+- [ ] Firestore migrated document count review
+- [ ] Firestore migration failures review
 - [ ] Rollback configuration review
 - [ ] Apps Script syntax validation
 - [ ] API Contract Validation

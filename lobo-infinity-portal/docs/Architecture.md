@@ -672,3 +672,8 @@ Version 7.2 adds a migration verification layer that compares repository reads
 from Google Sheets and Firestore, reports field-level differences, summarizes
 provider latency, checks Firestore completeness, and computes migration
 readiness. Player-facing data remains Google-backed in dual mode.
+
+Version 7.3 adds `FirestoreMigrationService`, a Commissioner-run mirror
+population step that reads Google-backed repositories and writes Firestore
+documents with stable ids. The service is repeatable, leaves Google Sheets
+unchanged, and reruns parity verification after completion.

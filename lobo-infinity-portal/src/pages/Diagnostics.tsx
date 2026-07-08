@@ -7,7 +7,10 @@ import {
   type PlatformReliabilityData,
 } from '../services/lightApi'
 import { getFrontendPerformanceDiagnostics } from '../services/performanceDiagnostics'
-import { getDataProviderDiagnostics } from '../services/data'
+import {
+  getDataProviderDiagnostics,
+  runDataMigrationToFirestore,
+} from '../services/data'
 
 function Diagnostics() {
   const auth = useAuth()
@@ -16,6 +19,7 @@ function Diagnostics() {
     ReturnType<typeof getDataProviderDiagnostics>
   > | null>(null)
   const [workingAction, setWorkingAction] = useState('')
+  const [workingMigration, setWorkingMigration] = useState(false)
   const canView = auth.isAtLeastRole('Commissioner')
   const canManage = auth.hasPermission('manageCache')
   const snapshot = canView ? getFrontendPerformanceDiagnostics() : null
@@ -62,6 +66,29 @@ function Diagnostics() {
       setPlatform(nextPlatform)
     } finally {
       setWorkingAction('')
+    }
+  }
+
+  async function executeFirestoreMigration() {
+    if (!canManage || workingMigration) {
+      return
+    }
+
+    if (
+      !window.confirm(
+        'Run Firestore data migration? Google Sheets remains authoritative.',
+      )
+    ) {
+      return
+    }
+
+    setWorkingMigration(true)
+
+    try {
+      await runDataMigrationToFirestore()
+      setProviderDiagnostics(await getDataProviderDiagnostics())
+    } finally {
+      setWorkingMigration(false)
     }
   }
 
@@ -369,6 +396,68 @@ function Diagnostics() {
           <p className="eyebrow">Migration Verification</p>
           <h2>Firestore Readiness</h2>
         </div>
+        <div className="operations-actions wrap">
+          <button
+            disabled={!canManage || workingMigration}
+            onClick={() => void executeFirestoreMigration()}
+            type="button"
+          >
+            {workingMigration ? 'Migrating Firestore...' : 'Run Firestore Migration'}
+          </button>
+        </div>
+        <dl className="operations-metrics">
+          <Metric
+            label="Migration"
+            value={providerDiagnostics?.migrationRun.overallStatus ?? 'Loading'}
+          />
+          <Metric
+            label="Documents Written"
+            value={providerDiagnostics?.migrationRun.documentsWritten ?? 'Loading'}
+          />
+          <Metric
+            label="Documents Verified"
+            value={providerDiagnostics?.migrationRun.documentsVerified ?? 'Loading'}
+          />
+          <Metric
+            label="Throughput"
+            value={
+              providerDiagnostics
+                ? `${providerDiagnostics.migrationRun.throughputPerSecond}/sec`
+                : 'Loading'
+            }
+          />
+        </dl>
+        <div className="operations-table-wrap">
+          <table className="operations-table">
+            <thead>
+              <tr>
+                <th>Collection</th>
+                <th>Status</th>
+                <th>Progress</th>
+                <th>Written</th>
+                <th>Verified</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(providerDiagnostics?.migrationRun.collections ?? []).map((collection) => (
+                <tr key={collection.collection}>
+                  <td>{collection.collection}</td>
+                  <td>{collection.status}</td>
+                  <td>{collection.percent}%</td>
+                  <td>{collection.written}</td>
+                  <td>{collection.verified}</td>
+                  <td>{collection.durationMs} ms</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {(providerDiagnostics?.migrationRun.failures.length ?? 0) > 0 ? (
+          <pre className="diagnostics-json">
+            {JSON.stringify(providerDiagnostics?.migrationRun.failures, null, 2)}
+          </pre>
+        ) : null}
         <dl className="operations-metrics">
           <Metric
             label="Overall Readiness"
