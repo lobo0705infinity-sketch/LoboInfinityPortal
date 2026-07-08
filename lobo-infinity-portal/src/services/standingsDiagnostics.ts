@@ -18,8 +18,11 @@ type RenderedRowSummary = {
   cellCount: number
   cells: string[]
   className: string
+  component: string
   html: string
   index: number
+  player: string
+  rank: string
   text: string
 }
 
@@ -178,8 +181,11 @@ function collectRenderedRows() {
       (cell) => cell.innerText.trim(),
     ),
     className: row.className,
+    component: row.dataset.standingsComponent || 'unknown',
     html: row.outerHTML.slice(0, 1000),
     index,
+    player: row.dataset.standingsPlayer || '',
+    rank: row.dataset.standingsRank || '',
     text: row.innerText.trim(),
   }))
 

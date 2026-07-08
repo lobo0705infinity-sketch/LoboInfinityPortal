@@ -41,34 +41,62 @@ function StandingsTable({
         <span role="columnheader">VP</span>
       </div>
 
-      {standings.map((standing) => (
-        <div
-          className={`table-row ${getRankClass(
-            standing.rank,
-            standings.length,
-            division,
-            showMovementZones,
-          )}`}
-          role="row"
-          key={standing.rank}
-        >
-          <span role="cell">{standing.rank}</span>
-          <strong role="cell">
-            <Link
-              className="table-player-link"
-              to={`/players/${encodeURIComponent(standing.player)}`}
-            >
-              {formatPlayerName(standing.player, standing.displayName)}
-            </Link>
-          </strong>
-          <span role="cell">{standing.games}</span>
-          <span role="cell">{standing.wins}</span>
-          <span role="cell">{standing.losses}</span>
-          <span role="cell">{standing.tp}</span>
-          <span role="cell">{standing.op}</span>
-          <span role="cell">{standing.vp}</span>
-        </div>
+      {standings.map((standing, index) => (
+        <StandingsRow
+          division={division}
+          index={index}
+          key={`${standing.rank}-${standing.player}`}
+          showMovementZones={showMovementZones}
+          standing={standing}
+          totalPlayers={standings.length}
+        />
       ))}
+    </div>
+  )
+}
+
+function StandingsRow({
+  division,
+  index,
+  showMovementZones,
+  standing,
+  totalPlayers,
+}: {
+  division: DivisionKey
+  index: number
+  showMovementZones: boolean
+  standing: MainManStanding
+  totalPlayers: number
+}) {
+  return (
+    <div
+      className={`table-row ${getRankClass(
+        standing.rank,
+        totalPlayers,
+        division,
+        showMovementZones,
+      )}`}
+      data-standings-component="StandingsRow"
+      data-standings-player={standing.player}
+      data-standings-rank={standing.rank}
+      data-standings-row-index={index}
+      role="row"
+    >
+      <span role="cell">{standing.rank}</span>
+      <strong role="cell">
+        <Link
+          className="table-player-link"
+          to={`/players/${encodeURIComponent(standing.player)}`}
+        >
+          {formatPlayerName(standing.player, standing.displayName)}
+        </Link>
+      </strong>
+      <span role="cell">{standing.games}</span>
+      <span role="cell">{standing.wins}</span>
+      <span role="cell">{standing.losses}</span>
+      <span role="cell">{standing.tp}</span>
+      <span role="cell">{standing.op}</span>
+      <span role="cell">{standing.vp}</span>
     </div>
   )
 }
