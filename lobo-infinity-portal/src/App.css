@@ -5038,6 +5038,68 @@
   margin: 0;
 }
 
+.availability-leave-dialog .scheduling-card-actions {
+  justify-content: flex-end;
+}
+
+.availability-leave-dialog .scheduling-card-actions button {
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(148, 163, 184, 0.36);
+  border-radius: 10px;
+  color: #f8fafc;
+  font-weight: 850;
+  min-height: 46px;
+  min-width: 120px;
+  padding: 0.72rem 1rem;
+  transition:
+    background 170ms ease,
+    border-color 170ms ease,
+    box-shadow 170ms ease,
+    color 170ms ease,
+    transform 170ms ease;
+}
+
+.availability-leave-dialog .scheduling-card-actions button:hover,
+.availability-leave-dialog .scheduling-card-actions button:focus-visible {
+  background: rgba(30, 41, 59, 0.98);
+  border-color: rgba(76, 201, 240, 0.58);
+  box-shadow: 0 0 0 1px rgba(76, 201, 240, 0.22);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.availability-leave-dialog .scheduling-card-actions button:last-child {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent),
+    var(--crimson);
+  border-color: rgba(255, 255, 255, 0.24);
+  box-shadow: 0 12px 26px rgba(193, 18, 31, 0.3);
+  color: #ffffff;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.32);
+}
+
+.availability-leave-dialog .scheduling-card-actions button:last-child:hover,
+.availability-leave-dialog .scheduling-card-actions button:last-child:focus-visible {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent),
+    #e11d2e;
+  border-color: rgba(255, 255, 255, 0.42);
+  box-shadow:
+    0 0 0 1px rgba(76, 201, 240, 0.24),
+    0 16px 34px rgba(193, 18, 31, 0.4);
+}
+
+.availability-leave-dialog .scheduling-card-actions button:disabled {
+  background: rgba(132, 144, 157, 0.36);
+  border-color: rgba(148, 163, 184, 0.22);
+  box-shadow: none;
+  color: rgba(255, 255, 255, 0.72);
+  cursor: not-allowed;
+  opacity: 1;
+  text-shadow: none;
+  transform: none;
+}
+
 .scheduling-form {
   display: grid;
   gap: 0.85rem;
