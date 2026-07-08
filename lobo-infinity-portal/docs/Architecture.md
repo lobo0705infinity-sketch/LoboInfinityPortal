@@ -625,3 +625,21 @@ Current experience mapping:
 - `Team Tournament` -> Tournament header, registration, teams, pairings, team standings, results, news, quick actions, and tournament operations.
 
 Non-League Events must not render League-specific standings, promotion, relegation, division rankings, or remaining League games. Future Event types should add purpose-built experiences behind the same Event Experience Router rather than filtering League pages by `eventId`.
+
+## Tournament Operations
+
+Version 6.1 implements Tournament Operations as an Event Experience extension.
+
+The Team Tournament experience owns tournament-specific workflows:
+
+- Team roster management
+- Free-agent review
+- Team invitations
+- Pairing publication
+- In-portal result submission
+- Round lifecycle controls
+- Team standings
+- Tournament timeline
+- Champion display
+
+These workflows are backed by Event-scoped sheets and existing Event Engine records. They do not introduce a new Tournament Engine. Commissioner controls update the same Event lifecycle/status fields used by Event Manager.

@@ -118,6 +118,28 @@ Team Tournament Events link to:
 
 The generic `/standings` page refuses to render League division tables for non-League Events and directs users to the appropriate Event experience instead.
 
+## Tournament Operations
+
+Version 6.1 expands the Team Tournament experience into a full operations surface while preserving the shared Event Engine.
+
+Tournament operations add Event-scoped records for:
+
+- Team invitations
+- Tournament result submissions
+- Round lifecycle controls
+- Tournament timeline entries
+- Champion display
+
+These records extend Team Tournament operations but do not create a separate Tournament Engine. They continue to use:
+
+- Event Engine records for Event identity, lifecycle, registration, participants, and rounds.
+- Event Registration for player registration and free-agent status.
+- Team Tournament Teams for team rosters.
+- Team Tournament Pairings for round pairings.
+- Team Tournament Results for in-portal tournament result reporting.
+
+Team standings combine Event-scoped Game Engine rows and Team Tournament Result rows.
+
 ## Commissioner Event Manager
 
 Version 6.0.3 also adds the Commissioner Event Manager.

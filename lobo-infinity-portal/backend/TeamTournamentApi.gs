@@ -32,6 +32,40 @@ const TEAM_TOURNAMENT_PAIRING_HEADERS = [
   "Updated At"
 ];
 
+const TEAM_TOURNAMENT_INVITATION_HEADERS = [
+  "Event ID",
+  "Invitation ID",
+  "Team Name",
+  "Captain",
+  "Player",
+  "Status",
+  "Message",
+  "Created At",
+  "Updated At"
+];
+
+const TEAM_TOURNAMENT_RESULT_HEADERS = [
+  "Event ID",
+  "Result ID",
+  "Round ID",
+  "Round",
+  "Team A",
+  "Team B",
+  "Player",
+  "Opponent",
+  "Tournament Points",
+  "Objective Points",
+  "Victory Points",
+  "Winning Faction",
+  "First Turn",
+  "Best Moment",
+  "Notes",
+  "Status",
+  "Submitted By",
+  "Created At",
+  "Updated At"
+];
+
 function getTeamTournament(e) {
 
   const params =
@@ -60,8 +94,14 @@ function getTeamTournament(e) {
   const pairings =
     getTeamTournamentPairings(eventId);
 
+  const invitations =
+    getTeamTournamentInvitations(eventId);
+
+  const results =
+    getTeamTournamentResults(eventId);
+
   const standings =
-    buildTeamTournamentStandings(eventId, teams);
+    buildTeamTournamentStandings(eventId, teams, results);
 
   const registrations =
     getEventRegistrationRows(eventId);
@@ -94,8 +134,8 @@ function getTeamTournament(e) {
           }).length
         ),
       completedMatches:
-        pairings.filter(function(pairing) {
-          return pairing.status === "Completed";
+        results.filter(function(result) {
+          return result.status !== "Rejected";
         }).length,
       upcomingPairings:
         pairings.filter(function(pairing) {
@@ -103,8 +143,18 @@ function getTeamTournament(e) {
         }),
       latestResults:
         getAllRecentGameObjectsForEvent(eventId).slice(0, 8),
+      tournamentResults: results,
+      invitations: invitations,
+      timeline:
+        buildTeamTournamentTimeline(event, teams, pairings, registrations, invitations, results),
+      freeAgents:
+        registrations.filter(function(registration) {
+          return registration.freeAgent === true && registration.status !== "Withdrawn";
+        }),
+      champion:
+        buildTeamTournamentChampion(event, standings),
       news:
-        buildTeamTournamentNews(event, teams, pairings),
+        buildTeamTournamentNews(event, teams, pairings, results),
       quickActions:
         buildTeamTournamentQuickActions(eventId, event),
       teams: teams,
@@ -252,10 +302,176 @@ function saveTeamTournamentPairing(e) {
 
 }
 
-function buildTeamTournamentStandings(eventId, teams) {
+function saveTeamTournamentInvitation(e) {
+
+  return requireApiPermission(e, "runSeasonControl", function(auth) {
+    const params =
+      getApiParameters(e);
+
+    const eventId =
+      resolveEventId(params.eventId || EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID);
+
+    const teamName =
+      getTeamTournamentString(params.teamName);
+
+    const player =
+      getTeamTournamentString(params.player);
+
+    if (teamName === "" || player === "")
+      return jsonOutput({
+        success: false,
+        error: "Team and player are required."
+      });
+
+    const invitationId =
+      getTeamTournamentString(params.invitationId) ||
+      "invite-" + Utilities.getUuid();
+
+    upsertTeamTournamentCompositeRow(
+      ensureTeamTournamentInvitationsSheet(),
+      TEAM_TOURNAMENT_INVITATION_HEADERS,
+      [
+        "Event ID",
+        "Invitation ID"
+      ],
+      [
+        eventId,
+        invitationId
+      ],
+      [
+        eventId,
+        invitationId,
+        teamName,
+        getTeamTournamentString(params.captain) ||
+          (auth && auth.user ? auth.user.leaguePlayer : "Commissioner"),
+        player,
+        getTeamTournamentString(params.status) || "Pending",
+        getTeamTournamentString(params.message),
+        getTeamTournamentTimestamp(),
+        getTeamTournamentTimestamp()
+      ]
+    );
+
+    invalidatePortalCacheGroup("events");
+
+    return getTeamTournament({
+      parameter: {
+        eventId: eventId
+      }
+    });
+  });
+
+}
+
+function saveTeamTournamentResult(e) {
+
+  return requireApiPermission(e, "submitLists", function(auth) {
+    const params =
+      getApiParameters(e);
+
+    const eventId =
+      resolveEventId(params.eventId || EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID);
+
+    const player =
+      getTeamTournamentString(params.player) ||
+      (auth && auth.user ? auth.user.leaguePlayer : "");
+
+    const opponent =
+      getTeamTournamentString(params.opponent);
+
+    if (player === "" || opponent === "")
+      return jsonOutput({
+        success: false,
+        error: "Player and opponent are required."
+      });
+
+    const resultId =
+      getTeamTournamentString(params.resultId) ||
+      "result-" + Utilities.getUuid();
+
+    upsertTeamTournamentCompositeRow(
+      ensureTeamTournamentResultsSheet(),
+      TEAM_TOURNAMENT_RESULT_HEADERS,
+      [
+        "Event ID",
+        "Result ID"
+      ],
+      [
+        eventId,
+        resultId
+      ],
+      [
+        eventId,
+        resultId,
+        getTeamTournamentString(params.roundId),
+        getTeamTournamentString(params.round) || "Round 1",
+        getTeamTournamentString(params.teamA),
+        getTeamTournamentString(params.teamB),
+        player,
+        opponent,
+        getTeamTournamentString(params.tournamentPoints),
+        getTeamTournamentString(params.objectivePoints),
+        getTeamTournamentString(params.victoryPoints),
+        getTeamTournamentString(params.winningFaction),
+        getTeamTournamentString(params.firstTurn),
+        getTeamTournamentString(params.bestMoment),
+        getTeamTournamentString(params.notes),
+        getTeamTournamentString(params.status) || "Submitted",
+        auth && auth.user ? auth.user.leaguePlayer || auth.user.email : "Player",
+        getTeamTournamentTimestamp(),
+        getTeamTournamentTimestamp()
+      ]
+    );
+
+    invalidatePortalCacheGroup("events");
+
+    return getTeamTournament({
+      parameter: {
+        eventId: eventId
+      }
+    });
+  });
+
+}
+
+function advanceTeamTournamentRound(e) {
+
+  return requireApiPermission(e, "runSeasonControl", function() {
+    const params =
+      getApiParameters(e);
+
+    const eventId =
+      resolveEventId(params.eventId || EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID);
+
+    const lifecycleStage =
+      getTeamTournamentString(params.lifecycleStage) || "Round 1";
+
+    const status =
+      getTeamTournamentString(params.status) || lifecycleStage;
+
+    updateEventManagerEventFields(eventId, {
+      "Lifecycle Stage": lifecycleStage,
+      "Status": status
+    });
+
+    invalidatePortalCacheGroup("events");
+
+    return getTeamTournament({
+      parameter: {
+        eventId: eventId
+      }
+    });
+  });
+
+}
+
+function buildTeamTournamentStandings(eventId, teams, tournamentResults) {
 
   const games =
     getAllRecentGameObjectsForEvent(eventId);
+
+  const results =
+    tournamentResults || [];
 
   return teams
     .map(function(team) {
@@ -300,6 +516,37 @@ function buildTeamTournamentStandings(eventId, teams) {
           vp += victory.right;
         }
       });
+
+      results
+        .filter(function(result) {
+          return result.status !== "Rejected" &&
+            (result.teamA === team.teamName || result.teamB === team.teamName);
+        })
+        .forEach(function(result) {
+          const teamIsA =
+            result.teamA === team.teamName;
+
+          const score =
+            parseTeamTournamentScore(result.tournamentPoints);
+          const objective =
+            parseTeamTournamentScore(result.objectivePoints);
+          const victory =
+            parseTeamTournamentScore(result.victoryPoints);
+
+          const teamTp =
+            teamIsA ? score.left : score.right;
+          const otherTp =
+            teamIsA ? score.right : score.left;
+
+          if (teamTp > otherTp)
+            wins++;
+          else if (otherTp > teamTp)
+            losses++;
+
+          tp += teamTp;
+          op += teamIsA ? objective.left : objective.right;
+          vp += teamIsA ? victory.left : victory.right;
+        });
 
       return {
         rank: 0,
@@ -377,6 +624,60 @@ function getTeamTournamentPairings(eventId) {
 
 }
 
+function getTeamTournamentInvitations(eventId) {
+
+  return getTeamTournamentRows(
+    ensureTeamTournamentInvitationsSheet()
+  ).filter(function(row) {
+    return row["Event ID"] === eventId;
+  }).map(function(row) {
+    return {
+      eventId: row["Event ID"],
+      invitationId: row["Invitation ID"],
+      teamName: row["Team Name"],
+      captain: row["Captain"],
+      player: row["Player"],
+      status: row["Status"],
+      message: row["Message"],
+      createdAt: row["Created At"],
+      updatedAt: row["Updated At"]
+    };
+  });
+
+}
+
+function getTeamTournamentResults(eventId) {
+
+  return getTeamTournamentRows(
+    ensureTeamTournamentResultsSheet()
+  ).filter(function(row) {
+    return row["Event ID"] === eventId;
+  }).map(function(row) {
+    return {
+      eventId: row["Event ID"],
+      resultId: row["Result ID"],
+      roundId: row["Round ID"],
+      round: row["Round"],
+      teamA: row["Team A"],
+      teamB: row["Team B"],
+      player: row["Player"],
+      opponent: row["Opponent"],
+      tournamentPoints: row["Tournament Points"],
+      objectivePoints: row["Objective Points"],
+      victoryPoints: row["Victory Points"],
+      winningFaction: row["Winning Faction"],
+      firstTurn: row["First Turn"],
+      bestMoment: row["Best Moment"],
+      notes: row["Notes"],
+      status: row["Status"],
+      submittedBy: row["Submitted By"],
+      createdAt: row["Created At"],
+      updatedAt: row["Updated At"]
+    };
+  });
+
+}
+
 function getTeamTournamentCurrentRound(eventId) {
 
   const rounds =
@@ -390,7 +691,7 @@ function getTeamTournamentCurrentRound(eventId) {
 
 }
 
-function buildTeamTournamentNews(event, teams, pairings) {
+function buildTeamTournamentNews(event, teams, pairings, results) {
 
   const news = [];
 
@@ -402,7 +703,100 @@ function buildTeamTournamentNews(event, teams, pairings) {
   if (pairings.length > 0)
     news.push("Pairings are posted for " + (pairings[0].round || "the current round") + ".");
 
+  if (results.length > 0)
+    news.push(results.length + " tournament results have been submitted.");
+
   return news;
+
+}
+
+function buildTeamTournamentTimeline(event, teams, pairings, registrations, invitations, results) {
+
+  const timeline = [
+    {
+      type: "Event",
+      title: event.name + " active",
+      body: event.status || event.lifecycleStage || "Tournament configured.",
+      timestamp: event.updatedAt || event.createdAt || ""
+    }
+  ];
+
+  registrations.slice(0, 8).forEach(function(registration) {
+    timeline.push({
+      type: "Registration",
+      title: registration.displayName + " registered",
+      body: registration.preferredTeam || registration.team || "Looking for Team",
+      timestamp: registration.updatedAt || registration.registeredAt || ""
+    });
+  });
+
+  teams.slice(0, 8).forEach(function(team) {
+    timeline.push({
+      type: "Team",
+      title: team.teamName + " rostered",
+      body: "Captain: " + (team.captain || "Not assigned"),
+      timestamp: team.updatedAt || team.createdAt || ""
+    });
+  });
+
+  invitations.slice(0, 8).forEach(function(invitation) {
+    timeline.push({
+      type: "Invitation",
+      title: invitation.teamName + " invited " + invitation.player,
+      body: invitation.status,
+      timestamp: invitation.updatedAt || invitation.createdAt || ""
+    });
+  });
+
+  pairings.slice(0, 8).forEach(function(pairing) {
+    timeline.push({
+      type: "Pairing",
+      title: pairing.teamA + " vs " + pairing.teamB,
+      body: pairing.round + " - " + pairing.status,
+      timestamp: pairing.updatedAt || pairing.createdAt || ""
+    });
+  });
+
+  results.slice(0, 8).forEach(function(result) {
+    timeline.push({
+      type: "Result",
+      title: result.player + " reported " + result.round,
+      body: result.teamA + " vs " + result.teamB,
+      timestamp: result.updatedAt || result.createdAt || ""
+    });
+  });
+
+  return timeline.sort(function(left, right) {
+    return String(right.timestamp).localeCompare(String(left.timestamp));
+  });
+
+}
+
+function buildTeamTournamentChampion(event, standings) {
+
+  if (
+    event.lifecycleStage !== "Awards" &&
+    event.status !== "Champion" &&
+    event.status !== "Archived"
+  )
+    return null;
+
+  const champion =
+    standings[0];
+
+  if (!champion)
+    return null;
+
+  return {
+    teamName: champion.teamName,
+    captain: champion.captain,
+    players: champion.players,
+    wins: champion.wins,
+    losses: champion.losses,
+    tournamentPoints: champion.tournamentPoints,
+    objectivePoints: champion.objectivePoints,
+    victoryPoints: champion.victoryPoints
+  };
 
 }
 
@@ -435,6 +829,8 @@ function ensureTeamTournamentSheets() {
 
   ensureTeamTournamentTeamsSheet();
   ensureTeamTournamentPairingsSheet();
+  ensureTeamTournamentInvitationsSheet();
+  ensureTeamTournamentResultsSheet();
 
 }
 
@@ -452,6 +848,24 @@ function ensureTeamTournamentPairingsSheet() {
   return ensureEventEngineSheet(
     CONFIG.SHEETS.TEAM_TOURNAMENT_PAIRINGS,
     TEAM_TOURNAMENT_PAIRING_HEADERS
+  );
+
+}
+
+function ensureTeamTournamentInvitationsSheet() {
+
+  return ensureEventEngineSheet(
+    CONFIG.SHEETS.TEAM_TOURNAMENT_INVITATIONS,
+    TEAM_TOURNAMENT_INVITATION_HEADERS
+  );
+
+}
+
+function ensureTeamTournamentResultsSheet() {
+
+  return ensureEventEngineSheet(
+    CONFIG.SHEETS.TEAM_TOURNAMENT_RESULTS,
+    TEAM_TOURNAMENT_RESULT_HEADERS
   );
 
 }

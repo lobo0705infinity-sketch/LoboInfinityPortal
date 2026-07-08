@@ -80,7 +80,11 @@ const CONFIG = {
 
     TEAM_TOURNAMENT_TEAMS: "Team Tournament Teams",
 
-    TEAM_TOURNAMENT_PAIRINGS: "Team Tournament Pairings"
+    TEAM_TOURNAMENT_PAIRINGS: "Team Tournament Pairings",
+
+    TEAM_TOURNAMENT_INVITATIONS: "Team Tournament Invitations",
+
+    TEAM_TOURNAMENT_RESULTS: "Team Tournament Results"
 
   },
 

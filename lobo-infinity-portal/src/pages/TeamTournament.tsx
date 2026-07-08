@@ -108,6 +108,45 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
     }
   }
 
+  async function saveInvitation(params: Record<string, string>) {
+    setWorking('invitation')
+    try {
+      const data = await apiClient.saveTeamTournamentInvitation({
+        ...params,
+        eventId: activeEventId,
+      })
+      setState({ data, status: 'success' })
+    } finally {
+      setWorking('')
+    }
+  }
+
+  async function saveResult(params: Record<string, string>) {
+    setWorking('result')
+    try {
+      const data = await apiClient.saveTeamTournamentResult({
+        ...params,
+        eventId: activeEventId,
+      })
+      setState({ data, status: 'success' })
+    } finally {
+      setWorking('')
+    }
+  }
+
+  async function advanceRound(params: Record<string, string>) {
+    setWorking('round')
+    try {
+      const data = await apiClient.advanceTeamTournamentRound({
+        ...params,
+        eventId: activeEventId,
+      })
+      setState({ data, status: 'success' })
+    } finally {
+      setWorking('')
+    }
+  }
+
   if (state.status === 'loading') {
     return (
       <main className="portal-shell">
@@ -153,7 +192,10 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
         <TournamentMetric label="Teams" value={data.registeredTeams} />
         <TournamentMetric label="Completed" value={data.completedMatches} />
         <TournamentMetric label="Pairings" value={data.pairings.length} />
+        <TournamentMetric label="Players" value={data.registration.registeredCount} />
       </section>
+
+      {data.champion ? <ChampionPanel champion={data.champion} /> : null}
 
       <section className="team-tournament-grid">
         <RegistrationPanel
@@ -171,6 +213,26 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
         <PairingsPanel pairings={data.pairings} />
       </section>
 
+      <section className="team-tournament-grid">
+        <FreeAgentCenter
+          disabled={working !== ''}
+          freeAgents={data.freeAgents}
+          onInvite={(params) => void saveInvitation(params)}
+          teams={data.teams}
+        />
+        <InvitationCenter invitations={data.invitations} />
+      </section>
+
+      <section className="team-tournament-grid">
+        <ResultReportPanel
+          disabled={working !== ''}
+          onSubmit={(params) => void saveResult(params)}
+          pairings={data.pairings}
+          player={auth.user?.leaguePlayer ?? ''}
+        />
+        <TournamentTimeline timeline={data.timeline} />
+      </section>
+
       <RostersPanel teams={data.teams} />
 
       <section className="team-tournament-grid">
@@ -183,6 +245,7 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
       {isCommissioner ? (
         <CommissionerTournamentTools
           disabled={working !== ''}
+          onRound={(params) => void advanceRound(params)}
           onPairing={(params) => void savePairing(params)}
           onTeam={(params) => void saveTeam(params)}
         />
@@ -444,6 +507,99 @@ function PairingsPanel({ pairings }: { pairings: TeamTournamentPairing[] }) {
   )
 }
 
+function FreeAgentCenter({
+  disabled,
+  freeAgents,
+  onInvite,
+  teams,
+}: {
+  disabled: boolean
+  freeAgents: EventRegistrationData['freeAgents']
+  onInvite: (params: Record<string, string>) => void
+  teams: TeamTournamentTeam[]
+}) {
+  const defaultTeam = teams[0]?.teamName ?? ''
+
+  function invite(player: string, teamName: string) {
+    onInvite({
+      player,
+      teamName,
+      status: 'Pending',
+    })
+  }
+
+  return (
+    <section className="panel team-tournament-panel" id="team-tournament-free-agents">
+      <div className="panel-heading">
+        <p className="eyebrow">Free Agent Center</p>
+        <h2>Looking for Team</h2>
+      </div>
+      {freeAgents.length === 0 ? (
+        <p>No free agents are currently waiting for a team.</p>
+      ) : (
+        <div className="team-pairing-list">
+          {freeAgents.map((agent) => {
+            const preferredTeam = agent.preferredTeam || defaultTeam
+
+            return (
+              <article className="team-pairing-card" key={agent.player}>
+                <strong>{agent.displayName || agent.player}</strong>
+                <p>{agent.faction || 'Faction not provided'}</p>
+                <p>{agent.discord || 'Discord not provided'}</p>
+                <p>{agent.registeredAt || 'Registration date unavailable'}</p>
+                <select
+                  aria-label={`Team for ${agent.displayName || agent.player}`}
+                  defaultValue={preferredTeam}
+                  disabled={disabled || teams.length === 0}
+                  onChange={(event) =>
+                    invite(agent.player, event.target.value)
+                  }
+                >
+                  <option value="">Select team</option>
+                  {teams.map((team) => (
+                    <option key={team.teamId} value={team.teamName}>
+                      {team.teamName}
+                    </option>
+                  ))}
+                </select>
+              </article>
+            )
+          })}
+        </div>
+      )}
+    </section>
+  )
+}
+
+function InvitationCenter({
+  invitations,
+}: {
+  invitations: TeamTournamentData['invitations']
+}) {
+  return (
+    <section className="panel team-tournament-panel" id="team-tournament-invitations">
+      <div className="panel-heading">
+        <p className="eyebrow">Team Invitations</p>
+        <h2>Invite Queue</h2>
+      </div>
+      {invitations.length === 0 ? (
+        <p>No active invitations.</p>
+      ) : (
+        <div className="team-pairing-list">
+          {invitations.map((invitation) => (
+            <article className="team-pairing-card" key={invitation.invitationId}>
+              <strong>{invitation.teamName}</strong>
+              <p>Player: {invitation.player}</p>
+              <p>Captain: {invitation.captain || 'Commissioner'}</p>
+              <p>Status: {invitation.status}</p>
+            </article>
+          ))}
+        </div>
+      )}
+    </section>
+  )
+}
+
 function RostersPanel({ teams }: { teams: TeamTournamentTeam[] }) {
   return (
     <section className="panel team-tournament-panel">
@@ -494,6 +650,99 @@ function LatestResults({ data }: { data: TeamTournamentData }) {
           </p>
         ))
       )}
+    </section>
+  )
+}
+
+function ResultReportPanel({
+  disabled,
+  onSubmit,
+  pairings,
+  player,
+}: {
+  disabled: boolean
+  onSubmit: (params: Record<string, string>) => void
+  pairings: TeamTournamentPairing[]
+  player: string
+}) {
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const form = new FormData(event.currentTarget)
+    onSubmit(Object.fromEntries(form.entries()) as Record<string, string>)
+    event.currentTarget.reset()
+  }
+
+  const firstPairing = pairings[0]
+
+  return (
+    <form className="panel team-tournament-form" id="team-tournament-results" onSubmit={submit}>
+      <p className="eyebrow">Match Reporting</p>
+      <h2>Submit Tournament Result</h2>
+      <input defaultValue={firstPairing?.roundId ?? ''} name="roundId" placeholder="Round ID" />
+      <input defaultValue={firstPairing?.round ?? 'Round 1'} name="round" placeholder="Round" />
+      <input defaultValue={firstPairing?.teamA ?? ''} name="teamA" placeholder="Team A" required />
+      <input defaultValue={firstPairing?.teamB ?? ''} name="teamB" placeholder="Team B" required />
+      <input defaultValue={player} name="player" placeholder="Your player name" required />
+      <input name="opponent" placeholder="Opponent" required />
+      <input name="tournamentPoints" placeholder="TP score, e.g. 7-3" required />
+      <input name="objectivePoints" placeholder="OP score, e.g. 41-28" required />
+      <input name="victoryPoints" placeholder="VP score, e.g. 180-123" required />
+      <input name="winningFaction" placeholder="Winning faction" />
+      <input name="firstTurn" placeholder="First turn player" />
+      <textarea name="bestMoment" placeholder="Best moment" rows={2} />
+      <textarea name="notes" placeholder="Notes" rows={2} />
+      <button disabled={disabled} type="submit">
+        Submit Tournament Result
+      </button>
+    </form>
+  )
+}
+
+function TournamentTimeline({
+  timeline,
+}: {
+  timeline: TeamTournamentData['timeline']
+}) {
+  return (
+    <section className="panel team-tournament-panel" id="team-tournament-timeline">
+      <div className="panel-heading">
+        <p className="eyebrow">Tournament Timeline</p>
+        <h2>Live Event Story</h2>
+      </div>
+      {timeline.length === 0 ? (
+        <p>No tournament activity yet.</p>
+      ) : (
+        <div className="event-home-timeline">
+          {timeline.slice(0, 10).map((item) => (
+            <article key={`${item.type}-${item.title}-${item.timestamp}`}>
+              <span>{item.type}</span>
+              <strong>{item.title}</strong>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+      )}
+    </section>
+  )
+}
+
+function ChampionPanel({
+  champion,
+}: {
+  champion: NonNullable<TeamTournamentData['champion']>
+}) {
+  return (
+    <section className="panel team-tournament-hero">
+      <div>
+        <p className="eyebrow">Tournament Champion</p>
+        <h2>{champion.teamName}</h2>
+        <p>Captain: {champion.captain || 'Not assigned'}</p>
+        <p>{champion.players.join(', ') || 'Roster pending'}</p>
+      </div>
+      <TournamentMetric label="Wins" value={champion.wins} />
+      <TournamentMetric label="TP" value={champion.tournamentPoints} />
+      <TournamentMetric label="OP" value={champion.objectivePoints} />
+      <TournamentMetric label="VP" value={champion.victoryPoints} />
     </section>
   )
 }
@@ -583,17 +832,20 @@ function RegistrationManagementPanel({
 
 function CommissionerTournamentTools({
   disabled,
+  onRound,
   onPairing,
   onTeam,
 }: {
   disabled: boolean
+  onRound: (params: Record<string, string>) => void
   onPairing: (params: Record<string, string>) => void
   onTeam: (params: Record<string, string>) => void
 }) {
   return (
-    <section className="team-tournament-grid">
+    <section className="team-tournament-grid" id="team-tournament-commissioner">
       <TeamForm disabled={disabled} onSubmit={onTeam} />
       <PairingForm disabled={disabled} onSubmit={onPairing} />
+      <RoundControlForm disabled={disabled} onSubmit={onRound} />
     </section>
   )
 }
@@ -651,6 +903,51 @@ function PairingForm({
       <textarea name="playerPairings" placeholder="Individual pairings" />
       <button disabled={disabled} type="submit">
         Save Pairing
+      </button>
+    </form>
+  )
+}
+
+function RoundControlForm({
+  disabled,
+  onSubmit,
+}: {
+  disabled: boolean
+  onSubmit: (params: Record<string, string>) => void
+}) {
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const form = new FormData(event.currentTarget)
+    onSubmit(Object.fromEntries(form.entries()) as Record<string, string>)
+  }
+
+  return (
+    <form className="panel team-tournament-form" onSubmit={submit}>
+      <p className="eyebrow">Commissioner</p>
+      <h2>Round Lifecycle</h2>
+      <select name="lifecycleStage" defaultValue="Round 1">
+        <option>Registration Open</option>
+        <option>Registration Closed</option>
+        <option>Roster Locked</option>
+        <option>Round 1</option>
+        <option>Round 2</option>
+        <option>Round 3</option>
+        <option>Final Round</option>
+        <option>Awards</option>
+        <option>Archived</option>
+      </select>
+      <select name="status" defaultValue="Round 1">
+        <option>Registration Open</option>
+        <option>Registration Closed</option>
+        <option>Roster Locked</option>
+        <option>Pairings Published</option>
+        <option>Accepting Results</option>
+        <option>Round Complete</option>
+        <option>Champion</option>
+        <option>Archived</option>
+      </select>
+      <button disabled={disabled} type="submit">
+        Update Round State
       </button>
     </form>
   )

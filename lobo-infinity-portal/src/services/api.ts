@@ -923,6 +923,58 @@ export type TeamTournamentStanding = {
   wins: number
 }
 
+export type TeamTournamentInvitation = {
+  captain: string
+  createdAt: string
+  eventId: string
+  invitationId: string
+  message: string
+  player: string
+  status: string
+  teamName: string
+  updatedAt: string
+}
+
+export type TeamTournamentResult = {
+  bestMoment: string
+  createdAt: string
+  eventId: string
+  firstTurn: string
+  notes: string
+  objectivePoints: string
+  opponent: string
+  player: string
+  resultId: string
+  round: string
+  roundId: string
+  status: string
+  submittedBy: string
+  teamA: string
+  teamB: string
+  tournamentPoints: string
+  updatedAt: string
+  victoryPoints: string
+  winningFaction: string
+}
+
+export type TeamTournamentTimelineEntry = {
+  body: string
+  timestamp: string
+  title: string
+  type: string
+}
+
+export type TeamTournamentChampion = {
+  captain: string
+  losses: number
+  objectivePoints: number
+  players: string[]
+  teamName: string
+  tournamentPoints: number
+  victoryPoints: number
+  wins: number
+}
+
 export type EventRegistrationEntry = {
   captain: boolean
   discord: string
@@ -1056,9 +1108,12 @@ export type EventHomeData = {
 }
 
 export type TeamTournamentData = {
+  champion: TeamTournamentChampion | null
   completedMatches: number
   currentRound: Record<string, unknown> | null
   event: LeagueEvent
+  freeAgents: EventRegistrationEntry[]
+  invitations: TeamTournamentInvitation[]
   latestResults: RecentGame[]
   news: string[]
   pairings: TeamTournamentPairing[]
@@ -1073,6 +1128,8 @@ export type TeamTournamentData = {
   standings: TeamTournamentStanding[]
   status: string
   teams: TeamTournamentTeam[]
+  timeline: TeamTournamentTimelineEntry[]
+  tournamentResults: TeamTournamentResult[]
   upcomingPairings: TeamTournamentPairing[]
 }
 
@@ -1897,6 +1954,18 @@ export type ApiClient = {
     params: Record<string, string>,
     options?: ApiOptions,
   ) => Promise<TeamTournamentData>
+  saveTeamTournamentInvitation: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<TeamTournamentData>
+  saveTeamTournamentResult: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<TeamTournamentData>
+  advanceTeamTournamentRound: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<TeamTournamentData>
   getCommissionerScheduling: (
     options?: ApiOptions,
   ) => Promise<CommissionerSchedulingData>
@@ -2415,6 +2484,30 @@ export async function saveTeamTournamentPairing(
   return normalizeTeamTournamentPayload(payload)
 }
 
+export async function saveTeamTournamentInvitation(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<TeamTournamentData> {
+  const payload = await postRequest('teamTournamentInvitation', options, params)
+  return normalizeTeamTournamentPayload(payload)
+}
+
+export async function saveTeamTournamentResult(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<TeamTournamentData> {
+  const payload = await postRequest('teamTournamentResult', options, params)
+  return normalizeTeamTournamentPayload(payload)
+}
+
+export async function advanceTeamTournamentRound(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<TeamTournamentData> {
+  const payload = await postRequest('teamTournamentRound', options, params)
+  return normalizeTeamTournamentPayload(payload)
+}
+
 export async function getCommissionerScheduling(
   options: ApiOptions = {},
 ): Promise<CommissionerSchedulingData> {
@@ -2697,6 +2790,9 @@ export const apiClient: ApiClient = {
   registerTeamTournament,
   saveTeamTournamentTeam,
   saveTeamTournamentPairing,
+  saveTeamTournamentInvitation,
+  saveTeamTournamentResult,
+  advanceTeamTournamentRound,
   getCommissionerScheduling,
   submitArmyList,
   voteArmyList,
@@ -4238,9 +4334,18 @@ function normalizeTeamTournamentPayload(payload: unknown): TeamTournamentData {
   const tournament = getRequiredRecord(record, 'tournament')
 
   return {
+    champion: getOptionalRecord(tournament, 'champion')
+      ? normalizeTeamTournamentChampion(getRequiredRecord(tournament, 'champion'))
+      : null,
     completedMatches: getNumber(tournament, 'completedMatches'),
     currentRound: getOptionalRecord(tournament, 'currentRound') ?? null,
     event: normalizeLeagueEvent(getRequiredRecord(tournament, 'event')),
+    freeAgents: getArray(tournament, 'freeAgents').map(
+      normalizeEventRegistrationEntry,
+    ),
+    invitations: getArray(tournament, 'invitations').map(
+      normalizeTeamTournamentInvitation,
+    ),
     latestResults: getArray(tournament, 'latestResults').map(normalizeRecentGame),
     news: getArray(tournament, 'news').map((item) => String(item ?? '')),
     pairings: getArray(tournament, 'pairings').map(normalizeTeamTournamentPairing),
@@ -4263,6 +4368,12 @@ function normalizeTeamTournamentPayload(payload: unknown): TeamTournamentData {
     ),
     status: getString(tournament, 'status'),
     teams: getArray(tournament, 'teams').map(normalizeTeamTournamentTeam),
+    timeline: getArray(tournament, 'timeline').map(
+      normalizeTeamTournamentTimelineEntry,
+    ),
+    tournamentResults: getArray(tournament, 'tournamentResults').map(
+      normalizeTeamTournamentResult,
+    ),
     upcomingPairings: getArray(tournament, 'upcomingPairings').map(
       normalizeTeamTournamentPairing,
     ),
@@ -4538,6 +4649,80 @@ function normalizeTeamTournamentStanding(
     rank: getNumber(record, 'rank'),
     strengthOfSchedule: getNumber(record, 'strengthOfSchedule'),
     teamId: getString(record, 'teamId'),
+    teamName: getString(record, 'teamName'),
+    tournamentPoints: getNumber(record, 'tournamentPoints'),
+    victoryPoints: getNumber(record, 'victoryPoints'),
+    wins: getNumber(record, 'wins'),
+  }
+}
+
+function normalizeTeamTournamentInvitation(
+  item: unknown,
+): TeamTournamentInvitation {
+  const record = asRecord(item, 'Team tournament invitation')
+
+  return {
+    captain: getString(record, 'captain'),
+    createdAt: getString(record, 'createdAt'),
+    eventId: getString(record, 'eventId'),
+    invitationId: getString(record, 'invitationId'),
+    message: getString(record, 'message'),
+    player: getString(record, 'player'),
+    status: getString(record, 'status'),
+    teamName: getString(record, 'teamName'),
+    updatedAt: getString(record, 'updatedAt'),
+  }
+}
+
+function normalizeTeamTournamentResult(item: unknown): TeamTournamentResult {
+  const record = asRecord(item, 'Team tournament result')
+
+  return {
+    bestMoment: getString(record, 'bestMoment'),
+    createdAt: getString(record, 'createdAt'),
+    eventId: getString(record, 'eventId'),
+    firstTurn: getString(record, 'firstTurn'),
+    notes: getString(record, 'notes'),
+    objectivePoints: getString(record, 'objectivePoints'),
+    opponent: getString(record, 'opponent'),
+    player: getString(record, 'player'),
+    resultId: getString(record, 'resultId'),
+    round: getString(record, 'round'),
+    roundId: getString(record, 'roundId'),
+    status: getString(record, 'status'),
+    submittedBy: getString(record, 'submittedBy'),
+    teamA: getString(record, 'teamA'),
+    teamB: getString(record, 'teamB'),
+    tournamentPoints: getString(record, 'tournamentPoints'),
+    updatedAt: getString(record, 'updatedAt'),
+    victoryPoints: getString(record, 'victoryPoints'),
+    winningFaction: getString(record, 'winningFaction'),
+  }
+}
+
+function normalizeTeamTournamentTimelineEntry(
+  item: unknown,
+): TeamTournamentTimelineEntry {
+  const record = asRecord(item, 'Team tournament timeline entry')
+
+  return {
+    body: getString(record, 'body'),
+    timestamp: getString(record, 'timestamp'),
+    title: getString(record, 'title'),
+    type: getString(record, 'type'),
+  }
+}
+
+function normalizeTeamTournamentChampion(
+  item: unknown,
+): TeamTournamentChampion {
+  const record = asRecord(item, 'Team tournament champion')
+
+  return {
+    captain: getString(record, 'captain'),
+    losses: getNumber(record, 'losses'),
+    objectivePoints: getNumber(record, 'objectivePoints'),
+    players: getArray(record, 'players').map((player) => String(player ?? '')),
     teamName: getString(record, 'teamName'),
     tournamentPoints: getNumber(record, 'tournamentPoints'),
     victoryPoints: getNumber(record, 'victoryPoints'),

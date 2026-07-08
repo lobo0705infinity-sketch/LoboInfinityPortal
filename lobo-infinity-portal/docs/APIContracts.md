@@ -537,6 +537,69 @@ Request:
 }
 ```
 
+### Team Invitations
+
+Action:
+
+`POST action=teamTournamentInvitation`
+
+Authentication:
+
+Requires Commissioner season-control permission.
+
+Request:
+
+```json
+{
+  "eventId": "event-august-2026-team-tournament",
+  "teamName": "Lobo Command",
+  "player": "FlashPulse",
+  "status": "Pending",
+  "message": "Join the Round 1 roster."
+}
+```
+
+### Tournament Result Reporting
+
+Action:
+
+`POST action=teamTournamentResult`
+
+Authentication:
+
+Requires an authenticated league member.
+
+Request:
+
+```json
+{
+  "eventId": "event-august-2026-team-tournament",
+  "round": "Round 1",
+  "teamA": "Lobo Command",
+  "teamB": "Wolfpack",
+  "player": "Lobo",
+  "opponent": "Chainsaw",
+  "tournamentPoints": "7-3",
+  "objectivePoints": "41-28",
+  "victoryPoints": "180-123",
+  "winningFaction": "Nomads",
+  "firstTurn": "Lobo",
+  "bestMoment": "Critical objective swing."
+}
+```
+
+### Tournament Round Lifecycle
+
+Action:
+
+`POST action=teamTournamentRound`
+
+Authentication:
+
+Requires Commissioner season-control permission.
+
+Updates the existing Event lifecycle/status fields for tournament round operations. It does not create a separate tournament lifecycle engine.
+
 Team Tournament mutations invalidate the `events` cache group so the dashboard, rosters, pairings, and standings refresh from the same event-scoped source.
 
 ## Event Lifecycle Mutations

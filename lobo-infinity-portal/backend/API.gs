@@ -373,6 +373,15 @@ function doGet(e) {
     case "teamTournamentPairing":
       return saveTeamTournamentPairing(e);
 
+    case "teamTournamentInvitation":
+      return saveTeamTournamentInvitation(e);
+
+    case "teamTournamentResult":
+      return saveTeamTournamentResult(e);
+
+    case "teamTournamentRound":
+      return advanceTeamTournamentRound(e);
+
     case "updateSettings":
       return requireApiPermission(e, "manageSettings", function() {
         return updateOperationsSettings(e);
@@ -660,6 +669,15 @@ function doPost(e) {
 
     case "teamTournamentPairing":
       return saveTeamTournamentPairing(e);
+
+    case "teamTournamentInvitation":
+      return saveTeamTournamentInvitation(e);
+
+    case "teamTournamentResult":
+      return saveTeamTournamentResult(e);
+
+    case "teamTournamentRound":
+      return advanceTeamTournamentRound(e);
 
     case "updateSettings":
       return requireApiPermission(e, "manageSettings", function() {
