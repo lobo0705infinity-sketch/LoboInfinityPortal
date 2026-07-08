@@ -21,8 +21,11 @@ function getStandings(e) {
     });
 
   return jsonOutput(
-    buildStandingsResponse(
-      divisionConfig
+    buildEventStandingsResponse(
+      divisionConfig,
+      e &&
+      e.parameter &&
+      e.parameter.eventId
     )
   );
 
@@ -30,10 +33,25 @@ function getStandings(e) {
 
 function buildStandingsResponse(divisionConfig) {
 
+  return buildEventStandingsResponse(
+    divisionConfig,
+    EVENT_ENGINE_DEFAULT_EVENT_ID
+  );
+
+}
+
+function buildEventStandingsResponse(divisionConfig, eventId) {
+
+  const resolvedEventId =
+    resolveLeagueEventScope(eventId);
+
   const registry =
     buildPlayerRegistry();
 
-  updateRegistryStatistics(registry);
+  updateRegistryStatistics(
+    registry,
+    resolvedEventId
+  );
 
   const rows =
     buildDivisionTable(
@@ -42,10 +60,19 @@ function buildStandingsResponse(divisionConfig) {
     );
 
   const standings =
-    standingsRowsToObjects(rows);
+    standingsRowsToObjects(rows, resolvedEventId);
 
   return {
     success: true,
+    eventId: resolvedEventId,
+    event:
+      resolvedEventId === "all" ||
+      resolvedEventId === "lifetime"
+        ? null
+        : typeof getEventByIdSnapshot === "function"
+        ? getEventByIdSnapshot(resolvedEventId) ||
+          getCurrentLeagueEventSnapshot()
+        : null,
     division: divisionConfig.key,
     divisionLabel: divisionConfig.label,
     standings: standings,
@@ -57,7 +84,7 @@ function buildStandingsResponse(divisionConfig) {
 
 }
 
-function standingsRowsToObjects(rows) {
+function standingsRowsToObjects(rows, eventId) {
 
   const displayNames =
     getPlayerDisplayNameMap();
@@ -70,6 +97,9 @@ function standingsRowsToObjects(rows) {
         row[CONFIG.STANDINGS.PLAYER];
 
       return {
+        eventId:
+          eventId ||
+          EVENT_ENGINE_DEFAULT_EVENT_ID,
         rank: row[CONFIG.STANDINGS.RANK],
         player: player,
         displayName:

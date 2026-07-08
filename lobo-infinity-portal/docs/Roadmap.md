@@ -40,6 +40,8 @@ Version 5.0.1 is a Performance Excellence hardening release. It preserves the co
 
 Version 5.1 is a Runtime Performance and User Experience release. It preserves completed workflows and adds route preloading on navigation intent, route mount timing, long task capture, API cache ratio visibility, and shared search-index normalization to improve perceived responsiveness without changing business logic or backend contracts.
 
+Version 6.0 is the Multi-Event Platform release. It promotes Event ID to an operational data dimension while preserving Current League defaults. Standings, Match Finder, and Scheduling Center now accept Event scope through existing services, rebuilt Game Engine rows include Event ID, and missing historical scope resolves to `event-current-league`.
+
 ### 3.2 Event Migration
 
 Add explicit event scope to historical data after migration validation has passed.

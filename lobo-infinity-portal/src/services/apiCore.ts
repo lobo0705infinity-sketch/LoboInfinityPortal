@@ -1,4 +1,5 @@
 export type ApiOptions = {
+  eventId?: string
   signal?: AbortSignal
 }
 

@@ -4934,6 +4934,37 @@
   animation: dashboard-fade 220ms ease both;
 }
 
+.scheduling-event-filter {
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+.scheduling-event-filter label {
+  display: grid;
+  gap: 8px;
+  width: min(100%, 420px);
+  color: var(--text-soft);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.scheduling-event-filter select {
+  min-height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 42px 10px 14px;
+  color: var(--text);
+  background: var(--panel);
+  font: inherit;
+  text-transform: none;
+}
+
+.scheduling-event-filter select:focus-visible {
+  outline: 3px solid rgba(76, 201, 240, 0.4);
+  outline-offset: 2px;
+}
+
 .scheduling-hero {
   align-items: center;
   display: grid;

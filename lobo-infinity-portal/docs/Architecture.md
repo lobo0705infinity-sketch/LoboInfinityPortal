@@ -446,6 +446,23 @@ Until Event Migration is completed, active Event data resolves through the Curre
 event-current-league
 ```
 
+Version 6.0 makes Event scope operational while preserving the hierarchy:
+
+```text
+Organization -> Community -> Series -> Event -> Season -> Round -> Game
+```
+
+Games now resolve through Event ID. Missing Event IDs remain backward-compatible and read as `event-current-league`.
+
+Existing services are extended rather than duplicated:
+
+- Standings pass event scope into the existing registry statistics updater.
+- Scheduling passes event scope into the existing Season Command Center context.
+- Match requests store Event ID in the existing Scheduling Requests sheet.
+- Frontend Event selectors consume the existing `events` endpoint.
+
+Aggregate `all` and `lifetime` scopes are read modes for historical statistics and do not create new data stores.
+
 Version 3.1.1 refines the Community Command Center into a player workflow surface.
 
 It adds:

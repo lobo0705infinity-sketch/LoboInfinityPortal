@@ -60,6 +60,8 @@ Required `event` fields:
 - `createdAt`
 - `updatedAt`
 
+Version 6.0 uses these Event records as the selector source for event-aware standings and scheduling views.
+
 ### Event
 
 Action:
@@ -189,6 +191,73 @@ Response:
   }
 }
 ```
+
+## Multi-Event Read Scope
+
+Version 6.0 adds optional `eventId` query parameters to existing read contracts.
+
+If omitted, the backend resolves to:
+
+```text
+event-current-league
+```
+
+Supported aggregate scopes:
+
+```text
+all
+lifetime
+```
+
+### Event-Aware Standings
+
+Action:
+
+`GET action=standings&division=main&eventId=event-current-league`
+
+Response adds:
+
+```json
+{
+  "success": true,
+  "eventId": "event-current-league",
+  "event": {},
+  "division": "main",
+  "divisionLabel": "Main Man",
+  "standings": [],
+  "summary": {}
+}
+```
+
+Each standings row may include `eventId`. Existing row fields are unchanged.
+
+### Event-Aware Scheduling Center
+
+Action:
+
+`GET action=schedulingCenter&eventId=event-current-league`
+
+Response adds:
+
+```json
+{
+  "success": true,
+  "scheduling": {
+    "eventId": "event-current-league",
+    "event": {}
+  }
+}
+```
+
+Scheduling request records include `eventId`. Missing stored values resolve to Current League.
+
+### Event-Aware Match Finder
+
+Action:
+
+`GET action=matchFinder&eventId=event-current-league`
+
+The payload remains structurally compatible and is filtered to the selected Event.
 
 Required lifecycle fields:
 

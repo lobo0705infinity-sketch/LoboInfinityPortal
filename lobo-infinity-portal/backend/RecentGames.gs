@@ -23,10 +23,11 @@ const RECENT_GAME_ANALYTICS_COLUMNS = {
   LOSER_VP: "Loser VP",
   BEST_MOMENT: "Best Moment",
   FIRST_TURN: "First Turn",
-  FIRST_TURN_WINNER: "First Turn Winner"
+  FIRST_TURN_WINNER: "First Turn Winner",
+  EVENT_ID: "Event ID"
 };
 
-function getRecentGames() {
+function getRecentGames(e) {
 
   const sheet =
     SpreadsheetApp
@@ -57,7 +58,8 @@ function getRecentGames() {
     getRecentGameColumns(headers);
 
   const games =
-    values
+    filterRecentGamesByEvent(
+      values
       .map(function(row, index) {
 
         return buildRecentGame(
@@ -75,7 +77,11 @@ function getRecentGames() {
           game.loser !== ""
         );
 
-      })
+      }),
+      e &&
+      e.parameter &&
+      e.parameter.eventId
+    )
       .sort(function(a, b) {
 
         const dateOrder =
@@ -109,6 +115,7 @@ function buildRecentGameResponse(game, id) {
 
   return {
     id: id,
+    eventId: game.eventId || EVENT_ENGINE_DEFAULT_EVENT_ID,
     date: game.date,
     division: game.division,
     winner: game.winner,
@@ -211,6 +218,11 @@ function getRecentGameColumns(headers) {
       getRecentGameOptionalColumn(
         headers,
         RECENT_GAME_ANALYTICS_COLUMNS.FIRST_TURN_WINNER
+      ),
+    eventId:
+      getRecentGameOptionalColumn(
+        headers,
+        RECENT_GAME_ANALYTICS_COLUMNS.EVENT_ID
       )
   };
 
@@ -293,7 +305,13 @@ function buildRecentGame(
         : getRecentGameString(
             row[columns.bestMoment]
           ),
-    firstTurn: firstTurn
+    firstTurn: firstTurn,
+    eventId:
+      columns.eventId === -1
+        ? EVENT_ENGINE_DEFAULT_EVENT_ID
+        : getRecentGameString(
+            row[columns.eventId]
+          ) || EVENT_ENGINE_DEFAULT_EVENT_ID
   };
 
 }
@@ -417,5 +435,37 @@ function getRecentGameFirstTurn(
     return loser;
 
   return firstTurnWinner;
+
+}
+
+function filterRecentGamesByEvent(games, eventId) {
+
+  const scope =
+    resolveLeagueEventScope(eventId);
+
+  if (
+    scope === "all" ||
+    scope === "lifetime"
+  )
+    return games;
+
+  return games.filter(function(game) {
+    return (
+      getRecentGameString(game.eventId) ||
+      EVENT_ENGINE_DEFAULT_EVENT_ID
+    ) === scope;
+  });
+
+}
+
+function getAllRecentGameObjectsForEvent(eventId) {
+
+  if (typeof getAllRecentGameObjects !== "function")
+    return [];
+
+  return filterRecentGamesByEvent(
+    getAllRecentGameObjects(),
+    eventId
+  );
 
 }

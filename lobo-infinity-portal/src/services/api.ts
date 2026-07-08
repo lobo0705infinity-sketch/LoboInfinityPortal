@@ -3,6 +3,8 @@ import type {
   DashboardSummary,
   DivisionKey,
   DivisionStandings,
+  EventCatalog,
+  LeagueEvent,
   LeagueOverview,
   LeagueOverviewDivision,
   Standing,
@@ -282,6 +284,7 @@ export type PlayerProfileData = {
 }
 
 export type RecentGame = {
+  eventId: string
   id: number
   date: string
   division: string
@@ -791,6 +794,7 @@ export type CommunityOpponentCard = {
 
 export type SchedulingRequest = {
   createdAt: string
+  eventId: string
   fromPlayer: string
   id: string
   location: string
@@ -832,6 +836,8 @@ export type SchedulingCenterData = {
   availability: SeasonAvailability
   commissioner: SeasonCommissionerStatus
   completedOpponents: SeasonOpponent[]
+  event: LeagueEvent | null
+  eventId: string
   currentSeason: string
   opponents: SeasonOpponent[]
   player: SeasonCommandPlayer
@@ -1556,6 +1562,7 @@ export type ApiClient = {
   getDashboard: (options?: ApiOptions) => Promise<DashboardData>
   getLeader: (options?: ApiOptions) => Promise<LeaderData>
   getRecentGames: (options?: ApiOptions) => Promise<RecentGame[]>
+  getEvents: (options?: ApiOptions) => Promise<EventCatalog>
   getStandings: (
     division: DivisionKey,
     options?: ApiOptions,
@@ -1725,7 +1732,11 @@ export async function getRecentGames(
   options: ApiOptions = {},
 ): Promise<RecentGame[]> {
   try {
-    const payload = await request('recentGames', options)
+    const payload = await request(
+      'recentGames',
+      options,
+      options.eventId ? { eventId: options.eventId } : {},
+    )
     return normalizeRecentGamesPayload(payload)
   } catch (error) {
     if (options.signal?.aborted) {
@@ -1736,13 +1747,26 @@ export async function getRecentGames(
   }
 }
 
+export async function getEvents(
+  options: ApiOptions = {},
+): Promise<EventCatalog> {
+  const payload = await request('events', options)
+  return normalizeEventCatalogPayload(payload)
+}
+
 export async function getStandings(
   division: DivisionKey,
   options: ApiOptions = {},
 ): Promise<DivisionStandings> {
-  const payload = await request('standings', options, {
+  const params: Record<string, string> = {
     division,
-  })
+  }
+
+  if (options.eventId) {
+    params.eventId = options.eventId
+  }
+
+  const payload = await request('standings', options, params)
 
   return normalizeStandingsPayload(payload)
 }
@@ -1924,14 +1948,22 @@ export async function updateSeasonAvailability(
 export async function getSchedulingCenter(
   options: ApiOptions = {},
 ): Promise<SchedulingCenterData> {
-  const payload = await request('schedulingCenter', options)
+  const payload = await request(
+    'schedulingCenter',
+    options,
+    options.eventId ? { eventId: options.eventId } : {},
+  )
   return normalizeSchedulingCenterPayload(payload)
 }
 
 export async function getMatchFinder(
   options: ApiOptions = {},
 ): Promise<MatchFinderData> {
-  const payload = await request('matchFinder', options)
+  const payload = await request(
+    'matchFinder',
+    options,
+    options.eventId ? { eventId: options.eventId } : {},
+  )
   return normalizeMatchFinderPayload(payload)
 }
 
@@ -2210,6 +2242,7 @@ export const apiClient: ApiClient = {
   getDashboard,
   getLeader,
   getRecentGames,
+  getEvents,
   getStandings,
   getAllStandings,
   getPlayers,
@@ -2615,8 +2648,55 @@ function normalizeStandingsPayload(payload: unknown): DivisionStandings {
   return {
     division: getDivisionKey(record, 'division'),
     divisionLabel: getRequiredString(record, 'divisionLabel'),
+    event: getOptionalRecord(record, 'event')
+      ? normalizeLeagueEvent(getRequiredRecord(record, 'event'))
+      : null,
+    eventId: getString(record, 'eventId'),
     standings: getRequiredArray(record, 'standings').map(normalizeStanding),
     summary: normalizeDivisionSummary(getRequiredRecord(record, 'summary')),
+  }
+}
+
+function normalizeEventCatalogPayload(payload: unknown): EventCatalog {
+  const record = asRecord(payload, 'Events response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Events failed.')
+  }
+
+  return {
+    currentEvent: normalizeLeagueEvent(getRequiredRecord(record, 'currentEvent')),
+    events: getRequiredArray(record, 'events').map(normalizeLeagueEvent),
+  }
+}
+
+function normalizeLeagueEvent(record: Record<string, unknown>): LeagueEvent {
+  return {
+    achievements: getString(record, 'achievements'),
+    archive: getString(record, 'archive'),
+    automation: getString(record, 'automation'),
+    commissioners: getString(record, 'commissioners'),
+    communityId: getString(record, 'communityId'),
+    createdAt: getString(record, 'createdAt'),
+    description: getString(record, 'description'),
+    discord: getString(record, 'discord'),
+    endDate: getString(record, 'endDate'),
+    history: getString(record, 'history'),
+    id: getRequiredString(record, 'id'),
+    lifecycleStage: getString(record, 'lifecycleStage'),
+    name: getRequiredString(record, 'name'),
+    owner: getString(record, 'owner'),
+    participants: getString(record, 'participants'),
+    registration: getString(record, 'registration'),
+    rules: getString(record, 'rules'),
+    scoringModel: getString(record, 'scoringModel'),
+    seriesId: getString(record, 'seriesId'),
+    standingsModel: getString(record, 'standingsModel'),
+    startDate: getString(record, 'startDate'),
+    status: getString(record, 'status'),
+    templateId: getString(record, 'templateId'),
+    type: getString(record, 'type'),
+    updatedAt: getString(record, 'updatedAt'),
   }
 }
 
@@ -2655,6 +2735,7 @@ function normalizeStanding(item: unknown): Standing {
   const record = asRecord(item, 'Standing')
 
   return {
+    eventId: getString(record, 'eventId'),
     rank: getRequiredNumber(record, 'rank'),
     player: getRequiredString(record, 'player'),
     displayName: getString(record, 'displayName') || getRequiredString(record, 'player'),
@@ -3627,6 +3708,10 @@ function normalizeSchedulingCenter(
     completedOpponents: getArray(record, 'completedOpponents').map(
       normalizeSeasonOpponent,
     ),
+    event: getOptionalRecord(record, 'event')
+      ? normalizeLeagueEvent(getRequiredRecord(record, 'event'))
+      : null,
+    eventId: getString(record, 'eventId') || 'event-current-league',
     currentSeason: getString(record, 'currentSeason'),
     opponents: getArray(record, 'opponents').map(normalizeSeasonOpponent),
     player: normalizeSeasonCommandPlayer(getRequiredRecord(record, 'player')),
@@ -3689,6 +3774,7 @@ function normalizeSchedulingRequest(item: unknown): SchedulingRequest {
 
   return {
     createdAt: getString(record, 'createdAt'),
+    eventId: getString(record, 'eventId') || 'event-current-league',
     fromPlayer: getString(record, 'fromPlayer'),
     id: getString(record, 'id'),
     location: getString(record, 'location'),
@@ -5128,6 +5214,7 @@ function normalizeRecentGame(item: unknown): RecentGame {
   const record = asRecord(item, 'Recent game')
 
   return {
+    eventId: getString(record, 'eventId') || 'event-current-league',
     id: getRequiredNumber(record, 'id'),
     date: getRequiredString(record, 'date'),
     division: getString(record, 'division'),

@@ -41,7 +41,7 @@ function doGet(e) {
 
     case "recentGames":
       return getCachedApiResponse(e, action, function() {
-        return getRecentGames();
+        return getRecentGames(e);
       });
 
     case "standings":

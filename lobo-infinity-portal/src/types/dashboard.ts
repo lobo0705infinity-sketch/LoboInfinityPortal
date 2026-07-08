@@ -8,6 +8,7 @@ export type DashboardSummary = {
 }
 
 export type Standing = {
+  eventId?: string
   rank: number
   player: string
   displayName: string
@@ -29,8 +30,43 @@ export type DivisionSummary = {
 export type DivisionStandings = {
   division: DivisionKey
   divisionLabel: string
+  event?: LeagueEvent | null
+  eventId?: string
   standings: Standing[]
   summary: DivisionSummary
+}
+
+export type LeagueEvent = {
+  achievements: string
+  archive: string
+  automation: string
+  commissioners: string
+  communityId: string
+  createdAt: string
+  description: string
+  discord: string
+  endDate: string
+  history: string
+  id: string
+  lifecycleStage: string
+  name: string
+  owner: string
+  participants: string
+  registration: string
+  rules: string
+  scoringModel: string
+  seriesId: string
+  standingsModel: string
+  startDate: string
+  status: string
+  templateId: string
+  type: string
+  updatedAt: string
+}
+
+export type EventCatalog = {
+  currentEvent: LeagueEvent
+  events: LeagueEvent[]
 }
 
 export type LeagueOverviewDivision = {

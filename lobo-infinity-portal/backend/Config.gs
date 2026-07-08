@@ -118,7 +118,9 @@ const CONFIG = {
 
     FACTION: 9,
 
-    FIRST_TURN: 10
+    FIRST_TURN: 10,
+
+    EVENT_ID: 11
 
   },
 

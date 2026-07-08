@@ -5,6 +5,37 @@
   padding: 0 clamp(18px, 4vw, 46px) 20px;
 }
 
+.event-filter {
+  display: flex;
+  padding: 0 clamp(18px, 4vw, 46px) 14px;
+}
+
+.event-filter label {
+  display: grid;
+  gap: 8px;
+  width: min(100%, 420px);
+  color: var(--text-soft);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.event-filter select {
+  min-height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 42px 10px 14px;
+  color: var(--text);
+  background: var(--panel);
+  font: inherit;
+  text-transform: none;
+}
+
+.event-filter select:focus-visible {
+  outline: 3px solid rgba(76, 201, 240, 0.4);
+  outline-offset: 2px;
+}
+
 .division-tab {
   min-height: 42px;
   border: 1px solid var(--border);

@@ -120,6 +120,12 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] Verify Nudge Engine
 - [ ] Verify Promotion Tracker
 - [ ] Verify Current League Event
+- [ ] Verify Multi-Event selector loads Events
+- [ ] Verify Standings event filter
+- [ ] Verify Match Finder event filter
+- [ ] Verify Scheduling Requests include Event ID
+- [ ] Verify legacy rows without Event ID resolve to Current League
+- [ ] Verify lifetime/all event scopes do not affect default Current League APIs
 - [ ] Verify Standings
 - [ ] Verify Hall of Fame
 - [ ] Verify Achievements

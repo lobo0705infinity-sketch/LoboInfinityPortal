@@ -220,12 +220,20 @@ function addSeasonCommandNotifications(notifications, user) {
 
 }
 
-function buildSeasonCommandContext(playerName) {
+function buildSeasonCommandContext(playerName, eventId) {
+
+  const resolvedEventId =
+    typeof resolveLeagueEventScope === "function"
+      ? resolveLeagueEventScope(eventId)
+      : eventId;
 
   const registry =
     buildPlayerRegistry();
 
-  updateRegistryStatistics(registry);
+  updateRegistryStatistics(
+    registry,
+    resolvedEventId
+  );
 
   const player =
     findRegisteredPlayer(
@@ -234,7 +242,9 @@ function buildSeasonCommandContext(playerName) {
     );
 
   const games =
-    getAllRecentGameObjects();
+    typeof getAllRecentGameObjectsForEvent === "function"
+      ? getAllRecentGameObjectsForEvent(resolvedEventId)
+      : getAllRecentGameObjects();
 
   const settings =
     typeof getSettingsObjectSafe === "function"
@@ -270,6 +280,12 @@ function buildSeasonCommandContext(playerName) {
 
   return {
     availability: availability,
+    eventId: resolvedEventId,
+    event:
+      typeof getEventByIdSnapshot === "function"
+        ? getEventByIdSnapshot(resolvedEventId) ||
+          getCurrentLeagueEventSnapshot()
+        : null,
     games: games,
     player: player,
     settings: settings,

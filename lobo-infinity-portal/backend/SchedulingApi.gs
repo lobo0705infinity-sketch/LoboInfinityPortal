@@ -17,7 +17,8 @@ const SCHEDULING_REQUEST_HEADERS = [
   "Status",
   "Response Message",
   "Created At",
-  "Updated At"
+  "Updated At",
+  "Event ID"
 ];
 
 function getSchedulingCenter(e) {
@@ -31,12 +32,16 @@ function getSchedulingCenter(e) {
       error: "Authentication is required."
     });
 
+  const eventId =
+    getSchedulingEventId(e);
+
   return jsonOutput({
     success: true,
     scheduling:
       buildSchedulingPayload(
         auth.user.leaguePlayer,
-        auth.user
+        auth.user,
+        eventId
       )
   });
 
@@ -53,10 +58,14 @@ function getMatchFinder(e) {
       error: "Authentication is required."
     });
 
+  const eventId =
+    getSchedulingEventId(e);
+
   const payload =
     buildSchedulingPayload(
       auth.user.leaguePlayer,
-      auth.user
+      auth.user,
+      eventId
     );
 
   return jsonOutput({
@@ -150,7 +159,8 @@ function updateSchedulingAvailability(e) {
       scheduling:
         buildSchedulingPayload(
           auth.user.leaguePlayer,
-          auth.user
+          auth.user,
+          getSchedulingEventId(e)
         ),
       diagnostics: {
         stage: "complete",
@@ -251,13 +261,15 @@ function createSchedulingRequest(e) {
     createdAt:
       getSchedulingTimestamp(),
     updatedAt:
-      getSchedulingTimestamp()
+      getSchedulingTimestamp(),
+    eventId:
+      getSchedulingEventId(e)
   };
 
   saveSchedulingRequestRecord(record);
 
   const refreshedRequest =
-    getSchedulingRequestsForPlayer(auth.user.leaguePlayer)
+    getSchedulingRequestsForPlayer(auth.user.leaguePlayer, record.eventId)
       .some(function(request) {
         return (
           getSchedulingKey(request.id) === getSchedulingKey(record.id) &&
@@ -347,7 +359,7 @@ function getSchedulingCalendarExport(e) {
     getSchedulingString(params.requestId);
 
   const request =
-    getSchedulingRequests()
+    getSchedulingRequests("all")
       .filter(function(item) {
         return item.id === requestId;
       })[0] || null;
@@ -412,10 +424,16 @@ function getCommissionerScheduling(e) {
 
 }
 
-function buildSchedulingPayload(playerName, user) {
+function buildSchedulingPayload(playerName, user, eventId) {
+
+  const resolvedEventId =
+    getSchedulingResolvedEventId(eventId);
 
   const context =
-    buildSeasonCommandContext(playerName);
+    buildSeasonCommandContext(
+      playerName,
+      resolvedEventId
+    );
 
   if (!context.player)
     return {
@@ -426,7 +444,10 @@ function buildSchedulingPayload(playerName, user) {
     buildSeasonCommandPayload(context);
 
   const requests =
-    getSchedulingRequestsForPlayer(playerName);
+      getSchedulingRequestsForPlayer(
+        playerName,
+        resolvedEventId
+      );
 
   const recommendations =
     buildSchedulingRecommendations(
@@ -439,6 +460,13 @@ function buildSchedulingPayload(playerName, user) {
     currentSeason:
       getSchedulingString(context.settings.currentSeason) ||
       "Current Season",
+    eventId:
+      resolvedEventId,
+    event:
+      typeof getEventByIdSnapshot === "function"
+        ? getEventByIdSnapshot(resolvedEventId) ||
+          getCurrentLeagueEventSnapshot()
+        : null,
     player:
       seasonCommand.player,
     availability:
@@ -465,7 +493,10 @@ function buildSchedulingPayload(playerName, user) {
     seasonProgress:
       buildSchedulingSeasonProgress(context),
     activity:
-      buildSchedulingActivity(requests),
+      buildSchedulingActivity(
+        requests,
+        resolvedEventId
+      ),
     commissioner:
       buildCommissionerSeasonStatus(context),
     quickActions:
@@ -625,6 +656,14 @@ function buildSchedulingSeasonProgress(context) {
     CONFIG.DIVISIONS.PGB
   ];
 
+  const leagueRegistry =
+    buildPlayerRegistry();
+
+  updateRegistryStatistics(
+    leagueRegistry,
+    context.eventId
+  );
+
   return {
     player:
       context.standing,
@@ -636,7 +675,7 @@ function buildSchedulingSeasonProgress(context) {
       divisions.map(function(division) {
         return buildSchedulingDivisionProgress(
           buildSeasonDivisionStandings(
-            buildPlayerRegistry(),
+            leagueRegistry,
             division
           )
         );
@@ -673,7 +712,7 @@ function buildSchedulingDivisionProgress(rows) {
 
 }
 
-function buildSchedulingActivity(requests) {
+function buildSchedulingActivity(requests, eventId) {
 
   const requestActivity =
     requests
@@ -703,7 +742,11 @@ function buildSchedulingActivity(requests) {
       });
 
   const games =
-    getAllRecentGameObjects()
+    (
+      typeof getAllRecentGameObjectsForEvent === "function"
+        ? getAllRecentGameObjectsForEvent(eventId)
+        : getAllRecentGameObjects()
+    )
       .slice(0, 5)
       .map(function(game) {
         return {
@@ -815,12 +858,12 @@ function buildCommissionerSchedulingDivision(registry, games, availability, divi
 
 }
 
-function getSchedulingRequestsForPlayer(playerName) {
+function getSchedulingRequestsForPlayer(playerName, eventId) {
 
   const key =
     getSchedulingKey(playerName);
 
-  return getSchedulingRequests()
+  return getSchedulingRequests(eventId)
     .filter(function(request) {
       return (
         getSchedulingKey(request.fromPlayer) === key ||
@@ -830,7 +873,10 @@ function getSchedulingRequestsForPlayer(playerName) {
 
 }
 
-function getSchedulingRequests() {
+function getSchedulingRequests(eventId) {
+
+  const resolvedEventId =
+    getSchedulingResolvedEventId(eventId);
 
   const sheet =
     ensureSchedulingRequestsSheet();
@@ -856,8 +902,18 @@ function getSchedulingRequests() {
         status: getSchedulingString(row[7]) || "Pending",
         responseMessage: getSchedulingString(row[8]),
         createdAt: getSchedulingString(row[9]),
-        updatedAt: getSchedulingString(row[10])
+        updatedAt: getSchedulingString(row[10]),
+        eventId:
+          getSchedulingString(row[11]) ||
+          EVENT_ENGINE_DEFAULT_EVENT_ID
       };
+    })
+    .filter(function(request) {
+      return (
+        resolvedEventId === "all" ||
+        resolvedEventId === "lifetime" ||
+        request.eventId === resolvedEventId
+      );
     });
 
 }
@@ -878,7 +934,8 @@ function saveSchedulingRequestRecord(record) {
     record.status,
     record.responseMessage,
     record.createdAt,
-    record.updatedAt
+    record.updatedAt,
+    record.eventId || EVENT_ENGINE_DEFAULT_EVENT_ID
   ]);
 
 }
@@ -1088,6 +1145,26 @@ function getSchedulingTimestamp() {
     Session.getScriptTimeZone(),
     "yyyy-MM-dd HH:mm:ss"
   );
+
+}
+
+function getSchedulingEventId(e) {
+
+  const params =
+    getApiParameters(e);
+
+  return getSchedulingResolvedEventId(
+    params.eventId
+  );
+
+}
+
+function getSchedulingResolvedEventId(eventId) {
+
+  if (typeof resolveLeagueEventScope === "function")
+    return resolveLeagueEventScope(eventId);
+
+  return getSchedulingString(eventId) || EVENT_ENGINE_DEFAULT_EVENT_ID;
 
 }
 

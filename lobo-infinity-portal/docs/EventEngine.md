@@ -209,3 +209,31 @@ Organization -> Community -> Series -> Event -> Season -> Round -> Game
 ```
 
 No new top-level architectural concept may be introduced without updating Architecture, API Contracts, Project Structure, Technical Debt, and Release Checklist documentation.
+
+## Multi-Event Platform
+
+Version 6.0 promotes Event scope from foundation metadata to an operational read/write dimension.
+
+The Event Engine remains the single source of truth. No separate tournament, campaign, or scheduling engine is introduced.
+
+Each rebuilt game row carries:
+
+```text
+Event ID
+```
+
+Rows missing Event ID resolve to:
+
+```text
+event-current-league
+```
+
+Event-aware consumers pass `eventId` into existing services. Supported read scopes:
+
+- Specific Event ID such as `event-current-league`.
+- `all`.
+- `lifetime`.
+
+Current League remains the default for legacy endpoint calls.
+
+Standings and scheduling use scoped Game Engine and Scheduling Request reads, so multiple Events can operate independently while still sharing player identity, formatting, notifications, diagnostics, cache behavior, and long-term statistics infrastructure.

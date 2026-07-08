@@ -18,10 +18,12 @@ const STANDINGS_HEADER = [
   ]
 ];
 
-function updateRegistryStatistics(registry) {
+function updateRegistryStatistics(registry, eventId) {
 
   const games =
-    getLeagueData();
+    typeof getLeagueDataForEvent === "function"
+      ? getLeagueDataForEvent(eventId)
+      : getLeagueData();
 
   games.forEach(function(game) {
 

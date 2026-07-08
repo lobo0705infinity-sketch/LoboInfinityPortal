@@ -37,7 +37,9 @@ const FORM = {
 
   LOSINGFACTION: 14,
 
-  MOMENT: 15
+  MOMENT: 15,
+
+  EVENT_ID: 16
 
 };
 
@@ -134,7 +136,8 @@ function getGameEngineHeaders() {
     "OP",
     "VP",
     "Faction",
-    "First Turn"
+    "First Turn",
+    "Event ID"
   ]];
 
 }
@@ -156,7 +159,8 @@ function getGameAnalyticsHeaders() {
     "Winner VP",
     "Loser VP",
     "Best Moment",
-    "First Turn Winner"
+    "First Turn Winner",
+    "Event ID"
   ]];
 
 }
@@ -257,6 +261,8 @@ function buildPlayerRow(row, playerNumber, winner) {
       : row[FORM.FIRSTTURN] === "Player 2"
           ? "Yes"
           : "No"
+    ,
+    getGameEngineEventId(row)
 
   ];
 
@@ -398,9 +404,24 @@ function buildAnalyticsRow(row, winner) {
 
     row[FORM.MOMENT],
 
-    firstTurnWinner
+    firstTurnWinner,
+
+    getGameEngineEventId(row)
 
   ];
+
+}
+
+function getGameEngineEventId(row) {
+
+  if (
+    row &&
+    row.length > FORM.EVENT_ID &&
+    String(row[FORM.EVENT_ID] || "").trim() !== ""
+  )
+    return String(row[FORM.EVENT_ID]).trim();
+
+  return EVENT_ENGINE_DEFAULT_EVENT_ID;
 
 }
 function buildGameAnalyticsRows(formRows) {

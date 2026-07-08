@@ -4,7 +4,12 @@ import StandingsTable from '../components/StandingsTable'
 import StatCard from '../components/StatCard'
 import { apiClient } from '../services/api'
 import { formatPlayerName } from '../services/formatting'
-import type { DivisionKey, DivisionStandings, Standing } from '../types/dashboard'
+import type {
+  DivisionKey,
+  DivisionStandings,
+  EventCatalog,
+  Standing,
+} from '../types/dashboard'
 import {
   formatDivisionLabel,
   getDivisionIdentity,
@@ -47,6 +52,8 @@ type StandingsState =
 
 function Standings() {
   const [activeDivision, setActiveDivision] = useState<DivisionKey>('main')
+  const [eventCatalog, setEventCatalog] = useState<EventCatalog | null>(null)
+  const [activeEventId, setActiveEventId] = useState('event-current-league')
   const [standingsState, setStandingsState] = useState<StandingsState>({
     status: 'idle',
   })
@@ -55,7 +62,26 @@ function Standings() {
     const controller = new AbortController()
 
     apiClient
+      .getEvents({ signal: controller.signal })
+      .then((catalog) => {
+        setEventCatalog(catalog)
+        setActiveEventId(catalog.currentEvent.id || 'event-current-league')
+      })
+      .catch(() => {
+        setEventCatalog(null)
+      })
+
+    return () => {
+      controller.abort()
+    }
+  }, [])
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    apiClient
       .getStandings(activeDivision, {
+        eventId: activeEventId,
         signal: controller.signal,
       })
       .then((data) => {
@@ -83,14 +109,53 @@ function Standings() {
     return () => {
       controller.abort()
     }
-  }, [activeDivision])
+  }, [activeDivision, activeEventId])
+
+  const activeEvent =
+    eventCatalog?.events.find((event) => event.id === activeEventId) ??
+    null
+
+  const activeEventLabel =
+    activeEventId === 'lifetime'
+      ? 'Lifetime'
+      : activeEventId === 'all'
+        ? 'All Events'
+        : activeEvent?.name ?? eventCatalog?.currentEvent.name ?? 'Current League'
 
   return (
     <main className="portal-shell">
       <section className="page-header" aria-labelledby="standings-page-title">
         <p className="eyebrow">Standings</p>
         <h1 id="standings-page-title">Standings</h1>
-        <p>Current League Rankings</p>
+        <p>
+          {activeEventLabel} Rankings
+        </p>
+      </section>
+
+      <section className="event-filter" aria-label="Event selector">
+        <label htmlFor="standings-event-select">
+          <span>Event</span>
+          <select
+            id="standings-event-select"
+            onChange={(event) => setActiveEventId(event.target.value)}
+            value={activeEventId}
+          >
+            {(eventCatalog?.events.length
+              ? eventCatalog.events
+              : [
+                  {
+                    id: 'event-current-league',
+                    name: 'Current League',
+                  },
+                ]
+            ).map((event) => (
+              <option key={event.id} value={event.id}>
+                {event.name}
+              </option>
+            ))}
+            <option value="lifetime">Lifetime</option>
+          </select>
+        </label>
       </section>
 
       <section className="division-tabs" aria-label="Standings divisions">

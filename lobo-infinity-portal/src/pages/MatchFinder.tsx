@@ -23,6 +23,7 @@ import {
   formatPlayerName,
   formatSchedulingDateTime,
 } from '../services/formatting'
+import type { EventCatalog } from '../types/dashboard'
 
 type MatchFinderState =
   | {
@@ -167,6 +168,8 @@ function MatchFinder() {
     searchParams.get('debug') === 'matchfinder' &&
     auth.isAtLeastRole('Commissioner')
   const [state, setState] = useState<MatchFinderState>({ status: 'loading' })
+  const [eventCatalog, setEventCatalog] = useState<EventCatalog | null>(null)
+  const [activeEventId, setActiveEventId] = useState('event-current-league')
   const [availabilityWorking, setAvailabilityWorking] = useState(false)
   const [requestWorking, setRequestWorking] = useState(false)
   const [responseWorking, setResponseWorking] = useState('')
@@ -185,7 +188,36 @@ function MatchFinder() {
     const controller = new AbortController()
 
     apiClient
-      .getSchedulingCenter({ signal: controller.signal })
+      .getEvents({ signal: controller.signal })
+      .then((catalog) => {
+        setEventCatalog(catalog)
+        setActiveEventId(catalog.currentEvent.id || 'event-current-league')
+      })
+      .catch(() => {
+        setEventCatalog(null)
+      })
+
+    return () => {
+      controller.abort()
+    }
+  }, [auth.authenticated, auth.status])
+
+  useEffect(() => {
+    if (auth.status !== 'ready') {
+      return
+    }
+
+    if (!auth.authenticated) {
+      return
+    }
+
+    const controller = new AbortController()
+
+    apiClient
+      .getSchedulingCenter({
+        eventId: activeEventId,
+        signal: controller.signal,
+      })
       .then((data) => setState({ data, status: 'success' }))
       .catch((error: unknown) => {
         if (controller.signal.aborted) {
@@ -204,7 +236,7 @@ function MatchFinder() {
     return () => {
       controller.abort()
     }
-  }, [auth.authenticated, auth.status])
+  }, [activeEventId, auth.authenticated, auth.status])
 
   async function updateAvailability(
     params: AvailabilityFormState,
@@ -214,7 +246,9 @@ function MatchFinder() {
     const start = performance.now()
 
     try {
-      const data = await apiClient.updateSchedulingAvailability(params)
+      const data = await apiClient.updateSchedulingAvailability(
+        { ...params, eventId: activeEventId },
+      )
       setState({ data, status: 'success' })
       const durationMs = performance.now() - start
       const verified = isAvailabilityPersistenceVerified(
@@ -262,7 +296,10 @@ function MatchFinder() {
     )
 
     try {
-      const data = await apiClient.createSchedulingRequest(params)
+      const data = await apiClient.createSchedulingRequest({
+        ...params,
+        eventId: activeEventId,
+      })
       const durationMs = performance.now() - start
       const outgoingVerified = isOutgoingRequestRefreshed(params, data)
       setState({ data, status: 'success' })
@@ -310,6 +347,7 @@ function MatchFinder() {
     setResponseWorking(requestId)
     try {
       const data = await apiClient.respondSchedulingRequest({
+        eventId: activeEventId,
         requestId,
         status,
       })
@@ -366,6 +404,11 @@ function MatchFinder() {
   return (
     <main className="portal-shell">
       <MatchFinderHeader />
+      <EventScopeSelector
+        activeEventId={activeEventId}
+        catalog={eventCatalog}
+        onChange={setActiveEventId}
+      />
       <section className="scheduling-hero panel">
         <div>
           <p className="eyebrow">{state.data.currentSeason}</p>
@@ -535,6 +578,45 @@ function getAvailabilityMismatchDetail(
   return mismatches.length > 0
     ? `verification mismatch: ${mismatches.join('; ')}`
     : 'verification failed without a field mismatch'
+}
+
+function EventScopeSelector({
+  activeEventId,
+  catalog,
+  onChange,
+}: {
+  activeEventId: string
+  catalog: EventCatalog | null
+  onChange: (eventId: string) => void
+}) {
+  const events =
+    catalog?.events.length
+      ? catalog.events
+      : [
+          {
+            id: 'event-current-league',
+            name: 'Current League',
+          },
+        ]
+
+  return (
+    <section className="scheduling-event-filter" aria-label="Scheduling event">
+      <label htmlFor="match-finder-event-select">
+        <span>Event</span>
+        <select
+          id="match-finder-event-select"
+          onChange={(event) => onChange(event.target.value)}
+          value={activeEventId}
+        >
+          {events.map((event) => (
+            <option key={event.id} value={event.id}>
+              {event.name}
+            </option>
+          ))}
+        </select>
+      </label>
+    </section>
+  )
 }
 
 function isOutgoingRequestRefreshed(
