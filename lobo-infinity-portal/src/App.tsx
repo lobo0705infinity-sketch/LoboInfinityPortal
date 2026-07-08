@@ -99,6 +99,7 @@ function AuthShell() {
             <Route path="/news/:id" element={<DeepLinkRedirect target="news" />} />
             <Route path="/events" element={<MeasuredRoute name="EventHome"><EventHome /></MeasuredRoute>} />
             <Route path="/event/:eventId" element={<MeasuredRoute name="EventHome"><EventHome /></MeasuredRoute>} />
+            <Route path="/event/:eventId/tournament" element={<MeasuredRoute name="TeamTournament"><TeamTournament /></MeasuredRoute>} />
             <Route path="/commissioner" element={<MeasuredRoute name="CommissionerDashboard"><CommissionerDashboard /></MeasuredRoute>} />
             <Route path="/commissioner/event-manager" element={<MeasuredRoute name="CommissionerEventManager"><CommissionerEventManager /></MeasuredRoute>} />
             <Route path="/diagnostics" element={<MeasuredRoute name="Diagnostics"><Diagnostics /></MeasuredRoute>} />

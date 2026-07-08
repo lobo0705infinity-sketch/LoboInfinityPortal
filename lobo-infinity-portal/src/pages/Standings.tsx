@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import Loading from '../components/Loading'
 import StandingsTable from '../components/StandingsTable'
 import StatCard from '../components/StatCard'
@@ -79,6 +80,16 @@ function Standings() {
   useEffect(() => {
     const controller = new AbortController()
 
+    const selectedEvent = eventCatalog?.events.find(
+      (event) => event.id === activeEventId,
+    )
+
+    if (selectedEvent && selectedEvent.type !== 'League') {
+      return () => {
+        controller.abort()
+      }
+    }
+
     apiClient
       .getStandings(activeDivision, {
         eventId: activeEventId,
@@ -109,7 +120,7 @@ function Standings() {
     return () => {
       controller.abort()
     }
-  }, [activeDivision, activeEventId])
+  }, [activeDivision, activeEventId, eventCatalog])
 
   const activeEvent =
     eventCatalog?.events.find((event) => event.id === activeEventId) ??
@@ -158,6 +169,10 @@ function Standings() {
         </label>
       </section>
 
+      {activeEvent && activeEvent.type !== 'League' ? (
+        <NonLeagueStandingsRedirect event={activeEvent} />
+      ) : (
+        <>
       <section className="division-tabs" aria-label="Standings divisions">
         {divisions.map((division) => {
           const identity = getDivisionIdentity(division.id)
@@ -184,7 +199,40 @@ function Standings() {
         activeDivision={activeDivision}
         standingsState={standingsState}
       />
+        </>
+      )}
     </main>
+  )
+}
+
+function NonLeagueStandingsRedirect({
+  event,
+}: {
+  event: NonNullable<EventCatalog['events'][number]>
+}) {
+  const isTeamTournament = event.type === 'Team Tournament'
+
+  return (
+    <section className="panel standings-panel">
+      <div className="panel-heading">
+        <p className="eyebrow">{event.type}</p>
+        <h2>{event.name}</h2>
+      </div>
+      <p>
+        This Event does not use league divisions, promotion, or relegation.
+        Open the purpose-built Event experience for standings and operations.
+      </p>
+      <Link
+        className="event-home-primary-action"
+        to={
+          isTeamTournament
+            ? `/event/${encodeURIComponent(event.id)}`
+            : `/event/${encodeURIComponent(event.id)}`
+        }
+      >
+        Open {isTeamTournament ? 'Team Tournament' : 'Event'} Experience
+      </Link>
+    </section>
   )
 }
 

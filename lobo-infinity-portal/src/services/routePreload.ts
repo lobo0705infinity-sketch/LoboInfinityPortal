@@ -85,6 +85,10 @@ function normalizeRoutePath(path: string) {
     return '/commissioner-event-manager'
   }
 
+  if (basePath === '/event' && pathname.endsWith('/tournament')) {
+    return '/team-tournament'
+  }
+
   if (basePath === '/players' && pathname !== '/players') {
     return '/player-detail'
   }

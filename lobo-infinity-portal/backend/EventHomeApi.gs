@@ -220,7 +220,7 @@ function buildEventHomeQuickActions(event, registration, currentPlayer) {
     action: "standings",
     href:
       event.type === "Team Tournament"
-        ? "/team-tournament#team-tournament-standings"
+        ? "/event/" + encodeURIComponent(event.id) + "/tournament#team-tournament-standings"
         : "/standings?eventId=" + encodeURIComponent(event.id),
     enabled: true
   });
@@ -236,7 +236,7 @@ function buildEventHomeQuickActions(event, registration, currentPlayer) {
     actions.push({
       label: "Team Tournament",
       action: "teamTournament",
-      href: "/team-tournament",
+      href: "/event/" + encodeURIComponent(event.id) + "/tournament",
       enabled: true
     });
 
@@ -291,8 +291,8 @@ function buildEventHomeNavigation(event) {
   ];
 
   if (event.type === "Team Tournament") {
-    items.splice(2, 0, ["Teams", "/team-tournament#team-tournament-register"]);
-    items.splice(3, 0, ["Pairings", "/team-tournament#team-tournament-pairings"]);
+    items.splice(2, 0, ["Teams", base + "/tournament#team-tournament-register"]);
+    items.splice(3, 0, ["Pairings", base + "/tournament#team-tournament-pairings"]);
   }
 
   return items.map(function(item) {

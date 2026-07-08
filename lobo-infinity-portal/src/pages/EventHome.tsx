@@ -6,6 +6,7 @@ import {
   type EventHomeData,
 } from '../services/api'
 import type { LeagueEvent } from '../types/dashboard'
+import TeamTournament from './TeamTournament'
 
 type EventHomeState =
   | { status: 'loading' }
@@ -74,6 +75,11 @@ function EventHome() {
   }
 
   const { data, events } = state
+
+  if (data.event.type === 'Team Tournament') {
+    return <TeamTournament eventId={data.event.id} />
+  }
+
   const heroAction = data.quickActions.find((action) => action.enabled)
   const currentRound = data.currentRound
     ? String(data.currentRound['name'] ?? data.statistics.currentRound)

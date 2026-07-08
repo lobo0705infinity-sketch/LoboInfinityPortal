@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import Loading from '../components/Loading'
 import {
@@ -18,16 +18,23 @@ type TournamentState =
 
 const defaultEventId = 'event-august-2026-team-tournament'
 
-function TeamTournament() {
+function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
+  const { eventId: routeEventId } = useParams<{ eventId: string }>()
+  const [searchParams] = useSearchParams()
   const auth = useAuth()
   const [state, setState] = useState<TournamentState>({ status: 'loading' })
   const [working, setWorking] = useState('')
+  const activeEventId =
+    experienceEventId ||
+    (routeEventId ? decodeURIComponent(routeEventId) : '') ||
+    searchParams.get('eventId') ||
+    defaultEventId
 
   useEffect(() => {
     const controller = new AbortController()
 
     apiClient
-      .getTeamTournament(defaultEventId, { signal: controller.signal })
+      .getTeamTournament(activeEventId, { signal: controller.signal })
       .then((data) => setState({ data, status: 'success' }))
       .catch((error: unknown) => {
         if (controller.signal.aborted) {
@@ -46,16 +53,16 @@ function TeamTournament() {
     return () => {
       controller.abort()
     }
-  }, [])
+  }, [activeEventId])
 
   async function register(params: Record<string, string>) {
     setWorking('register')
     try {
       await apiClient.registerForEvent({
         ...params,
-        eventId: defaultEventId,
+        eventId: activeEventId,
       })
-      const data = await apiClient.getTeamTournament(defaultEventId)
+      const data = await apiClient.getTeamTournament(activeEventId)
       setState({ data, status: 'success' })
     } finally {
       setWorking('')
@@ -66,9 +73,9 @@ function TeamTournament() {
     setWorking('withdraw')
     try {
       await apiClient.withdrawEventRegistration({
-        eventId: defaultEventId,
+        eventId: activeEventId,
       })
-      const data = await apiClient.getTeamTournament(defaultEventId)
+      const data = await apiClient.getTeamTournament(activeEventId)
       setState({ data, status: 'success' })
     } finally {
       setWorking('')
@@ -80,7 +87,7 @@ function TeamTournament() {
     try {
       const data = await apiClient.saveTeamTournamentTeam({
         ...params,
-        eventId: defaultEventId,
+        eventId: activeEventId,
       })
       setState({ data, status: 'success' })
     } finally {
@@ -93,7 +100,7 @@ function TeamTournament() {
     try {
       const data = await apiClient.saveTeamTournamentPairing({
         ...params,
-        eventId: defaultEventId,
+        eventId: activeEventId,
       })
       setState({ data, status: 'success' })
     } finally {
