@@ -14,22 +14,7 @@ function getEventManager(e) {
     const selectedEventId =
       resolveEventId(params.eventId || EVENT_ENGINE_DEFAULT_EVENT_ID);
 
-    ensureEventEngine();
-
-    if (typeof ensureTeamTournamentSheets === "function")
-      ensureTeamTournamentSheets();
-
-    const engine =
-      getEventEngineSnapshot();
-
-    const selectedEvent =
-      getEventByIdSnapshot(selectedEventId) ||
-      getCurrentLeagueEventSnapshot(engine);
-
-    return jsonOutput({
-      success: true,
-      manager: buildEventManagerPayload(engine, selectedEvent)
-    });
+    return buildEventManagerResponse(selectedEventId);
   });
 
 }
@@ -131,11 +116,7 @@ function saveEventManagerEvent(e) {
     recordEventManagerAudit(auth, eventId, "Event saved", eventName);
     invalidateEventManagerCaches();
 
-    return getEventManager({
-      parameter: {
-        eventId: eventId
-      }
-    });
+    return buildEventManagerResponse(eventId);
   });
 
 }
@@ -172,11 +153,7 @@ function setEventManagerRegistration(e) {
     recordEventManagerAudit(auth, eventId, "Registration updated", registration);
     invalidateEventManagerCaches();
 
-    return getEventManager({
-      parameter: {
-        eventId: eventId
-      }
-    });
+    return buildEventManagerResponse(eventId);
   });
 
 }
@@ -217,11 +194,7 @@ function setEventManagerLifecycle(e) {
     );
     invalidateEventManagerCaches();
 
-    return getEventManager({
-      parameter: {
-        eventId: eventId
-      }
-    });
+    return buildEventManagerResponse(eventId);
   });
 
 }
@@ -286,11 +259,7 @@ function setEventManagerCurrentEvent(e) {
     recordEventManagerAudit(auth, eventId, "Current event selected", eventId);
     invalidateEventManagerCaches();
 
-    return getEventManager({
-      parameter: {
-        eventId: eventId
-      }
-    });
+    return buildEventManagerResponse(eventId);
   });
 
 }
@@ -331,11 +300,7 @@ function saveEventManagerParticipant(e) {
     recordEventManagerAudit(auth, eventId, "Participant updated", player);
     invalidateEventManagerCaches();
 
-    return getEventManager({
-      parameter: {
-        eventId: eventId
-      }
-    });
+    return buildEventManagerResponse(eventId);
   });
 
 }
@@ -392,11 +357,7 @@ function saveEventManagerTeam(e) {
     recordEventManagerAudit(auth, eventId, "Team saved", teamName);
     invalidateEventManagerCaches();
 
-    return getEventManager({
-      parameter: {
-        eventId: eventId
-      }
-    });
+    return buildEventManagerResponse(eventId);
   });
 
 }
@@ -463,11 +424,31 @@ function saveEventManagerPairing(e) {
     );
     invalidateEventManagerCaches();
 
-    return getEventManager({
-      parameter: {
-        eventId: eventId
-      }
-    });
+    return buildEventManagerResponse(eventId);
+  });
+
+}
+
+function buildEventManagerResponse(selectedEventId) {
+
+  ensureEventEngine();
+
+  if (typeof SpreadsheetApp !== "undefined")
+    SpreadsheetApp.flush();
+
+  if (typeof ensureTeamTournamentSheets === "function")
+    ensureTeamTournamentSheets();
+
+  const engine =
+    getEventEngineSnapshot();
+
+  const selectedEvent =
+    getEventByIdSnapshot(selectedEventId) ||
+    getCurrentLeagueEventSnapshot(engine);
+
+  return jsonOutput({
+    success: true,
+    manager: buildEventManagerPayload(engine, selectedEvent)
   });
 
 }

@@ -40,6 +40,8 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
   const [selectedEventId, setSelectedEventId] = useState('event-current-league')
   const initialEventId = useRef('event-current-league')
   const [workingAction, setWorkingAction] = useState('')
+  const [actionError, setActionError] = useState('')
+  const [actionMessage, setActionMessage] = useState('')
   const [eventForm, setEventForm] = useState({
     description: '',
     endDate: '',
@@ -157,12 +159,41 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     handler: () => Promise<EventManagerData>,
   ) {
     setWorkingAction(action)
+    setActionError('')
+    setActionMessage('')
 
     try {
-      applyManagerData(await handler())
+      const data = await handler()
+      applyManagerData(data)
+      setActionMessage('Event Manager updated.')
+      return data
+    } catch (error) {
+      setActionError(
+        error instanceof Error
+          ? error.message
+          : 'Event Manager action failed.',
+      )
+      throw error
     } finally {
       setWorkingAction('')
     }
+  }
+
+  async function setRegistration(registration: string, action: string) {
+    await runManagerAction(action, async () => {
+      const data = await apiClient.setEventManagerRegistration({
+        eventId: selectedEventId,
+        registration,
+      })
+
+      if (data.selectedEvent.registration !== registration) {
+        throw new Error(
+          `Registration update did not persist. Expected ${registration}; backend returned ${data.selectedEvent.registration || 'blank'}.`,
+        )
+      }
+
+      return data
+    })
   }
 
   async function saveSelectedEvent(event: FormEvent<HTMLFormElement>) {
@@ -291,6 +322,16 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
         participants, teams, pairings, archive state, and the current active
         event.
       </p>
+      {actionError ? (
+        <p className="form-error" role="alert">
+          {actionError}
+        </p>
+      ) : null}
+      {actionMessage ? (
+        <p className="form-success" role="status">
+          {actionMessage}
+        </p>
+      ) : null}
       <div className="event-manager-toolbar">
         <label>
           Current Active Event
@@ -472,42 +513,21 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
               </button>
               <button
                 disabled={!canManage || workingAction !== ''}
-                onClick={() =>
-                  void runManagerAction('openRegistration', () =>
-                    apiClient.setEventManagerRegistration({
-                      eventId: selectedEventId,
-                      registration: 'Registration Open',
-                    }),
-                  )
-                }
+                onClick={() => void setRegistration('Registration Open', 'openRegistration')}
                 type="button"
               >
                 Open Registration
               </button>
               <button
                 disabled={!canManage || workingAction !== ''}
-                onClick={() =>
-                  void runManagerAction('reopenRegistration', () =>
-                    apiClient.setEventManagerRegistration({
-                      eventId: selectedEventId,
-                      registration: 'Registration Open',
-                    }),
-                  )
-                }
+                onClick={() => void setRegistration('Registration Open', 'reopenRegistration')}
                 type="button"
               >
                 Reopen Registration
               </button>
               <button
                 disabled={!canManage || workingAction !== ''}
-                onClick={() =>
-                  void runManagerAction('closeRegistration', () =>
-                    apiClient.setEventManagerRegistration({
-                      eventId: selectedEventId,
-                      registration: 'Registration Closed',
-                    }),
-                  )
-                }
+                onClick={() => void setRegistration('Registration Closed', 'closeRegistration')}
                 type="button"
               >
                 Close Registration
