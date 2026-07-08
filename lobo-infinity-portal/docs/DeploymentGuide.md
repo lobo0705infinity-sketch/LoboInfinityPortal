@@ -45,6 +45,35 @@ After deployment:
 If bootstrap fails, Google Sheets remains active and the Diagnostics panel shows
 the exact failing stage.
 
+## Firestore Configuration Verification
+
+When Firebase environment variables are added or changed in Vercel:
+
+1. Trigger a fresh production deployment.
+2. Hard refresh the production portal in a Commissioner browser session.
+3. Open Diagnostics.
+4. Confirm the Firestore Bootstrap, Provider Status, Environment Validation,
+   Schema Status, Migration Status, Read Probe, and Write Probe panels resolve
+   to explicit statuses.
+5. Confirm no Firestore panel remains indefinitely in `Loading`.
+
+Expected healthy production verification:
+
+```text
+Firestore: PASS
+Provider: dual
+Bootstrap: Complete
+Schema: Version 1
+Collections: Initialized
+Read Test: PASS
+Write Test: PASS
+Migration: Ready
+```
+
+If any panel reports `FAILED`, `CONFIGURATION ERROR`, `PERMISSION ERROR`, or
+`BOOTSTRAP REQUIRED`, leave Google Sheets as the authoritative provider and fix
+the reported configuration or permissions issue before running migration.
+
 ## Dual Compare
 
 Set:

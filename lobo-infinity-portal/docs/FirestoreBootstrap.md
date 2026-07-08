@@ -101,6 +101,17 @@ Commissioner Diagnostics includes a Firestore Bootstrap panel with:
 - Missing environment variables
 - Startup fallback status
 
+Version 7.3.1 hardens the panel for production verification. Bootstrap,
+provider health, and migration verification checks are bounded by explicit
+timeouts. If a check cannot complete, Diagnostics must display a concrete
+status such as `FAILED`, `CONFIGURATION ERROR`, `PERMISSION ERROR`, or
+`BOOTSTRAP REQUIRED` instead of remaining in a permanent loading state.
+
+After Firebase environment variables are changed in Vercel, trigger a fresh
+production deployment before validating this panel. Vite environment variables
+are compiled into the deployed frontend bundle, so an existing deployment will
+not automatically consume newly added Firebase values.
+
 ## Safety
 
 Firestore bootstrap failures do not take down production. Google Sheets remains

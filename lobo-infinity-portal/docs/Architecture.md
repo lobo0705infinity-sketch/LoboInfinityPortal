@@ -677,3 +677,11 @@ Version 7.3 adds `FirestoreMigrationService`, a Commissioner-run mirror
 population step that reads Google-backed repositories and writes Firestore
 documents with stable ids. The service is repeatable, leaves Google Sheets
 unchanged, and reruns parity verification after completion.
+
+Version 7.3.1 adds production Firestore configuration verification. The Data
+Access diagnostics layer now treats Firestore provider health, bootstrap, and
+migration verification as bounded checks with explicit fallback reports. Missing
+Vercel/Firebase environment variables, SDK initialization failures, permission
+errors, schema gaps, and migration verification timeouts are surfaced to
+Commissioners as actionable statuses. Player-facing data remains Google-backed
+until an explicit provider cutover.

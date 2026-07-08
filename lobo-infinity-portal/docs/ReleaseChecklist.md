@@ -15,10 +15,13 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] Data Access Layer boundary check for changed pages
 - [ ] Firestore provider health check
 - [ ] Firestore bootstrap diagnostics check
+- [ ] Fresh Vercel deployment after Firebase environment variable changes
 - [ ] Firestore environment variable validation
 - [ ] Firestore read/write probe check
 - [ ] Firestore schema initialization check
 - [ ] Firestore seed document check
+- [ ] Firestore Diagnostics panels resolve to explicit statuses
+- [ ] Verify no Firestore panel remains indefinitely in Loading
 - [ ] Dual provider comparison review
 - [ ] Migration verification dashboard review
 - [ ] Repository parity review

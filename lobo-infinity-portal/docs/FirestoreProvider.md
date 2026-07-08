@@ -75,6 +75,14 @@ Version 7.1.1 adds a dedicated Firestore Bootstrap diagnostics panel for
 environment validation, SDK initialization, read/write probes, schema status,
 seed documents, and startup fallback status.
 
+Version 7.3.1 verifies production Firestore configuration after Firebase values
+are added to Vercel. A fresh production deployment is required after changing
+any `VITE_FIREBASE_*` or `VITE_DATA_PROVIDER` value. Diagnostics now resolves
+long-running provider, bootstrap, and migration checks into explicit failure
+reports instead of leaving Commissioner panels in an indefinite loading state.
+Google Sheets remains the active fallback if Firestore configuration,
+permissions, schema verification, or connectivity fails.
+
 ## Dual Compare
 
 `VITE_DATA_PROVIDER=dual` keeps Google Sheets as the player-facing source of
