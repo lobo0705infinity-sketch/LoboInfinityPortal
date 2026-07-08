@@ -22,6 +22,7 @@ function Diagnostics() {
   const [workingMigration, setWorkingMigration] = useState(false)
   const canView = auth.isAtLeastRole('Commissioner')
   const canManage = auth.hasPermission('manageCache')
+  const canRunFirestoreMigration = auth.isAtLeastRole('Commissioner')
   const snapshot = canView ? getFrontendPerformanceDiagnostics() : null
 
   useEffect(() => {
@@ -70,7 +71,7 @@ function Diagnostics() {
   }
 
   async function executeFirestoreMigration() {
-    if (!canManage || workingMigration) {
+    if (!canRunFirestoreMigration || workingMigration) {
       return
     }
 
@@ -118,6 +119,29 @@ function Diagnostics() {
         <p className="eyebrow">Commissioner Diagnostics</p>
         <h1>Platform Health</h1>
         <p>Browser telemetry, snapshots, job queue, cache health, and recovery.</p>
+      </section>
+
+      <section className="panel operations-panel">
+        <div className="panel-heading">
+          <p className="eyebrow">Firestore Migration</p>
+          <h2>Data Mirror Control</h2>
+          <p>
+            Copies Google Sheets data into Firestore. Google Sheets remains
+            authoritative.
+          </p>
+        </div>
+        <div className="operations-actions wrap">
+          <button
+            disabled={!canRunFirestoreMigration || workingMigration}
+            onClick={() => void executeFirestoreMigration()}
+            type="button"
+          >
+            {workingMigration ? 'Migrating Firestore...' : 'Run Firestore Migration'}
+          </button>
+        </div>
+        {!canRunFirestoreMigration ? (
+          <p>Commissioner access is required to run Firestore migration.</p>
+        ) : null}
       </section>
 
       <section className="operations-grid">
@@ -395,15 +419,6 @@ function Diagnostics() {
         <div className="panel-heading">
           <p className="eyebrow">Migration Verification</p>
           <h2>Firestore Readiness</h2>
-        </div>
-        <div className="operations-actions wrap">
-          <button
-            disabled={!canManage || workingMigration}
-            onClick={() => void executeFirestoreMigration()}
-            type="button"
-          >
-            {workingMigration ? 'Migrating Firestore...' : 'Run Firestore Migration'}
-          </button>
         </div>
         <dl className="operations-metrics">
           <Metric
