@@ -6,6 +6,8 @@ const routeLoaders = new Map<string, () => Promise<unknown>>([
   ['/commissioner', () => import('../pages/CommissionerDashboard')],
   ['/compare', () => import('../pages/PlayerComparison')],
   ['/diagnostics', () => import('../pages/Diagnostics')],
+  ['/event', () => import('../pages/EventHome')],
+  ['/events', () => import('../pages/EventHome')],
   ['/games', () => import('../pages/GameDetails')],
   ['/factions', () => import('../pages/Factions')],
   ['/faction-detail', () => import('../pages/FactionProfile')],

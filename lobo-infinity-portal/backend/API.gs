@@ -120,6 +120,9 @@ function doGet(e) {
     case "eventRegistration":
       return getEventRegistration(e);
 
+    case "eventHome":
+      return getEventHome(e);
+
     case "eventTemplates":
       return getCachedApiResponse(e, action, function() {
         return getEventTemplates();

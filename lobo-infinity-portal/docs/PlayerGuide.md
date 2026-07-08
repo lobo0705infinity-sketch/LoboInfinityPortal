@@ -109,3 +109,21 @@ For Team Tournament registration, provide only Event-specific details:
 - Notes.
 
 You may edit or withdraw your registration while registration remains open. Once registration closes, changes must go through a Commissioner.
+
+## Event Home
+
+Open an Event directly:
+
+`/event/event-august-2026-team-tournament`
+
+The Event Home shows:
+
+- Event status.
+- Registration status.
+- Current round.
+- Your team or registration state.
+- Event timeline.
+- Latest news.
+- Quick actions.
+
+Use the Event selector to switch between active Events without leaving the Event experience.

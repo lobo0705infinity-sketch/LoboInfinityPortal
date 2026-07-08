@@ -263,6 +263,36 @@ The payload remains structurally compatible and is filtered to the selected Even
 
 Version 6.0.2 adds Event Engine-owned registration APIs. Registration is scoped by `eventId` and uses the `Event Participants` sheet as the source of truth.
 
+## Event Home
+
+Version 6.0.3 adds an Event Home composition API.
+
+Action:
+
+`GET action=eventHome&eventId=event-august-2026-team-tournament`
+
+Response:
+
+```json
+{
+  "success": true,
+  "home": {
+    "event": {},
+    "registration": {},
+    "currentRound": {},
+    "rounds": [],
+    "statistics": {},
+    "timeline": [],
+    "news": [],
+    "quickActions": [],
+    "playerStatus": {},
+    "navigation": []
+  }
+}
+```
+
+The endpoint is user-aware because `playerStatus` and current-player registration may differ by authenticated user. Do not serve it from a public shared cache.
+
 ### Registration Read
 
 Action:

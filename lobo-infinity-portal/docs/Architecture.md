@@ -150,6 +150,20 @@ Event registration reuses:
 
 Registration is scoped by Event ID. Registering for the Team Tournament does not change League participation, League standings, League scheduling, or any other Event.
 
+## Event Home Architecture
+
+Version 6.0.3 adds a shared Event Home surface for all Events.
+
+The Event Home is a composition layer. It reads from:
+
+- Event Engine Event, Season, and Round records.
+- Event Registration.
+- Event-scoped recent games.
+- Existing notification and news-style presentation.
+- Event-specific links such as Team Tournament pairings or standings.
+
+It does not introduce a new event model. Event-specific pages remain consumers of the same Event ID.
+
 Version 4.0.1 narrows scheduling to the league's online model. Player-facing availability and match requests use status, preferred days, preferred time window, Discord handle, and optional notes. Physical location metadata remains backward-compatible in the data model but is not used for recommendations or player-facing scheduling decisions.
 
 ## Mobile Experience Architecture

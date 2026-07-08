@@ -24,6 +24,7 @@ const CommissionerDashboard = lazy(() => import('./pages/CommissionerDashboard')
 const CommissionerNews = lazy(() => import('./pages/CommissionerNews'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 const Diagnostics = lazy(() => import('./pages/Diagnostics'))
+const EventHome = lazy(() => import('./pages/EventHome'))
 const FactionProfile = lazy(() => import('./pages/FactionProfile'))
 const Factions = lazy(() => import('./pages/Factions'))
 const GameDetails = lazy(() => import('./pages/GameDetails'))
@@ -95,6 +96,8 @@ function AuthShell() {
             <Route path="/hall-of-fame" element={<MeasuredRoute name="HallOfFame"><HallOfFame /></MeasuredRoute>} />
             <Route path="/news" element={<MeasuredRoute name="CommissionerNews"><CommissionerNews /></MeasuredRoute>} />
             <Route path="/news/:id" element={<DeepLinkRedirect target="news" />} />
+            <Route path="/events" element={<MeasuredRoute name="EventHome"><EventHome /></MeasuredRoute>} />
+            <Route path="/event/:eventId" element={<MeasuredRoute name="EventHome"><EventHome /></MeasuredRoute>} />
             <Route path="/commissioner" element={<MeasuredRoute name="CommissionerDashboard"><CommissionerDashboard /></MeasuredRoute>} />
             <Route path="/diagnostics" element={<MeasuredRoute name="Diagnostics"><Diagnostics /></MeasuredRoute>} />
             <Route path="/automation" element={<MeasuredRoute name="AutomationCenter"><AutomationCenter /></MeasuredRoute>} />

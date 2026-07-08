@@ -46,6 +46,8 @@ Version 6.0.1 is the Team Tournament Experience release. It validates the Multi-
 
 Version 6.0.2 is the Event Registration System release. It moves player registration into Event Participants so every Event can support portal-based self-registration, team preferences, free agents, captain flags, commissioner management, profile visibility, and lifecycle-gated registration without Google Forms.
 
+Version 6.0.3 is the Event Home Experience release. It gives every Event a dedicated destination with event identity, lifecycle-aware status, registration state, player status, timeline, news, quick actions, and event navigation.
+
 ### 3.2 Event Migration
 
 Add explicit event scope to historical data after migration validation has passed.

@@ -144,6 +144,13 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] Verify Event Registration commissioner management
 - [ ] Verify Event Registration profile display
 - [ ] Verify Event Registration notifications
+- [ ] Verify Event Home route
+- [ ] Verify Event Home selector
+- [ ] Verify Event Home player status
+- [ ] Verify Event Home lifecycle status
+- [ ] Verify Event Home timeline
+- [ ] Verify Event Home quick actions
+- [ ] Verify Event Home Team Tournament navigation
 - [ ] Verify Standings
 - [ ] Verify Hall of Fame
 - [ ] Verify Achievements

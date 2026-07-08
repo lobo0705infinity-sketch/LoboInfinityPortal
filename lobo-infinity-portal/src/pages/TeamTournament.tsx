@@ -137,8 +137,11 @@ function TeamTournament() {
           <p>
             {data.currentRound
               ? String(data.currentRound['name'] ?? 'Current round')
-              : 'Round setup pending'}
+            : 'Round setup pending'}
           </p>
+          <Link to={`/event/${encodeURIComponent(data.event.id)}`}>
+            Open Event Home
+          </Link>
         </div>
         <TournamentMetric label="Teams" value={data.registeredTeams} />
         <TournamentMetric label="Completed" value={data.completedMatches} />

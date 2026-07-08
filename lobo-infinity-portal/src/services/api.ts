@@ -974,6 +974,48 @@ export type EventRegistrationData = {
   waitlistCount: number
 }
 
+export type EventHomeData = {
+  currentRound: Record<string, unknown> | null
+  event: LeagueEvent
+  navigation: Array<{
+    href: string
+    label: string
+  }>
+  news: string[]
+  playerStatus: {
+    captain: boolean
+    currentTeam: string
+    notifications: string[]
+    outstandingAction: string
+    registrationStatus: string
+    upcomingMatch: string
+  }
+  quickActions: Array<{
+    action: string
+    enabled: boolean
+    href: string
+    label: string
+  }>
+  registration: EventRegistrationData
+  rounds: Array<Record<string, unknown>>
+  statistics: {
+    completedGames: number
+    completionPercentage: number
+    currentRound: string
+    gamesRemaining: number
+    lifecycleStage: string
+    registeredPlayers: number
+    registrationStatus: string
+    teams: number
+  }
+  timeline: Array<{
+    body: string
+    timestamp: string
+    title: string
+    type: string
+  }>
+}
+
 export type TeamTournamentData = {
   completedMatches: number
   currentRound: Record<string, unknown> | null
@@ -1756,6 +1798,10 @@ export type ApiClient = {
     eventId?: string,
     options?: ApiOptions,
   ) => Promise<EventRegistrationData>
+  getEventHome: (
+    eventId?: string,
+    options?: ApiOptions,
+  ) => Promise<EventHomeData>
   registerForEvent: (
     params: Record<string, string>,
     options?: ApiOptions,
@@ -2178,6 +2224,14 @@ export async function getEventRegistration(
   return normalizeEventRegistrationResponse(payload)
 }
 
+export async function getEventHome(
+  eventId = 'event-current-league',
+  options: ApiOptions = {},
+): Promise<EventHomeData> {
+  const payload = await request('eventHome', options, { eventId })
+  return normalizeEventHomePayload(payload)
+}
+
 export async function registerForEvent(
   params: Record<string, string>,
   options: ApiOptions = {},
@@ -2493,6 +2547,7 @@ export const apiClient: ApiClient = {
   getSchedulingCalendar,
   getTeamTournament,
   getEventRegistration,
+  getEventHome,
   registerForEvent,
   withdrawEventRegistration,
   manageEventRegistration,
@@ -4081,6 +4136,78 @@ function normalizeEventRegistrationResponse(
   }
 
   return normalizeEventRegistrationData(getRequiredRecord(record, 'registration'))
+}
+
+function normalizeEventHomePayload(payload: unknown): EventHomeData {
+  const record = asRecord(payload, 'Event home response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Event home failed.')
+  }
+
+  const home = getRequiredRecord(record, 'home')
+  const statistics = getOptionalRecord(home, 'statistics') ?? {}
+  const playerStatus = getOptionalRecord(home, 'playerStatus') ?? {}
+
+  return {
+    currentRound: getOptionalRecord(home, 'currentRound') ?? null,
+    event: normalizeLeagueEvent(getRequiredRecord(home, 'event')),
+    navigation: getArray(home, 'navigation').map((item) => {
+      const nav = asRecord(item, 'Event home navigation item')
+
+      return {
+        href: getString(nav, 'href'),
+        label: getString(nav, 'label'),
+      }
+    }),
+    news: getArray(home, 'news').map((item) => String(item ?? '')),
+    playerStatus: {
+      captain: getOptionalBoolean(playerStatus, 'captain') ?? false,
+      currentTeam: getString(playerStatus, 'currentTeam'),
+      notifications: getArray(playerStatus, 'notifications').map((item) =>
+        String(item ?? ''),
+      ),
+      outstandingAction: getString(playerStatus, 'outstandingAction'),
+      registrationStatus: getString(playerStatus, 'registrationStatus'),
+      upcomingMatch: getString(playerStatus, 'upcomingMatch'),
+    },
+    quickActions: getArray(home, 'quickActions').map((item) => {
+      const action = asRecord(item, 'Event home quick action')
+
+      return {
+        action: getString(action, 'action'),
+        enabled: getOptionalBoolean(action, 'enabled') ?? false,
+        href: getString(action, 'href'),
+        label: getString(action, 'label'),
+      }
+    }),
+    registration: normalizeEventRegistrationData(
+      getRequiredRecord(home, 'registration'),
+    ),
+    rounds: getArray(home, 'rounds').map((item) =>
+      asRecord(item, 'Event home round'),
+    ),
+    statistics: {
+      completedGames: getNumber(statistics, 'completedGames'),
+      completionPercentage: getNumber(statistics, 'completionPercentage'),
+      currentRound: getString(statistics, 'currentRound'),
+      gamesRemaining: getNumber(statistics, 'gamesRemaining'),
+      lifecycleStage: getString(statistics, 'lifecycleStage'),
+      registeredPlayers: getNumber(statistics, 'registeredPlayers'),
+      registrationStatus: getString(statistics, 'registrationStatus'),
+      teams: getNumber(statistics, 'teams'),
+    },
+    timeline: getArray(home, 'timeline').map((item) => {
+      const entry = asRecord(item, 'Event home timeline item')
+
+      return {
+        body: getString(entry, 'body'),
+        timestamp: getString(entry, 'timestamp'),
+        title: getString(entry, 'title'),
+        type: getString(entry, 'type'),
+      }
+    }),
+  }
 }
 
 function normalizeEventRegistrationData(

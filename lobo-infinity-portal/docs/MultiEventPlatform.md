@@ -72,6 +72,20 @@ Registration data includes player identity plus Event-specific fields such as Di
 
 Team Tournament registration is the first consumer of the generic registration engine.
 
+## Event Home
+
+Version 6.0.3 adds a shared Event Home experience.
+
+Every Event can be opened at:
+
+```text
+/event/{eventId}
+```
+
+The Event Home composes Event Engine data, Event Registration, rounds, event-scoped games, timeline entries, news, quick actions, and personalized player status into one destination.
+
+Event-specific pages such as Team Tournament remain specialized views, but the Event Home is the default landing page for understanding the selected competition.
+
 ## Standings Isolation
 
 Standings use the existing player registry and standings sorting logic. The only change is that the statistics updater reads Event-scoped `Game Engine` rows before building division tables.

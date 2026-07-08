@@ -68,3 +68,18 @@ Commissioners can:
 - Export the registration list.
 
 Player self-service registration automatically disables when the Event registration state is no longer `Registration Open`.
+
+## Event Home Operations
+
+Each Event Home centralizes event-specific operations links for Commissioners.
+
+The Event Home should be the first stop for reviewing:
+
+- Registration status.
+- Event progress.
+- Current round.
+- Timeline.
+- News.
+- Quick links to standings, pairings, and specialized Event pages.
+
+Commissioner-only mutation tools remain permission-gated in their existing operational pages.

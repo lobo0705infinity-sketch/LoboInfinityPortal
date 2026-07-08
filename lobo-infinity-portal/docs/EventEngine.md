@@ -263,3 +263,11 @@ Registration fields include:
 Registration status is Event-scoped. A player may register for the League, Team Tournament, Narrative Campaign, or future custom Events independently.
 
 Player self-service registration is allowed only while the Event registration state is `Registration Open`. Commissioner management remains permission-gated and can update registrations, assign teams, and manage waitlists.
+
+## Event Home
+
+Version 6.0.3 adds an Event Home composition layer.
+
+Event Home reads the existing Event Engine records, registration rows, rounds, and Event-scoped game data to present a dedicated destination for each Event.
+
+It does not create a new Event object or duplicate lifecycle logic.

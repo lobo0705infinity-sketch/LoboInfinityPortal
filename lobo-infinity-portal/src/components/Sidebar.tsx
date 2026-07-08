@@ -99,8 +99,13 @@ function Sidebar() {
           },
           {
             icon: 'standings' as PortalIconName,
+            label: 'Events',
+            to: '/events',
+          },
+          {
+            icon: 'standings' as PortalIconName,
             label: 'Team Tournament',
-            to: '/team-tournament',
+            to: '/event/event-august-2026-team-tournament',
           },
         ]
       : []),
