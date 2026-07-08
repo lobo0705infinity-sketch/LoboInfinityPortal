@@ -133,6 +133,15 @@ function Sidebar() {
           },
         ]
       : []),
+    ...(auth.isAtLeastRole('Commissioner')
+      ? [
+          {
+            icon: 'analytics' as PortalIconName,
+            label: 'Diagnostics',
+            to: '/diagnostics',
+          },
+        ]
+      : []),
     ...navigationItems.slice(6),
   ]
 

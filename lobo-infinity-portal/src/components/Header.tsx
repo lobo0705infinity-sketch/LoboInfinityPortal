@@ -82,8 +82,10 @@ function Header() {
           { label: 'Event Manager', to: '/commissioner/event-manager' },
           { label: 'Automation', to: '/automation' },
           { label: 'Integrity', to: '/integrity' },
-          { label: 'Diagnostics', to: '/diagnostics' },
         ]
+      : []),
+    ...(auth.isAtLeastRole('Commissioner')
+      ? [{ label: 'Diagnostics', to: '/diagnostics' }]
       : []),
   ]
 
