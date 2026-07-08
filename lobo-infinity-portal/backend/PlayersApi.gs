@@ -154,6 +154,9 @@ function getPlayer(e) {
       armyListSummary:
         armyLists.summary,
 
+      registeredEvents:
+        getRegisteredEventsForPlayer(registeredPlayer.player),
+
       availability:
         availability,
 
@@ -178,6 +181,46 @@ function getPlayer(e) {
     }
 
   });
+
+}
+
+function getRegisteredEventsForPlayer(player) {
+
+  const target =
+    getEventEngineString(player).toLowerCase();
+
+  const eventsById = {};
+
+  getEventEngineSnapshot()
+    .events
+    .forEach(function(event) {
+      eventsById[event.id] = event;
+    });
+
+  return getEventEngineRows(
+    ensureEventEngineSheet(
+      CONFIG.SHEETS.EVENT_PARTICIPANTS,
+      EVENT_ENGINE_PARTICIPANT_HEADERS
+    )
+  )
+    .filter(function(row) {
+      return getEventEngineString(row["Player"]).toLowerCase() === target;
+    })
+    .map(function(row) {
+      const event =
+        eventsById[row["Event ID"]] || {};
+
+      return {
+        eventId: row["Event ID"],
+        eventName: event.name || row["Event ID"],
+        eventType: event.type || "",
+        status: row["Status"] || "Registered",
+        team: row["Team"],
+        preferredTeam: row["Preferred Team"] || row["Team"],
+        registeredAt: row["Registered At"],
+        updatedAt: row["Updated At"] || row["Registered At"]
+      };
+    });
 
 }
 

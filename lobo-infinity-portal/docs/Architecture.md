@@ -135,6 +135,21 @@ Team Tournament support reuses the platform systems:
 
 No separate tournament engine exists. League data and Team Tournament data stay operationally isolated through Event ID scope.
 
+## Event Registration Architecture
+
+Version 6.0.2 makes registration an Event Engine concern.
+
+Event registration reuses:
+
+- OAuth and League Identity for the authenticated player.
+- Event Participants as the registration source of truth.
+- Event Lifecycle registration state to open and close self-service changes.
+- Notifications for registration-open and registration-count alerts.
+- Player Profiles to surface registered Events.
+- Commissioner operations permission for registration management.
+
+Registration is scoped by Event ID. Registering for the Team Tournament does not change League participation, League standings, League scheduling, or any other Event.
+
 Version 4.0.1 narrows scheduling to the league's online model. Player-facing availability and match requests use status, preferred days, preferred time window, Discord handle, and optional notes. Physical location metadata remains backward-compatible in the data model but is not used for recommendations or player-facing scheduling decisions.
 
 ## Mobile Experience Architecture

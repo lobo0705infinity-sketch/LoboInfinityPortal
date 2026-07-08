@@ -241,6 +241,24 @@ function PlayerProfile() {
             value={profileState.player.secondTurnGames}
           />
         </ProfileCard>
+
+        <ProfileCard title="Registered Events">
+          {profileState.player.registeredEvents.length === 0 ? (
+            <Metric label="Events" value="No event registrations yet." />
+          ) : (
+            profileState.player.registeredEvents.slice(0, 4).map((event) => (
+              <Metric
+                key={event.eventId}
+                label={event.eventName}
+                value={
+                  event.preferredTeam || event.team
+                    ? `${event.status} · ${event.preferredTeam || event.team}`
+                    : event.status
+                }
+              />
+            ))
+          )}
+        </ProfileCard>
       </section>
 
       <section className="command-center-grid" aria-label="Player charts">

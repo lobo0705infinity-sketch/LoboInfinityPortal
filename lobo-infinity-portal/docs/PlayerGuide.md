@@ -88,3 +88,24 @@ Players can:
 - Review latest Team Tournament results.
 
 Team Tournament games must be submitted under the Team Tournament Event so League standings remain unchanged.
+
+## Event Registration
+
+Open the Event page and use `Register for Event` to join without leaving the portal.
+
+Registration uses your existing portal identity for:
+
+- Player name.
+- League player key.
+- Email.
+- Profile information where available.
+
+For Team Tournament registration, provide only Event-specific details:
+
+- Discord handle.
+- Preferred team or Looking for Team.
+- Captain status.
+- Primary faction.
+- Notes.
+
+You may edit or withdraw your registration while registration remains open. Once registration closes, changes must go through a Commissioner.

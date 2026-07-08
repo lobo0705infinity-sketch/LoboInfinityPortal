@@ -76,7 +76,14 @@ const EVENT_ENGINE_PARTICIPANT_HEADERS = [
   "Registered At",
   "Seed",
   "Team",
-  "Notes"
+  "Notes",
+  "Email",
+  "Discord",
+  "Preferred Team",
+  "Captain",
+  "Free Agent",
+  "Faction",
+  "Updated At"
 ];
 
 const EVENT_ENGINE_SEASON_HEADERS = [
@@ -1144,21 +1151,42 @@ function ensureEventEngineSheet(name, headers) {
     sheet =
       spreadsheet.insertSheet(name);
 
-  const headerRange =
-    sheet.getRange(1, 1, 1, headers.length);
+  const lastColumn =
+    Math.max(sheet.getLastColumn(), headers.length);
 
-  const currentHeaders =
+  const headerRange =
+    sheet.getRange(1, 1, 1, lastColumn);
+
+  let currentHeaders =
     headerRange
       .getValues()[0]
       .map(getEventEngineString);
 
-  const matches =
-    headers.every(function(header, index) {
-      return currentHeaders[index] === header;
+  const occupiedHeaderCount =
+    currentHeaders.filter(function(header) {
+      return header !== "";
+    }).length;
+
+  if (
+    occupiedHeaderCount === 0
+  ) {
+    sheet
+      .getRange(1, 1, 1, headers.length)
+      .setValues([headers]);
+
+    return sheet;
+  }
+
+  const missingHeaders =
+    headers.filter(function(header) {
+      return currentHeaders.indexOf(header) === -1;
     });
 
-  if (!matches)
-    headerRange.setValues([headers]);
+  if (missingHeaders.length > 0) {
+    sheet
+      .getRange(1, occupiedHeaderCount + 1, 1, missingHeaders.length)
+      .setValues([missingHeaders]);
+  }
 
   return sheet;
 

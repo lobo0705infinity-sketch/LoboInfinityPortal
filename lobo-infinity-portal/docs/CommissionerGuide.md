@@ -52,3 +52,19 @@ Commissioner tools support:
 - Updating pairing status and results.
 
 These actions affect only the selected Team Tournament Event. League standings, League Match Finder, and League scheduling remain isolated by Event ID.
+
+## Event Registration Management
+
+Event registration is managed through Event Participants.
+
+Commissioners can:
+
+- Review registered players.
+- Track free agents.
+- Identify captains.
+- Assign players to teams.
+- Promote players from waitlist.
+- Remove or withdraw registrations.
+- Export the registration list.
+
+Player self-service registration automatically disables when the Event registration state is no longer `Registration Open`.

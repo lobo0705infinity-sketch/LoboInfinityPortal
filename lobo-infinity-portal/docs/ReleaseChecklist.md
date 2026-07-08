@@ -136,6 +136,14 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] Verify Team Tournament games do not affect League standings
 - [ ] Verify Team Tournament notifications include Event context
 - [ ] Verify Team Tournament commissioner tools are permission-gated
+- [ ] Verify Event Registration read API
+- [ ] Verify Event Registration player register
+- [ ] Verify Event Registration edit
+- [ ] Verify Event Registration withdraw
+- [ ] Verify Event Registration lifecycle gate
+- [ ] Verify Event Registration commissioner management
+- [ ] Verify Event Registration profile display
+- [ ] Verify Event Registration notifications
 - [ ] Verify Standings
 - [ ] Verify Hall of Fame
 - [ ] Verify Achievements

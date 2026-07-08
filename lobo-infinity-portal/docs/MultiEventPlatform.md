@@ -62,6 +62,16 @@ League standings, league scheduling, and league Match Finder views remain isolat
 
 Commissioner management uses existing operations permissions. No parallel tournament engine is introduced.
 
+## Event Registration
+
+Version 6.0.2 moves registration into the Event Engine.
+
+Every Event owns its registrations through Event Participants. Registering for one Event does not affect any other Event.
+
+Registration data includes player identity plus Event-specific fields such as Discord, preferred team, captain flag, free-agent flag, faction, notes, and status.
+
+Team Tournament registration is the first consumer of the generic registration engine.
+
 ## Standings Isolation
 
 Standings use the existing player registry and standings sorting logic. The only change is that the statistics updater reads Event-scoped `Game Engine` rows before building division tables.

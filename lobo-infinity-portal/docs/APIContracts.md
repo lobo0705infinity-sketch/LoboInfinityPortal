@@ -259,6 +259,96 @@ Action:
 
 The payload remains structurally compatible and is filtered to the selected Event.
 
+## Event Registration
+
+Version 6.0.2 adds Event Engine-owned registration APIs. Registration is scoped by `eventId` and uses the `Event Participants` sheet as the source of truth.
+
+### Registration Read
+
+Action:
+
+`GET action=eventRegistration&eventId=event-august-2026-team-tournament`
+
+Response:
+
+```json
+{
+  "success": true,
+  "registration": {
+    "eventId": "event-august-2026-team-tournament",
+    "eventName": "August 2026 Team Tournament",
+    "eventType": "Team Tournament",
+    "status": "Registration Open",
+    "registrationOpen": true,
+    "registeredCount": 0,
+    "waitlistCount": 0,
+    "teamCount": 0,
+    "currentPlayer": null,
+    "registrations": [],
+    "teams": [],
+    "freeAgents": [],
+    "captains": []
+  }
+}
+```
+
+### Register For Event
+
+Action:
+
+`POST action=registerForEvent`
+
+Authentication:
+
+Requires a logged-in league player.
+
+Request:
+
+```json
+{
+  "eventId": "event-august-2026-team-tournament",
+  "discord": "Lobo0705",
+  "preferredTeam": "OnlyPans",
+  "teamName": "OnlyPans",
+  "captain": "true",
+  "freeAgent": "false",
+  "faction": "Nomads",
+  "notes": "Available all rounds"
+}
+```
+
+### Withdraw Registration
+
+Action:
+
+`POST action=withdrawEventRegistration`
+
+Authentication:
+
+Requires the registered player. Registration must still be open.
+
+### Manage Registration
+
+Action:
+
+`POST action=manageEventRegistration`
+
+Authentication:
+
+Requires operations permission.
+
+Commissioners may update status, assign teams, promote waitlisted players, or remove registrations by setting participant status.
+
+### Export Registrations
+
+Action:
+
+`POST action=exportEventRegistrations`
+
+Authentication:
+
+Requires operations view permission.
+
 ## Team Tournament Experience
 
 Version 6.0.1 adds Team Tournament endpoints on top of the Event Engine. These endpoints do not replace existing league APIs.

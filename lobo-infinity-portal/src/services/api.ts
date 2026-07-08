@@ -281,6 +281,16 @@ export type PlayerProfileData = {
   scheduleLink: string
   armyLists: ArmyList[]
   armyListSummary: PlayerArmyListSummary
+  registeredEvents: Array<{
+    eventId: string
+    eventName: string
+    eventType: string
+    preferredTeam: string
+    registeredAt: string
+    status: string
+    team: string
+    updatedAt: string
+  }>
 }
 
 export type RecentGame = {
@@ -913,6 +923,57 @@ export type TeamTournamentStanding = {
   wins: number
 }
 
+export type EventRegistrationEntry = {
+  captain: boolean
+  discord: string
+  displayName: string
+  email: string
+  eventId: string
+  faction: string
+  freeAgent: boolean
+  notes: string
+  player: string
+  preferredTeam: string
+  registeredAt: string
+  role: string
+  seed: string
+  status: string
+  team: string
+  updatedAt: string
+}
+
+export type EventRegistrationTeamSummary = {
+  captains: number
+  players: EventRegistrationEntry[]
+  teamName: string
+}
+
+export type EventRegistrationData = {
+  capacity: {
+    maximumPlayers: number
+    maximumTeams: number
+    unlimited: boolean
+    waitlistEnabled: boolean
+  }
+  captains: EventRegistrationEntry[]
+  currentPlayer: EventRegistrationEntry | null
+  eventId: string
+  eventName: string
+  eventType: string
+  freeAgents: EventRegistrationEntry[]
+  registeredCount: number
+  registrationOpen: boolean
+  registrationWindow: {
+    endDate: string
+    startDate: string
+  }
+  registrations: EventRegistrationEntry[]
+  status: string
+  teamCount: number
+  teams: EventRegistrationTeamSummary[]
+  waitlistCount: number
+}
+
 export type TeamTournamentData = {
   completedMatches: number
   currentRound: Record<string, unknown> | null
@@ -926,6 +987,7 @@ export type TeamTournamentData = {
     eventId: string
     label: string
   }>
+  registration: EventRegistrationData
   registeredTeams: number
   standings: TeamTournamentStanding[]
   status: string
@@ -1690,6 +1752,22 @@ export type ApiClient = {
     eventId?: string,
     options?: ApiOptions,
   ) => Promise<TeamTournamentData>
+  getEventRegistration: (
+    eventId?: string,
+    options?: ApiOptions,
+  ) => Promise<EventRegistrationData>
+  registerForEvent: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<EventRegistrationData>
+  withdrawEventRegistration: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<EventRegistrationData>
+  manageEventRegistration: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<EventRegistrationData>
   registerTeamTournament: (
     params: Record<string, string>,
     options?: ApiOptions,
@@ -2092,6 +2170,38 @@ export async function getTeamTournament(
   return normalizeTeamTournamentPayload(payload)
 }
 
+export async function getEventRegistration(
+  eventId = 'event-current-league',
+  options: ApiOptions = {},
+): Promise<EventRegistrationData> {
+  const payload = await request('eventRegistration', options, { eventId })
+  return normalizeEventRegistrationResponse(payload)
+}
+
+export async function registerForEvent(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<EventRegistrationData> {
+  const payload = await postRequest('registerForEvent', options, params)
+  return normalizeEventRegistrationResponse(payload)
+}
+
+export async function withdrawEventRegistration(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<EventRegistrationData> {
+  const payload = await postRequest('withdrawEventRegistration', options, params)
+  return normalizeEventRegistrationResponse(payload)
+}
+
+export async function manageEventRegistration(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<EventRegistrationData> {
+  const payload = await postRequest('manageEventRegistration', options, params)
+  return normalizeEventRegistrationResponse(payload)
+}
+
 export async function registerTeamTournament(
   params: Record<string, string>,
   options: ApiOptions = {},
@@ -2382,6 +2492,10 @@ export const apiClient: ApiClient = {
   respondSchedulingRequest,
   getSchedulingCalendar,
   getTeamTournament,
+  getEventRegistration,
+  registerForEvent,
+  withdrawEventRegistration,
+  manageEventRegistration,
   registerTeamTournament,
   saveTeamTournamentTeam,
   saveTeamTournamentPairing,
@@ -2907,6 +3021,20 @@ function normalizePlayerProfileRecord(
     scheduleLink: getString(player, 'scheduleLink'),
     armyLists: getArray(player, 'armyLists').map(normalizeArmyList),
     armyListSummary: normalizePlayerArmyListSummary(player.armyListSummary),
+    registeredEvents: getArray(player, 'registeredEvents').map((item) => {
+      const event = asRecord(item, 'Registered event')
+
+      return {
+        eventId: getString(event, 'eventId'),
+        eventName: getString(event, 'eventName'),
+        eventType: getString(event, 'eventType'),
+        preferredTeam: getString(event, 'preferredTeam'),
+        registeredAt: getString(event, 'registeredAt'),
+        status: getString(event, 'status'),
+        team: getString(event, 'team'),
+        updatedAt: getString(event, 'updatedAt'),
+      }
+    }),
   }
 }
 
@@ -3458,6 +3586,7 @@ function normalizeComparisonPlayer(item: unknown): PlayerComparisonPlayer {
     preferredLocations: '',
     scheduleLink: '',
     armyLists: [],
+    registeredEvents: [],
     armyListSummary: {
       submitted: 0,
       highestRated: null,
@@ -3928,6 +4057,9 @@ function normalizeTeamTournamentPayload(payload: unknown): TeamTournamentData {
       }
     }),
     registeredTeams: getNumber(tournament, 'registeredTeams'),
+    registration: normalizeEventRegistrationData(
+      getRequiredRecord(tournament, 'registration'),
+    ),
     standings: getArray(tournament, 'standings').map(
       normalizeTeamTournamentStanding,
     ),
@@ -3936,6 +4068,93 @@ function normalizeTeamTournamentPayload(payload: unknown): TeamTournamentData {
     upcomingPairings: getArray(tournament, 'upcomingPairings').map(
       normalizeTeamTournamentPairing,
     ),
+  }
+}
+
+function normalizeEventRegistrationResponse(
+  payload: unknown,
+): EventRegistrationData {
+  const record = asRecord(payload, 'Event registration response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Event registration failed.')
+  }
+
+  return normalizeEventRegistrationData(getRequiredRecord(record, 'registration'))
+}
+
+function normalizeEventRegistrationData(
+  item: unknown,
+): EventRegistrationData {
+  const record = asRecord(item, 'Event registration')
+  const capacity = getOptionalRecord(record, 'capacity') ?? {}
+  const registrationWindow = getOptionalRecord(record, 'registrationWindow') ?? {}
+
+  return {
+    capacity: {
+      maximumPlayers: getNumber(capacity, 'maximumPlayers'),
+      maximumTeams: getNumber(capacity, 'maximumTeams'),
+      unlimited: getOptionalBoolean(capacity, 'unlimited') ?? true,
+      waitlistEnabled: getOptionalBoolean(capacity, 'waitlistEnabled') ?? false,
+    },
+    captains: getArray(record, 'captains').map(normalizeEventRegistrationEntry),
+    currentPlayer: getOptionalRecord(record, 'currentPlayer')
+      ? normalizeEventRegistrationEntry(getRequiredRecord(record, 'currentPlayer'))
+      : null,
+    eventId: getString(record, 'eventId'),
+    eventName: getString(record, 'eventName'),
+    eventType: getString(record, 'eventType'),
+    freeAgents: getArray(record, 'freeAgents').map(normalizeEventRegistrationEntry),
+    registeredCount: getNumber(record, 'registeredCount'),
+    registrationOpen: getOptionalBoolean(record, 'registrationOpen') ?? false,
+    registrationWindow: {
+      endDate: getString(registrationWindow, 'endDate'),
+      startDate: getString(registrationWindow, 'startDate'),
+    },
+    registrations: getArray(record, 'registrations').map(
+      normalizeEventRegistrationEntry,
+    ),
+    status: getString(record, 'status'),
+    teamCount: getNumber(record, 'teamCount'),
+    teams: getArray(record, 'teams').map(normalizeEventRegistrationTeamSummary),
+    waitlistCount: getNumber(record, 'waitlistCount'),
+  }
+}
+
+function normalizeEventRegistrationEntry(
+  item: unknown,
+): EventRegistrationEntry {
+  const record = asRecord(item, 'Event registration entry')
+
+  return {
+    captain: getOptionalBoolean(record, 'captain') ?? false,
+    discord: getString(record, 'discord'),
+    displayName: getString(record, 'displayName'),
+    email: getString(record, 'email'),
+    eventId: getString(record, 'eventId'),
+    faction: getString(record, 'faction'),
+    freeAgent: getOptionalBoolean(record, 'freeAgent') ?? false,
+    notes: getString(record, 'notes'),
+    player: getString(record, 'player'),
+    preferredTeam: getString(record, 'preferredTeam'),
+    registeredAt: getString(record, 'registeredAt'),
+    role: getString(record, 'role'),
+    seed: getString(record, 'seed'),
+    status: getString(record, 'status'),
+    team: getString(record, 'team'),
+    updatedAt: getString(record, 'updatedAt'),
+  }
+}
+
+function normalizeEventRegistrationTeamSummary(
+  item: unknown,
+): EventRegistrationTeamSummary {
+  const record = asRecord(item, 'Event registration team summary')
+
+  return {
+    captains: getNumber(record, 'captains'),
+    players: getArray(record, 'players').map(normalizeEventRegistrationEntry),
+    teamName: getString(record, 'teamName'),
   }
 }
 

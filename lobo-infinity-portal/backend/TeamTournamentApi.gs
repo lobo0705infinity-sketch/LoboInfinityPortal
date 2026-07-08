@@ -63,13 +63,36 @@ function getTeamTournament(e) {
   const standings =
     buildTeamTournamentStandings(eventId, teams);
 
+  const registrations =
+    getEventRegistrationRows(eventId);
+
+  const auth =
+    getRequestUser(e);
+
+  const currentPlayerRegistration =
+    auth.authenticated && auth.user.leaguePlayer
+      ? getEventRegistrationForPlayer(eventId, auth.user.leaguePlayer)
+      : null;
+
   return jsonOutput({
     success: true,
     tournament: {
       event: event,
       status: event.status || "Planning",
       currentRound: getTeamTournamentCurrentRound(eventId),
-      registeredTeams: teams.length,
+      registration:
+        buildEventRegistrationPayload(
+          event,
+          registrations,
+          currentPlayerRegistration
+        ),
+      registeredTeams:
+        Math.max(
+          teams.length,
+          getEventRegistrationTeamSummary(registrations).filter(function(team) {
+            return team.teamName !== "Looking for Team";
+          }).length
+        ),
       completedMatches:
         pairings.filter(function(pairing) {
           return pairing.status === "Completed";
@@ -94,63 +117,7 @@ function getTeamTournament(e) {
 
 function registerTeamTournamentPlayer(e) {
 
-  const auth =
-    getRequestUser(e);
-
-  if (!auth.authenticated || !auth.user.leaguePlayer)
-    return jsonOutput({
-      success: false,
-      error: "Authentication is required."
-    });
-
-  const params =
-    getApiParameters(e);
-
-  const eventId =
-    resolveEventId(params.eventId || EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID);
-
-  const teamName =
-    getTeamTournamentString(params.teamName);
-
-  ensureEventEngine();
-
-  const participantsSheet =
-    ensureEventEngineSheet(
-      CONFIG.SHEETS.EVENT_PARTICIPANTS,
-      EVENT_ENGINE_PARTICIPANT_HEADERS
-    );
-
-  upsertTeamTournamentCompositeRow(
-    participantsSheet,
-    EVENT_ENGINE_PARTICIPANT_HEADERS,
-    [
-      "Event ID",
-      "Player"
-    ],
-    [
-      eventId,
-      auth.user.leaguePlayer
-    ],
-    [
-      eventId,
-      auth.user.leaguePlayer,
-      auth.user.playerDisplayName || auth.user.leaguePlayer,
-      "Player",
-      "Registered",
-      getTeamTournamentTimestamp(),
-      "",
-      teamName,
-      ""
-    ]
-  );
-
-  invalidatePortalCacheGroup("events");
-
-  return getTeamTournament({
-    parameter: {
-      eventId: eventId
-    }
-  });
+  return registerForEvent(e);
 
 }
 

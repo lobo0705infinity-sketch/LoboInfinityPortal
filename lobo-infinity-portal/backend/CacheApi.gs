@@ -26,11 +26,11 @@ const PORTAL_CACHE_GROUPS = {
   search: ["searchData", "searchIndex"],
   news: ["news", "home", "notifications", "timeline"],
   settings: ["settings", "home"],
-  events: ["events", "event", "eventTemplates", "eventSeasons", "eventRounds", "eventMigrationValidation", "teamTournament"],
+  events: ["events", "event", "eventTemplates", "eventSeasons", "eventRounds", "eventMigrationValidation", "teamTournament", "eventRegistration"],
   seasonCommand: ["seasonCommandCenter", "communityCommandCenter", "schedulingCenter", "matchFinder"],
   scheduling: ["seasonCommandCenter", "communityCommandCenter", "schedulingCenter", "matchFinder", "notifications"],
   operations: ["operationsSummary", "operationsLifecycle", "operationsIdentity", "operationsContent", "operationsDiscord", "operationsNotifications", "operationsAudit", "integrity"],
-  all: ["dashboard", "home", "leader", "recentGames", "standings", "players", "player", "factions", "faction", "missions", "mission", "intelligence", "records", "hallOfFame", "comparison", "timeline", "news", "settings", "events", "event", "eventTemplates", "eventSeasons", "eventRounds", "eventMigrationValidation", "teamTournament", "seasonCommandCenter", "communityCommandCenter", "schedulingCenter", "matchFinder", "streams", "searchData", "searchIndex", "armyLists", "operationsSummary", "operationsLifecycle", "operationsIdentity", "operationsContent", "operationsDiscord", "operationsNotifications", "operationsAudit", "integrity"]
+  all: ["dashboard", "home", "leader", "recentGames", "standings", "players", "player", "factions", "faction", "missions", "mission", "intelligence", "records", "hallOfFame", "comparison", "timeline", "news", "settings", "events", "event", "eventTemplates", "eventSeasons", "eventRounds", "eventMigrationValidation", "teamTournament", "eventRegistration", "seasonCommandCenter", "communityCommandCenter", "schedulingCenter", "matchFinder", "streams", "searchData", "searchIndex", "armyLists", "operationsSummary", "operationsLifecycle", "operationsIdentity", "operationsContent", "operationsDiscord", "operationsNotifications", "operationsAudit", "integrity"]
 };
 
 const PORTAL_CACHE_ENDPOINT_GROUP = {
@@ -59,6 +59,7 @@ const PORTAL_CACHE_ENDPOINT_GROUP = {
   eventRounds: "events",
   eventMigrationValidation: "events",
   teamTournament: "events",
+  eventRegistration: "events",
   seasonCommandCenter: "seasonCommand",
   communityCommandCenter: "seasonCommand",
   schedulingCenter: "scheduling",

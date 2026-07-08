@@ -5073,6 +5073,11 @@
   gap: 18px;
 }
 
+.team-tournament-grid.compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
 .team-tournament-panel {
   display: grid;
   gap: 14px;
@@ -5147,6 +5152,48 @@
   color: #ffc7ce;
 }
 
+.event-registration-status,
+.event-registration-summary {
+  display: grid;
+  gap: 8px;
+  border: 1px solid rgba(76, 201, 240, 0.18);
+  border-radius: 8px;
+  padding: 12px;
+  background: rgba(76, 201, 240, 0.055);
+}
+
+.event-registration-status span,
+.event-registration-status small {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.event-registration-status strong {
+  font-size: 1.05rem;
+}
+
+.event-registration-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.event-registration-actions button {
+  flex: 1 1 180px;
+}
+
+.event-registration-check {
+  align-items: center;
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.event-registration-check input {
+  min-height: auto;
+  width: 18px;
+  height: 18px;
+}
+
 .team-tournament-table-shell {
   overflow-x: auto;
 }
@@ -5207,6 +5254,10 @@
   .team-tournament-form button,
   .team-tournament-actions button {
     width: 100%;
+  }
+
+  .team-tournament-grid.compact {
+    grid-template-columns: 1fr;
   }
 }
 

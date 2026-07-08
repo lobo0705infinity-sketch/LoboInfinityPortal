@@ -120,6 +120,8 @@ function buildLeagueNotifications() {
 
   addAchievementNotifications(notifications);
 
+  addEventRegistrationNotifications(notifications);
+
   games
     .slice(0, 5)
     .forEach(function(game, index) {
@@ -557,6 +559,58 @@ function addAchievementTimelineItems(timeline) {
       );
 
     });
+
+}
+
+function addEventRegistrationNotifications(notifications) {
+
+  const events =
+    getEventEngineSnapshot().events;
+
+  events.forEach(function(event) {
+    const registrations =
+      getEventRegistrationRows(event.id)
+        .filter(function(registration) {
+          return registration.status === "Registered";
+        });
+
+    if (event.registration === "Registration Open")
+      notifications.push(
+        buildLeagueNotification({
+          id: "event-registration-open-" + event.id,
+          type: "Event Registration",
+          title: event.name + " registration is open",
+          body:
+            "Register through the portal to join " +
+            event.name +
+            ".",
+          timestamp: event.updatedAt || getLeagueExperienceTimestamp(),
+          link:
+            event.type === "Team Tournament"
+              ? "/team-tournament"
+              : "/events",
+          priority: "high"
+        })
+      );
+
+    if (registrations.length > 0)
+      notifications.push(
+        buildLeagueNotification({
+          id: "event-registration-count-" + event.id,
+          type: "Event Registration",
+          title: event.name + " registration update",
+          body:
+            registrations.length +
+            " players are registered for this Event.",
+          timestamp: getLeagueExperienceTimestamp(),
+          link:
+            event.type === "Team Tournament"
+              ? "/team-tournament"
+              : "/events",
+          priority: "normal"
+        })
+      );
+  });
 
 }
 

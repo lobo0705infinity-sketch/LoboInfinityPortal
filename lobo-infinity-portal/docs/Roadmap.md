@@ -44,6 +44,8 @@ Version 6.0 is the Multi-Event Platform release. It promotes Event ID to an oper
 
 Version 6.0.1 is the Team Tournament Experience release. It validates the Multi-Event Platform by adding a Team Tournament Event dashboard, team registration, rosters, pairings, team standings, and commissioner tournament tools without creating a separate tournament engine.
 
+Version 6.0.2 is the Event Registration System release. It moves player registration into Event Participants so every Event can support portal-based self-registration, team preferences, free agents, captain flags, commissioner management, profile visibility, and lifecycle-gated registration without Google Forms.
+
 ### 3.2 Event Migration
 
 Add explicit event scope to historical data after migration validation has passed.

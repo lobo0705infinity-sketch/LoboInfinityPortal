@@ -4,6 +4,7 @@ import { useAuth } from '../auth/AuthContext'
 import Loading from '../components/Loading'
 import {
   apiClient,
+  type EventRegistrationData,
   type TeamTournamentData,
   type TeamTournamentPairing,
   type TeamTournamentTeam,
@@ -47,13 +48,27 @@ function TeamTournament() {
     }
   }, [])
 
-  async function register(teamName: string) {
+  async function register(params: Record<string, string>) {
     setWorking('register')
     try {
-      const data = await apiClient.registerTeamTournament({
+      await apiClient.registerForEvent({
+        ...params,
         eventId: defaultEventId,
-        teamName,
       })
+      const data = await apiClient.getTeamTournament(defaultEventId)
+      setState({ data, status: 'success' })
+    } finally {
+      setWorking('')
+    }
+  }
+
+  async function withdraw() {
+    setWorking('withdraw')
+    try {
+      await apiClient.withdrawEventRegistration({
+        eventId: defaultEventId,
+      })
+      const data = await apiClient.getTeamTournament(defaultEventId)
       setState({ data, status: 'success' })
     } finally {
       setWorking('')
@@ -133,8 +148,10 @@ function TeamTournament() {
       <section className="team-tournament-grid">
         <RegistrationPanel
           disabled={working !== ''}
-          onRegister={(teamName) => void register(teamName)}
-          userTeam={findUserTeam(data.teams, auth.user?.leaguePlayer ?? '')}
+          onRegister={(params) => void register(params)}
+          onWithdraw={() => void withdraw()}
+          registration={data.registration}
+          userDisplayName={auth.user?.playerDisplayName ?? auth.user?.leaguePlayer ?? ''}
         />
         <NewsPanel news={data.news} />
       </section>
@@ -148,8 +165,10 @@ function TeamTournament() {
 
       <section className="team-tournament-grid">
         <LatestResults data={data} />
-        <QuickActions actions={data.quickActions} />
+        <RegistrationManagementPanel registration={data.registration} />
       </section>
+
+      <QuickActions actions={data.quickActions} />
 
       {isCommissioner ? (
         <CommissionerTournamentTools
@@ -184,43 +203,154 @@ function TournamentMetric({ label, value }: { label: string; value: number }) {
 function RegistrationPanel({
   disabled,
   onRegister,
-  userTeam,
+  onWithdraw,
+  registration,
+  userDisplayName,
 }: {
   disabled: boolean
-  onRegister: (teamName: string) => void
-  userTeam: TeamTournamentTeam | null
+  onRegister: (params: Record<string, string>) => void
+  onWithdraw: () => void
+  registration: EventRegistrationData
+  userDisplayName: string
 }) {
-  const [teamName, setTeamName] = useState(userTeam?.teamName ?? '')
+  const [editing, setEditing] = useState(false)
+  const current = registration.currentPlayer
+  const [preferredTeam, setPreferredTeam] = useState(
+    current?.preferredTeam || current?.team || '',
+  )
+  const [discord, setDiscord] = useState(current?.discord ?? '')
+  const [captain, setCaptain] = useState(current?.captain ?? false)
+  const [freeAgent, setFreeAgent] = useState(current?.freeAgent ?? true)
+  const [faction, setFaction] = useState(current?.faction ?? '')
+  const [notes, setNotes] = useState(current?.notes ?? '')
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    onRegister(teamName)
+    onRegister({
+      captain: captain ? 'true' : 'false',
+      discord,
+      faction,
+      freeAgent: freeAgent ? 'true' : 'false',
+      notes,
+      preferredTeam: freeAgent ? 'Looking for Team' : preferredTeam,
+      teamName: freeAgent ? 'Looking for Team' : preferredTeam,
+    })
+    setEditing(false)
   }
+
+  const canRegister = registration.registrationOpen
+  const status = current?.status ?? registration.status
+  const showForm = editing || !current
 
   return (
     <section className="panel team-tournament-panel" id="team-tournament-register">
       <div className="panel-heading">
         <p className="eyebrow">Registration</p>
-        <h2>Your Tournament Entry</h2>
+        <h2>{registration.eventName}</h2>
       </div>
-      {userTeam ? (
-        <p>
-          You are registered with <strong>{userTeam.teamName}</strong>.
-        </p>
+      <div className="event-registration-status">
+        <span>{current ? 'Registered Player' : 'Registration Status'}</span>
+        <strong>{current ? `✓ ${status}` : status}</strong>
+        <small>
+          {registration.registeredCount} players registered
+          {registration.waitlistCount > 0
+            ? `, ${registration.waitlistCount} waitlisted`
+            : ''}
+        </small>
+      </div>
+
+      {current && !showForm ? (
+        <div className="event-registration-summary">
+          <p>
+            You are registered as <strong>{current.displayName}</strong>.
+          </p>
+          <p>
+            Team preference:{' '}
+            <strong>{current.preferredTeam || current.team || 'Looking for Team'}</strong>
+          </p>
+          {current.discord ? <p>Discord: {current.discord}</p> : null}
+          {current.faction ? <p>Primary faction: {current.faction}</p> : null}
+          <div className="event-registration-actions">
+            <button disabled={disabled || !canRegister} onClick={() => setEditing(true)} type="button">
+              Edit Registration
+            </button>
+            <button disabled={disabled || !canRegister} onClick={onWithdraw} type="button">
+              Withdraw
+            </button>
+          </div>
+        </div>
       ) : (
         <form className="team-tournament-form" onSubmit={submit}>
+          <p>
+            Player: <strong>{current?.displayName || userDisplayName || 'Your profile'}</strong>
+          </p>
           <label>
-            <span>Team Name</span>
+            <span>Discord</span>
             <input
-              onChange={(event) => setTeamName(event.target.value)}
-              placeholder="Enter your team"
-              required
-              value={teamName}
+              onChange={(event) => setDiscord(event.target.value)}
+              placeholder="Discord handle"
+              value={discord}
             />
           </label>
-          <button disabled={disabled || teamName.trim() === ''} type="submit">
-            Register for Tournament
-          </button>
+          <label>
+            <span>Preferred Team</span>
+            <input
+              disabled={freeAgent}
+              onChange={(event) => setPreferredTeam(event.target.value)}
+              placeholder="Team name"
+              value={preferredTeam}
+            />
+          </label>
+          <label className="event-registration-check">
+            <input
+              checked={freeAgent}
+              onChange={(event) => setFreeAgent(event.target.checked)}
+              type="checkbox"
+            />
+            <span>Looking for Team</span>
+          </label>
+          <label className="event-registration-check">
+            <input
+              checked={captain}
+              onChange={(event) => setCaptain(event.target.checked)}
+              type="checkbox"
+            />
+            <span>Captain?</span>
+          </label>
+          <label>
+            <span>Primary Faction</span>
+            <input
+              onChange={(event) => setFaction(event.target.value)}
+              placeholder="Optional"
+              value={faction}
+            />
+          </label>
+          <label>
+            <span>Notes</span>
+            <textarea
+              onChange={(event) => setNotes(event.target.value)}
+              placeholder="Anything the Commissioner should know"
+              rows={3}
+              value={notes}
+            />
+          </label>
+          <div className="event-registration-actions">
+            <button
+              disabled={
+                disabled ||
+                !canRegister ||
+                (!freeAgent && preferredTeam.trim() === '')
+              }
+              type="submit"
+            >
+              {current ? 'Update Registration' : 'Register for Event'}
+            </button>
+            {current ? (
+              <button disabled={disabled} onClick={() => setEditing(false)} type="button">
+                Cancel
+              </button>
+            ) : null}
+          </div>
         </form>
       )}
     </section>
@@ -405,6 +535,42 @@ function QuickActions({
   )
 }
 
+function RegistrationManagementPanel({
+  registration,
+}: {
+  registration: EventRegistrationData
+}) {
+  return (
+    <section className="panel team-tournament-panel">
+      <div className="panel-heading">
+        <p className="eyebrow">Registration Desk</p>
+        <h2>Event Entries</h2>
+      </div>
+      <div className="team-tournament-grid compact">
+        <TournamentMetric label="Players" value={registration.registeredCount} />
+        <TournamentMetric label="Teams" value={registration.teamCount} />
+        <TournamentMetric label="Free Agents" value={registration.freeAgents.length} />
+        <TournamentMetric label="Captains" value={registration.captains.length} />
+      </div>
+      {registration.registrations.length === 0 ? (
+        <p>No players have registered yet.</p>
+      ) : (
+        <ul>
+          {registration.registrations.slice(0, 8).map((entry) => (
+            <li key={entry.player}>
+              <strong>{entry.displayName}</strong>
+              <span>
+                {entry.status} ·{' '}
+                {entry.preferredTeam || entry.team || 'Looking for Team'}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  )
+}
+
 function CommissionerTournamentTools({
   disabled,
   onPairing,
@@ -477,20 +643,6 @@ function PairingForm({
         Save Pairing
       </button>
     </form>
-  )
-}
-
-function findUserTeam(teams: TeamTournamentTeam[], player: string) {
-  const key = player.trim().toLowerCase()
-
-  if (!key) {
-    return null
-  }
-
-  return (
-    teams.find((team) =>
-      splitPlayers(team.players).some((member) => member.toLowerCase() === key),
-    ) ?? null
   )
 }
 

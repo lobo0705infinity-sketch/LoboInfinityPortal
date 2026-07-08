@@ -237,3 +237,29 @@ Event-aware consumers pass `eventId` into existing services. Supported read scop
 Current League remains the default for legacy endpoint calls.
 
 Standings and scheduling use scoped Game Engine and Scheduling Request reads, so multiple Events can operate independently while still sharing player identity, formatting, notifications, diagnostics, cache behavior, and long-term statistics infrastructure.
+
+## Event Registration
+
+Version 6.0.2 makes `Event Participants` the standard registration store for every Event.
+
+Registration fields include:
+
+- Event ID
+- Player
+- Display Name
+- Role
+- Status
+- Registered At
+- Team
+- Notes
+- Email
+- Discord
+- Preferred Team
+- Captain
+- Free Agent
+- Faction
+- Updated At
+
+Registration status is Event-scoped. A player may register for the League, Team Tournament, Narrative Campaign, or future custom Events independently.
+
+Player self-service registration is allowed only while the Event registration state is `Registration Open`. Commissioner management remains permission-gated and can update registrations, assign teams, and manage waitlists.

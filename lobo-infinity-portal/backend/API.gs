@@ -117,6 +117,9 @@ function doGet(e) {
         return getEvent(e);
       });
 
+    case "eventRegistration":
+      return getEventRegistration(e);
+
     case "eventTemplates":
       return getCachedApiResponse(e, action, function() {
         return getEventTemplates();
@@ -294,6 +297,18 @@ function doGet(e) {
         return transitionEventLifecycle(e, auth);
       });
 
+    case "registerForEvent":
+      return registerForEvent(e);
+
+    case "withdrawEventRegistration":
+      return withdrawEventRegistration(e);
+
+    case "manageEventRegistration":
+      return manageEventRegistration(e);
+
+    case "exportEventRegistrations":
+      return exportEventRegistrations(e);
+
     case "voteArmyList":
       return requireApiPermission(e, "vote", function() {
         return voteArmyList(e);
@@ -323,7 +338,7 @@ function doGet(e) {
       return respondSchedulingRequest(e);
 
     case "teamTournamentRegister":
-      return registerTeamTournamentPlayer(e);
+      return registerForEvent(e);
 
     case "teamTournamentTeam":
       return saveTeamTournamentTeam(e);
@@ -576,6 +591,27 @@ function doPost(e) {
 
     case "respondSchedulingRequest":
       return respondSchedulingRequest(e);
+
+    case "registerForEvent":
+      return registerForEvent(e);
+
+    case "withdrawEventRegistration":
+      return withdrawEventRegistration(e);
+
+    case "manageEventRegistration":
+      return manageEventRegistration(e);
+
+    case "exportEventRegistrations":
+      return exportEventRegistrations(e);
+
+    case "teamTournamentRegister":
+      return registerForEvent(e);
+
+    case "teamTournamentTeam":
+      return saveTeamTournamentTeam(e);
+
+    case "teamTournamentPairing":
+      return saveTeamTournamentPairing(e);
 
     case "updateSettings":
       return requireApiPermission(e, "manageSettings", function() {
