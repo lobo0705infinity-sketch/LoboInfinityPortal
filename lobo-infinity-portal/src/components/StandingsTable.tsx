@@ -1,6 +1,8 @@
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import type { DivisionKey, MainManStanding } from '../types/dashboard'
 import { formatPlayerName } from '../services/formatting'
+import { publishStandingsDiagnostics } from '../services/standingsDiagnostics'
 
 type StandingsTableProps = {
   division?: DivisionKey
@@ -13,6 +15,19 @@ function StandingsTable({
   standings,
   showMovementZones = false,
 }: StandingsTableProps) {
+  useEffect(() => {
+    const handle = window.setTimeout(() => {
+      publishStandingsDiagnostics({
+        division,
+        tablePropsStandings: standings,
+      })
+    }, 0)
+
+    return () => {
+      window.clearTimeout(handle)
+    }
+  }, [division, standings])
+
   return (
     <div className="standings-table" role="table" aria-label="Main Man Standings">
       <div className="table-row table-head" role="row">

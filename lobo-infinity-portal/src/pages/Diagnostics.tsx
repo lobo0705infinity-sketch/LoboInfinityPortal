@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../auth/AuthContext'
+import { buildInfo } from '../services/buildInfo'
 import {
   getPlatformReliability,
   runReliabilityAction,
   type PlatformReliabilityData,
 } from '../services/lightApi'
 import { getFrontendPerformanceDiagnostics } from '../services/performanceDiagnostics'
+import { getStoredStandingsDiagnostics } from '../services/standingsDiagnostics'
 
 function Diagnostics() {
   const auth = useAuth()
@@ -14,6 +16,9 @@ function Diagnostics() {
   const canView = auth.isAtLeastRole('Commissioner')
   const canManage = auth.hasPermission('manageCache')
   const snapshot = canView ? getFrontendPerformanceDiagnostics() : null
+  const [standingsDiagnostics, setStandingsDiagnostics] = useState(() =>
+    canView ? getStoredStandingsDiagnostics() : null,
+  )
 
   useEffect(() => {
     if (!canView) {
@@ -120,6 +125,39 @@ function Diagnostics() {
           value={formatBytes(snapshot.stylesheetTransferBytes)}
         />
         <MetricCard label="Resources" value={snapshot.resourceCount} />
+      </section>
+
+      <section className="panel operations-panel">
+        <div className="panel-heading">
+          <p className="eyebrow">Production Build Identity</p>
+          <h2>Frontend Deployment</h2>
+        </div>
+        <div className="operations-table-wrap">
+          <table className="operations-table">
+            <tbody>
+              <tr>
+                <th>Git Commit</th>
+                <td>{buildInfo.gitCommit}</td>
+              </tr>
+              <tr>
+                <th>Build Timestamp</th>
+                <td>{buildInfo.buildTimestamp}</td>
+              </tr>
+              <tr>
+                <th>Vercel Deployment ID</th>
+                <td>{buildInfo.deploymentId}</td>
+              </tr>
+              <tr>
+                <th>Frontend Build Version</th>
+                <td>{buildInfo.frontendVersion}</td>
+              </tr>
+              <tr>
+                <th>Vercel URL</th>
+                <td>{buildInfo.vercelUrl || 'Not reported'}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section className="panel operations-panel">
@@ -380,6 +418,106 @@ function Diagnostics() {
 
       <section className="panel operations-panel">
         <div className="panel-heading">
+          <div>
+            <p className="eyebrow">Standings Runtime Parity</p>
+            <h2>Production Browser Rendering</h2>
+          </div>
+          <button
+            onClick={() => setStandingsDiagnostics(getStoredStandingsDiagnostics())}
+            type="button"
+          >
+            Refresh Standings Diagnostics
+          </button>
+        </div>
+        {standingsDiagnostics ? (
+          <div className="operations-table-wrap">
+            <table className="operations-table">
+              <tbody>
+                <tr>
+                  <th>Captured</th>
+                  <td>{standingsDiagnostics.timestamp}</td>
+                </tr>
+                <tr>
+                  <th>Division</th>
+                  <td>{standingsDiagnostics.division}</td>
+                </tr>
+                <tr>
+                  <th>Standings Component</th>
+                  <td>{standingsDiagnostics.component.standings}</td>
+                </tr>
+                <tr>
+                  <th>StandingsTable Component</th>
+                  <td>{standingsDiagnostics.component.standingsTable}</td>
+                </tr>
+                <tr>
+                  <th>API standings[0]</th>
+                  <td>{formatDiagnosticValue(standingsDiagnostics.api.standings0)}</td>
+                </tr>
+                <tr>
+                  <th>React state standings[0]</th>
+                  <td>
+                    {formatDiagnosticValue(
+                      standingsDiagnostics.reactState.standings0,
+                    )}
+                  </td>
+                </tr>
+                <tr>
+                  <th>StandingsTable props[0]</th>
+                  <td>
+                    {formatDiagnosticValue(
+                      standingsDiagnostics.tableProps.standings0,
+                    )}
+                  </td>
+                </tr>
+                <tr>
+                  <th>Rendered Row Count</th>
+                  <td>{standingsDiagnostics.renderedDom.rowCount}</td>
+                </tr>
+                <tr>
+                  <th>Rendered Row 0</th>
+                  <td>
+                    {formatDiagnosticValue(standingsDiagnostics.renderedDom.row0)}
+                  </td>
+                </tr>
+                <tr>
+                  <th>Rendered Row 1</th>
+                  <td>
+                    {formatDiagnosticValue(standingsDiagnostics.renderedDom.row1)}
+                  </td>
+                </tr>
+                <tr>
+                  <th>Loaded Scripts</th>
+                  <td>
+                    <pre className="diagnostics-json">
+                      {JSON.stringify(standingsDiagnostics.assets.scripts, null, 2)}
+                    </pre>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Loaded Stylesheets</th>
+                  <td>
+                    <pre className="diagnostics-json">
+                      {JSON.stringify(
+                        standingsDiagnostics.assets.stylesheets,
+                        null,
+                        2,
+                      )}
+                    </pre>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p>
+            No standings runtime snapshot found. Open Standings in this browser,
+            then return to Diagnostics.
+          </p>
+        )}
+      </section>
+
+      <section className="panel operations-panel">
+        <div className="panel-heading">
           <p className="eyebrow">Endpoint Timing</p>
           <h2>Recent Requests</h2>
         </div>
@@ -528,6 +666,22 @@ function formatBytes(value: number) {
   }
 
   return `${Math.round(value / 1024)} KB`
+}
+
+function formatDiagnosticValue(value: unknown) {
+  if (value === null || value === undefined) {
+    return 'Not captured'
+  }
+
+  if (typeof value === 'string' || typeof value === 'number') {
+    return value
+  }
+
+  return (
+    <pre className="diagnostics-json">
+      {JSON.stringify(value, null, 2)}
+    </pre>
+  )
 }
 
 export default Diagnostics

@@ -4,6 +4,7 @@ import StandingsTable from '../components/StandingsTable'
 import StatCard from '../components/StatCard'
 import { apiClient } from '../services/api'
 import { formatPlayerName } from '../services/formatting'
+import { publishStandingsDiagnostics } from '../services/standingsDiagnostics'
 import type { DivisionKey, DivisionStandings } from '../types/dashboard'
 import {
   formatDivisionLabel,
@@ -63,6 +64,11 @@ function Standings() {
           data,
           division: activeDivision,
           status: 'success',
+        })
+        publishStandingsDiagnostics({
+          apiStandings: data.standings,
+          division: activeDivision,
+          reactStateStandings: data.standings,
         })
       })
       .catch((error: unknown) => {
