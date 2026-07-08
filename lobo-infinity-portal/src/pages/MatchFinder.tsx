@@ -1289,22 +1289,6 @@ const ScheduleRequestForm = forwardRef<
         <p className="eyebrow">Schedule</p>
         <h2>Send Match Request</h2>
       </div>
-      <div
-        className={`match-request-action-bar ${submitState}`}
-        ref={actionBarRef}
-      >
-        <span aria-live="polite">{actionStatus}</span>
-        <button
-          data-match-request-click-handler="trace-submit"
-          disabled={requestDisabled}
-          form={MATCH_REQUEST_FORM_ID}
-          ref={buttonRef}
-          onClick={() => appendTrace('Send button clicked')}
-          type="submit"
-        >
-          {actionLabel}
-        </button>
-      </div>
       <form
         className="scheduling-form match-request-form"
         id={MATCH_REQUEST_FORM_ID}
@@ -1399,6 +1383,22 @@ const ScheduleRequestForm = forwardRef<
           />
         </label>
       </form>
+      <div
+        className={`match-request-action-bar ${submitState}`}
+        ref={actionBarRef}
+      >
+        <span aria-live="polite">{actionStatus}</span>
+        <button
+          data-match-request-click-handler="trace-submit"
+          disabled={requestDisabled}
+          form={MATCH_REQUEST_FORM_ID}
+          ref={buttonRef}
+          onClick={() => appendTrace('Send button clicked')}
+          type="submit"
+        >
+          {actionLabel}
+        </button>
+      </div>
       {pendingNavigation ? (
         <div
           aria-labelledby="match-request-leave-title"
