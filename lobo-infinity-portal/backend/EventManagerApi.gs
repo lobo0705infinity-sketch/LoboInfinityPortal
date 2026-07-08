@@ -153,9 +153,21 @@ function setEventManagerRegistration(e) {
       getEventManagerString(params.registration) ||
       "Registration Closed";
 
-    updateEventManagerEventFields(eventId, {
+    const fields = {
       "Registration": registration
-    });
+    };
+
+    if (registration === "Registration Open") {
+      fields["Lifecycle Stage"] = "Registration Open";
+      fields["Status"] = "Registration Open";
+    }
+
+    if (registration === "Registration Closed") {
+      fields["Lifecycle Stage"] = "Registration Closed";
+      fields["Status"] = "Registration Closed";
+    }
+
+    updateEventManagerEventFields(eventId, fields);
 
     recordEventManagerAudit(auth, eventId, "Registration updated", registration);
     invalidateEventManagerCaches();

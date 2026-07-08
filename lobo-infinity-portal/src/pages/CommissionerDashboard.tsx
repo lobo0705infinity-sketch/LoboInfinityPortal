@@ -87,8 +87,8 @@ function CommissionerDashboard() {
     status: 'loading',
   })
   const [workingAction, setWorkingAction] = useState('')
-  const [openPanels, setOpenPanels] = useState<string[]>([])
-  const [loadedPanels, setLoadedPanels] = useState<string[]>([])
+  const [openPanels, setOpenPanels] = useState<string[]>(['eventManager'])
+  const [loadedPanels, setLoadedPanels] = useState<string[]>(['eventManager'])
   const [loadingPanels, setLoadingPanels] = useState<string[]>([])
   const canViewOperations = auth.isAtLeastRole('Assistant Commissioner')
 
@@ -237,6 +237,18 @@ function CommissionerDashboard() {
     <main className="portal-shell">
       <PageHeader />
       <OperationsSummary data={data} />
+      <section className="panel event-manager-entry" aria-labelledby="event-manager-entry-title">
+        <div>
+          <p className="eyebrow">Event Operations</p>
+          <h2 id="event-manager-entry-title">Commissioner Event Manager</h2>
+          <p>
+            Create Events, open registration, manage participants, operate Team
+            Tournament teams and pairings, and set the current active Event from
+            the portal.
+          </p>
+        </div>
+        <a href="#event-manager-panel">Open Event Manager</a>
+      </section>
       <section className="operations-grid" aria-label="Operations status">
         <LeagueHealthPanel data={data} />
         <SeasonStatusPanel data={data} />
@@ -272,6 +284,7 @@ function CommissionerDashboard() {
           <PlayerManagementPanel data={data} />
         </LazyOperationsPanel>
         <LazyOperationsPanel
+          id="event-manager-panel"
           isLoading={loadingPanels.includes('eventManager')}
           isOpen={openPanels.includes('eventManager')}
           onToggle={() => togglePanel('eventManager')}
@@ -431,19 +444,21 @@ async function loadOperationsPanel(panel: string): Promise<OperationsDashboardDa
 
 function LazyOperationsPanel({
   children,
+  id,
   isLoading,
   isOpen,
   onToggle,
   title,
 }: {
   children: ReactNode
+  id?: string
   isLoading: boolean
   isOpen: boolean
   onToggle: () => void
   title: string
 }) {
   return (
-    <section className="panel operations-panel">
+    <section className="panel operations-panel" id={id}>
       <button className="integrity-card-button" onClick={onToggle} type="button">
         <span className="eyebrow">Lazy Loaded</span>
         <strong>{title}</strong>

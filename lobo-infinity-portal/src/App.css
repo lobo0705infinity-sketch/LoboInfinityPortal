@@ -5328,6 +5328,54 @@
   gap: 1rem;
 }
 
+.event-manager-entry {
+  align-items: center;
+  border-color: rgba(248, 113, 113, 0.42);
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.event-manager-entry a {
+  align-items: center;
+  background: var(--red);
+  border: 1px solid rgba(248, 113, 113, 0.75);
+  border-radius: 8px;
+  color: #fff;
+  display: inline-flex;
+  font-weight: 800;
+  min-height: 44px;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+}
+
+.event-manager-toolbar {
+  align-items: end;
+  background: rgba(15, 23, 42, 0.58);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 8px;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: minmax(220px, 0.4fr) minmax(0, 1fr);
+  padding: 0.85rem;
+}
+
+.event-manager-toolbar label {
+  color: var(--text-muted);
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+}
+
+.event-manager-toolbar select {
+  background: rgba(2, 6, 23, 0.75);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 8px;
+  color: var(--text-primary);
+  min-height: 44px;
+  padding: 0.7rem 0.8rem;
+}
+
 .event-manager-layout {
   display: grid;
   gap: 1rem;
@@ -5438,8 +5486,20 @@
   border-radius: 8px;
   display: grid;
   gap: 0.5rem;
-  grid-template-columns: minmax(120px, 1fr) repeat(3, minmax(80px, auto));
+  grid-template-columns: minmax(120px, 1fr) repeat(3, minmax(80px, auto)) auto;
   padding: 0.7rem;
+}
+
+.event-manager-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: flex-end;
+}
+
+.event-manager-row-actions button {
+  min-height: 36px;
+  padding: 0.45rem 0.65rem;
 }
 
 .team-tournament-table-shell {
@@ -5519,7 +5579,9 @@
   }
 
   .event-manager-layout,
+  .event-manager-entry,
   .event-manager-summary,
+  .event-manager-toolbar,
   .event-manager-form,
   .event-manager-form.compact,
   .event-manager-row {

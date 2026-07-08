@@ -188,6 +188,24 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     )
   }
 
+  async function applyLifecycle() {
+    await runManagerAction('lifecycle', () =>
+      apiClient.setEventManagerLifecycle({
+        eventId: selectedEventId,
+        lifecycleStage: eventForm.lifecycleStage,
+        status: eventForm.status || eventForm.lifecycleStage,
+      }),
+    )
+  }
+
+  async function selectCurrentEvent(eventId: string) {
+    await runManagerAction('currentEvent', () =>
+      apiClient.setEventManagerCurrentEvent({
+        eventId,
+      }),
+    )
+  }
+
   async function saveParticipant(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
@@ -202,6 +220,26 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
       displayName: '',
       player: '',
     }))
+  }
+
+  async function updateParticipantStatus(
+    participant: EventRegistrationEntry,
+    status: string,
+  ) {
+    await runManagerAction(`participant-${status}`, () =>
+      apiClient.saveEventManagerParticipant({
+        captain: String(participant.captain),
+        discord: participant.discord,
+        displayName: participant.displayName,
+        email: participant.email,
+        eventId: selectedEventId,
+        freeAgent: String(participant.freeAgent),
+        player: participant.player,
+        preferredTeam: participant.preferredTeam,
+        status,
+        team: participant.team,
+      }),
+    )
   }
 
   async function saveTeam(event: FormEvent<HTMLFormElement>) {
@@ -253,6 +291,25 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
         participants, teams, pairings, archive state, and the current active
         event.
       </p>
+      <div className="event-manager-toolbar">
+        <label>
+          Current Active Event
+          <select
+            disabled={!canManage || workingAction !== ''}
+            onChange={(event) => void selectCurrentEvent(event.target.value)}
+            value={data.currentEvent.id}
+          >
+            {data.events.map((summary) => (
+              <option key={summary.event.id} value={summary.event.id}>
+                {summary.event.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <span>
+          Active: <strong>{data.currentEvent.name}</strong>
+        </span>
+      </div>
 
       <div className="event-manager-layout">
         <section className="event-manager-list" aria-label="Events">
@@ -408,6 +465,13 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
               </button>
               <button
                 disabled={!canManage || workingAction !== ''}
+                onClick={() => void applyLifecycle()}
+                type="button"
+              >
+                Apply Lifecycle
+              </button>
+              <button
+                disabled={!canManage || workingAction !== ''}
                 onClick={() =>
                   void runManagerAction('openRegistration', () =>
                     apiClient.setEventManagerRegistration({
@@ -419,6 +483,20 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
                 type="button"
               >
                 Open Registration
+              </button>
+              <button
+                disabled={!canManage || workingAction !== ''}
+                onClick={() =>
+                  void runManagerAction('reopenRegistration', () =>
+                    apiClient.setEventManagerRegistration({
+                      eventId: selectedEventId,
+                      registration: 'Registration Open',
+                    }),
+                  )
+                }
+                type="button"
+              >
+                Reopen Registration
               </button>
               <button
                 disabled={!canManage || workingAction !== ''}
@@ -470,6 +548,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
             canManage={canManage}
             form={participantForm}
             onChange={setParticipantForm}
+            onStatusChange={updateParticipantStatus}
             onSubmit={saveParticipant}
             participants={data.participants}
             working={workingAction !== ''}
@@ -631,6 +710,7 @@ function ParticipantsPanel({
   canManage,
   form,
   onChange,
+  onStatusChange,
   onSubmit,
   participants,
   working,
@@ -638,6 +718,10 @@ function ParticipantsPanel({
   canManage: boolean
   form: ParticipantForm
   onChange: (value: ParticipantForm) => void
+  onStatusChange: (
+    participant: EventRegistrationEntry,
+    status: string,
+  ) => Promise<void>
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
   participants: EventRegistrationEntry[]
   working: boolean
@@ -652,6 +736,29 @@ function ParticipantsPanel({
             <span>{participant.status}</span>
             <span>{participant.team || participant.preferredTeam || 'No team'}</span>
             <span>{participant.captain ? 'Captain' : participant.freeAgent ? 'Free Agent' : 'Player'}</span>
+            <div className="event-manager-row-actions">
+              <button
+                disabled={!canManage || working}
+                onClick={() => void onStatusChange(participant, 'Approved')}
+                type="button"
+              >
+                Approve
+              </button>
+              <button
+                disabled={!canManage || working}
+                onClick={() => void onStatusChange(participant, 'Waitlisted')}
+                type="button"
+              >
+                Waitlist
+              </button>
+              <button
+                disabled={!canManage || working}
+                onClick={() => void onStatusChange(participant, 'Removed')}
+                type="button"
+              >
+                Remove
+              </button>
+            </div>
           </div>
         ))}
       </div>
