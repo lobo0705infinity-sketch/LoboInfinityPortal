@@ -2222,10 +2222,17 @@ function RecommendationCard({
         <Metric label="Discord" value={discordText} />
       </dl>
       <div className="scheduling-card-actions">
-        <Link to={recommendation.profileLink || `/players/${encodeURIComponent(recommendation.player)}`}>
+        <Link
+          className="scheduling-action secondary"
+          to={recommendation.profileLink || `/players/${encodeURIComponent(recommendation.player)}`}
+        >
           Profile
         </Link>
-        <button onClick={() => onRequest(recommendation.player)} type="button">
+        <button
+          className="scheduling-action primary"
+          onClick={() => onRequest(recommendation.player)}
+          type="button"
+        >
           Request Match
         </button>
       </div>
@@ -2275,6 +2282,7 @@ function RequestList({
               {actionLabel ? (
                 <>
                   <button
+                    className="scheduling-action primary"
                     disabled={working !== ''}
                     onClick={() => void onRespond(request.id, 'Accepted')}
                     type="button"
@@ -2282,6 +2290,7 @@ function RequestList({
                     {actionLabel}
                   </button>
                   <button
+                    className="scheduling-action danger"
                     disabled={working !== ''}
                     onClick={() => void onRespond(request.id, 'Declined')}
                     type="button"
@@ -2289,6 +2298,7 @@ function RequestList({
                     Decline
                   </button>
                   <button
+                    className="scheduling-action secondary"
                     disabled={working !== ''}
                     onClick={() => void onRespond(request.id, 'Suggested')}
                     type="button"
@@ -2299,6 +2309,7 @@ function RequestList({
               ) : null}
               {request.status === 'Accepted' ? (
                 <button
+                  className="scheduling-action secondary"
                   disabled={working !== ''}
                   onClick={() => void onCalendar(request.id)}
                   type="button"

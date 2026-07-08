@@ -5138,22 +5138,23 @@
   resize: vertical;
 }
 
-.scheduling-form button,
-.scheduling-card-actions button {
-  background: var(--accent);
-  border: 0;
+.scheduling-form button {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent),
+    var(--crimson);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 8px;
-  color: #061014;
+  color: #ffffff;
   cursor: pointer;
   font-weight: 800;
   min-height: 42px;
   padding: 0.65rem 0.9rem;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.32);
 }
 
-.scheduling-form button:disabled,
-.scheduling-card-actions button:disabled {
+.scheduling-form button:disabled {
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: 0.72;
 }
 
 .scheduling-form-wide,
@@ -5389,19 +5390,98 @@
 .scheduling-card-actions a,
 .scheduling-card-actions button {
   align-items: center;
-  border-radius: 8px;
+  border-radius: 10px;
   display: inline-flex;
   font-size: 0.85rem;
+  font-weight: 850;
   justify-content: center;
-  min-height: 38px;
-  padding: 0.55rem 0.75rem;
+  min-height: 44px;
+  padding: 0.65rem 0.85rem;
   text-decoration: none;
+  transition:
+    background 170ms ease,
+    border-color 170ms ease,
+    box-shadow 170ms ease,
+    color 170ms ease,
+    transform 170ms ease;
 }
 
-.scheduling-card-actions a {
+.scheduling-card-actions .scheduling-action {
   background: rgba(148, 163, 184, 0.1);
   border: 1px solid rgba(148, 163, 184, 0.18);
   color: var(--text);
+  cursor: pointer;
+}
+
+.scheduling-card-actions .scheduling-action.primary {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent),
+    var(--crimson);
+  border-color: rgba(255, 255, 255, 0.24);
+  box-shadow: 0 12px 26px rgba(193, 18, 31, 0.28);
+  color: #ffffff;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.32);
+}
+
+.scheduling-card-actions .scheduling-action.secondary {
+  background: rgba(15, 23, 42, 0.92);
+  border-color: rgba(148, 163, 184, 0.36);
+  color: #f8fafc;
+}
+
+.scheduling-card-actions .scheduling-action.danger {
+  background: rgba(127, 29, 29, 0.88);
+  border-color: rgba(248, 113, 113, 0.44);
+  box-shadow: 0 10px 24px rgba(127, 29, 29, 0.22);
+  color: #ffffff;
+}
+
+.scheduling-card-actions .scheduling-action:hover,
+.scheduling-card-actions .scheduling-action:focus-visible {
+  border-color: rgba(76, 201, 240, 0.58);
+  box-shadow: 0 0 0 1px rgba(76, 201, 240, 0.22);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.scheduling-card-actions .scheduling-action.primary:hover,
+.scheduling-card-actions .scheduling-action.primary:focus-visible {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent),
+    #e11d2e;
+  box-shadow:
+    0 0 0 1px rgba(76, 201, 240, 0.24),
+    0 16px 34px rgba(193, 18, 31, 0.4);
+}
+
+.scheduling-card-actions .scheduling-action.secondary:hover,
+.scheduling-card-actions .scheduling-action.secondary:focus-visible {
+  background: rgba(30, 41, 59, 0.98);
+}
+
+.scheduling-card-actions .scheduling-action.danger:hover,
+.scheduling-card-actions .scheduling-action.danger:focus-visible {
+  background: rgba(185, 28, 28, 0.94);
+  border-color: rgba(254, 202, 202, 0.48);
+  box-shadow:
+    0 0 0 1px rgba(76, 201, 240, 0.2),
+    0 14px 30px rgba(127, 29, 29, 0.34);
+}
+
+.scheduling-card-actions .scheduling-action:active {
+  transform: translateY(0);
+}
+
+.scheduling-card-actions .scheduling-action:disabled,
+.scheduling-card-actions .scheduling-action[aria-disabled="true"] {
+  background: rgba(132, 144, 157, 0.36);
+  border-color: rgba(148, 163, 184, 0.22);
+  box-shadow: none;
+  color: rgba(255, 255, 255, 0.72);
+  cursor: not-allowed;
+  opacity: 1;
+  text-shadow: none;
+  transform: none;
 }
 
 .scheduling-request {
