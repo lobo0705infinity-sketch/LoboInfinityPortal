@@ -103,30 +103,6 @@
   color: var(--blue);
 }
 
-.standings-table .table-row.rank-leader {
-  background:
-    linear-gradient(90deg, rgba(240, 177, 62, 0.18), transparent 42%),
-    rgba(46, 125, 78, 0.18);
-  box-shadow:
-    inset 4px 0 0 var(--gold),
-    0 0 0 1px rgba(240, 177, 62, 0.16);
-}
-
-.standings-table .table-row.rank-leader span:first-child::after {
-  content: " Leader";
-  color: var(--gold);
-  font-size: 0.72rem;
-  font-weight: 900;
-  margin-left: 0.35rem;
-  text-transform: uppercase;
-}
-
-.standings-table .table-row.rank-leader:hover {
-  background:
-    linear-gradient(90deg, rgba(240, 177, 62, 0.24), transparent 42%),
-    var(--panel-soft);
-}
-
 .zone-safe {
   background: rgba(46, 125, 78, 0.16);
   box-shadow: inset 4px 0 0 #2fbf71;
