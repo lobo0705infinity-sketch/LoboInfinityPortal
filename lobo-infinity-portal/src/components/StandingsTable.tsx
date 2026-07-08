@@ -1,133 +1,72 @@
-import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import type { DivisionKey, MainManStanding } from '../types/dashboard'
 import { formatPlayerName } from '../services/formatting'
-import { publishStandingsDiagnostics } from '../services/standingsDiagnostics'
+import type { Standing } from '../types/dashboard'
 
 type StandingsTableProps = {
-  division?: DivisionKey
-  standings: MainManStanding[]
-  showMovementZones?: boolean
+  ariaLabel: string
+  getRowClassName?: (standing: Standing, totalRows: number) => string
+  standings: Standing[]
 }
 
 function StandingsTable({
-  division = 'main',
+  ariaLabel,
+  getRowClassName,
   standings,
-  showMovementZones = false,
 }: StandingsTableProps) {
-  useEffect(() => {
-    const handle = window.setTimeout(() => {
-      publishStandingsDiagnostics({
-        division,
-        tablePropsStandings: standings,
-      })
-    }, 0)
-
-    return () => {
-      window.clearTimeout(handle)
-    }
-  }, [division, standings])
-
   return (
-    <div className="standings-table" role="table" aria-label="Main Man Standings">
-      <div className="table-row table-head" role="row">
-        <span role="columnheader">Rank</span>
-        <span role="columnheader">Player</span>
-        <span role="columnheader">Games</span>
-        <span role="columnheader">Wins</span>
-        <span role="columnheader">Losses</span>
-        <span role="columnheader">TP</span>
-        <span role="columnheader">OP</span>
-        <span role="columnheader">VP</span>
-      </div>
-
-      {standings.map((standing, index) => (
-        <StandingsRow
-          division={division}
-          index={index}
-          key={`${standing.rank}-${standing.player}`}
-          showMovementZones={showMovementZones}
-          standing={standing}
-          totalPlayers={standings.length}
-        />
-      ))}
+    <div className="standings-table-shell">
+      <table className="standings-data-table" aria-label={ariaLabel}>
+        <thead>
+          <tr>
+            <th scope="col">Rank</th>
+            <th scope="col">Player</th>
+            <th scope="col">Games</th>
+            <th scope="col">Wins</th>
+            <th scope="col">Losses</th>
+            <th scope="col">TP</th>
+            <th scope="col">OP</th>
+            <th scope="col">VP</th>
+          </tr>
+        </thead>
+        <tbody>
+          {standings.map((standing) => (
+            <StandingsRow
+              className={getRowClassName?.(standing, standings.length)}
+              key={`${standing.rank}-${standing.player}`}
+              standing={standing}
+            />
+          ))}
+        </tbody>
+      </table>
     </div>
   )
 }
 
 function StandingsRow({
-  division,
-  index,
-  showMovementZones,
+  className = '',
   standing,
-  totalPlayers,
 }: {
-  division: DivisionKey
-  index: number
-  showMovementZones: boolean
-  standing: MainManStanding
-  totalPlayers: number
+  className?: string
+  standing: Standing
 }) {
+  const playerName = formatPlayerName(standing.player, standing.displayName)
+
   return (
-    <div
-      className={`table-row ${getRankClass(
-        standing.rank,
-        totalPlayers,
-        division,
-        showMovementZones,
-      )}`}
-      data-standings-component="StandingsRow"
-      data-standings-player={standing.player}
-      data-standings-rank={standing.rank}
-      data-standings-row-index={index}
-      role="row"
-    >
-      <span role="cell">{standing.rank}</span>
-      <strong role="cell">
-        <Link
-          className="table-player-link"
-          to={`/players/${encodeURIComponent(standing.player)}`}
-        >
-          {formatPlayerName(standing.player, standing.displayName)}
+    <tr className={className || undefined} data-player={standing.player}>
+      <td data-label="Rank">{standing.rank}</td>
+      <td data-label="Player">
+        <Link to={`/players/${encodeURIComponent(standing.player)}`}>
+          {playerName}
         </Link>
-      </strong>
-      <span role="cell">{standing.games}</span>
-      <span role="cell">{standing.wins}</span>
-      <span role="cell">{standing.losses}</span>
-      <span role="cell">{standing.tp}</span>
-      <span role="cell">{standing.op}</span>
-      <span role="cell">{standing.vp}</span>
-    </div>
+      </td>
+      <td data-label="Games">{standing.games}</td>
+      <td data-label="Wins">{standing.wins}</td>
+      <td data-label="Losses">{standing.losses}</td>
+      <td data-label="TP">{standing.tp}</td>
+      <td data-label="OP">{standing.op}</td>
+      <td data-label="VP">{standing.vp}</td>
+    </tr>
   )
-}
-
-function getRankClass(
-  rank: number,
-  totalPlayers: number,
-  division: DivisionKey,
-  showMovementZones: boolean,
-) {
-  if (!showMovementZones) {
-    return ''
-  }
-
-  if (division === 'main') {
-    if (rank <= Math.max(0, totalPlayers - 2)) {
-      return 'zone-safe'
-    }
-
-    return 'zone-relegation'
-  }
-
-  if (rank <= 2) {
-    return 'zone-safe'
-  }
-
-  if (rank > Math.max(0, totalPlayers - 2)) {
-    return 'zone-relegation'
-  }
-
-  return ''
 }
 
 export default StandingsTable
