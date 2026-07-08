@@ -3,12 +3,12 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import Loading from '../components/Loading'
 import {
-  apiClient,
   type EventRegistrationData,
   type TeamTournamentData,
   type TeamTournamentPairing,
   type TeamTournamentTeam,
 } from '../services/api'
+import { registrationRepository, teamRepository } from '../services/data'
 import { formatPlayerName } from '../services/formatting'
 
 type TournamentState =
@@ -33,7 +33,7 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
   useEffect(() => {
     const controller = new AbortController()
 
-    apiClient
+    teamRepository
       .getTeamTournament(activeEventId, { signal: controller.signal })
       .then((data) => setState({ data, status: 'success' }))
       .catch((error: unknown) => {
@@ -58,11 +58,11 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
   async function register(params: Record<string, string>) {
     setWorking('register')
     try {
-      await apiClient.registerForEvent({
+      await registrationRepository.register({
         ...params,
         eventId: activeEventId,
       })
-      const data = await apiClient.getTeamTournament(activeEventId)
+      const data = await teamRepository.getTeamTournament(activeEventId)
       setState({ data, status: 'success' })
     } finally {
       setWorking('')
@@ -72,10 +72,10 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
   async function withdraw() {
     setWorking('withdraw')
     try {
-      await apiClient.withdrawEventRegistration({
+      await registrationRepository.withdraw({
         eventId: activeEventId,
       })
-      const data = await apiClient.getTeamTournament(activeEventId)
+      const data = await teamRepository.getTeamTournament(activeEventId)
       setState({ data, status: 'success' })
     } finally {
       setWorking('')
@@ -85,7 +85,7 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
   async function saveTeam(params: Record<string, string>) {
     setWorking('team')
     try {
-      const data = await apiClient.saveTeamTournamentTeam({
+      const data = await teamRepository.saveTeam({
         ...params,
         eventId: activeEventId,
       })
@@ -98,7 +98,7 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
   async function savePairing(params: Record<string, string>) {
     setWorking('pairing')
     try {
-      const data = await apiClient.saveTeamTournamentPairing({
+      const data = await teamRepository.savePairing({
         ...params,
         eventId: activeEventId,
       })
@@ -111,7 +111,7 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
   async function saveInvitation(params: Record<string, string>) {
     setWorking('invitation')
     try {
-      const data = await apiClient.saveTeamTournamentInvitation({
+      const data = await teamRepository.saveInvitation({
         ...params,
         eventId: activeEventId,
       })
@@ -124,7 +124,7 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
   async function saveResult(params: Record<string, string>) {
     setWorking('result')
     try {
-      const data = await apiClient.saveTeamTournamentResult({
+      const data = await teamRepository.saveResult({
         ...params,
         eventId: activeEventId,
       })
@@ -137,7 +137,7 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
   async function advanceRound(params: Record<string, string>) {
     setWorking('round')
     try {
-      const data = await apiClient.advanceTeamTournamentRound({
+      const data = await teamRepository.advanceRound({
         ...params,
         eventId: activeEventId,
       })

@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import {
-  apiClient,
   type EventManagerData,
   type EventRegistrationEntry,
 } from '../services/api'
+import { eventRepository } from '../services/data'
 import Loading from './Loading'
 
 type EventManagerState =
@@ -116,7 +116,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     setState({ status: 'loading' })
 
     try {
-      const data = await apiClient.getEventManager(eventId)
+      const data = await eventRepository.getEventManager(eventId)
       applyManagerData(data)
     } catch (error) {
       setState({
@@ -132,7 +132,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
   useEffect(() => {
     const controller = new AbortController()
 
-    apiClient
+    eventRepository
       .getEventManager(initialEventId.current, { signal: controller.signal })
       .then(applyManagerData)
       .catch((error: unknown) => {
@@ -181,7 +181,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
 
   async function setRegistration(registration: string, action: string) {
     await runManagerAction(action, async () => {
-      const data = await apiClient.setEventManagerRegistration({
+      const data = await eventRepository.setRegistration({
         eventId: selectedEventId,
         registration,
       })
@@ -200,7 +200,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     event.preventDefault()
 
     await runManagerAction('saveEvent', () =>
-      apiClient.saveEventManagerEvent({
+      eventRepository.saveEvent({
         ...eventForm,
         eventId: selectedEventId,
       }),
@@ -211,7 +211,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     event.preventDefault()
 
     await runManagerAction('createEvent', () =>
-      apiClient.saveEventManagerEvent({
+      eventRepository.saveEvent({
         ...newEventForm,
         lifecycleStage: 'Planning',
         status: 'Planning',
@@ -221,7 +221,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
 
   async function applyLifecycle() {
     await runManagerAction('lifecycle', () =>
-      apiClient.setEventManagerLifecycle({
+      eventRepository.setLifecycle({
         eventId: selectedEventId,
         lifecycleStage: eventForm.lifecycleStage,
         status: eventForm.status || eventForm.lifecycleStage,
@@ -231,7 +231,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
 
   async function selectCurrentEvent(eventId: string) {
     await runManagerAction('currentEvent', () =>
-      apiClient.setEventManagerCurrentEvent({
+      eventRepository.setCurrentEvent({
         eventId,
       }),
     )
@@ -241,7 +241,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     event.preventDefault()
 
     await runManagerAction('participant', () =>
-      apiClient.saveEventManagerParticipant({
+      eventRepository.saveParticipant({
         ...participantForm,
         eventId: selectedEventId,
       }),
@@ -258,7 +258,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     status: string,
   ) {
     await runManagerAction(`participant-${status}`, () =>
-      apiClient.saveEventManagerParticipant({
+      eventRepository.saveParticipant({
         captain: String(participant.captain),
         discord: participant.discord,
         displayName: participant.displayName,
@@ -277,7 +277,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     event.preventDefault()
 
     await runManagerAction('team', () =>
-      apiClient.saveEventManagerTeam({
+      eventRepository.saveTeam({
         ...teamForm,
         eventId: selectedEventId,
       }),
@@ -293,7 +293,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     event.preventDefault()
 
     await runManagerAction('pairing', () =>
-      apiClient.saveEventManagerPairing({
+      eventRepository.savePairing({
         ...pairingForm,
         eventId: selectedEventId,
       }),
@@ -536,7 +536,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
                 disabled={!canManage || workingAction !== ''}
                 onClick={() =>
                   void runManagerAction('currentEvent', () =>
-                    apiClient.setEventManagerCurrentEvent({
+                    eventRepository.setCurrentEvent({
                       eventId: selectedEventId,
                     }),
                   )
@@ -549,7 +549,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
                 disabled={!canManage || workingAction !== ''}
                 onClick={() =>
                   void runManagerAction('archive', () =>
-                    apiClient.setEventManagerLifecycle({
+                    eventRepository.setLifecycle({
                       archive: 'Archived',
                       eventId: selectedEventId,
                       lifecycleStage: 'Archived',

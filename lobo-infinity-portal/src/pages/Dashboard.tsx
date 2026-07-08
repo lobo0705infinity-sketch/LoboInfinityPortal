@@ -7,7 +7,6 @@ import RecentGames from '../components/RecentGames'
 import Skeleton from '../components/Skeleton'
 import StatCard from '../components/StatCard'
 import {
-  apiClient,
   type ArmyListCommunitySummary,
   type CommissionerNewsItem,
   type CommunityCommandCenterData,
@@ -21,6 +20,7 @@ import {
   type SchedulingRequest,
   type StandingsBattle,
 } from '../services/api'
+import { analyticsRepository, dashboardRepository } from '../services/data'
 import type { DashboardData, LeagueOverview } from '../types/dashboard'
 import {
   getDivisionIdentity,
@@ -91,7 +91,7 @@ async function hydrateDashboardAnalytics(
   signal: AbortSignal,
   setHomeState: (state: HomeState) => void,
 ) {
-  const intelligence = await apiClient.getAnalytics({ signal })
+  const intelligence = await analyticsRepository.getAnalytics({ signal })
 
   if (signal.aborted) {
     return
@@ -122,7 +122,7 @@ function Dashboard() {
 
     async function loadCommandCenter() {
       try {
-        const home = await apiClient.getHome({
+        const home = await dashboardRepository.getHome({
           signal: controller.signal,
         })
 
@@ -412,7 +412,7 @@ function CommunityCommandCenter() {
   useEffect(() => {
     const controller = new AbortController()
 
-    apiClient
+    dashboardRepository
       .getCommunityCommandCenter({ signal: controller.signal })
       .then((data) => {
         setState({ data, status: 'success' })

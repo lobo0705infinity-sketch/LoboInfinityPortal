@@ -50,6 +50,11 @@ Version 6.0.3 is the Event Home Experience release. It gives every Event a dedic
 
 Version 6.0.3 Commissioner Event Manager adds the operational control center inside Commissioner Dashboard so Events can be created, edited, opened for registration, closed, activated, archived, and managed without direct Google Sheets edits.
 
+Version 7.0 Foundation adds the Data Access Layer. The frontend begins moving
+from page-level API calls to repository contracts with provider selection via
+`VITE_DATA_PROVIDER`. Google Sheets remains the production provider until a
+Firestore or database provider is implemented and contract-tested.
+
 ### 3.2 Event Migration
 
 Add explicit event scope to historical data after migration validation has passed.

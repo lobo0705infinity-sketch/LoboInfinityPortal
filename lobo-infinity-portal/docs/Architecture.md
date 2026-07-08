@@ -643,3 +643,15 @@ The Team Tournament experience owns tournament-specific workflows:
 - Champion display
 
 These workflows are backed by Event-scoped sheets and existing Event Engine records. They do not introduce a new Tournament Engine. Commissioner controls update the same Event lifecycle/status fields used by Event Manager.
+
+## Data Access Layer
+
+Version 7.0 Foundation introduces a frontend Data Access Layer in
+`src/services/data`. Pages consume repositories such as `eventRepository`,
+`standingsRepository`, `teamRepository`, `registrationRepository`, and
+`schedulingRepository` instead of depending directly on a storage transport.
+
+The production provider remains Google Apps Script and Google Sheets through
+`GoogleSheetsProvider`, preserving all current API contracts and sheet schema.
+Future providers implement the same repository contracts and are selected by
+`VITE_DATA_PROVIDER`.

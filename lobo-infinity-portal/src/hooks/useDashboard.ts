@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { apiClient } from '../services/api'
+import { dataProvider } from '../services/data'
 import type { DashboardData } from '../types/dashboard'
 
 type DashboardState = {
@@ -20,7 +20,7 @@ function useDashboard(): DashboardState {
 
     async function loadDashboard() {
       try {
-        const data = await apiClient.getDashboard({
+        const data = await dataProvider.dashboard.getDashboard({
           signal: controller.signal,
         })
 

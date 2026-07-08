@@ -2,10 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import EventExperienceRouter from '../components/EventExperienceRouter'
 import Loading from '../components/Loading'
-import {
-  apiClient,
-  type EventHomeData,
-} from '../services/api'
+import { type EventHomeData } from '../services/api'
+import { eventRepository } from '../services/data'
 import type { LeagueEvent } from '../types/dashboard'
 
 type EventHomeState =
@@ -25,8 +23,8 @@ function EventHome() {
     const controller = new AbortController()
 
     Promise.all([
-      apiClient.getEventHome(selectedEventId, { signal: controller.signal }),
-      apiClient.getEvents({ signal: controller.signal }),
+      eventRepository.getEventHome(selectedEventId, { signal: controller.signal }),
+      eventRepository.getEvents({ signal: controller.signal }),
     ])
       .then(([data, catalog]) => {
         setState({

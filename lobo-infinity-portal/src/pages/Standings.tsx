@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import Loading from '../components/Loading'
 import StandingsTable from '../components/StandingsTable'
 import StatCard from '../components/StatCard'
-import { apiClient } from '../services/api'
+import { eventRepository, standingsRepository } from '../services/data'
 import { formatPlayerName } from '../services/formatting'
 import type {
   DivisionKey,
@@ -62,7 +62,7 @@ function Standings() {
   useEffect(() => {
     const controller = new AbortController()
 
-    apiClient
+    eventRepository
       .getEvents({ signal: controller.signal })
       .then((catalog) => {
         setEventCatalog(catalog)
@@ -90,7 +90,7 @@ function Standings() {
       }
     }
 
-    apiClient
+    standingsRepository
       .getStandings(activeDivision, {
         eventId: activeEventId,
         signal: controller.signal,

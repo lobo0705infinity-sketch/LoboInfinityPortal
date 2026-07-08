@@ -12,13 +12,13 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import Loading from '../components/Loading'
 import {
-  apiClient,
   type SeasonAvailability,
   type SchedulingCenterData,
   type SchedulingRecommendation,
   type SchedulingRequest,
 } from '../services/api'
 import { recordClientDiagnostic } from '../services/apiCore'
+import { eventRepository, schedulingRepository } from '../services/data'
 import {
   formatPlayerName,
   formatSchedulingDateTime,
@@ -187,7 +187,7 @@ function MatchFinder() {
 
     const controller = new AbortController()
 
-    apiClient
+    eventRepository
       .getEvents({ signal: controller.signal })
       .then((catalog) => {
         setEventCatalog(catalog)
@@ -213,7 +213,7 @@ function MatchFinder() {
 
     const controller = new AbortController()
 
-    apiClient
+    schedulingRepository
       .getSchedulingCenter({
         eventId: activeEventId,
         signal: controller.signal,
@@ -246,7 +246,7 @@ function MatchFinder() {
     const start = performance.now()
 
     try {
-      const data = await apiClient.updateSchedulingAvailability(
+      const data = await schedulingRepository.updateAvailability(
         { ...params, eventId: activeEventId },
       )
       setState({ data, status: 'success' })
@@ -296,7 +296,7 @@ function MatchFinder() {
     )
 
     try {
-      const data = await apiClient.createSchedulingRequest({
+      const data = await schedulingRepository.createRequest({
         ...params,
         eventId: activeEventId,
       })
@@ -346,7 +346,7 @@ function MatchFinder() {
   async function respondToRequest(requestId: string, status: string) {
     setResponseWorking(requestId)
     try {
-      const data = await apiClient.respondSchedulingRequest({
+      const data = await schedulingRepository.respondToRequest({
         eventId: activeEventId,
         requestId,
         status,
@@ -358,7 +358,7 @@ function MatchFinder() {
   }
 
   async function exportCalendar(requestId: string) {
-    const calendar = await apiClient.getSchedulingCalendar(requestId)
+    const calendar = await schedulingRepository.getSchedulingCalendar(requestId)
     const blob = new Blob([calendar.ics], { type: 'text/calendar' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
