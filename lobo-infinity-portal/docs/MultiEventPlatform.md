@@ -41,6 +41,27 @@ If omitted, they return Current League data.
 
 Scheduling requests include `Event ID`. Match Finder and scheduling request groups filter by the selected Event so requests from one Event do not appear in another Event workflow.
 
+## Team Tournament Event
+
+Version 6.0.1 adds `Team Tournament` as a first-class Event type in the existing Event Engine.
+
+The default Team Tournament seed is:
+
+```text
+event-august-2026-team-tournament
+```
+
+Team Tournament data is event-scoped:
+
+- Team registration writes Event Participants for the Team Tournament Event.
+- Team records live in the `Team Tournament Teams` sheet.
+- Pairings live in the `Team Tournament Pairings` sheet.
+- Team standings derive from games whose `Event ID` matches the Team Tournament Event.
+
+League standings, league scheduling, and league Match Finder views remain isolated from Team Tournament data.
+
+Commissioner management uses existing operations permissions. No parallel tournament engine is introduced.
+
 ## Standings Isolation
 
 Standings use the existing player registry and standings sorting logic. The only change is that the statistics updater reads Event-scoped `Game Engine` rows before building division tables.

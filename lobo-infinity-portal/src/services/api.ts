@@ -872,6 +872,67 @@ export type SchedulingCenterData = {
   }
 }
 
+export type TeamTournamentTeam = {
+  captain: string
+  createdAt: string
+  discordContact: string
+  eventId: string
+  factionRestrictions: string
+  logoUrl: string
+  players: string
+  status: string
+  teamId: string
+  teamName: string
+  updatedAt: string
+}
+
+export type TeamTournamentPairing = {
+  createdAt: string
+  eventId: string
+  playerPairings: string
+  results: string
+  round: string
+  roundId: string
+  status: string
+  teamA: string
+  teamB: string
+  updatedAt: string
+}
+
+export type TeamTournamentStanding = {
+  captain: string
+  losses: number
+  objectivePoints: number
+  players: string[]
+  rank: number
+  strengthOfSchedule: number
+  teamId: string
+  teamName: string
+  tournamentPoints: number
+  victoryPoints: number
+  wins: number
+}
+
+export type TeamTournamentData = {
+  completedMatches: number
+  currentRound: Record<string, unknown> | null
+  event: LeagueEvent
+  latestResults: RecentGame[]
+  news: string[]
+  pairings: TeamTournamentPairing[]
+  quickActions: Array<{
+    action: string
+    enabled: boolean
+    eventId: string
+    label: string
+  }>
+  registeredTeams: number
+  standings: TeamTournamentStanding[]
+  status: string
+  teams: TeamTournamentTeam[]
+  upcomingPairings: TeamTournamentPairing[]
+}
+
 export type MatchFinderData = {
   availability: SeasonAvailability
   currentSeason: string
@@ -1625,6 +1686,22 @@ export type ApiClient = {
     requestId: string,
     options?: ApiOptions,
   ) => Promise<{ filename: string; ics: string }>
+  getTeamTournament: (
+    eventId?: string,
+    options?: ApiOptions,
+  ) => Promise<TeamTournamentData>
+  registerTeamTournament: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<TeamTournamentData>
+  saveTeamTournamentTeam: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<TeamTournamentData>
+  saveTeamTournamentPairing: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<TeamTournamentData>
   getCommissionerScheduling: (
     options?: ApiOptions,
   ) => Promise<CommissionerSchedulingData>
@@ -2007,6 +2084,38 @@ export async function getSchedulingCalendar(
   }
 }
 
+export async function getTeamTournament(
+  eventId = 'event-august-2026-team-tournament',
+  options: ApiOptions = {},
+): Promise<TeamTournamentData> {
+  const payload = await request('teamTournament', options, { eventId })
+  return normalizeTeamTournamentPayload(payload)
+}
+
+export async function registerTeamTournament(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<TeamTournamentData> {
+  const payload = await postRequest('teamTournamentRegister', options, params)
+  return normalizeTeamTournamentPayload(payload)
+}
+
+export async function saveTeamTournamentTeam(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<TeamTournamentData> {
+  const payload = await postRequest('teamTournamentTeam', options, params)
+  return normalizeTeamTournamentPayload(payload)
+}
+
+export async function saveTeamTournamentPairing(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<TeamTournamentData> {
+  const payload = await postRequest('teamTournamentPairing', options, params)
+  return normalizeTeamTournamentPayload(payload)
+}
+
 export async function getCommissionerScheduling(
   options: ApiOptions = {},
 ): Promise<CommissionerSchedulingData> {
@@ -2272,6 +2381,10 @@ export const apiClient: ApiClient = {
   createSchedulingRequest,
   respondSchedulingRequest,
   getSchedulingCalendar,
+  getTeamTournament,
+  registerTeamTournament,
+  saveTeamTournamentTeam,
+  saveTeamTournamentPairing,
   getCommissionerScheduling,
   submitArmyList,
   voteArmyList,
@@ -3785,6 +3898,99 @@ function normalizeSchedulingRequest(item: unknown): SchedulingRequest {
     status: getString(record, 'status'),
     toPlayer: getString(record, 'toPlayer'),
     updatedAt: getString(record, 'updatedAt'),
+  }
+}
+
+function normalizeTeamTournamentPayload(payload: unknown): TeamTournamentData {
+  const record = asRecord(payload, 'Team tournament response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Team tournament failed.')
+  }
+
+  const tournament = getRequiredRecord(record, 'tournament')
+
+  return {
+    completedMatches: getNumber(tournament, 'completedMatches'),
+    currentRound: getOptionalRecord(tournament, 'currentRound') ?? null,
+    event: normalizeLeagueEvent(getRequiredRecord(tournament, 'event')),
+    latestResults: getArray(tournament, 'latestResults').map(normalizeRecentGame),
+    news: getArray(tournament, 'news').map((item) => String(item ?? '')),
+    pairings: getArray(tournament, 'pairings').map(normalizeTeamTournamentPairing),
+    quickActions: getArray(tournament, 'quickActions').map((item) => {
+      const action = asRecord(item, 'Team tournament quick action')
+
+      return {
+        action: getString(action, 'action'),
+        enabled: getOptionalBoolean(action, 'enabled') ?? false,
+        eventId: getString(action, 'eventId'),
+        label: getString(action, 'label'),
+      }
+    }),
+    registeredTeams: getNumber(tournament, 'registeredTeams'),
+    standings: getArray(tournament, 'standings').map(
+      normalizeTeamTournamentStanding,
+    ),
+    status: getString(tournament, 'status'),
+    teams: getArray(tournament, 'teams').map(normalizeTeamTournamentTeam),
+    upcomingPairings: getArray(tournament, 'upcomingPairings').map(
+      normalizeTeamTournamentPairing,
+    ),
+  }
+}
+
+function normalizeTeamTournamentTeam(item: unknown): TeamTournamentTeam {
+  const record = asRecord(item, 'Team tournament team')
+
+  return {
+    captain: getString(record, 'captain'),
+    createdAt: getString(record, 'createdAt'),
+    discordContact: getString(record, 'discordContact'),
+    eventId: getString(record, 'eventId'),
+    factionRestrictions: getString(record, 'factionRestrictions'),
+    logoUrl: getString(record, 'logoUrl'),
+    players: getString(record, 'players'),
+    status: getString(record, 'status'),
+    teamId: getString(record, 'teamId'),
+    teamName: getString(record, 'teamName'),
+    updatedAt: getString(record, 'updatedAt'),
+  }
+}
+
+function normalizeTeamTournamentPairing(item: unknown): TeamTournamentPairing {
+  const record = asRecord(item, 'Team tournament pairing')
+
+  return {
+    createdAt: getString(record, 'createdAt'),
+    eventId: getString(record, 'eventId'),
+    playerPairings: getString(record, 'playerPairings'),
+    results: getString(record, 'results'),
+    round: getString(record, 'round'),
+    roundId: getString(record, 'roundId'),
+    status: getString(record, 'status'),
+    teamA: getString(record, 'teamA'),
+    teamB: getString(record, 'teamB'),
+    updatedAt: getString(record, 'updatedAt'),
+  }
+}
+
+function normalizeTeamTournamentStanding(
+  item: unknown,
+): TeamTournamentStanding {
+  const record = asRecord(item, 'Team tournament standing')
+
+  return {
+    captain: getString(record, 'captain'),
+    losses: getNumber(record, 'losses'),
+    objectivePoints: getNumber(record, 'objectivePoints'),
+    players: getArray(record, 'players').map((player) => String(player ?? '')),
+    rank: getNumber(record, 'rank'),
+    strengthOfSchedule: getNumber(record, 'strengthOfSchedule'),
+    teamId: getString(record, 'teamId'),
+    teamName: getString(record, 'teamName'),
+    tournamentPoints: getNumber(record, 'tournamentPoints'),
+    victoryPoints: getNumber(record, 'victoryPoints'),
+    wins: getNumber(record, 'wins'),
   }
 }
 

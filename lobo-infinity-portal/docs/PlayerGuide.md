@@ -69,3 +69,22 @@ The opponent receives a portal notification and can accept, decline, or suggest 
 ## Calendar Export
 
 Accepted matches can be exported as `.ics` files for Google Calendar, Apple Calendar, and Outlook.
+
+## Team Tournament
+
+Open:
+
+`/team-tournament`
+
+The Team Tournament page is event-specific. Joining the Team Tournament does not change your League participation.
+
+Players can:
+
+- Register interest for the Team Tournament Event.
+- View registered teams.
+- Check rosters and captains.
+- View round pairings.
+- Track Team Tournament standings.
+- Review latest Team Tournament results.
+
+Team Tournament games must be submitted under the Team Tournament Event so League standings remain unchanged.

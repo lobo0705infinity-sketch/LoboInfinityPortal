@@ -33,3 +33,22 @@ The panel shows:
 Scheduling status is operations-gated.
 
 Scheduling requests are participant-controlled unless an authorized operations user needs to assist.
+
+## Team Tournament Operations
+
+Open:
+
+`/team-tournament`
+
+Commissioners with operations permission can manage the Team Tournament as a normal Event Engine event.
+
+Commissioner tools support:
+
+- Creating and editing teams.
+- Assigning captains.
+- Maintaining rosters before roster lock.
+- Recording faction restrictions and Discord contacts.
+- Posting round pairings.
+- Updating pairing status and results.
+
+These actions affect only the selected Team Tournament Event. League standings, League Match Finder, and League scheduling remain isolated by Event ID.

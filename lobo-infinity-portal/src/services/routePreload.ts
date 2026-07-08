@@ -23,6 +23,7 @@ const routeLoaders = new Map<string, () => Promise<unknown>>([
   ['/rules', () => import('../pages/Rules')],
   ['/standings', () => import('../pages/Standings')],
   ['/streams', () => import('../pages/StreamedGames')],
+  ['/team-tournament', () => import('../pages/TeamTournament')],
   ['/timeline', () => import('../pages/Timeline')],
 ])
 

@@ -119,6 +119,22 @@ The scheduling model extends existing systems:
 
 Scheduling does not modify game results, standings formulas, Event Lifecycle, Integrity validation, Discord automation, or authentication.
 
+## Team Tournament Architecture
+
+Version 6.0.1 proves the Multi-Event Platform with a Team Tournament experience built as a normal Event Engine event.
+
+Team Tournament support reuses the platform systems:
+
+- Event Engine owns the Team Tournament Event, season, and round.
+- Event Participants records player registration without changing league participation.
+- Team Tournament Teams stores captains, rosters, faction restrictions, logos, Discord contact, and roster status.
+- Team Tournament Pairings stores round pairings and individual player pairing notes.
+- Team standings derive only from Game Engine rows matching the Team Tournament Event ID.
+- Commissioner tools use existing operations permissions.
+- Notifications, scheduling, diagnostics, and lifetime statistics remain shared platform services.
+
+No separate tournament engine exists. League data and Team Tournament data stay operationally isolated through Event ID scope.
+
 Version 4.0.1 narrows scheduling to the league's online model. Player-facing availability and match requests use status, preferred days, preferred time window, Discord handle, and optional notes. Physical location metadata remains backward-compatible in the data model but is not used for recommendations or player-facing scheduling decisions.
 
 ## Mobile Experience Architecture

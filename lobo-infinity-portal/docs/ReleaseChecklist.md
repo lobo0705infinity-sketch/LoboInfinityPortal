@@ -126,6 +126,16 @@ Use this checklist for every Lobo Infinity League Portal release.
 - [ ] Verify Scheduling Requests include Event ID
 - [ ] Verify legacy rows without Event ID resolve to Current League
 - [ ] Verify lifetime/all event scopes do not affect default Current League APIs
+- [ ] Verify Team Tournament Event exists
+- [ ] Verify Team Tournament dashboard
+- [ ] Verify Team Tournament player registration
+- [ ] Verify Team Tournament team management
+- [ ] Verify Team Tournament roster management
+- [ ] Verify Team Tournament pairings
+- [ ] Verify Team Tournament standings
+- [ ] Verify Team Tournament games do not affect League standings
+- [ ] Verify Team Tournament notifications include Event context
+- [ ] Verify Team Tournament commissioner tools are permission-gated
 - [ ] Verify Standings
 - [ ] Verify Hall of Fame
 - [ ] Verify Achievements

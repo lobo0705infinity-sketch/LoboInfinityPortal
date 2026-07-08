@@ -43,6 +43,7 @@ const Standings = lazy(() => import('./pages/Standings'))
 const StreamedGames = lazy(() => import('./pages/StreamedGames'))
 const SubmitArmyList = lazy(() => import('./pages/SubmitArmyList'))
 const Timeline = lazy(() => import('./pages/Timeline'))
+const TeamTournament = lazy(() => import('./pages/TeamTournament'))
 
 function App() {
   return (
@@ -102,6 +103,7 @@ function AuthShell() {
             <Route path="/profile" element={<MeasuredRoute name="MyProfile"><MyProfile /></MeasuredRoute>} />
             <Route path="/achievement/:achievementId" element={<DeepLinkRedirect target="achievement" />} />
             <Route path="/timeline" element={<MeasuredRoute name="Timeline"><Timeline /></MeasuredRoute>} />
+            <Route path="/team-tournament" element={<MeasuredRoute name="TeamTournament"><TeamTournament /></MeasuredRoute>} />
             <Route path="/streams" element={<MeasuredRoute name="StreamedGames"><StreamedGames /></MeasuredRoute>} />
             <Route path="/stream/:id" element={<DeepLinkRedirect target="stream" />} />
             <Route path="/army-lists" element={<MeasuredRoute name="ArmyLists"><ArmyLists /></MeasuredRoute>} />

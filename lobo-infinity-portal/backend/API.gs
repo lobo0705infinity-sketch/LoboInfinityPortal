@@ -155,6 +155,11 @@ function doGet(e) {
     case "matchFinder":
       return getMatchFinder(e);
 
+    case "teamTournament":
+      return getCachedApiResponse(e, action, function() {
+        return getTeamTournament(e);
+      });
+
     case "schedulingCalendar":
       return getSchedulingCalendarExport(e);
 
@@ -316,6 +321,15 @@ function doGet(e) {
 
     case "respondSchedulingRequest":
       return respondSchedulingRequest(e);
+
+    case "teamTournamentRegister":
+      return registerTeamTournamentPlayer(e);
+
+    case "teamTournamentTeam":
+      return saveTeamTournamentTeam(e);
+
+    case "teamTournamentPairing":
+      return saveTeamTournamentPairing(e);
 
     case "updateSettings":
       return requireApiPermission(e, "manageSettings", function() {

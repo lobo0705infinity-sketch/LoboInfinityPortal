@@ -259,6 +259,116 @@ Action:
 
 The payload remains structurally compatible and is filtered to the selected Event.
 
+## Team Tournament Experience
+
+Version 6.0.1 adds Team Tournament endpoints on top of the Event Engine. These endpoints do not replace existing league APIs.
+
+### Team Tournament Read
+
+Action:
+
+`GET action=teamTournament&eventId=event-august-2026-team-tournament`
+
+If `eventId` is omitted, the backend resolves to the default Team Tournament Event.
+
+Response:
+
+```json
+{
+  "success": true,
+  "tournament": {
+    "event": {},
+    "status": "Planning",
+    "currentRound": {},
+    "registeredTeams": 0,
+    "completedMatches": 0,
+    "upcomingPairings": [],
+    "latestResults": [],
+    "news": [],
+    "quickActions": [],
+    "teams": [],
+    "pairings": [],
+    "standings": []
+  }
+}
+```
+
+### Team Tournament Player Registration
+
+Action:
+
+`POST action=teamTournamentRegister`
+
+Authentication:
+
+Requires a logged-in league player.
+
+Request:
+
+```json
+{
+  "eventId": "event-august-2026-team-tournament",
+  "teamName": "Lobo Command"
+}
+```
+
+The mutation writes an Event Participant row scoped to the Team Tournament Event.
+
+### Team Management
+
+Action:
+
+`POST action=teamTournamentTeam`
+
+Authentication:
+
+Requires operations permission.
+
+Request:
+
+```json
+{
+  "eventId": "event-august-2026-team-tournament",
+  "teamId": "team-lobo-command",
+  "teamName": "Lobo Command",
+  "captain": "Lobo",
+  "players": "Lobo, Chainsaw",
+  "factionRestrictions": "",
+  "logoUrl": "",
+  "discordContact": "@captain",
+  "status": "Registered"
+}
+```
+
+### Pairing Management
+
+Action:
+
+`POST action=teamTournamentPairing`
+
+Authentication:
+
+Requires operations permission.
+
+Request:
+
+```json
+{
+  "eventId": "event-august-2026-team-tournament",
+  "roundId": "round-august-2026-team-tournament-1",
+  "round": "Round 1",
+  "teamA": "Lobo Command",
+  "teamB": "Wolfpack",
+  "playerPairings": "Lobo vs Chainsaw",
+  "status": "Scheduled",
+  "results": ""
+}
+```
+
+Team Tournament mutations invalidate the `events` cache group so the dashboard, rosters, pairings, and standings refresh from the same event-scoped source.
+
+## Event Lifecycle Mutations
+
 Required lifecycle fields:
 
 - `event`

@@ -97,6 +97,11 @@ function Sidebar() {
             label: 'Match Finder',
             to: '/match-finder',
           },
+          {
+            icon: 'standings' as PortalIconName,
+            label: 'Team Tournament',
+            to: '/team-tournament',
+          },
         ]
       : []),
     ...(auth.isAtLeastRole('Assistant Commissioner')

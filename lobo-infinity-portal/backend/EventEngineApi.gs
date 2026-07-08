@@ -13,6 +13,9 @@ const EVENT_ENGINE_DEFAULT_TEMPLATE_ID = "template-league-season";
 const EVENT_ENGINE_DEFAULT_EVENT_ID = "event-current-league";
 const EVENT_ENGINE_DEFAULT_SEASON_ID = "season-current-league";
 const EVENT_ENGINE_DEFAULT_ROUND_ID = "round-current-league";
+const EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID = "event-august-2026-team-tournament";
+const EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_SEASON_ID = "season-august-2026-team-tournament";
+const EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ROUND_ID = "round-august-2026-team-tournament-1";
 
 const EVENT_ENGINE_EVENT_HEADERS = [
   "ID",
@@ -295,8 +298,11 @@ function ensureEventEngine() {
 
   ensureDefaultEventTemplates(sheets.templates);
   ensureDefaultCurrentLeagueEvent(sheets.events);
+  ensureDefaultTeamTournamentEvent(sheets.events);
   ensureDefaultCurrentLeagueSeason(sheets.seasons);
+  ensureDefaultTeamTournamentSeason(sheets.seasons);
   ensureDefaultCurrentLeagueRound(sheets.rounds);
+  ensureDefaultTeamTournamentRound(sheets.rounds);
   ensureDefaultCurrentLeagueParticipants(sheets.participants);
 
   return {
@@ -305,6 +311,95 @@ function ensureEventEngine() {
     seasons: getEventSeasonObjects(),
     rounds: getEventRoundObjects()
   };
+
+}
+
+function ensureDefaultTeamTournamentEvent(sheet) {
+
+  upsertEventEngineRow(
+    sheet,
+    EVENT_ENGINE_EVENT_HEADERS,
+    "ID",
+    EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID,
+    [
+      EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID,
+      EVENT_ENGINE_COMMUNITY_ID,
+      EVENT_ENGINE_DEFAULT_SERIES_ID,
+      "template-team-tournament",
+      "August 2026 Team Tournament",
+      "Event Engine-owned team tournament for rostered Infinity team play.",
+      "Team Tournament",
+      "Planning",
+      "Planning",
+      "Commissioner",
+      "",
+      "",
+      "",
+      "Registration Closed",
+      "Event Participants",
+      "Team tournament rules",
+      "Team aggregate",
+      "Team standings",
+      "Existing Automation Center",
+      "Existing Discord configuration",
+      "Tournament scoped achievements",
+      "Team tournament history",
+      "Not archived",
+      getEventEngineTimestamp(),
+      getEventEngineTimestamp()
+    ]
+  );
+
+}
+
+function ensureDefaultTeamTournamentSeason(sheet) {
+
+  upsertEventEngineRow(
+    sheet,
+    EVENT_ENGINE_SEASON_HEADERS,
+    "ID",
+    EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_SEASON_ID,
+    [
+      EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_SEASON_ID,
+      EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID,
+      "August 2026 Team Tournament",
+      1,
+      "",
+      "",
+      "Planning",
+      "Planning",
+      "Team tournament event season",
+      "Pairing reminders and round updates",
+      getEventEngineTimestamp(),
+      getEventEngineTimestamp()
+    ]
+  );
+
+}
+
+function ensureDefaultTeamTournamentRound(sheet) {
+
+  upsertEventEngineRow(
+    sheet,
+    EVENT_ENGINE_ROUND_HEADERS,
+    "ID",
+    EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ROUND_ID,
+    [
+      EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ROUND_ID,
+      EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID,
+      EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_SEASON_ID,
+      "Round 1",
+      1,
+      "Team Round",
+      "",
+      "",
+      "Planning",
+      "Team pairings resolve here until additional rounds are created.",
+      "Pairing reminders",
+      getEventEngineTimestamp(),
+      getEventEngineTimestamp()
+    ]
+  );
 
 }
 

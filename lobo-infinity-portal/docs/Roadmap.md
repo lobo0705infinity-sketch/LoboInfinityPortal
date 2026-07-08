@@ -42,6 +42,8 @@ Version 5.1 is a Runtime Performance and User Experience release. It preserves c
 
 Version 6.0 is the Multi-Event Platform release. It promotes Event ID to an operational data dimension while preserving Current League defaults. Standings, Match Finder, and Scheduling Center now accept Event scope through existing services, rebuilt Game Engine rows include Event ID, and missing historical scope resolves to `event-current-league`.
 
+Version 6.0.1 is the Team Tournament Experience release. It validates the Multi-Event Platform by adding a Team Tournament Event dashboard, team registration, rosters, pairings, team standings, and commissioner tournament tools without creating a separate tournament engine.
+
 ### 3.2 Event Migration
 
 Add explicit event scope to historical data after migration validation has passed.
