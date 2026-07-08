@@ -5,6 +5,7 @@ import {
 } from './providers/DualCompareProvider'
 import { firestoreProvider } from './providers/FirestoreProvider'
 import { getFirestoreBootstrapReport } from './providers/FirestoreBootstrap'
+import { getMigrationVerificationReport } from './providers/FirestoreMigrationVerification'
 import { googleSheetsProvider } from './providers/GoogleSheetsProvider'
 import { mockProvider } from './providers/MockProvider'
 
@@ -42,9 +43,10 @@ export const standingsRepository = dataProvider.standings
 export const teamRepository = dataProvider.teams
 
 export async function getDataProviderDiagnostics() {
-  const [bootstrap, health] = await Promise.all([
+  const [bootstrap, health, migration] = await Promise.all([
     getFirestoreBootstrapReport(),
     dataProvider.getHealth(),
+    getMigrationVerificationReport(),
   ])
 
   return {
@@ -52,6 +54,7 @@ export async function getDataProviderDiagnostics() {
     bootstrap,
     comparison: getProviderComparisonDiagnostics(),
     health,
+    migration,
   }
 }
 

@@ -667,3 +667,8 @@ above the Firestore provider. Bootstrap validates Vercel/Firebase environment
 variables, initializes the Firebase SDK, verifies Firestore read/write access,
 checks schema and seed documents, and reports Google Sheets fallback status.
 Bootstrap does not migrate production data or switch the production provider.
+
+Version 7.2 adds a migration verification layer that compares repository reads
+from Google Sheets and Firestore, reports field-level differences, summarizes
+provider latency, checks Firestore completeness, and computes migration
+readiness. Player-facing data remains Google-backed in dual mode.

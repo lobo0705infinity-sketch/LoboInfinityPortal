@@ -366,6 +366,208 @@ function Diagnostics() {
 
       <section className="panel operations-panel">
         <div className="panel-heading">
+          <p className="eyebrow">Migration Verification</p>
+          <h2>Firestore Readiness</h2>
+        </div>
+        <dl className="operations-metrics">
+          <Metric
+            label="Overall Readiness"
+            value={providerDiagnostics?.migration.overallReadiness ?? 'Loading'}
+          />
+          <Metric
+            label="Migration Progress"
+            value={
+              providerDiagnostics
+                ? `${providerDiagnostics.migration.migrationProgress}%`
+                : 'Loading'
+            }
+          />
+          <Metric
+            label="Mismatch Count"
+            value={providerDiagnostics?.migration.mismatchCount ?? 'Loading'}
+          />
+          <Metric
+            label="Last Verification"
+            value={providerDiagnostics?.migration.lastVerification ?? 'Loading'}
+          />
+        </dl>
+        <div className="operations-table-wrap">
+          <table className="operations-table">
+            <tbody>
+              <tr>
+                <th>Active Provider</th>
+                <td>{providerDiagnostics?.migration.provider.active ?? 'Loading'}</td>
+              </tr>
+              <tr>
+                <th>Google Status</th>
+                <td>{providerDiagnostics?.migration.provider.google ?? 'Loading'}</td>
+              </tr>
+              <tr>
+                <th>Firestore Status</th>
+                <td>{providerDiagnostics?.migration.provider.firestore ?? 'Loading'}</td>
+              </tr>
+              <tr>
+                <th>Synchronization</th>
+                <td>
+                  {providerDiagnostics
+                    ? `${providerDiagnostics.migration.synchronization.readSuccess}% read success, ${providerDiagnostics.migration.synchronization.mismatchRate}% mismatch rate`
+                    : 'Loading'}
+                </td>
+              </tr>
+              <tr>
+                <th>Replication Latency</th>
+                <td>
+                  {providerDiagnostics
+                    ? `${providerDiagnostics.migration.synchronization.replicationLatencyMs} ms`
+                    : 'Loading'}
+                </td>
+              </tr>
+              <tr>
+                <th>Write Verification</th>
+                <td>{providerDiagnostics?.migration.synchronization.writeSuccess ?? 'Loading'}</td>
+              </tr>
+              <tr>
+                <th>Firestore Completeness</th>
+                <td>
+                  {providerDiagnostics
+                    ? `${providerDiagnostics.migration.firestoreComplete.status}: ${providerDiagnostics.migration.firestoreComplete.collections.length} collections, ${providerDiagnostics.migration.firestoreComplete.missingCollections.length} missing`
+                    : 'Loading'}
+                </td>
+              </tr>
+              <tr>
+                <th>Missing Collections</th>
+                <td>
+                  {(providerDiagnostics?.migration.firestoreComplete.missingCollections.length ?? 0) > 0
+                    ? providerDiagnostics?.migration.firestoreComplete.missingCollections.join(', ')
+                    : 'None'}
+                </td>
+              </tr>
+              <tr>
+                <th>Rollback</th>
+                <td>{providerDiagnostics?.migration.rollback.instruction ?? 'Loading'}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="panel operations-panel">
+        <div className="panel-heading">
+          <p className="eyebrow">Repository Comparison</p>
+          <h2>Parity Status</h2>
+        </div>
+        <div className="operations-table-wrap">
+          <table className="operations-table">
+            <thead>
+              <tr>
+                <th>Repository</th>
+                <th>Status</th>
+                <th>Methods</th>
+                <th>Mismatches</th>
+                <th>Google</th>
+                <th>Firestore</th>
+                <th>P95</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(providerDiagnostics?.migration.repositories ?? []).map((repository) => (
+                <tr key={repository.repository}>
+                  <td>{repository.repository}</td>
+                  <td>{repository.status}</td>
+                  <td>{repository.methodCount}</td>
+                  <td>{repository.mismatchCount}</td>
+                  <td>{repository.googleLatencyMs} ms</td>
+                  <td>{repository.firestoreLatencyMs} ms</td>
+                  <td>{repository.p95LatencyMs} ms</td>
+                </tr>
+              ))}
+              {(providerDiagnostics?.migration.repositories.length ?? 0) === 0 ? (
+                <tr>
+                  <td colSpan={7}>Loading repository comparison...</td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="panel operations-panel">
+        <div className="panel-heading">
+          <p className="eyebrow">Difference Viewer</p>
+          <h2>Provider Mismatches</h2>
+        </div>
+        <div className="operations-table-wrap">
+          <table className="operations-table">
+            <thead>
+              <tr>
+                <th>Repository</th>
+                <th>Method</th>
+                <th>Field</th>
+                <th>Google</th>
+                <th>Firestore</th>
+                <th>Severity</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(providerDiagnostics?.migration.differences ?? []).slice(0, 25).map((difference, index) => (
+                <tr key={`${difference.repository}-${difference.method}-${difference.field}-${index}`}>
+                  <td>{difference.repository}</td>
+                  <td>{difference.method}</td>
+                  <td>{difference.field}</td>
+                  <td>
+                    <pre className="diagnostics-json">{difference.googleValue}</pre>
+                  </td>
+                  <td>
+                    <pre className="diagnostics-json">{difference.firestoreValue}</pre>
+                  </td>
+                  <td>{difference.severity}</td>
+                </tr>
+              ))}
+              {(providerDiagnostics?.migration.differences.length ?? 0) === 0 ? (
+                <tr>
+                  <td colSpan={6}>No provider differences reported.</td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="panel operations-panel">
+        <div className="panel-heading">
+          <p className="eyebrow">Performance Comparison</p>
+          <h2>Google Sheets vs Firestore</h2>
+        </div>
+        <div className="operations-table-wrap">
+          <table className="operations-table">
+            <thead>
+              <tr>
+                <th>Provider</th>
+                <th>Average</th>
+                <th>Median</th>
+                <th>P95</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Google Sheets</td>
+                <td>{providerDiagnostics?.migration.performance.google.averageMs ?? 'Loading'} ms</td>
+                <td>{providerDiagnostics?.migration.performance.google.medianMs ?? 'Loading'} ms</td>
+                <td>{providerDiagnostics?.migration.performance.google.p95Ms ?? 'Loading'} ms</td>
+              </tr>
+              <tr>
+                <td>Firestore</td>
+                <td>{providerDiagnostics?.migration.performance.firestore.averageMs ?? 'Loading'} ms</td>
+                <td>{providerDiagnostics?.migration.performance.firestore.medianMs ?? 'Loading'} ms</td>
+                <td>{providerDiagnostics?.migration.performance.firestore.p95Ms ?? 'Loading'} ms</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="panel operations-panel">
+        <div className="panel-heading">
           <p className="eyebrow">OAuth Diagnostics</p>
           <h2>Current Authentication Session</h2>
         </div>

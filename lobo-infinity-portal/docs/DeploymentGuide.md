@@ -57,6 +57,21 @@ Dual Compare keeps Google Sheets as the player-facing source of truth while
 Firestore reads are compared in the background. Mismatches are shown only to
 Commissioners.
 
+## Migration Verification
+
+Before switching to Firestore:
+
+1. Deploy with `VITE_DATA_PROVIDER=dual`.
+2. Open Commissioner Diagnostics.
+3. Review Migration Verification.
+4. Confirm all repositories report `MATCH`.
+5. Confirm mismatch count is `0`.
+6. Confirm Firestore Bootstrap is not failing.
+7. Confirm Firestore completeness is `PASS`.
+
+Do not set `VITE_DATA_PROVIDER=firestore` until Diagnostics reports
+`READY FOR FIRESTORE`.
+
 ## Rollback
 
 Set:

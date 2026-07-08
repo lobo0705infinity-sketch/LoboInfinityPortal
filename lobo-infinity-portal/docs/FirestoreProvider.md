@@ -82,6 +82,12 @@ truth. Reads are mirrored to Firestore in the background and compared. Writes
 continue to Google only. Differences are recorded in Commissioner Diagnostics
 and never shown to players.
 
+Version 7.2 adds a dedicated Migration Verification report in Diagnostics. It
+runs representative repository reads against Google Sheets and Firestore,
+records the first differing field, compares latency, checks Firestore
+collection completeness, and reports whether the portal is ready for provider
+cutover.
+
 ## Security Rules
 
 Production rules live in `firestore.rules` and are referenced by

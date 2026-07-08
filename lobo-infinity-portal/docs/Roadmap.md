@@ -64,6 +64,11 @@ Version 7.1.1 completes Firestore bootstrap readiness with environment
 validation, SDK/connectivity/read/write probes, required seed documents,
 Commissioner Bootstrap diagnostics, and Google Sheets startup fallback safety.
 
+Version 7.2 adds Firestore Migration Verification. Commissioner Diagnostics now
+compare repository outputs from Google Sheets and Firestore, show field-level
+differences, summarize provider latency, verify collection completeness, and
+compute readiness before any provider cutover.
+
 ### 3.2 Event Migration
 
 Add explicit event scope to historical data after migration validation has passed.

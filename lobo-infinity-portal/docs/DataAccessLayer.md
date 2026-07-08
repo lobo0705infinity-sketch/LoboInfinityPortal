@@ -72,7 +72,8 @@ The Firestore migration path is intentionally narrow:
 3. Run `VITE_DATA_PROVIDER=dual` to compare Google and Firestore reads.
 4. Use the migration utility to seed Firestore.
 5. Keep repository interfaces unchanged.
-6. Set `VITE_DATA_PROVIDER=firestore` only after contract validation passes.
+6. Open Commissioner Diagnostics and verify Migration Readiness.
+7. Set `VITE_DATA_PROVIDER=firestore` only after contract validation passes.
 
 Pages, Event Engine UI, scheduling workflows, and tournament operations should
 not require rewrites when the provider changes.

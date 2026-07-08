@@ -1001,6 +1001,11 @@ verification, seed verification, and startup fallback reporting through the DAL
 diagnostics surface. No Apps Script endpoint or player-facing API contract is
 changed.
 
+Version 7.2 adds Firestore Migration Verification through Commissioner
+Diagnostics. The verifier compares repository read outputs from Google Sheets
+and Firestore, records differences, and computes readiness without changing
+Apps Script endpoints, repository signatures, or player-facing response shapes.
+
 ### Reliability Dashboard
 
 Action:
