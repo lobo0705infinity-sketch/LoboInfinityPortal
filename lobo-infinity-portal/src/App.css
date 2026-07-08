@@ -69,12 +69,12 @@
 .auth-initialization-card {
   position: relative;
   display: grid;
-  width: min(560px, 100%);
+  width: min(940px, 100%);
   gap: 16px;
   overflow: hidden;
   border: 1px solid rgba(76, 201, 240, 0.24);
   border-radius: 20px;
-  padding: clamp(20px, 6vw, 42px);
+  padding: clamp(18px, 5vw, 42px);
   background:
     url("./assets/tactical-banner.svg") center / cover,
     linear-gradient(180deg, rgba(8, 14, 22, 0.94), rgba(8, 14, 22, 0.82));
@@ -98,18 +98,24 @@
 }
 
 .auth-initialization-card h1 {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 0.34em;
+  row-gap: 0.08em;
   margin: 0;
   color: var(--text);
-  font-size: clamp(1.85rem, 10vw, 3.75rem);
+  font-size: clamp(1.7rem, 4.2vw, 3.25rem);
   line-height: 0.95;
   max-width: 100%;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
   text-transform: uppercase;
   text-wrap: balance;
+  word-break: keep-all;
 }
 
 .auth-initialization-card h1 span {
-  display: block;
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .auth-initialization-card p:last-of-type {
