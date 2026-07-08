@@ -379,6 +379,58 @@ Authentication:
 
 Requires operations view permission.
 
+## Commissioner Event Manager
+
+Version 6.0.3 adds Event Manager APIs for Commissioner operations.
+
+### Event Manager Read
+
+Action:
+
+`GET action=eventManager&eventId=event-august-2026-team-tournament`
+
+Authentication:
+
+Requires operations view permission.
+
+Response:
+
+```json
+{
+  "success": true,
+  "manager": {
+    "currentEvent": {},
+    "selectedEvent": {},
+    "events": [],
+    "registration": {},
+    "participants": [],
+    "teams": [],
+    "pairings": [],
+    "rounds": [],
+    "quickActions": [],
+    "diagnostics": {}
+  }
+}
+```
+
+### Event Manager Mutations
+
+Authentication:
+
+Requires Commissioner season-control permission.
+
+Actions:
+
+- `POST action=eventManagerEvent`
+- `POST action=eventManagerRegistration`
+- `POST action=eventManagerLifecycle`
+- `POST action=eventManagerCurrentEvent`
+- `POST action=eventManagerParticipant`
+- `POST action=eventManagerTeam`
+- `POST action=eventManagerPairing`
+
+These endpoints update existing Event Engine, Event Participants, and Team Tournament sheets. They do not create a separate League or Tournament manager.
+
 ## Team Tournament Experience
 
 Version 6.0.1 adds Team Tournament endpoints on top of the Event Engine. These endpoints do not replace existing league APIs.

@@ -1320,6 +1320,16 @@ function getCurrentLeagueEventSnapshot(engine) {
   const snapshot =
     engine || getEventEngineSnapshot();
 
+  const activeEvent =
+    snapshot
+      .events
+      .filter(function(event) {
+        return event.status === "Current Active Event";
+      })[0];
+
+  if (activeEvent)
+    return activeEvent;
+
   return snapshot
     .events
     .filter(function(event) {

@@ -83,3 +83,29 @@ The Event Home should be the first stop for reviewing:
 - Quick links to standings, pairings, and specialized Event pages.
 
 Commissioner-only mutation tools remain permission-gated in their existing operational pages.
+
+## Event Manager
+
+Open:
+
+`/commissioner`
+
+Then expand:
+
+`Event Manager`
+
+Commissioners can operate every Event from this panel:
+
+- Create new Events.
+- Edit Event name, type, description, dates, lifecycle, registration, and rules.
+- Open or close registration.
+- Set the current active Event.
+- Archive completed Events.
+- Add or update participants.
+- Assign participants to teams.
+- Create or update Team Tournament teams.
+- Create or publish Team Tournament pairings.
+
+Assistant Commissioners may view Event Manager status where their operations role permits. Mutations require Commissioner-level season-control permission.
+
+The Event Manager is the preferred operational workflow. Google Sheets should only be edited directly for emergency repair.

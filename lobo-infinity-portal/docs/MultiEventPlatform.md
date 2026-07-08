@@ -86,6 +86,24 @@ The Event Home composes Event Engine data, Event Registration, rounds, event-sco
 
 Event-specific pages such as Team Tournament remain specialized views, but the Event Home is the default landing page for understanding the selected competition.
 
+## Commissioner Event Manager
+
+Version 6.0.3 also adds the Commissioner Event Manager.
+
+The Event Manager lives inside `/commissioner` and operates the same Event Engine records used by Event Home, Team Tournament, registration, standings, and scheduling.
+
+Commissioners can:
+
+- Create Events.
+- Edit Event details.
+- Open, close, or reopen registration.
+- Select the current active Event.
+- Update lifecycle and archive state.
+- Manage participants and registration status.
+- Manage Team Tournament teams and pairings.
+
+No separate League manager or Team Tournament manager is introduced.
+
 ## Standings Isolation
 
 Standings use the existing player registry and standings sorting logic. The only change is that the statistics updater reads Event-scoped `Game Engine` rows before building division tables.

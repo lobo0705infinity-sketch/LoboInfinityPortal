@@ -974,6 +974,45 @@ export type EventRegistrationData = {
   waitlistCount: number
 }
 
+export type EventManagerEventSummary = {
+  completedGames: number
+  completionPercentage: number
+  currentRound: Record<string, unknown> | null
+  event: LeagueEvent
+  participantCount: number
+  registrationStatus: string
+  teamCount: number
+}
+
+export type EventManagerData = {
+  currentEvent: LeagueEvent
+  diagnostics: {
+    cacheGroup: string
+    completedGames: number
+    eventHealth: string
+    eventId: string
+    lastUpdate: string
+    lifecycleStage: string
+    pairingCount: number
+    participantCount: number
+    registrationStatus: string
+    teamCount: number
+  }
+  events: EventManagerEventSummary[]
+  generatedAt: string
+  pairings: TeamTournamentPairing[]
+  participants: EventRegistrationEntry[]
+  quickActions: Array<{
+    action: string
+    enabled: boolean
+    label: string
+  }>
+  registration: EventRegistrationData
+  rounds: Array<Record<string, unknown>>
+  selectedEvent: LeagueEvent
+  teams: TeamTournamentTeam[]
+}
+
 export type EventHomeData = {
   currentRound: Record<string, unknown> | null
   event: LeagueEvent
@@ -1802,6 +1841,10 @@ export type ApiClient = {
     eventId?: string,
     options?: ApiOptions,
   ) => Promise<EventHomeData>
+  getEventManager: (
+    eventId?: string,
+    options?: ApiOptions,
+  ) => Promise<EventManagerData>
   registerForEvent: (
     params: Record<string, string>,
     options?: ApiOptions,
@@ -1814,6 +1857,34 @@ export type ApiClient = {
     params: Record<string, string>,
     options?: ApiOptions,
   ) => Promise<EventRegistrationData>
+  saveEventManagerEvent: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<EventManagerData>
+  setEventManagerRegistration: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<EventManagerData>
+  setEventManagerLifecycle: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<EventManagerData>
+  setEventManagerCurrentEvent: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<EventManagerData>
+  saveEventManagerParticipant: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<EventManagerData>
+  saveEventManagerTeam: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<EventManagerData>
+  saveEventManagerPairing: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<EventManagerData>
   registerTeamTournament: (
     params: Record<string, string>,
     options?: ApiOptions,
@@ -2232,6 +2303,14 @@ export async function getEventHome(
   return normalizeEventHomePayload(payload)
 }
 
+export async function getEventManager(
+  eventId = 'event-current-league',
+  options: ApiOptions = {},
+): Promise<EventManagerData> {
+  const payload = await request('eventManager', options, { eventId })
+  return normalizeEventManagerPayload(payload)
+}
+
 export async function registerForEvent(
   params: Record<string, string>,
   options: ApiOptions = {},
@@ -2254,6 +2333,62 @@ export async function manageEventRegistration(
 ): Promise<EventRegistrationData> {
   const payload = await postRequest('manageEventRegistration', options, params)
   return normalizeEventRegistrationResponse(payload)
+}
+
+export async function saveEventManagerEvent(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<EventManagerData> {
+  const payload = await postRequest('eventManagerEvent', options, params)
+  return normalizeEventManagerPayload(payload)
+}
+
+export async function setEventManagerRegistration(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<EventManagerData> {
+  const payload = await postRequest('eventManagerRegistration', options, params)
+  return normalizeEventManagerPayload(payload)
+}
+
+export async function setEventManagerLifecycle(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<EventManagerData> {
+  const payload = await postRequest('eventManagerLifecycle', options, params)
+  return normalizeEventManagerPayload(payload)
+}
+
+export async function setEventManagerCurrentEvent(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<EventManagerData> {
+  const payload = await postRequest('eventManagerCurrentEvent', options, params)
+  return normalizeEventManagerPayload(payload)
+}
+
+export async function saveEventManagerParticipant(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<EventManagerData> {
+  const payload = await postRequest('eventManagerParticipant', options, params)
+  return normalizeEventManagerPayload(payload)
+}
+
+export async function saveEventManagerTeam(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<EventManagerData> {
+  const payload = await postRequest('eventManagerTeam', options, params)
+  return normalizeEventManagerPayload(payload)
+}
+
+export async function saveEventManagerPairing(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<EventManagerData> {
+  const payload = await postRequest('eventManagerPairing', options, params)
+  return normalizeEventManagerPayload(payload)
 }
 
 export async function registerTeamTournament(
@@ -2548,9 +2683,17 @@ export const apiClient: ApiClient = {
   getTeamTournament,
   getEventRegistration,
   getEventHome,
+  getEventManager,
   registerForEvent,
   withdrawEventRegistration,
   manageEventRegistration,
+  saveEventManagerEvent,
+  setEventManagerRegistration,
+  setEventManagerLifecycle,
+  setEventManagerCurrentEvent,
+  saveEventManagerParticipant,
+  saveEventManagerTeam,
+  saveEventManagerPairing,
   registerTeamTournament,
   saveTeamTournamentTeam,
   saveTeamTournamentPairing,
@@ -4207,6 +4350,68 @@ function normalizeEventHomePayload(payload: unknown): EventHomeData {
         type: getString(entry, 'type'),
       }
     }),
+  }
+}
+
+function normalizeEventManagerPayload(payload: unknown): EventManagerData {
+  const record = asRecord(payload, 'Event manager response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Event manager failed.')
+  }
+
+  const manager = getRequiredRecord(record, 'manager')
+  const diagnostics = getOptionalRecord(manager, 'diagnostics') ?? {}
+
+  return {
+    currentEvent: normalizeLeagueEvent(getRequiredRecord(manager, 'currentEvent')),
+    diagnostics: {
+      cacheGroup: getString(diagnostics, 'cacheGroup'),
+      completedGames: getNumber(diagnostics, 'completedGames'),
+      eventHealth: getString(diagnostics, 'eventHealth'),
+      eventId: getString(diagnostics, 'eventId'),
+      lastUpdate: getString(diagnostics, 'lastUpdate'),
+      lifecycleStage: getString(diagnostics, 'lifecycleStage'),
+      pairingCount: getNumber(diagnostics, 'pairingCount'),
+      participantCount: getNumber(diagnostics, 'participantCount'),
+      registrationStatus: getString(diagnostics, 'registrationStatus'),
+      teamCount: getNumber(diagnostics, 'teamCount'),
+    },
+    events: getArray(manager, 'events').map((item) => {
+      const summary = asRecord(item, 'Event manager event summary')
+
+      return {
+        completedGames: getNumber(summary, 'completedGames'),
+        completionPercentage: getNumber(summary, 'completionPercentage'),
+        currentRound: getOptionalRecord(summary, 'currentRound') ?? null,
+        event: normalizeLeagueEvent(getRequiredRecord(summary, 'event')),
+        participantCount: getNumber(summary, 'participantCount'),
+        registrationStatus: getString(summary, 'registrationStatus'),
+        teamCount: getNumber(summary, 'teamCount'),
+      }
+    }),
+    generatedAt: getString(manager, 'generatedAt'),
+    pairings: getArray(manager, 'pairings').map(normalizeTeamTournamentPairing),
+    participants: getArray(manager, 'participants').map(
+      normalizeEventRegistrationEntry,
+    ),
+    quickActions: getArray(manager, 'quickActions').map((item) => {
+      const action = asRecord(item, 'Event manager quick action')
+
+      return {
+        action: getString(action, 'action'),
+        enabled: getOptionalBoolean(action, 'enabled') ?? false,
+        label: getString(action, 'label'),
+      }
+    }),
+    registration: normalizeEventRegistrationData(
+      getRequiredRecord(manager, 'registration'),
+    ),
+    rounds: getArray(manager, 'rounds').map((item) =>
+      asRecord(item, 'Event manager round'),
+    ),
+    selectedEvent: normalizeLeagueEvent(getRequiredRecord(manager, 'selectedEvent')),
+    teams: getArray(manager, 'teams').map(normalizeTeamTournamentTeam),
   }
 }
 

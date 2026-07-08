@@ -127,3 +127,5 @@ The Event Home shows:
 - Quick actions.
 
 Use the Event selector to switch between active Events without leaving the Event experience.
+
+When Commissioners update registration, lifecycle, teams, or pairings through Event Manager, the Event Home reflects that Event state on the next load.

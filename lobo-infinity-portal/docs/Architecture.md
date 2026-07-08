@@ -148,6 +148,14 @@ Event registration reuses:
 - Player Profiles to surface registered Events.
 - Commissioner operations permission for registration management.
 
+Version 6.0.3 adds Commissioner Event Manager operations on top of the Event Engine.
+
+- The Commissioner Dashboard lazy-loads the Event Manager only for operations users.
+- Event Manager reads compose Events, Event Participants, Event Rounds, Team Tournament teams, and Team Tournament pairings.
+- Mutations are permission-gated through existing Commissioner season-control permissions.
+- The current active Event is stored as an Event status marker and is consumed by the Event catalog.
+- Event Manager does not add a parallel League or Tournament management system.
+
 Registration is scoped by Event ID. Registering for the Team Tournament does not change League participation, League standings, League scheduling, or any other Event.
 
 ## Event Home Architecture

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
+import EventManagerPanel from '../components/EventManagerPanel'
 import Loading from '../components/Loading'
 import {
   apiClient,
@@ -77,6 +78,7 @@ const permissionRows = [
   ['Discord settings', 'Commissioner', 'Configure webhook and automation limits'],
   ['Discord announcements', 'Assistant Commissioner', 'Preview, send, and resend announcements'],
   ['Event lifecycle', 'Commissioner', 'Advance or rollback Event lifecycle stages'],
+  ['Event Manager', 'Commissioner', 'Create, operate, and archive Event Engine events'],
 ] as const
 
 function CommissionerDashboard() {
@@ -268,6 +270,14 @@ function CommissionerDashboard() {
           <StreamManager streams={data.streams} onAction={runAction} />
           <ArmyListApproval lists={data.pendingArmyLists} onAction={runAction} />
           <PlayerManagementPanel data={data} />
+        </LazyOperationsPanel>
+        <LazyOperationsPanel
+          isLoading={loadingPanels.includes('eventManager')}
+          isOpen={openPanels.includes('eventManager')}
+          onToggle={() => togglePanel('eventManager')}
+          title="Event Manager"
+        >
+          <EventManagerPanel canManage={auth.hasPermission('runSeasonControl')} />
         </LazyOperationsPanel>
         <LazyOperationsPanel
           isLoading={loadingPanels.includes('lifecycle')}

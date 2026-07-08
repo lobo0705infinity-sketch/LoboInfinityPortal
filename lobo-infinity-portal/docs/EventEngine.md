@@ -271,3 +271,22 @@ Version 6.0.3 adds an Event Home composition layer.
 Event Home reads the existing Event Engine records, registration rows, rounds, and Event-scoped game data to present a dedicated destination for each Event.
 
 It does not create a new Event object or duplicate lifecycle logic.
+
+## Commissioner Event Manager
+
+Version 6.0.3 adds a Commissioner Event Manager on top of the existing Event Engine sheets.
+
+The manager mutates:
+
+- `Events`
+- `Event Participants`
+- `Event Seasons`
+- `Event Rounds`
+- `Team Tournament Teams`
+- `Team Tournament Pairings`
+
+All mutations are Commissioner-gated through existing `runSeasonControl` permissions.
+
+The current active Event is represented by the Event `Status` value `Current Active Event`. Event catalog reads prefer that marker and fall back to `event-current-league` when no explicit current Event is selected.
+
+The manager does not introduce a separate tournament lifecycle or registration model. It reuses Event Engine rows, Event Registration rows, and Team Tournament Event-scoped tables.

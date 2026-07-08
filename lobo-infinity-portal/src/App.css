@@ -5323,6 +5323,125 @@
   color: var(--text-soft);
 }
 
+.event-manager {
+  display: grid;
+  gap: 1rem;
+}
+
+.event-manager-layout {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(220px, 0.35fr) minmax(0, 1fr);
+}
+
+.event-manager-list,
+.event-manager-detail,
+.event-manager-subpanel {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.event-manager-event {
+  align-items: flex-start;
+  background: rgba(15, 23, 42, 0.72);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 8px;
+  color: var(--text-primary);
+  display: grid;
+  gap: 0.25rem;
+  min-height: 44px;
+  padding: 0.85rem;
+  text-align: left;
+}
+
+.event-manager-event.active {
+  border-color: rgba(248, 113, 113, 0.8);
+  box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.22);
+}
+
+.event-manager-event span,
+.event-manager-metric span,
+.event-manager-row span {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.event-manager-summary {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.event-manager-metric {
+  background: rgba(15, 23, 42, 0.62);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 8px;
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.8rem;
+}
+
+.event-manager-form {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.event-manager-form.compact {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.event-manager-form h3,
+.event-manager-wide,
+.event-manager-actions {
+  grid-column: 1 / -1;
+}
+
+.event-manager-form label {
+  color: var(--text-muted);
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+}
+
+.event-manager-form input,
+.event-manager-form select,
+.event-manager-form textarea {
+  background: rgba(2, 6, 23, 0.75);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 8px;
+  color: var(--text-primary);
+  min-height: 44px;
+  padding: 0.7rem 0.8rem;
+}
+
+.event-manager-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.event-manager-actions button,
+.event-manager-form button {
+  min-height: 44px;
+}
+
+.event-manager-table {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.event-manager-row {
+  align-items: center;
+  background: rgba(15, 23, 42, 0.45);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 8px;
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: minmax(120px, 1fr) repeat(3, minmax(80px, auto));
+  padding: 0.7rem;
+}
+
 .team-tournament-table-shell {
   overflow-x: auto;
 }
@@ -5396,6 +5515,19 @@
 
   .event-home-primary-action,
   .event-home-actions a {
+    width: 100%;
+  }
+
+  .event-manager-layout,
+  .event-manager-summary,
+  .event-manager-form,
+  .event-manager-form.compact,
+  .event-manager-row {
+    grid-template-columns: 1fr;
+  }
+
+  .event-manager-actions button,
+  .event-manager-form button {
     width: 100%;
   }
 }

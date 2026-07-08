@@ -123,6 +123,9 @@ function doGet(e) {
     case "eventHome":
       return getEventHome(e);
 
+    case "eventManager":
+      return getEventManager(e);
+
     case "eventTemplates":
       return getCachedApiResponse(e, action, function() {
         return getEventTemplates();
@@ -308,6 +311,27 @@ function doGet(e) {
 
     case "manageEventRegistration":
       return manageEventRegistration(e);
+
+    case "eventManagerEvent":
+      return saveEventManagerEvent(e);
+
+    case "eventManagerRegistration":
+      return setEventManagerRegistration(e);
+
+    case "eventManagerLifecycle":
+      return setEventManagerLifecycle(e);
+
+    case "eventManagerCurrentEvent":
+      return setEventManagerCurrentEvent(e);
+
+    case "eventManagerParticipant":
+      return saveEventManagerParticipant(e);
+
+    case "eventManagerTeam":
+      return saveEventManagerTeam(e);
+
+    case "eventManagerPairing":
+      return saveEventManagerPairing(e);
 
     case "exportEventRegistrations":
       return exportEventRegistrations(e);
@@ -603,6 +627,27 @@ function doPost(e) {
 
     case "manageEventRegistration":
       return manageEventRegistration(e);
+
+    case "eventManagerEvent":
+      return saveEventManagerEvent(e);
+
+    case "eventManagerRegistration":
+      return setEventManagerRegistration(e);
+
+    case "eventManagerLifecycle":
+      return setEventManagerLifecycle(e);
+
+    case "eventManagerCurrentEvent":
+      return setEventManagerCurrentEvent(e);
+
+    case "eventManagerParticipant":
+      return saveEventManagerParticipant(e);
+
+    case "eventManagerTeam":
+      return saveEventManagerTeam(e);
+
+    case "eventManagerPairing":
+      return saveEventManagerPairing(e);
 
     case "exportEventRegistrations":
       return exportEventRegistrations(e);
