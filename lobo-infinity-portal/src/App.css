@@ -58,7 +58,7 @@
   display: grid;
   min-height: 100vh;
   place-items: center;
-  padding: 24px;
+  padding: max(18px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
   color: var(--text);
   background:
     radial-gradient(circle at 50% 16%, rgba(76, 201, 240, 0.13), transparent 32%),
@@ -69,12 +69,12 @@
 .auth-initialization-card {
   position: relative;
   display: grid;
-  width: min(520px, 100%);
+  width: min(560px, 100%);
   gap: 16px;
   overflow: hidden;
   border: 1px solid rgba(76, 201, 240, 0.24);
   border-radius: 20px;
-  padding: clamp(24px, 5vw, 42px);
+  padding: clamp(20px, 6vw, 42px);
   background:
     url("./assets/tactical-banner.svg") center / cover,
     linear-gradient(180deg, rgba(8, 14, 22, 0.94), rgba(8, 14, 22, 0.82));
@@ -100,15 +100,23 @@
 .auth-initialization-card h1 {
   margin: 0;
   color: var(--text);
-  font-size: clamp(2rem, 8vw, 3.75rem);
+  font-size: clamp(1.85rem, 10vw, 3.75rem);
   line-height: 0.95;
+  max-width: 100%;
+  overflow-wrap: anywhere;
   text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.auth-initialization-card h1 span {
+  display: block;
 }
 
 .auth-initialization-card p:last-of-type {
   margin: 0;
   color: var(--text-soft);
   font-weight: 850;
+  overflow-wrap: anywhere;
 }
 
 .auth-initialization-meter {

@@ -130,7 +130,10 @@ function AuthInitializationScreen() {
     >
       <section className="auth-initialization-card">
         <p className="eyebrow">Lobo Command Network</p>
-        <h1>Authenticating Operative...</h1>
+        <h1>
+          <span>Authenticating</span>
+          <span>Operative...</span>
+        </h1>
         <div className="auth-initialization-meter" aria-hidden="true">
           <span />
         </div>
