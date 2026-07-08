@@ -21,6 +21,7 @@ const Analytics = lazy(() => import('./pages/Analytics'))
 const ArmyLists = lazy(() => import('./pages/ArmyLists'))
 const AutomationCenter = lazy(() => import('./pages/AutomationCenter'))
 const CommissionerDashboard = lazy(() => import('./pages/CommissionerDashboard'))
+const CommissionerEventManager = lazy(() => import('./pages/CommissionerEventManager'))
 const CommissionerNews = lazy(() => import('./pages/CommissionerNews'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 const Diagnostics = lazy(() => import('./pages/Diagnostics'))
@@ -99,6 +100,7 @@ function AuthShell() {
             <Route path="/events" element={<MeasuredRoute name="EventHome"><EventHome /></MeasuredRoute>} />
             <Route path="/event/:eventId" element={<MeasuredRoute name="EventHome"><EventHome /></MeasuredRoute>} />
             <Route path="/commissioner" element={<MeasuredRoute name="CommissionerDashboard"><CommissionerDashboard /></MeasuredRoute>} />
+            <Route path="/commissioner/event-manager" element={<MeasuredRoute name="CommissionerEventManager"><CommissionerEventManager /></MeasuredRoute>} />
             <Route path="/diagnostics" element={<MeasuredRoute name="Diagnostics"><Diagnostics /></MeasuredRoute>} />
             <Route path="/automation" element={<MeasuredRoute name="AutomationCenter"><AutomationCenter /></MeasuredRoute>} />
             <Route path="/integrity" element={<MeasuredRoute name="LeagueIntegrity"><LeagueIntegrity /></MeasuredRoute>} />

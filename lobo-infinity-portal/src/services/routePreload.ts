@@ -4,6 +4,7 @@ const routeLoaders = new Map<string, () => Promise<unknown>>([
   ['/army-lists', () => import('../pages/ArmyLists')],
   ['/automation', () => import('../pages/AutomationCenter')],
   ['/commissioner', () => import('../pages/CommissionerDashboard')],
+  ['/commissioner-event-manager', () => import('../pages/CommissionerEventManager')],
   ['/compare', () => import('../pages/PlayerComparison')],
   ['/diagnostics', () => import('../pages/Diagnostics')],
   ['/event', () => import('../pages/EventHome')],
@@ -78,6 +79,10 @@ function normalizeRoutePath(path: string) {
 
   if (basePath === '/player') {
     return '/player-detail'
+  }
+
+  if (basePath === '/commissioner' && pathname === '/commissioner/event-manager') {
+    return '/commissioner-event-manager'
   }
 
   if (basePath === '/players' && pathname !== '/players') {

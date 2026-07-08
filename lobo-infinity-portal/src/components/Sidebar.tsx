@@ -117,6 +117,11 @@ function Sidebar() {
             to: '/commissioner',
           },
           {
+            icon: 'standings' as PortalIconName,
+            label: 'Event Manager',
+            to: '/commissioner/event-manager',
+          },
+          {
             icon: 'bell' as PortalIconName,
             label: 'Automation',
             to: '/automation',

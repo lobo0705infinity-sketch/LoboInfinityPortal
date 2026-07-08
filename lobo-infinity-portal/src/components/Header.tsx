@@ -79,6 +79,7 @@ function Header() {
     ...(auth.isAtLeastRole('Assistant Commissioner')
       ? [
           { label: 'Commissioner', to: '/commissioner' },
+          { label: 'Event Manager', to: '/commissioner/event-manager' },
           { label: 'Automation', to: '/automation' },
           { label: 'Integrity', to: '/integrity' },
           { label: 'Diagnostics', to: '/diagnostics' },
