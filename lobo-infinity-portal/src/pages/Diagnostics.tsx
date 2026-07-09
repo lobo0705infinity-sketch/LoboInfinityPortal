@@ -795,6 +795,102 @@ function Diagnostics() {
         </div>
       </section>
 
+      <section className="panel operations-panel">
+        <div className="panel-heading">
+          <p className="eyebrow">Identity Service</p>
+          <h2>Unified Identity Health</h2>
+        </div>
+        <dl className="operations-metrics">
+          <Metric
+            label="Overall Identity"
+            value={auth.identity?.identityHealth ?? 'Loading'}
+          />
+          <Metric
+            label="Synchronized"
+            value={auth.identity ? (auth.identity.synchronized ? 'Yes' : 'No') : 'Loading'}
+          />
+          <Metric
+            label="Identity Version"
+            value={auth.identity?.version ?? 'Loading'}
+          />
+          <Metric
+            label="Claim Version"
+            value={auth.identity?.claimVersion ?? 'Loading'}
+          />
+        </dl>
+        <div className="operations-table-wrap">
+          <table className="operations-table">
+            <thead>
+              <tr>
+                <th>Stage</th>
+                <th>Status</th>
+                <th>Email</th>
+                <th>League Player</th>
+                <th>Role</th>
+                <th>Detail</th>
+              </tr>
+            </thead>
+            <tbody>
+              {auth.identity ? (
+                [
+                  ['Google OAuth', auth.identity.google],
+                  ['Apps Script', auth.identity.appsScript],
+                  ['Portal Session', auth.identity.portalSession],
+                  ['Player Mapping', auth.identity.playerMapping],
+                  ['Firebase Authentication', auth.identity.firebase],
+                ].map(([label, stage]) => {
+                  const record = stage as {
+                    detail: string
+                    email: string
+                    leaguePlayer: string
+                    role: string
+                    status: string
+                  }
+
+                  return (
+                    <tr key={String(label)}>
+                      <td>{String(label)}</td>
+                      <td>{record.status}</td>
+                      <td>{record.email || 'Not reported'}</td>
+                      <td>{record.leaguePlayer || 'Not mapped'}</td>
+                      <td>{record.role || 'Not reported'}</td>
+                      <td>{record.detail}</td>
+                    </tr>
+                  )
+                })
+              ) : (
+                <tr>
+                  <td colSpan={6}>Loading identity synchronization...</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+        <div className="operations-grid two-column">
+          <div>
+            <h3>Expected Claims</h3>
+            <pre className="diagnostics-json">
+              {JSON.stringify(auth.identity?.expectedClaims ?? {}, null, 2)}
+            </pre>
+          </div>
+          <div>
+            <h3>Firebase Claims</h3>
+            <pre className="diagnostics-json">
+              {JSON.stringify(auth.identity?.firebase.claims ?? {}, null, 2)}
+            </pre>
+          </div>
+        </div>
+        {(auth.identity?.mismatches.length ?? 0) > 0 ? (
+          <ul className="operations-list">
+            {auth.identity?.mismatches.map((mismatch) => (
+              <li key={mismatch}>
+                <strong>{mismatch}</strong>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </section>
+
       {platform ? (
         <>
           <section className="panel operations-panel">

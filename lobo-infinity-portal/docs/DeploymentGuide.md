@@ -98,6 +98,20 @@ leaguePlayer=<canonical player id>
 If custom claims are missing, Bootstrap may authenticate but migration and
 administrative writes will remain denied by design.
 
+## Identity Verification
+
+Before migration or provider cutover:
+
+1. Sign in as a Commissioner.
+2. Open Diagnostics.
+3. Review Identity Service.
+4. Confirm Google OAuth, Apps Script, Portal Session, Player Mapping, and
+   Firebase Authentication all pass.
+5. Confirm expected claims match Firebase claims.
+
+Do not run production Firestore migration if Identity Health is
+`SYNC_REQUIRED` or `FAILED`.
+
 ## Dual Compare
 
 Set:

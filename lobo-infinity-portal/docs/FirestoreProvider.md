@@ -89,6 +89,10 @@ traffic continues to use Google Sheets until an explicit provider cutover.
 Firestore diagnostics expose the rules version, current Firebase role claim,
 and collection access matrix.
 
+Version 7.3.3 adds Identity Service diagnostics. The Firestore provider should
+not become authoritative unless Apps Script identity, Firebase Authentication,
+league player mapping, and Firebase custom claims all report synchronized.
+
 ## Dual Compare
 
 `VITE_DATA_PROVIDER=dual` keeps Google Sheets as the player-facing source of

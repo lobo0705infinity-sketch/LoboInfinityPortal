@@ -24,6 +24,10 @@ Services and Apps Script session flow. When Firebase is configured, the portal
 also signs the same Google ID token into Firebase Auth so Firestore can evaluate
 rules. This bridge does not replace portal authentication.
 
+Version 7.3.3 centralizes this comparison in the Identity Service. Firestore
+Rules consume synchronized Firebase claims; Apps Script remains the
+authoritative source used to determine the expected claim values.
+
 Commissioner-level Firestore writes require Firebase Auth custom claims. Until
 claims are issued for production Commissioners, Google Sheets remains the
 authoritative provider and Firestore remains a pre-cutover verification target.

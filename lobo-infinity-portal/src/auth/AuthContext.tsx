@@ -22,9 +22,14 @@ import {
   setApiOAuthClientId,
 } from '../services/apiCore'
 import {
-  signInToFirebaseWithGoogleToken,
   signOutOfFirebase,
 } from '../firebase/firebaseAuthBridge'
+import {
+  clearCachedIdentityReport,
+  getCachedIdentityReport,
+  synchronizeIdentity,
+  type UnifiedIdentityReport,
+} from '../services/identity/IdentityService'
 
 type GoogleCredentialResponse = {
   credential?: string
@@ -68,6 +73,7 @@ type AuthContextValue = {
   error: string
   googleReady: boolean
   hasPermission: (permission: string) => boolean
+  identity: UnifiedIdentityReport | null
   initialization: AuthInitializationMetrics
   isAtLeastRole: (role: UserRole) => boolean
   oauthConfigured: boolean
@@ -159,6 +165,9 @@ function AuthProvider({ children }: { children: ReactNode }) {
   })
   const [status, setStatus] = useState<'loading' | 'ready'>('loading')
   const [googleReady, setGoogleReady] = useState(false)
+  const [identity, setIdentity] = useState<UnifiedIdentityReport | null>(
+    getCachedIdentityReport,
+  )
   const [initialization, setInitialization] = useState<AuthInitializationMetrics>(
     initialInitializationMetrics,
   )
@@ -192,15 +201,17 @@ function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       if (nextSession.authenticated) {
-        const bridge = await signInToFirebaseWithGoogleToken(credential)
+        const report = await synchronizeIdentity(nextSession, credential)
+        setIdentity(report)
         recordClientDiagnostic(
-          'firebaseAuthBridge',
-          bridge.signedIn ? 'success' : 'failure',
+          'identitySynchronization',
+          report.synchronized ? 'success' : 'failure',
           0,
-          bridge.signedIn
-            ? `firebase:${bridge.email || 'signed-in'}:${bridge.role || 'no-role-claim'}`
-            : bridge.reason,
+          `${report.identityHealth}:${report.mismatches[0] || 'synchronized'}`,
         )
+      } else {
+        setIdentity(null)
+        clearCachedIdentityReport()
       }
 
       setSession(nextSession)
@@ -213,6 +224,8 @@ function AuthProvider({ children }: { children: ReactNode }) {
       )
       window.localStorage.removeItem(authStorageKey)
       setApiAuthToken('')
+      setIdentity(null)
+      clearCachedIdentityReport()
       setSession((current) => ({
         ...current,
         authenticated: false,
@@ -340,15 +353,17 @@ function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       if (nextSession.authenticated && storedToken) {
-        const bridge = await signInToFirebaseWithGoogleToken(storedToken)
+        const report = await synchronizeIdentity(nextSession, storedToken)
+        setIdentity(report)
         recordClientDiagnostic(
-          'firebaseAuthBridge',
-          bridge.signedIn ? 'success' : 'failure',
+          'identitySynchronization',
+          report.synchronized ? 'success' : 'failure',
           0,
-          bridge.signedIn
-            ? `firebase:${bridge.email || 'signed-in'}:${bridge.role || 'no-role-claim'}`
-            : bridge.reason,
+          `${report.identityHealth}:${report.mismatches[0] || 'synchronized'}`,
         )
+      } else {
+        setIdentity(null)
+        clearCachedIdentityReport()
       }
     } catch (error) {
       recordClientDiagnostic(
@@ -359,6 +374,8 @@ function AuthProvider({ children }: { children: ReactNode }) {
       )
       window.localStorage.removeItem(authStorageKey)
       setApiAuthToken('')
+      setIdentity(null)
+      clearCachedIdentityReport()
       setSession((current) => ({
         ...current,
         authenticated: false,
@@ -426,6 +443,8 @@ function AuthProvider({ children }: { children: ReactNode }) {
     setApiAuthToken('')
     window.google?.accounts.id.cancel()
     void signOutOfFirebase()
+    setIdentity(null)
+    clearCachedIdentityReport()
     setSession((current) => ({
       ...current,
       authenticated: false,
@@ -467,6 +486,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
       error: session.error,
       googleReady,
       hasPermission: (permission) => session.permissions[permission] === true,
+      identity,
       initialization,
       isAtLeastRole: (role) =>
         roleOrder.indexOf(session.user.role) >= roleOrder.indexOf(role),
@@ -481,6 +501,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
     }),
     [
       googleReady,
+      identity,
       initialization,
       refreshSession,
       renderSignInButton,

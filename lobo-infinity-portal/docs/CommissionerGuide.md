@@ -108,4 +108,22 @@ Commissioners can operate every Event from this panel:
 
 Assistant Commissioners may view Event Manager status where their operations role permits. Mutations require Commissioner-level season-control permission.
 
+## Identity Diagnostics
+
+Version 7.3.3 adds Identity Service diagnostics under Commissioner Diagnostics.
+
+Before running Firestore migration or provider cutover, Commissioners should
+confirm:
+
+- Google OAuth: PASS
+- Apps Script: PASS
+- Portal Session: PASS
+- Player Mapping: PASS
+- Firebase Authentication: PASS
+- Claims: synchronized
+
+If Diagnostics reports `SYNC_REQUIRED`, the portal identity is valid but
+Firebase custom claims do not yet match Apps Script. Keep Google Sheets
+authoritative until claims are synchronized.
+
 The Event Manager is the preferred operational workflow. Google Sheets should only be edited directly for emergency repair.

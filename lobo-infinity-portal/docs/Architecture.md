@@ -694,3 +694,10 @@ Firestore can evaluate authenticated rule paths without replacing the Apps
 Script session model. Bootstrap writes are limited to managed schema/probe/seed
 documents, migration writes require Commissioner claims, and the catch-all rule
 remains deny-all.
+
+Version 7.3.3 adds the Identity Service. Apps Script remains the authoritative
+source for player mapping, role, and portal permissions during the Firestore
+migration window. The frontend synchronizes that validated session into
+Firebase Auth, compares Firebase custom claims against the Apps Script session,
+and surfaces mismatches in Commissioner Diagnostics. Firestore provider cutover
+remains blocked until identity health is synchronized.

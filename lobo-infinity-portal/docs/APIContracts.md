@@ -1011,6 +1011,11 @@ Auth custom claims for the existing portal role model. No page-level API
 contract changes are introduced, and Google Sheets remains the production
 provider until explicit cutover.
 
+Version 7.3.3 adds client-side Identity Service diagnostics. It does not change
+Apps Script endpoint signatures. The existing `session` response remains the
+authoritative identity payload and is compared against Firebase Authentication
+claims for Firestore readiness.
+
 ### Reliability Dashboard
 
 Action:
