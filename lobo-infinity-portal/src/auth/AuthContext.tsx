@@ -337,12 +337,6 @@ function AuthProvider({ children }: { children: ReactNode }) {
         performance.now() - start,
         `${nextSession.stage || 'session'}:${nextSession.code || 'NO_CODE'}`,
       )
-      setSession(nextSession)
-      setInitialization((current) => ({
-        ...current,
-        completedAt: new Date().toISOString(),
-        sessionVerificationMs: Math.round(performance.now() - start),
-      }))
 
       if (
         !nextSession.authenticated &&
@@ -365,6 +359,13 @@ function AuthProvider({ children }: { children: ReactNode }) {
         setIdentity(null)
         clearCachedIdentityReport()
       }
+
+      setSession(nextSession)
+      setInitialization((current) => ({
+        ...current,
+        completedAt: new Date().toISOString(),
+        sessionVerificationMs: Math.round(performance.now() - start),
+      }))
     } catch (error) {
       recordClientDiagnostic(
         'oauthRefresh',

@@ -1,4 +1,4 @@
-import { getAuth } from 'firebase/auth'
+import { getAuth, onAuthStateChanged, type Auth } from 'firebase/auth'
 import {
   deleteDoc,
   doc,
@@ -58,6 +58,7 @@ export type FirestoreBootstrapReport = {
 
 let bootstrapRun: Promise<FirestoreBootstrapReport> | null = null
 export const firestoreSecurityRulesVersion = 'v7.3.2-firestore-security-rules'
+const firebaseAuthWaitMs = 4000
 
 type FirestoreAccessMatrixEntry = {
   assistantCommissioner: string
@@ -181,6 +182,34 @@ export async function runFirestoreBootstrap(): Promise<FirestoreBootstrapReport>
     const runtime = getFirebaseRuntime()
     const auth = getAuth(runtime.app)
     const user = await getCurrentFirebaseUser(auth)
+
+    if (!user.signedIn) {
+      return buildReport({
+        authentication: fail(
+          'Firebase Authentication did not complete. Firestore Bootstrap waits for Firebase Auth before read/write probes.',
+        ),
+        collectionsInitialized: fail('Schema initialization skipped until Firebase Auth succeeds.'),
+        connection: pass('Firebase SDK initialized. Firestore client is available.'),
+        environment,
+        errors: [
+          'Firebase Authentication has no current user. Verify Google provider is enabled in Firebase Authentication and the portal Google credential can sign into Firebase.',
+        ],
+        indexes: warn('No Firestore index check was run.'),
+        latencyMs: performance.now() - startedAt,
+        projectId: runtime.config.projectId,
+        provider,
+        readTest: fail('Read test skipped until Firebase Auth succeeds.'),
+        region,
+        schema: { ...fail('Schema unavailable until Firebase Auth succeeds.'), version: 0 },
+        security: fail('Firestore rules will deny writes without Firebase Authentication.'),
+        securityRulesVersion: firestoreSecurityRulesVersion,
+        seed: fail('Seed check skipped until Firebase Auth succeeds.'),
+        sdk: pass('Firebase SDK initialized.'),
+        user,
+        writeTest: fail('Write test skipped until Firebase Auth succeeds.'),
+      })
+    }
+
     const probeRef = doc(runtime.db, 'settings', 'bootstrapProbe')
     const schemaRef = doc(runtime.db, 'settings', 'schema')
 
@@ -206,7 +235,7 @@ export async function runFirestoreBootstrap(): Promise<FirestoreBootstrapReport>
 
     return buildReport({
       authentication: auth
-        ? pass('Firebase Auth SDK is available.')
+        ? pass(`Firebase Auth current user established for ${user.email || 'authenticated user'}.`)
         : warn('Firebase Auth SDK was not available.'),
       collectionsInitialized: schema.status === 'healthy'
         ? pass(`${schema.collections.length} collections initialized.`)
@@ -312,8 +341,10 @@ function buildReport(
   }
 }
 
-async function getCurrentFirebaseUser(auth: ReturnType<typeof getAuth>) {
-  if (!auth.currentUser) {
+async function getCurrentFirebaseUser(auth: Auth) {
+  const currentUser = auth.currentUser ?? await waitForFirebaseUser(auth)
+
+  if (!currentUser) {
     return {
       email: '',
       role: 'Anonymous',
@@ -321,13 +352,28 @@ async function getCurrentFirebaseUser(auth: ReturnType<typeof getAuth>) {
     }
   }
 
-  const token = await auth.currentUser.getIdTokenResult()
+  const token = await currentUser.getIdTokenResult()
 
   return {
-    email: auth.currentUser.email ?? '',
+    email: currentUser.email ?? '',
     role: typeof token.claims.role === 'string' ? token.claims.role : 'No role claim',
     signedIn: true,
   }
+}
+
+function waitForFirebaseUser(auth: Auth) {
+  return new Promise<Auth['currentUser']>((resolve) => {
+    const timeout = window.setTimeout(() => {
+      unsubscribe()
+      resolve(auth.currentUser)
+    }, firebaseAuthWaitMs)
+
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      window.clearTimeout(timeout)
+      unsubscribe()
+      resolve(user)
+    })
+  })
 }
 
 function pass(detail: string): FirestoreBootstrapCheck {

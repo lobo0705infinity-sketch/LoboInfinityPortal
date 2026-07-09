@@ -28,6 +28,11 @@ Version 7.3.3 centralizes this comparison in the Identity Service. Firestore
 Rules consume synchronized Firebase claims; Apps Script remains the
 authoritative source used to determine the expected claim values.
 
+Version 7.3.4 ensures Firestore Bootstrap runs after Firebase Auth. If the
+browser has no Firebase current user, Firestore rules are expected to deny
+access and Diagnostics reports the authentication bridge failure rather than a
+generic permission failure.
+
 Commissioner-level Firestore writes require Firebase Auth custom claims. Until
 claims are issued for production Commissioners, Google Sheets remains the
 authoritative provider and Firestore remains a pre-cutover verification target.

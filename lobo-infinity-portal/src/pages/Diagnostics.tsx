@@ -827,6 +827,7 @@ function Diagnostics() {
                 <th>Email</th>
                 <th>League Player</th>
                 <th>Role</th>
+                <th>Code</th>
                 <th>Detail</th>
               </tr>
             </thead>
@@ -845,6 +846,7 @@ function Diagnostics() {
                     leaguePlayer: string
                     role: string
                     status: string
+                    code?: string
                   }
 
                   return (
@@ -854,13 +856,14 @@ function Diagnostics() {
                       <td>{record.email || 'Not reported'}</td>
                       <td>{record.leaguePlayer || 'Not mapped'}</td>
                       <td>{record.role || 'Not reported'}</td>
+                      <td>{record.code || 'Not reported'}</td>
                       <td>{record.detail}</td>
                     </tr>
                   )
                 })
               ) : (
                 <tr>
-                  <td colSpan={6}>Loading identity synchronization...</td>
+                  <td colSpan={7}>Loading identity synchronization...</td>
                 </tr>
               )}
             </tbody>

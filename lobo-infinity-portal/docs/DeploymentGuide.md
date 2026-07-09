@@ -112,6 +112,14 @@ Before migration or provider cutover:
 Do not run production Firestore migration if Identity Health is
 `SYNC_REQUIRED` or `FAILED`.
 
+If Firebase Authentication fails, check the Identity Service code field:
+
+- `auth/operation-not-allowed`: enable Google sign-in in Firebase Authentication.
+- `auth/invalid-credential` or `auth/invalid-id-token`: verify the Google OAuth
+  client is authorized for the Firebase project.
+- `auth/network-request-failed`: retry after confirming Firebase Auth is
+  reachable from the production browser.
+
 ## Dual Compare
 
 Set:

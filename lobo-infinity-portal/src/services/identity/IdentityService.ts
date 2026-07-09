@@ -4,7 +4,7 @@ import {
   type FirebaseIdentityBridgeResult,
 } from '../../firebase/firebaseAuthBridge'
 
-export const identityVersion = '7.3.3'
+export const identityVersion = '7.3.4'
 
 export type IdentitySynchronizationStatus =
   | 'FAILED'
@@ -18,6 +18,7 @@ export type UnifiedIdentityReport = {
   expectedClaims: IdentityClaims
   firebase: IdentityStage & {
     claims: Record<string, unknown>
+    code: string
     uid: string
   }
   generatedAt: string
@@ -185,6 +186,7 @@ function compareClaims(
 function firebaseStage(firebase: FirebaseIdentityBridgeResult) {
   return {
     claims: firebase.claims,
+    code: firebase.code,
     detail: firebase.signedIn
       ? 'Firebase Authentication session established.'
       : firebase.reason || 'Firebase Authentication is unavailable.',
@@ -213,6 +215,7 @@ function stage(
 function emptyFirebaseIdentity(reason: string): FirebaseIdentityBridgeResult {
   return {
     claims: {},
+    code: 'FIREBASE_AUTH_SKIPPED',
     email: '',
     leaguePlayer: '',
     playerId: '',

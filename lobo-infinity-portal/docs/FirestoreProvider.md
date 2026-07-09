@@ -93,6 +93,10 @@ Version 7.3.3 adds Identity Service diagnostics. The Firestore provider should
 not become authoritative unless Apps Script identity, Firebase Authentication,
 league player mapping, and Firebase custom claims all report synchronized.
 
+Version 7.3.4 repairs the Firebase Authentication bridge diagnostics. Token
+exchange failures are surfaced with Firebase error codes, and Bootstrap does not
+attempt Firestore writes before Firebase Auth completes.
+
 ## Dual Compare
 
 `VITE_DATA_PROVIDER=dual` keeps Google Sheets as the player-facing source of

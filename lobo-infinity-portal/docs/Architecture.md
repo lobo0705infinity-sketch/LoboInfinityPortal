@@ -701,3 +701,8 @@ migration window. The frontend synchronizes that validated session into
 Firebase Auth, compares Firebase custom claims against the Apps Script session,
 and surfaces mismatches in Commissioner Diagnostics. Firestore provider cutover
 remains blocked until identity health is synchronized.
+
+Version 7.3.4 repairs authentication bridge ordering. The authenticated portal
+session synchronizes Firebase Auth before Firestore Bootstrap can initialize
+schema, seed documents, or probes. Diagnostics distinguish Firebase SDK
+initialization from Firebase Authentication token-exchange failures.

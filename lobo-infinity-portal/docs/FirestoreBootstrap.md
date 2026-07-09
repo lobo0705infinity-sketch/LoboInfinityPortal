@@ -117,6 +117,11 @@ bootstrap write probes can pass. The portal bridges the existing Google ID token
 into Firebase Auth when Firebase is configured. Commissioner Diagnostics shows
 the Firebase user and role claim used by Firestore rules.
 
+Version 7.3.4 enforces bootstrap ordering. Firestore Bootstrap waits for
+Firebase Authentication before schema initialization, seed verification,
+read probes, or write probes. If Firebase Auth has no current user, Bootstrap
+reports a Firebase Authentication failure and leaves Google Sheets active.
+
 ## Safety
 
 Firestore bootstrap failures do not take down production. Google Sheets remains

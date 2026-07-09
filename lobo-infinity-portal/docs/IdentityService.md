@@ -4,6 +4,10 @@ Version 7.3.3 establishes the portal's unified identity layer across Google
 OAuth, Apps Script session validation, Firebase Authentication, and Firestore
 Rules.
 
+Version 7.3.4 repairs the authentication bridge ordering. The portal now waits
+for Apps Script session validation and Firebase Authentication synchronization
+before Firestore Bootstrap runs read/write probes.
+
 ## Authority
 
 During the Firestore migration window, Apps Script remains the authoritative
@@ -30,6 +34,7 @@ Google Sign-In
 -> Portal role and permissions
 -> Firebase Auth bridge
 -> Claim comparison
+-> Firestore Bootstrap
 -> Identity diagnostics
 ```
 
@@ -69,6 +74,20 @@ SYNC_REQUIRED
 
 This means Apps Script identified the user correctly, Firebase Auth is
 available, but Firestore custom claims do not yet match the portal identity.
+
+## Authentication Bridge Failures
+
+Diagnostics surfaces Firebase Auth token-exchange failures with a concrete
+code. Common examples:
+
+- `auth/operation-not-allowed`: Google sign-in is not enabled in Firebase
+  Authentication.
+- `auth/invalid-credential`: Firebase rejected the Google credential.
+- `auth/invalid-id-token`: Firebase rejected the Google ID token.
+- `auth/network-request-failed`: Firebase Authentication could not be reached.
+
+Firestore Bootstrap does not run schema initialization, read probes, or write
+probes until Firebase Auth has a current user.
 
 ## Diagnostics
 
