@@ -7,6 +7,8 @@ import {
 } from './providers/DualCompareProvider'
 import { firestoreProvider } from './providers/FirestoreProvider'
 import {
+  firestoreAccessMatrix,
+  firestoreSecurityRulesVersion,
   getFirestoreBootstrapReport,
   type FirestoreBootstrapReport,
 } from './providers/FirestoreBootstrap'
@@ -125,6 +127,7 @@ function createBootstrapFailure(message: string): FirestoreBootstrapReport {
   const environment = getFirebaseEnvironmentDiagnostics()
 
   return {
+    accessMatrix: firestoreAccessMatrix,
     authentication: fail('FAILED: Firebase Auth check did not complete.'),
     collectionsInitialized: fail('BOOTSTRAP REQUIRED: Collections were not verified.'),
     connection: fail(`FAILED: ${message}`),
@@ -148,8 +151,14 @@ function createBootstrapFailure(message: string): FirestoreBootstrapReport {
       version: 0,
     },
     security: warn('CONNECTING: Security status was not verified.'),
+    securityRulesVersion: firestoreSecurityRulesVersion,
     seed: fail('BOOTSTRAP REQUIRED: Seed data was not verified.'),
     sdk: fail('FAILED: Firebase SDK check did not complete.'),
+    user: {
+      email: '',
+      role: 'Unknown',
+      signedIn: false,
+    },
     writeTest: fail('FAILED: Write probe did not complete.'),
   }
 }

@@ -12,7 +12,8 @@
     "build": "tsc -b && vite build",
     "analyze": "npm run build && node scripts/bundle-report.mjs",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "rules:check": "node scripts/firestore-rules-check.mjs"
   },
   "dependencies": {
     "firebase": "^12.15.0",

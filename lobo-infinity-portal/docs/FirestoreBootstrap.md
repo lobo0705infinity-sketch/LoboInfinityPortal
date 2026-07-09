@@ -112,6 +112,11 @@ production deployment before validating this panel. Vite environment variables
 are compiled into the deployed frontend bundle, so an existing deployment will
 not automatically consume newly added Firebase values.
 
+Version 7.3.2 requires the browser to be signed into Firebase Auth before
+bootstrap write probes can pass. The portal bridges the existing Google ID token
+into Firebase Auth when Firebase is configured. Commissioner Diagnostics shows
+the Firebase user and role claim used by Firestore rules.
+
 ## Safety
 
 Firestore bootstrap failures do not take down production. Google Sheets remains

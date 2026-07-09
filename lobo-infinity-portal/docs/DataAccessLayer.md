@@ -79,5 +79,9 @@ Version 7.3 exposes the migration utility in Commissioner Diagnostics as
 `Run Firestore Migration`. It writes Firestore mirror documents only; it does
 not mutate Google Sheets.
 
+Version 7.3.2 adds source-controlled Firestore security rules. The Data Access
+Layer remains provider-agnostic, but Firestore writes now require Firebase Auth
+rule authorization. Google Sheets stays authoritative until provider cutover.
+
 Pages, Event Engine UI, scheduling workflows, and tournament operations should
 not require rewrites when the provider changes.

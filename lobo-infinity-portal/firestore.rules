@@ -1,5 +1,7 @@
 rules_version = '2';
 
+// Lobo Infinity League Portal Firestore security rules v7.3.2.
+
 service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() {
@@ -12,10 +14,15 @@ service cloud.firestore {
         : 'Anonymous';
     }
 
-    function isPlayer() {
+    function leaguePlayer() {
+      return signedIn() && request.auth.token.leaguePlayer is string
+        ? request.auth.token.leaguePlayer
+        : '';
+    }
+
+    function isLeagueMember() {
       return signedIn() &&
-        ['League Member', 'Assistant Commissioner', 'Commissioner']
-          .hasAny([role()]);
+        ['League Member', 'Assistant Commissioner', 'Commissioner'].hasAny([role()]);
     }
 
     function isAssistantCommissioner() {
@@ -28,73 +35,190 @@ service cloud.firestore {
     }
 
     function ownsPlayer(playerId) {
-      return signedIn() &&
-        request.auth.token.leaguePlayer is string &&
-        request.auth.token.leaguePlayer == playerId;
+      return leaguePlayer() == playerId;
     }
 
-    match /settings/{document=**} {
+    function isCollectionMarker(documentId) {
+      return documentId == '__schema';
+    }
+
+    function isManagedSchemaMarker(collectionName) {
+      return request.resource.data.collection == collectionName &&
+        request.resource.data.managedBy == 'lobo-infinity-portal' &&
+        request.resource.data.provider == 'firestore' &&
+        request.resource.data.schemaVersion is int;
+    }
+
+    function isBootstrapSchemaDocument() {
+      return request.resource.data.provider == 'firestore' &&
+        request.resource.data.schemaVersion is int &&
+        request.resource.data.initializedBy in ['bootstrap', 'provider', 'migration'];
+    }
+
+    function isBootstrapDefaultsDocument() {
+      return request.resource.data.managedBy == 'lobo-infinity-portal' &&
+        request.resource.data.provider == 'firestore' &&
+        request.resource.data.activeProvider in ['google', 'dual', 'firestore'];
+    }
+
+    function isBootstrapAnalyticsDocument() {
+      return request.resource.data.managedBy == 'lobo-infinity-portal' &&
+        request.resource.data.provider == 'firestore' &&
+        request.resource.data.games is int;
+    }
+
+    function isBootstrapEventDocument(eventId) {
+      return eventId == 'event-current-league' &&
+        request.resource.data.id == eventId &&
+        request.resource.data.type == 'League' &&
+        request.resource.data.name is string &&
+        request.resource.data.provider == null;
+    }
+
+    function isBootstrapProbe() {
+      return request.resource.data.provider == 'firestore' &&
+        request.resource.data.purpose == 'bootstrap-write-test';
+    }
+
+    function canWriteMirrorDocument() {
+      return isCommissioner() &&
+        request.resource.data.keys().hasAny(['migratedAt', 'migrationSource']) &&
+        request.resource.data.migrationSource == 'google-sheets';
+    }
+
+    function registrationOwner() {
+      return request.resource.data.player is string
+        ? request.resource.data.player
+        : resource.data.player;
+    }
+
+    function notificationOwner() {
+      return request.resource.data.player is string
+        ? request.resource.data.player
+        : resource.data.player;
+    }
+
+    match /settings/schema {
       allow read: if true;
+      allow create, update: if isCommissioner() ||
+        signedIn() && isBootstrapSchemaDocument();
+      allow delete: if isCommissioner();
+    }
+
+    match /settings/defaults {
+      allow read: if true;
+      allow create, update: if isCommissioner() ||
+        signedIn() && isBootstrapDefaultsDocument();
+      allow delete: if isCommissioner();
+    }
+
+    match /settings/security {
+      allow read: if true;
+      allow create, update, delete: if isCommissioner();
+    }
+
+    match /settings/bootstrapProbe {
+      allow read: if isCommissioner();
+      allow create, update: if isCommissioner() ||
+        signedIn() && isBootstrapProbe();
+      allow delete: if isCommissioner() ||
+        signedIn() && resource.data.purpose == 'bootstrap-write-test';
+    }
+
+    match /settings/{documentId} {
+      allow read: if isCommissioner();
       allow create, update, delete: if isCommissioner();
     }
 
     match /events/{eventId} {
       allow read: if true;
-      allow create, update, delete: if isCommissioner();
+      allow create, update: if isCommissioner() ||
+        signedIn() && isCollectionMarker(eventId) && isManagedSchemaMarker('events') ||
+        signedIn() && isBootstrapEventDocument(eventId) ||
+        canWriteMirrorDocument();
+      allow delete: if isCommissioner();
     }
 
     match /players/{playerId} {
       allow read: if true;
-      allow create, update: if isCommissioner() || ownsPlayer(playerId);
+      allow create, update: if isCommissioner() || ownsPlayer(playerId) || canWriteMirrorDocument() ||
+        signedIn() && isCollectionMarker(playerId) && isManagedSchemaMarker('players');
       allow delete: if isCommissioner();
     }
 
     match /games/{gameId} {
       allow read: if true;
-      allow create: if isPlayer();
-      allow update: if isAssistantCommissioner();
+      allow create: if isLeagueMember() || canWriteMirrorDocument() ||
+        signedIn() && isCollectionMarker(gameId) && isManagedSchemaMarker('games');
+      allow update: if isAssistantCommissioner() || canWriteMirrorDocument();
       allow delete: if isCommissioner();
     }
 
     match /registrations/{registrationId} {
       allow read: if true;
-      allow create: if isPlayer();
+      allow create: if isLeagueMember() || canWriteMirrorDocument() ||
+        signedIn() && isCollectionMarker(registrationId) && isManagedSchemaMarker('registrations');
       allow update: if isAssistantCommissioner() ||
-        (isPlayer() && resource.data.player == request.auth.token.leaguePlayer);
+        ownsPlayer(registrationOwner()) ||
+        canWriteMirrorDocument();
       allow delete: if isCommissioner();
     }
 
     match /teams/{teamId} {
       allow read: if true;
-      allow create, update, delete: if isAssistantCommissioner();
+      allow create, update: if isAssistantCommissioner() || canWriteMirrorDocument() ||
+        signedIn() && isCollectionMarker(teamId) && isManagedSchemaMarker('teams');
+      allow delete: if isAssistantCommissioner();
     }
 
     match /pairings/{pairingId} {
       allow read: if true;
-      allow create, update, delete: if isAssistantCommissioner();
+      allow create, update: if isAssistantCommissioner() || canWriteMirrorDocument() ||
+        signedIn() && isCollectionMarker(pairingId) && isManagedSchemaMarker('pairings');
+      allow delete: if isAssistantCommissioner();
     }
 
     match /notifications/{notificationId} {
-      allow read: if isPlayer();
-      allow create: if isAssistantCommissioner();
+      allow read: if isLeagueMember();
+      allow create: if isAssistantCommissioner() || canWriteMirrorDocument() ||
+        signedIn() && isCollectionMarker(notificationId) && isManagedSchemaMarker('notifications');
       allow update: if isAssistantCommissioner() ||
-        (isPlayer() && resource.data.player == request.auth.token.leaguePlayer);
+        ownsPlayer(notificationOwner()) ||
+        canWriteMirrorDocument();
       allow delete: if isCommissioner();
     }
 
     match /missions/{missionId} {
       allow read: if true;
-      allow create, update, delete: if isAssistantCommissioner();
+      allow create, update: if isAssistantCommissioner() || canWriteMirrorDocument() ||
+        signedIn() && isCollectionMarker(missionId) && isManagedSchemaMarker('missions');
+      allow delete: if isAssistantCommissioner();
     }
 
     match /factions/{factionId} {
       allow read: if true;
-      allow create, update, delete: if isAssistantCommissioner();
+      allow create, update: if isAssistantCommissioner() || canWriteMirrorDocument() ||
+        signedIn() && isCollectionMarker(factionId) && isManagedSchemaMarker('factions');
+      allow delete: if isAssistantCommissioner();
+    }
+
+    match /analytics/default {
+      allow read: if true;
+      allow create, update: if isAssistantCommissioner() ||
+        signedIn() && isBootstrapAnalyticsDocument() ||
+        canWriteMirrorDocument();
+      allow delete: if isCommissioner();
     }
 
     match /analytics/{documentId} {
       allow read: if true;
-      allow create, update, delete: if isAssistantCommissioner();
+      allow create, update: if isAssistantCommissioner() || canWriteMirrorDocument() ||
+        signedIn() && isCollectionMarker(documentId) && isManagedSchemaMarker('analytics');
+      allow delete: if isAssistantCommissioner();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }

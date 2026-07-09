@@ -74,6 +74,30 @@ If any panel reports `FAILED`, `CONFIGURATION ERROR`, `PERMISSION ERROR`, or
 `BOOTSTRAP REQUIRED`, leave Google Sheets as the authoritative provider and fix
 the reported configuration or permissions issue before running migration.
 
+## Firestore Security Rules
+
+Deploy Firestore rules from source control:
+
+```text
+firebase deploy --only firestore:rules
+```
+
+Do not edit rules manually in the Firebase console. Before deployment run:
+
+```text
+npm run rules:check
+```
+
+Commissioner-level Firestore writes require Firebase Auth custom claims:
+
+```text
+role=Commissioner
+leaguePlayer=<canonical player id>
+```
+
+If custom claims are missing, Bootstrap may authenticate but migration and
+administrative writes will remain denied by design.
+
 ## Dual Compare
 
 Set:

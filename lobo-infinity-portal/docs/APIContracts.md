@@ -1006,6 +1006,11 @@ Diagnostics. The verifier compares repository read outputs from Google Sheets
 and Firestore, records differences, and computes readiness without changing
 Apps Script endpoints, repository signatures, or player-facing response shapes.
 
+Version 7.3.2 adds Firestore Security Rules. Firestore rules consume Firebase
+Auth custom claims for the existing portal role model. No page-level API
+contract changes are introduced, and Google Sheets remains the production
+provider until explicit cutover.
+
 ### Reliability Dashboard
 
 Action:

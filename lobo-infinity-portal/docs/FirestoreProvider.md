@@ -83,6 +83,12 @@ reports instead of leaving Commissioner panels in an indefinite loading state.
 Google Sheets remains the active fallback if Firestore configuration,
 permissions, schema verification, or connectivity fails.
 
+Version 7.3.2 deploys production Firestore security rules. The provider expects
+Firebase Auth custom claims for Commissioner-level writes and migration. Player
+traffic continues to use Google Sheets until an explicit provider cutover.
+Firestore diagnostics expose the rules version, current Firebase role claim,
+and collection access matrix.
+
 ## Dual Compare
 
 `VITE_DATA_PROVIDER=dual` keeps Google Sheets as the player-facing source of

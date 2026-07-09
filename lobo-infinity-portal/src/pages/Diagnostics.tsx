@@ -371,6 +371,20 @@ function Diagnostics() {
                 <td>{formatBootstrapCheck(providerDiagnostics?.bootstrap.security)}</td>
               </tr>
               <tr>
+                <th>Security Rules Version</th>
+                <td>{providerDiagnostics?.bootstrap.securityRulesVersion ?? 'Loading'}</td>
+              </tr>
+              <tr>
+                <th>Firebase User</th>
+                <td>
+                  {providerDiagnostics
+                    ? providerDiagnostics.bootstrap.user.signedIn
+                      ? `${providerDiagnostics.bootstrap.user.email || 'Signed in'} (${providerDiagnostics.bootstrap.user.role})`
+                      : 'Not signed into Firebase Auth'
+                    : 'Loading'}
+                </td>
+              </tr>
+              <tr>
                 <th>Startup Safety</th>
                 <td>{providerDiagnostics?.bootstrap.fallback.message ?? 'Loading'}</td>
               </tr>
@@ -410,6 +424,42 @@ function Diagnostics() {
                     : 'Loading'}
                 </td>
               </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="panel operations-panel">
+        <div className="panel-heading">
+          <p className="eyebrow">Firestore Security</p>
+          <h2>Collection Access Matrix</h2>
+        </div>
+        <div className="operations-table-wrap">
+          <table className="operations-table">
+            <thead>
+              <tr>
+                <th>Collection</th>
+                <th>Public</th>
+                <th>Player</th>
+                <th>Assistant Commissioner</th>
+                <th>Commissioner</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(providerDiagnostics?.bootstrap.accessMatrix ?? []).map((entry) => (
+                <tr key={entry.collection}>
+                  <td>{entry.collection}</td>
+                  <td>{entry.public}</td>
+                  <td>{entry.player}</td>
+                  <td>{entry.assistantCommissioner}</td>
+                  <td>{entry.commissioner}</td>
+                </tr>
+              ))}
+              {(providerDiagnostics?.bootstrap.accessMatrix.length ?? 0) === 0 ? (
+                <tr>
+                  <td colSpan={5}>Loading security matrix...</td>
+                </tr>
+              ) : null}
             </tbody>
           </table>
         </div>

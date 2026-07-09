@@ -22,6 +22,7 @@ export type FirestoreBootstrapCheck = {
 }
 
 export type FirestoreBootstrapReport = {
+  accessMatrix: FirestoreAccessMatrixEntry[]
   authentication: FirestoreBootstrapCheck
   collectionsInitialized: FirestoreBootstrapCheck
   connection: FirestoreBootstrapCheck
@@ -44,12 +45,93 @@ export type FirestoreBootstrapReport = {
     version: number
   }
   security: FirestoreBootstrapCheck
+  securityRulesVersion: string
   seed: FirestoreBootstrapCheck
   sdk: FirestoreBootstrapCheck
+  user: {
+    email: string
+    role: string
+    signedIn: boolean
+  }
   writeTest: FirestoreBootstrapCheck
 }
 
 let bootstrapRun: Promise<FirestoreBootstrapReport> | null = null
+export const firestoreSecurityRulesVersion = 'v7.3.2-firestore-security-rules'
+
+type FirestoreAccessMatrixEntry = {
+  assistantCommissioner: string
+  collection: string
+  commissioner: string
+  player: string
+  public: string
+}
+
+export const firestoreAccessMatrix: FirestoreAccessMatrixEntry[] = [
+  {
+    assistantCommissioner: 'Read; manage operational records where delegated',
+    collection: 'events',
+    commissioner: 'Create, update, archive',
+    player: 'Read public event data',
+    public: 'Read public event data',
+  },
+  {
+    assistantCommissioner: 'Read',
+    collection: 'players',
+    commissioner: 'Manage player records',
+    player: 'Read; update own player document',
+    public: 'Read public player data',
+  },
+  {
+    assistantCommissioner: 'Read; update/approve results',
+    collection: 'games',
+    commissioner: 'Full management',
+    player: 'Read; submit games',
+    public: 'Read public game data',
+  },
+  {
+    assistantCommissioner: 'Manage registrations',
+    collection: 'registrations',
+    commissioner: 'Full management',
+    player: 'Read; create and update own registration',
+    public: 'Read public registration summaries',
+  },
+  {
+    assistantCommissioner: 'Manage teams and rosters',
+    collection: 'teams',
+    commissioner: 'Full management',
+    player: 'Read public teams',
+    public: 'Read public teams',
+  },
+  {
+    assistantCommissioner: 'Manage pairings',
+    collection: 'pairings',
+    commissioner: 'Full management',
+    player: 'Read public pairings',
+    public: 'Read public pairings',
+  },
+  {
+    assistantCommissioner: 'Create and manage operational notifications',
+    collection: 'notifications',
+    commissioner: 'Full management',
+    player: 'Read and update own notification state',
+    public: 'No access',
+  },
+  {
+    assistantCommissioner: 'Manage reference data',
+    collection: 'missions/factions/analytics',
+    commissioner: 'Full management',
+    player: 'Read public analytics',
+    public: 'Read public analytics',
+  },
+  {
+    assistantCommissioner: 'No system writes',
+    collection: 'settings',
+    commissioner: 'Manage settings, schema, security, migration',
+    player: 'Read public bootstrap settings only',
+    public: 'Read public bootstrap settings only',
+  },
+]
 
 export function getFirestoreBootstrapReport() {
   if (!bootstrapRun) {
@@ -83,8 +165,14 @@ export async function runFirestoreBootstrap(): Promise<FirestoreBootstrapReport>
       region,
       schema: { ...fail('Schema unavailable.'), version: 0 },
       security: warn('Security rules cannot be verified without Firestore.'),
+      securityRulesVersion: firestoreSecurityRulesVersion,
       seed: fail('Seed check skipped.'),
       sdk: fail('Firebase SDK did not initialize.'),
+      user: {
+        email: '',
+        role: 'Anonymous',
+        signedIn: false,
+      },
       writeTest: fail('Write test skipped.'),
     })
   }
@@ -92,6 +180,7 @@ export async function runFirestoreBootstrap(): Promise<FirestoreBootstrapReport>
   try {
     const runtime = getFirebaseRuntime()
     const auth = getAuth(runtime.app)
+    const user = await getCurrentFirebaseUser(auth)
     const probeRef = doc(runtime.db, 'settings', 'bootstrapProbe')
     const schemaRef = doc(runtime.db, 'settings', 'schema')
 
@@ -142,6 +231,7 @@ export async function runFirestoreBootstrap(): Promise<FirestoreBootstrapReport>
         version: schema.schemaVersion,
       },
       security: pass('Client read/write probe completed with current rules.'),
+      securityRulesVersion: firestoreSecurityRulesVersion,
       seed:
         schema.seedEventExists &&
         schema.defaultSettingsExists &&
@@ -149,6 +239,7 @@ export async function runFirestoreBootstrap(): Promise<FirestoreBootstrapReport>
           ? pass('Current League, default settings, and default analytics are present.')
           : fail('One or more required seed documents are missing.'),
       sdk: pass('Firebase SDK initialized.'),
+      user,
       writeTest: pass('Temporary settings/bootstrapProbe write and cleanup succeeded.'),
     })
   } catch (error) {
@@ -170,8 +261,14 @@ export async function runFirestoreBootstrap(): Promise<FirestoreBootstrapReport>
       region,
       schema: { ...fail('Schema unavailable.'), version: 0 },
       security: warn('Security status could not be verified.'),
+      securityRulesVersion: firestoreSecurityRulesVersion,
       seed: fail('Seed check failed.'),
       sdk: fail('Firebase SDK or Firestore initialization failed.'),
+      user: {
+        email: '',
+        role: 'Unknown',
+        signedIn: false,
+      },
       writeTest: fail('Write test failed.'),
     })
   }
@@ -180,7 +277,7 @@ export async function runFirestoreBootstrap(): Promise<FirestoreBootstrapReport>
 function buildReport(
   report: Omit<
     FirestoreBootstrapReport,
-    'fallback' | 'generatedAt' | 'overallHealth'
+    'accessMatrix' | 'fallback' | 'generatedAt' | 'overallHealth'
   >,
 ): FirestoreBootstrapReport {
   const checks = [
@@ -201,6 +298,7 @@ function buildReport(
 
   return {
     ...report,
+    accessMatrix: firestoreAccessMatrix,
     fallback: {
       active: hasFailure,
       message: hasFailure
@@ -211,6 +309,24 @@ function buildReport(
     generatedAt: new Date().toISOString(),
     latencyMs: Math.round(report.latencyMs),
     overallHealth,
+  }
+}
+
+async function getCurrentFirebaseUser(auth: ReturnType<typeof getAuth>) {
+  if (!auth.currentUser) {
+    return {
+      email: '',
+      role: 'Anonymous',
+      signedIn: false,
+    }
+  }
+
+  const token = await auth.currentUser.getIdTokenResult()
+
+  return {
+    email: auth.currentUser.email ?? '',
+    role: typeof token.claims.role === 'string' ? token.claims.role : 'No role claim',
+    signedIn: true,
   }
 }
 

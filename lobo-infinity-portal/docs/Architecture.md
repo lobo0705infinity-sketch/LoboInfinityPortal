@@ -685,3 +685,12 @@ Vercel/Firebase environment variables, SDK initialization failures, permission
 errors, schema gaps, and migration verification timeouts are surfaced to
 Commissioners as actionable statuses. Player-facing data remains Google-backed
 until an explicit provider cutover.
+
+Version 7.3.2 adds production Firestore security rules. Firestore authorization
+is based on Firebase Auth custom claims for the existing portal roles:
+`League Member`, `Assistant Commissioner`, and `Commissioner`. The portal signs
+the existing Google ID token into Firebase Auth when Firebase is configured so
+Firestore can evaluate authenticated rule paths without replacing the Apps
+Script session model. Bootstrap writes are limited to managed schema/probe/seed
+documents, migration writes require Commissioner claims, and the catch-all rule
+remains deny-all.

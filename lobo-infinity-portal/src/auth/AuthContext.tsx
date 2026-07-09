@@ -21,6 +21,10 @@ import {
   setApiAuthToken,
   setApiOAuthClientId,
 } from '../services/apiCore'
+import {
+  signInToFirebaseWithGoogleToken,
+  signOutOfFirebase,
+} from '../firebase/firebaseAuthBridge'
 
 type GoogleCredentialResponse = {
   credential?: string
@@ -187,6 +191,18 @@ function AuthProvider({ children }: { children: ReactNode }) {
         setApiAuthToken('')
       }
 
+      if (nextSession.authenticated) {
+        const bridge = await signInToFirebaseWithGoogleToken(credential)
+        recordClientDiagnostic(
+          'firebaseAuthBridge',
+          bridge.signedIn ? 'success' : 'failure',
+          0,
+          bridge.signedIn
+            ? `firebase:${bridge.email || 'signed-in'}:${bridge.role || 'no-role-claim'}`
+            : bridge.reason,
+        )
+      }
+
       setSession(nextSession)
     } catch (error) {
       recordClientDiagnostic(
@@ -322,6 +338,18 @@ function AuthProvider({ children }: { children: ReactNode }) {
         window.localStorage.removeItem(authStorageKey)
         setApiAuthToken('')
       }
+
+      if (nextSession.authenticated && storedToken) {
+        const bridge = await signInToFirebaseWithGoogleToken(storedToken)
+        recordClientDiagnostic(
+          'firebaseAuthBridge',
+          bridge.signedIn ? 'success' : 'failure',
+          0,
+          bridge.signedIn
+            ? `firebase:${bridge.email || 'signed-in'}:${bridge.role || 'no-role-claim'}`
+            : bridge.reason,
+        )
+      }
     } catch (error) {
       recordClientDiagnostic(
         'oauthRefresh',
@@ -397,6 +425,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
     window.localStorage.removeItem(authStorageKey)
     setApiAuthToken('')
     window.google?.accounts.id.cancel()
+    void signOutOfFirebase()
     setSession((current) => ({
       ...current,
       authenticated: false,
