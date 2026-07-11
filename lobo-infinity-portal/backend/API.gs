@@ -320,9 +320,7 @@ function handleApiGet(e, action) {
       return getMatchFinder(e);
 
     case "teamTournament":
-      return getCachedApiResponse(e, action, function() {
-        return getTeamTournament(e);
-      });
+      return getTeamTournament(e);
 
     case "schedulingCalendar":
       return getSchedulingCalendarExport(e);
