@@ -425,7 +425,7 @@ async function postRequestInternal(
     body.set('oauthClientId', activeOAuthClientId)
   }
 
-  if (action !== 'heartbeat') {
+  if (action !== 'heartbeat' && action !== 'session') {
     invalidateAffectedCaches(action, params)
   }
 
