@@ -8,7 +8,7 @@ const routeLoaders = new Map<string, () => Promise<unknown>>([
   ['/compare', () => import('../pages/PlayerComparison')],
   ['/diagnostics', () => import('../pages/Diagnostics')],
   ['/event', () => import('../pages/EventHome')],
-  ['/events', () => import('../pages/EventHome')],
+  ['/events', () => import('../pages/PastEvents')],
   ['/games', () => import('../pages/GameDetails')],
   ['/factions', () => import('../pages/Factions')],
   ['/faction-detail', () => import('../pages/FactionProfile')],
@@ -24,6 +24,7 @@ const routeLoaders = new Map<string, () => Promise<unknown>>([
   ['/profile', () => import('../pages/MyProfile')],
   ['/rivalries', () => import('../pages/Rivalries')],
   ['/rules', () => import('../pages/Rules')],
+  ['/schedule', () => import('../pages/Schedule')],
   ['/standings', () => import('../pages/Standings')],
   ['/streams', () => import('../pages/StreamedGames')],
   ['/team-tournament', () => import('../pages/TeamTournament')],
@@ -85,8 +86,12 @@ function normalizeRoutePath(path: string) {
     return '/commissioner-event-manager'
   }
 
-  if (basePath === '/event' && pathname.endsWith('/tournament')) {
+  if (basePath === '/event' && pathname.includes('/tournament')) {
     return '/team-tournament'
+  }
+
+  if (basePath === '/event') {
+    return '/event'
   }
 
   if (basePath === '/players' && pathname !== '/players') {

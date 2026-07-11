@@ -40,11 +40,13 @@ const MissionProfile = lazyRoute('MissionProfile', () => import('./pages/Mission
 const Missions = lazyRoute('Missions', () => import('./pages/Missions'))
 const Notifications = lazyRoute('Notifications', () => import('./pages/Notifications'))
 const MyProfile = lazyRoute('MyProfile', () => import('./pages/MyProfile'))
+const PastEvents = lazyRoute('PastEvents', () => import('./pages/PastEvents'))
 const PlayerComparison = lazyRoute('PlayerComparison', () => import('./pages/PlayerComparison'))
 const PlayerProfile = lazyRoute('PlayerProfile', () => import('./pages/PlayerProfile'))
 const Players = lazyRoute('Players', () => import('./pages/Players'))
 const Rivalries = lazyRoute('Rivalries', () => import('./pages/Rivalries'))
 const Rules = lazyRoute('Rules', () => import('./pages/Rules'))
+const Schedule = lazyRoute('Schedule', () => import('./pages/Schedule'))
 const Standings = lazyRoute('Standings', () => import('./pages/Standings'))
 const StreamedGames = lazyRoute('StreamedGames', () => import('./pages/StreamedGames'))
 const SubmitArmyList = lazyRoute('SubmitArmyList', () => import('./pages/SubmitArmyList'))
@@ -114,11 +116,12 @@ function AuthShell() {
                 <Route path="/hall-of-fame" element={<MeasuredRoute name="HallOfFame"><HallOfFame /></MeasuredRoute>} />
                 <Route path="/news" element={<MeasuredRoute name="CommissionerNews"><CommissionerNews /></MeasuredRoute>} />
                 <Route path="/news/:id" element={<DeepLinkRedirect target="news" />} />
-                <Route path="/events" element={<MeasuredRoute name="EventHome"><EventHome /></MeasuredRoute>} />
+                <Route path="/events" element={<MeasuredRoute name="PastEvents"><PastEvents /></MeasuredRoute>} />
                 <Route path="/event/:eventId" element={<MeasuredRoute name="EventHome"><EventHome /></MeasuredRoute>} />
                 <Route path="/event/:eventId/submit-result" element={<MeasuredRoute name="SubmitResult"><SubmitResult /></MeasuredRoute>} />
                 <Route path="/event/:eventId/tournament/:section" element={<MeasuredRoute name="TeamTournament"><TeamTournament /></MeasuredRoute>} />
                 <Route path="/event/:eventId/tournament" element={<MeasuredRoute name="TeamTournament"><TeamTournament /></MeasuredRoute>} />
+                <Route path="/event/:eventId/:section" element={<MeasuredRoute name="EventHome"><EventHome /></MeasuredRoute>} />
                 <Route path="/commissioner" element={<MeasuredRoute name="CommissionerDashboard"><CommissionerDashboard /></MeasuredRoute>} />
                 <Route path="/commissioner/event-manager" element={<MeasuredRoute name="CommissionerEventManager"><CommissionerEventManager /></MeasuredRoute>} />
                 <Route path="/diagnostics" element={<MeasuredRoute name="Diagnostics"><Diagnostics /></MeasuredRoute>} />
@@ -127,6 +130,7 @@ function AuthShell() {
                 <Route path="/notifications" element={<MeasuredRoute name="Notifications"><Notifications /></MeasuredRoute>} />
                 <Route path="/profile" element={<MeasuredRoute name="MyProfile"><MyProfile /></MeasuredRoute>} />
                 <Route path="/achievement/:achievementId" element={<DeepLinkRedirect target="achievement" />} />
+                <Route path="/schedule" element={<MeasuredRoute name="Schedule"><Schedule /></MeasuredRoute>} />
                 <Route path="/timeline" element={<MeasuredRoute name="Timeline"><Timeline /></MeasuredRoute>} />
                 <Route path="/team-tournament" element={<MeasuredRoute name="TeamTournament"><TeamTournament /></MeasuredRoute>} />
                 <Route path="/streams" element={<MeasuredRoute name="StreamedGames"><StreamedGames /></MeasuredRoute>} />

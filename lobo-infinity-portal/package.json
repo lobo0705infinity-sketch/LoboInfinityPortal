@@ -14,6 +14,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "responsive:check": "node scripts/responsive-regression.mjs",
+    "league:navigation": "node scripts/league-navigation-check.mjs",
     "team-tournament:routing": "node scripts/team-tournament-routing-check.mjs",
     "rules:check": "node scripts/firestore-rules-check.mjs"
   },

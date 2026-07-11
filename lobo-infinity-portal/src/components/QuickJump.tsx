@@ -54,7 +54,11 @@ function QuickJump() {
 
       setItems([
         { label: 'Dashboard', to: '/' },
-        { label: 'Timeline', to: '/timeline' },
+        { label: 'July 2026 League', to: '/event/event-current-league' },
+        { label: 'League Registration', to: '/event/event-current-league/registration' },
+        { label: 'Schedule', to: '/schedule?eventId=event-current-league' },
+        { label: 'Past Events', to: '/events' },
+        { label: 'Community Timeline', to: '/timeline' },
         { label: 'Notifications', to: '/notifications' },
         { label: 'League Intelligence', to: '/analytics' },
         ...playerItems,

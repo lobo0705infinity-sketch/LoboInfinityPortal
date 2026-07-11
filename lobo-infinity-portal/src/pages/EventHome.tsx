@@ -29,8 +29,9 @@ const CommissionerEventWorkflow = lazy(
 
 function EventHome() {
   const auth = useAuth()
-  const { eventId } = useParams<{ eventId: string }>()
+  const { eventId, section } = useParams<{ eventId: string; section?: string }>()
   const selectedEventId = eventId ? decodeURIComponent(eventId) : defaultEventId
+  const selectedSection = normalizeEventHomeSection(section)
   const [state, setState] = useState<EventHomeState>({ status: 'loading' })
 
   useEffect(() => {
@@ -65,7 +66,7 @@ function EventHome() {
 
   if (state.status === 'loading') {
     return (
-      <EventHomeSkeleton selectedEventId={selectedEventId} />
+      <EventHomeSkeleton section={selectedSection} selectedEventId={selectedEventId} />
     )
   }
 
@@ -107,6 +108,16 @@ function EventHome() {
   const showPlayerStatus = hasEventCapability(capabilities, 'registration')
   const showRules = hasEventCapability(capabilities, 'rules')
   const showCommissionerWorkflow = auth.isAtLeastRole('Commissioner')
+
+  if (selectedSection === 'registration') {
+    return (
+      <EventRegistrationPage
+        data={data}
+        eventNavigationItems={eventNavigationItems}
+        quickActions={data.quickActions}
+      />
+    )
+  }
 
   return (
     <main className="portal-shell event-overview-shell">
@@ -185,7 +196,13 @@ function EventHome() {
   )
 }
 
-function EventHomeSkeleton({ selectedEventId }: { selectedEventId: string }) {
+function EventHomeSkeleton({
+  section,
+  selectedEventId,
+}: {
+  section: EventHomeSection
+  selectedEventId: string
+}) {
   const eventLabel = selectedEventId
     .split('-')
     .filter(Boolean)
@@ -201,7 +218,9 @@ function EventHomeSkeleton({ selectedEventId }: { selectedEventId: string }) {
       >
         <div>
           <p className="eyebrow">Event Headquarters</p>
-          <h1 id="event-home-title">{eventLabel}</h1>
+          <h1 id="event-home-title">
+            {section === 'registration' ? `${eventLabel} Registration` : eventLabel}
+          </h1>
           <p>Preparing event status, registration, and activity.</p>
           <div className="event-home-badges">
             <span>Loading status</span>
@@ -236,6 +255,16 @@ function EventHomeSkeleton({ selectedEventId }: { selectedEventId: string }) {
       </section>
     </main>
   )
+}
+
+type EventHomeSection = 'overview' | 'registration'
+
+function normalizeEventHomeSection(section: string | undefined): EventHomeSection {
+  if (section === 'registration') {
+    return 'registration'
+  }
+
+  return 'overview'
 }
 
 type StatusCard = {
@@ -375,6 +404,60 @@ function PlayerStatusCard({ data }: { data: EventHomeData }) {
       <EventMetric label="Next Match" value={data.playerStatus.upcomingMatch} />
       <p>{data.playerStatus.outstandingAction}</p>
     </section>
+  )
+}
+
+function EventRegistrationPage({
+  data,
+  eventNavigationItems,
+  quickActions,
+}: {
+  data: EventHomeData
+  eventNavigationItems: Array<{ href: string; label: string }>
+  quickActions: EventHomeData['quickActions']
+}) {
+  return (
+    <main className="portal-shell event-overview-shell" data-event-section="registration">
+      <section className="page-header" aria-labelledby="event-registration-title">
+        <p className="eyebrow">{data.event.name}</p>
+        <h1 id="event-registration-title">Registration</h1>
+        <p>{data.registration.status || 'Registration status for this event.'}</p>
+      </section>
+
+      <nav className="event-home-nav" aria-label="Event navigation">
+        {eventNavigationItems.map((item) => (
+          <Link key={`${item.label}-${item.href}`} to={item.href}>
+            {item.label}
+          </Link>
+        ))}
+      </nav>
+
+      <section className="event-overview-dashboard">
+        <PlayerStatusCard data={data} />
+        <section className="panel event-home-panel">
+          <div className="panel-heading">
+            <p className="eyebrow">Registration Window</p>
+            <h2>{data.registration.status}</h2>
+          </div>
+          <EventMetric label="Registered Players" value={data.registration.registeredCount} />
+          <EventMetric label="Waitlist" value={data.registration.waitlistCount} />
+          <EventMetric
+            label="Opens"
+            value={formatDate(data.registration.registrationWindow.startDate)}
+          />
+          <EventMetric
+            label="Closes"
+            value={formatDate(data.registration.registrationWindow.endDate)}
+          />
+        </section>
+      </section>
+
+      {quickActions.length > 0 ? (
+        <section className="event-overview-dashboard">
+          <QuickActions actions={quickActions} />
+        </section>
+      ) : null}
+    </main>
   )
 }
 
