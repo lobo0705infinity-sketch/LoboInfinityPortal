@@ -120,6 +120,7 @@ function AuthShell() {
                 <Route path="/events" element={<MeasuredRoute name="PastEvents"><PastEvents /></MeasuredRoute>} />
                 <Route path="/event/:eventId" element={<MeasuredRoute name="EventHome"><EventHome /></MeasuredRoute>} />
                 <Route path="/event/:eventId/submit-result" element={<MeasuredRoute name="SubmitResult"><SubmitResult /></MeasuredRoute>} />
+                <Route path="/casual-result" element={<MeasuredRoute name="SubmitResult"><SubmitResult /></MeasuredRoute>} />
                 <Route path="/event/:eventId/tournament/:section" element={<MeasuredRoute name="TeamTournament"><TeamTournament /></MeasuredRoute>} />
                 <Route path="/event/:eventId/tournament" element={<MeasuredRoute name="TeamTournament"><TeamTournament /></MeasuredRoute>} />
                 <Route path="/event/:eventId/:section" element={<MeasuredRoute name="EventHome"><EventHome /></MeasuredRoute>} />

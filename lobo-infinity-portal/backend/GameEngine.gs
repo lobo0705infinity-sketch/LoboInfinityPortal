@@ -39,7 +39,9 @@ const FORM = {
 
   MOMENT: 15,
 
-  EVENT_ID: 16
+  EVENT_ID: 16,
+
+  GAME_TYPE: 17
 
 };
 
@@ -137,7 +139,8 @@ function getGameEngineHeaders() {
     "VP",
     "Faction",
     "First Turn",
-    "Event ID"
+    "Event ID",
+    "Game Type"
   ]];
 
 }
@@ -160,7 +163,8 @@ function getGameAnalyticsHeaders() {
     "Loser VP",
     "Best Moment",
     "First Turn Winner",
-    "Event ID"
+    "Event ID",
+    "Game Type"
   ]];
 
 }
@@ -262,7 +266,9 @@ function buildPlayerRow(row, playerNumber, winner) {
           ? "Yes"
           : "No"
     ,
-    getGameEngineEventId(row)
+    getGameEngineEventId(row),
+
+    getGameEngineGameType(row)
 
   ];
 
@@ -406,13 +412,18 @@ function buildAnalyticsRow(row, winner) {
 
     firstTurnWinner,
 
-    getGameEngineEventId(row)
+    getGameEngineEventId(row),
+
+    getGameEngineGameType(row)
 
   ];
 
 }
 
 function getGameEngineEventId(row) {
+
+  if (getGameEngineGameType(row) === "casual")
+    return "";
 
   if (
     row &&
@@ -422,6 +433,42 @@ function getGameEngineEventId(row) {
     return String(row[FORM.EVENT_ID]).trim();
 
   return EVENT_ENGINE_DEFAULT_EVENT_ID;
+
+}
+
+function getGameEngineGameType(row) {
+
+  if (
+    row &&
+    row.length > FORM.GAME_TYPE &&
+    String(row[FORM.GAME_TYPE] || "").trim() !== ""
+  )
+    return normalizeGameType(row[FORM.GAME_TYPE]);
+
+  return "league";
+
+}
+
+function normalizeGameType(value) {
+
+  const type =
+    String(value || "")
+      .trim()
+      .toLowerCase();
+
+  if (type === "tournament")
+    return "tournament";
+
+  if (type === "casual")
+    return "casual";
+
+  if (type === "narrative")
+    return "narrative";
+
+  if (type === "all" || type === "all games")
+    return "all";
+
+  return "league";
 
 }
 function buildGameAnalyticsRows(formRows) {

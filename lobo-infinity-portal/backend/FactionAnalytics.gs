@@ -68,10 +68,10 @@ function createFaction(name){
 /*******************************************************
  * Update Registry
  *******************************************************/
-function updateFactionRegistry(registry){
+function updateFactionRegistry(registry, scopedGames){
 
   const games =
-    getLeagueData();
+    scopedGames || getLeagueData();
 
   games.forEach(function(game){
 

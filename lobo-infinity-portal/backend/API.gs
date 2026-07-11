@@ -502,6 +502,9 @@ function handleApiGet(e, action) {
     case "submitLeagueResult":
       return submitLeagueResult(e);
 
+    case "submitCasualResult":
+      return submitCasualResult(e);
+
     case "updateProfile":
       return updateMyProfile(e);
 
@@ -794,6 +797,9 @@ function handleApiPost(e, action) {
 
     case "submitLeagueResult":
       return submitLeagueResult(e);
+
+    case "submitCasualResult":
+      return submitCasualResult(e);
 
     case "voteArmyList":
       return requireApiPermission(e, "vote", function() {

@@ -128,7 +128,9 @@ const CONFIG = {
 
     FIRST_TURN: 10,
 
-    EVENT_ID: 11
+    EVENT_ID: 11,
+
+    GAME_TYPE: 12
 
   },
 

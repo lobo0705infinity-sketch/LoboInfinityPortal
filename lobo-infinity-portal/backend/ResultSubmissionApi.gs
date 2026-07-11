@@ -123,6 +123,7 @@ function submitLeagueResult(e) {
         : getResultSubmissionString(params.playerFaction);
     row[FORM.MOMENT] = getResultSubmissionString(params.bestMoment);
     row[FORM.EVENT_ID] = eventId;
+    row[FORM.GAME_TYPE] = "league";
 
     const sheet =
       SpreadsheetApp
@@ -143,6 +144,148 @@ function submitLeagueResult(e) {
       success: true,
       status: "Submitted",
       eventId: eventId,
+      player: player,
+      opponent: opponent
+    });
+  });
+
+}
+
+function submitCasualResult(e) {
+
+  return requireApiPermission(e, "submitLists", function(auth) {
+    const params =
+      getApiParameters(e);
+
+    const player =
+      getResultSubmissionString(params.player) ||
+      (auth && auth.user
+        ? auth.user.leaguePlayer ||
+          auth.user.playerDisplayName ||
+          auth.user.displayName ||
+          auth.user.email
+        : "");
+
+    const opponent =
+      getResultSubmissionString(params.opponent);
+
+    if (player === "" || opponent === "")
+      return resultSubmissionFailure("Players are required.");
+
+    if (normalizeResultSubmissionValue(player) === normalizeResultSubmissionValue(opponent))
+      return resultSubmissionFailure("Opponent must be a different player.");
+
+    if (getResultSubmissionString(params.playerFaction) === "")
+      return resultSubmissionFailure("Player faction is required.");
+
+    if (getResultSubmissionString(params.opponentFaction) === "")
+      return resultSubmissionFailure("Opponent faction is required.");
+
+    if (getResultSubmissionString(params.mission) === "")
+      return resultSubmissionFailure("Mission is required.");
+
+    if (getResultSubmissionString(params.firstTurn) === "")
+      return resultSubmissionFailure("First Turn is required.");
+
+    if (getResultSubmissionString(params.bestMoment) === "")
+      return resultSubmissionFailure("Best Moment is required.");
+
+    const playerTp =
+      parseResultSubmissionScore(params.playerTournamentPoints);
+    const opponentTp =
+      parseResultSubmissionScore(params.opponentTournamentPoints);
+    const playerOp =
+      parseResultSubmissionScore(params.playerObjectivePoints);
+    const opponentOp =
+      parseResultSubmissionScore(params.opponentObjectivePoints);
+    const playerVp =
+      parseResultSubmissionScore(params.playerVictoryPoints);
+    const opponentVp =
+      parseResultSubmissionScore(params.opponentVictoryPoints);
+
+    if (
+      playerTp === null ||
+      opponentTp === null ||
+      playerOp === null ||
+      opponentOp === null ||
+      playerVp === null ||
+      opponentVp === null
+    )
+      return resultSubmissionFailure("Scores must be non-negative numbers.");
+
+    if (playerTp + opponentTp > 10)
+      return resultSubmissionFailure("Tournament Points cannot total more than 10.");
+
+    const winner =
+      getResultSubmissionString(params.winner);
+
+    const expectedWinner =
+      determineLeagueSubmissionWinner(
+        player,
+        opponent,
+        playerTp,
+        opponentTp,
+        playerOp,
+        opponentOp,
+        playerVp,
+        opponentVp
+      );
+
+    if (
+      winner !== "" &&
+      normalizeResultSubmissionValue(winner) !== normalizeResultSubmissionValue(expectedWinner)
+    )
+      return resultSubmissionFailure("Winner does not match the submitted scores.");
+
+    const playerIsWinner =
+      normalizeResultSubmissionValue(expectedWinner) === normalizeResultSubmissionValue(player);
+
+    const row = [];
+    row[FORM.TIMESTAMP] = getResultSubmissionTimestamp();
+    row[FORM.DIVISION] = "Casual";
+    row[FORM.DATE] = getResultSubmissionDate();
+    row[FORM.MISSION] = getResultSubmissionString(params.mission);
+    row[FORM.PLAYER1] = player;
+    row[FORM.PLAYER2] = opponent;
+    row[FORM.P1TP] = playerTp;
+    row[FORM.P2TP] = opponentTp;
+    row[FORM.P1OP] = playerOp;
+    row[FORM.P2OP] = opponentOp;
+    row[FORM.P1VP] = playerVp;
+    row[FORM.P2VP] = opponentVp;
+    row[FORM.FIRSTTURN] = getResultSubmissionString(params.firstTurn);
+    row[FORM.WINNINGFACTION] =
+      playerIsWinner
+        ? getResultSubmissionString(params.playerFaction)
+        : getResultSubmissionString(params.opponentFaction);
+    row[FORM.LOSINGFACTION] =
+      playerIsWinner
+        ? getResultSubmissionString(params.opponentFaction)
+        : getResultSubmissionString(params.playerFaction);
+    row[FORM.MOMENT] = getResultSubmissionString(params.bestMoment);
+    row[FORM.EVENT_ID] = "";
+    row[FORM.GAME_TYPE] = "casual";
+
+    const sheet =
+      SpreadsheetApp
+        .getActive()
+        .getSheetByName(CONFIG.SHEETS.FORM);
+
+    if (!sheet)
+      return resultSubmissionFailure("Result datastore was not found.");
+
+    sheet.appendRow(row);
+
+    if (typeof rebuildGameEngine === "function")
+      rebuildGameEngine();
+
+    invalidateResultSubmissionCaches();
+
+    return jsonOutput({
+      success: true,
+      status: "Submitted",
+      eventId: "",
+      gameType: "casual",
       player: player,
       opponent: opponent
     });

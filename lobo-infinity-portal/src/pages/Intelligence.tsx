@@ -28,8 +28,18 @@ type IntelligenceState =
     }
 
 function Analytics() {
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const eventId = searchParams.get('eventId') || ''
+  const gameType = normalizeGameTypeFilter(searchParams.get('gameType'))
+  const handleGameTypeChange = (value: GameTypeFilter) => {
+    const next = new URLSearchParams(searchParams)
+    if (value === 'league') {
+      next.delete('gameType')
+    } else {
+      next.set('gameType', value)
+    }
+    setSearchParams(next)
+  }
   const [intelligenceState, setIntelligenceState] =
     useState<IntelligenceState>({
       status: 'idle',
@@ -41,6 +51,7 @@ function Analytics() {
     apiClient
       .getAnalytics({
         eventId,
+        gameType,
         signal: controller.signal,
       })
       .then((data) => {
@@ -66,12 +77,16 @@ function Analytics() {
     return () => {
       controller.abort()
     }
-  }, [eventId])
+  }, [eventId, gameType])
 
   if (intelligenceState.status === 'idle') {
     return (
       <main className="portal-shell">
-        <PageHeader eventScoped={Boolean(eventId)} />
+        <PageHeader
+          eventScoped={Boolean(eventId)}
+          gameType={gameType}
+          onGameTypeChange={handleGameTypeChange}
+        />
         <section className="intelligence-grid" aria-label="Event intelligence loading">
           <Skeleton label="Hot streaks loading" rows={5} />
           <Skeleton label="Records loading" rows={5} />
@@ -85,7 +100,11 @@ function Analytics() {
   if (intelligenceState.status === 'error') {
     return (
       <main className="portal-shell">
-        <PageHeader eventScoped={Boolean(eventId)} />
+        <PageHeader
+          eventScoped={Boolean(eventId)}
+          gameType={gameType}
+          onGameTypeChange={handleGameTypeChange}
+        />
         <section className="dashboard-state" aria-label="Intelligence error">
           <p role="alert">{intelligenceState.error}</p>
         </section>
@@ -97,7 +116,11 @@ function Analytics() {
 
   return (
     <main className="portal-shell">
-      <PageHeader eventScoped={Boolean(eventId)} />
+      <PageHeader
+        eventScoped={Boolean(eventId)}
+        gameType={gameType}
+        onGameTypeChange={handleGameTypeChange}
+      />
 
       <section className="intelligence-grid" aria-label="Event intelligence">
         <HotStreaksCard
@@ -135,14 +158,44 @@ function Analytics() {
   )
 }
 
-function PageHeader({ eventScoped }: { eventScoped: boolean }) {
+type GameTypeFilter = 'league' | 'tournament' | 'casual' | 'all'
+
+function PageHeader({
+  eventScoped,
+  gameType,
+  onGameTypeChange,
+}: {
+  eventScoped: boolean
+  gameType: GameTypeFilter
+  onGameTypeChange: (value: GameTypeFilter) => void
+}) {
   return (
     <section className="page-header" aria-labelledby="analytics-title">
       <p className="eyebrow">Analytics</p>
       <h1 id="analytics-title">{eventScoped ? 'Event Intelligence' : 'League Intelligence'}</h1>
       <p>Live stories, pressure points, meta movement, and race conditions</p>
+      <label className="dashboard-filter-control">
+        <span>Game Type</span>
+        <select
+          onChange={(event) => onGameTypeChange(event.target.value as GameTypeFilter)}
+          value={gameType}
+        >
+          <option value="league">League</option>
+          <option value="tournament">Tournament</option>
+          <option value="casual">Casual</option>
+          <option value="all">All Games</option>
+        </select>
+      </label>
     </section>
   )
+}
+
+function normalizeGameTypeFilter(value: string | null): GameTypeFilter {
+  if (value === 'tournament' || value === 'casual' || value === 'all') {
+    return value
+  }
+
+  return 'league'
 }
 
 function IntelligenceCard({

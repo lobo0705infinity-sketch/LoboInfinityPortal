@@ -24,7 +24,8 @@ const RECENT_GAME_ANALYTICS_COLUMNS = {
   BEST_MOMENT: "Best Moment",
   FIRST_TURN: "First Turn",
   FIRST_TURN_WINNER: "First Turn Winner",
-  EVENT_ID: "Event ID"
+  EVENT_ID: "Event ID",
+  GAME_TYPE: "Game Type"
 };
 
 function getRecentGames(e) {
@@ -80,7 +81,10 @@ function getRecentGames(e) {
       }),
       e &&
       e.parameter &&
-      e.parameter.eventId
+      e.parameter.eventId,
+      e &&
+      e.parameter &&
+      e.parameter.gameType
     )
       .sort(function(a, b) {
 
@@ -115,7 +119,11 @@ function buildRecentGameResponse(game, id) {
 
   return {
     id: id,
-    eventId: game.eventId || EVENT_ENGINE_DEFAULT_EVENT_ID,
+    eventId:
+      game.gameType === "casual"
+        ? ""
+        : game.eventId || EVENT_ENGINE_DEFAULT_EVENT_ID,
+    gameType: game.gameType,
     date: game.date,
     division: game.division,
     winner: game.winner,
@@ -223,6 +231,11 @@ function getRecentGameColumns(headers) {
       getRecentGameOptionalColumn(
         headers,
         RECENT_GAME_ANALYTICS_COLUMNS.EVENT_ID
+      ),
+    gameType:
+      getRecentGameOptionalColumn(
+        headers,
+        RECENT_GAME_ANALYTICS_COLUMNS.GAME_TYPE
       )
   };
 
@@ -306,13 +319,46 @@ function buildRecentGame(
             row[columns.bestMoment]
           ),
     firstTurn: firstTurn,
+    gameType:
+      getRecentGameGameType(
+        row,
+        columns
+      ),
     eventId:
-      columns.eventId === -1
-        ? EVENT_ENGINE_DEFAULT_EVENT_ID
-        : getRecentGameString(
-            row[columns.eventId]
-          ) || EVENT_ENGINE_DEFAULT_EVENT_ID
+      getRecentGameEventId(
+        row,
+        columns
+      )
   };
+
+}
+
+function getRecentGameGameType(row, columns) {
+
+  if (columns.gameType !== -1) {
+    const value =
+      getRecentGameString(
+        row[columns.gameType]
+      );
+
+    if (value !== "")
+      return normalizeGameType(value);
+  }
+
+  return "league";
+
+}
+
+function getRecentGameEventId(row, columns) {
+
+  if (getRecentGameGameType(row, columns) === "casual")
+    return "";
+
+  return columns.eventId === -1
+    ? EVENT_ENGINE_DEFAULT_EVENT_ID
+    : getRecentGameString(
+        row[columns.eventId]
+      ) || EVENT_ENGINE_DEFAULT_EVENT_ID;
 
 }
 
@@ -438,16 +484,22 @@ function getRecentGameFirstTurn(
 
 }
 
-function filterRecentGamesByEvent(games, eventId) {
+function filterRecentGamesByEvent(games, eventId, gameType) {
 
   const scope =
     resolveLeagueEventScope(eventId);
+
+  const typeScope =
+    resolveLeagueGameTypeScope(gameType);
 
   if (
     scope === "all" ||
     scope === "lifetime"
   )
-    return games;
+    return games.filter(function(game) {
+      return typeScope === "all" ||
+        getRecentGameString(game.gameType || "league") === typeScope;
+    });
 
   return measureEventHomeOperationIfAvailable(
     "eventHome.recentGames.filterByEvent",
@@ -456,6 +508,12 @@ function filterRecentGamesByEvent(games, eventId) {
         return measureEventHomeLoopIterationIfAvailable(
           "eventHome.loop.recentGames.filterByEvent",
           function() {
+            if (
+              typeScope !== "all" &&
+              getRecentGameString(game.gameType || "league") !== typeScope
+            )
+              return false;
+
             return (
               getRecentGameString(game.eventId) ||
               EVENT_ENGINE_DEFAULT_EVENT_ID
@@ -467,13 +525,14 @@ function filterRecentGamesByEvent(games, eventId) {
     {
       inputGames: games.length,
       eventId: eventId,
-      scope: scope
+      scope: scope,
+      gameType: typeScope
     }
   );
 
 }
 
-function getAllRecentGameObjectsForEvent(eventId) {
+function getAllRecentGameObjectsForEvent(eventId, gameType) {
 
   if (typeof getAllRecentGameObjects !== "function")
     return [];
@@ -483,11 +542,13 @@ function getAllRecentGameObjectsForEvent(eventId) {
     function() {
       return filterRecentGamesByEvent(
         getAllRecentGameObjects(),
-        eventId
+        eventId,
+        gameType
       );
     },
     {
-      eventId: eventId
+      eventId: eventId,
+      gameType: gameType || "league"
     }
   );
 

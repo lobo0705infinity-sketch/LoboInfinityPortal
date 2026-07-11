@@ -125,6 +125,7 @@ const endpointPolicy = {
   standings: { authRequired: false, userScoped: false },
   streams: { authRequired: false, userScoped: false },
   submitArmyList: { authRequired: true, userScoped: true },
+  submitCasualResult: { authRequired: true, userScoped: true },
   submitLeagueResult: { authRequired: true, userScoped: true },
   teamTournament: { authRequired: true, userScoped: true },
   teamTournamentInvitation: { authRequired: true, userScoped: false },

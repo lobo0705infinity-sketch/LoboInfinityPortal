@@ -25,10 +25,20 @@ type StatisticsState =
 
 function Analytics() {
   const location = useLocation()
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const isIntelligenceRoute = location.pathname === '/intelligence'
   const eventId = searchParams.get('eventId') || ''
+  const gameType = normalizeGameTypeFilter(searchParams.get('gameType'))
   const [state, setState] = useState<StatisticsState>({ status: 'loading' })
+  const handleGameTypeChange = (value: GameTypeFilter) => {
+    const next = new URLSearchParams(searchParams)
+    if (value === 'league') {
+      next.delete('gameType')
+    } else {
+      next.set('gameType', value)
+    }
+    setSearchParams(next)
+  }
 
   useEffect(() => {
     if (isIntelligenceRoute) {
@@ -36,7 +46,7 @@ function Analytics() {
     }
 
     const controller = new AbortController()
-    const options = { eventId, signal: controller.signal }
+    const options = { eventId, gameType, signal: controller.signal }
 
     Promise.all([
       apiClient.getPlayers(options),
@@ -74,7 +84,7 @@ function Analytics() {
     return () => {
       controller.abort()
     }
-  }, [eventId, isIntelligenceRoute])
+  }, [eventId, gameType, isIntelligenceRoute])
 
   if (isIntelligenceRoute) {
     return <Intelligence />
@@ -83,7 +93,11 @@ function Analytics() {
   if (state.status === 'loading') {
     return (
       <main className="portal-shell">
-        <PageHeader eventScoped={Boolean(eventId)} />
+        <PageHeader
+          eventScoped={Boolean(eventId)}
+          gameType={gameType}
+          onGameTypeChange={handleGameTypeChange}
+        />
         <section className="event-overview-status-grid" aria-label="Statistics loading">
           {['League Analytics', 'Player Analytics', 'Faction Analytics', 'Mission Analytics'].map((label) => (
             <article className="event-overview-status-card neutral" key={label}>
@@ -105,7 +119,11 @@ function Analytics() {
   if (state.status === 'error') {
     return (
       <main className="portal-shell">
-        <PageHeader eventScoped={Boolean(eventId)} />
+        <PageHeader
+          eventScoped={Boolean(eventId)}
+          gameType={gameType}
+          onGameTypeChange={handleGameTypeChange}
+        />
         <section className="dashboard-state" aria-label="Statistics error">
           <p role="alert">{state.error}</p>
         </section>
@@ -118,6 +136,8 @@ function Analytics() {
       data={state.data}
       eventScoped={Boolean(eventId)}
       eventId={eventId}
+      gameType={gameType}
+      onGameTypeChange={handleGameTypeChange}
     />
   )
 }
@@ -126,17 +146,25 @@ function StatisticsDashboard({
   data,
   eventScoped,
   eventId,
+  gameType,
+  onGameTypeChange,
 }: {
   data: Extract<StatisticsState, { status: 'success' }>['data']
   eventScoped: boolean
   eventId: string
+  gameType: GameTypeFilter
+  onGameTypeChange: (value: GameTypeFilter) => void
 }) {
   const model = useMemo(() => buildStatisticsModel(data), [data])
-  const eventQuery = eventId ? `?eventId=${encodeURIComponent(eventId)}` : ''
+  const eventQuery = buildStatisticsQuery(eventId, gameType)
 
   return (
     <main className="portal-shell">
-      <PageHeader eventScoped={eventScoped} />
+      <PageHeader
+        eventScoped={eventScoped}
+        gameType={gameType}
+        onGameTypeChange={onGameTypeChange}
+      />
 
       <section className="event-overview-status-grid" aria-label="Statistics summary">
         <SummaryCard label="Games" value={model.totalGames} />
@@ -214,14 +242,61 @@ function StatisticsDashboard({
   )
 }
 
-function PageHeader({ eventScoped }: { eventScoped: boolean }) {
+type GameTypeFilter = 'league' | 'tournament' | 'casual' | 'all'
+
+function PageHeader({
+  eventScoped,
+  gameType,
+  onGameTypeChange,
+}: {
+  eventScoped: boolean
+  gameType: GameTypeFilter
+  onGameTypeChange?: (value: GameTypeFilter) => void
+}) {
   return (
     <section className="page-header" aria-labelledby="statistics-title">
       <p className="eyebrow">Statistics</p>
       <h1 id="statistics-title">{eventScoped ? 'Event Statistics' : 'League Statistics'}</h1>
       <p>Player, faction, mission, and league analytics powered by live event data</p>
+      {onGameTypeChange ? (
+        <label className="dashboard-filter-control">
+          <span>Game Type</span>
+          <select
+            onChange={(event) => onGameTypeChange(event.target.value as GameTypeFilter)}
+            value={gameType}
+          >
+            <option value="league">League</option>
+            <option value="tournament">Tournament</option>
+            <option value="casual">Casual</option>
+            <option value="all">All Games</option>
+          </select>
+        </label>
+      ) : null}
     </section>
   )
+}
+
+function normalizeGameTypeFilter(value: string | null): GameTypeFilter {
+  if (value === 'tournament' || value === 'casual' || value === 'all') {
+    return value
+  }
+
+  return 'league'
+}
+
+function buildStatisticsQuery(eventId: string, gameType: GameTypeFilter) {
+  const params = new URLSearchParams()
+
+  if (eventId) {
+    params.set('eventId', eventId)
+  }
+
+  if (gameType !== 'league') {
+    params.set('gameType', gameType)
+  }
+
+  const query = params.toString()
+  return query ? `?${query}` : ''
 }
 
 function SummaryCard({ label, value }: { label: string; value: number | string }) {

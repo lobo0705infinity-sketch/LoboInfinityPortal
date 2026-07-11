@@ -15,6 +15,9 @@ function buildEventAnalyticsContext(e) {
   const eventId =
     resolveEventId(params.eventId || EVENT_ENGINE_DEFAULT_EVENT_ID);
 
+  const gameType =
+    normalizeGameType(params.gameType || "league");
+
   const event =
     (
       typeof getEventByIdSnapshot === "function"
@@ -32,6 +35,7 @@ function buildEventAnalyticsContext(e) {
     eventId: event.id || eventId,
     event: event,
     eventType: getEventAnalyticsString(event.type) || "League",
+    gameType: gameType,
     isLeague:
       getEventAnalyticsString(event.type).toLowerCase() === "league"
   };
@@ -52,7 +56,10 @@ function buildEventAnalyticsFallbackEvent(eventId) {
 
 function getEventAnalyticsPlayers(context) {
 
-  if (context.isLeague)
+  if (
+    context.isLeague &&
+    context.gameType === "league"
+  )
     return [
       buildEventStandingsResponse(
         getStandingsDivisionConfig("main"),
@@ -67,6 +74,9 @@ function getEventAnalyticsPlayers(context) {
         context.eventId
       )
     ];
+
+  if (context.isLeague)
+    return getEventAnalyticsGameEnginePlayers(context);
 
   const rows =
     getEventAnalyticsRegistrations(context.eventId)
@@ -102,7 +112,12 @@ function getEventAnalyticsPlayers(context) {
 function getEventAnalyticsFactions(context) {
 
   if (context.isLeague)
-    return buildFactionApiSummaries();
+    return buildFactionApiSummaries(
+      context.gameType === "league"
+        ? context.eventId
+        : "all",
+      context.gameType
+    );
 
   const factions = {};
 
@@ -187,10 +202,138 @@ function getEventAnalyticsFactions(context) {
 
 }
 
+function getEventAnalyticsGameEnginePlayers(context) {
+
+  const rows =
+    getLeagueDataForEvent(
+      context.gameType === "league"
+        ? context.eventId
+        : "all",
+      context.gameType
+    );
+
+  const players = {};
+
+  rows.forEach(function(row) {
+    const player =
+      getEventAnalyticsString(row[CONFIG.ENGINE.PLAYER]);
+
+    if (!player)
+      return;
+
+    if (!players[player])
+      players[player] = {
+        player: player,
+        displayName: getPlayerDisplayName(player),
+        games: 0,
+        wins: 0,
+        losses: 0,
+        tp: 0,
+        op: 0,
+        vp: 0,
+        faction: ""
+      };
+
+    const record =
+      players[player];
+
+    record.games += 1;
+    record.tp += Number(row[CONFIG.ENGINE.TP]) || 0;
+    record.op += Number(row[CONFIG.ENGINE.OP]) || 0;
+    record.vp += Number(row[CONFIG.ENGINE.VP]) || 0;
+    record.faction =
+      record.faction ||
+      getEventAnalyticsString(row[CONFIG.ENGINE.FACTION]);
+
+    switch (getEventAnalyticsString(row[CONFIG.ENGINE.RESULT])) {
+      case "W":
+        record.wins += 1;
+        break;
+      case "L":
+        record.losses += 1;
+        break;
+    }
+  });
+
+  const standings =
+    Object.values(players)
+      .sort(function(a, b) {
+        if (b.wins !== a.wins)
+          return b.wins - a.wins;
+        if (b.tp !== a.tp)
+          return b.tp - a.tp;
+        if (b.op !== a.op)
+          return b.op - a.op;
+        if (b.vp !== a.vp)
+          return b.vp - a.vp;
+        return a.player.localeCompare(b.player);
+      })
+      .map(function(player, index) {
+        return {
+          eventId:
+            context.gameType === "casual"
+              ? ""
+              : context.eventId,
+          rank: index + 1,
+          player: player.player,
+          displayName: player.displayName || player.player,
+          division:
+            context.gameType === "all"
+              ? "All Games"
+              : capitalizeEventAnalyticsGameType(context.gameType),
+          games: player.games,
+          wins: player.wins,
+          losses: player.losses,
+          tp: player.tp,
+          op: player.op,
+          vp: player.vp,
+          faction: player.faction
+        };
+      });
+
+  return [
+    {
+      success: true,
+      eventId:
+        context.gameType === "casual"
+          ? ""
+          : context.eventId,
+      event: context.event,
+      division: context.gameType,
+      divisionLabel:
+        capitalizeEventAnalyticsGameType(context.gameType) +
+        " Player Analytics",
+      standings: standings,
+      summary: buildEventAnalyticsDivisionSummary(standings)
+    }
+  ];
+
+}
+
+function capitalizeEventAnalyticsGameType(gameType) {
+
+  const value =
+    getEventAnalyticsString(gameType);
+
+  if (!value)
+    return "League";
+
+  if (value === "all")
+    return "All Games";
+
+  return value.charAt(0).toUpperCase() + value.slice(1);
+
+}
+
 function getEventAnalyticsMissions(context) {
 
   if (context.isLeague)
-    return buildMissionApiSummaries();
+    return buildMissionApiSummaries(
+      context.gameType === "league"
+        ? context.eventId
+        : "all",
+      context.gameType
+    );
 
   const missions = {};
 
@@ -254,8 +397,14 @@ function getEventAnalyticsMissions(context) {
 
 function getEventAnalyticsIntelligence(context) {
 
-  if (context.isLeague)
+  if (
+    context.isLeague &&
+    context.gameType === "league"
+  )
     return JSON.parse(getIntelligence().getContent());
+
+  if (context.isLeague)
+    return getEventAnalyticsGameTypeIntelligence(context);
 
   const results =
     getEventAnalyticsResults(context.eventId);
@@ -304,6 +453,96 @@ function getEventAnalyticsIntelligence(context) {
     promotionBattle: [],
     relegationBattle: [],
     records: buildEventAnalyticsRecords(results, standings)
+  };
+
+}
+
+function getEventAnalyticsGameTypeIntelligence(context) {
+
+  const games =
+    getAllRecentGameObjectsForEvent(
+      context.gameType === "league"
+        ? context.eventId
+        : "all",
+      context.gameType
+    );
+
+  const intelligenceGames =
+    games.map(function(game, index) {
+      return {
+        id: index + 1,
+        date: game.date,
+        division: game.division,
+        winner: game.winner,
+        winnerDisplayName: game.winnerDisplayName || game.winner,
+        loser: game.loser,
+        loserDisplayName: game.loserDisplayName || game.loser,
+        winnerFaction: game.winnerFaction,
+        loserFaction: game.loserFaction,
+        mission: game.mission,
+        tp: game.tp,
+        op: game.op,
+        vp: game.vp,
+        bestMoment: game.bestMoment,
+        firstTurn: game.firstTurn,
+        value: Number(String(game.op || "").split("-")[0]) || 0,
+        label: game.op || "",
+        story:
+          game.winner +
+          " defeated " +
+          game.loser +
+          " on " +
+          (game.mission || "an unreported mission") +
+          "."
+      };
+    });
+
+  return {
+    success: true,
+    winStreaks: [],
+    losingStreaks: [],
+    highestVPGames: intelligenceGames,
+    biggestVictories: intelligenceGames,
+    closestGames: intelligenceGames,
+    factionMomentum:
+      getEventAnalyticsFactions(context)
+        .map(function(faction) {
+          return {
+            faction: faction.name,
+            games: faction.games,
+            wins: faction.wins,
+            losses: faction.losses,
+            trend: faction.games > 0 ? "Active" : "No data",
+            story:
+              faction.name +
+              " has " +
+              faction.games +
+              " " +
+              context.gameType +
+              " games."
+          };
+        }),
+    missionTrends:
+      getEventAnalyticsMissions(context)
+        .map(function(mission) {
+          return {
+            mission: mission.mission,
+            games: mission.games,
+            firstTurnWinRate: mission.firstTurnWinRate,
+            mostSuccessfulFaction: mission.mostSuccessfulFaction,
+            story:
+              mission.mission +
+              " has " +
+              mission.games +
+              " " +
+              context.gameType +
+              " games."
+          };
+        }),
+    recentUpsets: [],
+    promotionBattle: [],
+    relegationBattle: [],
+    records: getLeagueRecords(games)
   };
 
 }
@@ -469,8 +708,16 @@ function getEventAnalyticsSearchData(context) {
     missions: getEventAnalyticsMissions(context),
     games:
       context.isLeague
-        ? getAllRecentGameObjects().slice(0, RECENT_GAMES_LIMIT)
-        : getAllRecentGameObjectsForEvent(context.eventId).slice(0, RECENT_GAMES_LIMIT),
+        ? getAllRecentGameObjectsForEvent(
+            context.gameType === "league"
+              ? context.eventId
+              : "all",
+            context.gameType
+          ).slice(0, RECENT_GAMES_LIMIT)
+        : getAllRecentGameObjectsForEvent(
+            context.eventId,
+            context.gameType
+          ).slice(0, RECENT_GAMES_LIMIT),
     armyLists:
       context.isLeague
         ? getArmyListObjects().filter(function(list) { return list.approved; })
@@ -484,7 +731,10 @@ function getEventAnalyticsPlayerProfile(e, requestedName) {
   const context =
     buildEventAnalyticsContext(e);
 
-  if (context.isLeague)
+  if (
+    context.isLeague &&
+    context.gameType === "league"
+  )
     return null;
 
   const players =
@@ -568,7 +818,10 @@ function getEventAnalyticsPlayerProfile(e, requestedName) {
 
 function getEventAnalyticsFactionProfile(context, requestedName) {
 
-  if (context.isLeague)
+  if (
+    context.isLeague &&
+    context.gameType === "league"
+  )
     return null;
 
   const faction =
@@ -603,7 +856,7 @@ function getEventAnalyticsFactionProfile(context, requestedName) {
       divisionBreakdown: faction.divisionBreakdown || [],
       mostPlayedMission: "",
       recentGames: buildEventAnalyticsGames(
-        getEventAnalyticsResults(context.eventId)
+        getEventAnalyticsProfileResults(context)
       ).filter(function(game) {
         return game.winnerFaction === faction.name;
       }),
@@ -632,7 +885,10 @@ function getEventAnalyticsFactionProfile(context, requestedName) {
 
 function getEventAnalyticsMissionProfile(context, requestedName) {
 
-  if (context.isLeague)
+  if (
+    context.isLeague &&
+    context.gameType === "league"
+  )
     return null;
 
   const mission =
@@ -663,7 +919,7 @@ function getEventAnalyticsMissionProfile(context, requestedName) {
       lastPlayed: mission.lastPlayed,
       mostPlayedFaction: mission.mostSuccessfulFaction,
       recentGames: buildEventAnalyticsGames(
-        getEventAnalyticsResults(context.eventId)
+        getEventAnalyticsProfileResults(context)
       ).filter(function(game) {
         return game.mission === mission.mission;
       }),
@@ -837,6 +1093,37 @@ function buildEventAnalyticsGames(results) {
           "."
       };
     });
+
+}
+
+function getEventAnalyticsProfileResults(context) {
+
+  if (
+    context.isLeague &&
+    context.gameType !== "league"
+  )
+    return getAllRecentGameObjectsForEvent(
+      "all",
+      context.gameType
+    ).map(function(game) {
+      return {
+        status: "",
+        updatedAt: game.date,
+        createdAt: game.date,
+        winner: game.winner,
+        player: game.winner,
+        opponent: game.loser,
+        winningFaction: game.winnerFaction,
+        mission: game.mission,
+        tournamentPoints: game.tp,
+        objectivePoints: game.op,
+        victoryPoints: game.vp,
+        bestMoment: game.bestMoment,
+        firstTurn: game.firstTurn
+      };
+    });
+
+  return getEventAnalyticsResults(context.eventId);
 
 }
 

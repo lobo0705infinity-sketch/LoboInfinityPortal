@@ -119,13 +119,20 @@ function getFaction(e) {
 
 }
 
-function buildFactionApiSummaries() {
+function buildFactionApiSummaries(eventId, gameType) {
 
   const registry =
     buildFactionRegistry();
 
+  const scopedGames =
+    getLeagueDataForEvent(
+      eventId || "all",
+      gameType || "league"
+    );
+
   updateFactionRegistry(
-    registry
+    registry,
+    scopedGames
   );
 
   const factions =
@@ -139,7 +146,8 @@ function buildFactionApiSummaries() {
 
     const games =
       getFactionEngineGames(
-        faction.faction
+        faction.faction,
+        scopedGames
       );
 
     return buildFactionApiSummary(
@@ -242,9 +250,9 @@ function findFactionSummary(
 
 }
 
-function getFactionEngineGames(factionName) {
+function getFactionEngineGames(factionName, scopedGames) {
 
-  return getLeagueData()
+  return (scopedGames || getLeagueData())
     .filter(function(game) {
 
       return (

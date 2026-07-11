@@ -1,5 +1,6 @@
 export type ApiOptions = {
   eventId?: string
+  gameType?: string
   signal?: AbortSignal
 }
 
@@ -940,6 +941,8 @@ function getMutationInvalidationGroups(action: string) {
     case 'submitLeagueResult':
     case 'teamTournamentResult':
       return ['dashboard', 'eventHome', 'teamTournament', 'standings', 'analytics', 'records', 'players']
+    case 'submitCasualResult':
+      return ['dashboard', 'analytics', 'records', 'players']
     case 'teamTournamentTeam':
     case 'teamTournamentPairing':
     case 'teamTournamentInvitation':

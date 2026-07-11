@@ -1,9 +1,10 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import Skeleton from '../components/Skeleton'
 import {
   apiClient,
+  type CasualResultSubmission,
   type EventHomeData,
   type LeagueResultSubmission,
   type TeamTournamentData,
@@ -39,7 +40,9 @@ const emptyLeagueResult: LeagueResultSubmission = {
 
 function SubmitResult() {
   const auth = useAuth()
+  const location = useLocation()
   const { eventId = 'event-current-league' } = useParams()
+  const isCasualRoute = location.pathname === '/casual-result'
   const [eventHome, setEventHome] = useState<EventHomeData | null>(null)
   const [teamTournament, setTeamTournament] = useState<TeamTournamentData | null>(null)
   const [state, setState] = useState<SubmitState>({ status: 'loading' })
@@ -47,11 +50,31 @@ function SubmitResult() {
     ...emptyLeagueResult,
     eventId,
   })
+  const [casualResult, setCasualResult] = useState<CasualResultSubmission>({
+    ...emptyLeagueResult,
+    division: undefined,
+    eventId: undefined,
+    player: auth.user.leaguePlayer || auth.user.playerDisplayName || auth.user.displayName || '',
+    playerFaction: auth.user.favoriteFaction || '',
+    round: undefined,
+  })
 
   useEffect(() => {
     const controller = new AbortController()
 
     async function loadSubmissionContext() {
+      if (isCasualRoute) {
+        setEventHome(null)
+        setTeamTournament(null)
+        setCasualResult((current) => ({
+          ...current,
+          player: current.player || auth.user.leaguePlayer || auth.user.playerDisplayName || auth.user.displayName || '',
+          playerFaction: current.playerFaction || auth.user.favoriteFaction || '',
+        }))
+        setState({ status: 'idle' })
+        return
+      }
+
       setState({ status: 'loading' })
 
       try {
@@ -117,8 +140,166 @@ function SubmitResult() {
     auth.user.favoriteFaction,
     auth.user.leagueDivision,
     auth.user.leaguePlayer,
+    auth.user.playerDisplayName,
+    auth.user.displayName,
     eventId,
+    isCasualRoute,
   ])
+
+  function updateCasualField(field: keyof CasualResultSubmission, value: string) {
+    setCasualResult((current) => ({
+      ...current,
+      [field]: value,
+    }))
+  }
+
+  async function submitCasual(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+
+    const validation = validateCasualResult(casualResult)
+
+    if (validation.length > 0) {
+      setState({ message: validation.join(' '), status: 'error' })
+      return
+    }
+
+    setState({ status: 'submitting' })
+
+    try {
+      await apiClient.submitCasualResult(casualResult)
+      setState({
+        message: 'Casual game submitted. Analytics and lifetime records will refresh from the official game data.',
+        status: 'success',
+      })
+    } catch {
+      setState({
+        message: 'Casual game could not be submitted. Please review the fields or contact a commissioner.',
+        status: 'error',
+      })
+    }
+  }
+
+  if (isCasualRoute) {
+    return (
+      <main className="portal-shell">
+        <section className="page-header" aria-labelledby="casual-result-title">
+          <p className="eyebrow">Casual Game</p>
+          <h1 id="casual-result-title">Submit Casual Game</h1>
+          <p>Record a non-event game for lifetime analytics, faction trends, mission data, and activity feeds.</p>
+          <Link className="submit-match-button" to="/">
+            Return to Dashboard
+          </Link>
+        </section>
+
+        {!auth.authenticated ? (
+          <section className="dashboard-state" aria-label="Authentication required">
+            <p role="alert">Sign in with a Portal account to submit a casual game.</p>
+          </section>
+        ) : null}
+
+        <form className="army-list-form panel" onSubmit={(event) => void submitCasual(event)}>
+          <FormField
+            label="Player"
+            onChange={(value) => updateCasualField('player', value)}
+            required
+            value={casualResult.player}
+          />
+          <FormField
+            label="Opponent"
+            onChange={(value) => updateCasualField('opponent', value)}
+            required
+            value={casualResult.opponent}
+          />
+          <FormField
+            label="Player Faction"
+            onChange={(value) => updateCasualField('playerFaction', value)}
+            required
+            value={casualResult.playerFaction}
+          />
+          <FormField
+            label="Opponent Faction"
+            onChange={(value) => updateCasualField('opponentFaction', value)}
+            required
+            value={casualResult.opponentFaction}
+          />
+          <FormField
+            label="Mission"
+            onChange={(value) => updateCasualField('mission', value)}
+            required
+            value={casualResult.mission}
+          />
+          <SelectField
+            label="Winner"
+            onChange={(value) => updateCasualField('winner', value)}
+            options={[casualResult.player, casualResult.opponent, 'Draw'].filter(Boolean)}
+            required
+            value={casualResult.winner}
+          />
+          <ScoreField
+            label="Player Tournament Points"
+            onChange={(value) => updateCasualField('playerTournamentPoints', value)}
+            value={casualResult.playerTournamentPoints}
+          />
+          <ScoreField
+            label="Opponent Tournament Points"
+            onChange={(value) => updateCasualField('opponentTournamentPoints', value)}
+            value={casualResult.opponentTournamentPoints}
+          />
+          <ScoreField
+            label="Player Objective Points"
+            onChange={(value) => updateCasualField('playerObjectivePoints', value)}
+            value={casualResult.playerObjectivePoints}
+          />
+          <ScoreField
+            label="Opponent Objective Points"
+            onChange={(value) => updateCasualField('opponentObjectivePoints', value)}
+            value={casualResult.opponentObjectivePoints}
+          />
+          <ScoreField
+            label="Player Victory Points"
+            onChange={(value) => updateCasualField('playerVictoryPoints', value)}
+            value={casualResult.playerVictoryPoints}
+          />
+          <ScoreField
+            label="Opponent Victory Points"
+            onChange={(value) => updateCasualField('opponentVictoryPoints', value)}
+            value={casualResult.opponentVictoryPoints}
+          />
+          <SelectField
+            label="First Turn"
+            onChange={(value) => updateCasualField('firstTurn', value)}
+            options={[casualResult.player, casualResult.opponent, 'Unknown'].filter(Boolean)}
+            required
+            value={casualResult.firstTurn}
+          />
+          <label className="army-list-form-wide">
+            <span>Best Moment</span>
+            <textarea
+              onChange={(event) => updateCasualField('bestMoment', event.target.value)}
+              required
+              rows={4}
+              value={casualResult.bestMoment}
+            />
+          </label>
+          <label className="army-list-form-wide">
+            <span>Optional Notes</span>
+            <textarea
+              onChange={(event) => updateCasualField('notes', event.target.value)}
+              rows={3}
+              value={casualResult.notes}
+            />
+          </label>
+          <div className="army-list-form-actions">
+            <button disabled={!auth.authenticated || state.status === 'submitting'} type="submit">
+              {state.status === 'submitting' ? 'Submitting...' : 'Submit Casual Game'}
+            </button>
+            {state.status === 'success' ? <p role="status">{state.message}</p> : null}
+            {state.status === 'error' ? <p role="alert">{state.message}</p> : null}
+          </div>
+        </form>
+      </main>
+    )
+  }
 
   if (eventHome?.event.type === 'Team Tournament') {
     return (
@@ -465,6 +646,71 @@ function validateLeagueResult(data: EventHomeData, submission: LeagueResultSubmi
     opponentVp,
   )
   if (expectedWinner && submission.winner && normalize(expectedWinner) !== normalize(submission.winner)) {
+    issues.push('Winner must match the submitted TP, OP, and VP scores.')
+  }
+
+  return issues
+}
+
+function validateCasualResult(submission: CasualResultSubmission) {
+  const issues: string[] = []
+
+  if (!submission.player.trim()) {
+    issues.push('Player is required.')
+  }
+
+  if (!submission.opponent.trim()) {
+    issues.push('Opponent is required.')
+  }
+
+  if (normalize(submission.opponent) === normalize(submission.player)) {
+    issues.push('Opponent must be a different player.')
+  }
+
+  if (!submission.playerFaction.trim() || !submission.opponentFaction.trim()) {
+    issues.push('Both factions are required.')
+  }
+
+  if (!submission.mission.trim()) {
+    issues.push('Mission is required.')
+  }
+
+  if (!submission.firstTurn.trim()) {
+    issues.push('First Turn is required.')
+  }
+
+  if (!submission.bestMoment.trim()) {
+    issues.push('Best Moment is required.')
+  }
+
+  const playerTp = parseScore(submission.playerTournamentPoints)
+  const opponentTp = parseScore(submission.opponentTournamentPoints)
+  const playerOp = parseScore(submission.playerObjectivePoints)
+  const opponentOp = parseScore(submission.opponentObjectivePoints)
+  const playerVp = parseScore(submission.playerVictoryPoints)
+  const opponentVp = parseScore(submission.opponentVictoryPoints)
+
+  if ([playerTp, opponentTp, playerOp, opponentOp, playerVp, opponentVp].some((score) => score === null)) {
+    issues.push('Scores must be non-negative numbers.')
+  }
+
+  if (playerTp !== null && opponentTp !== null && playerTp + opponentTp > 10) {
+    issues.push('Tournament Points cannot total more than 10.')
+  }
+
+  const expectedWinner = determineExpectedWinner(
+    submission.player,
+    submission.opponent,
+    playerTp,
+    opponentTp,
+    playerOp,
+    opponentOp,
+    playerVp,
+    opponentVp,
+  )
+  if (!submission.winner.trim()) {
+    issues.push('Winner is required.')
+  } else if (expectedWinner && normalize(expectedWinner) !== normalize(submission.winner)) {
     issues.push('Winner must match the submitted TP, OP, and VP scores.')
   }
 

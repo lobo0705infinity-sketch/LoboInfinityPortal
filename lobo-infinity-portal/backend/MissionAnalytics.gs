@@ -80,10 +80,10 @@ function createMissionFaction(){
 /*******************************************************
  * Update Registry
  *******************************************************/
-function updateMissionRegistry(registry){
+function updateMissionRegistry(registry, scopedGames){
 
   const games =
-    getLeagueData();
+    scopedGames || getLeagueData();
 
   games.forEach(function(game){
 

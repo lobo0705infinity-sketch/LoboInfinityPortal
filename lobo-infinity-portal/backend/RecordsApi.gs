@@ -27,7 +27,12 @@ function getRecords(e) {
     });
 
   const games =
-    getAllRecentGameObjects();
+    getAllRecentGameObjectsForEvent(
+      context.gameType === "league"
+        ? context.eventId
+        : "all",
+      context.gameType
+    );
 
   return jsonOutput({
     success: true,

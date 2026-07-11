@@ -69,7 +69,7 @@ function getLeagueData() {
   return LeagueData;
 
 }
-function getLeagueDataForEvent(eventId) {
+function getLeagueDataForEvent(eventId, gameType) {
 
   let timer =
     startDashboardEndpointSubStage(
@@ -79,34 +79,16 @@ function getLeagueDataForEvent(eventId) {
   const scope =
     resolveLeagueEventScope(eventId);
 
+  const typeScope =
+    resolveLeagueGameTypeScope(gameType);
+
   endDashboardEndpointSubStage(
     "dashboard.leagueData.resolveEventScope",
     timer,
     {
       eventId: eventId || "",
-      scope: scope
-    }
-  );
-
-  if (
-    scope === "all" ||
-    scope === "lifetime"
-  )
-    return getLeagueData();
-
-  timer =
-    startDashboardEndpointSubStage(
-      "dashboard.leagueData.eventColumn"
-    );
-
-  const eventColumn =
-    getLeagueDataEventColumn();
-
-  endDashboardEndpointSubStage(
-    "dashboard.leagueData.eventColumn",
-    timer,
-    {
-      eventColumn: eventColumn
+      scope: scope,
+      gameType: typeScope
     }
   );
 
@@ -115,13 +97,54 @@ function getLeagueDataForEvent(eventId) {
 
   timer =
     startDashboardEndpointSubStage(
-      "dashboard.leagueData.filterByEvent"
+      "dashboard.leagueData.scopeColumns"
+    );
+
+  const eventColumn =
+    getLeagueDataEventColumn();
+
+  const gameTypeColumn =
+    getLeagueDataGameTypeColumn();
+
+  endDashboardEndpointSubStage(
+    "dashboard.leagueData.scopeColumns",
+    timer,
+    {
+      eventColumn: eventColumn,
+      gameTypeColumn: gameTypeColumn
+    }
+  );
+
+  timer =
+    startDashboardEndpointSubStage(
+      "dashboard.leagueData.filterByScope"
     );
 
   const filtered =
     games
     .filter(function(row) {
+      const rowGameType =
+        getLeagueDataRowGameType(
+          row,
+          gameTypeColumn
+        );
+
+      if (
+        typeScope !== "all" &&
+        rowGameType !== typeScope
+      )
+        return false;
+
+      if (
+        scope === "all" ||
+        scope === "lifetime"
+      )
+        return true;
+
       const rowEventId =
+        rowGameType === "casual"
+          ? ""
+          :
         getLeagueDataString(
           eventColumn === -1
             ? ""
@@ -132,12 +155,13 @@ function getLeagueDataForEvent(eventId) {
     });
 
   endDashboardEndpointSubStage(
-    "dashboard.leagueData.filterByEvent",
+    "dashboard.leagueData.filterByScope",
     timer,
     {
       inputRows: games.length,
       outputRows: filtered.length,
-      scope: scope
+      scope: scope,
+      gameType: typeScope
     }
   );
 
@@ -157,6 +181,51 @@ function getLeagueDataEventColumn() {
     getLeagueData();
 
   return getLeagueDataHeaderIndex("Event ID");
+
+}
+
+function getLeagueDataGameTypeColumn() {
+
+  if (LeagueDataHeaders === null)
+    getLeagueData();
+
+  return getLeagueDataHeaderIndex("Game Type");
+
+}
+
+function getLeagueDataRowGameType(row, gameTypeColumn) {
+
+  if (
+    gameTypeColumn !== -1 &&
+    row &&
+    row.length > gameTypeColumn
+  ) {
+    const value =
+      getLeagueDataString(row[gameTypeColumn]);
+
+    if (value !== "")
+      return normalizeGameType(value);
+  }
+
+  return "league";
+
+}
+
+function resolveLeagueGameTypeScope(gameType) {
+
+  const value =
+    getLeagueDataString(gameType)
+      .toLowerCase();
+
+  if (
+    value === "all" ||
+    value === "tournament" ||
+    value === "casual" ||
+    value === "narrative"
+  )
+    return value;
+
+  return "league";
 
 }
 

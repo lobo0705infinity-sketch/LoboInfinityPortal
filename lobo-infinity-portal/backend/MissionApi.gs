@@ -94,13 +94,20 @@ function getMission(e) {
 
 }
 
-function buildMissionApiSummaries() {
+function buildMissionApiSummaries(eventId, gameType) {
 
   const registry =
     buildMissionRegistry();
 
+  const scopedGames =
+    getLeagueDataForEvent(
+      eventId || "all",
+      gameType || "league"
+    );
+
   updateMissionRegistry(
-    registry
+    registry,
+    scopedGames
   );
 
   return Object.values(registry)

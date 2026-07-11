@@ -74,6 +74,15 @@ export type LeagueResultSubmission = {
   notes: string
 }
 
+export type CasualResultSubmission = Omit<
+  LeagueResultSubmission,
+  'division' | 'eventId' | 'round'
+> & {
+  division?: string
+  eventId?: string
+  round?: string
+}
+
 export type ArmyListCommunitySummary = {
   topContributors: Array<{ count: number; displayName?: string; name: string }>
   highestRatedDesigner: {
@@ -2043,6 +2052,10 @@ export type ApiClient = {
     submission: LeagueResultSubmission,
     options?: ApiOptions,
   ) => Promise<void>
+  submitCasualResult: (
+    submission: CasualResultSubmission,
+    options?: ApiOptions,
+  ) => Promise<void>
   voteArmyList: (
     id: number,
     vote: 'up' | 'down',
@@ -2146,7 +2159,7 @@ export async function getRecentGames(
     const payload = await request(
       'recentGames',
       options,
-      options.eventId ? { eventId: options.eventId } : {},
+      buildAnalyticsRequestParams(options),
     )
     return normalizeRecentGamesPayload(payload)
   } catch (error) {
@@ -2190,13 +2203,20 @@ export async function getAllStandings(
   )
 }
 
+function buildAnalyticsRequestParams(options: ApiOptions): Record<string, string> {
+  return {
+    ...(options.eventId ? { eventId: options.eventId } : {}),
+    ...(options.gameType ? { gameType: options.gameType } : {}),
+  }
+}
+
 export async function getPlayers(
   options: ApiOptions = {},
 ): Promise<DivisionStandings[]> {
   const payload = await request(
     'players',
     options,
-    options.eventId ? { eventId: options.eventId } : {},
+    buildAnalyticsRequestParams(options),
   )
   return normalizePlayersPayload(payload)
 }
@@ -2232,7 +2252,7 @@ export async function getPlayer(
     options,
     {
       name: playerName,
-      ...(options.eventId ? { eventId: options.eventId } : {}),
+      ...buildAnalyticsRequestParams(options),
     },
   )
 
@@ -2245,7 +2265,7 @@ export async function getFactions(
   const payload = await request(
     'factions',
     options,
-    options.eventId ? { eventId: options.eventId } : {},
+    buildAnalyticsRequestParams(options),
   )
   return normalizeFactionsPayload(payload)
 }
@@ -2259,7 +2279,7 @@ export async function getFaction(
     options,
     {
       name: factionName,
-      ...(options.eventId ? { eventId: options.eventId } : {}),
+      ...buildAnalyticsRequestParams(options),
     },
   )
 
@@ -2272,7 +2292,7 @@ export async function getMissions(
   const payload = await request(
     'missions',
     options,
-    options.eventId ? { eventId: options.eventId } : {},
+    buildAnalyticsRequestParams(options),
   )
   return normalizeMissionsPayload(payload)
 }
@@ -2286,7 +2306,7 @@ export async function getMission(
     options,
     {
       name: missionName,
-      ...(options.eventId ? { eventId: options.eventId } : {}),
+      ...buildAnalyticsRequestParams(options),
     },
   )
 
@@ -2299,7 +2319,7 @@ export async function getAnalytics(
   const payload = await request(
     'intelligence',
     options,
-    options.eventId ? { eventId: options.eventId } : {},
+    buildAnalyticsRequestParams(options),
   )
   return normalizeIntelligencePayload(payload)
 }
@@ -2324,7 +2344,7 @@ export async function getTimeline(
   const payload = await request(
     'timeline',
     options,
-    options.eventId ? { eventId: options.eventId } : {},
+    buildAnalyticsRequestParams(options),
   )
   return normalizeTimelinePayload(payload)
 }
@@ -2335,7 +2355,7 @@ export async function getRecords(
   const payload = await request(
     'records',
     options,
-    options.eventId ? { eventId: options.eventId } : {},
+    buildAnalyticsRequestParams(options),
   )
   return normalizeRecordsPayload(payload)
 }
@@ -2346,7 +2366,7 @@ export async function getHallOfFame(
   const payload = await request(
     'hallOfFame',
     options,
-    options.eventId ? { eventId: options.eventId } : {},
+    buildAnalyticsRequestParams(options),
   )
   return normalizeHallOfFamePayload(payload)
 }
@@ -2362,7 +2382,7 @@ export async function getPlayerComparison(
     {
       left,
       right,
-      ...(options.eventId ? { eventId: options.eventId } : {}),
+      ...buildAnalyticsRequestParams(options),
     },
   )
 
@@ -2707,6 +2727,30 @@ export async function submitLeagueResult(
   normalizeMutationPayload(payload, 'Result submission failed.')
 }
 
+export async function submitCasualResult(
+  submission: CasualResultSubmission,
+  options: ApiOptions = {},
+): Promise<void> {
+  const payload = await postRequest('submitCasualResult', options, {
+    bestMoment: submission.bestMoment,
+    firstTurn: submission.firstTurn,
+    mission: submission.mission,
+    notes: submission.notes,
+    opponent: submission.opponent,
+    opponentFaction: submission.opponentFaction,
+    opponentObjectivePoints: submission.opponentObjectivePoints,
+    opponentTournamentPoints: submission.opponentTournamentPoints,
+    opponentVictoryPoints: submission.opponentVictoryPoints,
+    player: submission.player,
+    playerFaction: submission.playerFaction,
+    playerObjectivePoints: submission.playerObjectivePoints,
+    playerTournamentPoints: submission.playerTournamentPoints,
+    playerVictoryPoints: submission.playerVictoryPoints,
+    winner: submission.winner,
+  })
+  normalizeMutationPayload(payload, 'Casual result submission failed.')
+}
+
 export async function voteArmyList(
   id: number,
   vote: 'up' | 'down',
@@ -2929,6 +2973,7 @@ export const apiClient: ApiClient = {
   advanceTeamTournamentRound,
   getCommissionerScheduling,
   submitArmyList,
+  submitCasualResult,
   submitLeagueResult,
   voteArmyList,
   getOperations,
