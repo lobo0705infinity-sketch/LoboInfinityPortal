@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import {
   buildCapabilityNavigation,
@@ -275,12 +275,12 @@ function SidebarLink({
   item: NavigationItem
   onNavigate?: () => void
 }) {
+  const location = useLocation()
+  const active = `${location.pathname}${location.search}${location.hash}` === item.to
+
   return (
-    <NavLink
-      className={({ isActive }) =>
-        isActive ? 'sidebar-button active' : 'sidebar-button'
-      }
-      end
+    <Link
+      className={active ? 'sidebar-button active' : 'sidebar-button'}
       onClick={onNavigate}
       to={item.to}
     >
@@ -288,7 +288,7 @@ function SidebarLink({
         <PortalIcon name={item.icon} />
       </span>
       <span>{item.label}</span>
-    </NavLink>
+    </Link>
   )
 }
 

@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import {
   buildCapabilityNavigation,
   type EventNavigationConfig,
@@ -85,12 +85,12 @@ function MobileSidebarLink({
   item: NavigationItem
   onNavigate: () => void
 }) {
+  const location = useLocation()
+  const active = `${location.pathname}${location.search}${location.hash}` === item.to
+
   return (
-    <NavLink
-      className={({ isActive }) =>
-        isActive ? 'sidebar-button active' : 'sidebar-button'
-      }
-      end
+    <Link
+      className={active ? 'sidebar-button active' : 'sidebar-button'}
       onClick={onNavigate}
       onMouseEnter={() => preloadRoute(item.to)}
       to={item.to}
@@ -99,7 +99,7 @@ function MobileSidebarLink({
         <PortalIcon name={item.icon} />
       </span>
       <span>{item.label}</span>
-    </NavLink>
+    </Link>
   )
 }
 

@@ -18,6 +18,7 @@ const contentTypes = {
 const routes = [
   {
     actualRoute: `/event/${eventId}`,
+    activeLabel: 'Overview',
     component: 'EventHome',
     expectedRoute: `/event/${eventId}`,
     item: 'Overview',
@@ -27,6 +28,7 @@ const routes = [
   },
   {
     actualRoute: `/event/${eventId}/registration`,
+    activeLabel: 'Registration',
     component: 'EventHome registration',
     expectedRoute: `/event/${eventId}/registration`,
     item: 'Registration',
@@ -36,6 +38,7 @@ const routes = [
   },
   {
     actualRoute: `/match-finder?eventId=${eventId}`,
+    activeLabel: 'Match Finder',
     component: 'MatchFinder',
     expectedRoute: `/match-finder?eventId=${eventId}`,
     item: 'Match Finder',
@@ -44,6 +47,7 @@ const routes = [
   },
   {
     actualRoute: `/event/${eventId}/submit-result`,
+    activeLabel: 'Submit Result',
     component: 'SubmitResult',
     expectedRoute: `/event/${eventId}/submit-result`,
     item: 'Submit Result',
@@ -52,6 +56,7 @@ const routes = [
   },
   {
     actualRoute: `/standings?eventId=${eventId}`,
+    activeLabel: 'Standings',
     component: 'Standings',
     expectedRoute: `/standings?eventId=${eventId}`,
     item: 'Standings',
@@ -60,6 +65,7 @@ const routes = [
   },
   {
     actualRoute: `/schedule?eventId=${eventId}`,
+    activeLabel: 'Schedule',
     component: 'Schedule',
     expectedRoute: `/schedule?eventId=${eventId}`,
     item: 'Schedule',
@@ -69,6 +75,7 @@ const routes = [
   },
   {
     actualRoute: `/players?eventId=${eventId}`,
+    activeLabel: 'Players',
     component: 'Players',
     expectedRoute: `/players?eventId=${eventId}`,
     item: 'Players',
@@ -77,6 +84,7 @@ const routes = [
   },
   {
     actualRoute: `/factions?eventId=${eventId}`,
+    activeLabel: 'Factions',
     component: 'Factions',
     expectedRoute: `/factions?eventId=${eventId}`,
     item: 'Factions',
@@ -85,6 +93,7 @@ const routes = [
   },
   {
     actualRoute: `/analytics?eventId=${eventId}`,
+    activeLabel: 'Statistics',
     component: 'Analytics',
     expectedRoute: `/analytics?eventId=${eventId}`,
     item: 'Statistics',
@@ -93,6 +102,7 @@ const routes = [
   },
   {
     actualRoute: `/rules?eventId=${eventId}`,
+    activeLabel: 'Rules',
     component: 'Rules',
     expectedRoute: `/rules?eventId=${eventId}`,
     item: 'Rules',
@@ -101,6 +111,7 @@ const routes = [
   },
   {
     actualRoute: '/events',
+    activeLabel: 'Past Events',
     component: 'PastEvents',
     expectedRoute: '/events',
     item: 'Past Events',
@@ -408,7 +419,13 @@ async function run() {
     const missingText = route.requiredText.filter((text) => !mainText.includes(text))
     const rejectedText = route.rejectedText.filter((text) => mainText.includes(text))
     const routeMatches = pathname === route.expectedRoute
-    const pass = routeMatches && selectorFound && missingText.length === 0 && rejectedText.length === 0
+    const activeMatches = activeLabels.length === 1 && activeLabels[0] === route.activeLabel
+    const pass =
+      routeMatches &&
+      selectorFound &&
+      missingText.length === 0 &&
+      rejectedText.length === 0 &&
+      activeMatches
 
     report.push({
       actualRoute: pathname,
@@ -443,6 +460,10 @@ async function run() {
 
     if (rejectedText.length > 0) {
       failures.push(`${route.item} rendered wrong page text: ${rejectedText.join(', ')}`)
+    }
+
+    if (!activeMatches) {
+      failures.push(`${route.item} active nav mismatch: ${activeLabels.join(', ') || 'none'}`)
     }
   }
 
