@@ -264,6 +264,7 @@ function Diagnostics() {
       </section>
 
       {observatory ? <PerformanceObservatorySection observatory={observatory} /> : null}
+      {snapshot ? <ClientCacheDiagnosticsSection api={snapshot.api} /> : null}
 
       <section className="panel operations-panel">
         <div className="panel-heading">
@@ -1738,6 +1739,72 @@ function PerformanceObservatorySection({
   )
 }
 
+function ClientCacheDiagnosticsSection({
+  api,
+}: {
+  api: ReturnType<typeof getFrontendPerformanceDiagnostics>['api']
+}) {
+  const cache = api.sessionCache
+
+  return (
+    <section className="panel operations-panel">
+      <div className="panel-heading">
+        <p className="eyebrow">Client Cache</p>
+        <h2>Session Cache Diagnostics</h2>
+        <p>
+          Commissioner-only view of memory and session cache health. This panel
+          is read-only and does not trigger refreshes.
+        </p>
+      </div>
+
+      <dl className="operations-metrics">
+        <Metric label="Cache Version" value={cache.cacheVersion} />
+        <Metric label="Schema Version" value={cache.schemaVersion} />
+        <Metric label="Build Version" value={shortenValue(cache.buildVersion)} />
+        <Metric label="Hit Rate" value={`${cache.hitRatio}%`} />
+        <Metric label="Background Refreshes" value={cache.backgroundRefreshCount} />
+        <Metric label="Memory Cache Size" value={cache.memoryCacheSize} />
+        <Metric label="Session Cache Size" value={cache.sessionCacheSize} />
+        <Metric label="Session Cache Bytes" value={formatBytes(cache.sessionCacheBytes)} />
+        <Metric label="Last Invalidation" value={cache.lastInvalidationReason || 'None'} />
+        <Metric
+          label="Last Revalidation"
+          value={cache.lastRevalidationTimestamp || 'None'}
+        />
+      </dl>
+
+      <div className="operations-table-wrap">
+        <table className="operations-table">
+          <thead>
+            <tr>
+              <th>Dataset</th>
+              <th>Event</th>
+              <th>Age</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {cache.datasets.length > 0 ? (
+              cache.datasets.map((dataset) => (
+                <tr key={`${dataset.cacheKey}-${dataset.eventId}`}>
+                  <td>{dataset.group}</td>
+                  <td>{dataset.eventId || 'Global'}</td>
+                  <td>{formatDuration(dataset.ageMs)}</td>
+                  <td>{dataset.status}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={4}>No session cache entries recorded.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  )
+}
+
 function ObservatoryTable({
   columns,
   eyebrow,
@@ -1810,6 +1877,22 @@ function formatBytes(value: number) {
   }
 
   return `${Math.round(value / 1024)} KB`
+}
+
+function formatDuration(value: number) {
+  if (value < 1_000) {
+    return `${Math.round(value)} ms`
+  }
+
+  if (value < 60_000) {
+    return `${Math.round(value / 1_000)} s`
+  }
+
+  return `${Math.round(value / 60_000)} min`
+}
+
+function shortenValue(value: string) {
+  return value.length > 12 ? value.slice(0, 12) : value
 }
 
 function formatBootstrapCheck(

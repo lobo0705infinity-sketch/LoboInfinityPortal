@@ -9,6 +9,7 @@ import type {
   LeagueOverviewDivision,
   Standing,
 } from '../types/dashboard'
+import { formatNotificationTimestamp } from './formatting'
 import {
   postRequest,
   request,
@@ -3792,7 +3793,7 @@ function normalizeNotification(item: unknown): LeagueNotification {
     id: getRequiredString(record, 'id'),
     link: getString(record, 'link'),
     priority: getString(record, 'priority') || 'normal',
-    timestamp: getString(record, 'timestamp'),
+    timestamp: formatNotificationTimestamp(record.timestamp),
     title: getRequiredString(record, 'title'),
     type: getRequiredString(record, 'type'),
     unread: getRequiredBoolean(record, 'unread'),

@@ -11,21 +11,31 @@ import {
   recordApiRequestStarted,
   type LoboApiRequestDiagnostic,
 } from './diagnostics'
+import { buildInfo } from './buildInfo'
 
 type RequestParams = Record<string, string>
 
 type CacheEntry = {
+  action: string
+  eventId: string
   expiresAt: number
+  group: string
   payload: unknown
+  staleUntil: number
 }
 
 type SessionCacheEntry = {
-  version: string
-  timestamp: number
+  buildVersion: string
   cacheKey: string
+  cacheVersion: string
+  data: unknown
   eventId: string
   expiresAt: number
-  data: unknown
+  group: string
+  schemaVersion: number
+  staleUntil: number
+  timestamp: number
+  version: string
 }
 
 type CredentialShapeDiagnostic = {
@@ -58,6 +68,11 @@ type CredentialTransportDiagnostic = {
 }
 
 type SessionRecoveryHandler = () => Promise<boolean>
+type CachePolicy = {
+  group: string
+  stale: number
+  ttl: number
+}
 
 declare global {
   interface Window {
@@ -67,7 +82,7 @@ declare global {
 
 export type ApiTimingMetric = {
   action: string
-  cache: 'hit' | 'miss' | 'shared' | 'mutation'
+  cache: 'hit' | 'miss' | 'shared' | 'stale' | 'mutation'
   durationMs: number
   ok: boolean
   startTimeMs: number
@@ -115,11 +130,20 @@ let sessionRecoveryHandler: SessionRecoveryHandler | null = null
 let pendingSessionRecovery: Promise<boolean> | null = null
 
 const frontendCacheTtlMs = 300_000
-const sessionCacheVersion = 'v13.0'
-const sessionCachePrefix = `lobo-api-cache:${sessionCacheVersion}:`
+const clientCacheVersion = 'client-cache-v2'
+const clientCacheSchemaVersion = 1
+const clientBuildVersion =
+  buildInfo.gitCommit !== 'not-provided'
+    ? buildInfo.gitCommit
+    : buildInfo.deploymentId !== 'not-provided'
+      ? buildInfo.deploymentId
+      : buildInfo.buildTimestamp
+const sessionCacheVersion = `${clientCacheVersion}:${clientCacheSchemaVersion}:${clientBuildVersion}`
+const sessionCachePrefix = `lobo-api-cache:${clientCacheVersion}:`
 const sessionCacheLegacyPrefix = 'lobo-api-cache:'
 const frontendResponseCache = new Map<string, CacheEntry>()
 const inFlightRequests = new Map<string, Promise<unknown>>()
+const backgroundRevalidations = new Set<string>()
 const apiTimingMetrics: ApiTimingMetric[] = []
 const apiRequestHistory: ApiRequestAuditEntry[] = []
 const clientDiagnosticMetrics: ClientDiagnosticMetric[] = []
@@ -131,6 +155,10 @@ let sessionCacheMisses = 0
 let sessionCacheWrites = 0
 let sessionCacheClears = 0
 let lastSessionRestoreMs = 0
+let cacheRevision = 0
+let backgroundRefreshCount = 0
+let lastInvalidationReason = ''
+let lastRevalidationTimestamp = ''
 
 export function setApiAuthToken(token: string) {
   if (token && !isLikelyGoogleJwt(token)) {
@@ -178,7 +206,7 @@ export async function request(
   options: ApiOptions = {},
   params: RequestParams = {},
 ): Promise<unknown> {
-  return requestInternal(action, options, params, false)
+  return requestInternal(action, options, params, false, false)
 }
 
 async function requestInternal(
@@ -186,6 +214,7 @@ async function requestInternal(
   options: ApiOptions,
   params: RequestParams,
   retriedAfterSessionRecovery: boolean,
+  bypassCache: boolean,
 ): Promise<unknown> {
   const url = new URL(API_URL)
   url.searchParams.set('action', action)
@@ -205,6 +234,7 @@ async function requestInternal(
   const cacheKey = url.toString()
   const sessionCacheKey = buildSessionCacheKey(action, params)
   const eventId = options.eventId ?? params.eventId ?? ''
+  const cachePolicy = getCachePolicy(action)
   const routePath = typeof window !== 'undefined'
     ? `${window.location.pathname}${window.location.search}`
     : 'unknown'
@@ -213,25 +243,33 @@ async function requestInternal(
   const cached = frontendResponseCache.get(cacheKey)
   const canShareInFlightRequest = !options.signal
 
-  if (cached && cached.expiresAt > Date.now()) {
+  if (!bypassCache && cached && cached.expiresAt > Date.now()) {
     const now = performance.now()
     recordApiTiming(action, 'hit', 0, true, now, now, cacheKey, routePath, caller, duplicate)
     return cached.payload
   }
 
-  const sessionCached = readSessionResponseCache(sessionCacheKey)
+  const sessionCached = bypassCache ? null : readSessionResponseCache(sessionCacheKey)
 
   if (sessionCached) {
     frontendResponseCache.set(cacheKey, {
+      action,
+      eventId: sessionCached.eventId,
       expiresAt: sessionCached.expiresAt,
+      group: sessionCached.group,
       payload: sessionCached.data,
+      staleUntil: sessionCached.staleUntil,
     })
     const now = performance.now()
-    recordApiTiming(action, 'hit', 0, true, now, now, cacheKey, routePath, caller, duplicate)
+    const stale = sessionCached.expiresAt <= Date.now()
+    recordApiTiming(action, stale ? 'stale' : 'hit', 0, true, now, now, cacheKey, routePath, caller, duplicate)
+    if (stale) {
+      revalidateCachedRequest(action, options, params, sessionCacheKey, cacheKey, eventId)
+    }
     return sessionCached.data
   }
 
-  const inFlight = canShareInFlightRequest
+  const inFlight = !bypassCache && canShareInFlightRequest
     ? inFlightRequests.get(cacheKey)
     : null
 
@@ -266,6 +304,7 @@ async function requestInternal(
   recordApiRequestStarted(requestDiagnosticBase)
 
   const start = performance.now()
+  const requestRevision = cacheRevision
   let requestFinished = false
   const pending = fetch(url, {
     signal: options.signal,
@@ -298,18 +337,25 @@ async function requestInternal(
           const recovered = await recoverExpiredSession()
 
           if (recovered) {
-            return requestInternal(action, options, params, true)
+            return requestInternal(action, options, params, true, bypassCache)
           }
         }
 
         throw new Error(friendlySessionExpiredMessage)
       }
 
-      frontendResponseCache.set(cacheKey, {
-        expiresAt: Date.now() + frontendCacheTtlMs,
-        payload,
-      })
-      writeSessionResponseCache(sessionCacheKey, eventId, payload)
+      if (requestRevision === cacheRevision) {
+        const timestamp = Date.now()
+        frontendResponseCache.set(cacheKey, {
+          action,
+          eventId,
+          expiresAt: timestamp + cachePolicy.ttl,
+          group: cachePolicy.group,
+          payload,
+          staleUntil: timestamp + cachePolicy.stale,
+        })
+        writeSessionResponseCache(sessionCacheKey, eventId, cachePolicy, payload)
+      }
       const end = performance.now()
       recordApiTiming(action, 'miss', end - start, true, start, end, cacheKey, routePath, caller, duplicate)
 
@@ -337,7 +383,7 @@ async function requestInternal(
       }
     })
 
-  if (canShareInFlightRequest) {
+  if (!bypassCache && canShareInFlightRequest) {
     inFlightRequests.set(cacheKey, pending)
   }
 
@@ -376,9 +422,7 @@ async function postRequestInternal(
   }
 
   if (action !== 'heartbeat') {
-    frontendResponseCache.clear()
-    inFlightRequests.clear()
-    clearSessionResponseCache(`mutation:${action}`)
+    invalidateAffectedCaches(action, params)
   }
 
   const cacheKey = `${url.toString()}|${body.toString()}`
@@ -614,9 +658,9 @@ function readSessionResponseCache(cacheKey: string): SessionCacheEntry | null {
     const entry = JSON.parse(raw) as SessionCacheEntry
 
     if (
-      entry.version !== sessionCacheVersion ||
+      !isCurrentSessionCacheEntry(entry) ||
       entry.cacheKey !== cacheKey ||
-      entry.expiresAt <= Date.now()
+      entry.staleUntil <= Date.now()
     ) {
       window.sessionStorage.removeItem(getSessionStorageKey(cacheKey))
       sessionCacheMisses += 1
@@ -647,6 +691,7 @@ function readSessionResponseCache(cacheKey: string): SessionCacheEntry | null {
 function writeSessionResponseCache(
   cacheKey: string,
   eventId: string,
+  policy: CachePolicy,
   data: unknown,
 ) {
   initializeSessionResponseCache()
@@ -657,12 +702,17 @@ function writeSessionResponseCache(
 
   const timestamp = Date.now()
   const entry: SessionCacheEntry = {
-    version: sessionCacheVersion,
-    timestamp,
+    buildVersion: clientBuildVersion,
     cacheKey,
-    eventId,
-    expiresAt: timestamp + frontendCacheTtlMs,
+    cacheVersion: clientCacheVersion,
     data,
+    eventId,
+    expiresAt: timestamp + policy.ttl,
+    group: policy.group,
+    schemaVersion: clientCacheSchemaVersion,
+    staleUntil: timestamp + policy.stale,
+    timestamp,
+    version: sessionCacheVersion,
   }
 
   try {
@@ -714,6 +764,202 @@ function clearSessionResponseCache(reason: string) {
   }
 }
 
+function revalidateCachedRequest(
+  action: string,
+  options: ApiOptions,
+  params: RequestParams,
+  sessionCacheKey: string,
+  cacheKey: string,
+  eventId: string,
+) {
+  if (backgroundRevalidations.has(cacheKey) || options.signal?.aborted) {
+    return
+  }
+
+  backgroundRevalidations.add(cacheKey)
+  backgroundRefreshCount += 1
+  requestInternal(action, { eventId }, params, true, true)
+    .then((payload) => {
+      lastRevalidationTimestamp = new Date().toISOString()
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(
+          new CustomEvent('lobo:cache-revalidated', {
+            detail: { action, cacheKey: sessionCacheKey, eventId, payload },
+          }),
+        )
+      }
+    })
+    .catch((error: unknown) => {
+      recordClientDiagnostic(
+        'cacheRevalidate',
+        'failure',
+        0,
+        error instanceof Error ? error.message : String(error),
+      )
+    })
+    .finally(() => {
+      backgroundRevalidations.delete(cacheKey)
+    })
+}
+
+function invalidateAffectedCaches(action: string, params: RequestParams) {
+  const groups = getMutationInvalidationGroups(action)
+  const eventId = params.eventId ?? ''
+
+  if (groups.length === 0) {
+    lastInvalidationReason = `mutation:${action}:all`
+    clearSessionResponseCache(`mutation:${action}`)
+    frontendResponseCache.clear()
+    inFlightRequests.clear()
+    cacheRevision += 1
+    return
+  }
+
+  cacheRevision += 1
+  lastInvalidationReason = `mutation:${action}:${groups.join(',')}`
+  inFlightRequests.clear()
+  const match = (entry: Pick<CacheEntry, 'eventId' | 'group'>) =>
+    groups.includes(entry.group) &&
+    (!eventId || !entry.eventId || entry.eventId === eventId)
+
+  Array.from(frontendResponseCache.entries()).forEach(([key, entry]) => {
+    if (match(entry)) {
+      frontendResponseCache.delete(key)
+    }
+  })
+
+  clearSessionResponseCacheByPredicate(
+    `mutation:${action}`,
+    (entry) =>
+      groups.includes(entry.group) &&
+      (!eventId || !entry.eventId || entry.eventId === eventId),
+  )
+}
+
+function clearSessionResponseCacheByPredicate(
+  reason: string,
+  shouldClear: (entry: SessionCacheEntry) => boolean,
+) {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  try {
+    const keysToRemove: string[] = []
+
+    for (let index = 0; index < window.sessionStorage.length; index += 1) {
+      const key = window.sessionStorage.key(index)
+      if (!key?.startsWith(sessionCachePrefix)) {
+        continue
+      }
+
+      const raw = window.sessionStorage.getItem(key)
+      if (!raw) {
+        continue
+      }
+
+      const entry = JSON.parse(raw) as SessionCacheEntry
+      if (shouldClear(entry)) {
+        keysToRemove.push(key)
+      }
+    }
+
+    keysToRemove.forEach((key) => window.sessionStorage.removeItem(key))
+    sessionCacheClears += 1
+    recordClientDiagnostic(
+      'sessionCacheCleared',
+      'success',
+      0,
+      `${reason}:${keysToRemove.length}`,
+    )
+  } catch (error) {
+    recordClientDiagnostic(
+      'sessionCacheCleared',
+      'failure',
+      0,
+      error instanceof Error ? error.message : String(error),
+    )
+  }
+}
+
+function getCachePolicy(action: string): CachePolicy {
+  const group = getCacheGroup(action)
+  const minute = 60_000
+
+  if (['settings', 'events', 'rules'].includes(group)) {
+    return { group, ttl: 30 * minute, stale: 120 * minute }
+  }
+
+  if (['notifications', 'registration'].includes(group)) {
+    return { group, ttl: minute, stale: 10 * minute }
+  }
+
+  if (['standings', 'analytics', 'records', 'teamTournament'].includes(group)) {
+    return { group, ttl: 2 * minute, stale: 15 * minute }
+  }
+
+  if (['schedule', 'eventHome', 'players'].includes(group)) {
+    return { group, ttl: 5 * minute, stale: 30 * minute }
+  }
+
+  return { group, ttl: frontendCacheTtlMs, stale: 30 * minute }
+}
+
+function getCacheGroup(action: string) {
+  if (['settings'].includes(action)) return 'settings'
+  if (['events', 'eventHome', 'eventManager'].includes(action)) return action
+  if (['eventRegistration'].includes(action)) return 'registration'
+  if (['teamTournament'].includes(action)) return 'teamTournament'
+  if (['standings'].includes(action)) return 'standings'
+  if (['players', 'player', 'profile', 'myProfile'].includes(action)) return 'players'
+  if (['factions', 'faction', 'missions', 'mission', 'comparison'].includes(action)) return 'analytics'
+  if (['intelligence'].includes(action)) return 'analytics'
+  if (['records', 'hallOfFame'].includes(action)) return 'records'
+  if (['timeline', 'news', 'recentGames', 'home', 'dashboard'].includes(action)) return 'dashboard'
+  if (['schedulingCenter', 'matchFinder', 'seasonCommandCenter', 'communityCommandCenter'].includes(action)) return 'schedule'
+  if (['notifications'].includes(action)) return 'notifications'
+  if (['armyLists', 'streams'].includes(action)) return 'community'
+  return action
+}
+
+function getMutationInvalidationGroups(action: string) {
+  switch (action) {
+    case 'submitLeagueResult':
+    case 'teamTournamentResult':
+      return ['dashboard', 'eventHome', 'teamTournament', 'standings', 'analytics', 'records', 'players']
+    case 'teamTournamentTeam':
+    case 'teamTournamentPairing':
+    case 'teamTournamentInvitation':
+    case 'teamTournamentRound':
+      return ['eventHome', 'teamTournament', 'standings', 'analytics', 'schedule']
+    case 'registerForEvent':
+    case 'withdrawEventRegistration':
+    case 'manageEventRegistration':
+    case 'teamTournamentRegister':
+      return ['eventHome', 'registration', 'teamTournament', 'players', 'schedule']
+    case 'eventManagerEvent':
+    case 'eventManagerLifecycle':
+    case 'eventManagerCurrentEvent':
+    case 'eventManagerRegistration':
+    case 'eventManagerParticipant':
+    case 'eventManagerTeam':
+    case 'eventManagerPairing':
+      return ['events', 'eventHome', 'eventManager', 'registration', 'teamTournament', 'standings', 'analytics', 'schedule']
+    case 'seasonAvailability':
+    case 'schedulingAvailability':
+    case 'createSchedulingRequest':
+    case 'respondSchedulingRequest':
+      return ['schedule', 'players']
+    case 'submitArmyList':
+    case 'voteArmyList':
+      return ['community', 'players', 'dashboard']
+    case 'notificationState':
+      return ['notifications']
+    default:
+      return []
+  }
+}
+
 function initializeSessionResponseCache() {
   if (sessionCacheInitialized || typeof window === 'undefined') {
     return
@@ -728,7 +974,7 @@ function initializeSessionResponseCache() {
       const key = window.sessionStorage.key(index)
       if (
         key?.startsWith(sessionCacheLegacyPrefix) &&
-        !key.startsWith(sessionCachePrefix)
+        shouldRemoveStoredSessionCache(key)
       ) {
         keysToRemove.push(key)
       }
@@ -737,6 +983,100 @@ function initializeSessionResponseCache() {
     keysToRemove.forEach((key) => window.sessionStorage.removeItem(key))
   } catch {
     // Session storage is optional. The in-memory cache remains authoritative.
+  }
+}
+
+function shouldRemoveStoredSessionCache(key: string) {
+  if (!key.startsWith(sessionCachePrefix)) {
+    return true
+  }
+
+  try {
+    const raw = window.sessionStorage.getItem(key)
+    if (!raw) {
+      return true
+    }
+
+    const entry = JSON.parse(raw) as SessionCacheEntry
+    return !isCurrentSessionCacheEntry(entry)
+  } catch {
+    return true
+  }
+}
+
+function isCurrentSessionCacheEntry(entry: Partial<SessionCacheEntry>) {
+  return (
+    entry.cacheVersion === clientCacheVersion &&
+    entry.schemaVersion === clientCacheSchemaVersion &&
+    entry.buildVersion === clientBuildVersion &&
+    entry.version === sessionCacheVersion
+  )
+}
+
+function getSessionCacheInventory() {
+  if (typeof window === 'undefined') {
+    return {
+      bytes: 0,
+      datasets: [] as Array<{
+        ageMs: number
+        cacheKey: string
+        eventId: string
+        group: string
+        status: 'fresh' | 'stale'
+      }>,
+      size: 0,
+    }
+  }
+
+  const datasets: Array<{
+    ageMs: number
+    cacheKey: string
+    eventId: string
+    group: string
+    status: 'fresh' | 'stale'
+  }> = []
+  let bytes = 0
+
+  try {
+    for (let index = 0; index < window.sessionStorage.length; index += 1) {
+      const key = window.sessionStorage.key(index)
+      if (!key?.startsWith(sessionCachePrefix)) {
+        continue
+      }
+
+      const raw = window.sessionStorage.getItem(key)
+      if (!raw) {
+        continue
+      }
+
+      bytes += raw.length
+      const entry = JSON.parse(raw) as SessionCacheEntry
+      if (!isCurrentSessionCacheEntry(entry)) {
+        continue
+      }
+
+      datasets.push({
+        ageMs: Math.max(0, Date.now() - entry.timestamp),
+        cacheKey: entry.cacheKey,
+        eventId: entry.eventId,
+        group: entry.group,
+        status: entry.expiresAt > Date.now() ? 'fresh' : 'stale',
+      })
+    }
+  } catch {
+    return {
+      bytes,
+      datasets,
+      size: datasets.length,
+    }
+  }
+
+  return {
+    bytes,
+    datasets: datasets
+      .sort((left, right) => right.ageMs - left.ageMs)
+      .slice(0, 20),
+    size: datasets.length,
   }
 }
 
@@ -870,11 +1210,13 @@ async function hashCredential(token: string) {
 export function getApiDiagnostics() {
   const metrics = [...apiTimingMetrics]
   const completed = metrics.filter((metric) => metric.durationMs > 0)
-  const cacheHits = metrics.filter((metric) => metric.cache === 'hit').length
+  const cacheHits = metrics.filter((metric) => metric.cache === 'hit' || metric.cache === 'stale').length
   const cacheMisses = metrics.filter((metric) => metric.cache === 'miss').length
   const sharedRequests = metrics.filter((metric) => metric.cache === 'shared').length
   const readRequestCount = metrics.filter((metric) => metric.cache !== 'mutation').length
   const recentRequests = apiRequestHistory.slice(-50)
+  const memoryEntries = Array.from(frontendResponseCache.values())
+  const sessionInventory = getSessionCacheInventory()
   const duplicateRequests = recentRequests.filter((entry) => entry.duplicate)
   const duplicateGroups = recentRequests.reduce((groups, entry) => {
     if (!entry.duplicate) {
@@ -917,7 +1259,11 @@ export function getApiDiagnostics() {
     cacheHits,
     cacheMisses,
     sessionCache: {
+      backgroundRefreshCount,
+      buildVersion: clientBuildVersion,
       clears: sessionCacheClears,
+      cacheVersion: clientCacheVersion,
+      datasets: sessionInventory.datasets,
       hitRatio:
         sessionCacheHits + sessionCacheMisses > 0
           ? Math.round(
@@ -926,7 +1272,15 @@ export function getApiDiagnostics() {
           : 0,
       hits: sessionCacheHits,
       lastRestoreMs: Math.round(lastSessionRestoreMs),
+      lastInvalidationReason,
+      lastRevalidationTimestamp,
+      memoryCacheSize: frontendResponseCache.size,
+      memoryFreshCount: memoryEntries.filter((entry) => entry.expiresAt > Date.now()).length,
+      memoryStaleCount: memoryEntries.filter((entry) => entry.expiresAt <= Date.now()).length,
       misses: sessionCacheMisses,
+      schemaVersion: clientCacheSchemaVersion,
+      sessionCacheBytes: sessionInventory.bytes,
+      sessionCacheSize: sessionInventory.size,
       version: sessionCacheVersion,
       writes: sessionCacheWrites,
     },

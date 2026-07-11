@@ -144,6 +144,68 @@ export function formatRelativeTime(value: string) {
   return formatText(value)
 }
 
+export function formatNotificationTimestamp(value: unknown) {
+  const parsed = parseNotificationTimestamp(value)
+
+  if (!parsed) {
+    return 'Unknown'
+  }
+
+  return parsed.toLocaleDateString([], {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+}
+
+export function parseNotificationTimestamp(value: unknown): Date | null {
+  if (value == null) {
+    return null
+  }
+
+  if (value instanceof Date) {
+    return isValidNotificationDate(value) ? value : null
+  }
+
+  if (typeof value === 'number') {
+    return parseGoogleSheetsSerialDate(value)
+  }
+
+  if (typeof value === 'object') {
+    if ('toDate' in value && typeof value.toDate === 'function') {
+      const timestampDate = value.toDate() as unknown
+      return timestampDate instanceof Date && isValidNotificationDate(timestampDate)
+        ? timestampDate
+        : null
+    }
+
+    if ('seconds' in value && typeof value.seconds === 'number') {
+      const date = new Date(value.seconds * 1000)
+      return isValidNotificationDate(date) ? date : null
+    }
+
+    return null
+  }
+
+  if (typeof value !== 'string') {
+    return null
+  }
+
+  const text = formatText(value)
+
+  if (!text || isTimeOnlyValue(text)) {
+    return null
+  }
+
+  const numericValue = Number(text)
+  if (Number.isFinite(numericValue) && text === String(numericValue)) {
+    return parseGoogleSheetsSerialDate(numericValue)
+  }
+
+  const parsedDate = parseRuntimeDate(text)
+  return parsedDate && isValidNotificationDate(parsedDate) ? parsedDate : null
+}
+
 export function formatPlayerName(
   player: number | string | undefined,
   displayName?: number | string,
@@ -177,6 +239,32 @@ function parseRuntimeDate(value: string) {
   }
 
   return parsed
+}
+
+function parseGoogleSheetsSerialDate(value: number) {
+  if (!Number.isFinite(value) || value < 1) {
+    return null
+  }
+
+  const epoch = Date.UTC(1899, 11, 30)
+  const date = new Date(epoch + Math.floor(value) * 86_400_000)
+  return isValidNotificationDate(date) ? date : null
+}
+
+function isValidNotificationDate(value: Date) {
+  if (Number.isNaN(value.getTime())) {
+    return false
+  }
+
+  return !(
+    value.getFullYear() === 1899 &&
+    value.getMonth() === 11 &&
+    value.getDate() === 30
+  )
+}
+
+function isTimeOnlyValue(value: string) {
+  return /^(\d{1,2}):(\d{2})(?::\d{2})?(?:\s?(AM|PM))?$/i.test(value.trim())
 }
 
 function parseTimeParts(value: string) {

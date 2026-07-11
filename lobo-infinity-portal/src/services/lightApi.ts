@@ -6,6 +6,7 @@ import type {
   SearchData,
 } from './api'
 import { postRequest, request, type ApiOptions } from './apiCore'
+import { formatNotificationTimestamp } from './formatting'
 
 let settingsCache: PortalSettings | null = null
 let settingsRequest: Promise<PortalSettings> | null = null
@@ -154,7 +155,7 @@ export async function getNotifications(
       link: getString(record, 'link'),
       priority: getString(record, 'priority'),
       read: getBoolean(record, 'read'),
-      timestamp: getString(record, 'timestamp'),
+      timestamp: formatNotificationTimestamp(record.timestamp),
       title: getString(record, 'title'),
       type: getString(record, 'type'),
       unread: getBoolean(record, 'unread'),
