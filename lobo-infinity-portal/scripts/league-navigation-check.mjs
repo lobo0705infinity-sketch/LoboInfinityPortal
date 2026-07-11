@@ -96,7 +96,7 @@ const routes = [
     component: 'Rules',
     expectedRoute: `/rules?eventId=${eventId}`,
     item: 'Rules',
-    requiredText: ['Rules'],
+    requiredText: ['The Lobo Infinity League'],
     rejectedText: ['Chronological Event History'],
   },
   {
