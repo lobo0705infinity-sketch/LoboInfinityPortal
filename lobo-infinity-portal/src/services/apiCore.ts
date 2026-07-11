@@ -123,7 +123,7 @@ export type ClientDiagnosticMetric = {
 }
 
 export const API_URL =
-  'https://script.google.com/macros/s/AKfycbxBzo57XHrxiBy1EJq4f_VS026uTXnCYHSXrWT6c2uU__zSB2Dzeixx3rFHQahXQycCng/exec'
+  'https://script.google.com/macros/s/AKfycbyAo3l0ate7jbrqZ9bOvBBBtJ-268iXsuCv8a7JNUWQI9WdNx6vwK9TW05E7aVXl1TMRg/exec'
 
 let activeAuthToken = ''
 let activeOAuthClientId = ''
