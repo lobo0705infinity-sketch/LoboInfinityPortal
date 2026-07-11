@@ -25,6 +25,7 @@ type CacheEntry = {
 }
 
 type SessionCacheEntry = {
+  authScope: string
   buildVersion: string
   cacheKey: string
   cacheVersion: string
@@ -165,6 +166,8 @@ export function setApiAuthToken(token: string) {
     return
   }
 
+  const previousAuthToken = activeAuthToken
+
   if (token && !isLikelyGoogleJwt(token)) {
     activeAuthToken = ''
     activeAuthTokenVersion += 1
@@ -183,7 +186,7 @@ export function setApiAuthToken(token: string) {
 
   if (!token) {
     clearSessionResponseCache('auth_token_cleared')
-  } else if (activeAuthToken && activeAuthToken !== token) {
+  } else if (previousAuthToken !== token) {
     clearSessionResponseCache('auth_token_changed')
   }
 
@@ -635,11 +638,15 @@ function buildSessionCacheKey(action: string, params: RequestParams) {
     .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
     .join('&')
 
-  return `${action}?${serializedParams}`
+  return `${getSessionCacheAuthScope()}|${action}?${serializedParams}`
 }
 
 function getSessionStorageKey(cacheKey: string) {
   return `${sessionCachePrefix}${hashCacheKey(cacheKey)}`
+}
+
+function getSessionCacheAuthScope() {
+  return activeAuthToken ? `auth:${hashCacheKey(activeAuthToken)}` : 'auth:anonymous'
 }
 
 function readSessionResponseCache(cacheKey: string): SessionCacheEntry | null {
@@ -663,6 +670,7 @@ function readSessionResponseCache(cacheKey: string): SessionCacheEntry | null {
 
     if (
       !isCurrentSessionCacheEntry(entry) ||
+      entry.authScope !== getSessionCacheAuthScope() ||
       entry.cacheKey !== cacheKey ||
       entry.staleUntil <= Date.now()
     ) {
@@ -706,6 +714,7 @@ function writeSessionResponseCache(
 
   const timestamp = Date.now()
   const entry: SessionCacheEntry = {
+    authScope: getSessionCacheAuthScope(),
     buildVersion: clientBuildVersion,
     cacheKey,
     cacheVersion: clientCacheVersion,

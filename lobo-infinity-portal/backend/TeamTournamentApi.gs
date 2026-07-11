@@ -123,6 +123,16 @@ function getTeamTournament(e) {
         )
       : null;
 
+  const includeRegistrationDetails =
+    canViewEventRegistrationDetails(auth);
+
+  const visibleRegistrations =
+    includeRegistrationDetails
+      ? registrations
+      : currentPlayerRegistration
+        ? [currentPlayerRegistration]
+        : [];
+
   const teamSummary =
     getEventRegistrationTeamSummary(registrations);
 
@@ -136,7 +146,10 @@ function getTeamTournament(e) {
         buildEventRegistrationPayload(
           event,
           registrations,
-          currentPlayerRegistration
+          currentPlayerRegistration,
+          {
+            includeRegistrationDetails: includeRegistrationDetails
+          }
         ),
       registeredTeams:
         Math.max(
@@ -159,11 +172,13 @@ function getTeamTournament(e) {
       resultStatuses: resultStatuses,
       invitations: invitations,
       timeline:
-        buildTeamTournamentTimeline(event, teams, pairings, registrations, invitations, results),
+        buildTeamTournamentTimeline(event, teams, pairings, visibleRegistrations, invitations, results),
       freeAgents:
-        registrations.filter(function(registration) {
-          return registration.freeAgent === true && registration.status !== "Withdrawn";
-        }),
+        includeRegistrationDetails
+          ? registrations.filter(function(registration) {
+              return registration.freeAgent === true && registration.status !== "Withdrawn";
+            })
+          : [],
       champion:
         buildTeamTournamentChampion(event, standings),
       news:

@@ -41,7 +41,15 @@ function getEventRegistration(e) {
 
   return jsonOutput({
     success: true,
-    registration: buildEventRegistrationPayload(event, registrations, currentPlayer)
+    registration:
+      buildEventRegistrationPayload(
+        event,
+        registrations,
+        currentPlayer,
+        {
+          includeRegistrationDetails: canViewEventRegistrationDetails(auth)
+        }
+      )
   });
 
 }
@@ -383,7 +391,10 @@ function exportEventRegistrations(e) {
 
 }
 
-function buildEventRegistrationPayload(event, registrations, currentPlayer) {
+function buildEventRegistrationPayload(event, registrations, currentPlayer, options) {
+
+  const includeRegistrationDetails =
+    options && options.includeRegistrationDetails === true;
 
   const activeRegistrations =
     measureEventHomeOperationIfAvailable(
@@ -474,43 +485,62 @@ function buildEventRegistrationPayload(event, registrations, currentPlayer) {
     waitlistCount: waitlisted.length,
     teamCount: teams.length,
     currentPlayer: currentPlayer,
-    registrations: registrations,
-    teams: teams,
+    registrations: includeRegistrationDetails
+      ? registrations
+      : currentPlayer
+        ? [currentPlayer]
+        : [],
+    teams: includeRegistrationDetails ? teams : [],
     freeAgents:
-      measureEventHomeOperationIfAvailable(
-        "eventHome.registrationLookup.filter.freeAgents",
-        function() {
-          return activeRegistrations.filter(function(registration) {
-            return measureEventHomeLoopIterationIfAvailable(
-              "eventHome.loop.registration.freeAgentFilter",
-              function() {
-                return registration.freeAgent === true;
-              }
-            );
-          });
-        },
-        {
-          activeRegistrations: activeRegistrations.length
-        }
-      ),
+      includeRegistrationDetails
+        ? measureEventHomeOperationIfAvailable(
+            "eventHome.registrationLookup.filter.freeAgents",
+            function() {
+              return activeRegistrations.filter(function(registration) {
+                return measureEventHomeLoopIterationIfAvailable(
+                  "eventHome.loop.registration.freeAgentFilter",
+                  function() {
+                    return registration.freeAgent === true;
+                  }
+                );
+              });
+            },
+            {
+              activeRegistrations: activeRegistrations.length
+            }
+          )
+        : [],
     captains:
-      measureEventHomeOperationIfAvailable(
-        "eventHome.registrationLookup.filter.captains",
-        function() {
-          return activeRegistrations.filter(function(registration) {
-            return measureEventHomeLoopIterationIfAvailable(
-              "eventHome.loop.registration.captainFilter",
-              function() {
-                return registration.captain === true;
-              }
-            );
-          });
-        },
-        {
-          activeRegistrations: activeRegistrations.length
-        }
-      )
+      includeRegistrationDetails
+        ? measureEventHomeOperationIfAvailable(
+            "eventHome.registrationLookup.filter.captains",
+            function() {
+              return activeRegistrations.filter(function(registration) {
+                return measureEventHomeLoopIterationIfAvailable(
+                  "eventHome.loop.registration.captainFilter",
+                  function() {
+                    return registration.captain === true;
+                  }
+                );
+              });
+            },
+            {
+              activeRegistrations: activeRegistrations.length
+            }
+          )
+        : []
   };
+
+}
+
+function canViewEventRegistrationDetails(auth) {
+
+  return (
+    auth &&
+    auth.authenticated &&
+    auth.user &&
+    userHasPermission(auth.user.role, "runSeasonControl")
+  );
 
 }
 

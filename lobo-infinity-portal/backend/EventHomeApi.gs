@@ -220,15 +220,18 @@ function getEventHome(e) {
     measureEventHomeOperation(
       "eventHome.participantLoading.currentPlayer.lookup",
       function() {
-        return auth.authenticated && auth.user.leaguePlayer
-          ? getEventRegistrationForPlayer(event.id, auth.user.leaguePlayer)
+        return auth.authenticated
+          ? getEventRegistrationForPlayer(
+              event.id,
+              getEventParticipantKey(event, auth.user)
+            )
           : null;
       },
       {
         authenticated: auth.authenticated,
         player:
           auth.authenticated && auth.user
-            ? auth.user.leaguePlayer
+            ? getEventParticipantKey(event, auth.user)
             : ""
       }
     );
@@ -275,7 +278,14 @@ function getEventHome(e) {
     measureEventHomeOperation(
       "eventHome.registrationLookup.buildPayload.call",
       function() {
-        return buildEventRegistrationPayload(event, registrations, currentPlayer);
+        return buildEventRegistrationPayload(
+          event,
+          registrations,
+          currentPlayer,
+          {
+            includeRegistrationDetails: canViewEventRegistrationDetails(auth)
+          }
+        );
       },
       {
         registrations: registrations.length

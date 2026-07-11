@@ -468,7 +468,14 @@ function buildEventManagerPayload(engine, selectedEvent) {
     getEventRegistrationRows(selected.id);
 
   const registration =
-    buildEventRegistrationPayload(selected, registrations, null);
+    buildEventRegistrationPayload(
+      selected,
+      registrations,
+      null,
+      {
+        includeRegistrationDetails: true
+      }
+    );
 
   const teams =
     selected.type === "Team Tournament" && typeof getTeamTournamentTeams === "function"

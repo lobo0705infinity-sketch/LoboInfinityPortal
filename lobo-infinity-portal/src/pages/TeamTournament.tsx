@@ -514,7 +514,7 @@ function RegistrationPanel({
 
   const canRegister = registration.registrationOpen
   const status = current?.status ?? registration.status
-  const showForm = editing || !current
+  const showForm = editing
 
   return (
     <section
@@ -554,6 +554,15 @@ function RegistrationPanel({
             </button>
             <button disabled={disabled || !canRegister} onClick={onWithdraw} type="button">
               Withdraw
+            </button>
+          </div>
+        </div>
+      ) : !current && !showForm ? (
+        <div className="event-registration-summary">
+          <p>You are not registered.</p>
+          <div className="event-registration-actions">
+            <button disabled={disabled || !canRegister} onClick={() => setEditing(true)} type="button">
+              Register
             </button>
           </div>
         </div>
@@ -623,11 +632,9 @@ function RegistrationPanel({
             >
               {current ? 'Update Registration' : 'Register for Event'}
             </button>
-            {current ? (
-              <button disabled={disabled} onClick={() => setEditing(false)} type="button">
-                Cancel
-              </button>
-            ) : null}
+            <button disabled={disabled} onClick={() => setEditing(false)} type="button">
+              Cancel
+            </button>
           </div>
         </form>
       )}
