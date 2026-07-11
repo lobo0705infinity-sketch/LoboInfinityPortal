@@ -975,7 +975,7 @@ function HeadlineStack({
       label: item.date || 'Commissioner News',
       story: item.body,
       title: item.title,
-      to: item.link || '/analytics',
+      to: item.link || '/intelligence',
     })),
     intelligence?.winStreaks[0]
       ? {
@@ -1275,7 +1275,7 @@ function QuickNavigation() {
     ['Players', '/players'],
     ['Factions', '/factions'],
     ['Missions', '/missions'],
-    ['Intelligence', '/analytics'],
+    ['Intelligence', '/intelligence'],
     ['Hall of Fame', '/hall-of-fame'],
     ['Compare', '/compare'],
   ] as const

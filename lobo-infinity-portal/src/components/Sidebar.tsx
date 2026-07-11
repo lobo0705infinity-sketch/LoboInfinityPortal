@@ -44,7 +44,7 @@ const leagueItems: NavigationItem[] = [
   {
     icon: 'analytics',
     label: 'Intelligence',
-    to: '/analytics',
+    to: '/intelligence',
   },
   {
     icon: 'compare',

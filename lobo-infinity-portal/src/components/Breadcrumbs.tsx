@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 
 const labels: Record<string, string> = {
-  analytics: 'League Intelligence',
+  analytics: 'League Statistics',
   'army-lists': 'Army List Vault',
   'army-list': 'Army List',
   automation: 'League Automation Center',
@@ -18,6 +18,7 @@ const labels: Record<string, string> = {
   game: 'Match Details',
   games: 'Match Details',
   'hall-of-fame': 'Hall of Fame',
+  intelligence: 'League Intelligence',
   mission: 'Mission',
   missions: 'Missions',
   news: 'Commissioner News',

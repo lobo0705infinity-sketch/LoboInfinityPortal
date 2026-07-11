@@ -9,6 +9,7 @@ export type EventCapability =
   | 'schedule'
   | 'players'
   | 'factions'
+  | 'intelligence'
   | 'statistics'
   | 'rules'
   | 'teams'
@@ -36,6 +37,7 @@ export type EventCapabilityNavigationItem = {
 
 export const capabilityLabels: Record<EventCapability, string> = {
   factions: 'Factions',
+  intelligence: 'Intelligence',
   map: 'Map',
   matchFinder: 'Match Finder',
   objectives: 'Objectives',
@@ -55,6 +57,7 @@ export const capabilityLabels: Record<EventCapability, string> = {
 
 const capabilityIcons: Record<EventCapability, PortalIconName> = {
   factions: 'factions',
+  intelligence: 'analytics',
   map: 'timeline',
   matchFinder: 'compare',
   objectives: 'missions',
@@ -74,6 +77,7 @@ const capabilityIcons: Record<EventCapability, PortalIconName> = {
 
 const defaultCapabilityRoutes: Record<EventCapability, string> = {
   factions: '/factions?eventId=:eventId',
+  intelligence: '/intelligence?eventId=:eventId',
   map: '/event/:eventId#map',
   matchFinder: '/match-finder?eventId=:eventId',
   objectives: '/event/:eventId#objectives',
@@ -107,6 +111,7 @@ export const currentEventNavigation: EventNavigationConfig = {
     'players',
     'factions',
     'statistics',
+    'intelligence',
     'rules',
   ],
   id: 'event-current-league',
@@ -126,6 +131,7 @@ export const eventNavigation: EventNavigationConfig[] = [
       'standings',
       'results',
       'statistics',
+      'intelligence',
       'rules',
     ],
     id: 'event-august-2026-team-tournament',

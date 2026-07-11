@@ -113,6 +113,7 @@ function AuthShell() {
                 <Route path="/season/:seasonName" element={<DeepLinkRedirect target="season" />} />
                 <Route path="/weekly-report" element={<DeepLinkRedirect target="weeklyReport" />} />
                 <Route path="/analytics" element={<MeasuredRoute name="Analytics"><Analytics /></MeasuredRoute>} />
+                <Route path="/intelligence" element={<MeasuredRoute name="Intelligence"><Analytics /></MeasuredRoute>} />
                 <Route path="/hall-of-fame" element={<MeasuredRoute name="HallOfFame"><HallOfFame /></MeasuredRoute>} />
                 <Route path="/news" element={<MeasuredRoute name="CommissionerNews"><CommissionerNews /></MeasuredRoute>} />
                 <Route path="/news/:id" element={<DeepLinkRedirect target="news" />} />

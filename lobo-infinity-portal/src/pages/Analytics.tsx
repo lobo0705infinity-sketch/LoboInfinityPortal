@@ -1,64 +1,72 @@
-import { useEffect, useState, type ReactNode } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import Skeleton from '../components/Skeleton'
 import {
   apiClient,
-  type FactionMomentum,
-  type IntelligenceGame,
-  type IntelligenceMissionTrend,
-  type IntelligenceStreak,
-  type LeagueIntelligenceData,
+  type FactionSummary,
   type LeagueRecordValue,
-  type RecentUpset,
-  type StandingsBattle,
+  type MissionSummary,
 } from '../services/api'
-import { formatObjectiveScore, formatPlayerName } from '../services/formatting'
+import type { DivisionStandings, Standing } from '../types/dashboard'
+import Intelligence from './Intelligence'
 
-type IntelligenceState =
+type StatisticsState =
+  | { status: 'loading' }
   | {
-      status: 'idle'
-    }
-  | {
-      data: LeagueIntelligenceData
+      data: {
+        factions: FactionSummary[]
+        missions: MissionSummary[]
+        players: DivisionStandings[]
+        records: Record<string, LeagueRecordValue>
+      }
       status: 'success'
     }
-  | {
-      error: string
-      status: 'error'
-    }
+  | { error: string; status: 'error' }
 
 function Analytics() {
+  const location = useLocation()
   const [searchParams] = useSearchParams()
+  const isIntelligenceRoute = location.pathname === '/intelligence'
   const eventId = searchParams.get('eventId') || ''
-  const [intelligenceState, setIntelligenceState] =
-    useState<IntelligenceState>({
-      status: 'idle',
-    })
+  const [state, setState] = useState<StatisticsState>({ status: 'loading' })
 
   useEffect(() => {
-    const controller = new AbortController()
+    if (isIntelligenceRoute) {
+      return undefined
+    }
 
-    apiClient
-      .getAnalytics({
-        eventId,
-        signal: controller.signal,
-      })
-      .then((data) => {
-        setIntelligenceState({
-          data,
-          status: 'success',
-        })
+    const controller = new AbortController()
+    const options = { eventId, signal: controller.signal }
+
+    Promise.all([
+      apiClient.getPlayers(options),
+      apiClient.getFactions(options),
+      apiClient.getMissions(options),
+      apiClient.getRecords(options),
+    ])
+      .then(([players, factions, missions, records]) => {
+        if (!controller.signal.aborted) {
+          setState({
+            data: {
+              factions,
+              missions,
+              players,
+              records,
+            },
+            status: 'success',
+          })
+        }
       })
       .catch((error: unknown) => {
         if (controller.signal.aborted) {
           return
         }
 
-        setIntelligenceState({
+        setState({
           error:
             error instanceof Error
               ? error.message
-              : 'League intelligence could not be loaded.',
+              : 'Statistics could not be loaded.',
           status: 'error',
         })
       })
@@ -66,70 +74,141 @@ function Analytics() {
     return () => {
       controller.abort()
     }
-  }, [eventId])
+  }, [eventId, isIntelligenceRoute])
 
-  if (intelligenceState.status === 'idle') {
+  if (isIntelligenceRoute) {
+    return <Intelligence />
+  }
+
+  if (state.status === 'loading') {
     return (
       <main className="portal-shell">
         <PageHeader eventScoped={Boolean(eventId)} />
-        <section className="intelligence-grid" aria-label="Event intelligence loading">
-          <Skeleton label="Hot streaks loading" rows={5} />
-          <Skeleton label="Records loading" rows={5} />
-          <Skeleton label="Mission meta loading" rows={5} />
-          <Skeleton label="Faction momentum loading" rows={5} />
+        <section className="event-overview-status-grid" aria-label="Statistics loading">
+          {['League Analytics', 'Player Analytics', 'Faction Analytics', 'Mission Analytics'].map((label) => (
+            <article className="event-overview-status-card neutral" key={label}>
+              <span>{label}</span>
+              <strong>Loading</strong>
+            </article>
+          ))}
+        </section>
+        <section className="intelligence-grid">
+          <Skeleton label="Player analytics loading" rows={6} />
+          <Skeleton label="Faction analytics loading" rows={6} />
+          <Skeleton label="Mission analytics loading" rows={6} />
+          <Skeleton label="League records loading" rows={6} />
         </section>
       </main>
     )
   }
 
-  if (intelligenceState.status === 'error') {
+  if (state.status === 'error') {
     return (
       <main className="portal-shell">
         <PageHeader eventScoped={Boolean(eventId)} />
-        <section className="dashboard-state" aria-label="Intelligence error">
-          <p role="alert">{intelligenceState.error}</p>
+        <section className="dashboard-state" aria-label="Statistics error">
+          <p role="alert">{state.error}</p>
         </section>
       </main>
     )
   }
 
-  const { data } = intelligenceState
+  return (
+    <StatisticsDashboard
+      data={state.data}
+      eventScoped={Boolean(eventId)}
+      eventId={eventId}
+    />
+  )
+}
+
+function StatisticsDashboard({
+  data,
+  eventScoped,
+  eventId,
+}: {
+  data: Extract<StatisticsState, { status: 'success' }>['data']
+  eventScoped: boolean
+  eventId: string
+}) {
+  const model = useMemo(() => buildStatisticsModel(data), [data])
+  const eventQuery = eventId ? `?eventId=${encodeURIComponent(eventId)}` : ''
 
   return (
     <main className="portal-shell">
-      <PageHeader eventScoped={Boolean(eventId)} />
+      <PageHeader eventScoped={eventScoped} />
 
-      <section className="intelligence-grid" aria-label="Event intelligence">
-        <HotStreaksCard
-          losingStreaks={data.losingStreaks}
-          winStreaks={data.winStreaks}
-        />
-        <RecordsCard records={data.records} />
-        <MissionMetaCard missions={data.missionTrends} />
-        <FactionMomentumCard factions={data.factionMomentum} />
-        <BattleCard
-          eyebrow="Promotion Race"
-          items={data.promotionBattle}
-          title="Promotion Race"
-        />
-        <BattleCard
-          eyebrow="Relegation Race"
-          items={data.relegationBattle}
-          title="Relegation Race"
-        />
-        <GameListCard
-          eyebrow="Biggest Blowouts"
-          games={data.biggestVictories}
-          title="Biggest Blowouts"
-        />
-        <GameListCard
-          eyebrow="Closest Matches"
-          games={data.closestGames}
-          title="Closest Matches"
-        />
-        {data.recentUpsets.length > 0 ? (
-          <UpsetsCard upsets={data.recentUpsets} />
-        ) : null}
+      <section className="event-overview-status-grid" aria-label="Statistics summary">
+        <SummaryCard label="Games" value={model.totalGames} />
+        <SummaryCard label="Players" value={model.totalPlayers} />
+        <SummaryCard label="Factions" value={data.factions.length} />
+        <SummaryCard label="Missions" value={data.missions.length} />
+      </section>
+
+      <section className="intelligence-grid" aria-label="Analytics dashboards">
+        <AnalyticsPanel
+          actionLabel="View Players"
+          actionTo={`/players${eventQuery}`}
+          eyebrow="Player Analytics"
+          title="Player Performance"
+        >
+          <MetricList
+            items={[
+              ['Top Tournament Points', model.topPlayer],
+              ['Most Active Player', model.mostActivePlayer],
+              ['Best Win Rate', model.bestWinRatePlayer],
+              ['Active Divisions', String(data.players.length)],
+            ]}
+          />
+        </AnalyticsPanel>
+
+        <AnalyticsPanel
+          actionLabel="View Factions"
+          actionTo={`/factions${eventQuery}`}
+          eyebrow="Faction Analytics"
+          title="Faction Performance"
+        >
+          <MetricList
+            items={[
+              ['Top Faction', model.topFaction],
+              ['Most Played Faction', model.mostPlayedFaction],
+              ['Best Avg OP', model.bestObjectiveFaction],
+              ['Faction Count', String(data.factions.length)],
+            ]}
+          />
+        </AnalyticsPanel>
+
+        <AnalyticsPanel
+          actionLabel="View Missions"
+          actionTo={`/missions${eventQuery}`}
+          eyebrow="Mission Analytics"
+          title="Mission Meta"
+        >
+          <MetricList
+            items={[
+              ['Most Played Mission', model.mostPlayedMission],
+              ['Highest First Turn Win Rate', model.highestFirstTurnMission],
+              ['Best Avg OP Mission', model.bestObjectiveMission],
+              ['Mission Count', String(data.missions.length)],
+            ]}
+          />
+        </AnalyticsPanel>
+
+        <AnalyticsPanel
+          actionLabel="View Intelligence"
+          actionTo={`/intelligence${eventQuery}`}
+          eyebrow="League Analytics"
+          title="Records & Trends"
+        >
+          <MetricList
+            items={[
+              ['Highest Scoring Game', getRecordLabel(data.records.highestScoringGame)],
+              ['Largest OP Margin', getRecordLabel(data.records.largestOPMargin)],
+              ['Most Active Faction', getRecordLabel(data.records.mostActiveFaction)],
+              ['Most Active Mission', getRecordLabel(data.records.mostActiveMission)],
+            ]}
+          />
+        </AnalyticsPanel>
       </section>
     </main>
   )
@@ -137,19 +216,32 @@ function Analytics() {
 
 function PageHeader({ eventScoped }: { eventScoped: boolean }) {
   return (
-    <section className="page-header" aria-labelledby="analytics-title">
-      <p className="eyebrow">Analytics</p>
-      <h1 id="analytics-title">{eventScoped ? 'Event Intelligence' : 'League Intelligence'}</h1>
-      <p>Live stories, pressure points, meta movement, and race conditions</p>
+    <section className="page-header" aria-labelledby="statistics-title">
+      <p className="eyebrow">Statistics</p>
+      <h1 id="statistics-title">{eventScoped ? 'Event Statistics' : 'League Statistics'}</h1>
+      <p>Player, faction, mission, and league analytics powered by live event data</p>
     </section>
   )
 }
 
-function IntelligenceCard({
+function SummaryCard({ label, value }: { label: string; value: number | string }) {
+  return (
+    <article className="event-overview-status-card neutral">
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </article>
+  )
+}
+
+function AnalyticsPanel({
+  actionLabel,
+  actionTo,
   children,
   eyebrow,
   title,
 }: {
+  actionLabel: string
+  actionTo: string
   children: ReactNode
   eyebrow: string
   title: string
@@ -160,263 +252,147 @@ function IntelligenceCard({
         <p className="eyebrow">{eyebrow}</p>
         <h2 id={titleToId(title)}>{title}</h2>
       </div>
-      <div className="intelligence-card-body">{children}</div>
+      <div className="intelligence-card-body">
+        {children}
+        <Link className="event-home-primary-action" to={actionTo}>
+          {actionLabel}
+        </Link>
+      </div>
     </section>
   )
 }
 
-function HotStreaksCard({
-  losingStreaks,
-  winStreaks,
-}: {
-  losingStreaks: IntelligenceStreak[]
-  winStreaks: IntelligenceStreak[]
-}) {
+function MetricList({ items }: { items: Array<[string, string]> }) {
   return (
-    <IntelligenceCard eyebrow="Hot Streaks" title="Hot Streaks">
-      <StoryStack>
-        {winStreaks.map((streak) => (
-          <StoryLink
-            key={`win-${streak.player}`}
-            meta={`${streak.games} games`}
-            title={formatPlayerName(streak.player, streak.displayName)}
-            to={playerPath(streak.player)}
-          >
-            {streak.story}
-          </StoryLink>
-        ))}
-        {losingStreaks.map((streak) => (
-          <StoryLink
-            key={`loss-${streak.player}`}
-            meta={`${streak.games} games`}
-            title={formatPlayerName(streak.player, streak.displayName)}
-            to={playerPath(streak.player)}
-          >
-            {streak.story}
-          </StoryLink>
-        ))}
-      </StoryStack>
-    </IntelligenceCard>
+    <div className="event-overview-metrics">
+      {items.map(([label, value]) => (
+        <div className="event-home-metric" key={label}>
+          <span>{label}</span>
+          <strong>{value || 'Not established'}</strong>
+        </div>
+      ))}
+    </div>
   )
 }
 
-function RecordsCard({ records }: { records: Record<string, LeagueRecordValue> }) {
-  const recordItems = [
-    ['Largest OP Scoreline Margin', records.largestVPMargin],
-    ['Largest OP Margin', records.largestOPMargin],
-    ['Highest Scoring Game', records.highestScoringGame],
-    ['Lowest Scoring Game', records.lowestScoringGame],
-    ['Closest OP Game', records.closestVPGame],
-    ['Most Active Player', records.mostActivePlayer],
-    ['Most Active Faction', records.mostActiveFaction],
-    ['Most Active Mission', records.mostActiveMission],
-    ['Best First-Turn Faction', records.bestFirstTurnFaction],
-    ['Worst First-Turn Faction', records.worstFirstTurnFaction],
-  ] as const
-
-  return (
-    <IntelligenceCard eyebrow="League Records" title="League Records">
-      <StoryStack>
-        {recordItems.map(([label, record]) =>
-          record ? (
-            <StoryLink
-              key={label}
-              meta={label}
-              title={getRecordTitle(record)}
-              to={getRecordPath(record)}
-            >
-              {record.story}
-            </StoryLink>
-          ) : null,
-        )}
-      </StoryStack>
-    </IntelligenceCard>
+function buildStatisticsModel(data: Extract<StatisticsState, { status: 'success' }>['data']) {
+  const players = data.players.flatMap((division) =>
+    division.standings.map((player) => ({
+      ...player,
+      division: division.divisionLabel,
+    })),
   )
+  const totalGames = Math.max(
+    sum(data.factions.map((faction) => faction.games)),
+    sum(data.missions.map((mission) => mission.games)),
+    Math.round(sum(players.map((player) => player.games)) / 2),
+  )
+  const topPlayer = maxBy(players, (player) => player.tp)
+  const mostActivePlayer = maxBy(players, (player) => player.games)
+  const bestWinRatePlayer = maxBy(
+    players.filter((player) => player.games > 0),
+    (player) => player.wins / Math.max(1, player.games),
+  )
+  const topFaction = maxBy(data.factions, (faction) => faction.winRate)
+  const mostPlayedFaction = maxBy(data.factions, (faction) => faction.games)
+  const bestObjectiveFaction = maxBy(data.factions, (faction) => faction.averageOP)
+  const mostPlayedMission = maxBy(data.missions, (mission) => mission.games)
+  const highestFirstTurnMission = maxBy(data.missions, (mission) => mission.firstTurnWinRate)
+  const bestObjectiveMission = maxBy(data.missions, (mission) => mission.averageOP)
+
+  return {
+    bestObjectiveFaction: formatFaction(bestObjectiveFaction, 'averageOP'),
+    bestObjectiveMission: formatMission(bestObjectiveMission, 'averageOP'),
+    bestWinRatePlayer: formatPlayer(bestWinRatePlayer, 'winRate'),
+    highestFirstTurnMission: formatMission(highestFirstTurnMission, 'firstTurnWinRate'),
+    mostActivePlayer: formatPlayer(mostActivePlayer, 'games'),
+    mostPlayedFaction: formatFaction(mostPlayedFaction, 'games'),
+    mostPlayedMission: formatMission(mostPlayedMission, 'games'),
+    topFaction: formatFaction(topFaction, 'winRate'),
+    topPlayer: formatPlayer(topPlayer, 'tp'),
+    totalGames,
+    totalPlayers: players.length,
+  }
 }
 
-function MissionMetaCard({ missions }: { missions: IntelligenceMissionTrend[] }) {
-  return (
-    <IntelligenceCard eyebrow="Mission Meta" title="Mission Meta">
-      <StoryStack>
-        {missions.map((mission) => (
-          <StoryLink
-            key={mission.mission}
-            meta={`${mission.games} games / ${formatNumber(
-              mission.firstTurnWinRate,
-            )}% first-turn wins`}
-            title={mission.mission}
-            to={missionPath(mission.mission)}
-          >
-            {mission.story}
-          </StoryLink>
-        ))}
-      </StoryStack>
-    </IntelligenceCard>
-  )
+function maxBy<T>(items: T[], score: (item: T) => number) {
+  return items.reduce<T | null>((best, item) => {
+    if (!best) {
+      return item
+    }
+
+    return score(item) > score(best) ? item : best
+  }, null)
 }
 
-function FactionMomentumCard({ factions }: { factions: FactionMomentum[] }) {
-  return (
-    <IntelligenceCard eyebrow="Faction Momentum" title="Faction Momentum">
-      <StoryStack>
-        {factions.map((faction) => (
-          <StoryLink
-            key={faction.faction}
-            meta={faction.trend}
-            title={faction.faction}
-            to={factionPath(faction.faction)}
-          >
-            {faction.story}
-          </StoryLink>
-        ))}
-      </StoryStack>
-    </IntelligenceCard>
-  )
+function sum(values: number[]) {
+  return values.reduce((total, value) => total + value, 0)
 }
 
-function BattleCard({
-  eyebrow,
-  items,
-  title,
-}: {
-  eyebrow: string
-  items: StandingsBattle[]
-  title: string
-}) {
-  if (items.length === 0) {
-    return null
+function formatPlayer(
+  player: Standing | null,
+  metric: 'games' | 'tp' | 'winRate',
+) {
+  if (!player) {
+    return ''
   }
 
-  return (
-    <IntelligenceCard eyebrow={eyebrow} title={title}>
-      <StoryStack>
-        {items.map((item) => (
-          <StoryLink
-            key={`${item.division}-${item.rank}-${item.player}`}
-            meta={`${item.division} / Rank #${item.rank}`}
-            title={formatPlayerName(item.player, item.displayName)}
-            to={playerPath(item.player)}
-          >
-            {item.story}
-          </StoryLink>
-        ))}
-      </StoryStack>
-    </IntelligenceCard>
-  )
+  const name = player.displayName || player.player
+  if (metric === 'winRate') {
+    return `${name} / ${formatNumber((player.wins / Math.max(1, player.games)) * 100)}%`
+  }
+
+  return `${name} / ${metric === 'tp' ? player.tp : player.games}`
 }
 
-function GameListCard({
-  eyebrow,
-  games,
-  title,
-}: {
-  eyebrow: string
-  games: IntelligenceGame[]
-  title: string
-}) {
-  return (
-    <IntelligenceCard eyebrow={eyebrow} title={title}>
-      <StoryStack>
-        {games.map((game) => (
-          <StoryLink
-            key={`${title}-${game.id}`}
-            meta={`${formatObjectiveScore({ op: game.value })} / ${game.date}`}
-            title={`${formatPlayerName(game.winner, game.winnerDisplayName)} vs ${formatPlayerName(game.loser, game.loserDisplayName)}`}
-            to={`/games/${game.id}`}
-          >
-            {game.story}
-          </StoryLink>
-        ))}
-      </StoryStack>
-    </IntelligenceCard>
-  )
+function formatFaction(
+  faction: FactionSummary | null,
+  metric: 'averageOP' | 'games' | 'winRate',
+) {
+  if (!faction) {
+    return ''
+  }
+
+  if (metric === 'winRate') {
+    return `${faction.name} / ${formatNumber(faction.winRate)}%`
+  }
+
+  if (metric === 'averageOP') {
+    return `${faction.name} / ${formatNumber(faction.averageOP)} avg OP`
+  }
+
+  return `${faction.name} / ${faction.games}`
 }
 
-function UpsetsCard({ upsets }: { upsets: RecentUpset[] }) {
-  return (
-    <IntelligenceCard eyebrow="Latest Upsets" title="Latest Upsets">
-      <StoryStack>
-        {upsets.map((upset) => (
-          <StoryLink
-            key={`upset-${upset.id}`}
-            meta={`Rank #${upset.winnerRank} over #${upset.loserRank}`}
-            title={`${formatPlayerName(upset.winner, upset.winnerDisplayName)} over ${formatPlayerName(upset.loser, upset.loserDisplayName)}`}
-            to={`/games/${upset.id}`}
-          >
-            {upset.story}
-          </StoryLink>
-        ))}
-      </StoryStack>
-    </IntelligenceCard>
-  )
+function formatMission(
+  mission: MissionSummary | null,
+  metric: 'averageOP' | 'firstTurnWinRate' | 'games',
+) {
+  if (!mission) {
+    return ''
+  }
+
+  if (metric === 'firstTurnWinRate') {
+    return `${mission.mission} / ${formatNumber(mission.firstTurnWinRate)}%`
+  }
+
+  if (metric === 'averageOP') {
+    return `${mission.mission} / ${formatNumber(mission.averageOP)} avg OP`
+  }
+
+  return `${mission.mission} / ${mission.games}`
 }
 
-function StoryStack({ children }: { children: ReactNode }) {
-  return <div className="intelligence-story-stack">{children}</div>
-}
+function getRecordLabel(record: LeagueRecordValue | undefined) {
+  if (!record) {
+    return ''
+  }
 
-function StoryLink({
-  children,
-  meta,
-  title,
-  to,
-}: {
-  children: ReactNode
-  meta: string
-  title: string
-  to: string
-}) {
-  return (
-    <Link className="intelligence-story" to={to}>
-      <span>{meta}</span>
-      <strong>{title}</strong>
-      <p>{children}</p>
-    </Link>
-  )
-}
-
-function getRecordTitle(record: NonNullable<LeagueRecordValue>) {
   if ('winner' in record) {
-    return `${formatPlayerName(record.winner, record.winnerDisplayName)} vs ${formatPlayerName(record.loser, record.loserDisplayName)}`
+    return `${record.winnerDisplayName || record.winner} vs ${record.loserDisplayName || record.loser}`
   }
 
-  return record.displayName || record.name || record.faction || record.type || 'League Record'
-}
-
-function getRecordPath(record: NonNullable<LeagueRecordValue>) {
-  if ('winner' in record) {
-    return `/games/${record.id}`
-  }
-
-  if (record.type === 'player' && record.name) {
-    return playerPath(record.name)
-  }
-
-  if (record.type === 'faction' && record.name) {
-    return factionPath(record.name)
-  }
-
-  if (record.type === 'mission' && record.name) {
-    return missionPath(record.name)
-  }
-
-  if (record.faction) {
-    return factionPath(record.faction)
-  }
-
-  return '/analytics'
-}
-
-function playerPath(player: string) {
-  return `/players/${encodeURIComponent(player)}`
-}
-
-function factionPath(faction: string) {
-  return `/factions/${encodeURIComponent(faction)}`
-}
-
-function missionPath(mission: string) {
-  return `/missions/${encodeURIComponent(mission)}`
+  return record.displayName || record.name || record.faction || record.type || ''
 }
 
 function formatNumber(value: number) {

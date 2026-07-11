@@ -13,6 +13,7 @@ const routeLoaders = new Map<string, () => Promise<unknown>>([
   ['/factions', () => import('../pages/Factions')],
   ['/faction-detail', () => import('../pages/FactionProfile')],
   ['/hall-of-fame', () => import('../pages/HallOfFame')],
+  ['/intelligence', () => import('../pages/Analytics')],
   ['/integrity', () => import('../pages/LeagueIntegrity')],
   ['/match-finder', () => import('../pages/MatchFinder')],
   ['/missions', () => import('../pages/Missions')],

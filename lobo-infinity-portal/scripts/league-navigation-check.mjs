@@ -97,7 +97,16 @@ const routes = [
     component: 'Analytics',
     expectedRoute: `/analytics?eventId=${eventId}`,
     item: 'Statistics',
-    requiredText: ['Intelligence'],
+    requiredText: ['Event Statistics', 'Player Analytics', 'Faction Analytics', 'Mission Analytics'],
+    rejectedText: ['Chronological Event History'],
+  },
+  {
+    actualRoute: `/intelligence?eventId=${eventId}`,
+    activeLabel: 'Intelligence',
+    component: 'Intelligence',
+    expectedRoute: `/intelligence?eventId=${eventId}`,
+    item: 'Intelligence',
+    requiredText: ['Event Intelligence', 'Hot Streaks', 'League Records', 'Mission Meta'],
     rejectedText: ['Chronological Event History'],
   },
   {
@@ -322,6 +331,175 @@ const schedulingPayload = {
   },
 }
 
+const standing = {
+  displayName: 'Lobo',
+  eventId,
+  games: 3,
+  losses: 1,
+  op: 18,
+  player: 'Lobo',
+  rank: 1,
+  tp: 8,
+  vp: 520,
+  wins: 2,
+}
+
+const playersPayload = {
+  divisions: [
+    {
+      division: 'pga',
+      divisionLabel: 'Proving Grounds A',
+      eventId,
+      standings: [
+        standing,
+        {
+          ...standing,
+          displayName: 'FlashPulse',
+          games: 2,
+          losses: 1,
+          op: 12,
+          player: 'FlashPulse',
+          rank: 2,
+          tp: 5,
+          vp: 420,
+          wins: 1,
+        },
+      ],
+      summary: {
+        activePlayers: 2,
+        gamesPlayed: 3,
+        leader: standing,
+        players: 2,
+      },
+      success: true,
+    },
+  ],
+  success: true,
+}
+
+const factionsPayload = {
+  factions: [
+    {
+      averageOP: 6,
+      averageTP: 2.5,
+      averageVP: 210,
+      divisionBreakdown: [
+        { division: 'Proving Grounds A', games: 3 },
+      ],
+      games: 3,
+      lastPlayed: '2026-07-10',
+      losses: 1,
+      name: 'PanOceania',
+      topPlayer: 'Lobo',
+      topPlayerDisplayName: 'Lobo',
+      winRate: 66.67,
+      wins: 2,
+    },
+  ],
+  success: true,
+}
+
+const missionsPayload = {
+  missions: [
+    {
+      averageOP: 6,
+      averageTP: 2.5,
+      averageVP: 210,
+      firstTurnWinRate: 50,
+      games: 3,
+      lastPlayed: '2026-07-10',
+      mission: 'Supremacy',
+      mostSuccessfulFaction: 'PanOceania',
+    },
+  ],
+  success: true,
+}
+
+const records = {
+  highestScoringGame: {
+    date: '2026-07-10',
+    id: 1,
+    loser: 'FlashPulse',
+    loserDisplayName: 'FlashPulse',
+    mission: 'Supremacy',
+    story: 'Highest scoring test game.',
+    value: 18,
+    winner: 'Lobo',
+    winnerDisplayName: 'Lobo',
+  },
+  largestOPMargin: {
+    date: '2026-07-10',
+    id: 1,
+    loser: 'FlashPulse',
+    loserDisplayName: 'FlashPulse',
+    mission: 'Supremacy',
+    story: 'Largest OP margin.',
+    value: 6,
+    winner: 'Lobo',
+    winnerDisplayName: 'Lobo',
+  },
+  mostActiveFaction: {
+    faction: 'PanOceania',
+    games: 3,
+    name: 'PanOceania',
+    story: 'Most active faction.',
+    type: 'faction',
+  },
+  mostActiveMission: {
+    games: 3,
+    name: 'Supremacy',
+    story: 'Most active mission.',
+    type: 'mission',
+  },
+}
+
+const recordsPayload = {
+  records,
+  success: true,
+}
+
+const intelligencePayload = {
+  biggestVictories: [records.largestOPMargin],
+  closestGames: [records.highestScoringGame],
+  factionMomentum: [
+    {
+      faction: 'PanOceania',
+      games: 3,
+      losses: 1,
+      story: 'PanOceania is setting the early pace.',
+      trend: 'Rising',
+      wins: 2,
+    },
+  ],
+  highestVPGames: [records.highestScoringGame],
+  losingStreaks: [],
+  missionTrends: [
+    {
+      firstTurnWinRate: 50,
+      games: 3,
+      averageOP: 6,
+      averageTP: 2.5,
+      averageVP: 210,
+      mission: 'Supremacy',
+      mostSuccessfulFaction: 'PanOceania',
+      story: 'Supremacy remains contested.',
+    },
+  ],
+  promotionBattle: [],
+  recentUpsets: [],
+  records,
+  relegationBattle: [],
+  success: true,
+  winStreaks: [
+    {
+      displayName: 'Lobo',
+      games: 2,
+      player: 'Lobo',
+      story: 'Lobo has momentum.',
+    },
+  ],
+}
+
 function createServer() {
   return http.createServer((request, response) => {
     const pathname = decodeURIComponent(new URL(request.url ?? '/', 'http://local').pathname)
@@ -389,6 +567,51 @@ async function run() {
       return
     }
 
+    if (action === 'players') {
+      await route.fulfill({
+        body: JSON.stringify(playersPayload),
+        contentType: 'application/json',
+        status: 200,
+      })
+      return
+    }
+
+    if (action === 'factions') {
+      await route.fulfill({
+        body: JSON.stringify(factionsPayload),
+        contentType: 'application/json',
+        status: 200,
+      })
+      return
+    }
+
+    if (action === 'missions') {
+      await route.fulfill({
+        body: JSON.stringify(missionsPayload),
+        contentType: 'application/json',
+        status: 200,
+      })
+      return
+    }
+
+    if (action === 'records') {
+      await route.fulfill({
+        body: JSON.stringify(recordsPayload),
+        contentType: 'application/json',
+        status: 200,
+      })
+      return
+    }
+
+    if (action === 'intelligence') {
+      await route.fulfill({
+        body: JSON.stringify(intelligencePayload),
+        contentType: 'application/json',
+        status: 200,
+      })
+      return
+    }
+
     await route.fulfill({
       body: JSON.stringify({ error: 'mocked navigation audit response', success: false }),
       contentType: 'application/json',
@@ -411,13 +634,14 @@ async function run() {
     ).catch(() => undefined)
 
     const mainText = await page.locator('main').innerText().catch(() => '')
+    const normalizedMainText = mainText.toLowerCase()
     const pathname = await page.evaluate(() => `${window.location.pathname}${window.location.search}`)
     const activeLabels = await page.locator('.sidebar-button.active').allInnerTexts()
     const selectorFound = route.selector
       ? await page.locator(route.selector).count() > 0
       : true
-    const missingText = route.requiredText.filter((text) => !mainText.includes(text))
-    const rejectedText = route.rejectedText.filter((text) => mainText.includes(text))
+    const missingText = route.requiredText.filter((text) => !normalizedMainText.includes(text.toLowerCase()))
+    const rejectedText = route.rejectedText.filter((text) => normalizedMainText.includes(text.toLowerCase()))
     const routeMatches = pathname === route.expectedRoute
     const activeMatches = activeLabels.length === 1 && activeLabels[0] === route.activeLabel
     const pass =
@@ -455,7 +679,7 @@ async function run() {
     }
 
     if (missingText.length > 0) {
-      failures.push(`${route.item} missing visible text: ${missingText.join(', ')}`)
+      failures.push(`${route.item} missing visible text: ${missingText.join(', ')}; main=${mainText.slice(0, 220)}`)
     }
 
     if (rejectedText.length > 0) {

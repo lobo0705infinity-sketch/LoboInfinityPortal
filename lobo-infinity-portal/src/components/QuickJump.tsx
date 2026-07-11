@@ -60,7 +60,7 @@ function QuickJump() {
         { label: 'Past Events', to: '/events' },
         { label: 'Community Timeline', to: '/timeline' },
         { label: 'Notifications', to: '/notifications' },
-        { label: 'League Intelligence', to: '/analytics' },
+        { label: 'League Intelligence', to: '/intelligence' },
         ...playerItems,
         ...factionItems,
         ...missionItems,

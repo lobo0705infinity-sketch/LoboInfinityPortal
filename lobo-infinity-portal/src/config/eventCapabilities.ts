@@ -5,6 +5,7 @@ export type { EventCapability } from './eventNavigation'
 
 const labelCapabilities: Record<string, EventCapability> = {
   factions: 'factions',
+  intelligence: 'intelligence',
   map: 'map',
   matchfinder: 'matchFinder',
   objectives: 'objectives',
@@ -31,6 +32,7 @@ const campaignCapabilities: EventCapability[] = [
   'standings',
   'objectives',
   'statistics',
+  'intelligence',
   'rules',
 ]
 
@@ -44,6 +46,7 @@ const leagueCapabilities: EventCapability[] = [
   'players',
   'factions',
   'statistics',
+  'intelligence',
   'rules',
 ]
 
@@ -57,6 +60,7 @@ const tournamentCapabilities: EventCapability[] = [
   'standings',
   'results',
   'statistics',
+  'intelligence',
   'rules',
 ]
 
