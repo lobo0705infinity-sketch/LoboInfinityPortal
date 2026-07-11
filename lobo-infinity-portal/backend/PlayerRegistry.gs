@@ -18,18 +18,47 @@ const PLAYER = {
 };
 
 let playerDisplayNameCache = null;
+const PLAYER_REGISTRY_CACHE_KEY = "playerRegistry:v1";
+const PLAYER_REGISTRY_CACHE_TTL_SECONDS = 21600;
 
 function loadPlayers() {
+
+  let timer =
+    startDashboardEndpointSubStage(
+      "dashboard.players.spreadsheet.getActive"
+    );
 
   const sheet =
     SpreadsheetApp
       .getActive()
       .getSheetByName(CONFIG.SHEETS.PLAYERS);
 
+  endDashboardEndpointSubStage(
+    "dashboard.players.spreadsheet.getActiveAndSheetLookup",
+    timer,
+    {
+      sheet: CONFIG.SHEETS.PLAYERS
+    }
+  );
+
+  timer =
+    startDashboardEndpointSubStage(
+      "dashboard.players.getDataRange.getValues.initial"
+    );
+
   const data =
     sheet
       .getDataRange()
       .getValues();
+
+  endDashboardEndpointSubStage(
+    "dashboard.players.getDataRange.getValues.initial",
+    timer,
+    {
+      sheet: CONFIG.SHEETS.PLAYERS,
+      rows: data.length
+    }
+  );
 
   if (data.length <= 1)
     return [];
@@ -37,25 +66,62 @@ function loadPlayers() {
   const headers =
     data.shift();
 
+  const hadDisplayNameColumn =
+    getPlayerRegistryColumns(headers).displayName !== -1;
+
   const columns =
     ensurePlayerDisplayNameColumn(
       sheet,
       headers
     );
 
-  const values =
-    sheet
-      .getDataRange()
-      .getValues();
+  let values = data;
 
-  values.shift();
+  if (!hadDisplayNameColumn) {
+    timer =
+      startDashboardEndpointSubStage(
+        "dashboard.players.getDataRange.getValues.normalized"
+      );
 
-  return values.map(function(row) {
-    return normalizePlayerRegistryRow(
-      row,
-      columns
+    values =
+      sheet
+        .getDataRange()
+        .getValues();
+
+    endDashboardEndpointSubStage(
+      "dashboard.players.getDataRange.getValues.normalized",
+      timer,
+      {
+        sheet: CONFIG.SHEETS.PLAYERS,
+        rows: values.length
+      }
     );
-  });
+
+    values.shift();
+  }
+
+  timer =
+    startDashboardEndpointSubStage(
+      "dashboard.players.loop.normalize"
+    );
+
+  const normalized =
+    values.map(function(row) {
+      return normalizePlayerRegistryRow(
+        row,
+        columns
+      );
+    });
+
+  endDashboardEndpointSubStage(
+    "dashboard.players.loop.normalize",
+    timer,
+    {
+      rows: values.length
+    }
+  );
+
+  return normalized;
 
 }
 
@@ -77,6 +143,8 @@ function ensurePlayerDisplayNameColumn(sheet, headers) {
   sheet
     .getRange(1, playerColumn + 2)
     .setValue("Display Name");
+
+  invalidatePlayerRegistryCache();
 
   const nextHeaders =
     sheet
@@ -148,7 +216,7 @@ function setLeaguePlayerDisplayName(playerName, displayName) {
         getPlayerRegistryString(displayName)
       );
 
-    playerDisplayNameCache = null;
+    invalidatePlayerRegistryCache();
 
     if (typeof invalidatePortalCacheGroup === "function")
       invalidatePortalCacheGroup("all");
@@ -294,10 +362,21 @@ function getPlayerDisplayNameMap() {
   if (playerDisplayNameCache)
     return playerDisplayNameCache;
 
-  const map = {};
-
   const registry =
     buildPlayerRegistry();
+
+  playerDisplayNameCache =
+    buildPlayerDisplayNameMapFromRegistry(
+      registry
+    );
+
+  return playerDisplayNameCache;
+
+}
+
+function buildPlayerDisplayNameMapFromRegistry(registry) {
+
+  const map = {};
 
   Object.keys(registry)
     .forEach(function(playerName) {
@@ -309,9 +388,35 @@ function getPlayerDisplayNameMap() {
         player.player;
     });
 
-  playerDisplayNameCache = map;
+  return map;
 
-  return playerDisplayNameCache;
+}
+
+function clonePlayerRegistry(registry) {
+
+  const clone = {};
+
+  Object.keys(registry)
+    .forEach(function(playerName) {
+      const player =
+        registry[playerName];
+
+      clone[playerName] = {
+        player: player.player,
+        displayName: player.displayName,
+        division: player.division,
+        active: player.active,
+        games: player.games,
+        wins: player.wins,
+        losses: player.losses,
+        draws: player.draws,
+        tp: player.tp,
+        op: player.op,
+        vp: player.vp
+      };
+    });
+
+  return clone;
 
 }
 
@@ -340,6 +445,29 @@ function findPlayerRegistryEntry(registry, playerName) {
 
 function buildPlayerRegistry() {
 
+  const timer =
+    startDashboardEndpointSubStage(
+      "dashboard.players.buildRegistry"
+    );
+
+  const cached =
+    readPlayerRegistryCache();
+
+  if (cached) {
+    endDashboardEndpointSubStage(
+      "dashboard.players.buildRegistry",
+      timer,
+      {
+        cache: "hit",
+        players: Object.keys(cached).length
+      }
+    );
+
+    return clonePlayerRegistry(
+      cached
+    );
+  }
+
   const registry = {};
 
   loadPlayers()
@@ -356,7 +484,87 @@ function buildPlayerRegistry() {
 
     });
 
-  return registry;
+  endDashboardEndpointSubStage(
+    "dashboard.players.buildRegistry",
+    timer,
+    {
+      cache: "miss",
+      players: Object.keys(registry).length
+    }
+  );
+
+  writePlayerRegistryCache(
+    registry
+  );
+
+  return clonePlayerRegistry(
+    registry
+  );
+
+}
+
+function readPlayerRegistryCache() {
+
+  try {
+    const cached =
+      CacheService
+        .getScriptCache()
+        .get(PLAYER_REGISTRY_CACHE_KEY);
+
+    if (!cached)
+      return null;
+
+    const registry =
+      JSON.parse(cached);
+
+    if (!registry || typeof registry !== "object")
+      return null;
+
+    return registry;
+  }
+  catch (err) {
+    return null;
+  }
+
+}
+
+function writePlayerRegistryCache(registry) {
+
+  try {
+    CacheService
+      .getScriptCache()
+      .put(
+        PLAYER_REGISTRY_CACHE_KEY,
+        JSON.stringify(registry),
+        PLAYER_REGISTRY_CACHE_TTL_SECONDS
+      );
+  }
+  catch (err) {
+    Logger.log(
+      "Player Registry cache write skipped: " + err
+    );
+  }
+
+}
+
+function invalidatePlayerRegistryCache() {
+
+  playerDisplayNameCache =
+    null;
+
+  try {
+    CacheService
+      .getScriptCache()
+      .remove(PLAYER_REGISTRY_CACHE_KEY);
+
+    if (typeof invalidateDashboardLeagueOverviewCache === "function")
+      invalidateDashboardLeagueOverviewCache();
+  }
+  catch (err) {
+    Logger.log(
+      "Player Registry cache invalidation skipped: " + err
+    );
+  }
 
 }
 

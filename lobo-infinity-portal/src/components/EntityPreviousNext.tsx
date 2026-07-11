@@ -7,6 +7,7 @@ type EntityType = 'faction' | 'match' | 'mission' | 'player'
 
 type EntityPreviousNextProps = {
   current: number | string
+  eventId?: string
   type: EntityType
 }
 
@@ -24,7 +25,7 @@ type EntityNavState =
       status: 'success'
     }
 
-function EntityPreviousNext({ current, type }: EntityPreviousNextProps) {
+function EntityPreviousNext({ current, eventId, type }: EntityPreviousNextProps) {
   const [navState, setNavState] = useState<EntityNavState>({
     status: 'idle',
   })
@@ -33,7 +34,7 @@ function EntityPreviousNext({ current, type }: EntityPreviousNextProps) {
     const controller = new AbortController()
 
     async function loadEntities() {
-      const entities = await getEntities(type, controller.signal)
+      const entities = await getEntities(type, controller.signal, eventId)
 
       if (!controller.signal.aborted) {
         setNavState({
@@ -55,7 +56,7 @@ function EntityPreviousNext({ current, type }: EntityPreviousNextProps) {
     return () => {
       controller.abort()
     }
-  }, [type])
+  }, [eventId, type])
 
   if (navState.status !== 'success') {
     return null
@@ -63,7 +64,7 @@ function EntityPreviousNext({ current, type }: EntityPreviousNextProps) {
 
   const currentValue = String(current)
   const currentIndex = navState.entities.findIndex((entity) =>
-    entity.to.endsWith(`/${encodeURIComponent(currentValue)}`),
+    entity.to.split('?')[0].endsWith(`/${encodeURIComponent(currentValue)}`),
   )
 
   if (currentIndex < 0) {
@@ -78,37 +79,39 @@ function EntityPreviousNext({ current, type }: EntityPreviousNextProps) {
   )
 }
 
-async function getEntities(type: EntityType, signal: AbortSignal) {
+async function getEntities(type: EntityType, signal: AbortSignal, eventId = '') {
+  const eventQuery = eventId ? `?eventId=${encodeURIComponent(eventId)}` : ''
+
   if (type === 'player') {
-    const divisions = await apiClient.getPlayers({ signal })
+    const divisions = await apiClient.getPlayers({ eventId, signal })
 
     return divisions.flatMap((division) =>
       division.standings.map((player) => ({
         label: formatPlayerName(player.player, player.displayName),
-        to: `/players/${encodeURIComponent(player.player)}`,
+        to: `/players/${encodeURIComponent(player.player)}${eventQuery}`,
       })),
     )
   }
 
   if (type === 'faction') {
-    const factions = await apiClient.getFactions({ signal })
+    const factions = await apiClient.getFactions({ eventId, signal })
 
     return factions.map((faction) => ({
       label: faction.name,
-      to: `/factions/${encodeURIComponent(faction.name)}`,
+      to: `/factions/${encodeURIComponent(faction.name)}${eventQuery}`,
     }))
   }
 
   if (type === 'mission') {
-    const missions = await apiClient.getMissions({ signal })
+    const missions = await apiClient.getMissions({ eventId, signal })
 
     return missions.map((mission) => ({
       label: mission.mission,
-      to: `/missions/${encodeURIComponent(mission.mission)}`,
+      to: `/missions/${encodeURIComponent(mission.mission)}${eventQuery}`,
     }))
   }
 
-  const games = await apiClient.getRecentGames({ signal })
+  const games = await apiClient.getRecentGames({ eventId, signal })
 
   return games.map((game) => ({
     label: `${formatPlayerName(game.winner, game.winnerDisplayName)} defeated ${formatPlayerName(game.loser, game.loserDisplayName)}`,

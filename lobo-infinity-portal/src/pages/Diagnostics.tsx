@@ -8,6 +8,10 @@ import {
 } from '../services/lightApi'
 import { getFrontendPerformanceDiagnostics } from '../services/performanceDiagnostics'
 import {
+  buildPerformanceObservatory,
+  type PerformanceObservatorySnapshot,
+} from '../services/performanceObservatory'
+import {
   getDataProviderDiagnostics,
   runDataMigrationToFirestore,
 } from '../services/data'
@@ -24,6 +28,7 @@ function Diagnostics() {
   const canManage = auth.hasPermission('manageCache')
   const canRunFirestoreMigration = auth.isAtLeastRole('Commissioner')
   const snapshot = canView ? getFrontendPerformanceDiagnostics() : null
+  const observatory = canView ? buildPerformanceObservatory() : null
 
   useEffect(() => {
     if (!canView) {
@@ -144,6 +149,71 @@ function Diagnostics() {
         ) : null}
       </section>
 
+      <section className="panel operations-panel">
+        <div className="panel-heading">
+          <p className="eyebrow">Firebase Authentication Bridge</p>
+          <h2>Authentication Bridge Health</h2>
+        </div>
+        <div className="operations-table-wrap">
+          <table className="operations-table">
+            <tbody>
+              <tr>
+                <th>Google OAuth</th>
+                <td>
+                  {auth.identity?.google.status
+                    ? `${auth.identity.google.status}: ${auth.identity.google.detail}`
+                    : 'Unknown'}
+                </td>
+              </tr>
+              <tr>
+                <th>Portal Session</th>
+                <td>
+                  {auth.identity?.portalSession.status
+                    ? `${auth.identity.portalSession.status}: ${auth.identity.portalSession.detail}`
+                    : 'Unknown'}
+                </td>
+              </tr>
+              <tr>
+                <th>Identity Service</th>
+                <td>
+                  {auth.identity?.firebase.status
+                    ? `${auth.identity.firebase.status}: ${auth.identity.firebase.detail}`
+                    : 'Unknown'}
+                </td>
+              </tr>
+              <tr>
+                <th>Firebase SDK</th>
+                <td>
+                  {providerDiagnostics?.bootstrap.sdk
+                    ? `${providerDiagnostics.bootstrap.sdk.status}: ${providerDiagnostics.bootstrap.sdk.detail}`
+                    : 'Loading'}
+                </td>
+              </tr>
+              <tr>
+                <th>signInWithCredential()</th>
+                <td>{auth.identity?.firebase.code ?? 'Unknown'}</td>
+              </tr>
+              <tr>
+                <th>Firebase User</th>
+                <td>
+                  {providerDiagnostics?.bootstrap.user.signedIn
+                    ? `${providerDiagnostics.bootstrap.user.email || 'Signed in'} (${providerDiagnostics.bootstrap.user.role})`
+                    : 'Not signed into Firebase Auth'}
+                </td>
+              </tr>
+              <tr>
+                <th>Firestore Bootstrap</th>
+                <td>
+                  {providerDiagnostics?.bootstrap.overallHealth
+                    ? `${providerDiagnostics.bootstrap.overallHealth}: ${providerDiagnostics.bootstrap.fallback.message}`
+                    : 'Loading'}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       <section className="operations-grid">
         <MetricCard
           label="Platform"
@@ -193,6 +263,8 @@ function Diagnostics() {
         <MetricCard label="Resources" value={snapshot.resourceCount} />
       </section>
 
+      {observatory ? <PerformanceObservatorySection observatory={observatory} /> : null}
+
       <section className="panel operations-panel">
         <div className="panel-heading">
           <p className="eyebrow">Production Build Identity</p>
@@ -220,6 +292,83 @@ function Diagnostics() {
               <tr>
                 <th>Vercel URL</th>
                 <td>{buildInfo.vercelUrl || 'Not reported'}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="panel operations-panel">
+        <div className="panel-heading">
+          <p className="eyebrow">Firebase Authentication Bridge</p>
+          <h2>Auth Bridge Health</h2>
+        </div>
+        <div className="operations-table-wrap">
+          <table className="operations-table">
+            <tbody>
+              <tr>
+                <th>Google OAuth</th>
+                <td>
+                  {auth.identity?.google.status
+                    ? `${auth.identity.google.status}: ${auth.identity.google.detail}`
+                    : 'Unknown'}
+                </td>
+              </tr>
+              <tr>
+                <th>Identity Service</th>
+                <td>
+                  {auth.identity?.portalSession.status
+                    ? `${auth.identity.portalSession.status}: ${auth.identity.portalSession.detail}`
+                    : 'Unknown'}
+                </td>
+              </tr>
+              <tr>
+                <th>Firebase SDK</th>
+                <td>
+                  {providerDiagnostics?.bootstrap.sdk
+                    ? `${providerDiagnostics.bootstrap.sdk.status}: ${providerDiagnostics.bootstrap.sdk.detail}`
+                    : 'Loading'}
+                </td>
+              </tr>
+              <tr>
+                <th>signInWithCredential()</th>
+                <td>
+                  {auth.identity?.firebase.status
+                    ? `${auth.identity.firebase.status}: ${auth.identity.firebase.detail}`
+                    : 'Unknown'}
+                </td>
+              </tr>
+              <tr>
+                <th>Firebase User</th>
+                <td>
+                  {providerDiagnostics?.bootstrap.user.signedIn
+                    ? `PASS: ${providerDiagnostics.bootstrap.user.email || 'Signed in'} (${providerDiagnostics.bootstrap.user.role})`
+                    : `FAIL: Not signed into Firebase Auth`}
+                </td>
+              </tr>
+              <tr>
+                <th>Firestore Bootstrap</th>
+                <td>
+                  {providerDiagnostics?.bootstrap.overallHealth
+                    ? `${providerDiagnostics.bootstrap.overallHealth}: ${providerDiagnostics.bootstrap.fallback.message}`
+                    : 'Loading'}
+                </td>
+              </tr>
+              <tr>
+                <th>Firebase Identity Code</th>
+                <td>{auth.identity?.firebase.code ?? 'Unknown'}</td>
+              </tr>
+              <tr>
+                <th>Firebase Identity Reason</th>
+                <td>{auth.identity?.firebase.detail ?? 'Unknown'}</td>
+              </tr>
+              <tr>
+                <th>Bootstrap Authentication</th>
+                <td>
+                  {providerDiagnostics?.bootstrap.authentication
+                    ? `${providerDiagnostics.bootstrap.authentication.status}: ${providerDiagnostics.bootstrap.authentication.detail}`
+                    : 'Loading'}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -1169,6 +1318,123 @@ function Diagnostics() {
 
       <section className="panel operations-panel">
         <div className="panel-heading">
+          <p className="eyebrow">Waterfall</p>
+          <h2>API Request Waterfall</h2>
+        </div>
+        <div className="operations-table-wrap">
+          <table className="operations-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Endpoint</th>
+                <th>Cache</th>
+                <th>Duration</th>
+                <th>Timeline</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {snapshot.apiWaterfall.map((metric) => (
+                <tr
+                  key={`${metric.action}-${metric.startTimeMs}-${metric.endTimeMs}`}
+                >
+                  <td>{metric.sequence}</td>
+                  <td>{metric.action}</td>
+                  <td>{metric.cache}</td>
+                  <td>{metric.durationMs} ms</td>
+                  <td>{`${metric.startTimeMs.toFixed(0)} → ${metric.endTimeMs.toFixed(0)}`}</td>
+                  <td>{metric.ok ? 'OK' : 'Failed'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="panel operations-panel">
+        <div className="panel-heading">
+          <p className="eyebrow">Slowest Function</p>
+          <h2>Top API Latency</h2>
+        </div>
+        <div className="operations-table-wrap">
+          <table className="operations-table">
+            <thead>
+              <tr>
+                <th>Endpoint</th>
+                <th>Duration</th>
+                <th>Cache</th>
+              </tr>
+            </thead>
+            <tbody>
+              {snapshot.api.slowest.map((metric) => (
+                <tr key={`${metric.action}-${metric.timestamp}`}>
+                  <td>{metric.action}</td>
+                  <td>{metric.durationMs} ms</td>
+                  <td>{metric.cache}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="panel operations-panel">
+        <div className="panel-heading">
+          <p className="eyebrow">Root Cause</p>
+          <h2>Performance Summary</h2>
+        </div>
+        <div className="operations-table-wrap">
+          <table className="operations-table">
+            <tbody>
+              <tr>
+                <th>Peak API Concurrency</th>
+                <td>{snapshot.apiConcurrency}</td>
+              </tr>
+              <tr>
+                <th>Slowest API</th>
+                <td>
+                  {snapshot.api.slowest.length > 0
+                    ? `${snapshot.api.slowest[0].action} (${snapshot.api.slowest[0].durationMs} ms)`
+                    : 'None'}
+                </td>
+              </tr>
+              <tr>
+                <th>Highest Render Cost</th>
+                <td>
+                  {snapshot.longestComponentMount
+                    ? `${snapshot.longestComponentMount.name} ${snapshot.longestComponentMount.durationMs} ms`
+                    : 'None'}
+                </td>
+              </tr>
+              <tr>
+                <th>Page Load</th>
+                <td>{snapshot.pageLoad} ms</td>
+              </tr>
+              <tr>
+                <th>Time to Interactive</th>
+                <td>{snapshot.timeToInteractive} ms</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="panel operations-panel">
+        <div className="panel-heading">
+          <p className="eyebrow">Fix</p>
+          <h2>Evidence Only</h2>
+        </div>
+        <div className="operations-copy">
+          <p>
+            This report is evidence-only. It highlights the slowest API
+            endpoint and the top rendering cost without applying any runtime
+            optimizations.
+          </p>
+        </div>
+      </section>
+
+      <section className="panel operations-panel">
+        <div className="panel-heading">
           <p className="eyebrow">Slow Endpoint Warnings</p>
           <h2>Top Five</h2>
         </div>
@@ -1241,6 +1507,281 @@ function Metric({
       <dt>{label}</dt>
       <dd>{value}</dd>
     </div>
+  )
+}
+
+function PerformanceObservatorySection({
+  observatory,
+}: {
+  observatory: PerformanceObservatorySnapshot
+}) {
+  return (
+    <>
+      <section className="panel operations-panel">
+        <div className="panel-heading">
+          <p className="eyebrow">Performance Observatory</p>
+          <h2>Recommended Next Optimization</h2>
+          <p>
+            Continuous browser and backend telemetry ranked by user-visible
+            impact. This section is read-only and does not optimize runtime
+            behavior.
+          </p>
+        </div>
+        <dl className="operations-metrics">
+          <Metric
+            label="Performance Score"
+            value={`${observatory.releaseGate.performanceScore}%`}
+          />
+          <Metric
+            label="Slowest Workflow"
+            value={observatory.releaseGate.slowestWorkflow}
+          />
+          <Metric
+            label="Slowest Endpoint"
+            value={observatory.releaseGate.slowestEndpoint}
+          />
+          <Metric
+            label="Cache Hit Ratio"
+            value={`${observatory.releaseGate.cacheHitRatio}%`}
+          />
+        </dl>
+        <div className="operations-copy">
+          <p>
+            <strong>{observatory.recommendedNextOptimization.operation}</strong>
+            {' '}is the current highest-value target.
+          </p>
+          <p>
+            Cause: {observatory.recommendedNextOptimization.cause}. Recommendation:{' '}
+            {observatory.recommendedNextOptimization.recommendation}
+          </p>
+          <p>
+            Expected improvement:{' '}
+            {observatory.recommendedNextOptimization.expectedImprovementMs} ms.
+          </p>
+        </div>
+      </section>
+
+      <section className="operations-grid">
+        <MetricCard
+          label="Startup JS"
+          value={formatBytes(observatory.releaseGate.bundleJsBytes)}
+        />
+        <MetricCard
+          label="Startup CSS"
+          value={formatBytes(observatory.releaseGate.bundleCssBytes)}
+        />
+        <MetricCard
+          label="API Count"
+          value={observatory.releaseGate.apiCount}
+        />
+        <MetricCard
+          label="Startup Requests"
+          value={observatory.releaseGate.startupRequests}
+        />
+        <MetricCard
+          label="Duplicate Requests"
+          value={observatory.releaseGate.duplicateRequests}
+        />
+        <MetricCard
+          label="Regression"
+          value={observatory.regression.summary}
+        />
+      </section>
+
+      <section className="operations-grid two-column">
+        <ObservatoryTable
+          columns={['Operation', 'Avg', 'P95', 'Worst', 'Budget', 'Status']}
+          eyebrow="Scoreboard"
+          rows={observatory.topSlowestOperations.map((operation) => [
+            operation.name,
+            `${operation.averageMs} ms`,
+            `${operation.p95Ms} ms`,
+            `${operation.worstMs} ms`,
+            `${operation.budgetMs} ms`,
+            operation.status,
+          ])}
+          title="Top Slowest Operations"
+        />
+
+        <ObservatoryTable
+          columns={['Operation', 'Avg', 'Best', 'Worst', 'Count', 'Status']}
+          eyebrow="Budgets"
+          rows={observatory.budgetStatus.map((operation) => [
+            operation.name,
+            `${operation.averageMs} ms`,
+            `${operation.bestMs} ms`,
+            `${operation.worstMs} ms`,
+            operation.count,
+            operation.status,
+          ])}
+          title="Performance Budget Status"
+        />
+      </section>
+
+      <section className="operations-grid two-column">
+        <ObservatoryTable
+          columns={['Source', 'Type', 'Count', 'Total', 'Recommendation']}
+          eyebrow="Duplicate Work"
+          rows={observatory.duplicateWork.map((work) => [
+            work.source,
+            work.type,
+            work.count,
+            `${work.totalMs} ms`,
+            work.recommendation,
+          ])}
+          title="Duplicate Work Dashboard"
+        />
+
+        <ObservatoryTable
+          columns={['Metric', 'Value']}
+          eyebrow="Cache"
+          rows={[
+            ['Hit Ratio', `${observatory.cache.hitRatio}%`],
+            ['Hits', observatory.cache.hits],
+            ['Misses', observatory.cache.misses],
+            ['Shared Requests', observatory.cache.shared],
+            ['Invalidation Signals', observatory.cache.invalidations.length],
+          ]}
+          title="Cache Observatory"
+        />
+      </section>
+
+      <section className="operations-grid two-column">
+        <ObservatoryTable
+          columns={['Route', 'Avg', 'P95', 'Worst', 'Count']}
+          eyebrow="Routes"
+          rows={observatory.routePerformance.slice(0, 12).map((operation) => [
+            operation.name,
+            `${operation.averageMs} ms`,
+            `${operation.p95Ms} ms`,
+            `${operation.worstMs} ms`,
+            operation.count,
+          ])}
+          title="Route Performance"
+        />
+
+        <ObservatoryTable
+          columns={['Endpoint', 'Avg', 'P95', 'Worst', 'Count']}
+          eyebrow="APIs"
+          rows={observatory.apiPerformance.slice(0, 12).map((operation) => [
+            operation.name,
+            `${operation.averageMs} ms`,
+            `${operation.p95Ms} ms`,
+            `${operation.worstMs} ms`,
+            operation.count,
+          ])}
+          title="API Performance"
+        />
+      </section>
+
+      <section className="operations-grid two-column">
+        <ObservatoryTable
+          columns={['Endpoint', 'Stage', 'Calls', 'Total', 'Avg', 'Max', '%']}
+          eyebrow="Endpoint Profiling"
+          rows={observatory.topEndpointStages.slice(0, 16).map((stage) => [
+            stage.action,
+            stage.stage,
+            stage.callCount,
+            `${stage.totalMs} ms`,
+            `${stage.averageMs} ms`,
+            `${stage.maximumMs} ms`,
+            `${stage.percentOfEndpoint}%`,
+          ])}
+          title="Slowest Backend Stages"
+        />
+
+        <ObservatoryTable
+          columns={['Stage', 'Duration', '%']}
+          eyebrow="Waterfall"
+          rows={observatory.operationTimeline.map((stage) => [
+            stage.name,
+            `${stage.durationMs} ms`,
+            `${stage.percent}%`,
+          ])}
+          title="Latest Operation Timeline"
+        />
+      </section>
+
+      <section className="panel operations-panel">
+        <div className="panel-heading">
+          <p className="eyebrow">Historical Trend</p>
+          <h2>Last 30 Observatory Snapshots</h2>
+        </div>
+        <div className="operations-table-wrap">
+          <table className="operations-table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Deployment</th>
+                <th>Average API</th>
+                <th>Cache</th>
+                <th>Slowest Workflow</th>
+              </tr>
+            </thead>
+            <tbody>
+              {observatory.historicalTrend.slice(-10).map((entry) => (
+                <tr key={`${entry.deploymentId}-${entry.generatedAt}`}>
+                  <td>{entry.generatedAt}</td>
+                  <td>{entry.deploymentId || 'local'}</td>
+                  <td>{entry.averageApiMs} ms</td>
+                  <td>{entry.cacheHitRatio}%</td>
+                  <td>
+                    {entry.slowestWorkflow} {entry.slowestWorkflowMs} ms
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </>
+  )
+}
+
+function ObservatoryTable({
+  columns,
+  eyebrow,
+  rows,
+  title,
+}: {
+  columns: string[]
+  eyebrow: string
+  rows: Array<Array<number | string>>
+  title: string
+}) {
+  return (
+    <section className="panel operations-panel">
+      <div className="panel-heading">
+        <p className="eyebrow">{eyebrow}</p>
+        <h2>{title}</h2>
+      </div>
+      <div className="operations-table-wrap">
+        <table className="operations-table">
+          <thead>
+            <tr>
+              {columns.map((column) => (
+                <th key={column}>{column}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.length === 0 ? (
+              <tr>
+                <td colSpan={columns.length}>No telemetry captured yet.</td>
+              </tr>
+            ) : (
+              rows.map((row, rowIndex) => (
+                <tr key={`${title}-${rowIndex}`}>
+                  {row.map((cell, cellIndex) => (
+                    <td key={`${title}-${rowIndex}-${cellIndex}`}>{cell}</td>
+                  ))}
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </section>
   )
 }
 

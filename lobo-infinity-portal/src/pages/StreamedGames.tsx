@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import Loading from '../components/Loading'
+import Skeleton from '../components/Skeleton'
 import { apiClient, type StreamedGame } from '../services/api'
 
 type StreamsState =
@@ -100,9 +100,21 @@ function StreamedGames() {
       </section>
 
       {streamsState.status === 'loading' ? (
-        <section className="dashboard-state" aria-label="Streams loading">
-          <Loading />
-        </section>
+        <>
+          <section className="stream-filters" aria-label="Stream filters loading">
+            <label>
+              <span>Search</span>
+              <input disabled placeholder="Search players, factions, missions" />
+            </label>
+            <FilterSelect label="Division" onChange={() => undefined} options={[]} value="all" />
+            <FilterSelect label="Mission" onChange={() => undefined} options={[]} value="all" />
+            <FilterSelect label="Player" onChange={() => undefined} options={[]} value="all" />
+          </section>
+          <section className="stream-layout" aria-label="Streams loading">
+            <Skeleton label="Featured stream loading" rows={8} />
+            <Skeleton label="Stream list loading" rows={8} />
+          </section>
+        </>
       ) : streamsState.status === 'error' ? (
         <section className="dashboard-state" aria-label="Streams error">
           <p role="alert">{streamsState.error}</p>

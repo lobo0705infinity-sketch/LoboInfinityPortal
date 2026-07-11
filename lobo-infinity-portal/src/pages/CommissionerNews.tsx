@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import Loading from '../components/Loading'
+import Skeleton from '../components/Skeleton'
 import { apiClient, type CommissionerNewsItem } from '../services/api'
 
 type NewsState =
@@ -53,8 +53,10 @@ function CommissionerNews() {
     return (
       <main className="portal-shell">
         <PageHeader />
-        <section className="dashboard-state" aria-label="News loading">
-          <Loading />
+        <section className="news-grid" aria-label="News loading">
+          <Skeleton label="News articles loading" rows={5} />
+          <Skeleton label="News articles loading" rows={5} />
+          <Skeleton label="News articles loading" rows={5} />
         </section>
       </main>
     )

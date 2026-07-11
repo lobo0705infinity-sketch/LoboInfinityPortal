@@ -11,6 +11,7 @@ const PORTAL_CACHE_STATS_KEY = "portalCacheStats";
 const PORTAL_CACHE_MANIFEST_KEY = "portalCacheManifest";
 const PORTAL_CACHE_METADATA_KEY = "portalCacheMetadata";
 const PORTAL_CACHE_TTL_SECONDS = 900;
+const PORTAL_STABLE_DASHBOARD_CACHE_TTL_SECONDS = 1800;
 const PORTAL_STALE_CACHE_TTL_SECONDS = 21600;
 
 const PORTAL_CACHE_GROUPS = {
@@ -87,6 +88,9 @@ function cacheManagerGetOrBuild(e, action, producer) {
   const start =
     Date.now();
 
+  const cacheLookupStart =
+    startApiPipelineStage("cacheLookup");
+
   const cache =
     CacheService.getScriptCache();
 
@@ -100,6 +104,15 @@ function cacheManagerGetOrBuild(e, action, producer) {
     cache.get(cacheKey);
 
   if (cached) {
+    endApiPipelineStage(
+      "cacheLookup",
+      cacheLookupStart,
+      {
+        cacheKey: cacheKey,
+        hit: true
+      }
+    );
+
     recordPortalCacheMetric(
       action,
       "hit",
@@ -109,6 +122,15 @@ function cacheManagerGetOrBuild(e, action, producer) {
 
     return jsonFromCachePayload(cached);
   }
+
+  endApiPipelineStage(
+    "cacheLookup",
+    cacheLookupStart,
+    {
+      cacheKey: cacheKey,
+      hit: false
+    }
+  );
 
   recordPortalCacheMetric(
     action,
@@ -456,6 +478,28 @@ function getPortalCacheKey(e, action) {
   if (action === "hallOfFame")
     parts.push("schema=2.5.4.1");
 
+  if (
+    [
+      "players",
+      "player",
+      "factions",
+      "faction",
+      "missions",
+      "mission",
+      "intelligence",
+      "records",
+      "hallOfFame",
+      "comparison",
+      "timeline",
+      "searchData",
+      "searchIndex"
+    ].indexOf(action) !== -1
+  )
+    parts.push("eventContextSchema=13.0");
+
+  if (action === "events")
+    parts.push("schema=portalUser1");
+
   return (
     PORTAL_CACHE_PREFIX +
     getPortalCacheVersion() +
@@ -474,6 +518,15 @@ function getPortalStaleCacheKey(cacheKey) {
 }
 
 function getPortalCacheTtl(action) {
+
+  if (
+    [
+      "dashboard",
+      "home",
+      "leader"
+    ].indexOf(action) !== -1
+  )
+    return PORTAL_STABLE_DASHBOARD_CACHE_TTL_SECONDS;
 
   return PORTAL_CACHE_TTL_SECONDS;
 

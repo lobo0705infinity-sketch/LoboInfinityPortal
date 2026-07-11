@@ -1,0 +1,137 @@
+.event-overview-shell {
+  display: grid;
+  gap: 18px;
+}
+
+.event-overview-hero {
+  min-height: 310px;
+  overflow: hidden;
+  position: relative;
+}
+
+.event-overview-hero::before {
+  background:
+    linear-gradient(90deg, rgba(76, 201, 240, 0.18), transparent 42%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 26%);
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.event-overview-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.event-overview-hero-league {
+  background:
+    radial-gradient(circle at 82% 24%, rgba(76, 201, 240, 0.24), transparent 28%),
+    linear-gradient(135deg, rgba(193, 18, 31, 0.2), transparent 45%),
+    var(--panel-strong);
+}
+
+.event-overview-hero-tournament {
+  background:
+    radial-gradient(circle at 76% 28%, rgba(240, 177, 62, 0.22), transparent 30%),
+    linear-gradient(135deg, rgba(76, 201, 240, 0.16), transparent 46%),
+    var(--panel-strong);
+}
+
+.event-overview-hero-campaign {
+  background:
+    radial-gradient(circle at 78% 24%, rgba(53, 184, 126, 0.22), transparent 30%),
+    linear-gradient(135deg, rgba(193, 18, 31, 0.16), transparent 46%),
+    var(--panel-strong);
+}
+
+.event-overview-status-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.event-overview-status-card {
+  border: 1px solid rgba(76, 201, 240, 0.18);
+  border-radius: 10px;
+  padding: 14px;
+  background: rgba(8, 13, 19, 0.84);
+  box-shadow: var(--shadow-card);
+}
+
+.event-overview-status-card span {
+  color: var(--text-muted);
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.event-overview-status-card strong {
+  color: var(--text);
+  display: block;
+  font-size: clamp(1.2rem, 2vw, 1.8rem);
+  line-height: 1.05;
+}
+
+.event-overview-status-card.success {
+  border-color: rgba(53, 184, 126, 0.34);
+}
+
+.event-overview-status-card.warning {
+  border-color: rgba(240, 177, 62, 0.34);
+}
+
+.event-overview-status-card.accent {
+  border-color: rgba(76, 201, 240, 0.36);
+}
+
+.event-overview-dashboard {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+}
+
+.event-overview-dashboard-wide {
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+}
+
+.event-overview-progress {
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.event-overview-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--crimson), var(--blue));
+}
+
+.event-overview-metrics {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 920px) {
+  .event-overview-dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .event-overview-status-grid,
+  .event-overview-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .event-overview-status-grid,
+  .event-overview-metrics {
+    grid-template-columns: 1fr;
+  }
+}

@@ -743,6 +743,9 @@ function synchronizeEventLifecycleState(eventId) {
     stage
   );
 
+  if (typeof invalidateEventEngineSnapshotCache === "function")
+    invalidateEventEngineSnapshotCache();
+
   return getEventById(eventId);
 
 }
@@ -1122,6 +1125,9 @@ function updateEventLifecycleStage(eventId, targetStage) {
     targetStage
   );
 
+  if (typeof invalidateEventEngineSnapshotCache === "function")
+    invalidateEventEngineSnapshotCache();
+
   return getEventById(eventId);
 
 }
@@ -1187,6 +1193,9 @@ function updateEventLifecycleScopedSheet(sheetName, headers, keyHeader, keyValue
             .setValue(updates[header]);
       });
   }
+
+  if (typeof invalidateEventEngineSnapshotCache === "function")
+    invalidateEventEngineSnapshotCache();
 
 }
 

@@ -10,15 +10,42 @@ let LeagueDataHeaders = null;
 
 function loadLeagueData() {
 
+  let timer =
+    startDashboardEndpointSubStage(
+      "dashboard.leagueData.spreadsheet.getActiveAndSheetLookup"
+    );
+
   const sheet =
     SpreadsheetApp
       .getActive()
       .getSheetByName(CONFIG.SHEETS.ENGINE);
 
+  endDashboardEndpointSubStage(
+    "dashboard.leagueData.spreadsheet.getActiveAndSheetLookup",
+    timer,
+    {
+      sheet: CONFIG.SHEETS.ENGINE
+    }
+  );
+
+  timer =
+    startDashboardEndpointSubStage(
+      "dashboard.leagueData.getDataRange.getValues"
+    );
+
   const values =
     sheet
       .getDataRange()
       .getValues();
+
+  endDashboardEndpointSubStage(
+    "dashboard.leagueData.getDataRange.getValues",
+    timer,
+    {
+      sheet: CONFIG.SHEETS.ENGINE,
+      rows: values.length
+    }
+  );
 
   LeagueDataHeaders =
     values.shift() || [];
@@ -44,8 +71,22 @@ function getLeagueData() {
 }
 function getLeagueDataForEvent(eventId) {
 
+  let timer =
+    startDashboardEndpointSubStage(
+      "dashboard.leagueData.resolveEventScope"
+    );
+
   const scope =
     resolveLeagueEventScope(eventId);
+
+  endDashboardEndpointSubStage(
+    "dashboard.leagueData.resolveEventScope",
+    timer,
+    {
+      eventId: eventId || "",
+      scope: scope
+    }
+  );
 
   if (
     scope === "all" ||
@@ -53,10 +94,32 @@ function getLeagueDataForEvent(eventId) {
   )
     return getLeagueData();
 
+  timer =
+    startDashboardEndpointSubStage(
+      "dashboard.leagueData.eventColumn"
+    );
+
   const eventColumn =
     getLeagueDataEventColumn();
 
-  return getLeagueData()
+  endDashboardEndpointSubStage(
+    "dashboard.leagueData.eventColumn",
+    timer,
+    {
+      eventColumn: eventColumn
+    }
+  );
+
+  const games =
+    getLeagueData();
+
+  timer =
+    startDashboardEndpointSubStage(
+      "dashboard.leagueData.filterByEvent"
+    );
+
+  const filtered =
+    games
     .filter(function(row) {
       const rowEventId =
         getLeagueDataString(
@@ -67,6 +130,18 @@ function getLeagueDataForEvent(eventId) {
 
       return rowEventId === scope;
     });
+
+  endDashboardEndpointSubStage(
+    "dashboard.leagueData.filterByEvent",
+    timer,
+    {
+      inputRows: games.length,
+      outputRows: filtered.length,
+      scope: scope
+    }
+  );
+
+  return filtered;
 
 }
 function clearLeagueData() {

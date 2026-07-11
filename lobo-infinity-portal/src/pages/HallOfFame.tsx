@@ -1,7 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import BarChart from '../components/BarChart'
-import Loading from '../components/Loading'
 import Skeleton from '../components/Skeleton'
 import {
   apiClient,
@@ -33,6 +32,8 @@ type HallOfFameState =
     }
 
 function HallOfFame() {
+  const [searchParams] = useSearchParams()
+  const eventId = searchParams.get('eventId') || ''
   const [hallState, setHallState] = useState<HallOfFameState>({
     status: 'idle',
   })
@@ -43,6 +44,7 @@ function HallOfFame() {
 
     apiClient
       .getHallOfFame({
+        eventId,
         signal: controller.signal,
       })
       .then((data) => {
@@ -68,7 +70,7 @@ function HallOfFame() {
     return () => {
       controller.abort()
     }
-  }, [])
+  }, [eventId])
 
   useEffect(() => {
     if (hallState.status !== 'success') {
@@ -90,9 +92,7 @@ function HallOfFame() {
         <PageHeader />
         <div className="portal-grid">
           <Skeleton label="Hall of Fame loading" rows={6} />
-          <section className="dashboard-state" aria-label="Hall of Fame loading">
-            <Loading />
-          </section>
+          <Skeleton label="Hall of Fame records loading" rows={6} />
         </div>
       </main>
     )

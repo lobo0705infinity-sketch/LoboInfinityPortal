@@ -1,5 +1,4 @@
 import { Link, useLocation } from 'react-router-dom'
-import { preloadRoute } from '../services/routePreload'
 
 const labels: Record<string, string> = {
   analytics: 'League Intelligence',
@@ -53,9 +52,6 @@ function Breadcrumbs() {
         ) : (
           <Link
             key={path}
-            onFocus={() => preloadRoute(path)}
-            onMouseEnter={() => preloadRoute(path)}
-            onTouchStart={() => preloadRoute(path)}
             to={path}
           >
             {label}

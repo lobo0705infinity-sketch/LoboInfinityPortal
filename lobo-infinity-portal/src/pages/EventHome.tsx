@@ -1,35 +1,46 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import EventExperienceRouter from '../components/EventExperienceRouter'
-import Loading from '../components/Loading'
+import { lazy, Suspense, useEffect, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
+import { useAuth } from '../auth/AuthContext'
+import Skeleton from '../components/Skeleton'
+import {
+  getEventOverviewKind,
+  hasEventCapability,
+  resolveEventCapabilities,
+  type EventCapability,
+} from '../config/eventCapabilities'
+import {
+  buildCapabilityNavigation,
+  getEventNavigationConfig,
+} from '../config/eventNavigation'
 import { type EventHomeData } from '../services/api'
 import { eventRepository } from '../services/data'
 import type { LeagueEvent } from '../types/dashboard'
+import './EventHome.css'
 
 type EventHomeState =
   | { status: 'loading' }
-  | { data: EventHomeData; events: LeagueEvent[]; status: 'success' }
+  | { data: EventHomeData; status: 'success' }
   | { error: string; status: 'error' }
 
 const defaultEventId = 'event-current-league'
+const CommissionerEventWorkflow = lazy(
+  () => import('../components/CommissionerEventWorkflow'),
+)
 
 function EventHome() {
+  const auth = useAuth()
   const { eventId } = useParams<{ eventId: string }>()
-  const navigate = useNavigate()
   const selectedEventId = eventId ? decodeURIComponent(eventId) : defaultEventId
   const [state, setState] = useState<EventHomeState>({ status: 'loading' })
 
   useEffect(() => {
     const controller = new AbortController()
 
-    Promise.all([
-      eventRepository.getEventHome(selectedEventId, { signal: controller.signal }),
-      eventRepository.getEvents({ signal: controller.signal }),
-    ])
-      .then(([data, catalog]) => {
+    eventRepository
+      .getEventHome(selectedEventId, { signal: controller.signal })
+      .then((data) => {
         setState({
           data,
-          events: catalog.events,
           status: 'success',
         })
       })
@@ -54,11 +65,7 @@ function EventHome() {
 
   if (state.status === 'loading') {
     return (
-      <main className="portal-shell">
-        <section className="dashboard-state" aria-label="Event loading">
-          <Loading />
-        </section>
-      </main>
+      <EventHomeSkeleton selectedEventId={selectedEventId} />
     )
   }
 
@@ -72,18 +79,41 @@ function EventHome() {
     )
   }
 
-  const { data, events } = state
+  const { data } = state
 
   const heroAction = data.quickActions.find((action) => action.enabled)
   const currentRound = data.currentRound
     ? String(data.currentRound['name'] ?? data.statistics.currentRound)
     : data.statistics.currentRound || 'Pending'
   const countdown = getCountdownLabel(data.event)
+  const capabilities = resolveEventCapabilities(data.event, data.navigation)
+  const configuredNavigation = getEventNavigationConfig(data.event.id)
+  const eventNavigationItems = configuredNavigation
+    ? buildCapabilityNavigation({
+        ...configuredNavigation,
+        capabilities,
+      }).map((item) => ({
+        href: item.to,
+        label: item.label,
+      }))
+    : data.navigation
+  const overview = buildOverviewModel(data, capabilities)
+  const news = data.news.slice(0, 4)
+  const recentTimeline = data.timeline.slice(0, 5)
+  const showProgress = hasOverviewProgress(capabilities)
+  const showTimeline =
+    recentTimeline.length > 0 && hasEventTimeline(capabilities)
+  const showNews = news.length > 0
+  const showPlayerStatus = hasEventCapability(capabilities, 'registration')
+  const showRules = hasEventCapability(capabilities, 'rules')
+  const showCommissionerWorkflow = auth.isAtLeastRole('Commissioner')
 
   return (
-    <EventExperienceRouter data={data}>
-    <main className="portal-shell">
-      <section className="event-home-hero panel" aria-labelledby="event-home-title">
+    <main className="portal-shell event-overview-shell">
+      <section
+        className={`event-home-hero panel event-overview-hero event-overview-hero-${overview.kind}`}
+        aria-labelledby="event-home-title"
+      >
         <div>
           <p className="eyebrow">{data.event.type || 'Event'}</p>
           <h1 id="event-home-title">{data.event.name}</h1>
@@ -96,22 +126,6 @@ function EventHome() {
           </div>
         </div>
         <div className="event-home-selector">
-          <label>
-            <span>Current Event</span>
-            <select
-              onChange={(event) =>
-                navigate(`/event/${encodeURIComponent(event.target.value)}`)
-              }
-              value={data.event.id}
-            >
-              {events.map((event) => (
-                <option key={event.id} value={event.id}>
-                  {event.name}
-                </option>
-              ))}
-              <option value="lifetime">Lifetime</option>
-            </select>
-          </label>
           {heroAction ? (
             <Link className="event-home-primary-action" to={heroAction.href}>
               {heroAction.label}
@@ -120,30 +134,229 @@ function EventHome() {
         </div>
       </section>
 
+      <section className="event-overview-status-grid" aria-label="Event status">
+        {overview.statusCards.map((card) => (
+          <EventStatusCard card={card} key={card.label} />
+        ))}
+      </section>
+
       <nav className="event-home-nav" aria-label="Event navigation">
-        {data.navigation.map((item) => (
+        {eventNavigationItems.map((item) => (
           <Link key={`${item.label}-${item.href}`} to={item.href}>
             {item.label}
           </Link>
         ))}
+        {showCommissionerWorkflow ? <a href="#commissioner">Commissioner</a> : null}
       </nav>
 
-      <section className="event-home-grid">
-        <PlayerStatusCard data={data} />
-        <EventStatsCard data={data} />
+      <section className="event-overview-dashboard">
+        {data.quickActions.length > 0 ? (
+          <QuickActions actions={data.quickActions} />
+        ) : null}
+        {showProgress ? (
+          <EventProgressPanel data={data} overview={overview} />
+        ) : null}
       </section>
 
-      <section className="event-home-grid">
-        <EventTimeline data={data} />
-        <EventNews data={data} />
+      {showTimeline || showNews ? (
+        <section className="event-overview-dashboard event-overview-dashboard-wide">
+          {showTimeline ? (
+            <EventTimeline items={recentTimeline} />
+          ) : null}
+          {showNews ? <EventNews items={news} /> : null}
+        </section>
+      ) : null}
+
+      {showPlayerStatus || showRules ? (
+        <section className="event-overview-dashboard">
+          {showPlayerStatus ? (
+            <PlayerStatusCard data={data} />
+          ) : null}
+          {showRules ? <EventRules data={data} /> : null}
+        </section>
+      ) : null}
+
+      {showCommissionerWorkflow ? (
+        <Suspense fallback={null}>
+          <CommissionerEventWorkflow data={data} />
+        </Suspense>
+      ) : null}
+    </main>
+  )
+}
+
+function EventHomeSkeleton({ selectedEventId }: { selectedEventId: string }) {
+  const eventLabel = selectedEventId
+    .split('-')
+    .filter(Boolean)
+    .slice(1)
+    .join(' ')
+    .replace(/\b\w/g, (letter) => letter.toUpperCase()) || 'Event'
+
+  return (
+    <main className="portal-shell event-overview-shell">
+      <section
+        className="event-home-hero panel event-overview-hero"
+        aria-labelledby="event-home-title"
+      >
+        <div>
+          <p className="eyebrow">Event Headquarters</p>
+          <h1 id="event-home-title">{eventLabel}</h1>
+          <p>Preparing event status, registration, and activity.</p>
+          <div className="event-home-badges">
+            <span>Loading status</span>
+            <span>Loading registration</span>
+            <span>Loading round</span>
+          </div>
+        </div>
       </section>
 
-      <section className="event-home-grid">
-        <QuickActions data={data} />
-        <EventRules data={data} />
+      <section className="event-overview-status-grid" aria-label="Event status loading">
+        {['Registration', 'Teams', 'Round', 'Deadline'].map((label) => (
+          <article className="event-overview-status-card neutral" key={label}>
+            <span>{label}</span>
+            <strong>Loading</strong>
+          </article>
+        ))}
+      </section>
+
+      <nav className="event-home-nav" aria-label="Event navigation">
+        {['Overview', 'Registration', 'Submit Result', 'Standings', 'Rules'].map((label) => (
+          <span key={label}>{label}</span>
+        ))}
+      </nav>
+
+      <section className="event-overview-dashboard">
+        <Skeleton label="Event quick actions loading" rows={4} />
+        <Skeleton label="Event progress loading" rows={5} />
+      </section>
+      <section className="event-overview-dashboard event-overview-dashboard-wide">
+        <Skeleton label="Event timeline loading" rows={5} />
+        <Skeleton label="Event news loading" rows={4} />
       </section>
     </main>
-    </EventExperienceRouter>
+  )
+}
+
+type StatusCard = {
+  label: string
+  tone: 'accent' | 'neutral' | 'success' | 'warning'
+  value: string
+}
+
+type OverviewModel = {
+  focusLabel: string
+  kind: ReturnType<typeof getEventOverviewKind>
+  progressLabel: string
+  statusCards: StatusCard[]
+}
+
+function buildOverviewModel(
+  data: EventHomeData,
+  capabilities: EventCapability[],
+): OverviewModel {
+  const kind = getEventOverviewKind(capabilities)
+  const registrationDeadline = formatDate(
+    data.registration.registrationWindow.endDate || data.event.startDate,
+  )
+
+  const statusCards: StatusCard[] = []
+
+  if (hasEventCapability(capabilities, 'registration')) {
+    statusCards.push({
+      label: 'Registration',
+      tone: 'success',
+      value: data.registration.status || data.statistics.registrationStatus,
+    })
+  } else {
+    statusCards.push({
+      label: 'Status',
+      tone: 'success',
+      value: data.event.status || data.event.lifecycleStage,
+    })
+  }
+
+  if (hasEventCapability(capabilities, 'teams')) {
+    statusCards.push({
+      label: 'Teams Registered',
+      tone: 'accent',
+      value: String(data.statistics.teams),
+    })
+  } else if (
+    hasEventCapability(capabilities, 'players') ||
+    hasEventCapability(capabilities, 'registration')
+  ) {
+    statusCards.push({
+      label: 'Players',
+      tone: 'neutral',
+      value: String(data.statistics.registeredPlayers),
+    })
+  }
+
+  if (
+    hasEventCapability(capabilities, 'standings') ||
+    hasEventCapability(capabilities, 'schedule') ||
+    hasEventCapability(capabilities, 'objectives')
+  ) {
+    statusCards.push({
+      label: kind === 'campaign' ? 'Campaign Turn' : 'Current Round',
+      tone: 'accent',
+      value: data.statistics.currentRound || 'Pending',
+    })
+  }
+
+  if (hasEventCapability(capabilities, 'standings') && kind === 'league') {
+    statusCards.push({
+      label: 'Games Remaining',
+      tone: 'warning',
+      value: String(data.statistics.gamesRemaining),
+    })
+  } else if (hasEventCapability(capabilities, 'registration')) {
+    statusCards.push({
+      label: 'Deadline',
+      tone: 'warning',
+      value: registrationDeadline,
+    })
+  }
+
+  return {
+    focusLabel: getOverviewFocusLabel(kind),
+    kind,
+    progressLabel: getOverviewProgressLabel(kind),
+    statusCards: statusCards.slice(0, 4),
+  }
+}
+
+function getOverviewFocusLabel(kind: ReturnType<typeof getEventOverviewKind>) {
+  if (kind === 'campaign') {
+    return 'Campaign Command'
+  }
+
+  if (kind === 'tournament') {
+    return 'Tournament Operations'
+  }
+
+  return 'League Command'
+}
+
+function getOverviewProgressLabel(kind: ReturnType<typeof getEventOverviewKind>) {
+  if (kind === 'campaign') {
+    return 'Campaign Progress'
+  }
+
+  if (kind === 'tournament') {
+    return 'Tournament Progress'
+  }
+
+  return 'Season Progress'
+}
+
+function EventStatusCard({ card }: { card: StatusCard }) {
+  return (
+    <article className={`event-overview-status-card ${card.tone}`}>
+      <span>{card.label}</span>
+      <strong>{card.value}</strong>
+    </article>
   )
 }
 
@@ -165,35 +378,44 @@ function PlayerStatusCard({ data }: { data: EventHomeData }) {
   )
 }
 
-function EventStatsCard({ data }: { data: EventHomeData }) {
+function EventProgressPanel({
+  data,
+  overview,
+}: {
+  data: EventHomeData
+  overview: OverviewModel
+}) {
   return (
     <section className="panel event-home-panel" id="standings">
       <div className="panel-heading">
-        <p className="eyebrow">Event Progress</p>
-        <h2>{data.statistics.lifecycleStage || data.event.lifecycleStage}</h2>
+        <p className="eyebrow">{overview.focusLabel}</p>
+        <h2>{overview.progressLabel}</h2>
       </div>
-      <EventMetric label="Registered Players" value={data.statistics.registeredPlayers} />
-      <EventMetric label="Teams" value={data.statistics.teams} />
-      <EventMetric label="Completed Games" value={data.statistics.completedGames} />
-      <EventMetric
-        label="Completion"
-        value={`${data.statistics.completionPercentage}%`}
-      />
+      <div className="event-overview-progress">
+        <span style={{ width: `${clampPercent(data.statistics.completionPercentage)}%` }} />
+      </div>
+      <div className="event-overview-metrics">
+        <EventMetric label="Registered Players" value={data.statistics.registeredPlayers} />
+        <EventMetric label="Teams" value={data.statistics.teams} />
+        <EventMetric label="Completed Games" value={data.statistics.completedGames} />
+        <EventMetric
+          label="Completion"
+          value={`${data.statistics.completionPercentage}%`}
+        />
+      </div>
     </section>
   )
 }
 
-function EventTimeline({ data }: { data: EventHomeData }) {
-  const timeline = useMemo(() => data.timeline.slice(0, 8), [data.timeline])
-
+function EventTimeline({ items }: { items: EventHomeData['timeline'] }) {
   return (
     <section className="panel event-home-panel" id="results">
       <div className="panel-heading">
-        <p className="eyebrow">Timeline</p>
-        <h2>Event Story</h2>
+        <p className="eyebrow">Recent Results</p>
+        <h2>Event Feed</h2>
       </div>
       <div className="event-home-timeline">
-        {timeline.map((item) => (
+        {items.map((item) => (
           <article key={`${item.type}-${item.title}-${item.timestamp}`}>
             <span>{item.type}</span>
             <strong>{item.title}</strong>
@@ -205,21 +427,25 @@ function EventTimeline({ data }: { data: EventHomeData }) {
   )
 }
 
-function EventNews({ data }: { data: EventHomeData }) {
+function EventNews({ items }: { items: string[] }) {
   return (
     <section className="panel event-home-panel" id="news">
       <div className="panel-heading">
-        <p className="eyebrow">News</p>
-        <h2>Latest Updates</h2>
+        <p className="eyebrow">Latest News</p>
+        <h2>Intel Briefing</h2>
       </div>
-      {data.news.map((item) => (
+      {items.map((item) => (
         <p key={item}>{item}</p>
       ))}
     </section>
   )
 }
 
-function QuickActions({ data }: { data: EventHomeData }) {
+function QuickActions({
+  actions,
+}: {
+  actions: EventHomeData['quickActions']
+}) {
   return (
     <section className="panel event-home-panel">
       <div className="panel-heading">
@@ -227,7 +453,7 @@ function QuickActions({ data }: { data: EventHomeData }) {
         <h2>What To Do Next</h2>
       </div>
       <div className="event-home-actions">
-        {data.quickActions.map((action) => (
+        {actions.map((action) => (
           <Link
             aria-disabled={!action.enabled}
             className={action.enabled ? '' : 'disabled'}
@@ -262,6 +488,41 @@ function EventMetric({ label, value }: { label: string; value: number | string }
       <span>{label}</span>
       <strong>{value}</strong>
     </div>
+  )
+}
+
+function clampPercent(value: number) {
+  return Math.max(0, Math.min(100, value))
+}
+
+function formatDate(value: string) {
+  if (!value) {
+    return 'Pending'
+  }
+
+  const timestamp = Date.parse(value)
+
+  if (Number.isNaN(timestamp)) {
+    return value
+  }
+
+  return new Intl.DateTimeFormat('en-US', {
+    day: 'numeric',
+    month: 'short',
+  }).format(timestamp)
+}
+
+function hasOverviewProgress(capabilities: EventCapability[]) {
+  return capabilities.some((capability) =>
+    ['standings', 'statistics', 'teams', 'players', 'objectives'].includes(
+      capability,
+    ),
+  )
+}
+
+function hasEventTimeline(capabilities: EventCapability[]) {
+  return capabilities.some((capability) =>
+    ['results', 'schedule', 'standings'].includes(capability),
   )
 }
 

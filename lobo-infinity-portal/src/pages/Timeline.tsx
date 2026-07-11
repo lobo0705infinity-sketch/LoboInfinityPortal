@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import Loading from '../components/Loading'
+import { Link, useSearchParams } from 'react-router-dom'
+import Skeleton from '../components/Skeleton'
 import { apiClient, type LeagueTimelineItem } from '../services/api'
 
 type TimelineState =
@@ -17,6 +17,8 @@ type TimelineState =
     }
 
 function Timeline() {
+  const [searchParams] = useSearchParams()
+  const eventId = searchParams.get('eventId') || ''
   const [state, setState] = useState<TimelineState>({
     status: 'idle',
   })
@@ -26,6 +28,7 @@ function Timeline() {
 
     apiClient
       .getTimeline({
+        eventId,
         signal: controller.signal,
       })
       .then((items) => {
@@ -49,14 +52,14 @@ function Timeline() {
     return () => {
       controller.abort()
     }
-  }, [])
+  }, [eventId])
 
   if (state.status === 'idle') {
     return (
       <main className="portal-shell">
-        <PageHeader />
-        <section className="dashboard-state" aria-label="Timeline loading">
-          <Loading />
+        <PageHeader eventScoped={Boolean(eventId)} />
+        <section className="timeline-list" aria-label="Timeline loading">
+          <Skeleton label="Timeline entries loading" rows={8} />
         </section>
       </main>
     )
@@ -65,7 +68,7 @@ function Timeline() {
   if (state.status === 'error') {
     return (
       <main className="portal-shell">
-        <PageHeader />
+        <PageHeader eventScoped={Boolean(eventId)} />
         <section className="dashboard-state" aria-label="Timeline error">
           <p role="alert">{state.error}</p>
         </section>
@@ -75,8 +78,8 @@ function Timeline() {
 
   return (
     <main className="portal-shell">
-      <PageHeader />
-      <section className="timeline-list" aria-label="League timeline">
+      <PageHeader eventScoped={Boolean(eventId)} />
+      <section className="timeline-list" aria-label="Event timeline">
         {state.items.map((item) => (
           <article className="timeline-item" key={item.id}>
             <div className="timeline-marker" aria-hidden="true" />
@@ -93,11 +96,11 @@ function Timeline() {
   )
 }
 
-function PageHeader() {
+function PageHeader({ eventScoped }: { eventScoped: boolean }) {
   return (
     <section className="page-header" aria-labelledby="timeline-title">
-      <p className="eyebrow">League Timeline</p>
-      <h1 id="timeline-title">Chronological League History</h1>
+      <p className="eyebrow">{eventScoped ? 'Event Timeline' : 'League Timeline'}</p>
+      <h1 id="timeline-title">{eventScoped ? 'Chronological Event History' : 'Chronological League History'}</h1>
       <p>Games, records, standings movement, news, and Hall of Fame signals</p>
     </section>
   )

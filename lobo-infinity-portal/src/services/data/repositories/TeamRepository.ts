@@ -1,4 +1,4 @@
-import type { TeamTournamentData } from '../../api'
+import type { TeamTournamentData, TeamTournamentMutationResult } from '../../api'
 import type { ApiOptions } from '../../apiCore'
 
 export interface TeamRepository {
@@ -9,21 +9,21 @@ export interface TeamRepository {
   saveTeam(
     params: Record<string, string>,
     options?: ApiOptions,
-  ): Promise<TeamTournamentData>
+  ): Promise<TeamTournamentMutationResult>
   savePairing(
     params: Record<string, string>,
     options?: ApiOptions,
-  ): Promise<TeamTournamentData>
+  ): Promise<TeamTournamentMutationResult>
   saveInvitation(
     params: Record<string, string>,
     options?: ApiOptions,
-  ): Promise<TeamTournamentData>
+  ): Promise<TeamTournamentMutationResult>
   saveResult(
     params: Record<string, string>,
     options?: ApiOptions,
-  ): Promise<TeamTournamentData>
+  ): Promise<TeamTournamentMutationResult>
   advanceRound(
     params: Record<string, string>,
     options?: ApiOptions,
-  ): Promise<TeamTournamentData>
+  ): Promise<TeamTournamentMutationResult>
 }

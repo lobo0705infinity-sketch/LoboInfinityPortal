@@ -1,4 +1,4 @@
-import { getApiDiagnostics } from './apiCore'
+import { getApiDiagnostics, type ApiTimingMetric } from './apiCore'
 import { getRumMetrics } from './rumMetrics'
 
 export function getFrontendPerformanceDiagnostics() {
@@ -9,9 +9,12 @@ export function getFrontendPerformanceDiagnostics() {
 
   const resources = getResourceMetrics()
   const rum = getRumMetrics()
+  const apiDiagnostics = getApiDiagnostics()
 
   return {
-    api: getApiDiagnostics(),
+    api: apiDiagnostics,
+    apiWaterfall: buildApiWaterfall(apiDiagnostics.recent),
+    apiConcurrency: estimateApiConcurrency(apiDiagnostics.recent),
     bundleVersion: getBundleVersion(),
     componentMounts: rum.componentMounts,
     cumulativeLayoutShift: roundMetric(rum.cumulativeLayoutShift, 3),
@@ -34,6 +37,40 @@ export function getFrontendPerformanceDiagnostics() {
         ? Math.round(navigation.domInteractive - navigation.startTime)
         : 0,
   }
+}
+
+function buildApiWaterfall(recent: ApiTimingMetric[]) {
+  return recent
+    .slice()
+    .sort((left, right) => left.startTimeMs - right.startTimeMs)
+    .map((metric, index) => ({
+      sequence: index + 1,
+      action: metric.action,
+      cache: metric.cache,
+      durationMs: metric.durationMs,
+      startTimeMs: metric.startTimeMs,
+      endTimeMs: metric.endTimeMs,
+      ok: metric.ok,
+    }))
+}
+
+function estimateApiConcurrency(recent: ApiTimingMetric[]) {
+  const events: Array<{ time: number; delta: number }> = []
+
+  recent.forEach((metric) => {
+    events.push({ time: metric.startTimeMs, delta: 1 })
+    events.push({ time: metric.endTimeMs, delta: -1 })
+  })
+
+  return events
+    .sort((left, right) => left.time - right.time || right.delta - left.delta)
+    .reduce((acc, event) => {
+      const current = acc.current + event.delta
+      return {
+        current,
+        peak: Math.max(acc.peak, current),
+      }
+    }, { current: 0, peak: 0 }).peak
 }
 
 function getFirstContentfulPaint() {

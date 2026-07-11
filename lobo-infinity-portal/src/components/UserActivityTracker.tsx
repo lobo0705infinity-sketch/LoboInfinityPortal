@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
-import { updateProfile } from '../services/lightApi'
+import { heartbeat } from '../services/lightApi'
 import { recordRouteTransition } from '../services/rumMetrics'
 
 function UserActivityTracker() {
@@ -18,7 +18,7 @@ function UserActivityTracker() {
     }
 
     const updateLastPage = () => {
-      void updateProfile({
+      void heartbeat({
         lastPage: `${location.pathname}${location.search}`,
       })
     }

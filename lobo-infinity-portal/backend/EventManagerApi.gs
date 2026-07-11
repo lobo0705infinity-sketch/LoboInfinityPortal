@@ -719,6 +719,9 @@ function buildEventManagerEventId(name, type) {
 
 function invalidateEventManagerCaches() {
 
+  if (typeof invalidateEventEngineSnapshotCache === "function")
+    invalidateEventEngineSnapshotCache();
+
   invalidatePortalCacheGroup("events");
 
   if (typeof invalidateEventRegistrationCaches === "function")

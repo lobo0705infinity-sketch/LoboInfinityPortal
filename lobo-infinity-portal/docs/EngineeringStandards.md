@@ -57,7 +57,9 @@ Every release must satisfy all four gates.
 - Meets the Performance Budget.
 - Adds no unnecessary API requests.
 - Avoids Apps Script regressions.
-- Avoids bundle-size regression unless justified and documented.
+- Blocks regressions on the critical path: startup bundle, startup requests, Dashboard, authentication, Event Overview, shared runtime, shared CSS, and API request count.
+- Evaluates lazy-loaded route bundles separately. A lazy-route increase is acceptable only when it is isolated to that route, adds no startup regression, adds no Dashboard regression, adds no API requests, creates no duplicate calculations or caches, and the size increase is documented with the rationale.
+- Avoids unjustified bundle-size regression.
 
 ### Quality Gate
 
@@ -69,3 +71,14 @@ Every release must satisfy all four gates.
 - Technical Debt is documented.
 
 If any gate fails, the release is incomplete.
+
+## Accepted Architecture Releases
+
+### Version 13.0 - Event Context Migration
+
+- Accepted: July 11, 2026.
+- Scope: Event-scoped pages consistently respect `eventId` instead of silently falling back to League-wide data.
+- Frontend deployment: `dpl_8HBFkvYJYsVddovy2LYJ2o7Z4BqH`.
+- Apps Script deployment: `AKfycbxBzo57XHrxiBy1EJq4f_VS026uTXnCYHSXrWT6c2uU__zSB2Dzeixx3rFHQahXQycCng @195`.
+- Accepted tradeoff: startup bundle increase remains below 1 kB gzip and is justified by removing a fundamental event-context architecture inconsistency.
+- Release evidence: no new startup requests, no duplicate caches, no duplicate calculations, no backend performance regression, and production verification confirmed Team Tournament and League pages render their own scoped data.

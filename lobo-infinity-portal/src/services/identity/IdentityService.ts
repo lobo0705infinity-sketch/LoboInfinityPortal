@@ -54,11 +54,29 @@ export async function synchronizeIdentity(
   session: AuthSession,
   googleIdToken: string,
 ): Promise<UnifiedIdentityReport> {
+  console.groupCollapsed('[IdentityService] synchronizeIdentity entered')
+  console.debug('[IdentityService] session', {
+    authenticated: session.authenticated,
+    stage: session.stage,
+    code: session.code,
+    user: session.user.email,
+    role: session.user.role,
+  })
+  console.debug('[IdentityService] googleIdToken present', {
+    hasGoogleIdToken: Boolean(googleIdToken),
+    tokenLength: googleIdToken.length,
+  })
+
   const expectedClaims = buildExpectedClaims(session)
   const firebase = session.authenticated && googleIdToken
     ? await signInToFirebaseWithGoogleToken(googleIdToken)
     : emptyFirebaseIdentity('Portal session is not authenticated.')
+
+  console.debug('[IdentityService] firebase bridge result', firebase)
+
   const report = buildIdentityReport(session, firebase, expectedClaims)
+  console.debug('[IdentityService] unified identity report', report)
+  console.groupEnd()
 
   cacheIdentityReport(report)
 

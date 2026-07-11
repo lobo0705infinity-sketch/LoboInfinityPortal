@@ -6,20 +6,36 @@ function ProfileMenu({ mobile = false }: { mobile?: boolean }) {
   const auth = useAuth()
   const [isOpen, setIsOpen] = useState(false)
   const buttonRef = useRef<HTMLDivElement | null>(null)
+  const renderedButtonRef = useRef<HTMLElement | null>(null)
   const panelId = mobile ? 'mobile-profile-menu-panel' : 'profile-menu-panel'
+  const {
+    authenticated,
+    error,
+    googleReady,
+    isAtLeastRole,
+    oauthConfigured,
+    renderSignInButton,
+    signOut,
+    user,
+  } = auth
 
   useEffect(() => {
     if (
-      auth.authenticated ||
-      !auth.googleReady ||
-      !auth.oauthConfigured ||
+      authenticated ||
+      !googleReady ||
+      !oauthConfigured ||
       !buttonRef.current
     ) {
       return
     }
 
-    auth.renderSignInButton(buttonRef.current)
-  }, [auth])
+    if (renderedButtonRef.current === buttonRef.current) {
+      return
+    }
+
+    renderSignInButton(buttonRef.current)
+    renderedButtonRef.current = buttonRef.current
+  }, [authenticated, googleReady, oauthConfigured, renderSignInButton])
 
   useEffect(() => {
     if (!isOpen) {
@@ -39,10 +55,10 @@ function ProfileMenu({ mobile = false }: { mobile?: boolean }) {
     }
   }, [isOpen])
 
-  if (!auth.authenticated) {
+  if (!authenticated) {
     return (
       <div className={mobile ? 'profile-menu signed-out mobile-profile-menu' : 'profile-menu signed-out'}>
-        {auth.oauthConfigured ? (
+        {oauthConfigured ? (
           <div ref={buttonRef} className="google-signin-slot" />
         ) : (
           <div className="oauth-pending" title="Add Google OAuth Client ID in Settings">
@@ -50,7 +66,7 @@ function ProfileMenu({ mobile = false }: { mobile?: boolean }) {
             <small>OAuth pending</small>
           </div>
         )}
-        {auth.error ? <small className="auth-inline-error">{auth.error}</small> : null}
+        {error ? <small className="auth-inline-error">{error}</small> : null}
       </div>
     )
   }
@@ -66,12 +82,12 @@ function ProfileMenu({ mobile = false }: { mobile?: boolean }) {
         onClick={() => setIsOpen((open) => !open)}
         type="button"
       >
-        {auth.user.avatarUrl ? (
-          <img alt="" src={auth.user.avatarUrl} />
+        {user.avatarUrl ? (
+          <img alt="" src={user.avatarUrl} />
         ) : (
-          <span>{auth.user.displayName.slice(0, 1).toUpperCase()}</span>
+          <span>{user.displayName.slice(0, 1).toUpperCase()}</span>
         )}
-        <strong>{mobile ? 'Account' : auth.user.displayName}</strong>
+        <strong>{mobile ? 'Account' : user.displayName}</strong>
       </button>
 
       {isOpen ? (
@@ -82,22 +98,22 @@ function ProfileMenu({ mobile = false }: { mobile?: boolean }) {
           role="dialog"
         >
           <div className="profile-menu-card">
-            {auth.user.avatarUrl ? <img alt="" src={auth.user.avatarUrl} /> : null}
-            <strong>{auth.user.displayName}</strong>
-            <small>{auth.user.email}</small>
-            <span>{auth.user.role}</span>
+            {user.avatarUrl ? <img alt="" src={user.avatarUrl} /> : null}
+            <strong>{user.displayName}</strong>
+            <small>{user.email}</small>
+            <span>{user.role}</span>
           </div>
           <Link onClick={() => setIsOpen(false)} to="/profile">
             My Profile
           </Link>
-          {auth.isAtLeastRole('Assistant Commissioner') ? (
+          {isAtLeastRole('Assistant Commissioner') ? (
             <Link onClick={() => setIsOpen(false)} to="/commissioner">
               Commissioner Dashboard
             </Link>
           ) : null}
           <button
             onClick={() => {
-              auth.signOut()
+              signOut()
               setIsOpen(false)
             }}
             type="button"

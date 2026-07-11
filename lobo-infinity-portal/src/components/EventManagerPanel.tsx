@@ -4,7 +4,7 @@ import {
   type EventRegistrationEntry,
 } from '../services/api'
 import { eventRepository } from '../services/data'
-import Loading from './Loading'
+import Skeleton from './Skeleton'
 
 type EventManagerState =
   | { status: 'loading' }
@@ -301,7 +301,15 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
   }
 
   if (state.status === 'loading') {
-    return <Loading />
+    return (
+      <div className="event-manager" aria-label="Event Manager loading">
+        <div className="panel-heading">
+          <p className="eyebrow">Event Engine</p>
+          <h2>Event Manager</h2>
+        </div>
+        <Skeleton label="Event Manager controls loading" rows={8} />
+      </div>
+    )
   }
 
   if (state.status === 'error') {

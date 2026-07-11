@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import Loading from '../components/Loading'
+import { Link, useSearchParams } from 'react-router-dom'
+import Skeleton from '../components/Skeleton'
 import StandingsTable from '../components/StandingsTable'
 import StatCard from '../components/StatCard'
-import { eventRepository, standingsRepository } from '../services/data'
+import { getEventNavigationConfig } from '../config/eventNavigation'
+import { standingsRepository } from '../services/data'
+import { recordStandingsDiagnostic } from '../services/diagnostics'
 import { formatPlayerName } from '../services/formatting'
 import type {
   DivisionKey,
   DivisionStandings,
-  EventCatalog,
   Standing,
 } from '../types/dashboard'
 import {
@@ -52,43 +53,74 @@ type StandingsState =
     }
 
 function Standings() {
+  const [searchParams] = useSearchParams()
+  const requestedEventId = searchParams.get('eventId') || ''
   const [activeDivision, setActiveDivision] = useState<DivisionKey>('main')
-  const [eventCatalog, setEventCatalog] = useState<EventCatalog | null>(null)
-  const [activeEventId, setActiveEventId] = useState('event-current-league')
+  const activeEventId = requestedEventId || 'event-current-league'
   const [standingsState, setStandingsState] = useState<StandingsState>({
     status: 'idle',
   })
 
   useEffect(() => {
-    const controller = new AbortController()
-
-    eventRepository
-      .getEvents({ signal: controller.signal })
-      .then((catalog) => {
-        setEventCatalog(catalog)
-        setActiveEventId(catalog.currentEvent.id || 'event-current-league')
-      })
-      .catch(() => {
-        setEventCatalog(null)
-      })
+    const mountedAt = performance.now()
+    recordStandingsDiagnostic({
+      event: 'componentMount',
+    })
 
     return () => {
-      controller.abort()
+      recordStandingsDiagnostic({
+        durationMs: Math.round(performance.now() - mountedAt),
+        event: 'componentUnmount',
+      })
     }
   }, [])
 
   useEffect(() => {
-    const controller = new AbortController()
+    recordStandingsDiagnostic({
+      activeDivision,
+      activeEventId,
+      event: 'render',
+      eventCount: 0,
+      standingsStatus: standingsState.status,
+      standingsRecords:
+        standingsState.status === 'success'
+          ? standingsState.data.standings.length
+          : 0,
+    })
+  })
 
-    const selectedEvent = eventCatalog?.events.find(
-      (event) => event.id === activeEventId,
-    )
+  useEffect(() => {
+    recordStandingsDiagnostic({
+      activeEventId: requestedEventId || 'event-current-league',
+      event: 'eventContextResolved',
+    })
+  }, [requestedEventId])
+
+  useEffect(() => {
+    const controller = new AbortController()
+    const startedAt = performance.now()
+
+    const selectedEvent = getEventNavigationConfig(activeEventId)
 
     if (selectedEvent && selectedEvent.type !== 'League') {
+      recordStandingsDiagnostic({
+        activeDivision,
+        activeEventId,
+        event: 'standingsRequestSkipped',
+        reason: 'non_league_event',
+        selectedEventType: selectedEvent.type,
+      })
       return () => {
         controller.abort()
       }
     }
+
+    recordStandingsDiagnostic({
+      activeDivision,
+      activeEventId,
+      event: 'standingsRequestStarted',
+      selectedEventType: selectedEvent?.type ?? 'unknown',
+    })
 
     standingsRepository
       .getStandings(activeDivision, {
@@ -96,6 +128,14 @@ function Standings() {
         signal: controller.signal,
       })
       .then((data) => {
+        recordStandingsDiagnostic({
+          activeDivision,
+          activeEventId,
+          durationMs: Math.round(performance.now() - startedAt),
+          event: 'standingsRepositoryTransformComplete',
+          recordCount: data.standings.length,
+          summary: data.summary,
+        })
         setStandingsState({
           data,
           division: activeDivision,
@@ -103,10 +143,26 @@ function Standings() {
         })
       })
       .catch((error: unknown) => {
-        if (controller.signal.aborted) {
+        if (controller.signal.aborted || isAbortError(error)) {
+          recordStandingsDiagnostic({
+            activeDivision,
+            activeEventId,
+            durationMs: Math.round(performance.now() - startedAt),
+            event: 'standingsRequestAborted',
+            reason: controller.signal.aborted
+              ? 'controller_aborted'
+              : 'abort_error',
+          })
           return
         }
 
+        recordStandingsDiagnostic({
+          activeDivision,
+          activeEventId,
+          durationMs: Math.round(performance.now() - startedAt),
+          error: error instanceof Error ? error.message : String(error),
+          event: 'standingsRequestError',
+        })
         setStandingsState({
           division: activeDivision,
           error:
@@ -120,18 +176,17 @@ function Standings() {
     return () => {
       controller.abort()
     }
-  }, [activeDivision, activeEventId, eventCatalog])
+  }, [activeDivision, activeEventId])
 
   const activeEvent =
-    eventCatalog?.events.find((event) => event.id === activeEventId) ??
-    null
+    getEventNavigationConfig(activeEventId)
 
   const activeEventLabel =
     activeEventId === 'lifetime'
       ? 'Lifetime'
       : activeEventId === 'all'
         ? 'All Events'
-        : activeEvent?.name ?? eventCatalog?.currentEvent.name ?? 'Current League'
+        : activeEvent?.label ?? 'Current League'
 
   return (
     <main className="portal-shell">
@@ -141,32 +196,6 @@ function Standings() {
         <p>
           {activeEventLabel} Rankings
         </p>
-      </section>
-
-      <section className="event-filter" aria-label="Event selector">
-        <label htmlFor="standings-event-select">
-          <span>Event</span>
-          <select
-            id="standings-event-select"
-            onChange={(event) => setActiveEventId(event.target.value)}
-            value={activeEventId}
-          >
-            {(eventCatalog?.events.length
-              ? eventCatalog.events
-              : [
-                  {
-                    id: 'event-current-league',
-                    name: 'Current League',
-                  },
-                ]
-            ).map((event) => (
-              <option key={event.id} value={event.id}>
-                {event.name}
-              </option>
-            ))}
-            <option value="lifetime">Lifetime</option>
-          </select>
-        </label>
       </section>
 
       {activeEvent && activeEvent.type !== 'League' ? (
@@ -208,7 +237,7 @@ function Standings() {
 function NonLeagueStandingsRedirect({
   event,
 }: {
-  event: NonNullable<EventCatalog['events'][number]>
+  event: NonNullable<ReturnType<typeof getEventNavigationConfig>>
 }) {
   const isTeamTournament = event.type === 'Team Tournament'
 
@@ -216,7 +245,7 @@ function NonLeagueStandingsRedirect({
     <section className="panel standings-panel">
       <div className="panel-heading">
         <p className="eyebrow">{event.type}</p>
-        <h2>{event.name}</h2>
+        <h2>{event.label}</h2>
       </div>
       <p>
         This Event does not use league divisions, promotion, or relegation.
@@ -248,9 +277,21 @@ function DivisionPanel({
 
   if (!isCurrent || standingsState.status === 'loading') {
     return (
-      <section className="dashboard-state" aria-label="Standings loading">
-        <Loading />
-      </section>
+      <>
+        <section className="league-stats" aria-label="Standings summary loading">
+          <Skeleton label="Standings leader loading" rows={4} />
+          <Skeleton label="Standings games loading" rows={4} />
+          <Skeleton label="Standings players loading" rows={4} />
+          <Skeleton label="Standings rate loading" rows={4} />
+        </section>
+        <section className="panel standings-panel" aria-label="Standings table loading">
+          <div className="panel-heading">
+            <p className="eyebrow">{formatDivisionLabel(activeDivision)}</p>
+            <h2>Division Table</h2>
+          </div>
+          <Skeleton label="Standings rows loading" rows={10} />
+        </section>
+      </>
     )
   }
 
@@ -377,3 +418,18 @@ function getStandingRowClassName(
 }
 
 export default Standings
+
+function isAbortError(error: unknown) {
+  if (error instanceof DOMException && error.name === 'AbortError') {
+    return true
+  }
+
+  if (error instanceof Error) {
+    return (
+      error.name === 'AbortError' ||
+      error.message === 'signal is aborted without reason'
+    )
+  }
+
+  return String(error) === 'signal is aborted without reason'
+}

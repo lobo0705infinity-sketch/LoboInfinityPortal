@@ -5,7 +5,15 @@
  * Consolidated global search data endpoint.
  *******************************************************/
 
-function getSearchData() {
+function getSearchData(e) {
+
+  const context =
+    buildEventAnalyticsContext(e);
+
+  if (!context.isLeague)
+    return jsonOutput(
+      getEventAnalyticsSearchData(context)
+    );
 
   return jsonOutput({
     success: true,

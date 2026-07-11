@@ -13,7 +13,13 @@ function getEventRegistration(e) {
   const eventId =
     resolveEventId(params.eventId || EVENT_ENGINE_DEFAULT_EVENT_ID);
 
-  ensureEventEngine();
+  const runtimeValidation =
+    validateEventEngineRuntime();
+
+  if (!runtimeValidation.initialized)
+    return jsonOutput(
+      buildEventEngineInitializationRequiredResponse(runtimeValidation)
+    );
 
   const event =
     getEventByIdSnapshot(eventId) ||
@@ -26,8 +32,11 @@ function getEventRegistration(e) {
     getRequestUser(e);
 
   const currentPlayer =
-    auth.authenticated && auth.user.leaguePlayer
-      ? getEventRegistrationForPlayer(eventId, auth.user.leaguePlayer)
+    auth.authenticated
+      ? getEventRegistrationForPlayer(
+          eventId,
+          getEventParticipantKey(event, auth.user)
+        )
       : null;
 
   return jsonOutput({
@@ -42,7 +51,7 @@ function registerForEvent(e) {
   const auth =
     getRequestUser(e);
 
-  if (!auth.authenticated || !auth.user.leaguePlayer)
+  if (!auth.authenticated)
     return jsonOutput({
       success: false,
       error: "Authentication is required."
@@ -58,6 +67,12 @@ function registerForEvent(e) {
     getEventByIdSnapshot(eventId) ||
     getCurrentLeagueEventSnapshot();
 
+  if (!canUserParticipateInEvent(event, auth.user))
+    return jsonOutput({
+      success: false,
+      error: "League membership is required for this Event."
+    });
+
   if (!isEventRegistrationOpen(event))
     return jsonOutput({
       success: false,
@@ -65,9 +80,18 @@ function registerForEvent(e) {
     });
 
   const status =
-    resolveEventRegistrationStatus(eventId, event, auth.user.leaguePlayer);
+    resolveEventRegistrationStatus(
+      eventId,
+      event,
+      getEventParticipantKey(event, auth.user)
+    );
 
-  upsertEventRegistrationRow(eventId, auth.user, params, status);
+  upsertEventRegistrationRow(
+    eventId,
+    buildEventParticipantUser(event, auth.user),
+    params,
+    status
+  );
 
   invalidateEventRegistrationCaches();
 
@@ -84,7 +108,7 @@ function withdrawEventRegistration(e) {
   const auth =
     getRequestUser(e);
 
-  if (!auth.authenticated || !auth.user.leaguePlayer)
+  if (!auth.authenticated)
     return jsonOutput({
       success: false,
       error: "Authentication is required."
@@ -100,6 +124,12 @@ function withdrawEventRegistration(e) {
     getEventByIdSnapshot(eventId) ||
     getCurrentLeagueEventSnapshot();
 
+  if (!canUserParticipateInEvent(event, auth.user))
+    return jsonOutput({
+      success: false,
+      error: "League membership is required for this Event."
+    });
+
   if (!isEventRegistrationOpen(event))
     return jsonOutput({
       success: false,
@@ -107,7 +137,10 @@ function withdrawEventRegistration(e) {
     });
 
   const registration =
-    getEventRegistrationForPlayer(eventId, auth.user.leaguePlayer);
+    getEventRegistrationForPlayer(
+      eventId,
+      getEventParticipantKey(event, auth.user)
+    );
 
   if (!registration)
     return jsonOutput({
@@ -117,7 +150,7 @@ function withdrawEventRegistration(e) {
 
   upsertEventRegistrationRow(
     eventId,
-    auth.user,
+    buildEventParticipantUser(event, auth.user),
     {
       teamName: registration.team,
       preferredTeam: registration.preferredTeam,
@@ -140,11 +173,103 @@ function withdrawEventRegistration(e) {
 
 }
 
+function canUserParticipateInEvent(event, user) {
+
+  if (!eventRequiresLeagueMembership(event))
+    return true;
+
+  return getEventRegistrationString(user && user.leaguePlayer) !== "";
+
+}
+
+function eventRequiresLeagueMembership(event) {
+
+  if (!event)
+    return true;
+
+  if (event.requiresLeagueMembership === true)
+    return true;
+
+  if (event.requiresLeagueMembership === false)
+    return false;
+
+  const text =
+    [
+      event.permissions && event.permissions.requiresLeagueMembership === false
+        ? "requiresLeagueMembership=false"
+        : "",
+      event.permissions && event.permissions.requiresLeagueMembership === true
+        ? "requiresLeagueMembership=true"
+        : "",
+      event.type,
+      event.templateId,
+      event.rules
+    ].join(" ").toLowerCase();
+
+  if (text.indexOf("requiresleaguemembership=false") !== -1)
+    return false;
+
+  if (text.indexOf("requiresleaguemembership=true") !== -1)
+    return true;
+
+  return (
+    getEventRegistrationString(event.type).toLowerCase() === "league" ||
+    getEventRegistrationString(event.templateId).toLowerCase() ===
+      EVENT_ENGINE_DEFAULT_TEMPLATE_ID
+  );
+
+}
+
+function getEventParticipantKey(event, user) {
+
+  if (!user)
+    return "";
+
+  const leaguePlayer =
+    getEventRegistrationString(user.leaguePlayer);
+
+  if (leaguePlayer !== "")
+    return leaguePlayer;
+
+  if (eventRequiresLeagueMembership(event))
+    return "";
+
+  return getEventRegistrationString(user.email).toLowerCase();
+
+}
+
+function buildEventParticipantUser(event, user) {
+
+  const participantKey =
+    getEventParticipantKey(event, user);
+
+  return {
+    email: getEventRegistrationString(user.email),
+    leaguePlayer: participantKey,
+    playerDisplayName:
+      getEventRegistrationString(user.playerDisplayName) ||
+      getEventRegistrationString(user.displayName) ||
+      participantKey
+  };
+
+}
+
 function manageEventRegistration(e) {
 
   return requireApiPermission(e, "runSeasonControl", function() {
+    const approvalStart =
+      startEventApprovalSubStage(
+        "approval.total"
+      );
+
     const params =
-      getApiParameters(e);
+      measureEventApprovalOperation(
+        "approval.requestParameters",
+        function() {
+          return getApiParameters(e);
+        },
+        {}
+      );
 
     const eventId =
       resolveEventId(params.eventId || EVENT_ENGINE_DEFAULT_EVENT_ID);
@@ -166,20 +291,73 @@ function manageEventRegistration(e) {
         player
     };
 
-    upsertEventRegistrationRow(
-      eventId,
-      user,
-      params,
-      getEventRegistrationString(params.status) || "Registered"
+    measureEventApprovalOperation(
+      "approval.statusUpdate.upsertRegistrationRow",
+      function() {
+        upsertEventRegistrationRow(
+          eventId,
+          user,
+          params,
+          getEventRegistrationString(params.status) || "Registered"
+        );
+      },
+      {
+        eventId: eventId,
+        player: player,
+        status: getEventRegistrationString(params.status) || "Registered"
+      }
     );
 
-    invalidateEventRegistrationCaches();
-
-    return getEventRegistration({
-      parameter: {
+    measureEventApprovalOperation(
+      "approval.cacheInvalidation.eventRegistrationCaches",
+      function() {
+        invalidateEventRegistrationCaches();
+      },
+      {
         eventId: eventId
       }
-    });
+    );
+
+    const compactResponse =
+      getEventRegistrationString(params.responseMode).toLowerCase() ===
+      "mutation";
+
+    const response =
+      compactResponse
+        ? jsonOutput({
+            success: true,
+            mutation: {
+              kind: "registrationStatus",
+              eventId: eventId,
+              player: player,
+              status: getEventRegistrationString(params.status) || "Registered"
+            }
+          })
+        : measureEventApprovalOperation(
+            "approval.uiRefresh.getEventRegistration",
+            function() {
+              return getEventRegistration({
+                parameter: {
+                  eventId: eventId
+                }
+              });
+            },
+            {
+              eventId: eventId
+            }
+          );
+
+    endEventApprovalSubStage(
+      "approval.total",
+      approvalStart,
+      {
+        eventId: eventId,
+        player: player,
+        status: getEventRegistrationString(params.status) || "Registered"
+      }
+    );
+
+    return response;
   });
 
 }
@@ -208,25 +386,78 @@ function exportEventRegistrations(e) {
 function buildEventRegistrationPayload(event, registrations, currentPlayer) {
 
   const activeRegistrations =
-    registrations.filter(function(registration) {
-      return registration.status !== "Withdrawn";
-    });
+    measureEventHomeOperationIfAvailable(
+      "eventHome.registrationLookup.filter.activeRegistrations",
+      function() {
+        return registrations.filter(function(registration) {
+          return measureEventHomeLoopIterationIfAvailable(
+            "eventHome.loop.registration.activeFilter",
+            function() {
+              return registration.status !== "Withdrawn";
+            }
+          );
+        });
+      },
+      {
+        inputRegistrations: registrations.length
+      }
+    );
 
   const registered =
-    activeRegistrations.filter(function(registration) {
-      return registration.status === "Registered";
-    });
+    measureEventHomeOperationIfAvailable(
+      "eventHome.registrationLookup.filter.registered",
+      function() {
+        return activeRegistrations.filter(function(registration) {
+          return measureEventHomeLoopIterationIfAvailable(
+            "eventHome.loop.registration.registeredFilter",
+            function() {
+              return registration.status === "Registered";
+            }
+          );
+        });
+      },
+      {
+        activeRegistrations: activeRegistrations.length
+      }
+    );
 
   const waitlisted =
-    activeRegistrations.filter(function(registration) {
-      return registration.status === "Waitlisted";
-    });
+    measureEventHomeOperationIfAvailable(
+      "eventHome.registrationLookup.filter.waitlisted",
+      function() {
+        return activeRegistrations.filter(function(registration) {
+          return measureEventHomeLoopIterationIfAvailable(
+            "eventHome.loop.registration.waitlistedFilter",
+            function() {
+              return registration.status === "Waitlisted";
+            }
+          );
+        });
+      },
+      {
+        activeRegistrations: activeRegistrations.length
+      }
+    );
 
   const teams =
-    getEventRegistrationTeamSummary(activeRegistrations);
+    measureEventHomeOperationIfAvailable(
+      "eventHome.registrationLookup.teamSummary",
+      function() {
+        return getEventRegistrationTeamSummary(activeRegistrations);
+      },
+      {
+        activeRegistrations: activeRegistrations.length
+      }
+    );
 
   const capacity =
-    getEventRegistrationCapacity(event);
+    measureEventHomeOperationIfAvailable(
+      "eventHome.registrationLookup.capacity",
+      function() {
+        return getEventRegistrationCapacity(event);
+      },
+      {}
+    );
 
   return {
     eventId: event.id,
@@ -246,13 +477,39 @@ function buildEventRegistrationPayload(event, registrations, currentPlayer) {
     registrations: registrations,
     teams: teams,
     freeAgents:
-      activeRegistrations.filter(function(registration) {
-        return registration.freeAgent === true;
-      }),
+      measureEventHomeOperationIfAvailable(
+        "eventHome.registrationLookup.filter.freeAgents",
+        function() {
+          return activeRegistrations.filter(function(registration) {
+            return measureEventHomeLoopIterationIfAvailable(
+              "eventHome.loop.registration.freeAgentFilter",
+              function() {
+                return registration.freeAgent === true;
+              }
+            );
+          });
+        },
+        {
+          activeRegistrations: activeRegistrations.length
+        }
+      ),
     captains:
-      activeRegistrations.filter(function(registration) {
-        return registration.captain === true;
-      })
+      measureEventHomeOperationIfAvailable(
+        "eventHome.registrationLookup.filter.captains",
+        function() {
+          return activeRegistrations.filter(function(registration) {
+            return measureEventHomeLoopIterationIfAvailable(
+              "eventHome.loop.registration.captainFilter",
+              function() {
+                return registration.captain === true;
+              }
+            );
+          });
+        },
+        {
+          activeRegistrations: activeRegistrations.length
+        }
+      )
   };
 
 }
@@ -260,16 +517,33 @@ function buildEventRegistrationPayload(event, registrations, currentPlayer) {
 function upsertEventRegistrationRow(eventId, user, params, status) {
 
   const sheet =
-    ensureEventEngineSheet(
-      CONFIG.SHEETS.EVENT_PARTICIPANTS,
-      EVENT_ENGINE_PARTICIPANT_HEADERS
+    measureEventApprovalOperation(
+      "approval.sheetLookup.eventParticipants.ensureSheet",
+      function() {
+        return ensureEventEngineSheet(
+          CONFIG.SHEETS.EVENT_PARTICIPANTS,
+          EVENT_ENGINE_PARTICIPANT_HEADERS
+        );
+      },
+      {
+        sheet: CONFIG.SHEETS.EVENT_PARTICIPANTS
+      }
     );
 
   const now =
     getEventRegistrationTimestamp();
 
   const existing =
-    getEventRegistrationForPlayer(eventId, user.leaguePlayer);
+    measureEventApprovalOperation(
+      "approval.registrationLookup.existingRegistration",
+      function() {
+        return getEventRegistrationForPlayer(eventId, user.leaguePlayer);
+      },
+      {
+        eventId: eventId,
+        player: user.leaguePlayer
+      }
+    );
 
   const registeredAt =
     existing && existing.registeredAt
@@ -282,35 +556,45 @@ function upsertEventRegistrationRow(eventId, user, params, status) {
   const preferredTeam =
     getEventRegistrationString(params.preferredTeam || team);
 
-  upsertEventRegistrationCompositeRow(
-    sheet,
-    EVENT_ENGINE_PARTICIPANT_HEADERS,
-    [
-      "Event ID",
-      "Player"
-    ],
-    [
-      eventId,
-      user.leaguePlayer
-    ],
-    [
-      eventId,
-      user.leaguePlayer,
-      user.playerDisplayName || user.leaguePlayer,
-      getEventRegistrationString(params.role) || "Player",
-      status,
-      registeredAt,
-      getEventRegistrationString(params.seed),
-      team,
-      getEventRegistrationString(params.notes),
-      getEventRegistrationString(user.email),
-      getEventRegistrationString(params.discord),
-      preferredTeam,
-      getEventRegistrationBoolean(params.captain),
-      getEventRegistrationBoolean(params.freeAgent),
-      getEventRegistrationString(params.faction),
-      now
-    ]
+  measureEventApprovalOperation(
+    "approval.spreadsheetWrite.upsertCompositeRow",
+    function() {
+      upsertEventRegistrationCompositeRow(
+        sheet,
+        EVENT_ENGINE_PARTICIPANT_HEADERS,
+        [
+          "Event ID",
+          "Player"
+        ],
+        [
+          eventId,
+          user.leaguePlayer
+        ],
+        [
+          eventId,
+          user.leaguePlayer,
+          user.playerDisplayName || user.leaguePlayer,
+          getEventRegistrationString(params.role) || "Player",
+          status,
+          registeredAt,
+          getEventRegistrationString(params.seed),
+          team,
+          getEventRegistrationString(params.notes),
+          getEventRegistrationString(user.email),
+          getEventRegistrationString(params.discord),
+          preferredTeam,
+          getEventRegistrationBoolean(params.captain),
+          getEventRegistrationBoolean(params.freeAgent),
+          getEventRegistrationString(params.faction),
+          now
+        ]
+      );
+    },
+    {
+      eventId: eventId,
+      player: user.leaguePlayer,
+      status: status
+    }
   );
 
 }
@@ -321,17 +605,46 @@ function getEventRegistrationRows(eventId) {
     getEventRegistrationString(eventId);
 
   const sheet =
-    ensureEventEngineSheet(
-      CONFIG.SHEETS.EVENT_PARTICIPANTS,
-      EVENT_ENGINE_PARTICIPANT_HEADERS
+    measureEventHomeOperationIfAvailable(
+      "eventHome.sheetLookup.eventParticipants.runtimeSheet",
+      function() {
+        return getEventEngineRuntimeSheet(CONFIG.SHEETS.EVENT_PARTICIPANTS);
+      },
+      {
+        sheet: CONFIG.SHEETS.EVENT_PARTICIPANTS
+      }
     );
 
-  return getEventEngineRows(sheet)
+  if (!sheet)
+    return [];
+
+  const rows =
+    measureEventHomeOperationIfAvailable(
+      "eventHome.participantLoading.eventParticipants.getEventEngineRows",
+      function() {
+        return getEventEngineRows(sheet);
+      },
+      {
+        sheet: CONFIG.SHEETS.EVENT_PARTICIPANTS
+      }
+    );
+
+  return rows
     .filter(function(row) {
-      return row["Event ID"] === target;
+      return measureEventHomeLoopIterationIfAvailable(
+        "eventHome.loop.registration.rowsFilterByEvent",
+        function() {
+          return row["Event ID"] === target;
+        }
+      );
     })
     .map(function(row) {
-      return mapEventRegistrationRow(row);
+      return measureEventHomeLoopIterationIfAvailable(
+        "eventHome.loop.registration.mapRows",
+        function() {
+          return mapEventRegistrationRow(row);
+        }
+      );
     });
 
 }
@@ -341,10 +654,24 @@ function getEventRegistrationForPlayer(eventId, player) {
   const target =
     getEventRegistrationString(player).toLowerCase();
 
-  return getEventRegistrationRows(eventId)
-    .filter(function(registration) {
-      return registration.player.toLowerCase() === target;
-    })[0] || null;
+  return measureEventHomeOperationIfAvailable(
+    "eventHome.participantLoading.currentPlayer.getEventRegistrationRowsAgain",
+    function() {
+      return getEventRegistrationRows(eventId)
+        .filter(function(registration) {
+          return measureEventHomeLoopIterationIfAvailable(
+            "eventHome.loop.registration.currentPlayerFilter",
+            function() {
+              return registration.player.toLowerCase() === target;
+            }
+          );
+        })[0] || null;
+    },
+    {
+      eventId: eventId,
+      player: player
+    }
+  );
 
 }
 
@@ -443,29 +770,107 @@ function getEventRegistrationTeamSummary(registrations) {
   const byTeam = {};
 
   registrations.forEach(function(registration) {
-    const team =
-      registration.team ||
-      registration.preferredTeam ||
-      "Looking for Team";
+    measureEventHomeLoopIterationIfAvailable(
+      "eventHome.loop.registration.teamSummary.group",
+      function() {
+        const team =
+          registration.team ||
+          registration.preferredTeam ||
+          "Looking for Team";
 
-    if (!byTeam[team])
-      byTeam[team] = {
-        teamName: team,
-        players: [],
-        captains: 0
-      };
+        if (!byTeam[team])
+          byTeam[team] = {
+            teamName: team,
+            players: [],
+            captains: 0
+          };
 
-    byTeam[team].players.push(registration);
+        byTeam[team].players.push(registration);
 
-    if (registration.captain)
-      byTeam[team].captains++;
+        if (registration.captain)
+          byTeam[team].captains++;
+      }
+    );
   });
 
   return Object.keys(byTeam)
     .sort()
     .map(function(teamName) {
-      return byTeam[teamName];
+      return measureEventHomeLoopIterationIfAvailable(
+        "eventHome.loop.registration.teamSummary.map",
+        function() {
+          return byTeam[teamName];
+        }
+      );
     });
+
+}
+
+function measureEventHomeOperationIfAvailable(stageName, callback, details) {
+
+  if (typeof measureEventHomeOperation === "function")
+    return measureEventHomeOperation(stageName, callback, details || {});
+
+  return callback();
+
+}
+
+function measureEventHomeLoopIterationIfAvailable(stageName, callback) {
+
+  if (typeof measureEventHomeLoopIteration === "function")
+    return measureEventHomeLoopIteration(stageName, callback);
+
+  return callback();
+
+}
+
+function startEventApprovalSubStage(stageName) {
+
+  if (
+    typeof API_PIPELINE_CONTEXT === "undefined" ||
+    !API_PIPELINE_CONTEXT ||
+    API_PIPELINE_CONTEXT.action !== "manageEventRegistration"
+  )
+    return 0;
+
+  return Date.now();
+
+}
+
+function endEventApprovalSubStage(stageName, startTime, details) {
+
+  if (
+    typeof API_PIPELINE_CONTEXT === "undefined" ||
+    !API_PIPELINE_CONTEXT ||
+    API_PIPELINE_CONTEXT.action !== "manageEventRegistration" ||
+    !startTime ||
+    typeof recordApiPipelineSubStage !== "function"
+  )
+    return;
+
+  recordApiPipelineSubStage(
+    stageName,
+    startTime,
+    details || {}
+  );
+
+}
+
+function measureEventApprovalOperation(stageName, callback, details) {
+
+  const start =
+    startEventApprovalSubStage(stageName);
+
+  try {
+    return callback();
+  }
+  finally {
+    endEventApprovalSubStage(
+      stageName,
+      start,
+      details || {}
+    );
+  }
 
 }
 

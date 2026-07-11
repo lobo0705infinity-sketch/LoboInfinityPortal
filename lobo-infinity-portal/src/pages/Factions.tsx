@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import Loading from '../components/Loading'
+import { Link, useSearchParams } from 'react-router-dom'
+import Skeleton from '../components/Skeleton'
 import { apiClient, type FactionSummary } from '../services/api'
 
 type FactionsState =
@@ -17,6 +17,8 @@ type FactionsState =
     }
 
 function Factions() {
+  const [searchParams] = useSearchParams()
+  const eventId = searchParams.get('eventId') || ''
   const [factionsState, setFactionsState] = useState<FactionsState>({
     status: 'idle',
   })
@@ -26,6 +28,7 @@ function Factions() {
 
     apiClient
       .getFactions({
+        eventId,
         signal: controller.signal,
       })
       .then((factions) => {
@@ -51,14 +54,16 @@ function Factions() {
     return () => {
       controller.abort()
     }
-  }, [])
+  }, [eventId])
 
   if (factionsState.status === 'idle') {
     return (
       <main className="portal-shell">
         <PageHeader />
-        <section className="dashboard-state" aria-label="Factions loading">
-          <Loading />
+        <section className="faction-grid" aria-label="Factions loading">
+          <Skeleton label="Faction cards loading" rows={7} />
+          <Skeleton label="Faction cards loading" rows={7} />
+          <Skeleton label="Faction cards loading" rows={7} />
         </section>
       </main>
     )
@@ -86,7 +91,7 @@ function Factions() {
       ) : (
         <section className="faction-grid" aria-label="Faction headquarters">
           {factionsState.factions.map((faction) => (
-            <FactionCard faction={faction} key={faction.name} />
+            <FactionCard eventId={eventId} faction={faction} key={faction.name} />
           ))}
         </section>
       )}
@@ -94,8 +99,10 @@ function Factions() {
   )
 }
 
-function FactionCard({ faction }: { faction: FactionSummary }) {
-  const profilePath = `/factions/${encodeURIComponent(faction.name)}`
+function FactionCard({ eventId, faction }: { eventId: string; faction: FactionSummary }) {
+  const profilePath = eventId
+    ? `/factions/${encodeURIComponent(faction.name)}?eventId=${encodeURIComponent(eventId)}`
+    : `/factions/${encodeURIComponent(faction.name)}`
 
   return (
     <Link className="faction-card" to={profilePath}>

@@ -1,0 +1,956 @@
+/*******************************************************
+ * LOBO INFINITY LEAGUE
+ * EventAnalyticsApi.gs
+ *
+ * Event-scoped analytics dispatch layer. Keeps legacy
+ * response shapes while selecting the data source from
+ * the active Event.
+ *******************************************************/
+
+function buildEventAnalyticsContext(e) {
+
+  const params =
+    getApiParameters(e);
+
+  const eventId =
+    resolveEventId(params.eventId || EVENT_ENGINE_DEFAULT_EVENT_ID);
+
+  const event =
+    (
+      typeof getEventByIdSnapshot === "function"
+        ? getEventByIdSnapshot(eventId)
+        : null
+    ) ||
+    (
+      typeof getCurrentLeagueEventSnapshot === "function"
+        ? getCurrentLeagueEventSnapshot()
+        : null
+    ) ||
+    buildEventAnalyticsFallbackEvent(eventId);
+
+  return {
+    eventId: event.id || eventId,
+    event: event,
+    eventType: getEventAnalyticsString(event.type) || "League",
+    isLeague:
+      getEventAnalyticsString(event.type).toLowerCase() === "league"
+  };
+
+}
+
+function buildEventAnalyticsFallbackEvent(eventId) {
+
+  return {
+    id: eventId || EVENT_ENGINE_DEFAULT_EVENT_ID,
+    name: eventId || "Current Event",
+    type: "League",
+    status: "",
+    lifecycleStage: ""
+  };
+
+}
+
+function getEventAnalyticsPlayers(context) {
+
+  if (context.isLeague)
+    return [
+      buildEventStandingsResponse(
+        getStandingsDivisionConfig("main"),
+        context.eventId
+      ),
+      buildEventStandingsResponse(
+        getStandingsDivisionConfig("pga"),
+        context.eventId
+      ),
+      buildEventStandingsResponse(
+        getStandingsDivisionConfig("pgb"),
+        context.eventId
+      )
+    ];
+
+  const rows =
+    getEventAnalyticsRegistrations(context.eventId)
+      .filter(function(registration) {
+        return registration.status !== "Withdrawn" &&
+          registration.status !== "Removed";
+      });
+
+  const standings =
+    rows.map(function(registration, index) {
+      return buildEventAnalyticsStanding(
+        context,
+        registration.player || registration.displayName,
+        registration.displayName,
+        index + 1
+      );
+    });
+
+  return [
+    {
+      success: true,
+      eventId: context.eventId,
+      event: context.event,
+      division: "main",
+      divisionLabel: context.event.name + " Participants",
+      standings: standings,
+      summary: buildEventAnalyticsDivisionSummary(standings)
+    }
+  ];
+
+}
+
+function getEventAnalyticsFactions(context) {
+
+  if (context.isLeague)
+    return buildFactionApiSummaries();
+
+  const factions = {};
+
+  getEventAnalyticsRegistrations(context.eventId)
+    .forEach(function(registration) {
+      const faction =
+        getEventAnalyticsString(registration.faction) ||
+        "Unreported";
+
+      if (!factions[faction])
+        factions[faction] = {
+          name: faction,
+          games: 0,
+          wins: 0,
+          losses: 0,
+          tp: 0,
+          op: 0,
+          vp: 0,
+          players: [],
+          lastPlayed: ""
+        };
+
+      factions[faction].players.push(
+        registration.displayName ||
+        registration.player
+      );
+    });
+
+  getEventAnalyticsResults(context.eventId)
+    .forEach(function(result) {
+      const faction =
+        getEventAnalyticsString(result.winningFaction) ||
+        "Unreported";
+
+      if (!factions[faction])
+        factions[faction] = {
+          name: faction,
+          games: 0,
+          wins: 0,
+          losses: 0,
+          tp: 0,
+          op: 0,
+          vp: 0,
+          players: [],
+          lastPlayed: ""
+        };
+
+      factions[faction].games += 1;
+      factions[faction].wins += 1;
+      factions[faction].tp += Number(result.tournamentPoints) || 0;
+      factions[faction].op += Number(result.objectivePoints) || 0;
+      factions[faction].vp += Number(result.victoryPoints) || 0;
+      factions[faction].lastPlayed =
+        result.updatedAt ||
+        result.createdAt ||
+        factions[faction].lastPlayed;
+    });
+
+  return Object.keys(factions)
+    .sort()
+    .map(function(name) {
+      const faction =
+        factions[name];
+      const games =
+        faction.games || 0;
+
+      return {
+        name: faction.name,
+        games: games,
+        wins: faction.wins,
+        losses: faction.losses,
+        winRate: games > 0 ? (faction.wins / games) * 100 : 0,
+        averageTP: games > 0 ? faction.tp / games : 0,
+        averageOP: games > 0 ? faction.op / games : 0,
+        averageVP: games > 0 ? faction.vp / games : 0,
+        topPlayer: faction.players[0] || "",
+        topPlayerDisplayName: faction.players[0] || "",
+        lastPlayed: faction.lastPlayed,
+        divisionBreakdown: []
+      };
+    });
+
+}
+
+function getEventAnalyticsMissions(context) {
+
+  if (context.isLeague)
+    return buildMissionApiSummaries();
+
+  const missions = {};
+
+  getEventAnalyticsResults(context.eventId)
+    .forEach(function(result) {
+      const mission =
+        getEventAnalyticsString(result.mission) ||
+        "Unassigned Mission";
+
+      if (!missions[mission])
+        missions[mission] = {
+          mission: mission,
+          games: 0,
+          winnerTP: 0,
+          winnerOP: 0,
+          winnerVP: 0,
+          factions: {},
+          lastPlayed: ""
+        };
+
+      missions[mission].games += 1;
+      missions[mission].winnerTP += Number(result.tournamentPoints) || 0;
+      missions[mission].winnerOP += Number(result.objectivePoints) || 0;
+      missions[mission].winnerVP += Number(result.victoryPoints) || 0;
+
+      const faction =
+        getEventAnalyticsString(result.winningFaction);
+
+      if (faction)
+        missions[mission].factions[faction] =
+          (missions[mission].factions[faction] || 0) + 1;
+
+      missions[mission].lastPlayed =
+        result.updatedAt ||
+        result.createdAt ||
+        missions[mission].lastPlayed;
+    });
+
+  return Object.keys(missions)
+    .sort()
+    .map(function(name) {
+      const mission =
+        missions[name];
+      const games =
+        mission.games || 0;
+
+      return {
+        mission: mission.mission,
+        games: games,
+        averageTP: games > 0 ? mission.winnerTP / games : 0,
+        averageOP: games > 0 ? mission.winnerOP / games : 0,
+        averageVP: games > 0 ? mission.winnerVP / games : 0,
+        firstTurnWinRate: 0,
+        mostSuccessfulFaction:
+          getEventAnalyticsTopKey(mission.factions),
+        lastPlayed: mission.lastPlayed
+      };
+    });
+
+}
+
+function getEventAnalyticsIntelligence(context) {
+
+  if (context.isLeague)
+    return JSON.parse(getIntelligence().getContent());
+
+  const results =
+    getEventAnalyticsResults(context.eventId);
+
+  const standings =
+    getEventAnalyticsTeamStandings(context);
+
+  const missionTrends =
+    getEventAnalyticsMissions(context)
+      .map(function(mission) {
+        mission.story =
+          mission.games +
+          " reported games for " +
+          mission.mission +
+          ".";
+        return mission;
+      });
+
+  const factionMomentum =
+    getEventAnalyticsFactions(context)
+      .map(function(faction) {
+        return {
+          faction: faction.name,
+          games: faction.games,
+          wins: faction.wins,
+          losses: faction.losses,
+          trend: faction.games > 0 ? "Active" : "Registered",
+          story:
+            faction.name +
+            " has " +
+            faction.games +
+            " reported games in this event."
+        };
+      });
+
+  return {
+    success: true,
+    winStreaks: [],
+    losingStreaks: [],
+    highestVPGames: [],
+    biggestVictories: buildEventAnalyticsGames(results),
+    closestGames: buildEventAnalyticsGames(results),
+    factionMomentum: factionMomentum,
+    missionTrends: missionTrends,
+    recentUpsets: [],
+    promotionBattle: [],
+    relegationBattle: [],
+    records: buildEventAnalyticsRecords(results, standings)
+  };
+
+}
+
+function getEventIntelligence(e) {
+
+  const context =
+    buildEventAnalyticsContext(e);
+
+  return jsonOutput(
+    getEventAnalyticsIntelligence(context)
+  );
+
+}
+
+function getEventAnalyticsTimeline(context) {
+
+  if (context.isLeague)
+    return buildLeagueTimeline();
+
+  if (context.eventType === "Team Tournament")
+    return buildTeamTournamentTimeline(
+      context.event,
+      getEventAnalyticsTeams(context.eventId),
+      getEventAnalyticsPairings(context.eventId),
+      getEventAnalyticsRegistrations(context.eventId),
+      getEventAnalyticsInvitations(context.eventId),
+      getEventAnalyticsResults(context.eventId)
+    );
+
+  return [];
+
+}
+
+function getEventAnalyticsHallOfFame(context) {
+
+  if (context.isLeague)
+    return getHallOfFameSnapshot();
+
+  const standings =
+    getEventAnalyticsTeamStandings(context)
+      .map(function(row) {
+        return {
+          division: context.event.name,
+          player: row.player,
+          displayName: row.displayName || row.player,
+          rank: row.rank,
+          games: row.games,
+          wins: row.wins,
+          losses: row.losses,
+          tp: row.tp,
+          op: row.op,
+          vp: row.vp
+        };
+      });
+
+  return {
+    success: true,
+    leaders: {
+      tournamentPoints: standings.slice(0, 10),
+      objectivePoints: standings.slice(0, 10),
+      victoryPoints: standings.slice(0, 10),
+      wins: standings.slice(0, 10),
+      games: standings.slice(0, 10)
+    },
+    records: buildEventAnalyticsRecords(
+      getEventAnalyticsResults(context.eventId),
+      standings
+    ),
+    careerLeaders: {
+      achievementPoints: [],
+      championships: [],
+      communityAwards: [],
+      promotions: [],
+      seasonsPlayed: [],
+      winPercentage: []
+    },
+    recordBook: [],
+    leagueHistory: [],
+    seasonHistory: [],
+    playerCareers: []
+  };
+
+}
+
+function getEventAnalyticsComparison(e) {
+
+  const context =
+    buildEventAnalyticsContext(e);
+
+  if (context.isLeague)
+    return getLeaguePlayerComparison(e);
+
+  const leftName =
+    getComparisonParameter(e, "left");
+
+  const rightName =
+    getComparisonParameter(e, "right");
+
+  if (!leftName || !rightName)
+    return jsonOutput({
+      success: false,
+      error: "Missing comparison players."
+    });
+
+  const players =
+    getEventAnalyticsPlayers(context)[0].standings;
+
+  const left =
+    findEventAnalyticsStanding(players, leftName);
+
+  const right =
+    findEventAnalyticsStanding(players, rightName);
+
+  if (!left || !right)
+    return jsonOutput({
+      success: false,
+      error: "One or both event participants could not be found."
+    });
+
+  return jsonOutput({
+    success: true,
+    players: [
+      buildEventAnalyticsComparisonPlayer(left, context),
+      buildEventAnalyticsComparisonPlayer(right, context)
+    ],
+    headToHead:
+      getEventAnalyticsHeadToHead(
+        context.eventId,
+        left.player,
+        right.player
+      )
+  });
+
+}
+
+function buildEventAnalyticsComparisonPlayer(standing, context) {
+
+  return {
+    name: standing.player,
+    displayName: standing.displayName || standing.player,
+    division: context.event.name,
+    rank: standing.rank,
+    games: standing.games,
+    wins: standing.wins,
+    losses: standing.losses,
+    tp: standing.tp,
+    op: standing.op,
+    vp: standing.vp,
+    favoriteFaction: "",
+    favoriteMission: "",
+    bestFaction: ""
+  };
+
+}
+
+function getEventAnalyticsSearchData(context) {
+
+  return {
+    success: true,
+    players: getEventAnalyticsPlayers(context),
+    factions: getEventAnalyticsFactions(context),
+    missions: getEventAnalyticsMissions(context),
+    games:
+      context.isLeague
+        ? getAllRecentGameObjects().slice(0, RECENT_GAMES_LIMIT)
+        : getAllRecentGameObjectsForEvent(context.eventId).slice(0, RECENT_GAMES_LIMIT),
+    armyLists:
+      context.isLeague
+        ? getArmyListObjects().filter(function(list) { return list.approved; })
+        : []
+  };
+
+}
+
+function getEventAnalyticsPlayerProfile(e, requestedName) {
+
+  const context =
+    buildEventAnalyticsContext(e);
+
+  if (context.isLeague)
+    return null;
+
+  const players =
+    getEventAnalyticsPlayers(context)[0].standings;
+
+  const standing =
+    findEventAnalyticsStanding(players, requestedName);
+
+  if (!standing)
+    return jsonOutput({
+      success: false,
+      error: "Event participant not found."
+    });
+
+  const registration =
+    getEventAnalyticsRegistrations(context.eventId)
+      .filter(function(row) {
+        return getEventAnalyticsString(row.player).toLowerCase() ===
+          getEventAnalyticsString(standing.player).toLowerCase() ||
+          getEventAnalyticsString(row.displayName).toLowerCase() ===
+          getEventAnalyticsString(standing.player).toLowerCase();
+      })[0] || {};
+
+  return jsonOutput({
+    success: true,
+    eventId: context.eventId,
+    event: context.event,
+    player: {
+      name: standing.player,
+      displayName: standing.displayName || standing.player,
+      division: context.event.name,
+      rank: standing.rank,
+      games: standing.games,
+      wins: standing.wins,
+      losses: standing.losses,
+      tp: standing.tp,
+      op: standing.op,
+      vp: standing.vp,
+      favoriteFaction: registration.faction || "",
+      favoriteMission: "",
+      firstTurnGames: 0,
+      secondTurnGames: 0,
+      firstTurnWinRate: 0,
+      secondTurnWinRate: 0,
+      bestFaction: registration.faction || "",
+      rival: "",
+      nemesis: "",
+      armyLists: [],
+      armyListSummary: {
+        submitted: 0,
+        highestRated: null,
+        newest: null,
+        averageRating: 0,
+        favoriteFaction: registration.faction || ""
+      },
+      registeredEvents: [{
+        eventId: context.eventId,
+        eventName: context.event.name,
+        eventType: context.event.type,
+        status: registration.status || "Registered",
+        team: registration.team || "",
+        preferredTeam: registration.preferredTeam || registration.team || "",
+        registeredAt: registration.registeredAt || "",
+        updatedAt: registration.updatedAt || registration.registeredAt || ""
+      }],
+      availability: {},
+      profilePicture: "",
+      discordHandle: registration.discord || "",
+      homeStore: "",
+      city: "",
+      preferredLocations: "",
+      scheduleLink:
+        "/match-finder?eventId=" +
+        encodeURIComponent(context.eventId) +
+        "&opponent=" +
+        encodeURIComponent(standing.player)
+    }
+  });
+
+}
+
+function getEventAnalyticsFactionProfile(context, requestedName) {
+
+  if (context.isLeague)
+    return null;
+
+  const faction =
+    getEventAnalyticsFactions(context)
+      .filter(function(item) {
+        return getEventAnalyticsString(item.name).toLowerCase() ===
+          getEventAnalyticsString(requestedName).toLowerCase();
+      })[0];
+
+  if (!faction)
+    return jsonOutput({
+      success: false,
+      error: "Faction not found for this event."
+    });
+
+  return jsonOutput({
+    success: true,
+    eventId: context.eventId,
+    event: context.event,
+    faction: {
+      name: faction.name,
+      games: faction.games,
+      wins: faction.wins,
+      losses: faction.losses,
+      winRate: faction.winRate,
+      averageTP: faction.averageTP,
+      averageOP: faction.averageOP,
+      averageVP: faction.averageVP,
+      topPlayer: faction.topPlayer,
+      topPlayerDisplayName: faction.topPlayerDisplayName,
+      lastPlayed: faction.lastPlayed,
+      divisionBreakdown: faction.divisionBreakdown || [],
+      mostPlayedMission: "",
+      recentGames: buildEventAnalyticsGames(
+        getEventAnalyticsResults(context.eventId)
+      ).filter(function(game) {
+        return game.winnerFaction === faction.name;
+      }),
+      bestMoments: [],
+      matchups: [],
+      matchupSummary: {
+        games: 0,
+        wins: 0,
+        losses: 0,
+        winRate: 0
+      },
+      armyLists: {
+        lists: [],
+        summary: {
+          submitted: 0,
+          highestRated: null,
+          newest: null,
+          averageRating: 0,
+          favoriteFaction: faction.name
+        }
+      }
+    }
+  });
+
+}
+
+function getEventAnalyticsMissionProfile(context, requestedName) {
+
+  if (context.isLeague)
+    return null;
+
+  const mission =
+    getEventAnalyticsMissions(context)
+      .filter(function(item) {
+        return getEventAnalyticsString(item.mission).toLowerCase() ===
+          getEventAnalyticsString(requestedName).toLowerCase();
+      })[0];
+
+  if (!mission)
+    return jsonOutput({
+      success: false,
+      error: "Mission not found for this event."
+    });
+
+  return jsonOutput({
+    success: true,
+    eventId: context.eventId,
+    event: context.event,
+    mission: {
+      mission: mission.mission,
+      games: mission.games,
+      averageTP: mission.averageTP,
+      averageOP: mission.averageOP,
+      averageVP: mission.averageVP,
+      firstTurnWinRate: mission.firstTurnWinRate,
+      mostSuccessfulFaction: mission.mostSuccessfulFaction,
+      lastPlayed: mission.lastPlayed,
+      mostPlayedFaction: mission.mostSuccessfulFaction,
+      recentGames: buildEventAnalyticsGames(
+        getEventAnalyticsResults(context.eventId)
+      ).filter(function(game) {
+        return game.mission === mission.mission;
+      }),
+      bestMoments: [],
+      divisionBreakdown: []
+    }
+  });
+
+}
+
+function getEventAnalyticsTeamStandings(context) {
+
+  if (context.eventType === "Team Tournament")
+    return buildTeamTournamentStandings(
+      context.eventId,
+      getEventAnalyticsTeams(context.eventId),
+      getEventAnalyticsResults(context.eventId),
+      getAllRecentGameObjectsForEvent(context.eventId)
+    ).map(function(row) {
+      return {
+        eventId: context.eventId,
+        rank: row.rank,
+        player: row.teamName || row.player || row.team,
+        displayName: row.teamName || row.player || row.team,
+        games: row.matches || row.games || 0,
+        wins: row.wins || 0,
+        losses: row.losses || 0,
+        tp: row.tournamentPoints || row.tp || 0,
+        op: row.objectivePoints || row.op || 0,
+        vp: row.victoryPoints || row.vp || 0
+      };
+    });
+
+  return [];
+
+}
+
+function buildEventAnalyticsStanding(context, player, displayName, rank) {
+
+  const results =
+    getEventAnalyticsResults(context.eventId)
+      .filter(function(result) {
+        return result.player === player ||
+          result.opponent === player;
+      });
+
+  const wins =
+    results.filter(function(result) {
+      return result.winner === player;
+    }).length;
+
+  const totals =
+    results.reduce(function(total, result) {
+      total.tp += Number(result.tournamentPoints) || 0;
+      total.op += Number(result.objectivePoints) || 0;
+      total.vp += Number(result.victoryPoints) || 0;
+      return total;
+    }, {
+      tp: 0,
+      op: 0,
+      vp: 0
+    });
+
+  return {
+    eventId: context.eventId,
+    rank: rank,
+    player: player,
+    displayName: displayName || player,
+    games: results.length,
+    wins: wins,
+    losses: Math.max(0, results.length - wins),
+    tp: totals.tp,
+    op: totals.op,
+    vp: totals.vp
+  };
+
+}
+
+function buildEventAnalyticsDivisionSummary(standings) {
+
+  return {
+    leader: standings[0] || null,
+    players: standings.length,
+    gamesPlayed:
+      standings.reduce(function(total, player) {
+        return total + (Number(player.games) || 0);
+      }, 0) / 2,
+    activePlayers:
+      standings.filter(function(player) {
+        return Number(player.games) > 0;
+      }).length
+  };
+
+}
+
+function buildEventAnalyticsRecords(results, standings) {
+
+  const games =
+    buildEventAnalyticsGames(results);
+
+  const topStanding =
+    standings[0] || null;
+
+  const topResult =
+    games[0] || null;
+
+  return {
+    largestVPMargin: topResult,
+    largestOPMargin: topResult,
+    highestScoringGame: topResult,
+    lowestScoringGame: topResult,
+    closestVPGame: topResult,
+    mostActivePlayer:
+      topStanding
+        ? {
+            type: "player",
+            name: topStanding.player,
+            displayName: topStanding.displayName || topStanding.player,
+            games: topStanding.games || 0,
+            story: "Most active participant in this event."
+          }
+        : null,
+    mostActiveFaction: null,
+    mostActiveMission: null,
+    bestFirstTurnFaction: null,
+    worstFirstTurnFaction: null
+  };
+
+}
+
+function buildEventAnalyticsGames(results) {
+
+  return results
+    .filter(function(result) {
+      return result.status !== "Rejected";
+    })
+    .map(function(result, index) {
+      const winner =
+        result.winner || result.player;
+      const loser =
+        winner === result.player
+          ? result.opponent
+          : result.player;
+      const objectivePoints =
+        Number(result.objectivePoints) || 0;
+
+      return {
+        id: index + 1,
+        date: result.updatedAt || result.createdAt || "",
+        division: result.round || "",
+        winner: winner,
+        winnerDisplayName: winner,
+        loser: loser,
+        loserDisplayName: loser,
+        winnerFaction: result.winningFaction || "",
+        loserFaction: "",
+        mission: result.mission || "",
+        tp: String(result.tournamentPoints || ""),
+        op: String(result.objectivePoints || ""),
+        vp: String(result.victoryPoints || ""),
+        bestMoment: result.bestMoment || "",
+        firstTurn: result.firstTurn || "",
+        value: objectivePoints,
+        label: objectivePoints + " OP",
+        story:
+          winner +
+          " reported a result against " +
+          loser +
+          " in " +
+          (result.mission || "the event") +
+          "."
+      };
+    });
+
+}
+
+function findEventAnalyticsStanding(standings, playerName) {
+
+  const target =
+    getEventAnalyticsString(playerName).toLowerCase();
+
+  return standings.filter(function(standing) {
+    return getEventAnalyticsString(standing.player).toLowerCase() === target ||
+      getEventAnalyticsString(standing.displayName).toLowerCase() === target;
+  })[0] || null;
+
+}
+
+function getEventAnalyticsHeadToHead(eventId, left, right) {
+
+  const games =
+    getEventAnalyticsResults(eventId)
+      .filter(function(result) {
+        return (
+          result.player === left &&
+          result.opponent === right
+        ) ||
+        (
+          result.player === right &&
+          result.opponent === left
+        );
+      });
+
+  return {
+    games: games.length,
+    leftWins:
+      games.filter(function(result) {
+        return result.winner === left;
+      }).length,
+    rightWins:
+      games.filter(function(result) {
+        return result.winner === right;
+      }).length
+  };
+
+}
+
+function getEventAnalyticsRegistrations(eventId) {
+
+  if (typeof getEventRegistrationRows === "function")
+    return getEventRegistrationRows(eventId);
+
+  return [];
+
+}
+
+function getEventAnalyticsTeams(eventId) {
+
+  if (typeof getTeamTournamentTeams === "function")
+    return getTeamTournamentTeams(eventId)
+      .filter(function(team) {
+        return team.status !== "Deleted";
+      });
+
+  return [];
+
+}
+
+function getEventAnalyticsPairings(eventId) {
+
+  if (typeof getTeamTournamentPairings === "function")
+    return getTeamTournamentPairings(eventId);
+
+  return [];
+
+}
+
+function getEventAnalyticsInvitations(eventId) {
+
+  if (typeof getTeamTournamentInvitations === "function")
+    return getTeamTournamentInvitations(eventId);
+
+  return [];
+
+}
+
+function getEventAnalyticsResults(eventId) {
+
+  if (typeof getTeamTournamentResults === "function")
+    return getTeamTournamentResults(eventId);
+
+  return [];
+
+}
+
+function getEventAnalyticsTopKey(counts) {
+
+  let topKey = "";
+  let topValue = -1;
+
+  Object.keys(counts || {})
+    .forEach(function(key) {
+      if (counts[key] > topValue) {
+        topKey = key;
+        topValue = counts[key];
+      }
+    });
+
+  return topKey;
+
+}
+
+function getEventAnalyticsString(value) {
+
+  if (value === null || value === undefined)
+    return "";
+
+  return String(value).trim();
+
+}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import Loading from '../components/Loading'
+import { Link, useSearchParams } from 'react-router-dom'
+import Skeleton from '../components/Skeleton'
 import { apiClient, type MissionSummary } from '../services/api'
 
 type MissionsState =
@@ -17,6 +17,8 @@ type MissionsState =
     }
 
 function Missions() {
+  const [searchParams] = useSearchParams()
+  const eventId = searchParams.get('eventId') || ''
   const [missionsState, setMissionsState] = useState<MissionsState>({
     status: 'idle',
   })
@@ -26,6 +28,7 @@ function Missions() {
 
     apiClient
       .getMissions({
+        eventId,
         signal: controller.signal,
       })
       .then((missions) => {
@@ -51,14 +54,16 @@ function Missions() {
     return () => {
       controller.abort()
     }
-  }, [])
+  }, [eventId])
 
   if (missionsState.status === 'idle') {
     return (
       <main className="portal-shell">
         <PageHeader />
-        <section className="dashboard-state" aria-label="Missions loading">
-          <Loading />
+        <section className="faction-grid" aria-label="Missions loading">
+          <Skeleton label="Mission cards loading" rows={7} />
+          <Skeleton label="Mission cards loading" rows={7} />
+          <Skeleton label="Mission cards loading" rows={7} />
         </section>
       </main>
     )
@@ -86,7 +91,7 @@ function Missions() {
       ) : (
         <section className="faction-grid" aria-label="Mission headquarters">
           {missionsState.missions.map((mission) => (
-            <MissionCard key={mission.mission} mission={mission} />
+            <MissionCard eventId={eventId} key={mission.mission} mission={mission} />
           ))}
         </section>
       )}
@@ -94,8 +99,10 @@ function Missions() {
   )
 }
 
-function MissionCard({ mission }: { mission: MissionSummary }) {
-  const profilePath = `/missions/${encodeURIComponent(mission.mission)}`
+function MissionCard({ eventId, mission }: { eventId: string; mission: MissionSummary }) {
+  const profilePath = eventId
+    ? `/missions/${encodeURIComponent(mission.mission)}?eventId=${encodeURIComponent(eventId)}`
+    : `/missions/${encodeURIComponent(mission.mission)}`
 
   return (
     <Link className="faction-card mission-card" to={profilePath}>

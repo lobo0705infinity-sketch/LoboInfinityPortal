@@ -16,6 +16,35 @@ type NotificationState =
       status: 'error'
     }
 
+let notificationCache: LeagueNotification[] | null = null
+let notificationRequest: Promise<LeagueNotification[]> | null = null
+
+function getSharedNotifications(forceRefresh = false) {
+  if (!forceRefresh && notificationCache) {
+    return Promise.resolve(notificationCache)
+  }
+
+  if (!forceRefresh && notificationRequest) {
+    return notificationRequest
+  }
+
+  notificationRequest = getNotifications()
+    .then((notifications) => {
+      notificationCache = notifications
+      return notifications
+    })
+    .finally(() => {
+      notificationRequest = null
+    })
+
+  return notificationRequest
+}
+
+function invalidateNotificationCache() {
+  notificationCache = null
+  notificationRequest = null
+}
+
 function NotificationCenter({ compact = false }: { compact?: boolean }) {
   const [isOpen, setIsOpen] = useState(false)
   const [state, setState] = useState<NotificationState>({
@@ -27,32 +56,32 @@ function NotificationCenter({ compact = false }: { compact?: boolean }) {
       return
     }
 
-    const controller = new AbortController()
+    let isActive = true
 
-    void loadNotifications(controller.signal)
+    void loadNotifications().then((nextState) => {
+      if (isActive) {
+        setState(nextState)
+      }
+    })
 
     return () => {
-      controller.abort()
+      isActive = false
     }
   }, [isOpen])
 
-  async function loadNotifications(signal?: AbortSignal) {
-    getNotifications({
-      signal,
-    })
-      .then((notifications) => {
-        setState({
+  async function loadNotifications(forceRefresh = false): Promise<NotificationState> {
+    try {
+      const notifications = await getSharedNotifications(forceRefresh)
+
+      return {
           notifications,
           status: 'success',
-        })
-      })
-      .catch(() => {
-        if (!signal?.aborted) {
-          setState({
-            status: 'error',
-          })
-        }
-      })
+      }
+    } catch {
+      return {
+        status: 'error',
+      }
+    }
   }
 
   async function markAllRead() {
@@ -68,12 +97,13 @@ function NotificationCenter({ compact = false }: { compact?: boolean }) {
     })
 
     try {
+      invalidateNotificationCache()
       await updateNotificationState({
         notificationId: 'all',
         notificationIds: notifications.map((notification) => notification.id),
         state: 'read',
       })
-      await loadNotifications()
+      setState(await loadNotifications(true))
     } catch {
       setState({
         status: 'error',

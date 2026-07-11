@@ -1,4 +1,7 @@
-import type { EventRegistrationData } from '../../api'
+import type {
+  EventRegistrationData,
+  EventRegistrationMutationResult,
+} from '../../api'
 import type { ApiOptions } from '../../apiCore'
 
 export interface RegistrationRepository {
@@ -17,5 +20,5 @@ export interface RegistrationRepository {
   manage(
     params: Record<string, string>,
     options?: ApiOptions,
-  ): Promise<EventRegistrationData>
+  ): Promise<EventRegistrationMutationResult>
 }

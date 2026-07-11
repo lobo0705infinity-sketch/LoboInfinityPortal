@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import Loading from '../components/Loading'
+import { useSearchParams } from 'react-router-dom'
 import PlayerCard from '../components/PlayerCard'
+import Skeleton from '../components/Skeleton'
 import { apiClient } from '../services/api'
 import type { DivisionKey, DivisionStandings } from '../types/dashboard'
 import {
@@ -24,6 +25,8 @@ type PlayersState =
     }
 
 function Players() {
+  const [searchParams] = useSearchParams()
+  const eventId = searchParams.get('eventId') || ''
   const [activeFilter, setActiveFilter] = useState<PlayerFilter>('all')
   const [playersState, setPlayersState] = useState<PlayersState>({
     status: 'loading',
@@ -34,6 +37,7 @@ function Players() {
 
     apiClient
       .getPlayers({
+        eventId,
         signal: controller.signal,
       })
       .then((divisions) => {
@@ -59,7 +63,7 @@ function Players() {
     return () => {
       controller.abort()
     }
-  }, [])
+  }, [eventId])
 
   const players = useMemo(() => {
     if (playersState.status !== 'success') {
@@ -95,9 +99,22 @@ function Players() {
   if (playersState.status === 'loading') {
     return (
       <main className="portal-shell">
-        <PageHeader />
-        <section className="dashboard-state" aria-label="Players loading">
-          <Loading />
+        <PageHeader eventScoped={Boolean(eventId)} />
+        <section className="division-tabs" aria-label="Player filters loading">
+          <button className="division-tab active" disabled type="button">
+            All Players
+          </button>
+          <button className="division-tab" disabled type="button">
+            Alpha
+          </button>
+          <button className="division-tab" disabled type="button">
+            Beta
+          </button>
+        </section>
+        <section className="players-grid" aria-label="Players loading">
+          <Skeleton label="Player cards loading" rows={8} />
+          <Skeleton label="Player cards loading" rows={8} />
+          <Skeleton label="Player cards loading" rows={8} />
         </section>
       </main>
     )
@@ -106,7 +123,7 @@ function Players() {
   if (playersState.status === 'error') {
     return (
       <main className="portal-shell">
-        <PageHeader />
+        <PageHeader eventScoped={Boolean(eventId)} />
         <section className="dashboard-state" aria-label="Players error">
           <p role="alert">{playersState.error}</p>
         </section>
@@ -116,7 +133,7 @@ function Players() {
 
   return (
     <main className="portal-shell">
-      <PageHeader />
+      <PageHeader eventScoped={Boolean(eventId)} />
 
       <section className="division-tabs" aria-label="Player filters">
         <button
@@ -145,6 +162,7 @@ function Players() {
         {filteredPlayers.map((player) => (
           <PlayerCard
             divisionLabel={player.divisionLabel}
+            eventId={eventId}
             key={`${player.division}-${player.player}`}
             player={player}
           />
@@ -154,12 +172,12 @@ function Players() {
   )
 }
 
-function PageHeader() {
+function PageHeader({ eventScoped }: { eventScoped: boolean }) {
   return (
     <section className="page-header" aria-labelledby="players-title">
       <p className="eyebrow">Players</p>
       <h1 id="players-title">Players</h1>
-      <p>Browse league competitors</p>
+      <p>{eventScoped ? 'Browse event participants' : 'Browse league competitors'}</p>
     </section>
   )
 }

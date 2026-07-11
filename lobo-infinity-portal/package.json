@@ -13,6 +13,8 @@
     "analyze": "npm run build && node scripts/bundle-report.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
+    "responsive:check": "node scripts/responsive-regression.mjs",
+    "team-tournament:routing": "node scripts/team-tournament-routing-check.mjs",
     "rules:check": "node scripts/firestore-rules-check.mjs"
   },
   "dependencies": {
@@ -31,6 +33,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.3",
     "globals": "^17.7.0",
+    "playwright": "^1.61.1",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.62.0",
     "vite": "^8.1.1"

@@ -9,7 +9,22 @@ const HALL_OF_FAME_LIMIT = 10;
 const HALL_OF_FAME_SNAPSHOT_TTL_SECONDS = 900;
 const HALL_OF_FAME_SCHEMA_VERSION = "2.5.4.1";
 
-function getRecords() {
+function getRecords(e) {
+
+  const context =
+    buildEventAnalyticsContext(e);
+
+  if (!context.isLeague)
+    return jsonOutput({
+      success: true,
+      eventId: context.eventId,
+      event: context.event,
+      records:
+        buildEventAnalyticsRecords(
+          getEventAnalyticsResults(context.eventId),
+          getEventAnalyticsTeamStandings(context)
+        )
+    });
 
   const games =
     getAllRecentGameObjects();
@@ -24,7 +39,15 @@ function getRecords() {
 
 }
 
-function getHallOfFame() {
+function getHallOfFame(e) {
+
+  const context =
+    buildEventAnalyticsContext(e);
+
+  if (!context.isLeague)
+    return jsonOutput(
+      getEventAnalyticsHallOfFame(context)
+    );
 
   const snapshot =
     getHallOfFameSnapshot();
@@ -964,6 +987,12 @@ function getHallOfFameSnapshotCacheKey() {
 }
 
 function getPlayerComparison(e) {
+
+  return getEventAnalyticsComparison(e);
+
+}
+
+function getLeaguePlayerComparison(e) {
 
   const leftName =
     getComparisonParameter(

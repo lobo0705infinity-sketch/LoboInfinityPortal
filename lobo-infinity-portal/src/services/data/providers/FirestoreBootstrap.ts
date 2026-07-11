@@ -181,9 +181,20 @@ export async function runFirestoreBootstrap(): Promise<FirestoreBootstrapReport>
   try {
     const runtime = getFirebaseRuntime()
     const auth = getAuth(runtime.app)
+    console.debug('[FirestoreBootstrap] starting auth check', {
+      projectId: runtime.config.projectId,
+      authDomain: runtime.config.authDomain,
+      currentUserBefore: auth.currentUser?.uid ?? null,
+      currentUserEmailBefore: auth.currentUser?.email ?? null,
+    })
+
     const user = await getCurrentFirebaseUser(auth)
+    console.debug('[FirestoreBootstrap] getCurrentFirebaseUser returned', user)
 
     if (!user.signedIn) {
+      console.warn('[FirestoreBootstrap] no firebase current user found', {
+        currentUser: auth.currentUser,
+      })
       return buildReport({
         authentication: fail(
           'Firebase Authentication did not complete. Firestore Bootstrap waits for Firebase Auth before read/write probes.',

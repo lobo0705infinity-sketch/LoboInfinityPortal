@@ -1,8 +1,8 @@
 import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import BarChart from '../components/BarChart'
 import EntityPreviousNext from '../components/EntityPreviousNext'
-import Loading from '../components/Loading'
+import Skeleton from '../components/Skeleton'
 import {
   apiClient,
   type ArmyList,
@@ -30,6 +30,8 @@ type FactionProfileState =
 
 function FactionProfile() {
   const { name } = useParams<{ name: string }>()
+  const [searchParams] = useSearchParams()
+  const eventId = searchParams.get('eventId') || ''
   const decodedFactionName = decodeFactionName(name)
   const [profileState, setProfileState] = useState<FactionProfileState>({
     status: 'idle',
@@ -44,6 +46,7 @@ function FactionProfile() {
 
     apiClient
       .getFaction(decodedFactionName, {
+        eventId,
         signal: controller.signal,
       })
       .then((faction) => {
@@ -71,7 +74,7 @@ function FactionProfile() {
     return () => {
       controller.abort()
     }
-  }, [decodedFactionName])
+  }, [decodedFactionName, eventId])
 
   if (!decodedFactionName) {
     return (
@@ -92,8 +95,10 @@ function FactionProfile() {
     return (
       <main className="portal-shell">
         <FactionHeaderFallback factionName={decodedFactionName} />
-        <section className="dashboard-state" aria-label="Faction loading">
-          <Loading />
+        <section className="profile-card-grid" aria-label="Faction loading">
+          <Skeleton label="Faction metrics loading" rows={6} />
+          <Skeleton label="Faction chart loading" rows={6} />
+          <Skeleton label="Faction games loading" rows={6} />
         </section>
       </main>
     )
@@ -219,7 +224,7 @@ function FactionProfile() {
         newest={profileState.faction.armyLists.newest}
       />
 
-      <EntityPreviousNext current={profileState.faction.name} type="faction" />
+      <EntityPreviousNext current={profileState.faction.name} eventId={eventId} type="faction" />
     </main>
   )
 }

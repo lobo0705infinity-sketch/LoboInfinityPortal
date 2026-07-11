@@ -10,7 +10,7 @@ import {
 } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
-import Loading from '../components/Loading'
+import Skeleton from '../components/Skeleton'
 import {
   type SeasonAvailability,
   type SchedulingCenterData,
@@ -18,12 +18,11 @@ import {
   type SchedulingRequest,
 } from '../services/api'
 import { recordClientDiagnostic } from '../services/apiCore'
-import { eventRepository, schedulingRepository } from '../services/data'
+import { schedulingRepository } from '../services/data'
 import {
   formatPlayerName,
   formatSchedulingDateTime,
 } from '../services/formatting'
-import type { EventCatalog } from '../types/dashboard'
 
 type MatchFinderState =
   | {
@@ -164,43 +163,17 @@ function MatchFinder() {
   const auth = useAuth()
   const [searchParams] = useSearchParams()
   const preferredOpponent = searchParams.get('opponent') ?? ''
+  const requestedEventId = searchParams.get('eventId') || ''
   const debugEnabled =
     searchParams.get('debug') === 'matchfinder' &&
     auth.isAtLeastRole('Commissioner')
   const [state, setState] = useState<MatchFinderState>({ status: 'loading' })
-  const [eventCatalog, setEventCatalog] = useState<EventCatalog | null>(null)
-  const [activeEventId, setActiveEventId] = useState('event-current-league')
+  const activeEventId = requestedEventId || 'event-current-league'
   const [availabilityWorking, setAvailabilityWorking] = useState(false)
   const [requestWorking, setRequestWorking] = useState(false)
   const [responseWorking, setResponseWorking] = useState('')
   const [selectedOpponent, setSelectedOpponent] = useState(preferredOpponent)
   const requestFormRef = useRef<ScheduleRequestFormHandle>(null)
-
-  useEffect(() => {
-    if (auth.status !== 'ready') {
-      return
-    }
-
-    if (!auth.authenticated) {
-      return
-    }
-
-    const controller = new AbortController()
-
-    eventRepository
-      .getEvents({ signal: controller.signal })
-      .then((catalog) => {
-        setEventCatalog(catalog)
-        setActiveEventId(catalog.currentEvent.id || 'event-current-league')
-      })
-      .catch(() => {
-        setEventCatalog(null)
-      })
-
-    return () => {
-      controller.abort()
-    }
-  }, [auth.authenticated, auth.status])
 
   useEffect(() => {
     if (auth.status !== 'ready') {
@@ -383,8 +356,18 @@ function MatchFinder() {
     return (
       <main className="portal-shell">
         <MatchFinderHeader />
-        <section className="dashboard-state" aria-label="Match Finder loading">
-          <Loading />
+        <section className="scheduling-hero panel" aria-label="Match Finder loading">
+          <div>
+            <p className="eyebrow">Match Finder</p>
+            <h2>Loading player schedule</h2>
+            <p>Preparing availability, recommendations, and pending requests.</p>
+          </div>
+          <Skeleton label="Match Finder progress loading" rows={4} />
+        </section>
+        <section className="portal-grid">
+          <Skeleton label="Opponent recommendations loading" rows={7} />
+          <Skeleton label="Availability form loading" rows={7} />
+          <Skeleton label="Pending requests loading" rows={6} />
         </section>
       </main>
     )
@@ -404,11 +387,6 @@ function MatchFinder() {
   return (
     <main className="portal-shell">
       <MatchFinderHeader />
-      <EventScopeSelector
-        activeEventId={activeEventId}
-        catalog={eventCatalog}
-        onChange={setActiveEventId}
-      />
       <section className="scheduling-hero panel">
         <div>
           <p className="eyebrow">{state.data.currentSeason}</p>
@@ -578,45 +556,6 @@ function getAvailabilityMismatchDetail(
   return mismatches.length > 0
     ? `verification mismatch: ${mismatches.join('; ')}`
     : 'verification failed without a field mismatch'
-}
-
-function EventScopeSelector({
-  activeEventId,
-  catalog,
-  onChange,
-}: {
-  activeEventId: string
-  catalog: EventCatalog | null
-  onChange: (eventId: string) => void
-}) {
-  const events =
-    catalog?.events.length
-      ? catalog.events
-      : [
-          {
-            id: 'event-current-league',
-            name: 'Current League',
-          },
-        ]
-
-  return (
-    <section className="scheduling-event-filter" aria-label="Scheduling event">
-      <label htmlFor="match-finder-event-select">
-        <span>Event</span>
-        <select
-          id="match-finder-event-select"
-          onChange={(event) => onChange(event.target.value)}
-          value={activeEventId}
-        >
-          {events.map((event) => (
-            <option key={event.id} value={event.id}>
-              {event.name}
-            </option>
-          ))}
-        </select>
-      </label>
-    </section>
-  )
 }
 
 function isOutgoingRequestRefreshed(

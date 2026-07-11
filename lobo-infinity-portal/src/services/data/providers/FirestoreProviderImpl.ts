@@ -310,6 +310,7 @@ async function buildTeamTournamentData(
     status: event.status || event.lifecycleStage,
     teams,
     timeline: buildTournamentTimeline(event, registration, pairings, results),
+    resultStatuses: [],
     tournamentResults: results,
     upcomingPairings: pairings.filter((pairing) => pairing.status !== 'Completed'),
   }
@@ -810,6 +811,7 @@ function normalizeEvent(id: string, data: DocumentData): LeagueEvent {
     achievements: readString(data, 'achievements'),
     archive: readString(data, 'archive'),
     automation: readString(data, 'automation'),
+    capabilities: readStringArray(data, 'capabilities'),
     commissioners: readString(data, 'commissioners'),
     communityId: readString(data, 'communityId'),
     createdAt: readTimestamp(data, 'createdAt'),
@@ -935,6 +937,7 @@ function normalizeTournamentResult(id: string, data: DocumentData, eventId: stri
     createdAt: readTimestamp(data, 'createdAt'),
     eventId,
     firstTurn: readString(data, 'firstTurn'),
+    mission: readString(data, 'mission'),
     notes: readString(data, 'notes'),
     objectivePoints: readString(data, 'objectivePoints'),
     opponent: readString(data, 'opponent'),
@@ -944,11 +947,13 @@ function normalizeTournamentResult(id: string, data: DocumentData, eventId: stri
     roundId: readString(data, 'roundId'),
     status: readString(data, 'status') || 'Submitted',
     submittedBy: readString(data, 'submittedBy'),
+    table: readString(data, 'table'),
     teamA: readString(data, 'teamA'),
     teamB: readString(data, 'teamB'),
     tournamentPoints: readString(data, 'tournamentPoints'),
     updatedAt: readTimestamp(data, 'updatedAt'),
     victoryPoints: readString(data, 'victoryPoints'),
+    winner: readString(data, 'winner'),
     winningFaction: readString(data, 'winningFaction'),
   }
 }
@@ -1097,11 +1102,11 @@ function buildTournamentTimeline(
 function getEventNavigation(event: LeagueEvent) {
   if (event.type === 'Team Tournament') {
     return [
-      { href: `/team-tournament/${encodeURIComponent(event.id)}`, label: 'Overview' },
-      { href: '#registration', label: 'Registration' },
-      { href: '#teams', label: 'Teams' },
-      { href: '#pairings', label: 'Pairings' },
-      { href: '#standings', label: 'Standings' },
+      { href: `/event/${encodeURIComponent(event.id)}/tournament`, label: 'Overview' },
+      { href: `/event/${encodeURIComponent(event.id)}/tournament/registration`, label: 'Registration' },
+      { href: `/event/${encodeURIComponent(event.id)}/tournament/teams`, label: 'Teams' },
+      { href: `/event/${encodeURIComponent(event.id)}/tournament/pairings`, label: 'Pairings' },
+      { href: `/event/${encodeURIComponent(event.id)}/tournament/standings`, label: 'Standings' },
     ]
   }
 
@@ -1121,7 +1126,7 @@ function getEventQuickActions(
       action: 'register',
       enabled: registration.registrationOpen,
       href: event.type === 'Team Tournament'
-        ? `/team-tournament/${encodeURIComponent(event.id)}#team-tournament-register`
+        ? `/event/${encodeURIComponent(event.id)}/tournament/registration`
         : '#registration',
       label: registration.registrationOpen ? 'Register' : 'Registration Closed',
     },
@@ -1129,7 +1134,7 @@ function getEventQuickActions(
       action: 'standings',
       enabled: true,
       href: event.type === 'Team Tournament'
-        ? `/team-tournament/${encodeURIComponent(event.id)}#team-tournament-standings`
+        ? `/event/${encodeURIComponent(event.id)}/tournament/standings`
         : '/standings',
       label: 'Standings',
     },
@@ -1545,6 +1550,16 @@ function splitPlayers(players: string) {
 function readString(record: Record<string, unknown>, key: string) {
   const value = record[key]
   return typeof value === 'string' ? value : value == null ? '' : String(value)
+}
+
+function readStringArray(record: Record<string, unknown>, key: string) {
+  const value = record[key]
+
+  if (!Array.isArray(value)) {
+    return []
+  }
+
+  return value.map((item) => String(item ?? '')).filter(Boolean)
 }
 
 function readNumber(record: Record<string, unknown>, key: string) {

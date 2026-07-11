@@ -8,16 +8,24 @@
 const MISSION_PROFILE_RECENT_GAMES_LIMIT = 5;
 const MISSION_PROFILE_BEST_MOMENTS_LIMIT = 5;
 
-function getMissions() {
+function getMissions(e) {
+
+  const context =
+    buildEventAnalyticsContext(e);
 
   return jsonOutput({
     success: true,
-    missions: buildMissionApiSummaries()
+    eventId: context.eventId,
+    event: context.event,
+    missions: getEventAnalyticsMissions(context)
   });
 
 }
 
 function getMission(e) {
+
+  const context =
+    buildEventAnalyticsContext(e);
 
   const requestedName =
     getMissionRequestName(e);
@@ -27,6 +35,15 @@ function getMission(e) {
       success: false,
       error: "Missing mission name."
     });
+
+  const eventProfile =
+    getEventAnalyticsMissionProfile(
+      context,
+      requestedName
+    );
+
+  if (eventProfile)
+    return eventProfile;
 
   const summaries =
     buildMissionApiSummaries();

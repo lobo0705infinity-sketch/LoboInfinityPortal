@@ -25,24 +25,56 @@ function getSchedulingCenter(e) {
 
   const auth =
     getRequestUser(e);
+  const runtimeDiagnostics =
+    createSchedulingRuntimeDiagnostics(e);
 
-  if (!auth.authenticated || !auth.user.leaguePlayer)
+  if (!auth.authenticated)
+    logSchedulingRuntimeDiagnostics(
+      runtimeDiagnostics
+    );
+
+  if (!auth.authenticated)
     return jsonOutput({
       success: false,
-      error: "Authentication is required."
+      error: "Authentication is required.",
+      schedulingRuntimeDiagnostics: runtimeDiagnostics
     });
 
-  const eventId =
-    getSchedulingEventId(e);
+  const context =
+    buildEventSchedulingContext(e, auth);
+  annotateSchedulingRuntimeContext(
+    runtimeDiagnostics,
+    context
+  );
+
+  if (!context.canSchedule)
+    logSchedulingRuntimeDiagnostics(
+      runtimeDiagnostics
+    );
+
+  if (!context.canSchedule)
+    return jsonOutput({
+      success: false,
+      error: context.error || "Scheduling is not available for this event.",
+      schedulingRuntimeDiagnostics: runtimeDiagnostics
+    });
+
+  const scheduling =
+    buildEventSchedulingPayload(context);
+  annotateSchedulingRuntimePayload(
+    runtimeDiagnostics,
+    scheduling
+  );
+  logSchedulingRuntimeDiagnostics(
+    runtimeDiagnostics
+  );
 
   return jsonOutput({
     success: true,
     scheduling:
-      buildSchedulingPayload(
-        auth.user.leaguePlayer,
-        auth.user,
-        eventId
-      )
+      scheduling,
+    schedulingRuntimeDiagnostics:
+      runtimeDiagnostics
   });
 
 }
@@ -52,21 +84,23 @@ function getMatchFinder(e) {
   const auth =
     getRequestUser(e);
 
-  if (!auth.authenticated || !auth.user.leaguePlayer)
+  if (!auth.authenticated)
     return jsonOutput({
       success: false,
       error: "Authentication is required."
     });
 
-  const eventId =
-    getSchedulingEventId(e);
+  const context =
+    buildEventSchedulingContext(e, auth);
+
+  if (!context.canSchedule)
+    return jsonOutput({
+      success: false,
+      error: context.error || "Scheduling is not available for this event."
+    });
 
   const payload =
-    buildSchedulingPayload(
-      auth.user.leaguePlayer,
-      auth.user,
-      eventId
-    );
+    buildEventSchedulingPayload(context);
 
   return jsonOutput({
     success: true,
@@ -93,7 +127,7 @@ function updateSchedulingAvailability(e) {
     const auth =
       getRequestUser(e);
 
-    if (!auth.authenticated || !auth.user.leaguePlayer)
+    if (!auth.authenticated)
       return jsonOutput({
         success: false,
         code: "SCHEDULING_AVAILABILITY_AUTH_FAILED",
@@ -106,15 +140,33 @@ function updateSchedulingAvailability(e) {
         }
       });
 
+    const context =
+      buildEventSchedulingContext(e, auth);
+
+    if (!context.canSchedule)
+      return jsonOutput({
+        success: false,
+        code: "SCHEDULING_AVAILABILITY_AUTH_FAILED",
+        error: context.error || "Scheduling is not available for this event.",
+        diagnostics: {
+          stage: "participantResolution",
+          authenticated: Boolean(auth.authenticated),
+          eventId: context.eventId,
+          eventType: context.eventType,
+          participantKey: context.participantKey,
+          elapsedMs: new Date().getTime() - startedAt.getTime()
+        }
+      });
+
     const record =
-      buildSeasonAvailabilityRecordFromRequest(e, auth);
+      buildEventSchedulingAvailabilityRecordFromRequest(e, context);
 
     saveSeasonAvailabilityRecord(record);
 
     const saved =
       getSeasonAvailabilityForPlayer(
         getSeasonAvailabilityMap(),
-        auth.user.leaguePlayer
+        context.participantKey
       );
 
     const verified =
@@ -132,7 +184,7 @@ function updateSchedulingAvailability(e) {
         error: "Unable to verify saved availability.",
         diagnostics: {
           stage: "spreadsheetVerification",
-          player: auth.user.leaguePlayer,
+          player: context.participantKey,
           expected: {
             status: record.status,
             preferredDays: record.preferredDays,
@@ -157,14 +209,10 @@ function updateSchedulingAvailability(e) {
     return jsonOutput({
       success: true,
       scheduling:
-        buildSchedulingPayload(
-          auth.user.leaguePlayer,
-          auth.user,
-          getSchedulingEventId(e)
-        ),
+        buildEventSchedulingPayload(context),
       diagnostics: {
         stage: "complete",
-        player: auth.user.leaguePlayer,
+        player: context.participantKey,
         updatedAt: saved.updatedAt,
         elapsedMs: new Date().getTime() - startedAt.getTime()
       }
@@ -201,7 +249,7 @@ function createSchedulingRequest(e) {
   const auth =
     getRequestUser(e);
 
-  if (!auth.authenticated || !auth.user.leaguePlayer)
+  if (!auth.authenticated)
     return jsonOutput({
       success: false,
       code: "SCHEDULING_REQUEST_AUTH_FAILED",
@@ -210,6 +258,24 @@ function createSchedulingRequest(e) {
         stage: "leaguePlayerResolution",
         authenticated: Boolean(auth.authenticated),
         hasLeaguePlayer: Boolean(auth.user && auth.user.leaguePlayer),
+        elapsedMs: new Date().getTime() - startedAt.getTime()
+      }
+    });
+
+  const context =
+    buildEventSchedulingContext(e, auth);
+
+  if (!context.canSchedule)
+    return jsonOutput({
+      success: false,
+      code: "SCHEDULING_REQUEST_AUTH_FAILED",
+      error: context.error || "Scheduling is not available for this event.",
+      diagnostics: {
+        stage: "participantResolution",
+        authenticated: Boolean(auth.authenticated),
+        eventId: context.eventId,
+        eventType: context.eventType,
+        participantKey: context.participantKey,
         elapsedMs: new Date().getTime() - startedAt.getTime()
       }
     });
@@ -243,7 +309,7 @@ function createSchedulingRequest(e) {
       "schedule-" +
       Utilities.getUuid(),
     fromPlayer:
-      auth.user.leaguePlayer,
+      context.participantKey,
     toPlayer:
       opponent,
     proposedDate:
@@ -263,13 +329,13 @@ function createSchedulingRequest(e) {
     updatedAt:
       getSchedulingTimestamp(),
     eventId:
-      getSchedulingEventId(e)
+      context.eventId
   };
 
   saveSchedulingRequestRecord(record);
 
   const refreshedRequest =
-    getSchedulingRequestsForPlayer(auth.user.leaguePlayer, record.eventId)
+    getSchedulingRequestsForPlayer(context.participantKey, record.eventId)
       .some(function(request) {
         return (
           getSchedulingKey(request.id) === getSchedulingKey(record.id) &&
@@ -286,7 +352,7 @@ function createSchedulingRequest(e) {
       diagnostics: {
         stage: "spreadsheetVerification",
         requestId: record.id,
-        player: auth.user.leaguePlayer,
+        player: context.participantKey,
         opponent: opponent,
         elapsedMs: new Date().getTime() - startedAt.getTime()
       }
@@ -303,10 +369,19 @@ function respondSchedulingRequest(e) {
   const auth =
     getRequestUser(e);
 
-  if (!auth.authenticated || !auth.user.leaguePlayer)
+  if (!auth.authenticated)
     return jsonOutput({
       success: false,
       error: "Authentication is required."
+    });
+
+  const context =
+    buildEventSchedulingContext(e, auth);
+
+  if (!context.canSchedule)
+    return jsonOutput({
+      success: false,
+      error: context.error || "Scheduling is not available for this event."
     });
 
   const params =
@@ -327,7 +402,7 @@ function respondSchedulingRequest(e) {
   const result =
     updateSchedulingRequestStatus(
       requestId,
-      auth.user,
+      context,
       status,
       getSchedulingString(params.responseMessage)
     );
@@ -346,10 +421,19 @@ function getSchedulingCalendarExport(e) {
   const auth =
     getRequestUser(e);
 
-  if (!auth.authenticated || !auth.user.leaguePlayer)
+  if (!auth.authenticated)
     return jsonOutput({
       success: false,
       error: "Authentication is required."
+    });
+
+  const context =
+    buildEventSchedulingContext(e, auth);
+
+  if (!context.canSchedule)
+    return jsonOutput({
+      success: false,
+      error: context.error || "Scheduling is not available for this event."
     });
 
   const params =
@@ -505,6 +589,1040 @@ function buildSchedulingPayload(playerName, user, eventId) {
         recommendations
       )
   };
+
+}
+
+function buildEventSchedulingContext(e, auth) {
+
+  const eventId =
+    getSchedulingEventId(e);
+
+  const event =
+    getSchedulingEvent(eventId);
+
+  const eventType =
+    getSchedulingString(event && event.type) || "League";
+
+  const participantKey =
+    eventType === "League"
+      ? getSchedulingString(auth.user && auth.user.leaguePlayer)
+      : getEventParticipantKey(event, auth.user);
+
+  if (participantKey === "")
+    return {
+      auth: auth,
+      canSchedule: false,
+      error:
+        eventType === "League"
+          ? "League membership is required for this event."
+          : "Registration is required for this event.",
+      event: event,
+      eventId: eventId,
+      eventType: eventType,
+      participantKey: ""
+    };
+
+  if (eventType !== "League") {
+    const registration =
+      getEventRegistrationForPlayer(
+        eventId,
+        participantKey
+      );
+
+    if (!registration)
+      return {
+        auth: auth,
+        canSchedule: false,
+        error: "Register for this event before using Match Finder.",
+        event: event,
+        eventId: eventId,
+        eventType: eventType,
+        participantKey: participantKey
+      };
+  }
+
+  return {
+    auth: auth,
+    canSchedule: true,
+    event: event,
+    eventId: eventId,
+    eventType: eventType,
+    participantKey: participantKey
+  };
+
+}
+
+function buildEventSchedulingPayload(context) {
+
+  switch (context.eventType) {
+    case "Team Tournament":
+      return buildTeamTournamentSchedulingPayload(context);
+
+    case "League":
+      return buildSchedulingPayload(
+        context.participantKey,
+        context.auth.user,
+        context.eventId
+      );
+
+    default:
+      return buildGenericEventSchedulingPayload(context);
+  }
+
+}
+
+function createSchedulingRuntimeDiagnostics(e) {
+
+  const params =
+    getApiParameters(e);
+
+  return {
+    requestAction:
+      getSchedulingString(params.action),
+    browserEventId:
+      getSchedulingString(params.eventId),
+    requestParameterEventId:
+      getSchedulingString(params.eventId),
+    resolvedEventId:
+      "",
+    eventId:
+      "",
+    eventType:
+      "",
+    eventName:
+      "",
+    dispatcherBranch:
+      "",
+    seasonLabel:
+      "",
+    returnedEventName:
+      "",
+    recommendedOpponentSource:
+      "",
+    progressSource:
+      "",
+    capturedAt:
+      new Date().toISOString()
+  };
+
+}
+
+function annotateSchedulingRuntimeContext(diagnostics, context) {
+
+  if (!diagnostics || !context)
+    return diagnostics;
+
+  diagnostics.resolvedEventId =
+    getSchedulingString(context.eventId);
+  diagnostics.eventId =
+    getSchedulingString(context.event && context.event.id);
+  diagnostics.eventType =
+    getSchedulingString(context.event && context.event.type);
+  diagnostics.eventName =
+    getSchedulingString(context.event && context.event.name);
+  diagnostics.dispatcherBranch =
+    getSchedulingDispatcherBranch(context);
+
+  return diagnostics;
+
+}
+
+function annotateSchedulingRuntimePayload(diagnostics, scheduling) {
+
+  if (!diagnostics || !scheduling)
+    return diagnostics;
+
+  diagnostics.seasonLabel =
+    getSchedulingString(scheduling.currentSeason);
+  diagnostics.returnedEventName =
+    getSchedulingString(scheduling.event && scheduling.event.name);
+  diagnostics.recommendedOpponentSource =
+    getSchedulingRecommendationSource(scheduling);
+  diagnostics.progressSource =
+    getSchedulingProgressSource(scheduling);
+
+  return diagnostics;
+
+}
+
+function getSchedulingDispatcherBranch(context) {
+
+  switch (getSchedulingString(context && context.eventType)) {
+    case "League":
+      return "League";
+    case "Team Tournament":
+      return "Team Tournament";
+    default:
+      return "Generic Event";
+  }
+
+}
+
+function getSchedulingRecommendationSource(scheduling) {
+
+  const recommendation =
+    scheduling.recommendations &&
+    scheduling.recommendations.length
+      ? scheduling.recommendations[0]
+      : null;
+
+  if (!recommendation)
+    return "none";
+
+  return getSchedulingString(recommendation.reason) ||
+    getSchedulingString(recommendation.division) ||
+    getSchedulingString(recommendation.eventId) ||
+    "unknown";
+
+}
+
+function getSchedulingProgressSource(scheduling) {
+
+  const progress =
+    scheduling.progress || {};
+
+  return [
+    "completed=" + getSchedulingString(progress.gamesCompleted),
+    "remaining=" + getSchedulingString(progress.gamesRemaining),
+    "label=" + getSchedulingString(progress.label || progress.status)
+  ].join("; ");
+
+}
+
+function logSchedulingRuntimeDiagnostics(diagnostics) {
+
+  if (typeof console !== "undefined" && console.log)
+    console.log(
+      "LOBO SCHEDULING RUNTIME DIAGNOSTICS " +
+      JSON.stringify(diagnostics)
+    );
+
+}
+
+function getSchedulingEvent(eventId) {
+
+  if (typeof validateEventEngineRuntime === "function") {
+    const runtimeValidation =
+      validateEventEngineRuntime();
+
+    if (!runtimeValidation.initialized)
+      return null;
+  }
+
+  return (
+    typeof getEventByIdSnapshot === "function"
+      ? getEventByIdSnapshot(eventId)
+      : null
+  ) || (
+    typeof getCurrentLeagueEventSnapshot === "function"
+      ? getCurrentLeagueEventSnapshot()
+      : null
+  );
+
+}
+
+function buildEventSchedulingAvailabilityRecordFromRequest(e, context) {
+
+  const params =
+    getApiParameters(e);
+
+  return {
+    player: context.participantKey,
+    status:
+      getSchedulingString(params.status) ||
+      "Available",
+    preferredDays:
+      getSchedulingString(params.preferredDays),
+    preferredTimes:
+      getSchedulingString(params.preferredTimes),
+    notes:
+      getSchedulingString(params.notes),
+    updatedAt:
+      getSchedulingTimestamp(),
+    monday:
+      getSchedulingString(params.monday),
+    tuesday:
+      getSchedulingString(params.tuesday),
+    wednesday:
+      getSchedulingString(params.wednesday),
+    thursday:
+      getSchedulingString(params.thursday),
+    friday:
+      getSchedulingString(params.friday),
+    saturday:
+      getSchedulingString(params.saturday),
+    sunday:
+      getSchedulingString(params.sunday),
+    homeStore:
+      getSchedulingString(params.homeStore),
+    city:
+      getSchedulingString(params.city),
+    maxTravelDistance:
+      getSchedulingString(params.maxTravelDistance),
+    preferredLocations:
+      getSchedulingString(params.preferredLocations),
+    discordHandle:
+      getSchedulingString(params.discordHandle)
+  };
+
+}
+
+function buildTeamTournamentSchedulingPayload(context) {
+
+  const eventId =
+    context.eventId;
+
+  ensureTeamTournamentSheets();
+
+  const event =
+    context.event;
+
+  const registrations =
+    getEventRegistrationRows(eventId)
+      .filter(function(registration) {
+        return registration.status !== "Withdrawn";
+      });
+
+  const currentRegistration =
+    getEventRegistrationForPlayer(
+      eventId,
+      context.participantKey
+    );
+
+  const teams =
+    getTeamTournamentTeams(eventId)
+      .filter(function(team) {
+        return team.status !== "Deleted";
+      });
+
+  const pairings =
+    getTeamTournamentPairings(eventId);
+
+  const results =
+    getTeamTournamentResults(eventId);
+
+  const rounds =
+    getEventEngineSnapshot()
+      .rounds
+      .filter(function(round) {
+        return round.eventId === eventId;
+      });
+
+  const requests =
+    getSchedulingRequestsForPlayer(
+      context.participantKey,
+      eventId
+    );
+
+  const availabilityMap =
+    getSeasonAvailabilityMap();
+
+  const playerTeam =
+    findTeamTournamentSchedulingTeam(
+      teams,
+      currentRegistration,
+      context.participantKey
+    );
+
+  const playerResults =
+    results.filter(function(result) {
+      return (
+        result.status !== "Rejected" &&
+        (
+          getSchedulingKey(result.player) === getSchedulingKey(context.participantKey) ||
+          getSchedulingKey(result.opponent) === getSchedulingKey(context.participantKey)
+        )
+      );
+    });
+
+  const recommendations =
+    buildTeamTournamentSchedulingRecommendations(
+      context,
+      currentRegistration,
+      playerTeam,
+      teams,
+      pairings,
+      results,
+      availabilityMap,
+      requests
+    );
+
+  const opponents =
+    recommendations.map(function(recommendation) {
+      return {
+        player: recommendation.player,
+        displayName: recommendation.displayName,
+        rank: recommendation.rank,
+        games: recommendation.gamesCompleted,
+        status:
+          recommendation.gamesRemainingBetweenPlayers > 0
+            ? "Tournament Pairing"
+            : "Already Played",
+        gamesRemainingBetweenPlayers:
+          recommendation.gamesRemainingBetweenPlayers,
+        gameId: 0,
+        lastResult: "",
+        availability: recommendation.availability,
+        availabilitySummary: recommendation.availabilitySummary,
+        preferredStore: recommendation.preferredStore,
+        discordHandle: recommendation.discordHandle,
+        profileLink: recommendation.profileLink,
+        scheduleLink: recommendation.scheduleLink
+      };
+    });
+
+  const completedOpponents =
+    opponents.filter(function(opponent) {
+      return opponent.gamesRemainingBetweenPlayers === 0;
+    });
+
+  const remainingOpponents =
+    opponents.filter(function(opponent) {
+      return opponent.gamesRemainingBetweenPlayers > 0;
+    });
+
+  const gamesRequired =
+    Math.max(
+      1,
+      recommendations.length
+    );
+
+  const gamesCompleted =
+    playerResults.length;
+
+  return {
+    currentSeason:
+      getSchedulingString(event.name) ||
+      "Team Tournament",
+    eventId:
+      eventId,
+    event:
+      event,
+    player:
+      {
+        player: context.participantKey,
+        displayName:
+          currentRegistration
+            ? currentRegistration.displayName || currentRegistration.player
+            : context.auth.user.displayName || context.participantKey,
+        division:
+          playerTeam
+            ? playerTeam.teamName
+            : "Team Tournament",
+        rank:
+          0,
+        games:
+          gamesCompleted,
+        wins:
+          countTeamTournamentPlayerWins(context.participantKey, playerResults),
+        losses:
+          countTeamTournamentPlayerLosses(context.participantKey, playerResults),
+        tp:
+          0,
+        op:
+          0,
+        vp:
+          0
+      },
+    availability:
+      getSeasonAvailabilityForPlayer(
+        availabilityMap,
+        context.participantKey
+      ),
+    progress:
+      {
+        gamesRequired: gamesRequired,
+        gamesCompleted: gamesCompleted,
+        gamesRemaining: Math.max(0, gamesRequired - gamesCompleted),
+        opponentsCompleted: completedOpponents.length,
+        opponentsRemaining: remainingOpponents.length,
+        midseasonProgress:
+          getSeasonCommandPercent(
+            gamesCompleted,
+            Math.ceil(gamesRequired / 2)
+          ),
+        seasonProgress:
+          getSeasonCommandPercent(
+            gamesCompleted,
+            gamesRequired
+          ),
+        completionPercentage:
+          getSeasonCommandPercent(
+            gamesCompleted,
+            gamesRequired
+          )
+      },
+    opponents:
+      opponents,
+    completedOpponents:
+      completedOpponents,
+    remainingOpponents:
+      remainingOpponents,
+    recommendations:
+      recommendations,
+    requests:
+      buildSchedulingRequestGroups(
+        requests,
+        context.participantKey
+      ),
+    seasonProgress:
+      buildTeamTournamentSchedulingProgress(
+        registrations,
+        teams,
+        pairings,
+        results
+      ),
+    activity:
+      buildTeamTournamentSchedulingActivity(
+        eventId,
+        pairings,
+        results,
+        requests
+      ),
+    commissioner:
+      buildTeamTournamentSchedulingCommissioner(
+        registrations,
+        teams,
+        pairings,
+        results
+      ),
+    quickActions:
+      buildTeamTournamentSchedulingQuickActions(
+        eventId,
+        recommendations
+      ),
+    rounds:
+      rounds
+  };
+
+}
+
+function buildGenericEventSchedulingPayload(context) {
+
+  const availabilityMap =
+    getSeasonAvailabilityMap();
+
+  const requests =
+    getSchedulingRequestsForPlayer(
+      context.participantKey,
+      context.eventId
+    );
+
+  return {
+    currentSeason:
+      getSchedulingString(context.event && context.event.name) ||
+      getSchedulingString(context.eventType) ||
+      "Event",
+    eventId:
+      context.eventId,
+    event:
+      context.event,
+    player:
+      {
+        player: context.participantKey,
+        displayName:
+          context.auth.user.displayName || context.participantKey,
+        division:
+          context.eventType,
+        rank: 0,
+        games: 0,
+        wins: 0,
+        losses: 0,
+        tp: 0,
+        op: 0,
+        vp: 0
+      },
+    availability:
+      getSeasonAvailabilityForPlayer(
+        availabilityMap,
+        context.participantKey
+      ),
+    progress:
+      {
+        gamesRequired: 0,
+        gamesCompleted: 0,
+        gamesRemaining: 0,
+        opponentsCompleted: 0,
+        opponentsRemaining: 0,
+        midseasonProgress: 0,
+        seasonProgress: 0,
+        completionPercentage: 0
+      },
+    opponents: [],
+    completedOpponents: [],
+    remainingOpponents: [],
+    recommendations: [],
+    requests:
+      buildSchedulingRequestGroups(
+        requests,
+        context.participantKey
+      ),
+    seasonProgress:
+      {
+        player: {},
+        division: {
+          players: 0,
+          gamesCompleted: 0,
+          gamesRemaining: 0,
+          completionPercentage: 0
+        },
+        league: []
+      },
+    activity:
+      buildSchedulingActivity(
+        requests,
+        context.eventId
+      ),
+    commissioner:
+      {
+        division: context.eventType,
+        finished: 0,
+        behind: 0,
+        missingPairings: 0,
+        latePlayers: []
+      },
+    quickActions:
+      [
+        {
+          label: "Update Availability",
+          link:
+            "/match-finder?eventId=" +
+            encodeURIComponent(context.eventId) +
+            "#availability"
+        }
+      ]
+  };
+
+}
+
+function findTeamTournamentSchedulingTeam(teams, registration, participantKey) {
+
+  const key =
+    getSchedulingKey(participantKey);
+
+  const preferredTeam =
+    registration
+      ? getSchedulingString(registration.team || registration.preferredTeam)
+      : "";
+
+  if (preferredTeam !== "") {
+    const namedTeam =
+      teams.filter(function(team) {
+        return getSchedulingKey(team.teamName) === getSchedulingKey(preferredTeam);
+      })[0] || null;
+
+    if (namedTeam)
+      return namedTeam;
+  }
+
+  return teams.filter(function(team) {
+    return splitTeamTournamentPlayers(team.players)
+      .some(function(player) {
+        return getSchedulingKey(player) === key;
+      });
+  })[0] || null;
+
+}
+
+function buildTeamTournamentSchedulingRecommendations(
+  context,
+  currentRegistration,
+  playerTeam,
+  teams,
+  pairings,
+  results,
+  availabilityMap,
+  requests
+) {
+
+  if (!currentRegistration)
+    return [];
+
+  const pendingLookup = {};
+
+  requests.forEach(function(request) {
+    if (request.status !== "Pending" && request.status !== "Suggested")
+      return;
+
+    const other =
+      getSchedulingKey(request.fromPlayer) === getSchedulingKey(context.participantKey)
+        ? request.toPlayer
+        : request.fromPlayer;
+
+    pendingLookup[getSchedulingKey(other)] = true;
+  });
+
+  const opponentPlayers =
+    getTeamTournamentSchedulingOpponents(
+      context.participantKey,
+      playerTeam,
+      teams,
+      pairings,
+      results
+    );
+
+  return opponentPlayers
+    .map(function(opponent, index) {
+      const availability =
+        getSeasonAvailabilityForPlayer(
+          availabilityMap,
+          opponent.player
+        );
+
+      const overlap =
+        getAvailabilityOverlap(
+          availabilityMap,
+          context.participantKey,
+          opponent.player
+        );
+
+      const pending =
+        pendingLookup[getSchedulingKey(opponent.player)];
+
+      const score =
+        Math.max(
+          0,
+          Math.min(
+            100,
+            55 +
+              (opponent.scheduled ? 25 : 0) +
+              (overlap ? 15 : 0) -
+              (pending ? 25 : 0)
+          )
+        );
+
+      return {
+        player: opponent.player,
+        displayName: opponent.displayName || opponent.player,
+        division: opponent.teamName || "Team Tournament",
+        rank: index + 1,
+        gamesCompleted: opponent.completed ? 1 : 0,
+        gamesRemainingBetweenPlayers: opponent.completed ? 0 : 1,
+        availability: availability,
+        availabilitySummary: buildSeasonAvailabilitySummary(availability),
+        preferredStore: availability.homeStore,
+        discordHandle: availability.discordHandle,
+        profileLink:
+          "/players/" + encodeURIComponent(opponent.player),
+        scheduleLink:
+          "/match-finder?eventId=" +
+          encodeURIComponent(context.eventId) +
+          "&opponent=" +
+          encodeURIComponent(opponent.player),
+        score: score,
+        priority:
+          score >= 80
+            ? "High"
+            : score >= 55
+              ? "Recommended"
+              : "Normal",
+        reason:
+          buildTeamTournamentSchedulingReason(
+            opponent,
+            overlap,
+            pending
+          )
+      };
+    })
+    .sort(function(left, right) {
+      return right.score - left.score || left.rank - right.rank;
+    });
+
+}
+
+function getTeamTournamentSchedulingOpponents(
+  participantKey,
+  playerTeam,
+  teams,
+  pairings,
+  results
+) {
+
+  if (!playerTeam)
+    return [];
+
+  const currentTeamName =
+    getSchedulingString(playerTeam.teamName);
+
+  const relevantPairings =
+    pairings.filter(function(pairing) {
+      return (
+        pairing.teamA === currentTeamName ||
+        pairing.teamB === currentTeamName
+      );
+    });
+
+  const opponentTeamNames = {};
+
+  relevantPairings.forEach(function(pairing) {
+    const opponentTeam =
+      pairing.teamA === currentTeamName
+        ? pairing.teamB
+        : pairing.teamA;
+
+    if (opponentTeam)
+      opponentTeamNames[opponentTeam] = true;
+  });
+
+  const opponentTeams =
+    teams.filter(function(team) {
+      return opponentTeamNames[team.teamName] === true;
+    });
+
+  const completedLookup = {};
+
+  results
+    .filter(function(result) {
+      return result.status !== "Rejected";
+    })
+    .forEach(function(result) {
+      completedLookup[
+        getSchedulingKey(result.player) +
+        "|" +
+        getSchedulingKey(result.opponent)
+      ] = true;
+      completedLookup[
+        getSchedulingKey(result.opponent) +
+        "|" +
+        getSchedulingKey(result.player)
+      ] = true;
+    });
+
+  const opponents = [];
+  const seen = {};
+
+  opponentTeams.forEach(function(team) {
+    splitTeamTournamentPlayers(team.players)
+      .forEach(function(player) {
+        const key =
+          getSchedulingKey(player);
+
+        if (
+          key === "" ||
+          key === getSchedulingKey(participantKey) ||
+          seen[key]
+        )
+          return;
+
+        seen[key] = true;
+
+        opponents.push({
+          player: player,
+          displayName: player,
+          teamName: team.teamName,
+          scheduled: true,
+          completed:
+            completedLookup[
+              getSchedulingKey(participantKey) +
+              "|" +
+              key
+            ] === true
+        });
+      });
+  });
+
+  return opponents;
+
+}
+
+function buildTeamTournamentSchedulingReason(opponent, overlap, pending) {
+
+  if (pending)
+    return "A tournament scheduling request is already pending.";
+
+  if (overlap)
+    return "Tournament pairing with overlapping availability.";
+
+  if (opponent.scheduled)
+    return "Scheduled Team Tournament opponent.";
+
+  return "Eligible Team Tournament opponent.";
+
+}
+
+function countTeamTournamentPlayerWins(participantKey, results) {
+
+  return results.filter(function(result) {
+    return getSchedulingKey(result.winner) === getSchedulingKey(participantKey);
+  }).length;
+
+}
+
+function countTeamTournamentPlayerLosses(participantKey, results) {
+
+  return results.filter(function(result) {
+    return (
+      (
+        getSchedulingKey(result.player) === getSchedulingKey(participantKey) ||
+        getSchedulingKey(result.opponent) === getSchedulingKey(participantKey)
+      ) &&
+      getSchedulingKey(result.winner) !== "" &&
+      getSchedulingKey(result.winner) !== getSchedulingKey(participantKey)
+    );
+  }).length;
+
+}
+
+function buildTeamTournamentSchedulingProgress(registrations, teams, pairings, results) {
+
+  const activeResults =
+    results.filter(function(result) {
+      return result.status !== "Rejected";
+    });
+
+  const required =
+    Math.max(1, pairings.length * 5);
+
+  return {
+    player: {},
+    division: {
+      players: registrations.length,
+      gamesCompleted: activeResults.length,
+      gamesRemaining: Math.max(0, required - activeResults.length),
+      completionPercentage:
+        getSeasonCommandPercent(activeResults.length, required)
+    },
+    league: [
+      {
+        players: teams.length,
+        gamesCompleted: activeResults.length,
+        gamesRemaining: Math.max(0, required - activeResults.length),
+        completionPercentage:
+          getSeasonCommandPercent(activeResults.length, required)
+      }
+    ]
+  };
+
+}
+
+function buildTeamTournamentSchedulingActivity(eventId, pairings, results, requests) {
+
+  const requestActivity =
+    requests.map(function(request) {
+      return {
+        type: "Scheduling",
+        title: request.status + " tournament request",
+        body:
+          request.fromPlayer +
+          " -> " +
+          request.toPlayer +
+          " on " +
+          request.proposedDate +
+          " at " +
+          request.proposedTime,
+        timestamp: request.updatedAt || request.createdAt,
+        link:
+          "/match-finder?eventId=" +
+          encodeURIComponent(eventId)
+      };
+    });
+
+  const pairingActivity =
+    pairings.map(function(pairing) {
+      return {
+        type: "Pairing",
+        title: pairing.round || "Tournament pairing",
+        body: pairing.teamA + " vs " + pairing.teamB,
+        timestamp: pairing.updatedAt || pairing.createdAt,
+        link:
+          "/event/" +
+          encodeURIComponent(eventId) +
+          "/tournament#team-tournament-pairings"
+      };
+    });
+
+  const resultActivity =
+    results
+      .filter(function(result) {
+        return result.status !== "Rejected";
+      })
+      .map(function(result) {
+        return {
+          type: "Result",
+          title:
+            (result.winner || result.player) +
+            " submitted a tournament result",
+          body:
+            result.player +
+            " vs " +
+            result.opponent,
+          timestamp: result.updatedAt || result.createdAt,
+          link:
+            "/event/" +
+            encodeURIComponent(eventId) +
+            "/tournament#team-tournament-results"
+        };
+      });
+
+  return requestActivity
+    .concat(pairingActivity)
+    .concat(resultActivity)
+    .sort(function(left, right) {
+      return getSchedulingDateValue(right.timestamp) - getSchedulingDateValue(left.timestamp);
+    })
+    .slice(0, 10);
+
+}
+
+function buildTeamTournamentSchedulingCommissioner(registrations, teams, pairings, results) {
+
+  const activeResults =
+    results.filter(function(result) {
+      return result.status !== "Rejected";
+    });
+
+  return {
+    division: "Team Tournament",
+    finished: activeResults.length,
+    behind: Math.max(0, pairings.length * 5 - activeResults.length),
+    missingPairings:
+      pairings.length === 0
+        ? Math.max(1, teams.length > 1 ? 1 : 0)
+        : 0,
+    latePlayers: []
+  };
+
+}
+
+function buildTeamTournamentSchedulingQuickActions(eventId, recommendations) {
+
+  const actions = [
+    {
+      label: "Update Availability",
+      link:
+        "/match-finder?eventId=" +
+        encodeURIComponent(eventId) +
+        "#availability"
+    },
+    {
+      label: "Tournament Home",
+      link:
+        "/event/" +
+        encodeURIComponent(eventId) +
+        "/tournament"
+    },
+    {
+      label: "Submit Result",
+      link:
+        "/event/" +
+        encodeURIComponent(eventId) +
+        "/submit-result"
+    }
+  ];
+
+  if (recommendations[0])
+    actions.unshift({
+      label:
+        "Schedule " +
+        recommendations[0].displayName,
+      link:
+        "/match-finder?eventId=" +
+        encodeURIComponent(eventId) +
+        "&opponent=" +
+        encodeURIComponent(recommendations[0].player)
+    });
+
+  return actions;
 
 }
 
@@ -940,7 +2058,7 @@ function saveSchedulingRequestRecord(record) {
 
 }
 
-function updateSchedulingRequestStatus(requestId, user, status, responseMessage) {
+function updateSchedulingRequestStatus(requestId, context, status, responseMessage) {
 
   const sheet =
     ensureSchedulingRequestsSheet();
@@ -966,11 +2084,11 @@ function updateSchedulingRequestStatus(requestId, user, status, responseMessage)
       getSchedulingString(values[index][2]);
 
     const isParticipant =
-      getSchedulingKey(user.leaguePlayer) === getSchedulingKey(fromPlayer) ||
-      getSchedulingKey(user.leaguePlayer) === getSchedulingKey(toPlayer);
+      getSchedulingKey(context.participantKey) === getSchedulingKey(fromPlayer) ||
+      getSchedulingKey(context.participantKey) === getSchedulingKey(toPlayer);
 
     const canManage =
-      userHasPermission(user.role, "viewOperations");
+      userHasPermission(context.auth.user.role, "viewOperations");
 
     if (!isParticipant && !canManage)
       return {

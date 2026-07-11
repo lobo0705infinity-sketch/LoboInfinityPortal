@@ -1,5 +1,5 @@
-import { useEffect, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import type { ReactNode } from 'react'
 import { useAuth } from '../auth/AuthContext'
 import BarChart from '../components/BarChart'
 import Loading from '../components/Loading'
@@ -11,17 +11,14 @@ import {
   type CommissionerNewsItem,
   type CommunityCommandCenterData,
   type HallOfFameData,
-  type HomeData,
   type IntelligenceGame,
   type LeagueIntelligenceData,
   type LeagueRecordValue,
-  type PortalSettings,
   type RecentGame,
   type SchedulingRequest,
   type StandingsBattle,
 } from '../services/api'
-import { analyticsRepository, dashboardRepository } from '../services/data'
-import type { DashboardData, LeagueOverview } from '../types/dashboard'
+import type { LeagueOverview } from '../types/dashboard'
 import {
   getDivisionIdentity,
   getDivisionStyle,
@@ -31,31 +28,11 @@ import {
   formatPlayerName,
   formatSchedulingDateTime,
 } from '../services/formatting'
+import {
+  DashboardDataProvider,
+  useDashboardDataContext,
+} from '../contexts/DashboardDataContext'
 import '../App.css'
-
-type HomeState =
-  | {
-      status: 'loading'
-    }
-  | {
-      data: DashboardPageData
-      status: 'success'
-    }
-  | {
-      error: string
-      status: 'error'
-    }
-
-type DashboardPageData = {
-  armyListCommunity: ArmyListCommunitySummary
-  dashboard: DashboardData
-  hallOfFame: HallOfFameData | null
-  intelligence: LeagueIntelligenceData | null
-  news: CommissionerNewsItem[]
-  records: Record<string, LeagueRecordValue>
-  recentGames: RecentGame[]
-  settings: PortalSettings
-}
 
 type LeaguePersonalityItem = {
   body: string
@@ -73,92 +50,37 @@ type LeaguePersonality = {
   spotlight: LeaguePersonalityItem | null
 }
 
-function buildDashboardPageDataFromHome(home: HomeData): DashboardPageData {
-  return {
-    armyListCommunity: home.armyListCommunity,
-    dashboard: home.dashboard,
-    hallOfFame: home.hallOfFame,
-    intelligence: home.intelligence,
-    news: home.news,
-    records: home.records,
-    recentGames: home.recentGames,
-    settings: home.settings,
-  }
-}
-
-async function hydrateDashboardAnalytics(
-  initialData: DashboardPageData,
-  signal: AbortSignal,
-  setHomeState: (state: HomeState) => void,
-) {
-  const intelligence = await analyticsRepository.getAnalytics({ signal })
-
-  if (signal.aborted) {
-    return
-  }
-
-  setHomeState({
-    data: {
-      ...initialData,
-      intelligence,
-      records: intelligence.records,
-    },
-    status: 'success',
-  })
-}
-
 function Dashboard() {
   const auth = useAuth()
-  const [homeState, setHomeState] = useState<HomeState>({
-    status: 'loading',
-  })
   const lastUpdated = new Date().toLocaleTimeString([], {
     hour: 'numeric',
     minute: '2-digit',
   })
 
-  useEffect(() => {
-    const controller = new AbortController()
+  return (
+    <DashboardDataProvider
+      authenticated={auth.authenticated}
+      communityCacheKey={auth.user.email || auth.user.leaguePlayer || 'guest'}
+    >
+      <DashboardContent auth={auth} lastUpdated={lastUpdated} />
+    </DashboardDataProvider>
+  )
+}
 
-    async function loadCommandCenter() {
-      try {
-        const home = await dashboardRepository.getHome({
-          signal: controller.signal,
-        })
+function DashboardContent({
+  auth,
+  lastUpdated,
+}: {
+  auth: ReturnType<typeof useAuth>
+  lastUpdated: string
+}) {
+  const {
+    home,
+    homeStatus,
+    homeError,
+  } = useDashboardDataContext()
 
-        const initialData = buildDashboardPageDataFromHome(home)
-
-        setHomeState({
-          data: initialData,
-          status: 'success',
-        })
-
-        void hydrateDashboardAnalytics(
-          initialData,
-          controller.signal,
-          setHomeState,
-        ).catch(() => undefined)
-      } catch (error) {
-        if (!controller.signal.aborted) {
-          setHomeState({
-            error:
-              error instanceof Error
-                ? error.message
-                : 'Dashboard data could not be loaded.',
-            status: 'error',
-          })
-        }
-      }
-    }
-
-    void loadCommandCenter()
-
-    return () => {
-      controller.abort()
-    }
-  }, [])
-
-  if (homeState.status === 'loading') {
+  if (homeStatus === 'loading') {
     return (
       <main className="portal-shell">
         <DashboardHeader lastUpdated={lastUpdated} />
@@ -183,24 +105,25 @@ function Dashboard() {
     )
   }
 
-  if (homeState.status === 'error') {
+  if (homeStatus === 'error') {
     return (
       <main className="portal-shell">
         <DashboardHeader lastUpdated={lastUpdated} />
         <section className="dashboard-state" aria-label="Dashboard error">
-          <p role="alert">{homeState.error}</p>
+          <p role="alert">{homeError}</p>
         </section>
       </main>
     )
   }
 
-  const data = homeState.data.dashboard
-  const games = homeState.data.recentGames
-  const news = homeState.data.news
-  const records = homeState.data.records
-  const hallOfFame = homeState.data.hallOfFame
-  const intelligence = homeState.data.intelligence
-  const armyListCommunity = homeState.data.armyListCommunity
+  const homeData = home!
+  const data = homeData.dashboard
+  const games = homeData.recentGames
+  const news = homeData.news
+  const records = homeData.records
+  const hallOfFame = homeData.hallOfFame
+  const intelligence = homeData.intelligence
+  const armyListCommunity = homeData.armyListCommunity
   const featuredGame = games[0]
   const hottestPlayer = intelligence?.winStreaks[0]
   const strongestFaction =
@@ -378,10 +301,7 @@ function Dashboard() {
             biggestUpset={intelligence?.recentUpsets[0]}
             closestMatch={intelligence?.closestGames[0]}
           />
-          <RecentGames
-            games={games}
-            isLoading={false}
-          />
+          <RecentGames games={games} isLoading={false} />
         </div>
       </section>
 
@@ -393,298 +313,61 @@ function Dashboard() {
   )
 }
 
-type CommunityCommandState =
-  | {
-      status: 'idle'
-    }
-  | {
-      data: CommunityCommandCenterData
-      status: 'success'
-    }
-  | {
-      error: string
-      status: 'error'
-    }
-
 function CommunityCommandCenter() {
-  const [state, setState] = useState<CommunityCommandState>({ status: 'idle' })
+  const {
+    communityCommandCenter,
+    communityCommandCenterStatus,
+    communityCommandCenterError,
+  } = useDashboardDataContext()
 
-  useEffect(() => {
-    const controller = new AbortController()
-
-    dashboardRepository
-      .getCommunityCommandCenter({ signal: controller.signal })
-      .then((data) => {
-        setState({ data, status: 'success' })
-      })
-      .catch((error: unknown) => {
-        if (controller.signal.aborted) {
-          return
-        }
-
-        setState({
-          error:
-            error instanceof Error
-              ? error.message
-              : 'Community command center could not be loaded.',
-          status: 'error',
-        })
-      })
-
-    return () => {
-      controller.abort()
-    }
-  }, [])
-
-  if (state.status === 'idle') {
+  if (communityCommandCenterStatus === 'loading') {
     return (
-      <section className="community-command-center panel" aria-label="Community Command Center loading">
+      <section className="panel community-command-center-panel" aria-label="Community command center loading">
         <div className="panel-heading">
           <p className="eyebrow">Community Command Center</p>
-          <h2>What should I do today?</h2>
+          <h2>Loading community insights</h2>
         </div>
-        <Skeleton label="Community command center loading" rows={5} />
+        <div className="dashboard-state">
+          <Loading />
+        </div>
       </section>
     )
   }
 
-  if (state.status === 'error') {
+  if (communityCommandCenterStatus === 'error') {
     return (
-      <section className="community-command-center panel" aria-label="Community Command Center error">
+      <section className="panel community-command-center-panel" aria-label="Community command center error">
         <div className="panel-heading">
           <p className="eyebrow">Community Command Center</p>
-          <h2>What should I do today?</h2>
+          <h2>Community insights unavailable</h2>
         </div>
-        <p className="operations-empty" role="alert">
-          {state.error}
-        </p>
+        <div className="dashboard-state">
+          <p role="alert">{communityCommandCenterError}</p>
+        </div>
       </section>
     )
   }
 
-  const data = state.data
-  const suggested = data.opponentTracker.suggested
-  const personality = buildLeaguePersonality(data)
-  const priority = getPlayerHomePriority(data)
-  const nextMatch = data.matchRequests.upcoming[0]
-  const remainingOpponents = data.opponentTracker.remaining
-  const actionableNotifications = [
-    ...data.matchRequests.incoming.map((request) => ({
-      body: `${request.fromPlayer} challenged you for ${formatSchedulingDateTime(
-        request.proposedDate,
-        request.proposedTime,
-      )}.`,
-      id: request.id,
-      link: '/match-finder',
-      title: `${request.fromPlayer} is calling for battle`,
-      type: 'Scheduling',
-    })),
-    ...data.communityActivity.latestAchievements.slice(0, 2).map((item) => ({
-      body: item.body,
-      id: item.id,
-      link: item.link || '/notifications',
-      title: item.title,
-      type: item.type,
-    })),
-    ...data.communityActivity.news.slice(0, 2).map((item) => ({
-      body: item.body,
-      id: String(item.id),
-      link: item.link || '/news',
-      title: item.title,
-      type: 'Commissioner News',
-    })),
-  ].slice(0, 4)
+  if (!communityCommandCenter) {
+    return null
+  }
+
+  const personality = buildLeaguePersonality(communityCommandCenter)
 
   return (
-    <section className="player-home" aria-labelledby="player-home-title">
-      <section className="player-home-hero">
-        <div>
-          <p className="eyebrow">Player Home</p>
-          <h1 id="player-home-title">Welcome back, {data.welcome.displayName}</h1>
-          <p>{personality.heroMessage}</p>
-        </div>
-        <dl className="player-home-hero-stats">
-          <div>
-            <dt>Record</dt>
-            <dd>{data.welcome.currentRecord || '0-0'}</dd>
-          </div>
-          <div>
-            <dt>Rank</dt>
-            <dd>#{data.welcome.currentRank || '-'}</dd>
-          </div>
-          <div>
-            <dt>League</dt>
-            <dd>{data.welcome.leagueCompletion || data.opponentTracker.progress.completionPercentage}%</dd>
-          </div>
-        </dl>
-      </section>
-
+    <section className="community-command-center" aria-label="Community command center">
+      <div className="community-command-center-hero">
+        <p className="eyebrow">Community Command Center</p>
+        <h2>{personality.heroMessage}</h2>
+      </div>
       <LeaguePersonalityShowcase personality={personality} />
-
-      <section className="player-home-priority" aria-labelledby="next-priority-title">
-        <div>
-          <p className="eyebrow">Next Priority</p>
-          <h2 id="next-priority-title">{priority.title}</h2>
-          <p>{priority.reason}</p>
-          {suggested ? (
-            <small>
-              {suggested.reason}
-              {data.opponentTracker.remaining[0]?.availabilitySummary
-                ? ` - ${data.opponentTracker.remaining[0].availabilitySummary}`
-                : ''}
-            </small>
-          ) : null}
+      <section className="panel community-quick-actions" aria-labelledby="community-actions-title">
+        <div className="panel-heading">
+          <p className="eyebrow">Quick Actions</p>
+          <h2 id="community-actions-title">Take action</h2>
         </div>
-        <CommandActionLink className="player-home-primary-action" to={priority.link}>
-          {priority.action}
-        </CommandActionLink>
-      </section>
-
-      <section className="player-home-grid">
-        <section className="player-home-card player-home-upcoming" aria-labelledby="upcoming-title">
-          <div className="player-home-card-heading">
-            <p className="eyebrow">Upcoming</p>
-            <h2 id="upcoming-title">Matches & Requests</h2>
-          </div>
-          {nextMatch ? (
-            <article className="player-home-match">
-              <span>Accepted</span>
-              <strong>
-                {getOtherRequestPlayer(nextMatch, data.welcome.leaguePlayer)}
-              </strong>
-              <p>
-                {formatSchedulingDateTime(
-                  nextMatch.proposedDate,
-                  nextMatch.proposedTime,
-                )}
-                {getCountdownLabel(nextMatch.proposedDate)}
-              </p>
-            </article>
-          ) : null}
-          {data.matchRequests.incoming.map((request) => (
-            <CommandActionLink className="player-home-match action" key={request.id} to="/match-finder">
-              <span>Waiting for your response</span>
-              <strong>{request.fromPlayer}</strong>
-              <p>
-                {formatSchedulingDateTime(
-                  request.proposedDate,
-                  request.proposedTime,
-                )}
-              </p>
-            </CommandActionLink>
-          ))}
-          {data.matchRequests.outgoing.map((request) => (
-            <article className="player-home-match" key={request.id}>
-              <span>Pending</span>
-              <strong>{request.toPlayer}</strong>
-              <p>
-                {formatSchedulingDateTime(
-                  request.proposedDate,
-                  request.proposedTime,
-                )}
-              </p>
-            </article>
-          ))}
-          {!nextMatch &&
-          data.matchRequests.incoming.length === 0 &&
-          data.matchRequests.outgoing.length === 0 ? (
-            <CommandActionLink className="player-home-empty-action" to="/match-finder">
-              <strong>No battles scheduled</strong>
-              <span>Find your next opponent.</span>
-            </CommandActionLink>
-          ) : null}
-        </section>
-
-        <section className="player-home-card" aria-labelledby="progress-title">
-          <div className="player-home-card-heading">
-            <p className="eyebrow">Season Progress</p>
-            <h2 id="progress-title">{data.promotion.status}</h2>
-          </div>
-          <ProgressBar
-            label={`${data.opponentTracker.progress.gamesCompleted} / ${data.opponentTracker.progress.gamesRequired} Games`}
-            value={data.opponentTracker.progress.completionPercentage}
-          />
-          <dl className="player-home-mini-stats">
-            <div>
-              <dt>Remaining</dt>
-              <dd>{data.opponentTracker.progress.gamesRemaining}</dd>
-            </div>
-            <div>
-              <dt>Place</dt>
-              <dd>#{data.promotion.currentRank}</dd>
-            </div>
-            <div>
-              <dt>Magic #</dt>
-              <dd>{data.promotion.magicNumber}</dd>
-            </div>
-          </dl>
-        </section>
-      </section>
-
-      <section className="player-home-grid wide">
-        <section className="player-home-card" aria-labelledby="remaining-opponents-title">
-          <div className="player-home-card-heading">
-            <p className="eyebrow">Remaining Opponents</p>
-            <h2 id="remaining-opponents-title">Who Still Needs a Game?</h2>
-          </div>
-          <div className="player-home-opponents">
-            {remainingOpponents.slice(0, 5).map((opponent) => (
-              <CommandActionLink
-                className="player-home-opponent"
-                key={opponent.player}
-                to={opponent.scheduleLink || `/match-finder?opponent=${encodeURIComponent(opponent.player)}`}
-              >
-                <div>
-                  <strong>{formatPlayerName(opponent.player, opponent.displayName)}</strong>
-                  <span>
-                    {opponent.availabilitySummary || 'No availability added yet.'}
-                  </span>
-                </div>
-                <small>{opponent.suggestedPriority}</small>
-              </CommandActionLink>
-            ))}
-            {remainingOpponents.length === 0 ? (
-              <div className="player-home-empty-action">
-                <strong>Season complete</strong>
-                <span>Enjoy the rest of the season and cheer on the remaining players.</span>
-              </div>
-            ) : null}
-          </div>
-        </section>
-
-        <section className="player-home-card" aria-labelledby="notifications-title">
-          <div className="player-home-card-heading">
-            <p className="eyebrow">Actionable</p>
-            <h2 id="notifications-title">Notifications</h2>
-          </div>
-          <div className="player-home-feed compact">
-            {actionableNotifications.map((item) => (
-              <CommandActionLink className="player-home-feed-item" key={item.id} to={item.link}>
-                <span>{item.type}</span>
-                <strong>{item.title}</strong>
-                <p>{item.body}</p>
-              </CommandActionLink>
-            ))}
-            {actionableNotifications.length === 0 ? (
-              <CommandActionLink className="player-home-empty-action" to="/notifications">
-                <strong>No urgent league updates</strong>
-                <span>Open the full feed when you want the whole story.</span>
-              </CommandActionLink>
-            ) : null}
-          </div>
-          <CommandActionLink className="player-home-secondary-action" to="/notifications">
-            View All
-          </CommandActionLink>
-        </section>
-      </section>
-
-      <section className="player-home-card" aria-labelledby="quick-actions-title">
-        <div className="player-home-card-heading">
-          <p className="eyebrow">Fast Actions</p>
-          <h2 id="quick-actions-title">Quick Actions</h2>
-        </div>
-        <nav className="player-home-actions" aria-label="Player quick actions">
-          {buildPlayerHomeQuickActions(data).map((action) => (
+        <nav className="player-home-actions" aria-label="Community quick actions">
+          {buildPlayerHomeQuickActions(communityCommandCenter).map((action) => (
             <CommandActionLink key={action.label} to={action.link}>
               {action.label}
             </CommandActionLink>
@@ -696,10 +379,10 @@ function CommunityCommandCenter() {
         <section className="player-home-card" aria-labelledby="activity-title">
           <div className="player-home-card-heading">
             <p className="eyebrow">League Activity</p>
-            <h2 id="activity-title">What Changed?</h2>
+            <h2 id="activity-title">What changed?</h2>
           </div>
           <div className="player-home-feed">
-            {data.communityActivity.latestResults.slice(0, 3).map((game) => (
+            {communityCommandCenter.communityActivity.latestResults.slice(0, 3).map((game) => (
               <CommandActionLink className="player-home-feed-item" key={game.id} to={`/games/${game.id}`}>
                 <span>Latest Result</span>
                 <strong>
@@ -709,7 +392,7 @@ function CommunityCommandCenter() {
                 <p>{game.mission} - {formatObjectiveScore(game)}</p>
               </CommandActionLink>
             ))}
-            {data.communityActivity.news.slice(0, 2).map((item) => (
+            {communityCommandCenter.communityActivity.news.slice(0, 2).map((item) => (
               <CommandActionLink className="player-home-feed-item" key={item.id} to={item.link || '/news'}>
                 <span>Commissioner News</span>
                 <strong>{item.title}</strong>
@@ -722,10 +405,10 @@ function CommunityCommandCenter() {
         <section className="player-home-card" aria-labelledby="motivation-title">
           <div className="player-home-card-heading">
             <p className="eyebrow">Momentum</p>
-            <h2 id="motivation-title">Keep Moving</h2>
+            <h2 id="motivation-title">Keep moving</h2>
           </div>
           <div className="player-home-feed compact">
-            {buildMotivationMessages(data).map((message) => (
+            {buildMotivationMessages(communityCommandCenter).map((message) => (
               <p className="community-insight" key={message}>
                 {message}
               </p>
@@ -758,18 +441,6 @@ function CommandActionLink({
     <Link className={className} to={to}>
       {children}
     </Link>
-  )
-}
-
-function ProgressBar({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="season-progress-bar">
-      <div>
-        <span>{label}</span>
-        <strong>{value}%</strong>
-      </div>
-      <meter max={100} min={0} value={value} />
-    </div>
   )
 }
 
@@ -1093,80 +764,8 @@ function buildCommunitySpotlight(
   return null
 }
 
-function getPlayerHomePriority(data: CommunityCommandCenterData) {
-  const incoming = data.matchRequests.incoming[0]
-
-  if (incoming) {
-    return {
-      action: 'Respond Now',
-      link: '/match-finder',
-      reason: `${incoming.fromPlayer} is waiting for your response.`,
-      title: `Respond to ${incoming.fromPlayer}`,
-    }
-  }
-
-  const suggested = data.opponentTracker.suggested
-
-  if (suggested) {
-    return {
-      action: 'Schedule Match',
-      link: `/match-finder?opponent=${encodeURIComponent(suggested.player)}`,
-      reason: 'You still need this league game.',
-      title: `Play ${formatPlayerName(suggested.player, suggested.displayName)}`,
-    }
-  }
-
-  const action = data.today[0] || data.nextActions[0]
-
-  if (action) {
-    return {
-      action: action.label.toLowerCase().includes('availability')
-        ? 'Update Availability'
-        : 'Open',
-      link: action.link,
-      reason: 'This is the most useful league action available right now.',
-      title: action.label,
-    }
-  }
-
-  return {
-    action: 'View Standings',
-    link: '/standings',
-    reason: 'You are caught up for now.',
-    title: 'Check League Status',
-  }
-}
-
 function getOtherRequestPlayer(request: SchedulingRequest, playerName: string) {
   return request.fromPlayer === playerName ? request.toPlayer : request.fromPlayer
-}
-
-function getCountdownLabel(dateText: string) {
-  const date = new Date(dateText)
-
-  if (Number.isNaN(date.getTime())) {
-    return ''
-  }
-
-  const today = new Date()
-  const diffDays = Math.ceil(
-    (date.setHours(0, 0, 0, 0) - today.setHours(0, 0, 0, 0)) /
-      86_400_000,
-  )
-
-  if (diffDays === 0) {
-    return ' - Today'
-  }
-
-  if (diffDays === 1) {
-    return ' - Tomorrow'
-  }
-
-  if (diffDays > 1) {
-    return ` - In ${diffDays} days`
-  }
-
-  return ''
 }
 
 function buildPlayerHomeQuickActions(data: CommunityCommandCenterData) {

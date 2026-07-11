@@ -5,6 +5,140 @@
  * Public API routing and JSON response formatting.
  *******************************************************/
 
+var API_PIPELINE_CONTEXT = null;
+
+function createApiPipelineContext(action) {
+  return {
+    requestId:
+      "api-" + Math.random().toString(36).slice(2),
+    action: action,
+    startTime: Date.now(),
+    stageStarts: {},
+    stages: {},
+    logs: []
+  };
+}
+
+function startApiPipelineStage(stageName) {
+  if (!API_PIPELINE_CONTEXT)
+    return Date.now();
+
+  const start =
+    Date.now();
+
+  API_PIPELINE_CONTEXT.stageStarts[stageName] =
+    start;
+
+  return start;
+}
+
+function endApiPipelineStage(stageName, startTime, details) {
+  if (!API_PIPELINE_CONTEXT)
+    return;
+
+  API_PIPELINE_CONTEXT.stages[stageName] = {
+    stage: stageName,
+    startTime: startTime,
+    endTime: Date.now(),
+    durationMs: Date.now() - startTime,
+    details: details || {}
+  };
+}
+
+function recordApiPipelineSubStage(stageName, startTime, details) {
+  if (!API_PIPELINE_CONTEXT)
+    return;
+
+  if (!API_PIPELINE_CONTEXT.subStages)
+    API_PIPELINE_CONTEXT.subStages = [];
+
+  API_PIPELINE_CONTEXT.subStages.push({
+    stage: stageName,
+    startTime: startTime,
+    endTime: Date.now(),
+    durationMs: Date.now() - startTime,
+    details: details || {}
+  });
+}
+
+function recordApiPipelineStage(stageName, durationMs, startTime, endTime, details) {
+  if (!API_PIPELINE_CONTEXT)
+    return;
+
+  API_PIPELINE_CONTEXT.stages[stageName] = {
+    stage: stageName,
+    startTime: startTime,
+    endTime: endTime,
+    durationMs: durationMs,
+    details: details || {}
+  };
+}
+
+function getApiPipelineDiagnostics() {
+  if (!API_PIPELINE_CONTEXT)
+    return {};
+
+  return {
+    requestId: API_PIPELINE_CONTEXT.requestId,
+    action: API_PIPELINE_CONTEXT.action,
+    startTime: API_PIPELINE_CONTEXT.startTime,
+    stages: API_PIPELINE_CONTEXT.stages,
+    subStages: API_PIPELINE_CONTEXT.subStages || []
+  };
+}
+
+function finalizeApiPipelineEndpointExecution() {
+  if (!API_PIPELINE_CONTEXT)
+    return;
+
+  if (API_PIPELINE_CONTEXT.stages.endpointExecution)
+    return;
+
+  const startTime =
+    API_PIPELINE_CONTEXT.stageStarts.endpointExecution;
+
+  if (!startTime)
+    return;
+
+  endApiPipelineStage(
+    "endpointExecution",
+    startTime,
+    {}
+  );
+}
+
+function logApiPipelineTiming() {
+  if (!API_PIPELINE_CONTEXT)
+    return;
+
+  const stages = API_PIPELINE_CONTEXT.stages;
+  const values = [
+    "StageTime",
+    "Request received",
+    stages.requestReceived ? stages.requestReceived.durationMs + " ms" : "0 ms",
+    "Auth validation",
+    stages.authValidation ? stages.authValidation.durationMs + " ms" : "0 ms",
+    "Session lookup",
+    stages.sessionLookup ? stages.sessionLookup.durationMs + " ms" : "0 ms",
+    "Spreadsheet open",
+    stages.spreadsheetOpen ? stages.spreadsheetOpen.durationMs + " ms" : "0 ms",
+    "Sheet lookup",
+    stages.usersSheetLookup ? stages.usersSheetLookup.durationMs + " ms" : "0 ms",
+    "Cache lookup",
+    stages.cacheLookup ? stages.cacheLookup.durationMs + " ms" : "0 ms",
+    "Endpoint logic",
+    stages.endpointExecution ? stages.endpointExecution.durationMs + " ms" : "0 ms",
+    "JSON response",
+    stages.jsonSerialization ? stages.jsonSerialization.durationMs + " ms" : "0 ms"
+  ];
+
+  Logger.log(
+    values.join("") +
+      " action=" + API_PIPELINE_CONTEXT.action +
+      " requestId=" + API_PIPELINE_CONTEXT.requestId
+  );
+}
+
 function doGet(e) {
 
   const action =
@@ -12,7 +146,28 @@ function doGet(e) {
       ? e.parameter.action
       : "";
 
-  switch (action) {
+  API_PIPELINE_CONTEXT =
+    createApiPipelineContext(action);
+
+  recordApiPipelineStage(
+    "requestReceived",
+    0,
+    API_PIPELINE_CONTEXT.startTime,
+    API_PIPELINE_CONTEXT.startTime,
+    {
+      action: action
+    }
+  );
+
+  return handleApiGet(e, action);
+}
+
+function handleApiGet(e, action) {
+  const endpointExecutionStart =
+    startApiPipelineStage("endpointExecution");
+
+  try {
+    switch (action) {
 
     case "leader":
       return getCachedApiResponse(e, action, function() {
@@ -31,7 +186,7 @@ function doGet(e) {
 
     case "players":
       return getCachedApiResponse(e, action, function() {
-        return getPlayers();
+        return getPlayers(e);
       });
 
     case "player":
@@ -51,7 +206,7 @@ function doGet(e) {
 
     case "factions":
       return getCachedApiResponse(e, action, function() {
-        return getFactions();
+        return getFactions(e);
       });
 
     case "faction":
@@ -61,7 +216,7 @@ function doGet(e) {
 
     case "missions":
       return getCachedApiResponse(e, action, function() {
-        return getMissions();
+        return getMissions(e);
       });
 
     case "mission":
@@ -71,7 +226,7 @@ function doGet(e) {
 
     case "intelligence":
       return getCachedApiResponse(e, action, function() {
-        return getIntelligence();
+        return getEventIntelligence(e);
       });
 
     case "news":
@@ -81,12 +236,12 @@ function doGet(e) {
 
     case "records":
       return getCachedApiResponse(e, action, function() {
-        return getRecords();
+        return getRecords(e);
       });
 
     case "hallOfFame":
       return getCachedApiResponse(e, action, function() {
-        return getHallOfFame();
+        return getHallOfFame(e);
       });
 
     case "comparison":
@@ -99,7 +254,7 @@ function doGet(e) {
 
     case "timeline":
       return getCachedApiResponse(e, action, function() {
-        return getTimeline();
+        return getTimeline(e);
       });
 
     case "settings":
@@ -185,12 +340,12 @@ function doGet(e) {
 
     case "searchData":
       return getCachedApiResponse(e, action, function() {
-        return getSearchData();
+        return getSearchData(e);
       });
 
     case "searchIndex":
       return getCachedApiResponse(e, action, function() {
-        return getSearchData();
+        return getSearchData(e);
       });
 
     case "armyLists":
@@ -346,8 +501,14 @@ function doGet(e) {
         return submitArmyList(e);
       });
 
+    case "submitLeagueResult":
+      return submitLeagueResult(e);
+
     case "updateProfile":
       return updateMyProfile(e);
+
+    case "heartbeat":
+      return updateHeartbeat(e);
 
     case "notificationState":
       return updateNotificationState(e);
@@ -584,8 +745,15 @@ function doGet(e) {
         error: "Unknown API action."
       });
 
+    }
   }
-
+  finally {
+    endApiPipelineStage(
+      "endpointExecution",
+      endpointExecutionStart,
+      {}
+    );
+  }
 }
 
 function doPost(e) {
@@ -595,7 +763,28 @@ function doPost(e) {
       ? e.parameter.action
       : "";
 
-  switch (action) {
+  API_PIPELINE_CONTEXT =
+    createApiPipelineContext(action);
+
+  recordApiPipelineStage(
+    "requestReceived",
+    0,
+    API_PIPELINE_CONTEXT.startTime,
+    API_PIPELINE_CONTEXT.startTime,
+    {
+      action: action
+    }
+  );
+
+  return handleApiPost(e, action);
+}
+
+function handleApiPost(e, action) {
+  const endpointExecutionStart =
+    startApiPipelineStage("endpointExecution");
+
+  try {
+    switch (action) {
 
     case "session":
       return getAuthSession(e);
@@ -605,6 +794,9 @@ function doPost(e) {
         return submitArmyList(e);
       });
 
+    case "submitLeagueResult":
+      return submitLeagueResult(e);
+
     case "voteArmyList":
       return requireApiPermission(e, "vote", function() {
         return voteArmyList(e);
@@ -612,6 +804,9 @@ function doPost(e) {
 
     case "updateProfile":
       return updateMyProfile(e);
+
+    case "heartbeat":
+      return updateHeartbeat(e);
 
     case "notificationState":
       return updateNotificationState(e);
@@ -878,14 +1073,70 @@ function doPost(e) {
     default:
       return doGet(e);
 
+    }
   }
-
+  finally {
+    endApiPipelineStage(
+      "endpointExecution",
+      endpointExecutionStart,
+      {}
+    );
+  }
 }
 
 function jsonOutput(data) {
 
-  return ContentService
-    .createTextOutput(JSON.stringify(data))
-    .setMimeType(ContentService.MimeType.JSON);
+  if (API_PIPELINE_CONTEXT) {
+    finalizeApiPipelineEndpointExecution();
+
+    if (data && typeof data === "object" && data !== null) {
+      data.pipelineDiagnostics = getApiPipelineDiagnostics();
+    }
+  }
+
+  const jsonSerializationStart =
+    API_PIPELINE_CONTEXT
+      ? startApiPipelineStage("jsonSerialization")
+      : 0;
+
+  const json =
+    JSON.stringify(data);
+
+  if (API_PIPELINE_CONTEXT) {
+    endApiPipelineStage(
+      "jsonSerialization",
+      jsonSerializationStart,
+      {
+        bytes: json.length
+      }
+    );
+
+    if (data && typeof data === "object" && data !== null) {
+      data.pipelineDiagnostics = getApiPipelineDiagnostics();
+    }
+  }
+
+  const finalJson =
+    JSON.stringify(data);
+
+  const output =
+    ContentService
+      .createTextOutput(finalJson)
+      .setMimeType(ContentService.MimeType.JSON);
+
+  if (API_PIPELINE_CONTEXT) {
+    recordApiPipelineStage(
+      "responseReturned",
+      Date.now() - API_PIPELINE_CONTEXT.startTime,
+      API_PIPELINE_CONTEXT.startTime,
+      Date.now(),
+      {}
+    );
+
+    logApiPipelineTiming();
+    API_PIPELINE_CONTEXT = null;
+  }
+
+  return output;
 
 }

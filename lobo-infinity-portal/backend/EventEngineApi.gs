@@ -16,6 +16,8 @@ const EVENT_ENGINE_DEFAULT_ROUND_ID = "round-current-league";
 const EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID = "event-august-2026-team-tournament";
 const EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_SEASON_ID = "season-august-2026-team-tournament";
 const EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ROUND_ID = "round-august-2026-team-tournament-1";
+const EVENT_ENGINE_SNAPSHOT_CACHE_KEY = "eventEngineSnapshot:v2";
+const EVENT_ENGINE_SNAPSHOT_CACHE_TTL_SECONDS = 21600;
 
 const EVENT_ENGINE_EVENT_HEADERS = [
   "ID",
@@ -224,7 +226,31 @@ function getEventRounds(e) {
 
 function getEventEngineSnapshot() {
 
-  return {
+  const timer =
+    startDashboardEndpointSubStage(
+      "dashboard.eventEngine.snapshot"
+    );
+
+  const cached =
+    readEventEngineSnapshotCache();
+
+  if (cached) {
+    endDashboardEndpointSubStage(
+      "dashboard.eventEngine.snapshot",
+      timer,
+      {
+        cache: "hit",
+        events: cached.events.length,
+        templates: cached.templates.length,
+        seasons: cached.seasons.length,
+        rounds: cached.rounds.length
+      }
+    );
+
+    return cached;
+  }
+
+  const snapshot = {
     events:
       getEventObjectsNoEnsure(),
     templates:
@@ -234,6 +260,92 @@ function getEventEngineSnapshot() {
     rounds:
       getEventRoundObjectsNoEnsure()
   };
+
+  endDashboardEndpointSubStage(
+    "dashboard.eventEngine.snapshot",
+    timer,
+    {
+      cache: "miss",
+      events: snapshot.events.length,
+      templates: snapshot.templates.length,
+      seasons: snapshot.seasons.length,
+      rounds: snapshot.rounds.length
+    }
+  );
+
+  writeEventEngineSnapshotCache(
+    snapshot
+  );
+
+  return snapshot;
+
+}
+
+function readEventEngineSnapshotCache() {
+
+  try {
+    const cached =
+      CacheService
+        .getScriptCache()
+        .get(EVENT_ENGINE_SNAPSHOT_CACHE_KEY);
+
+    if (!cached)
+      return null;
+
+    const snapshot =
+      JSON.parse(cached);
+
+    if (
+      !snapshot ||
+      !snapshot.events ||
+      !snapshot.templates ||
+      !snapshot.seasons ||
+      !snapshot.rounds
+    )
+      return null;
+
+    return snapshot;
+  }
+  catch (err) {
+    return null;
+  }
+
+}
+
+function writeEventEngineSnapshotCache(snapshot) {
+
+  try {
+    CacheService
+      .getScriptCache()
+      .put(
+        EVENT_ENGINE_SNAPSHOT_CACHE_KEY,
+        JSON.stringify(snapshot),
+        EVENT_ENGINE_SNAPSHOT_CACHE_TTL_SECONDS
+      );
+  }
+  catch (err) {
+    Logger.log(
+      "Event Engine snapshot cache write skipped: " + err
+    );
+  }
+
+}
+
+function invalidateEventEngineSnapshotCache() {
+
+  try {
+    CacheService
+      .getScriptCache()
+      .remove(EVENT_ENGINE_SNAPSHOT_CACHE_KEY);
+
+    if (typeof invalidateDashboardLeagueOverviewCache === "function")
+      invalidateDashboardLeagueOverviewCache();
+  }
+  catch (err) {
+    Logger.log(
+      "Event Engine snapshot cache invalidation skipped: " + err
+    );
+  }
 
 }
 
@@ -277,46 +389,214 @@ function ensureEventEngine() {
 
   const sheets = {
     events:
-      ensureEventEngineSheet(
-        CONFIG.SHEETS.EVENTS,
-        EVENT_ENGINE_EVENT_HEADERS
+      measureEventHomeOperationIfAvailable(
+        "eventHome.eventEngine.ensureSheet.events",
+        function() {
+          return ensureEventEngineSheet(
+            CONFIG.SHEETS.EVENTS,
+            EVENT_ENGINE_EVENT_HEADERS
+          );
+        },
+        {
+          sheet: CONFIG.SHEETS.EVENTS
+        }
       ),
     templates:
-      ensureEventEngineSheet(
-        CONFIG.SHEETS.EVENT_TEMPLATES,
-        EVENT_ENGINE_TEMPLATE_HEADERS
+      measureEventHomeOperationIfAvailable(
+        "eventHome.eventEngine.ensureSheet.templates",
+        function() {
+          return ensureEventEngineSheet(
+            CONFIG.SHEETS.EVENT_TEMPLATES,
+            EVENT_ENGINE_TEMPLATE_HEADERS
+          );
+        },
+        {
+          sheet: CONFIG.SHEETS.EVENT_TEMPLATES
+        }
       ),
     participants:
-      ensureEventEngineSheet(
-        CONFIG.SHEETS.EVENT_PARTICIPANTS,
-        EVENT_ENGINE_PARTICIPANT_HEADERS
+      measureEventHomeOperationIfAvailable(
+        "eventHome.eventEngine.ensureSheet.participants",
+        function() {
+          return ensureEventEngineSheet(
+            CONFIG.SHEETS.EVENT_PARTICIPANTS,
+            EVENT_ENGINE_PARTICIPANT_HEADERS
+          );
+        },
+        {
+          sheet: CONFIG.SHEETS.EVENT_PARTICIPANTS
+        }
       ),
     seasons:
-      ensureEventEngineSheet(
-        CONFIG.SHEETS.EVENT_SEASONS,
-        EVENT_ENGINE_SEASON_HEADERS
+      measureEventHomeOperationIfAvailable(
+        "eventHome.eventEngine.ensureSheet.seasons",
+        function() {
+          return ensureEventEngineSheet(
+            CONFIG.SHEETS.EVENT_SEASONS,
+            EVENT_ENGINE_SEASON_HEADERS
+          );
+        },
+        {
+          sheet: CONFIG.SHEETS.EVENT_SEASONS
+        }
       ),
     rounds:
-      ensureEventEngineSheet(
-        CONFIG.SHEETS.EVENT_ROUNDS,
-        EVENT_ENGINE_ROUND_HEADERS
+      measureEventHomeOperationIfAvailable(
+        "eventHome.eventEngine.ensureSheet.rounds",
+        function() {
+          return ensureEventEngineSheet(
+            CONFIG.SHEETS.EVENT_ROUNDS,
+            EVENT_ENGINE_ROUND_HEADERS
+          );
+        },
+        {
+          sheet: CONFIG.SHEETS.EVENT_ROUNDS
+        }
       )
   };
 
-  ensureDefaultEventTemplates(sheets.templates);
-  ensureDefaultCurrentLeagueEvent(sheets.events);
-  ensureDefaultTeamTournamentEvent(sheets.events);
-  ensureDefaultCurrentLeagueSeason(sheets.seasons);
-  ensureDefaultTeamTournamentSeason(sheets.seasons);
-  ensureDefaultCurrentLeagueRound(sheets.rounds);
-  ensureDefaultTeamTournamentRound(sheets.rounds);
-  ensureDefaultCurrentLeagueParticipants(sheets.participants);
+  measureEventHomeOperationIfAvailable(
+    "eventHome.eventEngine.ensureDefaults.templates",
+    function() {
+      ensureDefaultEventTemplates(sheets.templates);
+    },
+    {}
+  );
+  measureEventHomeOperationIfAvailable(
+    "eventHome.eventEngine.ensureDefaults.currentLeagueEvent",
+    function() {
+      ensureDefaultCurrentLeagueEvent(sheets.events);
+    },
+    {}
+  );
+  measureEventHomeOperationIfAvailable(
+    "eventHome.eventEngine.ensureDefaults.teamTournamentEvent",
+    function() {
+      ensureDefaultTeamTournamentEvent(sheets.events);
+    },
+    {}
+  );
+  measureEventHomeOperationIfAvailable(
+    "eventHome.eventEngine.ensureDefaults.currentLeagueSeason",
+    function() {
+      ensureDefaultCurrentLeagueSeason(sheets.seasons);
+    },
+    {}
+  );
+  measureEventHomeOperationIfAvailable(
+    "eventHome.eventEngine.ensureDefaults.teamTournamentSeason",
+    function() {
+      ensureDefaultTeamTournamentSeason(sheets.seasons);
+    },
+    {}
+  );
+  measureEventHomeOperationIfAvailable(
+    "eventHome.eventEngine.ensureDefaults.currentLeagueRound",
+    function() {
+      ensureDefaultCurrentLeagueRound(sheets.rounds);
+    },
+    {}
+  );
+  measureEventHomeOperationIfAvailable(
+    "eventHome.eventEngine.ensureDefaults.teamTournamentRound",
+    function() {
+      ensureDefaultTeamTournamentRound(sheets.rounds);
+    },
+    {}
+  );
+  measureEventHomeOperationIfAvailable(
+    "eventHome.eventEngine.ensureDefaults.currentLeagueParticipants",
+    function() {
+      ensureDefaultCurrentLeagueParticipants(sheets.participants);
+    },
+    {}
+  );
 
   return {
-    events: getEventObjects(),
-    templates: getEventTemplateObjects(),
-    seasons: getEventSeasonObjects(),
-    rounds: getEventRoundObjects()
+    events:
+      measureEventHomeOperationIfAvailable(
+        "eventHome.eventEngine.return.getEventObjects",
+        function() {
+          return getEventObjects();
+        },
+        {}
+      ),
+    templates:
+      measureEventHomeOperationIfAvailable(
+        "eventHome.eventEngine.return.getEventTemplateObjects",
+        function() {
+          return getEventTemplateObjects();
+        },
+        {}
+      ),
+    seasons:
+      measureEventHomeOperationIfAvailable(
+        "eventHome.eventEngine.return.getEventSeasonObjects",
+        function() {
+          return getEventSeasonObjects();
+        },
+        {}
+      ),
+    rounds:
+      measureEventHomeOperationIfAvailable(
+        "eventHome.eventEngine.return.getEventRoundObjects",
+        function() {
+          return getEventRoundObjects();
+        },
+        {}
+      )
+  };
+
+}
+
+function validateEventEngineRuntime() {
+
+  const requiredSheets = [
+    CONFIG.SHEETS.EVENTS,
+    CONFIG.SHEETS.EVENT_TEMPLATES,
+    CONFIG.SHEETS.EVENT_PARTICIPANTS,
+    CONFIG.SHEETS.EVENT_SEASONS,
+    CONFIG.SHEETS.EVENT_ROUNDS
+  ];
+
+  const spreadsheet =
+    SpreadsheetApp.getActive();
+
+  const missingSheets = [];
+
+  requiredSheets.forEach(function(sheetName) {
+    const sheet =
+      spreadsheet.getSheetByName(sheetName);
+
+    if (!sheet)
+      missingSheets.push(sheetName);
+  });
+
+  return {
+    initialized:
+      missingSheets.length === 0,
+    missingSheets: missingSheets
+  };
+
+}
+
+function getEventEngineRuntimeSheet(name) {
+
+  const spreadsheet =
+    SpreadsheetApp.getActive();
+
+  return spreadsheet.getSheetByName(name);
+
+}
+
+function buildEventEngineInitializationRequiredResponse(validation) {
+
+  return {
+    success: false,
+    error: "Event Engine requires initialization.",
+    message:
+      "The Event Engine foundation is missing required sheets or headers. Run Commissioner Event Repair, Event Upgrade, Event Migration, or an explicit bootstrap operation before loading Event pages.",
+    eventEngineRuntime: validation || {}
   };
 
 }
@@ -448,9 +728,7 @@ function resolveRoundId(value) {
 
 function getCurrentLeagueEvent() {
 
-  ensureEventEngine();
-
-  return getEventById(EVENT_ENGINE_DEFAULT_EVENT_ID);
+  return getCurrentLeagueEventSnapshot();
 
 }
 
@@ -484,7 +762,7 @@ function ensureDefaultEventTemplates(sheet) {
       "League channel",
       "League scoped",
       "Commissioner controlled",
-      "Commissioner, Assistant Commissioner, Player",
+      "Commissioner, Assistant Commissioner, Player; requiresLeagueMembership=true",
       "Season start, midseason, final week, awards",
       "Remaining games, deadline, promotion/relegation",
       getEventEngineTimestamp(),
@@ -505,7 +783,7 @@ function ensureDefaultEventTemplates(sheet) {
       "Event channel",
       "Event scoped",
       "Open registration",
-      "Organizer, Assistant Organizer, Player",
+      "Organizer, Assistant Organizer, Player; requiresLeagueMembership=configurable",
       "Registration, active, completed",
       "Registration and result notifications",
       getEventEngineTimestamp(),
@@ -526,7 +804,7 @@ function ensureDefaultEventTemplates(sheet) {
       "Tournament channel",
       "Tournament scoped",
       "Roster registration",
-      "Organizer, Assistant Organizer, Player",
+      "Organizer, Assistant Organizer, Player; requiresLeagueMembership=false",
       "Pairings and round results",
       "Round deadlines and results",
       getEventEngineTimestamp(),
@@ -547,7 +825,7 @@ function ensureDefaultEventTemplates(sheet) {
       "Campaign channel",
       "Campaign scoped",
       "Organizer controlled",
-      "Organizer, Assistant Organizer, Player",
+      "Organizer, Assistant Organizer, Player; requiresLeagueMembership=false",
       "Chapter updates and milestones",
       "Turn reminders and story updates",
       getEventEngineTimestamp(),
@@ -568,7 +846,7 @@ function ensureDefaultEventTemplates(sheet) {
       "Event channel",
       "Event scoped",
       "Open registration",
-      "Organizer, Assistant Organizer, Player",
+      "Organizer, Assistant Organizer, Player; requiresLeagueMembership=false",
       "Phase start and phase close",
       "Phase deadlines",
       getEventEngineTimestamp(),
@@ -589,7 +867,7 @@ function ensureDefaultEventTemplates(sheet) {
       "Community channel",
       "Participation scoped",
       "Open registration",
-      "Organizer, Player",
+      "Organizer, Player; requiresLeagueMembership=false",
       "Event announcement and recap",
       "Event reminders",
       getEventEngineTimestamp(),
@@ -749,78 +1027,122 @@ function getEventObjects() {
 
   return getEventEngineRows(sheet)
     .map(function(row) {
-      return {
-        id: row["ID"],
-        communityId: row["Community ID"],
-        seriesId: row["Series ID"],
-        templateId: row["Template ID"],
-        name: row["Name"],
-        description: row["Description"],
-        type: row["Type"],
-        lifecycleStage: row["Lifecycle Stage"],
-        status: row["Status"],
-        owner: row["Owner"],
-        commissioners: row["Commissioners"],
-        startDate: row["Start Date"],
-        endDate: row["End Date"],
-        registration: row["Registration"],
-        participants: row["Participants"],
-        rules: row["Rules"],
-        scoringModel: row["Scoring Model"],
-        standingsModel: row["Standings Model"],
-        automation: row["Automation"],
-        discord: row["Discord"],
-        achievements: row["Achievements"],
-        history: row["History"],
-        archive: row["Archive"],
-        createdAt: row["Created At"],
-        updatedAt: row["Updated At"]
-      };
+      return mapEventEngineEventRow(row);
     });
 
 }
 
 function getEventObjectsNoEnsure() {
 
-  return getEventEngineRowsNoEnsure(
+  const timer =
+    startDashboardEndpointSubStage(
+      "dashboard.eventEngine.objects.events"
+    );
+
+  const objects =
+    getEventEngineRowsNoEnsure(
     CONFIG.SHEETS.EVENTS
   ).map(function(row) {
     return mapEventEngineEventRow(row);
   });
 
+  endDashboardEndpointSubStage(
+    "dashboard.eventEngine.objects.events",
+    timer,
+    {
+      sheet: CONFIG.SHEETS.EVENTS,
+      rows: objects.length
+    }
+  );
+
+  return objects;
+
 }
 
 function getEventTemplateObjectsNoEnsure() {
 
-  return getEventEngineRowsNoEnsure(
+  const timer =
+    startDashboardEndpointSubStage(
+      "dashboard.eventEngine.objects.templates"
+    );
+
+  const objects =
+    getEventEngineRowsNoEnsure(
     CONFIG.SHEETS.EVENT_TEMPLATES
   ).map(function(row) {
     return mapEventEngineTemplateRow(row);
   });
 
+  endDashboardEndpointSubStage(
+    "dashboard.eventEngine.objects.templates",
+    timer,
+    {
+      sheet: CONFIG.SHEETS.EVENT_TEMPLATES,
+      rows: objects.length
+    }
+  );
+
+  return objects;
+
 }
 
 function getEventSeasonObjectsNoEnsure() {
 
-  return getEventEngineRowsNoEnsure(
+  const timer =
+    startDashboardEndpointSubStage(
+      "dashboard.eventEngine.objects.seasons"
+    );
+
+  const objects =
+    getEventEngineRowsNoEnsure(
     CONFIG.SHEETS.EVENT_SEASONS
   ).map(function(row) {
     return mapEventEngineSeasonRow(row);
   });
 
+  endDashboardEndpointSubStage(
+    "dashboard.eventEngine.objects.seasons",
+    timer,
+    {
+      sheet: CONFIG.SHEETS.EVENT_SEASONS,
+      rows: objects.length
+    }
+  );
+
+  return objects;
+
 }
 
 function getEventRoundObjectsNoEnsure() {
 
-  return getEventEngineRowsNoEnsure(
+  const timer =
+    startDashboardEndpointSubStage(
+      "dashboard.eventEngine.objects.rounds"
+    );
+
+  const objects =
+    getEventEngineRowsNoEnsure(
     CONFIG.SHEETS.EVENT_ROUNDS
   ).map(function(row) {
     return mapEventEngineRoundRow(row);
   });
 
+  endDashboardEndpointSubStage(
+    "dashboard.eventEngine.objects.rounds",
+    timer,
+    {
+      sheet: CONFIG.SHEETS.EVENT_ROUNDS,
+      rows: objects.length
+    }
+  );
+
+  return objects;
+
 }
 
 function mapEventEngineEventRow(row) {
+  const permissions =
+    getEventEngineEventPermissions(row);
 
   return {
     id: row["ID"],
@@ -846,6 +1168,8 @@ function mapEventEngineEventRow(row) {
     achievements: row["Achievements"],
     history: row["History"],
     archive: row["Archive"],
+    permissions: permissions,
+    requiresLeagueMembership: permissions.requiresLeagueMembership,
     createdAt: row["Created At"],
     updatedAt: row["Updated At"]
   };
@@ -853,6 +1177,8 @@ function mapEventEngineEventRow(row) {
 }
 
 function mapEventEngineTemplateRow(row) {
+  const permissions =
+    getEventEngineTemplatePermissions(row);
 
   return {
     id: row["ID"],
@@ -870,10 +1196,61 @@ function mapEventEngineTemplateRow(row) {
     achievements: row["Achievements"],
     registration: row["Registration"],
     permissions: row["Permissions"],
+    permissionModel: permissions,
+    requiresLeagueMembership: permissions.requiresLeagueMembership,
     defaultTimeline: row["Default Timeline"],
     defaultNotifications: row["Default Notifications"],
     createdAt: row["Created At"],
     updatedAt: row["Updated At"]
+  };
+
+}
+
+function getEventEngineEventPermissions(row) {
+
+  const text =
+    [
+      row["Permissions"],
+      row["Rules"],
+      row["Type"],
+      row["Template ID"]
+    ].join(" ");
+
+  return buildEventEnginePermissionModel(
+    row["Type"],
+    row["Template ID"],
+    text
+  );
+
+}
+
+function getEventEngineTemplatePermissions(row) {
+
+  return buildEventEnginePermissionModel(
+    row["Event Type"],
+    row["ID"],
+    row["Permissions"]
+  );
+
+}
+
+function buildEventEnginePermissionModel(type, templateId, text) {
+
+  const normalized =
+    getEventEngineString(text).toLowerCase();
+
+  let requiresLeagueMembership =
+    getEventEngineString(type).toLowerCase() === "league" ||
+    getEventEngineString(templateId).toLowerCase() === EVENT_ENGINE_DEFAULT_TEMPLATE_ID;
+
+  if (normalized.indexOf("requiresleaguemembership=false") !== -1)
+    requiresLeagueMembership = false;
+
+  if (normalized.indexOf("requiresleaguemembership=true") !== -1)
+    requiresLeagueMembership = true;
+
+  return {
+    requiresLeagueMembership: requiresLeagueMembership
   };
 
 }
@@ -927,27 +1304,7 @@ function getEventTemplateObjects() {
 
   return getEventEngineRows(sheet)
     .map(function(row) {
-      return {
-        id: row["ID"],
-        name: row["Name"],
-        description: row["Description"],
-        eventType: row["Event Type"],
-        version: row["Version"],
-        active: getEventEngineBoolean(row["Active"]),
-        rules: row["Rules"],
-        scoringModel: row["Scoring Model"],
-        standingsModel: row["Standings Model"],
-        roundModel: row["Round Model"],
-        automation: row["Automation"],
-        discord: row["Discord"],
-        achievements: row["Achievements"],
-        registration: row["Registration"],
-        permissions: row["Permissions"],
-        defaultTimeline: row["Default Timeline"],
-        defaultNotifications: row["Default Notifications"],
-        createdAt: row["Created At"],
-        updatedAt: row["Updated At"]
-      };
+      return mapEventEngineTemplateRow(row);
     });
 
 }
@@ -1142,14 +1499,38 @@ function buildEventMigrationRollback() {
 function ensureEventEngineSheet(name, headers) {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    measureEventHomeOperationIfAvailable(
+      "eventHome.eventEngine.ensureSheet.getActive",
+      function() {
+        return SpreadsheetApp.getActive();
+      },
+      {
+        sheet: name
+      }
+    );
 
   let sheet =
-    spreadsheet.getSheetByName(name);
+    measureEventHomeOperationIfAvailable(
+      "eventHome.eventEngine.ensureSheet.getSheetByName",
+      function() {
+        return spreadsheet.getSheetByName(name);
+      },
+      {
+        sheet: name
+      }
+    );
 
   if (!sheet)
     sheet =
-      spreadsheet.insertSheet(name);
+      measureEventHomeOperationIfAvailable(
+        "eventHome.eventEngine.ensureSheet.insertSheet",
+        function() {
+          return spreadsheet.insertSheet(name);
+        },
+        {
+          sheet: name
+        }
+      );
 
   const lastColumn =
     Math.max(sheet.getLastColumn(), headers.length);
@@ -1158,14 +1539,37 @@ function ensureEventEngineSheet(name, headers) {
     sheet.getRange(1, 1, 1, lastColumn);
 
   let currentHeaders =
-    headerRange
-      .getValues()[0]
-      .map(getEventEngineString);
+    measureEventHomeOperationIfAvailable(
+      "eventHome.sheetRead." + name + ".headerRange.getValues",
+      function() {
+        return headerRange
+          .getValues()[0]
+          .map(getEventEngineString);
+      },
+      {
+        sheet: name,
+        columns: lastColumn
+      }
+    );
 
   const occupiedHeaderCount =
-    currentHeaders.filter(function(header) {
-      return header !== "";
-    }).length;
+    measureEventHomeOperationIfAvailable(
+      "eventHome.loop." + name + ".occupiedHeaderCount",
+      function() {
+        return currentHeaders.filter(function(header) {
+          return measureEventHomeLoopIterationIfAvailable(
+            "eventHome.loop." + name + ".occupiedHeaderFilter",
+            function() {
+              return header !== "";
+            }
+          );
+        }).length;
+      },
+      {
+        sheet: name,
+        headers: currentHeaders.length
+      }
+    );
 
   if (
     occupiedHeaderCount === 0
@@ -1174,18 +1578,36 @@ function ensureEventEngineSheet(name, headers) {
       .getRange(1, 1, 1, headers.length)
       .setValues([headers]);
 
+    invalidateEventEngineSnapshotCache();
+
     return sheet;
   }
 
   const missingHeaders =
-    headers.filter(function(header) {
-      return currentHeaders.indexOf(header) === -1;
-    });
+    measureEventHomeOperationIfAvailable(
+      "eventHome.loop." + name + ".missingHeaders",
+      function() {
+        return headers.filter(function(header) {
+          return measureEventHomeLoopIterationIfAvailable(
+            "eventHome.loop." + name + ".missingHeaderFilter",
+            function() {
+              return currentHeaders.indexOf(header) === -1;
+            }
+          );
+        });
+      },
+      {
+        sheet: name,
+        requiredHeaders: headers.length
+      }
+    );
 
   if (missingHeaders.length > 0) {
     sheet
       .getRange(1, occupiedHeaderCount + 1, 1, missingHeaders.length)
       .setValues([missingHeaders]);
+
+    invalidateEventEngineSnapshotCache();
   }
 
   return sheet;
@@ -1201,21 +1623,51 @@ function upsertEventEngineRow(sheet, headers, keyHeader, keyValue, row) {
     return;
 
   const values =
-    sheet
-      .getDataRange()
-      .getValues();
+    measureEventHomeOperationIfAvailable(
+      "eventHome.sheetRead." + sheet.getName() + ".upsertRowScan.getDataRange.getValues",
+      function() {
+        return sheet
+          .getDataRange()
+          .getValues();
+      },
+      {
+        sheet: sheet.getName(),
+        keyHeader: keyHeader,
+        keyValue: keyValue
+      }
+    );
 
   let rowNumber = -1;
 
   for (let index = 1; index < values.length; index++) {
-    if (getEventEngineString(values[index][keyColumn]) === keyValue) {
+    const matches =
+      measureEventHomeLoopIterationIfAvailable(
+        "eventHome.loop." + sheet.getName() + ".upsertRowScan",
+        function() {
+          return getEventEngineString(values[index][keyColumn]) === keyValue;
+        }
+      );
+
+    if (matches) {
       rowNumber = index + 1;
       break;
     }
   }
 
-  if (rowNumber === -1)
-    sheet.appendRow(row);
+  if (rowNumber === -1) {
+    measureEventHomeOperationIfAvailable(
+      "eventHome.sheetWrite." + sheet.getName() + ".appendRow",
+      function() {
+        sheet.appendRow(row);
+      },
+      {
+        sheet: sheet.getName(),
+        keyHeader: keyHeader,
+        keyValue: keyValue
+      }
+    );
+    invalidateEventEngineSnapshotCache();
+  }
 
 }
 
@@ -1234,17 +1686,42 @@ function upsertEventEngineCompositeRow(sheet, headers, keyHeaders, keyValues, ro
     return;
 
   const values =
-    sheet
-      .getDataRange()
-      .getValues();
+    measureEventHomeOperationIfAvailable(
+      "eventHome.sheetRead." + sheet.getName() + ".upsertCompositeScan.getDataRange.getValues",
+      function() {
+        return measureEventApprovalOperation(
+          "approval.sheetRead." + sheet.getName() + ".upsertCompositeScan.getDataRange.getValues",
+          function() {
+            return sheet
+              .getDataRange()
+              .getValues();
+          },
+          {
+            sheet: sheet.getName(),
+            keyHeaders: keyHeaders.join("|"),
+            keyValues: keyValues.join("|")
+          }
+        );
+      },
+      {
+        sheet: sheet.getName(),
+        keyHeaders: keyHeaders.join("|"),
+        keyValues: keyValues.join("|")
+      }
+    );
 
   let rowNumber = -1;
 
   for (let index = 1; index < values.length; index++) {
     const matches =
-      keyColumns.every(function(column, keyIndex) {
-        return getEventEngineString(values[index][column]) === keyValues[keyIndex];
-      });
+      measureEventHomeLoopIterationIfAvailable(
+        "eventHome.loop." + sheet.getName() + ".upsertCompositeScan",
+        function() {
+          return keyColumns.every(function(column, keyIndex) {
+            return getEventEngineString(values[index][column]) === keyValues[keyIndex];
+          });
+        }
+      );
 
     if (matches) {
       rowNumber = index + 1;
@@ -1252,17 +1729,91 @@ function upsertEventEngineCompositeRow(sheet, headers, keyHeaders, keyValues, ro
     }
   }
 
-  if (rowNumber === -1)
-    sheet.appendRow(row);
+  if (rowNumber === -1) {
+    measureEventHomeOperationIfAvailable(
+      "eventHome.sheetWrite." + sheet.getName() + ".appendCompositeRow",
+      function() {
+        sheet.appendRow(row);
+      },
+      {
+        sheet: sheet.getName(),
+        keyHeaders: keyHeaders.join("|"),
+        keyValues: keyValues.join("|")
+      }
+    );
+    invalidateEventEngineSnapshotCache();
+  }
 
 }
 
 function getEventEngineRows(sheet) {
 
+  let timer =
+    startDashboardEndpointSubStage(
+      "dashboard.eventEngine.getDataRange.getValues"
+    );
+
+  const eventHomeTimer =
+    typeof startEventHomeSubStage === "function"
+      ? startEventHomeSubStage(
+          "eventHome.sheetRead." + sheet.getName() + ".getDataRange.getValues"
+        )
+      : 0;
+
+  const approvalTimer =
+    typeof startEventApprovalSubStage === "function"
+      ? startEventApprovalSubStage(
+          "approval.sheetRead." + sheet.getName() + ".getDataRange.getValues"
+        )
+      : 0;
+
   const values =
     sheet
       .getDataRange()
       .getValues();
+
+  endDashboardEndpointSubStage(
+    "dashboard.eventEngine.getDataRange.getValues",
+    timer,
+    {
+      sheet: sheet.getName(),
+      rows: values.length
+    }
+  );
+
+  if (typeof endEventHomeSubStage === "function") {
+    if (typeof recordEventHomeForensicMetric === "function")
+      recordEventHomeForensicMetric(
+        "eventHome.sheetRead." + sheet.getName() + ".getDataRange.getValues",
+        eventHomeTimer ? Date.now() - eventHomeTimer : 0,
+        {
+          sheet: sheet.getName(),
+          rows: values.length,
+          columns: values[0] ? values[0].length : 0
+        }
+      );
+
+    endEventHomeSubStage(
+      "eventHome.sheetRead." + sheet.getName() + ".getDataRange.getValues",
+      eventHomeTimer,
+      {
+        sheet: sheet.getName(),
+        rows: values.length,
+        columns: values[0] ? values[0].length : 0
+      }
+    );
+  }
+
+  if (typeof endEventApprovalSubStage === "function")
+    endEventApprovalSubStage(
+      "approval.sheetRead." + sheet.getName() + ".getDataRange.getValues",
+      approvalTimer,
+      {
+        sheet: sheet.getName(),
+        rows: values.length,
+        columns: values[0] ? values[0].length : 0
+      }
+    );
 
   if (values.length <= 1)
     return [];
@@ -1270,30 +1821,133 @@ function getEventEngineRows(sheet) {
   const headers =
     values[0].map(getEventEngineString);
 
-  return values
+  timer =
+    startDashboardEndpointSubStage(
+      "dashboard.eventEngine.loop.rowsToRecords"
+    );
+
+  const eventHomeRowsTimer =
+    typeof startEventHomeSubStage === "function"
+      ? startEventHomeSubStage(
+          "eventHome.loop." + sheet.getName() + ".rowsToRecords"
+        )
+      : 0;
+
+  const approvalRowsTimer =
+    typeof startEventApprovalSubStage === "function"
+      ? startEventApprovalSubStage(
+          "approval.loop." + sheet.getName() + ".rowsToRecords"
+        )
+      : 0;
+
+  const records =
+    values
     .slice(1)
     .map(function(row) {
-      const record = {};
+      return typeof measureEventHomeLoopIteration === "function"
+        ? measureEventHomeLoopIteration(
+            "eventHome.loop." + sheet.getName() + ".rowToRecord",
+            function() {
+              const record = {};
 
-      headers.forEach(function(header, index) {
-        record[header] =
-          getEventEngineString(row[index]);
-      });
+              headers.forEach(function(header, index) {
+                record[header] =
+                  getEventEngineString(row[index]);
+              });
 
-      return record;
+              return record;
+            }
+          )
+        : (function() {
+            const record = {};
+
+            headers.forEach(function(header, index) {
+              record[header] =
+                getEventEngineString(row[index]);
+            });
+
+            return record;
+          })();
     })
     .filter(function(record) {
-      return record[headers[0]] !== "";
+      return typeof measureEventHomeLoopIteration === "function"
+        ? measureEventHomeLoopIteration(
+            "eventHome.loop." + sheet.getName() + ".filterNonEmpty",
+            function() {
+              return record[headers[0]] !== "";
+            }
+          )
+        : record[headers[0]] !== "";
     });
+
+  endDashboardEndpointSubStage(
+    "dashboard.eventEngine.loop.rowsToRecords",
+    timer,
+    {
+      sheet: sheet.getName(),
+      inputRows: values.length,
+      outputRows: records.length
+    }
+  );
+
+  if (typeof endEventHomeSubStage === "function") {
+    if (typeof recordEventHomeForensicMetric === "function")
+      recordEventHomeForensicMetric(
+        "eventHome.loop." + sheet.getName() + ".rowsToRecords",
+        eventHomeRowsTimer ? Date.now() - eventHomeRowsTimer : 0,
+        {
+          sheet: sheet.getName(),
+          inputRows: values.length,
+          outputRows: records.length
+        }
+      );
+
+    endEventHomeSubStage(
+      "eventHome.loop." + sheet.getName() + ".rowsToRecords",
+      eventHomeRowsTimer,
+      {
+        sheet: sheet.getName(),
+        inputRows: values.length,
+        outputRows: records.length
+      }
+    );
+  }
+
+  if (typeof endEventApprovalSubStage === "function")
+    endEventApprovalSubStage(
+      "approval.loop." + sheet.getName() + ".rowsToRecords",
+      approvalRowsTimer,
+      {
+        sheet: sheet.getName(),
+        inputRows: values.length,
+        outputRows: records.length
+      }
+    );
+
+  return records;
 
 }
 
 function getEventEngineRowsNoEnsure(sheetName) {
 
+  const timer =
+    startDashboardEndpointSubStage(
+      "dashboard.eventEngine.spreadsheet.getActiveAndSheetLookup"
+    );
+
   const sheet =
     SpreadsheetApp
       .getActive()
       .getSheetByName(sheetName);
+
+  endDashboardEndpointSubStage(
+    "dashboard.eventEngine.spreadsheet.getActiveAndSheetLookup",
+    timer,
+    {
+      sheet: sheetName,
+      found: !!sheet
+    }
+  );
 
   if (!sheet)
     return [];
@@ -1364,6 +2018,10 @@ function buildDefaultCurrentLeagueEventObject() {
     achievements: "Enabled",
     history: "Legacy League",
     archive: "",
+    permissions: {
+      requiresLeagueMembership: true
+    },
+    requiresLeagueMembership: true,
     createdAt: "",
     updatedAt: ""
   };
@@ -1425,24 +2083,36 @@ function getEventEngineDefaultSeries() {
 
 function getEventEngineSettings() {
 
-  try {
-    if (typeof getSettingsObject === "function")
-      return getSettingsObject();
+  return measureEventHomeOperationIfAvailable(
+    "eventHome.eventEngine.getSettings",
+    function() {
+      try {
+        if (typeof getSettingsObject === "function")
+          return getSettingsObject();
 
-    return JSON.parse(getSettings().getContent()).settings || {};
-  }
-  catch (err) {
-    return {};
-  }
+        return JSON.parse(getSettings().getContent()).settings || {};
+      }
+      catch (err) {
+        return {};
+      }
+    },
+    {}
+  );
 
 }
 
 function getEventEnginePlayerRows() {
 
-  if (typeof getOperationsLeagueIdentityRows === "function")
-    return getOperationsLeagueIdentityRows();
+  return measureEventHomeOperationIfAvailable(
+    "eventHome.eventEngine.getPlayerRows",
+    function() {
+      if (typeof getOperationsLeagueIdentityRows === "function")
+        return getOperationsLeagueIdentityRows();
 
-  return [];
+      return [];
+    },
+    {}
+  );
 
 }
 

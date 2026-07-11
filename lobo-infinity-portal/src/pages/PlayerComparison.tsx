@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import BarChart from '../components/BarChart'
-import Loading from '../components/Loading'
 import Skeleton from '../components/Skeleton'
 import {
   apiClient,
@@ -30,12 +29,14 @@ function PlayerComparison() {
   })
   const leftParam = searchParams.get('left') ?? ''
   const rightParam = searchParams.get('right') ?? ''
+  const eventId = searchParams.get('eventId') ?? ''
 
   useEffect(() => {
     const controller = new AbortController()
 
     async function loadComparison() {
       const divisions = await apiClient.getPlayers({
+        eventId,
         signal: controller.signal,
       })
       const players = flattenPlayers(divisions)
@@ -55,6 +56,7 @@ function PlayerComparison() {
       }
 
       const comparison = await apiClient.getPlayerComparison(left, right, {
+        eventId,
         signal: controller.signal,
       })
 
@@ -84,7 +86,7 @@ function PlayerComparison() {
     return () => {
       controller.abort()
     }
-  }, [leftParam, rightParam])
+  }, [eventId, leftParam, rightParam])
 
   if (comparisonState.status === 'idle') {
     return (
@@ -92,9 +94,7 @@ function PlayerComparison() {
         <PageHeader />
         <div className="portal-grid">
           <Skeleton label="Player comparison loading" rows={6} />
-          <section className="dashboard-state" aria-label="Comparison loading">
-            <Loading />
-          </section>
+          <Skeleton label="Comparison controls loading" rows={6} />
         </div>
       </main>
     )
@@ -122,6 +122,7 @@ function PlayerComparison() {
           label="Player One"
           onChange={(value) =>
             setSearchParams({
+              ...(eventId ? { eventId } : {}),
               left: value,
               right: rightParam || players[1]?.player || '',
             })
@@ -133,6 +134,7 @@ function PlayerComparison() {
           label="Player Two"
           onChange={(value) =>
             setSearchParams({
+              ...(eventId ? { eventId } : {}),
               left: leftParam || players[0]?.player || '',
               right: value,
             })

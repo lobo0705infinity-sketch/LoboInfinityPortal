@@ -52,6 +52,27 @@ export type ArmyListSubmission = {
   submitterEmail?: string
 }
 
+export type LeagueResultSubmission = {
+  eventId: string
+  round: string
+  division: string
+  mission: string
+  player: string
+  opponent: string
+  winner: string
+  playerTournamentPoints: string
+  opponentTournamentPoints: string
+  playerObjectivePoints: string
+  opponentObjectivePoints: string
+  playerVictoryPoints: string
+  opponentVictoryPoints: string
+  playerFaction: string
+  opponentFaction: string
+  firstTurn: string
+  bestMoment: string
+  notes: string
+}
+
 export type ArmyListCommunitySummary = {
   topContributors: Array<{ count: number; displayName?: string; name: string }>
   highestRatedDesigner: {
@@ -74,11 +95,15 @@ export type UserRole =
 export type PortalUser = {
   email: string
   displayName: string
+  googleAccount?: string
   leaguePlayer: string
   playerDisplayName: string
   leagueDivision: string
   role: UserRole
   enabled: boolean
+  portalPreferences?: Record<string, unknown>
+  commissionerPermissions?: string[]
+  eventRegistrations?: EventParticipant[]
   favoriteFaction: string
   avatarUrl: string
   created: string
@@ -91,6 +116,16 @@ export type PortalUser = {
   archivedAlerts: string[]
   lastPage: string
   searchHistory: string[]
+}
+
+export type EventParticipant = {
+  eventId: string
+  registration: Record<string, unknown>
+  team: string
+  armyLists: ArmyList[]
+  pairings: Record<string, unknown>[]
+  results: Record<string, unknown>[]
+  eventRole: string
 }
 
 export type PortalPermissions = Record<string, boolean>
@@ -940,6 +975,7 @@ export type TeamTournamentResult = {
   createdAt: string
   eventId: string
   firstTurn: string
+  mission: string
   notes: string
   objectivePoints: string
   opponent: string
@@ -949,12 +985,26 @@ export type TeamTournamentResult = {
   roundId: string
   status: string
   submittedBy: string
+  table: string
   teamA: string
   teamB: string
   tournamentPoints: string
   updatedAt: string
   victoryPoints: string
+  winner: string
   winningFaction: string
+}
+
+export type TeamTournamentResultStatus = {
+  opponent: string
+  player: string
+  resultId: string
+  round: string
+  roundId: string
+  status: string
+  table: string
+  teamA: string
+  teamB: string
 }
 
 export type TeamTournamentTimelineEntry = {
@@ -1129,9 +1179,24 @@ export type TeamTournamentData = {
   status: string
   teams: TeamTournamentTeam[]
   timeline: TeamTournamentTimelineEntry[]
+  resultStatuses: TeamTournamentResultStatus[]
   tournamentResults: TeamTournamentResult[]
   upcomingPairings: TeamTournamentPairing[]
 }
+
+export type TeamTournamentMutationResult =
+  | TeamTournamentData
+  | { data: TeamTournamentData; kind: 'full' }
+  | { eventId: string; kind: 'team'; team: TeamTournamentTeam }
+  | { eventId: string; kind: 'pairing'; pairing: TeamTournamentPairing }
+  | { eventId: string; kind: 'invitation'; invitation: TeamTournamentInvitation }
+  | { eventId: string; kind: 'result'; result: TeamTournamentResult }
+  | { eventId: string; kind: 'round'; lifecycleStage: string; status: string }
+
+export type EventRegistrationMutationResult =
+  | EventRegistrationData
+  | { data: EventRegistrationData; kind: 'full' }
+  | { eventId: string; kind: 'registrationStatus'; player: string; status: string }
 
 export type MatchFinderData = {
   availability: SeasonAvailability
@@ -1913,7 +1978,7 @@ export type ApiClient = {
   manageEventRegistration: (
     params: Record<string, string>,
     options?: ApiOptions,
-  ) => Promise<EventRegistrationData>
+  ) => Promise<EventRegistrationMutationResult>
   saveEventManagerEvent: (
     params: Record<string, string>,
     options?: ApiOptions,
@@ -1949,28 +2014,32 @@ export type ApiClient = {
   saveTeamTournamentTeam: (
     params: Record<string, string>,
     options?: ApiOptions,
-  ) => Promise<TeamTournamentData>
+  ) => Promise<TeamTournamentMutationResult>
   saveTeamTournamentPairing: (
     params: Record<string, string>,
     options?: ApiOptions,
-  ) => Promise<TeamTournamentData>
+  ) => Promise<TeamTournamentMutationResult>
   saveTeamTournamentInvitation: (
     params: Record<string, string>,
     options?: ApiOptions,
-  ) => Promise<TeamTournamentData>
+  ) => Promise<TeamTournamentMutationResult>
   saveTeamTournamentResult: (
     params: Record<string, string>,
     options?: ApiOptions,
-  ) => Promise<TeamTournamentData>
+  ) => Promise<TeamTournamentMutationResult>
   advanceTeamTournamentRound: (
     params: Record<string, string>,
     options?: ApiOptions,
-  ) => Promise<TeamTournamentData>
+  ) => Promise<TeamTournamentMutationResult>
   getCommissionerScheduling: (
     options?: ApiOptions,
   ) => Promise<CommissionerSchedulingData>
   submitArmyList: (
     submission: ArmyListSubmission,
+    options?: ApiOptions,
+  ) => Promise<void>
+  submitLeagueResult: (
+    submission: LeagueResultSubmission,
     options?: ApiOptions,
   ) => Promise<void>
   voteArmyList: (
@@ -2123,21 +2192,33 @@ export async function getAllStandings(
 export async function getPlayers(
   options: ApiOptions = {},
 ): Promise<DivisionStandings[]> {
-  const payload = await request('players', options)
+  const payload = await request(
+    'players',
+    options,
+    options.eventId ? { eventId: options.eventId } : {},
+  )
   return normalizePlayersPayload(payload)
 }
 
 export async function getSearchData(
   options: ApiOptions = {},
 ): Promise<SearchData> {
-  const payload = await request('searchData', options)
+  const payload = await request(
+    'searchData',
+    options,
+    options.eventId ? { eventId: options.eventId } : {},
+  )
   return normalizeSearchDataPayload(payload)
 }
 
 export async function getSearchIndex(
   options: ApiOptions = {},
 ): Promise<SearchData> {
-  const payload = await request('searchIndex', options)
+  const payload = await request(
+    'searchIndex',
+    options,
+    options.eventId ? { eventId: options.eventId } : {},
+  )
   return normalizeSearchDataPayload(payload)
 }
 
@@ -2145,9 +2226,14 @@ export async function getPlayer(
   playerName: string,
   options: ApiOptions = {},
 ): Promise<PlayerProfileData> {
-  const payload = await request('player', options, {
-    name: playerName,
-  })
+  const payload = await request(
+    'player',
+    options,
+    {
+      name: playerName,
+      ...(options.eventId ? { eventId: options.eventId } : {}),
+    },
+  )
 
   return normalizePlayerPayload(payload)
 }
@@ -2155,7 +2241,11 @@ export async function getPlayer(
 export async function getFactions(
   options: ApiOptions = {},
 ): Promise<FactionSummary[]> {
-  const payload = await request('factions', options)
+  const payload = await request(
+    'factions',
+    options,
+    options.eventId ? { eventId: options.eventId } : {},
+  )
   return normalizeFactionsPayload(payload)
 }
 
@@ -2163,9 +2253,14 @@ export async function getFaction(
   factionName: string,
   options: ApiOptions = {},
 ): Promise<FactionProfileData> {
-  const payload = await request('faction', options, {
-    name: factionName,
-  })
+  const payload = await request(
+    'faction',
+    options,
+    {
+      name: factionName,
+      ...(options.eventId ? { eventId: options.eventId } : {}),
+    },
+  )
 
   return normalizeFactionPayload(payload)
 }
@@ -2173,7 +2268,11 @@ export async function getFaction(
 export async function getMissions(
   options: ApiOptions = {},
 ): Promise<MissionSummary[]> {
-  const payload = await request('missions', options)
+  const payload = await request(
+    'missions',
+    options,
+    options.eventId ? { eventId: options.eventId } : {},
+  )
   return normalizeMissionsPayload(payload)
 }
 
@@ -2181,9 +2280,14 @@ export async function getMission(
   missionName: string,
   options: ApiOptions = {},
 ): Promise<MissionProfileData> {
-  const payload = await request('mission', options, {
-    name: missionName,
-  })
+  const payload = await request(
+    'mission',
+    options,
+    {
+      name: missionName,
+      ...(options.eventId ? { eventId: options.eventId } : {}),
+    },
+  )
 
   return normalizeMissionPayload(payload)
 }
@@ -2191,7 +2295,11 @@ export async function getMission(
 export async function getAnalytics(
   options: ApiOptions = {},
 ): Promise<LeagueIntelligenceData> {
-  const payload = await request('intelligence', options)
+  const payload = await request(
+    'intelligence',
+    options,
+    options.eventId ? { eventId: options.eventId } : {},
+  )
   return normalizeIntelligencePayload(payload)
 }
 
@@ -2212,21 +2320,33 @@ export async function getNotifications(
 export async function getTimeline(
   options: ApiOptions = {},
 ): Promise<LeagueTimelineItem[]> {
-  const payload = await request('timeline', options)
+  const payload = await request(
+    'timeline',
+    options,
+    options.eventId ? { eventId: options.eventId } : {},
+  )
   return normalizeTimelinePayload(payload)
 }
 
 export async function getRecords(
   options: ApiOptions = {},
 ): Promise<Record<string, LeagueRecordValue>> {
-  const payload = await request('records', options)
+  const payload = await request(
+    'records',
+    options,
+    options.eventId ? { eventId: options.eventId } : {},
+  )
   return normalizeRecordsPayload(payload)
 }
 
 export async function getHallOfFame(
   options: ApiOptions = {},
 ): Promise<HallOfFameData> {
-  const payload = await request('hallOfFame', options)
+  const payload = await request(
+    'hallOfFame',
+    options,
+    options.eventId ? { eventId: options.eventId } : {},
+  )
   return normalizeHallOfFamePayload(payload)
 }
 
@@ -2235,10 +2355,15 @@ export async function getPlayerComparison(
   right: string,
   options: ApiOptions = {},
 ): Promise<PlayerComparisonData> {
-  const payload = await request('comparison', options, {
-    left,
-    right,
-  })
+  const payload = await request(
+    'comparison',
+    options,
+    {
+      left,
+      right,
+      ...(options.eventId ? { eventId: options.eventId } : {}),
+    },
+  )
 
   return normalizePlayerComparisonPayload(payload)
 }
@@ -2399,9 +2524,9 @@ export async function withdrawEventRegistration(
 export async function manageEventRegistration(
   params: Record<string, string>,
   options: ApiOptions = {},
-): Promise<EventRegistrationData> {
+): Promise<EventRegistrationMutationResult> {
   const payload = await postRequest('manageEventRegistration', options, params)
-  return normalizeEventRegistrationResponse(payload)
+  return normalizeEventRegistrationMutationResponse(payload)
 }
 
 export async function saveEventManagerEvent(
@@ -2471,41 +2596,41 @@ export async function registerTeamTournament(
 export async function saveTeamTournamentTeam(
   params: Record<string, string>,
   options: ApiOptions = {},
-): Promise<TeamTournamentData> {
+): Promise<TeamTournamentMutationResult> {
   const payload = await postRequest('teamTournamentTeam', options, params)
-  return normalizeTeamTournamentPayload(payload)
+  return normalizeTeamTournamentMutationPayload(payload)
 }
 
 export async function saveTeamTournamentPairing(
   params: Record<string, string>,
   options: ApiOptions = {},
-): Promise<TeamTournamentData> {
+): Promise<TeamTournamentMutationResult> {
   const payload = await postRequest('teamTournamentPairing', options, params)
-  return normalizeTeamTournamentPayload(payload)
+  return normalizeTeamTournamentMutationPayload(payload)
 }
 
 export async function saveTeamTournamentInvitation(
   params: Record<string, string>,
   options: ApiOptions = {},
-): Promise<TeamTournamentData> {
+): Promise<TeamTournamentMutationResult> {
   const payload = await postRequest('teamTournamentInvitation', options, params)
-  return normalizeTeamTournamentPayload(payload)
+  return normalizeTeamTournamentMutationPayload(payload)
 }
 
 export async function saveTeamTournamentResult(
   params: Record<string, string>,
   options: ApiOptions = {},
-): Promise<TeamTournamentData> {
+): Promise<TeamTournamentMutationResult> {
   const payload = await postRequest('teamTournamentResult', options, params)
-  return normalizeTeamTournamentPayload(payload)
+  return normalizeTeamTournamentMutationPayload(payload)
 }
 
 export async function advanceTeamTournamentRound(
   params: Record<string, string>,
   options: ApiOptions = {},
-): Promise<TeamTournamentData> {
+): Promise<TeamTournamentMutationResult> {
   const payload = await postRequest('teamTournamentRound', options, params)
-  return normalizeTeamTournamentPayload(payload)
+  return normalizeTeamTournamentMutationPayload(payload)
 }
 
 export async function getCommissionerScheduling(
@@ -2571,6 +2696,14 @@ export async function submitArmyList(
 ): Promise<void> {
   const payload = await postRequest('submitArmyList', options, submission)
   normalizeMutationPayload(payload, 'Army list submission failed.')
+}
+
+export async function submitLeagueResult(
+  submission: LeagueResultSubmission,
+  options: ApiOptions = {},
+): Promise<void> {
+  const payload = await postRequest('submitLeagueResult', options, submission)
+  normalizeMutationPayload(payload, 'Result submission failed.')
 }
 
 export async function voteArmyList(
@@ -2795,6 +2928,7 @@ export const apiClient: ApiClient = {
   advanceTeamTournamentRound,
   getCommissionerScheduling,
   submitArmyList,
+  submitLeagueResult,
   voteArmyList,
   getOperations,
   getOperationsSummary,
@@ -3196,6 +3330,9 @@ function normalizeLeagueEvent(record: Record<string, unknown>): LeagueEvent {
     achievements: getString(record, 'achievements'),
     archive: getString(record, 'archive'),
     automation: getString(record, 'automation'),
+    capabilities: getArray(record, 'capabilities').map((item) =>
+      String(item ?? ''),
+    ),
     commissioners: getString(record, 'commissioners'),
     communityId: getString(record, 'communityId'),
     createdAt: getString(record, 'createdAt'),
@@ -4371,6 +4508,9 @@ function normalizeTeamTournamentPayload(payload: unknown): TeamTournamentData {
     timeline: getArray(tournament, 'timeline').map(
       normalizeTeamTournamentTimelineEntry,
     ),
+    resultStatuses: getArray(tournament, 'resultStatuses').map(
+      normalizeTeamTournamentResultStatus,
+    ),
     tournamentResults: getArray(tournament, 'tournamentResults').map(
       normalizeTeamTournamentResult,
     ),
@@ -4378,6 +4518,75 @@ function normalizeTeamTournamentPayload(payload: unknown): TeamTournamentData {
       normalizeTeamTournamentPairing,
     ),
   }
+}
+
+function normalizeTeamTournamentMutationPayload(
+  payload: unknown,
+): TeamTournamentMutationResult {
+  const record = asRecord(payload, 'Team tournament mutation response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Team tournament mutation failed.')
+  }
+
+  const mutation = getOptionalRecord(record, 'mutation')
+
+  if (!mutation) {
+    return {
+      data: normalizeTeamTournamentPayload(payload),
+      kind: 'full',
+    }
+  }
+
+  const kind = getString(mutation, 'kind')
+  const eventId = getString(mutation, 'eventId')
+
+  if (kind === 'team') {
+    return {
+      eventId,
+      kind,
+      team: normalizeTeamTournamentTeam(getRequiredRecord(mutation, 'team')),
+    }
+  }
+
+  if (kind === 'pairing') {
+    return {
+      eventId,
+      kind,
+      pairing: normalizeTeamTournamentPairing(
+        getRequiredRecord(mutation, 'pairing'),
+      ),
+    }
+  }
+
+  if (kind === 'invitation') {
+    return {
+      eventId,
+      kind,
+      invitation: normalizeTeamTournamentInvitation(
+        getRequiredRecord(mutation, 'invitation'),
+      ),
+    }
+  }
+
+  if (kind === 'result') {
+    return {
+      eventId,
+      kind,
+      result: normalizeTeamTournamentResult(getRequiredRecord(mutation, 'result')),
+    }
+  }
+
+  if (kind === 'round') {
+    return {
+      eventId,
+      kind,
+      lifecycleStage: getString(mutation, 'lifecycleStage'),
+      status: getString(mutation, 'status'),
+    }
+  }
+
+  throw new Error(`Unsupported Team Tournament mutation: ${kind || 'unknown'}.`)
 }
 
 function normalizeEventRegistrationResponse(
@@ -4390,6 +4599,38 @@ function normalizeEventRegistrationResponse(
   }
 
   return normalizeEventRegistrationData(getRequiredRecord(record, 'registration'))
+}
+
+function normalizeEventRegistrationMutationResponse(
+  payload: unknown,
+): EventRegistrationMutationResult {
+  const record = asRecord(payload, 'Event registration mutation response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Event registration failed.')
+  }
+
+  const mutation = getOptionalRecord(record, 'mutation')
+
+  if (!mutation) {
+    return {
+      data: normalizeEventRegistrationResponse(payload),
+      kind: 'full',
+    }
+  }
+
+  const kind = getString(mutation, 'kind')
+
+  if (kind === 'registrationStatus') {
+    return {
+      eventId: getString(mutation, 'eventId'),
+      kind,
+      player: getString(mutation, 'player'),
+      status: getString(mutation, 'status'),
+    }
+  }
+
+  throw new Error(`Unsupported registration mutation: ${kind || 'unknown'}.`)
 }
 
 function normalizeEventHomePayload(payload: unknown): EventHomeData {
@@ -4682,6 +4923,7 @@ function normalizeTeamTournamentResult(item: unknown): TeamTournamentResult {
     createdAt: getString(record, 'createdAt'),
     eventId: getString(record, 'eventId'),
     firstTurn: getString(record, 'firstTurn'),
+    mission: getString(record, 'mission'),
     notes: getString(record, 'notes'),
     objectivePoints: getString(record, 'objectivePoints'),
     opponent: getString(record, 'opponent'),
@@ -4691,12 +4933,32 @@ function normalizeTeamTournamentResult(item: unknown): TeamTournamentResult {
     roundId: getString(record, 'roundId'),
     status: getString(record, 'status'),
     submittedBy: getString(record, 'submittedBy'),
+    table: getString(record, 'table'),
     teamA: getString(record, 'teamA'),
     teamB: getString(record, 'teamB'),
     tournamentPoints: getString(record, 'tournamentPoints'),
     updatedAt: getString(record, 'updatedAt'),
     victoryPoints: getString(record, 'victoryPoints'),
+    winner: getString(record, 'winner'),
     winningFaction: getString(record, 'winningFaction'),
+  }
+}
+
+function normalizeTeamTournamentResultStatus(
+  item: unknown,
+): TeamTournamentResultStatus {
+  const record = asRecord(item, 'Team tournament result status')
+
+  return {
+    opponent: getString(record, 'opponent'),
+    player: getString(record, 'player'),
+    resultId: getString(record, 'resultId'),
+    round: getString(record, 'round'),
+    roundId: getString(record, 'roundId'),
+    status: getString(record, 'status') || 'Outstanding',
+    table: getString(record, 'table'),
+    teamA: getString(record, 'teamA'),
+    teamB: getString(record, 'teamB'),
   }
 }
 

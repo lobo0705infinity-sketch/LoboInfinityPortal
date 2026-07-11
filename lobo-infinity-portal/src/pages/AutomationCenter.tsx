@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { useAuth } from '../auth/AuthContext'
-import Loading from '../components/Loading'
+import Skeleton from '../components/Skeleton'
 import {
   apiClient,
   type AutomationCenterData,
@@ -159,8 +159,14 @@ function AutomationLoading() {
   return (
     <main className="portal-shell">
       <PageHeader />
-      <section className="dashboard-state" aria-label="Automation loading">
-        <Loading />
+      <section className="operations-grid" aria-label="Automation loading">
+        <Skeleton label="Automation status loading" rows={6} />
+        <Skeleton label="Discord automation loading" rows={6} />
+        <Skeleton label="Queue loading" rows={6} />
+      </section>
+      <section className="operations-grid two-column" aria-label="Automation controls loading">
+        <Skeleton label="Automation controls loading" rows={6} />
+        <Skeleton label="Automation history loading" rows={6} />
       </section>
     </main>
   )

@@ -449,12 +449,27 @@ function filterRecentGamesByEvent(games, eventId) {
   )
     return games;
 
-  return games.filter(function(game) {
-    return (
-      getRecentGameString(game.eventId) ||
-      EVENT_ENGINE_DEFAULT_EVENT_ID
-    ) === scope;
-  });
+  return measureEventHomeOperationIfAvailable(
+    "eventHome.recentGames.filterByEvent",
+    function() {
+      return games.filter(function(game) {
+        return measureEventHomeLoopIterationIfAvailable(
+          "eventHome.loop.recentGames.filterByEvent",
+          function() {
+            return (
+              getRecentGameString(game.eventId) ||
+              EVENT_ENGINE_DEFAULT_EVENT_ID
+            ) === scope;
+          }
+        );
+      });
+    },
+    {
+      inputGames: games.length,
+      eventId: eventId,
+      scope: scope
+    }
+  );
 
 }
 
@@ -463,9 +478,17 @@ function getAllRecentGameObjectsForEvent(eventId) {
   if (typeof getAllRecentGameObjects !== "function")
     return [];
 
-  return filterRecentGamesByEvent(
-    getAllRecentGameObjects(),
-    eventId
+  return measureEventHomeOperationIfAvailable(
+    "eventHome.recentGames.getAllAndFilter",
+    function() {
+      return filterRecentGamesByEvent(
+        getAllRecentGameObjects(),
+        eventId
+      );
+    },
+    {
+      eventId: eventId
+    }
   );
 
 }

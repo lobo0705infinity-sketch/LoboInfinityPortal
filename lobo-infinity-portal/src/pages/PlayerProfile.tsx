@@ -1,8 +1,8 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import BarChart from '../components/BarChart'
 import EntityPreviousNext from '../components/EntityPreviousNext'
-import Loading from '../components/Loading'
+import Skeleton from '../components/Skeleton'
 import {
   apiClient,
   type ArmyList,
@@ -32,6 +32,8 @@ type ProfileState =
 
 function PlayerProfile() {
   const { playerName } = useParams<{ playerName: string }>()
+  const [searchParams] = useSearchParams()
+  const eventId = searchParams.get('eventId') || ''
   const decodedPlayerName = decodePlayerName(playerName)
   const [profileState, setProfileState] = useState<ProfileState>({
     status: 'idle',
@@ -47,9 +49,11 @@ function PlayerProfile() {
 
     Promise.all([
       apiClient.getPlayer(decodedPlayerName, {
+        eventId,
         signal: controller.signal,
       }),
       apiClient.getRecentGames({
+        eventId,
         signal: controller.signal,
       }),
     ])
@@ -85,7 +89,7 @@ function PlayerProfile() {
     return () => {
       controller.abort()
     }
-  }, [decodedPlayerName])
+  }, [decodedPlayerName, eventId])
 
   if (!decodedPlayerName) {
     return (
@@ -106,8 +110,10 @@ function PlayerProfile() {
     return (
       <main className="portal-shell">
         <ProfileHeaderFallback playerName={decodedPlayerName} />
-        <section className="dashboard-state" aria-label="Player loading">
-          <Loading />
+        <section className="profile-card-grid" aria-label="Player loading">
+          <Skeleton label="Player metrics loading" rows={6} />
+          <Skeleton label="Player trend loading" rows={6} />
+          <Skeleton label="Player games loading" rows={6} />
         </section>
       </main>
     )
@@ -359,7 +365,7 @@ function PlayerProfile() {
         </section>
       ) : null}
 
-      <EntityPreviousNext current={profileState.player.name} type="player" />
+      <EntityPreviousNext current={profileState.player.name} eventId={eventId} type="player" />
     </main>
   )
 }

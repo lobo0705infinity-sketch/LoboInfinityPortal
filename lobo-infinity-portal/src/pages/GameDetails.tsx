@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import EntityPreviousNext from '../components/EntityPreviousNext'
-import Loading from '../components/Loading'
+import Skeleton from '../components/Skeleton'
 import { apiClient, type RecentGame } from '../services/api'
 import {
   formatObjectiveScore,
@@ -84,9 +84,20 @@ function GameDetails() {
   if (!isCurrentGame) {
     return (
       <main className="portal-shell">
-        <section className="match-loading" aria-label="Game loading">
-          <Loading />
-        </section>
+        <div className="match-report" aria-label="Game loading">
+          <nav className="match-nav" aria-label="Match navigation">
+            <Link to="/">Back to Dashboard</Link>
+            <Link to="/#recent-games">Back to Recent Games</Link>
+          </nav>
+          <section className="match-hero">
+            <p className="match-kicker">Match Result</p>
+            <Skeleton label="Match report loading" rows={8} />
+          </section>
+          <section className="match-details-grid">
+            <Skeleton label="Match details loading" rows={6} />
+            <Skeleton label="Match scoring loading" rows={6} />
+          </section>
+        </div>
       </main>
     )
   }

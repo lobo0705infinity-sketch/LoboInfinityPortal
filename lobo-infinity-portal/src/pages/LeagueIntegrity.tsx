@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useAuth } from '../auth/AuthContext'
-import Loading from '../components/Loading'
+import Skeleton from '../components/Skeleton'
 import {
   apiClient,
   type IntegrityData,
@@ -129,8 +129,10 @@ function LeagueIntegrity() {
     return (
       <main className="portal-shell">
         <PageHeader />
-        <section className="dashboard-state" aria-label="Integrity loading">
-          <Loading />
+        <section className="operations-grid" aria-label="Integrity loading">
+          <Skeleton label="Integrity health loading" rows={6} />
+          <Skeleton label="Integrity actions loading" rows={5} />
+          <Skeleton label="Integrity checks loading" rows={8} />
         </section>
       </main>
     )

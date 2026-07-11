@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import Loading from '../components/Loading'
+import Skeleton from '../components/Skeleton'
 import { apiClient, type LeagueNotification } from '../services/api'
 
 type NotificationsState =
@@ -113,8 +113,14 @@ function Notifications() {
     return (
       <main className="portal-shell">
         <PageHeader />
-        <section className="dashboard-state" aria-label="Notifications loading">
-          <Loading />
+        <div className="notification-page-actions">
+          <button disabled type="button">
+            Mark All Read
+          </button>
+        </div>
+        <section className="experience-grid" aria-label="Notifications loading">
+          <Skeleton label="Notifications loading" rows={5} />
+          <Skeleton label="Notifications loading" rows={5} />
         </section>
       </main>
     )

@@ -221,9 +221,7 @@ function GlobalSearch({ mode = 'desktop' }: { mode?: 'desktop' | 'mobile' }) {
             <Link
               key={item.to}
               onClick={closeSearch}
-              onFocus={() => preloadRoute(item.to)}
               onMouseEnter={() => preloadRoute(item.to)}
-              onTouchStart={() => preloadRoute(item.to)}
               to={item.to}
             >
               {item.label}
@@ -250,7 +248,6 @@ function GlobalSearch({ mode = 'desktop' }: { mode?: 'desktop' | 'mobile' }) {
                   rememberSearch(result)
                   closeSearch()
                 }}
-                onFocus={() => preloadRoute(result.to)}
                 onMouseEnter={() => setActiveIndex(index)}
                 onPointerEnter={() => preloadRoute(result.to)}
                 role="option"

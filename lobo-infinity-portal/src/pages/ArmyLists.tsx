@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import Loading from '../components/Loading'
+import Skeleton from '../components/Skeleton'
 import {
   apiClient,
   type ArmyList,
@@ -143,8 +143,20 @@ function ArmyLists() {
     return (
       <main className="portal-shell">
         <PageHeader />
-        <section className="dashboard-state" aria-label="Army lists loading">
-          <Loading />
+        <section className="community-summary-grid" aria-label="Army list summary loading">
+          <Skeleton label="Army list leaders loading" rows={5} />
+          <Skeleton label="Army list designer loading" rows={5} />
+          <Skeleton label="Army list trends loading" rows={5} />
+        </section>
+        <section className="army-list-filters" aria-label="Army list filters loading">
+          <input disabled placeholder="Search army lists" />
+          <select disabled><option>Faction</option></select>
+          <select disabled><option>Sectorial</option></select>
+          <select disabled><option>Mission</option></select>
+        </section>
+        <section className="army-list-grid" aria-label="Army lists loading">
+          <Skeleton label="Army lists loading" rows={8} />
+          <Skeleton label="Army lists loading" rows={8} />
         </section>
       </main>
     )

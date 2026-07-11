@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import EventManagerPanel from '../components/EventManagerPanel'
 import Loading from '../components/Loading'
+import Skeleton from '../components/Skeleton'
 import {
   apiClient,
   type ArmyList,
@@ -213,8 +214,18 @@ function CommissionerDashboard() {
     return (
       <main className="portal-shell">
         <PageHeader />
-        <section className="dashboard-state" aria-label="Operations loading">
-          <Loading />
+        <section className="operations-summary" aria-label="Operations summary loading">
+          <Skeleton label="Operations status loading" rows={4} />
+          <Skeleton label="Operations cache loading" rows={4} />
+          <Skeleton label="Operations identity loading" rows={4} />
+        </section>
+        <section className="panel event-manager-entry" aria-label="Event manager loading">
+          <Skeleton label="Event manager entry loading" rows={5} />
+        </section>
+        <section className="operations-grid" aria-label="Operations panels loading">
+          <Skeleton label="Operations panel loading" rows={7} />
+          <Skeleton label="Operations panel loading" rows={7} />
+          <Skeleton label="Operations panel loading" rows={7} />
         </section>
       </main>
     )

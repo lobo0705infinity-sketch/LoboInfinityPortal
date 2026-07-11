@@ -40,6 +40,7 @@ export type LeagueEvent = {
   achievements: string
   archive: string
   automation: string
+  capabilities: string[]
   commissioners: string
   communityId: string
   createdAt: string

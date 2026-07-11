@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { Link } from 'react-router-dom'
-import Loading from '../components/Loading'
+import { Link, useSearchParams } from 'react-router-dom'
+import Skeleton from '../components/Skeleton'
 import {
   apiClient,
   type FactionMomentum,
@@ -28,6 +28,8 @@ type IntelligenceState =
     }
 
 function Analytics() {
+  const [searchParams] = useSearchParams()
+  const eventId = searchParams.get('eventId') || ''
   const [intelligenceState, setIntelligenceState] =
     useState<IntelligenceState>({
       status: 'idle',
@@ -38,6 +40,7 @@ function Analytics() {
 
     apiClient
       .getAnalytics({
+        eventId,
         signal: controller.signal,
       })
       .then((data) => {
@@ -63,14 +66,17 @@ function Analytics() {
     return () => {
       controller.abort()
     }
-  }, [])
+  }, [eventId])
 
   if (intelligenceState.status === 'idle') {
     return (
       <main className="portal-shell">
-        <PageHeader />
-        <section className="dashboard-state" aria-label="Intelligence loading">
-          <Loading />
+        <PageHeader eventScoped={Boolean(eventId)} />
+        <section className="intelligence-grid" aria-label="Event intelligence loading">
+          <Skeleton label="Hot streaks loading" rows={5} />
+          <Skeleton label="Records loading" rows={5} />
+          <Skeleton label="Mission meta loading" rows={5} />
+          <Skeleton label="Faction momentum loading" rows={5} />
         </section>
       </main>
     )
@@ -79,7 +85,7 @@ function Analytics() {
   if (intelligenceState.status === 'error') {
     return (
       <main className="portal-shell">
-        <PageHeader />
+        <PageHeader eventScoped={Boolean(eventId)} />
         <section className="dashboard-state" aria-label="Intelligence error">
           <p role="alert">{intelligenceState.error}</p>
         </section>
@@ -91,9 +97,9 @@ function Analytics() {
 
   return (
     <main className="portal-shell">
-      <PageHeader />
+      <PageHeader eventScoped={Boolean(eventId)} />
 
-      <section className="intelligence-grid" aria-label="League intelligence">
+      <section className="intelligence-grid" aria-label="Event intelligence">
         <HotStreaksCard
           losingStreaks={data.losingStreaks}
           winStreaks={data.winStreaks}
@@ -129,11 +135,11 @@ function Analytics() {
   )
 }
 
-function PageHeader() {
+function PageHeader({ eventScoped }: { eventScoped: boolean }) {
   return (
     <section className="page-header" aria-labelledby="analytics-title">
       <p className="eyebrow">Analytics</p>
-      <h1 id="analytics-title">League Intelligence</h1>
+      <h1 id="analytics-title">{eventScoped ? 'Event Intelligence' : 'League Intelligence'}</h1>
       <p>Live stories, pressure points, meta movement, and race conditions</p>
     </section>
   )

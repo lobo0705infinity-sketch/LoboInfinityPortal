@@ -281,50 +281,43 @@
 
   .standings-table-shell {
     max-height: none;
-    overflow: visible;
+    overflow-x: auto;
   }
 
   .standings-data-table {
-    min-width: 0;
+    min-width: 720px;
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 10px;
+    border-collapse: collapse;
+    border-spacing: 0;
   }
 
   .standings-data-table thead {
-    display: none;
+    display: table-header-group;
   }
 
   .standings-data-table tr,
   .standings-data-table td {
-    display: block;
+    display: table-row;
   }
 
   .standings-data-table tbody tr {
     border: 1px solid rgba(76, 201, 240, 0.14);
-    border-radius: 14px;
+    border-radius: 0;
     overflow: hidden;
   }
 
+  .standings-data-table th,
   .standings-data-table td {
-    display: flex;
-    justify-content: space-between;
-    gap: 14px;
-    padding: 10px 12px;
-    white-space: normal;
+    display: table-cell;
+    padding: 12px 14px;
+    white-space: nowrap;
   }
 
   .standings-data-table td::before {
-    content: attr(data-label);
-    color: var(--text-muted);
-    font-size: 0.72rem;
-    font-weight: 900;
-    text-transform: uppercase;
+    content: none;
   }
 
   .standings-data-table td:nth-child(2) {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 4px;
+    white-space: normal;
   }
 }

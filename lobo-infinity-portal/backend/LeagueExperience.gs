@@ -93,12 +93,17 @@ function listToLookup(items) {
 
 }
 
-function getTimeline() {
+function getTimeline(e) {
+
+  const context =
+    buildEventAnalyticsContext(e);
 
   return jsonOutput({
     success: true,
+    eventId: context.eventId,
+    event: context.event,
     timeline:
-      buildLeagueTimeline()
+      getEventAnalyticsTimeline(context)
   });
 
 }

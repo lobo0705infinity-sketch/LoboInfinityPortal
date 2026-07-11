@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import Loading from '../components/Loading'
+import Skeleton from '../components/Skeleton'
 import {
   apiClient,
   type HomeData,
@@ -72,8 +72,10 @@ function Rivalries() {
   if (state.status === 'loading') {
     return (
       <main className="portal-shell">
-        <section className="dashboard-state" aria-label="Rivalries loading">
-          <Loading />
+        <RivalriesHeader />
+        <section className="rivalry-grid" aria-label="Rivalries loading">
+          <Skeleton label="Rivalry cards loading" rows={7} />
+          <Skeleton label="Rivalry cards loading" rows={7} />
         </section>
       </main>
     )
@@ -97,14 +99,7 @@ function RivalriesContent({ games }: { games: RecentGame[] }) {
 
   return (
     <main className="portal-shell">
-      <section className="page-header">
-        <p className="eyebrow">League Personality</p>
-        <h1>Rivalry Room</h1>
-        <p>
-          Head-to-head stories built only from submitted league games. Rivalries
-          appear here once the matchup has meaningful recent history.
-        </p>
-      </section>
+      <RivalriesHeader />
 
       {rivalries.length === 0 ? (
         <section className="panel operations-empty">
@@ -148,6 +143,19 @@ function RivalriesContent({ games }: { games: RecentGame[] }) {
         ))}
       </section>
     </main>
+  )
+}
+
+function RivalriesHeader() {
+  return (
+    <section className="page-header">
+      <p className="eyebrow">League Personality</p>
+      <h1>Rivalry Room</h1>
+      <p>
+        Head-to-head stories built only from submitted league games. Rivalries
+        appear here once the matchup has meaningful recent history.
+      </p>
+    </section>
   )
 }
 

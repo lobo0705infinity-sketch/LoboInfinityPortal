@@ -7,6 +7,9 @@ import type {
 } from './api'
 import { postRequest, request, type ApiOptions } from './apiCore'
 
+let settingsCache: PortalSettings | null = null
+let settingsRequest: Promise<PortalSettings> | null = null
+
 export type PlatformReliabilityData = {
   appsScriptVersion: string
   audit: Array<Record<string, unknown>>
@@ -90,8 +93,23 @@ export async function getSession(options: ApiOptions = {}): Promise<AuthSession>
 export async function getSettings(
   options: ApiOptions = {},
 ): Promise<PortalSettings> {
-  const payload = await request('settings', options)
-  return normalizeSettings(getRecord(asRecord(payload), 'settings'))
+  if (settingsCache) {
+    return settingsCache
+  }
+
+  settingsRequest ??= request('settings', options)
+    .then((payload) =>
+      normalizeSettings(getRecord(asRecord(payload), 'settings')),
+    )
+    .then((settings) => {
+      settingsCache = settings
+      return settings
+    })
+    .finally(() => {
+      settingsRequest = null
+    })
+
+  return settingsRequest
 }
 
 export async function updateProfile(
@@ -99,6 +117,13 @@ export async function updateProfile(
   options: ApiOptions = {},
 ): Promise<void> {
   await postRequest('updateProfile', options, params)
+}
+
+export async function heartbeat(
+  params: { lastPage: string },
+  options: ApiOptions = {},
+): Promise<void> {
+  await postRequest('heartbeat', options, params)
 }
 
 export async function getSearchIndex(

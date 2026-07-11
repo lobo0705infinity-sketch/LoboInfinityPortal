@@ -169,6 +169,55 @@ function updateMyProfile(e) {
 
 }
 
+function updateHeartbeat(e) {
+
+  return requireApiPermission(
+    e,
+    "readPortal",
+    function(auth) {
+
+      const params =
+        getAuthParams(e);
+
+      const sheet =
+        ensureUsersSheet();
+
+      const columns =
+        getUsersColumns(sheet);
+
+      const rowNumber =
+        getUserRowNumber(
+          sheet,
+          columns,
+          auth.user.email
+        );
+
+      if (rowNumber === -1)
+        return jsonOutput({
+          success: false,
+          error: "User record not found."
+        });
+
+      if (params.lastPage !== undefined)
+        sheet
+          .getRange(rowNumber, columns.lastPage + 1)
+          .setValue(getAuthString(params.lastPage));
+
+      updateUserLastSeen(
+        sheet,
+        columns,
+        rowNumber
+      );
+
+      return jsonOutput({
+        success: true
+      });
+
+    }
+  );
+
+}
+
 function updateNotificationState(e) {
 
   return requireApiPermission(
@@ -300,30 +349,124 @@ function requireApiPermission(e, permission, handler) {
 
 function getRequestUser(e) {
 
-  const token =
-    getRequestAuthToken(e);
+  const authTimings = [];
 
-  if (token === "")
+  const authValidationStart =
+    startApiPipelineStage("authValidation");
+
+  const tokenExtractionStart =
+    Date.now();
+
+  const tokenSelection =
+    selectRequestGoogleToken(e);
+
+  const token =
+    tokenSelection.token;
+
+  const tokenFormat =
+    tokenSelection.tokenFormat;
+
+  recordAuthFlowTiming(
+    authTimings,
+    "tokenExtraction",
+    tokenExtractionStart,
+      {
+        credentialReturned: token !== "",
+        candidateDiagnostics: tokenSelection.candidates,
+        noValidTokenFound: !tokenSelection.verified,
+        requestFields: tokenSelection.fields,
+        selectedTokenSource: tokenSelection.selectedTokenSource,
+        tokenSource: tokenSelection.selectedTokenSource,
+        tokenFormat: tokenFormat
+      }
+  );
+
+  if (!tokenSelection.verified) {
+    const failure =
+      tokenSelection.failure ||
+      (
+        tokenSelection.hasCredential
+          ? buildAuthVerificationFailure(
+              "AUTH_GOOGLE_TOKEN_MALFORMED",
+              "Google credential could not be decoded.",
+              tokenFormat,
+              {
+                candidateDiagnostics: tokenSelection.candidates,
+                noValidTokenFound: true,
+                requestFields: tokenSelection.fields,
+                selectedTokenSource: ""
+              }
+            )
+          : {
+              code: "AUTH_GOOGLE_TOKEN_MISSING",
+              stage: "frontendCredential",
+              error: "Sign in with Google to continue.",
+              diagnostics:
+                buildAuthDiagnostics(
+                  "frontendCredential",
+                  "AUTH_GOOGLE_TOKEN_MISSING",
+                  "No Google credential was provided with the session request.",
+                  {
+                    candidateDiagnostics: tokenSelection.candidates,
+                    noValidTokenFound: true,
+                    requestFields: tokenSelection.fields,
+                    selectedTokenSource: "",
+                    tokenFormat: tokenFormat
+                  }
+                )
+            }
+      );
+
+    endApiPipelineStage(
+      "authValidation",
+      authValidationStart,
+      {
+        reason: tokenSelection.hasCredential
+          ? "no_valid_token"
+          : "missing_token"
+      }
+    );
+
     return {
       authenticated: false,
-      code: "AUTH_GOOGLE_TOKEN_MISSING",
-      stage: "frontendCredential",
+      code: failure.code || "AUTH_GOOGLE_TOKEN_MISSING",
+      stage: failure.stage || "frontendCredential",
       user: buildGuestUser(),
-      error: "Sign in with Google to continue.",
+      error: failure.error || "Sign in with Google to continue.",
       diagnostics:
-        buildAuthDiagnostics(
-          "frontendCredential",
-          "AUTH_GOOGLE_TOKEN_MISSING",
-          "No Google credential was provided with the session request.",
-          {}
+        attachAuthFlowTimings(
+          failure.diagnostics || {},
+          authTimings
         )
     };
+  }
 
   const verified =
-    verifyGoogleIdentityToken(
-      token,
-      getRequestOAuthClientId(e)
-    );
+    tokenSelection.verified;
+
+  recordAuthFlowTiming(
+    authTimings,
+    "googleTokenValidation",
+    tokenExtractionStart,
+    {
+      valid: verified.valid || false,
+      code: verified.code || "",
+      stage: verified.stage || "googleTokenVerification",
+      candidateDiagnostics: tokenSelection.candidates,
+      selectedTokenSource: tokenSelection.selectedTokenSource,
+      tokenFormat: tokenFormat
+    }
+  );
+
+  endApiPipelineStage(
+    "authValidation",
+    authValidationStart,
+    {
+      tokenPresent: true,
+      verified: verified.valid || false,
+      verifiedStage: verified.stage || ""
+    }
+  );
 
   if (!verified.valid)
     return {
@@ -332,11 +475,32 @@ function getRequestUser(e) {
       stage: verified.stage || "googleTokenVerification",
       user: buildGuestUser(),
       error: verified.error || "Google identity could not be verified.",
-      diagnostics: verified.diagnostics || {}
+      diagnostics:
+        attachAuthFlowTimings(
+          verified.diagnostics || {},
+          authTimings
+        )
     };
+
+  const spreadsheetOpenStart =
+    startApiPipelineStage("spreadsheetOpen");
 
   const sheet =
     ensureUsersSheet();
+
+  endApiPipelineStage(
+    "spreadsheetOpen",
+    spreadsheetOpenStart,
+    {
+      sheetName: CONFIG.SHEETS.USERS
+    }
+  );
+
+  const sheetLookupStart =
+    startApiPipelineStage("sheetLookup");
+
+  const userResolutionStart =
+    Date.now();
 
   const columns =
     getUsersColumns(sheet);
@@ -358,17 +522,23 @@ function getRequestUser(e) {
     );
 
   if (rowNumber === -1) {
+    const role =
+      bootstrap || configuredCommissioner
+        ? USER_ROLES.COMMISSIONER
+        : leagueIdentity.player !== ""
+          ? USER_ROLES.MEMBER
+          : USER_ROLES.GUEST;
+
     rowNumber =
       createUserRow(
         sheet,
         columns,
         verified,
-        bootstrap || configuredCommissioner
-          ? USER_ROLES.COMMISSIONER
-          : USER_ROLES.MEMBER,
+        role,
         bootstrap ||
           configuredCommissioner ||
-          leagueIdentity.player !== ""
+          leagueIdentity.player !== "" ||
+          role === USER_ROLES.GUEST
       );
   }
 
@@ -392,35 +562,57 @@ function getRequestUser(e) {
       rowNumber
     );
 
-  const user =
+  if (
+    rowNumber !== -1 &&
+    leagueIdentity.player === ""
+  )
+    activatePortalGuestUser(
+      sheet,
+      columns,
+      rowNumber
+    );
+
+  let user =
     readUserRow(
       sheet,
       columns,
       rowNumber
     );
 
-  if (
-    !user.enabled &&
-    getAuthString(user.leaguePlayer) === ""
-  )
-    return {
-      authenticated: false,
-      code: "AUTH_EMAIL_NOT_REGISTERED",
-      stage: "leaguePlayerResolution",
-      user: user,
-      error: "Your Google account is not currently linked to a league player. Please contact the Commissioner.",
-      diagnostics:
-        buildAuthDiagnostics(
-          "leaguePlayerResolution",
-          "AUTH_EMAIL_NOT_REGISTERED",
-          "The Google email did not match an active Players sheet row.",
-          {
-            email: verified.email,
-            playerLookup: leagueIdentity,
-            userRow: rowNumber
-          }
-        )
-    };
+  if (!user.enabled) {
+    activatePortalUser(
+      sheet,
+      columns,
+      rowNumber
+    );
+
+    user =
+      readUserRow(
+        sheet,
+        columns,
+        rowNumber
+      );
+  }
+
+  endApiPipelineStage(
+    "sheetLookup",
+    sheetLookupStart,
+    {
+      rowNumber: rowNumber,
+      enabled: user.enabled || false
+    }
+  );
+
+  recordAuthFlowTiming(
+    authTimings,
+    "userResolution",
+    userResolutionStart,
+    {
+      rowNumber: rowNumber,
+      enabled: user.enabled || false,
+      leagueIdentity: leagueIdentity.player || ""
+    }
+  );
 
   if (!user.enabled)
     return {
@@ -430,7 +622,8 @@ function getRequestUser(e) {
       user: user,
       error: "This Google account exists but is not enabled.",
       diagnostics:
-        buildAuthDiagnostics(
+        attachAuthFlowTimings(
+          buildAuthDiagnostics(
           "playerAuthorization",
           "AUTH_USER_DISABLED",
           "The user row exists but is disabled.",
@@ -440,8 +633,16 @@ function getRequestUser(e) {
             userRow: rowNumber,
             playerLookup: leagueIdentity
           }
+          ),
+          authTimings
         )
     };
+
+  const sessionLookupStart =
+    startApiPipelineStage("sessionLookup");
+
+  const sessionCreationStart =
+    Date.now();
 
   syncUserIdentity(
     sheet,
@@ -450,15 +651,35 @@ function getRequestUser(e) {
     verified
   );
 
+  endApiPipelineStage(
+    "sessionLookup",
+    sessionLookupStart,
+    {
+      rowNumber: rowNumber,
+      leagueIdentity: leagueIdentity.player || ""
+    }
+  );
+
+  recordAuthFlowTiming(
+    authTimings,
+    "sessionCreation",
+    sessionCreationStart,
+    {
+      rowNumber: rowNumber,
+      leagueIdentity: leagueIdentity.player || ""
+    }
+  );
+
   return {
     authenticated: true,
     code: "AUTH_OK",
     stage: "sessionValidation",
     diagnostics:
-      buildAuthDiagnostics(
+      attachAuthFlowTimings(
+        buildAuthDiagnostics(
         "sessionValidation",
         "AUTH_OK",
-        "Google credential verified and league user resolved.",
+        "Google credential verified and portal user resolved.",
         {
           email: verified.email,
           leaguePlayer:
@@ -472,6 +693,8 @@ function getRequestUser(e) {
           userRow: rowNumber,
           playerLookup: leagueIdentity
         }
+        ),
+        authTimings
       ),
     user:
       readUserRow(
@@ -508,6 +731,24 @@ function promoteConfiguredCommissioner(sheet, columns, rowNumber) {
   sheet
     .getRange(rowNumber, columns.role + 1)
     .setValue(USER_ROLES.COMMISSIONER);
+
+  sheet
+    .getRange(rowNumber, columns.enabled + 1)
+    .setValue(true);
+
+}
+
+function activatePortalGuestUser(sheet, columns, rowNumber) {
+
+  activatePortalUser(
+    sheet,
+    columns,
+    rowNumber
+  );
+
+}
+
+function activatePortalUser(sheet, columns, rowNumber) {
 
   sheet
     .getRange(rowNumber, columns.enabled + 1)
@@ -704,6 +945,55 @@ function verifyGoogleIdentityToken(token, requestClientId) {
 
 }
 
+function getGoogleTokenFormatDiagnostics(token) {
+
+  const text =
+    getAuthString(token);
+
+  const parts =
+    text.split(".");
+
+  return {
+    credentialLength: text.length,
+    credentialPreviewEnd:
+      text.slice(-8),
+    credentialPreviewStart:
+      text.slice(0, 8),
+    credentialSha256:
+      hashAuthDiagnosticValue(text),
+    credentialStartsWithEyJ:
+      text.indexOf("eyJ") === 0,
+    headerLength: parts[0] ? parts[0].length : 0,
+    payloadLength: parts[1] ? parts[1].length : 0,
+    signatureLength: parts[2] ? parts[2].length : 0,
+    partCount: parts.length,
+    format:
+      parts.length === 3
+        ? "jwt"
+        : "not_jwt",
+    hasWhitespace:
+      /\s/.test(text)
+  };
+
+}
+
+function isLikelyGoogleJwt(token) {
+
+  const text =
+    getAuthString(token);
+
+  const parts =
+    text.split(".");
+
+  return (
+    text.length > 100 &&
+    text.indexOf("eyJ") === 0 &&
+    parts.length === 3 &&
+    !/\s/.test(text)
+  );
+
+}
+
 function buildAuthVerificationFailure(code, message, tokenDiagnostics, details) {
 
   return {
@@ -736,6 +1026,36 @@ function buildAuthDiagnostics(stage, code, message, details) {
     message: message,
     details: details || {}
   };
+
+}
+
+function recordAuthFlowTiming(timings, stage, startTime, details) {
+
+  if (!timings)
+    return;
+
+  timings.push({
+    stage: stage,
+    startTime: startTime,
+    endTime: Date.now(),
+    durationMs: Date.now() - startTime,
+    details: details || {}
+  });
+
+}
+
+function attachAuthFlowTimings(diagnostics, timings) {
+
+  const next =
+    diagnostics || {};
+
+  if (!next.details)
+    next.details = {};
+
+  next.details.authFlowTimings =
+    timings || [];
+
+  return next;
 
 }
 
@@ -2170,14 +2490,170 @@ function buildGuestUser() {
 
 function getRequestAuthToken(e) {
 
+  return selectRequestGoogleToken(e).token;
+
+}
+
+function selectRequestGoogleToken(e) {
+
+  const metadata =
+    getRequestAuthTokenMetadata(e);
+
+  const requestClientId =
+    getRequestOAuthClientId(e);
+
+  const candidates =
+    metadata.candidates.map(function(candidate) {
+      return Object.assign(
+        {
+          verificationAttempted: false,
+          verificationSucceeded: false,
+          skippedBecauseInvalidShape: false,
+          skippedBecauseEmpty: candidate.token === ""
+        },
+        candidate.diagnostics,
+        {
+          source: candidate.source
+        }
+      );
+    });
+
+  let failure =
+    null;
+
+  for (let index = 0; index < metadata.candidates.length; index += 1) {
+    const candidate =
+      metadata.candidates[index];
+
+    const candidateDiagnostic =
+      candidates[index];
+
+    if (candidate.token === "")
+      continue;
+
+    if (!isLikelyGoogleJwt(candidate.token)) {
+      candidateDiagnostic.skippedBecauseInvalidShape = true;
+      continue;
+    }
+
+    candidateDiagnostic.verificationAttempted = true;
+
+    const verified =
+      verifyGoogleIdentityToken(
+        candidate.token,
+        requestClientId
+      );
+
+    candidateDiagnostic.verificationSucceeded =
+      verified.valid || false;
+    candidateDiagnostic.verificationCode =
+      verified.code || "";
+    candidateDiagnostic.verificationStage =
+      verified.stage || "";
+
+    if (verified.valid)
+      return {
+        candidates: candidates,
+        failure: null,
+        fields: metadata.fields,
+        hasCredential: metadata.hasCredential,
+        selectedTokenSource: candidate.source,
+        token: candidate.token,
+        tokenFormat: candidate.diagnostics,
+        verified: verified
+      };
+
+    failure =
+      verified;
+  }
+
+  const firstProvided =
+    metadata.candidates.filter(function(candidate) {
+      return candidate.token !== "";
+    })[0];
+
+  return {
+    candidates: candidates,
+    failure: failure,
+    fields: metadata.fields,
+    hasCredential: metadata.hasCredential,
+    selectedTokenSource: "",
+    token: "",
+    tokenFormat: firstProvided
+      ? firstProvided.diagnostics
+      : getGoogleTokenFormatDiagnostics(""),
+    verified: null
+  };
+
+}
+
+function getRequestAuthTokenMetadata(e) {
+
   const params =
     getAuthParams(e);
 
-  return getAuthString(
-    params.authToken ||
-    params.idToken ||
-    params.credential
-  );
+  const authToken =
+    getAuthString(params.authToken);
+
+  const idToken =
+    getAuthString(params.idToken);
+
+  const credential =
+    getAuthString(params.credential);
+
+  const source =
+    authToken !== ""
+      ? "authToken"
+      : idToken !== ""
+        ? "idToken"
+        : credential !== ""
+          ? "credential"
+          : "";
+
+  const token =
+    source === "authToken"
+      ? authToken
+      : source === "idToken"
+        ? idToken
+        : source === "credential"
+          ? credential
+          : "";
+
+  return {
+    token: token,
+    source: source,
+    hasCredential:
+      authToken !== "" ||
+      idToken !== "" ||
+      credential !== "",
+    candidates: [
+      {
+        source: "authToken",
+        token: authToken,
+        diagnostics: getGoogleTokenFormatDiagnostics(authToken)
+      },
+      {
+        source: "idToken",
+        token: idToken,
+        diagnostics: getGoogleTokenFormatDiagnostics(idToken)
+      },
+      {
+        source: "credential",
+        token: credential,
+        diagnostics: getGoogleTokenFormatDiagnostics(credential)
+      }
+    ],
+    fields: {
+      authToken: getGoogleTokenFormatDiagnostics(authToken),
+      credential: getGoogleTokenFormatDiagnostics(credential),
+      idToken: getGoogleTokenFormatDiagnostics(idToken),
+      populated: {
+        authToken: authToken !== "",
+        credential: credential !== "",
+        idToken: idToken !== ""
+      }
+    }
+  };
 
 }
 

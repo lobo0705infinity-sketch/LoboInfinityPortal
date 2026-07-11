@@ -8,16 +8,24 @@
 const FACTION_PROFILE_RECENT_GAMES_LIMIT = 5;
 const FACTION_PROFILE_BEST_MOMENTS_LIMIT = 5;
 
-function getFactions() {
+function getFactions(e) {
+
+  const context =
+    buildEventAnalyticsContext(e);
 
   return jsonOutput({
     success: true,
-    factions: buildFactionApiSummaries()
+    eventId: context.eventId,
+    event: context.event,
+    factions: getEventAnalyticsFactions(context)
   });
 
 }
 
 function getFaction(e) {
+
+  const context =
+    buildEventAnalyticsContext(e);
 
   const requestedName =
     getFactionRequestName(e);
@@ -27,6 +35,15 @@ function getFaction(e) {
       success: false,
       error: "Missing faction name."
     });
+
+  const eventProfile =
+    getEventAnalyticsFactionProfile(
+      context,
+      requestedName
+    );
+
+  if (eventProfile)
+    return eventProfile;
 
   const summaries =
     buildFactionApiSummaries();
@@ -540,17 +557,33 @@ function getFactionBestMoments(games) {
 function getAllRecentGameObjects() {
 
   const sheet =
-    SpreadsheetApp
-      .getActive()
-      .getSheetByName(CONFIG.SHEETS.GAME_ANALYTICS);
+    measureEventHomeOperationIfAvailable(
+      "eventHome.sheetLookup.gameAnalytics",
+      function() {
+        return SpreadsheetApp
+          .getActive()
+          .getSheetByName(CONFIG.SHEETS.GAME_ANALYTICS);
+      },
+      {
+        sheet: CONFIG.SHEETS.GAME_ANALYTICS
+      }
+    );
 
   if (!sheet)
     return [];
 
   const values =
-    sheet
-      .getDataRange()
-      .getValues();
+    measureEventHomeOperationIfAvailable(
+      "eventHome.sheetRead.gameAnalytics.getDataRange.getValues",
+      function() {
+        return sheet
+          .getDataRange()
+          .getValues();
+      },
+      {
+        sheet: CONFIG.SHEETS.GAME_ANALYTICS
+      }
+    );
 
   if (values.length <= 1)
     return [];
@@ -563,44 +596,52 @@ function getAllRecentGameObjects() {
       headers
     );
 
-  return values
-    .map(function(row, index) {
+  return measureEventHomeOperationIfAvailable(
+    "eventHome.recentGames.transformAll",
+    function() {
+      return values
+        .map(function(row, index) {
 
-      return buildRecentGame(
-        row,
-        index + 1,
-        columns
-      );
+          return buildRecentGame(
+            row,
+            index + 1,
+            columns
+          );
 
-    })
-    .filter(function(game) {
+        })
+        .filter(function(game) {
 
-      return (
-        game.date !== "" &&
-        game.winner !== "" &&
-        game.loser !== ""
-      );
+          return (
+            game.date !== "" &&
+            game.winner !== "" &&
+            game.loser !== ""
+          );
 
-    })
-    .sort(function(a, b) {
+        })
+        .sort(function(a, b) {
 
-      const dateOrder =
-        b.sortDate.getTime() -
-        a.sortDate.getTime();
+          const dateOrder =
+            b.sortDate.getTime() -
+            a.sortDate.getTime();
 
-      if (dateOrder !== 0)
-        return dateOrder;
+          if (dateOrder !== 0)
+            return dateOrder;
 
-      return (
-        b.sourceIndex -
-        a.sourceIndex
-      );
+          return (
+            b.sourceIndex -
+            a.sourceIndex
+          );
 
-    })
-    .map(function(game, index) {
+        })
+        .map(function(game, index) {
 
-      return buildRecentGameResponse(game, index + 1);
+          return buildRecentGameResponse(game, index + 1);
 
-    });
+        });
+    },
+    {
+      rows: values.length
+    }
+  );
 
 }

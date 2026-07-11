@@ -20,10 +20,29 @@ const STANDINGS_HEADER = [
 
 function updateRegistryStatistics(registry, eventId) {
 
+  let timer =
+    startDashboardEndpointSubStage(
+      "dashboard.standings.getLeagueDataForEvent"
+    );
+
   const games =
     typeof getLeagueDataForEvent === "function"
       ? getLeagueDataForEvent(eventId)
       : getLeagueData();
+
+  endDashboardEndpointSubStage(
+    "dashboard.standings.getLeagueDataForEvent",
+    timer,
+    {
+      eventId: eventId || "",
+      rows: games.length
+    }
+  );
+
+  timer =
+    startDashboardEndpointSubStage(
+      "dashboard.standings.loop.updateRegistryStatistics"
+    );
 
   games.forEach(function(game) {
 
@@ -71,6 +90,15 @@ function updateRegistryStatistics(registry, eventId) {
 
   });
 
+  endDashboardEndpointSubStage(
+    "dashboard.standings.loop.updateRegistryStatistics",
+    timer,
+    {
+      rows: games.length,
+      players: Object.keys(registry).length
+    }
+  );
+
 }
 
 function getDivisionPlayers(
@@ -78,7 +106,13 @@ function getDivisionPlayers(
   division
 ) {
 
-  return Object
+  const timer =
+    startDashboardEndpointSubStage(
+      "dashboard.standings.filter.divisionPlayers"
+    );
+
+  const players =
+    Object
     .values(registry)
     .filter(function(player) {
 
@@ -88,9 +122,26 @@ function getDivisionPlayers(
 
     });
 
+  endDashboardEndpointSubStage(
+    "dashboard.standings.filter.divisionPlayers",
+    timer,
+    {
+      division: division,
+      inputPlayers: Object.keys(registry).length,
+      outputPlayers: players.length
+    }
+  );
+
+  return players;
+
 }
 
 function sortStandings(players) {
+
+  const timer =
+    startDashboardEndpointSubStage(
+      "dashboard.standings.sort"
+    );
 
   players.sort(function(a, b) {
 
@@ -109,9 +160,22 @@ function sortStandings(players) {
 
   });
 
+  endDashboardEndpointSubStage(
+    "dashboard.standings.sort",
+    timer,
+    {
+      players: players.length
+    }
+  );
+
 }
 
 function standingsToRows(players) {
+
+  const timer =
+    startDashboardEndpointSubStage(
+      "dashboard.standings.loop.toRows"
+    );
 
   const rows = [...STANDINGS_HEADER];
 
@@ -129,6 +193,15 @@ function standingsToRows(players) {
     ]);
 
   });
+
+  endDashboardEndpointSubStage(
+    "dashboard.standings.loop.toRows",
+    timer,
+    {
+      players: players.length,
+      rows: rows.length
+    }
+  );
 
   return rows;
 

@@ -9,11 +9,14 @@ import { formatPlayerName } from '../services/formatting'
 
 type PlayerCardProps = {
   divisionLabel?: string
+  eventId?: string
   player: Standing
 }
 
-function PlayerCard({ divisionLabel, player }: PlayerCardProps) {
-  const profilePath = `/players/${encodeURIComponent(player.player)}`
+function PlayerCard({ divisionLabel, eventId, player }: PlayerCardProps) {
+  const profilePath = eventId
+    ? `/players/${encodeURIComponent(player.player)}?eventId=${encodeURIComponent(eventId)}`
+    : `/players/${encodeURIComponent(player.player)}`
   const identity = getDivisionIdentity(divisionLabel)
   const playerName = formatPlayerName(player.player, player.displayName)
 

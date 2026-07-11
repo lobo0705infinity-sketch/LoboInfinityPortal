@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import BarChart, { type BarChartPoint } from '../components/BarChart'
-import Loading from '../components/Loading'
+import Skeleton from '../components/Skeleton'
 import {
   apiClient,
   type ArmyList,
@@ -211,8 +211,10 @@ function MyProfile() {
     return (
       <main className="portal-shell">
         <ProfileHeader />
-        <section className="dashboard-state" aria-label="Profile loading">
-          <Loading />
+        <section className="profile-card-grid" aria-label="Profile loading">
+          <Skeleton label="Profile summary loading" rows={6} />
+          <Skeleton label="Profile performance loading" rows={6} />
+          <Skeleton label="Profile achievements loading" rows={6} />
         </section>
       </main>
     )

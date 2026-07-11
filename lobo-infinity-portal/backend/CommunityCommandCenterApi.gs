@@ -31,11 +31,19 @@ function getCommunityCommandCenter(e) {
   const seasonCommand =
     buildSeasonCommandPayload(context);
 
+  const runtimeValidation =
+    validateEventEngineRuntime();
+
+  if (!runtimeValidation.initialized)
+    return jsonOutput(
+      buildEventEngineInitializationRequiredResponse(runtimeValidation)
+    );
+
   const events =
-    ensureEventEngine().events;
+    getEventEngineSnapshot().events;
 
   const currentEvent =
-    getCurrentLeagueEvent();
+    getCurrentLeagueEventSnapshot();
 
   const activity =
     buildCommunityActivity(context.games);

@@ -1,40 +1,20 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
+import { useSettings } from '../contexts/SettingsContext'
 import GlobalSearch from './GlobalSearch'
 import LeagueCrest from './LeagueCrest'
 import NotificationCenter from './NotificationCenter'
 import PortalIcon from './PortalIcon'
 import ProfileMenu from './ProfileMenu'
 import QuickJump from './QuickJump'
-import type { PortalSettings } from '../services/api'
-import { getSettings } from '../services/lightApi'
-import { preloadRoute } from '../services/routePreload'
+
+const MobileNavigationDrawer = lazy(() => import('./MobileNavigationDrawer'))
 
 function Header() {
   const auth = useAuth()
+  const { settings } = useSettings()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [settings, setSettings] = useState<PortalSettings | null>(null)
-
-  useEffect(() => {
-    const controller = new AbortController()
-
-    getSettings({
-      signal: controller.signal,
-    })
-      .then((settings) => {
-        setSettings(settings)
-      })
-      .catch(() => {
-        if (!controller.signal.aborted) {
-          setSettings(null)
-        }
-      })
-
-    return () => {
-      controller.abort()
-    }
-  }, [])
 
   const matchSubmissionUrl = settings?.googleFormUrl ?? ''
   const submissionsEnabled = settings?.submissionEnabled !== 'false'
@@ -59,35 +39,6 @@ function Header() {
       window.removeEventListener('keydown', handleKeyDown)
     }
   }, [isMobileMenuOpen])
-
-  const mobileMenuItems = [
-    { label: 'Dashboard', to: '/' },
-    { label: 'Match Finder', to: '/match-finder' },
-    { label: 'Standings', to: '/standings' },
-    { label: 'Notifications', to: '/notifications' },
-    ...(auth.authenticated
-      ? [
-          { label: 'My Profile', to: '/profile' },
-          { label: 'Army Lists', to: '/army-lists' },
-          { label: 'Timeline', to: '/timeline' },
-        ]
-      : []),
-    { label: 'Players', to: '/players' },
-    { label: 'Factions', to: '/factions' },
-    { label: 'Missions', to: '/missions' },
-    { label: 'Hall of Fame', to: '/hall-of-fame' },
-    ...(auth.isAtLeastRole('Assistant Commissioner')
-      ? [
-          { label: 'Commissioner', to: '/commissioner' },
-          { label: 'Event Manager', to: '/commissioner/event-manager' },
-          { label: 'Automation', to: '/automation' },
-          { label: 'Integrity', to: '/integrity' },
-        ]
-      : []),
-    ...(auth.isAtLeastRole('Commissioner')
-      ? [{ label: 'Diagnostics', to: '/diagnostics' }]
-      : []),
-  ]
 
   return (
     <header className="portal-header">
@@ -120,39 +71,13 @@ function Header() {
       </div>
 
       {isMobileMenuOpen ? (
-        <div
-          aria-label="Mobile navigation"
-          aria-modal="true"
-          className="mobile-menu-sheet"
-          id="mobile-navigation-menu"
-          role="dialog"
-        >
-          <div className="mobile-menu-heading">
-            <strong>Menu</strong>
-            <button
-              aria-label="Close navigation menu"
-              onClick={() => setIsMobileMenuOpen(false)}
-              type="button"
-            >
-              Close
-            </button>
-          </div>
-          <nav aria-label="Mobile portal sections">
-            {mobileMenuItems.map((item) => (
-              <Link
-                key={item.to}
-                onClick={() => setIsMobileMenuOpen(false)}
-                onFocus={() => preloadRoute(item.to)}
-                onMouseEnter={() => preloadRoute(item.to)}
-                onTouchStart={() => preloadRoute(item.to)}
-                to={item.to}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-          <ProfileMenu mobile />
-        </div>
+        <Suspense fallback={null}>
+          <MobileNavigationDrawer
+            authenticated={auth.authenticated}
+            commissioner={auth.isAtLeastRole('Commissioner')}
+            onClose={() => setIsMobileMenuOpen(false)}
+          />
+        </Suspense>
       ) : null}
 
       <div className="header-title">

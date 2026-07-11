@@ -1,8 +1,8 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import BarChart from '../components/BarChart'
 import EntityPreviousNext from '../components/EntityPreviousNext'
-import Loading from '../components/Loading'
+import Skeleton from '../components/Skeleton'
 import {
   apiClient,
   type MissionBestMoment,
@@ -28,6 +28,8 @@ type MissionProfileState =
 
 function MissionProfile() {
   const { missionName } = useParams<{ missionName: string }>()
+  const [searchParams] = useSearchParams()
+  const eventId = searchParams.get('eventId') || ''
   const decodedMissionName = decodeMissionName(missionName)
   const [profileState, setProfileState] = useState<MissionProfileState>({
     status: 'idle',
@@ -42,6 +44,7 @@ function MissionProfile() {
 
     apiClient
       .getMission(decodedMissionName, {
+        eventId,
         signal: controller.signal,
       })
       .then((mission) => {
@@ -69,7 +72,7 @@ function MissionProfile() {
     return () => {
       controller.abort()
     }
-  }, [decodedMissionName])
+  }, [decodedMissionName, eventId])
 
   if (!decodedMissionName) {
     return (
@@ -90,8 +93,10 @@ function MissionProfile() {
     return (
       <main className="portal-shell">
         <MissionHeaderFallback missionName={decodedMissionName} />
-        <section className="dashboard-state" aria-label="Mission loading">
-          <Loading />
+        <section className="profile-card-grid" aria-label="Mission loading">
+          <Skeleton label="Mission metrics loading" rows={6} />
+          <Skeleton label="Mission chart loading" rows={6} />
+          <Skeleton label="Mission games loading" rows={6} />
         </section>
       </main>
     )
@@ -209,7 +214,7 @@ function MissionProfile() {
         <BestMomentsPanel moments={profileState.mission.bestMoments} />
       </section>
 
-      <EntityPreviousNext current={profileState.mission.mission} type="mission" />
+      <EntityPreviousNext current={profileState.mission.mission} eventId={eventId} type="mission" />
     </main>
   )
 }

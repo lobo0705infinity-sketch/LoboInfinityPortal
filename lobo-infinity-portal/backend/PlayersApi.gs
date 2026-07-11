@@ -5,21 +5,17 @@
  * Player profile API endpoint.
  *******************************************************/
 
-function getPlayers() {
+function getPlayers(e) {
+
+  const context =
+    buildEventAnalyticsContext(e);
 
   return jsonOutput({
     success: true,
-    divisions: [
-      buildStandingsResponse(
-        getStandingsDivisionConfig("main")
-      ),
-      buildStandingsResponse(
-        getStandingsDivisionConfig("pga")
-      ),
-      buildStandingsResponse(
-        getStandingsDivisionConfig("pgb")
-      )
-    ]
+    eventId: context.eventId,
+    event: context.event,
+    divisions:
+      getEventAnalyticsPlayers(context)
   });
 
 }
@@ -34,6 +30,15 @@ function getPlayer(e) {
       success: false,
       error: "Missing player name."
     });
+
+  const eventProfile =
+    getEventAnalyticsPlayerProfile(
+      e,
+      requestedName
+    );
+
+  if (eventProfile)
+    return eventProfile;
 
   const registry =
     buildPlayerRegistry();
