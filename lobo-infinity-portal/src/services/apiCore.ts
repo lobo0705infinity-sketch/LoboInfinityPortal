@@ -161,6 +161,10 @@ let lastInvalidationReason = ''
 let lastRevalidationTimestamp = ''
 
 export function setApiAuthToken(token: string) {
+  if (token === activeAuthToken) {
+    return
+  }
+
   if (token && !isLikelyGoogleJwt(token)) {
     activeAuthToken = ''
     activeAuthTokenVersion += 1
