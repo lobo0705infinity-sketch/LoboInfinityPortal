@@ -1272,7 +1272,6 @@ function buildMilestoneItems({
 
 function QuickNavigation() {
   const links = [
-    ['Submit Game', '/submit-game'],
     ['Standings', '/standings'],
     ['Match Finder', '/match-finder'],
     ['Rivalries', '/rivalries'],

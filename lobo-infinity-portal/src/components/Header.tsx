@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import GlobalSearch from './GlobalSearch'
 import LeagueCrest from './LeagueCrest'
@@ -12,7 +12,9 @@ const MobileNavigationDrawer = lazy(() => import('./MobileNavigationDrawer'))
 
 function Header() {
   const auth = useAuth()
+  const location = useLocation()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const currentRoute = `${location.pathname}${location.search}`
 
   useEffect(() => {
     if (!isMobileMenuOpen) {
@@ -81,7 +83,11 @@ function Header() {
       </div>
 
       <div className="header-actions">
-        <Link className="submit-match-button" to="/submit-game">
+        <Link
+          className="submit-match-button"
+          state={currentRoute}
+          to="/submit-game"
+        >
           <PortalIcon name="submit" />
           Submit Game
         </Link>
@@ -94,7 +100,12 @@ function Header() {
           <span>Live</span>
         </div>
       </div>
-      <Link aria-label="Submit Game" className="mobile-submit-fab" to="/submit-game">
+      <Link
+        aria-label="Submit Game"
+        className="mobile-submit-fab"
+        state={currentRoute}
+        to="/submit-game"
+      >
         <PortalIcon name="submit" />
       </Link>
     </header>

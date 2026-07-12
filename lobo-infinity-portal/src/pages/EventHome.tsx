@@ -82,7 +82,8 @@ function EventHome() {
 
   const { data } = state
 
-  const heroAction = data.quickActions.find((action) => action.enabled)
+  const visibleQuickActions = data.quickActions.filter(isVisibleEventQuickAction)
+  const heroAction = visibleQuickActions.find((action) => action.enabled)
   const currentRound = data.currentRound
     ? String(data.currentRound['name'] ?? data.statistics.currentRound)
     : data.statistics.currentRound || 'Pending'
@@ -96,8 +97,8 @@ function EventHome() {
       }).map((item) => ({
         href: item.to,
         label: item.label,
-      }))
-    : data.navigation
+      })).filter(isVisibleEventNavigationItem)
+    : data.navigation.filter(isVisibleEventNavigationItem)
   const overview = buildOverviewModel(data, capabilities)
   const news = data.news.slice(0, 4)
   const recentTimeline = data.timeline.slice(0, 5)
@@ -114,7 +115,7 @@ function EventHome() {
       <EventRegistrationPage
         data={data}
         eventNavigationItems={eventNavigationItems}
-        quickActions={data.quickActions}
+        quickActions={visibleQuickActions}
       />
     )
   }
@@ -161,8 +162,8 @@ function EventHome() {
       </nav>
 
       <section className="event-overview-dashboard">
-        {data.quickActions.length > 0 ? (
-          <QuickActions actions={data.quickActions} />
+        {visibleQuickActions.length > 0 ? (
+          <QuickActions actions={visibleQuickActions} />
         ) : null}
         {showProgress ? (
           <EventProgressPanel data={data} overview={overview} />
@@ -240,7 +241,7 @@ function EventHomeSkeleton({
       </section>
 
       <nav className="event-home-nav" aria-label="Event navigation">
-        {['Overview', 'Registration', 'Submit Game', 'Standings', 'Rules'].map((label) => (
+        {['Overview', 'Registration', 'Standings', 'Rules'].map((label) => (
           <span key={label}>{label}</span>
         ))}
       </nav>
@@ -265,6 +266,25 @@ function normalizeEventHomeSection(section: string | undefined): EventHomeSectio
   }
 
   return 'overview'
+}
+
+function isVisibleEventNavigationItem(item: { href: string; label: string }) {
+  return !isSubmitGameReference(item.label, item.href)
+}
+
+function isVisibleEventQuickAction(action: EventHomeData['quickActions'][number]) {
+  return !isSubmitGameReference(action.label, action.href, action.action)
+}
+
+function isSubmitGameReference(label: string, href = '', action = '') {
+  const text = `${label} ${href} ${action}`.toLowerCase()
+
+  return (
+    text.includes('/submit-game') ||
+    text.includes('/submit-result') ||
+    text.includes('submit game') ||
+    text.includes('submit result')
+  )
 }
 
 type StatusCard = {

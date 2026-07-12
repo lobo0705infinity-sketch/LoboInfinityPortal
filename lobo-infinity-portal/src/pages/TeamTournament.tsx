@@ -299,6 +299,7 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
   const activeTeams = data.teams.filter((team) => team.status !== 'Deleted')
   const activeSection = getTournamentSection(section)
   const showOverview = activeSection === 'overview'
+  const visibleQuickActions = data.quickActions.filter(isVisibleTournamentQuickAction)
 
   return (
     <main className="portal-shell">
@@ -371,7 +372,7 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
 
       {showOverview || activeSection === 'results' ? (
       <section className="team-tournament-grid">
-        {isCommissioner ? <ResultStatusPanel statuses={data.resultStatuses} /> : <SubmitResultCard eventId={data.event.id} />}
+        {isCommissioner ? <ResultStatusPanel statuses={data.resultStatuses} /> : null}
         {showOverview ? <TournamentTimeline timeline={data.timeline} /> : null}
       </section>
       ) : null}
@@ -393,7 +394,9 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
       </section>
       ) : null}
 
-      {showOverview ? <QuickActions actions={data.quickActions} /> : null}
+      {showOverview && visibleQuickActions.length > 0 ? (
+        <QuickActions actions={visibleQuickActions} />
+      ) : null}
 
       {isCommissioner && (showOverview || activeSection === 'teams' || activeSection === 'pairings') ? (
         activeSection === 'teams' ? (
@@ -882,25 +885,6 @@ function LatestResults({ data }: { data: TeamTournamentData }) {
   )
 }
 
-function SubmitResultCard({ eventId }: { eventId: string }) {
-  return (
-    <section
-      className="panel team-tournament-panel"
-      data-tournament-section="results"
-      id="team-tournament-results"
-    >
-      <div className="panel-heading">
-        <p className="eyebrow">Match Reporting</p>
-        <h2>Submit Tournament Result</h2>
-      </div>
-      <p>Use the event result page to report your assigned table.</p>
-      <Link className="submit-match-button" to={`/submit-game?eventId=${encodeURIComponent(eventId)}&gameType=event`}>
-        Submit Game
-      </Link>
-    </section>
-  )
-}
-
 function ResultStatusPanel({
   statuses,
 }: {
@@ -1062,6 +1046,16 @@ function QuickActions({
         ))}
       </div>
     </section>
+  )
+}
+
+function isVisibleTournamentQuickAction(action: TeamTournamentData['quickActions'][number]) {
+  const text = `${action.label} ${action.action}`.toLowerCase()
+
+  return (
+    !text.includes('submit game') &&
+    !text.includes('submit result') &&
+    action.action !== 'submitResult'
   )
 }
 

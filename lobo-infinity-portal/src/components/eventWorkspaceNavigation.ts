@@ -4,6 +4,7 @@ import {
   type EventCapability,
   type EventNavigationConfig,
   getEventNavigationConfig,
+  isNavigableEventCapability,
 } from '../config/eventNavigation'
 
 const eventWorkspaceMemoryStorageKey = 'lobo-event-workspace-memory:v1'
@@ -75,13 +76,18 @@ export function resolveEventWorkspacePath(
 ) {
   const preferredCapability = getRouteCapability(pathname, search, hash)
 
-  if (preferredCapability && event.capabilities.includes(preferredCapability)) {
+  if (
+    preferredCapability &&
+    isNavigableEventCapability(preferredCapability) &&
+    event.capabilities.includes(preferredCapability)
+  ) {
     return buildCapabilityNavigationItem(event, preferredCapability).to
   }
 
   const rememberedWorkspace = readWorkspaceMemory()[event.id]
   if (
     rememberedWorkspace &&
+    isNavigableEventCapability(rememberedWorkspace.capability) &&
     event.capabilities.includes(rememberedWorkspace.capability)
   ) {
     return buildCapabilityNavigationItem(event, rememberedWorkspace.capability).to

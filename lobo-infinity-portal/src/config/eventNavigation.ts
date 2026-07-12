@@ -35,7 +35,9 @@ export type EventCapabilityNavigationItem = {
   to: string
 }
 
-export const capabilityLabels: Record<EventCapability, string> = {
+type NavigableEventCapability = Exclude<EventCapability, 'submitResult'>
+
+export const capabilityLabels: Record<NavigableEventCapability, string> = {
   factions: 'Factions',
   intelligence: 'Intelligence',
   map: 'Map',
@@ -48,14 +50,13 @@ export const capabilityLabels: Record<EventCapability, string> = {
   results: 'Results',
   rules: 'Rules',
   schedule: 'Schedule',
-  submitResult: 'Submit Game',
   standings: 'Standings',
   statistics: 'Statistics',
   teams: 'Teams',
   territories: 'Territories',
 }
 
-const capabilityIcons: Record<EventCapability, PortalIconName> = {
+const capabilityIcons: Record<NavigableEventCapability, PortalIconName> = {
   factions: 'factions',
   intelligence: 'analytics',
   map: 'timeline',
@@ -68,14 +69,13 @@ const capabilityIcons: Record<EventCapability, PortalIconName> = {
   results: 'timeline',
   rules: 'rules',
   schedule: 'timeline',
-  submitResult: 'submit',
   standings: 'standings',
   statistics: 'analytics',
   teams: 'players',
   territories: 'factions',
 }
 
-const defaultCapabilityRoutes: Record<EventCapability, string> = {
+const defaultCapabilityRoutes: Record<NavigableEventCapability, string> = {
   factions: '/factions?eventId=:eventId',
   intelligence: '/intelligence?eventId=:eventId',
   map: '/event/:eventId#map',
@@ -88,7 +88,6 @@ const defaultCapabilityRoutes: Record<EventCapability, string> = {
   results: '/event/:eventId#results',
   rules: '/rules?eventId=:eventId',
   schedule: '/schedule?eventId=:eventId',
-  submitResult: '/submit-game?eventId=:eventId&gameType=event',
   standings: '/standings?eventId=:eventId',
   statistics: '/analytics?eventId=:eventId',
   teams: '/event/:eventId#teams',
@@ -105,7 +104,6 @@ export const currentEventNavigation: EventNavigationConfig = {
     'overview',
     'registration',
     'matchFinder',
-    'submitResult',
     'standings',
     'schedule',
     'players',
@@ -125,7 +123,6 @@ export const eventNavigation: EventNavigationConfig[] = [
       'overview',
       'registration',
       'matchFinder',
-      'submitResult',
       'teams',
       'pairings',
       'standings',
@@ -141,7 +138,6 @@ export const eventNavigation: EventNavigationConfig[] = [
       registration: '/event/:eventId/tournament/registration',
       results: '/event/:eventId/tournament/results',
       standings: '/event/:eventId/tournament/standings',
-      submitResult: '/submit-game?eventId=:eventId&gameType=event',
       teams: '/event/:eventId/tournament/teams',
     },
     type: 'Team Tournament',
@@ -160,14 +156,16 @@ export function getEventNavigationConfig(eventId: string) {
 export function buildCapabilityNavigation(
   event: Pick<EventNavigationConfig, 'capabilities' | 'id' | 'routeOverrides'>,
 ) {
-  return event.capabilities.map((capability) =>
-    buildCapabilityNavigationItem(event, capability),
-  )
+  return event.capabilities
+    .filter(isNavigableEventCapability)
+    .map((capability) =>
+      buildCapabilityNavigationItem(event, capability),
+    )
 }
 
 export function buildCapabilityNavigationItem(
   event: Pick<EventNavigationConfig, 'id' | 'routeOverrides'>,
-  capability: EventCapability,
+  capability: NavigableEventCapability,
 ): EventCapabilityNavigationItem {
   const routeTemplate =
     event.routeOverrides?.[capability] ?? defaultCapabilityRoutes[capability]
@@ -180,4 +178,10 @@ export function buildCapabilityNavigationItem(
     mobileNav: mobileNavTargets[capability],
     to,
   }
+}
+
+export function isNavigableEventCapability(
+  capability: EventCapability,
+): capability is NavigableEventCapability {
+  return capability !== 'submitResult'
 }

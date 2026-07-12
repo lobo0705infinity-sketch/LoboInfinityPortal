@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import Skeleton from '../components/Skeleton'
 import {
@@ -66,9 +66,22 @@ const canonicalFactionFallbacks = [
 
 function SubmitResult() {
   const auth = useAuth()
+  const location = useLocation()
   const [searchParams] = useSearchParams()
-  const selectedGameType = searchParams.get('gameType') ?? ''
-  const eventId = searchParams.get('eventId') ?? 'event-current-league'
+  const rememberedSubmitContext = useMemo(
+    () => (typeof location.state === 'string' ? location.state : ''),
+    [location.state],
+  )
+  const inferredSubmitContext = useMemo(
+    () => inferSubmitGameContext(rememberedSubmitContext),
+    [rememberedSubmitContext],
+  )
+  const selectedGameType =
+    searchParams.get('gameType') ?? inferredSubmitContext.gameType
+  const eventId =
+    searchParams.get('eventId') ??
+    inferredSubmitContext.eventId ??
+    'event-current-league'
   const isCasualRoute = selectedGameType === 'casual'
   const shouldShowGameTypeSelector = !selectedGameType
   const [eventHome, setEventHome] = useState<EventHomeData | null>(null)
@@ -1172,6 +1185,56 @@ function buildFactionOptions(
 
 function buildMissionOptions() {
   return getCanonicalMissionOptions()
+}
+
+function inferSubmitGameContext(route: string): {
+  eventId?: string
+  gameType: string
+} {
+  if (!route || route === '/') {
+    return { gameType: '' }
+  }
+
+  const [pathname, search = ''] = route.split('?')
+  const params = new URLSearchParams(search)
+  const explicitGameType = params.get('gameType')
+  const explicitEventId = params.get('eventId')
+
+  if (explicitGameType) {
+    return {
+      eventId: explicitEventId || undefined,
+      gameType: explicitGameType,
+    }
+  }
+
+  const routeEventId =
+    explicitEventId ||
+    pathname.match(/^\/event\/([^/?#]+)/)?.[1] ||
+    (pathname === '/team-tournament'
+      ? 'event-august-2026-team-tournament'
+      : '')
+
+  if (routeEventId) {
+    return {
+      eventId: decodeURIComponent(routeEventId),
+      gameType: 'event',
+    }
+  }
+
+  if (/^\/(?:army-lists|news|notifications|streams|timeline)(?:\/|$)/.test(pathname)) {
+    return { gameType: 'casual' }
+  }
+
+  if (
+    /^\/(?:analytics|compare|factions|hall-of-fame|intelligence|match-finder|missions|players|rivalries|rules|schedule|standings)(?:\/|$)/.test(pathname)
+  ) {
+    return {
+      eventId: 'event-current-league',
+      gameType: 'event',
+    }
+  }
+
+  return { gameType: '' }
 }
 
 function buildEventOpponentOptions(
