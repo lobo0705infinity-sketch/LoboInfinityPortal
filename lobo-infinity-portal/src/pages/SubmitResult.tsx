@@ -21,10 +21,11 @@ import {
 } from '../services/api'
 import { resolveSubmitGamePlayer } from '../services/submitGameIdentity'
 import {
-  buildSubmitGameOpponentOptions,
+  buildSubmitGameOpponentResolution,
   buildSubmitGamePlayerOptions,
   isTournamentEventType,
 } from '../services/submitGameOpponents'
+import { recordSubmitGameOpponentResolutionDiagnostic } from '../services/diagnostics'
 
 type SubmitState =
   | { status: 'idle' }
@@ -112,22 +113,81 @@ function SubmitResult() {
   const allPlayerOptions = useMemo(() => buildSubmitGamePlayerOptions(searchIndex), [searchIndex])
   const factionOptions = useMemo(() => buildFactionOptions(), [])
   const missionOptions = useMemo(() => buildMissionOptions(), [])
-  const leagueOpponentOptions = useMemo(
+  const leagueOpponentResolution = useMemo(
     () =>
-      buildSubmitGameOpponentOptions({
+      buildSubmitGameOpponentResolution({
         allPlayers: allPlayerOptions,
         currentPlayer: leagueResult.player,
         currentPlayerDivision: leagueResult.division,
+        currentUserEmail: auth.user.email,
         eventHome,
         showAllPlayers: showAllOpponents && canOverrideOpponentFilter,
         tournamentRegistrations: teamTournament?.registration.registrations,
       }),
-    [allPlayerOptions, canOverrideOpponentFilter, eventHome, leagueResult.division, leagueResult.player, showAllOpponents, teamTournament?.registration.registrations],
+    [allPlayerOptions, auth.user.email, canOverrideOpponentFilter, eventHome, leagueResult.division, leagueResult.player, showAllOpponents, teamTournament?.registration.registrations],
   )
+  const leagueOpponentOptions = leagueOpponentResolution.options
   const casualOpponentOptions = useMemo(
     () => allPlayerOptions.filter((option) => !sameValue(option.value, casualResult.player)),
     [allPlayerOptions, casualResult.player],
   )
+
+  useEffect(() => {
+    if (
+      !eventHome ||
+      isTournamentEventType(eventHome.event.type) ||
+      leagueOpponentResolution.options.length > 0
+    ) {
+      return
+    }
+
+    const exclusionReasonCounts = new Map<string, number>()
+    leagueOpponentResolution.exclusions.forEach((entry) => {
+      exclusionReasonCounts.set(
+        entry.reason,
+        (exclusionReasonCounts.get(entry.reason) ?? 0) + 1,
+      )
+    })
+
+    recordSubmitGameOpponentResolutionDiagnostic({
+      authenticatedPlayer: authenticatedSubmitGamePlayer,
+      currentRegistrationPlayer:
+        leagueOpponentResolution.currentRegistration?.player ?? '',
+      currentRegistrationStatus:
+        leagueOpponentResolution.currentRegistration?.status ?? '',
+      eligibleOpponentCount: leagueOpponentResolution.options.length,
+      eventId: eventHome.event.id,
+      eventName: eventHome.event.name,
+      exclusionReasons: Array.from(exclusionReasonCounts.entries()).map(
+        ([reason, count]) => ({ count, reason }),
+      ),
+      leaguePlayer: auth.user.leaguePlayer,
+      participantCount: leagueOpponentResolution.participantCount,
+      playerId: leagueResult.player,
+      resolvedDivision: leagueOpponentResolution.resolvedDivision,
+      timestamp: new Date().toISOString(),
+    })
+
+    console.groupCollapsed('LOBO SUBMIT GAME OPPONENT RESOLUTION')
+    console.info({
+      authenticatedPlayer: authenticatedSubmitGamePlayer,
+      currentRegistration: leagueOpponentResolution.currentRegistration,
+      eligibleOpponentCount: leagueOpponentResolution.options.length,
+      event: eventHome.event,
+      exclusions: leagueOpponentResolution.exclusions,
+      leaguePlayer: auth.user.leaguePlayer,
+      participantCount: leagueOpponentResolution.participantCount,
+      playerId: leagueResult.player,
+      resolvedDivision: leagueOpponentResolution.resolvedDivision,
+    })
+    console.groupEnd()
+  }, [
+    auth.user.leaguePlayer,
+    authenticatedSubmitGamePlayer,
+    eventHome,
+    leagueOpponentResolution,
+    leagueResult.player,
+  ])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -208,7 +268,7 @@ function SubmitResult() {
         const currentPlayer = home.registration.currentPlayer
         setLeagueResult((current) => ({
           ...current,
-          division: auth.user.leagueDivision || currentPlayer?.notes || '',
+          division: currentPlayer?.notes || auth.user.leagueDivision || '',
           eventId: home.event.id,
           mission:
             getCanonicalMissionName(

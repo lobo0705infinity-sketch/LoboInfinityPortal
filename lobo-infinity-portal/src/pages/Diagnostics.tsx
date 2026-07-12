@@ -15,6 +15,7 @@ import {
   getDataProviderDiagnostics,
   runDataMigrationToFirestore,
 } from '../services/data'
+import { getDiagnosticsState } from '../services/diagnostics'
 
 function Diagnostics() {
   const auth = useAuth()
@@ -29,6 +30,9 @@ function Diagnostics() {
   const canRunFirestoreMigration = auth.isAtLeastRole('Commissioner')
   const snapshot = canView ? getFrontendPerformanceDiagnostics() : null
   const observatory = canView ? buildPerformanceObservatory() : null
+  const opponentResolutionDiagnostics = canView
+    ? getDiagnosticsState().submitGameOpponentResolution
+    : null
 
   useEffect(() => {
     if (!canView) {
@@ -265,6 +269,74 @@ function Diagnostics() {
 
       {observatory ? <PerformanceObservatorySection observatory={observatory} /> : null}
       {snapshot ? <ClientCacheDiagnosticsSection api={snapshot.api} /> : null}
+
+      <section className="panel operations-panel">
+        <div className="panel-heading">
+          <p className="eyebrow">Submit Game</p>
+          <h2>Opponent Resolution Diagnostics</h2>
+          <p>Latest zero-opponent league submission trace captured in this browser session.</p>
+        </div>
+        <div className="operations-table-wrap">
+          <table className="operations-table">
+            <tbody>
+              <tr>
+                <th>Authenticated Player</th>
+                <td>{opponentResolutionDiagnostics?.authenticatedPlayer ?? 'No zero-opponent trace captured'}</td>
+              </tr>
+              <tr>
+                <th>Player ID</th>
+                <td>{opponentResolutionDiagnostics?.playerId ?? 'None'}</td>
+              </tr>
+              <tr>
+                <th>League Player</th>
+                <td>{opponentResolutionDiagnostics?.leaguePlayer ?? 'None'}</td>
+              </tr>
+              <tr>
+                <th>Event</th>
+                <td>
+                  {opponentResolutionDiagnostics?.eventName
+                    ? `${opponentResolutionDiagnostics.eventName} (${opponentResolutionDiagnostics.eventId})`
+                    : 'None'}
+                </td>
+              </tr>
+              <tr>
+                <th>Event Participant Row</th>
+                <td>
+                  {opponentResolutionDiagnostics?.currentRegistrationPlayer
+                    ? `${opponentResolutionDiagnostics.currentRegistrationPlayer} (${opponentResolutionDiagnostics.currentRegistrationStatus})`
+                    : 'Not resolved'}
+                </td>
+              </tr>
+              <tr>
+                <th>Resolved Division</th>
+                <td>{opponentResolutionDiagnostics?.resolvedDivision || 'None'}</td>
+              </tr>
+              <tr>
+                <th>Participant Count</th>
+                <td>{opponentResolutionDiagnostics?.participantCount ?? 0}</td>
+              </tr>
+              <tr>
+                <th>Eligible Opponent Count</th>
+                <td>{opponentResolutionDiagnostics?.eligibleOpponentCount ?? 0}</td>
+              </tr>
+              <tr>
+                <th>Exclusion Reasons</th>
+                <td>
+                  {opponentResolutionDiagnostics?.exclusionReasons.length
+                    ? opponentResolutionDiagnostics.exclusionReasons
+                      .map((entry) => `${entry.reason}: ${entry.count}`)
+                      .join(', ')
+                    : 'None'}
+                </td>
+              </tr>
+              <tr>
+                <th>Captured</th>
+                <td>{opponentResolutionDiagnostics?.timestamp ?? 'Never'}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
 
       <section className="panel operations-panel">
         <div className="panel-heading">

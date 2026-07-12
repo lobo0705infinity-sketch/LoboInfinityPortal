@@ -70,6 +70,24 @@ export type LoboApplicationError = {
   time: string
 }
 
+export type LoboSubmitGameOpponentResolutionDiagnostic = {
+  authenticatedPlayer: string
+  currentRegistrationPlayer: string
+  currentRegistrationStatus: string
+  eligibleOpponentCount: number
+  eventId: string
+  eventName: string
+  exclusionReasons: Array<{
+    count: number
+    reason: string
+  }>
+  leaguePlayer: string
+  participantCount: number
+  playerId: string
+  resolvedDivision: string
+  timestamp: string
+}
+
 type AuthSessionSnapshot = {
   authenticated: boolean
   code: string
@@ -86,6 +104,7 @@ type LoboDiagnosticsState = {
   inFlightRequests: Record<string, LoboApiRequestDiagnostic>
   routeDiagnostics: LoboRouteDiagnostic[]
   standings: Array<Record<string, unknown>>
+  submitGameOpponentResolution?: LoboSubmitGameOpponentResolutionDiagnostic
 }
 
 declare global {
@@ -103,6 +122,7 @@ export function getDiagnosticsState(): LoboDiagnosticsState {
       inFlightRequests: {},
       routeDiagnostics: [],
       standings: [],
+      submitGameOpponentResolution: undefined,
     }
   }
 
@@ -113,6 +133,7 @@ export function getDiagnosticsState(): LoboDiagnosticsState {
     inFlightRequests: {},
     routeDiagnostics: [],
     standings: [],
+    submitGameOpponentResolution: undefined,
   }
 
   return window.__loboDiagnostics
@@ -172,6 +193,12 @@ export function recordStandingsDiagnostic(event: Record<string, unknown>) {
     },
     100,
   )
+}
+
+export function recordSubmitGameOpponentResolutionDiagnostic(
+  event: LoboSubmitGameOpponentResolutionDiagnostic,
+) {
+  getDiagnosticsState().submitGameOpponentResolution = event
 }
 
 export function buildAuthSessionSnapshot(session: AuthSession): AuthSessionSnapshot {

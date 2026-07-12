@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { resolveSubmitGamePlayer } from '../src/services/submitGameIdentity.ts'
 import {
   buildSubmitGameOpponentOptions,
+  buildSubmitGameOpponentResolution,
   type SubmitGameOpponentOption,
 } from '../src/services/submitGameOpponents.ts'
 import type { EventHomeData, EventRegistrationEntry } from '../src/services/api.ts'
@@ -48,29 +49,23 @@ assert.equal(
 )
 
 const allPlayers: SubmitGameOpponentOption[] = [
-  { label: 'Main One', meta: 'Main Man', value: 'Main One' },
-  { label: 'Main Two', meta: 'Main Man', value: 'Main Two' },
-  { label: 'PGA One', meta: 'Proving Grounds A', value: 'PGA One' },
-  { label: 'PGA Two', meta: 'Proving Grounds A', value: 'PGA Two' },
-  { label: 'PGB One', meta: 'Proving Grounds B', value: 'PGB One' },
-  { label: 'PGB Two', meta: 'Proving Grounds B', value: 'PGB Two' },
+  ...divisionPlayerOptions('Main', 'Main Man'),
+  ...divisionPlayerOptions('PGA', 'Proving Grounds A'),
+  ...divisionPlayerOptions('PGB', 'Proving Grounds B'),
 ]
 
 const tournamentRegistrations = [
-  registration('Main One', 'Main Man', 'Approved'),
-  registration('Main Two', 'Main Man', 'Approved'),
-  registration('PGA One', 'Proving Grounds A', 'Approved'),
-  registration('PGA Two', 'Proving Grounds A', 'Approved'),
-  registration('PGB One', 'Proving Grounds B', 'Approved'),
-  registration('PGB Two', 'Proving Grounds B', 'Approved'),
+  ...divisionRegistrations('Main', 'Main Man'),
+  ...divisionRegistrations('PGA', 'Proving Grounds A'),
+  ...divisionRegistrations('PGB', 'Proving Grounds B'),
   registration('Withdrawn Player', 'Proving Grounds B', 'Withdrawn'),
   registration('Deleted Player', 'Main Man', 'Deleted'),
 ]
 
 for (const [player, division] of [
-  ['Main One', 'Main Man'],
-  ['PGA One', 'Proving Grounds A'],
-  ['PGB One', 'Proving Grounds B'],
+  ['Main 1', 'Main Man'],
+  ['PGA 1', 'Proving Grounds A'],
+  ['PGB 1', 'Proving Grounds B'],
 ] as const) {
   const opponents = buildSubmitGameOpponentOptions({
     allPlayers,
@@ -95,24 +90,69 @@ for (const [player, division] of [
 assert.deepEqual(
   buildSubmitGameOpponentOptions({
     allPlayers,
-    currentPlayer: 'PGB One',
+    currentPlayer: 'PGB 1',
     currentPlayerDivision: 'Proving Grounds B',
-    eventHome: eventHome('League', tournamentRegistrations, 'PGB One'),
+    eventHome: eventHome('League', tournamentRegistrations, 'PGB 1'),
     showAllPlayers: false,
   }).map((option) => option.value).sort(),
-  ['PGB Two'],
+  ['PGB 2', 'PGB 3', 'PGB 4', 'PGB 5', 'PGB 6', 'PGB 7', 'PGB 8', 'PGB 9', 'PGB 10'].sort(),
   'League submission must remain restricted to the authenticated player division.',
+)
+
+for (const [player, profileDivision, expectedPrefix] of [
+  ['Main 1', 'Main Man', 'Main'],
+  ['PGA 1', 'Proving Grounds A', 'PGA'],
+  ['PGB 1', 'Proving Grounds B', 'PGB'],
+] as const) {
+  const resolution = buildSubmitGameOpponentResolution({
+    allPlayers,
+    currentPlayer: player,
+    currentPlayerDivision: profileDivision,
+    eventHome: eventHome('League', tournamentRegistrations, player),
+    showAllPlayers: false,
+  })
+
+  assert.equal(
+    resolution.options.length,
+    9,
+    `${profileDivision} league submission must resolve nine division opponents.`,
+  )
+
+  assert.ok(
+    resolution.options.every((option) => option.value.startsWith(`${expectedPrefix} `)),
+    `${profileDivision} league submission must not include other divisions.`,
+  )
+}
+
+const staleProfilePgbResolution = buildSubmitGameOpponentResolution({
+  allPlayers,
+  currentPlayer: 'PGB 1',
+  currentPlayerDivision: 'Proving Grounds A',
+  eventHome: eventHome('League', tournamentRegistrations, 'PGB 1'),
+  showAllPlayers: false,
+})
+
+assert.equal(
+  staleProfilePgbResolution.resolvedDivision,
+  'pgb',
+  'Current event participant row must override a stale profile division.',
+)
+
+assert.equal(
+  staleProfilePgbResolution.options.length,
+  9,
+  'PGB league submission must still resolve nine opponents when profile division is stale.',
 )
 
 assert.deepEqual(
   buildSubmitGameOpponentOptions({
     allPlayers,
-    currentPlayer: 'PGB One',
+    currentPlayer: 'PGB 1',
     currentPlayerDivision: 'Proving Grounds B',
-    eventHome: eventHome('Team Tournament', tournamentRegistrations, 'PGB One'),
+    eventHome: eventHome('Team Tournament', tournamentRegistrations, 'PGB 1'),
     showAllPlayers: true,
   }).map((option) => option.value).sort(),
-  ['Main One', 'Main Two', 'PGA One', 'PGA Two', 'PGB Two'].sort(),
+  allPlayers.map((option) => option.value).filter((name) => name !== 'PGB 1').sort(),
   'Commissioner override should use the global player registry except self.',
 )
 
@@ -125,7 +165,7 @@ assert.deepEqual(
     showAllPlayers: false,
     tournamentRegistrations,
   }).map((option) => option.value).sort(),
-  ['Main One', 'Main Two', 'PGA One', 'PGA Two', 'PGB One', 'PGB Two'].sort(),
+  allPlayers.map((option) => option.value).sort(),
   'Tournament opponent options should still come from tournament registrations when the user is not registered.',
 )
 
@@ -240,4 +280,27 @@ function registration(
     team: '',
     updatedAt: '',
   }
+}
+
+function divisionPlayerOptions(
+  prefix: 'Main' | 'PGA' | 'PGB',
+  division: string,
+) {
+  return Array.from({ length: 10 }, (_, index) => {
+    const player = `${prefix} ${index + 1}`
+    return {
+      label: player,
+      meta: division,
+      value: player,
+    }
+  })
+}
+
+function divisionRegistrations(
+  prefix: 'Main' | 'PGA' | 'PGB',
+  division: string,
+) {
+  return divisionPlayerOptions(prefix, division).map((player) =>
+    registration(player.value, division, 'Approved'),
+  )
 }

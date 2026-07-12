@@ -10,6 +10,21 @@ export type SubmitGameOpponentOption = {
   value: string
 }
 
+export type SubmitGameOpponentExclusion = {
+  division: string
+  player: string
+  reason: string
+  status: string
+}
+
+export type SubmitGameOpponentResolution = {
+  currentRegistration: EventRegistrationEntry | null
+  exclusions: SubmitGameOpponentExclusion[]
+  options: SubmitGameOpponentOption[]
+  participantCount: number
+  resolvedDivision: string
+}
+
 export function buildSubmitGamePlayerOptions(
   searchIndex: SearchData | null,
 ): SubmitGameOpponentOption[] {
@@ -55,24 +70,73 @@ export function buildSubmitGameOpponentOptions({
   showAllPlayers: boolean
   tournamentRegistrations?: EventRegistrationEntry[]
 }) {
+  return buildSubmitGameOpponentResolution({
+    allPlayers,
+    currentPlayer,
+    currentPlayerDivision,
+    eventHome,
+    showAllPlayers,
+    tournamentRegistrations,
+  }).options
+}
+
+export function buildSubmitGameOpponentResolution({
+  allPlayers,
+  currentPlayer,
+  currentPlayerDivision,
+  currentUserEmail = '',
+  eventHome,
+  showAllPlayers,
+  tournamentRegistrations,
+}: {
+  allPlayers: SubmitGameOpponentOption[]
+  currentPlayer: string
+  currentPlayerDivision: string
+  currentUserEmail?: string
+  eventHome: EventHomeData | null
+  showAllPlayers: boolean
+  tournamentRegistrations?: EventRegistrationEntry[]
+}): SubmitGameOpponentResolution {
+  const registrations = eventHome?.registration.registrations ?? []
+  const currentRegistration =
+    eventHome?.registration.currentPlayer ??
+    findCurrentRegistration(registrations, currentPlayer, currentUserEmail)
+
   if (showAllPlayers) {
-    return allPlayers.filter((option) => !sameSubmitGameValue(option.value, currentPlayer))
+    const options = allPlayers.filter((option) => !sameSubmitGameValue(option.value, currentPlayer))
+    return {
+      currentRegistration,
+      exclusions: [],
+      options,
+      participantCount: registrations.length,
+      resolvedDivision: '',
+    }
   }
 
   const eventType = eventHome?.event.type ?? ''
 
   if (isTournamentEventType(eventType)) {
-    return buildTournamentOpponentOptions(
-      tournamentRegistrations ?? eventHome?.registration.registrations ?? [],
+    const options = buildTournamentOpponentOptions(
+      tournamentRegistrations ?? registrations,
       currentPlayer,
+      currentRegistration,
     )
+
+    return {
+      currentRegistration,
+      exclusions: [],
+      options,
+      participantCount: tournamentRegistrations?.length ?? registrations.length,
+      resolvedDivision: '',
+    }
   }
 
-  return buildLeagueOpponentOptions(
+  return buildLeagueOpponentResolution(
     eventHome,
     allPlayers,
     currentPlayer,
     currentPlayerDivision,
+    currentRegistration,
   )
 }
 
@@ -84,9 +148,10 @@ export function isTournamentEventType(eventType: string) {
 function buildTournamentOpponentOptions(
   registrations: EventRegistrationEntry[],
   currentPlayer: string,
+  currentRegistration: EventRegistrationEntry | null,
 ) {
   return registrations
-    .filter((entry) => !sameSubmitGameValue(entry.player, currentPlayer))
+    .filter((entry) => !isSamePlayerRegistration(entry, currentPlayer, currentRegistration))
     .filter((entry) => isActiveTournamentRegistration(entry.status))
     .map((entry) => ({
       label: entry.displayName || entry.player,
@@ -99,45 +164,86 @@ function buildTournamentOpponentOptions(
     .sort((left, right) => left.label.localeCompare(right.label))
 }
 
-function buildLeagueOpponentOptions(
+function buildLeagueOpponentResolution(
   eventHome: EventHomeData | null,
   allPlayers: SubmitGameOpponentOption[],
   currentPlayer: string,
   currentPlayerDivision: string,
-) {
-  const currentRegistration = eventHome?.registration.currentPlayer
+  currentRegistration: EventRegistrationEntry | null,
+): SubmitGameOpponentResolution {
   const currentDivision = resolveLeagueDivision(
-    currentPlayerDivision,
     currentRegistration?.notes,
+    currentPlayerDivision,
+    getPlayerRegistryDivision(allPlayers, currentRegistration?.player ?? ''),
+    getPlayerRegistryDivision(allPlayers, currentRegistration?.displayName ?? ''),
     getPlayerRegistryDivision(allPlayers, currentPlayer),
   )
   const scheduledOpponent = eventHome?.playerStatus.upcomingMatch ?? ''
-  const options = (eventHome?.registration.registrations ?? [])
-    .filter((entry) => !sameSubmitGameValue(entry.player, currentPlayer))
-    .filter((entry) => !['deleted', 'removed', 'withdrawn'].includes(normalizeSubmitGameValue(entry.status)))
-    .filter((entry) => {
+  const exclusions: SubmitGameOpponentExclusion[] = []
+  const registrations = eventHome?.registration.registrations ?? []
+  const options = registrations
+    .flatMap((entry) => {
       const entryDivision = resolveLeagueDivision(
         entry.notes,
         getPlayerRegistryDivision(allPlayers, entry.player),
+        getPlayerRegistryDivision(allPlayers, entry.displayName),
       )
+      const excludedStatus = ['deleted', 'removed', 'withdrawn'].includes(normalizeSubmitGameValue(entry.status))
 
-      return currentDivision !== '' && entryDivision === currentDivision
+      if (isSamePlayerRegistration(entry, currentPlayer, currentRegistration)) {
+        exclusions.push({
+          division: entryDivision,
+          player: entry.player,
+          reason: 'self',
+          status: entry.status,
+        })
+        return []
+      }
+
+      if (excludedStatus) {
+        exclusions.push({
+          division: entryDivision,
+          player: entry.player,
+          reason: 'inactive-status',
+          status: entry.status,
+        })
+        return []
+      }
+
+      if (!currentDivision || entryDivision !== currentDivision) {
+        exclusions.push({
+          division: entryDivision,
+          player: entry.player,
+          reason: currentDivision ? 'different-division' : 'current-division-unresolved',
+          status: entry.status,
+        })
+        return []
+      }
+
+      return [{
+        label: entry.displayName || entry.player,
+        meta: [
+          'Same division',
+          entry.team || entry.preferredTeam || '',
+          entry.faction || '',
+        ].filter(Boolean).join(' - '),
+        value: entry.player,
+      }]
     })
-    .map((entry) => ({
-      label: entry.displayName || entry.player,
-      meta: [
-        'Same division',
-        entry.team || entry.preferredTeam || '',
-        entry.faction || '',
-      ].filter(Boolean).join(' - '),
-      value: entry.player,
-    }))
 
-  return options.sort((left, right) => {
+  const sortedOptions = options.sort((left, right) => {
     const leftScheduled = isScheduledOpponent(left, scheduledOpponent) ? 0 : 1
     const rightScheduled = isScheduledOpponent(right, scheduledOpponent) ? 0 : 1
     return leftScheduled - rightScheduled || left.label.localeCompare(right.label)
   })
+
+  return {
+    currentRegistration,
+    exclusions,
+    options: sortedOptions,
+    participantCount: registrations.length,
+    resolvedDivision: currentDivision,
+  }
 }
 
 function isActiveTournamentRegistration(status: string) {
@@ -154,6 +260,50 @@ function getPlayerRegistryDivision(
   ))?.meta ?? ''
 }
 
+function findCurrentRegistration(
+  registrations: EventRegistrationEntry[],
+  currentPlayer: string,
+  currentUserEmail: string,
+) {
+  const playerKey = normalizeSubmitGameValue(currentPlayer)
+  const emailKey = normalizeSubmitGameValue(currentUserEmail)
+
+  return registrations.find((entry) => {
+    const candidates = [
+      entry.player,
+      entry.displayName,
+      entry.email,
+    ].map(normalizeSubmitGameValue)
+
+    return (
+      (playerKey !== '' && candidates.includes(playerKey)) ||
+      (emailKey !== '' && candidates.includes(emailKey))
+    )
+  }) ?? null
+}
+
+function isSamePlayerRegistration(
+  entry: EventRegistrationEntry,
+  currentPlayer: string,
+  currentRegistration: EventRegistrationEntry | null,
+) {
+  const candidates = [
+    currentPlayer,
+    currentRegistration?.player ?? '',
+    currentRegistration?.displayName ?? '',
+    currentRegistration?.email ?? '',
+  ]
+
+  return candidates.some((candidate) => (
+    candidate !== '' &&
+    (
+      sameSubmitGameValue(entry.player, candidate) ||
+      sameSubmitGameValue(entry.displayName, candidate) ||
+      sameSubmitGameValue(entry.email, candidate)
+    )
+  ))
+}
+
 function resolveLeagueDivision(...values: Array<string | undefined>) {
   for (const value of values) {
     const normalized = normalizeDivision(value)
@@ -168,27 +318,28 @@ function resolveLeagueDivision(...values: Array<string | undefined>) {
 
 function normalizeDivision(value: string | undefined) {
   const normalized = normalizeSubmitGameValue(value ?? '')
+  const compact = normalized.replace(/[^a-z0-9]+/g, '')
 
   if (!normalized) {
     return ''
   }
 
-  if (normalized === 'main' || normalized.includes('mainman') || normalized.includes('main')) {
+  if (compact === 'main' || compact.includes('mainman') || compact.includes('main')) {
     return 'main'
   }
 
   if (
-    normalized === 'pga' ||
-    normalized.includes('provinggroundsa') ||
-    normalized.includes('provinggrounda')
+    compact === 'pga' ||
+    compact.includes('provinggroundsa') ||
+    compact.includes('provinggrounda')
   ) {
     return 'pga'
   }
 
   if (
-    normalized === 'pgb' ||
-    normalized.includes('provinggroundsb') ||
-    normalized.includes('provinggroundb')
+    compact === 'pgb' ||
+    compact.includes('provinggroundsb') ||
+    compact.includes('provinggroundb')
   ) {
     return 'pgb'
   }
