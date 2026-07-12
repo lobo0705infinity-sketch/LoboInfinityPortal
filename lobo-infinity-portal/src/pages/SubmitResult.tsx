@@ -19,6 +19,7 @@ import {
   type SearchData,
   type TeamTournamentData,
 } from '../services/api'
+import { resolveSubmitGamePlayer } from '../services/submitGameIdentity'
 
 type SubmitState =
   | { status: 'idle' }
@@ -75,6 +76,21 @@ function SubmitResult() {
   const [searchIndex, setSearchIndex] = useState<SearchData | null>(null)
   const [showAllOpponents, setShowAllOpponents] = useState(false)
   const [state, setState] = useState<SubmitState>({ status: 'loading' })
+  const authenticatedSubmitGamePlayer = useMemo(
+    () =>
+      resolveSubmitGamePlayer(
+        auth.authenticated,
+        auth.user.leaguePlayer,
+        auth.user.playerDisplayName,
+        auth.user.displayName,
+      ),
+    [
+      auth.authenticated,
+      auth.user.displayName,
+      auth.user.leaguePlayer,
+      auth.user.playerDisplayName,
+    ],
+  )
   const [leagueResult, setLeagueResult] = useState<LeagueResultSubmission>({
     ...emptyLeagueResult,
     eventId,
@@ -83,7 +99,7 @@ function SubmitResult() {
     ...emptyLeagueResult,
     division: undefined,
     eventId: undefined,
-    player: auth.user.leaguePlayer || auth.user.playerDisplayName || auth.user.displayName || '',
+    player: authenticatedSubmitGamePlayer,
     playerFaction: getCanonicalArmyName(auth.user.favoriteFaction),
     round: undefined,
   })
@@ -151,7 +167,7 @@ function SubmitResult() {
         setTeamTournament(null)
         setCasualResult((current) => ({
           ...current,
-          player: current.player || auth.user.leaguePlayer || auth.user.playerDisplayName || auth.user.displayName || '',
+          player: authenticatedSubmitGamePlayer || current.player,
           playerFaction:
             getCanonicalArmyName(current.playerFaction) ||
             getCanonicalArmyName(auth.user.favoriteFaction),
@@ -179,7 +195,10 @@ function SubmitResult() {
         setEventHome(home)
         setSearchIndex(registry)
 
-        const player = auth.user.leaguePlayer || home.registration.currentPlayer?.player || ''
+        const player =
+          authenticatedSubmitGamePlayer ||
+          home.registration.currentPlayer?.player ||
+          ''
         const currentPlayer = home.registration.currentPlayer
         setLeagueResult((current) => ({
           ...current,
@@ -234,11 +253,9 @@ function SubmitResult() {
       controller.abort()
     }
   }, [
+    authenticatedSubmitGamePlayer,
     auth.user.favoriteFaction,
     auth.user.leagueDivision,
-    auth.user.leaguePlayer,
-    auth.user.playerDisplayName,
-    auth.user.displayName,
     eventId,
     isCasualRoute,
     shouldShowGameTypeSelector,
