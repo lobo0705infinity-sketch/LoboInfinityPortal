@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { resolveSubmitGamePlayer } from '../src/services/submitGameIdentity.ts'
 import {
+  buildSubmitGameOpponentEventHome,
   buildSubmitGameOpponentOptions,
   buildSubmitGameOpponentResolution,
   type SubmitGameOpponentOption,
@@ -182,6 +183,46 @@ assert.equal(
   'PGB league submission must still resolve nine opponents when profile division is stale.',
 )
 
+const normalLeagueMemberHome = eventHome(
+  'League',
+  [registration('PGB 1', '', 'Active')],
+  'PGB 1',
+  productionShapedLeagueRegistrations
+    .filter((entry) => entry.player.startsWith('PGB ') && entry.player !== 'PGB 1')
+    .map((entry) => ({
+      active: true,
+      division: 'Proving Grounds B',
+      playerId: entry.player,
+      playerName: entry.displayName,
+    })),
+)
+
+assert.equal(
+  normalLeagueMemberHome.registration.registrations.length,
+  1,
+  'Normal League Member payload must keep private registrations scoped to current player only.',
+)
+
+assert.equal(
+  normalLeagueMemberHome.eligibleOpponents.length,
+  9,
+  'Normal League Member payload must include nine public eligible league opponents.',
+)
+
+const normalLeagueMemberResolution = buildSubmitGameOpponentResolution({
+  allPlayers,
+  currentPlayer: 'PGB 1',
+  currentPlayerDivision: 'Proving Grounds B',
+  eventHome: buildSubmitGameOpponentEventHome(normalLeagueMemberHome),
+  showAllPlayers: false,
+})
+
+assert.deepEqual(
+  normalLeagueMemberResolution.options.map((option) => option.value).sort(),
+  ['PGB 2', 'PGB 3', 'PGB 4', 'PGB 5', 'PGB 6', 'PGB 7', 'PGB 8', 'PGB 9', 'PGB 10'].sort(),
+  'Normal League Member opponent resolution must use eligibleOpponents instead of private registrations.',
+)
+
 assert.deepEqual(
   buildSubmitGameOpponentOptions({
     allPlayers,
@@ -213,9 +254,16 @@ function eventHome(
   eventType: string,
   registrations: EventRegistrationEntry[],
   currentPlayer: string,
+  eligibleOpponents = registrations.map((entry) => ({
+    active: !['Deleted', 'Removed', 'Withdrawn'].includes(entry.status),
+    division: entry.notes,
+    playerId: entry.player,
+    playerName: entry.displayName,
+  })),
 ): EventHomeData {
   return {
     currentRound: null,
+    eligibleOpponents,
     event: {
       achievements: '',
       archive: '',

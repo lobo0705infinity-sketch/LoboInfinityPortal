@@ -301,6 +301,35 @@ function getEventHome(e) {
     }
   );
 
+  const eligibleOpponentsStart =
+    startEventHomeSubStage(
+      "eventHome.eligibleOpponents"
+    );
+
+  const eligibleOpponents =
+    measureEventHomeOperation(
+      "eventHome.eligibleOpponents.build",
+      function() {
+        return buildEventHomeEligibleOpponents(
+          event,
+          registrations,
+          currentPlayer
+        );
+      },
+      {
+        eventId: event.id,
+        registrations: registrations.length
+      }
+    );
+
+  endEventHomeSubStage(
+    "eventHome.eligibleOpponents",
+    eligibleOpponentsStart,
+    {
+      opponents: eligibleOpponents.length
+    }
+  );
+
   const statisticsStart =
     startEventHomeSubStage(
       "eventHome.eventStatistics"
@@ -456,6 +485,7 @@ function getEventHome(e) {
     success: true,
     home: {
       event: event,
+      eligibleOpponents: eligibleOpponents,
       registration: registration,
       currentRound: currentRound,
       rounds: rounds,
@@ -473,6 +503,177 @@ function getEventHome(e) {
       eventType: event.type
     }
   );
+
+}
+
+function buildEventHomeEligibleOpponents(event, registrations, currentPlayer) {
+
+  const registry =
+    buildPlayerRegistry();
+
+  const currentPlayerId =
+    currentPlayer
+      ? getEventRegistrationString(currentPlayer.player)
+      : "";
+
+  const currentPlayerRegistryEntry =
+    currentPlayer
+      ? (
+          findPlayerRegistryEntry(registry, currentPlayer.player) ||
+          findPlayerRegistryEntry(registry, currentPlayer.displayName)
+        )
+      : null;
+
+  const currentDivision =
+    currentPlayer
+      ? normalizeEventHomeDivision(
+          getEventRegistrationString(currentPlayer.notes) ||
+          (
+            currentPlayerRegistryEntry
+              ? getEventRegistrationString(currentPlayerRegistryEntry.division)
+              : ""
+          )
+        )
+      : "";
+
+  const isLeagueEvent =
+    getEventRegistrationString(event && event.type)
+      .toLowerCase()
+      .indexOf("league") !== -1;
+
+  return registrations
+    .map(function(registration) {
+      return measureEventHomeLoopIteration(
+        "eventHome.loop.eligibleOpponents.map",
+        function() {
+          const registryEntry =
+            findPlayerRegistryEntry(
+              registry,
+              registration.player
+            ) ||
+            findPlayerRegistryEntry(
+              registry,
+              registration.displayName
+            );
+
+          const division =
+            getEventRegistrationString(registration.notes) ||
+            (
+              registryEntry
+                ? getEventRegistrationString(registryEntry.division)
+                : ""
+            );
+
+          return {
+            playerId:
+              getEventRegistrationString(registration.player),
+            playerName:
+              getEventRegistrationString(registration.displayName) ||
+              getEventRegistrationString(registration.player),
+            division: division,
+            divisionKey:
+              normalizeEventHomeDivision(division),
+            active:
+              isEventHomeEligibleOpponentActive(
+                registration,
+                registryEntry
+              ),
+            self:
+              currentPlayerId !== "" &&
+              getEventRegistrationString(registration.player)
+                .toLowerCase() === currentPlayerId.toLowerCase()
+          };
+        }
+      );
+    })
+    .filter(function(opponent) {
+      return measureEventHomeLoopIteration(
+        "eventHome.loop.eligibleOpponents.filter",
+        function() {
+          if (opponent.playerId === "")
+            return false;
+
+          if (!opponent.active)
+            return false;
+
+          if (opponent.self)
+            return false;
+
+          if (
+            isLeagueEvent &&
+            currentDivision !== "" &&
+            opponent.divisionKey !== currentDivision
+          )
+            return false;
+
+          return true;
+        }
+      );
+    })
+    .map(function(opponent) {
+      return measureEventHomeLoopIteration(
+        "eventHome.loop.eligibleOpponents.publicShape",
+        function() {
+          return {
+            playerId: opponent.playerId,
+            playerName: opponent.playerName,
+            division: opponent.division,
+            active: opponent.active
+          };
+        }
+      );
+    });
+
+}
+
+function normalizeEventHomeDivision(value) {
+
+  const compact =
+    getEventRegistrationString(value)
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "");
+
+  if (
+    compact === "main" ||
+    compact.indexOf("mainman") !== -1
+  )
+    return "main";
+
+  if (
+    compact === "pga" ||
+    compact.indexOf("provinggroundsa") !== -1 ||
+    compact.indexOf("provinggrounda") !== -1
+  )
+    return "pga";
+
+  if (
+    compact === "pgb" ||
+    compact.indexOf("provinggroundsb") !== -1 ||
+    compact.indexOf("provinggroundb") !== -1
+  )
+    return "pgb";
+
+  return compact;
+
+}
+
+function isEventHomeEligibleOpponentActive(registration, registryEntry) {
+
+  const status =
+    getEventRegistrationString(registration.status)
+      .toLowerCase();
+
+  if (
+    status === "deleted" ||
+    status === "removed" ||
+    status === "withdrawn"
+  )
+    return false;
+
+  if (registryEntry && registryEntry.active === false)
+    return false;
+
+  return true;
 
 }
 

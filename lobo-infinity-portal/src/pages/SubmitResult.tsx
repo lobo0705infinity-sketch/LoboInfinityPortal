@@ -21,6 +21,7 @@ import {
 } from '../services/api'
 import { resolveSubmitGamePlayer } from '../services/submitGameIdentity'
 import {
+  buildSubmitGameOpponentEventHome,
   buildSubmitGameOpponentResolution,
   buildSubmitGamePlayerOptions,
   isTournamentEventType,
@@ -113,6 +114,10 @@ function SubmitResult() {
   const allPlayerOptions = useMemo(() => buildSubmitGamePlayerOptions(searchIndex), [searchIndex])
   const factionOptions = useMemo(() => buildFactionOptions(), [])
   const missionOptions = useMemo(() => buildMissionOptions(), [])
+  const leagueOpponentEventHome = useMemo(
+    () => buildSubmitGameOpponentEventHome(eventHome),
+    [eventHome],
+  )
   const leagueOpponentResolution = useMemo(
     () =>
       buildSubmitGameOpponentResolution({
@@ -120,11 +125,11 @@ function SubmitResult() {
         currentPlayer: leagueResult.player,
         currentPlayerDivision: leagueResult.division,
         currentUserEmail: auth.user.email,
-        eventHome,
+        eventHome: leagueOpponentEventHome,
         showAllPlayers: showAllOpponents && canOverrideOpponentFilter,
         tournamentRegistrations: teamTournament?.registration.registrations,
       }),
-    [allPlayerOptions, auth.user.email, canOverrideOpponentFilter, eventHome, leagueResult.division, leagueResult.player, showAllOpponents, teamTournament?.registration.registrations],
+    [allPlayerOptions, auth.user.email, canOverrideOpponentFilter, leagueOpponentEventHome, leagueResult.division, leagueResult.player, showAllOpponents, teamTournament?.registration.registrations],
   )
   const leagueOpponentOptions = leagueOpponentResolution.options
   const casualOpponentOptions = useMemo(
@@ -897,7 +902,7 @@ function validateLeagueResult(
     issues.push('Opponent must be a different player.')
   }
 
-  if (!data.registration.registrations.some((entry) => normalize(entry.player) === normalize(submission.opponent))) {
+  if (!data.eligibleOpponents.some((entry) => entry.active && normalize(entry.playerId) === normalize(submission.opponent))) {
     issues.push('Opponent must be registered for this event.')
   }
 

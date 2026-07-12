@@ -1127,6 +1127,12 @@ export type EventManagerData = {
 
 export type EventHomeData = {
   currentRound: Record<string, unknown> | null
+  eligibleOpponents: Array<{
+    active: boolean
+    division: string
+    playerId: string
+    playerName: string
+  }>
   event: LeagueEvent
   navigation: Array<{
     href: string
@@ -4692,6 +4698,16 @@ function normalizeEventHomePayload(payload: unknown): EventHomeData {
 
   return {
     currentRound: getOptionalRecord(home, 'currentRound') ?? null,
+    eligibleOpponents: getArray(home, 'eligibleOpponents').map((item) => {
+      const opponent = asRecord(item, 'Event home eligible opponent')
+
+      return {
+        active: getOptionalBoolean(opponent, 'active') ?? false,
+        division: getString(opponent, 'division'),
+        playerId: getString(opponent, 'playerId'),
+        playerName: getString(opponent, 'playerName'),
+      }
+    }),
     event: normalizeLeagueEvent(getRequiredRecord(home, 'event')),
     navigation: getArray(home, 'navigation').map((item) => {
       const nav = asRecord(item, 'Event home navigation item')

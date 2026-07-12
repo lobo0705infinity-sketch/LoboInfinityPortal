@@ -25,6 +25,41 @@ export type SubmitGameOpponentResolution = {
   resolvedDivision: string
 }
 
+export function buildSubmitGameOpponentEventHome(
+  eventHome: EventHomeData | null,
+): EventHomeData | null {
+  if (!eventHome || isTournamentEventType(eventHome.event.type)) {
+    return eventHome
+  }
+
+  return {
+    ...eventHome,
+    registration: {
+      ...eventHome.registration,
+      registrations: eventHome.eligibleOpponents
+        .filter((opponent) => opponent.active)
+        .map((opponent) => ({
+          captain: false,
+          discord: '',
+          displayName: opponent.playerName || opponent.playerId,
+          email: '',
+          eventId: eventHome.event.id,
+          faction: '',
+          freeAgent: false,
+          notes: opponent.division,
+          player: opponent.playerId,
+          preferredTeam: '',
+          registeredAt: '',
+          role: 'Player',
+          seed: '',
+          status: 'Active',
+          team: '',
+          updatedAt: '',
+        })),
+    },
+  }
+}
+
 export function buildSubmitGamePlayerOptions(
   searchIndex: SearchData | null,
 ): SubmitGameOpponentOption[] {

@@ -420,6 +420,7 @@ export const firestoreProviderImpl: DataProvider = {
         currentRound: event.lifecycleStage.startsWith('Round')
           ? { name: event.lifecycleStage }
           : null,
+        eligibleOpponents: [],
         event,
         navigation: getEventNavigation(event),
         news: buildEventNews(event, registration),
