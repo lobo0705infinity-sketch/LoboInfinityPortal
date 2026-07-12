@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import {
@@ -5,111 +6,33 @@ import {
   type EventNavigationConfig,
 } from '../config/eventNavigation'
 import LeagueCrest from './LeagueCrest'
-import PortalIcon, { type PortalIconName } from './PortalIcon'
+import PortalIcon from './PortalIcon'
+import {
+  authenticatedTopLevelItems,
+  commissionerItems,
+  communityItems,
+  topLevelItems,
+  type NavigationItem,
+} from './sidebarNavigation'
 import { useSelectedEventNavigation } from './useSelectedEventNavigation'
 
-type NavigationItem = {
-  icon: PortalIconName
-  label: string
-  to: string
+const expandedEventStorageKey = 'le'
+
+function readExpandedEventId() {
+  try {
+    return window.sessionStorage.getItem(expandedEventStorageKey) || ''
+  } catch {
+    return ''
+  }
 }
 
-const topLevelItems: NavigationItem[] = [
-  {
-    icon: 'dashboard',
-    label: 'Dashboard',
-    to: '/',
-  },
-]
-
-const authenticatedTopLevelItems: NavigationItem[] = [
-  {
-    icon: 'players',
-    label: 'My Profile',
-    to: '/profile',
-  },
-]
-
-const communityItems: NavigationItem[] = [
-  {
-    icon: 'players',
-    label: 'Players',
-    to: '/players',
-  },
-  {
-    icon: 'hall',
-    label: 'Hall of Fame',
-    to: '/hall-of-fame',
-  },
-  {
-    icon: 'analytics',
-    label: 'Intelligence',
-    to: '/intelligence',
-  },
-  {
-    icon: 'compare',
-    label: 'Compare',
-    to: '/compare',
-  },
-  {
-    icon: 'missions',
-    label: 'Missions',
-    to: '/missions',
-  },
-  {
-    icon: 'news',
-    label: 'News',
-    to: '/news',
-  },
-  {
-    icon: 'timeline',
-    label: 'Timeline',
-    to: '/timeline',
-  },
-  {
-    icon: 'streams',
-    label: 'Streams',
-    to: '/streams',
-  },
-  {
-    icon: 'army',
-    label: 'Army Lists',
-    to: '/army-lists',
-  },
-  {
-    icon: 'bell',
-    label: 'Alerts',
-    to: '/notifications',
-  },
-]
-
-const commissionerItems: NavigationItem[] = [
-  {
-    icon: 'submit',
-    label: 'Operations',
-    to: '/commissioner',
-  },
-  {
-    icon: 'standings',
-    label: 'Event Manager',
-    to: '/commissioner/event-manager',
-  },
-  {
-    icon: 'bell',
-    label: 'Automation',
-    to: '/automation',
-  },
-  {
-    icon: 'analytics',
-    label: 'Integrity',
-    to: '/integrity',
-  },
-  {
-    icon: 'analytics',
-    label: 'Diagnostics',
-    to: '/diagnostics',
-  },
-]
+function writeExpandedEventId(eventId: string) {
+  try {
+    window.sessionStorage.setItem(expandedEventStorageKey, eventId)
+  } catch {
+    // Navigation memory is an enhancement; links remain deterministic.
+  }
+}
 
 function Sidebar() {
   const auth = useAuth()
@@ -117,9 +40,24 @@ function Sidebar() {
     eventOptions,
     prefetchEventNavigation,
     selectEvent,
-    selectedEvent,
     selectedEventId,
   } = useSelectedEventNavigation()
+  const [expandedEventId, setExpandedEventId] = useState(() =>
+    selectedEventId || readExpandedEventId(),
+  )
+  const knownExpandedEvent = eventOptions.some((event) => event.id === expandedEventId)
+  const resolvedExpandedEventId =
+    knownExpandedEvent ? expandedEventId : selectedEventId
+
+  function expandEvent(eventId: string) {
+    setExpandedEventId(eventId)
+    writeExpandedEventId(eventId)
+  }
+
+  function changeSelectedEvent(eventId: string) {
+    expandEvent(eventId)
+    selectEvent(eventId)
+  }
 
   return (
     <aside className="sidebar" aria-label="Portal navigation">
@@ -141,20 +79,36 @@ function Sidebar() {
             ))
           : null}
 
-        <section className="sidebar-section" aria-labelledby="sidebar-current-event">
-          <p className="sidebar-section-label" id="sidebar-current-event">Current Event</p>
-          <EventSelector
-            eventOptions={eventOptions}
-            onChange={selectEvent}
-            onPrefetch={prefetchEventNavigation}
-            selectedEventId={selectedEventId}
-          />
-          <EventGroup defaultOpen event={selectedEvent} />
+        <section className="sidebar-section" aria-labelledby="sidebar-my-events">
+          <p className="sidebar-section-label" id="sidebar-my-events">My Events</p>
+          {eventOptions.length > 1 ? (
+            <EventSelector
+              eventOptions={eventOptions}
+              onChange={changeSelectedEvent}
+              onPrefetch={prefetchEventNavigation}
+              selectedEventId={selectedEventId}
+            />
+          ) : null}
+          {eventOptions.length === 0 ? (
+            <NoEventsNavigation commissioner={auth.isAtLeastRole('Commissioner')} />
+          ) : (
+            eventOptions.map((event) => (
+              <EventGroup
+                event={event}
+                expanded={resolvedExpandedEventId === event.id}
+                key={event.id}
+                onToggle={() => expandEvent(event.id)}
+              />
+            ))
+          )}
         </section>
 
-        <SidebarSection items={communityItems} label="Community" />
+        <SidebarSection
+          items={communityItems}
+          label="Community"
+        />
         {auth.isAtLeastRole('Commissioner') ? (
-          <SidebarSection items={commissionerItems} label="Commissioner Tools" />
+          <SidebarSection items={commissionerItems} label="Commissioner" />
         ) : null}
       </nav>
     </aside>
@@ -176,7 +130,7 @@ function EventSelector({
     <label className="sidebar-event-selector">
       <span>Event Selector</span>
       <select
-        aria-label="Select current event"
+        aria-label="Select event"
         onChange={(event) => {
           const selector = event.currentTarget
           selector.disabled = true
@@ -215,40 +169,61 @@ function SidebarSection({
     <section className="sidebar-section" aria-labelledby={labelId}>
       <p className="sidebar-section-label" id={labelId}>{label}</p>
       {items.map((item) => (
-        <SidebarLink item={item} key={item.to} onNavigate={onNavigate} />
+        <SidebarLink
+          item={item}
+          key={item.to}
+          onNavigate={onNavigate}
+        />
       ))}
     </section>
   )
 }
 
 function EventGroup({
-  defaultOpen = false,
   event,
-  heading,
+  expanded,
   onNavigate,
+  onToggle,
 }: {
-  defaultOpen?: boolean
   event: EventNavigationConfig
-  heading?: string
+  expanded: boolean
   onNavigate?: () => void
+  onToggle: () => void
 }) {
   const items = buildCapabilityNavigation(event)
 
   return (
-    <section className="sidebar-section">
-      {heading ? <p className="sidebar-section-label">{heading}</p> : null}
-      <details className="sidebar-event-group" open={defaultOpen}>
-        <summary className="sidebar-event-summary">
+    <div className="sidebar-event-group">
+      <button
+        aria-expanded={expanded}
+        className="sidebar-event-summary"
+        onClick={onToggle}
+        type="button"
+      >
           <span>{event.label}</span>
           <small>{event.type}</small>
-        </summary>
+      </button>
+      {expanded ? (
         <div className="sidebar-subnav">
           {items.map((item) => (
             <SidebarLink item={item} key={`${event.id}-${item.label}`} onNavigate={onNavigate} />
           ))}
         </div>
-      </details>
-    </section>
+      ) : null}
+    </div>
+  )
+}
+
+function NoEventsNavigation({ commissioner }: { commissioner: boolean }) {
+  return (
+    <div className="sidebar-event-group">
+      <p className="sidebar-section-label">No Active Events</p>
+      <div className="sidebar-subnav">
+        <Link to="/players">Browse Community</Link>
+        {commissioner ? <Link to="/commissioner/event-manager">Create Event</Link> : null}
+        <Link to="/events">View Past Events</Link>
+      </div>
+    </div>
   )
 }
 

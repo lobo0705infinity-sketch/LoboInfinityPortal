@@ -46,16 +46,14 @@ function QuickJump() {
         label: `Match: ${formatPlayerName(game.winner, game.winnerDisplayName)} vs ${formatPlayerName(game.loser, game.loserDisplayName)}`,
         to: `/games/${game.id}`,
       }))
-
       setItems([
         { label: 'Dashboard', to: '/' },
         { label: 'Submit Game', to: '/submit-game' },
         { label: 'July 2026 League', to: '/event/event-current-league' },
-        { label: 'League Submit Game', to: '/submit-game?eventId=event-current-league&gameType=event' },
         { label: 'League Registration', to: '/event/event-current-league/registration' },
-        { label: 'Team Tournament Submit Game', to: '/submit-game?eventId=event-august-2026-team-tournament&gameType=event' },
-        { label: 'Casual Submit Game', to: '/submit-game?gameType=casual' },
-        { label: 'Schedule', to: '/schedule?eventId=event-current-league' },
+        { label: 'League Schedule', to: '/schedule?eventId=event-current-league' },
+        { label: 'Team Tournament', to: '/event/event-august-2026-team-tournament' },
+        { label: 'Tournament Registration', to: '/event/event-august-2026-team-tournament/tournament/registration' },
         { label: 'Past Events', to: '/events' },
         { label: 'Community Timeline', to: '/timeline' },
         { label: 'Notifications', to: '/notifications' },

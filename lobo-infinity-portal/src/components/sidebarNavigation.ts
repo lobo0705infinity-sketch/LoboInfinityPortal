@@ -12,6 +12,11 @@ export const topLevelItems: NavigationItem[] = [
     label: 'Dashboard',
     to: '/',
   },
+  {
+    icon: 'submit',
+    label: 'Submit Game',
+    to: '/submit-game',
+  },
 ]
 
 export const authenticatedTopLevelItems: NavigationItem[] = [
@@ -77,8 +82,8 @@ export const communityItems: NavigationItem[] = [
 
 export const commissionerItems: NavigationItem[] = [
   {
-    icon: 'submit',
-    label: 'Operations',
+    icon: 'dashboard',
+    label: 'Command Center',
     to: '/commissioner',
   },
   {
@@ -93,12 +98,22 @@ export const commissionerItems: NavigationItem[] = [
   },
   {
     icon: 'analytics',
-    label: 'Integrity',
+    label: 'Audit',
     to: '/integrity',
   },
   {
     icon: 'analytics',
     label: 'Diagnostics',
     to: '/diagnostics',
+  },
+  {
+    icon: 'players',
+    label: 'Users',
+    to: '/commissioner?section=users',
+  },
+  {
+    icon: 'submit',
+    label: 'Operations',
+    to: '/commissioner?section=operations',
   },
 ]

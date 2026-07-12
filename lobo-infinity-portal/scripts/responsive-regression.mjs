@@ -1,6 +1,17 @@
+import fs from 'node:fs'
+import http from 'node:http'
+import path from 'node:path'
 import { chromium } from 'playwright'
 
 const DEFAULT_BASE_URL = 'http://127.0.0.1:4173'
+const root = path.join(process.cwd(), 'dist')
+const contentTypes = {
+  '.css': 'text/css',
+  '.html': 'text/html',
+  '.js': 'text/javascript',
+  '.json': 'application/json',
+  '.svg': 'image/svg+xml',
+}
 
 const viewports = [
   { height: 1080, name: 'desktop-1920', width: 1920 },
@@ -60,6 +71,7 @@ const includeScreenshots = args.get('screenshots') === 'true'
 const auditAllWidths = args.get('all-widths') === 'true'
 const screenshotDir = args.get('screenshot-dir') ?? 'screenshots-responsive'
 const selectedViewports = auditAllWidths ? [...viewports, ...widthAuditViewports] : viewports
+const server = args.has('base-url') ? null : await startStaticServer()
 
 const browser = await chromium.launch()
 const failures = []
@@ -167,6 +179,7 @@ try {
   }
 } finally {
   await browser.close()
+  server?.close()
 }
 
 if (failures.length > 0) {
@@ -185,3 +198,29 @@ console.log(
     2,
   ),
 )
+
+function startStaticServer() {
+  return new Promise((resolve) => {
+    const server = http.createServer((request, response) => {
+      const url = new URL(request.url || '/', DEFAULT_BASE_URL)
+      let file = path.join(root, url.pathname)
+
+      if (!file.startsWith(root)) {
+        response.writeHead(403)
+        response.end()
+        return
+      }
+
+      if (!fs.existsSync(file) || fs.statSync(file).isDirectory()) {
+        file = path.join(root, 'index.html')
+      }
+
+      response.writeHead(200, {
+        'Content-Type': contentTypes[path.extname(file)] || 'application/octet-stream',
+      })
+      fs.createReadStream(file).pipe(response)
+    })
+
+    server.listen(new URL(DEFAULT_BASE_URL).port, '127.0.0.1', () => resolve(server))
+  })
+}

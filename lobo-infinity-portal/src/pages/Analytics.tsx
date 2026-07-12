@@ -24,15 +24,20 @@ type StatisticsState =
     }
   | { error: string; status: 'error' }
 
+const statisticsFilterStorageKey = 'lobo-statistics-game-type-filter'
+
 function Analytics() {
   const location = useLocation()
   const [searchParams, setSearchParams] = useSearchParams()
   const isIntelligenceRoute = location.pathname === '/intelligence'
   const eventId = searchParams.get('eventId') || ''
-  const gameType = normalizeGameTypeFilter(searchParams.get('gameType'))
+  const gameType = normalizeGameTypeFilter(
+    searchParams.get('gameType') ?? readStoredStatisticsFilter(),
+  )
   const [state, setState] = useState<StatisticsState>({ status: 'loading' })
   const handleGameTypeChange = (value: GameTypeFilter) => {
     const next = new URLSearchParams(searchParams)
+    writeStoredStatisticsFilter(value)
     if (value === 'all') {
       next.delete('gameType')
     } else {
@@ -283,6 +288,30 @@ function normalizeGameTypeFilter(value: string | null): GameTypeFilter {
   }
 
   return 'all'
+}
+
+function readStoredStatisticsFilter() {
+  if (typeof window === 'undefined') {
+    return null
+  }
+
+  try {
+    return window.sessionStorage.getItem(statisticsFilterStorageKey)
+  } catch {
+    return null
+  }
+}
+
+function writeStoredStatisticsFilter(value: GameTypeFilter) {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  try {
+    window.sessionStorage.setItem(statisticsFilterStorageKey, value)
+  } catch {
+    // Filter memory is an enhancement; route state still controls the view.
+  }
 }
 
 function buildStatisticsQuery(eventId: string, gameType: GameTypeFilter) {

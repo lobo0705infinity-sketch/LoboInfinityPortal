@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import {
   buildCapabilityNavigation,
@@ -21,6 +22,24 @@ type MobileNavigationDrawerProps = {
   onClose: () => void
 }
 
+const expandedEventStorageKey = 'le'
+
+function readExpandedEventId() {
+  try {
+    return window.sessionStorage.getItem(expandedEventStorageKey) || ''
+  } catch {
+    return ''
+  }
+}
+
+function writeExpandedEventId(eventId: string) {
+  try {
+    window.sessionStorage.setItem(expandedEventStorageKey, eventId)
+  } catch {
+    // Navigation memory is an enhancement; links remain deterministic.
+  }
+}
+
 function MobileSidebarSection({
   items,
   label,
@@ -36,33 +55,41 @@ function MobileSidebarSection({
     <section className="sidebar-section" aria-labelledby={labelId}>
       <p className="sidebar-section-label" id={labelId}>{label}</p>
       {items.map((item) => (
-        <MobileSidebarLink item={item} key={item.to} onNavigate={onNavigate} />
+        <MobileSidebarLink
+          item={item}
+          key={item.to}
+          onNavigate={onNavigate}
+        />
       ))}
     </section>
   )
 }
 
 function MobileEventGroup({
-  defaultOpen = false,
   event,
-  heading,
+  expanded,
   onNavigate,
+  onToggle,
 }: {
-  defaultOpen?: boolean
   event: EventNavigationConfig
-  heading?: string
+  expanded: boolean
   onNavigate: () => void
+  onToggle: () => void
 }) {
   const items = buildCapabilityNavigation(event)
 
   return (
-    <section className="sidebar-section">
-      {heading ? <p className="sidebar-section-label">{heading}</p> : null}
-      <details className="sidebar-event-group" open={defaultOpen}>
-        <summary className="sidebar-event-summary">
+    <div className="sidebar-event-group">
+      <button
+        aria-expanded={expanded}
+        className="sidebar-event-summary"
+        onClick={onToggle}
+        type="button"
+      >
           <span>{event.label}</span>
           <small>{event.type}</small>
-        </summary>
+      </button>
+      {expanded ? (
         <div className="sidebar-subnav">
           {items.map((item) => (
             <MobileSidebarLink
@@ -72,8 +99,8 @@ function MobileEventGroup({
             />
           ))}
         </div>
-      </details>
-    </section>
+      ) : null}
+    </div>
   )
 }
 
@@ -111,13 +138,24 @@ function MobileNavigationDrawer({
     eventOptions,
     prefetchEventNavigation,
     selectEvent,
-    selectedEvent,
     selectedEventId,
   } = useSelectedEventNavigation()
+  const [expandedEventId, setExpandedEventId] = useState(() =>
+    selectedEventId || readExpandedEventId(),
+  )
+  const knownExpandedEvent = eventOptions.some((event) => event.id === expandedEventId)
+  const resolvedExpandedEventId =
+    knownExpandedEvent ? expandedEventId : selectedEventId
 
   function handleEventChange(eventId: string) {
+    expandEvent(eventId)
     selectEvent(eventId)
     onClose()
+  }
+
+  function expandEvent(eventId: string) {
+    setExpandedEventId(eventId)
+    writeExpandedEventId(eventId)
   }
 
   return (
@@ -148,27 +186,66 @@ function MobileNavigationDrawer({
           ))
         ) : null}
 
-        <section className="sidebar-section" aria-labelledby="mobile-sidebar-current-event">
-          <p className="sidebar-section-label" id="mobile-sidebar-current-event">Current Event</p>
-          <MobileEventSelector
-            eventOptions={eventOptions}
-            onChange={handleEventChange}
-            onPrefetch={prefetchEventNavigation}
-            selectedEventId={selectedEventId}
-          />
-          <MobileEventGroup defaultOpen event={selectedEvent} onNavigate={onClose} />
+        <section className="sidebar-section" aria-labelledby="mobile-sidebar-my-events">
+          <p className="sidebar-section-label" id="mobile-sidebar-my-events">My Events</p>
+          {eventOptions.length > 1 ? (
+            <MobileEventSelector
+              eventOptions={eventOptions}
+              onChange={handleEventChange}
+              onPrefetch={prefetchEventNavigation}
+              selectedEventId={selectedEventId}
+            />
+          ) : null}
+          {eventOptions.length === 0 ? (
+            <MobileNoEventsNavigation commissioner={commissioner} onNavigate={onClose} />
+          ) : (
+            eventOptions.map((event) => (
+              <MobileEventGroup
+                event={event}
+                expanded={resolvedExpandedEventId === event.id}
+                key={event.id}
+                onNavigate={onClose}
+                onToggle={() => expandEvent(event.id)}
+              />
+            ))
+          )}
         </section>
 
-        <MobileSidebarSection items={communityItems} label="Community" onNavigate={onClose} />
+        <MobileSidebarSection
+          items={communityItems}
+          label="Community"
+          onNavigate={onClose}
+        />
         {commissioner ? (
           <MobileSidebarSection
             items={commissionerItems}
-            label="Commissioner Tools"
+            label="Commissioner"
             onNavigate={onClose}
           />
         ) : null}
       </nav>
     </aside>
+  )
+}
+
+function MobileNoEventsNavigation({
+  commissioner,
+  onNavigate,
+}: {
+  commissioner: boolean
+  onNavigate: () => void
+}) {
+  return (
+    <div className="sidebar-event-group">
+      <p className="sidebar-section-label">No Active Events</p>
+      <div className="sidebar-subnav">
+        <Link onClick={onNavigate} to="/players">Browse Community</Link>
+      {commissioner ? (
+          <Link onClick={onNavigate} to="/commissioner/event-manager">Create Event</Link>
+      ) : null}
+        <Link onClick={onNavigate} to="/events">View Past Events</Link>
+      </div>
+    </div>
   )
 }
 
@@ -187,7 +264,7 @@ function MobileEventSelector({
     <label className="sidebar-event-selector">
       <span>Event Selector</span>
       <select
-        aria-label="Select current event"
+        aria-label="Select event"
         onChange={(event) => {
           const selector = event.currentTarget
           selector.disabled = true

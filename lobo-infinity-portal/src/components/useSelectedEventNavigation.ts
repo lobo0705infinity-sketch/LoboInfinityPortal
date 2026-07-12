@@ -118,7 +118,6 @@ export function useSelectedEventNavigation() {
     eventOptions: eventNavigationOptions,
     prefetchEventNavigation,
     selectEvent,
-    selectedEvent,
     selectedEventId: selectedEvent.id,
   }
 }
