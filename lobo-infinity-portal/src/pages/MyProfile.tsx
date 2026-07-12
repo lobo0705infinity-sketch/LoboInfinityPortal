@@ -475,7 +475,11 @@ function ProfileHero({
           </div>
           <div>
             <dt>Favorite Mission</dt>
-            <dd>{getCanonicalMissionName(data.leagueStatistics?.favoriteMission) || 'Not established'}</dd>
+            <dd>{formatMissionMetric(data.leagueStatistics?.favoriteMission || '') || 'Not established'}</dd>
+          </div>
+          <div>
+            <dt>Best Mission</dt>
+            <dd>{formatMissionMetric(data.leagueStatistics?.bestMission || '') || 'Not established'}</dd>
           </div>
         </dl>
       </div>
@@ -2017,6 +2021,10 @@ function getMostCommon(values: string[]) {
     .forEach((value) => counts.set(value, (counts.get(value) ?? 0) + 1))
 
   return Array.from(counts.entries()).sort((left, right) => right[1] - left[1])[0]?.[0] ?? ''
+}
+
+function formatMissionMetric(value: string) {
+  return getCanonicalMissionName(value) || value
 }
 
 function formatRecord(stats: ProfileStatisticsSnapshot | null) {

@@ -199,7 +199,11 @@ function PlayerProfile() {
           />
           <Metric
             label="Favorite Mission"
-            value={getCanonicalMissionName(profileState.player.favoriteMission)}
+            value={formatMissionMetric(profileState.player.favoriteMission)}
+          />
+          <Metric
+            label="Best Mission"
+            value={formatMissionMetric(profileState.player.bestMission)}
           />
           <Metric label="Best Faction" value={profileState.player.bestFaction} />
           <Metric label="Rival" value={profileState.player.rival} />
@@ -491,6 +495,10 @@ function decodePlayerName(playerName: string | undefined) {
 
 function formatPercent(value: number) {
   return `${value}%`
+}
+
+function formatMissionMetric(value: string) {
+  return getCanonicalMissionName(value) || value
 }
 
 function titleToId(title: string) {

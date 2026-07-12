@@ -78,6 +78,11 @@ function getPlayer(e) {
       registeredPlayer.player
     );
 
+  const missionProfile =
+    getPlayerMissionProfile(
+      registeredPlayer.player
+    );
+
   const availability =
     getSeasonAvailabilityForPlayer(
       getSeasonAvailabilityMap(),
@@ -118,9 +123,10 @@ function getPlayer(e) {
         ),
 
       favoriteMission:
-        FAVORITEMISSION(
-          registeredPlayer.player
-        ),
+        missionProfile.favoriteMission,
+
+      bestMission:
+        missionProfile.bestMission,
 
       firstTurnGames:
         firstTurnGames.length,

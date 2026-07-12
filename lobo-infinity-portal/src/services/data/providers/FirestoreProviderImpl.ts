@@ -1464,6 +1464,7 @@ function emptyPlayerProfile(playerName: string): PlayerProfileData {
     division: '',
     favoriteFaction: '',
     favoriteMission: '',
+    bestMission: '',
     firstTurnGames: 0,
     firstTurnWinRate: 0,
     games: 0,

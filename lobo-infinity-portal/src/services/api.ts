@@ -311,6 +311,7 @@ export type PlayerProfileData = {
   vp: number
   favoriteFaction: string
   favoriteMission: string
+  bestMission: string
   firstTurnGames: number
   secondTurnGames: number
   firstTurnWinRate: number
@@ -3487,6 +3488,7 @@ function normalizePlayerProfileRecord(
     vp: getRequiredNumber(player, 'vp'),
     favoriteFaction: getString(player, 'favoriteFaction'),
     favoriteMission: getString(player, 'favoriteMission'),
+    bestMission: getString(player, 'bestMission'),
     firstTurnGames: getRequiredNumber(player, 'firstTurnGames'),
     secondTurnGames: getRequiredNumber(player, 'secondTurnGames'),
     firstTurnWinRate: getRequiredNumber(player, 'firstTurnWinRate'),
@@ -4055,6 +4057,7 @@ function normalizeComparisonPlayer(item: unknown): PlayerComparisonPlayer {
     vp: getRequiredNumber(record, 'vp'),
     favoriteFaction: getString(record, 'favoriteFaction'),
     favoriteMission: getString(record, 'favoriteMission'),
+    bestMission: getString(record, 'bestMission'),
     firstTurnGames: 0,
     secondTurnGames: 0,
     firstTurnWinRate: 0,

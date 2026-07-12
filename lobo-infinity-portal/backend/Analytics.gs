@@ -116,6 +116,151 @@ function MOSTCOMMON(values){
 
 }
 
+function getMissionProfileString(value) {
+
+  if (value === null || value === undefined)
+    return "";
+
+  return String(value).trim();
+
+}
+
+function getMissionProfileTime(value, fallback) {
+
+  if (value instanceof Date)
+    return value.getTime();
+
+  if (typeof value === "number" && isFinite(value))
+    return value;
+
+  const text =
+    getMissionProfileString(value);
+
+  if (text) {
+
+    const parsed =
+      Date.parse(text);
+
+    if (!isNaN(parsed))
+      return parsed;
+
+  }
+
+  return fallback || 0;
+
+}
+
+function buildMissionProfileSummary(items, readMission, readWin, readDate) {
+
+  const missions = {};
+
+  (items || []).forEach(function(item, index) {
+
+    const mission =
+      getMissionProfileString(readMission(item));
+
+    if (!mission)
+      return;
+
+    if (!missions[mission])
+      missions[mission] = {
+        mission: mission,
+        games: 0,
+        wins: 0,
+        losses: 0,
+        lastPlayedValue: 0
+      };
+
+    const record =
+      missions[mission];
+
+    record.games += 1;
+
+    if (readWin(item))
+      record.wins += 1;
+    else
+      record.losses += 1;
+
+    record.lastPlayedValue =
+      Math.max(
+        record.lastPlayedValue,
+        getMissionProfileTime(readDate(item), index + 1)
+      );
+
+  });
+
+  const rows =
+    Object.keys(missions)
+      .map(function(mission) {
+        const record =
+          missions[mission];
+
+        record.winRate =
+          record.games === 0
+            ? 0
+            : record.wins / record.games;
+
+        return record;
+      });
+
+  const favorite =
+    rows
+      .slice()
+      .sort(function(a, b) {
+        if (b.games !== a.games)
+          return b.games - a.games;
+        if (b.wins !== a.wins)
+          return b.wins - a.wins;
+        if (b.lastPlayedValue !== a.lastPlayedValue)
+          return b.lastPlayedValue - a.lastPlayedValue;
+        return a.mission.localeCompare(b.mission);
+      })[0] || null;
+
+  const best =
+    rows
+      .filter(function(record) {
+        return record.games >= 3;
+      })
+      .sort(function(a, b) {
+        if (b.winRate !== a.winRate)
+          return b.winRate - a.winRate;
+        if (b.wins !== a.wins)
+          return b.wins - a.wins;
+        if (b.lastPlayedValue !== a.lastPlayedValue)
+          return b.lastPlayedValue - a.lastPlayedValue;
+        if (b.games !== a.games)
+          return b.games - a.games;
+        return a.mission.localeCompare(b.mission);
+      })[0] || null;
+
+  return {
+    favoriteMission: favorite ? favorite.mission : "",
+    bestMission: best ? best.mission : "",
+    missions: rows
+      .sort(function(a, b) {
+        return a.mission.localeCompare(b.mission);
+      })
+  };
+
+}
+
+function getPlayerMissionProfile(player) {
+
+  return buildMissionProfileSummary(
+    PLAYERGAMES(player),
+    function(game) {
+      return game[COL_MISSION];
+    },
+    function(game) {
+      return game[COL_RESULT] === "W";
+    },
+    function(game) {
+      return game[COL_DATE];
+    }
+  );
+
+}
+
 
 /*******************************************************
  *
@@ -363,11 +508,15 @@ function FAVORITEMISSION(player){
 
   if(!player) return "";
 
-  const result = MOSTCOMMON(PLAYERMISSIONS(player));
+  return getPlayerMissionProfile(player).favoriteMission;
 
-  if(result.count===0) return "";
+}
 
-  return result.value + " (" + result.count + " games)";
+function PLAYERBESTMISSION(player){
+
+  if(!player) return "";
+
+  return getPlayerMissionProfile(player).bestMission;
 
 }
 

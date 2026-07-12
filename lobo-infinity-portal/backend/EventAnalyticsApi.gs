@@ -857,6 +857,12 @@ function getEventAnalyticsComparison(e) {
 
 function buildEventAnalyticsComparisonPlayer(standing, context) {
 
+  const missionProfile =
+    getEventAnalyticsPlayerMissionProfile(
+      context,
+      standing.player
+    );
+
   return {
     name: standing.player,
     displayName: standing.displayName || standing.player,
@@ -869,7 +875,8 @@ function buildEventAnalyticsComparisonPlayer(standing, context) {
     op: standing.op,
     vp: standing.vp,
     favoriteFaction: "",
-    favoriteMission: "",
+    favoriteMission: missionProfile.favoriteMission,
+    bestMission: missionProfile.bestMission,
     bestFaction: ""
   };
 
@@ -934,6 +941,12 @@ function getEventAnalyticsPlayerProfile(e, requestedName) {
           getEventAnalyticsString(standing.player).toLowerCase();
       })[0] || {};
 
+  const missionProfile =
+    getEventAnalyticsPlayerMissionProfile(
+      context,
+      standing.player
+    );
+
   return jsonOutput({
     success: true,
     eventId: context.eventId,
@@ -950,7 +963,8 @@ function getEventAnalyticsPlayerProfile(e, requestedName) {
       op: standing.op,
       vp: standing.vp,
       favoriteFaction: canonicalizeArmyName(registration.faction) || "",
-      favoriteMission: "",
+      favoriteMission: missionProfile.favoriteMission,
+      bestMission: missionProfile.bestMission,
       firstTurnGames: 0,
       secondTurnGames: 0,
       firstTurnWinRate: 0,
@@ -989,6 +1003,44 @@ function getEventAnalyticsPlayerProfile(e, requestedName) {
         encodeURIComponent(standing.player)
     }
   });
+
+}
+
+function getEventAnalyticsPlayerMissionProfile(context, playerName) {
+
+  const target =
+    getEventAnalyticsString(playerName).toLowerCase();
+
+  const results =
+    getEventAnalyticsResults(context.eventId)
+      .filter(function(result) {
+        if (result.status === "Rejected")
+          return false;
+
+        const player =
+          getEventAnalyticsString(result.player).toLowerCase();
+        const opponent =
+          getEventAnalyticsString(result.opponent).toLowerCase();
+        const winner =
+          getEventAnalyticsString(result.winner).toLowerCase();
+
+        return player === target ||
+          opponent === target ||
+          winner === target;
+      });
+
+  return buildMissionProfileSummary(
+    results,
+    function(result) {
+      return result.mission;
+    },
+    function(result) {
+      return getEventAnalyticsString(result.winner).toLowerCase() === target;
+    },
+    function(result) {
+      return result.updatedAt || result.createdAt;
+    }
+  );
 
 }
 

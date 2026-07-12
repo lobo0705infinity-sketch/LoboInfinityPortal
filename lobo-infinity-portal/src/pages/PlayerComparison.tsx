@@ -225,8 +225,10 @@ function ComparisonReport({
           <dl className="profile-metric-list">
             <Metric label={`${left.name} Record`} value={`${left.wins}-${left.losses}`} />
             <Metric label={`${right.name} Record`} value={`${right.wins}-${right.losses}`} />
-            <Metric label={`${left.name} Favorite Mission`} value={getCanonicalMissionName(left.favoriteMission)} />
-            <Metric label={`${right.name} Favorite Mission`} value={getCanonicalMissionName(right.favoriteMission)} />
+            <Metric label={`${left.name} Favorite Mission`} value={formatMissionMetric(left.favoriteMission)} />
+            <Metric label={`${right.name} Favorite Mission`} value={formatMissionMetric(right.favoriteMission)} />
+            <Metric label={`${left.name} Best Mission`} value={formatMissionMetric(left.bestMission)} />
+            <Metric label={`${right.name} Best Mission`} value={formatMissionMetric(right.bestMission)} />
           </dl>
         </section>
       </section>
@@ -291,6 +293,10 @@ function PlayerSelect({
       </select>
     </label>
   )
+}
+
+function formatMissionMetric(value: string) {
+  return getCanonicalMissionName(value) || value
 }
 
 function Metric({

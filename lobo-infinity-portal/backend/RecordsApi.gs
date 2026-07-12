@@ -1220,6 +1220,10 @@ function buildComparisonPlayer(
       FAVORITEMISSION(
         player.player
       ),
+    bestMission:
+      PLAYERBESTMISSION(
+        player.player
+      ),
     bestFaction:
       BESTFACTION(
         player.player
