@@ -26,11 +26,16 @@ function getRecords(e) {
         )
     });
 
+  if (context.gameType !== "league")
+    return jsonOutput({
+      success: true,
+      records:
+        getEventAnalyticsGameTypeRecords(context)
+    });
+
   const games =
     getAllRecentGameObjectsForEvent(
-      context.gameType === "league"
-        ? context.eventId
-        : "all",
+      context.eventId,
       context.gameType
     );
 

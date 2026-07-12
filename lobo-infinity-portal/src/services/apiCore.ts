@@ -122,8 +122,11 @@ export type ClientDiagnosticMetric = {
   timestamp: number
 }
 
-export const API_URL =
-  'https://script.google.com/macros/s/AKfycbyAo3l0ate7jbrqZ9bOvBBBtJ-268iXsuCv8a7JNUWQI9WdNx6vwK9TW05E7aVXl1TMRg/exec'
+export const API_URL = import.meta.env.VITE_API_URL as string
+
+if (!API_URL) {
+  throw new Error('VITE_API_URL is required.')
+}
 
 let activeAuthToken = ''
 let activeOAuthClientId = ''

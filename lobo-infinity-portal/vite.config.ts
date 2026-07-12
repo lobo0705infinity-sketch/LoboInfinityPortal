@@ -43,7 +43,17 @@ export default defineConfig({
     },
   },
   define: {
+    __BACKEND_COMMIT__: JSON.stringify(
+      process.env.VITE_BACKEND_COMMIT ??
+        process.env.VITE_BUILD_GIT_COMMIT ??
+        process.env.VERCEL_GIT_COMMIT_SHA ??
+        'not-provided',
+    ),
+    __BACKEND_DEPLOYMENT_ID__: JSON.stringify(
+      process.env.VITE_BACKEND_DEPLOYMENT_ID ?? 'not-provided',
+    ),
     __BUILD_TIMESTAMP__: JSON.stringify(new Date().toISOString()),
+    __CACHE_VERSION__: JSON.stringify(process.env.VITE_CACHE_VERSION ?? 'client-cache-v2'),
     __DEPLOYMENT_ID__: JSON.stringify(
       process.env.VITE_BUILD_DEPLOYMENT_ID ??
         process.env.VERCEL_DEPLOYMENT_ID ??
@@ -56,6 +66,8 @@ export default defineConfig({
         process.env.VERCEL_GIT_COMMIT_SHA ??
         'not-provided',
     ),
+    __PORTAL_VERSION__: JSON.stringify(process.env.VITE_PORTAL_VERSION ?? 'Version 5.0'),
+    __SCHEMA_VERSION__: JSON.stringify(process.env.VITE_SCHEMA_VERSION ?? '1'),
     __VERCEL_URL__: JSON.stringify(
       process.env.VITE_BUILD_VERCEL_URL ?? process.env.VERCEL_URL ?? '',
     ),

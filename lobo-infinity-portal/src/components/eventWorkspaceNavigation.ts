@@ -285,6 +285,7 @@ function getRouteCapability(
   if (pathname === '/intelligence' && queryEventId) return 'intelligence'
   if (pathname === '/timeline' && queryEventId) return 'schedule'
   if (pathname === '/rules' && queryEventId) return 'rules'
+  if (pathname === '/submit-game' && queryEventId) return 'submitResult'
 
   if (pathname.match(/^\/event\/[^/?#]+\/submit-result$/)) {
     return 'submitResult'

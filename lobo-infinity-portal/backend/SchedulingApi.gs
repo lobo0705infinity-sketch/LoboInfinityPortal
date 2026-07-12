@@ -1604,9 +1604,9 @@ function buildTeamTournamentSchedulingQuickActions(eventId, recommendations) {
     {
       label: "Submit Result",
       link:
-        "/event/" +
+        "/submit-game?eventId=" +
         encodeURIComponent(eventId) +
-        "/submit-result"
+        "&gameType=event"
     }
   ];
 

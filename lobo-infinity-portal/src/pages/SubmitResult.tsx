@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Link, useLocation, useParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import Skeleton from '../components/Skeleton'
 import {
@@ -40,9 +40,11 @@ const emptyLeagueResult: LeagueResultSubmission = {
 
 function SubmitResult() {
   const auth = useAuth()
-  const location = useLocation()
-  const { eventId = 'event-current-league' } = useParams()
-  const isCasualRoute = location.pathname === '/casual-result'
+  const [searchParams] = useSearchParams()
+  const selectedGameType = searchParams.get('gameType') ?? ''
+  const eventId = searchParams.get('eventId') ?? 'event-current-league'
+  const isCasualRoute = selectedGameType === 'casual'
+  const shouldShowGameTypeSelector = !selectedGameType
   const [eventHome, setEventHome] = useState<EventHomeData | null>(null)
   const [teamTournament, setTeamTournament] = useState<TeamTournamentData | null>(null)
   const [state, setState] = useState<SubmitState>({ status: 'loading' })
@@ -63,6 +65,13 @@ function SubmitResult() {
     const controller = new AbortController()
 
     async function loadSubmissionContext() {
+      if (shouldShowGameTypeSelector) {
+        setEventHome(null)
+        setTeamTournament(null)
+        setState({ status: 'idle' })
+        return
+      }
+
       if (isCasualRoute) {
         setEventHome(null)
         setTeamTournament(null)
@@ -144,6 +153,7 @@ function SubmitResult() {
     auth.user.displayName,
     eventId,
     isCasualRoute,
+    shouldShowGameTypeSelector,
   ])
 
   function updateCasualField(field: keyof CasualResultSubmission, value: string) {
@@ -177,6 +187,41 @@ function SubmitResult() {
         status: 'error',
       })
     }
+  }
+
+  if (shouldShowGameTypeSelector) {
+    return (
+      <main className="portal-shell">
+        <section className="page-header" aria-labelledby="submit-game-title">
+          <p className="eyebrow">Unified Game Submission</p>
+          <h1 id="submit-game-title">Submit Game</h1>
+          <p>Choose the game type. Each workflow reuses the same result validation and analytics pipeline.</p>
+        </section>
+
+        <section className="operations-grid">
+          <SubmissionChoice
+            description="Submit a game for the current league event."
+            label="League"
+            to="/submit-game?eventId=event-current-league&gameType=event"
+          />
+          <SubmissionChoice
+            description="Submit an individual table result for the Team Tournament."
+            label="Tournament"
+            to="/submit-game?eventId=event-august-2026-team-tournament&gameType=event"
+          />
+          <SubmissionChoice
+            description="Record a non-event game for lifetime analytics and activity feeds."
+            label="Casual"
+            to="/submit-game?gameType=casual"
+          />
+          <article className="panel operations-panel">
+            <p className="eyebrow">Coming Soon</p>
+            <h2>Narrative</h2>
+            <p>Narrative submissions will use the same game pipeline when that game type is enabled.</p>
+          </article>
+        </section>
+      </main>
+    )
   }
 
   if (isCasualRoute) {
@@ -478,6 +523,27 @@ function SubmitResult() {
         </div>
       </form>
     </main>
+  )
+}
+
+function SubmissionChoice({
+  description,
+  label,
+  to,
+}: {
+  description: string
+  label: string
+  to: string
+}) {
+  return (
+    <article className="panel operations-panel">
+      <p className="eyebrow">Game Type</p>
+      <h2>{label}</h2>
+      <p>{description}</p>
+      <Link className="submit-match-button" to={to}>
+        Continue
+      </Link>
+    </article>
   )
 }
 

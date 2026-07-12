@@ -542,8 +542,184 @@ function getEventAnalyticsGameTypeIntelligence(context) {
     recentUpsets: [],
     promotionBattle: [],
     relegationBattle: [],
-    records: getLeagueRecords(games)
+    records: getEventAnalyticsGameTypeRecords(context)
   };
+
+}
+
+function getEventAnalyticsGameTypeRecords(context) {
+
+  const games =
+    getAllRecentGameObjectsForEvent(
+      context.gameType === "league"
+        ? context.eventId
+        : "all",
+      context.gameType
+    );
+
+  return {
+    largestVPMargin:
+      getBiggestVictories(games)[0] || null,
+    largestOPMargin:
+      getLargestScoreMargin(
+        games,
+        "op",
+        "OP Margin"
+      ),
+    highestScoringGame:
+      getHighestScoringGames(games)[0] || null,
+    lowestScoringGame:
+      getLowestScoringGame(games),
+    closestVPGame:
+      getClosestGames(games)[0] || null,
+    mostActivePlayer:
+      getEventAnalyticsMostActiveGameValue(
+        games,
+        "player"
+      ),
+    mostActiveFaction:
+      getEventAnalyticsMostActiveGameValue(
+        games,
+        "faction"
+      ),
+    mostActiveMission:
+      getEventAnalyticsMostActiveGameValue(
+        games,
+        "mission"
+      ),
+    bestFirstTurnFaction:
+      getEventAnalyticsFirstTurnFactionRecord(games, true),
+    worstFirstTurnFaction:
+      getEventAnalyticsFirstTurnFactionRecord(games, false)
+  };
+
+}
+
+function getEventAnalyticsMostActiveGameValue(games, type) {
+
+  const counts = {};
+
+  games.forEach(function(game) {
+    if (type === "player") {
+      incrementEventAnalyticsCount(counts, game.winnerDisplayName || game.winner);
+      incrementEventAnalyticsCount(counts, game.loserDisplayName || game.loser);
+    } else if (type === "faction") {
+      incrementEventAnalyticsCount(counts, game.winnerFaction);
+      incrementEventAnalyticsCount(counts, game.loserFaction);
+    } else {
+      incrementEventAnalyticsCount(counts, game.mission);
+    }
+  });
+
+  const name =
+    getEventAnalyticsTopKey(counts);
+
+  if (!name)
+    return null;
+
+  return {
+    type: type,
+    name: name,
+    displayName: name,
+    games: counts[name],
+    story:
+      name +
+      " is the most active " +
+      type +
+      " with " +
+      counts[name] +
+      " appearances."
+  };
+
+}
+
+function getEventAnalyticsFirstTurnFactionRecord(games, best) {
+
+  const factions = {};
+
+  games.forEach(function(game) {
+    const firstTurn =
+      getEventAnalyticsString(game.firstTurn);
+
+    if (!firstTurn)
+      return;
+
+    const winner =
+      getEventAnalyticsString(game.winner);
+    const loser =
+      getEventAnalyticsString(game.loser);
+    const faction =
+      firstTurn === winner
+        ? game.winnerFaction
+        : firstTurn === loser
+          ? game.loserFaction
+          : "";
+
+    if (!faction)
+      return;
+
+    if (!factions[faction])
+      factions[faction] = {
+        faction: faction,
+        games: 0,
+        wins: 0
+      };
+
+    factions[faction].games += 1;
+
+    if (firstTurn === winner)
+      factions[faction].wins += 1;
+  });
+
+  const ranked =
+    Object.values(factions)
+      .filter(function(record) {
+        return record.games > 0;
+      })
+      .sort(function(a, b) {
+        const left =
+          a.wins / a.games;
+        const right =
+          b.wins / b.games;
+
+        return best
+          ? right - left
+          : left - right;
+      });
+
+  const record =
+    ranked[0];
+
+  if (!record)
+    return null;
+
+  const winRate =
+    Math.round((record.wins / record.games) * 100);
+
+  return {
+    faction: record.faction,
+    games: record.games,
+    wins: record.wins,
+    winRate: winRate,
+    story:
+      record.faction +
+      " is " +
+      winRate +
+      "% when taking first turn."
+  };
+
+}
+
+function incrementEventAnalyticsCount(counts, value) {
+
+  const key =
+    getEventAnalyticsString(value);
+
+  if (!key)
+    return;
+
+  counts[key] =
+    (counts[key] || 0) + 1;
 
 }
 

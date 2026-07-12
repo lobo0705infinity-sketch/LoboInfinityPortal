@@ -6,7 +6,7 @@ import {
   type ComponentType,
   type ReactNode,
 } from 'react'
-import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
 import AuthProvider from './auth/AuthContext'
 import ApplicationErrorBoundary from './components/ApplicationErrorBoundary'
 import Breadcrumbs from './components/Breadcrumbs'
@@ -119,8 +119,9 @@ function AuthShell() {
                 <Route path="/news/:id" element={<DeepLinkRedirect target="news" />} />
                 <Route path="/events" element={<MeasuredRoute name="PastEvents"><PastEvents /></MeasuredRoute>} />
                 <Route path="/event/:eventId" element={<MeasuredRoute name="EventHome"><EventHome /></MeasuredRoute>} />
-                <Route path="/event/:eventId/submit-result" element={<MeasuredRoute name="SubmitResult"><SubmitResult /></MeasuredRoute>} />
-                <Route path="/casual-result" element={<MeasuredRoute name="SubmitResult"><SubmitResult /></MeasuredRoute>} />
+                <Route path="/submit-game" element={<MeasuredRoute name="SubmitResult"><SubmitResult /></MeasuredRoute>} />
+                <Route path="/event/:eventId/submit-result" element={<LegacySubmitResultRedirect />} />
+                <Route path="/casual-result" element={<Navigate replace to="/submit-game?gameType=casual" />} />
                 <Route path="/event/:eventId/tournament/:section" element={<MeasuredRoute name="TeamTournament"><TeamTournament /></MeasuredRoute>} />
                 <Route path="/event/:eventId/tournament" element={<MeasuredRoute name="TeamTournament"><TeamTournament /></MeasuredRoute>} />
                 <Route path="/event/:eventId/:section" element={<MeasuredRoute name="EventHome"><EventHome /></MeasuredRoute>} />
@@ -147,6 +148,17 @@ function AuthShell() {
         </div>
       </div>
     </SettingsProvider>
+  )
+}
+
+function LegacySubmitResultRedirect() {
+  const { eventId = 'event-current-league' } = useParams()
+
+  return (
+    <Navigate
+      replace
+      to={`/submit-game?eventId=${encodeURIComponent(eventId)}&gameType=event`}
+    />
   )
 }
 

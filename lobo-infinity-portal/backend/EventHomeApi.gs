@@ -1118,7 +1118,7 @@ function buildEventHomeQuickActions(event, registration, currentPlayer) {
             ? "Submit Team Result"
             : "Submit Result",
         action: "submitResult",
-        href: "/event/" + encodeURIComponent(event.id) + "/submit-result",
+        href: "/submit-game?eventId=" + encodeURIComponent(event.id) + "&gameType=event",
         enabled: currentPlayer !== null
       });
     },
@@ -1228,7 +1228,7 @@ function buildEventHomeNavigation(event) {
         return [
           ["Overview", base],
           ["Registration", base + "#registration"],
-          ["Submit Result", base + "/submit-result"],
+          ["Submit Result", "/submit-game?eventId=" + encodeURIComponent(event.id) + "&gameType=event"],
           ["Standings", base + "#standings"],
           ["Results", base + "#results"],
           ["Rules", base + "#rules"],

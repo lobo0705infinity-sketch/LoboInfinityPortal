@@ -46,10 +46,10 @@ const routes = [
     rejectedText: ['Chronological Event History'],
   },
   {
-    actualRoute: `/event/${eventId}/submit-result`,
+    actualRoute: `/submit-game?eventId=${eventId}&gameType=event`,
     activeLabel: 'Submit Result',
     component: 'SubmitResult',
-    expectedRoute: `/event/${eventId}/submit-result`,
+    expectedRoute: `/submit-game?eventId=${eventId}&gameType=event`,
     item: 'Submit Result',
     requiredText: ['Submit Result'],
     rejectedText: ['Chronological Event History'],

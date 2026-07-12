@@ -268,6 +268,63 @@ function Diagnostics() {
 
       <section className="panel operations-panel">
         <div className="panel-heading">
+          <p className="eyebrow">System Information</p>
+          <h2>Version 5.0 Platform Release</h2>
+        </div>
+        <div className="operations-table-wrap">
+          <table className="operations-table">
+            <tbody>
+              <tr>
+                <th>Portal Version</th>
+                <td>{buildInfo.portalVersion}</td>
+              </tr>
+              <tr>
+                <th>Backend</th>
+                <td>Production</td>
+              </tr>
+              <tr>
+                <th>Frontend Commit SHA</th>
+                <td>{buildInfo.gitCommit}</td>
+              </tr>
+              <tr>
+                <th>Backend Commit SHA</th>
+                <td>{buildInfo.backendCommit}</td>
+              </tr>
+              <tr>
+                <th>Apps Script Deployment ID</th>
+                <td>{buildInfo.backendDeploymentId}</td>
+              </tr>
+              <tr>
+                <th>Frontend Build</th>
+                <td>{buildInfo.deploymentId}</td>
+              </tr>
+              <tr>
+                <th>Backend Build</th>
+                <td>{buildInfo.backendDeploymentId}</td>
+              </tr>
+              <tr>
+                <th>Build Timestamp</th>
+                <td>{buildInfo.buildTimestamp}</td>
+              </tr>
+              <tr>
+                <th>Cache Version</th>
+                <td>{buildInfo.cacheVersion}</td>
+              </tr>
+              <tr>
+                <th>Schema Version</th>
+                <td>{buildInfo.schemaVersion}</td>
+              </tr>
+              <tr>
+                <th>API Endpoint</th>
+                <td>{buildInfo.apiUrl ? 'Configured' : 'Not configured'}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="panel operations-panel">
+        <div className="panel-heading">
           <p className="eyebrow">Production Build Identity</p>
           <h2>Frontend Deployment</h2>
         </div>
