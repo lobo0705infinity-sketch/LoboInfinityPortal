@@ -1398,7 +1398,7 @@ function SearchableSelect({
         )
       : options
 
-    return candidates.slice(0, 20)
+    return candidates
   }, [options, query])
 
   function choose(option: PickerOption) {
