@@ -47,11 +47,11 @@ const routes = [
   },
   {
     actualRoute: `/submit-game?eventId=${eventId}&gameType=event`,
-    activeLabel: 'Submit Result',
+    activeLabel: 'Submit Game',
     component: 'SubmitResult',
     expectedRoute: `/submit-game?eventId=${eventId}&gameType=event`,
-    item: 'Submit Result',
-    requiredText: ['Submit Result'],
+    item: 'Submit Game',
+    requiredText: ['Submit Game'],
     rejectedText: ['Chronological Event History'],
   },
   {

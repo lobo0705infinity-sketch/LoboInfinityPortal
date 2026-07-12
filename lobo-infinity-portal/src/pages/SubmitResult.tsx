@@ -229,7 +229,7 @@ function SubmitResult() {
       <main className="portal-shell">
         <section className="page-header" aria-labelledby="casual-result-title">
           <p className="eyebrow">Casual Game</p>
-          <h1 id="casual-result-title">Submit Casual Game</h1>
+          <h1 id="casual-result-title">Submit Game</h1>
           <p>Record a non-event game for lifetime analytics, faction trends, mission data, and activity feeds.</p>
           <Link className="submit-match-button" to="/">
             Return to Dashboard
@@ -398,7 +398,7 @@ function SubmitResult() {
     <main className="portal-shell">
       <section className="page-header" aria-labelledby="submit-result-title">
         <p className="eyebrow">Event Result</p>
-        <h1 id="submit-result-title">Submit Result</h1>
+        <h1 id="submit-result-title">Submit Game</h1>
         <p>Report a completed match using the event context already attached to your account.</p>
         <Link className="submit-match-button" to={`/event/${encodeURIComponent(eventId)}`}>
           Return to Event
@@ -516,7 +516,7 @@ function SubmitResult() {
         </label>
         <div className="army-list-form-actions">
           <button disabled={!auth.authenticated || state.status === 'submitting'} type="submit">
-            {state.status === 'submitting' ? 'Submitting...' : 'Submit Result'}
+            {state.status === 'submitting' ? 'Submitting...' : 'Submit Game'}
           </button>
           {state.status === 'success' ? <p role="status">{state.message}</p> : null}
           {state.status === 'error' ? <p role="alert">{state.message}</p> : null}
@@ -601,7 +601,7 @@ function TeamTournamentResultSubmission({
     <main className="portal-shell">
       <section className="page-header" aria-labelledby="submit-team-result-title">
         <p className="eyebrow">Team Tournament</p>
-        <h1 id="submit-team-result-title">Submit Team Result</h1>
+        <h1 id="submit-team-result-title">Submit Game</h1>
         <p>Report individual table results against the current tournament pairing.</p>
         <Link className="submit-match-button" to={`/event/${encodeURIComponent(eventHome.event.id)}/tournament`}>
           Return to Tournament
@@ -645,7 +645,7 @@ function TeamTournamentResultSubmission({
         </label>
         <div className="army-list-form-actions">
           <button disabled={disabled || !assignment || alreadySubmitted || state.status === 'submitting'} type="submit">
-            {state.status === 'submitting' ? 'Submitting...' : 'Submit Team Result'}
+            {state.status === 'submitting' ? 'Submitting...' : 'Submit Game'}
           </button>
           {!eventHome.registration.currentPlayer ? (
             <p role="alert">You must be registered for this Team Tournament before submitting a result.</p>

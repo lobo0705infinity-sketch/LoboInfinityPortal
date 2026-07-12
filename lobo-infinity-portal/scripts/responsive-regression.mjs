@@ -27,7 +27,7 @@ const routes = [
   { name: 'dashboard', path: '/' },
   { name: 'event-overview', path: '/event/event-current-league' },
   { name: 'team-tournament', path: '/event/event-august-2026-team-tournament/tournament' },
-  { name: 'submit-result', path: '/event/event-current-league/submit-result' },
+  { name: 'submit-game', path: '/submit-game?eventId=event-current-league&gameType=event' },
   { name: 'standings', path: '/standings?eventId=event-current-league' },
   { name: 'match-finder', path: '/match-finder?eventId=event-current-league' },
   { name: 'players', path: '/players?eventId=event-current-league' },

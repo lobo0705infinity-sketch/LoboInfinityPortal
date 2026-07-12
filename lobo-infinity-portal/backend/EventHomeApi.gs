@@ -1113,10 +1113,7 @@ function buildEventHomeQuickActions(event, registration, currentPlayer) {
     "eventHome.quickActions.submitResult",
     function() {
       actions.push({
-        label:
-          event.type === "Team Tournament"
-            ? "Submit Team Result"
-            : "Submit Result",
+        label: "Submit Game",
         action: "submitResult",
         href: "/submit-game?eventId=" + encodeURIComponent(event.id) + "&gameType=event",
         enabled: currentPlayer !== null
@@ -1228,7 +1225,7 @@ function buildEventHomeNavigation(event) {
         return [
           ["Overview", base],
           ["Registration", base + "#registration"],
-          ["Submit Result", "/submit-game?eventId=" + encodeURIComponent(event.id) + "&gameType=event"],
+          ["Submit Game", "/submit-game?eventId=" + encodeURIComponent(event.id) + "&gameType=event"],
           ["Standings", base + "#standings"],
           ["Results", base + "#results"],
           ["Rules", base + "#rules"],

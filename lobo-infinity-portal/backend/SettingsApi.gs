@@ -44,7 +44,7 @@ const DEFAULT_SETTINGS = [
   ],
   [
     "submissionButtonText",
-    "Submit Match",
+    "Submit Game",
     "Header button text for match submissions."
   ],
   [

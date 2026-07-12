@@ -1200,7 +1200,7 @@ function emptySettings() {
     registrationOpen: 'false',
     seasonEndDate: '',
     seasonStartDate: '',
-    submissionButtonText: 'Submit Match',
+    submissionButtonText: 'Submit Game',
     submissionButtonVisible: 'true',
     submissionEnabled: 'true',
     themeAccentColor: '',

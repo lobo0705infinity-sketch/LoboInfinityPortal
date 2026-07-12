@@ -895,7 +895,7 @@ function SubmitResultCard({ eventId }: { eventId: string }) {
       </div>
       <p>Use the event result page to report your assigned table.</p>
       <Link className="submit-match-button" to={`/submit-game?eventId=${encodeURIComponent(eventId)}&gameType=event`}>
-        Submit Result
+        Submit Game
       </Link>
     </section>
   )

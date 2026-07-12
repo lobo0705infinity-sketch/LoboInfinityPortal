@@ -240,7 +240,7 @@ function EventHomeSkeleton({
       </section>
 
       <nav className="event-home-nav" aria-label="Event navigation">
-        {['Overview', 'Registration', 'Submit Result', 'Standings', 'Rules'].map((label) => (
+        {['Overview', 'Registration', 'Submit Game', 'Standings', 'Rules'].map((label) => (
           <span key={label}>{label}</span>
         ))}
       </nav>

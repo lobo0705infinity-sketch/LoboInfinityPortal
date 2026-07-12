@@ -241,7 +241,7 @@ function normalizeSettings(record: Record<string, unknown>): PortalSettings {
     seasonEndDate: getString(record, 'seasonEndDate'),
     seasonStartDate: getString(record, 'seasonStartDate'),
     submissionButtonText:
-      getString(record, 'submissionButtonText') || 'Submit Match',
+      getString(record, 'submissionButtonText') || 'Submit Game',
     submissionButtonVisible:
       getString(record, 'submissionButtonVisible') || 'true',
     submissionEnabled: getString(record, 'submissionEnabled') || 'true',

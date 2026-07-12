@@ -433,15 +433,11 @@ function buildCommunityNextActions(user, seasonCommand, currentEvent, settings, 
       link: activity.streams[0].youtubeUrl || "/streams"
     });
 
-  const submitUrl =
-    getCommunityCommandString(settings && settings.googleFormUrl);
-
-  if (submitUrl !== "")
-    actions.push({
-      label: "Submit a completed game.",
-      priority: "Low",
-      link: submitUrl
-    });
+  actions.push({
+    label: "Submit a completed game.",
+    priority: "Low",
+    link: "/submit-game?gameType=casual"
+  });
 
   return actions.slice(0, 5);
 
@@ -681,8 +677,7 @@ function buildCommunityIntelligenceSummary(user, seasonCommand) {
 
 function buildCommunityQuickActions(settings) {
 
-  const submitUrl =
-    getCommunityCommandString(settings && settings.googleFormUrl) || "/";
+  const submitUrl = "/submit-game?gameType=casual";
 
   return [
     {

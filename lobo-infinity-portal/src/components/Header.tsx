@@ -1,7 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
-import { useSettings } from '../contexts/SettingsContext'
 import GlobalSearch from './GlobalSearch'
 import LeagueCrest from './LeagueCrest'
 import NotificationCenter from './NotificationCenter'
@@ -13,14 +12,7 @@ const MobileNavigationDrawer = lazy(() => import('./MobileNavigationDrawer'))
 
 function Header() {
   const auth = useAuth()
-  const { settings } = useSettings()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-
-  const matchSubmissionUrl = settings?.googleFormUrl ?? ''
-  const submissionsEnabled = settings?.submissionEnabled !== 'false'
-  const buttonVisible = settings?.submissionButtonVisible !== 'false'
-  const buttonText = settings?.submissionButtonText || 'Submit Match'
-  const submitEnabled = Boolean(matchSubmissionUrl && submissionsEnabled && buttonVisible)
 
   useEffect(() => {
     if (!isMobileMenuOpen) {
@@ -89,17 +81,10 @@ function Header() {
       </div>
 
       <div className="header-actions">
-        {submitEnabled ? (
-          <a
-            className="submit-match-button"
-            href={matchSubmissionUrl}
-            rel="noreferrer"
-            target="_blank"
-          >
-            <PortalIcon name="submit" />
-            {buttonText}
-          </a>
-        ) : null}
+        <Link className="submit-match-button" to="/submit-game">
+          <PortalIcon name="submit" />
+          Submit Game
+        </Link>
         <GlobalSearch />
         <QuickJump />
         <NotificationCenter />
@@ -109,17 +94,9 @@ function Header() {
           <span>Live</span>
         </div>
       </div>
-      {submitEnabled ? (
-        <a
-          aria-label={buttonText}
-          className="mobile-submit-fab"
-          href={matchSubmissionUrl}
-          rel="noreferrer"
-          target="_blank"
-        >
-          <PortalIcon name="submit" />
-        </a>
-      ) : null}
+      <Link aria-label="Submit Game" className="mobile-submit-fab" to="/submit-game">
+        <PortalIcon name="submit" />
+      </Link>
     </header>
   )
 }

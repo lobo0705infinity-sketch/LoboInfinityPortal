@@ -1602,7 +1602,7 @@ function buildTeamTournamentSchedulingQuickActions(eventId, recommendations) {
         "/tournament"
     },
     {
-      label: "Submit Result",
+      label: "Submit Game",
       link:
         "/submit-game?eventId=" +
         encodeURIComponent(eventId) +

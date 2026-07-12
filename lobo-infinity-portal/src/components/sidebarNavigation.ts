@@ -12,6 +12,11 @@ export const topLevelItems: NavigationItem[] = [
     label: 'Dashboard',
     to: '/',
   },
+  {
+    icon: 'submit',
+    label: 'Submit Game',
+    to: '/submit-game',
+  },
 ]
 
 export const authenticatedTopLevelItems: NavigationItem[] = [
@@ -56,6 +61,11 @@ export const leagueItems: NavigationItem[] = [
 ]
 
 export const communityItems: NavigationItem[] = [
+  {
+    icon: 'submit',
+    label: 'Submit Game',
+    to: '/submit-game?gameType=casual',
+  },
   {
     icon: 'news',
     label: 'News',

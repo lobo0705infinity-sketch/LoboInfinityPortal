@@ -48,7 +48,7 @@ export const capabilityLabels: Record<EventCapability, string> = {
   results: 'Results',
   rules: 'Rules',
   schedule: 'Schedule',
-  submitResult: 'Submit Result',
+  submitResult: 'Submit Game',
   standings: 'Standings',
   statistics: 'Statistics',
   teams: 'Teams',
