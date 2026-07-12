@@ -20,6 +20,11 @@ import {
   type TeamTournamentData,
 } from '../services/api'
 import { resolveSubmitGamePlayer } from '../services/submitGameIdentity'
+import {
+  buildSubmitGameOpponentOptions,
+  buildSubmitGamePlayerOptions,
+  isTournamentEventType,
+} from '../services/submitGameOpponents'
 
 type SubmitState =
   | { status: 'idle' }
@@ -104,19 +109,20 @@ function SubmitResult() {
     round: undefined,
   })
   const canOverrideOpponentFilter = auth.isAtLeastRole('Commissioner')
-  const allPlayerOptions = useMemo(() => buildPlayerOptions(searchIndex), [searchIndex])
+  const allPlayerOptions = useMemo(() => buildSubmitGamePlayerOptions(searchIndex), [searchIndex])
   const factionOptions = useMemo(() => buildFactionOptions(), [])
   const missionOptions = useMemo(() => buildMissionOptions(), [])
   const leagueOpponentOptions = useMemo(
     () =>
-      buildEventOpponentOptions(
+      buildSubmitGameOpponentOptions({
+        allPlayers: allPlayerOptions,
+        currentPlayer: leagueResult.player,
+        currentPlayerDivision: leagueResult.division,
         eventHome,
-        allPlayerOptions,
-        leagueResult.player,
-        leagueResult.division,
-        showAllOpponents && canOverrideOpponentFilter,
-      ),
-    [allPlayerOptions, canOverrideOpponentFilter, eventHome, leagueResult.division, leagueResult.player, showAllOpponents],
+        showAllPlayers: showAllOpponents && canOverrideOpponentFilter,
+        tournamentRegistrations: teamTournament?.registration.registrations,
+      }),
+    [allPlayerOptions, canOverrideOpponentFilter, eventHome, leagueResult.division, leagueResult.player, showAllOpponents, teamTournament?.registration.registrations],
   )
   const casualOpponentOptions = useMemo(
     () => allPlayerOptions.filter((option) => !sameValue(option.value, casualResult.player)),
@@ -219,7 +225,7 @@ function SubmitResult() {
             home.statistics.currentRound,
         }))
 
-        if (home.event.type === 'Team Tournament') {
+        if (isTournamentEventType(home.event.type)) {
           const tournament = await apiClient.getTeamTournament(eventId, {
             signal: controller.signal,
           })
@@ -1148,34 +1154,6 @@ function toPickerOptions(values: string[]) {
     }))
 }
 
-function buildPlayerOptions(searchIndex: SearchData | null): PickerOption[] {
-  const seen = new Map<string, PickerOption>()
-
-  searchIndex?.players.forEach((division) => {
-    division.standings.forEach((player) => {
-      const value = player.player.trim()
-      if (!value) {
-        return
-      }
-
-      const key = normalize(value)
-      if (seen.has(key)) {
-        return
-      }
-
-      seen.set(key, {
-        label: player.displayName || value,
-        meta: division.divisionLabel,
-        value,
-      })
-    })
-  })
-
-  return Array.from(seen.values()).sort((left, right) =>
-    left.label.localeCompare(right.label),
-  )
-}
-
 function buildFactionOptions() {
   return toPickerOptions(getCanonicalArmyOptions())
 }
@@ -1234,121 +1212,6 @@ function inferSubmitGameContext(route: string): {
   return { gameType: '' }
 }
 
-function buildEventOpponentOptions(
-  eventHome: EventHomeData | null,
-  allPlayers: PickerOption[],
-  currentPlayer: string,
-  currentPlayerDivision: string,
-  showAllPlayers: boolean,
-) {
-  if (showAllPlayers) {
-    return allPlayers.filter((option) => !sameValue(option.value, currentPlayer))
-  }
-
-  const currentRegistration = eventHome?.registration.currentPlayer
-  const currentDivision = resolveLeagueDivision(
-    currentPlayerDivision,
-    currentRegistration?.notes,
-    getPlayerRegistryDivision(allPlayers, currentPlayer),
-  )
-  const isLeagueEvent = eventHome?.event.type.toLowerCase().includes('league') ?? false
-  const scheduledOpponent = eventHome?.playerStatus.upcomingMatch ?? ''
-  const options = (eventHome?.registration.registrations ?? [])
-    .filter((entry) => !sameValue(entry.player, currentPlayer))
-    .filter((entry) => !['removed', 'withdrawn'].includes(entry.status.toLowerCase()))
-    .filter((entry) => {
-      if (!isLeagueEvent) {
-        return true
-      }
-
-      const entryDivision = resolveLeagueDivision(
-        entry.notes,
-        getPlayerRegistryDivision(allPlayers, entry.player),
-      )
-
-      return currentDivision !== '' && entryDivision === currentDivision
-    })
-    .map((entry) => ({
-      label: entry.displayName || entry.player,
-      meta: [
-        isLeagueEvent && currentDivision ? 'Same division' : '',
-        entry.team || entry.preferredTeam || '',
-        getCanonicalArmyName(entry.faction) || entry.faction || '',
-      ].filter(Boolean).join(' · '),
-      value: entry.player,
-    }))
-
-  return options.sort((left, right) => {
-    const leftScheduled = isScheduledOpponent(left, scheduledOpponent) ? 0 : 1
-    const rightScheduled = isScheduledOpponent(right, scheduledOpponent) ? 0 : 1
-    const leftSameDivision = left.meta?.includes('Same division') ? 0 : 1
-    const rightSameDivision = right.meta?.includes('Same division') ? 0 : 1
-    return (
-      leftScheduled - rightScheduled ||
-      leftSameDivision - rightSameDivision ||
-      left.label.localeCompare(right.label)
-    )
-  })
-}
-
-function getPlayerRegistryDivision(players: PickerOption[], player: string) {
-  return players.find((option) => sameValue(option.value, player) || sameValue(option.label, player))?.meta ?? ''
-}
-
-function resolveLeagueDivision(...values: Array<string | undefined>) {
-  for (const value of values) {
-    const normalized = normalizeDivision(value)
-
-    if (normalized) {
-      return normalized
-    }
-  }
-
-  return ''
-}
-
-function normalizeDivision(value: string | undefined) {
-  const normalized = normalize(value ?? '')
-
-  if (!normalized) {
-    return ''
-  }
-
-  if (normalized === 'main' || normalized.includes('mainman') || normalized.includes('main')) {
-    return 'main'
-  }
-
-  if (
-    normalized === 'pga' ||
-    normalized.includes('provinggroundsa') ||
-    normalized.includes('provinggrounda')
-  ) {
-    return 'pga'
-  }
-
-  if (
-    normalized === 'pgb' ||
-    normalized.includes('provinggroundsb') ||
-    normalized.includes('provinggroundb')
-  ) {
-    return 'pgb'
-  }
-
-  return normalized
-}
-
-function isScheduledOpponent(option: PickerOption, scheduledOpponent: string) {
-  const scheduled = normalize(scheduledOpponent)
-
-  if (!scheduled) {
-    return false
-  }
-
-  const value = normalize(option.value)
-  const label = normalize(option.label)
-
-  return scheduled === value || scheduled === label || scheduled.includes(value) || scheduled.includes(label)
-}
 
 function HiddenField({ name, value }: { name: string; value: string }) {
   return <input name={name} readOnly type="hidden" value={value} />
