@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
-import { Link, useLocation, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import Skeleton from '../components/Skeleton'
 import {
@@ -66,12 +66,8 @@ const canonicalFactionFallbacks = [
 
 function SubmitResult() {
   const auth = useAuth()
-  const location = useLocation()
   const [searchParams] = useSearchParams()
-  const rememberedSubmitContext = useMemo(
-    () => (typeof location.state === 'string' ? location.state : ''),
-    [location.state],
-  )
+  const rememberedSubmitContext = searchParams.get('f') ?? ''
   const inferredSubmitContext = useMemo(
     () => inferSubmitGameContext(rememberedSubmitContext),
     [rememberedSubmitContext],

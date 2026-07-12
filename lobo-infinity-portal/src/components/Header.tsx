@@ -14,7 +14,7 @@ function Header() {
   const auth = useAuth()
   const location = useLocation()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const currentRoute = `${location.pathname}${location.search}`
+  const submitGamePath = `/submit-game?f=${location.pathname}`
 
   useEffect(() => {
     if (!isMobileMenuOpen) {
@@ -85,8 +85,7 @@ function Header() {
       <div className="header-actions">
         <Link
           className="submit-match-button"
-          state={currentRoute}
-          to="/submit-game"
+          to={submitGamePath}
         >
           <PortalIcon name="submit" />
           Submit Game
@@ -103,8 +102,7 @@ function Header() {
       <Link
         aria-label="Submit Game"
         className="mobile-submit-fab"
-        state={currentRoute}
-        to="/submit-game"
+        to={submitGamePath}
       >
         <PortalIcon name="submit" />
       </Link>
