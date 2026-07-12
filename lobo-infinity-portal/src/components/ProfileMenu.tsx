@@ -33,9 +33,9 @@ function ProfileMenu({ mobile = false }: { mobile?: boolean }) {
       return
     }
 
-    renderSignInButton(buttonRef.current)
+    renderSignInButton(buttonRef.current, mobile ? { width: 132 } : undefined)
     renderedButtonRef.current = buttonRef.current
-  }, [authenticated, googleReady, oauthConfigured, renderSignInButton])
+  }, [authenticated, googleReady, mobile, oauthConfigured, renderSignInButton])
 
   useEffect(() => {
     if (!isOpen) {
@@ -59,7 +59,10 @@ function ProfileMenu({ mobile = false }: { mobile?: boolean }) {
     return (
       <div className={mobile ? 'profile-menu signed-out mobile-profile-menu' : 'profile-menu signed-out'}>
         {oauthConfigured ? (
-          <div ref={buttonRef} className="google-signin-slot" />
+          <div aria-label="Sign In" className="google-signin-shell">
+            <span aria-hidden="true" className="google-signin-fallback">Sign In</span>
+            <div ref={buttonRef} className="google-signin-slot" />
+          </div>
         ) : (
           <div className="oauth-pending" title="Add Google OAuth Client ID in Settings">
             <span>Guest</span>

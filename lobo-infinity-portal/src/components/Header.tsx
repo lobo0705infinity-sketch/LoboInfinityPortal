@@ -35,7 +35,13 @@ function Header() {
   }, [isMobileMenuOpen])
 
   return (
-    <header className="portal-header">
+    <header
+      className={
+        auth.authenticated
+          ? 'portal-header authenticated'
+          : 'portal-header signed-out'
+      }
+    >
       <div className="mobile-app-bar">
         <button
           aria-expanded={isMobileMenuOpen}
@@ -59,8 +65,21 @@ function Header() {
           <span>Lobo</span>
         </Link>
         <div className="mobile-app-actions">
-          <GlobalSearch mode="mobile" />
-          <NotificationCenter compact />
+          <Link
+            aria-label="Submit Game"
+            className="mobile-header-action mobile-submit-action"
+            onClick={() => setIsMobileMenuOpen(false)}
+            to={submitGamePath}
+          >
+            <PortalIcon name="submit" />
+          </Link>
+          {auth.authenticated ? (
+            <>
+              <GlobalSearch mode="mobile" />
+              <NotificationCenter compact />
+            </>
+          ) : null}
+          <ProfileMenu mobile />
         </div>
       </div>
 

@@ -71,6 +71,7 @@ type GoogleAccounts = {
         text?: string
         theme?: string
         type?: string
+        width?: number
       },
     ) => void
   }
@@ -83,6 +84,10 @@ declare global {
       accounts: GoogleAccounts
     }
   }
+}
+
+type SignInButtonRenderOptions = {
+  width?: number
 }
 
 type AuthContextValue = {
@@ -99,7 +104,10 @@ type AuthContextValue = {
   oauthConfigured: boolean
   permissions: PortalPermissions
   refreshSession: () => Promise<boolean>
-  renderSignInButton: (element: HTMLElement) => void
+  renderSignInButton: (
+    element: HTMLElement,
+    options?: SignInButtonRenderOptions,
+  ) => void
   signOut: () => void
   stage: string
   status: 'loading' | 'ready'
@@ -974,7 +982,10 @@ function AuthProvider({ children }: { children: ReactNode }) {
     }))
   }, [])
 
-  const renderSignInButton = useCallback((element: HTMLElement) => {
+  const renderSignInButton = useCallback((
+    element: HTMLElement,
+    options: SignInButtonRenderOptions = {},
+  ) => {
     if (!window.google || !clientIdRef.current) {
       return
     }
@@ -995,6 +1006,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
       text: 'signin_with',
       theme: 'filled_black',
       type: 'standard',
+      width: options.width,
     })
     window.requestAnimationFrame(() => {
       const interactiveMs = performance.now() - authFlowStartedAtRef.current

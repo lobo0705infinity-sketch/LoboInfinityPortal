@@ -519,6 +519,7 @@
   align-items: center;
 }
 
+.google-signin-shell,
 .google-signin-slot {
   display: inline-flex;
   width: 178px;
@@ -533,6 +534,15 @@
   line-height: 0;
 }
 
+.google-signin-shell {
+  position: relative;
+}
+
+.google-signin-shell .google-signin-slot {
+  position: relative;
+  z-index: 1;
+}
+
 .google-signin-slot > div,
 .google-signin-slot iframe {
   display: block;
@@ -540,6 +550,27 @@
   overflow: hidden;
   border-radius: 999px;
   background: transparent;
+}
+
+.google-signin-fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: inline-flex;
+  width: 100%;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(76, 201, 240, 0.18);
+  border-radius: 999px;
+  color: var(--text);
+  background: rgba(10, 16, 24, 0.82);
+  font-size: 0.78rem;
+  font-weight: 950;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  pointer-events: none;
+  text-transform: uppercase;
 }
 
 .oauth-pending,
@@ -8113,6 +8144,7 @@ a {
   }
 
   .mobile-menu-button,
+  .mobile-header-action,
   .mobile-search-trigger,
   .notification-center-compact .notification-trigger {
     align-items: center;
@@ -8125,6 +8157,16 @@ a {
     justify-content: center;
     min-width: 44px;
     padding: 0;
+  }
+
+  .mobile-header-action {
+    text-decoration: none;
+  }
+
+  .mobile-submit-action {
+    color: #ffffff;
+    background: rgba(193, 18, 31, 0.28);
+    border-color: rgba(193, 18, 31, 0.54);
   }
 
   .mobile-menu-button {
@@ -8247,19 +8289,43 @@ a {
   }
 
   .mobile-profile-menu {
-    display: grid;
-    gap: 10px;
+    display: inline-grid;
+    gap: 8px;
+    position: relative;
   }
 
   .mobile-profile-menu .profile-trigger {
-    justify-content: flex-start;
-    min-height: 52px;
-    width: 100%;
+    border-radius: 12px;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0;
+    width: 44px;
+  }
+
+  .mobile-profile-menu .profile-trigger strong {
+    display: none;
   }
 
   .mobile-profile-menu .profile-menu-panel {
-    position: static;
-    width: 100%;
+    right: 0;
+    top: calc(100% + 8px);
+    width: min(82vw, 280px);
+  }
+
+  .mobile-profile-menu.signed-out .google-signin-shell,
+  .mobile-profile-menu.signed-out .google-signin-slot {
+    min-width: 132px;
+    width: 132px;
+  }
+
+  .mobile-profile-menu.signed-out {
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .mobile-profile-menu.signed-out .auth-inline-error {
+    display: none;
   }
 
   .mobile-search {
@@ -8966,6 +9032,7 @@ a {
   }
 
   .mobile-menu-button,
+  .mobile-header-action,
   .mobile-search-trigger,
   .notification-center-compact .notification-trigger {
     border-radius: 12px;
@@ -9104,7 +9171,7 @@ a {
   }
 
   .mobile-app-brand span {
-    max-width: 9ch;
+    display: none;
   }
 
   .portal-shell,
@@ -9161,6 +9228,7 @@ a {
   }
 
   .mobile-menu-button,
+  .mobile-header-action,
   .mobile-search-trigger,
   .notification-center-compact .notification-trigger {
     align-items: center;
@@ -9173,6 +9241,18 @@ a {
     justify-content: center;
     min-width: 40px;
     padding: 0;
+  }
+
+  .mobile-profile-menu .profile-trigger {
+    min-height: 40px;
+    min-width: 40px;
+    width: 40px;
+  }
+
+  .mobile-profile-menu.signed-out .google-signin-shell,
+  .mobile-profile-menu.signed-out .google-signin-slot {
+    height: 40px;
+    min-height: 40px;
   }
 
   .mobile-menu-button {
