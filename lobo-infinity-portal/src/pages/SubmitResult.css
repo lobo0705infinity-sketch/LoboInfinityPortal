@@ -1,0 +1,53 @@
+.searchable-select {
+  position: relative;
+}
+
+.searchable-select-menu {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  display: grid;
+  max-height: min(320px, 48vh);
+  overflow-y: auto;
+  border: 1px solid rgba(76, 201, 240, 0.28);
+  border-radius: 12px;
+  background: rgba(5, 8, 12, 0.98);
+  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.34);
+}
+
+.searchable-select-menu button,
+.searchable-select-empty {
+  display: grid;
+  gap: 3px;
+  min-height: 44px;
+  border: 0;
+  border-bottom: 1px solid rgba(76, 201, 240, 0.12);
+  background: transparent;
+  color: var(--text);
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.searchable-select-menu button {
+  cursor: pointer;
+}
+
+.searchable-select-menu button:hover,
+.searchable-select-menu button:focus-visible,
+.searchable-select-menu button.active {
+  background: rgba(76, 201, 240, 0.12);
+  outline: 0;
+}
+
+.searchable-select-menu button[aria-selected="true"] {
+  background: rgba(193, 18, 31, 0.18);
+}
+
+.searchable-select-menu small,
+.searchable-select-empty {
+  color: var(--text-muted);
+  font-size: 0.74rem;
+  font-weight: 800;
+}

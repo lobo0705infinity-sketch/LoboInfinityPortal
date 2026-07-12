@@ -1,12 +1,14 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import Skeleton from '../components/Skeleton'
+import './SubmitResult.css'
 import {
   apiClient,
   type CasualResultSubmission,
   type EventHomeData,
   type LeagueResultSubmission,
+  type SearchData,
   type TeamTournamentData,
 } from '../services/api'
 
@@ -38,6 +40,47 @@ const emptyLeagueResult: LeagueResultSubmission = {
   winner: '',
 }
 
+type PickerOption = {
+  label: string
+  meta?: string
+  value: string
+}
+
+const canonicalFactionFallbacks = [
+  'ALEPH',
+  'Ariadna',
+  'Combined Army',
+  'Haqqislam',
+  'JSA',
+  'NA2',
+  'Nomads',
+  'O-12',
+  'PanOceania',
+  'Tohaa',
+  'Yu Jing',
+]
+
+const canonicalMissionFallbacks = [
+  'Acquisition',
+  'Annihilation',
+  'Biotechvore',
+  'Capture and Protect',
+  'Countermeasures',
+  'Decapitation',
+  'Firefight',
+  'Frontline',
+  'Frostbyte',
+  'Highly Classified',
+  'Looting and Sabotaging',
+  'Mindwipe',
+  'Power Pack',
+  'Quadrant Control',
+  'Supplies',
+  'Supremacy',
+  'Transmission Matrix',
+  'Unmasking',
+]
+
 function SubmitResult() {
   const auth = useAuth()
   const [searchParams] = useSearchParams()
@@ -47,6 +90,8 @@ function SubmitResult() {
   const shouldShowGameTypeSelector = !selectedGameType
   const [eventHome, setEventHome] = useState<EventHomeData | null>(null)
   const [teamTournament, setTeamTournament] = useState<TeamTournamentData | null>(null)
+  const [searchIndex, setSearchIndex] = useState<SearchData | null>(null)
+  const [showAllOpponents, setShowAllOpponents] = useState(false)
   const [state, setState] = useState<SubmitState>({ status: 'loading' })
   const [leagueResult, setLeagueResult] = useState<LeagueResultSubmission>({
     ...emptyLeagueResult,
@@ -60,6 +105,31 @@ function SubmitResult() {
     playerFaction: auth.user.favoriteFaction || '',
     round: undefined,
   })
+  const canOverrideOpponentFilter = auth.isAtLeastRole('Commissioner')
+  const allPlayerOptions = useMemo(() => buildPlayerOptions(searchIndex), [searchIndex])
+  const factionOptions = useMemo(
+    () => buildFactionOptions(searchIndex, eventHome),
+    [eventHome, searchIndex],
+  )
+  const casualMissionOptions = useMemo(() => buildMissionOptions(searchIndex), [searchIndex])
+  const leagueMissionOptions = useMemo(
+    () => buildEventMissionOptions(eventHome, searchIndex),
+    [eventHome, searchIndex],
+  )
+  const leagueOpponentOptions = useMemo(
+    () =>
+      buildEventOpponentOptions(
+        eventHome,
+        allPlayerOptions,
+        leagueResult.player,
+        showAllOpponents && canOverrideOpponentFilter,
+      ),
+    [allPlayerOptions, canOverrideOpponentFilter, eventHome, leagueResult.player, showAllOpponents],
+  )
+  const casualOpponentOptions = useMemo(
+    () => allPlayerOptions.filter((option) => !sameValue(option.value, casualResult.player)),
+    [allPlayerOptions, casualResult.player],
+  )
 
   useEffect(() => {
     const controller = new AbortController()
@@ -68,11 +138,39 @@ function SubmitResult() {
       if (shouldShowGameTypeSelector) {
         setEventHome(null)
         setTeamTournament(null)
+        setSearchIndex(null)
         setState({ status: 'idle' })
         return
       }
 
       if (isCasualRoute) {
+        setState({ status: 'loading' })
+
+        try {
+          const registry = await apiClient.getSearchIndex({
+            signal: controller.signal,
+          })
+
+          if (controller.signal.aborted) {
+            return
+          }
+
+          setSearchIndex(registry)
+        } catch (error) {
+          if (controller.signal.aborted) {
+            return
+          }
+
+          setState({
+            message:
+              error instanceof Error
+                ? error.message
+                : 'Submission options are unavailable.',
+            status: 'error',
+          })
+          return
+        }
+
         setEventHome(null)
         setTeamTournament(null)
         setCasualResult((current) => ({
@@ -87,15 +185,21 @@ function SubmitResult() {
       setState({ status: 'loading' })
 
       try {
-        const home = await apiClient.getEventHome(eventId, {
-          signal: controller.signal,
-        })
+        const [home, registry] = await Promise.all([
+          apiClient.getEventHome(eventId, {
+            signal: controller.signal,
+          }),
+          apiClient.getSearchIndex({
+            signal: controller.signal,
+          }),
+        ])
 
         if (controller.signal.aborted) {
           return
         }
 
         setEventHome(home)
+        setSearchIndex(registry)
 
         const player = auth.user.leaguePlayer || home.registration.currentPlayer?.player || ''
         const currentPlayer = home.registration.currentPlayer
@@ -166,7 +270,11 @@ function SubmitResult() {
   async function submitCasual(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    const validation = validateCasualResult(casualResult)
+    const validation = validateCasualResult(casualResult, {
+      factions: factionOptions,
+      missions: casualMissionOptions,
+      opponents: casualOpponentOptions,
+    })
 
     if (validation.length > 0) {
       setState({ message: validation.join(' '), status: 'error' })
@@ -242,34 +350,46 @@ function SubmitResult() {
           </section>
         ) : null}
 
+        {state.status === 'loading' ? (
+          <section className="panel" aria-label="Submission options loading">
+            <Skeleton label="Submission options loading" rows={4} />
+          </section>
+        ) : null}
+
         <form className="army-list-form panel" onSubmit={(event) => void submitCasual(event)}>
-          <FormField
+          <ReadOnlyField
             label="Player"
-            onChange={(value) => updateCasualField('player', value)}
-            required
             value={casualResult.player}
           />
-          <FormField
+          <SearchableSelect
             label="Opponent"
             onChange={(value) => updateCasualField('opponent', value)}
+            options={casualOpponentOptions}
+            placeholder="Search active players"
             required
             value={casualResult.opponent}
           />
-          <FormField
+          <SearchableSelect
             label="Player Faction"
             onChange={(value) => updateCasualField('playerFaction', value)}
+            options={factionOptions}
+            placeholder="Search factions"
             required
             value={casualResult.playerFaction}
           />
-          <FormField
+          <SearchableSelect
             label="Opponent Faction"
             onChange={(value) => updateCasualField('opponentFaction', value)}
+            options={factionOptions}
+            placeholder="Search factions"
             required
             value={casualResult.opponentFaction}
           />
-          <FormField
+          <SearchableSelect
             label="Mission"
             onChange={(value) => updateCasualField('mission', value)}
+            options={casualMissionOptions}
+            placeholder="Search missions"
             required
             value={casualResult.mission}
           />
@@ -313,7 +433,7 @@ function SubmitResult() {
           <SelectField
             label="First Turn"
             onChange={(value) => updateCasualField('firstTurn', value)}
-            options={[casualResult.player, casualResult.opponent, 'Unknown'].filter(Boolean)}
+            options={[casualResult.player, casualResult.opponent].filter(Boolean)}
             required
             value={casualResult.firstTurn}
           />
@@ -336,7 +456,7 @@ function SubmitResult() {
           </label>
           <div className="army-list-form-actions">
             <button disabled={!auth.authenticated || state.status === 'submitting'} type="submit">
-              {state.status === 'submitting' ? 'Submitting...' : 'Submit Casual Game'}
+              {state.status === 'submitting' ? 'Submitting...' : 'Submit Game'}
             </button>
             {state.status === 'success' ? <p role="status">{state.message}</p> : null}
             {state.status === 'error' ? <p role="alert">{state.message}</p> : null}
@@ -371,7 +491,11 @@ function SubmitResult() {
       return
     }
 
-    const validation = validateLeagueResult(eventHome, leagueResult)
+    const validation = validateLeagueResult(eventHome, leagueResult, {
+      factions: factionOptions,
+      missions: leagueMissionOptions,
+      opponents: leagueOpponentOptions,
+    })
 
     if (validation.length > 0) {
       setState({ message: validation.join(' '), status: 'error' })
@@ -419,40 +543,54 @@ function SubmitResult() {
 
       <form className="army-list-form panel" onSubmit={(event) => void submit(event)}>
         <ReadOnlyField label="Event" value={eventHome?.event.name || eventId} />
-        <FormField
+        <ReadOnlyField
           label="Round"
-          onChange={(value) => updateField('round', value)}
-          required
           value={leagueResult.round}
         />
-        <FormField
+        <ReadOnlyField
           label="Division"
-          onChange={(value) => updateField('division', value)}
-          required
           value={leagueResult.division}
         />
-        <FormField
+        <SearchableSelect
           label="Mission"
           onChange={(value) => updateField('mission', value)}
+          options={leagueMissionOptions}
+          placeholder="Search event missions"
           required
           value={leagueResult.mission}
         />
         <ReadOnlyField label="Player" value={leagueResult.player || auth.user.leaguePlayer} />
-        <FormField
+        <SearchableSelect
           label="Opponent"
           onChange={(value) => updateField('opponent', value)}
+          options={leagueOpponentOptions}
+          placeholder="Search eligible opponents"
           required
           value={leagueResult.opponent}
         />
-        <FormField
+        {canOverrideOpponentFilter ? (
+          <label className="event-registration-check">
+            <input
+              checked={showAllOpponents}
+              onChange={(event) => setShowAllOpponents(event.target.checked)}
+              type="checkbox"
+            />
+            <span>Show All Players</span>
+          </label>
+        ) : null}
+        <SearchableSelect
           label="Registered Faction"
           onChange={(value) => updateField('playerFaction', value)}
+          options={factionOptions}
+          placeholder="Search factions"
           required
           value={leagueResult.playerFaction}
         />
-        <FormField
+        <SearchableSelect
           label="Opponent Faction"
           onChange={(value) => updateField('opponentFaction', value)}
+          options={factionOptions}
+          placeholder="Search factions"
           value={leagueResult.opponentFaction}
         />
         <SelectField
@@ -495,7 +633,7 @@ function SubmitResult() {
         <SelectField
           label="First Turn"
           onChange={(value) => updateField('firstTurn', value)}
-          options={['Player 1', 'Player 2', 'Unknown']}
+          options={[leagueResult.player, leagueResult.opponent].filter(Boolean)}
           value={leagueResult.firstTurn}
         />
         <label className="army-list-form-wide">
@@ -662,7 +800,15 @@ function TeamTournamentResultSubmission({
   )
 }
 
-function validateLeagueResult(data: EventHomeData, submission: LeagueResultSubmission) {
+function validateLeagueResult(
+  data: EventHomeData,
+  submission: LeagueResultSubmission,
+  options: {
+    factions: PickerOption[]
+    missions: PickerOption[]
+    opponents: PickerOption[]
+  },
+) {
   const issues: string[] = []
   const registered = data.registration.currentPlayer
 
@@ -676,6 +822,8 @@ function validateLeagueResult(data: EventHomeData, submission: LeagueResultSubmi
 
   if (!submission.opponent.trim()) {
     issues.push('Opponent is required.')
+  } else if (!optionContains(options.opponents, submission.opponent)) {
+    issues.push('Opponent must be selected from the eligible event players.')
   }
 
   if (normalize(submission.opponent) === normalize(submission.player)) {
@@ -684,6 +832,24 @@ function validateLeagueResult(data: EventHomeData, submission: LeagueResultSubmi
 
   if (!data.registration.registrations.some((entry) => normalize(entry.player) === normalize(submission.opponent))) {
     issues.push('Opponent must be registered for this event.')
+  }
+
+  if (!submission.playerFaction.trim() || !submission.opponentFaction.trim()) {
+    issues.push('Both factions are required.')
+  }
+
+  if (submission.playerFaction.trim() && !optionContains(options.factions, submission.playerFaction)) {
+    issues.push('Registered Faction must be selected from the faction database.')
+  }
+
+  if (submission.opponentFaction.trim() && !optionContains(options.factions, submission.opponentFaction)) {
+    issues.push('Opponent Faction must be selected from the faction database.')
+  }
+
+  if (!submission.mission.trim()) {
+    issues.push('Mission is required.')
+  } else if (!optionContains(options.missions, submission.mission)) {
+    issues.push('Mission must be selected from the mission database.')
   }
 
   const playerTp = parseScore(submission.playerTournamentPoints)
@@ -718,7 +884,14 @@ function validateLeagueResult(data: EventHomeData, submission: LeagueResultSubmi
   return issues
 }
 
-function validateCasualResult(submission: CasualResultSubmission) {
+function validateCasualResult(
+  submission: CasualResultSubmission,
+  options: {
+    factions: PickerOption[]
+    missions: PickerOption[]
+    opponents: PickerOption[]
+  },
+) {
   const issues: string[] = []
 
   if (!submission.player.trim()) {
@@ -727,6 +900,8 @@ function validateCasualResult(submission: CasualResultSubmission) {
 
   if (!submission.opponent.trim()) {
     issues.push('Opponent is required.')
+  } else if (!optionContains(options.opponents, submission.opponent)) {
+    issues.push('Opponent must be selected from active portal players.')
   }
 
   if (normalize(submission.opponent) === normalize(submission.player)) {
@@ -737,8 +912,18 @@ function validateCasualResult(submission: CasualResultSubmission) {
     issues.push('Both factions are required.')
   }
 
+  if (submission.playerFaction.trim() && !optionContains(options.factions, submission.playerFaction)) {
+    issues.push('Player Faction must be selected from the faction database.')
+  }
+
+  if (submission.opponentFaction.trim() && !optionContains(options.factions, submission.opponentFaction)) {
+    issues.push('Opponent Faction must be selected from the faction database.')
+  }
+
   if (!submission.mission.trim()) {
     issues.push('Mission is required.')
+  } else if (!optionContains(options.missions, submission.mission)) {
+    issues.push('Mission must be selected from the mission database.')
   }
 
   if (!submission.firstTurn.trim()) {
@@ -933,6 +1118,128 @@ function sameValue(left: string, right: string) {
   return normalize(left) === normalize(right)
 }
 
+function optionContains(options: PickerOption[], value: string) {
+  const normalized = normalize(value)
+  return options.some((option) => normalize(option.value) === normalized)
+}
+
+function toPickerOptions(values: string[]) {
+  const seen = new Set<string>()
+
+  return values
+    .map((value) => value.trim())
+    .filter(Boolean)
+    .filter((value) => {
+      const normalized = normalize(value)
+      if (seen.has(normalized)) {
+        return false
+      }
+
+      seen.add(normalized)
+      return true
+    })
+    .sort((left, right) => left.localeCompare(right))
+    .map((value) => ({
+      label: value,
+      value,
+    }))
+}
+
+function buildPlayerOptions(searchIndex: SearchData | null): PickerOption[] {
+  const seen = new Map<string, PickerOption>()
+
+  searchIndex?.players.forEach((division) => {
+    division.standings.forEach((player) => {
+      const value = player.player.trim()
+      if (!value) {
+        return
+      }
+
+      const key = normalize(value)
+      if (seen.has(key)) {
+        return
+      }
+
+      seen.set(key, {
+        label: player.displayName || value,
+        meta: division.divisionLabel,
+        value,
+      })
+    })
+  })
+
+  return Array.from(seen.values()).sort((left, right) =>
+    left.label.localeCompare(right.label),
+  )
+}
+
+function buildFactionOptions(
+  searchIndex: SearchData | null,
+  eventHome: EventHomeData | null,
+) {
+  return toPickerOptions([
+    ...(searchIndex?.factions.map((faction) => faction.name) ?? []),
+    ...(eventHome?.registration.registrations.map((entry) => entry.faction) ?? []),
+    ...canonicalFactionFallbacks,
+  ])
+}
+
+function buildMissionOptions(searchIndex: SearchData | null) {
+  return toPickerOptions([
+    ...(searchIndex?.missions.map((mission) => mission.mission) ?? []),
+    ...canonicalMissionFallbacks,
+  ])
+}
+
+function buildEventMissionOptions(
+  eventHome: EventHomeData | null,
+  searchIndex: SearchData | null,
+) {
+  const eventMissions = [
+    getRoundValue(eventHome?.currentRound ?? null, 'mission'),
+    getRoundValue(eventHome?.currentRound ?? null, 'Mission'),
+    ...(eventHome?.rounds.flatMap((round) => [
+      getRoundValue(round, 'mission'),
+      getRoundValue(round, 'Mission'),
+    ]) ?? []),
+  ]
+
+  const options = toPickerOptions(eventMissions)
+  return options.length > 0 ? options : buildMissionOptions(searchIndex)
+}
+
+function buildEventOpponentOptions(
+  eventHome: EventHomeData | null,
+  allPlayers: PickerOption[],
+  currentPlayer: string,
+  showAllPlayers: boolean,
+) {
+  if (showAllPlayers) {
+    return allPlayers.filter((option) => !sameValue(option.value, currentPlayer))
+  }
+
+  const currentRegistration = eventHome?.registration.currentPlayer
+  const currentDivision = currentRegistration?.notes || ''
+  const options = (eventHome?.registration.registrations ?? [])
+    .filter((entry) => !sameValue(entry.player, currentPlayer))
+    .filter((entry) => !['removed', 'withdrawn'].includes(entry.status.toLowerCase()))
+    .map((entry) => ({
+      label: entry.displayName || entry.player,
+      meta: [
+        sameValue(entry.notes, currentDivision) && currentDivision ? 'Same division' : '',
+        entry.team || entry.preferredTeam || '',
+        entry.faction || '',
+      ].filter(Boolean).join(' · '),
+      value: entry.player,
+    }))
+
+  return options.sort((left, right) => {
+    const leftSameDivision = left.meta?.includes('Same division') ? 0 : 1
+    const rightSameDivision = right.meta?.includes('Same division') ? 0 : 1
+    return leftSameDivision - rightSameDivision || left.label.localeCompare(right.label)
+  })
+}
+
 function HiddenField({ name, value }: { name: string; value: string }) {
   return <input name={name} readOnly type="hidden" value={value} />
 }
@@ -963,6 +1270,126 @@ function ScoreField({
       type="number"
       value={value}
     />
+  )
+}
+
+function SearchableSelect({
+  disabled = false,
+  label,
+  name,
+  onChange,
+  options,
+  placeholder = 'Search',
+  required = false,
+  value,
+}: {
+  disabled?: boolean
+  label: string
+  name?: string
+  onChange: (value: string) => void
+  options: PickerOption[]
+  placeholder?: string
+  required?: boolean
+  value: string
+}) {
+  const [query, setQuery] = useState('')
+  const [isOpen, setIsOpen] = useState(false)
+  const [activeIndex, setActiveIndex] = useState(0)
+  const selected = options.find((option) => sameValue(option.value, value))
+  const displayValue = selected?.label || value
+  const filteredOptions = useMemo(() => {
+    const normalizedQuery = normalize(query)
+    const candidates = normalizedQuery
+      ? options.filter((option) =>
+          normalize(`${option.label} ${option.meta ?? ''}`).includes(normalizedQuery),
+        )
+      : options
+
+    return candidates.slice(0, 20)
+  }, [options, query])
+
+  function choose(option: PickerOption) {
+    onChange(option.value)
+    setQuery('')
+    setIsOpen(false)
+    setActiveIndex(0)
+  }
+
+  return (
+    <label className="searchable-select">
+      <span>{label}</span>
+      {name ? <input name={name} readOnly type="hidden" value={value} /> : null}
+      <input
+        aria-autocomplete="list"
+        aria-expanded={isOpen}
+        aria-invalid={required && value === '' ? true : undefined}
+        disabled={disabled}
+        onBlur={() => {
+          window.setTimeout(() => setIsOpen(false), 120)
+        }}
+        onChange={(event) => {
+          setQuery(event.target.value)
+          setIsOpen(true)
+          setActiveIndex(0)
+        }}
+        onFocus={() => {
+          setQuery('')
+          setIsOpen(true)
+        }}
+        onKeyDown={(event) => {
+          if (event.key === 'Escape') {
+            setIsOpen(false)
+            setQuery('')
+            return
+          }
+
+          if (event.key === 'ArrowDown') {
+            event.preventDefault()
+            setIsOpen(true)
+            setActiveIndex((index) => Math.min(index + 1, filteredOptions.length - 1))
+            return
+          }
+
+          if (event.key === 'ArrowUp') {
+            event.preventDefault()
+            setActiveIndex((index) => Math.max(index - 1, 0))
+            return
+          }
+
+          if (event.key === 'Enter' && isOpen && filteredOptions[activeIndex]) {
+            event.preventDefault()
+            choose(filteredOptions[activeIndex])
+          }
+        }}
+        placeholder={placeholder}
+        role="combobox"
+        value={isOpen ? query : displayValue}
+      />
+      {isOpen ? (
+        <div className="searchable-select-menu" role="listbox">
+          {filteredOptions.length > 0 ? (
+            filteredOptions.map((option, index) => (
+              <button
+                aria-selected={sameValue(option.value, value)}
+                className={index === activeIndex ? 'active' : ''}
+                key={option.value}
+                onMouseDown={(event) => {
+                  event.preventDefault()
+                  choose(option)
+                }}
+                role="option"
+                type="button"
+              >
+                <strong>{option.label}</strong>
+                {option.meta ? <small>{option.meta}</small> : null}
+              </button>
+            ))
+          ) : (
+            <span className="searchable-select-empty">No matching options</span>
+          )}
+        </div>
+      ) : null}
+    </label>
   )
 }
 
