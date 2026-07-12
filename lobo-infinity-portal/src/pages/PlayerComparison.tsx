@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import BarChart from '../components/BarChart'
 import Skeleton from '../components/Skeleton'
+import { getCanonicalMissionName } from '../config/missions'
 import {
   apiClient,
   type PlayerComparisonData,
@@ -224,8 +225,8 @@ function ComparisonReport({
           <dl className="profile-metric-list">
             <Metric label={`${left.name} Record`} value={`${left.wins}-${left.losses}`} />
             <Metric label={`${right.name} Record`} value={`${right.wins}-${right.losses}`} />
-            <Metric label={`${left.name} Favorite Mission`} value={left.favoriteMission} />
-            <Metric label={`${right.name} Favorite Mission`} value={right.favoriteMission} />
+            <Metric label={`${left.name} Favorite Mission`} value={getCanonicalMissionName(left.favoriteMission)} />
+            <Metric label={`${right.name} Favorite Mission`} value={getCanonicalMissionName(right.favoriteMission)} />
           </dl>
         </section>
       </section>

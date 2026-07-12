@@ -3,6 +3,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 import BarChart from '../components/BarChart'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
+import { getCanonicalMissionName } from '../config/missions'
 import {
   apiClient,
   type ArmyList,
@@ -133,7 +134,7 @@ function FactionProfile() {
           />
           <Metric
             label="Most Played Mission"
-            value={profileState.faction.mostPlayedMission}
+            value={getCanonicalMissionName(profileState.faction.mostPlayedMission)}
           />
         </ProfileCard>
 
@@ -326,7 +327,7 @@ function RecentGamesPanel({ games }: { games: RecentGame[] }) {
                   {formatPlayerName(game.winner, game.winnerDisplayName)} defeated{' '}
                   {formatPlayerName(game.loser, game.loserDisplayName)}
                 </h3>
-                <p>{game.mission}</p>
+                <p>{getCanonicalMissionName(game.mission) || 'Mission not recorded'}</p>
               </div>
               <strong>{formatObjectiveScore(game)}</strong>
             </Link>
@@ -505,7 +506,7 @@ function ArmyListStack({ lists, title }: { lists: ArmyList[]; title: string }) {
             <article className="army-list-mini-card" key={list.id}>
               <span>{formatPlayerName(list.player, list.playerDisplayName)}</span>
               <h3>{list.armyName}</h3>
-              <p>{list.mission || 'Mission not recorded'}</p>
+              <p>{getCanonicalMissionName(list.mission) || 'Mission not recorded'}</p>
               <strong>Score {list.score}</strong>
               {list.armyLink ? (
                 <a href={list.armyLink} rel="noreferrer" target="_blank">

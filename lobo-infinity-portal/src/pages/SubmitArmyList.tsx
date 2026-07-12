@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
+import { CANONICAL_MISSIONS } from '../config/missions'
 import { apiClient, type ArmyListSubmission } from '../services/api'
 
 type SubmissionState =
@@ -122,9 +123,10 @@ function SubmitArmyList() {
           required
           value={submission.armyName}
         />
-        <FormField
+        <SelectField
           label="Mission"
           onChange={(value) => updateField('mission', value)}
+          options={CANONICAL_MISSIONS}
           value={submission.mission}
         />
         <FormField
@@ -196,6 +198,38 @@ function FormField({
         type={type}
         value={value}
       />
+    </label>
+  )
+}
+
+function SelectField({
+  label,
+  onChange,
+  options,
+  required = false,
+  value,
+}: {
+  label: string
+  onChange: (value: string) => void
+  options: readonly string[]
+  required?: boolean
+  value: string
+}) {
+  return (
+    <label>
+      <span>{label}</span>
+      <select
+        onChange={(event) => onChange(event.target.value)}
+        required={required}
+        value={value}
+      >
+        <option value="">Select mission</option>
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
     </label>
   )
 }

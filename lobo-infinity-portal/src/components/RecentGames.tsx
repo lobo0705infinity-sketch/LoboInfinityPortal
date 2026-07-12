@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { getCanonicalMissionName } from '../config/missions'
 import { apiClient, type RecentGame } from '../services/api'
 import { formatObjectiveScore, formatPlayerName } from '../services/formatting'
 
@@ -94,7 +95,7 @@ function RecentGames({
               <dl className="recent-game-summary">
                 <div>
                   <dt>Mission</dt>
-                  <dd>{game.mission}</dd>
+                  <dd>{getCanonicalMissionName(game.mission) || 'Mission not recorded'}</dd>
                 </div>
                 <div>
                   <dt>Winner Faction</dt>

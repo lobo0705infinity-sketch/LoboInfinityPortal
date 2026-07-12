@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import Skeleton from '../components/Skeleton'
+import { filterCanonicalMissionRecords } from '../config/missions'
 import { apiClient, type MissionSummary } from '../services/api'
 
 type MissionsState =
@@ -33,7 +34,7 @@ function Missions() {
       })
       .then((missions) => {
         setMissionsState({
-          missions,
+          missions: filterCanonicalMissionRecords(missions),
           status: 'success',
         })
       })

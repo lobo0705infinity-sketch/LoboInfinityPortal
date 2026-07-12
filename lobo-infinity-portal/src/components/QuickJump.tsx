@@ -25,6 +25,7 @@ function QuickJump() {
       const searchIndex = await getSearchIndex({
         signal: controller.signal,
       })
+      const { filterCanonicalMissionRecords } = await import('../config/missions')
 
       if (controller.signal.aborted) {
         return
@@ -42,10 +43,12 @@ function QuickJump() {
         to: `/factions/${encodeURIComponent(faction.name)}`,
       }))
 
-      const missionItems = searchIndex.missions.slice(0, 4).map((mission) => ({
-        label: `Mission: ${mission.mission}`,
-        to: `/missions/${encodeURIComponent(mission.mission)}`,
-      }))
+      const missionItems = filterCanonicalMissionRecords(searchIndex.missions)
+        .slice(0, 4)
+        .map((mission) => ({
+          label: `Mission: ${mission.mission}`,
+          to: `/missions/${encodeURIComponent(mission.mission)}`,
+        }))
 
       const gameItems = searchIndex.games.slice(0, 3).map((game) => ({
         label: `Match: ${formatPlayerName(game.winner, game.winnerDisplayName)} vs ${formatPlayerName(game.loser, game.loserDisplayName)}`,

@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import Skeleton from '../components/Skeleton'
+import { filterCanonicalMissionRecords } from '../config/missions'
 import {
   apiClient,
   type FactionMomentum,
@@ -128,7 +129,7 @@ function Analytics() {
           winStreaks={data.winStreaks}
         />
         <RecordsCard records={data.records} />
-        <MissionMetaCard missions={data.missionTrends} />
+        <MissionMetaCard missions={filterCanonicalMissionRecords(data.missionTrends)} />
         <FactionMomentumCard factions={data.factionMomentum} />
         <BattleCard
           eyebrow="Promotion Race"

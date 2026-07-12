@@ -273,8 +273,11 @@ async function getSearchItems() {
     return cachedSearchItems
   }
 
-  searchItemsPromise ??= getSearchIndex()
-    .then(({ players, factions, missions, games, armyLists }) => {
+  searchItemsPromise ??= Promise.all([
+    getSearchIndex(),
+    import('../config/missions'),
+  ])
+    .then(([{ players, factions, missions, games, armyLists }, missionRegistry]) => {
       const playerItems = players.flatMap((division) =>
         division.standings.map((player) => ({
           category: 'Player',
@@ -291,7 +294,7 @@ async function getSearchItems() {
         to: `/factions/${encodeURIComponent(faction.name)}`,
       }))
 
-      const missionItems = missions.map((mission) => ({
+      const missionItems = missionRegistry.filterCanonicalMissionRecords(missions).map((mission) => ({
         category: 'Mission',
         label: mission.mission,
         meta: `${mission.games} games - ${mission.firstTurnWinRate}% first turn`,

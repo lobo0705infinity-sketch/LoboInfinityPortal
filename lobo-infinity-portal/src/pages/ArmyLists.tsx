@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import Skeleton from '../components/Skeleton'
+import { filterCanonicalMissionNames } from '../config/missions'
 import {
   apiClient,
   type ArmyList,
@@ -81,7 +82,7 @@ function ArmyLists() {
 
     return {
       factions: getUniqueOptions(state.lists.map((list) => list.faction)),
-      missions: getUniqueOptions(state.lists.map((list) => list.mission)),
+      missions: filterCanonicalMissionNames(state.lists.map((list) => list.mission)),
       players: getUniqueOptions(state.lists.map((list) => list.player)),
       sectorials: getUniqueOptions(state.lists.map((list) => list.sectorial)),
     }

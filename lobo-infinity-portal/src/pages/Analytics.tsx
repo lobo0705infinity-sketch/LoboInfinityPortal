@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import Skeleton from '../components/Skeleton'
+import { filterCanonicalMissionRecords } from '../config/missions'
 import {
   apiClient,
   type FactionSummary,
@@ -59,7 +60,7 @@ function Analytics() {
           setState({
             data: {
               factions,
-              missions,
+              missions: filterCanonicalMissionRecords(missions),
               players,
               records,
             },

@@ -4,6 +4,7 @@ import { useAuth } from '../auth/AuthContext'
 import EventManagerPanel from '../components/EventManagerPanel'
 import Loading from '../components/Loading'
 import Skeleton from '../components/Skeleton'
+import { CANONICAL_MISSIONS } from '../config/missions'
 import {
   apiClient,
   type ArmyList,
@@ -1084,7 +1085,12 @@ function StreamManager({
     <section className="panel operations-panel">
       <PanelTitle eyebrow="Streams" title="Stream Manager" />
       <form className="operations-form" onSubmit={submit}>
-        <Input label="Mission" onChange={(value) => setDraft({ ...draft, mission: value })} value={draft.mission} />
+        <SelectInput
+          label="Mission"
+          onChange={(value) => setDraft({ ...draft, mission: value })}
+          options={CANONICAL_MISSIONS}
+          value={draft.mission}
+        />
         <Input label="Division" onChange={(value) => setDraft({ ...draft, division: value })} value={draft.division} />
         <Input label="Player 1" onChange={(value) => setDraft({ ...draft, player1: value })} value={draft.player1} />
         <Input label="Player 1 Faction" onChange={(value) => setDraft({ ...draft, player1Faction: value })} value={draft.player1Faction} />
@@ -1735,6 +1741,32 @@ function Input({
     <label>
       <span>{label}</span>
       <input disabled={disabled} onChange={(event) => onChange(event.target.value)} type={type} value={value} />
+    </label>
+  )
+}
+
+function SelectInput({
+  label,
+  onChange,
+  options,
+  value,
+}: {
+  label: string
+  onChange: (value: string) => void
+  options: readonly string[]
+  value: string
+}) {
+  return (
+    <label>
+      <span>{label}</span>
+      <select onChange={(event) => onChange(event.target.value)} value={value}>
+        <option value="">Select mission</option>
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
     </label>
   )
 }

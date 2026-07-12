@@ -3,6 +3,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 import BarChart from '../components/BarChart'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
+import { getCanonicalMissionName } from '../config/missions'
 import {
   apiClient,
   type ArmyList,
@@ -198,7 +199,7 @@ function PlayerProfile() {
           />
           <Metric
             label="Favorite Mission"
-            value={profileState.player.favoriteMission}
+            value={getCanonicalMissionName(profileState.player.favoriteMission)}
           />
           <Metric label="Best Faction" value={profileState.player.bestFaction} />
           <Metric label="Rival" value={profileState.player.rival} />
@@ -313,7 +314,7 @@ function PlayerProfile() {
                       {formatPlayerName(game.winner, game.winnerDisplayName)} defeated{' '}
                       {formatPlayerName(game.loser, game.loserDisplayName)}
                     </h3>
-                    <p>{game.mission}</p>
+                    <p>{getCanonicalMissionName(game.mission) || 'Mission not recorded'}</p>
                   </div>
                   <strong>{formatObjectiveScore(game)}</strong>
                 </Link>
@@ -383,7 +384,7 @@ function ArmyListSummaryCard({
         <>
           <Metric label="Army Name" value={list.armyName} />
           <Metric label="Faction" value={list.faction} />
-          <Metric label="Mission" value={list.mission} />
+          <Metric label="Mission" value={getCanonicalMissionName(list.mission)} />
           <Metric label="Score" value={list.score} />
         </>
       ) : (

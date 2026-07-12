@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import Skeleton from '../components/Skeleton'
+import { filterCanonicalMissionNames } from '../config/missions'
 import { apiClient, type StreamedGame } from '../services/api'
 
 type StreamsState =
@@ -351,7 +352,7 @@ function buildFilterOptions(streams: StreamedGame[]) {
 
   return {
     divisions: Array.from(divisions).sort(),
-    missions: Array.from(missions).sort(),
+    missions: filterCanonicalMissionNames(Array.from(missions)),
     players: Array.from(players).sort(),
   }
 }

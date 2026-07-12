@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { filterCanonicalMissionRecords } from '../config/missions'
 import { apiClient } from '../services/api'
 import { formatPlayerName } from '../services/formatting'
 import PreviousNextNav from './PreviousNextNav'
@@ -105,7 +106,7 @@ async function getEntities(type: EntityType, signal: AbortSignal, eventId = '') 
   if (type === 'mission') {
     const missions = await apiClient.getMissions({ eventId, signal })
 
-    return missions.map((mission) => ({
+    return filterCanonicalMissionRecords(missions).map((mission) => ({
       label: mission.mission,
       to: `/missions/${encodeURIComponent(mission.mission)}${eventQuery}`,
     }))

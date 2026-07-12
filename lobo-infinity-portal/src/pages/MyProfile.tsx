@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import BarChart, { type BarChartPoint } from '../components/BarChart'
 import Skeleton from '../components/Skeleton'
+import { getCanonicalMissionName } from '../config/missions'
 import {
   apiClient,
   type ArmyList,
@@ -474,7 +475,7 @@ function ProfileHero({
           </div>
           <div>
             <dt>Favorite Mission</dt>
-            <dd>{data.leagueStatistics?.favoriteMission || 'Not established'}</dd>
+            <dd>{getCanonicalMissionName(data.leagueStatistics?.favoriteMission) || 'Not established'}</dd>
           </div>
         </dl>
       </div>
@@ -793,7 +794,7 @@ function RecentGamesTable({ contexts }: { contexts: GameContext[] }) {
                   {formatPlayerName(context.opponent, context.opponentDisplayName) ||
                     'Unknown'}
                 </strong>
-                <span>{context.game.mission || 'Unknown'}</span>
+                <span>{getCanonicalMissionName(context.game.mission) || 'Unknown'}</span>
                 <span>{context.faction || 'Unknown'}</span>
                 <span className={context.result === 'Win' ? 'result-win' : 'result-loss'}>
                   {context.result}
@@ -808,7 +809,7 @@ function RecentGamesTable({ contexts }: { contexts: GameContext[] }) {
                   {formatPlayerName(context.opponent, context.opponentDisplayName) ||
                     'unknown opponent'}{' '}
                   on{' '}
-                  {context.game.mission || 'unknown mission'}.
+                  {getCanonicalMissionName(context.game.mission) || 'unknown mission'}.
                 </p>
                 <Link to={`/games/${context.game.id}`}>Open Game Details</Link>
               </div>
@@ -891,7 +892,7 @@ function ArmyListsPanel({
           <article className="operations-record" key={list.id}>
             <span>{list.faction || 'Unknown faction'}</span>
             <h3>{list.armyName || 'Untitled list'}</h3>
-            <p>{list.mission || 'Open mission'} / Score {list.score}</p>
+            <p>{getCanonicalMissionName(list.mission) || 'Open mission'} / Score {list.score}</p>
           </article>
         ))}
       </div>
@@ -1062,7 +1063,7 @@ function buildPerformanceRows(
   contexts.forEach((context) => {
     const label =
       key === 'mission'
-        ? context.game.mission
+        ? getCanonicalMissionName(context.game.mission)
         : key === 'opponent'
           ? context.opponent
           : context.faction
@@ -1677,7 +1678,7 @@ function buildProfileTimeline(
       body: `${context.result} against ${
         formatPlayerName(context.opponent, context.opponentDisplayName) ||
         'Unknown'
-      } on ${context.game.mission || 'unknown mission'}.`,
+      } on ${getCanonicalMissionName(context.game.mission) || 'unknown mission'}.`,
       id: `game-${context.game.id}`,
       link: `/games/${context.game.id}`,
       timestamp: context.game.date,

@@ -3,6 +3,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 import BarChart from '../components/BarChart'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
+import { getCanonicalMissionName } from '../config/missions'
 import {
   apiClient,
   type MissionBestMoment,
@@ -31,26 +32,27 @@ function MissionProfile() {
   const [searchParams] = useSearchParams()
   const eventId = searchParams.get('eventId') || ''
   const decodedMissionName = decodeMissionName(missionName)
+  const canonicalMissionName = getCanonicalMissionName(decodedMissionName)
   const [profileState, setProfileState] = useState<MissionProfileState>({
     status: 'idle',
   })
 
   useEffect(() => {
-    if (!decodedMissionName) {
+    if (!canonicalMissionName) {
       return
     }
 
     const controller = new AbortController()
 
     apiClient
-      .getMission(decodedMissionName, {
+      .getMission(canonicalMissionName, {
         eventId,
         signal: controller.signal,
       })
       .then((mission) => {
         setProfileState({
           mission,
-          missionName: decodedMissionName,
+          missionName: canonicalMissionName,
           status: 'success',
         })
       })
@@ -64,7 +66,7 @@ function MissionProfile() {
             error instanceof Error
               ? error.message
               : 'Mission profile could not be loaded.',
-          missionName: decodedMissionName,
+          missionName: canonicalMissionName,
           status: 'error',
         })
       })
@@ -72,14 +74,14 @@ function MissionProfile() {
     return () => {
       controller.abort()
     }
-  }, [decodedMissionName, eventId])
+  }, [canonicalMissionName, decodedMissionName, eventId])
 
-  if (!decodedMissionName) {
+  if (!canonicalMissionName) {
     return (
       <main className="portal-shell">
-        <MissionHeaderFallback missionName="" />
+        <MissionHeaderFallback missionName={decodedMissionName} />
         <section className="dashboard-state" aria-label="Mission error">
-          <p role="alert">Mission name is missing.</p>
+          <p role="alert">Mission is not in the current mission registry.</p>
         </section>
       </main>
     )
@@ -87,12 +89,12 @@ function MissionProfile() {
 
   const isCurrentProfile =
     profileState.status !== 'idle' &&
-    profileState.missionName === decodedMissionName
+    profileState.missionName === canonicalMissionName
 
   if (!isCurrentProfile) {
     return (
       <main className="portal-shell">
-        <MissionHeaderFallback missionName={decodedMissionName} />
+        <MissionHeaderFallback missionName={canonicalMissionName} />
         <section className="profile-card-grid" aria-label="Mission loading">
           <Skeleton label="Mission metrics loading" rows={6} />
           <Skeleton label="Mission chart loading" rows={6} />
@@ -105,7 +107,7 @@ function MissionProfile() {
   if (profileState.status === 'error') {
     return (
       <main className="portal-shell">
-        <MissionHeaderFallback missionName={decodedMissionName} />
+        <MissionHeaderFallback missionName={canonicalMissionName} />
         <section className="dashboard-state" aria-label="Mission error">
           <p role="alert">{profileState.error}</p>
         </section>

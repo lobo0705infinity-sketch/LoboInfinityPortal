@@ -2,6 +2,10 @@ import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import Skeleton from '../components/Skeleton'
+import {
+  getCanonicalMissionName,
+  getCanonicalMissionOptions,
+} from '../config/missions'
 import './SubmitResult.css'
 import {
   apiClient,
@@ -60,27 +64,6 @@ const canonicalFactionFallbacks = [
   'Yu Jing',
 ]
 
-const canonicalMissionFallbacks = [
-  'Acquisition',
-  'Annihilation',
-  'Biotechvore',
-  'Capture and Protect',
-  'Countermeasures',
-  'Decapitation',
-  'Firefight',
-  'Frontline',
-  'Frostbyte',
-  'Highly Classified',
-  'Looting and Sabotaging',
-  'Mindwipe',
-  'Power Pack',
-  'Quadrant Control',
-  'Supplies',
-  'Supremacy',
-  'Transmission Matrix',
-  'Unmasking',
-]
-
 function SubmitResult() {
   const auth = useAuth()
   const [searchParams] = useSearchParams()
@@ -111,11 +94,7 @@ function SubmitResult() {
     () => buildFactionOptions(searchIndex, eventHome),
     [eventHome, searchIndex],
   )
-  const casualMissionOptions = useMemo(() => buildMissionOptions(searchIndex), [searchIndex])
-  const leagueMissionOptions = useMemo(
-    () => buildEventMissionOptions(eventHome, searchIndex),
-    [eventHome, searchIndex],
-  )
+  const missionOptions = useMemo(() => buildMissionOptions(), [])
   const leagueOpponentOptions = useMemo(
     () =>
       buildEventOpponentOptions(
@@ -208,7 +187,11 @@ function SubmitResult() {
           ...current,
           division: auth.user.leagueDivision || currentPlayer?.notes || '',
           eventId: home.event.id,
-          mission: getRoundValue(home.currentRound, 'mission') || '',
+          mission:
+            getCanonicalMissionName(
+              getRoundValue(home.currentRound, 'mission') ||
+                getRoundValue(home.currentRound, 'Mission'),
+            ) || '',
           player,
           playerFaction: currentPlayer?.faction || auth.user.favoriteFaction || '',
           round:
@@ -273,7 +256,7 @@ function SubmitResult() {
 
     const validation = validateCasualResult(casualResult, {
       factions: factionOptions,
-      missions: casualMissionOptions,
+      missions: missionOptions,
       opponents: casualOpponentOptions,
     })
 
@@ -389,7 +372,7 @@ function SubmitResult() {
           <SearchableSelect
             label="Mission"
             onChange={(value) => updateCasualField('mission', value)}
-            options={casualMissionOptions}
+            options={missionOptions}
             placeholder="Search missions"
             required
             value={casualResult.mission}
@@ -494,7 +477,7 @@ function SubmitResult() {
 
     const validation = validateLeagueResult(eventHome, leagueResult, {
       factions: factionOptions,
-      missions: leagueMissionOptions,
+      missions: missionOptions,
       opponents: leagueOpponentOptions,
     })
 
@@ -555,7 +538,7 @@ function SubmitResult() {
         <SearchableSelect
           label="Mission"
           onChange={(value) => updateField('mission', value)}
-          options={leagueMissionOptions}
+          options={missionOptions}
           placeholder="Search event missions"
           required
           value={leagueResult.mission}
@@ -1008,13 +991,15 @@ function getTournamentAssignment(
   }
 
   const flipped = sameValue(table.opponent, player)
-
-  return {
-    mission:
-      getRoundValue(data.currentRound, 'mission') ||
+  const mission = getCanonicalMissionName(
+    getRoundValue(data.currentRound, 'mission') ||
       getRoundValue(data.currentRound, 'Mission') ||
       getRoundValue(eventHome.currentRound, 'mission') ||
-      table.round,
+      getRoundValue(eventHome.currentRound, 'Mission'),
+  )
+
+  return {
+    mission,
     opponent: flipped ? table.player : table.opponent,
     opponentTeam: sameValue(table.teamA, team) ? table.teamB : table.teamA,
     player,
@@ -1185,28 +1170,8 @@ function buildFactionOptions(
   ])
 }
 
-function buildMissionOptions(searchIndex: SearchData | null) {
-  return toPickerOptions([
-    ...(searchIndex?.missions.map((mission) => mission.mission) ?? []),
-    ...canonicalMissionFallbacks,
-  ])
-}
-
-function buildEventMissionOptions(
-  eventHome: EventHomeData | null,
-  searchIndex: SearchData | null,
-) {
-  const eventMissions = [
-    getRoundValue(eventHome?.currentRound ?? null, 'mission'),
-    getRoundValue(eventHome?.currentRound ?? null, 'Mission'),
-    ...(eventHome?.rounds.flatMap((round) => [
-      getRoundValue(round, 'mission'),
-      getRoundValue(round, 'Mission'),
-    ]) ?? []),
-  ]
-
-  const options = toPickerOptions(eventMissions)
-  return options.length > 0 ? options : buildMissionOptions(searchIndex)
+function buildMissionOptions() {
+  return getCanonicalMissionOptions()
 }
 
 function buildEventOpponentOptions(

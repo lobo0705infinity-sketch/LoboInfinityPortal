@@ -7,6 +7,10 @@ import RecentGames from '../components/RecentGames'
 import Skeleton from '../components/Skeleton'
 import StatCard from '../components/StatCard'
 import {
+  filterCanonicalMissionRecords,
+  getCanonicalMissionName,
+} from '../config/missions'
+import {
   type ArmyListCommunitySummary,
   type CommissionerNewsItem,
   type CommunityCommandCenterData,
@@ -136,7 +140,7 @@ function DashboardContent({
   const mostPlayedMission =
     intelligence?.records.mostActiveMission &&
     !('winner' in intelligence.records.mostActiveMission)
-      ? intelligence.records.mostActiveMission.name || ''
+      ? getCanonicalMissionName(intelligence.records.mostActiveMission.name)
       : ''
 
   return (
@@ -389,7 +393,7 @@ function CommunityCommandCenter() {
                   {formatPlayerName(game.winner, game.winnerDisplayName)} defeated{' '}
                   {formatPlayerName(game.loser, game.loserDisplayName)}
                 </strong>
-                <p>{game.mission} - {formatObjectiveScore(game)}</p>
+                <p>{formatMissionLabel(game.mission)} - {formatObjectiveScore(game)}</p>
               </CommandActionLink>
             ))}
             {communityCommandCenter.communityActivity.news.slice(0, 2).map((item) => (
@@ -585,7 +589,7 @@ function buildLeagueHeadlines(data: CommunityCommandCenterData) {
 
   data.communityActivity.latestResults.slice(0, 2).forEach((game) => {
     headlines.push({
-      body: `${game.mission} ended ${formatObjectiveScore(game)}.`,
+      body: `${formatMissionLabel(game.mission)} ended ${formatObjectiveScore(game)}.`,
       label: game.division || 'Latest Result',
       title: `${formatPlayerName(game.winner, game.winnerDisplayName)} defeated ${formatPlayerName(game.loser, game.loserDisplayName)}`,
       to: `/games/${game.id}`,
@@ -656,7 +660,7 @@ function buildFeaturedLeagueMatch(
 
   if (latest) {
     return {
-      body: `${latest.mission} finished ${formatObjectiveScore(latest)}. Latest completed battles shape the table while new matchups get scheduled.`,
+      body: `${formatMissionLabel(latest.mission)} finished ${formatObjectiveScore(latest)}. Latest completed battles shape the table while new matchups get scheduled.`,
       label: 'Featured Battle',
       title: `${formatPlayerName(latest.winner, latest.winnerDisplayName)} vs ${formatPlayerName(latest.loser, latest.loserDisplayName)}`,
       to: `/games/${latest.id}`,
@@ -679,7 +683,7 @@ function buildSeasonTimeline(data: CommunityCommandCenterData) {
   if (data.communityActivity.latestResults[0]) {
     const game = data.communityActivity.latestResults[0]
     timeline.push({
-      body: `${game.mission} - ${formatObjectiveScore(game)}.`,
+      body: `${formatMissionLabel(game.mission)} - ${formatObjectiveScore(game)}.`,
       label: game.date || 'Latest Result',
       title: `${formatPlayerName(game.winner, game.winnerDisplayName)} reports a win`,
       to: `/games/${game.id}`,
@@ -729,7 +733,7 @@ function buildRecordSpotlight(
   }
 
   return {
-    body: `${result.mission} produced a ${formatObjectiveScore(result)} result.`,
+    body: `${formatMissionLabel(result.mission)} produced a ${formatObjectiveScore(result)} result.`,
     label: 'Record Spotlight',
     title: 'Latest completed battle',
     to: `/games/${result.id}`,
@@ -842,7 +846,7 @@ function FeaturedMatchHero({ game }: { game: RecentGame }) {
       <dl className="featured-match-meta">
         <div>
           <dt>Mission</dt>
-          <dd>{game.mission}</dd>
+          <dd>{formatMissionLabel(game.mission)}</dd>
         </div>
         <div>
           <dt>OP</dt>
@@ -970,6 +974,9 @@ function HeadlineStack({
   news: CommissionerNewsItem[]
   strongestFaction: string
 }) {
+  const missionTrend = intelligence
+    ? filterCanonicalMissionRecords(intelligence.missionTrends)[0]
+    : null
   const headlines = [
     ...news.slice(0, 2).map((item) => ({
       label: item.date || 'Commissioner News',
@@ -988,12 +995,12 @@ function HeadlineStack({
           to: `/players/${encodeURIComponent(intelligence.winStreaks[0].player)}`,
         }
       : null,
-    intelligence?.missionTrends[0]
+    missionTrend
       ? {
           label: 'Most Played Mission',
-          story: intelligence.missionTrends[0].story,
-          title: intelligence.missionTrends[0].mission,
-          to: `/missions/${encodeURIComponent(intelligence.missionTrends[0].mission)}`,
+          story: missionTrend.story,
+          title: missionTrend.mission,
+          to: `/missions/${encodeURIComponent(missionTrend.mission)}`,
         }
       : null,
     strongestFaction
@@ -1354,6 +1361,10 @@ function DashboardHeader({ lastUpdated }: { lastUpdated: string }) {
       <p>Last Updated: {lastUpdated}</p>
     </section>
   )
+}
+
+function formatMissionLabel(mission: string) {
+  return getCanonicalMissionName(mission) || 'Mission not recorded'
 }
 
 function getGamesPerWeek(games: RecentGame[]) {

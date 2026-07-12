@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
+import { getCanonicalMissionName } from '../config/missions'
 import { apiClient, type RecentGame } from '../services/api'
 import {
   formatObjectiveScore,
@@ -111,6 +112,7 @@ function GameDetails() {
 
 function MatchReport({ game }: { game: RecentGame }) {
   const firstTurnPlayer = formatGameParticipant(game, game.firstTurn)
+  const mission = getCanonicalMissionName(game.mission)
 
   return (
     <main className="portal-shell">
@@ -149,9 +151,13 @@ function MatchReport({ game }: { game: RecentGame }) {
             <div>
               <dt>Mission</dt>
               <dd>
-                <Link to={`/missions/${encodeURIComponent(game.mission)}`}>
-                  {game.mission}
-                </Link>
+                {mission ? (
+                  <Link to={`/missions/${encodeURIComponent(mission)}`}>
+                    {mission}
+                  </Link>
+                ) : (
+                  'Mission not recorded'
+                )}
               </dd>
             </div>
             <div>
@@ -188,7 +194,7 @@ function MatchReport({ game }: { game: RecentGame }) {
             </li>
             <li>
               <span>Mission Briefing</span>
-              <strong>{game.mission}</strong>
+              <strong>{mission || 'Mission not recorded'}</strong>
             </li>
             <li>
               <span>Final Result</span>
@@ -233,7 +239,7 @@ function MatchReport({ game }: { game: RecentGame }) {
             </div>
             <div>
               <dt>Mission</dt>
-              <dd>{game.mission}</dd>
+              <dd>{mission || 'Mission not recorded'}</dd>
             </div>
             <div>
               <dt>Division</dt>
