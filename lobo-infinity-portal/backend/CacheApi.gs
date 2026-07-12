@@ -497,6 +497,15 @@ function getPortalCacheKey(e, action) {
   )
     parts.push("eventContextSchema=13.0");
 
+  if (
+    [
+      "players",
+      "searchData",
+      "searchIndex"
+    ].indexOf(action) !== -1
+  )
+    parts.push("communityPlayerRegistrySchema=5.3");
+
   if (action === "events")
     parts.push("schema=portalUser1");
 

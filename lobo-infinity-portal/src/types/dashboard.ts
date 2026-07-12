@@ -12,12 +12,20 @@ export type Standing = {
   rank: number
   player: string
   displayName: string
+  division?: string
   games: number
   wins: number
   losses: number
   tp: number
   op: number
   vp: number
+  faction?: string
+  favoriteArmy?: string
+  currentWinStreak?: number
+  statusBadges?: string[]
+  gameTypes?: string[]
+  lastActive?: string
+  communityStatus?: string
 }
 
 export type DivisionSummary = {

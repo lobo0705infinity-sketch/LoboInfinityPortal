@@ -1717,6 +1717,58 @@
   padding: 0 clamp(18px, 4vw, 46px) 46px;
 }
 
+.community-player-summary {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+  margin: 0 clamp(18px, 4vw, 46px) 16px;
+}
+
+.community-player-controls {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.4fr) repeat(4, minmax(140px, 1fr));
+  gap: 12px;
+  margin: 0 clamp(18px, 4vw, 46px) 18px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  background: var(--panel);
+  box-shadow: var(--shadow-panel);
+}
+
+.community-player-controls label {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.community-player-controls span {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.community-player-controls input,
+.community-player-controls select {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0 12px;
+  color: var(--text);
+  background: var(--panel-muted);
+  font: inherit;
+  font-weight: 800;
+}
+
+.community-player-controls input:focus,
+.community-player-controls select:focus {
+  outline: 2px solid rgba(76, 201, 240, 0.4);
+  outline-offset: 2px;
+}
+
 .faction-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -1935,7 +1987,7 @@
 
 .player-card-stats {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(86px, 1fr));
   gap: 10px;
   margin: 0;
 }
@@ -1961,6 +2013,53 @@
   color: var(--text);
   font-size: 1.1rem;
   font-weight: 900;
+  overflow-wrap: anywhere;
+}
+
+.player-card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.player-status-badge {
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
+  border: 1px solid rgba(76, 201, 240, 0.25);
+  border-radius: 999px;
+  padding: 3px 8px;
+  color: var(--blue);
+  background: rgba(76, 201, 240, 0.08);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.player-card-empty {
+  margin: -6px 0 0;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+@media (max-width: 1100px) {
+  .community-player-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .community-player-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .community-player-summary,
+  .community-player-controls {
+    grid-template-columns: 1fr;
+  }
 }
 
 .table-player-link,

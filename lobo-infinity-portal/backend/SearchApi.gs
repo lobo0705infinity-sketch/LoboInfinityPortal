@@ -7,6 +7,25 @@
 
 function getSearchData(e) {
 
+  const params =
+    getApiParameters(e);
+
+  if (getCommunityPlayerRegistryString(params.eventId) === "")
+    return jsonOutput({
+      success: true,
+      players: getCommunityPlayerRegistryStandings(),
+      factions: buildFactionApiSummaries("all", "all"),
+      missions: buildMissionApiSummaries("all", "all"),
+      games: getAllRecentGameObjectsForEvent("all", "all")
+        .slice(0, RECENT_GAMES_LIMIT),
+      armyLists: getArmyListObjects()
+        .filter(function(list) {
+
+          return list.approved;
+
+        })
+    });
+
   const context =
     buildEventAnalyticsContext(e);
 

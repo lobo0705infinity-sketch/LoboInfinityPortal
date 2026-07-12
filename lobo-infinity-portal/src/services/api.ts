@@ -3450,12 +3450,22 @@ function normalizeStanding(item: unknown): Standing {
     rank: getRequiredNumber(record, 'rank'),
     player: getRequiredString(record, 'player'),
     displayName: getString(record, 'displayName') || getRequiredString(record, 'player'),
+    division: getString(record, 'division'),
     games: getRequiredNumber(record, 'games'),
     wins: getRequiredNumber(record, 'wins'),
     losses: getRequiredNumber(record, 'losses'),
     tp: getRequiredNumber(record, 'tp'),
     op: getRequiredNumber(record, 'op'),
     vp: getRequiredNumber(record, 'vp'),
+    faction: getString(record, 'faction'),
+    favoriteArmy: getString(record, 'favoriteArmy'),
+    currentWinStreak: getNumber(record, 'currentWinStreak'),
+    statusBadges: getArray(record, 'statusBadges').map((item) =>
+      String(item ?? ''),
+    ),
+    gameTypes: getArray(record, 'gameTypes').map((item) => String(item ?? '')),
+    lastActive: getString(record, 'lastActive'),
+    communityStatus: getString(record, 'communityStatus'),
   }
 }
 

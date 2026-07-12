@@ -19,6 +19,15 @@ function PlayerCard({ divisionLabel, eventId, player }: PlayerCardProps) {
     : `/players/${encodeURIComponent(player.player)}`
   const identity = getDivisionIdentity(divisionLabel)
   const playerName = formatPlayerName(player.player, player.displayName)
+  const isCommunityCard = !eventId
+  const badges = player.statusBadges ?? []
+  const favoriteArmy = player.favoriteArmy || player.faction || 'Not recorded'
+  const streak = player.currentWinStreak ?? 0
+  const divisionBadgeLabel = eventId
+    ? formatDivisionLabel(divisionLabel)
+    : divisionLabel && divisionLabel !== 'Community Player Registry'
+      ? divisionLabel
+      : 'Community'
 
   return (
     <Link
@@ -29,9 +38,18 @@ function PlayerCard({ divisionLabel, eventId, player }: PlayerCardProps) {
       <div className="player-card-main">
         <div>
           <span className="division-badge player-card-division">
-            {formatDivisionLabel(divisionLabel)}
+            {divisionBadgeLabel}
           </span>
           <h2>{playerName}</h2>
+          {isCommunityCard && badges.length > 0 ? (
+            <span className="player-card-badges" aria-label="Player status">
+              {badges.map((badge) => (
+                <span className="player-status-badge" key={badge}>
+                  {badge}
+                </span>
+              ))}
+            </span>
+          ) : null}
         </div>
         <span className="player-card-chevron" aria-hidden="true">
           &gt;
@@ -58,7 +76,23 @@ function PlayerCard({ divisionLabel, eventId, player }: PlayerCardProps) {
           <dt>VP</dt>
           <dd>{player.vp}</dd>
         </div>
+        {isCommunityCard ? (
+          <>
+            <div>
+              <dt>Army</dt>
+              <dd>{favoriteArmy}</dd>
+            </div>
+            <div>
+              <dt>Streak</dt>
+              <dd>{streak}</dd>
+            </div>
+          </>
+        ) : null}
       </dl>
+
+      {isCommunityCard && player.games === 0 ? (
+        <p className="player-card-empty">No recorded games yet. Say hello!</p>
+      ) : null}
 
       <span className="player-card-accent" aria-hidden="true">
         {identity.icon}
