@@ -223,9 +223,9 @@ function buildStream(
     division: getStreamString(row[columns.division]),
     mission: getStreamString(row[columns.mission]),
     player1: getStreamString(row[columns.player1]),
-    player1Faction: getStreamString(row[columns.player1Faction]),
+    player1Faction: canonicalizeArmyName(row[columns.player1Faction]),
     player2: getStreamString(row[columns.player2]),
-    player2Faction: getStreamString(row[columns.player2Faction]),
+    player2Faction: canonicalizeArmyName(row[columns.player2Faction]),
     youtubeUrl: getStreamYoutubeUrl(row, columns.youtubeUrl),
     featured: getStreamBoolean(row[columns.featured])
   };

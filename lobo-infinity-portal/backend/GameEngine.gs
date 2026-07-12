@@ -236,6 +236,9 @@ function buildPlayerRow(row, playerNumber, winner) {
 
   }
 
+  faction =
+    canonicalizeArmyName(faction);
+
   return [
 
     row[FORM.DIVISION],
@@ -337,8 +340,10 @@ function buildAnalyticsRow(row, winner) {
       winnerPlayer = row[FORM.PLAYER1];
       loserPlayer = row[FORM.PLAYER2];
 
-      winnerFaction = row[FORM.WINNINGFACTION];
-      loserFaction = row[FORM.LOSINGFACTION];
+      winnerFaction =
+        canonicalizeArmyName(row[FORM.WINNINGFACTION]);
+      loserFaction =
+        canonicalizeArmyName(row[FORM.LOSINGFACTION]);
 
       winnerTP = Number(row[FORM.P1TP]) || 0;
       loserTP = Number(row[FORM.P2TP]) || 0;
@@ -359,8 +364,10 @@ function buildAnalyticsRow(row, winner) {
       winnerPlayer = row[FORM.PLAYER2];
       loserPlayer = row[FORM.PLAYER1];
 
-      winnerFaction = row[FORM.WINNINGFACTION];
-      loserFaction = row[FORM.LOSINGFACTION];
+      winnerFaction =
+        canonicalizeArmyName(row[FORM.WINNINGFACTION]);
+      loserFaction =
+        canonicalizeArmyName(row[FORM.LOSINGFACTION]);
 
       winnerTP = Number(row[FORM.P2TP]) || 0;
       loserTP = Number(row[FORM.P1TP]) || 0;

@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "npm run security:cache && tsc -b && vite build",
+    "build": "npm run security:cache && npm run security:armies && tsc -b && vite build",
     "analyze": "npm run build && node scripts/bundle-report.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -18,7 +18,8 @@
     "team-tournament:routing": "node scripts/team-tournament-routing-check.mjs",
     "test:notifications": "node --experimental-strip-types scripts/notification-timestamp-check.ts",
     "rules:check": "node scripts/firestore-rules-check.mjs",
-    "security:cache": "node scripts/security-cache-audit.mjs"
+    "security:cache": "node scripts/security-cache-audit.mjs",
+    "security:armies": "node scripts/army-registry-audit.mjs"
   },
   "dependencies": {
     "firebase": "^12.15.0",

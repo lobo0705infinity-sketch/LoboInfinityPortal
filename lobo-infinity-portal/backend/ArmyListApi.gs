@@ -74,7 +74,14 @@ function submitArmyList(e) {
     );
 
   const faction =
-    getApiParameter(parameters, "faction");
+    canonicalizeArmyParentFaction(
+      getApiParameter(parameters, "faction")
+    );
+
+  const sectorial =
+    canonicalizeArmyName(
+      getApiParameter(parameters, "sectorial")
+    );
 
   const armyName =
     getApiParameter(parameters, "armyName");
@@ -100,7 +107,7 @@ function submitArmyList(e) {
     ),
     player,
     faction,
-    getApiParameter(parameters, "sectorial"),
+    sectorial,
     getApiParameter(parameters, "mission"),
     getApiParameter(parameters, "event"),
     getApiParameter(parameters, "armyCode"),
@@ -244,9 +251,7 @@ function getPlayerArmyLists(playerName) {
 function getFactionArmyLists(factionName) {
 
   const normalizedFaction =
-    String(factionName || "")
-      .trim()
-      .toLowerCase();
+    canonicalizeArmyName(factionName);
 
   if (!normalizedFaction)
     return {
@@ -296,18 +301,16 @@ function getFactionMatchups(factionName) {
     .forEach(function(game) {
 
       const winnerFaction =
-        String(game.winnerFaction || "")
-          .trim();
+        canonicalizeArmyName(game.winnerFaction);
 
       const loserFaction =
-        String(game.loserFaction || "")
-          .trim();
+        canonicalizeArmyName(game.loserFaction);
 
       const winnerMatches =
-        winnerFaction.toLowerCase() === normalizedFaction;
+        winnerFaction === normalizedFaction;
 
       const loserMatches =
-        loserFaction.toLowerCase() === normalizedFaction;
+        loserFaction === normalizedFaction;
 
       if (
         !winnerMatches &&
@@ -528,11 +531,11 @@ function buildArmyListObject(row, id) {
         row[ARMY_LIST_COLUMNS.PLAYER]
       ),
     faction:
-      getArmyListString(
+      canonicalizeArmyParentFaction(
         row[ARMY_LIST_COLUMNS.FACTION]
       ),
     sectorial:
-      getArmyListString(
+      canonicalizeArmyName(
         row[ARMY_LIST_COLUMNS.SECTORIAL]
       ),
     mission:

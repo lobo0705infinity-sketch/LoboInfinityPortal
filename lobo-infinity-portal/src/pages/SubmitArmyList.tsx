@@ -1,6 +1,12 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
+import {
+  getArmiesForParent,
+  getArmyParentFaction,
+  getCanonicalArmyName,
+  getCanonicalParentFactionOptions,
+} from '../config/armies'
 import { CANONICAL_MISSIONS } from '../config/missions'
 import { apiClient, type ArmyListSubmission } from '../services/api'
 
@@ -68,6 +74,27 @@ function SubmitArmyList() {
   }
 
   function updateField(field: keyof ArmyListSubmission, value: string) {
+    if (field === 'faction') {
+      setSubmission((current) => ({
+        ...current,
+        faction: value,
+        sectorial:
+          value === getArmyParentFaction(current.sectorial)
+            ? current.sectorial
+            : '',
+      }))
+      return
+    }
+
+    if (field === 'sectorial') {
+      setSubmission((current) => ({
+        ...current,
+        faction: getArmyParentFaction(value) || current.faction,
+        sectorial: getCanonicalArmyName(value),
+      }))
+      return
+    }
+
     setSubmission((current) => ({
       ...current,
       [field]: value,
@@ -106,15 +133,19 @@ function SubmitArmyList() {
           type="email"
           value={auth.user.email}
         />
-        <FormField
+        <SelectField
           label="Faction"
           onChange={(value) => updateField('faction', value)}
+          options={getCanonicalParentFactionOptions()}
+          placeholder="Select faction"
           required
           value={submission.faction}
         />
-        <FormField
-          label="Sectorial"
+        <SelectField
+          label="Army / Sectorial"
           onChange={(value) => updateField('sectorial', value)}
+          options={getArmiesForParent(submission.faction)}
+          placeholder="Select army"
           value={submission.sectorial}
         />
         <FormField
@@ -206,12 +237,14 @@ function SelectField({
   label,
   onChange,
   options,
+  placeholder = 'Select mission',
   required = false,
   value,
 }: {
   label: string
   onChange: (value: string) => void
   options: readonly string[]
+  placeholder?: string
   required?: boolean
   value: string
 }) {
@@ -223,7 +256,7 @@ function SelectField({
         required={required}
         value={value}
       >
-        <option value="">Select mission</option>
+        <option value="">{placeholder}</option>
         {options.map((option) => (
           <option key={option} value={option}>
             {option}

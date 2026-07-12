@@ -3,6 +3,10 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import Skeleton from '../components/Skeleton'
 import {
+  getCanonicalArmyName,
+  getCanonicalArmyOptions,
+} from '../config/armies'
+import {
   getCanonicalMissionName,
   getCanonicalMissionOptions,
 } from '../config/missions'
@@ -50,20 +54,6 @@ type PickerOption = {
   value: string
 }
 
-const canonicalFactionFallbacks = [
-  'ALEPH',
-  'Ariadna',
-  'Combined Army',
-  'Haqqislam',
-  'JSA',
-  'NA2',
-  'Nomads',
-  'O-12',
-  'PanOceania',
-  'Tohaa',
-  'Yu Jing',
-]
-
 function SubmitResult() {
   const auth = useAuth()
   const [searchParams] = useSearchParams()
@@ -94,15 +84,12 @@ function SubmitResult() {
     division: undefined,
     eventId: undefined,
     player: auth.user.leaguePlayer || auth.user.playerDisplayName || auth.user.displayName || '',
-    playerFaction: auth.user.favoriteFaction || '',
+    playerFaction: getCanonicalArmyName(auth.user.favoriteFaction),
     round: undefined,
   })
   const canOverrideOpponentFilter = auth.isAtLeastRole('Commissioner')
   const allPlayerOptions = useMemo(() => buildPlayerOptions(searchIndex), [searchIndex])
-  const factionOptions = useMemo(
-    () => buildFactionOptions(searchIndex, eventHome),
-    [eventHome, searchIndex],
-  )
+  const factionOptions = useMemo(() => buildFactionOptions(), [])
   const missionOptions = useMemo(() => buildMissionOptions(), [])
   const leagueOpponentOptions = useMemo(
     () =>
@@ -165,7 +152,9 @@ function SubmitResult() {
         setCasualResult((current) => ({
           ...current,
           player: current.player || auth.user.leaguePlayer || auth.user.playerDisplayName || auth.user.displayName || '',
-          playerFaction: current.playerFaction || auth.user.favoriteFaction || '',
+          playerFaction:
+            getCanonicalArmyName(current.playerFaction) ||
+            getCanonicalArmyName(auth.user.favoriteFaction),
         }))
         setState({ status: 'idle' })
         return
@@ -202,7 +191,9 @@ function SubmitResult() {
                 getRoundValue(home.currentRound, 'Mission'),
             ) || '',
           player,
-          playerFaction: currentPlayer?.faction || auth.user.favoriteFaction || '',
+          playerFaction:
+            getCanonicalArmyName(currentPlayer?.faction) ||
+            getCanonicalArmyName(auth.user.favoriteFaction),
           round:
             getRoundValue(home.currentRound, 'name') ||
             getRoundValue(home.currentRound, 'round') ||
@@ -1168,15 +1159,8 @@ function buildPlayerOptions(searchIndex: SearchData | null): PickerOption[] {
   )
 }
 
-function buildFactionOptions(
-  searchIndex: SearchData | null,
-  eventHome: EventHomeData | null,
-) {
-  return toPickerOptions([
-    ...(searchIndex?.factions.map((faction) => faction.name) ?? []),
-    ...(eventHome?.registration.registrations.map((entry) => entry.faction) ?? []),
-    ...canonicalFactionFallbacks,
-  ])
+function buildFactionOptions() {
+  return toPickerOptions(getCanonicalArmyOptions())
 }
 
 function buildMissionOptions() {
@@ -1272,7 +1256,7 @@ function buildEventOpponentOptions(
       meta: [
         isLeagueEvent && currentDivision ? 'Same division' : '',
         entry.team || entry.preferredTeam || '',
-        entry.faction || '',
+        getCanonicalArmyName(entry.faction) || entry.faction || '',
       ].filter(Boolean).join(' · '),
       value: entry.player,
     }))

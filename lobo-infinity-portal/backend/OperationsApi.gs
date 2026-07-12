@@ -505,15 +505,23 @@ function updateArmyList(e) {
 
   for (const key in editable) {
 
-    if (params[key] !== undefined)
+    if (params[key] !== undefined) {
+      const value =
+        key === "faction"
+          ? canonicalizeArmyParentFaction(params[key])
+          : key === "sectorial"
+            ? canonicalizeArmyName(params[key])
+            : String(params[key]).trim();
+
       sheet
         .getRange(
           rowNumber,
           editable[key] + 1
         )
         .setValue(
-          String(params[key]).trim()
+          value
         );
+    }
 
   }
 
@@ -587,9 +595,9 @@ function saveOperationsStream(e) {
       params.division || "",
       params.mission || "",
       params.player1 || "",
-      params.player1Faction || "",
+      canonicalizeArmyName(params.player1Faction),
       params.player2 || "",
-      params.player2Faction || "",
+      canonicalizeArmyName(params.player2Faction),
       params.youtubeUrl || "",
       getOperationsBoolean(params.featured)
     ];

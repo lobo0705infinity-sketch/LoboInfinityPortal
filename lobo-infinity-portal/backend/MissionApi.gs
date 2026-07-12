@@ -261,9 +261,9 @@ function getMissionMostPlayedFaction(missionName) {
         return;
 
       const faction =
-        String(
+        canonicalizeArmyName(
           game[CONFIG.ENGINE.FACTION]
-        ).trim();
+        );
 
       if (!faction)
         return;

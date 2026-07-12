@@ -76,7 +76,9 @@ function updateFactionRegistry(registry, scopedGames){
   games.forEach(function(game){
 
     const faction =
-      game[CONFIG.ENGINE.FACTION];
+      canonicalizeArmyName(
+        game[CONFIG.ENGINE.FACTION]
+      );
 
     if(!faction)
       return;

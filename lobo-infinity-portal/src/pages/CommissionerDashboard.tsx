@@ -4,6 +4,7 @@ import { useAuth } from '../auth/AuthContext'
 import EventManagerPanel from '../components/EventManagerPanel'
 import Loading from '../components/Loading'
 import Skeleton from '../components/Skeleton'
+import { getCanonicalArmyName, getCanonicalArmyOptions } from '../config/armies'
 import { CANONICAL_MISSIONS } from '../config/missions'
 import {
   apiClient,
@@ -1093,9 +1094,21 @@ function StreamManager({
         />
         <Input label="Division" onChange={(value) => setDraft({ ...draft, division: value })} value={draft.division} />
         <Input label="Player 1" onChange={(value) => setDraft({ ...draft, player1: value })} value={draft.player1} />
-        <Input label="Player 1 Faction" onChange={(value) => setDraft({ ...draft, player1Faction: value })} value={draft.player1Faction} />
+        <SelectInput
+          label="Player 1 Faction"
+          onChange={(value) => setDraft({ ...draft, player1Faction: value })}
+          options={getCanonicalArmyOptions()}
+          placeholder="Select army"
+          value={draft.player1Faction}
+        />
         <Input label="Player 2" onChange={(value) => setDraft({ ...draft, player2: value })} value={draft.player2} />
-        <Input label="Player 2 Faction" onChange={(value) => setDraft({ ...draft, player2Faction: value })} value={draft.player2Faction} />
+        <SelectInput
+          label="Player 2 Faction"
+          onChange={(value) => setDraft({ ...draft, player2Faction: value })}
+          options={getCanonicalArmyOptions()}
+          placeholder="Select army"
+          value={draft.player2Faction}
+        />
         <Input label="YouTube URL" onChange={(value) => setDraft({ ...draft, youtubeUrl: value })} value={draft.youtubeUrl} />
         <Input label="Date" onChange={(value) => setDraft({ ...draft, date: value })} type="date" value={draft.date} />
         <label className="operations-check">
@@ -1116,7 +1129,11 @@ function StreamManager({
           meta: `${stream.player1} vs ${stream.player2}`,
           detail: stream.youtubeUrl,
           onDelete: () => void onAction('deleteStream', { id: stream.id }),
-          onEdit: () => setDraft(stream),
+          onEdit: () => setDraft({
+            ...stream,
+            player1Faction: getCanonicalArmyName(stream.player1Faction),
+            player2Faction: getCanonicalArmyName(stream.player2Faction),
+          }),
         }))}
       />
     </section>
@@ -1749,18 +1766,20 @@ function SelectInput({
   label,
   onChange,
   options,
+  placeholder = 'Select mission',
   value,
 }: {
   label: string
   onChange: (value: string) => void
   options: readonly string[]
+  placeholder?: string
   value: string
 }) {
   return (
     <label>
       <span>{label}</span>
       <select onChange={(event) => onChange(event.target.value)} value={value}>
-        <option value="">Select mission</option>
+        <option value="">{placeholder}</option>
         {options.map((option) => (
           <option key={option} value={option}>
             {option}

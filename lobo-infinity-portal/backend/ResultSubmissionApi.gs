@@ -78,6 +78,15 @@ function submitLeagueResult(e) {
     const winner =
       getResultSubmissionString(params.winner);
 
+    const playerFaction =
+      canonicalizeArmyName(params.playerFaction);
+
+    const opponentFaction =
+      canonicalizeArmyName(params.opponentFaction);
+
+    if (playerFaction === "" || opponentFaction === "")
+      return resultSubmissionFailure("Both factions are required.");
+
     const expectedWinner =
       determineLeagueSubmissionWinner(
         player,
@@ -115,12 +124,12 @@ function submitLeagueResult(e) {
     row[FORM.FIRSTTURN] = getResultSubmissionString(params.firstTurn);
     row[FORM.WINNINGFACTION] =
       playerIsWinner
-        ? getResultSubmissionString(params.playerFaction)
-        : getResultSubmissionString(params.opponentFaction);
+        ? playerFaction
+        : opponentFaction;
     row[FORM.LOSINGFACTION] =
       playerIsWinner
-        ? getResultSubmissionString(params.opponentFaction)
-        : getResultSubmissionString(params.playerFaction);
+        ? opponentFaction
+        : playerFaction;
     row[FORM.MOMENT] = getResultSubmissionString(params.bestMoment);
     row[FORM.EVENT_ID] = eventId;
     row[FORM.GAME_TYPE] = "league";
@@ -175,10 +184,16 @@ function submitCasualResult(e) {
     if (normalizeResultSubmissionValue(player) === normalizeResultSubmissionValue(opponent))
       return resultSubmissionFailure("Opponent must be a different player.");
 
-    if (getResultSubmissionString(params.playerFaction) === "")
+    const playerFaction =
+      canonicalizeArmyName(params.playerFaction);
+
+    const opponentFaction =
+      canonicalizeArmyName(params.opponentFaction);
+
+    if (playerFaction === "")
       return resultSubmissionFailure("Player faction is required.");
 
-    if (getResultSubmissionString(params.opponentFaction) === "")
+    if (opponentFaction === "")
       return resultSubmissionFailure("Opponent faction is required.");
 
     if (getResultSubmissionString(params.mission) === "")
@@ -256,12 +271,12 @@ function submitCasualResult(e) {
     row[FORM.FIRSTTURN] = getResultSubmissionString(params.firstTurn);
     row[FORM.WINNINGFACTION] =
       playerIsWinner
-        ? getResultSubmissionString(params.playerFaction)
-        : getResultSubmissionString(params.opponentFaction);
+        ? playerFaction
+        : opponentFaction;
     row[FORM.LOSINGFACTION] =
       playerIsWinner
-        ? getResultSubmissionString(params.opponentFaction)
-        : getResultSubmissionString(params.playerFaction);
+        ? opponentFaction
+        : playerFaction;
     row[FORM.MOMENT] = getResultSubmissionString(params.bestMoment);
     row[FORM.EVENT_ID] = "";
     row[FORM.GAME_TYPE] = "casual";

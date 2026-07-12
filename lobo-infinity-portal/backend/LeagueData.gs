@@ -50,7 +50,7 @@ function loadLeagueData() {
   LeagueDataHeaders =
     values.shift() || [];
 
-  LeagueData = values;
+  LeagueData = values.map(canonicalizeLeagueDataRow);
 
   Logger.log(
     LeagueData.length +
@@ -67,6 +67,33 @@ function getLeagueData() {
   }
 
   return LeagueData;
+
+}
+
+function canonicalizeLeagueDataRow(row) {
+
+  if (!row || !CONFIG || !CONFIG.ENGINE)
+    return row;
+
+  const factionColumn =
+    CONFIG.ENGINE.FACTION;
+
+  if (
+    typeof factionColumn === "number" &&
+    row.length > factionColumn
+  ) {
+
+    const copy =
+      row.slice();
+
+    copy[factionColumn] =
+      canonicalizeArmyName(copy[factionColumn]);
+
+    return copy;
+
+  }
+
+  return row;
 
 }
 function getLeagueDataForEvent(eventId, gameType) {

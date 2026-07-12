@@ -773,9 +773,9 @@ function getFirstTurnFactionRecord(best) {
         return;
 
       const faction =
-        String(
+        canonicalizeArmyName(
           row[CONFIG.ENGINE.FACTION]
-        ).trim();
+        );
 
       if (!faction)
         return;

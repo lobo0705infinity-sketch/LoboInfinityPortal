@@ -3,6 +3,10 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import Skeleton from '../components/Skeleton'
 import {
+  getCanonicalArmyName,
+  getCanonicalArmyOptions,
+} from '../config/armies'
+import {
   type EventRegistrationData,
   type TeamTournamentData,
   type TeamTournamentMutationResult,
@@ -498,7 +502,7 @@ function RegistrationPanel({
   const [discord, setDiscord] = useState(current?.discord ?? '')
   const [captain, setCaptain] = useState(current?.captain ?? false)
   const [freeAgent, setFreeAgent] = useState(current?.freeAgent ?? true)
-  const [faction, setFaction] = useState(current?.faction ?? '')
+  const [faction, setFaction] = useState(getCanonicalArmyName(current?.faction))
   const [notes, setNotes] = useState(current?.notes ?? '')
 
   function submit(event: FormEvent<HTMLFormElement>) {
@@ -609,11 +613,17 @@ function RegistrationPanel({
           </label>
           <label>
             <span>Primary Faction</span>
-            <input
+            <select
               onChange={(event) => setFaction(event.target.value)}
-              placeholder="Optional"
               value={faction}
-            />
+            >
+              <option value="">Optional</option>
+              {getCanonicalArmyOptions().map((army) => (
+                <option key={army} value={army}>
+                  {army}
+                </option>
+              ))}
+            </select>
           </label>
           <label>
             <span>Notes</span>

@@ -615,7 +615,7 @@ function upsertEventRegistrationRow(eventId, user, params, status) {
           preferredTeam,
           getEventRegistrationBoolean(params.captain),
           getEventRegistrationBoolean(params.freeAgent),
-          getEventRegistrationString(params.faction),
+          canonicalizeArmyName(params.faction),
           now
         ]
       );
@@ -722,7 +722,7 @@ function mapEventRegistrationRow(row) {
     preferredTeam: row["Preferred Team"] || row["Team"],
     captain: getEventRegistrationBoolean(row["Captain"]),
     freeAgent: getEventRegistrationBoolean(row["Free Agent"]),
-    faction: row["Faction"],
+    faction: canonicalizeArmyName(row["Faction"]),
     updatedAt: row["Updated At"] || row["Registered At"]
   };
 

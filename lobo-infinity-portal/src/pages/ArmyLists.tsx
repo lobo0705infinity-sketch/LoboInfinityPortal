@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import Skeleton from '../components/Skeleton'
+import {
+  getArmyParentFaction,
+  normalizeArmyForDisplay,
+} from '../config/armies'
 import { filterCanonicalMissionNames } from '../config/missions'
 import {
   apiClient,
@@ -81,10 +85,10 @@ function ArmyLists() {
     }
 
     return {
-      factions: getUniqueOptions(state.lists.map((list) => list.faction)),
+      factions: getUniqueOptions(state.lists.map(getArmyListFaction)),
       missions: filterCanonicalMissionNames(state.lists.map((list) => list.mission)),
       players: getUniqueOptions(state.lists.map((list) => list.player)),
-      sectorials: getUniqueOptions(state.lists.map((list) => list.sectorial)),
+      sectorials: getUniqueOptions(state.lists.map(getArmyListSectorial)),
     }
   }, [state])
 
@@ -96,12 +100,12 @@ function ArmyLists() {
     const normalizedQuery = query.trim().toLowerCase()
 
     return state.lists
-      .filter((list) => matchesFilter(list.faction, faction))
-      .filter((list) => matchesFilter(list.sectorial, sectorial))
+      .filter((list) => matchesFilter(getArmyListFaction(list), faction))
+      .filter((list) => matchesFilter(getArmyListSectorial(list), sectorial))
       .filter((list) => matchesFilter(list.mission, mission))
       .filter((list) => matchesFilter(list.player, player))
       .filter((list) =>
-        `${list.player} ${list.playerDisplayName} ${list.faction} ${list.sectorial} ${list.mission} ${list.armyName} ${list.description}`
+        `${list.player} ${list.playerDisplayName} ${getArmyListFaction(list)} ${getArmyListSectorial(list)} ${list.mission} ${list.armyName} ${list.description}`
           .toLowerCase()
           .includes(normalizedQuery),
       )
@@ -336,7 +340,7 @@ function ArmyListCard({
     <article className="army-list-card">
       <div className="army-list-card-heading">
         <div>
-          <p className="eyebrow">{list.faction}</p>
+          <p className="eyebrow">{getArmyListFaction(list)}</p>
           <h2>{list.armyName}</h2>
         </div>
         <strong>{list.score}</strong>
@@ -356,7 +360,7 @@ function ArmyListCard({
         </div>
         <div>
           <dt>Sectorial</dt>
-          <dd>{list.sectorial || 'Vanilla / Not recorded'}</dd>
+          <dd>{getArmyListSectorial(list) || 'Vanilla / Not recorded'}</dd>
         </div>
         <div>
           <dt>Submitted</dt>
@@ -391,6 +395,14 @@ function getUniqueOptions(values: string[]) {
   return Array.from(new Set(values.filter(Boolean))).sort((a, b) =>
     a.localeCompare(b),
   )
+}
+
+function getArmyListFaction(list: ArmyList) {
+  return getArmyParentFaction(list.sectorial) || normalizeArmyForDisplay(list.faction)
+}
+
+function getArmyListSectorial(list: ArmyList) {
+  return normalizeArmyForDisplay(list.sectorial)
 }
 
 function sortArmyLists(left: ArmyList, right: ArmyList, sortMode: SortMode) {

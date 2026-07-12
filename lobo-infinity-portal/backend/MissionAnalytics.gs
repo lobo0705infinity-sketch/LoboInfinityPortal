@@ -104,7 +104,9 @@ function updateMissionRegistry(registry, scopedGames){
       registry[mission];
 
     const faction =
-      game[CONFIG.ENGINE.FACTION];
+      canonicalizeArmyName(
+        game[CONFIG.ENGINE.FACTION]
+      );
 
     if(!faction)
       return;

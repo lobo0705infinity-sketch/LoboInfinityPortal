@@ -230,7 +230,7 @@ function findFactionSummary(
 ) {
 
   const normalizedName =
-    requestedName.toLowerCase();
+    canonicalizeArmyName(requestedName).toLowerCase();
 
   for (
     let index = 0;
@@ -252,13 +252,16 @@ function findFactionSummary(
 
 function getFactionEngineGames(factionName, scopedGames) {
 
+  const canonicalFactionName =
+    canonicalizeArmyName(factionName);
+
   return (scopedGames || getLeagueData())
     .filter(function(game) {
 
       return (
-        String(
+        canonicalizeArmyName(
           game[CONFIG.ENGINE.FACTION]
-        ).trim() === factionName
+        ) === canonicalFactionName
       );
 
     });
@@ -518,13 +521,16 @@ function getFactionMostPlayedMission(games) {
 
 function getFactionRecentGames(factionName) {
 
+  const canonicalFactionName =
+    canonicalizeArmyName(factionName);
+
   const games =
     getAllRecentGameObjects()
       .filter(function(game) {
 
         return (
-          game.winnerFaction === factionName ||
-          game.loserFaction === factionName
+          canonicalizeArmyName(game.winnerFaction) === canonicalFactionName ||
+          canonicalizeArmyName(game.loserFaction) === canonicalFactionName
         );
 
       })

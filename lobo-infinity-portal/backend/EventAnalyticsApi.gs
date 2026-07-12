@@ -124,7 +124,7 @@ function getEventAnalyticsFactions(context) {
   getEventAnalyticsRegistrations(context.eventId)
     .forEach(function(registration) {
       const faction =
-        getEventAnalyticsString(registration.faction) ||
+        canonicalizeArmyName(registration.faction) ||
         "Unreported";
 
       if (!factions[faction])
@@ -149,7 +149,7 @@ function getEventAnalyticsFactions(context) {
   getEventAnalyticsResults(context.eventId)
     .forEach(function(result) {
       const faction =
-        getEventAnalyticsString(result.winningFaction) ||
+        canonicalizeArmyName(result.winningFaction) ||
         "Unreported";
 
       if (!factions[faction])
@@ -243,7 +243,7 @@ function getEventAnalyticsGameEnginePlayers(context) {
     record.vp += Number(row[CONFIG.ENGINE.VP]) || 0;
     record.faction =
       record.faction ||
-      getEventAnalyticsString(row[CONFIG.ENGINE.FACTION]);
+      canonicalizeArmyName(row[CONFIG.ENGINE.FACTION]);
 
     switch (getEventAnalyticsString(row[CONFIG.ENGINE.RESULT])) {
       case "W":
@@ -360,7 +360,7 @@ function getEventAnalyticsMissions(context) {
       missions[mission].winnerVP += Number(result.victoryPoints) || 0;
 
       const faction =
-        getEventAnalyticsString(result.winningFaction);
+        canonicalizeArmyName(result.winningFaction);
 
       if (faction)
         missions[mission].factions[faction] =
@@ -650,9 +650,9 @@ function getEventAnalyticsFirstTurnFactionRecord(games, best) {
       getEventAnalyticsString(game.loser);
     const faction =
       firstTurn === winner
-        ? game.winnerFaction
+        ? canonicalizeArmyName(game.winnerFaction)
         : firstTurn === loser
-          ? game.loserFaction
+          ? canonicalizeArmyName(game.loserFaction)
           : "";
 
     if (!faction)
@@ -949,13 +949,13 @@ function getEventAnalyticsPlayerProfile(e, requestedName) {
       tp: standing.tp,
       op: standing.op,
       vp: standing.vp,
-      favoriteFaction: registration.faction || "",
+      favoriteFaction: canonicalizeArmyName(registration.faction) || "",
       favoriteMission: "",
       firstTurnGames: 0,
       secondTurnGames: 0,
       firstTurnWinRate: 0,
       secondTurnWinRate: 0,
-      bestFaction: registration.faction || "",
+      bestFaction: canonicalizeArmyName(registration.faction) || "",
       rival: "",
       nemesis: "",
       armyLists: [],
@@ -964,7 +964,7 @@ function getEventAnalyticsPlayerProfile(e, requestedName) {
         highestRated: null,
         newest: null,
         averageRating: 0,
-        favoriteFaction: registration.faction || ""
+        favoriteFaction: canonicalizeArmyName(registration.faction) || ""
       },
       registeredEvents: [{
         eventId: context.eventId,
@@ -1034,7 +1034,7 @@ function getEventAnalyticsFactionProfile(context, requestedName) {
       recentGames: buildEventAnalyticsGames(
         getEventAnalyticsProfileResults(context)
       ).filter(function(game) {
-        return game.winnerFaction === faction.name;
+        return canonicalizeArmyName(game.winnerFaction) === faction.name;
       }),
       bestMoments: [],
       matchups: [],
@@ -1250,7 +1250,7 @@ function buildEventAnalyticsGames(results) {
         winnerDisplayName: winner,
         loser: loser,
         loserDisplayName: loser,
-        winnerFaction: result.winningFaction || "",
+        winnerFaction: canonicalizeArmyName(result.winningFaction) || "",
         loserFaction: "",
         mission: result.mission || "",
         tp: String(result.tournamentPoints || ""),
@@ -1289,7 +1289,7 @@ function getEventAnalyticsProfileResults(context) {
         winner: game.winner,
         player: game.winner,
         opponent: game.loser,
-        winningFaction: game.winnerFaction,
+        winningFaction: canonicalizeArmyName(game.winnerFaction),
         mission: game.mission,
         tournamentPoints: game.tp,
         objectivePoints: game.op,

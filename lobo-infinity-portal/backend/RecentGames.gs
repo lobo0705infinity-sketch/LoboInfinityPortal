@@ -286,11 +286,11 @@ function buildRecentGame(
     winner: winner,
     loser: loser,
     winnerFaction:
-      getRecentGameString(
+      canonicalizeArmyName(
         row[columns.winnerFaction]
       ),
     loserFaction:
-      getRecentGameString(
+      canonicalizeArmyName(
         row[columns.loserFaction]
       ),
     mission:
