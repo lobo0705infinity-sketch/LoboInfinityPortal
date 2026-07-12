@@ -158,7 +158,7 @@ function Players() {
         ))}
       </section>
 
-      <section className="players-grid" aria-label="League competitors">
+      <section className="players-grid" aria-label="Portal players">
         {filteredPlayers.map((player) => (
           <PlayerCard
             divisionLabel={player.divisionLabel}
@@ -177,7 +177,7 @@ function PageHeader({ eventScoped }: { eventScoped: boolean }) {
     <section className="page-header" aria-labelledby="players-title">
       <p className="eyebrow">Players</p>
       <h1 id="players-title">Players</h1>
-      <p>{eventScoped ? 'Browse event participants' : 'Browse league competitors'}</p>
+      <p>{eventScoped ? 'Browse event participants' : 'Browse portal players across all games'}</p>
     </section>
   )
 }

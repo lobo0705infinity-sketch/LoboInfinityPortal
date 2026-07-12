@@ -10,7 +10,6 @@ import {
   authenticatedTopLevelItems,
   commissionerItems,
   communityItems,
-  leagueItems,
   topLevelItems,
   type NavigationItem,
 } from './sidebarNavigation'
@@ -158,17 +157,8 @@ function MobileNavigationDrawer({
             selectedEventId={selectedEventId}
           />
           <MobileEventGroup defaultOpen event={selectedEvent} onNavigate={onClose} />
-          <MobileSidebarLink
-            item={{
-              icon: 'standings',
-              label: 'Past Events',
-              to: '/events',
-            }}
-            onNavigate={onClose}
-          />
         </section>
 
-        <MobileSidebarSection items={leagueItems} label="League" onNavigate={onClose} />
         <MobileSidebarSection items={communityItems} label="Community" onNavigate={onClose} />
         {commissioner ? (
           <MobileSidebarSection

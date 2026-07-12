@@ -34,7 +34,7 @@ function Analytics() {
   const gameType = normalizeGameTypeFilter(searchParams.get('gameType'))
   const handleGameTypeChange = (value: GameTypeFilter) => {
     const next = new URLSearchParams(searchParams)
-    if (value === 'league') {
+    if (value === 'all') {
       next.delete('gameType')
     } else {
       next.set('gameType', value)
@@ -173,7 +173,7 @@ function PageHeader({
   return (
     <section className="page-header" aria-labelledby="analytics-title">
       <p className="eyebrow">Analytics</p>
-      <h1 id="analytics-title">{eventScoped ? 'Event Intelligence' : 'League Intelligence'}</h1>
+      <h1 id="analytics-title">{eventScoped ? 'Event Intelligence' : 'Intelligence'}</h1>
       <p>Live stories, pressure points, meta movement, and race conditions</p>
       <label className="dashboard-filter-control">
         <span>Game Type</span>
@@ -181,10 +181,10 @@ function PageHeader({
           onChange={(event) => onGameTypeChange(event.target.value as GameTypeFilter)}
           value={gameType}
         >
+          <option value="all">All Games</option>
           <option value="league">League</option>
           <option value="tournament">Tournament</option>
           <option value="casual">Casual</option>
-          <option value="all">All Games</option>
         </select>
       </label>
     </section>
@@ -192,11 +192,11 @@ function PageHeader({
 }
 
 function normalizeGameTypeFilter(value: string | null): GameTypeFilter {
-  if (value === 'tournament' || value === 'casual' || value === 'all') {
+  if (value === 'league' || value === 'tournament' || value === 'casual') {
     return value
   }
 
-  return 'league'
+  return 'all'
 }
 
 function IntelligenceCard({

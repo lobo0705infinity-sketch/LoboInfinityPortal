@@ -33,7 +33,7 @@ function Analytics() {
   const [state, setState] = useState<StatisticsState>({ status: 'loading' })
   const handleGameTypeChange = (value: GameTypeFilter) => {
     const next = new URLSearchParams(searchParams)
-    if (value === 'league') {
+    if (value === 'all') {
       next.delete('gameType')
     } else {
       next.set('gameType', value)
@@ -100,7 +100,7 @@ function Analytics() {
           onGameTypeChange={handleGameTypeChange}
         />
         <section className="event-overview-status-grid" aria-label="Statistics loading">
-          {['League Analytics', 'Player Analytics', 'Faction Analytics', 'Mission Analytics'].map((label) => (
+          {['Lifetime Analytics', 'Player Analytics', 'Faction Analytics', 'Mission Analytics'].map((label) => (
             <article className="event-overview-status-card neutral" key={label}>
               <span>{label}</span>
               <strong>Loading</strong>
@@ -257,8 +257,8 @@ function PageHeader({
   return (
     <section className="page-header" aria-labelledby="statistics-title">
       <p className="eyebrow">Statistics</p>
-      <h1 id="statistics-title">{eventScoped ? 'Event Statistics' : 'League Statistics'}</h1>
-      <p>Player, faction, mission, and league analytics powered by live event data</p>
+      <h1 id="statistics-title">{eventScoped ? 'Event Statistics' : 'Statistics'}</h1>
+      <p>Player, faction, mission, and lifetime analytics powered by live event data</p>
       {onGameTypeChange ? (
         <label className="dashboard-filter-control">
           <span>Game Type</span>
@@ -266,10 +266,10 @@ function PageHeader({
             onChange={(event) => onGameTypeChange(event.target.value as GameTypeFilter)}
             value={gameType}
           >
+            <option value="all">All Games</option>
             <option value="league">League</option>
             <option value="tournament">Tournament</option>
             <option value="casual">Casual</option>
-            <option value="all">All Games</option>
           </select>
         </label>
       ) : null}
@@ -278,11 +278,11 @@ function PageHeader({
 }
 
 function normalizeGameTypeFilter(value: string | null): GameTypeFilter {
-  if (value === 'tournament' || value === 'casual' || value === 'all') {
+  if (value === 'league' || value === 'tournament' || value === 'casual') {
     return value
   }
 
-  return 'league'
+  return 'all'
 }
 
 function buildStatisticsQuery(eventId: string, gameType: GameTypeFilter) {
@@ -292,7 +292,7 @@ function buildStatisticsQuery(eventId: string, gameType: GameTypeFilter) {
     params.set('eventId', eventId)
   }
 
-  if (gameType !== 'league') {
+  if (gameType !== 'all') {
     params.set('gameType', gameType)
   }
 

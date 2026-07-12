@@ -107,9 +107,9 @@ function RelatedLine({ item }: { item: CommissionerNewsItem }) {
 function PageHeader() {
   return (
     <section className="page-header" aria-labelledby="news-title">
-      <p className="eyebrow">Commissioner News</p>
-      <h1 id="news-title">League Dispatches</h1>
-      <p>Manual announcements or automatically generated live league stories</p>
+      <p className="eyebrow">News</p>
+      <h1 id="news-title">Portal Dispatches</h1>
+      <p>Announcements and automatically generated stories across the portal</p>
     </section>
   )
 }

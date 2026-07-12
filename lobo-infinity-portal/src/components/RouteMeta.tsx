@@ -32,7 +32,7 @@ function getRouteMeta(pathname: string) {
   if (pathname.startsWith('/player/') || pathname.startsWith('/players/')) {
     return {
       title: 'Player Profile | Lobo Infinity League',
-      description: 'Open a league player profile and career record.',
+      description: 'Open a portal player profile and career record.',
     }
   }
 
@@ -74,7 +74,7 @@ function getRouteMeta(pathname: string) {
   if (pathname.startsWith('/hall-of-fame')) {
     return {
       title: 'Hall of Fame | Lobo Infinity League',
-      description: 'Open the permanent league history and record book.',
+      description: 'Open the lifetime portal history and record book.',
     }
   }
 

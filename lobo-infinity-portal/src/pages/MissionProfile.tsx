@@ -151,7 +151,7 @@ function MissionProfile() {
           <Metric label="Last Played" value={profileState.mission.lastPlayed} />
         </ProfileCard>
 
-        <ProfileCard title="League Intelligence">
+        <ProfileCard title="Intelligence">
           <Metric
             label="Most Successful Faction"
             value={profileState.mission.mostSuccessfulFaction}

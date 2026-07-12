@@ -30,7 +30,7 @@ const authenticatedTopLevelItems: NavigationItem[] = [
   },
 ]
 
-const leagueItems: NavigationItem[] = [
+const communityItems: NavigationItem[] = [
   {
     icon: 'players',
     label: 'Players',
@@ -56,14 +56,6 @@ const leagueItems: NavigationItem[] = [
     label: 'Missions',
     to: '/missions',
   },
-  {
-    icon: 'rules',
-    label: 'Rules',
-    to: '/rules',
-  },
-]
-
-const communityItems: NavigationItem[] = [
   {
     icon: 'news',
     label: 'News',
@@ -130,7 +122,7 @@ function Sidebar() {
   } = useSelectedEventNavigation()
 
   return (
-    <aside className="sidebar" aria-label="League navigation">
+    <aside className="sidebar" aria-label="Portal navigation">
       <div className="sidebar-brand">
         <LeagueCrest compact />
         <div>
@@ -158,16 +150,8 @@ function Sidebar() {
             selectedEventId={selectedEventId}
           />
           <EventGroup defaultOpen event={selectedEvent} />
-          <SidebarLink
-            item={{
-              icon: 'standings',
-              label: 'Past Events',
-              to: '/events',
-            }}
-          />
         </section>
 
-        <SidebarSection items={leagueItems} label="League" />
         <SidebarSection items={communityItems} label="Community" />
         {auth.isAtLeastRole('Commissioner') ? (
           <SidebarSection items={commissionerItems} label="Commissioner Tools" />

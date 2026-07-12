@@ -22,7 +22,7 @@ export const authenticatedTopLevelItems: NavigationItem[] = [
   },
 ]
 
-export const leagueItems: NavigationItem[] = [
+export const communityItems: NavigationItem[] = [
   {
     icon: 'players',
     label: 'Players',
@@ -48,14 +48,6 @@ export const leagueItems: NavigationItem[] = [
     label: 'Missions',
     to: '/missions',
   },
-  {
-    icon: 'rules',
-    label: 'Rules',
-    to: '/rules',
-  },
-]
-
-export const communityItems: NavigationItem[] = [
   {
     icon: 'news',
     label: 'News',

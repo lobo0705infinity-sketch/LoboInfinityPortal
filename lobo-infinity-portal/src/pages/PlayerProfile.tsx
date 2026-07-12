@@ -192,7 +192,7 @@ function PlayerProfile() {
           <Metric label="Victory Points" value={profileState.player.vp} />
         </ProfileCard>
 
-        <ProfileCard title="League Intelligence">
+        <ProfileCard title="Intelligence">
           <Metric
             label="Favorite Faction"
             value={profileState.player.favoriteFaction}

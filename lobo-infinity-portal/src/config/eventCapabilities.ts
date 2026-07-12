@@ -40,27 +40,20 @@ const leagueCapabilities: EventCapability[] = [
   'overview',
   'registration',
   'matchFinder',
-  'submitResult',
   'standings',
   'schedule',
-  'players',
-  'factions',
   'statistics',
-  'intelligence',
   'rules',
 ]
 
 const tournamentCapabilities: EventCapability[] = [
   'overview',
   'registration',
-  'matchFinder',
-  'submitResult',
   'teams',
   'pairings',
   'standings',
   'results',
   'statistics',
-  'intelligence',
   'rules',
 ]
 
@@ -69,7 +62,10 @@ export function resolveEventCapabilities(
   navigation: Array<{ href: string; label: string }> = [],
 ): EventCapability[] {
   if (event.capabilities.length > 0) {
-    return event.capabilities as EventCapability[]
+    return filterOperationalEventCapabilities(
+      event,
+      event.capabilities as EventCapability[],
+    )
   }
 
   const navigationCapabilities = navigation
@@ -77,7 +73,10 @@ export function resolveEventCapabilities(
     .filter((capability): capability is EventCapability => Boolean(capability))
 
   if (navigationCapabilities.length > 0) {
-    return ['overview', ...navigationCapabilities]
+    return filterOperationalEventCapabilities(event, [
+      'overview',
+      ...navigationCapabilities,
+    ])
   }
 
   const type = event.type.toLowerCase()
@@ -91,6 +90,33 @@ export function resolveEventCapabilities(
   }
 
   return leagueCapabilities
+}
+
+function filterOperationalEventCapabilities(
+  event: LeagueEvent,
+  capabilities: EventCapability[],
+) {
+  const type = event.type.toLowerCase()
+
+  if (type.includes('tournament')) {
+    return withOverview(capabilities.filter((capability) =>
+      tournamentCapabilities.includes(capability),
+    ))
+  }
+
+  if (type.includes('league')) {
+    return withOverview(capabilities.filter((capability) =>
+      leagueCapabilities.includes(capability),
+    ))
+  }
+
+  return capabilities
+}
+
+function withOverview(capabilities: EventCapability[]): EventCapability[] {
+  return capabilities.includes('overview')
+    ? capabilities
+    : ['overview' as EventCapability, ...capabilities]
 }
 
 export function hasEventCapability(
