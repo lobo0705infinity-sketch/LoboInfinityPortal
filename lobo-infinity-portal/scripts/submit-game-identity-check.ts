@@ -62,6 +62,11 @@ const tournamentRegistrations = [
   registration('Deleted Player', 'Main Man', 'Deleted'),
 ]
 
+const productionShapedLeagueRegistrations = tournamentRegistrations.map((entry) => ({
+  ...entry,
+  notes: '',
+}))
+
 for (const [player, division] of [
   ['Main 1', 'Main Man'],
   ['PGA 1', 'Proving Grounds A'],
@@ -121,6 +126,39 @@ for (const [player, profileDivision, expectedPrefix] of [
   assert.ok(
     resolution.options.every((option) => option.value.startsWith(`${expectedPrefix} `)),
     `${profileDivision} league submission must not include other divisions.`,
+  )
+}
+
+for (const [player, expectedDivision, expectedPrefix] of [
+  ['Main 1', 'main', 'Main'],
+  ['PGA 1', 'pga', 'PGA'],
+  ['PGB 1', 'pgb', 'PGB'],
+] as const) {
+  const resolution = buildSubmitGameOpponentResolution({
+    allPlayers,
+    currentPlayer: player,
+    currentPlayerDivision: '',
+    eventHome: eventHome('League', productionShapedLeagueRegistrations, player),
+    showAllPlayers: false,
+  })
+
+  printLeagueResolutionReport(player, resolution)
+
+  assert.equal(
+    resolution.resolvedDivision,
+    expectedDivision,
+    `${player} must resolve division from Player Registry/Search metadata when Event Participant notes are blank.`,
+  )
+
+  assert.equal(
+    resolution.options.length,
+    9,
+    `${player} must resolve nine division opponents from production-shaped current league participants.`,
+  )
+
+  assert.ok(
+    resolution.options.every((option) => option.value.startsWith(`${expectedPrefix} `)),
+    `${player} must not include players outside ${expectedPrefix}.`,
   )
 }
 
@@ -302,5 +340,39 @@ function divisionRegistrations(
 ) {
   return divisionPlayerOptions(prefix, division).map((player) =>
     registration(player.value, division, 'Approved'),
+  )
+}
+
+function printLeagueResolutionReport(
+  authenticatedPlayer: string,
+  resolution: ReturnType<typeof buildSubmitGameOpponentResolution>,
+) {
+  const currentDivisionExclusions = resolution.exclusions.filter(
+    (entry) => entry.division === resolution.resolvedDivision,
+  )
+  const divisionParticipantCount =
+    resolution.options.length + currentDivisionExclusions.length
+
+  console.log(
+    'SUBMIT_GAME_LEAGUE_OPPONENT_RESOLUTION',
+    JSON.stringify(
+      {
+        authenticatedPlayer,
+        resolvedDivision: resolution.resolvedDivision || '(unresolved)',
+        eventParticipantRow: resolution.currentRegistration,
+        totalEventParticipantCount: resolution.participantCount,
+        divisionParticipantCount,
+        eligibleOpponentCount: resolution.options.length,
+        eligibleOpponents: resolution.options.map((option) => option.value),
+        excludedPlayers: resolution.exclusions.map((entry) => ({
+          player: entry.player,
+          division: entry.division || '(unresolved)',
+          status: entry.status,
+          reason: entry.reason,
+        })),
+      },
+      null,
+      2,
+    ),
   )
 }
