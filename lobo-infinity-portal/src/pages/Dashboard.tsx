@@ -7,10 +7,6 @@ import RecentGames from '../components/RecentGames'
 import Skeleton from '../components/Skeleton'
 import StatCard from '../components/StatCard'
 import {
-  filterCanonicalMissionRecords,
-  getCanonicalMissionName,
-} from '../config/missions'
-import {
   type ArmyListCommunitySummary,
   type CommissionerNewsItem,
   type CommunityCommandCenterData,
@@ -140,7 +136,7 @@ function DashboardContent({
   const mostPlayedMission =
     intelligence?.records.mostActiveMission &&
     !('winner' in intelligence.records.mostActiveMission)
-      ? getCanonicalMissionName(intelligence.records.mostActiveMission.name)
+      ? intelligence.records.mostActiveMission.name
       : ''
 
   return (
@@ -975,7 +971,7 @@ function HeadlineStack({
   strongestFaction: string
 }) {
   const missionTrend = intelligence
-    ? filterCanonicalMissionRecords(intelligence.missionTrends)[0]
+    ? intelligence.missionTrends[0]
     : null
   const headlines = [
     ...news.slice(0, 2).map((item) => ({
@@ -1364,7 +1360,7 @@ function DashboardHeader({ lastUpdated }: { lastUpdated: string }) {
 }
 
 function formatMissionLabel(mission: string) {
-  return getCanonicalMissionName(mission) || 'Mission not recorded'
+  return mission || 'Mission not recorded'
 }
 
 function getGamesPerWeek(games: RecentGame[]) {
