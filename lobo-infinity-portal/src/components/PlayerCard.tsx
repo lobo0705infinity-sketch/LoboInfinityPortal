@@ -23,11 +23,11 @@ function PlayerCard({ divisionLabel, eventId, player }: PlayerCardProps) {
   const badges = player.statusBadges ?? []
   const favoriteArmy = player.favoriteArmy || player.faction || 'Not recorded'
   const streak = player.currentWinStreak ?? 0
-  const divisionBadgeLabel = eventId
-    ? formatDivisionLabel(divisionLabel)
-    : divisionLabel && divisionLabel !== 'Player Registry'
-      ? divisionLabel
-      : 'Community'
+  const divisionBadgeLabel = getPlayerCardHomeLabel({
+    badges,
+    divisionLabel,
+    eventScoped: Boolean(eventId),
+  })
 
   return (
     <Link
@@ -99,6 +99,40 @@ function PlayerCard({ divisionLabel, eventId, player }: PlayerCardProps) {
       </span>
     </Link>
   )
+}
+
+function getPlayerCardHomeLabel({
+  badges,
+  divisionLabel,
+  eventScoped,
+}: {
+  badges: string[]
+  divisionLabel?: string
+  eventScoped: boolean
+}) {
+  const formattedDivision = eventScoped
+    ? formatDivisionLabel(divisionLabel)
+    : divisionLabel && divisionLabel !== 'Player Registry'
+      ? divisionLabel
+      : ''
+
+  if (formattedDivision) {
+    return formattedDivision
+  }
+
+  if (badges.includes('Casual Player')) {
+    return 'Casual Player'
+  }
+
+  if (badges.includes('League Player')) {
+    return 'League Player'
+  }
+
+  if (badges.includes('Tournament Player')) {
+    return 'Tournament Player'
+  }
+
+  return 'Casual Player'
 }
 
 export default PlayerCard

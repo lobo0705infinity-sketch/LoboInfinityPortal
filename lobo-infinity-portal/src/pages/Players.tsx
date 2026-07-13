@@ -88,7 +88,7 @@ function Players() {
       division.standings.map((player) => ({
         ...player,
         division: player.division || (eventScoped ? division.division : ''),
-        divisionLabel: player.division || (eventScoped ? division.divisionLabel : 'Community'),
+        divisionLabel: player.division || (eventScoped ? division.divisionLabel : ''),
         statusBadges: getStandingClassifications(player),
       })),
     )
