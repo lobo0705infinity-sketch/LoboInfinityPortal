@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import BarChart, { type BarChartPoint } from '../components/BarChart'
 import Skeleton from '../components/Skeleton'
-import { getCanonicalArmyOptions } from '../config/armies'
+import { getCanonicalArmyOptions, normalizeArmyForDisplay } from '../config/armies'
 import { getCanonicalMissionName } from '../config/missions'
 import {
   apiClient,
@@ -691,11 +691,26 @@ function validateProfileEditor(displayName: string, discordName: string) {
 
 function getCurrentTournamentLabel(events: MyProfileData['user']['eventRegistrations']) {
   const tournament = events?.find((event) =>
+    String(event.eventType ?? '').toLowerCase().includes('tournament') ||
+    String(event.eventName ?? '').toLowerCase().includes('tournament') ||
     event.eventRole.toLowerCase().includes('tournament') ||
     String(event.registration.eventType ?? '').toLowerCase().includes('tournament'),
   )
 
-  return tournament?.team || tournament?.eventId || 'Not registered'
+  const status =
+    String(tournament?.status || tournament?.registration.status || '').toLowerCase()
+
+  if (!tournament || ['deleted', 'removed', 'withdrawn'].includes(status)) {
+    return 'Not registered'
+  }
+
+  return (
+    tournament.eventName ||
+    String(tournament.registration.eventName ?? '') ||
+    tournament.team ||
+    tournament.eventId ||
+    'Registered'
+  )
 }
 
 function PlayerAnswerCard({
@@ -2000,6 +2015,11 @@ function buildArmySummary(
   lists: ArmyList[],
   profile: MyProfileData['leagueStatistics'],
 ): ArmySummary {
+  const favoriteArmy =
+    normalizeProfileArmyMetric(profile?.favoriteFaction) ||
+    normalizeProfileArmyMetric(profile?.armyListSummary.favoriteFaction) ||
+    getMostCommon(lists.map((list) => list.sectorial || list.faction))
+
   return {
     averageRating:
       profile?.armyListSummary.averageRating ??
@@ -2007,15 +2027,23 @@ function buildArmySummary(
         lists.reduce((total, list) => total + list.score, 0),
         lists.length,
       ),
-    favoriteFaction:
-      profile?.armyListSummary.favoriteFaction ||
-      getMostCommon(lists.map((list) => list.faction)),
+    favoriteFaction: favoriteArmy,
     highestRated:
       profile?.armyListSummary.highestRated ?? getHighestRatedList(lists),
-    mostUsedFaction: getMostCommon(lists.map((list) => list.faction)),
+    mostUsedFaction:
+      normalizeProfileArmyMetric(profile?.favoriteFaction) ||
+      getMostCommon(lists.map((list) => list.sectorial || list.faction)),
     newest: profile?.armyListSummary.newest ?? getNewestList(lists),
     submitted: profile?.armyListSummary.submitted ?? lists.length,
   }
+}
+
+function normalizeProfileArmyMetric(value: string | undefined) {
+  if (!value) {
+    return ''
+  }
+
+  return normalizeArmyForDisplay(value.replace(/\s*\(\d+\s+games?\)\s*$/i, ''))
 }
 
 function buildAchievementCards(

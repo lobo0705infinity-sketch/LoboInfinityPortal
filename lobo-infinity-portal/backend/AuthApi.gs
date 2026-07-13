@@ -1936,6 +1936,16 @@ function appendUserIdList(sheet, rowNumber, columnIndex, ids) {
 
 function buildUserProfile(user) {
 
+  const profileUser =
+    Object.assign(
+      {},
+      user,
+      {
+        eventRegistrations:
+          getProfileEventRegistrations(user)
+      }
+    );
+
   const armyLists =
     getUserSubmittedLists(user);
 
@@ -1952,7 +1962,7 @@ function buildUserProfile(user) {
     getUserAllLeagueGames(user);
 
   return {
-    user: user,
+    user: profileUser,
     submittedLists: armyLists,
     votesCast: getUserVotesCast(user),
     recentActivity: activity,
@@ -1983,6 +1993,72 @@ function buildUserProfile(user) {
           ),
     futureSections: []
   };
+
+}
+
+function getProfileEventRegistrations(user) {
+
+  if (!user)
+    return [];
+
+  if (
+    typeof getEventEngineSnapshot !== "function" ||
+    typeof getEventEngineRows !== "function" ||
+    typeof ensureEventEngineSheet !== "function" ||
+    typeof getEventParticipantKey !== "function"
+  )
+    return [];
+
+  const eventsById = {};
+
+  getEventEngineSnapshot()
+    .events
+    .forEach(function(event) {
+      eventsById[event.id] = event;
+    });
+
+  const rows =
+    getEventEngineRows(
+      ensureEventEngineSheet(
+        CONFIG.SHEETS.EVENT_PARTICIPANTS,
+        EVENT_ENGINE_PARTICIPANT_HEADERS
+      )
+    );
+
+  return rows
+    .filter(function(row) {
+      const event =
+        eventsById[row["Event ID"]] || {};
+      const participantKey =
+        getEventParticipantKey(event, user);
+
+      return participantKey !== "" &&
+        getAuthString(row["Player"]).toLowerCase() ===
+          participantKey.toLowerCase();
+    })
+    .map(function(row) {
+      const event =
+        eventsById[row["Event ID"]] || {};
+
+      return {
+        eventId: row["Event ID"],
+        eventName: event.name || row["Event ID"],
+        eventType: event.type || "",
+        eventRole: row["Role"] || "Player",
+        team: row["Team"],
+        status: row["Status"] || "Registered",
+        registeredAt: row["Registered At"],
+        updatedAt: row["Updated At"] || row["Registered At"],
+        registration: {
+          eventId: row["Event ID"],
+          eventName: event.name || row["Event ID"],
+          eventType: event.type || "",
+          status: row["Status"] || "Registered",
+          team: row["Team"],
+          preferredTeam: row["Preferred Team"] || row["Team"]
+        }
+      };
+    });
 
 }
 

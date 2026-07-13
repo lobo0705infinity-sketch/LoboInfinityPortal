@@ -1008,7 +1008,7 @@ function getCurrentTournamentLabel(player: PlayerProfileData) {
     return 'Not registered'
   }
 
-  return 'Registered'
+  return tournament.eventName || tournament.team || tournament.eventId || 'Registered'
 }
 
 function getPlayerResult(game: RecentGame, player: PlayerProfileData) {

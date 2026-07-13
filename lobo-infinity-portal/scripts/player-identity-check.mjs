@@ -68,6 +68,29 @@ const checks = [
       files.authContext.includes("profileVisibility: 'Public'"),
   },
   {
+    label: 'Authenticated profiles include sanitized event registrations',
+    pass:
+      files.authApi.includes('function getProfileEventRegistrations') &&
+      files.authApi.includes('getEventParticipantKey(event, user)') &&
+      files.authApi.includes('eventRegistrations:\n          getProfileEventRegistrations(user)') &&
+      files.api.includes('eventRegistrations: getArray(record, \'eventRegistrations\') as EventParticipant[]'),
+  },
+  {
+    label: 'Profile tournament status resolves from Event Participants source',
+    pass:
+      files.authApi.includes('CONFIG.SHEETS.EVENT_PARTICIPANTS') &&
+      files.myProfile.includes("return (\n    tournament.eventName") &&
+      files.playersApi.includes('function getRegisteredEventsForPlayer'),
+  },
+  {
+    label: 'Favorite army profile display uses canonical army names',
+    pass:
+      files.playersApi.includes('canonicalizeArmyName(row[CONFIG.ENGINE.FACTION])') &&
+      files.myProfile.includes('normalizeProfileArmyMetric') &&
+      files.myProfile.includes('normalizeArmyForDisplay') &&
+      files.myProfile.includes('list.sectorial || list.faction'),
+  },
+  {
     label: 'My Profile exposes an Edit Profile workflow',
     pass:
       files.myProfile.includes('function ProfileEditor') &&

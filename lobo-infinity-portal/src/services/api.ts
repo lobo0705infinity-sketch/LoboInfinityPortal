@@ -132,12 +132,17 @@ export type PortalUser = {
 
 export type EventParticipant = {
   eventId: string
+  eventName?: string
+  eventType?: string
   registration: Record<string, unknown>
   team: string
   armyLists: ArmyList[]
   pairings: Record<string, unknown>[]
   results: Record<string, unknown>[]
   eventRole: string
+  status?: string
+  registeredAt?: string
+  updatedAt?: string
 }
 
 export type PortalPermissions = Record<string, boolean>
@@ -3416,6 +3421,7 @@ function normalizePortalUser(record: Record<string, unknown>): PortalUser {
     archivedAlerts: normalizeStringArray(record.archivedAlerts),
     lastPage: getString(record, 'lastPage'),
     searchHistory: normalizeStringArray(record.searchHistory),
+    eventRegistrations: getArray(record, 'eventRegistrations') as EventParticipant[],
   }
 }
 
