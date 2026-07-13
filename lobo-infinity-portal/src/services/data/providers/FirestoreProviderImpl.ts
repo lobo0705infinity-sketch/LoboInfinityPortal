@@ -1528,6 +1528,7 @@ function emptyPlayerCareerSummary(): PlayerCareerSummary {
       biggestVictory: 0,
       highestVpGame: 0,
       mostPlayedArmy: '',
+      mostPlayedArmyParentFaction: '',
       mostPlayedMission: '',
     },
     records: {

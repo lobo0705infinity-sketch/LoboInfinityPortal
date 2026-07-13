@@ -352,6 +352,7 @@ export type PlayerRecordSummary = {
 export type PlayerCareerMetric = PlayerRecordSummary & {
   label: string
   lastPlayed: string
+  parentFaction?: string
   insufficientGames?: boolean
 }
 
@@ -383,6 +384,7 @@ export type PlayerCareerSummary = {
     highestVpGame: number
     biggestVictory: number
     mostPlayedArmy: string
+    mostPlayedArmyParentFaction?: string
     mostPlayedMission: string
   }
 }

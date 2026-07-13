@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
+import { getArmyParentFaction } from '../config/armies'
 import { getCanonicalMissionName } from '../config/missions'
 import type {
   ArmyList,
@@ -212,6 +213,7 @@ function PlayerProfile() {
 
       <section className="player-career-grid" aria-label="Army and mission summary">
         <CareerMetricGroup
+          showParentFaction
           title="Army Summary"
           metrics={[
             ['Favorite Army', career.armies.favorite],
@@ -344,9 +346,11 @@ function RecordCard({
 
 function CareerMetricGroup({
   metrics,
+  showParentFaction = false,
   title,
 }: {
   metrics: Array<[string, PlayerCareerMetric]>
+  showParentFaction?: boolean
   title: string
 }) {
   return (
@@ -357,7 +361,12 @@ function CareerMetricGroup({
       </div>
       <div className="player-career-metric-list">
         {metrics.map(([label, metric]) => (
-          <CareerMetricCard key={label} label={label} metric={metric} />
+          <CareerMetricCard
+            key={label}
+            label={label}
+            metric={metric}
+            showParentFaction={showParentFaction}
+          />
         ))}
       </div>
     </section>
@@ -367,18 +376,27 @@ function CareerMetricGroup({
 function CareerMetricCard({
   label,
   metric,
+  showParentFaction,
 }: {
   label: string
   metric: PlayerCareerMetric
+  showParentFaction: boolean
 }) {
   const value = metric.insufficientGames
     ? 'Requires 3 games'
     : formatMissionMetric(metric.label) || 'Not recorded'
+  const parentFaction =
+    showParentFaction && value !== 'Not recorded' && !metric.insufficientGames
+      ? metric.parentFaction || getArmyParentFaction(metric.label)
+      : ''
 
   return (
     <article className="player-career-metric">
       <span>{label}</span>
       <strong>{value}</strong>
+      {parentFaction && parentFaction !== metric.label ? (
+        <small>Parent Faction: {parentFaction}</small>
+      ) : null}
       <small>
         {metric.insufficientGames
           ? 'Minimum sample not reached'
@@ -400,6 +418,13 @@ function QuickStatsCard({
       <Metric
         label="Most Played Army"
         value={career.quickStats.mostPlayedArmy || player.favoriteFaction}
+      />
+      <Metric
+        label="Most Played Parent Faction"
+        value={
+          career.quickStats.mostPlayedArmyParentFaction ||
+          getArmyParentFaction(career.quickStats.mostPlayedArmy || player.favoriteFaction)
+        }
       />
       <Metric
         label="Most Played Mission"
@@ -731,6 +756,10 @@ function normalizePlayerCareerSummary(value: unknown): PlayerCareerSummary | und
       biggestVictory: getLocalNumber(quickStats, 'biggestVictory'),
       highestVpGame: getLocalNumber(quickStats, 'highestVpGame'),
       mostPlayedArmy: getLocalString(quickStats, 'mostPlayedArmy'),
+      mostPlayedArmyParentFaction: getLocalString(
+        quickStats,
+        'mostPlayedArmyParentFaction',
+      ),
       mostPlayedMission: getLocalString(quickStats, 'mostPlayedMission'),
     },
     records: {
@@ -753,6 +782,7 @@ function normalizePlayerCareerMetric(value: unknown): PlayerCareerMetric {
     insufficientGames: getLocalBoolean(record, 'insufficientGames'),
     label: getLocalString(record, 'label'),
     lastPlayed: getLocalString(record, 'lastPlayed'),
+    parentFaction: getLocalString(record, 'parentFaction'),
   }
 }
 
@@ -819,9 +849,9 @@ function buildFallbackCareerSummary(
     wins: player.wins,
   }
   const zero = emptyRecord()
-  const favoriteArmy = buildMetric(player.favoriteFaction, overall)
-  const bestArmy = buildMetric(player.bestFaction, overall)
-  const recentArmy = buildMetric(getPlayerArmy(games[0], player), overall)
+  const favoriteArmy = buildMetric(player.favoriteFaction, overall, true)
+  const bestArmy = buildMetric(player.bestFaction, overall, true)
+  const recentArmy = buildMetric(getPlayerArmy(games[0], player), overall, true)
   const favoriteMission = buildMetric(formatMissionMetric(player.favoriteMission), overall)
   const bestMission = player.bestMission
     ? buildMetric(formatMissionMetric(player.bestMission), overall)
@@ -853,6 +883,7 @@ function buildFallbackCareerSummary(
       biggestVictory: 0,
       highestVpGame: getHighestVp(games, player),
       mostPlayedArmy: player.favoriteFaction,
+      mostPlayedArmyParentFaction: getArmyParentFaction(player.favoriteFaction),
       mostPlayedMission: formatMissionMetric(player.favoriteMission),
     },
     records: {
@@ -903,11 +934,13 @@ function emptyRecord(): PlayerRecordSummary {
 function buildMetric(
   label: string,
   record: PlayerRecordSummary,
+  includeParentFaction = false,
 ): PlayerCareerMetric {
   return {
     ...record,
     label,
     lastPlayed: '',
+    parentFaction: includeParentFaction ? getArmyParentFaction(label) : undefined,
   }
 }
 
@@ -969,7 +1002,13 @@ function getCurrentTournamentLabel(player: PlayerProfileData) {
     return 'Not registered'
   }
 
-  return tournament.preferredTeam || tournament.team || tournament.eventName
+  const status = tournament.status.trim().toLowerCase()
+
+  if (['deleted', 'removed', 'withdrawn'].includes(status)) {
+    return 'Not registered'
+  }
+
+  return 'Registered'
 }
 
 function getPlayerResult(game: RecentGame, player: PlayerProfileData) {

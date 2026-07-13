@@ -870,7 +870,7 @@ function getPlayer(e) {
         armyLists.summary,
 
       registeredEvents:
-        getRegisteredEventsForPlayer(registeredPlayer.player),
+        getRegisteredEventsForPlayer(registeredPlayer),
 
       availability:
         availability,
@@ -989,6 +989,8 @@ function buildPlayerCareerSummary(playerName) {
         ),
       mostPlayedArmy:
         armyMetrics.favorite.label,
+      mostPlayedArmyParentFaction:
+        armyMetrics.favorite.parentFaction || "",
       mostPlayedMission:
         missionMetrics.favorite.label
     }
@@ -1014,6 +1016,8 @@ function buildPlayerCareerGame(row) {
     gameType: gameType || "league",
     army:
       canonicalizeArmyName(row[CONFIG.ENGINE.FACTION]),
+    parentFaction:
+      getCanonicalArmyParentFaction(row[CONFIG.ENGINE.FACTION]),
     mission:
       getCommunityPlayerRegistryString(row[CONFIG.ENGINE.MISSION]),
     date:
@@ -1091,10 +1095,17 @@ function buildPlayerCareerGroupMetrics(rows, field, bestMinimumGames) {
   const metrics =
     Object.keys(groups)
       .map(function(label) {
-        return buildPlayerCareerMetric(
+        const metric =
+          buildPlayerCareerMetric(
           label,
           groups[label].rows
         );
+
+        if (field === "army")
+          metric.parentFaction =
+            getCanonicalArmyParentFaction(label);
+
+        return metric;
       });
 
   const favorite =
@@ -1301,8 +1312,8 @@ function getPlayerCareerHighestValue(rows, field) {
 
 function getRegisteredEventsForPlayer(player) {
 
-  const target =
-    getEventEngineString(player).toLowerCase();
+  const identities =
+    getPlayerProfileRegistrationIdentities(player);
 
   const eventsById = {};
 
@@ -1319,7 +1330,7 @@ function getRegisteredEventsForPlayer(player) {
     )
   )
     .filter(function(row) {
-      return getEventEngineString(row["Player"]).toLowerCase() === target;
+      return playerProfileRegistrationMatches(row, identities);
     })
     .map(function(row) {
       const event =
@@ -1336,6 +1347,49 @@ function getRegisteredEventsForPlayer(player) {
         updatedAt: row["Updated At"] || row["Registered At"]
       };
     });
+
+}
+
+function getPlayerProfileRegistrationIdentities(player) {
+
+  const identities = {};
+
+  if (typeof player === "string") {
+    addPlayerProfileRegistrationIdentity(identities, player);
+    return identities;
+  }
+
+  if (!player)
+    return identities;
+
+  addPlayerProfileRegistrationIdentity(identities, player.player);
+  addPlayerProfileRegistrationIdentity(identities, player.displayName);
+
+  return identities;
+
+}
+
+function addPlayerProfileRegistrationIdentity(identities, value) {
+
+  const key =
+    getEventEngineString(value).toLowerCase();
+
+  if (key !== "")
+    identities[key] = true;
+
+}
+
+function playerProfileRegistrationMatches(row, identities) {
+
+  const player =
+    getEventEngineString(row["Player"]).toLowerCase();
+  const displayName =
+    getEventEngineString(row["Display Name"]).toLowerCase();
+
+  return !!(
+    identities[player] ||
+    identities[displayName]
+  );
 
 }
 

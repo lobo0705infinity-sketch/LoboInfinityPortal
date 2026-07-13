@@ -321,7 +321,7 @@ function PLAYERFACTIONS(player){
 
   return games.map(function(g){
 
-    return g[COL_FACTION];
+    return canonicalizeArmyName(g[COL_FACTION]);
 
   });
 
@@ -565,7 +565,8 @@ function BESTFACTION(player){
 
   games.forEach(function(g){
 
-    const faction = g[COL_FACTION];
+    const faction =
+      canonicalizeArmyName(g[COL_FACTION]);
 
     if(!factions[faction]){
 

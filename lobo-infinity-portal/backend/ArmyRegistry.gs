@@ -26,6 +26,10 @@ const ARMY_REGISTRY_ALIAS_MAP = {
   "vanilla ca": "Combined Army",
   "vanilla combined army": "Combined Army",
   "vanilla aleph": "ALEPH",
+  "oss": "Operations Subsection",
+  "operations": "Operations Subsection",
+  "operations subsection of the sss": "Operations Subsection",
+  "steel": "Steel Phalanx",
   "o12": "O-12",
   "o 12": "O-12",
   "vanilla o12": "O-12",
@@ -38,12 +42,68 @@ const ARMY_REGISTRY_ALIAS_MAP = {
   "shock army acontecimento": "Shock Army of Acontecimento",
   "shock army of acontecimento": "Shock Army of Acontecimento",
   "acontecimento": "Shock Army of Acontecimento",
+  "bakunin": "Bakunin Jurisdictional Command",
+  "corregidor": "Corregidor Jurisdictional Command",
+  "tunguska": "Tunguska Jurisdictional Command",
+  "morats": "Morat Aggression Force",
+  "morat": "Morat Aggression Force",
+  "shasvastii": "Shasvastii Expeditionary Force",
   "mrrf": "Force de Réponse Rapide Merovingienne",
   "merovingienne": "Force de Réponse Rapide Merovingienne",
   "usariadna": "USAriadna Ranger Force",
   "na2": "Non-Aligned Armies",
   "non aligned armies": "Non-Aligned Armies",
   "non-aligned armies": "Non-Aligned Armies"
+};
+
+const ARMY_REGISTRY_PARENT_MAP = {
+  "PanOceania": "PanOceania",
+  "Military Orders": "PanOceania",
+  "Kestrel Colonial Force": "PanOceania",
+  "Neoterra Capitaline Army": "PanOceania",
+  "Shock Army of Acontecimento": "PanOceania",
+  "Svalarheima Winter Force": "PanOceania",
+  "Varuna Immediate Reaction Division": "PanOceania",
+  "Yu Jing": "Yu Jing",
+  "Imperial Service": "Yu Jing",
+  "Invincible Army": "Yu Jing",
+  "White Banner": "Yu Jing",
+  "Ariadna": "Ariadna",
+  "Caledonian Highlander Army": "Ariadna",
+  "Force de Réponse Rapide Merovingienne": "Ariadna",
+  "Kosmoflot": "Ariadna",
+  "Tartary Army Corps": "Ariadna",
+  "USAriadna Ranger Force": "Ariadna",
+  "Haqqislam": "Haqqislam",
+  "Hassassin Bahram": "Haqqislam",
+  "Qapu Khalqi": "Haqqislam",
+  "Ramah Taskforce": "Haqqislam",
+  "Nomads": "Nomads",
+  "Bakunin Jurisdictional Command": "Nomads",
+  "Corregidor Jurisdictional Command": "Nomads",
+  "Tunguska Jurisdictional Command": "Nomads",
+  "Combined Army": "Combined Army",
+  "Morat Aggression Force": "Combined Army",
+  "Next Wave": "Combined Army",
+  "Onyx Contact Force": "Combined Army",
+  "Shasvastii Expeditionary Force": "Combined Army",
+  "ALEPH": "ALEPH",
+  "Operations Subsection": "ALEPH",
+  "Steel Phalanx": "ALEPH",
+  "O-12": "O-12",
+  "Starmada": "O-12",
+  "Torchlight Brigade": "O-12",
+  "Japanese Secessionist Army": "Japanese Secessionist Army",
+  "Oban": "Japanese Secessionist Army",
+  "Shindenbutai": "Japanese Secessionist Army",
+  "Tohaa": "Tohaa",
+  "Dashat Company": "Non-Aligned Armies",
+  "Druze Bayram Security": "Non-Aligned Armies",
+  "Foreign Company": "Non-Aligned Armies",
+  "Ikari Company": "Non-Aligned Armies",
+  "Spiral Corps": "Non-Aligned Armies",
+  "StarCo": "Non-Aligned Armies",
+  "White Company": "Non-Aligned Armies"
 };
 
 function canonicalizeArmyName(value) {
@@ -63,44 +123,19 @@ function canonicalizeArmyName(value) {
 
 function canonicalizeArmyParentFaction(value) {
 
-  const raw =
-    getArmyRegistryString(value);
+  return getCanonicalArmyParentFaction(value);
 
-  if (!raw)
+}
+
+function getCanonicalArmyParentFaction(value) {
+
+  const canonical =
+    canonicalizeArmyName(value);
+
+  if (!canonical)
     return "";
 
-  const key =
-    getArmyRegistryLookupKey(raw);
-
-  switch (key) {
-
-    case "pano":
-    case "pan o":
-    case "pan-o":
-      return "PanOceania";
-
-    case "yj":
-      return "Yu Jing";
-
-    case "ca":
-    case "combined":
-      return "Combined Army";
-
-    case "o12":
-    case "o 12":
-      return "O-12";
-
-    case "jsa":
-      return "Japanese Secessionist Army";
-
-    case "na2":
-    case "non aligned armies":
-      return "Non-Aligned Armies";
-
-    default:
-      return ARMY_REGISTRY_ALIAS_MAP[key] || raw;
-
-  }
+  return ARMY_REGISTRY_PARENT_MAP[canonical] || canonical;
 
 }
 
