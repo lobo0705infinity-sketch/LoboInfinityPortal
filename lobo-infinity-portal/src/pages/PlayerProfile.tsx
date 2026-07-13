@@ -192,7 +192,7 @@ function PlayerProfileDossier({
         <div className="profile-v21-hero-grid">
           <div className="profile-v21-portrait" aria-hidden="true">
             {player.profilePicture ? (
-              <img alt="" src={player.profilePicture} />
+              <img alt="" decoding="async" loading="lazy" src={player.profilePicture} />
             ) : (
               <span>{displayName.slice(0, 1)}</span>
             )}
@@ -202,6 +202,7 @@ function PlayerProfileDossier({
             <h1 id="player-title">{displayName}</h1>
             <strong>{homeLabel}</strong>
             <div className="profile-v21-meta" aria-label="Player profile details">
+              <span>{leagueLabel}</span>
               {player.city ? <span>{player.city}</span> : null}
               {joinedLabel ? <span>{joinedLabel}</span> : null}
               {player.homeStore ? <span>{player.homeStore}</span> : null}
@@ -220,12 +221,12 @@ function PlayerProfileDossier({
       </section>
 
       <section className="profile-v21-topline" aria-label="Player season status">
-        <CareerLevelCard level={level} />
         <SeasonSnapshot
           career={career}
           leagueLabel={leagueLabel}
           player={player}
         />
+        <CareerLevelCard level={level} />
       </section>
 
       <section className="profile-v21-shell" aria-label="Player dossier">
@@ -299,12 +300,24 @@ function SeasonSnapshot({
       </div>
       <dl>
         <div>
-          <dt>W-L-D</dt>
+          <dt>Record</dt>
           <dd>{formatRecord(record)}</dd>
         </div>
         <div>
-          <dt>Win Rate</dt>
-          <dd>{formatPercent(record.winPercentage)}</dd>
+          <dt>Rank</dt>
+          <dd>{player.rank > 0 ? `#${player.rank}` : 'Unranked'}</dd>
+        </div>
+        <div>
+          <dt>Division</dt>
+          <dd>{formatDivisionLabel(player.division) || leagueLabel}</dd>
+        </div>
+        <div>
+          <dt>Season</dt>
+          <dd>{leagueLabel}</dd>
+        </div>
+        <div>
+          <dt>Games</dt>
+          <dd>{career.totalGames}</dd>
         </div>
         <div>
           <dt>TP</dt>
@@ -319,20 +332,8 @@ function SeasonSnapshot({
           <dd>{player.vp}</dd>
         </div>
         <div>
-          <dt>Division</dt>
-          <dd>{formatDivisionLabel(player.division) || leagueLabel}</dd>
-        </div>
-        <div>
-          <dt>Rank</dt>
-          <dd>{player.rank > 0 ? `#${player.rank}` : 'Unranked'}</dd>
-        </div>
-        <div>
-          <dt>Season</dt>
-          <dd>{leagueLabel}</dd>
-        </div>
-        <div>
-          <dt>Games</dt>
-          <dd>{career.totalGames}</dd>
+          <dt>Win Rate</dt>
+          <dd>{formatPercent(record.winPercentage)}</dd>
         </div>
       </dl>
     </section>
@@ -345,11 +346,9 @@ function ProfileSectionNav() {
     ['Match History', '#recent-games-title'],
     ['Statistics', '#profile-statistics'],
     ['Factions', '#profile-factions'],
-    ['Army Lists', '#profile-army-lists'],
     ['Achievements', '#achievements-title'],
     ['Rivals', '#profile-rivals'],
-    ['Activity Feed', '#profile-activity'],
-    ['Notes & Media', '#profile-notes'],
+    ['Activity', '#profile-activity'],
   ]
 
   return (
@@ -472,6 +471,7 @@ function AchievementPreview({
             className={achievement.unlocked ? 'is-unlocked' : ''}
             key={achievement.title}
           >
+            <i aria-hidden="true" />
             <span>{achievement.tier}</span>
             <strong>{achievement.title}</strong>
             <small>{achievement.detail}</small>
@@ -1546,15 +1546,15 @@ function formatMissionMetric(value: string) {
 const playerProfileStyles = `
 .profile-v21-hero {
   position: relative;
-  min-height: clamp(360px, 42vw, 560px);
+  min-height: clamp(520px, 56vw, 720px);
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--division-accent, #4cc9f0) 52%, #2a3b49);
+  border: 1px solid color-mix(in srgb, var(--division-accent, #4cc9f0) 58%, #2a3b49);
   background:
-    radial-gradient(circle at 18% 50%, rgba(76, 201, 240, 0.2), transparent 24%),
-    radial-gradient(circle at 78% 42%, rgba(178, 18, 42, 0.24), transparent 30%),
-    linear-gradient(115deg, rgba(5, 6, 8, 0.98) 0%, rgba(10, 16, 24, 0.94) 46%, rgba(178, 18, 42, 0.2) 100%),
+    radial-gradient(circle at 23% 52%, rgba(76, 201, 240, 0.24), transparent 26%),
+    radial-gradient(circle at 80% 44%, rgba(178, 18, 42, 0.28), transparent 31%),
+    linear-gradient(115deg, rgba(5, 6, 8, 0.98) 0%, rgba(10, 16, 24, 0.94) 44%, rgba(178, 18, 42, 0.22) 100%),
     #050608;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
+  box-shadow: 0 30px 96px rgba(0, 0, 0, 0.46);
 }
 
 .profile-v21-hero::after {
@@ -1573,27 +1573,28 @@ const playerProfileStyles = `
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(150px, 220px) minmax(0, 1fr) minmax(260px, 360px);
-  gap: clamp(20px, 4vw, 54px);
+  grid-template-columns: minmax(260px, 360px) minmax(0, 1fr) minmax(320px, 430px);
+  gap: clamp(28px, 5vw, 72px);
   align-items: center;
   min-height: inherit;
-  padding: clamp(24px, 5vw, 64px);
+  padding: clamp(36px, 6vw, 88px);
 }
 
 .profile-v21-portrait {
   display: grid;
-  width: clamp(132px, 18vw, 220px);
+  width: clamp(260px, 28vw, 360px);
   aspect-ratio: 1;
   place-items: center;
   overflow: hidden;
-  border: 2px solid #4cc9f0;
+  border: 3px solid #4cc9f0;
   border-radius: 999px;
   background:
     radial-gradient(circle at 36% 25%, rgba(76, 201, 240, 0.32), transparent 48%),
     #121a24;
   box-shadow:
-    0 0 0 10px rgba(76, 201, 240, 0.08),
-    0 24px 72px rgba(0, 0, 0, 0.54);
+    0 0 0 16px rgba(76, 201, 240, 0.08),
+    0 0 0 28px rgba(76, 201, 240, 0.035),
+    0 32px 92px rgba(0, 0, 0, 0.62);
 }
 
 .profile-v21-portrait img {
@@ -1605,13 +1606,13 @@ const playerProfileStyles = `
 .profile-v21-portrait span {
   color: #f4f6f8;
   font-family: 'Bebas Neue', 'Rajdhani', sans-serif;
-  font-size: clamp(4rem, 11vw, 8rem);
+  font-size: clamp(7rem, 16vw, 12rem);
   line-height: 1;
 }
 
 .profile-v21-identity {
   display: grid;
-  gap: 12px;
+  gap: 16px;
   min-width: 0;
 }
 
@@ -1619,18 +1620,19 @@ const playerProfileStyles = `
   margin: 0;
   color: #f4f6f8;
   font-family: 'Bebas Neue', 'Rajdhani', sans-serif;
-  font-size: clamp(4rem, 11vw, 9rem);
+  font-size: clamp(6.4rem, 14vw, 12rem);
   font-weight: 900;
   letter-spacing: 0;
-  line-height: 0.84;
+  line-height: 0.78;
   text-transform: uppercase;
 }
 
 .profile-v21-identity > strong {
   color: #f2b632;
   font-family: 'Rajdhani', sans-serif;
-  font-size: clamp(1.35rem, 3vw, 2.5rem);
+  font-size: clamp(2rem, 4vw, 3.6rem);
   font-weight: 900;
+  line-height: 0.95;
   text-transform: uppercase;
 }
 
@@ -1638,7 +1640,7 @@ const playerProfileStyles = `
 .profile-v21-badges {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 }
 
 .profile-v21-meta span,
@@ -1646,11 +1648,11 @@ const playerProfileStyles = `
   border: 1px solid rgba(76, 201, 240, 0.34);
   background: rgba(18, 26, 36, 0.74);
   color: #f4f6f8;
-  font-size: 0.72rem;
+  font-size: clamp(0.78rem, 0.9vw, 0.92rem);
   font-weight: 900;
   letter-spacing: 0.08em;
   line-height: 1;
-  padding: 9px 10px;
+  padding: 11px 13px;
   text-transform: uppercase;
 }
 
@@ -1661,20 +1663,20 @@ const playerProfileStyles = `
 
 .profile-v21-quote {
   margin: 0;
-  border-left: 3px solid #b2122a;
+  border-left: 4px solid #b2122a;
   color: #dce7ef;
   font-family: 'Rajdhani', sans-serif;
-  font-size: clamp(1.15rem, 2vw, 1.6rem);
-  font-weight: 700;
+  font-size: clamp(1.4rem, 2.4vw, 2.05rem);
+  font-weight: 800;
   line-height: 1.25;
-  padding: 16px 0 16px 18px;
+  padding: 22px 0 22px 22px;
 }
 
 .profile-v21-topline {
   display: grid;
-  grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1.28fr);
+  grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.45fr);
   gap: 18px;
-  margin-top: 18px;
+  margin-top: 20px;
 }
 
 .profile-v21-level-card,
@@ -1691,6 +1693,11 @@ const playerProfileStyles = `
   background:
     linear-gradient(180deg, rgba(18, 26, 36, 0.94), rgba(7, 10, 14, 0.96)),
     #121a24;
+}
+
+.profile-v21-season {
+  border-color: rgba(76, 201, 240, 0.38);
+  box-shadow: inset 0 1px 0 rgba(76, 201, 240, 0.16);
 }
 
 .profile-v21-level-card {
@@ -1751,9 +1758,11 @@ const playerProfileStyles = `
 
 .profile-v21-season dl {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  gap: 1px;
   margin: 0;
+  border: 1px solid rgba(42, 59, 73, 0.9);
+  background: rgba(42, 59, 73, 0.9);
 }
 
 .profile-v21-season div,
@@ -1766,6 +1775,14 @@ const playerProfileStyles = `
   padding: 12px;
 }
 
+.profile-v21-season div {
+  border: 0;
+  background:
+    linear-gradient(180deg, rgba(18, 26, 36, 0.82), rgba(5, 6, 8, 0.7));
+  min-height: 88px;
+  padding: 16px 14px;
+}
+
 .profile-v21-season dd,
 .profile-v21-stat-list dd,
 .profile-v21-analysis dd,
@@ -1776,29 +1793,35 @@ const playerProfileStyles = `
   font-weight: 900;
 }
 
+.profile-v21-season dd {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(1.15rem, 1.45vw, 1.55rem);
+  line-height: 1.08;
+}
+
 .profile-v21-shell {
   display: grid;
-  grid-template-columns: 190px minmax(0, 1fr) minmax(280px, 360px);
-  gap: 18px;
+  grid-template-columns: 210px minmax(0, 1fr) minmax(300px, 380px);
+  gap: 24px;
   align-items: start;
-  margin-top: 18px;
+  margin-top: 28px;
 }
 
 .profile-v21-nav {
   position: sticky;
   top: 84px;
   display: grid;
-  gap: 6px;
-  border-left: 2px solid #4cc9f0;
-  padding-left: 12px;
+  gap: 8px;
+  border-left: 3px solid #4cc9f0;
+  padding-left: 14px;
 }
 
 .profile-v21-nav a {
   color: #aab7c2;
-  font-size: 0.74rem;
+  font-size: 0.8rem;
   font-weight: 900;
   letter-spacing: 0.08em;
-  padding: 9px 8px;
+  padding: 11px 10px;
   text-decoration: none;
   text-transform: uppercase;
 }
@@ -1812,7 +1835,7 @@ const playerProfileStyles = `
 .profile-v21-main,
 .profile-v21-aside {
   display: grid;
-  gap: 18px;
+  gap: 24px;
 }
 
 .profile-v21-performance-grid {
@@ -1897,7 +1920,7 @@ const playerProfileStyles = `
 .profile-v21-rival-list,
 .profile-v21-activity-list {
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 
 .profile-v21-faction-list div,
@@ -1909,6 +1932,43 @@ const playerProfileStyles = `
   padding: 12px;
 }
 
+.profile-v21-achievements {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.profile-v21-achievements article {
+  position: relative;
+  min-height: 148px;
+  overflow: hidden;
+  padding: 18px 14px 16px;
+  background:
+    linear-gradient(145deg, rgba(18, 26, 36, 0.92), rgba(5, 6, 8, 0.86)),
+    #121a24;
+}
+
+.profile-v21-achievements article::after {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 34px;
+  height: 54px;
+  clip-path: polygon(0 0, 100% 0, 100% 72%, 50% 100%, 0 72%);
+  content: '';
+  background: linear-gradient(180deg, rgba(242, 182, 50, 0.82), rgba(178, 18, 42, 0.48));
+  opacity: 0.28;
+}
+
+.profile-v21-achievements i {
+  display: grid;
+  width: 54px;
+  aspect-ratio: 1;
+  place-items: center;
+  margin-bottom: 14px;
+  clip-path: polygon(50% 0, 63% 28%, 94% 28%, 69% 47%, 79% 78%, 50% 60%, 21% 78%, 31% 47%, 6% 28%, 37% 28%);
+  background: linear-gradient(180deg, rgba(242, 182, 50, 0.95), rgba(178, 18, 42, 0.68));
+  box-shadow: 0 0 28px rgba(242, 182, 50, 0.16);
+}
+
 .profile-v21-faction-list strong,
 .profile-v21-achievements strong,
 .profile-v21-rival-list strong,
@@ -1916,6 +1976,13 @@ const playerProfileStyles = `
   display: block;
   color: #f4f6f8;
   font-weight: 900;
+}
+
+.profile-v21-achievements strong {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.1;
+  text-transform: uppercase;
 }
 
 .profile-v21-faction-list small,
@@ -1926,11 +1993,11 @@ const playerProfileStyles = `
 }
 
 .profile-v21-achievements article.is-unlocked {
-  border-color: rgba(95, 227, 138, 0.48);
+  border-color: rgba(242, 182, 50, 0.54);
 }
 
 .profile-v21-achievements article.is-unlocked span {
-  color: #5fe38a;
+  color: #f2b632;
 }
 
 .profile-v21-army-lists .army-list-mini-grid {
@@ -1943,7 +2010,7 @@ const playerProfileStyles = `
 
 @media (max-width: 1180px) {
   .profile-v21-hero-grid {
-    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-columns: minmax(220px, auto) minmax(0, 1fr);
   }
 
   .profile-v21-quote {
@@ -1976,7 +2043,7 @@ const playerProfileStyles = `
   }
 
   .profile-v21-portrait {
-    width: 144px;
+    width: min(54vw, 260px);
   }
 
   .profile-v21-season dl,
@@ -1984,6 +2051,10 @@ const playerProfileStyles = `
   .profile-v21-analysis,
   .profile-v21-army-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .profile-v21-achievements {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -1993,11 +2064,20 @@ const playerProfileStyles = `
   }
 
   .profile-v21-hero-grid {
-    padding: 22px;
+    gap: 22px;
+    padding: 26px 22px 34px;
   }
 
   .profile-v21-identity h1 {
-    font-size: clamp(3.2rem, 18vw, 5rem);
+    font-size: clamp(4.6rem, 20vw, 6.2rem);
+  }
+
+  .profile-v21-identity > strong {
+    font-size: clamp(1.5rem, 8vw, 2.4rem);
+  }
+
+  .profile-v21-quote {
+    font-size: 1.3rem;
   }
 
   .profile-v21-season dl,
