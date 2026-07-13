@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "npm run security:cache && npm run security:armies && npm run test:achievements && npm run test:draws && npm run test:standings-integrity && npm run test:commissioner-submit && npm run test:commissioner-context && tsc -b && vite build",
+    "build": "npm run security:cache && npm run security:armies && npm run test:achievements && npm run test:draws && npm run test:standings-integrity && npm run test:dashboard-api && npm run test:commissioner-submit && npm run test:commissioner-context && tsc -b && vite build",
     "analyze": "npm run build && node scripts/bundle-report.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -24,6 +24,7 @@
     "test:achievements": "node scripts/achievement-rules-check.mjs",
     "test:battle-report": "node scripts/battle-report-check.mjs",
     "test:dashboard-links": "node scripts/dashboard-links-check.mjs",
+    "test:dashboard-api": "node scripts/dashboard-api-contract-check.mjs",
     "test:draws": "node scripts/draw-support-check.mjs",
     "test:standings-integrity": "node scripts/standings-integrity-check.mjs",
     "test:player-profile": "node scripts/player-profile-check.mjs",

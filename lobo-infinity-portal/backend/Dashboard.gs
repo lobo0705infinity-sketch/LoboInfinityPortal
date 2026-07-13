@@ -101,7 +101,7 @@ function getDashboard() {
 
   const values =
     standings
-      .getRange(2, 1, standings.getLastRow() - 1, 8)
+      .getRange(2, 1, standings.getLastRow() - 1, getDashboardStandingsColumnCount())
       .getValues();
 
   endDashboardEndpointSubStage(
@@ -110,7 +110,7 @@ function getDashboard() {
     {
       sheet: CONFIG.SHEETS.MAIN_MAN,
       rows: values.length,
-      columns: 8
+      columns: getDashboardStandingsColumnCount()
     }
   );
 
@@ -251,6 +251,15 @@ function getDashboard() {
     leagueOverview: leagueOverview
   });
 
+}
+
+function getDashboardStandingsColumnCount() {
+  return Math.max.apply(
+    null,
+    Object.keys(CONFIG.STANDINGS).map(function(key) {
+      return CONFIG.STANDINGS[key];
+    })
+  ) + 1;
 }
 
 function buildLeagueOverview(dashboardContext) {
