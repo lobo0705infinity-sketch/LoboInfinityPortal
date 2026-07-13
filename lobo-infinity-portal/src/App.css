@@ -7484,7 +7484,7 @@ a {
 
 .table-row.table-head {
   position: sticky;
-  top: 58px;
+  top: 0;
   z-index: 3;
   border-color: rgba(76, 201, 240, 0.28);
   background:
