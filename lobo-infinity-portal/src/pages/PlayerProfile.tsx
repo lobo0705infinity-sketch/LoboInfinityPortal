@@ -18,6 +18,7 @@ import {
   formatPlayerName,
 } from '../services/formatting'
 import { isDrawGame } from '../services/gameResults'
+import { getProfileClassifications } from '../services/playerClassification'
 import {
   formatDivisionLabel,
   getDivisionStyle,
@@ -140,6 +141,7 @@ function PlayerProfile() {
   const movementStatus = getMovementStatus(player)
   const displayName = formatPlayerName(player.name, player.displayName)
   const currentTournament = getCurrentTournamentLabel(player)
+  const classifications = getProfileClassifications(player, career)
 
   return (
     <>
@@ -171,6 +173,9 @@ function PlayerProfile() {
                 {movementStatus.label}
               </span>
             ) : null}
+            {classifications.map((classification) => (
+              <span key={classification}>{classification}</span>
+            ))}
             <span>{career.totalGames} Lifetime Games</span>
           </div>
           <p>

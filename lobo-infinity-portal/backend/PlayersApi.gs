@@ -50,7 +50,7 @@ function getCommunityPlayerRegistryStandings() {
       eventId: "",
       event: null,
       division: "main",
-      divisionLabel: "Community Player Registry",
+      divisionLabel: "Player Registry",
       standings: standings,
       summary: buildEventAnalyticsDivisionSummary(standings)
     }
@@ -299,15 +299,18 @@ function applyCommunityParticipantStatus(records, eventsById) {
       getCommunityPlayerRegistryString(event.type)
         .toLowerCase();
 
+    if (!isCommunityActiveEvent(event))
+      return;
+
     if (eventType === "league") {
-      record.league = true;
+      record.activeLeagueRegistration = true;
       if (!record.division && row["Notes"])
         record.division =
           getCommunityPlayerRegistryString(row["Notes"]);
     }
 
     if (eventType.indexOf("tournament") !== -1)
-      record.tournament = true;
+      record.activeTournamentRegistration = true;
 
   });
 
@@ -370,12 +373,11 @@ function applyCommunityGameStatistics(records) {
             row[CONFIG.ENGINE.GAME_TYPE]
           );
 
-    if (gameType === "league")
-      record.league = true;
-    else if (gameType === "tournament")
-      record.tournament = true;
-    else if (gameType === "casual")
-      record.casual = true;
+    if (
+      gameType === "league" ||
+      gameType === "tournament"
+    )
+      record.officialGames += 1;
 
     const result =
       getCommunityPlayerRegistryString(row[CONFIG.ENGINE.RESULT]);
@@ -410,9 +412,9 @@ function upsertCommunityPlayerRecord(records, input) {
         getCommunityPlayerRegistryString(input.division),
       active: input.active !== false,
       portalUser: !!input.portalUser,
-      league: false,
-      tournament: false,
-      casual: false,
+      activeLeagueRegistration: false,
+      activeTournamentRegistration: false,
+      officialGames: 0,
       favoriteFaction: "",
       createdAt: "",
       lastSeen: "",
@@ -476,12 +478,17 @@ function finalizeCommunityPlayerRecord(record) {
     getCommunityStatusBadges(record);
   const gameTypes = [];
 
-  if (record.league)
+  if (record.activeLeagueRegistration)
     gameTypes.push("league");
-  if (record.tournament)
+  if (record.activeTournamentRegistration)
     gameTypes.push("tournament");
-  if (record.casual)
+  if (
+    !record.activeLeagueRegistration &&
+    !record.activeTournamentRegistration
+  )
     gameTypes.push("casual");
+  if (record.officialGames === 0)
+    gameTypes.push("new");
 
   return {
     eventId: "",
@@ -508,9 +515,7 @@ function finalizeCommunityPlayerRecord(record) {
       record.lastSeen ||
       record.createdAt,
     communityStatus:
-      record.games > 0
-        ? "Active"
-        : "New"
+      statusBadges.join(", ")
   };
 
 }
@@ -552,20 +557,53 @@ function getCommunityStatusBadges(record) {
 
   const badges = [];
 
-  if (record.league)
-    badges.push("League");
-  if (record.tournament)
-    badges.push("Tournament");
-  if (record.casual)
-    badges.push("Casual");
+  if (record.activeLeagueRegistration)
+    badges.push("League Player");
+  if (record.activeTournamentRegistration)
+    badges.push("Tournament Player");
 
-  if (record.games === 0)
+  if (
+    !record.activeLeagueRegistration &&
+    !record.activeTournamentRegistration
+  )
+    badges.push("Casual Player");
+
+  if (record.officialGames === 0)
     badges.push("New Player");
 
-  if (badges.length === 0)
-    badges.push("Registered");
-
   return badges;
+
+}
+
+function isCommunityActiveEvent(event) {
+
+  if (!event)
+    return false;
+
+  const archive =
+    getCommunityPlayerRegistryString(event.archive)
+      .toLowerCase();
+  const status =
+    getCommunityPlayerRegistryString(event.status)
+      .toLowerCase();
+  const lifecycleStage =
+    getCommunityPlayerRegistryString(event.lifecycleStage)
+      .toLowerCase();
+
+  if (archive === "archived")
+    return false;
+
+  const terminal = {
+    archived: true,
+    canceled: true,
+    cancelled: true,
+    complete: true,
+    completed: true,
+    deleted: true,
+    retired: true
+  };
+
+  return !terminal[status] && !terminal[lifecycleStage];
 
 }
 
@@ -1485,6 +1523,9 @@ function getRegisteredEventsForPlayer(player) {
   )
     .filter(function(row) {
       return playerProfileRegistrationMatches(row, identities);
+    })
+    .filter(function(row) {
+      return isCommunityActiveEvent(eventsById[row["Event ID"]] || {});
     })
     .map(function(row) {
       const event =

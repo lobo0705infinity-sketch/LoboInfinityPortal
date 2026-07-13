@@ -3,6 +3,11 @@ import { useSearchParams } from 'react-router-dom'
 import PlayerCard from '../components/PlayerCard'
 import Skeleton from '../components/Skeleton'
 import { apiClient } from '../services/api'
+import {
+  getStandingClassifications,
+  statusFilterMatches,
+  type PlayerStatusFilter,
+} from '../services/playerClassification'
 import type { DivisionKey, DivisionStandings, Standing } from '../types/dashboard'
 import {
   getDivisionIdentity,
@@ -10,8 +15,6 @@ import {
 } from '../utils/divisions'
 
 type PlayerFilter = 'all' | DivisionKey
-type CommunityGameTypeFilter = 'all' | 'league' | 'tournament' | 'casual'
-type CommunityStatusFilter = 'all' | 'active' | 'new' | 'inactive'
 type CommunitySort = 'recent' | 'games' | 'winRate' | 'name'
 type PlayerListItem = Standing & {
   divisionLabel?: string
@@ -36,8 +39,7 @@ function Players() {
   const eventScoped = Boolean(eventId)
   const [activeFilter, setActiveFilter] = useState<PlayerFilter>('all')
   const [query, setQuery] = useState('')
-  const [gameTypeFilter, setGameTypeFilter] = useState<CommunityGameTypeFilter>('all')
-  const [statusFilter, setStatusFilter] = useState<CommunityStatusFilter>('all')
+  const [statusFilter, setStatusFilter] = useState<PlayerStatusFilter>('all')
   const [divisionFilter, setDivisionFilter] = useState('all')
   const [sortBy, setSortBy] = useState<CommunitySort>('recent')
   const [playersState, setPlayersState] = useState<PlayersState>({
@@ -87,6 +89,7 @@ function Players() {
         ...player,
         division: player.division || (eventScoped ? division.division : ''),
         divisionLabel: player.division || (eventScoped ? division.divisionLabel : 'Community'),
+        statusBadges: getStandingClassifications(player),
       })),
     )
   }, [eventScoped, playersState])
@@ -119,15 +122,17 @@ function Players() {
     [players],
   )
   const communityCounts = useMemo(() => {
-    const hasGameType = (player: (typeof players)[number], type: string) =>
-      player.gameTypes?.includes(type) ?? false
+    const hasClassification = (
+      player: (typeof players)[number],
+      classification: ReturnType<typeof getStandingClassifications>[number],
+    ) => getStandingClassifications(player).includes(classification)
 
     return {
       registered: players.length,
-      league: players.filter((player) => hasGameType(player, 'league')).length,
-      tournament: players.filter((player) => hasGameType(player, 'tournament')).length,
-      casual: players.filter((player) => hasGameType(player, 'casual')).length,
-      newPlayers: players.filter((player) => player.games === 0).length,
+      league: players.filter((player) => hasClassification(player, 'League Player')).length,
+      tournament: players.filter((player) => hasClassification(player, 'Tournament Player')).length,
+      casual: players.filter((player) => hasClassification(player, 'Casual Player')).length,
+      newPlayers: players.filter((player) => hasClassification(player, 'New Player')).length,
     }
   }, [players])
   const communityPlayers = useMemo(() => {
@@ -147,34 +152,19 @@ function Players() {
         .filter(Boolean)
         .some((value) => String(value).toLowerCase().includes(normalizedQuery))
     }
-    const matchesGameType = (player: (typeof players)[number]) =>
-      gameTypeFilter === 'all' || (player.gameTypes?.includes(gameTypeFilter) ?? false)
     const matchesStatus = (player: (typeof players)[number]) => {
-      if (statusFilter === 'all') {
-        return true
-      }
-
-      if (statusFilter === 'new') {
-        return player.games === 0
-      }
-
-      if (statusFilter === 'inactive') {
-        return player.communityStatus === 'Inactive'
-      }
-
-      return player.games > 0
+      return statusFilterMatches(getStandingClassifications(player), statusFilter)
     }
     const matchesDivision = (player: (typeof players)[number]) =>
       divisionFilter === 'all' || player.division === divisionFilter
 
     return players
       .filter(matchesQuery)
-      .filter(matchesGameType)
       .filter(matchesStatus)
       .filter(matchesDivision)
       .slice()
       .sort((left, right) => sortCommunityPlayers(left, right, sortBy))
-  }, [divisionFilter, gameTypeFilter, players, query, sortBy, statusFilter])
+  }, [divisionFilter, players, query, sortBy, statusFilter])
 
   if (playersState.status === 'loading') {
     return (
@@ -259,24 +249,14 @@ function Players() {
               />
             </label>
             <FilterSelect
-              label="Game Type"
-              onChange={(value) => setGameTypeFilter(value as CommunityGameTypeFilter)}
+              label="Player Status"
+              onChange={(value) => setStatusFilter(value as PlayerStatusFilter)}
               options={[
                 ['all', 'All'],
-                ['league', 'League'],
-                ['tournament', 'Tournament'],
-                ['casual', 'Casual'],
-              ]}
-              value={gameTypeFilter}
-            />
-            <FilterSelect
-              label="Status"
-              onChange={(value) => setStatusFilter(value as CommunityStatusFilter)}
-              options={[
-                ['all', 'All'],
-                ['active', 'Active'],
-                ['new', 'New'],
-                ['inactive', 'Inactive'],
+                ['casual', 'Casual Player'],
+                ['league', 'League Player'],
+                ['tournament', 'Tournament Player'],
+                ['new', 'New Player'],
               ]}
               value={statusFilter}
             />

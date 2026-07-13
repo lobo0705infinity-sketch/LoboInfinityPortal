@@ -25,7 +25,7 @@ function PlayerCard({ divisionLabel, eventId, player }: PlayerCardProps) {
   const streak = player.currentWinStreak ?? 0
   const divisionBadgeLabel = eventId
     ? formatDivisionLabel(divisionLabel)
-    : divisionLabel && divisionLabel !== 'Community Player Registry'
+    : divisionLabel && divisionLabel !== 'Player Registry'
       ? divisionLabel
       : 'Community'
 
