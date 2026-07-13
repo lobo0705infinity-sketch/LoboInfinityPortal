@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState, type CSSProperties } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
@@ -23,6 +23,7 @@ import {
   formatDivisionLabel,
   getDivisionStyle,
 } from '../utils/divisions'
+import playerProfileConcept from '../../docs/design/Player Profile/player-profile-concept-v2.1.png'
 
 type ProfileState =
   | {
@@ -138,190 +139,20 @@ function PlayerProfile() {
 
   const player = profileState.player
   const career = player.careerSummary ?? buildFallbackCareerSummary(player, recentGames)
-  const movementStatus = getMovementStatus(player)
   const displayName = formatPlayerName(player.name, player.displayName)
-  const currentTournament = getCurrentTournamentLabel(player)
   const classifications = getProfileClassifications(player, career)
 
   return (
     <>
       <PlayerProfileStyles />
       <main className="portal-shell">
-        <section
-          className="player-career-hero profile-hero-focus"
-          style={getDivisionStyle(player.division)}
-          aria-labelledby="player-title"
-        >
-        <div className="player-career-avatar" aria-hidden="true">
-          {player.profilePicture ? (
-            <img alt="" src={player.profilePicture} />
-          ) : (
-            <span>{displayName.slice(0, 1)}</span>
-          )}
-        </div>
-
-        <div className="profile-hero-main">
-          <p className="eyebrow">Infinity Career</p>
-          <h1 id="player-title">{displayName}</h1>
-          <div className="profile-badges" aria-label="Player league status">
-            <span className="division-badge">
-              {formatDivisionLabel(player.division)}
-            </span>
-            <span>Rank #{player.rank || '--'}</span>
-            {movementStatus ? (
-              <span className={movementStatus.className}>
-                {movementStatus.label}
-              </span>
-            ) : null}
-            {classifications.map((classification) => (
-              <span key={classification}>{classification}</span>
-            ))}
-            <span>{career.totalGames} Lifetime Games</span>
-          </div>
-          <p>
-            {displayName} has played {career.totalGames} recorded games across
-            the portal with a {formatPercent(career.winPercentage)} win rate.
-          </p>
-        </div>
-
-        <div className="player-career-record" aria-label="Lifetime record">
-          <span>Lifetime Record</span>
-          <strong>{formatRecord(career.records.overall)}</strong>
-          <small>{formatPercent(career.winPercentage)} wins</small>
-        </div>
-
-        <dl className="profile-hero-score player-career-score" aria-label="Career summary">
-          <div>
-            <dt>Current League</dt>
-            <dd>{formatDivisionLabel(player.division) || 'Not linked'}</dd>
-          </div>
-          <div>
-            <dt>Current Tournament</dt>
-            <dd>{currentTournament}</dd>
-          </div>
-          <div>
-            <dt>Current Streak</dt>
-            <dd>{career.currentWinStreak} Wins</dd>
-          </div>
-          <div>
-            <dt>Longest Streak</dt>
-            <dd>{career.longestWinStreak} Wins</dd>
-          </div>
-        </dl>
-      </section>
-
-      <section className="player-record-grid" aria-label="Record summary">
-        <RecordCard label="Overall" record={career.records.overall} />
-        <RecordCard label="League" record={career.records.league} />
-        <RecordCard label="Tournament" record={career.records.tournament} />
-        <RecordCard label="Casual" record={career.records.casual} />
-      </section>
-
-      <section className="player-career-grid" aria-label="Army and mission summary">
-        <CareerMetricGroup
-          showParentFaction
-          title="Army Summary"
-          metrics={[
-            ['Favorite Army', career.armies.favorite],
-            ['Best Army', career.armies.best],
-            ['Most Recent Army', career.armies.mostRecent],
-          ]}
+        <PlayerProfileDossier
+          career={career}
+          classifications={classifications}
+          displayName={displayName}
+          player={player}
+          recentGames={recentGames}
         />
-        <CareerMetricGroup
-          title="Mission Summary"
-          metrics={[
-            ['Favorite Mission', career.missions.favorite],
-            ['Best Mission', career.missions.best],
-            ['Most Recent Mission', career.missions.mostRecent],
-          ]}
-        />
-        <QuickStatsCard career={career} player={player} />
-      </section>
-
-      <section className="player-profile-main-grid" aria-label="Career activity">
-        <RecentGamesPanel games={recentGames} player={player} />
-        <AchievementPreview />
-      </section>
-
-      <section className="profile-card-grid" aria-label="Player details">
-        <ProfileCard title="Scheduling">
-          <Metric
-            label="Availability"
-            value={player.availability.status || 'No availability added yet.'}
-          />
-          <Metric label="Preferred Days" value={player.availability.preferredDays} />
-          <Metric
-            label="Preferred Time Window"
-            value={player.availability.preferredTimes}
-          />
-          <Metric label="Discord" value={player.discordHandle} />
-          <Link
-            className="profile-action-link"
-            to={player.scheduleLink || `/match-finder?opponent=${encodeURIComponent(player.name)}`}
-          >
-            Schedule Match
-          </Link>
-        </ProfileCard>
-
-        <ProfileCard title="Turn Profile">
-          <Metric label="First Turn Win Rate" value={formatPercent(player.firstTurnWinRate)} />
-          <Metric label="Second Turn Win Rate" value={formatPercent(player.secondTurnWinRate)} />
-          <Metric label="First Turn Games" value={player.firstTurnGames} />
-          <Metric label="Second Turn Games" value={player.secondTurnGames} />
-        </ProfileCard>
-
-        <ProfileCard title="Registered Events">
-          {player.registeredEvents.length === 0 ? (
-            <Metric label="Events" value="No event registrations yet." />
-          ) : (
-            player.registeredEvents.slice(0, 4).map((event) => (
-              <Metric
-                key={event.eventId}
-                label={event.eventName}
-                value={
-                  event.preferredTeam || event.team
-                    ? `${event.status} - ${event.preferredTeam || event.team}`
-                    : event.status
-                }
-              />
-            ))
-          )}
-        </ProfileCard>
-      </section>
-
-      <section className="profile-card-grid" aria-label="Player army lists">
-        <ProfileCard title="Submitted Army Lists">
-          <Metric label="Lists Submitted" value={player.armyListSummary.submitted} />
-          <Metric
-            label="Average List Rating"
-            value={player.armyListSummary.averageRating}
-          />
-          <Metric
-            label="Favorite Faction"
-            value={player.armyListSummary.favoriteFaction || player.favoriteFaction}
-          />
-        </ProfileCard>
-        <ArmyListSummaryCard
-          list={player.armyListSummary.highestRated}
-          title="Highest Rated List"
-        />
-        <ArmyListSummaryCard list={player.armyListSummary.newest} title="Newest List" />
-      </section>
-
-      {player.armyLists.length > 0 ? (
-        <section className="panel faction-report-panel profile-army-list-panel">
-          <div className="panel-heading">
-            <p className="eyebrow">Community</p>
-            <h2>Player Army Lists</h2>
-          </div>
-          <div className="army-list-mini-grid">
-            {player.armyLists.map((list) => (
-              <ArmyListMiniCard key={list.id} list={list} />
-            ))}
-          </div>
-        </section>
-      ) : null}
-
         <EntityPreviousNext current={player.name} eventId={eventId} type="player" />
       </main>
     </>
@@ -332,115 +163,446 @@ function PlayerProfileStyles() {
   return <style>{playerProfileStyles}</style>
 }
 
-function RecordCard({
-  label,
-  record,
+function PlayerProfileDossier({
+  career,
+  classifications,
+  displayName,
+  player,
+  recentGames,
 }: {
-  label: string
-  record: PlayerRecordSummary
+  career: PlayerCareerSummary
+  classifications: ReturnType<typeof getProfileClassifications>
+  displayName: string
+  player: PlayerProfileData
+  recentGames: RecentGame[]
 }) {
+  const homeLabel = getCompetitiveHomeLabel(player, classifications)
+  const level = getCareerLevel(career)
+  const leagueLabel = getCurrentLeagueLabel(player)
+  const currentTournament = getCurrentTournamentLabel(player)
+  const quote = getHeroQuote(recentGames, player)
+  const joinedLabel = getJoinedLabel(player)
+
   return (
-    <article className="panel player-record-card">
-      <span>{label}</span>
-      <strong>{formatRecord(record)}</strong>
-      <small>
-        {record.games} games / {formatPercent(record.winPercentage)}
-      </small>
-    </article>
+    <>
+      <section
+        className="profile-v21-hero"
+        style={getDivisionStyle(player.division)}
+        aria-labelledby="player-title"
+      >
+        <img
+          alt=""
+          className="profile-v21-art"
+          loading="lazy"
+          src={playerProfileConcept}
+        />
+        <div className="profile-v21-hero-grid">
+          <div className="profile-v21-portrait" aria-hidden="true">
+            {player.profilePicture ? (
+              <img alt="" src={player.profilePicture} />
+            ) : (
+              <span>{displayName.slice(0, 1)}</span>
+            )}
+          </div>
+          <div className="profile-v21-identity">
+            <p className="eyebrow">Infinity Career Dossier</p>
+            <h1 id="player-title">{displayName}</h1>
+            <strong>{homeLabel}</strong>
+            <div className="profile-v21-meta" aria-label="Player profile details">
+              {player.city ? <span>{player.city}</span> : null}
+              {joinedLabel ? <span>{joinedLabel}</span> : null}
+              {player.homeStore ? <span>{player.homeStore}</span> : null}
+            </div>
+            <div className="profile-v21-badges" aria-label="Player classifications">
+              {classifications.map((classification) => (
+                <span key={classification}>{classification}</span>
+              ))}
+              {player.rank > 0 ? <span>#{player.rank} Ranked</span> : null}
+            </div>
+          </div>
+          {quote ? (
+            <blockquote className="profile-v21-quote">{quote}</blockquote>
+          ) : null}
+        </div>
+      </section>
+
+      <section className="profile-v21-topline" aria-label="Player season status">
+        <CareerLevelCard level={level} />
+        <SeasonSnapshot
+          career={career}
+          leagueLabel={leagueLabel}
+          player={player}
+        />
+      </section>
+
+      <section className="profile-v21-shell" aria-label="Player dossier">
+        <ProfileSectionNav />
+        <div className="profile-v21-main">
+          <PerformanceOverview career={career} player={player} />
+          <RecentGamesPanel games={recentGames} player={player} />
+          <ArmyListsPanel player={player} />
+          <NotesMediaPanel currentTournament={currentTournament} player={player} />
+        </div>
+        <aside className="profile-v21-aside" aria-label="Player analytics">
+          <FactionBreakdown career={career} player={player} />
+          <AchievementPreview career={career} player={player} />
+          <RivalsPanel games={recentGames} player={player} />
+          <ActivityFeed
+            currentTournament={currentTournament}
+            games={recentGames}
+            leagueLabel={leagueLabel}
+            player={player}
+          />
+        </aside>
+      </section>
+    </>
   )
 }
 
-function CareerMetricGroup({
-  metrics,
-  showParentFaction = false,
-  title,
+function CareerLevelCard({
+  level,
 }: {
-  metrics: Array<[string, PlayerCareerMetric]>
-  showParentFaction?: boolean
-  title: string
+  level: ReturnType<typeof getCareerLevel>
 }) {
   return (
-    <section className="panel player-career-panel" aria-labelledby={titleToId(title)}>
-      <div className="panel-heading">
-        <p className="eyebrow">Career</p>
-        <h2 id={titleToId(title)}>{title}</h2>
+    <section className="panel profile-v21-level-card" aria-labelledby="career-level-title">
+      <div className="profile-v21-level-mark">
+        <span>Level</span>
+        <strong>{level.current}</strong>
       </div>
-      <div className="player-career-metric-list">
-        {metrics.map(([label, metric]) => (
-          <CareerMetricCard
-            key={label}
-            label={label}
-            metric={metric}
-            showParentFaction={showParentFaction}
-          />
-        ))}
+      <div>
+        <div className="panel-heading">
+          <p className="eyebrow">Career Level</p>
+          <h2 id="career-level-title">Battlefield Progress</h2>
+        </div>
+        <div className="profile-v21-progress" aria-label={level.ariaLabel}>
+          <span style={{ width: `${level.progress}%` }} />
+        </div>
+        <p>
+          {level.currentGames} of {level.nextThreshold} official games toward
+          Level {level.next}
+        </p>
       </div>
     </section>
   )
 }
 
-function CareerMetricCard({
-  label,
-  metric,
-  showParentFaction,
+function SeasonSnapshot({
+  career,
+  leagueLabel,
+  player,
 }: {
-  label: string
-  metric: PlayerCareerMetric
-  showParentFaction: boolean
+  career: PlayerCareerSummary
+  leagueLabel: string
+  player: PlayerProfileData
 }) {
-  const value = metric.insufficientGames
-    ? 'Requires 3 games'
-    : formatMissionMetric(metric.label) || 'Not recorded'
-  const parentFaction =
-    showParentFaction && value !== 'Not recorded' && !metric.insufficientGames
-      ? metric.parentFaction || getArmyParentFaction(metric.label)
-      : ''
+  const record = career.records.overall
 
   return (
-    <article className="player-career-metric">
-      <span>{label}</span>
-      <strong>{value}</strong>
-      {parentFaction && parentFaction !== metric.label ? (
-        <small>Parent Faction: {parentFaction}</small>
-      ) : null}
-      <small>
-        {metric.insufficientGames
-          ? 'Minimum sample not reached'
-          : `${formatRecord(metric)} / ${formatPercent(metric.winPercentage)}`}
-      </small>
-    </article>
+    <section className="panel profile-v21-season" aria-labelledby="season-snapshot-title">
+      <div className="panel-heading">
+        <p className="eyebrow">Season Snapshot</p>
+        <h2 id="season-snapshot-title">Current Campaign</h2>
+      </div>
+      <dl>
+        <div>
+          <dt>W-L-D</dt>
+          <dd>{formatRecord(record)}</dd>
+        </div>
+        <div>
+          <dt>Win Rate</dt>
+          <dd>{formatPercent(record.winPercentage)}</dd>
+        </div>
+        <div>
+          <dt>TP</dt>
+          <dd>{player.tp}</dd>
+        </div>
+        <div>
+          <dt>OP</dt>
+          <dd>{player.op}</dd>
+        </div>
+        <div>
+          <dt>VP</dt>
+          <dd>{player.vp}</dd>
+        </div>
+        <div>
+          <dt>Division</dt>
+          <dd>{formatDivisionLabel(player.division) || leagueLabel}</dd>
+        </div>
+        <div>
+          <dt>Rank</dt>
+          <dd>{player.rank > 0 ? `#${player.rank}` : 'Unranked'}</dd>
+        </div>
+        <div>
+          <dt>Season</dt>
+          <dd>{leagueLabel}</dd>
+        </div>
+        <div>
+          <dt>Games</dt>
+          <dd>{career.totalGames}</dd>
+        </div>
+      </dl>
+    </section>
   )
 }
 
-function QuickStatsCard({
+function ProfileSectionNav() {
+  const sections = [
+    ['Overview', '#profile-overview'],
+    ['Match History', '#recent-games-title'],
+    ['Statistics', '#profile-statistics'],
+    ['Factions', '#profile-factions'],
+    ['Army Lists', '#profile-army-lists'],
+    ['Achievements', '#achievements-title'],
+    ['Rivals', '#profile-rivals'],
+    ['Activity Feed', '#profile-activity'],
+    ['Notes & Media', '#profile-notes'],
+  ]
+
+  return (
+    <nav className="profile-v21-nav" aria-label="Player profile sections">
+      {sections.map(([label, href]) => (
+        <a href={href} key={label}>{label}</a>
+      ))}
+    </nav>
+  )
+}
+
+function PerformanceOverview({
   career,
   player,
 }: {
   career: PlayerCareerSummary
   player: PlayerProfileData
 }) {
+  const metrics = getPerformanceMetrics(career, player)
+  const points = metrics.map(({ x, y }) => `${x},${y}`).join(' ')
+
   return (
-    <ProfileCard title="Quick Statistics">
-      <Metric
-        label="Most Played Army"
-        value={career.quickStats.mostPlayedArmy || player.favoriteFaction}
-      />
-      <Metric
-        label="Most Played Parent Faction"
-        value={
-          career.quickStats.mostPlayedArmyParentFaction ||
-          getArmyParentFaction(career.quickStats.mostPlayedArmy || player.favoriteFaction)
-        }
-      />
-      <Metric
-        label="Most Played Mission"
-        value={formatMissionMetric(career.quickStats.mostPlayedMission)}
-      />
-      <Metric label="Highest VP Game" value={career.quickStats.highestVpGame} />
-      <Metric label="Biggest Victory" value={`${career.quickStats.biggestVictory} VP`} />
-      <Metric label="Longest Win Streak" value={career.longestWinStreak} />
-      <Metric label="Games This Month" value={career.gamesThisMonth} />
-    </ProfileCard>
+    <section className="panel profile-v21-performance" id="profile-overview" aria-labelledby="performance-title">
+      <div className="panel-heading">
+        <p className="eyebrow">Overview</p>
+        <h2 id="performance-title">Performance Overview</h2>
+      </div>
+      <div className="profile-v21-performance-grid">
+        <svg viewBox="0 0 200 200" role="img" aria-label="Player performance radar chart">
+          <polygon className="profile-v21-radar-grid" points="100,20 176,76 147,166 53,166 24,76" />
+          <polygon className="profile-v21-radar-fill" points={points} />
+          {metrics.map((metric) => (
+            <text key={metric.label} x={metric.labelX} y={metric.labelY}>
+              {metric.shortLabel}
+            </text>
+          ))}
+        </svg>
+        <dl className="profile-v21-stat-list" id="profile-statistics">
+          {metrics.map((metric) => (
+            <div key={metric.label}>
+              <dt>{metric.label}</dt>
+              <dd>{metric.displayValue}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+      <div className="profile-v21-analysis">
+        <Metric label="Primary Army" value={career.quickStats.mostPlayedArmy || player.favoriteFaction} />
+        <Metric label="Top Mission" value={formatMissionMetric(career.quickStats.mostPlayedMission || player.favoriteMission)} />
+        <Metric label="Current Streak" value={`${career.currentWinStreak} wins`} />
+      </div>
+    </section>
+  )
+}
+
+function FactionBreakdown({
+  career,
+  player,
+}: {
+  career: PlayerCareerSummary
+  player: PlayerProfileData
+}) {
+  const factions = getFactionBreakdown(career, player)
+  const first = factions[0]
+
+  return (
+    <section className="panel profile-v21-factions" id="profile-factions" aria-labelledby="faction-breakdown-title">
+      <div className="panel-heading">
+        <p className="eyebrow">Factions</p>
+        <h2 id="faction-breakdown-title">Faction Breakdown</h2>
+      </div>
+      {first ? (
+        <>
+          <div
+            className="profile-v21-faction-ring"
+            style={
+              { '--faction-share': `${first.share}%` } as CSSProperties &
+                Record<'--faction-share', string>
+            }
+            aria-label={`${first.label} ${first.share}% usage`}
+          >
+            <strong>{first.share}%</strong>
+            <span>{first.label}</span>
+          </div>
+          <div className="profile-v21-faction-list">
+            {factions.map((faction) => (
+              <div key={faction.label}>
+                <span>{faction.label}</span>
+                <strong>{faction.games} games</strong>
+                <small>{formatPercent(faction.winPercentage)}</small>
+              </div>
+            ))}
+          </div>
+        </>
+      ) : (
+        <p className="player-profile-empty">No faction records available.</p>
+      )}
+    </section>
+  )
+}
+
+function AchievementPreview({
+  career,
+  player,
+}: {
+  career: PlayerCareerSummary
+  player: PlayerProfileData
+}) {
+  const achievements = getAchievementItems(career, player)
+
+  return (
+    <section className="panel player-achievement-panel" aria-labelledby="achievements-title">
+      <div className="panel-heading">
+        <p className="eyebrow">Achievements</p>
+        <h2 id="achievements-title">Achievements</h2>
+      </div>
+      <div className="profile-v21-achievements">
+        {achievements.map((achievement) => (
+          <article
+            className={achievement.unlocked ? 'is-unlocked' : ''}
+            key={achievement.title}
+          >
+            <span>{achievement.tier}</span>
+            <strong>{achievement.title}</strong>
+            <small>{achievement.detail}</small>
+          </article>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function RivalsPanel({
+  games,
+  player,
+}: {
+  games: RecentGame[]
+  player: PlayerProfileData
+}) {
+  const rivals = getRivalItems(games, player)
+
+  return (
+    <section className="panel profile-v21-rivals" id="profile-rivals" aria-labelledby="rivals-title">
+      <div className="panel-heading">
+        <p className="eyebrow">Rivals</p>
+        <h2 id="rivals-title">Rivals</h2>
+      </div>
+      {rivals.length > 0 ? (
+        <div className="profile-v21-rival-list">
+          {rivals.map((rival) => (
+            <div key={rival.name}>
+              <span>{rival.label}</span>
+              <strong>{rival.name}</strong>
+              <small>{rival.detail}</small>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="player-profile-empty">No rival records available.</p>
+      )}
+    </section>
+  )
+}
+
+function ActivityFeed({
+  currentTournament,
+  games,
+  leagueLabel,
+  player,
+}: {
+  currentTournament: string
+  games: RecentGame[]
+  leagueLabel: string
+  player: PlayerProfileData
+}) {
+  const activity = getActivityItems(games, player, leagueLabel, currentTournament)
+
+  return (
+    <section className="panel profile-v21-activity" id="profile-activity" aria-labelledby="activity-title">
+      <div className="panel-heading">
+        <p className="eyebrow">Activity Feed</p>
+        <h2 id="activity-title">Latest Signals</h2>
+      </div>
+      <div className="profile-v21-activity-list">
+        {activity.map((item) => (
+          <div key={`${item.date}-${item.label}`}>
+            <span>{item.date}</span>
+            <strong>{item.label}</strong>
+            <small>{item.detail}</small>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function ArmyListsPanel({ player }: { player: PlayerProfileData }) {
+  return (
+    <section className="panel profile-v21-army-lists" id="profile-army-lists" aria-labelledby="army-lists-title">
+      <div className="panel-heading">
+        <p className="eyebrow">Army Lists</p>
+        <h2 id="army-lists-title">Submitted Army Lists</h2>
+      </div>
+      <dl className="profile-v21-army-summary">
+        <Metric label="Lists Submitted" value={player.armyListSummary.submitted} />
+        <Metric label="Average List Rating" value={player.armyListSummary.averageRating} />
+        <Metric label="Favorite Faction" value={player.armyListSummary.favoriteFaction || player.favoriteFaction} />
+      </dl>
+      {player.armyLists.length > 0 ? (
+        <div className="army-list-mini-grid">
+          {player.armyLists.slice(0, 4).map((list) => (
+            <ArmyListMiniCard key={list.id} list={list} />
+          ))}
+        </div>
+      ) : null}
+    </section>
+  )
+}
+
+function NotesMediaPanel({
+  currentTournament,
+  player,
+}: {
+  currentTournament: string
+  player: PlayerProfileData
+}) {
+  return (
+    <section className="panel profile-v21-notes" id="profile-notes" aria-labelledby="notes-title">
+      <div className="panel-heading">
+        <p className="eyebrow">Notes & Media</p>
+        <h2 id="notes-title">Operations Profile</h2>
+      </div>
+      <dl className="profile-metric-list">
+        <Metric label="Availability" value={player.availability.status} />
+        <Metric label="Preferred Days" value={player.availability.preferredDays} />
+        <Metric label="Preferred Time" value={player.availability.preferredTimes} />
+        <Metric label="Discord" value={player.discordHandle} />
+        <Metric label="Current Tournament" value={currentTournament} />
+      </dl>
+      <Link
+        className="profile-action-link"
+        to={player.scheduleLink || `/match-finder?opponent=${encodeURIComponent(player.name)}`}
+      >
+        Schedule Match
+      </Link>
+    </section>
   )
 }
 
@@ -489,44 +651,6 @@ function RecentGamesPanel({
   )
 }
 
-function AchievementPreview() {
-  return (
-    <section className="panel player-achievement-panel" aria-labelledby="achievements-title">
-      <div className="panel-heading">
-        <p className="eyebrow">Achievements</p>
-        <h2 id="achievements-title">Achievement Preview</h2>
-      </div>
-      <div className="player-achievement-placeholder">
-        <strong>Achievements coming soon.</strong>
-        <p>Recent badges and next-progress goals will appear here when public achievements are available for player profiles.</p>
-      </div>
-    </section>
-  )
-}
-
-function ArmyListSummaryCard({
-  list,
-  title,
-}: {
-  list: ArmyList | null
-  title: string
-}) {
-  return (
-    <ProfileCard title={title}>
-      {list ? (
-        <>
-          <Metric label="Army Name" value={list.armyName} />
-          <Metric label="Faction" value={list.faction} />
-          <Metric label="Mission" value={getCanonicalMissionName(list.mission)} />
-          <Metric label="Score" value={list.score} />
-        </>
-      ) : (
-        <Metric label="Army List" value="Not recorded" />
-      )}
-    </ProfileCard>
-  )
-}
-
 function ArmyListMiniCard({ list }: { list: ArmyList }) {
   return (
     <article className="army-list-mini-card">
@@ -555,24 +679,6 @@ function ProfileHeaderFallback({ playerName }: { playerName: string }) {
         <p className="eyebrow">Player Profile</p>
         <h1 id="player-title">{playerName || 'Player'}</h1>
       </div>
-    </section>
-  )
-}
-
-function ProfileCard({
-  children,
-  title,
-}: {
-  children: ReactNode
-  title: string
-}) {
-  return (
-    <section className="panel profile-card" aria-labelledby={titleToId(title)}>
-      <div className="panel-heading">
-        <p className="eyebrow">Profile</p>
-        <h2 id={titleToId(title)}>{title}</h2>
-      </div>
-      <dl className="profile-metric-list">{children}</dl>
     </section>
   )
 }
@@ -955,22 +1061,353 @@ function buildMetric(
   }
 }
 
-function getMovementStatus(player: PlayerProfileData) {
-  if (player.division !== 'Main Man') {
-    return null
+function getCompetitiveHomeLabel(
+  player: PlayerProfileData,
+  classifications: ReturnType<typeof getProfileClassifications>,
+) {
+  const division = formatDivisionLabel(player.division)
+
+  if (division) {
+    return division
   }
 
-  if (player.rank >= 9) {
-    return {
-      className: 'profile-status-relegation',
-      label: 'Relegation',
-    }
+  if (classifications.includes('Tournament Player')) {
+    return 'Tournament Player'
   }
+
+  return 'Casual Player'
+}
+
+function getCareerLevel(career: PlayerCareerSummary) {
+  const officialGames = career.records.league.games + career.records.tournament.games
+  const current = Math.max(1, Math.floor(officialGames / 5) + 1)
+  const next = current + 1
+  const previousThreshold = (current - 1) * 5
+  const nextThreshold = current * 5
+  const progress =
+    nextThreshold > previousThreshold
+      ? Math.min(
+          100,
+          Math.round(
+            ((officialGames - previousThreshold) /
+              (nextThreshold - previousThreshold)) *
+              100,
+          ),
+        )
+      : 0
 
   return {
-    className: 'profile-status-safe',
-    label: 'Safe',
+    ariaLabel: `${officialGames} official games, ${progress}% to Level ${next}`,
+    current,
+    currentGames: officialGames,
+    next,
+    nextThreshold,
+    progress,
   }
+}
+
+function getJoinedLabel(player: PlayerProfileData) {
+  const registrations = player.registeredEvents
+    .map((event) => event.registeredAt)
+    .filter(Boolean)
+    .sort()
+  const firstRegistration = registrations[0]
+
+  if (!firstRegistration) {
+    return ''
+  }
+
+  const date = new Date(firstRegistration)
+
+  if (!Number.isFinite(date.getTime())) {
+    return ''
+  }
+
+  return `Joined ${date.toLocaleDateString(undefined, {
+    month: 'short',
+    year: 'numeric',
+  })}`
+}
+
+function getHeroQuote(games: RecentGame[], player: PlayerProfileData) {
+  const quotedGame = games.find((game) => game.bestMoment.trim())
+
+  if (quotedGame) {
+    return `"${quotedGame.bestMoment.trim()}"`
+  }
+
+  if (player.availability.notes) {
+    return `"${player.availability.notes}"`
+  }
+
+  return ''
+}
+
+function getCurrentLeagueLabel(player: PlayerProfileData) {
+  const league = player.registeredEvents.find((event) =>
+    isActiveProfileEvent(event.eventType, event.eventName, event.status, 'league'),
+  )
+
+  if (!league) {
+    return formatDivisionLabel(player.division) || 'No active league'
+  }
+
+  return league.eventName || league.eventId || formatDivisionLabel(player.division)
+}
+
+function getPerformanceMetrics(
+  career: PlayerCareerSummary,
+  player: PlayerProfileData,
+) {
+  const average = (value: number, games: number) =>
+    games > 0 ? Math.round(value / games) : 0
+  const record = career.records.overall
+  const values = [
+    {
+      displayValue: formatPercent(record.winPercentage),
+      label: 'Win Rate',
+      shortLabel: 'WIN',
+      value: record.winPercentage,
+    },
+    {
+      displayValue: String(average(player.tp, Math.max(record.games, 1))),
+      label: 'Average TP',
+      shortLabel: 'TP',
+      value: Math.min(100, average(player.tp, Math.max(record.games, 1)) * 25),
+    },
+    {
+      displayValue: String(average(player.op, Math.max(record.games, 1))),
+      label: 'Average OP',
+      shortLabel: 'OP',
+      value: Math.min(100, average(player.op, Math.max(record.games, 1)) * 10),
+    },
+    {
+      displayValue: String(average(player.vp, Math.max(record.games, 1))),
+      label: 'Average VP',
+      shortLabel: 'VP',
+      value: Math.min(100, average(player.vp, Math.max(record.games, 1))),
+    },
+    {
+      displayValue: String(career.longestWinStreak),
+      label: 'Longest Streak',
+      shortLabel: 'STR',
+      value: Math.min(100, career.longestWinStreak * 20),
+    },
+  ]
+  const anchors = [
+    { x: 100, y: 20, labelX: 88, labelY: 14 },
+    { x: 176, y: 76, labelX: 178, labelY: 76 },
+    { x: 147, y: 166, labelX: 148, labelY: 186 },
+    { x: 53, y: 166, labelX: 22, labelY: 186 },
+    { x: 24, y: 76, labelX: 0, labelY: 76 },
+  ]
+
+  return values.map((metric, index) => {
+    const anchor = anchors[index]
+    const ratio = Math.max(0.12, Math.min(1, metric.value / 100))
+
+    return {
+      ...metric,
+      labelX: anchor.labelX,
+      labelY: anchor.labelY,
+      x: 100 + (anchor.x - 100) * ratio,
+      y: 100 + (anchor.y - 100) * ratio,
+    }
+  })
+}
+
+function getFactionBreakdown(
+  career: PlayerCareerSummary,
+  player: PlayerProfileData,
+) {
+  const metrics = [
+    career.armies.favorite,
+    career.armies.best,
+    career.armies.mostRecent,
+  ]
+  const map = new Map<string, PlayerRecordSummary>()
+
+  metrics.forEach((metric) => {
+    const label = metric.label || player.favoriteFaction
+
+    if (!label) {
+      return
+    }
+
+    const existing = map.get(label)
+    map.set(label, {
+      draws: (existing?.draws ?? 0) + metric.draws,
+      games: (existing?.games ?? 0) + metric.games,
+      losses: (existing?.losses ?? 0) + metric.losses,
+      winPercentage: metric.winPercentage || existing?.winPercentage || 0,
+      wins: (existing?.wins ?? 0) + metric.wins,
+    })
+  })
+
+  const totalGames = Array.from(map.values()).reduce(
+    (sum, record) => sum + record.games,
+    0,
+  )
+
+  return Array.from(map.entries())
+    .map(([label, record]) => ({
+      games: record.games,
+      label,
+      share: totalGames > 0 ? Math.round((record.games / totalGames) * 100) : 0,
+      winPercentage: record.winPercentage,
+    }))
+    .sort((a, b) => b.games - a.games)
+}
+
+function getAchievementItems(
+  career: PlayerCareerSummary,
+  player: PlayerProfileData,
+) {
+  const officialGames = career.records.league.games + career.records.tournament.games
+  const achievements = [
+    {
+      detail: `${Math.min(officialGames, 1)} / 1 official games`,
+      tier: officialGames >= 1 ? 'Earned' : 'Progress',
+      title: 'First Official Game',
+      unlocked: officialGames >= 1,
+    },
+    {
+      detail: `${Math.min(career.totalGames, 10)} / 10 recorded games`,
+      tier: career.totalGames >= 10 ? 'Earned' : 'Progress',
+      title: 'Campaign Regular',
+      unlocked: career.totalGames >= 10,
+    },
+    {
+      detail: `${Math.min(officialGames, 50)} / 50 official games`,
+      tier: officialGames >= 50 ? 'Earned' : 'Progress',
+      title: 'Veteran',
+      unlocked: officialGames >= 50,
+    },
+    {
+      detail: player.rank > 0 ? `Rank #${player.rank}` : 'Unranked',
+      tier: player.rank > 0 ? 'Earned' : 'Progress',
+      title: 'Ranked Combatant',
+      unlocked: player.rank > 0,
+    },
+    {
+      detail: `${player.armyListSummary.submitted} submitted`,
+      tier: player.armyListSummary.submitted > 0 ? 'Earned' : 'Progress',
+      title: 'List Architect',
+      unlocked: player.armyListSummary.submitted > 0,
+    },
+  ]
+
+  return achievements
+}
+
+function getRivalItems(games: RecentGame[], player: PlayerProfileData) {
+  const rivalMap = new Map<string, { draws: number; games: number; losses: number; wins: number }>()
+
+  games.forEach((game) => {
+    const opponent = getOpponentLabel(game, player)
+    const existing = rivalMap.get(opponent) ?? {
+      draws: 0,
+      games: 0,
+      losses: 0,
+      wins: 0,
+    }
+    const result = getPlayerResult(game, player)
+
+    rivalMap.set(opponent, {
+      draws: existing.draws + (result === 'Draw' ? 1 : 0),
+      games: existing.games + 1,
+      losses: existing.losses + (result === 'Loss' ? 1 : 0),
+      wins: existing.wins + (result === 'Win' ? 1 : 0),
+    })
+  })
+
+  const derived = Array.from(rivalMap.entries())
+    .sort(([, a], [, b]) => b.games - a.games)
+    .slice(0, 3)
+    .map(([name, record], index) => ({
+      detail: `${record.wins}-${record.losses}${record.draws ? `-${record.draws}` : ''}`,
+      label: index === 0 ? 'Most Played' : 'Head to Head',
+      name,
+    }))
+
+  const namedRivals = [
+    player.rival
+      ? {
+          detail: 'Profile rival',
+          label: 'Rival',
+          name: player.rival,
+        }
+      : null,
+    player.nemesis
+      ? {
+          detail: 'Profile nemesis',
+          label: 'Nemesis',
+          name: player.nemesis,
+        }
+      : null,
+  ].filter((item): item is { detail: string; label: string; name: string } =>
+    Boolean(item),
+  )
+
+  return [...namedRivals, ...derived].filter(
+    (item, index, items) =>
+      items.findIndex((candidate) => candidate.name === item.name) === index,
+  )
+}
+
+function getActivityItems(
+  games: RecentGame[],
+  player: PlayerProfileData,
+  leagueLabel: string,
+  currentTournament: string,
+) {
+  const gameItems = games.slice(0, 4).map((game) => ({
+    date: game.date || 'Recent',
+    detail: `${getPlayerResult(game, player)} vs ${getOpponentLabel(game, player)}`,
+    label: formatGameType(game.gameType || 'league'),
+  }))
+  const registrationItems = player.registeredEvents.slice(0, 3).map((event) => ({
+    date: event.updatedAt || event.registeredAt || 'Registered',
+    detail: event.status || event.team || event.preferredTeam,
+    label: event.eventName || event.eventId,
+  }))
+  const fallbackItems = [
+    {
+      date: 'Current',
+      detail: formatDivisionLabel(player.division) || leagueLabel,
+      label: 'League Status',
+    },
+    {
+      date: 'Current',
+      detail: currentTournament,
+      label: 'Tournament Status',
+    },
+  ]
+
+  return [...gameItems, ...registrationItems, ...fallbackItems].slice(0, 6)
+}
+
+function isActiveProfileEvent(
+  eventType: string,
+  eventName: string,
+  status: string,
+  target: 'league' | 'tournament',
+) {
+  const normalizedStatus = status.trim().toLowerCase()
+
+  if (
+    ['deleted', 'removed', 'withdrawn', 'disabled', 'archived', 'completed'].includes(
+      normalizedStatus,
+    )
+  ) {
+    return false
+  }
+
+  const eventIdentity = `${eventType} ${eventName}`.toLowerCase()
+
+  return target === 'league'
+    ? eventIdentity.includes('league')
+    : eventIdentity.includes('tournament')
 }
 
 function decodePlayerName(playerName: string | undefined) {
@@ -1113,11 +1550,484 @@ function formatMissionMetric(value: string) {
   return getCanonicalMissionName(value) || value
 }
 
-function titleToId(title: string) {
-  return title.toLowerCase().replaceAll(' ', '-')
+const playerProfileStyles = `
+.profile-v21-hero {
+  position: relative;
+  min-height: clamp(360px, 42vw, 560px);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--division-accent, #4cc9f0) 52%, #2a3b49);
+  background:
+    linear-gradient(115deg, rgba(5, 6, 8, 0.96) 0%, rgba(10, 16, 24, 0.9) 46%, rgba(178, 18, 42, 0.24) 100%),
+    #050608;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
 }
 
-const playerProfileStyles = `
+.profile-v21-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.16;
+  filter: saturate(1.12) contrast(1.08);
+}
+
+.profile-v21-hero::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: '';
+  background:
+    linear-gradient(90deg, rgba(76, 201, 240, 0.16) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(76, 201, 240, 0.1) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(90deg, black, transparent 82%);
+}
+
+.profile-v21-hero-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(150px, 220px) minmax(0, 1fr) minmax(260px, 360px);
+  gap: clamp(20px, 4vw, 54px);
+  align-items: center;
+  min-height: inherit;
+  padding: clamp(24px, 5vw, 64px);
+}
+
+.profile-v21-portrait {
+  display: grid;
+  width: clamp(132px, 18vw, 220px);
+  aspect-ratio: 1;
+  place-items: center;
+  overflow: hidden;
+  border: 2px solid #4cc9f0;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 36% 25%, rgba(76, 201, 240, 0.32), transparent 48%),
+    #121a24;
+  box-shadow:
+    0 0 0 10px rgba(76, 201, 240, 0.08),
+    0 24px 72px rgba(0, 0, 0, 0.54);
+}
+
+.profile-v21-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-v21-portrait span {
+  color: #f4f6f8;
+  font-family: 'Bebas Neue', 'Rajdhani', sans-serif;
+  font-size: clamp(4rem, 11vw, 8rem);
+  line-height: 1;
+}
+
+.profile-v21-identity {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.profile-v21-identity h1 {
+  margin: 0;
+  color: #f4f6f8;
+  font-family: 'Bebas Neue', 'Rajdhani', sans-serif;
+  font-size: clamp(4rem, 11vw, 9rem);
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 0.84;
+  text-transform: uppercase;
+}
+
+.profile-v21-identity > strong {
+  color: #f2b632;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(1.35rem, 3vw, 2.5rem);
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.profile-v21-meta,
+.profile-v21-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.profile-v21-meta span,
+.profile-v21-badges span {
+  border: 1px solid rgba(76, 201, 240, 0.34);
+  background: rgba(18, 26, 36, 0.74);
+  color: #f4f6f8;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  padding: 9px 10px;
+  text-transform: uppercase;
+}
+
+.profile-v21-badges span:first-child {
+  border-color: rgba(242, 182, 50, 0.7);
+  color: #f2b632;
+}
+
+.profile-v21-quote {
+  margin: 0;
+  border-left: 3px solid #b2122a;
+  color: #dce7ef;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(1.15rem, 2vw, 1.6rem);
+  font-weight: 700;
+  line-height: 1.25;
+  padding: 16px 0 16px 18px;
+}
+
+.profile-v21-topline {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1.28fr);
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.profile-v21-level-card,
+.profile-v21-season,
+.profile-v21-performance,
+.profile-v21-factions,
+.player-achievement-panel,
+.profile-v21-rivals,
+.profile-v21-activity,
+.profile-v21-army-lists,
+.profile-v21-notes {
+  border-color: rgba(76, 201, 240, 0.24);
+  border-radius: 0;
+  background:
+    linear-gradient(180deg, rgba(18, 26, 36, 0.94), rgba(7, 10, 14, 0.96)),
+    #121a24;
+}
+
+.profile-v21-level-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+}
+
+.profile-v21-level-mark {
+  display: grid;
+  width: 116px;
+  aspect-ratio: 1;
+  place-items: center;
+  clip-path: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0 50%);
+  background: linear-gradient(180deg, rgba(76, 201, 240, 0.28), rgba(178, 18, 42, 0.24));
+  color: #f4f6f8;
+}
+
+.profile-v21-level-mark span,
+.profile-v21-season dt,
+.profile-v21-stat-list dt,
+.profile-v21-faction-list span,
+.profile-v21-achievements span,
+.profile-v21-rival-list span,
+.profile-v21-activity-list span {
+  color: #aab7c2;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.profile-v21-level-mark strong {
+  display: block;
+  font-size: 3.4rem;
+  line-height: 0.8;
+}
+
+.profile-v21-progress {
+  height: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(76, 201, 240, 0.28);
+  background: rgba(5, 6, 8, 0.72);
+}
+
+.profile-v21-progress span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #4cc9f0, #f2b632);
+}
+
+.profile-v21-level-card p {
+  margin: 10px 0 0;
+  color: #aab7c2;
+  font-size: 0.88rem;
+}
+
+.profile-v21-season dl {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.profile-v21-season div,
+.profile-v21-stat-list div,
+.profile-v21-analysis div,
+.profile-v21-army-summary div,
+.profile-metric-list div {
+  border: 1px solid rgba(42, 59, 73, 0.82);
+  background: rgba(5, 6, 8, 0.34);
+  padding: 12px;
+}
+
+.profile-v21-season dd,
+.profile-v21-stat-list dd,
+.profile-v21-analysis dd,
+.profile-v21-army-summary dd,
+.profile-metric-list dd {
+  margin: 4px 0 0;
+  color: #f4f6f8;
+  font-weight: 900;
+}
+
+.profile-v21-shell {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr) minmax(280px, 360px);
+  gap: 18px;
+  align-items: start;
+  margin-top: 18px;
+}
+
+.profile-v21-nav {
+  position: sticky;
+  top: 84px;
+  display: grid;
+  gap: 6px;
+  border-left: 2px solid #4cc9f0;
+  padding-left: 12px;
+}
+
+.profile-v21-nav a {
+  color: #aab7c2;
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  padding: 9px 8px;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.profile-v21-nav a:hover,
+.profile-v21-nav a:focus-visible {
+  background: rgba(76, 201, 240, 0.12);
+  color: #f4f6f8;
+}
+
+.profile-v21-main,
+.profile-v21-aside {
+  display: grid;
+  gap: 18px;
+}
+
+.profile-v21-performance-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+}
+
+.profile-v21-performance svg {
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 1;
+}
+
+.profile-v21-radar-grid {
+  fill: rgba(76, 201, 240, 0.04);
+  stroke: rgba(76, 201, 240, 0.34);
+  stroke-width: 1;
+}
+
+.profile-v21-radar-fill {
+  fill: rgba(76, 201, 240, 0.28);
+  stroke: #4cc9f0;
+  stroke-width: 2;
+}
+
+.profile-v21-performance text {
+  fill: #aab7c2;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.profile-v21-stat-list,
+.profile-v21-analysis,
+.profile-v21-army-summary,
+.profile-metric-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.profile-v21-stat-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.profile-v21-analysis,
+.profile-v21-army-summary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 14px;
+}
+
+.profile-v21-faction-ring {
+  display: grid;
+  width: min(210px, 100%);
+  aspect-ratio: 1;
+  place-items: center;
+  margin: 4px auto 18px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, #121a24 0 53%, transparent 54%),
+    conic-gradient(#4cc9f0 0 var(--faction-share), rgba(76, 201, 240, 0.12) var(--faction-share) 100%);
+}
+
+.profile-v21-faction-ring strong {
+  color: #f4f6f8;
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.profile-v21-faction-ring span {
+  max-width: 130px;
+  color: #aab7c2;
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.profile-v21-faction-list,
+.profile-v21-achievements,
+.profile-v21-rival-list,
+.profile-v21-activity-list {
+  display: grid;
+  gap: 10px;
+}
+
+.profile-v21-faction-list div,
+.profile-v21-achievements article,
+.profile-v21-rival-list div,
+.profile-v21-activity-list div {
+  border: 1px solid rgba(42, 59, 73, 0.82);
+  background: rgba(5, 6, 8, 0.36);
+  padding: 12px;
+}
+
+.profile-v21-faction-list strong,
+.profile-v21-achievements strong,
+.profile-v21-rival-list strong,
+.profile-v21-activity-list strong {
+  display: block;
+  color: #f4f6f8;
+  font-weight: 900;
+}
+
+.profile-v21-faction-list small,
+.profile-v21-achievements small,
+.profile-v21-rival-list small,
+.profile-v21-activity-list small {
+  color: #aab7c2;
+}
+
+.profile-v21-achievements article.is-unlocked {
+  border-color: rgba(95, 227, 138, 0.48);
+}
+
+.profile-v21-achievements article.is-unlocked span {
+  color: #5fe38a;
+}
+
+.profile-v21-army-lists .army-list-mini-grid {
+  margin-top: 14px;
+}
+
+.profile-v21-notes .profile-action-link {
+  margin-top: 14px;
+}
+
+@media (max-width: 1180px) {
+  .profile-v21-hero-grid {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .profile-v21-quote {
+    grid-column: 1 / -1;
+  }
+
+  .profile-v21-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .profile-v21-nav {
+    position: static;
+    display: flex;
+    overflow-x: auto;
+    border-left: 0;
+    border-bottom: 1px solid rgba(76, 201, 240, 0.24);
+    padding: 0 0 10px;
+  }
+
+  .profile-v21-nav a {
+    flex: 0 0 auto;
+  }
+}
+
+@media (max-width: 840px) {
+  .profile-v21-hero-grid,
+  .profile-v21-topline,
+  .profile-v21-performance-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .profile-v21-portrait {
+    width: 144px;
+  }
+
+  .profile-v21-season dl,
+  .profile-v21-stat-list,
+  .profile-v21-analysis,
+  .profile-v21-army-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 540px) {
+  .profile-v21-hero {
+    min-height: 0;
+  }
+
+  .profile-v21-hero-grid {
+    padding: 22px;
+  }
+
+  .profile-v21-identity h1 {
+    font-size: clamp(3.2rem, 18vw, 5rem);
+  }
+
+  .profile-v21-season dl,
+  .profile-v21-stat-list,
+  .profile-v21-analysis,
+  .profile-v21-army-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .profile-v21-level-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .player-career-hero {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) minmax(180px, auto) minmax(220px, auto);

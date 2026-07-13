@@ -6,6 +6,8 @@ export type PlayerClassification =
   | 'League Player'
   | 'Tournament Player'
   | 'New Player'
+  | 'Veteran'
+  | 'Commissioner'
 
 export type PlayerStatusFilter =
   | 'all'
@@ -90,6 +92,14 @@ export function getProfileClassifications(
     classifications.push('New Player')
   }
 
+  if (career.records.league.games + career.records.tournament.games >= 50) {
+    classifications.push('Veteran')
+  }
+
+  if (hasCommissionerSignal(player)) {
+    classifications.push('Commissioner')
+  }
+
   return classifications
 }
 
@@ -149,4 +159,28 @@ function isActiveEventRegistration(
 
 function normalizeValue(value: string) {
   return value.trim().toLowerCase()
+}
+
+function hasCommissionerSignal(player: PlayerProfileData) {
+  const source = player as PlayerProfileData & {
+    isCommissioner?: boolean
+    permissions?: Record<string, boolean>
+    role?: string
+    roles?: string[]
+  }
+
+  if (source.isCommissioner) {
+    return true
+  }
+
+  if (source.permissions?.commissioner) {
+    return true
+  }
+
+  const roleNames = [
+    source.role ?? '',
+    ...(Array.isArray(source.roles) ? source.roles : []),
+  ].map(normalizeValue)
+
+  return roleNames.some((role) => role.includes('commissioner'))
 }
