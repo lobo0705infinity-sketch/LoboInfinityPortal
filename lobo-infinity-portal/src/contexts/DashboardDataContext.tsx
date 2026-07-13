@@ -7,7 +7,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { dashboardRepository } from '../services/data'
+import { dashboardRepository, standingsRepository } from '../services/data'
 import { analyticsRepository, gameRepository } from '../services/data'
 import type {
   ArmyList,
@@ -23,7 +23,7 @@ import type {
   StreamedGame,
 } from '../services/api'
 import { apiClient } from '../services/api'
-import type { DashboardData } from '../types/dashboard'
+import type { DashboardData, DivisionStandings } from '../types/dashboard'
 
 type DashboardDataContextValue = {
   home: HomeData | null
@@ -48,6 +48,7 @@ const intelligenceCache = createDashboardCache<LeagueIntelligenceData>()
 const recordsCache = createDashboardCache<Record<string, LeagueRecordValue>>()
 const hallOfFameCache = createDashboardCache<HallOfFameData>()
 const streamsCache = createDashboardCache<StreamedGame[]>()
+const allStandingsCache = createDashboardCache<DivisionStandings[]>()
 const armyListsCache = createDashboardCache<{
   community: ArmyListCommunitySummary
   lists: ArmyList[]
@@ -101,6 +102,12 @@ function loadHallOfFame() {
 
 function loadStreams() {
   return streamsCache.load('streams', () => apiClient.getStreams())
+}
+
+function loadAllStandings() {
+  return allStandingsCache.load('allStandings', () =>
+    standingsRepository.getAllStandings(),
+  )
 }
 
 function loadArmyLists() {
@@ -292,6 +299,7 @@ export function DashboardDataProvider({
 }
 
 type DashboardDeferredData = {
+  allStandings: DivisionStandings[]
   armyListCommunity: ArmyListCommunitySummary
   armyLists: ArmyList[]
   hallOfFame: HallOfFameData
@@ -371,6 +379,9 @@ async function loadDeferredDashboardData(
     loadStreams().then((streams) =>
       update((current) => ({ ...current, streams })),
     ),
+    loadAllStandings().then((allStandings) =>
+      update((current) => ({ ...current, allStandings })),
+    ),
     loadArmyLists().then((armyListData) =>
       update((current) => ({
         ...current,
@@ -386,6 +397,7 @@ function buildHomeData(
   deferred: DashboardDeferredData,
 ): HomeData {
   return {
+    allStandings: deferred.allStandings,
     armyListCommunity: deferred.armyListCommunity,
     armyLists: deferred.armyLists,
     dashboard,
@@ -409,6 +421,7 @@ function buildHomeData(
 
 function createEmptyDeferredData(): DashboardDeferredData {
   return {
+    allStandings: [],
     armyListCommunity: {
       highestRatedDesigner: null,
       mostListsSubmitted: [],

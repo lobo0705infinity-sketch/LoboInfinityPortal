@@ -381,8 +381,10 @@ export const firestoreProviderImpl: DataProvider = {
     },
     getHome: async () => {
       const dashboard = await firestoreProviderImpl.dashboard.getDashboard()
+      const allStandings = await firestoreProviderImpl.standings.getAllStandings()
 
       return {
+        allStandings,
         armyListCommunity: {
           highestRatedDesigner: null,
           mostListsSubmitted: [],

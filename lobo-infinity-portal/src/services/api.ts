@@ -739,6 +739,7 @@ export type SearchData = {
 
 export type HomeData = {
   dashboard: DashboardData
+  allStandings: DivisionStandings[]
   recentGames: RecentGame[]
   news: CommissionerNewsItem[]
   intelligence: LeagueIntelligenceData
@@ -3198,6 +3199,7 @@ function normalizeHomePayload(payload: unknown): HomeData {
 
   return {
     dashboard: normalizeDashboardPayload(getRequiredRecord(record, 'dashboard')),
+    allStandings: [],
     recentGames: getRequiredArray(record, 'recentGames').map(normalizeRecentGame),
     news: getRequiredArray(record, 'news').map(normalizeNewsItem),
     intelligence: getOptionalRecord(record, 'intelligence')
