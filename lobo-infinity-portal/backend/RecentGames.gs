@@ -31,29 +31,48 @@ const RECENT_GAME_ANALYTICS_COLUMNS = {
 function getRecentGames(e) {
 
   if (typeof getAllRecentGameObjects === "function")
-    return jsonOutput({
-      success: true,
-      games:
-        filterRecentGamesByGameId(
-          filterRecentGamesByEvent(
-            filterRecentGamesByPlayer(
-              getAllRecentGameObjects(),
-              e &&
-              e.parameter &&
-              e.parameter.playerName
-            ),
+  {
+    const filteredGames =
+      filterRecentGamesByGameId(
+        filterRecentGamesByEvent(
+          filterRecentGamesByPlayer(
+            getAllRecentGameObjects(),
             e &&
             e.parameter &&
-            e.parameter.eventId,
-            e &&
-            e.parameter &&
-            e.parameter.gameType
+            e.parameter.playerName
           ),
           e &&
           e.parameter &&
+          e.parameter.eventId,
+          e &&
+          e.parameter &&
+          e.parameter.gameType
+        ),
+        e &&
+        e.parameter &&
+        e.parameter.gameId
+      ).slice(0, RECENT_GAMES_LIMIT);
+
+    if (
+      filteredGames.length === 0 &&
+      e &&
+      e.parameter &&
+      e.parameter.gameId
+    ) {
+      const linkedNewsGame =
+        buildRecentGameFromLinkedNews(
           e.parameter.gameId
-        ).slice(0, RECENT_GAMES_LIMIT)
+        );
+
+      if (linkedNewsGame)
+        filteredGames.push(linkedNewsGame);
+    }
+
+    return jsonOutput({
+      success: true,
+      games: filteredGames
     });
+  }
 
   const sheet =
     SpreadsheetApp
@@ -161,6 +180,77 @@ function filterRecentGamesByGameId(games, gameId) {
   return games.filter(function(game) {
     return game.id === target;
   });
+
+}
+
+function buildRecentGameFromLinkedNews(gameId) {
+
+  const target =
+    Number(gameId);
+
+  if (
+    !Number.isInteger(target) ||
+    typeof getManualCommissionerNews !== "function"
+  )
+    return null;
+
+  const link =
+    "/games/" + target;
+
+  const item =
+    getManualCommissionerNews()
+      .filter(function(newsItem) {
+        return getRecentGameString(newsItem.link) === link;
+      })[0];
+
+  if (!item)
+    return null;
+
+  const parsed =
+    parseLinkedNewsGame(item.body);
+
+  if (!parsed)
+    return null;
+
+  return {
+    id: target,
+    eventId: EVENT_ENGINE_DEFAULT_EVENT_ID,
+    gameType: "league",
+    date: item.date || "",
+    division: "",
+    winner: parsed.winner,
+    winnerDisplayName: parsed.winner,
+    loser: parsed.loser,
+    loserDisplayName: parsed.loser,
+    winnerFaction: "",
+    loserFaction: "",
+    mission: parsed.mission,
+    tp: "",
+    op: parsed.op,
+    vp: "",
+    bestMoment: item.body || "",
+    firstTurn: ""
+  };
+
+}
+
+function parseLinkedNewsGame(body) {
+
+  const text =
+    getRecentGameString(body);
+
+  const match =
+    text.match(/^(.+?) defeated (.+?) on (.+?) with a (.+?) scoreline\.$/);
+
+  if (!match)
+    return null;
+
+  return {
+    winner: match[1],
+    loser: match[2],
+    mission: match[3],
+    op: match[4]
+  };
 
 }
 
