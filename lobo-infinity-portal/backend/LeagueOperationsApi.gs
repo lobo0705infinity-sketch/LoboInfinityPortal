@@ -44,16 +44,16 @@ function saveLeagueOperations(e) {
       getCanonicalMissionName(params.mission2);
 
     const mission1MapA =
-      getCanonicalMapName(params.mission1MapA);
+      getLeagueOperationsString(params.mission1MapA);
 
     const mission1MapB =
-      getCanonicalMapName(params.mission1MapB);
+      getLeagueOperationsString(params.mission1MapB);
 
     const mission2MapA =
-      getCanonicalMapName(params.mission2MapA);
+      getLeagueOperationsString(params.mission2MapA);
 
     const mission2MapB =
-      getCanonicalMapName(params.mission2MapB);
+      getLeagueOperationsString(params.mission2MapB);
 
     const missing = [];
 
@@ -161,8 +161,7 @@ function buildLeagueOperationsPayload(row) {
     ],
     updatedAt: getLeagueOperationsString(safeRow[7]),
     updatedBy: getLeagueOperationsString(safeRow[8]),
-    missionOptions: getCanonicalMissionsForOperations(),
-    mapOptions: getCanonicalMaps()
+    missionOptions: getCanonicalMissionsForOperations()
   };
 
 }

@@ -457,7 +457,6 @@ export const firestoreProviderImpl: DataProvider = {
       }
     },
     getLeagueOperations: async () => ({
-      mapOptions: [],
       missionOptions: [],
       missions: [
         { maps: ['', ''], mission: '' },

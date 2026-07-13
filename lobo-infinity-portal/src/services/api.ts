@@ -1204,7 +1204,6 @@ export type LeagueOperationsMission = {
 }
 
 export type LeagueOperationsData = {
-  mapOptions: string[]
   missionOptions: string[]
   missions: LeagueOperationsMission[]
   updatedAt: string
@@ -5039,7 +5038,6 @@ function normalizeLeagueOperationsData(value: unknown): LeagueOperationsData {
   const record = asRecord(value ?? {}, 'League operations')
 
   return {
-    mapOptions: getArray(record, 'mapOptions').map((item) => String(item ?? '')),
     missionOptions: getArray(record, 'missionOptions').map((item) =>
       String(item ?? ''),
     ),

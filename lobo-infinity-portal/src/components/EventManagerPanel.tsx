@@ -655,28 +655,26 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
                 options={data.leagueOperations.missionOptions}
                 value={leagueOperationsForm.mission1}
               />
-              <LeagueOperationsSelect
+              <LeagueOperationsMapInput
                 disabled={!canManage}
-                label="Mission 1 Map A"
+                label="Mission 1 Map 1"
                 onChange={(mission1MapA) =>
                   setLeagueOperationsForm((current) => ({
                     ...current,
                     mission1MapA,
                   }))
                 }
-                options={data.leagueOperations.mapOptions}
                 value={leagueOperationsForm.mission1MapA}
               />
-              <LeagueOperationsSelect
+              <LeagueOperationsMapInput
                 disabled={!canManage}
-                label="Mission 1 Map B"
+                label="Mission 1 Map 2"
                 onChange={(mission1MapB) =>
                   setLeagueOperationsForm((current) => ({
                     ...current,
                     mission1MapB,
                   }))
                 }
-                options={data.leagueOperations.mapOptions}
                 value={leagueOperationsForm.mission1MapB}
               />
               <LeagueOperationsSelect
@@ -688,28 +686,26 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
                 options={data.leagueOperations.missionOptions}
                 value={leagueOperationsForm.mission2}
               />
-              <LeagueOperationsSelect
+              <LeagueOperationsMapInput
                 disabled={!canManage}
-                label="Mission 2 Map A"
+                label="Mission 2 Map 1"
                 onChange={(mission2MapA) =>
                   setLeagueOperationsForm((current) => ({
                     ...current,
                     mission2MapA,
                   }))
                 }
-                options={data.leagueOperations.mapOptions}
                 value={leagueOperationsForm.mission2MapA}
               />
-              <LeagueOperationsSelect
+              <LeagueOperationsMapInput
                 disabled={!canManage}
-                label="Mission 2 Map B"
+                label="Mission 2 Map 2"
                 onChange={(mission2MapB) =>
                   setLeagueOperationsForm((current) => ({
                     ...current,
                     mission2MapB,
                   }))
                 }
-                options={data.leagueOperations.mapOptions}
                 value={leagueOperationsForm.mission2MapB}
               />
               <div className="event-manager-actions event-manager-wide">
@@ -913,6 +909,30 @@ function LeagueOperationsSelect({
           </option>
         ))}
       </select>
+    </label>
+  )
+}
+
+function LeagueOperationsMapInput({
+  disabled,
+  label,
+  onChange,
+  value,
+}: {
+  disabled: boolean
+  label: string
+  onChange: (value: string) => void
+  value: string
+}) {
+  return (
+    <label>
+      {label}
+      <input
+        disabled={disabled}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder="Enter map name"
+        value={value}
+      />
     </label>
   )
 }

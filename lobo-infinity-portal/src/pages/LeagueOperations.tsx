@@ -42,7 +42,6 @@ function LeagueOperations() {
     state.status === 'success'
       ? state.data
       : {
-          mapOptions: [],
           missionOptions: [],
           missions: [
             { maps: ['', ''], mission: '' },
