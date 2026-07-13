@@ -51,6 +51,7 @@ const checks = [
     label: 'Battle report endpoint can fetch a specific immutable game id',
     pass:
       recentGamesApi.includes('function filterRecentGamesByGameId(games, gameId)') &&
+      recentGamesApi.includes('getAllRecentGameObjects()') &&
       recentGamesApi.includes('game.id === target') &&
       recentGamesApi.includes('e.parameter.gameId'),
   },

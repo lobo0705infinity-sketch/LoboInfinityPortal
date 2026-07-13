@@ -30,6 +30,24 @@ const RECENT_GAME_ANALYTICS_COLUMNS = {
 
 function getRecentGames(e) {
 
+  const requestedGameId =
+    e &&
+    e.parameter &&
+    Number(e.parameter.gameId);
+
+  if (
+    Number.isInteger(requestedGameId) &&
+    typeof getAllRecentGameObjects === "function"
+  )
+    return jsonOutput({
+      success: true,
+      games:
+        getAllRecentGameObjects()
+          .filter(function(game) {
+            return game.id === requestedGameId;
+          })
+    });
+
   const sheet =
     SpreadsheetApp
       .getActive()
