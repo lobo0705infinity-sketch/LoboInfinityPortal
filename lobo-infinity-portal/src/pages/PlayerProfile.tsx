@@ -1,8 +1,8 @@
 import { useEffect, useState, type CSSProperties } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
+import CommandEmblem from '../components/CommandEmblem'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
-import loboCrest from '../assets/lobo-crest.svg'
 import { getArmyParentFaction } from '../config/armies'
 import { getCanonicalMissionName } from '../config/missions'
 import type {
@@ -191,9 +191,14 @@ function PlayerProfileDossier({
         aria-labelledby="player-title"
       >
         <div className="profile-v21-hero-grid">
-          <div className="profile-v21-portrait" aria-hidden="true">
-            <PlayerPortrait player={player} />
-          </div>
+          <CommandEmblem
+            classifications={classifications}
+            competitiveHome={homeLabel}
+            player={player}
+            preferredFaction={career.quickStats.mostPlayedArmy || player.favoriteFaction}
+            rank={player.rank}
+            showBadges={false}
+          />
           <div className="profile-v21-identity">
             <p className="eyebrow">Infinity Career Dossier</p>
             <h1 id="player-title">{displayName}</h1>
@@ -273,17 +278,6 @@ function CareerLevelCard({
         </p>
       </div>
     </section>
-  )
-}
-
-function PlayerPortrait({ player }: { player: PlayerProfileData }) {
-  return (
-    <img
-      alt=""
-      decoding="async"
-      loading="lazy"
-      src={player.profilePicture || loboCrest}
-    />
   )
 }
 
@@ -1651,6 +1645,11 @@ const playerProfileStyles = `
   padding: clamp(32px, 5vw, 72px);
 }
 
+.profile-v21-hero .command-emblem {
+  --command-emblem-size: clamp(250px, 28vw, 360px);
+  align-self: center;
+}
+
 .profile-v21-portrait {
   display: grid;
   width: clamp(240px, 25vw, 330px);
@@ -2181,6 +2180,10 @@ const playerProfileStyles = `
     width: min(54vw, 260px);
   }
 
+  .profile-v21-hero .command-emblem {
+    --command-emblem-size: min(62vw, 260px);
+  }
+
   .profile-v21-highlight {
     grid-column: 1 / -1;
   }
@@ -2205,6 +2208,10 @@ const playerProfileStyles = `
   .profile-v21-hero-grid {
     gap: 22px;
     padding: 26px 22px 34px;
+  }
+
+  .profile-v21-hero .command-emblem {
+    --command-emblem-size: min(66vw, 230px);
   }
 
   .profile-v21-identity h1 {

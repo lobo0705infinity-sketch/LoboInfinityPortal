@@ -1,0 +1,178 @@
+.command-emblem {
+  --emblem-accent: #4cc9f0;
+  --emblem-secondary: #f2b632;
+  --emblem-hostile: #b2122a;
+  display: grid;
+  width: var(--command-emblem-size, clamp(128px, 24vw, 256px));
+  gap: 10px;
+  justify-items: center;
+  color: #f4f6f8;
+}
+
+.command-emblem-mark {
+  position: relative;
+  display: grid;
+  width: 100%;
+  aspect-ratio: 1;
+  place-items: center;
+}
+
+.command-emblem-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.58));
+}
+
+.command-emblem-frame {
+  fill: rgba(5, 6, 8, 0.88);
+  stroke: rgba(170, 183, 194, 0.44);
+  stroke-width: 8;
+}
+
+.command-emblem-frame-inner {
+  fill: rgba(18, 26, 36, 0.86);
+  stroke: var(--emblem-accent);
+  stroke-width: 5;
+}
+
+.command-emblem-core {
+  fill: rgba(5, 6, 8, 0.7);
+  stroke: color-mix(in srgb, var(--emblem-accent) 72%, #f4f6f8);
+  stroke-width: 4;
+}
+
+.command-emblem-core-line {
+  fill: none;
+  stroke: var(--emblem-accent);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 7;
+}
+
+.command-emblem-core-fill {
+  fill: color-mix(in srgb, var(--emblem-accent) 28%, #f4f6f8);
+}
+
+.command-emblem-ring {
+  fill: none;
+  opacity: 0.98;
+  stroke-width: 8;
+  transform-origin: 128px 128px;
+}
+
+.command-emblem-ring.is-base {
+  stroke: rgba(76, 201, 240, 0.2);
+  stroke-width: 4;
+}
+
+.command-emblem-ring.is-league {
+  stroke: #4cc9f0;
+  stroke-dasharray: 86 436;
+  transform: rotate(-156deg);
+}
+
+.command-emblem-ring.is-tournament {
+  stroke: #b2122a;
+  stroke-dasharray: 74 448;
+  transform: rotate(-18deg);
+}
+
+.command-emblem-ring.is-veteran,
+.command-emblem-ring.is-commissioner,
+.command-emblem-ring.is-rank {
+  stroke: #f2b632;
+  stroke-dasharray: 58 464;
+  transform: rotate(95deg);
+}
+
+.command-emblem-node {
+  fill: rgba(18, 26, 36, 0.96);
+  stroke: currentColor;
+  stroke-width: 3;
+}
+
+.command-emblem-node.is-league {
+  color: #4cc9f0;
+}
+
+.command-emblem-node.is-tournament {
+  color: #b2122a;
+}
+
+.command-emblem-node.is-rank {
+  color: #f2b632;
+}
+
+.command-emblem-rank-text,
+.command-emblem-name-text,
+.command-emblem-faction-text {
+  fill: #f4f6f8;
+  font-family: Inter, system-ui, sans-serif;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-anchor: middle;
+  text-transform: uppercase;
+}
+
+.command-emblem-rank-text {
+  fill: #f2b632;
+  font-size: 15px;
+}
+
+.command-emblem-name-text {
+  font-size: 18px;
+}
+
+.command-emblem-faction-text {
+  fill: #4cc9f0;
+  font-size: 8px;
+}
+
+.command-emblem-home {
+  display: inline-flex;
+  max-width: 100%;
+  align-items: center;
+  border: 1px solid rgba(242, 182, 50, 0.52);
+  background: rgba(242, 182, 50, 0.08);
+  color: #f2b632;
+  font-size: clamp(0.68rem, 1.1vw, 0.82rem);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  padding: 8px 10px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.command-emblem-badges {
+  display: flex;
+  max-width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.command-emblem-badge {
+  gap: 6px;
+  border-radius: 0;
+}
+
+.command-emblem-badge i {
+  width: 7px;
+  aspect-ratio: 1;
+  background: currentColor;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+
+@media (max-width: 840px) {
+  .command-emblem {
+    --command-emblem-size: min(54vw, 192px);
+  }
+}
+
+@media (max-width: 540px) {
+  .command-emblem {
+    --command-emblem-size: min(56vw, 176px);
+  }
+}
