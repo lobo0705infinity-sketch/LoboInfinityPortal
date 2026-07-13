@@ -132,6 +132,8 @@ function DashboardContent({
     : hasAuthenticatedPlayer
       ? 'Division unavailable'
       : 'Sign in for player division'
+  const divisionValue =
+    currentPlayerStanding?.division || currentPlayerDivision?.divisionLabel || 'N/A'
 
   return (
     <main className="portal-shell dashboard-facelift">
@@ -206,7 +208,7 @@ function DashboardContent({
           icon="DIV"
           label="Your Division"
           meta={divisionMeta}
-          value={currentPlayerStanding?.division || 'N/A'}
+          value={divisionValue}
         />
       </section>
 
