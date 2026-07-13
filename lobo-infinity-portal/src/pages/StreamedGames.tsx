@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import Skeleton from '../components/Skeleton'
 import { filterCanonicalMissionNames } from '../config/missions'
 import { apiClient, type StreamedGame } from '../services/api'
@@ -19,6 +20,7 @@ type StreamsState =
 const emptyStreams: StreamedGame[] = []
 
 function StreamedGames() {
+  const [searchParams] = useSearchParams()
   const [streamsState, setStreamsState] = useState<StreamsState>({
     status: 'loading',
   })
@@ -37,12 +39,16 @@ function StreamedGames() {
         signal: controller.signal,
       })
       .then((streams) => {
+        const linkedStreamId = Number(searchParams.get('streamId')) || null
         setStreamsState({
           streams,
           status: 'success',
         })
         setSelectedStreamId(
-          streams.find((stream) => stream.featured)?.id ?? streams[0]?.id ?? null,
+          streams.find((stream) => stream.id === linkedStreamId)?.id ??
+            streams.find((stream) => stream.featured)?.id ??
+            streams[0]?.id ??
+            null,
         )
       })
       .catch((error: unknown) => {
@@ -60,7 +66,7 @@ function StreamedGames() {
     return () => {
       controller.abort()
     }
-  }, [])
+  }, [searchParams])
 
   const streams =
     streamsState.status === 'success' ? streamsState.streams : emptyStreams
@@ -280,6 +286,11 @@ function FeaturedStream({ stream }: { stream: StreamedGame }) {
         <a href={stream.youtubeUrl} rel="noreferrer" target="_blank">
           Open on YouTube
         </a>
+        {stream.gameId ? (
+          <a href={`/games/${stream.gameId}`}>
+            View Battle Report
+          </a>
+        ) : null}
       </div>
     </section>
   )

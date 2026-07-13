@@ -20,7 +20,9 @@ const STREAM_HEADERS = [
   "Platform",
   "Description",
   "Thumbnail URL",
-  "Active"
+  "Active",
+  "Battle Report ID",
+  "Stream Type"
 ];
 
 function getStreams() {
@@ -100,7 +102,9 @@ function getStreams() {
           platform: stream.platform,
           description: stream.description,
           thumbnailUrl: stream.thumbnailUrl,
-          active: stream.active
+          active: stream.active,
+          gameId: stream.gameId,
+          streamType: stream.streamType
         };
 
       });
@@ -226,7 +230,9 @@ function getStreamColumns(headers) {
     platform: getStreamColumn(headers, "Platform"),
     description: getStreamColumn(headers, "Description"),
     thumbnailUrl: getStreamColumn(headers, "Thumbnail URL"),
-    active: getStreamColumn(headers, "Active")
+    active: getStreamColumn(headers, "Active"),
+    gameId: getStreamColumn(headers, "Battle Report ID"),
+    streamType: getStreamColumn(headers, "Stream Type")
   };
 
 }
@@ -260,7 +266,9 @@ function buildStream(
     platform: getStreamString(row[columns.platform]),
     description: getStreamString(row[columns.description]),
     thumbnailUrl: getStreamString(row[columns.thumbnailUrl]),
-    active: getStreamActiveBoolean(row[columns.active])
+    active: getStreamActiveBoolean(row[columns.active]),
+    gameId: getStreamNumber(row[columns.gameId]),
+    streamType: getStreamString(row[columns.streamType]) || "Standalone Stream"
   };
 
   return enrichStreamFromRecentGames(stream);
@@ -282,6 +290,17 @@ function getStreamString(value) {
     return "";
 
   return String(value).trim();
+
+}
+
+function getStreamNumber(value) {
+
+  const numeric =
+    Number(value);
+
+  return Number.isFinite(numeric)
+    ? numeric
+    : 0;
 
 }
 
@@ -324,6 +343,28 @@ function isStreamYoutubeUrl(value) {
 }
 
 function enrichStreamFromRecentGames(stream) {
+
+  if (stream.gameId) {
+    const linkedGame =
+      getAllRecentGameObjects()
+        .filter(function(game) {
+          return Number(game.id) === Number(stream.gameId);
+        })[0];
+
+    if (linkedGame) {
+      stream.date = stream.date || linkedGame.date;
+      stream.division = linkedGame.division || stream.division;
+      stream.mission = linkedGame.mission || stream.mission;
+      stream.player1 = linkedGame.winner || stream.player1;
+      stream.player1Faction = linkedGame.winnerFaction || stream.player1Faction;
+      stream.player2 = linkedGame.loser || stream.player2;
+      stream.player2Faction = linkedGame.loserFaction || stream.player2Faction;
+      stream.title = stream.title || (stream.player1 + " vs " + stream.player2);
+    }
+
+    return stream;
+
+  }
 
   if (
     stream.player1Faction !== "" &&

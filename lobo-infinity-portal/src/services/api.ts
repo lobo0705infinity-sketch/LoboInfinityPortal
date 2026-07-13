@@ -1956,6 +1956,8 @@ export type IntegrityReport = {
 
 export type StreamedGame = {
   id: number
+  gameId: number
+  streamType: string
   date: string
   division: string
   mission: string
@@ -6478,6 +6480,8 @@ function normalizeStreamedGame(item: unknown): StreamedGame {
 
   return {
     id: getRequiredNumber(record, 'id'),
+    gameId: getNumber(record, 'gameId'),
+    streamType: getString(record, 'streamType'),
     date: getString(record, 'date'),
     division: getString(record, 'division'),
     mission: getString(record, 'mission'),

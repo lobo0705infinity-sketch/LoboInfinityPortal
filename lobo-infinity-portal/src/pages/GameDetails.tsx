@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
 import { getCanonicalMissionName } from '../config/missions'
-import { apiClient, type CommissionerNewsItem, type RecentGame } from '../services/api'
+import { apiClient, type CommissionerNewsItem, type RecentGame, type StreamedGame } from '../services/api'
 import {
   formatPlayerName,
 } from '../services/formatting'
@@ -17,6 +17,7 @@ type GameDetailsState =
       game: RecentGame
       gameId: number
       status: 'success'
+      stream: StreamedGame | null
     }
   | {
       gameId: number
@@ -50,7 +51,9 @@ function GameDetails() {
             game,
             gameId,
             status: 'success',
+            stream: null,
           })
+          void loadLinkedStream(gameId, controller.signal, setGameState)
           return
         }
 
@@ -62,7 +65,9 @@ function GameDetails() {
               game: linkedGame,
               gameId,
               status: 'success',
+              stream: null,
             })
+            void loadLinkedStream(gameId, controller.signal, setGameState)
             return
           }
 
@@ -123,7 +128,25 @@ function GameDetails() {
     return <GameNotFound />
   }
 
-  return <MatchReport game={gameState.game} />
+  return <MatchReport game={gameState.game} stream={gameState.stream} />
+}
+
+function loadLinkedStream(
+  gameId: number,
+  signal: AbortSignal,
+  setGameState: Dispatch<SetStateAction<GameDetailsState>>,
+) {
+  return apiClient
+    .getStreams({ signal })
+    .then((streams) => {
+      const stream = streams.find((candidate) => candidate.gameId === gameId) ?? null
+      setGameState((current) =>
+        current.status === 'success' && current.gameId === gameId
+          ? { ...current, stream }
+          : current,
+      )
+    })
+    .catch(() => undefined)
 }
 
 function buildNewsLinkedGame(gameId: number, news: CommissionerNewsItem[]): RecentGame | null {
@@ -169,7 +192,7 @@ function parseNewsLinkedGame(body: string) {
   }
 }
 
-function MatchReport({ game }: { game: RecentGame }) {
+function MatchReport({ game, stream }: { game: RecentGame; stream: StreamedGame | null }) {
   const firstTurnPlayer = formatGameParticipant(game, game.firstTurn)
   const mission = getCanonicalMissionName(game.mission)
 
@@ -240,6 +263,15 @@ function MatchReport({ game }: { game: RecentGame }) {
             <ScoreLane score={formatBattleReportScore(game.vp, 'VP')} />
           </div>
         </section>
+
+        {stream ? (
+          <section className="match-info-card" aria-labelledby="watch-battle-report-title">
+            <p className="eyebrow">Stream</p>
+            <h2 id="watch-battle-report-title">Watch Battle Report</h2>
+            <p>{stream.title || `${game.winner} vs ${game.loser}`}</p>
+            <Link to={`/streams?streamId=${stream.id}`}>Watch Battle Report</Link>
+          </section>
+        ) : null}
 
         <section className="battle-timeline" aria-labelledby="timeline-title">
           <div className="panel-heading">

@@ -8,6 +8,7 @@ import {
   type OperationsDashboardData,
   type OperationsNewsItem,
   type OperationsTimelineItem,
+  type RecentGame,
   type StreamedGame,
 } from '../services/api'
 
@@ -47,6 +48,8 @@ const defaultNews: OperationsNewsItem = {
 const defaultStream: StreamedGame = {
   id: 0,
   active: true,
+  gameId: 0,
+  streamType: 'Standalone Stream',
   date: '',
   description: '',
   division: '',
@@ -218,6 +221,7 @@ function CommunityManager() {
         <StreamsManager
           items={state.data.streams}
           onAction={runAction}
+          recentGames={state.data.summary.recentMatchSubmissions}
           workingAction={workingAction}
         />
         <AlertsManager
@@ -300,23 +304,61 @@ function NewsManager({
 function StreamsManager({
   items,
   onAction,
+  recentGames,
   workingAction,
 }: {
   items: StreamedGame[]
   onAction: ContentAction
+  recentGames: RecentGame[]
   workingAction: string
 }) {
   const [draft, setDraft] = useState(defaultStream)
+  const [gameQuery, setGameQuery] = useState('')
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     void onAction('saveStream', draft).then(() => setDraft(defaultStream))
   }
 
+  const gameOptions = filterGameOptions(recentGames, gameQuery)
+
   return (
     <section className="panel operations-panel">
       <PanelTitle count={items.length} eyebrow="Streams" title="Stream Manager" />
       <form className="operations-form" onSubmit={submit}>
+        <SelectInput
+          label="Stream Type"
+          onChange={(value) =>
+            setDraft({
+              ...draft,
+              gameId: value === 'Battle Report' ? draft.gameId : 0,
+              streamType: value,
+            })
+          }
+          options={['Battle Report', 'Standalone Stream']}
+          value={draft.streamType || 'Standalone Stream'}
+        />
+        {draft.streamType === 'Battle Report' ? (
+          <>
+            <Input
+              label="Search Battle Reports"
+              onChange={setGameQuery}
+              value={gameQuery}
+            />
+            <SelectInput
+              label="Battle Report"
+              onChange={(value) => {
+                const game = recentGames.find((candidate) => String(candidate.id) === value)
+                setDraft(game ? applyGameToStreamDraft(draft, game) : { ...draft, gameId: 0 })
+              }}
+              options={gameOptions.map((game) => ({
+                label: getGameOptionLabel(game),
+                value: String(game.id),
+              }))}
+              value={draft.gameId ? String(draft.gameId) : ''}
+            />
+          </>
+        ) : null}
         <Input label="Stream Title" onChange={(value) => setDraft({ ...draft, title: value })} value={draft.title} />
         <Input label="Streamer" onChange={(value) => setDraft({ ...draft, streamer: value })} value={draft.streamer} />
         <SelectInput
@@ -328,6 +370,22 @@ function StreamsManager({
         <Input label="URL" onChange={(value) => setDraft({ ...draft, youtubeUrl: value })} value={draft.youtubeUrl} />
         <Input label="Thumbnail" onChange={(value) => setDraft({ ...draft, thumbnailUrl: value })} value={draft.thumbnailUrl} />
         <Input label="Date" onChange={(value) => setDraft({ ...draft, date: value })} type="date" value={draft.date} />
+        {draft.streamType !== 'Battle Report' ? (
+          <>
+            <Input label="Player 1" onChange={(value) => setDraft({ ...draft, player1: value })} value={draft.player1} />
+            <Input label="Player 1 Army" onChange={(value) => setDraft({ ...draft, player1Faction: value })} value={draft.player1Faction} />
+            <Input label="Player 2" onChange={(value) => setDraft({ ...draft, player2: value })} value={draft.player2} />
+            <Input label="Player 2 Army" onChange={(value) => setDraft({ ...draft, player2Faction: value })} value={draft.player2Faction} />
+            <Input label="Mission" onChange={(value) => setDraft({ ...draft, mission: value })} value={draft.mission} />
+            <Input label="Division" onChange={(value) => setDraft({ ...draft, division: value })} value={draft.division} />
+          </>
+        ) : (
+          <div className="operations-form-wide operations-empty">
+            {draft.gameId
+              ? `${draft.player1} (${draft.player1Faction}) vs ${draft.player2} (${draft.player2Faction}) / ${draft.mission} / ${draft.division}`
+              : 'Select a Battle Report to populate matchup fields.'}
+          </div>
+        )}
         <Textarea label="Description" onChange={(value) => setDraft({ ...draft, description: value })} value={draft.description} />
         <Checkbox label="Featured / Pin" onChange={(value) => setDraft({ ...draft, featured: value })} value={draft.featured} />
         <Checkbox label="Active" onChange={(value) => setDraft({ ...draft, active: value })} value={draft.active} />
@@ -340,7 +398,10 @@ function StreamsManager({
         items={items}
         onDelete={(id) => onAction('deleteStream', { id })}
         onEdit={setDraft}
-        renderDetail={(item) => item.description || item.youtubeUrl}
+        renderDetail={(item) =>
+          item.description ||
+          `${item.player1 || 'Player 1'} vs ${item.player2 || 'Player 2'}`
+        }
         renderMeta={(item) =>
           getStatusLine([
             item.platform,
@@ -513,7 +574,7 @@ function SelectInput({
 }: {
   label: string
   onChange: (value: string) => void
-  options: string[]
+  options: Array<string | { label: string; value: string }>
   value: string
 }) {
   return (
@@ -521,14 +582,69 @@ function SelectInput({
       <span>{label}</span>
       <select onChange={(event) => onChange(event.target.value)} value={value}>
         <option value="">Select</option>
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
+        {options.map((option) => {
+          const value = typeof option === 'string' ? option : option.value
+          const label = typeof option === 'string' ? option : option.label
+
+          return (
+            <option key={value} value={value}>
+              {label}
+            </option>
+          )
+        })}
       </select>
     </label>
   )
+}
+
+function filterGameOptions(games: RecentGame[], query: string) {
+  const normalizedQuery = query.trim().toLowerCase()
+
+  if (!normalizedQuery) {
+    return games
+  }
+
+  return games.filter((game) =>
+    [
+      String(game.id),
+      game.winner,
+      game.winnerDisplayName,
+      game.loser,
+      game.loserDisplayName,
+      game.winnerFaction,
+      game.loserFaction,
+      game.mission,
+      game.division,
+      game.date,
+    ]
+      .join(' ')
+      .toLowerCase()
+      .includes(normalizedQuery),
+  )
+}
+
+function getGameOptionLabel(game: RecentGame) {
+  return `#${game.id} ${game.winnerDisplayName || game.winner} vs ${
+    game.loserDisplayName || game.loser
+  } / ${game.mission} / ${game.division || 'No division'}`
+}
+
+function applyGameToStreamDraft(draft: StreamedGame, game: RecentGame): StreamedGame {
+  return {
+    ...draft,
+    date: game.date,
+    division: game.division,
+    gameId: game.id,
+    mission: game.mission,
+    player1: game.winnerDisplayName || game.winner,
+    player1Faction: game.winnerFaction,
+    player2: game.loserDisplayName || game.loser,
+    player2Faction: game.loserFaction,
+    streamType: 'Battle Report',
+    title:
+      draft.title ||
+      `${game.winnerDisplayName || game.winner} vs ${game.loserDisplayName || game.loser}`,
+  }
 }
 
 function Textarea({

@@ -644,7 +644,9 @@ function saveOperationsStream(e) {
       params.platform || "",
       params.description || "",
       params.thumbnailUrl || params.thumbnail || "",
-      getOperationsVisibleBoolean(params.active)
+      getOperationsVisibleBoolean(params.active),
+      params.gameId || params.battleReportId || "",
+      params.streamType || (params.gameId ? "Battle Report" : "Standalone Stream")
     ];
 
   const rowNumber =
@@ -1877,7 +1879,9 @@ function getOperationsStreams() {
         platform: stream.platform,
         description: stream.description,
         thumbnailUrl: stream.thumbnailUrl,
-        active: stream.active
+        active: stream.active,
+        gameId: stream.gameId,
+        streamType: stream.streamType
       };
 
     })
