@@ -891,11 +891,411 @@ function getPlayer(e) {
         availability.preferredLocations,
 
       scheduleLink:
-        "/match-finder?opponent=" + encodeURIComponent(registeredPlayer.player)
+        "/match-finder?opponent=" + encodeURIComponent(registeredPlayer.player),
+
+      careerSummary:
+        buildPlayerCareerSummary(
+          registeredPlayer.player
+        )
 
     }
 
   });
+
+}
+
+function buildPlayerCareerSummary(playerName) {
+
+  const target =
+    getCommunityPlayerKey(playerName);
+  const rows =
+    getLeagueDataForEvent(
+      "all",
+      "all"
+    )
+      .filter(function(row) {
+        return getCommunityPlayerKey(row[CONFIG.ENGINE.PLAYER]) === target;
+      })
+      .map(buildPlayerCareerGame)
+      .filter(function(game) {
+        return game.player !== "";
+      });
+
+  const sorted =
+    rows
+      .slice()
+      .sort(sortPlayerCareerGamesNewestFirst);
+
+  const overall =
+    buildPlayerCareerRecord(rows);
+  const records =
+    {
+      overall: overall,
+      league:
+        buildPlayerCareerRecordByType(
+          rows,
+          "league"
+        ),
+      tournament:
+        buildPlayerCareerRecordByType(
+          rows,
+          "tournament"
+        ),
+      casual:
+        buildPlayerCareerRecordByType(
+          rows,
+          "casual"
+        )
+    };
+  const armyMetrics =
+    buildPlayerCareerGroupMetrics(
+      rows,
+      "army",
+      1
+    );
+  const missionMetrics =
+    buildPlayerCareerGroupMetrics(
+      rows,
+      "mission",
+      3
+    );
+
+  return {
+    totalGames: overall.games,
+    wins: overall.wins,
+    losses: overall.losses,
+    winPercentage: overall.winPercentage,
+    currentWinStreak:
+      getPlayerCareerCurrentWinStreak(sorted),
+    longestWinStreak:
+      getPlayerCareerLongestWinStreak(rows),
+    gamesThisMonth:
+      getPlayerCareerGamesThisMonth(rows),
+    records: records,
+    armies: armyMetrics,
+    missions: missionMetrics,
+    quickStats: {
+      highestVpGame:
+        getPlayerCareerHighestValue(
+          rows,
+          "vp"
+        ),
+      biggestVictory:
+        getPlayerCareerHighestValue(
+          rows.filter(function(game) {
+            return game.result === "W";
+          }),
+          "vp"
+        ),
+      mostPlayedArmy:
+        armyMetrics.favorite.label,
+      mostPlayedMission:
+        missionMetrics.favorite.label
+    }
+  };
+
+}
+
+function buildPlayerCareerGame(row) {
+
+  const gameType =
+    typeof getGameEngineGameType === "function"
+      ? getGameEngineGameType(row)
+      : normalizeGameType(row[CONFIG.ENGINE.GAME_TYPE]);
+
+  const dateValue =
+    getCommunityDateValue(row[CONFIG.ENGINE.DATE]);
+
+  return {
+    player:
+      getCommunityPlayerRegistryString(row[CONFIG.ENGINE.PLAYER]),
+    result:
+      getCommunityPlayerRegistryString(row[CONFIG.ENGINE.RESULT]),
+    gameType: gameType || "league",
+    army:
+      canonicalizeArmyName(row[CONFIG.ENGINE.FACTION]),
+    mission:
+      getCommunityPlayerRegistryString(row[CONFIG.ENGINE.MISSION]),
+    date:
+      getCommunityPlayerRegistryString(row[CONFIG.ENGINE.DATE]),
+    dateValue: dateValue,
+    tp:
+      Number(row[CONFIG.ENGINE.TP]) || 0,
+    op:
+      Number(row[CONFIG.ENGINE.OP]) || 0,
+    vp:
+      Number(row[CONFIG.ENGINE.VP]) || 0
+  };
+
+}
+
+function buildPlayerCareerRecordByType(rows, gameType) {
+
+  return buildPlayerCareerRecord(
+    rows.filter(function(game) {
+      return game.gameType === gameType;
+    })
+  );
+
+}
+
+function buildPlayerCareerRecord(rows) {
+
+  const wins =
+    rows.filter(function(game) {
+      return game.result === "W";
+    }).length;
+  const losses =
+    rows.filter(function(game) {
+      return game.result === "L";
+    }).length;
+  const games =
+    wins + losses;
+
+  return {
+    games: games,
+    wins: wins,
+    losses: losses,
+    winPercentage:
+      games === 0
+        ? 0
+        : Math.round(
+            (wins / games) * 100
+          )
+  };
+
+}
+
+function buildPlayerCareerGroupMetrics(rows, field, bestMinimumGames) {
+
+  const groups = {};
+
+  rows.forEach(function(game) {
+    const label =
+      field === "army"
+        ? game.army
+        : game.mission;
+
+    if (!label)
+      return;
+
+    if (!groups[label])
+      groups[label] = {
+        label: label,
+        rows: []
+      };
+
+    groups[label].rows.push(game);
+  });
+
+  const metrics =
+    Object.keys(groups)
+      .map(function(label) {
+        return buildPlayerCareerMetric(
+          label,
+          groups[label].rows
+        );
+      });
+
+  const favorite =
+    metrics
+      .slice()
+      .sort(sortPlayerCareerFavoriteMetric)[0] ||
+    buildEmptyPlayerCareerMetric();
+  const best =
+    metrics
+      .filter(function(metric) {
+        return metric.games >= bestMinimumGames;
+      })
+      .sort(sortPlayerCareerBestMetric)[0] ||
+    buildEmptyPlayerCareerMetric(
+      bestMinimumGames > 1
+    );
+  const mostRecent =
+    metrics
+      .slice()
+      .sort(sortPlayerCareerRecentMetric)[0] ||
+    buildEmptyPlayerCareerMetric();
+
+  return {
+    favorite: favorite,
+    best: best,
+    mostRecent: mostRecent
+  };
+
+}
+
+function buildPlayerCareerMetric(label, rows) {
+
+  const record =
+    buildPlayerCareerRecord(rows);
+  const recent =
+    rows
+      .slice()
+      .sort(sortPlayerCareerGamesNewestFirst)[0] ||
+    {};
+
+  return {
+    label: label,
+    games: record.games,
+    wins: record.wins,
+    losses: record.losses,
+    winPercentage: record.winPercentage,
+    lastPlayed:
+      recent.date || ""
+  };
+
+}
+
+function buildEmptyPlayerCareerMetric(insufficientGames) {
+
+  return {
+    label: "",
+    games: 0,
+    wins: 0,
+    losses: 0,
+    winPercentage: 0,
+    lastPlayed: "",
+    insufficientGames: insufficientGames === true
+  };
+
+}
+
+function sortPlayerCareerFavoriteMetric(a, b) {
+
+  if (b.games !== a.games)
+    return b.games - a.games;
+
+  if (b.wins !== a.wins)
+    return b.wins - a.wins;
+
+  return comparePlayerCareerDates(
+    b.lastPlayed,
+    a.lastPlayed
+  );
+
+}
+
+function sortPlayerCareerBestMetric(a, b) {
+
+  if (b.winPercentage !== a.winPercentage)
+    return b.winPercentage - a.winPercentage;
+
+  if (b.wins !== a.wins)
+    return b.wins - a.wins;
+
+  if (b.games !== a.games)
+    return b.games - a.games;
+
+  return comparePlayerCareerDates(
+    b.lastPlayed,
+    a.lastPlayed
+  );
+
+}
+
+function sortPlayerCareerRecentMetric(a, b) {
+
+  return comparePlayerCareerDates(
+    b.lastPlayed,
+    a.lastPlayed
+  );
+
+}
+
+function sortPlayerCareerGamesNewestFirst(a, b) {
+
+  if (b.dateValue !== a.dateValue)
+    return b.dateValue - a.dateValue;
+
+  return 0;
+
+}
+
+function comparePlayerCareerDates(a, b) {
+
+  return getCommunityDateValue(a) - getCommunityDateValue(b);
+
+}
+
+function getPlayerCareerCurrentWinStreak(rows) {
+
+  let streak = 0;
+
+  for (
+    let index = 0;
+    index < rows.length;
+    index++
+  ) {
+    if (rows[index].result !== "W")
+      break;
+
+    streak++;
+  }
+
+  return streak;
+
+}
+
+function getPlayerCareerLongestWinStreak(rows) {
+
+  const sorted =
+    rows
+      .slice()
+      .sort(function(a, b) {
+        return a.dateValue - b.dateValue;
+      });
+  let current = 0;
+  let longest = 0;
+
+  sorted.forEach(function(game) {
+    if (game.result === "W") {
+      current++;
+      longest =
+        Math.max(
+          longest,
+          current
+        );
+      return;
+    }
+
+    current = 0;
+  });
+
+  return longest;
+
+}
+
+function getPlayerCareerGamesThisMonth(rows) {
+
+  const now =
+    new Date();
+  const year =
+    now.getFullYear();
+  const month =
+    now.getMonth();
+
+  return rows.filter(function(game) {
+    if (!game.dateValue)
+      return false;
+
+    const date =
+      new Date(game.dateValue);
+
+    return date.getFullYear() === year &&
+      date.getMonth() === month;
+  }).length;
+
+}
+
+function getPlayerCareerHighestValue(rows, field) {
+
+  return rows.reduce(function(highest, game) {
+    return Math.max(
+      highest,
+      Number(game[field]) || 0
+    );
+  }, 0);
 
 }
 

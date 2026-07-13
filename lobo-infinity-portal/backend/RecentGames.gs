@@ -60,6 +60,7 @@ function getRecentGames(e) {
 
   const games =
     filterRecentGamesByEvent(
+      filterRecentGamesByPlayer(
       values
       .map(function(row, index) {
 
@@ -79,6 +80,10 @@ function getRecentGames(e) {
         );
 
       }),
+      e &&
+      e.parameter &&
+      e.parameter.playerName
+      ),
       e &&
       e.parameter &&
       e.parameter.eventId,
@@ -111,6 +116,26 @@ function getRecentGames(e) {
   return jsonOutput({
     success: true,
     games: games
+  });
+
+}
+
+function filterRecentGamesByPlayer(games, playerName) {
+
+  const target =
+    getRecentGameString(playerName)
+      .toLowerCase();
+
+  if (target === "")
+    return games;
+
+  return games.filter(function(game) {
+    return (
+      getRecentGameString(game.winner).toLowerCase() === target ||
+      getRecentGameString(game.loser).toLowerCase() === target ||
+      getRecentGameString(getPlayerDisplayName(game.winner)).toLowerCase() === target ||
+      getRecentGameString(getPlayerDisplayName(game.loser)).toLowerCase() === target
+    );
   });
 
 }

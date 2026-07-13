@@ -27,6 +27,7 @@ import type {
   MissionSummary,
   MyProfileData,
   PlayerComparisonData,
+  PlayerCareerSummary,
   PlayerProfileData,
   RecentGame,
   SchedulingCenterData,
@@ -966,6 +967,7 @@ function normalizeRecentGame(id: string, data: DocumentData): RecentGame {
     division: readString(data, 'division'),
     eventId: readString(data, 'eventId') || defaultEventId,
     firstTurn: readString(data, 'firstTurn'),
+    gameType: readString(data, 'gameType') || 'league',
     id: Number(id) || readNumber(data, 'id'),
     loser: readString(data, 'loser'),
     loserDisplayName: readString(data, 'loserDisplayName'),
@@ -1461,6 +1463,7 @@ function emptyPlayerProfile(playerName: string): PlayerProfileData {
     armyLists: [],
     availability: emptyAvailability(),
     bestFaction: '',
+    careerSummary: emptyPlayerCareerSummary(),
     city: '',
     discordHandle: '',
     division: '',
@@ -1487,6 +1490,55 @@ function emptyPlayerProfile(playerName: string): PlayerProfileData {
     vp: 0,
     wins: 0,
     displayName: playerName,
+  }
+}
+
+function emptyPlayerCareerSummary(): PlayerCareerSummary {
+  const record = {
+    games: 0,
+    losses: 0,
+    winPercentage: 0,
+    wins: 0,
+  }
+  const metric = {
+    ...record,
+    label: '',
+    lastPlayed: '',
+  }
+
+  return {
+    armies: {
+      best: metric,
+      favorite: metric,
+      mostRecent: metric,
+    },
+    currentWinStreak: 0,
+    gamesThisMonth: 0,
+    longestWinStreak: 0,
+    losses: 0,
+    missions: {
+      best: {
+        ...metric,
+        insufficientGames: true,
+      },
+      favorite: metric,
+      mostRecent: metric,
+    },
+    quickStats: {
+      biggestVictory: 0,
+      highestVpGame: 0,
+      mostPlayedArmy: '',
+      mostPlayedMission: '',
+    },
+    records: {
+      casual: record,
+      league: record,
+      overall: record,
+      tournament: record,
+    },
+    totalGames: 0,
+    winPercentage: 0,
+    wins: 0,
   }
 }
 

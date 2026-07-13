@@ -327,6 +327,7 @@ export type PlayerProfileData = {
   homeStore: string
   preferredLocations: string
   scheduleLink: string
+  careerSummary?: PlayerCareerSummary
   armyLists: ArmyList[]
   armyListSummary: PlayerArmyListSummary
   registeredEvents: Array<{
@@ -341,8 +342,54 @@ export type PlayerProfileData = {
   }>
 }
 
+export type PlayerRecordSummary = {
+  games: number
+  wins: number
+  losses: number
+  winPercentage: number
+}
+
+export type PlayerCareerMetric = PlayerRecordSummary & {
+  label: string
+  lastPlayed: string
+  insufficientGames?: boolean
+}
+
+export type PlayerCareerSummary = {
+  totalGames: number
+  wins: number
+  losses: number
+  winPercentage: number
+  currentWinStreak: number
+  longestWinStreak: number
+  gamesThisMonth: number
+  records: {
+    overall: PlayerRecordSummary
+    league: PlayerRecordSummary
+    tournament: PlayerRecordSummary
+    casual: PlayerRecordSummary
+  }
+  armies: {
+    favorite: PlayerCareerMetric
+    best: PlayerCareerMetric
+    mostRecent: PlayerCareerMetric
+  }
+  missions: {
+    favorite: PlayerCareerMetric
+    best: PlayerCareerMetric
+    mostRecent: PlayerCareerMetric
+  }
+  quickStats: {
+    highestVpGame: number
+    biggestVictory: number
+    mostPlayedArmy: string
+    mostPlayedMission: string
+  }
+}
+
 export type RecentGame = {
   eventId: string
+  gameType?: string
   id: number
   date: string
   division: string
