@@ -23,7 +23,6 @@ import {
   formatDivisionLabel,
   getDivisionStyle,
 } from '../utils/divisions'
-import playerProfileConcept from '../../docs/design/Player Profile/player-profile-concept-v2.1.png'
 
 type ProfileState =
   | {
@@ -190,12 +189,6 @@ function PlayerProfileDossier({
         style={getDivisionStyle(player.division)}
         aria-labelledby="player-title"
       >
-        <img
-          alt=""
-          className="profile-v21-art"
-          loading="lazy"
-          src={playerProfileConcept}
-        />
         <div className="profile-v21-hero-grid">
           <div className="profile-v21-portrait" aria-hidden="true">
             {player.profilePicture ? (
@@ -1557,20 +1550,11 @@ const playerProfileStyles = `
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--division-accent, #4cc9f0) 52%, #2a3b49);
   background:
-    linear-gradient(115deg, rgba(5, 6, 8, 0.96) 0%, rgba(10, 16, 24, 0.9) 46%, rgba(178, 18, 42, 0.24) 100%),
+    radial-gradient(circle at 18% 50%, rgba(76, 201, 240, 0.2), transparent 24%),
+    radial-gradient(circle at 78% 42%, rgba(178, 18, 42, 0.24), transparent 30%),
+    linear-gradient(115deg, rgba(5, 6, 8, 0.98) 0%, rgba(10, 16, 24, 0.94) 46%, rgba(178, 18, 42, 0.2) 100%),
     #050608;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
-}
-
-.profile-v21-art {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  opacity: 0.16;
-  filter: saturate(1.12) contrast(1.08);
 }
 
 .profile-v21-hero::after {
