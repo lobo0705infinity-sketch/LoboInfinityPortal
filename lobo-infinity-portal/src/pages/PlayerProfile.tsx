@@ -1546,7 +1546,7 @@ function formatMissionMetric(value: string) {
 const playerProfileStyles = `
 .profile-v21-hero {
   position: relative;
-  min-height: clamp(520px, 56vw, 720px);
+  min-height: clamp(460px, 48vw, 620px);
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--division-accent, #4cc9f0) 58%, #2a3b49);
   background:
@@ -1577,12 +1577,12 @@ const playerProfileStyles = `
   gap: clamp(28px, 5vw, 72px);
   align-items: center;
   min-height: inherit;
-  padding: clamp(36px, 6vw, 88px);
+  padding: clamp(32px, 5vw, 72px);
 }
 
 .profile-v21-portrait {
   display: grid;
-  width: clamp(260px, 28vw, 360px);
+  width: clamp(240px, 25vw, 330px);
   aspect-ratio: 1;
   place-items: center;
   overflow: hidden;
@@ -1606,7 +1606,7 @@ const playerProfileStyles = `
 .profile-v21-portrait span {
   color: #f4f6f8;
   font-family: 'Bebas Neue', 'Rajdhani', sans-serif;
-  font-size: clamp(7rem, 16vw, 12rem);
+  font-size: clamp(6.4rem, 15vw, 11rem);
   line-height: 1;
 }
 
@@ -1620,7 +1620,7 @@ const playerProfileStyles = `
   margin: 0;
   color: #f4f6f8;
   font-family: 'Bebas Neue', 'Rajdhani', sans-serif;
-  font-size: clamp(5.8rem, 11vw, 9.75rem);
+  font-size: clamp(5.6rem, 10vw, 9.2rem);
   font-weight: 900;
   letter-spacing: 0;
   line-height: 0.78;
