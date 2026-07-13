@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "npm run security:cache && npm run security:armies && tsc -b && vite build",
+    "build": "npm run security:cache && npm run security:armies && npm run test:achievements && tsc -b && vite build",
     "analyze": "npm run build && node scripts/bundle-report.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -18,6 +18,7 @@
     "team-tournament:routing": "node scripts/team-tournament-routing-check.mjs",
     "test:submit-game": "node --experimental-strip-types scripts/submit-game-identity-check.ts",
     "test:notifications": "node --experimental-strip-types scripts/notification-timestamp-check.ts",
+    "test:achievements": "node scripts/achievement-rules-check.mjs",
     "test:player-registry": "node scripts/player-registry-context-check.mjs",
     "test:player-identity": "node scripts/player-identity-check.mjs",
     "rules:check": "node scripts/firestore-rules-check.mjs",

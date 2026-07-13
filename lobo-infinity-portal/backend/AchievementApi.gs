@@ -37,6 +37,9 @@ const ACHIEVEMENT_VISIBILITY = {
   HIDDEN: "Hidden"
 };
 
+const ACHIEVEMENT_CACHE_VERSION = "v2";
+const ACHIEVEMENT_PERFECT_CONTROL_ID = "hidden-perfect-control";
+
 function getAchievements(e) {
 
   const parameters =
@@ -160,6 +163,84 @@ function rebuildAchievements(e) {
 
 }
 
+function repairPerfectControlAchievements() {
+
+  const report =
+    auditPerfectControlAchievements(true);
+
+  invalidateAchievementCaches("");
+
+  return report;
+
+}
+
+function auditPerfectControlAchievements(removeInvalid) {
+
+  const rows =
+    getPerfectControlAchievementRows();
+
+  const invalidRows = [];
+
+  const holders =
+    rows.map(function(entry) {
+
+      const objectiveGames =
+        getAchievementPlayerObjectiveGames(entry.record.player);
+
+      const perfectGame =
+        objectiveGames.filter(function(game) {
+          return game.objectivePoints === 10;
+        })[0] || null;
+
+      const highestGame =
+        getHighestAchievementObjectiveGame(objectiveGames);
+
+      const valid =
+        Boolean(perfectGame);
+
+      if (!valid)
+        invalidRows.push(entry.row);
+
+      const evidence =
+        perfectGame || highestGame || {
+          date: "",
+          mission: "",
+          objectivePoints: 0
+        };
+
+      return {
+        player: entry.record.player,
+        date: evidence.date,
+        mission: evidence.mission,
+        objectivePoints: evidence.objectivePoints,
+        valid: valid,
+        revoked: Boolean(removeInvalid && !valid)
+      };
+
+    });
+
+  if (removeInvalid) {
+    const sheet =
+      getAchievementsSheet();
+
+    invalidRows
+      .sort(function(a, b) {
+        return b - a;
+      })
+      .forEach(function(row) {
+        sheet.deleteRow(row);
+      });
+  }
+
+  return {
+    success: true,
+    achievementId: ACHIEVEMENT_PERFECT_CONTROL_ID,
+    holders: holders,
+    revoked: removeInvalid ? invalidRows.length : 0
+  };
+
+}
+
 function buildLeaguePlayerAchievements(playerName) {
 
   const player =
@@ -185,6 +266,12 @@ function buildLeaguePlayerAchievements(playerName) {
 
   const recordMap =
     buildAchievementRecordMap(records);
+
+  revokeInvalidPerfectControlAchievementForPlayer(
+    player,
+    metrics,
+    recordMap
+  );
 
   definitions.forEach(function(definition) {
 
@@ -795,7 +882,7 @@ function getAchievementDefinitions() {
       150
     ),
     buildHiddenAchievementDefinition(
-      "hidden-perfect-control",
+      ACHIEVEMENT_PERFECT_CONTROL_ID,
       "Perfect Control",
       "Unlock this hidden achievement by recording a perfect OP game.",
       "Hidden Achievements",
@@ -803,7 +890,11 @@ function getAchievementDefinitions() {
       "lock",
       75,
       function(metrics) {
-        return buildAchievementThreshold(metrics.highestOP, 6);
+        return buildAchievementResult(
+          Number(metrics.perfectControlGames) > 0,
+          Number(metrics.perfectControlGames) > 0 ? 100 : 0,
+          "league-data"
+        );
       }
     )
   ];
@@ -976,6 +1067,7 @@ function buildAchievementMetrics(playerName) {
     highestTP: 0,
     highestOP: 0,
     highestVP: 0,
+    perfectControlGames: 0,
     longestWinStreak: 0,
     currentWinStreak: 0,
     mostFactionGames: 0,
@@ -1017,23 +1109,11 @@ function buildAchievementMetrics(playerName) {
       const mission =
         getAuthString(game.mission);
 
-      const tp =
-        getAchievementPlayerScore(game.tp, won);
-
-      const op =
-        getAchievementPlayerScore(game.op, won);
-
-      const vp =
-        getAchievementPlayerScore(game.vp, won);
-
-      metrics.highestTP =
-        Math.max(metrics.highestTP, tp);
-
-      metrics.highestOP =
-        Math.max(metrics.highestOP, op);
-
-      metrics.highestVP =
-        Math.max(metrics.highestVP, vp);
+      updateAchievementScoreMetrics(
+        metrics,
+        game,
+        won
+      );
 
       if (faction !== "") {
         factionGames[faction] =
@@ -1093,6 +1173,38 @@ function buildAchievementMetrics(playerName) {
     Object.keys(uniqueMissionWins).length;
 
   return metrics;
+
+}
+
+function updateAchievementScoreMetrics(metrics, game, won) {
+
+  const tp =
+    getAchievementPlayerScore(game.tp, won);
+
+  const op =
+    getAchievementPlayerScore(game.op, won);
+
+  const vp =
+    getAchievementPlayerScore(game.vp, won);
+
+  metrics.highestTP =
+    Math.max(metrics.highestTP, tp);
+
+  metrics.highestOP =
+    Math.max(metrics.highestOP, op);
+
+  metrics.highestVP =
+    Math.max(metrics.highestVP, vp);
+
+  if (op === 10)
+    metrics.perfectControlGames =
+      (Number(metrics.perfectControlGames) || 0) + 1;
+
+  return {
+    tp: tp,
+    op: op,
+    vp: vp
+  };
 
 }
 
@@ -1439,6 +1551,160 @@ function buildAchievementRecordMap(records) {
 
 }
 
+function revokeInvalidPerfectControlAchievementForPlayer(player, metrics, recordMap) {
+
+  if (!recordMap[ACHIEVEMENT_PERFECT_CONTROL_ID])
+    return false;
+
+  if (Number(metrics.perfectControlGames) > 0)
+    return false;
+
+  const removed =
+    deleteAchievementRecordForPlayer(
+      player,
+      ACHIEVEMENT_PERFECT_CONTROL_ID
+    );
+
+  if (removed) {
+    delete recordMap[ACHIEVEMENT_PERFECT_CONTROL_ID];
+    invalidateAchievementCaches(player);
+  }
+
+  return removed;
+
+}
+
+function deleteAchievementRecordForPlayer(playerName, achievementId) {
+
+  const sheet =
+    getAchievementsSheet();
+
+  const values =
+    sheet
+      .getDataRange()
+      .getValues();
+
+  if (values.length <= 1)
+    return false;
+
+  const columns =
+    getAchievementColumns(values[0]);
+
+  const existing =
+    findAchievementRow(
+      values,
+      columns,
+      playerName,
+      achievementId
+    );
+
+  if (existing.row <= 1)
+    return false;
+
+  sheet.deleteRow(existing.row);
+  return true;
+
+}
+
+function getPerfectControlAchievementRows() {
+
+  const sheet =
+    getAchievementsSheet();
+
+  const values =
+    sheet
+      .getDataRange()
+      .getValues();
+
+  if (values.length <= 1)
+    return [];
+
+  const columns =
+    getAchievementColumns(values[0]);
+
+  const rows = [];
+
+  for (let index = 1; index < values.length; index++) {
+    const record =
+      buildAchievementRecord(
+        values[index],
+        columns
+      );
+
+    if (
+      record.unlocked &&
+      record.id === ACHIEVEMENT_PERFECT_CONTROL_ID
+    )
+      rows.push({
+        row: index + 1,
+        record: record
+      });
+  }
+
+  return rows;
+
+}
+
+function getAchievementPlayerObjectiveGames(playerName) {
+
+  const normalized =
+    getAuthString(playerName).toLowerCase();
+
+  const games =
+    typeof getAllRecentGameObjects === "function"
+      ? getAllRecentGameObjects()
+      : [];
+
+  return games
+    .map(function(game) {
+
+      const winner =
+        getAuthString(game.winner).toLowerCase();
+      const loser =
+        getAuthString(game.loser).toLowerCase();
+
+      if (winner !== normalized && loser !== normalized)
+        return null;
+
+      const won =
+        winner === normalized;
+
+      return {
+        date: game.date,
+        mission: getAuthString(game.mission),
+        objectivePoints:
+          getAchievementPlayerScore(game.op, won)
+      };
+
+    })
+    .filter(function(game) {
+      return Boolean(game);
+    })
+    .sort(function(a, b) {
+      return (
+        getAchievementDate(b.date).getTime() -
+        getAchievementDate(a.date).getTime()
+      );
+    });
+
+}
+
+function getHighestAchievementObjectiveGame(games) {
+
+  return games
+    .slice()
+    .sort(function(a, b) {
+      if (b.objectivePoints !== a.objectivePoints)
+        return b.objectivePoints - a.objectivePoints;
+
+      return (
+        getAchievementDate(b.date).getTime() -
+        getAchievementDate(a.date).getTime()
+      );
+    })[0] || null;
+
+}
+
 function buildAchievementRecord(row, columns) {
 
   return {
@@ -1757,6 +2023,8 @@ function getAchievementCacheKey(playerName) {
 
   return (
     "achievements-" +
+    ACHIEVEMENT_CACHE_VERSION +
+    "-" +
     getAuthString(playerName).toLowerCase()
   );
 
