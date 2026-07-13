@@ -17,6 +17,7 @@ import {
   formatObjectiveScore,
   formatPlayerName,
 } from '../services/formatting'
+import { isDrawGame } from '../services/gameResults'
 import {
   formatDivisionLabel,
   getDivisionStyle,
@@ -790,6 +791,7 @@ function normalizePlayerRecordSummary(value: unknown): PlayerRecordSummary {
   const record = isRecord(value) ? value : {}
 
   return {
+    draws: getLocalNumber(record, 'draws'),
     games: getLocalNumber(record, 'games'),
     losses: getLocalNumber(record, 'losses'),
     winPercentage: getLocalNumber(record, 'winPercentage'),
@@ -821,6 +823,7 @@ function normalizePlayerRecentGame(item: unknown): RecentGame {
     division: getLocalString(record, 'division'),
     eventId: getLocalString(record, 'eventId'),
     firstTurn: getLocalString(record, 'firstTurn'),
+    gameResult: getLocalString(record, 'gameResult') || undefined,
     gameType: getLocalString(record, 'gameType') || 'league',
     id: getLocalNumber(record, 'id'),
     loser: getLocalString(record, 'loser'),
@@ -841,6 +844,7 @@ function buildFallbackCareerSummary(
   games: RecentGame[],
 ): PlayerCareerSummary {
   const overall = {
+    draws: 0,
     games: player.games,
     losses: player.losses,
     winPercentage: player.games > 0
@@ -924,6 +928,7 @@ function getLocalArray(record: Record<string, unknown>, key: string) {
 
 function emptyRecord(): PlayerRecordSummary {
   return {
+    draws: 0,
     games: 0,
     losses: 0,
     winPercentage: 0,
@@ -1012,6 +1017,10 @@ function getCurrentTournamentLabel(player: PlayerProfileData) {
 }
 
 function getPlayerResult(game: RecentGame, player: PlayerProfileData) {
+  if (isDrawGame(game)) {
+    return 'Draw'
+  }
+
   return isPlayerWinner(game, player) ? 'Win' : 'Loss'
 }
 
@@ -1089,7 +1098,9 @@ function formatPercent(value: number) {
 }
 
 function formatRecord(record: PlayerRecordSummary) {
-  return `${record.wins}-${record.losses}`
+  return record.draws > 0
+    ? `${record.wins}-${record.losses}-${record.draws}`
+    : `${record.wins}-${record.losses}`
 }
 
 function formatMissionMetric(value: string) {

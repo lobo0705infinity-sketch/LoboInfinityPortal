@@ -13,6 +13,7 @@ import {
   type RecentGame,
 } from '../services/api'
 import { formatObjectiveScore, formatPlayerName } from '../services/formatting'
+import { getGameHeadline } from '../services/gameResults'
 
 type FactionProfileState =
   | {
@@ -324,8 +325,7 @@ function RecentGamesPanel({ games }: { games: RecentGame[] }) {
               <div>
                 <span>{game.date}</span>
                 <h3>
-                  {formatPlayerName(game.winner, game.winnerDisplayName)} defeated{' '}
-                  {formatPlayerName(game.loser, game.loserDisplayName)}
+                  {getGameHeadline(game)}
                 </h3>
                 <p>{getCanonicalMissionName(game.mission) || 'Mission not recorded'}</p>
               </div>

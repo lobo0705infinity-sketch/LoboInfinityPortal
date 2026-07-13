@@ -350,6 +350,8 @@ function buildRecentGameResponse(game) {
       getPlayerDisplayName(game.loser),
     winnerFaction: game.winnerFaction,
     loserFaction: game.loserFaction,
+    gameResult:
+      getRecentGameResult(game),
     mission: game.mission,
     tp: game.tp,
     op: game.op,
@@ -357,6 +359,53 @@ function buildRecentGameResponse(game) {
     bestMoment: game.bestMoment,
     firstTurn: game.firstTurn
   };
+
+}
+
+function getRecentGameResult(game) {
+
+  const tp =
+    getRecentGameScoreParts(game.tp);
+
+  const op =
+    getRecentGameScoreParts(game.op);
+
+  const vp =
+    getRecentGameScoreParts(game.vp);
+
+  if (
+    tp &&
+    op &&
+    vp &&
+    tp[0] === tp[1] &&
+    op[0] === op[1] &&
+    vp[0] === vp[1]
+  )
+    return "Draw";
+
+  return "Player 1 Victory";
+
+}
+
+function getRecentGameScoreParts(score) {
+
+  const parts =
+    getRecentGameString(score)
+      .split("-");
+
+  if (parts.length !== 2)
+    return null;
+
+  const left =
+    Number(parts[0]);
+
+  const right =
+    Number(parts[1]);
+
+  if (!Number.isFinite(left) || !Number.isFinite(right))
+    return null;
+
+  return [left, right];
 
 }
 

@@ -103,10 +103,12 @@ function submitLeagueResult(e) {
       winner !== "" &&
       normalizeResultSubmissionValue(winner) !== normalizeResultSubmissionValue(expectedWinner)
     )
-      return resultSubmissionFailure("Winner does not match the submitted scores.");
+      return resultSubmissionFailure("Game Result does not match the submitted scores.");
 
     const playerIsWinner =
       normalizeResultSubmissionValue(expectedWinner) === normalizeResultSubmissionValue(player);
+    const resultIsDraw =
+      normalizeResultSubmissionValue(expectedWinner) === "draw";
 
     const row = [];
     row[FORM.TIMESTAMP] = getResultSubmissionTimestamp();
@@ -123,11 +125,11 @@ function submitLeagueResult(e) {
     row[FORM.P2VP] = opponentVp;
     row[FORM.FIRSTTURN] = getResultSubmissionString(params.firstTurn);
     row[FORM.WINNINGFACTION] =
-      playerIsWinner
+      resultIsDraw || playerIsWinner
         ? playerFaction
         : opponentFaction;
     row[FORM.LOSINGFACTION] =
-      playerIsWinner
+      resultIsDraw || playerIsWinner
         ? opponentFaction
         : playerFaction;
     row[FORM.MOMENT] = getResultSubmissionString(params.bestMoment);
@@ -250,10 +252,12 @@ function submitCasualResult(e) {
       winner !== "" &&
       normalizeResultSubmissionValue(winner) !== normalizeResultSubmissionValue(expectedWinner)
     )
-      return resultSubmissionFailure("Winner does not match the submitted scores.");
+      return resultSubmissionFailure("Game Result does not match the submitted scores.");
 
     const playerIsWinner =
       normalizeResultSubmissionValue(expectedWinner) === normalizeResultSubmissionValue(player);
+    const resultIsDraw =
+      normalizeResultSubmissionValue(expectedWinner) === "draw";
 
     const row = [];
     row[FORM.TIMESTAMP] = getResultSubmissionTimestamp();
@@ -270,11 +274,11 @@ function submitCasualResult(e) {
     row[FORM.P2VP] = opponentVp;
     row[FORM.FIRSTTURN] = getResultSubmissionString(params.firstTurn);
     row[FORM.WINNINGFACTION] =
-      playerIsWinner
+      resultIsDraw || playerIsWinner
         ? playerFaction
         : opponentFaction;
     row[FORM.LOSINGFACTION] =
-      playerIsWinner
+      resultIsDraw || playerIsWinner
         ? opponentFaction
         : playerFaction;
     row[FORM.MOMENT] = getResultSubmissionString(params.bestMoment);

@@ -1561,7 +1561,7 @@ function validateTeamTournamentResultSubmission(params, assignment) {
     issues.push("Tournament Points cannot total more than 10.");
 
   if (winner === "")
-    issues.push("Winner is required.");
+    issues.push("Game Result is required.");
 
   const expectedWinner =
     determineTeamTournamentResultWinner(
@@ -1573,7 +1573,7 @@ function validateTeamTournamentResultSubmission(params, assignment) {
     );
 
   if (expectedWinner !== "" && !teamTournamentSameValue(winner, expectedWinner))
-    issues.push("Winner must match the submitted TP, OP, and VP scores.");
+    issues.push("Game Result must match the submitted TP, OP, and VP scores.");
 
   return issues;
 

@@ -466,7 +466,7 @@ function SubmitResult() {
             value={casualResult.mission}
           />
           <SelectField
-            label="Winner"
+            label="Game Result"
             onChange={(value) => updateCasualField('winner', value)}
             options={[casualResult.player, casualResult.opponent, 'Draw'].filter(Boolean)}
             required
@@ -666,7 +666,7 @@ function SubmitResult() {
           value={leagueResult.opponentFaction}
         />
         <SelectField
-          label="Winner"
+          label="Game Result"
           onChange={(value) => updateField('winner', value)}
           options={[leagueResult.player, leagueResult.opponent, 'Draw'].filter(Boolean)}
           required
@@ -839,7 +839,7 @@ function TeamTournamentResultSubmission({
           </>
         ) : null}
         <SelectField
-          label="Winner"
+          label="Game Result"
           name="winner"
           onChange={setWinner}
           options={[assignment?.player ?? '', assignment?.opponent ?? '', 'Draw'].filter(Boolean)}
@@ -949,8 +949,10 @@ function validateLeagueResult(
     playerVp,
     opponentVp,
   )
-  if (expectedWinner && submission.winner && normalize(expectedWinner) !== normalize(submission.winner)) {
-    issues.push('Winner must match the submitted TP, OP, and VP scores.')
+  if (!submission.winner.trim()) {
+    issues.push('Game Result is required.')
+  } else if (expectedWinner && normalize(expectedWinner) !== normalize(submission.winner)) {
+    issues.push('Game Result must match the submitted TP, OP, and VP scores.')
   }
 
   return issues
@@ -1032,9 +1034,9 @@ function validateCasualResult(
     opponentVp,
   )
   if (!submission.winner.trim()) {
-    issues.push('Winner is required.')
+    issues.push('Game Result is required.')
   } else if (expectedWinner && normalize(expectedWinner) !== normalize(submission.winner)) {
-    issues.push('Winner must match the submitted TP, OP, and VP scores.')
+    issues.push('Game Result must match the submitted TP, OP, and VP scores.')
   }
 
   return issues
@@ -1131,7 +1133,7 @@ function validateTournamentResult(
   }
 
   if (!params.winner?.trim()) {
-    issues.push('Winner is required.')
+    issues.push('Game Result is required.')
   }
 
   return issues

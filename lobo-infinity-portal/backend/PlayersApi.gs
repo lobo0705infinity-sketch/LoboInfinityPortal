@@ -1202,13 +1202,18 @@ function buildPlayerCareerRecord(rows) {
     rows.filter(function(game) {
       return game.result === "L";
     }).length;
+  const draws =
+    rows.filter(function(game) {
+      return game.result === "D";
+    }).length;
   const games =
-    wins + losses;
+    wins + losses + draws;
 
   return {
     games: games,
     wins: wins,
     losses: losses,
+    draws: draws,
     winPercentage:
       games === 0
         ? 0

@@ -8,6 +8,7 @@ export type ScoreType = (typeof ScoreType)[keyof typeof ScoreType]
 
 export type LeagueScoreGame = {
   division?: string
+  gameResult?: string
   loser?: string
   loserDisplayName?: string
   mission?: string
@@ -43,7 +44,11 @@ export function formatTournamentScore(game: LeagueScoreGame) {
 export function formatGameSummary(game: LeagueScoreGame) {
   const result = formatLeagueResult(game)
 
-  return `${result.winner} defeated ${result.loser}\non ${result.mission}\n${result.op}`
+  const headline = isFormattedDrawGame(game)
+    ? `${result.winner} and ${result.loser} battled to a draw`
+    : `${result.winner} defeated ${result.loser}`
+
+  return `${headline}\non ${result.mission}\n${result.op}`
 }
 
 export function formatLeagueResult(game: LeagueScoreGame): LeagueResult {
@@ -215,6 +220,17 @@ export function formatPlayerName(
 
 function formatText(value: number | string | undefined) {
   return String(value ?? '').trim()
+}
+
+function isFormattedDrawGame(game: LeagueScoreGame) {
+  if (formatText(game.gameResult).toLowerCase() === 'draw') {
+    return true
+  }
+
+  return [game.tp, game.op, game.vp].every((score) => {
+    const [left, right] = formatText(score).split('-').map((part) => Number(part))
+    return Number.isFinite(left) && Number.isFinite(right) && left === right
+  })
 }
 
 function formatNumber(value: number) {

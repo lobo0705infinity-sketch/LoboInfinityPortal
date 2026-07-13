@@ -351,6 +351,7 @@ export type PlayerRecordSummary = {
   games: number
   wins: number
   losses: number
+  draws: number
   winPercentage: number
 }
 
@@ -396,6 +397,7 @@ export type PlayerCareerSummary = {
 
 export type RecentGame = {
   eventId: string
+  gameResult?: string
   gameType?: string
   id: number
   date: string
@@ -6655,6 +6657,7 @@ function normalizeRecentGame(item: unknown): RecentGame {
 
   return {
     eventId: getString(record, 'eventId') || 'event-current-league',
+    gameResult: getString(record, 'gameResult') || undefined,
     id: getRequiredNumber(record, 'id'),
     date: getRequiredString(record, 'date'),
     division: getString(record, 'division'),

@@ -28,6 +28,7 @@ import {
   formatPlayerName,
   formatSchedulingDateTime,
 } from '../services/formatting'
+import { getGameHeadline, isDrawGame } from '../services/gameResults'
 import {
   DashboardDataProvider,
   useDashboardDataContext,
@@ -386,8 +387,7 @@ function CommunityCommandCenter() {
               <CommandActionLink className="player-home-feed-item" key={game.id} to={`/games/${game.id}`}>
                 <span>Latest Result</span>
                 <strong>
-                  {formatPlayerName(game.winner, game.winnerDisplayName)} defeated{' '}
-                  {formatPlayerName(game.loser, game.loserDisplayName)}
+                  {getGameHeadline(game)}
                 </strong>
                 <p>{formatMissionLabel(game.mission)} - {formatObjectiveScore(game)}</p>
               </CommandActionLink>
@@ -587,7 +587,7 @@ function buildLeagueHeadlines(data: CommunityCommandCenterData) {
     headlines.push({
       body: `${formatMissionLabel(game.mission)} ended ${formatObjectiveScore(game)}.`,
       label: game.division || 'Latest Result',
-      title: `${formatPlayerName(game.winner, game.winnerDisplayName)} defeated ${formatPlayerName(game.loser, game.loserDisplayName)}`,
+      title: getGameHeadline(game),
       to: `/games/${game.id}`,
     })
   })
@@ -681,7 +681,9 @@ function buildSeasonTimeline(data: CommunityCommandCenterData) {
     timeline.push({
       body: `${formatMissionLabel(game.mission)} - ${formatObjectiveScore(game)}.`,
       label: game.date || 'Latest Result',
-      title: `${formatPlayerName(game.winner, game.winnerDisplayName)} reports a win`,
+      title: isDrawGame(game)
+        ? `${formatPlayerName(game.winner, game.winnerDisplayName)} reports a draw`
+        : `${formatPlayerName(game.winner, game.winnerDisplayName)} reports a win`,
       to: `/games/${game.id}`,
     })
   }
@@ -820,6 +822,8 @@ function buildMotivationMessages(data: CommunityCommandCenterData) {
 }
 
 function FeaturedMatchHero({ game }: { game: RecentGame }) {
+  const isDraw = isDrawGame(game)
+
   return (
     <Link className="featured-match-hero" to={`/games/${game.id}`}>
       <div className="featured-match-kicker">
@@ -828,13 +832,13 @@ function FeaturedMatchHero({ game }: { game: RecentGame }) {
       </div>
       <div className="featured-match-result">
         <div>
-          <p>Winner</p>
+          <p>{isDraw ? 'Player 1' : 'Winner'}</p>
           <h2>{formatPlayerName(game.winner, game.winnerDisplayName)}</h2>
           <span>{game.winnerFaction}</span>
         </div>
-        <strong>defeated</strong>
+        <strong>{isDraw ? 'draw' : 'defeated'}</strong>
         <div>
-          <p>Loser</p>
+          <p>{isDraw ? 'Player 2' : 'Loser'}</p>
           <h3>{formatPlayerName(game.loser, game.loserDisplayName)}</h3>
           <span>{game.loserFaction}</span>
         </div>

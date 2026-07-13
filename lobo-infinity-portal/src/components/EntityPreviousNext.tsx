@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { filterCanonicalMissionRecords } from '../config/missions'
 import { apiClient } from '../services/api'
 import { formatPlayerName } from '../services/formatting'
+import { getGameHeadline } from '../services/gameResults'
 import PreviousNextNav from './PreviousNextNav'
 
 type EntityType = 'faction' | 'match' | 'mission' | 'player'
@@ -115,7 +116,7 @@ async function getEntities(type: EntityType, signal: AbortSignal, eventId = '') 
   const games = await apiClient.getRecentGames({ eventId, signal })
 
   return games.map((game) => ({
-    label: `${formatPlayerName(game.winner, game.winnerDisplayName)} defeated ${formatPlayerName(game.loser, game.loserDisplayName)}`,
+    label: getGameHeadline(game),
     to: `/games/${game.id}`,
   }))
 }

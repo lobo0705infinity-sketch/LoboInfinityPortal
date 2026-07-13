@@ -333,7 +333,33 @@ function buildAnalyticsRow(row, winner) {
 
   let firstTurnWinner = "Draw";
 
-  if (!draw) {
+  if (draw) {
+
+    winnerPlayer = row[FORM.PLAYER1];
+    loserPlayer = row[FORM.PLAYER2];
+
+    winnerFaction =
+      canonicalizeArmyName(row[FORM.WINNINGFACTION]);
+    loserFaction =
+      canonicalizeArmyName(row[FORM.LOSINGFACTION]);
+
+    winnerTP = Number(row[FORM.P1TP]) || 0;
+    loserTP = Number(row[FORM.P2TP]) || 0;
+
+    winnerOP = Number(row[FORM.P1OP]) || 0;
+    loserOP = Number(row[FORM.P2OP]) || 0;
+
+    winnerVP = Number(row[FORM.P1VP]) || 0;
+    loserVP = Number(row[FORM.P2VP]) || 0;
+
+    firstTurnWinner =
+      row[FORM.FIRSTTURN] === "Player 1"
+        ? winnerPlayer
+        : row[FORM.FIRSTTURN] === "Player 2"
+          ? loserPlayer
+          : String(row[FORM.FIRSTTURN] || "").trim();
+
+  } else {
 
     if (winner === 1) {
 

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type KeyboardEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { formatObjectiveScore, formatPlayerName } from '../services/formatting'
+import { getGameHeadline } from '../services/gameResults'
 import { getSearchIndex, updateProfile } from '../services/lightApi'
 import { preloadRoute } from '../services/routePreload'
 import PortalIcon from './PortalIcon'
@@ -293,7 +294,7 @@ async function getSearchItems() {
 
       const matchItems = games.map((game) => ({
         category: 'Match',
-        label: `${formatPlayerName(game.winner, game.winnerDisplayName)} defeated ${formatPlayerName(game.loser, game.loserDisplayName)}`,
+        label: getGameHeadline(game),
         meta: `${game.mission} - ${formatObjectiveScore(game)}`,
         to: `/games/${game.id}`,
       }))

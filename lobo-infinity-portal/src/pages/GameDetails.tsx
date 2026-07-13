@@ -7,6 +7,7 @@ import { apiClient, type CommissionerNewsItem, type RecentGame, type StreamedGam
 import {
   formatPlayerName,
 } from '../services/formatting'
+import { getGameTimelineResult, isDrawGame } from '../services/gameResults'
 import './GameDetails.css'
 
 type GameDetailsState =
@@ -195,6 +196,7 @@ function parseNewsLinkedGame(body: string) {
 function MatchReport({ game, stream }: { game: RecentGame; stream: StreamedGame | null }) {
   const firstTurnPlayer = formatGameParticipant(game, game.firstTurn)
   const mission = getCanonicalMissionName(game.mission)
+  const isDraw = isDrawGame(game)
 
   return (
     <main className="portal-shell">
@@ -211,17 +213,17 @@ function MatchReport({ game, stream }: { game: RecentGame; stream: StreamedGame 
 
           <div className="match-result">
             <div className="match-player winner">
-              <span>Winner</span>
+              <span>{isDraw ? 'Player 1' : 'Winner'}</span>
               <h1>{formatPlayerName(game.winner, game.winnerDisplayName)}</h1>
               <Link to={`/factions/${encodeURIComponent(game.winnerFaction)}`}>
                 {game.winnerFaction}
               </Link>
             </div>
 
-            <div className="match-defeated">Defeated</div>
+            <div className="match-defeated">{isDraw ? 'Draw' : 'Defeated'}</div>
 
             <div className="match-player loser">
-              <span>Loser</span>
+              <span>{isDraw ? 'Player 2' : 'Loser'}</span>
               <h2>{formatPlayerName(game.loser, game.loserDisplayName)}</h2>
               <Link to={`/factions/${encodeURIComponent(game.loserFaction)}`}>
                 {game.loserFaction}
@@ -290,8 +292,7 @@ function MatchReport({ game, stream }: { game: RecentGame; stream: StreamedGame 
             <li>
               <span>Final Result</span>
               <strong>
-                {formatPlayerName(game.winner, game.winnerDisplayName)} defeated{' '}
-                {formatPlayerName(game.loser, game.loserDisplayName)}
+                {getGameTimelineResult(game)}
               </strong>
             </li>
           </ol>
@@ -313,7 +314,7 @@ function MatchReport({ game, stream }: { game: RecentGame; stream: StreamedGame 
           <h2 id="match-information-title">Mission Briefing</h2>
           <dl>
             <div>
-              <dt>Winner</dt>
+              <dt>{isDraw ? 'Player 1' : 'Winner'}</dt>
               <dd>
                 <Link to={`/players/${encodeURIComponent(game.winner)}`}>
                   {formatPlayerName(game.winner, game.winnerDisplayName)}
@@ -321,7 +322,7 @@ function MatchReport({ game, stream }: { game: RecentGame; stream: StreamedGame 
               </dd>
             </div>
             <div>
-              <dt>Loser</dt>
+              <dt>{isDraw ? 'Player 2' : 'Loser'}</dt>
               <dd>
                 <Link to={`/players/${encodeURIComponent(game.loser)}`}>
                   {formatPlayerName(game.loser, game.loserDisplayName)}
@@ -358,13 +359,27 @@ function formatGameParticipant(game: RecentGame, player: string) {
 }
 
 function formatBattleReportScore(score: number | string | undefined, label: 'TP' | 'OP' | 'VP') {
-  const value = String(score ?? '').trim()
+  const value = normalizeScoreText(String(score ?? '').trim())
 
   if (!value) {
     return `Not recorded ${label}`
   }
 
   return `${value} ${label}`
+}
+
+function normalizeScoreText(value: string) {
+  if (value === '-0' || Object.is(Number(value), -0)) {
+    return '0'
+  }
+
+  return value
+    .split('-')
+    .map((part) => {
+      const trimmed = part.trim()
+      return trimmed === '-0' || Object.is(Number(trimmed), -0) ? '0' : trimmed
+    })
+    .join('-')
 }
 
 function ScoreLane({ score }: { score: string }) {

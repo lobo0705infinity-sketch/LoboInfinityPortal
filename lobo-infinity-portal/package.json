@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "npm run security:cache && npm run security:armies && npm run test:achievements && tsc -b && vite build",
+    "build": "npm run security:cache && npm run security:armies && npm run test:achievements && npm run test:draws && tsc -b && vite build",
     "analyze": "npm run build && node scripts/bundle-report.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -22,6 +22,7 @@
     "test:achievements": "node scripts/achievement-rules-check.mjs",
     "test:battle-report": "node scripts/battle-report-check.mjs",
     "test:dashboard-links": "node scripts/dashboard-links-check.mjs",
+    "test:draws": "node scripts/draw-support-check.mjs",
     "test:player-profile": "node scripts/player-profile-check.mjs",
     "test:player-registry": "node scripts/player-registry-context-check.mjs",
     "test:player-identity": "node scripts/player-identity-check.mjs",

@@ -23,6 +23,7 @@ import {
   formatTournamentScore,
   formatVictoryScore,
 } from '../services/formatting'
+import { isDrawGame } from '../services/gameResults'
 import './MyProfile.css'
 
 type ProfileState =
@@ -50,7 +51,7 @@ type GameContext = {
   opponent: string
   opponentDisplayName: string
   op: number
-  result: 'Loss' | 'Unknown' | 'Win'
+  result: 'Draw' | 'Loss' | 'Unknown' | 'Win'
   tp: number
   vp: number
   wentFirst: boolean
@@ -1258,7 +1259,8 @@ function buildGameContext(game: RecentGame, leaguePlayer: string): GameContext {
   const player = leaguePlayer.toLowerCase()
   const isWinner = game.winner.toLowerCase() === player
   const isLoser = game.loser.toLowerCase() === player
-  const result = isWinner ? 'Win' : isLoser ? 'Loss' : 'Unknown'
+  const isDraw = isDrawGame(game)
+  const result = isDraw ? 'Draw' : isWinner ? 'Win' : isLoser ? 'Loss' : 'Unknown'
   const tp = getPlayerScore(game.tp, isWinner)
   const op = getPlayerScore(game.op, isWinner)
   const vp = getPlayerScore(game.vp, isWinner)

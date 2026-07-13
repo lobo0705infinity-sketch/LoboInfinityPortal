@@ -15,6 +15,7 @@ import {
 } from '../services/api'
 import { registrationRepository, teamRepository } from '../services/data'
 import { formatPlayerName } from '../services/formatting'
+import { getGameHeadline } from '../services/gameResults'
 import './TeamTournament.css'
 
 type TournamentState =
@@ -886,8 +887,7 @@ function LatestResults({ data }: { data: TeamTournamentData }) {
       ) : (
         data.latestResults.map((game) => (
           <p key={game.id}>
-            {game.winnerDisplayName} defeated {game.loserDisplayName} in{' '}
-            {game.mission}.
+            {getGameHeadline(game)} in {game.mission}.
           </p>
         ))
       )}

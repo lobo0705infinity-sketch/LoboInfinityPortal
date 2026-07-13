@@ -1495,6 +1495,7 @@ function emptyPlayerProfile(playerName: string): PlayerProfileData {
 
 function emptyPlayerCareerSummary(): PlayerCareerSummary {
   const record = {
+    draws: 0,
     games: 0,
     losses: 0,
     winPercentage: 0,

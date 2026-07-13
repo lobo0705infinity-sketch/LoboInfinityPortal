@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { apiClient, type RecentGame } from '../services/api'
-import { formatObjectiveScore, formatPlayerName } from '../services/formatting'
+import { formatObjectiveScore } from '../services/formatting'
+import { getGameHeadline, isDrawGame } from '../services/gameResults'
 
 type RecentGamesState = {
   games: RecentGame[]
@@ -86,8 +87,7 @@ function RecentGames({
               <div>
                 <span className="eyebrow">{formatRelativeDate(game.date)}</span>
                 <h3>
-                  {formatPlayerName(game.winner, game.winnerDisplayName)} defeated{' '}
-                  {formatPlayerName(game.loser, game.loserDisplayName)}
+                  {getGameHeadline(game)}
                 </h3>
               </div>
 
@@ -97,7 +97,7 @@ function RecentGames({
                   <dd>{game.mission || 'Mission not recorded'}</dd>
                 </div>
                 <div>
-                  <dt>Winner Faction</dt>
+                  <dt>{isDrawGame(game) ? 'Player 1 Faction' : 'Winner Faction'}</dt>
                   <dd>{game.winnerFaction}</dd>
                 </div>
                 <div>

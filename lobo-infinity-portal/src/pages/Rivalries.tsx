@@ -11,6 +11,7 @@ import {
   formatPlayerName,
   formatVictoryScore,
 } from '../services/formatting'
+import { getGameHeadline } from '../services/gameResults'
 
 type RivalriesState =
   | {
@@ -130,8 +131,7 @@ function RivalriesContent({ games }: { games: RecentGame[] }) {
                 <Link className="dashboard-news-item" key={game.id} to={`/games/${game.id}`}>
                   <span>{game.date || game.division}</span>
                   <strong>
-                    {formatPlayerName(game.winner, game.winnerDisplayName)} defeated{' '}
-                    {formatPlayerName(game.loser, game.loserDisplayName)}
+                    {getGameHeadline(game)}
                   </strong>
                   <p>
                     {game.mission} - {formatObjectiveScore(game)} - {formatVictoryScore(game)}
