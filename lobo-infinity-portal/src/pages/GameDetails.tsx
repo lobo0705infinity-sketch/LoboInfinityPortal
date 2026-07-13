@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
 import { getCanonicalMissionName } from '../config/missions'
-import { apiClient, type RecentGame } from '../services/api'
+import { apiClient, type CommissionerNewsItem, type RecentGame } from '../services/api'
 import {
   formatObjectiveScore,
   formatPlayerName,
@@ -57,10 +57,28 @@ function GameDetails() {
           return
         }
 
-        setGameState({
-          gameId,
-          status: 'not-found',
+        return apiClient.getNews({ signal: controller.signal }).then((news) => {
+          const linkedGame = buildNewsLinkedGame(gameId, news)
+
+          if (linkedGame) {
+            setGameState({
+              game: linkedGame,
+              gameId,
+              status: 'success',
+            })
+            return
+          }
+
+          setGameState({
+            gameId,
+            status: 'not-found',
+          })
         })
+      })
+      .then((result) => {
+        if (result) {
+          return
+        }
       })
       .catch(() => {
         if (!controller.signal.aborted) {
@@ -109,6 +127,49 @@ function GameDetails() {
   }
 
   return <MatchReport game={gameState.game} />
+}
+
+function buildNewsLinkedGame(gameId: number, news: CommissionerNewsItem[]): RecentGame | null {
+  const item = news.find((candidate) => candidate.link === `/games/${gameId}`)
+  const parsed = item ? parseNewsLinkedGame(item.body) : null
+
+  if (!item || !parsed) {
+    return null
+  }
+
+  return {
+    id: gameId,
+    eventId: 'event-current-league',
+    date: item.date || '',
+    division: '',
+    winner: parsed.winner,
+    winnerDisplayName: parsed.winner,
+    loser: parsed.loser,
+    loserDisplayName: parsed.loser,
+    winnerFaction: '',
+    loserFaction: '',
+    mission: parsed.mission,
+    tp: '',
+    op: parsed.op,
+    vp: '',
+    bestMoment: item.body,
+    firstTurn: '',
+  }
+}
+
+function parseNewsLinkedGame(body: string) {
+  const match = body.match(/^(.+?) defeated (.+?) on (.+?) with a (.+?) scoreline\.$/)
+
+  if (!match) {
+    return null
+  }
+
+  return {
+    winner: match[1],
+    loser: match[2],
+    mission: match[3],
+    op: match[4],
+  }
 }
 
 function MatchReport({ game }: { game: RecentGame }) {
