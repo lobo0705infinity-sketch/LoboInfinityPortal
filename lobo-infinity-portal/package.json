@@ -17,6 +17,7 @@
     "league:navigation": "node scripts/league-navigation-check.mjs",
     "team-tournament:routing": "node scripts/team-tournament-routing-check.mjs",
     "test:submit-game": "node --experimental-strip-types scripts/submit-game-identity-check.ts",
+    "test:team-membership": "node scripts/team-membership-check.mjs",
     "test:notifications": "node --experimental-strip-types scripts/notification-timestamp-check.ts",
     "test:achievements": "node scripts/achievement-rules-check.mjs",
     "test:battle-report": "node scripts/battle-report-check.mjs",

@@ -2119,6 +2119,77 @@ function updateParticipantStatus(
   }
 }
 
+function resolveRegistrationTeamMembership(
+  registration: EventRegistrationData,
+  teams: TeamTournamentTeam[],
+): EventRegistrationData {
+  const membership = buildTeamMembershipLookup(teams)
+  const updateEntry = (entry: EventRegistrationData['registrations'][number]) => {
+    const teamName = findTeamMembership(membership, entry.player, entry.displayName)
+
+    if (teamName) {
+      return {
+        ...entry,
+        freeAgent: false,
+        preferredTeam: teamName,
+        team: teamName,
+      }
+    }
+
+    return {
+      ...entry,
+      freeAgent: true,
+      preferredTeam: '',
+      team: '',
+    }
+  }
+  const registrations = registration.registrations.map(updateEntry)
+
+  return {
+    ...registration,
+    captains: registration.captains.map(updateEntry),
+    currentPlayer: registration.currentPlayer ? updateEntry(registration.currentPlayer) : null,
+    freeAgents: registrations.filter((entry) => entry.freeAgent),
+    registrations,
+    teams: registration.teams.map((team) => ({
+      ...team,
+      players: team.players.map(updateEntry),
+    })),
+  }
+}
+
+function buildTeamMembershipLookup(teams: TeamTournamentTeam[]) {
+  const membership = new Map<string, string>()
+
+  teams
+    .filter((team) => team.status !== 'Deleted')
+    .forEach((team) => {
+      const roster = [team.captain, ...splitPlayers(team.players)]
+
+      roster.forEach((player) => {
+        const key = normalizeTournamentPlayer(player)
+
+        if (key) {
+          membership.set(key, team.teamName)
+        }
+      })
+    })
+
+  return membership
+}
+
+function findTeamMembership(
+  membership: Map<string, string>,
+  player: string,
+  displayName: string,
+) {
+  return (
+    membership.get(normalizeTournamentPlayer(player)) ||
+    membership.get(normalizeTournamentPlayer(displayName)) ||
+    ''
+  )
+}
+
 function applyTeamTournamentMutationState(
   current: TournamentState,
   result: TeamTournamentMutationResult,
@@ -2162,9 +2233,11 @@ function applyTeamTournamentMutation(
   if (result.kind === 'team') {
     const teams = upsertBy(data.teams, result.team, (team) => team.teamId)
     const activeTeams = teams.filter((team) => team.status !== 'Deleted')
+    const registration = resolveRegistrationTeamMembership(data.registration, activeTeams)
 
     return {
       ...data,
+      registration,
       registeredTeams: activeTeams.length,
       standings: data.standings.map((standing) =>
         standing.teamId === result.team.teamId

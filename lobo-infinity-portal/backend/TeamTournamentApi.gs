@@ -110,7 +110,10 @@ function getTeamTournament(e) {
     buildTeamTournamentStandings(eventId, teams, results, runtime.recentGames);
 
   const registrations =
-    runtime.registrations;
+    resolveTeamTournamentRegistrationMembership(
+      runtime.registrations,
+      teams
+    );
 
   const auth =
     getRequestUser(e);
@@ -1039,6 +1042,111 @@ function findTeamTournamentRegistrationForPlayer(registrations, player) {
   }
 
   return null;
+
+}
+
+function resolveTeamTournamentRegistrationMembership(registrations, teams) {
+
+  const membership =
+    buildTeamTournamentMembershipLookup(teams);
+
+  return registrations.map(function(registration) {
+    const teamName =
+      findTeamTournamentMembership(
+        membership,
+        registration.player,
+        registration.displayName
+      );
+
+    const copy =
+      Object.assign({}, registration);
+
+    if (teamName !== "") {
+      copy.team = teamName;
+      copy.preferredTeam = teamName;
+      copy.freeAgent = false;
+    } else {
+      copy.team = "";
+      copy.preferredTeam = "";
+      copy.freeAgent = true;
+    }
+
+    return copy;
+  });
+
+}
+
+function buildTeamTournamentMembershipLookup(teams) {
+
+  const lookup = {};
+
+  teams
+    .filter(function(team) {
+      return getTeamTournamentString(team.status) !== "Deleted";
+    })
+    .forEach(function(team) {
+      const teamName =
+        getTeamTournamentString(team.teamName);
+
+      [
+        team.captain
+      ].concat(
+        parseTeamTournamentRoster(team.players)
+      ).forEach(function(player) {
+        const key =
+          normalizeTeamTournamentPlayerKey(player);
+
+        if (key !== "")
+          lookup[key] = teamName;
+      });
+    });
+
+  return lookup;
+
+}
+
+function findTeamTournamentMembership(membership, player, displayName) {
+
+  const playerKey =
+    normalizeTeamTournamentPlayerKey(player);
+
+  if (
+    playerKey !== "" &&
+    membership[playerKey]
+  )
+    return membership[playerKey];
+
+  const displayNameKey =
+    normalizeTeamTournamentPlayerKey(displayName);
+
+  if (
+    displayNameKey !== "" &&
+    membership[displayNameKey]
+  )
+    return membership[displayNameKey];
+
+  return "";
+
+}
+
+function normalizeTeamTournamentPlayerKey(value) {
+
+  return getTeamTournamentString(value)
+    .trim()
+    .toLowerCase();
+
+}
+
+function parseTeamTournamentRoster(players) {
+
+  return getTeamTournamentString(players)
+    .split(/[,;\n]/)
+    .map(function(player) {
+      return getTeamTournamentString(player);
+    })
+    .filter(function(player) {
+      return player !== "";
+    });
 
 }
 
