@@ -2320,6 +2320,7 @@ export async function getAllStandings(
 function buildAnalyticsRequestParams(options: ApiOptions): Record<string, string> {
   return {
     ...(options.eventId ? { eventId: options.eventId } : {}),
+    ...(typeof options.gameId === 'number' ? { gameId: String(options.gameId) } : {}),
     ...(options.gameType ? { gameType: options.gameType } : {}),
   }
 }

@@ -43,7 +43,16 @@ const checks = [
   },
   {
     label: 'Battle report resolves by immutable RecentGame.id',
-    pass: gameDetails.includes('games.find((candidate) => candidate.id === gameId)'),
+    pass:
+      gameDetails.includes('gameId,') &&
+      gameDetails.includes('games.find((candidate) => candidate.id === gameId)'),
+  },
+  {
+    label: 'Battle report endpoint can fetch a specific immutable game id',
+    pass:
+      recentGamesApi.includes('function filterRecentGamesByGameId(games, gameId)') &&
+      recentGamesApi.includes('game.id === target') &&
+      recentGamesApi.includes('e.parameter.gameId'),
   },
   {
     label: 'Recent Games component links by immutable RecentGame.id',

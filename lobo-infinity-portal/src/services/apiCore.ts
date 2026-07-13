@@ -1,5 +1,6 @@
 export type ApiOptions = {
   eventId?: string
+  gameId?: number
   gameType?: string
   signal?: AbortSignal
 }

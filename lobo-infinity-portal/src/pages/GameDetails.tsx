@@ -42,6 +42,7 @@ function GameDetails() {
 
     apiClient
       .getRecentGames({
+        gameId,
         signal: controller.signal,
       })
       .then((games) => {

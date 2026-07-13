@@ -59,7 +59,8 @@ function getRecentGames(e) {
     getRecentGameColumns(headers);
 
   const games =
-    filterRecentGamesByEvent(
+    filterRecentGamesByGameId(
+      filterRecentGamesByEvent(
       filterRecentGamesByPlayer(
       values
       .map(function(row, index) {
@@ -90,6 +91,10 @@ function getRecentGames(e) {
       e &&
       e.parameter &&
       e.parameter.gameType
+      ),
+      e &&
+      e.parameter &&
+      e.parameter.gameId
     )
       .sort(function(a, b) {
 
@@ -116,6 +121,20 @@ function getRecentGames(e) {
   return jsonOutput({
     success: true,
     games: games
+  });
+
+}
+
+function filterRecentGamesByGameId(games, gameId) {
+
+  const target =
+    Number(gameId);
+
+  if (!Number.isInteger(target))
+    return games;
+
+  return games.filter(function(game) {
+    return game.id === target;
   });
 
 }
