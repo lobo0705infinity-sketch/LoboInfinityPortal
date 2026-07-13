@@ -2,6 +2,7 @@ import { useEffect, useState, type CSSProperties } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
+import loboCrest from '../assets/lobo-crest.svg'
 import { getArmyParentFaction } from '../config/armies'
 import { getCanonicalMissionName } from '../config/missions'
 import type {
@@ -179,7 +180,7 @@ function PlayerProfileDossier({
   const level = getCareerLevel(career)
   const leagueLabel = getCurrentLeagueLabel(player)
   const currentTournament = getCurrentTournamentLabel(player)
-  const quote = getHeroQuote(recentGames, player)
+  const careerHighlight = getCareerHighlight(recentGames)
   const joinedLabel = getJoinedLabel(player)
 
   return (
@@ -191,11 +192,7 @@ function PlayerProfileDossier({
       >
         <div className="profile-v21-hero-grid">
           <div className="profile-v21-portrait" aria-hidden="true">
-            {player.profilePicture ? (
-              <img alt="" decoding="async" loading="lazy" src={player.profilePicture} />
-            ) : (
-              <span>{displayName.slice(0, 1)}</span>
-            )}
+            <PlayerPortrait player={player} />
           </div>
           <div className="profile-v21-identity">
             <p className="eyebrow">Infinity Career Dossier</p>
@@ -209,14 +206,12 @@ function PlayerProfileDossier({
             </div>
             <div className="profile-v21-badges" aria-label="Player classifications">
               {classifications.map((classification) => (
-                <span key={classification}>{classification}</span>
+                <TacticalBadge key={classification} label={classification} />
               ))}
-              {player.rank > 0 ? <span>#{player.rank} Ranked</span> : null}
+              {player.rank > 0 ? <TacticalBadge label={`Rank #${player.rank}`} /> : null}
             </div>
           </div>
-          {quote ? (
-            <blockquote className="profile-v21-quote">{quote}</blockquote>
-          ) : null}
+          <CareerHighlight highlight={careerHighlight} />
         </div>
       </section>
 
@@ -266,7 +261,7 @@ function CareerLevelCard({
       </div>
       <div>
         <div className="panel-heading">
-          <p className="eyebrow">Career Level</p>
+          <p className="eyebrow">Career Progression</p>
           <h2 id="career-level-title">Battlefield Progress</h2>
         </div>
         <div className="profile-v21-progress" aria-label={level.ariaLabel}>
@@ -278,6 +273,35 @@ function CareerLevelCard({
         </p>
       </div>
     </section>
+  )
+}
+
+function PlayerPortrait({ player }: { player: PlayerProfileData }) {
+  return (
+    <img
+      alt=""
+      decoding="async"
+      loading="lazy"
+      src={player.profilePicture || loboCrest}
+    />
+  )
+}
+
+function CareerHighlight({ highlight }: { highlight: string }) {
+  return (
+    <section className="profile-v21-highlight" aria-labelledby="career-highlight-title">
+      <p className="eyebrow" id="career-highlight-title">Career Highlight</p>
+      <blockquote>"{highlight}"</blockquote>
+    </section>
+  )
+}
+
+function TacticalBadge({ label }: { label: string }) {
+  return (
+    <span className={`player-status-badge profile-v21-badge ${badgeTone(label)}`}>
+      <i aria-hidden="true" />
+      {label}
+    </span>
   )
 }
 
@@ -309,7 +333,7 @@ function SeasonSnapshot({
         </div>
         <div>
           <dt>Division</dt>
-          <dd>{formatDivisionLabel(player.division) || leagueLabel}</dd>
+          <dd>{cleanTacticalLabel(formatDivisionLabel(player.division)) || leagueLabel}</dd>
         </div>
         <div>
           <dt>Season</dt>
@@ -368,7 +392,10 @@ function PerformanceOverview({
   player: PlayerProfileData
 }) {
   const metrics = getPerformanceMetrics(career, player)
-  const points = metrics.map(({ x, y }) => `${x},${y}`).join(' ')
+  const hasRadarAnalytics = hasValidPerformanceAnalytics(metrics)
+  const points = hasRadarAnalytics
+    ? metrics.map(({ x, y }) => `${x},${y}`).join(' ')
+    : ''
 
   return (
     <section className="panel profile-v21-performance" id="profile-overview" aria-labelledby="performance-title">
@@ -377,15 +404,22 @@ function PerformanceOverview({
         <h2 id="performance-title">Performance Overview</h2>
       </div>
       <div className="profile-v21-performance-grid">
-        <svg viewBox="0 0 200 200" role="img" aria-label="Player performance radar chart">
-          <polygon className="profile-v21-radar-grid" points="100,20 176,76 147,166 53,166 24,76" />
-          <polygon className="profile-v21-radar-fill" points={points} />
-          {metrics.map((metric) => (
-            <text key={metric.label} x={metric.labelX} y={metric.labelY}>
-              {metric.shortLabel}
-            </text>
-          ))}
-        </svg>
+        {hasRadarAnalytics ? (
+          <svg viewBox="0 0 200 200" role="img" aria-label="Player performance radar chart">
+            <polygon className="profile-v21-radar-grid" points="100,20 176,76 147,166 53,166 24,76" />
+            <polygon className="profile-v21-radar-fill" points={points} />
+            {metrics.map((metric) => (
+              <text key={metric.label} x={metric.labelX} y={metric.labelY}>
+                {metric.shortLabel}
+              </text>
+            ))}
+          </svg>
+        ) : (
+          <div className="profile-v21-analytics-fallback">
+            <strong>Performance Analytics</strong>
+            <p>Additional performance analytics unlock as more official games are recorded.</p>
+          </div>
+        )}
         <dl className="profile-v21-stat-list" id="profile-statistics">
           {metrics.map((metric) => (
             <div key={metric.label}>
@@ -1058,7 +1092,7 @@ function getCompetitiveHomeLabel(
   player: PlayerProfileData,
   classifications: ReturnType<typeof getProfileClassifications>,
 ) {
-  const division = formatDivisionLabel(player.division)
+  const division = cleanTacticalLabel(formatDivisionLabel(player.division))
 
   if (division) {
     return division
@@ -1122,18 +1156,14 @@ function getJoinedLabel(player: PlayerProfileData) {
   })}`
 }
 
-function getHeroQuote(games: RecentGame[], player: PlayerProfileData) {
+function getCareerHighlight(games: RecentGame[]) {
   const quotedGame = games.find((game) => game.bestMoment.trim())
 
   if (quotedGame) {
-    return `"${quotedGame.bestMoment.trim()}"`
+    return quotedGame.bestMoment.trim()
   }
 
-  if (player.availability.notes) {
-    return `"${player.availability.notes}"`
-  }
-
-  return ''
+  return 'No career highlight recorded yet.'
 }
 
 function getCurrentLeagueLabel(player: PlayerProfileData) {
@@ -1142,10 +1172,10 @@ function getCurrentLeagueLabel(player: PlayerProfileData) {
   )
 
   if (!league) {
-    return formatDivisionLabel(player.division) || 'No active league'
+    return cleanTacticalLabel(formatDivisionLabel(player.division)) || 'No active league'
   }
 
-  return league.eventName || league.eventId || formatDivisionLabel(player.division)
+  return league.eventName || league.eventId || cleanTacticalLabel(formatDivisionLabel(player.division))
 }
 
 function getPerformanceMetrics(
@@ -1207,6 +1237,47 @@ function getPerformanceMetrics(
       y: 100 + (anchor.y - 100) * ratio,
     }
   })
+}
+
+function hasValidPerformanceAnalytics(
+  metrics: ReturnType<typeof getPerformanceMetrics>,
+) {
+  return metrics.every((metric) =>
+    Number.isFinite(metric.value) &&
+    Number.isFinite(metric.x) &&
+    Number.isFinite(metric.y) &&
+    metric.value >= 0,
+  ) && metrics.some((metric) => metric.value > 0)
+}
+
+function badgeTone(label: string) {
+  const normalized = label.toLowerCase()
+
+  if (normalized.includes('rank') || normalized.includes('veteran')) {
+    return 'is-command'
+  }
+
+  if (normalized.includes('tournament')) {
+    return 'is-tournament'
+  }
+
+  if (normalized.includes('new')) {
+    return 'is-new'
+  }
+
+  if (normalized.includes('casual')) {
+    return 'is-casual'
+  }
+
+  if (normalized.includes('commissioner')) {
+    return 'is-commissioner'
+  }
+
+  return 'is-league'
+}
+
+function cleanTacticalLabel(value: string) {
+  return value.replace(/^[^\p{L}\p{N}#]+/u, '').trim()
 }
 
 function getFactionBreakdown(
@@ -1367,7 +1438,7 @@ function getActivityItems(
   const fallbackItems = [
     {
       date: 'Current',
-      detail: formatDivisionLabel(player.division) || leagueLabel,
+      detail: cleanTacticalLabel(formatDivisionLabel(player.division)) || leagueLabel,
       label: 'League Status',
     },
     {
@@ -1600,14 +1671,13 @@ const playerProfileStyles = `
 .profile-v21-portrait img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  padding: clamp(34px, 4vw, 54px);
 }
 
-.profile-v21-portrait span {
-  color: #f4f6f8;
-  font-family: 'Bebas Neue', 'Rajdhani', sans-serif;
-  font-size: clamp(6.4rem, 15vw, 11rem);
-  line-height: 1;
+.profile-v21-portrait img[src*="http"] {
+  object-fit: cover;
+  padding: 0;
 }
 
 .profile-v21-identity {
@@ -1644,8 +1714,9 @@ const playerProfileStyles = `
 }
 
 .profile-v21-meta span,
-.profile-v21-badges span {
+.profile-v21-badges .profile-v21-badge {
   border: 1px solid rgba(76, 201, 240, 0.34);
+  border-radius: 0;
   background: rgba(18, 26, 36, 0.74);
   color: #f4f6f8;
   font-size: clamp(0.78rem, 0.9vw, 0.92rem);
@@ -1656,21 +1727,61 @@ const playerProfileStyles = `
   text-transform: uppercase;
 }
 
-.profile-v21-badges span:first-child {
-  border-color: rgba(242, 182, 50, 0.7);
-  color: #f2b632;
+.profile-v21-badge i {
+  width: 8px;
+  aspect-ratio: 1;
+  border: 1px solid currentColor;
+  background: currentColor;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  opacity: 0.9;
 }
 
-.profile-v21-quote {
+.profile-v21-badge.is-command {
+  border-color: rgba(242, 182, 50, 0.68);
+  color: #f2b632;
+  background: rgba(242, 182, 50, 0.1);
+}
+
+.profile-v21-badge.is-tournament {
+  border-color: rgba(170, 183, 194, 0.48);
+  color: #f4f6f8;
+}
+
+.profile-v21-badge.is-casual {
+  border-color: rgba(126, 139, 149, 0.5);
+  color: #aab7c2;
+}
+
+.profile-v21-badge.is-new {
+  border-color: rgba(95, 227, 138, 0.54);
+  color: #5fe38a;
+}
+
+.profile-v21-badge.is-commissioner {
+  border-color: rgba(178, 18, 42, 0.62);
+  color: #f4f6f8;
+  background: rgba(178, 18, 42, 0.16);
+}
+
+.profile-v21-highlight {
   grid-column: 2;
   margin: 0;
   border-left: 4px solid #b2122a;
   color: #dce7ef;
+  padding: 22px 0 22px 22px;
+}
+
+.profile-v21-highlight .eyebrow {
+  color: #4cc9f0;
+  margin-bottom: 10px;
+}
+
+.profile-v21-highlight blockquote {
+  margin: 0;
   font-family: 'Rajdhani', sans-serif;
   font-size: clamp(1.35rem, 2vw, 1.8rem);
   font-weight: 800;
   line-height: 1.25;
-  padding: 22px 0 22px 22px;
 }
 
 .profile-v21-topline {
@@ -1852,6 +1963,28 @@ const playerProfileStyles = `
   aspect-ratio: 1;
 }
 
+.profile-v21-analytics-fallback {
+  display: grid;
+  min-height: 260px;
+  align-content: center;
+  border: 1px dashed rgba(76, 201, 240, 0.34);
+  background: rgba(5, 6, 8, 0.36);
+  padding: 24px;
+}
+
+.profile-v21-analytics-fallback strong {
+  color: #f4f6f8;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.profile-v21-analytics-fallback p {
+  color: #aab7c2;
+  margin: 8px 0 0;
+}
+
 .profile-v21-radar-grid {
   fill: rgba(76, 201, 240, 0.04);
   stroke: rgba(76, 201, 240, 0.34);
@@ -2014,7 +2147,7 @@ const playerProfileStyles = `
     grid-template-columns: minmax(220px, auto) minmax(0, 1fr);
   }
 
-  .profile-v21-quote {
+  .profile-v21-highlight {
     grid-column: 2;
   }
 
@@ -2047,7 +2180,7 @@ const playerProfileStyles = `
     width: min(54vw, 260px);
   }
 
-  .profile-v21-quote {
+  .profile-v21-highlight {
     grid-column: 1 / -1;
   }
 
@@ -2081,7 +2214,7 @@ const playerProfileStyles = `
     font-size: clamp(1.5rem, 8vw, 2.4rem);
   }
 
-  .profile-v21-quote {
+  .profile-v21-highlight blockquote {
     font-size: 1.3rem;
   }
 
