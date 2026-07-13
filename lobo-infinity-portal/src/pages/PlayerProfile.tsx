@@ -1715,6 +1715,7 @@ const playerProfileStyles = `
 
 .profile-v21-meta span,
 .profile-v21-badges .profile-v21-badge {
+  gap: 7px;
   border: 1px solid rgba(76, 201, 240, 0.34);
   border-radius: 0;
   background: rgba(18, 26, 36, 0.74);
