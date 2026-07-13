@@ -30,22 +30,29 @@ const RECENT_GAME_ANALYTICS_COLUMNS = {
 
 function getRecentGames(e) {
 
-  const requestedGameId =
-    e &&
-    e.parameter &&
-    Number(e.parameter.gameId);
-
-  if (
-    Number.isInteger(requestedGameId) &&
-    typeof getAllRecentGameObjects === "function"
-  )
+  if (typeof getAllRecentGameObjects === "function")
     return jsonOutput({
       success: true,
       games:
-        getAllRecentGameObjects()
-          .filter(function(game) {
-            return game.id === requestedGameId;
-          })
+        filterRecentGamesByGameId(
+          filterRecentGamesByEvent(
+            filterRecentGamesByPlayer(
+              getAllRecentGameObjects(),
+              e &&
+              e.parameter &&
+              e.parameter.playerName
+            ),
+            e &&
+            e.parameter &&
+            e.parameter.eventId,
+            e &&
+            e.parameter &&
+            e.parameter.gameType
+          ),
+          e &&
+          e.parameter &&
+          e.parameter.gameId
+        ).slice(0, RECENT_GAMES_LIMIT)
     });
 
   const sheet =
