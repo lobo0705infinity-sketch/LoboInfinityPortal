@@ -754,10 +754,9 @@ function getPlayer(e) {
     );
 
   if (!registeredPlayer)
-    return jsonOutput({
-      success: false,
-      error: "Player not found."
-    });
+    return getCommunityPlayerProfile(
+      requestedName
+    );
 
   updateRegistryStatistics(registry);
 
@@ -901,6 +900,156 @@ function getPlayer(e) {
     }
 
   });
+
+}
+
+function getCommunityPlayerProfile(requestedName) {
+
+  const communityPlayer =
+    findCommunityPlayerProfileRecord(
+      requestedName
+    );
+
+  if (!communityPlayer)
+    return jsonOutput({
+      success: false,
+      error: "Player not found."
+    });
+
+  const playerName =
+    communityPlayer.player;
+  const armyLists =
+    getPlayerArmyLists(
+      playerName
+    );
+
+  return jsonOutput({
+    success: true,
+    player: {
+      name: playerName,
+      displayName:
+        communityPlayer.displayName ||
+        playerName,
+      division:
+        communityPlayer.division || "",
+      rank:
+        communityPlayer.rank || 0,
+      games:
+        communityPlayer.games || 0,
+      wins:
+        communityPlayer.wins || 0,
+      losses:
+        communityPlayer.losses || 0,
+      tp:
+        communityPlayer.tp || 0,
+      op:
+        communityPlayer.op || 0,
+      vp:
+        communityPlayer.vp || 0,
+      favoriteFaction:
+        communityPlayer.favoriteArmy || "",
+      favoriteMission:
+        "",
+      bestMission:
+        "",
+      firstTurnGames:
+        0,
+      secondTurnGames:
+        0,
+      firstTurnWinRate:
+        0,
+      secondTurnWinRate:
+        0,
+      bestFaction:
+        "",
+      rival:
+        "",
+      nemesis:
+        "",
+      armyLists:
+        armyLists.lists,
+      armyListSummary:
+        armyLists.summary,
+      registeredEvents:
+        getRegisteredEventsForPlayer({
+          player: playerName,
+          displayName:
+            communityPlayer.displayName ||
+            playerName
+        }),
+      availability:
+        buildEmptyPlayerAvailability(
+          playerName
+        ),
+      profilePicture:
+        "",
+      discordHandle:
+        "",
+      homeStore:
+        "",
+      city:
+        "",
+      preferredLocations:
+        "",
+      scheduleLink:
+        "/match-finder?opponent=" + encodeURIComponent(playerName),
+      careerSummary:
+        buildPlayerCareerSummary(
+          playerName
+        )
+    }
+  });
+
+}
+
+function findCommunityPlayerProfileRecord(requestedName) {
+
+  const target =
+    getCommunityPlayerKey(requestedName);
+
+  if (target === "")
+    return null;
+
+  const rows =
+    buildCommunityPlayerRegistryRows();
+
+  for (let index = 0; index < rows.length; index++) {
+    const row =
+      rows[index];
+
+    if (
+      getCommunityPlayerKey(row.player) === target ||
+      getCommunityPlayerKey(row.displayName) === target
+    )
+      return row;
+  }
+
+  return null;
+
+}
+
+function buildEmptyPlayerAvailability(playerName) {
+
+  return {
+    city: "",
+    discordHandle: "",
+    friday: "",
+    homeStore: "",
+    maxTravelDistance: "",
+    monday: "",
+    notes: "",
+    player: playerName,
+    preferredDays: "",
+    preferredLocations: "",
+    preferredTimes: "",
+    saturday: "",
+    status: "",
+    sunday: "",
+    thursday: "",
+    tuesday: "",
+    updatedAt: "",
+    wednesday: ""
+  };
 
 }
 
