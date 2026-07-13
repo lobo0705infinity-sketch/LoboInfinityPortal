@@ -456,6 +456,17 @@ export const firestoreProviderImpl: DataProvider = {
         timeline: buildTournamentTimeline(event, registration, pairings, []),
       }
     },
+    getLeagueOperations: async () => ({
+      mapOptions: [],
+      missionOptions: [],
+      missions: [
+        { maps: ['', ''], mission: '' },
+        { maps: ['', ''], mission: '' },
+      ],
+      updatedAt: '',
+      updatedBy: '',
+      weekNumber: '',
+    }),
     getEventManager: async (eventId = defaultEventId) => {
       const events = await readEvents()
       const selectedEvent = events.find((event) => event.id === eventId) ?? events[0]
@@ -502,6 +513,7 @@ export const firestoreProviderImpl: DataProvider = {
           }),
         ),
         generatedAt: new Date().toISOString(),
+        leagueOperations: await firestoreProviderImpl.events.getLeagueOperations(),
         pairings,
         participants: registration.registrations,
         quickActions: [],
@@ -540,6 +552,8 @@ export const firestoreProviderImpl: DataProvider = {
       await savePairingDocument(params)
       return firestoreProviderImpl.events.getEventManager(params.eventId)
     },
+    saveLeagueOperations: async () =>
+      firestoreProviderImpl.events.getLeagueOperations(),
     saveParticipant: async (params) => {
       await saveRegistrationDocument(params)
       return firestoreProviderImpl.events.getEventManager(params.eventId)

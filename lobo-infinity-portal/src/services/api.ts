@@ -1184,6 +1184,7 @@ export type EventManagerData = {
   }
   events: EventManagerEventSummary[]
   generatedAt: string
+  leagueOperations: LeagueOperationsData
   pairings: TeamTournamentPairing[]
   participants: EventRegistrationEntry[]
   quickActions: Array<{
@@ -1195,6 +1196,20 @@ export type EventManagerData = {
   rounds: Array<Record<string, unknown>>
   selectedEvent: LeagueEvent
   teams: TeamTournamentTeam[]
+}
+
+export type LeagueOperationsMission = {
+  maps: string[]
+  mission: string
+}
+
+export type LeagueOperationsData = {
+  mapOptions: string[]
+  missionOptions: string[]
+  missions: LeagueOperationsMission[]
+  updatedAt: string
+  updatedBy: string
+  weekNumber: string
 }
 
 export type EventHomeData = {
@@ -2099,6 +2114,7 @@ export type ApiClient = {
     eventId?: string,
     options?: ApiOptions,
   ) => Promise<EventManagerData>
+  getLeagueOperations: (options?: ApiOptions) => Promise<LeagueOperationsData>
   registerForEvent: (
     params: Record<string, string>,
     options?: ApiOptions,
@@ -2139,6 +2155,10 @@ export type ApiClient = {
     params: Record<string, string>,
     options?: ApiOptions,
   ) => Promise<EventManagerData>
+  saveLeagueOperations: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<LeagueOperationsData>
   registerTeamTournament: (
     params: Record<string, string>,
     options?: ApiOptions,
@@ -2658,6 +2678,13 @@ export async function getEventManager(
   return normalizeEventManagerPayload(payload)
 }
 
+export async function getLeagueOperations(
+  options: ApiOptions = {},
+): Promise<LeagueOperationsData> {
+  const payload = await request('leagueOperations', options)
+  return normalizeLeagueOperationsPayload(payload)
+}
+
 export async function registerForEvent(
   params: Record<string, string>,
   options: ApiOptions = {},
@@ -2736,6 +2763,14 @@ export async function saveEventManagerPairing(
 ): Promise<EventManagerData> {
   const payload = await postRequest('eventManagerPairing', options, params)
   return normalizeEventManagerPayload(payload)
+}
+
+export async function saveLeagueOperations(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<LeagueOperationsData> {
+  const payload = await postRequest('leagueOperationsSave', options, params)
+  return normalizeLeagueOperationsPayload(payload)
 }
 
 export async function registerTeamTournament(
@@ -3094,6 +3129,7 @@ export const apiClient: ApiClient = {
   getTeamTournament,
   getEventRegistration,
   getEventHome,
+  getLeagueOperations,
   getEventManager,
   registerForEvent,
   withdrawEventRegistration,
@@ -3105,6 +3141,7 @@ export const apiClient: ApiClient = {
   saveEventManagerParticipant,
   saveEventManagerTeam,
   saveEventManagerPairing,
+  saveLeagueOperations,
   registerTeamTournament,
   saveTeamTournamentTeam,
   saveTeamTournamentPairing,
@@ -4963,6 +5000,7 @@ function normalizeEventManagerPayload(payload: unknown): EventManagerData {
       }
     }),
     generatedAt: getString(manager, 'generatedAt'),
+    leagueOperations: normalizeLeagueOperationsData(manager.leagueOperations),
     pairings: getArray(manager, 'pairings').map(normalizeTeamTournamentPairing),
     participants: getArray(manager, 'participants').map(
       normalizeEventRegistrationEntry,
@@ -4984,6 +5022,40 @@ function normalizeEventManagerPayload(payload: unknown): EventManagerData {
     ),
     selectedEvent: normalizeLeagueEvent(getRequiredRecord(manager, 'selectedEvent')),
     teams: getArray(manager, 'teams').map(normalizeTeamTournamentTeam),
+  }
+}
+
+function normalizeLeagueOperationsPayload(payload: unknown): LeagueOperationsData {
+  const record = asRecord(payload, 'League operations response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'League operations failed.')
+  }
+
+  return normalizeLeagueOperationsData(record.operations)
+}
+
+function normalizeLeagueOperationsData(value: unknown): LeagueOperationsData {
+  const record = asRecord(value ?? {}, 'League operations')
+
+  return {
+    mapOptions: getArray(record, 'mapOptions').map((item) => String(item ?? '')),
+    missionOptions: getArray(record, 'missionOptions').map((item) =>
+      String(item ?? ''),
+    ),
+    missions: getArray(record, 'missions')
+      .map((item) => {
+        const mission = asRecord(item, 'League operations mission')
+
+        return {
+          maps: getArray(mission, 'maps').map((map) => String(map ?? '')),
+          mission: getString(mission, 'mission'),
+        }
+      })
+      .slice(0, 2),
+    updatedAt: getString(record, 'updatedAt'),
+    updatedBy: getString(record, 'updatedBy'),
+    weekNumber: getString(record, 'weekNumber'),
   }
 }
 

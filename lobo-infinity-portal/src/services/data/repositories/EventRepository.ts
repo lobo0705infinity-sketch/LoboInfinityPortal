@@ -1,5 +1,6 @@
 import type {
   EventHomeData,
+  LeagueOperationsData,
   EventManagerData,
 } from '../../api'
 import type { ApiOptions } from '../../apiCore'
@@ -9,6 +10,7 @@ export interface EventRepository {
   getEvents(options?: ApiOptions): Promise<EventCatalog>
   getEventHome(eventId?: string, options?: ApiOptions): Promise<EventHomeData>
   getEventManager(eventId?: string, options?: ApiOptions): Promise<EventManagerData>
+  getLeagueOperations(options?: ApiOptions): Promise<LeagueOperationsData>
   saveEvent(
     params: Record<string, string>,
     options?: ApiOptions,
@@ -37,4 +39,8 @@ export interface EventRepository {
     params: Record<string, string>,
     options?: ApiOptions,
   ): Promise<EventManagerData>
+  saveLeagueOperations(
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ): Promise<LeagueOperationsData>
 }

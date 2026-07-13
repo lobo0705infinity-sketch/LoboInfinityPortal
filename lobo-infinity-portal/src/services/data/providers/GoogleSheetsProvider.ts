@@ -18,10 +18,12 @@ export const googleSheetsProvider: DataProvider = {
   },
   events: {
     getEventHome: apiClient.getEventHome,
+    getLeagueOperations: apiClient.getLeagueOperations,
     getEventManager: apiClient.getEventManager,
     getEvents: apiClient.getEvents,
     saveEvent: apiClient.saveEventManagerEvent,
     savePairing: apiClient.saveEventManagerPairing,
+    saveLeagueOperations: apiClient.saveLeagueOperations,
     saveParticipant: apiClient.saveEventManagerParticipant,
     saveTeam: apiClient.saveEventManagerTeam,
     setCurrentEvent: apiClient.setEventManagerCurrentEvent,

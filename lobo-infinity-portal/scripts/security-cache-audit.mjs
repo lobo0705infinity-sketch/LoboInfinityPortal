@@ -65,6 +65,8 @@ const endpointPolicy = {
   integrityReport: { authRequired: true, userScoped: false },
   intelligence: { authRequired: false, userScoped: false },
   leader: { authRequired: false, userScoped: false },
+  leagueOperations: { authRequired: false, userScoped: false },
+  leagueOperationsSave: { authRequired: true, userScoped: false },
   manageEventRegistration: { authRequired: true, userScoped: false },
   matchFinder: { authRequired: true, userScoped: true },
   mission: { authRequired: false, userScoped: false },

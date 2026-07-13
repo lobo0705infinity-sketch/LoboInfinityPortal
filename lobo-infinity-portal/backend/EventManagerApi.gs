@@ -501,6 +501,10 @@ function buildEventManagerPayload(engine, selectedEvent) {
     currentEvent:
       getCurrentLeagueEventSnapshot(engine),
     selectedEvent: selected,
+    leagueOperations:
+      typeof buildLeagueOperationsPayload === "function"
+        ? buildLeagueOperationsPayload(getLeagueOperationsCurrentRow())
+        : {},
     events: events,
     registration: registration,
     participants: registrations,

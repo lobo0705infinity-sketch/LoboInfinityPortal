@@ -219,6 +219,11 @@ function handleApiGet(e, action) {
         return getMissions(e);
       });
 
+    case "leagueOperations":
+      return getCachedApiResponse(e, action, function() {
+        return getLeagueOperations();
+      });
+
     case "mission":
       return getCachedApiResponse(e, action, function() {
         return getMission(e);
@@ -485,6 +490,9 @@ function handleApiGet(e, action) {
 
     case "eventManagerPairing":
       return saveEventManagerPairing(e);
+
+    case "leagueOperationsSave":
+      return saveLeagueOperations(e);
 
     case "exportEventRegistrations":
       return exportEventRegistrations(e);
@@ -876,6 +884,9 @@ function handleApiPost(e, action) {
 
     case "eventManagerPairing":
       return saveEventManagerPairing(e);
+
+    case "leagueOperationsSave":
+      return saveLeagueOperations(e);
 
     case "exportEventRegistrations":
       return exportEventRegistrations(e);

@@ -93,6 +93,15 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     teamA: '',
     teamB: '',
   })
+  const [leagueOperationsForm, setLeagueOperationsForm] = useState({
+    mission1: '',
+    mission1MapA: '',
+    mission1MapB: '',
+    mission2: '',
+    mission2MapA: '',
+    mission2MapB: '',
+    weekNumber: '',
+  })
 
   function applyManagerData(data: EventManagerData) {
     setSelectedEventId(data.selectedEvent.id)
@@ -108,6 +117,15 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
       startDate: data.selectedEvent.startDate,
       status: data.selectedEvent.status || 'Planning',
       type: data.selectedEvent.type || 'Custom',
+    })
+    setLeagueOperationsForm({
+      mission1: data.leagueOperations.missions[0]?.mission ?? '',
+      mission1MapA: data.leagueOperations.missions[0]?.maps[0] ?? '',
+      mission1MapB: data.leagueOperations.missions[0]?.maps[1] ?? '',
+      mission2: data.leagueOperations.missions[1]?.mission ?? '',
+      mission2MapA: data.leagueOperations.missions[1]?.maps[0] ?? '',
+      mission2MapB: data.leagueOperations.missions[1]?.maps[1] ?? '',
+      weekNumber: data.leagueOperations.weekNumber,
     })
     setState({ data, status: 'success' })
   }
@@ -217,6 +235,46 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
         status: 'Planning',
       }),
     )
+  }
+
+  async function saveLeagueOperations(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setWorkingAction('leagueOperations')
+    setActionError('')
+    setActionMessage('')
+
+    try {
+      const operations = await eventRepository.saveLeagueOperations(leagueOperationsForm)
+      setLeagueOperationsForm({
+        mission1: operations.missions[0]?.mission ?? '',
+        mission1MapA: operations.missions[0]?.maps[0] ?? '',
+        mission1MapB: operations.missions[0]?.maps[1] ?? '',
+        mission2: operations.missions[1]?.mission ?? '',
+        mission2MapA: operations.missions[1]?.maps[0] ?? '',
+        mission2MapB: operations.missions[1]?.maps[1] ?? '',
+        weekNumber: operations.weekNumber,
+      })
+      setState((current) =>
+        current.status === 'success'
+          ? {
+              ...current,
+              data: {
+                ...current.data,
+                leagueOperations: operations,
+              },
+            }
+          : current,
+      )
+      setActionMessage('League Operations updated.')
+    } catch (error) {
+      setActionError(
+        error instanceof Error
+          ? error.message
+          : 'League Operations could not be saved.',
+      )
+    } finally {
+      setWorkingAction('')
+    }
   }
 
   async function applyLifecycle() {
@@ -572,6 +630,99 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
             </div>
           </form>
 
+          {data.selectedEvent.type === 'League' ? (
+            <form className="event-manager-form" onSubmit={saveLeagueOperations}>
+              <h3>League Operations</h3>
+              <label>
+                Week Number
+                <input
+                  disabled={!canManage}
+                  onChange={(event) =>
+                    setLeagueOperationsForm((current) => ({
+                      ...current,
+                      weekNumber: event.target.value,
+                    }))
+                  }
+                  value={leagueOperationsForm.weekNumber}
+                />
+              </label>
+              <LeagueOperationsSelect
+                disabled={!canManage}
+                label="Mission 1"
+                onChange={(mission1) =>
+                  setLeagueOperationsForm((current) => ({ ...current, mission1 }))
+                }
+                options={data.leagueOperations.missionOptions}
+                value={leagueOperationsForm.mission1}
+              />
+              <LeagueOperationsSelect
+                disabled={!canManage}
+                label="Mission 1 Map A"
+                onChange={(mission1MapA) =>
+                  setLeagueOperationsForm((current) => ({
+                    ...current,
+                    mission1MapA,
+                  }))
+                }
+                options={data.leagueOperations.mapOptions}
+                value={leagueOperationsForm.mission1MapA}
+              />
+              <LeagueOperationsSelect
+                disabled={!canManage}
+                label="Mission 1 Map B"
+                onChange={(mission1MapB) =>
+                  setLeagueOperationsForm((current) => ({
+                    ...current,
+                    mission1MapB,
+                  }))
+                }
+                options={data.leagueOperations.mapOptions}
+                value={leagueOperationsForm.mission1MapB}
+              />
+              <LeagueOperationsSelect
+                disabled={!canManage}
+                label="Mission 2"
+                onChange={(mission2) =>
+                  setLeagueOperationsForm((current) => ({ ...current, mission2 }))
+                }
+                options={data.leagueOperations.missionOptions}
+                value={leagueOperationsForm.mission2}
+              />
+              <LeagueOperationsSelect
+                disabled={!canManage}
+                label="Mission 2 Map A"
+                onChange={(mission2MapA) =>
+                  setLeagueOperationsForm((current) => ({
+                    ...current,
+                    mission2MapA,
+                  }))
+                }
+                options={data.leagueOperations.mapOptions}
+                value={leagueOperationsForm.mission2MapA}
+              />
+              <LeagueOperationsSelect
+                disabled={!canManage}
+                label="Mission 2 Map B"
+                onChange={(mission2MapB) =>
+                  setLeagueOperationsForm((current) => ({
+                    ...current,
+                    mission2MapB,
+                  }))
+                }
+                options={data.leagueOperations.mapOptions}
+                value={leagueOperationsForm.mission2MapB}
+              />
+              <div className="event-manager-actions event-manager-wide">
+                <button disabled={!canManage || workingAction !== ''} type="submit">
+                  Save League Operations
+                </button>
+                <a className="button-link" href="/league-operations">
+                  View Public Page
+                </a>
+              </div>
+            </form>
+          ) : null}
+
           <ParticipantsPanel
             canManage={canManage}
             form={participantForm}
@@ -731,6 +882,38 @@ function RegistrationSelect({
       <option>Waitlist Open</option>
       <option>Capacity Full</option>
     </select>
+  )
+}
+
+function LeagueOperationsSelect({
+  disabled,
+  label,
+  onChange,
+  options,
+  value,
+}: {
+  disabled: boolean
+  label: string
+  onChange: (value: string) => void
+  options: string[]
+  value: string
+}) {
+  return (
+    <label>
+      {label}
+      <select
+        disabled={disabled}
+        onChange={(event) => onChange(event.target.value)}
+        value={value}
+      >
+        <option value="">Select {label}</option>
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    </label>
   )
 }
 

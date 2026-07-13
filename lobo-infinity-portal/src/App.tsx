@@ -36,6 +36,7 @@ const Factions = lazyRoute('Factions', () => import('./pages/Factions'))
 const GameDetails = lazyRoute('GameDetails', () => import('./pages/GameDetails'))
 const HallOfFame = lazyRoute('HallOfFame', () => import('./pages/HallOfFame'))
 const LeagueIntegrity = lazyRoute('LeagueIntegrity', () => import('./pages/LeagueIntegrity'))
+const LeagueOperations = lazyRoute('LeagueOperations', () => import('./pages/LeagueOperations'))
 const MatchFinder = lazyRoute('MatchFinder', () => import('./pages/MatchFinder'))
 const MissionProfile = lazyRoute('MissionProfile', () => import('./pages/MissionProfile'))
 const Missions = lazyRoute('Missions', () => import('./pages/Missions'))
@@ -96,6 +97,7 @@ function AuthShell() {
               <Routes>
                 <Route path="/" element={<MeasuredRoute name="Dashboard"><Dashboard /></MeasuredRoute>} />
                 <Route path="/standings" element={<MeasuredRoute name="Standings"><Standings /></MeasuredRoute>} />
+                <Route path="/league-operations" element={<MeasuredRoute name="LeagueOperations"><LeagueOperations /></MeasuredRoute>} />
                 <Route path="/players" element={<MeasuredRoute name="Players"><Players /></MeasuredRoute>} />
                 <Route path="/rivalries" element={<MeasuredRoute name="Rivalries"><Rivalries /></MeasuredRoute>} />
                 <Route path="/match-finder" element={<MeasuredRoute name="MatchFinder"><MatchFinder /></MeasuredRoute>} />

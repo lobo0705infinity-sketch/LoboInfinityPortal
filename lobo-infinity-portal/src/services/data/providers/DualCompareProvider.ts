@@ -86,10 +86,12 @@ export const dualCompareProvider: DataProvider = {
   },
   events: {
     getEventHome: wrapRead('events', 'getEventHome'),
+    getLeagueOperations: wrapRead('events', 'getLeagueOperations'),
     getEventManager: wrapRead('events', 'getEventManager'),
     getEvents: wrapRead('events', 'getEvents'),
     saveEvent: wrapWrite('events', 'saveEvent'),
     savePairing: wrapWrite('events', 'savePairing'),
+    saveLeagueOperations: wrapWrite('events', 'saveLeagueOperations'),
     saveParticipant: wrapWrite('events', 'saveParticipant'),
     saveTeam: wrapWrite('events', 'saveTeam'),
     setCurrentEvent: wrapWrite('events', 'setCurrentEvent'),

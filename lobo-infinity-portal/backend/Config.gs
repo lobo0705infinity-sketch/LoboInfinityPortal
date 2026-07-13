@@ -88,7 +88,9 @@ const CONFIG = {
 
     COMMUNITY_ALERTS: "Community Alerts",
 
-    COMMUNITY_TIMELINE: "Community Timeline"
+    COMMUNITY_TIMELINE: "Community Timeline",
+
+    LEAGUE_OPERATIONS: "League Operations"
 
   },
 

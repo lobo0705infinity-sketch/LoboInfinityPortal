@@ -61,10 +61,12 @@ export const firestoreProvider: DataProvider = {
   },
   events: {
     getEventHome: callRepository('events', 'getEventHome'),
+    getLeagueOperations: callRepository('events', 'getLeagueOperations'),
     getEventManager: callRepository('events', 'getEventManager'),
     getEvents: callRepository('events', 'getEvents'),
     saveEvent: callRepository('events', 'saveEvent'),
     savePairing: callRepository('events', 'savePairing'),
+    saveLeagueOperations: callRepository('events', 'saveLeagueOperations'),
     saveParticipant: callRepository('events', 'saveParticipant'),
     saveTeam: callRepository('events', 'saveTeam'),
     setCurrentEvent: callRepository('events', 'setCurrentEvent'),

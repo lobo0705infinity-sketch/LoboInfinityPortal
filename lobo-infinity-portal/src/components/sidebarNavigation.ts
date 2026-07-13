@@ -25,6 +25,11 @@ export const authenticatedTopLevelItems: NavigationItem[] = [
     label: 'My Profile',
     to: '/profile',
   },
+  {
+    icon: 'missions',
+    label: 'League Operations',
+    to: '/league-operations',
+  },
 ]
 
 export const communityItems: NavigationItem[] = [
