@@ -19,6 +19,7 @@
     "test:submit-game": "node --experimental-strip-types scripts/submit-game-identity-check.ts",
     "test:notifications": "node --experimental-strip-types scripts/notification-timestamp-check.ts",
     "test:player-registry": "node scripts/player-registry-context-check.mjs",
+    "test:player-identity": "node scripts/player-identity-check.mjs",
     "rules:check": "node scripts/firestore-rules-check.mjs",
     "security:cache": "node scripts/security-cache-audit.mjs",
     "security:armies": "node scripts/army-registry-audit.mjs"

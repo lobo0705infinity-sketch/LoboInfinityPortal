@@ -205,6 +205,7 @@ function normalizePortalUser(record: Record<string, unknown>): PortalUser {
     created: getString(record, 'created'),
     dismissedAlerts: getStringArray(record, 'dismissedAlerts'),
     displayName: getString(record, 'displayName') || 'Guest',
+    discordName: getString(record, 'discordName'),
     email: getString(record, 'email'),
     enabled: getBoolean(record, 'enabled'),
     favoriteFaction: getString(record, 'favoriteFaction'),
@@ -218,6 +219,7 @@ function normalizePortalUser(record: Record<string, unknown>): PortalUser {
     readAlerts: getStringArray(record, 'readAlerts'),
     role: (getString(record, 'role') || 'Guest') as PortalUser['role'],
     searchHistory: getStringArray(record, 'searchHistory'),
+    profileVisibility: getString(record, 'profileVisibility') || 'Public',
     themePreference: getString(record, 'themePreference') || 'system',
   }
 }

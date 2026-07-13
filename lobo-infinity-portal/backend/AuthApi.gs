@@ -25,6 +25,8 @@ const USER_HEADERS = [
   "Role",
   "Enabled",
   "Favorite Faction",
+  "Discord Name",
+  "Profile Visibility",
   "Avatar URL",
   "Created",
   "Last Login",
@@ -42,7 +44,7 @@ const PERMISSION_MIN_ROLE = {
   readPortal: USER_ROLES.GUEST,
   vote: USER_ROLES.MEMBER,
   submitLists: USER_ROLES.MEMBER,
-  updateProfile: USER_ROLES.MEMBER,
+  updateProfile: USER_ROLES.GUEST,
   manageNotifications: USER_ROLES.MEMBER,
   approveLists: USER_ROLES.ASSISTANT,
   manageNews: USER_ROLES.ASSISTANT,
@@ -123,15 +125,62 @@ function updateMyProfile(e) {
           error: "User record not found."
         });
 
-      if (params.displayName !== undefined)
+      if (params.displayName !== undefined) {
+        const validation =
+          validatePortalDisplayName(
+            sheet,
+            columns,
+            params.displayName,
+            auth.user.email,
+            auth.user.leaguePlayer
+          );
+
+        if (!validation.valid)
+          return jsonOutput({
+            success: false,
+            error: validation.error
+          });
+
         sheet
           .getRange(rowNumber, columns.displayName + 1)
-          .setValue(getAuthString(params.displayName));
+          .setValue(validation.displayName);
+
+        syncPortalDisplayNameReferences(
+          auth.user,
+          validation.displayName
+        );
+      }
 
       if (params.favoriteFaction !== undefined)
         sheet
           .getRange(rowNumber, columns.favoriteFaction + 1)
           .setValue(getAuthString(params.favoriteFaction));
+
+      if (
+        columns.discordName !== -1 &&
+        params.discordName !== undefined
+      ) {
+        const discordValidation =
+          validatePortalDiscordName(params.discordName);
+
+        if (!discordValidation.valid)
+          return jsonOutput({
+            success: false,
+            error: discordValidation.error
+          });
+
+        sheet
+          .getRange(rowNumber, columns.discordName + 1)
+          .setValue(discordValidation.discordName);
+      }
+
+      if (
+        columns.profileVisibility !== -1 &&
+        params.profileVisibility !== undefined
+      )
+        sheet
+          .getRange(rowNumber, columns.profileVisibility + 1)
+          .setValue(validatePortalProfileVisibility(params.profileVisibility));
 
       if (params.themePreference !== undefined)
         sheet
@@ -158,6 +207,8 @@ function updateMyProfile(e) {
         columns,
         rowNumber
       );
+
+      invalidatePortalIdentityCaches();
 
       return jsonOutput({
         success: true,
@@ -538,7 +589,8 @@ function getRequestUser(e) {
         bootstrap ||
           configuredCommissioner ||
           leagueIdentity.player !== "" ||
-          role === USER_ROLES.GUEST
+          role === USER_ROLES.GUEST,
+        leagueIdentity
       );
   }
 
@@ -648,7 +700,8 @@ function getRequestUser(e) {
     sheet,
     columns,
     rowNumber,
-    verified
+    verified,
+    leagueIdentity
   );
 
   endApiPipelineStage(
@@ -703,6 +756,288 @@ function getRequestUser(e) {
         rowNumber
       )
   };
+
+}
+
+const PORTAL_DISPLAY_NAME_RESERVED = [
+  "admin",
+  "administrator",
+  "commissioner",
+  "guest",
+  "system",
+  "unknown"
+];
+
+function validatePortalDisplayName(
+  sheet,
+  columns,
+  value,
+  currentEmail,
+  currentLeaguePlayer
+) {
+
+  const displayName =
+    getAuthString(value);
+
+  if (displayName.length < 3)
+    return {
+      valid: false,
+      error: "Display name must be at least 3 characters."
+    };
+
+  if (displayName.length > 24)
+    return {
+      valid: false,
+      error: "Display name must be 24 characters or fewer."
+    };
+
+  if (!/^[A-Za-z0-9 _-]+$/.test(displayName))
+    return {
+      valid: false,
+      error: "Display name may use letters, numbers, spaces, hyphen, and underscore only."
+    };
+
+  const normalized =
+    displayName.toLowerCase();
+
+  if (PORTAL_DISPLAY_NAME_RESERVED.indexOf(normalized) !== -1)
+    return {
+      valid: false,
+      error: "That display name is reserved."
+    };
+
+  if (
+    isPortalDisplayNameTaken(
+      sheet,
+      columns,
+      displayName,
+      currentEmail,
+      currentLeaguePlayer
+    )
+  )
+    return {
+      valid: false,
+      error: "That display name is already in use."
+    };
+
+  return {
+    valid: true,
+    displayName: displayName
+  };
+
+}
+
+function isPortalDisplayNameTaken(
+  sheet,
+  columns,
+  displayName,
+  currentEmail,
+  currentLeaguePlayer
+) {
+
+  const target =
+    getAuthString(displayName).toLowerCase();
+  const currentEmailKey =
+    getAuthString(currentEmail).toLowerCase();
+  const currentLeaguePlayerKey =
+    getAuthString(currentLeaguePlayer).toLowerCase();
+
+  const values =
+    sheet
+      .getDataRange()
+      .getValues();
+
+  for (
+    let index = 1;
+    index < values.length;
+    index++
+  ) {
+    const email =
+      getAuthString(values[index][columns.email])
+        .toLowerCase();
+
+    if (email === currentEmailKey)
+      continue;
+
+    if (
+      getAuthString(values[index][columns.displayName])
+        .toLowerCase() === target
+    )
+      return true;
+  }
+
+  const registry =
+    buildPlayerRegistry();
+
+  for (const key in registry) {
+    const player =
+      registry[key];
+    const playerName =
+      getAuthString(player.player);
+
+    if (playerName.toLowerCase() === currentLeaguePlayerKey)
+      continue;
+
+    if (
+      playerName.toLowerCase() === target ||
+      getAuthString(player.displayName).toLowerCase() === target
+    )
+      return true;
+  }
+
+  return false;
+
+}
+
+function validatePortalDiscordName(value) {
+
+  const discordName =
+    getAuthString(value);
+
+  if (discordName.length > 40)
+    return {
+      valid: false,
+      error: "Discord name must be 40 characters or fewer."
+    };
+
+  if (
+    discordName !== "" &&
+    !/^[A-Za-z0-9 ._#@-]+$/.test(discordName)
+  )
+    return {
+      valid: false,
+      error: "Discord name contains unsupported characters."
+    };
+
+  return {
+    valid: true,
+    discordName: discordName
+  };
+
+}
+
+function validatePortalProfileVisibility(value) {
+
+  const visibility =
+    getAuthString(value);
+
+  if (visibility === "Private")
+    return "Private";
+
+  return "Public";
+
+}
+
+function syncPortalDisplayNameReferences(user, displayName) {
+
+  const leaguePlayer =
+    getAuthString(user.leaguePlayer);
+
+  if (leaguePlayer !== "") {
+    try {
+      setLeaguePlayerDisplayName(
+        leaguePlayer,
+        displayName
+      );
+    }
+    catch (err) {
+      Logger.log(
+        "League display name sync skipped: " +
+        err
+      );
+    }
+  }
+
+  syncEventParticipantDisplayName(
+    user,
+    displayName
+  );
+
+}
+
+function syncEventParticipantDisplayName(user, displayName) {
+
+  const leaguePlayer =
+    getAuthString(user.leaguePlayer);
+  const email =
+    getAuthString(user.email).toLowerCase();
+
+  if (
+    leaguePlayer === "" &&
+    email === ""
+  )
+    return;
+
+  const sheet =
+    SpreadsheetApp
+      .getActive()
+      .getSheetByName(CONFIG.SHEETS.EVENT_PARTICIPANTS);
+
+  if (!sheet)
+    return;
+
+  const values =
+    sheet
+      .getDataRange()
+      .getValues();
+
+  if (values.length <= 1)
+    return;
+
+  const headers =
+    values[0]
+      .map(getAuthString);
+  const playerCol =
+    headers.indexOf("Player");
+  const displayNameCol =
+    headers.indexOf("Display Name");
+  const emailCol =
+    headers.indexOf("Email");
+
+  if (displayNameCol === -1)
+    return;
+
+  for (
+    let index = 1;
+    index < values.length;
+    index++
+  ) {
+    const rowPlayer =
+      playerCol === -1
+        ? ""
+        : getAuthString(values[index][playerCol]);
+    const rowEmail =
+      emailCol === -1
+        ? ""
+        : getAuthString(values[index][emailCol]).toLowerCase();
+
+    if (
+      (
+        leaguePlayer !== "" &&
+        rowPlayer.toLowerCase() === leaguePlayer.toLowerCase()
+      ) ||
+      (
+        email !== "" &&
+        rowEmail === email
+      )
+    )
+      sheet
+        .getRange(index + 1, displayNameCol + 1)
+        .setValue(displayName);
+  }
+
+}
+
+function invalidatePortalIdentityCaches() {
+
+  if (typeof invalidatePlayerRegistryCache === "function")
+    invalidatePlayerRegistryCache();
+
+  if (typeof invalidatePortalCacheGroup === "function") {
+    invalidatePortalCacheGroup("players");
+    invalidatePortalCacheGroup("search");
+    invalidatePortalCacheGroup("analytics");
+  }
 
 }
 
@@ -1211,6 +1546,8 @@ function getUsersColumns(sheet) {
     role: headers.indexOf("Role"),
     enabled: headers.indexOf("Enabled"),
     favoriteFaction: headers.indexOf("Favorite Faction"),
+    discordName: headers.indexOf("Discord Name"),
+    profileVisibility: headers.indexOf("Profile Visibility"),
     avatarUrl: headers.indexOf("Avatar URL"),
     created: headers.indexOf("Created"),
     lastLogin: headers.indexOf("Last Login"),
@@ -1226,17 +1563,24 @@ function getUsersColumns(sheet) {
 
 }
 
-function createUserRow(sheet, columns, verified, role, enabled) {
+function createUserRow(sheet, columns, verified, role, enabled, leagueIdentity) {
 
   const row = [];
   const timestamp =
     getAuthTimestamp();
 
   row[columns.email] = verified.email;
-  row[columns.displayName] = verified.displayName || verified.email;
+  row[columns.displayName] =
+    getAuthString(leagueIdentity && leagueIdentity.player) ||
+    verified.displayName ||
+    verified.email;
   row[columns.role] = role;
   row[columns.enabled] = enabled;
   row[columns.favoriteFaction] = "";
+  if (columns.discordName !== -1)
+    row[columns.discordName] = "";
+  if (columns.profileVisibility !== -1)
+    row[columns.profileVisibility] = "Public";
   row[columns.avatarUrl] = verified.avatarUrl;
   row[columns.created] = timestamp;
   row[columns.lastLogin] = timestamp;
@@ -1330,12 +1674,21 @@ function readUserRow(sheet, columns, rowNumber) {
     displayName: getAuthString(row[columns.displayName]),
     leaguePlayer: leagueIdentity.player,
     playerDisplayName:
+      getAuthString(row[columns.displayName]) ||
       leagueIdentity.displayName ||
       leagueIdentity.player,
     leagueDivision: leagueIdentity.division,
     role: normalizeUserRole(row[columns.role]),
     enabled: getAuthBoolean(row[columns.enabled]),
     favoriteFaction: getAuthString(row[columns.favoriteFaction]),
+    discordName:
+      columns.discordName === -1
+        ? ""
+        : getAuthString(row[columns.discordName]),
+    profileVisibility:
+      columns.profileVisibility === -1
+        ? "Public"
+        : getAuthString(row[columns.profileVisibility]) || "Public",
     avatarUrl: getAuthString(row[columns.avatarUrl]),
     created: getAuthString(row[columns.created]),
     lastLogin: getAuthString(row[columns.lastLogin]),
@@ -1351,17 +1704,20 @@ function readUserRow(sheet, columns, rowNumber) {
 
 }
 
-function syncUserIdentity(sheet, columns, rowNumber, verified) {
-
-  if (verified.displayName)
-    sheet
-      .getRange(rowNumber, columns.displayName + 1)
-      .setValue(verified.displayName);
+function syncUserIdentity(sheet, columns, rowNumber, verified, leagueIdentity) {
 
   if (verified.avatarUrl)
     sheet
       .getRange(rowNumber, columns.avatarUrl + 1)
       .setValue(verified.avatarUrl);
+
+  migratePortalDisplayName(
+    sheet,
+    columns,
+    rowNumber,
+    verified,
+    leagueIdentity
+  );
 
   sheet
     .getRange(rowNumber, columns.lastLogin + 1)
@@ -1372,6 +1728,46 @@ function syncUserIdentity(sheet, columns, rowNumber, verified) {
     columns,
     rowNumber
   );
+
+}
+
+function migratePortalDisplayName(sheet, columns, rowNumber, verified, leagueIdentity) {
+
+  if (columns.displayName === -1)
+    return;
+
+  const leagueDisplayName =
+    getAuthString(leagueIdentity && leagueIdentity.displayName) ||
+    getAuthString(leagueIdentity && leagueIdentity.player);
+
+  if (leagueDisplayName === "")
+    return;
+
+  const currentDisplayName =
+    getAuthString(
+      sheet
+        .getRange(rowNumber, columns.displayName + 1)
+        .getValue()
+    );
+
+  const googleDisplayName =
+    getAuthString(verified.displayName);
+  const email =
+    getAuthString(verified.email);
+
+  if (
+    currentDisplayName !== "" &&
+    currentDisplayName.toLowerCase() !== email.toLowerCase() &&
+    (
+      googleDisplayName === "" ||
+      currentDisplayName.toLowerCase() !== googleDisplayName.toLowerCase()
+    )
+  )
+    return;
+
+  sheet
+    .getRange(rowNumber, columns.displayName + 1)
+    .setValue(leagueDisplayName);
 
 }
 

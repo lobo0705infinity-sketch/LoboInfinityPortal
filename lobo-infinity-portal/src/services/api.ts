@@ -115,6 +115,8 @@ export type PortalUser = {
   commissionerPermissions?: string[]
   eventRegistrations?: EventParticipant[]
   favoriteFaction: string
+  discordName: string
+  profileVisibility: string
   avatarUrl: string
   created: string
   lastLogin: string
@@ -1890,7 +1892,16 @@ export type ApiClient = {
   getSession: (options?: ApiOptions) => Promise<AuthSession>
   getMyProfile: (options?: ApiOptions) => Promise<MyProfileData>
   updateProfile: (
-    params: Record<string, string>,
+    params: {
+      displayName?: string
+      discordName?: string
+      favoriteFaction?: string
+      profileVisibility?: string
+      themePreference?: string
+      notificationPreferences?: string
+      lastPage?: string
+      searchHistory?: string
+    },
     options?: ApiOptions,
   ) => Promise<MyProfileData>
   updateNotificationState: (
@@ -2114,7 +2125,16 @@ export async function getMyProfile(
 }
 
 export async function updateProfile(
-  params: Record<string, string>,
+  params: {
+    displayName?: string
+    discordName?: string
+    favoriteFaction?: string
+    profileVisibility?: string
+    themePreference?: string
+    notificationPreferences?: string
+    lastPage?: string
+    searchHistory?: string
+  },
   options: ApiOptions = {},
 ): Promise<MyProfileData> {
   const payload = await postRequest('updateProfile', options, params)
@@ -3301,6 +3321,8 @@ function normalizePortalUser(record: Record<string, unknown>): PortalUser {
     role: normalizeUserRole(getString(record, 'role')),
     enabled: getBoolean(record, 'enabled'),
     favoriteFaction: getString(record, 'favoriteFaction'),
+    discordName: getString(record, 'discordName'),
+    profileVisibility: getString(record, 'profileVisibility') || 'Public',
     avatarUrl: getString(record, 'avatarUrl'),
     created: getString(record, 'created'),
     lastLogin: getString(record, 'lastLogin'),

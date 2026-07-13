@@ -172,6 +172,8 @@ const guestUser: PortalUser = {
   role: 'Guest',
   enabled: false,
   favoriteFaction: '',
+  discordName: '',
+  profileVisibility: 'Public',
   avatarUrl: '',
   created: '',
   lastLogin: '',

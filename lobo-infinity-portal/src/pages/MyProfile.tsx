@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import BarChart, { type BarChartPoint } from '../components/BarChart'
 import Skeleton from '../components/Skeleton'
+import { getCanonicalArmyOptions } from '../config/armies'
 import { getCanonicalMissionName } from '../config/missions'
 import {
   apiClient,
@@ -22,6 +23,7 @@ import {
   formatTournamentScore,
   formatVictoryScore,
 } from '../services/formatting'
+import './MyProfile.css'
 
 type ProfileState =
   | {
@@ -35,6 +37,12 @@ type ProfileState =
       error: string
       status: 'error'
     }
+
+type ProfileSaveState =
+  | { status: 'idle' }
+  | { status: 'saving' }
+  | { message: string; status: 'success' }
+  | { message: string; status: 'error' }
 
 type GameContext = {
   faction: string
@@ -201,7 +209,7 @@ function MyProfile() {
         <ProfileHeader />
         <section className="dashboard-state" aria-label="Profile unavailable">
           <p role="alert">
-            Sign in with an enabled league account to view your player profile.
+            Sign in with a Portal account to view your player profile.
           </p>
         </section>
       </main>
@@ -232,10 +240,21 @@ function MyProfile() {
     )
   }
 
-  return <ProfileDashboard data={state.data} />
+  return (
+    <ProfileDashboard
+      data={state.data}
+      onProfileSaved={(data) => setState({ data, status: 'success' })}
+    />
+  )
 }
 
-function ProfileDashboard({ data }: { data: MyProfileData }) {
+function ProfileDashboard({
+  data,
+  onProfileSaved,
+}: {
+  data: MyProfileData
+  onProfileSaved: (data: MyProfileData) => void
+}) {
   const leaguePlayer = data.user.leaguePlayer
   const leagueStats = data.leagueStatistics
   const seasonStats =
@@ -256,6 +275,12 @@ function ProfileDashboard({ data }: { data: MyProfileData }) {
         leaguePlayer={leaguePlayer}
         performance={performance}
         seasonStats={seasonStats}
+      />
+
+      <ProfileEditor
+        data={data}
+        favoriteArmy={derived.armySummary.favoriteFaction}
+        onProfileSaved={onProfileSaved}
       />
 
       {!leaguePlayer ? (
@@ -406,6 +431,152 @@ function ProfileHeader() {
   )
 }
 
+function ProfileEditor({
+  data,
+  favoriteArmy,
+  onProfileSaved,
+}: {
+  data: MyProfileData
+  favoriteArmy: string
+  onProfileSaved: (data: MyProfileData) => void
+}) {
+  const auth = useAuth()
+  const [displayName, setDisplayName] = useState(data.user.displayName)
+  const [discordName, setDiscordName] = useState(data.user.discordName)
+  const [preferredArmy, setPreferredArmy] = useState(data.user.favoriteFaction)
+  const [profileVisibility, setProfileVisibility] = useState(
+    data.user.profileVisibility || 'Public',
+  )
+  const [saveState, setSaveState] = useState<ProfileSaveState>({ status: 'idle' })
+  const armyOptions = useMemo(() => getCanonicalArmyOptions(), [])
+
+  async function saveProfile(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+
+    const validationError = validateProfileEditor(displayName, discordName)
+
+    if (validationError) {
+      setSaveState({ message: validationError, status: 'error' })
+      return
+    }
+
+    setSaveState({ status: 'saving' })
+
+    try {
+      const updated = await apiClient.updateProfile({
+        displayName: displayName.trim(),
+        discordName: discordName.trim(),
+        favoriteFaction: preferredArmy,
+        profileVisibility,
+      })
+
+      onProfileSaved(updated)
+      await auth.refreshSession()
+      setSaveState({
+        message: 'Profile saved. Your portal display name is now active.',
+        status: 'success',
+      })
+    } catch (error) {
+      setSaveState({
+        message:
+          error instanceof Error
+            ? error.message
+            : 'Profile could not be saved.',
+        status: 'error',
+      })
+    }
+  }
+
+  return (
+    <section className="panel profile-feature-panel profile-editor-panel" aria-labelledby="profile-editor-title">
+      <div>
+        <p className="eyebrow">Player Identity</p>
+        <h2 id="profile-editor-title">Edit Profile</h2>
+        <p>
+          Google signs you in. Your portal profile controls how players see you.
+        </p>
+      </div>
+
+      <form className="army-list-form profile-editor-form" onSubmit={(event) => void saveProfile(event)}>
+        <label>
+          <span>Display Name</span>
+          <input
+            maxLength={24}
+            minLength={3}
+            onChange={(event) => setDisplayName(event.target.value)}
+            pattern="[A-Za-z0-9 _-]{3,24}"
+            required
+            value={displayName}
+          />
+        </label>
+
+        <label>
+          <span>Discord Name</span>
+          <input
+            maxLength={40}
+            onChange={(event) => setDiscordName(event.target.value)}
+            placeholder="Optional"
+            value={discordName}
+          />
+        </label>
+
+        <label>
+          <span>Preferred Army</span>
+          <select
+            onChange={(event) => setPreferredArmy(event.target.value)}
+            value={preferredArmy}
+          >
+            <option value="">No preference</option>
+            {armyOptions.map((army) => (
+              <option key={army} value={army}>
+                {army}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label>
+          <span>Profile Visibility</span>
+          <select
+            onChange={(event) => setProfileVisibility(event.target.value)}
+            value={profileVisibility}
+          >
+            <option value="Public">Public</option>
+            <option value="Private">Private</option>
+          </select>
+        </label>
+
+        <div className="profile-editor-readonly">
+          <span>Favorite Army</span>
+          <strong>{favoriteArmy || 'Not established'}</strong>
+        </div>
+
+        <div className="profile-editor-readonly">
+          <span>Current League</span>
+          <strong>{data.user.leagueDivision || 'Not linked'}</strong>
+        </div>
+
+        <div className="profile-editor-readonly">
+          <span>Current Tournament</span>
+          <strong>{getCurrentTournamentLabel(data.user.eventRegistrations)}</strong>
+        </div>
+
+        <div className="army-list-form-actions profile-editor-actions">
+          <button disabled={saveState.status === 'saving'} type="submit">
+            {saveState.status === 'saving' ? 'Saving...' : 'Save Profile'}
+          </button>
+          {saveState.status === 'error' ? (
+            <p role="alert">{saveState.message}</p>
+          ) : null}
+          {saveState.status === 'success' ? (
+            <p>{saveState.message}</p>
+          ) : null}
+        </div>
+      </form>
+    </section>
+  )
+}
+
 function ProfileHero({
   data,
   derived,
@@ -429,13 +600,8 @@ function ProfileHero({
       aria-label="Authenticated player profile"
     >
       <div className="profile-hero-main">
-        <p className="eyebrow">League Identity</p>
-        <h1>
-          {formatPlayerName(
-            leaguePlayer || 'Unlinked League Player',
-            data.user.playerDisplayName,
-          )}
-        </h1>
+        <p className="eyebrow">Player Identity</p>
+        <h1>{data.user.displayName}</h1>
         <div className="profile-badges">
           <span>{division}</span>
           <span>{formatRank(rank)}</span>
@@ -445,8 +611,10 @@ function ProfileHero({
           <span>{health}</span>
         </div>
         <p>
-          Portal identity: {data.user.displayName}. League statistics are scoped
-          to {formatPlayerName(leaguePlayer, data.user.playerDisplayName) || 'the linked player profile'}.
+          Google signs you in. Your portal display name is shown publicly.
+          {leaguePlayer
+            ? ` League statistics remain linked to ${leaguePlayer}.`
+            : ' League statistics will appear after you join a league event.'}
         </p>
       </div>
 
@@ -460,8 +628,7 @@ function ProfileHero({
           <img alt="" src={data.user.avatarUrl} />
         ) : (
           <strong>
-            {(formatPlayerName(leaguePlayer, data.user.playerDisplayName) ||
-              data.user.displayName).slice(0, 1)}
+            {data.user.displayName.slice(0, 1)}
           </strong>
         )}
         <dl>
@@ -485,6 +652,50 @@ function ProfileHero({
       </div>
     </section>
   )
+}
+
+function validateProfileEditor(displayName: string, discordName: string) {
+  const name = displayName.trim()
+
+  if (name.length < 3) {
+    return 'Display name must be at least 3 characters.'
+  }
+
+  if (name.length > 24) {
+    return 'Display name must be 24 characters or fewer.'
+  }
+
+  if (!/^[A-Za-z0-9 _-]+$/.test(name)) {
+    return 'Display name may use letters, numbers, spaces, hyphen, and underscore only.'
+  }
+
+  if (
+    ['admin', 'administrator', 'commissioner', 'guest', 'system', 'unknown']
+      .includes(name.toLowerCase())
+  ) {
+    return 'That display name is reserved.'
+  }
+
+  const discord = discordName.trim()
+
+  if (discord.length > 40) {
+    return 'Discord name must be 40 characters or fewer.'
+  }
+
+  if (discord && !/^[A-Za-z0-9 ._#@-]+$/.test(discord)) {
+    return 'Discord name contains unsupported characters.'
+  }
+
+  return ''
+}
+
+function getCurrentTournamentLabel(events: MyProfileData['user']['eventRegistrations']) {
+  const tournament = events?.find((event) =>
+    event.eventRole.toLowerCase().includes('tournament') ||
+    String(event.registration.eventType ?? '').toLowerCase().includes('tournament'),
+  )
+
+  return tournament?.team || tournament?.eventId || 'Not registered'
 }
 
 function PlayerAnswerCard({

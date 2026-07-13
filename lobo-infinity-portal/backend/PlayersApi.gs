@@ -150,8 +150,8 @@ function getCommunityPortalUsers(leagueIdentityByEmail) {
           displayName ||
           email,
         displayName:
-          identity.displayName ||
-          displayName,
+          displayName ||
+          identity.displayName,
         division:
           identity.division ||
           "",
@@ -430,10 +430,16 @@ function upsertCommunityPlayerRecord(records, input) {
   const record =
     records[key];
 
-  record.displayName =
-    record.displayName ||
-    getCommunityPlayerRegistryString(input.displayName) ||
-    record.player;
+  if (input.portalUser)
+    record.displayName =
+      getCommunityPlayerRegistryString(input.displayName) ||
+      record.displayName ||
+      record.player;
+  else
+    record.displayName =
+      record.displayName ||
+      getCommunityPlayerRegistryString(input.displayName) ||
+      record.player;
   record.division =
     record.division ||
     getCommunityPlayerRegistryString(input.division);
