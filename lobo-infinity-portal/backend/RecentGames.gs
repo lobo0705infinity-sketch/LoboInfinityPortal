@@ -107,9 +107,9 @@ function getRecentGames(e) {
 
       })
       .slice(0, RECENT_GAMES_LIMIT)
-      .map(function(game, index) {
+      .map(function(game) {
 
-        return buildRecentGameResponse(game, index + 1);
+        return buildRecentGameResponse(game);
 
       });
 
@@ -140,10 +140,10 @@ function filterRecentGamesByPlayer(games, playerName) {
 
 }
 
-function buildRecentGameResponse(game, id) {
+function buildRecentGameResponse(game) {
 
   return {
-    id: id,
+    id: game.id,
     eventId:
       game.gameType === "casual"
         ? ""
@@ -297,6 +297,7 @@ function buildRecentGame(
     );
 
   return {
+    id: sourceIndex,
     sourceIndex: sourceIndex,
     sortDate: sortDate,
     date:

@@ -647,9 +647,9 @@ function getAllRecentGameObjects() {
           );
 
         })
-        .map(function(game, index) {
+        .map(function(game) {
 
-          return buildRecentGameResponse(game, index + 1);
+          return buildRecentGameResponse(game);
 
         });
     },
