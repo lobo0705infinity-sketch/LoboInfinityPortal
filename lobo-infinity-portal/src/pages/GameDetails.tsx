@@ -5,10 +5,7 @@ import Skeleton from '../components/Skeleton'
 import { getCanonicalMissionName } from '../config/missions'
 import { apiClient, type CommissionerNewsItem, type RecentGame } from '../services/api'
 import {
-  formatObjectiveScore,
   formatPlayerName,
-  formatTournamentScore,
-  formatVictoryScore,
 } from '../services/formatting'
 import './GameDetails.css'
 
@@ -149,9 +146,9 @@ function buildNewsLinkedGame(gameId: number, news: CommissionerNewsItem[]): Rece
     winnerFaction: '',
     loserFaction: '',
     mission: parsed.mission,
-    tp: '',
+    tp: 'Not recorded',
     op: parsed.op,
-    vp: '',
+    vp: 'Not recorded',
     bestMoment: item.body,
     firstTurn: '',
   }
@@ -224,7 +221,7 @@ function MatchReport({ game }: { game: RecentGame }) {
             </div>
             <div>
               <dt>Division</dt>
-              <dd>{game.division}</dd>
+              <dd>{game.division || 'Not recorded'}</dd>
             </div>
             <div>
               <dt>Date Played</dt>
@@ -238,9 +235,9 @@ function MatchReport({ game }: { game: RecentGame }) {
             Score
           </p>
           <div className="score-grid">
-            <ScoreLane score={formatTournamentScore(game)} />
-            <ScoreLane score={formatObjectiveScore(game)} />
-            <ScoreLane score={formatVictoryScore(game)} />
+            <ScoreLane score={formatBattleReportScore(game.tp, 'TP')} />
+            <ScoreLane score={formatBattleReportScore(game.op, 'OP')} />
+            <ScoreLane score={formatBattleReportScore(game.vp, 'VP')} />
           </div>
         </section>
 
@@ -270,7 +267,7 @@ function MatchReport({ game }: { game: RecentGame }) {
 
         <section className="best-moment-card" aria-labelledby="best-moment-title">
           <p className="eyebrow">Best Moment</p>
-          <h2 id="best-moment-title">Best Moment Hero</h2>
+          <h2 id="best-moment-title">Best Moment</h2>
           <blockquote>
             "{game.bestMoment || 'No Best Moment was submitted for this match.'}"
           </blockquote>
@@ -305,7 +302,7 @@ function MatchReport({ game }: { game: RecentGame }) {
             </div>
             <div>
               <dt>Division</dt>
-              <dd>{game.division}</dd>
+              <dd>{game.division || 'Not recorded'}</dd>
             </div>
           </dl>
         </section>
@@ -326,6 +323,16 @@ function formatGameParticipant(game: RecentGame, player: string) {
   }
 
   return player
+}
+
+function formatBattleReportScore(score: number | string | undefined, label: 'TP' | 'OP' | 'VP') {
+  const value = String(score ?? '').trim()
+
+  if (!value) {
+    return `Not recorded ${label}`
+  }
+
+  return `${value} ${label}`
 }
 
 function ScoreLane({ score }: { score: string }) {

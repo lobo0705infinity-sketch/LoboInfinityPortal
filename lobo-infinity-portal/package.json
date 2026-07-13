@@ -19,6 +19,7 @@
     "test:submit-game": "node --experimental-strip-types scripts/submit-game-identity-check.ts",
     "test:notifications": "node --experimental-strip-types scripts/notification-timestamp-check.ts",
     "test:achievements": "node scripts/achievement-rules-check.mjs",
+    "test:battle-report": "node scripts/battle-report-check.mjs",
     "test:dashboard-links": "node scripts/dashboard-links-check.mjs",
     "test:player-profile": "node scripts/player-profile-check.mjs",
     "test:player-registry": "node scripts/player-registry-context-check.mjs",

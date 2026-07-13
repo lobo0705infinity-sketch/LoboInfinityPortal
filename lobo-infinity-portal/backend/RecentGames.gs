@@ -59,6 +59,21 @@ function getRecentGames(e) {
       e.parameter &&
       e.parameter.gameId
     ) {
+      const formResponseGame =
+        buildRecentGameFromFormResponseId(
+          e.parameter.gameId
+        );
+
+      if (formResponseGame)
+        filteredGames.push(formResponseGame);
+    }
+
+    if (
+      filteredGames.length === 0 &&
+      e &&
+      e.parameter &&
+      e.parameter.gameId
+    ) {
       const linkedNewsGame =
         buildRecentGameFromLinkedNews(
           e.parameter.gameId
@@ -180,6 +195,48 @@ function filterRecentGamesByGameId(games, gameId) {
   return games.filter(function(game) {
     return game.id === target;
   });
+
+}
+
+function buildRecentGameFromFormResponseId(gameId) {
+
+  const target =
+    Number(gameId);
+
+  if (!Number.isInteger(target))
+    return null;
+
+  const rows =
+    getFormResponses();
+
+  const row =
+    rows[target - 1];
+
+  if (
+    !row ||
+    !validateGame(row)
+  )
+    return null;
+
+  const winner =
+    determineWinner(row);
+
+  const analyticsRow =
+    buildAnalyticsRow(
+      row,
+      winner
+    );
+
+  const rawGame =
+    buildRecentGame(
+      analyticsRow,
+      target,
+      getRecentGameColumns(
+        getGameAnalyticsHeaders()[0]
+      )
+    );
+
+  return buildRecentGameResponse(rawGame);
 
 }
 
