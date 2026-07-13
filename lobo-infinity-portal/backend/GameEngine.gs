@@ -67,6 +67,29 @@ function getFormResponses() {
 
 function writeSheet(sheetName, rows) {
 
+  if (rows.length > 0) {
+
+    const width =
+      rows[0].length;
+
+    rows.forEach(function(row, index) {
+
+      if (!row || row.length !== width)
+        throw new Error(
+          sheetName +
+            " row " +
+            (index + 1) +
+            " has " +
+            (row ? row.length : 0) +
+            " columns; expected " +
+            width +
+            "."
+        );
+
+    });
+
+  }
+
   const sheet =
     SpreadsheetApp
       .getActive()
@@ -191,7 +214,8 @@ function getGameEngineHeaders() {
     "Faction",
     "First Turn",
     "Event ID",
-    "Game Type"
+    "Game Type",
+    "Game Result"
   ]];
 
 }
@@ -474,6 +498,13 @@ function buildAnalyticsRow(row, winner) {
 
   }
 
+  const gameResult =
+    draw
+      ? "Draw"
+      : winner === 1
+        ? "Player 1 Victory"
+        : "Player 2 Victory";
+
   return [
 
     row[FORM.DATE],
@@ -508,7 +539,9 @@ function buildAnalyticsRow(row, winner) {
 
     getGameEngineEventId(row),
 
-    getGameEngineGameType(row)
+    getGameEngineGameType(row),
+
+    gameResult
 
   ];
 
