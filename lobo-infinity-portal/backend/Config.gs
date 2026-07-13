@@ -84,7 +84,11 @@ const CONFIG = {
 
     TEAM_TOURNAMENT_INVITATIONS: "Team Tournament Invitations",
 
-    TEAM_TOURNAMENT_RESULTS: "Team Tournament Results"
+    TEAM_TOURNAMENT_RESULTS: "Team Tournament Results",
+
+    COMMUNITY_ALERTS: "Community Alerts",
+
+    COMMUNITY_TIMELINE: "Community Timeline"
 
   },
 

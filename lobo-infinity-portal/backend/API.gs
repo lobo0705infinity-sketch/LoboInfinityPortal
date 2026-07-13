@@ -584,6 +584,26 @@ function handleApiGet(e, action) {
         return deleteOperationsNews(e);
       });
 
+    case "saveAlert":
+      return requireApiPermission(e, "manageNews", function() {
+        return saveOperationsAlert(e);
+      });
+
+    case "deleteAlert":
+      return requireApiPermission(e, "manageNews", function() {
+        return deleteOperationsAlert(e);
+      });
+
+    case "saveTimelineEntry":
+      return requireApiPermission(e, "manageNews", function() {
+        return saveOperationsTimelineEntry(e);
+      });
+
+    case "deleteTimelineEntry":
+      return requireApiPermission(e, "manageNews", function() {
+        return deleteOperationsTimelineEntry(e);
+      });
+
     case "clearCache":
       return requireApiPermission(e, "manageCache", function() {
         return clearOperationsCache();
@@ -916,6 +936,26 @@ function handleApiPost(e, action) {
     case "deleteNews":
       return requireApiPermission(e, "manageNews", function() {
         return deleteOperationsNews(e);
+      });
+
+    case "saveAlert":
+      return requireApiPermission(e, "manageNews", function() {
+        return saveOperationsAlert(e);
+      });
+
+    case "deleteAlert":
+      return requireApiPermission(e, "manageNews", function() {
+        return deleteOperationsAlert(e);
+      });
+
+    case "saveTimelineEntry":
+      return requireApiPermission(e, "manageNews", function() {
+        return saveOperationsTimelineEntry(e);
+      });
+
+    case "deleteTimelineEntry":
+      return requireApiPermission(e, "manageNews", function() {
+        return deleteOperationsTimelineEntry(e);
       });
 
     case "clearCache":

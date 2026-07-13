@@ -65,11 +65,19 @@ function getManualCommissionerNews() {
 
       return (
         item.title !== "" &&
-        item.body !== ""
+        item.body !== "" &&
+        !item.archived &&
+        isCommunityContentVisible(item.date, item.expiration, true)
       );
 
     })
     .sort(function(a, b) {
+
+      if (a.pinned !== b.pinned)
+        return a.pinned ? -1 : 1;
+
+      if (a.featured !== b.featured)
+        return a.featured ? -1 : 1;
 
       return (
         getRecentGameDate(b.date).getTime() -
@@ -412,6 +420,26 @@ function getNewsColumns(headers) {
       getNewsColumn(
         headers,
         ["Related Mission", "Mission"]
+      ),
+    pinned:
+      getNewsColumn(
+        headers,
+        ["Pinned", "Pin"]
+      ),
+    archived:
+      getNewsColumn(
+        headers,
+        ["Archived", "Archive"]
+      ),
+    featured:
+      getNewsColumn(
+        headers,
+        ["Featured"]
+      ),
+    expiration:
+      getNewsColumn(
+        headers,
+        ["Expiration", "Expires", "Expires At"]
       )
   };
 
@@ -491,6 +519,21 @@ function buildNewsItem(row, sourceIndex, columns) {
         ? ""
         : getRecentGameString(
             row[columns.relatedMission]
+          ),
+    pinned:
+      columns.pinned !== -1 &&
+      getCommunityContentBoolean(row[columns.pinned]),
+    archived:
+      columns.archived !== -1 &&
+      getCommunityContentBoolean(row[columns.archived]),
+    featured:
+      columns.featured !== -1 &&
+      getCommunityContentBoolean(row[columns.featured]),
+    expiration:
+      columns.expiration === -1
+        ? ""
+        : getRecentGameString(
+            row[columns.expiration]
           )
   };
 

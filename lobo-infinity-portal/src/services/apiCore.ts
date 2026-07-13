@@ -972,6 +972,18 @@ function getMutationInvalidationGroups(action: string) {
     case 'submitArmyList':
     case 'voteArmyList':
       return ['community', 'players', 'dashboard']
+    case 'saveStream':
+    case 'deleteStream':
+      return ['community']
+    case 'saveNews':
+    case 'deleteNews':
+      return ['dashboard']
+    case 'saveAlert':
+    case 'deleteAlert':
+      return ['notifications']
+    case 'saveTimelineEntry':
+    case 'deleteTimelineEntry':
+      return ['dashboard']
     case 'notificationState':
       return ['notifications']
     default:

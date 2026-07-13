@@ -14,7 +14,13 @@ const STREAM_HEADERS = [
   "Player 2",
   "Player 2 Faction",
   "YouTube URL",
-  "Featured"
+  "Featured",
+  "Stream Title",
+  "Streamer",
+  "Platform",
+  "Description",
+  "Thumbnail URL",
+  "Active"
 ];
 
 function getStreams() {
@@ -52,7 +58,10 @@ function getStreams() {
       })
       .filter(function(stream) {
 
-        return stream.youtubeUrl !== "";
+        return (
+          stream.youtubeUrl !== "" &&
+          stream.active
+        );
 
       })
       .sort(function(a, b) {
@@ -85,7 +94,13 @@ function getStreams() {
           player2: stream.player2,
           player2Faction: stream.player2Faction,
           youtubeUrl: stream.youtubeUrl,
-          featured: stream.featured
+          featured: stream.featured,
+          title: stream.title,
+          streamer: stream.streamer,
+          platform: stream.platform,
+          description: stream.description,
+          thumbnailUrl: stream.thumbnailUrl,
+          active: stream.active
         };
 
       });
@@ -169,7 +184,13 @@ function migrateLegacyStreamsSheet(sheet) {
           row[4],
           "",
           row[6],
-          row[7]
+          row[7],
+          "",
+          "",
+          "",
+          "",
+          "",
+          true
         ];
 
       });
@@ -199,7 +220,13 @@ function getStreamColumns(headers) {
     player2: getStreamColumn(headers, "Player 2"),
     player2Faction: getStreamColumn(headers, "Player 2 Faction"),
     youtubeUrl: getStreamColumn(headers, "YouTube URL"),
-    featured: getStreamColumn(headers, "Featured")
+    featured: getStreamColumn(headers, "Featured"),
+    title: getStreamColumn(headers, "Stream Title"),
+    streamer: getStreamColumn(headers, "Streamer"),
+    platform: getStreamColumn(headers, "Platform"),
+    description: getStreamColumn(headers, "Description"),
+    thumbnailUrl: getStreamColumn(headers, "Thumbnail URL"),
+    active: getStreamColumn(headers, "Active")
   };
 
 }
@@ -227,7 +254,13 @@ function buildStream(
     player2: getStreamString(row[columns.player2]),
     player2Faction: canonicalizeArmyName(row[columns.player2Faction]),
     youtubeUrl: getStreamYoutubeUrl(row, columns.youtubeUrl),
-    featured: getStreamBoolean(row[columns.featured])
+    featured: getStreamBoolean(row[columns.featured]),
+    title: getStreamString(row[columns.title]),
+    streamer: getStreamString(row[columns.streamer]),
+    platform: getStreamString(row[columns.platform]),
+    description: getStreamString(row[columns.description]),
+    thumbnailUrl: getStreamString(row[columns.thumbnailUrl]),
+    active: getStreamActiveBoolean(row[columns.active])
   };
 
   return enrichStreamFromRecentGames(stream);
@@ -365,6 +398,23 @@ function getStreamBoolean(value) {
     text === "yes" ||
     text === "y" ||
     text === "featured"
+  );
+
+}
+
+function getStreamActiveBoolean(value) {
+
+  const text =
+    getStreamString(value)
+      .toLowerCase();
+
+  return !(
+    text === "false" ||
+    text === "no" ||
+    text === "0" ||
+    text === "hidden" ||
+    text === "inactive" ||
+    text === "archived"
   );
 
 }

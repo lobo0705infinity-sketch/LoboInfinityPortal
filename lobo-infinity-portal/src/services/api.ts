@@ -1428,6 +1428,31 @@ export type LeagueAudit = {
 export type OperationsNewsItem = CommissionerNewsItem & {
   pinned: boolean
   archived: boolean
+  featured: boolean
+  expiration: string
+}
+
+export type OperationsAlertItem = {
+  id: number
+  title: string
+  body: string
+  priority: string
+  publishDate: string
+  expiration: string
+  portalWide: boolean
+  featured: boolean
+  active: boolean
+}
+
+export type OperationsTimelineItem = {
+  id: number
+  date: string
+  category: string
+  title: string
+  description: string
+  link: string
+  featured: boolean
+  active: boolean
 }
 
 export type SeasonStatus = {
@@ -1494,6 +1519,8 @@ export type OperationsDashboardData = {
   pendingArmyLists: ArmyList[]
   streams: StreamedGame[]
   news: OperationsNewsItem[]
+  alerts: OperationsAlertItem[]
+  timeline: OperationsTimelineItem[]
   players: OperationsPlayer[]
   identity: OperationsIdentityManagement
   eventLifecycle: EventLifecycleData
@@ -1933,6 +1960,12 @@ export type StreamedGame = {
   player2Faction: string
   youtubeUrl: string
   featured: boolean
+  title: string
+  streamer: string
+  platform: string
+  description: string
+  thumbnailUrl: string
+  active: boolean
 }
 
 export type LeaderData = Pick<DashboardSummary, 'leagueLeader'>
@@ -5539,6 +5572,8 @@ function normalizeOperationsPayload(payload: unknown): OperationsDashboardData {
     ),
     streams: getRequiredArray(record, 'streams').map(normalizeStreamedGame),
     news: getRequiredArray(record, 'news').map(normalizeOperationsNewsItem),
+    alerts: getArray(record, 'alerts').map(normalizeOperationsAlertItem),
+    timeline: getArray(record, 'timeline').map(normalizeOperationsTimelineItem),
     players: getRequiredArray(record, 'players').map(normalizeOperationsPlayer),
     identity: normalizeOperationsIdentityManagement(
       getRequiredRecord(record, 'identity'),
@@ -6234,6 +6269,41 @@ function normalizeOperationsNewsItem(item: unknown): OperationsNewsItem {
     title: getString(record, 'title'),
     pinned: getBoolean(record, 'pinned'),
     archived: getBoolean(record, 'archived'),
+    featured: getBoolean(record, 'featured'),
+    expiration: getString(record, 'expiration'),
+  }
+}
+
+function normalizeOperationsAlertItem(item: unknown): OperationsAlertItem {
+  const record = asRecord(item, 'Operations alert item')
+
+  return {
+    id: getRequiredNumber(record, 'id'),
+    title: getString(record, 'title'),
+    body: getString(record, 'body'),
+    priority: getString(record, 'priority') || 'normal',
+    publishDate: getString(record, 'publishDate'),
+    expiration: getString(record, 'expiration'),
+    portalWide: getBoolean(record, 'portalWide'),
+    featured: getBoolean(record, 'featured'),
+    active: getBoolean(record, 'active'),
+  }
+}
+
+function normalizeOperationsTimelineItem(
+  item: unknown,
+): OperationsTimelineItem {
+  const record = asRecord(item, 'Operations timeline item')
+
+  return {
+    id: getRequiredNumber(record, 'id'),
+    date: getString(record, 'date'),
+    category: getString(record, 'category') || 'Portal Update',
+    title: getString(record, 'title'),
+    description: getString(record, 'description'),
+    link: getString(record, 'link'),
+    featured: getBoolean(record, 'featured'),
+    active: getBoolean(record, 'active'),
   }
 }
 
@@ -6408,8 +6478,17 @@ function normalizeStreamedGame(item: unknown): StreamedGame {
     player1Faction: getString(record, 'player1Faction'),
     player2: getString(record, 'player2'),
     player2Faction: getString(record, 'player2Faction'),
-    youtubeUrl: getRequiredString(record, 'youtubeUrl'),
+    youtubeUrl: getString(record, 'youtubeUrl'),
     featured: getBoolean(record, 'featured'),
+    title: getString(record, 'title'),
+    streamer: getString(record, 'streamer'),
+    platform: getString(record, 'platform'),
+    description: getString(record, 'description'),
+    thumbnailUrl: getString(record, 'thumbnailUrl'),
+    active:
+      record.active === undefined || record.active === null
+        ? true
+        : getBoolean(record, 'active'),
   }
 }
 

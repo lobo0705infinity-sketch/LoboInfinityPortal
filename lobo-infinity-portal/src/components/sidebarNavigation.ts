@@ -92,6 +92,11 @@ export const commissionerItems: NavigationItem[] = [
     to: '/commissioner/event-manager',
   },
   {
+    icon: 'news',
+    label: 'Community Manager',
+    to: '/commissioner/community-manager',
+  },
+  {
     icon: 'bell',
     label: 'Automation',
     to: '/automation',

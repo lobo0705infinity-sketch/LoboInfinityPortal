@@ -4023,6 +4023,7 @@
 
 .operations-access-card input,
 .operations-form input,
+.operations-form select,
 .operations-form textarea {
   min-height: 42px;
   border: 1px solid var(--border);
@@ -4051,6 +4052,7 @@
 
 .operations-access-card button,
 .operations-form button,
+.operations-actions a,
 .operations-actions button {
   min-height: 42px;
   border: 1px solid rgba(76, 201, 240, 0.42);
@@ -4069,6 +4071,7 @@
 
 .operations-access-card button:hover,
 .operations-form button:hover,
+.operations-actions a:hover,
 .operations-actions button:hover {
   border-color: var(--blue);
   background: var(--panel-soft);
@@ -7287,6 +7290,7 @@ a {
 .comparison-controls select:focus,
 .operations-access-card input:focus,
 .operations-form input:focus,
+.operations-form select:focus,
 .operations-form textarea:focus,
 .member-profile-form input:focus,
 .member-profile-form select:focus {

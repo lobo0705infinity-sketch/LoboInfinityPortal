@@ -123,6 +123,8 @@ function buildLeagueNotifications() {
 
   const notifications = [];
 
+  addCommunityAlertNotifications(notifications);
+
   addAchievementNotifications(notifications);
 
   addEventRegistrationNotifications(notifications);
@@ -327,6 +329,8 @@ function buildLeagueTimeline() {
 
   const timeline = [];
 
+  addCommunityTimelineItems(timeline);
+
   games
     .forEach(function(game) {
 
@@ -519,6 +523,82 @@ function addAchievementNotifications(notifications) {
             achievement.tier === "Legendary"
               ? "high"
               : "normal"
+        })
+      );
+
+    });
+
+}
+
+function addCommunityAlertNotifications(notifications) {
+
+  if (typeof getOperationsAlerts !== "function")
+    return;
+
+  getOperationsAlerts()
+    .filter(function(alert) {
+
+      return (
+        alert.portalWide &&
+        isCommunityContentVisible(
+          alert.publishDate,
+          alert.expiration,
+          alert.active
+        )
+      );
+
+    })
+    .forEach(function(alert) {
+
+      notifications.push(
+        buildLeagueNotification({
+          id: "community-alert-" + alert.id,
+          type: "Portal Alert",
+          title: alert.title,
+          body: alert.body,
+          timestamp:
+            alert.publishDate ||
+            getLeagueExperienceTimestamp(),
+          link: "/notifications",
+          priority:
+            alert.priority === "high" ||
+            alert.priority === "critical"
+              ? "high"
+              : "normal"
+        })
+      );
+
+    });
+
+}
+
+function addCommunityTimelineItems(timeline) {
+
+  if (typeof getOperationsTimelineEntries !== "function")
+    return;
+
+  getOperationsTimelineEntries()
+    .filter(function(item) {
+
+      return isCommunityContentVisible(
+        item.date,
+        "",
+        item.active
+      );
+
+    })
+    .forEach(function(item) {
+
+      timeline.push(
+        buildTimelineItem({
+          id: "community-timeline-" + item.id,
+          type: item.category || "Portal Update",
+          title: item.title,
+          body: item.description,
+          timestamp:
+            item.date ||
+            getLeagueExperienceTimestamp(),
+          link: item.link || "/timeline"
         })
       );
 

@@ -14,7 +14,30 @@ const COMMISSIONER_NEWS_HEADERS = [
   "Related Faction",
   "Related Mission",
   "Pinned",
-  "Archived"
+  "Archived",
+  "Featured",
+  "Expiration"
+];
+
+const COMMUNITY_ALERT_HEADERS = [
+  "Title",
+  "Body",
+  "Priority",
+  "Publish Date",
+  "Expiration",
+  "Portal Wide",
+  "Featured",
+  "Active"
+];
+
+const COMMUNITY_TIMELINE_HEADERS = [
+  "Date",
+  "Category",
+  "Title",
+  "Description",
+  "Link",
+  "Featured",
+  "Active"
 ];
 
 function getOperationsDashboard() {
@@ -34,6 +57,12 @@ function getOperationsDashboard() {
 
   const news =
     getOperationsNews();
+
+  const alerts =
+    getOperationsAlerts();
+
+  const timeline =
+    getOperationsTimelineEntries();
 
   const games =
     getAllRecentGameObjects();
@@ -81,6 +110,8 @@ function getOperationsDashboard() {
     pendingArmyLists: pendingArmyLists,
     streams: streams,
     news: news,
+    alerts: alerts,
+    timeline: timeline,
     players: getOperationsPlayers(),
     identity: getOperationsIdentityManagement(),
     eventLifecycle:
@@ -134,7 +165,11 @@ function getOperationsContentDashboard() {
     streams:
       getOperationsStreams(),
     news:
-      getOperationsNews()
+      getOperationsNews(),
+    alerts:
+      getOperationsAlerts(),
+    timeline:
+      getOperationsTimelineEntries()
   }));
 
 }
@@ -218,6 +253,10 @@ function buildOperationsDashboardPayload(overrides) {
       options.streams || [],
     news:
       options.news || [],
+    alerts:
+      options.alerts || [],
+    timeline:
+      options.timeline || [],
     players:
       options.players || [],
     identity:
@@ -598,8 +637,14 @@ function saveOperationsStream(e) {
       canonicalizeArmyName(params.player1Faction),
       params.player2 || "",
       canonicalizeArmyName(params.player2Faction),
-      params.youtubeUrl || "",
-      getOperationsBoolean(params.featured)
+      params.youtubeUrl || params.url || "",
+      getOperationsBoolean(params.featured),
+      params.title || "",
+      params.streamer || "",
+      params.platform || "",
+      params.description || "",
+      params.thumbnailUrl || params.thumbnail || "",
+      getOperationsVisibleBoolean(params.active)
     ];
 
   const rowNumber =
@@ -687,7 +732,9 @@ function saveOperationsNews(e) {
       params.relatedFaction || "",
       params.relatedMission || "",
       getOperationsBoolean(params.pinned),
-      getOperationsBoolean(params.archived)
+      getOperationsBoolean(params.archived),
+      getOperationsBoolean(params.featured),
+      params.expiration || ""
     ];
 
   const rowNumber =
@@ -742,6 +789,151 @@ function deleteOperationsNews(e) {
 
   sheet.deleteRow(id + 1);
   invalidatePortalCacheGroup("news");
+
+  return jsonOutput({
+    success: true
+  });
+
+}
+
+function saveOperationsAlert(e) {
+
+  const params =
+    getOperationsParams(e);
+
+  const sheet =
+    ensureCommunityAlertsSheet();
+
+  const id =
+    Number(params.id) || 0;
+
+  const row =
+    [
+      params.title || "",
+      params.body || "",
+      params.priority || "normal",
+      params.publishDate || params.date || getOperationsTimestamp(),
+      params.expiration || "",
+      getOperationsVisibleBoolean(params.portalWide),
+      getOperationsBoolean(params.featured),
+      getOperationsVisibleBoolean(params.active)
+    ];
+
+  const rowNumber =
+    id > 0
+      ? id + 1
+      : sheet.getLastRow() + 1;
+
+  sheet
+    .getRange(
+      rowNumber,
+      1,
+      1,
+      COMMUNITY_ALERT_HEADERS.length
+    )
+    .setValues([row]);
+
+  invalidatePortalCacheGroup("analytics");
+
+  return jsonOutput({
+    success: true
+  });
+
+}
+
+function deleteOperationsAlert(e) {
+
+  const id =
+    Number(
+      getOperationsParams(e).id
+    ) || 0;
+
+  const sheet =
+    ensureCommunityAlertsSheet();
+
+  if (
+    id < 1 ||
+    id + 1 > sheet.getLastRow()
+  )
+    return jsonOutput({
+      success: false,
+      error: "Alert not found."
+    });
+
+  sheet.deleteRow(id + 1);
+  invalidatePortalCacheGroup("analytics");
+
+  return jsonOutput({
+    success: true
+  });
+
+}
+
+function saveOperationsTimelineEntry(e) {
+
+  const params =
+    getOperationsParams(e);
+
+  const sheet =
+    ensureCommunityTimelineSheet();
+
+  const id =
+    Number(params.id) || 0;
+
+  const row =
+    [
+      params.date || getOperationsTimestamp(),
+      params.category || "Portal Update",
+      params.title || "",
+      params.description || params.body || "",
+      params.link || "",
+      getOperationsBoolean(params.featured),
+      getOperationsVisibleBoolean(params.active)
+    ];
+
+  const rowNumber =
+    id > 0
+      ? id + 1
+      : sheet.getLastRow() + 1;
+
+  sheet
+    .getRange(
+      rowNumber,
+      1,
+      1,
+      COMMUNITY_TIMELINE_HEADERS.length
+    )
+    .setValues([row]);
+
+  invalidatePortalCacheGroup("analytics");
+
+  return jsonOutput({
+    success: true
+  });
+
+}
+
+function deleteOperationsTimelineEntry(e) {
+
+  const id =
+    Number(
+      getOperationsParams(e).id
+    ) || 0;
+
+  const sheet =
+    ensureCommunityTimelineSheet();
+
+  if (
+    id < 1 ||
+    id + 1 > sheet.getLastRow()
+  )
+    return jsonOutput({
+      success: false,
+      error: "Timeline entry not found."
+    });
+
+  sheet.deleteRow(id + 1);
+  invalidatePortalCacheGroup("analytics");
 
   return jsonOutput({
     success: true
@@ -1642,9 +1834,58 @@ function buildAuditIssue(severity, description, suggestedFix, link) {
 
 function getOperationsStreams() {
 
-  return JSON.parse(
-    getStreams().getContent()
-  ).streams || [];
+  const sheet =
+    ensureStreamsSheet();
+
+  const values =
+    sheet
+      .getDataRange()
+      .getValues();
+
+  if (values.length <= 1)
+    return [];
+
+  const headers =
+    values.shift();
+
+  const columns =
+    getStreamColumns(headers);
+
+  return values
+    .map(function(row, index) {
+
+      const stream =
+        buildStream(
+          row,
+          index + 1,
+          columns
+        );
+
+      return {
+        id: stream.sourceIndex,
+        date: stream.date,
+        division: stream.division,
+        mission: stream.mission,
+        player1: stream.player1,
+        player1Faction: stream.player1Faction,
+        player2: stream.player2,
+        player2Faction: stream.player2Faction,
+        youtubeUrl: stream.youtubeUrl,
+        featured: stream.featured,
+        title: stream.title,
+        streamer: stream.streamer,
+        platform: stream.platform,
+        description: stream.description,
+        thumbnailUrl: stream.thumbnailUrl,
+        active: stream.active
+      };
+
+    })
+    .filter(function(stream) {
+
+      return stream.title || stream.youtubeUrl || stream.player1 || stream.player2;
+
+    });
 
 }
 
@@ -1675,7 +1916,9 @@ function getOperationsNews() {
         relatedFaction: getOperationsString(row[5]),
         relatedMission: getOperationsString(row[6]),
         pinned: getOperationsBoolean(row[7]),
-        archived: getOperationsBoolean(row[8])
+        archived: getOperationsBoolean(row[8]),
+        featured: getOperationsBoolean(row[9]),
+        expiration: getOperationsString(row[10])
       };
 
     })
@@ -1684,6 +1927,124 @@ function getOperationsNews() {
       return item.title || item.body;
 
     });
+
+}
+
+function getOperationsAlerts() {
+
+  const sheet =
+    ensureCommunityAlertsSheet();
+
+  const values =
+    sheet
+      .getDataRange()
+      .getValues();
+
+  if (values.length <= 1)
+    return [];
+
+  return values
+    .slice(1)
+    .map(function(row, index) {
+
+      return {
+        id: index + 1,
+        title: getOperationsString(row[0]),
+        body: getOperationsString(row[1]),
+        priority: getOperationsString(row[2]) || "normal",
+        publishDate: getOperationsString(row[3]),
+        expiration: getOperationsString(row[4]),
+        portalWide: getOperationsVisibleBoolean(row[5]),
+        featured: getOperationsBoolean(row[6]),
+        active: getOperationsVisibleBoolean(row[7])
+      };
+
+    })
+    .filter(function(item) {
+
+      return item.title || item.body;
+
+    });
+
+}
+
+function getOperationsTimelineEntries() {
+
+  const sheet =
+    ensureCommunityTimelineSheet();
+
+  const values =
+    sheet
+      .getDataRange()
+      .getValues();
+
+  if (values.length <= 1)
+    return [];
+
+  return values
+    .slice(1)
+    .map(function(row, index) {
+
+      return {
+        id: index + 1,
+        date: getOperationsString(row[0]),
+        category: getOperationsString(row[1]) || "Portal Update",
+        title: getOperationsString(row[2]),
+        description: getOperationsString(row[3]),
+        link: getOperationsString(row[4]),
+        featured: getOperationsBoolean(row[5]),
+        active: getOperationsVisibleBoolean(row[6])
+      };
+
+    })
+    .filter(function(item) {
+
+      return item.title || item.description;
+
+    });
+
+}
+
+function ensureCommunityAlertsSheet() {
+
+  return ensureOperationsContentSheet(
+    CONFIG.SHEETS.COMMUNITY_ALERTS,
+    COMMUNITY_ALERT_HEADERS
+  );
+
+}
+
+function ensureCommunityTimelineSheet() {
+
+  return ensureOperationsContentSheet(
+    CONFIG.SHEETS.COMMUNITY_TIMELINE,
+    COMMUNITY_TIMELINE_HEADERS
+  );
+
+}
+
+function ensureOperationsContentSheet(sheetName, headers) {
+
+  const spreadsheet =
+    SpreadsheetApp.getActive();
+
+  let sheet =
+    spreadsheet.getSheetByName(sheetName);
+
+  if (!sheet)
+    sheet =
+      spreadsheet.insertSheet(sheetName);
+
+  sheet
+    .getRange(
+      1,
+      1,
+      1,
+      headers.length
+    )
+    .setValues([headers]);
+
+  return sheet;
 
 }
 
@@ -1978,6 +2339,24 @@ function getOperationsBoolean(value) {
 
 }
 
+function getOperationsVisibleBoolean(value) {
+
+  const text =
+    getOperationsString(value)
+      .toLowerCase();
+
+  return !(
+    text === "false" ||
+    text === "no" ||
+    text === "0" ||
+    text === "hidden" ||
+    text === "inactive" ||
+    text === "archived" ||
+    text === "deleted"
+  );
+
+}
+
 function getOperationsTimestamp() {
 
   return Utilities.formatDate(
@@ -1985,5 +2364,65 @@ function getOperationsTimestamp() {
     Session.getScriptTimeZone(),
     "yyyy-MM-dd HH:mm:ss"
   );
+
+}
+
+function getCommunityContentBoolean(value) {
+
+  return getOperationsBoolean(value);
+
+}
+
+function isCommunityContentVisible(publishDate, expiration, active) {
+
+  if (active === false)
+    return false;
+
+  const now =
+    new Date();
+
+  const publish =
+    parseCommunityContentDate(publishDate);
+
+  if (
+    publish &&
+    publish.getTime() > now.getTime()
+  )
+    return false;
+
+  const expires =
+    parseCommunityContentDate(expiration);
+
+  if (
+    expires &&
+    expires.getTime() < now.getTime()
+  )
+    return false;
+
+  return true;
+
+}
+
+function parseCommunityContentDate(value) {
+
+  const text =
+    getOperationsString(value);
+
+  if (text === "")
+    return null;
+
+  if (
+    Object.prototype.toString.call(value) ===
+    "[object Date]"
+  )
+    return value;
+
+  const parsed =
+    new Date(text);
+
+  if (isNaN(parsed.getTime()))
+    return null;
+
+  return parsed;
 
 }

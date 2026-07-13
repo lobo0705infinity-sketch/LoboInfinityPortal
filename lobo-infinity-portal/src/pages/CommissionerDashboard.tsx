@@ -4,8 +4,6 @@ import { useAuth } from '../auth/AuthContext'
 import EventManagerPanel from '../components/EventManagerPanel'
 import Loading from '../components/Loading'
 import Skeleton from '../components/Skeleton'
-import { getCanonicalArmyName, getCanonicalArmyOptions } from '../config/armies'
-import { CANONICAL_MISSIONS } from '../config/missions'
 import {
   apiClient,
   type ArmyList,
@@ -13,9 +11,7 @@ import {
   type EventLifecycleData,
   type OperationsDashboardData,
   type OperationsIdentityRecord,
-  type OperationsNewsItem,
   type PortalSettings,
-  type StreamedGame,
 } from '../services/api'
 import { formatPlayerName } from '../services/formatting'
 
@@ -36,32 +32,6 @@ type OperationsAction = (
   action: string,
   params?: Record<string, string | number | boolean>,
 ) => Promise<void>
-
-const defaultStream: StreamedGame = {
-  id: 0,
-  date: '',
-  division: '',
-  mission: '',
-  player1: '',
-  player1Faction: '',
-  player2: '',
-  player2Faction: '',
-  youtubeUrl: '',
-  featured: false,
-}
-
-const defaultNews: OperationsNewsItem = {
-  id: 0,
-  body: '',
-  date: '',
-  link: '',
-  relatedFaction: '',
-  relatedMission: '',
-  relatedPlayer: '',
-  title: '',
-  pinned: false,
-  archived: false,
-}
 
 const permissionRows = [
   ['View operations', 'Assistant Commissioner', 'Assistant Commissioner and Commissioner'],
@@ -291,8 +261,10 @@ function CommissionerDashboard() {
           onToggle={() => togglePanel('content')}
           title="Content Operations"
         >
-          <NewsManager news={data.news} onAction={runAction} />
-          <StreamManager streams={data.streams} onAction={runAction} />
+          <CommunityManagerEntry
+            newsCount={data.news.length}
+            streamCount={data.streams.length}
+          />
           <ArmyListApproval lists={data.pendingArmyLists} onAction={runAction} />
           <PlayerManagementPanel data={data} />
         </LazyOperationsPanel>
@@ -1068,128 +1040,27 @@ function ArmyListApproval({
   )
 }
 
-function StreamManager({
-  onAction,
-  streams,
+function CommunityManagerEntry({
+  newsCount,
+  streamCount,
 }: {
-  onAction: OperationsAction
-  streams: StreamedGame[]
+  newsCount: number
+  streamCount: number
 }) {
-  const [draft, setDraft] = useState(defaultStream)
-
-  function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    void onAction('saveStream', draft).then(() => setDraft(defaultStream))
-  }
-
   return (
     <section className="panel operations-panel">
-      <PanelTitle eyebrow="Streams" title="Stream Manager" />
-      <form className="operations-form" onSubmit={submit}>
-        <SelectInput
-          label="Mission"
-          onChange={(value) => setDraft({ ...draft, mission: value })}
-          options={CANONICAL_MISSIONS}
-          value={draft.mission}
-        />
-        <Input label="Division" onChange={(value) => setDraft({ ...draft, division: value })} value={draft.division} />
-        <Input label="Player 1" onChange={(value) => setDraft({ ...draft, player1: value })} value={draft.player1} />
-        <SelectInput
-          label="Player 1 Faction"
-          onChange={(value) => setDraft({ ...draft, player1Faction: value })}
-          options={getCanonicalArmyOptions()}
-          placeholder="Select army"
-          value={draft.player1Faction}
-        />
-        <Input label="Player 2" onChange={(value) => setDraft({ ...draft, player2: value })} value={draft.player2} />
-        <SelectInput
-          label="Player 2 Faction"
-          onChange={(value) => setDraft({ ...draft, player2Faction: value })}
-          options={getCanonicalArmyOptions()}
-          placeholder="Select army"
-          value={draft.player2Faction}
-        />
-        <Input label="YouTube URL" onChange={(value) => setDraft({ ...draft, youtubeUrl: value })} value={draft.youtubeUrl} />
-        <Input label="Date" onChange={(value) => setDraft({ ...draft, date: value })} type="date" value={draft.date} />
-        <label className="operations-check">
-          <input
-            checked={draft.featured}
-            onChange={(event) => setDraft({ ...draft, featured: event.target.checked })}
-            type="checkbox"
-          />
-          Featured
-        </label>
-        <button type="submit">Save Stream</button>
-      </form>
-      <RecordList
-        empty="No streams configured."
-        items={streams.map((stream) => ({
-          id: stream.id,
-          title: stream.mission || 'Untitled stream',
-          meta: `${stream.player1} vs ${stream.player2}`,
-          detail: stream.youtubeUrl,
-          onDelete: () => void onAction('deleteStream', { id: stream.id }),
-          onEdit: () => setDraft({
-            ...stream,
-            player1Faction: getCanonicalArmyName(stream.player1Faction),
-            player2Faction: getCanonicalArmyName(stream.player2Faction),
-          }),
-        }))}
-      />
-    </section>
-  )
-}
-
-function NewsManager({
-  news,
-  onAction,
-}: {
-  news: OperationsNewsItem[]
-  onAction: OperationsAction
-}) {
-  const [draft, setDraft] = useState(defaultNews)
-
-  function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    void onAction('saveNews', draft).then(() => setDraft(defaultNews))
-  }
-
-  return (
-    <section className="panel operations-panel">
-      <PanelTitle eyebrow="News" title="Commissioner News" />
-      <form className="operations-form" onSubmit={submit}>
-        <Input label="Title" onChange={(value) => setDraft({ ...draft, title: value })} value={draft.title} />
-        <Input label="Date" onChange={(value) => setDraft({ ...draft, date: value })} type="date" value={draft.date} />
-        <Input label="Link" onChange={(value) => setDraft({ ...draft, link: value })} value={draft.link} />
-        <label className="operations-form-wide">
-          <span>Body</span>
-          <textarea
-            onChange={(event) => setDraft({ ...draft, body: event.target.value })}
-            rows={4}
-            value={draft.body}
-          />
-        </label>
-        <label className="operations-check">
-          <input checked={draft.pinned} onChange={(event) => setDraft({ ...draft, pinned: event.target.checked })} type="checkbox" />
-          Pin
-        </label>
-        <label className="operations-check">
-          <input checked={draft.archived} onChange={(event) => setDraft({ ...draft, archived: event.target.checked })} type="checkbox" />
-          Archive
-        </label>
-        <button type="submit">Save News</button>
-      </form>
-      <RecordList
-        empty="No manual news configured."
-        items={news.map((item) => ({
-          id: item.id,
-          title: item.title || 'Untitled news',
-          meta: item.date,
-          detail: item.body,
-          onDelete: () => void onAction('deleteNews', { id: item.id }),
-          onEdit: () => setDraft(item),
-        }))}
-      />
+      <PanelTitle eyebrow="Community Content" title="Community Manager" />
+      <dl className="operations-metrics compact">
+        <Metric label="News" value={newsCount} />
+        <Metric label="Streams" value={streamCount} />
+      </dl>
+      <p className="operations-empty">
+        Portal-wide News, Streams, Alerts, and Timeline entries are managed in
+        the dedicated Community Manager.
+      </p>
+      <div className="operations-actions">
+        <Link to="/commissioner/community-manager">Open Community Manager</Link>
+      </div>
     </section>
   )
 }
@@ -1759,69 +1630,6 @@ function Input({
       <span>{label}</span>
       <input disabled={disabled} onChange={(event) => onChange(event.target.value)} type={type} value={value} />
     </label>
-  )
-}
-
-function SelectInput({
-  label,
-  onChange,
-  options,
-  placeholder = 'Select mission',
-  value,
-}: {
-  label: string
-  onChange: (value: string) => void
-  options: readonly string[]
-  placeholder?: string
-  value: string
-}) {
-  return (
-    <label>
-      <span>{label}</span>
-      <select onChange={(event) => onChange(event.target.value)} value={value}>
-        <option value="">{placeholder}</option>
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-    </label>
-  )
-}
-
-function RecordList({
-  empty,
-  items,
-}: {
-  empty: string
-  items: Array<{
-    detail: string
-    id: number
-    meta: string
-    onDelete: () => void
-    onEdit: () => void
-    title: string
-  }>
-}) {
-  if (items.length === 0) {
-    return <EmptyState text={empty} />
-  }
-
-  return (
-    <div className="operations-stack">
-      {items.slice(0, 8).map((item) => (
-        <article className="operations-record" key={item.id}>
-          <span>{item.meta || 'Live record'}</span>
-          <h3>{item.title}</h3>
-          <p>{item.detail}</p>
-          <div className="operations-actions">
-            <button onClick={item.onEdit} type="button">Edit</button>
-            <button onClick={item.onDelete} type="button">Delete</button>
-          </div>
-        </article>
-      ))}
-    </div>
   )
 }
 

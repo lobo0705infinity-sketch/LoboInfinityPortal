@@ -99,9 +99,9 @@ function Timeline() {
 function PageHeader({ eventScoped }: { eventScoped: boolean }) {
   return (
     <section className="page-header" aria-labelledby="timeline-title">
-      <p className="eyebrow">{eventScoped ? 'Event Timeline' : 'League Timeline'}</p>
-      <h1 id="timeline-title">{eventScoped ? 'Chronological Event History' : 'Chronological League History'}</h1>
-      <p>Games, records, standings movement, news, and Hall of Fame signals</p>
+      <p className="eyebrow">{eventScoped ? 'Event Timeline' : 'Portal Timeline'}</p>
+      <h1 id="timeline-title">{eventScoped ? 'Chronological Event History' : 'Chronological Portal History'}</h1>
+      <p>Community milestones, games, records, standings movement, news, and Hall of Fame signals</p>
     </section>
   )
 }

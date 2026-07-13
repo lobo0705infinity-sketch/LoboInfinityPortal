@@ -223,7 +223,7 @@ function FeaturedStream({ stream }: { stream: StreamedGame }) {
               })
             }
             src={embedUrl}
-            title={`${stream.player1} vs ${stream.player2}`}
+            title={getStreamTitle(stream)}
           />
         ) : (
           <StreamThumbnail stream={stream} />
@@ -232,9 +232,22 @@ function FeaturedStream({ stream }: { stream: StreamedGame }) {
       <div className="featured-stream-copy">
         <p className="eyebrow">{stream.featured ? 'Featured Stream' : 'Selected Stream'}</p>
         <h2 id="featured-stream-title">
-          {stream.player1} vs {stream.player2}
+          {getStreamTitle(stream)}
         </h2>
+        {stream.description ? <p>{stream.description}</p> : null}
         <dl className="stream-meta">
+          {stream.streamer ? (
+            <div>
+              <dt>Streamer</dt>
+              <dd>{stream.streamer}</dd>
+            </div>
+          ) : null}
+          {stream.platform ? (
+            <div>
+              <dt>Platform</dt>
+              <dd>{stream.platform}</dd>
+            </div>
+          ) : null}
           <div>
             <dt>Player 1</dt>
             <dd>{stream.player1 || 'Not reported'}</dd>
@@ -276,8 +289,8 @@ function StreamSummary({ stream }: { stream: StreamedGame }) {
   return (
     <div>
       <span className="eyebrow">{stream.date || 'Stream'}</span>
-      <h2>{stream.mission || 'League Stream'}</h2>
-      <p>{stream.division}</p>
+      <h2>{stream.title || stream.mission || 'League Stream'}</h2>
+      <p>{stream.description || stream.division}</p>
       <dl className="stream-card-matchup">
         <div>
           <dt>{stream.player1 || 'Player 1'}</dt>
@@ -295,17 +308,27 @@ function StreamSummary({ stream }: { stream: StreamedGame }) {
 function StreamThumbnail({ stream }: { stream: StreamedGame }) {
   const videoId = getYouTubeVideoId(stream.youtubeUrl)
 
+  if (stream.thumbnailUrl) {
+    return (
+      <img
+        alt={getStreamTitle(stream)}
+        className="stream-thumbnail"
+        src={stream.thumbnailUrl}
+      />
+    )
+  }
+
   if (!videoId) {
     return (
       <div className="stream-thumbnail stream-thumbnail-fallback">
-        <span>{stream.mission || 'Stream'}</span>
+        <span>{stream.title || stream.mission || 'Stream'}</span>
       </div>
     )
   }
 
   return (
     <img
-      alt={`${stream.player1} vs ${stream.player2}`}
+      alt={getStreamTitle(stream)}
       className="stream-thumbnail"
       src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
     />
@@ -379,6 +402,10 @@ function matchesFilters(
     stream.date,
     stream.division,
     stream.mission,
+    stream.title,
+    stream.streamer,
+    stream.platform,
+    stream.description,
     stream.player1,
     stream.player1Faction,
     stream.player2,
@@ -395,6 +422,15 @@ function matchesFilters(
       stream.player2 === filters.playerFilter) &&
     (query === '' || haystack.includes(query))
   )
+}
+
+function getStreamTitle(stream: StreamedGame) {
+  if (stream.title) {
+    return stream.title
+  }
+
+  const players = [stream.player1, stream.player2].filter(Boolean)
+  return players.length === 2 ? `${players[0]} vs ${players[1]}` : 'Streamed Game'
 }
 
 function getYouTubeVideoId(url: string) {

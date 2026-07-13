@@ -193,8 +193,8 @@ function PageHeader() {
   return (
     <section className="page-header" aria-labelledby="notifications-title">
       <p className="eyebrow">Notification Center</p>
-      <h1 id="notifications-title">Live League Alerts</h1>
-      <p>Records, streaks, movement, and newly reported games</p>
+      <h1 id="notifications-title">Portal Alerts</h1>
+      <p>Community alerts, records, streaks, movement, and newly reported games</p>
     </section>
   )
 }
