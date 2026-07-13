@@ -133,6 +133,7 @@ function getEventAnalyticsFactions(context) {
           games: 0,
           wins: 0,
           losses: 0,
+          draws: 0,
           tp: 0,
           op: 0,
           vp: 0,
@@ -158,6 +159,7 @@ function getEventAnalyticsFactions(context) {
           games: 0,
           wins: 0,
           losses: 0,
+          draws: 0,
           tp: 0,
           op: 0,
           vp: 0,
@@ -166,7 +168,10 @@ function getEventAnalyticsFactions(context) {
         };
 
       factions[faction].games += 1;
-      factions[faction].wins += 1;
+      if (isEventAnalyticsDrawResult(result))
+        factions[faction].draws += 1;
+      else
+        factions[faction].wins += 1;
       factions[faction].tp += Number(result.tournamentPoints) || 0;
       factions[faction].op += Number(result.objectivePoints) || 0;
       factions[faction].vp += Number(result.victoryPoints) || 0;
@@ -189,6 +194,7 @@ function getEventAnalyticsFactions(context) {
         games: games,
         wins: faction.wins,
         losses: faction.losses,
+        draws: faction.draws,
         winRate: games > 0 ? (faction.wins / games) * 100 : 0,
         averageTP: games > 0 ? faction.tp / games : 0,
         averageOP: games > 0 ? faction.op / games : 0,
@@ -228,6 +234,7 @@ function getEventAnalyticsGameEnginePlayers(context) {
         games: 0,
         wins: 0,
         losses: 0,
+        draws: 0,
         tp: 0,
         op: 0,
         vp: 0,
@@ -251,6 +258,9 @@ function getEventAnalyticsGameEnginePlayers(context) {
         break;
       case "L":
         record.losses += 1;
+        break;
+      case "D":
+        record.draws += 1;
         break;
     }
   });
@@ -284,6 +294,7 @@ function getEventAnalyticsGameEnginePlayers(context) {
           games: player.games,
           wins: player.wins,
           losses: player.losses,
+          draws: player.draws,
           tp: player.tp,
           op: player.op,
           vp: player.vp,
@@ -1094,6 +1105,7 @@ function getEventAnalyticsFactionProfile(context, requestedName) {
         games: 0,
         wins: 0,
         losses: 0,
+        draws: 0,
         winRate: 0
       },
       armyLists: {
@@ -1175,6 +1187,7 @@ function getEventAnalyticsTeamStandings(context) {
         games: row.matches || row.games || 0,
         wins: row.wins || 0,
         losses: row.losses || 0,
+        draws: row.draws || 0,
         tp: row.tournamentPoints || row.tp || 0,
         op: row.objectivePoints || row.op || 0,
         vp: row.victoryPoints || row.vp || 0
@@ -1196,7 +1209,11 @@ function buildEventAnalyticsStanding(context, player, displayName, rank) {
 
   const wins =
     results.filter(function(result) {
-      return result.winner === player;
+      return !isEventAnalyticsDrawResult(result) && result.winner === player;
+    }).length;
+  const draws =
+    results.filter(function(result) {
+      return isEventAnalyticsDrawResult(result);
     }).length;
 
   const totals =
@@ -1218,7 +1235,8 @@ function buildEventAnalyticsStanding(context, player, displayName, rank) {
     displayName: displayName || player,
     games: results.length,
     wins: wins,
-    losses: Math.max(0, results.length - wins),
+    losses: Math.max(0, results.length - wins - draws),
+    draws: draws,
     tp: totals.tp,
     op: totals.op,
     vp: totals.vp
@@ -1391,8 +1409,56 @@ function getEventAnalyticsHeadToHead(eventId, left, right) {
     rightWins:
       games.filter(function(result) {
         return result.winner === right;
+      }).length,
+    draws:
+      games.filter(function(result) {
+        return String(result.gameResult || "").toLowerCase() === "draw" ||
+          (
+            result.winner !== left &&
+            result.winner !== right
+          );
       }).length
   };
+
+}
+
+function isEventAnalyticsDrawResult(result) {
+
+  if (!result)
+    return false;
+
+  const explicitResult =
+    String(result.gameResult || result.result || result.winner || "")
+      .trim()
+      .toLowerCase();
+
+  if (explicitResult === "draw" || explicitResult === "d")
+    return true;
+
+  return (
+    isEventAnalyticsScoreDraw(result.tp || result.tournamentPoints) &&
+    isEventAnalyticsScoreDraw(result.op || result.objectivePoints) &&
+    isEventAnalyticsScoreDraw(result.vp || result.victoryPoints)
+  );
+
+}
+
+function isEventAnalyticsScoreDraw(value) {
+
+  const parts =
+    String(value || "")
+      .split("-");
+
+  if (parts.length !== 2)
+    return false;
+
+  const left =
+    Number(parts[0]);
+
+  const right =
+    Number(parts[1]);
+
+  return Number.isFinite(left) && Number.isFinite(right) && left === right;
 
 }
 

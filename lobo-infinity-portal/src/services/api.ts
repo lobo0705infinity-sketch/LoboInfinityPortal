@@ -179,6 +179,7 @@ export type ProfileStatisticsSnapshot = {
   games: number
   wins: number
   losses: number
+  draws: number
   tp: number
   op: number
   vp: number
@@ -273,6 +274,7 @@ export type FactionMatchup = {
   games: number
   wins: number
   losses: number
+  draws: number
   winRate: number
   averageTP: number
   averageOP: number
@@ -284,6 +286,7 @@ export type FactionMatchupSummary = {
   games: number
   wins: number
   losses: number
+  draws: number
   winRate: number
   bestOpponent: string
 }
@@ -313,6 +316,7 @@ export type PlayerProfileData = {
   games: number
   wins: number
   losses: number
+  draws: number
   tp: number
   op: number
   vp: number
@@ -426,6 +430,7 @@ export type FactionSummary = {
   games: number
   wins: number
   losses: number
+  draws: number
   winRate: number
   averageTP: number
   averageOP: number
@@ -629,6 +634,7 @@ export type HallOfFameLeader = {
   games: number
   wins: number
   losses: number
+  draws: number
   tp: number
   op: number
   vp: number
@@ -682,6 +688,7 @@ export type HallOfFameTimelineItem = {
 
 export type HallOfFameData = {
   leaders: {
+    draws: HallOfFameLeader[]
     games: HallOfFameLeader[]
     objectivePoints: HallOfFameLeader[]
     tournamentPoints: HallOfFameLeader[]
@@ -714,6 +721,7 @@ export type PlayerComparisonData = {
     games: number
     leftWins: number
     rightWins: number
+    draws: number
   }
   players: PlayerComparisonPlayer[]
 }
@@ -1015,6 +1023,7 @@ export type TeamTournamentPairing = {
 
 export type TeamTournamentStanding = {
   captain: string
+  draws: number
   losses: number
   objectivePoints: number
   players: string[]
@@ -1085,6 +1094,7 @@ export type TeamTournamentTimelineEntry = {
 
 export type TeamTournamentChampion = {
   captain: string
+  draws: number
   losses: number
   objectivePoints: number
   players: string[]
@@ -3210,6 +3220,7 @@ function buildEmptyHallOfFameData(): HallOfFameData {
     },
     leaders: {
       games: [],
+      draws: [],
       objectivePoints: [],
       tournamentPoints: [],
       victoryPoints: [],
@@ -3290,6 +3301,7 @@ function normalizeProfileStatisticsSnapshot(
     games: getNumber(record, 'games'),
     wins: getNumber(record, 'wins'),
     losses: getNumber(record, 'losses'),
+    draws: getNumber(record, 'draws'),
     tp: getNumber(record, 'tp'),
     op: getNumber(record, 'op'),
     vp: getNumber(record, 'vp'),
@@ -3569,6 +3581,7 @@ function normalizeStanding(item: unknown): Standing {
     games: getRequiredNumber(record, 'games'),
     wins: getRequiredNumber(record, 'wins'),
     losses: getRequiredNumber(record, 'losses'),
+    draws: getNumber(record, 'draws'),
     tp: getRequiredNumber(record, 'tp'),
     op: getRequiredNumber(record, 'op'),
     vp: getRequiredNumber(record, 'vp'),
@@ -3608,6 +3621,7 @@ function normalizePlayerProfileRecord(
     games: getRequiredNumber(player, 'games'),
     wins: getRequiredNumber(player, 'wins'),
     losses: getRequiredNumber(player, 'losses'),
+    draws: getNumber(player, 'draws'),
     tp: getRequiredNumber(player, 'tp'),
     op: getRequiredNumber(player, 'op'),
     vp: getRequiredNumber(player, 'vp'),
@@ -3724,6 +3738,7 @@ function normalizeFactionSummary(item: unknown): FactionSummary {
     games: getRequiredNumber(record, 'games'),
     wins: getRequiredNumber(record, 'wins'),
     losses: getRequiredNumber(record, 'losses'),
+    draws: getNumber(record, 'draws'),
     winRate: getRequiredNumber(record, 'winRate'),
     averageTP: getRequiredNumber(record, 'averageTP'),
     averageOP: getRequiredNumber(record, 'averageOP'),
@@ -4038,6 +4053,7 @@ function normalizeHallOfFamePayload(payload: unknown): HallOfFameData {
         normalizeHallOfFameLeader,
       ),
       wins: getRequiredArray(leaders, 'wins').map(normalizeHallOfFameLeader),
+      draws: getArray(leaders, 'draws').map(normalizeHallOfFameLeader),
     },
     records: normalizeLeagueRecords(getRequiredRecord(record, 'records')),
     careerLeaders: normalizeHallOfFameCareerLeaders(
@@ -4061,6 +4077,7 @@ function normalizeHallOfFameLeader(item: unknown): HallOfFameLeader {
     games: getRequiredNumber(record, 'games'),
     wins: getRequiredNumber(record, 'wins'),
     losses: getRequiredNumber(record, 'losses'),
+    draws: getNumber(record, 'draws'),
     tp: getRequiredNumber(record, 'tp'),
     op: getRequiredNumber(record, 'op'),
     vp: getRequiredNumber(record, 'vp'),
@@ -4160,6 +4177,7 @@ function normalizePlayerComparisonPayload(
       games: getRequiredNumber(headToHead, 'games'),
       leftWins: getRequiredNumber(headToHead, 'leftWins'),
       rightWins: getRequiredNumber(headToHead, 'rightWins'),
+      draws: getNumber(headToHead, 'draws'),
     },
     players: getRequiredArray(record, 'players').map(normalizeComparisonPlayer),
   }
@@ -4177,6 +4195,7 @@ function normalizeComparisonPlayer(item: unknown): PlayerComparisonPlayer {
     games: getRequiredNumber(record, 'games'),
     wins: getRequiredNumber(record, 'wins'),
     losses: getRequiredNumber(record, 'losses'),
+    draws: getNumber(record, 'draws'),
     tp: getRequiredNumber(record, 'tp'),
     op: getRequiredNumber(record, 'op'),
     vp: getRequiredNumber(record, 'vp'),
@@ -5074,6 +5093,7 @@ function normalizeTeamTournamentStanding(
 
   return {
     captain: getString(record, 'captain'),
+    draws: getNumber(record, 'draws'),
     losses: getNumber(record, 'losses'),
     objectivePoints: getNumber(record, 'objectivePoints'),
     players: getArray(record, 'players').map((player) => String(player ?? '')),
@@ -5172,6 +5192,7 @@ function normalizeTeamTournamentChampion(
 
   return {
     captain: getString(record, 'captain'),
+    draws: getNumber(record, 'draws'),
     losses: getNumber(record, 'losses'),
     objectivePoints: getNumber(record, 'objectivePoints'),
     players: getArray(record, 'players').map((player) => String(player ?? '')),
@@ -6399,6 +6420,7 @@ function normalizeFactionMatchup(item: unknown): FactionMatchup {
     games: getRequiredNumber(record, 'games'),
     wins: getRequiredNumber(record, 'wins'),
     losses: getRequiredNumber(record, 'losses'),
+    draws: getNumber(record, 'draws'),
     winRate: getRequiredNumber(record, 'winRate'),
     averageTP: getRequiredNumber(record, 'averageTP'),
     averageOP: getRequiredNumber(record, 'averageOP'),
@@ -6413,6 +6435,7 @@ function normalizeFactionMatchupSummary(value: unknown): FactionMatchupSummary {
       games: 0,
       wins: 0,
       losses: 0,
+      draws: 0,
       winRate: 0,
       bestOpponent: '',
     }
@@ -6425,6 +6448,7 @@ function normalizeFactionMatchupSummary(value: unknown): FactionMatchupSummary {
     games: getNumber(record, 'games'),
     wins: getNumber(record, 'wins'),
     losses: getNumber(record, 'losses'),
+    draws: getNumber(record, 'draws'),
     winRate: getNumber(record, 'winRate'),
     bestOpponent: getString(record, 'bestOpponent'),
   }

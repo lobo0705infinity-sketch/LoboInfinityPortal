@@ -64,6 +64,7 @@ type PerformanceRow = {
   games: number
   label: string
   losses: number
+  draws: number
   wins: number
   winRate: number
 }
@@ -1313,6 +1314,7 @@ function buildPerformanceRows(
         games: 0,
         label,
         losses: 0,
+        draws: 0,
         totalOP: 0,
         totalTP: 0,
         totalVP: 0,
@@ -1333,6 +1335,10 @@ function buildPerformanceRows(
       existing.losses += 1
     }
 
+    if (context.result === 'Draw') {
+      existing.draws += 1
+    }
+
     rows.set(label, existing)
   })
 
@@ -1344,6 +1350,7 @@ function buildPerformanceRows(
       games: row.games,
       label: row.label,
       losses: row.losses,
+      draws: row.draws,
       winRate: percentage(row.wins, row.games),
       wins: row.wins,
     }))
@@ -1535,7 +1542,7 @@ function buildOpponentIntelligence(
   return [
     {
       label: 'Best Opponent',
-      meta: `${best.wins}-${best.losses} head-to-head`,
+      meta: `${best.wins}-${best.losses}-${best.draws} head-to-head`,
       tone: best.wins > best.losses ? 'good' : 'neutral',
       value: performance.bestOpponent || best.label,
     },
@@ -2174,6 +2181,7 @@ function buildStatsFromProfile(
     division: profile.division,
     games: profile.games,
     losses: profile.losses,
+    draws: profile.draws,
     op: profile.op,
     promotionStatus: profile.rank > 0 ? 'In contention' : 'Unranked',
     rank: profile.rank,

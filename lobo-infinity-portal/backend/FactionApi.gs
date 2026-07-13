@@ -87,6 +87,7 @@ function getFaction(e) {
       games: faction.games,
       wins: faction.wins,
       losses: faction.losses,
+      draws: faction.draws || 0,
       winRate: faction.winRate,
       averageTP: faction.averageTP,
       averageOP: faction.averageOP,
@@ -169,6 +170,7 @@ function buildFactionApiSummary(
     games: faction.games,
     wins: faction.wins,
     losses: faction.losses,
+    draws: faction.draws || 0,
     winRate:
       getFactionWinRate(
         faction

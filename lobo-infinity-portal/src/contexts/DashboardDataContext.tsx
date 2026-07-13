@@ -427,6 +427,7 @@ function createEmptyDeferredData(): DashboardDeferredData {
         winPercentage: [],
       },
       leaders: {
+        draws: [],
         games: [],
         objectivePoints: [],
         tournamentPoints: [],

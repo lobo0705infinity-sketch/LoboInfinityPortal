@@ -25,7 +25,8 @@ const RECENT_GAME_ANALYTICS_COLUMNS = {
   FIRST_TURN: "First Turn",
   FIRST_TURN_WINNER: "First Turn Winner",
   EVENT_ID: "Event ID",
-  GAME_TYPE: "Game Type"
+  GAME_TYPE: "Game Type",
+  GAME_RESULT: "Game Result"
 };
 
 function getRecentGames(e) {
@@ -364,6 +365,12 @@ function buildRecentGameResponse(game) {
 
 function getRecentGameResult(game) {
 
+  const explicitResult =
+    getRecentGameString(game.gameResult);
+
+  if (explicitResult !== "")
+    return explicitResult;
+
   const tp =
     getRecentGameScoreParts(game.tp);
 
@@ -501,6 +508,11 @@ function getRecentGameColumns(headers) {
       getRecentGameOptionalColumn(
         headers,
         RECENT_GAME_ANALYTICS_COLUMNS.GAME_TYPE
+      ),
+    gameResult:
+      getRecentGameOptionalColumn(
+        headers,
+        RECENT_GAME_ANALYTICS_COLUMNS.GAME_RESULT
       )
   };
 
@@ -585,6 +597,12 @@ function buildRecentGame(
             row[columns.bestMoment]
           ),
     firstTurn: firstTurn,
+    gameResult:
+      columns.gameResult === -1
+        ? ""
+        : getRecentGameString(
+            row[columns.gameResult]
+          ),
     gameType:
       getRecentGameGameType(
         row,

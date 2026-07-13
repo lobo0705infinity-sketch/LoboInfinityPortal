@@ -114,6 +114,11 @@ function getHallOfFameSnapshot() {
           standings,
           "wins"
         ),
+      draws:
+        getHallOfFameLeaders(
+          standings,
+          "draws"
+        ),
       games:
         getHallOfFameLeaders(
           standings,
@@ -244,6 +249,7 @@ function buildHallOfFameCareers(standings, context) {
         games: Number(player.games) || 0,
         wins: Number(player.wins) || 0,
         losses: Number(player.losses) || 0,
+        draws: Number(player.draws) || 0,
         winPercentage:
           getHallOfFameWinPercentage(player),
         tp: Number(player.tp) || 0,
@@ -1287,11 +1293,18 @@ function getComparisonHeadToHead(
       );
 
     }).length;
+  const draws =
+    games.filter(function(game) {
+
+      return game[CONFIG.ENGINE.RESULT] === "D";
+
+    }).length / 2;
 
   return {
     games: games.length / 2,
     leftWins: leftWins,
-    rightWins: rightWins
+    rightWins: rightWins,
+    draws: draws
   };
 
 }

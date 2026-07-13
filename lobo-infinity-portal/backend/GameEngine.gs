@@ -41,7 +41,9 @@ const FORM = {
 
   EVENT_ID: 16,
 
-  GAME_TYPE: 17
+  GAME_TYPE: 17,
+
+  GAME_RESULT: 18
 
 };
 
@@ -103,6 +105,18 @@ function validateGame(row) {
 
 function determineWinner(row) {
 
+  const explicitResult =
+    getGameEngineExplicitResult(row);
+
+  if (explicitResult === "draw")
+    return 0;
+
+  if (explicitResult === "player1")
+    return 1;
+
+  if (explicitResult === "player2")
+    return 2;
+
   const p1TP = Number(row[FORM.P1TP]) || 0;
   const p2TP = Number(row[FORM.P2TP]) || 0;
 
@@ -122,6 +136,43 @@ function determineWinner(row) {
     return p1VP > p2VP ? 1 : 2;
 
   return 0;
+
+}
+
+function getGameEngineExplicitResult(row) {
+
+  if (
+    !row ||
+    row.length <= FORM.GAME_RESULT ||
+    String(row[FORM.GAME_RESULT] || "").trim() === ""
+  )
+    return "";
+
+  const value =
+    String(row[FORM.GAME_RESULT] || "")
+      .trim()
+      .toLowerCase();
+
+  if (value === "draw")
+    return "draw";
+
+  if (
+    value === "player 1 victory" ||
+    value === "player1" ||
+    value === "p1" ||
+    value === String(row[FORM.PLAYER1] || "").trim().toLowerCase()
+  )
+    return "player1";
+
+  if (
+    value === "player 2 victory" ||
+    value === "player2" ||
+    value === "p2" ||
+    value === String(row[FORM.PLAYER2] || "").trim().toLowerCase()
+  )
+    return "player2";
+
+  return "";
 
 }
 
@@ -164,7 +215,8 @@ function getGameAnalyticsHeaders() {
     "Best Moment",
     "First Turn Winner",
     "Event ID",
-    "Game Type"
+    "Game Type",
+    "Game Result"
   ]];
 
 }
@@ -239,6 +291,13 @@ function buildPlayerRow(row, playerNumber, winner) {
   faction =
     canonicalizeArmyName(faction);
 
+  const gameResult =
+    winner === 0
+      ? "Draw"
+      : winner === 1
+        ? "Player 1 Victory"
+        : "Player 2 Victory";
+
   return [
 
     row[FORM.DIVISION],
@@ -271,7 +330,9 @@ function buildPlayerRow(row, playerNumber, winner) {
     ,
     getGameEngineEventId(row),
 
-    getGameEngineGameType(row)
+    getGameEngineGameType(row),
+
+    gameResult
 
   ];
 

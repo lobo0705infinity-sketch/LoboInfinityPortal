@@ -401,7 +401,7 @@ function FactionMatchupsPanel({
       </div>
       <div className="matchup-summary-strip">
         <Metric label="Opponents" value={summary.opponents} />
-        <Metric label="Overall Record" value={`${summary.wins}-${summary.losses}`} />
+        <Metric label="Overall Record" value={`${summary.wins}-${summary.losses}-${summary.draws}`} />
         <Metric label="Win Rate" value={formatPercent(summary.winRate)} />
         <Metric label="Best Opponent" value={summary.bestOpponent} />
       </div>
@@ -444,6 +444,7 @@ function FactionMatchupsPanel({
             <span role="columnheader">Games</span>
             <span role="columnheader">Wins</span>
             <span role="columnheader">Losses</span>
+            <span role="columnheader">Draws</span>
             <span role="columnheader">Win %</span>
             <span role="columnheader">Avg TP</span>
             <span role="columnheader">Avg OP</span>
@@ -459,6 +460,7 @@ function FactionMatchupsPanel({
               <span role="cell">{matchup.games}</span>
               <span role="cell">{matchup.wins}</span>
               <span role="cell">{matchup.losses}</span>
+              <span role="cell">{matchup.draws}</span>
               <span role="cell">{formatPercent(matchup.winRate)}</span>
               <span role="cell">{formatNumber(matchup.averageTP)}</span>
               <span role="cell">{formatNumber(matchup.averageOP)}</span>

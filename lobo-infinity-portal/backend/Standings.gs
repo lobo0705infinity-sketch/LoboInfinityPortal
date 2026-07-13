@@ -12,6 +12,7 @@ const STANDINGS_HEADER = [
     "Games",
     "Wins",
     "Losses",
+    "Draws",
     "TP",
     "OP",
     "VP"
@@ -187,6 +188,7 @@ function standingsToRows(players) {
       player.games,
       player.wins,
       player.losses,
+      player.draws,
       player.tp,
       player.op,
       player.vp

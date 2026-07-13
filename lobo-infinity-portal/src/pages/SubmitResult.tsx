@@ -468,7 +468,7 @@ function SubmitResult() {
           <SelectField
             label="Game Result"
             onChange={(value) => updateCasualField('winner', value)}
-            options={[casualResult.player, casualResult.opponent, 'Draw'].filter(Boolean)}
+            options={buildGameResultOptions(casualResult.player, casualResult.opponent)}
             required
             value={casualResult.winner}
           />
@@ -668,7 +668,7 @@ function SubmitResult() {
         <SelectField
           label="Game Result"
           onChange={(value) => updateField('winner', value)}
-          options={[leagueResult.player, leagueResult.opponent, 'Draw'].filter(Boolean)}
+          options={buildGameResultOptions(leagueResult.player, leagueResult.opponent)}
           required
           value={leagueResult.winner}
         />
@@ -842,7 +842,7 @@ function TeamTournamentResultSubmission({
           label="Game Result"
           name="winner"
           onChange={setWinner}
-          options={[assignment?.player ?? '', assignment?.opponent ?? '', 'Draw'].filter(Boolean)}
+          options={buildGameResultOptions(assignment?.player ?? '', assignment?.opponent ?? '')}
           required
           value={winner}
         />
@@ -939,20 +939,8 @@ function validateLeagueResult(
     issues.push('Tournament Points cannot total more than 10.')
   }
 
-  const expectedWinner = determineExpectedWinner(
-    submission.player,
-    submission.opponent,
-    playerTp,
-    opponentTp,
-    playerOp,
-    opponentOp,
-    playerVp,
-    opponentVp,
-  )
   if (!submission.winner.trim()) {
     issues.push('Game Result is required.')
-  } else if (expectedWinner && normalize(expectedWinner) !== normalize(submission.winner)) {
-    issues.push('Game Result must match the submitted TP, OP, and VP scores.')
   }
 
   return issues
@@ -1023,20 +1011,8 @@ function validateCasualResult(
     issues.push('Tournament Points cannot total more than 10.')
   }
 
-  const expectedWinner = determineExpectedWinner(
-    submission.player,
-    submission.opponent,
-    playerTp,
-    opponentTp,
-    playerOp,
-    opponentOp,
-    playerVp,
-    opponentVp,
-  )
   if (!submission.winner.trim()) {
     issues.push('Game Result is required.')
-  } else if (expectedWinner && normalize(expectedWinner) !== normalize(submission.winner)) {
-    issues.push('Game Result must match the submitted TP, OP, and VP scores.')
   }
 
   return issues
@@ -1142,35 +1118,6 @@ function validateTournamentResult(
 function isResultWindowOpen(data: EventHomeData) {
   const status = `${data.event.status} ${data.event.lifecycleStage}`.toLowerCase()
   return !status.includes('archived') && !status.includes('completed') && !status.includes('registration open')
-}
-
-function determineExpectedWinner(
-  player: string,
-  opponent: string,
-  playerTp: number | null,
-  opponentTp: number | null,
-  playerOp: number | null,
-  opponentOp: number | null,
-  playerVp: number | null,
-  opponentVp: number | null,
-) {
-  if ([playerTp, opponentTp, playerOp, opponentOp, playerVp, opponentVp].some((score) => score === null)) {
-    return ''
-  }
-
-  if (playerTp !== opponentTp) {
-    return Number(playerTp) > Number(opponentTp) ? player : opponent
-  }
-
-  if (playerOp !== opponentOp) {
-    return Number(playerOp) > Number(opponentOp) ? player : opponent
-  }
-
-  if (playerVp !== opponentVp) {
-    return Number(playerVp) > Number(opponentVp) ? player : opponent
-  }
-
-  return 'Draw'
 }
 
 function parseScore(value: string) {
@@ -1433,6 +1380,24 @@ function SearchableSelect({
   )
 }
 
+type SelectFieldOption = string | { label: string; value: string }
+
+function buildGameResultOptions(player: string, opponent: string): SelectFieldOption[] {
+  const options: SelectFieldOption[] = []
+
+  if (player.trim()) {
+    options.push({ label: 'Player 1 Victory', value: player })
+  }
+
+  if (opponent.trim()) {
+    options.push({ label: 'Player 2 Victory', value: opponent })
+  }
+
+  options.push({ label: 'Draw', value: 'Draw' })
+
+  return options
+}
+
 function SelectField({
   label,
   name,
@@ -1444,7 +1409,7 @@ function SelectField({
   label: string
   name?: string
   onChange: (value: string) => void
-  options: string[]
+  options: SelectFieldOption[]
   required?: boolean
   value: string
 }) {
@@ -1458,11 +1423,16 @@ function SelectField({
         value={value}
       >
         <option value="">Select</option>
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
+        {options.map((option) => {
+          const label = typeof option === 'string' ? option : option.label
+          const optionValue = typeof option === 'string' ? option : option.value
+
+          return (
+          <option key={optionValue} value={optionValue}>
+            {label}
           </option>
-        ))}
+          )
+        })}
       </select>
     </label>
   )

@@ -169,6 +169,7 @@ function HallOfFame() {
 
           <section className="intelligence-grid" aria-label="Hall of Fame records">
             <LeaderBoard title="Most Wins" leaders={hallState.data.leaders.wins} />
+            <LeaderBoard title="Most Draws" leaders={hallState.data.leaders.draws} />
             <LeaderBoard title="Most Games" leaders={hallState.data.leaders.games} />
             <RecordsList records={hallState.data.records} />
           </section>
@@ -465,13 +466,25 @@ function LeaderBoard({
               <span>#{index + 1}</span>
               <strong>{formatPlayerName(leader.player, leader.displayName)}</strong>
               <small>{leader.division}</small>
-              <b>{title === 'Most Wins' ? leader.wins : leader.games}</b>
+              <b>{getLeaderBoardValue(title, leader)}</b>
             </Link>
           ))}
         </div>
       </div>
     </section>
   )
+}
+
+function getLeaderBoardValue(title: string, leader: HallOfFameLeader) {
+  if (title === 'Most Wins') {
+    return leader.wins
+  }
+
+  if (title === 'Most Draws') {
+    return leader.draws
+  }
+
+  return leader.games
 }
 
 function RecordsList({

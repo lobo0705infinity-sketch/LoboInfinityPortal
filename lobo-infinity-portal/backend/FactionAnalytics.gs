@@ -54,6 +54,8 @@ function createFaction(name){
 
     losses: 0,
 
+    draws: 0,
+
     tp: 0,
 
     op: 0,
@@ -103,6 +105,10 @@ function updateFactionRegistry(registry, scopedGames){
 
       case "L":
         record.losses++;
+        break;
+
+      case "D":
+        record.draws++;
         break;
 
     }

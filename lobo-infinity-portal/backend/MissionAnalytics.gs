@@ -70,7 +70,9 @@ function createMissionFaction(){
 
     wins: 0,
 
-    losses: 0
+    losses: 0,
+
+    draws: 0
 
   };
 
@@ -159,6 +161,14 @@ function updateMissionRegistry(registry, scopedGames){
 
         break;
 
+      case "D":
+
+        record.games++;
+
+        record.factions[faction].draws++;
+
+        break;
+
     }
 
   });
@@ -206,6 +216,11 @@ function getTopThreeWinningFactions(factions){
         entry[1].wins +
         "-" +
         entry[1].losses +
+        (
+          entry[1].draws > 0
+            ? "-" + entry[1].draws
+            : ""
+        ) +
         ")"
       );
 

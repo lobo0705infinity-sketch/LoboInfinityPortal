@@ -332,6 +332,7 @@ function getFactionMatchups(factionName) {
           games: 0,
           wins: 0,
           losses: 0,
+          draws: 0,
           tp: 0,
           op: 0,
           vp: 0
@@ -342,7 +343,9 @@ function getFactionMatchups(factionName) {
 
       matchup.games++;
 
-      if (winnerMatches)
+      if (isFactionMatchupDraw(game))
+        matchup.draws++;
+      else if (winnerMatches)
         matchup.wins++;
       else
         matchup.losses++;
@@ -379,6 +382,7 @@ function getFactionMatchups(factionName) {
           games: matchup.games,
           wins: matchup.wins,
           losses: matchup.losses,
+          draws: matchup.draws,
           winRate:
             matchup.games === 0
               ? 0
@@ -432,6 +436,7 @@ function buildFactionMatchupOverall(rows) {
       total.games += row.games;
       total.wins += row.wins;
       total.losses += row.losses;
+      total.draws += row.draws;
 
       if (
         !total.best ||
@@ -446,6 +451,7 @@ function buildFactionMatchupOverall(rows) {
       games: 0,
       wins: 0,
       losses: 0,
+      draws: 0,
       best: null
     });
 
@@ -454,6 +460,7 @@ function buildFactionMatchupOverall(rows) {
     games: summary.games,
     wins: summary.wins,
     losses: summary.losses,
+    draws: summary.draws,
     winRate:
       summary.games === 0
         ? 0
@@ -465,6 +472,43 @@ function buildFactionMatchupOverall(rows) {
         ? summary.best.opponent
         : ""
   };
+
+}
+
+function isFactionMatchupDraw(game) {
+
+  const explicitResult =
+    String(game.gameResult || "")
+      .trim()
+      .toLowerCase();
+
+  if (explicitResult === "draw")
+    return true;
+
+  return (
+    isFactionMatchupScoreDraw(game.tp) &&
+    isFactionMatchupScoreDraw(game.op) &&
+    isFactionMatchupScoreDraw(game.vp)
+  );
+
+}
+
+function isFactionMatchupScoreDraw(value) {
+
+  const parts =
+    String(value || "")
+      .split("-");
+
+  if (parts.length !== 2)
+    return false;
+
+  const left =
+    Number(parts[0]);
+
+  const right =
+    Number(parts[1]);
+
+  return Number.isFinite(left) && Number.isFinite(right) && left === right;
 
 }
 

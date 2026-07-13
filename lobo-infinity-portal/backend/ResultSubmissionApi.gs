@@ -98,17 +98,13 @@ function submitLeagueResult(e) {
         playerVp,
         opponentVp
       );
-
-    if (
-      winner !== "" &&
-      normalizeResultSubmissionValue(winner) !== normalizeResultSubmissionValue(expectedWinner)
-    )
-      return resultSubmissionFailure("Game Result does not match the submitted scores.");
+    const submittedResult =
+      winner !== "" ? winner : expectedWinner;
 
     const playerIsWinner =
-      normalizeResultSubmissionValue(expectedWinner) === normalizeResultSubmissionValue(player);
+      normalizeResultSubmissionValue(submittedResult) === normalizeResultSubmissionValue(player);
     const resultIsDraw =
-      normalizeResultSubmissionValue(expectedWinner) === "draw";
+      normalizeResultSubmissionValue(submittedResult) === "draw";
 
     const row = [];
     row[FORM.TIMESTAMP] = getResultSubmissionTimestamp();
@@ -135,6 +131,12 @@ function submitLeagueResult(e) {
     row[FORM.MOMENT] = getResultSubmissionString(params.bestMoment);
     row[FORM.EVENT_ID] = eventId;
     row[FORM.GAME_TYPE] = "league";
+    row[FORM.GAME_RESULT] =
+      resultIsDraw
+        ? "Draw"
+        : playerIsWinner
+          ? "Player 1 Victory"
+          : "Player 2 Victory";
 
     const sheet =
       SpreadsheetApp
@@ -247,17 +249,13 @@ function submitCasualResult(e) {
         playerVp,
         opponentVp
       );
-
-    if (
-      winner !== "" &&
-      normalizeResultSubmissionValue(winner) !== normalizeResultSubmissionValue(expectedWinner)
-    )
-      return resultSubmissionFailure("Game Result does not match the submitted scores.");
+    const submittedResult =
+      winner !== "" ? winner : expectedWinner;
 
     const playerIsWinner =
-      normalizeResultSubmissionValue(expectedWinner) === normalizeResultSubmissionValue(player);
+      normalizeResultSubmissionValue(submittedResult) === normalizeResultSubmissionValue(player);
     const resultIsDraw =
-      normalizeResultSubmissionValue(expectedWinner) === "draw";
+      normalizeResultSubmissionValue(submittedResult) === "draw";
 
     const row = [];
     row[FORM.TIMESTAMP] = getResultSubmissionTimestamp();
@@ -284,6 +282,12 @@ function submitCasualResult(e) {
     row[FORM.MOMENT] = getResultSubmissionString(params.bestMoment);
     row[FORM.EVENT_ID] = "";
     row[FORM.GAME_TYPE] = "casual";
+    row[FORM.GAME_RESULT] =
+      resultIsDraw
+        ? "Draw"
+        : playerIsWinner
+          ? "Player 1 Victory"
+          : "Player 2 Victory";
 
     const sheet =
       SpreadsheetApp

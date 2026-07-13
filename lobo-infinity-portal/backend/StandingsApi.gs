@@ -235,6 +235,7 @@ function standingsRowsToObjects(rows, eventId, dashboardContext) {
         games: row[CONFIG.STANDINGS.GAMES],
         wins: row[CONFIG.STANDINGS.WINS],
         losses: row[CONFIG.STANDINGS.LOSSES],
+        draws: row[CONFIG.STANDINGS.DRAWS],
         tp: row[CONFIG.STANDINGS.TP],
         op: row[CONFIG.STANDINGS.OP],
         vp: row[CONFIG.STANDINGS.VP]

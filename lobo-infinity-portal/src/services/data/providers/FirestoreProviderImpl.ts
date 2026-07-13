@@ -272,6 +272,7 @@ async function buildTeamTournamentData(
     champion: standings[0] && event.lifecycleStage === 'Awards'
       ? {
           captain: standings[0].captain,
+          draws: standings[0].draws,
           losses: standings[0].losses,
           objectivePoints: standings[0].objectivePoints,
           players: standings[0].players,
@@ -606,7 +607,7 @@ export const firestoreProviderImpl: DataProvider = {
     },
   },
   players: {
-    comparePlayers: async () => ({ headToHead: { games: 0, leftWins: 0, rightWins: 0 }, players: [] } as PlayerComparisonData),
+    comparePlayers: async () => ({ headToHead: { games: 0, leftWins: 0, rightWins: 0, draws: 0 }, players: [] } as PlayerComparisonData),
     getAllPlayers: buildAllStandings,
     getCurrentPlayer: async () => emptyMyProfile(),
     getPlayer: async (playerName) => emptyPlayerProfile(playerName),
@@ -777,6 +778,7 @@ async function buildDivisionStandings(
     eventId,
     games: readNumber(data, 'games'),
     losses: readNumber(data, 'losses'),
+    draws: readNumber(data, 'draws'),
     op: readNumber(data, 'op'),
     player: readString(data, 'player') || id,
     displayName: readString(data, 'displayName') || readString(data, 'player') || id,
@@ -991,6 +993,7 @@ function normalizeFaction(id: string, data: DocumentData): FactionSummary {
     games: readNumber(data, 'games'),
     lastPlayed: readString(data, 'lastPlayed'),
     losses: readNumber(data, 'losses'),
+    draws: readNumber(data, 'draws'),
     name: readString(data, 'name') || id,
     topPlayer: readString(data, 'topPlayer'),
     topPlayerDisplayName: readString(data, 'topPlayerDisplayName'),
@@ -1025,6 +1028,7 @@ function buildTeamStandings(
       return {
         captain: team.captain,
         losses: 0,
+        draws: 0,
         objectivePoints: sumScore(teamResults, 'objectivePoints'),
         players: splitPlayers(team.players),
         rank: 0,
@@ -1172,6 +1176,7 @@ function emptyHallOfFame(): HallOfFameData {
     },
     leaders: {
       games: [],
+      draws: [],
       objectivePoints: [],
       tournamentPoints: [],
       victoryPoints: [],
@@ -1380,6 +1385,7 @@ function emptySeasonCommandPlayer() {
     division: '',
     games: 0,
     losses: 0,
+    draws: 0,
     op: 0,
     player: '',
     rank: 0,
@@ -1475,6 +1481,7 @@ function emptyPlayerProfile(playerName: string): PlayerProfileData {
     games: 0,
     homeStore: '',
     losses: 0,
+    draws: 0,
     name: playerName,
     nemesis: '',
     op: 0,
@@ -1554,6 +1561,7 @@ function emptyFactionProfile(factionName: string): FactionProfileData {
       bestOpponent: '',
       games: 0,
       losses: 0,
+      draws: 0,
       opponents: 0,
       winRate: 0,
       wins: 0,

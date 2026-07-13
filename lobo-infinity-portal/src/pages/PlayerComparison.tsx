@@ -199,7 +199,7 @@ function ComparisonReport({
         <div className="comparison-versus">
           <span>Head to Head</span>
           <strong>
-            {comparison.headToHead.leftWins}-{comparison.headToHead.rightWins}
+            {comparison.headToHead.leftWins}-{comparison.headToHead.rightWins}-{comparison.headToHead.draws}
           </strong>
           <small>{comparison.headToHead.games} games</small>
         </div>

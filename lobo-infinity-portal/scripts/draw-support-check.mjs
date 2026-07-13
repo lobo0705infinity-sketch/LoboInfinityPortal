@@ -19,6 +19,16 @@ const resultSubmission = read('backend/ResultSubmissionApi.gs')
 const playersApi = read('backend/PlayersApi.gs')
 const apiTypes = read('src/services/api.ts')
 const gameResults = read('src/services/gameResults.ts')
+const standingsApi = read('backend/StandingsApi.gs')
+const standingsTable = read('src/components/StandingsTable.tsx')
+const teamTournamentApi = read('backend/TeamTournamentApi.gs')
+const teamTournamentPage = read('src/pages/TeamTournament.tsx')
+const recordsApi = read('backend/RecordsApi.gs')
+const hallOfFame = read('src/pages/HallOfFame.tsx')
+const factionProfile = read('src/pages/FactionProfile.tsx')
+const armyListApi = read('backend/ArmyListApi.gs')
+const rivalries = read('src/pages/Rivalries.tsx')
+const playerComparison = read('src/pages/PlayerComparison.tsx')
 
 check(
   'Submit Game uses Game Result label',
@@ -27,7 +37,14 @@ check(
 check(
   'Submit Game validation no longer reports Winner is required',
   !submitResult.includes('Winner is required.') &&
-    !submitResult.includes('Winner must match the submitted TP, OP, and VP scores.'),
+    !submitResult.includes('Winner must match the submitted TP, OP, and VP scores.') &&
+    !submitResult.includes('Game Result must match the submitted TP, OP, and VP scores.'),
+)
+check(
+  'Submit Game stores explicit game result labels',
+  submitResult.includes('Player 1 Victory') &&
+    submitResult.includes('Player 2 Victory') &&
+    resultSubmission.includes('row[FORM.GAME_RESULT]'),
 )
 check(
   'Backend submission preserves player/opponent armies for draws',
@@ -35,7 +52,9 @@ check(
 )
 check(
   'Recent game payload exposes gameResult',
-  recentGames.includes('gameResult:') && recentGames.includes('function getRecentGameResult'),
+  recentGames.includes('gameResult:') &&
+    recentGames.includes('function getRecentGameResult') &&
+    gameEngine.includes('"Game Result"'),
 )
 check(
   'Game Engine analytics keeps both player rows for draws',
@@ -69,6 +88,39 @@ check(
   playersApi.includes('return game.result === "D";') &&
     playersApi.includes('wins + losses + draws') &&
     playersApi.includes('draws: draws'),
+)
+check(
+  'League standings expose and render Draws',
+  standingsApi.includes('draws: row[CONFIG.STANDINGS.DRAWS]') &&
+    standingsTable.includes('<th scope="col">Draws</th>') &&
+    standingsTable.includes('standing.draws'),
+)
+check(
+  'Team Tournament standings include draws',
+  teamTournamentApi.includes('let draws = 0') &&
+    teamTournamentApi.includes('draws: draws') &&
+    teamTournamentPage.includes('<th>D</th>') &&
+    teamTournamentPage.includes('team.draws'),
+)
+check(
+  'Hall of Fame includes Most Draws',
+  recordsApi.includes('"draws"') &&
+    hallOfFame.includes('Most Draws') &&
+    apiTypes.includes('draws: HallOfFameLeader[]'),
+)
+check(
+  'Faction matchups expose W-L-D',
+  armyListApi.includes('matchup.draws') &&
+    factionProfile.includes('summary.wins}-${summary.losses}-${summary.draws') &&
+    factionProfile.includes('matchup.draws'),
+)
+check(
+  'Head-to-head surfaces render draws',
+  recordsApi.includes('draws: draws') &&
+    apiTypes.includes('rightWins: number') &&
+    apiTypes.includes('draws: number') &&
+    playerComparison.includes('headToHead.draws') &&
+    rivalries.includes('rivalry.leftWins}-${rivalry.rightWins}-${rivalry.draws'),
 )
 
 const failed = checks.filter((item) => !item.condition)

@@ -632,6 +632,7 @@ function normalizePlayerProfilePayload(payload: unknown): PlayerProfileData {
     games: getLocalNumber(player, 'games'),
     homeStore: getLocalString(player, 'homeStore'),
     losses: getLocalNumber(player, 'losses'),
+    draws: getLocalNumber(player, 'draws'),
     name,
     nemesis: getLocalString(player, 'nemesis'),
     op: getLocalNumber(player, 'op'),

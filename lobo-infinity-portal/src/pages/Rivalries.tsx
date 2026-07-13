@@ -11,7 +11,7 @@ import {
   formatPlayerName,
   formatVictoryScore,
 } from '../services/formatting'
-import { getGameHeadline } from '../services/gameResults'
+import { getGameHeadline, isDrawGame } from '../services/gameResults'
 
 type RivalriesState =
   | {
@@ -33,6 +33,7 @@ type RivalrySummary = {
   left: string
   leftDisplayName: string
   leftWins: number
+  draws: number
   latest: RecentGame
   right: string
   rightDisplayName: string
@@ -120,7 +121,7 @@ function RivalriesContent({ games }: { games: RecentGame[] }) {
               </h2>
             </div>
             <dl className="operations-metrics compact">
-              <Metric label="Record" value={`${rivalry.leftWins}-${rivalry.rightWins}`} />
+              <Metric label="Record" value={`${rivalry.leftWins}-${rivalry.rightWins}-${rivalry.draws}`} />
               <Metric label="TP" value={rivalry.totalTP} />
               <Metric label="OP" value={rivalry.totalOP} />
               <Metric label="VP" value={rivalry.totalVP} />
@@ -191,8 +192,9 @@ function buildRivalries(games: RecentGame[]) {
 function buildRivalrySummary(key: string, games: RecentGame[]): RivalrySummary {
   const [left, right] = key.split('::')
   const latest = games[0]
-  const leftWins = games.filter((game) => game.winner === left).length
-  const rightWins = games.filter((game) => game.winner === right).length
+  const draws = games.filter(isDrawGame).length
+  const leftWins = games.filter((game) => !isDrawGame(game) && game.winner === left).length
+  const rightWins = games.filter((game) => !isDrawGame(game) && game.winner === right).length
   const totalTP = sumScores(games, 'tp')
   const totalOP = sumScores(games, 'op')
   const totalVP = sumScores(games, 'vp')
@@ -207,6 +209,7 @@ function buildRivalrySummary(key: string, games: RecentGame[]): RivalrySummary {
     games,
     key,
     latest,
+    draws,
     left,
     leftDisplayName:
       latest.winner === left ? latest.winnerDisplayName : latest.loserDisplayName,

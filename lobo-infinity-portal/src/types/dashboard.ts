@@ -16,6 +16,7 @@ export type Standing = {
   games: number
   wins: number
   losses: number
+  draws: number
   tp: number
   op: number
   vp: number

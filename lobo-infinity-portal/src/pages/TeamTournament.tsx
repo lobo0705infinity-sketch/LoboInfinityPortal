@@ -682,6 +682,7 @@ function TeamStandings({
                 <th>Team</th>
                 <th>W</th>
                 <th>L</th>
+                <th>D</th>
                 <th>TP</th>
                 <th>OP</th>
                 <th>VP</th>
@@ -694,6 +695,7 @@ function TeamStandings({
                   <td>{team.teamName}</td>
                   <td>{team.wins}</td>
                   <td>{team.losses}</td>
+                  <td>{team.draws}</td>
                   <td>{team.tournamentPoints}</td>
                   <td>{team.objectivePoints}</td>
                   <td>{team.victoryPoints}</td>

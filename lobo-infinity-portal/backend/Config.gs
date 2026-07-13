@@ -153,11 +153,13 @@ const CONFIG = {
 
     LOSSES: 4,
 
-    TP: 5,
+    DRAWS: 5,
 
-    OP: 6,
+    TP: 6,
 
-    VP: 7
+    OP: 7,
+
+    VP: 8
 
   }
 

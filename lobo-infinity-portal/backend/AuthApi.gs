@@ -2246,6 +2246,7 @@ function buildProfileStatisticsSnapshot(playerStats) {
     games: games,
     wins: wins,
     losses: Number(playerStats.losses) || 0,
+    draws: Number(playerStats.draws) || 0,
     tp: Number(playerStats.tp) || 0,
     op: Number(playerStats.op) || 0,
     vp: Number(playerStats.vp) || 0,
@@ -2580,7 +2581,8 @@ function buildProfileLeaguePerformance(
           opponent: opponent,
           games: 0,
           wins: 0,
-          losses: 0
+          losses: 0,
+          draws: 0
         };
 
       opponents[opponent].games++;
@@ -2590,6 +2592,9 @@ function buildProfileLeaguePerformance(
 
       if (result === "Loss")
         opponents[opponent].losses++;
+
+      if (result === "Draw")
+        opponents[opponent].draws++;
     }
 
     if (index === 0)
