@@ -72,6 +72,9 @@ export type LeagueResultSubmission = {
   firstTurn: string
   bestMoment: string
   notes: string
+  commissionerMode?: boolean
+  commissionerOverride?: boolean
+  commissionerReason?: string
 }
 
 export type CasualResultSubmission = Omit<
@@ -2852,7 +2855,12 @@ export async function submitLeagueResult(
   submission: LeagueResultSubmission,
   options: ApiOptions = {},
 ): Promise<void> {
-  const payload = await postRequest('submitLeagueResult', options, submission)
+  const payload = await postRequest('submitLeagueResult', options, {
+    ...submission,
+    commissionerMode: submission.commissionerMode ? 'true' : '',
+    commissionerOverride: submission.commissionerOverride ? 'true' : '',
+    commissionerReason: submission.commissionerReason ?? '',
+  })
   normalizeMutationPayload(payload, 'Result submission failed.')
 }
 
@@ -2862,6 +2870,9 @@ export async function submitCasualResult(
 ): Promise<void> {
   const payload = await postRequest('submitCasualResult', options, {
     bestMoment: submission.bestMoment,
+    commissionerMode: submission.commissionerMode ? 'true' : '',
+    commissionerOverride: submission.commissionerOverride ? 'true' : '',
+    commissionerReason: submission.commissionerReason ?? '',
     firstTurn: submission.firstTurn,
     mission: submission.mission,
     notes: submission.notes,

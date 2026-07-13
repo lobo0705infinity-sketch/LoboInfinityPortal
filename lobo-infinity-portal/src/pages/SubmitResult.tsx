@@ -82,6 +82,9 @@ function SubmitResult() {
   const [teamTournament, setTeamTournament] = useState<TeamTournamentData | null>(null)
   const [searchIndex, setSearchIndex] = useState<SearchData | null>(null)
   const [showAllOpponents, setShowAllOpponents] = useState(false)
+  const [commissionerMode, setCommissionerMode] = useState(false)
+  const [commissionerOverride, setCommissionerOverride] = useState(false)
+  const [commissionerReason, setCommissionerReason] = useState('')
   const [state, setState] = useState<SubmitState>({ status: 'loading' })
   const authenticatedSubmitGamePlayer = useMemo(
     () =>
@@ -111,6 +114,8 @@ function SubmitResult() {
     round: undefined,
   })
   const canOverrideOpponentFilter = auth.isAtLeastRole('Commissioner')
+  const isCommissionerSubmission = canOverrideOpponentFilter && commissionerMode
+  const isCommissionerOverride = isCommissionerSubmission && commissionerOverride
   const allPlayerOptions = useMemo(() => buildSubmitGamePlayerOptions(searchIndex), [searchIndex])
   const factionOptions = useMemo(() => buildFactionOptions(), [])
   const missionOptions = useMemo(() => buildMissionOptions(), [])
@@ -126,16 +131,32 @@ function SubmitResult() {
         currentPlayerDivision: leagueResult.division,
         currentUserEmail: auth.user.email,
         eventHome: leagueOpponentEventHome,
-        showAllPlayers: showAllOpponents && canOverrideOpponentFilter,
+        showAllPlayers:
+          (showAllOpponents || commissionerOverride) && canOverrideOpponentFilter,
         tournamentRegistrations: teamTournament?.registration.registrations,
       }),
-    [allPlayerOptions, auth.user.email, canOverrideOpponentFilter, leagueOpponentEventHome, leagueResult.division, leagueResult.player, showAllOpponents, teamTournament?.registration.registrations],
+    [allPlayerOptions, auth.user.email, canOverrideOpponentFilter, commissionerOverride, leagueOpponentEventHome, leagueResult.division, leagueResult.player, showAllOpponents, teamTournament?.registration.registrations],
   )
   const leagueOpponentOptions = leagueOpponentResolution.options
   const casualOpponentOptions = useMemo(
     () => allPlayerOptions.filter((option) => !sameValue(option.value, casualResult.player)),
     [allPlayerOptions, casualResult.player],
   )
+
+  function buildCommissionerPayload<T extends LeagueResultSubmission | CasualResultSubmission>(
+    submission: T,
+  ): T {
+    if (!isCommissionerSubmission) {
+      return submission
+    }
+
+    return {
+      ...submission,
+      commissionerMode: true,
+      commissionerOverride: isCommissionerOverride,
+      commissionerReason,
+    }
+  }
 
   useEffect(() => {
     if (
@@ -356,7 +377,7 @@ function SubmitResult() {
     setState({ status: 'submitting' })
 
     try {
-      await apiClient.submitCasualResult(casualResult)
+      await apiClient.submitCasualResult(buildCommissionerPayload(casualResult))
       setState({
         message: 'Casual game submitted. Analytics and lifetime records will refresh from the official game data.',
         status: 'success',
@@ -429,12 +450,33 @@ function SubmitResult() {
         ) : null}
 
         <form className="army-list-form panel" onSubmit={(event) => void submitCasual(event)}>
-          <ReadOnlyField
-            label="Player"
-            value={casualResult.player}
-          />
+          {canOverrideOpponentFilter ? (
+            <CommissionerModeControls
+              commissionerMode={commissionerMode}
+              commissionerOverride={commissionerOverride}
+              reason={commissionerReason}
+              setCommissionerMode={setCommissionerMode}
+              setCommissionerOverride={setCommissionerOverride}
+              setReason={setCommissionerReason}
+            />
+          ) : null}
+          {isCommissionerSubmission ? (
+            <SearchableSelect
+              label="Player 1"
+              onChange={(value) => updateCasualField('player', value)}
+              options={allPlayerOptions}
+              placeholder="Search active players"
+              required
+              value={casualResult.player}
+            />
+          ) : (
+            <ReadOnlyField
+              label="Player"
+              value={casualResult.player}
+            />
+          )}
           <SearchableSelect
-            label="Opponent"
+            label={isCommissionerSubmission ? 'Player 2' : 'Opponent'}
             onChange={(value) => updateCasualField('opponent', value)}
             options={casualOpponentOptions}
             placeholder="Search active players"
@@ -541,9 +583,17 @@ function SubmitResult() {
   if (eventHome?.event.type === 'Team Tournament') {
     return (
       <TeamTournamentResultSubmission
+        allPlayerOptions={allPlayerOptions}
+        commissionerMode={isCommissionerSubmission}
+        commissionerOverride={isCommissionerOverride}
+        commissionerReason={commissionerReason}
         data={teamTournament}
         disabled={!auth.authenticated || state.status === 'loading'}
         eventHome={eventHome}
+        isCommissioner={canOverrideOpponentFilter}
+        setCommissionerMode={setCommissionerMode}
+        setCommissionerOverride={setCommissionerOverride}
+        setCommissionerReason={setCommissionerReason}
       />
     )
   }
@@ -564,9 +614,13 @@ function SubmitResult() {
     }
 
     const validation = validateLeagueResult(eventHome, leagueResult, {
+      commissionerMode: isCommissionerSubmission,
+      commissionerOverride: isCommissionerOverride,
       factions: factionOptions,
       missions: missionOptions,
-      opponents: leagueOpponentOptions,
+      opponents: isCommissionerOverride
+        ? allPlayerOptions.filter((option) => !sameValue(option.value, leagueResult.player))
+        : leagueOpponentOptions,
     })
 
     if (validation.length > 0) {
@@ -577,7 +631,7 @@ function SubmitResult() {
     setState({ status: 'submitting' })
 
     try {
-      await apiClient.submitLeagueResult(leagueResult)
+      await apiClient.submitLeagueResult(buildCommissionerPayload(leagueResult))
       setState({
         message: 'Result submitted. Standings will refresh from the official event data.',
         status: 'success',
@@ -614,6 +668,16 @@ function SubmitResult() {
       ) : null}
 
       <form className="army-list-form panel" onSubmit={(event) => void submit(event)}>
+        {canOverrideOpponentFilter ? (
+          <CommissionerModeControls
+            commissionerMode={commissionerMode}
+            commissionerOverride={commissionerOverride}
+            reason={commissionerReason}
+            setCommissionerMode={setCommissionerMode}
+            setCommissionerOverride={setCommissionerOverride}
+            setReason={setCommissionerReason}
+          />
+        ) : null}
         <ReadOnlyField label="Event" value={eventHome?.event.name || eventId} />
         <ReadOnlyField
           label="Round"
@@ -631,16 +695,36 @@ function SubmitResult() {
           required
           value={leagueResult.mission}
         />
-        <ReadOnlyField label="Player" value={leagueResult.player || auth.user.leaguePlayer} />
+        {isCommissionerSubmission ? (
+          <SearchableSelect
+            label="Player 1"
+            onChange={(value) => {
+              const registration = eventHome?.registration.registrations.find((entry) => (
+                sameValue(entry.player, value) || sameValue(entry.displayName, value)
+              ))
+              updateField('player', value)
+              updateField('division', registration?.notes || getPlayerOptionMeta(allPlayerOptions, value))
+              updateField('opponent', '')
+              updateField('winner', '')
+              setShowAllOpponents(false)
+            }}
+            options={allPlayerOptions}
+            placeholder="Search players"
+            required
+            value={leagueResult.player}
+          />
+        ) : (
+          <ReadOnlyField label="Player" value={leagueResult.player || auth.user.leaguePlayer} />
+        )}
         <SearchableSelect
-          label="Opponent"
+          label={isCommissionerSubmission ? 'Player 2' : 'Opponent'}
           onChange={(value) => updateField('opponent', value)}
-          options={leagueOpponentOptions}
+          options={isCommissionerOverride ? allPlayerOptions.filter((option) => !sameValue(option.value, leagueResult.player)) : leagueOpponentOptions}
           placeholder="Search eligible opponents"
           required
           value={leagueResult.opponent}
         />
-        {canOverrideOpponentFilter ? (
+        {canOverrideOpponentFilter && !isCommissionerSubmission ? (
           <label className="event-registration-check">
             <input
               checked={showAllOpponents}
@@ -757,19 +841,118 @@ function SubmissionChoice({
   )
 }
 
+function CommissionerModeControls({
+  commissionerMode,
+  commissionerOverride,
+  reason,
+  setCommissionerMode,
+  setCommissionerOverride,
+  setReason,
+}: {
+  commissionerMode: boolean
+  commissionerOverride: boolean
+  reason: string
+  setCommissionerMode: (value: boolean) => void
+  setCommissionerOverride: (value: boolean) => void
+  setReason: (value: string) => void
+}) {
+  return (
+    <fieldset className="army-list-form-wide submit-game-commissioner-mode">
+      <legend>Commissioner Mode</legend>
+      <label className="event-registration-check">
+        <input
+          checked={commissionerMode}
+          onChange={(event) => {
+            setCommissionerMode(event.target.checked)
+            if (!event.target.checked) {
+              setCommissionerOverride(false)
+              setReason('')
+            }
+          }}
+          type="checkbox"
+        />
+        <span>Submit Game For Other Players</span>
+      </label>
+      {commissionerMode ? (
+        <>
+          <label className="event-registration-check">
+            <input
+              checked={commissionerOverride}
+              onChange={(event) => setCommissionerOverride(event.target.checked)}
+              type="checkbox"
+            />
+            <span>Commissioner Override</span>
+          </label>
+          <label>
+            <span>Reason</span>
+            <input
+              onChange={(event) => setReason(event.target.value)}
+              placeholder="Optional audit note"
+              value={reason}
+            />
+          </label>
+        </>
+      ) : null}
+    </fieldset>
+  )
+}
+
 function TeamTournamentResultSubmission({
+  allPlayerOptions,
+  commissionerMode,
+  commissionerOverride,
+  commissionerReason,
   data,
   disabled,
   eventHome,
+  isCommissioner,
+  setCommissionerMode,
+  setCommissionerOverride,
+  setCommissionerReason,
 }: {
+  allPlayerOptions: PickerOption[]
+  commissionerMode: boolean
+  commissionerOverride: boolean
+  commissionerReason: string
   data: TeamTournamentData | null
   disabled: boolean
   eventHome: EventHomeData
+  isCommissioner: boolean
+  setCommissionerMode: (value: boolean) => void
+  setCommissionerOverride: (value: boolean) => void
+  setCommissionerReason: (value: string) => void
 }) {
   const [state, setState] = useState<SubmitState>({ status: 'idle' })
   const [winner, setWinner] = useState('')
-  const assignment = getTournamentAssignment(data, eventHome)
+  const defaultPlayer =
+    eventHome.registration.currentPlayer?.player ||
+    eventHome.registration.currentPlayer?.displayName ||
+    ''
+  const [selectedPlayer, setSelectedPlayer] = useState(defaultPlayer)
+  const [selectedOpponent, setSelectedOpponent] = useState('')
+  const assignment = getTournamentAssignment(
+    data,
+    eventHome,
+    commissionerMode ? selectedPlayer : '',
+  )
   const alreadySubmitted = assignment ? assignment.status.toLowerCase() !== 'outstanding' : false
+  const tournamentPlayerOptions = useMemo(
+    () => buildTournamentPlayerOptions(data, eventHome, allPlayerOptions, commissionerOverride),
+    [allPlayerOptions, commissionerOverride, data, eventHome],
+  )
+  const tournamentOpponentOptions = useMemo(
+    () => buildTournamentOpponentPickerOptions(
+      data,
+      eventHome,
+      allPlayerOptions,
+      selectedPlayer,
+      commissionerOverride,
+    ),
+    [allPlayerOptions, commissionerOverride, data, eventHome, selectedPlayer],
+  )
+  const effectiveOpponent = commissionerMode
+    ? selectedOpponent || assignment?.opponent || ''
+    : assignment?.opponent || ''
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -781,7 +964,18 @@ function TeamTournamentResultSubmission({
 
     const form = new FormData(event.currentTarget)
     const params = Object.fromEntries(form.entries()) as Record<string, string>
-    const validation = validateTournamentResult(params, eventHome, assignment, alreadySubmitted)
+    const validation = validateTournamentResult(
+      {
+        ...params,
+        opponent: effectiveOpponent,
+        player: commissionerMode ? selectedPlayer : assignment?.player || '',
+      },
+      eventHome,
+      assignment,
+      alreadySubmitted,
+      commissionerMode,
+      commissionerOverride,
+    )
 
     if (validation.length > 0) {
       setState({ message: validation.join(' '), status: 'error' })
@@ -793,7 +987,12 @@ function TeamTournamentResultSubmission({
     try {
       await apiClient.saveTeamTournamentResult({
         ...params,
+        commissionerMode: commissionerMode ? 'true' : '',
+        commissionerOverride: commissionerOverride ? 'true' : '',
+        commissionerReason,
         eventId: eventHome.event.id,
+        opponent: effectiveOpponent,
+        player: commissionerMode ? selectedPlayer : assignment?.player || '',
       })
       setState({
         message: 'Tournament result submitted for commissioner review.',
@@ -819,13 +1018,51 @@ function TeamTournamentResultSubmission({
       </section>
 
       <form className="army-list-form panel" onSubmit={(event) => void submit(event)}>
+        {isCommissioner ? (
+          <CommissionerModeControls
+            commissionerMode={commissionerMode}
+            commissionerOverride={commissionerOverride}
+            reason={commissionerReason}
+            setCommissionerMode={setCommissionerMode}
+            setCommissionerOverride={setCommissionerOverride}
+            setReason={setCommissionerReason}
+          />
+        ) : null}
         <ReadOnlyField label="Event" value={eventHome.event.name} />
         <ReadOnlyField label="Round" value={assignment?.round || getRoundValue(eventHome.currentRound, 'name') || 'Current round'} />
         <ReadOnlyField label="Team" value={assignment?.team || eventHome.registration.currentPlayer?.team || ''} />
         <ReadOnlyField label="Opponent Team" value={assignment?.opponentTeam || ''} />
         <ReadOnlyField label="Table" value={assignment?.table || 'Not published'} />
         <ReadOnlyField label="Mission" value={assignment?.mission || 'Not published'} />
-        <ReadOnlyField label="Opponent" value={assignment?.opponent || 'Not published'} />
+        {commissionerMode ? (
+          <>
+            <SearchableSelect
+              label="Player 1"
+              onChange={(value) => {
+                setSelectedPlayer(value)
+                setSelectedOpponent('')
+                setWinner('')
+              }}
+              options={tournamentPlayerOptions}
+              placeholder="Search tournament players"
+              required
+              value={selectedPlayer}
+            />
+            <SearchableSelect
+              label="Player 2"
+              onChange={(value) => {
+                setSelectedOpponent(value)
+                setWinner('')
+              }}
+              options={tournamentOpponentOptions}
+              placeholder="Search tournament opponents"
+              required
+              value={effectiveOpponent}
+            />
+          </>
+        ) : (
+          <ReadOnlyField label="Opponent" value={assignment?.opponent || 'Not published'} />
+        )}
         {assignment ? (
           <>
             <HiddenField name="roundId" value={assignment.roundId} />
@@ -833,8 +1070,8 @@ function TeamTournamentResultSubmission({
             <HiddenField name="teamA" value={assignment.teamA} />
             <HiddenField name="teamB" value={assignment.teamB} />
             <HiddenField name="table" value={assignment.table} />
-            <HiddenField name="player" value={assignment.player} />
-            <HiddenField name="opponent" value={assignment.opponent} />
+            <HiddenField name="player" value={commissionerMode ? selectedPlayer : assignment.player} />
+            <HiddenField name="opponent" value={effectiveOpponent} />
             <HiddenField name="mission" value={assignment.mission} />
           </>
         ) : null}
@@ -842,7 +1079,7 @@ function TeamTournamentResultSubmission({
           label="Game Result"
           name="winner"
           onChange={setWinner}
-          options={buildGameResultOptions(assignment?.player ?? '', assignment?.opponent ?? '')}
+          options={buildGameResultOptions(commissionerMode ? selectedPlayer : assignment?.player ?? '', effectiveOpponent)}
           required
           value={winner}
         />
@@ -854,7 +1091,7 @@ function TeamTournamentResultSubmission({
           <textarea name="bestMoment" required rows={3} />
         </label>
         <div className="army-list-form-actions">
-          <button disabled={disabled || !assignment || alreadySubmitted || state.status === 'submitting'} type="submit">
+          <button disabled={disabled || (!assignment && !commissionerOverride) || alreadySubmitted || state.status === 'submitting'} type="submit">
             {state.status === 'submitting' ? 'Submitting...' : 'Submit Game'}
           </button>
           {!eventHome.registration.currentPlayer ? (
@@ -876,6 +1113,8 @@ function validateLeagueResult(
   data: EventHomeData,
   submission: LeagueResultSubmission,
   options: {
+    commissionerMode?: boolean
+    commissionerOverride?: boolean
     factions: PickerOption[]
     missions: PickerOption[]
     opponents: PickerOption[]
@@ -884,7 +1123,7 @@ function validateLeagueResult(
   const issues: string[] = []
   const registered = data.registration.currentPlayer
 
-  if (!registered) {
+  if (!registered && !options.commissionerMode) {
     issues.push('You must be registered for this event before submitting a result.')
   }
 
@@ -902,7 +1141,10 @@ function validateLeagueResult(
     issues.push('Opponent must be a different player.')
   }
 
-  if (!data.eligibleOpponents.some((entry) => entry.active && normalize(entry.playerId) === normalize(submission.opponent))) {
+  if (
+    !options.commissionerOverride &&
+    !data.eligibleOpponents.some((entry) => entry.active && normalize(entry.playerId) === normalize(submission.opponent))
+  ) {
     issues.push('Opponent must be registered for this event.')
   }
 
@@ -1035,14 +1277,23 @@ type TournamentAssignment = {
 function getTournamentAssignment(
   data: TeamTournamentData | null,
   eventHome: EventHomeData,
+  selectedPlayer = '',
 ): TournamentAssignment | null {
-  if (!data || !eventHome.registration.currentPlayer) {
+  if (!data || (!eventHome.registration.currentPlayer && !selectedPlayer)) {
     return null
   }
 
   const registration = eventHome.registration.currentPlayer
-  const player = registration.player || registration.displayName
-  const team = registration.team || registration.preferredTeam
+  const player = selectedPlayer || registration?.player || registration?.displayName || ''
+  const selectedRegistration = data.registration.registrations.find((entry) => (
+    sameValue(entry.player, player) || sameValue(entry.displayName, player)
+  ))
+  const team =
+    selectedRegistration?.team ||
+    selectedRegistration?.preferredTeam ||
+    registration?.team ||
+    registration?.preferredTeam ||
+    ''
 
   if (!player || !team) {
     return null
@@ -1084,10 +1335,12 @@ function validateTournamentResult(
   eventHome: EventHomeData,
   assignment: TournamentAssignment | null,
   alreadySubmitted: boolean,
+  commissionerMode = false,
+  commissionerOverride = false,
 ) {
   const issues: string[] = []
 
-  if (!eventHome.registration.currentPlayer) {
+  if (!eventHome.registration.currentPlayer && !commissionerMode) {
     issues.push('You must be registered for this Team Tournament before submitting a result.')
   }
 
@@ -1095,7 +1348,7 @@ function validateTournamentResult(
     issues.push('This Team Tournament round is not currently accepting results.')
   }
 
-  if (!assignment) {
+  if (!assignment && !commissionerOverride) {
     issues.push('No active table pairing was found for your registration.')
     return issues
   }
@@ -1106,6 +1359,14 @@ function validateTournamentResult(
 
   if (!params.tournamentPoints?.trim() || !params.objectivePoints?.trim() || !params.victoryPoints?.trim()) {
     issues.push('Tournament Points, Objective Points, and Victory Points are required.')
+  }
+
+  if (!params.player?.trim() || !params.opponent?.trim()) {
+    issues.push('Player 1 and Player 2 are required.')
+  }
+
+  if (normalize(params.player || '') === normalize(params.opponent || '')) {
+    issues.push('Player 2 must be different from Player 1.')
   }
 
   if (!params.winner?.trim()) {
@@ -1144,6 +1405,13 @@ function sameValue(left: string, right: string) {
 function optionContains(options: PickerOption[], value: string) {
   const normalized = normalize(value)
   return options.some((option) => normalize(option.value) === normalized)
+}
+
+function getPlayerOptionMeta(options: PickerOption[], value: string) {
+  return options.find((option) => (
+    sameValue(option.value, value) ||
+    sameValue(option.label, value)
+  ))?.meta ?? ''
 }
 
 function toPickerOptions(values: string[]) {
@@ -1396,6 +1664,42 @@ function buildGameResultOptions(player: string, opponent: string): SelectFieldOp
   options.push({ label: 'Draw', value: 'Draw' })
 
   return options
+}
+
+function buildTournamentPlayerOptions(
+  data: TeamTournamentData | null,
+  eventHome: EventHomeData,
+  allPlayers: PickerOption[],
+  commissionerOverride: boolean,
+) {
+  if (commissionerOverride) {
+    return allPlayers
+  }
+
+  return toPickerOptions(
+    (data?.registration.registrations ?? eventHome.registration.registrations)
+      .filter((entry) => !['deleted', 'removed', 'withdrawn'].includes(normalize(entry.status)))
+      .map((entry) => entry.player || entry.displayName),
+  )
+}
+
+function buildTournamentOpponentPickerOptions(
+  data: TeamTournamentData | null,
+  eventHome: EventHomeData,
+  allPlayers: PickerOption[],
+  selectedPlayer: string,
+  commissionerOverride: boolean,
+) {
+  if (commissionerOverride) {
+    return allPlayers.filter((option) => !sameValue(option.value, selectedPlayer))
+  }
+
+  return toPickerOptions(
+    (data?.registration.registrations ?? eventHome.registration.registrations)
+      .filter((entry) => !['deleted', 'removed', 'withdrawn'].includes(normalize(entry.status)))
+      .map((entry) => entry.player || entry.displayName)
+      .filter((player) => !sameValue(player, selectedPlayer)),
+  )
 }
 
 function SelectField({

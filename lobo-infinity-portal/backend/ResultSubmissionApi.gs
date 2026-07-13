@@ -11,6 +11,12 @@ function submitLeagueResult(e) {
     const params =
       getApiParameters(e);
 
+    const commissionerContext =
+      getResultSubmissionCommissionerContext(auth, params);
+
+    if (commissionerContext.error)
+      return resultSubmissionFailure(commissionerContext.error);
+
     const eventId =
       resolveEventId(params.eventId || EVENT_ENGINE_DEFAULT_EVENT_ID);
 
@@ -40,13 +46,16 @@ function submitLeagueResult(e) {
     const registrations =
       getEventRegistrationRows(eventId);
 
-    if (!isResultSubmissionRegisteredPlayer(registrations, player))
+    if (!commissionerContext.override &&
+        !isResultSubmissionRegisteredPlayer(registrations, player))
       return resultSubmissionFailure("Player is not registered for this event.");
 
-    if (!isResultSubmissionRegisteredPlayer(registrations, opponent))
+    if (!commissionerContext.override &&
+        !isResultSubmissionRegisteredPlayer(registrations, opponent))
       return resultSubmissionFailure("Opponent is not registered for this event.");
 
-    if (hasExistingLeagueResult(eventId, player, opponent))
+    if (!commissionerContext.override &&
+        hasExistingLeagueResult(eventId, player, opponent))
       return resultSubmissionFailure("This match has already been reported.");
 
     const playerTp =
@@ -148,6 +157,18 @@ function submitLeagueResult(e) {
 
     sheet.appendRow(row);
 
+    recordResultSubmissionCommissionerAudit(
+      commissionerContext,
+      "league",
+      {
+        eventId: eventId,
+        player: player,
+        opponent: opponent,
+        mission: row[FORM.MISSION],
+        result: row[FORM.GAME_RESULT]
+      }
+    );
+
     if (typeof rebuildGameEngine === "function")
       rebuildGameEngine();
 
@@ -169,6 +190,12 @@ function submitCasualResult(e) {
   return requireApiPermission(e, "submitLists", function(auth) {
     const params =
       getApiParameters(e);
+
+    const commissionerContext =
+      getResultSubmissionCommissionerContext(auth, params);
+
+    if (commissionerContext.error)
+      return resultSubmissionFailure(commissionerContext.error);
 
     const player =
       getResultSubmissionString(params.player) ||
@@ -299,6 +326,18 @@ function submitCasualResult(e) {
 
     sheet.appendRow(row);
 
+    recordResultSubmissionCommissionerAudit(
+      commissionerContext,
+      "casual",
+      {
+        eventId: "",
+        player: player,
+        opponent: opponent,
+        mission: row[FORM.MISSION],
+        result: row[FORM.GAME_RESULT]
+      }
+    );
+
     if (typeof rebuildGameEngine === "function")
       rebuildGameEngine();
 
@@ -322,6 +361,108 @@ function resultSubmissionFailure(message) {
     success: false,
     error: message
   });
+
+}
+
+function getResultSubmissionCommissionerContext(auth, params) {
+
+  const enabled =
+    getResultSubmissionBoolean(params.commissionerMode);
+
+  const override =
+    enabled && getResultSubmissionBoolean(params.commissionerOverride);
+
+  if (!enabled)
+    return {
+      enabled: false,
+      override: false,
+      reason: "",
+      commissioner: ""
+    };
+
+  const allowed =
+    auth &&
+    auth.user &&
+    typeof userHasPermission === "function" &&
+    userHasPermission(auth.user.role, "runSeasonControl");
+
+  if (!allowed)
+    return {
+      enabled: false,
+      override: false,
+      reason: "",
+      commissioner: "",
+      error: "Commissioner mode is only available to commissioners."
+    };
+
+  return {
+    enabled: true,
+    override: override,
+    reason: getResultSubmissionString(params.commissionerReason),
+    commissioner:
+      auth.user.playerDisplayName ||
+      auth.user.leaguePlayer ||
+      auth.user.displayName ||
+      auth.user.email ||
+      "Commissioner"
+  };
+
+}
+
+function getResultSubmissionBoolean(value) {
+
+  const normalized =
+    normalizeResultSubmissionValue(value);
+
+  return (
+    normalized === "true" ||
+    normalized === "yes" ||
+    normalized === "1"
+  );
+
+}
+
+function recordResultSubmissionCommissionerAudit(context, gameType, details) {
+
+  if (!context || !context.enabled)
+    return;
+
+  const spreadsheet =
+    SpreadsheetApp.getActive();
+
+  let sheet =
+    spreadsheet.getSheetByName("Commissioner Submission Audit");
+
+  if (!sheet) {
+    sheet =
+      spreadsheet.insertSheet("Commissioner Submission Audit");
+
+    sheet.appendRow([
+      "Timestamp",
+      "Commissioner",
+      "Game Type",
+      "Event ID",
+      "Player 1",
+      "Player 2",
+      "Mission",
+      "Result",
+      "Override Used",
+      "Reason"
+    ]);
+  }
+
+  sheet.appendRow([
+    getResultSubmissionTimestamp(),
+    context.commissioner,
+    gameType,
+    details.eventId || "",
+    details.player || "",
+    details.opponent || "",
+    details.mission || "",
+    details.result || "",
+    context.override ? "TRUE" : "FALSE",
+    context.reason || ""
+  ]);
 
 }
 

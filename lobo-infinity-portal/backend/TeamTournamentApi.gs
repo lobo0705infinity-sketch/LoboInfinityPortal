@@ -74,6 +74,17 @@ function getTeamTournament(e) {
   const params =
     getApiParameters(e);
 
+  const commissionerContext =
+    typeof getResultSubmissionCommissionerContext === "function"
+      ? getResultSubmissionCommissionerContext(auth, params)
+      : { enabled: false, override: false, reason: "", commissioner: "" };
+
+  if (commissionerContext.error)
+    return jsonOutput({
+      success: false,
+      error: commissionerContext.error
+    });
+
   const eventId =
     resolveEventId(params.eventId || EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID);
 
@@ -725,13 +736,21 @@ function saveTeamTournamentResult(e) {
       error: "Portal result submission is only enabled for Team Tournament events."
     });
 
-  const registration =
-    getEventRegistrationForPlayer(
-      eventId,
-      getEventParticipantKey(event, auth.user)
-    );
+  const selectedPlayer =
+    commissionerContext.enabled
+      ? getTeamTournamentString(params.player)
+      : "";
 
-  if (!registration || registration.status === "Withdrawn")
+  const registration =
+    commissionerContext.enabled && selectedPlayer !== ""
+      ? getEventRegistrationForPlayer(eventId, selectedPlayer)
+      : getEventRegistrationForPlayer(
+          eventId,
+          getEventParticipantKey(event, auth.user)
+        );
+
+  if ((!registration || registration.status === "Withdrawn") &&
+      !commissionerContext.override)
     return jsonOutput({
       success: false,
       error: "You must be registered for this Team Tournament before submitting a result."
@@ -749,14 +768,24 @@ function saveTeamTournamentResult(e) {
   const pairings =
     getTeamTournamentPairings(eventId);
 
-  const assignment =
-    resolveTeamTournamentResultAssignment(
-      event,
-      currentRound,
-      registration,
-      pairings,
-      params
-    );
+  let assignment =
+    registration
+      ? resolveTeamTournamentResultAssignment(
+          event,
+          currentRound,
+          registration,
+          pairings,
+          params
+        )
+      : null;
+
+  if (!assignment && commissionerContext.override)
+    assignment =
+      buildCommissionerTeamTournamentOverrideAssignment(
+        eventId,
+        currentRound,
+        params
+      );
 
   if (!assignment)
     return jsonOutput({
@@ -776,7 +805,8 @@ function saveTeamTournamentResult(e) {
   const results =
     getTeamTournamentResults(eventId);
 
-  if (hasSubmittedTeamTournamentResult(results, assignment))
+  if (!commissionerContext.override &&
+      hasSubmittedTeamTournamentResult(results, assignment))
     return jsonOutput({
       success: false,
       error: "This match has already been submitted."
@@ -807,7 +837,10 @@ function saveTeamTournamentResult(e) {
       bestMoment: getTeamTournamentString(params.bestMoment),
       notes: "",
       status: "Submitted",
-      submittedBy: auth.user.leaguePlayer || auth.user.email || assignment.player,
+      submittedBy:
+        commissionerContext.enabled
+          ? commissionerContext.commissioner
+          : auth.user.leaguePlayer || auth.user.email || assignment.player,
       createdAt: timestamp,
       updatedAt: timestamp,
       table: assignment.table,
@@ -851,6 +884,19 @@ function saveTeamTournamentResult(e) {
       result.winner
     ]
   );
+
+  if (typeof recordResultSubmissionCommissionerAudit === "function")
+    recordResultSubmissionCommissionerAudit(
+      commissionerContext,
+      "tournament",
+      {
+        eventId: eventId,
+        player: assignment.player,
+        opponent: assignment.opponent,
+        mission: assignment.mission,
+        result: result.winner
+      }
+    );
 
   invalidatePortalCacheGroup("events");
 
@@ -1590,6 +1636,55 @@ function validateTeamTournamentResultSubmission(params, assignment) {
     issues.push("Game Result is required.");
 
   return issues;
+
+}
+
+function buildCommissionerTeamTournamentOverrideAssignment(
+  eventId,
+  currentRound,
+  params
+) {
+
+  const player =
+    getTeamTournamentString(params.player);
+
+  const opponent =
+    getTeamTournamentString(params.opponent);
+
+  if (player === "" || opponent === "")
+    return null;
+
+  if (teamTournamentSameValue(player, opponent))
+    return null;
+
+  const roundId =
+    getTeamTournamentString(params.roundId) ||
+    getTeamTournamentRoundValue(currentRound, "roundId") ||
+    getTeamTournamentRoundValue(currentRound, "id") ||
+    EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ROUND_ID;
+
+  const round =
+    getTeamTournamentString(params.round) ||
+    getTeamTournamentRoundValue(currentRound, "name") ||
+    getTeamTournamentRoundValue(currentRound, "round") ||
+    "Commissioner Correction";
+
+  const mission =
+    getTeamTournamentString(params.mission) ||
+    getTeamTournamentRoundValue(currentRound, "mission") ||
+    getTeamTournamentRoundValue(currentRound, "Mission") ||
+    round;
+
+  return {
+    roundId: roundId,
+    round: round,
+    teamA: getTeamTournamentString(params.teamA),
+    teamB: getTeamTournamentString(params.teamB),
+    table: getTeamTournamentString(params.table) || "Commissioner Override",
+    player: player,
+    opponent: opponent,
+    mission: mission
+  };
 
 }
 
