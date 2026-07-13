@@ -5,7 +5,7 @@
  * Central cache manager for cache-first API delivery.
  *******************************************************/
 
-const PORTAL_CACHE_PREFIX = "portal:v2.0.2:";
+const PORTAL_CACHE_PREFIX = "portal:v2.0.3:";
 const PORTAL_CACHE_VERSION_KEY = "portalCacheVersion";
 const PORTAL_CACHE_STATS_KEY = "portalCacheStats";
 const PORTAL_CACHE_MANIFEST_KEY = "portalCacheManifest";
