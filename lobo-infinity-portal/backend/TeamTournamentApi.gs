@@ -74,6 +74,9 @@ function getTeamTournament(e) {
   const params =
     getApiParameters(e);
 
+  const auth =
+    getRequestUser(e);
+
   const commissionerContext =
     typeof getResultSubmissionCommissionerContext === "function"
       ? getResultSubmissionCommissionerContext(auth, params)
@@ -125,9 +128,6 @@ function getTeamTournament(e) {
       runtime.registrations,
       teams
     );
-
-  const auth =
-    getRequestUser(e);
 
   const currentPlayerRegistration =
     auth.authenticated
