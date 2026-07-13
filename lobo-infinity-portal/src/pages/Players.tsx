@@ -230,7 +230,7 @@ function Players() {
         </section>
       ) : (
         <>
-          <section className="community-player-summary" aria-label="Community player counts">
+          <section className="community-player-summary" aria-label="Player counts">
             <SummaryCard label="Registered Players" value={communityCounts.registered} />
             <SummaryCard label="League Players" value={communityCounts.league} />
             <SummaryCard label="Tournament Players" value={communityCounts.tournament} />
@@ -238,7 +238,7 @@ function Players() {
             <SummaryCard label="New Players" value={communityCounts.newPlayers} />
           </section>
 
-          <section className="community-player-controls" aria-label="Community player filters">
+          <section className="community-player-controls" aria-label="Player filters">
             <label>
               <span>Search</span>
               <input
