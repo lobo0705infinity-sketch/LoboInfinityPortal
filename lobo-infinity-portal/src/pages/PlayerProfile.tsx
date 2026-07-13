@@ -1573,7 +1573,7 @@ const playerProfileStyles = `
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(260px, 360px) minmax(0, 1fr) minmax(320px, 430px);
+  grid-template-columns: minmax(280px, 390px) minmax(0, 1fr);
   gap: clamp(28px, 5vw, 72px);
   align-items: center;
   min-height: inherit;
@@ -1620,7 +1620,7 @@ const playerProfileStyles = `
   margin: 0;
   color: #f4f6f8;
   font-family: 'Bebas Neue', 'Rajdhani', sans-serif;
-  font-size: clamp(6.4rem, 14vw, 12rem);
+  font-size: clamp(5.8rem, 11vw, 9.75rem);
   font-weight: 900;
   letter-spacing: 0;
   line-height: 0.78;
@@ -1662,11 +1662,12 @@ const playerProfileStyles = `
 }
 
 .profile-v21-quote {
+  grid-column: 2;
   margin: 0;
   border-left: 4px solid #b2122a;
   color: #dce7ef;
   font-family: 'Rajdhani', sans-serif;
-  font-size: clamp(1.4rem, 2.4vw, 2.05rem);
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
   font-weight: 800;
   line-height: 1.25;
   padding: 22px 0 22px 22px;
@@ -2014,7 +2015,7 @@ const playerProfileStyles = `
   }
 
   .profile-v21-quote {
-    grid-column: 1 / -1;
+    grid-column: 2;
   }
 
   .profile-v21-shell {
@@ -2044,6 +2045,10 @@ const playerProfileStyles = `
 
   .profile-v21-portrait {
     width: min(54vw, 260px);
+  }
+
+  .profile-v21-quote {
+    grid-column: 1 / -1;
   }
 
   .profile-v21-season dl,
