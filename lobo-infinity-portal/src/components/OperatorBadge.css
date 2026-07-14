@@ -88,22 +88,26 @@
   stroke: color-mix(in srgb, var(--operator-accent) 78%, #f4f6f8);
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 9;
+  stroke-width: 7;
 }
 
 .operator-badge-faction-mark circle,
 .operator-badge-faction-mark path:nth-child(2) {
-  fill: color-mix(in srgb, var(--operator-accent) 28%, #f4f6f8);
-  stroke-width: 5;
+  fill: none;
+  stroke: color-mix(in srgb, var(--operator-accent) 52%, #f4f6f8);
+  stroke-width: 4;
 }
 
 .operator-badge-module {
-  color: #7e8b95;
-  opacity: 0.72;
+  color: var(--operator-accent);
+  filter:
+    drop-shadow(0 0 10px color-mix(in srgb, currentColor 42%, transparent))
+    drop-shadow(0 10px 18px rgba(0, 0, 0, 0.48));
+  opacity: 1;
 }
 
 .operator-badge-module > path {
-  fill: rgba(18, 26, 36, 0.96);
+  fill: rgba(5, 6, 8, 0.96);
   stroke: currentColor;
   stroke-width: 3;
 }
@@ -136,10 +140,22 @@
   color: #f2b632;
 }
 
-.operator-badge-rank path {
-  fill: rgba(18, 26, 36, 0.96);
-  stroke: currentColor;
-  stroke-width: 3;
+.operator-badge-rank-shadow {
+  fill: rgba(0, 0, 0, 0.52);
+  stroke: rgba(5, 6, 8, 0.82);
+  stroke-width: 5;
+}
+
+.operator-badge-rank-face {
+  fill: rgba(18, 26, 36, 0.98);
+  stroke: #f2b632;
+  stroke-width: 4;
+}
+
+.operator-badge-rank-cut {
+  fill: none;
+  stroke: rgba(242, 182, 50, 0.32);
+  stroke-width: 2;
 }
 
 .operator-badge-rank text,
@@ -155,17 +171,35 @@
 .operator-badge-rank text {
   fill: #f2b632;
   font-size: 25px;
+  paint-order: stroke fill;
+  stroke: rgba(5, 6, 8, 0.8);
+  stroke-width: 4;
 }
 
-.operator-badge-plate path {
+.operator-badge-plate-shadow {
+  fill: rgba(0, 0, 0, 0.56);
+  stroke: rgba(5, 6, 8, 0.84);
+  stroke-width: 5;
+}
+
+.operator-badge-plate-face {
   fill: rgba(5, 6, 8, 0.96);
-  stroke: rgba(76, 201, 240, 0.45);
+  stroke: rgba(76, 201, 240, 0.62);
   stroke-width: 3;
+}
+
+.operator-badge-plate-trim {
+  fill: none;
+  stroke: rgba(76, 201, 240, 0.22);
+  stroke-width: 1.5;
 }
 
 .operator-badge-name {
   fill: #f4f6f8;
   font-size: 24px;
+  paint-order: stroke fill;
+  stroke: rgba(5, 6, 8, 0.9);
+  stroke-width: 4;
 }
 
 .operator-badge-faction {
@@ -177,15 +211,19 @@
   display: inline-flex;
   max-width: 100%;
   align-items: center;
-  border: 1px solid rgba(242, 182, 50, 0.56);
-  background: rgba(242, 182, 50, 0.1);
+  border: 1px solid rgba(242, 182, 50, 0.68);
+  background:
+    linear-gradient(90deg, rgba(242, 182, 50, 0.18), rgba(5, 6, 8, 0.74) 18%, rgba(5, 6, 8, 0.84) 82%, rgba(242, 182, 50, 0.18)),
+    rgba(242, 182, 50, 0.08);
+  clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0 50%);
   color: #f2b632;
   font-size: clamp(0.68rem, 1.1vw, 0.82rem);
   font-weight: 900;
   letter-spacing: 0.08em;
   line-height: 1;
-  padding: 8px 12px;
+  padding: 9px 16px;
   text-align: center;
+  text-shadow: 0 0 12px rgba(242, 182, 50, 0.26);
   text-transform: uppercase;
 }
 

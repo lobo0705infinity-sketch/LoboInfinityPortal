@@ -126,11 +126,15 @@ function OperatorBadge({
           </AchievementModule>
 
           <g className="operator-badge-rank">
-            <path d="M119 268h82l18 22-18 22h-82l-18-22Z" />
+            <path className="operator-badge-rank-shadow" d="M117 270h86l20 20-20 24h-86l-20-24Z" />
+            <path className="operator-badge-rank-face" d="M120 268h80l17 22-17 22h-80l-17-22Z" />
+            <path className="operator-badge-rank-cut" d="M114 290h92" />
             <text x="160" y="299">{displayRank > 0 ? `#${displayRank}` : '--'}</text>
           </g>
           <g className="operator-badge-plate">
-            <path d="M63 306h194l21 24-21 24H63l-21-24Z" />
+            <path className="operator-badge-plate-shadow" d="M58 309h204l22 21-22 27H58l-22-27Z" />
+            <path className="operator-badge-plate-face" d="M63 306h194l21 24-21 24H63l-21-24Z" />
+            <path className="operator-badge-plate-trim" d="M78 316h164M78 344h164" />
             <text className="operator-badge-name" x="160" y="335">
               {truncateLabel(playerName, 13)}
             </text>
@@ -180,8 +184,12 @@ function AchievementModule({
   x: number
   y: number
 }) {
+  if (!active) {
+    return null
+  }
+
   return (
-    <g className={`operator-badge-module is-${tone}${active ? ' is-active' : ''}`} transform={`translate(${x - 24} ${y - 24})`}>
+    <g className={`operator-badge-module is-${tone} is-active`} transform={`translate(${x - 24} ${y - 24})`}>
       <path d="M24 2 44 13v22L24 46 4 35V13Z" />
       <g transform="translate(0 0)">{children}</g>
     </g>
@@ -189,11 +197,21 @@ function AchievementModule({
 }
 
 function FactionCore({ variant }: { variant: string }) {
+  if (variant === 'imperial') {
+    return (
+      <g className="operator-badge-faction-mark">
+        <path d="M160 93 210 126 198 203 160 229 122 203 110 126Z" />
+        <path d="M128 132h64M136 158h48M144 184h32M160 109v103M127 205l33 22 33-22" />
+        <path d="M135 116 116 96M185 116l19-20" />
+      </g>
+    )
+  }
+
   if (variant === 'hassassin') {
     return (
       <g className="operator-badge-faction-mark">
-        <path d="M160 92 207 220 160 183 113 220Z" />
-        <path d="M160 118 181 187 160 170 139 187Z" />
+        <path d="M160 92 195 141 182 219 160 194 138 219 125 141Z" />
+        <path d="M139 151h42M160 112v74M143 204 160 176 177 204" />
       </g>
     )
   }
@@ -201,8 +219,8 @@ function FactionCore({ variant }: { variant: string }) {
   if (variant === 'nomads') {
     return (
       <g className="operator-badge-faction-mark">
-        <path d="M105 194 150 98 218 143 172 222Z" />
-        <path d="M139 186 160 132 190 151 169 197Z" />
+        <path d="M105 188 144 101 218 132 184 219 132 207Z" />
+        <path d="M132 188 157 131 191 145 169 201M124 158h72" />
       </g>
     )
   }
@@ -210,8 +228,8 @@ function FactionCore({ variant }: { variant: string }) {
   if (variant === 'morats') {
     return (
       <g className="operator-badge-faction-mark">
-        <path d="M101 186 126 108 160 91 194 108 219 186 181 225H139Z" />
-        <path d="M129 176 145 135h30l16 41-31 27Z" />
+        <path d="M104 188 124 119 160 93 196 119 216 188 183 226H137Z" />
+        <path d="M130 170 145 136h30l15 34-30 27ZM128 136l-16-22M192 136l16-22" />
       </g>
     )
   }
@@ -219,8 +237,9 @@ function FactionCore({ variant }: { variant: string }) {
   if (variant === 'combined') {
     return (
       <g className="operator-badge-faction-mark">
-        <path d="M160 104c42 7 65 32 65 56s-23 49-65 56c-42-7-65-32-65-56s23-49 65-56Z" />
-        <circle cx="160" cy="160" r="28" />
+        <path d="M160 102c37 9 61 31 66 58-5 27-29 49-66 58-37-9-61-31-66-58 5-27 29-49 66-58Z" />
+        <path d="M122 160h76M160 122v76M137 137l46 46M183 137l-46 46" />
+        <circle cx="160" cy="160" r="20" />
       </g>
     )
   }
@@ -228,17 +247,37 @@ function FactionCore({ variant }: { variant: string }) {
   if (variant === 'pano') {
     return (
       <g className="operator-badge-faction-mark">
-        <path d="M160 96 216 128 204 205 160 228 116 205 104 128Z" />
-        <path d="M160 122 188 139 182 188 160 201 138 188 132 139Z" />
+        <path d="M160 96 209 124 203 197 160 226 117 197 111 124Z" />
+        <path d="M135 131h50M132 161h56M160 116v93M138 193l22 16 22-16" />
+      </g>
+    )
+  }
+
+  if (variant === 'o12') {
+    return (
+      <g className="operator-badge-faction-mark">
+        <path d="M160 96 211 132 197 206 160 226 123 206 109 132Z" />
+        <path d="M160 116v88M122 160h76M134 132l52 56M186 132l-52 56" />
+        <circle cx="160" cy="160" r="22" />
+      </g>
+    )
+  }
+
+  if (variant === 'ariadna') {
+    return (
+      <g className="operator-badge-faction-mark">
+        <path d="M112 198 134 111 160 94 186 111 208 198 174 225H146Z" />
+        <path d="M133 188 160 127 187 188M123 154h74M143 218l17-31 17 31" />
+        <path d="M122 117 105 101M198 117l17-16" />
       </g>
     )
   }
 
   return (
     <g className="operator-badge-faction-mark">
-      <path d="M160 86 227 222 160 183 93 222Z" />
-      <circle cx="160" cy="160" r="15" />
-      <path d="M160 183 160 222" />
+      <path d="M160 88 219 217 160 185 101 217Z" />
+      <path d="M132 199 160 130 188 199M160 185v38" />
+      <circle cx="160" cy="160" r="13" />
     </g>
   )
 }
@@ -317,6 +356,16 @@ function normalizeCompetitiveHome(
 function factionVariant(faction: string) {
   const normalized = faction.toLowerCase()
 
+  if (
+    normalized.includes('imperial') ||
+    normalized.includes('yu jing') ||
+    normalized.includes('yujing') ||
+    normalized.includes('invincible') ||
+    normalized.includes('white banner')
+  ) {
+    return { accent: '#f2b632', id: 'imperial', secondary: '#d54624' }
+  }
+
   if (normalized.includes('hassassin') || normalized.includes('haqqislam') || normalized.includes('ramah')) {
     return { accent: '#b2122a', id: 'hassassin', secondary: '#f2b632' }
   }
@@ -334,12 +383,26 @@ function factionVariant(faction: string) {
     return { accent: '#f26a21', id: 'morats', secondary: '#f2b632' }
   }
 
-  if (normalized.includes('combined')) {
+  if (normalized.includes('combined') || normalized.includes('shasvastii') || normalized.includes('onyx')) {
     return { accent: '#9b5cff', id: 'combined', secondary: '#b2122a' }
   }
 
   if (normalized.includes('pan') || normalized.includes('pano') || normalized.includes('winterfor')) {
     return { accent: '#4d8dff', id: 'pano', secondary: '#f4f6f8' }
+  }
+
+  if (normalized.includes('o-12') || normalized.includes('o12') || normalized.includes('starmada')) {
+    return { accent: '#4cc9f0', id: 'o12', secondary: '#f4f6f8' }
+  }
+
+  if (
+    normalized.includes('ariadna') ||
+    normalized.includes('kosmoflot') ||
+    normalized.includes('usariadna') ||
+    normalized.includes('caledonia') ||
+    normalized.includes('tartary')
+  ) {
+    return { accent: '#8f9a93', id: 'ariadna', secondary: '#f2b632' }
   }
 
   return { accent: '#4cc9f0', id: 'operations', secondary: '#f2b632' }
