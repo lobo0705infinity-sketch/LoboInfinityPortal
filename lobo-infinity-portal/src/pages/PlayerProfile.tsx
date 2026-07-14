@@ -5,6 +5,7 @@ import { getOperatorBadgeDetails } from '../components/operatorBadgeDetails'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
 import { getArmyParentFaction } from '../config/armies'
+import { getEventNavigationConfig } from '../config/eventNavigation'
 import { getCanonicalMissionName } from '../config/missions'
 import type {
   ArmyList,
@@ -198,12 +199,12 @@ function PlayerProfileDossier({
   const homeLabel = divisionLabel
   const currentRank = leagueModel?.rank ?? 0
   const level = getCareerLevel(career)
-  const leagueLabel = leagueModel?.currentLeague || 'Not Assigned'
+  const leagueLabel = getCurrentLeagueDisplayLabel(player, leagueModel?.currentLeague)
   const currentTournament = getCurrentTournamentLabel(player)
   const careerHighlight = getCareerHighlight(recentGames)
   const joinedLabel = getJoinedLabel(player)
   const achievements = getAchievementItems(career, player)
-  const preferredFaction = leagueModel?.preferredArmy || ''
+  const preferredFaction = leagueModel?.preferredArmy || player.favoriteFaction || ''
   const leagueModelPlayer = {
     ...player,
     division: divisionLabel,
@@ -338,6 +339,37 @@ function ServiceRecord({
   )
 }
 
+function getCurrentLeagueDisplayLabel(
+  player: PlayerProfileData,
+  leagueName: string | undefined,
+) {
+  const normalizedLeagueName = leagueName?.trim()
+
+  if (normalizedLeagueName === 'Current League') {
+    return getEventNavigationConfig('event-current-league')?.label || 'Not Assigned'
+  }
+
+  if (normalizedLeagueName) {
+    return normalizedLeagueName
+  }
+
+  const currentLeagueRegistration = player.registeredEvents.find((event) =>
+    event.eventType === 'League' &&
+    !['deleted', 'removed', 'withdrawn', 'disabled', 'archived', 'completed'].includes(
+      event.status.trim().toLowerCase(),
+    )
+  )
+  const configuredLeagueLabel = currentLeagueRegistration
+    ? getEventNavigationConfig(currentLeagueRegistration.eventId)?.label
+    : null
+
+  if (configuredLeagueLabel) {
+    return configuredLeagueLabel
+  }
+
+  return 'Not Assigned'
+}
+
 function OperatorBadgeLegend({
   details,
 }: {
@@ -369,6 +401,18 @@ function OperatorBadgeLegend({
       title: 'Tournament Champion',
     },
     {
+      detail: 'Represents commissioner service.',
+      earned: details.rings.commissioner,
+      label: 'Command Ring',
+      title: 'Commissioner',
+    },
+    {
+      detail: 'Represents Hall of Fame recognition.',
+      earned: details.rings['hall-of-fame'],
+      label: 'Crown Ring',
+      title: 'Hall of Fame',
+    },
+    {
       detail: details.rank,
       earned: details.rank !== 'Unranked',
       label: 'Rank Plaque',
@@ -391,7 +435,7 @@ function OperatorBadgeLegend({
             <span>{item.label}</span>
             <strong>{item.title}</strong>
             <small>{item.detail}</small>
-            {item.title.includes('Champion') || item.title === 'Veteran' ? (
+            {item.title.includes('Champion') || item.title === 'Veteran' || item.title === 'Commissioner' || item.title === 'Hall of Fame' ? (
               <em>{item.earned ? 'Earned' : 'Not Earned'}</em>
             ) : null}
           </article>
