@@ -7,10 +7,17 @@ const recentGamesApi = read('backend/RecentGames.gs')
 
 const checks = [
   {
-    label: 'Battle Report no longer renders Best Moment Hero',
+    label: 'Battle Report renders approved Battle Highlight language',
     pass:
       !gameDetails.includes('Best Moment Hero') &&
-      gameDetails.includes('<h2 id="best-moment-title">Best Moment</h2>'),
+      gameDetails.includes('title="Battle Highlight"') &&
+      gameDetails.includes('No Battle Highlight submitted.'),
+  },
+  {
+    label: 'Battle Report uses shared OperatorBadge component',
+    pass:
+      gameDetails.includes("import OperatorBadge from '../components/OperatorBadge'") &&
+      gameDetails.includes('<OperatorBadge'),
   },
   {
     label: 'Battle Report does not use generic score formatter for TP/OP/VP',
@@ -18,16 +25,18 @@ const checks = [
       !gameDetails.includes('formatTournamentScore(game)') &&
       !gameDetails.includes('formatObjectiveScore(game)') &&
       !gameDetails.includes('formatVictoryScore(game)') &&
-      gameDetails.includes('formatBattleReportScore(game.tp,') &&
-      gameDetails.includes('formatBattleReportScore(game.op,') &&
-      gameDetails.includes('formatBattleReportScore(game.vp,'),
+      gameDetails.includes('buildScores(game)') &&
+      gameDetails.includes("{ label: 'TP' as const") &&
+      gameDetails.includes("{ label: 'OP' as const") &&
+      gameDetails.includes("{ label: 'VP' as const"),
   },
   {
     label: 'Battle Report missing score fields render as Not recorded',
     pass:
-      gameDetails.includes('return `Not recorded ${label}`') &&
-      formatBattleReportScore('', 'TP') === 'Not recorded TP' &&
-      formatBattleReportScore(undefined, 'VP') === 'Not recorded VP',
+      gameDetails.includes("left = 'Not recorded'") &&
+      gameDetails.includes("right = 'Not recorded'") &&
+      splitScoreValue('').left === 'Not recorded' &&
+      splitScoreValue(undefined).right === 'Not recorded',
   },
   {
     label: 'Battle Report exact lookup can use canonical Form Responses row',
@@ -55,14 +64,14 @@ if (failures.length > 0) {
   process.exitCode = 1
 }
 
-function formatBattleReportScore(score, label) {
+function splitScoreValue(score) {
   const value = String(score ?? '').trim()
+  const [left = 'Not recorded', right = 'Not recorded'] = value ? value.split('-') : []
 
-  if (!value) {
-    return `Not recorded ${label}`
+  return {
+    left: left.trim() || 'Not recorded',
+    right: right.trim() || 'Not recorded',
   }
-
-  return `${value} ${label}`
 }
 
 function read(path) {

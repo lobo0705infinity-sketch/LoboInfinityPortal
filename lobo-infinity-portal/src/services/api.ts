@@ -6765,6 +6765,7 @@ function normalizeRecentGame(item: unknown): RecentGame {
   return {
     eventId: getString(record, 'eventId') || 'event-current-league',
     gameResult: getString(record, 'gameResult') || undefined,
+    gameType: getString(record, 'gameType') || undefined,
     id: getRequiredNumber(record, 'id'),
     date: getRequiredString(record, 'date'),
     division: getString(record, 'division'),

@@ -1,12 +1,11 @@
-import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
+import { useEffect, useMemo, useState, type Dispatch, type ReactNode, type SetStateAction } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import EntityPreviousNext from '../components/EntityPreviousNext'
+import OperatorBadge from '../components/OperatorBadge'
 import Skeleton from '../components/Skeleton'
 import { getCanonicalMissionName } from '../config/missions'
 import { apiClient, type CommissionerNewsItem, type RecentGame, type StreamedGame } from '../services/api'
-import {
-  formatPlayerName,
-} from '../services/formatting'
+import { formatPlayerName } from '../services/formatting'
 import { getGameTimelineResult, isDrawGame } from '../services/gameResults'
 import './GameDetails.css'
 
@@ -24,6 +23,15 @@ type GameDetailsState =
       gameId: number
       status: 'not-found'
     }
+
+type BattleParticipant = {
+  displayName: string
+  faction: string
+  label: string
+  name: string
+  result: string
+  scoreTone: 'cyan' | 'red'
+}
 
 function GameDetails() {
   const { id } = useParams<{ id: string }>()
@@ -107,18 +115,18 @@ function GameDetails() {
   if (!isCurrentGame) {
     return (
       <main className="portal-shell">
-        <div className="match-report" aria-label="Game loading">
-          <nav className="match-nav" aria-label="Match navigation">
-            <Link to="/">Back to Dashboard</Link>
-            <Link to="/#recent-games">Back to Recent Games</Link>
+        <div className="battle-report" aria-label="Battle report loading">
+          <nav className="battle-report-breadcrumb" aria-label="Battle report navigation">
+            <Link to="/">Dashboard</Link>
+            <span aria-hidden="true">/</span>
+            <Link to="/#recent-games">Battle Reports</Link>
           </nav>
-          <section className="match-hero">
-            <p className="match-kicker">Match Result</p>
-            <Skeleton label="Match report loading" rows={8} />
+          <section className="battle-report-hero">
+            <Skeleton label="Battle report loading" rows={8} />
           </section>
-          <section className="match-details-grid">
-            <Skeleton label="Match details loading" rows={6} />
-            <Skeleton label="Match scoring loading" rows={6} />
+          <section className="battle-report-grid">
+            <Skeleton label="Battle report timeline loading" rows={6} />
+            <Skeleton label="Battle report scoring loading" rows={6} />
           </section>
         </div>
       </main>
@@ -129,7 +137,7 @@ function GameDetails() {
     return <GameNotFound />
   }
 
-  return <MatchReport game={gameState.game} stream={gameState.stream} />
+  return <BattleReport game={gameState.game} stream={gameState.stream} />
 }
 
 function loadLinkedStream(
@@ -161,6 +169,7 @@ function buildNewsLinkedGame(gameId: number, news: CommissionerNewsItem[]): Rece
   return {
     id: gameId,
     eventId: 'event-current-league',
+    gameType: 'league',
     date: item.date || '',
     division: '',
     winner: parsed.winner,
@@ -193,156 +202,252 @@ function parseNewsLinkedGame(body: string) {
   }
 }
 
-function MatchReport({ game, stream }: { game: RecentGame; stream: StreamedGame | null }) {
-  const firstTurnPlayer = formatGameParticipant(game, game.firstTurn)
+function BattleReport({ game, stream }: { game: RecentGame; stream: StreamedGame | null }) {
   const mission = getCanonicalMissionName(game.mission)
   const isDraw = isDrawGame(game)
+  const participants = useMemo(() => buildParticipants(game, isDraw), [game, isDraw])
+  const scores = useMemo(() => buildScores(game), [game])
+  const timeline = useMemo(() => buildBattleTimeline(game, mission), [game, mission])
+  const reportType = formatReportType(game)
+  const battleHighlight = game.bestMoment.trim()
 
   return (
     <main className="portal-shell">
-      <div className="match-report">
-        <nav className="match-nav" aria-label="Match navigation">
-          <Link to="/">Back to Dashboard</Link>
-          <Link to="/#recent-games">Back to Recent Games</Link>
+      <article className="battle-report" aria-labelledby="battle-report-title">
+        <nav className="battle-report-breadcrumb" aria-label="Battle report navigation">
+          <Link to="/">Dashboard</Link>
+          <span aria-hidden="true">/</span>
+          <Link to="/#recent-games">Battle Reports</Link>
+          {game.division ? (
+            <>
+              <span aria-hidden="true">/</span>
+              <span>{game.division}</span>
+            </>
+          ) : null}
         </nav>
 
-        <section className="match-hero" aria-labelledby="match-result-title">
-          <p className="match-kicker" id="match-result-title">
-            Match Result
-          </p>
-
-          <div className="match-result">
-            <div className="match-player winner">
-              <span>{isDraw ? 'Player 1' : 'Winner'}</span>
-              <h1>{formatPlayerName(game.winner, game.winnerDisplayName)}</h1>
-              <Link to={`/factions/${encodeURIComponent(game.winnerFaction)}`}>
-                {game.winnerFaction}
-              </Link>
-            </div>
-
-            <div className="match-defeated">{isDraw ? 'Draw' : 'Defeated'}</div>
-
-            <div className="match-player loser">
-              <span>{isDraw ? 'Player 2' : 'Loser'}</span>
-              <h2>{formatPlayerName(game.loser, game.loserDisplayName)}</h2>
-              <Link to={`/factions/${encodeURIComponent(game.loserFaction)}`}>
-                {game.loserFaction}
-              </Link>
+        <header className="battle-report-hero">
+          <div>
+            <p className="battle-report-kicker">Mission Dossier</p>
+            <h1 id="battle-report-title">{mission || 'Mission Not Recorded'}</h1>
+            <div className="battle-report-tags" aria-label="Battle report classifications">
+              {game.division ? <span>{game.division}</span> : null}
+              <span>{reportType}</span>
+              {game.date ? <span>{game.date}</span> : null}
             </div>
           </div>
-
-          <dl className="match-meta-strip" aria-label="Match summary">
+          <dl className="battle-report-identifiers" aria-label="Battle report identifiers">
             <div>
-              <dt>Mission</dt>
-              <dd>
-                {mission ? (
-                  <Link to={`/missions/${encodeURIComponent(mission)}`}>
-                    {mission}
-                  </Link>
-                ) : (
-                  'Mission not recorded'
-                )}
-              </dd>
+              <dt>Report ID</dt>
+              <dd>BR-{game.id}</dd>
             </div>
             <div>
-              <dt>Division</dt>
-              <dd>{game.division || 'Not recorded'}</dd>
+              <dt>Classification</dt>
+              <dd>{reportType}</dd>
             </div>
-            <div>
-              <dt>Date Played</dt>
-              <dd>{game.date}</dd>
-            </div>
+            {game.date ? (
+              <div>
+                <dt>Date Played</dt>
+                <dd>{game.date}</dd>
+              </div>
+            ) : null}
           </dl>
+        </header>
+
+        <section className={isDraw ? 'battle-report-versus is-draw' : 'battle-report-versus'} aria-label="Battle result">
+          <ParticipantPanel participant={participants[0]} game={game} />
+          <Scoreboard isDraw={isDraw} scores={scores} />
+          <ParticipantPanel participant={participants[1]} game={game} />
         </section>
 
-        <section className="match-scoreboard" aria-labelledby="score-title">
-          <p className="eyebrow" id="score-title">
-            Score
-          </p>
-          <div className="score-grid">
-            <ScoreLane score={formatBattleReportScore(game.tp, 'TP')} />
-            <ScoreLane score={formatBattleReportScore(game.op, 'OP')} />
-            <ScoreLane score={formatBattleReportScore(game.vp, 'VP')} />
-          </div>
+        <section className="battle-report-grid battle-report-grid-primary">
+          <BattleCard title="Mission Summary" eyebrow="Mission Briefing">
+            <dl className="battle-report-facts">
+              <Fact label="Game Type" value={reportType} />
+              <Fact label="Division" value={game.division || 'Not recorded'} />
+              <Fact label="First Turn" value={formatGameParticipant(game, game.firstTurn) || 'Not recorded'} />
+              <Fact label="Mission" value={mission || 'Mission not recorded'} />
+            </dl>
+          </BattleCard>
+
+          <BattleCard title="Game Timeline" eyebrow="Timeline">
+            <ol className="battle-report-timeline">
+              {timeline.map((item) => (
+                <li key={item.title}>
+                  <span>{item.time}</span>
+                  <div>
+                    <strong>{item.title}</strong>
+                    <p>{item.description}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </BattleCard>
+
+          <BattleCard title="Battle Highlight" eyebrow="After Action Note" wide>
+            <blockquote className="battle-report-highlight">
+              "{battleHighlight || 'No Battle Highlight submitted.'}"
+            </blockquote>
+          </BattleCard>
         </section>
 
-        {stream ? (
-          <section className="match-info-card" aria-labelledby="watch-battle-report-title">
-            <p className="eyebrow">Stream</p>
-            <h2 id="watch-battle-report-title">Watch Battle Report</h2>
-            <p>{stream.title || `${game.winner} vs ${game.loser}`}</p>
-            <Link to={`/streams?streamId=${stream.id}`}>Watch Battle Report</Link>
-          </section>
-        ) : null}
-
-        <section className="battle-timeline" aria-labelledby="timeline-title">
-          <div className="panel-heading">
-            <p className="eyebrow">Timeline</p>
-            <h2 id="timeline-title">Battle Report Timeline</h2>
-          </div>
-          <ol>
-            <li>
-              <span>First Turn</span>
-              <strong>{firstTurnPlayer || 'Not recorded'}</strong>
-            </li>
-            <li>
-              <span>Mission Briefing</span>
-              <strong>{mission || 'Mission not recorded'}</strong>
-            </li>
-            <li>
-              <span>Final Result</span>
-              <strong>
-                {getGameTimelineResult(game)}
-              </strong>
-            </li>
-          </ol>
-        </section>
-
-        <section className="best-moment-card" aria-labelledby="best-moment-title">
-          <p className="eyebrow">Best Moment</p>
-          <h2 id="best-moment-title">Best Moment</h2>
-          <blockquote>
-            "{game.bestMoment || 'No Best Moment was submitted for this match.'}"
-          </blockquote>
-        </section>
-
-        <section
-          className="match-info-card"
-          aria-labelledby="match-information-title"
-        >
-          <p className="eyebrow">Match Information</p>
-          <h2 id="match-information-title">Mission Briefing</h2>
-          <dl>
-            <div>
-              <dt>{isDraw ? 'Player 1' : 'Winner'}</dt>
-              <dd>
-                <Link to={`/players/${encodeURIComponent(game.winner)}`}>
-                  {formatPlayerName(game.winner, game.winnerDisplayName)}
-                </Link>
-              </dd>
+        <section className="battle-report-grid">
+          <BattleCard title="Army Lists" eyebrow="Force Manifests" wide>
+            <div className="battle-report-armies">
+              {participants.map((participant) => (
+                <article className={`battle-report-army is-${participant.scoreTone}`} key={participant.name}>
+                  <strong>{participant.displayName}</strong>
+                  <span>{participant.faction || 'Army not recorded'}</span>
+                  {participant.faction ? (
+                    <Link to={`/factions/${encodeURIComponent(participant.faction)}`}>
+                      View Army Dossier
+                    </Link>
+                  ) : null}
+                </article>
+              ))}
             </div>
-            <div>
-              <dt>{isDraw ? 'Player 2' : 'Loser'}</dt>
-              <dd>
-                <Link to={`/players/${encodeURIComponent(game.loser)}`}>
-                  {formatPlayerName(game.loser, game.loserDisplayName)}
-                </Link>
-              </dd>
-            </div>
-            <div>
-              <dt>Mission</dt>
-              <dd>{mission || 'Mission not recorded'}</dd>
-            </div>
-            <div>
-              <dt>Division</dt>
-              <dd>{game.division || 'Not recorded'}</dd>
-            </div>
-          </dl>
+          </BattleCard>
+
+          <BattleCard title="Mission Objectives" eyebrow="Scoring">
+            <dl className="battle-report-objectives">
+              {scores.map((score) => (
+                <div key={score.label}>
+                  <dt>{score.label}</dt>
+                  <dd>
+                    <span>{score.left}</span>
+                    <b>{score.right}</b>
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </BattleCard>
+
+          {stream ? <StreamPanel game={game} stream={stream} /> : null}
+
+          <BattleCard title="Report Information" eyebrow="Verification">
+            <dl className="battle-report-facts">
+              <Fact label="Reported On" value={game.date || 'Not recorded'} />
+              <Fact label="Report ID" value={`BR-${game.id}`} />
+              {stream ? <Fact label="Stream" value={stream.title || 'Linked stream'} /> : null}
+              <Fact label="Result" value={isDraw ? 'Draw' : getGameTimelineResult(game)} />
+            </dl>
+          </BattleCard>
         </section>
 
-        <EntityPreviousNext current={game.id} type="match" />
-      </div>
+        <nav className="battle-report-footer-nav" aria-label="Battle report footer navigation">
+          <EntityPreviousNext current={game.id} type="match" />
+          <Link to="/#recent-games">Back to Battle Reports</Link>
+        </nav>
+      </article>
     </main>
+  )
+}
+
+function ParticipantPanel({ game, participant }: { game: RecentGame; participant: BattleParticipant }) {
+  return (
+    <article className={`battle-report-participant is-${participant.scoreTone}`}>
+      <OperatorBadge
+        competitiveHome={game.division || 'Casual Player'}
+        player={{
+          displayName: participant.displayName,
+          division: game.division,
+          favoriteFaction: participant.faction,
+          name: participant.name,
+          rank: 0,
+        }}
+        preferredFaction={participant.faction}
+        rank={0}
+        showBadges={false}
+      />
+      <div className="battle-report-participant-copy">
+        <span>{participant.result}</span>
+        <h2>{participant.displayName}</h2>
+        {participant.faction ? (
+          <Link to={`/factions/${encodeURIComponent(participant.faction)}`}>
+            {participant.faction}
+          </Link>
+        ) : (
+          <p>Army not recorded</p>
+        )}
+      </div>
+    </article>
+  )
+}
+
+function Scoreboard({
+  isDraw,
+  scores,
+}: {
+  isDraw: boolean
+  scores: Array<{ label: 'TP' | 'OP' | 'VP'; left: string; right: string }>
+}) {
+  const primary = scores.find((score) => score.label === 'OP') ?? scores[0]
+
+  return (
+    <div className={isDraw ? 'battle-report-score is-draw' : 'battle-report-score'} aria-label="Final score">
+      <span>{isDraw ? 'Draw' : 'Final Score'}</span>
+      <strong>
+        <b>{primary.left}</b>
+        <em>{primary.label}</em>
+        <b>{primary.right}</b>
+      </strong>
+      <dl>
+        {scores.map((score) => (
+          <div key={score.label}>
+            <dt>{score.label}</dt>
+            <dd>{score.left}-{score.right}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  )
+}
+
+function BattleCard({
+  children,
+  eyebrow,
+  title,
+  wide = false,
+}: {
+  children: ReactNode
+  eyebrow: string
+  title: string
+  wide?: boolean
+}) {
+  return (
+    <section className={wide ? 'battle-report-card is-wide' : 'battle-report-card'} aria-labelledby={slugTitle(title)}>
+      <p className="battle-report-card-eyebrow">{eyebrow}</p>
+      <h2 id={slugTitle(title)}>{title}</h2>
+      {children}
+    </section>
+  )
+}
+
+function StreamPanel({ game, stream }: { game: RecentGame; stream: StreamedGame }) {
+  return (
+    <BattleCard title="Stream / VOD" eyebrow="Transmission">
+      <div className="battle-report-stream">
+        {stream.thumbnailUrl ? (
+          <img alt="" loading="lazy" src={stream.thumbnailUrl} />
+        ) : null}
+        <div>
+          <strong>{stream.title || `${game.winner} vs ${game.loser}`}</strong>
+          {stream.platform || stream.streamer ? (
+            <span>{[stream.platform, stream.streamer].filter(Boolean).join(' / ')}</span>
+          ) : null}
+          <Link to={`/streams?streamId=${stream.id}`}>Watch Now</Link>
+        </div>
+      </div>
+    </BattleCard>
+  )
+}
+
+function Fact({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <dt>{label}</dt>
+      <dd>{value}</dd>
+    </div>
   )
 }
 
@@ -358,14 +463,88 @@ function formatGameParticipant(game: RecentGame, player: string) {
   return player
 }
 
-function formatBattleReportScore(score: number | string | undefined, label: 'TP' | 'OP' | 'VP') {
-  const value = normalizeScoreText(String(score ?? '').trim())
+function formatReportType(game: RecentGame) {
+  const type = String(game.gameType || '').trim()
 
-  if (!value) {
-    return `Not recorded ${label}`
+  if (type) {
+    return `${type.charAt(0).toUpperCase()}${type.slice(1)}`
   }
 
-  return `${value} ${label}`
+  if (game.eventId || game.division) {
+    return 'League'
+  }
+
+  return 'Battle Report'
+}
+
+function buildParticipants(game: RecentGame, isDraw: boolean): [BattleParticipant, BattleParticipant] {
+  return [
+    {
+      displayName: formatPlayerName(game.winner, game.winnerDisplayName),
+      faction: game.winnerFaction,
+      label: isDraw ? 'Player One' : 'Winner',
+      name: game.winner,
+      result: isDraw ? 'Draw' : 'Winner',
+      scoreTone: 'cyan',
+    },
+    {
+      displayName: formatPlayerName(game.loser, game.loserDisplayName),
+      faction: game.loserFaction,
+      label: isDraw ? 'Player Two' : 'Defeated',
+      name: game.loser,
+      result: isDraw ? 'Draw' : 'Defeated',
+      scoreTone: 'red',
+    },
+  ]
+}
+
+function buildScores(game: RecentGame) {
+  return [
+    { label: 'OP' as const, ...splitScoreValue(game.op) },
+    { label: 'TP' as const, ...splitScoreValue(game.tp) },
+    { label: 'VP' as const, ...splitScoreValue(game.vp) },
+  ]
+}
+
+function buildBattleTimeline(game: RecentGame, mission: string) {
+  const items = [
+    {
+      description: formatGameParticipant(game, game.firstTurn) || 'First turn not recorded',
+      time: 'Phase 01',
+      title: 'First Turn',
+    },
+    {
+      description: mission || 'Mission not recorded',
+      time: 'Phase 02',
+      title: 'Mission Briefing',
+    },
+    {
+      description: getGameTimelineResult(game),
+      time: 'Phase 03',
+      title: 'Mission Complete',
+    },
+  ]
+
+  if (game.bestMoment.trim()) {
+    items.splice(2, 0, {
+      description: game.bestMoment.trim(),
+      time: 'Phase 03',
+      title: 'Battle Highlight',
+    })
+    items[3] = { ...items[3], time: 'Phase 04' }
+  }
+
+  return items
+}
+
+function splitScoreValue(value: number | string | undefined) {
+  const normalized = normalizeScoreText(String(value ?? '').trim())
+  const [left = 'Not recorded', right = 'Not recorded'] = normalized ? normalized.split('-') : []
+
+  return {
+    left: left.trim() || 'Not recorded',
+    right: right.trim() || 'Not recorded',
+  }
 }
 
 function normalizeScoreText(value: string) {
@@ -382,27 +561,14 @@ function normalizeScoreText(value: string) {
     .join('-')
 }
 
-function ScoreLane({ score }: { score: string }) {
-  const { label, value } = splitFormattedScore(score)
-  const [winnerScore, loserScore] = splitScore(value)
-
-  return (
-    <div className="score-lane">
-      <span>{label}</span>
-      <strong>
-        <b>{winnerScore}</b>-{loserScore}
-      </strong>
-    </div>
-  )
-}
-
 function GameNotFound() {
   return (
     <main className="portal-shell">
-      <div className="match-report">
-        <nav className="match-nav" aria-label="Match navigation">
-          <Link to="/">Back to Dashboard</Link>
-          <Link to="/#recent-games">Back to Recent Games</Link>
+      <div className="battle-report">
+        <nav className="battle-report-breadcrumb" aria-label="Battle report navigation">
+          <Link to="/">Dashboard</Link>
+          <span aria-hidden="true">/</span>
+          <Link to="/#recent-games">Battle Reports</Link>
         </nav>
         <section className="dashboard-state" aria-label="Game not found">
           <p role="alert">Game not found.</p>
@@ -412,14 +578,8 @@ function GameNotFound() {
   )
 }
 
-function splitScore(value: string) {
-  const [winnerScore = '0', loserScore = '0'] = value.split('-')
-  return [winnerScore, loserScore]
-}
-
-function splitFormattedScore(score: string) {
-  const [value = '0-0', label = ''] = score.split(' ')
-  return { label, value }
+function slugTitle(title: string) {
+  return `battle-report-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
 }
 
 export default GameDetails
