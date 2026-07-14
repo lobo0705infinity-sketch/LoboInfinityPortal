@@ -315,9 +315,6 @@ export type PlayerProfileData = {
   displayName: string
   profilePicture: string
   division: string
-  competitiveHome: string
-  currentLeague: string
-  currentSeason: string
   rank: number
   games: number
   wins: number
@@ -342,8 +339,6 @@ export type PlayerProfileData = {
   homeStore: string
   preferredLocations: string
   scheduleLink: string
-  classifications: string[]
-  careerStatus: string
   careerSummary?: PlayerCareerSummary
   armyLists: ArmyList[]
   armyListSummary: PlayerArmyListSummary
@@ -3671,9 +3666,6 @@ function normalizePlayerProfileRecord(
     displayName: getString(player, 'displayName') || getRequiredString(player, 'name'),
     profilePicture: getString(player, 'profilePicture'),
     division: getString(player, 'division'),
-    competitiveHome: getString(player, 'competitiveHome'),
-    currentLeague: getString(player, 'currentLeague'),
-    currentSeason: getString(player, 'currentSeason'),
     rank: getRequiredNumber(player, 'rank'),
     games: getRequiredNumber(player, 'games'),
     wins: getRequiredNumber(player, 'wins'),
@@ -3700,9 +3692,6 @@ function normalizePlayerProfileRecord(
     homeStore: getString(player, 'homeStore'),
     preferredLocations: getString(player, 'preferredLocations'),
     scheduleLink: getString(player, 'scheduleLink'),
-    classifications: getArray(player, 'classifications')
-      .filter((item): item is string => typeof item === 'string'),
-    careerStatus: getString(player, 'careerStatus'),
     armyLists: getArray(player, 'armyLists').map(normalizeArmyList),
     armyListSummary: normalizePlayerArmyListSummary(player.armyListSummary),
     registeredEvents: getArray(player, 'registeredEvents').map((item) => {
@@ -4251,9 +4240,6 @@ function normalizeComparisonPlayer(item: unknown): PlayerComparisonPlayer {
     displayName: getString(record, 'displayName') || getRequiredString(record, 'name'),
     profilePicture: '',
     division: getString(record, 'division'),
-    competitiveHome: getString(record, 'competitiveHome'),
-    currentLeague: getString(record, 'currentLeague'),
-    currentSeason: getString(record, 'currentSeason'),
     rank: getRequiredNumber(record, 'rank'),
     games: getRequiredNumber(record, 'games'),
     wins: getRequiredNumber(record, 'wins'),
@@ -4278,9 +4264,6 @@ function normalizeComparisonPlayer(item: unknown): PlayerComparisonPlayer {
     homeStore: '',
     preferredLocations: '',
     scheduleLink: '',
-    classifications: getArray(record, 'classifications')
-      .filter((item): item is string => typeof item === 'string'),
-    careerStatus: getString(record, 'careerStatus'),
     armyLists: [],
     registeredEvents: [],
     armyListSummary: {

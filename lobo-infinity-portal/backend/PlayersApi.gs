@@ -798,28 +798,11 @@ function getPlayer(e) {
 
   updateRegistryStatistics(registry);
 
-  const registeredEvents =
-    getRegisteredEventsForPlayer(registeredPlayer);
-
-  const careerSummary =
-    buildPlayerCareerSummary(
-      registeredPlayer.player
-    );
-
-  const assignment =
-    buildPlayerProfileAssignment(
-      registeredPlayer,
-      registeredEvents,
-      registry
-    );
-
   const standing =
-    assignment.division
-      ? getPlayerStanding(
-          registry,
-          registeredPlayer
-        )
-      : getEmptyPlayerStanding(registeredPlayer);
+    getPlayerStanding(
+      registry,
+      registeredPlayer
+    );
 
   const firstTurnGames =
     FIRSTTURNGAMES(
@@ -859,16 +842,7 @@ function getPlayer(e) {
         registeredPlayer.displayName ||
         registeredPlayer.player,
 
-      division: assignment.division,
-
-      currentLeague:
-        assignment.currentLeague,
-
-      currentSeason:
-        assignment.currentSeason,
-
-      competitiveHome:
-        assignment.competitiveHome,
+      division: registeredPlayer.division,
 
       rank: standing.rank,
 
@@ -933,7 +907,7 @@ function getPlayer(e) {
         armyLists.summary,
 
       registeredEvents:
-        registeredEvents,
+        getRegisteredEventsForPlayer(registeredPlayer),
 
       availability:
         availability,
@@ -957,18 +931,8 @@ function getPlayer(e) {
         "/match-finder?opponent=" + encodeURIComponent(registeredPlayer.player),
 
       careerSummary:
-        careerSummary,
-
-      classifications:
-        buildPlayerProfileClassifications(
-          registeredEvents,
-          careerSummary
-        ),
-
-      careerStatus:
-        buildPlayerProfileCareerStatus(
-          registeredEvents,
-          careerSummary
+        buildPlayerCareerSummary(
+          registeredPlayer.player
         )
 
     }
@@ -996,22 +960,6 @@ function getCommunityPlayerProfile(requestedName) {
     getPlayerArmyLists(
       playerName
     );
-  const registeredEvents =
-    getRegisteredEventsForPlayer({
-      player: playerName,
-      displayName:
-        communityPlayer.displayName ||
-        playerName
-    });
-  const careerSummary =
-    buildPlayerCareerSummary(
-      playerName
-    );
-  const assignment =
-    buildPlayerProfileAssignment(
-      communityPlayer,
-      registeredEvents
-    );
 
   return jsonOutput({
     success: true,
@@ -1021,13 +969,7 @@ function getCommunityPlayerProfile(requestedName) {
         communityPlayer.displayName ||
         playerName,
       division:
-        assignment.division,
-      currentLeague:
-        assignment.currentLeague,
-      currentSeason:
-        assignment.currentSeason,
-      competitiveHome:
-        assignment.competitiveHome,
+        communityPlayer.division || "",
       rank:
         communityPlayer.rank || 0,
       games:
@@ -1067,7 +1009,12 @@ function getCommunityPlayerProfile(requestedName) {
       armyListSummary:
         armyLists.summary,
       registeredEvents:
-        registeredEvents,
+        getRegisteredEventsForPlayer({
+          player: playerName,
+          displayName:
+            communityPlayer.displayName ||
+            playerName
+        }),
       availability:
         buildEmptyPlayerAvailability(
           playerName
@@ -1085,16 +1032,8 @@ function getCommunityPlayerProfile(requestedName) {
       scheduleLink:
         "/match-finder?opponent=" + encodeURIComponent(playerName),
       careerSummary:
-        careerSummary,
-      classifications:
-        buildPlayerProfileClassifications(
-          registeredEvents,
-          careerSummary
-        ),
-      careerStatus:
-        buildPlayerProfileCareerStatus(
-          registeredEvents,
-          careerSummary
+        buildPlayerCareerSummary(
+          playerName
         )
     }
   });
@@ -1586,9 +1525,6 @@ function getRegisteredEventsForPlayer(player) {
       return playerProfileRegistrationMatches(row, identities);
     })
     .filter(function(row) {
-      return !isSyntheticCurrentLeagueParticipant(row);
-    })
-    .filter(function(row) {
       return isCommunityActiveEvent(eventsById[row["Event ID"]] || {});
     })
     .map(function(row) {
@@ -1606,169 +1542,6 @@ function getRegisteredEventsForPlayer(player) {
         updatedAt: row["Updated At"] || row["Registered At"]
       };
     });
-
-}
-
-function isSyntheticCurrentLeagueParticipant(row) {
-
-  return row["Event ID"] === EVENT_ENGINE_DEFAULT_EVENT_ID &&
-    getEventEngineString(row["Registered At"]) === "" &&
-    getEventEngineString(row["Updated At"]) === "";
-
-}
-
-function buildPlayerProfileAssignment(player, registeredEvents, registry) {
-
-  const league =
-    getPlayerProfileActiveRegistration(
-      registeredEvents,
-      "league"
-    );
-
-  if (!league)
-    return {
-      currentLeague: "",
-      currentSeason: "",
-      competitiveHome: "",
-      division: ""
-    };
-
-  return {
-    currentLeague:
-      league.eventName || league.eventId || "",
-    currentSeason:
-      league.eventName || "",
-    competitiveHome:
-      player.division || "",
-    division:
-      player.division || ""
-  };
-
-}
-
-function getPlayerProfileActiveRegistration(registeredEvents, target) {
-
-  for (let index = 0; index < registeredEvents.length; index++) {
-    const event =
-      registeredEvents[index];
-
-    if (!isPlayerProfileActiveRegistration(event))
-      continue;
-
-    const identity =
-      getCommunityPlayerRegistryString(
-        event.eventType + " " + event.eventName
-      ).toLowerCase();
-
-    if (
-      target === "league" &&
-      identity.indexOf("league") !== -1
-    )
-      return event;
-
-    if (
-      target === "tournament" &&
-      identity.indexOf("tournament") !== -1
-    )
-      return event;
-  }
-
-  return null;
-
-}
-
-function isPlayerProfileActiveRegistration(event) {
-
-  const status =
-    getCommunityPlayerRegistryString(event.status)
-      .toLowerCase();
-
-  const inactive = {
-    archived: true,
-    completed: true,
-    deleted: true,
-    disabled: true,
-    removed: true,
-    withdrawn: true
-  };
-
-  return !inactive[status];
-
-}
-
-function buildPlayerProfileClassifications(registeredEvents, careerSummary) {
-
-  const hasLeague =
-    !!getPlayerProfileActiveRegistration(
-      registeredEvents,
-      "league"
-    );
-  const hasTournament =
-    !!getPlayerProfileActiveRegistration(
-      registeredEvents,
-      "tournament"
-    );
-  const officialGames =
-    (
-      careerSummary.records &&
-      careerSummary.records.league
-        ? Number(careerSummary.records.league.games) || 0
-        : 0
-    ) +
-    (
-      careerSummary.records &&
-      careerSummary.records.tournament
-        ? Number(careerSummary.records.tournament.games) || 0
-        : 0
-    );
-  const classifications = [];
-
-  if (hasLeague)
-    classifications.push("League Player");
-
-  if (hasTournament)
-    classifications.push("Tournament Player");
-
-  if (!hasLeague && !hasTournament)
-    classifications.push("Casual Player");
-
-  if (officialGames === 0)
-    classifications.push("New Player");
-
-  if (officialGames >= 50)
-    classifications.push("Veteran");
-
-  return classifications;
-
-}
-
-function buildPlayerProfileCareerStatus(registeredEvents, careerSummary) {
-
-  const classifications =
-    buildPlayerProfileClassifications(
-      registeredEvents,
-      careerSummary
-    );
-
-  if (classifications.indexOf("Veteran") !== -1)
-    return "Veteran Operator";
-
-  if (classifications.indexOf("New Player") !== -1)
-    return "New Operator";
-
-  if (
-    classifications.indexOf("League Player") !== -1 &&
-    classifications.indexOf("Tournament Player") !== -1
-  )
-    return "Multi-Theater Active";
-
-  if (classifications.indexOf("Tournament Player") !== -1)
-    return "Tournament Active";
-
-  if (classifications.indexOf("League Player") !== -1)
-    return "League Active";
-
-  return "Casual Player";
 
 }
 
@@ -1921,20 +1694,6 @@ function getPlayerStanding(
     tp: player.tp,
     op: player.op,
     vp: player.vp
-  };
-
-}
-
-function getEmptyPlayerStanding(player) {
-
-  return {
-    rank: 0,
-    games: player.games || 0,
-    wins: player.wins || 0,
-    losses: player.losses || 0,
-    tp: player.tp || 0,
-    op: player.op || 0,
-    vp: player.vp || 0
   };
 
 }
