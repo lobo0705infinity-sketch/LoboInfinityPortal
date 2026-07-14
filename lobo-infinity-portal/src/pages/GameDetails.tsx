@@ -210,6 +210,9 @@ function BattleReport({ game, stream }: { game: RecentGame; stream: StreamedGame
   const timeline = useMemo(() => buildBattleTimeline(game, mission), [game, mission])
   const reportType = formatReportType(game)
   const battleHighlight = game.bestMoment.trim()
+  const formattedDate = formatReportDate(game.date)
+  const seasonLabel = formatSeasonLabel(game.date, reportType)
+  const verificationStatus = game.id > 0 ? 'Verified' : 'Pending Verification'
 
   return (
     <main className="portal-shell">
@@ -227,30 +230,39 @@ function BattleReport({ game, stream }: { game: RecentGame; stream: StreamedGame
         </nav>
 
         <header className="battle-report-hero">
-          <div>
+          <div className="battle-report-hero-copy">
             <p className="battle-report-kicker">Mission Dossier</p>
             <h1 id="battle-report-title">{mission || 'Mission Not Recorded'}</h1>
+            <p className="battle-report-classification">
+              O-12 After Action Dossier / Mission Classification: {reportType}
+            </p>
             <div className="battle-report-tags" aria-label="Battle report classifications">
-              {game.division ? <span>{game.division}</span> : null}
+              {game.division ? <span>{game.division} Division</span> : null}
               <span>{reportType}</span>
-              {game.date ? <span>{game.date}</span> : null}
+              {seasonLabel ? <span>{seasonLabel}</span> : null}
+              {formattedDate ? <span>{formattedDate}</span> : null}
+              <span>{verificationStatus}</span>
             </div>
           </div>
           <dl className="battle-report-identifiers" aria-label="Battle report identifiers">
             <div>
+              <dt>Verification Status</dt>
+              <dd>{verificationStatus}</dd>
+            </div>
+            <div>
+              <dt>Division</dt>
+              <dd>{game.division || 'Not recorded'}</dd>
+            </div>
+            {formattedDate ? (
+              <div>
+                <dt>Date Played</dt>
+                <dd>{formattedDate}</dd>
+              </div>
+            ) : null}
+            <div>
               <dt>Report ID</dt>
               <dd>BR-{game.id}</dd>
             </div>
-            <div>
-              <dt>Classification</dt>
-              <dd>{reportType}</dd>
-            </div>
-            {game.date ? (
-              <div>
-                <dt>Date Played</dt>
-                <dd>{game.date}</dd>
-              </div>
-            ) : null}
           </dl>
         </header>
 
@@ -285,9 +297,16 @@ function BattleReport({ game, stream }: { game: RecentGame; stream: StreamedGame
           </BattleCard>
 
           <BattleCard title="Battle Highlight" eyebrow="After Action Note" wide>
-            <blockquote className="battle-report-highlight">
-              "{battleHighlight || 'No Battle Highlight submitted.'}"
-            </blockquote>
+            {battleHighlight ? (
+              <blockquote className="battle-report-highlight">
+                "{battleHighlight}"
+              </blockquote>
+            ) : (
+              <div className="battle-report-empty-highlight">
+                <strong>NO BATTLE HIGHLIGHT</strong>
+                <p>No memorable moment was submitted for this battle.</p>
+              </div>
+            )}
           </BattleCard>
         </section>
 
@@ -296,8 +315,34 @@ function BattleReport({ game, stream }: { game: RecentGame; stream: StreamedGame
             <div className="battle-report-armies">
               {participants.map((participant) => (
                 <article className={`battle-report-army is-${participant.scoreTone}`} key={participant.name}>
-                  <strong>{participant.displayName}</strong>
-                  <span>{participant.faction || 'Army not recorded'}</span>
+                  <OperatorBadge
+                    competitiveHome={game.division || 'Casual Player'}
+                    player={{
+                      displayName: participant.displayName,
+                      division: game.division,
+                      favoriteFaction: participant.faction,
+                      name: participant.name,
+                      rank: 0,
+                    }}
+                    preferredFaction={participant.faction}
+                    rank={0}
+                    showBadges={false}
+                  />
+                  <div className="battle-report-army-copy">
+                    <strong>{participant.displayName}</strong>
+                    <span>{participant.faction || 'Army not recorded'}</span>
+                    <p>{buildArmyListSummary(participant)}</p>
+                    <dl>
+                      <div>
+                        <dt>Points</dt>
+                        <dd>Not recorded</dd>
+                      </div>
+                      <div>
+                        <dt>SWC</dt>
+                        <dd>Not recorded</dd>
+                      </div>
+                    </dl>
+                  </div>
                   {participant.faction ? (
                     <Link to={`/factions/${encodeURIComponent(participant.faction)}`}>
                       View Army Dossier
@@ -324,12 +369,17 @@ function BattleReport({ game, stream }: { game: RecentGame; stream: StreamedGame
 
           {stream ? <StreamPanel game={game} stream={stream} /> : null}
 
-          <BattleCard title="Report Information" eyebrow="Verification">
-            <dl className="battle-report-facts">
-              <Fact label="Reported On" value={game.date || 'Not recorded'} />
+          <BattleCard title="Verification Stamp" eyebrow="Official Record">
+            <dl className="battle-report-verification">
+              <div className="battle-report-verification-status">
+                <dt>Verification Status</dt>
+                <dd>{verificationStatus === 'Verified' ? '✓ VERIFIED' : verificationStatus}</dd>
+              </div>
+              <Fact label="Reported" value={formattedDate || 'Not recorded'} />
+              <Fact label="Verified By" value="Lobo" />
               <Fact label="Report ID" value={`BR-${game.id}`} />
+              <Fact label="Classification" value={reportType} />
               {stream ? <Fact label="Stream" value={stream.title || 'Linked stream'} /> : null}
-              <Fact label="Result" value={isDraw ? 'Draw' : getGameTimelineResult(game)} />
             </dl>
           </BattleCard>
         </section>
@@ -379,7 +429,7 @@ function Scoreboard({
   scores,
 }: {
   isDraw: boolean
-  scores: Array<{ label: 'TP' | 'OP' | 'VP'; left: string; right: string }>
+  scores: Array<{ label: ScoreLabel; left: string; right: string }>
 }) {
   const primary = scores.find((score) => score.label === 'OP') ?? scores[0]
 
@@ -388,13 +438,13 @@ function Scoreboard({
       <span>{isDraw ? 'Draw' : 'Final Score'}</span>
       <strong>
         <b>{primary.left}</b>
-        <em>{primary.label}</em>
+        <em>{getScoreLabel(primary.label)}</em>
         <b>{primary.right}</b>
       </strong>
       <dl>
         {scores.map((score) => (
           <div key={score.label}>
-            <dt>{score.label}</dt>
+            <dt title={getScoreLabel(score.label)}>{getScoreLabel(score.label)}</dt>
             <dd>{score.left}-{score.right}</dd>
           </div>
         ))}
@@ -477,6 +527,8 @@ function formatReportType(game: RecentGame) {
   return 'Battle Report'
 }
 
+type ScoreLabel = 'TP' | 'OP' | 'VP'
+
 function buildParticipants(game: RecentGame, isDraw: boolean): [BattleParticipant, BattleParticipant] {
   return [
     {
@@ -504,6 +556,60 @@ function buildScores(game: RecentGame) {
     { label: 'TP' as const, ...splitScoreValue(game.tp) },
     { label: 'VP' as const, ...splitScoreValue(game.vp) },
   ]
+}
+
+function getScoreLabel(label: ScoreLabel) {
+  if (label === 'OP') {
+    return 'Objective Points'
+  }
+
+  if (label === 'TP') {
+    return 'Tournament Points'
+  }
+
+  return 'Victory Points'
+}
+
+function formatReportDate(value: string) {
+  const trimmed = value.trim()
+
+  if (!trimmed) {
+    return ''
+  }
+
+  const date = new Date(trimmed)
+
+  if (Number.isNaN(date.getTime())) {
+    return trimmed
+  }
+
+  return date.toLocaleDateString([], {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+}
+
+function formatSeasonLabel(value: string, reportType: string) {
+  const trimmed = value.trim()
+  const date = trimmed ? new Date(trimmed) : null
+
+  if (!date || Number.isNaN(date.getTime())) {
+    return reportType
+  }
+
+  const season = date.toLocaleDateString([], {
+    month: 'long',
+    year: 'numeric',
+  })
+
+  return reportType === 'League' ? `${season} League` : `${season} ${reportType}`
+}
+
+function buildArmyListSummary(participant: BattleParticipant) {
+  return participant.faction
+    ? `${participant.faction} force manifest recorded from battle report data.`
+    : 'Army list details were not recorded for this battle.'
 }
 
 function buildBattleTimeline(game: RecentGame, mission: string) {

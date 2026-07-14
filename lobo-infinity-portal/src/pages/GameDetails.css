@@ -42,16 +42,48 @@
 
 .battle-report-hero {
   display: grid;
-  min-height: 176px;
-  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.36fr);
+  min-height: clamp(300px, 38vw, 480px);
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.34fr);
   gap: 24px;
-  align-items: center;
+  align-items: end;
   border-color: rgba(178, 18, 42, 0.58);
   background:
-    linear-gradient(112deg, rgba(5, 6, 8, 0.98) 0%, rgba(5, 6, 8, 0.94) 58%, rgba(178, 18, 42, 0.34) 58%, rgba(18, 26, 36, 0.9) 100%),
+    linear-gradient(112deg, rgba(5, 6, 8, 0.98) 0%, rgba(5, 6, 8, 0.94) 53%, rgba(178, 18, 42, 0.34) 53%, rgba(18, 26, 36, 0.9) 100%),
     repeating-linear-gradient(90deg, rgba(76, 201, 240, 0.08) 0 1px, transparent 1px 72px),
+    radial-gradient(circle at 18% 18%, rgba(76, 201, 240, 0.16), transparent 28%),
     #050608;
-  padding: clamp(22px, 4vw, 34px);
+  padding: clamp(28px, 5vw, 54px);
+  position: relative;
+  overflow: hidden;
+}
+
+.battle-report-hero::before {
+  content: "";
+  position: absolute;
+  inset: 22px;
+  border: 1px solid rgba(76, 201, 240, 0.18);
+  pointer-events: none;
+}
+
+.battle-report-hero::after {
+  content: "O-12 / CLASSIFIED AAR";
+  position: absolute;
+  top: 24px;
+  right: clamp(24px, 4vw, 48px);
+  border: 1px solid rgba(242, 182, 50, 0.38);
+  color: rgba(242, 182, 50, 0.82);
+  font-size: 0.7rem;
+  font-weight: 950;
+  letter-spacing: 0.14em;
+  padding: 8px 10px;
+  text-transform: uppercase;
+}
+
+.battle-report-hero-copy,
+.battle-report-identifiers {
+  min-width: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .battle-report-kicker,
@@ -68,11 +100,23 @@
   margin: 8px 0 0;
   color: #f4f6f8;
   font-family: Bebas Neue, Rajdhani, Inter, system-ui, sans-serif;
-  font-size: clamp(3rem, 8vw, 6.8rem);
+  font-size: clamp(4.2rem, 10vw, 9.6rem);
   font-weight: 900;
   letter-spacing: 0;
-  line-height: 0.86;
-  overflow-wrap: anywhere;
+  line-height: 0.82;
+  max-width: 900px;
+  overflow-wrap: normal;
+  text-transform: uppercase;
+  word-break: normal;
+}
+
+.battle-report-classification {
+  max-width: 760px;
+  margin: 14px 0 0;
+  color: #aab7c2;
+  font-size: clamp(0.9rem, 1.4vw, 1.08rem);
+  font-weight: 850;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -111,7 +155,8 @@
 
 .battle-report-identifiers div,
 .battle-report-facts div,
-.battle-report-objectives div {
+.battle-report-objectives div,
+.battle-report-verification div {
   border: 1px solid rgba(42, 59, 73, 0.88);
   background: rgba(18, 26, 36, 0.74);
   padding: 12px;
@@ -120,7 +165,8 @@
 .battle-report-identifiers dt,
 .battle-report-facts dt,
 .battle-report-objectives dt,
-.battle-report-score dt {
+.battle-report-score dt,
+.battle-report-verification dt {
   color: #aab7c2;
   font-size: 0.68rem;
   font-weight: 950;
@@ -131,7 +177,8 @@
 .battle-report-identifiers dd,
 .battle-report-facts dd,
 .battle-report-objectives dd,
-.battle-report-score dd {
+.battle-report-score dd,
+.battle-report-verification dd {
   margin: 5px 0 0;
   color: #f4f6f8;
   font-weight: 950;
@@ -238,8 +285,8 @@
 
 .battle-report-score strong {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 14px;
+  grid-template-columns: minmax(0, 1fr) minmax(70px, 0.42fr) minmax(0, 1fr);
+  gap: 10px;
   align-items: end;
   color: #f4f6f8;
   font-size: clamp(3rem, 8vw, 6.8rem);
@@ -260,10 +307,12 @@
 
 .battle-report-score em {
   color: #f4f6f8;
-  font-size: clamp(1.1rem, 2vw, 1.8rem);
+  font-size: clamp(0.72rem, 1.2vw, 1rem);
   font-style: normal;
   font-weight: 950;
   padding-bottom: 10px;
+  text-transform: uppercase;
+  line-height: 0.95;
 }
 
 .battle-report-score dl {
@@ -340,7 +389,8 @@
 }
 
 .battle-report-timeline p,
-.battle-report-highlight {
+.battle-report-highlight,
+.battle-report-empty-highlight p {
   margin: 4px 0 0;
   color: #d8e1e8;
   line-height: 1.45;
@@ -351,6 +401,22 @@
   font-weight: 800;
 }
 
+.battle-report-empty-highlight {
+  border: 1px dashed rgba(242, 182, 50, 0.42);
+  background:
+    linear-gradient(135deg, rgba(242, 182, 50, 0.1), transparent 58%),
+    rgba(5, 6, 8, 0.42);
+  padding: 18px;
+}
+
+.battle-report-empty-highlight strong {
+  color: #f2b632;
+  font-size: 0.88rem;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .battle-report-armies {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -359,10 +425,22 @@
 
 .battle-report-army {
   display: grid;
-  gap: 8px;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
   border: 1px solid rgba(42, 59, 73, 0.88);
   background: rgba(5, 6, 8, 0.42);
   padding: 14px;
+}
+
+.battle-report-army .operator-badge {
+  --operator-badge-size: clamp(92px, 10vw, 124px);
+}
+
+.battle-report-army-copy {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
 }
 
 .battle-report-army.is-cyan {
@@ -380,13 +458,48 @@
 }
 
 .battle-report-army span,
+.battle-report-army p,
 .battle-report-army a {
+  margin: 0;
   color: #aab7c2;
   font-weight: 850;
   text-decoration: none;
 }
 
+.battle-report-army p {
+  line-height: 1.35;
+}
+
+.battle-report-army dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.battle-report-army dl div {
+  border: 1px solid rgba(42, 59, 73, 0.72);
+  background: rgba(18, 26, 36, 0.58);
+  padding: 8px;
+}
+
+.battle-report-army dt {
+  color: #aab7c2;
+  font-size: 0.64rem;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.battle-report-army dd {
+  margin: 3px 0 0;
+  color: #f4f6f8;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
 .battle-report-army a {
+  grid-column: 1 / -1;
   color: #4cc9f0;
   font-size: 0.78rem;
   letter-spacing: 0.08em;
@@ -445,6 +558,27 @@
   text-transform: uppercase;
 }
 
+.battle-report-verification {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  transform: rotate(-0.35deg);
+}
+
+.battle-report-verification .battle-report-verification-status {
+  border-color: rgba(242, 182, 50, 0.66);
+  background:
+    linear-gradient(135deg, rgba(242, 182, 50, 0.14), transparent 64%),
+    rgba(5, 6, 8, 0.58);
+  text-align: center;
+}
+
+.battle-report-verification .battle-report-verification-status dd {
+  color: #f2b632;
+  font-size: clamp(1.3rem, 3vw, 2.1rem);
+  letter-spacing: 0.08em;
+}
+
 .battle-report-footer-nav {
   justify-content: space-between;
   border: 1px solid rgba(76, 201, 240, 0.24);
@@ -454,6 +588,26 @@
 
 .battle-report-footer-nav .entity-previous-next {
   flex: 1 1 auto;
+}
+
+.battle-report-footer-nav .previous-next-nav a:first-child > span,
+.battle-report-footer-nav .previous-next-nav a:last-child > span {
+  font-size: 0;
+}
+
+.battle-report-footer-nav .previous-next-nav a:first-child > span::after {
+  content: "\25C0  Previous Battle";
+  font-size: 0.78rem;
+}
+
+.battle-report-footer-nav .previous-next-nav a:last-child > span::after {
+  content: "Next Battle \25B6";
+  font-size: 0.78rem;
+}
+
+.battle-report-footer-nav > a {
+  border: 1px solid rgba(76, 201, 240, 0.34);
+  padding: 10px 12px;
 }
 
 @media (max-width: 1180px) {
@@ -483,10 +637,21 @@
     min-height: 0;
   }
 
+  .battle-report-hero h1 {
+    font-size: clamp(2.35rem, 10.5vw, 2.65rem);
+    max-width: 100%;
+  }
+
   .battle-report-participant,
   .battle-report-armies,
   .battle-report-score dl {
     grid-template-columns: 1fr;
+  }
+
+  .battle-report-army {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
   }
 
   .battle-report-participant {

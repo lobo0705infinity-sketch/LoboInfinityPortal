@@ -11,7 +11,8 @@ const checks = [
     pass:
       !gameDetails.includes('Best Moment Hero') &&
       gameDetails.includes('title="Battle Highlight"') &&
-      gameDetails.includes('No Battle Highlight submitted.'),
+      gameDetails.includes('NO BATTLE HIGHLIGHT') &&
+      gameDetails.includes('No memorable moment was submitted for this battle.'),
   },
   {
     label: 'Battle Report uses shared OperatorBadge component',
