@@ -2,6 +2,7 @@
   --operator-accent: #4cc9f0;
   --operator-secondary: #f2b632;
   position: relative;
+  z-index: 3;
   display: grid;
   width: var(--operator-badge-size, clamp(128px, 24vw, 256px));
   gap: 10px;
