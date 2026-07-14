@@ -1,6 +1,7 @@
 .operator-badge {
   --operator-accent: #4cc9f0;
   --operator-secondary: #f2b632;
+  isolation: isolate;
   position: relative;
   z-index: 3;
   display: grid;
@@ -18,6 +19,8 @@
 
 .operator-badge-mark {
   display: grid;
+  position: relative;
+  z-index: 1;
   width: 100%;
   aspect-ratio: 8 / 9;
   place-items: center;
@@ -217,6 +220,8 @@
 
 .operator-badge-home {
   display: inline-flex;
+  position: relative;
+  z-index: 1;
   max-width: 100%;
   align-items: center;
   border: 1px solid rgba(242, 182, 50, 0.68);
@@ -237,6 +242,8 @@
 
 .operator-badge-classifications {
   display: flex;
+  position: relative;
+  z-index: 1;
   max-width: 100%;
   flex-wrap: wrap;
   justify-content: center;
@@ -257,7 +264,7 @@
 
 .operator-badge-tooltip {
   position: absolute;
-  z-index: 20;
+  z-index: 30;
   top: 12px;
   left: 50%;
   width: min(280px, 100%);
