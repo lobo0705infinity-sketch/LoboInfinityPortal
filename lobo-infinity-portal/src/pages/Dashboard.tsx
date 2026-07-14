@@ -17,6 +17,7 @@ import {
   formatPlayerName,
 } from '../services/formatting'
 import { getGameHeadline, isDrawGame } from '../services/gameResults'
+import { resolvePlayerLeagueModel } from '../services/playerLeagueModel'
 import dashboardConcept from '../../docs/design/dashboard/docs/dashboard-concept-v2.1.png'
 import loboCrest from '../assets/lobo-crest.svg'
 import {
@@ -107,12 +108,10 @@ function DashboardContent({
       ? intelligence.records.mostActiveMission.name
       : ''
   const currentLeader = data.standings[0] ?? null
-  const currentPlayerContext = findCurrentPlayerStanding(
+  const currentPlayerModel = resolvePlayerLeagueModel(
     homeData.allStandings,
-    auth.user.leaguePlayer,
+    [auth.user.leaguePlayer],
   )
-  const currentPlayerStanding = currentPlayerContext?.standing ?? null
-  const currentPlayerDivision = currentPlayerContext?.division ?? null
   const scheduledLeagueGames = getScheduledLeagueGames(homeData.allStandings)
   const completedLeagueGames =
     data.leagueOverview.totalLeagueGames || data.summary.gamesPlayed
@@ -122,18 +121,17 @@ function DashboardContent({
       ? Math.min(100, Math.round((completedLeagueGames / requiredLeagueGames) * 100))
       : 0
   const hasAuthenticatedPlayer = auth.authenticated && Boolean(auth.user.leaguePlayer)
-  const rankMeta = currentPlayerStanding
-    ? `${currentPlayerStanding.division || currentPlayerDivision?.divisionLabel || 'Current'} Division`
+  const rankMeta = currentPlayerModel
+    ? `${currentPlayerModel.division} Division`
     : hasAuthenticatedPlayer
       ? 'Rank unavailable'
       : 'Sign in to view your rank'
-  const divisionMeta = currentPlayerDivision
-    ? `${currentPlayerDivision.summary.players} players`
+  const divisionMeta = currentPlayerModel
+    ? `${currentPlayerModel.divisionPopulation} players`
     : hasAuthenticatedPlayer
       ? 'Division unavailable'
       : 'Sign in for player division'
-  const divisionValue =
-    currentPlayerStanding?.division || currentPlayerDivision?.divisionLabel || 'N/A'
+  const divisionValue = currentPlayerModel?.division || 'N/A'
 
   return (
     <main className="portal-shell dashboard-facelift">
@@ -201,7 +199,7 @@ function DashboardContent({
           icon="RANK"
           label="Your Rank"
           meta={rankMeta}
-          value={currentPlayerStanding ? `#${currentPlayerStanding.rank}` : 'N/A'}
+          value={currentPlayerModel ? `#${currentPlayerModel.rank}` : 'N/A'}
         />
         <DashboardStatusTile
           accent="cyan"
@@ -260,36 +258,6 @@ function DashboardStatusTile({
       </div>
     </article>
   )
-}
-
-function findCurrentPlayerStanding(
-  divisions: DivisionStandings[],
-  playerIdentity: string,
-) {
-  const normalizedIdentity = normalizeIdentity(playerIdentity)
-
-  if (!normalizedIdentity) {
-    return null
-  }
-
-  for (const division of divisions) {
-    const standing = division.standings.find((row) => {
-      const player = normalizeIdentity(row.player)
-      const displayName = normalizeIdentity(row.displayName)
-
-      return player === normalizedIdentity || displayName === normalizedIdentity
-    })
-
-    if (standing) {
-      return { division, standing }
-    }
-  }
-
-  return null
-}
-
-function normalizeIdentity(value: string) {
-  return value.trim().toLowerCase()
 }
 
 function getScheduledLeagueGames(divisions: DivisionStandings[]) {

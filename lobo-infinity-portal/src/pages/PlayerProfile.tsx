@@ -15,6 +15,7 @@ import type {
   RecentGame,
 } from '../services/api'
 import { request } from '../services/apiCore'
+import { standingsRepository } from '../services/data'
 import {
   formatObjectiveScore,
   formatPlayerName,
@@ -25,9 +26,11 @@ import {
   isActiveEventRegistration,
 } from '../services/playerClassification'
 import {
-  formatDivisionLabel,
-  getDivisionStyle,
-} from '../utils/divisions'
+  resolvePlayerLeagueModel,
+  type PlayerLeagueModel,
+} from '../services/playerLeagueModel'
+import type { DivisionStandings } from '../types/dashboard'
+import { getDivisionStyle } from '../utils/divisions'
 
 type ProfileState =
   | {
@@ -39,6 +42,7 @@ type ProfileState =
       status: 'error'
     }
   | {
+      allStandings: DivisionStandings[]
       player: PlayerProfileData
       playerName: string
       status: 'success'
@@ -64,9 +68,11 @@ function PlayerProfile() {
     Promise.all([
       getPlayerProfileForCareer(decodedPlayerName, controller.signal),
       getRecentGamesForPlayer(decodedPlayerName, controller.signal),
+      getProfileStandings(eventId, controller.signal),
     ])
-      .then(([profile, games]) => {
+      .then(([profile, games, allStandings]) => {
         setProfileState({
+          allStandings,
           player: profile,
           playerName: decodedPlayerName,
           status: 'success',
@@ -91,7 +97,7 @@ function PlayerProfile() {
     return () => {
       controller.abort()
     }
-  }, [decodedPlayerName])
+  }, [decodedPlayerName, eventId])
 
   if (!decodedPlayerName) {
     return (
@@ -145,6 +151,11 @@ function PlayerProfile() {
   const career = player.careerSummary ?? buildFallbackCareerSummary(player, recentGames)
   const displayName = formatPlayerName(player.name, player.displayName)
   const classifications = getProfileClassifications(player, career)
+  const leagueModel = resolvePlayerLeagueModel(profileState.allStandings, [
+    player.name,
+    player.displayName,
+    decodedPlayerName,
+  ])
 
   return (
     <>
@@ -154,6 +165,7 @@ function PlayerProfile() {
           career={career}
           classifications={classifications}
           displayName={displayName}
+          leagueModel={leagueModel}
           player={player}
           recentGames={recentGames}
         />
@@ -171,30 +183,38 @@ function PlayerProfileDossier({
   career,
   classifications,
   displayName,
+  leagueModel,
   player,
   recentGames,
 }: {
   career: PlayerCareerSummary
   classifications: ReturnType<typeof getProfileClassifications>
   displayName: string
+  leagueModel: PlayerLeagueModel | null
   player: PlayerProfileData
   recentGames: RecentGame[]
 }) {
-  const divisionLabel = getCurrentDivisionLabel(player, classifications) || 'Not Assigned'
+  const divisionLabel = leagueModel?.division || 'Not Assigned'
   const homeLabel = divisionLabel
-  const currentRank = getCurrentRank(player, classifications)
+  const currentRank = leagueModel?.rank ?? 0
   const level = getCareerLevel(career)
-  const leagueLabel = getCurrentLeagueLabel(player)
+  const leagueLabel = leagueModel?.currentLeague || 'Not Assigned'
   const currentTournament = getCurrentTournamentLabel(player)
   const careerHighlight = getCareerHighlight(recentGames)
   const joinedLabel = getJoinedLabel(player)
   const achievements = getAchievementItems(career, player)
-  const preferredFaction = player.favoriteFaction
+  const preferredFaction = leagueModel?.preferredArmy || ''
+  const leagueModelPlayer = {
+    ...player,
+    division: divisionLabel,
+    favoriteFaction: preferredFaction,
+    rank: currentRank,
+  }
   const badgeDetails = getOperatorBadgeDetails({
     achievements,
     classifications,
     competitiveHome: homeLabel,
-    player,
+    player: leagueModelPlayer,
     preferredFaction,
     rank: currentRank,
   })
@@ -211,7 +231,7 @@ function PlayerProfileDossier({
             achievements={achievements}
             classifications={classifications}
             competitiveHome={homeLabel}
-            player={player}
+            player={leagueModelPlayer}
             preferredFaction={preferredFaction}
             rank={currentRank}
             showBadges={false}
@@ -860,6 +880,13 @@ async function getPlayerProfileForCareer(
   return normalizePlayerProfilePayload(payload)
 }
 
+function getProfileStandings(eventId: string, signal: AbortSignal) {
+  return standingsRepository.getAllStandings({
+    ...(eventId ? { eventId } : {}),
+    signal,
+  })
+}
+
 function normalizePlayerProfilePayload(payload: unknown): PlayerProfileData {
   const record = isRecord(payload) ? payload : {}
 
@@ -1210,24 +1237,6 @@ function buildMetric(
   }
 }
 
-function getCurrentDivisionLabel(
-  player: PlayerProfileData,
-  classifications: ReturnType<typeof getProfileClassifications>,
-) {
-  if (!classifications.includes('League Player')) {
-    return ''
-  }
-
-  return cleanTacticalLabel(formatDivisionLabel(player.division))
-}
-
-function getCurrentRank(
-  player: PlayerProfileData,
-  classifications: ReturnType<typeof getProfileClassifications>,
-) {
-  return getCurrentDivisionLabel(player, classifications) ? player.rank : 0
-}
-
 function getCareerStatus(classifications: ReturnType<typeof getProfileClassifications>) {
   if (classifications.includes('Veteran')) {
     return 'Veteran Operator'
@@ -1311,18 +1320,6 @@ function getCareerHighlight(games: RecentGame[]) {
   }
 
   return 'No career highlight recorded yet.'
-}
-
-function getCurrentLeagueLabel(player: PlayerProfileData) {
-  const league = player.registeredEvents.find((event) =>
-    isActiveEventRegistration(event, 'league'),
-  )
-
-  if (!league?.eventName) {
-    return 'Not Assigned'
-  }
-
-  return league.eventName
 }
 
 function getPerformanceMetrics(
@@ -1421,10 +1418,6 @@ function badgeTone(label: string) {
   }
 
   return 'is-league'
-}
-
-function cleanTacticalLabel(value: string) {
-  return value.replace(/^[^\p{L}\p{N}#]+/u, '').trim()
 }
 
 function getFactionBreakdown(
