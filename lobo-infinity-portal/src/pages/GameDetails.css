@@ -148,11 +148,13 @@
 
 .battle-report-participant {
   display: grid;
-  grid-template-columns: minmax(92px, 132px) minmax(0, 1fr);
+  grid-template-columns: 1fr;
   gap: 12px;
   align-items: center;
+  justify-items: center;
   min-width: 0;
   padding: clamp(18px, 3vw, 28px);
+  text-align: center;
 }
 
 .battle-report-participant.is-cyan {
@@ -171,12 +173,13 @@
 }
 
 .battle-report-participant .operator-badge {
-  --operator-badge-size: clamp(92px, 10vw, 132px);
+  --operator-badge-size: clamp(104px, 11vw, 148px);
 }
 
 .battle-report-participant-copy {
   display: grid;
   gap: 8px;
+  justify-items: center;
   min-width: 0;
 }
 
