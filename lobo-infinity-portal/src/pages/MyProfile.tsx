@@ -453,6 +453,7 @@ function ProfileEditor({
   )
   const [saveState, setSaveState] = useState<ProfileSaveState>({ status: 'idle' })
   const armyOptions = useMemo(() => getCanonicalArmyOptions(), [])
+  const currentLeague = getProfileEditorCurrentLeagueLabel(data)
 
   async function saveProfile(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -557,7 +558,7 @@ function ProfileEditor({
 
         <div className="profile-editor-readonly">
           <span>Current League</span>
-          <strong>{data.user.leagueDivision || 'Not linked'}</strong>
+          <strong>{currentLeague}</strong>
         </div>
 
         <div className="profile-editor-readonly">
@@ -594,13 +595,13 @@ function ProfileHero({
   performance: MyProfileData['leaguePerformance']
   seasonStats: ProfileStatisticsSnapshot | null
 }) {
-  const rank = seasonStats?.rank ?? 0
-  const division = seasonStats?.division || data.user.leagueDivision || 'No division'
   const health = getLeagueHealth(data, leaguePlayer)
   const classifications = getMyProfileClassifications(data, seasonStats)
+  const division = getMyProfileCompetitiveHome(data, seasonStats, classifications)
+  const rank = getMyProfileCurrentRank(seasonStats, classifications)
   const operatorPlayer = buildOperatorBadgePlayer(data, seasonStats)
   const careerHighlight = getMyProfileCareerHighlight(data.recentGames)
-  const currentLeague = getCurrentLeagueLabel(data, seasonStats)
+  const currentLeague = getCurrentLeagueLabel(data, seasonStats, classifications)
   const joinedDate = getProfileJoinedDate(data)
 
   return (
@@ -662,7 +663,7 @@ function ProfileHero({
             </div>
             <div>
               <dt>Preferred Army</dt>
-              <dd>{data.user.favoriteFaction || derived.armySummary.favoriteFaction || 'Neutral Operator Badge'}</dd>
+              <dd>{data.user.favoriteFaction || derived.armySummary.favoriteFaction || 'Not Selected'}</dd>
             </div>
             <div>
               <dt>Competitive Home</dt>
@@ -736,16 +737,45 @@ function buildOperatorBadgePlayer(
   }
 }
 
+function getMyProfileCompetitiveHome(
+  data: MyProfileData,
+  seasonStats: ProfileStatisticsSnapshot | null,
+  classifications: PlayerClassification[],
+) {
+  const division = getMyProfileAssignedDivision(data, seasonStats, classifications)
+
+  return division || 'Free Agent'
+}
+
+function getMyProfileAssignedDivision(
+  data: MyProfileData,
+  seasonStats: ProfileStatisticsSnapshot | null,
+  classifications: PlayerClassification[],
+) {
+  if (!classifications.includes('League Player')) {
+    return ''
+  }
+
+  return seasonStats?.division || data.user.leagueDivision || ''
+}
+
+function getMyProfileCurrentRank(
+  seasonStats: ProfileStatisticsSnapshot | null,
+  classifications: PlayerClassification[],
+) {
+  return classifications.includes('League Player') ? seasonStats?.rank ?? 0 : 0
+}
+
 function getMyProfileClassifications(
   data: MyProfileData,
   seasonStats: ProfileStatisticsSnapshot | null,
 ): PlayerClassification[] {
   const registrations = data.user.eventRegistrations ?? []
   const hasLeague = registrations.some((event) =>
-    isActiveProfileRegistration(event.eventType, event.eventName, event.status, 'league'),
+    isActiveProfileRegistration(event, 'league'),
   )
   const hasTournament = registrations.some((event) =>
-    isActiveProfileRegistration(event.eventType, event.eventName, event.status, 'tournament'),
+    isActiveProfileRegistration(event, 'tournament'),
   )
   const classifications: PlayerClassification[] = []
   const officialGames = getOfficialGamesPlayed(data, seasonStats)
@@ -809,12 +839,10 @@ function getOfficialGamesPlayed(
 }
 
 function isActiveProfileRegistration(
-  eventType: string | undefined,
-  eventName: string | undefined,
-  status: string | undefined,
+  event: NonNullable<MyProfileData['user']['eventRegistrations']>[number],
   target: 'league' | 'tournament',
 ) {
-  const normalizedStatus = String(status || '').trim().toLowerCase()
+  const normalizedStatus = String(event.status || '').trim().toLowerCase()
 
   if (
     ['deleted', 'removed', 'withdrawn', 'disabled', 'archived', 'completed'].includes(
@@ -824,11 +852,23 @@ function isActiveProfileRegistration(
     return false
   }
 
-  const identity = `${eventType || ''} ${eventName || ''}`.toLowerCase()
+  if (isSyntheticCurrentLeagueRegistration(event)) {
+    return false
+  }
+
+  const identity = `${event.eventType || ''} ${event.eventName || ''}`.toLowerCase()
 
   return target === 'league'
     ? identity.includes('league')
     : identity.includes('tournament')
+}
+
+function isSyntheticCurrentLeagueRegistration(
+  event: NonNullable<MyProfileData['user']['eventRegistrations']>[number],
+) {
+  return event.eventId === 'event-current-league' &&
+    String(event.registeredAt || '').trim() === '' &&
+    String(event.updatedAt || '').trim() === ''
 }
 
 function getMyProfileCareerHighlight(games: RecentGame[]) {
@@ -839,12 +879,23 @@ function getMyProfileCareerHighlight(games: RecentGame[]) {
 function getCurrentLeagueLabel(
   data: MyProfileData,
   seasonStats: ProfileStatisticsSnapshot | null,
+  classifications: PlayerClassification[],
 ) {
   const activeLeague = (data.user.eventRegistrations ?? []).find((event) =>
-    isActiveProfileRegistration(event.eventType, event.eventName, event.status, 'league'),
+    isActiveProfileRegistration(event, 'league'),
   )
 
-  return activeLeague?.eventName || seasonStats?.division || data.user.leagueDivision || 'No active league'
+  return activeLeague?.eventName ||
+    getMyProfileAssignedDivision(data, seasonStats, classifications) ||
+    'Not Assigned'
+}
+
+function getProfileEditorCurrentLeagueLabel(data: MyProfileData) {
+  const activeLeague = (data.user.eventRegistrations ?? []).find((event) =>
+    isActiveProfileRegistration(event, 'league'),
+  )
+
+  return activeLeague?.eventName || activeLeague?.eventId || 'Not Assigned'
 }
 
 function getProfileJoinedDate(data: MyProfileData) {

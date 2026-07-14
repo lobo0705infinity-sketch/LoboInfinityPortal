@@ -44,7 +44,7 @@ function OperatorBadge({
     rank,
   })
   const faction = details.faction
-  const factionIcon = getFactionIcon(selectedFaction)
+  const factionIcon = getFactionIcon(selectedFaction) || getFactionIcon('')
   const displayRank = rank ?? player.rank ?? 0
   const home = details.competitiveHome
   const rings = getEarnedRings(details.rings)
@@ -253,6 +253,7 @@ function FactionCore({ icon }: { icon: string }) {
         href={icon}
         preserveAspectRatio="xMidYMid meet"
         width="106"
+        xlinkHref={icon}
         x="107"
         y="107"
       />

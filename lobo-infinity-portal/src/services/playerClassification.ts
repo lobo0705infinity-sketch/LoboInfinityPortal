@@ -64,15 +64,10 @@ export function getProfileClassifications(
   career: PlayerCareerSummary,
 ): PlayerClassification[] {
   const hasLeague = player.registeredEvents.some((event) =>
-    isActiveEventRegistration(event.eventType, event.eventName, event.status, 'league'),
+    isActiveEventRegistration(event, 'league'),
   )
   const hasTournament = player.registeredEvents.some((event) =>
-    isActiveEventRegistration(
-      event.eventType,
-      event.eventName,
-      event.status,
-      'tournament',
-    ),
+    isActiveEventRegistration(event, 'tournament'),
   )
   const classifications: PlayerClassification[] = []
 
@@ -135,12 +130,10 @@ export function statusFilterLabel(
 }
 
 function isActiveEventRegistration(
-  eventType: string,
-  eventName: string,
-  status: string,
+  event: PlayerProfileData['registeredEvents'][number],
   target: 'league' | 'tournament',
 ) {
-  const normalizedStatus = normalizeValue(status)
+  const normalizedStatus = normalizeValue(event.status)
 
   if (
     ['deleted', 'removed', 'withdrawn', 'disabled', 'archived', 'completed'].includes(
@@ -150,11 +143,23 @@ function isActiveEventRegistration(
     return false
   }
 
-  const eventIdentity = `${eventType} ${eventName}`.toLowerCase()
+  if (isSyntheticCurrentLeagueRegistration(event)) {
+    return false
+  }
+
+  const eventIdentity = `${event.eventType} ${event.eventName}`.toLowerCase()
 
   return target === 'league'
     ? eventIdentity.includes('league')
     : eventIdentity.includes('tournament')
+}
+
+function isSyntheticCurrentLeagueRegistration(
+  event: PlayerProfileData['registeredEvents'][number],
+) {
+  return event.eventId === 'event-current-league' &&
+    normalizeValue(event.registeredAt) === '' &&
+    normalizeValue(event.updatedAt) === ''
 }
 
 function normalizeValue(value: string) {

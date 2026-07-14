@@ -178,8 +178,10 @@ function PlayerProfileDossier({
   recentGames: RecentGame[]
 }) {
   const homeLabel = getCompetitiveHomeLabel(player, classifications)
+  const divisionLabel = getCurrentDivisionLabel(player, classifications) || 'Not Assigned'
+  const currentRank = getCurrentRank(player, classifications)
   const level = getCareerLevel(career)
-  const leagueLabel = getCurrentLeagueLabel(player)
+  const leagueLabel = getCurrentLeagueLabel(player, classifications)
   const currentTournament = getCurrentTournamentLabel(player)
   const careerHighlight = getCareerHighlight(recentGames)
   const joinedLabel = getJoinedLabel(player)
@@ -191,14 +193,14 @@ function PlayerProfileDossier({
     competitiveHome: homeLabel,
     player,
     preferredFaction,
-    rank: player.rank,
+    rank: currentRank,
   })
 
   return (
     <>
       <section
         className="profile-v21-hero"
-        style={getDivisionStyle(player.division)}
+        style={getDivisionStyle(homeLabel)}
         aria-labelledby="player-title"
       >
         <div className="profile-v21-hero-grid">
@@ -208,7 +210,7 @@ function PlayerProfileDossier({
             competitiveHome={homeLabel}
             player={player}
             preferredFaction={preferredFaction}
-            rank={player.rank}
+            rank={currentRank}
             showBadges={false}
           />
           <div className="profile-v21-identity">
@@ -225,7 +227,7 @@ function PlayerProfileDossier({
               {classifications.map((classification) => (
                 <TacticalBadge key={classification} label={classification} />
               ))}
-              {player.rank > 0 ? <TacticalBadge label={`Rank #${player.rank}`} /> : null}
+              {currentRank > 0 ? <TacticalBadge label={`Rank #${currentRank}`} /> : null}
             </div>
             <ServiceRecord
               careerStatus={getCareerStatus(classifications)}
@@ -245,8 +247,10 @@ function PlayerProfileDossier({
       <section className="profile-v21-topline" aria-label="Player season status">
         <SeasonSnapshot
           career={career}
+          divisionLabel={divisionLabel}
           leagueLabel={leagueLabel}
           player={player}
+          rank={currentRank}
         />
         <CareerLevelCard level={level} />
       </section>
@@ -291,7 +295,7 @@ function ServiceRecord({
   const rows = [
     ['Operator Since', operatorSince],
     ['Current League', currentLeague],
-    ['Preferred Army', preferredArmy || 'Neutral Operator Badge'],
+    ['Preferred Army', preferredArmy || 'Not Selected'],
     ['Competitive Home', competitiveHome],
     ['Career Status', careerStatus],
   ]
@@ -422,12 +426,16 @@ function TacticalBadge({ label }: { label: string }) {
 
 function SeasonSnapshot({
   career,
+  divisionLabel,
   leagueLabel,
   player,
+  rank,
 }: {
   career: PlayerCareerSummary
+  divisionLabel: string
   leagueLabel: string
   player: PlayerProfileData
+  rank: number
 }) {
   const record = career.records.overall
 
@@ -444,11 +452,11 @@ function SeasonSnapshot({
         </div>
         <div>
           <dt>Rank</dt>
-          <dd>{player.rank > 0 ? `#${player.rank}` : 'Unranked'}</dd>
+          <dd>{rank > 0 ? `#${rank}` : 'Unranked'}</dd>
         </div>
         <div>
           <dt>Division</dt>
-          <dd>{cleanTacticalLabel(formatDivisionLabel(player.division)) || leagueLabel}</dd>
+          <dd>{divisionLabel}</dd>
         </div>
         <div>
           <dt>Season</dt>
@@ -1203,17 +1211,31 @@ function getCompetitiveHomeLabel(
   player: PlayerProfileData,
   classifications: ReturnType<typeof getProfileClassifications>,
 ) {
-  const division = cleanTacticalLabel(formatDivisionLabel(player.division))
+  const division = getCurrentDivisionLabel(player, classifications)
 
   if (division) {
     return division
   }
 
-  if (classifications.includes('Tournament Player')) {
-    return 'Tournament Player'
+  return 'Free Agent'
+}
+
+function getCurrentDivisionLabel(
+  player: PlayerProfileData,
+  classifications: ReturnType<typeof getProfileClassifications>,
+) {
+  if (!classifications.includes('League Player')) {
+    return ''
   }
 
-  return 'Casual Player'
+  return cleanTacticalLabel(formatDivisionLabel(player.division))
+}
+
+function getCurrentRank(
+  player: PlayerProfileData,
+  classifications: ReturnType<typeof getProfileClassifications>,
+) {
+  return getCurrentDivisionLabel(player, classifications) ? player.rank : 0
 }
 
 function getCareerStatus(classifications: ReturnType<typeof getProfileClassifications>) {
@@ -1301,16 +1323,19 @@ function getCareerHighlight(games: RecentGame[]) {
   return 'No career highlight recorded yet.'
 }
 
-function getCurrentLeagueLabel(player: PlayerProfileData) {
+function getCurrentLeagueLabel(
+  player: PlayerProfileData,
+  classifications: ReturnType<typeof getProfileClassifications>,
+) {
   const league = player.registeredEvents.find((event) =>
-    isActiveProfileEvent(event.eventType, event.eventName, event.status, 'league'),
+    isActiveProfileEvent(event, 'league'),
   )
 
   if (!league) {
-    return cleanTacticalLabel(formatDivisionLabel(player.division)) || 'No active league'
+    return 'Not Assigned'
   }
 
-  return league.eventName || league.eventId || cleanTacticalLabel(formatDivisionLabel(player.division))
+  return league.eventName || league.eventId || getCurrentDivisionLabel(player, classifications) || 'Active League'
 }
 
 function getPerformanceMetrics(
@@ -1573,7 +1598,7 @@ function getActivityItems(
   const fallbackItems = [
     {
       date: 'Current',
-      detail: cleanTacticalLabel(formatDivisionLabel(player.division)) || leagueLabel,
+      detail: leagueLabel,
       label: 'League Status',
     },
     {
@@ -1587,12 +1612,10 @@ function getActivityItems(
 }
 
 function isActiveProfileEvent(
-  eventType: string,
-  eventName: string,
-  status: string,
+  event: PlayerProfileData['registeredEvents'][number],
   target: 'league' | 'tournament',
 ) {
-  const normalizedStatus = status.trim().toLowerCase()
+  const normalizedStatus = event.status.trim().toLowerCase()
 
   if (
     ['deleted', 'removed', 'withdrawn', 'disabled', 'archived', 'completed'].includes(
@@ -1602,11 +1625,23 @@ function isActiveProfileEvent(
     return false
   }
 
-  const eventIdentity = `${eventType} ${eventName}`.toLowerCase()
+  if (isSyntheticCurrentLeagueRegistration(event)) {
+    return false
+  }
+
+  const eventIdentity = `${event.eventType} ${event.eventName}`.toLowerCase()
 
   return target === 'league'
     ? eventIdentity.includes('league')
     : eventIdentity.includes('tournament')
+}
+
+function isSyntheticCurrentLeagueRegistration(
+  event: PlayerProfileData['registeredEvents'][number],
+) {
+  return event.eventId === 'event-current-league' &&
+    event.registeredAt.trim() === '' &&
+    event.updatedAt.trim() === ''
 }
 
 function decodePlayerName(playerName: string | undefined) {
