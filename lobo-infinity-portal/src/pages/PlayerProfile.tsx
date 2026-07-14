@@ -1789,6 +1789,7 @@ const playerProfileStyles = `
 .profile-v21-hero .operator-badge {
   --operator-badge-size: clamp(280px, 30vw, 410px);
   align-self: center;
+  z-index: 5;
 }
 
 .profile-v21-portrait {
@@ -1821,6 +1822,8 @@ const playerProfileStyles = `
 }
 
 .profile-v21-identity {
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: 16px;
   min-width: 0;
