@@ -556,7 +556,7 @@ function PerformanceOverview({
         </dl>
       </div>
       <div className="profile-v21-analysis">
-        <Metric label="Primary Army" value={career.quickStats.mostPlayedArmy || player.favoriteFaction} />
+        <Metric label="Primary Army" value={career.quickStats.mostPlayedArmy || 'Not Selected'} />
         <Metric label="Top Mission" value={formatMissionMetric(career.quickStats.mostPlayedMission || player.favoriteMission)} />
         <Metric label="Current Streak" value={`${career.currentWinStreak} wins`} />
       </div>
@@ -1147,8 +1147,8 @@ function buildFallbackCareerSummary(
     quickStats: {
       biggestVictory: 0,
       highestVpGame: getHighestVp(games, player),
-      mostPlayedArmy: player.favoriteFaction,
-      mostPlayedArmyParentFaction: getArmyParentFaction(player.favoriteFaction),
+      mostPlayedArmy: '',
+      mostPlayedArmyParentFaction: '',
       mostPlayedMission: formatMissionMetric(player.favoriteMission),
     },
     records: {
