@@ -1,0 +1,222 @@
+.operator-badge {
+  --operator-accent: #4cc9f0;
+  --operator-secondary: #f2b632;
+  display: grid;
+  width: var(--operator-badge-size, clamp(128px, 24vw, 256px));
+  gap: 10px;
+  justify-items: center;
+  color: #f4f6f8;
+}
+
+.operator-badge-mark {
+  display: grid;
+  width: 100%;
+  aspect-ratio: 8 / 9;
+  place-items: center;
+}
+
+.operator-badge-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 26px 52px rgba(0, 0, 0, 0.64));
+}
+
+.operator-badge-outer {
+  fill: rgba(18, 26, 36, 0.94);
+  stroke: rgba(170, 183, 194, 0.42);
+  stroke-width: 10;
+}
+
+.operator-badge-armature {
+  fill: rgba(5, 6, 8, 0.76);
+  stroke: rgba(170, 183, 194, 0.56);
+  stroke-width: 8;
+}
+
+.operator-badge-core {
+  stroke: var(--operator-accent);
+  stroke-width: 5;
+}
+
+.operator-badge-inner {
+  fill: rgba(5, 6, 8, 0.2);
+  stroke: color-mix(in srgb, var(--operator-accent) 76%, #f4f6f8);
+  stroke-width: 4;
+}
+
+.operator-badge-ring {
+  fill: none;
+  opacity: 0.95;
+  stroke-linecap: square;
+  stroke-width: 9;
+  transform-origin: 160px 160px;
+}
+
+.operator-badge-ring.is-league-champion {
+  stroke: #4cc9f0;
+  stroke-dasharray: 94 710;
+  transform: rotate(-160deg);
+}
+
+.operator-badge-ring.is-tournament-champion {
+  stroke: #b2122a;
+  stroke-dasharray: 88 716;
+  transform: rotate(-24deg);
+}
+
+.operator-badge-ring.is-veteran {
+  stroke: #5fe38a;
+  stroke-dasharray: 70 734;
+  transform: rotate(130deg);
+}
+
+.operator-badge-ring.is-hall-of-fame {
+  stroke: #f2b632;
+  stroke-dasharray: 88 716;
+  transform: rotate(-90deg);
+}
+
+.operator-badge-ring.is-commissioner {
+  stroke: #f4f6f8;
+  stroke-dasharray: 64 740;
+  transform: rotate(40deg);
+}
+
+.operator-badge-faction-mark {
+  fill: none;
+  stroke: color-mix(in srgb, var(--operator-accent) 78%, #f4f6f8);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 9;
+}
+
+.operator-badge-faction-mark circle,
+.operator-badge-faction-mark path:nth-child(2) {
+  fill: color-mix(in srgb, var(--operator-accent) 28%, #f4f6f8);
+  stroke-width: 5;
+}
+
+.operator-badge-module {
+  color: #7e8b95;
+  opacity: 0.72;
+}
+
+.operator-badge-module > path {
+  fill: rgba(18, 26, 36, 0.96);
+  stroke: currentColor;
+  stroke-width: 3;
+}
+
+.operator-badge-module g {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+}
+
+.operator-badge-module.is-active {
+  opacity: 1;
+}
+
+.operator-badge-module.is-league.is-active {
+  color: #4cc9f0;
+}
+
+.operator-badge-module.is-command.is-active {
+  color: #f2b632;
+}
+
+.operator-badge-module.is-tournament.is-active {
+  color: #b2122a;
+}
+
+.operator-badge-rank {
+  color: #f2b632;
+}
+
+.operator-badge-rank path {
+  fill: rgba(18, 26, 36, 0.96);
+  stroke: currentColor;
+  stroke-width: 3;
+}
+
+.operator-badge-rank text,
+.operator-badge-name,
+.operator-badge-faction {
+  font-family: Inter, system-ui, sans-serif;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-anchor: middle;
+  text-transform: uppercase;
+}
+
+.operator-badge-rank text {
+  fill: #f2b632;
+  font-size: 25px;
+}
+
+.operator-badge-plate path {
+  fill: rgba(5, 6, 8, 0.96);
+  stroke: rgba(76, 201, 240, 0.45);
+  stroke-width: 3;
+}
+
+.operator-badge-name {
+  fill: #f4f6f8;
+  font-size: 24px;
+}
+
+.operator-badge-faction {
+  fill: #4cc9f0;
+  font-size: 10px;
+}
+
+.operator-badge-home {
+  display: inline-flex;
+  max-width: 100%;
+  align-items: center;
+  border: 1px solid rgba(242, 182, 50, 0.56);
+  background: rgba(242, 182, 50, 0.1);
+  color: #f2b632;
+  font-size: clamp(0.68rem, 1.1vw, 0.82rem);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  padding: 8px 12px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.operator-badge-classifications {
+  display: flex;
+  max-width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.operator-badge-classification {
+  gap: 6px;
+  border-radius: 0;
+}
+
+.operator-badge-classification i {
+  width: 7px;
+  aspect-ratio: 1;
+  background: currentColor;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+
+@media (max-width: 840px) {
+  .operator-badge {
+    --operator-badge-size: min(56vw, 192px);
+  }
+}
+
+@media (max-width: 540px) {
+  .operator-badge {
+    --operator-badge-size: min(58vw, 176px);
+  }
+}

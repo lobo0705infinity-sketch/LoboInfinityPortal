@@ -1,6 +1,6 @@
 import { useEffect, useState, type CSSProperties } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import CommandEmblem from '../components/CommandEmblem'
+import OperatorBadge from '../components/OperatorBadge'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
 import { getArmyParentFaction } from '../config/armies'
@@ -182,6 +182,7 @@ function PlayerProfileDossier({
   const currentTournament = getCurrentTournamentLabel(player)
   const careerHighlight = getCareerHighlight(recentGames)
   const joinedLabel = getJoinedLabel(player)
+  const achievements = getAchievementItems(career, player)
 
   return (
     <>
@@ -191,7 +192,8 @@ function PlayerProfileDossier({
         aria-labelledby="player-title"
       >
         <div className="profile-v21-hero-grid">
-          <CommandEmblem
+          <OperatorBadge
+            achievements={achievements}
             classifications={classifications}
             competitiveHome={homeLabel}
             player={player}
@@ -239,7 +241,7 @@ function PlayerProfileDossier({
         </div>
         <aside className="profile-v21-aside" aria-label="Player analytics">
           <FactionBreakdown career={career} player={player} />
-          <AchievementPreview career={career} player={player} />
+          <AchievementPreview achievements={achievements} />
           <RivalsPanel games={recentGames} player={player} />
           <ActivityFeed
             currentTournament={currentTournament}
@@ -479,14 +481,10 @@ function FactionBreakdown({
 }
 
 function AchievementPreview({
-  career,
-  player,
+  achievements,
 }: {
-  career: PlayerCareerSummary
-  player: PlayerProfileData
+  achievements: ReturnType<typeof getAchievementItems>
 }) {
-  const achievements = getAchievementItems(career, player)
-
   return (
     <section className="panel player-achievement-panel" aria-labelledby="achievements-title">
       <div className="panel-heading">
@@ -1645,8 +1643,8 @@ const playerProfileStyles = `
   padding: clamp(32px, 5vw, 72px);
 }
 
-.profile-v21-hero .command-emblem {
-  --command-emblem-size: clamp(250px, 28vw, 360px);
+.profile-v21-hero .operator-badge {
+  --operator-badge-size: clamp(280px, 30vw, 410px);
   align-self: center;
 }
 
@@ -2180,8 +2178,8 @@ const playerProfileStyles = `
     width: min(54vw, 260px);
   }
 
-  .profile-v21-hero .command-emblem {
-    --command-emblem-size: min(62vw, 260px);
+  .profile-v21-hero .operator-badge {
+    --operator-badge-size: min(66vw, 300px);
   }
 
   .profile-v21-highlight {
@@ -2210,8 +2208,8 @@ const playerProfileStyles = `
     padding: 26px 22px 34px;
   }
 
-  .profile-v21-hero .command-emblem {
-    --command-emblem-size: min(66vw, 230px);
+  .profile-v21-hero .operator-badge {
+    --operator-badge-size: min(78vw, 280px);
   }
 
   .profile-v21-identity h1 {
