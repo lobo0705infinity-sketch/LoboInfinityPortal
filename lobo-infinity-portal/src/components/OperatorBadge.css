@@ -257,8 +257,8 @@
 .operator-badge-tooltip {
   position: absolute;
   z-index: 20;
-  right: 0;
-  bottom: calc(100% + 14px);
+  top: 18px;
+  left: calc(100% + 18px);
   width: min(280px, 82vw);
   border: 1px solid rgba(76, 201, 240, 0.42);
   background:
@@ -270,14 +270,14 @@
   padding: 14px;
   pointer-events: none;
   text-align: left;
-  transform: translateY(8px);
+  transform: translateX(-8px);
   transition: opacity 160ms ease, transform 160ms ease;
 }
 
 .operator-badge:hover > .operator-badge-tooltip,
 .operator-badge:focus-visible > .operator-badge-tooltip {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateX(0);
 }
 
 .operator-badge-tooltip strong {
