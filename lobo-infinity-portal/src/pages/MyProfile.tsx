@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 're
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import BarChart, { type BarChartPoint } from '../components/BarChart'
+import OperatorBadge from '../components/OperatorBadge'
 import Skeleton from '../components/Skeleton'
 import { getCanonicalArmyOptions, normalizeArmyForDisplay } from '../config/armies'
 import { getCanonicalMissionName } from '../config/missions'
@@ -24,6 +25,7 @@ import {
   formatVictoryScore,
 } from '../services/formatting'
 import { isDrawGame } from '../services/gameResults'
+import type { PlayerClassification } from '../services/playerClassification'
 import './MyProfile.css'
 
 type ProfileState =
@@ -595,12 +597,32 @@ function ProfileHero({
   const rank = seasonStats?.rank ?? 0
   const division = seasonStats?.division || data.user.leagueDivision || 'No division'
   const health = getLeagueHealth(data, leaguePlayer)
+  const classifications = getMyProfileClassifications(data, seasonStats)
+  const operatorPlayer = buildOperatorBadgePlayer(data, seasonStats)
+  const careerHighlight = getMyProfileCareerHighlight(data.recentGames)
+  const currentLeague = getCurrentLeagueLabel(data, seasonStats)
+  const joinedDate = getProfileJoinedDate(data)
 
   return (
     <section
-      className="profile-hero-focus member-profile-hero player-combat-hero"
+      className="profile-hero-focus member-profile-hero player-combat-hero my-profile-operator-hero"
       aria-label="Authenticated player profile"
     >
+      <div className="my-profile-operator-badge">
+        <OperatorBadge
+          achievements={data.achievements.map((achievement) => ({
+            title: achievement.name || achievement.title,
+            unlocked: achievement.unlocked,
+          }))}
+          classifications={classifications}
+          competitiveHome={division}
+          player={operatorPlayer}
+          preferredFaction={data.user.favoriteFaction || derived.armySummary.favoriteFaction}
+          rank={rank}
+          showBadges={false}
+        />
+      </div>
+
       <div className="profile-hero-main">
         <p className="eyebrow">Player Identity</p>
         <h1>{data.user.displayName}</h1>
@@ -612,45 +634,27 @@ function ProfileHero({
           <span>{performance.currentStreak}</span>
           <span>{health}</span>
         </div>
+        <div className="my-profile-hero-meta" aria-label="Profile identity details">
+          <span>{currentLeague}</span>
+          <span>{joinedDate}</span>
+        </div>
+        <div className="my-profile-classifications" aria-label="Player classifications">
+          {classifications.map((classification) => (
+            <span className="player-status-badge" key={classification}>
+              {classification}
+            </span>
+          ))}
+        </div>
+        <blockquote className="my-profile-highlight">
+          <span>Career Highlight</span>
+          <p>{careerHighlight}</p>
+        </blockquote>
         <p>
           Google signs you in. Your portal display name is shown publicly.
           {leaguePlayer
             ? ` League statistics remain linked to ${leaguePlayer}.`
             : ' League statistics will appear after you join a league event.'}
         </p>
-      </div>
-
-      <div className="combat-rank-emblem" aria-label="Portal rank icon">
-        <span>{rank > 0 ? rank : '--'}</span>
-        <small>Rank</small>
-      </div>
-
-      <div className="member-avatar-card combat-avatar-card">
-        {data.user.avatarUrl ? (
-          <img alt="" src={data.user.avatarUrl} />
-        ) : (
-          <strong>
-            {data.user.displayName.slice(0, 1)}
-          </strong>
-        )}
-        <dl>
-          <div>
-            <dt>Current Season</dt>
-            <dd>Active Season</dd>
-          </div>
-          <div>
-            <dt>Favorite Faction</dt>
-            <dd>{derived.armySummary.favoriteFaction || 'Not established'}</dd>
-          </div>
-          <div>
-            <dt>Favorite Mission</dt>
-            <dd>{formatMissionMetric(data.leagueStatistics?.favoriteMission || '') || 'Not established'}</dd>
-          </div>
-          <div>
-            <dt>Best Mission</dt>
-            <dd>{formatMissionMetric(data.leagueStatistics?.bestMission || '') || 'Not established'}</dd>
-          </div>
-        </dl>
       </div>
     </section>
   )
@@ -689,6 +693,133 @@ function validateProfileEditor(displayName: string, discordName: string) {
   }
 
   return ''
+}
+
+function buildOperatorBadgePlayer(
+  data: MyProfileData,
+  seasonStats: ProfileStatisticsSnapshot | null,
+) {
+  const officialGames = getOfficialGamesPlayed(data, seasonStats)
+
+  return {
+    careerSummary: {
+      records: {
+        league: { games: officialGames },
+        tournament: { games: 0 },
+      },
+      totalGames: data.leagueStatistics?.games ?? officialGames,
+    },
+    displayName: data.user.displayName,
+    division: seasonStats?.division || data.user.leagueDivision || '',
+    favoriteFaction: data.user.favoriteFaction || data.leagueStatistics?.favoriteFaction || '',
+    name: data.user.leaguePlayer || data.user.displayName,
+    rank: seasonStats?.rank ?? data.leagueStatistics?.rank ?? 0,
+  }
+}
+
+function getMyProfileClassifications(
+  data: MyProfileData,
+  seasonStats: ProfileStatisticsSnapshot | null,
+): PlayerClassification[] {
+  const registrations = data.user.eventRegistrations ?? []
+  const hasLeague = registrations.some((event) =>
+    isActiveProfileRegistration(event.eventType, event.eventName, event.status, 'league'),
+  )
+  const hasTournament = registrations.some((event) =>
+    isActiveProfileRegistration(event.eventType, event.eventName, event.status, 'tournament'),
+  )
+  const classifications: PlayerClassification[] = []
+  const officialGames = getOfficialGamesPlayed(data, seasonStats)
+
+  if (hasLeague) {
+    classifications.push('League Player')
+  }
+
+  if (hasTournament) {
+    classifications.push('Tournament Player')
+  }
+
+  if (!hasLeague && !hasTournament) {
+    classifications.push('Casual Player')
+  }
+
+  if (officialGames === 0) {
+    classifications.push('New Player')
+  }
+
+  if (officialGames >= 50) {
+    classifications.push('Veteran')
+  }
+
+  if (data.user.role.toLowerCase().includes('commissioner')) {
+    classifications.push('Commissioner')
+  }
+
+  return classifications
+}
+
+function getOfficialGamesPlayed(
+  data: MyProfileData,
+  seasonStats: ProfileStatisticsSnapshot | null,
+) {
+  return data.careerStatistics?.games ?? seasonStats?.games ?? data.leagueStatistics?.games ?? 0
+}
+
+function isActiveProfileRegistration(
+  eventType: string | undefined,
+  eventName: string | undefined,
+  status: string | undefined,
+  target: 'league' | 'tournament',
+) {
+  const normalizedStatus = String(status || '').trim().toLowerCase()
+
+  if (
+    ['deleted', 'removed', 'withdrawn', 'disabled', 'archived', 'completed'].includes(
+      normalizedStatus,
+    )
+  ) {
+    return false
+  }
+
+  const identity = `${eventType || ''} ${eventName || ''}`.toLowerCase()
+
+  return target === 'league'
+    ? identity.includes('league')
+    : identity.includes('tournament')
+}
+
+function getMyProfileCareerHighlight(games: RecentGame[]) {
+  return games.find((game) => game.bestMoment.trim())?.bestMoment.trim() ||
+    'No career highlight recorded yet.'
+}
+
+function getCurrentLeagueLabel(
+  data: MyProfileData,
+  seasonStats: ProfileStatisticsSnapshot | null,
+) {
+  const activeLeague = (data.user.eventRegistrations ?? []).find((event) =>
+    isActiveProfileRegistration(event.eventType, event.eventName, event.status, 'league'),
+  )
+
+  return activeLeague?.eventName || seasonStats?.division || data.user.leagueDivision || 'No active league'
+}
+
+function getProfileJoinedDate(data: MyProfileData) {
+  const registrationDates = (data.user.eventRegistrations ?? [])
+    .map((event) => event.registeredAt)
+    .filter(Boolean)
+    .sort()
+  const firstDate = registrationDates[0] || data.user.created
+  const date = new Date(firstDate)
+
+  if (!firstDate || !Number.isFinite(date.getTime())) {
+    return 'Joined date unavailable'
+  }
+
+  return `Joined ${date.toLocaleDateString(undefined, {
+    month: 'short',
+    year: 'numeric',
+  })}`
 }
 
 function getCurrentTournamentLabel(events: MyProfileData['user']['eventRegistrations']) {
@@ -2270,10 +2401,6 @@ function getMostCommon(values: string[]) {
     .forEach((value) => counts.set(value, (counts.get(value) ?? 0) + 1))
 
   return Array.from(counts.entries()).sort((left, right) => right[1] - left[1])[0]?.[0] ?? ''
-}
-
-function formatMissionMetric(value: string) {
-  return getCanonicalMissionName(value) || value
 }
 
 function formatRecord(stats: ProfileStatisticsSnapshot | null) {
