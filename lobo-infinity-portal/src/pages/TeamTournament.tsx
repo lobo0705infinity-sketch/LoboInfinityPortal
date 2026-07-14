@@ -1100,7 +1100,7 @@ function RegistrationManagementPanel({
         <p>No players have registered yet.</p>
       ) : (
         <ul>
-          {registration.registrations.slice(0, 12).map((entry) => {
+          {registration.registrations.map((entry) => {
             const rowWorking = working === `participant:${entry.player}`
             const approved = entry.status === 'Approved'
 
