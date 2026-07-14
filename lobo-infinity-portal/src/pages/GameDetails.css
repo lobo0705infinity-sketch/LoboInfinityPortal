@@ -148,8 +148,8 @@
 
 .battle-report-participant {
   display: grid;
-  grid-template-columns: minmax(120px, 0.42fr) minmax(0, 1fr);
-  gap: 18px;
+  grid-template-columns: minmax(92px, 132px) minmax(0, 1fr);
+  gap: 12px;
   align-items: center;
   min-width: 0;
   padding: clamp(18px, 3vw, 28px);
@@ -171,7 +171,7 @@
 }
 
 .battle-report-participant .operator-badge {
-  --operator-badge-size: clamp(112px, 16vw, 180px);
+  --operator-badge-size: clamp(92px, 10vw, 132px);
 }
 
 .battle-report-participant-copy {
@@ -183,7 +183,7 @@
 .battle-report-participant-copy h2 {
   margin: 0;
   color: #f4f6f8;
-  font-size: clamp(2rem, 5vw, 4.1rem);
+  font-size: clamp(1.5rem, 3vw, 2.85rem);
   font-weight: 950;
   line-height: 0.95;
   overflow-wrap: anywhere;
