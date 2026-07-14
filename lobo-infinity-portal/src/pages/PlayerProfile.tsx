@@ -20,7 +20,10 @@ import {
   formatPlayerName,
 } from '../services/formatting'
 import { isDrawGame } from '../services/gameResults'
-import { getProfileClassifications } from '../services/playerClassification'
+import {
+  getProfileClassifications,
+  isActiveEventRegistration,
+} from '../services/playerClassification'
 import {
   formatDivisionLabel,
   getDivisionStyle,
@@ -177,16 +180,16 @@ function PlayerProfileDossier({
   player: PlayerProfileData
   recentGames: RecentGame[]
 }) {
-  const homeLabel = getCompetitiveHomeLabel(player, classifications)
   const divisionLabel = getCurrentDivisionLabel(player, classifications) || 'Not Assigned'
+  const homeLabel = divisionLabel
   const currentRank = getCurrentRank(player, classifications)
   const level = getCareerLevel(career)
-  const leagueLabel = getCurrentLeagueLabel(player, classifications)
+  const leagueLabel = getCurrentLeagueLabel(player)
   const currentTournament = getCurrentTournamentLabel(player)
   const careerHighlight = getCareerHighlight(recentGames)
   const joinedLabel = getJoinedLabel(player)
   const achievements = getAchievementItems(career, player)
-  const preferredFaction = career.quickStats.mostPlayedArmy || player.favoriteFaction
+  const preferredFaction = player.favoriteFaction
   const badgeDetails = getOperatorBadgeDetails({
     achievements,
     classifications,
@@ -1207,19 +1210,6 @@ function buildMetric(
   }
 }
 
-function getCompetitiveHomeLabel(
-  player: PlayerProfileData,
-  classifications: ReturnType<typeof getProfileClassifications>,
-) {
-  const division = getCurrentDivisionLabel(player, classifications)
-
-  if (division) {
-    return division
-  }
-
-  return 'Free Agent'
-}
-
 function getCurrentDivisionLabel(
   player: PlayerProfileData,
   classifications: ReturnType<typeof getProfileClassifications>,
@@ -1323,19 +1313,16 @@ function getCareerHighlight(games: RecentGame[]) {
   return 'No career highlight recorded yet.'
 }
 
-function getCurrentLeagueLabel(
-  player: PlayerProfileData,
-  classifications: ReturnType<typeof getProfileClassifications>,
-) {
+function getCurrentLeagueLabel(player: PlayerProfileData) {
   const league = player.registeredEvents.find((event) =>
-    isActiveProfileEvent(event, 'league'),
+    isActiveEventRegistration(event, 'league'),
   )
 
-  if (!league) {
+  if (!league?.eventName) {
     return 'Not Assigned'
   }
 
-  return league.eventName || league.eventId || getCurrentDivisionLabel(player, classifications) || 'Active League'
+  return league.eventName
 }
 
 function getPerformanceMetrics(
@@ -1611,39 +1598,6 @@ function getActivityItems(
   return [...gameItems, ...registrationItems, ...fallbackItems].slice(0, 6)
 }
 
-function isActiveProfileEvent(
-  event: PlayerProfileData['registeredEvents'][number],
-  target: 'league' | 'tournament',
-) {
-  const normalizedStatus = event.status.trim().toLowerCase()
-
-  if (
-    ['deleted', 'removed', 'withdrawn', 'disabled', 'archived', 'completed'].includes(
-      normalizedStatus,
-    )
-  ) {
-    return false
-  }
-
-  if (isSyntheticCurrentLeagueRegistration(event)) {
-    return false
-  }
-
-  const eventIdentity = `${event.eventType} ${event.eventName}`.toLowerCase()
-
-  return target === 'league'
-    ? eventIdentity.includes('league')
-    : eventIdentity.includes('tournament')
-}
-
-function isSyntheticCurrentLeagueRegistration(
-  event: PlayerProfileData['registeredEvents'][number],
-) {
-  return event.eventId === 'event-current-league' &&
-    event.registeredAt.trim() === '' &&
-    event.updatedAt.trim() === ''
-}
-
 function decodePlayerName(playerName: string | undefined) {
   if (!playerName) {
     return ''
@@ -1677,16 +1631,10 @@ function filterGamesForPlayer(
 
 function getCurrentTournamentLabel(player: PlayerProfileData) {
   const tournament = player.registeredEvents.find((event) =>
-    `${event.eventType} ${event.eventName}`.toLowerCase().includes('tournament'),
+    isActiveEventRegistration(event, 'tournament'),
   )
 
   if (!tournament) {
-    return 'Not registered'
-  }
-
-  const status = tournament.status.trim().toLowerCase()
-
-  if (['deleted', 'removed', 'withdrawn'].includes(status)) {
     return 'Not registered'
   }
 

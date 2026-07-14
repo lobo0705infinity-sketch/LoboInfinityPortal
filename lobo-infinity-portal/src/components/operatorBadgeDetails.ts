@@ -56,7 +56,7 @@ export function getOperatorBadgeDetails({
   const rings = deriveAchievementRings(player, classifications, achievements)
 
   return {
-    competitiveHome: normalizeCompetitiveHome(competitiveHome, classifications),
+    competitiveHome: normalizeCompetitiveHome(competitiveHome),
     faction,
     rank: displayRank > 0 ? `#${displayRank}` : 'Unranked',
     rings: {
@@ -140,34 +140,9 @@ function deriveAchievementRings(
   return Array.from(rings)
 }
 
-function normalizeCompetitiveHome(
-  value: string,
-  classifications: PlayerClassification[],
-) {
+function normalizeCompetitiveHome(value: string) {
   const trimmed = value.trim()
-  const normalized = trimmed.toLowerCase()
-
-  if (normalized.includes('main man')) {
-    return 'Main Man'
-  }
-
-  if (normalized.includes('proving grounds a')) {
-    return 'Proving Grounds A'
-  }
-
-  if (normalized.includes('proving grounds b')) {
-    return 'Proving Grounds B'
-  }
-
-  if (trimmed) {
-    return trimmed
-  }
-
-  if (classifications.includes('Casual Player')) {
-    return 'Free Agent'
-  }
-
-  return 'Not Assigned'
+  return trimmed || 'Not Assigned'
 }
 
 function formatEarned(earned: boolean) {

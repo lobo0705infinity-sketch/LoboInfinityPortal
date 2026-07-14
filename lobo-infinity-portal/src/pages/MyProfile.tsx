@@ -275,7 +275,6 @@ function ProfileDashboard({
 
       <ProfileHero
         data={data}
-        derived={derived}
         leaguePlayer={leaguePlayer}
         performance={performance}
         seasonStats={seasonStats}
@@ -584,13 +583,11 @@ function ProfileEditor({
 
 function ProfileHero({
   data,
-  derived,
   leaguePlayer,
   performance,
   seasonStats,
 }: {
   data: MyProfileData
-  derived: ProfileDerivedData
   leaguePlayer: string
   performance: MyProfileData['leaguePerformance']
   seasonStats: ProfileStatisticsSnapshot | null
@@ -601,7 +598,7 @@ function ProfileHero({
   const rank = getMyProfileCurrentRank(seasonStats, classifications)
   const operatorPlayer = buildOperatorBadgePlayer(data, seasonStats)
   const careerHighlight = getMyProfileCareerHighlight(data.recentGames)
-  const currentLeague = getCurrentLeagueLabel(data, seasonStats, classifications)
+  const currentLeague = getCurrentLeagueLabel(data)
   const joinedDate = getProfileJoinedDate(data)
 
   return (
@@ -618,7 +615,7 @@ function ProfileHero({
           classifications={classifications}
           competitiveHome={division}
           player={operatorPlayer}
-          preferredFaction={data.user.favoriteFaction || derived.armySummary.favoriteFaction}
+          preferredFaction={data.user.favoriteFaction}
           rank={rank}
           showBadges={false}
         />
@@ -663,7 +660,7 @@ function ProfileHero({
             </div>
             <div>
               <dt>Preferred Army</dt>
-              <dd>{data.user.favoriteFaction || derived.armySummary.favoriteFaction || 'Not Selected'}</dd>
+              <dd>{data.user.favoriteFaction || 'Not Selected'}</dd>
             </div>
             <div>
               <dt>Competitive Home</dt>
@@ -731,7 +728,7 @@ function buildOperatorBadgePlayer(
     },
     displayName: data.user.displayName,
     division: seasonStats?.division || data.user.leagueDivision || '',
-    favoriteFaction: data.user.favoriteFaction || data.leagueStatistics?.favoriteFaction || '',
+    favoriteFaction: data.user.favoriteFaction || '',
     name: data.user.leaguePlayer || data.user.displayName,
     rank: seasonStats?.rank ?? data.leagueStatistics?.rank ?? 0,
   }
@@ -744,7 +741,7 @@ function getMyProfileCompetitiveHome(
 ) {
   const division = getMyProfileAssignedDivision(data, seasonStats, classifications)
 
-  return division || 'Free Agent'
+  return division || 'Not Assigned'
 }
 
 function getMyProfileAssignedDivision(
@@ -876,18 +873,12 @@ function getMyProfileCareerHighlight(games: RecentGame[]) {
     'No career highlight recorded yet.'
 }
 
-function getCurrentLeagueLabel(
-  data: MyProfileData,
-  seasonStats: ProfileStatisticsSnapshot | null,
-  classifications: PlayerClassification[],
-) {
+function getCurrentLeagueLabel(data: MyProfileData) {
   const activeLeague = (data.user.eventRegistrations ?? []).find((event) =>
     isActiveProfileRegistration(event, 'league'),
   )
 
-  return activeLeague?.eventName ||
-    getMyProfileAssignedDivision(data, seasonStats, classifications) ||
-    'Not Assigned'
+  return activeLeague?.eventName || 'Not Assigned'
 }
 
 function getProfileEditorCurrentLeagueLabel(data: MyProfileData) {

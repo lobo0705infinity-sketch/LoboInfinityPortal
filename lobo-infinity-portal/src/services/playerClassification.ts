@@ -129,7 +129,7 @@ export function statusFilterLabel(
   return 'Casual Player'
 }
 
-function isActiveEventRegistration(
+export function isActiveEventRegistration(
   event: PlayerProfileData['registeredEvents'][number],
   target: 'league' | 'tournament',
 ) {
