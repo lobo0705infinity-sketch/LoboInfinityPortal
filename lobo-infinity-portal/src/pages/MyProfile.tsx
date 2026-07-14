@@ -649,12 +649,31 @@ function ProfileHero({
           <span>Career Highlight</span>
           <p>{careerHighlight}</p>
         </blockquote>
-        <p>
-          Google signs you in. Your portal display name is shown publicly.
-          {leaguePlayer
-            ? ` League statistics remain linked to ${leaguePlayer}.`
-            : ' League statistics will appear after you join a league event.'}
-        </p>
+        <section className="my-profile-service-record" aria-labelledby="my-service-record-title">
+          <span id="my-service-record-title">Service Record</span>
+          <dl>
+            <div>
+              <dt>Operator Since</dt>
+              <dd>{joinedDate}</dd>
+            </div>
+            <div>
+              <dt>Current League</dt>
+              <dd>{currentLeague}</dd>
+            </div>
+            <div>
+              <dt>Preferred Army</dt>
+              <dd>{data.user.favoriteFaction || derived.armySummary.favoriteFaction || 'Neutral Operator Badge'}</dd>
+            </div>
+            <div>
+              <dt>Competitive Home</dt>
+              <dd>{division}</dd>
+            </div>
+            <div>
+              <dt>Career Status</dt>
+              <dd>{getMyProfileCareerStatus(classifications)}</dd>
+            </div>
+          </dl>
+        </section>
       </div>
     </section>
   )
@@ -756,6 +775,30 @@ function getMyProfileClassifications(
   }
 
   return classifications
+}
+
+function getMyProfileCareerStatus(classifications: PlayerClassification[]) {
+  if (classifications.includes('Veteran')) {
+    return 'Veteran Operator'
+  }
+
+  if (classifications.includes('New Player')) {
+    return 'New Operator'
+  }
+
+  if (classifications.includes('League Player') && classifications.includes('Tournament Player')) {
+    return 'Multi-Theater Active'
+  }
+
+  if (classifications.includes('Tournament Player')) {
+    return 'Tournament Active'
+  }
+
+  if (classifications.includes('League Player')) {
+    return 'League Active'
+  }
+
+  return 'Casual Player'
 }
 
 function getOfficialGamesPlayed(

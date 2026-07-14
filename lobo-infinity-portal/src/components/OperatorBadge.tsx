@@ -1,26 +1,15 @@
-import type { CSSProperties, ReactNode } from 'react'
+import { useState, type CSSProperties, type ReactNode } from 'react'
 import type { PlayerClassification } from '../services/playerClassification'
+import {
+  formatRingLabel,
+  getEarnedRings,
+  getOperatorBadgeDetails,
+  getOperatorBadgeRows,
+  type OperatorBadgeAchievement,
+  type OperatorBadgeDetail,
+  type OperatorBadgePlayer,
+} from './operatorBadgeDetails'
 import './OperatorBadge.css'
-
-export type OperatorBadgeAchievement = {
-  title: string
-  unlocked?: boolean
-}
-
-export type OperatorBadgePlayer = {
-  careerSummary?: {
-    records?: {
-      league?: { games?: number }
-      tournament?: { games?: number }
-    }
-    totalGames?: number
-  }
-  displayName?: string
-  division?: string
-  favoriteFaction?: string
-  name: string
-  rank?: number
-}
 
 type OperatorBadgeProps = {
   achievements?: OperatorBadgeAchievement[]
@@ -41,11 +30,20 @@ function OperatorBadge({
   rank,
   showBadges = true,
 }: OperatorBadgeProps) {
+  const [modalOpen, setModalOpen] = useState(false)
   const playerName = player.displayName || player.name
-  const faction = preferredFaction || player.favoriteFaction || 'Neutral Operator Badge'
+  const details = getOperatorBadgeDetails({
+    achievements,
+    classifications,
+    competitiveHome,
+    player,
+    preferredFaction,
+    rank,
+  })
+  const faction = details.faction
   const displayRank = rank ?? player.rank ?? 0
-  const home = normalizeCompetitiveHome(competitiveHome || player.division || '', classifications)
-  const rings = deriveAchievementRings(player, classifications, achievements)
+  const home = details.competitiveHome
+  const rings = getEarnedRings(details.rings)
   const variant = factionVariant(faction)
   const ariaLabel = [
     playerName,
@@ -60,10 +58,19 @@ function OperatorBadge({
     <figure
       aria-label={ariaLabel}
       className="operator-badge"
+      onClick={() => setModalOpen(true)}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
+          setModalOpen(true)
+        }
+      }}
+      role="button"
       style={{
         '--operator-accent': variant.accent,
         '--operator-secondary': variant.secondary,
       } as CSSProperties & Record<'--operator-accent' | '--operator-secondary', string>}
+      tabIndex={0}
     >
       <div className="operator-badge-mark" aria-hidden="true">
         <svg className="operator-badge-svg" viewBox="0 0 320 360" role="img">
@@ -155,7 +162,51 @@ function OperatorBadge({
           ))}
         </div>
       ) : null}
+      <OperatorBadgeTooltip details={details} />
+      {modalOpen ? (
+        <div
+          aria-modal="true"
+          className="operator-badge-modal"
+          onClick={(event) => event.stopPropagation()}
+          role="dialog"
+        >
+          <div className="operator-badge-modal-card">
+            <button
+              aria-label="Close Operator Badge details"
+              onClick={() => setModalOpen(false)}
+              type="button"
+            >
+              Close
+            </button>
+            <OperatorBadgeTooltip details={details} modal />
+          </div>
+        </div>
+      ) : null}
     </figure>
+  )
+}
+
+function OperatorBadgeTooltip({
+  details,
+  modal = false,
+}: {
+  details: OperatorBadgeDetail
+  modal?: boolean
+}) {
+  const rows = getOperatorBadgeRows(details)
+
+  return (
+    <div className={modal ? 'operator-badge-tooltip is-modal' : 'operator-badge-tooltip'} role="tooltip">
+      <strong>Operator Badge</strong>
+      <dl>
+        {rows.map((row) => (
+          <div key={row.label}>
+            <dt>{row.label}</dt>
+            <dd>{row.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
   )
 }
 
@@ -218,77 +269,6 @@ function FactionCore({ variant }: { variant: string }) {
       ))}
     </g>
   )
-}
-
-function deriveAchievementRings(
-  player: OperatorBadgePlayer,
-  classifications: PlayerClassification[],
-  achievements: OperatorBadgeAchievement[],
-) {
-  const rings = new Set<string>()
-  const officialGames =
-    (player.careerSummary?.records?.league?.games ?? 0) +
-    (player.careerSummary?.records?.tournament?.games ?? 0)
-  const unlockedAchievements = achievements
-    .filter((achievement) => achievement.unlocked !== false)
-    .map((achievement) => achievement.title.toLowerCase())
-
-  if (unlockedAchievements.some((title) => title.includes('league champion'))) {
-    rings.add('league-champion')
-  }
-
-  if (unlockedAchievements.some((title) => title.includes('tournament champion'))) {
-    rings.add('tournament-champion')
-  }
-
-  if (
-    unlockedAchievements.some((title) => title.includes('hall of fame')) ||
-    unlockedAchievements.some((title) => title.includes('legend'))
-  ) {
-    rings.add('hall-of-fame')
-  }
-
-  if (
-    classifications.includes('Veteran') ||
-    officialGames >= 50 ||
-    unlockedAchievements.some((title) => title.includes('veteran'))
-  ) {
-    rings.add('veteran')
-  }
-
-  if (
-    classifications.includes('Commissioner') ||
-    unlockedAchievements.some((title) => title.includes('commissioner'))
-  ) {
-    rings.add('commissioner')
-  }
-
-  return Array.from(rings)
-}
-
-function normalizeCompetitiveHome(
-  value: string,
-  classifications: PlayerClassification[],
-) {
-  const normalized = value.trim().toLowerCase()
-
-  if (normalized.includes('main man')) {
-    return 'Main Man'
-  }
-
-  if (normalized.includes('proving grounds a')) {
-    return 'Proving Grounds A'
-  }
-
-  if (normalized.includes('proving grounds b')) {
-    return 'Proving Grounds B'
-  }
-
-  if (classifications.includes('Casual Player') || !normalized) {
-    return 'Casual Player'
-  }
-
-  return 'Casual Player'
 }
 
 function factionVariant(faction: string) {
@@ -688,13 +668,6 @@ function normalizeFactionKey(value: string) {
     .toLowerCase()
     .replace(/&/g, 'and')
     .replace(/[^a-z0-9]+/g, '')
-}
-
-function formatRingLabel(value: string) {
-  return value
-    .split('-')
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ')
 }
 
 function truncateLabel(value: string, length: number) {

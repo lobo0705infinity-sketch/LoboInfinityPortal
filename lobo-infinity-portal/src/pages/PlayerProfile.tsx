@@ -1,6 +1,7 @@
 import { useEffect, useState, type CSSProperties } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import OperatorBadge from '../components/OperatorBadge'
+import { getOperatorBadgeDetails } from '../components/operatorBadgeDetails'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
 import { getArmyParentFaction } from '../config/armies'
@@ -183,6 +184,15 @@ function PlayerProfileDossier({
   const careerHighlight = getCareerHighlight(recentGames)
   const joinedLabel = getJoinedLabel(player)
   const achievements = getAchievementItems(career, player)
+  const preferredFaction = career.quickStats.mostPlayedArmy || player.favoriteFaction
+  const badgeDetails = getOperatorBadgeDetails({
+    achievements,
+    classifications,
+    competitiveHome: homeLabel,
+    player,
+    preferredFaction,
+    rank: player.rank,
+  })
 
   return (
     <>
@@ -197,7 +207,7 @@ function PlayerProfileDossier({
             classifications={classifications}
             competitiveHome={homeLabel}
             player={player}
-            preferredFaction={career.quickStats.mostPlayedArmy || player.favoriteFaction}
+            preferredFaction={preferredFaction}
             rank={player.rank}
             showBadges={false}
           />
@@ -217,8 +227,18 @@ function PlayerProfileDossier({
               ))}
               {player.rank > 0 ? <TacticalBadge label={`Rank #${player.rank}`} /> : null}
             </div>
+            <ServiceRecord
+              careerStatus={getCareerStatus(classifications)}
+              competitiveHome={homeLabel}
+              currentLeague={leagueLabel}
+              operatorSince={joinedLabel || 'Not recorded'}
+              preferredArmy={badgeDetails.faction}
+            />
           </div>
-          <CareerHighlight highlight={careerHighlight} />
+          <div className="profile-v21-hero-panels">
+            <OperatorBadgeLegend details={badgeDetails} />
+            <CareerHighlight highlight={careerHighlight} />
+          </div>
         </div>
       </section>
 
@@ -252,6 +272,105 @@ function PlayerProfileDossier({
         </aside>
       </section>
     </>
+  )
+}
+
+function ServiceRecord({
+  careerStatus,
+  competitiveHome,
+  currentLeague,
+  operatorSince,
+  preferredArmy,
+}: {
+  careerStatus: string
+  competitiveHome: string
+  currentLeague: string
+  operatorSince: string
+  preferredArmy: string
+}) {
+  const rows = [
+    ['Operator Since', operatorSince],
+    ['Current League', currentLeague],
+    ['Preferred Army', preferredArmy || 'Neutral Operator Badge'],
+    ['Competitive Home', competitiveHome],
+    ['Career Status', careerStatus],
+  ]
+
+  return (
+    <section className="profile-v21-service-record" aria-labelledby="service-record-title">
+      <p className="eyebrow" id="service-record-title">Service Record</p>
+      <dl>
+        {rows.map(([label, value]) => (
+          <div key={label}>
+            <dt>{label}</dt>
+            <dd>{value}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  )
+}
+
+function OperatorBadgeLegend({
+  details,
+}: {
+  details: ReturnType<typeof getOperatorBadgeDetails>
+}) {
+  const items = [
+    {
+      detail: details.faction,
+      earned: true,
+      label: 'Center',
+      title: 'Preferred Army',
+    },
+    {
+      detail: 'Awarded for winning an official League season.',
+      earned: details.rings['league-champion'],
+      label: 'Top Ring',
+      title: 'League Champion',
+    },
+    {
+      detail: 'Represents long-term league participation.',
+      earned: details.rings.veteran,
+      label: 'Left Ring',
+      title: 'Veteran',
+    },
+    {
+      detail: 'Represents tournament victories.',
+      earned: details.rings['tournament-champion'],
+      label: 'Right Ring',
+      title: 'Tournament Champion',
+    },
+    {
+      detail: details.rank,
+      earned: details.rank !== 'Unranked',
+      label: 'Rank Plaque',
+      title: 'Current Division Rank',
+    },
+    {
+      detail: details.competitiveHome,
+      earned: true,
+      label: 'Bottom Plate',
+      title: 'Competitive Home',
+    },
+  ]
+
+  return (
+    <section className="profile-v21-badge-legend" aria-labelledby="badge-legend-title">
+      <p className="eyebrow" id="badge-legend-title">Operator Badge Legend</p>
+      <div>
+        {items.map((item) => (
+          <article key={item.label}>
+            <span>{item.label}</span>
+            <strong>{item.title}</strong>
+            <small>{item.detail}</small>
+            {item.title.includes('Champion') || item.title === 'Veteran' ? (
+              <em>{item.earned ? 'Earned' : 'Not Earned'}</em>
+            ) : null}
+          </article>
+        ))}
+      </div>
+    </section>
   )
 }
 
@@ -1097,6 +1216,30 @@ function getCompetitiveHomeLabel(
   return 'Casual Player'
 }
 
+function getCareerStatus(classifications: ReturnType<typeof getProfileClassifications>) {
+  if (classifications.includes('Veteran')) {
+    return 'Veteran Operator'
+  }
+
+  if (classifications.includes('New Player')) {
+    return 'New Operator'
+  }
+
+  if (classifications.includes('League Player') && classifications.includes('Tournament Player')) {
+    return 'Multi-Theater Active'
+  }
+
+  if (classifications.includes('Tournament Player')) {
+    return 'Tournament Active'
+  }
+
+  if (classifications.includes('League Player')) {
+    return 'League Active'
+  }
+
+  return 'Casual Player'
+}
+
 function getCareerLevel(career: PlayerCareerSummary) {
   const officialGames = career.records.league.games + career.records.tournament.games
   const current = Math.max(1, Math.floor(officialGames / 5) + 1)
@@ -1710,6 +1853,92 @@ const playerProfileStyles = `
   gap: 10px;
 }
 
+.profile-v21-service-record,
+.profile-v21-badge-legend {
+  border: 1px solid rgba(76, 201, 240, 0.3);
+  background: rgba(5, 6, 8, 0.48);
+  padding: 16px;
+}
+
+.profile-v21-service-record dl,
+.profile-v21-badge-legend > div {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.profile-v21-service-record dl {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.profile-v21-service-record div,
+.profile-v21-badge-legend article {
+  border: 1px solid rgba(42, 59, 73, 0.72);
+  background: rgba(18, 26, 36, 0.58);
+  padding: 10px;
+}
+
+.profile-v21-service-record dt,
+.profile-v21-badge-legend span {
+  color: #aab7c2;
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.profile-v21-service-record dd {
+  margin: 5px 0 0;
+  color: #f4f6f8;
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1.12;
+  text-transform: uppercase;
+}
+
+.profile-v21-hero-panels {
+  display: grid;
+  grid-column: 2;
+  gap: 16px;
+}
+
+.profile-v21-badge-legend > div {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.profile-v21-badge-legend strong,
+.profile-v21-badge-legend small,
+.profile-v21-badge-legend em {
+  display: block;
+}
+
+.profile-v21-badge-legend strong {
+  margin-top: 5px;
+  color: #f4f6f8;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.profile-v21-badge-legend small {
+  margin-top: 4px;
+  color: #aab7c2;
+  line-height: 1.25;
+}
+
+.profile-v21-badge-legend em {
+  margin-top: 8px;
+  color: #f2b632;
+  font-size: 0.68rem;
+  font-style: normal;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .profile-v21-meta span,
 .profile-v21-badges .profile-v21-badge {
   gap: 7px;
@@ -1762,7 +1991,6 @@ const playerProfileStyles = `
 }
 
 .profile-v21-highlight {
-  grid-column: 2;
   margin: 0;
   border-left: 4px solid #b2122a;
   color: #dce7ef;
@@ -2146,7 +2374,7 @@ const playerProfileStyles = `
   }
 
   .profile-v21-highlight {
-    grid-column: 2;
+    grid-column: auto;
   }
 
   .profile-v21-shell {
@@ -2184,6 +2412,15 @@ const playerProfileStyles = `
 
   .profile-v21-highlight {
     grid-column: 1 / -1;
+  }
+
+  .profile-v21-hero-panels {
+    grid-column: 1 / -1;
+  }
+
+  .profile-v21-service-record dl,
+  .profile-v21-badge-legend > div {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .profile-v21-season dl,
@@ -2227,7 +2464,9 @@ const playerProfileStyles = `
   .profile-v21-season dl,
   .profile-v21-stat-list,
   .profile-v21-analysis,
-  .profile-v21-army-summary {
+  .profile-v21-army-summary,
+  .profile-v21-service-record dl,
+  .profile-v21-badge-legend > div {
     grid-template-columns: minmax(0, 1fr);
   }
 
