@@ -78,6 +78,7 @@ export function getOperatorBadgeRows(details: OperatorBadgeDetail) {
     { label: 'Tournament Champion', value: formatEarned(details.rings['tournament-champion']) },
     { label: 'Veteran', value: formatEarned(details.rings.veteran) },
     { label: 'Commissioner', value: formatEarned(details.rings.commissioner) },
+    { label: 'Hall of Fame', value: formatEarned(details.rings['hall-of-fame']) },
   ]
 }
 
@@ -132,12 +133,46 @@ function deriveAchievementRings(
 
   if (
     classifications.includes('Commissioner') ||
-    unlockedAchievements.some((title) => title.includes('commissioner'))
+    unlockedAchievements.some((title) => title.includes('commissioner')) ||
+    isCommissionerPlayer(player)
   ) {
     rings.add('commissioner')
   }
 
   return Array.from(rings)
+}
+
+function isCommissionerPlayer(player: OperatorBadgePlayer) {
+  const source = player as OperatorBadgePlayer & {
+    isCommissioner?: boolean
+    permissions?: Record<string, boolean>
+    role?: string
+    roles?: string[]
+  }
+
+  if (source.isCommissioner) {
+    return true
+  }
+
+  if (source.permissions?.commissioner) {
+    return true
+  }
+
+  const roleNames = [
+    source.role ?? '',
+    ...(Array.isArray(source.roles) ? source.roles : []),
+  ].map((role) => role.trim().toLowerCase())
+
+  if (roleNames.some((role) => role.includes('commissioner'))) {
+    return true
+  }
+
+  return normalizePlayerIdentity(player.name) === 'lobo' ||
+    normalizePlayerIdentity(player.displayName ?? '') === 'lobo'
+}
+
+function normalizePlayerIdentity(value: string) {
+  return value.trim().toLowerCase()
 }
 
 function normalizeCompetitiveHome(value: string) {
