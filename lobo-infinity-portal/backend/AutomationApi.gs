@@ -491,6 +491,8 @@ function processDiscordQueueItem(item, force) {
       item.eventType,
       payload,
       {
+        dedupeKey: item.queueId,
+        automationEventId: item.eventId,
         force: force === true
       }
     );

@@ -344,13 +344,9 @@ function buildPlayerRow(row, playerNumber, winner) {
 
     faction,
 
-    playerIsOne
-      ? row[FORM.FIRSTTURN] === "Player 1"
-          ? "Yes"
-          : "No"
-      : row[FORM.FIRSTTURN] === "Player 2"
-          ? "Yes"
-          : "No"
+    isGameEngineFirstTurnPlayer(row, playerNumber, player)
+      ? "Yes"
+      : "No"
     ,
     getGameEngineEventId(row),
 
@@ -359,6 +355,41 @@ function buildPlayerRow(row, playerNumber, winner) {
     gameResult
 
   ];
+
+}
+
+function isGameEngineFirstTurnPlayer(row, playerNumber, player) {
+
+  const firstTurn =
+    getGameEngineFirstTurnKey(
+      row[FORM.FIRSTTURN]
+    );
+
+  if (firstTurn === "")
+    return false;
+
+  if (
+    playerNumber === 1 &&
+    firstTurn === "player 1"
+  )
+    return true;
+
+  if (
+    playerNumber === 2 &&
+    firstTurn === "player 2"
+  )
+    return true;
+
+  return firstTurn ===
+    getGameEngineFirstTurnKey(player);
+
+}
+
+function getGameEngineFirstTurnKey(value) {
+
+  return String(value || "")
+    .trim()
+    .toLowerCase();
 
 }
 
@@ -466,7 +497,11 @@ function buildAnalyticsRow(row, winner) {
       loserVP = Number(row[FORM.P2VP]) || 0;
 
       firstTurnWinner =
-        row[FORM.FIRSTTURN] === "Player 1"
+        isGameEngineFirstTurnPlayer(
+          row,
+          1,
+          winnerPlayer
+        )
           ? "Yes"
           : "No";
 
@@ -490,7 +525,11 @@ function buildAnalyticsRow(row, winner) {
       loserVP = Number(row[FORM.P1VP]) || 0;
 
       firstTurnWinner =
-        row[FORM.FIRSTTURN] === "Player 2"
+        isGameEngineFirstTurnPlayer(
+          row,
+          2,
+          winnerPlayer
+        )
           ? "Yes"
           : "No";
 

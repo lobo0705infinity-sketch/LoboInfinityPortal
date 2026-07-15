@@ -1,5 +1,5 @@
 # Operation Facelift 2.5
-# Command Emblem System
+# Operator Badge System
 # Implementation Notes
 
 Version: 1.0
@@ -7,115 +7,97 @@ Version: 1.0
 Status: APPROVED
 
 Artwork Reference:
-command-emblem-concept-v1.png
+operator-badge-concept-v1.png
 
 ---
 
 # Purpose
 
-This document defines the engineering requirements for implementing the Command Emblem System.
+Implement one reusable React component named:
 
-The objective is to replace generic player icons with a reusable, data-driven identity system.
+OperatorBadge
 
-This is a presentation release.
-
-No gameplay logic changes.
+This component becomes the single visual identity component used throughout the portal.
 
 ---
 
 # Scope
 
-Implement one reusable Command Emblem component.
+Build the OperatorBadge component.
 
-Do not modify:
+Phase 1 integrates it into:
 
-- Event Engine
-- Authentication
-- Routing
-- Business Logic
-- Statistics
-- Match Results
-- Player Classification calculations
+- Player Profile only
 
-Presentation only.
+No other pages are modified during this release.
 
 ---
 
 # Architecture
 
-The Command Emblem is a shared React component.
-
-One implementation.
-
-Many consumers.
-
-Every page imports the same component.
+One component.
 
 No duplicate implementations.
 
----
+Future pages import:
 
-# Usage
-
-Replace generic player icons with Command Emblems on:
-
-- Player Profile
-- Players page
-- Dashboard Commander Overview
-- Hall of Fame
-- Standings (Top Players)
-- Match Reports
-- Team Tournament Rosters
-- Search Results
-- Hover Cards
-- Commissioner tools
-
-Do not create page-specific versions.
+<OperatorBadge player={player} />
 
 ---
 
-# Live Data Policy
-
-Every emblem is generated from production data.
+# Live Data
 
 Never hardcode:
 
-- faction
-- rank
-- badges
-- division
-- competitive home
-- championships
+- Faction
+- Rank
+- Division
+- Competitive Home
+- Achievement Rings
 
-All elements are data driven.
+Everything comes from existing production data.
 
 ---
 
-# Data Binding Matrix
+# Data Sources
 
-| Visual Element | Production Source |
-|----------------|------------------|
-| Preferred Faction | Player Profile |
-| Competitive Home | Active Event Registration |
-| Rank | Standings |
-| League Champion Ring | Hall of Fame / Championships |
-| Tournament Champion Ring | Tournament Results |
-| Veteran Ring | Career Games |
-| Commissioner Ring | User Role |
-| Hall of Fame Ring | Hall of Fame |
-| Player Name | Player Profile |
+Preferred Faction
 
-No duplicate API requests.
+↓
 
-Reuse existing repositories.
+Player Profile
+
+Competitive Home
+
+↓
+
+Player Classification
+
+Rank
+
+↓
+
+Standings
+
+Achievement Rings
+
+↓
+
+Existing Achievement / Championship data
+
+Classification Badges
+
+↓
+
+Player Classification model
+
+No additional API requests.
 
 ---
 
 # Competitive Home
 
-Display one primary home.
-
-Priority order
+Priority
 
 Main Man
 
@@ -135,35 +117,15 @@ Never display Community.
 
 ---
 
-# Classification Badges
-
-Continue using the approved classification model.
-
-League Player
-
-Tournament Player
-
-Casual Player
-
-New Player
-
-Veteran
-
-Commissioner
-
-Hall of Fame
-
-Badges remain separate from the emblem.
-
----
-
 # Faction Core
 
-Use the player's preferred faction.
+Use preferred faction.
 
-If no preferred faction exists:
+If unavailable
 
-Display Neutral Command Core.
+↓
+
+Neutral tactical core.
 
 Never leave the center blank.
 
@@ -171,51 +133,55 @@ Never leave the center blank.
 
 # Achievement Rings
 
-Outer rings activate automatically.
+Automatically enabled.
 
 No manual assignment.
 
-Examples
+Support
 
-League Champion
-
-Tournament Champion
-
-Veteran
-
-Commissioner
-
-Hall of Fame
-
-Multiple rings may appear simultaneously.
+- League Champion
+- Tournament Champion
+- Veteran
+- Hall of Fame
+- Commissioner
 
 ---
 
-# Rank Module
+# Rank
 
-Display current rank.
+Always display the current live rank.
 
-Do not display historical rank.
-
-Always use current production standings.
+Never historical rank.
 
 ---
 
-# Responsive
+# Component Consumers
 
-Desktop
+Future releases will reuse this component in:
 
-256 px
+- Dashboard
+- Players
+- Hall of Fame
+- Standings
+- Battle Reports
+- Team Tournament
+- Search
+- Hover Cards
 
-Tablet
+Phase 1 implements Player Profile only.
 
-192 px
+---
 
-Mobile
+# Accessibility
 
-128 px
+Expose:
 
-Component scales without changing layout.
+- Player Name
+- Preferred Faction
+- Competitive Home
+- Rank
+
+Screen-reader friendly.
 
 ---
 
@@ -223,39 +189,13 @@ Component scales without changing layout.
 
 Allowed
 
-Glow
+- Glow
+- Hover
+- Selection
 
-Hover
-
-Selection
-
-Future ring animation
-
-Maximum duration
+Maximum
 
 200 ms
-
-No decorative motion.
-
----
-
-# Accessibility
-
-Every emblem exposes:
-
-Player Name
-
-Preferred Faction
-
-Competitive Home
-
-Rank
-
-Classification
-
-All information available to screen readers.
-
-Do not communicate information using color alone.
 
 ---
 
@@ -263,13 +203,11 @@ Do not communicate information using color alone.
 
 SVG preferred.
 
-Lazy load when appropriate.
+Lazy load assets where appropriate.
 
-Single reusable component.
+Single implementation.
 
 No duplicate rendering.
-
-No duplicate calculations.
 
 No startup bundle regression.
 
@@ -285,23 +223,17 @@ Tablet
 
 Mobile
 
-Every faction
+Preferred Faction
 
-Every division
+Competitive Home
 
-Casual Player
+Rank
 
-League Player
+Classification
 
-Tournament Player
+Achievement Rings
 
-Veteran
-
-Commissioner
-
-Hall of Fame
-
-Player without preferred faction
+Player without faction
 
 Player without achievements
 
@@ -313,15 +245,11 @@ Player with multiple achievements
 
 Must pass
 
-npm run lint
-
-npm run build
-
-Responsive validation
-
-Accessibility validation
-
-Performance validation
+- npm run lint
+- npm run build
+- Responsive validation
+- Accessibility validation
+- Performance validation
 
 No startup bundle regression.
 
@@ -329,36 +257,16 @@ No startup bundle regression.
 
 # Definition of Done
 
-The Command Emblem System is complete when:
+✓ One reusable OperatorBadge component exists.
 
-✓ One shared component exists
+✓ Player Profile uses OperatorBadge.
 
-✓ Every faction renders correctly
+✓ Live production data only.
 
-✓ Preferred faction drives the center artwork
+✓ Responsive.
 
-✓ Competitive home displays correctly
+✓ Accessible.
 
-✓ Achievement rings are data driven
+✓ Performance maintained.
 
-✓ Rank updates dynamically
-
-✓ Classification badges remain separate
-
-✓ Responsive
-
-✓ Accessible
-
-✓ Performance maintained
-
----
-
-# Engineering Principle
-
-The Command Emblem becomes the visual identity of every player in the Lobo Infinity Portal.
-
-Every page should use the same component.
-
-Future visual improvements are made once in the shared component and immediately benefit the entire portal.
-
-No page may implement its own custom version.
+No page-specific implementations.

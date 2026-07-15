@@ -16,16 +16,20 @@ import {
   type RecentGame,
 } from '../services/api'
 import {
-  formatObjectiveScore,
   formatPercentage,
   formatPlayerName,
   formatRank,
   formatRecord as formatRecordValue,
-  formatTournamentScore,
-  formatVictoryScore,
 } from '../services/formatting'
 import { isDrawGame } from '../services/gameResults'
+import { getConfiguredEventDisplayName } from '../services/leagueEventDisplay'
+import {
+  resolvePlayerLeagueModel,
+  type PlayerLeagueModel,
+} from '../services/playerLeagueModel'
 import type { PlayerClassification } from '../services/playerClassification'
+import { standingsRepository } from '../services/data'
+import type { DivisionStandings } from '../types/dashboard'
 import './MyProfile.css'
 
 type ProfileState =
@@ -33,6 +37,7 @@ type ProfileState =
       status: 'loading'
     }
   | {
+      allStandings: DivisionStandings[]
       data: MyProfileData
       status: 'success'
     }
@@ -168,7 +173,7 @@ type ProfileTimelineItem = Pick<
   'body' | 'id' | 'link' | 'timestamp' | 'title' | 'type'
 >
 
-const CURRENT_SEASON_TARGET_GAMES = 8
+const CURRENT_SEASON_TARGET_GAMES = 9
 
 function MyProfile() {
   const auth = useAuth()
@@ -183,10 +188,15 @@ function MyProfile() {
 
     async function loadProfile() {
       try {
-        const data = await apiClient.getMyProfile({
-          signal: controller.signal,
-        })
-        setState({ data, status: 'success' })
+        const [data, allStandings] = await Promise.all([
+          apiClient.getMyProfile({
+            signal: controller.signal,
+          }),
+          standingsRepository.getAllStandings({
+            signal: controller.signal,
+          }),
+        ])
+        setState({ allStandings, data, status: 'success' })
       } catch (error) {
         if (!controller.signal.aborted) {
           setState({
@@ -247,129 +257,86 @@ function MyProfile() {
   return (
     <ProfileDashboard
       data={state.data}
-      onProfileSaved={(data) => setState({ data, status: 'success' })}
+      allStandings={state.allStandings}
+      onProfileSaved={(data) =>
+        setState((current) =>
+          current.status === 'success'
+            ? { ...current, data }
+            : { allStandings: [], data, status: 'success' },
+        )
+      }
     />
   )
 }
 
 function ProfileDashboard({
+  allStandings,
   data,
   onProfileSaved,
 }: {
+  allStandings: DivisionStandings[]
   data: MyProfileData
   onProfileSaved: (data: MyProfileData) => void
 }) {
-  const leaguePlayer = data.user.leaguePlayer
+  const leagueModel = useMemo(
+    () => resolveMyProfileLeagueModel(data, allStandings),
+    [allStandings, data],
+  )
+  const leaguePlayer = getMyProfileCompetitivePlayerName(data, leagueModel)
   const leagueStats = data.leagueStatistics
   const seasonStats =
-    data.currentSeasonStatistics ?? buildStatsFromProfile(leagueStats)
+    buildStatsFromLeagueModel(leagueModel) ??
+    data.currentSeasonStatistics ??
+    buildStatsFromProfile(leagueStats)
   const performance = data.leaguePerformance
   const derived = useMemo(
     () => buildProfileDerivedData(data, leaguePlayer, seasonStats),
     [data, leaguePlayer, seasonStats],
   )
+  const careerHighlight = getMyProfileCareerHighlight(data.recentGames)
 
   return (
     <main className="portal-shell">
       <ProfileHeader />
 
-      <ProfileHero
-        data={data}
-        leaguePlayer={leaguePlayer}
-        performance={performance}
-        seasonStats={seasonStats}
-      />
-
-      <ProfileEditor
-        data={data}
-        favoriteArmy={derived.armySummary.favoriteFaction}
-        onProfileSaved={onProfileSaved}
-      />
-
-      {!leaguePlayer ? (
+      {!leagueModel ? (
         <section className="dashboard-state" aria-label="League profile missing">
           <p role="alert">
-            This Google account is authenticated, but it is not linked to a
-            Players sheet league identity yet.
+            This Google account is authenticated, but no current league standing
+            could be resolved for this profile yet.
           </p>
         </section>
       ) : null}
 
-      <section className="profile-command-grid" aria-label="Profile command summary">
-        <PlayerAnswerCard
-          title="How Am I Doing?"
-          value={formatRecord(seasonStats)}
-          meta={`${formatPercentage(seasonStats?.winPercentage ?? 0)} win rate`}
-          status={seasonStats?.promotionStatus || 'Unranked'}
+      <section className="my-profile-v3-dashboard" aria-label="Competitive identity dashboard">
+        <ProfileHero
+          data={data}
+          leagueModel={leagueModel}
+          performance={performance}
+          seasonStats={seasonStats}
         />
-        <PlayerAnswerCard
-          title="Strength"
-          value={derived.factionPerformance[0]?.label || 'Not established'}
-          meta={
-            derived.factionPerformance[0]
-              ? `${formatPercentage(derived.factionPerformance[0].winRate)} wins`
-              : 'Play more games to establish a pattern'
-          }
-          status="Best faction"
-        />
-        <PlayerAnswerCard
-          title="Work On"
-          value={getWeaknessLabel(derived)}
-          meta={getWeaknessMeta(derived)}
-          status="Coaching signal"
-        />
-        <PlayerAnswerCard
-          title="Promotion"
-          value={formatPromotionDistance(seasonStats)}
-          meta={seasonStats?.promotionStatus || 'Unranked'}
-          status="Division movement"
-        />
-        <PlayerAnswerCard
-          title="Schedule"
-          value="Match Finder"
-          meta="Update availability and request games"
-          status="Community"
-          to="/match-finder#availability"
+        <SeasonDashboardPanel
+          leagueModel={leagueModel}
+          performance={performance}
+          seasonStats={seasonStats}
         />
       </section>
 
-      <section className="profile-stat-grid" aria-label="Core statistics">
-        <StatTile label="Games Played" value={seasonStats?.games ?? 0} />
-        <StatTile label="Wins" value={seasonStats?.wins ?? 0} />
-        <StatTile label="Losses" value={seasonStats?.losses ?? 0} />
-        <StatTile
-          label="Win %"
-          value={formatPercentage(seasonStats?.winPercentage ?? 0)}
-        />
-        <StatTile label="Tournament Points" value={seasonStats?.tp ?? 0} />
-        <StatTile label="Objective Points" value={seasonStats?.op ?? 0} />
-        <StatTile label="Victory Points" value={seasonStats?.vp ?? 0} />
-        <StatTile
-          label="Average TP"
-          value={seasonStats?.averageTournamentPoints ?? 0}
-        />
-        <StatTile
-          label="Average OP"
-          value={seasonStats?.averageObjectivePoints ?? 0}
-        />
-        <StatTile
-          label="Average VP"
-          value={seasonStats?.averageVictoryPoints ?? 0}
-        />
-        <StatTile label="Current Streak" value={performance.currentStreak} />
-        <StatTile label="Longest Win Streak" value={performance.longestWinStreak} />
-        <StatTile
-          label="Longest Losing Streak"
-          value={performance.longestLosingStreak}
-        />
+      <section className="my-profile-v3-support" aria-label="Season pulse">
+        <RecentResultsPanel contexts={derived.contexts} />
+        <CareerHighlightCard highlight={careerHighlight} />
       </section>
+
+      <ProfileEditor
+        data={data}
+        favoriteArmy={derived.armySummary.favoriteFaction}
+        leagueModel={leagueModel}
+        onProfileSaved={onProfileSaved}
+      />
 
       <section className="profile-section-grid" aria-label="Player intelligence">
         <IntelligencePanel intelligence={derived.intelligence} />
-        <SeasonSummaryPanel
-          currentStreak={performance.currentStreak}
-          seasonStats={seasonStats}
-        />
+        <TurnAnalyticsPanel derived={derived} leagueStats={leagueStats} />
       </section>
 
       <section className="profile-wide-grid" aria-label="Career history">
@@ -406,19 +373,13 @@ function ProfileDashboard({
         </ChartPanel>
       </section>
 
-      <section className="profile-section-grid" aria-label="Turn analytics">
-        <TurnAnalyticsPanel derived={derived} leagueStats={leagueStats} />
+      <section className="profile-section-grid" aria-label="Records and achievements">
         <RecordsPanel records={derived.records} />
-      </section>
-
-      <section className="profile-wide-grid" aria-label="Recent games and timeline">
-        <RecentGamesTable contexts={derived.contexts} />
-        <TimelinePanel items={derived.timeline} />
-      </section>
-
-      <section className="profile-section-grid" aria-label="Army lists and achievements">
-        <ArmyListsPanel lists={data.submittedLists} summary={derived.armySummary} />
         <AchievementsPanel achievements={derived.achievements} />
+      </section>
+
+      <section className="profile-section-grid" aria-label="Army lists">
+        <ArmyListsPanel lists={data.submittedLists} summary={derived.armySummary} />
       </section>
     </main>
   )
@@ -427,7 +388,7 @@ function ProfileDashboard({
 function ProfileHeader() {
   return (
     <section className="page-header" aria-labelledby="my-profile-title">
-      <p className="eyebrow">My Profile 2.1</p>
+      <p className="eyebrow">My Profile 3.0</p>
       <h1 id="my-profile-title">Combat Record</h1>
       <p>League identity, form, strengths, weaknesses, and career signals.</p>
     </section>
@@ -437,10 +398,12 @@ function ProfileHeader() {
 function ProfileEditor({
   data,
   favoriteArmy,
+  leagueModel,
   onProfileSaved,
 }: {
   data: MyProfileData
   favoriteArmy: string
+  leagueModel: PlayerLeagueModel | null
   onProfileSaved: (data: MyProfileData) => void
 }) {
   const auth = useAuth()
@@ -452,7 +415,7 @@ function ProfileEditor({
   )
   const [saveState, setSaveState] = useState<ProfileSaveState>({ status: 'idle' })
   const armyOptions = useMemo(() => getCanonicalArmyOptions(), [])
-  const currentLeague = getProfileEditorCurrentLeagueLabel(data)
+  const currentLeague = getCurrentLeagueLabel(leagueModel)
 
   async function saveProfile(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -556,7 +519,7 @@ function ProfileEditor({
         </div>
 
         <div className="profile-editor-readonly">
-          <span>Current League</span>
+          <span>League</span>
           <strong>{currentLeague}</strong>
         </div>
 
@@ -583,23 +546,23 @@ function ProfileEditor({
 
 function ProfileHero({
   data,
-  leaguePlayer,
+  leagueModel,
   performance,
   seasonStats,
 }: {
   data: MyProfileData
-  leaguePlayer: string
+  leagueModel: PlayerLeagueModel | null
   performance: MyProfileData['leaguePerformance']
   seasonStats: ProfileStatisticsSnapshot | null
 }) {
-  const health = getLeagueHealth(data, leaguePlayer)
-  const classifications = getMyProfileClassifications(data, seasonStats)
-  const division = getMyProfileCompetitiveHome(data, seasonStats, classifications)
-  const rank = getMyProfileCurrentRank(seasonStats, classifications)
-  const operatorPlayer = buildOperatorBadgePlayer(data, seasonStats)
-  const careerHighlight = getMyProfileCareerHighlight(data.recentGames)
-  const currentLeague = getCurrentLeagueLabel(data)
+  const health = getLeagueHealth(data, leagueModel)
+  const classifications = getMyProfileClassifications(data, seasonStats, leagueModel)
+  const division = getMyProfileCompetitiveHome(leagueModel)
+  const rank = getMyProfileCurrentRank(leagueModel)
+  const operatorPlayer = buildOperatorBadgePlayer(data, seasonStats, leagueModel)
+  const currentLeague = getCurrentLeagueLabel(leagueModel)
   const joinedDate = getProfileJoinedDate(data)
+  const promotionStatus = getCompetitivePromotionStatus(leagueModel, seasonStats)
 
   return (
     <section
@@ -628,7 +591,7 @@ function ProfileHero({
           <span>{division}</span>
           <span>{formatRank(rank)}</span>
           <span>{formatRecord(seasonStats)}</span>
-          <span>{seasonStats?.promotionStatus || 'Unranked'}</span>
+          <span>{promotionStatus}</span>
           <span>{performance.currentStreak}</span>
           <span>{health}</span>
         </div>
@@ -643,10 +606,6 @@ function ProfileHero({
             </span>
           ))}
         </div>
-        <blockquote className="my-profile-highlight">
-          <span>Career Highlight</span>
-          <p>{careerHighlight}</p>
-        </blockquote>
         <section className="my-profile-service-record" aria-labelledby="my-service-record-title">
           <span id="my-service-record-title">Service Record</span>
           <dl>
@@ -655,7 +614,7 @@ function ProfileHero({
               <dd>{joinedDate}</dd>
             </div>
             <div>
-              <dt>Current League</dt>
+              <dt>League</dt>
               <dd>{currentLeague}</dd>
             </div>
             <div>
@@ -663,16 +622,139 @@ function ProfileHero({
               <dd>{data.user.favoriteFaction || 'Not Selected'}</dd>
             </div>
             <div>
-              <dt>Competitive Home</dt>
-              <dd>{division}</dd>
-            </div>
-            <div>
-              <dt>Career Status</dt>
-              <dd>{getMyProfileCareerStatus(classifications)}</dd>
+              <dt>Promotion Status</dt>
+              <dd>{promotionStatus}</dd>
             </div>
           </dl>
         </section>
       </div>
+    </section>
+  )
+}
+
+function SeasonDashboardPanel({
+  leagueModel,
+  performance,
+  seasonStats,
+}: {
+  leagueModel: PlayerLeagueModel | null
+  performance: MyProfileData['leaguePerformance']
+  seasonStats: ProfileStatisticsSnapshot | null
+}) {
+  const gamesPlayed = seasonStats?.games ?? 0
+  const gamesRemaining = getGamesRemaining(seasonStats)
+  const promotionStatus = getCompetitivePromotionStatus(leagueModel, seasonStats)
+  const dashboardRows = [
+    { label: 'Record', value: formatRecord(seasonStats) },
+    { label: 'Rank', value: formatLeaguePosition(leagueModel, seasonStats) },
+    { label: 'TP', value: seasonStats?.tp ?? 0 },
+    { label: 'OP', value: seasonStats?.op ?? 0 },
+    { label: 'VP', value: seasonStats?.vp ?? 0 },
+    {
+      label: 'Win Rate',
+      value: formatPercentage(seasonStats?.winPercentage ?? 0),
+    },
+    { label: 'Remaining', value: gamesRemaining },
+    { label: 'Streak', value: performance.currentStreak },
+  ]
+
+  return (
+    <section className="panel my-profile-season-panel" aria-labelledby="my-current-season-title">
+      <div className="panel-heading">
+        <p className="eyebrow">{getCurrentLeagueLabel(leagueModel)}</p>
+        <h2 id="my-current-season-title">Current Season</h2>
+      </div>
+      <div className="my-profile-season-record">
+        <strong>{formatRecord(seasonStats)}</strong>
+        <span>{promotionStatus}</span>
+      </div>
+      <dl className="my-profile-season-stats">
+        {dashboardRows.map((row) => (
+          <div key={row.label}>
+            <dt>{row.label}</dt>
+            <dd>{row.value}</dd>
+          </div>
+        ))}
+      </dl>
+      <SeasonProgressMeter gamesPlayed={gamesPlayed} />
+    </section>
+  )
+}
+
+function SeasonProgressMeter({ gamesPlayed }: { gamesPlayed: number }) {
+  const completed = Math.min(gamesPlayed, CURRENT_SEASON_TARGET_GAMES)
+  const completion = percentage(completed, CURRENT_SEASON_TARGET_GAMES)
+
+  return (
+    <div className="my-profile-season-progress" aria-label="Season completion">
+      <div>
+        <span>Season Completion</span>
+        <strong>{formatPercentage(completion)}</strong>
+      </div>
+      <div
+        className="my-profile-progress-blocks"
+        aria-label={`${completed} of ${CURRENT_SEASON_TARGET_GAMES} games played`}
+      >
+        {Array.from({ length: CURRENT_SEASON_TARGET_GAMES }, (_, index) => (
+          <span
+            className={index < completed ? 'is-complete' : undefined}
+            key={index}
+          />
+        ))}
+      </div>
+      <p>
+        {completed} / {CURRENT_SEASON_TARGET_GAMES}
+      </p>
+    </div>
+  )
+}
+
+function RecentResultsPanel({ contexts }: { contexts: GameContext[] }) {
+  const recent = contexts.slice(0, 5)
+
+  return (
+    <section className="panel my-profile-recent-panel" aria-labelledby="my-recent-results-title">
+      <div className="panel-heading">
+        <p className="eyebrow">Recent Results</p>
+        <h2 id="my-recent-results-title">Last Five League Games</h2>
+      </div>
+      <div className="my-profile-recent-list">
+        {recent.length > 0 ? (
+          recent.map((context) => (
+            <Link
+              className={`my-profile-result-card result-${context.result.toLowerCase()}`}
+              key={context.game.id}
+              to={`/games/${context.game.id}`}
+            >
+              <span className="my-profile-result-mark">
+                {formatRecentResultMark(context.result)}
+              </span>
+              <div>
+                <strong>
+                  {formatPlayerName(context.opponent, context.opponentDisplayName) ||
+                    'Unknown Opponent'}
+                </strong>
+                <p>{getCanonicalMissionName(context.game.mission) || 'Unknown Mission'}</p>
+              </div>
+              <span>{context.game.date || 'Date Pending'}</span>
+            </Link>
+          ))
+        ) : (
+          <p className="operations-empty">No recent league games matched this player.</p>
+        )}
+      </div>
+    </section>
+  )
+}
+
+function CareerHighlightCard({ highlight }: { highlight: string }) {
+  return (
+    <section className="panel my-profile-highlight-card" aria-labelledby="my-career-highlight-title">
+      <div className="panel-heading">
+        <p className="eyebrow">Career Highlight</p>
+        <h2 id="my-career-highlight-title">Featured Battle Story</h2>
+      </div>
+      <p>{highlight}</p>
     </section>
   )
 }
@@ -715,6 +797,7 @@ function validateProfileEditor(displayName: string, discordName: string) {
 function buildOperatorBadgePlayer(
   data: MyProfileData,
   seasonStats: ProfileStatisticsSnapshot | null,
+  leagueModel: PlayerLeagueModel | null,
 ) {
   const officialGames = getOfficialGamesPlayed(data, seasonStats)
 
@@ -727,50 +810,49 @@ function buildOperatorBadgePlayer(
       totalGames: data.leagueStatistics?.games ?? officialGames,
     },
     displayName: data.user.displayName,
-    division: seasonStats?.division || data.user.leagueDivision || '',
+    division: leagueModel?.division || '',
     favoriteFaction: data.user.favoriteFaction || '',
-    name: data.user.leaguePlayer || data.user.displayName,
-    rank: seasonStats?.rank ?? data.leagueStatistics?.rank ?? 0,
+    name: getMyProfileCompetitivePlayerName(data, leagueModel),
+    rank: leagueModel?.rank ?? 0,
   }
 }
 
-function getMyProfileCompetitiveHome(
+function resolveMyProfileLeagueModel(
   data: MyProfileData,
-  seasonStats: ProfileStatisticsSnapshot | null,
-  classifications: PlayerClassification[],
+  allStandings: DivisionStandings[],
 ) {
-  const division = getMyProfileAssignedDivision(data, seasonStats, classifications)
-
-  return division || 'Not Assigned'
+  return resolvePlayerLeagueModel(
+    allStandings,
+    [data.user.canonicalPlayer],
+  )
 }
 
-function getMyProfileAssignedDivision(
+function getMyProfileCompetitivePlayerName(
   data: MyProfileData,
-  seasonStats: ProfileStatisticsSnapshot | null,
-  classifications: PlayerClassification[],
+  leagueModel: PlayerLeagueModel | null,
 ) {
-  if (!classifications.includes('League Player')) {
-    return ''
-  }
-
-  return seasonStats?.division || data.user.leagueDivision || ''
+  return leagueModel?.standing.player || data.user.canonicalPlayer
 }
 
-function getMyProfileCurrentRank(
-  seasonStats: ProfileStatisticsSnapshot | null,
-  classifications: PlayerClassification[],
-) {
-  return classifications.includes('League Player') ? seasonStats?.rank ?? 0 : 0
+function getMyProfileCompetitiveHome(leagueModel: PlayerLeagueModel | null) {
+  return leagueModel?.division || 'Not Assigned'
+}
+
+function getMyProfileCurrentRank(leagueModel: PlayerLeagueModel | null) {
+  return leagueModel?.rank ?? 0
 }
 
 function getMyProfileClassifications(
   data: MyProfileData,
   seasonStats: ProfileStatisticsSnapshot | null,
+  leagueModel: PlayerLeagueModel | null,
 ): PlayerClassification[] {
   const registrations = data.user.eventRegistrations ?? []
-  const hasLeague = registrations.some((event) =>
-    isActiveProfileRegistration(event, 'league'),
-  )
+  const hasLeague =
+    Boolean(leagueModel) ||
+    registrations.some((event) =>
+      isActiveProfileRegistration(event, 'league'),
+    )
   const hasTournament = registrations.some((event) =>
     isActiveProfileRegistration(event, 'tournament'),
   )
@@ -804,35 +886,11 @@ function getMyProfileClassifications(
   return classifications
 }
 
-function getMyProfileCareerStatus(classifications: PlayerClassification[]) {
-  if (classifications.includes('Veteran')) {
-    return 'Veteran Operator'
-  }
-
-  if (classifications.includes('New Player')) {
-    return 'New Operator'
-  }
-
-  if (classifications.includes('League Player') && classifications.includes('Tournament Player')) {
-    return 'Multi-Theater Active'
-  }
-
-  if (classifications.includes('Tournament Player')) {
-    return 'Tournament Active'
-  }
-
-  if (classifications.includes('League Player')) {
-    return 'League Active'
-  }
-
-  return 'Casual Player'
-}
-
 function getOfficialGamesPlayed(
   data: MyProfileData,
   seasonStats: ProfileStatisticsSnapshot | null,
 ) {
-  return data.careerStatistics?.games ?? seasonStats?.games ?? data.leagueStatistics?.games ?? 0
+  return seasonStats?.games ?? data.careerStatistics?.games ?? data.leagueStatistics?.games ?? 0
 }
 
 function isActiveProfileRegistration(
@@ -870,23 +928,13 @@ function isSyntheticCurrentLeagueRegistration(
 
 function getMyProfileCareerHighlight(games: RecentGame[]) {
   return games.find((game) => game.bestMoment.trim())?.bestMoment.trim() ||
-    'No career highlight recorded yet.'
+    'No featured battle story yet.'
 }
 
-function getCurrentLeagueLabel(data: MyProfileData) {
-  const activeLeague = (data.user.eventRegistrations ?? []).find((event) =>
-    isActiveProfileRegistration(event, 'league'),
-  )
-
-  return activeLeague?.eventName || 'Not Assigned'
-}
-
-function getProfileEditorCurrentLeagueLabel(data: MyProfileData) {
-  const activeLeague = (data.user.eventRegistrations ?? []).find((event) =>
-    isActiveProfileRegistration(event, 'league'),
-  )
-
-  return activeLeague?.eventName || activeLeague?.eventId || 'Not Assigned'
+function getCurrentLeagueLabel(leagueModel: PlayerLeagueModel | null) {
+  return getConfiguredEventDisplayName({
+    eventName: leagueModel?.currentLeague,
+  })
 }
 
 function getProfileJoinedDate(data: MyProfileData) {
@@ -928,37 +976,6 @@ function getCurrentTournamentLabel(events: MyProfileData['user']['eventRegistrat
     tournament.team ||
     tournament.eventId ||
     'Registered'
-  )
-}
-
-function PlayerAnswerCard({
-  meta,
-  status,
-  title,
-  to,
-  value,
-}: {
-  meta: string
-  status: string
-  title: string
-  to?: string
-  value: ReactNode
-}) {
-  const content = (
-    <article className="panel player-answer-card">
-      <span>{status}</span>
-      <h2>{title}</h2>
-      <strong>{value}</strong>
-      <p>{meta}</p>
-    </article>
-  )
-
-  return to ? (
-    <Link className="player-answer-link" to={to}>
-      {content}
-    </Link>
-  ) : (
-    content
   )
 }
 
@@ -1019,58 +1036,6 @@ function IntelligencePanel({
             </div>
           </article>
         ))}
-      </div>
-    </section>
-  )
-}
-
-function SeasonSummaryPanel({
-  currentStreak,
-  seasonStats,
-}: {
-  currentStreak: string
-  seasonStats: ProfileStatisticsSnapshot | null
-}) {
-  const progress = getPromotionProgress(seasonStats)
-
-  return (
-    <section className="panel profile-feature-panel">
-      <div className="panel-heading">
-        <p className="eyebrow">Season Summary</p>
-        <h2>Promotion Track</h2>
-      </div>
-      <div className="promotion-meter">
-        <strong>{seasonStats?.promotionStatus || 'Unranked'}</strong>
-        <span className="profile-progress-track">
-          <span style={{ width: `${progress}%` }} />
-        </span>
-        <p>{formatPromotionGuidance(seasonStats)}</p>
-        <dl className="season-summary-grid">
-          <div>
-            <dt>Current Rank</dt>
-            <dd>{formatRank(seasonStats?.rank ?? 0)}</dd>
-          </div>
-          <div>
-            <dt>Promotion Zone</dt>
-            <dd>{getPromotionZoneStatus(seasonStats)}</dd>
-          </div>
-          <div>
-            <dt>Relegation Zone</dt>
-            <dd>{getRelegationZoneStatus(seasonStats)}</dd>
-          </div>
-          <div>
-            <dt>Games Remaining</dt>
-            <dd>{getGamesRemaining(seasonStats)}</dd>
-          </div>
-          <div>
-            <dt>Win Rate</dt>
-            <dd>{formatPercentage(seasonStats?.winPercentage ?? 0)}</dd>
-          </div>
-          <div>
-            <dt>Current Form</dt>
-            <dd>{currentStreak}</dd>
-          </div>
-        </dl>
       </div>
     </section>
   )
@@ -1210,87 +1175,6 @@ function RecordsPanel({ records }: { records: PersonalRecord[] }) {
             </article>
           )
         })}
-      </div>
-    </section>
-  )
-}
-
-function RecentGamesTable({ contexts }: { contexts: GameContext[] }) {
-  return (
-    <section className="panel profile-table-panel">
-      <div className="panel-heading">
-        <p className="eyebrow">Recent Games</p>
-        <h2>Match Log</h2>
-      </div>
-      <div className="profile-game-list">
-        <div className="table-row table-head" role="row">
-          <span>Date</span>
-          <span>Opponent</span>
-          <span>Mission</span>
-          <span>Faction</span>
-          <span>Result</span>
-          <span>TP</span>
-          <span>OP</span>
-          <span>VP</span>
-        </div>
-        {contexts.length > 0 ? (
-          contexts.map((context) => (
-            <details className="profile-game-row" key={context.game.id}>
-              <summary>
-                <span>{context.game.date}</span>
-                <strong>
-                  {formatPlayerName(context.opponent, context.opponentDisplayName) ||
-                    'Unknown'}
-                </strong>
-                <span>{getCanonicalMissionName(context.game.mission) || 'Unknown'}</span>
-                <span>{context.faction || 'Unknown'}</span>
-                <span className={context.result === 'Win' ? 'result-win' : 'result-loss'}>
-                  {context.result}
-                </span>
-                <span>{formatTournamentScore(context.game)}</span>
-                <span>{formatObjectiveScore(context.game)}</span>
-                <span>{formatVictoryScore(context.game)}</span>
-              </summary>
-              <div className="profile-game-details">
-                <p>
-                  {context.result} against{' '}
-                  {formatPlayerName(context.opponent, context.opponentDisplayName) ||
-                    'unknown opponent'}{' '}
-                  on{' '}
-                  {getCanonicalMissionName(context.game.mission) || 'unknown mission'}.
-                </p>
-                <Link to={`/games/${context.game.id}`}>Open Game Details</Link>
-              </div>
-            </details>
-          ))
-        ) : (
-          <p className="operations-empty">No recent games matched this league player.</p>
-        )}
-      </div>
-    </section>
-  )
-}
-
-function TimelinePanel({ items }: { items: ProfileTimelineItem[] }) {
-  return (
-    <section className="panel profile-feature-panel">
-      <div className="panel-heading">
-        <p className="eyebrow">Player Timeline</p>
-        <h2>Career Feed</h2>
-      </div>
-      <div className="profile-timeline">
-        {items.length > 0 ? (
-          items.map((item) => (
-            <Link className="profile-timeline-card" key={item.id} to={item.link || '/timeline'}>
-              <span>{item.type}</span>
-              <strong>{item.title}</strong>
-              <p>{item.body}</p>
-              <small>{item.timestamp}</small>
-            </Link>
-          ))
-        ) : (
-          <p className="operations-empty">No league timeline activity yet.</p>
-        )}
       </div>
     </section>
   )
@@ -2409,6 +2293,60 @@ function buildStatsFromProfile(
   }
 }
 
+function buildStatsFromLeagueModel(
+  leagueModel: PlayerLeagueModel | null,
+): ProfileStatisticsSnapshot | null {
+  if (!leagueModel) {
+    return null
+  }
+
+  const standing = leagueModel.standing
+  const winPercentage = percentage(standing.wins, standing.games)
+
+  return {
+    averageObjectivePoints: average(standing.op, standing.games),
+    averageTournamentPoints: average(standing.tp, standing.games),
+    averageVictoryPoints: average(standing.vp, standing.games),
+    division: leagueModel.division,
+    games: standing.games,
+    losses: standing.losses,
+    draws: standing.draws,
+    op: standing.op,
+    promotionStatus:
+      standing.rank > 0 ? getProfilePromotionStatus(leagueModel.division, standing.rank) : 'Unranked',
+    rank: standing.rank,
+    seasonProgress: standing.games,
+    tp: standing.tp,
+    vp: standing.vp,
+    winPercentage,
+    wins: standing.wins,
+  }
+}
+
+function getProfilePromotionStatus(division: string, rank: number) {
+  if (rank <= 0) {
+    return 'Unranked'
+  }
+
+  if (rank === 1) {
+    return '⭐ League Leader'
+  }
+
+  if (division.toLowerCase().includes('main')) {
+    return rank >= 7 ? 'Relegation Position' : 'Safe'
+  }
+
+  if (rank <= 2) {
+    return 'Promotion Position'
+  }
+
+  if (rank === 3) {
+    return '⚔ Challenge Match'
+  }
+
+  return 'Safe'
+}
+
 function getPlayerScore(score: string, isWinner: boolean) {
   const [winnerScore, loserScore] = splitScore(score)
   return isWinner ? winnerScore : loserScore
@@ -2493,43 +2431,76 @@ function formatRecord(stats: ProfileStatisticsSnapshot | null) {
     return '0-0'
   }
 
+  if (stats.draws > 0) {
+    return `${stats.wins}-${stats.losses}-${stats.draws}`
+  }
+
   return formatRecordValue(stats.wins, stats.losses)
 }
 
-function formatPromotionDistance(stats: ProfileStatisticsSnapshot | null) {
-  if (!stats || stats.rank <= 0) {
+function getCompetitivePromotionStatus(
+  leagueModel: PlayerLeagueModel | null,
+  stats: ProfileStatisticsSnapshot | null,
+) {
+  const rank = leagueModel?.rank ?? stats?.rank ?? 0
+  const division = leagueModel?.division ?? stats?.division ?? ''
+  const population = leagueModel?.divisionPopulation ?? 0
+
+  if (rank <= 0) {
     return 'Unranked'
   }
 
-  if (stats.promotionStatus.includes('Promotion')) {
-    return stats.rank <= 2 ? 'In range' : `${Math.max(0, stats.rank - 2)} ranks away`
+  if (rank === 1) {
+    return '⭐ League Leader'
   }
 
-  if (stats.promotionStatus.includes('Relegation')) {
-    return 'Defend position'
+  if (division.toLowerCase().includes('main')) {
+    const relegationLine =
+      population > 0 ? Math.max(7, population - 1) : 7
+
+    return rank >= relegationLine ? 'Relegation Position' : 'Safe'
   }
 
-  return 'Stable'
+  if (rank <= 2) {
+    return 'Promotion Position'
+  }
+
+  if (rank === 3) {
+    return '⚔ Challenge Match'
+  }
+
+  return 'Safe'
 }
 
-function getPromotionZoneStatus(stats: ProfileStatisticsSnapshot | null) {
-  if (!stats || stats.rank <= 0) {
+function formatLeaguePosition(
+  leagueModel: PlayerLeagueModel | null,
+  stats: ProfileStatisticsSnapshot | null,
+) {
+  const rank = leagueModel?.rank ?? stats?.rank ?? 0
+
+  if (rank <= 0) {
     return 'Unranked'
   }
 
-  if (stats.promotionStatus.includes('Promotion')) {
-    return stats.rank <= 2 ? 'Inside zone' : 'Chasing'
-  }
+  const population = leagueModel?.divisionPopulation ?? 0
 
-  return 'Not active'
+  return population > 0 ? `#${rank} of ${population}` : `#${rank}`
 }
 
-function getRelegationZoneStatus(stats: ProfileStatisticsSnapshot | null) {
-  if (!stats || stats.rank <= 0) {
-    return 'Unranked'
+function formatRecentResultMark(result: GameContext['result']) {
+  if (result === 'Win') {
+    return 'W'
   }
 
-  return stats.promotionStatus.includes('Relegation') ? 'At risk' : 'Clear'
+  if (result === 'Loss') {
+    return 'L'
+  }
+
+  if (result === 'Draw') {
+    return 'D'
+  }
+
+  return '-'
 }
 
 function getGamesRemaining(stats: ProfileStatisticsSnapshot | null) {
@@ -2582,25 +2553,9 @@ function getRequiredWinsForMovement(stats: ProfileStatisticsSnapshot) {
   return stats.rank <= 4 ? 1 : 2
 }
 
-function getPromotionProgress(stats: ProfileStatisticsSnapshot | null) {
-  if (!stats || stats.rank <= 0) {
-    return 8
-  }
-
-  if (stats.promotionStatus.includes('Promotion')) {
-    return stats.rank <= 2 ? 92 : Math.max(18, 90 - stats.rank * 10)
-  }
-
-  if (stats.promotionStatus.includes('Relegation')) {
-    return 28
-  }
-
-  return 58
-}
-
-function getLeagueHealth(data: MyProfileData, leaguePlayer: string) {
-  if (!leaguePlayer) {
-    return 'Identity Missing'
+function getLeagueHealth(data: MyProfileData, leagueModel: PlayerLeagueModel | null) {
+  if (!leagueModel) {
+    return 'League Assignment Missing'
   }
 
   if (!data.leagueStatistics) {
@@ -2608,26 +2563,6 @@ function getLeagueHealth(data: MyProfileData, leaguePlayer: string) {
   }
 
   return 'League Healthy'
-}
-
-function getWeaknessLabel(derived: ProfileDerivedData) {
-  const weakestMission = derived.missionPerformance
-    .slice()
-    .reverse()
-    .find((row) => row.games > 0)
-
-  return weakestMission?.label || 'More data needed'
-}
-
-function getWeaknessMeta(derived: ProfileDerivedData) {
-  const weakestMission = derived.missionPerformance
-    .slice()
-    .reverse()
-    .find((row) => row.games > 0)
-
-  return weakestMission
-    ? `${formatPercentage(weakestMission.winRate)} win rate / avg OP ${weakestMission.averageOP}`
-    : 'Play more games to reveal a pattern'
 }
 
 function average(total: number, count: number) {

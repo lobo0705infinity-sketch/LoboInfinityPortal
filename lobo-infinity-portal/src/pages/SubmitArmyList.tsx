@@ -39,7 +39,7 @@ const initialSubmission: ArmyListSubmission = {
 
 function SubmitArmyList() {
   const auth = useAuth()
-  const playerName = auth.user.leaguePlayer
+  const playerName = auth.user.canonicalPlayer || auth.user.leaguePlayer
   const [submission, setSubmission] =
     useState<ArmyListSubmission>(initialSubmission)
   const [state, setState] = useState<SubmissionState>({

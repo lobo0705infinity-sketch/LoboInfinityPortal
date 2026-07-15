@@ -35,14 +35,25 @@ function rebuildGameEngine() {
     " games processed."
   );
 
+  return {
+    engineRows: engine.length - 1,
+    analyticsRows: analytics.length - 1
+  };
+
+}
+
+function publishLatestGameSubmittedAutomationEvent() {
+
   try {
 
     if (
-      typeof publishLeagueAutomationEvent === "function" &&
-      analytics.length > 1
+      typeof publishLeagueAutomationEvent === "function"
     ) {
       const latestGame =
         getDiscordLatestGame();
+
+      if (!latestGame)
+        return;
 
       publishLeagueAutomationEvent({
         eventType: "gameSubmitted",
@@ -69,7 +80,7 @@ function rebuildGameEngine() {
   catch (err) {
 
     Logger.log(
-      "Discord game announcement failed: " +
+      "Game submitted automation event failed: " +
       String(err && err.message ? err.message : err)
     );
 

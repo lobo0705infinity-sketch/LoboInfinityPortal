@@ -59,6 +59,7 @@ const endpointPolicy = {
   home: { authRequired: false, userScoped: false },
   identityBulkDisable: { authRequired: true, userScoped: false },
   identityBulkEnable: { authRequired: true, userScoped: false },
+  identityResolutionDiagnostics: { authRequired: true, userScoped: false },
   integrity: { authRequired: true, userScoped: false },
   integrityFreshAudit: { authRequired: true, userScoped: false },
   integrityRepair: { authRequired: true, userScoped: false },

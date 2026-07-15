@@ -1,249 +1,187 @@
-# Operation Facelift 2.0
-# Player Profile Implementation Notes
+# Operation Facelift 2.5
+# Operator Badge System
+# Implementation Notes
 
-Version: 2.1
+Version: 1.0
 
 Status: APPROVED
 
 Artwork Reference:
-player-profile-concept-v2.1.png
+operator-badge-concept-v1.png
 
 ---
 
 # Purpose
 
-This document defines the engineering requirements for implementing Player Profile Version 2.1.
+Implement one reusable React component named:
 
-The objective is to faithfully reproduce the approved Player Profile design while preserving all existing functionality.
+OperatorBadge
 
-This is a presentation release.
-
-It is NOT an architecture release.
+This component becomes the single visual identity component used throughout the portal.
 
 ---
 
 # Scope
 
-Modify:
+Build the OperatorBadge component.
 
-Player Profile only.
+Phase 1 integrates it into:
 
-Do not modify:
+- Player Profile only
 
-- Dashboard
-- Battle Reports
-- Standings
-- Hall of Fame
-- Community
-- Submit Game
-- Commissioner
-- Team Tournament
-
-Player Profile presentation only.
+No other pages are modified during this release.
 
 ---
 
 # Architecture
 
-Preserve:
+One component.
 
-- Event Engine
-- Authentication
-- Routing
-- Smart Cache
-- Firestore
-- Apps Script
-- Analytics
-- Notification pipeline
+No duplicate implementations.
 
-No backend work.
+Future pages import:
 
-No database changes.
-
-No API contract changes.
+<OperatorBadge player={player} />
 
 ---
 
-# Live Data Policy
-
-The approved concept artwork contains illustrative values only.
-
-Every visual component must bind to existing production data.
+# Live Data
 
 Never hardcode:
 
-- Player name
+- Faction
 - Rank
-- Record
-- TP
-- OP
-- VP
-- Win %
-- Factions
-- Missions
-- Rivals
-- Achievements
+- Division
+- Competitive Home
+- Achievement Rings
 
-The concept defines layout only.
-
-Production data defines content.
+Everything comes from existing production data.
 
 ---
 
-# Data Binding Matrix
+# Data Sources
 
-| Component | Existing Production Source |
-|------------|----------------------------|
-| Player Identity | Player Profile API |
-| Display Name | Player Profile |
-| Classification Badges | Player Classification Model |
-| Current League | Event Registration |
-| Current Tournament | Event Registration |
-| Season Snapshot | Player Statistics |
-| Match History | Recent Games API |
-| Achievements | Achievement API |
-| Faction Breakdown | Analytics API |
-| Rivals | Rival Statistics |
-| Activity Feed | Player Activity |
-| Army Lists | Existing Army List Repository |
+Preferred Faction
 
-No duplicate API requests.
+↓
+
+Player Profile
+
+Competitive Home
+
+↓
+
+Player Classification
+
+Rank
+
+↓
+
+Standings
+
+Achievement Rings
+
+↓
+
+Existing Achievement / Championship data
+
+Classification Badges
+
+↓
+
+Player Classification model
+
+No additional API requests.
 
 ---
 
-# Player Classification
+# Competitive Home
 
-Use the approved classification model.
+Priority
 
-Automatically determine:
+Main Man
 
-- Casual Player
-- League Player
-- Tournament Player
-- New Player
+↓
+
+Proving Grounds A
+
+↓
+
+Proving Grounds B
+
+↓
+
+Casual Player
+
+Never display Community.
+
+---
+
+# Faction Core
+
+Use preferred faction.
+
+If unavailable
+
+↓
+
+Neutral tactical core.
+
+Never leave the center blank.
+
+---
+
+# Achievement Rings
+
+Automatically enabled.
+
+No manual assignment.
+
+Support
+
+- League Champion
+- Tournament Champion
 - Veteran
+- Hall of Fame
 - Commissioner
 
-Do not create stored status fields.
+---
 
-Derive dynamically from existing data.
+# Rank
+
+Always display the current live rank.
+
+Never historical rank.
 
 ---
 
-# Hero Section
+# Component Consumers
 
-Use:
+Future releases will reuse this component in:
 
-player-profile-concept-v2.1.png
+- Dashboard
+- Players
+- Hall of Fame
+- Standings
+- Battle Reports
+- Team Tournament
+- Search
+- Hover Cards
 
-as the visual reference.
-
-The player portrait and identity are the focal point.
-
-Hero artwork must remain lazy-loaded.
-
----
-
-# Navigation
-
-Profile navigation is internal only.
-
-Do not modify application routing.
-
-Do not create additional routes.
-
-Navigation scrolls to sections already present on the page.
+Phase 1 implements Player Profile only.
 
 ---
 
-# Tactical Cards
+# Accessibility
 
-All sections use the shared Tactical Card component.
+Expose:
 
-Do not create page-specific card implementations.
+- Player Name
+- Preferred Faction
+- Competitive Home
+- Rank
 
-Reuse the shared component defined by DesignSystem.md.
-
----
-
-# Performance Overview
-
-Reuse existing analytics.
-
-Do not invent player ratings.
-
-If an analytic does not exist:
-
-Leave the component visually present but bind only to existing production values.
-
-Do not fabricate statistics.
-
----
-
-# Recent Matches
-
-Reuse the existing Battle Report list.
-
-Do not create another query.
-
-Each row links to the existing Battle Report page.
-
-Display:
-
-- Date
-- Opponent
-- Mission
-- Result
-- TP
-- VP
-
-No duplicate calculations.
-
----
-
-# Rivals
-
-Reuse the existing rivalry calculations.
-
-Do not recompute head-to-head statistics.
-
----
-
-# Achievements
-
-Reuse the existing Achievement API.
-
-No changes to unlock logic.
-
-Presentation only.
-
----
-
-# Activity Feed
-
-Reuse existing player activity.
-
-Do not create another feed.
-
-Display newest first.
-
----
-
-# Typography
-
-Use DesignSystem.md.
-
-No additional fonts.
-
-Maintain the approved hierarchy.
-
----
-
-# Colors
-
-Use DesignSystem.md.
-
-No page-specific palette.
+Screen-reader friendly.
 
 ---
 
@@ -251,74 +189,27 @@ No page-specific palette.
 
 Allowed
 
-- Fade
-- Slide
 - Glow
-- Section reveal
+- Hover
+- Selection
 
-Maximum duration
+Maximum
 
 200 ms
 
-No decorative animation.
-
 ---
 
-# Mobile
+# Performance
 
-Maintain complete functionality.
+SVG preferred.
 
-Hero compresses.
+Lazy load assets where appropriate.
 
-Cards stack.
+Single implementation.
 
-Navigation becomes horizontal.
+No duplicate rendering.
 
-Charts resize responsively.
-
-No horizontal scrolling.
-
----
-
-# Accessibility
-
-Maintain WCAG AA.
-
-Keyboard navigation.
-
-Visible focus indicators.
-
-Charts require textual summaries.
-
-Icons require labels.
-
----
-
-# Performance Budget
-
-Startup requests
-
-No increase
-
-Backend requests
-
-No increase
-
-Duplicate calculations
-
-None
-
-Duplicate rendering
-
-None
-
-Hero artwork
-
-Lazy-loaded
-
-Startup bundle increase
-
-Target: <5 KB gzip
+No startup bundle regression.
 
 ---
 
@@ -332,33 +223,30 @@ Tablet
 
 Mobile
 
-Responsive
+Preferred Faction
 
-Accessibility
+Competitive Home
 
-Player data
+Rank
 
-Achievements
+Classification
 
-Recent matches
+Achievement Rings
 
-Rival statistics
+Player without faction
 
-Classification badges
+Player without achievements
 
-Live production data
-
-No placeholder values remain.
+Player with multiple achievements
 
 ---
 
 # Release Gates
 
-Must pass:
+Must pass
 
 - npm run lint
 - npm run build
-- Player Profile regression tests
 - Responsive validation
 - Accessibility validation
 - Performance validation
@@ -369,38 +257,16 @@ No startup bundle regression.
 
 # Definition of Done
 
-Player Profile Version 2.1 is complete when:
+✓ One reusable OperatorBadge component exists.
 
-✓ Matches player-profile-concept-v2.1.png
+✓ Player Profile uses OperatorBadge.
 
-✓ Uses DesignSystem.md
+✓ Live production data only.
 
-✓ Uses Tactical Card component
+✓ Responsive.
 
-✓ Uses live production data
+✓ Accessible.
 
-✓ Uses approved player classifications
+✓ Performance maintained.
 
-✓ Preserves routing
-
-✓ Preserves authentication
-
-✓ Preserves Event Engine
-
-✓ Responsive
-
-✓ Accessible
-
-✓ Performance maintained
-
-✓ No placeholder values remain
-
----
-
-# Engineering Principle
-
-The Player Profile is the definitive player dossier for the portal.
-
-It should present the player's history, achievements, identity, and performance using the shared visual language established by Dashboard v2.1.
-
-Every enhancement must strengthen identity, readability, and immersion without altering existing portal functionality.
+No page-specific implementations.

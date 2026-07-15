@@ -664,7 +664,7 @@ function saveTeamTournamentInvitation(e) {
         teamName: teamName,
         captain:
           getTeamTournamentString(params.captain) ||
-          (auth && auth.user ? auth.user.leaguePlayer : "Commissioner"),
+          (auth && auth.user ? getCanonicalPlayerFromUser(auth.user) : "Commissioner"),
         player: player,
         status: getTeamTournamentString(params.status) || "Pending",
         message: getTeamTournamentString(params.message),
@@ -840,7 +840,7 @@ function saveTeamTournamentResult(e) {
       submittedBy:
         commissionerContext.enabled
           ? commissionerContext.commissioner
-          : auth.user.leaguePlayer || auth.user.email || assignment.player,
+          : getCanonicalPlayerFromUser(auth.user) || auth.user.email || assignment.player,
       createdAt: timestamp,
       updatedAt: timestamp,
       table: assignment.table,

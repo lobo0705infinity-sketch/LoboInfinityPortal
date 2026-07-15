@@ -376,6 +376,11 @@ function handleApiGet(e, action) {
         return getOperationsIdentityDashboard();
       });
 
+    case "identityResolutionDiagnostics":
+      return requireApiPermission(e, "viewOperations", function(auth) {
+        return getIdentityResolutionDiagnostics(auth);
+      });
+
     case "operationsContent":
       return requireApiPermission(e, "viewOperations", function() {
         return getOperationsContentDashboard();

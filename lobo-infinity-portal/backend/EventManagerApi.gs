@@ -754,7 +754,7 @@ function recordEventManagerAudit(auth, eventId, action, detail) {
       detail: detail,
       actor:
         auth && auth.user
-          ? auth.user.email || auth.user.leaguePlayer || "Commissioner"
+          ? auth.user.email || getCanonicalPlayerFromUser(auth.user) || "Commissioner"
           : "Commissioner"
     }
   );

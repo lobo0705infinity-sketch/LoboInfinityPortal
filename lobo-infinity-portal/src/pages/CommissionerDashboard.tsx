@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import EventManagerPanel from '../components/EventManagerPanel'
 import Loading from '../components/Loading'
@@ -56,11 +56,15 @@ const permissionRows = [
 
 function CommissionerDashboard() {
   const auth = useAuth()
+  const location = useLocation()
+  const requestedPanel = getRequestedCommandCenterPanel(location.search)
   const [state, setState] = useState<OperationsState>({
     status: 'loading',
   })
   const [workingAction, setWorkingAction] = useState('')
-  const [openPanels, setOpenPanels] = useState<string[]>(['eventManager'])
+  const [openPanels, setOpenPanels] = useState<string[]>(() =>
+    requestedPanel ? ['eventManager', requestedPanel] : ['eventManager'],
+  )
   const [loadedPanels, setLoadedPanels] = useState<string[]>(['eventManager'])
   const [loadingPanels, setLoadingPanels] = useState<string[]>([])
   const canViewOperations = auth.isAtLeastRole('Assistant Commissioner')
@@ -140,6 +144,17 @@ function CommissionerDashboard() {
       controller.abort()
     }
   }, [auth.authenticated, auth.status, canViewOperations, loadOperations])
+
+  useEffect(() => {
+    if (!requestedPanel || state.status !== 'success') {
+      return
+    }
+
+    setOpenPanels((current) =>
+      current.includes(requestedPanel) ? current : [...current, requestedPanel],
+    )
+    void ensurePanel(requestedPanel)
+  }, [requestedPanel, state.status])
 
   async function runAction(
     action: string,
@@ -391,6 +406,24 @@ function mergeOperationsData(
     audit:
       next.audit.issues.length > 0 ? next.audit : current.audit,
   }
+}
+
+function getRequestedCommandCenterPanel(search: string) {
+  const section = new URLSearchParams(search).get('section')
+
+  if (section === 'users' || section === 'players') {
+    return 'identity'
+  }
+
+  if (section === 'operations' || section === 'system') {
+    return 'audit'
+  }
+
+  if (section === 'events') {
+    return 'eventManager'
+  }
+
+  return ''
 }
 
 async function loadOperationsPanel(panel: string): Promise<OperationsDashboardData> {

@@ -1,5 +1,19 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { createHash } from 'node:crypto'
+import productionRelease from './release/production.json' with { type: 'json' }
+
+const apiUrl = process.env.VITE_API_URL ?? ''
+const appsScriptDeploymentId =
+  apiUrl.match(/\/macros\/s\/([^/]+)\/exec\/?$/)?.[1] ??
+  productionRelease.appsScriptDeploymentId
+const apiUrlFingerprint = apiUrl
+  ? 'sha256:' +
+    createHash('sha256')
+      .update(apiUrl)
+      .digest('hex')
+      .slice(0, 16)
+  : ''
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -50,7 +64,14 @@ export default defineConfig({
         'not-provided',
     ),
     __BACKEND_DEPLOYMENT_ID__: JSON.stringify(
-      process.env.VITE_BACKEND_DEPLOYMENT_ID ?? 'not-provided',
+      process.env.VITE_BACKEND_DEPLOYMENT_ID ??
+        appsScriptDeploymentId ??
+        'not-provided',
+    ),
+    __BUILD_GIT_BRANCH__: JSON.stringify(
+      process.env.VITE_BUILD_GIT_BRANCH ??
+        process.env.VERCEL_GIT_COMMIT_REF ??
+        'not-provided',
     ),
     __BUILD_TIMESTAMP__: JSON.stringify(new Date().toISOString()),
     __CACHE_VERSION__: JSON.stringify(process.env.VITE_CACHE_VERSION ?? 'client-cache-v2'),
@@ -66,6 +87,12 @@ export default defineConfig({
         process.env.VERCEL_GIT_COMMIT_SHA ??
         'not-provided',
     ),
+    __APPS_SCRIPT_VERSION__: JSON.stringify(
+      process.env.VITE_APPS_SCRIPT_VERSION ??
+        String(productionRelease.appsScriptVersion),
+    ),
+    __API_URL_FINGERPRINT__: JSON.stringify(apiUrlFingerprint),
+    __RELEASE_MANIFEST_VERSION__: JSON.stringify(String(productionRelease.schemaVersion)),
     __PORTAL_VERSION__: JSON.stringify(process.env.VITE_PORTAL_VERSION ?? 'Version 5.0'),
     __SCHEMA_VERSION__: JSON.stringify(process.env.VITE_SCHEMA_VERSION ?? '1'),
     __VERCEL_URL__: JSON.stringify(

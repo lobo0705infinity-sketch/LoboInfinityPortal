@@ -2,6 +2,20 @@
 
 Use this checklist for every Lobo Infinity League Portal release.
 
+- [ ] Confirm release source is latest approved production branch: `npm run release:source`
+- [ ] Confirm `VITE_API_URL` matches `release/production.json`: `npm run release:manifest`
+- [ ] Generate release fingerprint: `npm run release:fingerprint`
+- [ ] Run complete release gate: `npm run release:gate`
+- [ ] Deploy to staging/preview, not production
+- [ ] Validate staged production contract: `CONTRACT_BASE_URL=<staging-url> npm run release:contract`
+- [ ] Validate staged visual regression: `VISUAL_BASE_URL=<staging-url> npm run release:visual`
+- [ ] Validate staged deployment fingerprint: `STAGING_URL=<staging-url> npm run release:promotion`
+- [ ] Promote the exact staged Vercel deployment to production without rebuilding
+- [ ] Validate production contract after promotion: `CONTRACT_BASE_URL=https://lobo-infinity-portal.vercel.app npm run release:contract`
+- [ ] Validate production visual regression after promotion: `VISUAL_BASE_URL=https://lobo-infinity-portal.vercel.app npm run release:visual`
+- [ ] Compare staged and production fingerprints: `COMPARE_PRODUCTION=1 STAGING_URL=<staging-url> npm run release:promotion`
+- [ ] Record known-good frontend/backend pair in `release/known-good.json`
+- [ ] Complete manual authenticated checks: sign-in, refresh session, My Profile identity, Submit Game identity, Submit Army List identity, commissioner permissions
 - [ ] Architecture Gate
 - [ ] Compatibility Gate
 - [ ] Performance Gate

@@ -97,12 +97,14 @@ function SubmitResult() {
     () =>
       resolveSubmitGamePlayer(
         auth.authenticated,
+        auth.user.canonicalPlayer,
         auth.user.leaguePlayer,
         auth.user.playerDisplayName,
         auth.user.displayName,
       ),
     [
       auth.authenticated,
+      auth.user.canonicalPlayer,
       auth.user.displayName,
       auth.user.leaguePlayer,
       auth.user.playerDisplayName,
@@ -194,7 +196,7 @@ function SubmitResult() {
       exclusionReasons: Array.from(exclusionReasonCounts.entries()).map(
         ([reason, count]) => ({ count, reason }),
       ),
-      leaguePlayer: auth.user.leaguePlayer,
+      leaguePlayer: auth.user.canonicalPlayer || auth.user.leaguePlayer,
       participantCount: leagueOpponentResolution.participantCount,
       playerId: leagueResult.player,
       resolvedDivision: leagueOpponentResolution.resolvedDivision,
@@ -208,13 +210,14 @@ function SubmitResult() {
       eligibleOpponentCount: leagueOpponentResolution.options.length,
       event: eventHome.event,
       exclusions: leagueOpponentResolution.exclusions,
-      leaguePlayer: auth.user.leaguePlayer,
+      leaguePlayer: auth.user.canonicalPlayer || auth.user.leaguePlayer,
       participantCount: leagueOpponentResolution.participantCount,
       playerId: leagueResult.player,
       resolvedDivision: leagueOpponentResolution.resolvedDivision,
     })
     console.groupEnd()
   }, [
+    auth.user.canonicalPlayer,
     auth.user.leaguePlayer,
     authenticatedSubmitGamePlayer,
     eventHome,
@@ -721,7 +724,10 @@ function SubmitResult() {
             value={leagueResult.player}
           />
         ) : (
-          <ReadOnlyField label="Player" value={leagueResult.player || auth.user.leaguePlayer} />
+          <ReadOnlyField
+            label="Player"
+            value={leagueResult.player || auth.user.canonicalPlayer || auth.user.leaguePlayer}
+          />
         )}
         <SearchableSelect
           label={isCommissionerSubmission ? 'Player 2' : 'Opponent'}

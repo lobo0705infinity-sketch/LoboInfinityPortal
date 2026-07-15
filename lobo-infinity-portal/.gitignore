@@ -12,6 +12,8 @@ dist
 .codex-screenshots
 dist-ssr
 screenshots
+.release-artifacts
+public/release-fingerprint.json
 *.local
 
 # Editor directories and files

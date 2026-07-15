@@ -51,9 +51,26 @@
   grid-column: 1 / -1;
 }
 
+.my-profile-v3-dashboard,
+.my-profile-v3-support {
+  display: grid;
+  gap: 18px;
+  margin: 0 clamp(18px, 4vw, 46px) 18px;
+}
+
+.my-profile-v3-dashboard {
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
+  align-items: stretch;
+}
+
+.my-profile-v3-support {
+  grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+}
+
 .my-profile-operator-hero {
   grid-template-columns: minmax(280px, 390px) minmax(0, 1fr);
   align-items: center;
+  margin: 0;
 }
 
 .my-profile-operator-badge {
@@ -126,7 +143,7 @@
 
 .my-profile-service-record dl {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
   margin: 0;
 }
@@ -154,9 +171,211 @@
   text-transform: uppercase;
 }
 
+.my-profile-season-panel,
+.my-profile-recent-panel,
+.my-profile-highlight-card {
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  min-height: 100%;
+}
+
+.my-profile-season-record {
+  display: grid;
+  gap: 8px;
+  border: 1px solid rgba(76, 201, 240, 0.3);
+  background: rgba(5, 6, 8, 0.58);
+  padding: 18px;
+}
+
+.my-profile-season-record strong {
+  color: var(--text);
+  font-size: clamp(2.3rem, 5vw, 4.25rem);
+  font-weight: 950;
+  letter-spacing: 0;
+  line-height: 0.9;
+}
+
+.my-profile-season-record span {
+  color: var(--blue);
+  font-size: 0.78rem;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.my-profile-season-stats {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.my-profile-season-stats div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 14px;
+  border-bottom: 1px solid rgba(42, 59, 73, 0.58);
+  padding: 8px 0;
+}
+
+.my-profile-season-stats dt {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.my-profile-season-stats dd {
+  margin: 0;
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 950;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.my-profile-season-progress {
+  display: grid;
+  gap: 10px;
+  border: 1px solid rgba(42, 59, 73, 0.72);
+  background: rgba(18, 26, 36, 0.5);
+  padding: 14px;
+}
+
+.my-profile-season-progress > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.my-profile-season-progress span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.my-profile-season-progress strong {
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 950;
+}
+
+.my-profile-season-progress p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.my-profile-progress-blocks {
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.my-profile-progress-blocks span {
+  display: block;
+  min-height: 14px;
+  border: 1px solid rgba(76, 201, 240, 0.24);
+  background: rgba(8, 13, 19, 0.8);
+}
+
+.my-profile-progress-blocks span.is-complete {
+  border-color: rgba(76, 201, 240, 0.75);
+  background: linear-gradient(180deg, rgba(76, 201, 240, 0.95), rgba(22, 98, 132, 0.86));
+}
+
+.my-profile-recent-list {
+  display: grid;
+  gap: 10px;
+}
+
+.my-profile-result-card {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgba(42, 59, 73, 0.72);
+  background: rgba(8, 13, 19, 0.72);
+  color: var(--text);
+  padding: 12px;
+  text-decoration: none;
+}
+
+.my-profile-result-card:hover {
+  border-color: rgba(76, 201, 240, 0.58);
+  background: rgba(18, 26, 36, 0.88);
+}
+
+.my-profile-result-mark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(76, 201, 240, 0.4);
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 950;
+}
+
+.my-profile-result-card.result-win .my-profile-result-mark {
+  border-color: rgba(74, 222, 128, 0.55);
+  color: #86efac;
+}
+
+.my-profile-result-card.result-loss .my-profile-result-mark {
+  border-color: rgba(248, 113, 113, 0.55);
+  color: #fca5a5;
+}
+
+.my-profile-result-card.result-draw .my-profile-result-mark {
+  border-color: rgba(251, 191, 36, 0.55);
+  color: #fde68a;
+}
+
+.my-profile-result-card strong {
+  color: var(--text);
+  font-size: 0.98rem;
+  font-weight: 950;
+}
+
+.my-profile-result-card p {
+  margin: 3px 0 0;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.my-profile-result-card > span:last-child {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.my-profile-highlight-card p {
+  margin: 0;
+  border-left: 4px solid var(--crimson);
+  padding: 4px 0 4px 16px;
+  color: var(--text);
+  font-size: clamp(1.05rem, 2vw, 1.45rem);
+  font-weight: 900;
+  line-height: 1.32;
+}
+
 @media (max-width: 1100px) {
   .profile-editor-form {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .my-profile-v3-dashboard,
+  .my-profile-v3-support {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -193,5 +412,14 @@
 
   .my-profile-service-record dl {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .my-profile-result-card {
+    grid-template-columns: 34px minmax(0, 1fr);
+  }
+
+  .my-profile-result-card > span:last-child {
+    grid-column: 2;
+    text-align: left;
   }
 }

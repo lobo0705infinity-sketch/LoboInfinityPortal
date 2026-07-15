@@ -220,7 +220,7 @@ function NoEventsNavigation({ commissioner }: { commissioner: boolean }) {
       <p className="sidebar-section-label">No Active Events</p>
       <div className="sidebar-subnav">
         <Link to="/players">Browse Community</Link>
-        {commissioner ? <Link to="/commissioner/event-manager">Create Event</Link> : null}
+        {commissioner ? <Link to="/commissioner/events">Create Event</Link> : null}
         <Link to="/events">View Past Events</Link>
       </div>
     </div>

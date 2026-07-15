@@ -1458,6 +1458,7 @@ function emptyMyProfile(): MyProfileData {
       lastPage: '',
       lastSeen: '',
       leagueDivision: '',
+      canonicalPlayer: '',
       leaguePlayer: '',
       notificationPreferences: {},
       playerDisplayName: '',

@@ -37,7 +37,7 @@ function ApplicationErrorBoundary(props: ApplicationErrorBoundaryProps) {
         authenticated: auth.authenticated,
         code: auth.code,
         email: auth.user.email,
-        player: auth.user.leaguePlayer,
+        player: auth.user.canonicalPlayer || auth.user.leaguePlayer,
         role: auth.user.role,
         stage: auth.stage,
         status: auth.status,

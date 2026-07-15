@@ -1107,6 +1107,7 @@ function RegistrationManagementPanel({
             return (
             <li key={entry.player}>
               <strong>{entry.displayName}</strong>
+              {' '}
               <span>
                 {entry.status} ·{' '}
                 {entry.preferredTeam || entry.team || 'Looking for Team'}
@@ -1499,9 +1500,16 @@ function TeamForm({
                 {visibleAvailablePlayers.map((player) => (
                   <li key={player.name}>
                     <strong>{player.label}</strong>
+                    {' '}
                     <span>{player.faction || 'Faction not provided'}</span>
+                    {' '}
                     <span>{player.status}</span>
-                    {player.discord ? <span>{player.discord}</span> : null}
+                    {player.discord ? (
+                      <>
+                        {' '}
+                        <span>{player.discord}</span>
+                      </>
+                    ) : null}
                   </li>
                 ))}
               </ul>

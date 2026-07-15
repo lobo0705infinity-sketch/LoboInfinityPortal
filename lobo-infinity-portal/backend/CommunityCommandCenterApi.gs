@@ -9,15 +9,17 @@ function getCommunityCommandCenter(e) {
 
   const auth =
     getRequestUser(e);
+  const canonicalPlayer =
+    getCanonicalPlayerFromUser(auth.user);
 
-  if (!auth.authenticated || !auth.user.leaguePlayer)
+  if (!auth.authenticated || !canonicalPlayer)
     return jsonOutput({
       success: false,
       error: "Authentication is required."
     });
 
   const player =
-    getCommunityCommandString(auth.user.leaguePlayer);
+    getCommunityCommandString(canonicalPlayer);
 
   const context =
     buildSeasonCommandContext(player);
@@ -125,17 +127,19 @@ function getCommunityCommandCenter(e) {
 }
 
 function buildCommunityCommandWelcome(user, currentEvent, events, seasonCommand) {
+  const canonicalPlayer =
+    getCanonicalPlayerFromUser(user);
 
   return {
     displayName:
       user.displayName ||
       user.playerDisplayName ||
-      user.leaguePlayer,
+      canonicalPlayer,
     leaguePlayer:
-      user.leaguePlayer,
+      canonicalPlayer,
     playerDisplayName:
       user.playerDisplayName ||
-      user.leaguePlayer,
+      canonicalPlayer,
     currentRank:
       seasonCommand.player.rank,
     currentDivision:
@@ -412,7 +416,7 @@ function buildCommunityNextActions(user, seasonCommand, currentEvent, settings, 
       link: "/standings"
     });
 
-  if (getCommunityPlayerArmyListCount(user.leaguePlayer) === 0)
+  if (getCommunityPlayerArmyListCount(getCanonicalPlayerFromUser(user)) === 0)
     actions.push({
       label: "Submit your first Army List.",
       priority: "Normal",

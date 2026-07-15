@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "productionBranch": "main",
+  "frontendVersion": "0.0.0",
+  "frontendCommit": "set-to-main-head-during-release",
+  "appsScriptVersion": 65,
+  "appsScriptDeploymentId": "AKfycbwRdhFhNiKeF8X-JV5egiZsgkTJAGbByQQhJrbTaR4V6BCzw_KwW_7KBrh78-ntT10yMw",
+  "appsScriptUrl": "https://script.google.com/macros/s/AKfycbwRdhFhNiKeF8X-JV5egiZsgkTJAGbByQQhJrbTaR4V6BCzw_KwW_7KBrh78-ntT10yMw/exec",
+  "vercelProject": "lobo-infinity-portal",
+  "productionAlias": "lobo-infinity-portal.vercel.app",
+  "requiredRoutes": [
+    "/",
+    "/profile",
+    "/players",
+    "/submit-game",
+    "/army-lists/submit",
+    "/events",
+    "/commissioner",
+    "/commissioner/events",
+    "/commissioner/players",
+    "/commissioner/automation",
+    "/commissioner/system"
+  ],
+  "contractMarkers": {
+    "commissionerNavigation": [
+      "Command Center",
+      "Events",
+      "Players",
+      "Automation",
+      "System"
+    ],
+    "commissionerRoutes": [
+      "/commissioner/events",
+      "/commissioner/players",
+      "/commissioner/automation",
+      "/commissioner/system"
+    ],
+    "myProfileIdentity": [
+      "canonicalPlayer",
+      "resolvePlayerLeagueModel",
+      "getConfiguredEventDisplayName"
+    ],
+    "myProfileUx": [
+      "Current Season",
+      "Promotion Status",
+      "Recent Results",
+      "Featured Battle Story",
+      "Season Completion"
+    ],
+    "authenticationHardening": [
+      "DUPLICATE_MATCH",
+      "NO_RECOVERY_MATCH",
+      "RECOVERED_EVENT_PARTICIPANT_MATCH",
+      "VITE_API_URL"
+    ]
+  },
+  "forbiddenActiveMarkers": {
+    "legacyCommissionerTopLevel": [
+      "Event Manager",
+      "Community Manager",
+      "Audit",
+      "Diagnostics",
+      "Users",
+      "Operations"
+    ],
+    "removedMyProfileUx": [
+      "Competitive Home",
+      "Career Status"
+    ],
+    "untraceableBuild": [
+      "gitCommit: not-provided",
+      "deploymentId: not-provided"
+    ]
+  }
+}

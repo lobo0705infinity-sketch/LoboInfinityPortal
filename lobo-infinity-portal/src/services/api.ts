@@ -109,6 +109,7 @@ export type PortalUser = {
   email: string
   displayName: string
   googleAccount?: string
+  canonicalPlayer: string
   leaguePlayer: string
   playerDisplayName: string
   leagueDivision: string
@@ -174,6 +175,30 @@ export type MyProfileData = {
   intelligence: ProfileIntelligenceContext
   achievements: ProfileAchievement[]
   futureSections: string[]
+}
+
+export type IdentityResolutionDiagnostics = {
+  email: string
+  canonicalPlayer: string
+  leaguePlayer: string
+  displayName: string
+  playerRegistryMatch: boolean
+  playerRegistryStatus: string
+  playerRegistryReason: string
+  divisionStandingsMatch: boolean
+  divisionStandingsReason: string
+  currentLeague: string
+  division: string
+  rank: number
+  competitiveHome: string
+  matchedStanding: {
+    eventId: string
+    player: string
+    displayName: string
+    division: string
+    rank: number
+  } | null
+  reasons: string[]
 }
 
 export type ProfileStatisticsSnapshot = {
@@ -2010,6 +2035,9 @@ export type LeaderData = Pick<DashboardSummary, 'leagueLeader'>
 export type ApiClient = {
   getSession: (options?: ApiOptions) => Promise<AuthSession>
   getMyProfile: (options?: ApiOptions) => Promise<MyProfileData>
+  getIdentityResolutionDiagnostics: (
+    options?: ApiOptions,
+  ) => Promise<IdentityResolutionDiagnostics>
   updateProfile: (
     params: {
       displayName?: string
@@ -2246,6 +2274,13 @@ export async function getMyProfile(
 ): Promise<MyProfileData> {
   const payload = await request('myProfile', options)
   return normalizeMyProfilePayload(payload)
+}
+
+export async function getIdentityResolutionDiagnostics(
+  options: ApiOptions = {},
+): Promise<IdentityResolutionDiagnostics> {
+  const payload = await request('identityResolutionDiagnostics', options)
+  return normalizeIdentityResolutionDiagnosticsPayload(payload)
 }
 
 export async function updateProfile(
@@ -3090,6 +3125,7 @@ export async function operationsAction(
 export const apiClient: ApiClient = {
   getSession,
   getMyProfile,
+  getIdentityResolutionDiagnostics,
   updateProfile,
   updateNotificationState,
   getHome,
@@ -3341,6 +3377,45 @@ function normalizeMyProfilePayload(payload: unknown): MyProfileData {
   }
 }
 
+function normalizeIdentityResolutionDiagnosticsPayload(
+  payload: unknown,
+): IdentityResolutionDiagnostics {
+  const record = asRecord(payload, 'Identity resolution diagnostics response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Identity diagnostics failed.')
+  }
+
+  const diagnostics = getRequiredRecord(record, 'identityResolution')
+  const matchedStanding = getOptionalRecord(diagnostics, 'matchedStanding')
+
+  return {
+    email: getString(diagnostics, 'email'),
+    canonicalPlayer: getString(diagnostics, 'canonicalPlayer'),
+    leaguePlayer: getString(diagnostics, 'leaguePlayer'),
+    displayName: getString(diagnostics, 'displayName'),
+    playerRegistryMatch: getBoolean(diagnostics, 'playerRegistryMatch'),
+    playerRegistryStatus: getString(diagnostics, 'playerRegistryStatus'),
+    playerRegistryReason: getString(diagnostics, 'playerRegistryReason'),
+    divisionStandingsMatch: getBoolean(diagnostics, 'divisionStandingsMatch'),
+    divisionStandingsReason: getString(diagnostics, 'divisionStandingsReason'),
+    currentLeague: getString(diagnostics, 'currentLeague'),
+    division: getString(diagnostics, 'division'),
+    rank: getNumber(diagnostics, 'rank'),
+    competitiveHome: getString(diagnostics, 'competitiveHome'),
+    matchedStanding: matchedStanding
+      ? {
+          eventId: getString(matchedStanding, 'eventId'),
+          player: getString(matchedStanding, 'player'),
+          displayName: getString(matchedStanding, 'displayName'),
+          division: getString(matchedStanding, 'division'),
+          rank: getNumber(matchedStanding, 'rank'),
+        }
+      : null,
+    reasons: normalizeStringArray(diagnostics.reasons),
+  }
+}
+
 function normalizeProfileStatisticsSnapshot(
   record: Record<string, unknown>,
 ): ProfileStatisticsSnapshot {
@@ -3467,6 +3542,7 @@ function normalizePortalUser(record: Record<string, unknown>): PortalUser {
   return {
     email: getString(record, 'email'),
     displayName: getString(record, 'displayName') || 'Guest',
+    canonicalPlayer: getString(record, 'canonicalPlayer'),
     leaguePlayer: getString(record, 'leaguePlayer'),
     playerDisplayName:
       getString(record, 'playerDisplayName') || getString(record, 'leaguePlayer'),

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "releases": [
+    {
+      "label": "auth-hardening-conservative-recovery",
+      "gitCommit": "c85039d0ab47faae9b657654f62a6c1f5ef0ee12",
+      "vercelDeploymentId": "dpl_F1sHbRQvo7E9PZjSBD2bMLqEMwFd",
+      "vercelUrl": "https://lobo-infinity-portal-kx1uxzhrp-lobo0705infinity-5309s-projects.vercel.app",
+      "appsScriptDeploymentId": "AKfycbwRdhFhNiKeF8X-JV5egiZsgkTJAGbByQQhJrbTaR4V6BCzw_KwW_7KBrh78-ntT10yMw",
+      "appsScriptVersion": 65,
+      "apiEndpoint": "https://script.google.com/macros/s/AKfycbwRdhFhNiKeF8X-JV5egiZsgkTJAGbByQQhJrbTaR4V6BCzw_KwW_7KBrh78-ntT10yMw/exec",
+      "productionContractResult": "passed",
+      "visualRegressionResult": "route-smoke-passed; baselines pending intentional capture",
+      "deployedAt": "2026-07-15T01:47:49-04:00"
+    }
+  ]
+}

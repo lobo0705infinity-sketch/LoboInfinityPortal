@@ -32,8 +32,10 @@ function getSeasonCommandCenter(e) {
 
   const auth =
     getRequestUser(e);
+  const canonicalPlayer =
+    getCanonicalPlayerFromUser(auth.user);
 
-  if (!auth.authenticated || !auth.user.leaguePlayer)
+  if (!auth.authenticated || !canonicalPlayer)
     return jsonOutput({
       success: false,
       error: "Authentication is required."
@@ -41,7 +43,7 @@ function getSeasonCommandCenter(e) {
 
   const context =
     buildSeasonCommandContext(
-      auth.user.leaguePlayer
+      canonicalPlayer
     );
 
   if (!context.player)
@@ -61,8 +63,10 @@ function updateSeasonAvailability(e) {
 
   const auth =
     getRequestUser(e);
+  const canonicalPlayer =
+    getCanonicalPlayerFromUser(auth.user);
 
-  if (!auth.authenticated || !auth.user.leaguePlayer)
+  if (!auth.authenticated || !canonicalPlayer)
     return jsonOutput({
       success: false,
       error: "Authentication is required."
@@ -85,7 +89,7 @@ function buildSeasonAvailabilityRecordFromRequest(e, auth) {
     getApiParameters(e);
 
   return {
-    player: auth.user.leaguePlayer,
+    player: getCanonicalPlayerFromUser(auth.user),
     status:
       getSeasonCommandString(params.status) ||
       "Available",
@@ -126,16 +130,18 @@ function buildSeasonAvailabilityRecordFromRequest(e, auth) {
 }
 
 function addSeasonCommandNotifications(notifications, user) {
+  const canonicalPlayer =
+    getCanonicalPlayerFromUser(user);
 
   if (
     !user ||
-    !user.leaguePlayer
+    !canonicalPlayer
   )
     return;
 
   const context =
     buildSeasonCommandContext(
-      user.leaguePlayer
+      canonicalPlayer
     );
 
   if (!context.player)

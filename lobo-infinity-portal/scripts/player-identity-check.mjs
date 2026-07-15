@@ -5,6 +5,7 @@ const root = process.cwd()
 
 const files = {
   authApi: read('backend/AuthApi.gs'),
+  identityService: read('backend/IdentityService.gs'),
   myProfile: read('src/pages/MyProfile.tsx'),
   api: read('src/services/api.ts'),
   authContext: read('src/auth/AuthContext.tsx'),
@@ -63,9 +64,20 @@ const checks = [
   {
     label: 'Frontend profile model includes identity fields',
     pass:
+      files.api.includes('canonicalPlayer: string') &&
       files.api.includes('discordName: string') &&
       files.api.includes('profileVisibility: string') &&
       files.authContext.includes("profileVisibility: 'Public'"),
+  },
+  {
+    label: 'My Profile league resolution uses canonical player identity only',
+    pass:
+      files.identityService.includes('function getAuthCanonicalPlayerIdentityByEmail') &&
+      files.identityService.includes('buildCommunityLeagueIdentityByEmailMap') &&
+      files.authApi.includes('canonicalPlayer: leagueIdentity.player') &&
+      files.myProfile.includes('[data.user.canonicalPlayer]') &&
+      !files.myProfile.includes('data.user.leaguePlayer,\n      data.user.playerDisplayName') &&
+      files.api.includes("canonicalPlayer: getString(record, 'canonicalPlayer')"),
   },
   {
     label: 'Authenticated profiles include sanitized event registrations',

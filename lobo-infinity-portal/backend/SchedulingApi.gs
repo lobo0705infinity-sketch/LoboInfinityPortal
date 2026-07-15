@@ -135,7 +135,7 @@ function updateSchedulingAvailability(e) {
         diagnostics: {
           stage: "leaguePlayerResolution",
           authenticated: Boolean(auth.authenticated),
-          hasLeaguePlayer: Boolean(auth.user && auth.user.leaguePlayer),
+          hasLeaguePlayer: Boolean(getCanonicalPlayerFromUser(auth.user)),
           elapsedMs: new Date().getTime() - startedAt.getTime()
         }
       });
@@ -257,7 +257,7 @@ function createSchedulingRequest(e) {
       diagnostics: {
         stage: "leaguePlayerResolution",
         authenticated: Boolean(auth.authenticated),
-        hasLeaguePlayer: Boolean(auth.user && auth.user.leaguePlayer),
+        hasLeaguePlayer: Boolean(getCanonicalPlayerFromUser(auth.user)),
         elapsedMs: new Date().getTime() - startedAt.getTime()
       }
     });
@@ -605,7 +605,7 @@ function buildEventSchedulingContext(e, auth) {
 
   const participantKey =
     eventType === "League"
-      ? getSchedulingString(auth.user && auth.user.leaguePlayer)
+      ? getSchedulingString(getCanonicalPlayerFromUser(auth.user))
       : getEventParticipantKey(event, auth.user);
 
   if (participantKey === "")
@@ -2152,18 +2152,20 @@ function ensureSchedulingRequestsSheet() {
 }
 
 function addSchedulingNotifications(notifications, user) {
+  const canonicalPlayer =
+    getCanonicalPlayerFromUser(user);
 
-  if (!user || !user.leaguePlayer)
+  if (!user || !canonicalPlayer)
     return;
 
-  getSchedulingRequestsForPlayer(user.leaguePlayer)
+  getSchedulingRequestsForPlayer(canonicalPlayer)
     .filter(function(request) {
       return request.status === "Pending" || request.status === "Accepted" || request.status === "Declined" || request.status === "Suggested";
     })
     .slice(0, 8)
     .forEach(function(request) {
       const incoming =
-        getSchedulingKey(request.toPlayer) === getSchedulingKey(user.leaguePlayer);
+        getSchedulingKey(request.toPlayer) === getSchedulingKey(canonicalPlayer);
 
       notifications.push(
         buildLeagueNotification({

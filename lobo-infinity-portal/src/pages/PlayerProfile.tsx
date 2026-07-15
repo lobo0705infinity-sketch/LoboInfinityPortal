@@ -5,7 +5,6 @@ import { getOperatorBadgeDetails } from '../components/operatorBadgeDetails'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
 import { getArmyParentFaction } from '../config/armies'
-import { getEventNavigationConfig } from '../config/eventNavigation'
 import { getCanonicalMissionName } from '../config/missions'
 import type {
   ArmyList,
@@ -22,6 +21,7 @@ import {
   formatPlayerName,
 } from '../services/formatting'
 import { isDrawGame } from '../services/gameResults'
+import { getConfiguredEventDisplayName } from '../services/leagueEventDisplay'
 import {
   getProfileClassifications,
   isActiveEventRegistration,
@@ -343,31 +343,17 @@ function getCurrentLeagueDisplayLabel(
   player: PlayerProfileData,
   leagueName: string | undefined,
 ) {
-  const normalizedLeagueName = leagueName?.trim()
-
-  if (normalizedLeagueName === 'Current League') {
-    return getEventNavigationConfig('event-current-league')?.label || 'Not Assigned'
-  }
-
-  if (normalizedLeagueName) {
-    return normalizedLeagueName
-  }
-
   const currentLeagueRegistration = player.registeredEvents.find((event) =>
     event.eventType === 'League' &&
     !['deleted', 'removed', 'withdrawn', 'disabled', 'archived', 'completed'].includes(
       event.status.trim().toLowerCase(),
     )
   )
-  const configuredLeagueLabel = currentLeagueRegistration
-    ? getEventNavigationConfig(currentLeagueRegistration.eventId)?.label
-    : null
 
-  if (configuredLeagueLabel) {
-    return configuredLeagueLabel
-  }
-
-  return 'Not Assigned'
+  return getConfiguredEventDisplayName({
+    eventId: currentLeagueRegistration?.eventId,
+    eventName: leagueName,
+  })
 }
 
 function OperatorBadgeLegend({

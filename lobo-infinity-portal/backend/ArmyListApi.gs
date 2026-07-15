@@ -69,7 +69,7 @@ function submitArmyList(e) {
     getApiParameter(parameters, "player") ||
     (
       auth.authenticated
-        ? auth.user.leaguePlayer
+        ? getCanonicalPlayerFromUser(auth.user)
         : ""
     );
 
@@ -99,12 +99,15 @@ function submitArmyList(e) {
   const sheet =
     getArmyListSheet();
 
-  sheet.appendRow([
+  const submissionDate =
     Utilities.formatDate(
       new Date(),
       Session.getScriptTimeZone(),
       "yyyy-MM-dd"
-    ),
+    );
+
+  sheet.appendRow([
+    submissionDate,
     player,
     faction,
     sectorial,
@@ -126,6 +129,34 @@ function submitArmyList(e) {
 
   if (typeof evaluateAchievementsForPlayer === "function")
     evaluateAchievementsForPlayer(player);
+
+  if (typeof publishLeagueAutomationEvent === "function") {
+    const listId =
+      sheet.getLastRow() - 1;
+
+    publishLeagueAutomationEvent({
+      eventType: "armyListSubmitted",
+      category: "Army Lists",
+      priority: "normal",
+      player: player,
+      division: "",
+      message:
+        player +
+        " submitted an army list: " +
+        armyName,
+      payload: {
+        listId: listId,
+        id: listId,
+        player: player,
+        faction: faction,
+        sectorial: sectorial,
+        armyName: armyName,
+        mission: getApiParameter(parameters, "mission"),
+        event: getApiParameter(parameters, "event"),
+        submittedAt: submissionDate
+      }
+    });
+  }
 
   return jsonOutput({
     success: true

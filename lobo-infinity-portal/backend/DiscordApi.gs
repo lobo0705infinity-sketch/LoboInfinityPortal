@@ -1043,6 +1043,12 @@ function sendDiscordAnnouncementPayload(event, payload, options) {
 
   options = options || {};
 
+  const logPayload =
+    buildDiscordLogPayload(
+      payload,
+      options
+    );
+
   const config =
     getDiscordConfig();
 
@@ -1059,7 +1065,7 @@ function sendDiscordAnnouncementPayload(event, payload, options) {
     const skipped =
       logDiscordAutomation(
         event,
-        payload,
+        logPayload,
         webhookUrl,
         true,
         "Automation disabled.",
@@ -1078,7 +1084,7 @@ function sendDiscordAnnouncementPayload(event, payload, options) {
     const missing =
       logDiscordAutomation(
         event,
-        payload,
+        logPayload,
         webhookUrl,
         false,
         "Webhook URL is not configured.",
@@ -1097,13 +1103,13 @@ function sendDiscordAnnouncementPayload(event, payload, options) {
     !options.force &&
     isDuplicateDiscordAnnouncement(
       event,
-      payload
+      logPayload
     )
   ) {
     const duplicate =
       logDiscordAutomation(
         event,
-        payload,
+        logPayload,
         webhookUrl,
         true,
         "Duplicate announcement skipped.",
@@ -1123,7 +1129,7 @@ function sendDiscordAnnouncementPayload(event, payload, options) {
     const limited =
       logDiscordAutomation(
         event,
-        payload,
+        logPayload,
         webhookUrl,
         false,
         "Rate limit reached.",
@@ -1157,7 +1163,7 @@ function sendDiscordAnnouncementPayload(event, payload, options) {
     const entry =
       logDiscordAutomation(
         event,
-        payload,
+        logPayload,
         webhookUrl,
         success,
         success
@@ -1182,7 +1188,7 @@ function sendDiscordAnnouncementPayload(event, payload, options) {
     const entry =
       logDiscordAutomation(
         event,
-        payload,
+        logPayload,
         webhookUrl,
         false,
         String(err && err.message ? err.message : err),
@@ -1199,20 +1205,75 @@ function sendDiscordAnnouncementPayload(event, payload, options) {
 
 }
 
+function buildDiscordLogPayload(payload, options) {
+
+  const copy =
+    JSON.parse(
+      JSON.stringify(payload || {})
+    );
+
+  const dedupeKey =
+    getDiscordString(
+      options && options.dedupeKey
+    );
+
+  if (dedupeKey !== "") {
+    copy._automation = {
+      dedupeKey: dedupeKey,
+      eventId:
+        getDiscordString(
+          options && options.automationEventId
+        )
+    };
+  }
+
+  return copy;
+
+}
+
+function getDiscordPayloadDedupeKey(payload) {
+
+  return getDiscordString(
+    payload &&
+    payload._automation &&
+    payload._automation.dedupeKey
+  );
+
+}
+
 function isDuplicateDiscordAnnouncement(event, payload) {
 
-  const title =
-    getDiscordPayloadTitle(payload);
+  const dedupeKey =
+    getDiscordPayloadDedupeKey(payload);
+
+  if (dedupeKey === "")
+    return false;
 
   return getDiscordLogEntries(100)
     .some(function(entry) {
+      const loggedPayload =
+        parseDiscordLogPayload(entry.payload);
+
       return (
         entry.event === event &&
-        entry.title === title &&
+        getDiscordPayloadDedupeKey(loggedPayload) === dedupeKey &&
         entry.success === true &&
         entry.status === "Sent"
       );
     });
+
+}
+
+function parseDiscordLogPayload(value) {
+
+  try {
+    return JSON.parse(
+      getDiscordString(value)
+    );
+  }
+  catch (err) {
+    return {};
+  }
 
 }
 

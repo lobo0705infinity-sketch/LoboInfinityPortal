@@ -95,7 +95,7 @@ function saveLeagueOperations(e) {
 
     const updatedBy =
       auth && auth.user
-        ? auth.user.email || auth.user.leaguePlayer || "Commissioner"
+        ? auth.user.email || getCanonicalPlayerFromUser(auth.user) || "Commissioner"
         : "Commissioner";
 
     const row = [

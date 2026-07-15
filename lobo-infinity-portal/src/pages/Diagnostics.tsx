@@ -16,10 +16,18 @@ import {
   runDataMigrationToFirestore,
 } from '../services/data'
 import { getDiagnosticsState } from '../services/diagnostics'
+import { getConfiguredEventDisplayName } from '../services/leagueEventDisplay'
+import {
+  apiClient,
+  type IdentityResolutionDiagnostics,
+} from '../services/api'
 
 function Diagnostics() {
   const auth = useAuth()
   const [platform, setPlatform] = useState<PlatformReliabilityData | null>(null)
+  const [identityResolution, setIdentityResolution] =
+    useState<IdentityResolutionDiagnostics | null>(null)
+  const [identityResolutionError, setIdentityResolutionError] = useState('')
   const [providerDiagnostics, setProviderDiagnostics] = useState<Awaited<
     ReturnType<typeof getDataProviderDiagnostics>
   > | null>(null)
@@ -48,6 +56,25 @@ function Diagnostics() {
       .catch(() => {
         if (!controller.signal.aborted) {
           setPlatform(null)
+        }
+      })
+
+    apiClient
+      .getIdentityResolutionDiagnostics({
+        signal: controller.signal,
+      })
+      .then((diagnostics) => {
+        setIdentityResolution(diagnostics)
+        setIdentityResolutionError('')
+      })
+      .catch((error: unknown) => {
+        if (!controller.signal.aborted) {
+          setIdentityResolution(null)
+          setIdentityResolutionError(
+            error instanceof Error
+              ? error.message
+              : 'Identity diagnostics failed.',
+          )
         }
       })
 
@@ -272,6 +299,92 @@ function Diagnostics() {
 
       <section className="panel operations-panel">
         <div className="panel-heading">
+          <p className="eyebrow">Identity Resolution</p>
+          <h2>Authenticated Player Lookup</h2>
+          <p>
+            Uses the same authenticated profile identity and current standings
+            resolution path as My Profile.
+          </p>
+        </div>
+        <div className="operations-table-wrap">
+          <table className="operations-table">
+            <tbody>
+              <tr>
+                <th>Authenticated Google Email</th>
+                <td>{identityResolution?.email || 'Loading'}</td>
+              </tr>
+              <tr>
+                <th>Canonical Player</th>
+                <td>{identityResolution?.canonicalPlayer || 'Not resolved'}</td>
+              </tr>
+              <tr>
+                <th>League Player Legacy</th>
+                <td>{identityResolution?.leaguePlayer || 'None'}</td>
+              </tr>
+              <tr>
+                <th>Display Name</th>
+                <td>{identityResolution?.displayName || 'None'}</td>
+              </tr>
+              <tr>
+                <th>Player Registry Match</th>
+                <td>
+                  {identityResolution
+                    ? identityResolution.playerRegistryMatch
+                      ? 'Yes'
+                      : `No: ${identityResolution.playerRegistryReason || identityResolution.playerRegistryStatus}`
+                    : 'Loading'}
+                </td>
+              </tr>
+              <tr>
+                <th>DivisionStandings Match</th>
+                <td>
+                  {identityResolution
+                    ? identityResolution.divisionStandingsMatch
+                      ? 'Yes'
+                      : `No: ${identityResolution.divisionStandingsReason}`
+                    : 'Loading'}
+                </td>
+              </tr>
+              <tr>
+                <th>Current League</th>
+                <td>{getIdentityResolutionCurrentLeague(identityResolution)}</td>
+              </tr>
+              <tr>
+                <th>Division</th>
+                <td>{identityResolution?.division || 'Not Assigned'}</td>
+              </tr>
+              <tr>
+                <th>Rank</th>
+                <td>{identityResolution?.rank ? identityResolution.rank : 'Unranked'}</td>
+              </tr>
+              <tr>
+                <th>Competitive Home</th>
+                <td>{identityResolution?.competitiveHome || 'Not Assigned'}</td>
+              </tr>
+              <tr>
+                <th>Matched Standing</th>
+                <td>
+                  {identityResolution?.matchedStanding
+                    ? `${identityResolution.matchedStanding.player} (${identityResolution.matchedStanding.division}, rank ${identityResolution.matchedStanding.rank})`
+                    : 'None'}
+                </td>
+              </tr>
+              <tr>
+                <th>Failure Reasons</th>
+                <td>
+                  {identityResolutionError ||
+                    (identityResolution?.reasons.length
+                      ? identityResolution.reasons.join('; ')
+                      : 'None')}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="panel operations-panel">
+        <div className="panel-heading">
           <p className="eyebrow">Submit Game</p>
           <h2>Opponent Resolution Diagnostics</h2>
           <p>Latest zero-opponent league submission trace captured in this browser session.</p>
@@ -367,6 +480,10 @@ function Diagnostics() {
                 <td>{buildInfo.backendDeploymentId}</td>
               </tr>
               <tr>
+                <th>Apps Script Version</th>
+                <td>{buildInfo.appsScriptVersion}</td>
+              </tr>
+              <tr>
                 <th>Frontend Build</th>
                 <td>{buildInfo.deploymentId}</td>
               </tr>
@@ -388,7 +505,15 @@ function Diagnostics() {
               </tr>
               <tr>
                 <th>API Endpoint</th>
-                <td>{buildInfo.apiUrl ? 'Configured' : 'Not configured'}</td>
+                <td>
+                  {buildInfo.apiUrl
+                    ? `Configured (${buildInfo.apiUrlFingerprint || 'fingerprint unavailable'})`
+                    : 'Not configured'}
+                </td>
+              </tr>
+              <tr>
+                <th>Release Manifest</th>
+                <td>{buildInfo.releaseManifestVersion}</td>
               </tr>
             </tbody>
           </table>
@@ -406,6 +531,10 @@ function Diagnostics() {
               <tr>
                 <th>Git Commit</th>
                 <td>{buildInfo.gitCommit}</td>
+              </tr>
+              <tr>
+                <th>Git Branch</th>
+                <td>{buildInfo.buildGitBranch}</td>
               </tr>
               <tr>
                 <th>Build Timestamp</th>
@@ -2006,6 +2135,15 @@ function formatBytes(value: number) {
   }
 
   return `${Math.round(value / 1024)} KB`
+}
+
+function getIdentityResolutionCurrentLeague(
+  identityResolution: IdentityResolutionDiagnostics | null,
+) {
+  return getConfiguredEventDisplayName({
+    eventId: identityResolution?.matchedStanding?.eventId,
+    eventName: identityResolution?.currentLeague,
+  })
 }
 
 function formatDuration(value: number) {

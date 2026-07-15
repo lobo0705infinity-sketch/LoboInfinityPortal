@@ -125,10 +125,6 @@ export type ClientDiagnosticMetric = {
 
 export const API_URL = import.meta.env.VITE_API_URL as string
 
-if (!API_URL) {
-  throw new Error('VITE_API_URL is required.')
-}
-
 let activeAuthToken = ''
 let activeOAuthClientId = ''
 let activeAuthTokenVersion = 0
@@ -228,7 +224,7 @@ async function requestInternal(
   retriedAfterSessionRecovery: boolean,
   bypassCache: boolean,
 ): Promise<unknown> {
-  const url = new URL(API_URL)
+  const url = new URL(getRequiredApiUrl())
   url.searchParams.set('action', action)
 
   Object.entries(params).forEach(([key, value]) => {
@@ -416,7 +412,7 @@ async function postRequestInternal(
   params: RequestParams,
   retriedAfterSessionRecovery: boolean,
 ): Promise<unknown> {
-  const url = new URL(API_URL)
+  const url = new URL(getRequiredApiUrl())
   url.searchParams.set('action', action)
 
   const body = new URLSearchParams()
@@ -618,6 +614,14 @@ function isExpiredCredentialPayload(payload: unknown) {
   const code = typeof record.code === 'string' ? record.code : ''
 
   return record.success === false && code === 'AUTH_GOOGLE_TOKEN_EXPIRED'
+}
+
+function getRequiredApiUrl() {
+  if (!API_URL) {
+    throw new Error('VITE_API_URL is required for API requests.')
+  }
+
+  return API_URL
 }
 
 function readPipelineDiagnostics(payload: unknown) {

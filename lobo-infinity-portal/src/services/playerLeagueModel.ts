@@ -1,4 +1,5 @@
 import type { DivisionStandings, Standing } from '../types/dashboard'
+import { getConfiguredEventDisplayName } from './leagueEventDisplay'
 
 export type PlayerLeagueModel = {
   currentLeague: string
@@ -29,7 +30,10 @@ export function resolvePlayerLeagueModel(
 
     if (standing) {
       return {
-        currentLeague: division.event?.name || 'Not Assigned',
+        currentLeague: getConfiguredEventDisplayName({
+          eventId: division.event?.id || division.eventId || standing.eventId,
+          eventName: division.event?.name,
+        }),
         division: standing.division || division.divisionLabel,
         divisionPopulation: division.summary.players || division.standings.length,
         preferredArmy: standing.favoriteArmy || standing.faction || '',

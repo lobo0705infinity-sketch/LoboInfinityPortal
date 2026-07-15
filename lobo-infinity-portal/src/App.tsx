@@ -26,8 +26,10 @@ const ArmyLists = lazyRoute('ArmyLists', () => import('./pages/ArmyLists'))
 const AutomationCenter = lazyRoute('AutomationCenter', () => import('./pages/AutomationCenter'))
 const CommunityManager = lazyRoute('CommunityManager', () => import('./pages/CommunityManager'))
 const CommissionerDashboard = lazyRoute('CommissionerDashboard', () => import('./pages/CommissionerDashboard'))
-const CommissionerEventManager = lazyRoute('CommissionerEventManager', () => import('./pages/CommissionerEventManager'))
+const CommissionerEvents = lazyRoute('CommissionerEvents', () => import('./pages/CommissionerEvents'))
 const CommissionerNews = lazyRoute('CommissionerNews', () => import('./pages/CommissionerNews'))
+const CommissionerPlayers = lazyRoute('CommissionerPlayers', () => import('./pages/CommissionerPlayers'))
+const CommissionerSystem = lazyRoute('CommissionerSystem', () => import('./pages/CommissionerSystem'))
 const Dashboard = lazyRoute('Dashboard', () => import('./pages/Dashboard'))
 const Diagnostics = lazyRoute('Diagnostics', () => import('./pages/Diagnostics'))
 const EventHome = lazyRoute('EventHome', () => import('./pages/EventHome'))
@@ -129,10 +131,16 @@ function AuthShell() {
                 <Route path="/event/:eventId/tournament" element={<MeasuredRoute name="TeamTournament"><TeamTournament /></MeasuredRoute>} />
                 <Route path="/event/:eventId/:section" element={<MeasuredRoute name="EventHome"><EventHome /></MeasuredRoute>} />
                 <Route path="/commissioner" element={<MeasuredRoute name="CommissionerDashboard"><CommissionerDashboard /></MeasuredRoute>} />
-                <Route path="/commissioner/event-manager" element={<MeasuredRoute name="CommissionerEventManager"><CommissionerEventManager /></MeasuredRoute>} />
+                <Route path="/commissioner/events" element={<MeasuredRoute name="CommissionerEvents"><CommissionerEvents /></MeasuredRoute>} />
+                <Route path="/commissioner/event-manager" element={<Navigate replace to="/commissioner/events" />} />
+                <Route path="/commissioner/players" element={<MeasuredRoute name="CommissionerPlayers"><CommissionerPlayers /></MeasuredRoute>} />
                 <Route path="/commissioner/community-manager" element={<MeasuredRoute name="CommunityManager"><CommunityManager /></MeasuredRoute>} />
+                <Route path="/commissioner/system" element={<MeasuredRoute name="CommissionerSystem"><CommissionerSystem /></MeasuredRoute>} />
+                <Route path="/commissioner/system/diagnostics" element={<MeasuredRoute name="Diagnostics"><Diagnostics /></MeasuredRoute>} />
+                <Route path="/commissioner/system/audit" element={<MeasuredRoute name="LeagueIntegrity"><LeagueIntegrity /></MeasuredRoute>} />
+                <Route path="/commissioner/automation" element={<MeasuredRoute name="AutomationCenter"><AutomationCenter /></MeasuredRoute>} />
                 <Route path="/diagnostics" element={<MeasuredRoute name="Diagnostics"><Diagnostics /></MeasuredRoute>} />
-                <Route path="/automation" element={<MeasuredRoute name="AutomationCenter"><AutomationCenter /></MeasuredRoute>} />
+                <Route path="/automation" element={<Navigate replace to="/commissioner/automation" />} />
                 <Route path="/integrity" element={<MeasuredRoute name="LeagueIntegrity"><LeagueIntegrity /></MeasuredRoute>} />
                 <Route path="/notifications" element={<MeasuredRoute name="Notifications"><Notifications /></MeasuredRoute>} />
                 <Route path="/profile" element={<MeasuredRoute name="MyProfile"><MyProfile /></MeasuredRoute>} />

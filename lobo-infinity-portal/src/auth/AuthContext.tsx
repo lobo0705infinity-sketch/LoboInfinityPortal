@@ -166,6 +166,7 @@ const roleOrder: UserRole[] = [
 const guestUser: PortalUser = {
   email: '',
   displayName: 'Guest',
+  canonicalPlayer: '',
   leaguePlayer: '',
   playerDisplayName: '',
   leagueDivision: '',

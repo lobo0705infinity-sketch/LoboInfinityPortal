@@ -93,37 +93,22 @@ export const commissionerItems: NavigationItem[] = [
   },
   {
     icon: 'standings',
-    label: 'Event Manager',
-    to: '/commissioner/event-manager',
+    label: 'Events',
+    to: '/commissioner/events',
   },
   {
-    icon: 'news',
-    label: 'Community Manager',
-    to: '/commissioner/community-manager',
+    icon: 'players',
+    label: 'Players',
+    to: '/commissioner/players',
   },
   {
     icon: 'bell',
     label: 'Automation',
-    to: '/automation',
+    to: '/commissioner/automation',
   },
   {
     icon: 'analytics',
-    label: 'Audit',
-    to: '/integrity',
-  },
-  {
-    icon: 'analytics',
-    label: 'Diagnostics',
-    to: '/diagnostics',
-  },
-  {
-    icon: 'players',
-    label: 'Users',
-    to: '/commissioner?section=users',
-  },
-  {
-    icon: 'submit',
-    label: 'Operations',
-    to: '/commissioner?section=operations',
+    label: 'System',
+    to: '/commissioner/system',
   },
 ]

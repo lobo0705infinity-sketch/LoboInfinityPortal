@@ -71,6 +71,9 @@ function onFormSubmit(e) {
 
   rebuildEverything();
 
+  if (typeof publishLatestGameSubmittedAutomationEvent === "function")
+    publishLatestGameSubmittedAutomationEvent();
+
 }
 
 function runLeague() {
