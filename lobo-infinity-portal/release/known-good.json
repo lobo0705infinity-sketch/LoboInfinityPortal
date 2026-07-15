@@ -12,6 +12,18 @@
       "productionContractResult": "passed",
       "visualRegressionResult": "route-smoke-passed; baselines pending intentional capture",
       "deployedAt": "2026-07-15T01:47:49-04:00"
+    },
+    {
+      "label": "release-safeguards-visual-baselines",
+      "gitCommit": "92968da0b58fd6f0aa2f99b5d9ab98ac6f577da7",
+      "vercelDeploymentId": "dpl_Hbt7GtuZZMQgJbYc8gHxSSYwtgMj",
+      "vercelUrl": "https://lobo-infinity-portal.vercel.app",
+      "appsScriptDeploymentId": "AKfycbwRdhFhNiKeF8X-JV5egiZsgkTJAGbByQQhJrbTaR4V6BCzw_KwW_7KBrh78-ntT10yMw",
+      "appsScriptVersion": 65,
+      "apiEndpoint": "https://script.google.com/macros/s/AKfycbwRdhFhNiKeF8X-JV5egiZsgkTJAGbByQQhJrbTaR4V6BCzw_KwW_7KBrh78-ntT10yMw/exec",
+      "productionContractResult": "passed",
+      "visualRegressionResult": "route-smoke-passed; live visual check found commissioner-sidebar-desktop height 1440x3860 versus approved 1440x3818; baselines unchanged",
+      "deployedAt": "2026-07-15T11:09:58-04:00"
     }
   ]
 }
