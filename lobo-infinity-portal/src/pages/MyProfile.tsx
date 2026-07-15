@@ -259,7 +259,7 @@ function ProfileDashboard({
   data: MyProfileData
   onProfileSaved: (data: MyProfileData) => void
 }) {
-  const leaguePlayer = data.user.leaguePlayer
+  const leaguePlayer = data.user.canonicalPlayer || data.user.leaguePlayer
   const leagueStats = data.leagueStatistics
   const seasonStats =
     data.currentSeasonStatistics ?? buildStatsFromProfile(leagueStats)

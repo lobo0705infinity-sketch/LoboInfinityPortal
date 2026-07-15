@@ -150,6 +150,20 @@ function resolveCanonicalPlayerIdentityFromPlayersSheet(email, options) {
       []
     );
 
+  if (matches.length > 1)
+    return buildIdentityServiceResolution(
+      "",
+      "",
+      "",
+      matches.length,
+      "DUPLICATE_MATCH",
+      "Multiple Players-sheet rows match this Google email.",
+      matches.map(function(match) {
+        return match.row;
+      }),
+      "Players"
+    );
+
   const first =
     matches[0];
 
@@ -158,12 +172,8 @@ function resolveCanonicalPlayerIdentityFromPlayersSheet(email, options) {
     first.displayName || first.player,
     first.division,
     matches.length,
-    matches.length > 1
-      ? "DUPLICATE_MATCH"
-      : "MATCH",
-    matches.length > 1
-      ? "Multiple Players-sheet rows match this Google email; using the first row."
-      : "",
+    "MATCH",
+    "",
     matches.map(function(match) {
       return match.row;
     }),
@@ -288,6 +298,20 @@ function resolveCanonicalPlayerIdentityFromEventParticipants(email) {
       []
     );
 
+  if (matches.length > 1)
+    return buildIdentityServiceResolution(
+      "",
+      "",
+      "",
+      matches.length,
+      "DUPLICATE_MATCH",
+      "Multiple active Event Participants email rows match this Google email.",
+      matches.map(function(match) {
+        return match.row;
+      }),
+      "Event Participants"
+    );
+
   const first =
     matches[0];
 
@@ -296,9 +320,7 @@ function resolveCanonicalPlayerIdentityFromEventParticipants(email) {
     first.displayName || first.player,
     first.division,
     matches.length,
-    matches.length > 1
-      ? "RECOVERED_EVENT_PARTICIPANT_DUPLICATE_MATCH"
-      : "RECOVERED_EVENT_PARTICIPANT_MATCH",
+    "RECOVERED_EVENT_PARTICIPANT_MATCH",
     "Recovered canonical player from Event Engine participant email.",
     matches.map(function(match) {
       return match.row;
