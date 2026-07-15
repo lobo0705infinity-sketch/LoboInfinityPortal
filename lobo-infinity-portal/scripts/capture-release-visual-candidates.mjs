@@ -74,6 +74,9 @@ const surfaces = [
   { name: 'submit-game-desktop', route: '/submit-game', width: 1440, height: 1000 },
   { name: 'submit-army-list-desktop', route: '/army-lists/submit', width: 1440, height: 1000 },
   { name: 'events-desktop', route: '/events', width: 1440, height: 1000 },
+  { name: 'commissioner-events-desktop', route: '/commissioner/events', width: 1440, height: 1000 },
+  { name: 'commissioner-players-desktop', route: '/commissioner/players', width: 1440, height: 1000 },
+  { name: 'commissioner-automation-desktop', route: '/commissioner/automation', width: 1440, height: 1000 },
   { name: 'commissioner-system-desktop', route: '/commissioner/system', width: 1440, height: 1000 },
 ].filter(includeSurface)
 
