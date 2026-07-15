@@ -60,5 +60,5 @@ if (failures.length > 0) {
 }
 
 function read(path) {
-  return readFileSync(resolve(root, path), 'utf8')
+  return readFileSync(resolve(root, path), 'utf8').replace(/\r\n/g, '\n')
 }

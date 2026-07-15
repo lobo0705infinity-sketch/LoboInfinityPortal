@@ -1,11 +1,12 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { chromium } from 'playwright'
-import { fail, pass, readManifest, repoRoot } from './release-utils.mjs'
+import { currentGitState, fail, pass, readManifest, repoRoot } from './release-utils.mjs'
 
 const manifest = readManifest()
 const baseUrl = process.env.VISUAL_BASE_URL || process.env.CONTRACT_BASE_URL
 const updateBaselines = process.env.UPDATE_VISUAL_BASELINES === '1'
+const candidateOnly = process.env.VISUAL_CANDIDATES_ONLY === '1'
 
 if (!baseUrl) {
   fail('visual regression check requires VISUAL_BASE_URL or CONTRACT_BASE_URL')
@@ -30,7 +31,10 @@ const surfaces = [
   { name: 'my-profile-mobile', route: '/profile', width: 390, height: 844, markers: authenticatedMarkersEnabled ? ['My Profile'] : [] },
 ]
 
-const outputDir = resolve(repoRoot, '.release-artifacts', 'visual-current')
+const state = currentGitState()
+const outputDir = candidateOnly
+  ? resolve(repoRoot, '.release-artifacts', 'visual-candidates', state.commit)
+  : resolve(repoRoot, '.release-artifacts', 'visual-current')
 const baselineDir = resolve(repoRoot, 'tests', 'visual-baselines')
 mkdirSync(outputDir, { recursive: true })
 mkdirSync(baselineDir, { recursive: true })
@@ -77,6 +81,10 @@ for (const surface of surfaces) {
     const baselinePath = resolve(baselineDir, `${surface.name}.png`)
     writeFileSync(screenshotPath, screenshot)
 
+    if (candidateOnly) {
+      continue
+    }
+
     if (updateBaselines) {
       writeFileSync(baselinePath, screenshot)
     } else {
@@ -103,4 +111,4 @@ if (failures.length) {
   fail('visual regression check failed', failures)
 }
 
-pass(`visual regression check passed for ${surfaces.length} surfaces`)
+pass(`${candidateOnly ? 'visual candidates captured' : 'visual regression check passed'} for ${surfaces.length} surfaces in ${outputDir}`)
