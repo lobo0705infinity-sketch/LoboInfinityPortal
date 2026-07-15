@@ -16,6 +16,7 @@
     "release:contract": "node scripts/production-contract-check.mjs",
     "release:smoke": "node scripts/production-route-smoke-check.mjs",
     "release:visual": "node scripts/production-visual-check.mjs",
+    "release:visual:candidates": "node scripts/capture-release-visual-candidates.mjs",
     "release:promotion": "node scripts/release-promotion-check.mjs",
     "release:rollback-plan": "node scripts/rollback-plan.mjs",
     "release:safeguards:self-test": "node scripts/release-safeguard-self-test.mjs",
