@@ -68,7 +68,7 @@
 }
 
 .my-profile-operator-hero {
-  grid-template-columns: minmax(280px, 390px) minmax(0, 1fr);
+  grid-template-columns: minmax(280px, 380px) minmax(420px, 1fr);
   align-items: center;
   margin: 0;
 }
@@ -79,7 +79,7 @@
 }
 
 .my-profile-operator-badge .operator-badge {
-  --operator-badge-size: clamp(280px, 30vw, 410px);
+  --operator-badge-size: clamp(220px, 18vw, 260px);
 }
 
 .my-profile-hero-meta,
@@ -143,8 +143,8 @@
 
 .my-profile-service-record dl {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(2, minmax(170px, 1fr));
+  gap: 10px;
   margin: 0;
 }
 
@@ -152,23 +152,23 @@
   border: 1px solid rgba(42, 59, 73, 0.72);
   background: rgba(18, 26, 36, 0.58);
   padding: 10px;
+  min-width: 0;
 }
 
 .my-profile-service-record dt {
   color: var(--muted);
-  font-size: 0.64rem;
+  font-size: 0.58rem;
   font-weight: 900;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .my-profile-service-record dd {
   margin: 5px 0 0;
   color: var(--text);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 900;
-  line-height: 1.12;
-  text-transform: uppercase;
+  line-height: 1.22;
 }
 
 .my-profile-season-panel,
@@ -393,7 +393,7 @@
   }
 
   .my-profile-service-record dl {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(150px, 1fr));
   }
 }
 
