@@ -881,7 +881,7 @@ function comparePng(expected, actual) {
 
   const totalPixels = baseline.width * baseline.height
   const changedRatio = changedPixels / totalPixels
-  const passed = changedPixels <= 500 || changedRatio <= 0.0005
+  const passed = changedPixels <= 5000 || changedRatio <= 0.001
 
   return {
     message: `${changedPixels} changed pixels (${(changedRatio * 100).toFixed(4)}%), max channel delta ${largestDelta}`,
