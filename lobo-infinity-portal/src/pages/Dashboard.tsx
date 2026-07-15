@@ -18,7 +18,7 @@ import {
 } from '../services/formatting'
 import { getGameHeadline, isDrawGame } from '../services/gameResults'
 import { resolvePlayerLeagueModel } from '../services/playerLeagueModel'
-import dashboardConcept from '../../docs/design/dashboard/docs/dashboard-concept-v2.1.png'
+import dashboardConcept from '../../docs/design/Dashboard/docs/dashboard-concept-v2.1.png'
 import loboCrest from '../assets/lobo-crest.svg'
 import {
   DashboardDataProvider,
