@@ -174,81 +174,6 @@ function getCommunityPortalUsers(leagueIdentityByEmail) {
 
 }
 
-function buildCommunityLeagueIdentityByEmailMap() {
-
-  const sheet =
-    SpreadsheetApp
-      .getActive()
-      .getSheetByName(CONFIG.SHEETS.PLAYERS);
-
-  if (!sheet)
-    return {};
-
-  const values =
-    sheet
-      .getDataRange()
-      .getValues();
-
-  if (values.length <= 1)
-    return {};
-
-  const headers =
-    values[0]
-      .map(getCommunityPlayerRegistryString);
-
-  const playerCol =
-    headers.indexOf("Player");
-  const emailCol =
-    headers.indexOf("Google Email");
-  const displayNameCol =
-    headers.indexOf("Display Name");
-  const divisionCol =
-    headers.indexOf("Division");
-  const activeCol =
-    headers.indexOf("Active");
-
-  if (
-    playerCol === -1 ||
-    emailCol === -1
-  )
-    return {};
-
-  const map = {};
-
-  values.slice(1)
-    .forEach(function(row) {
-      const email =
-        getCommunityPlayerRegistryString(row[emailCol])
-          .toLowerCase();
-
-      if (!email)
-        return;
-
-      if (
-        activeCol !== -1 &&
-        getCommunityBoolean(row[activeCol]) === false
-      )
-        return;
-
-      map[email] = {
-        player:
-          getCommunityPlayerRegistryString(row[playerCol]),
-        displayName:
-          displayNameCol === -1
-            ? getCommunityPlayerRegistryString(row[playerCol])
-            : getCommunityPlayerRegistryString(row[displayNameCol]) ||
-              getCommunityPlayerRegistryString(row[playerCol]),
-        division:
-          divisionCol === -1
-            ? ""
-            : getCommunityPlayerRegistryString(row[divisionCol])
-      };
-    });
-
-  return map;
-
-}
-
 function buildCommunityEventsById() {
 
   const map = {};
@@ -804,13 +729,8 @@ function getPlayer(e) {
       registeredPlayer
     );
 
-  const firstTurnGames =
-    FIRSTTURNGAMES(
-      registeredPlayer.player
-    );
-
-  const secondTurnGames =
-    SECONDTURNGAMES(
+  const turnStats =
+    getPlayerTurnStatsFromGameEngine(
       registeredPlayer.player
     );
 
@@ -870,20 +790,16 @@ function getPlayer(e) {
         missionProfile.bestMission,
 
       firstTurnGames:
-        firstTurnGames.length,
+        turnStats.firstTurnGames,
 
       secondTurnGames:
-        secondTurnGames.length,
+        turnStats.secondTurnGames,
 
       firstTurnWinRate:
-        getPlayerWinRate(
-          firstTurnGames
-        ),
+        turnStats.firstTurnWinRate,
 
       secondTurnWinRate:
-        getPlayerWinRate(
-          secondTurnGames
-        ),
+        turnStats.secondTurnWinRate,
 
       bestFaction:
         BESTFACTION(
@@ -1706,6 +1622,37 @@ function getPlayerWinRate(games) {
   return Math.round(
     RECORD(games).pct * 100
   );
+
+}
+
+function getPlayerTurnStatsFromGameEngine(player) {
+
+  const games =
+    getLeagueData()
+      .filter(function(game) {
+        return game[COL_PLAYER] === player;
+      });
+
+  const firstTurnGames =
+    games.filter(function(game) {
+      return game[COL_FIRSTTURN] === "Yes";
+    });
+
+  const secondTurnGames =
+    games.filter(function(game) {
+      return game[COL_FIRSTTURN] === "No";
+    });
+
+  return {
+    firstTurnGames: firstTurnGames.length,
+    secondTurnGames: secondTurnGames.length,
+    firstTurnWinRate: getPlayerWinRate(
+      firstTurnGames
+    ),
+    secondTurnWinRate: getPlayerWinRate(
+      secondTurnGames
+    )
+  };
 
 }
 

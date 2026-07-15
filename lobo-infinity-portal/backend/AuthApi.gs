@@ -96,6 +96,180 @@ function getMyProfile(e) {
 
 }
 
+function getIdentityResolutionDiagnostics(auth) {
+
+  const profile =
+    buildUserProfile(auth.user);
+  const user =
+    profile.user || {};
+  const email =
+    getAuthString(user.email).toLowerCase();
+  const canonicalIdentity =
+    getAuthCanonicalPlayerIdentityByEmail(email);
+  const canonicalPlayer =
+    getAuthString(user.canonicalPlayer);
+  const standingsResolution =
+    resolveIdentityDiagnosticsStanding(canonicalPlayer);
+  const reasons = [];
+
+  if (email === "")
+    reasons.push("Authenticated Google email is missing.");
+
+  if (canonicalIdentity.player === "")
+    reasons.push(getIdentityResolutionRegistryReason(canonicalIdentity.status));
+
+  if (canonicalPlayer === "")
+    reasons.push("Canonical player is missing from getMyProfile payload.");
+
+  if (!standingsResolution.match)
+    reasons.push(
+      canonicalPlayer === ""
+        ? "No DivisionStandings lookup attempted because canonical player is missing."
+        : "No DivisionStandings match for canonical player: " + canonicalPlayer
+    );
+
+  return jsonOutput({
+    success: true,
+    identityResolution: {
+      email: email,
+      canonicalPlayer: canonicalPlayer,
+      leaguePlayer: getAuthString(user.leaguePlayer),
+      displayName: getAuthString(user.displayName),
+      playerRegistryMatch: canonicalIdentity.player !== "",
+      playerRegistryStatus: canonicalIdentity.status,
+      playerRegistryReason:
+        canonicalIdentity.player !== ""
+          ? ""
+          : getIdentityResolutionRegistryReason(canonicalIdentity.status),
+      playerRegistrySource: getAuthString(canonicalIdentity.source),
+      playerRegistryMatchRows: canonicalIdentity.matchRows || [],
+      divisionStandingsMatch: standingsResolution.match,
+      divisionStandingsReason:
+        standingsResolution.match
+          ? ""
+          : (
+              canonicalPlayer === ""
+                ? "Canonical player missing."
+                : "No DivisionStandings match for canonical player."
+            ),
+      currentLeague: standingsResolution.currentLeague,
+      division: standingsResolution.division,
+      rank: standingsResolution.rank,
+      competitiveHome: standingsResolution.competitiveHome,
+      matchedStanding: standingsResolution.standing,
+      reasons: reasons
+    }
+  });
+
+}
+
+function resolveIdentityDiagnosticsStanding(canonicalPlayer) {
+
+  const normalized =
+    getAuthString(canonicalPlayer).toLowerCase();
+
+  if (normalized === "")
+    return {
+      match: false,
+      currentLeague: "",
+      division: "",
+      rank: 0,
+      competitiveHome: "",
+      standing: null
+    };
+
+  const divisions =
+    getSearchPlayers();
+
+  for (
+    let divisionIndex = 0;
+    divisionIndex < divisions.length;
+    divisionIndex++
+  ) {
+    const division =
+      divisions[divisionIndex];
+    const standings =
+      division.standings || [];
+
+    for (
+      let rowIndex = 0;
+      rowIndex < standings.length;
+      rowIndex++
+    ) {
+      const row =
+        standings[rowIndex];
+      const player =
+        getAuthString(row.player).toLowerCase();
+      const displayName =
+        getAuthString(row.displayName).toLowerCase();
+
+      if (
+        player === normalized ||
+        displayName === normalized
+      ) {
+        const divisionLabel =
+          getAuthString(row.division) ||
+          getAuthString(division.divisionLabel);
+
+        return {
+          match: true,
+          currentLeague:
+            division.event && division.event.name
+              ? getAuthString(division.event.name)
+              : "",
+          division: divisionLabel,
+          rank: Number(row.rank) || 0,
+          competitiveHome: divisionLabel,
+          standing: {
+            eventId: getAuthString(row.eventId),
+            player: getAuthString(row.player),
+            displayName: getAuthString(row.displayName),
+            division: divisionLabel,
+            rank: Number(row.rank) || 0
+          }
+        };
+      }
+    }
+  }
+
+  return {
+    match: false,
+    currentLeague: "",
+    division: "",
+    rank: 0,
+    competitiveHome: "",
+    standing: null
+  };
+
+}
+
+function getIdentityResolutionRegistryReason(status) {
+
+  switch (status) {
+    case "NO_EMAIL":
+      return "No authenticated Google email.";
+    case "NO_MATCH":
+      return "No Players-sheet email match.";
+    case "DUPLICATE_MATCH":
+      return "Multiple Players-sheet email matches; using the first row.";
+    case "RECOVERED_EVENT_PARTICIPANT_MATCH":
+      return "Recovered canonical player from Event Engine participant email.";
+    case "RECOVERED_EVENT_PARTICIPANT_DUPLICATE_MATCH":
+      return "Recovered canonical player from multiple Event Engine participant rows; using the first row.";
+    case "NO_RECOVERY_MATCH":
+      return "No Players-sheet or Event Participants email match.";
+    case "PLAYERS_SHEET_MISSING":
+      return "Players sheet not found.";
+    case "PLAYERS_SHEET_EMPTY":
+      return "Players sheet has no rows.";
+    case "PLAYERS_HEADERS_MISSING":
+      return "Players sheet is missing Player or Google Email headers.";
+    default:
+      return "Player Registry lookup failed: " + getAuthString(status);
+  }
+
+}
+
 function updateMyProfile(e) {
 
   return requireApiPermission(
@@ -132,7 +306,7 @@ function updateMyProfile(e) {
             columns,
             params.displayName,
             auth.user.email,
-            auth.user.leaguePlayer
+            getCanonicalPlayerFromUser(auth.user)
           );
 
         if (!validation.valid)
@@ -931,7 +1105,7 @@ function validatePortalProfileVisibility(value) {
 function syncPortalDisplayNameReferences(user, displayName) {
 
   const leaguePlayer =
-    getAuthString(user.leaguePlayer);
+    getAuthString(getCanonicalPlayerFromUser(user));
 
   if (leaguePlayer !== "") {
     try {
@@ -958,7 +1132,7 @@ function syncPortalDisplayNameReferences(user, displayName) {
 function syncEventParticipantDisplayName(user, displayName) {
 
   const leaguePlayer =
-    getAuthString(user.leaguePlayer);
+    getAuthString(getCanonicalPlayerFromUser(user));
   const email =
     getAuthString(user.email).toLowerCase();
 
@@ -1664,14 +1838,15 @@ function readUserRow(sheet, columns, rowNumber) {
       .getRange(rowNumber, 1, 1, sheet.getLastColumn())
       .getValues()[0];
 
+  const email =
+    getAuthString(row[columns.email]).toLowerCase();
   const leagueIdentity =
-    getAuthLeagueIdentityByEmail(
-      getAuthString(row[columns.email])
-    );
+    getAuthCanonicalPlayerIdentityByEmail(email);
 
   return {
-    email: getAuthString(row[columns.email]).toLowerCase(),
+    email: email,
     displayName: getAuthString(row[columns.displayName]),
+    canonicalPlayer: leagueIdentity.player,
     leaguePlayer: leagueIdentity.player,
     playerDisplayName:
       getAuthString(row[columns.displayName]) ||
@@ -1771,133 +1946,6 @@ function migratePortalDisplayName(sheet, columns, rowNumber, verified, leagueIde
 
 }
 
-function getAuthLeagueIdentityByEmail(email) {
-
-  const normalized =
-    getAuthString(email)
-      .toLowerCase();
-
-  if (normalized === "")
-    return {
-      player: "",
-      displayName: "",
-      division: "",
-      matches: 0,
-      status: "NO_EMAIL"
-    };
-
-  const spreadsheet =
-    SpreadsheetApp.getActive();
-
-  const sheet =
-    spreadsheet.getSheetByName(CONFIG.SHEETS.PLAYERS);
-
-  if (!sheet)
-    return {
-      player: "",
-      displayName: "",
-      division: "",
-      matches: 0,
-      status: "PLAYERS_SHEET_MISSING"
-    };
-
-  const values =
-    sheet
-      .getDataRange()
-      .getValues();
-
-  if (values.length === 0)
-    return {
-      player: "",
-      displayName: "",
-      division: "",
-      matches: 0,
-      status: "PLAYERS_SHEET_EMPTY"
-    };
-
-  const headers =
-    values[0]
-      .map(function(header) {
-        return getAuthString(header);
-      });
-
-  const playerCol =
-    headers.indexOf("Player");
-
-  const divisionCol =
-    headers.indexOf("Division");
-
-  const displayNameCol =
-    headers.indexOf("Display Name");
-
-  const emailCol =
-    headers.indexOf("Google Email");
-
-  if (
-    playerCol === -1 ||
-    emailCol === -1
-  )
-    return {
-      player: "",
-      displayName: "",
-      division: "",
-      matches: 0,
-      status: "PLAYERS_HEADERS_MISSING"
-    };
-
-  const matches = [];
-
-  for (
-    let index = 1;
-    index < values.length;
-    index++
-  ) {
-
-    if (
-      getAuthString(values[index][emailCol])
-        .toLowerCase() === normalized
-    )
-      matches.push({
-        player: getAuthString(values[index][playerCol]),
-        displayName:
-          displayNameCol === -1
-            ? getAuthString(values[index][playerCol])
-            : getAuthString(values[index][displayNameCol]) ||
-              getAuthString(values[index][playerCol]),
-        division:
-          divisionCol === -1
-            ? ""
-            : getAuthString(values[index][divisionCol]),
-        row: index + 1
-      });
-
-  }
-
-  if (matches.length > 0)
-    return {
-      player: matches[0].player,
-      displayName: matches[0].displayName,
-      division: matches[0].division,
-      matchRows:
-        matches.map(function(match) {
-          return match.row;
-        }),
-      matches: matches.length,
-      status:
-        matches.length > 1
-          ? "DUPLICATE_MATCH"
-          : "MATCH"
-    };
-
-  return {
-    player: "",
-    displayName: "",
-    matches: 0,
-    status: "NO_MATCH"
-  };
-
-}
-
 function updateUserLastSeen(sheet, columns, rowNumber) {
 
   sheet
@@ -1985,7 +2033,7 @@ function buildUserProfile(user) {
       ),
     achievements:
       typeof buildLeaguePlayerAchievements === "function"
-        ? buildLeaguePlayerAchievements(user.leaguePlayer)
+        ? buildLeaguePlayerAchievements(getCanonicalPlayerFromUser(user))
         : buildProfileAchievements(
             user,
             playerStats,
@@ -2068,7 +2116,7 @@ function getUserAllLeagueGames(user) {
     return [];
 
   const leaguePlayer =
-    getAuthString(user.leaguePlayer);
+    getAuthString(getCanonicalPlayerFromUser(user));
 
   if (leaguePlayer === "")
     return [];
@@ -2092,7 +2140,7 @@ function getUserSubmittedLists(user) {
     return [];
 
   const leaguePlayer =
-    getAuthString(user.leaguePlayer);
+    getAuthString(getCanonicalPlayerFromUser(user));
 
   if (leaguePlayer === "")
     return [];
@@ -2164,7 +2212,7 @@ function getUserRecentActivity(user) {
     return [];
 
   const leaguePlayer =
-    getAuthString(user.leaguePlayer);
+    getAuthString(getCanonicalPlayerFromUser(user));
 
   if (leaguePlayer === "")
     return [];
@@ -2187,7 +2235,7 @@ function getUserRecentGames(user) {
     return [];
 
   const leaguePlayer =
-    getAuthString(user.leaguePlayer);
+    getAuthString(getCanonicalPlayerFromUser(user));
 
   if (leaguePlayer === "")
     return [];
@@ -2206,7 +2254,7 @@ function getUserLeagueStatistics(user) {
     return null;
 
   const leaguePlayer =
-    getAuthString(user.leaguePlayer);
+    getAuthString(getCanonicalPlayerFromUser(user));
 
   if (leaguePlayer === "")
     return null;
@@ -2274,7 +2322,7 @@ function buildProfileStatisticsSnapshot(playerStats) {
 function buildProfileIntelligenceContext(user, playerStats) {
 
   const leaguePlayer =
-    getAuthString(user.leaguePlayer);
+    getAuthString(getCanonicalPlayerFromUser(user));
 
   const division =
     playerStats
@@ -2513,7 +2561,7 @@ function buildProfileLeaguePerformance(
 ) {
 
   const leaguePlayer =
-    getAuthString(user.leaguePlayer);
+    getAuthString(getCanonicalPlayerFromUser(user));
 
   const opponents = {};
   const chronological =
@@ -2880,7 +2928,7 @@ function buildProfileAchievements(
     achievements.push({
       title: "League Profile Linked",
       description: "Google account is mapped to the league player record.",
-      value: getAuthString(user.leaguePlayer)
+      value: getAuthString(getCanonicalPlayerFromUser(user))
     });
 
   return achievements.slice(0, 6);

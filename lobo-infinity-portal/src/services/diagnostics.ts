@@ -206,7 +206,7 @@ export function buildAuthSessionSnapshot(session: AuthSession): AuthSessionSnaps
     authenticated: session.authenticated,
     code: session.code,
     email: session.user.email,
-    player: session.user.leaguePlayer,
+    player: session.user.canonicalPlayer || session.user.leaguePlayer,
     role: session.user.role,
     stage: session.stage,
   }

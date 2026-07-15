@@ -205,6 +205,7 @@ function normalizePortalUser(record: Record<string, unknown>): PortalUser {
     created: getString(record, 'created'),
     dismissedAlerts: getStringArray(record, 'dismissedAlerts'),
     displayName: getString(record, 'displayName') || 'Guest',
+    canonicalPlayer: getString(record, 'canonicalPlayer'),
     discordName: getString(record, 'discordName'),
     email: getString(record, 'email'),
     enabled: getBoolean(record, 'enabled'),

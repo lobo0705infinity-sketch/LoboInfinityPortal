@@ -59,7 +59,7 @@ function getAchievements(e) {
   return requireApiPermission(e, "updateProfile", function(auth) {
 
     const leaguePlayer =
-      getAuthString(auth.user.leaguePlayer);
+      getAuthString(getCanonicalPlayerFromUser(auth.user));
 
     if (leaguePlayer === "")
       return jsonOutput({

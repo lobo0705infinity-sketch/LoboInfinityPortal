@@ -9,38 +9,38 @@ import {
 import type { EventHomeData, EventRegistrationEntry } from '../src/services/api.ts'
 
 assert.equal(
-  resolveSubmitGamePlayer(false, '', '', 'Guest'),
+  resolveSubmitGamePlayer(false, '', '', '', 'Guest'),
   'Guest',
   'Unauthenticated shell state may display Guest.',
 )
 
 assert.equal(
-  resolveSubmitGamePlayer(true, '', '', 'Guest'),
+  resolveSubmitGamePlayer(true, '', '', '', 'Guest'),
   '',
   'Authenticated submission must not resolve Guest as a player.',
 )
 
 assert.equal(
-  resolveSubmitGamePlayer(true, 'Lobo', 'Lobo Display', 'Lobo Real Name'),
+  resolveSubmitGamePlayer(true, 'Lobo', 'Legacy Lobo', 'Lobo Display', 'Lobo Real Name'),
   'Lobo',
-  'League submission should prefer the authenticated league player.',
+  'League submission should prefer the authenticated canonical player.',
 )
 
 assert.equal(
-  resolveSubmitGamePlayer(true, '', 'Portal Handle', 'Portal Player'),
+  resolveSubmitGamePlayer(true, '', '', 'Portal Handle', 'Portal Player'),
   'Portal Handle',
   'Casual submission should use the authenticated portal player display name when no league player exists.',
 )
 
 assert.equal(
-  resolveSubmitGamePlayer(true, '', '', 'Casual Player'),
+  resolveSubmitGamePlayer(true, '', '', '', 'Casual Player'),
   'Casual Player',
   'Casual submission should fall back to the authenticated portal display name.',
 )
 
 const staleCasualPlayer = 'Guest'
 const hydratedCasualPlayer =
-  resolveSubmitGamePlayer(true, 'Lobo', 'Lobo Display', 'Lobo Real Name') ||
+  resolveSubmitGamePlayer(true, 'Lobo', '', 'Lobo Display', 'Lobo Real Name') ||
   staleCasualPlayer
 
 assert.equal(

@@ -98,13 +98,14 @@ export function clearCachedIdentityReport() {
 
 export function buildExpectedClaims(session: AuthSession): IdentityClaims {
   const role = session.user.role
+  const canonicalPlayer = session.user.canonicalPlayer || session.user.leaguePlayer
 
   return {
     assistantCommissioner:
       role === 'Assistant Commissioner' || role === 'Commissioner',
     commissioner: role === 'Commissioner',
-    leaguePlayer: session.user.leaguePlayer,
-    playerId: session.user.leaguePlayer,
+    leaguePlayer: canonicalPlayer,
+    playerId: canonicalPlayer,
     registeredEvents: [],
     role,
   }
@@ -152,7 +153,7 @@ function buildIdentityReport(
     google: stage('PASS', session, 'Google OAuth token accepted by portal session validation.'),
     identityHealth,
     mismatches,
-    playerMapping: session.user.leaguePlayer
+    playerMapping: session.user.canonicalPlayer || session.user.leaguePlayer
       ? stage('PASS', session, 'League player mapping resolved.')
       : stage('FAILED', session, 'League player mapping is missing.'),
     portalSession: stage('PASS', session, 'Portal session is authenticated.'),
@@ -224,7 +225,7 @@ function stage(
   return {
     detail,
     email: session.user.email,
-    leaguePlayer: session.user.leaguePlayer,
+    leaguePlayer: session.user.canonicalPlayer || session.user.leaguePlayer,
     role: session.user.role,
     status,
   }

@@ -186,7 +186,7 @@ function canUserParticipateInEvent(event, user) {
   if (!eventRequiresLeagueMembership(event))
     return true;
 
-  return getEventRegistrationString(user && user.leaguePlayer) !== "";
+  return getEventRegistrationString(getCanonicalPlayerFromUser(user)) !== "";
 
 }
 
@@ -234,7 +234,7 @@ function getEventParticipantKey(event, user) {
     return "";
 
   const leaguePlayer =
-    getEventRegistrationString(user.leaguePlayer);
+    getEventRegistrationString(getCanonicalPlayerFromUser(user));
 
   if (leaguePlayer !== "")
     return leaguePlayer;
@@ -567,11 +567,11 @@ function upsertEventRegistrationRow(eventId, user, params, status) {
     measureEventApprovalOperation(
       "approval.registrationLookup.existingRegistration",
       function() {
-        return getEventRegistrationForPlayer(eventId, user.leaguePlayer);
+        return getEventRegistrationForPlayer(eventId, getCanonicalPlayerFromUser(user));
       },
       {
         eventId: eventId,
-        player: user.leaguePlayer
+        player: getCanonicalPlayerFromUser(user)
       }
     );
 
@@ -598,12 +598,12 @@ function upsertEventRegistrationRow(eventId, user, params, status) {
         ],
         [
           eventId,
-          user.leaguePlayer
+          getCanonicalPlayerFromUser(user)
         ],
         [
           eventId,
-          user.leaguePlayer,
-          user.playerDisplayName || user.leaguePlayer,
+          getCanonicalPlayerFromUser(user),
+          user.playerDisplayName || getCanonicalPlayerFromUser(user),
           getEventRegistrationString(params.role) || "Player",
           status,
           registeredAt,
@@ -622,7 +622,7 @@ function upsertEventRegistrationRow(eventId, user, params, status) {
     },
     {
       eventId: eventId,
-      player: user.leaguePlayer,
+      player: getCanonicalPlayerFromUser(user),
       status: status
     }
   );

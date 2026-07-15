@@ -37,7 +37,7 @@ function Dashboard() {
   return (
     <DashboardDataProvider
       authenticated={auth.authenticated}
-      communityCacheKey={auth.user.email || auth.user.leaguePlayer || 'guest'}
+      communityCacheKey={auth.user.email || auth.user.canonicalPlayer || auth.user.leaguePlayer || 'guest'}
     >
       <DashboardContent auth={auth} lastUpdated={lastUpdated} />
     </DashboardDataProvider>
@@ -108,9 +108,10 @@ function DashboardContent({
       ? intelligence.records.mostActiveMission.name
       : ''
   const currentLeader = data.standings[0] ?? null
+  const authenticatedCanonicalPlayer = auth.user.canonicalPlayer || auth.user.leaguePlayer
   const currentPlayerModel = resolvePlayerLeagueModel(
     homeData.allStandings,
-    [auth.user.leaguePlayer],
+    [authenticatedCanonicalPlayer],
   )
   const scheduledLeagueGames = getScheduledLeagueGames(homeData.allStandings)
   const completedLeagueGames =
@@ -120,7 +121,7 @@ function DashboardContent({
     requiredLeagueGames > 0
       ? Math.min(100, Math.round((completedLeagueGames / requiredLeagueGames) * 100))
       : 0
-  const hasAuthenticatedPlayer = auth.authenticated && Boolean(auth.user.leaguePlayer)
+  const hasAuthenticatedPlayer = auth.authenticated && Boolean(authenticatedCanonicalPlayer)
   const rankMeta = currentPlayerModel
     ? `${currentPlayerModel.division} Division`
     : hasAuthenticatedPlayer

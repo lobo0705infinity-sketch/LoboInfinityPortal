@@ -32,7 +32,7 @@ function submitLeagueResult(e) {
 
     const player =
       getResultSubmissionString(params.player) ||
-      (auth && auth.user ? auth.user.leaguePlayer : "");
+      (auth && auth.user ? getCanonicalPlayerFromUser(auth.user) : "");
 
     const opponent =
       getResultSubmissionString(params.opponent);
@@ -172,6 +172,9 @@ function submitLeagueResult(e) {
     if (typeof rebuildGameEngine === "function")
       rebuildGameEngine();
 
+    if (typeof publishLatestGameSubmittedAutomationEvent === "function")
+      publishLatestGameSubmittedAutomationEvent();
+
     invalidateResultSubmissionCaches();
 
     return jsonOutput({
@@ -200,7 +203,7 @@ function submitCasualResult(e) {
     const player =
       getResultSubmissionString(params.player) ||
       (auth && auth.user
-        ? auth.user.leaguePlayer ||
+        ? getCanonicalPlayerFromUser(auth.user) ||
           auth.user.playerDisplayName ||
           auth.user.displayName ||
           auth.user.email
@@ -341,6 +344,9 @@ function submitCasualResult(e) {
     if (typeof rebuildGameEngine === "function")
       rebuildGameEngine();
 
+    if (typeof publishLatestGameSubmittedAutomationEvent === "function")
+      publishLatestGameSubmittedAutomationEvent();
+
     invalidateResultSubmissionCaches();
 
     return jsonOutput({
@@ -401,7 +407,7 @@ function getResultSubmissionCommissionerContext(auth, params) {
     reason: getResultSubmissionString(params.commissionerReason),
     commissioner:
       auth.user.playerDisplayName ||
-      auth.user.leaguePlayer ||
+      getCanonicalPlayerFromUser(auth.user) ||
       auth.user.displayName ||
       auth.user.email ||
       "Commissioner"
