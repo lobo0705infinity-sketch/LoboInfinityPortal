@@ -67,3 +67,8 @@ node_modules/
 
 # dataconnect generated files
 .dataconnect
+
+# Local Codex/Vercel artifacts
+.codex-deploy/
+.codex-screenshots/
+.vercel/
