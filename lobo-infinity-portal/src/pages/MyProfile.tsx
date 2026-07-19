@@ -5,6 +5,7 @@ import BarChart, { type BarChartPoint } from '../components/BarChart'
 import OperatorBadge from '../components/OperatorBadge'
 import Skeleton from '../components/Skeleton'
 import { getCanonicalArmyOptions, normalizeArmyForDisplay } from '../config/armies'
+import { resolveFactionPortrait, type FactionPortrait } from '../config/factionPortraits'
 import { getCanonicalMissionName } from '../config/missions'
 import {
   apiClient,
@@ -563,10 +564,13 @@ function ProfileHero({
   const currentLeague = getCurrentLeagueLabel(leagueModel)
   const joinedDate = getProfileJoinedDate(data)
   const promotionStatus = getCompetitivePromotionStatus(leagueModel, seasonStats)
+  const portrait = resolveFactionPortrait(
+    data.user.favoriteFaction || leagueModel?.preferredArmy,
+  )
 
   return (
     <section
-      className="profile-hero-focus member-profile-hero player-combat-hero my-profile-operator-hero"
+      className={`profile-hero-focus member-profile-hero player-combat-hero my-profile-operator-hero${portrait ? ' has-faction-portrait' : ''}`}
       aria-label="Authenticated player profile"
     >
       <div className="my-profile-operator-badge">
@@ -628,7 +632,29 @@ function ProfileHero({
           </dl>
         </section>
       </div>
+
+      {portrait ? <FactionPortraitPanel portrait={portrait} /> : null}
     </section>
+  )
+}
+
+function FactionPortraitPanel({ portrait }: { portrait: FactionPortrait }) {
+  const [visible, setVisible] = useState(true)
+
+  if (!visible) {
+    return null
+  }
+
+  return (
+    <aside className="my-profile-faction-portrait" aria-label={`${portrait.faction} portrait`}>
+      <img
+        alt={portrait.alt}
+        decoding="async"
+        loading="eager"
+        onError={() => setVisible(false)}
+        src={portrait.src}
+      />
+    </aside>
   )
 }
 

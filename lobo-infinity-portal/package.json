@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "npm run api:init-order && npm run security:cache && npm run security:armies && npm run test:achievements && npm run test:draws && npm run test:standings-integrity && npm run test:dashboard-api && npm run test:commissioner-submit && npm run test:commissioner-context && tsc -b && vite build",
+    "build": "npm run api:init-order && npm run security:cache && npm run security:armies && npm run test:faction-portraits && npm run test:achievements && npm run test:draws && npm run test:standings-integrity && npm run test:dashboard-api && npm run test:commissioner-submit && npm run test:commissioner-context && tsc -b && vite build",
     "release:source": "node scripts/release-source-check.mjs",
     "release:manifest": "node scripts/release-manifest-check.mjs",
     "release:fingerprint": "node scripts/generate-release-fingerprint.mjs",
@@ -43,6 +43,7 @@
     "test:player-profile": "node scripts/player-profile-check.mjs",
     "test:player-registry": "node scripts/player-registry-context-check.mjs",
     "test:player-identity": "node scripts/player-identity-check.mjs",
+    "test:faction-portraits": "node --experimental-strip-types scripts/faction-portrait-check.ts",
     "rules:check": "node scripts/firestore-rules-check.mjs",
     "security:cache": "node scripts/security-cache-audit.mjs",
     "security:armies": "node scripts/army-registry-audit.mjs"

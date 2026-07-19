@@ -73,13 +73,56 @@
   margin: 0;
 }
 
+.my-profile-operator-hero.has-faction-portrait {
+  grid-column: 1 / -1;
+  grid-template-areas: "badge identity portrait";
+  grid-template-columns: minmax(260px, 0.72fr) minmax(300px, 1fr) minmax(280px, 0.88fr);
+  gap: clamp(16px, 2vw, 24px);
+}
+
 .my-profile-operator-badge {
   display: grid;
   justify-items: center;
 }
 
+.my-profile-operator-hero.has-faction-portrait .my-profile-operator-badge {
+  grid-area: badge;
+}
+
+.my-profile-operator-hero.has-faction-portrait .profile-hero-main {
+  grid-area: identity;
+}
+
 .my-profile-operator-badge .operator-badge {
   --operator-badge-size: clamp(220px, 18vw, 260px);
+}
+
+.my-profile-operator-hero.has-faction-portrait .operator-badge {
+  --operator-badge-size: clamp(220px, 19vw, 280px);
+}
+
+.my-profile-faction-portrait {
+  position: relative;
+  display: grid;
+  min-height: clamp(420px, 42vw, 600px);
+  place-items: end center;
+  align-self: stretch;
+  grid-area: portrait;
+  overflow: hidden;
+  border: 1px solid rgba(76, 201, 240, 0.24);
+  background:
+    linear-gradient(180deg, rgba(76, 201, 240, 0.08), transparent 38%),
+    rgba(5, 6, 8, 0.46);
+}
+
+.my-profile-faction-portrait img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: 600px;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 28px 28px rgba(0, 0, 0, 0.36));
 }
 
 .my-profile-hero-meta,
@@ -146,6 +189,10 @@
   grid-template-columns: repeat(2, minmax(170px, 1fr));
   gap: 10px;
   margin: 0;
+}
+
+.my-profile-operator-hero.has-faction-portrait .my-profile-service-record dl {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .my-profile-service-record div {
@@ -377,11 +424,24 @@
   .my-profile-v3-support {
     grid-template-columns: 1fr;
   }
+
+  .my-profile-operator-hero.has-faction-portrait {
+    grid-template-areas:
+      "badge portrait"
+      "identity portrait";
+    grid-template-columns: minmax(240px, 0.95fr) minmax(260px, 0.82fr);
+  }
 }
 
 @media (max-width: 920px) {
   .my-profile-operator-hero {
     grid-template-columns: 1fr;
+  }
+
+  .my-profile-operator-hero.has-faction-portrait {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
   }
 
   .my-profile-operator-badge {
@@ -390,6 +450,16 @@
 
   .my-profile-operator-badge .operator-badge {
     --operator-badge-size: min(66vw, 300px);
+  }
+
+  .my-profile-faction-portrait {
+    order: 2;
+    width: 100%;
+    min-height: min(118vw, 540px);
+  }
+
+  .my-profile-operator-hero.has-faction-portrait .profile-hero-main {
+    order: 3;
   }
 
   .my-profile-service-record dl {
@@ -408,6 +478,10 @@
 
   .my-profile-operator-badge .operator-badge {
     --operator-badge-size: min(78vw, 280px);
+  }
+
+  .my-profile-faction-portrait {
+    min-height: min(132vw, 520px);
   }
 
   .my-profile-service-record dl {
