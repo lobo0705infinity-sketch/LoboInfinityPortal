@@ -11,7 +11,42 @@ const api = read('src/services/api.ts')
 const backendApi = read('backend/API.gs')
 const resultSubmissionApi = read('backend/ResultSubmissionApi.gs')
 const teamTournamentApi = read('backend/TeamTournamentApi.gs')
+const frontendMissionRegistry = read('src/config/missions.ts')
+const backendMissionRegistry = read('backend/MissionRegistry.gs')
+const leagueOperationsApi = read('backend/LeagueOperationsApi.gs')
 const contract = read('release/production.json')
+
+function extractSingleQuotedArray(source, exportName) {
+  const pattern = new RegExp(`export const ${exportName} = \\[([\\s\\S]*?)\\] as const`)
+  const match = source.match(pattern)
+  assert.ok(match, `${exportName} must be exported as a readonly array.`)
+  return [...match[1].matchAll(/'([^']+)'/g)].map((entry) => entry[1])
+}
+
+function extractDoubleQuotedConstArray(source, constName) {
+  const pattern = new RegExp(`const ${constName} = \\[([\\s\\S]*?)\\];`)
+  const match = source.match(pattern)
+  assert.ok(match, `${constName} must be declared as an Apps Script array.`)
+  return [...match[1].matchAll(/"([^"]+)"/g)].map((entry) => entry[1])
+}
+
+function assertSingleMissionRegistryEntry(registry, name, label) {
+  const matches = registry.filter((mission) => mission === name)
+  assert.equal(matches.length, 1, `${label} must contain exactly one ${name} mission.`)
+}
+
+const frontendMissions = extractSingleQuotedArray(frontendMissionRegistry, 'CANONICAL_MISSIONS')
+const backendMissions = extractDoubleQuotedConstArray(backendMissionRegistry, 'CANONICAL_MISSIONS')
+
+assert.deepEqual(frontendMissions, backendMissions, 'Frontend and backend canonical mission registries must stay aligned.')
+assertSingleMissionRegistryEntry(frontendMissions, 'Neutralization', 'Frontend mission registry')
+assertSingleMissionRegistryEntry(backendMissions, 'Neutralization', 'Backend mission registry')
+assert.match(frontendMissionRegistry, /getCanonicalMissionOptions\(\)[\s\S]*CANONICAL_MISSIONS\.map/, 'Submit Game mission options must come from the canonical mission registry.')
+assert.match(frontendMissionRegistry, /getCanonicalMissionName\([\s\S]*canonicalMissionByKey\.get/, 'Frontend mission validation must resolve canonical registry entries.')
+assert.match(backendMissionRegistry, /function getCanonicalMissionName\(value\)[\s\S]*CANONICAL_MISSIONS/, 'Backend mission validation must resolve canonical registry entries.')
+assert.match(leagueOperationsApi, /missionOptions: getCanonicalMissionsForOperations\(\)/, 'Commissioner event mission options must come from the canonical mission registry.')
+assert.match(leagueOperationsApi, /getCanonicalMissionName\(params\.mission1\)/, 'Commissioner mission 1 validation must use the canonical mission registry.')
+assert.match(leagueOperationsApi, /getCanonicalMissionName\(params\.mission2\)/, 'Commissioner mission 2 validation must use the canonical mission registry.')
 
 assert.match(app, /<Route path="\/submit-game"[\s\S]*<SubmitResult \/>/, '/submit-game must render SubmitResult.')
 assert.match(app, /\/casual-result" element={<Navigate replace to="\/submit-game\?gameType=casual"/, 'Casual result route must continue to enter the casual submission flow.')
