@@ -456,7 +456,11 @@ function ProfileEditor({
   }
 
   return (
-    <section className="panel profile-feature-panel profile-editor-panel" aria-labelledby="profile-editor-title">
+    <section
+      className="panel profile-feature-panel profile-editor-panel"
+      aria-labelledby="profile-editor-title"
+      data-visual-surface="my-profile-edit-profile"
+    >
       <div>
         <p className="eyebrow">Player Identity</p>
         <h2 id="profile-editor-title">Edit Profile</h2>
@@ -1034,7 +1038,7 @@ function IntelligencePanel({
   ]
 
   return (
-    <section className="panel profile-feature-panel">
+    <section className="panel profile-feature-panel" data-visual-surface="my-profile-competitive-coaching">
       <div className="panel-heading">
         <p className="eyebrow">Player Intelligence</p>
         <h2>Competitive Coaching</h2>
@@ -1140,7 +1144,7 @@ function TurnAnalyticsPanel({
   leagueStats: MyProfileData['leagueStatistics']
 }) {
   return (
-    <section className="panel profile-feature-panel">
+    <section className="panel profile-feature-panel" data-visual-surface="my-profile-advanced-analytics">
       <div className="panel-heading">
         <p className="eyebrow">Advanced Analytics</p>
         <h2>First / Second Turn</h2>

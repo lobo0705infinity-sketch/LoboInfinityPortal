@@ -44,12 +44,38 @@ const surfaces = [
     height: 1050,
   },
   {
-    markers: ['Last Five League Games', 'Featured Battle Story', 'Edit Profile', preferredArmy],
-    name: 'my-profile-desktop-analytics-settings',
-    route: '/profile',
+    componentCapture: {
+      markers: ['Player Identity', 'Edit Profile', preferredArmy, 'Save Profile'],
+    },
     hideAppChrome: true,
-    scrollTo: '.my-profile-v3-support',
-    screenshot: 'viewport',
+    markers: ['Edit Profile', preferredArmy],
+    name: 'my-profile-edit-profile',
+    route: '/profile',
+    screenshotSelector: '[data-visual-surface="my-profile-edit-profile"]',
+    width: 1440,
+    height: 1050,
+  },
+  {
+    componentCapture: {
+      markers: ['Player Intelligence', 'Competitive Coaching'],
+    },
+    hideAppChrome: true,
+    markers: ['Competitive Coaching'],
+    name: 'my-profile-competitive-coaching',
+    route: '/profile',
+    screenshotSelector: '[data-visual-surface="my-profile-competitive-coaching"]',
+    width: 1440,
+    height: 1050,
+  },
+  {
+    componentCapture: {
+      markers: ['Advanced Analytics', 'First / Second Turn'],
+    },
+    hideAppChrome: true,
+    markers: ['First / Second Turn'],
+    name: 'my-profile-advanced-analytics',
+    route: '/profile',
+    screenshotSelector: '[data-visual-surface="my-profile-advanced-analytics"]',
     width: 1440,
     height: 1050,
   },
@@ -60,15 +86,6 @@ const surfaces = [
     route: '/profile',
     hideAppChrome: true,
     screenshotSelector: '.my-profile-v3-dashboard',
-    width: 390,
-    height: 844,
-  },
-  {
-    markers: ['Featured Battle Story', 'Edit Profile', preferredArmy],
-    name: 'my-profile-mobile-analytics-settings',
-    route: '/profile',
-    hideAppChrome: true,
-    screenshotSelector: '.profile-editor-panel',
     width: 390,
     height: 844,
   },
@@ -173,8 +190,8 @@ for (const surface of surfaces) {
     let screenshot
     if (surface.screenshotSelector) {
       const region = page.locator(surface.screenshotSelector).first()
-      await region.scrollIntoViewIfNeeded({ timeout: 5000 })
-      await page.waitForTimeout(250)
+      await region.waitFor({ state: 'visible', timeout: 5000 })
+      await waitForStableScreenshotTarget(page, surface.screenshotSelector)
       if (surface.expectedPortrait) {
         const screenshotClip = await screenshotClipForSelector(page, surface.screenshotSelector)
         const portraitValidation = await validateExpectedPortrait(
@@ -190,6 +207,18 @@ for (const surface of surfaces) {
         })
       }
       screenshot = await region.screenshot()
+      if (surface.componentCapture) {
+        const captureValidation = await validateComponentCapture(
+          page,
+          surface.screenshotSelector,
+          surface.componentCapture,
+          screenshot,
+        )
+
+        captureValidation.errors.forEach((error) => {
+          failures.push(`${surface.name} capture validation failed: ${error}`)
+        })
+      }
     } else {
       if (surface.expectedPortrait) {
         const screenshotClip = await screenshotClipForViewport(page)
@@ -240,6 +269,129 @@ if (failures.length) {
 }
 
 pass(`${compareBaselines ? 'visual regression check passed' : 'candidate visual screenshots captured'} in ${outputDir}`)
+
+async function waitForStableScreenshotTarget(page, selector) {
+  await page.evaluate(async (targetSelector) => {
+    await document.fonts?.ready
+
+    const target = document.querySelector(targetSelector)
+
+    if (!(target instanceof HTMLElement)) {
+      throw new Error(`screenshot target not found: ${targetSelector}`)
+    }
+
+    const images = Array.from(target.querySelectorAll('img'))
+    await Promise.all(
+      images.map((image) => {
+        if (image.complete && image.naturalWidth > 0 && image.naturalHeight > 0) {
+          return undefined
+        }
+
+        return new Promise((resolveImage, rejectImage) => {
+          image.addEventListener('load', resolveImage, { once: true })
+          image.addEventListener('error', rejectImage, { once: true })
+        })
+      }),
+    )
+
+    let previous = ''
+    let stableFrames = 0
+
+    for (let index = 0; index < 30; index += 1) {
+      await new Promise((resolveFrame) => requestAnimationFrame(() => resolveFrame()))
+
+      const rect = target.getBoundingClientRect()
+      const current = [
+        Math.round(rect.left * 100) / 100,
+        Math.round(rect.top * 100) / 100,
+        Math.round(rect.width * 100) / 100,
+        Math.round(rect.height * 100) / 100,
+        document.documentElement.scrollWidth,
+        document.documentElement.scrollHeight,
+      ].join(':')
+
+      stableFrames = current === previous ? stableFrames + 1 : 0
+      previous = current
+
+      if (stableFrames >= 3) {
+        return
+      }
+    }
+
+    throw new Error(`screenshot target did not settle: ${targetSelector}`)
+  }, selector)
+}
+
+async function validateComponentCapture(page, selector, expected, screenshot) {
+  const image = decodePng(screenshot)
+  const result = await page.evaluate(({ targetSelector, expectedMarkers }) => {
+    const target = document.querySelector(targetSelector)
+
+    if (!(target instanceof HTMLElement)) {
+      return { errors: [`capture target not found: ${targetSelector}`] }
+    }
+
+    const targetRect = rectRecord(target.getBoundingClientRect())
+    const targetText = `${target.textContent || ''}\n${target.innerText || ''}`
+    const errors = []
+
+    expectedMarkers.forEach((marker) => {
+      if (!targetText.includes(marker)) {
+        errors.push(`required section marker is missing from wrapper: ${marker}`)
+      }
+    })
+
+    const style = window.getComputedStyle(target)
+    const visible =
+      targetRect.width > 0 &&
+      targetRect.height > 0 &&
+      style.display !== 'none' &&
+      style.visibility !== 'hidden' &&
+      Number(style.opacity || '1') > 0
+
+    if (!visible) {
+      errors.push(`component target is not visible: ${targetSelector}`)
+    }
+
+    return {
+      errors,
+      targetRect,
+    }
+
+    function rectRecord(rect) {
+      return {
+        bottom: rect.bottom,
+        height: rect.height,
+        left: rect.left,
+        right: rect.right,
+        top: rect.top,
+        width: rect.width,
+      }
+    }
+  }, {
+    expectedMarkers: expected.markers,
+    targetSelector: selector,
+  })
+  const errors = [...result.errors]
+  const expectedWidth = Math.ceil(result.targetRect?.width || 0)
+  const expectedHeight = Math.ceil(result.targetRect?.height || 0)
+
+  if (image.width + 1 < expectedWidth || Math.abs(image.width - expectedWidth) > 1) {
+    errors.push(`capture width ${image.width}px does not match component width ${expectedWidth}px.`)
+  }
+  if (image.height + 1 < expectedHeight || Math.abs(image.height - expectedHeight) > 1) {
+    errors.push(`capture height ${image.height}px does not match component height ${expectedHeight}px.`)
+  }
+
+  return {
+    ...result,
+    errors,
+    image: {
+      height: image.height,
+      width: image.width,
+    },
+  }
+}
 
 async function screenshotClipForViewport(page) {
   return page.evaluate(() => ({
@@ -616,9 +768,10 @@ function includeSurface(surface) {
   const approvedReleaseSurfaces = [
     'commissioner-sidebar-desktop',
     'my-profile-desktop-dashboard',
-    'my-profile-desktop-analytics-settings',
+    'my-profile-edit-profile',
+    'my-profile-competitive-coaching',
+    'my-profile-advanced-analytics',
     'my-profile-mobile-dashboard',
-    'my-profile-mobile-analytics-settings',
   ]
 
   if (requested.length > 0) {
