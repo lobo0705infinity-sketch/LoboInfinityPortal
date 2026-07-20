@@ -22,17 +22,18 @@ const checks = [
   {
     label: 'Zero-game community profile returns normal zero statistics',
     pass:
-      playersApi.includes('games:\n        communityPlayer.games || 0') &&
-      playersApi.includes('wins:\n        communityPlayer.wins || 0') &&
-      playersApi.includes('losses:\n        communityPlayer.losses || 0') &&
-      playersApi.includes('careerSummary:\n        buildPlayerCareerSummary('),
+      /games:\s*communityPlayer\.games \|\| 0/.test(playersApi) &&
+      /wins:\s*communityPlayer\.wins \|\| 0/.test(playersApi) &&
+      /losses:\s*communityPlayer\.losses \|\| 0/.test(playersApi) &&
+      /careerSummary:\s*buildPlayerCareerSummary\(/.test(playersApi),
   },
   {
     label: 'Zero-game profile has empty-state availability and recent games',
     pass:
       playersApi.includes('function buildEmptyPlayerAvailability') &&
       playerProfile.includes('No recorded games yet.') &&
-      playerProfile.includes('Achievements coming soon.'),
+      playerProfile.includes('value={player.availability.status}') &&
+      playerProfile.includes('value={currentTournament}'),
   },
 ]
 

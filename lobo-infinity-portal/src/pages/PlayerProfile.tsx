@@ -5,6 +5,10 @@ import { getOperatorBadgeDetails } from '../components/operatorBadgeDetails'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
 import { getArmyParentFaction } from '../config/armies'
+import {
+  resolveFactionPortraitFromArmyPriority,
+  type FactionPortrait,
+} from '../config/factionPortraits'
 import { getCanonicalMissionName } from '../config/missions'
 import type {
   ArmyList,
@@ -205,6 +209,13 @@ function PlayerProfileDossier({
   const joinedLabel = getJoinedLabel(player)
   const achievements = getAchievementItems(career, player)
   const preferredFaction = leagueModel?.preferredArmy || player.favoriteFaction || ''
+  const portrait = resolveFactionPortraitFromArmyPriority(
+    leagueModel?.preferredArmy,
+    player.favoriteFaction,
+    player.armyListSummary.favoriteFaction,
+    career.quickStats.mostPlayedArmy,
+    career.quickStats.mostPlayedArmyParentFaction,
+  )
   const leagueModelPlayer = {
     ...player,
     division: divisionLabel,
@@ -228,15 +239,18 @@ function PlayerProfileDossier({
         aria-labelledby="player-title"
       >
         <div className="profile-v21-hero-grid">
-          <OperatorBadge
-            achievements={achievements}
-            classifications={classifications}
-            competitiveHome={homeLabel}
-            player={leagueModelPlayer}
-            preferredFaction={preferredFaction}
-            rank={currentRank}
-            showBadges={false}
-          />
+          <div className={`profile-v21-operator-column${portrait ? ' has-faction-portrait' : ''}`}>
+            <OperatorBadge
+              achievements={achievements}
+              classifications={classifications}
+              competitiveHome={homeLabel}
+              player={leagueModelPlayer}
+              preferredFaction={preferredFaction}
+              rank={currentRank}
+              showBadges={false}
+            />
+            {portrait ? <PublicPlayerFactionPortrait portrait={portrait} /> : null}
+          </div>
           <div className="profile-v21-identity">
             <p className="eyebrow">Infinity Career Dossier</p>
             <h1 id="player-title">{displayName}</h1>
@@ -300,6 +314,30 @@ function PlayerProfileDossier({
         </aside>
       </section>
     </>
+  )
+}
+
+function PublicPlayerFactionPortrait({
+  portrait,
+}: {
+  portrait: FactionPortrait
+}) {
+  const [visible, setVisible] = useState(true)
+
+  if (!visible) {
+    return null
+  }
+
+  return (
+    <aside className="profile-v21-faction-portrait" aria-label={`${portrait.faction} portrait`}>
+      <img
+        alt={portrait.alt}
+        decoding="async"
+        loading="lazy"
+        onError={() => setVisible(false)}
+        src={portrait.src}
+      />
+    </aside>
   )
 }
 
@@ -1798,33 +1836,41 @@ const playerProfileStyles = `
   z-index: 5;
 }
 
-.profile-v21-portrait {
+.profile-v21-operator-column {
   display: grid;
-  width: clamp(240px, 25vw, 330px);
-  aspect-ratio: 1;
-  place-items: center;
-  overflow: hidden;
-  border: 3px solid #4cc9f0;
-  border-radius: 999px;
-  background:
-    radial-gradient(circle at 36% 25%, rgba(76, 201, 240, 0.32), transparent 48%),
-    #121a24;
-  box-shadow:
-    0 0 0 16px rgba(76, 201, 240, 0.08),
-    0 0 0 28px rgba(76, 201, 240, 0.035),
-    0 32px 92px rgba(0, 0, 0, 0.62);
+  justify-items: center;
+  align-self: center;
+  gap: clamp(16px, 2.5vw, 28px);
+  min-width: 0;
 }
 
-.profile-v21-portrait img {
+.profile-v21-operator-column.has-faction-portrait {
+  align-self: stretch;
+  align-content: center;
+}
+
+.profile-v21-faction-portrait {
+  display: grid;
+  width: min(100%, clamp(240px, 27vw, 390px));
+  aspect-ratio: 4 / 5;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(76, 201, 240, 0.32);
+  background:
+    radial-gradient(circle at 50% 22%, rgba(76, 201, 240, 0.14), transparent 42%),
+    linear-gradient(180deg, rgba(18, 26, 36, 0.2), rgba(5, 6, 8, 0.1)),
+    #121a24;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 22px 58px rgba(0, 0, 0, 0.42);
+}
+
+.profile-v21-faction-portrait img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  padding: clamp(34px, 4vw, 54px);
-}
-
-.profile-v21-portrait img[src*="http"] {
-  object-fit: cover;
-  padding: 0;
+  object-position: center bottom;
+  padding: clamp(8px, 1.6vw, 18px);
 }
 
 .profile-v21-identity {
@@ -2411,8 +2457,20 @@ const playerProfileStyles = `
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .profile-v21-portrait {
-    width: min(54vw, 260px);
+  .profile-v21-operator-column {
+    order: 1;
+  }
+
+  .profile-v21-identity {
+    order: 2;
+  }
+
+  .profile-v21-hero-panels {
+    order: 3;
+  }
+
+  .profile-v21-faction-portrait {
+    width: min(72vw, 300px);
   }
 
   .profile-v21-hero .operator-badge {
@@ -2456,6 +2514,10 @@ const playerProfileStyles = `
 
   .profile-v21-hero .operator-badge {
     --operator-badge-size: min(78vw, 280px);
+  }
+
+  .profile-v21-faction-portrait {
+    width: min(78vw, 280px);
   }
 
   .profile-v21-identity h1 {
