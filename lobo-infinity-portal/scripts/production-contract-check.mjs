@@ -184,6 +184,10 @@ assertIncludes('My Profile identity', myProfile, manifest.contractMarkers.myProf
 assertIncludes('My Profile 3.0 UX', myProfile, manifest.contractMarkers.myProfileUx, failures)
 assertExcludes('My Profile 3.0 UX', myProfile, manifest.forbiddenActiveMarkers.removedMyProfileUx, failures)
 
+const submitResult = read('src/pages/SubmitResult.tsx')
+assertIncludes('Submit Game modes', submitResult, manifest.contractMarkers.submitGameModes, failures)
+assertExcludes('Submit Game modes', submitResult, manifest.forbiddenActiveMarkers.removedSubmitGameModes, failures)
+
 const identityService = read('backend/IdentityService.gs')
 assertIncludes(
   'Authentication hardening',
@@ -209,6 +213,7 @@ if (targetUrl) {
       assertIncludes('Deployed bundle commissioner routes', bundle, manifest.contractMarkers.commissionerRoutes, failures)
       assertIncludes('Deployed bundle identity markers', bundle, ['canonicalPlayer'], failures)
       assertIncludes('Deployed bundle My Profile markers', bundle, ['Current Season', 'Promotion Status', 'Recent Results'], failures)
+      assertIncludes('Deployed bundle Submit Game markers', bundle, manifest.contractMarkers.submitGameModes, failures)
       assertExcludes('Deployed bundle legacy commissioner labels', bundle, manifest.forbiddenActiveMarkers.legacyCommissionerTopLevel, failures)
     }
 

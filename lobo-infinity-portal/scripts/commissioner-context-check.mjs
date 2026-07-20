@@ -9,38 +9,26 @@ const submitResult = read('src/pages/SubmitResult.tsx')
 
 assert.match(
   submitResult,
-  /shouldDefaultCommissionerToCurrentLeague/,
-  'Submit Game must explicitly guard commissioner default event context.',
+  /const selectedGameType =\s*searchParams\.get\('gameType'\) \?\?\s*inferredSubmitContext\.gameType/s,
+  'Submit Game must not bypass the shared game-type chooser for commissioners.',
 )
 
-assert.match(
+assert.doesNotMatch(
   submitResult,
-  /auth\.isAtLeastRole\('Commissioner'\) && !hasExplicitGameType && !hasExplicitEventId/,
-  'Commissioner default may only apply when no explicit game type or event was requested.',
-)
-
-assert.match(
-  submitResult,
-  /shouldDefaultCommissionerToCurrentLeague \? 'event' : inferredSubmitContext\.gameType/,
-  'Commissioner Submit Game must default to an event submission instead of Community Player Registry.',
-)
-
-assert.match(
-  submitResult,
-  /shouldDefaultCommissionerToCurrentLeague\s*\?\s*'event-current-league'\s*:\s*inferredSubmitContext\.eventId/s,
-  'Commissioner Submit Game must begin in the Current League event context.',
+  /shouldDefaultCommissionerToCurrentLeague|auth\.isAtLeastRole\('Commissioner'\) && !hasExplicitGameType && !hasExplicitEventId/,
+  'Commissioner role must not force /submit-game into the Current League event context.',
 )
 
 assert.match(
   submitResult,
   /searchParams\.get\('gameType'\) \?\?/,
-  'Explicit gameType query parameters must continue to override commissioner defaults.',
+  'Explicit gameType query parameters must continue to select focused submission flows.',
 )
 
 assert.match(
   submitResult,
   /searchParams\.get\('eventId'\) \?\?/,
-  'Explicit eventId query parameters must continue to override commissioner defaults.',
+  'Explicit eventId query parameters must continue to select event-specific submission flows.',
 )
 
 console.log('commissioner context checks passed')

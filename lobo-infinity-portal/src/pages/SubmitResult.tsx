@@ -70,18 +70,12 @@ function SubmitResult() {
     () => inferSubmitGameContext(rememberedSubmitContext),
     [rememberedSubmitContext],
   )
-  const hasExplicitGameType = searchParams.has('gameType')
-  const hasExplicitEventId = searchParams.has('eventId')
-  const shouldDefaultCommissionerToCurrentLeague =
-    auth.isAtLeastRole('Commissioner') && !hasExplicitGameType && !hasExplicitEventId
   const selectedGameType =
     searchParams.get('gameType') ??
-    (shouldDefaultCommissionerToCurrentLeague ? 'event' : inferredSubmitContext.gameType)
+    inferredSubmitContext.gameType
   const eventId =
     searchParams.get('eventId') ??
-    (shouldDefaultCommissionerToCurrentLeague
-      ? 'event-current-league'
-      : inferredSubmitContext.eventId) ??
+    inferredSubmitContext.eventId ??
     'event-current-league'
   const isCasualRoute = selectedGameType === 'casual'
   const shouldShowGameTypeSelector = !selectedGameType

@@ -47,6 +47,15 @@
       "Featured Battle Story",
       "Season Completion"
     ],
+    "submitGameModes": [
+      "Unified Game Submission",
+      "League",
+      "Tournament",
+      "Casual",
+      "submitLeagueResult",
+      "submitCasualResult",
+      "saveTeamTournamentResult"
+    ],
     "authenticationHardening": [
       "DUPLICATE_MATCH",
       "NO_RECOVERY_MATCH",
@@ -66,6 +75,9 @@
     "removedMyProfileUx": [
       "Competitive Home",
       "Career Status"
+    ],
+    "removedSubmitGameModes": [
+      "shouldDefaultCommissionerToCurrentLeague"
     ],
     "untraceableBuild": [
       "gitCommit: not-provided",
