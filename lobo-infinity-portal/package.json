@@ -31,6 +31,7 @@
     "team-tournament:routing": "node scripts/team-tournament-routing-check.mjs",
     "test:commissioner-submit": "node scripts/commissioner-submit-check.mjs",
     "test:commissioner-context": "node scripts/commissioner-context-check.mjs",
+    "test:submit-result": "node scripts/submit-result-best-moment-check.mjs",
     "test:submit-game": "node --experimental-strip-types scripts/submit-game-identity-check.ts",
     "test:submit-game-modes": "node scripts/submit-game-modes-check.mjs",
     "test:team-membership": "node scripts/team-membership-check.mjs",

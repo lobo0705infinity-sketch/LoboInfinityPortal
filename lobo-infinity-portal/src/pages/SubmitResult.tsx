@@ -367,7 +367,11 @@ function SubmitResult() {
   async function submitCasual(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    const validation = validateCasualResult(casualResult, {
+    const submission = {
+      ...casualResult,
+      bestMoment: getFormDataString(new FormData(event.currentTarget), 'bestMoment'),
+    }
+    const validation = validateCasualResult(submission, {
       factions: factionOptions,
       missions: missionOptions,
       opponents: casualOpponentOptions,
@@ -381,14 +385,17 @@ function SubmitResult() {
     setState({ status: 'submitting' })
 
     try {
-      await apiClient.submitCasualResult(buildCommissionerPayload(casualResult))
+      await apiClient.submitCasualResult(buildCommissionerPayload(submission))
       setState({
         message: 'Casual game submitted. Analytics and lifetime records will refresh from the official game data.',
         status: 'success',
       })
-    } catch {
+    } catch (error) {
       setState({
-        message: 'Casual game could not be submitted. Please review the fields or contact a commissioner.',
+        message:
+          error instanceof Error
+            ? error.message
+            : 'Casual game could not be submitted. Please review the fields or contact a commissioner.',
         status: 'error',
       })
     }
@@ -558,6 +565,7 @@ function SubmitResult() {
           <label className="army-list-form-wide">
             <span>Best Moment</span>
             <textarea
+              name="bestMoment"
               onChange={(event) => updateCasualField('bestMoment', event.target.value)}
               required
               rows={4}
@@ -617,7 +625,11 @@ function SubmitResult() {
       return
     }
 
-    const validation = validateLeagueResult(eventHome, leagueResult, {
+    const submission = {
+      ...leagueResult,
+      bestMoment: getFormDataString(new FormData(event.currentTarget), 'bestMoment'),
+    }
+    const validation = validateLeagueResult(eventHome, submission, {
       commissionerMode: isCommissionerSubmission,
       commissionerOverride: isCommissionerOverride,
       factions: factionOptions,
@@ -635,7 +647,7 @@ function SubmitResult() {
     setState({ status: 'submitting' })
 
     try {
-      await apiClient.submitLeagueResult(buildCommissionerPayload(leagueResult))
+      await apiClient.submitLeagueResult(buildCommissionerPayload(submission))
       setState({
         message: 'Result submitted. Standings will refresh from the official event data.',
         status: 'success',
@@ -802,7 +814,9 @@ function SubmitResult() {
         <label className="army-list-form-wide">
           <span>Best Moment</span>
           <textarea
+            name="bestMoment"
             onChange={(event) => updateField('bestMoment', event.target.value)}
+            required
             rows={4}
             value={leagueResult.bestMoment}
           />
@@ -1504,6 +1518,12 @@ function inferSubmitGameContext(route: string): {
 
 function HiddenField({ name, value }: { name: string; value: string }) {
   return <input name={name} readOnly type="hidden" value={value} />
+}
+
+function getFormDataString(form: FormData, name: string) {
+  const value = form.get(name)
+
+  return typeof value === 'string' ? value : ''
 }
 
 function ReadOnlyField({ label, value }: { label: string; value: string }) {

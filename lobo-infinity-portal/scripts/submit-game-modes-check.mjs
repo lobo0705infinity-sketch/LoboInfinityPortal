@@ -59,8 +59,8 @@ assert.match(submitResult, /label="Casual"[\s\S]*to="\/submit-game\?gameType=cas
 assert.match(submitResult, /const shouldShowGameTypeSelector = !selectedGameType/, 'The chooser must be shown whenever no game type is explicit or inferred.')
 assert.doesNotMatch(submitResult, /shouldDefaultCommissionerToCurrentLeague/, 'Active League context or commissioner role must not hide Casual and Tournament choices.')
 
-assert.match(submitResult, /apiClient\.submitLeagueResult\(buildCommissionerPayload\(leagueResult\)\)/, 'League selection must call the league result submission API.')
-assert.match(submitResult, /apiClient\.submitCasualResult\(buildCommissionerPayload\(casualResult\)\)/, 'Casual selection must call the casual result submission API.')
+assert.match(submitResult, /apiClient\.submitLeagueResult\(buildCommissionerPayload\(submission\)\)/, 'League selection must call the league result submission API.')
+assert.match(submitResult, /apiClient\.submitCasualResult\(buildCommissionerPayload\(submission\)\)/, 'Casual selection must call the casual result submission API.')
 assert.match(submitResult, /apiClient\.saveTeamTournamentResult\(/, 'Tournament selection must call the team tournament result API.')
 
 assert.match(api, /postRequest\('submitLeagueResult'/, 'Frontend API must retain the submitLeagueResult action.')
