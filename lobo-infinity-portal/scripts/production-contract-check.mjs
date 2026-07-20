@@ -188,6 +188,20 @@ const submitResult = read('src/pages/SubmitResult.tsx')
 assertIncludes('Submit Game modes', submitResult, manifest.contractMarkers.submitGameModes, failures)
 assertExcludes('Submit Game modes', submitResult, manifest.forbiddenActiveMarkers.removedSubmitGameModes, failures)
 
+const missions = read('src/pages/Missions.tsx')
+assertIncludes('Mission Headquarters scope selector', missions, manifest.contractMarkers.missionHeadquartersScope, failures)
+if (!/apiClient\s*\.\s*getMissions\(\{[\s\S]*eventId,[\s\S]*gameType,/.test(missions)) {
+  failures.push('Mission Headquarters must pass eventId and gameType to the missions endpoint.')
+}
+
+const missionApi = read('backend/MissionApi.gs')
+if (!/getLeagueDataForEvent\(\s*eventId \|\| "all",\s*gameType \|\| "league"\s*\)/.test(missionApi)) {
+  failures.push('Mission API must keep the missions endpoint league-scoped by default and allow explicit gameType scopes.')
+}
+
+const leagueData = read('backend/LeagueData.gs')
+assertIncludes('Game Engine mission scope filtering', leagueData, ['rowGameType !== typeScope', 'rowGameType === "casual"'], failures)
+
 const identityService = read('backend/IdentityService.gs')
 assertIncludes(
   'Authentication hardening',

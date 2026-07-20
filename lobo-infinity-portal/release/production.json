@@ -56,6 +56,15 @@
       "submitCasualResult",
       "saveTeamTournamentResult"
     ],
+    "missionHeadquartersScope": [
+      "Mission Headquarters",
+      "Current League",
+      "Tournament",
+      "Casual",
+      "All Games",
+      "getMissions",
+      "gameType"
+    ],
     "authenticationHardening": [
       "DUPLICATE_MATCH",
       "NO_RECOVERY_MATCH",

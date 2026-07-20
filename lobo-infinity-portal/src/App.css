@@ -2142,6 +2142,7 @@
   .player-card-stat-wide {
     grid-column: 1 / -1;
   }
+
 }
 
 .table-player-link,
@@ -2297,6 +2298,76 @@
 
 .mission-card .faction-card-chevron {
   color: #2dc653;
+}
+
+.mission-scope-control {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  width: min(100%, 820px);
+  margin-top: 20px;
+}
+
+.mission-scope-control button {
+  display: grid;
+  min-height: 72px;
+  gap: 4px;
+  align-content: center;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, #2dc653 20%, var(--border));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--panel) 86%, transparent);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease;
+}
+
+.mission-scope-control button:hover,
+.mission-scope-control button:focus-visible,
+.mission-scope-control button.active {
+  border-color: color-mix(in srgb, #2dc653 64%, var(--border));
+  background: color-mix(in srgb, #2dc653 16%, var(--panel));
+}
+
+.mission-scope-control button:focus-visible {
+  outline: 2px solid color-mix(in srgb, #2dc653 70%, white);
+  outline-offset: 3px;
+}
+
+.mission-scope-control button:hover {
+  transform: translateY(-1px);
+}
+
+.mission-scope-control span {
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.mission-scope-control small {
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.25;
+}
+
+.mission-scope-note {
+  max-width: 720px;
+  margin: 12px 0 0;
+  color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  .mission-scope-control {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mission-scope-control button {
+    min-height: 66px;
+    padding: 9px 10px;
+  }
 }
 
 .faction-profile-grid {

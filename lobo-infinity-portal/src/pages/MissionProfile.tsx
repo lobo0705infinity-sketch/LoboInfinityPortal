@@ -32,6 +32,7 @@ function MissionProfile() {
   const { missionName } = useParams<{ missionName: string }>()
   const [searchParams] = useSearchParams()
   const eventId = searchParams.get('eventId') || ''
+  const gameType = searchParams.get('gameType') || ''
   const decodedMissionName = decodeMissionName(missionName)
   const canonicalMissionName = getCanonicalMissionName(decodedMissionName)
   const [profileState, setProfileState] = useState<MissionProfileState>({
@@ -48,6 +49,7 @@ function MissionProfile() {
     apiClient
       .getMission(canonicalMissionName, {
         eventId,
+        gameType,
         signal: controller.signal,
       })
       .then((mission) => {
@@ -75,7 +77,7 @@ function MissionProfile() {
     return () => {
       controller.abort()
     }
-  }, [canonicalMissionName, decodedMissionName, eventId])
+  }, [canonicalMissionName, decodedMissionName, eventId, gameType])
 
   if (!canonicalMissionName) {
     return (

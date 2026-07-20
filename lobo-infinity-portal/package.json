@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "npm run api:init-order && npm run security:cache && npm run security:armies && npm run test:faction-portraits && npm run test:achievements && npm run test:draws && npm run test:standings-integrity && npm run test:dashboard-api && npm run test:commissioner-submit && npm run test:commissioner-context && tsc -b && vite build",
+    "build": "npm run api:init-order && npm run security:cache && npm run security:armies && npm run test:faction-portraits && npm run test:mission-scopes && npm run test:achievements && npm run test:draws && npm run test:standings-integrity && npm run test:dashboard-api && npm run test:commissioner-submit && npm run test:commissioner-context && tsc -b && vite build",
     "release:source": "node scripts/release-source-check.mjs",
     "release:manifest": "node scripts/release-manifest-check.mjs",
     "release:fingerprint": "node scripts/generate-release-fingerprint.mjs",
@@ -35,6 +35,7 @@
     "test:submit-game": "node --experimental-strip-types scripts/submit-game-identity-check.ts",
     "test:submit-game-modes": "node scripts/submit-game-modes-check.mjs",
     "test:players-portraits": "node scripts/players-portrait-check.mjs",
+    "test:mission-scopes": "node scripts/mission-scope-check.mjs",
     "test:team-membership": "node scripts/team-membership-check.mjs",
     "test:notifications": "node --experimental-strip-types scripts/notification-timestamp-check.ts",
     "test:achievements": "node scripts/achievement-rules-check.mjs",
