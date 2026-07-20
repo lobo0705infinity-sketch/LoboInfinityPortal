@@ -4,6 +4,7 @@ import { chromium } from 'playwright'
 import {
   FACTION_PORTRAIT_REGISTRY,
   resolveFactionPortrait,
+  resolveFactionPortraitFromArmyPriority,
 } from '../src/config/factionPortraits.ts'
 
 const expected = [
@@ -64,10 +65,29 @@ if (resolveFactionPortrait('  kosmoflot  ')?.src !== '/faction-portraits/kosmofl
   failures.push('Portrait resolution should be deterministic for whitespace/case variants.')
 }
 
+if (
+  resolveFactionPortraitFromArmyPriority('Unknown Army', 'Operations Subsection')?.src !==
+  '/faction-portraits/operations-subsection.png'
+) {
+  failures.push('Portrait priority should fall through from unsupported current army to supported preferred army.')
+}
+
+if (
+  resolveFactionPortraitFromArmyPriority('vanilla aleph', 'Kosmoflot')?.src !==
+  '/faction-portraits/kosmoflot.png'
+) {
+  failures.push('Portrait priority should use existing aliases without inventing unsupported parent portraits.')
+}
+
+if (resolveFactionPortraitFromArmyPriority('PanOceania', 'Yu Jing') !== null) {
+  failures.push('Unsupported factions must keep the existing no-portrait fallback.')
+}
+
 for (const [faction] of expected) {
   console.log(`PASS ${faction} portrait resolves`)
 }
 console.log('PASS Unknown factions keep the existing tactical panel')
+console.log('PASS Players portrait priority uses current army, preferred army, and existing aliases')
 
 for (const result of assetResults) {
   console.log(

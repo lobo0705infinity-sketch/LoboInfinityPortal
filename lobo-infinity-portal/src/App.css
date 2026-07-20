@@ -1712,7 +1712,7 @@
 
 .players-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 16px;
   padding: 0 clamp(18px, 4vw, 46px) 46px;
 }
@@ -1901,6 +1901,55 @@
     transform 180ms ease;
 }
 
+.player-card.has-faction-portrait {
+  grid-template-columns: minmax(0, 1fr) minmax(104px, 30%);
+  column-gap: 14px;
+  background:
+    linear-gradient(90deg, rgba(13, 20, 28, 0.98) 0%, rgba(13, 20, 28, 0.94) 58%, rgba(13, 20, 28, 0.66) 76%, rgba(13, 20, 28, 0.36) 100%),
+    radial-gradient(circle at 82% 42%, color-mix(in srgb, var(--division-accent) 18%, transparent), transparent 46%),
+    var(--panel);
+}
+
+.player-card-content {
+  display: grid;
+  gap: 18px;
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.player-card-portrait {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  min-width: 0;
+  min-height: 172px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.player-card-portrait::before {
+  position: absolute;
+  inset: 0 auto 0 -18px;
+  width: 42px;
+  background: linear-gradient(90deg, rgba(13, 20, 28, 0.95), rgba(13, 20, 28, 0));
+  content: "";
+}
+
+.player-card-portrait img {
+  display: block;
+  width: 126%;
+  height: 100%;
+  max-height: 216px;
+  object-fit: cover;
+  object-position: center top;
+  opacity: 0.76;
+  filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.34));
+}
+
 .player-card:hover,
 .player-card:focus-visible {
   border-color: color-mix(in srgb, var(--division-accent) 58%, var(--border));
@@ -1927,6 +1976,7 @@
   margin: 10px 0 0;
   color: var(--text);
   font-size: 1.35rem;
+  overflow-wrap: anywhere;
 }
 
 .player-card-chevron {
@@ -1987,9 +2037,13 @@
 
 .player-card-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(86px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
   margin: 0;
+}
+
+.player-card.has-faction-portrait .player-card-stats {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .player-card-stats div {
@@ -2014,6 +2068,10 @@
   font-size: 1.1rem;
   font-weight: 900;
   overflow-wrap: anywhere;
+}
+
+.player-card-stat-wide {
+  grid-column: 1 / -1;
 }
 
 .player-card-badges {
@@ -2060,6 +2118,29 @@
   .community-player-summary,
   .community-player-controls {
     grid-template-columns: 1fr;
+  }
+
+  .player-card.has-faction-portrait {
+    grid-template-columns: minmax(0, 1fr) minmax(68px, 22%);
+    gap: 12px;
+  }
+
+  .player-card-portrait {
+    min-height: 132px;
+  }
+
+  .player-card-portrait img {
+    width: 138%;
+    max-height: 152px;
+    opacity: 0.64;
+  }
+
+  .player-card-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .player-card-stat-wide {
+    grid-column: 1 / -1;
   }
 }
 

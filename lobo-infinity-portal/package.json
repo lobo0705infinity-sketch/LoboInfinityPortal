@@ -34,6 +34,7 @@
     "test:submit-result": "node scripts/submit-result-best-moment-check.mjs",
     "test:submit-game": "node --experimental-strip-types scripts/submit-game-identity-check.ts",
     "test:submit-game-modes": "node scripts/submit-game-modes-check.mjs",
+    "test:players-portraits": "node scripts/players-portrait-check.mjs",
     "test:team-membership": "node scripts/team-membership-check.mjs",
     "test:notifications": "node --experimental-strip-types scripts/notification-timestamp-check.ts",
     "test:achievements": "node scripts/achievement-rules-check.mjs",

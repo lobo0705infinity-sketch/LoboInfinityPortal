@@ -1,3 +1,5 @@
+import { getArmyParentFaction, getCanonicalArmyName } from './armies.ts'
+
 export type FactionPortrait = {
   alt: string
   faction: string
@@ -47,6 +49,37 @@ export function resolveFactionPortrait(
   const key = normalizeFactionPortraitKey(faction)
 
   return key ? factionPortraitByKey.get(key) ?? null : null
+}
+
+export function resolveFactionPortraitFromArmyPriority(
+  ...factions: Array<string | null | undefined>
+): FactionPortrait | null {
+  for (const faction of factions) {
+    const portrait = resolveFactionPortraitCandidate(faction)
+
+    if (portrait) {
+      return portrait
+    }
+  }
+
+  return null
+}
+
+function resolveFactionPortraitCandidate(faction: string | null | undefined) {
+  const direct = resolveFactionPortrait(faction)
+
+  if (direct) {
+    return direct
+  }
+
+  const canonicalArmy = getCanonicalArmyName(faction)
+  const canonical = resolveFactionPortrait(canonicalArmy)
+
+  if (canonical) {
+    return canonical
+  }
+
+  return resolveFactionPortrait(getArmyParentFaction(canonicalArmy || faction))
 }
 
 function normalizeFactionPortraitKey(value: string | null | undefined) {
