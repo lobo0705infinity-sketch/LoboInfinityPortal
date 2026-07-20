@@ -84,7 +84,7 @@ async function assertPublicProfilePortraitUi() {
 
 async function assertSupportedProfile(browser, baseUrl) {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } })
-  await routeApi(context, 'Test Pilot', 'Bakunin Jurisdictional Command')
+  await routeApi(context, 'Test Pilot', 'ALEPH')
   const page = await context.newPage()
 
   try {
@@ -95,17 +95,19 @@ async function assertSupportedProfile(browser, baseUrl) {
     assert.equal(desktop.hasPortrait, true)
     assert.equal(desktop.objectFit, 'contain')
     assert.equal(desktop.imageLoaded, true)
+    assert.match(desktop.imageSrc, /\/faction-portraits\/aleph\.png$/)
     assert.equal(desktop.portraitBelowBadge, true)
     assert.equal(desktop.overlapsBadge, false)
     assert.equal(desktop.overlapsIdentity, false)
     assert.equal(desktop.hasHorizontalOverflow, false)
 
     const mobile = await browser.newPage({ viewport: { width: 390, height: 900 } })
-    await routeApi(mobile, 'Test Pilot', 'Bakunin Jurisdictional Command')
+    await routeApi(mobile, 'Test Pilot', 'ALEPH')
     await mobile.goto(`${baseUrl}/player/Test%20Pilot`, { waitUntil: 'networkidle' })
     await mobile.waitForSelector('.profile-v21-faction-portrait img')
     const mobileLayout = await readLayout(mobile)
     assert.equal(mobileLayout.portraitBelowBadge, true)
+    assert.match(mobileLayout.imageSrc, /\/faction-portraits\/aleph\.png$/)
     assert.equal(mobileLayout.hasHorizontalOverflow, false)
     await mobile.close()
   } finally {
@@ -194,6 +196,7 @@ async function readLayout(page) {
       hasHorizontalOverflow:
         document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
       imageLoaded: image.complete && image.naturalWidth > 0 && image.naturalHeight > 0,
+      imageSrc: image.currentSrc,
       objectFit: imageStyle.objectFit,
       overlapsBadge: rectanglesOverlap(badgeRect, portraitRect),
       overlapsIdentity: rectanglesOverlap(identityRect, portraitRect),

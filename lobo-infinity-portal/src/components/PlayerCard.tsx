@@ -29,8 +29,8 @@ function PlayerCard({ divisionLabel, eventId, player }: PlayerCardProps) {
   const badges = player.statusBadges ?? []
   const favoriteArmy = player.favoriteArmy || player.faction || 'Not recorded'
   const portrait = resolveFactionPortraitFromArmyPriority(
-    player.faction,
     player.favoriteArmy,
+    player.faction,
   )
   const streak = player.currentWinStreak ?? 0
   const divisionBadgeLabel = getPlayerCardHomeLabel({

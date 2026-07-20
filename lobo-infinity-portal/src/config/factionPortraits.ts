@@ -10,6 +10,31 @@ const FACTION_PORTRAIT_BASE_PATH = '/faction-portraits/'
 
 export const FACTION_PORTRAIT_REGISTRY: readonly FactionPortrait[] = [
   {
+    alt: 'ALEPH pilot portrait',
+    faction: 'ALEPH',
+    src: `${FACTION_PORTRAIT_BASE_PATH}aleph.png`,
+  },
+  {
+    alt: 'Nomads pilot portrait',
+    faction: 'Nomads',
+    src: `${FACTION_PORTRAIT_BASE_PATH}nomads.png`,
+  },
+  {
+    alt: 'Combined Army pilot portrait',
+    faction: 'Combined Army',
+    src: `${FACTION_PORTRAIT_BASE_PATH}combined-army.png`,
+  },
+  {
+    alt: 'Starmada pilot portrait',
+    faction: 'Starmada',
+    src: `${FACTION_PORTRAIT_BASE_PATH}starmada.png`,
+  },
+  {
+    alt: 'Torchlight Brigade pilot portrait',
+    faction: 'Torchlight Brigade',
+    src: `${FACTION_PORTRAIT_BASE_PATH}torchlight-brigade.png`,
+  },
+  {
     alt: 'Ariadna pilot portrait',
     faction: 'Ariadna',
     src: `${FACTION_PORTRAIT_BASE_PATH}ariadna.png`,
@@ -68,12 +93,31 @@ const factionPortraitByKey = new Map(
   ]),
 )
 
+const factionPortraitAliasByKey = new Map(
+  [
+    ['Nomad', 'Nomads'],
+    ['Combined', 'Combined Army'],
+    ['Torchlight', 'Torchlight Brigade'],
+  ].map(([alias, faction]) => [
+    normalizeFactionPortraitKey(alias),
+    normalizeFactionPortraitKey(faction),
+  ]),
+)
+
 export function resolveFactionPortrait(
   faction: string | null | undefined,
 ): FactionPortrait | null {
   const key = normalizeFactionPortraitKey(faction)
 
-  return key ? factionPortraitByKey.get(key) ?? null : null
+  if (!key) {
+    return null
+  }
+
+  return (
+    factionPortraitByKey.get(key) ??
+    factionPortraitByKey.get(factionPortraitAliasByKey.get(key) || '') ??
+    null
+  )
 }
 
 export function resolveFactionPortraitFromArmyPriority(

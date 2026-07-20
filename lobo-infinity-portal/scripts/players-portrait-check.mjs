@@ -25,8 +25,8 @@ assert.equal(
 
 assert.match(
   playerCard,
-  /resolveFactionPortraitFromArmyPriority\(\s*player\.faction,\s*player\.favoriteArmy,\s*\)/,
-  'Player cards must resolve portraits from current faction before preferred army.',
+  /resolveFactionPortraitFromArmyPriority\(\s*player\.favoriteArmy,\s*player\.faction,\s*\)/,
+  'Player cards must resolve portraits from the same preferred/current army inputs used by public profiles.',
 )
 
 assert.doesNotMatch(

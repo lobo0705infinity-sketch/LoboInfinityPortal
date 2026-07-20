@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { chromium } from 'playwright'
 import {
@@ -8,6 +8,11 @@ import {
 } from '../src/config/factionPortraits.ts'
 
 const expected = [
+  ['ALEPH', '/faction-portraits/aleph.png'],
+  ['Nomads', '/faction-portraits/nomads.png'],
+  ['Combined Army', '/faction-portraits/combined-army.png'],
+  ['Starmada', '/faction-portraits/starmada.png'],
+  ['Torchlight Brigade', '/faction-portraits/torchlight-brigade.png'],
   ['Ariadna', '/faction-portraits/ariadna.png'],
   ['Haqqislam', '/faction-portraits/haqqislam.png'],
   ['Japanese Secessionist Army', '/faction-portraits/jsa.png'],
@@ -21,16 +26,22 @@ const expected = [
 ] as const
 
 const expectedAliases = [
+  ['Aleph', '/faction-portraits/aleph.png'],
+  ['ALEPH', '/faction-portraits/aleph.png'],
+  ['Nomad', '/faction-portraits/nomads.png'],
+  ['Combined', '/faction-portraits/combined-army.png'],
+  ['Torchlight', '/faction-portraits/torchlight-brigade.png'],
   ['JSA', '/faction-portraits/jsa.png'],
   ['vanilla jsa', '/faction-portraits/jsa.png'],
   ['O12', '/faction-portraits/o-12.png'],
   ['o 12', '/faction-portraits/o-12.png'],
   ['Hassassin Bahram', '/faction-portraits/haqqislam.png'],
   ['Oban', '/faction-portraits/jsa.png'],
-  ['Starmada', '/faction-portraits/o-12.png'],
+  ['vanilla aleph', '/faction-portraits/aleph.png'],
 ] as const
 
 const failures: string[] = []
+const expectedSources = new Set(expected.map(([, src]) => src))
 
 if (FACTION_PORTRAIT_REGISTRY.length !== expected.length) {
   failures.push(
@@ -53,6 +64,8 @@ for (const [faction, src] of expected) {
   const publicPath = resolve(process.cwd(), 'public', src.replace(/^\//, ''))
   if (!existsSync(publicPath)) {
     failures.push(`${faction} portrait asset is missing at ${publicPath}.`)
+  } else if (statSync(publicPath).size === 0) {
+    failures.push(`${faction} portrait asset at ${publicPath} must not be empty.`)
   }
 
   const duplicatedPath = resolve(process.cwd(), 'public', 'public', src.replace(/^\//, ''))
@@ -65,6 +78,21 @@ const registrySources = new Set(FACTION_PORTRAIT_REGISTRY.map((portrait) => port
 
 if (registrySources.size !== FACTION_PORTRAIT_REGISTRY.length) {
   failures.push('Each faction must resolve to exactly one unique portrait source.')
+}
+
+for (const portrait of FACTION_PORTRAIT_REGISTRY) {
+  if (!expectedSources.has(portrait.src)) {
+    failures.push(`${portrait.faction} uses unexpected portrait source ${portrait.src}.`)
+  }
+}
+
+const publicPortraitFiles = listFactionPortraitFiles(resolve(process.cwd(), 'public', 'faction-portraits'))
+const expectedFiles = [...expectedSources].map((src) => src.replace('/faction-portraits/', '')).sort()
+
+if (publicPortraitFiles.join('|') !== expectedFiles.join('|')) {
+  failures.push(
+    `public/faction-portraits must contain exactly the approved portrait files. Found ${publicPortraitFiles.join(', ') || 'none'}.`,
+  )
 }
 
 for (const [alias, src] of expectedAliases) {
@@ -110,11 +138,8 @@ if (
   failures.push('Portrait priority should fall through from unsupported current army to supported preferred army.')
 }
 
-if (
-  resolveFactionPortraitFromArmyPriority('vanilla aleph', 'Kosmoflot')?.src !==
-  '/faction-portraits/kosmoflot.png'
-) {
-  failures.push('Portrait priority should use existing aliases without inventing unsupported parent portraits.')
+if (resolveFactionPortrait('Combined')?.src !== '/faction-portraits/combined-army.png') {
+  failures.push('Combined shorthand must resolve through the centralized portrait alias map.')
 }
 
 if (resolveFactionPortraitFromArmyPriority('PanOceania', 'Yu Jing') !== null) {
@@ -125,11 +150,14 @@ if (resolveFactionPortraitFromArmyPriority('Nighthawkmk2') !== null) {
   failures.push('Player names must not resolve faction portraits.')
 }
 
+assertSourceContracts()
+assertBuildOutputIfRequested()
+
 for (const [faction] of expected) {
   console.log(`PASS ${faction} portrait resolves`)
 }
 console.log('PASS Unknown factions keep the existing tactical panel')
-console.log('PASS Players portrait priority uses current army, preferred army, and existing aliases')
+console.log('PASS Players, My Profile, and Public Profile reuse centralized ALEPH portrait resolution')
 
 for (const result of assetResults) {
   console.log(
@@ -254,4 +282,60 @@ function pngHasAlphaChannel(path: string) {
   const colorType = bytes[25]
 
   return colorType === 4 || colorType === 6
+}
+
+function listFactionPortraitFiles(path: string) {
+  if (!existsSync(path)) {
+    return []
+  }
+
+  return readdirSync(path)
+    .filter((file) => file.endsWith('.png'))
+    .sort()
+}
+
+function assertSourceContracts() {
+  const playerCard = readFileSync(resolve(process.cwd(), 'src', 'components', 'PlayerCard.tsx'), 'utf8')
+  const playerProfile = readFileSync(resolve(process.cwd(), 'src', 'pages', 'PlayerProfile.tsx'), 'utf8')
+  const myProfile = readFileSync(resolve(process.cwd(), 'src', 'pages', 'MyProfile.tsx'), 'utf8')
+  const portraits = readFileSync(resolve(process.cwd(), 'src', 'config', 'factionPortraits.ts'), 'utf8')
+
+  if (
+    !/resolveFactionPortraitFromArmyPriority\(\s*player\.favoriteArmy,\s*player\.faction,\s*\)/.test(
+      playerCard,
+    )
+  ) {
+    failures.push('Player cards must resolve preferred/current army inputs in the same order used by public profiles.')
+  }
+
+  if (
+    !/resolveFactionPortraitFromArmyPriority\(\s*leagueModel\?\.preferredArmy,[\s\S]*player\.favoriteFaction,[\s\S]*player\.armyListSummary\.favoriteFaction/.test(
+      playerProfile,
+    )
+  ) {
+    failures.push('Public profiles must keep using centralized preferred/current army portrait resolution.')
+  }
+
+  if (!/resolveFactionPortrait\(\s*data\.user\.favoriteFaction \|\| leagueModel\?\.preferredArmy,\s*\)/.test(myProfile)) {
+    failures.push('My Profile portrait behavior must remain on the existing centralized resolver call.')
+  }
+
+  if (/Nighthawkmk2|playerName|displayName|decodedPlayerName/.test(portraits)) {
+    failures.push('Faction portrait resolution must not include player-name-specific matching.')
+  }
+}
+
+function assertBuildOutputIfRequested() {
+  if (process.env.CHECK_FACTION_PORTRAIT_BUILD_OUTPUT !== '1') {
+    return
+  }
+
+  const distPath = resolve(process.cwd(), 'dist', 'faction-portraits')
+  const distFiles = listFactionPortraitFiles(distPath)
+
+  if (distFiles.join('|') !== expectedFiles.join('|')) {
+    failures.push(
+      `dist/faction-portraits must include exactly the approved portrait files. Found ${distFiles.join(', ') || 'none'}.`,
+    )
+  }
 }
