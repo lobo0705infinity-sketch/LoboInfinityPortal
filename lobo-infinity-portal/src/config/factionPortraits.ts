@@ -10,6 +10,31 @@ const FACTION_PORTRAIT_BASE_PATH = '/faction-portraits/'
 
 export const FACTION_PORTRAIT_REGISTRY: readonly FactionPortrait[] = [
   {
+    alt: 'Ariadna pilot portrait',
+    faction: 'Ariadna',
+    src: `${FACTION_PORTRAIT_BASE_PATH}ariadna.png`,
+  },
+  {
+    alt: 'Haqqislam pilot portrait',
+    faction: 'Haqqislam',
+    src: `${FACTION_PORTRAIT_BASE_PATH}haqqislam.png`,
+  },
+  {
+    alt: 'Japanese Secessionist Army pilot portrait',
+    faction: 'Japanese Secessionist Army',
+    src: `${FACTION_PORTRAIT_BASE_PATH}jsa.png`,
+  },
+  {
+    alt: 'Tohaa pilot portrait',
+    faction: 'Tohaa',
+    src: `${FACTION_PORTRAIT_BASE_PATH}tohaa.png`,
+  },
+  {
+    alt: 'O-12 pilot portrait',
+    faction: 'O-12',
+    src: `${FACTION_PORTRAIT_BASE_PATH}o-12.png`,
+  },
+  {
     alt: 'Operations Subsection pilot portrait',
     faction: 'Operations Subsection',
     src: `${FACTION_PORTRAIT_BASE_PATH}operations-subsection.png`,

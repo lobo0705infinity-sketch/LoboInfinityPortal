@@ -8,11 +8,26 @@ import {
 } from '../src/config/factionPortraits.ts'
 
 const expected = [
+  ['Ariadna', '/faction-portraits/ariadna.png'],
+  ['Haqqislam', '/faction-portraits/haqqislam.png'],
+  ['Japanese Secessionist Army', '/faction-portraits/jsa.png'],
+  ['Tohaa', '/faction-portraits/tohaa.png'],
+  ['O-12', '/faction-portraits/o-12.png'],
   ['Operations Subsection', '/faction-portraits/operations-subsection.png'],
   ['Bakunin Jurisdictional Command', '/faction-portraits/bakunin.png'],
   ['Kosmoflot', '/faction-portraits/kosmoflot.png'],
   ['Morat Aggression Force', '/faction-portraits/morats.png'],
   ['Shasvastii Expeditionary Force', '/faction-portraits/shasvastii.png'],
+] as const
+
+const expectedAliases = [
+  ['JSA', '/faction-portraits/jsa.png'],
+  ['vanilla jsa', '/faction-portraits/jsa.png'],
+  ['O12', '/faction-portraits/o-12.png'],
+  ['o 12', '/faction-portraits/o-12.png'],
+  ['Hassassin Bahram', '/faction-portraits/haqqislam.png'],
+  ['Oban', '/faction-portraits/jsa.png'],
+  ['Starmada', '/faction-portraits/o-12.png'],
 ] as const
 
 const failures: string[] = []
@@ -39,6 +54,25 @@ for (const [faction, src] of expected) {
   if (!existsSync(publicPath)) {
     failures.push(`${faction} portrait asset is missing at ${publicPath}.`)
   }
+
+  const duplicatedPath = resolve(process.cwd(), 'public', 'public', src.replace(/^\//, ''))
+  if (existsSync(duplicatedPath)) {
+    failures.push(`${faction} portrait asset must not be duplicated at ${duplicatedPath}.`)
+  }
+}
+
+const registrySources = new Set(FACTION_PORTRAIT_REGISTRY.map((portrait) => portrait.src))
+
+if (registrySources.size !== FACTION_PORTRAIT_REGISTRY.length) {
+  failures.push('Each faction must resolve to exactly one unique portrait source.')
+}
+
+for (const [alias, src] of expectedAliases) {
+  const portrait = resolveFactionPortraitFromArmyPriority(alias)
+
+  if (portrait?.src !== src) {
+    failures.push(`${alias} resolved ${portrait?.src || 'no portrait'}, expected ${src}.`)
+  }
 }
 
 const assetResults = await inspectPortraitAssets()
@@ -54,6 +88,10 @@ for (const result of assetResults) {
     failures.push(
       `${result.file} is invalid: edge and corner pixels form an opaque white/checkerboard rectangular background.`,
     )
+  }
+
+  if (!result.hasAlphaChannel) {
+    failures.push(`${result.file} is invalid: PNG color type does not include an alpha channel.`)
   }
 }
 
@@ -83,6 +121,10 @@ if (resolveFactionPortraitFromArmyPriority('PanOceania', 'Yu Jing') !== null) {
   failures.push('Unsupported factions must keep the existing no-portrait fallback.')
 }
 
+if (resolveFactionPortraitFromArmyPriority('Nighthawkmk2') !== null) {
+  failures.push('Player names must not resolve faction portraits.')
+}
+
 for (const [faction] of expected) {
   console.log(`PASS ${faction} portrait resolves`)
 }
@@ -91,7 +133,7 @@ console.log('PASS Players portrait priority uses current army, preferred army, a
 
 for (const result of assetResults) {
   console.log(
-    `${result.hasUsableTransparency && !result.hasOpaqueRectangularBackground ? 'PASS' : 'FAIL'} ${result.file} transparency integrity`,
+    `${result.hasAlphaChannel && result.hasUsableTransparency && !result.hasOpaqueRectangularBackground ? 'PASS' : 'FAIL'} ${result.file} transparency integrity`,
   )
 }
 
@@ -110,7 +152,8 @@ async function inspectPortraitAssets() {
 
     for (const [, src] of expected) {
       const file = src.replace('/faction-portraits/', '')
-      const dataUrl = `data:image/png;base64,${readFileAsBase64(resolve(process.cwd(), 'public', src.replace(/^\//, '')))}`
+      const publicPath = resolve(process.cwd(), 'public', src.replace(/^\//, ''))
+      const dataUrl = `data:image/png;base64,${readFileAsBase64(publicPath)}`
       const result = await page.evaluate(async (imageSrc: string) => {
         const image = new Image()
         await new Promise<void>((resolveImage, rejectImage) => {
@@ -193,7 +236,7 @@ async function inspectPortraitAssets() {
         }
       }, dataUrl)
 
-      results.push({ file, ...result })
+      results.push({ file, hasAlphaChannel: pngHasAlphaChannel(publicPath), ...result })
     }
 
     return results
@@ -204,4 +247,11 @@ async function inspectPortraitAssets() {
 
 function readFileAsBase64(path: string) {
   return readFileSync(path).toString('base64')
+}
+
+function pngHasAlphaChannel(path: string) {
+  const bytes = readFileSync(path)
+  const colorType = bytes[25]
+
+  return colorType === 4 || colorType === 6
 }
