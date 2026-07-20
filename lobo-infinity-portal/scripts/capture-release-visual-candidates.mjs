@@ -21,6 +21,7 @@ const player = 'Lobo'
 const now = '2026-07-15T12:00:00.000Z'
 const leagueName = 'July 2026 League'
 const preferredArmy = 'Operations Subsection'
+const preferredArmyPortrait = '/faction-portraits/operations-subsection.png'
 const fixtureToken =
   'eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJlbWFpbCI6InJldmlld0Bsb2JvLmxvY2FsIiwibmFtZSI6IkxvYm8iLCJhdWQiOiJjYW5kaWRhdGUtY2xpZW50IiwiaWF0IjoxNzg0MTEwODAwLCJleHAiOjE3ODQxMTQ0MDB9.signature'
 
@@ -36,6 +37,7 @@ const surfaces = [
   {
     markers: [leagueName, 'Main Man', '#2', '#2 of 10', '2-0', 'Safe', preferredArmy, '2 Wins'],
     name: 'my-profile-desktop-dashboard',
+    expectedPortrait: { faction: preferredArmy, mode: 'desktop', src: preferredArmyPortrait },
     route: '/profile',
     screenshot: 'viewport',
     width: 1440,
@@ -54,6 +56,7 @@ const surfaces = [
   {
     markers: [leagueName, 'Main Man', '#2', '#2 of 10', '2-0', 'Safe', 'Current Season'],
     name: 'my-profile-mobile-dashboard',
+    expectedPortrait: { faction: preferredArmy, mode: 'mobile', src: preferredArmyPortrait },
     route: '/profile',
     hideAppChrome: true,
     screenshotSelector: '.my-profile-v3-dashboard',
@@ -111,7 +114,13 @@ const failures = []
 for (const surface of surfaces) {
   const page = await context.newPage()
   const errors = []
+  const portraitResponses = []
   page.on('pageerror', (error) => errors.push(error.message))
+  page.on('response', (response) => {
+    if (surface.expectedPortrait && response.url().includes(surface.expectedPortrait.src)) {
+      portraitResponses.push(response.status())
+    }
+  })
   await page.setViewportSize({ width: surface.width, height: surface.height })
 
   try {
@@ -142,7 +151,6 @@ for (const surface of surfaces) {
         failures.push(`${surface.name} rendered forbidden text: ${marker}`)
       }
     })
-
     if (surface.hideAppChrome) {
       await page.addStyleTag({
         content: `
@@ -161,13 +169,42 @@ for (const surface of surfaces) {
       await page.waitForTimeout(250)
     }
     const screenshotPath = resolve(outputDir, `${surface.name}.png`)
+    const metricsPath = resolve(outputDir, `${surface.name}-portrait-metrics.json`)
     let screenshot
     if (surface.screenshotSelector) {
       const region = page.locator(surface.screenshotSelector).first()
       await region.scrollIntoViewIfNeeded({ timeout: 5000 })
       await page.waitForTimeout(250)
+      if (surface.expectedPortrait) {
+        const screenshotClip = await screenshotClipForSelector(page, surface.screenshotSelector)
+        const portraitValidation = await validateExpectedPortrait(
+          page,
+          surface.expectedPortrait,
+          portraitResponses,
+          screenshotClip,
+        )
+
+        writeFileSync(metricsPath, JSON.stringify(portraitValidation, null, 2))
+        portraitValidation.errors.forEach((error) => {
+          failures.push(`${surface.name} portrait validation failed: ${error}`)
+        })
+      }
       screenshot = await region.screenshot()
     } else {
+      if (surface.expectedPortrait) {
+        const screenshotClip = await screenshotClipForViewport(page)
+        const portraitValidation = await validateExpectedPortrait(
+          page,
+          surface.expectedPortrait,
+          portraitResponses,
+          screenshotClip,
+        )
+
+        writeFileSync(metricsPath, JSON.stringify(portraitValidation, null, 2))
+        portraitValidation.errors.forEach((error) => {
+          failures.push(`${surface.name} portrait validation failed: ${error}`)
+        })
+      }
       screenshot = await page.screenshot({ fullPage: surface.screenshot !== 'viewport' })
     }
     writeFileSync(screenshotPath, screenshot)
@@ -203,6 +240,373 @@ if (failures.length) {
 }
 
 pass(`${compareBaselines ? 'visual regression check passed' : 'candidate visual screenshots captured'} in ${outputDir}`)
+
+async function screenshotClipForViewport(page) {
+  return page.evaluate(() => ({
+    height: window.innerHeight,
+    type: 'viewport',
+    width: window.innerWidth,
+    x: 0,
+    y: 0,
+  }))
+}
+
+async function screenshotClipForSelector(page, selector) {
+  return page.evaluate((clipSelector) => {
+    const element = document.querySelector(clipSelector)
+
+    if (!(element instanceof HTMLElement)) {
+      return {
+        height: 0,
+        selector: clipSelector,
+        type: 'selector',
+        width: 0,
+        x: 0,
+        y: 0,
+      }
+    }
+
+    const rect = element.getBoundingClientRect()
+
+    return {
+      height: rect.height,
+      selector: clipSelector,
+      type: 'selector',
+      width: rect.width,
+      x: rect.left,
+      y: rect.top,
+    }
+  }, selector)
+}
+
+async function validateExpectedPortrait(page, expected, responseStatuses, screenshotClip) {
+  const result = await page.evaluate(({ expectedPortrait, clip }) => {
+    const errors = []
+    const portraitElementSelector = '.my-profile-faction-portrait img'
+    const image = document.querySelector('.my-profile-faction-portrait img')
+    const portraitPanel = document.querySelector('.my-profile-faction-portrait')
+    const hero = document.querySelector('.my-profile-operator-hero')
+    const badge = document.querySelector('.my-profile-operator-badge')
+    const identity = document.querySelector('.my-profile-operator-hero .profile-hero-main')
+    const seasonPanel = document.querySelector('.my-profile-season-panel')
+
+    if (!(image instanceof HTMLImageElement)) {
+      errors.push('portrait image element is missing.')
+    }
+    if (!(portraitPanel instanceof HTMLElement)) {
+      errors.push('portrait panel is missing.')
+    }
+    if (!(hero instanceof HTMLElement) || !(badge instanceof HTMLElement) || !(identity instanceof HTMLElement)) {
+      errors.push('required dashboard layout elements are missing.')
+    }
+
+    if (
+      !(image instanceof HTMLImageElement) ||
+      !(portraitPanel instanceof HTMLElement) ||
+      !(hero instanceof HTMLElement) ||
+      !(badge instanceof HTMLElement) ||
+      !(identity instanceof HTMLElement)
+    ) {
+      return { errors }
+    }
+
+    const viewportWidth = window.innerWidth
+    const viewportHeight = window.innerHeight
+    const mobileBreakpoint = 920
+    const imageStyle = window.getComputedStyle(image)
+    const panelStyle = window.getComputedStyle(portraitPanel)
+    const imageRect = image.getBoundingClientRect()
+    const panelRect = portraitPanel.getBoundingClientRect()
+    const badgeRect = badge.getBoundingClientRect()
+    const identityRect = identity.getBoundingClientRect()
+    const seasonRect = seasonPanel instanceof HTMLElement ? seasonPanel.getBoundingClientRect() : null
+    const currentSrc = image.currentSrc || image.src || image.getAttribute('src') || ''
+    const imageTransparency = inspectImageTransparency(image)
+    const intersection = intersectRects(rectRecord(imageRect), clip)
+    const panelIntersection = intersectRects(rectRecord(panelRect), clip)
+    const visibleArea = intersection.area
+    const coveredSamples = coverageSamples(image, intersection)
+
+    if (!currentSrc.includes(expectedPortrait.src)) {
+      errors.push(`portrait src is ${currentSrc || '(empty)'}, expected ${expectedPortrait.src}.`)
+    }
+    if (!image.alt.toLowerCase().includes(expectedPortrait.faction.toLowerCase())) {
+      errors.push(`portrait alt text does not identify ${expectedPortrait.faction}.`)
+    }
+    if (!image.complete || image.naturalWidth <= 0 || image.naturalHeight <= 0) {
+      errors.push('portrait image is missing, unloaded, or broken.')
+    }
+    if (imageStyle.objectFit !== 'contain') {
+      errors.push(`portrait object-fit is ${imageStyle.objectFit}, expected contain.`)
+    }
+    if (
+      imageStyle.display === 'none' ||
+      imageStyle.visibility === 'hidden' ||
+      Number(imageStyle.opacity) === 0 ||
+      panelStyle.display === 'none' ||
+      panelStyle.visibility === 'hidden' ||
+      Number(panelStyle.opacity) === 0
+    ) {
+      errors.push('portrait image or panel is hidden.')
+    }
+    if (
+      imageRect.width < 80 ||
+      imageRect.height < 160 ||
+      panelRect.width < 120 ||
+      panelRect.height < 240 ||
+      visibleArea <= 0
+    ) {
+      errors.push(
+        `portrait image or panel is zero-sized or too small: image=${Math.round(imageRect.width)}x${Math.round(imageRect.height)} panel=${Math.round(panelRect.width)}x${Math.round(panelRect.height)}.`,
+      )
+    }
+    if (visibleArea < 12000) {
+      errors.push(`portrait does not have meaningful visible area in the screenshot clip: ${Math.round(visibleArea)}px.`)
+    }
+    if (panelIntersection.area <= 0) {
+      errors.push('portrait parent panel does not intersect the screenshot clip.')
+    }
+    if (Number(imageStyle.opacity) <= 0 || Number(panelStyle.opacity) <= 0) {
+      errors.push('portrait computed opacity is not greater than zero.')
+    }
+    if (coveredSamples.covered > 0) {
+      errors.push(`portrait is covered at ${coveredSamples.covered} of ${coveredSamples.total} sampled points.`)
+    }
+    if (!imageTransparency.hasUsableTransparency) {
+      errors.push('portrait asset does not expose usable alpha transparency.')
+    }
+    if (imageTransparency.hasOpaqueRectangularBackground) {
+      errors.push('portrait asset appears to have an opaque white/checkerboard rectangular background.')
+    }
+    if (document.body.innerText.includes('Competitive Home')) {
+      errors.push('removed Competitive Home label reappeared.')
+    }
+    if (document.body.innerText.includes('Career Status')) {
+      errors.push('removed Career Status label reappeared.')
+    }
+    if (document.documentElement.scrollWidth > document.documentElement.clientWidth + 2) {
+      errors.push('page has horizontal overflow.')
+    }
+    if (rectanglesOverlap(panelRect, identityRect)) {
+      errors.push('portrait panel overlaps identity text.')
+    }
+    if (expectedPortrait.mode === 'desktop') {
+      if (viewportWidth <= mobileBreakpoint) {
+        errors.push(`desktop capture viewport is inside mobile breakpoint: ${viewportWidth}px.`)
+      }
+      if (!(badgeRect.left < identityRect.left && identityRect.left < panelRect.left)) {
+        errors.push('desktop layout is not ordered badge, identity, portrait.')
+      }
+      if (panelRect.right > document.documentElement.clientWidth + 2) {
+        errors.push('desktop portrait panel overflows the viewport.')
+      }
+    } else {
+      if (viewportWidth > mobileBreakpoint) {
+        errors.push(`mobile capture viewport exceeds mobile breakpoint: ${viewportWidth}px.`)
+      }
+      if (!(badgeRect.top <= panelRect.top && panelRect.top <= identityRect.top)) {
+        errors.push('mobile layout is not stacked badge, portrait, identity.')
+      }
+      if (!(seasonPanel instanceof HTMLElement) || !seasonRect) {
+        errors.push('mobile Current Season panel is missing.')
+      } else if (!(identityRect.top <= seasonRect.top)) {
+        errors.push('mobile layout does not place Current Season after identity.')
+      } else if (intersectRects(rectRecord(seasonRect), clip).area <= 0) {
+        errors.push('mobile Current Season panel does not intersect the screenshot clip.')
+      }
+    }
+
+    return {
+      coverageSamples: coveredSamples,
+      currentSrc,
+      errors,
+      intersectsScreenshotClip: intersection.area > 0,
+      meaningfulVisibleArea: visibleArea,
+      naturalHeight: image.naturalHeight,
+      naturalWidth: image.naturalWidth,
+      parentBoundingRect: rectRecord(panelRect),
+      portraitBoundingRect: rectRecord(imageRect),
+      portraitComputedStyle: {
+        display: imageStyle.display,
+        objectFit: imageStyle.objectFit,
+        opacity: imageStyle.opacity,
+        visibility: imageStyle.visibility,
+        zIndex: imageStyle.zIndex,
+      },
+      portraitElementSelector,
+      screenshotClip: clip,
+      viewport: {
+        devicePixelRatio: window.devicePixelRatio,
+        height: viewportHeight,
+        isMobileMediaQueryActive: window.matchMedia(`(max-width: ${mobileBreakpoint}px)`).matches,
+        maxTouchPoints: navigator.maxTouchPoints,
+        pointerCoarse: window.matchMedia('(pointer: coarse)').matches,
+        width: viewportWidth,
+      },
+    }
+
+    function coverageSamples(target, rect) {
+      if (rect.area <= 0) {
+        return {
+          covered: 0,
+          points: [],
+          total: 0,
+        }
+      }
+
+      const points = [
+        [rect.left + rect.width * 0.5, rect.top + rect.height * 0.5],
+        [rect.left + rect.width * 0.25, rect.top + rect.height * 0.25],
+        [rect.left + rect.width * 0.75, rect.top + rect.height * 0.25],
+        [rect.left + rect.width * 0.25, rect.top + rect.height * 0.75],
+        [rect.left + rect.width * 0.75, rect.top + rect.height * 0.75],
+      ].filter(([x, y]) => x >= 0 && y >= 0 && x < window.innerWidth && y < window.innerHeight)
+
+      const results = points.map(([x, y]) => {
+        const topElement = document.elementFromPoint(x, y)
+        const covered = topElement !== target && !target.contains(topElement)
+
+        return {
+          covered,
+          tag: topElement?.tagName || '',
+          x,
+          y,
+        }
+      })
+
+      return {
+        covered: results.filter((point) => point.covered).length,
+        points: results,
+        total: results.length,
+      }
+    }
+
+    function intersectRects(first, second) {
+      const left = Math.max(first.left, second.x)
+      const right = Math.min(first.right, second.x + second.width)
+      const top = Math.max(first.top, second.y)
+      const bottom = Math.min(first.bottom, second.y + second.height)
+      const width = Math.max(0, right - left)
+      const height = Math.max(0, bottom - top)
+
+      return {
+        area: width * height,
+        bottom,
+        height,
+        left,
+        right,
+        top,
+        width,
+      }
+    }
+
+    function rectRecord(rect) {
+      return {
+        bottom: rect.bottom,
+        height: rect.height,
+        left: rect.left,
+        right: rect.right,
+        top: rect.top,
+        width: rect.width,
+      }
+    }
+
+    function inspectImageTransparency(img) {
+      const canvas = document.createElement('canvas')
+      canvas.width = img.naturalWidth
+      canvas.height = img.naturalHeight
+      const context = canvas.getContext('2d', { willReadFrequently: true })
+
+      if (!context || canvas.width <= 0 || canvas.height <= 0) {
+        return {
+          hasOpaqueRectangularBackground: true,
+          hasUsableTransparency: false,
+        }
+      }
+
+      context.drawImage(img, 0, 0)
+      const data = context.getImageData(0, 0, canvas.width, canvas.height).data
+      let transparentPixels = 0
+      let translucentPixels = 0
+      const edgeSamples = []
+      const sampleStride = Math.max(1, Math.floor(Math.min(canvas.width, canvas.height) / 28))
+
+      for (let index = 3; index < data.length; index += 4) {
+        const alpha = data[index]
+
+        if (alpha === 0) {
+          transparentPixels += 1
+        } else if (alpha < 255) {
+          translucentPixels += 1
+        }
+      }
+
+      for (let x = 0; x < canvas.width; x += sampleStride) {
+        edgeSamples.push(readPixel(data, canvas.width, x, 0))
+        edgeSamples.push(readPixel(data, canvas.width, x, canvas.height - 1))
+      }
+
+      for (let y = 0; y < canvas.height; y += sampleStride) {
+        edgeSamples.push(readPixel(data, canvas.width, 0, y))
+        edgeSamples.push(readPixel(data, canvas.width, canvas.width - 1, y))
+      }
+
+      const opaqueLightEdgeSamples = edgeSamples.filter(
+        (sample) =>
+          sample.alpha === 255 &&
+          sample.red >= 228 &&
+          sample.green >= 228 &&
+          sample.blue >= 228,
+      ).length
+      const totalPixels = canvas.width * canvas.height
+
+      return {
+        hasOpaqueRectangularBackground: opaqueLightEdgeSamples / edgeSamples.length > 0.85,
+        hasUsableTransparency: (transparentPixels + translucentPixels) / totalPixels > 0.05,
+      }
+    }
+
+    function readPixel(pixels, width, x, y) {
+      const index = (y * width + x) * 4
+
+      return {
+        alpha: pixels[index + 3],
+        blue: pixels[index + 2],
+        green: pixels[index + 1],
+        red: pixels[index],
+      }
+    }
+
+    function rectanglesOverlap(first, second) {
+      const left = Math.max(first.left, second.left)
+      const right = Math.min(first.right, second.right)
+      const top = Math.max(first.top, second.top)
+      const bottom = Math.min(first.bottom, second.bottom)
+
+      return Math.max(0, right - left) * Math.max(0, bottom - top) > 16
+    }
+  }, { clip: screenshotClip, expectedPortrait: expected })
+
+  const errors = [...result.errors]
+
+  if (!responseStatuses.length) {
+    errors.push(`portrait asset request was not observed for ${expected.src}.`)
+  } else if (!responseStatuses.some((status) => status >= 200 && status < 300)) {
+    errors.push(`portrait asset request did not succeed: statuses=${responseStatuses.join(', ')}.`)
+  }
+
+  return {
+    ...result,
+    deviceEmulationSettings: {
+      context: 'default Chromium context',
+      hasTouch: false,
+      isMobile: false,
+      userAgent: 'Playwright default',
+    },
+    errors,
+    portraitAssetResponses: responseStatuses,
+  }
+}
 
 function includeSurface(surface) {
   const requested = (process.env.VISUAL_CANDIDATE_SURFACES || '')
