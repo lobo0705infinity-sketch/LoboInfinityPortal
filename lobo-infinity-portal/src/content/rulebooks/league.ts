@@ -108,7 +108,7 @@ export const leagueRulebook: Rulebook = {
             'Both players roll a die.',
             'The player with the higher roll chooses which eligible mission will be played.',
             'The player with the lower roll chooses which eligible map will be used.',
-            'Both players put two copies of their miniatures on the table in Tabletop Simulator in their respective bags/boxes.',
+            'Players then select Classified Cards and then select which list they will use. Both players put two copies of their miniatures on the table in Tabletop Simulator in their respective bags/boxes, and then roll for Initiative.',
             "One copy of each player's army is put off to the side. Then both players announce which army they are playing.",
             'At the end of the game, opponents may check the bag on the side if they have any questions about the list.',
           ],
