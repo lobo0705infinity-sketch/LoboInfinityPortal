@@ -10,17 +10,31 @@ import {
 const expected = [
   ['ALEPH', '/faction-portraits/aleph.png'],
   ['Nomads', '/faction-portraits/nomads.png'],
+  ['Corregidor', '/faction-portraits/corregidor.png'],
+  ['Tunguska', '/faction-portraits/tunguska.png'],
   ['Combined Army', '/faction-portraits/combined-army.png'],
+  ['Onyx Contact Force', '/faction-portraits/onyx-contact-force.png'],
   ['Starmada', '/faction-portraits/starmada.png'],
   ['Torchlight Brigade', '/faction-portraits/torchlight-brigade.png'],
   ['Ariadna', '/faction-portraits/ariadna.png'],
   ['Haqqislam', '/faction-portraits/haqqislam.png'],
+  ['Ramah Taskforce', '/faction-portraits/ramah-taskforce.png'],
+  ['Hassassin Bahram', '/faction-portraits/hassassin-bahram.png'],
+  ['Qapu Khalqi', '/faction-portraits/qapu-khalqi.png'],
   ['Japanese Secessionist Army', '/faction-portraits/jsa.png'],
   ['Tohaa', '/faction-portraits/tohaa.png'],
   ['O-12', '/faction-portraits/o-12.png'],
+  ['Military Orders', '/faction-portraits/military-orders.png'],
+  ['White Banner', '/faction-portraits/white-banner.png'],
+  ['Varuna', '/faction-portraits/varuna.png'],
+  ["Svalarheima's Winter Force", '/faction-portraits/winterfor.png'],
+  ['Kestrel Colonial Force', '/faction-portraits/kestrel-colonial-force.png'],
+  ['Imperial Service', '/faction-portraits/imperial-service.png'],
   ['Operations Subsection', '/faction-portraits/operations-subsection.png'],
   ['Bakunin Jurisdictional Command', '/faction-portraits/bakunin.png'],
   ['Kosmoflot', '/faction-portraits/kosmoflot.png'],
+  ['USAriadna Ranger Force', '/faction-portraits/usariadna.png'],
+  ['Tartary Army Corps', '/faction-portraits/tartary-army-corps.png'],
   ['Morat Aggression Force', '/faction-portraits/morats.png'],
   ['Shasvastii Expeditionary Force', '/faction-portraits/shasvastii.png'],
 ] as const
@@ -29,13 +43,26 @@ const expectedAliases = [
   ['Aleph', '/faction-portraits/aleph.png'],
   ['ALEPH', '/faction-portraits/aleph.png'],
   ['Nomad', '/faction-portraits/nomads.png'],
+  ['Jurisdictional Command of Corregidor', '/faction-portraits/corregidor.png'],
+  ['Tunguska Jurisdictional Command', '/faction-portraits/tunguska.png'],
   ['Combined', '/faction-portraits/combined-army.png'],
+  ['Onyx', '/faction-portraits/onyx-contact-force.png'],
   ['Torchlight', '/faction-portraits/torchlight-brigade.png'],
+  ['Ramah Task Force', '/faction-portraits/ramah-taskforce.png'],
   ['JSA', '/faction-portraits/jsa.png'],
   ['vanilla jsa', '/faction-portraits/jsa.png'],
   ['O12', '/faction-portraits/o-12.png'],
   ['o 12', '/faction-portraits/o-12.png'],
-  ['Hassassin Bahram', '/faction-portraits/haqqislam.png'],
+  ['Hassassin Bahram', '/faction-portraits/hassassin-bahram.png'],
+  ['Varuna Immediate Reaction Division', '/faction-portraits/varuna.png'],
+  ['WinterFor', '/faction-portraits/winterfor.png'],
+  ['Svalarheima', '/faction-portraits/winterfor.png'],
+  ['Kestrel', '/faction-portraits/kestrel-colonial-force.png'],
+  ['Imperial Service Sectorial Army', '/faction-portraits/imperial-service.png'],
+  ['USARF', '/faction-portraits/usariadna.png'],
+  ['US Ariadna', '/faction-portraits/usariadna.png'],
+  ['Tartary Army Korps', '/faction-portraits/tartary-army-corps.png'],
+  ['TAK', '/faction-portraits/tartary-army-corps.png'],
   ['Oban', '/faction-portraits/jsa.png'],
   ['vanilla aleph', '/faction-portraits/aleph.png'],
 ] as const
@@ -115,6 +142,12 @@ for (const result of assetResults) {
   if (result.hasOpaqueRectangularBackground) {
     failures.push(
       `${result.file} is invalid: edge and corner pixels form an opaque white/checkerboard rectangular background.`,
+    )
+  }
+
+  if (result.hasOpaqueEdgeBackground) {
+    failures.push(
+      `${result.file} is invalid: edge pixels form an opaque rectangular studio background.`,
     )
   }
 
@@ -234,12 +267,16 @@ async function inspectPortraitAssets() {
             sample.blue >= 228,
         ).length
         const opaqueLightEdgeRatio = opaqueLightEdgeSamples / edgeSamples.length
+        const opaqueEdgeRatio =
+          edgeSamples.filter((sample) => sample.alpha === 255).length / edgeSamples.length
 
         return {
+          hasOpaqueEdgeBackground: opaqueEdgeRatio > 0.85,
           hasOpaqueRectangularBackground: opaqueLightEdgeRatio > 0.85,
           hasUsableTransparency:
             (transparentPixels + translucentPixels) / (canvas.width * canvas.height) > 0.05,
           height: canvas.height,
+          opaqueEdgeRatio,
           opaqueLightEdgeRatio,
           totalPixels: canvas.width * canvas.height,
           translucentPixels,

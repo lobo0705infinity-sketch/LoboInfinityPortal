@@ -20,9 +20,24 @@ export const FACTION_PORTRAIT_REGISTRY: readonly FactionPortrait[] = [
     src: `${FACTION_PORTRAIT_BASE_PATH}nomads.png`,
   },
   {
+    alt: 'Corregidor pilot portrait',
+    faction: 'Corregidor',
+    src: `${FACTION_PORTRAIT_BASE_PATH}corregidor.png`,
+  },
+  {
+    alt: 'Tunguska pilot portrait',
+    faction: 'Tunguska',
+    src: `${FACTION_PORTRAIT_BASE_PATH}tunguska.png`,
+  },
+  {
     alt: 'Combined Army pilot portrait',
     faction: 'Combined Army',
     src: `${FACTION_PORTRAIT_BASE_PATH}combined-army.png`,
+  },
+  {
+    alt: 'Onyx Contact Force pilot portrait',
+    faction: 'Onyx Contact Force',
+    src: `${FACTION_PORTRAIT_BASE_PATH}onyx-contact-force.png`,
   },
   {
     alt: 'Starmada pilot portrait',
@@ -45,6 +60,21 @@ export const FACTION_PORTRAIT_REGISTRY: readonly FactionPortrait[] = [
     src: `${FACTION_PORTRAIT_BASE_PATH}haqqislam.png`,
   },
   {
+    alt: 'Ramah Taskforce pilot portrait',
+    faction: 'Ramah Taskforce',
+    src: `${FACTION_PORTRAIT_BASE_PATH}ramah-taskforce.png`,
+  },
+  {
+    alt: 'Hassassin Bahram pilot portrait',
+    faction: 'Hassassin Bahram',
+    src: `${FACTION_PORTRAIT_BASE_PATH}hassassin-bahram.png`,
+  },
+  {
+    alt: 'Qapu Khalqi pilot portrait',
+    faction: 'Qapu Khalqi',
+    src: `${FACTION_PORTRAIT_BASE_PATH}qapu-khalqi.png`,
+  },
+  {
     alt: 'Japanese Secessionist Army pilot portrait',
     faction: 'Japanese Secessionist Army',
     src: `${FACTION_PORTRAIT_BASE_PATH}jsa.png`,
@@ -60,6 +90,36 @@ export const FACTION_PORTRAIT_REGISTRY: readonly FactionPortrait[] = [
     src: `${FACTION_PORTRAIT_BASE_PATH}o-12.png`,
   },
   {
+    alt: 'Military Orders pilot portrait',
+    faction: 'Military Orders',
+    src: `${FACTION_PORTRAIT_BASE_PATH}military-orders.png`,
+  },
+  {
+    alt: 'White Banner pilot portrait',
+    faction: 'White Banner',
+    src: `${FACTION_PORTRAIT_BASE_PATH}white-banner.png`,
+  },
+  {
+    alt: 'Varuna pilot portrait',
+    faction: 'Varuna',
+    src: `${FACTION_PORTRAIT_BASE_PATH}varuna.png`,
+  },
+  {
+    alt: "Svalarheima's Winter Force pilot portrait",
+    faction: "Svalarheima's Winter Force",
+    src: `${FACTION_PORTRAIT_BASE_PATH}winterfor.png`,
+  },
+  {
+    alt: 'Kestrel Colonial Force pilot portrait',
+    faction: 'Kestrel Colonial Force',
+    src: `${FACTION_PORTRAIT_BASE_PATH}kestrel-colonial-force.png`,
+  },
+  {
+    alt: 'Imperial Service pilot portrait',
+    faction: 'Imperial Service',
+    src: `${FACTION_PORTRAIT_BASE_PATH}imperial-service.png`,
+  },
+  {
     alt: 'Operations Subsection pilot portrait',
     faction: 'Operations Subsection',
     src: `${FACTION_PORTRAIT_BASE_PATH}operations-subsection.png`,
@@ -73,6 +133,16 @@ export const FACTION_PORTRAIT_REGISTRY: readonly FactionPortrait[] = [
     alt: 'Kosmoflot pilot portrait',
     faction: 'Kosmoflot',
     src: `${FACTION_PORTRAIT_BASE_PATH}kosmoflot.png`,
+  },
+  {
+    alt: 'USAriadna Ranger Force pilot portrait',
+    faction: 'USAriadna Ranger Force',
+    src: `${FACTION_PORTRAIT_BASE_PATH}usariadna.png`,
+  },
+  {
+    alt: 'Tartary Army Corps pilot portrait',
+    faction: 'Tartary Army Corps',
+    src: `${FACTION_PORTRAIT_BASE_PATH}tartary-army-corps.png`,
   },
   {
     alt: 'Morat Aggression Force pilot portrait',
@@ -96,8 +166,21 @@ const factionPortraitByKey = new Map(
 const factionPortraitAliasByKey = new Map(
   [
     ['Nomad', 'Nomads'],
+    ['Jurisdictional Command of Corregidor', 'Corregidor'],
+    ['Tunguska Jurisdictional Command', 'Tunguska'],
     ['Combined', 'Combined Army'],
+    ['Onyx', 'Onyx Contact Force'],
     ['Torchlight', 'Torchlight Brigade'],
+    ['Ramah Task Force', 'Ramah Taskforce'],
+    ['Varuna Immediate Reaction Division', 'Varuna'],
+    ['WinterFor', "Svalarheima's Winter Force"],
+    ['Svalarheima', "Svalarheima's Winter Force"],
+    ['Kestrel', 'Kestrel Colonial Force'],
+    ['Imperial Service Sectorial Army', 'Imperial Service'],
+    ['USARF', 'USAriadna Ranger Force'],
+    ['US Ariadna', 'USAriadna Ranger Force'],
+    ['Tartary Army Korps', 'Tartary Army Corps'],
+    ['TAK', 'Tartary Army Corps'],
   ].map(([alias, faction]) => [
     normalizeFactionPortraitKey(alias),
     normalizeFactionPortraitKey(faction),
