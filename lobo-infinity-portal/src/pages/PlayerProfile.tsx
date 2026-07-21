@@ -216,10 +216,11 @@ function PlayerProfileDossier({
     mostPlayedParentFaction: career.quickStats.mostPlayedArmyParentFaction,
     preferredArmy: player.favoriteFaction,
   })
+  const badgeFaction = portrait?.faction || preferredFaction
   const leagueModelPlayer = {
     ...player,
     division: divisionLabel,
-    favoriteFaction: preferredFaction,
+    favoriteFaction: badgeFaction,
     rank: currentRank,
   }
   const badgeDetails = getOperatorBadgeDetails({
@@ -227,7 +228,7 @@ function PlayerProfileDossier({
     classifications,
     competitiveHome: homeLabel,
     player: leagueModelPlayer,
-    preferredFaction,
+    preferredFaction: badgeFaction,
     rank: currentRank,
   })
 
@@ -245,7 +246,7 @@ function PlayerProfileDossier({
               classifications={classifications}
               competitiveHome={homeLabel}
               player={leagueModelPlayer}
-              preferredFaction={preferredFaction}
+              preferredFaction={badgeFaction}
               rank={currentRank}
               showBadges={false}
             />
