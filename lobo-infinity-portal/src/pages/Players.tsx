@@ -54,6 +54,11 @@ function Players() {
         eventId,
         signal: controller.signal,
       })
+      .then((divisions) =>
+        eventScoped
+          ? divisions
+          : applyCommunityPreferredArmies(divisions, controller.signal),
+      )
       .then((divisions) => {
         setPlayersState({
           divisions,
@@ -302,6 +307,34 @@ function Players() {
       ) : null}
     </main>
   )
+}
+
+async function applyCommunityPreferredArmies(
+  divisions: DivisionStandings[],
+  signal: AbortSignal,
+) {
+  const players = divisions.flatMap((division) => division.standings)
+  const profileEntries = await Promise.all(
+    players.map(async (player) => {
+      try {
+        const profile = await apiClient.getPlayer(player.player, { signal })
+
+        return [player.player, profile.favoriteFaction] as const
+      } catch {
+        return [player.player, ''] as const
+      }
+    }),
+  )
+  const preferredArmyByPlayer = new Map(profileEntries)
+
+  return divisions.map((division) => ({
+    ...division,
+    standings: division.standings.map((player) => ({
+      ...player,
+      favoriteFaction: preferredArmyByPlayer.get(player.player) || '',
+      preferredArmy: preferredArmyByPlayer.get(player.player) || '',
+    })),
+  }))
 }
 
 function SummaryCard({ label, value }: { label: string; value: number }) {

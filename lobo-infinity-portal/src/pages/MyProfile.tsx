@@ -568,6 +568,7 @@ function ProfileHero({
   const currentLeague = getCurrentLeagueLabel(leagueModel)
   const joinedDate = getProfileJoinedDate(data)
   const promotionStatus = getCompetitivePromotionStatus(leagueModel, seasonStats)
+  const preferredFaction = leagueModel?.preferredArmy || data.user.favoriteFaction || ''
   const portrait = resolvePlayerFactionPortrait({
     currentEventArmy: leagueModel?.preferredArmy,
     preferredArmy: data.user.favoriteFaction,
@@ -587,7 +588,7 @@ function ProfileHero({
           classifications={classifications}
           competitiveHome={division}
           player={operatorPlayer}
-          preferredFaction={data.user.favoriteFaction}
+          preferredFaction={preferredFaction}
           rank={rank}
           showBadges={false}
         />
@@ -628,7 +629,7 @@ function ProfileHero({
             </div>
             <div>
               <dt>Preferred Army</dt>
-              <dd>{data.user.favoriteFaction || 'Not Selected'}</dd>
+              <dd>{preferredFaction || 'Not Selected'}</dd>
             </div>
             <div>
               <dt>Promotion Status</dt>

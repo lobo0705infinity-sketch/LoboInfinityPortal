@@ -22,6 +22,8 @@ export type Standing = {
   vp: number
   faction?: string
   favoriteArmy?: string
+  preferredArmy?: string
+  favoriteFaction?: string
   currentWinStreak?: number
   statusBadges?: string[]
   gameTypes?: string[]

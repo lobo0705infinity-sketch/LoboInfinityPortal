@@ -3712,6 +3712,8 @@ function normalizeStanding(item: unknown): Standing {
     vp: getRequiredNumber(record, 'vp'),
     faction: getString(record, 'faction'),
     favoriteArmy: getString(record, 'favoriteArmy'),
+    preferredArmy: getString(record, 'preferredArmy'),
+    favoriteFaction: getString(record, 'favoriteFaction'),
     currentWinStreak: getNumber(record, 'currentWinStreak'),
     statusBadges: getArray(record, 'statusBadges').map((item) =>
       String(item ?? ''),

@@ -34,7 +34,7 @@ function OperatorBadge({
   const coreGradientId = `operator-core-${useId().replace(/:/g, '')}`
   const [modalOpen, setModalOpen] = useState(false)
   const playerName = player.displayName || player.name
-  const selectedFaction = normalizePreferredFactionLabel(preferredFaction || player.favoriteFaction || '')
+  const selectedFaction = (preferredFaction || player.favoriteFaction || '').trim()
   const details = getOperatorBadgeDetails({
     achievements,
     classifications,
@@ -262,10 +262,6 @@ function FactionCore({ icon }: { icon: string }) {
 }
 function truncateLabel(value: string, length: number) {
   return value.length > length ? `${value.slice(0, length - 1)}.` : value
-}
-
-function normalizePreferredFactionLabel(value: string) {
-  return value.trim().replace(/\s*\(\d+\s+games?\)$/i, '')
 }
 
 export default OperatorBadge

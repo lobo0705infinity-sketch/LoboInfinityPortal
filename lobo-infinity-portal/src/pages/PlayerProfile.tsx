@@ -1823,7 +1823,7 @@ const playerProfileStyles = `
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(280px, 390px) minmax(0, 1fr);
+  grid-template-columns: minmax(260px, 360px) minmax(220px, 330px) minmax(0, 1fr);
   gap: clamp(28px, 5vw, 72px);
   align-items: center;
   min-height: inherit;

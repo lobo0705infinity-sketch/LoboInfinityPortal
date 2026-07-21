@@ -50,6 +50,9 @@
     "test:player-registry": "node scripts/player-registry-context-check.mjs",
     "test:player-identity": "node scripts/player-identity-check.mjs",
     "test:faction-portraits": "node --experimental-strip-types scripts/faction-portrait-check.ts",
+    "test:players-portraits": "node --experimental-strip-types scripts/player-portrait-check.ts players",
+    "test:public-player-profile-portraits": "node --experimental-strip-types scripts/player-portrait-check.ts public-profiles",
+    "test:player-portrait-consistency": "node --experimental-strip-types scripts/player-portrait-check.ts consistency",
     "rules:check": "node scripts/firestore-rules-check.mjs",
     "security:cache": "node scripts/security-cache-audit.mjs",
     "security:armies": "node scripts/army-registry-audit.mjs"

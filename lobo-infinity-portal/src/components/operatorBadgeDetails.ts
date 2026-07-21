@@ -51,7 +51,7 @@ export function getOperatorBadgeDetails({
   preferredFaction,
   rank,
 }: OperatorBadgeDetailInput): OperatorBadgeDetail {
-  const faction = normalizePreferredFactionLabel(preferredFaction || player.favoriteFaction || '') || 'Not Selected'
+  const faction = (preferredFaction || player.favoriteFaction || '').trim() || 'Not Selected'
   const displayRank = rank ?? player.rank ?? 0
   const rings = deriveAchievementRings(player, classifications, achievements)
 
@@ -182,8 +182,4 @@ function normalizeCompetitiveHome(value: string) {
 
 function formatEarned(earned: boolean) {
   return earned ? 'Earned' : 'Not Earned'
-}
-
-function normalizePreferredFactionLabel(value: string) {
-  return value.trim().replace(/\s*\(\d+\s+games?\)$/i, '')
 }
