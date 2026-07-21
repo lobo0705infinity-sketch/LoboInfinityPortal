@@ -25,8 +25,8 @@ assert.equal(
 
 assert.match(
   playerCard,
-  /resolveFactionPortraitFromArmyPriority\(\s*player\.favoriteArmy,\s*player\.faction,\s*\)/,
-  'Player cards must resolve portraits from the same preferred/current army inputs used by public profiles.',
+  /resolvePlayerFactionPortrait\(\{\s*currentEventArmy:\s*eventId \? player\.favoriteArmy : '',[\s\S]*playerFaction:\s*player\.faction,[\s\S]*preferredArmy:\s*eventId \? '' : player\.favoriteArmy/,
+  'Player cards must resolve portraits through the shared player portrait context.',
 )
 
 assert.doesNotMatch(
@@ -85,8 +85,8 @@ assert.match(
 
 assert.match(
   myProfile,
-  /resolveFactionPortrait\(\s*data\.user\.favoriteFaction \|\| leagueModel\?\.preferredArmy,\s*\)/,
-  'My Profile portrait behavior must remain on the existing resolver call.',
+  /resolvePlayerFactionPortrait\(\{\s*currentEventArmy:\s*leagueModel\?\.preferredArmy,[\s\S]*preferredArmy:\s*data\.user\.favoriteFaction/,
+  'My Profile portraits must resolve through the shared player portrait context.',
 )
 
 console.log('players portrait checks passed')

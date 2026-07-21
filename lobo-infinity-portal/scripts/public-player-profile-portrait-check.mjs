@@ -34,13 +34,13 @@ function assertSourceContract() {
   )
   assert.match(
     playerProfile,
-    /import\s*\{[\s\S]*resolveFactionPortraitFromArmyPriority[\s\S]*\}\s*from '..\/config\/factionPortraits'/,
+    /import\s*\{[\s\S]*resolvePlayerFactionPortrait[\s\S]*\}\s*from '..\/config\/factionPortraits'/,
     'Public Player Profile must reuse the centralized faction portrait resolver.',
   )
   assert.match(
     playerProfile,
-    /resolveFactionPortraitFromArmyPriority\(\s*leagueModel\?\.preferredArmy,[\s\S]*player\.favoriteFaction,[\s\S]*player\.armyListSummary\.favoriteFaction,[\s\S]*career\.quickStats\.mostPlayedArmy,[\s\S]*career\.quickStats\.mostPlayedArmyParentFaction,/,
-    'Public Player Profile must resolve from current/preferred army fields before parent faction fields.',
+    /resolvePlayerFactionPortrait\(\{\s*currentEventArmy:\s*leagueModel\?\.preferredArmy,[\s\S]*favoriteArmy:\s*player\.armyListSummary\.favoriteFaction,[\s\S]*mostPlayedArmy:\s*career\.quickStats\.mostPlayedArmy,[\s\S]*mostPlayedParentFaction:\s*career\.quickStats\.mostPlayedArmyParentFaction,[\s\S]*preferredArmy:\s*player\.favoriteFaction/,
+    'Public Player Profile must resolve from the shared player portrait context.',
   )
   assert.doesNotMatch(
     playerProfile,

@@ -36,6 +36,7 @@
     "test:submit-game-modes": "node scripts/submit-game-modes-check.mjs",
     "test:players-portraits": "node scripts/players-portrait-check.mjs",
     "test:public-player-profile-portraits": "node scripts/public-player-profile-portrait-check.mjs",
+    "test:player-portrait-consistency": "node --experimental-strip-types scripts/player-portrait-consistency-check.mjs",
     "test:mission-scopes": "node scripts/mission-scope-check.mjs",
     "test:team-membership": "node scripts/team-membership-check.mjs",
     "test:notifications": "node --experimental-strip-types scripts/notification-timestamp-check.ts",

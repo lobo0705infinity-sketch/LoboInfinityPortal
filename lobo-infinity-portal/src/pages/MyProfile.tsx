@@ -5,7 +5,7 @@ import BarChart, { type BarChartPoint } from '../components/BarChart'
 import OperatorBadge from '../components/OperatorBadge'
 import Skeleton from '../components/Skeleton'
 import { getCanonicalArmyOptions, normalizeArmyForDisplay } from '../config/armies'
-import { resolveFactionPortrait, type FactionPortrait } from '../config/factionPortraits'
+import { resolvePlayerFactionPortrait, type FactionPortrait } from '../config/factionPortraits'
 import { getCanonicalMissionName } from '../config/missions'
 import {
   apiClient,
@@ -568,9 +568,10 @@ function ProfileHero({
   const currentLeague = getCurrentLeagueLabel(leagueModel)
   const joinedDate = getProfileJoinedDate(data)
   const promotionStatus = getCompetitivePromotionStatus(leagueModel, seasonStats)
-  const portrait = resolveFactionPortrait(
-    data.user.favoriteFaction || leagueModel?.preferredArmy,
-  )
+  const portrait = resolvePlayerFactionPortrait({
+    currentEventArmy: leagueModel?.preferredArmy,
+    preferredArmy: data.user.favoriteFaction,
+  })
 
   return (
     <section

@@ -6,6 +6,33 @@ export type FactionPortrait = {
   src: string
 }
 
+export type PlayerFactionPortraitContext = {
+  currentEventArmy?: string | null
+  favoriteArmy?: string | null
+  mostPlayedArmy?: string | null
+  mostPlayedParentFaction?: string | null
+  parentFaction?: string | null
+  playerFaction?: string | null
+  preferredArmy?: string | null
+}
+
+export type PlayerFactionPortraitResolution = {
+  canonicalArmy: string
+  portrait: FactionPortrait | null
+  rawValue: string
+  reason: string
+  source:
+    | 'currentEventArmy'
+    | 'preferredArmy'
+    | 'favoriteArmy'
+    | 'playerFaction'
+    | 'mostPlayedArmy'
+    | 'mostPlayedParentFaction'
+    | 'parentFaction'
+    | 'none'
+  unsupported: boolean
+}
+
 const FACTION_PORTRAIT_BASE_PATH = '/faction-portraits/'
 
 export const FACTION_PORTRAIT_REGISTRY: readonly FactionPortrait[] = [
@@ -224,6 +251,7 @@ const factionPortraitAliasByKey = new Map(
     ['Acontecimento', 'Shock Army of Acontecimento'],
     ['SAA', 'Shock Army of Acontecimento'],
     ['Varuna Immediate Reaction Division', 'Varuna'],
+    ['Svalarheima Winter Force', "Svalarheima's Winter Force"],
     ['WinterFor', "Svalarheima's Winter Force"],
     ['Svalarheima', "Svalarheima's Winter Force"],
     ['Kestrel', 'Kestrel Colonial Force'],
@@ -281,6 +309,65 @@ export function resolveFactionPortraitFromArmyPriority(
   return null
 }
 
+export function resolvePlayerFactionPortrait(
+  context: PlayerFactionPortraitContext,
+): FactionPortrait | null {
+  return resolvePlayerFactionPortraitDetails(context).portrait
+}
+
+export function resolvePlayerFactionPortraitDetails(
+  context: PlayerFactionPortraitContext,
+): PlayerFactionPortraitResolution {
+  const candidates: Array<{
+    source: Exclude<PlayerFactionPortraitResolution['source'], 'none'>
+    value: string | null | undefined
+  }> = [
+    { source: 'currentEventArmy', value: context.currentEventArmy },
+    { source: 'preferredArmy', value: context.preferredArmy },
+    { source: 'favoriteArmy', value: context.favoriteArmy },
+    { source: 'playerFaction', value: context.playerFaction },
+    { source: 'mostPlayedArmy', value: context.mostPlayedArmy },
+    { source: 'mostPlayedParentFaction', value: context.mostPlayedParentFaction },
+    { source: 'parentFaction', value: context.parentFaction },
+  ]
+
+  for (const candidate of candidates) {
+    const rawValue = String(candidate.value || '').trim()
+
+    if (!rawValue) {
+      continue
+    }
+
+    const normalizedValue = normalizeFactionPortraitInput(rawValue)
+    const portrait = resolveFactionPortraitCandidate(normalizedValue)
+
+    if (portrait) {
+      const canonicalArmy =
+        getCanonicalArmyName(normalizedValue) ||
+        getCanonicalArmyName(portrait.faction) ||
+        portrait.faction
+
+      return {
+        canonicalArmy,
+        portrait,
+        rawValue,
+        reason: `${candidate.source} resolved ${canonicalArmy || portrait.faction}`,
+        source: candidate.source,
+        unsupported: false,
+      }
+    }
+  }
+
+  return {
+    canonicalArmy: '',
+    portrait: null,
+    rawValue: '',
+    reason: 'no supported portrait input',
+    source: 'none',
+    unsupported: true,
+  }
+}
+
 function resolveFactionPortraitCandidate(faction: string | null | undefined) {
   const direct = resolveFactionPortrait(faction)
 
@@ -296,6 +383,13 @@ function resolveFactionPortraitCandidate(faction: string | null | undefined) {
   }
 
   return resolveFactionPortrait(getArmyParentFaction(canonicalArmy || faction))
+}
+
+function normalizeFactionPortraitInput(value: string) {
+  return value
+    .trim()
+    .replace(/\s+\(\d+\s+games?\)$/i, '')
+    .trim()
 }
 
 function normalizeFactionPortraitKey(value: string | null | undefined) {

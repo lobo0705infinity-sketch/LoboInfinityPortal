@@ -5,6 +5,8 @@ import {
   FACTION_PORTRAIT_REGISTRY,
   resolveFactionPortrait,
   resolveFactionPortraitFromArmyPriority,
+  resolvePlayerFactionPortrait,
+  resolvePlayerFactionPortraitDetails,
 } from '../src/config/factionPortraits.ts'
 
 const expected = [
@@ -70,6 +72,7 @@ const expectedAliases = [
   ['o 12', '/faction-portraits/o-12.png'],
   ['Hassassin Bahram', '/faction-portraits/hassassin-bahram.png'],
   ['Varuna Immediate Reaction Division', '/faction-portraits/varuna.png'],
+  ['Svalarheima Winter Force', '/faction-portraits/winterfor.png'],
   ['WinterFor', '/faction-portraits/winterfor.png'],
   ['Svalarheima', '/faction-portraits/winterfor.png'],
   ['Kestrel', '/faction-portraits/kestrel-colonial-force.png'],
@@ -197,6 +200,92 @@ if (
   '/faction-portraits/operations-subsection.png'
 ) {
   failures.push('Portrait priority should fall through from unsupported current army to supported preferred army.')
+}
+
+if (
+  resolvePlayerFactionPortrait({
+    currentEventArmy: 'ALEPH',
+    preferredArmy: 'Operations Subsection',
+    playerFaction: 'ALEPH',
+  })?.src !== '/faction-portraits/aleph.png'
+) {
+  failures.push('Current active-event army must be the first player portrait candidate when supplied.')
+}
+
+if (
+  resolvePlayerFactionPortrait({
+    preferredArmy: 'Operations Subsection',
+    playerFaction: 'ALEPH',
+    parentFaction: 'ALEPH',
+  })?.src !== '/faction-portraits/operations-subsection.png'
+) {
+  failures.push('Valid sectorials must resolve before parent-faction fallback portraits.')
+}
+
+if (
+  resolvePlayerFactionPortrait({
+    favoriteArmy: 'bakunin jurisdictional command',
+    playerFaction: 'Nomads',
+  })?.src !== '/faction-portraits/bakunin.png'
+) {
+  failures.push('Casing differences must resolve through the shared player portrait resolver.')
+}
+
+if (
+  resolvePlayerFactionPortrait({
+    favoriteArmy: 'Force de Reponse Rapide Merovingienne',
+  })?.src !== '/faction-portraits/frrm.png'
+) {
+  failures.push('Accented and unaccented FRRM values must resolve consistently.')
+}
+
+if (
+  resolvePlayerFactionPortrait({
+    preferredArmy: 'Operations Subsection (4 games)',
+    playerFaction: 'ALEPH',
+  })?.src !== '/faction-portraits/operations-subsection.png'
+) {
+  failures.push('Profile metric suffixes from real player data must not block exact sectorial portraits.')
+}
+
+if (
+  resolvePlayerFactionPortrait({
+    playerFaction: 'ALEPH',
+    preferredArmy: 'Bakunin Jurisdictional Command',
+  })?.src !== '/faction-portraits/bakunin.png'
+) {
+  failures.push('Preferred army must outrank player faction outside explicit current-event context.')
+}
+
+if (
+  resolvePlayerFactionPortrait({
+    playerFaction: 'ALEPH',
+  })?.src !== '/faction-portraits/aleph.png'
+) {
+  failures.push('Stale tournament army data must not be treated as current-event army unless supplied in context.')
+}
+
+if (
+  resolvePlayerFactionPortrait({
+    mostPlayedArmy: 'Kosmoflot',
+    mostPlayedParentFaction: 'Ariadna',
+    playerFaction: 'Ariadna',
+  })?.src !== '/faction-portraits/ariadna.png'
+) {
+  failures.push('Player faction must outrank most-played army under the shared priority contract.')
+}
+
+if (
+  resolvePlayerFactionPortrait({
+    mostPlayedArmy: 'Kosmoflot',
+    mostPlayedParentFaction: 'Ariadna',
+  })?.src !== '/faction-portraits/kosmoflot.png'
+) {
+  failures.push('Most-played army must outrank its parent faction.')
+}
+
+if (!resolvePlayerFactionPortraitDetails({ preferredArmy: 'Unknown Sectorial' }).unsupported) {
+  failures.push('Unsupported player portrait contexts must report unsupported/no portrait.')
 }
 
 if (resolveFactionPortrait('Combined')?.src !== '/faction-portraits/combined-army.png') {
@@ -366,23 +455,27 @@ function assertSourceContracts() {
   const portraits = readFileSync(resolve(process.cwd(), 'src', 'config', 'factionPortraits.ts'), 'utf8')
 
   if (
-    !/resolveFactionPortraitFromArmyPriority\(\s*player\.favoriteArmy,\s*player\.faction,\s*\)/.test(
+    !/resolvePlayerFactionPortrait\(\{\s*currentEventArmy:\s*eventId \? player\.favoriteArmy : '',[\s\S]*playerFaction:\s*player\.faction,[\s\S]*preferredArmy:\s*eventId \? '' : player\.favoriteArmy/.test(
       playerCard,
     )
   ) {
-    failures.push('Player cards must resolve preferred/current army inputs in the same order used by public profiles.')
+    failures.push('Player cards must use the shared player portrait resolver context.')
   }
 
   if (
-    !/resolveFactionPortraitFromArmyPriority\(\s*leagueModel\?\.preferredArmy,[\s\S]*player\.favoriteFaction,[\s\S]*player\.armyListSummary\.favoriteFaction/.test(
+    !/resolvePlayerFactionPortrait\(\{\s*currentEventArmy:\s*leagueModel\?\.preferredArmy,[\s\S]*favoriteArmy:\s*player\.armyListSummary\.favoriteFaction,[\s\S]*mostPlayedArmy:\s*career\.quickStats\.mostPlayedArmy,[\s\S]*mostPlayedParentFaction:\s*career\.quickStats\.mostPlayedArmyParentFaction,[\s\S]*preferredArmy:\s*player\.favoriteFaction/.test(
       playerProfile,
     )
   ) {
-    failures.push('Public profiles must keep using centralized preferred/current army portrait resolution.')
+    failures.push('Public profiles must use the shared player portrait resolver context.')
   }
 
-  if (!/resolveFactionPortrait\(\s*data\.user\.favoriteFaction \|\| leagueModel\?\.preferredArmy,\s*\)/.test(myProfile)) {
-    failures.push('My Profile portrait behavior must remain on the existing centralized resolver call.')
+  if (
+    !/resolvePlayerFactionPortrait\(\{\s*currentEventArmy:\s*leagueModel\?\.preferredArmy,[\s\S]*preferredArmy:\s*data\.user\.favoriteFaction/.test(
+      myProfile,
+    )
+  ) {
+    failures.push('My Profile must use the shared player portrait resolver context.')
   }
 
   if (/Nighthawkmk2|playerName|displayName|decodedPlayerName/.test(portraits)) {

@@ -6,7 +6,7 @@ import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
 import { getArmyParentFaction } from '../config/armies'
 import {
-  resolveFactionPortraitFromArmyPriority,
+  resolvePlayerFactionPortrait,
   type FactionPortrait,
 } from '../config/factionPortraits'
 import { getCanonicalMissionName } from '../config/missions'
@@ -209,13 +209,13 @@ function PlayerProfileDossier({
   const joinedLabel = getJoinedLabel(player)
   const achievements = getAchievementItems(career, player)
   const preferredFaction = leagueModel?.preferredArmy || player.favoriteFaction || ''
-  const portrait = resolveFactionPortraitFromArmyPriority(
-    leagueModel?.preferredArmy,
-    player.favoriteFaction,
-    player.armyListSummary.favoriteFaction,
-    career.quickStats.mostPlayedArmy,
-    career.quickStats.mostPlayedArmyParentFaction,
-  )
+  const portrait = resolvePlayerFactionPortrait({
+    currentEventArmy: leagueModel?.preferredArmy,
+    favoriteArmy: player.armyListSummary.favoriteFaction,
+    mostPlayedArmy: career.quickStats.mostPlayedArmy,
+    mostPlayedParentFaction: career.quickStats.mostPlayedArmyParentFaction,
+    preferredArmy: player.favoriteFaction,
+  })
   const leagueModelPlayer = {
     ...player,
     division: divisionLabel,

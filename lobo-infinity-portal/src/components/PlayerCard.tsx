@@ -8,7 +8,7 @@ import {
 } from '../utils/divisions'
 import { formatPlayerName } from '../services/formatting'
 import {
-  resolveFactionPortraitFromArmyPriority,
+  resolvePlayerFactionPortrait,
   type FactionPortrait,
 } from '../config/factionPortraits'
 
@@ -28,10 +28,11 @@ function PlayerCard({ divisionLabel, eventId, player }: PlayerCardProps) {
   const isCommunityCard = !eventId
   const badges = player.statusBadges ?? []
   const favoriteArmy = player.favoriteArmy || player.faction || 'Not recorded'
-  const portrait = resolveFactionPortraitFromArmyPriority(
-    player.favoriteArmy,
-    player.faction,
-  )
+  const portrait = resolvePlayerFactionPortrait({
+    currentEventArmy: eventId ? player.favoriteArmy : '',
+    playerFaction: player.faction,
+    preferredArmy: eventId ? '' : player.favoriteArmy,
+  })
   const streak = player.currentWinStreak ?? 0
   const divisionBadgeLabel = getPlayerCardHomeLabel({
     badges,
