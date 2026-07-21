@@ -441,11 +441,10 @@ function assertSourceContracts() {
   const portraits = readFileSync(resolve(process.cwd(), 'src', 'config', 'factionPortraits.ts'), 'utf8')
 
   if (
-    !/resolvePlayerFactionPortrait\(\{\s*currentEventArmy:\s*eventId \? player\.favoriteArmy : '',[\s\S]*playerFaction:\s*player\.faction,[\s\S]*preferredArmy:\s*eventId \? '' : player\.favoriteArmy/.test(
-      playerCard,
-    )
+    !/resolvePlayerFactionIdentity\(player\)/.test(playerCard) ||
+    !/resolvePortraitFromIdentity\(factionIdentity\.portraitPath, factionIdentity\.normalizedFaction\)/.test(playerCard)
   ) {
-    failures.push('Player cards must use the shared player portrait resolver context.')
+    failures.push('Player cards must use the shared player faction identity portrait path.')
   }
 
   if (

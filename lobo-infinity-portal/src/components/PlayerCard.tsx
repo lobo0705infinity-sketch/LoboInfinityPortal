@@ -11,6 +11,7 @@ import {
   resolvePlayerFactionPortrait,
   type FactionPortrait,
 } from '../config/factionPortraits'
+import { resolvePlayerFactionIdentity } from '../services/playerFactionIdentity'
 
 type PlayerCardProps = {
   divisionLabel?: string
@@ -28,11 +29,10 @@ function PlayerCard({ divisionLabel, eventId, player }: PlayerCardProps) {
   const isCommunityCard = !eventId
   const badges = player.statusBadges ?? []
   const favoriteArmy = player.favoriteArmy || player.faction || 'Not recorded'
-  const portrait = resolvePlayerFactionPortrait({
-    currentEventArmy: eventId ? player.favoriteArmy : '',
-    playerFaction: player.faction,
-    preferredArmy: eventId ? '' : player.favoriteArmy,
-  })
+  const factionIdentity = resolvePlayerFactionIdentity(player)
+  const portrait = eventId
+    ? resolvePlayerFactionPortrait({ currentEventArmy: player.favoriteArmy })
+    : resolvePortraitFromIdentity(factionIdentity.portraitPath, factionIdentity.normalizedFaction)
   const streak = player.currentWinStreak ?? 0
   const divisionBadgeLabel = getPlayerCardHomeLabel({
     badges,
@@ -176,6 +176,21 @@ function getPlayerCardHomeLabel({
   }
 
   return 'Casual Player'
+}
+
+function resolvePortraitFromIdentity(
+  portraitPath: string | null,
+  faction: string | null,
+): FactionPortrait | null {
+  if (!portraitPath || !faction) {
+    return null
+  }
+
+  return {
+    alt: `${faction} pilot portrait`,
+    faction,
+    src: portraitPath,
+  }
 }
 
 export default PlayerCard
