@@ -87,6 +87,11 @@ export const FACTION_PORTRAIT_REGISTRY: readonly FactionPortrait[] = [
     src: `${FACTION_PORTRAIT_BASE_PATH}torchlight-brigade.png`,
   },
   {
+    alt: 'White Company pilot portrait',
+    faction: 'White Company',
+    src: `${FACTION_PORTRAIT_BASE_PATH}white-company.png`,
+  },
+  {
     alt: 'Ariadna pilot portrait',
     faction: 'Ariadna',
     src: `${FACTION_PORTRAIT_BASE_PATH}ariadna.png`,
@@ -280,6 +285,8 @@ const factionPortraitAliasByKey = new Map(
     ['StarCo. Free Company of the Star', 'StarCo'],
     ['Free Company of the Star', 'StarCo'],
     ['Torchlight', 'Torchlight Brigade'],
+    ['WhiteCo', 'White Company'],
+    ['White Co', 'White Company'],
     ['Ramah Task Force', 'Ramah Taskforce'],
     ['Neoterra', 'Neoterran Capitaline Army'],
     ['NCA', 'Neoterran Capitaline Army'],
