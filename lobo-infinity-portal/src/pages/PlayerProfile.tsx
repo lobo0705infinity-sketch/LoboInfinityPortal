@@ -6,7 +6,6 @@ import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
 import { getArmyParentFaction } from '../config/armies'
 import {
-  resolvePlayerFactionPortrait,
   type FactionPortrait,
 } from '../config/factionPortraits'
 import { getCanonicalMissionName } from '../config/missions'
@@ -26,6 +25,10 @@ import {
 } from '../services/formatting'
 import { isDrawGame } from '../services/gameResults'
 import { getConfiguredEventDisplayName } from '../services/leagueEventDisplay'
+import {
+  resolvePlayerFactionIdentity,
+  type PlayerFactionIdentity,
+} from '../services/playerFactionIdentity'
 import {
   getProfileClassifications,
   isActiveEventRegistration,
@@ -208,15 +211,10 @@ function PlayerProfileDossier({
   const careerHighlight = getCareerHighlight(recentGames)
   const joinedLabel = getJoinedLabel(player)
   const achievements = getAchievementItems(career, player)
-  const preferredFaction = leagueModel?.preferredArmy || player.favoriteFaction || ''
-  const portrait = resolvePlayerFactionPortrait({
-    currentEventArmy: leagueModel?.preferredArmy,
-    favoriteArmy: player.armyListSummary.favoriteFaction,
-    mostPlayedArmy: career.quickStats.mostPlayedArmy,
-    mostPlayedParentFaction: career.quickStats.mostPlayedArmyParentFaction,
-    preferredArmy: player.favoriteFaction,
-  })
-  const badgeFaction = portrait?.faction || preferredFaction
+  const factionIdentity = resolvePlayerFactionIdentity(player)
+  const preferredFaction = factionIdentity.normalizedFaction || ''
+  const portrait = resolvePortraitFromIdentity(factionIdentity)
+  const badgeFaction = factionIdentity.badgeFactionKey || preferredFaction
   const leagueModelPlayer = {
     ...player,
     division: divisionLabel,
@@ -316,6 +314,20 @@ function PlayerProfileDossier({
       </section>
     </>
   )
+}
+
+function resolvePortraitFromIdentity(
+  identity: PlayerFactionIdentity,
+): FactionPortrait | null {
+  if (!identity.portraitPath || !identity.normalizedFaction) {
+    return null
+  }
+
+  return {
+    alt: `${identity.normalizedFaction} pilot portrait`,
+    faction: identity.normalizedFaction,
+    src: identity.portraitPath,
+  }
 }
 
 function PublicPlayerFactionPortrait({

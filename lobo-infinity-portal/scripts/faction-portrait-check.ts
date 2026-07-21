@@ -448,11 +448,10 @@ function assertSourceContracts() {
   }
 
   if (
-    !/resolvePlayerFactionPortrait\(\{\s*currentEventArmy:\s*leagueModel\?\.preferredArmy,[\s\S]*favoriteArmy:\s*player\.armyListSummary\.favoriteFaction,[\s\S]*mostPlayedArmy:\s*career\.quickStats\.mostPlayedArmy,[\s\S]*mostPlayedParentFaction:\s*career\.quickStats\.mostPlayedArmyParentFaction,[\s\S]*preferredArmy:\s*player\.favoriteFaction/.test(
-      playerProfile,
-    )
+    !/resolvePlayerFactionIdentity\(player\)/.test(playerProfile) ||
+    !/resolvePortraitFromIdentity\(factionIdentity\)/.test(playerProfile)
   ) {
-    failures.push('Public profiles must use the shared player portrait resolver context.')
+    failures.push('Public profiles must use the shared player faction identity portrait path.')
   }
 
   if (

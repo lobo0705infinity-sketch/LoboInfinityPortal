@@ -269,6 +269,7 @@ const factionPortraitAliasByKey = new Map(
   [
     ['Nomad', 'Nomads'],
     ['Jurisdictional Command of Corregidor', 'Corregidor'],
+    ['Corregidor Jurisdictional Command', 'Corregidor'],
     ['Tunguska Jurisdictional Command', 'Tunguska'],
     ['Combined', 'Combined Army'],
     ['CA', 'Combined Army'],
