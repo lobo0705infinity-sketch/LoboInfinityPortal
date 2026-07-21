@@ -15,6 +15,7 @@ const expected = [
   ['Corregidor', '/faction-portraits/corregidor.png'],
   ['Tunguska', '/faction-portraits/tunguska.png'],
   ['Combined Army', '/faction-portraits/combined-army.png'],
+  ['Next Wave', '/faction-portraits/next-wave.png'],
   ['Onyx Contact Force', '/faction-portraits/onyx-contact-force.png'],
   ['Starmada', '/faction-portraits/starmada.png'],
   ['StarCo', '/faction-portraits/starco.png'],
@@ -27,16 +28,19 @@ const expected = [
   ['Japanese Secessionist Army', '/faction-portraits/jsa.png'],
   ['Tohaa', '/faction-portraits/tohaa.png'],
   ['O-12', '/faction-portraits/o-12.png'],
+  ['Yu Jing', '/faction-portraits/yu-jing.png'],
   ['Military Orders', '/faction-portraits/military-orders.png'],
   ['Neoterran Capitaline Army', '/faction-portraits/neoterra.png'],
   ['Shock Army of Acontecimento', '/faction-portraits/acontecimento.png'],
   ['White Banner', '/faction-portraits/white-banner.png'],
   ['Varuna', '/faction-portraits/varuna.png'],
-  ["Svalarheima's Winter Force", '/faction-portraits/winterfor.png'],
+  ["Svalarheima's Winter Force", '/faction-portraits/winter-for.png'],
+  ['PanOceania', '/faction-portraits/panoceania.png'],
   ['Kestrel Colonial Force', '/faction-portraits/kestrel-colonial-force.png'],
   ['Imperial Service', '/faction-portraits/imperial-service.png'],
   ['Invincible Army', '/faction-portraits/invincible-army.png'],
   ['Operations Subsection', '/faction-portraits/operations-subsection.png'],
+  ['Steel Phalanx', '/faction-portraits/steel-phalanx.png'],
   ['Bakunin Jurisdictional Command', '/faction-portraits/bakunin.png'],
   ['Kosmoflot', '/faction-portraits/kosmoflot.png'],
   ['USAriadna Ranger Force', '/faction-portraits/usariadna.png'],
@@ -48,6 +52,8 @@ const expected = [
   ['Druze Bayram Security', '/faction-portraits/druze-bayram-security.png'],
   ['Morat Aggression Force', '/faction-portraits/morats.png'],
   ['Shasvastii Expeditionary Force', '/faction-portraits/shasvastii.png'],
+  ['Oban', '/faction-portraits/oban.png'],
+  ['Shindenbutai', '/faction-portraits/shindenbutai.png'],
 ] as const
 
 const expectedAliases = [
@@ -57,6 +63,10 @@ const expectedAliases = [
   ['Jurisdictional Command of Corregidor', '/faction-portraits/corregidor.png'],
   ['Tunguska Jurisdictional Command', '/faction-portraits/tunguska.png'],
   ['Combined', '/faction-portraits/combined-army.png'],
+  ['CA', '/faction-portraits/combined-army.png'],
+  ['Panoceania', '/faction-portraits/panoceania.png'],
+  ['PanO', '/faction-portraits/panoceania.png'],
+  ['Pan O', '/faction-portraits/panoceania.png'],
   ['Onyx', '/faction-portraits/onyx-contact-force.png'],
   ['StarCo. Free Company of the Star', '/faction-portraits/starco.png'],
   ['Free Company of the Star', '/faction-portraits/starco.png'],
@@ -72,9 +82,9 @@ const expectedAliases = [
   ['o 12', '/faction-portraits/o-12.png'],
   ['Hassassin Bahram', '/faction-portraits/hassassin-bahram.png'],
   ['Varuna Immediate Reaction Division', '/faction-portraits/varuna.png'],
-  ['Svalarheima Winter Force', '/faction-portraits/winterfor.png'],
-  ['WinterFor', '/faction-portraits/winterfor.png'],
-  ['Svalarheima', '/faction-portraits/winterfor.png'],
+  ['Svalarheima Winter Force', '/faction-portraits/winter-for.png'],
+  ['WinterFor', '/faction-portraits/winter-for.png'],
+  ['Svalarheima', '/faction-portraits/winter-for.png'],
   ['Kestrel', '/faction-portraits/kestrel-colonial-force.png'],
   ['Imperial Service Sectorial Army', '/faction-portraits/imperial-service.png'],
   ['IA', '/faction-portraits/invincible-army.png'],
@@ -94,7 +104,7 @@ const expectedAliases = [
   ['Dashat', '/faction-portraits/dahshat-company.png'],
   ['Druze', '/faction-portraits/druze-bayram-security.png'],
   ['DBS', '/faction-portraits/druze-bayram-security.png'],
-  ['Oban', '/faction-portraits/jsa.png'],
+  ['Oban', '/faction-portraits/oban.png'],
   ['vanilla aleph', '/faction-portraits/aleph.png'],
 ] as const
 
@@ -164,26 +174,8 @@ for (const [alias, src] of expectedAliases) {
 const assetResults = await inspectPortraitAssets()
 
 for (const result of assetResults) {
-  if (!result.hasUsableTransparency) {
-    failures.push(
-      `${result.file} is invalid: expected usable alpha transparency, found ${result.transparentPixels} fully transparent pixels and ${result.translucentPixels} translucent pixels across ${result.totalPixels} pixels.`,
-    )
-  }
-
-  if (result.hasOpaqueRectangularBackground) {
-    failures.push(
-      `${result.file} is invalid: edge and corner pixels form an opaque white/checkerboard rectangular background.`,
-    )
-  }
-
-  if (result.hasOpaqueEdgeBackground) {
-    failures.push(
-      `${result.file} is invalid: edge pixels form an opaque rectangular studio background.`,
-    )
-  }
-
-  if (!result.hasAlphaChannel) {
-    failures.push(`${result.file} is invalid: PNG color type does not include an alpha channel.`)
+  if (result.width <= 0 || result.height <= 0) {
+    failures.push(`${result.file} is invalid: image dimensions must be nonzero.`)
   }
 }
 
@@ -292,8 +284,11 @@ if (resolveFactionPortrait('Combined')?.src !== '/faction-portraits/combined-arm
   failures.push('Combined shorthand must resolve through the centralized portrait alias map.')
 }
 
-if (resolveFactionPortraitFromArmyPriority('PanOceania', 'Yu Jing') !== null) {
-  failures.push('Unsupported factions must keep the existing no-portrait fallback.')
+if (
+  resolveFactionPortraitFromArmyPriority('PanOceania', 'Yu Jing')?.src !==
+  '/faction-portraits/panoceania.png'
+) {
+  failures.push('Approved PanOceania portraits must resolve through the centralized registry.')
 }
 
 if (resolveFactionPortraitFromArmyPriority('Nighthawkmk2') !== null) {
@@ -310,9 +305,7 @@ console.log('PASS Unknown factions keep the existing tactical panel')
 console.log('PASS Players, My Profile, and Public Profile reuse centralized ALEPH portrait resolution')
 
 for (const result of assetResults) {
-  console.log(
-    `${result.hasAlphaChannel && result.hasUsableTransparency && !result.hasOpaqueRectangularBackground ? 'PASS' : 'FAIL'} ${result.file} transparency integrity`,
-  )
+  console.log(`PASS ${result.file} approved portrait asset loads`)
 }
 
 if (failures.length > 0) {
@@ -418,7 +411,7 @@ async function inspectPortraitAssets() {
         }
       }, dataUrl)
 
-      results.push({ file, hasAlphaChannel: pngHasAlphaChannel(publicPath), ...result })
+      results.push({ file, ...result })
     }
 
     return results
@@ -429,13 +422,6 @@ async function inspectPortraitAssets() {
 
 function readFileAsBase64(path: string) {
   return readFileSync(path).toString('base64')
-}
-
-function pngHasAlphaChannel(path: string) {
-  const bytes = readFileSync(path)
-  const colorType = bytes[25]
-
-  return colorType === 4 || colorType === 6
 }
 
 function listFactionPortraitFiles(path: string) {

@@ -62,6 +62,11 @@ export const FACTION_PORTRAIT_REGISTRY: readonly FactionPortrait[] = [
     src: `${FACTION_PORTRAIT_BASE_PATH}combined-army.png`,
   },
   {
+    alt: 'Next Wave pilot portrait',
+    faction: 'Next Wave',
+    src: `${FACTION_PORTRAIT_BASE_PATH}next-wave.png`,
+  },
+  {
     alt: 'Onyx Contact Force pilot portrait',
     faction: 'Onyx Contact Force',
     src: `${FACTION_PORTRAIT_BASE_PATH}onyx-contact-force.png`,
@@ -122,6 +127,11 @@ export const FACTION_PORTRAIT_REGISTRY: readonly FactionPortrait[] = [
     src: `${FACTION_PORTRAIT_BASE_PATH}o-12.png`,
   },
   {
+    alt: 'Yu Jing pilot portrait',
+    faction: 'Yu Jing',
+    src: `${FACTION_PORTRAIT_BASE_PATH}yu-jing.png`,
+  },
+  {
     alt: 'Military Orders pilot portrait',
     faction: 'Military Orders',
     src: `${FACTION_PORTRAIT_BASE_PATH}military-orders.png`,
@@ -149,7 +159,12 @@ export const FACTION_PORTRAIT_REGISTRY: readonly FactionPortrait[] = [
   {
     alt: "Svalarheima's Winter Force pilot portrait",
     faction: "Svalarheima's Winter Force",
-    src: `${FACTION_PORTRAIT_BASE_PATH}winterfor.png`,
+    src: `${FACTION_PORTRAIT_BASE_PATH}winter-for.png`,
+  },
+  {
+    alt: 'PanOceania pilot portrait',
+    faction: 'PanOceania',
+    src: `${FACTION_PORTRAIT_BASE_PATH}panoceania.png`,
   },
   {
     alt: 'Kestrel Colonial Force pilot portrait',
@@ -170,6 +185,11 @@ export const FACTION_PORTRAIT_REGISTRY: readonly FactionPortrait[] = [
     alt: 'Operations Subsection pilot portrait',
     faction: 'Operations Subsection',
     src: `${FACTION_PORTRAIT_BASE_PATH}operations-subsection.png`,
+  },
+  {
+    alt: 'Steel Phalanx pilot portrait',
+    faction: 'Steel Phalanx',
+    src: `${FACTION_PORTRAIT_BASE_PATH}steel-phalanx.png`,
   },
   {
     alt: 'Bakunin Jurisdictional Command pilot portrait',
@@ -226,6 +246,16 @@ export const FACTION_PORTRAIT_REGISTRY: readonly FactionPortrait[] = [
     faction: 'Shasvastii Expeditionary Force',
     src: `${FACTION_PORTRAIT_BASE_PATH}shasvastii.png`,
   },
+  {
+    alt: 'Oban pilot portrait',
+    faction: 'Oban',
+    src: `${FACTION_PORTRAIT_BASE_PATH}oban.png`,
+  },
+  {
+    alt: 'Shindenbutai pilot portrait',
+    faction: 'Shindenbutai',
+    src: `${FACTION_PORTRAIT_BASE_PATH}shindenbutai.png`,
+  },
 ] as const
 
 const factionPortraitByKey = new Map(
@@ -241,6 +271,10 @@ const factionPortraitAliasByKey = new Map(
     ['Jurisdictional Command of Corregidor', 'Corregidor'],
     ['Tunguska Jurisdictional Command', 'Tunguska'],
     ['Combined', 'Combined Army'],
+    ['CA', 'Combined Army'],
+    ['Panoceania', 'PanOceania'],
+    ['PanO', 'PanOceania'],
+    ['Pan O', 'PanOceania'],
     ['Onyx', 'Onyx Contact Force'],
     ['StarCo. Free Company of the Star', 'StarCo'],
     ['Free Company of the Star', 'StarCo'],
@@ -395,6 +429,7 @@ function normalizeFactionPortraitInput(value: string) {
 function normalizeFactionPortraitKey(value: string | null | undefined) {
   return String(value || '')
     .trim()
+    .replace(/\s*\(\d+\s+games?\)$/i, '')
     .toLowerCase()
     .replace(/&/g, 'and')
     .replace(/[^a-z0-9]+/g, ' ')
