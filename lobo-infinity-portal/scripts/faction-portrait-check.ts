@@ -455,11 +455,10 @@ function assertSourceContracts() {
   }
 
   if (
-    !/resolvePlayerFactionPortrait\(\{\s*currentEventArmy:\s*leagueModel\?\.preferredArmy,[\s\S]*preferredArmy:\s*data\.user\.favoriteFaction/.test(
-      myProfile,
-    )
+    !/resolvePlayerFactionIdentity\(data\.user\)/.test(myProfile) ||
+    !/resolvePortraitFromIdentity\(factionIdentity\)/.test(myProfile)
   ) {
-    failures.push('My Profile must use the shared player portrait resolver context.')
+    failures.push('My Profile must use the shared player faction identity portrait path.')
   }
 
   if (/Nighthawkmk2|playerName|displayName|decodedPlayerName/.test(portraits)) {

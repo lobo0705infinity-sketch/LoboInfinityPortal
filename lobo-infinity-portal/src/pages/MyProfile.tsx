@@ -5,7 +5,7 @@ import BarChart, { type BarChartPoint } from '../components/BarChart'
 import OperatorBadge from '../components/OperatorBadge'
 import Skeleton from '../components/Skeleton'
 import { getCanonicalArmyOptions, normalizeArmyForDisplay } from '../config/armies'
-import { resolvePlayerFactionPortrait, type FactionPortrait } from '../config/factionPortraits'
+import type { FactionPortrait } from '../config/factionPortraits'
 import { getCanonicalMissionName } from '../config/missions'
 import {
   apiClient,
@@ -28,6 +28,10 @@ import {
   resolvePlayerLeagueModel,
   type PlayerLeagueModel,
 } from '../services/playerLeagueModel'
+import {
+  resolvePlayerFactionIdentity,
+  type PlayerFactionIdentity,
+} from '../services/playerFactionIdentity'
 import type { PlayerClassification } from '../services/playerClassification'
 import { standingsRepository } from '../services/data'
 import type { DivisionStandings } from '../types/dashboard'
@@ -568,11 +572,9 @@ function ProfileHero({
   const currentLeague = getCurrentLeagueLabel(leagueModel)
   const joinedDate = getProfileJoinedDate(data)
   const promotionStatus = getCompetitivePromotionStatus(leagueModel, seasonStats)
-  const preferredFaction = leagueModel?.preferredArmy || data.user.favoriteFaction || ''
-  const portrait = resolvePlayerFactionPortrait({
-    currentEventArmy: leagueModel?.preferredArmy,
-    preferredArmy: data.user.favoriteFaction,
-  })
+  const factionIdentity = resolvePlayerFactionIdentity(data.user)
+  const preferredFaction = factionIdentity.normalizedFaction || ''
+  const portrait = resolvePortraitFromIdentity(factionIdentity)
 
   return (
     <section
@@ -642,6 +644,20 @@ function ProfileHero({
       {portrait ? <FactionPortraitPanel portrait={portrait} /> : null}
     </section>
   )
+}
+
+function resolvePortraitFromIdentity(
+  identity: PlayerFactionIdentity,
+): FactionPortrait | null {
+  if (!identity.portraitPath || !identity.normalizedFaction) {
+    return null
+  }
+
+  return {
+    alt: `${identity.normalizedFaction} pilot portrait`,
+    faction: identity.normalizedFaction,
+    src: identity.portraitPath,
+  }
 }
 
 function FactionPortraitPanel({ portrait }: { portrait: FactionPortrait }) {

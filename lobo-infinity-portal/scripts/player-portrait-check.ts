@@ -33,6 +33,13 @@ const apiUrl = readApiUrl()
 const expected = new Map([
   ['Vision', { normalizedFaction: 'Steel Phalanx', portraitPath: '/faction-portraits/steel-phalanx.png' }],
   ['Brooke', { normalizedFaction: 'Next Wave', portraitPath: '/faction-portraits/next-wave.png' }],
+  [
+    'Arg',
+    {
+      normalizedFaction: 'Corregidor Jurisdictional Command',
+      portraitPath: '/faction-portraits/corregidor.png',
+    },
+  ],
   ['Diabloknk', { normalizedFaction: 'Next Wave', portraitPath: '/faction-portraits/next-wave.png' }],
   ['Jqam1', { normalizedFaction: 'Next Wave', portraitPath: '/faction-portraits/next-wave.png' }],
   ['Erichagz', { normalizedFaction: 'Next Wave', portraitPath: '/faction-portraits/next-wave.png' }],
@@ -69,6 +76,7 @@ const results = players.map((player) => {
     cardNormalizedFaction: cardIdentity.normalizedFaction || '',
     cardPortraitPath: cardIdentity.portraitPath || '',
     player: player.player,
+    preferredArmyDisplay: profileIdentity.normalizedFaction || '',
     preferredArmy: profile?.favoriteFaction || '',
     profileNormalizedFaction: profileIdentity.normalizedFaction || '',
     profilePortraitPath: profileIdentity.portraitPath || '',
@@ -93,11 +101,12 @@ if (mode === 'players') {
   const mismatches = results.filter(
     (result) =>
       result.cardNormalizedFaction !== result.profileNormalizedFaction ||
-      result.cardNormalizedFaction !== result.badgeFactionKey,
+      result.cardNormalizedFaction !== result.badgeFactionKey ||
+      result.cardNormalizedFaction !== result.preferredArmyDisplay,
   )
 
   if (mismatches.length > 0) {
-    throw new Error(`Player/profile/badge faction identity mismatches: ${mismatches.length}`)
+    throw new Error(`Player/profile/badge/preferred-army faction identity mismatches: ${mismatches.length}`)
   }
 
   console.log(`PASS player portrait consistency checked ${players.length} players`)
@@ -207,6 +216,12 @@ function assertResolverRules() {
     favoriteFaction: '',
     preferredArmy: 'Next Wave',
   })
+  const brookeMetricIdentity = resolvePlayerFactionIdentity({
+    favoriteFaction: 'Next Wave (2 games)',
+  })
+  const argIdentity = resolvePlayerFactionIdentity({
+    favoriteFaction: 'Corregidor Jurisdictional Command',
+  })
   const shockArmyIdentity = resolvePlayerFactionIdentity({
     favoriteFaction: 'Shock Army of Acontecimento (1 games)',
   })
@@ -217,6 +232,23 @@ function assertResolverRules() {
     blankIdentity.portraitPath !== null
   ) {
     throw new Error('Blank favoriteFaction must yield default badge and no portrait.')
+  }
+
+  if (
+    brookeMetricIdentity.normalizedFaction !== 'Next Wave' ||
+    brookeMetricIdentity.badgeFactionKey !== 'Next Wave' ||
+    brookeMetricIdentity.portraitPath !== '/faction-portraits/next-wave.png'
+  ) {
+    throw new Error('Metric suffixes must be removed before resolving Brooke/Next Wave identity.')
+  }
+
+  if (
+    argIdentity.normalizedFaction !== 'Corregidor Jurisdictional Command' ||
+    argIdentity.badgeFactionKey !== 'Corregidor Jurisdictional Command' ||
+    argIdentity.parentFaction !== 'Nomads' ||
+    argIdentity.portraitPath !== '/faction-portraits/corregidor.png'
+  ) {
+    throw new Error('Sectorial preferred armies must not fall back to parent-faction portraits when mapped.')
   }
 
   if (
