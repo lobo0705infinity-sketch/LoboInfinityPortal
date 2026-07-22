@@ -35,6 +35,23 @@ const checks = [
       playerProfile.includes('value={player.availability.status}') &&
       playerProfile.includes('value={currentTournament}'),
   },
+  {
+    label: 'Public profile uses saved Preferred Army before game-derived Favorite Faction',
+    pass:
+      playersApi.includes('const savedPreferredArmy =') &&
+      playersApi.includes('const gameDerivedFavoriteFaction =') &&
+      playersApi.includes('const resolvedPreferredArmy =') &&
+      /resolvedPreferredArmy\s*=\s*savedPreferredArmy\s*\|\|\s*gameDerivedFavoriteFaction/.test(playersApi) &&
+      /favoriteFaction:\s*resolvedPreferredArmy/.test(playersApi) &&
+      /preferredArmy:\s*resolvedPreferredArmy/.test(playersApi),
+  },
+  {
+    label: 'Arg saved USAriadna-style override and blank fallback remain supported',
+    pass:
+      playersApi.includes('function getSavedPreferredArmyForPlayer') &&
+      playersApi.includes('gameDerivedFavoriteFaction:') &&
+      /favoriteArmy\s*=\s*record\.favoriteFaction\s*\|\|\s*gameDerivedFavoriteFaction/.test(playersApi),
+  },
 ]
 
 const failures = checks.filter((check) => !check.pass)

@@ -174,6 +174,38 @@ function getCommunityPortalUsers(leagueIdentityByEmail) {
 
 }
 
+function getSavedPreferredArmyByPlayer() {
+
+  const leagueIdentityByEmail =
+    buildCommunityLeagueIdentityByEmailMap();
+  const map = {};
+
+  getCommunityPortalUsers(leagueIdentityByEmail)
+    .forEach(function(user) {
+      const key =
+        getCommunityPlayerKey(user.player);
+
+      if (
+        key !== "" &&
+        user.favoriteFaction
+      )
+        map[key] =
+          user.favoriteFaction;
+    });
+
+  return map;
+
+}
+
+function getSavedPreferredArmyForPlayer(playerName) {
+
+  const map =
+    getSavedPreferredArmyByPlayer();
+
+  return map[getCommunityPlayerKey(playerName)] || "";
+
+}
+
 function buildCommunityEventsById() {
 
   const map = {};
@@ -393,9 +425,12 @@ function upsertCommunityPlayerRecord(records, input) {
 
 function finalizeCommunityPlayerRecord(record) {
 
-  const favoriteArmy =
+  const gameDerivedFavoriteFaction =
     getCommunityMostPlayedArmy(record.factionCounts) ||
+    "";
+  const favoriteArmy =
     record.favoriteFaction ||
+    gameDerivedFavoriteFaction ||
     "";
   const currentWinStreak =
     getCommunityCurrentWinStreak(record.results);
@@ -432,6 +467,9 @@ function finalizeCommunityPlayerRecord(record) {
     vp: record.vp,
     faction: favoriteArmy,
     favoriteArmy: favoriteArmy,
+    favoriteFaction: favoriteArmy,
+    preferredArmy: favoriteArmy,
+    gameDerivedFavoriteFaction: gameDerivedFavoriteFaction,
     currentWinStreak: currentWinStreak,
     statusBadges: statusBadges,
     gameTypes: gameTypes,
@@ -749,6 +787,17 @@ function getPlayer(e) {
       getSeasonAvailabilityMap(),
       registeredPlayer.player
     );
+  const savedPreferredArmy =
+    getSavedPreferredArmyForPlayer(
+      registeredPlayer.player
+    );
+  const gameDerivedFavoriteFaction =
+    FAVORITEFACTION(
+      registeredPlayer.player
+    );
+  const resolvedPreferredArmy =
+    savedPreferredArmy ||
+    gameDerivedFavoriteFaction;
 
   return jsonOutput({
 
@@ -779,9 +828,13 @@ function getPlayer(e) {
       vp: standing.vp,
 
       favoriteFaction:
-        FAVORITEFACTION(
-          registeredPlayer.player
-        ),
+        resolvedPreferredArmy,
+
+      preferredArmy:
+        resolvedPreferredArmy,
+
+      gameDerivedFavoriteFaction:
+        gameDerivedFavoriteFaction,
 
       favoriteMission:
         missionProfile.favoriteMission,
@@ -876,6 +929,10 @@ function getCommunityPlayerProfile(requestedName) {
     getPlayerArmyLists(
       playerName
     );
+  const resolvedPreferredArmy =
+    communityPlayer.favoriteFaction ||
+    communityPlayer.favoriteArmy ||
+    "";
 
   return jsonOutput({
     success: true,
@@ -901,7 +958,11 @@ function getCommunityPlayerProfile(requestedName) {
       vp:
         communityPlayer.vp || 0,
       favoriteFaction:
-        communityPlayer.favoriteArmy || "",
+        resolvedPreferredArmy,
+      preferredArmy:
+        resolvedPreferredArmy,
+      gameDerivedFavoriteFaction:
+        communityPlayer.gameDerivedFavoriteFaction || "",
       favoriteMission:
         "",
       bestMission:
