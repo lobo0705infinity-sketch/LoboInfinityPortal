@@ -646,8 +646,9 @@ function buildSessionCacheKey(action: string, params: RequestParams) {
     .sort(([left], [right]) => left.localeCompare(right))
     .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
     .join('&')
+  const actionCacheVersion = action === 'player' ? ':player-v3' : ''
 
-  return `${getSessionCacheAuthScope()}|${action}?${serializedParams}`
+  return `${getSessionCacheAuthScope()}|${action}${actionCacheVersion}?${serializedParams}`
 }
 
 function getSessionStorageKey(cacheKey: string) {
