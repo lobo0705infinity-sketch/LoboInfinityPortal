@@ -240,11 +240,29 @@ function runMain() {
   }
 
   currentStep = 'assign production alias'
-  run('npx.cmd', ['--yes', 'vercel', 'alias', 'set', deploymentId, productionAlias, '--scope', scope], {
+  const alias = spawnVercel(['--yes', 'vercel', 'alias', 'set', deploymentId, productionAlias, '--scope', scope], {
     cwd: releaseRoot,
-    stdio: 'inherit',
-    step: currentStep,
+    encoding: 'utf8',
   })
+  if (alias.error) {
+    alias.error.step = currentStep
+    alias.error.status = alias.status
+    alias.error.stdout = alias.stdout
+    alias.error.stderr = alias.stderr
+    throw alias.error
+  }
+  const aliasStdout = normalizeProcessOutput(alias.stdout)
+  const aliasStderr = normalizeProcessOutput(alias.stderr)
+  process.stdout.write(aliasStdout)
+  process.stderr.write(aliasStderr)
+  if (alias.status !== 0) {
+    const error = new Error('Vercel alias command failed')
+    error.step = currentStep
+    error.status = alias.status
+    error.stdout = alias.stdout
+    error.stderr = alias.stderr
+    throw error
+  }
 
   currentStep = 'post-deploy verification'
   run('node', ['scripts/post-deploy-production-verify.mjs'], {
