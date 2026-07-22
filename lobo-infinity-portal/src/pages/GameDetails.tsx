@@ -25,6 +25,7 @@ type GameDetailsState =
     }
 
 type BattleParticipant = {
+  armyCode: string
   displayName: string
   division: string
   faction: string
@@ -227,6 +228,8 @@ function buildNewsLinkedGame(gameId: number, news: CommissionerNewsItem[]): Rece
     loserDisplayName: parsed.loser,
     winnerFaction: '',
     loserFaction: '',
+    winnerArmyCode: '',
+    loserArmyCode: '',
     mission: parsed.mission,
     tp: 'Not recorded',
     op: parsed.op,
@@ -382,11 +385,7 @@ function BattleReport({ game, stream }: { game: RecentGame; stream: StreamedGame
                     <strong>{participant.displayName}</strong>
                     <span>{participant.faction || 'Army not recorded'}</span>
                   </div>
-                  {participant.faction ? (
-                    <Link to={`/factions/${encodeURIComponent(participant.faction)}`}>
-                      View Army Dossier
-                    </Link>
-                  ) : null}
+                  <ArmyDossierLink armyCode={participant.armyCode} />
                 </article>
               ))}
             </div>
@@ -461,6 +460,44 @@ function ParticipantPanel({ game, participant }: { game: RecentGame; participant
       </div>
     </article>
   )
+}
+
+function ArmyDossierLink({ armyCode }: { armyCode: string }) {
+  const target = getArmyDossierTarget(armyCode)
+
+  if (!target) {
+    return null
+  }
+
+  if (target.external) {
+    return (
+      <a href={target.href} rel="noreferrer" target="_blank">
+        View Army Dossier
+      </a>
+    )
+  }
+
+  return <Link to={target.href}>View Army Dossier</Link>
+}
+
+function getArmyDossierTarget(armyCode: string) {
+  const value = armyCode.trim()
+
+  if (!value) {
+    return null
+  }
+
+  if (/^https?:\/\//i.test(value)) {
+    return {
+      external: true,
+      href: value,
+    }
+  }
+
+  return {
+    external: false,
+    href: `/army-list/${encodeURIComponent(value)}`,
+  }
 }
 
 function Scoreboard({
@@ -571,6 +608,7 @@ type ScoreLabel = 'TP' | 'OP' | 'VP'
 function buildParticipants(game: RecentGame, isDraw: boolean): [BattleParticipant, BattleParticipant] {
   return [
     {
+      armyCode: game.winnerArmyCode,
       displayName: formatPlayerName(game.winner, game.winnerDisplayName),
       division: game.division,
       faction: game.winnerFaction,
@@ -580,6 +618,7 @@ function buildParticipants(game: RecentGame, isDraw: boolean): [BattleParticipan
       scoreTone: 'cyan',
     },
     {
+      armyCode: game.loserArmyCode,
       displayName: formatPlayerName(game.loser, game.loserDisplayName),
       division: game.division,
       faction: game.loserFaction,

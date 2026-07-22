@@ -48,6 +48,8 @@ const emptyLeagueResult: LeagueResultSubmission = {
   opponentTournamentPoints: '',
   opponentVictoryPoints: '',
   player: '',
+  player1ArmyCode: '',
+  player2ArmyCode: '',
   playerFaction: '',
   playerObjectivePoints: '',
   playerTournamentPoints: '',
@@ -510,6 +512,18 @@ function SubmitResult() {
             required
             value={casualResult.opponentFaction}
           />
+          <FormField
+            label="Player 1 Army Code"
+            onChange={(value) => updateCasualField('player1ArmyCode', value)}
+            required
+            value={casualResult.player1ArmyCode ?? ''}
+          />
+          <FormField
+            label="Player 2 Army Code"
+            onChange={(value) => updateCasualField('player2ArmyCode', value)}
+            required
+            value={casualResult.player2ArmyCode ?? ''}
+          />
           <SearchableSelect
             label="Mission"
             onChange={(value) => updateCasualField('mission', value)}
@@ -767,6 +781,18 @@ function SubmitResult() {
           options={factionOptions}
           placeholder="Search factions"
           value={leagueResult.opponentFaction}
+        />
+        <FormField
+          label="Player 1 Army Code"
+          onChange={(value) => updateField('player1ArmyCode', value)}
+          required
+          value={leagueResult.player1ArmyCode ?? ''}
+        />
+        <FormField
+          label="Player 2 Army Code"
+          onChange={(value) => updateField('player2ArmyCode', value)}
+          required
+          value={leagueResult.player2ArmyCode ?? ''}
         />
         <SelectField
           label="Game Result"
@@ -1104,6 +1130,8 @@ function TeamTournamentResultSubmission({
           required
           value={winner}
         />
+        <FormField label="Player 1 Army Code" name="player1ArmyCode" required value="" />
+        <FormField label="Player 2 Army Code" name="player2ArmyCode" required value="" />
         <FormField label="Tournament Points" name="tournamentPoints" required value="" />
         <FormField label="Objective Points" name="objectivePoints" required value="" />
         <FormField label="Victory Points" name="victoryPoints" required value="" />
@@ -1173,6 +1201,10 @@ function validateLeagueResult(
     issues.push('Both factions are required.')
   }
 
+  if (!submission.player1ArmyCode?.trim() || !submission.player2ArmyCode?.trim()) {
+    issues.push('Player 1 Army Code and Player 2 Army Code are required.')
+  }
+
   if (submission.playerFaction.trim() && !optionContains(options.factions, submission.playerFaction)) {
     issues.push('Registered Faction must be selected from the faction database.')
   }
@@ -1235,6 +1267,10 @@ function validateCasualResult(
 
   if (!submission.playerFaction.trim() || !submission.opponentFaction.trim()) {
     issues.push('Both factions are required.')
+  }
+
+  if (!submission.player1ArmyCode?.trim() || !submission.player2ArmyCode?.trim()) {
+    issues.push('Player 1 Army Code and Player 2 Army Code are required.')
   }
 
   if (submission.playerFaction.trim() && !optionContains(options.factions, submission.playerFaction)) {
@@ -1384,6 +1420,10 @@ function validateTournamentResult(
 
   if (!params.player?.trim() || !params.opponent?.trim()) {
     issues.push('Player 1 and Player 2 are required.')
+  }
+
+  if (!params.player1ArmyCode?.trim() || !params.player2ArmyCode?.trim()) {
+    issues.push('Player 1 Army Code and Player 2 Army Code are required.')
   }
 
   if (normalize(params.player || '') === normalize(params.opponent || '')) {

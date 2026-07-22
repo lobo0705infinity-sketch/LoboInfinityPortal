@@ -5,6 +5,11 @@
  * Reuses Form Responses and the existing Game Engine rebuild.
  *******************************************************/
 
+const RESULT_SUBMISSION_ARMY_CODE_HEADERS = {
+  PLAYER1_ARMY_CODE: "Player 1 Army Code",
+  PLAYER2_ARMY_CODE: "Player 2 Army Code"
+};
+
 function submitLeagueResult(e) {
 
   return requireApiPermission(e, "submitLists", function(auth) {
@@ -154,6 +159,14 @@ function submitLeagueResult(e) {
 
     if (!sheet)
       return resultSubmissionFailure("Result datastore was not found.");
+
+    const armyCodeColumns =
+      ensureResultSubmissionArmyCodeColumns(sheet);
+
+    row[armyCodeColumns.player1ArmyCode] =
+      getResultSubmissionString(params.player1ArmyCode);
+    row[armyCodeColumns.player2ArmyCode] =
+      getResultSubmissionString(params.player2ArmyCode);
 
     sheet.appendRow(row);
 
@@ -327,6 +340,14 @@ function submitCasualResult(e) {
     if (!sheet)
       return resultSubmissionFailure("Result datastore was not found.");
 
+    const armyCodeColumns =
+      ensureResultSubmissionArmyCodeColumns(sheet);
+
+    row[armyCodeColumns.player1ArmyCode] =
+      getResultSubmissionString(params.player1ArmyCode);
+    row[armyCodeColumns.player2ArmyCode] =
+      getResultSubmissionString(params.player2ArmyCode);
+
     sheet.appendRow(row);
 
     recordResultSubmissionCommissionerAudit(
@@ -367,6 +388,63 @@ function resultSubmissionFailure(message) {
     success: false,
     error: message
   });
+
+}
+
+function ensureResultSubmissionArmyCodeColumns(sheet) {
+
+  const requiredHeaders = [
+    RESULT_SUBMISSION_ARMY_CODE_HEADERS.PLAYER1_ARMY_CODE,
+    RESULT_SUBMISSION_ARMY_CODE_HEADERS.PLAYER2_ARMY_CODE
+  ];
+
+  const lastColumn =
+    Math.max(sheet.getLastColumn(), FORM.GAME_RESULT + 1);
+
+  const headerRange =
+    sheet.getRange(1, 1, 1, lastColumn);
+
+  let headers =
+    headerRange
+      .getValues()[0]
+      .map(getResultSubmissionString);
+
+  const occupiedHeaderCount =
+    headers.filter(function(header) {
+      return header !== "";
+    }).length;
+
+  if (occupiedHeaderCount === 0) {
+    sheet
+      .getRange(1, 1, 1, requiredHeaders.length)
+      .setValues([requiredHeaders]);
+
+    headers = requiredHeaders.slice();
+  } else {
+    const missingHeaders =
+      requiredHeaders.filter(function(header) {
+        return headers.indexOf(header) === -1;
+      });
+
+    if (missingHeaders.length > 0) {
+      sheet
+        .getRange(1, occupiedHeaderCount + 1, 1, missingHeaders.length)
+        .setValues([missingHeaders]);
+
+      headers =
+        sheet
+          .getRange(1, 1, 1, occupiedHeaderCount + missingHeaders.length)
+          .getValues()[0]
+          .map(getResultSubmissionString);
+    }
+  }
+
+  return {
+    player1ArmyCode:
+      headers.indexOf(RESULT_SUBMISSION_ARMY_CODE_HEADERS.PLAYER1_ARMY_CODE),
+    player2ArmyCode:
+      headers.indexOf(RESULT_SUBMISSION_ARMY_CODE_HEADERS.PLAYER2_ARMY_CODE)
+  };
 
 }
 

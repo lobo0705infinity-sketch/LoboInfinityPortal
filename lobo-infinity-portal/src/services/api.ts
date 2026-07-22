@@ -69,6 +69,8 @@ export type LeagueResultSubmission = {
   opponentVictoryPoints: string
   playerFaction: string
   opponentFaction: string
+  player1ArmyCode?: string
+  player2ArmyCode?: string
   firstTurn: string
   bestMoment: string
   notes: string
@@ -440,6 +442,8 @@ export type RecentGame = {
   loserDisplayName: string
   winnerFaction: string
   loserFaction: string
+  winnerArmyCode: string
+  loserArmyCode: string
   mission: string
   tp: string
   op: string
@@ -1086,6 +1090,8 @@ export type TeamTournamentResult = {
   notes: string
   objectivePoints: string
   opponent: string
+  player1ArmyCode: string
+  player2ArmyCode: string
   player: string
   resultId: string
   round: string
@@ -2952,6 +2958,8 @@ export async function submitCasualResult(
     opponentTournamentPoints: submission.opponentTournamentPoints,
     opponentVictoryPoints: submission.opponentVictoryPoints,
     player: submission.player,
+    player1ArmyCode: submission.player1ArmyCode ?? '',
+    player2ArmyCode: submission.player2ArmyCode ?? '',
     playerFaction: submission.playerFaction,
     playerObjectivePoints: submission.playerObjectivePoints,
     playerTournamentPoints: submission.playerTournamentPoints,
@@ -5298,6 +5306,8 @@ function normalizeTeamTournamentResult(item: unknown): TeamTournamentResult {
     notes: getString(record, 'notes'),
     objectivePoints: getString(record, 'objectivePoints'),
     opponent: getString(record, 'opponent'),
+    player1ArmyCode: getString(record, 'player1ArmyCode'),
+    player2ArmyCode: getString(record, 'player2ArmyCode'),
     player: getString(record, 'player'),
     resultId: getString(record, 'resultId'),
     round: getString(record, 'round'),
@@ -6855,6 +6865,8 @@ function normalizeRecentGame(item: unknown): RecentGame {
       getString(record, 'loserDisplayName') || getRequiredString(record, 'loser'),
     winnerFaction: getString(record, 'winnerFaction'),
     loserFaction: getString(record, 'loserFaction'),
+    winnerArmyCode: getString(record, 'winnerArmyCode'),
+    loserArmyCode: getString(record, 'loserArmyCode'),
     mission: getRequiredString(record, 'mission'),
     tp: getString(record, 'tp'),
     op: getString(record, 'op'),

@@ -43,8 +43,17 @@ const FORM = {
 
   GAME_TYPE: 17,
 
-  GAME_RESULT: 18
+  GAME_RESULT: 18,
 
+  PLAYER1_ARMY_CODE: 19,
+
+  PLAYER2_ARMY_CODE: 20
+
+};
+
+const GAME_ENGINE_FORM_HEADERS = {
+  PLAYER1_ARMY_CODE: "Player 1 Army Code",
+  PLAYER2_ARMY_CODE: "Player 2 Army Code"
 };
 
 function getFormResponses() {
@@ -59,7 +68,13 @@ function getFormResponses() {
       .getDataRange()
       .getValues();
 
-  values.shift();
+  const headers =
+    values.shift() || [];
+
+  values.forEach(function(row) {
+    row.__formHeaders =
+      headers;
+  });
 
   return values;
 
@@ -215,7 +230,8 @@ function getGameEngineHeaders() {
     "First Turn",
     "Event ID",
     "Game Type",
-    "Game Result"
+    "Game Result",
+    "Army Code"
   ]];
 
 }
@@ -240,7 +256,9 @@ function getGameAnalyticsHeaders() {
     "First Turn Winner",
     "Event ID",
     "Game Type",
-    "Game Result"
+    "Game Result",
+    "Winner Army Code",
+    "Loser Army Code"
   ]];
 
 }
@@ -352,7 +370,19 @@ function buildPlayerRow(row, playerNumber, winner) {
 
     getGameEngineGameType(row),
 
-    gameResult
+    gameResult,
+
+    playerIsOne
+      ? getGameEngineFormValue(
+          row,
+          GAME_ENGINE_FORM_HEADERS.PLAYER1_ARMY_CODE,
+          FORM.PLAYER1_ARMY_CODE
+        )
+      : getGameEngineFormValue(
+          row,
+          GAME_ENGINE_FORM_HEADERS.PLAYER2_ARMY_CODE,
+          FORM.PLAYER2_ARMY_CODE
+        )
 
   ];
 
@@ -390,6 +420,35 @@ function getGameEngineFirstTurnKey(value) {
   return String(value || "")
     .trim()
     .toLowerCase();
+
+}
+
+function getGameEngineString(value) {
+
+  if (
+    value === null ||
+    value === undefined
+  )
+    return "";
+
+  return String(value).trim();
+
+}
+
+function getGameEngineFormValue(row, header, fallbackIndex) {
+
+  const headers =
+    row && row.__formHeaders
+      ? row.__formHeaders
+      : [];
+
+  const index =
+    headers.indexOf(header);
+
+  if (index !== -1)
+    return getGameEngineString(row[index]);
+
+  return getGameEngineString(row[fallbackIndex]);
 
 }
 
@@ -449,6 +508,9 @@ function buildAnalyticsRow(row, winner) {
 
   let firstTurnWinner = "Draw";
 
+  let winnerArmyCode = "";
+  let loserArmyCode = "";
+
   if (draw) {
 
     winnerPlayer = row[FORM.PLAYER1];
@@ -467,6 +529,19 @@ function buildAnalyticsRow(row, winner) {
 
     winnerVP = Number(row[FORM.P1VP]) || 0;
     loserVP = Number(row[FORM.P2VP]) || 0;
+
+    winnerArmyCode =
+      getGameEngineFormValue(
+        row,
+        GAME_ENGINE_FORM_HEADERS.PLAYER1_ARMY_CODE,
+        FORM.PLAYER1_ARMY_CODE
+      );
+    loserArmyCode =
+      getGameEngineFormValue(
+        row,
+        GAME_ENGINE_FORM_HEADERS.PLAYER2_ARMY_CODE,
+        FORM.PLAYER2_ARMY_CODE
+      );
 
     firstTurnWinner =
       row[FORM.FIRSTTURN] === "Player 1"
@@ -496,6 +571,19 @@ function buildAnalyticsRow(row, winner) {
       winnerVP = Number(row[FORM.P1VP]) || 0;
       loserVP = Number(row[FORM.P2VP]) || 0;
 
+      winnerArmyCode =
+        getGameEngineFormValue(
+          row,
+          GAME_ENGINE_FORM_HEADERS.PLAYER1_ARMY_CODE,
+          FORM.PLAYER1_ARMY_CODE
+        );
+      loserArmyCode =
+        getGameEngineFormValue(
+          row,
+          GAME_ENGINE_FORM_HEADERS.PLAYER2_ARMY_CODE,
+          FORM.PLAYER2_ARMY_CODE
+        );
+
       firstTurnWinner =
         isGameEngineFirstTurnPlayer(
           row,
@@ -523,6 +611,19 @@ function buildAnalyticsRow(row, winner) {
 
       winnerVP = Number(row[FORM.P2VP]) || 0;
       loserVP = Number(row[FORM.P1VP]) || 0;
+
+      winnerArmyCode =
+        getGameEngineFormValue(
+          row,
+          GAME_ENGINE_FORM_HEADERS.PLAYER2_ARMY_CODE,
+          FORM.PLAYER2_ARMY_CODE
+        );
+      loserArmyCode =
+        getGameEngineFormValue(
+          row,
+          GAME_ENGINE_FORM_HEADERS.PLAYER1_ARMY_CODE,
+          FORM.PLAYER1_ARMY_CODE
+        );
 
       firstTurnWinner =
         isGameEngineFirstTurnPlayer(
@@ -580,7 +681,11 @@ function buildAnalyticsRow(row, winner) {
 
     getGameEngineGameType(row),
 
-    gameResult
+    gameResult,
+
+    winnerArmyCode,
+
+    loserArmyCode
 
   ];
 

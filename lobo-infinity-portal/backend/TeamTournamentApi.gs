@@ -66,7 +66,9 @@ const TEAM_TOURNAMENT_RESULT_HEADERS = [
   "Updated At",
   "Table",
   "Mission",
-  "Winner"
+  "Winner",
+  "Player 1 Army Code",
+  "Player 2 Army Code"
 ];
 
 function getTeamTournament(e) {
@@ -845,7 +847,9 @@ function saveTeamTournamentResult(e) {
       updatedAt: timestamp,
       table: assignment.table,
       mission: assignment.mission,
-      winner: getTeamTournamentString(params.winner)
+      winner: getTeamTournamentString(params.winner),
+      player1ArmyCode: getTeamTournamentString(params.player1ArmyCode),
+      player2ArmyCode: getTeamTournamentString(params.player2ArmyCode)
     };
 
   upsertTeamTournamentCompositeRow(
@@ -881,7 +885,9 @@ function saveTeamTournamentResult(e) {
       result.updatedAt,
       result.table,
       result.mission,
-      result.winner
+      result.winner,
+      result.player1ArmyCode,
+      result.player2ArmyCode
     ]
   );
 
@@ -1319,7 +1325,9 @@ function getTeamTournamentResults(eventId, sheet) {
       status: row["Status"],
       submittedBy: row["Submitted By"],
       createdAt: row["Created At"],
-      updatedAt: row["Updated At"]
+      updatedAt: row["Updated At"],
+      player1ArmyCode: row["Player 1 Army Code"],
+      player2ArmyCode: row["Player 2 Army Code"]
     };
   });
 

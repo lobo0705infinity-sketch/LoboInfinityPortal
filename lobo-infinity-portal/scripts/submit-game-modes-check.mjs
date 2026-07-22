@@ -62,6 +62,13 @@ assert.doesNotMatch(submitResult, /shouldDefaultCommissionerToCurrentLeague/, 'A
 assert.match(submitResult, /apiClient\.submitLeagueResult\(buildCommissionerPayload\(submission\)\)/, 'League selection must call the league result submission API.')
 assert.match(submitResult, /apiClient\.submitCasualResult\(buildCommissionerPayload\(submission\)\)/, 'Casual selection must call the casual result submission API.')
 assert.match(submitResult, /apiClient\.saveTeamTournamentResult\(/, 'Tournament selection must call the team tournament result API.')
+assert.match(submitResult, /label="Player 1 Army Code"[\s\S]*updateField\('player1ArmyCode'/, 'League submission must require Player 1 Army Code.')
+assert.match(submitResult, /label="Player 2 Army Code"[\s\S]*updateField\('player2ArmyCode'/, 'League submission must require Player 2 Army Code.')
+assert.match(submitResult, /label="Player 1 Army Code"[\s\S]*updateCasualField\('player1ArmyCode'/, 'Casual submission must require Player 1 Army Code.')
+assert.match(submitResult, /label="Player 2 Army Code"[\s\S]*updateCasualField\('player2ArmyCode'/, 'Casual submission must require Player 2 Army Code.')
+assert.match(submitResult, /label="Player 1 Army Code" name="player1ArmyCode" required/, 'Tournament submission must send Player 1 Army Code as player1ArmyCode.')
+assert.match(submitResult, /label="Player 2 Army Code" name="player2ArmyCode" required/, 'Tournament submission must send Player 2 Army Code as player2ArmyCode.')
+assert.match(submitResult, /Player 1 Army Code and Player 2 Army Code are required\./, 'Submit Game validation must require both army codes.')
 
 assert.match(api, /postRequest\('submitLeagueResult'/, 'Frontend API must retain the submitLeagueResult action.')
 assert.match(api, /postRequest\('submitCasualResult'/, 'Frontend API must retain the submitCasualResult action.')
@@ -73,10 +80,16 @@ assert.match(backendApi, /case "teamTournamentResult":[\s\S]*return saveTeamTour
 
 assert.match(resultSubmissionApi, /function submitLeagueResult\(e\)/, 'League backend handler must exist.')
 assert.match(resultSubmissionApi, /row\[FORM\.EVENT_ID\] = eventId;[\s\S]*row\[FORM\.GAME_TYPE\] = "league";/, 'League results must write the selected event id and league game type.')
+assert.match(resultSubmissionApi, /RESULT_SUBMISSION_ARMY_CODE_HEADERS[\s\S]*Player 1 Army Code[\s\S]*Player 2 Army Code/, 'League and Casual submissions must define army-code Form Responses headers.')
+assert.match(resultSubmissionApi, /ensureResultSubmissionArmyCodeColumns\(sheet\)[\s\S]*params\.player1ArmyCode[\s\S]*params\.player2ArmyCode/, 'League and Casual submissions must store both player army codes by header name.')
 assert.match(resultSubmissionApi, /function submitCasualResult\(e\)/, 'Casual backend handler must exist.')
 assert.match(resultSubmissionApi, /row\[FORM\.EVENT_ID\] = "";[\s\S]*row\[FORM\.GAME_TYPE\] = "casual";/, 'Casual results must remain isolated from league event standings.')
 assert.match(teamTournamentApi, /function saveTeamTournamentResult\(e\)/, 'Tournament backend handler must exist.')
 assert.match(teamTournamentApi, /ensureTeamTournamentResultsSheet\(\)/, 'Tournament results must write to the tournament results datastore.')
+assert.match(teamTournamentApi, /TEAM_TOURNAMENT_RESULT_HEADERS[\s\S]*Player 1 Army Code[\s\S]*Player 2 Army Code/, 'Tournament results must include both player army-code columns.')
+assert.match(teamTournamentApi, /player1ArmyCode: getTeamTournamentString\(params\.player1ArmyCode\)[\s\S]*player2ArmyCode: getTeamTournamentString\(params\.player2ArmyCode\)/, 'Tournament results must associate submitted army codes with player and opponent.')
+assert.match(api, /player1ArmyCode\?: string[\s\S]*player2ArmyCode\?: string/, 'Frontend result submission model must carry optional army-code fields before UI enforcement.')
+assert.match(api, /player1ArmyCode: submission\.player1ArmyCode \?\? ''[\s\S]*player2ArmyCode: submission\.player2ArmyCode \?\? ''/, 'Casual result API payload must carry both army-code fields.')
 
 assert.match(contract, /"submitGameModes"/, 'Production contract must include submit game mode markers.')
 

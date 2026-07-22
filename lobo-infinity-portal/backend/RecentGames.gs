@@ -26,7 +26,9 @@ const RECENT_GAME_ANALYTICS_COLUMNS = {
   FIRST_TURN_WINNER: "First Turn Winner",
   EVENT_ID: "Event ID",
   GAME_TYPE: "Game Type",
-  GAME_RESULT: "Game Result"
+  GAME_RESULT: "Game Result",
+  WINNER_ARMY_CODE: "Winner Army Code",
+  LOSER_ARMY_CODE: "Loser Army Code"
 };
 
 function getRecentGames(e) {
@@ -282,6 +284,8 @@ function buildRecentGameFromLinkedNews(gameId) {
     loserDisplayName: parsed.loser,
     winnerFaction: "",
     loserFaction: "",
+    winnerArmyCode: "",
+    loserArmyCode: "",
     mission: parsed.mission,
     tp: "",
     op: parsed.op,
@@ -351,6 +355,8 @@ function buildRecentGameResponse(game) {
       getPlayerDisplayName(game.loser),
     winnerFaction: game.winnerFaction,
     loserFaction: game.loserFaction,
+    winnerArmyCode: game.winnerArmyCode || "",
+    loserArmyCode: game.loserArmyCode || "",
     gameResult:
       getRecentGameResult(game),
     mission: game.mission,
@@ -513,6 +519,16 @@ function getRecentGameColumns(headers) {
       getRecentGameOptionalColumn(
         headers,
         RECENT_GAME_ANALYTICS_COLUMNS.GAME_RESULT
+      ),
+    winnerArmyCode:
+      getRecentGameOptionalColumn(
+        headers,
+        RECENT_GAME_ANALYTICS_COLUMNS.WINNER_ARMY_CODE
+      ),
+    loserArmyCode:
+      getRecentGameOptionalColumn(
+        headers,
+        RECENT_GAME_ANALYTICS_COLUMNS.LOSER_ARMY_CODE
       )
   };
 
@@ -571,6 +587,18 @@ function buildRecentGame(
       canonicalizeArmyName(
         row[columns.loserFaction]
       ),
+    winnerArmyCode:
+      columns.winnerArmyCode === -1
+        ? ""
+        : getRecentGameString(
+            row[columns.winnerArmyCode]
+          ),
+    loserArmyCode:
+      columns.loserArmyCode === -1
+        ? ""
+        : getRecentGameString(
+            row[columns.loserArmyCode]
+          ),
     mission:
       getRecentGameString(
         row[columns.mission]

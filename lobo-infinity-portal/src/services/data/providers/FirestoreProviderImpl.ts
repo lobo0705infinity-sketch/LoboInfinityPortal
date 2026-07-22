@@ -960,6 +960,8 @@ function normalizeTournamentResult(id: string, data: DocumentData, eventId: stri
     notes: readString(data, 'notes'),
     objectivePoints: readString(data, 'objectivePoints'),
     opponent: readString(data, 'opponent'),
+    player1ArmyCode: readString(data, 'player1ArmyCode'),
+    player2ArmyCode: readString(data, 'player2ArmyCode'),
     player: readString(data, 'player'),
     resultId: readString(data, 'resultId') || id,
     round: readString(data, 'round'),
@@ -988,6 +990,7 @@ function normalizeRecentGame(id: string, data: DocumentData): RecentGame {
     id: Number(id) || readNumber(data, 'id'),
     loser: readString(data, 'loser'),
     loserDisplayName: readString(data, 'loserDisplayName'),
+    loserArmyCode: readString(data, 'loserArmyCode'),
     loserFaction: readString(data, 'loserFaction'),
     mission: readString(data, 'mission'),
     op: readString(data, 'op'),
@@ -995,6 +998,7 @@ function normalizeRecentGame(id: string, data: DocumentData): RecentGame {
     vp: readString(data, 'vp'),
     winner: readString(data, 'winner'),
     winnerDisplayName: readString(data, 'winnerDisplayName'),
+    winnerArmyCode: readString(data, 'winnerArmyCode'),
     winnerFaction: readString(data, 'winnerFaction'),
   }
 }

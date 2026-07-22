@@ -4,6 +4,7 @@ import { resolve } from 'node:path'
 const root = process.cwd()
 const gameDetails = read('src/pages/GameDetails.tsx')
 const recentGamesApi = read('backend/RecentGames.gs')
+const gameEngine = read('backend/GameEngine.gs')
 
 const checks = [
   {
@@ -46,6 +47,25 @@ const checks = [
       recentGamesApi.includes('getFormResponses()') &&
       recentGamesApi.includes('buildAnalyticsRow(') &&
       recentGamesApi.includes('buildRecentGameResponse(rawGame)'),
+  },
+  {
+    label: 'Battle Report recent-game API carries army codes by winner and loser',
+    pass:
+      gameEngine.includes('"Winner Army Code"') &&
+      gameEngine.includes('"Loser Army Code"') &&
+      recentGamesApi.includes('WINNER_ARMY_CODE: "Winner Army Code"') &&
+      recentGamesApi.includes('winnerArmyCode: game.winnerArmyCode || ""') &&
+      recentGamesApi.includes('loserArmyCode: game.loserArmyCode || ""'),
+  },
+  {
+    label: 'Battle Report Army List dossier links use participant armyCode',
+    pass:
+      gameDetails.includes('armyCode: string') &&
+      gameDetails.includes('armyCode: game.winnerArmyCode') &&
+      gameDetails.includes('armyCode: game.loserArmyCode') &&
+      gameDetails.includes('<ArmyDossierLink armyCode={participant.armyCode} />') &&
+      gameDetails.includes('function getArmyDossierTarget(armyCode: string)') &&
+      gameDetails.includes("href: `/army-list/${encodeURIComponent(value)}`"),
   },
   {
     label: 'Battle Report linked-news fallback is secondary to canonical form lookup',
