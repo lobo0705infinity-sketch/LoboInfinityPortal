@@ -32,12 +32,12 @@ function run(command, args, options = {}) {
   }
 
   try {
-    const output = execFileSync(command, args, {
+    const output = normalizeProcessOutput(execFileSync(command, args, {
       cwd: options.cwd ?? portalRoot,
       encoding: 'utf8',
       env: options.env ?? process.env,
       stdio: options.stdio ?? ['ignore', 'pipe', 'pipe'],
-    }).trim()
+    })).trim()
     if (diagnose) {
       console.log(`PASS: ${label}`)
     }
