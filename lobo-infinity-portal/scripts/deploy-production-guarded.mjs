@@ -62,6 +62,20 @@ function normalizeProcessOutput(output) {
   return output
 }
 
+function spawnVercel(args, options) {
+  if (process.platform !== 'win32') {
+    return spawnSync('npx', args, options)
+  }
+
+  const commandLine = ['npx.cmd', ...args].join(' ')
+
+  return spawnSync(
+    'cmd.exe',
+    ['/d', '/s', '/c', commandLine],
+    options,
+  )
+}
+
 function printError(error) {
   console.error(`FAIL: ${error.step ?? currentStep}`)
   console.error(`error name: ${error.name ?? 'Error'}`)
@@ -195,7 +209,7 @@ function runMain() {
   }
 
   currentStep = 'execute Vercel production deployment'
-  const deploy = spawnSync('npx.cmd', deployArgs.slice(1), {
+  const deploy = spawnVercel(deployArgs.slice(1), {
     cwd: releaseRoot,
     encoding: 'utf8',
     env: buildEnv,
