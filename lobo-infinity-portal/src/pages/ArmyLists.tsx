@@ -1,27 +1,29 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import OperatorBadge from '../components/OperatorBadge'
 import Skeleton from '../components/Skeleton'
-import {
-  getArmyParentFaction,
-  normalizeArmyForDisplay,
-} from '../config/armies'
-import { filterCanonicalMissionNames } from '../config/missions'
+import { normalizeArmyForDisplay } from '../config/armies'
 import {
   apiClient,
-  type ArmyList,
-  type ArmyListCommunitySummary,
+  type SubmittedArmyListEntry,
 } from '../services/api'
 import { formatPlayerName } from '../services/formatting'
+import { resolvePlayerFactionIdentity } from '../services/playerFactionIdentity'
 
-type SortMode = 'newest' | 'popular' | 'rated' | 'downloaded'
+type ArmyListFilter = {
+  event: string
+  faction: string
+  gameType: string
+  player: string
+  result: string
+}
 
 type ArmyListsState =
   | {
       status: 'loading'
     }
   | {
-      community: ArmyListCommunitySummary
-      lists: ArmyList[]
+      lists: SubmittedArmyListEntry[]
       status: 'success'
     }
   | {
@@ -29,29 +31,30 @@ type ArmyListsState =
       status: 'error'
     }
 
+const defaultFilters: ArmyListFilter = {
+  event: 'all',
+  faction: 'all',
+  gameType: 'all',
+  player: 'all',
+  result: 'all',
+}
+
 function ArmyLists() {
   const [state, setState] = useState<ArmyListsState>({
     status: 'loading',
   })
-  const [query, setQuery] = useState('')
-  const [faction, setFaction] = useState('all')
-  const [sectorial, setSectorial] = useState('all')
-  const [mission, setMission] = useState('all')
-  const [player, setPlayer] = useState('all')
-  const [sortMode, setSortMode] = useState<SortMode>('newest')
-  const [votedIds, setVotedIds] = useState<Set<number>>(() => getStoredVotes())
+  const [filters, setFilters] = useState<ArmyListFilter>(defaultFilters)
 
   useEffect(() => {
     const controller = new AbortController()
 
     apiClient
-      .getArmyLists({
+      .getSubmittedArmyListLibrary({
         signal: controller.signal,
       })
-      .then((data) => {
+      .then((lists) => {
         setState({
-          community: data.community,
-          lists: data.lists,
+          lists,
           status: 'success',
         })
       })
@@ -64,7 +67,7 @@ function ArmyLists() {
           error:
             error instanceof Error
               ? error.message
-              : 'Army lists could not be loaded.',
+              : 'Submitted army lists could not be loaded.',
           status: 'error',
         })
       })
@@ -74,21 +77,23 @@ function ArmyLists() {
     }
   }, [])
 
-  const filters = useMemo(() => {
+  const filterOptions = useMemo(() => {
     if (state.status !== 'success') {
       return {
+        events: [],
         factions: [],
-        missions: [],
+        gameTypes: [],
         players: [],
-        sectorials: [],
+        results: [],
       }
     }
 
     return {
-      factions: getUniqueOptions(state.lists.map(getArmyListFaction)),
-      missions: filterCanonicalMissionNames(state.lists.map((list) => list.mission)),
-      players: getUniqueOptions(state.lists.map((list) => list.player)),
-      sectorials: getUniqueOptions(state.lists.map(getArmyListSectorial)),
+      events: getUniqueOptions(state.lists.map((list) => list.eventName)),
+      factions: getUniqueOptions(state.lists.map((list) => getDisplayFaction(list))),
+      gameTypes: getUniqueOptions(state.lists.map((list) => list.gameType)),
+      players: getUniqueOptions(state.lists.map((list) => getDisplayPlayer(list))),
+      results: getUniqueOptions(state.lists.map((list) => list.result)),
     }
   }, [state])
 
@@ -97,71 +102,35 @@ function ArmyLists() {
       return []
     }
 
-    const normalizedQuery = query.trim().toLowerCase()
-
     return state.lists
-      .filter((list) => matchesFilter(getArmyListFaction(list), faction))
-      .filter((list) => matchesFilter(getArmyListSectorial(list), sectorial))
-      .filter((list) => matchesFilter(list.mission, mission))
-      .filter((list) => matchesFilter(list.player, player))
-      .filter((list) =>
-        `${list.player} ${list.playerDisplayName} ${getArmyListFaction(list)} ${getArmyListSectorial(list)} ${list.mission} ${list.armyName} ${list.description}`
-          .toLowerCase()
-          .includes(normalizedQuery),
-      )
-      .sort((left, right) => sortArmyLists(left, right, sortMode))
-  }, [faction, mission, player, query, sectorial, sortMode, state])
+      .filter((list) => matchesFilter(getDisplayPlayer(list), filters.player))
+      .filter((list) => matchesFilter(getDisplayFaction(list), filters.faction))
+      .filter((list) => matchesFilter(list.gameType, filters.gameType))
+      .filter((list) => matchesFilter(list.eventName, filters.event))
+      .filter((list) => matchesFilter(list.result, filters.result))
+  }, [filters, state])
 
-  async function handleVote(list: ArmyList, vote: 'up' | 'down') {
-    if (votedIds.has(list.id)) {
-      return
-    }
-
-    await apiClient.voteArmyList(list.id, vote)
-    const nextVotes = new Set(votedIds)
-    nextVotes.add(list.id)
-    setVotedIds(nextVotes)
-    storeVotes(nextVotes)
-
-    if (state.status === 'success') {
-      setState({
-        ...state,
-        lists: state.lists.map((candidate) =>
-          candidate.id === list.id
-            ? {
-                ...candidate,
-                downvotes:
-                  vote === 'down'
-                    ? candidate.downvotes + 1
-                    : candidate.downvotes,
-                score: candidate.score + (vote === 'up' ? 1 : -1),
-                upvotes:
-                  vote === 'up' ? candidate.upvotes + 1 : candidate.upvotes,
-              }
-            : candidate,
-        ),
-      })
-    }
+  function updateFilter(name: keyof ArmyListFilter, value: string) {
+    setFilters((current) => ({
+      ...current,
+      [name]: value,
+    }))
   }
 
   if (state.status === 'loading') {
     return (
       <main className="portal-shell">
         <PageHeader />
-        <section className="community-summary-grid" aria-label="Army list summary loading">
-          <Skeleton label="Army list leaders loading" rows={5} />
-          <Skeleton label="Army list designer loading" rows={5} />
-          <Skeleton label="Army list trends loading" rows={5} />
-        </section>
-        <section className="army-list-filters" aria-label="Army list filters loading">
-          <input disabled placeholder="Search army lists" />
+      <section className="army-list-controls army-list-library-controls" aria-label="Army list filters loading">
+          <select disabled><option>Player</option></select>
           <select disabled><option>Faction</option></select>
-          <select disabled><option>Sectorial</option></select>
-          <select disabled><option>Mission</option></select>
+          <select disabled><option>Game Type</option></select>
+          <select disabled><option>Event</option></select>
+          <select disabled><option>Result</option></select>
         </section>
         <section className="army-list-grid" aria-label="Army lists loading">
-          <Skeleton label="Army lists loading" rows={8} />
-          <Skeleton label="Army lists loading" rows={8} />
+          <Skeleton label="Submitted army lists loading" rows={8} />
+          <Skeleton label="Submitted army lists loading" rows={8} />
         </section>
       </main>
     )
@@ -182,87 +151,47 @@ function ArmyLists() {
     <main className="portal-shell">
       <PageHeader />
 
-      <section className="community-summary-grid" aria-label="Community leaders">
-        <CommunityCard title="Top Contributors">
-          {state.community.topContributors.map((contributor) => (
-            <Link key={contributor.name} to={`/players/${encodeURIComponent(contributor.name)}`}>
-              <strong>{formatPlayerName(contributor.name, contributor.displayName)}</strong>
-              <span>{contributor.count} lists</span>
-            </Link>
-          ))}
-        </CommunityCard>
-        <CommunityCard title="Highest Rated Designer">
-          {state.community.highestRatedDesigner ? (
-            <Link
-              to={`/players/${encodeURIComponent(
-                state.community.highestRatedDesigner.name,
-              )}`}
-            >
-              <strong>
-                {formatPlayerName(
-                  state.community.highestRatedDesigner.name,
-                  state.community.highestRatedDesigner.displayName,
-                )}
-              </strong>
-              <span>{state.community.highestRatedDesigner.score} score</span>
-            </Link>
-          ) : null}
-        </CommunityCard>
-        <CommunityCard title="Most Popular Faction">
-          {state.community.mostPopularFaction ? (
-            <Link
-              to={`/factions/${encodeURIComponent(
-                state.community.mostPopularFaction,
-              )}`}
-            >
-              <strong>{state.community.mostPopularFaction}</strong>
-              <span>Most submitted</span>
-            </Link>
-          ) : null}
-        </CommunityCard>
-      </section>
-
-      <section className="army-list-controls" aria-label="Army list filters">
-        <label>
-          <span>Search</span>
-          <input
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Player, faction, mission, army name"
-            type="search"
-            value={query}
-          />
-        </label>
-        <FilterSelect label="Faction" onChange={setFaction} options={filters.factions} value={faction} />
-        <FilterSelect label="Sectorial" onChange={setSectorial} options={filters.sectorials} value={sectorial} />
-        <FilterSelect label="Mission" onChange={setMission} options={filters.missions} value={mission} />
-        <FilterSelect label="Player" onChange={setPlayer} options={filters.players} value={player} />
-        <label>
-          <span>Sort</span>
-          <select
-            onChange={(event) => setSortMode(event.target.value as SortMode)}
-            value={sortMode}
-          >
-            <option value="newest">Newest</option>
-            <option value="popular">Most Popular</option>
-            <option value="rated">Highest Rated</option>
-            <option value="downloaded">Most Downloaded</option>
-          </select>
-        </label>
+      <section className="army-list-controls army-list-library-controls" aria-label="Army list filters">
+        <FilterSelect
+          label="Player"
+          onChange={(value) => updateFilter('player', value)}
+          options={filterOptions.players}
+          value={filters.player}
+        />
+        <FilterSelect
+          label="Faction"
+          onChange={(value) => updateFilter('faction', value)}
+          options={filterOptions.factions}
+          value={filters.faction}
+        />
+        <FilterSelect
+          label="Game Type"
+          onChange={(value) => updateFilter('gameType', value)}
+          options={filterOptions.gameTypes}
+          value={filters.gameType}
+        />
+        <FilterSelect
+          label="Event"
+          onChange={(value) => updateFilter('event', value)}
+          options={filterOptions.events}
+          value={filters.event}
+        />
+        <FilterSelect
+          label="Result"
+          onChange={(value) => updateFilter('result', value)}
+          options={filterOptions.results}
+          value={filters.result}
+        />
       </section>
 
       {visibleLists.length === 0 ? (
         <section className="dashboard-state" aria-label="No army lists">
-          <p>No approved army lists match the current filters.</p>
+          <p>No submitted army lists match the current filters.</p>
         </section>
       ) : (
-        <section className="army-list-grid" aria-label="Army List Vault">
+        <section className="army-list-grid army-list-library-grid" aria-label="Army List Library">
           {visibleLists.map((list) => (
-            <ArmyListCard
-              disabled={votedIds.has(list.id)}
-              key={list.id}
-              list={list}
-              onVote={handleVote}
-            />
+            <ArmyListCard key={list.id} list={list} />
           ))}
         </section>
       )}
@@ -274,29 +203,8 @@ function PageHeader() {
   return (
     <section className="page-header" aria-labelledby="army-lists-title">
       <p className="eyebrow">Community</p>
-      <h1 id="army-lists-title">Army List Vault</h1>
-      <p>Browse approved league lists, designer notes, and Infinity Army links</p>
-      <Link className="submit-match-button" to="/army-lists/submit">
-        Submit Army List
-      </Link>
-    </section>
-  )
-}
-
-function CommunityCard({
-  children,
-  title,
-}: {
-  children: ReactNode
-  title: string
-}) {
-  return (
-    <section className="panel community-card">
-      <p className="eyebrow">Community</p>
-      <h2>{title}</h2>
-      <div className="community-card-stack">
-        {children || <span>No approved lists yet.</span>}
-      </div>
+      <h1 id="army-lists-title">Army List Library</h1>
+      <p>Submitted game lists from League, Casual, and Tournament battle reports</p>
     </section>
   )
 }
@@ -327,64 +235,100 @@ function FilterSelect({
   )
 }
 
-function ArmyListCard({
-  disabled,
-  list,
-  onVote,
-}: {
-  disabled: boolean
-  list: ArmyList
-  onVote: (list: ArmyList, vote: 'up' | 'down') => void
-}) {
+function ArmyListCard({ list }: { list: SubmittedArmyListEntry }) {
+  const factionIdentity = resolvePlayerFactionIdentity({
+    favoriteFaction: list.faction,
+  })
+  const portraitPath = factionIdentity.portraitPath
+  const displayFaction = factionIdentity.normalizedFaction || getDisplayFaction(list)
+
   return (
-    <article className="army-list-card">
-      <div className="army-list-card-heading">
-        <div>
-          <p className="eyebrow">{getArmyListFaction(list)}</p>
-          <h2>{list.armyName}</h2>
-        </div>
-        <strong>{list.score}</strong>
+    <article className={`army-list-card army-list-library-card is-${list.result.toLowerCase()}`}>
+      {portraitPath ? (
+        <span className="army-list-library-portrait" aria-label={`${displayFaction} portrait`}>
+          <img
+            alt={`${displayFaction} portrait`}
+            decoding="async"
+            loading="lazy"
+            src={portraitPath}
+          />
+        </span>
+      ) : null}
+      <div className="army-list-library-badge">
+        <OperatorBadge
+          player={{
+            displayName: getDisplayPlayer(list),
+            favoriteFaction: displayFaction,
+            name: list.player,
+          }}
+          preferredFaction={displayFaction}
+          showBadges={false}
+        />
       </div>
-      <dl className="army-list-meta">
-        <div>
-          <dt>Player</dt>
-          <dd>
-            <Link to={`/players/${encodeURIComponent(list.player)}`}>
-              {formatPlayerName(list.player, list.playerDisplayName)}
-            </Link>
-          </dd>
+      <div className="army-list-library-body">
+        <div className="army-list-card-heading">
+          <div>
+            <p className="eyebrow">{list.gameType}</p>
+            <h2>{getDisplayPlayer(list)}</h2>
+          </div>
+          <strong>{list.result}</strong>
         </div>
-        <div>
-          <dt>Mission</dt>
-          <dd>{list.mission || 'Not recorded'}</dd>
+        <p className="army-list-library-faction">{displayFaction || 'Faction not recorded'}</p>
+        <dl className="army-list-meta army-list-library-meta">
+          <div>
+            <dt>Event</dt>
+            <dd>{list.eventName || 'Not recorded'}</dd>
+          </div>
+          <div>
+            <dt>Opponent</dt>
+            <dd>{formatPlayerName(list.opponent, list.opponentDisplayName)}</dd>
+          </div>
+          <div>
+            <dt>Mission</dt>
+            <dd>{list.mission || 'Not recorded'}</dd>
+          </div>
+          <div>
+            <dt>Date</dt>
+            <dd>{list.date || 'Not recorded'}</dd>
+          </div>
+        </dl>
+        <div className="army-list-actions army-list-library-actions">
+          <ArmyListExternalLink armyCode={list.armyCode} />
+          <Link to={list.battleReportPath}>View Battle Report</Link>
         </div>
-        <div>
-          <dt>Sectorial</dt>
-          <dd>{getArmyListSectorial(list) || 'Vanilla / Not recorded'}</dd>
-        </div>
-        <div>
-          <dt>Submitted</dt>
-          <dd>{list.submissionDate || 'Not recorded'}</dd>
-        </div>
-      </dl>
-      {list.description ? <p>{list.description}</p> : null}
-      <div className="army-list-actions">
-        {list.armyLink ? (
-          <a href={list.armyLink} rel="noreferrer" target="_blank">
-            View in Infinity Army
-          </a>
-        ) : list.armyCode ? (
-          <code>{list.armyCode}</code>
-        ) : null}
-        <button disabled={disabled} onClick={() => void onVote(list, 'up')} type="button">
-          Upvote {list.upvotes}
-        </button>
-        <button disabled={disabled} onClick={() => void onVote(list, 'down')} type="button">
-          Downvote {list.downvotes}
-        </button>
       </div>
     </article>
   )
+}
+
+function ArmyListExternalLink({ armyCode }: { armyCode: string }) {
+  const target = getArmyListTarget(armyCode)
+
+  if (target.external) {
+    return (
+      <a href={target.href} rel="noreferrer" target="_blank">
+        View in Infinity Army
+      </a>
+    )
+  }
+
+  return <Link to={target.href}>View in Infinity Army</Link>
+}
+
+function getArmyListTarget(armyCode: string) {
+  const value = armyCode.trim()
+
+  if (/^https?:\/\//i.test(value)) {
+    return {
+      external: true,
+      href: value,
+    }
+  }
+
+  return {
+    external: false,
+    href: `/army-list/${encodeURIComponent(value)}`,
+  }
 }
 
 function matchesFilter(value: string, filter: string) {
@@ -397,41 +341,12 @@ function getUniqueOptions(values: string[]) {
   )
 }
 
-function getArmyListFaction(list: ArmyList) {
-  return getArmyParentFaction(list.sectorial) || normalizeArmyForDisplay(list.faction)
+function getDisplayFaction(list: SubmittedArmyListEntry) {
+  return normalizeArmyForDisplay(list.faction)
 }
 
-function getArmyListSectorial(list: ArmyList) {
-  return normalizeArmyForDisplay(list.sectorial)
-}
-
-function sortArmyLists(left: ArmyList, right: ArmyList, sortMode: SortMode) {
-  if (sortMode === 'popular' || sortMode === 'downloaded') {
-    return right.upvotes - left.upvotes || right.score - left.score
-  }
-
-  if (sortMode === 'rated') {
-    return right.score - left.score || right.upvotes - left.upvotes
-  }
-
-  return right.id - left.id
-}
-
-function getStoredVotes() {
-  try {
-    const stored = window.localStorage.getItem('lobo-army-list-votes')
-    const ids = stored ? (JSON.parse(stored) as number[]) : []
-    return new Set(ids)
-  } catch {
-    return new Set<number>()
-  }
-}
-
-function storeVotes(votes: Set<number>) {
-  window.localStorage.setItem(
-    'lobo-army-list-votes',
-    JSON.stringify(Array.from(votes)),
-  )
+function getDisplayPlayer(list: SubmittedArmyListEntry) {
+  return formatPlayerName(list.player, list.playerDisplayName)
 }
 
 export default ArmyLists

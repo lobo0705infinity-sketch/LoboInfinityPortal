@@ -431,6 +431,7 @@ export type PlayerCareerSummary = {
 
 export type RecentGame = {
   eventId: string
+  eventName?: string
   gameResult?: string
   gameType?: string
   id: number
@@ -450,6 +451,24 @@ export type RecentGame = {
   vp: string
   bestMoment: string
   firstTurn: string
+}
+
+export type SubmittedArmyListEntry = {
+  id: string
+  gameId: number
+  armyCode: string
+  battleReportPath: string
+  date: string
+  eventId: string
+  eventName: string
+  faction: string
+  gameType: 'League' | 'Casual' | 'Tournament'
+  mission: string
+  opponent: string
+  opponentDisplayName: string
+  player: string
+  playerDisplayName: string
+  result: 'Win' | 'Loss' | 'Draw'
 }
 
 export type FactionDivisionBreakdown = {
@@ -2069,6 +2088,9 @@ export type ApiClient = {
   getDashboard: (options?: ApiOptions) => Promise<DashboardData>
   getLeader: (options?: ApiOptions) => Promise<LeaderData>
   getRecentGames: (options?: ApiOptions) => Promise<RecentGame[]>
+  getSubmittedArmyListLibrary: (
+    options?: ApiOptions,
+  ) => Promise<SubmittedArmyListEntry[]>
   getEvents: (options?: ApiOptions) => Promise<EventCatalog>
   getStandings: (
     division: DivisionKey,
@@ -2361,6 +2383,152 @@ export async function getRecentGames(
 
     return []
   }
+}
+
+export async function getSubmittedArmyListLibrary(
+  options: ApiOptions = {},
+): Promise<SubmittedArmyListEntry[]> {
+  const [games, eventCatalog] = await Promise.all([
+    getRecentGames(options),
+    getEvents(options).catch(() => null),
+  ])
+  const eventNames = new Map<string, string>()
+
+  eventCatalog?.events.forEach((event) => {
+    eventNames.set(event.id, event.name)
+  })
+  if (eventCatalog?.currentEvent) {
+    eventNames.set(eventCatalog.currentEvent.id, eventCatalog.currentEvent.name)
+  }
+
+  return games
+    .flatMap((game) => buildSubmittedArmyListEntries(game, eventNames))
+    .sort((left, right) => {
+      const rightDate = Date.parse(right.date)
+      const leftDate = Date.parse(left.date)
+
+      if (Number.isFinite(rightDate) && Number.isFinite(leftDate)) {
+        return rightDate - leftDate || right.gameId - left.gameId
+      }
+
+      return right.gameId - left.gameId
+    })
+}
+
+function buildSubmittedArmyListEntries(
+  game: RecentGame,
+  eventNames: Map<string, string>,
+): SubmittedArmyListEntry[] {
+  return [
+    buildSubmittedArmyListEntry({
+      armyCode: game.winnerArmyCode,
+      displayName: game.winnerDisplayName,
+      faction: game.winnerFaction,
+      game,
+      opponent: game.loser,
+      opponentDisplayName: game.loserDisplayName,
+      player: game.winner,
+      side: 'winner',
+    }),
+    buildSubmittedArmyListEntry({
+      armyCode: game.loserArmyCode,
+      displayName: game.loserDisplayName,
+      faction: game.loserFaction,
+      game,
+      opponent: game.winner,
+      opponentDisplayName: game.winnerDisplayName,
+      player: game.loser,
+      side: 'loser',
+    }),
+  ]
+    .filter((entry): entry is Omit<SubmittedArmyListEntry, 'eventName'> =>
+      Boolean(entry),
+    )
+    .map((entry) => ({
+      ...entry,
+      eventName: getSubmittedArmyListEventName(game, eventNames),
+    }))
+}
+
+function buildSubmittedArmyListEntry({
+  armyCode,
+  displayName,
+  faction,
+  game,
+  opponent,
+  opponentDisplayName,
+  player,
+  side,
+}: {
+  armyCode: string
+  displayName: string
+  faction: string
+  game: RecentGame
+  opponent: string
+  opponentDisplayName: string
+  player: string
+  side: 'winner' | 'loser'
+}): Omit<SubmittedArmyListEntry, 'eventName'> | null {
+  const normalizedArmyCode = armyCode.trim()
+
+  if (!normalizedArmyCode) {
+    return null
+  }
+
+  return {
+    id: `${game.id}-${side}`,
+    gameId: game.id,
+    armyCode: normalizedArmyCode,
+    battleReportPath: `/games/${encodeURIComponent(String(game.id))}`,
+    date: game.date,
+    eventId: game.eventId,
+    faction,
+    gameType: formatSubmittedArmyListGameType(game.gameType),
+    mission: game.mission,
+    opponent,
+    opponentDisplayName,
+    player,
+    playerDisplayName: displayName,
+    result: getSubmittedArmyListResult(game, side),
+  }
+}
+
+function getSubmittedArmyListEventName(
+  game: RecentGame,
+  eventNames: Map<string, string>,
+) {
+  if (game.gameType === 'casual') {
+    return 'Casual Play'
+  }
+
+  return game.eventName || eventNames.get(game.eventId) || 'League Event'
+}
+
+function formatSubmittedArmyListGameType(
+  gameType: string | undefined,
+): SubmittedArmyListEntry['gameType'] {
+  const value = String(gameType || '').trim().toLowerCase()
+
+  if (value === 'casual') {
+    return 'Casual'
+  }
+
+  if (value === 'tournament') {
+    return 'Tournament'
+  }
+
+  return 'League'
+}
+
+function getSubmittedArmyListResult(
+  game: RecentGame,
+  side: 'winner' | 'loser',
+): SubmittedArmyListEntry['result'] {
+  if (String(game.gameResult || '').trim().toLowerCase() === 'draw') {
+    return 'Draw'
+  }
+
+  return side === 'winner' ? 'Win' : 'Loss'
 }
 
 export async function getEvents(
@@ -3140,6 +3308,7 @@ export const apiClient: ApiClient = {
   getDashboard,
   getLeader,
   getRecentGames,
+  getSubmittedArmyListLibrary,
   getEvents,
   getStandings,
   getAllStandings,
@@ -6852,6 +7021,7 @@ function normalizeRecentGame(item: unknown): RecentGame {
 
   return {
     eventId: getString(record, 'eventId') || 'event-current-league',
+    eventName: getString(record, 'eventName') || undefined,
     gameResult: getString(record, 'gameResult') || undefined,
     gameType: getString(record, 'gameType') || undefined,
     id: getRequiredNumber(record, 'id'),
