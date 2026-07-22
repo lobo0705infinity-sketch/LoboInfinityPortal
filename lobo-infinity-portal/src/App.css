@@ -1976,11 +1976,26 @@
   gap: 14px;
 }
 
+.player-card-main > div {
+  min-width: 0;
+}
+
 .player-card h2 {
+  display: -webkit-box;
+  max-width: 100%;
   margin: 10px 0 0;
   color: var(--text);
   font-size: 1.35rem;
+  line-height: 1.08;
+  overflow: hidden;
   overflow-wrap: anywhere;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.player-card h2.is-long-player-name {
+  font-size: 1.22rem;
 }
 
 .player-card-chevron {

@@ -26,6 +26,7 @@ function PlayerCard({ divisionLabel, eventId, player }: PlayerCardProps) {
     : `/players/${encodeURIComponent(player.player)}`
   const identity = getDivisionIdentity(divisionLabel)
   const playerName = formatPlayerName(player.player, player.displayName)
+  const longPlayerName = playerName.length > 18
   const isCommunityCard = !eventId
   const badges = player.statusBadges ?? []
   const favoriteArmy = player.favoriteArmy || player.faction || 'Not recorded'
@@ -52,7 +53,9 @@ function PlayerCard({ divisionLabel, eventId, player }: PlayerCardProps) {
             <span className="division-badge player-card-division">
               {divisionBadgeLabel}
             </span>
-            <h2>{playerName}</h2>
+            <h2 className={longPlayerName ? 'is-long-player-name' : undefined}>
+              {playerName}
+            </h2>
             {isCommunityCard && badges.length > 0 ? (
               <span className="player-card-badges" aria-label="Player status">
                 {badges.map((badge) => (
