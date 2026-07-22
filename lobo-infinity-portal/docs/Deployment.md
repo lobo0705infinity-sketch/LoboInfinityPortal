@@ -38,16 +38,22 @@ The frontend build output is `dist`. `dist` is generated output and must not be 
 
 ## Vercel Deployment
 
-The normal deployment path is the Vercel project build, not `--prebuilt` and not `vercel deploy dist`.
+The normal deployment path is the guarded Vercel project build, not `--prebuilt`
+and not `vercel deploy dist`. Run it from:
+
+```text
+C:\Users\19734\Documents\LoboInfinityLeague\.codex-deploy\release-safeguards-main\lobo-infinity-portal
+```
 
 ```powershell
-npx vercel deploy --prod
+npm run release:deploy:guarded
 ```
 
 Required Vercel project settings:
 
 - Framework Preset: `Vite`
-- Root Directory: repository root / empty
+- Project: `lobo-infinity-portal`
+- Root Directory: `lobo-infinity-portal`
 - Install Command: `npm install`
 - Build Command: `npm run build`
 - Output Directory: `dist`
@@ -58,7 +64,24 @@ The repository `vercel.json` also declares:
 - `installCommand`: `npm install`
 - `buildCommand`: `npm run build`
 - `outputDirectory`: `dist`
-- SPA rewrite from `/(.*)` to `/index.html`
+- filesystem routes before the SPA rewrite from `/(.*)` to `/index.html`
+
+The guarded deployment script explicitly assigns
+`lobo-infinity-portal.vercel.app` to the new production deployment after Vercel
+finishes. This is required because the normal domain is managed as a manual
+alias, while Vercel automatically aliases only the team project domain.
+
+The build regenerates `public/release-fingerprint.json` with the expected Git
+commit. The post-deploy verifier fails the release if the normal alias, release
+fingerprint, `/players` bundle, or `/faction-portraits/kosmoflot.png` static
+asset does not match the new deployment.
+
+A stray Vercel project named `dist` exists and must not be used for production.
+Do not remove it without explicit approval. Removal command for later review:
+
+```powershell
+npx vercel project rm dist --scope lobo0705infinity-5309s-projects
+```
 
 ## Apps Script Deployment
 

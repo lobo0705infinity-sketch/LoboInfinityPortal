@@ -11,13 +11,35 @@ import {
 } from './release-utils.mjs'
 
 const manifest = readManifest()
-const state = currentGitState()
+const state = (() => {
+  try {
+    return currentGitState()
+  } catch {
+    return {
+      branch: 'not-provided',
+      commit: 'not-provided',
+    }
+  }
+})()
 const apiUrl = normalizeApiUrl(process.env.VITE_API_URL || manifest.appsScriptUrl)
+const frontendCommit =
+  process.env.VITE_BUILD_GIT_COMMIT ||
+  process.env.VERCEL_GIT_COMMIT_SHA ||
+  state.commit
+const gitBranch =
+  process.env.VITE_BUILD_GIT_BRANCH ||
+  process.env.VERCEL_GIT_COMMIT_REF ||
+  state.branch
+
+if (!frontendCommit || frontendCommit === 'not-provided') {
+  throw new Error('release fingerprint requires VITE_BUILD_GIT_COMMIT, VERCEL_GIT_COMMIT_SHA, or a readable Git checkout')
+}
+
 const payload = {
   schemaVersion: 1,
   frontendVersion: process.env.npm_package_version || manifest.frontendVersion,
-  frontendCommit: process.env.VITE_BUILD_GIT_COMMIT || process.env.VERCEL_GIT_COMMIT_SHA || state.commit,
-  gitBranch: process.env.VITE_BUILD_GIT_BRANCH || process.env.VERCEL_GIT_COMMIT_REF || state.branch,
+  frontendCommit,
+  gitBranch,
   buildTimestamp: new Date().toISOString(),
   vercelDeploymentId:
     process.env.VITE_BUILD_DEPLOYMENT_ID ||

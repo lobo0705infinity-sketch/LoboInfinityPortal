@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "npm run api:init-order && npm run security:cache && npm run security:armies && npm run test:achievements && npm run test:draws && npm run test:standings-integrity && npm run test:dashboard-api && npm run test:commissioner-submit && npm run test:commissioner-context && tsc -b && vite build",
+    "build": "npm run release:fingerprint && npm run api:init-order && npm run security:cache && npm run security:armies && npm run test:achievements && npm run test:draws && npm run test:standings-integrity && npm run test:dashboard-api && npm run test:commissioner-submit && npm run test:commissioner-context && tsc -b && vite build",
     "release:source": "node scripts/release-source-check.mjs",
     "release:manifest": "node scripts/release-manifest-check.mjs",
     "release:fingerprint": "node scripts/generate-release-fingerprint.mjs",
@@ -21,6 +21,8 @@
     "release:rollback-plan": "node scripts/rollback-plan.mjs",
     "release:safeguards:self-test": "node scripts/release-safeguard-self-test.mjs",
     "release:apps-script:syntax": "node scripts/apps-script-syntax-check.mjs",
+    "release:deploy:guarded": "node scripts/deploy-production-guarded.mjs",
+    "release:post-deploy:verify": "node scripts/post-deploy-production-verify.mjs",
     "release:gate": "npm run release:source && npm run release:manifest && npm run release:fingerprint && npm run build && npm run test:player-identity && npm run test:player-registry && npm run test:submit-game && npm run test:submit-game-modes && npm run test:team-membership && npm run test:standings-integrity && npm run test:achievements && npm run test:commissioner-context && npm run release:apps-script:syntax && npm run release:contract && npm run release:smoke && npm run release:visual",
     "analyze": "npm run build && node scripts/bundle-report.mjs",
     "lint": "eslint .",
