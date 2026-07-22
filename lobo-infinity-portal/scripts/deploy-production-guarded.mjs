@@ -35,6 +35,16 @@ function readJson(command, args, options = {}) {
   return JSON.parse(run(command, args, options))
 }
 
+function normalizeProcessOutput(output) {
+  if (output == null) {
+    return ''
+  }
+  if (Buffer.isBuffer(output)) {
+    return output.toString('utf8')
+  }
+  return output
+}
+
 if (process.cwd() !== portalRoot) {
   fail(`run from ${portalRoot}`)
 }
@@ -104,13 +114,15 @@ const deploy = spawnSync('npx.cmd', deployArgs.slice(1), {
   encoding: 'utf8',
   env: buildEnv,
 })
-process.stdout.write(deploy.stdout)
-process.stderr.write(deploy.stderr)
+const deployStdout = normalizeProcessOutput(deploy.stdout)
+const deployStderr = normalizeProcessOutput(deploy.stderr)
+process.stdout.write(deployStdout)
+process.stderr.write(deployStderr)
 if (deploy.status !== 0) {
   process.exit(deploy.status ?? 1)
 }
 
-const deploymentId = deploy.stdout.match(/"id":\s*"(dpl_[^"]+)"/)?.[1]
+const deploymentId = deployStdout.match(/"id":\s*"(dpl_[^"]+)"/)?.[1]
 if (!deploymentId) {
   fail('could not determine Vercel deployment ID from deploy output')
 }
