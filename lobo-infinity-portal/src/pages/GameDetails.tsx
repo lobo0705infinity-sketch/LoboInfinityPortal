@@ -26,12 +26,61 @@ type GameDetailsState =
 
 type BattleParticipant = {
   displayName: string
+  division: string
   faction: string
   label: string
   name: string
   result: string
   scoreTone: 'cyan' | 'red'
 }
+
+const armyListCardLayoutCss = `
+  .battle-report-armies {
+    grid-template-columns: repeat(2, minmax(280px, 1fr));
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .battle-report-army {
+    display: flex;
+    min-width: 0;
+    min-height: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .battle-report-army .operator-badge {
+    flex: 0 0 auto;
+    margin-inline: auto;
+  }
+
+  .battle-report-army-copy {
+    width: 100%;
+    justify-items: center;
+    gap: 6px;
+  }
+
+  .battle-report-army strong,
+  .battle-report-army span {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .battle-report-army a {
+    grid-column: auto;
+    max-width: 100%;
+    margin-top: auto;
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 760px) {
+    .battle-report-armies {
+      grid-template-columns: 1fr;
+    }
+  }
+`
 
 function GameDetails() {
   const { id } = useParams<{ id: string }>()
@@ -312,14 +361,15 @@ function BattleReport({ game, stream }: { game: RecentGame; stream: StreamedGame
 
         <section className="battle-report-grid">
           <BattleCard title="Army Lists" eyebrow="Force Manifests" wide>
+            <style>{armyListCardLayoutCss}</style>
             <div className="battle-report-armies">
               {participants.map((participant) => (
                 <article className={`battle-report-army is-${participant.scoreTone}`} key={participant.name}>
                   <OperatorBadge
-                    competitiveHome={game.division || 'Casual Player'}
+                    competitiveHome={participant.division || 'Casual Player'}
                     player={{
                       displayName: participant.displayName,
-                      division: game.division,
+                      division: participant.division,
                       favoriteFaction: participant.faction,
                       name: participant.name,
                       rank: 0,
@@ -331,17 +381,6 @@ function BattleReport({ game, stream }: { game: RecentGame; stream: StreamedGame
                   <div className="battle-report-army-copy">
                     <strong>{participant.displayName}</strong>
                     <span>{participant.faction || 'Army not recorded'}</span>
-                    <p>{buildArmyListSummary(participant)}</p>
-                    <dl>
-                      <div>
-                        <dt>Points</dt>
-                        <dd>Not recorded</dd>
-                      </div>
-                      <div>
-                        <dt>SWC</dt>
-                        <dd>Not recorded</dd>
-                      </div>
-                    </dl>
                   </div>
                   {participant.faction ? (
                     <Link to={`/factions/${encodeURIComponent(participant.faction)}`}>
@@ -533,6 +572,7 @@ function buildParticipants(game: RecentGame, isDraw: boolean): [BattleParticipan
   return [
     {
       displayName: formatPlayerName(game.winner, game.winnerDisplayName),
+      division: game.division,
       faction: game.winnerFaction,
       label: isDraw ? 'Player One' : 'Winner',
       name: game.winner,
@@ -541,6 +581,7 @@ function buildParticipants(game: RecentGame, isDraw: boolean): [BattleParticipan
     },
     {
       displayName: formatPlayerName(game.loser, game.loserDisplayName),
+      division: game.division,
       faction: game.loserFaction,
       label: isDraw ? 'Player Two' : 'Defeated',
       name: game.loser,
@@ -604,12 +645,6 @@ function formatSeasonLabel(value: string, reportType: string) {
   })
 
   return reportType === 'League' ? `${season} League` : `${season} ${reportType}`
-}
-
-function buildArmyListSummary(participant: BattleParticipant) {
-  return participant.faction
-    ? `${participant.faction} force manifest recorded from battle report data.`
-    : 'Army list details were not recorded for this battle.'
 }
 
 function buildBattleTimeline(game: RecentGame, mission: string) {
