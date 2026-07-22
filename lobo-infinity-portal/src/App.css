@@ -4428,6 +4428,43 @@
   gap: 10px;
 }
 
+.operations-feedback {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  margin: 14px 18px 0;
+  border: 1px solid rgba(76, 201, 240, 0.24);
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: rgba(8, 14, 22, 0.72);
+  color: var(--text);
+  font-weight: 850;
+}
+
+.operations-feedback.success {
+  border-color: rgba(45, 198, 83, 0.46);
+}
+
+.operations-feedback.error {
+  border-color: rgba(239, 35, 60, 0.58);
+}
+
+.operations-feedback.pending {
+  border-color: rgba(240, 177, 62, 0.54);
+}
+
+.operations-feedback button {
+  border: 1px solid rgba(76, 201, 240, 0.32);
+  border-radius: 10px;
+  padding: 8px 10px;
+  color: var(--blue);
+  background: var(--panel-strong);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 950;
+}
+
 .event-lifecycle-panel {
   grid-column: 1 / -1;
 }

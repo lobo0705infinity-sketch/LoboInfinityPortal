@@ -33,6 +33,11 @@ type OperationsAction = (
   params?: Record<string, string | number | boolean>,
 ) => Promise<void>
 
+type RebuildStatisticsFeedback = {
+  status: 'success' | 'error'
+  message: string
+} | null
+
 const permissionRows = [
   ['View operations', 'Assistant Commissioner', 'Assistant Commissioner and Commissioner'],
   ['News', 'Assistant Commissioner', 'Create, edit, archive, and delete news'],
@@ -62,6 +67,8 @@ function CommissionerDashboard() {
     status: 'loading',
   })
   const [workingAction, setWorkingAction] = useState('')
+  const [rebuildStatisticsFeedback, setRebuildStatisticsFeedback] =
+    useState<RebuildStatisticsFeedback>(null)
   const [openPanels, setOpenPanels] = useState<string[]>(() =>
     requestedPanel ? ['eventManager', requestedPanel] : ['eventManager'],
   )
@@ -161,9 +168,29 @@ function CommissionerDashboard() {
     params: Record<string, string | number | boolean> = {},
   ) {
     setWorkingAction(action)
+    if (action === 'rebuildStatistics') {
+      setRebuildStatisticsFeedback(null)
+    }
     try {
       await apiClient.operationsAction(action, params)
       await loadOperations()
+      if (action === 'rebuildStatistics') {
+        setRebuildStatisticsFeedback({
+          status: 'success',
+          message: 'Statistics rebuild complete',
+        })
+      }
+    } catch (error) {
+      if (action === 'rebuildStatistics') {
+        setRebuildStatisticsFeedback({
+          status: 'error',
+          message:
+            error instanceof Error
+              ? error.message
+              : 'Statistics rebuild failed.',
+        })
+      }
+      throw error
     } finally {
       setWorkingAction('')
     }
@@ -321,6 +348,8 @@ function CommissionerDashboard() {
         <CachePanel
           cache={data.summary.cacheStatus}
           canManage={auth.hasPermission('manageCache')}
+          feedback={rebuildStatisticsFeedback}
+          onDismissFeedback={() => setRebuildStatisticsFeedback(null)}
           onAction={runAction}
           workingAction={workingAction}
         />
@@ -1290,14 +1319,20 @@ function PromotionRelegationPanel({
 function CachePanel({
   cache,
   canManage,
+  feedback,
+  onDismissFeedback,
   onAction,
   workingAction,
 }: {
   cache: OperationsDashboardData['summary']['cacheStatus']
   canManage: boolean
+  feedback: RebuildStatisticsFeedback
+  onDismissFeedback: () => void
   onAction: OperationsAction
   workingAction: string
 }) {
+  const isRebuildingStatistics = workingAction === 'rebuildStatistics'
+
   return (
     <section className="panel operations-panel">
       <PanelTitle eyebrow="Cache" title="Cache and Rebuild" />
@@ -1317,9 +1352,30 @@ function CachePanel({
           Refresh All Cache
         </button>
         <button disabled={!canManage || workingAction !== ''} onClick={() => void onAction('rebuildStatistics')} type="button">
-          Statistics Rebuild
+          {isRebuildingStatistics ? 'Rebuilding statistics...' : 'Statistics Rebuild'}
         </button>
       </div>
+      {(isRebuildingStatistics || feedback) && (
+        <div
+          className={`operations-feedback ${feedback?.status || 'pending'}`}
+          role={feedback?.status === 'error' ? 'alert' : 'status'}
+        >
+          <span>
+            {isRebuildingStatistics
+              ? 'Rebuilding statistics...'
+              : feedback?.message}
+          </span>
+          {feedback && (
+            <button
+              aria-label="Dismiss statistics rebuild message"
+              onClick={onDismissFeedback}
+              type="button"
+            >
+              Dismiss
+            </button>
+          )}
+        </div>
+      )}
       <div className="operations-stack">
         {cache.entries.length > 0 ? (
           cache.entries.slice(0, 8).map((entry) => (
