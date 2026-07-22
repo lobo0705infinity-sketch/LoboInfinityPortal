@@ -29,11 +29,23 @@ type SearchState =
 let cachedSearchItems: SearchItem[] | null = null
 let searchItemsPromise: Promise<SearchItem[]> | null = null
 
-function GlobalSearch({ mode = 'desktop' }: { mode?: 'desktop' | 'mobile' }) {
+type GlobalSearchProps = {
+  isMobileOpen?: boolean
+  mode?: 'desktop' | 'mobile'
+  onMobileClose?: () => void
+  onMobileOpen?: () => void
+}
+
+function GlobalSearch({
+  isMobileOpen: controlledMobileOpen,
+  mode = 'desktop',
+  onMobileClose,
+  onMobileOpen,
+}: GlobalSearchProps) {
   const auth = useAuth()
   const navigate = useNavigate()
   const [query, setQuery] = useState('')
-  const [isMobileOpen, setIsMobileOpen] = useState(false)
+  const [uncontrolledMobileOpen, setUncontrolledMobileOpen] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
   const [searchState, setSearchState] = useState<SearchState>({
     status: 'idle',
@@ -42,6 +54,10 @@ function GlobalSearch({ mode = 'desktop' }: { mode?: 'desktop' | 'mobile' }) {
   const inputId = mode === 'mobile' ? 'mobile-global-search' : 'global-search'
   const resultsId =
     mode === 'mobile' ? 'mobile-global-search-results' : 'global-search-results'
+  const isMobileOpen =
+    mode === 'mobile' && controlledMobileOpen !== undefined
+      ? controlledMobileOpen
+      : uncontrolledMobileOpen
 
   useEffect(() => {
     if (!hasRequestedSearchData) {
@@ -78,6 +94,19 @@ function GlobalSearch({ mode = 'desktop' }: { mode?: 'desktop' | 'mobile' }) {
     }
   }, [hasRequestedSearchData])
 
+  useEffect(() => {
+    if (mode !== 'mobile' || !isMobileOpen) {
+      return
+    }
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [isMobileOpen, mode])
+
   const results = useMemo(() => {
     if (searchState.status !== 'success') {
       return []
@@ -101,7 +130,20 @@ function GlobalSearch({ mode = 'desktop' }: { mode?: 'desktop' | 'mobile' }) {
   function closeSearch() {
     setQuery('')
     setActiveIndex(0)
-    setIsMobileOpen(false)
+    if (mode === 'mobile' && onMobileClose) {
+      onMobileClose()
+    } else {
+      setUncontrolledMobileOpen(false)
+    }
+  }
+
+  function openSearch() {
+    setHasRequestedSearchData(true)
+    if (mode === 'mobile' && onMobileOpen) {
+      onMobileOpen()
+    } else {
+      setUncontrolledMobileOpen(true)
+    }
   }
 
   function rememberSearch(item: SearchItem) {
@@ -149,20 +191,11 @@ function GlobalSearch({ mode = 'desktop' }: { mode?: 'desktop' | 'mobile' }) {
     }
   }
 
-  const quickJumpItems = [
-    { label: 'Dashboard', to: '/' },
-    { label: 'Match Finder', to: '/match-finder' },
-    { label: 'Standings', to: '/standings' },
-    { label: 'Notifications', to: '/notifications' },
-    { label: 'My Profile', to: '/profile' },
-    { label: 'Army Lists', to: '/army-lists' },
-  ]
-
   return (
     <div
       className={
         mode === 'mobile' && isMobileOpen
-          ? 'global-search mobile-search-open'
+          ? 'global-search mobile-search mobile-search-open'
           : mode === 'mobile'
             ? 'global-search mobile-search'
             : 'global-search'
@@ -174,8 +207,11 @@ function GlobalSearch({ mode = 'desktop' }: { mode?: 'desktop' | 'mobile' }) {
           aria-label="Open search"
           className="mobile-search-trigger"
           onClick={() => {
-            setIsMobileOpen(true)
-            setHasRequestedSearchData(true)
+            if (isMobileOpen) {
+              closeSearch()
+            } else {
+              openSearch()
+            }
           }}
           type="button"
         >
@@ -185,14 +221,13 @@ function GlobalSearch({ mode = 'desktop' }: { mode?: 'desktop' | 'mobile' }) {
       <div className="global-search-surface">
         {mode === 'mobile' ? (
           <div className="mobile-search-heading">
-            <strong>Search League</strong>
             <button onClick={closeSearch} type="button">
               Close
             </button>
           </div>
         ) : null}
       <label className="search-label" htmlFor={inputId}>
-        Search
+        {mode === 'mobile' ? 'Search League' : 'Search'}
       </label>
       <input
         aria-activedescendant={
@@ -216,20 +251,6 @@ function GlobalSearch({ mode = 'desktop' }: { mode?: 'desktop' | 'mobile' }) {
         type="search"
         value={query}
       />
-      {mode === 'mobile' && query.trim().length < 2 ? (
-        <div className="mobile-quick-jump" aria-label="Quick jump">
-          {quickJumpItems.map((item) => (
-            <Link
-              key={item.to}
-              onClick={closeSearch}
-              onMouseEnter={() => preloadRoute(item.to)}
-              to={item.to}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </div>
-      ) : null}
       {query.trim().length >= 2 ? (
         <div className="search-results" id={resultsId} role="listbox">
           {searchState.status === 'error' ? (
@@ -263,6 +284,8 @@ function GlobalSearch({ mode = 'desktop' }: { mode?: 'desktop' | 'mobile' }) {
             <p>No matching live records.</p>
           )}
         </div>
+      ) : mode === 'mobile' ? (
+        <p className="mobile-search-empty">Enter at least two characters.</p>
       ) : null}
       </div>
     </div>

@@ -8500,6 +8500,7 @@ a {
 
 /* Version 4.2 Native Mobile Experience */
 .mobile-app-bar,
+.mobile-panel-backdrop,
 .mobile-menu-sheet,
 .mobile-submit-fab,
 .mobile-search-trigger,
@@ -8537,6 +8538,16 @@ a {
     gap: 10px;
     grid-template-columns: 44px minmax(0, 1fr) auto;
     width: 100%;
+  }
+
+  .mobile-panel-backdrop {
+    display: block;
+    position: fixed;
+    inset: var(--mobile-header-height) 0 0;
+    z-index: 79;
+    border: 0;
+    padding: 0;
+    background: rgba(0, 0, 0, 0.48);
   }
 
   .mobile-menu-button,
@@ -8737,30 +8748,28 @@ a {
   }
 
   .mobile-search.mobile-search-open .global-search-surface {
-    background:
-      linear-gradient(180deg, rgba(76, 201, 240, 0.08), transparent 24%),
-      rgba(5, 8, 12, 0.98);
+    align-content: start;
+    background: #05080c;
+    bottom: 0;
     display: grid;
-    gap: 14px;
-    inset: 0;
+    gap: 12px;
+    height: calc(100dvh - var(--mobile-header-height));
+    left: 0;
+    max-height: none;
     overflow-y: auto;
-    padding: calc(16px + env(safe-area-inset-top, 0px)) 14px
-      calc(var(--mobile-nav-height) + var(--mobile-safe-bottom) + 18px);
+    padding: 14px 14px calc(18px + var(--mobile-safe-bottom));
+    pointer-events: auto;
     position: fixed;
+    right: 0;
+    top: var(--mobile-header-height);
     z-index: 120;
   }
 
   .mobile-search-heading {
     align-items: center;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 12px;
-  }
-
-  .mobile-search-heading strong {
-    font-size: 0.9rem;
-    font-weight: 950;
-    text-transform: uppercase;
   }
 
   .mobile-search-heading button {
@@ -8783,6 +8792,16 @@ a {
     max-height: none;
     position: static;
     width: 100%;
+  }
+
+  .mobile-search-empty {
+    margin: 0;
+    border: 1px solid rgba(76, 201, 240, 0.16);
+    border-radius: 16px;
+    padding: 16px;
+    color: var(--text-soft);
+    background: rgba(255, 255, 255, 0.03);
+    font-weight: 800;
   }
 
   .mobile-quick-jump {
@@ -8913,9 +8932,12 @@ a {
     border-radius: 0;
     bottom: 0;
     display: flex;
+    flex-direction: column;
     gap: 18px;
+    height: auto;
     left: 0;
     max-height: none;
+    min-height: auto;
     overscroll-behavior: contain;
     padding: 18px 14px calc(18px + var(--mobile-safe-bottom));
     right: auto;

@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import GlobalSearch from './GlobalSearch'
@@ -9,21 +10,49 @@ import ProfileMenu from './ProfileMenu'
 import QuickJump from './QuickJump'
 
 const MobileNavigationDrawer = lazy(() => import('./MobileNavigationDrawer'))
+type ActiveMobilePanel = 'menu' | 'search' | null
 
 function Header() {
   const auth = useAuth()
   const location = useLocation()
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [activeMobilePanel, setActiveMobilePanel] = useState<ActiveMobilePanel>(null)
   const submitGamePath = `/submit-game?f=${location.pathname}`
+  const isMobileMenuOpen = activeMobilePanel === 'menu'
+  const isMobileSearchOpen = activeMobilePanel === 'search'
+  const mobilePanelLayer = typeof document === 'undefined'
+    ? null
+    : createPortal(
+      <>
+        {activeMobilePanel ? (
+          <button
+            aria-label="Close mobile panel"
+            className="mobile-panel-backdrop"
+            onClick={() => setActiveMobilePanel(null)}
+            type="button"
+          />
+        ) : null}
+
+        {isMobileMenuOpen ? (
+          <Suspense fallback={null}>
+            <MobileNavigationDrawer
+              authenticated={auth.authenticated}
+              commissioner={auth.isAtLeastRole('Commissioner')}
+              onClose={() => setActiveMobilePanel(null)}
+            />
+          </Suspense>
+        ) : null}
+      </>,
+      document.body,
+    )
 
   useEffect(() => {
-    if (!isMobileMenuOpen) {
+    if (!activeMobilePanel) {
       return
     }
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
-        setIsMobileMenuOpen(false)
+        setActiveMobilePanel(null)
       }
     }
 
@@ -32,7 +61,11 @@ function Header() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [isMobileMenuOpen])
+  }, [activeMobilePanel])
+
+  useEffect(() => {
+    setActiveMobilePanel(null)
+  }, [location.pathname, location.search, location.hash])
 
   return (
     <header
@@ -48,7 +81,7 @@ function Header() {
           aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
           aria-controls="mobile-navigation-menu"
           className="mobile-menu-button"
-          onClick={() => setIsMobileMenuOpen((open) => !open)}
+          onClick={() => setActiveMobilePanel((panel) => panel === 'menu' ? null : 'menu')}
           type="button"
         >
           <span />
@@ -58,7 +91,7 @@ function Header() {
         <Link
           aria-label="Dashboard"
           className="mobile-app-brand"
-          onClick={() => setIsMobileMenuOpen(false)}
+          onClick={() => setActiveMobilePanel(null)}
           to="/"
         >
           <LeagueCrest compact />
@@ -68,14 +101,19 @@ function Header() {
           <Link
             aria-label="Submit Game"
             className="mobile-header-action mobile-submit-action"
-            onClick={() => setIsMobileMenuOpen(false)}
+            onClick={() => setActiveMobilePanel(null)}
             to={submitGamePath}
           >
             <PortalIcon name="submit" />
           </Link>
           {auth.authenticated ? (
             <>
-              <GlobalSearch mode="mobile" />
+              <GlobalSearch
+                isMobileOpen={isMobileSearchOpen}
+                mode="mobile"
+                onMobileClose={() => setActiveMobilePanel(null)}
+                onMobileOpen={() => setActiveMobilePanel('search')}
+              />
               <NotificationCenter compact />
             </>
           ) : null}
@@ -83,15 +121,7 @@ function Header() {
         </div>
       </div>
 
-      {isMobileMenuOpen ? (
-        <Suspense fallback={null}>
-          <MobileNavigationDrawer
-            authenticated={auth.authenticated}
-            commissioner={auth.isAtLeastRole('Commissioner')}
-            onClose={() => setIsMobileMenuOpen(false)}
-          />
-        </Suspense>
-      ) : null}
+      {mobilePanelLayer}
 
       <div className="header-title">
         <LeagueCrest compact />
