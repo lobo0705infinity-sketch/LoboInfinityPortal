@@ -46,17 +46,19 @@ function inspectAlias() {
     }
   }
 
-  const output = execFileSync(
+  const commandLine = [
     'npx.cmd',
-    [
-      '--yes',
-      'vercel',
-      'inspect',
-      productionUrl,
-      '--scope',
-      scope,
-      '--format=json',
-    ],
+    '--yes',
+    'vercel',
+    'inspect',
+    productionUrl,
+    '--scope',
+    scope,
+    '--format=json',
+  ].join(' ')
+  const output = execFileSync(
+    'cmd.exe',
+    ['/d', '/s', '/c', commandLine],
     {
       cwd: resolve(repoRoot, '..'),
       encoding: 'utf8',
