@@ -27,6 +27,7 @@ function PlayerCard({ divisionLabel, eventId, player }: PlayerCardProps) {
   const identity = getDivisionIdentity(divisionLabel)
   const playerName = formatPlayerName(player.player, player.displayName)
   const longPlayerName = playerName.length > 18
+  const compactPlayerName = isSingleLongPlayerName(playerName)
   const isCommunityCard = !eventId
   const badges = player.statusBadges ?? []
   const favoriteArmy = player.favoriteArmy || player.faction || 'Not recorded'
@@ -53,7 +54,10 @@ function PlayerCard({ divisionLabel, eventId, player }: PlayerCardProps) {
             <span className="division-badge player-card-division">
               {divisionBadgeLabel}
             </span>
-            <h2 className={longPlayerName ? 'is-long-player-name' : undefined}>
+            <h2 className={getPlayerNameClassName({
+              compact: compactPlayerName,
+              long: longPlayerName,
+            })}>
               {playerName}
             </h2>
             {isCommunityCard && badges.length > 0 ? (
@@ -179,6 +183,25 @@ function getPlayerCardHomeLabel({
   }
 
   return 'Casual Player'
+}
+
+function getPlayerNameClassName({
+  compact,
+  long,
+}: {
+  compact: boolean
+  long: boolean
+}) {
+  return [
+    long ? 'is-long-player-name' : '',
+    compact ? 'is-compact-player-name' : '',
+  ].filter(Boolean).join(' ') || undefined
+}
+
+function isSingleLongPlayerName(playerName: string) {
+  const normalized = playerName.trim()
+
+  return !/\s/.test(normalized) && normalized.length > 10
 }
 
 function resolvePortraitFromIdentity(
