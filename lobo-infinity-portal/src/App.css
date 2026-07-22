@@ -1986,7 +1986,8 @@
   margin: 10px 0 0;
   color: var(--text);
   font-size: 1.35rem;
-  line-height: 1.08;
+  line-height: 1.25;
+  min-height: 1.25em;
   overflow: hidden;
   overflow-wrap: normal;
   text-overflow: ellipsis;
@@ -2146,7 +2147,7 @@
   }
 
   .player-card.has-faction-portrait {
-    grid-template-columns: minmax(0, 1fr) minmax(68px, 22%);
+    grid-template-columns: minmax(0, 1fr) minmax(88px, 26%);
     gap: 12px;
   }
 
@@ -2155,7 +2156,7 @@
   }
 
   .player-card-portrait img {
-    width: 138%;
+    width: 100%;
     max-height: 152px;
     opacity: 0.64;
   }
