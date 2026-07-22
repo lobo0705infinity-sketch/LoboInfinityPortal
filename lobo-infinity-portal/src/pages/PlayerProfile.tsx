@@ -266,6 +266,12 @@ function PlayerProfileDossier({
               ))}
               {currentRank > 0 ? <TacticalBadge label={`Rank #${currentRank}`} /> : null}
             </div>
+            {portrait ? (
+              <PublicPlayerFactionPortrait
+                className="profile-v21-mobile-portrait"
+                portrait={portrait}
+              />
+            ) : null}
             <ServiceRecord
               careerStatus={getCareerStatus(classifications)}
               competitiveHome={homeLabel}
@@ -331,8 +337,10 @@ function resolvePortraitFromIdentity(
 }
 
 function PublicPlayerFactionPortrait({
+  className = '',
   portrait,
 }: {
+  className?: string
   portrait: FactionPortrait
 }) {
   const [visible, setVisible] = useState(true)
@@ -342,7 +350,10 @@ function PublicPlayerFactionPortrait({
   }
 
   return (
-    <aside className="profile-v21-faction-portrait" aria-label={`${portrait.faction} portrait`}>
+    <aside
+      className={`profile-v21-faction-portrait${className ? ` ${className}` : ''}`}
+      aria-label={`${portrait.faction} portrait`}
+    >
       <img
         alt={portrait.alt}
         decoding="async"
@@ -1888,6 +1899,10 @@ const playerProfileStyles = `
   padding: clamp(8px, 1.6vw, 18px);
 }
 
+.profile-v21-mobile-portrait {
+  display: none;
+}
+
 .profile-v21-identity {
   position: relative;
   z-index: 1;
@@ -1938,7 +1953,8 @@ const playerProfileStyles = `
 }
 
 .profile-v21-service-record dl {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
+  align-items: stretch;
 }
 
 .profile-v21-service-record div,
@@ -1946,6 +1962,14 @@ const playerProfileStyles = `
   border: 1px solid rgba(42, 59, 73, 0.72);
   background: rgba(18, 26, 36, 0.58);
   padding: 10px;
+}
+
+.profile-v21-service-record div {
+  min-width: 0;
+  min-height: 74px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .profile-v21-service-record dt,
@@ -1964,6 +1988,8 @@ const playerProfileStyles = `
   font-weight: 900;
   line-height: 1.12;
   text-transform: uppercase;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .profile-v21-hero-panels {
@@ -2473,19 +2499,25 @@ const playerProfileStyles = `
   }
 
   .profile-v21-operator-column {
-    order: 1;
+    display: none;
   }
 
   .profile-v21-identity {
-    order: 2;
+    order: 1;
   }
 
   .profile-v21-hero-panels {
-    order: 3;
+    order: 2;
   }
 
   .profile-v21-faction-portrait {
     width: min(72vw, 300px);
+  }
+
+  .profile-v21-mobile-portrait {
+    display: grid;
+    justify-self: center;
+    width: min(78vw, 320px);
   }
 
   .profile-v21-hero .operator-badge {
