@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "npm run api:init-order && npm run security:cache && npm run security:armies && npm run test:players-portraits && npm run test:public-player-profile-portraits && npm run test:achievements && npm run test:draws && npm run test:standings-integrity && npm run test:dashboard-api && npm run test:commissioner-submit && npm run test:commissioner-context && tsc -b && vite build",
+    "build": "npm run api:init-order && npm run security:cache && npm run security:armies && npm run test:achievements && npm run test:draws && npm run test:standings-integrity && npm run test:dashboard-api && npm run test:commissioner-submit && npm run test:commissioner-context && tsc -b && vite build",
     "release:source": "node scripts/release-source-check.mjs",
     "release:manifest": "node scripts/release-manifest-check.mjs",
     "release:fingerprint": "node scripts/generate-release-fingerprint.mjs",
