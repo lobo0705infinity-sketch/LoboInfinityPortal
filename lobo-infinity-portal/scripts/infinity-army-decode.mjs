@@ -405,13 +405,20 @@ function classifyOrders(icons) {
 }
 
 function isHackerProfile(skills, equipment) {
-  const skillText = String(skills || '')
-  const equipmentText = String(equipment || '')
+  return (
+    hasExactSkillToken(skills, 'Hacker') ||
+    splitSkillTokens(equipment).some((item) => isRecognizedHackerDevice(item))
+  )
+}
+
+function isRecognizedHackerDevice(equipment) {
+  const device = normalizeSkillToken(equipment)
 
   return (
-    /\bHacker\b/i.test(skillText) ||
-    /\bHacking Device\b/i.test(skillText) ||
-    /\b(?:EVO\s+)?(?:Killer\s+)?Hacking Device(?:\s+Plus)?\b/i.test(equipmentText)
+    device === 'hacking device' ||
+    device === 'hacking device plus' ||
+    device === 'killer hacking device' ||
+    device === 'evo hacking device'
   )
 }
 

@@ -5,6 +5,8 @@ import { decodeArmyListToFiles, hasExactSkillToken } from './infinity-army-decod
 
 const forWorkCode =
   'gr8Kb3BlcmF0aW9ucwhGb3IgV29ya4EsAgEBAAUAhK0BAgAAhusBAgAAh2oBBQAAgkgBBgAAh1IBAQACAQAKAIJQAQEAAIJTAQEAAIJTAQEAADIBAQAAh28CAQAAh28CAQAAh28BAgAAh0YBAgAAglQBAQAAh2YBAgA%3D'
+const panoceaniaJoanCode =
+  'ZQpwYW5vY2VhbmlhBSBKb2FugSwCAQEACgCHEAEEAAAJAQMAACoBBAAAhMYBBAAAhMYBBAAAhwwBAwAAhh0BAgAAMgEBAAARAQEAABMBAQACAQAFAIcYAQIAAIdvAQEAAIdvAgEAAIdvAgEAAIdSAQEA'
 
 const expectedProfiles = [
   'RUDRA FTO',
@@ -29,12 +31,18 @@ const result = await decodeArmyListToFiles({
   input: forWorkCode,
   outputDir,
 })
+const panoceaniaResult = await decodeArmyListToFiles({
+  input: panoceaniaJoanCode,
+  outputDir,
+})
 
 const profiles = result.list.combatGroups.flatMap((group) =>
   group.entries.map((entry) => entry.profile),
 )
 const entries = result.list.combatGroups.flatMap((group) => group.entries)
 const hackers = entries.filter((entry) => entry.hacker).map((entry) => entry.profile)
+const panoceaniaEntries = panoceaniaResult.list.combatGroups.flatMap((group) => group.entries)
+const panoceaniaHackers = panoceaniaEntries.filter((entry) => entry.hacker).map((entry) => entry.profile)
 
 assertEqual(result.list.faction, 'ALEPH', 'faction')
 assertEqual(result.list.sectorial, 'Operations Subsection', 'sectorial')
@@ -57,6 +65,16 @@ assertEqual(hasExactSkillToken('Forward Deployment (+8″), Specialist Operative
 assertEqual(hasExactSkillToken('Forward Observer, Mimetism [-3]', 'Forward Observer'), true, 'true forward observer exact token')
 assertEqual(hasExactSkillToken('Number 2, Specialist Operative, Tactical Awareness', 'Chain of Command'), false, 'number 2 chain of command')
 assertEqual(hasExactSkillToken('Chain of Command, Courage', 'Chain of Command'), true, 'true chain of command exact token')
+assertEqual(
+  JSON.stringify(panoceaniaHackers),
+  JSON.stringify(['BLACK A.I.R.', 'Pilot-X Team']),
+  'PanOceania hackers',
+)
+assertEqual(
+  panoceaniaEntries.some((entry) => entry.profile === 'RACERBOT Mk-III' && entry.hacker),
+  false,
+  'PanOceania Racerbot support profiles as hackers',
+)
 
 console.log(JSON.stringify({
   csvPath: result.csvPath,
