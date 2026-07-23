@@ -2475,8 +2475,16 @@ export async function getRecentGames(
 export async function getSubmittedArmyListLibrary(
   options: ApiOptions = {},
 ): Promise<SubmittedArmyListEntry[]> {
-  const [games, eventCatalog] = await Promise.all([
+  const [games, casualGames, tournamentGames, eventCatalog] = await Promise.all([
     getRecentGames(options),
+    getRecentGames({
+      ...options,
+      gameType: 'casual',
+    }),
+    getRecentGames({
+      ...options,
+      gameType: 'tournament',
+    }),
     getEvents(options).catch(() => null),
   ])
   const eventNames = new Map<string, string>()
@@ -2488,8 +2496,10 @@ export async function getSubmittedArmyListLibrary(
     eventNames.set(eventCatalog.currentEvent.id, eventCatalog.currentEvent.name)
   }
 
-  return games
-    .flatMap((game) => buildSubmittedArmyListEntries(game, eventNames))
+  return dedupeSubmittedArmyListEntries(
+    [...games, ...casualGames, ...tournamentGames]
+      .flatMap((game) => buildSubmittedArmyListEntries(game, eventNames)),
+  )
     .sort((left, right) => {
       const rightDate = Date.parse(right.date)
       const leftDate = Date.parse(left.date)
@@ -2500,6 +2510,41 @@ export async function getSubmittedArmyListLibrary(
 
       return right.gameId - left.gameId
     })
+}
+
+function dedupeSubmittedArmyListEntries(
+  entries: SubmittedArmyListEntry[],
+): SubmittedArmyListEntry[] {
+  const seen = new Set<string>()
+
+  return entries.filter((entry) => {
+    const key = [
+      entry.gameId,
+      normalizeSubmittedArmyListKeyPart(entry.player),
+      getSubmittedArmyCodeHash(entry.armyCode),
+    ].join(':')
+
+    if (seen.has(key)) {
+      return false
+    }
+
+    seen.add(key)
+    return true
+  })
+}
+
+function normalizeSubmittedArmyListKeyPart(value: string) {
+  return value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-')
+}
+
+function getSubmittedArmyCodeHash(value: string) {
+  let hash = 5381
+
+  for (let index = 0; index < value.length; index += 1) {
+    hash = (hash * 33) ^ value.charCodeAt(index)
+  }
+
+  return (hash >>> 0).toString(16)
 }
 
 function buildSubmittedArmyListEntries(

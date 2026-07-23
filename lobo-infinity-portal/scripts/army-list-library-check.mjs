@@ -62,8 +62,28 @@ assert.match(
 )
 assert.match(
   api,
+  /gameType: 'casual'/,
+  'Submitted army list library must include casual games from recentGames&gameType=casual.',
+)
+assert.match(
+  api,
+  /gameType: 'tournament'/,
+  'Submitted army list library must include tournament games from recentGames&gameType=tournament.',
+)
+assert.match(
+  api,
   /getEvents\(options\)/,
   'Submitted army list library must resolve event names from existing events data.',
+)
+assert.match(
+  api,
+  /dedupeSubmittedArmyListEntries/,
+  'Submitted army list library must dedupe combined game feeds.',
+)
+assert.match(
+  api,
+  /getSubmittedArmyCodeHash/,
+  'Submitted army list library must dedupe by army-code hash.',
 )
 assert.match(
   api,
