@@ -426,6 +426,22 @@ const remRemoteRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
   sort: 'usage',
   troopType: 'REM',
 })
+const tagRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
+  skill: '',
+  sort: 'usage',
+  troopType: 'TAG',
+})
+const panoceaniaAnalysis = buildFixtureAnalysis(typeSkillFixtureLists.slice(1))
+const panoceaniaRemRows = filterAndSortModelUsage(panoceaniaAnalysis.modelUsage, {
+  skill: '',
+  sort: 'usage',
+  troopType: 'REM',
+})
+const remHackerRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
+  skill: 'Hacker',
+  sort: 'usage',
+  troopType: 'REM',
+})
 
 assert.equal(allAnalysis.listCount, 2, 'All Army Lists must include winning and losing decoded lists.')
 assert.equal(winningAnalysis.listCount, 1, 'Winning Record must include only winning submitted lists.')
@@ -520,6 +536,26 @@ assert.deepEqual(
   'Combined Type and Skill filters must both apply.',
 )
 assert.deepEqual(
+  tagRows,
+  [],
+  'A sectorial with no TAG entries must keep the TAG filter active and return no Model Usage rows.',
+)
+assert.deepEqual(
+  panoceaniaRemRows,
+  [],
+  'A sectorial with no REM entries must keep the REM filter active and return no Model Usage rows.',
+)
+assert.deepEqual(
+  remHackerRows,
+  [],
+  'A Type and Skill combination with no matches must return no Model Usage rows.',
+)
+assert.doesNotMatch(
+  page,
+  /setModelTypeFilter\(''\)/,
+  'Selected troop-type filters must not reset to All Types when no rows match.',
+)
+assert.deepEqual(
   buildSkillOptions(typeSkillFixtureLists.slice(0, 1)),
   ['Engineer', 'Hacker', 'Lieutenant', 'Remote Presence'],
   'Operations Subsection skill options must come from the selected sectorial dataset.',
@@ -528,11 +564,6 @@ assert.deepEqual(
   buildSkillOptions(typeSkillFixtureLists.slice(1)),
   ['Forward Observer'],
   'Changing sectorial must refresh Skill dropdown options.',
-)
-assert.equal(
-  reconcileTroopTypeFilter('REM', typeSkillFixtureLists.slice(1)),
-  '',
-  'Changing from a sectorial with REM to one without REM must reset Type to All Types.',
 )
 assert.equal(
   normalizeSectorialDisplayName('Panoceania'),

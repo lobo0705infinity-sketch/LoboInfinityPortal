@@ -269,7 +269,6 @@ function ArmyIntelligenceContent({
   )
   const analysis = useMemo(() => buildArmyAnalysis(matchingLists), [matchingLists])
   const skillOptions = useMemo(() => buildSkillOptions(matchingLists), [matchingLists])
-  const availableTroopTypes = useMemo(() => buildTroopTypeOptions(matchingLists), [matchingLists])
   const filteredModelUsage = useMemo(
     () =>
       filterAndSortModelUsage(
@@ -288,12 +287,6 @@ function ArmyIntelligenceContent({
       setModelSkillFilter('')
     }
   }, [modelSkillFilter, skillOptions])
-
-  useEffect(() => {
-    if (modelTypeFilter && !availableTroopTypes.includes(modelTypeFilter)) {
-      setModelTypeFilter('')
-    }
-  }, [availableTroopTypes, modelTypeFilter])
 
   const canRefreshArmyIntelligence = auth.hasPermission('manageCache')
 
@@ -764,22 +757,6 @@ function buildSkillOptions(lists: ArmyIntelligenceList[]) {
   })
 
   return Array.from(skills).sort((left, right) => left.localeCompare(right))
-}
-
-function buildTroopTypeOptions(lists: ArmyIntelligenceList[]) {
-  const types = new Set<string>()
-
-  lists.forEach((list) => {
-    list.decoded?.combatGroups.forEach((group) => {
-      group.entries.forEach((entry) => {
-        if (entry.troopType) {
-          types.add(entry.troopType)
-        }
-      })
-    })
-  })
-
-  return Array.from(types).sort((left, right) => left.localeCompare(right))
 }
 
 function filterAndSortModelUsage(
