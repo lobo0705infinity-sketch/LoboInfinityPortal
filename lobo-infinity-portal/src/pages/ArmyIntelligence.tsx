@@ -5,6 +5,7 @@ import {
   apiClient,
   type ArmyIntelligenceData,
   type ArmyIntelligenceDecodedEntry,
+  type ArmyIntelligenceRefreshFailure,
   type ArmyIntelligenceList,
 } from '../services/api'
 
@@ -23,19 +24,31 @@ type ArmyIntelligenceState =
 
 type AnalysisResultFilter = 'all' | 'winning' | 'losing'
 type ModelUsageSort = 'usage' | 'pointsHigh' | 'pointsLow'
+type RefreshCounts = {
+  currentTarget: string
+  decoded: number
+  failed: number
+  failures: ArmyIntelligenceRefreshFailure[]
+  progress: number
+  skipped: number
+  total: number
+}
 type RefreshState =
   | {
       status: 'idle'
     }
   | {
+      counts: RefreshCounts
       message: string
       status: 'running'
     }
   | {
+      counts: RefreshCounts
       message: string
       status: 'success'
     }
   | {
+      counts?: RefreshCounts
       message: string
       status: 'error'
     }
@@ -94,9 +107,6 @@ const resultFilterOptions: Array<{
   },
 ]
 const troopTypeOptions = ['HI', 'LI', 'MI', 'REM', 'SK', 'TAG', 'VH', 'WB']
-const operationsSubsectionSectorial = 'Operations Subsection'
-const loboForWorkSnapshotKey =
-  'casual:36:winner:lobo:a59a31d83c48418d817f7e887c935ae0636d5fbf4b67b6015738d41378a15c88'
 const modelUsageSortOptions: Array<{
   label: string
   value: ModelUsageSort
@@ -114,6 +124,49 @@ const modelUsageSortOptions: Array<{
     value: 'pointsLow',
   },
 ]
+
+function formatRefreshTarget(
+  item:
+    | {
+        listName?: string
+        player?: string
+        sectorial?: string
+      }
+    | undefined,
+) {
+  if (!item) {
+    return ''
+  }
+
+  const sectorialOrList = item.sectorial || item.listName || 'Unassigned'
+  const player = item.player || 'Unknown player'
+  return `${sectorialOrList} / ${player}`
+}
+
+function formatRefreshFailureContext(failure: ArmyIntelligenceRefreshFailure) {
+  const context = [failure.sectorial, failure.listName].filter(Boolean).join(' / ')
+  return context || 'Unassigned list'
+}
+
+function formatRefreshProgress(counts?: RefreshCounts) {
+  if (!counts) {
+    return 'Preparing snapshot queue'
+  }
+
+  if (counts.total <= 0) {
+    return 'Preparing snapshot queue'
+  }
+
+  return `${counts.progress} of ${counts.total}${counts.currentTarget ? ` - ${counts.currentTarget}` : ''}`
+}
+
+function getRefreshPercent(counts?: RefreshCounts) {
+  if (!counts || counts.total <= 0) {
+    return 0
+  }
+
+  return Math.min(100, Math.round((counts.progress / counts.total) * 100))
+}
 
 function ArmyIntelligence() {
   const [state, setState] = useState<ArmyIntelligenceState>({
@@ -242,35 +295,98 @@ function ArmyIntelligenceContent({
     }
   }, [availableTroopTypes, modelTypeFilter])
 
-  const canRefreshSelectedSectorial =
-    auth.hasPermission('manageCache') &&
-    selectedSectorial === operationsSubsectionSectorial
+  const canRefreshArmyIntelligence = auth.hasPermission('manageCache')
 
-  async function refreshSelectedSectorial() {
-    if (!canRefreshSelectedSectorial) {
+  async function refreshAllSectorials() {
+    if (!canRefreshArmyIntelligence || refreshState.status === 'running') {
       return
     }
 
+    let counts: RefreshCounts = {
+      currentTarget: '',
+      decoded: 0,
+      failed: 0,
+      failures: [],
+      progress: 0,
+      skipped: 0,
+      total: data.lists.length,
+    }
+    const failedSnapshotKeys = new Set<string>()
+
     setRefreshState({
-      message: 'Refreshing Operations Subsection snapshot 1 of 1...',
+      counts,
+      message:
+        counts.total > 0
+          ? `Preparing ${counts.total} Army Intelligence snapshots...`
+          : 'Preparing Army Intelligence snapshot queue...',
       status: 'running',
     })
 
     try {
-      const result = await apiClient.refreshArmyIntelligenceSnapshots({
-        batchLimit: 1,
-        sectorial: operationsSubsectionSectorial,
-        snapshotKeys: [loboForWorkSnapshotKey],
-      })
+      for (let pass = 0; pass < 250; pass += 1) {
+        const result = await apiClient.refreshArmyIntelligenceSnapshots({
+          batchLimit: 1,
+          excludeSnapshotKeys: Array.from(failedSnapshotKeys),
+        })
+        const total = result.sourceCount || counts.total
+        const skipped = pass === 0 ? result.currentCount : counts.skipped
+        const newFailures = result.failures.filter(
+          (failure) => !failedSnapshotKeys.has(failure.snapshotKey),
+        )
+
+        for (const failure of newFailures) {
+          failedSnapshotKeys.add(failure.snapshotKey)
+        }
+        const currentTarget = formatRefreshTarget(result.processed[0])
+
+        counts = {
+          currentTarget,
+          decoded: counts.decoded + result.decoded,
+          failed: failedSnapshotKeys.size,
+          failures: [...counts.failures, ...newFailures],
+          progress: Math.min(
+            total,
+            skipped + counts.decoded + result.decoded + failedSnapshotKeys.size,
+          ),
+          skipped,
+          total,
+        }
+
+        setRefreshState({
+          counts,
+          message:
+            total > 0
+              ? `Processing ${counts.progress} of ${total}${currentTarget ? ` - ${currentTarget}` : ''}`
+              : 'No submitted army-list snapshots found.',
+          status: 'running',
+        })
+
+        if (!result.hasMore) {
+          break
+        }
+
+        if (result.updated === 0 && result.failed === 0 && result.decoded === 0) {
+          throw new Error('Army Intelligence refresh made no progress.')
+        }
+
+        if (pass === 249) {
+          throw new Error('Army Intelligence refresh stopped after 250 batches.')
+        }
+      }
 
       await reload()
 
       setRefreshState({
-        message: `Refresh complete: ${result.updated} snapshot updated.`,
+        counts,
+        message:
+          counts.failed > 0
+            ? 'Refresh completed with errors'
+            : 'Refresh complete',
         status: 'success',
       })
     } catch (error) {
       setRefreshState({
+        counts,
         message:
           error instanceof Error
             ? error.message
@@ -313,22 +429,58 @@ function ArmyIntelligenceContent({
           <div className="army-intelligence-refresh-action" aria-live="polite">
             <button
               className="button army-intelligence-refresh-button"
-              disabled={!canRefreshSelectedSectorial || refreshState.status === 'running'}
-              onClick={refreshSelectedSectorial}
+              disabled={refreshState.status === 'running'}
+              onClick={refreshAllSectorials}
               type="button"
             >
               {refreshState.status === 'running'
                 ? 'Refreshing...'
-                : 'Refresh Selected Sectorial'}
+                : 'Refresh All Sectorials'}
             </button>
             <p
               className={`army-intelligence-refresh-status is-${refreshState.status}`}
               role={refreshState.status === 'error' ? 'alert' : undefined}
             >
               {refreshState.status === 'idle'
-                ? 'Commissioner action: refreshes one selected snapshot.'
+                ? 'Commissioner action: refreshes stale snapshots one at a time.'
                 : refreshState.message}
             </p>
+            {refreshState.status !== 'idle' ? (
+              <div className={`army-intelligence-refresh-summary is-${refreshState.status}`}>
+                <div className="army-intelligence-refresh-progress-line">
+                  <span>Total snapshots: {refreshState.counts?.total ?? data.lists.length}</span>
+                  <span>
+                    Progress: {formatRefreshProgress(refreshState.counts)}
+                  </span>
+                </div>
+                <div
+                  aria-label="Army Intelligence refresh progress"
+                  aria-valuemax={Math.max(1, refreshState.counts?.total ?? data.lists.length)}
+                  aria-valuemin={0}
+                  aria-valuenow={refreshState.counts?.progress ?? 0}
+                  className="army-intelligence-refresh-progress"
+                  role="progressbar"
+                >
+                  <span style={{ width: `${getRefreshPercent(refreshState.counts)}%` }} />
+                </div>
+                <div className="army-intelligence-refresh-counters">
+                  <span><strong>{refreshState.counts?.decoded ?? 0}</strong>Decoded</span>
+                  <span><strong>{refreshState.counts?.skipped ?? 0}</strong>Skipped</span>
+                  <span><strong>{refreshState.counts?.failed ?? 0}</strong>Failed</span>
+                </div>
+              </div>
+            ) : null}
+            {refreshState.status !== 'idle' && refreshState.counts?.failures.length ? (
+              <ul className="army-intelligence-refresh-failures">
+                {refreshState.counts.failures.map((failure) => (
+                  <li key={failure.snapshotKey}>
+                    <strong>{failure.player || 'Unknown player'}</strong>
+                    <span>{formatRefreshFailureContext(failure)}</span>
+                    <span>{failure.reason}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
           </div>
         ) : null}
       </section>

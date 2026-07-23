@@ -363,9 +363,13 @@ export type ArmyIntelligenceList = {
 }
 
 export type ArmyIntelligenceRefreshResult = {
+  candidateCount: number
+  currentCount: number
   decoded: number
   failed: number
+  failures: ArmyIntelligenceRefreshFailure[]
   hasMore: boolean
+  processed: ArmyIntelligenceRefreshProcessed[]
   remaining: number
   requestedSectorial: string
   requestedSnapshotKeys: string[]
@@ -374,8 +378,21 @@ export type ArmyIntelligenceRefreshResult = {
   updated: number
 }
 
+export type ArmyIntelligenceRefreshFailure = {
+  listName: string
+  player: string
+  reason: string
+  sectorial: string
+  snapshotKey: string
+}
+
+export type ArmyIntelligenceRefreshProcessed = ArmyIntelligenceRefreshFailure & {
+  status: 'decoded' | 'failed'
+}
+
 export type ArmyIntelligenceRefreshRequest = {
   batchLimit?: number
+  excludeSnapshotKeys?: string[]
   sectorial?: string
   snapshotKeys?: string[]
 }
@@ -3475,6 +3492,7 @@ export async function refreshArmyIntelligenceSnapshots(
       apiUrl: API_URL,
       authToken: getActiveApiAuthToken(),
       batchLimit: refreshRequest.batchLimit || 4,
+      excludeSnapshotKeys: refreshRequest.excludeSnapshotKeys || [],
       sectorial: refreshRequest.sectorial || '',
       snapshotKeys: refreshRequest.snapshotKeys || [],
     }),
@@ -3490,15 +3508,44 @@ export async function refreshArmyIntelligenceSnapshots(
   }
 
   return {
+    candidateCount: getNumber(payload, 'candidateCount'),
+    currentCount: getNumber(payload, 'currentCount'),
     decoded: getNumber(payload, 'decoded'),
     failed: getNumber(payload, 'failed'),
+    failures: getArray(payload, 'failures').map(normalizeArmyIntelligenceRefreshFailure),
     hasMore: getBoolean(payload, 'hasMore'),
+    processed: getArray(payload, 'processed').map(normalizeArmyIntelligenceRefreshProcessed),
     remaining: getNumber(payload, 'remaining'),
     requestedSectorial: getString(payload, 'requestedSectorial'),
     requestedSnapshotKeys: getArray(payload, 'requestedSnapshotKeys').map((entry) => String(entry)),
     skipped: getNumber(payload, 'skipped'),
     sourceCount: getNumber(payload, 'sourceCount'),
     updated: getNumber(payload, 'updated'),
+  }
+}
+
+function normalizeArmyIntelligenceRefreshFailure(
+  item: unknown,
+): ArmyIntelligenceRefreshFailure {
+  const record = asRecord(item, 'Army Intelligence refresh failure')
+
+  return {
+    listName: getString(record, 'listName'),
+    player: getString(record, 'player'),
+    reason: getString(record, 'reason'),
+    sectorial: getString(record, 'sectorial'),
+    snapshotKey: getString(record, 'snapshotKey'),
+  }
+}
+
+function normalizeArmyIntelligenceRefreshProcessed(
+  item: unknown,
+): ArmyIntelligenceRefreshProcessed {
+  const record = asRecord(item, 'Army Intelligence refresh processed item')
+
+  return {
+    ...normalizeArmyIntelligenceRefreshFailure(record),
+    status: getString(record, 'status') === 'failed' ? 'failed' : 'decoded',
   }
 }
 

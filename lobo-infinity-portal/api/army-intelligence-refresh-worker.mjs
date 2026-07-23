@@ -25,6 +25,9 @@ export default async function handler(request, response) {
     const requestedSnapshotKeys = Array.isArray(body.snapshotKeys)
       ? new Set(body.snapshotKeys.map((key) => String(key || '').trim()).filter(Boolean))
       : new Set()
+    const excludedSnapshotKeys = Array.isArray(body.excludeSnapshotKeys)
+      ? new Set(body.excludeSnapshotKeys.map((key) => String(key || '').trim()).filter(Boolean))
+      : new Set()
 
     if (!apiUrl) {
       response.status(500).json({ error: 'Missing API URL.', success: false })
@@ -40,6 +43,7 @@ export default async function handler(request, response) {
       await loadLiveSources(apiUrl),
       {
         sectorial: requestedSectorial,
+        excludeSnapshotKeys: excludedSnapshotKeys,
         snapshotKeys: requestedSnapshotKeys,
       },
     )
@@ -54,11 +58,13 @@ export default async function handler(request, response) {
         !current.hasProfileMetadata
       )
     })
+    const currentCount = sources.length - allCandidates.length
     const candidates = allCandidates.slice(0, batchLimit)
 
     const outputDir = await mkdtemp(join(tmpdir(), 'lobo-army-intelligence-'))
     const snapshots = []
     const failures = []
+    const processed = []
 
     for (const source of candidates) {
       try {
@@ -73,17 +79,32 @@ export default async function handler(request, response) {
           snapshotKey: source.snapshotKey,
           status: 'decoded',
         })
+        processed.push({
+          listName: result.list?.listName || source.mission || '',
+          player: source.player,
+          sectorial: result.list?.sectorial || source.sectorial || '',
+          snapshotKey: source.snapshotKey,
+          status: 'decoded',
+        })
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error)
-        failures.push({
+        const failure = {
+          listName: source.mission || source.event || '',
+          player: source.player,
           reason: message,
+          sectorial: source.sectorial || '',
           snapshotKey: source.snapshotKey,
-        })
+        }
+        failures.push(failure)
         snapshots.push({
           decoded: null,
           decodedAt: new Date().toISOString(),
           error: message,
           snapshotKey: source.snapshotKey,
+          status: 'failed',
+        })
+        processed.push({
+          ...failure,
           status: 'failed',
         })
       }
@@ -94,13 +115,17 @@ export default async function handler(request, response) {
     }
 
     response.status(200).json({
+      candidateCount: allCandidates.length,
+      currentCount,
       decoded: snapshots.filter((snapshot) => snapshot.status === 'decoded').length,
       failed: failures.length,
+      failures,
       hasMore: allCandidates.length > candidates.length,
+      processed,
       remaining: Math.max(0, allCandidates.length - candidates.length),
       requestedSectorial,
       requestedSnapshotKeys: Array.from(requestedSnapshotKeys),
-      skipped: sources.length - candidates.length,
+      skipped: currentCount,
       sourceCount: sources.length,
       success: true,
       updated: snapshots.length,
@@ -125,6 +150,10 @@ async function readJsonBody(request) {
 
 function filterRequestedSources(sources, filters) {
   return sources.filter((source) => {
+    if (filters.excludeSnapshotKeys.size > 0 && filters.excludeSnapshotKeys.has(source.snapshotKey)) {
+      return false
+    }
+
     if (filters.snapshotKeys.size > 0 && !filters.snapshotKeys.has(source.snapshotKey)) {
       return false
     }

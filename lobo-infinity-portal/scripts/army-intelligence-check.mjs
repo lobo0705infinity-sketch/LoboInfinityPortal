@@ -133,7 +133,7 @@ assert.doesNotMatch(
 )
 assert.doesNotMatch(
   page,
-  /Submitted Lists|DecodedListRow|army-intelligence-list-table|All Sectorials|Factions and Sectorials/,
+  /Submitted Lists|DecodedListRow|army-intelligence-list-table|Factions and Sectorials/,
   'Army Intelligence page must not render the old submitted-list archive or all-sectorial summaries.',
 )
 assert.match(
@@ -168,13 +168,18 @@ assert.match(
 )
 assert.match(
   page,
-  /loboForWorkSnapshotKey[\s\S]*batchLimit: 1[\s\S]*Refresh Selected Sectorial/,
-  'Army Intelligence page must refresh the selected sectorial one snapshot at a time.',
+  /refreshAllSectorials[\s\S]*batchLimit: 1[\s\S]*excludeSnapshotKeys[\s\S]*Refresh All Sectorials/,
+  'Army Intelligence page must refresh all stale sectorials one snapshot at a time.',
 )
 assert.match(
   page,
   /useAuth\(\)[\s\S]*hasPermission\('manageCache'\)/,
-  'Refresh Selected Sectorial must require the Commissioner cache-management permission.',
+  'Refresh All Sectorials must require the Commissioner cache-management permission.',
+)
+assert.doesNotMatch(
+  page,
+  /loboForWorkSnapshotKey|Refresh Selected Sectorial|canRefreshSelectedSectorial/,
+  'Army Intelligence page must not hard-code one selected-sectorial refresh target.',
 )
 assert.match(
   apiClient,
@@ -210,6 +215,16 @@ assert.match(
   worker,
   /requestedSnapshotKeys[\s\S]*filterRequestedSources[\s\S]*snapshotKeys\.has\(source\.snapshotKey\)/,
   'Commissioner decoder worker must support explicit snapshot-key filtering.',
+)
+assert.match(
+  worker,
+  /excludedSnapshotKeys[\s\S]*excludeSnapshotKeys\.has\(source\.snapshotKey\)/,
+  'Commissioner decoder worker must exclude failed snapshots already seen in the same browser run.',
+)
+assert.match(
+  worker,
+  /candidateCount[\s\S]*currentCount[\s\S]*failures[\s\S]*processed/,
+  'Commissioner decoder worker must return batch progress and failure details.',
 )
 assert.match(
   worker,
@@ -566,6 +581,81 @@ assert.doesNotMatch(
   refresh,
   /submitLeagueResult|submitCasualResult|teamTournamentResult/,
   'Refresh script must not modify submission flows.',
+)
+
+const multiSectorialRefreshRun = [
+  {
+    currentCount: 1,
+    decoded: 1,
+    failures: [],
+    processed: [
+      {
+        player: 'Lobo',
+        sectorial: 'Operations Subsection',
+        snapshotKey: 'ops-current-decoder',
+        status: 'decoded',
+      },
+    ],
+    sourceCount: 4,
+  },
+  {
+    currentCount: 2,
+    decoded: 0,
+    failures: [
+      {
+        player: 'Broken List',
+        reason: 'Unsupported army code.',
+        sectorial: 'Nomads',
+        snapshotKey: 'broken-list',
+      },
+    ],
+    processed: [
+      {
+        player: 'Broken List',
+        sectorial: 'Nomads',
+        snapshotKey: 'broken-list',
+        status: 'failed',
+      },
+    ],
+    sourceCount: 4,
+  },
+  {
+    currentCount: 2,
+    decoded: 1,
+    failures: [],
+    processed: [
+      {
+        player: 'ADangerousFrog',
+        sectorial: 'PanOceania',
+        snapshotKey: 'pano-current-decoder',
+        status: 'decoded',
+      },
+    ],
+    sourceCount: 4,
+  },
+]
+const refreshedSectorials = new Set(
+  multiSectorialRefreshRun.flatMap((batch) =>
+    batch.processed
+      .filter((entry) => entry.status === 'decoded')
+      .map((entry) => entry.sectorial),
+  ),
+)
+
+assert.deepEqual(
+  Array.from(refreshedSectorials).sort(),
+  ['Operations Subsection', 'PanOceania'],
+  'Refresh All Sectorials regression must cover multiple sectorials in one run.',
+)
+assert.equal(
+  multiSectorialRefreshRun.at(0).currentCount,
+  1,
+  'Refresh All Sectorials must count current snapshots as skipped.',
+)
+assert.equal(
+  multiSectorialRefreshRun.at(2).processed.at(0).player,
+  'ADangerousFrog',
+  'A failed snapshot must not stop later stale snapshots from refreshing.',
 )
 
 console.log('Army Intelligence Phase 1 checks passed.')
