@@ -183,11 +183,26 @@ function CommissionerDashboard() {
     }
     try {
       if (action === 'refreshArmyIntelligence') {
-        const result = await apiClient.refreshArmyIntelligenceSnapshots()
+        let result = await apiClient.refreshArmyIntelligenceSnapshots()
+        const totals = { updated: result.updated }
+        let refreshPasses = 1
+
+        while (result.hasMore && refreshPasses < 20) {
+          result = await apiClient.refreshArmyIntelligenceSnapshots()
+          totals.updated += result.updated
+          refreshPasses += 1
+        }
+
+        if (result.hasMore) {
+          throw new Error(
+            `Army Intelligence refresh paused with ${result.remaining} snapshots remaining. Run refresh again.`,
+          )
+        }
+
         await loadOperations()
         setArmyIntelligenceFeedback({
           status: 'success',
-          message: `Army Intelligence refresh complete: ${result.updated} snapshots updated`,
+          message: `Army Intelligence refresh complete: ${totals.updated} snapshots updated`,
         })
         return
       }

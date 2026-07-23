@@ -365,6 +365,8 @@ export type ArmyIntelligenceList = {
 export type ArmyIntelligenceRefreshResult = {
   decoded: number
   failed: number
+  hasMore: boolean
+  remaining: number
   skipped: number
   sourceCount: number
   updated: number
@@ -3460,6 +3462,7 @@ export async function refreshArmyIntelligenceSnapshots(): Promise<ArmyIntelligen
     body: JSON.stringify({
       apiUrl: API_URL,
       authToken: getActiveApiAuthToken(),
+      batchLimit: 4,
     }),
     headers: {
       'content-type': 'application/json',
@@ -3475,6 +3478,8 @@ export async function refreshArmyIntelligenceSnapshots(): Promise<ArmyIntelligen
   return {
     decoded: getNumber(payload, 'decoded'),
     failed: getNumber(payload, 'failed'),
+    hasMore: getBoolean(payload, 'hasMore'),
+    remaining: getNumber(payload, 'remaining'),
     skipped: getNumber(payload, 'skipped'),
     sourceCount: getNumber(payload, 'sourceCount'),
     updated: getNumber(payload, 'updated'),

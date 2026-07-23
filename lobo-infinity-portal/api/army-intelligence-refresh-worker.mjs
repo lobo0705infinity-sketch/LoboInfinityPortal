@@ -7,6 +7,8 @@ import {
   decodeArmyListToFiles,
 } from '../scripts/infinity-army-decode.mjs'
 
+const DEFAULT_REFRESH_BATCH_LIMIT = 4
+
 export default async function handler(request, response) {
   if (request.method !== 'POST') {
     response.setHeader('allow', 'POST')
@@ -18,6 +20,7 @@ export default async function handler(request, response) {
     const body = await readJsonBody(request)
     const apiUrl = String(body.apiUrl || process.env.VITE_API_URL || '').trim()
     const authToken = String(body.authToken || '').trim()
+    const batchLimit = Math.max(1, Number(body.batchLimit) || DEFAULT_REFRESH_BATCH_LIMIT)
 
     if (!apiUrl) {
       response.status(500).json({ error: 'Missing API URL.', success: false })
@@ -31,7 +34,7 @@ export default async function handler(request, response) {
 
     const sources = await loadLiveSources(apiUrl)
     const state = await loadSnapshotState(apiUrl)
-    const candidates = sources.filter((source) => {
+    const allCandidates = sources.filter((source) => {
       const current = state.get(source.snapshotKey)
       return (
         !current ||
@@ -41,6 +44,7 @@ export default async function handler(request, response) {
         !current.hasProfileMetadata
       )
     })
+    const candidates = allCandidates.slice(0, batchLimit)
 
     const outputDir = await mkdtemp(join(tmpdir(), 'lobo-army-intelligence-'))
     const snapshots = []
@@ -82,6 +86,8 @@ export default async function handler(request, response) {
     response.status(200).json({
       decoded: snapshots.filter((snapshot) => snapshot.status === 'decoded').length,
       failed: failures.length,
+      hasMore: allCandidates.length > candidates.length,
+      remaining: Math.max(0, allCandidates.length - candidates.length),
       skipped: sources.length - candidates.length,
       sourceCount: sources.length,
       success: true,
