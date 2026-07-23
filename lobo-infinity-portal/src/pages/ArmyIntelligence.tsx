@@ -38,8 +38,10 @@ type ArmyAnalysis = {
   averageRegularOrders: number
   averageSwc: number
   averageTacticalAwarenessOrders: number
+  chainOfCommand: UsageRow[]
   doctors: UsageRow[]
   engineers: UsageRow[]
+  forwardObservers: UsageRow[]
   hackers: UsageRow[]
   lieutenants: UsageRow[]
   listCount: number
@@ -200,7 +202,7 @@ function ArmyIntelligenceContent({ data }: { data: ArmyIntelligenceData }) {
             <MetricCard label="Average Irregular Orders" value={analysis.averageIrregularOrders} />
             <MetricCard label="Average Impetuous Orders" value={analysis.averageImpetuousOrders} />
             <MetricCard label="Average Tactical Awareness" value={analysis.averageTacticalAwarenessOrders} />
-            <MetricCard label="Average Lieutenant Bonus" value={analysis.averageLieutenantOrders} />
+            <MetricCard label="Average Lieutenant Orders" value={analysis.averageLieutenantOrders} />
             <MetricCard label="Average Points" value={analysis.averagePoints} />
             <MetricCard label="Average SWC" value={analysis.averageSwc} />
           </section>
@@ -214,14 +216,20 @@ function ArmyIntelligenceContent({ data }: { data: ArmyIntelligenceData }) {
             <ResponsiveDisclosure title="Hackers">
               <UsagePanel items={analysis.hackers} title="Hackers" titleHidden />
             </ResponsiveDisclosure>
-            <ResponsiveDisclosure title="Specialists">
-              <UsagePanel items={analysis.specialists} title="Specialists" titleHidden />
+            <ResponsiveDisclosure title="Specialist Operatives">
+              <UsagePanel items={analysis.specialists} title="Specialist Operatives" titleHidden />
             </ResponsiveDisclosure>
             <ResponsiveDisclosure title="Doctors">
               <UsagePanel items={analysis.doctors} title="Doctors" titleHidden />
             </ResponsiveDisclosure>
             <ResponsiveDisclosure title="Engineers">
               <UsagePanel items={analysis.engineers} title="Engineers" titleHidden />
+            </ResponsiveDisclosure>
+            <ResponsiveDisclosure title="Forward Observers">
+              <UsagePanel items={analysis.forwardObservers} title="Forward Observers" titleHidden />
+            </ResponsiveDisclosure>
+            <ResponsiveDisclosure title="Chain of Command">
+              <UsagePanel items={analysis.chainOfCommand} title="Chain of Command" titleHidden />
             </ResponsiveDisclosure>
           </section>
         </>
@@ -370,8 +378,10 @@ function buildArmyAnalysis(lists: ArmyIntelligenceList[]): ArmyAnalysis {
         listEntries.reduce((total, entry) => total + countTacticalAwarenessOrders(entry), 0),
       ),
     ),
+    chainOfCommand: buildUsageRows(entriesByList, (entry) => entry.chainOfCommand),
     doctors: buildUsageRows(entriesByList, (entry) => entry.doctor),
     engineers: buildUsageRows(entriesByList, (entry) => entry.engineer),
+    forwardObservers: buildUsageRows(entriesByList, (entry) => entry.forwardObserver),
     hackers: buildUsageRows(entriesByList, (entry) => entry.hacker),
     lieutenants: buildUsageRows(entriesByList, (entry) => entry.lieutenant),
     listCount: decodedLists.length,

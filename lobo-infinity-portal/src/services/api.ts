@@ -298,9 +298,11 @@ export type ArmyIntelligenceCount = {
 
 export type ArmyIntelligenceDecodedEntry = {
   combatGroup: number
+  chainOfCommand: boolean
   combinedId: string
   doctor: boolean
   engineer: boolean
+  forwardObserver: boolean
   hacker: boolean
   lieutenant: boolean
   orderTypes: string[]
@@ -4808,9 +4810,11 @@ function normalizeArmyIntelligenceDecodedEntry(item: unknown): ArmyIntelligenceD
 
   return {
     combatGroup: getNumber(record, 'combatGroup'),
+    chainOfCommand: getBoolean(record, 'chainOfCommand'),
     combinedId: getString(record, 'combinedId'),
     doctor: getBoolean(record, 'doctor'),
     engineer: getBoolean(record, 'engineer'),
+    forwardObserver: getBoolean(record, 'forwardObserver'),
     hacker: getBoolean(record, 'hacker'),
     lieutenant: getBoolean(record, 'lieutenant'),
     orderTypes: getArray(record, 'orderTypes').map((entry) => String(entry)),

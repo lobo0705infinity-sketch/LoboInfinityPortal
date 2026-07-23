@@ -282,7 +282,9 @@ function buildStructuredList(armyCode, codeData, resolved) {
       entries.push({
         combatGroup: group.combatGroup,
         combinedId: member.combinedId,
-        hacker: /\bHacker\b|Hacking Device/i.test(`${skills} ${equipment}`),
+        chainOfCommand: hasExactSkillToken(skills, 'Chain of Command'),
+        forwardObserver: hasExactSkillToken(skills, 'Forward Observer'),
+        hacker: isHackerProfile(skills, equipment),
         lieutenant: /lieutenant/i.test(`${skills} ${(card?.icons || []).join(' ')}`),
         orderTypes,
         points: listRow?.points ?? 0,
@@ -348,6 +350,8 @@ function toCsv(list) {
       'orderTypes',
       'lieutenant',
       'hacker',
+      'forwardObserver',
+      'chainOfCommand',
       'specialist',
       'doctor',
       'engineer',
@@ -369,6 +373,8 @@ function toCsv(list) {
         entry.orderTypes.join('|'),
         entry.lieutenant,
         entry.hacker,
+        entry.forwardObserver,
+        entry.chainOfCommand,
         entry.specialist,
         entry.doctor,
         entry.engineer,
@@ -396,6 +402,40 @@ function classifyOrders(icons) {
     orders.push('lieutenant')
   }
   return orders
+}
+
+function isHackerProfile(skills, equipment) {
+  const skillText = String(skills || '')
+  const equipmentText = String(equipment || '')
+
+  return (
+    /\bHacker\b/i.test(skillText) ||
+    /\bHacking Device\b/i.test(skillText) ||
+    /\b(?:EVO\s+)?(?:Killer\s+)?Hacking Device(?:\s+Plus)?\b/i.test(equipmentText)
+  )
+}
+
+export function hasExactSkillToken(skills, expectedSkill) {
+  const expected = normalizeSkillToken(expectedSkill)
+
+  return splitSkillTokens(skills).some((skill) => normalizeSkillToken(skill) === expected)
+}
+
+function splitSkillTokens(skills) {
+  return String(skills || '')
+    .split(',')
+    .map((skill) => skill.trim())
+    .filter(Boolean)
+}
+
+function normalizeSkillToken(skill) {
+  return String(skill || '')
+    .replace(/\[[^\]]*\]/g, '')
+    .replace(/\([^)]*\)/g, '')
+    .replace(/[“”″]/g, '"')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase()
 }
 
 function parseCost(value) {

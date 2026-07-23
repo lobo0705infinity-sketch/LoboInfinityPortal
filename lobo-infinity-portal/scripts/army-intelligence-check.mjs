@@ -91,12 +91,12 @@ assert.match(
 )
 assert.match(
   page,
-  /Average Tactical Awareness[\s\S]*Average Lieutenant Bonus/,
-  'Army Intelligence page must show order averages including Tactical Awareness and Lieutenant bonus orders.',
+  /Average Tactical Awareness[\s\S]*Average Lieutenant Orders/,
+  'Army Intelligence page must show order averages including Tactical Awareness and Lieutenant orders.',
 )
 assert.match(
   page,
-  /Model Usage[\s\S]*Lieutenant Choices[\s\S]*Hackers[\s\S]*Specialists[\s\S]*Doctors[\s\S]*Engineers/,
+  /Model Usage[\s\S]*Lieutenant Choices[\s\S]*Hackers[\s\S]*Specialist Operatives[\s\S]*Doctors[\s\S]*Engineers[\s\S]*Forward Observers[\s\S]*Chain of Command/,
   'Army Intelligence page must show model and role usage breakdowns.',
 )
 assert.match(
@@ -137,9 +137,9 @@ const operationsLists = [
         {
           combatGroup: 1,
           entries: [
-            { doctor: false, engineer: false, hacker: true, lieutenant: false, orderTypes: ['regular'], profile: 'RUDRA FTO', specialist: false, unit: 'RUDRA FTO' },
+            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'RUDRA FTO', specialist: false, unit: 'RUDRA FTO' },
             { doctor: false, engineer: true, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'ARTALIS', specialist: false, unit: 'ARTALIS' },
-            { doctor: false, engineer: false, hacker: true, lieutenant: false, orderTypes: ['regular'], profile: 'DIKPALA', specialist: false, unit: 'DIKPALA' },
+            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'DIKPALA', specialist: false, unit: 'DIKPALA' },
             { doctor: false, engineer: false, hacker: true, lieutenant: true, orderTypes: ['regular', 'lieutenant', 'lieutenant'], profile: 'ASURA', specialist: false, unit: 'ASURA' },
             { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['irregular'], profile: 'SĀCHĀ', specialist: true, unit: 'SĀCHĀ' },
           ],
@@ -151,8 +151,8 @@ const operationsLists = [
             { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'NETROD', specialist: false, unit: 'NETROD' },
             { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'NETROD', specialist: false, unit: 'NETROD' },
             { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['irregular'], profile: 'WARCOR', specialist: false, unit: 'WARCOR' },
-            { doctor: false, engineer: false, hacker: true, lieutenant: false, orderTypes: ['regular'], profile: 'RACERBOT Mk-III', specialist: false, unit: 'RACERBOT Mk-III' },
-            { doctor: false, engineer: false, hacker: true, lieutenant: false, orderTypes: ['regular'], profile: 'RACERBOT Mk-III', specialist: false, unit: 'RACERBOT Mk-III' },
+            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'RACERBOT Mk-III', specialist: false, unit: 'RACERBOT Mk-III' },
+            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'RACERBOT Mk-III', specialist: false, unit: 'RACERBOT Mk-III' },
             { doctor: false, engineer: false, hacker: true, lieutenant: false, orderTypes: ['regular'], profile: 'Pilot-X Team', specialist: false, unit: 'Pilot-X Team' },
             { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'MAXIMUS AGENT FTO', specialist: true, unit: 'MAXIMUS AGENT FTO' },
             { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'PROBOT', specialist: false, unit: 'PROBOT' },
@@ -181,9 +181,9 @@ const operationsLists = [
       combatGroups: [
         {
           entries: [
-            { doctor: false, engineer: false, hacker: true, lieutenant: false, orderTypes: ['regular'], profile: 'RUDRA FTO', specialist: false, unit: 'RUDRA FTO' },
+            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'RUDRA FTO', specialist: false, unit: 'RUDRA FTO' },
             { doctor: true, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'CLAIRE LAZHARI FTO', specialist: false, unit: 'CLAIRE LAZHARI FTO' },
-            { doctor: false, engineer: false, hacker: false, lieutenant: true, orderTypes: ['regular', 'lieutenant', 'lieutenant'], profile: 'ASURA', specialist: false, unit: 'ASURA' },
+            { doctor: false, engineer: false, hacker: true, lieutenant: true, orderTypes: ['regular', 'lieutenant', 'lieutenant'], profile: 'ASURA', specialist: false, unit: 'ASURA' },
           ],
         },
       ],
@@ -207,6 +207,26 @@ const operationsLists = [
 const allAnalysis = buildFixtureAnalysis(operationsLists)
 const winningAnalysis = buildFixtureAnalysis(operationsLists.filter((list) => list.result === 'Win'))
 const losingAnalysis = buildFixtureAnalysis(operationsLists.filter((list) => list.result === 'Loss'))
+const roleFixtureAnalysis = buildFixtureAnalysis([
+  {
+    decoded: {
+      combatGroups: [
+        {
+          entries: [
+            { forwardObserver: true, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'Forward Observer Profile', unit: 'Forward Observer Profile' },
+            { chainOfCommand: true, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'Chain of Command Profile', unit: 'Chain of Command Profile' },
+          ],
+        },
+      ],
+      orderCounts: {
+        regular: 2,
+      },
+      totals: {},
+    },
+    result: 'Win',
+    status: 'decoded',
+  },
+])
 
 assert.equal(allAnalysis.listCount, 2, 'All Army Lists must include winning and losing decoded lists.')
 assert.equal(winningAnalysis.listCount, 1, 'Winning Record must include only winning submitted lists.')
@@ -230,6 +250,36 @@ assert.deepEqual(
     totalSelections: 2,
   },
   'Duplicate models must count twice for selections but once for list appearance.',
+)
+assert.deepEqual(
+  winningAnalysis.hackers.map((row) => row.name),
+  ['ASURA', 'Pilot-X Team'],
+  'Operations Subsection winning list hackers must include only explicit hacker profiles.',
+)
+assert.equal(
+  winningAnalysis.hackers.some((row) => ['RACERBOT Mk-III', 'DIKPALA', 'RUDRA FTO'].includes(row.name)),
+  false,
+  'Repeater support profiles must not be classified as hackers.',
+)
+assert.equal(
+  winningAnalysis.forwardObservers.length,
+  0,
+  'SACHA with Forward Deployment must not appear in Forward Observers.',
+)
+assert.equal(
+  winningAnalysis.chainOfCommand.some((row) => row.name === 'MAXIMUS AGENT FTO'),
+  false,
+  'MAXIMUS AGENT FTO must not appear in Chain of Command without an explicit Chain of Command skill.',
+)
+assert.equal(
+  roleFixtureAnalysis.forwardObservers.length,
+  1,
+  'Explicit Forward Observer profiles must appear in Forward Observers.',
+)
+assert.deepEqual(
+  roleFixtureAnalysis.chainOfCommand.map((row) => row.name),
+  ['Chain of Command Profile'],
+  'Explicit Chain of Command profiles must appear in Chain of Command.',
 )
 assert.match(
   commissioner,
@@ -281,18 +331,21 @@ function buildFixtureAnalysis(lists) {
       ),
     ),
     listCount: lists.length,
+    chainOfCommand: buildUsageRows(entriesByList, (entry) => entry.chainOfCommand),
+    forwardObservers: buildUsageRows(entriesByList, (entry) => entry.forwardObserver),
+    hackers: buildUsageRows(entriesByList, (entry) => entry.hacker),
     modelUsage: buildUsageRows(entriesByList),
   }
 }
 
-function buildUsageRows(entriesByList) {
+function buildUsageRows(entriesByList, predicate = () => true) {
   const totalSelections = new Map()
   const listAppearances = new Map()
 
   entriesByList.forEach((entries) => {
     const seenInList = new Set()
 
-    entries.forEach((entry) => {
+    entries.filter(predicate).forEach((entry) => {
       totalSelections.set(entry.unit, (totalSelections.get(entry.unit) ?? 0) + 1)
       seenInList.add(entry.unit)
     })
