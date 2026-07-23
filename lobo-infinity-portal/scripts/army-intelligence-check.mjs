@@ -213,7 +213,7 @@ assert.match(
 )
 assert.match(
   decoder,
-  /ARMY_INTELLIGENCE_DECODER_VERSION = 'army-intelligence-decoder-v2'/,
+  /ARMY_INTELLIGENCE_DECODER_VERSION = 'army-intelligence-decoder-v3'/,
   'Standalone decoder must define the current Army Intelligence decoder version.',
 )
 assert.match(
@@ -865,8 +865,13 @@ assert.match(
 )
 assert.match(
   refresh,
-  /snapshotHasDecodedProfileMetadata[\s\S]*troopType[\s\S]*skills[\s\S]*wounds[\s\S]*structure/,
-  'Refresh script must redecode stale snapshots missing troop type, skills, wounds, or structure.',
+  /snapshotHasDecodedProfileMetadata[\s\S]*troopType[\s\S]*skills[\s\S]*wounds[\s\S]*structure[\s\S]*weapons[\s\S]*equipment/,
+  'Refresh script must redecode stale snapshots missing troop type, skills, wounds, structure, weapons, or equipment.',
+)
+assert.match(
+  worker,
+  /snapshotHasDecodedProfileMetadata[\s\S]*troopType[\s\S]*skills[\s\S]*wounds[\s\S]*structure[\s\S]*weapons[\s\S]*equipment/,
+  'Commissioner decoder worker must redecode stale snapshots missing troop type, skills, wounds, structure, weapons, or equipment.',
 )
 assert.match(
   refresh,
@@ -964,10 +969,103 @@ assert.equal(
   'A failed snapshot must not stop later stale snapshots from refreshing.',
 )
 
+const liveV2LoboForWorkSnapshot = buildLiveV2SnapshotFixture({
+  listName: 'For Work',
+  player: 'Lobo',
+  sectorial: 'Operations Subsection',
+  snapshotKey: 'casual:36:winner:lobo:a59a31d83c48418d817f7e887c935ae0636d5fbf4b67b6015738d41378a15c88',
+})
+const liveV2PanOceaniaJoanSnapshot = buildLiveV2SnapshotFixture({
+  listName: ' Joan',
+  player: 'ADangerousFrog',
+  sectorial: 'Panoceania',
+  snapshotKey: 'casual:36:loser:adangerousfrog:bf0e05e82a54d947aeeaac0d5ad1c41cc9d09a7e4ab059b8d4e2ad2f8c832b07',
+})
+
+assert.equal(
+  snapshotHasCompleteProfileMetadata(liveV2LoboForWorkSnapshot),
+  false,
+  'Lobo / Operations Subsection / For Work v2 snapshot must be stale without weapons and equipment.',
+)
+assert.equal(
+  snapshotHasCompleteProfileMetadata(liveV2PanOceaniaJoanSnapshot),
+  false,
+  'ADangerousFrog / PanOceania / Joan v2 snapshot must be stale without weapons and equipment.',
+)
+assert.equal(
+  isCurrentSnapshot(
+    liveV2LoboForWorkSnapshot,
+    'a59a31d83c48418d817f7e887c935ae0636d5fbf4b67b6015738d41378a15c88',
+  ),
+  false,
+  'Lobo / Operations Subsection / For Work v2 snapshot must be re-decoded even when the army-code hash is unchanged.',
+)
+assert.equal(
+  isCurrentSnapshot(
+    liveV2PanOceaniaJoanSnapshot,
+    'bf0e05e82a54d947aeeaac0d5ad1c41cc9d09a7e4ab059b8d4e2ad2f8c832b07',
+  ),
+  false,
+  'ADangerousFrog / PanOceania / Joan v2 snapshot must be re-decoded even when the army-code hash is unchanged.',
+)
+
 console.log('Army Intelligence Phase 1 checks passed.')
 
 function read(path) {
   return readFileSync(path, 'utf8')
+}
+
+function buildLiveV2SnapshotFixture({ listName, player, sectorial, snapshotKey }) {
+  return {
+    armyCodeHash: snapshotKey.split(':').at(-1),
+    decoded: {
+      combatGroups: [
+        {
+          entries: Array.from({ length: 15 }, (_, index) => ({
+            profile: `${player} profile ${index + 1}`,
+            skills: [],
+            structure: index % 2 === 0 ? null : 1,
+            troopType: index % 2 === 0 ? 'LI' : 'REM',
+            wounds: index % 2 === 0 ? 1 : null,
+          })),
+        },
+      ],
+      decoderVersion: 'army-intelligence-decoder-v2',
+      listName,
+      sectorial,
+    },
+    player,
+    snapshotKey,
+    status: 'decoded',
+  }
+}
+
+function isCurrentSnapshot(snapshot, armyCodeHash) {
+  return (
+    snapshot.armyCodeHash === armyCodeHash &&
+    snapshot.status === 'decoded' &&
+    snapshot.decoded?.decoderVersion === 'army-intelligence-decoder-v3' &&
+    snapshotHasCompleteProfileMetadata(snapshot)
+  )
+}
+
+function snapshotHasCompleteProfileMetadata(list) {
+  if (list.status !== 'decoded' || !list.decoded) {
+    return false
+  }
+
+  const groups = Array.isArray(list.decoded.combatGroups) ? list.decoded.combatGroups : []
+  return groups.every((group) => {
+    const entries = Array.isArray(group.entries) ? group.entries : []
+    return entries.every((entry) =>
+      Object.hasOwn(entry, 'troopType') &&
+      Object.hasOwn(entry, 'skills') &&
+      Object.hasOwn(entry, 'wounds') &&
+      Object.hasOwn(entry, 'structure') &&
+      Object.hasOwn(entry, 'weapons') &&
+      Object.hasOwn(entry, 'equipment'),
+    )
+  })
 }
 
 function buildFixtureAnalysis(lists) {

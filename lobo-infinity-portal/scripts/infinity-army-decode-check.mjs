@@ -1,7 +1,11 @@
 import { mkdtemp } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { decodeArmyListToFiles, hasExactSkillToken } from './infinity-army-decode.mjs'
+import {
+  ARMY_INTELLIGENCE_DECODER_VERSION,
+  decodeArmyListToFiles,
+  hasExactSkillToken,
+} from './infinity-army-decode.mjs'
 
 const forWorkCode =
   'gr8Kb3BlcmF0aW9ucwhGb3IgV29ya4EsAgEBAAUAhK0BAgAAhusBAgAAh2oBBQAAgkgBBgAAh1IBAQACAQAKAIJQAQEAAIJTAQEAAIJTAQEAADIBAQAAh28CAQAAh28CAQAAh28BAgAAh0YBAgAAglQBAQAAh2YBAgA%3D'
@@ -60,6 +64,8 @@ const totalDurability = entries.reduce((total, entry) => total + (entry.wounds ?
 const durabilityModelCount = entries.filter((entry) => entry.wounds !== null || entry.structure !== null).length
 
 assertEqual(result.list.faction, 'ALEPH', 'faction')
+assertEqual(result.list.decoderVersion, 'army-intelligence-decoder-v3', 'decoder version')
+assertEqual(ARMY_INTELLIGENCE_DECODER_VERSION, 'army-intelligence-decoder-v3', 'exported decoder version')
 assertEqual(result.list.sectorial, 'Operations Subsection', 'sectorial')
 assertEqual(result.list.listName, 'For Work', 'list name')
 assertEqual(result.list.totals.points, 300, 'points')

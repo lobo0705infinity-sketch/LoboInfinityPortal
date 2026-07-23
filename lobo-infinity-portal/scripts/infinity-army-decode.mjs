@@ -20,7 +20,7 @@ const portalRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const defaultOutputDir = resolve(portalRoot, '.tmp', 'army-decode')
 const infinityDataBaseUrl =
   process.env.INFINITY_DATA_BASE_URL || 'https://infinity.2nirwana.de/cards'
-export const ARMY_INTELLIGENCE_DECODER_VERSION = 'army-intelligence-decoder-v2'
+export const ARMY_INTELLIGENCE_DECODER_VERSION = 'army-intelligence-decoder-v3'
 
 const parentFactionBySectorialSlug = new Map([
   ['operations', 'ALEPH'],

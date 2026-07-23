@@ -225,7 +225,9 @@ function snapshotHasDecodedProfileMetadata(list) {
       Object.hasOwn(entry, 'troopType') &&
       Object.hasOwn(entry, 'skills') &&
       Object.hasOwn(entry, 'wounds') &&
-      Object.hasOwn(entry, 'structure'),
+      Object.hasOwn(entry, 'structure') &&
+      Object.hasOwn(entry, 'weapons') &&
+      Object.hasOwn(entry, 'equipment'),
     )
   })
 }
