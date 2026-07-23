@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { type ReactNode, useEffect, useMemo, useState } from 'react'
 import Skeleton from '../components/Skeleton'
 import {
   apiClient,
-  type ArmyIntelligenceCount,
   type ArmyIntelligenceData,
+  type ArmyIntelligenceDecodedEntry,
   type ArmyIntelligenceList,
 } from '../services/api'
 
@@ -19,6 +19,51 @@ type ArmyIntelligenceState =
       error: string
       status: 'error'
     }
+
+type AnalysisResultFilter = 'all' | 'winning' | 'losing'
+
+type UsageRow = {
+  listCount: number
+  name: string
+  percentage: number
+  totalSelections: number
+}
+
+type ArmyAnalysis = {
+  averageCombatGroups: number
+  averageImpetuousOrders: number
+  averageIrregularOrders: number
+  averageLieutenantOrders: number
+  averagePoints: number
+  averageRegularOrders: number
+  averageSwc: number
+  averageTacticalAwarenessOrders: number
+  doctors: UsageRow[]
+  engineers: UsageRow[]
+  hackers: UsageRow[]
+  lieutenants: UsageRow[]
+  listCount: number
+  modelUsage: UsageRow[]
+  specialists: UsageRow[]
+}
+
+const resultFilterOptions: Array<{
+  label: string
+  value: AnalysisResultFilter
+}> = [
+  {
+    label: 'All Army Lists',
+    value: 'all',
+  },
+  {
+    label: 'Army Lists with a Winning Record',
+    value: 'winning',
+  },
+  {
+    label: 'Army Lists with a Losing Record',
+    value: 'losing',
+  },
+]
 
 function ArmyIntelligence() {
   const [state, setState] = useState<ArmyIntelligenceState>({
@@ -62,9 +107,9 @@ function ArmyIntelligence() {
       <main className="portal-shell army-intelligence-page">
         <PageHeader />
         <section className="army-intelligence-summary" aria-label="Army Intelligence loading">
-          <Skeleton label="Army Intelligence summary loading" rows={5} />
-          <Skeleton label="Army Intelligence faction data loading" rows={5} />
-          <Skeleton label="Army Intelligence unit data loading" rows={5} />
+          <Skeleton label="Army Intelligence controls loading" rows={3} />
+          <Skeleton label="Army Intelligence metrics loading" rows={5} />
+          <Skeleton label="Army Intelligence model usage loading" rows={5} />
         </section>
       </main>
     )
@@ -86,134 +131,121 @@ function ArmyIntelligence() {
 
 function ArmyIntelligenceContent({ data }: { data: ArmyIntelligenceData }) {
   const [selectedSectorial, setSelectedSectorial] = useState('')
-  const sectorials = useMemo(
-    () =>
-      Array.from(
-        new Set(
-          data.lists
-            .map((list) => getListSectorial(list))
-            .filter(Boolean),
-        ),
-      ).sort((left, right) => left.localeCompare(right)),
+  const [resultFilter, setResultFilter] = useState<AnalysisResultFilter>('all')
+  const decodedLists = useMemo(
+    () => data.lists.filter(isDecodedList),
     [data.lists],
   )
-  const filteredLists = useMemo(
+  const sectorials = useMemo(
+    () =>
+      Array.from(new Set(decodedLists.map((list) => getDecodedSectorial(list)).filter(Boolean)))
+        .sort((left, right) => left.localeCompare(right)),
+    [decodedLists],
+  )
+  const matchingLists = useMemo(
     () =>
       selectedSectorial
-        ? data.lists.filter((list) =>
-            selectedSectorial === 'all'
-              ? true
-              : isListAttributedToSectorial(list, selectedSectorial),
-          )
+        ? decodedLists
+            .filter((list) => getDecodedSectorial(list) === selectedSectorial)
+            .filter((list) => matchesResultFilter(list, resultFilter))
         : [],
-    [data.lists, selectedSectorial],
+    [decodedLists, resultFilter, selectedSectorial],
   )
-  const decodedLists = useMemo(
-    () => filteredLists.filter((list) => list.status === 'decoded' && list.decoded),
-    [filteredLists],
+  const analysis = useMemo(() => buildArmyAnalysis(matchingLists), [matchingLists])
+  const decodeIssues = useMemo(
+    () => data.lists.filter((list) => list.status === 'pending' || list.status === 'failed'),
+    [data.lists],
   )
-  const pendingLists = filteredLists.filter((list) => list.status === 'pending')
-  const failedLists = filteredLists.filter((list) => list.status === 'failed')
-  const unassignedIssueLists = useMemo(
-    () =>
-      selectedSectorial && selectedSectorial !== 'all'
-        ? data.lists.filter(
-            (list) =>
-              (list.status === 'pending' || list.status === 'failed') &&
-              !isListAttributedToSectorial(list, selectedSectorial),
-          )
-        : [],
-    [data.lists, selectedSectorial],
-  )
-  const summary = useMemo(() => buildFilteredSummary(filteredLists), [filteredLists])
 
   return (
     <main className="portal-shell army-intelligence-page">
       <PageHeader />
 
-      <SectorialSelector
-        onChange={setSelectedSectorial}
-        sectorials={sectorials}
-        value={selectedSectorial}
-      />
+      <section className="panel army-intelligence-selector" aria-label="Army Intelligence analysis controls">
+        <label>
+          <span>Select Sectorial</span>
+          <select onChange={(event) => setSelectedSectorial(event.target.value)} value={selectedSectorial}>
+            <option value="">Choose a sectorial</option>
+            {sectorials.map((sectorial) => (
+              <option key={sectorial} value={sectorial}>
+                {sectorial}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          <span>Analyze</span>
+          <select
+            onChange={(event) => setResultFilter(event.target.value as AnalysisResultFilter)}
+            value={resultFilter}
+          >
+            {resultFilterOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </label>
+      </section>
 
       {!selectedSectorial ? (
-        <section className="panel army-intelligence-empty" aria-label="Select a sectorial">
-          <p>Select a sectorial to review decoded list trends, unit usage, and specialist roles.</p>
+        <section className="panel army-intelligence-empty" aria-label="Choose a sectorial">
+          <p>Choose a sectorial to analyze decoded submitted army lists.</p>
+        </section>
+      ) : matchingLists.length === 0 ? (
+        <section className="panel army-intelligence-empty" aria-label="No matching army lists">
+          <p>No decoded army lists match the selected sectorial and result filter.</p>
         </section>
       ) : (
         <>
+          <section className="army-intelligence-summary" aria-label="Army Intelligence analysis summary">
+            <MetricCard label="Army Lists Analyzed" value={analysis.listCount} />
+            <MetricCard label="Average Regular Orders" value={analysis.averageRegularOrders} />
+            <MetricCard label="Average Irregular Orders" value={analysis.averageIrregularOrders} />
+            <MetricCard label="Average Impetuous Orders" value={analysis.averageImpetuousOrders} />
+            <MetricCard label="Average Tactical Awareness" value={analysis.averageTacticalAwarenessOrders} />
+            <MetricCard label="Average Lieutenant Bonus" value={analysis.averageLieutenantOrders} />
+            <MetricCard label="Average Combat Groups" value={analysis.averageCombatGroups} />
+            <MetricCard label="Average Points" value={analysis.averagePoints} />
+            <MetricCard label="Average SWC" value={analysis.averageSwc} />
+          </section>
 
-      <section className="army-intelligence-summary" aria-label="Army Intelligence summary">
-        <MetricCard label="Decoded Lists" value={summary.decodedLists} />
-        <MetricCard label="Pending" value={summary.pendingLists} />
-        <MetricCard label="Failed" value={summary.failedLists} />
-        <MetricCard label="Average Points" value={summary.averagePoints} />
-        <MetricCard label="Average SWC" value={summary.averageSwc} />
-        <MetricCard label="Combat Groups" value={summary.averageCombatGroups} />
-        <MetricCard label="Regular Orders" value={summary.averageRegularOrders} />
-        <MetricCard label="Irregular Orders" value={summary.averageIrregularOrders} />
-      </section>
+          <UsagePanel items={analysis.modelUsage} title="Model Usage" variant="wide" />
 
-      <section className="army-intelligence-grid" aria-label="Army Intelligence aggregates">
-        <CountPanel items={summary.units} limit={12} title="Most-Used Units" />
-        <CountPanel items={summary.lieutenants} title="Lieutenant Choices" />
-        <CountPanel items={summary.hackers} title="Hackers" />
-        <CountPanel items={summary.specialists} title="Specialists" />
-        <CountPanel items={summary.doctorsEngineers} title="Doctors / Engineers" />
-      </section>
-
-      <section className="panel army-intelligence-lists" aria-labelledby="decoded-lists-title">
-        <div className="army-intelligence-section-heading">
-          <div>
-            <p className="eyebrow">Decoded Snapshots</p>
-            <h2 id="decoded-lists-title">Submitted Lists</h2>
-          </div>
-          <strong>{decodedLists.length} decoded</strong>
-        </div>
-        <div className="army-intelligence-list-table" role="table" aria-label="Decoded army lists">
-          <div role="row">
-            <span role="columnheader">Player</span>
-            <span role="columnheader">Faction</span>
-            <span role="columnheader">List</span>
-            <span role="columnheader">Totals</span>
-          </div>
-          {decodedLists.map((list) => (
-            <DecodedListRow key={list.snapshotKey} list={list} />
-          ))}
-        </div>
-      </section>
-
-      {(pendingLists.length > 0 || failedLists.length > 0) && (
-        <section className="army-intelligence-grid" aria-label="Pending and failed decodes">
-          <StatusPanel lists={pendingLists} status="pending" title="Pending Decodes" />
-          <StatusPanel lists={failedLists} status="failed" title="Failed Decodes" />
-        </section>
-      )}
-      {unassignedIssueLists.length > 0 && (
-        <section className="panel army-intelligence-unassigned" aria-labelledby="unassigned-decodes-title">
-          <div className="army-intelligence-section-heading">
-            <div>
-              <p className="eyebrow">Unassigned</p>
-              <h2 id="unassigned-decodes-title">Decode Issues</h2>
-            </div>
-            <strong>Not attributed to {selectedSectorial}</strong>
-          </div>
-          <p>
-            These pending or failed decode snapshots do not currently have enough faction
-            or sectorial metadata to associate them with the selected sectorial.
-          </p>
-          <ol>
-            {unassignedIssueLists.slice(0, 8).map((list) => (
-              <li key={list.snapshotKey}>
-                <span>{list.player || list.snapshotKey}</span>
-                <strong>{list.status === 'failed' ? list.error || 'Decode failed' : 'Pending'}</strong>
-              </li>
-            ))}
-          </ol>
-        </section>
-      )}
+          <section className="army-intelligence-grid" aria-label="Role usage breakdowns">
+            <ResponsiveDisclosure title="Lieutenant Choices">
+              <UsagePanel items={analysis.lieutenants} title="Lieutenant Choices" titleHidden />
+            </ResponsiveDisclosure>
+            <ResponsiveDisclosure title="Hackers">
+              <UsagePanel items={analysis.hackers} title="Hackers" titleHidden />
+            </ResponsiveDisclosure>
+            <ResponsiveDisclosure title="Specialists">
+              <UsagePanel items={analysis.specialists} title="Specialists" titleHidden />
+            </ResponsiveDisclosure>
+            <ResponsiveDisclosure title="Doctors">
+              <UsagePanel items={analysis.doctors} title="Doctors" titleHidden />
+            </ResponsiveDisclosure>
+            <ResponsiveDisclosure title="Engineers">
+              <UsagePanel items={analysis.engineers} title="Engineers" titleHidden />
+            </ResponsiveDisclosure>
+          </section>
         </>
+      )}
+
+      {decodeIssues.length > 0 && (
+        <ResponsiveDisclosure count={decodeIssues.length} title="Decode Issues" variant="warning">
+          <section className="army-intelligence-unassigned" aria-labelledby="decode-issues-title">
+            <p>Pending or failed decodes are not included in sectorial statistics.</p>
+            <ol>
+              {decodeIssues.slice(0, 8).map((list) => (
+                <li key={list.snapshotKey}>
+                  <span>{list.player || list.snapshotKey}</span>
+                  <strong>{list.status === 'failed' ? list.error || 'Decode failed' : 'Pending'}</strong>
+                </li>
+              ))}
+            </ol>
+          </section>
+        </ResponsiveDisclosure>
       )}
     </main>
   )
@@ -224,7 +256,7 @@ function PageHeader() {
     <section className="page-header" aria-labelledby="army-intelligence-title">
       <p className="eyebrow">Intelligence</p>
       <h1 id="army-intelligence-title">Army Intelligence</h1>
-      <p>Decoded snapshots from submitted League, Casual, Tournament, and Army List Library codes</p>
+      <p>Sectorial list-building analysis from decoded submitted army codes</p>
     </section>
   )
 }
@@ -233,60 +265,45 @@ function MetricCard({ label, value }: { label: string; value: number }) {
   return (
     <article className="army-intelligence-metric">
       <span>{label}</span>
-      <strong>{Number.isInteger(value) ? value : value.toFixed(1)}</strong>
+      <strong>{formatNumber(value)}</strong>
     </article>
   )
 }
 
-function SectorialSelector({
-  onChange,
-  sectorials,
-  value,
-}: {
-  onChange: (value: string) => void
-  sectorials: string[]
-  value: string
-}) {
-  return (
-    <section className="panel army-intelligence-selector" aria-label="Army Intelligence sectorial selector">
-      <label>
-        <span>Select Sectorial</span>
-        <select onChange={(event) => onChange(event.target.value)} value={value}>
-          <option value="">Choose a sectorial</option>
-          <option value="all">All Sectorials</option>
-          {sectorials.map((sectorial) => (
-            <option key={sectorial} value={sectorial}>
-              {sectorial}
-            </option>
-          ))}
-        </select>
-      </label>
-    </section>
-  )
-}
-
-function CountPanel({
+function UsagePanel({
   items,
-  limit = 8,
+  titleHidden,
   title,
+  variant,
 }: {
-  items: ArmyIntelligenceCount[]
-  limit?: number
+  items: UsageRow[]
+  titleHidden?: boolean
   title: string
+  variant?: 'wide'
 }) {
-  const visible = items.slice(0, limit)
+  const visible = items.slice(0, variant === 'wide' ? 24 : 10)
 
   return (
-    <section className="panel army-intelligence-panel" aria-labelledby={`${slugify(title)}-title`}>
-      <h2 id={`${slugify(title)}-title`}>{title}</h2>
-      {visible.length === 0 ? (
-        <p>No decoded data yet.</p>
+    <section
+      className={`${titleHidden ? '' : 'panel '}army-intelligence-panel${titleHidden ? ' army-intelligence-panel-embedded' : ''}${variant === 'wide' ? ' army-intelligence-panel-wide' : ''}`}
+      aria-labelledby={`${slugify(title)}-title`}
+    >
+      {titleHidden ? (
+        <h2 className="sr-only" id={`${slugify(title)}-title`}>{title}</h2>
       ) : (
-        <ol>
+        <h2 id={`${slugify(title)}-title`}>{title}</h2>
+      )}
+      {visible.length === 0 ? (
+        <p>No matching decoded usage.</p>
+      ) : (
+        <ol className="army-intelligence-usage-list">
           {visible.map((item) => (
             <li key={item.name}>
               <span>{item.name}</span>
-              <strong>{item.count}</strong>
+              <strong>{item.totalSelections}</strong>
+              <small>
+                {item.listCount} lists / {formatNumber(item.percentage)}%
+              </small>
             </li>
           ))}
         </ol>
@@ -295,104 +312,150 @@ function CountPanel({
   )
 }
 
-function DecodedListRow({ list }: { list: ArmyIntelligenceList }) {
-  const decoded = list.decoded
-
-  return (
-    <div role="row">
-      <span role="cell">{list.player}</span>
-      <span role="cell">{list.sectorial || list.faction || 'Not recorded'}</span>
-      <span role="cell">{decoded?.listName || 'Unnamed list'}</span>
-      <span role="cell">
-        {decoded
-          ? `${decoded.totals.points} pts / ${decoded.totals.swc} SWC / ${decoded.totals.combatGroups} groups`
-          : 'Pending'}
-      </span>
-    </div>
-  )
-}
-
-function StatusPanel({
-  lists,
-  status,
+function ResponsiveDisclosure({
+  children,
+  count,
   title,
+  variant,
 }: {
-  lists: ArmyIntelligenceList[]
-  status: 'failed' | 'pending'
+  children: ReactNode
+  count?: number
   title: string
+  variant?: 'warning'
 }) {
+  const [open, setOpen] = useState(() =>
+    typeof window === 'undefined'
+      ? true
+      : !window.matchMedia('(max-width: 720px)').matches,
+  )
+
   return (
-    <section className={`panel army-intelligence-panel is-${status}`} aria-labelledby={`${status}-decodes-title`}>
-      <h2 id={`${status}-decodes-title`}>{title}</h2>
-      {lists.length === 0 ? (
-        <p>No {status} decodes.</p>
-      ) : (
-        <ol>
-          {lists.slice(0, 8).map((list) => (
-            <li key={list.snapshotKey}>
-              <span>{list.player || list.snapshotKey}</span>
-              <strong>{status === 'failed' ? list.error || 'Decode failed' : 'Pending'}</strong>
-            </li>
-          ))}
-        </ol>
-      )}
+    <section
+      className={`panel army-intelligence-disclosure${variant === 'warning' ? ' is-warning' : ''}`}
+      data-open={open ? 'true' : 'false'}
+    >
+      <button
+        aria-expanded={open}
+        className="army-intelligence-disclosure-toggle"
+        onClick={() => setOpen((current) => !current)}
+        type="button"
+      >
+        <span>{title}</span>
+        {typeof count === 'number' ? <strong>{count}</strong> : null}
+      </button>
+      <div className="army-intelligence-disclosure-content" hidden={!open}>
+        {children}
+      </div>
     </section>
   )
 }
 
-function slugify(value: string) {
-  return value.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+function isDecodedList(list: ArmyIntelligenceList) {
+  return list.status === 'decoded' && Boolean(list.decoded)
 }
 
-function getListSectorial(list: ArmyIntelligenceList) {
-  return list.decoded?.sectorial || list.sectorial || list.faction
+function getDecodedSectorial(list: ArmyIntelligenceList) {
+  return list.decoded?.sectorial || ''
 }
 
-function isListAttributedToSectorial(list: ArmyIntelligenceList, sectorial: string) {
-  if (list.status === 'decoded') {
-    return getListSectorial(list) === sectorial
+function matchesResultFilter(list: ArmyIntelligenceList, filter: AnalysisResultFilter) {
+  if (filter === 'all') {
+    return true
   }
 
-  return list.sectorial === sectorial
+  const result = list.result.trim().toLowerCase()
+
+  if (filter === 'winning') {
+    return result === 'win'
+  }
+
+  return result === 'loss'
 }
 
-function buildFilteredSummary(lists: ArmyIntelligenceList[]) {
-  const decodedLists = lists.filter((list) => list.status === 'decoded' && list.decoded)
-  const entries = decodedLists.flatMap((list) =>
-    list.decoded?.combatGroups.flatMap((group) => group.entries) ?? [],
+function buildArmyAnalysis(lists: ArmyIntelligenceList[]): ArmyAnalysis {
+  const decodedLists = lists.filter((list): list is ArmyIntelligenceList & { decoded: NonNullable<ArmyIntelligenceList['decoded']> } =>
+    Boolean(list.decoded),
+  )
+  const entriesByList = decodedLists.map((list) =>
+    list.decoded.combatGroups.flatMap((group) => group.entries),
   )
 
   return {
-    averageCombatGroups: average(
-      decodedLists.map((list) => list.decoded?.totals.combatGroups ?? 0),
+    averageCombatGroups: average(decodedLists.map((list) => list.decoded.totals.combatGroups)),
+    averageImpetuousOrders: average(decodedLists.map((list) => list.decoded.orderCounts.impetuous)),
+    averageIrregularOrders: average(decodedLists.map((list) => list.decoded.orderCounts.irregular)),
+    averageLieutenantOrders: average(decodedLists.map((list) => list.decoded.orderCounts.lieutenant)),
+    averagePoints: average(decodedLists.map((list) => list.decoded.totals.points)),
+    averageRegularOrders: average(decodedLists.map((list) => list.decoded.orderCounts.regular)),
+    averageSwc: average(decodedLists.map((list) => list.decoded.totals.swc)),
+    averageTacticalAwarenessOrders: average(
+      entriesByList.map((listEntries) =>
+        listEntries.reduce((total, entry) => total + countTacticalAwarenessOrders(entry), 0),
+      ),
     ),
-    averageIrregularOrders: average(
-      decodedLists.map((list) => list.decoded?.orderCounts.irregular ?? 0),
-    ),
-    averagePoints: average(
-      decodedLists.map((list) => list.decoded?.totals.points ?? 0),
-    ),
-    averageRegularOrders: average(
-      decodedLists.map((list) => list.decoded?.orderCounts.regular ?? 0),
-    ),
-    averageSwc: average(decodedLists.map((list) => list.decoded?.totals.swc ?? 0)),
-    decodedLists: decodedLists.length,
-    doctorsEngineers: countEntries(
-      entries.filter((entry) => entry.doctor || entry.engineer).map((entry) => entry.unit),
-    ),
-    factions: countEntries(decodedLists.map((list) => list.faction)),
-    failedLists: lists.filter((list) => list.status === 'failed').length,
-    hackers: countEntries(entries.filter((entry) => entry.hacker).map((entry) => entry.unit)),
-    lieutenants: countEntries(
-      entries.filter((entry) => entry.lieutenant).map((entry) => entry.unit),
-    ),
-    pendingLists: lists.filter((list) => list.status === 'pending').length,
-    sectorials: countEntries(decodedLists.map((list) => getListSectorial(list))),
-    specialists: countEntries(
-      entries.filter((entry) => entry.specialist).map((entry) => entry.unit),
-    ),
-    units: countEntries(entries.map((entry) => entry.unit)),
+    doctors: buildUsageRows(entriesByList, (entry) => entry.doctor),
+    engineers: buildUsageRows(entriesByList, (entry) => entry.engineer),
+    hackers: buildUsageRows(entriesByList, (entry) => entry.hacker),
+    lieutenants: buildUsageRows(entriesByList, (entry) => entry.lieutenant),
+    listCount: decodedLists.length,
+    modelUsage: buildUsageRows(entriesByList),
+    specialists: buildUsageRows(entriesByList, (entry) => entry.specialist),
   }
+}
+
+function buildUsageRows(
+  entriesByList: ArmyIntelligenceDecodedEntry[][],
+  predicate: (entry: ArmyIntelligenceDecodedEntry) => boolean = () => true,
+): UsageRow[] {
+  const totalSelections = new Map<string, number>()
+  const listAppearances = new Map<string, number>()
+
+  entriesByList.forEach((entries) => {
+    const seenInList = new Set<string>()
+
+    entries.filter(predicate).forEach((entry) => {
+      const name = getModelName(entry)
+
+      if (!name) {
+        return
+      }
+
+      totalSelections.set(name, (totalSelections.get(name) ?? 0) + 1)
+      seenInList.add(name)
+    })
+
+    seenInList.forEach((name) => {
+      listAppearances.set(name, (listAppearances.get(name) ?? 0) + 1)
+    })
+  })
+
+  return Array.from(totalSelections.entries())
+    .map(([name, total]) => {
+      const listCount = listAppearances.get(name) ?? 0
+
+      return {
+        listCount,
+        name,
+        percentage: entriesByList.length ? (listCount / entriesByList.length) * 100 : 0,
+        totalSelections: total,
+      }
+    })
+    .sort(
+      (left, right) =>
+        right.totalSelections - left.totalSelections ||
+        right.listCount - left.listCount ||
+        left.name.localeCompare(right.name),
+    )
+}
+
+function getModelName(entry: ArmyIntelligenceDecodedEntry) {
+  return (entry.unit || entry.profile).trim()
+}
+
+function countTacticalAwarenessOrders(entry: ArmyIntelligenceDecodedEntry) {
+  return entry.orderTypes.filter((orderType) =>
+    orderType.trim().toLowerCase().replace(/[^a-z]/g, '').includes('tacticalawareness'),
+  ).length
 }
 
 function average(values: number[]) {
@@ -403,19 +466,12 @@ function average(values: number[]) {
   return Math.round((values.reduce((total, value) => total + value, 0) / values.length) * 10) / 10
 }
 
-function countEntries(values: string[]): ArmyIntelligenceCount[] {
-  const counts = new Map<string, number>()
+function formatNumber(value: number) {
+  return Number.isInteger(value) ? String(value) : value.toFixed(1)
+}
 
-  values
-    .map((value) => value.trim())
-    .filter(Boolean)
-    .forEach((value) => {
-      counts.set(value, (counts.get(value) ?? 0) + 1)
-    })
-
-  return Array.from(counts.entries())
-    .map(([name, count]) => ({ count, name }))
-    .sort((left, right) => right.count - left.count || left.name.localeCompare(right.name))
+function slugify(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, '-')
 }
 
 export default ArmyIntelligence

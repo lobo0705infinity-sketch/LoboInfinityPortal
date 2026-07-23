@@ -81,13 +81,140 @@ assert.match(
 )
 assert.match(
   page,
-  /Pending Decodes[\s\S]*Failed Decodes/,
-  'Army Intelligence page must show pending and failed decodes.',
+  /Select Sectorial[\s\S]*Choose a sectorial[\s\S]*Analyze/,
+  'Army Intelligence page must require sectorial and analysis-result selectors.',
 )
 assert.match(
   page,
-  /Lieutenant Choices[\s\S]*Hackers[\s\S]*Specialists/,
-  'Army Intelligence page must show tactical aggregate sections.',
+  /All Army Lists[\s\S]*Army Lists with a Winning Record[\s\S]*Army Lists with a Losing Record/,
+  'Army Intelligence page must support all, winning, and losing record filters.',
+)
+assert.match(
+  page,
+  /Average Tactical Awareness[\s\S]*Average Lieutenant Bonus/,
+  'Army Intelligence page must show order averages including Tactical Awareness and Lieutenant bonus orders.',
+)
+assert.match(
+  page,
+  /Model Usage[\s\S]*Lieutenant Choices[\s\S]*Hackers[\s\S]*Specialists[\s\S]*Doctors[\s\S]*Engineers/,
+  'Army Intelligence page must show model and role usage breakdowns.',
+)
+assert.match(
+  page,
+  /countTacticalAwarenessOrders[\s\S]*orderTypes/,
+  'Tactical Awareness must be derived from decoded entry orderTypes.',
+)
+assert.match(
+  page,
+  /listAppearances[\s\S]*percentage/,
+  'Model usage must count per-list appearances separately from duplicate selections.',
+)
+assert.match(
+  page,
+  /Pending or failed decodes are not included in sectorial statistics/,
+  'Pending and failed decodes must be shown only as separate warnings.',
+)
+assert.doesNotMatch(
+  page,
+  /Submitted Lists|DecodedListRow|army-intelligence-list-table|All Sectorials|Factions and Sectorials/,
+  'Army Intelligence page must not render the old submitted-list archive or all-sectorial summaries.',
+)
+assert.match(
+  page,
+  /matchesResultFilter[\s\S]*result === 'win'[\s\S]*result === 'loss'/,
+  'Result filtering must be based on submitted list win/loss result.',
+)
+assert.match(
+  page,
+  /filter\(isDecodedList\)/,
+  'Sectorial statistics must use decoded snapshot data only.',
+)
+
+const operationsLists = [
+  {
+    decoded: {
+      combatGroups: [
+        {
+          entries: [
+            { doctor: false, engineer: false, hacker: true, lieutenant: false, orderTypes: ['regular'], profile: 'RUDRA FTO', specialist: false, unit: 'RUDRA FTO' },
+            { doctor: false, engineer: true, hacker: false, lieutenant: false, orderTypes: ['regular', 'tactical awareness'], profile: 'ARTALIS', specialist: false, unit: 'ARTALIS' },
+            { doctor: false, engineer: false, hacker: true, lieutenant: true, orderTypes: ['regular', 'lieutenant'], profile: 'ASURA', specialist: false, unit: 'ASURA' },
+            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['irregular'], profile: 'SACHA', specialist: true, unit: 'SACHA' },
+            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'NETROD', specialist: false, unit: 'NETROD' },
+            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'NETROD', specialist: false, unit: 'NETROD' },
+          ],
+        },
+      ],
+      orderCounts: {
+        impetuous: 0,
+        irregular: 1,
+        lieutenant: 1,
+        regular: 5,
+      },
+      sectorial: 'Operations Subsection',
+      totals: {
+        combatGroups: 2,
+        points: 300,
+        swc: 3,
+      },
+    },
+    result: 'Win',
+    status: 'decoded',
+  },
+  {
+    decoded: {
+      combatGroups: [
+        {
+          entries: [
+            { doctor: false, engineer: false, hacker: true, lieutenant: false, orderTypes: ['regular'], profile: 'RUDRA FTO', specialist: false, unit: 'RUDRA FTO' },
+            { doctor: true, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'CLAIRE LAZHARI FTO', specialist: false, unit: 'CLAIRE LAZHARI FTO' },
+            { doctor: false, engineer: false, hacker: false, lieutenant: true, orderTypes: ['regular', 'lieutenant', 'lieutenant'], profile: 'ASURA', specialist: false, unit: 'ASURA' },
+          ],
+        },
+      ],
+      orderCounts: {
+        impetuous: 0,
+        irregular: 0,
+        lieutenant: 2,
+        regular: 3,
+      },
+      sectorial: 'Operations Subsection',
+      totals: {
+        combatGroups: 1,
+        points: 290,
+        swc: 2,
+      },
+    },
+    result: 'Loss',
+    status: 'decoded',
+  },
+]
+const allAnalysis = buildFixtureAnalysis(operationsLists)
+const winningAnalysis = buildFixtureAnalysis(operationsLists.filter((list) => list.result === 'Win'))
+const losingAnalysis = buildFixtureAnalysis(operationsLists.filter((list) => list.result === 'Loss'))
+
+assert.equal(allAnalysis.listCount, 2, 'All Army Lists must include winning and losing decoded lists.')
+assert.equal(winningAnalysis.listCount, 1, 'Winning Record must include only winning submitted lists.')
+assert.equal(losingAnalysis.listCount, 1, 'Losing Record must include only losing submitted lists.')
+assert.notEqual(
+  winningAnalysis.averageRegularOrders,
+  losingAnalysis.averageRegularOrders,
+  'Changing result filters must change order averages when matching data differs.',
+)
+assert.notDeepEqual(
+  winningAnalysis.modelUsage,
+  losingAnalysis.modelUsage,
+  'Changing result filters must change model usage counts when matching data differs.',
+)
+assert.deepEqual(
+  allAnalysis.modelUsage.find((row) => row.name === 'NETROD'),
+  {
+    listCount: 1,
+    name: 'NETROD',
+    percentage: 50,
+    totalSelections: 2,
+  },
+  'Duplicate models must count twice for selections but once for list appearance.',
 )
 assert.match(
   commissioner,
@@ -124,4 +251,71 @@ console.log('Army Intelligence Phase 1 checks passed.')
 
 function read(path) {
   return readFileSync(path, 'utf8')
+}
+
+function buildFixtureAnalysis(lists) {
+  const entriesByList = lists.map((list) =>
+    list.decoded.combatGroups.flatMap((group) => group.entries),
+  )
+
+  return {
+    averageRegularOrders: average(lists.map((list) => list.decoded.orderCounts.regular)),
+    averageTacticalAwarenessOrders: average(
+      entriesByList.map((entries) =>
+        entries.reduce((total, entry) => total + countTacticalAwarenessOrders(entry), 0),
+      ),
+    ),
+    listCount: lists.length,
+    modelUsage: buildUsageRows(entriesByList),
+  }
+}
+
+function buildUsageRows(entriesByList) {
+  const totalSelections = new Map()
+  const listAppearances = new Map()
+
+  entriesByList.forEach((entries) => {
+    const seenInList = new Set()
+
+    entries.forEach((entry) => {
+      totalSelections.set(entry.unit, (totalSelections.get(entry.unit) ?? 0) + 1)
+      seenInList.add(entry.unit)
+    })
+
+    seenInList.forEach((name) => {
+      listAppearances.set(name, (listAppearances.get(name) ?? 0) + 1)
+    })
+  })
+
+  return Array.from(totalSelections.entries())
+    .map(([name, totalSelections]) => {
+      const listCount = listAppearances.get(name) ?? 0
+
+      return {
+        listCount,
+        name,
+        percentage: entriesByList.length ? (listCount / entriesByList.length) * 100 : 0,
+        totalSelections,
+      }
+    })
+    .sort(
+      (left, right) =>
+        right.totalSelections - left.totalSelections ||
+        right.listCount - left.listCount ||
+        left.name.localeCompare(right.name),
+    )
+}
+
+function countTacticalAwarenessOrders(entry) {
+  return entry.orderTypes.filter((orderType) =>
+    orderType.trim().toLowerCase().replace(/[^a-z]/g, '').includes('tacticalawareness'),
+  ).length
+}
+
+function average(values) {
+  if (values.length === 0) {
+    return 0
+  }
+
+  return Math.round((values.reduce((total, value) => total + value, 0) / values.length) * 10) / 10
 }
