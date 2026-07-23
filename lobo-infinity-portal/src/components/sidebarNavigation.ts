@@ -75,8 +75,8 @@ export const communityItems: NavigationItem[] = [
   },
   {
     icon: 'army',
-    label: 'Army Lists',
-    to: '/army-lists',
+    label: 'Army Intelligence',
+    to: '/army-intelligence',
   },
   {
     icon: 'bell',

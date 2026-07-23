@@ -1,6 +1,7 @@
 const routeLoaders = new Map<string, () => Promise<unknown>>([
   ['/', () => import('../pages/Dashboard')],
   ['/analytics', () => import('../pages/Analytics')],
+  ['/army-intelligence', () => import('../pages/ArmyIntelligence')],
   ['/army-lists', () => import('../pages/ArmyLists')],
   ['/automation', () => import('../pages/AutomationCenter')],
   ['/commissioner', () => import('../pages/CommissionerDashboard')],

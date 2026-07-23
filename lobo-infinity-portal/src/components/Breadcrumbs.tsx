@@ -8,6 +8,7 @@ type Breadcrumb = {
 }
 
 const routeLabels: Record<string, string> = {
+  '/army-intelligence': 'Army Intelligence',
   '/army-lists': 'Army Lists',
   '/events': 'Past Events',
   '/hall-of-fame': 'Hall of Fame',
@@ -88,6 +89,11 @@ function buildBreadcrumbs(pathname: string, search: string): Breadcrumb[] {
       breadcrumbs.push({ label: eventScopedRoutes[pathname] ?? routeLabels[pathname] ?? formatSegment(pathname) })
       return breadcrumbs
     }
+  }
+
+  if (pathname === '/army-intelligence') {
+    breadcrumbs.push({ label: 'Army Intelligence' })
+    return breadcrumbs
   }
 
   const communityItem = communityItems.find((item) => item.to === pathname)
