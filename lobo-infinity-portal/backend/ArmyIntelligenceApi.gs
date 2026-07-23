@@ -171,45 +171,67 @@ function appendArmyIntelligenceRecentGameSources(sources) {
       ? getAllRecentGameObjects()
       : [];
 
-  games.forEach(function(game) {
-    appendArmyIntelligenceParticipantSource(sources, {
-      armyCode: game.winnerArmyCode,
-      date: game.date,
-      event: game.eventName || game.eventId || "",
-      faction: game.winnerFaction,
-      gameType: formatArmyIntelligenceGameType(game.gameType),
-      mission: game.mission,
-      opponent: game.loserDisplayName || game.loser,
-      player: game.winnerDisplayName || game.winner,
-      result:
-        getArmyIntelligenceString(game.gameResult).toLowerCase() === "draw"
-          ? "Draw"
-          : "Win",
-      sectorial: game.winnerFaction,
-      sourceId: game.id,
-      sourcePlayer: "winner",
-      sourceType: game.gameType === "casual" ? "casual" : "league"
-    });
+  const casualGames =
+    typeof getAllRecentGameObjectsForEvent === "function"
+      ? getAllRecentGameObjectsForEvent("all", "casual")
+      : [];
 
-    appendArmyIntelligenceParticipantSource(sources, {
-      armyCode: game.loserArmyCode,
-      date: game.date,
-      event: game.eventName || game.eventId || "",
-      faction: game.loserFaction,
-      gameType: formatArmyIntelligenceGameType(game.gameType),
-      mission: game.mission,
-      opponent: game.winnerDisplayName || game.winner,
-      player: game.loserDisplayName || game.loser,
-      result:
-        getArmyIntelligenceString(game.gameResult).toLowerCase() === "draw"
-          ? "Draw"
-          : "Loss",
-      sectorial: game.loserFaction,
-      sourceId: game.id,
-      sourcePlayer: "loser",
-      sourceType: game.gameType === "casual" ? "casual" : "league"
+  const seenGames = {};
+
+  games
+    .concat(casualGames)
+    .filter(function(game) {
+      const key =
+        [
+          getArmyIntelligenceString(game.id),
+          getArmyIntelligenceString(game.gameType)
+        ].join(":");
+
+      if (seenGames[key])
+        return false;
+
+      seenGames[key] = true;
+      return true;
+    })
+    .forEach(function(game) {
+      appendArmyIntelligenceParticipantSource(sources, {
+        armyCode: game.winnerArmyCode,
+        date: game.date,
+        event: game.eventName || game.eventId || "",
+        faction: game.winnerFaction,
+        gameType: formatArmyIntelligenceGameType(game.gameType),
+        mission: game.mission,
+        opponent: game.loserDisplayName || game.loser,
+        player: game.winnerDisplayName || game.winner,
+        result:
+          getArmyIntelligenceString(game.gameResult).toLowerCase() === "draw"
+            ? "Draw"
+            : "Win",
+        sectorial: game.winnerFaction,
+        sourceId: game.id,
+        sourcePlayer: "winner",
+        sourceType: game.gameType === "casual" ? "casual" : "league"
+      });
+
+      appendArmyIntelligenceParticipantSource(sources, {
+        armyCode: game.loserArmyCode,
+        date: game.date,
+        event: game.eventName || game.eventId || "",
+        faction: game.loserFaction,
+        gameType: formatArmyIntelligenceGameType(game.gameType),
+        mission: game.mission,
+        opponent: game.winnerDisplayName || game.winner,
+        player: game.loserDisplayName || game.loser,
+        result:
+          getArmyIntelligenceString(game.gameResult).toLowerCase() === "draw"
+            ? "Draw"
+            : "Loss",
+        sectorial: game.loserFaction,
+        sourceId: game.id,
+        sourcePlayer: "loser",
+        sourceType: game.gameType === "casual" ? "casual" : "league"
+      });
     });
-  });
 
 }
 
@@ -402,13 +424,13 @@ function mergeArmyIntelligenceSourceAndSnapshot(source, snapshot) {
     decoded: decoded,
     error: snapshot.error,
     event: source.event,
-    faction: decoded.faction || source.faction,
+    faction: decoded && decoded.faction ? decoded.faction : source.faction,
     gameType: source.gameType,
     mission: source.mission,
     opponent: source.opponent,
     player: source.player,
     result: source.result,
-    sectorial: decoded.sectorial || source.sectorial,
+    sectorial: decoded && decoded.sectorial ? decoded.sectorial : source.sectorial,
     snapshotKey: source.snapshotKey,
     sourceId: source.sourceId,
     sourcePlayer: source.sourcePlayer,

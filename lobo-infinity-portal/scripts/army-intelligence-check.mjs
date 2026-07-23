@@ -31,6 +31,16 @@ assert.match(
 )
 assert.match(
   backend,
+  /getAllRecentGameObjectsForEvent\("all", "casual"\)/,
+  'Backend must explicitly include casual recent-game army codes.',
+)
+assert.match(
+  backend,
+  /decoded && decoded\.faction/,
+  'Backend must not read decoded faction fields when decoded JSON is null.',
+)
+assert.match(
+  backend,
   /appendArmyIntelligenceTeamTournamentSources/,
   'Backend must include Tournament army codes.',
 )
@@ -88,6 +98,16 @@ assert.match(
   refresh,
   /decodeArmyListToFiles/,
   'Refresh script must use the existing standalone decoder.',
+)
+assert.match(
+  refresh,
+  /getAction\(apiUrl, 'recentGames', \{ gameType: 'casual' \}\)/,
+  'Refresh script must explicitly query casual recent-game army codes.',
+)
+assert.match(
+  refresh,
+  /matchesSourceFilters/,
+  'Refresh script must support targeted source refreshes.',
 )
 assert.match(
   refresh,

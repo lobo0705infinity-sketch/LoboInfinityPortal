@@ -22,6 +22,7 @@ const snapshotState = useFixture
 
 const candidates = sources
   .filter((source) => source.armyCode)
+  .filter((source) => matchesSourceFilters(source, options))
   .filter((source) => {
     const current = snapshotState.get(source.snapshotKey)
     return !current || current.armyCodeHash !== source.armyCodeHash || current.status !== 'decoded'
@@ -91,8 +92,14 @@ console.log(JSON.stringify({
 }, null, 2))
 
 async function loadLiveSources(apiUrl) {
-  const [recentGames, armyLists, events] = await Promise.all([
+  const targetedCasualGame =
+    options.sourceType === 'casual' && options.sourceId
+      ? getAction(apiUrl, 'recentGames', { gameId: options.sourceId, gameType: 'casual' }).then((payload) => payload.games || [])
+      : Promise.resolve([])
+  const [recentGames, casualGames, sourceIdCasualGames, armyLists, events] = await Promise.all([
     getAction(apiUrl, 'recentGames').then((payload) => payload.games || []),
+    getAction(apiUrl, 'recentGames', { gameType: 'casual' }).then((payload) => payload.games || []),
+    targetedCasualGame,
     getAction(apiUrl, 'armyLists').then((payload) => payload.lists || []),
     getAction(apiUrl, 'events').catch(() => null),
   ])
@@ -112,7 +119,7 @@ async function loadLiveSources(apiUrl) {
     eventNames.set(events.currentEvent.id, events.currentEvent.name || '')
   }
 
-  for (const game of recentGames) {
+  for (const game of [...recentGames, ...casualGames, ...sourceIdCasualGames]) {
     pushParticipantSource(sources, {
       armyCode: game.winnerArmyCode,
       date: game.date,
@@ -287,6 +294,13 @@ function uniqueSources(sources) {
   })
 }
 
+function matchesSourceFilters(source, filters) {
+  if (filters.sourceType && source.sourceType !== filters.sourceType) return false
+  if (filters.sourceId && String(source.sourceId) !== String(filters.sourceId)) return false
+  if (filters.sourcePlayer && source.sourcePlayer !== filters.sourcePlayer) return false
+  return true
+}
+
 function fixtureSources() {
   const sources = []
   pushParticipantSource(sources, {
@@ -319,7 +333,7 @@ function parseArgs(values) {
   for (let index = 0; index < values.length; index += 1) {
     const value = values[index]
     if (!value.startsWith('--')) continue
-    const key = value.slice(2)
+    const key = toCamelOption(value.slice(2))
     const next = values[index + 1]
     if (next && !next.startsWith('--')) {
       parsed[key] = next
@@ -329,6 +343,10 @@ function parseArgs(values) {
     }
   }
   return parsed
+}
+
+function toCamelOption(value) {
+  return value.replace(/-([a-z])/g, (_match, letter) => letter.toUpperCase())
 }
 
 function formatGameType(value) {
