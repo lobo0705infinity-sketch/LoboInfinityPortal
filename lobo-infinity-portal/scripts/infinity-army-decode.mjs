@@ -217,10 +217,12 @@ function parseInfinityDataOverview(html) {
       ),
       profile: textContent(matchFirst(block, /<h2 class="card-header-title">([\s\S]*?)<\/h2>/)),
       skills: textContent(matchFirst(block, /<b>Skills:<\/b>\s*<span>([\s\S]*?)<\/span>/)),
+      structure: parseProfileStructure(block),
       troopType: textContent(matchFirst(block, /<div class="typ-and-category">\s*<div>([\s\S]*?)<\/div>/)),
       weapons: [...block.matchAll(/<td class="weapon-table-name-header">([\s\S]*?)<\/td>/g)].map((match) =>
         textContent(match[1]),
       ),
+      wounds: parseProfileWounds(block),
     })
     cardMatch = cardPattern.exec(html)
   }
@@ -295,8 +297,10 @@ function buildStructuredList(armyCode, codeData, resolved) {
         doctor: /\bDoctor\b/i.test(skills),
         engineer: /\bEngineer\b/i.test(skills),
         swc: listRow?.swc ?? 0,
+        structure: card?.structure ?? null,
         troopType: normalizeTroopType(card?.troopType),
         unit: listRow?.unit || card?.profile || '',
+        wounds: card?.wounds ?? null,
       })
     }
   }
@@ -350,8 +354,10 @@ function toCsv(list) {
       'profile',
       'points',
       'swc',
+      'structure',
       'troopType',
       'skills',
+      'wounds',
       'orderTypes',
       'lieutenant',
       'hacker',
@@ -375,8 +381,10 @@ function toCsv(list) {
         entry.profile,
         entry.points,
         entry.swc,
+        entry.structure ?? '',
         entry.troopType,
         entry.skills.join('|'),
+        entry.wounds ?? '',
         entry.orderTypes.join('|'),
         entry.lieutenant,
         entry.hacker,
@@ -465,6 +473,36 @@ function parseCost(value) {
     points: Number(value.match(/(\d+(?:\.\d+)?)\s*pts/i)?.[1] || 0),
     swc: Number(value.match(/(\d+(?:\.\d+)?)\s*swc/i)?.[1] || 0),
   }
+}
+
+function parseAttributeNumber(block, names) {
+  const table = matchFirst(block, /<table class="attribut">([\s\S]*?)<\/table>/)
+  if (!table) {
+    return null
+  }
+
+  const headers = [...table.matchAll(/<th>([\s\S]*?)<\/th>/g)].map((match) => textContent(match[1]))
+  const values = [...table.matchAll(/<td>([\s\S]*?)<\/td>/g)].map((match) => textContent(match[1]))
+  const normalizedNames = new Set(names.map((name) => normalizeSkillToken(name)))
+  const index = headers.findIndex((header) => normalizedNames.has(normalizeSkillToken(header)))
+  if (index < 0) {
+    return null
+  }
+
+  const value = Number(values[index])
+  return Number.isFinite(value) ? value : null
+}
+
+function parseProfileWounds(block) {
+  const explicitWounds = parseAttributeNumber(block, ['W', 'Wounds', 'VITA'])
+  if (explicitWounds !== null) {
+    return explicitWounds
+  }
+  return null
+}
+
+function parseProfileStructure(block) {
+  return parseAttributeNumber(block, ['STR', 'Structure'])
 }
 
 function normalizeSectorialName(slug) {

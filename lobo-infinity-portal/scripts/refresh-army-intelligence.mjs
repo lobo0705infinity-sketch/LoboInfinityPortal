@@ -25,7 +25,12 @@ const candidates = sources
   .filter((source) => matchesSourceFilters(source, options))
   .filter((source) => {
     const current = snapshotState.get(source.snapshotKey)
-    return !current || current.armyCodeHash !== source.armyCodeHash || current.status !== 'decoded'
+    return (
+      !current ||
+      current.armyCodeHash !== source.armyCodeHash ||
+      current.status !== 'decoded' ||
+      !current.hasProfileMetadata
+    )
   })
   .slice(0, limit > 0 ? limit : undefined)
 
@@ -79,7 +84,7 @@ const payloadPath = resolve(outDir, 'army-intelligence-refresh-payload.json')
 await writeFile(payloadPath, `${JSON.stringify(payload, null, 2)}\n`, 'utf8')
 
 if (!dryRun && snapshots.length > 0) {
-  await postSnapshots(options.apiUrl || await readApiUrl(), snapshots)
+  await postSnapshots(options.apiUrl || await readApiUrl(), snapshots, readAuthToken(options))
 }
 
 console.log(JSON.stringify({
@@ -215,10 +220,28 @@ async function loadSnapshotState(apiUrl) {
   for (const list of payload.lists || []) {
     state.set(list.snapshotKey, {
       armyCodeHash: list.armyCodeHash,
+      hasProfileMetadata: snapshotHasDecodedProfileMetadata(list),
       status: list.status,
     })
   }
   return state
+}
+
+function snapshotHasDecodedProfileMetadata(list) {
+  if (list.status !== 'decoded' || !list.decoded) {
+    return false
+  }
+
+  const groups = Array.isArray(list.decoded.combatGroups) ? list.decoded.combatGroups : []
+  return groups.every((group) => {
+    const entries = Array.isArray(group.entries) ? group.entries : []
+    return entries.every((entry) =>
+      Object.hasOwn(entry, 'troopType') &&
+      Object.hasOwn(entry, 'skills') &&
+      Object.hasOwn(entry, 'wounds') &&
+      Object.hasOwn(entry, 'structure'),
+    )
+  })
 }
 
 async function getAction(apiUrl, action, params = {}) {
@@ -237,10 +260,13 @@ async function getAction(apiUrl, action, params = {}) {
   return JSON.parse(text)
 }
 
-async function postSnapshots(apiUrl, snapshots) {
+async function postSnapshots(apiUrl, snapshots, authToken = '') {
   const body = new URLSearchParams()
   body.set('action', 'refreshArmyIntelligence')
   body.set('snapshots', JSON.stringify(snapshots))
+  if (authToken) {
+    body.set('authToken', authToken)
+  }
 
   const response = await fetch(apiUrl, {
     body,
@@ -255,6 +281,10 @@ async function postSnapshots(apiUrl, snapshots) {
   if (payload.success === false) {
     throw new Error(payload.error || 'refreshArmyIntelligence failed.')
   }
+}
+
+function readAuthToken(options) {
+  return String(options.authToken || process.env.LOBO_GOOGLE_ID_TOKEN || process.env.GOOGLE_ID_TOKEN || '').trim()
 }
 
 function pushParticipantSource(sources, source) {

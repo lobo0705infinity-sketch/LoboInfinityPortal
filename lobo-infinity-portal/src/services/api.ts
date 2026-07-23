@@ -310,9 +310,11 @@ export type ArmyIntelligenceDecodedEntry = {
   profile: string
   skills: string[]
   specialist: boolean
+  structure: number | null
   swc: number
   troopType: string
   unit: string
+  wounds: number | null
 }
 
 export type ArmyIntelligenceDecodedList = {
@@ -4824,9 +4826,15 @@ function normalizeArmyIntelligenceDecodedEntry(item: unknown): ArmyIntelligenceD
     profile: getString(record, 'profile'),
     skills: getArray(record, 'skills').map((entry) => String(entry)),
     specialist: getBoolean(record, 'specialist'),
+    structure: record.structure === null || record.structure === undefined || record.structure === ''
+      ? null
+      : getNumber(record, 'structure'),
     swc: getNumber(record, 'swc'),
     troopType: getString(record, 'troopType'),
     unit: getString(record, 'unit'),
+    wounds: record.wounds === null || record.wounds === undefined || record.wounds === ''
+      ? null
+      : getNumber(record, 'wounds'),
   }
 }
 

@@ -7,6 +7,7 @@ const apiClient = read('src/services/api.ts')
 const app = read('src/App.tsx')
 const page = read('src/pages/ArmyIntelligence.tsx')
 const commissioner = read('src/pages/CommissionerDashboard.tsx')
+const decoder = read('scripts/infinity-army-decode.mjs')
 const refresh = read('scripts/refresh-army-intelligence.mjs')
 
 assert.match(
@@ -96,6 +97,11 @@ assert.match(
 )
 assert.match(
   page,
+  /Average Wounds \/ Structure per Model[\s\S]*averageDurability/,
+  'Army Intelligence page must show average Wounds or Structure per selected model.',
+)
+assert.match(
+  page,
   /Model Usage[\s\S]*Lieutenant Choices[\s\S]*Hackers[\s\S]*Specialist Operatives[\s\S]*Doctors[\s\S]*Engineers[\s\S]*Forward Observers[\s\S]*Chain of Command/,
   'Army Intelligence page must show model and role usage breakdowns.',
 )
@@ -148,6 +154,31 @@ assert.match(
   page,
   /Skill[\s\S]*All Skills[\s\S]*buildSkillOptions/,
   'Model Usage must expose skill filtering from currently matching decoded lists.',
+)
+assert.match(
+  apiClient,
+  /structure: number \| null[\s\S]*wounds: number \| null[\s\S]*structure:[\s\S]*wounds:/,
+  'API client must preserve decoded profile wounds and structure through normalization.',
+)
+assert.match(
+  decoder,
+  /structure: card\?\.structure[\s\S]*troopType: normalizeTroopType[\s\S]*wounds: card\?\.wounds/,
+  'Standalone decoder must serialize troop type, structure, and wounds on each decoded profile.',
+)
+assert.match(
+  decoder,
+  /skills: splitSkillTokens\(skills\)/,
+  'Standalone decoder must serialize exact skill tokens.',
+)
+assert.match(
+  decoder,
+  /parseAttributeNumber\(block, \['W', 'Wounds', 'VITA'\]\)[\s\S]*return null/,
+  'Standalone decoder must parse only W/Wounds/VITA, not Structure.',
+)
+assert.match(
+  decoder,
+  /parseProfileStructure[\s\S]*parseAttributeNumber\(block, \['STR', 'Structure'\]\)/,
+  'Standalone decoder must parse Structure from STR/Structure separately.',
 )
 
 const operationsLists = [
@@ -253,11 +284,15 @@ const typeSkillFixtureLists = [
       combatGroups: [
         {
           entries: [
-            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 68, profile: 'ASURA Hacker', skills: ['Hacker', 'Lieutenant'], troopType: 'HI', unit: 'ASURA' },
-            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 22, profile: 'Pilot-X Team Hacker', skills: ['Hacker'], troopType: 'LI', unit: 'Pilot-X Team' },
-            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 41, profile: 'RUDRA FTO Repeater', skills: ['Remote Presence'], troopType: 'REM', unit: 'RUDRA FTO' },
-            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 10, profile: 'RACERBOT Repeater', skills: ['Remote Presence'], troopType: 'REM', unit: 'RACERBOT Mk-III' },
-            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 28, profile: 'ARTALIS Engineer', skills: ['Engineer'], troopType: 'MI', unit: 'ARTALIS' },
+            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 68, profile: 'ASURA Hacker', skills: ['Hacker', 'Lieutenant'], structure: null, troopType: 'HI', unit: 'ASURA', wounds: 2 },
+            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 22, profile: 'Pilot-X Team Hacker', skills: ['Hacker'], structure: null, troopType: 'LI', unit: 'Pilot-X Team', wounds: 1 },
+            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 41, profile: 'RUDRA FTO Repeater', skills: ['Remote Presence'], structure: 2, troopType: 'REM', unit: 'RUDRA FTO', wounds: null },
+          ],
+        },
+        {
+          entries: [
+            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 10, profile: 'RACERBOT Repeater', skills: ['Remote Presence'], structure: 1, troopType: 'REM', unit: 'RACERBOT Mk-III', wounds: null },
+            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 28, profile: 'ARTALIS Engineer', skills: ['Engineer'], structure: null, troopType: 'MI', unit: 'ARTALIS', wounds: 1 },
           ],
         },
       ],
@@ -275,7 +310,7 @@ const typeSkillFixtureLists = [
       combatGroups: [
         {
           entries: [
-            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 12, profile: 'Fusilier Forward Observer', skills: ['Forward Observer'], troopType: 'LI', unit: 'FUSILIER' },
+            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 12, profile: 'Fusilier Forward Observer', skills: ['Forward Observer'], structure: null, troopType: 'LI', unit: 'FUSILIER', wounds: 1 },
           ],
         },
       ],
@@ -294,6 +329,11 @@ const remRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
   skill: '',
   sort: 'usage',
   troopType: 'REM',
+})
+const hiRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
+  skill: '',
+  sort: 'usage',
+  troopType: 'HI',
 })
 const hackerRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
   skill: 'Hacker',
@@ -369,9 +409,19 @@ assert.deepEqual(
   'REM type filter must exclude HI, LI, and MI models.',
 )
 assert.deepEqual(
+  hiRows.map((row) => row.name),
+  ['ASURA'],
+  'HI type filter must produce a different exact troop-type result from REM.',
+)
+assert.deepEqual(
   hackerRows.map((row) => row.name),
   ['ASURA', 'Pilot-X Team'],
   'Skill filter must match exact decoded skills.',
+)
+assert.equal(
+  typeSkillAnalysis.averageDurability,
+  1.4,
+  'Average durability must average each selected profile Wounds or Structure value across both combat groups.',
 )
 assert.deepEqual(
   filterAndSortModelUsage(typeSkillAnalysis.modelUsage, { skill: '', sort: 'pointsHigh', troopType: '' }).map((row) => row.name),
@@ -433,8 +483,23 @@ assert.match(
 )
 assert.match(
   refresh,
+  /snapshotHasDecodedProfileMetadata[\s\S]*troopType[\s\S]*skills[\s\S]*wounds[\s\S]*structure/,
+  'Refresh script must redecode stale snapshots missing troop type, skills, wounds, or structure.',
+)
+assert.match(
+  refresh,
   /status: 'failed'/,
   'Refresh script must preserve failed decodes as snapshot rows.',
+)
+assert.match(
+  refresh,
+  /postSnapshots[\s\S]*body\.set\('action', 'refreshArmyIntelligence'\)/,
+  'Refresh script must write decoded snapshots only through the Army Intelligence refresh endpoint.',
+)
+assert.match(
+  refresh,
+  /readAuthToken[\s\S]*body\.set\('authToken', authToken\)/,
+  'Refresh script must support authenticated Commissioner snapshot writes.',
 )
 assert.doesNotMatch(
   refresh,
@@ -460,12 +525,23 @@ function buildFixtureAnalysis(lists) {
         entries.reduce((total, entry) => total + countTacticalAwarenessOrders(entry), 0),
       ),
     ),
+    averageDurability: average(entriesByList.map(calculateAverageDurabilityPerModel)),
     listCount: lists.length,
     chainOfCommand: buildUsageRows(entriesByList, (entry) => entry.chainOfCommand),
     forwardObservers: buildUsageRows(entriesByList, (entry) => entry.forwardObserver),
     hackers: buildUsageRows(entriesByList, (entry) => entry.hacker),
     modelUsage: buildModelUsageRows(entriesByList),
   }
+}
+
+function calculateAverageDurabilityPerModel(entries) {
+  const values = entries
+    .map((entry) => entry.wounds ?? entry.structure)
+    .filter((value) => typeof value === 'number')
+
+  return values.length > 0
+    ? values.reduce((total, value) => total + value, 0) / values.length
+    : 0
 }
 
 function buildSkillOptions(lists) {

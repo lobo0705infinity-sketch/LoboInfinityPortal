@@ -47,6 +47,7 @@ type ArmyAnalysis = {
   averageRegularOrders: number
   averageSwc: number
   averageTacticalAwarenessOrders: number
+  averageDurability: number
   chainOfCommand: UsageRow[]
   doctors: UsageRow[]
   engineers: UsageRow[]
@@ -261,6 +262,7 @@ function ArmyIntelligenceContent({ data }: { data: ArmyIntelligenceData }) {
             <MetricCard label="Average Lieutenant Orders" value={analysis.averageLieutenantOrders} />
             <MetricCard label="Average Points" value={analysis.averagePoints} />
             <MetricCard label="Average SWC" value={analysis.averageSwc} />
+            <MetricCard label="Average Wounds / Structure per Model" value={analysis.averageDurability} />
           </section>
 
           <section className="panel army-intelligence-selector army-intelligence-model-controls" aria-label="Model Usage filters">
@@ -470,6 +472,7 @@ function buildArmyAnalysis(lists: ArmyIntelligenceList[]): ArmyAnalysis {
         listEntries.reduce((total, entry) => total + countTacticalAwarenessOrders(entry), 0),
       ),
     ),
+    averageDurability: average(entriesByList.map(calculateAverageDurabilityPerModel)),
     chainOfCommand: buildUsageRows(entriesByList, (entry) => entry.chainOfCommand),
     doctors: buildUsageRows(entriesByList, (entry) => entry.doctor),
     engineers: buildUsageRows(entriesByList, (entry) => entry.engineer),
@@ -480,6 +483,16 @@ function buildArmyAnalysis(lists: ArmyIntelligenceList[]): ArmyAnalysis {
     modelUsage: buildModelUsageRows(entriesByList),
     specialists: buildUsageRows(entriesByList, (entry) => entry.specialist),
   }
+}
+
+function calculateAverageDurabilityPerModel(entries: ArmyIntelligenceDecodedEntry[]) {
+  const values = entries
+    .map((entry) => entry.wounds ?? entry.structure)
+    .filter((value): value is number => typeof value === 'number')
+
+  return values.length > 0
+    ? values.reduce((total, value) => total + value, 0) / values.length
+    : 0
 }
 
 function buildSkillOptions(lists: ArmyIntelligenceList[]) {
