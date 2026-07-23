@@ -168,6 +168,11 @@ assert.match(
 )
 assert.match(
   page,
+  /normalizeSectorialDisplayName[\s\S]*compact === 'panoceania'[\s\S]*PanOceania/,
+  'Army Intelligence page must canonicalize PanOceania sectorial display variants.',
+)
+assert.match(
+  page,
   /refreshAllSectorials[\s\S]*batchLimit: 1[\s\S]*excludeSnapshotKeys[\s\S]*Refresh All Sectorials/,
   'Army Intelligence page must refresh all stale sectorials one snapshot at a time.',
 )
@@ -393,7 +398,7 @@ const typeSkillFixtureLists = [
       orderCounts: {
         regular: 1,
       },
-      sectorial: 'PanOceania',
+      sectorial: 'Panoceania',
       totals: {},
     },
     result: 'Win',
@@ -528,6 +533,23 @@ assert.equal(
   reconcileTroopTypeFilter('REM', typeSkillFixtureLists.slice(1)),
   '',
   'Changing from a sectorial with REM to one without REM must reset Type to All Types.',
+)
+assert.equal(
+  normalizeSectorialDisplayName('Panoceania'),
+  'PanOceania',
+  'Panoceania snapshots must display as canonical PanOceania.',
+)
+assert.equal(
+  normalizeSectorialDisplayName('Pan OCeania'),
+  'PanOceania',
+  'Case and spacing variants must canonicalize to PanOceania.',
+)
+assert.equal(
+  buildFixtureAnalysis(
+    typeSkillFixtureLists.filter((list) => getDecodedSectorial(list) === 'PanOceania'),
+  ).listCount,
+  1,
+  'A snapshot containing a PanOceania variant must be selected and analyzed by the canonical UI value.',
 )
 assert.equal(
   formatModelUsageName({
@@ -723,6 +745,21 @@ function buildTroopTypeOptions(lists) {
   })
 
   return Array.from(types).sort((left, right) => left.localeCompare(right))
+}
+
+function getDecodedSectorial(list) {
+  return normalizeSectorialDisplayName(list.decoded?.sectorial || '')
+}
+
+function normalizeSectorialDisplayName(value) {
+  const name = String(value || '').trim()
+  const compact = name.replace(/\s+/g, '').toLocaleLowerCase()
+
+  if (compact === 'panoceania') {
+    return 'PanOceania'
+  }
+
+  return name
 }
 
 function reconcileTroopTypeFilter(selectedType, lists) {

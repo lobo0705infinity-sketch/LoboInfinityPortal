@@ -676,7 +676,18 @@ function isDecodedList(list: ArmyIntelligenceList) {
 }
 
 function getDecodedSectorial(list: ArmyIntelligenceList) {
-  return list.decoded?.sectorial || ''
+  return normalizeSectorialDisplayName(list.decoded?.sectorial || '')
+}
+
+function normalizeSectorialDisplayName(value: string) {
+  const name = value.trim()
+  const compact = name.replace(/\s+/g, '').toLocaleLowerCase()
+
+  if (compact === 'panoceania') {
+    return 'PanOceania'
+  }
+
+  return name
 }
 
 function matchesResultFilter(list: ArmyIntelligenceList, filter: AnalysisResultFilter) {
