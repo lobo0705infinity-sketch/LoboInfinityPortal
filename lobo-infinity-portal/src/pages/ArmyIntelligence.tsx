@@ -21,12 +21,21 @@ type ArmyIntelligenceState =
     }
 
 type AnalysisResultFilter = 'all' | 'winning' | 'losing'
+type ModelUsageSort = 'usage' | 'pointsHigh' | 'pointsLow'
 
 type UsageRow = {
   listCount: number
   name: string
   percentage: number
+  points?: number
+  profile?: string
+  skills?: string[]
+  troopType?: string
   totalSelections: number
+}
+
+type ModelUsageAccumulator = Omit<UsageRow, 'skills'> & {
+  skills: Set<string>
 }
 
 type ArmyAnalysis = {
@@ -64,6 +73,24 @@ const resultFilterOptions: Array<{
   {
     label: 'Army Lists with a Losing Record',
     value: 'losing',
+  },
+]
+const troopTypeOptions = ['HI', 'LI', 'MI', 'REM', 'SK', 'TAG', 'VH', 'WB']
+const modelUsageSortOptions: Array<{
+  label: string
+  value: ModelUsageSort
+}> = [
+  {
+    label: 'Usage Count',
+    value: 'usage',
+  },
+  {
+    label: 'Points: High to Low',
+    value: 'pointsHigh',
+  },
+  {
+    label: 'Points: Low to High',
+    value: 'pointsLow',
   },
 ]
 
@@ -134,6 +161,9 @@ function ArmyIntelligence() {
 function ArmyIntelligenceContent({ data }: { data: ArmyIntelligenceData }) {
   const [selectedSectorial, setSelectedSectorial] = useState('')
   const [resultFilter, setResultFilter] = useState<AnalysisResultFilter>('all')
+  const [modelSkillFilter, setModelSkillFilter] = useState('')
+  const [modelSort, setModelSort] = useState<ModelUsageSort>('usage')
+  const [modelTypeFilter, setModelTypeFilter] = useState('')
   const decodedLists = useMemo(
     () => data.lists.filter(isDecodedList),
     [data.lists],
@@ -154,6 +184,32 @@ function ArmyIntelligenceContent({ data }: { data: ArmyIntelligenceData }) {
     [decodedLists, resultFilter, selectedSectorial],
   )
   const analysis = useMemo(() => buildArmyAnalysis(matchingLists), [matchingLists])
+  const skillOptions = useMemo(() => buildSkillOptions(matchingLists), [matchingLists])
+  const availableTroopTypes = useMemo(() => buildTroopTypeOptions(matchingLists), [matchingLists])
+  const filteredModelUsage = useMemo(
+    () =>
+      filterAndSortModelUsage(
+        analysis.modelUsage,
+        {
+          skill: modelSkillFilter,
+          sort: modelSort,
+          troopType: modelTypeFilter,
+        },
+      ),
+    [analysis.modelUsage, modelSkillFilter, modelSort, modelTypeFilter],
+  )
+
+  useEffect(() => {
+    if (modelSkillFilter && !skillOptions.includes(modelSkillFilter)) {
+      setModelSkillFilter('')
+    }
+  }, [modelSkillFilter, skillOptions])
+
+  useEffect(() => {
+    if (modelTypeFilter && !availableTroopTypes.includes(modelTypeFilter)) {
+      setModelTypeFilter('')
+    }
+  }, [availableTroopTypes, modelTypeFilter])
 
   return (
     <main className="portal-shell army-intelligence-page">
@@ -207,7 +263,42 @@ function ArmyIntelligenceContent({ data }: { data: ArmyIntelligenceData }) {
             <MetricCard label="Average SWC" value={analysis.averageSwc} />
           </section>
 
-          <UsagePanel items={analysis.modelUsage} title="Model Usage" variant="wide" />
+          <section className="panel army-intelligence-selector army-intelligence-model-controls" aria-label="Model Usage filters">
+            <label>
+              <span>Type</span>
+              <select onChange={(event) => setModelTypeFilter(event.target.value)} value={modelTypeFilter}>
+                <option value="">All Types</option>
+                {troopTypeOptions.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span>Sort</span>
+              <select onChange={(event) => setModelSort(event.target.value as ModelUsageSort)} value={modelSort}>
+                {modelUsageSortOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span>Skill</span>
+              <select onChange={(event) => setModelSkillFilter(event.target.value)} value={modelSkillFilter}>
+                <option value="">All Skills</option>
+                {skillOptions.map((skill) => (
+                  <option key={skill} value={skill}>
+                    {skill}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </section>
+
+          <UsagePanel items={filteredModelUsage} title="Model Usage" variant="wide" />
 
           <section className="army-intelligence-grid" aria-label="Role usage breakdowns">
             <ResponsiveDisclosure title="Lieutenant Choices">
@@ -283,10 +374,11 @@ function UsagePanel({
       ) : (
         <ol className="army-intelligence-usage-list">
           {visible.map((item) => (
-            <li key={item.name}>
-              <span>{item.name}</span>
+            <li key={`${item.name}|${item.profile ?? ''}|${item.points ?? ''}|${item.troopType ?? ''}`}>
+              <span>{formatModelUsageName(item)}</span>
               <strong>{item.totalSelections}</strong>
               <small>
+                {typeof item.points === 'number' ? `${item.points} pts / ` : ''}
                 {item.listCount} lists / {formatNumber(item.percentage)}%
               </small>
             </li>
@@ -385,9 +477,147 @@ function buildArmyAnalysis(lists: ArmyIntelligenceList[]): ArmyAnalysis {
     hackers: buildUsageRows(entriesByList, (entry) => entry.hacker),
     lieutenants: buildUsageRows(entriesByList, (entry) => entry.lieutenant),
     listCount: decodedLists.length,
-    modelUsage: buildUsageRows(entriesByList),
+    modelUsage: buildModelUsageRows(entriesByList),
     specialists: buildUsageRows(entriesByList, (entry) => entry.specialist),
   }
+}
+
+function buildSkillOptions(lists: ArmyIntelligenceList[]) {
+  const skills = new Set<string>()
+
+  lists.forEach((list) => {
+    list.decoded?.combatGroups.forEach((group) => {
+      group.entries.forEach((entry) => {
+        entry.skills.forEach((skill) => {
+          if (skill) {
+            skills.add(skill)
+          }
+        })
+      })
+    })
+  })
+
+  return Array.from(skills).sort((left, right) => left.localeCompare(right))
+}
+
+function buildTroopTypeOptions(lists: ArmyIntelligenceList[]) {
+  const types = new Set<string>()
+
+  lists.forEach((list) => {
+    list.decoded?.combatGroups.forEach((group) => {
+      group.entries.forEach((entry) => {
+        if (entry.troopType) {
+          types.add(entry.troopType)
+        }
+      })
+    })
+  })
+
+  return Array.from(types).sort((left, right) => left.localeCompare(right))
+}
+
+function filterAndSortModelUsage(
+  rows: UsageRow[],
+  filters: {
+    skill: string
+    sort: ModelUsageSort
+    troopType: string
+  },
+) {
+  return rows
+    .filter((row) => !filters.troopType || row.troopType === filters.troopType)
+    .filter((row) => !filters.skill || rowSkills(row).includes(filters.skill))
+    .sort((left, right) => compareModelUsageRows(left, right, filters.sort))
+}
+
+function buildModelUsageRows(entriesByList: ArmyIntelligenceDecodedEntry[][]): UsageRow[] {
+  const rowsByKey = new Map<string, ModelUsageAccumulator>()
+  const listAppearances = new Map<string, Set<number>>()
+
+  entriesByList.forEach((entries, listIndex) => {
+    entries.forEach((entry) => {
+      const name = getModelName(entry)
+
+      if (!name) {
+        return
+      }
+
+      const key = [name, entry.profile, entry.points, entry.troopType].join('|')
+      const row = rowsByKey.get(key) ?? {
+        listCount: 0,
+        name,
+        percentage: 0,
+        points: entry.points,
+        profile: entry.profile,
+        skills: new Set<string>(),
+        totalSelections: 0,
+        troopType: entry.troopType,
+      }
+
+      row.totalSelections += 1
+      entry.skills.forEach((skill) => row.skills.add(skill))
+      rowsByKey.set(key, row)
+
+      const appearances = listAppearances.get(key) ?? new Set<number>()
+      appearances.add(listIndex)
+      listAppearances.set(key, appearances)
+    })
+  })
+
+  return Array.from(rowsByKey.entries())
+    .map(([key, row]) => ({
+      listCount: listAppearances.get(key)?.size ?? 0,
+      name: row.name,
+      percentage: entriesByList.length
+        ? ((listAppearances.get(key)?.size ?? 0) / entriesByList.length) * 100
+        : 0,
+      points: row.points,
+      profile: row.profile,
+      skills: Array.from(row.skills).sort((left, right) => left.localeCompare(right)),
+      totalSelections: row.totalSelections,
+      troopType: row.troopType,
+    }))
+    .sort((left, right) => compareModelUsageRows(left, right, 'usage'))
+}
+
+function compareModelUsageRows(left: UsageRow, right: UsageRow, sort: ModelUsageSort): number {
+  if (sort === 'pointsHigh') {
+    return (right.points ?? 0) - (left.points ?? 0) || compareModelUsageRows(left, right, 'usage')
+  }
+
+  if (sort === 'pointsLow') {
+    return (left.points ?? 0) - (right.points ?? 0) || compareModelUsageRows(left, right, 'usage')
+  }
+
+  return (
+    right.totalSelections - left.totalSelections ||
+    right.listCount - left.listCount ||
+    left.name.localeCompare(right.name) ||
+    String(left.profile || '').localeCompare(String(right.profile || ''))
+  )
+}
+
+function rowSkills(row: UsageRow) {
+  return 'skills' in row && Array.isArray(row.skills) ? row.skills : []
+}
+
+function formatModelUsageName(item: UsageRow) {
+  const name = item.name.trim()
+  const profile = item.profile?.trim()
+
+  if (!profile || profile === name) {
+    return name
+  }
+
+  const normalizedName = name.toLocaleLowerCase()
+  const normalizedProfile = profile.toLocaleLowerCase()
+
+  if (normalizedProfile.startsWith(normalizedName)) {
+    const detail = profile.slice(name.length).trim()
+    return detail ? `${name} - ${detail}` : name
+  }
+
+  return `${name} - ${profile}`
 }
 
 function buildUsageRows(

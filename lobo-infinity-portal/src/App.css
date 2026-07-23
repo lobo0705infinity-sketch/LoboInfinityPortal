@@ -4234,6 +4234,10 @@
   width: 100%;
 }
 
+.army-intelligence-model-controls {
+  grid-template-columns: repeat(3, minmax(12rem, 1fr));
+}
+
 .army-intelligence-empty {
   max-width: 42rem;
 }

@@ -217,6 +217,7 @@ function parseInfinityDataOverview(html) {
       ),
       profile: textContent(matchFirst(block, /<h2 class="card-header-title">([\s\S]*?)<\/h2>/)),
       skills: textContent(matchFirst(block, /<b>Skills:<\/b>\s*<span>([\s\S]*?)<\/span>/)),
+      troopType: textContent(matchFirst(block, /<div class="typ-and-category">\s*<div>([\s\S]*?)<\/div>/)),
       weapons: [...block.matchAll(/<td class="weapon-table-name-header">([\s\S]*?)<\/td>/g)].map((match) =>
         textContent(match[1]),
       ),
@@ -289,10 +290,12 @@ function buildStructuredList(armyCode, codeData, resolved) {
         orderTypes,
         points: listRow?.points ?? 0,
         profile: card?.profile || listRow?.unit || '',
+        skills: splitSkillTokens(skills).map(normalizeSkillTokenForDisplay),
         specialist: /\bSpecialist Operative\b/i.test(skills),
         doctor: /\bDoctor\b/i.test(skills),
         engineer: /\bEngineer\b/i.test(skills),
         swc: listRow?.swc ?? 0,
+        troopType: normalizeTroopType(card?.troopType),
         unit: listRow?.unit || card?.profile || '',
       })
     }
@@ -347,6 +350,8 @@ function toCsv(list) {
       'profile',
       'points',
       'swc',
+      'troopType',
+      'skills',
       'orderTypes',
       'lieutenant',
       'hacker',
@@ -370,6 +375,8 @@ function toCsv(list) {
         entry.profile,
         entry.points,
         entry.swc,
+        entry.troopType,
+        entry.skills.join('|'),
         entry.orderTypes.join('|'),
         entry.lieutenant,
         entry.hacker,
@@ -443,6 +450,14 @@ function normalizeSkillToken(skill) {
     .replace(/\s+/g, ' ')
     .trim()
     .toLowerCase()
+}
+
+function normalizeSkillTokenForDisplay(skill) {
+  return normalizeSkillToken(skill).replace(/\b\w/g, (letter) => letter.toUpperCase())
+}
+
+function normalizeTroopType(value) {
+  return String(value || '').trim().toUpperCase()
 }
 
 function parseCost(value) {

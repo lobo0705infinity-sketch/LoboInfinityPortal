@@ -308,8 +308,10 @@ export type ArmyIntelligenceDecodedEntry = {
   orderTypes: string[]
   points: number
   profile: string
+  skills: string[]
   specialist: boolean
   swc: number
+  troopType: string
   unit: string
 }
 
@@ -4820,8 +4822,10 @@ function normalizeArmyIntelligenceDecodedEntry(item: unknown): ArmyIntelligenceD
     orderTypes: getArray(record, 'orderTypes').map((entry) => String(entry)),
     points: getNumber(record, 'points'),
     profile: getString(record, 'profile'),
+    skills: getArray(record, 'skills').map((entry) => String(entry)),
     specialist: getBoolean(record, 'specialist'),
     swc: getNumber(record, 'swc'),
+    troopType: getString(record, 'troopType'),
     unit: getString(record, 'unit'),
   }
 }

@@ -129,6 +129,26 @@ assert.match(
   /filter\(isDecodedList\)/,
   'Sectorial statistics must use decoded snapshot data only.',
 )
+assert.match(
+  page,
+  /troopTypeOptions = \['HI', 'LI', 'MI', 'REM', 'SK', 'TAG', 'VH', 'WB'\][\s\S]*Type[\s\S]*All Types/,
+  'Model Usage must expose exact troop-type filters.',
+)
+assert.match(
+  page,
+  /formatModelUsageName\(item\)/,
+  'Model Usage rows must use the formatted profile-level label.',
+)
+assert.match(
+  page,
+  /Sort[\s\S]*Usage Count[\s\S]*Points: High to Low[\s\S]*Points: Low to High/,
+  'Model Usage must expose usage and points sorting.',
+)
+assert.match(
+  page,
+  /Skill[\s\S]*All Skills[\s\S]*buildSkillOptions/,
+  'Model Usage must expose skill filtering from currently matching decoded lists.',
+)
 
 const operationsLists = [
   {
@@ -227,6 +247,64 @@ const roleFixtureAnalysis = buildFixtureAnalysis([
     status: 'decoded',
   },
 ])
+const typeSkillFixtureLists = [
+  {
+    decoded: {
+      combatGroups: [
+        {
+          entries: [
+            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 68, profile: 'ASURA Hacker', skills: ['Hacker', 'Lieutenant'], troopType: 'HI', unit: 'ASURA' },
+            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 22, profile: 'Pilot-X Team Hacker', skills: ['Hacker'], troopType: 'LI', unit: 'Pilot-X Team' },
+            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 41, profile: 'RUDRA FTO Repeater', skills: ['Remote Presence'], troopType: 'REM', unit: 'RUDRA FTO' },
+            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 10, profile: 'RACERBOT Repeater', skills: ['Remote Presence'], troopType: 'REM', unit: 'RACERBOT Mk-III' },
+            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 28, profile: 'ARTALIS Engineer', skills: ['Engineer'], troopType: 'MI', unit: 'ARTALIS' },
+          ],
+        },
+      ],
+      orderCounts: {
+        regular: 5,
+      },
+      sectorial: 'Operations Subsection',
+      totals: {},
+    },
+    result: 'Win',
+    status: 'decoded',
+  },
+  {
+    decoded: {
+      combatGroups: [
+        {
+          entries: [
+            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 12, profile: 'Fusilier Forward Observer', skills: ['Forward Observer'], troopType: 'LI', unit: 'FUSILIER' },
+          ],
+        },
+      ],
+      orderCounts: {
+        regular: 1,
+      },
+      sectorial: 'PanOceania',
+      totals: {},
+    },
+    result: 'Win',
+    status: 'decoded',
+  },
+]
+const typeSkillAnalysis = buildFixtureAnalysis(typeSkillFixtureLists.slice(0, 1))
+const remRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
+  skill: '',
+  sort: 'usage',
+  troopType: 'REM',
+})
+const hackerRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
+  skill: 'Hacker',
+  sort: 'usage',
+  troopType: '',
+})
+const remRemoteRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
+  skill: 'Remote Presence',
+  sort: 'usage',
+  troopType: 'REM',
+})
 
 assert.equal(allAnalysis.listCount, 2, 'All Army Lists must include winning and losing decoded lists.')
 assert.equal(winningAnalysis.listCount, 1, 'Winning Record must include only winning submitted lists.')
@@ -247,7 +325,11 @@ assert.deepEqual(
     listCount: 1,
     name: 'NETROD',
     percentage: 50,
+    points: undefined,
+    profile: 'NETROD',
+    skills: [],
     totalSelections: 2,
+    troopType: undefined,
   },
   'Duplicate models must count twice for selections but once for list appearance.',
 )
@@ -280,6 +362,54 @@ assert.deepEqual(
   roleFixtureAnalysis.chainOfCommand.map((row) => row.name),
   ['Chain of Command Profile'],
   'Explicit Chain of Command profiles must appear in Chain of Command.',
+)
+assert.deepEqual(
+  remRows.map((row) => row.name),
+  ['RACERBOT Mk-III', 'RUDRA FTO'],
+  'REM type filter must exclude HI, LI, and MI models.',
+)
+assert.deepEqual(
+  hackerRows.map((row) => row.name),
+  ['ASURA', 'Pilot-X Team'],
+  'Skill filter must match exact decoded skills.',
+)
+assert.deepEqual(
+  filterAndSortModelUsage(typeSkillAnalysis.modelUsage, { skill: '', sort: 'pointsHigh', troopType: '' }).map((row) => row.name),
+  ['ASURA', 'RUDRA FTO', 'ARTALIS', 'Pilot-X Team', 'RACERBOT Mk-III'],
+  'Points high-to-low sort must use decoded profile points.',
+)
+assert.deepEqual(
+  filterAndSortModelUsage(typeSkillAnalysis.modelUsage, { skill: '', sort: 'pointsLow', troopType: '' }).map((row) => row.name),
+  ['RACERBOT Mk-III', 'Pilot-X Team', 'ARTALIS', 'RUDRA FTO', 'ASURA'],
+  'Points low-to-high sort must use decoded profile points.',
+)
+assert.deepEqual(
+  remRemoteRows.map((row) => row.name),
+  ['RACERBOT Mk-III', 'RUDRA FTO'],
+  'Combined Type and Skill filters must both apply.',
+)
+assert.deepEqual(
+  buildSkillOptions(typeSkillFixtureLists.slice(0, 1)),
+  ['Engineer', 'Hacker', 'Lieutenant', 'Remote Presence'],
+  'Operations Subsection skill options must come from the selected sectorial dataset.',
+)
+assert.deepEqual(
+  buildSkillOptions(typeSkillFixtureLists.slice(1)),
+  ['Forward Observer'],
+  'Changing sectorial must refresh Skill dropdown options.',
+)
+assert.equal(
+  reconcileTroopTypeFilter('REM', typeSkillFixtureLists.slice(1)),
+  '',
+  'Changing from a sectorial with REM to one without REM must reset Type to All Types.',
+)
+assert.equal(
+  formatModelUsageName({
+    name: 'FUSILIER',
+    profile: 'FUSILIER Forward Observer',
+  }),
+  'FUSILIER - Forward Observer',
+  'Model Usage must not duplicate unit names when showing a profile-level row.',
 )
 assert.match(
   commissioner,
@@ -334,8 +464,131 @@ function buildFixtureAnalysis(lists) {
     chainOfCommand: buildUsageRows(entriesByList, (entry) => entry.chainOfCommand),
     forwardObservers: buildUsageRows(entriesByList, (entry) => entry.forwardObserver),
     hackers: buildUsageRows(entriesByList, (entry) => entry.hacker),
-    modelUsage: buildUsageRows(entriesByList),
+    modelUsage: buildModelUsageRows(entriesByList),
   }
+}
+
+function buildSkillOptions(lists) {
+  const skills = new Set()
+
+  lists.forEach((list) => {
+    list.decoded.combatGroups.forEach((group) => {
+      group.entries.forEach((entry) => {
+        ;(entry.skills || []).forEach((skill) => skills.add(skill))
+      })
+    })
+  })
+
+  return Array.from(skills).sort((left, right) => left.localeCompare(right))
+}
+
+function buildTroopTypeOptions(lists) {
+  const types = new Set()
+
+  lists.forEach((list) => {
+    list.decoded.combatGroups.forEach((group) => {
+      group.entries.forEach((entry) => {
+        if (entry.troopType) {
+          types.add(entry.troopType)
+        }
+      })
+    })
+  })
+
+  return Array.from(types).sort((left, right) => left.localeCompare(right))
+}
+
+function reconcileTroopTypeFilter(selectedType, lists) {
+  if (!selectedType) {
+    return ''
+  }
+
+  return buildTroopTypeOptions(lists).includes(selectedType) ? selectedType : ''
+}
+
+function formatModelUsageName(item) {
+  const name = item.name.trim()
+  const profile = item.profile?.trim()
+
+  if (!profile || profile === name) {
+    return name
+  }
+
+  const normalizedName = name.toLocaleLowerCase()
+  const normalizedProfile = profile.toLocaleLowerCase()
+
+  if (normalizedProfile.startsWith(normalizedName)) {
+    const detail = profile.slice(name.length).trim()
+    return detail ? `${name} - ${detail}` : name
+  }
+
+  return `${name} - ${profile}`
+}
+
+function filterAndSortModelUsage(rows, filters) {
+  return rows
+    .filter((row) => !filters.troopType || row.troopType === filters.troopType)
+    .filter((row) => !filters.skill || row.skills.includes(filters.skill))
+    .sort((left, right) => compareModelUsageRows(left, right, filters.sort))
+}
+
+function buildModelUsageRows(entriesByList) {
+  const rowsByKey = new Map()
+  const listAppearances = new Map()
+
+  entriesByList.forEach((entries, listIndex) => {
+    entries.forEach((entry) => {
+      const key = [entry.unit, entry.profile, entry.points, entry.troopType].join('|')
+      const row = rowsByKey.get(key) || {
+        listCount: 0,
+        name: entry.unit,
+        percentage: 0,
+        points: entry.points,
+        profile: entry.profile,
+        skills: new Set(),
+        totalSelections: 0,
+        troopType: entry.troopType,
+      }
+
+      row.totalSelections += 1
+      ;(entry.skills || []).forEach((skill) => row.skills.add(skill))
+      rowsByKey.set(key, row)
+
+      const appearances = listAppearances.get(key) || new Set()
+      appearances.add(listIndex)
+      listAppearances.set(key, appearances)
+    })
+  })
+
+  return Array.from(rowsByKey.entries())
+    .map(([key, row]) => ({
+      listCount: listAppearances.get(key)?.size || 0,
+      name: row.name,
+      percentage: entriesByList.length ? ((listAppearances.get(key)?.size || 0) / entriesByList.length) * 100 : 0,
+      points: row.points,
+      profile: row.profile,
+      skills: Array.from(row.skills).sort((left, right) => left.localeCompare(right)),
+      totalSelections: row.totalSelections,
+      troopType: row.troopType,
+    }))
+    .sort((left, right) => compareModelUsageRows(left, right, 'usage'))
+}
+
+function compareModelUsageRows(left, right, sort) {
+  if (sort === 'pointsHigh') {
+    return (right.points || 0) - (left.points || 0) || compareModelUsageRows(left, right, 'usage')
+  }
+
+  if (sort === 'pointsLow') {
+    return (left.points || 0) - (right.points || 0) || compareModelUsageRows(left, right, 'usage')
+  }
+
+  return (
+    right.totalSelections - left.totalSelections ||
+    right.listCount - left.listCount ||
+    left.name.localeCompare(right.name) ||
+    String(left.profile || '').localeCompare(String(right.profile || ''))
+  )
 }
 
 function buildUsageRows(entriesByList, predicate = () => true) {
