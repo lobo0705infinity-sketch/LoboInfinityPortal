@@ -271,7 +271,7 @@ function UsagePanel({
         <h2 id={`${slugify(title)}-title`}>{title}</h2>
       ) : null}
       {visible.length === 0 ? (
-        <p>No matching decoded usage.</p>
+        <p>None</p>
       ) : (
         <ol className="army-intelligence-usage-list">
           {visible.map((item) => (
