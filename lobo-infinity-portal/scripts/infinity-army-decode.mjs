@@ -293,6 +293,7 @@ function buildStructuredList(armyCode, codeData, resolved) {
         orderTypes,
         points: listRow?.points ?? 0,
         profile: card?.profile || listRow?.unit || '',
+        equipment: splitProfileTokens(equipment),
         skills: splitSkillTokens(skills).map(normalizeSkillTokenForDisplay),
         specialist: /\bSpecialist Operative\b/i.test(skills),
         doctor: /\bDoctor\b/i.test(skills),
@@ -301,6 +302,7 @@ function buildStructuredList(armyCode, codeData, resolved) {
         structure: card?.structure ?? null,
         troopType: normalizeTroopType(card?.troopType),
         unit: listRow?.unit || card?.profile || '',
+        weapons: (card?.weapons || []).map(normalizeProfileToken).filter(Boolean),
         wounds: card?.wounds ?? null,
       })
     }
@@ -359,6 +361,8 @@ function toCsv(list) {
       'structure',
       'troopType',
       'skills',
+      'equipment',
+      'weapons',
       'wounds',
       'orderTypes',
       'lieutenant',
@@ -386,6 +390,8 @@ function toCsv(list) {
         entry.structure ?? '',
         entry.troopType,
         entry.skills.join('|'),
+        entry.equipment.join('|'),
+        entry.weapons.join('|'),
         entry.wounds ?? '',
         entry.orderTypes.join('|'),
         entry.lieutenant,
@@ -450,6 +456,20 @@ function splitSkillTokens(skills) {
     .split(',')
     .map((skill) => skill.trim())
     .filter(Boolean)
+}
+
+function splitProfileTokens(value) {
+  return String(value || '')
+    .split(',')
+    .map(normalizeProfileToken)
+    .filter(Boolean)
+}
+
+function normalizeProfileToken(value) {
+  return String(value || '')
+    .replace(/[â€œâ€â€³]/g, '"')
+    .replace(/\s+/g, ' ')
+    .trim()
 }
 
 function normalizeSkillToken(skill) {

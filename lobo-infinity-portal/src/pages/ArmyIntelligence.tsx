@@ -54,6 +54,7 @@ type RefreshState =
     }
 
 type UsageRow = {
+  equipment?: string[]
   listCount: number
   name: string
   percentage: number
@@ -62,10 +63,13 @@ type UsageRow = {
   skills?: string[]
   troopType?: string
   totalSelections: number
+  weapons?: string[]
 }
 
-type ModelUsageAccumulator = Omit<UsageRow, 'skills'> & {
+type ModelUsageAccumulator = Omit<UsageRow, 'equipment' | 'skills' | 'weapons'> & {
+  equipment: Set<string>
   skills: Set<string>
+  weapons: Set<string>
 }
 
 type UniqueArmyIntelligenceList = ArmyIntelligenceList & {
@@ -248,9 +252,11 @@ function ArmyIntelligenceContent({
   const auth = useAuth()
   const [selectedSectorial, setSelectedSectorial] = useState('')
   const [resultFilter, setResultFilter] = useState<AnalysisResultFilter>('all')
+  const [modelEquipmentFilter, setModelEquipmentFilter] = useState('')
   const [modelSkillFilter, setModelSkillFilter] = useState('')
   const [modelSort, setModelSort] = useState<ModelUsageSort>('usage')
   const [modelTypeFilter, setModelTypeFilter] = useState('')
+  const [modelWeaponFilter, setModelWeaponFilter] = useState('')
   const [refreshState, setRefreshState] = useState<RefreshState>({ status: 'idle' })
   const decodedLists = useMemo(
     () => data.lists.filter(isDecodedList),
@@ -276,18 +282,22 @@ function ArmyIntelligenceContent({
     [resultFilter, selectedSectorial, uniqueDecodedLists],
   )
   const analysis = useMemo(() => buildArmyAnalysis(matchingLists), [matchingLists])
+  const equipmentOptions = useMemo(() => buildEquipmentOptions(matchingLists), [matchingLists])
   const skillOptions = useMemo(() => buildSkillOptions(matchingLists), [matchingLists])
+  const weaponOptions = useMemo(() => buildWeaponOptions(matchingLists), [matchingLists])
   const filteredModelUsage = useMemo(
     () =>
       filterAndSortModelUsage(
         analysis.modelUsage,
         {
+          equipment: modelEquipmentFilter,
           skill: modelSkillFilter,
           sort: modelSort,
           troopType: modelTypeFilter,
+          weapon: modelWeaponFilter,
         },
       ),
-    [analysis.modelUsage, modelSkillFilter, modelSort, modelTypeFilter],
+    [analysis.modelUsage, modelEquipmentFilter, modelSkillFilter, modelSort, modelTypeFilter, modelWeaponFilter],
   )
 
   useEffect(() => {
@@ -295,6 +305,18 @@ function ArmyIntelligenceContent({
       setModelSkillFilter('')
     }
   }, [modelSkillFilter, skillOptions])
+
+  useEffect(() => {
+    if (modelWeaponFilter && !weaponOptions.includes(modelWeaponFilter)) {
+      setModelWeaponFilter('')
+    }
+  }, [modelWeaponFilter, weaponOptions])
+
+  useEffect(() => {
+    if (modelEquipmentFilter && !equipmentOptions.includes(modelEquipmentFilter)) {
+      setModelEquipmentFilter('')
+    }
+  }, [equipmentOptions, modelEquipmentFilter])
 
   const canRefreshArmyIntelligence = auth.hasPermission('manageCache')
 
@@ -537,6 +559,28 @@ function ArmyIntelligenceContent({
                 {skillOptions.map((skill) => (
                   <option key={skill} value={skill}>
                     {skill}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span>Weapon</span>
+              <select onChange={(event) => setModelWeaponFilter(event.target.value)} value={modelWeaponFilter}>
+                <option value="">All Weapons</option>
+                {weaponOptions.map((weapon) => (
+                  <option key={weapon} value={weapon}>
+                    {weapon}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span>Equipment</span>
+              <select onChange={(event) => setModelEquipmentFilter(event.target.value)} value={modelEquipmentFilter}>
+                <option value="">All Equipment</option>
+                {equipmentOptions.map((equipment) => (
+                  <option key={equipment} value={equipment}>
+                    {equipment}
                   </option>
                 ))}
               </select>
@@ -796,34 +840,52 @@ function calculateAverageDurabilityPerModel(entries: ArmyIntelligenceDecodedEntr
 }
 
 function buildSkillOptions(lists: ArmyIntelligenceList[]) {
-  const skills = new Set<string>()
+  return buildEntryTokenOptions(lists, (entry) => entry.skills)
+}
 
+function buildWeaponOptions(lists: ArmyIntelligenceList[]) {
+  return buildEntryTokenOptions(lists, (entry) => entry.weapons)
+}
+
+function buildEquipmentOptions(lists: ArmyIntelligenceList[]) {
+  return buildEntryTokenOptions(lists, (entry) => entry.equipment)
+}
+
+function buildEntryTokenOptions(
+  lists: ArmyIntelligenceList[],
+  getTokens: (entry: ArmyIntelligenceDecodedEntry) => string[],
+) {
+  const values = new Set<string>()
   lists.forEach((list) => {
     list.decoded?.combatGroups.forEach((group) => {
       group.entries.forEach((entry) => {
-        entry.skills.forEach((skill) => {
-          if (skill) {
-            skills.add(skill)
+        ;(getTokens(entry) ?? []).forEach((value) => {
+          if (value) {
+            values.add(value)
           }
         })
       })
     })
   })
 
-  return Array.from(skills).sort((left, right) => left.localeCompare(right))
+  return Array.from(values).sort((left, right) => left.localeCompare(right))
 }
 
 function filterAndSortModelUsage(
   rows: UsageRow[],
   filters: {
+    equipment: string
     skill: string
     sort: ModelUsageSort
     troopType: string
+    weapon: string
   },
 ) {
   return rows
     .filter((row) => !filters.troopType || row.troopType === filters.troopType)
     .filter((row) => !filters.skill || rowSkills(row).includes(filters.skill))
+    .filter((row) => !filters.weapon || rowWeapons(row).includes(filters.weapon))
+    .filter((row) => !filters.equipment || rowEquipment(row).includes(filters.equipment))
     .sort((left, right) => compareModelUsageRows(left, right, filters.sort))
 }
 
@@ -841,6 +903,7 @@ function buildModelUsageRows(entriesByList: ArmyIntelligenceDecodedEntry[][]): U
 
       const key = [name, entry.profile, entry.points, entry.troopType].join('|')
       const row = rowsByKey.get(key) ?? {
+        equipment: new Set<string>(),
         listCount: 0,
         name,
         percentage: 0,
@@ -849,10 +912,13 @@ function buildModelUsageRows(entriesByList: ArmyIntelligenceDecodedEntry[][]): U
         skills: new Set<string>(),
         totalSelections: 0,
         troopType: entry.troopType,
+        weapons: new Set<string>(),
       }
 
       row.totalSelections += 1
+      ;(entry.equipment ?? []).forEach((equipment) => row.equipment.add(equipment))
       entry.skills.forEach((skill) => row.skills.add(skill))
+      ;(entry.weapons ?? []).forEach((weapon) => row.weapons.add(weapon))
       rowsByKey.set(key, row)
 
       const appearances = listAppearances.get(key) ?? new Set<number>()
@@ -863,6 +929,7 @@ function buildModelUsageRows(entriesByList: ArmyIntelligenceDecodedEntry[][]): U
 
   return Array.from(rowsByKey.entries())
     .map(([key, row]) => ({
+      equipment: Array.from(row.equipment).sort((left, right) => left.localeCompare(right)),
       listCount: listAppearances.get(key)?.size ?? 0,
       name: row.name,
       percentage: entriesByList.length
@@ -873,6 +940,7 @@ function buildModelUsageRows(entriesByList: ArmyIntelligenceDecodedEntry[][]): U
       skills: Array.from(row.skills).sort((left, right) => left.localeCompare(right)),
       totalSelections: row.totalSelections,
       troopType: row.troopType,
+      weapons: Array.from(row.weapons).sort((left, right) => left.localeCompare(right)),
     }))
     .sort((left, right) => compareModelUsageRows(left, right, 'usage'))
 }
@@ -896,6 +964,14 @@ function compareModelUsageRows(left: UsageRow, right: UsageRow, sort: ModelUsage
 
 function rowSkills(row: UsageRow) {
   return 'skills' in row && Array.isArray(row.skills) ? row.skills : []
+}
+
+function rowWeapons(row: UsageRow) {
+  return 'weapons' in row && Array.isArray(row.weapons) ? row.weapons : []
+}
+
+function rowEquipment(row: UsageRow) {
+  return 'equipment' in row && Array.isArray(row.equipment) ? row.equipment : []
 }
 
 function formatModelUsageName(item: UsageRow) {

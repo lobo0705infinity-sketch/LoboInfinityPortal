@@ -178,6 +178,16 @@ assert.match(
 )
 assert.match(
   page,
+  /Weapon[\s\S]*All Weapons[\s\S]*buildWeaponOptions/,
+  'Model Usage must expose weapon filtering from currently matching decoded lists.',
+)
+assert.match(
+  page,
+  /Equipment[\s\S]*All Equipment[\s\S]*buildEquipmentOptions/,
+  'Model Usage must expose equipment filtering from currently matching decoded lists.',
+)
+assert.match(
+  page,
   /normalizeSectorialDisplayName[\s\S]*compact === 'panoceania'[\s\S]*PanOceania/,
   'Army Intelligence page must canonicalize PanOceania sectorial display variants.',
 )
@@ -260,6 +270,11 @@ assert.match(
   decoder,
   /skills: splitSkillTokens\(skills\)/,
   'Standalone decoder must serialize exact skill tokens.',
+)
+assert.match(
+  decoder,
+  /equipment: splitProfileTokens\(equipment\)[\s\S]*weapons: \(card\?\.weapons \|\| \[\]\)\.map\(normalizeProfileToken\)/,
+  'Standalone decoder must serialize exact profile-level equipment and weapon tokens.',
 )
 assert.match(
   decoder,
@@ -375,15 +390,15 @@ const typeSkillFixtureLists = [
       combatGroups: [
         {
           entries: [
-            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 68, profile: 'ASURA Hacker', skills: ['Hacker', 'Lieutenant'], structure: null, troopType: 'HI', unit: 'ASURA', wounds: 2 },
-            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 22, profile: 'Pilot-X Team Hacker', skills: ['Hacker'], structure: null, troopType: 'LI', unit: 'Pilot-X Team', wounds: 1 },
-            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 41, profile: 'RUDRA FTO Repeater', skills: ['Remote Presence'], structure: 2, troopType: 'REM', unit: 'RUDRA FTO', wounds: null },
+            { equipment: ['Hacking Device Plus'], hacker: false, lieutenant: false, orderTypes: ['regular'], points: 68, profile: 'ASURA Hacker', skills: ['Hacker', 'Lieutenant'], structure: null, troopType: 'HI', unit: 'ASURA', weapons: ['MULTI Rifle'], wounds: 2 },
+            { equipment: ['Hacking Device'], hacker: false, lieutenant: false, orderTypes: ['regular'], points: 22, profile: 'Pilot-X Team Hacker', skills: ['Hacker'], structure: null, troopType: 'LI', unit: 'Pilot-X Team', weapons: ['Submachine Gun'], wounds: 1 },
+            { equipment: ['Repeater'], hacker: false, lieutenant: false, orderTypes: ['regular'], points: 41, profile: 'RUDRA FTO Repeater', skills: ['Remote Presence'], structure: 2, troopType: 'REM', unit: 'RUDRA FTO', weapons: ['MULTI Rifle'], wounds: null },
           ],
         },
         {
           entries: [
-            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 10, profile: 'RACERBOT Repeater', skills: ['Remote Presence'], structure: 1, troopType: 'REM', unit: 'RACERBOT Mk-III', wounds: null },
-            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 28, profile: 'ARTALIS Engineer', skills: ['Engineer'], structure: null, troopType: 'MI', unit: 'ARTALIS', wounds: 1 },
+            { equipment: ['Repeater'], hacker: false, lieutenant: false, orderTypes: ['regular'], points: 10, profile: 'RACERBOT Repeater', skills: ['Remote Presence'], structure: 1, troopType: 'REM', unit: 'RACERBOT Mk-III', weapons: ['Flash Pulse'], wounds: null },
+            { equipment: ['D-Charges'], hacker: false, lieutenant: false, orderTypes: ['regular'], points: 28, profile: 'ARTALIS Engineer', skills: ['Engineer'], structure: null, troopType: 'MI', unit: 'ARTALIS', weapons: ['Combi Rifle'], wounds: 1 },
           ],
         },
       ],
@@ -401,7 +416,7 @@ const typeSkillFixtureLists = [
       combatGroups: [
         {
           entries: [
-            { hacker: false, lieutenant: false, orderTypes: ['regular'], points: 12, profile: 'Fusilier Forward Observer', skills: ['Forward Observer'], structure: null, troopType: 'LI', unit: 'FUSILIER', wounds: 1 },
+            { equipment: ['Deployable Repeater'], hacker: false, lieutenant: false, orderTypes: ['regular'], points: 12, profile: 'Fusilier Forward Observer', skills: ['Forward Observer'], structure: null, troopType: 'LI', unit: 'FUSILIER', weapons: ['Combi Rifle'], wounds: 1 },
           ],
         },
       ],
@@ -526,25 +541,61 @@ const hackerRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
   troopType: '',
 })
 const remRemoteRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
+  equipment: '',
   skill: 'Remote Presence',
   sort: 'usage',
   troopType: 'REM',
+  weapon: '',
 })
 const tagRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
+  equipment: '',
   skill: '',
   sort: 'usage',
   troopType: 'TAG',
+  weapon: '',
 })
 const panoceaniaAnalysis = buildFixtureAnalysis(typeSkillFixtureLists.slice(1))
 const panoceaniaRemRows = filterAndSortModelUsage(panoceaniaAnalysis.modelUsage, {
+  equipment: '',
   skill: '',
   sort: 'usage',
   troopType: 'REM',
+  weapon: '',
 })
 const remHackerRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
+  equipment: '',
   skill: 'Hacker',
   sort: 'usage',
   troopType: 'REM',
+  weapon: '',
+})
+const multiRifleRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
+  equipment: '',
+  skill: '',
+  sort: 'usage',
+  troopType: '',
+  weapon: 'MULTI Rifle',
+})
+const repeaterRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
+  equipment: 'Repeater',
+  skill: '',
+  sort: 'usage',
+  troopType: '',
+  weapon: '',
+})
+const remRepeaterRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
+  equipment: 'Repeater',
+  skill: '',
+  sort: 'usage',
+  troopType: 'REM',
+  weapon: '',
+})
+const multiRifleDChargesRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
+  equipment: 'D-Charges',
+  skill: '',
+  sort: 'usage',
+  troopType: '',
+  weapon: 'MULTI Rifle',
 })
 
 assert.equal(allAnalysis.listCount, 2, 'All Army Lists must include winning and losing decoded lists.')
@@ -563,6 +614,7 @@ assert.notDeepEqual(
 assert.deepEqual(
   allAnalysis.modelUsage.find((row) => row.name === 'NETROD'),
   {
+    equipment: [],
     listCount: 1,
     name: 'NETROD',
     percentage: 50,
@@ -571,6 +623,7 @@ assert.deepEqual(
     skills: [],
     totalSelections: 2,
     troopType: undefined,
+    weapons: [],
   },
   'Duplicate models must count twice for selections but once for list appearance.',
 )
@@ -607,6 +660,7 @@ assert.deepEqual(
 assert.deepEqual(
   uniqueSubmittedAllAnalysis.modelUsage.find((row) => row.name === 'ASURA'),
   {
+    equipment: [],
     listCount: 2,
     name: 'ASURA',
     percentage: 100,
@@ -615,6 +669,7 @@ assert.deepEqual(
     skills: ['Hacker'],
     totalSelections: 2,
     troopType: 'HI',
+    weapons: [],
   },
   'Model usage must analyze the deduplicated unique submitted list set.',
 )
@@ -684,6 +739,26 @@ assert.deepEqual(
   'Combined Type and Skill filters must both apply.',
 )
 assert.deepEqual(
+  multiRifleRows.map((row) => row.name),
+  ['ASURA', 'RUDRA FTO'],
+  'Weapon filter must match exact decoded profile weapons.',
+)
+assert.deepEqual(
+  repeaterRows.map((row) => row.name),
+  ['RACERBOT Mk-III', 'RUDRA FTO'],
+  'Equipment filter must match exact decoded profile equipment.',
+)
+assert.deepEqual(
+  remRepeaterRows.map((row) => row.name),
+  ['RACERBOT Mk-III', 'RUDRA FTO'],
+  'Type and Equipment filters must combine.',
+)
+assert.deepEqual(
+  multiRifleDChargesRows,
+  [],
+  'Combined Weapon and Equipment filters with no matching profile must return no Model Usage rows.',
+)
+assert.deepEqual(
   tagRows,
   [],
   'A sectorial with no TAG entries must keep the TAG filter active and return no Model Usage rows.',
@@ -712,6 +787,26 @@ assert.deepEqual(
   buildSkillOptions(typeSkillFixtureLists.slice(1)),
   ['Forward Observer'],
   'Changing sectorial must refresh Skill dropdown options.',
+)
+assert.deepEqual(
+  buildWeaponOptions(typeSkillFixtureLists.slice(0, 1)),
+  ['Combi Rifle', 'Flash Pulse', 'MULTI Rifle', 'Submachine Gun'],
+  'Weapon options must come from the selected sectorial dataset and sort alphabetically.',
+)
+assert.deepEqual(
+  buildEquipmentOptions(typeSkillFixtureLists.slice(0, 1)),
+  ['D-Charges', 'Hacking Device', 'Hacking Device Plus', 'Repeater'],
+  'Equipment options must come from the selected sectorial dataset and sort alphabetically.',
+)
+assert.deepEqual(
+  buildWeaponOptions(typeSkillFixtureLists.slice(1)),
+  ['Combi Rifle'],
+  'Changing sectorial must refresh Weapon dropdown options.',
+)
+assert.deepEqual(
+  buildEquipmentOptions(typeSkillFixtureLists.slice(1)),
+  ['Deployable Repeater'],
+  'Changing sectorial must refresh Equipment dropdown options.',
 )
 assert.equal(
   normalizeSectorialDisplayName('Panoceania'),
@@ -907,17 +1002,28 @@ function calculateAverageDurabilityPerModel(entries) {
 }
 
 function buildSkillOptions(lists) {
-  const skills = new Set()
+  return buildEntryTokenOptions(lists, (entry) => entry.skills)
+}
 
+function buildWeaponOptions(lists) {
+  return buildEntryTokenOptions(lists, (entry) => entry.weapons)
+}
+
+function buildEquipmentOptions(lists) {
+  return buildEntryTokenOptions(lists, (entry) => entry.equipment)
+}
+
+function buildEntryTokenOptions(lists, getTokens) {
+  const values = new Set()
   lists.forEach((list) => {
     list.decoded.combatGroups.forEach((group) => {
       group.entries.forEach((entry) => {
-        ;(entry.skills || []).forEach((skill) => skills.add(skill))
+        ;(getTokens(entry) || []).forEach((value) => values.add(value))
       })
     })
   })
 
-  return Array.from(skills).sort((left, right) => left.localeCompare(right))
+  return Array.from(values).sort((left, right) => left.localeCompare(right))
 }
 
 function deduplicateSubmittedArmyLists(lists) {
@@ -1030,6 +1136,8 @@ function filterAndSortModelUsage(rows, filters) {
   return rows
     .filter((row) => !filters.troopType || row.troopType === filters.troopType)
     .filter((row) => !filters.skill || row.skills.includes(filters.skill))
+    .filter((row) => !filters.weapon || row.weapons.includes(filters.weapon))
+    .filter((row) => !filters.equipment || row.equipment.includes(filters.equipment))
     .sort((left, right) => compareModelUsageRows(left, right, filters.sort))
 }
 
@@ -1053,6 +1161,7 @@ function buildModelUsageRows(entriesByList) {
     entries.forEach((entry) => {
       const key = [entry.unit, entry.profile, entry.points, entry.troopType].join('|')
       const row = rowsByKey.get(key) || {
+        equipment: new Set(),
         listCount: 0,
         name: entry.unit,
         percentage: 0,
@@ -1061,10 +1170,13 @@ function buildModelUsageRows(entriesByList) {
         skills: new Set(),
         totalSelections: 0,
         troopType: entry.troopType,
+        weapons: new Set(),
       }
 
       row.totalSelections += 1
+      ;(entry.equipment || []).forEach((equipment) => row.equipment.add(equipment))
       ;(entry.skills || []).forEach((skill) => row.skills.add(skill))
+      ;(entry.weapons || []).forEach((weapon) => row.weapons.add(weapon))
       rowsByKey.set(key, row)
 
       const appearances = listAppearances.get(key) || new Set()
@@ -1075,6 +1187,7 @@ function buildModelUsageRows(entriesByList) {
 
   return Array.from(rowsByKey.entries())
     .map(([key, row]) => ({
+      equipment: Array.from(row.equipment).sort((left, right) => left.localeCompare(right)),
       listCount: listAppearances.get(key)?.size || 0,
       name: row.name,
       percentage: entriesByList.length ? ((listAppearances.get(key)?.size || 0) / entriesByList.length) * 100 : 0,
@@ -1083,6 +1196,7 @@ function buildModelUsageRows(entriesByList) {
       skills: Array.from(row.skills).sort((left, right) => left.localeCompare(right)),
       totalSelections: row.totalSelections,
       troopType: row.troopType,
+      weapons: Array.from(row.weapons).sort((left, right) => left.localeCompare(right)),
     }))
     .sort((left, right) => compareModelUsageRows(left, right, 'usage'))
 }

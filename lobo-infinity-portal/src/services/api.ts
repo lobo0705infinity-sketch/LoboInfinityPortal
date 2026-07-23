@@ -304,6 +304,7 @@ export type ArmyIntelligenceDecodedEntry = {
   combinedId: string
   doctor: boolean
   engineer: boolean
+  equipment: string[]
   forwardObserver: boolean
   hacker: boolean
   lieutenant: boolean
@@ -316,6 +317,7 @@ export type ArmyIntelligenceDecodedEntry = {
   swc: number
   troopType: string
   unit: string
+  weapons: string[]
   wounds: number | null
 }
 
@@ -4926,6 +4928,7 @@ function normalizeArmyIntelligenceDecodedEntry(item: unknown): ArmyIntelligenceD
     combinedId: getString(record, 'combinedId'),
     doctor: getBoolean(record, 'doctor'),
     engineer: getBoolean(record, 'engineer'),
+    equipment: getArray(record, 'equipment').map((entry) => String(entry)),
     forwardObserver: getBoolean(record, 'forwardObserver'),
     hacker: getBoolean(record, 'hacker'),
     lieutenant: getBoolean(record, 'lieutenant'),
@@ -4940,6 +4943,7 @@ function normalizeArmyIntelligenceDecodedEntry(item: unknown): ArmyIntelligenceD
     swc: getNumber(record, 'swc'),
     troopType: getString(record, 'troopType'),
     unit: getString(record, 'unit'),
+    weapons: getArray(record, 'weapons').map((entry) => String(entry)),
     wounds: record.wounds === null || record.wounds === undefined || record.wounds === ''
       ? null
       : getNumber(record, 'wounds'),
