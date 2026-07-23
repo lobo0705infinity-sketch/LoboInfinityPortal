@@ -105,11 +105,10 @@ async function loadLiveSources(apiUrl) {
     options.sourceType === 'casual' && options.sourceId
       ? getAction(apiUrl, 'recentGames', { gameId: options.sourceId, gameType: 'casual' }).then((payload) => payload.games || [])
       : Promise.resolve([])
-  const [recentGames, casualGames, sourceIdCasualGames, armyLists, events] = await Promise.all([
+  const [recentGames, casualGames, sourceIdCasualGames, events] = await Promise.all([
     getAction(apiUrl, 'recentGames').then((payload) => payload.games || []),
     getAction(apiUrl, 'recentGames', { gameType: 'casual' }).then((payload) => payload.games || []),
     targetedCasualGame,
-    getAction(apiUrl, 'armyLists').then((payload) => payload.lists || []),
     getAction(apiUrl, 'events').catch(() => null),
   ])
 
@@ -158,24 +157,6 @@ async function loadLiveSources(apiUrl) {
       sourceId: game.id,
       sourcePlayer: 'loser',
       sourceType: game.gameType === 'casual' ? 'casual' : 'league',
-    })
-  }
-
-  for (const list of armyLists) {
-    pushParticipantSource(sources, {
-      armyCode: list.armyCode || list.armyLink,
-      date: list.submissionDate,
-      event: list.event,
-      faction: list.faction,
-      gameType: 'Army List Library',
-      mission: list.mission,
-      opponent: '',
-      player: list.playerDisplayName || list.player,
-      result: '',
-      sectorial: list.sectorial,
-      sourceId: list.id,
-      sourcePlayer: 'library',
-      sourceType: 'armyLibrary',
     })
   }
 
@@ -343,15 +324,15 @@ function fixtureSources() {
     date: '2026-07-03',
     event: 'Fixture',
     faction: 'ALEPH',
-    gameType: 'Army List Library',
+    gameType: 'League',
     mission: 'Hardlock',
     opponent: '',
     player: 'Lobo',
     result: '',
     sectorial: 'Operations Subsection',
     sourceId: 'fixture-1',
-    sourcePlayer: 'library',
-    sourceType: 'armyLibrary',
+    sourcePlayer: 'winner',
+    sourceType: 'league',
   })
   return sources
 }

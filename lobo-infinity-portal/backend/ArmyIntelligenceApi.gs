@@ -147,7 +147,6 @@ function buildArmyIntelligenceSources() {
 
   appendArmyIntelligenceRecentGameSources(sources);
   appendArmyIntelligenceTeamTournamentSources(sources);
-  appendArmyIntelligenceLibrarySources(sources);
 
   const seen = {};
 
@@ -282,37 +281,6 @@ function appendArmyIntelligenceTeamTournamentSources(sources) {
       sourceType: "tournament"
     });
   });
-
-}
-
-function appendArmyIntelligenceLibrarySources(sources) {
-
-  const lists =
-    typeof getArmyListObjects === "function"
-      ? getArmyListObjects()
-      : [];
-
-  lists
-    .filter(function(list) {
-      return list.approved;
-    })
-    .forEach(function(list) {
-      appendArmyIntelligenceParticipantSource(sources, {
-        armyCode: list.armyCode || list.armyLink,
-        date: list.submissionDate,
-        event: list.event,
-        faction: list.faction,
-        gameType: "Army List Library",
-        mission: list.mission,
-        opponent: "",
-        player: list.playerDisplayName || list.player,
-        result: "",
-        sectorial: list.sectorial,
-        sourceId: list.id,
-        sourcePlayer: "library",
-        sourceType: "armyLibrary"
-      });
-    });
 
 }
 

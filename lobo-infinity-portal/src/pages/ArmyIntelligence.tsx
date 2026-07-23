@@ -68,6 +68,10 @@ type ModelUsageAccumulator = Omit<UsageRow, 'skills'> & {
   skills: Set<string>
 }
 
+type UniqueArmyIntelligenceList = ArmyIntelligenceList & {
+  resultSet: Set<string>
+}
+
 type ArmyAnalysis = {
   averageCombatGroups: number
   averageImpetuousOrders: number
@@ -252,20 +256,24 @@ function ArmyIntelligenceContent({
     () => data.lists.filter(isDecodedList),
     [data.lists],
   )
+  const uniqueDecodedLists = useMemo(
+    () => deduplicateSubmittedArmyLists(decodedLists),
+    [decodedLists],
+  )
   const sectorials = useMemo(
     () =>
-      Array.from(new Set(decodedLists.map((list) => getDecodedSectorial(list)).filter(Boolean)))
+      Array.from(new Set(uniqueDecodedLists.map((list) => getDecodedSectorial(list)).filter(Boolean)))
         .sort((left, right) => left.localeCompare(right)),
-    [decodedLists],
+    [uniqueDecodedLists],
   )
   const matchingLists = useMemo(
     () =>
       selectedSectorial
-        ? decodedLists
+        ? uniqueDecodedLists
             .filter((list) => getDecodedSectorial(list) === selectedSectorial)
             .filter((list) => matchesResultFilter(list, resultFilter))
         : [],
-    [decodedLists, resultFilter, selectedSectorial],
+    [resultFilter, selectedSectorial, uniqueDecodedLists],
   )
   const analysis = useMemo(() => buildArmyAnalysis(matchingLists), [matchingLists])
   const skillOptions = useMemo(() => buildSkillOptions(matchingLists), [matchingLists])
@@ -668,6 +676,54 @@ function isDecodedList(list: ArmyIntelligenceList) {
   return list.status === 'decoded' && Boolean(list.decoded)
 }
 
+function deduplicateSubmittedArmyLists(lists: ArmyIntelligenceList[]): UniqueArmyIntelligenceList[] {
+  const uniqueByKey = new Map<string, UniqueArmyIntelligenceList>()
+
+  lists
+    .filter(isAllowedArmyIntelligenceSource)
+    .forEach((list) => {
+      const key = getSubmittedArmyListDeduplicationKey(list)
+
+      if (!key) {
+        return
+      }
+
+      const existing = uniqueByKey.get(key)
+      if (existing) {
+        normalizeResultValue(list.result).forEach((result) => existing.resultSet.add(result))
+        return
+      }
+
+      uniqueByKey.set(key, {
+        ...list,
+        resultSet: normalizeResultValue(list.result),
+      })
+    })
+
+  return Array.from(uniqueByKey.values())
+}
+
+function isAllowedArmyIntelligenceSource(list: ArmyIntelligenceList) {
+  return ['league', 'casual', 'tournament'].includes(list.sourceType.trim().toLowerCase())
+}
+
+function getSubmittedArmyListDeduplicationKey(list: ArmyIntelligenceList) {
+  const player = normalizeArmyIntelligenceDeduplicationPart(list.player)
+  const armyCodeHash = list.armyCodeHash.trim().toLowerCase()
+
+  return player && armyCodeHash ? `${player}:${armyCodeHash}` : ''
+}
+
+function normalizeArmyIntelligenceDeduplicationPart(value: string) {
+  return value.trim().toLowerCase().replace(/\s+/g, ' ')
+}
+
+function normalizeResultValue(value: string) {
+  const result = value.trim().toLowerCase()
+
+  return result ? new Set([result]) : new Set<string>()
+}
+
 function getDecodedSectorial(list: ArmyIntelligenceList) {
   return normalizeSectorialDisplayName(list.decoded?.sectorial || '')
 }
@@ -683,18 +739,16 @@ function normalizeSectorialDisplayName(value: string) {
   return name
 }
 
-function matchesResultFilter(list: ArmyIntelligenceList, filter: AnalysisResultFilter) {
+function matchesResultFilter(list: UniqueArmyIntelligenceList, filter: AnalysisResultFilter) {
   if (filter === 'all') {
     return true
   }
 
-  const result = list.result.trim().toLowerCase()
-
   if (filter === 'winning') {
-    return result === 'win'
+    return list.resultSet.has('win')
   }
 
-  return result === 'loss'
+  return list.resultSet.has('loss')
 }
 
 function buildArmyAnalysis(lists: ArmyIntelligenceList[]): ArmyAnalysis {

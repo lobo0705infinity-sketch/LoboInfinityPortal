@@ -167,10 +167,9 @@ function filterRequestedSources(sources, filters) {
 }
 
 async function loadLiveSources(apiUrl) {
-  const [recentGames, casualGames, armyLists, events] = await Promise.all([
+  const [recentGames, casualGames, events] = await Promise.all([
     getAction(apiUrl, 'recentGames').then((payload) => payload.games || []),
     getAction(apiUrl, 'recentGames', { gameType: 'casual' }).then((payload) => payload.games || []),
-    getAction(apiUrl, 'armyLists').then((payload) => payload.lists || []),
     getAction(apiUrl, 'events').catch(() => null),
   ])
 
@@ -219,24 +218,6 @@ async function loadLiveSources(apiUrl) {
       sourceId: game.id,
       sourcePlayer: 'loser',
       sourceType: game.gameType === 'casual' ? 'casual' : 'league',
-    })
-  }
-
-  for (const list of armyLists) {
-    pushParticipantSource(sources, {
-      armyCode: list.armyCode || list.armyLink,
-      date: list.submissionDate,
-      event: list.event,
-      faction: list.faction,
-      gameType: 'Army List Library',
-      mission: list.mission,
-      opponent: '',
-      player: list.playerDisplayName || list.player,
-      result: '',
-      sectorial: list.sectorial,
-      sourceId: list.id,
-      sourcePlayer: 'library',
-      sourceType: 'armyLibrary',
     })
   }
 

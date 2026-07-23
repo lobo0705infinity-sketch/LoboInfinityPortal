@@ -46,10 +46,20 @@ assert.match(
   /appendArmyIntelligenceTeamTournamentSources/,
   'Backend must include Tournament army codes.',
 )
-assert.match(
+assert.doesNotMatch(
   backend,
-  /appendArmyIntelligenceLibrarySources/,
-  'Backend must include approved Army List Library codes.',
+  /appendArmyIntelligenceLibrarySources\(sources\)/,
+  'Backend must not include standalone Army List Library codes in Army Intelligence analysis sources.',
+)
+assert.match(
+  page,
+  /deduplicateSubmittedArmyLists[\s\S]*getSubmittedArmyListDeduplicationKey[\s\S]*armyCodeHash/,
+  'Army Intelligence page must deduplicate submitted lists by player and army-code hash.',
+)
+assert.match(
+  page,
+  /isAllowedArmyIntelligenceSource[\s\S]*league[\s\S]*casual[\s\S]*tournament/,
+  'Army Intelligence page must analyze only League, Casual, and Tournament sources.',
 )
 assert.match(
   apiRouter,
@@ -138,8 +148,8 @@ assert.doesNotMatch(
 )
 assert.match(
   page,
-  /matchesResultFilter[\s\S]*result === 'win'[\s\S]*result === 'loss'/,
-  'Result filtering must be based on submitted list win/loss result.',
+  /matchesResultFilter[\s\S]*resultSet\.has\('win'\)[\s\S]*resultSet\.has\('loss'\)/,
+  'Result filtering must be based on the deduplicated submitted list win/loss result set.',
 )
 assert.match(
   page,
@@ -405,7 +415,101 @@ const typeSkillFixtureLists = [
     status: 'decoded',
   },
 ]
+const duplicateSourceFixtureLists = [
+  {
+    armyCodeHash: 'same-code-hash',
+    decoded: {
+      combatGroups: [
+        {
+          entries: [
+            { hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'ASURA Hacker', skills: ['Hacker'], troopType: 'HI', unit: 'ASURA' },
+          ],
+        },
+      ],
+      orderCounts: {
+        regular: 1,
+      },
+      sectorial: 'Operations Subsection',
+      totals: {},
+    },
+    player: 'Lobo',
+    result: 'Win',
+    sourceType: 'league',
+    status: 'decoded',
+  },
+  {
+    armyCodeHash: 'same-code-hash',
+    decoded: {
+      combatGroups: [
+        {
+          entries: [
+            { hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'ASURA Hacker', skills: ['Hacker'], troopType: 'HI', unit: 'ASURA' },
+          ],
+        },
+      ],
+      orderCounts: {
+        regular: 1,
+      },
+      sectorial: 'Operations Subsection',
+      totals: {},
+    },
+    player: ' lobo ',
+    result: 'Loss',
+    sourceType: 'casual',
+    status: 'decoded',
+  },
+  {
+    armyCodeHash: 'same-code-hash',
+    decoded: {
+      combatGroups: [
+        {
+          entries: [
+            { hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'ASURA Hacker', skills: ['Hacker'], troopType: 'HI', unit: 'ASURA' },
+          ],
+        },
+      ],
+      orderCounts: {
+        regular: 1,
+      },
+      sectorial: 'Operations Subsection',
+      totals: {},
+    },
+    player: 'Different Player',
+    result: 'Win',
+    sourceType: 'league',
+    status: 'decoded',
+  },
+  {
+    armyCodeHash: 'library-code-hash',
+    decoded: {
+      combatGroups: [
+        {
+          entries: [
+            { hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'Library Only', skills: [], troopType: 'LI', unit: 'LIBRARY ONLY' },
+          ],
+        },
+      ],
+      orderCounts: {
+        regular: 1,
+      },
+      sectorial: 'Operations Subsection',
+      totals: {},
+    },
+    player: 'Library Player',
+    result: 'Win',
+    sourceType: 'armyLibrary',
+    status: 'decoded',
+  },
+]
 const typeSkillAnalysis = buildFixtureAnalysis(typeSkillFixtureLists.slice(0, 1))
+const uniqueSubmittedLists = deduplicateSubmittedArmyLists(duplicateSourceFixtureLists)
+const uniqueSubmittedAllAnalysis = buildFixtureAnalysis(uniqueSubmittedLists)
+const uniqueSubmittedWinningAnalysis = buildFixtureAnalysis(
+  uniqueSubmittedLists.filter((list) => matchesResultFilter(list, 'winning')),
+)
+const uniqueSubmittedLosingAnalysis = buildFixtureAnalysis(
+  uniqueSubmittedLists.filter((list) => matchesResultFilter(list, 'losing')),
+)
 const remRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
   skill: '',
   sort: 'usage',
@@ -469,6 +573,50 @@ assert.deepEqual(
     troopType: undefined,
   },
   'Duplicate models must count twice for selections but once for list appearance.',
+)
+assert.equal(
+  duplicateSourceFixtureLists.filter((list) => list.sourceType === 'armyLibrary').length,
+  1,
+  'Deduplication fixture must include an excluded Army List Library source.',
+)
+assert.equal(
+  uniqueSubmittedLists.length,
+  2,
+  'Army Intelligence must exclude standalone library sources and deduplicate same-player identical army-code submissions.',
+)
+assert.equal(
+  uniqueSubmittedAllAnalysis.listCount,
+  2,
+  'All Army Lists must count each unique player/code pair once.',
+)
+assert.equal(
+  uniqueSubmittedWinningAnalysis.listCount,
+  2,
+  'Winning Record must include a unique list with any winning submission and must not merge different players.',
+)
+assert.equal(
+  uniqueSubmittedLosingAnalysis.listCount,
+  1,
+  'Losing Record must include a unique list when the same player/code has at least one losing submission.',
+)
+assert.deepEqual(
+  uniqueSubmittedLists.find((list) => list.player === 'Lobo')?.resultSet,
+  new Set(['win', 'loss']),
+  'A deduplicated list submitted in both wins and losses must preserve both result flags.',
+)
+assert.deepEqual(
+  uniqueSubmittedAllAnalysis.modelUsage.find((row) => row.name === 'ASURA'),
+  {
+    listCount: 2,
+    name: 'ASURA',
+    percentage: 100,
+    points: undefined,
+    profile: 'ASURA Hacker',
+    skills: ['Hacker'],
+    totalSelections: 2,
+    troopType: 'HI',
+  },
+  'Model usage must analyze the deduplicated unique submitted list set.',
 )
 assert.deepEqual(
   winningAnalysis.hackers.map((row) => row.name),
@@ -604,6 +752,16 @@ assert.match(
   refresh,
   /getAction\(apiUrl, 'recentGames', \{ gameType: 'casual' \}\)/,
   'Refresh script must explicitly query casual recent-game army codes.',
+)
+assert.doesNotMatch(
+  refresh,
+  /getAction\(apiUrl, 'armyLists'\)|sourceType: 'armyLibrary'|gameType: 'Army List Library'/,
+  'Refresh script must not ingest standalone Army List Library sources.',
+)
+assert.doesNotMatch(
+  worker,
+  /getAction\(apiUrl, 'armyLists'\)|sourceType: 'armyLibrary'|gameType: 'Army List Library'/,
+  'Commissioner decoder worker must not ingest standalone Army List Library sources.',
 )
 assert.match(
   refresh,
@@ -762,6 +920,54 @@ function buildSkillOptions(lists) {
   return Array.from(skills).sort((left, right) => left.localeCompare(right))
 }
 
+function deduplicateSubmittedArmyLists(lists) {
+  const uniqueByKey = new Map()
+
+  lists
+    .filter(isAllowedArmyIntelligenceSource)
+    .forEach((list) => {
+      const key = getSubmittedArmyListDeduplicationKey(list)
+
+      if (!key) {
+        return
+      }
+
+      const existing = uniqueByKey.get(key)
+      if (existing) {
+        normalizeResultValue(list.result).forEach((result) => existing.resultSet.add(result))
+        return
+      }
+
+      uniqueByKey.set(key, {
+        ...list,
+        resultSet: normalizeResultValue(list.result),
+      })
+    })
+
+  return Array.from(uniqueByKey.values())
+}
+
+function isAllowedArmyIntelligenceSource(list) {
+  return ['league', 'casual', 'tournament'].includes(String(list.sourceType || '').trim().toLowerCase())
+}
+
+function getSubmittedArmyListDeduplicationKey(list) {
+  const player = normalizeArmyIntelligenceDeduplicationPart(list.player || '')
+  const armyCodeHash = String(list.armyCodeHash || '').trim().toLowerCase()
+
+  return player && armyCodeHash ? `${player}:${armyCodeHash}` : ''
+}
+
+function normalizeArmyIntelligenceDeduplicationPart(value) {
+  return String(value).trim().toLowerCase().replace(/\s+/g, ' ')
+}
+
+function normalizeResultValue(value) {
+  const result = String(value || '').trim().toLowerCase()
+
+  return result ? new Set([result]) : new Set()
+}
+
 function buildTroopTypeOptions(lists) {
   const types = new Set()
 
@@ -825,6 +1031,18 @@ function filterAndSortModelUsage(rows, filters) {
     .filter((row) => !filters.troopType || row.troopType === filters.troopType)
     .filter((row) => !filters.skill || row.skills.includes(filters.skill))
     .sort((left, right) => compareModelUsageRows(left, right, filters.sort))
+}
+
+function matchesResultFilter(list, filter) {
+  if (filter === 'all') {
+    return true
+  }
+
+  if (filter === 'winning') {
+    return list.resultSet.has('win')
+  }
+
+  return list.resultSet.has('loss')
 }
 
 function buildModelUsageRows(entriesByList) {
