@@ -20,6 +20,7 @@ const portalRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const defaultOutputDir = resolve(portalRoot, '.tmp', 'army-decode')
 const infinityDataBaseUrl =
   process.env.INFINITY_DATA_BASE_URL || 'https://infinity.2nirwana.de/cards'
+export const ARMY_INTELLIGENCE_DECODER_VERSION = 'army-intelligence-decoder-v2'
 
 const parentFactionBySectorialSlug = new Map([
   ['operations', 'ALEPH'],
@@ -330,6 +331,7 @@ function buildStructuredList(armyCode, codeData, resolved) {
       combatGroup: group.combatGroup,
       entries: entries.filter((entry) => entry.combatGroup === group.combatGroup),
     })),
+    decoderVersion: ARMY_INTELLIGENCE_DECODER_VERSION,
     faction: parentFactionBySectorialSlug.get(codeData.sectorialSlug) || codeData.sectorialSlug,
     listName: codeData.listName,
     orderCounts,

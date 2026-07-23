@@ -182,18 +182,22 @@ function CommissionerDashboard() {
       setArmyIntelligenceFeedback(null)
     }
     try {
+      if (action === 'refreshArmyIntelligence') {
+        const result = await apiClient.refreshArmyIntelligenceSnapshots()
+        await loadOperations()
+        setArmyIntelligenceFeedback({
+          status: 'success',
+          message: `Army Intelligence refresh complete: ${result.updated} snapshots updated`,
+        })
+        return
+      }
+
       await apiClient.operationsAction(action, params)
       await loadOperations()
       if (action === 'rebuildStatistics') {
         setRebuildStatisticsFeedback({
           status: 'success',
           message: 'Statistics rebuild complete',
-        })
-      }
-      if (action === 'refreshArmyIntelligence') {
-        setArmyIntelligenceFeedback({
-          status: 'success',
-          message: 'Army Intelligence refresh queued',
         })
       }
     } catch (error) {

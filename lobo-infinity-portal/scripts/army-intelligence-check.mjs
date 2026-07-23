@@ -9,6 +9,7 @@ const page = read('src/pages/ArmyIntelligence.tsx')
 const commissioner = read('src/pages/CommissionerDashboard.tsx')
 const decoder = read('scripts/infinity-army-decode.mjs')
 const refresh = read('scripts/refresh-army-intelligence.mjs')
+const worker = read('api/army-intelligence-refresh-worker.mjs')
 
 assert.match(
   backend,
@@ -69,6 +70,11 @@ assert.match(
   apiClient,
   /export async function getArmyIntelligence/,
   'API client must expose getArmyIntelligence.',
+)
+assert.match(
+  apiClient,
+  /refreshArmyIntelligenceSnapshots[\s\S]*\/api\/army-intelligence-refresh-worker[\s\S]*getActiveApiAuthToken/,
+  'API client must invoke the authenticated Army Intelligence decoder worker.',
 )
 assert.match(
   app,
@@ -159,6 +165,36 @@ assert.match(
   apiClient,
   /structure: number \| null[\s\S]*wounds: number \| null[\s\S]*structure:[\s\S]*wounds:/,
   'API client must preserve decoded profile wounds and structure through normalization.',
+)
+assert.match(
+  decoder,
+  /ARMY_INTELLIGENCE_DECODER_VERSION = 'army-intelligence-decoder-v2'/,
+  'Standalone decoder must define the current Army Intelligence decoder version.',
+)
+assert.match(
+  decoder,
+  /decoderVersion: ARMY_INTELLIGENCE_DECODER_VERSION/,
+  'Decoded snapshots must include decoderVersion.',
+)
+assert.match(
+  refresh,
+  /current\.decoderVersion !== ARMY_INTELLIGENCE_DECODER_VERSION/,
+  'Refresh script must redecode snapshots with old or missing decoderVersion.',
+)
+assert.match(
+  worker,
+  /current\.decoderVersion !== ARMY_INTELLIGENCE_DECODER_VERSION/,
+  'Commissioner decoder worker must redecode snapshots with old or missing decoderVersion.',
+)
+assert.match(
+  worker,
+  /postSnapshots[\s\S]*authToken/,
+  'Commissioner decoder worker must write snapshots through the authenticated Apps Script endpoint.',
+)
+assert.match(
+  commissioner,
+  /refreshArmyIntelligenceSnapshots/,
+  'Commissioner Refresh Army Intelligence must invoke the authenticated decoder worker.',
 )
 assert.match(
   decoder,

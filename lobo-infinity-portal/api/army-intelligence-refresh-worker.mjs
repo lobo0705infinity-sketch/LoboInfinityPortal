@@ -1,114 +1,114 @@
-#!/usr/bin/env node
-
 import { createHash } from 'node:crypto'
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { mkdtemp } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import {
   ARMY_INTELLIGENCE_DECODER_VERSION,
   decodeArmyListToFiles,
-} from './infinity-army-decode.mjs'
+} from '../scripts/infinity-army-decode.mjs'
 
-const args = new Set(process.argv.slice(2))
-const options = parseArgs(process.argv.slice(2))
-const dryRun = args.has('--dry-run') || !args.has('--write')
-const useFixture = args.has('--fixture')
-const limit = Number(options.limit || 0)
-const outDir = resolve(options.outDir || '.tmp/army-intelligence-refresh')
-const decodedDir = resolve(outDir, 'decoded')
+export default async function handler(request, response) {
+  if (request.method !== 'POST') {
+    response.setHeader('allow', 'POST')
+    response.status(405).json({ error: 'Method not allowed.', success: false })
+    return
+  }
 
-const sources = useFixture
-  ? fixtureSources()
-  : await loadLiveSources(options.apiUrl || await readApiUrl())
-const snapshotState = useFixture
-  ? new Map()
-  : await loadSnapshotState(options.apiUrl || await readApiUrl()).catch(() => new Map())
-
-const candidates = sources
-  .filter((source) => source.armyCode)
-  .filter((source) => matchesSourceFilters(source, options))
-  .filter((source) => {
-    const current = snapshotState.get(source.snapshotKey)
-    return (
-      !current ||
-      current.armyCodeHash !== source.armyCodeHash ||
-      current.status !== 'decoded' ||
-      current.decoderVersion !== ARMY_INTELLIGENCE_DECODER_VERSION ||
-      !current.hasProfileMetadata
-    )
-  })
-  .slice(0, limit > 0 ? limit : undefined)
-
-await mkdir(outDir, { recursive: true })
-await mkdir(decodedDir, { recursive: true })
-
-const snapshots = []
-const failures = []
-
-for (const source of candidates) {
   try {
-    const result = await decodeArmyListToFiles({
-      input: source.armyCode,
-      outputDir: decodedDir,
+    const body = await readJsonBody(request)
+    const apiUrl = String(body.apiUrl || process.env.VITE_API_URL || '').trim()
+    const authToken = String(body.authToken || '').trim()
+
+    if (!apiUrl) {
+      response.status(500).json({ error: 'Missing API URL.', success: false })
+      return
+    }
+
+    if (!authToken) {
+      response.status(401).json({ error: 'Sign in with Google to continue.', success: false })
+      return
+    }
+
+    const sources = await loadLiveSources(apiUrl)
+    const state = await loadSnapshotState(apiUrl)
+    const candidates = sources.filter((source) => {
+      const current = state.get(source.snapshotKey)
+      return (
+        !current ||
+        current.armyCodeHash !== source.armyCodeHash ||
+        current.status !== 'decoded' ||
+        current.decoderVersion !== ARMY_INTELLIGENCE_DECODER_VERSION ||
+        !current.hasProfileMetadata
+      )
     })
 
-    snapshots.push({
-      decoded: result.list,
-      decodedAt: new Date().toISOString(),
-      error: '',
-      snapshotKey: source.snapshotKey,
-      status: 'decoded',
+    const outputDir = await mkdtemp(join(tmpdir(), 'lobo-army-intelligence-'))
+    const snapshots = []
+    const failures = []
+
+    for (const source of candidates) {
+      try {
+        const result = await decodeArmyListToFiles({
+          input: source.armyCode,
+          outputDir,
+        })
+        snapshots.push({
+          decoded: result.list,
+          decodedAt: new Date().toISOString(),
+          error: '',
+          snapshotKey: source.snapshotKey,
+          status: 'decoded',
+        })
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error)
+        failures.push({
+          reason: message,
+          snapshotKey: source.snapshotKey,
+        })
+        snapshots.push({
+          decoded: null,
+          decodedAt: new Date().toISOString(),
+          error: message,
+          snapshotKey: source.snapshotKey,
+          status: 'failed',
+        })
+      }
+    }
+
+    if (snapshots.length > 0) {
+      await postSnapshots(apiUrl, snapshots, authToken)
+    }
+
+    response.status(200).json({
+      decoded: snapshots.filter((snapshot) => snapshot.status === 'decoded').length,
+      failed: failures.length,
+      skipped: sources.length - candidates.length,
+      sourceCount: sources.length,
+      success: true,
+      updated: snapshots.length,
     })
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error)
-    failures.push({
-      reason: message,
-      snapshotKey: source.snapshotKey,
-    })
-    snapshots.push({
-      decoded: null,
-      decodedAt: new Date().toISOString(),
-      error: message,
-      snapshotKey: source.snapshotKey,
-      status: 'failed',
+    response.status(500).json({
+      error: error instanceof Error ? error.message : String(error),
+      success: false,
     })
   }
 }
 
-const payload = {
-  decoded: snapshots.filter((snapshot) => snapshot.status === 'decoded').length,
-  dryRun,
-  failures,
-  generatedAt: new Date().toISOString(),
-  skipped: sources.length - candidates.length,
-  snapshots,
-  sources: sources.length,
+async function readJsonBody(request) {
+  const chunks = []
+  for await (const chunk of request) {
+    chunks.push(chunk)
+  }
+
+  const text = Buffer.concat(chunks).toString('utf8')
+  return text ? JSON.parse(text) : {}
 }
-
-const payloadPath = resolve(outDir, 'army-intelligence-refresh-payload.json')
-await writeFile(payloadPath, `${JSON.stringify(payload, null, 2)}\n`, 'utf8')
-
-if (!dryRun && snapshots.length > 0) {
-  await postSnapshots(options.apiUrl || await readApiUrl(), snapshots, readAuthToken(options))
-}
-
-console.log(JSON.stringify({
-  decoded: payload.decoded,
-  dryRun,
-  failed: failures.length,
-  payloadPath,
-  skipped: payload.skipped,
-  sources: payload.sources,
-}, null, 2))
 
 async function loadLiveSources(apiUrl) {
-  const targetedCasualGame =
-    options.sourceType === 'casual' && options.sourceId
-      ? getAction(apiUrl, 'recentGames', { gameId: options.sourceId, gameType: 'casual' }).then((payload) => payload.games || [])
-      : Promise.resolve([])
-  const [recentGames, casualGames, sourceIdCasualGames, armyLists, events] = await Promise.all([
+  const [recentGames, casualGames, armyLists, events] = await Promise.all([
     getAction(apiUrl, 'recentGames').then((payload) => payload.games || []),
     getAction(apiUrl, 'recentGames', { gameType: 'casual' }).then((payload) => payload.games || []),
-    targetedCasualGame,
     getAction(apiUrl, 'armyLists').then((payload) => payload.lists || []),
     getAction(apiUrl, 'events').catch(() => null),
   ])
@@ -128,7 +128,7 @@ async function loadLiveSources(apiUrl) {
     eventNames.set(events.currentEvent.id, events.currentEvent.name || '')
   }
 
-  for (const game of [...recentGames, ...casualGames, ...sourceIdCasualGames]) {
+  for (const game of uniqueGames([...recentGames, ...casualGames])) {
     pushParticipantSource(sources, {
       armyCode: game.winnerArmyCode,
       date: game.date,
@@ -265,13 +265,11 @@ async function getAction(apiUrl, action, params = {}) {
   return JSON.parse(text)
 }
 
-async function postSnapshots(apiUrl, snapshots, authToken = '') {
+async function postSnapshots(apiUrl, snapshots, authToken) {
   const body = new URLSearchParams()
   body.set('action', 'refreshArmyIntelligence')
+  body.set('authToken', authToken)
   body.set('snapshots', JSON.stringify(snapshots))
-  if (authToken) {
-    body.set('authToken', authToken)
-  }
 
   const response = await fetch(apiUrl, {
     body,
@@ -286,10 +284,6 @@ async function postSnapshots(apiUrl, snapshots, authToken = '') {
   if (payload.success === false) {
     throw new Error(payload.error || 'refreshArmyIntelligence failed.')
   }
-}
-
-function readAuthToken(options) {
-  return String(options.authToken || process.env.LOBO_GOOGLE_ID_TOKEN || process.env.GOOGLE_ID_TOKEN || '').trim()
 }
 
 function pushParticipantSource(sources, source) {
@@ -320,6 +314,16 @@ function pushParticipantSource(sources, source) {
   })
 }
 
+function uniqueGames(games) {
+  const seen = new Set()
+  return games.filter((game) => {
+    const key = `${game.id}:${game.gameType}`
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
+}
+
 function uniqueSources(sources) {
   const seen = new Set()
   return sources.filter((source) => {
@@ -329,68 +333,6 @@ function uniqueSources(sources) {
   })
 }
 
-function matchesSourceFilters(source, filters) {
-  if (filters.sourceType && source.sourceType !== filters.sourceType) return false
-  if (filters.sourceId && String(source.sourceId) !== String(filters.sourceId)) return false
-  if (filters.sourcePlayer && source.sourcePlayer !== filters.sourcePlayer) return false
-  return true
-}
-
-function fixtureSources() {
-  const sources = []
-  pushParticipantSource(sources, {
-    armyCode: 'gr8Kb3BlcmF0aW9ucwhGb3IgV29ya4EsAgEBAAUAhK0BAgAAhusBAgAAh2oBBQAAgkgBBgAAh1IBAQACAQAKAIJQAQEAAIJTAQEAAIJTAQEAADIBAQAAh28CAQAAh28CAQAAh28BAgAAh0YBAgAAglQBAQAAh2YBAgA%3D',
-    date: '2026-07-03',
-    event: 'Fixture',
-    faction: 'ALEPH',
-    gameType: 'Army List Library',
-    mission: 'Hardlock',
-    opponent: '',
-    player: 'Lobo',
-    result: '',
-    sectorial: 'Operations Subsection',
-    sourceId: 'fixture-1',
-    sourcePlayer: 'library',
-    sourceType: 'armyLibrary',
-  })
-  return sources
-}
-
-async function readApiUrl() {
-  const env = await readFile('.env.local', 'utf8')
-  const apiUrl = env.match(/^VITE_API_URL=(.+)$/m)?.[1]?.trim()
-  if (!apiUrl) throw new Error('VITE_API_URL is required in .env.local or --api-url.')
-  return apiUrl
-}
-
-function parseArgs(values) {
-  const parsed = {}
-  for (let index = 0; index < values.length; index += 1) {
-    const value = values[index]
-    if (!value.startsWith('--')) continue
-    const key = toCamelOption(value.slice(2))
-    const next = values[index + 1]
-    if (next && !next.startsWith('--')) {
-      parsed[key] = next
-      index += 1
-    } else {
-      parsed[key] = 'true'
-    }
-  }
-  return parsed
-}
-
-function toCamelOption(value) {
-  return value.replace(/-([a-z])/g, (_match, letter) => letter.toUpperCase())
-}
-
-function formatGameType(value) {
-  const normalized = String(value || '').trim().toLowerCase()
-  if (normalized === 'casual') return 'Casual'
-  if (normalized === 'tournament') return 'Tournament'
-  return 'League'
-}
-
 function tournamentResult(result, player) {
   const winner = String(result.winner || '').trim()
   if (!winner) return ''
@@ -398,10 +340,17 @@ function tournamentResult(result, player) {
   return slugKey(winner) === slugKey(player) ? 'Win' : 'Loss'
 }
 
-function sha256(value) {
-  return createHash('sha256').update(String(value)).digest('hex')
+function formatGameType(value) {
+  const normalized = String(value || '').toLowerCase()
+  if (normalized === 'casual') return 'Casual'
+  if (normalized === 'tournament') return 'Tournament'
+  return 'League'
 }
 
 function slugKey(value) {
   return String(value || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-')
+}
+
+function sha256(value) {
+  return createHash('sha256').update(String(value)).digest('hex')
 }

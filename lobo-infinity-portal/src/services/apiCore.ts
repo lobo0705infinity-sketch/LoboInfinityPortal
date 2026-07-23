@@ -201,6 +201,10 @@ export function getActiveAuthTokenVersion() {
   return activeAuthTokenVersion
 }
 
+export function getActiveApiAuthToken() {
+  return activeAuthToken
+}
+
 export function setSessionRecoveryHandler(handler: SessionRecoveryHandler | null) {
   sessionRecoveryHandler = handler
 }

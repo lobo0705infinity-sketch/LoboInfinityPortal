@@ -11,6 +11,8 @@ import type {
 } from '../types/dashboard'
 import { formatNotificationTimestamp } from './formatting'
 import {
+  API_URL,
+  getActiveApiAuthToken,
   postRequest,
   request,
   setApiAuthToken,
@@ -322,6 +324,7 @@ export type ArmyIntelligenceDecodedList = {
     combatGroup: number
     entries: ArmyIntelligenceDecodedEntry[]
   }>
+  decoderVersion: string
   faction: string
   listName: string
   orderCounts: {
@@ -357,6 +360,14 @@ export type ArmyIntelligenceList = {
   sourcePlayer: string
   sourceType: string
   status: 'decoded' | 'failed' | 'pending'
+}
+
+export type ArmyIntelligenceRefreshResult = {
+  decoded: number
+  failed: number
+  skipped: number
+  sourceCount: number
+  updated: number
 }
 
 export type ArmyIntelligenceSummary = {
@@ -2379,6 +2390,7 @@ export type ApiClient = {
     params?: Record<string, string | number | boolean>,
     options?: ApiOptions,
   ) => Promise<void>
+  refreshArmyIntelligenceSnapshots: () => Promise<ArmyIntelligenceRefreshResult>
 }
 
 const divisionKeys: DivisionKey[] = ['main', 'pga', 'pgb']
@@ -3443,6 +3455,32 @@ export async function operationsAction(
   normalizeMutationPayload(payload, `${action} failed.`)
 }
 
+export async function refreshArmyIntelligenceSnapshots(): Promise<ArmyIntelligenceRefreshResult> {
+  const response = await fetch('/api/army-intelligence-refresh-worker', {
+    body: JSON.stringify({
+      apiUrl: API_URL,
+      authToken: getActiveApiAuthToken(),
+    }),
+    headers: {
+      'content-type': 'application/json',
+    },
+    method: 'POST',
+  })
+  const payload = await response.json() as Record<string, unknown>
+
+  if (!response.ok || payload.success === false) {
+    throw new Error(getString(payload, 'error') || 'Army Intelligence refresh failed.')
+  }
+
+  return {
+    decoded: getNumber(payload, 'decoded'),
+    failed: getNumber(payload, 'failed'),
+    skipped: getNumber(payload, 'skipped'),
+    sourceCount: getNumber(payload, 'sourceCount'),
+    updated: getNumber(payload, 'updated'),
+  }
+}
+
 export const apiClient: ApiClient = {
   getSession,
   getMyProfile,
@@ -3528,6 +3566,7 @@ export const apiClient: ApiClient = {
   getOperationsAudit,
   getOperationsSeason,
   operationsAction,
+  refreshArmyIntelligenceSnapshots,
 }
 
 function normalizeDashboardPayload(payload: unknown): DashboardData {
@@ -4792,6 +4831,7 @@ function normalizeArmyIntelligenceDecodedList(value: unknown): ArmyIntelligenceD
         entries: getArray(groupRecord, 'entries').map(normalizeArmyIntelligenceDecodedEntry),
       }
     }),
+    decoderVersion: getString(record, 'decoderVersion'),
     faction: getString(record, 'faction'),
     listName: getString(record, 'listName'),
     orderCounts: {
