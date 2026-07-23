@@ -77,6 +77,11 @@ assert.match(
   'API client must invoke the authenticated Army Intelligence decoder worker.',
 )
 assert.match(
+  apiClient,
+  /refreshArmyIntelligenceSnapshots\([\s\S]*ArmyIntelligenceRefreshRequest[\s\S]*snapshotKeys:[\s\S]*refreshRequest\.snapshotKeys/,
+  'API client must support targeted Army Intelligence refresh requests.',
+)
+assert.match(
   app,
   /\/army-intelligence/,
   'App must register the Army Intelligence route.',
@@ -162,6 +167,16 @@ assert.match(
   'Model Usage must expose skill filtering from currently matching decoded lists.',
 )
 assert.match(
+  page,
+  /loboForWorkSnapshotKey[\s\S]*batchLimit: 1[\s\S]*Refresh Selected Sectorial/,
+  'Army Intelligence page must refresh the selected sectorial one snapshot at a time.',
+)
+assert.match(
+  page,
+  /useAuth\(\)[\s\S]*hasPermission\('manageCache'\)/,
+  'Refresh Selected Sectorial must require the Commissioner cache-management permission.',
+)
+assert.match(
   apiClient,
   /structure: number \| null[\s\S]*wounds: number \| null[\s\S]*structure:[\s\S]*wounds:/,
   'API client must preserve decoded profile wounds and structure through normalization.',
@@ -190,6 +205,16 @@ assert.match(
   worker,
   /postSnapshots[\s\S]*authToken/,
   'Commissioner decoder worker must write snapshots through the authenticated Apps Script endpoint.',
+)
+assert.match(
+  worker,
+  /requestedSnapshotKeys[\s\S]*filterRequestedSources[\s\S]*snapshotKeys\.has\(source\.snapshotKey\)/,
+  'Commissioner decoder worker must support explicit snapshot-key filtering.',
+)
+assert.match(
+  worker,
+  /requestedSectorial[\s\S]*source\.sectorial !== filters\.sectorial/,
+  'Commissioner decoder worker must support selected-sectorial filtering.',
 )
 assert.match(
   commissioner,

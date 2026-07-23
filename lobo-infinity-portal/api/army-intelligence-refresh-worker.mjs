@@ -21,6 +21,10 @@ export default async function handler(request, response) {
     const apiUrl = String(body.apiUrl || process.env.VITE_API_URL || '').trim()
     const authToken = String(body.authToken || '').trim()
     const batchLimit = Math.max(1, Number(body.batchLimit) || DEFAULT_REFRESH_BATCH_LIMIT)
+    const requestedSectorial = String(body.sectorial || '').trim()
+    const requestedSnapshotKeys = Array.isArray(body.snapshotKeys)
+      ? new Set(body.snapshotKeys.map((key) => String(key || '').trim()).filter(Boolean))
+      : new Set()
 
     if (!apiUrl) {
       response.status(500).json({ error: 'Missing API URL.', success: false })
@@ -32,7 +36,13 @@ export default async function handler(request, response) {
       return
     }
 
-    const sources = await loadLiveSources(apiUrl)
+    const sources = filterRequestedSources(
+      await loadLiveSources(apiUrl),
+      {
+        sectorial: requestedSectorial,
+        snapshotKeys: requestedSnapshotKeys,
+      },
+    )
     const state = await loadSnapshotState(apiUrl)
     const allCandidates = sources.filter((source) => {
       const current = state.get(source.snapshotKey)
@@ -88,6 +98,8 @@ export default async function handler(request, response) {
       failed: failures.length,
       hasMore: allCandidates.length > candidates.length,
       remaining: Math.max(0, allCandidates.length - candidates.length),
+      requestedSectorial,
+      requestedSnapshotKeys: Array.from(requestedSnapshotKeys),
       skipped: sources.length - candidates.length,
       sourceCount: sources.length,
       success: true,
@@ -109,6 +121,20 @@ async function readJsonBody(request) {
 
   const text = Buffer.concat(chunks).toString('utf8')
   return text ? JSON.parse(text) : {}
+}
+
+function filterRequestedSources(sources, filters) {
+  return sources.filter((source) => {
+    if (filters.snapshotKeys.size > 0 && !filters.snapshotKeys.has(source.snapshotKey)) {
+      return false
+    }
+
+    if (filters.sectorial && source.sectorial !== filters.sectorial) {
+      return false
+    }
+
+    return true
+  })
 }
 
 async function loadLiveSources(apiUrl) {

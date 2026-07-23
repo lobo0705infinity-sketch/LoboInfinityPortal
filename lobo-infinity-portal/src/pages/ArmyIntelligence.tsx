@@ -1,4 +1,5 @@
-import { type ReactNode, useEffect, useMemo, useState } from 'react'
+import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { useAuth } from '../auth/AuthContext'
 import Skeleton from '../components/Skeleton'
 import {
   apiClient,
@@ -22,6 +23,22 @@ type ArmyIntelligenceState =
 
 type AnalysisResultFilter = 'all' | 'winning' | 'losing'
 type ModelUsageSort = 'usage' | 'pointsHigh' | 'pointsLow'
+type RefreshState =
+  | {
+      status: 'idle'
+    }
+  | {
+      message: string
+      status: 'running'
+    }
+  | {
+      message: string
+      status: 'success'
+    }
+  | {
+      message: string
+      status: 'error'
+    }
 
 type UsageRow = {
   listCount: number
@@ -77,6 +94,9 @@ const resultFilterOptions: Array<{
   },
 ]
 const troopTypeOptions = ['HI', 'LI', 'MI', 'REM', 'SK', 'TAG', 'VH', 'WB']
+const operationsSubsectionSectorial = 'Operations Subsection'
+const loboForWorkSnapshotKey =
+  'casual:36:winner:lobo:a59a31d83c48418d817f7e887c935ae0636d5fbf4b67b6015738d41378a15c88'
 const modelUsageSortOptions: Array<{
   label: string
   value: ModelUsageSort
@@ -100,21 +120,18 @@ function ArmyIntelligence() {
     status: 'loading',
   })
 
-  useEffect(() => {
-    const controller = new AbortController()
-
+  const loadArmyIntelligence = useCallback((signal?: AbortSignal) =>
     apiClient
-      .getArmyIntelligence({
-        signal: controller.signal,
-      })
+      .getArmyIntelligence(signal ? { signal } : {})
       .then((data) => {
         setState({
           data,
           status: 'success',
         })
+        return data
       })
       .catch((error: unknown) => {
-        if (controller.signal.aborted) {
+        if (signal?.aborted) {
           return
         }
 
@@ -125,12 +142,17 @@ function ArmyIntelligence() {
               : 'Army Intelligence could not be loaded.',
           status: 'error',
         })
-      })
+      }), [])
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    void loadArmyIntelligence(controller.signal)
 
     return () => {
       controller.abort()
     }
-  }, [])
+  }, [loadArmyIntelligence])
 
   if (state.status === 'loading') {
     return (
@@ -156,15 +178,23 @@ function ArmyIntelligence() {
     )
   }
 
-  return <ArmyIntelligenceContent data={state.data} />
+  return <ArmyIntelligenceContent data={state.data} reload={loadArmyIntelligence} />
 }
 
-function ArmyIntelligenceContent({ data }: { data: ArmyIntelligenceData }) {
+function ArmyIntelligenceContent({
+  data,
+  reload,
+}: {
+  data: ArmyIntelligenceData
+  reload: () => Promise<ArmyIntelligenceData | void>
+}) {
+  const auth = useAuth()
   const [selectedSectorial, setSelectedSectorial] = useState('')
   const [resultFilter, setResultFilter] = useState<AnalysisResultFilter>('all')
   const [modelSkillFilter, setModelSkillFilter] = useState('')
   const [modelSort, setModelSort] = useState<ModelUsageSort>('usage')
   const [modelTypeFilter, setModelTypeFilter] = useState('')
+  const [refreshState, setRefreshState] = useState<RefreshState>({ status: 'idle' })
   const decodedLists = useMemo(
     () => data.lists.filter(isDecodedList),
     [data.lists],
@@ -212,6 +242,44 @@ function ArmyIntelligenceContent({ data }: { data: ArmyIntelligenceData }) {
     }
   }, [availableTroopTypes, modelTypeFilter])
 
+  const canRefreshSelectedSectorial =
+    auth.hasPermission('manageCache') &&
+    selectedSectorial === operationsSubsectionSectorial
+
+  async function refreshSelectedSectorial() {
+    if (!canRefreshSelectedSectorial) {
+      return
+    }
+
+    setRefreshState({
+      message: 'Refreshing Operations Subsection snapshot 1 of 1...',
+      status: 'running',
+    })
+
+    try {
+      const result = await apiClient.refreshArmyIntelligenceSnapshots({
+        batchLimit: 1,
+        sectorial: operationsSubsectionSectorial,
+        snapshotKeys: [loboForWorkSnapshotKey],
+      })
+
+      await reload()
+
+      setRefreshState({
+        message: `Refresh complete: ${result.updated} snapshot updated.`,
+        status: 'success',
+      })
+    } catch (error) {
+      setRefreshState({
+        message:
+          error instanceof Error
+            ? error.message
+            : 'Army Intelligence refresh failed.',
+        status: 'error',
+      })
+    }
+  }
+
   return (
     <main className="portal-shell army-intelligence-page">
       <PageHeader />
@@ -241,6 +309,28 @@ function ArmyIntelligenceContent({ data }: { data: ArmyIntelligenceData }) {
             ))}
           </select>
         </label>
+        {auth.hasPermission('manageCache') ? (
+          <div className="army-intelligence-refresh-action" aria-live="polite">
+            <button
+              className="button army-intelligence-refresh-button"
+              disabled={!canRefreshSelectedSectorial || refreshState.status === 'running'}
+              onClick={refreshSelectedSectorial}
+              type="button"
+            >
+              {refreshState.status === 'running'
+                ? 'Refreshing...'
+                : 'Refresh Selected Sectorial'}
+            </button>
+            <p
+              className={`army-intelligence-refresh-status is-${refreshState.status}`}
+              role={refreshState.status === 'error' ? 'alert' : undefined}
+            >
+              {refreshState.status === 'idle'
+                ? 'Commissioner action: refreshes one selected snapshot.'
+                : refreshState.message}
+            </p>
+          </div>
+        ) : null}
       </section>
 
       {!selectedSectorial ? (

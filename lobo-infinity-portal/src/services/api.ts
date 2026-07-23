@@ -367,9 +367,17 @@ export type ArmyIntelligenceRefreshResult = {
   failed: number
   hasMore: boolean
   remaining: number
+  requestedSectorial: string
+  requestedSnapshotKeys: string[]
   skipped: number
   sourceCount: number
   updated: number
+}
+
+export type ArmyIntelligenceRefreshRequest = {
+  batchLimit?: number
+  sectorial?: string
+  snapshotKeys?: string[]
 }
 
 export type ArmyIntelligenceSummary = {
@@ -2392,7 +2400,9 @@ export type ApiClient = {
     params?: Record<string, string | number | boolean>,
     options?: ApiOptions,
   ) => Promise<void>
-  refreshArmyIntelligenceSnapshots: () => Promise<ArmyIntelligenceRefreshResult>
+  refreshArmyIntelligenceSnapshots: (
+    request?: ArmyIntelligenceRefreshRequest,
+  ) => Promise<ArmyIntelligenceRefreshResult>
 }
 
 const divisionKeys: DivisionKey[] = ['main', 'pga', 'pgb']
@@ -3457,12 +3467,16 @@ export async function operationsAction(
   normalizeMutationPayload(payload, `${action} failed.`)
 }
 
-export async function refreshArmyIntelligenceSnapshots(): Promise<ArmyIntelligenceRefreshResult> {
+export async function refreshArmyIntelligenceSnapshots(
+  refreshRequest: ArmyIntelligenceRefreshRequest = {},
+): Promise<ArmyIntelligenceRefreshResult> {
   const response = await fetch('/api/army-intelligence-refresh-worker', {
     body: JSON.stringify({
       apiUrl: API_URL,
       authToken: getActiveApiAuthToken(),
-      batchLimit: 4,
+      batchLimit: refreshRequest.batchLimit || 4,
+      sectorial: refreshRequest.sectorial || '',
+      snapshotKeys: refreshRequest.snapshotKeys || [],
     }),
     headers: {
       'content-type': 'application/json',
@@ -3480,6 +3494,8 @@ export async function refreshArmyIntelligenceSnapshots(): Promise<ArmyIntelligen
     failed: getNumber(payload, 'failed'),
     hasMore: getBoolean(payload, 'hasMore'),
     remaining: getNumber(payload, 'remaining'),
+    requestedSectorial: getString(payload, 'requestedSectorial'),
+    requestedSnapshotKeys: getArray(payload, 'requestedSnapshotKeys').map((entry) => String(entry)),
     skipped: getNumber(payload, 'skipped'),
     sourceCount: getNumber(payload, 'sourceCount'),
     updated: getNumber(payload, 'updated'),
