@@ -190,7 +190,7 @@ function ArmyIntelligenceContent({ data }: { data: ArmyIntelligenceData }) {
 
       {!selectedSectorial ? (
         <section className="panel army-intelligence-empty" aria-label="Choose a sectorial">
-          <p>Choose a sectorial to analyze decoded submitted army lists.</p>
+          <p>Choose a sectorial to view army-list analysis.</p>
         </section>
       ) : matchingLists.length === 0 ? (
         <section className="panel army-intelligence-empty" aria-label="No matching army lists">
@@ -232,7 +232,7 @@ function ArmyIntelligenceContent({ data }: { data: ArmyIntelligenceData }) {
         </>
       )}
 
-      {decodeIssues.length > 0 && (
+      {selectedSectorial && decodeIssues.length > 0 && (
         <ResponsiveDisclosure count={decodeIssues.length} title="Decode Issues" variant="warning">
           <section className="army-intelligence-unassigned" aria-labelledby="decode-issues-title">
             <p>Pending or failed decodes are not included in sectorial statistics.</p>
