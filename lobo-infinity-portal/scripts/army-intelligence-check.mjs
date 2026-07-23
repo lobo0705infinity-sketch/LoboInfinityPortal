@@ -109,10 +109,10 @@ assert.match(
   /listAppearances[\s\S]*percentage/,
   'Model usage must count per-list appearances separately from duplicate selections.',
 )
-assert.match(
+assert.doesNotMatch(
   page,
-  /Pending or failed decodes are not included in sectorial statistics/,
-  'Pending and failed decodes must be shown only as separate warnings.',
+  /Decode Issues|Pending or failed decodes|Decode failed/,
+  'Pending and failed decode rows must not render on the public Army Intelligence page.',
 )
 assert.doesNotMatch(
   page,
@@ -135,21 +135,36 @@ const operationsLists = [
     decoded: {
       combatGroups: [
         {
+          combatGroup: 1,
           entries: [
             { doctor: false, engineer: false, hacker: true, lieutenant: false, orderTypes: ['regular'], profile: 'RUDRA FTO', specialist: false, unit: 'RUDRA FTO' },
-            { doctor: false, engineer: true, hacker: false, lieutenant: false, orderTypes: ['regular', 'tactical awareness'], profile: 'ARTALIS', specialist: false, unit: 'ARTALIS' },
-            { doctor: false, engineer: false, hacker: true, lieutenant: true, orderTypes: ['regular', 'lieutenant'], profile: 'ASURA', specialist: false, unit: 'ASURA' },
-            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['irregular'], profile: 'SACHA', specialist: true, unit: 'SACHA' },
+            { doctor: false, engineer: true, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'ARTALIS', specialist: false, unit: 'ARTALIS' },
+            { doctor: false, engineer: false, hacker: true, lieutenant: false, orderTypes: ['regular'], profile: 'DIKPALA', specialist: false, unit: 'DIKPALA' },
+            { doctor: false, engineer: false, hacker: true, lieutenant: true, orderTypes: ['regular', 'lieutenant', 'lieutenant'], profile: 'ASURA', specialist: false, unit: 'ASURA' },
+            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['irregular'], profile: 'SĀCHĀ', specialist: true, unit: 'SĀCHĀ' },
+          ],
+        },
+        {
+          combatGroup: 2,
+          entries: [
+            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'SAMEKH Rebot', specialist: false, unit: 'SAMEKH Rebot' },
             { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'NETROD', specialist: false, unit: 'NETROD' },
             { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'NETROD', specialist: false, unit: 'NETROD' },
+            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['irregular'], profile: 'WARCOR', specialist: false, unit: 'WARCOR' },
+            { doctor: false, engineer: false, hacker: true, lieutenant: false, orderTypes: ['regular'], profile: 'RACERBOT Mk-III', specialist: false, unit: 'RACERBOT Mk-III' },
+            { doctor: false, engineer: false, hacker: true, lieutenant: false, orderTypes: ['regular'], profile: 'RACERBOT Mk-III', specialist: false, unit: 'RACERBOT Mk-III' },
+            { doctor: false, engineer: false, hacker: true, lieutenant: false, orderTypes: ['regular'], profile: 'Pilot-X Team', specialist: false, unit: 'Pilot-X Team' },
+            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'MAXIMUS AGENT FTO', specialist: true, unit: 'MAXIMUS AGENT FTO' },
+            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'PROBOT', specialist: false, unit: 'PROBOT' },
+            { doctor: true, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'CLAIRE LAZHARI FTO', specialist: false, unit: 'CLAIRE LAZHARI FTO' },
           ],
         },
       ],
       orderCounts: {
         impetuous: 0,
-        irregular: 1,
-        lieutenant: 1,
-        regular: 5,
+        irregular: 2,
+        lieutenant: 2,
+        regular: 13,
       },
       sectorial: 'Operations Subsection',
       totals: {

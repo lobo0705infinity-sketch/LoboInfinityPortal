@@ -152,10 +152,6 @@ function ArmyIntelligenceContent({ data }: { data: ArmyIntelligenceData }) {
     [decodedLists, resultFilter, selectedSectorial],
   )
   const analysis = useMemo(() => buildArmyAnalysis(matchingLists), [matchingLists])
-  const decodeIssues = useMemo(
-    () => data.lists.filter((list) => list.status === 'pending' || list.status === 'failed'),
-    [data.lists],
-  )
 
   return (
     <main className="portal-shell army-intelligence-page">
@@ -205,7 +201,6 @@ function ArmyIntelligenceContent({ data }: { data: ArmyIntelligenceData }) {
             <MetricCard label="Average Impetuous Orders" value={analysis.averageImpetuousOrders} />
             <MetricCard label="Average Tactical Awareness" value={analysis.averageTacticalAwarenessOrders} />
             <MetricCard label="Average Lieutenant Bonus" value={analysis.averageLieutenantOrders} />
-            <MetricCard label="Average Combat Groups" value={analysis.averageCombatGroups} />
             <MetricCard label="Average Points" value={analysis.averagePoints} />
             <MetricCard label="Average SWC" value={analysis.averageSwc} />
           </section>
@@ -230,22 +225,6 @@ function ArmyIntelligenceContent({ data }: { data: ArmyIntelligenceData }) {
             </ResponsiveDisclosure>
           </section>
         </>
-      )}
-
-      {selectedSectorial && decodeIssues.length > 0 && (
-        <ResponsiveDisclosure count={decodeIssues.length} title="Decode Issues" variant="warning">
-          <section className="army-intelligence-unassigned" aria-labelledby="decode-issues-title">
-            <p>Pending or failed decodes are not included in sectorial statistics.</p>
-            <ol>
-              {decodeIssues.slice(0, 8).map((list) => (
-                <li key={list.snapshotKey}>
-                  <span>{list.player || list.snapshotKey}</span>
-                  <strong>{list.status === 'failed' ? list.error || 'Decode failed' : 'Pending'}</strong>
-                </li>
-              ))}
-            </ol>
-          </section>
-        </ResponsiveDisclosure>
       )}
     </main>
   )
@@ -286,13 +265,11 @@ function UsagePanel({
   return (
     <section
       className={`${titleHidden ? '' : 'panel '}army-intelligence-panel${titleHidden ? ' army-intelligence-panel-embedded' : ''}${variant === 'wide' ? ' army-intelligence-panel-wide' : ''}`}
-      aria-labelledby={`${slugify(title)}-title`}
+      aria-labelledby={titleHidden ? undefined : `${slugify(title)}-title`}
     >
-      {titleHidden ? (
-        <h2 className="sr-only" id={`${slugify(title)}-title`}>{title}</h2>
-      ) : (
+      {!titleHidden ? (
         <h2 id={`${slugify(title)}-title`}>{title}</h2>
-      )}
+      ) : null}
       {visible.length === 0 ? (
         <p>No matching decoded usage.</p>
       ) : (
