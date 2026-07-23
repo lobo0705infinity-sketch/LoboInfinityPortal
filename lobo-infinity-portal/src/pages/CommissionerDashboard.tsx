@@ -38,6 +38,11 @@ type RebuildStatisticsFeedback = {
   message: string
 } | null
 
+type ArmyIntelligenceFeedback = {
+  status: 'success' | 'error'
+  message: string
+} | null
+
 const permissionRows = [
   ['View operations', 'Assistant Commissioner', 'Assistant Commissioner and Commissioner'],
   ['News', 'Assistant Commissioner', 'Create, edit, archive, and delete news'],
@@ -69,6 +74,8 @@ function CommissionerDashboard() {
   const [workingAction, setWorkingAction] = useState('')
   const [rebuildStatisticsFeedback, setRebuildStatisticsFeedback] =
     useState<RebuildStatisticsFeedback>(null)
+  const [armyIntelligenceFeedback, setArmyIntelligenceFeedback] =
+    useState<ArmyIntelligenceFeedback>(null)
   const [openPanels, setOpenPanels] = useState<string[]>(() =>
     requestedPanel ? ['eventManager', requestedPanel] : ['eventManager'],
   )
@@ -171,6 +178,9 @@ function CommissionerDashboard() {
     if (action === 'rebuildStatistics') {
       setRebuildStatisticsFeedback(null)
     }
+    if (action === 'refreshArmyIntelligence') {
+      setArmyIntelligenceFeedback(null)
+    }
     try {
       await apiClient.operationsAction(action, params)
       await loadOperations()
@@ -178,6 +188,12 @@ function CommissionerDashboard() {
         setRebuildStatisticsFeedback({
           status: 'success',
           message: 'Statistics rebuild complete',
+        })
+      }
+      if (action === 'refreshArmyIntelligence') {
+        setArmyIntelligenceFeedback({
+          status: 'success',
+          message: 'Army Intelligence refresh queued',
         })
       }
     } catch (error) {
@@ -188,6 +204,15 @@ function CommissionerDashboard() {
             error instanceof Error
               ? error.message
               : 'Statistics rebuild failed.',
+        })
+      }
+      if (action === 'refreshArmyIntelligence') {
+        setArmyIntelligenceFeedback({
+          status: 'error',
+          message:
+            error instanceof Error
+              ? error.message
+              : 'Army Intelligence refresh failed.',
         })
       }
       throw error
@@ -348,7 +373,9 @@ function CommissionerDashboard() {
         <CachePanel
           cache={data.summary.cacheStatus}
           canManage={auth.hasPermission('manageCache')}
+          armyIntelligenceFeedback={armyIntelligenceFeedback}
           feedback={rebuildStatisticsFeedback}
+          onDismissArmyIntelligenceFeedback={() => setArmyIntelligenceFeedback(null)}
           onDismissFeedback={() => setRebuildStatisticsFeedback(null)}
           onAction={runAction}
           workingAction={workingAction}
@@ -1317,21 +1344,26 @@ function PromotionRelegationPanel({
 }
 
 function CachePanel({
+  armyIntelligenceFeedback,
   cache,
   canManage,
   feedback,
+  onDismissArmyIntelligenceFeedback,
   onDismissFeedback,
   onAction,
   workingAction,
 }: {
+  armyIntelligenceFeedback: ArmyIntelligenceFeedback
   cache: OperationsDashboardData['summary']['cacheStatus']
   canManage: boolean
   feedback: RebuildStatisticsFeedback
+  onDismissArmyIntelligenceFeedback: () => void
   onDismissFeedback: () => void
   onAction: OperationsAction
   workingAction: string
 }) {
   const isRebuildingStatistics = workingAction === 'rebuildStatistics'
+  const isRefreshingArmyIntelligence = workingAction === 'refreshArmyIntelligence'
 
   return (
     <section className="panel operations-panel">
@@ -1354,6 +1386,9 @@ function CachePanel({
         <button disabled={!canManage || workingAction !== ''} onClick={() => void onAction('rebuildStatistics')} type="button">
           {isRebuildingStatistics ? 'Rebuilding statistics...' : 'Statistics Rebuild'}
         </button>
+        <button disabled={!canManage || workingAction !== ''} onClick={() => void onAction('refreshArmyIntelligence')} type="button">
+          {isRefreshingArmyIntelligence ? 'Refreshing Army Intelligence...' : 'Refresh Army Intelligence'}
+        </button>
       </div>
       {(isRebuildingStatistics || feedback) && (
         <div
@@ -1369,6 +1404,27 @@ function CachePanel({
             <button
               aria-label="Dismiss statistics rebuild message"
               onClick={onDismissFeedback}
+              type="button"
+            >
+              Dismiss
+            </button>
+          )}
+        </div>
+      )}
+      {(isRefreshingArmyIntelligence || armyIntelligenceFeedback) && (
+        <div
+          className={`operations-feedback ${armyIntelligenceFeedback?.status || 'pending'}`}
+          role={armyIntelligenceFeedback?.status === 'error' ? 'alert' : 'status'}
+        >
+          <span>
+            {isRefreshingArmyIntelligence
+              ? 'Refreshing Army Intelligence...'
+              : armyIntelligenceFeedback?.message}
+          </span>
+          {armyIntelligenceFeedback && (
+            <button
+              aria-label="Dismiss Army Intelligence refresh message"
+              onClick={onDismissArmyIntelligenceFeedback}
               type="button"
             >
               Dismiss

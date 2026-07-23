@@ -4164,6 +4164,206 @@
   margin-top: auto;
 }
 
+.army-intelligence-page {
+  gap: 1.25rem;
+}
+
+.army-intelligence-summary {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+}
+
+.army-intelligence-metric {
+  background: rgba(8, 13, 20, 0.86);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 8px;
+  min-height: 5.25rem;
+  padding: 0.9rem;
+}
+
+.army-intelligence-metric span {
+  color: var(--muted);
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.army-intelligence-metric strong {
+  display: block;
+  font-size: 1.8rem;
+  line-height: 1.1;
+  margin-top: 0.35rem;
+}
+
+.army-intelligence-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+}
+
+.army-intelligence-selector {
+  max-width: 28rem;
+}
+
+.army-intelligence-selector label {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.army-intelligence-selector span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.army-intelligence-selector select {
+  background: rgba(4, 9, 15, 0.92);
+  border: 1px solid rgba(148, 163, 184, 0.26);
+  border-radius: 8px;
+  color: var(--text);
+  min-height: 2.75rem;
+  padding: 0.65rem 0.8rem;
+  width: 100%;
+}
+
+.army-intelligence-empty {
+  max-width: 42rem;
+}
+
+.army-intelligence-empty p {
+  color: var(--muted);
+  margin: 0;
+}
+
+.army-intelligence-panel {
+  min-width: 0;
+}
+
+.army-intelligence-panel h2 {
+  font-size: 1rem;
+  margin: 0 0 0.75rem;
+}
+
+.army-intelligence-panel ol {
+  display: grid;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.army-intelligence-panel li {
+  align-items: start;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding-bottom: 0.5rem;
+}
+
+.army-intelligence-panel li span {
+  overflow-wrap: anywhere;
+}
+
+.army-intelligence-panel li strong {
+  color: var(--accent);
+  font-size: 0.85rem;
+  text-align: right;
+}
+
+.army-intelligence-section-heading {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.army-intelligence-section-heading h2 {
+  margin: 0;
+}
+
+.army-intelligence-list-table {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.army-intelligence-list-table [role='row'] {
+  align-items: start;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: minmax(8rem, 1fr) minmax(9rem, 1fr) minmax(10rem, 1.4fr) minmax(9rem, auto);
+  padding: 0.6rem 0;
+}
+
+.army-intelligence-list-table [role='columnheader'] {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.army-intelligence-list-table [role='cell'] {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.army-intelligence-unassigned {
+  max-width: 46rem;
+}
+
+.army-intelligence-unassigned p {
+  color: var(--muted);
+  margin: 0 0 0.75rem;
+}
+
+.army-intelligence-unassigned ol {
+  display: grid;
+  gap: 0.45rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.army-intelligence-unassigned li {
+  align-items: start;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.army-intelligence-unassigned li span {
+  overflow-wrap: anywhere;
+}
+
+.army-intelligence-unassigned li strong {
+  color: var(--accent);
+  font-size: 0.85rem;
+  text-align: right;
+}
+
+@media (max-width: 720px) {
+  .army-intelligence-section-heading {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .army-intelligence-list-table [role='row'] {
+    grid-template-columns: 1fr;
+  }
+
+  .army-intelligence-list-table [role='columnheader'] {
+    display: none;
+  }
+}
+
 .army-list-library-actions a {
   flex: 1 1 190px;
   text-align: center;

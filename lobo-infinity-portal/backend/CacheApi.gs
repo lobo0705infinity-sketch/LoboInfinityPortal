@@ -23,7 +23,8 @@ const PORTAL_CACHE_GROUPS = {
   leagueOperations: ["leagueOperations", "home", "eventHome", "eventManager"],
   hallOfFame: ["hallOfFame", "records", "home"],
   analytics: ["intelligence", "records", "home", "notifications", "timeline"],
-  armyLists: ["armyLists", "player", "faction", "searchData", "home"],
+  armyLists: ["armyLists", "player", "faction", "searchData", "home", "armyIntelligence"],
+  armyIntelligence: ["armyIntelligence"],
   streams: ["streams", "home"],
   search: ["searchData", "searchIndex"],
   news: ["news", "home", "notifications", "timeline"],
@@ -32,7 +33,7 @@ const PORTAL_CACHE_GROUPS = {
   seasonCommand: ["seasonCommandCenter", "communityCommandCenter", "schedulingCenter", "matchFinder"],
   scheduling: ["seasonCommandCenter", "communityCommandCenter", "schedulingCenter", "matchFinder", "notifications"],
   operations: ["operationsSummary", "operationsLifecycle", "operationsIdentity", "operationsContent", "operationsDiscord", "operationsNotifications", "operationsAudit", "integrity"],
-  all: ["dashboard", "home", "leader", "recentGames", "standings", "players", "player", "factions", "faction", "missions", "mission", "leagueOperations", "intelligence", "records", "hallOfFame", "comparison", "timeline", "news", "settings", "events", "event", "eventHome", "eventManager", "eventTemplates", "eventSeasons", "eventRounds", "eventMigrationValidation", "teamTournament", "eventRegistration", "seasonCommandCenter", "communityCommandCenter", "schedulingCenter", "matchFinder", "streams", "searchData", "searchIndex", "armyLists", "operationsSummary", "operationsLifecycle", "operationsIdentity", "operationsContent", "operationsDiscord", "operationsNotifications", "operationsAudit", "integrity"]
+  all: ["dashboard", "home", "leader", "recentGames", "standings", "players", "player", "factions", "faction", "missions", "mission", "leagueOperations", "intelligence", "records", "hallOfFame", "comparison", "timeline", "news", "settings", "events", "event", "eventHome", "eventManager", "eventTemplates", "eventSeasons", "eventRounds", "eventMigrationValidation", "teamTournament", "eventRegistration", "seasonCommandCenter", "communityCommandCenter", "schedulingCenter", "matchFinder", "streams", "searchData", "searchIndex", "armyLists", "armyIntelligence", "operationsSummary", "operationsLifecycle", "operationsIdentity", "operationsContent", "operationsDiscord", "operationsNotifications", "operationsAudit", "integrity"]
 };
 
 const PORTAL_CACHE_ENDPOINT_GROUP = {
@@ -72,7 +73,8 @@ const PORTAL_CACHE_ENDPOINT_GROUP = {
   streams: "streams",
   searchData: "search",
   searchIndex: "search",
-  armyLists: "armyLists"
+  armyLists: "armyLists",
+  armyIntelligence: "armyIntelligence"
 };
 
 function getCachedApiResponse(e, action, producer) {

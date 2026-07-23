@@ -22,6 +22,7 @@ import { recordComponentMount } from './services/rumMetrics'
 import './App.css'
 
 const Analytics = lazyRoute('Analytics', () => import('./pages/Analytics'))
+const ArmyIntelligence = lazyRoute('ArmyIntelligence', () => import('./pages/ArmyIntelligence'))
 const ArmyLists = lazyRoute('ArmyLists', () => import('./pages/ArmyLists'))
 const AutomationCenter = lazyRoute('AutomationCenter', () => import('./pages/AutomationCenter'))
 const CommunityManager = lazyRoute('CommunityManager', () => import('./pages/CommunityManager'))
@@ -119,6 +120,7 @@ function AuthShell() {
                 <Route path="/weekly-report" element={<DeepLinkRedirect target="weeklyReport" />} />
                 <Route path="/analytics" element={<MeasuredRoute name="Analytics"><Analytics /></MeasuredRoute>} />
                 <Route path="/intelligence" element={<MeasuredRoute name="Intelligence"><Analytics /></MeasuredRoute>} />
+                <Route path="/army-intelligence" element={<MeasuredRoute name="ArmyIntelligence"><ArmyIntelligence /></MeasuredRoute>} />
                 <Route path="/hall-of-fame" element={<MeasuredRoute name="HallOfFame"><HallOfFame /></MeasuredRoute>} />
                 <Route path="/news" element={<MeasuredRoute name="CommissionerNews"><CommissionerNews /></MeasuredRoute>} />
                 <Route path="/news/:id" element={<DeepLinkRedirect target="news" />} />

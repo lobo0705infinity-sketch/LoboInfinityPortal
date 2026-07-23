@@ -356,6 +356,11 @@ function handleApiGet(e, action) {
         return getArmyLists();
       });
 
+    case "armyIntelligence":
+      return getCachedApiResponse(e, action, function() {
+        return getArmyIntelligence(e);
+      });
+
     case "operations":
       return requireApiPermission(e, "viewOperations", function() {
         return getOperationsDashboard();
@@ -630,6 +635,11 @@ function handleApiGet(e, action) {
     case "rebuildStatistics":
       return requireApiPermission(e, "manageCache", function() {
         return rebuildOperationsStatistics();
+      });
+
+    case "refreshArmyIntelligence":
+      return requireApiPermission(e, "manageCache", function() {
+        return refreshArmyIntelligence(e);
       });
 
     case "seasonOperation":
@@ -987,6 +997,11 @@ function handleApiPost(e, action) {
     case "rebuildStatistics":
       return requireApiPermission(e, "manageCache", function() {
         return rebuildOperationsStatistics();
+      });
+
+    case "refreshArmyIntelligence":
+      return requireApiPermission(e, "manageCache", function() {
+        return refreshArmyIntelligence(e);
       });
 
     case "seasonOperation":

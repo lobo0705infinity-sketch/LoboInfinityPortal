@@ -291,6 +291,92 @@ export type ArmyListsData = {
   community: ArmyListCommunitySummary
 }
 
+export type ArmyIntelligenceCount = {
+  count: number
+  name: string
+}
+
+export type ArmyIntelligenceDecodedEntry = {
+  combatGroup: number
+  combinedId: string
+  doctor: boolean
+  engineer: boolean
+  hacker: boolean
+  lieutenant: boolean
+  orderTypes: string[]
+  points: number
+  profile: string
+  specialist: boolean
+  swc: number
+  unit: string
+}
+
+export type ArmyIntelligenceDecodedList = {
+  combatGroups: Array<{
+    combatGroup: number
+    entries: ArmyIntelligenceDecodedEntry[]
+  }>
+  faction: string
+  listName: string
+  orderCounts: {
+    impetuous: number
+    irregular: number
+    lieutenant: number
+    regular: number
+  }
+  sectorial: string
+  totals: {
+    combatGroups: number
+    points: number
+    swc: number
+  }
+}
+
+export type ArmyIntelligenceList = {
+  armyCodeHash: string
+  date: string
+  decoded: ArmyIntelligenceDecodedList | null
+  decodedAt: string
+  error: string
+  event: string
+  faction: string
+  gameType: string
+  mission: string
+  opponent: string
+  player: string
+  result: string
+  sectorial: string
+  snapshotKey: string
+  sourceId: string
+  sourcePlayer: string
+  sourceType: string
+  status: 'decoded' | 'failed' | 'pending'
+}
+
+export type ArmyIntelligenceSummary = {
+  averageCombatGroups: number
+  averageIrregularOrders: number
+  averagePoints: number
+  averageRegularOrders: number
+  averageSwc: number
+  decodedLists: number
+  doctorsEngineers: ArmyIntelligenceCount[]
+  factions: ArmyIntelligenceCount[]
+  failedLists: number
+  hackers: ArmyIntelligenceCount[]
+  lieutenants: ArmyIntelligenceCount[]
+  pendingLists: number
+  sectorials: ArmyIntelligenceCount[]
+  specialists: ArmyIntelligenceCount[]
+  totalLists: number
+  units: ArmyIntelligenceCount[]
+}
+
+export type ArmyIntelligenceData = {
+  lists: ArmyIntelligenceList[]
+  summary: ArmyIntelligenceSummary
+}
+
 export type PlayerArmyListSummary = {
   submitted: number
   highestRated: ArmyList | null
@@ -2128,6 +2214,7 @@ export type ApiClient = {
   getSettings: (options?: ApiOptions) => Promise<PortalSettings>
   getStreams: (options?: ApiOptions) => Promise<StreamedGame[]>
   getArmyLists: (options?: ApiOptions) => Promise<ArmyListsData>
+  getArmyIntelligence: (options?: ApiOptions) => Promise<ArmyIntelligenceData>
   getCommunityCommandCenter: (
     options?: ApiOptions,
   ) => Promise<CommunityCommandCenterData>
@@ -2771,6 +2858,13 @@ export async function getArmyLists(
   return normalizeArmyListsPayload(payload)
 }
 
+export async function getArmyIntelligence(
+  options: ApiOptions = {},
+): Promise<ArmyIntelligenceData> {
+  const payload = await request('armyIntelligence', options)
+  return normalizeArmyIntelligencePayload(payload)
+}
+
 export async function getCommunityCommandCenter(
   options: ApiOptions = {},
 ): Promise<CommunityCommandCenterData> {
@@ -3330,6 +3424,7 @@ export const apiClient: ApiClient = {
   getSettings,
   getStreams,
   getArmyLists,
+  getArmyIntelligence,
   getCommunityCommandCenter,
   getSeasonCommandCenter,
   updateSeasonAvailability,
@@ -4587,6 +4682,128 @@ function normalizeArmyListsPayload(payload: unknown): ArmyListsData {
   return {
     lists: getRequiredArray(record, 'lists').map(normalizeArmyList),
     community: normalizeArmyListCommunity(record.community),
+  }
+}
+
+function normalizeArmyIntelligencePayload(payload: unknown): ArmyIntelligenceData {
+  const record = asRecord(payload, 'Army Intelligence response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Army Intelligence failed.')
+  }
+
+  return {
+    lists: getRequiredArray(record, 'lists').map(normalizeArmyIntelligenceList),
+    summary: normalizeArmyIntelligenceSummary(getRequiredRecord(record, 'summary')),
+  }
+}
+
+function normalizeArmyIntelligenceList(item: unknown): ArmyIntelligenceList {
+  const record = asRecord(item, 'Army Intelligence list')
+  const status = getString(record, 'status')
+
+  return {
+    armyCodeHash: getString(record, 'armyCodeHash'),
+    date: getString(record, 'date'),
+    decoded: record.decoded ? normalizeArmyIntelligenceDecodedList(record.decoded) : null,
+    decodedAt: getString(record, 'decodedAt'),
+    error: getString(record, 'error'),
+    event: getString(record, 'event'),
+    faction: getString(record, 'faction'),
+    gameType: getString(record, 'gameType'),
+    mission: getString(record, 'mission'),
+    opponent: getString(record, 'opponent'),
+    player: getString(record, 'player'),
+    result: getString(record, 'result'),
+    sectorial: getString(record, 'sectorial'),
+    snapshotKey: getRequiredString(record, 'snapshotKey'),
+    sourceId: getString(record, 'sourceId'),
+    sourcePlayer: getString(record, 'sourcePlayer'),
+    sourceType: getString(record, 'sourceType'),
+    status:
+      status === 'decoded' || status === 'failed' || status === 'pending'
+        ? status
+        : 'pending',
+  }
+}
+
+function normalizeArmyIntelligenceDecodedList(value: unknown): ArmyIntelligenceDecodedList {
+  const record = asRecord(value, 'Decoded army list')
+  const totals = getOptionalRecord(record, 'totals') ?? {}
+  const orderCounts = getOptionalRecord(record, 'orderCounts') ?? {}
+
+  return {
+    combatGroups: getArray(record, 'combatGroups').map((group) => {
+      const groupRecord = asRecord(group, 'Decoded combat group')
+
+      return {
+        combatGroup: getNumber(groupRecord, 'combatGroup'),
+        entries: getArray(groupRecord, 'entries').map(normalizeArmyIntelligenceDecodedEntry),
+      }
+    }),
+    faction: getString(record, 'faction'),
+    listName: getString(record, 'listName'),
+    orderCounts: {
+      impetuous: getNumber(orderCounts, 'impetuous'),
+      irregular: getNumber(orderCounts, 'irregular'),
+      lieutenant: getNumber(orderCounts, 'lieutenant'),
+      regular: getNumber(orderCounts, 'regular'),
+    },
+    sectorial: getString(record, 'sectorial'),
+    totals: {
+      combatGroups: getNumber(totals, 'combatGroups'),
+      points: getNumber(totals, 'points'),
+      swc: getNumber(totals, 'swc'),
+    },
+  }
+}
+
+function normalizeArmyIntelligenceDecodedEntry(item: unknown): ArmyIntelligenceDecodedEntry {
+  const record = asRecord(item, 'Decoded army entry')
+
+  return {
+    combatGroup: getNumber(record, 'combatGroup'),
+    combinedId: getString(record, 'combinedId'),
+    doctor: getBoolean(record, 'doctor'),
+    engineer: getBoolean(record, 'engineer'),
+    hacker: getBoolean(record, 'hacker'),
+    lieutenant: getBoolean(record, 'lieutenant'),
+    orderTypes: getArray(record, 'orderTypes').map((entry) => String(entry)),
+    points: getNumber(record, 'points'),
+    profile: getString(record, 'profile'),
+    specialist: getBoolean(record, 'specialist'),
+    swc: getNumber(record, 'swc'),
+    unit: getString(record, 'unit'),
+  }
+}
+
+function normalizeArmyIntelligenceSummary(record: Record<string, unknown>): ArmyIntelligenceSummary {
+  return {
+    averageCombatGroups: getNumber(record, 'averageCombatGroups'),
+    averageIrregularOrders: getNumber(record, 'averageIrregularOrders'),
+    averagePoints: getNumber(record, 'averagePoints'),
+    averageRegularOrders: getNumber(record, 'averageRegularOrders'),
+    averageSwc: getNumber(record, 'averageSwc'),
+    decodedLists: getNumber(record, 'decodedLists'),
+    doctorsEngineers: getArray(record, 'doctorsEngineers').map(normalizeArmyIntelligenceCount),
+    factions: getArray(record, 'factions').map(normalizeArmyIntelligenceCount),
+    failedLists: getNumber(record, 'failedLists'),
+    hackers: getArray(record, 'hackers').map(normalizeArmyIntelligenceCount),
+    lieutenants: getArray(record, 'lieutenants').map(normalizeArmyIntelligenceCount),
+    pendingLists: getNumber(record, 'pendingLists'),
+    sectorials: getArray(record, 'sectorials').map(normalizeArmyIntelligenceCount),
+    specialists: getArray(record, 'specialists').map(normalizeArmyIntelligenceCount),
+    totalLists: getNumber(record, 'totalLists'),
+    units: getArray(record, 'units').map(normalizeArmyIntelligenceCount),
+  }
+}
+
+function normalizeArmyIntelligenceCount(item: unknown): ArmyIntelligenceCount {
+  const record = asRecord(item, 'Army Intelligence count')
+
+  return {
+    count: getNumber(record, 'count'),
+    name: getRequiredString(record, 'name'),
   }
 }
 

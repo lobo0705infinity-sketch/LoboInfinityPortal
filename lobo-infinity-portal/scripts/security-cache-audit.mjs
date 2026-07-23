@@ -9,6 +9,7 @@ const source = fs.readFileSync(apiPath, 'utf8')
 const endpointPolicy = {
   achievements: { authRequired: true, userScoped: true },
   approveArmyList: { authRequired: true, userScoped: false },
+  armyIntelligence: { authRequired: false, userScoped: false },
   armyLists: { authRequired: false, userScoped: false },
   automation: { authRequired: true, userScoped: false },
   automationEvents: { authRequired: true, userScoped: false },
@@ -97,6 +98,7 @@ const endpointPolicy = {
   rebuildAchievements: { authRequired: true, userScoped: false },
   rebuildStatistics: { authRequired: true, userScoped: false },
   records: { authRequired: false, userScoped: false },
+  refreshArmyIntelligence: { authRequired: true, userScoped: false },
   refreshCache: { authRequired: true, userScoped: false },
   registerForEvent: { authRequired: true, userScoped: true },
   rejectArmyList: { authRequired: true, userScoped: false },
