@@ -26,6 +26,22 @@ Global header controls defer network work:
 
 The frontend GET cache TTL is five minutes to avoid repeated Apps Script calls during normal navigation.
 
+## Players Page Performance
+
+Performance Release 1 removes the community Players page per-player profile fanout.
+
+The public Players page now relies on the existing players-list response for
+authoritative preferred-army identity fields:
+
+- `favoriteArmy`
+- `favoriteFaction`
+- `preferredArmy`
+
+The backend list response resolves those fields from saved Preferred Army first,
+then uses the existing game-derived Favorite Faction fallback only when the saved
+value is blank. This preserves portrait and badge identity while avoiding one
+extra `action=player` request per player card.
+
 ## Dashboard Strategy
 
 Dashboard first paint now uses the lightweight `dashboard` endpoint.

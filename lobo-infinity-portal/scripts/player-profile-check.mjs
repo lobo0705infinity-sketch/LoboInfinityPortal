@@ -50,6 +50,8 @@ const checks = [
     pass:
       playersApi.includes('function getSavedPreferredArmyForPlayer') &&
       playersApi.includes('gameDerivedFavoriteFaction:') &&
+      playersApi.includes('function getCommunityGameDerivedPreferredArmy') &&
+      playersApi.includes('FAVORITEFACTION(player)') &&
       /favoriteArmy\s*=\s*record\.favoriteFaction\s*\|\|\s*gameDerivedFavoriteFaction/.test(playersApi),
   },
 ]

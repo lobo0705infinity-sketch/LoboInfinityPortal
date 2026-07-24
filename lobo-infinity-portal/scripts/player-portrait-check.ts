@@ -6,6 +6,8 @@ type LivePlayer = {
   displayName?: string
   faction?: string
   favoriteArmy?: string
+  favoriteFaction?: string
+  gameDerivedFavoriteFaction?: string
   player: string
   preferredArmy?: string
 }
@@ -36,38 +38,37 @@ const expected = new Map([
   [
     'Arg',
     {
-      normalizedFaction: 'Corregidor Jurisdictional Command',
-      portraitPath: '/faction-portraits/corregidor.png',
+      normalizedFaction: 'USAriadna Ranger Force',
+      portraitPath: '/faction-portraits/usariadna.png',
     },
   ],
   ['Diabloknk', { normalizedFaction: 'Next Wave', portraitPath: '/faction-portraits/next-wave.png' }],
   ['Jqam1', { normalizedFaction: 'Next Wave', portraitPath: '/faction-portraits/next-wave.png' }],
   ['Erichagz', { normalizedFaction: 'Next Wave', portraitPath: '/faction-portraits/next-wave.png' }],
   ['King Butt', { normalizedFaction: 'PanOceania', portraitPath: '/faction-portraits/panoceania.png' }],
-  ['krazyglue04', { normalizedFaction: '', portraitPath: '' }],
+  ['krazyglue04', { normalizedFaction: 'Next Wave', portraitPath: '/faction-portraits/next-wave.png' }],
   [
     'Rattlernxt',
     {
-      normalizedFaction: 'Shock Army of Acontecimento',
-      portraitPath: '/faction-portraits/acontecimento.png',
+      normalizedFaction: 'Onyx Contact Force',
+      portraitPath: '/faction-portraits/onyx-contact-force.png',
     },
   ],
 ])
 
 assertResolverRules()
+assertPlayersListPreferredArmyRules()
 
 const players = await getPlayers()
-const profiles = new Map<string, LiveProfile>()
 
-for (const player of players) {
-  profiles.set(player.player, await getProfile(player.player))
-}
+const profiles =
+  mode === 'players'
+    ? new Map<string, LiveProfile>()
+    : await getProfiles(players)
 
 const results = players.map((player) => {
   const profile = profiles.get(player.player)
-  const cardIdentity = resolvePlayerFactionIdentity({
-    favoriteFaction: profile?.favoriteFaction || '',
-  })
+  const cardIdentity = resolvePlayerFactionIdentity(player)
   const profileIdentity = resolvePlayerFactionIdentity(profile || {})
   const badgeIdentity = profileIdentity
 
@@ -111,6 +112,12 @@ if (mode === 'players') {
 
   console.log(`PASS player portrait consistency checked ${players.length} players`)
 } else if (mode === 'audit') {
+  const mismatches = results.filter(
+    (result) =>
+      result.cardNormalizedFaction !== result.profileNormalizedFaction ||
+      result.cardNormalizedFaction !== result.badgeFactionKey,
+  )
+
   console.log(JSON.stringify({
     affected: results
       .filter((result) => expected.has(result.player))
@@ -123,11 +130,8 @@ if (mode === 'players') {
         publicProfile: result.profileNormalizedFaction,
         publicProfilePortrait: result.profilePortraitPath,
       })),
-    mismatchCount: results.filter(
-      (result) =>
-        result.cardNormalizedFaction !== result.profileNormalizedFaction ||
-        result.cardNormalizedFaction !== result.badgeFactionKey,
-    ).length,
+    mismatches,
+    mismatchCount: mismatches.length,
     noPortrait: results
       .filter((result) => !result.profilePortraitPath)
       .map((result) => result.player),
@@ -135,6 +139,16 @@ if (mode === 'players') {
   }, null, 2))
 } else {
   throw new Error(`Unknown player portrait check mode: ${mode}`)
+}
+
+async function getProfiles(players: LivePlayer[]) {
+  const profiles = new Map<string, LiveProfile>()
+
+  for (const player of players) {
+    profiles.set(player.player, await getProfile(player.player))
+  }
+
+  return profiles
 }
 
 function assertExpected(
@@ -257,5 +271,37 @@ function assertResolverRules() {
     shockArmyIdentity.portraitPath !== '/faction-portraits/acontecimento.png'
   ) {
     throw new Error('Approved Shock Army portrait asset must not change the badge faction identity.')
+  }
+}
+
+function assertPlayersListPreferredArmyRules() {
+  const playersPage = readFileSync(resolve(process.cwd(), 'src/pages/Players.tsx'), 'utf8')
+  const playersApi = readFileSync(resolve(process.cwd(), 'backend/PlayersApi.gs'), 'utf8')
+
+  if (playersPage.includes('applyCommunityPreferredArmies')) {
+    throw new Error('Players page must not run per-player profile enrichment.')
+  }
+
+  if (/apiClient\.getPlayer\(/.test(playersPage)) {
+    throw new Error('Players page must not call getPlayer() for every card.')
+  }
+
+  if (!playersApi.includes('function getCommunityGameDerivedPreferredArmy')) {
+    throw new Error('Players list must use the shared game-derived preferred-army helper.')
+  }
+
+  if (!/FAVORITEFACTION\(player\)/.test(playersApi)) {
+    throw new Error('Players list fallback must use FAVORITEFACTION(player), matching public profiles.')
+  }
+
+  if (!/favoriteArmy\s*=\s*record\.favoriteFaction\s*\|\|\s*gameDerivedFavoriteFaction/.test(playersApi)) {
+    throw new Error('Players list must prefer saved Preferred Army before game-derived fallback.')
+  }
+
+  if (
+    !/favoriteFaction:\s*favoriteArmy/.test(playersApi) ||
+    !/preferredArmy:\s*favoriteArmy/.test(playersApi)
+  ) {
+    throw new Error('Players list must expose the resolved preferred army as favoriteFaction and preferredArmy.')
   }
 }

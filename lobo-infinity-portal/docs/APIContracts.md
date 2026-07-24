@@ -231,6 +231,26 @@ Response adds:
 
 Each standings row may include `eventId`. Existing row fields are unchanged.
 
+### Player Directory
+
+Action:
+
+`GET action=players`
+
+The community player directory response returns `divisions[].standings[]` rows
+using the shared standings row shape. Each community row must include the
+authoritative preferred-army identity needed by player cards:
+
+- `favoriteArmy`
+- `favoriteFaction`
+- `preferredArmy`
+- `gameDerivedFavoriteFaction`
+
+For community player rows, `favoriteArmy`, `favoriteFaction`, and `preferredArmy`
+resolve from the saved My Profile Preferred Army value first. The game-derived
+Favorite Faction value is used only when the saved value is blank. The Players
+page must not call `GET action=player` per card to repair these fields.
+
 ### Event-Aware Scheduling Center
 
 Action:

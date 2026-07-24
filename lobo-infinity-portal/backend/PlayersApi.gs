@@ -426,8 +426,7 @@ function upsertCommunityPlayerRecord(records, input) {
 function finalizeCommunityPlayerRecord(record) {
 
   const gameDerivedFavoriteFaction =
-    getCommunityMostPlayedArmy(record.factionCounts) ||
-    "";
+    getCommunityGameDerivedPreferredArmy(record);
   const favoriteArmy =
     record.favoriteFaction ||
     gameDerivedFavoriteFaction ||
@@ -480,6 +479,23 @@ function finalizeCommunityPlayerRecord(record) {
     communityStatus:
       statusBadges.join(", ")
   };
+
+}
+
+function getCommunityGameDerivedPreferredArmy(record) {
+
+  const player =
+    getCommunityPlayerRegistryString(record.player);
+  const formulaFavorite =
+    typeof FAVORITEFACTION === "function" && player
+      ? canonicalizeArmyName(
+          FAVORITEFACTION(player)
+        )
+      : "";
+
+  return formulaFavorite ||
+    getCommunityMostPlayedArmy(record.factionCounts) ||
+    "";
 
 }
 
