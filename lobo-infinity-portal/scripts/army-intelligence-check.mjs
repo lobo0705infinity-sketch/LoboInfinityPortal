@@ -97,6 +97,11 @@ assert.match(
   'App must register the Army Intelligence route.',
 )
 assert.match(
+  app,
+  /RouteScrollReset[\s\S]*useNavigationType[\s\S]*navigationType === 'POP'[\s\S]*window\.scrollTo/,
+  'Route navigation must scroll new pages to the top without overriding browser back/forward restoration.',
+)
+assert.match(
   page,
   /getArmyIntelligence/,
   'Army Intelligence page must read decoded snapshot data.',
@@ -130,6 +135,21 @@ assert.match(
   page,
   /countTacticalAwarenessOrders[\s\S]*entry\.skills[\s\S]*normalizeExactSkillToken[\s\S]*tacticalawareness/,
   'Tactical Awareness must be derived from exact decoded skill tokens.',
+)
+assert.match(
+  page,
+  /selectedSectorial[\s\S]*window\.scrollTo/,
+  'Changing Army Intelligence sectorials must scroll the analysis back to the top.',
+)
+assert.match(
+  page,
+  /Profile[\s\S]*AVA Taken[\s\S]*Selections[\s\S]*Lists/,
+  'Army Intelligence usage lists must render clear column headers.',
+)
+assert.match(
+  page,
+  /formatAvaTaken[\s\S]*toFixed\(1\)/,
+  'AVA Taken must display with decimal precision instead of rounded integers.',
 )
 assert.match(
   page,
@@ -273,8 +293,18 @@ assert.match(
 )
 assert.match(
   decoder,
-  /equipment: splitProfileTokens\(equipment\)[\s\S]*weapons: \(card\?\.weapons \|\| \[\]\)\.map\(normalizeProfileToken\)/,
-  'Standalone decoder must serialize exact profile-level equipment and weapon tokens.',
+  /equipment: splitProfileTokens\(equipment\)[\s\S]*weapons: \(card\?\.weapons \|\| \[\]\)\.map\(normalizeWeaponToken\)/,
+  'Standalone decoder must serialize profile-level equipment and normalized base weapon tokens.',
+)
+assert.match(
+  decoder,
+  /normalizeWeaponToken[\s\S]*replace\(\/\\s\+\\\[\[\^\\\]\]\+\\\]\$\/, ''\)/,
+  'Standalone decoder must merge bracketed alternate weapon modes under the base weapon name.',
+)
+assert.match(
+  decoder,
+  /normalizeSkillTokenForDisplay[\s\S]*normalizeProfileToken\(skill\)/,
+  'Standalone decoder must preserve full displayed skill text including brackets, parentheses, and punctuation.',
 )
 assert.match(
   decoder,
@@ -397,8 +427,8 @@ const typeSkillFixtureLists = [
         },
         {
           entries: [
-            { equipment: ['Repeater'], hacker: false, lieutenant: false, orderTypes: ['regular'], points: 10, profile: 'RACERBOT Repeater', skills: ['Remote Presence'], structure: 1, troopType: 'REM', unit: 'RACERBOT Mk-III', weapons: ['Flash Pulse'], wounds: null },
-            { equipment: ['D-Charges'], hacker: false, lieutenant: false, orderTypes: ['regular'], points: 28, profile: 'ARTALIS Engineer', skills: ['Engineer'], structure: null, troopType: 'MI', unit: 'ARTALIS', weapons: ['Combi Rifle'], wounds: 1 },
+            { equipment: ['Repeater'], hacker: false, lieutenant: false, orderTypes: ['regular'], points: 10, profile: 'RACERBOT Repeater', skills: ['Remote Presence', 'RemDriver [PH=13]'], structure: 1, troopType: 'REM', unit: 'RACERBOT Mk-III', weapons: ['Flash Pulse'], wounds: null },
+            { equipment: ['D-Charges'], hacker: false, lieutenant: false, orderTypes: ['regular'], points: 28, profile: 'ARTALIS Engineer', skills: ['Engineer'], structure: null, troopType: 'MI', unit: 'ARTALIS', weapons: ['Combi Rifle', 'D-Charges [CC]', 'D-Charges [Demolition]'], wounds: 1 },
           ],
         },
       ],
@@ -576,6 +606,13 @@ const multiRifleRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
   troopType: '',
   weapon: 'MULTI Rifle',
 })
+const dChargesWeaponRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
+  equipment: '',
+  skill: '',
+  sort: 'alphabetical',
+  troopType: '',
+  weapon: 'D-Charges',
+})
 const repeaterRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
   equipment: 'Repeater',
   skill: '',
@@ -629,6 +666,7 @@ assert.equal(
 assert.deepEqual(
   allAnalysis.modelUsage.find((row) => row.name === 'NETROD'),
   {
+    avaTaken: 2,
     equipment: [],
     listCount: 1,
     name: 'NETROD',
@@ -675,6 +713,7 @@ assert.deepEqual(
 assert.deepEqual(
   uniqueSubmittedAllAnalysis.modelUsage.find((row) => row.name === 'ASURA'),
   {
+    avaTaken: 1,
     equipment: [],
     listCount: 2,
     name: 'ASURA',
@@ -770,6 +809,11 @@ assert.deepEqual(
   'Weapon filter must match exact decoded profile weapons.',
 )
 assert.deepEqual(
+  dChargesWeaponRows.map((row) => row.name),
+  ['ARTALIS'],
+  'Bracketed D-Charges weapon modes must merge under the base D-Charges filter.',
+)
+assert.deepEqual(
   repeaterRows.map((row) => row.name),
   ['RACERBOT Mk-III', 'RUDRA FTO'],
   'Equipment filter must match exact decoded profile equipment.',
@@ -806,8 +850,13 @@ assert.doesNotMatch(
 )
 assert.deepEqual(
   buildSkillOptions(typeSkillFixtureLists.slice(0, 1)),
-  ['Engineer', 'Hacker', 'Lieutenant', 'Remote Presence'],
+  ['Engineer', 'Hacker', 'Lieutenant', 'RemDriver [PH=13]', 'Remote Presence'],
   'Operations Subsection skill options must come from the selected sectorial dataset.',
+)
+assert.equal(
+  buildSkillOptions(typeSkillFixtureLists.slice(0, 1)).includes('RemDriver [PH=13]'),
+  true,
+  'Skill options must preserve complete decoded skill strings including closing brackets.',
 )
 assert.deepEqual(
   buildSkillOptions(typeSkillFixtureLists.slice(1)),
@@ -816,8 +865,8 @@ assert.deepEqual(
 )
 assert.deepEqual(
   buildWeaponOptions(typeSkillFixtureLists.slice(0, 1)),
-  ['Combi Rifle', 'Flash Pulse', 'MULTI Rifle', 'Submachine Gun'],
-  'Weapon options must come from the selected sectorial dataset and sort alphabetically.',
+  ['Combi Rifle', 'D-Charges', 'Flash Pulse', 'MULTI Rifle', 'Submachine Gun'],
+  'Weapon options must come from the selected sectorial dataset, merge bracketed modes, and sort alphabetically.',
 )
 assert.deepEqual(
   buildEquipmentOptions(typeSkillFixtureLists.slice(0, 1)),
@@ -1130,7 +1179,7 @@ function buildSkillOptions(lists) {
 }
 
 function buildWeaponOptions(lists) {
-  return buildEntryTokenOptions(lists, (entry) => entry.weapons)
+  return buildEntryTokenOptions(lists, (entry) => (entry.weapons || []).map(normalizeWeaponModeName))
 }
 
 function buildEquipmentOptions(lists) {
@@ -1300,7 +1349,7 @@ function buildModelUsageRows(entriesByList) {
       row.totalSelections += 1
       ;(entry.equipment || []).forEach((equipment) => row.equipment.add(equipment))
       ;(entry.skills || []).forEach((skill) => row.skills.add(skill))
-      ;(entry.weapons || []).forEach((weapon) => row.weapons.add(weapon))
+      ;(entry.weapons || []).forEach((weapon) => row.weapons.add(normalizeWeaponModeName(weapon)))
       rowsByKey.set(key, row)
 
       const appearances = listAppearances.get(key) || new Set()
@@ -1312,6 +1361,9 @@ function buildModelUsageRows(entriesByList) {
   return Array.from(rowsByKey.entries())
     .map(([key, row]) => ({
       equipment: Array.from(row.equipment).sort((left, right) => left.localeCompare(right)),
+      avaTaken: (listAppearances.get(key)?.size || 0) > 0
+        ? row.totalSelections / (listAppearances.get(key)?.size || 1)
+        : 0,
       listCount: listAppearances.get(key)?.size || 0,
       name: row.name,
       percentage: entriesByList.length ? ((listAppearances.get(key)?.size || 0) / entriesByList.length) * 100 : 0,
@@ -1376,6 +1428,10 @@ function buildUsageRows(entriesByList, predicate = () => true) {
 
 function countTacticalAwarenessOrders(entry) {
   return (entry.skills || []).some((skill) => normalizeExactSkillToken(skill) === 'tacticalawareness') ? 1 : 0
+}
+
+function normalizeWeaponModeName(weapon) {
+  return String(weapon || '').trim().replace(/\s+\[[^\]]+\]$/, '')
 }
 
 function normalizeExactSkillToken(skill) {

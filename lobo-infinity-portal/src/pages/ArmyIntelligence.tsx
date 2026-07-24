@@ -58,6 +58,7 @@ type UsageRow = {
   listCount: number
   name: string
   percentage: number
+  avaTaken?: number
   points?: number
   profile?: string
   skills?: string[]
@@ -305,6 +306,17 @@ function ArmyIntelligenceContent({
       setModelSkillFilter('')
     }
   }, [modelSkillFilter, skillOptions])
+
+  useEffect(() => {
+    if (!selectedSectorial) {
+      return
+    }
+
+    window.scrollTo({
+      left: 0,
+      top: 0,
+    })
+  }, [selectedSectorial])
 
   useEffect(() => {
     if (modelWeaponFilter && !weaponOptions.includes(modelWeaponFilter)) {
@@ -662,13 +674,23 @@ function UsagePanel({
         <p>None</p>
       ) : (
         <ol className="army-intelligence-usage-list">
+          <li className="army-intelligence-usage-list-header">
+            <span>Profile</span>
+            <strong>{variant === 'wide' ? 'AVA Taken' : 'Selections'}</strong>
+            <small>Lists</small>
+          </li>
           {visible.map((item) => (
             <li key={`${item.name}|${item.profile ?? ''}|${item.points ?? ''}|${item.troopType ?? ''}`}>
-              <span>{formatModelUsageName(item)}</span>
-              <strong>{item.totalSelections}</strong>
-              <small>
-                {typeof item.points === 'number' ? `${item.points} pts / ` : ''}
-                {item.listCount} lists / {formatNumber(item.percentage)}%
+              <span className="army-intelligence-profile-cell">
+                <span>{formatModelUsageName(item)}</span>
+                {typeof item.points === 'number' ? (
+                  <small className="army-intelligence-points-cell">{item.points} pts</small>
+                ) : null}
+              </span>
+              <strong>{variant === 'wide' ? formatAvaTaken(item.avaTaken) : item.totalSelections}</strong>
+              <small className="army-intelligence-lists-cell">
+                <span>{item.listCount} lists</span>
+                <span>{formatNumber(item.percentage)}%</span>
               </small>
             </li>
           ))}
@@ -844,7 +866,7 @@ function buildSkillOptions(lists: ArmyIntelligenceList[]) {
 }
 
 function buildWeaponOptions(lists: ArmyIntelligenceList[]) {
-  return buildEntryTokenOptions(lists, (entry) => entry.weapons)
+  return buildEntryTokenOptions(lists, (entry) => (entry.weapons ?? []).map(normalizeWeaponModeName))
 }
 
 function buildEquipmentOptions(lists: ArmyIntelligenceList[]) {
@@ -918,7 +940,7 @@ function buildModelUsageRows(entriesByList: ArmyIntelligenceDecodedEntry[][]): U
       row.totalSelections += 1
       ;(entry.equipment ?? []).forEach((equipment) => row.equipment.add(equipment))
       entry.skills.forEach((skill) => row.skills.add(skill))
-      ;(entry.weapons ?? []).forEach((weapon) => row.weapons.add(weapon))
+      ;(entry.weapons ?? []).forEach((weapon) => row.weapons.add(normalizeWeaponModeName(weapon)))
       rowsByKey.set(key, row)
 
       const appearances = listAppearances.get(key) ?? new Set<number>()
@@ -930,6 +952,9 @@ function buildModelUsageRows(entriesByList: ArmyIntelligenceDecodedEntry[][]): U
   return Array.from(rowsByKey.entries())
     .map(([key, row]) => ({
       equipment: Array.from(row.equipment).sort((left, right) => left.localeCompare(right)),
+      avaTaken: (listAppearances.get(key)?.size ?? 0) > 0
+        ? row.totalSelections / (listAppearances.get(key)?.size ?? 1)
+        : 0,
       listCount: listAppearances.get(key)?.size ?? 0,
       name: row.name,
       percentage: entriesByList.length
@@ -1046,6 +1071,10 @@ function normalizeExactSkillToken(skill: string) {
   return skill.trim().toLowerCase().replace(/[^a-z]/g, '')
 }
 
+function normalizeWeaponModeName(weapon: string) {
+  return weapon.trim().replace(/\s+\[[^\]]+\]$/, '')
+}
+
 function average(values: number[]) {
   if (values.length === 0) {
     return 0
@@ -1056,6 +1085,10 @@ function average(values: number[]) {
 
 function formatNumber(value: number) {
   return Number.isInteger(value) ? String(value) : value.toFixed(1)
+}
+
+function formatAvaTaken(value: number | undefined) {
+  return typeof value === 'number' ? value.toFixed(1) : '0.0'
 }
 
 function slugify(value: string) {

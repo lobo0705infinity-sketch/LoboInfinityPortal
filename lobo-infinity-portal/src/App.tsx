@@ -6,7 +6,7 @@ import {
   type ComponentType,
   type ReactNode,
 } from 'react'
-import { BrowserRouter, Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigationType, useParams } from 'react-router-dom'
 import AuthProvider from './auth/AuthContext'
 import ApplicationErrorBoundary from './components/ApplicationErrorBoundary'
 import Breadcrumbs from './components/Breadcrumbs'
@@ -91,6 +91,7 @@ function AuthShell() {
       <div className="app-shell auth-ready">
         <RouteMeta />
         <UserActivityTracker />
+        <RouteScrollReset />
         <Sidebar />
         <div className="app-main">
           <Header />
@@ -163,6 +164,24 @@ function AuthShell() {
       </div>
     </SettingsProvider>
   )
+}
+
+function RouteScrollReset() {
+  const location = useLocation()
+  const navigationType = useNavigationType()
+
+  useEffect(() => {
+    if (navigationType === 'POP') {
+      return
+    }
+
+    window.scrollTo({
+      left: 0,
+      top: 0,
+    })
+  }, [location.pathname, location.search, navigationType])
+
+  return null
 }
 
 function LegacySubmitResultRedirect() {

@@ -302,7 +302,7 @@ function buildStructuredList(armyCode, codeData, resolved) {
         structure: card?.structure ?? null,
         troopType: normalizeTroopType(card?.troopType),
         unit: listRow?.unit || card?.profile || '',
-        weapons: (card?.weapons || []).map(normalizeProfileToken).filter(Boolean),
+        weapons: (card?.weapons || []).map(normalizeWeaponToken).filter(Boolean),
         wounds: card?.wounds ?? null,
       })
     }
@@ -482,8 +482,12 @@ function normalizeSkillToken(skill) {
     .toLowerCase()
 }
 
+function normalizeWeaponToken(value) {
+  return normalizeProfileToken(value).replace(/\s+\[[^\]]+\]$/, '')
+}
+
 function normalizeSkillTokenForDisplay(skill) {
-  return normalizeSkillToken(skill).replace(/\b\w/g, (letter) => letter.toUpperCase())
+  return normalizeProfileToken(skill)
 }
 
 function normalizeTroopType(value) {
