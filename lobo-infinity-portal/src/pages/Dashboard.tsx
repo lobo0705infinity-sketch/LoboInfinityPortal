@@ -1,24 +1,24 @@
 import { Link } from 'react-router-dom'
+import { useEffect, useRef } from 'react'
 import { useAuth } from '../auth/AuthContext'
 import Loading from '../components/Loading'
 import Skeleton from '../components/Skeleton'
 import {
   type ArmyListCommunitySummary,
-  type CommissionerNewsItem,
   type HallOfFameData,
   type LeagueIntelligenceData,
   type LeagueRecordValue,
   type RecentGame,
   type StreamedGame,
 } from '../services/api'
-import type { DivisionStandings, Standing } from '../types/dashboard'
+import type { DashboardDeferredKey } from '../contexts/DashboardDataContext'
+import type { LeagueOverview, Standing } from '../types/dashboard'
 import {
   formatObjectiveScore,
   formatPlayerName,
 } from '../services/formatting'
 import { getGameHeadline, isDrawGame } from '../services/gameResults'
 import { resolvePlayerLeagueModel } from '../services/playerLeagueModel'
-import dashboardConcept from '../../docs/design/Dashboard/docs/dashboard-concept-v2.1.png'
 import loboCrest from '../assets/lobo-crest.svg'
 import {
   DashboardDataProvider,
@@ -26,6 +26,8 @@ import {
 } from '../contexts/DashboardDataContext'
 import '../App.css'
 import './Dashboard.css'
+
+const dashboardHero = '/dashboard/dashboard-hero.webp'
 
 function Dashboard() {
   const auth = useAuth()
@@ -96,7 +98,6 @@ function DashboardContent({
   const homeData = home!
   const data = homeData.dashboard
   const games = homeData.recentGames
-  const news = homeData.news
   const records = homeData.records
   const hallOfFame = homeData.hallOfFame
   const intelligence = homeData.intelligence
@@ -113,7 +114,7 @@ function DashboardContent({
     homeData.allStandings,
     [authenticatedCanonicalPlayer],
   )
-  const scheduledLeagueGames = getScheduledLeagueGames(homeData.allStandings)
+  const scheduledLeagueGames = getScheduledLeagueGamesFromOverview(data.leagueOverview)
   const completedLeagueGames =
     data.leagueOverview.totalLeagueGames || data.summary.gamesPlayed
   const requiredLeagueGames = Math.max(scheduledLeagueGames, completedLeagueGames)
@@ -141,8 +142,9 @@ function DashboardContent({
           alt=""
           aria-hidden="true"
           decoding="async"
-          loading="lazy"
-          src={dashboardConcept}
+          height={1024}
+          src={dashboardHero}
+          width={1536}
         />
         <div className="dashboard-command-overlay">
           <img
@@ -214,7 +216,7 @@ function DashboardContent({
       <SupportLeagueCard />
 
       <section className="dashboard-ops-grid" aria-label="Command operations">
-        <LiveTransmissions games={games} news={news} />
+        <LiveTransmissions games={games} />
         <CommanderOverview intelligence={intelligence} leader={currentLeader} leaderName={data.summary.leagueLeader} />
         <WeeklyOperations
           featuredGame={featuredGame}
@@ -282,25 +284,16 @@ function DashboardStatusTile({
   )
 }
 
-function getScheduledLeagueGames(divisions: DivisionStandings[]) {
-  return divisions.reduce((total, division) => {
-    const playerCount = division.summary.players || division.standings.length
-
-    return total + (playerCount * Math.max(0, playerCount - 1)) / 2
-  }, 0)
-}
-
 function formatSeasonLabel(season: string) {
   return season.trim() || 'Season synchronized'
 }
 
 function LiveTransmissions({
   games,
-  news,
 }: {
   games: RecentGame[]
-  news: CommissionerNewsItem[]
 }) {
+  const ref = useDashboardDeferredOnDemand(['recentGames'])
   const transmissions = [
     ...games.slice(0, 4).map((game) => {
       const isDraw = isDrawGame(game)
@@ -315,19 +308,10 @@ function LiveTransmissions({
         tone: 'red',
       }
     }),
-    ...news.slice(0, 2).map((item) => ({
-      action: 'View Details',
-      detail: item.body,
-      label: 'Mission Rotation Updated',
-      time: item.date || 'Live',
-      title: item.title,
-      to: item.link || '/news',
-      tone: 'cyan',
-    })),
   ].slice(0, 5)
 
   return (
-    <section className="panel dashboard-transmissions" aria-labelledby="transmissions-title">
+    <section ref={ref} className="panel dashboard-transmissions" aria-labelledby="transmissions-title">
       <div className="panel-heading">
         <div>
           <p className="eyebrow">Live Transmissions</p>
@@ -365,11 +349,12 @@ function WeeklyOperations({
   intelligence: LeagueIntelligenceData | null
   mostPlayedMission: string
 }) {
+  const ref = useDashboardDeferredOnDemand(['recentGames', 'intelligence'])
   const missionTrend = intelligence?.missionTrends[0]
   const secondTrend = intelligence?.missionTrends[1]
 
   return (
-    <section className="panel dashboard-weekly-ops" aria-labelledby="weekly-ops-title">
+    <section ref={ref} className="panel dashboard-weekly-ops" aria-labelledby="weekly-ops-title">
       <div className="panel-heading">
         <p className="eyebrow">This Week's Operations</p>
         <h2 id="weekly-ops-title">This Week's Operations</h2>
@@ -422,6 +407,7 @@ function CommanderOverview({
   leader: Standing | null
   leaderName: string
 }) {
+  const ref = useDashboardDeferredOnDemand(['intelligence'])
   const name = leader ? formatPlayerName(leader.player, leader.displayName) : leaderName
   const profilePath = leader ? `/players/${encodeURIComponent(leader.player)}` : '/standings'
   const leaderStreak = leader
@@ -429,7 +415,7 @@ function CommanderOverview({
     : null
 
   return (
-    <section className="panel dashboard-commander" aria-labelledby="commander-title">
+    <section ref={ref} className="panel dashboard-commander" aria-labelledby="commander-title">
       <div className="panel-heading">
         <p className="eyebrow">Commander Overview</p>
         <h2 id="commander-title">Commander Overview</h2>
@@ -482,6 +468,13 @@ function CommunityIntelligence({
   records: Record<string, LeagueRecordValue>
   streams: StreamedGame[]
 }) {
+  const ref = useDashboardDeferredOnDemand([
+    'armyLists',
+    'hallOfFame',
+    'intelligence',
+    'records',
+    'streams',
+  ])
   const activePlayer = records.mostActivePlayer
   const activePlayerName =
     activePlayer && !('winner' in activePlayer)
@@ -551,7 +544,7 @@ function CommunityIntelligence({
   ]
 
   return (
-    <section className="panel dashboard-community-intel" aria-labelledby="community-intel-title">
+    <section ref={ref} className="panel dashboard-community-intel" aria-labelledby="community-intel-title">
       <div className="panel-heading">
         <div>
           <p className="eyebrow">Community Intelligence</p>
@@ -597,6 +590,62 @@ function QuickNavigation() {
       ))}
     </nav>
   )
+}
+
+function getScheduledLeagueGamesFromOverview(overview: LeagueOverview) {
+  return overview.divisions.reduce((total, division) => {
+    const playerCount = division.players || 0
+
+    return total + (playerCount * Math.max(0, playerCount - 1)) / 2
+  }, 0)
+}
+
+function useDashboardDeferredOnDemand(
+  sections: DashboardDeferredKey[],
+  enabled = true,
+) {
+  const ref = useRef<HTMLElement | null>(null)
+  const requested = useRef(false)
+  const { loadDeferredSections } = useDashboardDataContext()
+
+  useEffect(() => {
+    if (!enabled || requested.current || sections.length === 0) {
+      return
+    }
+
+    const element = ref.current
+
+    if (!element) {
+      return
+    }
+
+    if (typeof IntersectionObserver === 'undefined') {
+      requested.current = true
+      loadDeferredSections(sections)
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting || requested.current) {
+          return
+        }
+
+        requested.current = true
+        loadDeferredSections(sections)
+        observer.disconnect()
+      },
+      { rootMargin: '140px 0px' },
+    )
+
+    observer.observe(element)
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [enabled, loadDeferredSections, sections])
+
+  return ref
 }
 
 function DashboardHeader({ lastUpdated }: { lastUpdated: string }) {

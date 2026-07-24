@@ -1,9 +1,11 @@
 /* eslint-disable react-refresh/only-export-components */
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react'
@@ -13,7 +15,6 @@ import type {
   ArmyList,
   ArmyListCommunitySummary,
   CommunityCommandCenterData,
-  CommissionerNewsItem,
   HallOfFameData,
   HomeData,
   LeagueIntelligenceData,
@@ -29,6 +30,8 @@ type DashboardDataContextValue = {
   home: HomeData | null
   homeStatus: 'loading' | 'success' | 'error'
   homeError: string | null
+  deferredStatus: Record<DashboardDeferredKey, DashboardDeferredStatus>
+  loadDeferredSections: (sections: DashboardDeferredKey[]) => void
   communityCommandCenter: CommunityCommandCenterData | null
   communityCommandCenterStatus: 'idle' | 'loading' | 'success' | 'error'
   communityCommandCenterError: string | null
@@ -43,7 +46,6 @@ type DashboardDataProviderProps = {
 const DashboardDataContext = createContext<DashboardDataContextValue | null>(null)
 const dashboardCache = createDashboardCache<DashboardData>()
 const recentGamesCache = createDashboardCache<RecentGame[]>()
-const newsCache = createDashboardCache<CommissionerNewsItem[]>()
 const intelligenceCache = createDashboardCache<LeagueIntelligenceData>()
 const recordsCache = createDashboardCache<Record<string, LeagueRecordValue>>()
 const hallOfFameCache = createDashboardCache<HallOfFameData>()
@@ -57,6 +59,17 @@ const pendingCommunityRequests = new Map<
   string,
   Promise<CommunityCommandCenterData>
 >()
+
+export type DashboardDeferredKey =
+  | 'allStandings'
+  | 'armyLists'
+  | 'hallOfFame'
+  | 'intelligence'
+  | 'records'
+  | 'recentGames'
+  | 'streams'
+
+type DashboardDeferredStatus = 'idle' | 'loading' | 'success' | 'error'
 
 function loadCommunityCommandCenter(cacheKey: string) {
   const existing = pendingCommunityRequests.get(cacheKey)
@@ -82,10 +95,6 @@ function loadDashboardSummary() {
 
 function loadRecentGames() {
   return recentGamesCache.load('recentGames', () => gameRepository.getRecentGames())
-}
-
-function loadNews() {
-  return newsCache.load('news', () => apiClient.getNews())
 }
 
 function loadIntelligence() {
@@ -127,14 +136,17 @@ export function DashboardDataProvider({
   const [homeState, setHomeState] = useState<{
     dashboard: DashboardData | null
     deferred: DashboardDeferredData
+    deferredStatus: Record<DashboardDeferredKey, DashboardDeferredStatus>
     status: 'loading' | 'success' | 'error'
     error: string | null
   }>({
     dashboard: null,
     deferred: createEmptyDeferredData(),
+    deferredStatus: createInitialDeferredStatus(),
     status: 'loading',
     error: null,
   })
+  const requestedDeferredSections = useRef(new Set<DashboardDeferredKey>())
 
   const [communityState, setCommunityState] = useState<{
     data: CommunityCommandCenterData | null
@@ -161,17 +173,6 @@ export function DashboardDataProvider({
           status: 'success',
           error: null,
         }))
-
-        void loadDeferredDashboardData((updater) => {
-          if (!isActive) {
-            return
-          }
-
-          setHomeState((current) => ({
-            ...current,
-            deferred: updater(current.deferred),
-          }))
-        })
       })
       .catch((error: unknown) => {
         if (!isActive) {
@@ -191,6 +192,54 @@ export function DashboardDataProvider({
 
     return () => {
       isActive = false
+    }
+  }, [])
+
+  const loadDeferredSections = useCallback((sections: DashboardDeferredKey[]) => {
+    const pendingSections = sections.filter(
+      (section) => !requestedDeferredSections.current.has(section),
+    )
+
+    if (pendingSections.length === 0) {
+      return
+    }
+
+    for (const section of pendingSections) {
+      requestedDeferredSections.current.add(section)
+    }
+
+    setHomeState((current) => ({
+      ...current,
+      deferredStatus: {
+        ...current.deferredStatus,
+        ...Object.fromEntries(
+          pendingSections.map((section) => [section, 'loading' as const]),
+        ),
+      },
+    }))
+
+    for (const section of pendingSections) {
+      void loadDashboardDeferredSection(section)
+        .then((updater) => {
+          setHomeState((current) => ({
+            ...current,
+            deferred: updater(current.deferred),
+            deferredStatus: {
+              ...current.deferredStatus,
+              [section]: 'success',
+            },
+          }))
+        })
+        .catch(() => {
+          requestedDeferredSections.current.delete(section)
+          setHomeState((current) => ({
+            ...current,
+            deferredStatus: {
+              ...current.deferredStatus,
+              [section]: 'error',
+            },
+          }))
+        })
     }
   }, [])
 
@@ -284,11 +333,13 @@ export function DashboardDataProvider({
         : null,
       homeStatus: homeState.status,
       homeError: homeState.error,
+      deferredStatus: homeState.deferredStatus,
+      loadDeferredSections,
       communityCommandCenter: communityState.data,
       communityCommandCenterStatus: communityState.status,
       communityCommandCenterError: communityState.error,
     }),
-    [homeState, communityState],
+    [homeState, loadDeferredSections, communityState],
   )
 
   return (
@@ -304,7 +355,6 @@ type DashboardDeferredData = {
   armyLists: ArmyList[]
   hallOfFame: HallOfFameData
   intelligence: LeagueIntelligenceData
-  news: CommissionerNewsItem[]
   records: Record<string, LeagueRecordValue>
   streams: StreamedGame[]
   recentGames: RecentGame[]
@@ -359,37 +409,41 @@ function createDashboardCache<T>() {
   }
 }
 
-async function loadDeferredDashboardData(
-  update: (updater: (current: DashboardDeferredData) => DashboardDeferredData) => void,
-) {
-  await Promise.allSettled([
-    loadRecentGames().then((recentGames) =>
-      update((current) => ({ ...current, recentGames })),
-    ),
-    loadNews().then((news) => update((current) => ({ ...current, news }))),
-    loadIntelligence().then((intelligence) =>
-      update((current) => ({ ...current, intelligence })),
-    ),
-    loadRecords().then((records) =>
-      update((current) => ({ ...current, records })),
-    ),
-    loadHallOfFame().then((hallOfFame) =>
-      update((current) => ({ ...current, hallOfFame })),
-    ),
-    loadStreams().then((streams) =>
-      update((current) => ({ ...current, streams })),
-    ),
-    loadAllStandings().then((allStandings) =>
-      update((current) => ({ ...current, allStandings })),
-    ),
-    loadArmyLists().then((armyListData) =>
-      update((current) => ({
+async function loadDashboardDeferredSection(section: DashboardDeferredKey) {
+  switch (section) {
+    case 'allStandings': {
+      const allStandings = await loadAllStandings()
+      return (current: DashboardDeferredData) => ({ ...current, allStandings })
+    }
+    case 'armyLists': {
+      const armyListData = await loadArmyLists()
+      return (current: DashboardDeferredData) => ({
         ...current,
         armyListCommunity: armyListData.community,
         armyLists: armyListData.lists,
-      })),
-    ),
-  ])
+      })
+    }
+    case 'hallOfFame': {
+      const hallOfFame = await loadHallOfFame()
+      return (current: DashboardDeferredData) => ({ ...current, hallOfFame })
+    }
+    case 'intelligence': {
+      const intelligence = await loadIntelligence()
+      return (current: DashboardDeferredData) => ({ ...current, intelligence })
+    }
+    case 'records': {
+      const records = await loadRecords()
+      return (current: DashboardDeferredData) => ({ ...current, records })
+    }
+    case 'recentGames': {
+      const recentGames = await loadRecentGames()
+      return (current: DashboardDeferredData) => ({ ...current, recentGames })
+    }
+    case 'streams': {
+      const streams = await loadStreams()
+      return (current: DashboardDeferredData) => ({ ...current, streams })
+    }
+  }
 }
 
 function buildHomeData(
@@ -403,12 +457,12 @@ function buildHomeData(
     dashboard,
     hallOfFame: deferred.hallOfFame,
     intelligence: deferred.intelligence,
-    news: deferred.news,
+    news: [],
     quickStats: {
       activePlayers: dashboard.summary.activePlayers,
       armyLists: deferred.armyLists.length,
       games: dashboard.summary.gamesPlayed,
-      news: deferred.news.length,
+      news: 0,
       recentGames: deferred.recentGames.length,
       streams: deferred.streams.length,
     },
@@ -466,10 +520,21 @@ function createEmptyDeferredData(): DashboardDeferredData {
       relegationBattle: [],
       winStreaks: [],
     },
-    news: [],
     recentGames: [],
     records: {},
     streams: [],
+  }
+}
+
+function createInitialDeferredStatus(): Record<DashboardDeferredKey, DashboardDeferredStatus> {
+  return {
+    allStandings: 'idle',
+    armyLists: 'idle',
+    hallOfFame: 'idle',
+    intelligence: 'idle',
+    records: 'idle',
+    recentGames: 'idle',
+    streams: 'idle',
   }
 }
 
