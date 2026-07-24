@@ -1,6 +1,7 @@
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { useAuth } from '../auth/AuthContext'
 import Skeleton from '../components/Skeleton'
+import lieutenantOrderReference from '../../docs/mockups/lieutenant-order-reference.png'
 import {
   apiClient,
   type ArmyIntelligenceData,
@@ -66,6 +67,8 @@ type UsageRow = {
   totalSelections: number
   weapons?: string[]
 }
+
+type MetricIcon = 'impetuous' | 'irregular' | 'lieutenant' | 'points' | 'regular' | 'tactical' | 'wounds'
 
 type ModelUsageAccumulator = Omit<UsageRow, 'equipment' | 'skills' | 'weapons'> & {
   equipment: Set<string>
@@ -531,15 +534,13 @@ function ArmyIntelligenceContent({
       ) : (
         <>
           <section className="army-intelligence-summary" aria-label="Army Intelligence analysis summary">
-            <MetricCard label="Army Lists Analyzed" value={analysis.listCount} />
-            <MetricCard label="Average Regular Orders" value={analysis.averageRegularOrders} />
-            <MetricCard label="Average Irregular Orders" value={analysis.averageIrregularOrders} />
-            <MetricCard label="Average Impetuous Orders" value={analysis.averageImpetuousOrders} />
-            <MetricCard label="Average Tactical Awareness" value={analysis.averageTacticalAwarenessOrders} />
-            <MetricCard label="Average Lieutenant Orders" value={analysis.averageLieutenantOrders} />
-            <MetricCard label="Average Points" value={analysis.averagePoints} />
-            <MetricCard label="Average SWC" value={analysis.averageSwc} />
-            <MetricCard label="Average Wounds / Structure per Model" value={analysis.averageDurability} />
+            <MetricCard icon="regular" label="Average Regular Orders" value={analysis.averageRegularOrders} />
+            <MetricCard icon="irregular" label="Average Irregular Orders" value={analysis.averageIrregularOrders} />
+            <MetricCard icon="tactical" label="Average Tactical Awareness Orders" value={analysis.averageTacticalAwarenessOrders} />
+            <MetricCard icon="impetuous" label="Average Impetuous Orders" value={analysis.averageImpetuousOrders} />
+            <MetricCard icon="lieutenant" label="Average Lieutenant Orders" value={analysis.averageLieutenantOrders} />
+            <MetricCard icon="wounds" label="Average Wounds / Structure per Model" value={analysis.averageDurability} />
+            <MetricCard icon="points" label="Average Points" value={analysis.averagePoints} />
           </section>
 
           <section className="panel army-intelligence-selector army-intelligence-model-controls" aria-label="Model Usage filters">
@@ -640,12 +641,33 @@ function PageHeader() {
   )
 }
 
-function MetricCard({ label, value }: { label: string; value: number }) {
+function MetricCard({ icon, label, value }: { icon: MetricIcon; label: string; value: number }) {
   return (
     <article className="army-intelligence-metric">
+      <MetricIcon icon={icon} />
       <span>{label}</span>
       <strong>{formatNumber(value)}</strong>
     </article>
+  )
+}
+
+function MetricIcon({ icon }: { icon: MetricIcon }) {
+  if (icon === 'lieutenant') {
+    return (
+      <span
+        aria-hidden="true"
+        className="army-intelligence-metric-icon is-lieutenant"
+        style={{ backgroundImage: `url(${lieutenantOrderReference})` }}
+      />
+    )
+  }
+
+  if (icon === 'points' || icon === 'wounds') {
+    return <span aria-hidden="true" className={`army-intelligence-metric-icon is-${icon}`} />
+  }
+
+  return (
+    <span aria-hidden="true" className={`army-intelligence-metric-icon is-${icon}`} />
   )
 }
 
@@ -675,23 +697,36 @@ function UsagePanel({
       ) : (
         <ol className="army-intelligence-usage-list">
           <li className="army-intelligence-usage-list-header">
-            <span>Profile</span>
-            <strong>{variant === 'wide' ? 'AVA Taken' : 'Selections'}</strong>
-            <small>Lists</small>
+            <span className="army-intelligence-profile-cell">Profile</span>
+            <strong>Selections</strong>
+            {variant === 'wide' ? <small className="army-intelligence-points-cell">Points</small> : null}
+            <small className="army-intelligence-lists-cell">Lists</small>
+            {variant === 'wide' ? <small className="army-intelligence-ava-cell">AVA Taken</small> : null}
           </li>
           {visible.map((item) => (
             <li key={`${item.name}|${item.profile ?? ''}|${item.points ?? ''}|${item.troopType ?? ''}`}>
               <span className="army-intelligence-profile-cell">
                 <span>{formatModelUsageName(item)}</span>
-                {typeof item.points === 'number' ? (
+                {variant !== 'wide' && typeof item.points === 'number' ? (
                   <small className="army-intelligence-points-cell">{item.points} pts</small>
                 ) : null}
               </span>
-              <strong>{variant === 'wide' ? formatAvaTaken(item.avaTaken) : item.totalSelections}</strong>
+              <strong>{item.totalSelections}</strong>
+              {variant === 'wide' ? (
+                <small className="army-intelligence-points-cell">
+                  {typeof item.points === 'number' ? `${item.points} pts` : '0 pts'}
+                </small>
+              ) : null}
               <small className="army-intelligence-lists-cell">
-                <span>{item.listCount} lists</span>
-                <span>{formatNumber(item.percentage)}%</span>
+                {variant === 'wide'
+                  ? `${item.listCount} lists`
+                  : `${item.listCount} lists / ${formatNumber(item.percentage)}%`}
               </small>
+              {variant === 'wide' ? (
+                <small className="army-intelligence-ava-cell">
+                  {formatAvaTaken(item.avaTaken)} / {formatNumber(item.percentage)}%
+                </small>
+              ) : null}
             </li>
           ))}
         </ol>

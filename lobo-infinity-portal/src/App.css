@@ -4165,21 +4165,25 @@
 }
 
 .army-intelligence-page {
-  gap: 1.25rem;
+  gap: 1.05rem;
 }
 
 .army-intelligence-summary {
   display: grid;
-  gap: 0.75rem;
-  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  gap: 0.7rem;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
 }
 
 .army-intelligence-metric {
+  align-items: center;
   background: rgba(8, 13, 20, 0.86);
   border: 1px solid rgba(148, 163, 184, 0.22);
   border-radius: 8px;
-  min-height: 5.25rem;
-  padding: 0.9rem;
+  display: grid;
+  gap: 0.35rem 0.75rem;
+  grid-template-columns: 3.4rem minmax(0, 1fr);
+  min-height: 7rem;
+  padding: 0.95rem;
 }
 
 .army-intelligence-metric span {
@@ -4193,21 +4197,85 @@
 
 .army-intelligence-metric strong {
   display: block;
-  font-size: 1.8rem;
+  font-size: 1.75rem;
+  grid-column: 2;
   line-height: 1.1;
-  margin-top: 0.35rem;
+  margin-top: 0;
+}
+
+.army-intelligence-metric-icon {
+  align-self: center;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  border-radius: 999px;
+  display: block;
+  grid-row: 1 / span 2;
+  height: 3.5rem;
+  justify-self: center;
+  position: relative;
+  width: 3.5rem;
+}
+
+.army-intelligence-metric-icon.is-regular,
+.army-intelligence-metric-icon.is-irregular,
+.army-intelligence-metric-icon.is-tactical,
+.army-intelligence-metric-icon.is-impetuous {
+  filter: drop-shadow(0 0 12px rgba(76, 201, 240, 0.22));
+}
+
+.army-intelligence-metric-icon.is-regular {
+  background-image: url("/army-intelligence/regular-order.svg");
+}
+
+.army-intelligence-metric-icon.is-irregular {
+  background-image: url("/army-intelligence/irregular-order.svg");
+}
+
+.army-intelligence-metric-icon.is-tactical {
+  background-image: url("/army-intelligence/tactical-awareness-order.svg");
+}
+
+.army-intelligence-metric-icon.is-impetuous {
+  background-image: url("/army-intelligence/impetuous-order.svg");
+}
+
+.army-intelligence-metric-icon.is-lieutenant {
+  background-size: 170% auto;
+  border-radius: 999px;
+}
+
+.army-intelligence-metric-icon.is-wounds::before,
+.army-intelligence-metric-icon.is-points::before {
+  align-items: center;
+  color: #b9ecff;
+  display: grid;
+  font-size: 2.2rem;
+  height: 100%;
+  justify-items: center;
+  line-height: 1;
+  text-shadow: 0 0 14px rgba(76, 201, 240, 0.55);
+  width: 100%;
+}
+
+.army-intelligence-metric-icon.is-wounds::before {
+  content: "⌁";
+}
+
+.army-intelligence-metric-icon.is-points::before {
+  content: "☆";
 }
 
 .army-intelligence-grid {
   display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: 0.65rem;
+  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
 }
 
 .army-intelligence-selector {
   align-items: end;
   display: grid;
-  gap: 1rem;
+  gap: 0.7rem 1.4rem;
   grid-template-columns: repeat(2, minmax(14rem, 1fr));
 }
 
@@ -4358,6 +4426,8 @@
 }
 
 .army-intelligence-panel-wide {
+  background: rgba(8, 13, 20, 0.88);
+  border-color: rgba(76, 201, 240, 0.16);
   width: 100%;
 }
 
@@ -4368,8 +4438,8 @@
 }
 
 .army-intelligence-panel h2 {
-  font-size: 1rem;
-  margin: 0 0 0.75rem;
+  font-size: 1.18rem;
+  margin: 0 0 0.85rem;
 }
 
 .army-intelligence-panel ol {
@@ -4386,8 +4456,29 @@
   border-bottom: 1px solid rgba(148, 163, 184, 0.12);
   display: grid;
   gap: 0.75rem;
-  grid-template-columns: minmax(0, 1fr) auto minmax(6.5rem, auto);
+  grid-template-columns: minmax(7rem, 1fr) minmax(4.5rem, auto) minmax(5.5rem, auto);
   padding-bottom: 0.5rem;
+}
+
+.army-intelligence-panel-wide .army-intelligence-usage-list li {
+  align-items: center;
+  grid-template-columns: minmax(16rem, 2.8fr) minmax(5rem, 0.55fr) minmax(7rem, 0.85fr) minmax(7rem, 0.85fr) minmax(8rem, 0.9fr);
+  min-height: 2rem;
+}
+
+.army-intelligence-usage-list-header {
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.army-intelligence-usage-list-header span,
+.army-intelligence-usage-list-header strong,
+.army-intelligence-usage-list-header small {
+  overflow-wrap: normal;
+  white-space: nowrap;
 }
 
 .army-intelligence-panel li span,
@@ -4396,7 +4487,8 @@
 }
 
 .army-intelligence-profile-cell,
-.army-intelligence-lists-cell {
+.army-intelligence-lists-cell,
+.army-intelligence-ava-cell {
   display: grid;
   min-width: 0;
 }
@@ -4419,6 +4511,32 @@
   gap: 0.12rem;
 }
 
+.army-intelligence-ava-cell {
+  gap: 0.12rem;
+}
+
+.army-intelligence-panel-wide .army-intelligence-points-cell,
+.army-intelligence-panel-wide .army-intelligence-lists-cell,
+.army-intelligence-panel-wide .army-intelligence-ava-cell {
+  color: var(--text);
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.army-intelligence-panel-wide .army-intelligence-points-cell {
+  justify-self: start;
+}
+
+.army-intelligence-panel-wide .army-intelligence-lists-cell {
+  justify-self: start;
+}
+
+.army-intelligence-panel-wide .army-intelligence-ava-cell {
+  justify-content: start;
+}
+
 .army-intelligence-panel li strong,
 .army-intelligence-usage-list li strong {
   color: var(--accent);
@@ -4435,6 +4553,7 @@
 
 .army-intelligence-disclosure {
   min-width: 0;
+  padding: 0.85rem 1rem;
 }
 
 .army-intelligence-disclosure-toggle {
@@ -4452,6 +4571,22 @@
   padding: 0;
   text-align: left;
   width: 100%;
+}
+
+.army-intelligence-disclosure-toggle span {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.55rem;
+}
+
+.army-intelligence-disclosure-toggle span::before {
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 3px rgba(76, 201, 240, 0.12), 0 0 12px rgba(76, 201, 240, 0.28);
+  color: var(--accent);
+  content: "";
+  height: 1rem;
+  width: 1rem;
 }
 
 .army-intelligence-disclosure-toggle strong {
@@ -4538,8 +4673,15 @@
   }
 
   .army-intelligence-metric {
-    min-height: 5.4rem;
+    gap: 0.35rem 0.55rem;
+    grid-template-columns: 2.85rem minmax(0, 1fr);
+    min-height: 6.25rem;
     padding: 0.8rem;
+  }
+
+  .army-intelligence-metric-icon {
+    height: 2.85rem;
+    width: 2.85rem;
   }
 
   .army-intelligence-metric span {
@@ -4559,7 +4701,7 @@
   .army-intelligence-panel li,
   .army-intelligence-usage-list li {
     gap: 0.35rem;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(6rem, 1fr) minmax(4rem, max-content) minmax(5.5rem, max-content);
     min-height: 3.7rem;
     padding: 0.65rem 0;
   }
@@ -4584,8 +4726,18 @@
 
   .army-intelligence-panel-wide .army-intelligence-usage-list li {
     align-items: start;
-    column-gap: 0.65rem;
-    grid-template-columns: minmax(0, 1fr) minmax(4.25rem, max-content) minmax(4.8rem, max-content);
+    column-gap: 0.5rem;
+    grid-template-columns: minmax(0, 1fr) minmax(2.4rem, max-content) minmax(3.6rem, max-content) minmax(4.6rem, max-content);
+  }
+
+  .army-intelligence-panel-wide .army-intelligence-usage-list-header .army-intelligence-points-cell {
+    display: none;
+  }
+
+  .army-intelligence-panel-wide .army-intelligence-usage-list li:not(.army-intelligence-usage-list-header) .army-intelligence-points-cell {
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: start;
   }
 
   .army-intelligence-panel-wide .army-intelligence-usage-list li small {
@@ -4606,7 +4758,9 @@
   }
 
   .army-intelligence-panel-wide .army-intelligence-usage-list li strong,
-  .army-intelligence-panel-wide .army-intelligence-lists-cell {
+  .army-intelligence-panel-wide .army-intelligence-points-cell,
+  .army-intelligence-panel-wide .army-intelligence-lists-cell,
+  .army-intelligence-panel-wide .army-intelligence-ava-cell {
     justify-self: end;
     text-align: right;
     white-space: nowrap;

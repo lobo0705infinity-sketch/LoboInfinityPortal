@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Regular Order">
+  <defs>
+    <radialGradient id="regular-fill" cx="50%" cy="38%" r="62%">
+      <stop offset="0" stop-color="#39d987"/>
+      <stop offset="1" stop-color="#137a43"/>
+    </radialGradient>
+  </defs>
+  <circle cx="32" cy="32" r="29" fill="url(#regular-fill)" stroke="#d9dde5" stroke-width="5"/>
+  <circle cx="32" cy="32" r="24" fill="none" stroke="rgba(255,255,255,0.32)" stroke-width="2"/>
+  <path d="M32 12 49 49 32 40 15 49Z" fill="#fff"/>
+</svg>

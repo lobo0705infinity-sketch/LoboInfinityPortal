@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Tactical Awareness Order">
+  <defs>
+    <radialGradient id="tactical-fill" cx="50%" cy="38%" r="62%">
+      <stop offset="0" stop-color="#ef4be8"/>
+      <stop offset="1" stop-color="#7f168b"/>
+    </radialGradient>
+  </defs>
+  <circle cx="32" cy="32" r="29" fill="url(#tactical-fill)" stroke="#d9dde5" stroke-width="5"/>
+  <circle cx="32" cy="32" r="24" fill="none" stroke="rgba(255,255,255,0.32)" stroke-width="2"/>
+  <path d="M17 49 27 14 36 49 29 42Z" fill="#fff"/>
+  <path d="M32 49 42 14 51 49 44 42Z" fill="#fff" opacity="0.95"/>
+</svg>
