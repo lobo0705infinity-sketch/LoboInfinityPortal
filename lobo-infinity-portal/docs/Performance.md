@@ -42,6 +42,17 @@ then uses the existing game-derived Favorite Faction fallback only when the save
 value is blank. This preserves portrait and badge identity while avoiding one
 extra `action=player` request per player card.
 
+Performance Release 2 removes repeated Preferred Army fallback scans inside the
+single `players` endpoint. The Players API now builds one game-derived
+preferred-faction map while it is already looping over Game Engine rows for
+community statistics. Player finalization reads that shared map instead of
+calling `FAVORITEFACTION(player)` for every player.
+
+The shared map preserves the existing formula tie-breaking behavior by using
+`MOSTCOMMON()` over each player's faction list in game-row order. Players cache
+entries strip cold `pipelineDiagnostics` before writing to CacheService so warm
+responses do not report stale cold-build timings.
+
 ## Dashboard Strategy
 
 Dashboard first paint now uses the lightweight `dashboard` endpoint.

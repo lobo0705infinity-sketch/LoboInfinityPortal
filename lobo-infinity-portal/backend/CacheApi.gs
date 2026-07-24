@@ -216,9 +216,14 @@ function buildPortalCachePayload(action, content, createdAt) {
 
   const ttl =
     getPortalCacheTtl(action);
+  const cacheContent =
+    sanitizePortalCacheContent(
+      action,
+      content
+    );
 
   return JSON.stringify({
-    content: content,
+    content: cacheContent,
     metadata: {
       action: action,
       createdAt: createdAt,
@@ -229,9 +234,32 @@ function buildPortalCachePayload(action, content, createdAt) {
       ttlSeconds: ttl,
       version: getPortalCacheVersion(),
       status: "fresh",
-      size: content.length
+      size: cacheContent.length
     }
   });
+
+}
+
+function sanitizePortalCacheContent(action, content) {
+
+  if (action !== "players")
+    return content;
+
+  try {
+    const parsed =
+      JSON.parse(content);
+
+    if (
+      parsed &&
+      typeof parsed === "object"
+    )
+      delete parsed.pipelineDiagnostics;
+
+    return JSON.stringify(parsed);
+  }
+  catch (err) {
+    return content;
+  }
 
 }
 
@@ -501,9 +529,11 @@ function getPortalCacheKey(e, action) {
   )
     parts.push("eventContextSchema=13.0");
 
+  if (action === "players")
+    parts.push("communityPlayerRegistrySchema=5.4");
+
   if (
     [
-      "players",
       "searchData",
       "searchIndex"
     ].indexOf(action) !== -1

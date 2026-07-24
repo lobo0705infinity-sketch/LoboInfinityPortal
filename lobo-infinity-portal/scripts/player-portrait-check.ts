@@ -277,6 +277,14 @@ function assertResolverRules() {
 function assertPlayersListPreferredArmyRules() {
   const playersPage = readFileSync(resolve(process.cwd(), 'src/pages/Players.tsx'), 'utf8')
   const playersApi = readFileSync(resolve(process.cwd(), 'backend/PlayersApi.gs'), 'utf8')
+  const cacheApi = readFileSync(resolve(process.cwd(), 'backend/CacheApi.gs'), 'utf8')
+  const playersListPath = [
+    extractFunction(playersApi, 'buildCommunityPlayerRegistryRows'),
+    extractFunction(playersApi, 'applyCommunityGameStatistics'),
+    extractFunction(playersApi, 'buildCommunityPreferredFactionMap'),
+    extractFunction(playersApi, 'finalizeCommunityPlayerRecord'),
+    extractFunction(playersApi, 'getCommunityGameDerivedPreferredArmy'),
+  ].join('\n')
 
   if (playersPage.includes('applyCommunityPreferredArmies')) {
     throw new Error('Players page must not run per-player profile enrichment.')
@@ -290,8 +298,20 @@ function assertPlayersListPreferredArmyRules() {
     throw new Error('Players list must use the shared game-derived preferred-army helper.')
   }
 
-  if (!/FAVORITEFACTION\(player\)/.test(playersApi)) {
-    throw new Error('Players list fallback must use FAVORITEFACTION(player), matching public profiles.')
+  if (!playersApi.includes('function buildCommunityPreferredFactionMap')) {
+    throw new Error('Players list must build preferred-faction fallback from a shared map.')
+  }
+
+  if (/FAVORITEFACTION|PLAYERFACTIONS|PLAYERGAMES/.test(playersListPath)) {
+    throw new Error('Players list path must not call per-player faction spreadsheet functions.')
+  }
+
+  if (!/MOSTCOMMON\(\s*valuesByPlayerKey\[playerKey\]\s*\)/.test(playersListPath)) {
+    throw new Error('Players list fallback must preserve FAVORITEFACTION tie-breaking via MOSTCOMMON.')
+  }
+
+  if (!/preferredFactionByPlayerKey/.test(playersListPath)) {
+    throw new Error('Players list finalization must consume the shared preferred-faction map.')
   }
 
   if (!/favoriteArmy\s*=\s*record\.favoriteFaction\s*\|\|\s*gameDerivedFavoriteFaction/.test(playersApi)) {
@@ -304,4 +324,24 @@ function assertPlayersListPreferredArmyRules() {
   ) {
     throw new Error('Players list must expose the resolved preferred army as favoriteFaction and preferredArmy.')
   }
+
+  if (
+    !cacheApi.includes('function sanitizePortalCacheContent') ||
+    !/action !== "players"[\s\S]*delete parsed\.pipelineDiagnostics/.test(cacheApi) ||
+    !cacheApi.includes('communityPlayerRegistrySchema=5.4')
+  ) {
+    throw new Error('Players cache must avoid persisting cold pipeline diagnostics and use the current players schema key.')
+  }
+}
+
+function extractFunction(source: string, name: string) {
+  const start = source.indexOf(`function ${name}`)
+
+  if (start === -1) {
+    return ''
+  }
+
+  const next = source.indexOf('\nfunction ', start + 1)
+
+  return next === -1 ? source.slice(start) : source.slice(start, next)
 }

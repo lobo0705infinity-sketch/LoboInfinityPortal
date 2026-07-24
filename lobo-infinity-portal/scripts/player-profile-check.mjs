@@ -51,8 +51,22 @@ const checks = [
       playersApi.includes('function getSavedPreferredArmyForPlayer') &&
       playersApi.includes('gameDerivedFavoriteFaction:') &&
       playersApi.includes('function getCommunityGameDerivedPreferredArmy') &&
-      playersApi.includes('FAVORITEFACTION(player)') &&
+      playersApi.includes('function buildCommunityPreferredFactionMap') &&
+      !extractFunction(playersApi, 'getCommunityGameDerivedPreferredArmy').includes('FAVORITEFACTION') &&
       /favoriteArmy\s*=\s*record\.favoriteFaction\s*\|\|\s*gameDerivedFavoriteFaction/.test(playersApi),
+  },
+  {
+    label: 'Players list builds preferred-army fallback without per-player game scans',
+    pass:
+      extractFunction(playersApi, 'applyCommunityGameStatistics').includes('preferredFactionValuesByPlayerKey') &&
+      extractFunction(playersApi, 'buildCommunityPreferredFactionMap').includes('MOSTCOMMON') &&
+      !/FAVORITEFACTION|PLAYERFACTIONS|PLAYERGAMES/.test([
+        extractFunction(playersApi, 'buildCommunityPlayerRegistryRows'),
+        extractFunction(playersApi, 'applyCommunityGameStatistics'),
+        extractFunction(playersApi, 'buildCommunityPreferredFactionMap'),
+        extractFunction(playersApi, 'finalizeCommunityPlayerRecord'),
+        extractFunction(playersApi, 'getCommunityGameDerivedPreferredArmy'),
+      ].join('\n')),
   },
 ]
 
@@ -68,4 +82,16 @@ if (failures.length > 0) {
 
 function read(path) {
   return readFileSync(resolve(root, path), 'utf8')
+}
+
+function extractFunction(source, name) {
+  const start = source.indexOf(`function ${name}`)
+
+  if (start === -1) {
+    return ''
+  }
+
+  const next = source.indexOf('\nfunction ', start + 1)
+
+  return next === -1 ? source.slice(start) : source.slice(start, next)
 }

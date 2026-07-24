@@ -61,12 +61,47 @@ function getCommunityPlayerRegistryStandings() {
 function buildCommunityPlayerRegistryRows() {
 
   const records = {};
+  let timer =
+    startCommunityPlayersStage(
+      "players.registry.loading"
+    );
   const registry =
     buildPlayerRegistry();
+  endCommunityPlayersStage(
+    "players.registry.loading",
+    timer,
+    {
+      players: Object.keys(registry).length
+    }
+  );
+
+  timer =
+    startCommunityPlayersStage(
+      "players.identityMap.loading"
+    );
   const leagueIdentityByEmail =
     buildCommunityLeagueIdentityByEmailMap();
+  endCommunityPlayersStage(
+    "players.identityMap.loading",
+    timer,
+    {
+      identities: Object.keys(leagueIdentityByEmail).length
+    }
+  );
+
+  timer =
+    startCommunityPlayersStage(
+      "players.events.loading"
+    );
   const eventsById =
     buildCommunityEventsById();
+  endCommunityPlayersStage(
+    "players.events.loading",
+    timer,
+    {
+      events: Object.keys(eventsById).length
+    }
+  );
 
   Object.keys(registry)
     .forEach(function(key) {
@@ -87,30 +122,103 @@ function buildCommunityPlayerRegistryRows() {
       );
     });
 
-  getCommunityPortalUsers(leagueIdentityByEmail)
+  timer =
+    startCommunityPlayersStage(
+      "players.users.merge"
+    );
+  const portalUsers =
+    getCommunityPortalUsers(leagueIdentityByEmail);
+
+  portalUsers
     .forEach(function(user) {
       upsertCommunityPlayerRecord(
         records,
         user
       );
     });
+  endCommunityPlayersStage(
+    "players.users.merge",
+    timer,
+    {
+      users: portalUsers.length,
+      records: Object.keys(records).length
+    }
+  );
 
+  timer =
+    startCommunityPlayersStage(
+      "players.participants.merge"
+    );
   applyCommunityParticipantStatus(
     records,
     eventsById
   );
-
-  applyCommunityGameStatistics(
-    records
+  endCommunityPlayersStage(
+    "players.participants.merge",
+    timer,
+    {
+      records: Object.keys(records).length
+    }
   );
 
-  return Object.values(records)
-    .map(finalizeCommunityPlayerRecord)
+  timer =
+    startCommunityPlayersStage(
+      "players.gameStatisticsAndPreferredMap"
+    );
+  const gameStatistics =
+    applyCommunityGameStatistics(
+      records
+    );
+  endCommunityPlayersStage(
+    "players.gameStatisticsAndPreferredMap",
+    timer,
+    {
+      rows: gameStatistics.rows,
+      preferredFactionPlayers:
+        Object.keys(gameStatistics.preferredFactionByPlayerKey).length,
+      records: Object.keys(records).length
+    }
+  );
+
+  timer =
+    startCommunityPlayersStage(
+      "players.finalization"
+    );
+  const finalized =
+    Object.values(records)
+      .map(function(record) {
+        return finalizeCommunityPlayerRecord(
+          record,
+          gameStatistics.preferredFactionByPlayerKey
+        );
+      });
+  endCommunityPlayersStage(
+    "players.finalization",
+    timer,
+    {
+      players: finalized.length
+    }
+  );
+
+  timer =
+    startCommunityPlayersStage(
+      "players.sorting"
+    );
+  finalized
     .sort(sortCommunityPlayerRecords)
     .map(function(player, index) {
       player.rank = index + 1;
       return player;
     });
+  endCommunityPlayersStage(
+    "players.sorting",
+    timer,
+    {
+      players: finalized.length
+    }
+  );
+
+  return finalized;
 
 }
 
@@ -297,16 +405,32 @@ function applyCommunityGameStatistics(records) {
       "all",
       "all"
     );
+  const preferredFactionValuesByPlayerKey = {};
 
-  rows.forEach(function(row) {
+  rows.forEach(function(row, rowIndex) {
     const player =
       getCommunityPlayerRegistryString(row[CONFIG.ENGINE.PLAYER]);
 
     if (!player)
       return;
 
+    const playerKey =
+      getCommunityPlayerKey(player);
     const record =
-      records[getCommunityPlayerKey(player)];
+      records[playerKey];
+
+    if (rowIndex > 0) {
+      const preferredFaction =
+        canonicalizeArmyName(row[CONFIG.ENGINE.FACTION]);
+
+      if (preferredFaction) {
+        if (!preferredFactionValuesByPlayerKey[playerKey])
+          preferredFactionValuesByPlayerKey[playerKey] = [];
+
+        preferredFactionValuesByPlayerKey[playerKey]
+          .push(preferredFaction);
+      }
+    }
 
     if (!record)
       return;
@@ -350,6 +474,41 @@ function applyCommunityGameStatistics(records) {
         getCommunityDateValue(row[CONFIG.ENGINE.DATE])
     });
   });
+
+  return {
+    preferredFactionByPlayerKey:
+      buildCommunityPreferredFactionMap(
+        preferredFactionValuesByPlayerKey
+      ),
+    rows: rows.length
+  };
+
+}
+
+function buildCommunityPreferredFactionMap(valuesByPlayerKey) {
+
+  const map = {};
+
+  Object.keys(valuesByPlayerKey)
+    .forEach(function(playerKey) {
+      const result =
+        MOSTCOMMON(
+          valuesByPlayerKey[playerKey]
+        );
+
+      if (
+        result &&
+        result.count > 0 &&
+        result.value
+      )
+        map[playerKey] =
+          canonicalizeArmyName(result.value) +
+          " (" +
+          result.count +
+          " games)";
+    });
+
+  return map;
 
 }
 
@@ -423,10 +582,13 @@ function upsertCommunityPlayerRecord(records, input) {
 
 }
 
-function finalizeCommunityPlayerRecord(record) {
+function finalizeCommunityPlayerRecord(record, preferredFactionByPlayerKey) {
 
   const gameDerivedFavoriteFaction =
-    getCommunityGameDerivedPreferredArmy(record);
+    getCommunityGameDerivedPreferredArmy(
+      record,
+      preferredFactionByPlayerKey
+    );
   const favoriteArmy =
     record.favoriteFaction ||
     gameDerivedFavoriteFaction ||
@@ -482,20 +644,53 @@ function finalizeCommunityPlayerRecord(record) {
 
 }
 
-function getCommunityGameDerivedPreferredArmy(record) {
+function getCommunityGameDerivedPreferredArmy(record, preferredFactionByPlayerKey) {
 
-  const player =
-    getCommunityPlayerRegistryString(record.player);
-  const formulaFavorite =
-    typeof FAVORITEFACTION === "function" && player
+  const playerKey =
+    getCommunityPlayerKey(record.player);
+  const mappedFavorite =
+    preferredFactionByPlayerKey &&
+    preferredFactionByPlayerKey[playerKey]
       ? canonicalizeArmyName(
-          FAVORITEFACTION(player)
+          preferredFactionByPlayerKey[playerKey]
         )
       : "";
 
-  return formulaFavorite ||
+  return mappedFavorite ||
     getCommunityMostPlayedArmy(record.factionCounts) ||
     "";
+
+}
+
+function startCommunityPlayersStage(stageName) {
+
+  if (
+    typeof API_PIPELINE_CONTEXT === "undefined" ||
+    !API_PIPELINE_CONTEXT ||
+    API_PIPELINE_CONTEXT.action !== "players"
+  )
+    return 0;
+
+  return Date.now();
+
+}
+
+function endCommunityPlayersStage(stageName, startTime, details) {
+
+  if (
+    typeof API_PIPELINE_CONTEXT === "undefined" ||
+    !API_PIPELINE_CONTEXT ||
+    API_PIPELINE_CONTEXT.action !== "players" ||
+    !startTime ||
+    typeof recordApiPipelineSubStage !== "function"
+  )
+    return;
+
+  recordApiPipelineSubStage(
+    stageName,
+    startTime,
+    details || {}
+  );
 
 }
 
