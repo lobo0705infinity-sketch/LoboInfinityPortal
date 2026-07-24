@@ -139,6 +139,22 @@ for (const [faction, src] of expected) {
     failures.push(`${faction} portrait asset at ${publicPath} must not be empty.`)
   }
 
+  const cardDerivativePath = resolve(
+    process.cwd(),
+    'public',
+    'faction-portraits',
+    'cards',
+    src.replace('/faction-portraits/', '').replace(/\.png$/, '.webp'),
+  )
+
+  if (!existsSync(cardDerivativePath)) {
+    failures.push(`${faction} card portrait derivative is missing at ${cardDerivativePath}.`)
+  } else if (statSync(cardDerivativePath).size === 0) {
+    failures.push(`${faction} card portrait derivative at ${cardDerivativePath} must not be empty.`)
+  } else if (!isWebpFile(cardDerivativePath)) {
+    failures.push(`${faction} card portrait derivative must be WebP: ${cardDerivativePath}.`)
+  }
+
   const duplicatedPath = resolve(process.cwd(), 'public', 'public', src.replace(/^\//, ''))
   if (existsSync(duplicatedPath)) {
     failures.push(`${faction} portrait asset must not be duplicated at ${duplicatedPath}.`)
@@ -437,6 +453,16 @@ function listFactionPortraitFiles(path: string) {
     .sort()
 }
 
+function isWebpFile(path: string) {
+  const buffer = readFileSync(path)
+
+  return (
+    buffer.length > 12 &&
+    buffer.subarray(0, 4).toString('ascii') === 'RIFF' &&
+    buffer.subarray(8, 12).toString('ascii') === 'WEBP'
+  )
+}
+
 function assertSourceContracts() {
   const playerCard = readFileSync(resolve(process.cwd(), 'src', 'components', 'PlayerCard.tsx'), 'utf8')
   const playerProfile = readFileSync(resolve(process.cwd(), 'src', 'pages', 'PlayerProfile.tsx'), 'utf8')
@@ -448,6 +474,22 @@ function assertSourceContracts() {
     !/resolvePortraitFromIdentity\(factionIdentity\.portraitPath, factionIdentity\.normalizedFaction\)/.test(playerCard)
   ) {
     failures.push('Player cards must use the shared player faction identity portrait path.')
+  }
+
+  if (
+    !/getPlayerCardPortraitSrc\(originalSrc\)/.test(playerCard) ||
+    !/\/faction-portraits\/cards\/\$\{match\[1\]\}\.webp/.test(playerCard) ||
+    !/setSrc\(originalSrc\)/.test(playerCard)
+  ) {
+    failures.push('Player cards must use optimized card portrait derivatives with original PNG fallback.')
+  }
+
+  if (!/loading="lazy"/.test(playerCard) || !/decoding="async"/.test(playerCard)) {
+    failures.push('Player card portraits must lazy-load and decode asynchronously.')
+  }
+
+  if (!/width=\{320\}/.test(playerCard) || !/height=\{432\}/.test(playerCard)) {
+    failures.push('Player card portraits must declare stable intrinsic dimensions.')
   }
 
   if (

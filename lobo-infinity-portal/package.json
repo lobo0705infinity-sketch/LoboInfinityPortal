@@ -23,6 +23,7 @@
     "release:apps-script:syntax": "node scripts/apps-script-syntax-check.mjs",
     "release:deploy:guarded": "node scripts/deploy-production-guarded.mjs",
     "release:post-deploy:verify": "node scripts/post-deploy-production-verify.mjs",
+    "faction-portraits:cards": "node scripts/generate-faction-card-portraits.mjs",
     "release:gate": "npm run release:source && npm run release:manifest && npm run release:fingerprint && npm run build && npm run test:player-identity && npm run test:player-registry && npm run test:submit-game && npm run test:submit-game-modes && npm run test:team-membership && npm run test:standings-integrity && npm run test:achievements && npm run test:commissioner-context && npm run release:apps-script:syntax && npm run release:contract && npm run release:smoke && npm run release:visual",
     "analyze": "npm run build && node scripts/bundle-report.mjs",
     "lint": "eslint .",
