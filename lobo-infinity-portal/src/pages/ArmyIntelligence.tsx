@@ -23,7 +23,7 @@ type ArmyIntelligenceState =
     }
 
 type AnalysisResultFilter = 'all' | 'winning' | 'losing'
-type ModelUsageSort = 'usage' | 'pointsHigh' | 'pointsLow'
+type ModelUsageSort = 'alphabetical' | 'pointsHigh' | 'pointsLow'
 type RefreshCounts = {
   currentTarget: string
   decoded: number
@@ -120,8 +120,8 @@ const modelUsageSortOptions: Array<{
   value: ModelUsageSort
 }> = [
   {
-    label: 'Usage Count',
-    value: 'usage',
+    label: 'Alphabetically',
+    value: 'alphabetical',
   },
   {
     label: 'Points: High to Low',
@@ -254,7 +254,7 @@ function ArmyIntelligenceContent({
   const [resultFilter, setResultFilter] = useState<AnalysisResultFilter>('all')
   const [modelEquipmentFilter, setModelEquipmentFilter] = useState('')
   const [modelSkillFilter, setModelSkillFilter] = useState('')
-  const [modelSort, setModelSort] = useState<ModelUsageSort>('usage')
+  const [modelSort, setModelSort] = useState<ModelUsageSort>('alphabetical')
   const [modelTypeFilter, setModelTypeFilter] = useState('')
   const [modelWeaponFilter, setModelWeaponFilter] = useState('')
   const [refreshState, setRefreshState] = useState<RefreshState>({ status: 'idle' })
@@ -942,24 +942,20 @@ function buildModelUsageRows(entriesByList: ArmyIntelligenceDecodedEntry[][]): U
       troopType: row.troopType,
       weapons: Array.from(row.weapons).sort((left, right) => left.localeCompare(right)),
     }))
-    .sort((left, right) => compareModelUsageRows(left, right, 'usage'))
+    .sort((left, right) => compareModelUsageRows(left, right, 'alphabetical'))
 }
 
 function compareModelUsageRows(left: UsageRow, right: UsageRow, sort: ModelUsageSort): number {
   if (sort === 'pointsHigh') {
-    return (right.points ?? 0) - (left.points ?? 0) || compareModelUsageRows(left, right, 'usage')
+    return (right.points ?? 0) - (left.points ?? 0) || compareModelUsageRows(left, right, 'alphabetical')
   }
 
   if (sort === 'pointsLow') {
-    return (left.points ?? 0) - (right.points ?? 0) || compareModelUsageRows(left, right, 'usage')
+    return (left.points ?? 0) - (right.points ?? 0) || compareModelUsageRows(left, right, 'alphabetical')
   }
 
-  return (
-    right.totalSelections - left.totalSelections ||
-    right.listCount - left.listCount ||
-    left.name.localeCompare(right.name) ||
-    String(left.profile || '').localeCompare(String(right.profile || ''))
-  )
+  const labelComparison = formatModelUsageName(left).localeCompare(formatModelUsageName(right))
+  return labelComparison || right.totalSelections - left.totalSelections || right.listCount - left.listCount
 }
 
 function rowSkills(row: UsageRow) {
@@ -1043,9 +1039,11 @@ function getModelName(entry: ArmyIntelligenceDecodedEntry) {
 }
 
 function countTacticalAwarenessOrders(entry: ArmyIntelligenceDecodedEntry) {
-  return entry.orderTypes.filter((orderType) =>
-    orderType.trim().toLowerCase().replace(/[^a-z]/g, '').includes('tacticalawareness'),
-  ).length
+  return entry.skills.some((skill) => normalizeExactSkillToken(skill) === 'tacticalawareness') ? 1 : 0
+}
+
+function normalizeExactSkillToken(skill: string) {
+  return skill.trim().toLowerCase().replace(/[^a-z]/g, '')
 }
 
 function average(values: number[]) {

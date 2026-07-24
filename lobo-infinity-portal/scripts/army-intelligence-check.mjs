@@ -128,8 +128,8 @@ assert.match(
 )
 assert.match(
   page,
-  /countTacticalAwarenessOrders[\s\S]*orderTypes/,
-  'Tactical Awareness must be derived from decoded entry orderTypes.',
+  /countTacticalAwarenessOrders[\s\S]*entry\.skills[\s\S]*normalizeExactSkillToken[\s\S]*tacticalawareness/,
+  'Tactical Awareness must be derived from exact decoded skill tokens.',
 )
 assert.match(
   page,
@@ -168,8 +168,8 @@ assert.match(
 )
 assert.match(
   page,
-  /Sort[\s\S]*Usage Count[\s\S]*Points: High to Low[\s\S]*Points: Low to High/,
-  'Model Usage must expose usage and points sorting.',
+  /Sort[\s\S]*Alphabetically[\s\S]*Points: High to Low[\s\S]*Points: Low to High/,
+  'Model Usage must expose alphabetical and points sorting.',
 )
 assert.match(
   page,
@@ -294,7 +294,7 @@ const operationsLists = [
         {
           combatGroup: 1,
           entries: [
-            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'RUDRA FTO', specialist: false, unit: 'RUDRA FTO' },
+            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'RUDRA FTO', skills: ['Tactical Awareness'], specialist: false, unit: 'RUDRA FTO' },
             { doctor: false, engineer: true, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'ARTALIS', specialist: false, unit: 'ARTALIS' },
             { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'DIKPALA', specialist: false, unit: 'DIKPALA' },
             { doctor: false, engineer: false, hacker: true, lieutenant: true, orderTypes: ['regular', 'lieutenant', 'lieutenant'], profile: 'ASURA', specialist: false, unit: 'ASURA' },
@@ -308,8 +308,8 @@ const operationsLists = [
             { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'NETROD', specialist: false, unit: 'NETROD' },
             { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'NETROD', specialist: false, unit: 'NETROD' },
             { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['irregular'], profile: 'WARCOR', specialist: false, unit: 'WARCOR' },
-            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'RACERBOT Mk-III', specialist: false, unit: 'RACERBOT Mk-III' },
-            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'RACERBOT Mk-III', specialist: false, unit: 'RACERBOT Mk-III' },
+            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'RACERBOT Mk-III', skills: ['Tactical Awareness'], specialist: false, unit: 'RACERBOT Mk-III' },
+            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'RACERBOT Mk-III', skills: ['Tactical Awareness'], specialist: false, unit: 'RACERBOT Mk-III' },
             { doctor: false, engineer: false, hacker: true, lieutenant: false, orderTypes: ['regular'], profile: 'Pilot-X Team', specialist: false, unit: 'Pilot-X Team' },
             { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'MAXIMUS AGENT FTO', specialist: true, unit: 'MAXIMUS AGENT FTO' },
             { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'PROBOT', specialist: false, unit: 'PROBOT' },
@@ -338,7 +338,7 @@ const operationsLists = [
       combatGroups: [
         {
           entries: [
-            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'RUDRA FTO', specialist: false, unit: 'RUDRA FTO' },
+            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'RUDRA FTO', skills: ['Tactical Awareness'], specialist: false, unit: 'RUDRA FTO' },
             { doctor: true, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'CLAIRE LAZHARI FTO', specialist: false, unit: 'CLAIRE LAZHARI FTO' },
             { doctor: false, engineer: false, hacker: true, lieutenant: true, orderTypes: ['regular', 'lieutenant', 'lieutenant'], profile: 'ASURA', specialist: false, unit: 'ASURA' },
           ],
@@ -527,30 +527,30 @@ const uniqueSubmittedLosingAnalysis = buildFixtureAnalysis(
 )
 const remRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
   skill: '',
-  sort: 'usage',
+  sort: 'alphabetical',
   troopType: 'REM',
 })
 const hiRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
   skill: '',
-  sort: 'usage',
+  sort: 'alphabetical',
   troopType: 'HI',
 })
 const hackerRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
   skill: 'Hacker',
-  sort: 'usage',
+  sort: 'alphabetical',
   troopType: '',
 })
 const remRemoteRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
   equipment: '',
   skill: 'Remote Presence',
-  sort: 'usage',
+  sort: 'alphabetical',
   troopType: 'REM',
   weapon: '',
 })
 const tagRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
   equipment: '',
   skill: '',
-  sort: 'usage',
+  sort: 'alphabetical',
   troopType: 'TAG',
   weapon: '',
 })
@@ -558,42 +558,42 @@ const panoceaniaAnalysis = buildFixtureAnalysis(typeSkillFixtureLists.slice(1))
 const panoceaniaRemRows = filterAndSortModelUsage(panoceaniaAnalysis.modelUsage, {
   equipment: '',
   skill: '',
-  sort: 'usage',
+  sort: 'alphabetical',
   troopType: 'REM',
   weapon: '',
 })
 const remHackerRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
   equipment: '',
   skill: 'Hacker',
-  sort: 'usage',
+  sort: 'alphabetical',
   troopType: 'REM',
   weapon: '',
 })
 const multiRifleRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
   equipment: '',
   skill: '',
-  sort: 'usage',
+  sort: 'alphabetical',
   troopType: '',
   weapon: 'MULTI Rifle',
 })
 const repeaterRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
   equipment: 'Repeater',
   skill: '',
-  sort: 'usage',
+  sort: 'alphabetical',
   troopType: '',
   weapon: '',
 })
 const remRepeaterRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
   equipment: 'Repeater',
   skill: '',
-  sort: 'usage',
+  sort: 'alphabetical',
   troopType: 'REM',
   weapon: '',
 })
 const multiRifleDChargesRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
   equipment: 'D-Charges',
   skill: '',
-  sort: 'usage',
+  sort: 'alphabetical',
   troopType: '',
   weapon: 'MULTI Rifle',
 })
@@ -610,6 +610,21 @@ assert.notDeepEqual(
   winningAnalysis.modelUsage,
   losingAnalysis.modelUsage,
   'Changing result filters must change model usage counts when matching data differs.',
+)
+assert.equal(
+  winningAnalysis.averageTacticalAwarenessOrders,
+  3,
+  'Known Operations Subsection winning list must count three Tactical Awareness profiles from exact skill tokens.',
+)
+assert.equal(
+  losingAnalysis.averageTacticalAwarenessOrders,
+  1,
+  'Known Operations Subsection losing list must count one Tactical Awareness profile from exact skill tokens.',
+)
+assert.equal(
+  allAnalysis.averageTacticalAwarenessOrders,
+  2,
+  'Tactical Awareness average must average per-list totals across multiple matching lists.',
 )
 assert.deepEqual(
   allAnalysis.modelUsage.find((row) => row.name === 'NETROD'),
@@ -732,6 +747,17 @@ assert.deepEqual(
   filterAndSortModelUsage(typeSkillAnalysis.modelUsage, { skill: '', sort: 'pointsLow', troopType: '' }).map((row) => row.name),
   ['RACERBOT Mk-III', 'Pilot-X Team', 'ARTALIS', 'RUDRA FTO', 'ASURA'],
   'Points low-to-high sort must use decoded profile points.',
+)
+assert.deepEqual(
+  filterAndSortModelUsage(typeSkillAnalysis.modelUsage, { skill: '', sort: 'alphabetical', troopType: '' }).map(formatModelUsageName),
+  [
+    'ARTALIS - Engineer',
+    'ASURA - Hacker',
+    'Pilot-X Team - Hacker',
+    'RACERBOT Mk-III - RACERBOT Repeater',
+    'RUDRA FTO - Repeater',
+  ],
+  'Alphabetical sort must order Model Usage by displayed model/profile label A-Z.',
 )
 assert.deepEqual(
   remRemoteRows.map((row) => row.name),
@@ -1296,24 +1322,20 @@ function buildModelUsageRows(entriesByList) {
       troopType: row.troopType,
       weapons: Array.from(row.weapons).sort((left, right) => left.localeCompare(right)),
     }))
-    .sort((left, right) => compareModelUsageRows(left, right, 'usage'))
+    .sort((left, right) => compareModelUsageRows(left, right, 'alphabetical'))
 }
 
 function compareModelUsageRows(left, right, sort) {
   if (sort === 'pointsHigh') {
-    return (right.points || 0) - (left.points || 0) || compareModelUsageRows(left, right, 'usage')
+    return (right.points || 0) - (left.points || 0) || compareModelUsageRows(left, right, 'alphabetical')
   }
 
   if (sort === 'pointsLow') {
-    return (left.points || 0) - (right.points || 0) || compareModelUsageRows(left, right, 'usage')
+    return (left.points || 0) - (right.points || 0) || compareModelUsageRows(left, right, 'alphabetical')
   }
 
-  return (
-    right.totalSelections - left.totalSelections ||
-    right.listCount - left.listCount ||
-    left.name.localeCompare(right.name) ||
-    String(left.profile || '').localeCompare(String(right.profile || ''))
-  )
+  const labelComparison = formatModelUsageName(left).localeCompare(formatModelUsageName(right))
+  return labelComparison || right.totalSelections - left.totalSelections || right.listCount - left.listCount
 }
 
 function buildUsageRows(entriesByList, predicate = () => true) {
@@ -1353,9 +1375,11 @@ function buildUsageRows(entriesByList, predicate = () => true) {
 }
 
 function countTacticalAwarenessOrders(entry) {
-  return entry.orderTypes.filter((orderType) =>
-    orderType.trim().toLowerCase().replace(/[^a-z]/g, '').includes('tacticalawareness'),
-  ).length
+  return (entry.skills || []).some((skill) => normalizeExactSkillToken(skill) === 'tacticalawareness') ? 1 : 0
+}
+
+function normalizeExactSkillToken(skill) {
+  return String(skill || '').trim().toLowerCase().replace(/[^a-z]/g, '')
 }
 
 function average(values) {
