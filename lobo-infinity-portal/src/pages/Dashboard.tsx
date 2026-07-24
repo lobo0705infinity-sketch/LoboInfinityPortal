@@ -211,6 +211,8 @@ function DashboardContent({
         />
       </section>
 
+      <SupportLeagueCard />
+
       <section className="dashboard-ops-grid" aria-label="Command operations">
         <LiveTransmissions games={games} news={news} />
         <CommanderOverview intelligence={intelligence} leader={currentLeader} leaderName={data.summary.leagueLeader} />
@@ -233,6 +235,25 @@ function DashboardContent({
         <strong>Lobo Infinity League API</strong>
       </footer>
     </main>
+  )
+}
+
+function SupportLeagueCard() {
+  return (
+    <section className="dashboard-support-card" aria-labelledby="support-league-title">
+      <div>
+        <p className="eyebrow">Support Channel</p>
+        <h2 id="support-league-title">Support the Lobo Infinity League</h2>
+        <p>Help cover hosting, prizes, and league expenses.</p>
+      </div>
+      <a
+        href="https://ko-fi.com/lobo0705"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        Buy Lobo a Coffee
+      </a>
+    </section>
   )
 }
 
