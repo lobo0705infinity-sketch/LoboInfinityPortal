@@ -11,6 +11,10 @@ const forWorkCode =
   'gr8Kb3BlcmF0aW9ucwhGb3IgV29ya4EsAgEBAAUAhK0BAgAAhusBAgAAh2oBBQAAgkgBBgAAh1IBAQACAQAKAIJQAQEAAIJTAQEAAIJTAQEAADIBAQAAh28CAQAAh28CAQAAh28BAgAAh0YBAgAAglQBAQAAh2YBAgA%3D'
 const panoceaniaJoanCode =
   'ZQpwYW5vY2VhbmlhBSBKb2FugSwCAQEACgCHEAEEAAAJAQMAACoBBAAAhMYBBAAAhMYBBAAAhwwBAwAAhh0BAgAAMgEBAAARAQEAABMBAQACAQAFAIcYAQIAAIdvAQEAAIdvAgEAAIdvAgEAAIdSAQEA'
+const samCaledonianCode =
+  'gS4aY2FsZWRvbmlhbi1oaWdobGFuZGVyLWFybXkOV2hlcmUncyBXYWxEb26BLAIBAQAJAIEbAQEAAIX1AQEAAIEDAQEAAID1AQcAAIEHAQIAAID7AQIAAIEIAQIAAID1AQgAAID1AQEAAgEABgCCqAGJIwAAgPUBBwAAgPUBAgAAgPUBBwAAhiIBBwAAgPUBAgA%3D'
+const xtaproShasvastiiCode =
+  'glsKc2hhc3Zhc3RpaQEggSwBAQEABgCB%2FwEBAACHUgEBAACB9gEIAACFFgEFAACFDAEGAACCAAEDAA%3D%3D'
 
 const expectedProfiles = [
   'RUDRA FTO',
@@ -39,6 +43,14 @@ const panoceaniaResult = await decodeArmyListToFiles({
   input: panoceaniaJoanCode,
   outputDir,
 })
+const samResult = await decodeArmyListToFiles({
+  input: samCaledonianCode,
+  outputDir,
+})
+const xtaproResult = await decodeArmyListToFiles({
+  input: xtaproShasvastiiCode,
+  outputDir,
+})
 
 const profiles = result.list.combatGroups.flatMap((group) =>
   group.entries.map((entry) => entry.profile),
@@ -47,6 +59,10 @@ const entries = result.list.combatGroups.flatMap((group) => group.entries)
 const hackers = entries.filter((entry) => entry.hacker).map((entry) => entry.profile)
 const panoceaniaEntries = panoceaniaResult.list.combatGroups.flatMap((group) => group.entries)
 const panoceaniaHackers = panoceaniaEntries.filter((entry) => entry.hacker).map((entry) => entry.profile)
+const samEntries = samResult.list.combatGroups.flatMap((group) => group.entries)
+const xtaproEntries = xtaproResult.list.combatGroups.flatMap((group) => group.entries)
+const samArmand = samEntries.find((entry) => entry.combinedId === '302-680-1-2339-1')
+const xtaproSeedSoldier = xtaproEntries.find((entry) => entry.combinedId === '603-512-1-3-1')
 const rudra = entries.find((entry) => entry.profile === 'RUDRA FTO')
 const artalis = entries.find((entry) => entry.profile === 'ARTALIS')
 const asura = entries.find((entry) => entry.profile === 'ASURA')
@@ -127,10 +143,31 @@ assertEqual(
   false,
   'PanOceania Racerbot support profiles as hackers',
 )
+assertEqual(samResult.list.totals.points, 299, 'Sam Caledonian points')
+assertEqual(samResult.list.totals.swc, 3, 'Sam Caledonian SWC')
+assertEqual(samEntries.length, 15, 'Sam Caledonian entry count')
+assertEqual(samArmand?.points, 34, 'Sam Armand points')
+assertEqual(samArmand?.swc, 1.5, 'Sam Armand SWC')
+assertEqual(samResult.list.incomplete, false, 'Sam Caledonian decode completeness')
+assertEqual((samResult.list.warnings ?? []).length, 0, 'Sam Caledonian decode warnings')
+assertEqual(xtaproResult.list.totals.points, 98, 'xtapro Shasvastii points')
+assertEqual(xtaproResult.list.totals.swc, 0, 'xtapro Shasvastii SWC')
+assertEqual(xtaproEntries.length, 6, 'xtapro Shasvastii entry count')
+assertEqual(xtaproSeedSoldier?.points, 17, 'xtapro Seed-Soldier points')
+assertEqual(xtaproResult.list.incomplete, false, 'xtapro Shasvastii decode completeness')
+assertEqual((xtaproResult.list.warnings ?? []).length, 0, 'xtapro Shasvastii decode warnings')
 
 console.log(JSON.stringify({
   csvPath: result.csvPath,
   jsonPath: result.jsonPath,
+  sam: {
+    points: samResult.list.totals.points,
+    swc: samResult.list.totals.swc,
+  },
+  xtapro: {
+    points: xtaproResult.list.totals.points,
+    swc: xtaproResult.list.totals.swc,
+  },
   result: 'PASS',
 }, null, 2))
 

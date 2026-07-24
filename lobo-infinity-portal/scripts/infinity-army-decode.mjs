@@ -266,8 +266,13 @@ function buildStructuredList(armyCode, codeData, resolved) {
     cardsById.set(card.combinedId, entries)
   }
 
+  const rowsByGroup = new Map()
   const rowsByGroupAndUnit = new Map()
   for (const row of resolved.listRows) {
+    const groupRows = rowsByGroup.get(row.combatGroup) || []
+    groupRows.push(row)
+    rowsByGroup.set(row.combatGroup, groupRows)
+
     const key = `${row.combatGroup}:${row.unit}`
     const entries = rowsByGroupAndUnit.get(key) || []
     entries.push(row)
@@ -275,13 +280,30 @@ function buildStructuredList(armyCode, codeData, resolved) {
   }
 
   const entries = []
+  const warnings = []
   for (const group of codeData.combatGroups) {
     for (const member of group.members) {
       const card = shift(cardsById.get(member.combinedId))
-      const listRow = shift(rowsByGroupAndUnit.get(`${group.combatGroup}:${card?.profile || ''}`))
+      const listRow =
+        shift(rowsByGroup.get(group.combatGroup)) ||
+        matchCostRowByNormalizedName(rowsByGroupAndUnit, group.combatGroup, card)
       const orderTypes = classifyOrders(card?.icons || [])
       const skills = card?.skills || ''
       const equipment = card?.equipment || ''
+
+      if (!card || !listRow) {
+        warnings.push({
+          combatGroup: group.combatGroup,
+          combinedId: member.combinedId,
+          groupId: member.groupId,
+          message: !card
+            ? 'Decoded army entry did not resolve to an Infinity-Data card.'
+            : 'Decoded army entry resolved to a card but did not match an Infinity-Data cost row.',
+          optionId: member.optionId,
+          profile: card?.profile || '',
+          unitId: member.unitId,
+        })
+      }
 
       entries.push({
         combatGroup: group.combatGroup,
@@ -335,6 +357,7 @@ function buildStructuredList(armyCode, codeData, resolved) {
     })),
     decoderVersion: ARMY_INTELLIGENCE_DECODER_VERSION,
     faction: parentFactionBySectorialSlug.get(codeData.sectorialSlug) || codeData.sectorialSlug,
+    incomplete: warnings.length > 0,
     listName: codeData.listName,
     orderCounts,
     sectorial: normalizeSectorialName(codeData.sectorialSlug),
@@ -344,7 +367,33 @@ function buildStructuredList(armyCode, codeData, resolved) {
       resolver: infinityDataBaseUrl,
     },
     totals,
+    warnings,
   }
+}
+
+function matchCostRowByNormalizedName(rowsByGroupAndUnit, combatGroup, card) {
+  if (!card?.profile) {
+    return null
+  }
+
+  const normalizedProfile = normalizeCostLookupName(card.profile)
+  for (const [key, rows] of rowsByGroupAndUnit.entries()) {
+    if (!key.startsWith(`${combatGroup}:`) || rows.length === 0) {
+      continue
+    }
+
+    const unitName = key.slice(String(combatGroup).length + 1)
+    const normalizedUnit = normalizeCostLookupName(unitName)
+    if (
+      normalizedProfile === normalizedUnit ||
+      normalizedProfile.startsWith(normalizedUnit) ||
+      normalizedUnit.startsWith(normalizedProfile)
+    ) {
+      return shift(rows)
+    }
+  }
+
+  return null
 }
 
 function toCsv(list) {
@@ -484,6 +533,16 @@ function normalizeSkillToken(skill) {
 
 function normalizeWeaponToken(value) {
   return normalizeProfileToken(value).replace(/\s+\[[^\]]+\]$/, '')
+}
+
+function normalizeCostLookupName(value) {
+  return normalizeProfileToken(value)
+    .replace(/&(?:#0*39|apos);/gi, "'")
+    .replace(/&quot;/gi, '"')
+    .replace(/&amp;/gi, '&')
+    .replace(/\s+-\s+seed-embryo$/i, '')
+    .replace(/[^a-z0-9]+/gi, '')
+    .toLowerCase()
 }
 
 function normalizeSkillTokenForDisplay(skill) {
