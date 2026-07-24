@@ -314,7 +314,14 @@ function buildPlayerRow(row, playerNumber, winner) {
   // IMPORTANT:
   // Keep faction information even if the game is a draw.
 
-  if (playerIsOne) {
+  if (winner === 0) {
+
+    faction =
+      playerIsOne
+        ? row[FORM.WINNINGFACTION]
+        : row[FORM.LOSINGFACTION];
+
+  } else if (playerIsOne) {
 
     faction =
       winner === 2

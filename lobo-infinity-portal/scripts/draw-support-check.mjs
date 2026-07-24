@@ -63,6 +63,12 @@ check(
     gameEngine.includes('loserPlayer = row[FORM.PLAYER2]'),
 )
 check(
+  'Game Engine draw player rows keep each player faction',
+  /winner === 0[\s\S]*playerIsOne[\s\S]*row\[FORM\.WINNINGFACTION\][\s\S]*row\[FORM\.LOSINGFACTION\]/.test(
+    gameEngine,
+  ),
+)
+check(
   'Frontend RecentGame type carries gameResult',
   apiTypes.includes('gameResult?: string') &&
     apiTypes.includes("gameResult: getString(record, 'gameResult') || undefined"),
