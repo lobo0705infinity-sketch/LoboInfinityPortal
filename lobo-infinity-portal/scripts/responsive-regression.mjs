@@ -46,7 +46,6 @@ const routes = [
   { name: 'statistics', path: '/analytics?eventId=event-current-league' },
   { name: 'rules-league', path: '/rules?eventId=event-current-league' },
   { name: 'rules-team-tournament', path: '/rules?eventId=event-august-2026-team-tournament' },
-  { name: 'timeline', path: '/timeline?eventId=event-current-league' },
   { name: 'news', path: '/news' },
   { name: 'hall-of-fame', path: '/hall-of-fame' },
   { name: 'compare', path: '/compare' },

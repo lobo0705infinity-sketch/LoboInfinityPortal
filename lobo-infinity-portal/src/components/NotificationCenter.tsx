@@ -178,7 +178,7 @@ function NotificationCenter({ compact = false }: { compact?: boolean }) {
                 Mark read
               </button>
             ) : null}
-            <Link onClick={() => setIsOpen(false)} to="/notifications">
+            <Link onClick={() => setIsOpen(false)} to="/dashboard">
               View all
             </Link>
           </div>
@@ -198,7 +198,7 @@ function NotificationCenter({ compact = false }: { compact?: boolean }) {
                   }
                   key={notification.id}
                   onClick={() => setIsOpen(false)}
-                  to={notification.link || '/notifications'}
+                  to={notification.link || '/dashboard'}
                 >
                   {notification.unread ? <span aria-hidden="true" /> : null}
                   <small>{notification.type}</small>

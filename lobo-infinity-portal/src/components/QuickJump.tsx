@@ -55,8 +55,6 @@ function QuickJump() {
         { label: 'Team Tournament', to: '/event/event-august-2026-team-tournament' },
         { label: 'Tournament Registration', to: '/event/event-august-2026-team-tournament/tournament/registration' },
         { label: 'Past Events', to: '/events' },
-        { label: 'Community Timeline', to: '/timeline' },
-        { label: 'Notifications', to: '/notifications' },
         { label: 'Army Intelligence', to: '/army-intelligence' },
         ...playerItems,
         ...factionItems,

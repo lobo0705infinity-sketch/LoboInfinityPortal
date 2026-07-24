@@ -18,7 +18,6 @@ const routeLoaders = new Map<string, () => Promise<unknown>>([
   ['/match-finder', () => import('../pages/MatchFinder')],
   ['/missions', () => import('../pages/Missions')],
   ['/mission-detail', () => import('../pages/MissionProfile')],
-  ['/notifications', () => import('../pages/Notifications')],
   ['/players', () => import('../pages/Players')],
   ['/player-detail', () => import('../pages/PlayerProfile')],
   ['/profile', () => import('../pages/MyProfile')],
@@ -28,7 +27,6 @@ const routeLoaders = new Map<string, () => Promise<unknown>>([
   ['/standings', () => import('../pages/Standings')],
   ['/streams', () => import('../pages/StreamedGames')],
   ['/team-tournament', () => import('../pages/TeamTournament')],
-  ['/timeline', () => import('../pages/Timeline')],
 ])
 
 const loadedRoutes = new Set<string>()

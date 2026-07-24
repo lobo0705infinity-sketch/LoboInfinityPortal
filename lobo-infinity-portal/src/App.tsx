@@ -42,7 +42,6 @@ const LeagueOperations = lazyRoute('LeagueOperations', () => import('./pages/Lea
 const MatchFinder = lazyRoute('MatchFinder', () => import('./pages/MatchFinder'))
 const MissionProfile = lazyRoute('MissionProfile', () => import('./pages/MissionProfile'))
 const Missions = lazyRoute('Missions', () => import('./pages/Missions'))
-const Notifications = lazyRoute('Notifications', () => import('./pages/Notifications'))
 const MyProfile = lazyRoute('MyProfile', () => import('./pages/MyProfile'))
 const PastEvents = lazyRoute('PastEvents', () => import('./pages/PastEvents'))
 const PlayerComparison = lazyRoute('PlayerComparison', () => import('./pages/PlayerComparison'))
@@ -55,7 +54,6 @@ const Standings = lazyRoute('Standings', () => import('./pages/Standings'))
 const StreamedGames = lazyRoute('StreamedGames', () => import('./pages/StreamedGames'))
 const SubmitArmyList = lazyRoute('SubmitArmyList', () => import('./pages/SubmitArmyList'))
 const SubmitResult = lazyRoute('SubmitResult', () => import('./pages/SubmitResult'))
-const Timeline = lazyRoute('Timeline', () => import('./pages/Timeline'))
 const TeamTournament = lazyRoute('TeamTournament', () => import('./pages/TeamTournament'))
 
 function App() {
@@ -145,11 +143,12 @@ function AuthShell() {
                 <Route path="/diagnostics" element={<MeasuredRoute name="Diagnostics"><Diagnostics /></MeasuredRoute>} />
                 <Route path="/automation" element={<Navigate replace to="/commissioner/automation" />} />
                 <Route path="/integrity" element={<MeasuredRoute name="LeagueIntegrity"><LeagueIntegrity /></MeasuredRoute>} />
-                <Route path="/notifications" element={<MeasuredRoute name="Notifications"><Notifications /></MeasuredRoute>} />
+                <Route path="/alerts" element={<Navigate replace to="/dashboard" />} />
+                <Route path="/notifications" element={<Navigate replace to="/dashboard" />} />
                 <Route path="/profile" element={<MeasuredRoute name="MyProfile"><MyProfile /></MeasuredRoute>} />
                 <Route path="/achievement/:achievementId" element={<DeepLinkRedirect target="achievement" />} />
                 <Route path="/schedule" element={<MeasuredRoute name="Schedule"><Schedule /></MeasuredRoute>} />
-                <Route path="/timeline" element={<MeasuredRoute name="Timeline"><Timeline /></MeasuredRoute>} />
+                <Route path="/timeline" element={<Navigate replace to="/dashboard" />} />
                 <Route path="/team-tournament" element={<MeasuredRoute name="TeamTournament"><TeamTournament /></MeasuredRoute>} />
                 <Route path="/streams" element={<MeasuredRoute name="StreamedGames"><StreamedGames /></MeasuredRoute>} />
                 <Route path="/stream/:id" element={<DeepLinkRedirect target="stream" />} />

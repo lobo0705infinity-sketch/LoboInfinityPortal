@@ -1049,9 +1049,6 @@ function NotificationStatusPanel({ data }: { data: OperationsDashboardData }) {
         <Metric label="Normal Priority" value={notifications.normalPriority} />
         <Metric label="Unread For You" value={data.summary.notificationStatus.total} />
       </dl>
-      <div className="operations-actions">
-        <Link to="/notifications">Open Notifications</Link>
-      </div>
     </section>
   )
 }

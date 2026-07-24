@@ -333,7 +333,6 @@ function LiveTransmissions({
           <p className="eyebrow">Live Transmissions</p>
           <h2 id="transmissions-title">Live Transmissions</h2>
         </div>
-        <Link to="/timeline">View All</Link>
       </div>
       <div className="dashboard-transmission-list">
         {transmissions.map((item) => (

@@ -54,11 +54,6 @@ export const communityItems: NavigationItem[] = [
     to: '/missions',
   },
   {
-    icon: 'timeline',
-    label: 'Timeline',
-    to: '/timeline',
-  },
-  {
     icon: 'streams',
     label: 'Streams',
     to: '/streams',
@@ -67,11 +62,6 @@ export const communityItems: NavigationItem[] = [
     icon: 'army',
     label: 'Army Intelligence',
     to: '/army-intelligence',
-  },
-  {
-    icon: 'bell',
-    label: 'Alerts',
-    to: '/notifications',
   },
 ]
 
