@@ -689,7 +689,7 @@ function UsagePanel({
       className={`${titleHidden ? '' : 'panel '}army-intelligence-panel${titleHidden ? ' army-intelligence-panel-embedded' : ''}${variant === 'wide' ? ' army-intelligence-panel-wide' : ''}`}
       aria-labelledby={titleHidden ? undefined : `${slugify(title)}-title`}
     >
-      {!titleHidden ? (
+      {!titleHidden && variant !== 'wide' ? (
         <h2 id={`${slugify(title)}-title`}>{title}</h2>
       ) : null}
       {visible.length === 0 ? (
