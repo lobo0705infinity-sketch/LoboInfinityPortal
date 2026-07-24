@@ -10,6 +10,7 @@ export const CANONICAL_MISSIONS = [
   'Last Launch',
   'Neutralization',
   'Outbreak',
+  'Panic Room',
   'Provisioning',
   'Annihilation',
   'Battleground',

@@ -41,6 +41,8 @@ const backendMissions = extractDoubleQuotedConstArray(backendMissionRegistry, 'C
 assert.deepEqual(frontendMissions, backendMissions, 'Frontend and backend canonical mission registries must stay aligned.')
 assertSingleMissionRegistryEntry(frontendMissions, 'Neutralization', 'Frontend mission registry')
 assertSingleMissionRegistryEntry(backendMissions, 'Neutralization', 'Backend mission registry')
+assertSingleMissionRegistryEntry(frontendMissions, 'Panic Room', 'Frontend mission registry')
+assertSingleMissionRegistryEntry(backendMissions, 'Panic Room', 'Backend mission registry')
 assert.match(frontendMissionRegistry, /getCanonicalMissionOptions\(\)[\s\S]*CANONICAL_MISSIONS\.map/, 'Submit Game mission options must come from the canonical mission registry.')
 assert.match(frontendMissionRegistry, /getCanonicalMissionName\([\s\S]*canonicalMissionByKey\.get/, 'Frontend mission validation must resolve canonical registry entries.')
 assert.match(backendMissionRegistry, /function getCanonicalMissionName\(value\)[\s\S]*CANONICAL_MISSIONS/, 'Backend mission validation must resolve canonical registry entries.')
