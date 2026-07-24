@@ -288,7 +288,6 @@ function getRouteCapability(
   if (pathname === '/players' && queryEventId) return 'players'
   if (pathname === '/factions' && queryEventId) return 'factions'
   if (pathname === '/analytics' && queryEventId) return 'statistics'
-  if (pathname === '/intelligence' && queryEventId) return 'intelligence'
   if (pathname === '/timeline' && queryEventId) return 'schedule'
   if (pathname === '/rules' && queryEventId) return 'rules'
   if (pathname === '/submit-game' && queryEventId) return 'submitResult'

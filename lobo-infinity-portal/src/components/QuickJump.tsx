@@ -57,7 +57,7 @@ function QuickJump() {
         { label: 'Past Events', to: '/events' },
         { label: 'Community Timeline', to: '/timeline' },
         { label: 'Notifications', to: '/notifications' },
-        { label: 'Intelligence', to: '/intelligence' },
+        { label: 'Army Intelligence', to: '/army-intelligence' },
         ...playerItems,
         ...factionItems,
         ...gameItems,

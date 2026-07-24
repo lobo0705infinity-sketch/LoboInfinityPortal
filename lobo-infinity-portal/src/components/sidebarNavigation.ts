@@ -44,11 +44,6 @@ export const communityItems: NavigationItem[] = [
     to: '/hall-of-fame',
   },
   {
-    icon: 'analytics',
-    label: 'Intelligence',
-    to: '/intelligence',
-  },
-  {
     icon: 'compare',
     label: 'Compare',
     to: '/compare',
@@ -57,11 +52,6 @@ export const communityItems: NavigationItem[] = [
     icon: 'missions',
     label: 'Missions',
     to: '/missions',
-  },
-  {
-    icon: 'news',
-    label: 'News',
-    to: '/news',
   },
   {
     icon: 'timeline',

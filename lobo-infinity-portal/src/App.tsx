@@ -28,7 +28,6 @@ const AutomationCenter = lazyRoute('AutomationCenter', () => import('./pages/Aut
 const CommunityManager = lazyRoute('CommunityManager', () => import('./pages/CommunityManager'))
 const CommissionerDashboard = lazyRoute('CommissionerDashboard', () => import('./pages/CommissionerDashboard'))
 const CommissionerEvents = lazyRoute('CommissionerEvents', () => import('./pages/CommissionerEvents'))
-const CommissionerNews = lazyRoute('CommissionerNews', () => import('./pages/CommissionerNews'))
 const CommissionerPlayers = lazyRoute('CommissionerPlayers', () => import('./pages/CommissionerPlayers'))
 const CommissionerSystem = lazyRoute('CommissionerSystem', () => import('./pages/CommissionerSystem'))
 const Dashboard = lazyRoute('Dashboard', () => import('./pages/Dashboard'))
@@ -120,11 +119,12 @@ function AuthShell() {
                 <Route path="/season/:seasonName" element={<DeepLinkRedirect target="season" />} />
                 <Route path="/weekly-report" element={<DeepLinkRedirect target="weeklyReport" />} />
                 <Route path="/analytics" element={<MeasuredRoute name="Analytics"><Analytics /></MeasuredRoute>} />
-                <Route path="/intelligence" element={<MeasuredRoute name="Intelligence"><Analytics /></MeasuredRoute>} />
+                <Route path="/dashboard" element={<MeasuredRoute name="Dashboard"><Dashboard /></MeasuredRoute>} />
+                <Route path="/intelligence" element={<Navigate replace to="/army-intelligence" />} />
                 <Route path="/army-intelligence" element={<MeasuredRoute name="ArmyIntelligence"><ArmyIntelligence /></MeasuredRoute>} />
                 <Route path="/hall-of-fame" element={<MeasuredRoute name="HallOfFame"><HallOfFame /></MeasuredRoute>} />
-                <Route path="/news" element={<MeasuredRoute name="CommissionerNews"><CommissionerNews /></MeasuredRoute>} />
-                <Route path="/news/:id" element={<DeepLinkRedirect target="news" />} />
+                <Route path="/news" element={<Navigate replace to="/dashboard" />} />
+                <Route path="/news/:id" element={<Navigate replace to="/dashboard" />} />
                 <Route path="/events" element={<MeasuredRoute name="PastEvents"><PastEvents /></MeasuredRoute>} />
                 <Route path="/event/:eventId" element={<MeasuredRoute name="EventHome"><EventHome /></MeasuredRoute>} />
                 <Route path="/submit-game" element={<MeasuredRoute name="SubmitResult"><SubmitResult /></MeasuredRoute>} />

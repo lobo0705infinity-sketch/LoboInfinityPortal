@@ -9,7 +9,6 @@ export type EventCapability =
   | 'schedule'
   | 'players'
   | 'factions'
-  | 'intelligence'
   | 'statistics'
   | 'rules'
   | 'teams'
@@ -39,7 +38,6 @@ type NavigableEventCapability = Exclude<EventCapability, 'submitResult'>
 
 export const capabilityLabels: Record<NavigableEventCapability, string> = {
   factions: 'Factions',
-  intelligence: 'Intelligence',
   map: 'Map',
   matchFinder: 'Match Finder',
   objectives: 'Objectives',
@@ -58,7 +56,6 @@ export const capabilityLabels: Record<NavigableEventCapability, string> = {
 
 const capabilityIcons: Record<NavigableEventCapability, PortalIconName> = {
   factions: 'factions',
-  intelligence: 'analytics',
   map: 'timeline',
   matchFinder: 'compare',
   objectives: 'missions',
@@ -77,7 +74,6 @@ const capabilityIcons: Record<NavigableEventCapability, PortalIconName> = {
 
 const defaultCapabilityRoutes: Record<NavigableEventCapability, string> = {
   factions: '/factions?eventId=:eventId',
-  intelligence: '/intelligence?eventId=:eventId',
   map: '/event/:eventId#map',
   matchFinder: '/match-finder?eventId=:eventId',
   objectives: '/event/:eventId#objectives',

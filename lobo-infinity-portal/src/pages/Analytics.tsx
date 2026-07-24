@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
-import { Link, useLocation, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import Skeleton from '../components/Skeleton'
 import { filterCanonicalMissionRecords } from '../config/missions'
 import {
@@ -9,7 +9,6 @@ import {
   type MissionSummary,
 } from '../services/api'
 import type { DivisionStandings, Standing } from '../types/dashboard'
-import Intelligence from './Intelligence'
 
 type StatisticsState =
   | { status: 'loading' }
@@ -27,9 +26,7 @@ type StatisticsState =
 const statisticsFilterStorageKey = 'lobo-statistics-game-type-filter'
 
 function Analytics() {
-  const location = useLocation()
   const [searchParams, setSearchParams] = useSearchParams()
-  const isIntelligenceRoute = location.pathname === '/intelligence'
   const eventId = searchParams.get('eventId') || ''
   const gameType = normalizeGameTypeFilter(
     searchParams.get('gameType') ?? readStoredStatisticsFilter(),
@@ -47,10 +44,6 @@ function Analytics() {
   }
 
   useEffect(() => {
-    if (isIntelligenceRoute) {
-      return undefined
-    }
-
     const controller = new AbortController()
     const options = { eventId, gameType, signal: controller.signal }
 
@@ -90,11 +83,7 @@ function Analytics() {
     return () => {
       controller.abort()
     }
-  }, [eventId, gameType, isIntelligenceRoute])
-
-  if (isIntelligenceRoute) {
-    return <Intelligence />
-  }
+  }, [eventId, gameType])
 
   if (state.status === 'loading') {
     return (
@@ -229,8 +218,8 @@ function StatisticsDashboard({
         </AnalyticsPanel>
 
         <AnalyticsPanel
-          actionLabel="View Intelligence"
-          actionTo={`/intelligence${eventQuery}`}
+          actionLabel="View Army Intelligence"
+          actionTo="/army-intelligence"
           eyebrow="League Analytics"
           title="Records & Trends"
         >
@@ -263,7 +252,7 @@ function PageHeader({
     <section className="page-header" aria-labelledby="statistics-title">
       <p className="eyebrow">Statistics</p>
       <h1 id="statistics-title">{eventScoped ? 'Event Statistics' : 'Statistics'}</h1>
-      <p>Player, faction, mission, and lifetime analytics powered by live event data</p>
+      <p>Player Analytics, Faction Analytics, Mission Analytics, and lifetime records powered by live event data</p>
       {onGameTypeChange ? (
         <label className="dashboard-filter-control">
           <span>Game Type</span>
