@@ -16,11 +16,8 @@ type ComparisonState =
   | {
       comparison: PlayerComparisonData | null
       divisions: DivisionStandings[]
+      error?: string
       status: 'success'
-    }
-  | {
-      error: string
-      status: 'error'
     }
 
 function PlayerComparison() {
@@ -40,14 +37,8 @@ function PlayerComparison() {
         eventId,
         signal: controller.signal,
       })
-      const players = flattenPlayers(divisions)
-      const left = leftParam || players[0]?.player || ''
-      const right =
-        rightParam ||
-        players.find((player) => player.player !== left)?.player ||
-        ''
 
-      if (!left || !right) {
+      if (!leftParam || !rightParam) {
         setComparisonState({
           comparison: null,
           divisions,
@@ -56,15 +47,31 @@ function PlayerComparison() {
         return
       }
 
-      const comparison = await apiClient.getPlayerComparison(left, right, {
-        eventId,
-        signal: controller.signal,
-      })
+      try {
+        const comparison = await apiClient.getPlayerComparison(leftParam, rightParam, {
+          eventId,
+          signal: controller.signal,
+        })
 
-      if (!controller.signal.aborted) {
+        if (!controller.signal.aborted) {
+          setComparisonState({
+            comparison,
+            divisions,
+            status: 'success',
+          })
+        }
+      } catch (error: unknown) {
+        if (controller.signal.aborted) {
+          return
+        }
+
         setComparisonState({
-          comparison,
+          comparison: null,
           divisions,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Player comparison could not be loaded.',
           status: 'success',
         })
       }
@@ -76,11 +83,13 @@ function PlayerComparison() {
       }
 
       setComparisonState({
+        comparison: null,
+        divisions: [],
         error:
           error instanceof Error
             ? error.message
             : 'Player comparison could not be loaded.',
-        status: 'error',
+        status: 'success',
       })
     })
 
@@ -101,18 +110,8 @@ function PlayerComparison() {
     )
   }
 
-  if (comparisonState.status === 'error') {
-    return (
-      <main className="portal-shell">
-        <PageHeader />
-        <section className="dashboard-state" aria-label="Comparison error">
-          <p role="alert">{comparisonState.error}</p>
-        </section>
-      </main>
-    )
-  }
-
   const players = flattenPlayers(comparisonState.divisions)
+  const playerNames = players.map((player) => player.player)
 
   return (
     <main className="portal-shell">
@@ -122,34 +121,34 @@ function PlayerComparison() {
         <PlayerSelect
           label="Player One"
           onChange={(value) =>
-            setSearchParams({
-              ...(eventId ? { eventId } : {}),
-              left: value,
-              right: rightParam || players[1]?.player || '',
-            })
+            setSearchParams(buildComparisonSearchParams(value, rightParam, eventId))
           }
-          players={players.map((player) => player.player)}
-          value={leftParam || players[0]?.player || ''}
+          players={playerNames}
+          value={leftParam}
         />
         <PlayerSelect
           label="Player Two"
           onChange={(value) =>
-            setSearchParams({
-              ...(eventId ? { eventId } : {}),
-              left: leftParam || players[0]?.player || '',
-              right: value,
-            })
+            setSearchParams(buildComparisonSearchParams(leftParam, value, eventId))
           }
-          players={players.map((player) => player.player)}
-          value={rightParam || players[1]?.player || ''}
+          players={playerNames}
+          value={rightParam}
         />
       </section>
 
-      {comparisonState.comparison ? (
+      {comparisonState.error ? (
+        <section className="dashboard-state" aria-label="Comparison error">
+          <p role="alert">{comparisonState.error}</p>
+        </section>
+      ) : comparisonState.comparison ? (
         <ComparisonReport comparison={comparisonState.comparison} />
       ) : (
         <section className="dashboard-state" aria-label="Comparison unavailable">
-          <p role="alert">Comparison requires at least two live players.</p>
+          <p>
+            {leftParam || rightParam
+              ? 'Select another player to compare head-to-head performance.'
+              : 'Select two players to compare head-to-head performance.'}
+          </p>
         </section>
       )}
     </main>
@@ -281,10 +280,16 @@ function PlayerSelect({
   players: string[]
   value: string
 }) {
+  const hasCurrentValue = value !== '' && players.includes(value)
+
   return (
     <label>
       <span>{label}</span>
       <select onChange={(event) => onChange(event.target.value)} value={value}>
+        <option value="">Select player</option>
+        {value && !hasCurrentValue ? (
+          <option value={value}>{value} (unresolved)</option>
+        ) : null}
         {players.map((player) => (
           <option key={player} value={player}>
             {player}
@@ -293,6 +298,14 @@ function PlayerSelect({
       </select>
     </label>
   )
+}
+
+function buildComparisonSearchParams(left: string, right: string, eventId: string) {
+  return {
+    ...(eventId ? { eventId } : {}),
+    ...(left ? { left } : {}),
+    ...(right ? { right } : {}),
+  }
 }
 
 function formatMissionMetric(value: string) {
