@@ -85,6 +85,12 @@
   box-shadow: 0 18px 42px rgba(0, 0, 0, 0.42);
 }
 
+.dashboard-initial-state {
+  display: grid;
+  gap: 12px;
+  padding: 12px 0 0;
+}
+
 .dashboard-command-hero > img {
   position: absolute;
   inset: 0;
@@ -121,12 +127,14 @@
 
 .dashboard-command-logo {
   width: clamp(72px, 7vw, 96px);
+  min-height: 72px;
   height: auto;
   filter: drop-shadow(0 0 18px rgba(178, 18, 42, 0.4));
 }
 
 .dashboard-command-overlay h1 {
   max-width: 11ch;
+  min-height: 1.88em;
   margin: 0;
   color: #f4f6f8;
   font-family: "Bebas Neue", Rajdhani, Inter, sans-serif;
@@ -136,6 +144,7 @@
 
 .dashboard-command-overlay p:not(.eyebrow) {
   max-width: 58ch;
+  min-height: 3.1em;
   margin: 0;
   color: #aab7c2;
   font-weight: 800;
@@ -146,6 +155,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  min-height: 35px;
 }
 
 .dashboard-command-status span {
@@ -282,7 +292,8 @@
   font-weight: 800;
 }
 
-.dashboard-support-card a {
+.dashboard-support-card a,
+.dashboard-support-card-placeholder span {
   display: inline-flex;
   min-height: 42px;
   align-items: center;
@@ -302,6 +313,10 @@
     box-shadow 160ms ease,
     transform 160ms ease;
   white-space: nowrap;
+}
+
+.dashboard-support-card-placeholder span {
+  opacity: 0.72;
 }
 
 .dashboard-support-card a:hover,

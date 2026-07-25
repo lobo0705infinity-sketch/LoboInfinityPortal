@@ -28,6 +28,10 @@ import '../App.css'
 import './Dashboard.css'
 
 const dashboardHero = '/dashboard/dashboard-hero.webp'
+const deferredObserverDelayMs = 3200
+const deferredObserverRootMargin = '80px 0px'
+
+preloadDashboardHero()
 
 function Dashboard() {
   const auth = useAuth()
@@ -58,36 +62,23 @@ function DashboardContent({
     homeStatus,
     homeError,
   } = useDashboardDataContext()
+  const homeData = home
+  const data = homeData?.dashboard
+  const currentSeason = homeData?.settings.currentSeason || ''
 
   if (homeStatus === 'loading') {
     return (
-      <main className="portal-shell">
-        <DashboardHeader lastUpdated={lastUpdated} />
-        <section className="league-command-hero" aria-label="League command center">
-          <div>
-            <p className="eyebrow">League Command Center</p>
-            <h1>Lobo Infinity Portal 2.0</h1>
-            <p>
-              Live standings, battle reports, records, meta pressure, and league
-              movement from Google Sheets.
-            </p>
-          </div>
-          <QuickNavigation />
-        </section>
-        <div className="portal-grid">
-          <Skeleton label="Dashboard loading" rows={8} />
-          <section className="dashboard-state" aria-label="Dashboard loading">
-            <Loading />
-          </section>
-        </div>
+      <main className="portal-shell dashboard-facelift">
+        <DashboardCommandHero currentSeason={currentSeason} lastUpdated={lastUpdated} />
+        <DashboardLoadingContent />
       </main>
     )
   }
 
   if (homeStatus === 'error') {
     return (
-      <main className="portal-shell">
-        <DashboardHeader lastUpdated={lastUpdated} />
+      <main className="portal-shell dashboard-facelift">
+        <DashboardCommandHero currentSeason={currentSeason} lastUpdated={lastUpdated} />
         <section className="dashboard-state" aria-label="Dashboard error">
           <p role="alert">{homeError}</p>
         </section>
@@ -95,8 +86,10 @@ function DashboardContent({
     )
   }
 
-  const homeData = home!
-  const data = homeData.dashboard
+  if (!homeData || !data) {
+    return null
+  }
+
   const games = homeData.recentGames
   const records = homeData.records
   const hallOfFame = homeData.hallOfFame
@@ -137,36 +130,7 @@ function DashboardContent({
 
   return (
     <main className="portal-shell dashboard-facelift">
-      <section className="dashboard-command-hero" aria-label="Lobo command network">
-        <img
-          alt=""
-          aria-hidden="true"
-          decoding="async"
-          height={1024}
-          src={dashboardHero}
-          width={1536}
-        />
-        <div className="dashboard-command-overlay">
-          <img
-            alt="Lobo Infinity League"
-            className="dashboard-command-logo"
-            decoding="async"
-            loading="lazy"
-            src={loboCrest}
-          />
-          <p className="eyebrow">Lobo Command Network</p>
-          <h1>Lobo Command Network</h1>
-          <p>
-            {formatSeasonLabel(homeData.settings.currentSeason)} operations synchronized.
-            Standings, battle reports, transmissions, and command status are live.
-          </p>
-          <div className="dashboard-command-status" aria-label="Operational status">
-            <span>Operational</span>
-            <span>{formatSeasonLabel(homeData.settings.currentSeason)}</span>
-            <span>Updated {lastUpdated}</span>
-          </div>
-        </div>
-      </section>
+      <DashboardCommandHero currentSeason={currentSeason} lastUpdated={lastUpdated} />
 
       <section className="dashboard-status-grid" aria-label="Dashboard summary">
         <DashboardStatusTile
@@ -237,6 +201,92 @@ function DashboardContent({
         <strong>Lobo Infinity League API</strong>
       </footer>
     </main>
+  )
+}
+
+function DashboardLoadingContent() {
+  const placeholders = [
+    ['STA', 'Season Status'],
+    ['PRG', 'Season Progress'],
+    ['RPT', 'Recent Reports'],
+    ['STR', 'Streamed Reports'],
+    ['RANK', 'Your Rank'],
+    ['DIV', 'Your Division'],
+  ] as const
+
+  return (
+    <div className="dashboard-loading-content" aria-busy="true">
+      <section className="dashboard-status-grid" aria-label="Dashboard summary loading">
+        {placeholders.map(([icon, label]) => (
+          <DashboardStatusTile
+            accent="cyan"
+            icon={icon}
+            key={label}
+            label={label}
+            meta="Synchronizing"
+            value="..."
+          />
+        ))}
+      </section>
+      <section className="dashboard-support-card dashboard-support-card-placeholder" aria-label="Support section loading">
+        <div>
+          <p className="eyebrow">Support Channel</p>
+          <h2>Support the Lobo Infinity League</h2>
+          <p>Help cover hosting, prizes, and league expenses.</p>
+        </div>
+        <span aria-hidden="true">Buy Lobo a Coffee</span>
+      </section>
+      <div className="dashboard-initial-state">
+        <Skeleton label="Dashboard loading" rows={4} />
+        <section className="dashboard-state" aria-label="Dashboard loading">
+          <Loading />
+        </section>
+      </div>
+    </div>
+  )
+}
+
+function DashboardCommandHero({
+  currentSeason,
+  lastUpdated,
+}: {
+  currentSeason: string
+  lastUpdated: string
+}) {
+  const seasonLabel = formatSeasonLabel(currentSeason)
+
+  return (
+    <section className="dashboard-command-hero" aria-label="Lobo command network">
+      <img
+        alt=""
+        aria-hidden="true"
+        decoding="async"
+        fetchPriority="high"
+        height={1024}
+        src={dashboardHero}
+        width={1536}
+      />
+      <div className="dashboard-command-overlay">
+        <img
+          alt="Lobo Infinity League"
+          className="dashboard-command-logo"
+          decoding="async"
+          loading="lazy"
+          src={loboCrest}
+        />
+        <p className="eyebrow">Lobo Command Network</p>
+        <h1>Lobo Command Network</h1>
+        <p>
+          {seasonLabel} operations synchronized.
+          Standings, battle reports, transmissions, and command status are live.
+        </p>
+        <div className="dashboard-command-status" aria-label="Operational status">
+          <span>Operational</span>
+          <span>{seasonLabel}</span>
+          <span>Updated {lastUpdated}</span>
+        </div>
+      </div>
+    </section>
   )
 }
 
@@ -568,30 +618,6 @@ function CommunityIntelligence({
   )
 }
 
-function QuickNavigation() {
-  const links = [
-    ['Standings', '/standings'],
-    ['Match Finder', '/match-finder'],
-    ['Rivalries', '/rivalries'],
-    ['Players', '/players'],
-    ['Factions', '/factions'],
-    ['Missions', '/missions'],
-    ['Intelligence', '/intelligence'],
-    ['Hall of Fame', '/hall-of-fame'],
-    ['Compare', '/compare'],
-  ] as const
-
-  return (
-    <nav className="quick-nav" aria-label="Dashboard quick navigation">
-      {links.map(([label, to]) => (
-        <Link key={to} to={to}>
-          {label}
-        </Link>
-      ))}
-    </nav>
-  )
-}
-
 function getScheduledLeagueGamesFromOverview(overview: LeagueOverview) {
   return overview.divisions.reduce((total, division) => {
     const playerCount = division.players || 0
@@ -625,39 +651,52 @@ function useDashboardDeferredOnDemand(
       return
     }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.isIntersecting || requested.current) {
-          return
-        }
+    let observer: IntersectionObserver | null = null
+    const timeout = window.setTimeout(() => {
+      if (requested.current) {
+        return
+      }
 
-        requested.current = true
-        loadDeferredSections(sections)
-        observer.disconnect()
-      },
-      { rootMargin: '140px 0px' },
-    )
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry?.isIntersecting || requested.current) {
+            return
+          }
 
-    observer.observe(element)
+          requested.current = true
+          loadDeferredSections(sections)
+          observer?.disconnect()
+        },
+        { rootMargin: deferredObserverRootMargin },
+      )
+
+      observer.observe(element)
+    }, deferredObserverDelayMs)
 
     return () => {
-      observer.disconnect()
+      window.clearTimeout(timeout)
+      observer?.disconnect()
     }
   }, [enabled, loadDeferredSections, sections])
 
   return ref
 }
 
-function DashboardHeader({ lastUpdated }: { lastUpdated: string }) {
-  return (
-    <section className="dashboard-header" aria-labelledby="dashboard-title">
-      <div>
-        <p className="eyebrow">Dashboard</p>
-        <h1 id="dashboard-title">Live League Status</h1>
-      </div>
-      <p>Last Updated: {lastUpdated}</p>
-    </section>
-  )
+function preloadDashboardHero() {
+  if (typeof document === 'undefined') {
+    return
+  }
+
+  if (document.querySelector(`link[rel="preload"][href="${dashboardHero}"]`)) {
+    return
+  }
+
+  const link = document.createElement('link')
+  link.as = 'image'
+  link.href = dashboardHero
+  link.rel = 'preload'
+  link.type = 'image/webp'
+  document.head.appendChild(link)
 }
 
 function formatMissionLabel(mission: string) {

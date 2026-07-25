@@ -14,6 +14,7 @@ const sourcePath = resolve(
 const derivativePath = resolve(process.cwd(), 'public', 'dashboard', 'dashboard-hero.webp')
 const dashboard = read('src/pages/Dashboard.tsx')
 const context = read('src/contexts/DashboardDataContext.tsx')
+const dashboardCss = read('src/pages/Dashboard.css')
 
 assert(existsSync(sourcePath), 'Approved Dashboard source artwork must exist.')
 assert(existsSync(derivativePath), 'Optimized Dashboard hero derivative must exist.')
@@ -47,6 +48,28 @@ assert(
   /decoding="async"/.test(dashboard) && !/loading="lazy"[\s\S]*src=\{dashboardHero\}/.test(dashboard),
   'Above-the-fold Dashboard hero must decode asynchronously without lazy loading.',
 )
+assert(
+  /fetchPriority="high"/.test(dashboard),
+  'Above-the-fold Dashboard hero must use high fetch priority.',
+)
+assert(
+  /function preloadDashboardHero/.test(dashboard) &&
+    /link\.rel = 'preload'/.test(dashboard) &&
+    /link\.as = 'image'/.test(dashboard) &&
+    /link\.href = dashboardHero/.test(dashboard),
+  'Dashboard route module must preload the optimized hero image.',
+)
+assert(
+  /homeStatus === 'loading'[\s\S]*<DashboardCommandHero/.test(dashboard) &&
+    /homeStatus === 'error'[\s\S]*<DashboardCommandHero/.test(dashboard),
+  'Dashboard loading and error states must render the final optimized hero independently of summary data.',
+)
+assert(
+  /min-height: 420px/.test(dashboardCss) &&
+    /dashboard-command-overlay[\s\S]*min-height: inherit/.test(dashboardCss) &&
+    /dashboard-command-status[\s\S]*min-height: 35px/.test(dashboardCss),
+  'Dashboard hero loading and loaded states must reserve stable hero and overlay dimensions.',
+)
 
 for (const action of ['recentGames', 'streams', 'records', 'hallOfFame', 'armyLists', 'intelligence']) {
   assert(
@@ -68,6 +91,12 @@ assert(
     /requested\.current/.test(dashboard) &&
     /loadDeferredSections\(sections\)/.test(dashboard),
   'Dashboard must use a reusable one-shot IntersectionObserver deferred-section pattern.',
+)
+assert(
+  /deferredObserverDelayMs = 3200/.test(dashboard) &&
+    /deferredObserverRootMargin = '80px 0px'/.test(dashboard) &&
+    /window\.setTimeout/.test(dashboard),
+  'Dashboard deferred observers must wait past the LCP window and use a narrower forward margin.',
 )
 assert(
   /requestedDeferredSections\.current\.has\(section\)/.test(context),
