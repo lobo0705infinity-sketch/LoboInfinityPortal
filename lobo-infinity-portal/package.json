@@ -46,6 +46,7 @@
     "test:notifications": "node --experimental-strip-types scripts/notification-timestamp-check.ts",
     "test:achievements": "node scripts/achievement-rules-check.mjs",
     "test:battle-report": "node scripts/battle-report-check.mjs",
+    "test:operator-badges": "node scripts/operator-badge-icon-check.mjs",
     "test:dashboard-links": "node scripts/dashboard-links-check.mjs",
     "test:dashboard-performance": "node scripts/dashboard-performance-check.mjs",
     "test:player-comparison": "node scripts/player-comparison-check.mjs",

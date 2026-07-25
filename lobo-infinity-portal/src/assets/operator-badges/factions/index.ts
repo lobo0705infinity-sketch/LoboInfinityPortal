@@ -29,6 +29,7 @@ import WhiteBanner from "./white-banner.svg";
 
 import Ariadna from "./ariadna.svg";
 import Caledonia from "./caledonian-highlander-army.svg";
+import Frrm from "./frrm.svg";
 import Tartary from "./tartary-army-corps.svg";
 import USAriadna from "./usariadna-ranger-force.svg";
 import Kosmoflot from "./kosmoflot.svg";
@@ -110,6 +111,7 @@ export const factionIcons: Record<string, string> = {
   // Ariadna
   "Ariadna": Ariadna,
   "Caledonian Highlander Army": Caledonia,
+  "Force de Réponse Rapide Merovingienne": Frrm,
   "Tartary Army Corps": Tartary,
   "USAriadna Ranger Force": USAriadna,
   "Kosmoflot": Kosmoflot,
@@ -160,8 +162,50 @@ export const factionIcons: Record<string, string> = {
   "Torchlight Brigade": TorchlightBrigade
 };
 
+const factionIconAliases: Record<string, string> = {
+  "Force de Reponse Rapide Merovingienne": "Force de Réponse Rapide Merovingienne",
+  "FRRM": "Force de Réponse Rapide Merovingienne",
+  "frrm": "Force de Réponse Rapide Merovingienne",
+  "Merovingienne": "Force de Réponse Rapide Merovingienne",
+  "MRRF": "Force de Réponse Rapide Merovingienne",
+  "mrrf": "Force de Réponse Rapide Merovingienne",
+};
+
+const factionIconsByKey = new Map(
+  Object.entries(factionIcons).map(([faction, icon]) => [
+    normalizeFactionIconKey(faction),
+    icon,
+  ]),
+);
+
+const factionIconAliasesByKey = new Map(
+  Object.entries(factionIconAliases).map(([alias, faction]) => [
+    normalizeFactionIconKey(alias),
+    normalizeFactionIconKey(faction),
+  ]),
+);
+
 export function getFactionIcon(preferredFaction?: string): string {
   if (!preferredFaction?.trim()) return LoboDefault;
 
-  return factionIcons[preferredFaction] ?? LoboDefault;
+  const direct = factionIcons[preferredFaction];
+  if (direct) return direct;
+
+  const key = normalizeFactionIconKey(preferredFaction);
+  const aliasKey = factionIconAliasesByKey.get(key);
+
+  return factionIconsByKey.get(aliasKey || key) ?? LoboDefault;
+}
+
+function normalizeFactionIconKey(value: string) {
+  return value
+    .trim()
+    .replace(/\s*\(\d+\s+games?\)$/i, "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
