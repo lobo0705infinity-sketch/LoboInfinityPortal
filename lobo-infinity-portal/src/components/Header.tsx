@@ -11,6 +11,8 @@ import QuickJump from './QuickJump'
 
 const MobileNavigationDrawer = lazy(() => import('./MobileNavigationDrawer'))
 type ActiveMobilePanel = 'menu' | 'search' | null
+const kofiSupportUrl = 'https://ko-fi.com/lobo0705'
+const kofiSupportLabel = 'Support the Lobo Infinity League on Ko-fi'
 
 function Header() {
   const auth = useAuth()
@@ -106,6 +108,16 @@ function Header() {
           >
             <PortalIcon name="submit" />
           </Link>
+          <a
+            aria-label={kofiSupportLabel}
+            className="mobile-header-action mobile-support-action"
+            href={kofiSupportUrl}
+            rel="noopener noreferrer"
+            target="_blank"
+            title={kofiSupportLabel}
+          >
+            <PortalIcon name="support" />
+          </a>
           {auth.authenticated ? (
             <>
               <GlobalSearch
@@ -139,6 +151,17 @@ function Header() {
           <PortalIcon name="submit" />
           Submit Game
         </Link>
+        <a
+          aria-label={kofiSupportLabel}
+          className="header-support-button"
+          href={kofiSupportUrl}
+          rel="noopener noreferrer"
+          target="_blank"
+          title={kofiSupportLabel}
+        >
+          <PortalIcon name="support" />
+          <span>Support Us</span>
+        </a>
         <GlobalSearch />
         <QuickJump />
         <NotificationCenter />

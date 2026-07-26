@@ -13,6 +13,7 @@ export type PortalIconName =
   | 'search'
   | 'standings'
   | 'streams'
+  | 'support'
   | 'submit'
   | 'timeline'
 
@@ -109,6 +110,11 @@ const paths: Record<PortalIconName, string[]> = {
     'm11 10 4-3-4-3v6Z',
     'M7.5 4.5h9',
     'M8 20h8',
+  ],
+  support: [
+    'M12 18.5c-3.6-2.6-6.2-5.1-6.2-8A3.4 3.4 0 0 1 12 8.7a3.4 3.4 0 0 1 6.2 1.8c0 2.9-2.6 5.4-6.2 8Z',
+    'M8.5 9.8c.6-.8 1.8-1 2.7-.2',
+    'M14.7 9.6c.9-.8 2.1-.6 2.7.2',
   ],
   submit: [
     'M12 4.5v11',

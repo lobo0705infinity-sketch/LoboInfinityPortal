@@ -177,8 +177,6 @@ function DashboardContent({
         />
       </section>
 
-      <SupportLeagueCard />
-
       <section className="dashboard-ops-grid" aria-label="Command operations">
         <LiveTransmissions games={games} />
         <CommanderOverview intelligence={intelligence} leader={currentLeader} leaderName={data.summary.leagueLeader} />
@@ -227,14 +225,6 @@ function DashboardLoadingContent() {
             value="..."
           />
         ))}
-      </section>
-      <section className="dashboard-support-card dashboard-support-card-placeholder" aria-label="Support section loading">
-        <div>
-          <p className="eyebrow">Support Channel</p>
-          <h2>Support the Lobo Infinity League</h2>
-          <p>Help cover hosting, prizes, and league expenses.</p>
-        </div>
-        <span aria-hidden="true">Buy Lobo a Coffee</span>
       </section>
       <div className="dashboard-initial-state">
         <Skeleton label="Dashboard loading" rows={4} />
@@ -286,25 +276,6 @@ function DashboardCommandHero({
           <span>Updated {lastUpdated}</span>
         </div>
       </div>
-    </section>
-  )
-}
-
-function SupportLeagueCard() {
-  return (
-    <section className="dashboard-support-card" aria-labelledby="support-league-title">
-      <div>
-        <p className="eyebrow">Support Channel</p>
-        <h2 id="support-league-title">Support the Lobo Infinity League</h2>
-        <p>Help cover hosting, prizes, and league expenses.</p>
-      </div>
-      <a
-        href="https://ko-fi.com/lobo0705"
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        Buy Lobo a Coffee
-      </a>
     </section>
   )
 }
