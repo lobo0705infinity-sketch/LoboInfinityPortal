@@ -9,6 +9,8 @@ const requiredStandingFields = [
   'vp',
 ]
 
+import { readFileSync } from 'node:fs'
+
 function assert(condition, message) {
   if (!condition) {
     throw new Error(message)
@@ -106,6 +108,42 @@ try {
 assert(
   failedAsExpected,
   'Dashboard contract check must fail when VP is missing',
+)
+
+const dashboardSource = readFileSync('backend/Dashboard.gs', 'utf8')
+const cacheSource = readFileSync('backend/CacheApi.gs', 'utf8')
+const resultSubmissionSource = readFileSync('backend/ResultSubmissionApi.gs', 'utf8')
+
+assert(
+  /buildStandingsResponse\(\s*getStandingsDivisionConfig\("main"\),\s*dashboardContext\s*\)/s.test(
+    dashboardSource,
+  ),
+  'Dashboard leader must use the same event-scoped Main Man standings builder as the Standings API.',
+)
+
+assert(
+  !/const standings\s*=\s*ss\.getSheetByName\(CONFIG\.SHEETS\.MAIN_MAN\)/.test(
+    dashboardSource,
+  ),
+  'Dashboard must not read the legacy Main Man Standings sheet for Current Leader.',
+)
+
+assert(
+  /const leader\s*=\s*mainManResponse\.summary\.leader/.test(dashboardSource) &&
+    /const mainManStandings\s*=\s*mainManResponse\.standings/.test(dashboardSource),
+  'Dashboard leader and mainManStandings must be populated from the shared standings response.',
+)
+
+assert(
+  /const PORTAL_CACHE_PREFIX = "portal:v2\.0\.8:"/.test(cacheSource),
+  'Dashboard cache schema must be bumped so stale legacy dashboard responses are not reused.',
+)
+
+assert(
+  /invalidatePortalCacheGroup\("dashboard"\);[\s\S]*invalidatePortalCacheGroup\("standings"\);/.test(
+    resultSubmissionSource,
+  ),
+  'League result submission must invalidate both Dashboard and standings caches.',
 )
 
 console.log('dashboard API contract checks passed')

@@ -9,6 +9,7 @@ const config = read('backend/Config.gs')
 const gameEngine = read('backend/GameEngine.gs')
 const standings = read('backend/Standings.gs')
 const leagueData = read('backend/LeagueData.gs')
+const dashboard = read('backend/Dashboard.gs')
 
 assert.match(
   gameEngine,
@@ -80,6 +81,24 @@ assert.match(
   leagueData,
   /return rowEventId === scope/,
   'League standings must continue filtering by event scope after loading Game Engine rows.',
+)
+
+assert.match(
+  dashboard,
+  /buildStandingsResponse\(\s*getStandingsDivisionConfig\("main"\),\s*dashboardContext\s*\)/s,
+  'Dashboard Current Leader must share the current event Main Man standings source.',
+)
+
+assert.doesNotMatch(
+  dashboard,
+  /getSheetByName\(CONFIG\.SHEETS\.MAIN_MAN\)/,
+  'Dashboard Current Leader must not read the legacy Main Man Standings sheet.',
+)
+
+assert.match(
+  standings,
+  /if \(b\.tp !== a\.tp\)[\s\S]*return b\.tp - a\.tp;[\s\S]*if \(b\.op !== a\.op\)[\s\S]*return b\.op - a\.op;[\s\S]*if \(b\.vp !== a\.vp\)[\s\S]*return b\.vp - a\.vp;[\s\S]*return a\.player\.localeCompare/s,
+  'Standings sort order must remain TP, OP, VP, then player name.',
 )
 
 console.log('standings integrity checks passed')
