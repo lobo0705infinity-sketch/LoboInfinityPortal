@@ -13,6 +13,7 @@ const routeLabels: Record<string, string> = {
   '/events': 'Past Events',
   '/hall-of-fame': 'Hall of Fame',
   '/integrity': 'Audit',
+  '/league-operations': 'Mission & Map',
   '/match-finder': 'Match Finder',
   '/profile': 'My Profile',
   '/submit-game': 'Submit Game',

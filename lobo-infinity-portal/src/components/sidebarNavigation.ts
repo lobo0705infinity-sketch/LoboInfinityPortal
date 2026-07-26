@@ -27,7 +27,7 @@ export const authenticatedTopLevelItems: NavigationItem[] = [
   },
   {
     icon: 'missions',
-    label: 'League Operations',
+    label: 'Mission & Map',
     to: '/league-operations',
   },
 ]

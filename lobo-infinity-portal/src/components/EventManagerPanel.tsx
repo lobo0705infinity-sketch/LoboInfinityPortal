@@ -265,12 +265,12 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
             }
           : current,
       )
-      setActionMessage('League Operations updated.')
+      setActionMessage('Mission & Map updated.')
     } catch (error) {
       setActionError(
         error instanceof Error
           ? error.message
-          : 'League Operations could not be saved.',
+          : 'Mission & Map could not be saved.',
       )
     } finally {
       setWorkingAction('')
@@ -632,7 +632,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
 
           {data.selectedEvent.type === 'League' ? (
             <form className="event-manager-form" onSubmit={saveLeagueOperations}>
-              <h3>League Operations</h3>
+              <h3>Mission & Map</h3>
               <label>
                 Week Number
                 <input
@@ -710,7 +710,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
               />
               <div className="event-manager-actions event-manager-wide">
                 <button disabled={!canManage || workingAction !== ''} type="submit">
-                  Save League Operations
+                  Save Mission & Map
                 </button>
                 <a className="button-link" href="/league-operations">
                   View Public Page

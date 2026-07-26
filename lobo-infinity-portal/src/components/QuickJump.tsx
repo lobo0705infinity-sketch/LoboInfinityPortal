@@ -51,6 +51,7 @@ function QuickJump() {
         { label: 'Submit Game', to: '/submit-game' },
         { label: 'July 2026 League', to: '/event/event-current-league' },
         { label: 'League Registration', to: '/event/event-current-league/registration' },
+        { label: 'Mission & Map', to: '/league-operations' },
         { label: 'League Schedule', to: '/schedule?eventId=event-current-league' },
         { label: 'Team Tournament', to: '/event/event-august-2026-team-tournament' },
         { label: 'Tournament Registration', to: '/event/event-august-2026-team-tournament/tournament/registration' },

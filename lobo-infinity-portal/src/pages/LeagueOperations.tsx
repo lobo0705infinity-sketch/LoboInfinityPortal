@@ -27,10 +27,10 @@ function LeagueOperations() {
         }
 
         setState({
-          error:
-            error instanceof Error
-              ? error.message
-              : 'League Operations could not be loaded.',
+            error:
+              error instanceof Error
+                ? error.message
+              : 'Mission & Map could not be loaded.',
           status: 'error',
         })
       })
@@ -55,7 +55,7 @@ function LeagueOperations() {
   return (
     <main className="page page-narrow">
       <section className="page-hero">
-        <p className="eyebrow">League Operations</p>
+        <p className="eyebrow">Mission & Map</p>
         <h1>This Week&apos;s Missions</h1>
         {operations.weekNumber ? <p>Week {operations.weekNumber}</p> : null}
       </section>
@@ -70,8 +70,8 @@ function LeagueOperations() {
 
       {state.status === 'loading' ? (
         <section className="operations-grid two-column">
-          <Skeleton label="League Operations loading" rows={4} />
-          <Skeleton label="League Operations loading" rows={4} />
+          <Skeleton label="Mission & Map loading" rows={4} />
+          <Skeleton label="Mission & Map loading" rows={4} />
         </section>
       ) : (
         <section className="operations-grid two-column" aria-label="This week's missions">
