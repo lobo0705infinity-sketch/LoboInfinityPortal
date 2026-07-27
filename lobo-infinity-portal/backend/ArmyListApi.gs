@@ -581,6 +581,7 @@ function getArmyListObjects() {
 
 function buildArmyListObject(row, id) {
 
+  // `row` is an Army Lists sheet row indexed by ARMY_LIST_COLUMNS.
   const upvotes =
     Number(
       row[ARMY_LIST_COLUMNS.UPVOTES]

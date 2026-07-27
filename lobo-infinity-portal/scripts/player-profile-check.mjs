@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
 const root = process.cwd()
+const leagueData = read('backend/LeagueData.gs')
 const playersApi = read('backend/PlayersApi.gs')
 const playerProfile = read('src/pages/PlayerProfile.tsx')
 
@@ -67,6 +68,19 @@ const checks = [
         extractFunction(playersApi, 'finalizeCommunityPlayerRecord'),
         extractFunction(playersApi, 'getCommunityGameDerivedPreferredArmy'),
       ].join('\n')),
+  },
+  {
+    label: 'Player profile recent games request includes all game types',
+    pass:
+      playerProfile.includes("{ gameType: 'all', playerName }"),
+  },
+  {
+    label: 'Career summaries classify Game Engine rows with Game Engine schema',
+    pass:
+      leagueData.includes('function getGameEngineRowGameType(row)') &&
+      leagueData.includes('CONFIG.ENGINE.GAME_TYPE') &&
+      playersApi.includes('getGameEngineRowGameType(row)') &&
+      !playersApi.includes('getGameEngineGameType(row)'),
   },
 ]
 

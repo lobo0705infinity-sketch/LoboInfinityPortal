@@ -222,6 +222,7 @@ function getLeagueDataGameTypeColumn() {
 
 function getLeagueDataRowGameType(row, gameTypeColumn) {
 
+  // `row` is a Game Engine row; `gameTypeColumn` must come from Game Engine headers/indexes.
   if (
     gameTypeColumn !== -1 &&
     row &&
@@ -235,6 +236,16 @@ function getLeagueDataRowGameType(row, gameTypeColumn) {
   }
 
   return "league";
+
+}
+
+function getGameEngineRowGameType(row) {
+
+  // Schema-specific wrapper for raw Game Engine rows indexed by CONFIG.ENGINE.
+  return getLeagueDataRowGameType(
+    row,
+    CONFIG.ENGINE.GAME_TYPE
+  );
 
 }
 

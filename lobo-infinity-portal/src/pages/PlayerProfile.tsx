@@ -1186,7 +1186,7 @@ async function getRecentGamesForPlayer(
   const payload = await request(
     'recentGames',
     { signal },
-    { playerName },
+    { gameType: 'all', playerName },
   )
   const record = isRecord(payload) ? payload : {}
   const games = Array.isArray(record.games) ? record.games : []

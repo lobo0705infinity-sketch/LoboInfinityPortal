@@ -700,6 +700,7 @@ function buildAnalyticsRow(row, winner) {
 
 function getGameEngineEventId(row) {
 
+  // `row` is a Form Responses row. Game Engine rows use CONFIG.ENGINE indexes.
   if (getGameEngineGameType(row) === "casual")
     return "";
 
@@ -716,6 +717,7 @@ function getGameEngineEventId(row) {
 
 function getGameEngineGameType(row) {
 
+  // `row` is a Form Responses row. Use getGameEngineRowGameType for Game Engine rows.
   if (
     row &&
     row.length > FORM.GAME_TYPE &&

@@ -448,8 +448,8 @@ function applyCommunityGameStatistics(records) {
         (record.factionCounts[faction] || 0) + 1;
 
     const gameType =
-      typeof getGameEngineGameType === "function"
-        ? getGameEngineGameType(row)
+      typeof getGameEngineRowGameType === "function"
+        ? getGameEngineRowGameType(row)
         : normalizeGameType(
             row[CONFIG.ENGINE.GAME_TYPE]
           );
@@ -1376,8 +1376,8 @@ function buildPlayerCareerSummary(playerName) {
 function buildPlayerCareerGame(row) {
 
   const gameType =
-    typeof getGameEngineGameType === "function"
-      ? getGameEngineGameType(row)
+    typeof getGameEngineRowGameType === "function"
+      ? getGameEngineRowGameType(row)
       : normalizeGameType(row[CONFIG.ENGINE.GAME_TYPE]);
 
   const dateValue =

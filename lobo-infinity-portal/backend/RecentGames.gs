@@ -540,6 +540,7 @@ function buildRecentGame(
   columns
 ) {
 
+  // `row` is a Game Analytics row; `columns` must come from getRecentGameColumns().
   const winner =
     getRecentGameString(
       row[columns.winner]
