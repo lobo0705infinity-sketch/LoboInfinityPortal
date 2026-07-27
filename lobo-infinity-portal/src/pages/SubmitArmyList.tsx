@@ -115,7 +115,7 @@ function SubmitArmyList() {
       {!auth.authenticated ? (
         <section className="dashboard-state" aria-label="Authentication required">
           <p role="alert">
-            Sign in with an enabled league account to submit an army list.
+            Sign in with a Portal account to submit an army list.
           </p>
         </section>
       ) : null}

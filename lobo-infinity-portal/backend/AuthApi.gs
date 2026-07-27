@@ -43,7 +43,12 @@ const USER_HEADERS = [
 const PERMISSION_MIN_ROLE = {
   readPortal: USER_ROLES.GUEST,
   vote: USER_ROLES.MEMBER,
+  // Deprecated: legacy League-only submission permission.
+  // Use canSubmitLeagueGames, canSubmitCasualGames, or canSubmitArmyLists for new work.
   submitLists: USER_ROLES.MEMBER,
+  canSubmitLeagueGames: USER_ROLES.MEMBER,
+  canSubmitCasualGames: USER_ROLES.GUEST,
+  canSubmitArmyLists: USER_ROLES.GUEST,
   updateProfile: USER_ROLES.GUEST,
   manageNotifications: USER_ROLES.MEMBER,
   approveLists: USER_ROLES.ASSISTANT,
@@ -537,7 +542,21 @@ function requireApiPermission(e, permission, handler) {
   const auth =
     getRequestUser(e);
 
-  if (!auth.authenticated)
+  logAuthorizationDiagnostic(
+    "authorization.check",
+    auth,
+    permission,
+    ""
+  );
+
+  if (!auth.authenticated) {
+    logAuthorizationDiagnostic(
+      "authorization.denied",
+      auth,
+      permission,
+      auth.error || "Authentication is required."
+    );
+
     return jsonOutput({
       success: false,
       code: "AUTH_REQUIRED",
@@ -547,8 +566,16 @@ function requireApiPermission(e, permission, handler) {
       error: auth.error || "Authentication is required.",
       requiredRole: PERMISSION_MIN_ROLE[permission] || USER_ROLES.MEMBER
     });
+  }
 
-  if (!auth.user.enabled)
+  if (!auth.user.enabled) {
+    logAuthorizationDiagnostic(
+      "authorization.denied",
+      auth,
+      permission,
+      "User is disabled."
+    );
+
     return jsonOutput({
       success: false,
       code: "USER_DISABLED",
@@ -558,8 +585,16 @@ function requireApiPermission(e, permission, handler) {
       error: "This Google account is not enabled for league access.",
       requiredRole: PERMISSION_MIN_ROLE[permission] || USER_ROLES.MEMBER
     });
+  }
 
-  if (!userHasPermission(auth.user.role, permission))
+  if (!userHasPermission(auth.user.role, permission)) {
+    logAuthorizationDiagnostic(
+      "authorization.denied",
+      auth,
+      permission,
+      "Role does not satisfy required permission."
+    );
+
     return jsonOutput({
       success: false,
       code: "PERMISSION_DENIED",
@@ -567,8 +602,79 @@ function requireApiPermission(e, permission, handler) {
       requiredRole: PERMISSION_MIN_ROLE[permission] || USER_ROLES.MEMBER,
       role: auth.user.role
     });
+  }
 
   return handler(auth);
+
+}
+
+function logAuthorizationDiagnostic(stage, auth, permission, reason) {
+
+  try {
+    const user =
+      auth && auth.user
+        ? auth.user
+        : buildGuestUser();
+    const permissions =
+      getRolePermissions(user.role);
+    const canonicalPlayer =
+      getCanonicalPlayerFromUser(user);
+
+    Logger.log(
+      "AUTHORIZATION_DIAGNOSTIC " +
+      JSON.stringify({
+        stage: stage,
+        endpoint:
+          API_PIPELINE_CONTEXT && API_PIPELINE_CONTEXT.action
+            ? API_PIPELINE_CONTEXT.action
+            : "",
+        action:
+          API_PIPELINE_CONTEXT && API_PIPELINE_CONTEXT.action
+            ? API_PIPELINE_CONTEXT.action
+            : "",
+        requestId:
+          API_PIPELINE_CONTEXT && API_PIPELINE_CONTEXT.requestId
+            ? API_PIPELINE_CONTEXT.requestId
+            : "",
+        timestamp: new Date().toISOString(),
+        authorizationHelper: "requireApiPermission",
+        permission: permission,
+        permissionRequested: permission,
+        permissionGranted:
+          userHasPermission(
+            user.role,
+            permission
+          ),
+        failedPermission: reason ? permission : "",
+        reason: reason || "",
+        email: getAuthString(user.email).toLowerCase(),
+        authenticated: !!(auth && auth.authenticated),
+        canonicalPlayer: canonicalPlayer,
+        registeredUser: !!(user && user.enabled),
+        leaguePlayer: canonicalPlayer !== "",
+        commissioner:
+          userHasPermission(
+            user.role,
+            "runSeasonControl"
+          ),
+        canSubmitLeagueGames:
+          permissions.canSubmitLeagueGames === true,
+        canSubmitCasualGames:
+          permissions.canSubmitCasualGames === true,
+        canSubmitArmyLists:
+          permissions.canSubmitArmyLists === true,
+        role: user.role || "",
+        requiredRole:
+          PERMISSION_MIN_ROLE[permission] || USER_ROLES.MEMBER,
+        authCode: auth && auth.code ? auth.code : ""
+      })
+    );
+  }
+  catch (err) {
+    Logger.log(
+      "AUTHORIZATION_DIAGNOSTIC_FAILED " + err
+    );
+  }
 
 }
 

@@ -513,7 +513,7 @@ function handleApiGet(e, action) {
       });
 
     case "submitArmyList":
-      return requireApiPermission(e, "submitLists", function() {
+      return requireApiPermission(e, "canSubmitArmyLists", function() {
         return submitArmyList(e);
       });
 
@@ -834,7 +834,7 @@ function handleApiPost(e, action) {
       return getAuthSession(e);
 
     case "submitArmyList":
-      return requireApiPermission(e, "submitLists", function() {
+      return requireApiPermission(e, "canSubmitArmyLists", function() {
         return submitArmyList(e);
       });
 

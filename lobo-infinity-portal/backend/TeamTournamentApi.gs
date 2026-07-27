@@ -725,6 +725,17 @@ function saveTeamTournamentResult(e) {
   const params =
     getApiParameters(e);
 
+  const commissionerContext =
+    typeof getResultSubmissionCommissionerContext === "function"
+      ? getResultSubmissionCommissionerContext(auth, params)
+      : { enabled: false, override: false, reason: "", commissioner: "" };
+
+  if (commissionerContext.error)
+    return jsonOutput({
+      success: false,
+      error: commissionerContext.error
+    });
+
   const eventId =
     resolveEventId(params.eventId || EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID);
 

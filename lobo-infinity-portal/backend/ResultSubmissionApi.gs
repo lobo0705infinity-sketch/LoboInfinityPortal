@@ -12,7 +12,7 @@ const RESULT_SUBMISSION_ARMY_CODE_HEADERS = {
 
 function submitLeagueResult(e) {
 
-  return requireApiPermission(e, "submitLists", function(auth) {
+  return requireApiPermission(e, "canSubmitLeagueGames", function(auth) {
     const params =
       getApiParameters(e);
 
@@ -203,7 +203,7 @@ function submitLeagueResult(e) {
 
 function submitCasualResult(e) {
 
-  return requireApiPermission(e, "submitLists", function(auth) {
+  return requireApiPermission(e, "canSubmitCasualGames", function(auth) {
     const params =
       getApiParameters(e);
 

@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import fs from 'node:fs'
 import { resolveSubmitGamePlayer } from '../src/services/submitGameIdentity.ts'
 import {
   buildSubmitGameOpponentEventHome,
@@ -7,6 +8,71 @@ import {
   type SubmitGameOpponentOption,
 } from '../src/services/submitGameOpponents.ts'
 import type { EventHomeData, EventRegistrationEntry } from '../src/services/api.ts'
+
+const authApiSource = fs.readFileSync('backend/AuthApi.gs', 'utf8')
+const resultSubmissionSource = fs.readFileSync('backend/ResultSubmissionApi.gs', 'utf8')
+const apiSource = fs.readFileSync('backend/API.gs', 'utf8')
+const teamTournamentSource = fs.readFileSync('backend/TeamTournamentApi.gs', 'utf8')
+
+assert.match(
+  authApiSource,
+  /canSubmitCasualGames:\s*USER_ROLES\.GUEST/,
+  'Casual game submission permission must be available to authenticated Portal users.',
+)
+
+assert.match(
+  authApiSource,
+  /canSubmitLeagueGames:\s*USER_ROLES\.MEMBER/,
+  'League game submission permission must remain restricted to League Members.',
+)
+
+assert.match(
+  authApiSource,
+  /canSubmitArmyLists:\s*USER_ROLES\.GUEST/,
+  'Army list submission permission must be available to authenticated Portal users.',
+)
+
+assert.match(
+  resultSubmissionSource,
+  /submitCasualResult[\s\S]*requireApiPermission\(e,\s*"canSubmitCasualGames"/,
+  'Casual game submission must not use the legacy League Member submitLists permission.',
+)
+
+assert.match(
+  resultSubmissionSource,
+  /submitLeagueResult[\s\S]*requireApiPermission\(e,\s*"canSubmitLeagueGames"/,
+  'League game submission must keep a League Member authorization requirement.',
+)
+
+assert.match(
+  apiSource,
+  /case "submitArmyList":[\s\S]*requireApiPermission\(e,\s*"canSubmitArmyLists"/,
+  'Army list submission must not use the legacy League Member submitLists permission.',
+)
+
+assert.match(
+  authApiSource,
+  /Deprecated: legacy League-only submission permission[\s\S]*submitLists:\s*USER_ROLES\.MEMBER/,
+  'Legacy submitLists permission must be explicitly marked deprecated.',
+)
+
+assert.match(
+  authApiSource,
+  /permissionGranted:[\s\S]*userHasPermission\([\s\S]*permission/,
+  'Authorization diagnostics must include permission outcome.',
+)
+
+assert.match(
+  authApiSource,
+  /requestId:[\s\S]*API_PIPELINE_CONTEXT\.requestId/,
+  'Authorization diagnostics must include the API request id.',
+)
+
+assert.match(
+  teamTournamentSource,
+  /function saveTeamTournamentResult\(e\)[\s\S]*const commissionerContext =[\s\S]*getResultSubmissionCommissionerContext\(auth, params\)/,
+  'Team Tournament result submission must initialize commissioner context before using it.',
+)
 
 assert.equal(
   resolveSubmitGamePlayer(false, '', '', '', 'Guest'),
