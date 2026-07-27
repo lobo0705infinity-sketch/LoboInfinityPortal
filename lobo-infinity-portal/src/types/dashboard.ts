@@ -1,4 +1,4 @@
-export type DivisionKey = 'main' | 'pga' | 'pgb'
+export type DivisionKey = 'main' | 'pga' | 'pgb' | 'casual'
 
 export type DashboardSummary = {
   leagueLeader: string

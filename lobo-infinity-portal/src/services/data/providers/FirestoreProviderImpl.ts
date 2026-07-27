@@ -1682,6 +1682,10 @@ function getDivisionLabel(division: DivisionKey) {
     return 'Proving Grounds A'
   }
 
+  if (division === 'casual') {
+    return 'Casual'
+  }
+
   return 'Proving Grounds B'
 }
 

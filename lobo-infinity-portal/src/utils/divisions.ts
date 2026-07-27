@@ -31,6 +31,13 @@ const identities: Record<DivisionKey, DivisionIdentity> = {
     label: 'Proving Grounds B',
     shortLabel: 'Proving Grounds B',
   },
+  casual: {
+    accent: '#6C757D',
+    icon: 'C',
+    key: 'casual',
+    label: 'Casual',
+    shortLabel: 'Casual',
+  },
 }
 
 export function getDivisionIdentity(
@@ -42,6 +49,10 @@ export function getDivisionIdentity(
 
   if (division === 'pgb' || division === 'Proving Grounds B') {
     return identities.pgb
+  }
+
+  if (division === 'casual' || division === 'Casual') {
+    return identities.casual
   }
 
   return identities.main

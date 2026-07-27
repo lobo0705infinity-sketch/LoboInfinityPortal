@@ -2424,7 +2424,7 @@ export type ApiClient = {
   ) => Promise<ArmyIntelligenceRefreshResult>
 }
 
-const divisionKeys: DivisionKey[] = ['main', 'pga', 'pgb']
+const leagueDivisionKeys: DivisionKey[] = ['main', 'pga', 'pgb']
 
 export async function getSession(
   options: ApiOptions = {},
@@ -2740,7 +2740,7 @@ export async function getAllStandings(
   options: ApiOptions = {},
 ): Promise<DivisionStandings[]> {
   return Promise.all(
-    divisionKeys.map((division) => getStandings(division, options)),
+    leagueDivisionKeys.map((division) => getStandings(division, options)),
   )
 }
 
@@ -7553,7 +7553,7 @@ function getDivisionKey(
 ): DivisionKey {
   const value = getRequiredString(record, key)
 
-  if (value === 'main' || value === 'pga' || value === 'pgb') {
+  if (value === 'main' || value === 'pga' || value === 'pgb' || value === 'casual') {
     return value
   }
 
