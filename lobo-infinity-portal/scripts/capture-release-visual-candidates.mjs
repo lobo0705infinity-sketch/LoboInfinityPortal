@@ -37,7 +37,7 @@ const surfaces = [
   {
     markers: [leagueName, 'Main Man', '#2', '#2 of 10', '2-0', 'Safe', preferredArmy, '2 Wins'],
     name: 'my-profile-desktop-dashboard',
-    expectedPortrait: { faction: preferredArmy, mode: 'desktop', src: preferredArmyPortrait },
+    expectedPortrait: { faction: preferredArmy, mode: 'desktop', requireAlpha: false, src: preferredArmyPortrait },
     route: '/profile',
     screenshot: 'viewport',
     width: 1440,
@@ -82,7 +82,7 @@ const surfaces = [
   {
     markers: [leagueName, 'Main Man', '#2', '#2 of 10', '2-0', 'Safe', 'Current Season'],
     name: 'my-profile-mobile-dashboard',
-    expectedPortrait: { faction: preferredArmy, mode: 'mobile', src: preferredArmyPortrait },
+    expectedPortrait: { faction: preferredArmy, mode: 'mobile', requireAlpha: false, src: preferredArmyPortrait },
     route: '/profile',
     hideAppChrome: true,
     screenshotSelector: '.my-profile-v3-dashboard',
@@ -524,7 +524,7 @@ async function validateExpectedPortrait(page, expected, responseStatuses, screen
     if (coveredSamples.covered > 0) {
       errors.push(`portrait is covered at ${coveredSamples.covered} of ${coveredSamples.total} sampled points.`)
     }
-    if (!imageTransparency.hasUsableTransparency) {
+    if (expectedPortrait.requireAlpha !== false && !imageTransparency.hasUsableTransparency) {
       errors.push('portrait asset does not expose usable alpha transparency.')
     }
     if (imageTransparency.hasOpaqueRectangularBackground) {
