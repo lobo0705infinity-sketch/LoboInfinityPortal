@@ -23,6 +23,7 @@ const endpointPolicy = {
   communityCommandCenter: { authRequired: true, userScoped: true },
   commissionerScheduling: { authRequired: true, userScoped: false },
   comparison: { authRequired: false, userScoped: false },
+  correctGameArmyCode: { authRequired: true, userScoped: false },
   createSchedulingRequest: { authRequired: true, userScoped: true },
   dashboard: { authRequired: false, userScoped: false },
   deleteAlert: { authRequired: true, userScoped: false },
