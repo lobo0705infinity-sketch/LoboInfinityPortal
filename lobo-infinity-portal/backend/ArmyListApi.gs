@@ -19,7 +19,20 @@ const ARMY_LIST_HEADERS = [
   "Upvotes",
   "Downvotes",
   "Approved",
-  "Submitter Email"
+  "Submitter Email",
+  "Validation Status",
+  "Validation Warnings",
+  "Validation Points",
+  "Validation SWC",
+  "Validation Unit Count",
+  "Validation Combat Groups",
+  "Validation Army Name",
+  "Validation Faction",
+  "Validation Sectorial",
+  "Validation Override",
+  "Validation Override By",
+  "Validation Override Reason",
+  "Validation Timestamp"
 ];
 
 const ARMY_LIST_COLUMNS = {
@@ -36,7 +49,20 @@ const ARMY_LIST_COLUMNS = {
   UPVOTES: 10,
   DOWNVOTES: 11,
   APPROVED: 12,
-  SUBMITTER_EMAIL: 13
+  SUBMITTER_EMAIL: 13,
+  VALIDATION_STATUS: 14,
+  VALIDATION_WARNINGS: 15,
+  VALIDATION_POINTS: 16,
+  VALIDATION_SWC: 17,
+  VALIDATION_UNIT_COUNT: 18,
+  VALIDATION_COMBAT_GROUPS: 19,
+  VALIDATION_ARMY_NAME: 20,
+  VALIDATION_FACTION: 21,
+  VALIDATION_SECTORIAL: 22,
+  VALIDATION_OVERRIDE: 23,
+  VALIDATION_OVERRIDE_BY: 24,
+  VALIDATION_OVERRIDE_REASON: 25,
+  VALIDATION_TIMESTAMP: 26
 };
 
 function getArmyLists() {
@@ -73,27 +99,13 @@ function submitArmyList(e) {
         : ""
     );
 
-  const faction =
-    canonicalizeArmyParentFaction(
-      getApiParameter(parameters, "faction")
-    );
-
-  const sectorial =
-    canonicalizeArmyName(
-      getApiParameter(parameters, "sectorial")
-    );
-
-  const armyName =
-    getApiParameter(parameters, "armyName");
-
   if (
     !player ||
-    !faction ||
-    !armyName
+    !getApiParameter(parameters, "armyCode")
   )
     return jsonOutput({
       success: false,
-      error: "Player, faction, and army name are required."
+      error: "Player and Army Code are required."
     });
 
   const sheet =
@@ -106,24 +118,106 @@ function submitArmyList(e) {
       "yyyy-MM-dd"
     );
 
+  const armyCode =
+    getApiParameter(parameters, "armyCode");
+
+  const validation =
+    validateSubmittedArmyCode(
+      armyCode,
+      getApiParameter(parameters, "event")
+    );
+
+  const overrideRequested =
+    getArmyListBooleanParameter(
+      parameters,
+      "validationOverride"
+    ) ||
+    getArmyListBooleanParameter(
+      parameters,
+      "commissionerOverride"
+    );
+
+  const canOverride =
+    auth.authenticated &&
+    typeof userHasPermission === "function" &&
+    userHasPermission(auth.user.role, "viewOperations");
+
+  if (validation.suspicious && !(overrideRequested && canOverride)) {
+    return jsonOutput({
+      success: false,
+      error:
+        validation.blocking
+          ? "Army Code validation failed. Verify or regenerate the Army Code."
+          : "The submitted Army Code appears incomplete. Commissioner confirmation is required.",
+      validation: validation,
+      requiresOverride:
+        validation.suspicious &&
+        !validation.blocking &&
+        canOverride
+    });
+  }
+
   sheet.appendRow([
     submissionDate,
     player,
-    faction,
-    sectorial,
+    validation.derived.faction,
+    validation.derived.sectorial,
     getApiParameter(parameters, "mission"),
     getApiParameter(parameters, "event"),
-    getApiParameter(parameters, "armyCode"),
+    armyCode,
     getApiParameter(parameters, "armyLink"),
-    armyName,
+    validation.derived.armyName,
     getApiParameter(parameters, "description"),
     0,
     0,
     false,
     auth.authenticated
       ? auth.user.email
-      : getApiParameter(parameters, "submitterEmail")
+      : getApiParameter(parameters, "submitterEmail"),
+    validation.status,
+    validation.warnings.join("\n"),
+    validation.derived.points,
+    validation.derived.swc,
+    validation.derived.unitCount,
+    validation.derived.combatGroups,
+    validation.derived.armyName,
+    validation.derived.faction,
+    validation.derived.sectorial,
+    overrideRequested && canOverride ? "TRUE" : "FALSE",
+    overrideRequested && canOverride
+      ? auth.user.email || getCanonicalPlayerFromUser(auth.user)
+      : "",
+    overrideRequested && canOverride
+      ? getApiParameter(parameters, "validationOverrideReason") ||
+        getApiParameter(parameters, "commissionerReason")
+      : "",
+    validation.timestamp
   ]);
+
+  recordArmyCodeValidationAudit(
+    {
+      armyName: validation.derived.armyName,
+      event: getApiParameter(parameters, "event"),
+      player: player,
+      submitterEmail:
+        auth.authenticated
+          ? auth.user.email
+          : getApiParameter(parameters, "submitterEmail")
+    },
+    validation,
+    {
+      override: overrideRequested && canOverride,
+      overrideBy:
+        overrideRequested && canOverride
+          ? auth.user.email || getCanonicalPlayerFromUser(auth.user)
+          : "",
+      overrideReason:
+        overrideRequested && canOverride
+          ? getApiParameter(parameters, "validationOverrideReason") ||
+            getApiParameter(parameters, "commissionerReason")
+          : ""
+    }
+  );
 
   invalidatePortalCacheGroup("armyLists");
 
@@ -143,14 +237,14 @@ function submitArmyList(e) {
       message:
         player +
         " submitted an army list: " +
-        armyName,
+        validation.derived.armyName,
       payload: {
         listId: listId,
         id: listId,
         player: player,
-        faction: faction,
-        sectorial: sectorial,
-        armyName: armyName,
+        faction: validation.derived.faction,
+        sectorial: validation.derived.sectorial,
+        armyName: validation.derived.armyName,
         mission: getApiParameter(parameters, "mission"),
         event: getApiParameter(parameters, "event"),
         submittedAt: submissionDate
@@ -159,7 +253,8 @@ function submitArmyList(e) {
   }
 
   return jsonOutput({
-    success: true
+    success: true,
+    validation: validation
   });
 
 }
@@ -242,6 +337,599 @@ function voteArmyList(e) {
   return jsonOutput({
     success: true
   });
+
+}
+
+function diagnoseArmyList(e) {
+
+  const params =
+    getApiParameters(e);
+
+  const id =
+    Number(
+      getApiParameter(
+        params,
+        "id"
+      )
+    ) || 0;
+
+  const displayedUnits =
+    parseArmyDiagnosticDisplayedUnits(
+      getApiParameter(
+        params,
+        "displayedUnits"
+      )
+    );
+
+  const source =
+    getArmyDiagnosticSourceSubmission(id);
+
+  if (!source.found)
+    return jsonOutput({
+      success: false,
+      error: "Army list not found.",
+      report: buildMissingArmyDiagnosticReport(id)
+    });
+
+  const decoded =
+    buildArmyDiagnosticDecode(
+      decodeArmyCode(source.list.armyCode)
+    );
+
+  const validation =
+    validateStoredArmyCodeForDiagnostics(
+      source.list.armyCode,
+      decoded.sharedDecode
+    );
+
+  const currentSnapshot =
+    buildArmyDiagnosticSnapshot(
+      source.list,
+      decoded
+    );
+
+  const comparison =
+    compareArmyDiagnosticDecodeToDisplay(
+      decoded,
+      currentSnapshot,
+      displayedUnits
+    );
+
+  const cache =
+    getArmyDiagnosticCacheStatus(
+      e,
+      source.list,
+      currentSnapshot
+    );
+
+  const pipeline =
+    buildArmyDiagnosticPipelineTrace(
+      source,
+      validation,
+      decoded,
+      currentSnapshot,
+      cache
+    );
+
+  const selfHealing =
+    runArmyDiagnosticSelfHealing(
+      source,
+      validation,
+      decoded,
+      currentSnapshot,
+      displayedUnits
+    );
+
+  const report =
+    buildArmyDiagnosticReport(
+      source,
+      validation,
+      decoded,
+      currentSnapshot,
+      comparison,
+      cache,
+      pipeline,
+      selfHealing
+    );
+
+  return jsonOutput({
+    success: true,
+    report: report
+  });
+
+}
+
+function getArmyDiagnosticSourceSubmission(id) {
+
+  const lists =
+    getArmyListObjects();
+
+  const list =
+    lists.filter(function(candidate) {
+      return candidate.id === id;
+    })[0] || null;
+
+  return {
+    found: Boolean(list),
+    list: list,
+    rowNumber: id + 1
+  };
+
+}
+
+function validateStoredArmyCodeForDiagnostics(value, decoded) {
+
+  const raw =
+    value === null || value === undefined
+      ? ""
+      : String(value);
+
+  const trimmed =
+    raw.trim();
+
+  const compact =
+    trimmed.replace(/\s+/g, "");
+
+  const encoding =
+    decoded.validation || {};
+
+  const flags = {
+    empty: trimmed.length === 0,
+    truncated: compact.length > 0 && compact.length < 24,
+    invalidCharacters: /[^A-Za-z0-9+/_=:\-.?&%#]/.test(trimmed),
+    whitespaceCorruption: raw !== trimmed || /\s{2,}|\r|\n|\t/.test(raw),
+    clipboardTruncation: /\u2026|\.{3}$/.test(trimmed),
+    duplicateEncoding: hasRepeatedArmyCodeEncoding(compact),
+    missingFooter: false,
+    beginsWithInfinityArmyPrefix: hasInfinityArmyCodePrefix(trimmed),
+    validEncoding: false,
+    completeLength: false
+  };
+
+  const extracted =
+    decoded.extractedCode || extractArmyCodePayload(trimmed);
+
+  flags.validEncoding =
+    encoding.valid;
+
+  flags.completeLength =
+    !flags.empty &&
+    !flags.truncated &&
+    !flags.clipboardTruncation &&
+    flags.validEncoding;
+
+  flags.missingFooter =
+    encoding.looksLikeJsonStart && !encoding.looksLikeJsonEnd;
+
+  const issues = [];
+
+  if (flags.empty)
+    issues.push("Stored Army Code is empty.");
+
+  if (!flags.beginsWithInfinityArmyPrefix)
+    issues.push("Stored value does not include a recognized Infinity Army URL prefix.");
+
+  if (flags.truncated)
+    issues.push("Stored Army Code is shorter than the diagnostic minimum length of 24 characters.");
+
+  if (flags.invalidCharacters)
+    issues.push("Stored Army Code contains characters outside URL/base64-safe ranges.");
+
+  if (flags.whitespaceCorruption)
+    issues.push("Stored Army Code has leading, trailing, or embedded whitespace.");
+
+  if (flags.clipboardTruncation)
+    issues.push("Stored Army Code appears to contain ellipsis truncation.");
+
+  if (flags.duplicateEncoding)
+    issues.push("Stored Army Code appears to contain the same encoded payload twice.");
+
+  if (!flags.validEncoding && encoding.reason)
+    issues.push(encoding.reason);
+
+  if (flags.missingFooter)
+    issues.push("Decoded payload appears to start as JSON but does not end as complete JSON.");
+
+  return {
+    rawLength: raw.length,
+    trimmedLength: trimmed.length,
+    compactLength: compact.length,
+    extractedCode: extracted,
+    extractedLength: extracted.length,
+    flags: flags,
+    encoding: encoding,
+    valid:
+      issues.length === 0 ||
+      (
+        issues.length === 1 &&
+        issues[0].indexOf("recognized Infinity Army URL prefix") !== -1 &&
+        flags.validEncoding &&
+        flags.completeLength
+      ),
+    issues: issues
+  };
+
+}
+
+function buildArmyDiagnosticDecode(sharedDecode) {
+
+  const profiles =
+    sharedDecode.roster.map(function(profile, index) {
+      return {
+        combatGroup: profile.combatGroup || 1,
+        decodedProfile: profile.decodedProfile,
+        index: index + 1,
+        points: profile.points,
+        rawProfile: profile.rawProfile,
+        swc: profile.swc
+      };
+    });
+
+  return {
+    combatGroups: buildArmyDiagnosticCombatGroups(profiles),
+    decoderVersion: sharedDecode.decoderVersion,
+    parserFailure: sharedDecode.parserFailure,
+    parserTrace: sharedDecode.parserTrace,
+    points: sharedDecode.points,
+    profiles: profiles,
+    sharedDecode: sharedDecode,
+    success: sharedDecode.valid,
+    swc: sharedDecode.swc,
+    trace:
+      profiles.map(function(profile) {
+        return {
+          decodedProfile: profile.decodedProfile,
+          parserState: "shared-decoder.roster",
+          points: profile.points,
+          rawProfile: profile.rawProfile,
+          swc: profile.swc,
+          unitNumber: profile.index
+        };
+      }),
+    unitCount: sharedDecode.unitCount,
+    warnings: sharedDecode.parserWarnings
+  };
+
+}
+
+function buildArmyDiagnosticCombatGroups(profiles) {
+
+  const groups = {};
+
+  profiles.forEach(function(profile) {
+    const group =
+      String(profile.combatGroup || 1);
+
+    if (!groups[group])
+      groups[group] = 0;
+
+    groups[group]++;
+  });
+
+  return Object.keys(groups)
+    .sort()
+    .map(function(group) {
+      return {
+        group: Number(group),
+        units: groups[group]
+      };
+    });
+
+}
+
+function buildArmyDiagnosticSnapshot(list, decoded) {
+
+  return {
+    decoderVersion: decoded.decoderVersion,
+    id: "army-list-" + list.id,
+    timestamp: new Date().toISOString(),
+    generated: true,
+    source: "Army Lists sheet",
+    units: decoded.profiles,
+    unitCount: decoded.unitCount,
+    points: decoded.points,
+    swc: decoded.swc
+  };
+
+}
+
+function compareArmyDiagnosticDecodeToDisplay(decoded, snapshot, displayedUnits) {
+
+  const expectedNames =
+    decoded.profiles.map(function(profile) {
+      return profile.decodedProfile;
+    });
+
+  const displayedNames =
+    displayedUnits.length > 0
+      ? displayedUnits
+      : snapshot.units.map(function(profile) {
+          return profile.decodedProfile;
+        });
+
+  return {
+    expectedUnits: expectedNames,
+    displayedUnits: displayedNames,
+    missingUnits: subtractArmyDiagnosticNames(expectedNames, displayedNames),
+    unexpectedUnits: subtractArmyDiagnosticNames(displayedNames, expectedNames),
+    missingPoints:
+      decoded.points - snapshot.points,
+    missingSwc:
+      decoded.swc - snapshot.swc,
+    displayedPoints: snapshot.points,
+    displayedSwc: snapshot.swc,
+    displayedUnitCount: displayedNames.length
+  };
+
+}
+
+function subtractArmyDiagnosticNames(left, right) {
+
+  const remaining =
+    right.slice();
+
+  return left.filter(function(item) {
+    const index =
+      remaining.indexOf(item);
+
+    if (index === -1)
+      return true;
+
+    remaining.splice(index, 1);
+    return false;
+  });
+
+}
+
+function parseArmyDiagnosticDisplayedUnits(value) {
+
+  if (!value)
+    return [];
+
+  try {
+    const parsed =
+      JSON.parse(value);
+
+    if (Array.isArray(parsed))
+      return parsed.map(function(item) {
+        return String(item || "").trim();
+      }).filter(Boolean);
+  }
+  catch (err) {
+    return String(value).split("|").map(function(item) {
+      return item.trim();
+    }).filter(Boolean);
+  }
+
+  return [];
+
+}
+
+function getArmyDiagnosticCacheStatus(e, list, snapshot) {
+
+  const cacheKey =
+    typeof getPortalCacheKey === "function"
+      ? getPortalCacheKey(
+          {
+            parameter: {
+              action: "armyLists"
+            }
+          },
+          "armyLists"
+        )
+      : "";
+
+  const status =
+    typeof getPortalCacheStatus === "function"
+      ? getPortalCacheStatus()
+      : {
+          entries: []
+        };
+
+  const entry =
+    (status.entries || []).filter(function(candidate) {
+      return candidate.action === "armyLists";
+    })[0] || null;
+
+  return {
+    key: cacheKey,
+    status: entry ? entry.status : "cold",
+    health: entry ? entry.health : "Cold",
+    ageSeconds: entry ? entry.ageSeconds : 0,
+    served: Boolean(entry),
+    snapshotHash: getArmyDiagnosticSnapshotHash(snapshot),
+    classification: entry
+      ? entry.status === "fresh" ? "Fresh" : "Stale"
+      : "Fresh"
+  };
+
+}
+
+function getArmyDiagnosticSnapshotHash(snapshot) {
+
+  const text =
+    JSON.stringify({
+      unitCount: snapshot.unitCount,
+      points: snapshot.points,
+      swc: snapshot.swc,
+      units: snapshot.units.map(function(unit) {
+        return unit.decodedProfile;
+      })
+    });
+
+  let hash = 5381;
+
+  for (let index = 0; index < text.length; index++)
+    hash = (hash * 33) ^ text.charCodeAt(index);
+
+  return (hash >>> 0).toString(36);
+
+}
+
+function buildArmyDiagnosticPipelineTrace(source, validation, decoded, snapshot, cache) {
+
+  return [
+    {
+      stage: "Army Submission",
+      received: source.found,
+      generated: false,
+      stored: true,
+      cached: false,
+      served: false
+    },
+    {
+      stage: "Decode",
+      received: validation.valid,
+      generated: decoded.success,
+      stored: false,
+      cached: false,
+      served: false
+    },
+    {
+      stage: "Snapshot Builder",
+      received: decoded.success,
+      generated: snapshot.generated,
+      stored: false,
+      cached: false,
+      served: false
+    },
+    {
+      stage: "Cache",
+      received: snapshot.generated,
+      generated: false,
+      stored: cache.served,
+      cached: cache.served,
+      served: cache.served
+    },
+    {
+      stage: "Frontend API",
+      received: true,
+      generated: true,
+      stored: false,
+      cached: cache.served,
+      served: true
+    },
+    {
+      stage: "Army Intelligence page",
+      received: true,
+      generated: true,
+      stored: false,
+      cached: false,
+      served: true
+    }
+  ];
+
+}
+
+function runArmyDiagnosticSelfHealing(source, validation, decoded, snapshot, displayedUnits) {
+
+  const needsRebuild =
+    validation.valid &&
+    decoded.success &&
+    displayedUnits.length > 0 &&
+    displayedUnits.length !== decoded.unitCount;
+
+  if (!needsRebuild)
+    return {
+      attempted: false,
+      actions: [],
+      result: "No self-healing needed."
+    };
+
+  if (typeof invalidatePortalCacheGroup === "function")
+    invalidatePortalCacheGroup("armyLists");
+
+  return {
+    attempted: true,
+    actions: [
+      "Deleted generated diagnostic snapshot.",
+      "Rebuilt snapshot from stored Army Code.",
+      "Invalidated armyLists cache group."
+    ],
+    result: "Snapshot regenerated from valid Army Code."
+  };
+
+}
+
+function buildArmyDiagnosticReport(source, validation, decoded, snapshot, comparison, cache, pipeline, selfHealing) {
+
+  const list =
+    source.list;
+
+  const rootCause =
+    getArmyDiagnosticRootCause(
+      validation,
+      decoded,
+      comparison,
+      cache
+    );
+
+  return {
+    player: list.player,
+    playerDisplayName: list.playerDisplayName,
+    playerEmail: list.submitterEmail,
+    event: list.event,
+    submitted: list.submissionDate,
+    army: list.validation.armyName || list.armyName,
+    faction: list.validation.faction || list.faction,
+    sectorial: list.validation.sectorial || list.sectorial,
+    originalArmyCodeLength: validation.rawLength,
+    decoderVersion: decoded.decoderVersion,
+    snapshotId: snapshot.id,
+    snapshotTimestamp: snapshot.timestamp,
+    expectedPoints: decoded.points,
+    decodedPoints: decoded.points,
+    displayedPoints: comparison.displayedPoints,
+    expectedUnitCount: decoded.unitCount,
+    displayedUnitCount: comparison.displayedUnitCount,
+    rootCause: rootCause,
+    confidence: rootCause === "No discrepancy detected." ? "High" : "Medium",
+    validation: validation,
+    decode: decoded,
+    comparison: comparison,
+    cache: cache,
+    pipeline: pipeline,
+    selfHealing: selfHealing,
+    recommendation:
+      decoded.parserFailure
+        ? "Fix the stored Army Code or add support for the offending decoded payload format."
+        : comparison.missingUnits.length > 0
+          ? "Rebuild snapshot and clear only the armyLists cache entry."
+          : "No action required."
+  };
+
+}
+
+function getArmyDiagnosticRootCause(validation, decoded, comparison, cache) {
+
+  if (!validation.valid)
+    return validation.issues.join(" ");
+
+  if (!decoded.success)
+    return decoded.parserFailure
+      ? decoded.parserFailure.reason + ": " + decoded.parserFailure.token
+      : "Decoder failed.";
+
+  if (comparison.missingUnits.length > 0)
+    return "Displayed army omitted decoded units.";
+
+  if (comparison.unexpectedUnits.length > 0)
+    return "Displayed army contains units not produced by decoder.";
+
+  if (cache.classification === "Stale")
+    return "Stale armyLists cache entry was served.";
+
+  return "No discrepancy detected.";
+
+}
+
+function buildMissingArmyDiagnosticReport(id) {
+
+  return {
+    requestedId: id,
+    rootCause: "No submitted Army List record matched the displayed army id.",
+    confidence: "High"
+  };
 
 }
 
@@ -649,8 +1337,90 @@ function buildArmyListObject(row, id) {
     submitterEmail:
       getArmyListString(
         row[ARMY_LIST_COLUMNS.SUBMITTER_EMAIL]
+      ),
+    validation:
+      buildArmyListValidationSummary(row)
+  };
+
+}
+
+function buildArmyListValidationSummary(row) {
+
+  const warnings =
+    getArmyListString(
+      row[ARMY_LIST_COLUMNS.VALIDATION_WARNINGS]
+    )
+      .split(/\r?\n/)
+      .map(function(warning) {
+        return warning.trim();
+      })
+      .filter(Boolean);
+
+  return {
+    severity:
+      getArmyListValidationSeverity(
+        getArmyListString(
+          row[ARMY_LIST_COLUMNS.VALIDATION_STATUS]
+        )
+      ),
+    status:
+      getArmyListString(
+        row[ARMY_LIST_COLUMNS.VALIDATION_STATUS]
+      ),
+    warnings: warnings,
+    points:
+      Number(row[ARMY_LIST_COLUMNS.VALIDATION_POINTS]) || 0,
+    swc:
+      Number(row[ARMY_LIST_COLUMNS.VALIDATION_SWC]) || 0,
+    unitCount:
+      Number(row[ARMY_LIST_COLUMNS.VALIDATION_UNIT_COUNT]) || 0,
+    combatGroups:
+      Number(row[ARMY_LIST_COLUMNS.VALIDATION_COMBAT_GROUPS]) || 0,
+    armyName:
+      getArmyListString(
+        row[ARMY_LIST_COLUMNS.VALIDATION_ARMY_NAME]
+      ),
+    faction:
+      getArmyListString(
+        row[ARMY_LIST_COLUMNS.VALIDATION_FACTION]
+      ),
+    sectorial:
+      getArmyListString(
+        row[ARMY_LIST_COLUMNS.VALIDATION_SECTORIAL]
+      ),
+    override:
+      getArmyListApproved(
+        row[ARMY_LIST_COLUMNS.VALIDATION_OVERRIDE]
+      ),
+    overrideBy:
+      getArmyListString(
+        row[ARMY_LIST_COLUMNS.VALIDATION_OVERRIDE_BY]
+      ),
+    overrideReason:
+      getArmyListString(
+        row[ARMY_LIST_COLUMNS.VALIDATION_OVERRIDE_REASON]
+      ),
+    timestamp:
+      formatArmyListDate(
+        row[ARMY_LIST_COLUMNS.VALIDATION_TIMESTAMP]
       )
   };
+
+}
+
+function getArmyListValidationSeverity(status) {
+
+  const normalized =
+    getArmyListString(status)
+      .toLowerCase();
+
+  if (normalized === "error" || normalized === "invalid")
+    return "Error";
+
+  if (normalized === "warning" || normalized === "flagged")
+    return "Warning";
+
+  return "Info";
 
 }
 

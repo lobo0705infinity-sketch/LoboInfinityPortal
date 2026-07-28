@@ -24,6 +24,7 @@ import './App.css'
 const Analytics = lazyRoute('Analytics', () => import('./pages/Analytics'))
 const ArmyIntelligence = lazyRoute('ArmyIntelligence', () => import('./pages/ArmyIntelligence'))
 const ArmyLists = lazyRoute('ArmyLists', () => import('./pages/ArmyLists'))
+const ArmyCodeValidation = lazyRoute('ArmyCodeValidation', () => import('./pages/ArmyCodeValidation'))
 const AutomationCenter = lazyRoute('AutomationCenter', () => import('./pages/AutomationCenter'))
 const CommunityManager = lazyRoute('CommunityManager', () => import('./pages/CommunityManager'))
 const CommissionerDashboard = lazyRoute('CommissionerDashboard', () => import('./pages/CommissionerDashboard'))
@@ -137,6 +138,7 @@ function AuthShell() {
                 <Route path="/commissioner/players" element={<MeasuredRoute name="CommissionerPlayers"><CommissionerPlayers /></MeasuredRoute>} />
                 <Route path="/commissioner/community-manager" element={<MeasuredRoute name="CommunityManager"><CommunityManager /></MeasuredRoute>} />
                 <Route path="/commissioner/system" element={<MeasuredRoute name="CommissionerSystem"><CommissionerSystem /></MeasuredRoute>} />
+                <Route path="/commissioner/army-code-validation" element={<MeasuredRoute name="ArmyCodeValidation"><ArmyCodeValidation /></MeasuredRoute>} />
                 <Route path="/commissioner/system/diagnostics" element={<MeasuredRoute name="Diagnostics"><Diagnostics /></MeasuredRoute>} />
                 <Route path="/commissioner/system/audit" element={<MeasuredRoute name="LeagueIntegrity"><LeagueIntegrity /></MeasuredRoute>} />
                 <Route path="/commissioner/automation" element={<MeasuredRoute name="AutomationCenter"><AutomationCenter /></MeasuredRoute>} />

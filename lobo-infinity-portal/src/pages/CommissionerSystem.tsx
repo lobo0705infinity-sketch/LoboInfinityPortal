@@ -19,6 +19,11 @@ const systemWorkflows = [
     to: '/diagnostics',
   },
   {
+    body: 'Review Army Codes that failed validation or need commissioner override.',
+    label: 'Army Code Validation',
+    to: '/commissioner/army-code-validation',
+  },
+  {
     body: 'Clear, refresh, and inspect shared cache state.',
     label: 'Cache Management',
     to: '/commissioner?section=operations',
@@ -116,6 +121,7 @@ function CommissionerSystem() {
         <div className="operations-actions wrap">
           <Link to="/integrity">Open Audit</Link>
           <Link to="/diagnostics">Open Diagnostics</Link>
+          <Link to="/commissioner/army-code-validation">Open Army Code Validation</Link>
           <Link to="/commissioner?section=operations">Open Operations</Link>
           <Link to="/commissioner/automation">Open Queue Maintenance</Link>
         </div>

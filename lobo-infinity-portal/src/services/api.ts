@@ -40,6 +40,7 @@ export type ArmyList = {
   downvotes: number
   score: number
   approved: boolean
+  validation: ArmyCodeValidationSummary
 }
 
 export type ArmyListSubmission = {
@@ -53,6 +54,93 @@ export type ArmyListSubmission = {
   armyName: string
   description: string
   submitterEmail?: string
+  validationOverride?: boolean
+  validationOverrideReason?: string
+}
+
+export type ArmyCodeValidationSummary = {
+  armyName: string
+  combatGroups: number
+  faction: string
+  override: boolean
+  overrideBy: string
+  overrideReason: string
+  points: number
+  sectorial: string
+  severity: 'Error' | 'Warning' | 'Info'
+  status: string
+  swc: number
+  timestamp: string
+  unitCount: number
+  warnings: string[]
+}
+
+export type ArmyCodeValidationReport = {
+  blocking: boolean
+  decoderVersion: string
+  derived: {
+    armyName: string
+    combatGroups: number
+    faction: string
+    points: number
+    sectorial: string
+    swc: number
+    unitCount: number
+  }
+  exceptions: string[]
+  issues: Array<{
+    code: string
+    message: string
+    severity: 'Error' | 'Warning' | 'Info'
+  }>
+  severity: 'Error' | 'Warning' | 'Info'
+  status: string
+  suspicious: boolean
+  thresholds: {
+    event: string
+    expectedPoints: number
+    maximumPointTolerance: number
+    maximumPoints: number
+    minimumErrorPoints: number
+    minimumPointTolerance: number
+    minimumWarningPoints: number
+    minimumUnitCount: number
+    source: string
+  }
+  timestamp: string
+  valid: boolean
+  warnings: string[]
+}
+
+export type FlaggedArmySubmission = {
+  armyIntelligenceLink: string
+  armyName: string
+  event: string
+  id: number
+  player: string
+  playerDisplayName: string
+  points: number
+  submitted: string
+  swc: number
+  unitCount: number
+  validationStatus: string
+  validationWarnings: string[]
+}
+
+export type FlaggedArmySubmissionsData = {
+  submissions: FlaggedArmySubmission[]
+  summary: {
+    counts: {
+      errors: number
+      healthy: number
+      info: number
+      total: number
+      warnings: number
+    }
+    events: string[]
+    players: string[]
+    warningTypes: string[]
+  }
 }
 
 export type LeagueResultSubmission = {
@@ -291,6 +379,95 @@ export type ProfileIntelligenceContext = {
 export type ArmyListsData = {
   lists: ArmyList[]
   community: ArmyListCommunitySummary
+}
+
+export type ArmyDiagnosticReport = {
+  player: string
+  playerDisplayName: string
+  playerEmail: string
+  decoderVersion: string
+  event: string
+  submitted: string
+  army: string
+  faction: string
+  sectorial: string
+  originalArmyCodeLength: number
+  snapshotId: string
+  snapshotTimestamp: string
+  expectedPoints: number
+  decodedPoints: number
+  displayedPoints: number
+  expectedUnitCount: number
+  displayedUnitCount: number
+  rootCause: string
+  confidence: string
+  validation: {
+    valid: boolean
+    issues: string[]
+    flags: Record<string, boolean>
+    rawLength: number
+    extractedLength: number
+  }
+  decode: {
+    decoderVersion: string
+    success: boolean
+    unitCount: number
+    combatGroups: Array<{ group: number; units: number }>
+    points: number
+    swc: number
+    profiles: Array<{
+      index: number
+      rawProfile: string
+      decodedProfile: string
+      points: number
+      swc: number
+      combatGroup: number
+    }>
+    trace: Array<{
+      unitNumber: number
+      rawProfile: string
+      decodedProfile: string
+      points: number
+      swc: number
+      parserState: string
+    }>
+    parserFailure: {
+      location: string
+      exception: string
+      token: string
+      reason: string
+    } | null
+  }
+  comparison: {
+    expectedUnits: string[]
+    displayedUnits: string[]
+    missingUnits: string[]
+    unexpectedUnits: string[]
+    missingPoints: number
+    missingSwc: number
+    displayedUnitCount: number
+  }
+  cache: {
+    key: string
+    status: string
+    health: string
+    ageSeconds: number
+    classification: string
+  }
+  pipeline: Array<{
+    stage: string
+    received: boolean
+    generated: boolean
+    stored: boolean
+    cached: boolean
+    served: boolean
+  }>
+  selfHealing: {
+    attempted: boolean
+    actions: string[]
+    result: string
+  }
+  recommendation: string
 }
 
 export type ArmyIntelligenceCount = {
@@ -2422,6 +2599,23 @@ export type ApiClient = {
   refreshArmyIntelligenceSnapshots: (
     request?: ArmyIntelligenceRefreshRequest,
   ) => Promise<ArmyIntelligenceRefreshResult>
+  validateArmyCode: (
+    armyCode: string,
+    event: string,
+    options?: ApiOptions,
+  ) => Promise<ArmyCodeValidationReport>
+  getFlaggedArmySubmissions: (
+    filters?: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<FlaggedArmySubmissionsData>
+  auditArmyCodeSubmissions: (
+    options?: ApiOptions,
+  ) => Promise<FlaggedArmySubmissionsData & { count: number; generatedAt: string }>
+  diagnoseArmyList: (
+    id: number,
+    displayedUnits?: string[],
+    options?: ApiOptions,
+  ) => Promise<ArmyDiagnosticReport>
 }
 
 const leagueDivisionKeys: DivisionKey[] = ['main', 'pga', 'pgb']
@@ -2959,6 +3153,52 @@ export async function getArmyIntelligence(
   return normalizeArmyIntelligencePayload(payload)
 }
 
+export async function validateArmyCode(
+  armyCode: string,
+  event: string,
+  options: ApiOptions = {},
+): Promise<ArmyCodeValidationReport> {
+  const payload = await postRequest('validateArmyCode', options, {
+    armyCode,
+    event,
+  })
+  return normalizeArmyCodeValidationPayload(payload)
+}
+
+export async function getFlaggedArmySubmissions(
+  filters: Record<string, string> = {},
+  options: ApiOptions = {},
+): Promise<FlaggedArmySubmissionsData> {
+  const payload = await request('flaggedArmySubmissions', options, filters)
+  return normalizeFlaggedArmySubmissionsPayload(payload)
+}
+
+export async function auditArmyCodeSubmissions(
+  options: ApiOptions = {},
+): Promise<FlaggedArmySubmissionsData & { count: number; generatedAt: string }> {
+  const payload = await request('auditArmyCodeSubmissions', options)
+  const normalized = normalizeFlaggedArmySubmissionsPayload(payload)
+  const record = asRecord(payload, 'Army Code audit response')
+
+  return {
+    ...normalized,
+    count: getNumber(record, 'count'),
+    generatedAt: getString(record, 'generatedAt'),
+  }
+}
+
+export async function diagnoseArmyList(
+  id: number,
+  displayedUnits: string[] = [],
+  options: ApiOptions = {},
+): Promise<ArmyDiagnosticReport> {
+  const payload = await postRequest('diagnoseArmyList', options, {
+    displayedUnits: JSON.stringify(displayedUnits),
+    id: String(id),
+  })
+  return normalizeArmyDiagnosticPayload(payload)
+}
+
 export async function getCommunityCommandCenter(
   options: ApiOptions = {},
 ): Promise<CommunityCommandCenterData> {
@@ -3279,8 +3519,21 @@ export async function submitArmyList(
   submission: ArmyListSubmission,
   options: ApiOptions = {},
 ): Promise<void> {
-  const payload = await postRequest('submitArmyList', options, submission)
-  normalizeMutationPayload(payload, 'Army list submission failed.')
+  const payload = await postRequest('submitArmyList', options, {
+    armyCode: submission.armyCode,
+    armyLink: submission.armyLink,
+    armyName: submission.armyName,
+    description: submission.description,
+    event: submission.event,
+    faction: submission.faction,
+    mission: submission.mission,
+    player: submission.player,
+    sectorial: submission.sectorial,
+    submitterEmail: submission.submitterEmail || '',
+    validationOverride: submission.validationOverride ? 'true' : '',
+    validationOverrideReason: submission.validationOverrideReason || '',
+  })
+  normalizeArmyListSubmissionPayload(payload)
 }
 
 export async function submitLeagueResult(
@@ -3584,6 +3837,10 @@ export const apiClient: ApiClient = {
   getStreams,
   getArmyLists,
   getArmyIntelligence,
+  validateArmyCode,
+  getFlaggedArmySubmissions,
+  auditArmyCodeSubmissions,
+  diagnoseArmyList,
   getCommunityCommandCenter,
   getSeasonCommandCenter,
   updateSeasonAvailability,
@@ -4842,6 +5099,258 @@ function normalizeArmyListsPayload(payload: unknown): ArmyListsData {
   return {
     lists: getRequiredArray(record, 'lists').map(normalizeArmyList),
     community: normalizeArmyListCommunity(record.community),
+  }
+}
+
+function normalizeArmyCodeValidationPayload(payload: unknown): ArmyCodeValidationReport {
+  const record = asRecord(payload, 'Army Code validation response')
+
+  if (record.success === false) {
+    const validation = getOptionalRecord(record, 'validation')
+    const detail = validation
+      ? normalizeArmyCodeValidationReport(validation)
+      : null
+    const message = getString(record, 'error') || 'Army Code validation failed.'
+    const error = new Error(message) as Error & { validation?: ArmyCodeValidationReport }
+    if (detail) {
+      error.validation = detail
+    }
+    throw error
+  }
+
+  return normalizeArmyCodeValidationReport(
+    getRequiredRecord(record, 'validation'),
+  )
+}
+
+function normalizeArmyCodeValidationReport(value: unknown): ArmyCodeValidationReport {
+  const record = asRecord(value, 'Army Code validation')
+  const derived = getRequiredRecord(record, 'derived')
+  const thresholds = getRequiredRecord(record, 'thresholds')
+
+  return {
+    blocking: getBoolean(record, 'blocking'),
+    decoderVersion: getString(record, 'decoderVersion'),
+    derived: {
+      armyName: getString(derived, 'armyName'),
+      combatGroups: getNumber(derived, 'combatGroups'),
+      faction: getString(derived, 'faction'),
+      points: getNumber(derived, 'points'),
+      sectorial: getString(derived, 'sectorial'),
+      swc: getNumber(derived, 'swc'),
+      unitCount: getNumber(derived, 'unitCount'),
+    },
+    exceptions: normalizeStringArray(record.exceptions),
+    issues: getArray(record, 'issues').map((item) => {
+      const issue = asRecord(item, 'Army Code validation issue')
+      return {
+        code: getString(issue, 'code'),
+        message: getString(issue, 'message'),
+        severity: normalizeArmyCodeValidationSeverity(issue.severity),
+      }
+    }),
+    severity: normalizeArmyCodeValidationSeverity(record.severity),
+    status: getString(record, 'status'),
+    suspicious: getBoolean(record, 'suspicious'),
+    thresholds: {
+      event: getString(thresholds, 'event'),
+      expectedPoints: getNumber(thresholds, 'expectedPoints'),
+      maximumPointTolerance: getNumber(thresholds, 'maximumPointTolerance'),
+      maximumPoints: getNumber(thresholds, 'maximumPoints'),
+      minimumErrorPoints: getNumber(thresholds, 'minimumErrorPoints'),
+      minimumPointTolerance: getNumber(thresholds, 'minimumPointTolerance'),
+      minimumWarningPoints: getNumber(thresholds, 'minimumWarningPoints'),
+      minimumUnitCount: getNumber(thresholds, 'minimumUnitCount'),
+      source: getString(thresholds, 'source'),
+    },
+    timestamp: getString(record, 'timestamp'),
+    valid: getBoolean(record, 'valid'),
+    warnings: normalizeStringArray(record.warnings),
+  }
+}
+
+function normalizeFlaggedArmySubmissionsPayload(payload: unknown): FlaggedArmySubmissionsData {
+  const record = asRecord(payload, 'Flagged army submissions response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Flagged army submissions failed.')
+  }
+
+  const summary = getOptionalRecord(record, 'summary') ?? {}
+
+  return {
+    submissions: getRequiredArray(record, 'submissions').map(normalizeFlaggedArmySubmission),
+    summary: {
+      counts: normalizeArmyCodeValidationCounts(summary.counts),
+      events: normalizeStringArray(summary.events),
+      players: normalizeStringArray(summary.players),
+      warningTypes: normalizeStringArray(summary.warningTypes),
+    },
+  }
+}
+
+function normalizeArmyCodeValidationCounts(value: unknown) {
+  const record = value && typeof value === 'object' && !Array.isArray(value)
+    ? asRecord(value, 'Army Code validation counts')
+    : {}
+
+  return {
+    errors: getNumber(record, 'errors'),
+    healthy: getNumber(record, 'healthy'),
+    info: getNumber(record, 'info'),
+    total: getNumber(record, 'total'),
+    warnings: getNumber(record, 'warnings'),
+  }
+}
+
+function normalizeFlaggedArmySubmission(value: unknown): FlaggedArmySubmission {
+  const record = asRecord(value, 'Flagged army submission')
+
+  return {
+    armyIntelligenceLink: getString(record, 'armyIntelligenceLink'),
+    armyName: getString(record, 'armyName'),
+    event: getString(record, 'event'),
+    id: getRequiredNumber(record, 'id'),
+    player: getRequiredString(record, 'player'),
+    playerDisplayName: getString(record, 'playerDisplayName'),
+    points: getNumber(record, 'points'),
+    submitted: getString(record, 'submitted'),
+    swc: getNumber(record, 'swc'),
+    unitCount: getNumber(record, 'unitCount'),
+    validationStatus: getString(record, 'validationStatus'),
+    validationWarnings: normalizeStringArray(record.validationWarnings),
+  }
+}
+
+function normalizeArmyDiagnosticPayload(payload: unknown): ArmyDiagnosticReport {
+  const record = asRecord(payload, 'Army diagnostic response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Army diagnostic failed.')
+  }
+
+  const report = getRequiredRecord(record, 'report')
+  const validation = getRequiredRecord(report, 'validation')
+  const decode = getRequiredRecord(report, 'decode')
+  const comparison = getRequiredRecord(report, 'comparison')
+  const cache = getRequiredRecord(report, 'cache')
+  const selfHealing = getRequiredRecord(report, 'selfHealing')
+
+  return {
+    player: getRequiredString(report, 'player'),
+    playerDisplayName: getString(report, 'playerDisplayName'),
+    playerEmail: getString(report, 'playerEmail'),
+    decoderVersion: getString(report, 'decoderVersion'),
+    event: getString(report, 'event'),
+    submitted: getString(report, 'submitted'),
+    army: getRequiredString(report, 'army'),
+    faction: getString(report, 'faction'),
+    sectorial: getString(report, 'sectorial'),
+    originalArmyCodeLength: getNumber(report, 'originalArmyCodeLength'),
+    snapshotId: getString(report, 'snapshotId'),
+    snapshotTimestamp: getString(report, 'snapshotTimestamp'),
+    expectedPoints: getNumber(report, 'expectedPoints'),
+    decodedPoints: getNumber(report, 'decodedPoints'),
+    displayedPoints: getNumber(report, 'displayedPoints'),
+    expectedUnitCount: getNumber(report, 'expectedUnitCount'),
+    displayedUnitCount: getNumber(report, 'displayedUnitCount'),
+    rootCause: getRequiredString(report, 'rootCause'),
+    confidence: getString(report, 'confidence'),
+    validation: {
+      valid: getBoolean(validation, 'valid'),
+      issues: normalizeStringArray(validation.issues),
+      flags: normalizeBooleanRecord(
+        getOptionalRecord(validation, 'flags') ?? {},
+      ),
+      rawLength: getNumber(validation, 'rawLength'),
+      extractedLength: getNumber(validation, 'extractedLength'),
+    },
+    decode: {
+      decoderVersion: getString(decode, 'decoderVersion'),
+      success: getBoolean(decode, 'success'),
+      unitCount: getNumber(decode, 'unitCount'),
+      combatGroups: getArray(decode, 'combatGroups').map((item) => {
+        const group = asRecord(item, 'Army diagnostic combat group')
+        return {
+          group: getNumber(group, 'group'),
+          units: getNumber(group, 'units'),
+        }
+      }),
+      points: getNumber(decode, 'points'),
+      swc: getNumber(decode, 'swc'),
+      profiles: getArray(decode, 'profiles').map(normalizeArmyDiagnosticProfile),
+      trace: getArray(decode, 'trace').map((item) => {
+        const trace = asRecord(item, 'Army diagnostic parser trace')
+        return {
+          unitNumber: getNumber(trace, 'unitNumber'),
+          rawProfile: getString(trace, 'rawProfile'),
+          decodedProfile: getString(trace, 'decodedProfile'),
+          points: getNumber(trace, 'points'),
+          swc: getNumber(trace, 'swc'),
+          parserState: getString(trace, 'parserState'),
+        }
+      }),
+      parserFailure: decode.parserFailure
+        ? normalizeArmyDiagnosticParserFailure(decode.parserFailure)
+        : null,
+    },
+    comparison: {
+      expectedUnits: normalizeStringArray(comparison.expectedUnits),
+      displayedUnits: normalizeStringArray(comparison.displayedUnits),
+      missingUnits: normalizeStringArray(comparison.missingUnits),
+      unexpectedUnits: normalizeStringArray(comparison.unexpectedUnits),
+      missingPoints: getNumber(comparison, 'missingPoints'),
+      missingSwc: getNumber(comparison, 'missingSwc'),
+      displayedUnitCount: getNumber(comparison, 'displayedUnitCount'),
+    },
+    cache: {
+      key: getString(cache, 'key'),
+      status: getString(cache, 'status'),
+      health: getString(cache, 'health'),
+      ageSeconds: getNumber(cache, 'ageSeconds'),
+      classification: getString(cache, 'classification'),
+    },
+    pipeline: getArray(report, 'pipeline').map((item) => {
+      const stage = asRecord(item, 'Army diagnostic pipeline stage')
+      return {
+        stage: getString(stage, 'stage'),
+        received: getBoolean(stage, 'received'),
+        generated: getBoolean(stage, 'generated'),
+        stored: getBoolean(stage, 'stored'),
+        cached: getBoolean(stage, 'cached'),
+        served: getBoolean(stage, 'served'),
+      }
+    }),
+    selfHealing: {
+      attempted: getBoolean(selfHealing, 'attempted'),
+      actions: normalizeStringArray(selfHealing.actions),
+      result: getString(selfHealing, 'result'),
+    },
+    recommendation: getString(report, 'recommendation'),
+  }
+}
+
+function normalizeArmyDiagnosticProfile(item: unknown) {
+  const record = asRecord(item, 'Army diagnostic profile')
+
+  return {
+    index: getNumber(record, 'index'),
+    rawProfile: getString(record, 'rawProfile'),
+    decodedProfile: getString(record, 'decodedProfile'),
+    points: getNumber(record, 'points'),
+    swc: getNumber(record, 'swc'),
+    combatGroup: getNumber(record, 'combatGroup'),
+  }
+}
+
+function normalizeArmyDiagnosticParserFailure(item: unknown) {
+  const record = asRecord(item, 'Army diagnostic parser failure')
+
+  return {
+    location: getString(record, 'location'),
+    exception: getString(record, 'exception'),
+    token: getString(record, 'token'),
+    reason: getString(record, 'reason'),
   }
 }
 
@@ -7077,6 +7586,23 @@ function normalizeMutationPayload(payload: unknown, fallbackMessage: string) {
   }
 }
 
+function normalizeArmyListSubmissionPayload(payload: unknown) {
+  const record = asRecord(payload, 'Army list submission response')
+
+  if (record.success === false) {
+    const validation = getOptionalRecord(record, 'validation')
+    const error = new Error(
+      getString(record, 'error') || 'Army list submission failed.',
+    ) as Error & { validation?: ArmyCodeValidationReport }
+
+    if (validation) {
+      error.validation = normalizeArmyCodeValidationReport(validation)
+    }
+
+    throw error
+  }
+}
+
 function normalizeArmyList(item: unknown): ArmyList {
   const record = asRecord(item, 'Army list')
 
@@ -7099,7 +7625,65 @@ function normalizeArmyList(item: unknown): ArmyList {
     downvotes: getRequiredNumber(record, 'downvotes'),
     score: getRequiredNumber(record, 'score'),
     approved: getBoolean(record, 'approved'),
+    validation: normalizeArmyCodeValidationSummary(record.validation),
   }
+}
+
+function normalizeArmyCodeValidationSummary(value: unknown): ArmyCodeValidationSummary {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return {
+      armyName: '',
+      combatGroups: 0,
+      faction: '',
+      override: false,
+      overrideBy: '',
+      overrideReason: '',
+      points: 0,
+      sectorial: '',
+      severity: 'Info',
+      status: '',
+      swc: 0,
+      timestamp: '',
+      unitCount: 0,
+      warnings: [],
+    }
+  }
+
+  const record = asRecord(value, 'Army Code validation summary')
+
+  return {
+    armyName: getString(record, 'armyName'),
+    combatGroups: getNumber(record, 'combatGroups'),
+    faction: getString(record, 'faction'),
+    override: getBoolean(record, 'override'),
+    overrideBy: getString(record, 'overrideBy'),
+    overrideReason: getString(record, 'overrideReason'),
+    points: getNumber(record, 'points'),
+    sectorial: getString(record, 'sectorial'),
+    severity: normalizeArmyCodeValidationSeverity(record.severity),
+    status: getString(record, 'status'),
+    swc: getNumber(record, 'swc'),
+    timestamp: getString(record, 'timestamp'),
+    unitCount: getNumber(record, 'unitCount'),
+    warnings: normalizeStringArray(record.warnings),
+  }
+}
+
+function normalizeArmyCodeValidationSeverity(value: unknown): 'Error' | 'Warning' | 'Info' {
+  if (value === 'Error' || value === 'Warning' || value === 'Info') {
+    return value
+  }
+
+  const normalized = typeof value === 'string' ? value.toLowerCase() : ''
+  if (normalized === 'error' || normalized === 'invalid') {
+    return 'Error'
+  }
+
+  if (normalized === 'warning' || normalized === 'flagged') {
+    return 'Warning'
+  }
+
+  return 'Info'
 }
 
 function normalizePlayerArmyListSummary(value: unknown): PlayerArmyListSummary {

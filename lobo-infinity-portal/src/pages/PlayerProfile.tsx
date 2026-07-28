@@ -1089,6 +1089,22 @@ function normalizePlayerArmyList(item: unknown): ArmyList {
     submissionDate: getLocalString(record, 'submissionDate'),
     submitterEmail: getLocalString(record, 'submitterEmail'),
     upvotes: getLocalNumber(record, 'upvotes'),
+    validation: {
+      armyName: '',
+      combatGroups: 0,
+      faction: '',
+      override: false,
+      overrideBy: '',
+      overrideReason: '',
+      points: 0,
+      sectorial: '',
+      severity: 'Info',
+      status: '',
+      swc: 0,
+      timestamp: '',
+      unitCount: 0,
+      warnings: [],
+    },
   }
 }
 

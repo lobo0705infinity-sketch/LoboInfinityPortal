@@ -361,6 +361,24 @@ function handleApiGet(e, action) {
         return getArmyIntelligence(e);
       });
 
+    case "diagnoseArmyList":
+      return requireApiPermission(e, "viewOperations", function() {
+        return diagnoseArmyList(e);
+      });
+
+    case "validateArmyCode":
+      return validateArmyCode(e);
+
+    case "flaggedArmySubmissions":
+      return requireApiPermission(e, "viewOperations", function() {
+        return getFlaggedArmySubmissions(e);
+      });
+
+    case "auditArmyCodeSubmissions":
+      return requireApiPermission(e, "runLeagueAudit", function() {
+        return auditArmyCodeSubmissions(e);
+      });
+
     case "operations":
       return requireApiPermission(e, "viewOperations", function() {
         return getOperationsDashboard();
@@ -510,6 +528,24 @@ function handleApiGet(e, action) {
     case "voteArmyList":
       return requireApiPermission(e, "vote", function() {
         return voteArmyList(e);
+      });
+
+    case "validateArmyCode":
+      return validateArmyCode(e);
+
+    case "flaggedArmySubmissions":
+      return requireApiPermission(e, "viewOperations", function() {
+        return getFlaggedArmySubmissions(e);
+      });
+
+    case "auditArmyCodeSubmissions":
+      return requireApiPermission(e, "runLeagueAudit", function() {
+        return auditArmyCodeSubmissions(e);
+      });
+
+    case "diagnoseArmyList":
+      return requireApiPermission(e, "viewOperations", function() {
+        return diagnoseArmyList(e);
       });
 
     case "submitArmyList":

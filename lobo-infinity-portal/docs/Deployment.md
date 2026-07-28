@@ -36,6 +36,18 @@ npm run build
 
 The frontend build output is `dist`. `dist` is generated output and must not be the deployment source.
 
+`VITE_API_URL` must match `release/production.json`. Local release checks load Vite-style env files in this order: `.env`, `.env.local`, `.env.production`, `.env.production.local`, then shell variables. Use `.env.production.local` or the Vercel project environment to point production builds at the approved Apps Script URL.
+
+For release-candidate review before a branch is merged, run:
+
+```powershell
+npm run release:source:candidate
+npm run release:manifest
+npm run build
+```
+
+For production release, `npm run release:source` remains strict: the checkout must be clean, on the configured production branch, and connected to an upstream.
+
 ## Vercel Deployment
 
 The normal deployment path is the guarded Vercel project build, not `--prebuilt`

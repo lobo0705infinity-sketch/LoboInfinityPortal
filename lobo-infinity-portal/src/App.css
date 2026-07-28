@@ -4197,6 +4197,186 @@
   margin-top: auto;
 }
 
+.army-diagnostic-backdrop {
+  align-items: center;
+  background: rgb(4 8 14 / 72%);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 24px;
+  position: fixed;
+  z-index: 80;
+}
+
+.army-diagnostic-panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-lg);
+  color: var(--text);
+  max-height: min(760px, calc(100vh - 48px));
+  max-width: 920px;
+  overflow: auto;
+  padding: 20px;
+  width: min(920px, 100%);
+}
+
+.army-diagnostic-header {
+  align-items: flex-start;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.army-diagnostic-header h2 {
+  margin: 0;
+}
+
+.army-diagnostic-body {
+  display: grid;
+  gap: 14px;
+}
+
+.army-diagnostic-summary {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  margin: 0;
+}
+
+.army-diagnostic-summary div,
+.army-diagnostic-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.army-diagnostic-summary dt,
+.army-diagnostic-section h3 {
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  margin: 0 0 6px;
+  text-transform: uppercase;
+}
+
+.army-diagnostic-summary dd,
+.army-diagnostic-section p {
+  margin: 0;
+}
+
+.army-diagnostic-section ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.army-diagnostic-pipeline,
+.army-diagnostic-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.army-diagnostic-pipeline span {
+  background: var(--panel-muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 10px;
+}
+
+.army-validation-warning {
+  background: rgba(244, 173, 66, 0.14);
+  border: 1px solid rgba(244, 173, 66, 0.45);
+  border-radius: 8px;
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.army-validation-warning h2 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.army-validation-summary {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.army-validation-summary dl {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  margin: 0;
+}
+
+.army-validation-summary dt,
+.army-validation-table th {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.army-validation-summary dd {
+  font-weight: 700;
+  margin: 0.2rem 0 0;
+}
+
+.army-validation-override {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.army-validation-override label:first-child {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.army-validation-table {
+  overflow-x: auto;
+}
+
+.army-validation-summary-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  margin-bottom: 1rem;
+}
+
+.army-validation-metric {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.army-validation-metric strong {
+  font-size: 1.8rem;
+}
+
+.army-validation-table table {
+  border-collapse: collapse;
+  min-width: 780px;
+  width: 100%;
+}
+
+.army-validation-table th,
+.army-validation-table td {
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.army-validation-warning-list {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
 .army-intelligence-page {
   gap: 1.05rem;
 }

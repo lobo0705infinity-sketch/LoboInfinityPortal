@@ -2,7 +2,8 @@
 
 Use this checklist for every Lobo Infinity League Portal release.
 
-- [ ] Confirm release source is latest approved production branch: `npm run release:source`
+- [ ] For local release-candidate review before commit/merge, inspect source state: `npm run release:source:candidate`
+- [ ] Confirm production release source is latest approved production branch: `npm run release:source`
 - [ ] Confirm `VITE_API_URL` matches `release/production.json`: `npm run release:manifest`
 - [ ] Generate release fingerprint: `npm run release:fingerprint`
 - [ ] Run complete release gate: `npm run release:gate`

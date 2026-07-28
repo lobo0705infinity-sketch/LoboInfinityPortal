@@ -42,6 +42,8 @@ const CONFIG = {
 
     ARMY_LISTS: "Army Lists",
 
+    ARMY_CODE_VALIDATION_AUDIT: "Army Code Validation Audit",
+
     COMMISSIONER_NEWS: "Commissioner News",
 
     SEASON_ARCHIVE: "Season Archive",

@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../auth/AuthContext'
 import OperatorBadge from '../components/OperatorBadge'
 import Skeleton from '../components/Skeleton'
 import { normalizeArmyForDisplay } from '../config/armies'
 import {
   apiClient,
+  type ArmyDiagnosticReport,
+  type ArmyList,
   type SubmittedArmyListEntry,
 } from '../services/api'
 import { formatPlayerName } from '../services/formatting'
@@ -40,10 +43,26 @@ const defaultFilters: ArmyListFilter = {
 }
 
 function ArmyLists() {
+  const auth = useAuth()
+  const canDiagnose =
+    auth.hasPermission('viewOperations') ||
+    auth.isAtLeastRole('Assistant Commissioner')
   const [state, setState] = useState<ArmyListsState>({
     status: 'loading',
   })
   const [filters, setFilters] = useState<ArmyListFilter>(defaultFilters)
+  const [diagnosticSources, setDiagnosticSources] = useState<Map<string, ArmyList>>(
+    () => new Map(),
+  )
+  const [diagnosticState, setDiagnosticState] = useState<{
+    error: string
+    loadingId: string
+    report: ArmyDiagnosticReport | null
+  }>({
+    error: '',
+    loadingId: '',
+    report: null,
+  })
 
   useEffect(() => {
     const controller = new AbortController()
@@ -76,6 +95,36 @@ function ArmyLists() {
       controller.abort()
     }
   }, [])
+
+  useEffect(() => {
+    if (!canDiagnose) {
+      setDiagnosticSources(new Map())
+      return
+    }
+
+    const controller = new AbortController()
+
+    apiClient
+      .getArmyLists({
+        signal: controller.signal,
+      })
+      .then((data) => {
+        setDiagnosticSources(
+          new Map(
+            data.lists.map((list) => [getArmyCodeDiagnosticKey(list.armyCode), list]),
+          ),
+        )
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) {
+          setDiagnosticSources(new Map())
+        }
+      })
+
+    return () => {
+      controller.abort()
+    }
+  }, [canDiagnose])
 
   const filterOptions = useMemo(() => {
     if (state.status !== 'success') {
@@ -115,6 +164,46 @@ function ArmyLists() {
       ...current,
       [name]: value,
     }))
+  }
+
+  async function handleDiagnose(list: SubmittedArmyListEntry) {
+    const source = diagnosticSources.get(getArmyCodeDiagnosticKey(list.armyCode))
+
+    if (!source) {
+      setDiagnosticState({
+        error: 'This displayed army row is not linked to a persisted Army List submission.',
+        loadingId: '',
+        report: null,
+      })
+      return
+    }
+
+    setDiagnosticState({
+      error: '',
+      loadingId: list.id,
+      report: null,
+    })
+
+    try {
+      const report = await apiClient.diagnoseArmyList(
+        source.id,
+        getDisplayedArmyUnits(list),
+      )
+      setDiagnosticState({
+        error: '',
+        loadingId: '',
+        report,
+      })
+    } catch (error) {
+      setDiagnosticState({
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Army diagnostic could not be loaded.',
+        loadingId: '',
+        report: null,
+      })
+    }
   }
 
   if (state.status === 'loading') {
@@ -191,10 +280,30 @@ function ArmyLists() {
       ) : (
         <section className="army-list-grid army-list-library-grid" aria-label="Army List Library">
           {visibleLists.map((list) => (
-            <ArmyListCard key={list.id} list={list} />
+            <ArmyListCard
+              canDiagnose={
+                canDiagnose &&
+                diagnosticSources.has(getArmyCodeDiagnosticKey(list.armyCode))
+              }
+              diagnosing={diagnosticState.loadingId === list.id}
+              key={list.id}
+              list={list}
+              onDiagnose={handleDiagnose}
+            />
           ))}
         </section>
       )}
+      <ArmyDiagnosticModal
+        error={diagnosticState.error}
+        onClose={() =>
+          setDiagnosticState({
+            error: '',
+            loadingId: '',
+            report: null,
+          })
+        }
+        report={diagnosticState.report}
+      />
     </main>
   )
 }
@@ -235,7 +344,17 @@ function FilterSelect({
   )
 }
 
-function ArmyListCard({ list }: { list: SubmittedArmyListEntry }) {
+function ArmyListCard({
+  canDiagnose,
+  diagnosing,
+  list,
+  onDiagnose,
+}: {
+  canDiagnose: boolean
+  diagnosing: boolean
+  list: SubmittedArmyListEntry
+  onDiagnose: (list: SubmittedArmyListEntry) => void
+}) {
   const factionIdentity = resolvePlayerFactionIdentity({
     favoriteFaction: list.faction,
   })
@@ -295,9 +414,129 @@ function ArmyListCard({ list }: { list: SubmittedArmyListEntry }) {
         <div className="army-list-actions army-list-library-actions">
           <ArmyListExternalLink armyCode={list.armyCode} />
           <Link to={list.battleReportPath}>View Battle Report</Link>
+          {canDiagnose ? (
+            <button
+              disabled={diagnosing}
+              onClick={() => void onDiagnose(list)}
+              type="button"
+            >
+              {diagnosing ? 'Diagnosing' : 'Diagnose Army'}
+            </button>
+          ) : null}
         </div>
       </div>
     </article>
+  )
+}
+
+function ArmyDiagnosticModal({
+  error,
+  onClose,
+  report,
+}: {
+  error: string
+  onClose: () => void
+  report: ArmyDiagnosticReport | null
+}) {
+  if (!report && !error) {
+    return null
+  }
+
+  return (
+    <section
+      aria-label="Army diagnostic report"
+      className="army-diagnostic-backdrop"
+      role="dialog"
+    >
+      <div className="army-diagnostic-panel">
+        <div className="army-diagnostic-header">
+          <div>
+            <p className="eyebrow">Commissioner Diagnostic</p>
+            <h2>Diagnose Army</h2>
+          </div>
+          <button onClick={onClose} type="button">Close</button>
+        </div>
+        {error ? (
+          <p role="alert">{error}</p>
+        ) : report ? (
+          <div className="army-diagnostic-body">
+            <dl className="army-diagnostic-summary">
+              <DiagnosticField label="Player" value={formatPlayerName(report.player, report.playerDisplayName)} />
+              <DiagnosticField label="Event" value={report.event || 'Not recorded'} />
+              <DiagnosticField label="Submitted" value={report.submitted || 'Not recorded'} />
+              <DiagnosticField label="Snapshot" value={`${report.snapshotId} / ${report.snapshotTimestamp}`} />
+              <DiagnosticField label="Decoder" value={report.decoderVersion || 'Not recorded'} />
+              <DiagnosticField label="Cache Status" value={`${report.cache.classification} / ${report.cache.status}`} />
+              <DiagnosticField label="Army Code" value={report.validation.valid ? 'Valid' : 'Invalid'} />
+              <DiagnosticField label="Decode" value={report.decode.success ? 'Success' : 'Failed'} />
+              <DiagnosticField label="Units Found" value={String(report.expectedUnitCount)} />
+              <DiagnosticField label="Units Displayed" value={String(report.displayedUnitCount)} />
+              <DiagnosticField label="Root Cause" value={report.rootCause} />
+              <DiagnosticField label="Confidence" value={report.confidence || 'Not recorded'} />
+            </dl>
+
+            {report.comparison.missingUnits.length > 0 ? (
+              <DiagnosticList title="Missing" values={report.comparison.missingUnits} />
+            ) : null}
+            {report.comparison.unexpectedUnits.length > 0 ? (
+              <DiagnosticList title="Unexpected" values={report.comparison.unexpectedUnits} />
+            ) : null}
+            {report.decode.parserFailure ? (
+              <section className="army-diagnostic-section">
+                <h3>Parser stopped at</h3>
+                <p><strong>Location:</strong> {report.decode.parserFailure.location}</p>
+                <p><strong>Token:</strong> {report.decode.parserFailure.token}</p>
+                <p><strong>Reason:</strong> {report.decode.parserFailure.reason}</p>
+              </section>
+            ) : null}
+            {report.validation.issues.length > 0 ? (
+              <DiagnosticList title="Validation Issues" values={report.validation.issues} />
+            ) : null}
+            <section className="army-diagnostic-section">
+              <h3>Pipeline</h3>
+              <div className="army-diagnostic-pipeline">
+                {report.pipeline.map((stage) => (
+                  <span key={stage.stage}>
+                    {stage.stage}: {stage.received ? 'received' : 'missing'} / {stage.served ? 'served' : 'not served'}
+                  </span>
+                ))}
+              </div>
+            </section>
+            <section className="army-diagnostic-section">
+              <h3>Recommendation</h3>
+              <p>{report.recommendation}</p>
+              <div className="army-diagnostic-actions">
+                <button type="button">Rebuild Snapshot</button>
+                <button type="button">Clear Cache</button>
+                <button type="button">Re-run Decode</button>
+              </div>
+            </section>
+          </div>
+        ) : null}
+      </div>
+    </section>
+  )
+}
+
+function DiagnosticField({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <dt>{label}</dt>
+      <dd>{value}</dd>
+    </div>
+  )
+}
+
+function DiagnosticList({ title, values }: { title: string; values: string[] }) {
+  return (
+    <section className="army-diagnostic-section">
+      <h3>{title}</h3>
+      <ul>
+        {values.map((value) => (
+          <li key={value}>{value}</li>
+        ))}
+      </ul>
+    </section>
   )
 }
 
@@ -347,6 +586,16 @@ function getDisplayFaction(list: SubmittedArmyListEntry) {
 
 function getDisplayPlayer(list: SubmittedArmyListEntry) {
   return formatPlayerName(list.player, list.playerDisplayName)
+}
+
+function getDisplayedArmyUnits(list: SubmittedArmyListEntry) {
+  return [
+    list.armyCode,
+  ].filter(Boolean)
+}
+
+function getArmyCodeDiagnosticKey(value: string) {
+  return value.trim().toLowerCase()
 }
 
 export default ArmyLists

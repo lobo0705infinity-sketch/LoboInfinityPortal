@@ -4,6 +4,7 @@ import {
   currentGitState,
   extractAppsScriptDeploymentId,
   fingerprint,
+  loadViteEnv,
   normalizeApiUrl,
   pass,
   readManifest,
@@ -21,14 +22,15 @@ const state = (() => {
     }
   }
 })()
-const apiUrl = normalizeApiUrl(process.env.VITE_API_URL || manifest.appsScriptUrl)
+const env = loadViteEnv(process.env.MODE || 'production')
+const apiUrl = normalizeApiUrl(env.get('VITE_API_URL') || manifest.appsScriptUrl)
 const frontendCommit =
-  process.env.VITE_BUILD_GIT_COMMIT ||
-  process.env.VERCEL_GIT_COMMIT_SHA ||
+  env.get('VITE_BUILD_GIT_COMMIT') ||
+  env.get('VERCEL_GIT_COMMIT_SHA') ||
   state.commit
 const gitBranch =
-  process.env.VITE_BUILD_GIT_BRANCH ||
-  process.env.VERCEL_GIT_COMMIT_REF ||
+  env.get('VITE_BUILD_GIT_BRANCH') ||
+  env.get('VERCEL_GIT_COMMIT_REF') ||
   state.branch
 
 if (!frontendCommit || frontendCommit === 'not-provided') {
@@ -42,15 +44,15 @@ const payload = {
   gitBranch,
   buildTimestamp: new Date().toISOString(),
   vercelDeploymentId:
-    process.env.VITE_BUILD_DEPLOYMENT_ID ||
-    process.env.VERCEL_DEPLOYMENT_ID ||
-    process.env.VERCEL_DEPLOYMENT_URL ||
+    env.get('VITE_BUILD_DEPLOYMENT_ID') ||
+    env.get('VERCEL_DEPLOYMENT_ID') ||
+    env.get('VERCEL_DEPLOYMENT_URL') ||
     'not-provided',
   vercelProject: manifest.vercelProject,
   appsScriptDeploymentId: extractAppsScriptDeploymentId(apiUrl),
   appsScriptVersion: manifest.appsScriptVersion,
   apiUrlFingerprint: fingerprint(apiUrl),
-  cacheVersion: process.env.VITE_CACHE_VERSION || 'client-cache-v2',
+  cacheVersion: env.get('VITE_CACHE_VERSION') || 'client-cache-v2',
 }
 
 const publicDir = resolve(repoRoot, 'public')
