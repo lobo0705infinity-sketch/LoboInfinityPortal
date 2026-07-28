@@ -64,13 +64,42 @@ check(
 )
 
 check(
+  /function getGameArmyCodeCorrectionPlayerNumber\(winner, playerRole\)[\s\S]*if \(winner === 0\)[\s\S]*playerRole === "winner"[\s\S]*\? 1[\s\S]*: 2/,
+  'Draw corrections must map winnerArmyCode to Player 1 and loserArmyCode to Player 2.',
+  correction,
+)
+
+check(
+  /return playerRole === "winner"[\s\S]*\? winner[\s\S]*: winner === 1 \? 2 : 1/,
+  'Non-draw corrections must preserve winner and loser Army Code mapping.',
+  correction,
+)
+
+check(
+  !/Winner\/loser Army Code correction is not available for drawn games/.test(correction),
+  'Drawn games must not be rejected by the correction target resolver.',
+)
+
+check(
+  /sourceType:[\s\S]*getGameEngineGameType\(row\) === "casual"[\s\S]*\? "casual"[\s\S]*: "league"/,
+  'Corrections must retain the game source type for Army Intelligence snapshot regeneration.',
+  correction,
+)
+
+check(
   /recordGameArmyCodeCorrectionAudit\(\{[\s\S]*previousHash[\s\S]*newHash[\s\S]*commissioner[\s\S]*reason/,
   'Correction must record previous and new hashes, commissioner, and reason.',
   correction,
 )
 
 check(
-  /buildArmyIntelligenceSources\(\)[\s\S]*source\.sourceType === "league"[\s\S]*String\(source\.sourceId\) === String\(gameId\)[\s\S]*source\.sourcePlayer === playerRole/,
+  /regenerateCorrectedGameArmyIntelligenceSnapshot\(\s*gameId,\s*playerRole,\s*target\.sourceType,[\s\S]*correctedArmyCode,\s*decoded\s*\)/,
+  'Snapshot regeneration must use the target source type from the selected game.',
+  correction,
+)
+
+check(
+  /buildArmyIntelligenceSources\(\)[\s\S]*source\.sourceType === sourceType[\s\S]*String\(source\.sourceId\) === String\(gameId\)[\s\S]*source\.sourcePlayer === playerRole/,
   'Snapshot regeneration must be scoped to the selected game and player role.',
   correction,
 )
@@ -93,6 +122,16 @@ check(
   correction,
 )
 
+check(
+  (correction.match(/\.setValue\(correctedArmyCode\)/g) || []).length === 1,
+  'Correction must write the corrected Army Code to exactly one selected cell.',
+)
+
+check(
+  !/gameResult[\s\S]{0,120}\.setValue|setValue[\s\S]{0,120}gameResult|GAME_RESULT[\s\S]{0,120}\.setValue|setValue[\s\S]{0,120}GAME_RESULT/.test(correction),
+  'Correction must not modify the game result, so drawn games remain Draw.',
+)
+
 if (failures.length > 0) {
   console.error('Game Army Code correction regression check failed:')
   for (const failure of failures) {
@@ -101,7 +140,7 @@ if (failures.length > 0) {
   process.exit(1)
 }
 
-console.log('Game Army Code correction regression check passed: 14 checks.')
+console.log('Game Army Code correction regression check passed: 21 checks.')
 
 function read(path) {
   return readFileSync(join(root, path), 'utf8')

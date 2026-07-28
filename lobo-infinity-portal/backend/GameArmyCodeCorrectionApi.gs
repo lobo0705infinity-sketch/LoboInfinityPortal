@@ -106,6 +106,7 @@ function correctGameArmyCode(e, auth) {
     regenerateCorrectedGameArmyIntelligenceSnapshot(
       gameId,
       playerRole,
+      target.sourceType,
       correctedArmyCode,
       decoded
     );
@@ -206,16 +207,11 @@ function getGameArmyCodeCorrectionTarget(gameId, playerRole) {
   const winner =
     determineWinner(row);
 
-  if (winner === 0)
-    return {
-      found: false,
-      error: "Winner/loser Army Code correction is not available for drawn games."
-    };
-
   const playerNumber =
-    playerRole === "winner"
-      ? winner
-      : winner === 1 ? 2 : 1;
+    getGameArmyCodeCorrectionPlayerNumber(
+      winner,
+      playerRole
+    );
 
   const columns =
     ensureResultSubmissionArmyCodeColumns(sheet);
@@ -252,18 +248,35 @@ function getGameArmyCodeCorrectionTarget(gameId, playerRole) {
       decodeArmyCode(previousArmyCode),
     row: row,
     rowNumber: rowNumber,
-    sheet: sheet
+    sheet: sheet,
+    sourceType:
+      getGameEngineGameType(row) === "casual"
+        ? "casual"
+        : "league"
   };
 
 }
 
-function regenerateCorrectedGameArmyIntelligenceSnapshot(gameId, playerRole, armyCode, decoded) {
+function getGameArmyCodeCorrectionPlayerNumber(winner, playerRole) {
+
+  if (winner === 0)
+    return playerRole === "winner"
+      ? 1
+      : 2;
+
+  return playerRole === "winner"
+    ? winner
+    : winner === 1 ? 2 : 1;
+
+}
+
+function regenerateCorrectedGameArmyIntelligenceSnapshot(gameId, playerRole, sourceType, armyCode, decoded) {
 
   const sources =
     buildArmyIntelligenceSources()
       .filter(function(source) {
         return (
-          source.sourceType === "league" &&
+          source.sourceType === sourceType &&
           String(source.sourceId) === String(gameId) &&
           source.sourcePlayer === playerRole
         );
