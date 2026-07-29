@@ -11,6 +11,8 @@ const factionBackend = read('backend/FactionApi.gs')
 const frontend = read('src/pages/TeamTournament.tsx')
 const submitResult = read('src/pages/SubmitResult.tsx')
 const eventHomeBackend = read('backend/EventHomeApi.gs')
+const eventRegistrationBackend = read('backend/EventRegistrationApi.gs')
+const eventEngineBackend = read('backend/EventEngineApi.gs')
 const eventManagerPanel = read('src/components/EventManagerPanel.tsx')
 const api = read('src/services/api.ts')
 const resultSubmissionBackend = read('backend/ResultSubmissionApi.gs')
@@ -37,6 +39,24 @@ const checks = [
       backend.includes('copy.teamId = teamIdentity.teamId') &&
       backend.includes('copy.team = teamIdentity.teamName') &&
       backend.includes('copy.preferredTeam = teamIdentity.teamName'),
+  },
+  {
+    label: 'Event Participants persist Team ID for new Team Tournament registrations',
+    pass:
+      eventEngineBackend.includes('"Team ID"') &&
+      eventRegistrationBackend.includes('const teamId =\n    getEventRegistrationString(params.teamId);') &&
+      eventRegistrationBackend.includes('teamId,\n          now') &&
+      eventRegistrationBackend.includes('teamId: row["Team ID"] || ""'),
+  },
+  {
+    label: 'Backend current-player registration lookup supports identity candidates',
+    pass:
+      eventRegistrationBackend.includes('function getEventParticipantIdentityCandidates(') &&
+      eventRegistrationBackend.includes('user.playerDisplayName') &&
+      eventRegistrationBackend.includes('user.displayName') &&
+      eventRegistrationBackend.includes('function getEventRegistrationForUser(event, user)') &&
+      eventHomeBackend.includes('getEventRegistrationForUser(event, auth.user)') &&
+      backend.includes('findTeamTournamentRegistrationForUser('),
   },
   {
     label: 'Backend does not preserve stale team names when no roster membership exists',
@@ -121,6 +141,9 @@ const checks = [
     label: 'Submit Result displays Team Tournament names resolved from Team IDs',
     pass:
       submitResult.includes('function resolveTournamentTeamName(') &&
+      submitResult.includes('data.registration.currentPlayer ||') &&
+      submitResult.includes('authenticatedPlayer = \'\'') &&
+      submitResult.includes('const playerCandidates = uniqueNonEmpty([') &&
       submitResult.includes('resolveTournamentTeamName(data, table.teamAId, table.teamA)') &&
       submitResult.includes('resolveTournamentTeamName(data, table.teamBId, table.teamB)') &&
       submitResult.includes('team: resolvedTeam || (teamId ? \'\' : team)') &&

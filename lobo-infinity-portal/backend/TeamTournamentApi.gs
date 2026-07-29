@@ -138,9 +138,10 @@ function getTeamTournament(e) {
 
   const currentPlayerRegistration =
     auth.authenticated
-      ? findTeamTournamentRegistrationForPlayer(
+      ? findTeamTournamentRegistrationForUser(
+          event,
           registrations,
-          getEventParticipantKey(event, auth.user)
+          auth.user
         )
       : null;
 
@@ -802,10 +803,7 @@ function saveTeamTournamentResult(e) {
   const rawRegistration =
     commissionerContext.enabled && selectedPlayer !== ""
       ? getEventRegistrationForPlayer(eventId, selectedPlayer)
-      : getEventRegistrationForPlayer(
-          eventId,
-          getEventParticipantKey(event, auth.user)
-        );
+      : getEventRegistrationForUser(event, auth.user);
 
   if ((!rawRegistration || rawRegistration.status === "Withdrawn") &&
       !commissionerContext.override)
@@ -1406,6 +1404,28 @@ function findTeamTournamentRegistrationForPlayer(registrations, player) {
       registrations[index];
 
     if (getTeamTournamentString(registration.player).toLowerCase() === target)
+      return registration;
+  }
+
+  return null;
+
+}
+
+function findTeamTournamentRegistrationForUser(event, registrations, user) {
+
+  const candidates =
+    typeof getEventParticipantIdentityCandidates === "function"
+      ? getEventParticipantIdentityCandidates(event, user)
+      : [getEventParticipantKey(event, user)];
+
+  for (let index = 0; index < candidates.length; index++) {
+    const registration =
+      findTeamTournamentRegistrationForPlayer(
+        registrations,
+        candidates[index]
+      );
+
+    if (registration)
       return registration;
   }
 

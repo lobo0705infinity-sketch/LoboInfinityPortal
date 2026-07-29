@@ -610,6 +610,7 @@ function SubmitResult() {
     return (
       <TeamTournamentResultSubmission
         allPlayerOptions={allPlayerOptions}
+        authenticatedPlayer={authenticatedSubmitGamePlayer}
         commissionerMode={isCommissionerSubmission}
         commissionerOverride={isCommissionerOverride}
         commissionerReason={commissionerReason}
@@ -946,6 +947,7 @@ function CommissionerModeControls({
 
 function TeamTournamentResultSubmission({
   allPlayerOptions,
+  authenticatedPlayer,
   commissionerMode,
   commissionerOverride,
   commissionerReason,
@@ -958,6 +960,7 @@ function TeamTournamentResultSubmission({
   setCommissionerReason,
 }: {
   allPlayerOptions: PickerOption[]
+  authenticatedPlayer: string
   commissionerMode: boolean
   commissionerOverride: boolean
   commissionerReason: string
@@ -971,9 +974,13 @@ function TeamTournamentResultSubmission({
 }) {
   const [state, setState] = useState<SubmitState>({ status: 'idle' })
   const [winner, setWinner] = useState('')
+  const currentTournamentRegistration =
+    eventHome.registration.currentPlayer ||
+    data?.registration.currentPlayer ||
+    null
   const defaultPlayer =
-    eventHome.registration.currentPlayer?.player ||
-    eventHome.registration.currentPlayer?.displayName ||
+    currentTournamentRegistration?.player ||
+    currentTournamentRegistration?.displayName ||
     ''
   const [selectedPlayer, setSelectedPlayer] = useState(defaultPlayer)
   const [selectedOpponent, setSelectedOpponent] = useState('')
@@ -981,6 +988,7 @@ function TeamTournamentResultSubmission({
     data,
     eventHome,
     commissionerMode ? selectedPlayer : '',
+    authenticatedPlayer,
   )
   const alreadySubmitted = assignment ? assignment.status.toLowerCase() !== 'outstanding' : false
   const tournamentPlayerOptions = useMemo(
@@ -1018,6 +1026,7 @@ function TeamTournamentResultSubmission({
         player: commissionerMode ? selectedPlayer : assignment?.player || '',
       },
       eventHome,
+      data,
       assignment,
       alreadySubmitted,
       commissionerMode,
@@ -1347,15 +1356,32 @@ function getTournamentAssignment(
   data: TeamTournamentData | null,
   eventHome: EventHomeData,
   selectedPlayer = '',
+  authenticatedPlayer = '',
 ): TournamentAssignment | null {
-  if (!data || (!eventHome.registration.currentPlayer && !selectedPlayer)) {
+  if (!data) {
     return null
   }
 
-  const registration = eventHome.registration.currentPlayer
-  const player = selectedPlayer || registration?.player || registration?.displayName || ''
+  const registration =
+    data.registration.currentPlayer ||
+    eventHome.registration.currentPlayer
+
+  const playerCandidates = uniqueNonEmpty([
+    selectedPlayer,
+    registration?.player,
+    registration?.displayName,
+    authenticatedPlayer,
+  ])
+
+  if (playerCandidates.length === 0) {
+    return null
+  }
+
+  const player = playerCandidates[0]
   const selectedRegistration = data.registration.registrations.find((entry) => (
-    sameValue(entry.player, player) || sameValue(entry.displayName, player)
+    playerCandidates.some((candidate) => (
+      sameValue(entry.player, candidate) || sameValue(entry.displayName, candidate)
+    ))
   ))
   const team =
     selectedRegistration?.team ||
@@ -1373,14 +1399,23 @@ function getTournamentAssignment(
   }
 
   const table = data.resultStatuses.find((status) => (
-    sameValue(status.player, player) || sameValue(status.opponent, player)
+    playerCandidates.some((candidate) => (
+      sameValue(status.player, candidate) || sameValue(status.opponent, candidate)
+    ))
+  )) || data.resultStatuses.find((status) => (
+    teamId !== '' &&
+    (status.teamAId === teamId || status.teamBId === teamId)
   ))
 
   if (!table) {
     return null
   }
 
-  const flipped = sameValue(table.opponent, player)
+  const matchedPlayer =
+    playerCandidates.find((candidate) => (
+      sameValue(table.player, candidate) || sameValue(table.opponent, candidate)
+    )) || player
+  const flipped = sameValue(table.opponent, matchedPlayer)
   const playerIsTeamA =
     table.teamAId && teamId
       ? table.teamAId === teamId
@@ -1404,7 +1439,7 @@ function getTournamentAssignment(
     mission,
     opponent: flipped ? table.player : table.opponent,
     opponentTeam,
-    player,
+    player: matchedPlayer,
     round: table.round,
     roundId: table.roundId,
     status: table.status,
@@ -1420,6 +1455,7 @@ function getTournamentAssignment(
 function validateTournamentResult(
   params: Record<string, string>,
   eventHome: EventHomeData,
+  data: TeamTournamentData | null,
   assignment: TournamentAssignment | null,
   alreadySubmitted: boolean,
   commissionerMode = false,
@@ -1427,7 +1463,7 @@ function validateTournamentResult(
 ) {
   const issues: string[] = []
 
-  if (!eventHome.registration.currentPlayer && !commissionerMode) {
+  if (!eventHome.registration.currentPlayer && !data?.registration.currentPlayer && !commissionerMode) {
     issues.push('You must be registered for this Team Tournament before submitting a result.')
   }
 
@@ -1491,6 +1527,21 @@ function normalize(value: string) {
 
 function sameValue(left: string, right: string) {
   return normalize(left) === normalize(right)
+}
+
+function uniqueNonEmpty(values: Array<string | undefined>) {
+  const seen = new Set<string>()
+
+  return values.filter((value): value is string => {
+    const normalized = normalize(value || '')
+
+    if (!value || !normalized || seen.has(normalized)) {
+      return false
+    }
+
+    seen.add(normalized)
+    return true
+  })
 }
 
 function optionContains(options: PickerOption[], value: string) {

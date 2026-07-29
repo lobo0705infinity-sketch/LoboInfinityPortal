@@ -33,10 +33,7 @@ function getEventRegistration(e) {
 
   const currentPlayer =
     auth.authenticated
-      ? getEventRegistrationForPlayer(
-          eventId,
-          getEventParticipantKey(event, auth.user)
-        )
+      ? getEventRegistrationForUser(event, auth.user)
       : null;
 
   return jsonOutput({
@@ -243,6 +240,41 @@ function getEventParticipantKey(event, user) {
     return "";
 
   return getEventRegistrationString(user.email).toLowerCase();
+
+}
+
+function getEventParticipantIdentityCandidates(event, user) {
+
+  if (!user)
+    return [];
+
+  const candidates = [
+    getCanonicalPlayerFromUser(user),
+    user.leaguePlayer,
+    user.canonicalPlayer,
+    user.playerDisplayName,
+    user.displayName
+  ];
+
+  if (!eventRequiresLeagueMembership(event))
+    candidates.push(user.email);
+
+  const seen = {};
+
+  return candidates
+    .map(function(value) {
+      return getEventRegistrationString(value);
+    })
+    .filter(function(value) {
+      const key =
+        value.toLowerCase();
+
+      if (key === "" || seen[key])
+        return false;
+
+      seen[key] = true;
+      return true;
+    });
 
 }
 
@@ -586,6 +618,9 @@ function upsertEventRegistrationRow(eventId, user, params, status) {
   const preferredTeam =
     getEventRegistrationString(params.preferredTeam || team);
 
+  const teamId =
+    getEventRegistrationString(params.teamId);
+
   measureEventApprovalOperation(
     "approval.spreadsheetWrite.upsertCompositeRow",
     function() {
@@ -616,6 +651,7 @@ function upsertEventRegistrationRow(eventId, user, params, status) {
           getEventRegistrationBoolean(params.captain),
           getEventRegistrationBoolean(params.freeAgent),
           canonicalizeArmyName(params.faction),
+          teamId,
           now
         ]
       );
@@ -692,7 +728,10 @@ function getEventRegistrationForPlayer(eventId, player) {
           return measureEventHomeLoopIterationIfAvailable(
             "eventHome.loop.registration.currentPlayerFilter",
             function() {
-              return registration.player.toLowerCase() === target;
+              return eventRegistrationMatchesPlayer(
+                registration,
+                target
+              );
             }
           );
         })[0] || null;
@@ -702,6 +741,41 @@ function getEventRegistrationForPlayer(eventId, player) {
       player: player
     }
   );
+
+}
+
+function getEventRegistrationForUser(event, user) {
+
+  const candidates =
+    getEventParticipantIdentityCandidates(event, user);
+
+  for (let index = 0; index < candidates.length; index++) {
+    const registration =
+      getEventRegistrationForPlayer(
+        event.id,
+        candidates[index]
+      );
+
+    if (registration)
+      return registration;
+  }
+
+  return null;
+
+}
+
+function eventRegistrationMatchesPlayer(registration, target) {
+
+  if (!registration || target === "")
+    return false;
+
+  return [
+    registration.player,
+    registration.displayName,
+    registration.email
+  ].some(function(value) {
+    return getEventRegistrationString(value).toLowerCase() === target;
+  });
 
 }
 
@@ -718,6 +792,7 @@ function mapEventRegistrationRow(row) {
     team: row["Team"],
     notes: row["Notes"],
     email: row["Email"],
+    teamId: row["Team ID"] || "",
     discord: row["Discord"],
     preferredTeam: row["Preferred Team"] || row["Team"],
     captain: getEventRegistrationBoolean(row["Captain"]),

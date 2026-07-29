@@ -221,10 +221,7 @@ function getEventHome(e) {
       "eventHome.participantLoading.currentPlayer.lookup",
       function() {
         return auth.authenticated
-          ? getEventRegistrationForPlayer(
-              event.id,
-              getEventParticipantKey(event, auth.user)
-            )
+          ? getEventRegistrationForUser(event, auth.user)
           : null;
       },
       {
