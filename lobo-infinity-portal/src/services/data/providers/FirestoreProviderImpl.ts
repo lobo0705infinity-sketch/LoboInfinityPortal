@@ -764,7 +764,7 @@ async function saveTeamDocument(params: Record<string, string>) {
 async function savePairingDocument(params: Record<string, string>) {
   const db = await getDb()
   const eventId = params.eventId || defaultTournamentEventId
-  const roundId = params.roundId || `${eventId}_${slug(params.round || 'round')}_${slug(params.teamA || 'team-a')}_${slug(params.teamB || 'team-b')}`
+  const roundId = params.roundId || `${eventId}_${slug(params.round || 'round')}_${slug(params.teamAId || params.teamA || 'team-a')}_${slug(params.teamBId || params.teamB || 'team-b')}`
   await setDoc(
     doc(db, 'pairings', roundId),
     {
@@ -888,6 +888,7 @@ function normalizeRegistration(
     seed: readString(data, 'seed'),
     status: readString(data, 'status') || 'Registered',
     team: readString(data, 'team'),
+    teamId: readString(data, 'teamId'),
     updatedAt: readTimestamp(data, 'updatedAt'),
   }
 }
@@ -919,6 +920,8 @@ function normalizePairing(id: string, data: DocumentData, eventId: string): Team
     status: readString(data, 'status') || 'Scheduled',
     teamA: readString(data, 'teamA'),
     teamB: readString(data, 'teamB'),
+    teamAId: readString(data, 'teamAId'),
+    teamBId: readString(data, 'teamBId'),
     updatedAt: readTimestamp(data, 'updatedAt'),
   }
 }
@@ -945,6 +948,7 @@ function normalizeInvitation(id: string, data: DocumentData, eventId: string): T
     message: readString(data, 'message'),
     player: readString(data, 'player'),
     status: readString(data, 'status') || 'Pending',
+    teamId: readString(data, 'teamId'),
     teamName: readString(data, 'teamName'),
     updatedAt: readTimestamp(data, 'updatedAt'),
   }
@@ -971,6 +975,8 @@ function normalizeTournamentResult(id: string, data: DocumentData, eventId: stri
     table: readString(data, 'table'),
     teamA: readString(data, 'teamA'),
     teamB: readString(data, 'teamB'),
+    teamAId: readString(data, 'teamAId'),
+    teamBId: readString(data, 'teamBId'),
     tournamentPoints: readString(data, 'tournamentPoints'),
     updatedAt: readTimestamp(data, 'updatedAt'),
     victoryPoints: readString(data, 'victoryPoints'),
@@ -1040,9 +1046,13 @@ function buildTeamStandings(
 ) {
   return teams
     .map((team) => {
-      const teamResults = results.filter((result) =>
-        [result.teamA, result.teamB].includes(team.teamName),
-      )
+      const teamResults = results.filter((result) => {
+        if (result.teamAId || result.teamBId) {
+          return [result.teamAId, result.teamBId].includes(team.teamId)
+        }
+
+        return [result.teamA, result.teamB].includes(team.teamName)
+      })
 
       return {
         captain: team.captain,

@@ -615,7 +615,8 @@ function getAllRecentGameObjects() {
   return measureEventHomeOperationIfAvailable(
     "eventHome.recentGames.transformAll",
     function() {
-      return values
+      const leagueGames =
+        values
         .map(function(row, index) {
 
           return buildRecentGame(
@@ -653,6 +654,24 @@ function getAllRecentGameObjects() {
 
           return buildRecentGameResponse(game);
 
+        });
+
+      const tournamentGames =
+        typeof getAllTeamTournamentRecentGameObjects === "function"
+          ? getAllTeamTournamentRecentGameObjects()
+          : [];
+
+      return leagueGames
+        .concat(tournamentGames)
+        .sort(function(a, b) {
+          const dateOrder =
+            new Date(b.date).getTime() -
+            new Date(a.date).getTime();
+
+          if (Number.isFinite(dateOrder) && dateOrder !== 0)
+            return dateOrder;
+
+          return String(b.id).localeCompare(String(a.id));
         });
     },
     {

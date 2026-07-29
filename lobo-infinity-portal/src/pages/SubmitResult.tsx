@@ -1114,6 +1114,8 @@ function TeamTournamentResultSubmission({
           <>
             <HiddenField name="roundId" value={assignment.roundId} />
             <HiddenField name="round" value={assignment.round} />
+            <HiddenField name="teamAId" value={assignment.teamAId} />
+            <HiddenField name="teamBId" value={assignment.teamBId} />
             <HiddenField name="teamA" value={assignment.teamA} />
             <HiddenField name="teamB" value={assignment.teamB} />
             <HiddenField name="table" value={assignment.table} />
@@ -1329,6 +1331,8 @@ type TournamentAssignment = {
   team: string
   teamA: string
   teamB: string
+  teamAId: string
+  teamBId: string
 }
 
 function getTournamentAssignment(
@@ -1351,8 +1355,12 @@ function getTournamentAssignment(
     registration?.team ||
     registration?.preferredTeam ||
     ''
+  const teamId =
+    selectedRegistration?.teamId ||
+    registration?.teamId ||
+    ''
 
-  if (!player || !team) {
+  if (!player || (!teamId && !team)) {
     return null
   }
 
@@ -1375,7 +1383,14 @@ function getTournamentAssignment(
   return {
     mission,
     opponent: flipped ? table.player : table.opponent,
-    opponentTeam: sameValue(table.teamA, team) ? table.teamB : table.teamA,
+    opponentTeam:
+      table.teamAId && teamId
+        ? table.teamAId === teamId
+          ? table.teamB
+          : table.teamA
+        : sameValue(table.teamA, team)
+          ? table.teamB
+          : table.teamA,
     player,
     round: table.round,
     roundId: table.roundId,
@@ -1384,6 +1399,8 @@ function getTournamentAssignment(
     team,
     teamA: table.teamA,
     teamB: table.teamB,
+    teamAId: table.teamAId,
+    teamBId: table.teamBId,
   }
 }
 

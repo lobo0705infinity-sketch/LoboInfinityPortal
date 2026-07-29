@@ -10,6 +10,11 @@ const RESULT_SUBMISSION_ARMY_CODE_HEADERS = {
   PLAYER2_ARMY_CODE: "Player 2 Army Code"
 };
 
+const RESULT_SUBMISSION_CANONICAL_HEADERS = {
+  SOURCE_TYPE: "Source Type",
+  SOURCE_RESULT_ID: "Source Result ID"
+};
+
 function submitLeagueResult(e) {
 
   return requireApiPermission(e, "canSubmitLeagueGames", function(auth) {
@@ -445,6 +450,242 @@ function ensureResultSubmissionArmyCodeColumns(sheet) {
     player2ArmyCode:
       headers.indexOf(RESULT_SUBMISSION_ARMY_CODE_HEADERS.PLAYER2_ARMY_CODE)
   };
+
+}
+
+function appendCanonicalGameSubmissionRecord(record) {
+
+  const sheet =
+    SpreadsheetApp
+      .getActive()
+      .getSheetByName(CONFIG.SHEETS.FORM);
+
+  if (!sheet)
+    throw new Error("Result datastore was not found.");
+
+  const armyCodeColumns =
+    ensureResultSubmissionArmyCodeColumns(sheet);
+
+  const sourceColumns =
+    ensureResultSubmissionCanonicalColumns(sheet);
+
+  const sourceType =
+    getResultSubmissionString(record.sourceType);
+
+  const sourceResultId =
+    getResultSubmissionString(record.sourceResultId);
+
+  if (
+    sourceType !== "" &&
+    sourceResultId !== "" &&
+    hasCanonicalGameSubmissionRecord(
+      sheet,
+      sourceColumns,
+      sourceType,
+      sourceResultId
+    )
+  )
+    return {
+      appended: false,
+      sourceResultId: sourceResultId,
+      sourceType: sourceType
+    };
+
+  const row = [];
+
+  row[FORM.TIMESTAMP] =
+    getResultSubmissionString(record.timestamp) ||
+    getResultSubmissionTimestamp();
+  row[FORM.DIVISION] =
+    getResultSubmissionString(record.division);
+  row[FORM.DATE] =
+    getResultSubmissionString(record.date) ||
+    getResultSubmissionDate();
+  row[FORM.MISSION] =
+    getResultSubmissionString(record.mission);
+  row[FORM.PLAYER1] =
+    getResultSubmissionString(record.player1);
+  row[FORM.PLAYER2] =
+    getResultSubmissionString(record.player2);
+  row[FORM.P1TP] =
+    Number(record.player1Tp) || 0;
+  row[FORM.P2TP] =
+    Number(record.player2Tp) || 0;
+  row[FORM.P1OP] =
+    Number(record.player1Op) || 0;
+  row[FORM.P2OP] =
+    Number(record.player2Op) || 0;
+  row[FORM.P1VP] =
+    Number(record.player1Vp) || 0;
+  row[FORM.P2VP] =
+    Number(record.player2Vp) || 0;
+  row[FORM.FIRSTTURN] =
+    getResultSubmissionString(record.firstTurn);
+  row[FORM.WINNINGFACTION] =
+    canonicalizeArmyName(record.winningFaction);
+  row[FORM.LOSINGFACTION] =
+    canonicalizeArmyName(record.losingFaction);
+  row[FORM.MOMENT] =
+    getResultSubmissionString(record.bestMoment);
+  row[FORM.EVENT_ID] =
+    getResultSubmissionString(record.eventId);
+  row[FORM.GAME_TYPE] =
+    normalizeGameType(record.gameType);
+  row[FORM.GAME_RESULT] =
+    getResultSubmissionString(record.gameResult);
+  row[armyCodeColumns.player1ArmyCode] =
+    getResultSubmissionString(record.player1ArmyCode);
+  row[armyCodeColumns.player2ArmyCode] =
+    getResultSubmissionString(record.player2ArmyCode);
+  row[sourceColumns.sourceType] =
+    sourceType;
+  row[sourceColumns.sourceResultId] =
+    sourceResultId;
+
+  sheet.appendRow(row);
+
+  return {
+    appended: true,
+    sourceResultId: sourceResultId,
+    sourceType: sourceType
+  };
+
+}
+
+function ensureResultSubmissionCanonicalColumns(sheet) {
+
+  const requiredHeaders = [
+    RESULT_SUBMISSION_CANONICAL_HEADERS.SOURCE_TYPE,
+    RESULT_SUBMISSION_CANONICAL_HEADERS.SOURCE_RESULT_ID
+  ];
+
+  const headerRange =
+    sheet.getRange(
+      1,
+      1,
+      1,
+      Math.max(
+        sheet.getLastColumn(),
+        FORM.PLAYER2_ARMY_CODE + 1
+      )
+    );
+
+  const headers =
+    headerRange
+      .getValues()[0]
+      .map(getResultSubmissionString);
+
+  requiredHeaders.forEach(function(header) {
+    if (headers.indexOf(header) === -1) {
+      headers.push(header);
+      sheet
+        .getRange(
+          1,
+          headers.length
+        )
+        .setValue(header);
+    }
+  });
+
+  return {
+    sourceType:
+      headers.indexOf(
+        RESULT_SUBMISSION_CANONICAL_HEADERS.SOURCE_TYPE
+      ),
+    sourceResultId:
+      headers.indexOf(
+        RESULT_SUBMISSION_CANONICAL_HEADERS.SOURCE_RESULT_ID
+      )
+  };
+
+}
+
+function hasCanonicalGameSubmissionRecord(
+  sheet,
+  sourceColumns,
+  sourceType,
+  sourceResultId
+) {
+
+  const values =
+    sheet
+      .getDataRange()
+      .getValues();
+
+  if (values.length <= 1)
+    return false;
+
+  const typeTarget =
+    normalizeResultSubmissionValue(sourceType);
+
+  const idTarget =
+    normalizeResultSubmissionValue(sourceResultId);
+
+  return values
+    .slice(1)
+    .some(function(row) {
+      return (
+        normalizeResultSubmissionValue(row[sourceColumns.sourceType]) === typeTarget &&
+        normalizeResultSubmissionValue(row[sourceColumns.sourceResultId]) === idTarget
+      );
+    });
+
+}
+
+function getCanonicalGameSubmissionSourceIds(sourceType) {
+
+  const sheet =
+    SpreadsheetApp
+      .getActive()
+      .getSheetByName(CONFIG.SHEETS.FORM);
+
+  if (!sheet)
+    return {};
+
+  const values =
+    sheet
+      .getDataRange()
+      .getValues();
+
+  if (values.length <= 1)
+    return {};
+
+  const headers =
+    values.shift().map(getResultSubmissionString);
+
+  const sourceTypeColumn =
+    headers.indexOf(
+      RESULT_SUBMISSION_CANONICAL_HEADERS.SOURCE_TYPE
+    );
+
+  const sourceResultIdColumn =
+    headers.indexOf(
+      RESULT_SUBMISSION_CANONICAL_HEADERS.SOURCE_RESULT_ID
+    );
+
+  if (sourceTypeColumn === -1 || sourceResultIdColumn === -1)
+    return {};
+
+  const sourceTypeTarget =
+    normalizeResultSubmissionValue(sourceType);
+
+  const ids = {};
+
+  values.forEach(function(row) {
+    if (
+      normalizeResultSubmissionValue(row[sourceTypeColumn]) !==
+      sourceTypeTarget
+    )
+      return;
+
+    const sourceResultId =
+      getResultSubmissionString(row[sourceResultIdColumn]);
+
+    if (sourceResultId !== "")
+      ids[sourceResultId] = true;
+  });
+
+  return ids;
 
 }
 

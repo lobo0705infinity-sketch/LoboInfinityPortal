@@ -92,6 +92,8 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     status: 'Scheduled',
     teamA: '',
     teamB: '',
+    teamAId: '',
+    teamBId: '',
   })
   const [leagueOperationsForm, setLeagueOperationsForm] = useState({
     mission1: '',
@@ -1067,6 +1069,8 @@ function TeamOperationsPanel({
     status: string
     teamA: string
     teamB: string
+    teamAId: string
+    teamBId: string
   }
   pairings: EventManagerData['pairings']
   teamForm: {
@@ -1157,23 +1161,45 @@ function TeamOperationsPanel({
         </label>
         <label>
           Team A
-          <input
+          <select
             disabled={!canManage}
             onChange={(event) =>
-              onPairingChange({ ...pairingForm, teamA: event.target.value })
+              onPairingChange({
+                ...pairingForm,
+                teamA: teams.find((team) => team.teamId === event.target.value)?.teamName ?? '',
+                teamAId: event.target.value,
+              })
             }
-            value={pairingForm.teamA}
-          />
+            value={pairingForm.teamAId}
+          >
+            <option value="">Select team</option>
+            {teams.map((team) => (
+              <option key={team.teamId} value={team.teamId}>
+                {team.teamName}
+              </option>
+            ))}
+          </select>
         </label>
         <label>
           Team B
-          <input
+          <select
             disabled={!canManage}
             onChange={(event) =>
-              onPairingChange({ ...pairingForm, teamB: event.target.value })
+              onPairingChange({
+                ...pairingForm,
+                teamB: teams.find((team) => team.teamId === event.target.value)?.teamName ?? '',
+                teamBId: event.target.value,
+              })
             }
-            value={pairingForm.teamB}
-          />
+            value={pairingForm.teamBId}
+          >
+            <option value="">Select team</option>
+            {teams.map((team) => (
+              <option key={team.teamId} value={team.teamId}>
+                {team.teamName}
+              </option>
+            ))}
+          </select>
         </label>
         <label>
           Status

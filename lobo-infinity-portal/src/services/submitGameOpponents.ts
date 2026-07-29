@@ -54,6 +54,7 @@ export function buildSubmitGameOpponentEventHome(
           seed: '',
           status: 'Active',
           team: '',
+          teamId: '',
           updatedAt: '',
         })),
     },

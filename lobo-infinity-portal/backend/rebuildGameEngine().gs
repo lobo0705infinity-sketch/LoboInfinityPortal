@@ -42,39 +42,59 @@ function rebuildGameEngine() {
 
 }
 
-function publishLatestGameSubmittedAutomationEvent() {
+function publishLatestGameSubmittedAutomationEvent(game) {
+
+  try {
+
+    const submittedGame =
+      game || getDiscordLatestGame();
+
+    return publishGameSubmittedAutomationEvent(submittedGame);
+
+  }
+  catch (err) {
+
+    Logger.log(
+      "Game submitted automation event failed: " +
+      String(err && err.message ? err.message : err)
+    );
+
+  }
+
+}
+
+function publishGameSubmittedAutomationEvent(game) {
 
   try {
 
     if (
-      typeof publishLeagueAutomationEvent === "function"
-    ) {
-      const latestGame =
-        getDiscordLatestGame();
+      typeof publishLeagueAutomationEvent !== "function" ||
+      !game
+    )
+      return {
+        success: true,
+        skipped: true
+      };
 
-      if (!latestGame)
-        return;
-
-      publishLeagueAutomationEvent({
-        eventType: "gameSubmitted",
-        category: "Match Results",
-        priority: "high",
-        player:
-          latestGame && latestGame.winner
-            ? latestGame.winner
-            : "",
-        division:
-          latestGame && latestGame.division
-            ? latestGame.division
-            : "",
-        message:
-          latestGame && latestGame.summary
-            ? latestGame.summary
-            : "A league game was submitted.",
-        payload:
-          JSON.stringify(latestGame || {})
-      });
-    }
+    return publishLeagueAutomationEvent({
+      eventType: "gameSubmitted",
+      category: "Match Results",
+      priority: "high",
+      player:
+        game && game.winner
+          ? game.winner
+          : "",
+      division:
+        game && game.division
+          ? game.division
+          : "",
+      message:
+        game && game.summary
+          ? game.summary
+          : "A league game was submitted.",
+      payload:
+        JSON.stringify(game || {})
+    });
 
   }
   catch (err) {

@@ -371,16 +371,33 @@ function saveEventManagerPairing(e) {
     const eventId =
       resolveEventId(params.eventId || EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID);
 
-    const teamA =
-      getEventManagerString(params.teamA);
+    const teams =
+      typeof getTeamTournamentTeams === "function"
+        ? getTeamTournamentTeams(eventId)
+        : [];
 
-    const teamB =
-      getEventManagerString(params.teamB);
+    const teamAIdentity =
+      typeof resolveTeamTournamentTeamIdentity === "function"
+        ? resolveTeamTournamentTeamIdentity(
+            teams,
+            getEventManagerString(params.teamAId),
+            getEventManagerString(params.teamA)
+          )
+        : { teamId: "", teamName: getEventManagerString(params.teamA) };
 
-    if (teamA === "" || teamB === "")
+    const teamBIdentity =
+      typeof resolveTeamTournamentTeamIdentity === "function"
+        ? resolveTeamTournamentTeamIdentity(
+            teams,
+            getEventManagerString(params.teamBId),
+            getEventManagerString(params.teamB)
+          )
+        : { teamId: "", teamName: getEventManagerString(params.teamB) };
+
+    if (teamAIdentity.teamId === "" || teamBIdentity.teamId === "")
       return jsonOutput({
         success: false,
-        error: "Both teams are required."
+        error: "Both teams must be selected from the Team Registry."
       });
 
     const roundId =
@@ -393,26 +410,28 @@ function saveEventManagerPairing(e) {
       [
         "Event ID",
         "Round ID",
-        "Team A",
-        "Team B"
+        "Team A ID",
+        "Team B ID"
       ],
       [
         eventId,
         roundId,
-        teamA,
-        teamB
+        teamAIdentity.teamId,
+        teamBIdentity.teamId
       ],
       [
         eventId,
         roundId,
         getEventManagerString(params.round) || "Round 1",
-        teamA,
-        teamB,
+        teamAIdentity.teamName,
+        teamBIdentity.teamName,
         getEventManagerString(params.playerPairings),
         getEventManagerString(params.status) || "Scheduled",
         getEventManagerString(params.results),
         getEventManagerTimestamp(),
-        getEventManagerTimestamp()
+        getEventManagerTimestamp(),
+        teamAIdentity.teamId,
+        teamBIdentity.teamId
       ]
     );
 
@@ -420,7 +439,7 @@ function saveEventManagerPairing(e) {
       auth,
       eventId,
       "Pairing saved",
-      teamA + " vs " + teamB
+      teamAIdentity.teamName + " vs " + teamBIdentity.teamName
     );
     invalidateEventManagerCaches();
 

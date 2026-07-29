@@ -516,9 +516,18 @@ function buildAutomationDiscordPayload(item) {
   const template =
     getAutomationTemplateForEvent(item.eventType);
 
+  const teamSummary =
+    payload.teamAName && payload.teamBName
+      ? getAutomationString(payload.teamAName) +
+        " vs " +
+        getAutomationString(payload.teamBName)
+      : "";
+
   const context = {
     player: getAutomationString(payload.player),
-    division: getAutomationString(payload.division),
+    division:
+      teamSummary ||
+      getAutomationString(payload.division),
     message:
       getAutomationString(payload.message) ||
       item.eventType

@@ -415,7 +415,7 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
           </section>
         ) : activeSection === 'pairings' ? (
           <section className="team-tournament-grid" id="team-tournament-commissioner">
-            <PairingForm disabled={working !== ''} onSubmit={(params) => void savePairing(params)} />
+            <PairingForm disabled={working !== ''} onSubmit={(params) => void savePairing(params)} teams={data.teams.filter((team) => team.status !== 'Deleted')} />
             <RoundControlForm disabled={working !== ''} onSubmit={(params) => void advanceRound(params)} />
           </section>
         ) : (
@@ -754,12 +754,14 @@ function FreeAgentCenter({
   onInvite: (params: Record<string, string>) => void
   teams: TeamTournamentTeam[]
 }) {
-  const defaultTeam = teams[0]?.teamName ?? ''
+  const defaultTeam = teams[0]?.teamId ?? ''
 
-  function invite(player: string, teamName: string) {
+  function invite(player: string, teamId: string) {
+    const team = teams.find((candidate) => candidate.teamId === teamId)
     onInvite({
       player,
-      teamName,
+      teamId,
+      teamName: team?.teamName ?? '',
       status: 'Pending',
     })
   }
@@ -779,7 +781,9 @@ function FreeAgentCenter({
       ) : (
         <div className="team-pairing-list">
           {freeAgents.map((agent) => {
-            const preferredTeam = agent.preferredTeam || defaultTeam
+            const preferredTeam =
+              teams.find((team) => team.teamName === agent.preferredTeam)?.teamId ||
+              defaultTeam
 
             return (
               <article className="team-pairing-card" key={agent.player}>
@@ -797,7 +801,7 @@ function FreeAgentCenter({
                 >
                   <option value="">Select team</option>
                   {teams.map((team) => (
-                    <option key={team.teamId} value={team.teamName}>
+                    <option key={team.teamId} value={team.teamId}>
                       {team.teamName}
                     </option>
                   ))}
@@ -1181,7 +1185,7 @@ function CommissionerTournamentTools({
         registration={registration}
         teams={teams}
       />
-      <PairingForm disabled={disabled} onSubmit={onPairing} />
+      <PairingForm disabled={disabled} onSubmit={onPairing} teams={teams.filter((team) => team.status !== 'Deleted')} />
       <RoundControlForm disabled={disabled} onSubmit={onRound} />
     </section>
   )
@@ -1958,14 +1962,23 @@ function normalizeTournamentPlayer(player: string) {
 function PairingForm({
   disabled,
   onSubmit,
+  teams,
 }: {
   disabled: boolean
   onSubmit: (params: Record<string, string>) => void
+  teams: TeamTournamentTeam[]
 }) {
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const form = new FormData(event.currentTarget)
-    onSubmit(Object.fromEntries(form.entries()) as Record<string, string>)
+    const params = Object.fromEntries(form.entries()) as Record<string, string>
+    const teamA = teams.find((team) => team.teamId === params.teamAId)
+    const teamB = teams.find((team) => team.teamId === params.teamBId)
+    onSubmit({
+      ...params,
+      teamA: teamA?.teamName ?? '',
+      teamB: teamB?.teamName ?? '',
+    })
     event.currentTarget.reset()
   }
 
@@ -1974,8 +1987,22 @@ function PairingForm({
       <p className="eyebrow">Commissioner</p>
       <h2>Post Pairing</h2>
       <input name="round" placeholder="Round" />
-      <input name="teamA" placeholder="Team A" required />
-      <input name="teamB" placeholder="Team B" required />
+      <select name="teamAId" required>
+        <option value="">Team A</option>
+        {teams.map((team) => (
+          <option key={team.teamId} value={team.teamId}>
+            {team.teamName}
+          </option>
+        ))}
+      </select>
+      <select name="teamBId" required>
+        <option value="">Team B</option>
+        {teams.map((team) => (
+          <option key={team.teamId} value={team.teamId}>
+            {team.teamName}
+          </option>
+        ))}
+      </select>
       <textarea name="playerPairings" placeholder="Individual pairings" />
       <button disabled={disabled} type="submit">
         Save Pairing
@@ -2135,14 +2162,15 @@ function resolveRegistrationTeamMembership(
 ): EventRegistrationData {
   const membership = buildTeamMembershipLookup(teams)
   const updateEntry = (entry: EventRegistrationData['registrations'][number]) => {
-    const teamName = findTeamMembership(membership, entry.player, entry.displayName)
+    const teamIdentity = findTeamMembership(membership, entry.player, entry.displayName)
 
-    if (teamName) {
+    if (teamIdentity.teamId) {
       return {
         ...entry,
         freeAgent: false,
-        preferredTeam: teamName,
-        team: teamName,
+        preferredTeam: teamIdentity.teamName,
+        team: teamIdentity.teamName,
+        teamId: teamIdentity.teamId,
       }
     }
 
@@ -2151,6 +2179,7 @@ function resolveRegistrationTeamMembership(
       freeAgent: true,
       preferredTeam: '',
       team: '',
+      teamId: '',
     }
   }
   const registrations = registration.registrations.map(updateEntry)
@@ -2169,7 +2198,7 @@ function resolveRegistrationTeamMembership(
 }
 
 function buildTeamMembershipLookup(teams: TeamTournamentTeam[]) {
-  const membership = new Map<string, string>()
+  const membership = new Map<string, { teamId: string; teamName: string }>()
 
   teams
     .filter((team) => team.status !== 'Deleted')
@@ -2180,7 +2209,10 @@ function buildTeamMembershipLookup(teams: TeamTournamentTeam[]) {
         const key = normalizeTournamentPlayer(player)
 
         if (key) {
-          membership.set(key, team.teamName)
+          membership.set(key, {
+            teamId: team.teamId,
+            teamName: team.teamName,
+          })
         }
       })
     })
@@ -2189,14 +2221,14 @@ function buildTeamMembershipLookup(teams: TeamTournamentTeam[]) {
 }
 
 function findTeamMembership(
-  membership: Map<string, string>,
+  membership: Map<string, { teamId: string; teamName: string }>,
   player: string,
   displayName: string,
 ) {
   return (
     membership.get(normalizeTournamentPlayer(player)) ||
     membership.get(normalizeTournamentPlayer(displayName)) ||
-    ''
+    { teamId: '', teamName: '' }
   )
 }
 

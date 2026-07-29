@@ -760,6 +760,10 @@ export type RecentGame = {
   vp: string
   bestMoment: string
   firstTurn: string
+  teamAId?: string
+  teamBId?: string
+  teamAName?: string
+  teamBName?: string
 }
 
 export type SubmittedArmyListEntry = {
@@ -1379,6 +1383,8 @@ export type TeamTournamentPairing = {
   status: string
   teamA: string
   teamB: string
+  teamAId: string
+  teamBId: string
   updatedAt: string
 }
 
@@ -1405,6 +1411,7 @@ export type TeamTournamentInvitation = {
   message: string
   player: string
   status: string
+  teamId: string
   teamName: string
   updatedAt: string
 }
@@ -1429,6 +1436,8 @@ export type TeamTournamentResult = {
   table: string
   teamA: string
   teamB: string
+  teamAId: string
+  teamBId: string
   tournamentPoints: string
   updatedAt: string
   victoryPoints: string
@@ -1446,6 +1455,8 @@ export type TeamTournamentResultStatus = {
   table: string
   teamA: string
   teamB: string
+  teamAId: string
+  teamBId: string
 }
 
 export type TeamTournamentTimelineEntry = {
@@ -1483,6 +1494,7 @@ export type EventRegistrationEntry = {
   seed: string
   status: string
   team: string
+  teamId: string
   updatedAt: string
 }
 
@@ -6272,6 +6284,7 @@ function normalizeEventRegistrationEntry(
     seed: getString(record, 'seed'),
     status: getString(record, 'status'),
     team: getString(record, 'team'),
+    teamId: getString(record, 'teamId'),
     updatedAt: getString(record, 'updatedAt'),
   }
 }
@@ -6319,6 +6332,8 @@ function normalizeTeamTournamentPairing(item: unknown): TeamTournamentPairing {
     status: getString(record, 'status'),
     teamA: getString(record, 'teamA'),
     teamB: getString(record, 'teamB'),
+    teamAId: getString(record, 'teamAId'),
+    teamBId: getString(record, 'teamBId'),
     updatedAt: getString(record, 'updatedAt'),
   }
 }
@@ -6357,6 +6372,7 @@ function normalizeTeamTournamentInvitation(
     message: getString(record, 'message'),
     player: getString(record, 'player'),
     status: getString(record, 'status'),
+    teamId: getString(record, 'teamId'),
     teamName: getString(record, 'teamName'),
     updatedAt: getString(record, 'updatedAt'),
   }
@@ -6385,6 +6401,8 @@ function normalizeTeamTournamentResult(item: unknown): TeamTournamentResult {
     table: getString(record, 'table'),
     teamA: getString(record, 'teamA'),
     teamB: getString(record, 'teamB'),
+    teamAId: getString(record, 'teamAId'),
+    teamBId: getString(record, 'teamBId'),
     tournamentPoints: getString(record, 'tournamentPoints'),
     updatedAt: getString(record, 'updatedAt'),
     victoryPoints: getString(record, 'victoryPoints'),
@@ -6408,6 +6426,8 @@ function normalizeTeamTournamentResultStatus(
     table: getString(record, 'table'),
     teamA: getString(record, 'teamA'),
     teamB: getString(record, 'teamB'),
+    teamAId: getString(record, 'teamAId'),
+    teamBId: getString(record, 'teamBId'),
   }
 }
 
@@ -8017,6 +8037,10 @@ function normalizeRecentGame(item: unknown): RecentGame {
     vp: getRequiredString(record, 'vp'),
     bestMoment: getString(record, 'bestMoment'),
     firstTurn: getString(record, 'firstTurn'),
+    teamAId: getString(record, 'teamAId') || undefined,
+    teamBId: getString(record, 'teamBId') || undefined,
+    teamAName: getString(record, 'teamAName') || undefined,
+    teamBName: getString(record, 'teamBName') || undefined,
   }
 }
 
