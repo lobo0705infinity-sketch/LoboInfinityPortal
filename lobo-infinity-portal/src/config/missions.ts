@@ -5,6 +5,7 @@ export const CANONICAL_MISSIONS = [
   'Corporate Appropriation',
   'Critical Intervention',
   'Crossing Lines',
+  "Dead Man's Switch",
   'Evacuation',
   'Hardlock',
   'Last Launch',
