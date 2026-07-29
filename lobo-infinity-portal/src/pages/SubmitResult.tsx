@@ -1077,7 +1077,7 @@ function TeamTournamentResultSubmission({
         ) : null}
         <ReadOnlyField label="Event" value={eventHome.event.name} />
         <ReadOnlyField label="Round" value={assignment?.round || getRoundValue(eventHome.currentRound, 'name') || 'Current round'} />
-        <ReadOnlyField label="Team" value={assignment?.team || eventHome.registration.currentPlayer?.team || ''} />
+        <ReadOnlyField label="Team" value={assignment?.team || ''} />
         <ReadOnlyField label="Opponent Team" value={assignment?.opponentTeam || ''} />
         <ReadOnlyField label="Table" value={assignment?.table || 'Not published'} />
         <ReadOnlyField label="Mission" value={assignment?.mission || 'Not published'} />
@@ -1335,6 +1335,14 @@ type TournamentAssignment = {
   teamBId: string
 }
 
+function resolveTournamentTeamName(data: TeamTournamentData | null, teamId: string, fallback = '') {
+  if (!teamId) {
+    return fallback
+  }
+
+  return data?.teams.find((team) => team.teamId === teamId)?.teamName || ''
+}
+
 function getTournamentAssignment(
   data: TeamTournamentData | null,
   eventHome: EventHomeData,
@@ -1373,6 +1381,18 @@ function getTournamentAssignment(
   }
 
   const flipped = sameValue(table.opponent, player)
+  const playerIsTeamA =
+    table.teamAId && teamId
+      ? table.teamAId === teamId
+      : sameValue(table.teamA, team)
+  const resolvedTeam =
+    playerIsTeamA
+      ? resolveTournamentTeamName(data, table.teamAId, table.teamA)
+      : resolveTournamentTeamName(data, table.teamBId, table.teamB)
+  const opponentTeam =
+    playerIsTeamA
+      ? resolveTournamentTeamName(data, table.teamBId, table.teamB)
+      : resolveTournamentTeamName(data, table.teamAId, table.teamA)
   const mission = getCanonicalMissionName(
     getRoundValue(data.currentRound, 'mission') ||
       getRoundValue(data.currentRound, 'Mission') ||
@@ -1383,22 +1403,15 @@ function getTournamentAssignment(
   return {
     mission,
     opponent: flipped ? table.player : table.opponent,
-    opponentTeam:
-      table.teamAId && teamId
-        ? table.teamAId === teamId
-          ? table.teamB
-          : table.teamA
-        : sameValue(table.teamA, team)
-          ? table.teamB
-          : table.teamA,
+    opponentTeam,
     player,
     round: table.round,
     roundId: table.roundId,
     status: table.status,
     table: table.table,
-    team,
-    teamA: table.teamA,
-    teamB: table.teamB,
+    team: resolvedTeam || (teamId ? '' : team),
+    teamA: resolveTournamentTeamName(data, table.teamAId, table.teamA),
+    teamB: resolveTournamentTeamName(data, table.teamBId, table.teamB),
     teamAId: table.teamAId,
     teamBId: table.teamBId,
   }

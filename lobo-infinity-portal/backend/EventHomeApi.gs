@@ -274,7 +274,7 @@ function getEventHome(e) {
       "eventHome.registrationLookup.buildPayload"
     );
 
-  const registration =
+  const rawRegistration =
     measureEventHomeOperation(
       "eventHome.registrationLookup.buildPayload.call",
       function() {
@@ -290,6 +290,12 @@ function getEventHome(e) {
       {
         registrations: registrations.length
       }
+    );
+
+  const registration =
+    resolveEventHomeTeamTournamentRegistrationPayload(
+      event,
+      rawRegistration
     );
 
   endEventHomeSubStage(
@@ -439,10 +445,13 @@ function getEventHome(e) {
     measureEventHomeOperation(
       "eventHome.playerStatus.build",
       function() {
-        return buildEventHomePlayerStatus(registration, currentPlayer);
+        return buildEventHomePlayerStatus(
+          registration,
+          registration.currentPlayer || currentPlayer
+        );
       },
       {
-        hasCurrentPlayer: currentPlayer !== null
+        hasCurrentPlayer: registration.currentPlayer !== null
       }
     );
 
@@ -450,7 +459,7 @@ function getEventHome(e) {
     "eventHome.playerStatus",
     playerStatusStart,
     {
-      hasCurrentPlayer: currentPlayer !== null
+      hasCurrentPlayer: registration.currentPlayer !== null
     }
   );
 
@@ -1367,6 +1376,41 @@ function buildEventHomeQuickActions(event, registration, currentPlayer) {
     );
 
   return actions;
+
+}
+
+function resolveEventHomeTeamTournamentRegistrationPayload(event, registration) {
+
+  if (
+    !event ||
+    event.type !== "Team Tournament" ||
+    !registration ||
+    typeof getTeamTournamentTeams !== "function" ||
+    typeof resolveTeamTournamentRegistrationMembership !== "function"
+  )
+    return registration;
+
+  const teams =
+    getTeamTournamentTeams(event.id);
+
+  const visibleRegistrations =
+    resolveTeamTournamentRegistrationMembership(
+      registration.registrations || [],
+      teams
+    );
+
+  const currentPlayer =
+    registration.currentPlayer
+      ? resolveTeamTournamentRegistrationMembership(
+          [registration.currentPlayer],
+          teams
+        )[0]
+      : null;
+
+  return Object.assign({}, registration, {
+    currentPlayer: currentPlayer,
+    registrations: visibleRegistrations
+  });
 
 }
 

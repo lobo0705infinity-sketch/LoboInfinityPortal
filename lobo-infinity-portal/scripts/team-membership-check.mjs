@@ -10,6 +10,7 @@ const automationBackend = read('backend/AutomationApi.gs')
 const factionBackend = read('backend/FactionApi.gs')
 const frontend = read('src/pages/TeamTournament.tsx')
 const submitResult = read('src/pages/SubmitResult.tsx')
+const eventHomeBackend = read('backend/EventHomeApi.gs')
 const eventManagerPanel = read('src/components/EventManagerPanel.tsx')
 const api = read('src/services/api.ts')
 const resultSubmissionBackend = read('backend/ResultSubmissionApi.gs')
@@ -115,6 +116,26 @@ const checks = [
       submitResult.includes('<HiddenField name="teamAId" value={assignment.teamAId} />') &&
       submitResult.includes('<HiddenField name="teamBId" value={assignment.teamBId} />') &&
       submitResult.includes('selectedRegistration?.teamId'),
+  },
+  {
+    label: 'Submit Result displays Team Tournament names resolved from Team IDs',
+    pass:
+      submitResult.includes('function resolveTournamentTeamName(') &&
+      submitResult.includes('resolveTournamentTeamName(data, table.teamAId, table.teamA)') &&
+      submitResult.includes('resolveTournamentTeamName(data, table.teamBId, table.teamB)') &&
+      submitResult.includes('team: resolvedTeam || (teamId ? \'\' : team)') &&
+      submitResult.includes("return data?.teams.find((team) => team.teamId === teamId)?.teamName || ''") &&
+      submitResult.includes('<ReadOnlyField label="Team" value={assignment?.team || \'\'} />') &&
+      !submitResult.includes('value={assignment?.team || eventHome.registration.currentPlayer?.team || \'\'}'),
+  },
+  {
+    label: 'Event Home Team Tournament registrations resolve through the Team Registry',
+    pass:
+      eventHomeBackend.includes('resolveEventHomeTeamTournamentRegistrationPayload(') &&
+      eventHomeBackend.includes('event.type !== "Team Tournament"') &&
+      eventHomeBackend.includes('getTeamTournamentTeams(event.id)') &&
+      eventHomeBackend.includes('resolveTeamTournamentRegistrationMembership(') &&
+      eventHomeBackend.includes('registration.currentPlayer || currentPlayer'),
   },
   {
     label: 'API contract exposes Team IDs across team tournament payloads',
