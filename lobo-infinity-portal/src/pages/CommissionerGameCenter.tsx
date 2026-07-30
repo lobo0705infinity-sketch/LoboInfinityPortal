@@ -78,6 +78,7 @@ function CommissionerGameCenter() {
     [filters, games, sort],
   )
   const hasActiveFilters = Object.values(filters).some(Boolean)
+  const canCorrectScores = auth.isAtLeastRole('Commissioner')
 
   function updateFilter(key: GameCenterFilterKey, value: string) {
     setFilters((current) => ({
@@ -219,6 +220,7 @@ function CommissionerGameCenter() {
                           </button>
                         </th>
                       ))}
+                      {canCorrectScores ? <th scope="col">Actions</th> : null}
                     </tr>
                   </thead>
                   <tbody>
@@ -237,6 +239,21 @@ function CommissionerGameCenter() {
                         {gameCenterColumns.map((column) => (
                           <td key={column.key}>{getGameCenterCell(game, column.key)}</td>
                         ))}
+                        {canCorrectScores ? (
+                          <td>
+                            <button
+                              aria-label={`Correct score for game ${game.id}`}
+                              className="game-center-row-action"
+                              onClick={(event) => {
+                                event.stopPropagation()
+                                navigate(`/commissioner/game-center/${game.id}/score-correction`)
+                              }}
+                              type="button"
+                            >
+                              Correct Score
+                            </button>
+                          </td>
+                        ) : null}
                       </tr>
                     ))}
                   </tbody>

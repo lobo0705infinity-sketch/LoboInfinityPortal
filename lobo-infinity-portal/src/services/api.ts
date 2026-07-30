@@ -813,6 +813,47 @@ export type GameCenterData = {
   games: GameCenterGame[]
 }
 
+export type GameScoreCorrectionRequest = {
+  gameId: number
+  expectedEventId: string
+  expectedPlayer1: string
+  expectedPlayer2: string
+  expectedTp: string
+  expectedOp: string
+  expectedVp: string
+  player1TournamentPoints?: string
+  player2TournamentPoints?: string
+  player1ObjectivePoints?: string
+  player2ObjectivePoints?: string
+  player1VictoryPoints?: string
+  player2VictoryPoints?: string
+  reason: string
+}
+
+export type GameScoreCorrectionResult = {
+  auditWritten: boolean
+  cacheInvalidated: string
+  correctedFields: string[]
+  derivedAnalyticsRebuilt: boolean
+  eventId: string
+  gameEngineRebuilt: boolean
+  gameId: number
+  players: {
+    player1: string
+    player2: string
+  }
+  before: {
+    tp: string
+    op: string
+    vp: string
+  }
+  after: {
+    tp: string
+    op: string
+    vp: string
+  }
+}
+
 export type FactionDivisionBreakdown = {
   division: string
   games: number
@@ -2442,6 +2483,10 @@ export type ApiClient = {
     options?: ApiOptions,
   ) => Promise<SubmittedArmyListEntry[]>
   getGameCenter: (options?: ApiOptions) => Promise<GameCenterData>
+  correctGameScore: (
+    request: GameScoreCorrectionRequest,
+    options?: ApiOptions,
+  ) => Promise<GameScoreCorrectionResult>
   getEvents: (options?: ApiOptions) => Promise<EventCatalog>
   getStandings: (
     division: DivisionKey,
@@ -2802,6 +2847,19 @@ export async function getGameCenter(
 ): Promise<GameCenterData> {
   const payload = await request('gameCenter', options)
   return normalizeGameCenterPayload(payload)
+}
+
+export async function correctGameScore(
+  correction: GameScoreCorrectionRequest,
+  options: ApiOptions = {},
+): Promise<GameScoreCorrectionResult> {
+  const params = Object.fromEntries(
+    Object.entries(correction)
+      .filter(([, value]) => value !== undefined && value !== '')
+      .map(([key, value]) => [key, String(value)]),
+  )
+  const payload = await postRequest('correctGameScore', options, params)
+  return normalizeGameScoreCorrectionPayload(payload)
 }
 
 function dedupeSubmittedArmyListEntries(
@@ -3865,6 +3923,7 @@ export const apiClient: ApiClient = {
   getRecentGames,
   getSubmittedArmyListLibrary,
   getGameCenter,
+  correctGameScore,
   getEvents,
   getStandings,
   getAllStandings,
@@ -4574,6 +4633,42 @@ function normalizeGameCenterPayload(payload: unknown): GameCenterData {
   return {
     generatedAt: getString(record, 'generatedAt'),
     games: getRequiredArray(record, 'games').map(normalizeGameCenterGame),
+  }
+}
+
+function normalizeGameScoreCorrectionPayload(
+  payload: unknown,
+): GameScoreCorrectionResult {
+  const record = asRecord(payload, 'Game Score correction response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Game Score correction failed.')
+  }
+
+  const players = getRequiredRecord(record, 'players')
+
+  return {
+    auditWritten: getBoolean(record, 'auditWritten'),
+    cacheInvalidated: getString(record, 'cacheInvalidated'),
+    correctedFields: getArray(record, 'correctedFields').map((field) => String(field ?? '')),
+    derivedAnalyticsRebuilt: getBoolean(record, 'derivedAnalyticsRebuilt'),
+    eventId: getString(record, 'eventId'),
+    gameEngineRebuilt: getBoolean(record, 'gameEngineRebuilt'),
+    gameId: getRequiredNumber(record, 'gameId'),
+    players: {
+      player1: getString(players, 'player1'),
+      player2: getString(players, 'player2'),
+    },
+    before: normalizeGameScoreCorrectionScores(getRequiredRecord(record, 'before')),
+    after: normalizeGameScoreCorrectionScores(getRequiredRecord(record, 'after')),
+  }
+}
+
+function normalizeGameScoreCorrectionScores(record: Record<string, unknown>) {
+  return {
+    tp: getString(record, 'tp'),
+    op: getString(record, 'op'),
+    vp: getString(record, 'vp'),
   }
 }
 

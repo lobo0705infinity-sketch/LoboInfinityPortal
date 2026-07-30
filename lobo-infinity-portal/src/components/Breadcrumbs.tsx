@@ -17,6 +17,7 @@ const routeLabels: Record<string, string> = {
   '/match-finder': 'Match Finder',
   '/profile': 'My Profile',
   '/commissioner/game-center': 'Game Center',
+  '/commissioner/game-center/score-correction': 'Score Correction',
   '/submit-game': 'Submit Game',
 }
 
@@ -110,6 +111,17 @@ function buildBreadcrumbs(pathname: string, search: string): Breadcrumb[] {
     pathname === '/integrity' ||
     pathname.startsWith('/commissioner')
   ) {
+    const gameScoreCorrectionMatch = pathname.match(
+      /^\/commissioner\/game-center\/([^/?#]+)\/score-correction$/,
+    )
+
+    if (gameScoreCorrectionMatch) {
+      breadcrumbs.push({ label: 'Commissioner', to: '/commissioner' })
+      breadcrumbs.push({ label: 'Game Center', to: '/commissioner/game-center' })
+      breadcrumbs.push({ label: `Score Correction #${decodeSegment(gameScoreCorrectionMatch[1])}` })
+      return breadcrumbs
+    }
+
     const commissionerSection =
       searchParams.get('section') === 'users'
         ? 'Users'

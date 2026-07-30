@@ -30,6 +30,7 @@ const CommunityManager = lazyRoute('CommunityManager', () => import('./pages/Com
 const CommissionerDashboard = lazyRoute('CommissionerDashboard', () => import('./pages/CommissionerDashboard'))
 const CommissionerEvents = lazyRoute('CommissionerEvents', () => import('./pages/CommissionerEvents'))
 const CommissionerGameCenter = lazyRoute('CommissionerGameCenter', () => import('./pages/CommissionerGameCenter'))
+const CommissionerGameScoreCorrection = lazyRoute('CommissionerGameScoreCorrection', () => import('./pages/CommissionerGameScoreCorrection'))
 const CommissionerPlayers = lazyRoute('CommissionerPlayers', () => import('./pages/CommissionerPlayers'))
 const CommissionerSystem = lazyRoute('CommissionerSystem', () => import('./pages/CommissionerSystem'))
 const Dashboard = lazyRoute('Dashboard', () => import('./pages/Dashboard'))
@@ -135,6 +136,7 @@ function AuthShell() {
                 <Route path="/event/:eventId/:section" element={<MeasuredRoute name="EventHome"><EventHome /></MeasuredRoute>} />
                 <Route path="/commissioner" element={<MeasuredRoute name="CommissionerDashboard"><CommissionerDashboard /></MeasuredRoute>} />
                 <Route path="/commissioner/game-center" element={<MeasuredRoute name="CommissionerGameCenter"><CommissionerGameCenter /></MeasuredRoute>} />
+                <Route path="/commissioner/game-center/:gameId/score-correction" element={<MeasuredRoute name="CommissionerGameScoreCorrection"><CommissionerGameScoreCorrection /></MeasuredRoute>} />
                 <Route path="/commissioner/events" element={<MeasuredRoute name="CommissionerEvents"><CommissionerEvents /></MeasuredRoute>} />
                 <Route path="/commissioner/event-manager" element={<Navigate replace to="/commissioner/events" />} />
                 <Route path="/commissioner/players" element={<MeasuredRoute name="CommissionerPlayers"><CommissionerPlayers /></MeasuredRoute>} />
