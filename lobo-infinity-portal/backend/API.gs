@@ -628,6 +628,11 @@ function handleApiGet(e, action) {
         return correctGameArmyCode(e, auth);
       });
 
+    case "correctGameScore":
+      return requireApiPermission(e, "dataCorrections", function(auth) {
+        return correctGameScore(e, auth);
+      });
+
     case "saveStream":
       return requireApiPermission(e, "manageStreams", function() {
         return saveOperationsStream(e);
@@ -993,6 +998,11 @@ function handleApiPost(e, action) {
     case "correctGameArmyCode":
       return requireApiPermission(e, "dataCorrections", function(auth) {
         return correctGameArmyCode(e, auth);
+      });
+
+    case "correctGameScore":
+      return requireApiPermission(e, "dataCorrections", function(auth) {
+        return correctGameScore(e, auth);
       });
 
     case "saveStream":

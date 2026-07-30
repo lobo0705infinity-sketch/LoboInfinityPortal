@@ -46,6 +46,8 @@ const CONFIG = {
 
     GAME_ARMY_CODE_CORRECTION_AUDIT: "Game Army Code Correction Audit",
 
+    GAME_SCORE_CORRECTION_AUDIT: "Game Score Correction Audit",
+
     COMMISSIONER_NEWS: "Commissioner News",
 
     SEASON_ARCHIVE: "Season Archive",
