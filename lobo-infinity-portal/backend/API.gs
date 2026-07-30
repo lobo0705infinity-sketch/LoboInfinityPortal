@@ -199,6 +199,11 @@ function handleApiGet(e, action) {
         return getRecentGames(e);
       });
 
+    case "gameCenter":
+      return requireApiPermission(e, "viewOperations", function() {
+        return getGameCenter(e);
+      });
+
     case "standings":
       return getCachedApiResponse(e, action, function() {
         return getStandings(e);

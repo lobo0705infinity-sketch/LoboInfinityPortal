@@ -784,6 +784,35 @@ export type SubmittedArmyListEntry = {
   result: 'Win' | 'Loss' | 'Draw'
 }
 
+export type GameCenterGame = {
+  id: number
+  date: string
+  sortDate: string
+  eventId: string
+  event: string
+  gameType: string
+  gameTypeLabel: string
+  mission: string
+  player1: string
+  player1DisplayName: string
+  player2: string
+  player2DisplayName: string
+  winner: string
+  winnerDisplayName: string
+  result: string
+  player1Faction: string
+  player2Faction: string
+  team: string
+  tp: string
+  op: string
+  vp: string
+}
+
+export type GameCenterData = {
+  generatedAt: string
+  games: GameCenterGame[]
+}
+
 export type FactionDivisionBreakdown = {
   division: string
   games: number
@@ -2412,6 +2441,7 @@ export type ApiClient = {
   getSubmittedArmyListLibrary: (
     options?: ApiOptions,
   ) => Promise<SubmittedArmyListEntry[]>
+  getGameCenter: (options?: ApiOptions) => Promise<GameCenterData>
   getEvents: (options?: ApiOptions) => Promise<EventCatalog>
   getStandings: (
     division: DivisionKey,
@@ -2765,6 +2795,13 @@ export async function getSubmittedArmyListLibrary(
 
       return right.gameId - left.gameId
     })
+}
+
+export async function getGameCenter(
+  options: ApiOptions = {},
+): Promise<GameCenterData> {
+  const payload = await request('gameCenter', options)
+  return normalizeGameCenterPayload(payload)
 }
 
 function dedupeSubmittedArmyListEntries(
@@ -3827,6 +3864,7 @@ export const apiClient: ApiClient = {
   getLeader,
   getRecentGames,
   getSubmittedArmyListLibrary,
+  getGameCenter,
   getEvents,
   getStandings,
   getAllStandings,
@@ -4524,6 +4562,19 @@ function normalizeRecentGamesPayload(payload: unknown): RecentGame[] {
   }
 
   return getRequiredArray(record, 'games').map(normalizeRecentGame)
+}
+
+function normalizeGameCenterPayload(payload: unknown): GameCenterData {
+  const record = asRecord(payload, 'Game Center response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Game Center failed.')
+  }
+
+  return {
+    generatedAt: getString(record, 'generatedAt'),
+    games: getRequiredArray(record, 'games').map(normalizeGameCenterGame),
+  }
 }
 
 function normalizeFactionsPayload(payload: unknown): FactionSummary[] {
@@ -8041,6 +8092,36 @@ function normalizeRecentGame(item: unknown): RecentGame {
     teamBId: getString(record, 'teamBId') || undefined,
     teamAName: getString(record, 'teamAName') || undefined,
     teamBName: getString(record, 'teamBName') || undefined,
+  }
+}
+
+function normalizeGameCenterGame(item: unknown): GameCenterGame {
+  const record = asRecord(item, 'Game Center game')
+
+  return {
+    id: getRequiredNumber(record, 'id'),
+    date: getRequiredString(record, 'date'),
+    sortDate: getString(record, 'sortDate'),
+    eventId: getString(record, 'eventId'),
+    event: getString(record, 'event'),
+    gameType: getString(record, 'gameType') || 'league',
+    gameTypeLabel: getString(record, 'gameTypeLabel') || 'League',
+    mission: getRequiredString(record, 'mission'),
+    player1: getRequiredString(record, 'player1'),
+    player1DisplayName:
+      getString(record, 'player1DisplayName') || getRequiredString(record, 'player1'),
+    player2: getRequiredString(record, 'player2'),
+    player2DisplayName:
+      getString(record, 'player2DisplayName') || getRequiredString(record, 'player2'),
+    winner: getString(record, 'winner'),
+    winnerDisplayName: getString(record, 'winnerDisplayName'),
+    result: getString(record, 'result') || 'Draw',
+    player1Faction: getString(record, 'player1Faction'),
+    player2Faction: getString(record, 'player2Faction'),
+    team: getString(record, 'team'),
+    tp: getString(record, 'tp'),
+    op: getString(record, 'op'),
+    vp: getString(record, 'vp'),
   }
 }
 

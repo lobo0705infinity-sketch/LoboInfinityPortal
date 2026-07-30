@@ -59,6 +59,7 @@ const endpointPolicy = {
   faction: { authRequired: false, userScoped: false },
   factions: { authRequired: false, userScoped: false },
   flaggedArmySubmissions: { authRequired: true, userScoped: false },
+  gameCenter: { authRequired: true, userScoped: false },
   hallOfFame: { authRequired: false, userScoped: false },
   heartbeat: { authRequired: true, userScoped: true },
   home: { authRequired: false, userScoped: false },

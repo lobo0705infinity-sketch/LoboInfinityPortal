@@ -73,6 +73,11 @@ export const commissionerItems: NavigationItem[] = [
   },
   {
     icon: 'standings',
+    label: 'Game Center',
+    to: '/commissioner/game-center',
+  },
+  {
+    icon: 'standings',
     label: 'Events',
     to: '/commissioner/events',
   },

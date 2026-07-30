@@ -187,6 +187,548 @@ function getRecentGames(e) {
 
 }
 
+function getGameCenter(e) {
+
+  const games =
+    getGameCenterCanonicalGames();
+
+  const context =
+    buildGameCenterContext(games);
+
+  return jsonOutput({
+    success: true,
+    generatedAt: new Date().toISOString(),
+    games:
+      games.map(function(game) {
+        return buildGameCenterGameResponse(
+          game,
+          context
+        );
+      })
+  });
+
+}
+
+function getGameCenterCanonicalGames() {
+
+  if (typeof getAllRecentGameObjects === "function")
+    return dedupeGameCenterCanonicalGames(
+      getAllRecentGameObjects()
+        .slice()
+    )
+      .sort(sortGameCenterCanonicalGames);
+
+  const sheet =
+    SpreadsheetApp
+      .getActive()
+      .getSheetByName(CONFIG.SHEETS.GAME_ANALYTICS);
+
+  if (!sheet)
+    return [];
+
+  const values =
+    sheet
+      .getDataRange()
+      .getValues();
+
+  if (values.length <= 1)
+    return [];
+
+  const headers =
+    values.shift();
+
+  const columns =
+    getRecentGameColumns(headers);
+
+  return dedupeGameCenterCanonicalGames(
+    values
+      .map(function(row, index) {
+        return buildRecentGame(
+          row,
+          index + 1,
+          columns
+        );
+      })
+      .filter(function(game) {
+        return (
+          game.date !== "" &&
+          game.winner !== "" &&
+          game.loser !== ""
+        );
+      })
+  )
+    .sort(sortGameCenterCanonicalGames);
+
+}
+
+function dedupeGameCenterCanonicalGames(games) {
+
+  const seen = {};
+
+  return games.filter(function(game) {
+    const id =
+      getGameCenterCanonicalGameId(game);
+
+    if (id === "")
+      return true;
+
+    if (seen[id])
+      return false;
+
+    seen[id] = true;
+    return true;
+  });
+
+}
+
+function getGameCenterCanonicalGameId(game) {
+
+  const id =
+    Number(
+      game &&
+      game.id
+    );
+
+  if (
+    Number.isInteger(id) &&
+    id > 0
+  )
+    return String(id);
+
+  const sourceIndex =
+    Number(
+      game &&
+      game.sourceIndex
+    );
+
+  if (
+    Number.isInteger(sourceIndex) &&
+    sourceIndex > 0
+  )
+    return String(sourceIndex);
+
+  return "";
+
+}
+
+function sortGameCenterCanonicalGames(a, b) {
+
+  const leftDate =
+    getGameCenterSortDate(a);
+
+  const rightDate =
+    getGameCenterSortDate(b);
+
+  const dateOrder =
+    rightDate.getTime() -
+    leftDate.getTime();
+
+  if (dateOrder !== 0)
+    return dateOrder;
+
+  return (
+    getGameCenterSortIndex(b) -
+    getGameCenterSortIndex(a)
+  );
+
+}
+
+function getGameCenterSortDate(game) {
+
+  if (
+    game &&
+    game.sortDate &&
+    typeof game.sortDate.getTime === "function" &&
+    !isNaN(game.sortDate.getTime())
+  )
+    return game.sortDate;
+
+  const parsed =
+    new Date(
+      game &&
+      game.date
+    );
+
+  if (!isNaN(parsed.getTime()))
+    return parsed;
+
+  return new Date(0);
+
+}
+
+function getGameCenterSortIndex(game) {
+
+  const sourceIndex =
+    Number(
+      game &&
+      game.sourceIndex
+    );
+
+  if (Number.isFinite(sourceIndex))
+    return sourceIndex;
+
+  const id =
+    Number(
+      game &&
+      game.id
+    );
+
+  if (Number.isFinite(id))
+    return id;
+
+  return 0;
+
+}
+
+function buildGameCenterContext(games) {
+
+  const events =
+    buildGameCenterEventLookup();
+
+  return {
+    events: events,
+    teams:
+      buildGameCenterTeamLookup(
+        games,
+        events
+      )
+  };
+
+}
+
+function buildGameCenterEventLookup() {
+
+  const lookup = {};
+
+  try {
+    const engine =
+      typeof getEventEngineSnapshot === "function"
+        ? getEventEngineSnapshot()
+        : null;
+
+    if (
+      engine &&
+      Array.isArray(engine.events)
+    )
+      engine.events.forEach(function(event) {
+        if (event && event.id)
+          lookup[event.id] = event;
+      });
+  }
+  catch (err) {
+    Logger.log(
+      "Game Center event lookup failed: " +
+      String(err)
+    );
+  }
+
+  return lookup;
+
+}
+
+function buildGameCenterTeamLookup(games, events) {
+
+  const lookup = {};
+  const eventIds = {};
+
+  games.forEach(function(game) {
+    const eventId =
+      getRecentGameString(game.eventId);
+
+    if (
+      eventId !== "" &&
+      isGameCenterTeamTournamentGame(
+        game,
+        events[eventId]
+      )
+    )
+      eventIds[eventId] = true;
+  });
+
+  Object.keys(eventIds)
+    .forEach(function(eventId) {
+      try {
+        const teams =
+          typeof getTeamTournamentTeams === "function"
+            ? getTeamTournamentTeams(eventId)
+            : [];
+
+        teams.forEach(function(team) {
+          const teamName =
+            getRecentGameString(team.teamName);
+
+          if (teamName === "")
+            return;
+
+          [
+            team.captain
+          ].concat(
+            parseGameCenterTeamRoster(team.players)
+          ).forEach(function(player) {
+            const key =
+              getGameCenterTeamKey(
+                eventId,
+                player
+              );
+
+            if (key !== "")
+              lookup[key] = teamName;
+          });
+        });
+      }
+      catch (err) {
+        Logger.log(
+          "Game Center team lookup failed for " +
+          eventId +
+          ": " +
+          String(err)
+        );
+      }
+    });
+
+  return lookup;
+
+}
+
+function parseGameCenterTeamRoster(players) {
+
+  return getRecentGameString(players)
+    .split(/[,;\n]/)
+    .map(function(player) {
+      return getRecentGameString(player);
+    })
+    .filter(function(player) {
+      return player !== "";
+    });
+
+}
+
+function getGameCenterTeamKey(eventId, player) {
+
+  const normalized =
+    getRecentGameString(player)
+      .toLowerCase();
+
+  if (normalized === "")
+    return "";
+
+  return (
+    eventId +
+    "::" +
+    normalized
+  );
+
+}
+
+function buildGameCenterGameResponse(game, context) {
+
+  const recent =
+    isGameCenterRecentGameResponse(game)
+      ? game
+      : buildRecentGameResponse(game);
+
+  const playerFields =
+    buildGameCenterPlayerFields(recent);
+
+  const event =
+    context.events[recent.eventId];
+
+  const team =
+    getGameCenterTeamLabel(
+      recent.eventId,
+      playerFields.player1,
+      playerFields.player2,
+      context.teams
+    );
+
+  return {
+    id: recent.id,
+    date: recent.date,
+    sortDate:
+      game.sortDate &&
+      typeof game.sortDate.getTime === "function" &&
+      !isNaN(game.sortDate.getTime())
+        ? game.sortDate.toISOString()
+        : getGameCenterSortDate(recent).toISOString(),
+    eventId: recent.eventId,
+    event:
+      recent.gameType === "casual"
+        ? "Casual"
+        : event && event.name
+          ? event.name
+          : recent.eventId || "Current League",
+    gameType:
+      isGameCenterTeamTournamentGame(
+        recent,
+        event
+      )
+        ? "tournament"
+        : recent.gameType || "league",
+    gameTypeLabel:
+      getGameCenterGameTypeLabel(
+        recent,
+        event
+      ),
+    mission: recent.mission,
+    player1: playerFields.player1,
+    player1DisplayName: playerFields.player1DisplayName,
+    player2: playerFields.player2,
+    player2DisplayName: playerFields.player2DisplayName,
+    winner: playerFields.winner,
+    winnerDisplayName: playerFields.winnerDisplayName,
+    result: playerFields.result,
+    player1Faction: playerFields.player1Faction,
+    player2Faction: playerFields.player2Faction,
+    team: team,
+    tp: playerFields.tp,
+    op: playerFields.op,
+    vp: playerFields.vp
+  };
+
+}
+
+function isGameCenterRecentGameResponse(game) {
+
+  return (
+    game &&
+    game.id !== undefined &&
+    game.date !== undefined &&
+    game.winnerDisplayName !== undefined &&
+    game.loserDisplayName !== undefined
+  );
+
+}
+
+function buildGameCenterPlayerFields(recent) {
+
+  const result =
+    getRecentGameString(recent.gameResult);
+
+  const normalizedResult =
+    result.toLowerCase();
+
+  const player2Victory =
+    normalizedResult === "player 2 victory";
+
+  const draw =
+    normalizedResult === "draw";
+
+  if (player2Victory)
+    return {
+      player1: recent.loser,
+      player1DisplayName: recent.loserDisplayName,
+      player2: recent.winner,
+      player2DisplayName: recent.winnerDisplayName,
+      winner: recent.winner,
+      winnerDisplayName: recent.winnerDisplayName,
+      result: recent.winnerDisplayName,
+      player1Faction: recent.loserFaction,
+      player2Faction: recent.winnerFaction,
+      tp: invertGameCenterScore(recent.tp),
+      op: invertGameCenterScore(recent.op),
+      vp: invertGameCenterScore(recent.vp)
+    };
+
+  return {
+    player1: recent.winner,
+    player1DisplayName: recent.winnerDisplayName,
+    player2: recent.loser,
+    player2DisplayName: recent.loserDisplayName,
+    winner:
+      draw
+        ? ""
+        : recent.winner,
+    winnerDisplayName:
+      draw
+        ? ""
+        : recent.winnerDisplayName,
+    result:
+      draw
+        ? "Draw"
+        : recent.winnerDisplayName,
+    player1Faction: recent.winnerFaction,
+    player2Faction: recent.loserFaction,
+    tp: recent.tp,
+    op: recent.op,
+    vp: recent.vp
+  };
+
+}
+
+function invertGameCenterScore(score) {
+
+  const parts =
+    getRecentGameString(score)
+      .split("-");
+
+  if (parts.length !== 2)
+    return getRecentGameString(score);
+
+  return (
+    getRecentGameString(parts[1]) +
+    "-" +
+    getRecentGameString(parts[0])
+  );
+
+}
+
+function getGameCenterGameTypeLabel(game, event) {
+
+  if (isGameCenterTeamTournamentGame(game, event))
+    return "Team Tournament";
+
+  if (game.gameType === "casual")
+    return "Casual";
+
+  return "League";
+
+}
+
+function isGameCenterTeamTournamentGame(game, event) {
+
+  if (getRecentGameString(game.gameType) === "tournament")
+    return true;
+
+  if (
+    event &&
+    getRecentGameString(event.type).toLowerCase() === "team tournament"
+  )
+    return true;
+
+  return getRecentGameString(game.eventId) ===
+    EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID;
+
+}
+
+function getGameCenterTeamLabel(eventId, player1, player2, teams) {
+
+  const player1Team =
+    teams[
+      getGameCenterTeamKey(
+        eventId,
+        player1
+      )
+    ] || "";
+
+  const player2Team =
+    teams[
+      getGameCenterTeamKey(
+        eventId,
+        player2
+      )
+    ] || "";
+
+  if (
+    player1Team !== "" &&
+    player2Team !== "" &&
+    player1Team !== player2Team
+  )
+    return player1Team + " / " + player2Team;
+
+  return player1Team || player2Team;
+
+}
+
 function filterRecentGamesByGameId(games, gameId) {
 
   const target =

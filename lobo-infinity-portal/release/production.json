@@ -16,6 +16,7 @@
     "/army-lists/submit",
     "/events",
     "/commissioner",
+    "/commissioner/game-center",
     "/commissioner/events",
     "/commissioner/players",
     "/commissioner/automation",
@@ -24,12 +25,14 @@
   "contractMarkers": {
     "commissionerNavigation": [
       "Command Center",
+      "Game Center",
       "Events",
       "Players",
       "Automation",
       "System"
     ],
     "commissionerRoutes": [
+      "/commissioner/game-center",
       "/commissioner/events",
       "/commissioner/players",
       "/commissioner/automation",

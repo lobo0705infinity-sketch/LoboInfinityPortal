@@ -16,6 +16,7 @@ const routeLabels: Record<string, string> = {
   '/league-operations': 'Mission & Map',
   '/match-finder': 'Match Finder',
   '/profile': 'My Profile',
+  '/commissioner/game-center': 'Game Center',
   '/submit-game': 'Submit Game',
 }
 

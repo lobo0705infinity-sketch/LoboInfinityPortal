@@ -306,19 +306,30 @@ function CommissionerDashboard() {
     <main className="portal-shell">
       <PageHeader />
       <OperationsSummary data={data} />
-      <section className="panel event-manager-entry" aria-labelledby="event-manager-entry-title">
-        <div>
-          <p className="eyebrow">Event Operations</p>
-          <h2 id="event-manager-entry-title">Commissioner Event Manager</h2>
-          <p>
+        <section className="panel event-manager-entry" aria-labelledby="event-manager-entry-title">
+          <div>
+            <p className="eyebrow">Event Operations</p>
+            <h2 id="event-manager-entry-title">Commissioner Event Manager</h2>
+            <p>
             Create Events, open registration, manage participants, operate Team
             Tournament teams and pairings, and set the current active Event from
             the portal.
           </p>
-        </div>
-        <a href="#event-manager-panel">Open Event Manager</a>
-      </section>
-      <section className="operations-grid" aria-label="Operations status">
+          </div>
+          <a href="#event-manager-panel">Open Event Manager</a>
+        </section>
+        <section className="panel event-manager-entry" aria-labelledby="game-center-entry-title">
+          <div>
+            <p className="eyebrow">Game Database</p>
+            <h2 id="game-center-entry-title">Game Center</h2>
+            <p>
+              Search, sort, and filter every League, Casual, and Team Tournament
+              game from the canonical game engine data.
+            </p>
+          </div>
+          <Link to="/commissioner/game-center">Open Game Center</Link>
+        </section>
+        <section className="operations-grid" aria-label="Operations status">
         <LeagueHealthPanel data={data} />
         <SeasonStatusPanel data={data} />
         <IdentityStatusPanel data={data} />

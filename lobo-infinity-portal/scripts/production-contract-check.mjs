@@ -58,6 +58,7 @@ function extractCommissionerItems(source) {
 function assertExactCommissionerNavigation(source, failures) {
   const expected = [
     ['Command Center', '/commissioner'],
+    ['Game Center', '/commissioner/game-center'],
     ['Events', '/commissioner/events'],
     ['Players', '/commissioner/players'],
     ['Automation', '/commissioner/automation'],
@@ -168,6 +169,7 @@ assertIncludes(
   failures,
 )
 const app = read('src/App.tsx')
+assertRouteElement('Commissioner Game Center', app, '/commissioner/game-center', 'CommissionerGameCenter', failures)
 assertRouteElement('Commissioner Events', app, '/commissioner/events', 'CommissionerEvents', failures)
 assertRouteElement('Commissioner Players', app, '/commissioner/players', 'CommissionerPlayers', failures)
 assertRouteElement('Commissioner Automation', app, '/commissioner/automation', 'AutomationCenter', failures)

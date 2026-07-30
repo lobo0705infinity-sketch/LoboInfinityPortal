@@ -942,7 +942,7 @@ function getCacheGroup(action: string) {
   if (['factions', 'faction', 'missions', 'mission', 'comparison'].includes(action)) return 'analytics'
   if (['intelligence'].includes(action)) return 'analytics'
   if (['records', 'hallOfFame'].includes(action)) return 'records'
-  if (['timeline', 'news', 'recentGames', 'home', 'dashboard'].includes(action)) return 'dashboard'
+  if (['timeline', 'news', 'recentGames', 'gameCenter', 'home', 'dashboard'].includes(action)) return 'dashboard'
   if (['schedulingCenter', 'matchFinder', 'seasonCommandCenter', 'communityCommandCenter'].includes(action)) return 'schedule'
   if (['notifications'].includes(action)) return 'notifications'
   if (['armyLists', 'streams'].includes(action)) return 'community'
