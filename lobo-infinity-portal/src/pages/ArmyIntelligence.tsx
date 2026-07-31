@@ -1,10 +1,11 @@
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import InteractiveMetricCard from '../components/InteractiveMetricCard'
 import Skeleton from '../components/Skeleton'
 import lieutenantOrderReference from '../../docs/mockups/lieutenant-order-reference.png'
 import { CANONICAL_ARMY_REGISTRY, getArmyParentFaction, normalizeArmyForDisplay } from '../config/armies'
+import { readArmyIntelligenceFactionParam } from '../services/armyIntelligenceNavigation'
 import {
   apiClient,
   type ArmyIntelligenceArmyList,
@@ -277,7 +278,9 @@ function ArmyIntelligenceContent({
   reload: () => Promise<ArmyIntelligenceData | void>
 }) {
   const auth = useAuth()
-  const [selectedSectorial, setSelectedSectorial] = useState('')
+  const [searchParams] = useSearchParams()
+  const requestedFaction = readArmyIntelligenceFactionParam(searchParams)
+  const [selectedSectorial, setSelectedSectorial] = useState(requestedFaction)
   const [resultFilter, setResultFilter] = useState<AnalysisResultFilter>('all')
   const [modelEquipmentFilter, setModelEquipmentFilter] = useState('')
   const [modelSkillFilter, setModelSkillFilter] = useState('')
@@ -300,7 +303,10 @@ function ArmyIntelligenceContent({
   )
   const sectorials = useMemo(
     () =>
-      Array.from(new Set(uniqueDecodedLists.map((list) => getDecodedSectorial(list)).filter(Boolean)))
+      Array.from(new Set([
+        ...uniqueDecodedLists.map((list) => getIntelligenceParentFaction(list)).filter(Boolean),
+        ...uniqueDecodedLists.map((list) => getDecodedSectorial(list)).filter(Boolean),
+      ]))
         .sort((left, right) => left.localeCompare(right)),
     [uniqueDecodedLists],
   )
@@ -370,9 +376,17 @@ function ArmyIntelligenceContent({
           troopType: modelTypeFilter,
           weapon: modelWeaponFilter,
         },
-      ),
+    ),
     [analysis.modelUsage, modelEquipmentFilter, modelSkillFilter, modelSort, modelTypeFilter, modelWeaponFilter],
   )
+
+  useEffect(() => {
+    if (!requestedFaction || requestedFaction === selectedSectorial) {
+      return
+    }
+
+    setSelectedSectorial(requestedFaction)
+  }, [requestedFaction, selectedSectorial])
 
   useEffect(() => {
     if (modelSkillFilter && !skillOptions.includes(modelSkillFilter)) {

@@ -1,4 +1,7 @@
+import { type KeyboardEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { getFactionIcon } from '../assets/operator-badges/factions'
+import { buildArmyIntelligenceFactionPath } from '../services/armyIntelligenceNavigation'
 import './PrimaryFactionCard.css'
 
 type PrimaryFactionCardProps = {
@@ -7,26 +10,48 @@ type PrimaryFactionCardProps = {
   variant?: 'definition' | 'readonly'
 }
 
-const pendingFactionLabel = 'Faction Pending.'
+const pendingFactionLabel = 'Faction Pending'
 
 function PrimaryFactionCard({
   className = '',
   faction,
   variant = 'definition',
 }: PrimaryFactionCardProps) {
+  const navigate = useNavigate()
   const normalizedFaction = String(faction ?? '').trim()
   const displayFaction = normalizedFaction || pendingFactionLabel
   const icon = getFactionIcon(normalizedFaction)
+  const isInteractive = Boolean(normalizedFaction)
+  const ariaLabel = isInteractive
+    ? `View ${displayFaction} Army Intelligence`
+    : undefined
   const classes = [
     'primary-faction-card',
     `primary-faction-card--${variant}`,
     className,
     normalizedFaction ? 'has-faction' : 'is-pending',
+    isInteractive ? 'interactive-metric-card interactive-metric-card-action is-interactive' : '',
   ].filter(Boolean).join(' ')
+  const actionProps = isInteractive
+    ? {
+        'aria-label': ariaLabel,
+        onClick: () => navigate(buildArmyIntelligenceFactionPath(normalizedFaction)),
+        onKeyDown: (event: KeyboardEvent<HTMLDivElement>) => {
+          if (event.key !== 'Enter' && event.key !== ' ') {
+            return
+          }
+
+          event.preventDefault()
+          navigate(buildArmyIntelligenceFactionPath(normalizedFaction))
+        },
+        role: 'link',
+        tabIndex: 0,
+      }
+    : {}
 
   if (variant === 'readonly') {
     return (
-      <div className={classes}>
+      <div className={classes} {...actionProps}>
         <span>Primary Faction</span>
         <strong>
           <PrimaryFactionValue faction={displayFaction} icon={icon} />
@@ -36,7 +61,7 @@ function PrimaryFactionCard({
   }
 
   return (
-    <div className={classes}>
+    <div className={classes} {...actionProps}>
       <dt>Primary Faction</dt>
       <dd>
         <PrimaryFactionValue faction={displayFaction} icon={icon} />
