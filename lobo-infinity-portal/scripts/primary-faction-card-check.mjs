@@ -19,7 +19,9 @@ const checks = [
     label: 'PrimaryFactionCard uses the existing faction artwork registry',
     pass:
       files.component.includes("import { getFactionIcon } from '../assets/operator-badges/factions'") &&
-      files.component.includes('const icon = getFactionIcon(normalizedFaction)') &&
+      files.component.includes("import { resolveArmyIdentity } from '../services/armyIdentity'") &&
+      files.component.includes('const identity = resolveArmyIdentity(faction)') &&
+      files.component.includes('const icon = getFactionIcon(identity?.iconKey || normalizedFaction)') &&
       files.component.includes("<img alt=\"\" aria-hidden=\"true\""),
   },
   {
@@ -41,7 +43,7 @@ const checks = [
   {
     label: 'PrimaryFactionCard uses the shared interactive metric affordance only when a faction exists',
     pass:
-      files.component.includes('const isInteractive = Boolean(normalizedFaction)') &&
+      files.component.includes('const isInteractive = Boolean(identity)') &&
       files.component.includes("isInteractive ? 'interactive-metric-card interactive-metric-card-action is-interactive' : ''") &&
       files.component.includes('role: \'link\'') &&
       files.component.includes('tabIndex: 0') &&

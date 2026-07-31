@@ -5,7 +5,7 @@ import BarChart, { type BarChartPoint } from '../components/BarChart'
 import OperatorBadge from '../components/OperatorBadge'
 import PrimaryFactionCard from '../components/PrimaryFactionCard'
 import Skeleton from '../components/Skeleton'
-import { getCanonicalArmyOptions, normalizeArmyForDisplay } from '../config/armies'
+import { getCanonicalArmyOptions, normalizeArmyForDisplay } from '../services/armyIdentity'
 import type { FactionPortrait } from '../config/factionPortraits'
 import { getCanonicalMissionName } from '../config/missions'
 import {
@@ -2195,11 +2195,7 @@ function buildArmySummary(
 }
 
 function normalizeProfileArmyMetric(value: string | undefined) {
-  if (!value) {
-    return ''
-  }
-
-  return normalizeArmyForDisplay(value.replace(/\s*\(\d+\s+games?\)\s*$/i, ''))
+  return normalizeArmyForDisplay(value)
 }
 
 function buildAchievementCards(

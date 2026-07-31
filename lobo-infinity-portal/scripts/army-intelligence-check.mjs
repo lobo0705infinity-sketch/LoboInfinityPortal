@@ -7,6 +7,7 @@ const apiClient = read('src/services/api.ts')
 const app = read('src/App.tsx')
 const appCss = read('src/App.css')
 const armies = read('src/config/armies.ts')
+const armyIdentity = read('src/services/armyIdentity.ts')
 const interactiveMetricCard = read('src/components/InteractiveMetricCard.tsx')
 const page = read('src/pages/ArmyIntelligence.tsx')
 const commissioner = read('src/pages/CommissionerDashboard.tsx')
@@ -263,14 +264,14 @@ assert.match(
   'Army Intelligence selector options must canonicalize and de-duplicate decoded faction and sectorial values before rendering.',
 )
 assert.match(
-  armies,
-  /CANONICAL_ARMY_REGISTRY\.flatMap\(\(army\) => \[[\s\S]*normalizeArmyKey\(army\.name\)[\s\S]*normalizeArmyKey\(army\.id\)/,
-  'Canonical army display normalization must resolve registry ids as well as display names.',
+  armyIdentity,
+  /activeArmyIdentities[\s\S]*getArmyRegistryIdentityValues\(army\)[\s\S]*normalizeArmyIdentityKey\(value\)[\s\S]*armyIdentityByKey\.set\(key, army\)/,
+  'Canonical army display normalization must resolve registry ids, display names, and aliases through the shared Army Identity service.',
 )
 assert.match(
   armies,
-  /(?=[\s\S]*'shasvastii', 'Shasvastii Expeditionary Force')(?=[\s\S]*'tunguska', 'Tunguska Jurisdictional Command')(?=[\s\S]*'starco-free-company-of-the-star', 'StarCo')/,
-  'Canonical army display normalization must resolve decoded shorthand and slug aliases seen in Army Intelligence data.',
+  /(?=[\s\S]*aliases: \[[^\]]*'shasvastii'[^\]]*\][\s\S]*id: 'shasvastii-expeditionary-force')(?=[\s\S]*aliases: \[[^\]]*'tunguska'[^\]]*\][\s\S]*id: 'tunguska-jurisdictional-command')(?=[\s\S]*aliases: \[[^\]]*'starco-free-company-of-the-star'[^\]]*\][\s\S]*id: 'starco')/,
+  'Canonical army registry aliases must include decoded shorthand and slug values seen in Army Intelligence data.',
 )
 assert.match(
   page,

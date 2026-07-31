@@ -4,8 +4,9 @@ import { useAuth } from '../auth/AuthContext'
 import InteractiveMetricCard from '../components/InteractiveMetricCard'
 import Skeleton from '../components/Skeleton'
 import lieutenantOrderReference from '../../docs/mockups/lieutenant-order-reference.png'
-import { CANONICAL_ARMY_REGISTRY, getArmyParentFaction, normalizeArmyForDisplay } from '../config/armies'
+import { CANONICAL_ARMY_REGISTRY } from '../config/armies'
 import { readArmyIntelligenceFactionParam } from '../services/armyIntelligenceNavigation'
+import { getArmyParentFaction, normalizeArmyForDisplay } from '../services/armyIdentity'
 import {
   apiClient,
   type ArmyIntelligenceArmyList,

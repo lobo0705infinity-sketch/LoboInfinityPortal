@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import OperatorBadge from '../components/OperatorBadge'
 import Skeleton from '../components/Skeleton'
-import { normalizeArmyForDisplay } from '../config/armies'
+import { normalizeArmyForDisplay } from '../services/armyIdentity'
 import {
   apiClient,
   type ArmyDiagnosticReport,

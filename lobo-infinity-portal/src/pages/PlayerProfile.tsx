@@ -5,7 +5,7 @@ import { getOperatorBadgeDetails } from '../components/operatorBadgeDetails'
 import PrimaryFactionCard from '../components/PrimaryFactionCard'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
-import { getArmyParentFaction } from '../config/armies'
+import { getArmyParentFaction } from '../services/armyIdentity'
 import {
   type FactionPortrait,
 } from '../config/factionPortraits'

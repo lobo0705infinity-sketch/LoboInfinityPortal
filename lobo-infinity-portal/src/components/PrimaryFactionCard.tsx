@@ -1,6 +1,7 @@
 import { type KeyboardEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getFactionIcon } from '../assets/operator-badges/factions'
+import { resolveArmyIdentity } from '../services/armyIdentity'
 import { buildArmyIntelligenceFactionPath } from '../services/armyIntelligenceNavigation'
 import './PrimaryFactionCard.css'
 
@@ -18,10 +19,11 @@ function PrimaryFactionCard({
   variant = 'definition',
 }: PrimaryFactionCardProps) {
   const navigate = useNavigate()
-  const normalizedFaction = String(faction ?? '').trim()
+  const identity = resolveArmyIdentity(faction)
+  const normalizedFaction = identity?.displayName || ''
   const displayFaction = normalizedFaction || pendingFactionLabel
-  const icon = getFactionIcon(normalizedFaction)
-  const isInteractive = Boolean(normalizedFaction)
+  const icon = getFactionIcon(identity?.iconKey || normalizedFaction)
+  const isInteractive = Boolean(identity)
   const ariaLabel = isInteractive
     ? `View ${displayFaction} Army Intelligence`
     : undefined

@@ -1,4 +1,4 @@
-import { getArmyParentFaction, getCanonicalArmyName } from './armies.ts'
+import { getArmyParentFaction, getCanonicalArmyName } from '../services/armyIdentity.ts'
 
 export type FactionPortrait = {
   alt: string

@@ -6,7 +6,7 @@ import {
   getArmyParentFaction,
   getCanonicalArmyName,
   getCanonicalParentFactionOptions,
-} from '../config/armies'
+} from '../services/armyIdentity'
 import { CANONICAL_MISSIONS } from '../config/missions'
 import { apiClient, type ArmyListSubmission } from '../services/api'
 import type { ArmyCodeValidationReport } from '../services/api'

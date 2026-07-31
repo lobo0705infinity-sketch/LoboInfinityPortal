@@ -4,6 +4,7 @@
 
 // ===== ALEPH =====
 
+import { resolveArmyIdentity } from "../../../services/armyIdentity";
 import Aleph from "./aleph.svg";
 import OperationsSubsection from "./operations-subsection.svg";
 import SteelPhalanx from "./steel-phalanx.svg";
@@ -191,7 +192,8 @@ export function getFactionIcon(preferredFaction?: string): string {
   const direct = factionIcons[preferredFaction];
   if (direct) return direct;
 
-  const key = normalizeFactionIconKey(preferredFaction);
+  const canonicalFaction = resolveArmyIdentity(preferredFaction)?.displayName;
+  const key = normalizeFactionIconKey(canonicalFaction || preferredFaction);
   const aliasKey = factionIconAliasesByKey.get(key);
 
   return factionIconsByKey.get(aliasKey || key) ?? LoboDefault;

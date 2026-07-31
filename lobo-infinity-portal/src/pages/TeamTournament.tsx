@@ -7,7 +7,7 @@ import Skeleton from '../components/Skeleton'
 import {
   getCanonicalArmyName,
   getCanonicalArmyOptions,
-} from '../config/armies'
+} from '../services/armyIdentity'
 import { getDiscordCommunityLink } from '../config/communityLinks'
 import { useSettings } from '../contexts/SettingsContext'
 import {

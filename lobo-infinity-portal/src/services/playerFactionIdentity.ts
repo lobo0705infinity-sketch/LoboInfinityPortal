@@ -1,5 +1,5 @@
-import { getArmyParentFaction } from '../config/armies.ts'
 import { resolveFactionPortrait } from '../config/factionPortraits.ts'
+import { getArmyParentFaction, resolveArmyIdentity } from './armyIdentity.ts'
 
 export type PlayerFactionIdentity = {
   badgeFactionKey: string | null
@@ -19,7 +19,7 @@ export function resolvePlayerFactionIdentity(
   player: PlayerFactionIdentitySource,
 ): PlayerFactionIdentity {
   const rawPreferredArmy = readStoredPreferredArmy(player)
-  const normalizedFaction = normalizeStoredPreferredArmy(rawPreferredArmy)
+  const normalizedFaction = resolveArmyIdentity(rawPreferredArmy)?.displayName || null
 
   if (!normalizedFaction) {
     return {
@@ -52,9 +52,3 @@ function readStoredPreferredArmy(player: PlayerFactionIdentitySource) {
   return String(player.favoriteFaction ?? player.preferredArmy ?? '').trim()
 }
 
-function normalizeStoredPreferredArmy(value: string | null) {
-  return String(value || '')
-    .trim()
-    .replace(/\s*\(\d+\s+games?\)$/i, '')
-    .trim() || null
-}
