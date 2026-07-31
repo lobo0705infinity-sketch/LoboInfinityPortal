@@ -43,8 +43,13 @@ assert.match(
 )
 assert.match(
   backend,
-  /knownArmyListCounts[\s\S]*knownArmyLists: getKnownArmyListCount[\s\S]*buildKnownArmyListCountsByFaction[\s\S]*getArmyListObjects\(\)/,
+  /knownArmyListRegistry[\s\S]*armyLists: knownArmyListRegistry\.lists[\s\S]*knownArmyLists: getKnownArmyListCount[\s\S]*buildKnownArmyListRegistry[\s\S]*getArmyListObjects\(\)/,
   'Backend must derive knownArmyLists from the canonical Army Lists registry during the Army Intelligence response build.',
+)
+assert.match(
+  backend,
+  /source: "Community Library"[\s\S]*submissionDate[\s\S]*points[\s\S]*swc/,
+  'Backend must expose lightweight Army List Explorer rows from the canonical Army Lists registry.',
 )
 assert.match(
   backend,
@@ -85,6 +90,11 @@ assert.match(
   apiClient,
   /knownArmyLists: number[\s\S]*knownArmyLists: getNumber\(record, 'knownArmyLists'\)/,
   'API client must preserve knownArmyLists through the Army Intelligence type and normalizer.',
+)
+assert.match(
+  apiClient,
+  /export type ArmyIntelligenceArmyList[\s\S]*armyLists: ArmyIntelligenceArmyList\[[\s\S]*normalizeArmyIntelligenceArmyList/,
+  'API client must expose and normalize Army Intelligence explorer rows.',
 )
 assert.match(
   apiClient,
@@ -133,8 +143,33 @@ assert.match(
 )
 assert.match(
   page,
-  /Known Army Lists[\s\S]*selectedKnownArmyLists[\s\S]*getKnownArmyListsForSelectedFaction/,
-  'Army Intelligence page must display the selected faction known army-list count alongside summary metrics.',
+  /getKnownArmyListsForSelectedFaction[\s\S]*Known Army Lists[\s\S]*onValueAction[\s\S]*setExplorerOpen\(true\)[\s\S]*selectedKnownArmyLists/,
+  'Army Intelligence page must open the Army List Explorer from the Known Army Lists statistic value.',
+)
+assert.match(
+  page,
+  /ArmyListExplorer[\s\S]*Known Army Lists[\s\S]*Players[\s\S]*Sectorials Represented[\s\S]*Sectorial Coverage[\s\S]*Newest Submission[\s\S]*Most Popular Sectorial[\s\S]*Most Submitted By/,
+  'Army Intelligence page must expose an interactive Army List Explorer with summary statistics.',
+)
+assert.match(
+  page,
+  /Most Popular Sectorial[\s\S]*setSectorialFilter\(summary\.mostPopularSectorial\)[\s\S]*Most Submitted By[\s\S]*setPlayerFilter\(summary\.mostActivePlayer\)/,
+  'Army List Explorer summary statistics must filter by popular sectorial and active player.',
+)
+assert.match(
+  page,
+  /CANONICAL_ARMY_REGISTRY[\s\S]*getTotalSectorialsForFaction[\s\S]*army\.type === 'Sectorial'/,
+  'Army List Explorer sectorial coverage must use the canonical faction registry.',
+)
+assert.match(
+  page,
+  /filterAndSortExplorerRows[\s\S]*Submission Date[\s\S]*Player[\s\S]*Sectorial[\s\S]*Search[\s\S]*Points/,
+  'Army List Explorer must support requested sorting, filtering, and search controls.',
+)
+assert.match(
+  page,
+  /getArmyIntelligenceListTarget[\s\S]*\/army-list\//,
+  'Army List Explorer rows must open the existing army-list target instead of creating a new viewer.',
 )
 assert.match(
   page,
@@ -1163,6 +1198,153 @@ assert.equal(
   'Scheduled Army Intelligence refresh responses must update knownArmyLists from the latest stored Army Lists.',
 )
 
+const explorerRows = buildArmyListExplorerRowsFixture([
+  {
+    id: 1,
+    armyName: 'Onyx Attack',
+    faction: 'Combined Army',
+    player: 'Lobo',
+    points: 300,
+    sectorial: 'Onyx Contact Force',
+    submissionDate: '2026-07-25',
+    swc: 6,
+  },
+  {
+    id: 2,
+    armyName: 'Shas Shell',
+    faction: 'Combined Army',
+    player: 'FlashPulse',
+    points: 295,
+    sectorial: 'Shasvastii Expeditionary Force',
+    submissionDate: '2026-07-27',
+    swc: 5.5,
+  },
+  {
+    id: 3,
+    armyName: 'Morat Advance',
+    faction: 'Combined Army',
+    player: 'FlashPulse',
+    points: 300,
+    sectorial: 'Morat Aggression Force',
+    submissionDate: '2026-07-26',
+    swc: 6,
+  },
+  {
+    id: 4,
+    armyName: 'Bureau Strike',
+    faction: 'O-12',
+    player: 'Judge',
+    points: 300,
+    sectorial: 'O-12',
+    submissionDate: '2026-07-24',
+    swc: 6,
+  },
+])
+const combinedExplorerRows = explorerRows.filter((row) => row.faction === 'Combined Army')
+assert.equal(
+  combinedExplorerRows.length,
+  knownArmyListCounts['Combined Army'],
+  'Known Army Lists count must match the selected faction explorer rows.',
+)
+assert.deepEqual(
+  filterAndSortExplorerRowsFixture(combinedExplorerRows, { sort: 'submissionDate' }).map((row) => row.armyName),
+  ['Shas Shell', 'Morat Advance', 'Onyx Attack'],
+  'Army List Explorer must sort by submission date.',
+)
+assert.deepEqual(
+  filterAndSortExplorerRowsFixture(combinedExplorerRows, { player: 'FlashPulse', sort: 'player' }).map((row) => row.armyName),
+  ['Shas Shell', 'Morat Advance'],
+  'Army List Explorer must filter by player.',
+)
+assert.deepEqual(
+  filterAndSortExplorerRowsFixture(combinedExplorerRows, { sectorial: 'Onyx Contact Force', sort: 'sectorial' }).map((row) => row.armyName),
+  ['Onyx Attack'],
+  'Army List Explorer must filter by sectorial.',
+)
+assert.deepEqual(
+  filterAndSortExplorerRowsFixture(combinedExplorerRows, { search: 'shas', sort: 'submissionDate' }).map((row) => row.armyName),
+  ['Shas Shell'],
+  'Army List Explorer search must match army names.',
+)
+assert.deepEqual(
+  filterAndSortExplorerRowsFixture(combinedExplorerRows, { search: 'lobo', sort: 'submissionDate' }).map((row) => row.armyName),
+  ['Onyx Attack'],
+  'Army List Explorer search must match player names.',
+)
+assert.deepEqual(
+  filterAndSortExplorerRowsFixture(combinedExplorerRows, { sort: 'points' }).map((row) => row.armyName),
+  ['Morat Advance', 'Onyx Attack', 'Shas Shell'],
+  'Army List Explorer must sort by points with deterministic tie handling.',
+)
+assert.deepEqual(
+  buildArmyListExplorerSummaryFixture(combinedExplorerRows, 'Combined Army'),
+  {
+    knownArmyLists: 3,
+    mostActivePlayer: 'FlashPulse',
+    mostActivePlayerCount: 2,
+    mostPopularSectorial: 'Morat Aggression Force',
+    newestSubmission: '2026-07-27',
+    players: 2,
+    sectorialCoverage: 3,
+    sectorials: 3,
+    totalSectorials: 4,
+  },
+  'Army List Explorer summary statistics must match the selected faction Army Lists.',
+)
+assert.deepEqual(
+  filterAndSortExplorerRowsFixture(combinedExplorerRows, {
+    player: buildArmyListExplorerSummaryFixture(combinedExplorerRows, 'Combined Army').mostActivePlayer,
+    sort: 'player',
+  }).map((row) => row.armyName),
+  ['Shas Shell', 'Morat Advance'],
+  'Clicking Most Submitted By must filter to that player.',
+)
+assert.deepEqual(
+  filterAndSortExplorerRowsFixture(combinedExplorerRows, {
+    sectorial: buildArmyListExplorerSummaryFixture(combinedExplorerRows, 'Combined Army').mostPopularSectorial,
+    sort: 'sectorial',
+  }).map((row) => row.armyName),
+  ['Morat Advance'],
+  'Clicking Most Popular Sectorial must filter to that sectorial.',
+)
+const combinedRowsAfterNewSubmission = buildArmyListExplorerRowsFixture([
+  ...explorerRows,
+  {
+    id: 5,
+    armyName: 'Next Wave Probe',
+    faction: 'Combined Army',
+    player: 'Cipher',
+    points: 300,
+    sectorial: 'Next Wave',
+    submissionDate: '2026-07-28',
+    swc: 6,
+  },
+]).filter((row) => row.faction === 'Combined Army')
+assert.deepEqual(
+  buildArmyListExplorerSummaryFixture(combinedRowsAfterNewSubmission, 'Combined Army'),
+  {
+    knownArmyLists: 4,
+    mostActivePlayer: 'FlashPulse',
+    mostActivePlayerCount: 2,
+    mostPopularSectorial: 'Morat Aggression Force',
+    newestSubmission: '2026-07-28',
+    players: 3,
+    sectorialCoverage: 4,
+    sectorials: 4,
+    totalSectorials: 4,
+  },
+  'Sectorial Coverage must update after new Army List submissions.',
+)
+assert.equal(
+  new Set(combinedExplorerRows.map((row) => row.id)).size,
+  combinedExplorerRows.length,
+  'Army List Explorer must not display duplicate Army Lists.',
+)
+assert.ok(
+  combinedExplorerRows.every((row) => getArmyIntelligenceListTargetFixture(row).startsWith('/army-list/')),
+  'Every Army List Explorer row must open through the existing army-list target.',
+)
+
 console.log('Army Intelligence Phase 1 checks passed.')
 
 function read(path) {
@@ -1180,6 +1362,130 @@ function buildKnownArmyListCountsByFactionFixture(lists) {
     counts[faction] = (counts[faction] || 0) + 1
     return counts
   }, {})
+}
+
+function buildArmyListExplorerRowsFixture(lists) {
+  return lists.map((list) => ({
+    id: list.id,
+    armyName: list.armyName,
+    faction: canonicalizeArmyParentFactionFixture(list.faction),
+    player: list.player,
+    playerDisplayName: list.playerDisplayName || list.player,
+    points: list.points,
+    sectorial: list.sectorial,
+    source: 'Community Library',
+    submissionDate: list.submissionDate,
+    swc: list.swc,
+  }))
+}
+
+function filterAndSortExplorerRowsFixture(rows, filters) {
+  const query = String(filters.search || '').trim().toLowerCase()
+
+  return rows
+    .filter((row) => !filters.player || row.playerDisplayName === filters.player)
+    .filter((row) => !filters.sectorial || row.sectorial === filters.sectorial)
+    .filter((row) =>
+      !query ||
+      row.playerDisplayName.toLowerCase().includes(query) ||
+      row.armyName.toLowerCase().includes(query),
+    )
+    .sort((left, right) => compareExplorerRowsFixture(left, right, filters.sort || 'submissionDate'))
+}
+
+function compareExplorerRowsFixture(left, right, sort) {
+  if (sort === 'player') {
+    return left.playerDisplayName.localeCompare(right.playerDisplayName) ||
+      compareExplorerRowsFixture(left, right, 'submissionDate')
+  }
+
+  if (sort === 'sectorial') {
+    return left.sectorial.localeCompare(right.sectorial) ||
+      compareExplorerRowsFixture(left, right, 'submissionDate')
+  }
+
+  if (sort === 'points') {
+    return right.points - left.points || compareExplorerRowsFixture(left, right, 'submissionDate')
+  }
+
+  return Date.parse(right.submissionDate) - Date.parse(left.submissionDate) ||
+    right.id - left.id ||
+    left.armyName.localeCompare(right.armyName)
+}
+
+function buildArmyListExplorerSummaryFixture(rows, selectedParentFaction) {
+  const playerCounts = new Map()
+  const sectorialCounts = new Map()
+  let newestSubmission = ''
+
+  rows.forEach((row) => {
+    playerCounts.set(row.playerDisplayName, (playerCounts.get(row.playerDisplayName) || 0) + 1)
+    if (isCanonicalSectorialFixture(row.sectorial)) {
+      sectorialCounts.set(row.sectorial, (sectorialCounts.get(row.sectorial) || 0) + 1)
+    }
+    if (!newestSubmission || Date.parse(row.submissionDate) > Date.parse(newestSubmission)) {
+      newestSubmission = row.submissionDate
+    }
+  })
+
+  const mostActivePlayer = getCountLeaderFixture(playerCounts)
+  const mostPopularSectorial = getCountLeaderFixture(sectorialCounts)
+  const totalSectorials = getTotalSectorialsForFactionFixture(selectedParentFaction)
+
+  return {
+    knownArmyLists: rows.length,
+    mostActivePlayer: mostActivePlayer.name,
+    mostActivePlayerCount: mostActivePlayer.count,
+    mostPopularSectorial: mostPopularSectorial.name,
+    newestSubmission,
+    players: playerCounts.size,
+    sectorialCoverage: totalSectorials > 0 ? sectorialCounts.size : 0,
+    sectorials: sectorialCounts.size,
+    totalSectorials,
+  }
+}
+
+function getTotalSectorialsForFactionFixture(parentFaction) {
+  const sectorialsByParent = {
+    'Combined Army': [
+      'Morat Aggression Force',
+      'Next Wave',
+      'Onyx Contact Force',
+      'Shasvastii Expeditionary Force',
+    ],
+    'O-12': [
+      'Starmada',
+      'Torchlight Brigade',
+    ],
+  }
+
+  return (sectorialsByParent[parentFaction] || []).length
+}
+
+function isCanonicalSectorialFixture(value) {
+  const knownSectorials = new Set([
+    'Morat Aggression Force',
+    'Next Wave',
+    'Onyx Contact Force',
+    'Shasvastii Expeditionary Force',
+    'Starmada',
+    'Torchlight Brigade',
+  ])
+
+  return knownSectorials.has(value)
+}
+
+function getCountLeaderFixture(counts) {
+  return Array.from(counts.entries())
+    .map(([name, count]) => ({ count, name }))
+    .sort((left, right) => right.count - left.count || left.name.localeCompare(right.name))[0] || {
+      count: 0,
+      name: '',
+    }
+}
+
+function getArmyIntelligenceListTargetFixture(row) {
+  return `/army-list/${encodeURIComponent(row.armyCode || row.armyLink || String(row.id))}`
 }
 
 function attachKnownArmyListsFixture(list, counts) {

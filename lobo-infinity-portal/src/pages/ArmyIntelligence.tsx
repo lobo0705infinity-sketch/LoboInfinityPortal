@@ -1,9 +1,12 @@
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import Skeleton from '../components/Skeleton'
 import lieutenantOrderReference from '../../docs/mockups/lieutenant-order-reference.png'
+import { CANONICAL_ARMY_REGISTRY, getArmyParentFaction, normalizeArmyForDisplay } from '../config/armies'
 import {
   apiClient,
+  type ArmyIntelligenceArmyList,
   type ArmyIntelligenceData,
   type ArmyIntelligenceDecodedEntry,
   type ArmyIntelligenceRefreshFailure,
@@ -24,6 +27,7 @@ type ArmyIntelligenceState =
     }
 
 type AnalysisResultFilter = 'all' | 'winning' | 'losing'
+type ArmyListExplorerSort = 'submissionDate' | 'player' | 'sectorial' | 'points'
 type ModelUsageSort = 'alphabetical' | 'pointsHigh' | 'pointsLow'
 type RefreshCounts = {
   currentTarget: string
@@ -99,6 +103,18 @@ type ArmyAnalysis = {
   listCount: number
   modelUsage: UsageRow[]
   specialists: UsageRow[]
+}
+
+type ArmyListExplorerSummary = {
+  knownArmyLists: number
+  mostActivePlayer: string
+  mostActivePlayerCount: number
+  mostPopularSectorial: string
+  newestSubmission: string
+  players: number
+  sectorialCoverage: number
+  sectorials: number
+  totalSectorials: number
 }
 
 const resultFilterOptions: Array<{
@@ -261,6 +277,11 @@ function ArmyIntelligenceContent({
   const [modelSort, setModelSort] = useState<ModelUsageSort>('alphabetical')
   const [modelTypeFilter, setModelTypeFilter] = useState('')
   const [modelWeaponFilter, setModelWeaponFilter] = useState('')
+  const [explorerOpen, setExplorerOpen] = useState(false)
+  const [explorerPlayerFilter, setExplorerPlayerFilter] = useState('')
+  const [explorerSearch, setExplorerSearch] = useState('')
+  const [explorerSectorialFilter, setExplorerSectorialFilter] = useState('')
+  const [explorerSort, setExplorerSort] = useState<ArmyListExplorerSort>('submissionDate')
   const [refreshState, setRefreshState] = useState<RefreshState>({ status: 'idle' })
   const decodedLists = useMemo(
     () => data.lists.filter(isDecodedList),
@@ -296,6 +317,48 @@ function ArmyIntelligenceContent({
     () => getKnownArmyListsForSelectedFaction(selectedFactionLists),
     [selectedFactionLists],
   )
+  const selectedParentFaction = useMemo(
+    () => getSelectedParentFaction(selectedSectorial, selectedFactionLists),
+    [selectedFactionLists, selectedSectorial],
+  )
+  const selectedArmyListExplorerRows = useMemo(
+    () =>
+      selectedParentFaction
+        ? data.armyLists.filter((list) => getExplorerParentFaction(list) === selectedParentFaction)
+        : [],
+    [data.armyLists, selectedParentFaction],
+  )
+  const explorerPlayerOptions = useMemo(
+    () => getUniqueExplorerOptions(selectedArmyListExplorerRows.map(formatExplorerPlayer)),
+    [selectedArmyListExplorerRows],
+  )
+  const explorerSectorialOptions = useMemo(
+    () => getUniqueExplorerOptions(selectedArmyListExplorerRows.map((list) => normalizeArmyForDisplay(list.sectorial))),
+    [selectedArmyListExplorerRows],
+  )
+  const visibleExplorerRows = useMemo(
+    () =>
+      filterAndSortExplorerRows(
+        selectedArmyListExplorerRows,
+        {
+          player: explorerPlayerFilter,
+          search: explorerSearch,
+          sectorial: explorerSectorialFilter,
+          sort: explorerSort,
+        },
+      ),
+    [
+      explorerPlayerFilter,
+      explorerSearch,
+      explorerSectorialFilter,
+      explorerSort,
+      selectedArmyListExplorerRows,
+    ],
+  )
+  const explorerSummary = useMemo(
+    () => buildArmyListExplorerSummary(selectedArmyListExplorerRows, selectedParentFaction),
+    [selectedArmyListExplorerRows, selectedParentFaction],
+  )
   const analysis = useMemo(() => buildArmyAnalysis(matchingLists), [matchingLists])
   const equipmentOptions = useMemo(() => buildEquipmentOptions(matchingLists), [matchingLists])
   const skillOptions = useMemo(() => buildSkillOptions(matchingLists), [matchingLists])
@@ -326,11 +389,29 @@ function ArmyIntelligenceContent({
       return
     }
 
+    setExplorerOpen(false)
+    setExplorerPlayerFilter('')
+    setExplorerSearch('')
+    setExplorerSectorialFilter('')
+    setExplorerSort('submissionDate')
+
     window.scrollTo({
       left: 0,
       top: 0,
     })
   }, [selectedSectorial])
+
+  useEffect(() => {
+    if (explorerPlayerFilter && !explorerPlayerOptions.includes(explorerPlayerFilter)) {
+      setExplorerPlayerFilter('')
+    }
+  }, [explorerPlayerFilter, explorerPlayerOptions])
+
+  useEffect(() => {
+    if (explorerSectorialFilter && !explorerSectorialOptions.includes(explorerSectorialFilter)) {
+      setExplorerSectorialFilter('')
+    }
+  }, [explorerSectorialFilter, explorerSectorialOptions])
 
   useEffect(() => {
     if (modelWeaponFilter && !weaponOptions.includes(modelWeaponFilter)) {
@@ -545,7 +626,13 @@ function ArmyIntelligenceContent({
       ) : (
         <>
           <section className="army-intelligence-summary" aria-label="Army Intelligence analysis summary">
-            <MetricCard icon="lists" label="Known Army Lists" value={selectedKnownArmyLists} />
+            <MetricCard
+              disabled={selectedArmyListExplorerRows.length === 0}
+              icon="lists"
+              label="Known Army Lists"
+              onValueAction={() => setExplorerOpen(true)}
+              value={selectedKnownArmyLists}
+            />
             <MetricCard icon="regular" label="Average Regular Orders" value={analysis.averageRegularOrders} />
             <MetricCard icon="irregular" label="Average Irregular Orders" value={analysis.averageIrregularOrders} />
             <MetricCard icon="tactical" label="Average Tactical Awareness Orders" value={analysis.averageTacticalAwarenessOrders} />
@@ -554,6 +641,25 @@ function ArmyIntelligenceContent({
             <MetricCard icon="wounds" label="Average Wounds / Structure per Model" value={analysis.averageDurability} />
             <MetricCard icon="points" label="Average Points" value={analysis.averagePoints} />
           </section>
+
+          <ArmyListExplorer
+            lists={visibleExplorerRows}
+            onClose={() => setExplorerOpen(false)}
+            open={explorerOpen}
+            playerFilter={explorerPlayerFilter}
+            playerOptions={explorerPlayerOptions}
+            search={explorerSearch}
+            sectorialFilter={explorerSectorialFilter}
+            sectorialOptions={explorerSectorialOptions}
+            selectedFaction={selectedParentFaction || selectedSectorial}
+            setExplorerOpen={setExplorerOpen}
+            setPlayerFilter={setExplorerPlayerFilter}
+            setSearch={setExplorerSearch}
+            setSectorialFilter={setExplorerSectorialFilter}
+            setSort={setExplorerSort}
+            sort={explorerSort}
+            summary={explorerSummary}
+          />
 
           <section className="panel army-intelligence-selector army-intelligence-model-controls" aria-label="Model Usage filters">
             <label>
@@ -653,13 +759,72 @@ function PageHeader() {
   )
 }
 
-function MetricCard({ icon, label, value }: { icon: MetricIcon; label: string; value: number }) {
+function MetricCard({
+  disabled,
+  icon,
+  label,
+  onValueAction,
+  value,
+}: {
+  disabled?: boolean
+  icon: MetricIcon
+  label: string
+  onValueAction?: () => void
+  value: number
+}) {
   return (
-    <article className="army-intelligence-metric">
+    <article className={`army-intelligence-metric${onValueAction ? ' has-action-value' : ''}`}>
       <MetricIcon icon={icon} />
       <span>{label}</span>
-      <strong>{formatNumber(value)}</strong>
+      {onValueAction ? (
+        <button
+          aria-label={`Open ${label}`}
+          className="army-intelligence-metric-value-action"
+          disabled={disabled}
+          onClick={onValueAction}
+          type="button"
+        >
+          {formatNumber(value)}
+        </button>
+      ) : (
+        <strong>{formatNumber(value)}</strong>
+      )}
     </article>
+  )
+}
+
+function ExplorerStat({
+  label,
+  onClick,
+  value,
+}: {
+  label: string
+  onClick?: () => void
+  value: string
+}) {
+  const content = (
+    <>
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </>
+  )
+
+  if (onClick) {
+    return (
+      <button
+        className="army-intelligence-explorer-stat is-actionable"
+        onClick={onClick}
+        type="button"
+      >
+        {content}
+      </button>
+    )
+  }
+
+  return (
+    <div className="army-intelligence-explorer-stat">
+      {content}
+    </div>
   )
 }
 
@@ -687,6 +852,191 @@ function getKnownArmyListsForSelectedFaction(lists: ArmyIntelligenceList[]) {
   return lists.reduce(
     (highest, list) => Math.max(highest, list.knownArmyLists),
     0,
+  )
+}
+
+function ArmyListExplorer({
+  lists,
+  onClose,
+  open,
+  playerFilter,
+  playerOptions,
+  search,
+  sectorialFilter,
+  sectorialOptions,
+  selectedFaction,
+  setExplorerOpen,
+  setPlayerFilter,
+  setSearch,
+  setSectorialFilter,
+  setSort,
+  sort,
+  summary,
+}: {
+  lists: ArmyIntelligenceArmyList[]
+  onClose: () => void
+  open: boolean
+  playerFilter: string
+  playerOptions: string[]
+  search: string
+  sectorialFilter: string
+  sectorialOptions: string[]
+  selectedFaction: string
+  setExplorerOpen: (value: boolean) => void
+  setPlayerFilter: (value: string) => void
+  setSearch: (value: string) => void
+  setSectorialFilter: (value: string) => void
+  setSort: (value: ArmyListExplorerSort) => void
+  sort: ArmyListExplorerSort
+  summary: ArmyListExplorerSummary
+}) {
+  if (!open) {
+    return null
+  }
+
+  return (
+    <section
+      aria-label={`${selectedFaction} Army List Explorer`}
+      className="army-intelligence-explorer-backdrop"
+      role="dialog"
+    >
+      <div className="army-intelligence-explorer-panel">
+        <div className="army-intelligence-explorer-header">
+          <div>
+            <p className="eyebrow">Army List Explorer</p>
+            <h2>{selectedFaction}</h2>
+          </div>
+          <button onClick={onClose} type="button">Close</button>
+        </div>
+
+        <div className="army-intelligence-explorer-stats">
+          <ExplorerStat
+            label="Known Army Lists"
+            onClick={() => {
+              setPlayerFilter('')
+              setSectorialFilter('')
+              setSearch('')
+            }}
+            value={String(summary.knownArmyLists)}
+          />
+          <ExplorerStat label="Players" value={String(summary.players)} />
+          <ExplorerStat label="Sectorials Represented" value={String(summary.sectorials)} />
+          {summary.totalSectorials > 0 ? (
+            <ExplorerStat
+              label="Sectorial Coverage"
+              value={`${summary.sectorialCoverage} / ${summary.totalSectorials}`}
+            />
+          ) : null}
+          <ExplorerStat label="Newest Submission" value={formatExplorerDate(summary.newestSubmission)} />
+          <ExplorerStat
+            label="Most Popular Sectorial"
+            onClick={
+              summary.mostPopularSectorial
+                ? () => {
+                    setExplorerOpen(true)
+                    setSectorialFilter(summary.mostPopularSectorial)
+                  }
+                : undefined
+            }
+            value={summary.mostPopularSectorial || 'None'}
+          />
+          <ExplorerStat
+            label="Most Submitted By"
+            onClick={
+              summary.mostActivePlayer
+                ? () => {
+                    setExplorerOpen(true)
+                    setPlayerFilter(summary.mostActivePlayer)
+                  }
+                : undefined
+            }
+            value={
+              summary.mostActivePlayer
+                ? `${summary.mostActivePlayer} (${summary.mostActivePlayerCount})`
+                : 'None'
+            }
+          />
+        </div>
+
+        <section className="army-intelligence-explorer-controls" aria-label="Army List Explorer controls">
+          <label>
+            <span>Sort</span>
+            <select onChange={(event) => setSort(event.target.value as ArmyListExplorerSort)} value={sort}>
+              <option value="submissionDate">Submission Date</option>
+              <option value="player">Player</option>
+              <option value="sectorial">Sectorial</option>
+              <option value="points">Points</option>
+            </select>
+          </label>
+          <label>
+            <span>Player</span>
+            <select onChange={(event) => setPlayerFilter(event.target.value)} value={playerFilter}>
+              <option value="">All Players</option>
+              {playerOptions.map((player) => (
+                <option key={player} value={player}>{player}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span>Sectorial</span>
+            <select onChange={(event) => setSectorialFilter(event.target.value)} value={sectorialFilter}>
+              <option value="">All Sectorials</option>
+              {sectorialOptions.map((sectorial) => (
+                <option key={sectorial} value={sectorial}>{sectorial}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span>Search</span>
+            <input
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Player or army name"
+              type="search"
+              value={search}
+            />
+          </label>
+        </section>
+
+        {lists.length === 0 ? (
+          <p className="army-intelligence-explorer-empty">No army lists match the current explorer filters.</p>
+        ) : (
+          <div className="army-intelligence-explorer-table" role="region" aria-label="Known Army Lists">
+            <table>
+              <thead>
+                <tr>
+                  <th>Player</th>
+                  <th>Sectorial</th>
+                  <th>Army Name</th>
+                  <th>Points</th>
+                  <th>SWC</th>
+                  <th>Submission Date</th>
+                  <th>Source</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {lists.map((list) => (
+                  <tr key={`${list.source}:${list.id}:${list.armyCode}`}>
+                    <td>{formatExplorerPlayer(list)}</td>
+                    <td>{normalizeArmyForDisplay(list.sectorial) || 'Not recorded'}</td>
+                    <td>{list.armyName || 'Untitled Army List'}</td>
+                    <td>{formatNumber(list.points)}</td>
+                    <td>{formatNumber(list.swc)}</td>
+                    <td>{formatExplorerDate(list.submissionDate)}</td>
+                    <td>{list.source || 'Community Library'}</td>
+                    <td>
+                      <Link to={getArmyIntelligenceListTarget(list)}>
+                        Open List
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </section>
   )
 }
 
@@ -848,6 +1198,31 @@ function getDecodedSectorial(list: ArmyIntelligenceList) {
   return normalizeSectorialDisplayName(list.decoded?.sectorial || '')
 }
 
+function getSelectedParentFaction(selectedSectorial: string, lists: ArmyIntelligenceList[]) {
+  const fromRegistry = getArmyParentFaction(selectedSectorial)
+
+  if (fromRegistry) {
+    return fromRegistry
+  }
+
+  for (const list of lists) {
+    const faction =
+      getArmyParentFaction(list.decoded?.faction) ||
+      getArmyParentFaction(list.faction) ||
+      normalizeArmyForDisplay(list.faction)
+
+    if (faction) {
+      return faction
+    }
+  }
+
+  return normalizeArmyForDisplay(selectedSectorial)
+}
+
+function getExplorerParentFaction(list: ArmyIntelligenceArmyList) {
+  return getArmyParentFaction(list.faction) || normalizeArmyForDisplay(list.faction)
+}
+
 function normalizeSectorialDisplayName(value: string) {
   const name = value.trim()
   const compact = name.replace(/\s+/g, '').toLocaleLowerCase()
@@ -869,6 +1244,166 @@ function matchesResultFilter(list: UniqueArmyIntelligenceList, filter: AnalysisR
   }
 
   return list.resultSet.has('loss')
+}
+
+function filterAndSortExplorerRows(
+  lists: ArmyIntelligenceArmyList[],
+  filters: {
+    player: string
+    search: string
+    sectorial: string
+    sort: ArmyListExplorerSort
+  },
+) {
+  const query = filters.search.trim().toLowerCase()
+
+  return lists
+    .filter((list) => !filters.player || formatExplorerPlayer(list) === filters.player)
+    .filter((list) => !filters.sectorial || normalizeArmyForDisplay(list.sectorial) === filters.sectorial)
+    .filter((list) =>
+      !query ||
+      formatExplorerPlayer(list).toLowerCase().includes(query) ||
+      list.armyName.toLowerCase().includes(query),
+    )
+    .sort((left, right) => compareExplorerRows(left, right, filters.sort))
+}
+
+function compareExplorerRows(
+  left: ArmyIntelligenceArmyList,
+  right: ArmyIntelligenceArmyList,
+  sort: ArmyListExplorerSort,
+): number {
+  if (sort === 'player') {
+    return formatExplorerPlayer(left).localeCompare(formatExplorerPlayer(right)) ||
+      compareExplorerRows(left, right, 'submissionDate')
+  }
+
+  if (sort === 'sectorial') {
+    return normalizeArmyForDisplay(left.sectorial).localeCompare(normalizeArmyForDisplay(right.sectorial)) ||
+      compareExplorerRows(left, right, 'submissionDate')
+  }
+
+  if (sort === 'points') {
+    return right.points - left.points || compareExplorerRows(left, right, 'submissionDate')
+  }
+
+  return getExplorerDateTime(right.submissionDate) - getExplorerDateTime(left.submissionDate) ||
+    right.id - left.id ||
+    left.armyName.localeCompare(right.armyName)
+}
+
+function buildArmyListExplorerSummary(
+  lists: ArmyIntelligenceArmyList[],
+  selectedParentFaction: string,
+): ArmyListExplorerSummary {
+  const players = new Set<string>()
+  const sectorials = new Set<string>()
+  const playerCounts = new Map<string, number>()
+  const sectorialCounts = new Map<string, number>()
+  let newestSubmission = ''
+
+  lists.forEach((list) => {
+    const player = formatExplorerPlayer(list)
+    const sectorial = normalizeArmyForDisplay(list.sectorial)
+
+    players.add(player)
+    playerCounts.set(player, (playerCounts.get(player) ?? 0) + 1)
+
+    if (sectorial && isCanonicalSectorial(sectorial)) {
+      sectorials.add(sectorial)
+      sectorialCounts.set(sectorial, (sectorialCounts.get(sectorial) ?? 0) + 1)
+    }
+
+    if (getExplorerDateTime(list.submissionDate) > getExplorerDateTime(newestSubmission)) {
+      newestSubmission = list.submissionDate
+    }
+  })
+
+  const mostActivePlayer = getCountLeader(playerCounts)
+  const mostPopularSectorial = getCountLeader(sectorialCounts)
+  const totalSectorials = getTotalSectorialsForFaction(selectedParentFaction)
+
+  return {
+    knownArmyLists: lists.length,
+    mostActivePlayer: mostActivePlayer.name,
+    mostActivePlayerCount: mostActivePlayer.count,
+    mostPopularSectorial: mostPopularSectorial.name,
+    newestSubmission,
+    players: players.size,
+    sectorialCoverage: totalSectorials > 0 ? sectorials.size : 0,
+    sectorials: sectorials.size,
+    totalSectorials,
+  }
+}
+
+function getTotalSectorialsForFaction(parentFaction: string) {
+  const faction = normalizeArmyForDisplay(parentFaction)
+
+  if (!faction) {
+    return 0
+  }
+
+  return CANONICAL_ARMY_REGISTRY.filter(
+    (army) => army.active && army.type === 'Sectorial' && army.parentFaction === faction,
+  ).length
+}
+
+function isCanonicalSectorial(value: string) {
+  const canonicalName = normalizeArmyForDisplay(value)
+
+  return CANONICAL_ARMY_REGISTRY.some(
+    (army) => army.active && army.type === 'Sectorial' && army.name === canonicalName,
+  )
+}
+
+function getCountLeader(counts: Map<string, number>) {
+  return Array.from(counts.entries())
+    .map(([name, count]) => ({ count, name }))
+    .sort((left, right) => right.count - left.count || left.name.localeCompare(right.name))[0] ?? {
+      count: 0,
+      name: '',
+    }
+}
+
+function getUniqueExplorerOptions(values: string[]) {
+  return Array.from(new Set(values.filter(Boolean))).sort((left, right) => left.localeCompare(right))
+}
+
+function formatExplorerPlayer(list: ArmyIntelligenceArmyList) {
+  return list.playerDisplayName || list.player || 'Unknown Player'
+}
+
+function formatExplorerDate(value: string) {
+  if (!value) {
+    return 'Not recorded'
+  }
+
+  const date = new Date(`${value}T00:00:00`)
+
+  if (Number.isNaN(date.getTime())) {
+    return value
+  }
+
+  return new Intl.DateTimeFormat(undefined, {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  }).format(date)
+}
+
+function getExplorerDateTime(value: string) {
+  if (!value) {
+    return 0
+  }
+
+  const date = new Date(`${value}T00:00:00`)
+  return Number.isNaN(date.getTime()) ? 0 : date.getTime()
+}
+
+function getArmyIntelligenceListTarget(list: ArmyIntelligenceArmyList) {
+  const value = (list.armyCode || list.armyLink || String(list.id)).trim()
+
+  return `/army-list/${encodeURIComponent(value)}`
 }
 
 function buildArmyAnalysis(lists: ArmyIntelligenceList[]): ArmyAnalysis {

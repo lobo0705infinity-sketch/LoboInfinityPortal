@@ -542,6 +542,21 @@ export type ArmyIntelligenceList = {
   status: 'decoded' | 'failed' | 'pending'
 }
 
+export type ArmyIntelligenceArmyList = {
+  id: number
+  armyCode: string
+  armyLink: string
+  armyName: string
+  faction: string
+  player: string
+  playerDisplayName: string
+  points: number
+  sectorial: string
+  source: 'League' | 'Casual' | 'Team Tournament' | 'Community Library' | string
+  submissionDate: string
+  swc: number
+}
+
 export type ArmyIntelligenceRefreshResult = {
   candidateCount: number
   currentCount: number
@@ -597,6 +612,7 @@ export type ArmyIntelligenceSummary = {
 }
 
 export type ArmyIntelligenceData = {
+  armyLists: ArmyIntelligenceArmyList[]
   lists: ArmyIntelligenceList[]
   summary: ArmyIntelligenceSummary
 }
@@ -5524,8 +5540,28 @@ function normalizeArmyIntelligencePayload(payload: unknown): ArmyIntelligenceDat
   }
 
   return {
+    armyLists: getArray(record, 'armyLists').map(normalizeArmyIntelligenceArmyList),
     lists: getRequiredArray(record, 'lists').map(normalizeArmyIntelligenceList),
     summary: normalizeArmyIntelligenceSummary(getRequiredRecord(record, 'summary')),
+  }
+}
+
+function normalizeArmyIntelligenceArmyList(item: unknown): ArmyIntelligenceArmyList {
+  const record = asRecord(item, 'Army Intelligence army list')
+
+  return {
+    id: getNumber(record, 'id'),
+    armyCode: getString(record, 'armyCode'),
+    armyLink: getString(record, 'armyLink'),
+    armyName: getString(record, 'armyName'),
+    faction: getString(record, 'faction'),
+    player: getString(record, 'player'),
+    playerDisplayName: getString(record, 'playerDisplayName') || getString(record, 'player'),
+    points: getNumber(record, 'points'),
+    sectorial: getString(record, 'sectorial'),
+    source: getString(record, 'source') || 'Community Library',
+    submissionDate: getString(record, 'submissionDate'),
+    swc: getNumber(record, 'swc'),
   }
 }
 

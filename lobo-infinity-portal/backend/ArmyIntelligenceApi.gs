@@ -59,8 +59,8 @@ function getArmyIntelligence(e) {
   const snapshots =
     getArmyIntelligenceSnapshotMap();
 
-  const knownArmyListCounts =
-    buildKnownArmyListCountsByFaction();
+  const knownArmyListRegistry =
+    buildKnownArmyListRegistry();
 
   const lists =
     sources.map(function(source) {
@@ -71,12 +71,13 @@ function getArmyIntelligence(e) {
       return mergeArmyIntelligenceSourceAndSnapshot(
         source,
         snapshot,
-        knownArmyListCounts
+        knownArmyListRegistry.counts
       );
     });
 
   return jsonOutput({
     success: true,
+    armyLists: knownArmyListRegistry.lists,
     lists: lists,
     summary: buildArmyIntelligenceSummary(lists)
   });
@@ -422,12 +423,16 @@ function mergeArmyIntelligenceSourceAndSnapshot(source, snapshot, knownArmyListC
 
 }
 
-function buildKnownArmyListCountsByFaction() {
+function buildKnownArmyListRegistry() {
 
   const counts = {};
+  const lists = [];
 
   if (typeof getArmyListObjects !== "function")
-    return counts;
+    return {
+      counts: counts,
+      lists: lists
+    };
 
   getArmyListObjects().forEach(function(list) {
     const faction =
@@ -442,9 +447,35 @@ function buildKnownArmyListCountsByFaction() {
 
     counts[faction] =
       (counts[faction] || 0) + 1;
+
+    lists.push({
+      id: list.id,
+      armyCode: list.armyCode,
+      armyLink: list.armyLink,
+      armyName:
+        list.armyName ||
+        (list.validation && list.validation.armyName) ||
+        "",
+      faction: faction,
+      player: list.player,
+      playerDisplayName: list.playerDisplayName || list.player,
+      points:
+        Number(list.validation && list.validation.points) || 0,
+      sectorial:
+        list.sectorial ||
+        (list.validation && list.validation.sectorial) ||
+        "",
+      source: "Community Library",
+      submissionDate: list.submissionDate,
+      swc:
+        Number(list.validation && list.validation.swc) || 0
+    });
   });
 
-  return counts;
+  return {
+    counts: counts,
+    lists: lists
+  };
 
 }
 
