@@ -68,7 +68,7 @@ type UsageRow = {
   weapons?: string[]
 }
 
-type MetricIcon = 'impetuous' | 'irregular' | 'lieutenant' | 'points' | 'regular' | 'tactical' | 'wounds'
+type MetricIcon = 'impetuous' | 'irregular' | 'lieutenant' | 'lists' | 'points' | 'regular' | 'tactical' | 'wounds'
 
 type ModelUsageAccumulator = Omit<UsageRow, 'equipment' | 'skills' | 'weapons'> & {
   equipment: Set<string>
@@ -284,6 +284,17 @@ function ArmyIntelligenceContent({
             .filter((list) => matchesResultFilter(list, resultFilter))
         : [],
     [resultFilter, selectedSectorial, uniqueDecodedLists],
+  )
+  const selectedFactionLists = useMemo(
+    () =>
+      selectedSectorial
+        ? uniqueDecodedLists.filter((list) => getDecodedSectorial(list) === selectedSectorial)
+        : [],
+    [selectedSectorial, uniqueDecodedLists],
+  )
+  const selectedKnownArmyLists = useMemo(
+    () => getKnownArmyListsForSelectedFaction(selectedFactionLists),
+    [selectedFactionLists],
   )
   const analysis = useMemo(() => buildArmyAnalysis(matchingLists), [matchingLists])
   const equipmentOptions = useMemo(() => buildEquipmentOptions(matchingLists), [matchingLists])
@@ -534,6 +545,7 @@ function ArmyIntelligenceContent({
       ) : (
         <>
           <section className="army-intelligence-summary" aria-label="Army Intelligence analysis summary">
+            <MetricCard icon="lists" label="Known Army Lists" value={selectedKnownArmyLists} />
             <MetricCard icon="regular" label="Average Regular Orders" value={analysis.averageRegularOrders} />
             <MetricCard icon="irregular" label="Average Irregular Orders" value={analysis.averageIrregularOrders} />
             <MetricCard icon="tactical" label="Average Tactical Awareness Orders" value={analysis.averageTacticalAwarenessOrders} />
@@ -668,6 +680,13 @@ function MetricIcon({ icon }: { icon: MetricIcon }) {
 
   return (
     <span aria-hidden="true" className={`army-intelligence-metric-icon is-${icon}`} />
+  )
+}
+
+function getKnownArmyListsForSelectedFaction(lists: ArmyIntelligenceList[]) {
+  return lists.reduce(
+    (highest, list) => Math.max(highest, list.knownArmyLists),
+    0,
   )
 }
 

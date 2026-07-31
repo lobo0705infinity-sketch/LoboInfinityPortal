@@ -529,6 +529,7 @@ export type ArmyIntelligenceList = {
   event: string
   faction: string
   gameType: string
+  knownArmyLists: number
   mission: string
   opponent: string
   player: string
@@ -5541,6 +5542,7 @@ function normalizeArmyIntelligenceList(item: unknown): ArmyIntelligenceList {
     event: getString(record, 'event'),
     faction: getString(record, 'faction'),
     gameType: getString(record, 'gameType'),
+    knownArmyLists: getNumber(record, 'knownArmyLists'),
     mission: getString(record, 'mission'),
     opponent: getString(record, 'opponent'),
     player: getString(record, 'player'),

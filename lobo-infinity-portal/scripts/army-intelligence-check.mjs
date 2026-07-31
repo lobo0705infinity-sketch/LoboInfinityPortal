@@ -43,6 +43,11 @@ assert.match(
 )
 assert.match(
   backend,
+  /knownArmyListCounts[\s\S]*knownArmyLists: getKnownArmyListCount[\s\S]*buildKnownArmyListCountsByFaction[\s\S]*getArmyListObjects\(\)/,
+  'Backend must derive knownArmyLists from the canonical Army Lists registry during the Army Intelligence response build.',
+)
+assert.match(
+  backend,
   /appendArmyIntelligenceTeamTournamentSources/,
   'Backend must include Tournament army codes.',
 )
@@ -75,6 +80,11 @@ assert.match(
   apiClient,
   /export type ArmyIntelligenceData/,
   'API client must expose Army Intelligence data types.',
+)
+assert.match(
+  apiClient,
+  /knownArmyLists: number[\s\S]*knownArmyLists: getNumber\(record, 'knownArmyLists'\)/,
+  'API client must preserve knownArmyLists through the Army Intelligence type and normalizer.',
 )
 assert.match(
   apiClient,
@@ -120,6 +130,11 @@ assert.match(
   page,
   /Average Tactical Awareness[\s\S]*Average Lieutenant Orders/,
   'Army Intelligence page must show order averages including Tactical Awareness and Lieutenant orders.',
+)
+assert.match(
+  page,
+  /Known Army Lists[\s\S]*selectedKnownArmyLists[\s\S]*getKnownArmyListsForSelectedFaction/,
+  'Army Intelligence page must display the selected faction known army-list count alongside summary metrics.',
 )
 assert.match(
   page,
@@ -1084,10 +1099,112 @@ assert.equal(
   'ADangerousFrog / PanOceania / Joan v2 snapshot must be re-decoded even when the army-code hash is unchanged.',
 )
 
+const storedArmyListRegistry = [
+  { armyName: 'Onyx Attack', faction: 'Combined Army', player: 'Lobo' },
+  { armyName: 'Morat Advance', faction: 'Combined Army', player: 'Frog' },
+  { armyName: 'Shasvastii Shell', faction: 'Combined Army', player: 'Fixer' },
+  { armyName: 'Bureau Strike', faction: 'O-12', player: 'Judge' },
+  { armyName: 'Starmada Boarding', faction: 'O-12', player: 'Marshal' },
+  { armyName: 'Corregidor Run', faction: 'Nomads', player: 'Nomad' },
+]
+const knownArmyListCounts = buildKnownArmyListCountsByFactionFixture(storedArmyListRegistry)
+assert.equal(
+  knownArmyListCounts['Combined Army'],
+  3,
+  'Combined Army knownArmyLists count must match stored Army Lists.',
+)
+assert.equal(
+  knownArmyListCounts['O-12'],
+  2,
+  'O-12 knownArmyLists count must match stored Army Lists.',
+)
+assert.deepEqual(
+  knownArmyListCounts,
+  {
+    'Combined Army': 3,
+    Nomads: 1,
+    'O-12': 2,
+  },
+  'Every faction count must match the stored Army Lists registry.',
+)
+assert.equal(
+  buildKnownArmyListCountsByFactionFixture([
+    ...storedArmyListRegistry,
+    { armyName: 'Onyx Reinforcement', faction: 'Combined Army', player: 'New Player' },
+  ])['Combined Army'],
+  4,
+  'New Army List submissions must increase the selected faction knownArmyLists count.',
+)
+assert.equal(
+  attachKnownArmyListsFixture(
+    { decoded: { faction: 'O-12', sectorial: 'Starmada' }, faction: 'O-12' },
+    knownArmyListCounts,
+  ).knownArmyLists,
+  2,
+  'Army Code corrections must preserve knownArmyLists counts from the stored Army Lists registry.',
+)
+assert.equal(
+  attachKnownArmyListsFixture(
+    { decoded: { faction: 'Combined Army', sectorial: 'Onyx Contact Force' }, faction: 'O-12' },
+    knownArmyListCounts,
+  ).knownArmyLists,
+  3,
+  'Corrected decoded factions must resolve knownArmyLists from the corrected canonical faction.',
+)
+assert.equal(
+  attachKnownArmyListsFixture(
+    { decoded: { faction: 'Combined Army', sectorial: 'Combined Army' }, faction: 'Combined Army' },
+    buildKnownArmyListCountsByFactionFixture([
+      ...storedArmyListRegistry,
+      { armyName: 'Scheduled Refresh List', faction: 'Combined Army', player: 'Scheduler' },
+    ]),
+  ).knownArmyLists,
+  4,
+  'Scheduled Army Intelligence refresh responses must update knownArmyLists from the latest stored Army Lists.',
+)
+
 console.log('Army Intelligence Phase 1 checks passed.')
 
 function read(path) {
   return readFileSync(path, 'utf8')
+}
+
+function buildKnownArmyListCountsByFactionFixture(lists) {
+  return lists.reduce((counts, list) => {
+    const faction = canonicalizeArmyParentFactionFixture(list.faction)
+
+    if (!faction) {
+      return counts
+    }
+
+    counts[faction] = (counts[faction] || 0) + 1
+    return counts
+  }, {})
+}
+
+function attachKnownArmyListsFixture(list, counts) {
+  const faction = list.decoded?.faction || list.faction
+
+  return {
+    ...list,
+    knownArmyLists: counts[canonicalizeArmyParentFactionFixture(faction)] || 0,
+  }
+}
+
+function canonicalizeArmyParentFactionFixture(value) {
+  const name = String(value || '').trim()
+  const compact = name.replace(/[^a-z0-9]/gi, '').toLowerCase()
+  const parentFactions = {
+    combinedarmy: 'Combined Army',
+    nomads: 'Nomads',
+    o12: 'O-12',
+    starmada: 'O-12',
+    onyxcontactforce: 'Combined Army',
+    morataggressionforce: 'Combined Army',
+    shasvastiiexpeditionaryforce: 'Combined Army',
+  }
+
+  return parentFactions[compact] || name
 }
 
 function buildLiveV2SnapshotFixture({ listName, player, sectorial, snapshotKey }) {

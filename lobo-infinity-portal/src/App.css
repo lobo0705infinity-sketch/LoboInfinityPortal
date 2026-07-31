@@ -4631,7 +4631,8 @@
 }
 
 .army-intelligence-metric-icon.is-wounds::before,
-.army-intelligence-metric-icon.is-points::before {
+.army-intelligence-metric-icon.is-points::before,
+.army-intelligence-metric-icon.is-lists::before {
   align-items: center;
   color: #b9ecff;
   display: grid;
@@ -4649,6 +4650,13 @@
 
 .army-intelligence-metric-icon.is-points::before {
   content: "☆";
+}
+
+.army-intelligence-metric-icon.is-lists::before {
+  content: "LST";
+  font-size: 1rem;
+  font-weight: 950;
+  letter-spacing: 0;
 }
 
 .army-intelligence-grid {

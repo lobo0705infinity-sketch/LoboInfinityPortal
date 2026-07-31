@@ -59,13 +59,20 @@ function getArmyIntelligence(e) {
   const snapshots =
     getArmyIntelligenceSnapshotMap();
 
+  const knownArmyListCounts =
+    buildKnownArmyListCountsByFaction();
+
   const lists =
     sources.map(function(source) {
       const snapshot =
         snapshots[source.snapshotKey] ||
         createPendingArmyIntelligenceSnapshot(source);
 
-      return mergeArmyIntelligenceSourceAndSnapshot(source, snapshot);
+      return mergeArmyIntelligenceSourceAndSnapshot(
+        source,
+        snapshot,
+        knownArmyListCounts
+      );
     });
 
   return jsonOutput({
@@ -380,10 +387,13 @@ function createPendingArmyIntelligenceSnapshot(source) {
 
 }
 
-function mergeArmyIntelligenceSourceAndSnapshot(source, snapshot) {
+function mergeArmyIntelligenceSourceAndSnapshot(source, snapshot, knownArmyListCounts) {
 
   const decoded =
     parseArmyIntelligenceSnapshotJson(snapshot.decodedJson);
+
+  const faction =
+    decoded && decoded.faction ? decoded.faction : source.faction;
 
   return {
     armyCodeHash: source.armyCodeHash,
@@ -392,8 +402,12 @@ function mergeArmyIntelligenceSourceAndSnapshot(source, snapshot) {
     decoded: decoded,
     error: snapshot.error,
     event: source.event,
-    faction: decoded && decoded.faction ? decoded.faction : source.faction,
+    faction: faction,
     gameType: source.gameType,
+    knownArmyLists: getKnownArmyListCount(
+      knownArmyListCounts,
+      faction
+    ),
     mission: source.mission,
     opponent: source.opponent,
     player: source.player,
@@ -405,6 +419,41 @@ function mergeArmyIntelligenceSourceAndSnapshot(source, snapshot) {
     sourceType: source.sourceType,
     status: snapshot.status || "pending"
   };
+
+}
+
+function buildKnownArmyListCountsByFaction() {
+
+  const counts = {};
+
+  if (typeof getArmyListObjects !== "function")
+    return counts;
+
+  getArmyListObjects().forEach(function(list) {
+    const faction =
+      canonicalizeArmyParentFaction(
+        list.faction ||
+        (list.validation && list.validation.faction) ||
+        ""
+      );
+
+    if (!faction)
+      return;
+
+    counts[faction] =
+      (counts[faction] || 0) + 1;
+  });
+
+  return counts;
+
+}
+
+function getKnownArmyListCount(counts, faction) {
+
+  const key =
+    canonicalizeArmyParentFaction(faction);
+
+  return counts[key] || 0;
 
 }
 
