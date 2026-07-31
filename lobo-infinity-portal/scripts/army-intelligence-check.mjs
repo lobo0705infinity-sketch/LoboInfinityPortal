@@ -143,8 +143,8 @@ assert.match(
 )
 assert.match(
   page,
-  /getKnownArmyListsForSelectedFaction[\s\S]*Known Army Lists[\s\S]*onValueAction[\s\S]*setExplorerOpen\(true\)[\s\S]*selectedKnownArmyLists/,
-  'Army Intelligence page must open the Army List Explorer from the Known Army Lists statistic value.',
+  /selectedKnownArmyLists = selectedArmyListExplorerRows\.length[\s\S]*Known Army Lists[\s\S]*onValueAction[\s\S]*setExplorerOpen\(true\)[\s\S]*selectedKnownArmyLists/,
+  'Army Intelligence page must open the Army List Explorer from the Known Army Lists statistic value and display the explorer row count.',
 )
 assert.match(
   page,

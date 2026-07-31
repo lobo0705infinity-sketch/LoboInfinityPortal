@@ -313,10 +313,6 @@ function ArmyIntelligenceContent({
         : [],
     [selectedSectorial, uniqueDecodedLists],
   )
-  const selectedKnownArmyLists = useMemo(
-    () => getKnownArmyListsForSelectedFaction(selectedFactionLists),
-    [selectedFactionLists],
-  )
   const selectedParentFaction = useMemo(
     () => getSelectedParentFaction(selectedSectorial, selectedFactionLists),
     [selectedFactionLists, selectedSectorial],
@@ -328,6 +324,7 @@ function ArmyIntelligenceContent({
         : [],
     [data.armyLists, selectedParentFaction],
   )
+  const selectedKnownArmyLists = selectedArmyListExplorerRows.length
   const explorerPlayerOptions = useMemo(
     () => getUniqueExplorerOptions(selectedArmyListExplorerRows.map(formatExplorerPlayer)),
     [selectedArmyListExplorerRows],
@@ -845,13 +842,6 @@ function MetricIcon({ icon }: { icon: MetricIcon }) {
 
   return (
     <span aria-hidden="true" className={`army-intelligence-metric-icon is-${icon}`} />
-  )
-}
-
-function getKnownArmyListsForSelectedFaction(lists: ArmyIntelligenceList[]) {
-  return lists.reduce(
-    (highest, list) => Math.max(highest, list.knownArmyLists),
-    0,
   )
 }
 
