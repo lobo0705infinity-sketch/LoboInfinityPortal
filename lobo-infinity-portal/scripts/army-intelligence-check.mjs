@@ -280,13 +280,23 @@ assert.match(
 )
 assert.match(
   page,
-  /Profile[\s\S]*AVA Taken[\s\S]*Selections[\s\S]*Lists/,
-  'Army Intelligence usage lists must render clear column headers.',
+  /Profile[\s\S]*Copies[\s\S]*Lists[\s\S]*Avg Copies\/List[\s\S]*List Coverage/,
+  'Army Intelligence usage lists must render player-facing copy, list, average-copy, and coverage column headers.',
+)
+assert.match(
+  page,
+  /title="Total models across all submitted Army Lists\."[\s\S]*title="Number of submitted Army Lists containing this troop\."[\s\S]*title="Average number of copies when the troop is taken\."[\s\S]*title="Percentage of submitted Army Lists containing the troop\."/,
+  'Army Intelligence usage column headers must expose concise help tooltips.',
+)
+assert.doesNotMatch(
+  page,
+  />Selections<|>AVA Taken</,
+  'Army Intelligence must not show the old Selections or AVA Taken labels.',
 )
 assert.match(
   page,
   /formatAvaTaken[\s\S]*toFixed\(1\)/,
-  'AVA Taken must display with decimal precision instead of rounded integers.',
+  'Avg Copies/List must display with decimal precision instead of rounded integers.',
 )
 assert.match(
   page,
@@ -741,6 +751,38 @@ const genericProfileRows = buildModelUsageRows([
   ],
 ])
 const genericProfileGroups = buildUsageGroups(genericProfileRows)
+const duplicateCopyRows = buildModelUsageRows([
+  [
+    buildProfileEntry('Generic Remote', 'Generic Remote Repeater', 8, 'REM'),
+    buildProfileEntry('Generic Remote', 'Generic Remote Repeater', 8, 'REM'),
+  ],
+])
+const oneCopyAcrossTwoListsRows = buildModelUsageRows([
+  [
+    buildProfileEntry('Generic Remote', 'Generic Remote Repeater', 8, 'REM'),
+  ],
+  [
+    buildProfileEntry('Generic Remote', 'Generic Remote Repeater', 8, 'REM'),
+  ],
+])
+const scopeCountingFixtureLists = [
+  buildScopeCountingList('Operations Subsection', 'ALEPH', [
+    buildProfileEntry('Generic Remote', 'Generic Remote Repeater', 8, 'REM'),
+    buildProfileEntry('Generic Remote', 'Generic Remote Repeater', 8, 'REM'),
+  ]),
+  buildScopeCountingList('Operations Subsection', 'ALEPH', [
+    buildProfileEntry('Generic Remote', 'Generic Remote Repeater', 8, 'REM'),
+  ]),
+  buildScopeCountingList('Panoceania', 'Panoceania', [
+    buildProfileEntry('Generic Remote', 'Generic Remote Repeater', 8, 'REM'),
+    buildProfileEntry('Generic Remote', 'Generic Remote Repeater', 8, 'REM'),
+    buildProfileEntry('Generic Remote', 'Generic Remote Repeater', 8, 'REM'),
+  ]),
+]
+const selectedScopeCountingLists = scopeCountingFixtureLists.filter((list) =>
+  decodedListMatchesSelectedScopeFixture(list, 'Operations Subsection'),
+)
+const selectedScopeCountingAnalysis = buildFixtureAnalysis(selectedScopeCountingLists)
 const remRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
   skill: '',
   sort: 'alphabetical',
@@ -1026,6 +1068,41 @@ assert.equal(
   duplicateSourceFixtureLists.filter((list) => list.sourceType === 'armyLibrary').length,
   1,
   'Deduplication fixture must include an excluded Army List Library source.',
+)
+assert.deepEqual(
+  pickUsageCountingFields(duplicateCopyRows.find((row) => row.name === 'Generic Remote')),
+  {
+    avaTaken: 2,
+    listCount: 1,
+    percentage: 100,
+    totalSelections: 2,
+  },
+  'Two copies of a decoded profile in one list must count as two selections in one containing list.',
+)
+assert.deepEqual(
+  pickUsageCountingFields(oneCopyAcrossTwoListsRows.find((row) => row.name === 'Generic Remote')),
+  {
+    avaTaken: 1,
+    listCount: 2,
+    percentage: 100,
+    totalSelections: 2,
+  },
+  'One copy of a decoded profile in two lists must count as two selections across two containing lists.',
+)
+assert.equal(
+  selectedScopeCountingLists.length,
+  2,
+  'Selected sectorial scope must exclude cross-faction decoded lists before analysis.',
+)
+assert.deepEqual(
+  pickUsageCountingFields(selectedScopeCountingAnalysis.modelUsage.find((row) => row.name === 'Generic Remote')),
+  {
+    avaTaken: 1.5,
+    listCount: 2,
+    percentage: 100,
+    totalSelections: 3,
+  },
+  'Cross-faction decoded lists must not contribute to selected-scope copies, lists, average copies, or list coverage.',
 )
 assert.equal(
   uniqueSubmittedLists.length,
@@ -1882,6 +1959,52 @@ function getSelectedExplorerScopeFixture(selectedItem) {
     isParentFaction,
     label,
     parentFaction,
+  }
+}
+
+function decodedListMatchesSelectedScopeFixture(list, selectedItem) {
+  const scope = getSelectedExplorerScopeFixture(selectedItem)
+  const decodedFaction = canonicalizeArmyParentFactionFixture(list.decoded?.faction || list.faction)
+  const decodedSectorial = String(list.decoded?.sectorial || list.sectorial || '').trim()
+
+  if (scope.isParentFaction) {
+    return decodedFaction === scope.parentFaction
+  }
+
+  return decodedSectorial === scope.label
+}
+
+function buildScopeCountingList(sectorial, faction, entries) {
+  return {
+    decoded: {
+      combatGroups: [
+        {
+          entries,
+        },
+      ],
+      faction,
+      orderCounts: {
+        regular: 10,
+      },
+      sectorial,
+      totals: {
+        points: 300,
+      },
+    },
+    faction,
+    result: 'win',
+    sectorial,
+    sourceType: 'league',
+    status: 'decoded',
+  }
+}
+
+function pickUsageCountingFields(row) {
+  return {
+    avaTaken: row?.avaTaken,
+    listCount: row?.listCount,
+    percentage: row?.percentage,
+    totalSelections: row?.totalSelections,
   }
 }
 

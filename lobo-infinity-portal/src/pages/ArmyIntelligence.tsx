@@ -1122,10 +1122,15 @@ function UsagePanel({
         <div className="army-intelligence-usage-groups">
           <div className="army-intelligence-usage-list army-intelligence-usage-list-header">
             <span className="army-intelligence-profile-cell">Troop / Profile</span>
-            <strong>Selections</strong>
+            <strong title="Total models across all submitted Army Lists.">Copies</strong>
             {variant === 'wide' ? <small className="army-intelligence-points-cell">Points</small> : null}
-            <small className="army-intelligence-lists-cell">Lists</small>
-            {variant === 'wide' ? <small className="army-intelligence-ava-cell">AVA Taken</small> : null}
+            <small className="army-intelligence-lists-cell" title="Number of submitted Army Lists containing this troop.">Lists</small>
+            {variant === 'wide' ? (
+              <>
+                <small className="army-intelligence-avg-copies-cell" title="Average number of copies when the troop is taken.">Avg Copies/List</small>
+                <small className="army-intelligence-coverage-cell" title="Percentage of submitted Army Lists containing the troop.">List Coverage</small>
+              </>
+            ) : null}
           </div>
           {visibleGroups.map((group) => (
             <div
@@ -1136,7 +1141,7 @@ function UsagePanel({
               <button
                 aria-controls={`${slugify(title)}-${slugify(group.name)}-profiles`}
                 aria-expanded={isUsageGroupOpen(group, expandedGroups, normalizedSearch)}
-                aria-label={`${group.name}, ${group.totalSelections} selections. ${isUsageGroupOpen(group, expandedGroups, normalizedSearch) ? 'Collapse' : 'Expand'} profiles.`}
+                aria-label={`${group.name}, ${group.totalSelections} copies. ${isUsageGroupOpen(group, expandedGroups, normalizedSearch) ? 'Collapse' : 'Expand'} profiles.`}
                 className="army-intelligence-usage-group-summary"
                 onClick={() => toggleGroup(group.name)}
                 onKeyDown={handleUsageGroupKeyDown}
@@ -1154,9 +1159,14 @@ function UsagePanel({
                     : `${group.listCount} lists / ${formatNumber(group.percentage)}%`}
                 </small>
                 {variant === 'wide' ? (
-                  <small className="army-intelligence-ava-cell">
-                    {formatNumber(group.percentage)}%
-                  </small>
+                  <>
+                    <small className="army-intelligence-avg-copies-cell">
+                      {formatAvaTaken(calculateAverageCopiesPerContainingList(group.totalSelections, group.listCount))}
+                    </small>
+                    <small className="army-intelligence-coverage-cell">
+                      {formatNumber(group.percentage)}%
+                    </small>
+                  </>
                 ) : null}
               </button>
               <ol
@@ -1184,9 +1194,14 @@ function UsagePanel({
                         : `${item.listCount} lists / ${formatNumber(item.percentage)}%`}
                     </small>
                     {variant === 'wide' ? (
-                      <small className="army-intelligence-ava-cell">
-                        {formatAvaTaken(item.avaTaken)} / {formatNumber(item.percentage)}%
-                      </small>
+                      <>
+                        <small className="army-intelligence-avg-copies-cell">
+                          {formatAvaTaken(item.avaTaken)}
+                        </small>
+                        <small className="army-intelligence-coverage-cell">
+                          {formatNumber(item.percentage)}%
+                        </small>
+                      </>
                     ) : null}
                   </li>
                 ))}
@@ -1198,10 +1213,15 @@ function UsagePanel({
         <ol className="army-intelligence-usage-list">
           <li className="army-intelligence-usage-list-header">
             <span className="army-intelligence-profile-cell">Profile</span>
-            <strong>Selections</strong>
+            <strong title="Total models across all submitted Army Lists.">Copies</strong>
             {variant === 'wide' ? <small className="army-intelligence-points-cell">Points</small> : null}
-            <small className="army-intelligence-lists-cell">Lists</small>
-            {variant === 'wide' ? <small className="army-intelligence-ava-cell">AVA Taken</small> : null}
+            <small className="army-intelligence-lists-cell" title="Number of submitted Army Lists containing this troop.">Lists</small>
+            {variant === 'wide' ? (
+              <>
+                <small className="army-intelligence-avg-copies-cell" title="Average number of copies when the troop is taken.">Avg Copies/List</small>
+                <small className="army-intelligence-coverage-cell" title="Percentage of submitted Army Lists containing the troop.">List Coverage</small>
+              </>
+            ) : null}
           </li>
           {visible.map((item) => (
             <li key={`${item.profileKey ?? item.name}|${item.profile ?? ''}|${item.points ?? ''}|${item.troopType ?? ''}`}>
@@ -1223,9 +1243,14 @@ function UsagePanel({
                   : `${item.listCount} lists / ${formatNumber(item.percentage)}%`}
               </small>
               {variant === 'wide' ? (
-                <small className="army-intelligence-ava-cell">
-                  {formatAvaTaken(item.avaTaken)} / {formatNumber(item.percentage)}%
-                </small>
+                <>
+                  <small className="army-intelligence-avg-copies-cell">
+                    {formatAvaTaken(item.avaTaken)}
+                  </small>
+                  <small className="army-intelligence-coverage-cell">
+                    {formatNumber(item.percentage)}%
+                  </small>
+                </>
               ) : null}
             </li>
           ))}
@@ -2140,6 +2165,10 @@ function formatNumber(value: number) {
 
 function formatAvaTaken(value: number | undefined) {
   return typeof value === 'number' ? value.toFixed(1) : '0.0'
+}
+
+function calculateAverageCopiesPerContainingList(copies: number, lists: number) {
+  return lists > 0 ? copies / lists : 0
 }
 
 function slugify(value: string) {

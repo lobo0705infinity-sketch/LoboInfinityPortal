@@ -5093,7 +5093,7 @@
   align-items: center;
   border-bottom: 0;
   gap: 0.25rem;
-  grid-template-columns: minmax(12rem, 2.15fr) minmax(5.5rem, 0.72fr) minmax(6.5rem, 0.78fr) minmax(6.5rem, 0.78fr) minmax(7.5rem, 0.85fr);
+  grid-template-columns: minmax(12rem, 2.1fr) minmax(5rem, 0.62fr) minmax(6rem, 0.7fr) minmax(6rem, 0.72fr) minmax(7.25rem, 0.82fr) minmax(7rem, 0.8fr);
   min-height: 3rem;
   padding: 0;
 }
@@ -5196,7 +5196,8 @@
 
 .army-intelligence-profile-cell,
 .army-intelligence-lists-cell,
-.army-intelligence-ava-cell {
+.army-intelligence-avg-copies-cell,
+.army-intelligence-coverage-cell {
   display: grid;
   min-width: 0;
 }
@@ -5251,13 +5252,15 @@
   gap: 0.12rem;
 }
 
-.army-intelligence-ava-cell {
+.army-intelligence-avg-copies-cell,
+.army-intelligence-coverage-cell {
   gap: 0.12rem;
 }
 
 .army-intelligence-panel-wide .army-intelligence-points-cell,
 .army-intelligence-panel-wide .army-intelligence-lists-cell,
-.army-intelligence-panel-wide .army-intelligence-ava-cell {
+.army-intelligence-panel-wide .army-intelligence-avg-copies-cell,
+.army-intelligence-panel-wide .army-intelligence-coverage-cell {
   color: var(--text);
   font-size: 0.86rem;
   font-weight: 600;
@@ -5273,7 +5276,8 @@
   justify-self: stretch;
 }
 
-.army-intelligence-panel-wide .army-intelligence-ava-cell {
+.army-intelligence-panel-wide .army-intelligence-avg-copies-cell,
+.army-intelligence-panel-wide .army-intelligence-coverage-cell {
   justify-content: center;
 }
 
@@ -5565,7 +5569,8 @@
   .army-intelligence-panel-wide .army-intelligence-usage-group-summary strong,
   .army-intelligence-panel-wide .army-intelligence-points-cell,
   .army-intelligence-panel-wide .army-intelligence-lists-cell,
-  .army-intelligence-panel-wide .army-intelligence-ava-cell {
+  .army-intelligence-panel-wide .army-intelligence-avg-copies-cell,
+  .army-intelligence-panel-wide .army-intelligence-coverage-cell {
     justify-self: stretch;
     text-align: center;
     white-space: normal;
@@ -5586,7 +5591,8 @@
   .army-intelligence-panel-wide .army-intelligence-usage-group-summary > strong::before,
   .army-intelligence-panel-wide .army-intelligence-points-cell::before,
   .army-intelligence-panel-wide .army-intelligence-lists-cell::before,
-  .army-intelligence-panel-wide .army-intelligence-ava-cell::before {
+  .army-intelligence-panel-wide .army-intelligence-avg-copies-cell::before,
+  .army-intelligence-panel-wide .army-intelligence-coverage-cell::before {
     color: #8ff0ff;
     content: attr(data-label);
     display: block;
@@ -5599,11 +5605,11 @@
   }
 
   .army-intelligence-panel-wide .army-intelligence-usage-list li > strong::before {
-    content: "Selections";
+    content: "Copies";
   }
 
   .army-intelligence-panel-wide .army-intelligence-usage-group-summary > strong::before {
-    content: "Selections";
+    content: "Copies";
   }
 
   .army-intelligence-panel-wide .army-intelligence-points-cell::before {
@@ -5614,8 +5620,12 @@
     content: "Lists";
   }
 
-  .army-intelligence-panel-wide .army-intelligence-ava-cell::before {
-    content: "AVA Taken";
+  .army-intelligence-panel-wide .army-intelligence-avg-copies-cell::before {
+    content: "Avg Copies/List";
+  }
+
+  .army-intelligence-panel-wide .army-intelligence-coverage-cell::before {
+    content: "List Coverage";
   }
 
   .army-intelligence-panel-wide .army-intelligence-usage-list-header {
