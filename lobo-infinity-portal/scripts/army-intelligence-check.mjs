@@ -6,12 +6,51 @@ const apiRouter = read('backend/API.gs')
 const apiClient = read('src/services/api.ts')
 const app = read('src/App.tsx')
 const appCss = read('src/App.css')
+const armies = read('src/config/armies.ts')
 const interactiveMetricCard = read('src/components/InteractiveMetricCard.tsx')
 const page = read('src/pages/ArmyIntelligence.tsx')
 const commissioner = read('src/pages/CommissionerDashboard.tsx')
 const decoder = read('scripts/infinity-army-decode.mjs')
 const refresh = read('scripts/refresh-army-intelligence.mjs')
 const worker = read('api/army-intelligence-refresh-worker.mjs')
+const canonicalArmyFixtureNames = [
+  'Ariadna',
+  'Combined Army',
+  'Force de Réponse Rapide Merovingienne',
+  'Nomads',
+  'Shasvastii Expeditionary Force',
+  'StarCo',
+  'Tunguska Jurisdictional Command',
+  'ALEPH',
+  'Steel Phalanx',
+  'Operations Subsection',
+  'O-12',
+]
+const canonicalArmyFixtureAliases = new Map([
+  ['ariadna', 'Ariadna'],
+  ['combined army', 'Combined Army'],
+  ['combined-army', 'Combined Army'],
+  ['force de reponse rapide merovingienne', 'Force de Réponse Rapide Merovingienne'],
+  ['force-de-reponse-rapide-merovingienne', 'Force de Réponse Rapide Merovingienne'],
+  ['nomads', 'Nomads'],
+  ['shasvastii', 'Shasvastii Expeditionary Force'],
+  ['shasvastii expeditionary force', 'Shasvastii Expeditionary Force'],
+  ['shasvastii-expeditionary-force', 'Shasvastii Expeditionary Force'],
+  ['starco', 'StarCo'],
+  ['starco free company of the star', 'StarCo'],
+  ['starco-free-company-of-the-star', 'StarCo'],
+  ['tunguska', 'Tunguska Jurisdictional Command'],
+  ['tunguska jurisdictional command', 'Tunguska Jurisdictional Command'],
+  ['tunguska-jurisdictional-command', 'Tunguska Jurisdictional Command'],
+  ['aleph', 'ALEPH'],
+  ['steel phalanx', 'Steel Phalanx'],
+  ['steel-phalanx', 'Steel Phalanx'],
+  ['operations subsection', 'Operations Subsection'],
+  ['operations-subsection', 'Operations Subsection'],
+  ['o 12', 'O-12'],
+  ['o-12', 'O-12'],
+])
+const canonicalArmyFixtureByName = new Set(canonicalArmyFixtureNames)
 
 assert.match(
   backend,
@@ -217,6 +256,21 @@ assert.match(
   page,
   /selectedExplorerScope[\s\S]*getSelectedExplorerScope\(selectedSectorial\)[\s\S]*selectedScopeLists[\s\S]*intelligenceListMatchesSelectedScope\(list, selectedExplorerScope\)[\s\S]*matchingLists[\s\S]*selectedScopeLists\.filter\(\(list\) => matchesResultFilter\(list, resultFilter\)\)[\s\S]*selectedArmyListExplorerRows[\s\S]*buildExplorerRowsFromSelectedLists\(matchingLists\)[\s\S]*selectedFaction=\{selectedExplorerScope\.label \|\| selectedSectorial\}/,
   'Army Intelligence Explorer must use the selected item scope for both rows and modal title.',
+)
+assert.match(
+  page,
+  /sectorials = useMemo\([\s\S]*buildArmyIntelligenceSelectorOptions\(uniqueDecodedLists\)[\s\S]*function buildArmyIntelligenceSelectorOptions[\s\S]*addArmyIntelligenceSelectorOption[\s\S]*normalizeArmyForDisplay[\s\S]*getArmyIntelligenceSelectorOptionKey/,
+  'Army Intelligence selector options must canonicalize and de-duplicate decoded faction and sectorial values before rendering.',
+)
+assert.match(
+  armies,
+  /CANONICAL_ARMY_REGISTRY\.flatMap\(\(army\) => \[[\s\S]*normalizeArmyKey\(army\.name\)[\s\S]*normalizeArmyKey\(army\.id\)/,
+  'Canonical army display normalization must resolve registry ids as well as display names.',
+)
+assert.match(
+  armies,
+  /(?=[\s\S]*'shasvastii', 'Shasvastii Expeditionary Force')(?=[\s\S]*'tunguska', 'Tunguska Jurisdictional Command')(?=[\s\S]*'starco-free-company-of-the-star', 'StarCo')/,
+  'Canonical army display normalization must resolve decoded shorthand and slug aliases seen in Army Intelligence data.',
 )
 assert.match(
   page,
@@ -1762,6 +1816,16 @@ const alephExplorerRows = buildArmyListExplorerRowsFixture([
 const alephScopeRows = selectExplorerRowsForScopeFixture(alephExplorerRows, 'ALEPH')
 const steelScopeRows = selectExplorerRowsForScopeFixture(alephExplorerRows, 'Steel Phalanx')
 const ossScopeRows = selectExplorerRowsForScopeFixture(alephExplorerRows, 'Operations Subsection')
+const duplicateSelectorOptions = buildArmyIntelligenceSelectorOptionsFixture([
+  buildSelectorScopeListFixture('Combined Army', 'Shasvastii'),
+  buildSelectorScopeListFixture('combined-army', 'shasvastii'),
+  buildSelectorScopeListFixture('Nomads', 'Tunguska'),
+  buildSelectorScopeListFixture('nomads', 'tunguska'),
+  buildSelectorScopeListFixture('Ariadna', 'Force De Reponse Rapide Merovingienne'),
+  buildSelectorScopeListFixture('ariadna', 'force-de-reponse-rapide-merovingienne'),
+  buildSelectorScopeListFixture('Non-Aligned Armies', 'Starco Free Company Of The Star'),
+  buildSelectorScopeListFixture('non-aligned-armies', 'starco-free-company-of-the-star'),
+])
 assert.deepEqual(
   alephScopeRows.map((row) => row.armyName).sort(),
   ['OSS Net One', 'OSS Net Two', 'Steel Assault', 'Vanilla ALEPH Control'],
@@ -1841,6 +1905,33 @@ assert.equal(emptyScopeAnalysis.listCount, 0, 'An empty selected collection must
 assert.equal(emptyScopeAnalysis.averageRegularOrders, 0, 'An empty selected collection must produce zero average regular orders.')
 assert.equal(emptyScopeAnalysis.averagePoints, 0, 'An empty selected collection must produce zero average points.')
 assert.equal(emptyScopeAnalysis.averageDurability, 0, 'An empty selected collection must produce zero average durability.')
+assert.deepEqual(
+  duplicateSelectorOptions,
+  [
+    'Ariadna',
+    'Combined Army',
+    'Force de Réponse Rapide Merovingienne',
+    'Nomads',
+    'Shasvastii Expeditionary Force',
+    'StarCo',
+    'Tunguska Jurisdictional Command',
+  ],
+  'Army Intelligence selector must display one canonical entry per faction or sectorial even when decoded data mixes slugs and names.',
+)
+assert.ok(
+  duplicateSelectorOptions.every((option) => !/^[a-z0-9]+(?:-[a-z0-9]+)+$/.test(option)),
+  'Army Intelligence selector must not display slug values.',
+)
+assert.equal(
+  new Set(duplicateSelectorOptions.map(normalizeArmySelectorOptionKeyFixture)).size,
+  duplicateSelectorOptions.length,
+  'Army Intelligence selector must not contain duplicate canonical display names.',
+)
+assert.equal(
+  getSelectedExplorerScopeFixture('starco-free-company-of-the-star').label,
+  'StarCo',
+  'Army Intelligence routing must continue to accept slug identifiers and resolve them to canonical display names.',
+)
 
 console.log('Army Intelligence Phase 1 checks passed.')
 
@@ -1874,6 +1965,37 @@ function buildArmyListExplorerRowsFixture(lists) {
     submissionDate: list.submissionDate,
     swc: list.swc,
   }))
+}
+
+function buildArmyIntelligenceSelectorOptionsFixture(lists) {
+  const optionsByKey = new Map()
+
+  lists.forEach((list) => {
+    addArmyIntelligenceSelectorOptionFixture(optionsByKey, canonicalizeArmyParentFactionFixture(list.decoded?.faction || list.faction))
+    addArmyIntelligenceSelectorOptionFixture(optionsByKey, normalizeArmyForDisplayFixture(list.decoded?.sectorial || list.sectorial))
+  })
+
+  return Array.from(optionsByKey.values()).sort((left, right) => left.localeCompare(right))
+}
+
+function addArmyIntelligenceSelectorOptionFixture(optionsByKey, value) {
+  const displayName = normalizeArmyForDisplayFixture(value)
+  const key = normalizeArmySelectorOptionKeyFixture(displayName)
+
+  if (canonicalArmyFixtureByName.has(displayName) && key && !optionsByKey.has(key)) {
+    optionsByKey.set(key, displayName)
+  }
+}
+
+function buildSelectorScopeListFixture(faction, sectorial) {
+  return {
+    decoded: {
+      faction,
+      sectorial,
+    },
+    faction,
+    sectorial,
+  }
 }
 
 function buildExplorerRowsFromSelectedListsFixture(lists) {
@@ -1951,7 +2073,7 @@ function selectExplorerRowsForScopeFixture(rows, selectedItem) {
 }
 
 function getSelectedExplorerScopeFixture(selectedItem) {
-  const label = String(selectedItem || '').trim()
+  const label = normalizeArmyForDisplayFixture(selectedItem)
   const parentFaction = canonicalizeArmyParentFactionFixture(label)
   const isParentFaction = parentFaction === label && ['ALEPH', 'Combined Army', 'O-12'].includes(label)
 
@@ -2126,8 +2248,19 @@ function attachKnownArmyListsFixture(list, counts) {
   }
 }
 
-function canonicalizeArmyParentFactionFixture(value) {
+function normalizeArmyForDisplayFixture(value) {
   const name = String(value || '').trim()
+  const key = normalizeArmySelectorOptionKeyFixture(name)
+
+  return canonicalArmyFixtureAliases.get(key) || name
+}
+
+function normalizeArmySelectorOptionKeyFixture(value) {
+  return String(value || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim()
+}
+
+function canonicalizeArmyParentFactionFixture(value) {
+  const name = normalizeArmyForDisplayFixture(value)
   const compact = name.replace(/[^a-z0-9]/gi, '').toLowerCase()
   const parentFactions = {
     combinedarmy: 'Combined Army',

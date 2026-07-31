@@ -314,12 +314,7 @@ function ArmyIntelligenceContent({
     [decodedLists],
   )
   const sectorials = useMemo(
-    () =>
-      Array.from(new Set([
-        ...uniqueDecodedLists.map((list) => getIntelligenceParentFaction(list)).filter(Boolean),
-        ...uniqueDecodedLists.map((list) => getDecodedSectorial(list)).filter(Boolean),
-      ]))
-        .sort((left, right) => left.localeCompare(right)),
+    () => buildArmyIntelligenceSelectorOptions(uniqueDecodedLists),
     [uniqueDecodedLists],
   )
   const selectedExplorerScope = useMemo(
@@ -1351,7 +1346,32 @@ function normalizeResultValue(value: string) {
 }
 
 function getDecodedSectorial(list: ArmyIntelligenceList) {
-  return normalizeSectorialDisplayName(list.decoded?.sectorial || '')
+  return normalizeSectorialDisplayName(normalizeArmyForDisplay(list.decoded?.sectorial || list.sectorial || ''))
+}
+
+function buildArmyIntelligenceSelectorOptions(lists: UniqueArmyIntelligenceList[]) {
+  const optionsByKey = new Map<string, string>()
+
+  lists.forEach((list) => {
+    addArmyIntelligenceSelectorOption(optionsByKey, getIntelligenceParentFaction(list))
+    addArmyIntelligenceSelectorOption(optionsByKey, getDecodedSectorial(list))
+  })
+
+  return Array.from(optionsByKey.values()).sort((left, right) => left.localeCompare(right))
+}
+
+function addArmyIntelligenceSelectorOption(optionsByKey: Map<string, string>, value: string) {
+  const displayName = normalizeSectorialDisplayName(normalizeArmyForDisplay(value))
+  const registryEntry = CANONICAL_ARMY_REGISTRY.find((army) => army.active && army.name === displayName)
+  const key = getArmyIntelligenceSelectorOptionKey(displayName)
+
+  if (registryEntry && key && !optionsByKey.has(key)) {
+    optionsByKey.set(key, displayName)
+  }
+}
+
+function getArmyIntelligenceSelectorOptionKey(value: string) {
+  return value.trim().toLowerCase().replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim()
 }
 
 function getSelectedExplorerScope(selectedItem: string): ArmyIntelligenceSelectionScope {

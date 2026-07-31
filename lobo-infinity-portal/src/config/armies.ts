@@ -59,7 +59,10 @@ export const CANONICAL_ARMY_REGISTRY: readonly ArmyRegistryEntry[] = [
 ] as const
 
 const armyNameByKey = new Map<string, string>(
-  CANONICAL_ARMY_REGISTRY.map((army) => [normalizeArmyKey(army.name), army.name]),
+  CANONICAL_ARMY_REGISTRY.flatMap((army) => [
+    [normalizeArmyKey(army.name), army.name],
+    [normalizeArmyKey(army.id), army.name],
+  ]),
 )
 
 const armyAliasEntries = [
@@ -78,10 +81,13 @@ const armyAliasEntries = [
   ['vanilla haqq', 'Haqqislam'],
   ['vanilla haqqislam', 'Haqqislam'],
   ['vanilla nomads', 'Nomads'],
+  ['corregidor', 'Corregidor Jurisdictional Command'],
+  ['tunguska', 'Tunguska Jurisdictional Command'],
   ['ca', 'Combined Army'],
   ['vanilla ca', 'Combined Army'],
   ['combined', 'Combined Army'],
   ['vanilla combined army', 'Combined Army'],
+  ['shasvastii', 'Shasvastii Expeditionary Force'],
   ['vanilla aleph', 'ALEPH'],
   ['o12', 'O-12'],
   ['o 12', 'O-12'],
@@ -96,8 +102,12 @@ const armyAliasEntries = [
   ['shock army of acontecimento', 'Shock Army of Acontecimento'],
   ['acontecimento', 'Shock Army of Acontecimento'],
   ['mrrf', 'Force de Réponse Rapide Merovingienne'],
+  ['force de reponse rapide merovingienne', 'Force de Réponse Rapide Merovingienne'],
   ['merovingienne', 'Force de Réponse Rapide Merovingienne'],
   ['usariadna', 'USAriadna Ranger Force'],
+  ['starco free company of the star', 'StarCo'],
+  ['starco-free-company-of-the-star', 'StarCo'],
+  ['starco. free company of the star', 'StarCo'],
 ] as const
 
 armyAliasEntries.forEach(([alias, canonicalName]) => {

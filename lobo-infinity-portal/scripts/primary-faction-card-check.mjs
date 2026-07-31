@@ -67,7 +67,10 @@ const checks = [
   {
     label: 'Army Intelligence selector includes parent factions and sectorials from the same loaded data',
     pass:
-      /const sectorials = useMemo\([\s\S]*getIntelligenceParentFaction\(list\)[\s\S]*getDecodedSectorial\(list\)[\s\S]*\[uniqueDecodedLists\]/.test(
+      /const sectorials = useMemo\([\s\S]*buildArmyIntelligenceSelectorOptions\(uniqueDecodedLists\)[\s\S]*\[uniqueDecodedLists\]/.test(
+        files.armyIntelligence,
+      ) &&
+      /function buildArmyIntelligenceSelectorOptions[\s\S]*getIntelligenceParentFaction\(list\)[\s\S]*getDecodedSectorial\(list\)/.test(
         files.armyIntelligence,
       ),
   },
