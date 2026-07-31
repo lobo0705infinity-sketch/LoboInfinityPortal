@@ -2,6 +2,7 @@ import { useEffect, useState, type CSSProperties } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import OperatorBadge from '../components/OperatorBadge'
 import { getOperatorBadgeDetails } from '../components/operatorBadgeDetails'
+import PrimaryFactionCard from '../components/PrimaryFactionCard'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
 import { getArmyParentFaction } from '../config/armies'
@@ -824,7 +825,7 @@ function ArmyListsPanel({ player }: { player: PlayerProfileData }) {
       <dl className="profile-v21-army-summary">
         <Metric label="Lists Submitted" value={player.armyListSummary.submitted} />
         <Metric label="Average List Rating" value={player.armyListSummary.averageRating} />
-        <Metric label="Primary Faction" value={player.armyListSummary.favoriteFaction || player.favoriteFaction} />
+        <PrimaryFactionCard faction={player.armyListSummary.favoriteFaction || player.favoriteFaction} />
       </dl>
       {player.armyLists.length > 0 ? (
         <div className="army-list-mini-grid">

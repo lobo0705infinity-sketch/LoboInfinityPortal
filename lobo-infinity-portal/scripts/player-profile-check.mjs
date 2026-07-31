@@ -47,9 +47,10 @@ const checks = [
       /preferredArmy:\s*resolvedPreferredArmy/.test(playersApi),
   },
   {
-    label: 'Public profile labels play-history faction as Primary Faction',
+    label: 'Public profile renders play-history faction through PrimaryFactionCard',
     pass:
-      playerProfile.includes('label="Primary Faction"') &&
+      playerProfile.includes("import PrimaryFactionCard from '../components/PrimaryFactionCard'") &&
+      playerProfile.includes('<PrimaryFactionCard faction={player.armyListSummary.favoriteFaction || player.favoriteFaction} />') &&
       !playerProfile.includes('label="Favorite Faction"'),
   },
   {

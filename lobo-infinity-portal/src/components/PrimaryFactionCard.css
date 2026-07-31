@@ -1,0 +1,50 @@
+.primary-faction-card-value {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  gap: 10px;
+  line-height: 1.1;
+  vertical-align: middle;
+}
+
+.primary-faction-card-value img {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(76, 201, 240, 0.42);
+  border-radius: 999px;
+  padding: 4px;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(76, 201, 240, 0.18), rgba(5, 6, 8, 0.9) 64%),
+    rgba(5, 6, 8, 0.92);
+  box-shadow: 0 0 14px rgba(76, 201, 240, 0.16);
+  object-fit: contain;
+}
+
+.primary-faction-card .primary-faction-card-value span {
+  min-width: 0;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: 0;
+  line-height: inherit;
+  text-transform: none;
+  overflow-wrap: anywhere;
+}
+
+.primary-faction-card.is-pending .primary-faction-card-value img {
+  border-color: rgba(178, 18, 42, 0.58);
+  box-shadow: 0 0 14px rgba(178, 18, 42, 0.14);
+}
+
+@media (max-width: 520px) {
+  .primary-faction-card-value {
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .primary-faction-card-value img {
+    width: 30px;
+    height: 30px;
+  }
+}

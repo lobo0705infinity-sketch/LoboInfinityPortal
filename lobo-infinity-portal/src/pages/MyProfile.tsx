@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import BarChart, { type BarChartPoint } from '../components/BarChart'
 import OperatorBadge from '../components/OperatorBadge'
+import PrimaryFactionCard from '../components/PrimaryFactionCard'
 import Skeleton from '../components/Skeleton'
 import { getCanonicalArmyOptions, normalizeArmyForDisplay } from '../config/armies'
 import type { FactionPortrait } from '../config/factionPortraits'
@@ -522,10 +523,11 @@ function ProfileEditor({
           </select>
         </label>
 
-        <div className="profile-editor-readonly">
-          <span>Primary Faction</span>
-          <strong>{favoriteArmy || 'Not established'}</strong>
-        </div>
+        <PrimaryFactionCard
+          className="profile-editor-readonly"
+          faction={favoriteArmy}
+          variant="readonly"
+        />
 
         <div className="profile-editor-readonly">
           <span>League</span>
@@ -1258,10 +1260,7 @@ function ArmyListsPanel({
           <dt>Most Used</dt>
           <dd>{summary.mostUsedFaction || 'Not established'}</dd>
         </div>
-        <div>
-          <dt>Primary Faction</dt>
-          <dd>{summary.favoriteFaction || 'Not established'}</dd>
-        </div>
+        <PrimaryFactionCard faction={summary.favoriteFaction} />
         <div>
           <dt>Average Rating</dt>
           <dd>{summary.averageRating}</dd>

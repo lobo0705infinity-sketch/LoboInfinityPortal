@@ -156,9 +156,9 @@ assert(
 )
 
 assert(
-  dashboardPageSource.includes('<dt>Primary Faction</dt>') &&
+  dashboardPageSource.includes('<PrimaryFactionCard faction={leader?.faction || leader?.favoriteArmy} />') &&
     !dashboardPageSource.includes('<dt>Favorite Army</dt>'),
-  'Commander Overview must label the resolved play-history faction as Primary Faction.',
+  'Commander Overview must render the resolved play-history faction through PrimaryFactionCard.',
 )
 
 assert(

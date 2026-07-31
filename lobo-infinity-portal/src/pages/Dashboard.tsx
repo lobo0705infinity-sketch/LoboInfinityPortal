@@ -4,6 +4,7 @@ import { useAuth } from '../auth/AuthContext'
 import DiscordCommunityLink from '../components/DiscordCommunityLink'
 import Loading from '../components/Loading'
 import PortalIcon from '../components/PortalIcon'
+import PrimaryFactionCard from '../components/PrimaryFactionCard'
 import Skeleton from '../components/Skeleton'
 import {
   type ArmyListCommunitySummary,
@@ -514,10 +515,7 @@ function CommanderOverview({
             <dt>Win Streak</dt>
             <dd>{leaderStreak ? `${leaderStreak.games} wins` : `${leader?.currentWinStreak ?? 0} wins`}</dd>
           </div>
-          <div>
-            <dt>Primary Faction</dt>
-            <dd>{leader?.faction || leader?.favoriteArmy || 'Faction pending'}</dd>
-          </div>
+          <PrimaryFactionCard faction={leader?.faction || leader?.favoriteArmy} />
         </dl>
         <Link to={profilePath}>View Profile</Link>
       </div>
