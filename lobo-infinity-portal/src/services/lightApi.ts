@@ -233,6 +233,8 @@ function normalizeSettings(record: Record<string, unknown>): PortalSettings {
     currentSeason: getString(record, 'currentSeason'),
     deploymentUrl: getString(record, 'deploymentUrl'),
     discordInvite: getString(record, 'discordInvite'),
+    discordServerName:
+      getString(record, 'discordServerName') || 'Lobo Infinity League Discord',
     gitCommit: getString(record, 'gitCommit'),
     googleFormUrl: getString(record, 'googleFormUrl'),
     googleOAuthClientId: getString(record, 'googleOAuthClientId'),

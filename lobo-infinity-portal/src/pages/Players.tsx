@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import DiscordCommunityLink from '../components/DiscordCommunityLink'
 import PlayerCard from '../components/PlayerCard'
 import Skeleton from '../components/Skeleton'
 import { apiClient } from '../services/api'
@@ -370,9 +371,16 @@ function getTime(value: string | undefined) {
 function PageHeader({ eventScoped }: { eventScoped: boolean }) {
   return (
     <section className="page-header" aria-labelledby="players-title">
-      <p className="eyebrow">Players</p>
-      <h1 id="players-title">Players</h1>
-      <p>{eventScoped ? 'Browse event participants' : 'Browse portal players across all games'}</p>
+      <div>
+        <p className="eyebrow">Players</p>
+        <h1 id="players-title">Players</h1>
+        <p>{eventScoped ? 'Browse event participants' : 'Browse portal players across all games'}</p>
+      </div>
+      {!eventScoped ? (
+        <DiscordCommunityLink className="page-header-action">
+          Join Discord
+        </DiscordCommunityLink>
+      ) : null}
     </section>
   )
 }

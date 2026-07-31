@@ -1867,6 +1867,7 @@ export type PortalSettings = {
   leagueName: string
   googleFormUrl: string
   discordInvite: string
+  discordServerName: string
   leagueWebsite: string
   submissionEnabled: string
   submissionButtonText: string
@@ -5218,6 +5219,8 @@ function normalizeSettingsRecord(settings: Record<string, unknown>): PortalSetti
     leagueName: getString(settings, 'leagueName'),
     googleFormUrl: getString(settings, 'googleFormUrl'),
     discordInvite: getString(settings, 'discordInvite'),
+    discordServerName:
+      getString(settings, 'discordServerName') || 'Lobo Infinity League Discord',
     leagueWebsite: getString(settings, 'leagueWebsite'),
     submissionEnabled: getString(settings, 'submissionEnabled'),
     submissionButtonText: getString(settings, 'submissionButtonText'),

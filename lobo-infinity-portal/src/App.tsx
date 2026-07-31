@@ -12,6 +12,7 @@ import ApplicationErrorBoundary from './components/ApplicationErrorBoundary'
 import Breadcrumbs from './components/Breadcrumbs'
 import DeepLinkRedirect from './components/DeepLinkRedirect'
 import Header from './components/Header'
+import GlobalFooter from './components/GlobalFooter'
 import Loading from './components/Loading'
 import RouteMeta from './components/RouteMeta'
 import Sidebar from './components/Sidebar'
@@ -102,6 +103,7 @@ function AuthShell() {
                 <Route path="/" element={<MeasuredRoute name="Dashboard"><Dashboard /></MeasuredRoute>} />
                 <Route path="/standings" element={<MeasuredRoute name="Standings"><Standings /></MeasuredRoute>} />
                 <Route path="/league-operations" element={<MeasuredRoute name="LeagueOperations"><LeagueOperations /></MeasuredRoute>} />
+                <Route path="/community" element={<MeasuredRoute name="Players"><Players /></MeasuredRoute>} />
                 <Route path="/players" element={<MeasuredRoute name="Players"><Players /></MeasuredRoute>} />
                 <Route path="/rivalries" element={<MeasuredRoute name="Rivalries"><Rivalries /></MeasuredRoute>} />
                 <Route path="/match-finder" element={<MeasuredRoute name="MatchFinder"><MatchFinder /></MeasuredRoute>} />
@@ -165,6 +167,7 @@ function AuthShell() {
               </Routes>
             </Suspense>
           </ApplicationErrorBoundary>
+          <GlobalFooter />
         </div>
       </div>
     </SettingsProvider>

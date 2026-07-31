@@ -1,6 +1,7 @@
 import type { PortalIconName } from './PortalIcon'
 
 export type NavigationItem = {
+  external?: boolean
   icon: PortalIconName
   label: string
   to: string

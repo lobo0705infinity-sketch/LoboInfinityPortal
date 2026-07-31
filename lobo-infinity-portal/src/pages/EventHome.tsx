@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
+import DiscordCommunityLink from '../components/DiscordCommunityLink'
 import Skeleton from '../components/Skeleton'
 import {
   getEventOverviewKind,
@@ -138,6 +139,9 @@ function EventHome() {
           </div>
         </div>
         <div className="event-home-selector">
+          <DiscordCommunityLink className="event-home-secondary-action">
+            Join Discord
+          </DiscordCommunityLink>
           {heroAction ? (
             <Link className="event-home-primary-action" to={heroAction.href}>
               {heroAction.label}

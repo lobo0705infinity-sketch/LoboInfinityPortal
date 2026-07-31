@@ -253,6 +253,56 @@
   color: #b66cff;
 }
 
+.dashboard-discord-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 18px;
+}
+
+.dashboard-discord-icon {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  border: 1px solid rgba(76, 201, 240, 0.28);
+  border-radius: 16px;
+  color: var(--blue);
+  background: rgba(76, 201, 240, 0.12);
+}
+
+.dashboard-discord-icon .portal-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.dashboard-discord-card h2 {
+  margin: 4px 0 8px;
+  color: var(--text);
+  font-size: 1.2rem;
+}
+
+.dashboard-discord-card p:last-child {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.dashboard-discord-action {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  border: 1px solid rgba(76, 201, 240, 0.34);
+  border-radius: 12px;
+  color: var(--text);
+  background: rgba(76, 201, 240, 0.12);
+  font-size: 0.8rem;
+  font-weight: 900;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
 .dashboard-ops-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.92fr) minmax(0, 1.03fr) minmax(0, 0.88fr);

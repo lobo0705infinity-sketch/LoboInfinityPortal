@@ -1227,6 +1227,7 @@ function emptySettings() {
     currentSeason: 'Current League',
     deploymentUrl: '',
     discordInvite: '',
+    discordServerName: 'Lobo Infinity League Discord',
     gitCommit: '',
     googleFormUrl: '',
     googleOAuthClientId: '',

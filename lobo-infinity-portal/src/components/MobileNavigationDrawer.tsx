@@ -4,6 +4,8 @@ import {
   buildCapabilityNavigation,
   type EventNavigationConfig,
 } from '../config/eventNavigation'
+import { getDiscordCommunityLink } from '../config/communityLinks'
+import { useSettings } from '../contexts/SettingsContext'
 import { preloadRoute } from '../services/routePreload'
 import LeagueCrest from './LeagueCrest'
 import PortalIcon from './PortalIcon'
@@ -114,6 +116,23 @@ function MobileSidebarLink({
   const location = useLocation()
   const active = `${location.pathname}${location.search}${location.hash}` === item.to
 
+  if (item.external) {
+    return (
+      <a
+        className="sidebar-button"
+        href={item.to}
+        onClick={onNavigate}
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        <span className="sidebar-icon" aria-hidden="true">
+          <PortalIcon name={item.icon} />
+        </span>
+        <span>{item.label}</span>
+      </a>
+    )
+  }
+
   return (
     <Link
       className={active ? 'sidebar-button active' : 'sidebar-button'}
@@ -134,6 +153,7 @@ function MobileNavigationDrawer({
   commissioner,
   onClose,
 }: MobileNavigationDrawerProps) {
+  const { settings } = useSettings()
   const {
     eventOptions,
     prefetchEventNavigation,
@@ -146,6 +166,18 @@ function MobileNavigationDrawer({
   const knownExpandedEvent = eventOptions.some((event) => event.id === expandedEventId)
   const resolvedExpandedEventId =
     knownExpandedEvent ? expandedEventId : selectedEventId
+  const discordLink = getDiscordCommunityLink(settings)
+  const resolvedCommunityItems = discordLink
+    ? [
+        ...communityItems,
+        {
+          external: true,
+          icon: 'discord' as const,
+          label: discordLink.label,
+          to: discordLink.url,
+        },
+      ]
+    : communityItems
 
   function handleEventChange(eventId: string) {
     expandEvent(eventId)
@@ -212,7 +244,7 @@ function MobileNavigationDrawer({
         </section>
 
         <MobileSidebarSection
-          items={communityItems}
+          items={resolvedCommunityItems}
           label="Community"
           onNavigate={onClose}
         />

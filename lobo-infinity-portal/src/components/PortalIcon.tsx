@@ -4,6 +4,7 @@ export type PortalIconName =
   | 'bell'
   | 'compare'
   | 'dashboard'
+  | 'discord'
   | 'factions'
   | 'hall'
   | 'missions'
@@ -52,6 +53,13 @@ const paths: Record<PortalIconName, string[]> = {
     'M13 11h6v8h-6z',
     'M5 13h6v6H5z',
     'M7 8h2',
+  ],
+  discord: [
+    'M8.2 8.5c2.5-.8 5.1-.8 7.6 0',
+    'M7.5 9.4c-.8 1.7-1.2 3.5-1.2 5.4 3.8 2.8 7.6 2.8 11.4 0 0-1.9-.4-3.7-1.2-5.4',
+    'M9.2 14.2h.01',
+    'M14.8 14.2h.01',
+    'M10.1 16c1.3.6 2.5.6 3.8 0',
   ],
   factions: [
     'M12 4.5 19 8.5v7l-7 4-7-4v-7l7-4Z',

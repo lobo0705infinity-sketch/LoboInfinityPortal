@@ -33,6 +33,11 @@ const DEFAULT_SETTINGS = [
     "Discord invite URL."
   ],
   [
+    "discordServerName",
+    "Lobo Infinity League Discord",
+    "Public Discord server name."
+  ],
+  [
     "leagueWebsite",
     "",
     "Primary league website URL."

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
+import { getDiscordCommunityLink } from '../config/communityLinks'
 import {
   buildCapabilityNavigation,
   type EventNavigationConfig,
@@ -15,6 +16,7 @@ import {
   type NavigationItem,
 } from './sidebarNavigation'
 import { useSelectedEventNavigation } from './useSelectedEventNavigation'
+import { useSettings } from '../contexts/SettingsContext'
 
 const expandedEventStorageKey = 'le'
 
@@ -36,6 +38,7 @@ function writeExpandedEventId(eventId: string) {
 
 function Sidebar() {
   const auth = useAuth()
+  const { settings } = useSettings()
   const {
     eventOptions,
     prefetchEventNavigation,
@@ -48,6 +51,18 @@ function Sidebar() {
   const knownExpandedEvent = eventOptions.some((event) => event.id === expandedEventId)
   const resolvedExpandedEventId =
     knownExpandedEvent ? expandedEventId : selectedEventId
+  const discordLink = getDiscordCommunityLink(settings)
+  const resolvedCommunityItems = discordLink
+    ? [
+        ...communityItems,
+        {
+          external: true,
+          icon: 'discord' as const,
+          label: discordLink.label,
+          to: discordLink.url,
+        },
+      ]
+    : communityItems
 
   function expandEvent(eventId: string) {
     setExpandedEventId(eventId)
@@ -104,7 +119,7 @@ function Sidebar() {
         </section>
 
         <SidebarSection
-          items={communityItems}
+          items={resolvedCommunityItems}
           label="Community"
         />
         {auth.isAtLeastRole('Commissioner') ? (
@@ -236,6 +251,23 @@ function SidebarLink({
 }) {
   const location = useLocation()
   const active = `${location.pathname}${location.search}${location.hash}` === item.to
+
+  if (item.external) {
+    return (
+      <a
+        className="sidebar-button"
+        href={item.to}
+        onClick={onNavigate}
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        <span className="sidebar-icon" aria-hidden="true">
+          <PortalIcon name={item.icon} />
+        </span>
+        <span>{item.label}</span>
+      </a>
+    )
+  }
 
   return (
     <Link

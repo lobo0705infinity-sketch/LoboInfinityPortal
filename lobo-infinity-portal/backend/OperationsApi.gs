@@ -435,6 +435,7 @@ function updateOperationsSettings(e) {
       "submissionButtonText",
       "submissionButtonVisible",
       "discordInvite",
+      "discordServerName",
       "leagueWebsite",
       "bannerImage",
       "leagueLogo",
@@ -458,6 +459,16 @@ function updateOperationsSettings(e) {
     return jsonOutput({
       success: false,
       error: "Google Form URL must be a valid http or https URL."
+    });
+
+  if (
+    params.discordInvite !== undefined &&
+    String(params.discordInvite).trim() !== "" &&
+    !isOperationsValidUrl(params.discordInvite)
+  )
+    return jsonOutput({
+      success: false,
+      error: "Discord Invite URL must be a valid http or https URL."
     });
 
   keys.forEach(function(key) {

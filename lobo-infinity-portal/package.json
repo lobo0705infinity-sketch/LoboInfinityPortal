@@ -9,8 +9,8 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "npm run release:fingerprint && npm run api:init-order && npm run security:cache && npm run security:armies && npm run test:release-tooling && npm run test:army-diagnostics && npm run test:army-code-validation && npm run test:game-army-code-correction && npm run test:game-score-correction && npm run test:game-score-correction-ui && npm run test:game-center && npm run test:faction-portraits && npm run test:achievements && npm run test:draws && npm run test:standings-integrity && npm run test:dashboard-api && npm run test:commissioner-submit && npm run test:commissioner-context && tsc -b && vite build",
-    "build:vercel": "npm run release:fingerprint && npm run api:init-order && npm run security:cache && npm run security:armies && npm run test:release-tooling && npm run test:army-diagnostics && npm run test:army-code-validation && npm run test:game-army-code-correction && npm run test:game-score-correction && npm run test:game-score-correction-ui && npm run test:game-center && npm run test:achievements && npm run test:draws && npm run test:standings-integrity && npm run test:dashboard-api && npm run test:commissioner-submit && npm run test:commissioner-context && tsc -b && vite build",
+    "build": "npm run release:fingerprint && npm run api:init-order && npm run security:cache && npm run security:armies && npm run test:release-tooling && npm run test:army-diagnostics && npm run test:army-code-validation && npm run test:game-army-code-correction && npm run test:game-score-correction && npm run test:game-score-correction-ui && npm run test:game-center && npm run test:faction-portraits && npm run test:achievements && npm run test:draws && npm run test:standings-integrity && npm run test:dashboard-api && npm run test:community-links && npm run test:commissioner-submit && npm run test:commissioner-context && tsc -b && vite build",
+    "build:vercel": "npm run release:fingerprint && npm run api:init-order && npm run security:cache && npm run security:armies && npm run test:release-tooling && npm run test:army-diagnostics && npm run test:army-code-validation && npm run test:game-army-code-correction && npm run test:game-score-correction && npm run test:game-score-correction-ui && npm run test:game-center && npm run test:achievements && npm run test:draws && npm run test:standings-integrity && npm run test:dashboard-api && npm run test:community-links && npm run test:commissioner-submit && npm run test:commissioner-context && tsc -b && vite build",
     "release:source": "node scripts/release-source-check.mjs",
     "release:source:candidate": "node scripts/release-source-check.mjs --candidate",
     "release:manifest": "node scripts/release-manifest-check.mjs",
@@ -61,6 +61,7 @@
     "test:dashboard-links": "node scripts/dashboard-links-check.mjs",
     "test:dashboard-performance": "node scripts/dashboard-performance-check.mjs",
     "test:player-comparison": "node scripts/player-comparison-check.mjs",
+    "test:community-links": "node scripts/community-links-check.mjs",
     "test:dashboard-api": "node scripts/dashboard-api-contract-check.mjs",
     "test:draws": "node scripts/draw-support-check.mjs",
     "test:standings-integrity": "node scripts/standings-integrity-check.mjs",

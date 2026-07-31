@@ -1023,6 +1023,76 @@
   font-weight: 800;
 }
 
+.page-header > div > p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.page-header-action,
+.event-home-secondary-action,
+.team-tournament-discord-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  border: 1px solid rgba(76, 201, 240, 0.34);
+  border-radius: 12px;
+  padding: 0 16px;
+  color: var(--text);
+  background: rgba(76, 201, 240, 0.12);
+  font-size: 0.8rem;
+  font-weight: 900;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease;
+}
+
+.page-header-action:hover,
+.page-header-action:focus-visible,
+.event-home-secondary-action:hover,
+.event-home-secondary-action:focus-visible,
+.team-tournament-discord-action:hover,
+.team-tournament-discord-action:focus-visible {
+  border-color: rgba(76, 201, 240, 0.58);
+  background: rgba(76, 201, 240, 0.2);
+  transform: translateY(-1px);
+}
+
+.global-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 10px clamp(18px, 4vw, 46px) 28px;
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+  color: var(--text-muted);
+}
+
+.global-footer > div,
+.global-footer nav,
+.global-footer-icon-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.global-footer-icon-link {
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.global-footer-icon-link .portal-icon {
+  width: 24px;
+  height: 24px;
+}
+
 .dashboard-state {
   margin: 0 clamp(18px, 4vw, 46px);
   padding: 28px;

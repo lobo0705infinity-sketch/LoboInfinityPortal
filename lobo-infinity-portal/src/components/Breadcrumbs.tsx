@@ -10,6 +10,7 @@ type Breadcrumb = {
 const routeLabels: Record<string, string> = {
   '/army-intelligence': 'Army Intelligence',
   '/army-lists': 'Army Lists',
+  '/community': 'Community',
   '/events': 'Past Events',
   '/hall-of-fame': 'Hall of Fame',
   '/integrity': 'Audit',

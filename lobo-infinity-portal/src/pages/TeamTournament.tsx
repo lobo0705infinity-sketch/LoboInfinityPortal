@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
+import DiscordCommunityLink from '../components/DiscordCommunityLink'
 import Skeleton from '../components/Skeleton'
 import {
   getCanonicalArmyName,
@@ -329,6 +330,9 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
             <Link to={`/event/${encodeURIComponent(data.event.id)}`}>
               Open Event Home
             </Link>
+            <DiscordCommunityLink className="team-tournament-discord-action">
+              Join Discord
+            </DiscordCommunityLink>
           </div>
           <TournamentMetric label="Teams" value={data.registeredTeams} />
           <TournamentMetric label="Completed" value={data.completedMatches} />

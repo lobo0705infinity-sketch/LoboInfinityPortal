@@ -1736,6 +1736,8 @@ function SettingsPanel({
         <Input disabled={!canManage} label="League Name" onChange={(value) => setDraft({ ...draft, leagueName: value })} value={draft.leagueName} />
         <Input disabled={!canManage} label="Current Season" onChange={(value) => setDraft({ ...draft, currentSeason: value })} value={draft.currentSeason} />
         <Input disabled={!canManage} label="Google Form URL" onChange={(value) => setDraft({ ...draft, googleFormUrl: value })} value={draft.googleFormUrl} />
+        <Input disabled={!canManage} label="Discord Invite URL" onChange={(value) => setDraft({ ...draft, discordInvite: value })} value={draft.discordInvite} />
+        <Input disabled={!canManage} label="Discord Server Name" onChange={(value) => setDraft({ ...draft, discordServerName: value })} value={draft.discordServerName} />
         <Input disabled={!canManage} label="Portal Version" onChange={(value) => setDraft({ ...draft, portalVersion: value })} value={draft.portalVersion} />
         <Input disabled={!canManage} label="Git Commit" onChange={(value) => setDraft({ ...draft, gitCommit: value })} value={draft.gitCommit} />
         <Input disabled={!canManage} label="Deployment URL" onChange={(value) => setDraft({ ...draft, deploymentUrl: value })} value={draft.deploymentUrl} />

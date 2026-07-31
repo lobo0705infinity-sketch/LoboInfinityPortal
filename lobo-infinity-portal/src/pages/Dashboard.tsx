@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useRef } from 'react'
 import { useAuth } from '../auth/AuthContext'
+import DiscordCommunityLink from '../components/DiscordCommunityLink'
 import Loading from '../components/Loading'
+import PortalIcon from '../components/PortalIcon'
 import Skeleton from '../components/Skeleton'
 import {
   type ArmyListCommunitySummary,
@@ -24,6 +26,8 @@ import {
   DashboardDataProvider,
   useDashboardDataContext,
 } from '../contexts/DashboardDataContext'
+import { useSettings } from '../contexts/SettingsContext'
+import { getDiscordCommunityLink } from '../config/communityLinks'
 import '../App.css'
 import './Dashboard.css'
 
@@ -192,6 +196,7 @@ function DashboardContent({
           records={records}
           streams={homeData.streams}
         />
+        <DiscordDashboardCard />
       </section>
 
       <footer className="dashboard-footer">
@@ -302,6 +307,34 @@ function DashboardStatusTile({
         <small>{meta}</small>
       </div>
     </article>
+  )
+}
+
+function DiscordDashboardCard() {
+  const { settings } = useSettings()
+  const discord = getDiscordCommunityLink(settings)
+
+  if (!discord) {
+    return null
+  }
+
+  return (
+    <section className="panel dashboard-discord-card" aria-labelledby="dashboard-discord-title">
+      <div className="dashboard-discord-icon" aria-hidden="true">
+        <PortalIcon name="discord" />
+      </div>
+      <div>
+        <p className="eyebrow">Community Link</p>
+        <h2 id="dashboard-discord-title">Join the Lobo Infinity League Discord</h2>
+        <p>
+          Coordinate games, follow announcements, and stay connected with the
+          league community.
+        </p>
+      </div>
+      <DiscordCommunityLink className="dashboard-discord-action">
+        Join Discord
+      </DiscordCommunityLink>
+    </section>
   )
 }
 
