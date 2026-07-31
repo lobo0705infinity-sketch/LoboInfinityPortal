@@ -185,8 +185,13 @@ assert.doesNotMatch(
 )
 assert.match(
   page,
-  /selectedExplorerScope[\s\S]*getSelectedExplorerScope\(selectedSectorial\)[\s\S]*selectedArmyListExplorerRows[\s\S]*explorerRowMatchesSelectedScope\(list, selectedExplorerScope\)[\s\S]*selectedFaction=\{selectedExplorerScope\.label \|\| selectedSectorial\}/,
+  /selectedExplorerScope[\s\S]*getSelectedExplorerScope\(selectedSectorial\)[\s\S]*selectedScopeLists[\s\S]*intelligenceListMatchesSelectedScope\(list, selectedExplorerScope\)[\s\S]*matchingLists[\s\S]*selectedScopeLists\.filter\(\(list\) => matchesResultFilter\(list, resultFilter\)\)[\s\S]*selectedArmyListExplorerRows[\s\S]*buildExplorerRowsFromSelectedLists\(matchingLists\)[\s\S]*selectedFaction=\{selectedExplorerScope\.label \|\| selectedSectorial\}/,
   'Army Intelligence Explorer must use the selected item scope for both rows and modal title.',
+)
+assert.match(
+  page,
+  /selectedArmyListExplorerRows[\s\S]*buildExplorerRowsFromSelectedLists\(matchingLists\)[\s\S]*selectedKnownArmyLists = selectedArmyListExplorerRows\.length[\s\S]*buildArmyListExplorerSummary\(selectedArmyListExplorerRows, selectedExplorerScope\)[\s\S]*buildArmyAnalysis\(matchingLists\)/,
+  'Army Intelligence summary metrics and explorer rows must derive from the same filtered Army Intelligence collection.',
 )
 assert.match(
   page,
@@ -195,8 +200,8 @@ assert.match(
 )
 assert.doesNotMatch(
   page,
-  /data\.armyLists\.filter\(\(list\) => getExplorerParentFaction\(list\) === selectedParentFaction\)/,
-  'Sectorial selections must not broaden explorer rows to the selected parent faction.',
+  /data\.armyLists\.filter|getExplorerParentFaction|explorerRowMatchesSelectedScope/,
+  'Army Intelligence selected-page metrics must not use a separate registry collection after applying the selected scope.',
 )
 assert.match(
   page,
@@ -1480,6 +1485,47 @@ assert.equal(
   alephScopeRows.length,
   'Known Army Lists must equal the displayed explorer rows for parent faction selections.',
 )
+const steelDecodedScopeLists = [
+  buildSingleCollectionScopeListFixture({
+    faction: 'ALEPH',
+    listName: 'Steel Single Source',
+    player: 'Steel Player',
+    points: 299,
+    regularOrders: 14,
+    sectorial: 'Steel Phalanx',
+    sourceId: '21',
+    wounds: [1, 1, 1, 1.4],
+  }),
+]
+const steelRowsFromSameCollection = buildExplorerRowsFromSelectedListsFixture(steelDecodedScopeLists)
+const steelAnalysisFromSameCollection = buildFixtureAnalysis(steelDecodedScopeLists)
+assert.equal(
+  steelRowsFromSameCollection.length,
+  steelAnalysisFromSameCollection.listCount,
+  'Known Army Lists and derived statistics must use the same Steel Phalanx filtered collection.',
+)
+assert.equal(
+  steelRowsFromSameCollection.length,
+  1,
+  'Non-zero Steel Phalanx derived statistics must imply a non-zero Known Army Lists count.',
+)
+assert.equal(
+  steelRowsFromSameCollection[0].sectorial,
+  'Steel Phalanx',
+  'Steel Phalanx explorer rows derived from the selected collection must preserve exact sectorial scope.',
+)
+assert.equal(
+  steelRowsFromSameCollection[0].points,
+  steelAnalysisFromSameCollection.averagePoints,
+  'Explorer points and average points must describe the same submitted Steel Phalanx list.',
+)
+const emptyScopeRows = buildExplorerRowsFromSelectedListsFixture([])
+const emptyScopeAnalysis = buildFixtureAnalysis([])
+assert.equal(emptyScopeRows.length, 0, 'An empty selected collection must produce zero Known Army Lists.')
+assert.equal(emptyScopeAnalysis.listCount, 0, 'An empty selected collection must produce zero analyzed lists.')
+assert.equal(emptyScopeAnalysis.averageRegularOrders, 0, 'An empty selected collection must produce zero average regular orders.')
+assert.equal(emptyScopeAnalysis.averagePoints, 0, 'An empty selected collection must produce zero average points.')
+assert.equal(emptyScopeAnalysis.averageDurability, 0, 'An empty selected collection must produce zero average durability.')
 
 console.log('Army Intelligence Phase 1 checks passed.')
 
@@ -1513,6 +1559,68 @@ function buildArmyListExplorerRowsFixture(lists) {
     submissionDate: list.submissionDate,
     swc: list.swc,
   }))
+}
+
+function buildExplorerRowsFromSelectedListsFixture(lists) {
+  return lists.map((list, index) => ({
+    id: Number(list.sourceId) || index + 1,
+    armyName: list.decoded?.listName || 'Untitled Army List',
+    faction: canonicalizeArmyParentFactionFixture(list.decoded?.faction || list.faction),
+    player: list.player || list.sourcePlayer,
+    playerDisplayName: list.player || list.sourcePlayer || 'Unknown Player',
+    points: list.decoded?.totals.points || 0,
+    sectorial: list.decoded?.sectorial || list.sectorial,
+    source: list.gameType || list.sourceType || 'Army Intelligence',
+    submissionDate: list.date || list.decodedAt,
+    swc: list.decoded?.totals.swc || 0,
+  }))
+}
+
+function buildSingleCollectionScopeListFixture({
+  faction,
+  listName,
+  player,
+  points,
+  regularOrders,
+  sectorial,
+  sourceId,
+  wounds,
+}) {
+  return {
+    date: '2026-07-31',
+    decoded: {
+      combatGroups: [
+        {
+          entries: wounds.map((wound, index) => ({
+            name: `${sectorial} Unit ${index + 1}`,
+            profile: `${sectorial} Profile ${index + 1}`,
+            skills: [],
+            structure: null,
+            unit: `${sectorial} Unit ${index + 1}`,
+            wounds: wound,
+          })),
+        },
+      ],
+      faction,
+      listName,
+      orderCounts: {
+        regular: regularOrders,
+      },
+      sectorial,
+      totals: {
+        points,
+        swc: 6,
+      },
+    },
+    faction,
+    gameType: 'League',
+    player,
+    result: 'win',
+    sectorial,
+    sourceId,
+    sourcePlayer: player,
+    sourceType: 'league',
+  }
 }
 
 function selectExplorerRowsForScopeFixture(rows, selectedItem) {
@@ -1735,6 +1843,7 @@ function buildFixtureAnalysis(lists) {
   )
 
   return {
+    averagePoints: average(lists.map((list) => list.decoded.totals.points)),
     averageRegularOrders: average(lists.map((list) => list.decoded.orderCounts.regular)),
     averageTacticalAwarenessOrders: average(
       entriesByList.map((entries) =>

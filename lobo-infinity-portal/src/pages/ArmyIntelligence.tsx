@@ -304,25 +304,24 @@ function ArmyIntelligenceContent({
         .sort((left, right) => left.localeCompare(right)),
     [uniqueDecodedLists],
   )
-  const matchingLists = useMemo(
-    () =>
-      selectedSectorial
-        ? uniqueDecodedLists
-            .filter((list) => getDecodedSectorial(list) === selectedSectorial)
-            .filter((list) => matchesResultFilter(list, resultFilter))
-        : [],
-    [resultFilter, selectedSectorial, uniqueDecodedLists],
-  )
   const selectedExplorerScope = useMemo(
     () => getSelectedExplorerScope(selectedSectorial),
     [selectedSectorial],
   )
-  const selectedArmyListExplorerRows = useMemo(
+  const selectedScopeLists = useMemo(
     () =>
       selectedExplorerScope.label
-        ? data.armyLists.filter((list) => explorerRowMatchesSelectedScope(list, selectedExplorerScope))
+        ? uniqueDecodedLists.filter((list) => intelligenceListMatchesSelectedScope(list, selectedExplorerScope))
         : [],
-    [data.armyLists, selectedExplorerScope],
+    [selectedExplorerScope, uniqueDecodedLists],
+  )
+  const matchingLists = useMemo(
+    () => selectedScopeLists.filter((list) => matchesResultFilter(list, resultFilter)),
+    [resultFilter, selectedScopeLists],
+  )
+  const selectedArmyListExplorerRows = useMemo(
+    () => buildExplorerRowsFromSelectedLists(matchingLists),
+    [matchingLists],
   )
   const selectedKnownArmyLists = selectedArmyListExplorerRows.length
   const explorerPlayerOptions = useMemo(
@@ -1203,16 +1202,62 @@ function getSelectedExplorerScope(selectedItem: string): ArmyIntelligenceSelecti
   }
 }
 
-function explorerRowMatchesSelectedScope(list: ArmyIntelligenceArmyList, scope: ArmyIntelligenceSelectionScope) {
+function intelligenceListMatchesSelectedScope(list: ArmyIntelligenceList, scope: ArmyIntelligenceSelectionScope) {
   if (scope.isParentFaction) {
-    return getExplorerParentFaction(list) === scope.parentFaction
+    return getIntelligenceParentFaction(list) === scope.parentFaction
   }
 
-  return getExplorerSectorial(list) === scope.label
+  return getDecodedSectorial(list) === scope.label
 }
 
-function getExplorerParentFaction(list: ArmyIntelligenceArmyList) {
-  return getArmyParentFaction(list.faction) || normalizeArmyForDisplay(list.faction)
+function getIntelligenceParentFaction(list: ArmyIntelligenceList) {
+  return getArmyParentFaction(list.decoded?.faction) ||
+    getArmyParentFaction(list.faction) ||
+    normalizeArmyForDisplay(list.faction)
+}
+
+function buildExplorerRowsFromSelectedLists(lists: UniqueArmyIntelligenceList[]): ArmyIntelligenceArmyList[] {
+  return lists.map((list, index) => ({
+    id: getStableExplorerRowId(list, index),
+    armyCode: '',
+    armyLink: '',
+    armyName: list.decoded?.listName || 'Untitled Army List',
+    faction: getIntelligenceParentFaction(list),
+    player: list.player || list.sourcePlayer,
+    playerDisplayName: list.player || list.sourcePlayer || 'Unknown Player',
+    points: list.decoded?.totals.points ?? 0,
+    sectorial: getDecodedSectorial(list),
+    source: formatIntelligenceSource(list),
+    submissionDate: list.date || list.decodedAt,
+    swc: list.decoded?.totals.swc ?? 0,
+  }))
+}
+
+function getStableExplorerRowId(list: ArmyIntelligenceList, index: number) {
+  const sourceId = Number(list.sourceId)
+
+  return Number.isFinite(sourceId) && sourceId > 0
+    ? sourceId
+    : index + 1
+}
+
+function formatIntelligenceSource(list: ArmyIntelligenceList) {
+  const sourceType = list.sourceType.trim().toLowerCase()
+  const gameType = list.gameType.trim().toLowerCase()
+
+  if (sourceType === 'league' || gameType === 'league') {
+    return 'League'
+  }
+
+  if (sourceType === 'casual' || gameType === 'casual') {
+    return 'Casual'
+  }
+
+  if (sourceType === 'tournament' || gameType.includes('team')) {
+    return 'Team Tournament'
+  }
+
+  return list.gameType || list.sourceType || 'Army Intelligence'
 }
 
 function getExplorerSectorial(list: ArmyIntelligenceArmyList) {
