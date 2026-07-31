@@ -118,6 +118,12 @@ type ArmyListExplorerSummary = {
   totalSectorials: number
 }
 
+type ArmyIntelligenceSelectionScope = {
+  isParentFaction: boolean
+  label: string
+  parentFaction: string
+}
+
 const resultFilterOptions: Array<{
   label: string
   value: AnalysisResultFilter
@@ -307,23 +313,16 @@ function ArmyIntelligenceContent({
         : [],
     [resultFilter, selectedSectorial, uniqueDecodedLists],
   )
-  const selectedFactionLists = useMemo(
-    () =>
-      selectedSectorial
-        ? uniqueDecodedLists.filter((list) => getDecodedSectorial(list) === selectedSectorial)
-        : [],
-    [selectedSectorial, uniqueDecodedLists],
-  )
-  const selectedParentFaction = useMemo(
-    () => getSelectedParentFaction(selectedSectorial, selectedFactionLists),
-    [selectedFactionLists, selectedSectorial],
+  const selectedExplorerScope = useMemo(
+    () => getSelectedExplorerScope(selectedSectorial),
+    [selectedSectorial],
   )
   const selectedArmyListExplorerRows = useMemo(
     () =>
-      selectedParentFaction
-        ? data.armyLists.filter((list) => getExplorerParentFaction(list) === selectedParentFaction)
+      selectedExplorerScope.label
+        ? data.armyLists.filter((list) => explorerRowMatchesSelectedScope(list, selectedExplorerScope))
         : [],
-    [data.armyLists, selectedParentFaction],
+    [data.armyLists, selectedExplorerScope],
   )
   const selectedKnownArmyLists = selectedArmyListExplorerRows.length
   const explorerPlayerOptions = useMemo(
@@ -331,7 +330,7 @@ function ArmyIntelligenceContent({
     [selectedArmyListExplorerRows],
   )
   const explorerSectorialOptions = useMemo(
-    () => getUniqueExplorerOptions(selectedArmyListExplorerRows.map((list) => normalizeArmyForDisplay(list.sectorial))),
+    () => getUniqueExplorerOptions(selectedArmyListExplorerRows.map(getExplorerSectorial)),
     [selectedArmyListExplorerRows],
   )
   const visibleExplorerRows = useMemo(
@@ -354,8 +353,8 @@ function ArmyIntelligenceContent({
     ],
   )
   const explorerSummary = useMemo(
-    () => buildArmyListExplorerSummary(selectedArmyListExplorerRows, selectedParentFaction),
-    [selectedArmyListExplorerRows, selectedParentFaction],
+    () => buildArmyListExplorerSummary(selectedArmyListExplorerRows, selectedExplorerScope),
+    [selectedArmyListExplorerRows, selectedExplorerScope],
   )
   const analysis = useMemo(() => buildArmyAnalysis(matchingLists), [matchingLists])
   const equipmentOptions = useMemo(() => buildEquipmentOptions(matchingLists), [matchingLists])
@@ -651,7 +650,8 @@ function ArmyIntelligenceContent({
             search={explorerSearch}
             sectorialFilter={explorerSectorialFilter}
             sectorialOptions={explorerSectorialOptions}
-            selectedFaction={selectedParentFaction || selectedSectorial}
+            selectedFaction={selectedExplorerScope.label || selectedSectorial}
+            showFactionScopeStats={selectedExplorerScope.isParentFaction}
             setExplorerOpen={setExplorerOpen}
             setPlayerFilter={setExplorerPlayerFilter}
             setSearch={setExplorerSearch}
@@ -845,6 +845,7 @@ function ArmyListExplorer({
   sectorialFilter,
   sectorialOptions,
   selectedFaction,
+  showFactionScopeStats,
   setExplorerOpen,
   setPlayerFilter,
   setSearch,
@@ -862,6 +863,7 @@ function ArmyListExplorer({
   sectorialFilter: string
   sectorialOptions: string[]
   selectedFaction: string
+  showFactionScopeStats: boolean
   setExplorerOpen: (value: boolean) => void
   setPlayerFilter: (value: string) => void
   setSearch: (value: string) => void
@@ -902,28 +904,32 @@ function ArmyListExplorer({
             value={String(summary.knownArmyLists)}
           />
           <ExplorerStat label="Players" value={String(summary.players)} />
-          <ExplorerStat label="Sectorials Represented" value={String(summary.sectorials)} />
-          {summary.totalSectorials > 0 ? (
+          {showFactionScopeStats ? (
+            <ExplorerStat label="Sectorials Represented" value={String(summary.sectorials)} />
+          ) : null}
+          {showFactionScopeStats && summary.totalSectorials > 0 ? (
             <ExplorerStat
               label="Sectorial Coverage"
               value={`${summary.sectorialCoverage} / ${summary.totalSectorials}`}
             />
           ) : null}
           <ExplorerStat label="Newest Submission" value={formatExplorerDate(summary.newestSubmission)} />
-          <ExplorerStat
-            ariaLabel="Filter Army List Explorer by most popular sectorial"
-            helperText={summary.mostPopularSectorial ? 'Filter by this sectorial' : undefined}
-            label="Most Popular Sectorial"
-            onClick={
-              summary.mostPopularSectorial
-                ? () => {
-                    setExplorerOpen(true)
-                    setSectorialFilter(summary.mostPopularSectorial)
-                  }
-                : undefined
-            }
-            value={summary.mostPopularSectorial || 'None'}
-          />
+          {showFactionScopeStats ? (
+            <ExplorerStat
+              ariaLabel="Filter Army List Explorer by most popular sectorial"
+              helperText={summary.mostPopularSectorial ? 'Filter by this sectorial' : undefined}
+              label="Most Popular Sectorial"
+              onClick={
+                summary.mostPopularSectorial
+                  ? () => {
+                      setExplorerOpen(true)
+                      setSectorialFilter(summary.mostPopularSectorial)
+                    }
+                  : undefined
+              }
+              value={summary.mostPopularSectorial || 'None'}
+            />
+          ) : null}
           <ExplorerStat
             ariaLabel="Filter Army List Explorer by most submitted player"
             helperText={summary.mostActivePlayer ? 'Filter by this player' : undefined}
@@ -1004,7 +1010,7 @@ function ArmyListExplorer({
                 {lists.map((list) => (
                   <tr key={`${list.source}:${list.id}:${list.armyCode}`}>
                     <td>{formatExplorerPlayer(list)}</td>
-                    <td>{normalizeArmyForDisplay(list.sectorial) || 'Not recorded'}</td>
+                    <td>{getExplorerSectorial(list) || 'Not recorded'}</td>
                     <td>{list.armyName || 'Untitled Army List'}</td>
                     <td>{formatNumber(list.points)}</td>
                     <td>{formatNumber(list.swc)}</td>
@@ -1184,29 +1190,33 @@ function getDecodedSectorial(list: ArmyIntelligenceList) {
   return normalizeSectorialDisplayName(list.decoded?.sectorial || '')
 }
 
-function getSelectedParentFaction(selectedSectorial: string, lists: ArmyIntelligenceList[]) {
-  const fromRegistry = getArmyParentFaction(selectedSectorial)
+function getSelectedExplorerScope(selectedItem: string): ArmyIntelligenceSelectionScope {
+  const label = normalizeSectorialDisplayName(normalizeArmyForDisplay(selectedItem))
+  const registryEntry = CANONICAL_ARMY_REGISTRY.find((army) => army.active && army.name === label)
+  const isParentFaction = registryEntry?.type === 'Vanilla' && registryEntry.parentFaction === registryEntry.name
+  const parentFaction = registryEntry?.parentFaction || getArmyParentFaction(label) || label
 
-  if (fromRegistry) {
-    return fromRegistry
+  return {
+    isParentFaction,
+    label,
+    parentFaction,
+  }
+}
+
+function explorerRowMatchesSelectedScope(list: ArmyIntelligenceArmyList, scope: ArmyIntelligenceSelectionScope) {
+  if (scope.isParentFaction) {
+    return getExplorerParentFaction(list) === scope.parentFaction
   }
 
-  for (const list of lists) {
-    const faction =
-      getArmyParentFaction(list.decoded?.faction) ||
-      getArmyParentFaction(list.faction) ||
-      normalizeArmyForDisplay(list.faction)
-
-    if (faction) {
-      return faction
-    }
-  }
-
-  return normalizeArmyForDisplay(selectedSectorial)
+  return getExplorerSectorial(list) === scope.label
 }
 
 function getExplorerParentFaction(list: ArmyIntelligenceArmyList) {
   return getArmyParentFaction(list.faction) || normalizeArmyForDisplay(list.faction)
+}
+
+function getExplorerSectorial(list: ArmyIntelligenceArmyList) {
+  return normalizeSectorialDisplayName(normalizeArmyForDisplay(list.sectorial))
 }
 
 function normalizeSectorialDisplayName(value: string) {
@@ -1245,7 +1255,7 @@ function filterAndSortExplorerRows(
 
   return lists
     .filter((list) => !filters.player || formatExplorerPlayer(list) === filters.player)
-    .filter((list) => !filters.sectorial || normalizeArmyForDisplay(list.sectorial) === filters.sectorial)
+    .filter((list) => !filters.sectorial || getExplorerSectorial(list) === filters.sectorial)
     .filter((list) =>
       !query ||
       formatExplorerPlayer(list).toLowerCase().includes(query) ||
@@ -1265,7 +1275,7 @@ function compareExplorerRows(
   }
 
   if (sort === 'sectorial') {
-    return normalizeArmyForDisplay(left.sectorial).localeCompare(normalizeArmyForDisplay(right.sectorial)) ||
+    return getExplorerSectorial(left).localeCompare(getExplorerSectorial(right)) ||
       compareExplorerRows(left, right, 'submissionDate')
   }
 
@@ -1280,7 +1290,7 @@ function compareExplorerRows(
 
 function buildArmyListExplorerSummary(
   lists: ArmyIntelligenceArmyList[],
-  selectedParentFaction: string,
+  selectedScope: ArmyIntelligenceSelectionScope,
 ): ArmyListExplorerSummary {
   const players = new Set<string>()
   const sectorials = new Set<string>()
@@ -1290,7 +1300,7 @@ function buildArmyListExplorerSummary(
 
   lists.forEach((list) => {
     const player = formatExplorerPlayer(list)
-    const sectorial = normalizeArmyForDisplay(list.sectorial)
+    const sectorial = getExplorerSectorial(list)
 
     players.add(player)
     playerCounts.set(player, (playerCounts.get(player) ?? 0) + 1)
@@ -1307,13 +1317,15 @@ function buildArmyListExplorerSummary(
 
   const mostActivePlayer = getCountLeader(playerCounts)
   const mostPopularSectorial = getCountLeader(sectorialCounts)
-  const totalSectorials = getTotalSectorialsForFaction(selectedParentFaction)
+  const totalSectorials = selectedScope.isParentFaction
+    ? getTotalSectorialsForFaction(selectedScope.parentFaction)
+    : 0
 
   return {
     knownArmyLists: lists.length,
     mostActivePlayer: mostActivePlayer.name,
     mostActivePlayerCount: mostActivePlayer.count,
-    mostPopularSectorial: mostPopularSectorial.name,
+    mostPopularSectorial: selectedScope.isParentFaction ? mostPopularSectorial.name : '',
     newestSubmission,
     players: players.size,
     sectorialCoverage: totalSectorials > 0 ? sectorials.size : 0,

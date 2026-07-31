@@ -185,6 +185,21 @@ assert.doesNotMatch(
 )
 assert.match(
   page,
+  /selectedExplorerScope[\s\S]*getSelectedExplorerScope\(selectedSectorial\)[\s\S]*selectedArmyListExplorerRows[\s\S]*explorerRowMatchesSelectedScope\(list, selectedExplorerScope\)[\s\S]*selectedFaction=\{selectedExplorerScope\.label \|\| selectedSectorial\}/,
+  'Army Intelligence Explorer must use the selected item scope for both rows and modal title.',
+)
+assert.match(
+  page,
+  /showFactionScopeStats=\{selectedExplorerScope\.isParentFaction\}[\s\S]*showFactionScopeStats \? \([\s\S]*Sectorials Represented[\s\S]*showFactionScopeStats && summary\.totalSectorials > 0[\s\S]*showFactionScopeStats \? \([\s\S]*Most Popular Sectorial/,
+  'Army Intelligence Explorer must hide faction-only statistics when the selected item is a sectorial.',
+)
+assert.doesNotMatch(
+  page,
+  /data\.armyLists\.filter\(\(list\) => getExplorerParentFaction\(list\) === selectedParentFaction\)/,
+  'Sectorial selections must not broaden explorer rows to the selected parent faction.',
+)
+assert.match(
+  page,
   /ArmyListExplorer[\s\S]*Known Army Lists[\s\S]*Players[\s\S]*Sectorials Represented[\s\S]*Sectorial Coverage[\s\S]*Newest Submission[\s\S]*Most Popular Sectorial[\s\S]*Most Submitted By/,
   'Army Intelligence page must expose an interactive Army List Explorer with summary statistics.',
 )
@@ -1382,6 +1397,90 @@ assert.ok(
   'Every Army List Explorer row must open through the existing army-list target.',
 )
 
+const alephExplorerRows = buildArmyListExplorerRowsFixture([
+  {
+    id: 10,
+    armyName: 'Vanilla ALEPH Control',
+    faction: 'ALEPH',
+    player: 'Vanilla Player',
+    points: 300,
+    sectorial: 'ALEPH',
+    submissionDate: '2026-07-20',
+    swc: 6,
+  },
+  {
+    id: 11,
+    armyName: 'Steel Assault',
+    faction: 'ALEPH',
+    player: 'Steel Player',
+    points: 300,
+    sectorial: 'Steel Phalanx',
+    submissionDate: '2026-07-21',
+    swc: 6,
+  },
+  {
+    id: 12,
+    armyName: 'OSS Net One',
+    faction: 'ALEPH',
+    player: 'OSS Player',
+    points: 300,
+    sectorial: 'Operations Subsection',
+    submissionDate: '2026-07-22',
+    swc: 6,
+  },
+  {
+    id: 13,
+    armyName: 'OSS Net Two',
+    faction: 'ALEPH',
+    player: 'OSS Player',
+    points: 295,
+    sectorial: 'Operations Subsection',
+    submissionDate: '2026-07-23',
+    swc: 5.5,
+  },
+])
+const alephScopeRows = selectExplorerRowsForScopeFixture(alephExplorerRows, 'ALEPH')
+const steelScopeRows = selectExplorerRowsForScopeFixture(alephExplorerRows, 'Steel Phalanx')
+const ossScopeRows = selectExplorerRowsForScopeFixture(alephExplorerRows, 'Operations Subsection')
+assert.deepEqual(
+  alephScopeRows.map((row) => row.armyName).sort(),
+  ['OSS Net One', 'OSS Net Two', 'Steel Assault', 'Vanilla ALEPH Control'],
+  'Selecting ALEPH must display ALEPH-wide Vanilla, Steel Phalanx, and Operations Subsection explorer rows.',
+)
+assert.deepEqual(
+  steelScopeRows.map((row) => row.sectorial),
+  ['Steel Phalanx'],
+  'Selecting Steel Phalanx must display only Steel Phalanx explorer rows.',
+)
+assert.ok(
+  steelScopeRows.every((row) => row.sectorial !== 'Operations Subsection'),
+  'Selecting Steel Phalanx must not show Operations Subsection rows.',
+)
+assert.deepEqual(
+  ossScopeRows.map((row) => row.sectorial),
+  ['Operations Subsection', 'Operations Subsection'],
+  'Selecting Operations Subsection must display only Operations Subsection explorer rows.',
+)
+assert.ok(
+  ossScopeRows.every((row) => row.sectorial !== 'Steel Phalanx'),
+  'Selecting Operations Subsection must not show Steel Phalanx rows.',
+)
+assert.equal(
+  buildArmyListExplorerSummaryFixture(steelScopeRows, '').knownArmyLists,
+  steelScopeRows.length,
+  'Known Army Lists must equal the displayed explorer rows for sectorial selections.',
+)
+assert.equal(
+  buildArmyListExplorerSummaryFixture(ossScopeRows, '').knownArmyLists,
+  ossScopeRows.length,
+  'Known Army Lists must equal the displayed explorer rows for Operations Subsection.',
+)
+assert.equal(
+  buildArmyListExplorerSummaryFixture(alephScopeRows, 'ALEPH').knownArmyLists,
+  alephScopeRows.length,
+  'Known Army Lists must equal the displayed explorer rows for parent faction selections.',
+)
+
 console.log('Army Intelligence Phase 1 checks passed.')
 
 function read(path) {
@@ -1414,6 +1513,30 @@ function buildArmyListExplorerRowsFixture(lists) {
     submissionDate: list.submissionDate,
     swc: list.swc,
   }))
+}
+
+function selectExplorerRowsForScopeFixture(rows, selectedItem) {
+  const scope = getSelectedExplorerScopeFixture(selectedItem)
+
+  return rows.filter((row) => {
+    if (scope.isParentFaction) {
+      return row.faction === scope.parentFaction
+    }
+
+    return row.sectorial === scope.label
+  })
+}
+
+function getSelectedExplorerScopeFixture(selectedItem) {
+  const label = String(selectedItem || '').trim()
+  const parentFaction = canonicalizeArmyParentFactionFixture(label)
+  const isParentFaction = parentFaction === label && ['ALEPH', 'Combined Army', 'O-12'].includes(label)
+
+  return {
+    isParentFaction,
+    label,
+    parentFaction,
+  }
 }
 
 function filterAndSortExplorerRowsFixture(rows, filters) {
@@ -1542,6 +1665,9 @@ function canonicalizeArmyParentFactionFixture(value) {
     nomads: 'Nomads',
     o12: 'O-12',
     starmada: 'O-12',
+    aleph: 'ALEPH',
+    steelphalanx: 'ALEPH',
+    operationssubsection: 'ALEPH',
     onyxcontactforce: 'Combined Army',
     morataggressionforce: 'Combined Army',
     shasvastiiexpeditionaryforce: 'Combined Army',
