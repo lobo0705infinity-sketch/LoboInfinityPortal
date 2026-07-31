@@ -1,4 +1,4 @@
-import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { type KeyboardEvent, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import InteractiveMetricCard from '../components/InteractiveMetricCard'
@@ -68,6 +68,9 @@ type UsageRow = {
   avaTaken?: number
   points?: number
   profile?: string
+  profileDisplayLabel?: string
+  profileKey?: string
+  profileLabel?: string
   skills?: string[]
   troopType?: string
   totalSelections: number
@@ -80,6 +83,14 @@ type ModelUsageAccumulator = Omit<UsageRow, 'equipment' | 'skills' | 'weapons'> 
   equipment: Set<string>
   skills: Set<string>
   weapons: Set<string>
+}
+
+type UsageGroup = {
+  listCount: number
+  name: string
+  percentage: number
+  profiles: UsageRow[]
+  totalSelections: number
 }
 
 type UniqueArmyIntelligenceList = ArmyIntelligenceList & {
@@ -283,6 +294,7 @@ function ArmyIntelligenceContent({
   const [selectedSectorial, setSelectedSectorial] = useState(requestedFaction)
   const [resultFilter, setResultFilter] = useState<AnalysisResultFilter>('all')
   const [modelEquipmentFilter, setModelEquipmentFilter] = useState('')
+  const [modelSearchFilter, setModelSearchFilter] = useState('')
   const [modelSkillFilter, setModelSkillFilter] = useState('')
   const [modelSort, setModelSort] = useState<ModelUsageSort>('alphabetical')
   const [modelTypeFilter, setModelTypeFilter] = useState('')
@@ -371,13 +383,14 @@ function ArmyIntelligenceContent({
         analysis.modelUsage,
         {
           equipment: modelEquipmentFilter,
+          search: modelSearchFilter,
           skill: modelSkillFilter,
           sort: modelSort,
           troopType: modelTypeFilter,
           weapon: modelWeaponFilter,
         },
     ),
-    [analysis.modelUsage, modelEquipmentFilter, modelSkillFilter, modelSort, modelTypeFilter, modelWeaponFilter],
+    [analysis.modelUsage, modelEquipmentFilter, modelSearchFilter, modelSkillFilter, modelSort, modelTypeFilter, modelWeaponFilter],
   )
 
   useEffect(() => {
@@ -697,6 +710,15 @@ function ArmyIntelligenceContent({
               </select>
             </label>
             <label>
+              <span>Search</span>
+              <input
+                onChange={(event) => setModelSearchFilter(event.target.value)}
+                placeholder="Troop or profile"
+                type="search"
+                value={modelSearchFilter}
+              />
+            </label>
+            <label>
               <span>Skill</span>
               <select onChange={(event) => setModelSkillFilter(event.target.value)} value={modelSkillFilter}>
                 <option value="">All Skills</option>
@@ -731,7 +753,12 @@ function ArmyIntelligenceContent({
             </label>
           </section>
 
-          <UsagePanel items={filteredModelUsage} title="Model Usage" variant="wide" />
+          <UsagePanel
+            items={filteredModelUsage}
+            search={modelSearchFilter}
+            title="Model Usage"
+            variant="wide"
+          />
 
           <section className="army-intelligence-grid" aria-label="Role usage breakdowns">
             <ResponsiveDisclosure title="Lieutenant Choices">
@@ -1047,16 +1074,39 @@ function ArmyListExplorer({
 
 function UsagePanel({
   items,
+  search = '',
   titleHidden,
   title,
   variant,
 }: {
   items: UsageRow[]
+  search?: string
   titleHidden?: boolean
   title: string
   variant?: 'wide'
 }) {
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(() => new Set())
   const visible = items.slice(0, variant === 'wide' ? 24 : 10)
+  const usageGroups = buildUsageGroups(items)
+  const shouldGroup = variant === 'wide' || usageGroups.some((group) => group.profiles.length > 1)
+  const visibleGroups = shouldGroup
+    ? usageGroups.slice(0, variant === 'wide' ? 24 : 10)
+    : []
+  const normalizedSearch = normalizeSearchToken(search)
+
+  function toggleGroup(name: string) {
+    setExpandedGroups((current) => {
+      const next = new Set(current)
+
+      if (next.has(name)) {
+        next.delete(name)
+      } else {
+        next.add(name)
+      }
+
+      return next
+    })
+  }
 
   return (
     <section
@@ -1066,8 +1116,84 @@ function UsagePanel({
       {!titleHidden && variant !== 'wide' ? (
         <h2 id={`${slugify(title)}-title`}>{title}</h2>
       ) : null}
-      {visible.length === 0 ? (
+      {items.length === 0 ? (
         <p>None</p>
+      ) : shouldGroup ? (
+        <div className="army-intelligence-usage-groups">
+          <div className="army-intelligence-usage-list army-intelligence-usage-list-header">
+            <span className="army-intelligence-profile-cell">Troop / Profile</span>
+            <strong>Selections</strong>
+            {variant === 'wide' ? <small className="army-intelligence-points-cell">Points</small> : null}
+            <small className="army-intelligence-lists-cell">Lists</small>
+            {variant === 'wide' ? <small className="army-intelligence-ava-cell">AVA Taken</small> : null}
+          </div>
+          {visibleGroups.map((group) => (
+            <div
+              className={`army-intelligence-usage-group${doesGroupNameMatchSearch(group, normalizedSearch) ? ' is-search-match' : ''}`}
+              data-open={isUsageGroupOpen(group, expandedGroups, normalizedSearch) ? 'true' : 'false'}
+              key={group.name}
+            >
+              <button
+                aria-controls={`${slugify(title)}-${slugify(group.name)}-profiles`}
+                aria-expanded={isUsageGroupOpen(group, expandedGroups, normalizedSearch)}
+                aria-label={`${group.name}, ${group.totalSelections} selections. ${isUsageGroupOpen(group, expandedGroups, normalizedSearch) ? 'Collapse' : 'Expand'} profiles.`}
+                className="army-intelligence-usage-group-summary"
+                onClick={() => toggleGroup(group.name)}
+                onKeyDown={handleUsageGroupKeyDown}
+                type="button"
+              >
+                <span className="army-intelligence-profile-cell">
+                  <span>{group.name} ({group.totalSelections})</span>
+                  <small>{group.profiles.length} profiles</small>
+                </span>
+                <strong>{group.totalSelections}</strong>
+                {variant === 'wide' ? <small className="army-intelligence-points-cell">-</small> : null}
+                <small className="army-intelligence-lists-cell">
+                  {variant === 'wide'
+                    ? `${group.listCount} lists`
+                    : `${group.listCount} lists / ${formatNumber(group.percentage)}%`}
+                </small>
+                {variant === 'wide' ? (
+                  <small className="army-intelligence-ava-cell">
+                    {formatNumber(group.percentage)}%
+                  </small>
+                ) : null}
+              </button>
+              <ol
+                className="army-intelligence-usage-list army-intelligence-profile-usage-list"
+                hidden={!isUsageGroupOpen(group, expandedGroups, normalizedSearch)}
+                id={`${slugify(title)}-${slugify(group.name)}-profiles`}
+              >
+                {group.profiles.map((item) => (
+                  <li key={`${item.profileKey ?? item.profile ?? item.name}|${item.points ?? ''}|${item.troopType ?? ''}`}>
+                    <span className="army-intelligence-profile-cell">
+                      <span>{item.profileDisplayLabel || item.profileLabel || formatModelUsageName(item)}</span>
+                      {variant !== 'wide' && typeof item.points === 'number' ? (
+                        <small className="army-intelligence-points-cell">{item.points} pts</small>
+                      ) : null}
+                    </span>
+                    <strong>{item.totalSelections}</strong>
+                    {variant === 'wide' ? (
+                      <small className="army-intelligence-points-cell">
+                        {typeof item.points === 'number' ? `${item.points} pts` : '0 pts'}
+                      </small>
+                    ) : null}
+                    <small className="army-intelligence-lists-cell">
+                      {variant === 'wide'
+                        ? `${item.listCount} lists`
+                        : `${item.listCount} lists / ${formatNumber(item.percentage)}%`}
+                    </small>
+                    {variant === 'wide' ? (
+                      <small className="army-intelligence-ava-cell">
+                        {formatAvaTaken(item.avaTaken)} / {formatNumber(item.percentage)}%
+                      </small>
+                    ) : null}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ))}
+        </div>
       ) : (
         <ol className="army-intelligence-usage-list">
           <li className="army-intelligence-usage-list-header">
@@ -1078,7 +1204,7 @@ function UsagePanel({
             {variant === 'wide' ? <small className="army-intelligence-ava-cell">AVA Taken</small> : null}
           </li>
           {visible.map((item) => (
-            <li key={`${item.name}|${item.profile ?? ''}|${item.points ?? ''}|${item.troopType ?? ''}`}>
+            <li key={`${item.profileKey ?? item.name}|${item.profile ?? ''}|${item.points ?? ''}|${item.troopType ?? ''}`}>
               <span className="army-intelligence-profile-cell">
                 <span>{formatModelUsageName(item)}</span>
                 {variant !== 'wide' && typeof item.points === 'number' ? (
@@ -1543,17 +1669,21 @@ function filterAndSortModelUsage(
   rows: UsageRow[],
   filters: {
     equipment: string
+    search?: string
     skill: string
     sort: ModelUsageSort
     troopType: string
     weapon: string
   },
 ) {
+  const query = normalizeSearchToken(filters.search ?? '')
+
   return rows
     .filter((row) => !filters.troopType || row.troopType === filters.troopType)
     .filter((row) => !filters.skill || rowSkills(row).includes(filters.skill))
     .filter((row) => !filters.weapon || rowWeapons(row).includes(filters.weapon))
     .filter((row) => !filters.equipment || rowEquipment(row).includes(filters.equipment))
+    .filter((row) => !query || doesUsageRowMatchSearch(row, query))
     .sort((left, right) => compareModelUsageRows(left, right, filters.sort))
 }
 
@@ -1564,12 +1694,13 @@ function buildModelUsageRows(entriesByList: ArmyIntelligenceDecodedEntry[][]): U
   entriesByList.forEach((entries, listIndex) => {
     entries.forEach((entry) => {
       const name = getModelName(entry)
+      const profileKey = getProfileAggregationKey(entry)
 
-      if (!name) {
+      if (!name || !profileKey) {
         return
       }
 
-      const key = [name, entry.profile, entry.points, entry.troopType].join('|')
+      const key = [profileKey, entry.points, entry.troopType].join('|')
       const row = rowsByKey.get(key) ?? {
         equipment: new Set<string>(),
         listCount: 0,
@@ -1577,6 +1708,9 @@ function buildModelUsageRows(entriesByList: ArmyIntelligenceDecodedEntry[][]): U
         percentage: 0,
         points: entry.points,
         profile: entry.profile,
+        profileDisplayLabel: getProfileDisplayLabel(entry),
+        profileKey,
+        profileLabel: getProfileDisplayLabel(entry),
         skills: new Set<string>(),
         totalSelections: 0,
         troopType: entry.troopType,
@@ -1608,6 +1742,9 @@ function buildModelUsageRows(entriesByList: ArmyIntelligenceDecodedEntry[][]): U
         : 0,
       points: row.points,
       profile: row.profile,
+      profileDisplayLabel: row.profileDisplayLabel,
+      profileKey: row.profileKey,
+      profileLabel: row.profileLabel,
       skills: Array.from(row.skills).sort((left, right) => left.localeCompare(right)),
       totalSelections: row.totalSelections,
       troopType: row.troopType,
@@ -1664,37 +1801,66 @@ function buildUsageRows(
   entriesByList: ArmyIntelligenceDecodedEntry[][],
   predicate: (entry: ArmyIntelligenceDecodedEntry) => boolean = () => true,
 ): UsageRow[] {
-  const totalSelections = new Map<string, number>()
-  const listAppearances = new Map<string, number>()
+  const rowsByKey = new Map<string, ModelUsageAccumulator>()
+  const listAppearances = new Map<string, Set<number>>()
 
-  entriesByList.forEach((entries) => {
+  entriesByList.forEach((entries, listIndex) => {
     const seenInList = new Set<string>()
 
     entries.filter(predicate).forEach((entry) => {
       const name = getModelName(entry)
+      const profileKey = getProfileAggregationKey(entry)
 
-      if (!name) {
+      if (!name || !profileKey) {
         return
       }
 
-      totalSelections.set(name, (totalSelections.get(name) ?? 0) + 1)
-      seenInList.add(name)
+      const row = rowsByKey.get(profileKey) ?? {
+        equipment: new Set<string>(),
+        listCount: 0,
+        name,
+        percentage: 0,
+        points: entry.points,
+        profile: entry.profile,
+        profileDisplayLabel: getProfileDisplayLabel(entry),
+        profileKey,
+        profileLabel: getProfileDisplayLabel(entry),
+        skills: new Set<string>(),
+        totalSelections: 0,
+        troopType: entry.troopType,
+        weapons: new Set<string>(),
+      }
+
+      row.totalSelections += 1
+      rowsByKey.set(profileKey, row)
+      seenInList.add(profileKey)
     })
 
-    seenInList.forEach((name) => {
-      listAppearances.set(name, (listAppearances.get(name) ?? 0) + 1)
+    seenInList.forEach((profileKey) => {
+      const appearances = listAppearances.get(profileKey) ?? new Set<number>()
+      appearances.add(listIndex)
+      listAppearances.set(profileKey, appearances)
     })
   })
 
-  return Array.from(totalSelections.entries())
-    .map(([name, total]) => {
-      const listCount = listAppearances.get(name) ?? 0
+  return Array.from(rowsByKey.entries())
+    .map(([profileKey, row]) => {
+      const listCount = listAppearances.get(profileKey)?.size ?? 0
 
       return {
+        equipment: Array.from(row.equipment),
         listCount,
-        name,
+        name: row.name,
         percentage: entriesByList.length ? (listCount / entriesByList.length) * 100 : 0,
-        totalSelections: total,
+        points: row.points,
+        profile: row.profile,
+        profileDisplayLabel: row.profileDisplayLabel,
+        profileKey,
+        profileLabel: row.profileLabel,
+        skills: Array.from(row.skills),
+        totalSelections: row.totalSelections,
+        troopType: row.troopType,
+        weapons: Array.from(row.weapons),
       }
     })
     .sort(
@@ -1707,6 +1873,245 @@ function buildUsageRows(
 
 function getModelName(entry: ArmyIntelligenceDecodedEntry) {
   return (entry.unit || entry.profile).trim()
+}
+
+function getProfileAggregationKey(entry: ArmyIntelligenceDecodedEntry) {
+  return (entry.profile || entry.unit).trim()
+}
+
+function getProfileDisplayLabel(entry: ArmyIntelligenceDecodedEntry) {
+  const name = getModelName(entry)
+  const profile = (entry.profile || name).trim()
+  return removeTroopNamePrefix(profile, name)
+}
+
+function removeTroopNamePrefix(profile: string, troopName: string) {
+  const trimmedProfile = profile.trim()
+  const trimmedTroopName = troopName.trim()
+
+  if (!trimmedProfile || !trimmedTroopName || trimmedProfile === trimmedTroopName) {
+    return trimmedProfile || trimmedTroopName
+  }
+
+  const normalizedName = trimmedTroopName.toLocaleLowerCase()
+  const normalizedProfile = trimmedProfile.toLocaleLowerCase()
+
+  if (normalizedProfile.startsWith(normalizedName)) {
+    return trimProfileLabelSeparator(trimmedProfile.slice(trimmedTroopName.length)) || trimmedTroopName
+  }
+
+  return trimmedProfile
+}
+
+function trimProfileLabelSeparator(value: string) {
+  let start = 0
+  let end = value.length
+
+  while (start < end && isProfileLabelSeparator(value[start])) {
+    start += 1
+  }
+
+  while (end > start && isProfileLabelSeparator(value[end - 1])) {
+    end -= 1
+  }
+
+  return value.slice(start, end)
+}
+
+function isProfileLabelSeparator(value: string) {
+  return value === ' ' || value === '-' || value === ':' || value === '/'
+}
+
+function buildUsageGroups(rows: UsageRow[]): UsageGroup[] {
+  const groups = new Map<string, UsageGroup>()
+
+  rows.forEach((row) => {
+    const current = groups.get(row.name) ?? {
+      listCount: 0,
+      name: row.name,
+      percentage: 0,
+      profiles: [],
+      totalSelections: 0,
+    }
+
+    current.profiles.push(row)
+    current.totalSelections += row.totalSelections
+    current.listCount = Math.max(current.listCount, row.listCount)
+    current.percentage = Math.max(current.percentage, row.percentage)
+    groups.set(row.name, current)
+  })
+
+  return Array.from(groups.values())
+    .map((group) => ({
+      ...group,
+      profiles: resolveUniqueProfileDisplayLabels(group.profiles, group.name).sort(compareUsageGroupProfiles),
+    }))
+    .sort(
+      (left, right) =>
+        right.totalSelections - left.totalSelections ||
+        right.listCount - left.listCount ||
+        left.name.localeCompare(right.name),
+    )
+}
+
+function compareUsageGroupProfiles(left: UsageRow, right: UsageRow) {
+  return right.totalSelections - left.totalSelections ||
+    right.listCount - left.listCount ||
+    getUsageProfileDisplayLabel(left).localeCompare(getUsageProfileDisplayLabel(right))
+}
+
+function resolveUniqueProfileDisplayLabels(rows: UsageRow[], troopName: string) {
+  const rowsWithBaseLabels = rows.map((row) => ({
+    baseLabel: getUsageProfileBaseLabel(row, troopName),
+    row,
+  }))
+  const duplicateCounts = countNormalizedLabels(rowsWithBaseLabels.map((item) => item.baseLabel))
+
+  return rowsWithBaseLabels.map(({ baseLabel, row }) => {
+    if ((duplicateCounts.get(normalizeSearchToken(baseLabel)) ?? 0) <= 1) {
+      return {
+        ...row,
+        profileDisplayLabel: baseLabel,
+      }
+    }
+
+    return {
+      ...row,
+      profileDisplayLabel: getShortestUniqueProfileDisplayLabel(row, rows, troopName, baseLabel),
+    }
+  })
+}
+
+function countNormalizedLabels(labels: string[]) {
+  const counts = new Map<string, number>()
+
+  labels.forEach((label) => {
+    const key = normalizeSearchToken(label)
+    counts.set(key, (counts.get(key) ?? 0) + 1)
+  })
+
+  return counts
+}
+
+function getUsageProfileBaseLabel(row: UsageRow, troopName: string) {
+  const canonicalProfile = (row.profileKey || row.profile || row.profileLabel || row.name).trim()
+  return removeTroopNamePrefix(canonicalProfile, troopName)
+}
+
+function getShortestUniqueProfileDisplayLabel(
+  row: UsageRow,
+  rows: UsageRow[],
+  troopName: string,
+  baseLabel: string,
+) {
+  const candidates = buildProfileDisplayLabelCandidates(row, troopName, baseLabel)
+
+  return candidates.find((candidate) =>
+    rows.every((other) =>
+      other === row ||
+      !buildProfileDisplayLabelCandidates(other, troopName, getUsageProfileBaseLabel(other, troopName))
+        .some((otherCandidate) => normalizeSearchToken(otherCandidate) === normalizeSearchToken(candidate)),
+    ),
+  ) ?? candidates[candidates.length - 1] ?? baseLabel
+}
+
+function buildProfileDisplayLabelCandidates(row: UsageRow, troopName: string, baseLabel: string) {
+  const labels: string[] = [baseLabel]
+  const metadataTokens = getProfileMetadataTokens(row)
+
+  metadataTokens.forEach((_, index) => {
+    labels.push(`${baseLabel} (${metadataTokens.slice(0, index + 1).join(', ')})`)
+  })
+
+  const canonicalProfile = removeTroopNamePrefix((row.profileKey || row.profile || '').trim(), troopName)
+  if (canonicalProfile && !labels.some((label) => normalizeSearchToken(label) === normalizeSearchToken(canonicalProfile))) {
+    labels.push(canonicalProfile)
+  }
+
+  if (typeof row.points === 'number') {
+    labels.push(`${baseLabel} (${row.points} pts)`)
+  }
+
+  if (row.troopType) {
+    labels.push(`${baseLabel} (${row.troopType})`)
+  }
+
+  const stableKeyParts = [row.profileKey, row.points, row.troopType]
+    .filter((value) => value !== undefined && value !== '')
+
+  if (stableKeyParts.length > 0) {
+    labels.push(`${baseLabel} (${stableKeyParts.join(', ')})`)
+  }
+
+  return labels
+}
+
+function getProfileMetadataTokens(row: UsageRow) {
+  const tokens = new Set<string>()
+
+  ;[row.weapons ?? [], row.equipment ?? [], row.skills ?? []].forEach((group) => {
+    group
+      .map((token) => token.trim())
+      .filter(Boolean)
+      .sort((left, right) => left.localeCompare(right))
+      .forEach((token) => tokens.add(token))
+  })
+
+  return Array.from(tokens)
+}
+
+function getUsageProfileDisplayLabel(row: UsageRow) {
+  return row.profileDisplayLabel || row.profileLabel || formatModelUsageName(row)
+}
+
+function isUsageGroupOpen(
+  group: UsageGroup,
+  expandedGroups: Set<string>,
+  normalizedSearch: string,
+) {
+  return expandedGroups.has(group.name) ||
+    (Boolean(normalizedSearch) && group.profiles.some((row) => doesProfileRowMatchSearch(row, normalizedSearch)))
+}
+
+function doesUsageRowMatchSearch(row: UsageRow, normalizedSearch: string) {
+  return normalizeSearchToken(row.name).includes(normalizedSearch) ||
+    doesProfileRowMatchSearch(row, normalizedSearch)
+}
+
+function doesProfileRowMatchSearch(row: UsageRow, normalizedSearch: string) {
+  return normalizeSearchToken(row.profileDisplayLabel ?? '').includes(normalizedSearch) ||
+    normalizeSearchToken(row.profileLabel ?? '').includes(normalizedSearch) ||
+    normalizeSearchToken(row.profile ?? '').includes(normalizedSearch) ||
+    normalizeSearchToken(formatModelUsageName(row)).includes(normalizedSearch) ||
+    getProfileMetadataTokens(row).some((token) => normalizeSearchToken(token).includes(normalizedSearch))
+}
+
+function doesGroupNameMatchSearch(group: UsageGroup, normalizedSearch: string) {
+  return Boolean(normalizedSearch) && normalizeSearchToken(group.name).includes(normalizedSearch)
+}
+
+function normalizeSearchToken(value: string) {
+  return value.trim().toLocaleLowerCase()
+}
+
+function handleUsageGroupKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
+  if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') {
+    return
+  }
+
+  const buttons = Array.from(
+    document.querySelectorAll<HTMLButtonElement>('.army-intelligence-usage-group-summary'),
+  )
+  const currentIndex = buttons.indexOf(event.currentTarget)
+
+  if (currentIndex === -1) {
+    return
+  }
+
+  event.preventDefault()
+  const offset = event.key === 'ArrowDown' ? 1 : -1
+  const nextIndex = (currentIndex + offset + buttons.length) % buttons.length
+  buttons[nextIndex]?.focus()
 }
 
 function countTacticalAwarenessOrders(entry: ArmyIntelligenceDecodedEntry) {

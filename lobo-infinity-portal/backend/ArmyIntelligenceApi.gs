@@ -573,8 +573,7 @@ function collectArmyIntelligenceUnits(accumulator, list) {
   groups.forEach(function(group) {
     (group.entries || []).forEach(function(entry) {
       const label =
-        getArmyIntelligenceString(entry.unit) ||
-        getArmyIntelligenceString(entry.profile) ||
+        getArmyIntelligenceProfileAggregationLabel(entry) ||
         "Unknown";
 
       incrementArmyIntelligenceCount(accumulator.units, label);
@@ -592,6 +591,15 @@ function collectArmyIntelligenceUnits(accumulator, list) {
         incrementArmyIntelligenceCount(accumulator.doctorsEngineers, label);
     });
   });
+
+}
+
+function getArmyIntelligenceProfileAggregationLabel(entry) {
+
+  return (
+    getArmyIntelligenceString(entry && entry.profile) ||
+    getArmyIntelligenceString(entry && entry.unit)
+  );
 
 }
 

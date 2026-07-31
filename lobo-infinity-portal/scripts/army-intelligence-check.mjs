@@ -70,6 +70,31 @@ assert.match(
 )
 assert.match(
   page,
+  /getProfileAggregationKey\(entry\)[\s\S]*entry\.profile/,
+  'Army Intelligence profile aggregation must use the decoded profile identity.',
+)
+assert.match(
+  page,
+  /buildUsageGroups[\s\S]*army-intelligence-usage-group[\s\S]*profileLabel/,
+  'Model Usage must group decoded profile rows beneath troop names.',
+)
+assert.match(
+  page,
+  /aria-expanded[\s\S]*handleUsageGroupKeyDown[\s\S]*ArrowDown[\s\S]*ArrowUp/,
+  'Model Usage troop groups must be accessible expandable controls with arrow-key navigation.',
+)
+assert.match(
+  page,
+  /modelSearchFilter[\s\S]*doesUsageRowMatchSearch[\s\S]*doesProfileRowMatchSearch/,
+  'Model Usage search must preserve troop/profile hierarchy instead of flattening decoded profiles.',
+)
+assert.match(
+  backend,
+  /getArmyIntelligenceProfileAggregationLabel[\s\S]*entry && entry\.profile/,
+  'Backend Army Intelligence summary counts must prefer decoded profile labels over troop names.',
+)
+assert.match(
+  page,
   /isAllowedArmyIntelligenceSource[\s\S]*league[\s\S]*casual[\s\S]*tournament/,
   'Army Intelligence page must analyze only League, Casual, and Tournament sources.',
 )
@@ -167,6 +192,11 @@ assert.match(
   appCss,
   /\.army-intelligence-metric small[\s\S]*grid-column: 2[\s\S]*line-height: 1\.2[\s\S]*@media[\s\S]*\.army-intelligence-metric small/,
   'Clickable metric helper text must render in the card and remain available in the mobile layout.',
+)
+assert.match(
+  appCss,
+  /army-intelligence-profile-usage-list\[hidden\][\s\S]*display:\s*none/,
+  'Collapsed troop groups must hide profile rows even though usage lists use grid layout.',
 )
 assert.match(
   page,
@@ -662,6 +692,55 @@ const uniqueSubmittedWinningAnalysis = buildFixtureAnalysis(
 const uniqueSubmittedLosingAnalysis = buildFixtureAnalysis(
   uniqueSubmittedLists.filter((list) => matchesResultFilter(list, 'losing')),
 )
+const profileSplitRows = buildModelUsageRows([
+  [
+    buildProfileEntry('DASYU', 'DASYU Hacker', 34, 'MI', { skills: ['Hacker'] }),
+    buildProfileEntry('DASYU', 'DASYU Minelayer', 31, 'MI', { equipment: ['Mine Dispenser'] }),
+    buildProfileEntry('DIKPALA', 'DIKPALA Heavy Machine Gun', 49, 'TAG'),
+    buildProfileEntry('ASURA', 'ASURA Hacker', 68, 'HI', { skills: ['Hacker'] }),
+  ],
+  [
+    buildProfileEntry('DASYU', 'DASYU Hacker', 34, 'MI', { skills: ['Hacker'] }),
+    buildProfileEntry('DASYU', 'DASYU MULTI Sniper', 42, 'MI', { weapons: ['MULTI Sniper Rifle'] }),
+    buildProfileEntry('DIKPALA', 'DIKPALA MULTI Marksman Rifle', 46, 'TAG'),
+    buildProfileEntry('ASURA', 'ASURA Lieutenant', 65, 'HI', { lieutenant: true }),
+  ],
+  [
+    buildProfileEntry('DASYU', 'DASYU Minelayer', 31, 'MI', { equipment: ['Mine Dispenser'] }),
+    buildProfileEntry('DIKPALA', 'DIKPALA Heavy Machine Gun', 49, 'TAG'),
+    buildProfileEntry('ASURA', 'ASURA Hacker', 68, 'HI', { skills: ['Hacker'] }),
+  ],
+])
+const profileSplitGroups = buildUsageGroups(profileSplitRows)
+const genericProfileRows = buildModelUsageRows([
+  [
+    buildProfileEntry('Example Trooper', 'Example Trooper Hacker', 20, 'LI', {
+      equipment: ['Assault Hacking Device'],
+      skills: ['Hacker'],
+    }),
+    buildProfileEntry('Example Trooper', 'Hacker', 21, 'LI', {
+      equipment: ['Killer Hacking Device'],
+      skills: ['Hacker'],
+    }),
+    buildProfileEntry('Future Release Unit', 'Future Release Unit Long Range Profile', 32, 'MI', {
+      weapons: ['Precision Rifle'],
+    }),
+  ],
+  [
+    buildProfileEntry('Example Trooper', 'Example Trooper Hacker', 20, 'LI', {
+      equipment: ['Assault Hacking Device'],
+      skills: ['Hacker'],
+    }),
+    buildProfileEntry('Example Trooper', 'Hacker', 21, 'LI', {
+      equipment: ['Killer Hacking Device'],
+      skills: ['Hacker'],
+    }),
+    buildProfileEntry('Future Release Unit', 'Future Release Unit Long Range Profile', 32, 'MI', {
+      weapons: ['Precision Rifle'],
+    }),
+  ],
+])
+const genericProfileGroups = buildUsageGroups(genericProfileRows)
 const remRows = filterAndSortModelUsage(typeSkillAnalysis.modelUsage, {
   skill: '',
   sort: 'alphabetical',
@@ -780,12 +859,168 @@ assert.deepEqual(
     percentage: 50,
     points: undefined,
     profile: 'NETROD',
+    profileDisplayLabel: 'NETROD',
+    profileKey: 'NETROD',
+    profileLabel: 'NETROD',
     skills: [],
     totalSelections: 2,
     troopType: undefined,
     weapons: [],
   },
   'Duplicate models must count twice for selections but once for list appearance.',
+)
+assert.deepEqual(
+  profileSplitRows
+    .filter((row) => row.name === 'DASYU')
+    .map((row) => [row.profile, row.totalSelections])
+    .sort((left, right) => String(left[0]).localeCompare(String(right[0]))),
+  [
+    ['DASYU Hacker', 2],
+    ['DASYU Minelayer', 2],
+    ['DASYU MULTI Sniper', 1],
+  ],
+  'Dasyu Hacker, Minelayer, and MULTI Sniper profiles must not merge by troop name.',
+)
+assert.deepEqual(
+  profileSplitRows
+    .filter((row) => row.name === 'DIKPALA')
+    .map((row) => [row.profile, row.totalSelections])
+    .sort((left, right) => String(left[0]).localeCompare(String(right[0]))),
+  [
+    ['DIKPALA Heavy Machine Gun', 2],
+    ['DIKPALA MULTI Marksman Rifle', 1],
+  ],
+  'Dikpala profiles must not merge by troop name.',
+)
+assert.deepEqual(
+  profileSplitRows
+    .filter((row) => row.name === 'ASURA')
+    .map((row) => [row.profile, row.totalSelections])
+    .sort((left, right) => String(left[0]).localeCompare(String(right[0]))),
+  [
+    ['ASURA Hacker', 2],
+    ['ASURA Lieutenant', 1],
+  ],
+  'Different Asura profiles must not merge by troop name.',
+)
+assert.equal(
+  profileSplitGroups.find((group) => group.name === 'DASYU')?.totalSelections,
+  profileSplitRows
+    .filter((row) => row.name === 'DASYU')
+    .reduce((total, row) => total + row.totalSelections, 0),
+  'Grouped troop totals must equal their decoded profile row totals.',
+)
+assert.deepEqual(
+  profileSplitGroups.find((group) => group.name === 'DASYU')?.profiles.map((row) => row.profile),
+  ['DASYU Hacker', 'DASYU Minelayer', 'DASYU MULTI Sniper'],
+  'Profiles within a troop group must sort by selections descending by default.',
+)
+assert.deepEqual(
+  profileSplitGroups.map((group) => group.name),
+  ['DASYU', 'ASURA', 'DIKPALA'],
+  'Troop groups must sort by total selections descending with stable secondary sorting.',
+)
+const hackerSearchGroups = buildUsageGroups(filterAndSortModelUsage(profileSplitRows, {
+  equipment: '',
+  search: 'Hacker',
+  skill: '',
+  sort: 'alphabetical',
+  troopType: '',
+  weapon: '',
+}))
+assert.deepEqual(
+  hackerSearchGroups.map((group) => [group.name, group.profiles.map((row) => row.profile)]),
+  [
+    ['ASURA', ['ASURA Hacker']],
+    ['DASYU', ['DASYU Hacker']],
+  ],
+  'Searching for a profile must reveal only matching decoded profiles beneath their troop groups.',
+)
+assert.equal(
+  hackerSearchGroups.every((group) => isUsageGroupOpen(group, new Set(), 'hacker')),
+  true,
+  'Searching for a profile must auto-expand matching troop groups.',
+)
+const dasyuSearchGroups = buildUsageGroups(filterAndSortModelUsage(profileSplitRows, {
+  equipment: '',
+  search: 'Dasyu',
+  skill: '',
+  sort: 'alphabetical',
+  troopType: '',
+  weapon: '',
+}))
+assert.deepEqual(
+  dasyuSearchGroups.map((group) => [group.name, group.profiles.length, doesGroupNameMatchSearch(group, 'dasyu')]),
+  [['DASYU', 3, true]],
+  'Searching for a troop name must retain the troop hierarchy and mark the troop row as a search match.',
+)
+const minelayerSearchGroups = buildUsageGroups(filterAndSortModelUsage(profileSplitRows, {
+  equipment: '',
+  search: 'Minelayer',
+  skill: '',
+  sort: 'alphabetical',
+  troopType: '',
+  weapon: '',
+}))
+assert.deepEqual(
+  minelayerSearchGroups.map((group) => [group.name, group.profiles.map((row) => row.profile)]),
+  [['DASYU', ['DASYU Minelayer']]],
+  'Searching for a specific profile must not show sibling profiles in the same troop group.',
+)
+const mineDispenserGroups = buildUsageGroups(filterAndSortModelUsage(profileSplitRows, {
+  equipment: 'Mine Dispenser',
+  search: '',
+  skill: '',
+  sort: 'alphabetical',
+  troopType: '',
+  weapon: '',
+}))
+assert.deepEqual(
+  mineDispenserGroups.map((group) => [group.name, group.profiles.map((row) => row.profile)]),
+  [['DASYU', ['DASYU Minelayer']]],
+  'Model usage filters must preserve hierarchy and hide troop groups without matching profiles.',
+)
+const exampleTrooperGroup = genericProfileGroups.find((group) => group.name === 'Example Trooper')
+assert.ok(exampleTrooperGroup, 'Generic profile fixture must produce a troop group.')
+assert.deepEqual(
+  exampleTrooperGroup.profiles.map((row) => row.profileKey),
+  ['Example Trooper Hacker', 'Hacker'],
+  'Generic profile label disambiguation must not change canonical decoded aggregation keys.',
+)
+assert.equal(
+  new Set(exampleTrooperGroup.profiles.map((row) => row.profileDisplayLabel)).size,
+  exampleTrooperGroup.profiles.length,
+  'Every displayed profile label must be unique within its troop group.',
+)
+assert.deepEqual(
+  exampleTrooperGroup.profiles.map((row) => row.profileDisplayLabel),
+  ['Hacker (Assault Hacking Device)', 'Hacker (Killer Hacking Device)'],
+  'Duplicate concise profile labels must expand only as far as needed using canonical decoded metadata.',
+)
+assert.deepEqual(
+  buildUsageGroups(filterAndSortModelUsage(genericProfileRows, {
+    equipment: '',
+    search: 'Killer Hacking Device',
+    skill: '',
+    sort: 'alphabetical',
+    troopType: '',
+    weapon: '',
+  })).map((group) => [group.name, group.profiles.map((row) => row.profileDisplayLabel)]),
+  [['Example Trooper', ['Hacker']]],
+  'Searching by decoded disambiguation metadata must reveal the matching profile before group labels are resolved.',
+)
+const futureReleaseGroup = genericProfileGroups.find((group) => group.name === 'Future Release Unit')
+assert.deepEqual(
+  futureReleaseGroup?.profiles.map((row) => row.profileDisplayLabel),
+  ['Long Range Profile'],
+  'New decoded profiles must automatically remove repeated troop context without manual mappings.',
+)
+assert.equal(
+  genericProfileGroups.flatMap((group) => group.profiles).some((row) =>
+    row.profileDisplayLabel !== row.name && row.profileDisplayLabel?.startsWith(`${row.name} `),
+  ),
+  false,
+  'Troop names must not be unnecessarily repeated in displayed profile labels.',
 )
 assert.equal(
   duplicateSourceFixtureLists.filter((list) => list.sourceType === 'armyLibrary').length,
@@ -827,6 +1062,9 @@ assert.deepEqual(
     percentage: 100,
     points: undefined,
     profile: 'ASURA Hacker',
+    profileDisplayLabel: 'Hacker',
+    profileKey: 'ASURA Hacker',
+    profileLabel: 'Hacker',
     skills: ['Hacker'],
     totalSelections: 2,
     troopType: 'HI',
@@ -2001,11 +2239,14 @@ function formatModelUsageName(item) {
 }
 
 function filterAndSortModelUsage(rows, filters) {
+  const query = normalizeSearchToken(filters.search || '')
+
   return rows
     .filter((row) => !filters.troopType || row.troopType === filters.troopType)
     .filter((row) => !filters.skill || row.skills.includes(filters.skill))
     .filter((row) => !filters.weapon || row.weapons.includes(filters.weapon))
     .filter((row) => !filters.equipment || row.equipment.includes(filters.equipment))
+    .filter((row) => !query || doesUsageRowMatchSearch(row, query))
     .sort((left, right) => compareModelUsageRows(left, right, filters.sort))
 }
 
@@ -2027,7 +2268,8 @@ function buildModelUsageRows(entriesByList) {
 
   entriesByList.forEach((entries, listIndex) => {
     entries.forEach((entry) => {
-      const key = [entry.unit, entry.profile, entry.points, entry.troopType].join('|')
+      const profileKey = getProfileAggregationKey(entry)
+      const key = [profileKey, entry.points, entry.troopType].join('|')
       const row = rowsByKey.get(key) || {
         equipment: new Set(),
         listCount: 0,
@@ -2035,6 +2277,9 @@ function buildModelUsageRows(entriesByList) {
         percentage: 0,
         points: entry.points,
         profile: entry.profile,
+        profileDisplayLabel: getProfileDisplayLabel(entry),
+        profileKey,
+        profileLabel: getProfileDisplayLabel(entry),
         skills: new Set(),
         totalSelections: 0,
         troopType: entry.troopType,
@@ -2064,12 +2309,36 @@ function buildModelUsageRows(entriesByList) {
       percentage: entriesByList.length ? ((listAppearances.get(key)?.size || 0) / entriesByList.length) * 100 : 0,
       points: row.points,
       profile: row.profile,
+      profileDisplayLabel: row.profileDisplayLabel,
+      profileKey: row.profileKey,
+      profileLabel: row.profileLabel,
       skills: Array.from(row.skills).sort((left, right) => left.localeCompare(right)),
       totalSelections: row.totalSelections,
       troopType: row.troopType,
       weapons: Array.from(row.weapons).sort((left, right) => left.localeCompare(right)),
     }))
     .sort((left, right) => compareModelUsageRows(left, right, 'alphabetical'))
+}
+
+function buildProfileEntry(unit, profile, points, troopType, overrides = {}) {
+  return {
+    chainOfCommand: false,
+    doctor: false,
+    engineer: false,
+    equipment: [],
+    forwardObserver: false,
+    hacker: false,
+    lieutenant: false,
+    orderTypes: [],
+    points,
+    profile,
+    skills: [],
+    specialist: false,
+    troopType,
+    unit,
+    weapons: [],
+    ...overrides,
+  }
 }
 
 function compareModelUsageRows(left, right, sort) {
@@ -2086,31 +2355,60 @@ function compareModelUsageRows(left, right, sort) {
 }
 
 function buildUsageRows(entriesByList, predicate = () => true) {
-  const totalSelections = new Map()
+  const rowsByKey = new Map()
   const listAppearances = new Map()
 
-  entriesByList.forEach((entries) => {
+  entriesByList.forEach((entries, listIndex) => {
     const seenInList = new Set()
 
     entries.filter(predicate).forEach((entry) => {
-      totalSelections.set(entry.unit, (totalSelections.get(entry.unit) ?? 0) + 1)
-      seenInList.add(entry.unit)
+      const profileKey = getProfileAggregationKey(entry)
+      const row = rowsByKey.get(profileKey) || {
+        equipment: new Set(),
+        listCount: 0,
+        name: entry.unit,
+        percentage: 0,
+        points: entry.points,
+        profile: entry.profile,
+        profileDisplayLabel: getProfileDisplayLabel(entry),
+        profileKey,
+        profileLabel: getProfileDisplayLabel(entry),
+        skills: new Set(),
+        totalSelections: 0,
+        troopType: entry.troopType,
+        weapons: new Set(),
+      }
+
+      row.totalSelections += 1
+      rowsByKey.set(profileKey, row)
+      seenInList.add(profileKey)
     })
 
-    seenInList.forEach((name) => {
-      listAppearances.set(name, (listAppearances.get(name) ?? 0) + 1)
+    seenInList.forEach((profileKey) => {
+      const appearances = listAppearances.get(profileKey) || new Set()
+      appearances.add(listIndex)
+      listAppearances.set(profileKey, appearances)
     })
   })
 
-  return Array.from(totalSelections.entries())
-    .map(([name, totalSelections]) => {
-      const listCount = listAppearances.get(name) ?? 0
+  return Array.from(rowsByKey.entries())
+    .map(([profileKey, row]) => {
+      const listCount = listAppearances.get(profileKey)?.size ?? 0
 
       return {
+        equipment: Array.from(row.equipment),
         listCount,
-        name,
+        name: row.name,
         percentage: entriesByList.length ? (listCount / entriesByList.length) * 100 : 0,
-        totalSelections,
+        points: row.points,
+        profile: row.profile,
+        profileDisplayLabel: row.profileDisplayLabel,
+        profileKey,
+        profileLabel: row.profileLabel,
+        skills: Array.from(row.skills),
+        totalSelections: row.totalSelections,
+        troopType: row.troopType,
+        weapons: Array.from(row.weapons),
       }
     })
     .sort(
@@ -2119,6 +2417,213 @@ function buildUsageRows(entriesByList, predicate = () => true) {
         right.listCount - left.listCount ||
         left.name.localeCompare(right.name),
     )
+}
+
+function getProfileAggregationKey(entry) {
+  return String(entry.profile || entry.unit || '').trim()
+}
+
+function getProfileDisplayLabel(entry) {
+  const name = String(entry.unit || entry.profile || '').trim()
+  const profile = String(entry.profile || name).trim()
+  return removeTroopNamePrefix(profile, name)
+}
+
+function removeTroopNamePrefix(profile, troopName) {
+  const trimmedProfile = String(profile || '').trim()
+  const trimmedTroopName = String(troopName || '').trim()
+
+  if (!trimmedProfile || !trimmedTroopName || trimmedProfile === trimmedTroopName) {
+    return trimmedProfile || trimmedTroopName
+  }
+
+  if (trimmedProfile.toLocaleLowerCase().startsWith(trimmedTroopName.toLocaleLowerCase())) {
+    return trimProfileLabelSeparator(trimmedProfile.slice(trimmedTroopName.length)) || trimmedTroopName
+  }
+
+  return trimmedProfile
+}
+
+function trimProfileLabelSeparator(value) {
+  let start = 0
+  let end = value.length
+
+  while (start < end && isProfileLabelSeparator(value[start])) {
+    start += 1
+  }
+
+  while (end > start && isProfileLabelSeparator(value[end - 1])) {
+    end -= 1
+  }
+
+  return value.slice(start, end)
+}
+
+function isProfileLabelSeparator(value) {
+  return value === ' ' || value === '-' || value === ':' || value === '/'
+}
+
+function buildUsageGroups(rows) {
+  const groups = new Map()
+
+  rows.forEach((row) => {
+    const group = groups.get(row.name) || {
+      listCount: 0,
+      name: row.name,
+      percentage: 0,
+      profiles: [],
+      totalSelections: 0,
+    }
+
+    group.profiles.push(row)
+    group.totalSelections += row.totalSelections
+    group.listCount = Math.max(group.listCount, row.listCount)
+    group.percentage = Math.max(group.percentage, row.percentage)
+    groups.set(row.name, group)
+  })
+
+  return Array.from(groups.values())
+    .map((group) => ({
+      ...group,
+      profiles: resolveUniqueProfileDisplayLabels(group.profiles, group.name).sort(compareUsageGroupProfiles),
+    }))
+    .sort(
+      (left, right) =>
+        right.totalSelections - left.totalSelections ||
+        right.listCount - left.listCount ||
+        left.name.localeCompare(right.name),
+    )
+}
+
+function compareUsageGroupProfiles(left, right) {
+  return right.totalSelections - left.totalSelections ||
+    right.listCount - left.listCount ||
+    getUsageProfileDisplayLabel(left).localeCompare(getUsageProfileDisplayLabel(right))
+}
+
+function resolveUniqueProfileDisplayLabels(rows, troopName) {
+  const rowsWithBaseLabels = rows.map((row) => ({
+    baseLabel: getUsageProfileBaseLabel(row, troopName),
+    row,
+  }))
+  const duplicateCounts = countNormalizedLabels(rowsWithBaseLabels.map((item) => item.baseLabel))
+
+  return rowsWithBaseLabels.map(({ baseLabel, row }) => {
+    if ((duplicateCounts.get(normalizeSearchToken(baseLabel)) || 0) <= 1) {
+      return {
+        ...row,
+        profileDisplayLabel: baseLabel,
+      }
+    }
+
+    return {
+      ...row,
+      profileDisplayLabel: getShortestUniqueProfileDisplayLabel(row, rows, troopName, baseLabel),
+    }
+  })
+}
+
+function countNormalizedLabels(labels) {
+  const counts = new Map()
+
+  labels.forEach((label) => {
+    const key = normalizeSearchToken(label)
+    counts.set(key, (counts.get(key) || 0) + 1)
+  })
+
+  return counts
+}
+
+function getUsageProfileBaseLabel(row, troopName) {
+  const canonicalProfile = String(row.profileKey || row.profile || row.profileLabel || row.name || '').trim()
+  return removeTroopNamePrefix(canonicalProfile, troopName)
+}
+
+function getShortestUniqueProfileDisplayLabel(row, rows, troopName, baseLabel) {
+  const candidates = buildProfileDisplayLabelCandidates(row, troopName, baseLabel)
+
+  return candidates.find((candidate) =>
+    rows.every((other) =>
+      other === row ||
+      !buildProfileDisplayLabelCandidates(other, troopName, getUsageProfileBaseLabel(other, troopName))
+        .some((otherCandidate) => normalizeSearchToken(otherCandidate) === normalizeSearchToken(candidate)),
+    ),
+  ) || candidates[candidates.length - 1] || baseLabel
+}
+
+function buildProfileDisplayLabelCandidates(row, troopName, baseLabel) {
+  const labels = [baseLabel]
+  const metadataTokens = getProfileMetadataTokens(row)
+
+  metadataTokens.forEach((token, index) => {
+    labels.push(`${baseLabel} (${metadataTokens.slice(0, index + 1).join(', ')})`)
+  })
+
+  const canonicalProfile = removeTroopNamePrefix(String(row.profileKey || row.profile || '').trim(), troopName)
+  if (canonicalProfile && !labels.some((label) => normalizeSearchToken(label) === normalizeSearchToken(canonicalProfile))) {
+    labels.push(canonicalProfile)
+  }
+
+  if (typeof row.points === 'number') {
+    labels.push(`${baseLabel} (${row.points} pts)`)
+  }
+
+  if (row.troopType) {
+    labels.push(`${baseLabel} (${row.troopType})`)
+  }
+
+  const stableKeyParts = [row.profileKey, row.points, row.troopType]
+    .filter((value) => value !== undefined && value !== '')
+
+  if (stableKeyParts.length > 0) {
+    labels.push(`${baseLabel} (${stableKeyParts.join(', ')})`)
+  }
+
+  return labels
+}
+
+function getProfileMetadataTokens(row) {
+  const tokens = new Set()
+
+  ;[row.weapons || [], row.equipment || [], row.skills || []].forEach((group) => {
+    group
+      .map((token) => String(token || '').trim())
+      .filter(Boolean)
+      .sort((left, right) => left.localeCompare(right))
+      .forEach((token) => tokens.add(token))
+  })
+
+  return Array.from(tokens)
+}
+
+function getUsageProfileDisplayLabel(row) {
+  return row.profileDisplayLabel || row.profileLabel || formatModelUsageName(row)
+}
+
+function isUsageGroupOpen(group, expandedGroups, normalizedSearch) {
+  return expandedGroups.has(group.name) ||
+    (Boolean(normalizedSearch) && group.profiles.some((row) => doesProfileRowMatchSearch(row, normalizedSearch)))
+}
+
+function doesUsageRowMatchSearch(row, normalizedSearch) {
+  return normalizeSearchToken(row.name).includes(normalizedSearch) ||
+    doesProfileRowMatchSearch(row, normalizedSearch)
+}
+
+function doesProfileRowMatchSearch(row, normalizedSearch) {
+  return normalizeSearchToken(row.profileDisplayLabel || '').includes(normalizedSearch) ||
+    normalizeSearchToken(row.profileLabel || '').includes(normalizedSearch) ||
+    normalizeSearchToken(row.profile || '').includes(normalizedSearch) ||
+    normalizeSearchToken(formatModelUsageName(row)).includes(normalizedSearch) ||
+    getProfileMetadataTokens(row).some((token) => normalizeSearchToken(token).includes(normalizedSearch))
+}
+
+function doesGroupNameMatchSearch(group, normalizedSearch) {
+  return Boolean(normalizedSearch) && normalizeSearchToken(group.name).includes(normalizedSearch)
+}
+
+function normalizeSearchToken(value) {
+  return String(value || '').trim().toLocaleLowerCase()
 }
 
 function countTacticalAwarenessOrders(entry) {
