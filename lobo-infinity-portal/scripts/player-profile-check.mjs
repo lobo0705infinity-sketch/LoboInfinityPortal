@@ -50,7 +50,7 @@ const checks = [
     label: 'Public profile renders play-history faction through PrimaryFactionCard',
     pass:
       playerProfile.includes("import PrimaryFactionCard from '../components/PrimaryFactionCard'") &&
-      playerProfile.includes('<PrimaryFactionCard faction={player.armyListSummary.favoriteFaction || player.favoriteFaction} />') &&
+      playerProfile.includes('<PrimaryFactionCard faction={player.favoriteFaction || player.armyListSummary.favoriteFaction} />') &&
       !playerProfile.includes('label="Favorite Faction"'),
   },
   {

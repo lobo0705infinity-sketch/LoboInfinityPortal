@@ -38,7 +38,7 @@ const checks = [
     label: 'Public Player Profile renders Primary Faction through the shared card',
     pass:
       files.playerProfile.includes("import PrimaryFactionCard from '../components/PrimaryFactionCard'") &&
-      /<PrimaryFactionCard faction=\{player\.armyListSummary\.favoriteFaction \|\| player\.favoriteFaction\} \/>/.test(
+      /<PrimaryFactionCard faction=\{player\.favoriteFaction \|\| player\.armyListSummary\.favoriteFaction\} \/>/.test(
         files.playerProfile,
       ) &&
       !files.playerProfile.includes('label="Primary Faction"'),
