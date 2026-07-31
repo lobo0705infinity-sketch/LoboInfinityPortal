@@ -4578,14 +4578,17 @@
     transform 160ms ease;
 }
 
-.army-intelligence-metric-action {
+.interactive-metric-card-action {
   cursor: pointer;
   font: inherit;
+}
+
+.army-intelligence-metric.interactive-metric-card-action {
   width: 100%;
 }
 
-.army-intelligence-metric-action:hover,
-.army-intelligence-metric-action:focus-visible {
+.interactive-metric-card-action:hover,
+.interactive-metric-card-action:focus-visible {
   background:
     linear-gradient(135deg, rgba(76, 201, 240, 0.12), transparent 44%),
     rgba(8, 13, 20, 0.92);
@@ -4595,17 +4598,17 @@
   transform: translateY(-2px);
 }
 
-.army-intelligence-metric-action:focus-visible {
+.interactive-metric-card-action:focus-visible {
   box-shadow: 0 16px 34px rgba(0, 0, 0, 0.24), 0 0 0 3px rgba(76, 201, 240, 0.26);
 }
 
-.army-intelligence-metric-action:disabled {
+.interactive-metric-card-action:disabled {
   cursor: default;
   opacity: 0.7;
 }
 
-.army-intelligence-metric-action:disabled:hover,
-.army-intelligence-metric-action:disabled:focus-visible {
+.interactive-metric-card-action:disabled:hover,
+.interactive-metric-card-action:disabled:focus-visible {
   background: rgba(8, 13, 20, 0.86);
   border-color: rgba(148, 163, 184, 0.22);
   box-shadow: none;
@@ -4937,17 +4940,6 @@
   text-align: left;
 }
 
-.army-intelligence-explorer-stat.is-actionable {
-  cursor: pointer;
-}
-
-.army-intelligence-explorer-stat.is-actionable:hover,
-.army-intelligence-explorer-stat.is-actionable:focus-visible {
-  border-color: rgba(76, 201, 240, 0.58);
-  box-shadow: 0 0 0 1px rgba(76, 201, 240, 0.2), 0 0 24px rgba(76, 201, 240, 0.12);
-  outline: 0;
-}
-
 .army-intelligence-explorer-stat span,
 .army-intelligence-explorer-controls span,
 .army-intelligence-explorer-table th {
@@ -4963,6 +4955,13 @@
   font-size: 1rem;
   font-weight: 900;
   margin: 0;
+}
+
+.army-intelligence-explorer-stat small {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1.2;
 }
 
 .army-intelligence-explorer-controls {

@@ -6,6 +6,7 @@ const apiRouter = read('backend/API.gs')
 const apiClient = read('src/services/api.ts')
 const app = read('src/App.tsx')
 const appCss = read('src/App.css')
+const interactiveMetricCard = read('src/components/InteractiveMetricCard.tsx')
 const page = read('src/pages/ArmyIntelligence.tsx')
 const commissioner = read('src/pages/CommissionerDashboard.tsx')
 const decoder = read('scripts/infinity-army-decode.mjs')
@@ -148,24 +149,39 @@ assert.match(
   'Army Intelligence page must open the Army List Explorer from an obviously actionable Known Army Lists card and display the explorer row count.',
 )
 assert.match(
-  page,
-  /function MetricCard[\s\S]*if \(onValueAction\)[\s\S]*<button[\s\S]*aria-label=\{actionLabel \|\| `Open \$\{label\}`\}[\s\S]*className="army-intelligence-metric army-intelligence-metric-action"[\s\S]*onClick=\{onValueAction\}[\s\S]*type="button"/,
-  'Clickable metric cards must use one reusable native button interaction for mouse and keyboard activation.',
+  interactiveMetricCard,
+  /export default function InteractiveMetricCard[\s\S]*if \(onActivate\)[\s\S]*<button[\s\S]*aria-label=\{ariaLabel \|\| label\}[\s\S]*className=\{`\$\{className\} interactive-metric-card interactive-metric-card-action`\}[\s\S]*disabled=\{disabled\}[\s\S]*onClick=\{onActivate\}[\s\S]*type="button"/,
+  'Shared InteractiveMetricCard must use one reusable native button interaction for mouse and keyboard activation.',
 )
 assert.match(
-  page,
-  /helperText \? <small>\{helperText\}<\/small> : null/,
-  'Clickable metric cards must support subtle helper text for discoverability.',
+  interactiveMetricCard,
+  /helperText \? <small className="interactive-metric-card-helper">\{helperText\}<\/small> : null/,
+  'Shared InteractiveMetricCard must support subtle helper text for discoverability.',
 )
 assert.match(
   appCss,
-  /\.army-intelligence-metric-action[\s\S]*cursor: pointer[\s\S]*\.army-intelligence-metric-action:hover,[\s\S]*\.army-intelligence-metric-action:focus-visible[\s\S]*border-color: rgba\(76, 201, 240, 0\.58\)[\s\S]*box-shadow:[\s\S]*transform: translateY\(-2px\)/,
+  /\.interactive-metric-card-action[\s\S]*cursor: pointer[\s\S]*\.interactive-metric-card-action:hover,[\s\S]*\.interactive-metric-card-action:focus-visible[\s\S]*border-color: rgba\(76, 201, 240, 0\.58\)[\s\S]*box-shadow:[\s\S]*transform: translateY\(-2px\)/,
   'Clickable metric cards must expose hover and focus affordance with pointer cursor, accent border, elevation, and subtle motion.',
 )
 assert.match(
   appCss,
   /\.army-intelligence-metric small[\s\S]*grid-column: 2[\s\S]*line-height: 1\.2[\s\S]*@media[\s\S]*\.army-intelligence-metric small/,
   'Clickable metric helper text must render in the card and remain available in the mobile layout.',
+)
+assert.match(
+  page,
+  /import InteractiveMetricCard[\s\S]*function MetricCard[\s\S]*<InteractiveMetricCard[\s\S]*function ExplorerStat[\s\S]*<InteractiveMetricCard/,
+  'Army Intelligence interactive metrics must use the shared InteractiveMetricCard component.',
+)
+assert.match(
+  page,
+  /ariaLabel="Show all submitted army lists"[\s\S]*helperText="Show all submitted lists"[\s\S]*label="Known Army Lists"[\s\S]*helperText=\{summary\.mostPopularSectorial \? 'Filter by this sectorial' : undefined\}[\s\S]*label="Most Popular Sectorial"[\s\S]*helperText=\{summary\.mostActivePlayer \? 'Filter by this player' : undefined\}[\s\S]*label="Most Submitted By"/,
+  'Army Intelligence filter metrics must show helper text that explains the shared card action.',
+)
+assert.doesNotMatch(
+  page,
+  /className="army-intelligence-explorer-stat is-actionable"|className="army-intelligence-metric army-intelligence-metric-action"/,
+  'Army Intelligence must not keep page-specific interactive metric styling outside the shared component.',
 )
 assert.match(
   page,

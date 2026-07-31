@@ -1,6 +1,7 @@
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
+import InteractiveMetricCard from '../components/InteractiveMetricCard'
 import Skeleton from '../components/Skeleton'
 import lieutenantOrderReference from '../../docs/mockups/lieutenant-order-reference.png'
 import { CANONICAL_ARMY_REGISTRY, getArmyParentFaction, normalizeArmyForDisplay } from '../config/armies'
@@ -775,68 +776,42 @@ function MetricCard({
   onValueAction?: () => void
   value: number
 }) {
-  const content = (
-    <>
-      <MetricIcon icon={icon} />
-      <span>{label}</span>
-      <strong>{formatNumber(value)}</strong>
-      {helperText ? <small>{helperText}</small> : null}
-    </>
-  )
-
-  if (onValueAction) {
-    return (
-      <button
-        aria-label={actionLabel || `Open ${label}`}
-        className="army-intelligence-metric army-intelligence-metric-action"
-        disabled={disabled}
-        onClick={onValueAction}
-        type="button"
-      >
-        {content}
-      </button>
-    )
-  }
-
   return (
-    <article className="army-intelligence-metric">
-      {content}
-    </article>
+    <InteractiveMetricCard
+      ariaLabel={actionLabel || `Open ${label}`}
+      className="army-intelligence-metric"
+      disabled={disabled}
+      helperText={helperText}
+      icon={<MetricIcon icon={icon} />}
+      label={label}
+      onActivate={onValueAction}
+      value={formatNumber(value)}
+    />
   )
 }
 
 function ExplorerStat({
+  ariaLabel,
+  helperText,
   label,
   onClick,
   value,
 }: {
+  ariaLabel?: string
+  helperText?: string
   label: string
   onClick?: () => void
   value: string
 }) {
-  const content = (
-    <>
-      <span>{label}</span>
-      <strong>{value}</strong>
-    </>
-  )
-
-  if (onClick) {
-    return (
-      <button
-        className="army-intelligence-explorer-stat is-actionable"
-        onClick={onClick}
-        type="button"
-      >
-        {content}
-      </button>
-    )
-  }
-
   return (
-    <div className="army-intelligence-explorer-stat">
-      {content}
-    </div>
+    <InteractiveMetricCard
+      ariaLabel={ariaLabel || label}
+      className="army-intelligence-explorer-stat"
+      helperText={helperText}
+      label={label}
+      onActivate={onClick}
+      value={value}
+    />
   )
 }
 
@@ -916,6 +891,8 @@ function ArmyListExplorer({
 
         <div className="army-intelligence-explorer-stats">
           <ExplorerStat
+            ariaLabel="Show all submitted army lists"
+            helperText="Show all submitted lists"
             label="Known Army Lists"
             onClick={() => {
               setPlayerFilter('')
@@ -934,6 +911,8 @@ function ArmyListExplorer({
           ) : null}
           <ExplorerStat label="Newest Submission" value={formatExplorerDate(summary.newestSubmission)} />
           <ExplorerStat
+            ariaLabel="Filter Army List Explorer by most popular sectorial"
+            helperText={summary.mostPopularSectorial ? 'Filter by this sectorial' : undefined}
             label="Most Popular Sectorial"
             onClick={
               summary.mostPopularSectorial
@@ -946,6 +925,8 @@ function ArmyListExplorer({
             value={summary.mostPopularSectorial || 'None'}
           />
           <ExplorerStat
+            ariaLabel="Filter Army List Explorer by most submitted player"
+            helperText={summary.mostActivePlayer ? 'Filter by this player' : undefined}
             label="Most Submitted By"
             onClick={
               summary.mostActivePlayer
