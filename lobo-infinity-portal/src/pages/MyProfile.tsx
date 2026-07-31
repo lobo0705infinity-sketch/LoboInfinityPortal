@@ -523,7 +523,7 @@ function ProfileEditor({
         </label>
 
         <div className="profile-editor-readonly">
-          <span>Favorite Army</span>
+          <span>Primary Faction</span>
           <strong>{favoriteArmy || 'Not established'}</strong>
         </div>
 
@@ -1259,7 +1259,7 @@ function ArmyListsPanel({
           <dd>{summary.mostUsedFaction || 'Not established'}</dd>
         </div>
         <div>
-          <dt>Favorite Faction</dt>
+          <dt>Primary Faction</dt>
           <dd>{summary.favoriteFaction || 'Not established'}</dd>
         </div>
         <div>

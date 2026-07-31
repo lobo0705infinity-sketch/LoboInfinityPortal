@@ -515,7 +515,7 @@ function CommanderOverview({
             <dd>{leaderStreak ? `${leaderStreak.games} wins` : `${leader?.currentWinStreak ?? 0} wins`}</dd>
           </div>
           <div>
-            <dt>Favorite Army</dt>
+            <dt>Primary Faction</dt>
             <dd>{leader?.faction || leader?.favoriteArmy || 'Faction pending'}</dd>
           </div>
         </dl>

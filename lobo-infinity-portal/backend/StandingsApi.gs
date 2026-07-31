@@ -210,6 +210,13 @@ function standingsRowsToObjects(rows, eventId, dashboardContext) {
     }
   );
 
+  const favoriteArmyMaps =
+    typeof buildCommunityResolvedFavoriteArmyMaps === "function"
+      ? buildCommunityResolvedFavoriteArmyMaps()
+      : {
+          resolvedFavoriteByPlayerKey: {}
+        };
+
   timer =
     startDashboardEndpointSubStage(
       "dashboard.standings.loop.rowsToObjects"
@@ -222,6 +229,15 @@ function standingsRowsToObjects(rows, eventId, dashboardContext) {
 
       const player =
         row[CONFIG.STANDINGS.PLAYER];
+      const playerKey =
+        typeof getCommunityPlayerKey === "function"
+          ? getCommunityPlayerKey(player)
+          : String(player || "")
+              .trim()
+              .toLowerCase();
+      const favoriteArmy =
+        favoriteArmyMaps.resolvedFavoriteByPlayerKey[playerKey] ||
+        "";
 
       return {
         eventId:
@@ -238,7 +254,11 @@ function standingsRowsToObjects(rows, eventId, dashboardContext) {
         draws: row[CONFIG.STANDINGS.DRAWS],
         tp: row[CONFIG.STANDINGS.TP],
         op: row[CONFIG.STANDINGS.OP],
-        vp: row[CONFIG.STANDINGS.VP]
+        vp: row[CONFIG.STANDINGS.VP],
+        faction: favoriteArmy,
+        favoriteArmy: favoriteArmy,
+        favoriteFaction: favoriteArmy,
+        preferredArmy: favoriteArmy
       };
 
     });

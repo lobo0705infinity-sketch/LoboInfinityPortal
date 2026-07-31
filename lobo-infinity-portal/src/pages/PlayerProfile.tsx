@@ -824,7 +824,7 @@ function ArmyListsPanel({ player }: { player: PlayerProfileData }) {
       <dl className="profile-v21-army-summary">
         <Metric label="Lists Submitted" value={player.armyListSummary.submitted} />
         <Metric label="Average List Rating" value={player.armyListSummary.averageRating} />
-        <Metric label="Favorite Faction" value={player.armyListSummary.favoriteFaction || player.favoriteFaction} />
+        <Metric label="Primary Faction" value={player.armyListSummary.favoriteFaction || player.favoriteFaction} />
       </dl>
       {player.armyLists.length > 0 ? (
         <div className="army-list-mini-grid">

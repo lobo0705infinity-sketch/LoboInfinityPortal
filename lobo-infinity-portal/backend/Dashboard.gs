@@ -164,7 +164,11 @@ function getDashboard() {
       draws: leader.draws || 0,
       tp: leader.tp || 0,
       op: leader.op || 0,
-      vp: leader.vp || 0
+      vp: leader.vp || 0,
+      faction: leader.faction || "",
+      favoriteArmy: leader.favoriteArmy || leader.faction || "",
+      favoriteFaction: leader.favoriteFaction || leader.favoriteArmy || leader.faction || "",
+      preferredArmy: leader.preferredArmy || leader.favoriteArmy || leader.faction || ""
     },
     topFaction: topFaction,
     gamesPlayed: gamesPlayed,

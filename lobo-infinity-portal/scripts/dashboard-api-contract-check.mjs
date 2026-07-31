@@ -7,6 +7,10 @@ const requiredStandingFields = [
   'tp',
   'op',
   'vp',
+  'faction',
+  'favoriteArmy',
+  'favoriteFaction',
+  'preferredArmy',
 ]
 
 import { readFileSync } from 'node:fs'
@@ -44,6 +48,10 @@ const validDashboardPayload = {
     tp: 10,
     op: 15,
     vp: 301,
+    faction: 'Steel Phalanx',
+    favoriteArmy: 'Steel Phalanx',
+    favoriteFaction: 'Steel Phalanx',
+    preferredArmy: 'Steel Phalanx',
   },
   mainManStandings: [
     {
@@ -56,6 +64,10 @@ const validDashboardPayload = {
       tp: 10,
       op: 15,
       vp: 301,
+      faction: 'Steel Phalanx',
+      favoriteArmy: 'Steel Phalanx',
+      favoriteFaction: 'Steel Phalanx',
+      preferredArmy: 'Steel Phalanx',
     },
   ],
 }
@@ -111,6 +123,9 @@ assert(
 )
 
 const dashboardSource = readFileSync('backend/Dashboard.gs', 'utf8')
+const dashboardPageSource = readFileSync('src/pages/Dashboard.tsx', 'utf8')
+const standingsSource = readFileSync('backend/StandingsApi.gs', 'utf8')
+const playersSource = readFileSync('backend/PlayersApi.gs', 'utf8')
 const cacheSource = readFileSync('backend/CacheApi.gs', 'utf8')
 const resultSubmissionSource = readFileSync('backend/ResultSubmissionApi.gs', 'utf8')
 
@@ -132,6 +147,40 @@ assert(
   /const leader\s*=\s*mainManResponse\.summary\.leader/.test(dashboardSource) &&
     /const mainManStandings\s*=\s*mainManResponse\.standings/.test(dashboardSource),
   'Dashboard leader and mainManStandings must be populated from the shared standings response.',
+)
+
+assert(
+  /favoriteArmy:\s*leader\.favoriteArmy \|\| leader\.faction \|\| ""/.test(dashboardSource) &&
+    /favoriteFaction:\s*leader\.favoriteFaction \|\| leader\.favoriteArmy \|\| leader\.faction \|\| ""/.test(dashboardSource),
+  'Dashboard leader must retain favorite-army fields from the shared standings response.',
+)
+
+assert(
+  dashboardPageSource.includes('<dt>Primary Faction</dt>') &&
+    !dashboardPageSource.includes('<dt>Favorite Army</dt>'),
+  'Commander Overview must label the resolved play-history faction as Primary Faction.',
+)
+
+assert(
+  standingsSource.includes('buildCommunityResolvedFavoriteArmyMaps()') &&
+    /faction:\s*favoriteArmy/.test(standingsSource) &&
+    /favoriteArmy:\s*favoriteArmy/.test(standingsSource) &&
+    /favoriteFaction:\s*favoriteArmy/.test(standingsSource) &&
+    /preferredArmy:\s*favoriteArmy/.test(standingsSource),
+  'Standings rows must expose the shared resolved favorite army for Commander Overview.',
+)
+
+assert(
+  playersSource.includes('function buildCommunityResolvedFavoriteArmyMaps') &&
+    playersSource.includes('function buildCommunityGameFavoriteArmyMap') &&
+    playersSource.includes('function buildCommunityArmyListFavoriteArmyMap') &&
+    /favoriteArmy\s*=\s*gameDerivedFavoriteFaction\s*\|\|\s*armyListDerivedFavoriteFaction\s*\|\|\s*""/.test(
+      playersSource,
+    ) &&
+    !/favoriteArmy\s*=\s*record\.favoriteFaction\s*\|\|\s*gameDerivedFavoriteFaction/.test(
+      playersSource,
+    ),
+  'Primary Faction must resolve from Game Engine first, then Army Lists, without manual player-sheet maintenance.',
 )
 
 assert(

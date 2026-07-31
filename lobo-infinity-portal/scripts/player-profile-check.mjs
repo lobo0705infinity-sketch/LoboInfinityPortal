@@ -37,24 +37,32 @@ const checks = [
       playerProfile.includes('value={currentTournament}'),
   },
   {
-    label: 'Public profile uses saved Preferred Army before game-derived Favorite Faction',
+    label: 'Public profile exposes the shared automatic Primary Faction',
     pass:
-      playersApi.includes('const savedPreferredArmy =') &&
       playersApi.includes('const gameDerivedFavoriteFaction =') &&
+      playersApi.includes('const armyListDerivedFavoriteFaction =') &&
       playersApi.includes('const resolvedPreferredArmy =') &&
-      /resolvedPreferredArmy\s*=\s*savedPreferredArmy\s*\|\|\s*gameDerivedFavoriteFaction/.test(playersApi) &&
+      /resolvedPreferredArmy\s*=\s*communityPlayer\.favoriteFaction\s*\|\|\s*communityPlayer\.favoriteArmy\s*\|\|\s*""/.test(playersApi) &&
       /favoriteFaction:\s*resolvedPreferredArmy/.test(playersApi) &&
       /preferredArmy:\s*resolvedPreferredArmy/.test(playersApi),
   },
   {
-    label: 'Arg saved USAriadna-style override and blank fallback remain supported',
+    label: 'Public profile labels play-history faction as Primary Faction',
     pass:
-      playersApi.includes('function getSavedPreferredArmyForPlayer') &&
+      playerProfile.includes('label="Primary Faction"') &&
+      !playerProfile.includes('label="Favorite Faction"'),
+  },
+  {
+    label: 'Primary Faction derives from Game Engine first and Army Lists second',
+    pass:
       playersApi.includes('gameDerivedFavoriteFaction:') &&
+      playersApi.includes('armyListDerivedFavoriteFaction:') &&
+      playersApi.includes('function buildCommunityResolvedFavoriteArmyMaps') &&
       playersApi.includes('function getCommunityGameDerivedPreferredArmy') &&
       playersApi.includes('function buildCommunityPreferredFactionMap') &&
       !extractFunction(playersApi, 'getCommunityGameDerivedPreferredArmy').includes('FAVORITEFACTION') &&
-      /favoriteArmy\s*=\s*record\.favoriteFaction\s*\|\|\s*gameDerivedFavoriteFaction/.test(playersApi),
+      /favoriteArmy\s*=\s*gameDerivedFavoriteFaction\s*\|\|\s*armyListDerivedFavoriteFaction\s*\|\|\s*""/.test(playersApi) &&
+      !/favoriteArmy\s*=\s*record\.favoriteFaction\s*\|\|\s*gameDerivedFavoriteFaction/.test(playersApi),
   },
   {
     label: 'Players list builds preferred-army fallback without per-player game scans',

@@ -310,12 +310,22 @@ function assertPlayersListPreferredArmyRules() {
     throw new Error('Players list fallback must preserve FAVORITEFACTION tie-breaking via MOSTCOMMON.')
   }
 
-  if (!/preferredFactionByPlayerKey/.test(playersListPath)) {
-    throw new Error('Players list finalization must consume the shared preferred-faction map.')
+  if (
+    !/preferredFactionByPlayerKey/.test(playersListPath) ||
+    !/buildCommunityResolvedFavoriteArmyMaps/.test(playersListPath)
+  ) {
+    throw new Error('Players list finalization must consume the shared resolved favorite-army map.')
   }
 
-  if (!/favoriteArmy\s*=\s*record\.favoriteFaction\s*\|\|\s*gameDerivedFavoriteFaction/.test(playersApi)) {
-    throw new Error('Players list must prefer saved Preferred Army before game-derived fallback.')
+  if (
+    !/favoriteArmy\s*=\s*gameDerivedFavoriteFaction\s*\|\|\s*armyListDerivedFavoriteFaction\s*\|\|\s*""/.test(
+      playersApi,
+    ) ||
+    /favoriteArmy\s*=\s*record\.favoriteFaction\s*\|\|\s*gameDerivedFavoriteFaction/.test(
+      playersApi,
+    )
+  ) {
+    throw new Error('Players list must derive Primary Faction from Game Engine first, then Army Lists.')
   }
 
   if (
