@@ -2,11 +2,14 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import DiscordCommunityLink from '../components/DiscordCommunityLink'
+import PortalIcon from '../components/PortalIcon'
 import Skeleton from '../components/Skeleton'
 import {
   getCanonicalArmyName,
   getCanonicalArmyOptions,
 } from '../config/armies'
+import { getDiscordCommunityLink } from '../config/communityLinks'
+import { useSettings } from '../contexts/SettingsContext'
 import {
   type EventRegistrationData,
   type TeamTournamentData,
@@ -330,9 +333,6 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
             <Link to={`/event/${encodeURIComponent(data.event.id)}`}>
               Open Event Home
             </Link>
-            <DiscordCommunityLink className="team-tournament-discord-action">
-              Join Discord
-            </DiscordCommunityLink>
           </div>
           <TournamentMetric label="Teams" value={data.registeredTeams} />
           <TournamentMetric label="Completed" value={data.completedMatches} />
@@ -340,6 +340,8 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
           <TournamentMetric label="Players" value={data.registration.registeredCount} />
         </section>
       ) : null}
+
+      {showOverview ? <TeamCommunicationCard /> : null}
 
       {showOverview && data.champion ? <ChampionPanel champion={data.champion} /> : null}
 
@@ -453,6 +455,34 @@ function PageHeader({
         {section === 'overview' ? title : `${title} ${sectionLabel}`}
       </h1>
       <p>Rosters, pairings, standings, and tournament operations.</p>
+    </section>
+  )
+}
+
+function TeamCommunicationCard() {
+  const { settings } = useSettings()
+  const discord = getDiscordCommunityLink(settings)
+
+  if (!discord) {
+    return null
+  }
+
+  return (
+    <section className="panel team-communication-card" aria-labelledby="team-communication-title">
+      <div className="team-communication-icon" aria-hidden="true">
+        <PortalIcon name="discord" />
+      </div>
+      <div>
+        <p className="eyebrow">Team Communication</p>
+        <h2 id="team-communication-title">Team Communication</h2>
+        <p>
+          Coordinate pairings, communicate with teammates, prepare lineups, and
+          stay informed throughout the tournament.
+        </p>
+      </div>
+      <DiscordCommunityLink className="team-tournament-discord-action">
+        Open Discord
+      </DiscordCommunityLink>
     </section>
   )
 }

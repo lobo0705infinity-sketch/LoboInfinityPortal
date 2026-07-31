@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import DiscordCommunityLink from '../components/DiscordCommunityLink'
+import PortalIcon from '../components/PortalIcon'
 import PlayerCard from '../components/PlayerCard'
 import Skeleton from '../components/Skeleton'
+import { getDiscordCommunityLink } from '../config/communityLinks'
+import { useSettings } from '../contexts/SettingsContext'
 import { apiClient } from '../services/api'
 import {
   getStandingClassifications,
@@ -231,6 +234,8 @@ function Players() {
         </section>
       ) : (
         <>
+          <CommunityHubSection />
+
           <section className="community-player-summary" aria-label="Player counts">
             <SummaryCard label="Registered Players" value={communityCounts.registered} />
             <SummaryCard label="League Players" value={communityCounts.league} />
@@ -376,11 +381,58 @@ function PageHeader({ eventScoped }: { eventScoped: boolean }) {
         <h1 id="players-title">Players</h1>
         <p>{eventScoped ? 'Browse event participants' : 'Browse portal players across all games'}</p>
       </div>
-      {!eventScoped ? (
-        <DiscordCommunityLink className="page-header-action">
-          Join Discord
-        </DiscordCommunityLink>
-      ) : null}
+    </section>
+  )
+}
+
+function CommunityHubSection() {
+  const { settings } = useSettings()
+  const discord = getDiscordCommunityLink(settings)
+
+  if (!discord) {
+    return null
+  }
+
+  const hubUses = [
+    'Find opponents.',
+    'Organize games.',
+    'Follow league standings.',
+    'Join Team Tournaments.',
+    'Discuss missions and tactics.',
+    'Get help with lists and rules.',
+    'Stay informed about upcoming events.',
+  ]
+
+  return (
+    <section className="community-hub-feature panel" aria-labelledby="community-hub-title">
+      <div className="community-hub-feature-header">
+        <div className="community-hub-discord-icon" aria-hidden="true">
+          <PortalIcon name="discord" />
+        </div>
+        <div>
+          <p className="eyebrow">Community Hub</p>
+          <h2 id="community-hub-title">The Community Starts Here</h2>
+          <p>
+            Whether you're a veteran or completely new to Infinity, Discord is
+            the best place to connect with the Lobo Infinity League.
+          </p>
+        </div>
+      </div>
+      <div className="community-hub-services">
+        <article className="community-hub-service">
+          <div>
+            <h3>Use it to:</h3>
+            <ul>
+              {hubUses.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+          <DiscordCommunityLink className="page-header-action">
+            Join Discord
+          </DiscordCommunityLink>
+        </article>
+      </div>
     </section>
   )
 }

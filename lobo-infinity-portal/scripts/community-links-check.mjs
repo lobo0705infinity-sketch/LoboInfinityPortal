@@ -6,10 +6,12 @@ const root = process.cwd()
 const files = {
   api: read('src/services/api.ts'),
   app: read('src/App.tsx'),
+  appCss: read('src/App.css'),
   backendOperations: read('backend/OperationsApi.gs'),
   backendSettings: read('backend/SettingsApi.gs'),
   communityConfig: read('src/config/communityLinks.ts'),
   discordLink: read('src/components/DiscordCommunityLink.tsx'),
+  dashboardCss: read('src/pages/Dashboard.css'),
   dashboard: read('src/pages/Dashboard.tsx'),
   eventHome: read('src/pages/EventHome.tsx'),
   footer: read('src/components/GlobalFooter.tsx'),
@@ -79,6 +81,63 @@ const checks = [
       files.eventHome.includes('<DiscordCommunityLink'),
   },
   {
+    label: 'Dashboard presents Discord as league headquarters',
+    pass:
+      files.dashboard.includes('Your headquarters for everything happening in the league.') &&
+      files.dashboard.includes('Find league, casual, and Team Tournament opponents.') &&
+      files.dashboard.includes('Ask rules questions and discuss Infinity strategy.') &&
+      files.dashboard.includes('Join the Discord') &&
+      files.dashboard.includes('dashboard-community-card'),
+  },
+  {
+    label: 'Community page has a featured Community Hub with one primary Discord CTA',
+    pass:
+      files.players.includes('function CommunityHubSection()') &&
+      files.players.includes('const discord = getDiscordCommunityLink(settings)') &&
+      files.players.includes('if (!discord)') &&
+      files.players.includes('The Community Starts Here') &&
+      files.players.includes('community-hub-services') &&
+      countOccurrences(files.players, '<DiscordCommunityLink className="page-header-action">') === 1,
+  },
+  {
+    label: 'Event Overview uses a small opponent coordination Discord callout',
+    pass:
+      files.eventHome.includes('function EventDiscordCallout()') &&
+      files.eventHome.includes('const discord = getDiscordCommunityLink(settings)') &&
+      files.eventHome.includes('if (!discord)') &&
+      files.eventHome.includes('Need an opponent?') &&
+      files.eventHome.includes('Join the Lobo Infinity League Discord.'),
+  },
+  {
+    label: 'Team Tournament uses a Team Communication Discord card',
+    pass:
+      files.teamTournament.includes('function TeamCommunicationCard()') &&
+      files.teamTournament.includes('const discord = getDiscordCommunityLink(settings)') &&
+      files.teamTournament.includes('if (!discord)') &&
+      files.teamTournament.includes('Coordinate pairings, communicate with teammates, prepare lineups') &&
+      files.teamTournament.includes('Open Discord'),
+  },
+  {
+    label: 'Discord community sections include Discord icon treatment',
+    pass:
+      files.dashboard.includes('<PortalIcon name="discord" />') &&
+      files.players.includes('<PortalIcon name="discord" />') &&
+      files.eventHome.includes('<PortalIcon name="discord" />') &&
+      files.teamTournament.includes('<PortalIcon name="discord" />'),
+  },
+  {
+    label: 'Discord community sections have mobile responsive layout rules',
+    pass:
+      files.appCss.includes('@media (max-width: 820px)') &&
+      files.appCss.includes('.community-hub-feature-header') &&
+      files.appCss.includes('.event-discord-callout') &&
+      files.appCss.includes('.team-communication-card') &&
+      files.appCss.includes('grid-template-columns: 1fr') &&
+      files.dashboardCss.includes('@media (max-width: 640px)') &&
+      files.dashboardCss.includes('.dashboard-community-card-header') &&
+      files.dashboardCss.includes('.dashboard-discord-action'),
+  },
+  {
     label: 'Commissioner settings can update the public Discord invite',
     pass:
       files.backendOperations.includes('"discordInvite"') &&
@@ -115,6 +174,10 @@ if (failures.length > 0) {
 
 function read(path) {
   return readFileSync(resolve(root, path), 'utf8')
+}
+
+function countOccurrences(text, pattern) {
+  return text.split(pattern).length - 1
 }
 
 function listTrackedSource(directory) {

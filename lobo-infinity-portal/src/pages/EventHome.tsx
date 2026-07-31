@@ -2,7 +2,9 @@ import { lazy, Suspense, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import DiscordCommunityLink from '../components/DiscordCommunityLink'
+import PortalIcon from '../components/PortalIcon'
 import Skeleton from '../components/Skeleton'
+import { getDiscordCommunityLink } from '../config/communityLinks'
 import {
   getEventOverviewKind,
   hasEventCapability,
@@ -15,6 +17,7 @@ import {
 } from '../config/eventNavigation'
 import { type EventHomeData } from '../services/api'
 import { eventRepository } from '../services/data'
+import { useSettings } from '../contexts/SettingsContext'
 import type { LeagueEvent } from '../types/dashboard'
 import './EventHome.css'
 
@@ -139,9 +142,6 @@ function EventHome() {
           </div>
         </div>
         <div className="event-home-selector">
-          <DiscordCommunityLink className="event-home-secondary-action">
-            Join Discord
-          </DiscordCommunityLink>
           {heroAction ? (
             <Link className="event-home-primary-action" to={heroAction.href}>
               {heroAction.label}
@@ -155,6 +155,8 @@ function EventHome() {
           <EventStatusCard card={card} key={card.label} />
         ))}
       </section>
+
+      <EventDiscordCallout />
 
       <nav className="event-home-nav" aria-label="Event navigation">
         {eventNavigationItems.map((item) => (
@@ -259,6 +261,34 @@ function EventHomeSkeleton({
         <Skeleton label="Event news loading" rows={4} />
       </section>
     </main>
+  )
+}
+
+function EventDiscordCallout() {
+  const { settings } = useSettings()
+  const discord = getDiscordCommunityLink(settings)
+
+  if (!discord) {
+    return null
+  }
+
+  return (
+    <section className="panel event-discord-callout" aria-labelledby="event-discord-title">
+      <div className="event-discord-icon" aria-hidden="true">
+        <PortalIcon name="discord" />
+      </div>
+      <div>
+        <p className="eyebrow">League Coordination</p>
+        <h2 id="event-discord-title">Need an opponent?</h2>
+        <p>
+          Looking for a game, have a question about this event, or want to
+          coordinate with other players? Join the Lobo Infinity League Discord.
+        </p>
+      </div>
+      <DiscordCommunityLink className="event-home-secondary-action">
+        Join Discord
+      </DiscordCommunityLink>
+    </section>
   )
 }
 

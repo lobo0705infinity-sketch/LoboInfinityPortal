@@ -318,21 +318,37 @@ function DiscordDashboardCard() {
     return null
   }
 
+  const communityBenefits = [
+    'Find league, casual, and Team Tournament opponents.',
+    'Coordinate games and schedules.',
+    'Receive league news and event announcements.',
+    'Share army lists, tactics, and painting projects.',
+    'Ask rules questions and discuss Infinity strategy.',
+    'Meet new players and grow the community.',
+  ]
+
   return (
-    <section className="panel dashboard-discord-card" aria-labelledby="dashboard-discord-title">
-      <div className="dashboard-discord-icon" aria-hidden="true">
-        <PortalIcon name="discord" />
+    <section className="panel dashboard-community-card" aria-labelledby="dashboard-discord-title">
+      <div className="dashboard-community-card-header">
+        <div className="dashboard-discord-icon" aria-hidden="true">
+          <PortalIcon name="discord" />
+        </div>
+        <div>
+          <p className="eyebrow">Community Headquarters</p>
+          <h2 id="dashboard-discord-title">Join the Lobo Infinity League Discord</h2>
+          <p>Your headquarters for everything happening in the league.</p>
+        </div>
       </div>
-      <div>
-        <p className="eyebrow">Community Link</p>
-        <h2 id="dashboard-discord-title">Join the Lobo Infinity League Discord</h2>
-        <p>
-          Coordinate games, follow announcements, and stay connected with the
-          league community.
-        </p>
+      <div className="dashboard-community-card-body">
+        <p>Join the community to:</p>
+        <ul>
+          {communityBenefits.map((benefit) => (
+            <li key={benefit}>{benefit}</li>
+          ))}
+        </ul>
       </div>
       <DiscordCommunityLink className="dashboard-discord-action">
-        Join Discord
+        Join the Discord
       </DiscordCommunityLink>
     </section>
   )
