@@ -14,6 +14,7 @@ import {
 } from '../services/api'
 import { formatObjectiveScore, formatPlayerName } from '../services/formatting'
 import { getGameHeadline } from '../services/gameResults'
+import { getInfinityArmyTarget } from '../services/infinityArmyLinks'
 
 type FactionProfileState =
   | {
@@ -505,23 +506,40 @@ function ArmyListStack({ lists, title }: { lists: ArmyList[]; title: string }) {
       ) : (
         <div className="army-list-mini-grid">
           {lists.map((list) => (
-            <article className="army-list-mini-card" key={list.id}>
-              <span>{formatPlayerName(list.player, list.playerDisplayName)}</span>
-              <h3>{list.armyName}</h3>
-              <p>{getCanonicalMissionName(list.mission) || 'Mission not recorded'}</p>
-              <strong>Score {list.score}</strong>
-              {list.armyLink ? (
-                <a href={list.armyLink} rel="noreferrer" target="_blank">
-                  View in Infinity Army
-                </a>
-              ) : list.armyCode ? (
-                <code>{list.armyCode}</code>
-              ) : null}
-            </article>
+            <ArmyListMiniCard key={list.id} list={list} />
           ))}
         </div>
       )}
     </section>
+  )
+}
+
+function ArmyListMiniCard({ list }: { list: ArmyList }) {
+  const target = getInfinityArmyTarget(list.armyCode || list.armyLink)
+
+  return (
+    <article className="army-list-mini-card">
+      <span>{formatPlayerName(list.player, list.playerDisplayName)}</span>
+      <h3>{list.armyName}</h3>
+      <p>{getCanonicalMissionName(list.mission) || 'Mission not recorded'}</p>
+      <strong>Score {list.score}</strong>
+      {target.status === 'available' ? (
+        <a href={target.href} rel="noreferrer" target="_blank">
+          View in Infinity Army
+        </a>
+      ) : (
+        <button
+          aria-label={`View in Infinity Army unavailable: ${target.reason}`}
+          className={`army-list-unavailable-link is-${target.status}`}
+          disabled
+          title={target.reason}
+          type="button"
+        >
+          <span>View in Infinity Army</span>
+          <small>{target.reason}</small>
+        </button>
+      )}
+    </article>
   )
 }
 

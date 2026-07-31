@@ -25,6 +25,7 @@ import {
   formatPlayerName,
 } from '../services/formatting'
 import { isDrawGame } from '../services/gameResults'
+import { getInfinityArmyTarget } from '../services/infinityArmyLinks'
 import { getConfiguredEventDisplayName } from '../services/leagueEventDisplay'
 import {
   resolvePlayerFactionIdentity,
@@ -914,6 +915,8 @@ function RecentGamesPanel({
 }
 
 function ArmyListMiniCard({ list }: { list: ArmyList }) {
+  const target = getInfinityArmyTarget(list.armyCode || list.armyLink)
+
   return (
     <article className="army-list-mini-card">
       <span>{list.submissionDate || 'Date not recorded'}</span>
@@ -923,13 +926,22 @@ function ArmyListMiniCard({ list }: { list: ArmyList }) {
         {list.sectorial ? ` - ${list.sectorial}` : ''}
       </p>
       <strong>Score {list.score}</strong>
-      {list.armyLink ? (
-        <a href={list.armyLink} rel="noreferrer" target="_blank">
+      {target.status === 'available' ? (
+        <a href={target.href} rel="noreferrer" target="_blank">
           View in Infinity Army
         </a>
-      ) : list.armyCode ? (
-        <code>{list.armyCode}</code>
-      ) : null}
+      ) : (
+        <button
+          aria-label={`View in Infinity Army unavailable: ${target.reason}`}
+          className={`army-list-unavailable-link is-${target.status}`}
+          disabled
+          title={target.reason}
+          type="button"
+        >
+          <span>View in Infinity Army</span>
+          <small>{target.reason}</small>
+        </button>
+      )}
     </article>
   )
 }

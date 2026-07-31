@@ -11,6 +11,7 @@ import {
   type SubmittedArmyListEntry,
 } from '../services/api'
 import { formatPlayerName } from '../services/formatting'
+import { getInfinityArmyTarget } from '../services/infinityArmyLinks'
 import { resolvePlayerFactionIdentity } from '../services/playerFactionIdentity'
 
 type ArmyListFilter = {
@@ -541,9 +542,9 @@ function DiagnosticList({ title, values }: { title: string; values: string[] }) 
 }
 
 function ArmyListExternalLink({ armyCode }: { armyCode: string }) {
-  const target = getArmyListTarget(armyCode)
+  const target = getInfinityArmyTarget(armyCode)
 
-  if (target.external) {
+  if (target.status === 'available') {
     return (
       <a href={target.href} rel="noreferrer" target="_blank">
         View in Infinity Army
@@ -551,23 +552,18 @@ function ArmyListExternalLink({ armyCode }: { armyCode: string }) {
     )
   }
 
-  return <Link to={target.href}>View in Infinity Army</Link>
-}
-
-function getArmyListTarget(armyCode: string) {
-  const value = armyCode.trim()
-
-  if (/^https?:\/\//i.test(value)) {
-    return {
-      external: true,
-      href: value,
-    }
-  }
-
-  return {
-    external: false,
-    href: `/army-list/${encodeURIComponent(value)}`,
-  }
+  return (
+    <button
+      aria-label={`View in Infinity Army unavailable: ${target.reason}`}
+      className={`army-list-unavailable-link is-${target.status}`}
+      disabled
+      title={target.reason}
+      type="button"
+    >
+      <span>View in Infinity Army</span>
+      <small>{target.reason}</small>
+    </button>
+  )
 }
 
 function matchesFilter(value: string, filter: string) {
