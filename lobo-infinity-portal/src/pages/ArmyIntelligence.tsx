@@ -624,7 +624,9 @@ function ArmyIntelligenceContent({
         <>
           <section className="army-intelligence-summary" aria-label="Army Intelligence analysis summary">
             <MetricCard
+              actionLabel="Browse submitted army lists"
               disabled={selectedArmyListExplorerRows.length === 0}
+              helperText="View submitted army lists"
               icon="lists"
               label="Known Army Lists"
               onValueAction={() => setExplorerOpen(true)}
@@ -757,35 +759,48 @@ function PageHeader() {
 }
 
 function MetricCard({
+  actionLabel,
   disabled,
+  helperText,
   icon,
   label,
   onValueAction,
   value,
 }: {
+  actionLabel?: string
   disabled?: boolean
+  helperText?: string
   icon: MetricIcon
   label: string
   onValueAction?: () => void
   value: number
 }) {
-  return (
-    <article className={`army-intelligence-metric${onValueAction ? ' has-action-value' : ''}`}>
+  const content = (
+    <>
       <MetricIcon icon={icon} />
       <span>{label}</span>
-      {onValueAction ? (
-        <button
-          aria-label={`Open ${label}`}
-          className="army-intelligence-metric-value-action"
-          disabled={disabled}
-          onClick={onValueAction}
-          type="button"
-        >
-          {formatNumber(value)}
-        </button>
-      ) : (
-        <strong>{formatNumber(value)}</strong>
-      )}
+      <strong>{formatNumber(value)}</strong>
+      {helperText ? <small>{helperText}</small> : null}
+    </>
+  )
+
+  if (onValueAction) {
+    return (
+      <button
+        aria-label={actionLabel || `Open ${label}`}
+        className="army-intelligence-metric army-intelligence-metric-action"
+        disabled={disabled}
+        onClick={onValueAction}
+        type="button"
+      >
+        {content}
+      </button>
+    )
+  }
+
+  return (
+    <article className="army-intelligence-metric">
+      {content}
     </article>
   )
 }

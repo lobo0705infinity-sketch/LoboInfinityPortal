@@ -5,6 +5,7 @@ const backend = read('backend/ArmyIntelligenceApi.gs')
 const apiRouter = read('backend/API.gs')
 const apiClient = read('src/services/api.ts')
 const app = read('src/App.tsx')
+const appCss = read('src/App.css')
 const page = read('src/pages/ArmyIntelligence.tsx')
 const commissioner = read('src/pages/CommissionerDashboard.tsx')
 const decoder = read('scripts/infinity-army-decode.mjs')
@@ -143,8 +144,28 @@ assert.match(
 )
 assert.match(
   page,
-  /selectedKnownArmyLists = selectedArmyListExplorerRows\.length[\s\S]*Known Army Lists[\s\S]*onValueAction[\s\S]*setExplorerOpen\(true\)[\s\S]*selectedKnownArmyLists/,
-  'Army Intelligence page must open the Army List Explorer from the Known Army Lists statistic value and display the explorer row count.',
+  /selectedKnownArmyLists = selectedArmyListExplorerRows\.length[\s\S]*actionLabel="Browse submitted army lists"[\s\S]*helperText="View submitted army lists"[\s\S]*Known Army Lists[\s\S]*onValueAction[\s\S]*setExplorerOpen\(true\)[\s\S]*selectedKnownArmyLists/,
+  'Army Intelligence page must open the Army List Explorer from an obviously actionable Known Army Lists card and display the explorer row count.',
+)
+assert.match(
+  page,
+  /function MetricCard[\s\S]*if \(onValueAction\)[\s\S]*<button[\s\S]*aria-label=\{actionLabel \|\| `Open \$\{label\}`\}[\s\S]*className="army-intelligence-metric army-intelligence-metric-action"[\s\S]*onClick=\{onValueAction\}[\s\S]*type="button"/,
+  'Clickable metric cards must use one reusable native button interaction for mouse and keyboard activation.',
+)
+assert.match(
+  page,
+  /helperText \? <small>\{helperText\}<\/small> : null/,
+  'Clickable metric cards must support subtle helper text for discoverability.',
+)
+assert.match(
+  appCss,
+  /\.army-intelligence-metric-action[\s\S]*cursor: pointer[\s\S]*\.army-intelligence-metric-action:hover,[\s\S]*\.army-intelligence-metric-action:focus-visible[\s\S]*border-color: rgba\(76, 201, 240, 0\.58\)[\s\S]*box-shadow:[\s\S]*transform: translateY\(-2px\)/,
+  'Clickable metric cards must expose hover and focus affordance with pointer cursor, accent border, elevation, and subtle motion.',
+)
+assert.match(
+  appCss,
+  /\.army-intelligence-metric small[\s\S]*grid-column: 2[\s\S]*line-height: 1\.2[\s\S]*@media[\s\S]*\.army-intelligence-metric small/,
+  'Clickable metric helper text must render in the card and remain available in the mobile layout.',
 )
 assert.match(
   page,
