@@ -128,6 +128,16 @@ assert.match(
   /modelSearchFilter[\s\S]*doesUsageRowMatchSearch[\s\S]*doesProfileRowMatchSearch/,
   'Model Usage search must preserve troop/profile hierarchy instead of flattening decoded profiles.',
 )
+assert.doesNotMatch(
+  page,
+  /Dasyu|Dikpala|Asura|Swiss Guard|Orc Troop/i,
+  'Army Intelligence profile label presentation must not contain troop-specific naming logic.',
+)
+assert.match(
+  page,
+  /buildCanonicalProfileDisplayLabel[\s\S]*getPrimaryProfileWeapon[\s\S]*getProfileDisambiguationTokens/,
+  'Army Intelligence profile labels must be generated from decoded designation, primary weapon, and minimal decoded disambiguation metadata.',
+)
 assert.match(
   backend,
   /getArmyIntelligenceProfileAggregationLabel[\s\S]*entry && entry\.profile/,
@@ -782,26 +792,42 @@ const genericProfileRows = buildModelUsageRows([
     buildProfileEntry('Example Trooper', 'Example Trooper Hacker', 20, 'LI', {
       equipment: ['Assault Hacking Device'],
       skills: ['Hacker'],
+      weapons: ['Combi Rifle', 'Pistol', 'CC Weapon'],
     }),
     buildProfileEntry('Example Trooper', 'Hacker', 21, 'LI', {
       equipment: ['Killer Hacking Device'],
       skills: ['Hacker'],
+      weapons: ['Combi Rifle', 'Pistol', 'CC Weapon'],
     }),
     buildProfileEntry('Future Release Unit', 'Future Release Unit Long Range Profile', 32, 'MI', {
       weapons: ['Precision Rifle'],
+    }),
+    buildProfileEntry('Weapon Platform', 'Weapon Platform Heavy Machine Gun', 28, 'LI', {
+      weapons: ['Heavy Machine Gun', 'Pistol', 'CC Weapon'],
+    }),
+    buildProfileEntry('Generic Chassis', 'Generic Chassis', 18, 'REM', {
+      weapons: ['AP Submachine Gun', 'Pistol', 'Flash Pulse'],
     }),
   ],
   [
     buildProfileEntry('Example Trooper', 'Example Trooper Hacker', 20, 'LI', {
       equipment: ['Assault Hacking Device'],
       skills: ['Hacker'],
+      weapons: ['Combi Rifle', 'Pistol', 'CC Weapon'],
     }),
     buildProfileEntry('Example Trooper', 'Hacker', 21, 'LI', {
       equipment: ['Killer Hacking Device'],
       skills: ['Hacker'],
+      weapons: ['Combi Rifle', 'Pistol', 'CC Weapon'],
     }),
     buildProfileEntry('Future Release Unit', 'Future Release Unit Long Range Profile', 32, 'MI', {
       weapons: ['Precision Rifle'],
+    }),
+    buildProfileEntry('Weapon Platform', 'Weapon Platform Heavy Machine Gun', 28, 'LI', {
+      weapons: ['Heavy Machine Gun', 'Pistol', 'CC Weapon'],
+    }),
+    buildProfileEntry('Generic Chassis', 'Generic Chassis', 18, 'REM', {
+      weapons: ['AP Submachine Gun', 'Pistol', 'Flash Pulse'],
     }),
   ],
 ])
@@ -1091,8 +1117,13 @@ assert.equal(
 )
 assert.deepEqual(
   exampleTrooperGroup.profiles.map((row) => row.profileDisplayLabel),
-  ['Hacker (Assault Hacking Device)', 'Hacker (Killer Hacking Device)'],
-  'Duplicate concise profile labels must expand only as far as needed using canonical decoded metadata.',
+  ['Hacker (Assault Hacking Device) — Combi Rifle', 'Hacker (Killer Hacking Device) — Combi Rifle'],
+  'Duplicate profile labels must expand only as far as needed while preserving designation plus primary weapon.',
+)
+assert.deepEqual(
+  exampleTrooperGroup.profiles.map((row) => row.profileDisplayLabel).every((label) => label.includes(' — Combi Rifle')),
+  true,
+  'Generic profile labels must follow the designation then primary weapon hierarchy when decoded weapons exist.',
 )
 assert.deepEqual(
   buildUsageGroups(filterAndSortModelUsage(genericProfileRows, {
@@ -1103,14 +1134,26 @@ assert.deepEqual(
     troopType: '',
     weapon: '',
   })).map((group) => [group.name, group.profiles.map((row) => row.profileDisplayLabel)]),
-  [['Example Trooper', ['Hacker']]],
+  [['Example Trooper', ['Hacker — Combi Rifle']]],
   'Searching by decoded disambiguation metadata must reveal the matching profile before group labels are resolved.',
 )
 const futureReleaseGroup = genericProfileGroups.find((group) => group.name === 'Future Release Unit')
 assert.deepEqual(
   futureReleaseGroup?.profiles.map((row) => row.profileDisplayLabel),
-  ['Long Range Profile'],
-  'New decoded profiles must automatically remove repeated troop context without manual mappings.',
+  ['Long Range Profile — Precision Rifle'],
+  'New decoded profiles must automatically combine decoded designation and primary weapon without manual mappings.',
+)
+const weaponPlatformGroup = genericProfileGroups.find((group) => group.name === 'Weapon Platform')
+assert.deepEqual(
+  weaponPlatformGroup?.profiles.map((row) => row.profileDisplayLabel),
+  ['Heavy Machine Gun'],
+  'Weapon-only profiles must display the primary decoded weapon and ignore generic sidearms.',
+)
+const genericChassisGroup = genericProfileGroups.find((group) => group.name === 'Generic Chassis')
+assert.deepEqual(
+  genericChassisGroup?.profiles.map((row) => row.profileDisplayLabel),
+  ['AP Submachine Gun'],
+  'Profiles whose decoded profile equals the troop name must use the primary decoded weapon instead of repeating troop context.',
 )
 assert.equal(
   genericProfileGroups.flatMap((group) => group.profiles).some((row) =>
@@ -2793,7 +2836,16 @@ function countNormalizedLabels(labels) {
 
 function getUsageProfileBaseLabel(row, troopName) {
   const canonicalProfile = String(row.profileKey || row.profile || row.profileLabel || row.name || '').trim()
-  return removeTroopNamePrefix(canonicalProfile, troopName)
+  const designation = getUsageProfileDesignation(canonicalProfile, troopName)
+  return buildCanonicalProfileDisplayLabel(designation, row)
+}
+
+function getUsageProfileDesignation(profile, troopName) {
+  const designation = removeTroopNamePrefix(profile, troopName)
+
+  return normalizeProfileIdentityToken(designation) === normalizeProfileIdentityToken(troopName)
+    ? ''
+    : designation
 }
 
 function getShortestUniqueProfileDisplayLabel(row, rows, troopName, baseLabel) {
@@ -2810,10 +2862,16 @@ function getShortestUniqueProfileDisplayLabel(row, rows, troopName, baseLabel) {
 
 function buildProfileDisplayLabelCandidates(row, troopName, baseLabel) {
   const labels = [baseLabel]
-  const metadataTokens = getProfileMetadataTokens(row)
+  const designation = getUsageProfileDesignation(String(row.profileKey || row.profile || row.profileLabel || '').trim(), troopName)
+  const primaryWeapon = getPrimaryProfileWeapon(row)
+  const metadataTokens = getProfileDisambiguationTokens(row, designation || baseLabel, primaryWeapon)
 
   metadataTokens.forEach((token, index) => {
-    labels.push(`${baseLabel} (${metadataTokens.slice(0, index + 1).join(', ')})`)
+    labels.push(buildCanonicalProfileDisplayLabel(
+      formatProfileDesignationWithMetadata(designation || baseLabel, metadataTokens.slice(0, index + 1)),
+      row,
+      primaryWeapon,
+    ))
   })
 
   const canonicalProfile = removeTroopNamePrefix(String(row.profileKey || row.profile || '').trim(), troopName)
@@ -2839,6 +2897,89 @@ function buildProfileDisplayLabelCandidates(row, troopName, baseLabel) {
   return labels
 }
 
+function buildCanonicalProfileDisplayLabel(designation, row, primaryWeapon = getPrimaryProfileWeapon(row)) {
+  const cleanDesignation = removePrimaryWeaponFromDesignation(designation, primaryWeapon)
+
+  if (!primaryWeapon) {
+    return cleanDesignation || String(designation || '').trim() || row.profileLabel || row.name
+  }
+
+  if (!cleanDesignation) {
+    return primaryWeapon
+  }
+
+  return `${cleanDesignation} — ${primaryWeapon}`
+}
+
+function formatProfileDesignationWithMetadata(designation, metadataTokens) {
+  const cleanDesignation = String(designation || '').trim()
+  const uniqueMetadata = metadataTokens
+    .map((token) => String(token || '').trim())
+    .filter(Boolean)
+    .filter((token) => normalizeSearchToken(token) !== normalizeSearchToken(cleanDesignation))
+
+  if (uniqueMetadata.length === 0) {
+    return cleanDesignation
+  }
+
+  return `${cleanDesignation} (${uniqueMetadata.join(', ')})`
+}
+
+function removePrimaryWeaponFromDesignation(designation, primaryWeapon) {
+  const cleanDesignation = String(designation || '').trim()
+
+  if (!cleanDesignation || !primaryWeapon) {
+    return cleanDesignation
+  }
+
+  const normalizedDesignation = normalizeProfileIdentityToken(cleanDesignation)
+  const normalizedWeapon = normalizeProfileIdentityToken(primaryWeapon)
+
+  if (normalizedDesignation === normalizedWeapon || normalizedWeapon.includes(normalizedDesignation)) {
+    return ''
+  }
+
+  if (!normalizedDesignation.includes(normalizedWeapon)) {
+    return cleanDesignation
+  }
+
+  return cleanDesignation
+    .split(/\s+/)
+    .filter((part) => !normalizedWeapon.split(' ').includes(normalizeProfileIdentityToken(part)))
+    .join(' ')
+    .trim()
+}
+
+function getPrimaryProfileWeapon(row) {
+  return rowWeapons(row)
+    .map((weapon) => String(weapon || '').trim())
+    .filter(Boolean)
+    .find((weapon) => !isGenericProfileWeapon(weapon)) || ''
+}
+
+function isGenericProfileWeapon(weapon) {
+  const normalizedWeapon = normalizeProfileIdentityToken(weapon)
+
+  return normalizedWeapon === '' ||
+    normalizedWeapon === 'cc weapon' ||
+    normalizedWeapon.endsWith(' cc weapon') ||
+    normalizedWeapon === 'knife' ||
+    normalizedWeapon === 'pistol' ||
+    normalizedWeapon === 'flash pulse' ||
+    normalizedWeapon === 'gizmokit'
+}
+
+function rowWeapons(row) {
+  return Array.isArray(row.weapons) ? row.weapons : []
+}
+
+function normalizeProfileIdentityToken(value) {
+  return normalizeSearchToken(value)
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
 function getProfileMetadataTokens(row) {
   const tokens = new Set()
 
@@ -2851,6 +2992,20 @@ function getProfileMetadataTokens(row) {
   })
 
   return Array.from(tokens)
+}
+
+function getProfileDisambiguationTokens(row, designation, primaryWeapon) {
+  const normalizedDesignation = normalizeProfileIdentityToken(designation)
+  const normalizedPrimaryWeapon = normalizeProfileIdentityToken(primaryWeapon)
+
+  return getProfileMetadataTokens(row).filter((token) => {
+    const normalizedToken = normalizeProfileIdentityToken(token)
+
+    return normalizedToken &&
+      normalizedToken !== normalizedDesignation &&
+      normalizedToken !== normalizedPrimaryWeapon &&
+      !isGenericProfileWeapon(token)
+  })
 }
 
 function getUsageProfileDisplayLabel(row) {

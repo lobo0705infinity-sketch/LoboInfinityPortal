@@ -2041,7 +2041,16 @@ function countNormalizedLabels(labels: string[]) {
 
 function getUsageProfileBaseLabel(row: UsageRow, troopName: string) {
   const canonicalProfile = (row.profileKey || row.profile || row.profileLabel || row.name).trim()
-  return removeTroopNamePrefix(canonicalProfile, troopName)
+  const designation = getUsageProfileDesignation(canonicalProfile, troopName)
+  return buildCanonicalProfileDisplayLabel(designation, row)
+}
+
+function getUsageProfileDesignation(profile: string, troopName: string) {
+  const designation = removeTroopNamePrefix(profile, troopName)
+
+  return normalizeProfileIdentityToken(designation) === normalizeProfileIdentityToken(troopName)
+    ? ''
+    : designation
 }
 
 function getShortestUniqueProfileDisplayLabel(
@@ -2063,10 +2072,16 @@ function getShortestUniqueProfileDisplayLabel(
 
 function buildProfileDisplayLabelCandidates(row: UsageRow, troopName: string, baseLabel: string) {
   const labels: string[] = [baseLabel]
-  const metadataTokens = getProfileMetadataTokens(row)
+  const designation = getUsageProfileDesignation((row.profileKey || row.profile || row.profileLabel || '').trim(), troopName)
+  const primaryWeapon = getPrimaryProfileWeapon(row)
+  const metadataTokens = getProfileDisambiguationTokens(row, designation || baseLabel, primaryWeapon)
 
   metadataTokens.forEach((_, index) => {
-    labels.push(`${baseLabel} (${metadataTokens.slice(0, index + 1).join(', ')})`)
+    labels.push(buildCanonicalProfileDisplayLabel(
+      formatProfileDesignationWithMetadata(designation || baseLabel, metadataTokens.slice(0, index + 1)),
+      row,
+      primaryWeapon,
+    ))
   })
 
   const canonicalProfile = removeTroopNamePrefix((row.profileKey || row.profile || '').trim(), troopName)
@@ -2092,6 +2107,89 @@ function buildProfileDisplayLabelCandidates(row: UsageRow, troopName: string, ba
   return labels
 }
 
+function buildCanonicalProfileDisplayLabel(
+  designation: string,
+  row: UsageRow,
+  primaryWeapon = getPrimaryProfileWeapon(row),
+) {
+  const cleanDesignation = removePrimaryWeaponFromDesignation(designation, primaryWeapon)
+
+  if (!primaryWeapon) {
+    return cleanDesignation || designation.trim() || row.profileLabel || row.name
+  }
+
+  if (!cleanDesignation) {
+    return primaryWeapon
+  }
+
+  return `${cleanDesignation} — ${primaryWeapon}`
+}
+
+function formatProfileDesignationWithMetadata(designation: string, metadataTokens: string[]) {
+  const cleanDesignation = designation.trim()
+  const uniqueMetadata = metadataTokens
+    .map((token) => token.trim())
+    .filter(Boolean)
+    .filter((token) => normalizeSearchToken(token) !== normalizeSearchToken(cleanDesignation))
+
+  if (uniqueMetadata.length === 0) {
+    return cleanDesignation
+  }
+
+  return `${cleanDesignation} (${uniqueMetadata.join(', ')})`
+}
+
+function removePrimaryWeaponFromDesignation(designation: string, primaryWeapon: string) {
+  const cleanDesignation = designation.trim()
+
+  if (!cleanDesignation || !primaryWeapon) {
+    return cleanDesignation
+  }
+
+  const normalizedDesignation = normalizeProfileIdentityToken(cleanDesignation)
+  const normalizedWeapon = normalizeProfileIdentityToken(primaryWeapon)
+
+  if (normalizedDesignation === normalizedWeapon || normalizedWeapon.includes(normalizedDesignation)) {
+    return ''
+  }
+
+  if (!normalizedDesignation.includes(normalizedWeapon)) {
+    return cleanDesignation
+  }
+
+  return cleanDesignation
+    .split(/\s+/)
+    .filter((part) => !normalizedWeapon.split(' ').includes(normalizeProfileIdentityToken(part)))
+    .join(' ')
+    .trim()
+}
+
+function getPrimaryProfileWeapon(row: UsageRow) {
+  return rowWeapons(row)
+    .map((weapon) => weapon.trim())
+    .filter(Boolean)
+    .find((weapon) => !isGenericProfileWeapon(weapon)) || ''
+}
+
+function isGenericProfileWeapon(weapon: string) {
+  const normalizedWeapon = normalizeProfileIdentityToken(weapon)
+
+  return normalizedWeapon === '' ||
+    normalizedWeapon === 'cc weapon' ||
+    normalizedWeapon.endsWith(' cc weapon') ||
+    normalizedWeapon === 'knife' ||
+    normalizedWeapon === 'pistol' ||
+    normalizedWeapon === 'flash pulse' ||
+    normalizedWeapon === 'gizmokit'
+}
+
+function normalizeProfileIdentityToken(value: string) {
+  return normalizeSearchToken(value)
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
 function getProfileMetadataTokens(row: UsageRow) {
   const tokens = new Set<string>()
 
@@ -2104,6 +2202,20 @@ function getProfileMetadataTokens(row: UsageRow) {
   })
 
   return Array.from(tokens)
+}
+
+function getProfileDisambiguationTokens(row: UsageRow, designation: string, primaryWeapon: string) {
+  const normalizedDesignation = normalizeProfileIdentityToken(designation)
+  const normalizedPrimaryWeapon = normalizeProfileIdentityToken(primaryWeapon)
+
+  return getProfileMetadataTokens(row).filter((token) => {
+    const normalizedToken = normalizeProfileIdentityToken(token)
+
+    return normalizedToken &&
+      normalizedToken !== normalizedDesignation &&
+      normalizedToken !== normalizedPrimaryWeapon &&
+      !isGenericProfileWeapon(token)
+  })
 }
 
 function getUsageProfileDisplayLabel(row: UsageRow) {
