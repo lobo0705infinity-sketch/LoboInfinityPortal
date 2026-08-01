@@ -388,50 +388,68 @@ function PageHeader({ eventScoped }: { eventScoped: boolean }) {
 function CommunityHubSection() {
   const { settings } = useSettings()
   const discord = getDiscordCommunityLink(settings)
+  const [communityHubCollapsed, setCommunityHubCollapsed] = useState(() => {
+    if (typeof window === 'undefined') {
+      return false
+    }
+
+    return window.localStorage.getItem('players-community-hub-collapsed') === 'true'
+  })
+
+  const toggleCommunityHub = () => {
+    setCommunityHubCollapsed((collapsed) => {
+      const nextCollapsed = !collapsed
+      window.localStorage.setItem(
+        'players-community-hub-collapsed',
+        String(nextCollapsed),
+      )
+      return nextCollapsed
+    })
+  }
 
   if (!discord) {
     return null
   }
 
-  const hubUses = [
-    'Find opponents.',
-    'Organize games.',
-    'Follow league standings.',
-    'Join Team Tournaments.',
-    'Discuss missions and tactics.',
-    'Get help with lists and rules.',
-    'Stay informed about upcoming events.',
-  ]
-
   return (
-    <section className="community-hub-feature panel" aria-labelledby="community-hub-title">
-      <div className="community-hub-feature-header">
-        <div className="community-hub-discord-icon" aria-hidden="true">
+    <section
+      className={
+        communityHubCollapsed
+          ? 'community-hub-feature players-community-hub panel is-collapsed'
+          : 'community-hub-feature players-community-hub panel'
+      }
+      aria-labelledby="community-hub-title"
+    >
+      <div className="players-community-hub-main">
+        <span className="players-community-hub-icon" aria-hidden="true">
           <PortalIcon name="discord" />
-        </div>
+        </span>
         <div>
           <p className="eyebrow">Community Hub</p>
-          <h2 id="community-hub-title">The Community Starts Here</h2>
-          <p>
-            Whether you're a veteran or completely new to Infinity, Discord is
-            the best place to connect with the Lobo Infinity League.
-          </p>
+          <h2 id="community-hub-title">Community Hub</h2>
+          <p>Coordinate games and league activity with the Lobo community.</p>
         </div>
       </div>
-      <div className="community-hub-services">
-        <article className="community-hub-service">
-          <div>
-            <h3>Use it to:</h3>
-            <ul>
-              {hubUses.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-          <DiscordCommunityLink className="page-header-action">
-            Join Discord
-          </DiscordCommunityLink>
-        </article>
+      {communityHubCollapsed ? null : (
+        <ul className="players-community-checklist" aria-label="Community Hub benefits">
+          <li>Find opponents</li>
+          <li>League announcements</li>
+          <li>Strategy discussion</li>
+          <li>Team Tournaments</li>
+          <li>Army list advice</li>
+        </ul>
+      )}
+      <div className="players-community-actions">
+        <DiscordCommunityLink className="page-header-action players-discord-action" icon>
+          Join Discord
+        </DiscordCommunityLink>
+        <button
+          className="players-community-collapse"
+          onClick={toggleCommunityHub}
+          type="button"
+        >
+          {communityHubCollapsed ? 'Show' : 'Hide'}
+        </button>
       </div>
     </section>
   )

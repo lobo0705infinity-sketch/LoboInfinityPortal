@@ -90,14 +90,20 @@ const checks = [
       files.dashboard.includes('dashboard-community-card'),
   },
   {
-    label: 'Community page has a featured Community Hub with one primary Discord CTA',
+    label: 'Community page has a compact Community Hub with one primary Discord CTA',
     pass:
       files.players.includes('function CommunityHubSection()') &&
       files.players.includes('const discord = getDiscordCommunityLink(settings)') &&
       files.players.includes('if (!discord)') &&
-      files.players.includes('The Community Starts Here') &&
-      files.players.includes('community-hub-services') &&
-      countOccurrences(files.players, '<DiscordCommunityLink className="page-header-action">') === 1,
+      files.players.includes('players-community-hub') &&
+      files.players.includes('players-community-checklist') &&
+      files.players.includes('Find opponents') &&
+      files.players.includes('League announcements') &&
+      files.players.includes('Strategy discussion') &&
+      files.players.includes('Team Tournaments') &&
+      files.players.includes('Army list advice') &&
+      files.players.includes('players-community-hub-collapsed') &&
+      countOccurrences(files.players, '<DiscordCommunityLink className="page-header-action players-discord-action" icon>') === 1,
   },
   {
     label: 'Event Overview uses a small opponent coordination Discord callout',
