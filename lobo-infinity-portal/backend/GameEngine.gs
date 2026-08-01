@@ -47,7 +47,11 @@ const FORM = {
 
   PLAYER1_ARMY_CODE: 19,
 
-  PLAYER2_ARMY_CODE: 20
+  PLAYER2_ARMY_CODE: 20,
+
+  WINNER_ARMY_LIST_ID: 21,
+
+  LOSER_ARMY_LIST_ID: 22
 
 };
 
@@ -231,7 +235,8 @@ function getGameEngineHeaders() {
     "Event ID",
     "Game Type",
     "Game Result",
-    "Army Code"
+    "Army Code",
+    "Army List ID"
   ]];
 
 }
@@ -258,7 +263,9 @@ function getGameAnalyticsHeaders() {
     "Game Type",
     "Game Result",
     "Winner Army Code",
-    "Loser Army Code"
+    "Loser Army Code",
+    "Winner Army List ID",
+    "Loser Army List ID"
   ]];
 
 }
@@ -347,6 +354,13 @@ function buildPlayerRow(row, playerNumber, winner) {
         ? "Player 1 Victory"
         : "Player 2 Victory";
 
+  const armyListId =
+    getGameEnginePlayerArmyListId(
+      row,
+      playerNumber,
+      winner
+    );
+
   return [
 
     row[FORM.DIVISION],
@@ -389,7 +403,9 @@ function buildPlayerRow(row, playerNumber, winner) {
           row,
           GAME_ENGINE_FORM_HEADERS.PLAYER2_ARMY_CODE,
           FORM.PLAYER2_ARMY_CODE
-        )
+        ),
+
+    armyListId
 
   ];
 
@@ -652,6 +668,18 @@ function buildAnalyticsRow(row, winner) {
         ? "Player 1 Victory"
         : "Player 2 Victory";
 
+  const winnerArmyListId =
+    getGameEngineFormArmyListId(
+      row,
+      FORM.WINNER_ARMY_LIST_ID
+    );
+
+  const loserArmyListId =
+    getGameEngineFormArmyListId(
+      row,
+      FORM.LOSER_ARMY_LIST_ID
+    );
+
   return [
 
     row[FORM.DATE],
@@ -692,7 +720,11 @@ function buildAnalyticsRow(row, winner) {
 
     winnerArmyCode,
 
-    loserArmyCode
+    loserArmyCode,
+
+    winnerArmyListId,
+
+    loserArmyListId
 
   ];
 
@@ -749,6 +781,40 @@ function normalizeGameType(value) {
     return "all";
 
   return "league";
+
+}
+
+function getGameEnginePlayerArmyListId(row, playerNumber, winner) {
+
+  if (winner === 0) {
+    return playerNumber === 1
+      ? getGameEngineFormArmyListId(row, FORM.WINNER_ARMY_LIST_ID)
+      : getGameEngineFormArmyListId(row, FORM.LOSER_ARMY_LIST_ID);
+  }
+
+  const playerWon =
+    winner === playerNumber;
+
+  return playerWon
+    ? getGameEngineFormArmyListId(row, FORM.WINNER_ARMY_LIST_ID)
+    : getGameEngineFormArmyListId(row, FORM.LOSER_ARMY_LIST_ID);
+
+}
+
+function getGameEngineFormArmyListId(row, column) {
+
+  if (
+    !row ||
+    row.length <= column
+  )
+    return "";
+
+  const id =
+    Number(row[column]) || 0;
+
+  return id > 0
+    ? String(id)
+    : "";
 
 }
 function buildGameAnalyticsRows(formRows) {

@@ -106,6 +106,26 @@ function submitLeagueResult(e) {
     if (playerFaction === "" || opponentFaction === "")
       return resultSubmissionFailure("Both factions are required.");
 
+    const playerArmyList =
+      validateResultSubmissionArmyListId(
+        params.playerArmyListId,
+        player,
+        playerFaction
+      );
+
+    if (!playerArmyList.valid)
+      return resultSubmissionFailure(playerArmyList.error);
+
+    const opponentArmyList =
+      validateResultSubmissionArmyListId(
+        params.opponentArmyListId,
+        opponent,
+        opponentFaction
+      );
+
+    if (!opponentArmyList.valid)
+      return resultSubmissionFailure(opponentArmyList.error);
+
     const expectedWinner =
       determineLeagueSubmissionWinner(
         player,
@@ -156,6 +176,14 @@ function submitLeagueResult(e) {
         : playerIsWinner
           ? "Player 1 Victory"
           : "Player 2 Victory";
+    row[FORM.WINNER_ARMY_LIST_ID] =
+      resultIsDraw || playerIsWinner
+        ? playerArmyList.id
+        : opponentArmyList.id;
+    row[FORM.LOSER_ARMY_LIST_ID] =
+      resultIsDraw || playerIsWinner
+        ? opponentArmyList.id
+        : playerArmyList.id;
 
     const sheet =
       SpreadsheetApp
@@ -167,6 +195,8 @@ function submitLeagueResult(e) {
 
     const armyCodeColumns =
       ensureResultSubmissionArmyCodeColumns(sheet);
+
+    ensureResultSubmissionArmyListHeaders(sheet);
 
     row[armyCodeColumns.player1ArmyCode] =
       getResultSubmissionString(params.player1ArmyCode);
@@ -183,7 +213,9 @@ function submitLeagueResult(e) {
         player: player,
         opponent: opponent,
         mission: row[FORM.MISSION],
-        result: row[FORM.GAME_RESULT]
+        result: row[FORM.GAME_RESULT],
+        winnerArmyListId: row[FORM.WINNER_ARMY_LIST_ID],
+        loserArmyListId: row[FORM.LOSER_ARMY_LIST_ID]
       }
     );
 
@@ -247,6 +279,26 @@ function submitCasualResult(e) {
 
     if (opponentFaction === "")
       return resultSubmissionFailure("Opponent faction is required.");
+
+    const playerArmyList =
+      validateResultSubmissionArmyListId(
+        params.playerArmyListId,
+        player,
+        playerFaction
+      );
+
+    if (!playerArmyList.valid)
+      return resultSubmissionFailure(playerArmyList.error);
+
+    const opponentArmyList =
+      validateResultSubmissionArmyListId(
+        params.opponentArmyListId,
+        opponent,
+        opponentFaction
+      );
+
+    if (!opponentArmyList.valid)
+      return resultSubmissionFailure(opponentArmyList.error);
 
     if (getResultSubmissionString(params.mission) === "")
       return resultSubmissionFailure("Mission is required.");
@@ -336,6 +388,14 @@ function submitCasualResult(e) {
         : playerIsWinner
           ? "Player 1 Victory"
           : "Player 2 Victory";
+    row[FORM.WINNER_ARMY_LIST_ID] =
+      resultIsDraw || playerIsWinner
+        ? playerArmyList.id
+        : opponentArmyList.id;
+    row[FORM.LOSER_ARMY_LIST_ID] =
+      resultIsDraw || playerIsWinner
+        ? opponentArmyList.id
+        : playerArmyList.id;
 
     const sheet =
       SpreadsheetApp
@@ -347,6 +407,8 @@ function submitCasualResult(e) {
 
     const armyCodeColumns =
       ensureResultSubmissionArmyCodeColumns(sheet);
+
+    ensureResultSubmissionArmyListHeaders(sheet);
 
     row[armyCodeColumns.player1ArmyCode] =
       getResultSubmissionString(params.player1ArmyCode);
@@ -363,7 +425,9 @@ function submitCasualResult(e) {
         player: player,
         opponent: opponent,
         mission: row[FORM.MISSION],
-        result: row[FORM.GAME_RESULT]
+        result: row[FORM.GAME_RESULT],
+        winnerArmyListId: row[FORM.WINNER_ARMY_LIST_ID],
+        loserArmyListId: row[FORM.LOSER_ARMY_LIST_ID]
       }
     );
 
@@ -382,6 +446,144 @@ function submitCasualResult(e) {
       gameType: "casual",
       player: player,
       opponent: opponent
+    });
+  });
+
+}
+
+function linkHistoricalArmyLists(e) {
+
+  return requireApiPermission(e, "viewOperations", function(auth) {
+    const params =
+      getApiParameters(e);
+
+    const gameId =
+      Number(params.gameId) || 0;
+
+    if (gameId <= 0)
+      return resultSubmissionFailure("Game ID is required.");
+
+    const games =
+      typeof getAllRecentGameObjectsForEvent === "function"
+        ? getAllRecentGameObjectsForEvent("all", "all")
+        : [];
+
+    const game =
+      games.filter(function(candidate) {
+        return Number(candidate.id) === gameId;
+      })[0] || null;
+
+    if (!game)
+      return resultSubmissionFailure("Game was not found.");
+
+    const winnerArmyList =
+      validateResultSubmissionArmyListId(
+        params.winnerArmyListId,
+        game.winner,
+        game.winnerFaction
+      );
+
+    if (!winnerArmyList.valid)
+      return resultSubmissionFailure(winnerArmyList.error);
+
+    const loserArmyList =
+      validateResultSubmissionArmyListId(
+        params.loserArmyListId,
+        game.loser,
+        game.loserFaction
+      );
+
+    if (!loserArmyList.valid)
+      return resultSubmissionFailure(loserArmyList.error);
+
+    const sheet =
+      SpreadsheetApp
+        .getActive()
+        .getSheetByName(CONFIG.SHEETS.FORM);
+
+    if (!sheet)
+      return resultSubmissionFailure("Result datastore was not found.");
+
+    ensureResultSubmissionArmyListHeaders(sheet);
+
+    const rowNumber =
+      getResultSubmissionFormRowNumberForGameId(gameId);
+
+    if (rowNumber <= 1)
+      return resultSubmissionFailure("Source game row was not found.");
+
+    const previousWinnerArmyListId =
+      getResultSubmissionString(
+        sheet
+          .getRange(rowNumber, FORM.WINNER_ARMY_LIST_ID + 1)
+          .getValue()
+      );
+
+    const previousLoserArmyListId =
+      getResultSubmissionString(
+        sheet
+          .getRange(rowNumber, FORM.LOSER_ARMY_LIST_ID + 1)
+          .getValue()
+      );
+
+    sheet
+      .getRange(rowNumber, FORM.WINNER_ARMY_LIST_ID + 1)
+      .setValue(winnerArmyList.id);
+
+    sheet
+      .getRange(rowNumber, FORM.LOSER_ARMY_LIST_ID + 1)
+      .setValue(loserArmyList.id);
+
+    recordArmyListLinkAudit({
+      commissioner:
+        auth.user.playerDisplayName ||
+        getCanonicalPlayerFromUser(auth.user) ||
+        auth.user.displayName ||
+        auth.user.email ||
+        "Commissioner",
+      eventId: game.eventId || "",
+      gameId: gameId,
+      loser: game.loser,
+      loserArmyListId: loserArmyList.id,
+      previousLoserArmyListId: previousLoserArmyListId,
+      previousWinnerArmyListId: previousWinnerArmyListId,
+      reason: getResultSubmissionString(params.reason),
+      winner: game.winner,
+      winnerArmyListId: winnerArmyList.id
+    });
+
+    if (typeof rebuildGameEngine === "function")
+      rebuildGameEngine();
+
+    invalidateResultSubmissionCaches();
+
+    return jsonOutput({
+      success: true,
+      status: "Linked",
+      gameId: gameId,
+      winnerArmyListId: winnerArmyList.id,
+      loserArmyListId: loserArmyList.id
+    });
+  });
+
+}
+
+function getArmyListLinkCandidates(e) {
+
+  return requireApiPermission(e, "viewOperations", function() {
+    return jsonOutput({
+      success: true,
+      games:
+        typeof getAllRecentGameObjectsForEvent === "function"
+          ? getAllRecentGameObjectsForEvent("all", "all")
+          : [],
+      armyLists:
+        typeof getArmyListObjects === "function"
+          ? getArmyListObjects()
+            .filter(function(list) {
+              return list.approved;
+            })
+          : []
     });
   });
 
@@ -453,6 +655,150 @@ function ensureResultSubmissionArmyCodeColumns(sheet) {
 
 }
 
+function validateResultSubmissionArmyListId(value, player, faction) {
+
+  const id =
+    Number(value) || 0;
+
+  if (id <= 0)
+    return {
+      valid: true,
+      id: "",
+      list: null
+    };
+
+  const list =
+    getResultSubmissionApprovedArmyListById(id);
+
+  if (!list)
+    return {
+      valid: false,
+      id: "",
+      list: null,
+      error: "Selected Army List must be an approved submitted list."
+    };
+
+  if (
+    normalizeResultSubmissionValue(list.player) !==
+    normalizeResultSubmissionValue(player)
+  )
+    return {
+      valid: false,
+      id: "",
+      list: null,
+      error: "Selected Army List does not belong to the submitted player."
+    };
+
+  if (!resultSubmissionArmyListMatchesFaction(list, faction))
+    return {
+      valid: false,
+      id: "",
+      list: null,
+      error: "Selected Army List does not match the submitted faction or sectorial."
+    };
+
+  return {
+    valid: true,
+    id: String(id),
+    list: list
+  };
+
+}
+
+function getResultSubmissionFormRowNumberForGameId(gameId) {
+
+  const sheet =
+    SpreadsheetApp
+      .getActive()
+      .getSheetByName(CONFIG.SHEETS.FORM);
+
+  if (!sheet)
+    return 0;
+
+  const values =
+    sheet
+      .getDataRange()
+      .getValues();
+
+  if (values.length <= 1)
+    return 0;
+
+  values.shift();
+
+  let validGameId =
+    0;
+
+  for (let index = 0; index < values.length; index += 1) {
+    if (!validateGame(values[index]))
+      continue;
+
+    validGameId += 1;
+
+    if (validGameId === Number(gameId))
+      return index + 2;
+  }
+
+  return 0;
+
+}
+
+function getResultSubmissionApprovedArmyListById(id) {
+
+  if (typeof getArmyListObjects !== "function")
+    return null;
+
+  return getArmyListObjects()
+    .filter(function(list) {
+      return list.approved && Number(list.id) === Number(id);
+    })[0] || null;
+
+}
+
+function resultSubmissionArmyListMatchesFaction(list, faction) {
+
+  const selected =
+    canonicalizeArmyName(faction);
+
+  if (!selected)
+    return false;
+
+  const listFaction =
+    canonicalizeArmyName(list.faction);
+
+  const listSectorial =
+    canonicalizeArmyName(list.sectorial);
+
+  return (
+    selected === listFaction ||
+    selected === listSectorial ||
+    canonicalizeArmyParentFaction(selected) === listFaction
+  );
+
+}
+
+function ensureResultSubmissionArmyListHeaders(sheet) {
+
+  const required = [
+    {
+      column: FORM.WINNER_ARMY_LIST_ID,
+      header: "Winner Army List ID"
+    },
+    {
+      column: FORM.LOSER_ARMY_LIST_ID,
+      header: "Loser Army List ID"
+    }
+  ];
+
+  required.forEach(function(item) {
+    const cell =
+      sheet.getRange(1, item.column + 1);
+
+    if (getResultSubmissionString(cell.getValue()) === "")
+      cell.setValue(item.header);
+  });
+
+}
+
 function appendCanonicalGameSubmissionRecord(record) {
 
   const sheet =
@@ -465,6 +811,8 @@ function appendCanonicalGameSubmissionRecord(record) {
 
   const armyCodeColumns =
     ensureResultSubmissionArmyCodeColumns(sheet);
+
+  ensureResultSubmissionArmyListHeaders(sheet);
 
   const sourceColumns =
     ensureResultSubmissionCanonicalColumns(sheet);
@@ -537,6 +885,10 @@ function appendCanonicalGameSubmissionRecord(record) {
     getResultSubmissionString(record.player1ArmyCode);
   row[armyCodeColumns.player2ArmyCode] =
     getResultSubmissionString(record.player2ArmyCode);
+  row[FORM.WINNER_ARMY_LIST_ID] =
+    getResultSubmissionString(record.winnerArmyListId);
+  row[FORM.LOSER_ARMY_LIST_ID] =
+    getResultSubmissionString(record.loserArmyListId);
   row[sourceColumns.sourceType] =
     sourceType;
   row[sourceColumns.sourceResultId] =
@@ -566,7 +918,7 @@ function ensureResultSubmissionCanonicalColumns(sheet) {
       1,
       Math.max(
         sheet.getLastColumn(),
-        FORM.PLAYER2_ARMY_CODE + 1
+        FORM.LOSER_ARMY_LIST_ID + 1
       )
     );
 
@@ -771,6 +1123,8 @@ function recordResultSubmissionCommissionerAudit(context, gameType, details) {
       "Player 2",
       "Mission",
       "Result",
+      "Winner Army List ID",
+      "Loser Army List ID",
       "Override Used",
       "Reason"
     ]);
@@ -785,8 +1139,53 @@ function recordResultSubmissionCommissionerAudit(context, gameType, details) {
     details.opponent || "",
     details.mission || "",
     details.result || "",
+    details.winnerArmyListId || "",
+    details.loserArmyListId || "",
     context.override ? "TRUE" : "FALSE",
     context.reason || ""
+  ]);
+
+}
+
+function recordArmyListLinkAudit(details) {
+
+  const spreadsheet =
+    SpreadsheetApp.getActive();
+
+  let sheet =
+    spreadsheet.getSheetByName("Army List Link Audit");
+
+  if (!sheet) {
+    sheet =
+      spreadsheet.insertSheet("Army List Link Audit");
+
+    sheet.appendRow([
+      "Timestamp",
+      "Commissioner",
+      "Game ID",
+      "Event ID",
+      "Winner",
+      "Loser",
+      "Previous Winner Army List ID",
+      "Previous Loser Army List ID",
+      "Winner Army List ID",
+      "Loser Army List ID",
+      "Reason"
+    ]);
+  }
+
+  sheet.appendRow([
+    getResultSubmissionTimestamp(),
+    details.commissioner || "",
+    details.gameId || "",
+    details.eventId || "",
+    details.winner || "",
+    details.loser || "",
+    details.previousWinnerArmyListId || "",
+    details.previousLoserArmyListId || "",
+    details.winnerArmyListId || "",
+    details.loserArmyListId || "",
+    details.reason || ""
   ]);
 
 }
@@ -929,6 +1328,8 @@ function invalidateResultSubmissionCaches() {
     invalidatePortalCacheGroup("events");
     invalidatePortalCacheGroup("standings");
     invalidatePortalCacheGroup("players");
+    invalidatePortalCacheGroup("armyLists");
+    invalidatePortalCacheGroup("search");
   }
 
 }

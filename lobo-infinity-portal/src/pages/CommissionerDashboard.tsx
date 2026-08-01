@@ -329,6 +329,17 @@ function CommissionerDashboard() {
           </div>
           <Link to="/commissioner/game-center">Open Game Center</Link>
         </section>
+        <section className="panel event-manager-entry" aria-labelledby="army-list-links-entry-title">
+          <div>
+            <p className="eyebrow">Army Lists</p>
+            <h2 id="army-list-links-entry-title">Army List Links</h2>
+            <p>
+              Link approved Army Lists to historical game records for exact
+              future Competitive Intelligence measurement.
+            </p>
+          </div>
+          <Link to="/commissioner/army-list-links">Open Army List Links</Link>
+        </section>
         <section className="operations-grid" aria-label="Operations status">
         <LeagueHealthPanel data={data} />
         <SeasonStatusPanel data={data} />

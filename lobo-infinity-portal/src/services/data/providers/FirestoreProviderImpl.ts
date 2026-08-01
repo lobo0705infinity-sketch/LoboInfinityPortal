@@ -998,6 +998,7 @@ function normalizeRecentGame(id: string, data: DocumentData): RecentGame {
     loserDisplayName: readString(data, 'loserDisplayName'),
     loserArmyCode: readString(data, 'loserArmyCode'),
     loserFaction: readString(data, 'loserFaction'),
+    loserArmyListId: readString(data, 'loserArmyListId'),
     mission: readString(data, 'mission'),
     op: readString(data, 'op'),
     tp: readString(data, 'tp'),
@@ -1006,6 +1007,7 @@ function normalizeRecentGame(id: string, data: DocumentData): RecentGame {
     winnerDisplayName: readString(data, 'winnerDisplayName'),
     winnerArmyCode: readString(data, 'winnerArmyCode'),
     winnerFaction: readString(data, 'winnerFaction'),
+    winnerArmyListId: readString(data, 'winnerArmyListId'),
   }
 }
 

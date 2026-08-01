@@ -230,6 +230,8 @@ function buildNewsLinkedGame(gameId: number, news: CommissionerNewsItem[]): Rece
     loserFaction: '',
     winnerArmyCode: '',
     loserArmyCode: '',
+    winnerArmyListId: '',
+    loserArmyListId: '',
     mission: parsed.mission,
     tp: 'Not recorded',
     op: parsed.op,

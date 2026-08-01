@@ -161,6 +161,8 @@ export type LeagueResultSubmission = {
   opponentFaction: string
   player1ArmyCode?: string
   player2ArmyCode?: string
+  playerArmyListId: string
+  opponentArmyListId: string
   firstTurn: string
   bestMoment: string
   notes: string
@@ -771,6 +773,8 @@ export type RecentGame = {
   loserFaction: string
   winnerArmyCode: string
   loserArmyCode: string
+  winnerArmyListId: string
+  loserArmyListId: string
   mission: string
   tp: string
   op: string
@@ -1181,6 +1185,11 @@ export type SearchData = {
   players: DivisionStandings[]
   factions: FactionSummary[]
   missions: MissionSummary[]
+  games: RecentGame[]
+  armyLists: ArmyList[]
+}
+
+export type ArmyListLinkCandidates = {
   games: RecentGame[]
   armyLists: ArmyList[]
 }
@@ -2501,6 +2510,7 @@ export type ApiClient = {
     options?: ApiOptions,
   ) => Promise<SubmittedArmyListEntry[]>
   getGameCenter: (options?: ApiOptions) => Promise<GameCenterData>
+  getArmyListLinkCandidates: (options?: ApiOptions) => Promise<ArmyListLinkCandidates>
   correctGameScore: (
     request: GameScoreCorrectionRequest,
     options?: ApiOptions,
@@ -2667,6 +2677,15 @@ export type ApiClient = {
   ) => Promise<void>
   submitCasualResult: (
     submission: CasualResultSubmission,
+    options?: ApiOptions,
+  ) => Promise<void>
+  linkHistoricalArmyLists: (
+    params: {
+      gameId: number
+      winnerArmyListId: string
+      loserArmyListId: string
+      reason?: string
+    },
     options?: ApiOptions,
   ) => Promise<void>
   voteArmyList: (
@@ -2865,6 +2884,13 @@ export async function getGameCenter(
 ): Promise<GameCenterData> {
   const payload = await request('gameCenter', options)
   return normalizeGameCenterPayload(payload)
+}
+
+export async function getArmyListLinkCandidates(
+  options: ApiOptions = {},
+): Promise<ArmyListLinkCandidates> {
+  const payload = await request('armyListLinkCandidates', options)
+  return normalizeArmyListLinkCandidatesPayload(payload)
 }
 
 export async function correctGameScore(
@@ -3688,6 +3714,7 @@ export async function submitCasualResult(
     notes: submission.notes,
     opponent: submission.opponent,
     opponentFaction: submission.opponentFaction,
+    opponentArmyListId: submission.opponentArmyListId,
     opponentObjectivePoints: submission.opponentObjectivePoints,
     opponentTournamentPoints: submission.opponentTournamentPoints,
     opponentVictoryPoints: submission.opponentVictoryPoints,
@@ -3695,12 +3722,31 @@ export async function submitCasualResult(
     player1ArmyCode: submission.player1ArmyCode ?? '',
     player2ArmyCode: submission.player2ArmyCode ?? '',
     playerFaction: submission.playerFaction,
+    playerArmyListId: submission.playerArmyListId,
     playerObjectivePoints: submission.playerObjectivePoints,
     playerTournamentPoints: submission.playerTournamentPoints,
     playerVictoryPoints: submission.playerVictoryPoints,
     winner: submission.winner,
   })
   normalizeMutationPayload(payload, 'Casual result submission failed.')
+}
+
+export async function linkHistoricalArmyLists(
+  params: {
+    gameId: number
+    winnerArmyListId: string
+    loserArmyListId: string
+    reason?: string
+  },
+  options: ApiOptions = {},
+): Promise<void> {
+  const payload = await postRequest('linkHistoricalArmyLists', options, {
+    gameId: String(params.gameId),
+    loserArmyListId: params.loserArmyListId,
+    reason: params.reason ?? '',
+    winnerArmyListId: params.winnerArmyListId,
+  })
+  normalizeMutationPayload(payload, 'Army List link update failed.')
 }
 
 export async function voteArmyList(
@@ -3941,6 +3987,7 @@ export const apiClient: ApiClient = {
   getRecentGames,
   getSubmittedArmyListLibrary,
   getGameCenter,
+  getArmyListLinkCandidates,
   correctGameScore,
   getEvents,
   getStandings,
@@ -4003,6 +4050,7 @@ export const apiClient: ApiClient = {
   submitArmyList,
   submitCasualResult,
   submitLeagueResult,
+  linkHistoricalArmyLists,
   voteArmyList,
   getOperations,
   getOperationsSummary,
@@ -8218,6 +8266,8 @@ function normalizeRecentGame(item: unknown): RecentGame {
     loserFaction: getString(record, 'loserFaction'),
     winnerArmyCode: getString(record, 'winnerArmyCode'),
     loserArmyCode: getString(record, 'loserArmyCode'),
+    winnerArmyListId: getString(record, 'winnerArmyListId'),
+    loserArmyListId: getString(record, 'loserArmyListId'),
     mission: getRequiredString(record, 'mission'),
     tp: getString(record, 'tp'),
     op: getString(record, 'op'),
@@ -8228,6 +8278,19 @@ function normalizeRecentGame(item: unknown): RecentGame {
     teamBId: getString(record, 'teamBId') || undefined,
     teamAName: getString(record, 'teamAName') || undefined,
     teamBName: getString(record, 'teamBName') || undefined,
+  }
+}
+
+function normalizeArmyListLinkCandidatesPayload(payload: unknown): ArmyListLinkCandidates {
+  const record = asRecord(payload, 'Army list link candidates response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Army list link candidates failed.')
+  }
+
+  return {
+    games: getRequiredArray(record, 'games').map(normalizeRecentGame),
+    armyLists: getRequiredArray(record, 'armyLists').map(normalizeArmyList),
   }
 }
 

@@ -28,7 +28,9 @@ const RECENT_GAME_ANALYTICS_COLUMNS = {
   GAME_TYPE: "Game Type",
   GAME_RESULT: "Game Result",
   WINNER_ARMY_CODE: "Winner Army Code",
-  LOSER_ARMY_CODE: "Loser Army Code"
+  LOSER_ARMY_CODE: "Loser Army Code",
+  WINNER_ARMY_LIST_ID: "Winner Army List ID",
+  LOSER_ARMY_LIST_ID: "Loser Army List ID"
 };
 
 function getRecentGames(e) {
@@ -899,6 +901,8 @@ function buildRecentGameResponse(game) {
     loserFaction: game.loserFaction,
     winnerArmyCode: game.winnerArmyCode || "",
     loserArmyCode: game.loserArmyCode || "",
+    winnerArmyListId: game.winnerArmyListId || "",
+    loserArmyListId: game.loserArmyListId || "",
     gameResult:
       getRecentGameResult(game),
     mission: game.mission,
@@ -1071,6 +1075,16 @@ function getRecentGameColumns(headers) {
       getRecentGameOptionalColumn(
         headers,
         RECENT_GAME_ANALYTICS_COLUMNS.LOSER_ARMY_CODE
+      ),
+    winnerArmyListId:
+      getRecentGameOptionalColumn(
+        headers,
+        RECENT_GAME_ANALYTICS_COLUMNS.WINNER_ARMY_LIST_ID
+      ),
+    loserArmyListId:
+      getRecentGameOptionalColumn(
+        headers,
+        RECENT_GAME_ANALYTICS_COLUMNS.LOSER_ARMY_LIST_ID
       )
   };
 
@@ -1183,6 +1197,16 @@ function buildRecentGame(
       getRecentGameEventId(
         row,
         columns
+      ),
+    winnerArmyListId:
+      getRecentGameArmyListId(
+        row,
+        columns.winnerArmyListId
+      ),
+    loserArmyListId:
+      getRecentGameArmyListId(
+        row,
+        columns.loserArmyListId
       )
   };
 
@@ -1214,6 +1238,20 @@ function getRecentGameEventId(row, columns) {
     : getRecentGameString(
         row[columns.eventId]
       ) || EVENT_ENGINE_DEFAULT_EVENT_ID;
+
+}
+
+function getRecentGameArmyListId(row, column) {
+
+  if (column === -1)
+    return "";
+
+  const id =
+    Number(row[column]) || 0;
+
+  return id > 0
+    ? String(id)
+    : "";
 
 }
 

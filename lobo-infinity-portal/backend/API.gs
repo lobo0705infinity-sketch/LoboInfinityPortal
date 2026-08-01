@@ -204,6 +204,11 @@ function handleApiGet(e, action) {
         return getGameCenter(e);
       });
 
+    case "armyListLinkCandidates":
+      return requireApiPermission(e, "viewOperations", function() {
+        return getArmyListLinkCandidates(e);
+      });
+
     case "standings":
       return getCachedApiResponse(e, action, function() {
         return getStandings(e);
@@ -369,6 +374,11 @@ function handleApiGet(e, action) {
     case "diagnoseArmyList":
       return requireApiPermission(e, "viewOperations", function() {
         return diagnoseArmyList(e);
+      });
+
+    case "linkHistoricalArmyLists":
+      return requireApiPermission(e, "viewOperations", function() {
+        return linkHistoricalArmyLists(e);
       });
 
     case "validateArmyCode":

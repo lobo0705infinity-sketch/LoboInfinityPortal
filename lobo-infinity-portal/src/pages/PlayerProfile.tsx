@@ -1239,6 +1239,7 @@ function normalizePlayerRecentGame(item: unknown): RecentGame {
     loserDisplayName: getLocalString(record, 'loserDisplayName'),
     loserArmyCode: getLocalString(record, 'loserArmyCode'),
     loserFaction: getLocalString(record, 'loserFaction'),
+    loserArmyListId: getLocalString(record, 'loserArmyListId'),
     mission: getLocalString(record, 'mission'),
     op: getLocalString(record, 'op'),
     tp: getLocalString(record, 'tp'),
@@ -1247,6 +1248,7 @@ function normalizePlayerRecentGame(item: unknown): RecentGame {
     winnerDisplayName: getLocalString(record, 'winnerDisplayName'),
     winnerArmyCode: getLocalString(record, 'winnerArmyCode'),
     winnerFaction: getLocalString(record, 'winnerFaction'),
+    winnerArmyListId: getLocalString(record, 'winnerArmyListId'),
   }
 }
 

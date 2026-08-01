@@ -28,6 +28,7 @@ const ArmyLists = lazyRoute('ArmyLists', () => import('./pages/ArmyLists'))
 const ArmyCodeValidation = lazyRoute('ArmyCodeValidation', () => import('./pages/ArmyCodeValidation'))
 const AutomationCenter = lazyRoute('AutomationCenter', () => import('./pages/AutomationCenter'))
 const CommunityManager = lazyRoute('CommunityManager', () => import('./pages/CommunityManager'))
+const CommissionerArmyListLinks = lazyRoute('CommissionerArmyListLinks', () => import('./pages/CommissionerArmyListLinks'))
 const CommissionerDashboard = lazyRoute('CommissionerDashboard', () => import('./pages/CommissionerDashboard'))
 const CommissionerEvents = lazyRoute('CommissionerEvents', () => import('./pages/CommissionerEvents'))
 const CommissionerGameCenter = lazyRoute('CommissionerGameCenter', () => import('./pages/CommissionerGameCenter'))
@@ -137,6 +138,7 @@ function AuthShell() {
                 <Route path="/event/:eventId/tournament" element={<MeasuredRoute name="TeamTournament"><TeamTournament /></MeasuredRoute>} />
                 <Route path="/event/:eventId/:section" element={<MeasuredRoute name="EventHome"><EventHome /></MeasuredRoute>} />
                 <Route path="/commissioner" element={<MeasuredRoute name="CommissionerDashboard"><CommissionerDashboard /></MeasuredRoute>} />
+                <Route path="/commissioner/army-list-links" element={<MeasuredRoute name="CommissionerArmyListLinks"><CommissionerArmyListLinks /></MeasuredRoute>} />
                 <Route path="/commissioner/game-center" element={<MeasuredRoute name="CommissionerGameCenter"><CommissionerGameCenter /></MeasuredRoute>} />
                 <Route path="/commissioner/game-center/:gameId/score-correction" element={<MeasuredRoute name="CommissionerGameScoreCorrection"><CommissionerGameScoreCorrection /></MeasuredRoute>} />
                 <Route path="/commissioner/events" element={<MeasuredRoute name="CommissionerEvents"><CommissionerEvents /></MeasuredRoute>} />

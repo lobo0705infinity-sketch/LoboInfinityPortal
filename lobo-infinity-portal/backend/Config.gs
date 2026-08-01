@@ -142,7 +142,13 @@ const CONFIG = {
 
     EVENT_ID: 11,
 
-    GAME_TYPE: 12
+    GAME_TYPE: 12,
+
+    GAME_RESULT: 13,
+
+    ARMY_CODE: 14,
+
+    ARMY_LIST_ID: 15
 
   },
 

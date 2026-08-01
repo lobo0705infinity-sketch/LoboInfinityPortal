@@ -5,6 +5,7 @@ import Skeleton from '../components/Skeleton'
 import {
   getCanonicalArmyName,
   getCanonicalArmyOptions,
+  getArmyParentFaction,
 } from '../services/armyIdentity'
 import {
   getCanonicalMissionName,
@@ -14,6 +15,7 @@ import './SubmitResult.css'
 import {
   apiClient,
   type CasualResultSubmission,
+  type ArmyList,
   type EventHomeData,
   type LeagueResultSubmission,
   type SearchData,
@@ -43,6 +45,7 @@ const emptyLeagueResult: LeagueResultSubmission = {
   mission: '',
   notes: '',
   opponent: '',
+  opponentArmyListId: '',
   opponentFaction: '',
   opponentObjectivePoints: '',
   opponentTournamentPoints: '',
@@ -50,6 +53,7 @@ const emptyLeagueResult: LeagueResultSubmission = {
   player: '',
   player1ArmyCode: '',
   player2ArmyCode: '',
+  playerArmyListId: '',
   playerFaction: '',
   playerObjectivePoints: '',
   playerTournamentPoints: '',
@@ -146,6 +150,22 @@ function SubmitResult() {
   const casualOpponentOptions = useMemo(
     () => allPlayerOptions.filter((option) => !sameValue(option.value, casualResult.player)),
     [allPlayerOptions, casualResult.player],
+  )
+  const casualPlayerArmyListOptions = useMemo(
+    () => buildArmyListPickerOptions(searchIndex?.armyLists ?? [], casualResult.player, casualResult.playerFaction),
+    [casualResult.player, casualResult.playerFaction, searchIndex?.armyLists],
+  )
+  const casualOpponentArmyListOptions = useMemo(
+    () => buildArmyListPickerOptions(searchIndex?.armyLists ?? [], casualResult.opponent, casualResult.opponentFaction),
+    [casualResult.opponent, casualResult.opponentFaction, searchIndex?.armyLists],
+  )
+  const leaguePlayerArmyListOptions = useMemo(
+    () => buildArmyListPickerOptions(searchIndex?.armyLists ?? [], leagueResult.player, leagueResult.playerFaction),
+    [leagueResult.player, leagueResult.playerFaction, searchIndex?.armyLists],
+  )
+  const leagueOpponentArmyListOptions = useMemo(
+    () => buildArmyListPickerOptions(searchIndex?.armyLists ?? [], leagueResult.opponent, leagueResult.opponentFaction),
+    [leagueResult.opponent, leagueResult.opponentFaction, searchIndex?.armyLists],
   )
 
   function buildCommissionerPayload<T extends LeagueResultSubmission | CasualResultSubmission>(
@@ -363,6 +383,8 @@ function SubmitResult() {
     setCasualResult((current) => ({
       ...current,
       [field]: value,
+      ...(field === 'player' || field === 'playerFaction' ? { playerArmyListId: '' } : {}),
+      ...(field === 'opponent' || field === 'opponentFaction' ? { opponentArmyListId: '' } : {}),
     }))
   }
 
@@ -505,6 +527,13 @@ function SubmitResult() {
             value={casualResult.playerFaction}
           />
           <SearchableSelect
+            label="Player Army List"
+            onChange={(value) => updateCasualField('playerArmyListId', value)}
+            options={casualPlayerArmyListOptions}
+            placeholder="Search approved lists"
+            value={casualResult.playerArmyListId || ''}
+          />
+          <SearchableSelect
             label="Opponent Faction"
             onChange={(value) => updateCasualField('opponentFaction', value)}
             options={factionOptions}
@@ -523,6 +552,13 @@ function SubmitResult() {
             onChange={(value) => updateCasualField('player2ArmyCode', value)}
             required
             value={casualResult.player2ArmyCode ?? ''}
+          />
+          <SearchableSelect
+            label="Opponent Army List"
+            onChange={(value) => updateCasualField('opponentArmyListId', value)}
+            options={casualOpponentArmyListOptions}
+            placeholder="Search approved lists"
+            value={casualResult.opponentArmyListId || ''}
           />
           <SearchableSelect
             label="Mission"
@@ -629,6 +665,8 @@ function SubmitResult() {
     setLeagueResult((current) => ({
       ...current,
       [field]: value,
+      ...(field === 'player' || field === 'playerFaction' ? { playerArmyListId: '' } : {}),
+      ...(field === 'opponent' || field === 'opponentFaction' ? { opponentArmyListId: '' } : {}),
     }))
   }
 
@@ -777,11 +815,25 @@ function SubmitResult() {
           value={leagueResult.playerFaction}
         />
         <SearchableSelect
+          label="Player Army List"
+          onChange={(value) => updateField('playerArmyListId', value)}
+          options={leaguePlayerArmyListOptions}
+          placeholder="Search approved lists"
+          value={leagueResult.playerArmyListId || ''}
+        />
+        <SearchableSelect
           label="Opponent Faction"
           onChange={(value) => updateField('opponentFaction', value)}
           options={factionOptions}
           placeholder="Search factions"
           value={leagueResult.opponentFaction}
+        />
+        <SearchableSelect
+          label="Opponent Army List"
+          onChange={(value) => updateField('opponentArmyListId', value)}
+          options={leagueOpponentArmyListOptions}
+          placeholder="Search approved lists"
+          value={leagueResult.opponentArmyListId || ''}
         />
         <FormField
           label="Player 1 Army Code"
@@ -1580,6 +1632,66 @@ function toPickerOptions(values: string[]) {
 
 function buildFactionOptions() {
   return toPickerOptions(getCanonicalArmyOptions())
+}
+
+function buildArmyListPickerOptions(
+  armyLists: ArmyList[],
+  player: string,
+  faction: string,
+): PickerOption[] {
+  const options: PickerOption[] = [
+    {
+      label: 'Army List not submitted',
+      meta: 'Historical compatibility',
+      value: '',
+    },
+  ]
+
+  if (!player.trim() || !faction.trim()) {
+    return options
+  }
+
+  return [
+    ...options,
+    ...armyLists
+      .filter((list) => (
+        list.approved &&
+        sameValue(list.player, player) &&
+        armyListMatchesSelectedFaction(list, faction)
+      ))
+      .sort((left, right) => {
+        const nameComparison = left.armyName.localeCompare(right.armyName)
+        if (nameComparison !== 0) return nameComparison
+        return Number(left.id) - Number(right.id)
+      })
+      .map((list) => ({
+        label: list.armyName || `Army List #${list.id}`,
+        meta: [
+          list.sectorial || list.faction,
+          list.mission,
+          list.event,
+          `#${list.id}`,
+        ].filter(Boolean).join(' | '),
+        value: String(list.id),
+      })),
+  ]
+}
+
+function armyListMatchesSelectedFaction(list: ArmyList, faction: string) {
+  const selectedFaction = getCanonicalArmyName(faction)
+  if (!selectedFaction) return false
+
+  const listSectorial = getCanonicalArmyName(list.sectorial)
+  const listFaction = getCanonicalArmyName(list.faction)
+
+  if (sameValue(listSectorial, selectedFaction) || sameValue(listFaction, selectedFaction)) {
+    return true
+  }
+
+  const selectedParent = getArmyParentFaction(selectedFaction)
+  const listParent = getArmyParentFaction(listSectorial || listFaction)
+
+  return Boolean(selectedParent && listParent && sameValue(selectedParent, listParent))
 }
 
 function buildMissionOptions() {
