@@ -2041,27 +2041,29 @@
 
 .community-player-summary .event-overview-status-card {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 8px;
   min-height: 0;
   border-radius: 10px;
-  padding: 9px 12px;
+  padding: 10px 12px;
   background:
     linear-gradient(135deg, rgba(76, 201, 240, 0.1), transparent 52%),
     rgba(8, 13, 19, 0.84);
 }
 
 .community-player-summary .event-overview-status-card span {
-  color: rgba(180, 198, 214, 0.86);
-  font-size: 0.64rem;
-  line-height: 1.1;
+  color: #fff;
+  font-size: clamp(0.71rem, 1.2vw, 0.93rem);
+  line-height: 1;
   margin: 0;
-  max-width: 9.5rem;
+  max-width: 100%;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
 }
 
 .community-player-summary .event-overview-status-card strong {
-  flex: 0 0 auto;
+  align-self: flex-end;
   margin: 0;
   min-width: 2.2ch;
   color: var(--blue);
