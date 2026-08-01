@@ -4894,6 +4894,83 @@
   margin: 0;
 }
 
+.army-intelligence-brief {
+  background:
+    linear-gradient(135deg, rgba(76, 201, 240, 0.12), transparent 42%),
+    rgba(8, 13, 20, 0.9);
+  border-color: rgba(76, 201, 240, 0.24);
+  display: grid;
+  gap: 0.85rem;
+}
+
+.army-intelligence-brief-header {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.army-intelligence-brief-header span {
+  background: rgba(76, 201, 240, 0.12);
+  border: 1px solid rgba(76, 201, 240, 0.26);
+  border-radius: 6px;
+  color: var(--accent);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  padding: 0.28rem 0.45rem;
+}
+
+.army-intelligence-brief h2 {
+  font-size: 1.18rem;
+  margin: 0;
+}
+
+.army-intelligence-brief ul {
+  display: grid;
+  gap: 0.55rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.army-intelligence-brief li {
+  color: var(--text);
+  display: grid;
+  gap: 0.18rem;
+  line-height: 1.45;
+  padding-left: 1.05rem;
+  position: relative;
+}
+
+.army-intelligence-brief li::before {
+  background: var(--accent);
+  border-radius: 999px;
+  box-shadow: 0 0 12px rgba(76, 201, 240, 0.45);
+  content: "";
+  height: 0.38rem;
+  left: 0;
+  position: absolute;
+  top: 0.58rem;
+  width: 0.38rem;
+}
+
+.army-intelligence-brief li strong {
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.army-intelligence-brief li span {
+  color: var(--text);
+}
+
+.army-intelligence-brief p {
+  color: var(--muted);
+  margin: 0;
+}
+
 .army-intelligence-explorer-backdrop {
   align-items: start;
   background: rgba(2, 6, 12, 0.78);

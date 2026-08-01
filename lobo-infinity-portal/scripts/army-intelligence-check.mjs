@@ -139,6 +139,26 @@ assert.match(
   'Army Intelligence profile labels must be generated from decoded designation, primary weapon, and minimal decoded disambiguation metadata.',
 )
 assert.match(
+  page,
+  /buildIntelligenceBrief\(matchingLists, analysis, selectedExplorerScope\.label \|\| selectedSectorial\)/,
+  'Army Intelligence Brief must be generated from the selected-scope list collection and its shared analysis.',
+)
+assert.match(
+  page,
+  /function buildIntelligenceBrief[\s\S]*decodedListCount < 2[\s\S]*return \[\]/,
+  'Army Intelligence Brief must suppress weak observations when too few lists are available.',
+)
+assert.match(
+  page,
+  /Additional Army Lists are needed before meaningful intelligence can be generated/,
+  'Army Intelligence Brief must expose the required low-data empty state.',
+)
+assert.doesNotMatch(
+  page,
+  /openai|chatgpt|llm|language model|generateText|completion/i,
+  'Army Intelligence Brief must not use AI or LLM-generated summaries.',
+)
+assert.match(
   backend,
   /getArmyIntelligenceProfileAggregationLabel[\s\S]*entry && entry\.profile/,
   'Backend Army Intelligence summary counts must prefer decoded profile labels over troop names.',
@@ -971,6 +991,84 @@ assert.equal(
   allAnalysis.averageTacticalAwarenessOrders,
   2,
   'Tactical Awareness average must average per-list totals across multiple matching lists.',
+)
+const intelligenceBrief = buildIntelligenceBriefFixture(operationsLists, allAnalysis, 'Operations Subsection')
+const repeatedIntelligenceBrief = buildIntelligenceBriefFixture(operationsLists, allAnalysis, 'Operations Subsection')
+assert.deepEqual(
+  intelligenceBrief,
+  repeatedIntelligenceBrief,
+  'Army Intelligence Brief rules must be deterministic for the same selected-scope input.',
+)
+assert.ok(
+  intelligenceBrief.length >= 3 && intelligenceBrief.length <= 5,
+  'Army Intelligence Brief must emit three to five meaningful observations when enough support exists.',
+)
+assert.deepEqual(
+  intelligenceBrief.map((observation) => [observation.heading, observation.text]).slice(0, 3),
+  [
+    ['Core Unit', 'The ASURA appears in every known Operations Subsection list, making it a defining element of this force.'],
+    ['Common List Construction', 'ASURA is the most common troop, with 2 decoded copies across 2 lists.'],
+    ['Heavy Hacker Presence', 'Hackers appear in every submitted list, making that role a consistent part of the force package.'],
+  ],
+  'Army Intelligence Brief must summarize coverage, troop frequency, and role coverage with tactical headings from selected-scope data.',
+)
+assert.deepEqual(
+  intelligenceBrief.map((observation) => observation.priority),
+  [...intelligenceBrief.map((observation) => observation.priority)].sort((left, right) => left - right),
+  'Army Intelligence Brief ordering must remain deterministic by observation strength.',
+)
+assert.ok(
+  intelligenceBrief.some((observation) => observation.heading === 'Order Baseline' && observation.text === 'Known lists average 8 Regular Orders, indicating the baseline order efficiency of this force.'),
+  'Army Intelligence Brief order observations must use the existing average order calculation.',
+)
+assert.ok(
+  intelligenceBrief.findIndex((observation) => observation.heading === 'Core Unit') <
+    intelligenceBrief.findIndex((observation) => observation.heading === 'Order Baseline'),
+  'Army Intelligence Brief must place stronger inclusion observations before average statistics.',
+)
+assert.deepEqual(
+  buildIntelligenceBriefFixture(operationsLists.slice(0, 1), winningAnalysis, 'Operations Subsection'),
+  [],
+  'Army Intelligence Brief must use the empty state when too few lists are available.',
+)
+const updatedBriefLists = [
+  ...operationsLists,
+  {
+    decoded: {
+      combatGroups: [
+        {
+          entries: [
+            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'Recon Drone', skills: [], specialist: false, unit: 'Recon Drone' },
+            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'Recon Drone', skills: [], specialist: false, unit: 'Recon Drone' },
+            { doctor: false, engineer: false, hacker: false, lieutenant: false, orderTypes: ['regular'], profile: 'Recon Drone', skills: [], specialist: false, unit: 'Recon Drone' },
+          ],
+        },
+      ],
+      orderCounts: {
+        regular: 3,
+      },
+      sectorial: 'Operations Subsection',
+      totals: {
+        points: 120,
+      },
+    },
+    result: 'Win',
+    status: 'decoded',
+  },
+]
+const updatedIntelligenceBrief = buildIntelligenceBriefFixture(
+  updatedBriefLists,
+  buildFixtureAnalysis(updatedBriefLists),
+  'Operations Subsection',
+)
+assert.notDeepEqual(
+  updatedIntelligenceBrief,
+  intelligenceBrief,
+  'Army Intelligence Brief observations must update when the selected Army List collection changes.',
+)
+assert.ok(
+  updatedIntelligenceBrief.some((observation) => observation.text.includes('Recon Drone')),
+  'Army Intelligence Brief update must be supported by the newly submitted Army List data.',
 )
 assert.deepEqual(
   allAnalysis.modelUsage.find((row) => row.name === 'NETROD'),
@@ -2395,6 +2493,211 @@ function buildFixtureAnalysis(lists) {
     hackers: buildUsageRows(entriesByList, (entry) => entry.hacker),
     modelUsage: buildModelUsageRows(entriesByList),
   }
+}
+
+function buildIntelligenceBriefFixture(lists, analysis, selectedScope) {
+  const decodedListCount = analysis.listCount
+
+  if (decodedListCount < 2) {
+    return []
+  }
+
+  const observations = []
+  const scopeName = selectedScope || 'the selected force'
+  const troopGroups = buildIntelligenceBriefTroopGroupsFixture(lists)
+  const usageGroups = buildUsageGroups(analysis.modelUsage)
+  const topGroup = troopGroups[0]
+  const topCoverageGroup = [...troopGroups].sort(compareUsageGroupsByCoverageFixture)[0]
+
+  if (topCoverageGroup && topCoverageGroup.percentage >= 100) {
+    observations.push({
+      heading: 'Core Unit',
+      id: `coverage-total-${normalizeObservationIdFixture(topCoverageGroup.name)}`,
+      priority: 10,
+      text: `The ${topCoverageGroup.name} appears in every known ${scopeName} list, making it a defining element of this force.`,
+    })
+  } else if (topCoverageGroup && topCoverageGroup.percentage >= 75) {
+    observations.push({
+      heading: 'Widely Adopted',
+      id: `coverage-high-${normalizeObservationIdFixture(topCoverageGroup.name)}`,
+      priority: 20,
+      text: `The ${topCoverageGroup.name} appears in ${formatPercentValueFixture(topCoverageGroup.percentage)} of known ${scopeName} lists, indicating broad adoption across submitted forces.`,
+    })
+  }
+
+  if (topGroup) {
+    observations.push({
+      heading: 'Common List Construction',
+      id: `most-common-troop-${normalizeObservationIdFixture(topGroup.name)}`,
+      priority: 30,
+      text: `${topGroup.name} is the most common troop, with ${topGroup.totalSelections} decoded copies across ${formatListCountFixture(topGroup.listCount)}.`,
+    })
+  }
+
+  const topProfileGroup = usageGroups.find((group) => group.profiles.length > 1)
+  const topProfile = topProfileGroup?.profiles[0]
+  if (topProfileGroup && topProfile) {
+    observations.push({
+      heading: 'Popular Profile',
+      id: `top-profile-${normalizeObservationIdFixture(topProfileGroup.name)}-${normalizeObservationIdFixture(getUsageProfileDisplayLabel(topProfile))}`,
+      priority: 40,
+      text: `The most common ${topProfileGroup.name} profile is ${getUsageProfileDisplayLabel(topProfile)}, marking it as the preferred decoded loadout for that troop.`,
+    })
+  }
+
+  addRoleCoverageObservationFixture(observations, 'hacker', 'Hackers', lists, (entry) => entry.hacker, 50)
+  addRoleCoverageObservationFixture(observations, 'engineer', 'Engineers', lists, (entry) => entry.engineer, 60)
+  addRoleCoverageObservationFixture(observations, 'specialist', 'Specialists', lists, (entry) => entry.specialist, 70)
+
+  if (analysis.averageRegularOrders > 0) {
+    observations.push({
+      heading: analysis.averageRegularOrders >= 12 ? 'High Order Count' : 'Order Baseline',
+      id: 'average-regular-orders',
+      priority: 80,
+      text: `Known lists average ${formatNumberFixture(analysis.averageRegularOrders)} Regular Orders, indicating the baseline order efficiency of this force.`,
+    })
+  }
+
+  return deduplicateBriefObservationsFixture(observations)
+    .sort((left, right) => left.priority - right.priority || left.id.localeCompare(right.id))
+    .slice(0, 5)
+}
+
+function addRoleCoverageObservationFixture(observations, id, label, lists, predicate, priority) {
+  const total = lists.length
+
+  if (total < 2) {
+    return
+  }
+
+  const listCount = lists.filter((list) =>
+    list.decoded.combatGroups.some((group) => group.entries.some(predicate)),
+  ).length
+  const percentage = (listCount / total) * 100
+
+  if (percentage === 0) {
+    observations.push({
+      heading: `No ${label}`,
+      id: `${id}-absent`,
+      priority,
+      text: `No submitted lists include ${label.toLocaleLowerCase()}, leaving that battlefield role absent from the current intelligence sample.`,
+    })
+    return
+  }
+
+  if (percentage === 100) {
+    observations.push({
+      heading: getRoleCoverageHeadingFixture(id, percentage),
+      id: `${id}-total`,
+      priority,
+      text: `${label} appear in every submitted list, making that role a consistent part of the force package.`,
+    })
+    return
+  }
+
+  if (percentage >= 75 || percentage <= 25) {
+    observations.push({
+      heading: getRoleCoverageHeadingFixture(id, percentage),
+      id: `${id}-coverage-${Math.round(percentage)}`,
+      priority,
+      text: `${label} appear in ${formatPercentValueFixture(percentage)} of submitted lists, ${percentage >= 75 ? 'showing strong role coverage across known forces' : 'indicating limited role support in the current sample'}.`,
+    })
+  }
+}
+
+function getRoleCoverageHeadingFixture(id, percentage) {
+  if (id === 'hacker' && percentage >= 75) {
+    return 'Heavy Hacker Presence'
+  }
+
+  if (id === 'engineer' && percentage <= 25) {
+    return 'Limited Engineer Support'
+  }
+
+  if (id === 'specialist' && percentage >= 75) {
+    return 'Specialist Coverage'
+  }
+
+  return percentage >= 75 ? 'Strong Role Coverage' : 'Low Coverage'
+}
+
+function buildIntelligenceBriefTroopGroupsFixture(lists) {
+  const groups = new Map()
+
+  lists.forEach((list, listIndex) => {
+    list.decoded.combatGroups.forEach((group) => {
+      group.entries.forEach((entry) => {
+        const name = entry.unit || entry.profile
+        if (!name) {
+          return
+        }
+
+        const current = groups.get(name) || {
+          listIndexes: new Set(),
+          name,
+          totalSelections: 0,
+        }
+        current.listIndexes.add(listIndex)
+        current.totalSelections += 1
+        groups.set(name, current)
+      })
+    })
+  })
+
+  return Array.from(groups.values())
+    .map((group) => ({
+      listCount: group.listIndexes.size,
+      name: group.name,
+      percentage: lists.length ? (group.listIndexes.size / lists.length) * 100 : 0,
+      totalSelections: group.totalSelections,
+    }))
+    .sort(
+      (left, right) =>
+        right.totalSelections - left.totalSelections ||
+        right.listCount - left.listCount ||
+        left.name.localeCompare(right.name),
+    )
+}
+
+function compareUsageGroupsByCoverageFixture(left, right) {
+  return right.percentage - left.percentage ||
+    right.listCount - left.listCount ||
+    right.totalSelections - left.totalSelections ||
+    left.name.localeCompare(right.name)
+}
+
+function deduplicateBriefObservationsFixture(observations) {
+  const seen = new Set()
+
+  return observations.filter((observation) => {
+    const key = normalizeSearchToken(observation.text)
+    if (seen.has(key)) {
+      return false
+    }
+
+    seen.add(key)
+    return true
+  })
+}
+
+function normalizeObservationIdFixture(value) {
+  return normalizeSearchToken(value).replace(/\s+/g, '-')
+}
+
+function formatPercentValueFixture(value) {
+  return `${formatNumberFixture(value)}%`
+}
+
+function formatListCountFixture(value) {
+  return `${value} ${value === 1 ? 'list' : 'lists'}`
+}
+
+function formatNumberFixture(value) {
+  if (!Number.isFinite(value)) {
+    return '0'
+  }
+
+  return Number.isInteger(value) ? String(value) : value.toFixed(1)
 }
 
 function calculateAverageDurabilityPerModel(entries) {

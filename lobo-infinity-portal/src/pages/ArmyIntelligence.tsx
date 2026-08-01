@@ -94,6 +94,20 @@ type UsageGroup = {
   totalSelections: number
 }
 
+type IntelligenceBriefObservation = {
+  heading: string
+  id: string
+  priority: number
+  text: string
+}
+
+type IntelligenceBriefTroopGroup = {
+  listCount: number
+  name: string
+  percentage: number
+  totalSelections: number
+}
+
 type UniqueArmyIntelligenceList = ArmyIntelligenceList & {
   resultSet: Set<string>
 }
@@ -370,6 +384,10 @@ function ArmyIntelligenceContent({
     [selectedArmyListExplorerRows, selectedExplorerScope],
   )
   const analysis = useMemo(() => buildArmyAnalysis(matchingLists), [matchingLists])
+  const intelligenceBrief = useMemo(
+    () => buildIntelligenceBrief(matchingLists, analysis, selectedExplorerScope.label || selectedSectorial),
+    [analysis, matchingLists, selectedExplorerScope.label, selectedSectorial],
+  )
   const equipmentOptions = useMemo(() => buildEquipmentOptions(matchingLists), [matchingLists])
   const skillOptions = useMemo(() => buildSkillOptions(matchingLists), [matchingLists])
   const weaponOptions = useMemo(() => buildWeaponOptions(matchingLists), [matchingLists])
@@ -644,6 +662,8 @@ function ArmyIntelligenceContent({
         </section>
       ) : (
         <>
+          <IntelligenceBrief observations={intelligenceBrief} />
+
           <section className="army-intelligence-summary" aria-label="Army Intelligence analysis summary">
             <MetricCard
               actionLabel="Browse submitted army lists"
@@ -1064,6 +1084,29 @@ function ArmyListExplorer({
           </div>
         )}
       </div>
+    </section>
+  )
+}
+
+function IntelligenceBrief({ observations }: { observations: IntelligenceBriefObservation[] }) {
+  return (
+    <section className="panel army-intelligence-brief" aria-labelledby="army-intelligence-brief-title">
+      <div className="army-intelligence-brief-header">
+        <span aria-hidden="true">INTEL</span>
+        <h2 id="army-intelligence-brief-title">Intelligence Brief</h2>
+      </div>
+      {observations.length > 0 ? (
+        <ul>
+          {observations.map((observation) => (
+            <li key={observation.id}>
+              <strong>{observation.heading}</strong>
+              <span>{observation.text}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>Additional Army Lists are needed before meaningful intelligence can be generated.</p>
+      )}
     </section>
   )
 }
@@ -1667,6 +1710,240 @@ function buildArmyAnalysis(lists: ArmyIntelligenceList[]): ArmyAnalysis {
     modelUsage: buildModelUsageRows(entriesByList),
     specialists: buildUsageRows(entriesByList, (entry) => entry.specialist),
   }
+}
+
+function buildIntelligenceBrief(
+  lists: ArmyIntelligenceList[],
+  analysis: ArmyAnalysis,
+  selectedScope: string,
+): IntelligenceBriefObservation[] {
+  const decodedListCount = analysis.listCount
+
+  if (decodedListCount < 2) {
+    return []
+  }
+
+  const observations: IntelligenceBriefObservation[] = []
+  const scopeName = selectedScope || 'the selected force'
+  const troopGroups = buildIntelligenceBriefTroopGroups(lists)
+  const usageGroups = buildUsageGroups(analysis.modelUsage)
+  const topGroup = troopGroups[0]
+  const topCoverageGroup = [...troopGroups].sort(compareUsageGroupsByCoverage)[0]
+
+  if (topCoverageGroup && topCoverageGroup.percentage >= 100) {
+    observations.push({
+      heading: 'Core Unit',
+      id: `coverage-total-${normalizeObservationId(topCoverageGroup.name)}`,
+      priority: 10,
+      text: `The ${topCoverageGroup.name} appears in every known ${scopeName} list, making it a defining element of this force.`,
+    })
+  } else if (topCoverageGroup && topCoverageGroup.percentage >= 75) {
+    observations.push({
+      heading: 'Widely Adopted',
+      id: `coverage-high-${normalizeObservationId(topCoverageGroup.name)}`,
+      priority: 20,
+      text: `The ${topCoverageGroup.name} appears in ${formatPercentValue(topCoverageGroup.percentage)} of known ${scopeName} lists, indicating broad adoption across submitted forces.`,
+    })
+  }
+
+  if (topGroup) {
+    observations.push({
+      heading: 'Common List Construction',
+      id: `most-common-troop-${normalizeObservationId(topGroup.name)}`,
+      priority: 30,
+      text: `${topGroup.name} is the most common troop, with ${topGroup.totalSelections} decoded copies across ${formatListCount(topGroup.listCount)}.`,
+    })
+  }
+
+  const topProfileGroup = usageGroups.find((group) => group.profiles.length > 1)
+  const topProfile = topProfileGroup?.profiles[0]
+  if (topProfileGroup && topProfile) {
+    observations.push({
+      heading: 'Popular Profile',
+      id: `top-profile-${normalizeObservationId(topProfileGroup.name)}-${normalizeObservationId(getUsageProfileDisplayLabel(topProfile))}`,
+      priority: 40,
+      text: `The most common ${topProfileGroup.name} profile is ${getUsageProfileDisplayLabel(topProfile)}, marking it as the preferred decoded loadout for that troop.`,
+    })
+  }
+
+  addRoleCoverageObservation(observations, 'hacker', 'Hackers', lists, (entry) => entry.hacker, 50)
+  addRoleCoverageObservation(observations, 'engineer', 'Engineers', lists, (entry) => entry.engineer, 60)
+  addRoleCoverageObservation(observations, 'specialist', 'Specialists', lists, (entry) => entry.specialist, 70)
+
+  if (analysis.averageRegularOrders > 0) {
+    observations.push({
+      heading: analysis.averageRegularOrders >= 12 ? 'High Order Count' : 'Order Baseline',
+      id: 'average-regular-orders',
+      priority: 80,
+      text: `Known lists average ${formatNumber(analysis.averageRegularOrders)} Regular Orders, indicating the baseline order efficiency of this force.`,
+    })
+  }
+
+  if (analysis.averageTacticalAwarenessOrders > 0) {
+    observations.push({
+      heading: 'Tactical Awareness',
+      id: 'average-tactical-awareness-orders',
+      priority: 90,
+      text: `Known lists average ${formatNumber(analysis.averageTacticalAwarenessOrders)} Tactical Awareness Orders, adding extra activation pressure beyond the regular order pool.`,
+    })
+  }
+
+  if (analysis.averagePoints > 0) {
+    observations.push({
+      heading: 'Points Profile',
+      id: 'average-points',
+      priority: 100,
+      text: `Submitted lists average ${formatNumber(analysis.averagePoints)} points, showing the typical list size represented in this intelligence sample.`,
+    })
+  }
+
+  return deduplicateBriefObservations(observations)
+    .sort((left, right) => left.priority - right.priority || left.id.localeCompare(right.id))
+    .slice(0, 5)
+}
+
+function addRoleCoverageObservation(
+  observations: IntelligenceBriefObservation[],
+  id: string,
+  label: string,
+  lists: ArmyIntelligenceList[],
+  predicate: (entry: ArmyIntelligenceDecodedEntry) => boolean,
+  priority: number,
+) {
+  const decodedLists = lists.filter((list) => Boolean(list.decoded))
+  const total = decodedLists.length
+
+  if (total < 2) {
+    return
+  }
+
+  const listCount = decodedLists.filter((list) =>
+    list.decoded?.combatGroups.some((group) => group.entries.some(predicate)),
+  ).length
+  const percentage = (listCount / total) * 100
+
+  if (percentage === 0) {
+    observations.push({
+      heading: `No ${label}`,
+      id: `${id}-absent`,
+      priority,
+      text: `No submitted lists include ${label.toLocaleLowerCase()}, leaving that battlefield role absent from the current intelligence sample.`,
+    })
+    return
+  }
+
+  if (percentage === 100) {
+    observations.push({
+      heading: getRoleCoverageHeading(id, percentage),
+      id: `${id}-total`,
+      priority,
+      text: `${label} appear in every submitted list, making that role a consistent part of the force package.`,
+    })
+    return
+  }
+
+  if (percentage >= 75 || percentage <= 25) {
+    observations.push({
+      heading: getRoleCoverageHeading(id, percentage),
+      id: `${id}-coverage-${Math.round(percentage)}`,
+      priority,
+      text: `${label} appear in ${formatPercentValue(percentage)} of submitted lists, ${percentage >= 75 ? 'showing strong role coverage across known forces' : 'indicating limited role support in the current sample'}.`,
+    })
+  }
+}
+
+function getRoleCoverageHeading(id: string, percentage: number) {
+  if (id === 'hacker' && percentage >= 75) {
+    return 'Heavy Hacker Presence'
+  }
+
+  if (id === 'engineer' && percentage <= 25) {
+    return 'Limited Engineer Support'
+  }
+
+  if (id === 'specialist' && percentage >= 75) {
+    return 'Specialist Coverage'
+  }
+
+  return percentage >= 75 ? 'Strong Role Coverage' : 'Low Coverage'
+}
+
+function buildIntelligenceBriefTroopGroups(lists: ArmyIntelligenceList[]): IntelligenceBriefTroopGroup[] {
+  const decodedLists = lists.filter((list): list is ArmyIntelligenceList & { decoded: NonNullable<ArmyIntelligenceList['decoded']> } =>
+    Boolean(list.decoded),
+  )
+  const groups = new Map<string, {
+    listIndexes: Set<number>
+    name: string
+    totalSelections: number
+  }>()
+
+  decodedLists.forEach((list, listIndex) => {
+    list.decoded.combatGroups.forEach((group) => {
+      group.entries.forEach((entry) => {
+        const name = getModelName(entry)
+        if (!name) {
+          return
+        }
+
+        const current = groups.get(name) ?? {
+          listIndexes: new Set<number>(),
+          name,
+          totalSelections: 0,
+        }
+        current.listIndexes.add(listIndex)
+        current.totalSelections += 1
+        groups.set(name, current)
+      })
+    })
+  })
+
+  return Array.from(groups.values())
+    .map((group) => ({
+      listCount: group.listIndexes.size,
+      name: group.name,
+      percentage: decodedLists.length ? (group.listIndexes.size / decodedLists.length) * 100 : 0,
+      totalSelections: group.totalSelections,
+    }))
+    .sort(
+      (left, right) =>
+        right.totalSelections - left.totalSelections ||
+        right.listCount - left.listCount ||
+        left.name.localeCompare(right.name),
+    )
+}
+
+function compareUsageGroupsByCoverage(left: IntelligenceBriefTroopGroup, right: IntelligenceBriefTroopGroup) {
+  return right.percentage - left.percentage ||
+    right.listCount - left.listCount ||
+    right.totalSelections - left.totalSelections ||
+    left.name.localeCompare(right.name)
+}
+
+function deduplicateBriefObservations(observations: IntelligenceBriefObservation[]) {
+  const seen = new Set<string>()
+
+  return observations.filter((observation) => {
+    const key = normalizeSearchToken(observation.text)
+    if (seen.has(key)) {
+      return false
+    }
+
+    seen.add(key)
+    return true
+  })
+}
+
+function normalizeObservationId(value: string) {
+  return normalizeSearchToken(value).replace(/\s+/g, '-')
+}
+
+function formatPercentValue(value: number) {
+  return `${formatNumber(value)}%`
+}
+
+function formatListCount(value: number) {
+  return `${value} ${value === 1 ? 'list' : 'lists'}`
 }
 
 function calculateAverageDurabilityPerModel(entries: ArmyIntelligenceDecodedEntry[]) {
