@@ -60,6 +60,7 @@
     "test:game-score-correction": "node scripts/game-score-correction-check.mjs",
     "test:game-score-correction-ui": "node scripts/game-score-correction-ui-check.mjs",
     "test:army-list-tracking": "node scripts/army-list-tracking-check.mjs",
+    "test:operations-engine": "node scripts/operations-engine-check.mjs",
     "test:game-center": "node --experimental-strip-types scripts/game-center-check.ts",
     "test:dashboard-links": "node scripts/dashboard-links-check.mjs",
     "test:dashboard-performance": "node scripts/dashboard-performance-check.mjs",

@@ -1958,6 +1958,107 @@ export type OperationsTimelineItem = {
   active: boolean
 }
 
+export type OperationsQueueItem = {
+  operationId: string
+  operationType: string
+  operationClass: string
+  owningSubsystem: string
+  artifactStateKey: string
+  status: string
+  priority: number
+  dependencyOperationId: string
+  retryCount: number
+  primaryTrigger: string
+  triggerCount: number
+  triggers: unknown[]
+  latestTriggerAt: string
+  queuePosition: number
+  createdAt: string
+  startedAt: string
+  completedAt: string
+  updatedAt: string
+  errorMessage: string
+  verificationResult: Record<string, unknown>
+}
+
+export type OperationsQueueData = {
+  success: boolean
+  generatedAt: string
+  operationClasses: string[]
+  coalescingKey: string[]
+  schema: string[]
+  queue: OperationsQueueItem[]
+}
+
+export type OperationsLogEntry = {
+  logId: string
+  operationId: string
+  operationType: string
+  operationClass: string
+  owningSubsystem: string
+  artifactStateKey: string
+  eventType: string
+  trigger: string
+  triggeredAt: string
+  mergedOperationId: string
+  status: string
+  success: string
+  startedAt: string
+  completedAt: string
+  durationMs: number
+  rowsProcessed: number
+  cacheInvalidations: unknown[]
+  downstreamOperations: unknown[]
+  verificationResult: Record<string, unknown>
+  retryCount: number
+  errorMessage: string
+  createdAt: string
+}
+
+export type OperationsLogData = {
+  success: boolean
+  generatedAt: string
+  schema: string[]
+  log: OperationsLogEntry[]
+}
+
+export type OperationsSubsystemState = {
+  subsystemId: string
+  subsystemName: string
+  schemaVersion: string
+  sourceHash: string
+  artifactHash: string
+  artifactStateKey: string
+  lastBuiltAt: string
+  healthy: boolean
+  stale: boolean
+  staleReason: string
+  details: Record<string, unknown>
+}
+
+export type OperationsStateData = {
+  success: boolean
+  generatedAt: string
+  healthy: boolean
+  stale: boolean
+  staleCount: number
+  states: OperationsSubsystemState[]
+}
+
+export type OperationsExecutionData = {
+  success: boolean
+  status: string
+  generatedAt: string
+  operation: OperationsQueueItem | null
+  rebuildResult: Record<string, unknown>
+  verificationResult: Record<string, unknown>
+  cacheInvalidations: string[]
+  coalescedOperations: number
+  logId: string
+  error: string
+  message: string
+}
+
 export type SeasonStatus = {
   currentSeasonName: string
   startDate: string
@@ -2700,6 +2801,10 @@ export type ApiClient = {
   getOperationsContent: (options?: ApiOptions) => Promise<OperationsDashboardData>
   getOperationsDiscord: (options?: ApiOptions) => Promise<OperationsDashboardData>
   getOperationsNotifications: (options?: ApiOptions) => Promise<OperationsDashboardData>
+  getOperationsState: (options?: ApiOptions) => Promise<OperationsStateData>
+  getOperationsQueue: (options?: ApiOptions) => Promise<OperationsQueueData>
+  getOperationsLog: (options?: ApiOptions) => Promise<OperationsLogData>
+  runOperationsNext: (options?: ApiOptions) => Promise<OperationsExecutionData>
   getOperationsAudit: (options?: ApiOptions) => Promise<LeagueAudit>
   getOperationsSeason: (options?: ApiOptions) => Promise<OperationsSeasonData>
   getIntegrity: (options?: ApiOptions) => Promise<IntegrityData>
@@ -3810,6 +3915,34 @@ export async function getOperationsNotifications(
   return normalizeOperationsPayload(payload)
 }
 
+export async function getOperationsState(
+  options: ApiOptions = {},
+): Promise<OperationsStateData> {
+  const payload = await request('operationsState', options)
+  return normalizeOperationsStatePayload(payload)
+}
+
+export async function getOperationsQueue(
+  options: ApiOptions = {},
+): Promise<OperationsQueueData> {
+  const payload = await request('operationsQueue', options)
+  return normalizeOperationsQueuePayload(payload)
+}
+
+export async function getOperationsLog(
+  options: ApiOptions = {},
+): Promise<OperationsLogData> {
+  const payload = await request('operationsLog', options)
+  return normalizeOperationsLogPayload(payload)
+}
+
+export async function runOperationsNext(
+  options: ApiOptions = {},
+): Promise<OperationsExecutionData> {
+  const payload = await postRequest('operationsRunNext', options, {})
+  return normalizeOperationsExecutionPayload(payload)
+}
+
 export async function getIntegrity(
   options: ApiOptions = {},
 ): Promise<IntegrityData> {
@@ -4059,6 +4192,10 @@ export const apiClient: ApiClient = {
   getOperationsContent,
   getOperationsDiscord,
   getOperationsNotifications,
+  getOperationsState,
+  getOperationsQueue,
+  getOperationsLog,
+  runOperationsNext,
   getIntegrity,
   getIntegrityFreshAudit,
   getIntegrityReport,
@@ -7112,6 +7249,152 @@ function normalizeOperationsPayload(payload: unknown): OperationsDashboardData {
     ),
     settings: normalizeSettingsRecord(getRequiredRecord(record, 'settings')),
     audit: normalizeLeagueAudit(getRequiredRecord(record, 'audit')),
+  }
+}
+
+function normalizeOperationsQueuePayload(payload: unknown): OperationsQueueData {
+  const record = asRecord(payload, 'Operations Queue response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Operations Queue failed.')
+  }
+
+  return {
+    success: true,
+    generatedAt: getString(record, 'generatedAt'),
+    operationClasses: getArray(record, 'operationClasses').map((item) => String(item)),
+    coalescingKey: getArray(record, 'coalescingKey').map((item) => String(item)),
+    schema: getArray(record, 'schema').map((item) => String(item)),
+    queue: getArray(record, 'queue').map(normalizeOperationsQueueItem),
+  }
+}
+
+function normalizeOperationsStatePayload(payload: unknown): OperationsStateData {
+  const record = asRecord(payload, 'Operations State response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Operations State failed.')
+  }
+
+  return {
+    success: true,
+    generatedAt: getString(record, 'generatedAt'),
+    healthy: getBoolean(record, 'healthy'),
+    stale: getBoolean(record, 'stale'),
+    staleCount: getNumber(record, 'staleCount'),
+    states: getArray(record, 'states').map(normalizeOperationsSubsystemState),
+  }
+}
+
+function normalizeOperationsSubsystemState(
+  item: unknown,
+): OperationsSubsystemState {
+  const record = asRecord(item, 'Operations subsystem state')
+
+  return {
+    subsystemId: getString(record, 'subsystemId'),
+    subsystemName: getString(record, 'subsystemName'),
+    schemaVersion: getString(record, 'schemaVersion'),
+    sourceHash: getString(record, 'sourceHash'),
+    artifactHash: getString(record, 'artifactHash'),
+    artifactStateKey: getString(record, 'artifactStateKey'),
+    lastBuiltAt: getString(record, 'lastBuiltAt'),
+    healthy: getBoolean(record, 'healthy'),
+    stale: getBoolean(record, 'stale'),
+    staleReason: getString(record, 'staleReason'),
+    details: getOptionalRecord(record, 'details') ?? {},
+  }
+}
+
+function normalizeOperationsQueueItem(item: unknown): OperationsQueueItem {
+  const record = asRecord(item, 'Operations Queue item')
+
+  return {
+    operationId: getString(record, 'operationId'),
+    operationType: getString(record, 'operationType'),
+    operationClass: getString(record, 'operationClass'),
+    owningSubsystem: getString(record, 'owningSubsystem'),
+    artifactStateKey: getString(record, 'artifactStateKey'),
+    status: getString(record, 'status'),
+    priority: getNumber(record, 'priority'),
+    dependencyOperationId: getString(record, 'dependencyOperationId'),
+    retryCount: getNumber(record, 'retryCount'),
+    primaryTrigger: getString(record, 'primaryTrigger'),
+    triggerCount: getNumber(record, 'triggerCount'),
+    triggers: getArray(record, 'triggers'),
+    latestTriggerAt: getString(record, 'latestTriggerAt'),
+    queuePosition: getNumber(record, 'queuePosition'),
+    createdAt: getString(record, 'createdAt'),
+    startedAt: getString(record, 'startedAt'),
+    completedAt: getString(record, 'completedAt'),
+    updatedAt: getString(record, 'updatedAt'),
+    errorMessage: getString(record, 'errorMessage'),
+    verificationResult: getOptionalRecord(record, 'verificationResult') ?? {},
+  }
+}
+
+function normalizeOperationsLogPayload(payload: unknown): OperationsLogData {
+  const record = asRecord(payload, 'Operations Log response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Operations Log failed.')
+  }
+
+  return {
+    success: true,
+    generatedAt: getString(record, 'generatedAt'),
+    schema: getArray(record, 'schema').map((item) => String(item)),
+    log: getArray(record, 'log').map(normalizeOperationsLogEntry),
+  }
+}
+
+function normalizeOperationsExecutionPayload(
+  payload: unknown,
+): OperationsExecutionData {
+  const record = asRecord(payload, 'Operations execution response')
+  const operation = getOptionalRecord(record, 'operation')
+
+  return {
+    success: getBoolean(record, 'success'),
+    status: getString(record, 'status'),
+    generatedAt: getString(record, 'generatedAt'),
+    operation: operation ? normalizeOperationsQueueItem(operation) : null,
+    rebuildResult: getOptionalRecord(record, 'rebuildResult') ?? {},
+    verificationResult: getOptionalRecord(record, 'verificationResult') ?? {},
+    cacheInvalidations: getArray(record, 'cacheInvalidations').map(String),
+    coalescedOperations: getNumber(record, 'coalescedOperations'),
+    logId: getString(record, 'logId'),
+    error: getString(record, 'error'),
+    message: getString(record, 'message'),
+  }
+}
+
+function normalizeOperationsLogEntry(item: unknown): OperationsLogEntry {
+  const record = asRecord(item, 'Operations Log entry')
+
+  return {
+    logId: getString(record, 'logId'),
+    operationId: getString(record, 'operationId'),
+    operationType: getString(record, 'operationType'),
+    operationClass: getString(record, 'operationClass'),
+    owningSubsystem: getString(record, 'owningSubsystem'),
+    artifactStateKey: getString(record, 'artifactStateKey'),
+    eventType: getString(record, 'eventType'),
+    trigger: getString(record, 'trigger'),
+    triggeredAt: getString(record, 'triggeredAt'),
+    mergedOperationId: getString(record, 'mergedOperationId'),
+    status: getString(record, 'status'),
+    success: getString(record, 'success'),
+    startedAt: getString(record, 'startedAt'),
+    completedAt: getString(record, 'completedAt'),
+    durationMs: getNumber(record, 'durationMs'),
+    rowsProcessed: getNumber(record, 'rowsProcessed'),
+    cacheInvalidations: getArray(record, 'cacheInvalidations'),
+    downstreamOperations: getArray(record, 'downstreamOperations'),
+    verificationResult: getOptionalRecord(record, 'verificationResult') ?? {},
+    retryCount: getNumber(record, 'retryCount'),
+    errorMessage: getString(record, 'errorMessage'),
+    createdAt: getString(record, 'createdAt'),
   }
 }
 

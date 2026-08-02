@@ -445,13 +445,18 @@ assert.match(
 )
 assert.match(
   page,
-  /refreshAllSectorials[\s\S]*batchLimit: 1[\s\S]*excludeSnapshotKeys[\s\S]*Refresh All Sectorials/,
-  'Army Intelligence page must refresh all stale sectorials one snapshot at a time.',
+  /ArmyIntelligenceOperationsStatus[\s\S]*getOperationsState[\s\S]*getOperationsQueue[\s\S]*Automatic Operations/,
+  'Army Intelligence page must expose read-only Operations Engine status instead of routine refresh controls.',
 )
 assert.match(
   page,
-  /useAuth\(\)[\s\S]*hasPermission\('manageCache'\)/,
-  'Refresh All Sectorials must require the Commissioner cache-management permission.',
+  /useAuth\(\)[\s\S]*isAtLeastRole\('Assistant Commissioner'\)/,
+  'Army Intelligence Operations status must require Assistant Commissioner visibility.',
+)
+assert.doesNotMatch(
+  page,
+  /refreshAllSectorials|Refresh All Sectorials|apiClient\.refreshArmyIntelligenceSnapshots/,
+  'Army Intelligence page must not expose routine manual Army Intelligence refresh controls.',
 )
 assert.doesNotMatch(
   page,
@@ -509,9 +514,14 @@ assert.match(
   'Commissioner decoder worker must support selected-sectorial filtering.',
 )
 assert.match(
+  apiClient,
+  /refreshArmyIntelligenceSnapshots/,
+  'API client must keep the authenticated Army Intelligence decoder worker.',
+)
+assert.doesNotMatch(
   commissioner,
   /refreshArmyIntelligenceSnapshots/,
-  'Commissioner Refresh Army Intelligence must invoke the authenticated decoder worker.',
+  'Commissioner dashboard must not invoke the manual Army Intelligence decoder worker.',
 )
 assert.match(
   decoder,
@@ -1528,8 +1538,13 @@ assert.equal(
 )
 assert.match(
   commissioner,
-  /refreshArmyIntelligence/,
-  'Commissioner dashboard must expose a Refresh Army Intelligence action.',
+  /OperationsEngineDashboard/,
+  'Commissioner dashboard must expose the read-only Operations Engine status dashboard.',
+)
+assert.doesNotMatch(
+  commissioner,
+  /Refresh Army Intelligence/,
+  'Commissioner dashboard must not expose a manual Refresh Army Intelligence maintenance button.',
 )
 assert.match(
   refresh,
@@ -1649,12 +1664,12 @@ const refreshedSectorials = new Set(
 assert.deepEqual(
   Array.from(refreshedSectorials).sort(),
   ['Operations Subsection', 'PanOceania'],
-  'Refresh All Sectorials regression must cover multiple sectorials in one run.',
+  'Army Intelligence refresh worker regression must cover multiple sectorials in one run.',
 )
 assert.equal(
   multiSectorialRefreshRun.at(0).currentCount,
   1,
-  'Refresh All Sectorials must count current snapshots as skipped.',
+  'Army Intelligence refresh worker must count current snapshots as skipped.',
 )
 assert.equal(
   multiSectorialRefreshRun.at(2).processed.at(0).player,

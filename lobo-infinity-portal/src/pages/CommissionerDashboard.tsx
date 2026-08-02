@@ -11,6 +11,12 @@ import {
   type EventLifecycleData,
   type OperationsDashboardData,
   type OperationsIdentityRecord,
+  type OperationsLogData,
+  type OperationsLogEntry,
+  type OperationsQueueData,
+  type OperationsQueueItem,
+  type OperationsStateData,
+  type OperationsSubsystemState,
   type PortalSettings,
 } from '../services/api'
 import { formatPlayerName } from '../services/formatting'
@@ -32,16 +38,6 @@ type OperationsAction = (
   action: string,
   params?: Record<string, string | number | boolean>,
 ) => Promise<void>
-
-type RebuildStatisticsFeedback = {
-  status: 'success' | 'error'
-  message: string
-} | null
-
-type ArmyIntelligenceFeedback = {
-  status: 'success' | 'error'
-  message: string
-} | null
 
 const permissionRows = [
   ['View operations', 'Assistant Commissioner', 'Assistant Commissioner and Commissioner'],
@@ -72,10 +68,6 @@ function CommissionerDashboard() {
     status: 'loading',
   })
   const [workingAction, setWorkingAction] = useState('')
-  const [rebuildStatisticsFeedback, setRebuildStatisticsFeedback] =
-    useState<RebuildStatisticsFeedback>(null)
-  const [armyIntelligenceFeedback, setArmyIntelligenceFeedback] =
-    useState<ArmyIntelligenceFeedback>(null)
   const [openPanels, setOpenPanels] = useState<string[]>(() =>
     requestedPanel ? ['eventManager', requestedPanel] : ['eventManager'],
   )
@@ -175,66 +167,9 @@ function CommissionerDashboard() {
     params: Record<string, string | number | boolean> = {},
   ) {
     setWorkingAction(action)
-    if (action === 'rebuildStatistics') {
-      setRebuildStatisticsFeedback(null)
-    }
-    if (action === 'refreshArmyIntelligence') {
-      setArmyIntelligenceFeedback(null)
-    }
     try {
-      if (action === 'refreshArmyIntelligence') {
-        let result = await apiClient.refreshArmyIntelligenceSnapshots()
-        const totals = { updated: result.updated }
-        let refreshPasses = 1
-
-        while (result.hasMore && refreshPasses < 20) {
-          result = await apiClient.refreshArmyIntelligenceSnapshots()
-          totals.updated += result.updated
-          refreshPasses += 1
-        }
-
-        if (result.hasMore) {
-          throw new Error(
-            `Army Intelligence refresh paused with ${result.remaining} snapshots remaining. Run refresh again.`,
-          )
-        }
-
-        await loadOperations()
-        setArmyIntelligenceFeedback({
-          status: 'success',
-          message: `Army Intelligence refresh complete: ${totals.updated} snapshots updated`,
-        })
-        return
-      }
-
       await apiClient.operationsAction(action, params)
       await loadOperations()
-      if (action === 'rebuildStatistics') {
-        setRebuildStatisticsFeedback({
-          status: 'success',
-          message: 'Statistics rebuild complete',
-        })
-      }
-    } catch (error) {
-      if (action === 'rebuildStatistics') {
-        setRebuildStatisticsFeedback({
-          status: 'error',
-          message:
-            error instanceof Error
-              ? error.message
-              : 'Statistics rebuild failed.',
-        })
-      }
-      if (action === 'refreshArmyIntelligence') {
-        setArmyIntelligenceFeedback({
-          status: 'error',
-          message:
-            error instanceof Error
-              ? error.message
-              : 'Army Intelligence refresh failed.',
-        })
-      }
-      throw error
     } finally {
       setWorkingAction('')
     }
@@ -411,16 +346,7 @@ function CommissionerDashboard() {
           onAction={runAction}
           workingAction={workingAction}
         />
-        <CachePanel
-          cache={data.summary.cacheStatus}
-          canManage={auth.hasPermission('manageCache')}
-          armyIntelligenceFeedback={armyIntelligenceFeedback}
-          feedback={rebuildStatisticsFeedback}
-          onDismissArmyIntelligenceFeedback={() => setArmyIntelligenceFeedback(null)}
-          onDismissFeedback={() => setRebuildStatisticsFeedback(null)}
-          onAction={runAction}
-          workingAction={workingAction}
-        />
+        <OperationsEngineDashboard />
         <LazyOperationsPanel
           isLoading={loadingPanels.includes('discord')}
           isOpen={openPanels.includes('discord')}
@@ -1381,110 +1307,503 @@ function PromotionRelegationPanel({
   )
 }
 
-function CachePanel({
-  armyIntelligenceFeedback,
-  cache,
-  canManage,
-  feedback,
-  onDismissArmyIntelligenceFeedback,
-  onDismissFeedback,
-  onAction,
-  workingAction,
-}: {
-  armyIntelligenceFeedback: ArmyIntelligenceFeedback
-  cache: OperationsDashboardData['summary']['cacheStatus']
-  canManage: boolean
-  feedback: RebuildStatisticsFeedback
-  onDismissArmyIntelligenceFeedback: () => void
-  onDismissFeedback: () => void
-  onAction: OperationsAction
-  workingAction: string
-}) {
-  const isRebuildingStatistics = workingAction === 'rebuildStatistics'
-  const isRefreshingArmyIntelligence = workingAction === 'refreshArmyIntelligence'
+type OperationsEngineDashboardState =
+  | {
+      status: 'loading'
+    }
+  | {
+      log: OperationsLogData
+      queue: OperationsQueueData
+      state: OperationsStateData
+      status: 'success'
+    }
+  | {
+      error: string
+      status: 'error'
+    }
+
+function OperationsEngineDashboard() {
+  const [engineState, setEngineState] = useState<OperationsEngineDashboardState>({
+    status: 'loading',
+  })
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    async function loadOperationsEngineDashboard() {
+      try {
+        const [state, queue, log] = await Promise.all([
+          apiClient.getOperationsState({ signal: controller.signal }),
+          apiClient.getOperationsQueue({ signal: controller.signal }),
+          apiClient.getOperationsLog({ signal: controller.signal }),
+        ])
+
+        setEngineState({
+          log,
+          queue,
+          state,
+          status: 'success',
+        })
+      } catch (error) {
+        if (controller.signal.aborted) {
+          return
+        }
+
+        setEngineState({
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Operations Dashboard could not be loaded.',
+          status: 'error',
+        })
+      }
+    }
+
+    void loadOperationsEngineDashboard()
+
+    return () => {
+      controller.abort()
+    }
+  }, [])
+
+  if (engineState.status === 'loading') {
+    return (
+      <section className="panel operations-panel">
+        <PanelTitle eyebrow="Operations Engine" title="System Status" />
+        <Skeleton label="Operations Engine loading" rows={8} />
+      </section>
+    )
+  }
+
+  if (engineState.status === 'error') {
+    return (
+      <section className="panel operations-panel">
+        <PanelTitle eyebrow="Operations Engine" title="System Status" />
+        <p className="operations-empty" role="alert">{engineState.error}</p>
+      </section>
+    )
+  }
+
+  const { log, queue, state } = engineState
+  const activeOperation = queue.queue.find((operation) => operation.status === 'Running') ?? null
+  const recentLog = sortOperationsLog(log.log).slice(0, 10)
+  const lastSuccessfulRun = findLastSuccessfulOperation(log.log)
+  const lastFailure = findLastFailedOperation(log.log)
+  const queueStats = getQueueStatistics(queue.queue)
+  const retryStats = getRetryStatistics(queue.queue)
 
   return (
-    <section className="panel operations-panel">
-      <PanelTitle eyebrow="Cache" title="Cache and Rebuild" />
-      <dl className="operations-metrics">
-        <Metric label="Status" value={cache.status} />
-        <Metric label="Version" value={cache.version} />
-        <Metric label="Last Refresh" value={cache.lastRefresh || 'Not recorded'} />
-        <Metric label="Cache Age" value={cache.cacheAge} />
-        <Metric label="Avg API Response" value={cache.performance.averageApiResponse || '0ms'} />
-        <Metric label="Cache Hit Rate" value={`${cache.performance.cacheHitRate}%`} />
+    <section className="panel operations-panel operations-engine-dashboard" aria-label="Commissioner Operations Dashboard">
+      <PanelTitle eyebrow="Operations Engine" title="System Status" />
+      <dl className="operations-metrics compact">
+        <Metric label="Overall System Health" value={formatOperationsHealth(state)} />
+        <Metric label="Subsystems Stale" value={state.staleCount} />
+        <Metric label="Queued" value={queueStats.queued} />
+        <Metric label="Running" value={queueStats.running} />
+        <Metric label="Failed" value={queueStats.failed} />
+        <Metric label="Retrying" value={retryStats.retrying} />
       </dl>
-      <div className="operations-actions wrap">
-        <button disabled={!canManage || workingAction !== ''} onClick={() => void onAction('clearCache')} type="button">
-          Cache Clear
-        </button>
-        <button disabled={!canManage || workingAction !== ''} onClick={() => void onAction('refreshCache', { group: 'all' })} type="button">
-          Refresh All Cache
-        </button>
-        <button disabled={!canManage || workingAction !== ''} onClick={() => void onAction('rebuildStatistics')} type="button">
-          {isRebuildingStatistics ? 'Rebuilding statistics...' : 'Statistics Rebuild'}
-        </button>
-        <button disabled={!canManage || workingAction !== ''} onClick={() => void onAction('refreshArmyIntelligence')} type="button">
-          {isRefreshingArmyIntelligence ? 'Refreshing Army Intelligence...' : 'Refresh Army Intelligence'}
-        </button>
+      <div className="operations-engine-section">
+        <h3>Subsystem Health</h3>
+        <div className="operations-engine-subsystems">
+          {['gameEngine', 'armyIntelligence', 'competitiveIntelligence', 'cache'].map((subsystemId) => (
+            <SubsystemHealthCard
+              key={subsystemId}
+              state={findSubsystemState(state.states, subsystemId)}
+              subsystemId={subsystemId}
+            />
+          ))}
+        </div>
       </div>
-      {(isRebuildingStatistics || feedback) && (
-        <div
-          className={`operations-feedback ${feedback?.status || 'pending'}`}
-          role={feedback?.status === 'error' ? 'alert' : 'status'}
-        >
-          <span>
-            {isRebuildingStatistics
-              ? 'Rebuilding statistics...'
-              : feedback?.message}
-          </span>
-          {feedback && (
-            <button
-              aria-label="Dismiss statistics rebuild message"
-              onClick={onDismissFeedback}
-              type="button"
-            >
-              Dismiss
-            </button>
-          )}
-        </div>
-      )}
-      {(isRefreshingArmyIntelligence || armyIntelligenceFeedback) && (
-        <div
-          className={`operations-feedback ${armyIntelligenceFeedback?.status || 'pending'}`}
-          role={armyIntelligenceFeedback?.status === 'error' ? 'alert' : 'status'}
-        >
-          <span>
-            {isRefreshingArmyIntelligence
-              ? 'Refreshing Army Intelligence...'
-              : armyIntelligenceFeedback?.message}
-          </span>
-          {armyIntelligenceFeedback && (
-            <button
-              aria-label="Dismiss Army Intelligence refresh message"
-              onClick={onDismissArmyIntelligenceFeedback}
-              type="button"
-            >
-              Dismiss
-            </button>
-          )}
-        </div>
-      )}
-      <div className="operations-stack">
-        {cache.entries.length > 0 ? (
-          cache.entries.slice(0, 8).map((entry) => (
-            <article className="operations-record" key={`${entry.action}-${entry.version}`}>
-              <span>{entry.group}</span>
-              <h3>{entry.action}</h3>
-              <p>{entry.health} - age {entry.ageSeconds}s - expires in {entry.timeRemainingSeconds}s</p>
-            </article>
-          ))
+      <div className="operations-engine-section">
+        <h3>Active Operation</h3>
+        {activeOperation ? (
+          <OperationSummaryCard operation={activeOperation} />
         ) : (
-          <p className="operations-empty">Cache is cold. It will warm as pages are requested.</p>
+          <EmptyState text="No operation is currently running." />
         )}
+      </div>
+      <div className="operations-engine-section">
+        <h3>Queue Statistics</h3>
+        <dl className="operations-metrics compact">
+          <Metric label="Total" value={queueStats.total} />
+          <Metric label="Waiting" value={queueStats.waiting} />
+          <Metric label="Completed" value={queueStats.completed} />
+        </dl>
+      </div>
+      <div className="operations-engine-section">
+        <h3>Retry Statistics</h3>
+        <dl className="operations-metrics compact">
+          <Metric label="Retries" value={retryStats.totalRetries} />
+          <Metric label="Retry Items" value={retryStats.itemsWithRetries} />
+          <Metric label="Max Retry" value={retryStats.maxRetryCount} />
+        </dl>
+      </div>
+      <div className="operations-engine-section">
+        <h3>Last Successful Run</h3>
+        {lastSuccessfulRun ? (
+          <OperationLogSummaryCard entry={lastSuccessfulRun} />
+        ) : (
+          <EmptyState text="No successful operation run has been logged." />
+        )}
+      </div>
+      <div className="operations-engine-section">
+        <h3>Last Failure</h3>
+        {lastFailure ? (
+          <OperationLogSummaryCard entry={lastFailure} />
+        ) : (
+          <EmptyState text="No operation failure has been logged." />
+        )}
+      </div>
+      <div className="operations-engine-section operations-engine-table-section">
+        <h3>Operations Queue</h3>
+        <OperationsQueueTable queue={queue.queue} />
+      </div>
+      <div className="operations-engine-section operations-engine-table-section">
+        <h3>Recent Operations Log</h3>
+        <OperationsLogTable log={recentLog} />
       </div>
     </section>
   )
+}
+
+function SubsystemHealthCard({
+  state,
+  subsystemId,
+}: {
+  state: OperationsSubsystemState | null
+  subsystemId: string
+}) {
+  const label = state?.subsystemName || formatSubsystemName(subsystemId)
+  const status = state ? formatSubsystemStatus(state) : 'Unavailable'
+
+  return (
+    <article className={`operations-record ${getSubsystemTone(state)}`}>
+      <span>{subsystemId}</span>
+      <h3>{label}</h3>
+      <p>{status}</p>
+      <small>
+        {state?.staleReason || state?.schemaVersion || 'No subsystem state reported.'}
+      </small>
+      {state?.lastBuiltAt ? <small>Last built: {formatOperationsTimestamp(state.lastBuiltAt)}</small> : null}
+    </article>
+  )
+}
+
+function OperationSummaryCard({ operation }: { operation: OperationsQueueItem }) {
+  return (
+    <article className={`operations-record ${getOperationTone(operation.status)}`}>
+      <span>{operation.operationClass} - {operation.status}</span>
+      <h3>{operation.operationType}</h3>
+      <p>{operation.owningSubsystem} - priority {operation.priority}</p>
+      <small>
+        Trigger count {operation.triggerCount} - queued {formatOperationsTimestamp(operation.createdAt)}
+      </small>
+    </article>
+  )
+}
+
+function OperationLogSummaryCard({ entry }: { entry: OperationsLogEntry }) {
+  return (
+    <article className={`operations-record ${getOperationTone(entry.status)}`}>
+      <span>{entry.status || entry.eventType}</span>
+      <h3>{entry.operationType || entry.operationId}</h3>
+      <p>{entry.owningSubsystem} - {entry.trigger || 'No trigger recorded'}</p>
+      <small>
+        {formatOperationDuration(entry.durationMs)} - {entry.rowsProcessed} rows - {formatOperationsTimestamp(getLogTimestamp(entry))}
+      </small>
+    </article>
+  )
+}
+
+function OperationsQueueTable({ queue }: { queue: OperationsQueueItem[] }) {
+  const sortedQueue = queue.slice().sort(compareQueueItems)
+
+  if (sortedQueue.length === 0) {
+    return <EmptyState text="The Operations Queue is empty." />
+  }
+
+  return (
+    <div className="operations-table-wrap">
+      <table className="operations-table">
+        <thead>
+          <tr>
+            <th>Operation Type</th>
+            <th>Operation Class</th>
+            <th>Status</th>
+            <th>Owning Subsystem</th>
+            <th>Priority</th>
+            <th>Dependency</th>
+            <th>Trigger Count</th>
+            <th>Queue Position</th>
+            <th>Created At</th>
+            <th>Started At</th>
+            <th>Retry Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sortedQueue.map((operation) => (
+            <tr key={operation.operationId}>
+              <td>{operation.operationType}</td>
+              <td>{operation.operationClass}</td>
+              <td>{operation.status}</td>
+              <td>{operation.owningSubsystem}</td>
+              <td>{operation.priority}</td>
+              <td>{operation.dependencyOperationId || 'None'}</td>
+              <td>{operation.triggerCount}</td>
+              <td>{operation.queuePosition || '-'}</td>
+              <td>{formatOperationsTimestamp(operation.createdAt)}</td>
+              <td>{formatOperationsTimestamp(operation.startedAt)}</td>
+              <td>{operation.retryCount}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function OperationsLogTable({ log }: { log: OperationsLogEntry[] }) {
+  if (log.length === 0) {
+    return <EmptyState text="No Operations Log entries have been recorded." />
+  }
+
+  return (
+    <div className="operations-table-wrap">
+      <table className="operations-table">
+        <thead>
+          <tr>
+            <th>Operation</th>
+            <th>Subsystem</th>
+            <th>Trigger</th>
+            <th>Duration</th>
+            <th>Rows Processed</th>
+            <th>Verification Result</th>
+            <th>Cache Invalidations</th>
+            <th>Final Status</th>
+            <th>Timestamp</th>
+          </tr>
+        </thead>
+        <tbody>
+          {log.map((entry) => (
+            <tr key={entry.logId}>
+              <td>{entry.operationType || entry.operationId}</td>
+              <td>{entry.owningSubsystem}</td>
+              <td>{entry.trigger || 'None'}</td>
+              <td>{formatOperationDuration(entry.durationMs)}</td>
+              <td>{entry.rowsProcessed}</td>
+              <td>{formatVerificationResult(entry.verificationResult)}</td>
+              <td>{formatUnknownList(entry.cacheInvalidations)}</td>
+              <td>{entry.status || entry.eventType}</td>
+              <td>{formatOperationsTimestamp(getLogTimestamp(entry))}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function findSubsystemState(
+  states: OperationsSubsystemState[],
+  subsystemId: string,
+) {
+  return states.find((state) => state.subsystemId === subsystemId) ?? null
+}
+
+function formatOperationsHealth(state: OperationsStateData) {
+  if (!state.healthy) {
+    return 'Unhealthy'
+  }
+
+  if (state.stale) {
+    return 'Stale'
+  }
+
+  return 'Healthy'
+}
+
+function formatSubsystemStatus(state: OperationsSubsystemState) {
+  if (!state.healthy) {
+    return 'Unhealthy'
+  }
+
+  if (state.stale) {
+    return 'Stale'
+  }
+
+  return 'Healthy'
+}
+
+function getSubsystemTone(state: OperationsSubsystemState | null) {
+  if (!state || !state.healthy) {
+    return 'critical'
+  }
+
+  if (state.stale) {
+    return 'warning'
+  }
+
+  return 'success'
+}
+
+function getOperationTone(status: string) {
+  const normalizedStatus = status.toLowerCase()
+
+  if (normalizedStatus === 'completed') {
+    return 'success'
+  }
+
+  if (normalizedStatus === 'failed') {
+    return 'critical'
+  }
+
+  if (normalizedStatus === 'running' || normalizedStatus === 'retrying') {
+    return 'warning'
+  }
+
+  return 'pending'
+}
+
+function getQueueStatistics(queue: OperationsQueueItem[]) {
+  return {
+    completed: countQueueStatus(queue, 'Completed'),
+    failed: countQueueStatus(queue, 'Failed'),
+    queued: countQueueStatus(queue, 'Queued'),
+    retrying: countQueueStatus(queue, 'Retrying'),
+    running: countQueueStatus(queue, 'Running'),
+    total: queue.length,
+    waiting: countQueueStatus(queue, 'Waiting on Dependency'),
+  }
+}
+
+function getRetryStatistics(queue: OperationsQueueItem[]) {
+  const retryCounts = queue.map((operation) => operation.retryCount)
+  const totalRetries = retryCounts.reduce((total, count) => total + count, 0)
+
+  return {
+    itemsWithRetries: queue.filter((operation) => operation.retryCount > 0).length,
+    maxRetryCount: Math.max(0, ...retryCounts),
+    retrying: countQueueStatus(queue, 'Retrying'),
+    totalRetries,
+  }
+}
+
+function countQueueStatus(queue: OperationsQueueItem[], status: string) {
+  return queue.filter((operation) => operation.status === status).length
+}
+
+function compareQueueItems(left: OperationsQueueItem, right: OperationsQueueItem) {
+  const leftPosition = left.queuePosition || Number.MAX_SAFE_INTEGER
+  const rightPosition = right.queuePosition || Number.MAX_SAFE_INTEGER
+
+  if (leftPosition !== rightPosition) {
+    return leftPosition - rightPosition
+  }
+
+  return getTimestampValue(left.createdAt) - getTimestampValue(right.createdAt)
+}
+
+function sortOperationsLog(log: OperationsLogEntry[]) {
+  return log
+    .slice()
+    .sort((left, right) => getTimestampValue(getLogTimestamp(right)) - getTimestampValue(getLogTimestamp(left)))
+}
+
+function findLastSuccessfulOperation(log: OperationsLogEntry[]) {
+  return sortOperationsLog(log).find((entry) => {
+    return (
+      entry.eventType === 'Executed' &&
+      entry.status === 'Completed' &&
+      entry.success.toLowerCase() === 'true'
+    )
+  }) ?? null
+}
+
+function findLastFailedOperation(log: OperationsLogEntry[]) {
+  return sortOperationsLog(log).find((entry) => {
+    return (
+      entry.eventType === 'Executed' &&
+      (entry.status === 'Failed' || entry.success.toLowerCase() === 'false')
+    )
+  }) ?? null
+}
+
+function getLogTimestamp(entry: OperationsLogEntry) {
+  return entry.completedAt || entry.createdAt || entry.startedAt || entry.triggeredAt
+}
+
+function getTimestampValue(value: string) {
+  const timestamp = Date.parse(value)
+  return Number.isFinite(timestamp) ? timestamp : 0
+}
+
+function formatOperationsTimestamp(value: string) {
+  if (!value) {
+    return 'Not recorded'
+  }
+
+  const timestamp = Date.parse(value)
+  if (!Number.isFinite(timestamp)) {
+    return value
+  }
+
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: 'short',
+    timeStyle: 'short',
+  }).format(new Date(timestamp))
+}
+
+function formatOperationDuration(durationMs: number) {
+  if (!Number.isFinite(durationMs) || durationMs <= 0) {
+    return '0ms'
+  }
+
+  if (durationMs < 1000) {
+    return `${durationMs}ms`
+  }
+
+  return `${(durationMs / 1000).toFixed(1)}s`
+}
+
+function formatVerificationResult(result: Record<string, unknown>) {
+  if (result.success === true) {
+    return 'Passed'
+  }
+
+  if (result.success === false) {
+    return 'Failed'
+  }
+
+  const errors = Array.isArray(result.errors) ? result.errors.length : 0
+  if (errors > 0) {
+    return `${errors} errors`
+  }
+
+  return Object.keys(result).length > 0 ? 'Recorded' : 'Not recorded'
+}
+
+function formatUnknownList(items: unknown[]) {
+  if (items.length === 0) {
+    return 'None'
+  }
+
+  return items.map((item) => String(item)).join(', ')
+}
+
+function formatSubsystemName(subsystemId: string) {
+  switch (subsystemId) {
+    case 'gameEngine':
+      return 'Game Engine'
+    case 'armyIntelligence':
+      return 'Army Intelligence'
+    case 'competitiveIntelligence':
+      return 'Competitive Intelligence'
+    case 'cache':
+      return 'Cache'
+    default:
+      return subsystemId
+  }
 }
 
 function AuditPanel({

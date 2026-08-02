@@ -449,6 +449,21 @@ function handleApiGet(e, action) {
         return getOperationsStatus(auth);
       });
 
+    case "operationsState":
+      return requireApiPermission(e, "viewOperations", function() {
+        return getOperationsEngineState();
+      });
+
+    case "operationsQueue":
+      return requireApiPermission(e, "viewOperations", function() {
+        return getOperationsEngineQueue();
+      });
+
+    case "operationsLog":
+      return requireApiPermission(e, "viewOperations", function() {
+        return getOperationsEngineLog();
+      });
+
     case "reliability":
       return requireApiPermission(e, "viewOperations", function() {
         return getReliabilityDashboard();
@@ -711,6 +726,11 @@ function handleApiGet(e, action) {
     case "operationsCommand":
       return requireApiPermission(e, "runSeasonControl", function() {
         return executeOperationsCommand(e);
+      });
+
+    case "operationsRunNext":
+      return requireApiPermission(e, "runSeasonControl", function() {
+        return executeOperationsEngineNext(e);
       });
 
     case "identityBulkEnable":

@@ -154,9 +154,12 @@ function LeagueIntegrity() {
       <PageHeader />
       <HealthOverview data={state.data} />
       <IntegrityActions
+        onExport={() => void exportReport()}
+        workingAction={workingAction}
+      />
+      <EmergencyRecoveryActions
         canRepair={canRepair}
         onAudit={() => void runFreshAudit()}
-        onExport={() => void exportReport()}
         onRepair={(repair) => void runRepair(repair)}
         workingAction={workingAction}
       />
@@ -209,56 +212,88 @@ function HealthOverview({ data }: { data: IntegrityData }) {
 }
 
 function IntegrityActions({
-  canRepair,
-  onAudit,
   onExport,
-  onRepair,
   workingAction,
 }: {
-  canRepair: boolean
-  onAudit: () => void
   onExport: () => void
-  onRepair: (repair: string) => void
   workingAction: string
 }) {
   const disabled = workingAction !== ''
 
   return (
     <section className="panel operations-panel">
+      <div className="panel-heading">
+        <p className="eyebrow">Automatic Operations</p>
+        <h2>Integrity Maintenance Is Self-Healing</h2>
+        <p>
+          Routine rebuilds, refreshes, and cache recovery are coordinated by
+          the Operations Engine. Commissioner actions here are limited to
+          reporting unless emergency recovery is required.
+        </p>
+      </div>
+      <div className="operations-actions wrap">
+        <button disabled={disabled} onClick={onExport} type="button">
+          Export Audit Report
+        </button>
+      </div>
+    </section>
+  )
+}
+
+function EmergencyRecoveryActions({
+  canRepair,
+  onAudit,
+  onRepair,
+  workingAction,
+}: {
+  canRepair: boolean
+  onAudit: () => void
+  onRepair: (repair: string) => void
+  workingAction: string
+}) {
+  const disabled = workingAction !== ''
+
+  return (
+    <section className="panel operations-panel emergency-recovery-panel">
+      <div className="panel-heading">
+        <p className="eyebrow">Emergency / Recovery</p>
+        <h2>Break-Glass Administrative Tools</h2>
+        <p>
+          Routine maintenance is handled by the Operations Engine. Use these
+          controls only for incident recovery or directed administrative repair.
+        </p>
+      </div>
       <div className="operations-actions wrap">
         <button disabled={!canRepair || disabled} onClick={onAudit} type="button">
-          Run Fresh Audit
+          Emergency Fresh Audit
         </button>
         <button
           disabled={!canRepair || disabled}
           onClick={() => onRepair('safe')}
           type="button"
         >
-          Repair All Safe Issues
+          Emergency Safe Repair
         </button>
         <button
           disabled={!canRepair || disabled}
           onClick={() => onRepair('statistics')}
           type="button"
         >
-          Rebuild Statistics
+          Emergency Statistics Rebuild
         </button>
         <button
           disabled={!canRepair || disabled}
           onClick={() => onRepair('standings')}
           type="button"
         >
-          Rebuild Standings
+          Emergency Standings Rebuild
         </button>
         <button
           disabled={!canRepair || disabled}
           onClick={() => onRepair('cache')}
           type="button"
         >
-          Refresh Cache
-        </button>
-        <button disabled={disabled} onClick={onExport} type="button">
-          Export Audit Report
+          Emergency Cache Recovery
         </button>
       </div>
     </section>

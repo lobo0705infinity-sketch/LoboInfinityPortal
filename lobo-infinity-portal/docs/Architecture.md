@@ -463,6 +463,16 @@ No new top-level architectural concept may be introduced without updating:
 - `docs/TechnicalDebt.md`
 - `docs/ReleaseChecklist.md`
 
+Engineering Rule #3:
+
+No subsystem may perform operational orchestration directly.
+
+All automatic maintenance must be requested through the Operations Engine.
+
+Subsystems may detect stale state, expose health, enqueue work, rebuild themselves, and verify themselves. They may not invoke rebuilds of other subsystems directly.
+
+The Operations Engine is the sole orchestrator of operational workflows.
+
 ## Engineering Gates
 
 Every release must satisfy four permanent gates:

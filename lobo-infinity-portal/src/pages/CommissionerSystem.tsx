@@ -24,31 +24,6 @@ const systemWorkflows = [
     to: '/commissioner/army-code-validation',
   },
   {
-    body: 'Clear, refresh, and inspect shared cache state.',
-    label: 'Cache Management',
-    to: '/commissioner?section=operations',
-  },
-  {
-    body: 'Run rebuild tasks for standings, statistics, achievements, and search data.',
-    label: 'Rebuild Engine',
-    to: '/commissioner?section=operations',
-  },
-  {
-    body: 'Recalculate statistics and repair generated competitive data.',
-    label: 'Recalculate Statistics',
-    to: '/integrity',
-  },
-  {
-    body: 'Refresh search index and verify searchable player records.',
-    label: 'Refresh Search Index',
-    to: '/diagnostics',
-  },
-  {
-    body: 'Maintain automation queues, retries, failed jobs, and background operations.',
-    label: 'Queue Maintenance',
-    to: '/commissioner/automation',
-  },
-  {
     body: 'Review portal version, backend deployment, frontend deployment, and build metadata.',
     label: 'Version Information',
     to: '/diagnostics',
@@ -56,6 +31,29 @@ const systemWorkflows = [
   {
     body: 'Inspect deployment IDs, API endpoint configuration, and production build identity.',
     label: 'Deployment Information',
+    to: '/diagnostics',
+  },
+]
+
+const emergencyWorkflows = [
+  {
+    body: 'Inspect Operations Engine status, queue history, cache state, and failed background work before incident response.',
+    label: 'Operations Recovery',
+    to: '/commissioner?section=operations',
+  },
+  {
+    body: 'Use break-glass rebuild, standings, cache, and repair controls only during production recovery.',
+    label: 'Emergency Recovery',
+    to: '/integrity',
+  },
+  {
+    body: 'Review automation queues, retries, failed jobs, and background operation history.',
+    label: 'Automation Queue Recovery',
+    to: '/commissioner/automation',
+  },
+  {
+    body: 'Recover search indexing and verify searchable player records only during directed incident work.',
+    label: 'Search Index Recovery',
     to: '/diagnostics',
   },
 ]
@@ -81,7 +79,7 @@ function CommissionerSystem() {
           <h1>System</h1>
           <p>
             Sign in with an enabled Assistant Commissioner or Commissioner
-            account to use system maintenance tools.
+            account to inspect system health and recovery tools.
           </p>
         </section>
       </main>
@@ -94,8 +92,8 @@ function CommissionerSystem() {
         <p className="eyebrow">Commissioner</p>
         <h1 id="commissioner-system-title">System</h1>
         <p>
-          Maintenance, audit, diagnostics, cache, rebuild, queue, version, and
-          deployment tools grouped away from daily league operations.
+          Health, audit, diagnostics, queue, version, deployment, and recovery
+          tools grouped away from daily league operations.
         </p>
       </section>
 
@@ -111,19 +109,28 @@ function CommissionerSystem() {
 
       <section className="panel operations-panel">
         <div className="panel-heading">
-          <p className="eyebrow">Maintenance Consoles</p>
-          <h2>System Tools</h2>
+          <p className="eyebrow">Emergency / Recovery</p>
+          <h2>Break-Glass Tools</h2>
           <p>
-            Audit, Diagnostics, and Operations are consolidated here as
-            maintenance workflows. Legacy URLs still work for direct links.
+            Routine maintenance is automatic through the Operations Engine.
+            These links are for recovery, diagnostics, and directed incident work.
           </p>
+        </div>
+        <div className="operations-stack">
+          {emergencyWorkflows.map((workflow) => (
+            <Link className="operations-record warning" key={workflow.label} to={workflow.to}>
+              <span>Emergency / Recovery</span>
+              <h3>{workflow.label}</h3>
+              <p>{workflow.body}</p>
+            </Link>
+          ))}
         </div>
         <div className="operations-actions wrap">
           <Link to="/integrity">Open Audit</Link>
           <Link to="/diagnostics">Open Diagnostics</Link>
           <Link to="/commissioner/army-code-validation">Open Army Code Validation</Link>
-          <Link to="/commissioner?section=operations">Open Operations</Link>
-          <Link to="/commissioner/automation">Open Queue Maintenance</Link>
+          <Link to="/commissioner?section=operations">Open Operations Status</Link>
+          <Link to="/commissioner/automation">Open Queue Recovery</Link>
         </div>
       </section>
     </main>

@@ -31,6 +31,16 @@ No new top-level architectural concept may be introduced without updating:
 
 Examples of top-level concepts include Organization, Community, Series, Event, Season, Round, Game, Identity, Automation, Achievements, Hall of Fame, and Statistics.
 
+## Engineering Rule #3
+
+No subsystem may perform operational orchestration directly.
+
+All automatic maintenance must be requested through the Operations Engine.
+
+Subsystems may detect stale state, expose health, enqueue work, rebuild themselves, and verify themselves. They may not invoke rebuilds of other subsystems directly.
+
+The Operations Engine is the sole orchestrator of operational workflows.
+
 ## Engineering Gates
 
 Every release must satisfy all four gates.
@@ -42,6 +52,7 @@ Every release must satisfy all four gates.
 - Fits the frozen Version 3 Event Engine architecture.
 - Extends the architecture rather than redesigning it.
 - Lifecycle and operational repairs reuse existing mutation, automation, audit, and cache paths.
+- Operational maintenance is orchestrated only by the Operations Engine.
 
 ### Compatibility Gate
 
