@@ -351,8 +351,8 @@ const checks = [
       !competitiveSelfHealingSection(files.competitiveIntelligenceAdapter).includes('executeOperationsEngineNext'),
   ],
   [
-    'Stage 5 cache healing remains disabled during Stages 2-4',
-    files.operationsEngine.includes('const OPERATIONS_ENGINE_CACHE_HEALING_ENABLED = false') &&
+    'Stage 5 cache healing is enabled for verified completed operations',
+    files.operationsEngine.includes('const OPERATIONS_ENGINE_CACHE_HEALING_ENABLED = true') &&
       files.operationsEngine.includes('function isOperationsEngineCacheHealingEnabled()') &&
       files.operationsEngine.includes('if (!isOperationsEngineCacheHealingEnabled())') &&
       files.operationsEngine.indexOf('if (!isOperationsEngineCacheHealingEnabled())') <
