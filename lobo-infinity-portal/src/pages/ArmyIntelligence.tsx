@@ -349,8 +349,8 @@ function ArmyIntelligenceContent({
   )
   const selectedArmyListExplorerRows = useMemo(
     () =>
-      buildExplorerRowsFromSelectedLists(
-        matchingLists.filter((list) => getDecodedSectorial(list) === selectedExplorerScope.label),
+      buildExplorerRowsFromSelectedLists(matchingLists).filter(
+        (list) => getExplorerSectorial(list) === selectedExplorerScope.label,
       ),
     [matchingLists, selectedExplorerScope.label],
   )
