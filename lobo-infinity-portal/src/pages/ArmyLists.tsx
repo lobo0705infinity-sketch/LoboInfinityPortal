@@ -140,7 +140,7 @@ function ArmyLists() {
 
     return {
       events: getUniqueOptions(state.lists.map((list) => list.eventName)),
-      factions: getUniqueOptions(state.lists.map((list) => getDisplayFaction(list))),
+      factions: getUniqueOptions(state.lists.map((list) => getArmyListFilterIdentity(list))),
       gameTypes: getUniqueOptions(state.lists.map((list) => list.gameType)),
       players: getUniqueOptions(state.lists.map((list) => getDisplayPlayer(list))),
       results: getUniqueOptions(state.lists.map((list) => list.result)),
@@ -154,7 +154,7 @@ function ArmyLists() {
 
     return state.lists
       .filter((list) => matchesFilter(getDisplayPlayer(list), filters.player))
-      .filter((list) => matchesFilter(getDisplayFaction(list), filters.faction))
+      .filter((list) => matchesFilter(getArmyListFilterIdentity(list), filters.faction))
       .filter((list) => matchesFilter(list.gameType, filters.gameType))
       .filter((list) => matchesFilter(list.eventName, filters.event))
       .filter((list) => matchesFilter(list.result, filters.result))
@@ -577,6 +577,10 @@ function getUniqueOptions(values: string[]) {
 }
 
 function getDisplayFaction(list: SubmittedArmyListEntry) {
+  return normalizeArmyForDisplay(list.faction)
+}
+
+function getArmyListFilterIdentity(list: SubmittedArmyListEntry) {
   return normalizeArmyForDisplay(list.faction)
 }
 
