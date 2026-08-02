@@ -5,6 +5,7 @@ import {
 } from '../services/api'
 import { eventRepository } from '../services/data'
 import Skeleton from './Skeleton'
+import TeamPairingEditor from './TeamPairingEditor'
 
 type EventManagerState =
   | { status: 'loading' }
@@ -83,17 +84,6 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     status: 'Registered',
     teamId: '',
     teamName: '',
-  })
-  const [pairingForm, setPairingForm] = useState({
-    playerPairings: '',
-    results: '',
-    round: 'Round 1',
-    roundId: '',
-    status: 'Scheduled',
-    teamA: '',
-    teamB: '',
-    teamAId: '',
-    teamBId: '',
   })
   const [leagueOperationsForm, setLeagueOperationsForm] = useState({
     mission1: '',
@@ -349,12 +339,10 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     }))
   }
 
-  async function savePairing(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-
+  async function savePairing(params: Record<string, string>) {
     await runManagerAction('pairing', () =>
       eventRepository.savePairing({
-        ...pairingForm,
+        ...params,
         eventId: selectedEventId,
       }),
     )
@@ -734,12 +722,17 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
           {isTeamTournament ? (
             <TeamOperationsPanel
               canManage={canManage}
-              onPairingChange={setPairingForm}
               onPairingSubmit={savePairing}
               onTeamChange={setTeamForm}
               onTeamSubmit={saveTeam}
-              pairingForm={pairingForm}
               pairings={data.pairings}
+              rounds={data.rounds}
+              currentRound={
+                data.events.find((event) => event.event.id === data.selectedEvent.id)
+                  ?.currentRound ??
+                data.rounds[0] ??
+                null
+              }
               teamForm={teamForm}
               teams={data.teams}
               working={workingAction !== ''}
@@ -1046,33 +1039,23 @@ function ParticipantsPanel({
 
 function TeamOperationsPanel({
   canManage,
-  onPairingChange,
   onPairingSubmit,
   onTeamChange,
   onTeamSubmit,
-  pairingForm,
   pairings,
+  currentRound,
+  rounds,
   teamForm,
   teams,
   working,
 }: {
   canManage: boolean
-  onPairingChange: (value: typeof pairingForm) => void
-  onPairingSubmit: (event: FormEvent<HTMLFormElement>) => void
+  onPairingSubmit: (params: Record<string, string>) => void
   onTeamChange: (value: typeof teamForm) => void
   onTeamSubmit: (event: FormEvent<HTMLFormElement>) => void
-  pairingForm: {
-    playerPairings: string
-    results: string
-    round: string
-    roundId: string
-    status: string
-    teamA: string
-    teamB: string
-    teamAId: string
-    teamBId: string
-  }
   pairings: EventManagerData['pairings']
+  currentRound: Record<string, unknown> | null
+  rounds: Array<Record<string, unknown>>
   teamForm: {
     captain: string
     discordContact: string
@@ -1148,78 +1131,14 @@ function TeamOperationsPanel({
           </div>
         ))}
       </div>
-      <form className="event-manager-form compact" onSubmit={onPairingSubmit}>
-        <label>
-          Round
-          <input
-            disabled={!canManage}
-            onChange={(event) =>
-              onPairingChange({ ...pairingForm, round: event.target.value })
-            }
-            value={pairingForm.round}
-          />
-        </label>
-        <label>
-          Team A
-          <select
-            disabled={!canManage}
-            onChange={(event) =>
-              onPairingChange({
-                ...pairingForm,
-                teamA: teams.find((team) => team.teamId === event.target.value)?.teamName ?? '',
-                teamAId: event.target.value,
-              })
-            }
-            value={pairingForm.teamAId}
-          >
-            <option value="">Select team</option>
-            {teams.map((team) => (
-              <option key={team.teamId} value={team.teamId}>
-                {team.teamName}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Team B
-          <select
-            disabled={!canManage}
-            onChange={(event) =>
-              onPairingChange({
-                ...pairingForm,
-                teamB: teams.find((team) => team.teamId === event.target.value)?.teamName ?? '',
-                teamBId: event.target.value,
-              })
-            }
-            value={pairingForm.teamBId}
-          >
-            <option value="">Select team</option>
-            {teams.map((team) => (
-              <option key={team.teamId} value={team.teamId}>
-                {team.teamName}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Status
-          <select
-            disabled={!canManage}
-            onChange={(event) =>
-              onPairingChange({ ...pairingForm, status: event.target.value })
-            }
-            value={pairingForm.status}
-          >
-            <option>Scheduled</option>
-            <option>Published</option>
-            <option>Completed</option>
-            <option>Closed</option>
-          </select>
-        </label>
-        <button disabled={!canManage || working} type="submit">
-          Save Pairing
-        </button>
-      </form>
+      <TeamPairingEditor
+        currentRound={currentRound}
+        disabled={!canManage || working}
+        onSubmit={onPairingSubmit}
+        pairings={pairings}
+        rounds={rounds}
+        teams={teams.filter((team) => team.status !== 'Deleted')}
+      />
     </section>
   )
 }

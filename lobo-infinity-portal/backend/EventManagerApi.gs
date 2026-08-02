@@ -400,6 +400,26 @@ function saveEventManagerPairing(e) {
         error: "Both teams must be selected from the Team Registry."
       });
 
+    const structuredPairings =
+      typeof buildTeamTournamentStructuredPlayerPairings === "function"
+        ? buildTeamTournamentStructuredPlayerPairings(
+            params,
+            teamAIdentity,
+            teamBIdentity,
+            teams
+          )
+        : {
+            valid: false,
+            errors: ["Team Pairing Editor validation is unavailable."],
+            playerPairings: ""
+          };
+
+    if (!structuredPairings.valid)
+      return jsonOutput({
+        success: false,
+        error: structuredPairings.errors.join(" ")
+      });
+
     const roundId =
       getEventManagerString(params.roundId) ||
       EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ROUND_ID;
@@ -425,7 +445,7 @@ function saveEventManagerPairing(e) {
         getEventManagerString(params.round) || "Round 1",
         teamAIdentity.teamName,
         teamBIdentity.teamName,
-        getEventManagerString(params.playerPairings),
+        structuredPairings.playerPairings,
         getEventManagerString(params.status) || "Scheduled",
         getEventManagerString(params.results),
         getEventManagerTimestamp(),

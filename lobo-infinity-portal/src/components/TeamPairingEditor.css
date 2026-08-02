@@ -1,0 +1,145 @@
+.team-pairing-editor {
+  align-content: start;
+}
+
+.team-pairing-controls,
+.team-pairing-rosters {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.team-pairing-rosters {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.team-pairing-editor select {
+  min-height: 44px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--text, var(--text-primary));
+  background: rgba(2, 6, 23, 0.75);
+  font: inherit;
+}
+
+.team-pairing-roster,
+.team-pairing-status,
+.team-pairing-row {
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.42);
+}
+
+.team-pairing-roster {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+}
+
+.team-pairing-roster div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.team-pairing-roster h3,
+.team-pairing-roster p,
+.team-pairing-status strong,
+.team-pairing-status span {
+  margin: 0;
+}
+
+.team-pairing-roster h3 {
+  font-size: 0.92rem;
+}
+
+.team-pairing-roster span,
+.team-pairing-status span {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.team-pairing-roster ul,
+.team-pairing-errors {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.team-pairing-roster li,
+.team-pairing-roster p {
+  color: var(--text-soft, var(--text-muted));
+  font-size: 0.84rem;
+}
+
+.team-pairing-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+}
+
+.team-pairing-board {
+  display: grid;
+  gap: 8px;
+}
+
+.team-pairing-row {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) 36px minmax(0, 1fr);
+  gap: 10px;
+  align-items: end;
+  padding: 10px;
+}
+
+.team-pairing-row > strong {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-soft, var(--text-muted));
+  font-size: 0.86rem;
+}
+
+.team-pairing-row label {
+  min-width: 0;
+}
+
+.team-pairing-vs {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.team-pairing-errors {
+  color: #ffc7ce;
+}
+
+.team-pairing-valid {
+  margin: 0;
+  color: #bbf7d0;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+@media (max-width: 860px) {
+  .team-pairing-controls,
+  .team-pairing-rosters,
+  .team-pairing-row {
+    grid-template-columns: 1fr;
+  }
+
+  .team-pairing-vs {
+    min-height: 20px;
+  }
+}

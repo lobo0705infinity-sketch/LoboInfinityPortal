@@ -4,6 +4,7 @@ import { useAuth } from '../auth/AuthContext'
 import DiscordCommunityLink from '../components/DiscordCommunityLink'
 import PortalIcon from '../components/PortalIcon'
 import Skeleton from '../components/Skeleton'
+import TeamPairingEditor from '../components/TeamPairingEditor'
 import {
   getCanonicalArmyName,
   getCanonicalArmyOptions,
@@ -421,16 +422,19 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
           </section>
         ) : activeSection === 'pairings' ? (
           <section className="team-tournament-grid" id="team-tournament-commissioner">
-            <PairingForm disabled={working !== ''} onSubmit={(params) => void savePairing(params)} teams={data.teams.filter((team) => team.status !== 'Deleted')} />
+            <TeamPairingEditor currentRound={data.currentRound} disabled={working !== ''} onSubmit={(params) => void savePairing(params)} pairings={data.pairings} rounds={data.rounds} teams={activeTeams} />
             <RoundControlForm disabled={working !== ''} onSubmit={(params) => void advanceRound(params)} />
           </section>
         ) : (
           <CommissionerTournamentTools
+            currentRound={data.currentRound}
             disabled={working !== ''}
             onRound={(params) => void advanceRound(params)}
             onPairing={(params) => void savePairing(params)}
             onTeam={(params) => void saveTeam(params)}
+            pairings={data.pairings}
             registration={data.registration}
+            rounds={data.rounds}
             teams={activeTeams}
           />
         )
@@ -1193,18 +1197,24 @@ function RegistrationManagementPanel({
 }
 
 function CommissionerTournamentTools({
+  currentRound,
   disabled,
   onRound,
   onPairing,
   onTeam,
+  pairings,
   registration,
+  rounds,
   teams,
 }: {
+  currentRound: Record<string, unknown> | null
   disabled: boolean
   onRound: (params: Record<string, string>) => void
   onPairing: (params: Record<string, string>) => void
   onTeam: (params: Record<string, string>) => void
+  pairings: TeamTournamentPairing[]
   registration: EventRegistrationData
+  rounds: Array<Record<string, unknown>>
   teams: TeamTournamentTeam[]
 }) {
   return (
@@ -1219,7 +1229,7 @@ function CommissionerTournamentTools({
         registration={registration}
         teams={teams}
       />
-      <PairingForm disabled={disabled} onSubmit={onPairing} teams={teams.filter((team) => team.status !== 'Deleted')} />
+      <TeamPairingEditor currentRound={currentRound} disabled={disabled} onSubmit={onPairing} pairings={pairings} rounds={rounds} teams={teams.filter((team) => team.status !== 'Deleted')} />
       <RoundControlForm disabled={disabled} onSubmit={onRound} />
     </section>
   )
@@ -1991,58 +2001,6 @@ function padTournamentMembers(players: string[]) {
 
 function normalizeTournamentPlayer(player: string) {
   return player.trim().toLowerCase()
-}
-
-function PairingForm({
-  disabled,
-  onSubmit,
-  teams,
-}: {
-  disabled: boolean
-  onSubmit: (params: Record<string, string>) => void
-  teams: TeamTournamentTeam[]
-}) {
-  function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    const form = new FormData(event.currentTarget)
-    const params = Object.fromEntries(form.entries()) as Record<string, string>
-    const teamA = teams.find((team) => team.teamId === params.teamAId)
-    const teamB = teams.find((team) => team.teamId === params.teamBId)
-    onSubmit({
-      ...params,
-      teamA: teamA?.teamName ?? '',
-      teamB: teamB?.teamName ?? '',
-    })
-    event.currentTarget.reset()
-  }
-
-  return (
-    <form className="panel team-tournament-form" data-tournament-section="pairings" onSubmit={submit}>
-      <p className="eyebrow">Commissioner</p>
-      <h2>Post Pairing</h2>
-      <input name="round" placeholder="Round" />
-      <select name="teamAId" required>
-        <option value="">Team A</option>
-        {teams.map((team) => (
-          <option key={team.teamId} value={team.teamId}>
-            {team.teamName}
-          </option>
-        ))}
-      </select>
-      <select name="teamBId" required>
-        <option value="">Team B</option>
-        {teams.map((team) => (
-          <option key={team.teamId} value={team.teamId}>
-            {team.teamName}
-          </option>
-        ))}
-      </select>
-      <textarea name="playerPairings" placeholder="Individual pairings" />
-      <button disabled={disabled} type="submit">
-        Save Pairing
-      </button>
-    </form>
-  )
 }
 
 function RoundControlForm({

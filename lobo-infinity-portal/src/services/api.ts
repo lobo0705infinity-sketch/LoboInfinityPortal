@@ -1745,6 +1745,7 @@ export type TeamTournamentData = {
   }>
   registration: EventRegistrationData
   registeredTeams: number
+  rounds: Array<Record<string, unknown>>
   standings: TeamTournamentStanding[]
   status: string
   teams: TeamTournamentTeam[]
@@ -6285,6 +6286,9 @@ function normalizeTeamTournamentPayload(payload: unknown): TeamTournamentData {
     registeredTeams: getNumber(tournament, 'registeredTeams'),
     registration: normalizeEventRegistrationData(
       getRequiredRecord(tournament, 'registration'),
+    ),
+    rounds: getArray(tournament, 'rounds').map((item) =>
+      asRecord(item, 'Team tournament round'),
     ),
     standings: getArray(tournament, 'standings').map(
       normalizeTeamTournamentStanding,

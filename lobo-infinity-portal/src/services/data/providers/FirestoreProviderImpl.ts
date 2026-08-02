@@ -308,6 +308,7 @@ async function buildTeamTournamentData(
     ],
     registration,
     registeredTeams: teams.length,
+    rounds: [],
     standings,
     status: event.status || event.lifecycleStage,
     teams,

@@ -130,6 +130,9 @@ function getTeamTournament(e) {
   const standings =
     buildTeamTournamentStandings(eventId, teams, results);
 
+  const rounds =
+    getTeamTournamentRounds(eventId);
+
   const registrations =
     resolveTeamTournamentRegistrationMembership(
       runtime.registrations,
@@ -163,7 +166,8 @@ function getTeamTournament(e) {
     tournament: {
       event: event,
       status: event.status || "Planning",
-      currentRound: getTeamTournamentCurrentRound(eventId),
+      currentRound: rounds[0] || null,
+      rounds: rounds,
       registration:
         buildEventRegistrationPayload(
           event,
@@ -602,6 +606,20 @@ function saveTeamTournamentPairing(e) {
         error: "Both teams must be selected from the Team Registry."
       });
 
+    const structuredPairings =
+      buildTeamTournamentStructuredPlayerPairings(
+        params,
+        teamAIdentity,
+        teamBIdentity,
+        teams
+      );
+
+    if (!structuredPairings.valid)
+      return jsonOutput({
+        success: false,
+        error: structuredPairings.errors.join(" ")
+      });
+
     const sheet =
       ensureTeamTournamentPairingsSheet();
 
@@ -617,7 +635,7 @@ function saveTeamTournamentPairing(e) {
         teamB: teamBIdentity.teamName,
         teamAId: teamAIdentity.teamId,
         teamBId: teamBIdentity.teamId,
-        playerPairings: getTeamTournamentString(params.playerPairings),
+        playerPairings: structuredPairings.playerPairings,
         status: getTeamTournamentString(params.status) || "Scheduled",
         results: getTeamTournamentString(params.results),
         createdAt: timestamp,
@@ -1694,6 +1712,169 @@ function resolveTeamTournamentTeamIdentity(teams, teamId, teamName) {
 
 }
 
+function buildTeamTournamentStructuredPlayerPairings(params, teamAIdentity, teamBIdentity, teams) {
+
+  const tableCount = 5;
+  const errors = [];
+  const teamA =
+    findTeamTournamentTeamById(teams, teamAIdentity.teamId);
+  const teamB =
+    findTeamTournamentTeamById(teams, teamBIdentity.teamId);
+  const teamARoster =
+    getTeamTournamentTeamRoster(teamA);
+  const teamBRoster =
+    getTeamTournamentTeamRoster(teamB);
+  const teamASelections = {};
+  const teamBSelections = {};
+  const rows = [];
+
+  if (!teamA)
+    errors.push(teamAIdentity.teamName + " could not be loaded from the Team Registry.");
+
+  if (!teamB)
+    errors.push(teamBIdentity.teamName + " could not be loaded from the Team Registry.");
+
+  if (teamAIdentity.teamId === teamBIdentity.teamId)
+    errors.push("Select two different teams.");
+
+  if (teamA && teamARoster.length !== tableCount)
+    errors.push(teamAIdentity.teamName + " must have five rostered players.");
+
+  if (teamB && teamBRoster.length !== tableCount)
+    errors.push(teamBIdentity.teamName + " must have five rostered players.");
+
+  for (let index = 1; index <= tableCount; index++) {
+    const submittedA =
+      getTeamTournamentString(params["teamAPlayer" + index]);
+    const submittedB =
+      getTeamTournamentString(params["teamBPlayer" + index]);
+    const playerA =
+      resolveTeamTournamentRosterPlayer(teamARoster, submittedA);
+    const playerB =
+      resolveTeamTournamentRosterPlayer(teamBRoster, submittedB);
+
+    if (submittedA === "" || submittedB === "") {
+      errors.push("Table " + index + " is incomplete.");
+    } else {
+      if (playerA === "")
+        errors.push(submittedA + " is not on " + teamAIdentity.teamName + ".");
+
+      if (playerB === "")
+        errors.push(submittedB + " is not on " + teamBIdentity.teamName + ".");
+
+      if (
+        normalizeTeamTournamentPlayerKey(submittedA) !== "" &&
+        normalizeTeamTournamentPlayerKey(submittedA) === normalizeTeamTournamentPlayerKey(submittedB)
+      )
+        errors.push("Table " + index + " pairs " + submittedA + " against themselves.");
+    }
+
+    if (playerA !== "") {
+      const keyA =
+        normalizeTeamTournamentPlayerKey(playerA);
+
+      if (teamASelections[keyA])
+        errors.push(teamAIdentity.teamName + " lists " + playerA + " more than once.");
+
+      teamASelections[keyA] = playerA;
+    }
+
+    if (playerB !== "") {
+      const keyB =
+        normalizeTeamTournamentPlayerKey(playerB);
+
+      if (teamBSelections[keyB])
+        errors.push(teamBIdentity.teamName + " lists " + playerB + " more than once.");
+
+      teamBSelections[keyB] = playerB;
+    }
+
+    rows.push({
+      table: index,
+      teamAPlayer: playerA || submittedA,
+      teamBPlayer: playerB || submittedB
+    });
+  }
+
+  teamARoster.forEach(function(player) {
+    if (!teamASelections[normalizeTeamTournamentPlayerKey(player)])
+      errors.push(teamAIdentity.teamName + " missing " + player + ".");
+  });
+
+  teamBRoster.forEach(function(player) {
+    if (!teamBSelections[normalizeTeamTournamentPlayerKey(player)])
+      errors.push(teamBIdentity.teamName + " missing " + player + ".");
+  });
+
+  if (errors.length > 0)
+    return {
+      valid: false,
+      errors: errors,
+      playerPairings: ""
+    };
+
+  return {
+    valid: true,
+    errors: [],
+    playerPairings:
+      rows
+        .map(function(row) {
+          return "Table " + row.table + ": " + row.teamAPlayer + " vs " + row.teamBPlayer;
+        })
+        .join("\n")
+  };
+
+}
+
+function findTeamTournamentTeamById(teams, teamId) {
+
+  const id =
+    getTeamTournamentString(teamId);
+
+  return (teams || []).filter(function(team) {
+    return getTeamTournamentString(team.teamId) === id;
+  })[0] || null;
+
+}
+
+function getTeamTournamentTeamRoster(team) {
+
+  if (!team)
+    return [];
+
+  const seen = {};
+
+  return [
+    team.captain
+  ].concat(
+    parseTeamTournamentRoster(team.players)
+  ).filter(function(player) {
+    const key =
+      normalizeTeamTournamentPlayerKey(player);
+
+    if (key === "" || seen[key])
+      return false;
+
+    seen[key] = true;
+    return true;
+  });
+
+}
+
+function resolveTeamTournamentRosterPlayer(roster, player) {
+
+  const key =
+    normalizeTeamTournamentPlayerKey(player);
+
+  if (key === "")
+    return "";
+
+  return (roster || []).filter(function(candidate) {
+    return normalizeTeamTournamentPlayerKey(candidate) === key;
+  })[0] || "";
+
+}
+
 function normalizeTeamTournamentPlayerKey(value) {
 
   return getTeamTournamentString(value)
@@ -1828,6 +2009,12 @@ function getTeamTournamentResults(eventId, sheet) {
 
 function getTeamTournamentCurrentRound(eventId) {
 
+  return getTeamTournamentRounds(eventId)[0] || null;
+
+}
+
+function getTeamTournamentRounds(eventId) {
+
   const rounds =
     getEventEngineSnapshot()
       .rounds
@@ -1835,7 +2022,7 @@ function getTeamTournamentCurrentRound(eventId) {
         return round.eventId === eventId;
       });
 
-  return rounds[0] || null;
+  return rounds;
 
 }
 

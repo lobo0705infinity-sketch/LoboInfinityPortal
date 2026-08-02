@@ -14,6 +14,7 @@ const eventHomeBackend = read('backend/EventHomeApi.gs')
 const eventRegistrationBackend = read('backend/EventRegistrationApi.gs')
 const eventEngineBackend = read('backend/EventEngineApi.gs')
 const eventManagerPanel = read('src/components/EventManagerPanel.tsx')
+const teamPairingEditor = read('src/components/TeamPairingEditor.tsx')
 const api = read('src/services/api.ts')
 const resultSubmissionBackend = read('backend/ResultSubmissionApi.gs')
 
@@ -115,20 +116,67 @@ const checks = [
       backend.includes('["teamAId", "teamAId", "Team ID"]'),
   },
   {
-    label: 'Frontend Team Tournament pairing form stores selected Team IDs',
+    label: 'Frontend Team Tournament pairing editor stores selected Team IDs',
     pass:
-      frontend.includes('<select name="teamAId" required>') &&
-      frontend.includes('<select name="teamBId" required>') &&
-      frontend.includes('teamA: teamA?.teamName ??') &&
+      frontend.includes('TeamPairingEditor') &&
+      teamPairingEditor.includes('teamAId: teamA.teamId') &&
+      teamPairingEditor.includes('teamBId: teamB.teamId') &&
+      !frontend.includes('<textarea name="playerPairings"') &&
+      !eventManagerPanel.includes('<textarea name="playerPairings"') &&
       !frontend.includes('<input name="teamA" placeholder="Team A" required />'),
   },
   {
-    label: 'Event Manager pairing form stores selected Team IDs',
+    label: 'Event Manager pairing editor reuses shared Team IDs',
     pass:
-      eventManagerPanel.includes('teamAId: event.target.value') &&
-      eventManagerPanel.includes('teamBId: event.target.value') &&
+      eventManagerPanel.includes('TeamPairingEditor') &&
+      eventManagerPanel.includes('onPairingSubmit: (params: Record<string, string>) => void') &&
       eventManagerBackend.includes('getEventManagerString(params.teamAId)') &&
       eventManagerBackend.includes('getEventManagerString(params.teamBId)'),
+  },
+  {
+    label: 'Team Pairing Editor validates complete canonical five-player rosters',
+    pass:
+      teamPairingEditor.includes('validateTeamPairings(') &&
+      teamPairingEditor.includes('TEAM_PAIRING_TABLE_COUNT = 5') &&
+      teamPairingEditor.includes('Select two different teams.') &&
+      teamPairingEditor.includes('must have five rostered players.') &&
+      teamPairingEditor.includes('is incomplete.') &&
+      teamPairingEditor.includes('against themselves.') &&
+      teamPairingEditor.includes('more than once.') &&
+      teamPairingEditor.includes('missing:') &&
+      teamPairingEditor.includes('disabled={disabled || !validation.valid}'),
+  },
+  {
+    label: 'Team Pairing Editor preloads existing stored pairings by round and Team IDs',
+    pass:
+      teamPairingEditor.includes('pairings?: TeamTournamentPairing[]') &&
+      teamPairingEditor.includes('buildRowsForSelectedPairing(') &&
+      teamPairingEditor.includes('findStoredTeamPairing(') &&
+      teamPairingEditor.includes('parseStoredPairingRows(') &&
+      teamPairingEditor.includes('parseStoredPairingLine(') &&
+      teamPairingEditor.includes('pairing.teamAId === teamAId') &&
+      teamPairingEditor.includes('pairing.teamBId === teamBId') &&
+      frontend.includes('pairings={data.pairings}') &&
+      eventManagerPanel.includes('pairings={pairings}'),
+  },
+  {
+    label: 'Backend materializes Team Tournament pairings from structured player selections',
+    pass:
+      backend.includes('function buildTeamTournamentStructuredPlayerPairings(') &&
+      backend.includes('params["teamAPlayer" + index]') &&
+      backend.includes('params["teamBPlayer" + index]') &&
+      backend.includes('resolveTeamTournamentRosterPlayer(teamARoster, submittedA)') &&
+      backend.includes('return "Table " + row.table + ": " + row.teamAPlayer + " vs " + row.teamBPlayer;') &&
+      backend.includes('playerPairings: structuredPairings.playerPairings') &&
+      eventManagerBackend.includes('buildTeamTournamentStructuredPlayerPairings(') &&
+      eventManagerBackend.includes('structuredPairings.playerPairings'),
+  },
+  {
+    label: 'Backend save paths no longer accept manual playerPairings text',
+    pass:
+      !backend.includes('playerPairings: getTeamTournamentString(params.playerPairings)') &&
+      !eventManagerBackend.includes('getEventManagerString(params.playerPairings)') &&
+      backend.includes('function parseTeamTournamentPlayerPairings('),
   },
   {
     label: 'Submit Result sends Team IDs with tournament result payload',
