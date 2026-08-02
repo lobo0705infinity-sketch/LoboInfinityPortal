@@ -348,11 +348,8 @@ function ArmyIntelligenceContent({
     [resultFilter, selectedScopeLists],
   )
   const selectedArmyListExplorerRows = useMemo(
-    () =>
-      buildExplorerRowsFromSelectedLists(matchingLists).filter(
-        (list) => getExplorerSectorial(list) === selectedExplorerScope.label,
-      ),
-    [matchingLists, selectedExplorerScope.label],
+    () => buildExplorerRowsFromSelectedLists(matchingLists),
+    [matchingLists],
   )
   const selectedKnownArmyLists = selectedArmyListExplorerRows.length
   const explorerPlayerOptions = useMemo(
@@ -1435,10 +1432,6 @@ function getSelectedExplorerScope(selectedItem: string): ArmyIntelligenceSelecti
 }
 
 function intelligenceListMatchesSelectedScope(list: ArmyIntelligenceList, scope: ArmyIntelligenceSelectionScope) {
-  if (scope.isParentFaction) {
-    return getIntelligenceParentFaction(list) === scope.parentFaction
-  }
-
   return getDecodedSectorial(list) === scope.label
 }
 
