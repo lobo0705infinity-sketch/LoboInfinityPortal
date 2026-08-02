@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { join } from 'node:path'
+import vm from 'node:vm'
 
 function read(path) {
   return readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
@@ -15,6 +16,7 @@ const discordApi = read('backend/DiscordApi.gs')
 const missionApi = read('backend/MissionApi.gs')
 const missionAnalytics = read('backend/MissionAnalytics.gs')
 const recentGamesApi = read('backend/RecentGames.gs')
+const gameEngine = read('backend/GameEngine.gs')
 const armyIntelligenceApi = read('backend/ArmyIntelligenceApi.gs')
 const analyticsPage = read('src/pages/Analytics.tsx')
 const streamedGamesPage = read('src/pages/StreamedGames.tsx')
@@ -97,6 +99,59 @@ function assertNoProductionMissionNameLiterals(missions) {
   )
 }
 
+function assertGameAnalyticsArmyCodesMaterialize() {
+  const context = {
+    EVENT_ENGINE_DEFAULT_EVENT_ID: 'event-current-league',
+    canonicalizeArmyName: (value) => String(value || '').trim(),
+  }
+
+  vm.runInNewContext(
+    `${gameEngine}
+globalThis.__buildAnalyticsRow = buildAnalyticsRow;
+globalThis.__FORM = FORM;
+globalThis.__gameAnalyticsHeaders = getGameAnalyticsHeaders()[0];`,
+    context,
+  )
+
+  const FORM = context.__FORM
+  const row = []
+  row[FORM.DATE] = '2026-08-01'
+  row[FORM.DIVISION] = 'Main Man'
+  row[FORM.MISSION] = 'Panic Room'
+  row[FORM.PLAYER1] = 'Player One'
+  row[FORM.PLAYER2] = 'Player Two'
+  row[FORM.P1TP] = 1
+  row[FORM.P2TP] = 5
+  row[FORM.P1OP] = 3
+  row[FORM.P2OP] = 8
+  row[FORM.P1VP] = 100
+  row[FORM.P2VP] = 200
+  row[FORM.FIRSTTURN] = 'Player 2'
+  row[FORM.WINNINGFACTION] = 'Faction Two'
+  row[FORM.LOSINGFACTION] = 'Faction One'
+  row[FORM.GAME_TYPE] = 'league'
+  row[FORM.GAME_RESULT] = 'Player 2 Victory'
+  row[27] = 'PLAYER-ONE-CODE'
+  row[28] = 'PLAYER-TWO-CODE'
+  row.__formHeaders = []
+  row.__formHeaders[27] = ' Player 1 Army Code '
+  row.__formHeaders[28] = ' Player 2 Army Code '
+
+  const analyticsRow = context.__buildAnalyticsRow(row, 2)
+  const headers = context.__gameAnalyticsHeaders
+
+  assert.equal(
+    analyticsRow[headers.indexOf('Winner Army Code')],
+    'PLAYER-TWO-CODE',
+    'Game Analytics must materialize Winner Army Code from the winning player Army Code.',
+  )
+  assert.equal(
+    analyticsRow[headers.indexOf('Loser Army Code')],
+    'PLAYER-ONE-CODE',
+    'Game Analytics must materialize Loser Army Code from the losing player Army Code.',
+  )
+}
+
 const frontendMissions = extractSingleQuotedArray(frontendMissionRegistry, 'CANONICAL_MISSIONS')
 const backendMissions = extractDoubleQuotedConstArray(backendMissionRegistry, 'CANONICAL_MISSIONS')
 
@@ -121,6 +176,7 @@ assert.match(missionApi, /buildMissionRegistry\(\)[\s\S]*updateMissionRegistry\(
 assert.match(missionAnalytics, /function updateMissionRegistry\(registry, scopedGames\)[\s\S]*const mission =[\s\S]*game\[CONFIG\.ENGINE\.MISSION\]/, 'Mission analytics must group games by stored mission name.')
 assert.match(recentGamesApi, /mission:[\s\S]*row\[columns\.mission\]/, 'Recent games API must serialize the stored mission name.')
 assert.match(armyIntelligenceApi, /mission: game\.mission/, 'Army Intelligence sources must carry the stored game mission name.')
+assertGameAnalyticsArmyCodesMaterialize()
 assert.match(discordApi, /buildDiscordMissionPayload\(\)[\s\S]*buildMissionApiSummaries\(\)[\s\S]*title: mission\.mission/, 'Discord mission payloads must use mission API names without overrides.')
 assert.match(discordApi, /buildDiscordGamePayload\(game\)[\s\S]*Mission: "[\s\S]*result\.mission/, 'Discord game announcements must display the submitted game mission.')
 assert.match(searchApi, /missions: buildMissionApiSummaries\("all", "all"\)/, 'Search APIs must return mission names from the mission API summaries.')

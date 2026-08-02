@@ -466,7 +466,7 @@ function getGameEngineFormValue(row, header, fallbackIndex) {
       : [];
 
   const index =
-    headers.indexOf(header);
+    headers.map(getGameEngineString).indexOf(header);
 
   if (index !== -1)
     return getGameEngineString(row[index]);
