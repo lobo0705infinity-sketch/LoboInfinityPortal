@@ -195,14 +195,17 @@ const checks = [
       files.serviceApi.includes('runOperationsNext,'),
   ],
   [
-    'Stage 0 Shadow Mode is hard-enabled before production execution',
-    files.operationsEngine.includes('const OPERATIONS_ENGINE_SHADOW_MODE = true') &&
+    'Stages 2-4 disable global Shadow Mode for approved production execution',
+    files.operationsEngine.includes('const OPERATIONS_ENGINE_SHADOW_MODE = false') &&
+      files.operationsEngine.includes('const OPERATIONS_ENGINE_EXECUTABLE_OPERATIONS') &&
+      files.operationsEngine.includes('gameEngine: "Rebuild Game Engine"') &&
+      files.operationsEngine.includes('armyIntelligence: "Refresh Army Intelligence"') &&
+      files.operationsEngine.includes('competitiveIntelligence: "Refresh Competitive Intelligence"') &&
       files.operationsEngine.includes('function isOperationsEngineShadowMode()') &&
-      files.operationsEngine.includes('if (isOperationsEngineShadowMode())') &&
-      files.operationsEngine.includes('return planOperationsEngineShadowQueueWithLock(e);'),
+      files.operationsEngine.includes('function isOperationsEngineOperationExecutionEnabled(operation)'),
   ],
   [
-    'Stage 0 state reads perform stale detection, queueing, and shadow planning only',
+    'Operations state reads perform stale detection and queueing without execution',
     stateSection.includes('requestOperationsEngineGameEngineSelfHealing(states)') &&
       stateSection.includes('requestOperationsEngineArmyIntelligenceSelfHealing(states)') &&
       stateSection.includes('requestOperationsEngineCompetitiveIntelligenceSelfHealing(states)') &&
@@ -240,6 +243,30 @@ const checks = [
       shadowModeSection(files.operationsEngine).includes('plannedCacheInvalidations') &&
       shadowModeSection(files.operationsEngine).includes('plannedDownstreamOperations') &&
       shadowModeSection(files.operationsEngine).includes('getOperationsEnginePlannedDownstreamOperations'),
+  ],
+  [
+    'Stages 2-4 keep non-approved operations in shadow planning',
+    executionSection(files.operationsEngine).includes('!isOperationsEngineOperationExecutionEnabled(operation)') &&
+      executionSection(files.operationsEngine).includes('return executeOperationsEngineQueueRowInShadowMode('),
+  ],
+  [
+    'Stages 2-4 enqueue downstream work only after successful verification',
+    executionSection(files.operationsEngine).indexOf('adapter.verify(context)') <
+      executionSection(files.operationsEngine).indexOf('if (verificationResult.success === false)') &&
+      executionSection(files.operationsEngine).indexOf('if (verificationResult.success === false)') <
+      executionSection(files.operationsEngine).indexOf('if (finalStatus === "Completed")') &&
+      files.operationsEngine.includes('function requestOperationsEngineDownstreamSelfHealing(operation)') &&
+      files.operationsEngine.includes('requestOperationsEngineArmyIntelligenceSelfHealing(states)') &&
+      files.operationsEngine.includes('requestOperationsEngineCompetitiveIntelligenceSelfHealing(states)'),
+  ],
+  [
+    'Downstream enqueue reuses the active execution lock',
+    files.operationsEngine.includes('var OPERATIONS_ENGINE_LOCK_HELD = false') &&
+      files.operationsEngine.includes('function isOperationsEngineLockHeld()') &&
+      files.operationsEngine.includes('if (isOperationsEngineLockHeld())') &&
+      files.operationsEngine.includes('return enqueueOperationWithLock(request);') &&
+      files.operationsEngine.includes('OPERATIONS_ENGINE_LOCK_HELD = true') &&
+      files.operationsEngine.includes('OPERATIONS_ENGINE_LOCK_HELD = false'),
   ],
   [
     'Phase 5 exposes coalescing enqueueOperation without bypassing the queue',
@@ -324,7 +351,15 @@ const checks = [
       !competitiveSelfHealingSection(files.competitiveIntelligenceAdapter).includes('executeOperationsEngineNext'),
   ],
   [
-    'Phase 8 cache invalidation happens only after rebuild and verification pass',
+    'Stage 5 cache healing remains disabled during Stages 2-4',
+    files.operationsEngine.includes('const OPERATIONS_ENGINE_CACHE_HEALING_ENABLED = false') &&
+      files.operationsEngine.includes('function isOperationsEngineCacheHealingEnabled()') &&
+      files.operationsEngine.includes('if (!isOperationsEngineCacheHealingEnabled())') &&
+      files.operationsEngine.indexOf('if (!isOperationsEngineCacheHealingEnabled())') <
+        files.operationsEngine.indexOf('invalidatePortalCacheGroup(group)'),
+  ],
+  [
+    'Future cache invalidation path remains gated after rebuild and verification pass',
     executionSection(files.operationsEngine).indexOf('adapter.rebuild(context)') <
       executionSection(files.operationsEngine).indexOf('adapter.verify(context)') &&
       executionSection(files.operationsEngine).indexOf('adapter.verify(context)') <

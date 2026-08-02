@@ -92,7 +92,15 @@ const OPERATIONS_ENGINE_TERMINAL_STATUSES = [
 ];
 
 const OPERATIONS_ENGINE_LOCK_WAIT_MS = 5000;
-const OPERATIONS_ENGINE_SHADOW_MODE = true;
+const OPERATIONS_ENGINE_SHADOW_MODE = false;
+const OPERATIONS_ENGINE_CACHE_HEALING_ENABLED = false;
+const OPERATIONS_ENGINE_EXECUTABLE_OPERATIONS = {
+  gameEngine: "Rebuild Game Engine",
+  armyIntelligence: "Refresh Army Intelligence",
+  competitiveIntelligence: "Refresh Competitive Intelligence"
+};
+
+var OPERATIONS_ENGINE_LOCK_HELD = false;
 
 function getOperationsEngineQueue() {
 
@@ -292,6 +300,9 @@ function requestOperationsEngineCompetitiveIntelligenceSelfHealing(states) {
 }
 
 function enqueueOperation(request) {
+
+  if (isOperationsEngineLockHeld())
+    return enqueueOperationWithLock(request);
 
   const lock =
     LockService.getScriptLock();
@@ -633,11 +644,14 @@ function executeOperationsEngineNext(e) {
     });
 
   try {
+    OPERATIONS_ENGINE_LOCK_HELD = true;
+
     return jsonOutput(
       executeOperationsEngineNextWithLock(e)
     );
   }
   finally {
+    OPERATIONS_ENGINE_LOCK_HELD = false;
     lock.releaseLock();
   }
 
@@ -718,7 +732,10 @@ function executeOperationsEngineQueueRow(
   const operation =
     queueRow.record;
 
-  if (isOperationsEngineShadowMode())
+  if (
+    isOperationsEngineShadowMode() ||
+    !isOperationsEngineOperationExecutionEnabled(operation)
+  )
     return executeOperationsEngineQueueRowInShadowMode(
       queueSheet,
       logSheet,
@@ -742,6 +759,7 @@ function executeOperationsEngineQueueRow(
   let rebuildResult = {};
   let verificationResult = {};
   let cacheInvalidations = [];
+  let downstreamOperations = [];
   let finalStatus = "Completed";
   let errorMessage = "";
 
@@ -818,6 +836,10 @@ function executeOperationsEngineQueueRow(
     }
   );
 
+  if (finalStatus === "Completed")
+    downstreamOperations =
+      requestOperationsEngineDownstreamSelfHealing(operation);
+
   const logId =
     appendOperationsEngineLog(
       logSheet,
@@ -846,7 +868,7 @@ function executeOperationsEngineQueueRow(
         "Cache Invalidations JSON":
           JSON.stringify(cacheInvalidations),
         "Downstream Operations JSON":
-          JSON.stringify([]),
+          JSON.stringify(downstreamOperations),
         "Verification Result JSON":
           JSON.stringify(verificationResult),
         "Retry Count": retryCount,
@@ -871,6 +893,7 @@ function executeOperationsEngineQueueRow(
     rebuildResult: rebuildResult,
     verificationResult: verificationResult,
     cacheInvalidations: cacheInvalidations,
+    downstreamOperations: downstreamOperations,
     coalescedOperations: coalescedOperations,
     logId: logId,
     error: errorMessage
@@ -1250,6 +1273,39 @@ function getOperationsEnginePlannedDownstreamOperations(operation) {
 
 }
 
+function requestOperationsEngineDownstreamSelfHealing(operation) {
+
+  const owningSubsystem =
+    getOperationsEngineString(operation && operation.owningSubsystem);
+
+  if (owningSubsystem !== "gameEngine" &&
+      owningSubsystem !== "armyIntelligence")
+    return [];
+
+  const states =
+    getOperationsEngineSubsystemStates();
+
+  if (owningSubsystem === "gameEngine")
+    return [
+      {
+        owningSubsystem: "armyIntelligence",
+        operationType: "Refresh Army Intelligence",
+        result:
+          requestOperationsEngineArmyIntelligenceSelfHealing(states)
+      }
+    ];
+
+  return [
+    {
+      owningSubsystem: "competitiveIntelligence",
+      operationType: "Refresh Competitive Intelligence",
+      result:
+        requestOperationsEngineCompetitiveIntelligenceSelfHealing(states)
+    }
+  ];
+
+}
+
 function getOperationsEngineAdapterForOperation(operation) {
 
   const adapter =
@@ -1599,6 +1655,9 @@ function coalesceOperationsEngineDuplicateQueueRow(
 }
 
 function invalidateOperationsEngineAdapterCaches(adapter, context) {
+
+  if (!isOperationsEngineCacheHealingEnabled())
+    return [];
 
   if (typeof invalidatePortalCacheGroup !== "function")
     return [];
@@ -2161,6 +2220,34 @@ function getOperationsEngineNormalizedStatus(status) {
 function isOperationsEngineShadowMode() {
 
   return OPERATIONS_ENGINE_SHADOW_MODE === true;
+
+}
+
+function isOperationsEngineCacheHealingEnabled() {
+
+  return OPERATIONS_ENGINE_CACHE_HEALING_ENABLED === true;
+
+}
+
+function isOperationsEngineLockHeld() {
+
+  return OPERATIONS_ENGINE_LOCK_HELD === true;
+
+}
+
+function isOperationsEngineOperationExecutionEnabled(operation) {
+
+  const owningSubsystem =
+    getOperationsEngineString(operation && operation.owningSubsystem);
+
+  const operationType =
+    getOperationsEngineString(operation && operation.operationType);
+
+  return (
+    getOperationsEngineString(
+      OPERATIONS_ENGINE_EXECUTABLE_OPERATIONS[owningSubsystem]
+    ) === operationType
+  );
 
 }
 
