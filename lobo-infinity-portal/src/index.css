@@ -31,6 +31,21 @@ select {
   font: inherit;
 }
 
+select option {
+  color: var(--text, #f4f8fb);
+  background: var(--panel, #0f151c);
+}
+
+select option:checked {
+  color: var(--text, #f4f8fb);
+  background: var(--panel-soft, #202a35);
+}
+
+select option:hover {
+  color: var(--text, #f4f8fb);
+  background: var(--panel-strong, #151d26);
+}
+
 a {
   outline-color: #4cc9f0;
   outline-offset: 3px;
