@@ -348,8 +348,11 @@ function ArmyIntelligenceContent({
     [resultFilter, selectedScopeLists],
   )
   const selectedArmyListExplorerRows = useMemo(
-    () => buildExplorerRowsFromSelectedLists(matchingLists),
-    [matchingLists],
+    () =>
+      buildExplorerRowsFromSelectedLists(
+        matchingLists.filter((list) => getDecodedSectorial(list) === selectedExplorerScope.label),
+      ),
+    [matchingLists, selectedExplorerScope.label],
   )
   const selectedKnownArmyLists = selectedArmyListExplorerRows.length
   const explorerPlayerOptions = useMemo(
