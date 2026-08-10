@@ -879,8 +879,20 @@ function buildLegacyArmyIntelligenceSnapshot(source) {
       decodeArmyCode(source.armyCode)
     );
 
-  if (!decoded.success)
+  if (!decoded.success) {
+    Logger.log(
+      JSON.stringify({
+        armyListId: source.armyListId,
+        condition: "Boolean(decoded.success)",
+        conditionResult: Boolean(decoded.success),
+        variables: {
+          decodedSuccess: decoded.success
+        }
+      })
+    );
+
     return null;
+  }
 
   return {
     decoded: buildLegacyArmyIntelligenceDecodedList(decoded),
