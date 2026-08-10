@@ -254,12 +254,40 @@ function normalizeArmyIntelligenceReadModelRoleFlags(payload) {
 
 function buildArmyIntelligenceListsFromCanonicalSources(knownArmyListCounts) {
 
+  let failureLogged = false;
+
   return buildArmyIntelligenceSources()
     .map(function(source) {
+      const decodeRuntime = {};
       const snapshot =
-        buildLegacyArmyIntelligenceSnapshot(source);
+        buildLegacyArmyIntelligenceSnapshot(source, decodeRuntime);
 
-      if (!snapshot)
+      if (!snapshot) {
+        if (!failureLogged && source.armyListId) {
+          Logger.log(
+            JSON.stringify({
+              armyListId: source.armyListId,
+              decode: {
+                success: Boolean(decodeRuntime.success),
+                valid: Boolean(decodeRuntime.valid),
+                exception: {
+                  message: decodeRuntime.exception.message,
+                  stack: decodeRuntime.exception.stack
+                }
+              },
+              reason:
+                "buildLegacyArmyIntelligenceSnapshot returned null because decode.success is false.",
+              statusAssignment: {
+                file: "ArmyIntelligenceApi.gs",
+                function: "buildArmyIntelligenceListsFromCanonicalSources",
+                line: 299,
+                value: "failed"
+              }
+            })
+          );
+          failureLogged = true;
+        }
+
         return mergeArmyIntelligenceSourceAndSnapshot(
           source,
           {
@@ -272,6 +300,7 @@ function buildArmyIntelligenceListsFromCanonicalSources(knownArmyListCounts) {
           },
           knownArmyListCounts
         );
+      }
 
       return mergeArmyIntelligenceSourceAndSnapshot(
         source,
@@ -696,6 +725,7 @@ function appendArmyIntelligenceRecentGameSources(
             game.winnerFaction,
             armyListsByPlayerAndFaction
           ),
+        armyListId: game.winnerArmyListId,
         date: game.date,
         event: game.eventName || game.eventId || "",
         faction: game.winnerFaction,
@@ -723,6 +753,7 @@ function appendArmyIntelligenceRecentGameSources(
             game.loserFaction,
             armyListsByPlayerAndFaction
           ),
+        armyListId: game.loserArmyListId,
         date: game.date,
         event: game.eventName || game.eventId || "",
         faction: game.loserFaction,
@@ -858,12 +889,27 @@ function syncLegacyArmyIntelligenceSnapshotsForCurrentSources() {
 
 }
 
-function buildLegacyArmyIntelligenceSnapshot(source) {
+function buildLegacyArmyIntelligenceSnapshot(source, decodeRuntime) {
+
+  const sharedDecode =
+    decodeArmyCode(source.armyCode);
 
   const decoded =
     buildArmyDiagnosticDecode(
-      decodeArmyCode(source.armyCode)
+      sharedDecode
     );
+
+  if (decodeRuntime) {
+    decodeRuntime.success = Boolean(decoded.success);
+    decodeRuntime.valid = Boolean(sharedDecode.valid);
+    decodeRuntime.exception = {
+      message:
+        sharedDecode.exceptions && sharedDecode.exceptions.length > 0
+          ? String(sharedDecode.exceptions[0])
+          : "",
+      stack: ""
+    };
+  }
 
   if (!decoded.success)
     return null;
@@ -1023,6 +1069,7 @@ function appendArmyIntelligenceParticipantSource(sources, source) {
   sources.push({
     armyCode: armyCode,
     armyCodeHash: armyCodeHash,
+    armyListId: getArmyIntelligenceString(source.armyListId),
     date: getArmyIntelligenceString(source.date),
     event: getArmyIntelligenceString(source.event),
     faction: getArmyIntelligenceString(source.faction),
