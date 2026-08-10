@@ -254,39 +254,22 @@ function normalizeArmyIntelligenceReadModelRoleFlags(payload) {
 
 function buildArmyIntelligenceListsFromCanonicalSources(knownArmyListCounts) {
 
-  let failureLogged = false;
-
   return buildArmyIntelligenceSources()
     .map(function(source) {
-      const decodeRuntime = {};
       const snapshot =
-        buildLegacyArmyIntelligenceSnapshot(source, decodeRuntime);
+        buildLegacyArmyIntelligenceSnapshot(source);
 
       if (!snapshot) {
-        if (!failureLogged && source.armyListId) {
-          Logger.log(
-            JSON.stringify({
-              armyListId: source.armyListId,
-              decode: {
-                success: Boolean(decodeRuntime.success),
-                valid: Boolean(decodeRuntime.valid),
-                exception: {
-                  message: decodeRuntime.exception.message,
-                  stack: decodeRuntime.exception.stack
-                }
-              },
-              reason:
-                "buildLegacyArmyIntelligenceSnapshot returned null because decode.success is false.",
-              statusAssignment: {
-                file: "ArmyIntelligenceApi.gs",
-                function: "buildArmyIntelligenceListsFromCanonicalSources",
-                line: 299,
-                value: "failed"
-              }
-            })
-          );
-          failureLogged = true;
-        }
+        Logger.log(
+          JSON.stringify({
+            armyListId: source.armyListId,
+            condition: "Boolean(snapshot)",
+            conditionResult: Boolean(snapshot),
+            variables: {
+              snapshot: snapshot
+            }
+          })
+        );
 
         return mergeArmyIntelligenceSourceAndSnapshot(
           source,
@@ -889,27 +872,12 @@ function syncLegacyArmyIntelligenceSnapshotsForCurrentSources() {
 
 }
 
-function buildLegacyArmyIntelligenceSnapshot(source, decodeRuntime) {
-
-  const sharedDecode =
-    decodeArmyCode(source.armyCode);
+function buildLegacyArmyIntelligenceSnapshot(source) {
 
   const decoded =
     buildArmyDiagnosticDecode(
-      sharedDecode
+      decodeArmyCode(source.armyCode)
     );
-
-  if (decodeRuntime) {
-    decodeRuntime.success = Boolean(decoded.success);
-    decodeRuntime.valid = Boolean(sharedDecode.valid);
-    decodeRuntime.exception = {
-      message:
-        sharedDecode.exceptions && sharedDecode.exceptions.length > 0
-          ? String(sharedDecode.exceptions[0])
-          : "",
-      stack: ""
-    };
-  }
 
   if (!decoded.success)
     return null;
