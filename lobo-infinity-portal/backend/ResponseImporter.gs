@@ -32,6 +32,7 @@ function handleLoboFormSubmit(e) {
 
 function lifResolveFormType_(sheet) {
   const url = String(sheet.getFormUrl() || "");
+  const sheetName = String(sheet.getName() || "").trim();
   const props = lifGetProperties_();
   const mappings = [
     [LIF_FORMS.PROPERTIES.LEAGUE_FORM_ID, LIF_FORMS.TYPES.LEAGUE],
@@ -42,6 +43,8 @@ function lifResolveFormType_(sheet) {
     const id = props.getProperty(mappings[i][0]);
     if (id && url.indexOf(id) >= 0) return mappings[i][1];
   }
+  if (sheetName === LIF_FORMS.TARGET_SHEET) return LIF_FORMS.TYPES.LEAGUE;
+  if (sheetName === "Form Responses 15") return LIF_FORMS.TYPES.TEAM;
   throw new Error("The response sheet is not linked to an installed Lobo form.");
 }
 
