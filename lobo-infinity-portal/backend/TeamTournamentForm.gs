@@ -60,7 +60,7 @@ function lifAddTeamTournamentGameFields_(form, players, teams, missions, faction
   lifAddScore_(form, f.PLAYER_VP); lifAddScore_(form, f.OPPONENT_VP);
 
   form.addSectionHeaderItem().setTitle("Game Details");
-  lifAddParagraph_(form, f.BEST_MOMENT, true);
+  lifAddParagraph_(form, f.BEST_MOMENT, false);
   lifAddParagraph_(form, f.NOTES, false);
   return form;
 }
@@ -70,34 +70,39 @@ function lifGetTeamTournamentFormOptions_() {
     lifRequireProperty_(LIF_FORMS.PROPERTIES.TARGET_SPREADSHEET_ID)
   );
   const eventId = lifResolveActiveTeamTournamentEventId_(spreadsheet);
-  const registrations = lifGetActiveTeamTournamentRegistrations_(spreadsheet, eventId);
+  const tournamentTeams = lifReadSheetObjects_(spreadsheet, "Team Tournament Teams")
+    .filter(function(team) {
+      return String(team["Event ID"] || "").trim() === eventId && lifLeagueRowIsActive_(team);
+    });
+  if (typeof parseTeamTournamentRoster !== "function") {
+    throw new Error("Canonical Team Tournament roster data is not available.");
+  }
   const seenPlayers = {};
-  const players = registrations.reduce(function(result, registration) {
-    const player = String(registration["Player"] || registration["Display Name"] || "").trim();
-    const key = lifNormalize_(player);
-    if (player && !seenPlayers[key]) {
-      seenPlayers[key] = true;
-      result.push(player);
-    }
+  const players = tournamentTeams.reduce(function(result, team) {
+    [team["Captain"]].concat(parseTeamTournamentRoster(team["Players"]))
+      .forEach(function(value) {
+        const player = String(value || "").trim();
+        const key = lifNormalize_(player);
+        if (player && !seenPlayers[key]) {
+          seenPlayers[key] = true;
+          result.push(player);
+        }
+      });
     return result;
   }, []);
   players.sort(function(left, right) { return left.localeCompare(right); });
   if (!players.length) throw new Error("The active Team Tournament has no registered players.");
 
   const seenTeams = {};
-  const teams = lifReadSheetObjects_(spreadsheet, "Team Tournament Teams")
-    .filter(function(team) {
-      return String(team["Event ID"] || "").trim() === eventId && lifLeagueRowIsActive_(team);
-    })
-    .reduce(function(result, team) {
-      const name = String(team["Team Name"] || "").trim();
-      const key = lifNormalize_(name);
-      if (name && !seenTeams[key]) {
-        seenTeams[key] = true;
-        result.push(name);
-      }
-      return result;
-    }, []);
+  const teams = tournamentTeams.reduce(function(result, team) {
+    const name = String(team["Team Name"] || "").trim();
+    const key = lifNormalize_(name);
+    if (name && !seenTeams[key]) {
+      seenTeams[key] = true;
+      result.push(name);
+    }
+    return result;
+  }, []);
   teams.sort(function(left, right) { return left.localeCompare(right); });
   if (!teams.length) throw new Error("The active Team Tournament has no registered teams.");
 
