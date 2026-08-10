@@ -58,31 +58,16 @@ function lifAddCasualGameFields_(form, players, missions, factions) {
 }
 
 function lifGetCasualPlayerOptions_() {
-  const spreadsheet = SpreadsheetApp.openById(
-    lifRequireProperty_(LIF_FORMS.PROPERTIES.TARGET_SPREADSHEET_ID)
-  );
-  const sheet = spreadsheet.getSheetByName("Players");
-  if (!sheet) throw new Error("Players sheet not found.");
-  const values = sheet.getDataRange().getDisplayValues();
-  if (values.length < 2) throw new Error("Players sheet has no player rows.");
-  const headers = values[0].map(function(value) { return String(value || "").trim(); });
-  const playerIndex = headers.indexOf("Player");
-  const activeIndex = headers.indexOf("Active");
-  if (playerIndex < 0) throw new Error("Players sheet is missing the Player column.");
-  const seen = {};
-  const players = values.slice(1).reduce(function(result, row) {
-    const player = String(row[playerIndex] || "").trim();
-    const active = activeIndex < 0 ? "" : String(row[activeIndex] || "").trim().toLowerCase();
-    if (!player || active === "false" || active === "inactive" || active === "no") return result;
-    const key = player.toLowerCase();
-    if (!seen[key]) {
-      seen[key] = true;
-      result.push(player);
-    }
-    return result;
-  }, []);
+  if (typeof buildCommunityPlayerRegistryRows !== "function") {
+    throw new Error("Community Player Registry is not available.");
+  }
+  const players = buildCommunityPlayerRegistryRows()
+    .map(function(player) {
+      return String(player.displayName || player.player || "").trim();
+    })
+    .filter(function(player) { return player !== ""; });
   players.sort(function(left, right) { return left.localeCompare(right); });
-  if (!players.length) throw new Error("Players sheet has no active players.");
+  if (!players.length) throw new Error("Community Player Registry has no players.");
   return players;
 }
 
