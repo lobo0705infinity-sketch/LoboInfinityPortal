@@ -1,22 +1,25 @@
 
-function createCasualSubmissionForm(responseSpreadsheetId) {
+function createCasualSubmissionForm(responseSpreadsheetId, requireExisting) {
   const players = lifGetCasualPlayerOptions_();
   const missions = lifGetCasualMissionOptions_();
   const factions = getCanonicalArmyOptions();
-  const form = lifGetCasualFormForGeneration_();
+  const form = lifGetCasualFormForGeneration_(requireExisting === true);
   lifAddCasualGameFields_(form, players, missions, factions);
   return lifLinkForm_(form, responseSpreadsheetId);
 }
 
 function refreshCasualSubmissionForm() {
   const responseSpreadsheetId = lifRequireProperty_(LIF_FORMS.PROPERTIES.RESPONSE_SPREADSHEET_ID);
-  const form = createCasualSubmissionForm(responseSpreadsheetId);
+  const form = createCasualSubmissionForm(responseSpreadsheetId, true);
   lifGetProperties_().setProperty(LIF_FORMS.PROPERTIES.CASUAL_FORM_ID, form.getId());
   return form.getPublishedUrl();
 }
 
-function lifGetCasualFormForGeneration_() {
+function lifGetCasualFormForGeneration_(requireExisting) {
   const existingId = String(lifGetProperties_().getProperty(LIF_FORMS.PROPERTIES.CASUAL_FORM_ID) || "").trim();
+  if (requireExisting && !existingId) {
+    throw new Error("Missing required script property: " + LIF_FORMS.PROPERTIES.CASUAL_FORM_ID);
+  }
   const form = existingId ? FormApp.openById(existingId) : FormApp.create(LIF_FORMS.FORM_TITLES.CASUAL);
   form.getItems().slice().reverse().forEach(function(item) { form.deleteItem(item); });
   form.setTitle(LIF_FORMS.FORM_TITLES.CASUAL)
