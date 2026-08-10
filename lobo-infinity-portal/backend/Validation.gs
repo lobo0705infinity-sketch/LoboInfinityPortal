@@ -3,7 +3,7 @@ function lifValidateSubmission_(submission) {
   const errors = [];
   const required = ["mission", "player", "opponent", "playerFaction", "opponentFaction",
     "playerArmyCode", "opponentArmyCode", "gameResult", "firstTurn"];
-  if (submission.formType !== LIF_FORMS.TYPES.LEAGUE) required.push("bestMoment");
+  if (submission.formType === LIF_FORMS.TYPES.TEAM) required.push("bestMoment");
   required.forEach(function(key) {
     if (!String(submission[key] || "").trim()) errors.push(key + " is required.");
   });
