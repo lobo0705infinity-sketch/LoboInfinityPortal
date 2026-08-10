@@ -20,8 +20,6 @@ function lifValidateSubmission_(submission) {
     errors.push("Game Result is invalid.");
   if (["Player", "Opponent"].indexOf(submission.firstTurn) < 0)
     errors.push("First Turn is invalid.");
-  if (submission.formType === LIF_FORMS.TYPES.TEAM && !String(submission.eventId || "").trim())
-    errors.push("Event ID is required for event games.");
   return errors;
 }
 

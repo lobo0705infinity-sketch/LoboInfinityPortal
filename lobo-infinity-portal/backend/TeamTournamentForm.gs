@@ -1,10 +1,16 @@
 
 function createTeamTournamentSubmissionForm(responseSpreadsheetId) {
-  const players = lifGetLeaguePlayerOptions_();
+  const tournamentOptions = lifGetTeamTournamentFormOptions_();
   const missions = lifGetTeamTournamentMissionOptions_();
   const factions = getCanonicalArmyOptions();
   const form = lifGetTeamTournamentFormForGeneration_();
-  lifAddTeamTournamentGameFields_(form, players, missions, factions);
+  lifAddTeamTournamentGameFields_(
+    form,
+    tournamentOptions.players,
+    tournamentOptions.teams,
+    missions,
+    factions
+  );
   return lifLinkForm_(form, responseSpreadsheetId);
 }
 
@@ -28,14 +34,12 @@ function lifGetTeamTournamentFormForGeneration_() {
   return form;
 }
 
-function lifAddTeamTournamentGameFields_(form, players, missions, factions) {
+function lifAddTeamTournamentGameFields_(form, players, teams, missions, factions) {
   const f = LIF_FORMS.FIELDS;
   form.addSectionHeaderItem().setTitle("Tournament Match Information");
-  lifAddText_(form, f.EVENT_ID, true);
   lifAddText_(form, f.ROUND, true);
-  lifAddText_(form, f.TEAM, true);
-  lifAddText_(form, f.OPPONENT_TEAM, true);
-  lifAddText_(form, f.TABLE, true);
+  lifAddChoice_(form, "Your Team", teams, true);
+  lifAddChoice_(form, f.OPPONENT_TEAM, teams, true);
 
   form.addSectionHeaderItem().setTitle("Player Information");
   lifAddChoice_(form, f.PLAYER, players, true);
@@ -59,6 +63,45 @@ function lifAddTeamTournamentGameFields_(form, players, missions, factions) {
   lifAddParagraph_(form, f.BEST_MOMENT, true);
   lifAddParagraph_(form, f.NOTES, false);
   return form;
+}
+
+function lifGetTeamTournamentFormOptions_() {
+  const spreadsheet = SpreadsheetApp.openById(
+    lifRequireProperty_(LIF_FORMS.PROPERTIES.TARGET_SPREADSHEET_ID)
+  );
+  const eventId = lifResolveActiveTeamTournamentEventId_(spreadsheet);
+  const registrations = lifGetActiveTeamTournamentRegistrations_(spreadsheet, eventId);
+  const seenPlayers = {};
+  const players = registrations.reduce(function(result, registration) {
+    const player = String(registration["Player"] || registration["Display Name"] || "").trim();
+    const key = lifNormalize_(player);
+    if (player && !seenPlayers[key]) {
+      seenPlayers[key] = true;
+      result.push(player);
+    }
+    return result;
+  }, []);
+  players.sort(function(left, right) { return left.localeCompare(right); });
+  if (!players.length) throw new Error("The active Team Tournament has no registered players.");
+
+  const seenTeams = {};
+  const teams = lifReadSheetObjects_(spreadsheet, "Team Tournament Teams")
+    .filter(function(team) {
+      return String(team["Event ID"] || "").trim() === eventId && lifLeagueRowIsActive_(team);
+    })
+    .reduce(function(result, team) {
+      const name = String(team["Team Name"] || "").trim();
+      const key = lifNormalize_(name);
+      if (name && !seenTeams[key]) {
+        seenTeams[key] = true;
+        result.push(name);
+      }
+      return result;
+    }, []);
+  teams.sort(function(left, right) { return left.localeCompare(right); });
+  if (!teams.length) throw new Error("The active Team Tournament has no registered teams.");
+
+  return { eventId: eventId, players: players, teams: teams };
 }
 
 function lifGetTeamTournamentMissionOptions_() {

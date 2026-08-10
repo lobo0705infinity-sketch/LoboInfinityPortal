@@ -52,11 +52,14 @@ function lifReadSubmission_(named, formType, timestamp, targetSpreadsheet) {
   const leagueContext = formType === LIF_FORMS.TYPES.LEAGUE
     ? lifResolveLeagueImportContext_(targetSpreadsheet, selectedPlayer)
     : null;
+  const teamTournamentContext = formType === LIF_FORMS.TYPES.TEAM
+    ? lifResolveTeamTournamentImportContext_(targetSpreadsheet, selectedPlayer)
+    : null;
   return {
     timestamp: timestamp || new Date(), formType: formType,
-    eventId: formType === LIF_FORMS.TYPES.CASUAL ? "" : leagueContext ? leagueContext.eventId : get(f.EVENT_ID),
+    eventId: formType === LIF_FORMS.TYPES.CASUAL ? "" : leagueContext ? leagueContext.eventId : teamTournamentContext.eventId,
     division: formType === LIF_FORMS.TYPES.CASUAL ? "Casual" : leagueContext ? leagueContext.division : get(f.DIVISION) || "Team Tournament",
-    mission: get(f.MISSION), player: leagueContext ? leagueContext.player : selectedPlayer, opponent: get(f.OPPONENT),
+    mission: get(f.MISSION), player: leagueContext ? leagueContext.player : teamTournamentContext ? teamTournamentContext.player : selectedPlayer, opponent: get(f.OPPONENT),
     playerFaction: get(f.PLAYER_FACTION), opponentFaction: get(f.OPPONENT_FACTION),
     playerArmyCode: lifNormalizeArmyCode_(get(f.PLAYER_ARMY_CODE)),
     opponentArmyCode: lifNormalizeArmyCode_(get(f.OPPONENT_ARMY_CODE)),
@@ -66,6 +69,53 @@ function lifReadSubmission_(named, formType, timestamp, targetSpreadsheet) {
     gameResult: get(f.GAME_RESULT), firstTurn: get(f.FIRST_TURN),
     bestMoment: get(f.BEST_MOMENT), notes: get(f.NOTES)
   };
+}
+
+function lifResolveTeamTournamentImportContext_(spreadsheet, selectedPlayer) {
+  if (!spreadsheet) throw new Error("The target portal spreadsheet is required for Team Tournament imports.");
+  const eventId = lifResolveActiveTeamTournamentEventId_(spreadsheet);
+  const selectedKey = lifNormalize_(selectedPlayer);
+  const registration = lifGetActiveTeamTournamentRegistrations_(spreadsheet, eventId)
+    .filter(function(row) {
+      return lifNormalize_(row["Player"]) === selectedKey || lifNormalize_(row["Display Name"]) === selectedKey;
+    })[0];
+  if (!registration) throw new Error("Selected Player is not registered in the active Team Tournament.");
+  return {
+    eventId: eventId,
+    player: String(registration["Player"] || registration["Display Name"] || selectedPlayer).trim()
+  };
+}
+
+function lifResolveActiveTeamTournamentEventId_(spreadsheet) {
+  if (!spreadsheet) throw new Error("The target portal spreadsheet is required to resolve the active Team Tournament.");
+  const events = lifReadSheetObjects_(spreadsheet, "Events").filter(function(event) {
+    return lifNormalize_(event["Type"]) === "team tournament" && lifLeagueRowIsActive_(event);
+  });
+  const current = events.filter(function(event) {
+    return lifNormalize_(event["Status"]) === "current active event" ||
+      lifNormalize_(event["Status"]) === "active" ||
+      lifNormalize_(event["Lifecycle Stage"]) === "active";
+  });
+  if (current.length === 1) return String(current[0]["ID"] || "").trim();
+  if (current.length > 1) throw new Error("Multiple active Team Tournament events were found.");
+  const defaultId = typeof EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID === "undefined"
+    ? ""
+    : String(EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID || "").trim();
+  const configured = events.filter(function(event) {
+    return defaultId && String(event["ID"] || "").trim() === defaultId;
+  });
+  if (configured.length === 1) return defaultId;
+  if (events.length === 1) return String(events[0]["ID"] || "").trim();
+  if (!events.length) throw new Error("No active Team Tournament event was found.");
+  throw new Error("Multiple Team Tournament events are active; the current event is ambiguous.");
+}
+
+function lifGetActiveTeamTournamentRegistrations_(spreadsheet, eventId) {
+  return lifReadSheetObjects_(spreadsheet, "Event Participants").filter(function(registration) {
+    const status = lifNormalize_(registration["Status"]);
+    return String(registration["Event ID"] || "").trim() === eventId &&
+      (status === "registered" || status === "active");
+  });
 }
 
 function lifResolveLeagueImportContext_(spreadsheet, selectedPlayer) {
