@@ -11,6 +11,7 @@ import {
   getCanonicalMissionName,
   getCanonicalMissionOptions,
 } from '../config/missions'
+import { GOOGLE_FORM_URLS } from '../config/googleForms'
 import './SubmitResult.css'
 import {
   apiClient,
@@ -69,6 +70,67 @@ type PickerOption = {
 }
 
 function SubmitResult() {
+  return (
+    <main className="portal-shell">
+      <section className="page-header" aria-labelledby="submit-game-title">
+        <p className="eyebrow">Game Submission</p>
+        <h1 id="submit-game-title">Submit Game</h1>
+        <p>Choose the type of game you want to submit.</p>
+      </section>
+
+      <section className="operations-grid" aria-label="Google Forms game submissions">
+        <GoogleFormLauncher
+          buttonLabel="Submit League Game"
+          description="Submit an official League game."
+          label="League Game"
+          url={GOOGLE_FORM_URLS.league}
+        />
+        <GoogleFormLauncher
+          buttonLabel="Submit Team Tournament Game"
+          description="Submit an official Team Tournament game."
+          label="Team Tournament"
+          url={GOOGLE_FORM_URLS.teamTournament}
+        />
+        <GoogleFormLauncher
+          buttonLabel="Submit Casual Game"
+          description="Submit a Casual game for lifetime statistics."
+          label="Casual Game"
+          url={GOOGLE_FORM_URLS.casual}
+        />
+      </section>
+    </main>
+  )
+}
+
+function GoogleFormLauncher({
+  buttonLabel,
+  description,
+  label,
+  url,
+}: {
+  buttonLabel: string
+  description: string
+  label: string
+  url: string
+}) {
+  return (
+    <article className="panel operations-panel">
+      <p className="eyebrow">Google Form</p>
+      <h2>{label}</h2>
+      <p>{description}</p>
+      <a
+        className="submit-match-button"
+        href={url}
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        {buttonLabel}
+      </a>
+    </article>
+  )
+}
+
+export function LegacySubmitResult() {
   const auth = useAuth()
   const [searchParams] = useSearchParams()
   const rememberedSubmitContext = searchParams.get('f') ?? ''
