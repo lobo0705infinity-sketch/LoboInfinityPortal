@@ -315,8 +315,7 @@ function buildMissionAnalyticsRows(registry){
 function writeMissionAnalytics(rows){
 
   const sheet =
-    SpreadsheetApp
-      .getActive()
+    lifGetTargetSpreadsheet_()
       .getSheetByName(
         CONFIG.SHEETS.MISSION_ANALYTICS
       );

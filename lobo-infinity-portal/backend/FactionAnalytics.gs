@@ -259,8 +259,7 @@ function buildFactionAnalyticsRows(registry){
 function writeFactionAnalytics(rows){
 
   const sheet =
-    SpreadsheetApp
-      .getActive()
+    lifGetTargetSpreadsheet_()
       .getSheetByName(
         CONFIG.SHEETS.FACTION_ANALYTICS
       );
