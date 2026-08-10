@@ -305,8 +305,7 @@ function buildPlayerAnalyticsRows(registry){
 function writePlayerAnalytics(rows){
 
   const sheet =
-    SpreadsheetApp
-      .getActive()
+    lifGetTargetSpreadsheet_()
       .getSheetByName(
         CONFIG.SHEETS.PLAYER_ANALYTICS
       );
