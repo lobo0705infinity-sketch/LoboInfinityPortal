@@ -159,7 +159,7 @@ function getSettings() {
 function ensureSettingsSheet() {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   let sheet =
     spreadsheet.getSheetByName(CONFIG.SHEETS.SETTINGS);

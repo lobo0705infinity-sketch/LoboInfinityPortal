@@ -496,7 +496,7 @@ function recordGameScoreCorrectionAudit(record) {
 function getGameScoreCorrectionAuditSheet() {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   let sheet =
     spreadsheet.getSheetByName(CONFIG.SHEETS.GAME_SCORE_CORRECTION_AUDIT);

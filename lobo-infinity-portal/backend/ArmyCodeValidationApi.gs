@@ -499,7 +499,7 @@ function recordArmyCodeValidationAudit(source, validation, override) {
 function getArmyCodeValidationAuditSheet() {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   let sheet =
     spreadsheet.getSheetByName(CONFIG.SHEETS.ARMY_CODE_VALIDATION_AUDIT);

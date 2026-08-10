@@ -245,7 +245,7 @@ function appendArmyIntelligenceRecentGameSources(sources) {
 function appendArmyIntelligenceTeamTournamentSources(sources) {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   const sheet =
     spreadsheet.getSheetByName(CONFIG.SHEETS.TEAM_TOURNAMENT_RESULTS);
@@ -671,7 +671,7 @@ function buildArmyIntelligenceSnapshotRow(source, snapshot) {
 function ensureArmyIntelligenceSheet() {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   let sheet =
     spreadsheet.getSheetByName(ARMY_INTELLIGENCE_SHEET_NAME);

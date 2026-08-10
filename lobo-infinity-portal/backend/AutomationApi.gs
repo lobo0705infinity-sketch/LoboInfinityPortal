@@ -1006,7 +1006,7 @@ function ensureAutomationQueueSheet() {
 function ensureAutomationSheet(name, headers) {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   let sheet =
     spreadsheet.getSheetByName(name);

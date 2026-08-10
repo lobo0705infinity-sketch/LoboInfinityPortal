@@ -2120,7 +2120,7 @@ function updateSchedulingRequestStatus(requestId, context, status, responseMessa
 function ensureSchedulingRequestsSheet() {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   let sheet =
     spreadsheet.getSheetByName(

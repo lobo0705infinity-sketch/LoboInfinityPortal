@@ -368,7 +368,7 @@ function buildIntegrityContext() {
   updateRegistryStatistics(registry);
 
   return {
-    spreadsheet: SpreadsheetApp.getActive(),
+    spreadsheet: lifGetTargetSpreadsheet_(),
     settings: getSettingsObject(),
     games: getLeagueData(),
     recentGames: getAllRecentGameObjects(),
@@ -1099,7 +1099,7 @@ function auditIntegrityNews(context) {
 function repairIntegrityFormulas() {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   const sheets = [
     "Main Man Data",

@@ -231,7 +231,7 @@ function buildTeamTournamentRuntime(eventId) {
     measureTeamTournamentOperation(
       "teamTournament.spreadsheet.getActive",
       function() {
-        return SpreadsheetApp.getActive();
+        return lifGetTargetSpreadsheet_();
       },
       {
         eventId: eventId

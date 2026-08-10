@@ -18,7 +18,7 @@ function getDashboard() {
     );
 
   const ss =
-    SpreadsheetApp.getActiveSpreadsheet();
+    lifGetTargetSpreadsheet_();
 
   endDashboardEndpointSubStage(
     "dashboard.spreadsheet.getActiveSpreadsheet",

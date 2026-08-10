@@ -204,7 +204,7 @@ function getLeagueOperationsCurrentRowNumber(sheet) {
 function ensureLeagueOperationsSheet() {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   let sheet =
     spreadsheet.getSheetByName(CONFIG.SHEETS.LEAGUE_OPERATIONS);

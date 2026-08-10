@@ -1105,7 +1105,7 @@ function recordResultSubmissionCommissionerAudit(context, gameType, details) {
     return;
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   let sheet =
     spreadsheet.getSheetByName("Commissioner Submission Audit");
@@ -1150,7 +1150,7 @@ function recordResultSubmissionCommissionerAudit(context, gameType, details) {
 function recordArmyListLinkAudit(details) {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   let sheet =
     spreadsheet.getSheetByName("Army List Link Audit");

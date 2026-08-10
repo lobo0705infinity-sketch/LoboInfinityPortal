@@ -1763,7 +1763,7 @@ function hashAuthDiagnosticValue(value) {
 function ensureUsersSheet() {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   let sheet =
     spreadsheet.getSheetByName(CONFIG.SHEETS.USERS);

@@ -178,3 +178,16 @@ const CONFIG = {
   }
 
 };
+
+function lifGetTargetSpreadsheet_() {
+  const targetSpreadsheetId = String(
+    PropertiesService
+      .getScriptProperties()
+      .getProperty("LIF_TARGET_SPREADSHEET_ID") || ""
+  ).trim();
+
+  if (!targetSpreadsheetId)
+    throw new Error("Missing required script property: LIF_TARGET_SPREADSHEET_ID");
+
+  return SpreadsheetApp.openById(targetSpreadsheetId);
+}

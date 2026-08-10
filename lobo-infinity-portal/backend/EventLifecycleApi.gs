@@ -1305,7 +1305,7 @@ function getEventLifecycleAuditRows(eventId) {
 function ensureEventLifecycleAuditSheet() {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   let sheet =
     spreadsheet.getSheetByName(

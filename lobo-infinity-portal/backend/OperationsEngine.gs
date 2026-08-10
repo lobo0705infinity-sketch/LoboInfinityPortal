@@ -1803,7 +1803,7 @@ function normalizeOperationsEngineSubsystemState(state, adapter) {
 function ensureOperationsEngineSheet(sheetName, headers) {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   let sheet =
     spreadsheet.getSheetByName(sheetName);

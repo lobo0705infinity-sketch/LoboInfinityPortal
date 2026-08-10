@@ -226,7 +226,7 @@ function buildDivisionTable(registry, division) {
 function writeStandingsSheet(sheetName, rows) {
 
   const ss =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   const sheet =
     ss.getSheetByName(sheetName);

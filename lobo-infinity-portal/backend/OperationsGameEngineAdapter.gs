@@ -27,7 +27,7 @@ function getOperationsGameEngineAdapter() {
 function getOperationsGameEngineCurrentState() {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   const formSheet =
     spreadsheet.getSheetByName(CONFIG.SHEETS.FORM);
@@ -116,7 +116,7 @@ function rebuildOperationsGameEngine() {
 function verifyOperationsGameEngine() {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   const sheet =
     spreadsheet.getSheetByName(CONFIG.SHEETS.GAME_ANALYTICS);

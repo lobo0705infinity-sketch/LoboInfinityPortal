@@ -463,7 +463,7 @@ function recordGameArmyCodeCorrectionAudit(record) {
 function getGameArmyCodeCorrectionAuditSheet() {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   let sheet =
     spreadsheet.getSheetByName(CONFIG.SHEETS.GAME_ARMY_CODE_CORRECTION_AUDIT);

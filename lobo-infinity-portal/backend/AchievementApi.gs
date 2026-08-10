@@ -1871,7 +1871,7 @@ function getAchievementLeaguePlayers() {
 function getAchievementsSheet() {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   let sheet =
     spreadsheet.getSheetByName(

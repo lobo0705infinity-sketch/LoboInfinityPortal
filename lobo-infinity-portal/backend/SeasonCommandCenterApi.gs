@@ -976,7 +976,7 @@ function saveSeasonAvailabilityRecord(record) {
 function ensureSeasonAvailabilitySheet() {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   let sheet =
     spreadsheet.getSheetByName(

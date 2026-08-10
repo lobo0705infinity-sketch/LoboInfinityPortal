@@ -1382,7 +1382,7 @@ function setDiscordConfigValues(updates) {
 function ensureDiscordConfigSheet() {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   let sheet =
     spreadsheet.getSheetByName(CONFIG.SHEETS.DISCORD_CONFIG);
@@ -1608,7 +1608,7 @@ function logDiscordAutomation(event, payload, webhookUrl, success, failure, retr
 function ensureDiscordLogSheet() {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   let sheet =
     spreadsheet.getSheetByName(CONFIG.SHEETS.DISCORD_LOG);

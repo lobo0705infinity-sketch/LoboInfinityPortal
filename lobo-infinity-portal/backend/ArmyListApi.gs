@@ -1579,7 +1579,7 @@ function buildHighestRatedDesigner(lists) {
 function getArmyListSheet() {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   let sheet =
     spreadsheet.getSheetByName(

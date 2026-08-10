@@ -119,7 +119,7 @@ function getStreams() {
 function ensureStreamsSheet() {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   let sheet =
     spreadsheet.getSheetByName(CONFIG.SHEETS.STREAMS);

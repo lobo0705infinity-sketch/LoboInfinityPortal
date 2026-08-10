@@ -1733,7 +1733,7 @@ function getOperationsUsers() {
 function getOperationsLeagueIdentityRows() {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   const sheet =
     spreadsheet.getSheetByName(CONFIG.SHEETS.PLAYERS);
@@ -2041,7 +2041,7 @@ function ensureCommunityTimelineSheet() {
 function ensureOperationsContentSheet(sheetName, headers) {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   let sheet =
     spreadsheet.getSheetByName(sheetName);
@@ -2066,7 +2066,7 @@ function ensureOperationsContentSheet(sheetName, headers) {
 function ensureCommissionerNewsSheet() {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   let sheet =
     spreadsheet.getSheetByName(
@@ -2270,7 +2270,7 @@ function getSeasonArchiveRows() {
 function ensureSeasonArchiveSheet() {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   let sheet =
     spreadsheet.getSheetByName(

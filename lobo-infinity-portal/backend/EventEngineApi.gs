@@ -561,7 +561,7 @@ function validateEventEngineRuntime() {
   ];
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   const missingSheets = [];
 
@@ -584,7 +584,7 @@ function validateEventEngineRuntime() {
 function getEventEngineRuntimeSheet(name) {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   return spreadsheet.getSheetByName(name);
 
@@ -1370,7 +1370,7 @@ function getEventRoundObjects() {
 function buildEventMigrationAudit() {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   const requiredSheets = [
     CONFIG.SHEETS.EVENTS,
@@ -1503,7 +1503,7 @@ function ensureEventEngineSheet(name, headers) {
     measureEventHomeOperationIfAvailable(
       "eventHome.eventEngine.ensureSheet.getActive",
       function() {
-        return SpreadsheetApp.getActive();
+        return lifGetTargetSpreadsheet_();
       },
       {
         sheet: name
@@ -2047,7 +2047,7 @@ function getEventParticipantCount(eventId) {
 function getEventByIdNoEnsure(eventId) {
 
   const spreadsheet =
-    SpreadsheetApp.getActive();
+    lifGetTargetSpreadsheet_();
 
   const sheet =
     spreadsheet.getSheetByName(CONFIG.SHEETS.EVENTS);
