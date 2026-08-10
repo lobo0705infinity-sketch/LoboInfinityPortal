@@ -5,16 +5,6 @@
  * Reuses Form Responses and the existing Game Engine rebuild.
  *******************************************************/
 
-const RESULT_SUBMISSION_ARMY_CODE_HEADERS = {
-  PLAYER1_ARMY_CODE: "Player 1 Army Code",
-  PLAYER2_ARMY_CODE: "Player 2 Army Code"
-};
-
-const RESULT_SUBMISSION_CANONICAL_HEADERS = {
-  SOURCE_TYPE: "Source Type",
-  SOURCE_RESULT_ID: "Source Result ID"
-};
-
 function submitLeagueResult(e) {
 
   return requireApiPermission(e, "canSubmitLeagueGames", function(auth) {
@@ -110,7 +100,8 @@ function submitLeagueResult(e) {
       validateResultSubmissionArmyListId(
         params.playerArmyListId,
         player,
-        playerFaction
+        playerFaction,
+        params.playerArmyCode
       );
 
     if (!playerArmyList.valid)
@@ -120,7 +111,8 @@ function submitLeagueResult(e) {
       validateResultSubmissionArmyListId(
         params.opponentArmyListId,
         opponent,
-        opponentFaction
+        opponentFaction,
+        params.opponentArmyCode
       );
 
     if (!opponentArmyList.valid)
@@ -176,14 +168,29 @@ function submitLeagueResult(e) {
         : playerIsWinner
           ? "Player 1 Victory"
           : "Player 2 Victory";
+    const playerArmyCode =
+      getResultSubmissionArmyCode(
+        params.playerArmyCode ||
+        (playerArmyList.list && playerArmyList.list.armyCode)
+      );
+    const opponentArmyCode =
+      getResultSubmissionArmyCode(
+        params.opponentArmyCode ||
+        (opponentArmyList.list && opponentArmyList.list.armyCode)
+      );
+
+    row[FORM.PLAYER1_ARMY_CODE] =
+      playerArmyCode;
+    row[FORM.PLAYER2_ARMY_CODE] =
+      opponentArmyCode;
     row[FORM.WINNER_ARMY_LIST_ID] =
       resultIsDraw || playerIsWinner
-        ? playerArmyList.id
-        : opponentArmyList.id;
+        ? getResultSubmissionArmyListId(playerArmyList, playerArmyCode)
+        : getResultSubmissionArmyListId(opponentArmyList, opponentArmyCode);
     row[FORM.LOSER_ARMY_LIST_ID] =
       resultIsDraw || playerIsWinner
-        ? opponentArmyList.id
-        : playerArmyList.id;
+        ? getResultSubmissionArmyListId(opponentArmyList, opponentArmyCode)
+        : getResultSubmissionArmyListId(playerArmyList, playerArmyCode);
 
     const sheet =
       SpreadsheetApp
@@ -193,15 +200,7 @@ function submitLeagueResult(e) {
     if (!sheet)
       return resultSubmissionFailure("Result datastore was not found.");
 
-    const armyCodeColumns =
-      ensureResultSubmissionArmyCodeColumns(sheet);
-
     ensureResultSubmissionArmyListHeaders(sheet);
-
-    row[armyCodeColumns.player1ArmyCode] =
-      getResultSubmissionString(params.player1ArmyCode);
-    row[armyCodeColumns.player2ArmyCode] =
-      getResultSubmissionString(params.player2ArmyCode);
 
     sheet.appendRow(row);
 
@@ -219,7 +218,9 @@ function submitLeagueResult(e) {
       }
     );
 
-    if (typeof rebuildGameEngine === "function")
+    if (typeof rebuildEverything === "function")
+      rebuildEverything();
+    else if (typeof rebuildGameEngine === "function")
       rebuildGameEngine();
 
     if (typeof publishLatestGameSubmittedAutomationEvent === "function")
@@ -284,7 +285,8 @@ function submitCasualResult(e) {
       validateResultSubmissionArmyListId(
         params.playerArmyListId,
         player,
-        playerFaction
+        playerFaction,
+        params.playerArmyCode
       );
 
     if (!playerArmyList.valid)
@@ -294,7 +296,8 @@ function submitCasualResult(e) {
       validateResultSubmissionArmyListId(
         params.opponentArmyListId,
         opponent,
-        opponentFaction
+        opponentFaction,
+        params.opponentArmyCode
       );
 
     if (!opponentArmyList.valid)
@@ -388,14 +391,29 @@ function submitCasualResult(e) {
         : playerIsWinner
           ? "Player 1 Victory"
           : "Player 2 Victory";
+    const playerArmyCode =
+      getResultSubmissionArmyCode(
+        params.playerArmyCode ||
+        (playerArmyList.list && playerArmyList.list.armyCode)
+      );
+    const opponentArmyCode =
+      getResultSubmissionArmyCode(
+        params.opponentArmyCode ||
+        (opponentArmyList.list && opponentArmyList.list.armyCode)
+      );
+
+    row[FORM.PLAYER1_ARMY_CODE] =
+      playerArmyCode;
+    row[FORM.PLAYER2_ARMY_CODE] =
+      opponentArmyCode;
     row[FORM.WINNER_ARMY_LIST_ID] =
       resultIsDraw || playerIsWinner
-        ? playerArmyList.id
-        : opponentArmyList.id;
+        ? getResultSubmissionArmyListId(playerArmyList, playerArmyCode)
+        : getResultSubmissionArmyListId(opponentArmyList, opponentArmyCode);
     row[FORM.LOSER_ARMY_LIST_ID] =
       resultIsDraw || playerIsWinner
-        ? opponentArmyList.id
-        : playerArmyList.id;
+        ? getResultSubmissionArmyListId(opponentArmyList, opponentArmyCode)
+        : getResultSubmissionArmyListId(playerArmyList, playerArmyCode);
 
     const sheet =
       SpreadsheetApp
@@ -405,15 +423,7 @@ function submitCasualResult(e) {
     if (!sheet)
       return resultSubmissionFailure("Result datastore was not found.");
 
-    const armyCodeColumns =
-      ensureResultSubmissionArmyCodeColumns(sheet);
-
     ensureResultSubmissionArmyListHeaders(sheet);
-
-    row[armyCodeColumns.player1ArmyCode] =
-      getResultSubmissionString(params.player1ArmyCode);
-    row[armyCodeColumns.player2ArmyCode] =
-      getResultSubmissionString(params.player2ArmyCode);
 
     sheet.appendRow(row);
 
@@ -431,7 +441,9 @@ function submitCasualResult(e) {
       }
     );
 
-    if (typeof rebuildGameEngine === "function")
+    if (typeof rebuildEverything === "function")
+      rebuildEverything();
+    else if (typeof rebuildGameEngine === "function")
       rebuildGameEngine();
 
     if (typeof publishLatestGameSubmittedAutomationEvent === "function")
@@ -598,74 +610,29 @@ function resultSubmissionFailure(message) {
 
 }
 
-function ensureResultSubmissionArmyCodeColumns(sheet) {
+function validateResultSubmissionArmyListId(value, player, faction, armyCode) {
 
-  const requiredHeaders = [
-    RESULT_SUBMISSION_ARMY_CODE_HEADERS.PLAYER1_ARMY_CODE,
-    RESULT_SUBMISSION_ARMY_CODE_HEADERS.PLAYER2_ARMY_CODE
-  ];
+  const normalizedArmyCode =
+    normalizeResultSubmissionArmyCode(armyCode);
 
-  const lastColumn =
-    Math.max(sheet.getLastColumn(), FORM.GAME_RESULT + 1);
-
-  const headerRange =
-    sheet.getRange(1, 1, 1, lastColumn);
-
-  let headers =
-    headerRange
-      .getValues()[0]
-      .map(getResultSubmissionString);
-
-  const occupiedHeaderCount =
-    headers.filter(function(header) {
-      return header !== "";
-    }).length;
-
-  if (occupiedHeaderCount === 0) {
-    sheet
-      .getRange(1, 1, 1, requiredHeaders.length)
-      .setValues([requiredHeaders]);
-
-    headers = requiredHeaders.slice();
-  } else {
-    const missingHeaders =
-      requiredHeaders.filter(function(header) {
-        return headers.indexOf(header) === -1;
-      });
-
-    if (missingHeaders.length > 0) {
-      sheet
-        .getRange(1, occupiedHeaderCount + 1, 1, missingHeaders.length)
-        .setValues([missingHeaders]);
-
-      headers =
-        sheet
-          .getRange(1, 1, 1, occupiedHeaderCount + missingHeaders.length)
-          .getValues()[0]
-          .map(getResultSubmissionString);
-    }
-  }
-
-  return {
-    player1ArmyCode:
-      headers.indexOf(RESULT_SUBMISSION_ARMY_CODE_HEADERS.PLAYER1_ARMY_CODE),
-    player2ArmyCode:
-      headers.indexOf(RESULT_SUBMISSION_ARMY_CODE_HEADERS.PLAYER2_ARMY_CODE)
-  };
-
-}
-
-function validateResultSubmissionArmyListId(value, player, faction) {
+  if (normalizedArmyCode)
+    return {
+      valid: true,
+      id:
+        typeof buildCanonicalArmyCodeArmyListId === "function"
+          ? String(buildCanonicalArmyCodeArmyListId(normalizedArmyCode))
+          : "",
+      list: null
+    };
 
   const id =
     Number(value) || 0;
 
   if (id <= 0)
-    return {
-      valid: true,
-      id: "",
-      list: null
-    };
+    return validateResultSubmissionMissingArmyListId(
+      player,
+      faction
+    );
 
   const list =
     getResultSubmissionApprovedArmyListById(id);
@@ -679,17 +646,9 @@ function validateResultSubmissionArmyListId(value, player, faction) {
     };
 
   if (
-    normalizeResultSubmissionValue(list.player) !==
-    normalizeResultSubmissionValue(player)
+    faction &&
+    !resultSubmissionArmyListMatchesFaction(list, faction)
   )
-    return {
-      valid: false,
-      id: "",
-      list: null,
-      error: "Selected Army List does not belong to the submitted player."
-    };
-
-  if (!resultSubmissionArmyListMatchesFaction(list, faction))
     return {
       valid: false,
       id: "",
@@ -702,6 +661,49 @@ function validateResultSubmissionArmyListId(value, player, faction) {
     id: String(id),
     list: list
   };
+
+}
+
+function validateResultSubmissionMissingArmyListId(player, faction) {
+
+  return {
+    valid: false,
+    id: "",
+    list: null,
+    error: "Army Code or Army List selection is required."
+  };
+
+}
+
+function getResultSubmissionArmyListId(armyList, armyCode) {
+
+  const normalizedArmyCode =
+    normalizeResultSubmissionArmyCode(armyCode);
+
+  if (normalizedArmyCode && typeof buildCanonicalArmyCodeArmyListId === "function")
+    return String(buildCanonicalArmyCodeArmyListId(normalizedArmyCode));
+
+  return armyList && armyList.id
+    ? armyList.id
+    : "";
+
+}
+
+function getResultSubmissionArmyCode(value) {
+
+  return normalizeResultSubmissionArmyCode(value);
+
+}
+
+function normalizeResultSubmissionArmyCode(value) {
+
+  if (typeof normalizeCanonicalArmyListCode === "function")
+    return normalizeCanonicalArmyListCode(value);
+
+  return getResultSubmissionString(value)
+    .replace(/\s+/g, "")
+    .replace(/-/g, "")
+    .replace(/_/g, "");
 
 }
 
@@ -780,6 +782,14 @@ function ensureResultSubmissionArmyListHeaders(sheet) {
 
   const required = [
     {
+      column: FORM.PLAYER1_ARMY_CODE,
+      header: "Player 1 Army Code"
+    },
+    {
+      column: FORM.PLAYER2_ARMY_CODE,
+      header: "Player 2 Army Code"
+    },
+    {
       column: FORM.WINNER_ARMY_LIST_ID,
       header: "Winner Army List ID"
     },
@@ -796,248 +806,6 @@ function ensureResultSubmissionArmyListHeaders(sheet) {
     if (getResultSubmissionString(cell.getValue()) === "")
       cell.setValue(item.header);
   });
-
-}
-
-function appendCanonicalGameSubmissionRecord(record) {
-
-  const sheet =
-    SpreadsheetApp
-      .getActive()
-      .getSheetByName(CONFIG.SHEETS.FORM);
-
-  if (!sheet)
-    throw new Error("Result datastore was not found.");
-
-  const armyCodeColumns =
-    ensureResultSubmissionArmyCodeColumns(sheet);
-
-  ensureResultSubmissionArmyListHeaders(sheet);
-
-  const sourceColumns =
-    ensureResultSubmissionCanonicalColumns(sheet);
-
-  const sourceType =
-    getResultSubmissionString(record.sourceType);
-
-  const sourceResultId =
-    getResultSubmissionString(record.sourceResultId);
-
-  if (
-    sourceType !== "" &&
-    sourceResultId !== "" &&
-    hasCanonicalGameSubmissionRecord(
-      sheet,
-      sourceColumns,
-      sourceType,
-      sourceResultId
-    )
-  )
-    return {
-      appended: false,
-      sourceResultId: sourceResultId,
-      sourceType: sourceType
-    };
-
-  const row = [];
-
-  row[FORM.TIMESTAMP] =
-    getResultSubmissionString(record.timestamp) ||
-    getResultSubmissionTimestamp();
-  row[FORM.DIVISION] =
-    getResultSubmissionString(record.division);
-  row[FORM.DATE] =
-    getResultSubmissionString(record.date) ||
-    getResultSubmissionDate();
-  row[FORM.MISSION] =
-    getResultSubmissionString(record.mission);
-  row[FORM.PLAYER1] =
-    getResultSubmissionString(record.player1);
-  row[FORM.PLAYER2] =
-    getResultSubmissionString(record.player2);
-  row[FORM.P1TP] =
-    Number(record.player1Tp) || 0;
-  row[FORM.P2TP] =
-    Number(record.player2Tp) || 0;
-  row[FORM.P1OP] =
-    Number(record.player1Op) || 0;
-  row[FORM.P2OP] =
-    Number(record.player2Op) || 0;
-  row[FORM.P1VP] =
-    Number(record.player1Vp) || 0;
-  row[FORM.P2VP] =
-    Number(record.player2Vp) || 0;
-  row[FORM.FIRSTTURN] =
-    getResultSubmissionString(record.firstTurn);
-  row[FORM.WINNINGFACTION] =
-    canonicalizeArmyName(record.winningFaction);
-  row[FORM.LOSINGFACTION] =
-    canonicalizeArmyName(record.losingFaction);
-  row[FORM.MOMENT] =
-    getResultSubmissionString(record.bestMoment);
-  row[FORM.EVENT_ID] =
-    getResultSubmissionString(record.eventId);
-  row[FORM.GAME_TYPE] =
-    normalizeGameType(record.gameType);
-  row[FORM.GAME_RESULT] =
-    getResultSubmissionString(record.gameResult);
-  row[armyCodeColumns.player1ArmyCode] =
-    getResultSubmissionString(record.player1ArmyCode);
-  row[armyCodeColumns.player2ArmyCode] =
-    getResultSubmissionString(record.player2ArmyCode);
-  row[FORM.WINNER_ARMY_LIST_ID] =
-    getResultSubmissionString(record.winnerArmyListId);
-  row[FORM.LOSER_ARMY_LIST_ID] =
-    getResultSubmissionString(record.loserArmyListId);
-  row[sourceColumns.sourceType] =
-    sourceType;
-  row[sourceColumns.sourceResultId] =
-    sourceResultId;
-
-  sheet.appendRow(row);
-
-  return {
-    appended: true,
-    sourceResultId: sourceResultId,
-    sourceType: sourceType
-  };
-
-}
-
-function ensureResultSubmissionCanonicalColumns(sheet) {
-
-  const requiredHeaders = [
-    RESULT_SUBMISSION_CANONICAL_HEADERS.SOURCE_TYPE,
-    RESULT_SUBMISSION_CANONICAL_HEADERS.SOURCE_RESULT_ID
-  ];
-
-  const headerRange =
-    sheet.getRange(
-      1,
-      1,
-      1,
-      Math.max(
-        sheet.getLastColumn(),
-        FORM.LOSER_ARMY_LIST_ID + 1
-      )
-    );
-
-  const headers =
-    headerRange
-      .getValues()[0]
-      .map(getResultSubmissionString);
-
-  requiredHeaders.forEach(function(header) {
-    if (headers.indexOf(header) === -1) {
-      headers.push(header);
-      sheet
-        .getRange(
-          1,
-          headers.length
-        )
-        .setValue(header);
-    }
-  });
-
-  return {
-    sourceType:
-      headers.indexOf(
-        RESULT_SUBMISSION_CANONICAL_HEADERS.SOURCE_TYPE
-      ),
-    sourceResultId:
-      headers.indexOf(
-        RESULT_SUBMISSION_CANONICAL_HEADERS.SOURCE_RESULT_ID
-      )
-  };
-
-}
-
-function hasCanonicalGameSubmissionRecord(
-  sheet,
-  sourceColumns,
-  sourceType,
-  sourceResultId
-) {
-
-  const values =
-    sheet
-      .getDataRange()
-      .getValues();
-
-  if (values.length <= 1)
-    return false;
-
-  const typeTarget =
-    normalizeResultSubmissionValue(sourceType);
-
-  const idTarget =
-    normalizeResultSubmissionValue(sourceResultId);
-
-  return values
-    .slice(1)
-    .some(function(row) {
-      return (
-        normalizeResultSubmissionValue(row[sourceColumns.sourceType]) === typeTarget &&
-        normalizeResultSubmissionValue(row[sourceColumns.sourceResultId]) === idTarget
-      );
-    });
-
-}
-
-function getCanonicalGameSubmissionSourceIds(sourceType) {
-
-  const sheet =
-    SpreadsheetApp
-      .getActive()
-      .getSheetByName(CONFIG.SHEETS.FORM);
-
-  if (!sheet)
-    return {};
-
-  const values =
-    sheet
-      .getDataRange()
-      .getValues();
-
-  if (values.length <= 1)
-    return {};
-
-  const headers =
-    values.shift().map(getResultSubmissionString);
-
-  const sourceTypeColumn =
-    headers.indexOf(
-      RESULT_SUBMISSION_CANONICAL_HEADERS.SOURCE_TYPE
-    );
-
-  const sourceResultIdColumn =
-    headers.indexOf(
-      RESULT_SUBMISSION_CANONICAL_HEADERS.SOURCE_RESULT_ID
-    );
-
-  if (sourceTypeColumn === -1 || sourceResultIdColumn === -1)
-    return {};
-
-  const sourceTypeTarget =
-    normalizeResultSubmissionValue(sourceType);
-
-  const ids = {};
-
-  values.forEach(function(row) {
-    if (
-      normalizeResultSubmissionValue(row[sourceTypeColumn]) !==
-      sourceTypeTarget
-    )
-      return;
-
-    const sourceResultId =
-      getResultSubmissionString(row[sourceResultIdColumn]);
-
-    if (sourceResultId !== "")
-      ids[sourceResultId] = true;
-  });
-
-  return ids;
 
 }
 

@@ -605,12 +605,6 @@ function getArmyCodeValidationString(value) {
 
 }
 
-function getArmyCodeValidationTimestamp() {
-
-  return getOperationsTimestamp();
-
-}
-
 function getArmyListBooleanParameter(parameters, key) {
 
   const value =

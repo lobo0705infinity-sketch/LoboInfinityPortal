@@ -371,58 +371,37 @@ function saveEventManagerPairing(e) {
     const eventId =
       resolveEventId(params.eventId || EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID);
 
-    const teams =
-      typeof getTeamTournamentTeams === "function"
-        ? getTeamTournamentTeams(eventId)
-        : [];
+    const teamA =
+      getEventManagerString(params.teamA);
 
-    const teamAIdentity =
-      typeof resolveTeamTournamentTeamIdentity === "function"
-        ? resolveTeamTournamentTeamIdentity(
-            teams,
-            getEventManagerString(params.teamAId),
-            getEventManagerString(params.teamA)
-          )
-        : { teamId: "", teamName: getEventManagerString(params.teamA) };
+    const teamB =
+      getEventManagerString(params.teamB);
 
-    const teamBIdentity =
-      typeof resolveTeamTournamentTeamIdentity === "function"
-        ? resolveTeamTournamentTeamIdentity(
-            teams,
-            getEventManagerString(params.teamBId),
-            getEventManagerString(params.teamB)
-          )
-        : { teamId: "", teamName: getEventManagerString(params.teamB) };
-
-    if (teamAIdentity.teamId === "" || teamBIdentity.teamId === "")
+    if (teamA === "" || teamB === "")
       return jsonOutput({
         success: false,
-        error: "Both teams must be selected from the Team Registry."
-      });
-
-    const structuredPairings =
-      typeof buildTeamTournamentStructuredPlayerPairings === "function"
-        ? buildTeamTournamentStructuredPlayerPairings(
-            params,
-            teamAIdentity,
-            teamBIdentity,
-            teams
-          )
-        : {
-            valid: false,
-            errors: ["Team Pairing Editor validation is unavailable."],
-            playerPairings: ""
-          };
-
-    if (!structuredPairings.valid)
-      return jsonOutput({
-        success: false,
-        error: structuredPairings.errors.join(" ")
+        error: "Both teams are required."
       });
 
     const roundId =
       getEventManagerString(params.roundId) ||
       EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ROUND_ID;
+
+    const existingPairings =
+      getTeamTournamentPairings(eventId);
+
+    const existingPairing =
+      existingPairings.find(function(pairing) {
+        return (
+          getTeamTournamentString(pairing.roundId) === roundId &&
+          getTeamTournamentString(pairing.teamA).toLowerCase() === teamA.toLowerCase() &&
+          getTeamTournamentString(pairing.teamB).toLowerCase() === teamB.toLowerCase()
+        );
+      });
+
+    const playerPairings =
+      getEventManagerString(params.playerPairings) ||
+      (existingPairing ? getTeamTournamentString(existingPairing.playerPairings) : "");
 
     upsertTeamTournamentCompositeRow(
       ensureTeamTournamentPairingsSheet(),
@@ -430,28 +409,26 @@ function saveEventManagerPairing(e) {
       [
         "Event ID",
         "Round ID",
-        "Team A ID",
-        "Team B ID"
+        "Team A",
+        "Team B"
       ],
       [
         eventId,
         roundId,
-        teamAIdentity.teamId,
-        teamBIdentity.teamId
+        teamA,
+        teamB
       ],
       [
         eventId,
         roundId,
         getEventManagerString(params.round) || "Round 1",
-        teamAIdentity.teamName,
-        teamBIdentity.teamName,
-        structuredPairings.playerPairings,
+        teamA,
+        teamB,
+        playerPairings,
         getEventManagerString(params.status) || "Scheduled",
         getEventManagerString(params.results),
         getEventManagerTimestamp(),
-        getEventManagerTimestamp(),
-        teamAIdentity.teamId,
-        teamBIdentity.teamId
+        getEventManagerTimestamp()
       ]
     );
 
@@ -459,7 +436,7 @@ function saveEventManagerPairing(e) {
       auth,
       eventId,
       "Pairing saved",
-      teamAIdentity.teamName + " vs " + teamBIdentity.teamName
+      teamA + " vs " + teamB
     );
     invalidateEventManagerCaches();
 

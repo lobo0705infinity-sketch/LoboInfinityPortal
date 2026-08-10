@@ -85,7 +85,6 @@ const EVENT_ENGINE_PARTICIPANT_HEADERS = [
   "Captain",
   "Free Agent",
   "Faction",
-  "Team ID",
   "Updated At"
 ];
 
@@ -227,6 +226,15 @@ function getEventRounds(e) {
 
 function getEventEngineSnapshot() {
 
+  const forensicStart =
+    enterApiForensicFunction(
+      "getEventEngineSnapshot",
+      "eventLookup",
+      {}
+    );
+
+  try {
+
   const timer =
     startDashboardEndpointSubStage(
       "dashboard.eventEngine.snapshot"
@@ -279,6 +287,25 @@ function getEventEngineSnapshot() {
   );
 
   return snapshot;
+
+  }
+  catch (err) {
+    recordApiForensicException(
+      "getEventEngineSnapshot",
+      "eventLookup",
+      forensicStart,
+      err
+    );
+    throw err;
+  }
+  finally {
+    exitApiForensicFunction(
+      "getEventEngineSnapshot",
+      "eventLookup",
+      forensicStart,
+      {}
+    );
+  }
 
 }
 

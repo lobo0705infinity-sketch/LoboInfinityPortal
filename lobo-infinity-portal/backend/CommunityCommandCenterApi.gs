@@ -416,13 +416,6 @@ function buildCommunityNextActions(user, seasonCommand, currentEvent, settings, 
       link: "/standings"
     });
 
-  if (getCommunityPlayerArmyListCount(getCanonicalPlayerFromUser(user)) === 0)
-    actions.push({
-      label: "Submit your first Army List.",
-      priority: "Normal",
-      link: "/army-lists/submit"
-    });
-
   if (activity && activity.news[0])
     actions.push({
       label: "Read the latest commissioner news.",
@@ -687,10 +680,6 @@ function buildCommunityQuickActions(settings) {
     {
       label: "Submit Game",
       link: submitUrl
-    },
-    {
-      label: "Submit Army List",
-      link: "/army-lists/submit"
     },
     {
       label: "Match Finder",

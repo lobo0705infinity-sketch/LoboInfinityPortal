@@ -29,9 +29,7 @@ const TEAM_TOURNAMENT_PAIRING_HEADERS = [
   "Status",
   "Results",
   "Created At",
-  "Updated At",
-  "Team A ID",
-  "Team B ID"
+  "Updated At"
 ];
 
 const TEAM_TOURNAMENT_INVITATION_HEADERS = [
@@ -43,8 +41,7 @@ const TEAM_TOURNAMENT_INVITATION_HEADERS = [
   "Status",
   "Message",
   "Created At",
-  "Updated At",
-  "Team ID"
+  "Updated At"
 ];
 
 const TEAM_TOURNAMENT_RESULT_HEADERS = [
@@ -69,11 +66,7 @@ const TEAM_TOURNAMENT_RESULT_HEADERS = [
   "Updated At",
   "Table",
   "Mission",
-  "Winner",
-  "Player 1 Army Code",
-  "Player 2 Army Code",
-  "Team A ID",
-  "Team B ID"
+  "Winner"
 ];
 
 function getTeamTournament(e) {
@@ -116,22 +109,19 @@ function getTeamTournament(e) {
     runtime.teams;
 
   const pairings =
-    resolveTeamTournamentPairings(runtime.pairings, teams);
+    runtime.pairings;
 
   const invitations =
-    resolveTeamTournamentInvitations(runtime.invitations, teams);
+    runtime.invitations;
 
   const results =
-    resolveTeamTournamentResults(runtime.results, teams);
+    runtime.results;
 
   const resultStatuses =
     buildTeamTournamentResultStatuses(pairings, results);
 
   const standings =
-    buildTeamTournamentStandings(eventId, teams, results);
-
-  const rounds =
-    getTeamTournamentRounds(eventId);
+    buildTeamTournamentStandings(eventId, teams, results, runtime.recentGames);
 
   const registrations =
     resolveTeamTournamentRegistrationMembership(
@@ -141,10 +131,9 @@ function getTeamTournament(e) {
 
   const currentPlayerRegistration =
     auth.authenticated
-      ? findTeamTournamentRegistrationForUser(
-          event,
+      ? findTeamTournamentRegistrationForPlayer(
           registrations,
-          auth.user
+          getEventParticipantKey(event, auth.user)
         )
       : null;
 
@@ -166,8 +155,7 @@ function getTeamTournament(e) {
     tournament: {
       event: event,
       status: event.status || "Planning",
-      currentRound: rounds[0] || null,
-      rounds: rounds,
+      currentRound: getTeamTournamentCurrentRound(eventId),
       registration:
         buildEventRegistrationPayload(
           event,
@@ -193,7 +181,7 @@ function getTeamTournament(e) {
           return pairing.status !== "Completed";
         }),
       latestResults:
-        buildTeamTournamentLatestResults(results).slice(0, 8),
+        runtime.recentGames.slice(0, 8),
       tournamentResults: results,
       resultStatuses: resultStatuses,
       invitations: invitations,
@@ -216,6 +204,271 @@ function getTeamTournament(e) {
       standings: standings
     }
   });
+
+}
+
+// Temporary commissioner-only diagnostic endpoint for live Team Tournament tracing.
+// Remove this endpoint once the registration/pairing bug is resolved.
+function getTeamTournamentDiagnostic(e) {
+
+  return requireApiPermission(
+  e,
+  "runSeasonControl",
+  function(auth) {
+
+    const params =
+      getApiParameters(e);
+
+    const eventId =
+      resolveEventId(
+        params.eventId || EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID
+      );
+
+    const event =
+      getEventByIdSnapshot(eventId) ||
+      getEventByIdSnapshot(EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID) ||
+      getCurrentLeagueEventSnapshot();
+
+    const spreadsheet =
+    lifGetTargetSpreadsheet_();
+
+    const sheets = {
+      teams:
+        spreadsheet.getSheetByName(CONFIG.SHEETS.TEAM_TOURNAMENT_TEAMS),
+      pairings:
+        spreadsheet.getSheetByName(CONFIG.SHEETS.TEAM_TOURNAMENT_PAIRINGS),
+      registrations:
+        spreadsheet.getSheetByName(CONFIG.SHEETS.EVENT_PARTICIPANTS)
+    };
+
+    const teams =
+      getTeamTournamentTeams(eventId, sheets.teams);
+
+    const pairings =
+      getTeamTournamentPairings(eventId, sheets.pairings);
+
+    const rawRegistrations =
+      getTeamTournamentRegistrationRows(eventId, sheets.registrations);
+
+    const registrations =
+      resolveTeamTournamentRegistrationMembership(
+        rawRegistrations,
+        teams
+      );
+
+    const currentRound =
+      getTeamTournamentCurrentRound(eventId);
+
+    const authParticipantKey =
+      getEventParticipantKey(event, auth.user);
+
+    const requestedPlayer =
+      getTeamTournamentString(params.player);
+
+    const targetKey =
+      requestedPlayer !== ""
+        ? requestedPlayer
+        : authParticipantKey;
+
+    const registration =
+      findTeamTournamentRegistrationForPlayer(
+        registrations,
+        targetKey
+      );
+
+    const registrationCandidates =
+      registration
+        ? []
+        : rawRegistrations.slice(0, 50).map(function(registration) {
+            return {
+              player: registration.player,
+              displayName: registration.displayName,
+              email: registration.email,
+              status: registration.status,
+              eventId: registration.eventId,
+              normalized: {
+                player: normalizeTeamTournamentPlayerKey(registration.player),
+                displayName: normalizeTeamTournamentPlayerKey(registration.displayName),
+                email: normalizeTeamTournamentPlayerKey(registration.email)
+              }
+            };
+          });
+
+    const player =
+      registration
+        ? getTeamTournamentString(registration.player) ||
+          getTeamTournamentString(registration.displayName)
+        : "";
+
+    const teamName =
+      registration
+        ? getTeamTournamentString(registration.team) ||
+          getTeamTournamentString(registration.preferredTeam)
+        : "";
+
+    const currentRoundId =
+      getTeamTournamentRoundValue(currentRound, "roundId") ||
+      getTeamTournamentRoundValue(currentRound, "id");
+
+    const teamMatches =
+      teamName !== ""
+        ? teams.filter(function(team) {
+            return teamTournamentSameValue(team.teamName, teamName);
+          })
+        : [];
+
+    const pairingsForTeam =
+      teamName !== ""
+        ? pairings.filter(function(pairing) {
+            return (
+              teamTournamentSameValue(pairing.teamA, teamName) ||
+              teamTournamentSameValue(pairing.teamB, teamName)
+            );
+          })
+        : [];
+
+    const currentRoundPairingsForTeam =
+      teamName !== ""
+        ? pairingsForTeam.filter(function(pairing) {
+            return (
+              currentRoundId === "" ||
+              getTeamTournamentString(pairing.roundId) === currentRoundId
+            );
+          })
+        : [];
+
+    const activePairingsForTeam =
+      currentRoundPairingsForTeam.filter(function(pairing) {
+        return getTeamTournamentString(pairing.status).toLowerCase() !== "completed";
+      });
+
+    const assignment =
+      registration
+        ? resolveTeamTournamentResultAssignment(
+            event,
+            currentRound,
+            registration,
+            pairings,
+            params
+          )
+        : null;
+
+    let failure = "";
+
+    if (!registration) {
+      failure =
+        "Registration lookup failed for participant key: '" +
+        targetKey +
+        "'.";
+    }
+    else if (teamName === "") {
+      failure =
+        "Registration found but no Team is assigned for this player.";
+    }
+    else if (pairingsForTeam.length === 0) {
+      failure =
+        "No published pairing contains team '" +
+        teamName +
+        "'.";
+    }
+    else if (currentRoundPairingsForTeam.length === 0) {
+      failure =
+        "Published pairings contain team '" +
+        teamName +
+        "', but none are in the current round '" +
+        (currentRound ? getTeamTournamentString(currentRound.round) || getTeamTournamentRoundValue(currentRound, "name") : "") +
+        "'.";
+    }
+    else if (activePairingsForTeam.length === 0) {
+      failure =
+        "Pairings were found for team '" +
+        teamName +
+        "' in the current round, but none are active (all are completed).";
+    }
+    else if (!assignment) {
+      failure =
+        "Active pairing found for team '" +
+        teamName +
+        "' but player '" +
+        player +
+        "' did not match any published pairing assignment.";
+    }
+    else {
+      failure = "No failure; assignment resolved.";
+    }
+
+    return jsonOutput({
+      success: true,
+      diagnostic: {
+        eventId: eventId,
+        currentRound: {
+          roundId: currentRoundId,
+          round: getTeamTournamentString(currentRound && currentRound.round) ||
+            getTeamTournamentRoundValue(currentRound, "name") ||
+            ""
+        },
+        auth: {
+          email: getTeamTournamentString(auth.user && auth.user.email),
+          displayName: getTeamTournamentString(auth.user && auth.user.displayName),
+          leaguePlayer: getTeamTournamentString(auth.user && auth.user.leaguePlayer),
+          participantKey: authParticipantKey
+        },
+        query: {
+          requestedPlayer: requestedPlayer,
+          targetKey: targetKey,
+          searchMode: requestedPlayer !== "" ? "requestedPlayer" : "authenticatedUser"
+        },
+        registration: registration,
+        registrationFound: !!registration,
+        registrationCandidates: registrationCandidates,
+        team: teamName,
+        teamFound: teamMatches.length > 0,
+        matchingTeams: teamMatches.map(function(team) {
+          return {
+            teamName: team.teamName,
+            captain: team.captain,
+            players: team.players,
+            status: team.status
+          };
+        }),
+        pairingSummary: {
+          allPairingsForTeam: pairingsForTeam.map(function(pairing) {
+            return {
+              roundId: pairing.roundId,
+              round: pairing.round,
+              teamA: pairing.teamA,
+              teamB: pairing.teamB,
+              status: pairing.status,
+              playerPairings: pairing.playerPairings
+            };
+          }),
+          currentRoundPairingsForTeam: currentRoundPairingsForTeam.map(function(pairing) {
+            return {
+              roundId: pairing.roundId,
+              round: pairing.round,
+              teamA: pairing.teamA,
+              teamB: pairing.teamB,
+              status: pairing.status,
+              playerPairings: pairing.playerPairings
+            };
+          }),
+          activePairingsForTeam: activePairingsForTeam.map(function(pairing) {
+            return {
+              roundId: pairing.roundId,
+              round: pairing.round,
+              teamA: pairing.teamA,
+              teamB: pairing.teamB,
+              status: pairing.status,
+              playerPairings: pairing.playerPairings
+            };
+          })
+        },
+        assignment: assignment,
+        failure: failure
+      }
+    });
+  }
+  );
 
 }
 
@@ -447,22 +700,6 @@ function getTeamTournamentRuntimeCacheKey(eventId) {
 
 }
 
-function invalidateTeamTournamentMetadataCaches() {
-
-  invalidatePortalCacheGroup("events");
-  invalidatePortalCacheGroup("standings");
-  invalidatePortalCacheGroup("analytics");
-  invalidatePortalCacheGroup("dashboard");
-
-}
-
-function invalidateTeamTournamentResultCaches() {
-
-    invalidateTeamTournamentMetadataCaches();
-  invalidatePortalCacheGroup("players");
-
-}
-
 function measureTeamTournamentOperation(stageName, operation, details) {
 
   const start =
@@ -557,7 +794,7 @@ function saveTeamTournamentTeam(e) {
       ]
     );
 
-    invalidateTeamTournamentMetadataCaches();
+    invalidatePortalCacheGroup("events");
 
     return buildTeamTournamentMutationResponse(
       "team",
@@ -583,41 +820,16 @@ function saveTeamTournamentPairing(e) {
       getTeamTournamentString(params.roundId) ||
       EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ROUND_ID;
 
-    const teams =
-      getTeamTournamentTeams(eventId);
+    const teamA =
+      getTeamTournamentString(params.teamA);
 
-    const teamAIdentity =
-      resolveTeamTournamentTeamIdentity(
-        teams,
-        getTeamTournamentString(params.teamAId),
-        getTeamTournamentString(params.teamA)
-      );
+    const teamB =
+      getTeamTournamentString(params.teamB);
 
-    const teamBIdentity =
-      resolveTeamTournamentTeamIdentity(
-        teams,
-        getTeamTournamentString(params.teamBId),
-        getTeamTournamentString(params.teamB)
-      );
-
-    if (teamAIdentity.teamId === "" || teamBIdentity.teamId === "")
+    if (teamA === "" || teamB === "")
       return jsonOutput({
         success: false,
-        error: "Both teams must be selected from the Team Registry."
-      });
-
-    const structuredPairings =
-      buildTeamTournamentStructuredPlayerPairings(
-        params,
-        teamAIdentity,
-        teamBIdentity,
-        teams
-      );
-
-    if (!structuredPairings.valid)
-      return jsonOutput({
-        success: false,
-        error: structuredPairings.errors.join(" ")
+        error: "Both teams are required."
       });
 
     const sheet =
@@ -626,16 +838,30 @@ function saveTeamTournamentPairing(e) {
     const timestamp =
       getTeamTournamentTimestamp();
 
+    const existingPairings =
+      getTeamTournamentPairings(eventId);
+
+    const existingPairing =
+      existingPairings.find(function(pairing) {
+        return (
+          getTeamTournamentString(pairing.roundId) === roundId &&
+          getTeamTournamentString(pairing.teamA).toLowerCase() === teamA.toLowerCase() &&
+          getTeamTournamentString(pairing.teamB).toLowerCase() === teamB.toLowerCase()
+        );
+      });
+
+    const playerPairings =
+      getTeamTournamentString(params.playerPairings) ||
+      (existingPairing ? getTeamTournamentString(existingPairing.playerPairings) : "");
+
     const pairing =
       {
         eventId: eventId,
         roundId: roundId,
         round: getTeamTournamentString(params.round) || "Round 1",
-        teamA: teamAIdentity.teamName,
-        teamB: teamBIdentity.teamName,
-        teamAId: teamAIdentity.teamId,
-        teamBId: teamBIdentity.teamId,
-        playerPairings: structuredPairings.playerPairings,
+        teamA: teamA,
+        teamB: teamB,
+        playerPairings: playerPairings,
         status: getTeamTournamentString(params.status) || "Scheduled",
         results: getTeamTournamentString(params.results),
         createdAt: timestamp,
@@ -648,14 +874,14 @@ function saveTeamTournamentPairing(e) {
       [
         "Event ID",
         "Round ID",
-        "Team A ID",
-        "Team B ID"
+        "Team A",
+        "Team B"
       ],
       [
         eventId,
         roundId,
-        pairing.teamAId,
-        pairing.teamBId
+        teamA,
+        teamB
       ],
       [
         pairing.eventId,
@@ -667,13 +893,11 @@ function saveTeamTournamentPairing(e) {
         pairing.status,
         pairing.results,
         pairing.createdAt,
-        pairing.updatedAt,
-        pairing.teamAId,
-        pairing.teamBId
+        pairing.updatedAt
       ]
     );
 
-    invalidateTeamTournamentMetadataCaches();
+    invalidatePortalCacheGroup("events");
 
     return buildTeamTournamentMutationResponse(
       "pairing",
@@ -695,23 +919,16 @@ function saveTeamTournamentInvitation(e) {
     const eventId =
       resolveEventId(params.eventId || EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID);
 
-    const teams =
-      getTeamTournamentTeams(eventId);
-
-    const teamIdentity =
-      resolveTeamTournamentTeamIdentity(
-        teams,
-        getTeamTournamentString(params.teamId),
-        getTeamTournamentString(params.teamName)
-      );
+    const teamName =
+      getTeamTournamentString(params.teamName);
 
     const player =
       getTeamTournamentString(params.player);
 
-    if (teamIdentity.teamId === "" || player === "")
+    if (teamName === "" || player === "")
       return jsonOutput({
         success: false,
-        error: "A Team Registry team and player are required."
+        error: "Team and player are required."
       });
 
     const invitationId =
@@ -725,8 +942,7 @@ function saveTeamTournamentInvitation(e) {
       {
         eventId: eventId,
         invitationId: invitationId,
-        teamId: teamIdentity.teamId,
-        teamName: teamIdentity.teamName,
+        teamName: teamName,
         captain:
           getTeamTournamentString(params.captain) ||
           (auth && auth.user ? getCanonicalPlayerFromUser(auth.user) : "Commissioner"),
@@ -757,12 +973,11 @@ function saveTeamTournamentInvitation(e) {
         invitation.status,
         invitation.message,
         invitation.createdAt,
-        invitation.updatedAt,
-        invitation.teamId
+        invitation.updatedAt
       ]
     );
 
-    invalidateTeamTournamentMetadataCaches();
+    invalidatePortalCacheGroup("events");
 
     return buildTeamTournamentMutationResponse(
       "invitation",
@@ -818,28 +1033,20 @@ function saveTeamTournamentResult(e) {
       ? getTeamTournamentString(params.player)
       : "";
 
-  const rawRegistration =
+  const registration =
     commissionerContext.enabled && selectedPlayer !== ""
       ? getEventRegistrationForPlayer(eventId, selectedPlayer)
-      : getEventRegistrationForUser(event, auth.user);
+      : getEventRegistrationForPlayer(
+          eventId,
+          getEventParticipantKey(event, auth.user)
+        );
 
-  if ((!rawRegistration || rawRegistration.status === "Withdrawn") &&
+  if ((!registration || registration.status === "Withdrawn") &&
       !commissionerContext.override)
     return jsonOutput({
       success: false,
       error: "You must be registered for this Team Tournament before submitting a result."
     });
-
-  const teams =
-    getTeamTournamentTeams(eventId);
-
-  const registration =
-    rawRegistration
-      ? resolveTeamTournamentRegistrationMembership(
-          [rawRegistration],
-          teams
-        )[0]
-      : null;
 
   const currentRound =
     getTeamTournamentCurrentRound(eventId);
@@ -851,10 +1058,7 @@ function saveTeamTournamentResult(e) {
     });
 
   const pairings =
-    resolveTeamTournamentPairings(
-      getTeamTournamentPairings(eventId),
-      teams
-    );
+    getTeamTournamentPairings(eventId);
 
   let assignment =
     registration
@@ -891,10 +1095,7 @@ function saveTeamTournamentResult(e) {
     });
 
   const results =
-    resolveTeamTournamentResults(
-      getTeamTournamentResults(eventId),
-      teams
-    );
+    getTeamTournamentResults(eventId);
 
   if (!commissionerContext.override &&
       hasSubmittedTeamTournamentResult(results, assignment))
@@ -918,8 +1119,6 @@ function saveTeamTournamentResult(e) {
       round: assignment.round,
       teamA: assignment.teamA,
       teamB: assignment.teamB,
-      teamAId: assignment.teamAId,
-      teamBId: assignment.teamBId,
       player: assignment.player,
       opponent: assignment.opponent,
       tournamentPoints: getTeamTournamentString(params.tournamentPoints),
@@ -938,9 +1137,7 @@ function saveTeamTournamentResult(e) {
       updatedAt: timestamp,
       table: assignment.table,
       mission: assignment.mission,
-      winner: getTeamTournamentString(params.winner),
-      player1ArmyCode: getTeamTournamentString(params.player1ArmyCode),
-      player2ArmyCode: getTeamTournamentString(params.player2ArmyCode)
+      winner: getTeamTournamentString(params.winner)
     };
 
   upsertTeamTournamentCompositeRow(
@@ -976,11 +1173,7 @@ function saveTeamTournamentResult(e) {
       result.updatedAt,
       result.table,
       result.mission,
-      result.winner,
-      result.player1ArmyCode,
-      result.player2ArmyCode,
-      result.teamAId,
-      result.teamBId
+      result.winner
     ]
   );
 
@@ -997,14 +1190,7 @@ function saveTeamTournamentResult(e) {
       }
     );
 
-  persistTeamTournamentCanonicalGame(result, event);
-
-  if (typeof publishGameSubmittedAutomationEvent === "function")
-    publishGameSubmittedAutomationEvent(
-      buildTeamTournamentSubmittedGamePayload(event, result)
-    );
-
-  invalidateTeamTournamentResultCaches();
+  invalidatePortalCacheGroup("events");
 
   return buildTeamTournamentMutationResponse(
     "result",
@@ -1036,7 +1222,7 @@ function advanceTeamTournamentRound(e) {
       "Status": status
     });
 
-  invalidateTeamTournamentMetadataCaches();
+    invalidatePortalCacheGroup("events");
 
     return buildTeamTournamentMutationResponse(
       "round",
@@ -1067,13 +1253,24 @@ function buildTeamTournamentMutationResponse(kind, eventId, payload) {
 
 function buildTeamTournamentStandings(eventId, teams, tournamentResults, recentGames) {
 
+  const games =
+    recentGames || getAllRecentGameObjectsForEvent(eventId);
+
   const results =
-    resolveTeamTournamentResults(tournamentResults || [], teams);
+    tournamentResults || [];
 
   return teams
     .map(function(team) {
       const players =
         splitTeamTournamentPlayers(team.players);
+
+      const teamGames =
+        games.filter(function(game) {
+          return (
+            players.indexOf(game.winner) !== -1 ||
+            players.indexOf(game.loser) !== -1
+          );
+        });
 
       let wins = 0;
       let losses = 0;
@@ -1082,14 +1279,52 @@ function buildTeamTournamentStandings(eventId, teams, tournamentResults, recentG
       let op = 0;
       let vp = 0;
 
+      teamGames.forEach(function(game) {
+        const isDraw =
+          getTeamTournamentString(game.gameResult).toLowerCase() === "draw" ||
+          (
+            teamTournamentScoreIsDraw(game.tp) &&
+            teamTournamentScoreIsDraw(game.op) &&
+            teamTournamentScoreIsDraw(game.vp)
+          );
+        const winnerOnTeam =
+          players.indexOf(game.winner) !== -1;
+
+        const score =
+          parseTeamTournamentScore(game.tp);
+        const objective =
+          parseTeamTournamentScore(game.op);
+        const victory =
+          parseTeamTournamentScore(game.vp);
+
+        if (isDraw) {
+          draws++;
+          tp += score.left;
+          op += objective.left;
+          vp += victory.left;
+        }
+        else if (winnerOnTeam) {
+          wins++;
+          tp += score.left;
+          op += objective.left;
+          vp += victory.left;
+        }
+        else {
+          losses++;
+          tp += score.right;
+          op += objective.right;
+          vp += victory.right;
+        }
+      });
+
       results
         .filter(function(result) {
-          return isAcceptedTeamTournamentResult(result) &&
-            (result.teamAId === team.teamId || result.teamBId === team.teamId);
+          return result.status !== "Rejected" &&
+            (result.teamA === team.teamName || result.teamB === team.teamName);
         })
         .forEach(function(result) {
           const teamIsA =
-            result.teamAId === team.teamId;
+            result.teamA === team.teamName;
 
           const score =
             parseTeamTournamentScore(result.tournamentPoints);
@@ -1153,266 +1388,10 @@ function buildTeamTournamentStandings(eventId, teams, tournamentResults, recentG
 
 }
 
-function persistTeamTournamentCanonicalGame(result, event) {
-
-  if (typeof appendCanonicalGameSubmissionRecord !== "function")
-    throw new Error("Canonical game submission writer is unavailable.");
-
-  const canonicalRecord =
-    buildTeamTournamentCanonicalGameRecord(result, event);
-
-  appendCanonicalGameSubmissionRecord(canonicalRecord);
-
-  if (typeof rebuildGameEngine === "function")
-    rebuildGameEngine();
-
-}
-
-function buildTeamTournamentCanonicalGameRecord(result, event) {
-
-  const tournamentPoints =
-    parseTeamTournamentScore(result.tournamentPoints);
-
-  const objectivePoints =
-    parseTeamTournamentScore(result.objectivePoints);
-
-  const victoryPoints =
-    parseTeamTournamentScore(result.victoryPoints);
-
-  const player1Faction =
-    getTeamTournamentArmyCodeFaction(result.player1ArmyCode);
-
-  const player2Faction =
-    getTeamTournamentArmyCodeFaction(result.player2ArmyCode);
-
-  const gameResult =
-    getTeamTournamentCanonicalGameResult(result);
-
-  const player1Wins =
-    gameResult === "Player 1 Victory";
-
-  const player2Wins =
-    gameResult === "Player 2 Victory";
-
-  return {
-    sourceType: "teamTournamentResult",
-    sourceResultId: result.resultId,
-    timestamp: result.createdAt || result.updatedAt,
-    division:
-      result.teamA && result.teamB
-        ? result.teamA + " vs " + result.teamB
-        : getTeamTournamentString(event && event.name) || "Team Tournament",
-    date: result.updatedAt || result.createdAt,
-    mission: result.mission,
-    player1: result.player,
-    player2: result.opponent,
-    player1Tp: tournamentPoints.left,
-    player2Tp: tournamentPoints.right,
-    player1Op: objectivePoints.left,
-    player2Op: objectivePoints.right,
-    player1Vp: victoryPoints.left,
-    player2Vp: victoryPoints.right,
-    firstTurn: result.firstTurn,
-    winningFaction:
-      player2Wins
-        ? player2Faction
-        : player1Faction,
-    losingFaction:
-      player1Wins || gameResult === "Draw"
-        ? player2Faction
-        : player1Faction,
-    bestMoment: result.bestMoment,
-    eventId: result.eventId,
-    gameType: "tournament",
-    gameResult: gameResult,
-    player1ArmyCode: result.player1ArmyCode,
-    player2ArmyCode: result.player2ArmyCode
-  };
-
-}
-
-function getTeamTournamentCanonicalGameResult(result) {
-
-  const winner =
-    getTeamTournamentString(result.winner);
-
-  if (winner === "" || winner.toLowerCase() === "draw")
-    return "Draw";
-
-  if (teamTournamentSameValue(winner, result.player))
-    return "Player 1 Victory";
-
-  if (teamTournamentSameValue(winner, result.opponent))
-    return "Player 2 Victory";
-
-  return "Draw";
-
-}
-
-function getTeamTournamentArmyCodeFaction(armyCode) {
-
-  if (typeof decodeArmyCode !== "function")
-    return "";
-
-  const decoded =
-    decodeArmyCode(armyCode);
-
-  if (!decoded || !decoded.valid)
-    return "";
-
-  return canonicalizeArmyName(
-    decoded.sectorial ||
-    decoded.faction ||
-    decoded.derived &&
-    (
-      decoded.derived.sectorial ||
-      decoded.derived.faction
-    )
-  );
-
-}
-
-function isAcceptedTeamTournamentResult(result) {
-
-  return getTeamTournamentString(result.status).toLowerCase() !== "rejected";
-
-}
-
-function buildTeamTournamentLatestResults(results) {
-
-  return (results || [])
-    .filter(isAcceptedTeamTournamentResult)
-    .map(function(result, index) {
-      return buildTeamTournamentSubmittedGamePayload(null, result, index + 1);
-    })
-    .sort(function(left, right) {
-      return getTeamTournamentString(right.sortDate)
-        .localeCompare(getTeamTournamentString(left.sortDate));
-    });
-
-}
-
-function buildTeamTournamentSubmittedGamePayload(event, result, index) {
-
-  const teamA =
-    getTeamTournamentString(result.teamA);
-
-  const teamB =
-    getTeamTournamentString(result.teamB);
-
-  const division =
-    teamA && teamB
-      ? teamA + " vs " + teamB
-      : getTeamTournamentString(event && event.name) || "Team Tournament";
-
-  return {
-    id: result.resultId || index || "",
-    sourceIndex: index || 0,
-    sortDate: result.updatedAt || result.createdAt || "",
-    date: result.updatedAt || result.createdAt || "",
-    division: division,
-    eventId:
-      result.eventId ||
-      getTeamTournamentString(event && event.id),
-    eventName:
-      getTeamTournamentString(event && event.name),
-    gameType: "tournament",
-    gameResult: result.winner,
-    winner: result.player,
-    loser: result.opponent,
-    winnerDisplayName: result.player,
-    loserDisplayName: result.opponent,
-    winnerFaction: result.winningFaction,
-    loserFaction: "",
-    mission: result.mission,
-    tp: result.tournamentPoints,
-    op: result.objectivePoints,
-    vp: result.victoryPoints,
-    bestMoment: result.bestMoment,
-    firstTurn: result.firstTurn,
-    winnerArmyCode: result.player1ArmyCode,
-    loserArmyCode: result.player2ArmyCode,
-    teamAId: result.teamAId,
-    teamBId: result.teamBId,
-    teamAName: teamA,
-    teamBName: teamB,
-    summary:
-      "Team Tournament result submitted: " +
-      division +
-      " - " +
-      result.player +
-      " vs " +
-      result.opponent +
-      " on " +
-      result.mission +
-      "."
-  };
-
-}
-
-function getAllTeamTournamentRecentGameObjects() {
-
-  const eventIds = {};
-
-  const canonicalSourceIds =
-    typeof getCanonicalGameSubmissionSourceIds === "function"
-      ? getCanonicalGameSubmissionSourceIds("teamTournamentResult")
-      : {};
-
-  getTeamTournamentRows(
-    getTeamTournamentRuntimeSheet(CONFIG.SHEETS.TEAM_TOURNAMENT_RESULTS)
-  ).forEach(function(row) {
-    const eventId =
-      getTeamTournamentString(row["Event ID"]);
-
-    if (eventId !== "")
-      eventIds[eventId] = true;
-  });
-
-  return Object.keys(eventIds)
-    .flatMap(function(eventId) {
-      const event =
-        getEventByIdSnapshot(eventId) ||
-        getEventByIdSnapshot(EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID);
-
-      const teams =
-        getTeamTournamentTeams(eventId);
-
-      const results =
-        resolveTeamTournamentResults(
-          getTeamTournamentResults(eventId),
-          teams
-        );
-
-      return buildTeamTournamentLatestResults(results)
-        .filter(function(game) {
-          return !canonicalSourceIds[getTeamTournamentString(game.id)];
-        })
-        .map(function(game) {
-          return Object.assign({}, game, {
-            eventName:
-              getTeamTournamentString(event && event.name)
-          });
-        });
-    })
-    .sort(function(left, right) {
-      const dateOrder =
-        new Date(right.date).getTime() -
-        new Date(left.date).getTime();
-
-      if (Number.isFinite(dateOrder) && dateOrder !== 0)
-        return dateOrder;
-
-      return getTeamTournamentString(right.id)
-        .localeCompare(getTeamTournamentString(left.id));
-    });
-
-}
-
 function findTeamTournamentRegistrationForPlayer(registrations, player) {
 
   const target =
-    getTeamTournamentString(player).toLowerCase();
+    normalizeTeamTournamentPlayerKey(player);
 
   if (target === "")
     return null;
@@ -1421,29 +1400,11 @@ function findTeamTournamentRegistrationForPlayer(registrations, player) {
     const registration =
       registrations[index];
 
-    if (getTeamTournamentString(registration.player).toLowerCase() === target)
-      return registration;
-  }
-
-  return null;
-
-}
-
-function findTeamTournamentRegistrationForUser(event, registrations, user) {
-
-  const candidates =
-    typeof getEventParticipantIdentityCandidates === "function"
-      ? getEventParticipantIdentityCandidates(event, user)
-      : [getEventParticipantKey(event, user)];
-
-  for (let index = 0; index < candidates.length; index++) {
-    const registration =
-      findTeamTournamentRegistrationForPlayer(
-        registrations,
-        candidates[index]
-      );
-
-    if (registration)
+    if (
+      normalizeTeamTournamentPlayerKey(registration.player) === target ||
+      normalizeTeamTournamentPlayerKey(registration.displayName) === target ||
+      normalizeTeamTournamentPlayerKey(registration.email) === target
+    )
       return registration;
   }
 
@@ -1457,7 +1418,7 @@ function resolveTeamTournamentRegistrationMembership(registrations, teams) {
     buildTeamTournamentMembershipLookup(teams);
 
   return registrations.map(function(registration) {
-    const teamIdentity =
+    const teamName =
       findTeamTournamentMembership(
         membership,
         registration.player,
@@ -1467,13 +1428,11 @@ function resolveTeamTournamentRegistrationMembership(registrations, teams) {
     const copy =
       Object.assign({}, registration);
 
-    if (teamIdentity.teamId !== "") {
-      copy.teamId = teamIdentity.teamId;
-      copy.team = teamIdentity.teamName;
-      copy.preferredTeam = teamIdentity.teamName;
+    if (teamName !== "") {
+      copy.team = teamName;
+      copy.preferredTeam = teamName;
       copy.freeAgent = false;
     } else {
-      copy.teamId = "";
       copy.team = "";
       copy.preferredTeam = "";
       copy.freeAgent = true;
@@ -1493,10 +1452,8 @@ function buildTeamTournamentMembershipLookup(teams) {
       return getTeamTournamentString(team.status) !== "Deleted";
     })
     .forEach(function(team) {
-      const teamIdentity = {
-        teamId: getTeamTournamentString(team.teamId),
-        teamName: getTeamTournamentString(team.teamName)
-      };
+      const teamName =
+        getTeamTournamentString(team.teamName);
 
       [
         team.captain
@@ -1507,7 +1464,7 @@ function buildTeamTournamentMembershipLookup(teams) {
           normalizeTeamTournamentPlayerKey(player);
 
         if (key !== "")
-          lookup[key] = teamIdentity;
+          lookup[key] = teamName;
       });
     });
 
@@ -1535,343 +1492,7 @@ function findTeamTournamentMembership(membership, player, displayName) {
   )
     return membership[displayNameKey];
 
-  return {
-    teamId: "",
-    teamName: ""
-  };
-
-}
-
-function resolveTeamTournamentPairings(pairings, teams) {
-
-  return (pairings || []).map(function(pairing) {
-    let teamA =
-      resolveTeamTournamentTeamIdentity(teams, pairing.teamAId, pairing.teamA);
-    let teamB =
-      resolveTeamTournamentTeamIdentity(teams, pairing.teamBId, pairing.teamB);
-    const inferred =
-      inferTeamTournamentPairingIdentities(pairing, teams);
-
-    if (teamA.teamId === "" && inferred.teamA.teamId !== "")
-      teamA = inferred.teamA;
-
-    if (teamB.teamId === "" && inferred.teamB.teamId !== "")
-      teamB = inferred.teamB;
-
-    return Object.assign({}, pairing, {
-      teamAId: teamA.teamId,
-      teamBId: teamB.teamId,
-      teamA: teamA.teamName || getTeamTournamentString(pairing.teamA),
-      teamB: teamB.teamName || getTeamTournamentString(pairing.teamB)
-    });
-  });
-
-}
-
-function resolveTeamTournamentInvitations(invitations, teams) {
-
-  return (invitations || []).map(function(invitation) {
-    const team =
-      resolveTeamTournamentTeamIdentity(teams, invitation.teamId, invitation.teamName);
-
-    return Object.assign({}, invitation, {
-      teamId: team.teamId,
-      teamName: team.teamName || getTeamTournamentString(invitation.teamName)
-    });
-  });
-
-}
-
-function resolveTeamTournamentResults(results, teams) {
-
-  return (results || []).map(function(result) {
-    let teamA =
-      resolveTeamTournamentTeamIdentity(teams, result.teamAId, result.teamA);
-    let teamB =
-      resolveTeamTournamentTeamIdentity(teams, result.teamBId, result.teamB);
-    const inferred =
-      inferTeamTournamentResultIdentities(result, teams);
-
-    if (teamA.teamId === "" && inferred.teamA.teamId !== "")
-      teamA = inferred.teamA;
-
-    if (teamB.teamId === "" && inferred.teamB.teamId !== "")
-      teamB = inferred.teamB;
-
-    return Object.assign({}, result, {
-      teamAId: teamA.teamId,
-      teamBId: teamB.teamId,
-      teamA: teamA.teamName || getTeamTournamentString(result.teamA),
-      teamB: teamB.teamName || getTeamTournamentString(result.teamB)
-    });
-  });
-
-}
-
-function inferTeamTournamentPairingIdentities(pairing, teams) {
-
-  const assignments =
-    parseTeamTournamentPlayerPairings(pairing);
-
-  const membership =
-    buildTeamTournamentMembershipLookup(teams);
-
-  return {
-    teamA: getOnlyTeamTournamentIdentity(
-      assignments.map(function(assignment) {
-        return findTeamTournamentMembership(membership, assignment.player, "");
-      })
-    ),
-    teamB: getOnlyTeamTournamentIdentity(
-      assignments.map(function(assignment) {
-        return findTeamTournamentMembership(membership, assignment.opponent, "");
-      })
-    )
-  };
-
-}
-
-function inferTeamTournamentResultIdentities(result, teams) {
-
-  const membership =
-    buildTeamTournamentMembershipLookup(teams);
-
-  return {
-    teamA: findTeamTournamentMembership(membership, result.player, ""),
-    teamB: findTeamTournamentMembership(membership, result.opponent, "")
-  };
-
-}
-
-function getOnlyTeamTournamentIdentity(identities) {
-
-  const seen = {};
-  let selected = {
-    teamId: "",
-    teamName: ""
-  };
-
-  (identities || []).forEach(function(identity) {
-    if (!identity || identity.teamId === "")
-      return;
-
-    seen[identity.teamId] = identity;
-    selected = identity;
-  });
-
-  return Object.keys(seen).length === 1
-    ? selected
-    : {
-        teamId: "",
-        teamName: ""
-      };
-
-}
-
-function resolveTeamTournamentTeamIdentity(teams, teamId, teamName) {
-
-  const id =
-    getTeamTournamentString(teamId);
-
-  const name =
-    getTeamTournamentString(teamName);
-
-  if (id !== "") {
-    const byId =
-      (teams || []).filter(function(team) {
-        return getTeamTournamentString(team.teamId) === id;
-      })[0];
-
-    if (byId)
-      return {
-        teamId: getTeamTournamentString(byId.teamId),
-        teamName: getTeamTournamentString(byId.teamName)
-      };
-  }
-
-  if (name !== "") {
-    const key =
-      name.toLowerCase();
-
-    const matches =
-      (teams || []).filter(function(team) {
-        return getTeamTournamentString(team.teamName).toLowerCase() === key;
-      });
-
-    if (matches.length === 1)
-      return {
-        teamId: getTeamTournamentString(matches[0].teamId),
-        teamName: getTeamTournamentString(matches[0].teamName)
-      };
-  }
-
-  return {
-    teamId: "",
-    teamName: name
-  };
-
-}
-
-function buildTeamTournamentStructuredPlayerPairings(params, teamAIdentity, teamBIdentity, teams) {
-
-  const tableCount = 5;
-  const errors = [];
-  const teamA =
-    findTeamTournamentTeamById(teams, teamAIdentity.teamId);
-  const teamB =
-    findTeamTournamentTeamById(teams, teamBIdentity.teamId);
-  const teamARoster =
-    getTeamTournamentTeamRoster(teamA);
-  const teamBRoster =
-    getTeamTournamentTeamRoster(teamB);
-  const teamASelections = {};
-  const teamBSelections = {};
-  const rows = [];
-
-  if (!teamA)
-    errors.push(teamAIdentity.teamName + " could not be loaded from the Team Registry.");
-
-  if (!teamB)
-    errors.push(teamBIdentity.teamName + " could not be loaded from the Team Registry.");
-
-  if (teamAIdentity.teamId === teamBIdentity.teamId)
-    errors.push("Select two different teams.");
-
-  if (teamA && teamARoster.length !== tableCount)
-    errors.push(teamAIdentity.teamName + " must have five rostered players.");
-
-  if (teamB && teamBRoster.length !== tableCount)
-    errors.push(teamBIdentity.teamName + " must have five rostered players.");
-
-  for (let index = 1; index <= tableCount; index++) {
-    const submittedA =
-      getTeamTournamentString(params["teamAPlayer" + index]);
-    const submittedB =
-      getTeamTournamentString(params["teamBPlayer" + index]);
-    const playerA =
-      resolveTeamTournamentRosterPlayer(teamARoster, submittedA);
-    const playerB =
-      resolveTeamTournamentRosterPlayer(teamBRoster, submittedB);
-
-    if (submittedA === "" || submittedB === "") {
-      errors.push("Table " + index + " is incomplete.");
-    } else {
-      if (playerA === "")
-        errors.push(submittedA + " is not on " + teamAIdentity.teamName + ".");
-
-      if (playerB === "")
-        errors.push(submittedB + " is not on " + teamBIdentity.teamName + ".");
-
-      if (
-        normalizeTeamTournamentPlayerKey(submittedA) !== "" &&
-        normalizeTeamTournamentPlayerKey(submittedA) === normalizeTeamTournamentPlayerKey(submittedB)
-      )
-        errors.push("Table " + index + " pairs " + submittedA + " against themselves.");
-    }
-
-    if (playerA !== "") {
-      const keyA =
-        normalizeTeamTournamentPlayerKey(playerA);
-
-      if (teamASelections[keyA])
-        errors.push(teamAIdentity.teamName + " lists " + playerA + " more than once.");
-
-      teamASelections[keyA] = playerA;
-    }
-
-    if (playerB !== "") {
-      const keyB =
-        normalizeTeamTournamentPlayerKey(playerB);
-
-      if (teamBSelections[keyB])
-        errors.push(teamBIdentity.teamName + " lists " + playerB + " more than once.");
-
-      teamBSelections[keyB] = playerB;
-    }
-
-    rows.push({
-      table: index,
-      teamAPlayer: playerA || submittedA,
-      teamBPlayer: playerB || submittedB
-    });
-  }
-
-  teamARoster.forEach(function(player) {
-    if (!teamASelections[normalizeTeamTournamentPlayerKey(player)])
-      errors.push(teamAIdentity.teamName + " missing " + player + ".");
-  });
-
-  teamBRoster.forEach(function(player) {
-    if (!teamBSelections[normalizeTeamTournamentPlayerKey(player)])
-      errors.push(teamBIdentity.teamName + " missing " + player + ".");
-  });
-
-  if (errors.length > 0)
-    return {
-      valid: false,
-      errors: errors,
-      playerPairings: ""
-    };
-
-  return {
-    valid: true,
-    errors: [],
-    playerPairings:
-      rows
-        .map(function(row) {
-          return "Table " + row.table + ": " + row.teamAPlayer + " vs " + row.teamBPlayer;
-        })
-        .join("\n")
-  };
-
-}
-
-function findTeamTournamentTeamById(teams, teamId) {
-
-  const id =
-    getTeamTournamentString(teamId);
-
-  return (teams || []).filter(function(team) {
-    return getTeamTournamentString(team.teamId) === id;
-  })[0] || null;
-
-}
-
-function getTeamTournamentTeamRoster(team) {
-
-  if (!team)
-    return [];
-
-  const seen = {};
-
-  return [
-    team.captain
-  ].concat(
-    parseTeamTournamentRoster(team.players)
-  ).filter(function(player) {
-    const key =
-      normalizeTeamTournamentPlayerKey(player);
-
-    if (key === "" || seen[key])
-      return false;
-
-    seen[key] = true;
-    return true;
-  });
-
-}
-
-function resolveTeamTournamentRosterPlayer(roster, player) {
-
-  const key =
-    normalizeTeamTournamentPlayerKey(player);
-
-  if (key === "")
-    return "";
-
-  return (roster || []).filter(function(candidate) {
-    return normalizeTeamTournamentPlayerKey(candidate) === key;
-  })[0] || "";
+  return "";
 
 }
 
@@ -1933,8 +1554,6 @@ function getTeamTournamentPairings(eventId, sheet) {
       round: row["Round"],
       teamA: row["Team A"],
       teamB: row["Team B"],
-      teamAId: row["Team A ID"],
-      teamBId: row["Team B ID"],
       playerPairings: row["Player Pairings"],
       status: row["Status"],
       results: row["Results"],
@@ -1955,7 +1574,6 @@ function getTeamTournamentInvitations(eventId, sheet) {
     return {
       eventId: row["Event ID"],
       invitationId: row["Invitation ID"],
-      teamId: row["Team ID"],
       teamName: row["Team Name"],
       captain: row["Captain"],
       player: row["Player"],
@@ -1982,8 +1600,6 @@ function getTeamTournamentResults(eventId, sheet) {
       round: row["Round"],
       teamA: row["Team A"],
       teamB: row["Team B"],
-      teamAId: row["Team A ID"],
-      teamBId: row["Team B ID"],
       table: row["Table"],
       player: row["Player"],
       opponent: row["Opponent"],
@@ -1999,21 +1615,13 @@ function getTeamTournamentResults(eventId, sheet) {
       status: row["Status"],
       submittedBy: row["Submitted By"],
       createdAt: row["Created At"],
-      updatedAt: row["Updated At"],
-      player1ArmyCode: row["Player 1 Army Code"],
-      player2ArmyCode: row["Player 2 Army Code"]
+      updatedAt: row["Updated At"]
     };
   });
 
 }
 
 function getTeamTournamentCurrentRound(eventId) {
-
-  return getTeamTournamentRounds(eventId)[0] || null;
-
-}
-
-function getTeamTournamentRounds(eventId) {
 
   const rounds =
     getEventEngineSnapshot()
@@ -2022,7 +1630,7 @@ function getTeamTournamentRounds(eventId) {
         return round.eventId === eventId;
       });
 
-  return rounds;
+  return rounds[0] || null;
 
 }
 
@@ -2169,8 +1777,6 @@ function buildTeamTournamentResultStatuses(pairings, results) {
           roundId: pairing.roundId,
           teamA: pairing.teamA,
           teamB: pairing.teamB,
-          teamAId: pairing.teamAId,
-          teamBId: pairing.teamBId,
           player: "",
           opponent: ""
         });
@@ -2180,8 +1786,6 @@ function buildTeamTournamentResultStatuses(pairings, results) {
         round: pairing.round,
         teamA: pairing.teamA,
         teamB: pairing.teamB,
-        teamAId: pairing.teamAId,
-        teamBId: pairing.teamBId,
         table: "",
         player: "",
         opponent: "",
@@ -2200,8 +1804,6 @@ function buildTeamTournamentResultStatuses(pairings, results) {
         round: assignment.round,
         teamA: assignment.teamA,
         teamB: assignment.teamB,
-        teamAId: assignment.teamAId,
-        teamBId: assignment.teamBId,
         table: assignment.table,
         player: assignment.player,
         opponent: assignment.opponent,
@@ -2228,10 +1830,11 @@ function resolveTeamTournamentResultAssignment(
     getTeamTournamentString(registration.displayName) ||
     getTeamTournamentString(params.player);
 
-  const teamId =
-    getTeamTournamentString(registration.teamId);
+  const team =
+    getTeamTournamentString(registration.team) ||
+    getTeamTournamentString(registration.preferredTeam);
 
-  if (player === "" || teamId === "")
+  if (player === "" || team === "")
     return null;
 
   const currentRoundId =
@@ -2240,8 +1843,8 @@ function resolveTeamTournamentResultAssignment(
 
   const activePairings =
     pairings.filter(function(pairing) {
-      if (getTeamTournamentString(pairing.teamAId) !== teamId &&
-          getTeamTournamentString(pairing.teamBId) !== teamId)
+      if (!teamTournamentSameValue(pairing.teamA, team) &&
+          !teamTournamentSameValue(pairing.teamB, team))
         return false;
 
       if (currentRoundId !== "" &&
@@ -2269,8 +1872,6 @@ function resolveTeamTournamentResultAssignment(
           round: assignment.round,
           teamA: activePairings[index].teamA,
           teamB: activePairings[index].teamB,
-          teamAId: activePairings[index].teamAId,
-          teamBId: activePairings[index].teamBId,
           table: assignment.table,
           player: player,
           opponent: playerIsOpponent ? assignment.player : assignment.opponent,
@@ -2282,14 +1883,33 @@ function resolveTeamTournamentResultAssignment(
         };
       }
     }
+
+    const selectedOpponent =
+      getTeamTournamentString(params.opponent);
+
+    return {
+      roundId: getTeamTournamentString(activePairings[index].roundId),
+      round: getTeamTournamentString(activePairings[index].round) ||
+        getTeamTournamentRoundValue(currentRound, "name") ||
+        "",
+      teamA: activePairings[index].teamA,
+      teamB: activePairings[index].teamB,
+      table: "",
+      player: player,
+      opponent: selectedOpponent,
+      mission:
+        getTeamTournamentString(params.mission) ||
+        getTeamTournamentRoundValue(currentRound, "mission") ||
+        getTeamTournamentRoundValue(currentRound, "Mission") ||
+        getTeamTournamentRoundValue(currentRound, "name") ||
+        getTeamTournamentString(activePairings[index].round)
+    };
   }
 
   return null;
-
 }
-
 function validateTeamTournamentResultSubmission(params, assignment) {
-
+ 
   const issues = [];
   const winner =
     getTeamTournamentString(params.winner);
@@ -2299,13 +1919,13 @@ function validateTeamTournamentResultSubmission(params, assignment) {
     parseTeamTournamentSubmittedScore(params.objectivePoints);
   const victoryPoints =
     parseTeamTournamentSubmittedScore(params.victoryPoints);
-
-  if (assignment.opponent === "")
+  const submittedOpponent =
+    getTeamTournamentString(params.opponent);
+ 
+  if (assignment.opponent === "" && submittedOpponent === "")
     issues.push("Opponent could not be resolved from the published pairing.");
-
+ 
   [
-    ["teamAId", "teamAId", "Team ID"],
-    ["teamBId", "teamBId", "Opponent team ID"],
     ["roundId", "roundId", "Round"],
     ["teamA", "teamA", "Team"],
     ["teamB", "teamB", "Opponent team"],
@@ -2377,8 +1997,6 @@ function buildCommissionerTeamTournamentOverrideAssignment(
     round: round,
     teamA: getTeamTournamentString(params.teamA),
     teamB: getTeamTournamentString(params.teamB),
-    teamAId: getTeamTournamentString(params.teamAId),
-    teamBId: getTeamTournamentString(params.teamBId),
     table: getTeamTournamentString(params.table) || "Commissioner Override",
     player: player,
     opponent: opponent,
@@ -2424,19 +2042,13 @@ function findTeamTournamentResultForAssignment(results, assignment) {
 
     if (assignment.player === "" && assignment.opponent === "") {
       if (
-        getTeamTournamentString(assignment.teamAId) === "" ||
-        getTeamTournamentString(assignment.teamBId) === ""
-      )
-        continue;
-
-      if (
         (
-          getTeamTournamentString(result.teamAId) === getTeamTournamentString(assignment.teamAId) &&
-          getTeamTournamentString(result.teamBId) === getTeamTournamentString(assignment.teamBId)
+          teamTournamentSameValue(result.teamA, assignment.teamA) &&
+          teamTournamentSameValue(result.teamB, assignment.teamB)
         ) ||
         (
-          getTeamTournamentString(result.teamAId) === getTeamTournamentString(assignment.teamBId) &&
-          getTeamTournamentString(result.teamBId) === getTeamTournamentString(assignment.teamAId)
+          teamTournamentSameValue(result.teamA, assignment.teamB) &&
+          teamTournamentSameValue(result.teamB, assignment.teamA)
         )
       )
         return result;
@@ -2506,8 +2118,6 @@ function parseTeamTournamentPlayerPairingLine(pairing, line) {
     round: pairing.round,
     teamA: pairing.teamA,
     teamB: pairing.teamB,
-    teamAId: pairing.teamAId,
-    teamBId: pairing.teamBId,
     table: tableMatch ? tableMatch[1] : "",
     player: cleanTeamTournamentPlayerName(parts[0]),
     opponent: cleanTeamTournamentPlayerName(parts[1]),

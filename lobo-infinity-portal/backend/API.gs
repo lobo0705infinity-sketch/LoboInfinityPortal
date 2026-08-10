@@ -13,10 +13,247 @@ function createApiPipelineContext(action) {
       "api-" + Math.random().toString(36).slice(2),
     action: action,
     startTime: Date.now(),
+    currentStage: "requestReceived",
+    currentFunction: "",
+    authenticated: false,
+    userEmail: "",
     stageStarts: {},
     stages: {},
-    logs: []
+    logs: [],
+    functionStack: []
   };
+}
+
+function getApiForensicTimestamp() {
+  try {
+    return new Date().toISOString();
+  }
+  catch (err) {
+    return "";
+  }
+}
+
+function getApiForensicElapsed(startTime) {
+  try {
+    return startTime
+      ? Date.now() - startTime
+      : 0;
+  }
+  catch (err) {
+    return 0;
+  }
+}
+
+function recordApiForensicLog(fn, stage, status, startTime, details) {
+  try {
+    const elapsed =
+      getApiForensicElapsed(startTime);
+    const entry = {
+      requestId:
+        API_PIPELINE_CONTEXT && API_PIPELINE_CONTEXT.requestId
+          ? API_PIPELINE_CONTEXT.requestId
+          : "",
+      action:
+        API_PIPELINE_CONTEXT && API_PIPELINE_CONTEXT.action
+          ? API_PIPELINE_CONTEXT.action
+          : "",
+      functionName: fn || "",
+      stage: stage || "",
+      status: status || "",
+      elapsedTime: elapsed,
+      timestamp: getApiForensicTimestamp(),
+      details: details || {}
+    };
+
+    if (API_PIPELINE_CONTEXT) {
+      API_PIPELINE_CONTEXT.currentStage =
+        stage || API_PIPELINE_CONTEXT.currentStage || "";
+      API_PIPELINE_CONTEXT.currentFunction =
+        fn || API_PIPELINE_CONTEXT.currentFunction || "";
+
+      if (!API_PIPELINE_CONTEXT.logs)
+        API_PIPELINE_CONTEXT.logs = [];
+
+      API_PIPELINE_CONTEXT.logs.push(entry);
+    }
+
+    Logger.log(
+      "API_FORENSIC " +
+        JSON.stringify(entry)
+    );
+  }
+  catch (err) {
+  }
+}
+
+function enterApiForensicFunction(fn, stage, details) {
+  const start =
+    Date.now();
+
+  try {
+    if (API_PIPELINE_CONTEXT) {
+      API_PIPELINE_CONTEXT.currentStage = stage || fn || "";
+      API_PIPELINE_CONTEXT.currentFunction = fn || "";
+
+      if (!API_PIPELINE_CONTEXT.functionStack)
+        API_PIPELINE_CONTEXT.functionStack = [];
+
+      API_PIPELINE_CONTEXT.functionStack.push({
+        functionName: fn || "",
+        stage: stage || fn || "",
+        startTime: start,
+        exceptionThrown: false
+      });
+    }
+
+    recordApiForensicLog(
+      fn,
+      stage || fn,
+      "entered",
+      start,
+      details || {}
+    );
+  }
+  catch (err) {
+  }
+
+  return start;
+}
+
+function exitApiForensicFunction(fn, stage, startTime, details) {
+  try {
+    let exceptionThrown = false;
+
+    if (
+      API_PIPELINE_CONTEXT &&
+      API_PIPELINE_CONTEXT.functionStack &&
+      API_PIPELINE_CONTEXT.functionStack.length > 0
+    ) {
+      const current =
+        API_PIPELINE_CONTEXT.functionStack[
+          API_PIPELINE_CONTEXT.functionStack.length - 1
+        ];
+
+      exceptionThrown =
+        current && current.exceptionThrown === true;
+    }
+
+    recordApiForensicLog(
+      fn,
+      stage || fn,
+      exceptionThrown
+        ? "exitedAfterException"
+        : "completed",
+      startTime,
+      details || {}
+    );
+
+    if (
+      API_PIPELINE_CONTEXT &&
+      API_PIPELINE_CONTEXT.functionStack &&
+      API_PIPELINE_CONTEXT.functionStack.length > 0
+    ) {
+      API_PIPELINE_CONTEXT.functionStack.pop();
+
+      const next =
+        API_PIPELINE_CONTEXT.functionStack[
+          API_PIPELINE_CONTEXT.functionStack.length - 1
+        ];
+
+      API_PIPELINE_CONTEXT.currentStage =
+        next
+          ? next.stage
+          : API_PIPELINE_CONTEXT.currentStage;
+      API_PIPELINE_CONTEXT.currentFunction =
+        next
+          ? next.functionName
+          : API_PIPELINE_CONTEXT.currentFunction;
+    }
+  }
+  catch (err) {
+  }
+}
+
+function recordApiForensicException(fn, stage, startTime, err) {
+  try {
+    if (
+      API_PIPELINE_CONTEXT &&
+      API_PIPELINE_CONTEXT.functionStack &&
+      API_PIPELINE_CONTEXT.functionStack.length > 0
+    ) {
+      API_PIPELINE_CONTEXT.functionStack[
+        API_PIPELINE_CONTEXT.functionStack.length - 1
+      ].exceptionThrown = true;
+    }
+
+    recordApiForensicLog(
+      fn,
+      stage || fn,
+      "exception",
+      startTime,
+      {
+        exception: String(err),
+        message:
+          err && err.message
+            ? String(err.message)
+            : String(err),
+        stack:
+          err && err.stack
+            ? String(err.stack)
+            : ""
+      }
+    );
+  }
+  catch (logErr) {
+  }
+}
+
+function setApiForensicAuthState(auth) {
+  try {
+    if (!API_PIPELINE_CONTEXT)
+      return;
+
+    API_PIPELINE_CONTEXT.authenticated =
+      !!(auth && auth.authenticated);
+
+    API_PIPELINE_CONTEXT.userEmail =
+      auth && auth.user && auth.user.email
+        ? String(auth.user.email)
+        : "";
+  }
+  catch (err) {
+  }
+}
+
+function clearApiPipelineContext() {
+  try {
+    API_PIPELINE_CONTEXT = null;
+  }
+  catch (err) {
+  }
+}
+
+function safeApiJsonStringify(value, fallback) {
+  try {
+    return JSON.stringify(value);
+  }
+  catch (err) {
+    try {
+      return JSON.stringify(fallback);
+    }
+    catch (fallbackErr) {
+      return '{"success":false,"errorType":"UNCAUGHT_EXCEPTION","message":"Forensic JSON serialization failed."}';
+    }
+  }
+}
+
+function safeApiString(value) {
+  try {
+    return String(value);
+  }
+  catch (err) {
+    return "";
+  }
 }
 
 function startApiPipelineStage(stageName) {
@@ -25,6 +262,9 @@ function startApiPipelineStage(stageName) {
 
   const start =
     Date.now();
+
+  API_PIPELINE_CONTEXT.currentStage =
+    stageName;
 
   API_PIPELINE_CONTEXT.stageStarts[stageName] =
     start;
@@ -82,8 +322,14 @@ function getApiPipelineDiagnostics() {
     requestId: API_PIPELINE_CONTEXT.requestId,
     action: API_PIPELINE_CONTEXT.action,
     startTime: API_PIPELINE_CONTEXT.startTime,
+    currentStage: API_PIPELINE_CONTEXT.currentStage || "",
+    currentFunction: API_PIPELINE_CONTEXT.currentFunction || "",
+    authenticated: API_PIPELINE_CONTEXT.authenticated || false,
+    userEmail: API_PIPELINE_CONTEXT.userEmail || "",
     stages: API_PIPELINE_CONTEXT.stages,
-    subStages: API_PIPELINE_CONTEXT.subStages || []
+    subStages: API_PIPELINE_CONTEXT.subStages || [],
+    logs: API_PIPELINE_CONTEXT.logs || [],
+    functionStack: API_PIPELINE_CONTEXT.functionStack || []
   };
 }
 
@@ -141,25 +387,49 @@ function logApiPipelineTiming() {
 
 function doGet(e) {
 
-  const action =
-    (e && e.parameter && e.parameter.action)
-      ? e.parameter.action
-      : "";
+  let action = "";
 
-  API_PIPELINE_CONTEXT =
-    createApiPipelineContext(action);
+  try {
 
-  recordApiPipelineStage(
-    "requestReceived",
-    0,
-    API_PIPELINE_CONTEXT.startTime,
-    API_PIPELINE_CONTEXT.startTime,
-    {
-      action: action
-    }
-  );
+    action =
+      (e && e.parameter && e.parameter.action)
+        ? e.parameter.action
+        : "";
 
-  return handleApiGet(e, action);
+    API_PIPELINE_CONTEXT =
+      createApiPipelineContext(action);
+
+    recordApiPipelineStage(
+      "requestReceived",
+      0,
+      API_PIPELINE_CONTEXT.startTime,
+      API_PIPELINE_CONTEXT.startTime,
+      {
+        action: action,
+        method: "GET"
+      }
+    );
+
+    const parameterParsingStart =
+      startApiPipelineStage("parameterParsing");
+
+    endApiPipelineStage(
+      "parameterParsing",
+      parameterParsingStart,
+      {
+        action: action
+      }
+    );
+
+    return handleApiGet(e, action);
+  }
+  catch (err) {
+    return jsonExceptionOutput(
+      err,
+      action,
+      "doGet"
+    );
+  }
 }
 
 function handleApiGet(e, action) {
@@ -337,6 +607,12 @@ function handleApiGet(e, action) {
     case "teamTournament":
       return getTeamTournament(e);
 
+    case "teamTournamentDiagnostic":
+      return getTeamTournamentDiagnostic(e);
+
+    case "version":
+      return getPortalVersion(e);
+
     case "schedulingCalendar":
       return getSchedulingCalendarExport(e);
 
@@ -367,9 +643,7 @@ function handleApiGet(e, action) {
       });
 
     case "armyIntelligence":
-      return getCachedApiResponse(e, action, function() {
-        return getArmyIntelligence(e);
-      });
+      return getArmyIntelligence(e);
 
     case "diagnoseArmyList":
       return requireApiPermission(e, "viewOperations", function() {
@@ -377,9 +651,7 @@ function handleApiGet(e, action) {
       });
 
     case "linkHistoricalArmyLists":
-      return requireApiPermission(e, "viewOperations", function() {
-        return linkHistoricalArmyLists(e);
-      });
+      return legacyStandaloneArmyListWorkflowDisabled();
 
     case "validateArmyCode":
       return validateArmyCode(e);
@@ -457,11 +729,6 @@ function handleApiGet(e, action) {
     case "operationsQueue":
       return requireApiPermission(e, "viewOperations", function() {
         return getOperationsEngineQueue();
-      });
-
-    case "operationsLog":
-      return requireApiPermission(e, "viewOperations", function() {
-        return getOperationsEngineLog();
       });
 
     case "reliability":
@@ -579,9 +846,7 @@ function handleApiGet(e, action) {
       });
 
     case "submitArmyList":
-      return requireApiPermission(e, "canSubmitArmyLists", function() {
-        return submitArmyList(e);
-      });
+      return legacyStandaloneArmyListWorkflowDisabled();
 
     case "submitLeagueResult":
       return submitLeagueResult(e);
@@ -634,28 +899,22 @@ function handleApiGet(e, action) {
       });
 
     case "approveArmyList":
-      return requireApiPermission(e, "approveLists", function() {
-        return approveArmyList(e);
-      });
+      return legacyStandaloneArmyListWorkflowDisabled();
 
     case "rejectArmyList":
-      return requireApiPermission(e, "approveLists", function() {
-        return rejectArmyList(e);
-      });
+      return legacyStandaloneArmyListWorkflowDisabled();
 
     case "updateArmyList":
-      return requireApiPermission(e, "approveLists", function() {
-        return updateArmyList(e);
-      });
-
-    case "correctGameArmyCode":
-      return requireApiPermission(e, "dataCorrections", function(auth) {
-        return correctGameArmyCode(e, auth);
-      });
+      return legacyStandaloneArmyListWorkflowDisabled();
 
     case "correctGameScore":
       return requireApiPermission(e, "dataCorrections", function(auth) {
         return correctGameScore(e, auth);
+      });
+
+    case "repairHistoricalArmyCodes":
+      return requireApiPermission(e, "dataCorrections", function(auth) {
+        return repairHistoricalArmyCodes(e, auth);
       });
 
     case "saveStream":
@@ -713,11 +972,6 @@ function handleApiGet(e, action) {
         return rebuildOperationsStatistics();
       });
 
-    case "refreshArmyIntelligence":
-      return requireApiPermission(e, "manageCache", function() {
-        return refreshArmyIntelligence(e);
-      });
-
     case "seasonOperation":
       return requireApiPermission(e, "runSeasonControl", function() {
         return executeSeasonOperation(e);
@@ -726,11 +980,6 @@ function handleApiGet(e, action) {
     case "operationsCommand":
       return requireApiPermission(e, "runSeasonControl", function() {
         return executeOperationsCommand(e);
-      });
-
-    case "operationsRunNext":
-      return requireApiPermission(e, "runSeasonControl", function() {
-        return executeOperationsEngineNext(e);
       });
 
     case "identityBulkEnable":
@@ -883,25 +1132,49 @@ function handleApiGet(e, action) {
 
 function doPost(e) {
 
-  const action =
-    (e && e.parameter && e.parameter.action)
-      ? e.parameter.action
-      : "";
+  let action = "";
 
-  API_PIPELINE_CONTEXT =
-    createApiPipelineContext(action);
+  try {
 
-  recordApiPipelineStage(
-    "requestReceived",
-    0,
-    API_PIPELINE_CONTEXT.startTime,
-    API_PIPELINE_CONTEXT.startTime,
-    {
-      action: action
-    }
-  );
+    action =
+      (e && e.parameter && e.parameter.action)
+        ? e.parameter.action
+        : "";
 
-  return handleApiPost(e, action);
+    API_PIPELINE_CONTEXT =
+      createApiPipelineContext(action);
+
+    recordApiPipelineStage(
+      "requestReceived",
+      0,
+      API_PIPELINE_CONTEXT.startTime,
+      API_PIPELINE_CONTEXT.startTime,
+      {
+        action: action,
+        method: "POST"
+      }
+    );
+
+    const parameterParsingStart =
+      startApiPipelineStage("parameterParsing");
+
+    endApiPipelineStage(
+      "parameterParsing",
+      parameterParsingStart,
+      {
+        action: action
+      }
+    );
+
+    return handleApiPost(e, action);
+  }
+  catch (err) {
+    return jsonExceptionOutput(
+      err,
+      action,
+      "doPost"
+    );
+  }
 }
 
 function handleApiPost(e, action) {
@@ -915,9 +1188,7 @@ function handleApiPost(e, action) {
       return getAuthSession(e);
 
     case "submitArmyList":
-      return requireApiPermission(e, "canSubmitArmyLists", function() {
-        return submitArmyList(e);
-      });
+      return legacyStandaloneArmyListWorkflowDisabled();
 
     case "submitLeagueResult":
       return submitLeagueResult(e);
@@ -1011,28 +1282,22 @@ function handleApiPost(e, action) {
       });
 
     case "approveArmyList":
-      return requireApiPermission(e, "approveLists", function() {
-        return approveArmyList(e);
-      });
+      return legacyStandaloneArmyListWorkflowDisabled();
 
     case "rejectArmyList":
-      return requireApiPermission(e, "approveLists", function() {
-        return rejectArmyList(e);
-      });
+      return legacyStandaloneArmyListWorkflowDisabled();
 
     case "updateArmyList":
-      return requireApiPermission(e, "approveLists", function() {
-        return updateArmyList(e);
-      });
-
-    case "correctGameArmyCode":
-      return requireApiPermission(e, "dataCorrections", function(auth) {
-        return correctGameArmyCode(e, auth);
-      });
+      return legacyStandaloneArmyListWorkflowDisabled();
 
     case "correctGameScore":
       return requireApiPermission(e, "dataCorrections", function(auth) {
         return correctGameScore(e, auth);
+      });
+
+    case "repairHistoricalArmyCodes":
+      return requireApiPermission(e, "dataCorrections", function(auth) {
+        return repairHistoricalArmyCodes(e, auth);
       });
 
     case "saveStream":
@@ -1088,11 +1353,6 @@ function handleApiPost(e, action) {
     case "rebuildStatistics":
       return requireApiPermission(e, "manageCache", function() {
         return rebuildOperationsStatistics();
-      });
-
-    case "refreshArmyIntelligence":
-      return requireApiPermission(e, "manageCache", function() {
-        return refreshArmyIntelligence(e);
       });
 
     case "seasonOperation":
@@ -1300,9 +1560,148 @@ function jsonOutput(data) {
     );
 
     logApiPipelineTiming();
-    API_PIPELINE_CONTEXT = null;
+    clearApiPipelineContext();
   }
 
   return output;
+
+}
+
+function jsonExceptionOutput(err, action, endpoint) {
+
+  try {
+
+    let context = {};
+
+    try {
+      context =
+        API_PIPELINE_CONTEXT
+          ? getApiPipelineDiagnostics()
+          : {};
+    }
+    catch (diagnosticsErr) {
+      context = {
+        diagnosticsError: safeApiString(diagnosticsErr)
+      };
+    }
+
+    const requestId =
+      API_PIPELINE_CONTEXT && API_PIPELINE_CONTEXT.requestId
+        ? API_PIPELINE_CONTEXT.requestId
+        : "api-" + Math.random().toString(36).slice(2);
+
+    const pipelineStage =
+      API_PIPELINE_CONTEXT && API_PIPELINE_CONTEXT.currentStage
+        ? API_PIPELINE_CONTEXT.currentStage
+        : "unknown";
+
+    const exceptionText =
+      safeApiString(err);
+    const messageText =
+      err && err.message
+        ? safeApiString(err.message)
+        : exceptionText;
+    const stackText =
+      err && err.stack
+        ? safeApiString(err.stack)
+        : "";
+
+    const payload = {
+      success: false,
+      errorType: "UNCAUGHT_EXCEPTION",
+      exception: exceptionText,
+      message: messageText,
+      stack: stackText,
+      action: safeApiString(action || ""),
+      requestId: requestId,
+      pipelineStage: pipelineStage,
+      authenticated:
+        API_PIPELINE_CONTEXT
+          ? !!API_PIPELINE_CONTEXT.authenticated
+          : false,
+      userEmail:
+        API_PIPELINE_CONTEXT && API_PIPELINE_CONTEXT.userEmail
+          ? safeApiString(API_PIPELINE_CONTEXT.userEmail)
+          : "",
+      endpoint: safeApiString(endpoint || ""),
+      timestamp: getApiForensicTimestamp(),
+      diagnostics: context
+    };
+
+    recordApiForensicLog(
+      endpoint || "api",
+      pipelineStage,
+      "uncaughtExceptionJsonReturned",
+      API_PIPELINE_CONTEXT
+        ? API_PIPELINE_CONTEXT.startTime
+        : Date.now(),
+      {
+        exception: payload.exception,
+        message: payload.message
+      }
+    );
+
+    const json =
+      safeApiJsonStringify(
+        payload,
+        {
+          success: false,
+          errorType: "UNCAUGHT_EXCEPTION",
+          exception: payload.exception || "",
+          message: payload.message || "",
+          action: safeApiString(action || ""),
+          requestId: requestId,
+          pipelineStage: pipelineStage,
+          endpoint: safeApiString(endpoint || ""),
+          timestamp: getApiForensicTimestamp(),
+          diagnosticsSerializationFailed: true
+        }
+      );
+
+    try {
+      Logger.log(
+        "API_UNCAUGHT_EXCEPTION " +
+          json
+      );
+    }
+    catch (logErr) {
+    }
+
+    clearApiPipelineContext();
+
+    try {
+      return ContentService
+        .createTextOutput(json)
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    catch (outputErr) {
+      clearApiPipelineContext();
+
+      return ContentService
+        .createTextOutput(
+          '{"success":false,"errorType":"UNCAUGHT_EXCEPTION","message":"Forensic exception output failed."}'
+        )
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+  catch (handlerErr) {
+    clearApiPipelineContext();
+
+    return ContentService
+      .createTextOutput(
+        '{"success":false,"errorType":"UNCAUGHT_EXCEPTION","message":"Forensic exception handler failed before payload construction."}'
+      )
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+}
+
+function legacyStandaloneArmyListWorkflowDisabled() {
+
+  return jsonOutput({
+    success: false,
+    error:
+      "Standalone Army List submissions are no longer supported. Submit games with Army Lists through Submit Game."
+  });
 
 }

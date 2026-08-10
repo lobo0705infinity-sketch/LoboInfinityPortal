@@ -33,7 +33,10 @@ function getEventRegistration(e) {
 
   const currentPlayer =
     auth.authenticated
-      ? getEventRegistrationForUser(event, auth.user)
+      ? getEventRegistrationForPlayer(
+          eventId,
+          getEventParticipantKey(event, auth.user)
+        )
       : null;
 
   return jsonOutput({
@@ -243,41 +246,6 @@ function getEventParticipantKey(event, user) {
 
 }
 
-function getEventParticipantIdentityCandidates(event, user) {
-
-  if (!user)
-    return [];
-
-  const candidates = [
-    getCanonicalPlayerFromUser(user),
-    user.leaguePlayer,
-    user.canonicalPlayer,
-    user.playerDisplayName,
-    user.displayName
-  ];
-
-  if (!eventRequiresLeagueMembership(event))
-    candidates.push(user.email);
-
-  const seen = {};
-
-  return candidates
-    .map(function(value) {
-      return getEventRegistrationString(value);
-    })
-    .filter(function(value) {
-      const key =
-        value.toLowerCase();
-
-      if (key === "" || seen[key])
-        return false;
-
-      seen[key] = true;
-      return true;
-    });
-
-}
-
 function buildEventParticipantUser(event, user) {
 
   const participantKey =
@@ -425,6 +393,20 @@ function exportEventRegistrations(e) {
 
 function buildEventRegistrationPayload(event, registrations, currentPlayer, options) {
 
+  const forensicStart =
+    enterApiForensicFunction(
+      "buildEventRegistrationPayload",
+      "registrationLookup",
+      {
+        eventId:
+          event && event.id
+            ? event.id
+            : ""
+      }
+    );
+
+  try {
+
   const includeRegistrationDetails =
     options && options.includeRegistrationDetails === true;
 
@@ -563,6 +545,25 @@ function buildEventRegistrationPayload(event, registrations, currentPlayer, opti
         : []
   };
 
+  }
+  catch (err) {
+    recordApiForensicException(
+      "buildEventRegistrationPayload",
+      "registrationLookup",
+      forensicStart,
+      err
+    );
+    throw err;
+  }
+  finally {
+    exitApiForensicFunction(
+      "buildEventRegistrationPayload",
+      "registrationLookup",
+      forensicStart,
+      {}
+    );
+  }
+
 }
 
 function canViewEventRegistrationDetails(auth) {
@@ -618,9 +619,6 @@ function upsertEventRegistrationRow(eventId, user, params, status) {
   const preferredTeam =
     getEventRegistrationString(params.preferredTeam || team);
 
-  const teamId =
-    getEventRegistrationString(params.teamId);
-
   measureEventApprovalOperation(
     "approval.spreadsheetWrite.upsertCompositeRow",
     function() {
@@ -651,7 +649,6 @@ function upsertEventRegistrationRow(eventId, user, params, status) {
           getEventRegistrationBoolean(params.captain),
           getEventRegistrationBoolean(params.freeAgent),
           canonicalizeArmyName(params.faction),
-          teamId,
           now
         ]
       );
@@ -666,6 +663,17 @@ function upsertEventRegistrationRow(eventId, user, params, status) {
 }
 
 function getEventRegistrationRows(eventId) {
+
+  const forensicStart =
+    enterApiForensicFunction(
+      "getEventRegistrationRows",
+      "registrationLookup",
+      {
+        eventId: getEventRegistrationString(eventId)
+      }
+    );
+
+  try {
 
   const target =
     getEventRegistrationString(eventId);
@@ -713,6 +721,25 @@ function getEventRegistrationRows(eventId) {
       );
     });
 
+  }
+  catch (err) {
+    recordApiForensicException(
+      "getEventRegistrationRows",
+      "registrationLookup",
+      forensicStart,
+      err
+    );
+    throw err;
+  }
+  finally {
+    exitApiForensicFunction(
+      "getEventRegistrationRows",
+      "registrationLookup",
+      forensicStart,
+      {}
+    );
+  }
+
 }
 
 function getEventRegistrationForPlayer(eventId, player) {
@@ -728,10 +755,7 @@ function getEventRegistrationForPlayer(eventId, player) {
           return measureEventHomeLoopIterationIfAvailable(
             "eventHome.loop.registration.currentPlayerFilter",
             function() {
-              return eventRegistrationMatchesPlayer(
-                registration,
-                target
-              );
+              return registration.player.toLowerCase() === target;
             }
           );
         })[0] || null;
@@ -741,41 +765,6 @@ function getEventRegistrationForPlayer(eventId, player) {
       player: player
     }
   );
-
-}
-
-function getEventRegistrationForUser(event, user) {
-
-  const candidates =
-    getEventParticipantIdentityCandidates(event, user);
-
-  for (let index = 0; index < candidates.length; index++) {
-    const registration =
-      getEventRegistrationForPlayer(
-        event.id,
-        candidates[index]
-      );
-
-    if (registration)
-      return registration;
-  }
-
-  return null;
-
-}
-
-function eventRegistrationMatchesPlayer(registration, target) {
-
-  if (!registration || target === "")
-    return false;
-
-  return [
-    registration.player,
-    registration.displayName,
-    registration.email
-  ].some(function(value) {
-    return getEventRegistrationString(value).toLowerCase() === target;
-  });
 
 }
 
@@ -792,7 +781,6 @@ function mapEventRegistrationRow(row) {
     team: row["Team"],
     notes: row["Notes"],
     email: row["Email"],
-    teamId: row["Team ID"] || "",
     discord: row["Discord"],
     preferredTeam: row["Preferred Team"] || row["Team"],
     captain: getEventRegistrationBoolean(row["Captain"]),

@@ -116,6 +116,26 @@ const DEFAULT_SETTINGS = [
     "deploymentUrl",
     "",
     "Current production deployment URL."
+  ],
+  [
+    "appsScriptVersion",
+    "",
+    "Apps Script backend version identifier."
+  ],
+  [
+    "backendDeploymentId",
+    "",
+    "Apps Script backend deployment ID."
+  ],
+  [
+    "buildTimestamp",
+    "",
+    "Build or deployment timestamp."
+  ],
+  [
+    "backendSchemaVersion",
+    "",
+    "Backend schema version or release schema identifier."
   ]
 ];
 

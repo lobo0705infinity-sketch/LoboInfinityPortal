@@ -65,7 +65,80 @@ const ARMY_LIST_COLUMNS = {
   VALIDATION_TIMESTAMP: 26
 };
 
+const ARMY_INTELLIGENCE_HEADERS = [
+  "Army List ID",
+  "Snapshot Timestamp",
+  "Decoder Version",
+  "Player",
+  "Faction",
+  "Sectorial",
+  "Army Name",
+  "Points",
+  "SWC",
+  "Unit Count",
+  "Snapshot JSON"
+];
+
+const ARMY_LISTS_READ_MODEL_KEY = "armyLists:v1";
+const ARMY_LISTS_READ_MODEL_CHUNK_SIZE = 45000;
+const ARMY_LISTS_READ_MODEL_HEADERS = [
+  "Key",
+  "Generated At",
+  "Chunk Index",
+  "Payload JSON Chunk"
+];
+
 function getArmyLists() {
+
+  const readModel =
+    readArmyListsReadModelPayload();
+
+  if (readModel)
+    return jsonOutput(readModel);
+
+  return jsonOutput({
+    success: true,
+    lists: [],
+    community: buildArmyListCommunitySummary([])
+  });
+
+}
+
+function rebuildArmyListsReadModel() {
+
+  const payload =
+    rebuildArmyListsReadModelPayloadAndPersist();
+
+  return {
+    lists: payload.lists.length
+  };
+
+}
+
+function rebuildArmyListsReadModelPayloadAndPersist() {
+
+  const payload =
+    rebuildArmyListsReadModelPayload();
+
+  const rows =
+    buildArmyListsReadModelRowsFromPayload(payload);
+
+  const spreadsheet =
+    lifGetTargetSpreadsheet_();
+
+  if (!spreadsheet.getSheetByName(CONFIG.SHEETS.ARMY_LISTS_READ_MODEL))
+    spreadsheet.insertSheet(CONFIG.SHEETS.ARMY_LISTS_READ_MODEL);
+
+  writeSheet(
+    CONFIG.SHEETS.ARMY_LISTS_READ_MODEL,
+    rows
+  );
+
+  return payload;
+
+}
+
+function rebuildArmyListsReadModelPayload() {
 
   const lists =
     getArmyListObjects()
@@ -75,11 +148,96 @@ function getArmyLists() {
 
       });
 
-  return jsonOutput({
+  return {
     success: true,
     lists: lists,
     community: buildArmyListCommunitySummary(lists)
-  });
+  };
+
+}
+
+function buildArmyListsReadModelRowsFromPayload(payload) {
+
+  const generatedAt =
+    new Date().toISOString();
+
+  const json =
+    JSON.stringify(payload);
+
+  const rows = [
+    ARMY_LISTS_READ_MODEL_HEADERS
+  ];
+
+  for (
+    let offset = 0, index = 1;
+    offset < json.length;
+    offset += ARMY_LISTS_READ_MODEL_CHUNK_SIZE, index += 1
+  )
+    rows.push([
+      ARMY_LISTS_READ_MODEL_KEY,
+      generatedAt,
+      index,
+      json.slice(
+        offset,
+        offset + ARMY_LISTS_READ_MODEL_CHUNK_SIZE
+      )
+    ]);
+
+  if (rows.length === 1)
+    rows.push([
+      ARMY_LISTS_READ_MODEL_KEY,
+      generatedAt,
+      1,
+      json
+    ]);
+
+  return rows;
+
+}
+
+function readArmyListsReadModelPayload() {
+
+  const sheet =
+    SpreadsheetApp
+      .getActive()
+      .getSheetByName(CONFIG.SHEETS.ARMY_LISTS_READ_MODEL);
+
+  if (!sheet || sheet.getLastRow() < 2)
+    return null;
+
+  const rows =
+    sheet
+      .getRange(
+        2,
+        1,
+        sheet.getLastRow() - 1,
+        ARMY_LISTS_READ_MODEL_HEADERS.length
+      )
+      .getValues()
+      .filter(function(row) {
+        return row[0] === ARMY_LISTS_READ_MODEL_KEY;
+      })
+      .sort(function(left, right) {
+        return Number(left[2]) - Number(right[2]);
+      });
+
+  if (rows.length === 0)
+    return null;
+
+  const json =
+    rows.map(function(row) {
+      return getArmyListString(row[3]);
+    }).join("");
+
+  if (!json)
+    return null;
+
+  const payload =
+    JSON.parse(json);
+
+  payload.success = true;
+
+  return payload;
 
 }
 
@@ -223,34 +381,6 @@ function submitArmyList(e) {
 
   if (typeof evaluateAchievementsForPlayer === "function")
     evaluateAchievementsForPlayer(player);
-
-  if (typeof publishLeagueAutomationEvent === "function") {
-    const listId =
-      sheet.getLastRow() - 1;
-
-    publishLeagueAutomationEvent({
-      eventType: "armyListSubmitted",
-      category: "Army Lists",
-      priority: "normal",
-      player: player,
-      division: "",
-      message:
-        player +
-        " submitted an army list: " +
-        validation.derived.armyName,
-      payload: {
-        listId: listId,
-        id: listId,
-        player: player,
-        faction: validation.derived.faction,
-        sectorial: validation.derived.sectorial,
-        armyName: validation.derived.armyName,
-        mission: getApiParameter(parameters, "mission"),
-        event: getApiParameter(parameters, "event"),
-        submittedAt: submissionDate
-      }
-    });
-  }
 
   return jsonOutput({
     success: true,
@@ -557,11 +687,23 @@ function buildArmyDiagnosticDecode(sharedDecode) {
     sharedDecode.roster.map(function(profile, index) {
       return {
         combatGroup: profile.combatGroup || 1,
+        chainOfCommand: Boolean(profile.chainOfCommand),
         decodedProfile: profile.decodedProfile,
+        doctor: Boolean(profile.doctor),
+        engineer: Boolean(profile.engineer),
+        equipment: profile.equipment || [],
+        forwardObserver: Boolean(profile.forwardObserver),
+        hacker: Boolean(profile.hacker),
         index: index + 1,
+        lieutenant: Boolean(profile.lieutenant),
         points: profile.points,
         rawProfile: profile.rawProfile,
-        swc: profile.swc
+        skills: profile.skills || [],
+        specialist: Boolean(profile.specialist),
+        swc: profile.swc,
+        troopType: profile.troopType || "",
+        unit: profile.unit || profile.decodedProfile,
+        weapons: profile.weapons || []
       };
     });
 
@@ -630,6 +772,133 @@ function buildArmyDiagnosticSnapshot(list, decoded) {
     points: decoded.points,
     swc: decoded.swc
   };
+
+}
+
+function buildArmyIntelligenceForGameEngineRows(gameEngineRows) {
+
+  const requiredIds =
+    getArmyIntelligenceRequiredArmyListIds(gameEngineRows);
+
+  if (requiredIds.length === 0)
+    return [
+      ARMY_INTELLIGENCE_HEADERS
+    ];
+
+  const listsById =
+    getArmyIntelligenceSourceListLookup();
+
+  const rows = [
+    ARMY_INTELLIGENCE_HEADERS
+  ];
+
+  requiredIds.forEach(function(id) {
+
+    const list =
+      listsById[id] || null;
+
+    if (!list)
+      throw new Error(
+        "Army Intelligence source list not found for Army List ID " +
+          id +
+          "."
+      );
+
+    if (!list.armyCode)
+      throw new Error(
+        "Army Intelligence source list " +
+          id +
+          " does not have an Army Code."
+      );
+
+    const decoded =
+      buildArmyDiagnosticDecode(
+        decodeArmyCode(list.armyCode)
+      );
+
+    if (!decoded.success)
+      throw new Error(
+        "Army Intelligence snapshot generation failed for Army List ID " +
+          id +
+          "."
+      );
+
+    const snapshot =
+      buildArmyDiagnosticSnapshot(
+        list,
+        decoded
+      );
+
+    rows.push(
+      buildArmyIntelligenceRow(
+        list,
+        snapshot
+      )
+    );
+
+  });
+
+  return rows;
+
+}
+
+function getArmyIntelligenceRequiredArmyListIds(gameEngineRows) {
+
+  const seen = {};
+  const ids = [];
+
+  (gameEngineRows || []).forEach(function(row, index) {
+
+    if (index === 0)
+      return;
+
+    const id =
+      getArmyListString(
+        row[CONFIG.ENGINE.ARMY_LIST_ID]
+      );
+
+    if (!id || seen[id])
+      return;
+
+    seen[id] = true;
+    ids.push(id);
+
+  });
+
+  return ids;
+
+}
+
+function getArmyIntelligenceSourceListLookup() {
+
+  const lookup = {};
+
+  getArmyListObjects()
+    .forEach(function(list) {
+
+      lookup[String(list.id)] = list;
+
+    });
+
+  return lookup;
+
+}
+
+function buildArmyIntelligenceRow(list, snapshot) {
+
+  return [
+    String(list.id),
+    snapshot.timestamp,
+    snapshot.decoderVersion,
+    list.player,
+    list.faction,
+    list.sectorial,
+    list.armyName,
+    snapshot.points,
+    snapshot.swc,
+    snapshot.unitCount,
+    JSON.stringify(snapshot)
+  ];
 
 }
 
@@ -823,30 +1092,10 @@ function buildArmyDiagnosticPipelineTrace(source, validation, decoded, snapshot,
 
 function runArmyDiagnosticSelfHealing(source, validation, decoded, snapshot, displayedUnits) {
 
-  const needsRebuild =
-    validation.valid &&
-    decoded.success &&
-    displayedUnits.length > 0 &&
-    displayedUnits.length !== decoded.unitCount;
-
-  if (!needsRebuild)
-    return {
-      attempted: false,
-      actions: [],
-      result: "No self-healing needed."
-    };
-
-  if (typeof invalidatePortalCacheGroup === "function")
-    invalidatePortalCacheGroup("armyLists");
-
   return {
-    attempted: true,
-    actions: [
-      "Deleted generated diagnostic snapshot.",
-      "Rebuilt snapshot from stored Army Code.",
-      "Invalidated armyLists cache group."
-    ],
-    result: "Snapshot regenerated from valid Army Code."
+    attempted: false,
+    actions: [],
+    result: "Diagnostics report deterministic state but do not repair it."
   };
 
 }
@@ -1232,6 +1481,411 @@ function isFactionMatchupScoreDraw(value) {
 }
 
 function getArmyListObjects() {
+
+  return getCanonicalGameSubmittedArmyListObjects();
+
+}
+
+function getCanonicalGameSubmittedArmyListObjects() {
+
+  const lookup = {};
+
+  getCanonicalArmyListRecentGames()
+    .forEach(function(game) {
+
+      appendCanonicalGameSubmittedArmyList(
+        lookup,
+        game,
+        "winner"
+      );
+
+      appendCanonicalGameSubmittedArmyList(
+        lookup,
+        game,
+        "loser"
+      );
+
+    });
+
+  return Object.keys(lookup)
+    .map(function(id) {
+      return lookup[id];
+    })
+    .sort(function(a, b) {
+      return b.sortIndex - a.sortIndex;
+    });
+
+}
+
+function getCanonicalArmyListRecentGames() {
+
+  const sheet =
+    SpreadsheetApp
+      .getActive()
+      .getSheetByName(CONFIG.SHEETS.FORM);
+
+  if (!sheet)
+    return [];
+
+  const values =
+    sheet
+      .getDataRange()
+      .getValues();
+
+  if (values.length <= 1)
+    return [];
+
+  values.shift();
+
+  return values
+    .filter(function(row) {
+      return validateGame(row);
+    })
+    .map(function(row, index) {
+      return buildCanonicalArmyListGameSubmission(
+        row,
+        index + 1
+      );
+    });
+
+}
+
+function buildCanonicalArmyListGameSubmission(row, sourceIndex) {
+
+  const winner =
+    determineWinner(row);
+
+  const draw =
+    winner === 0;
+
+  return {
+    id: sourceIndex,
+    sourceIndex: sourceIndex,
+    date:
+      formatArmyListDate(row[FORM.DATE]),
+    mission:
+      getArmyListString(row[FORM.MISSION]),
+    eventId:
+      getGameEngineEventId(row),
+    gameType:
+      getGameEngineGameType(row),
+    winner:
+      draw || winner === 1
+        ? getArmyListString(row[FORM.PLAYER1])
+        : getArmyListString(row[FORM.PLAYER2]),
+    loser:
+      draw || winner === 1
+        ? getArmyListString(row[FORM.PLAYER2])
+        : getArmyListString(row[FORM.PLAYER1]),
+    winnerFaction:
+      canonicalizeArmyName(row[FORM.WINNINGFACTION]),
+    loserFaction:
+      canonicalizeArmyName(row[FORM.LOSINGFACTION]),
+    winnerArmyListId:
+      getGameEngineFormArmyListId(
+        row,
+        FORM.WINNER_ARMY_LIST_ID
+      ),
+    loserArmyListId:
+      getGameEngineFormArmyListId(
+        row,
+        FORM.LOSER_ARMY_LIST_ID
+      ),
+    winnerArmyCode:
+      draw || winner === 1
+        ? getArmyListString(row[FORM.PLAYER1_ARMY_CODE])
+        : getArmyListString(row[FORM.PLAYER2_ARMY_CODE]),
+    loserArmyCode:
+      draw || winner === 1
+        ? getArmyListString(row[FORM.PLAYER2_ARMY_CODE])
+        : getArmyListString(row[FORM.PLAYER1_ARMY_CODE])
+  };
+
+}
+
+function appendCanonicalGameSubmittedArmyList(lookup, game, side) {
+
+  const isWinner =
+    side === "winner";
+
+  const armyCode =
+    getArmyListString(
+      isWinner
+        ? game.winnerArmyCode
+        : game.loserArmyCode
+    );
+
+  const armyListId =
+    getArmyListNumber(
+      isWinner
+        ? game.winnerArmyListId
+        : game.loserArmyListId
+    );
+
+  if (!armyCode && !armyListId)
+    return;
+
+  const player =
+    getArmyListString(
+      isWinner
+        ? game.winner
+        : game.loser
+    );
+
+  const opponent =
+    getArmyListString(
+      isWinner
+        ? game.loser
+        : game.winner
+    );
+
+  const gameFaction =
+    getArmyListString(
+      isWinner
+        ? game.winnerFaction
+        : game.loserFaction
+    );
+
+  const decoded =
+    armyCode
+      ? decodeArmyCode(armyCode)
+      : null;
+
+  const id =
+    (
+      armyCode
+        ? buildCanonicalGameSubmittedArmyListId(game, side)
+        : 0
+    ) ||
+    armyListId;
+
+  if (!id)
+    return;
+
+  const existing =
+    lookup[id];
+
+  if (existing) {
+    existing.games++;
+    if (!existing.armyCode && armyCode)
+      existing.armyCode = armyCode;
+    if (!existing.mission && game.mission)
+      existing.mission = getArmyListString(game.mission);
+    if (!existing.event && game.eventId)
+      existing.event = getArmyListString(game.eventId);
+    if (getArmyListNumber(game.sourceIndex || game.id) > existing.sortIndex)
+      existing.sortIndex =
+        getArmyListNumber(game.sourceIndex || game.id);
+    return;
+  }
+
+  const derived =
+    decoded && decoded.valid
+      ? decoded.derived || {}
+      : {};
+
+  const armyName =
+    getArmyListString(derived.armyName) ||
+    getArmyListString(
+      gameFaction
+        ? gameFaction + " Army List"
+        : "Game Submitted Army List"
+    );
+
+  const faction =
+    canonicalizeArmyParentFaction(
+      getArmyListString(derived.faction) ||
+      gameFaction
+    );
+
+  const sectorial =
+    canonicalizeArmyName(
+      getArmyListString(derived.sectorial) ||
+      gameFaction
+    );
+
+  lookup[id] = {
+    id: id,
+    submissionDate:
+      formatArmyListDate(game.date),
+    player: player,
+    playerDisplayName:
+      getPlayerDisplayName(player),
+    faction: faction,
+    sectorial: sectorial,
+    mission:
+      getArmyListString(game.mission),
+    event:
+      getArmyListString(game.eventId || game.gameType),
+    armyCode: armyCode,
+    armyLink: "",
+    armyName: armyName,
+    description:
+      buildCanonicalGameSubmittedArmyListDescription(
+        game,
+        opponent
+      ),
+    upvotes: 0,
+    downvotes: 0,
+    score: 0,
+    approved: true,
+    submitterEmail: "",
+    games: 1,
+    source: "Game submission",
+    sourceGameId:
+      getArmyListString(game.id),
+    sortIndex:
+      getArmyListNumber(game.sourceIndex || game.id),
+    validation:
+      buildCanonicalGameSubmittedArmyListValidation(
+        decoded,
+        faction,
+        sectorial,
+        armyName
+      )
+  };
+
+}
+
+function buildCanonicalGameSubmittedArmyListDescription(game, opponent) {
+
+  const parts = [];
+
+  if (game.mission)
+    parts.push(game.mission);
+
+  if (opponent)
+    parts.push("vs " + opponent);
+
+  if (game.date)
+    parts.push(game.date);
+
+  return parts.join(" | ");
+
+}
+
+function buildCanonicalGameSubmittedArmyListValidation(
+  decoded,
+  faction,
+  sectorial,
+  armyName
+) {
+
+  const valid =
+    decoded && decoded.valid;
+
+  return {
+    severity:
+      valid
+        ? "Info"
+        : "Warning",
+    status:
+      valid
+        ? "decoded"
+        : "unavailable",
+    warnings:
+      decoded && decoded.parserWarnings
+        ? decoded.parserWarnings
+        : [],
+    points:
+      valid
+        ? Number(decoded.derived.points) || 0
+        : 0,
+    swc:
+      valid
+        ? Number(decoded.derived.swc) || 0
+        : 0,
+    unitCount:
+      valid
+        ? Number(decoded.derived.unitCount) || 0
+        : 0,
+    combatGroups:
+      valid
+        ? Number(decoded.derived.combatGroups) || 0
+        : 0,
+    armyName: armyName,
+    faction: faction,
+    sectorial: sectorial,
+    override: false,
+    overrideBy: "",
+    overrideReason: "",
+    timestamp: ""
+  };
+
+}
+
+function buildCanonicalGameSubmittedArmyListId(game, side) {
+
+  const armyCode =
+    getArmyListString(
+      side === "winner"
+        ? game.winnerArmyCode
+        : game.loserArmyCode
+    );
+
+  if (armyCode)
+    return buildCanonicalArmyCodeArmyListId(armyCode);
+
+  return buildCanonicalGameSideArmyListId(
+    game,
+    side
+  );
+
+}
+
+function buildCanonicalArmyCodeArmyListId(armyCode) {
+
+  const identity =
+    normalizeCanonicalArmyListCode(armyCode);
+
+  if (!identity)
+    return 0;
+
+  let hash = 5381;
+
+  for (let index = 0; index < identity.length; index++)
+    hash = (hash * 33) ^ identity.charCodeAt(index);
+
+  return 800000000 + (hash >>> 0);
+
+}
+
+function normalizeCanonicalArmyListCode(value) {
+
+  return getArmyListString(value)
+    .replace(/\s+/g, "")
+    .replace(/-/g, "")
+    .replace(/_/g, "");
+
+}
+
+function buildCanonicalGameSideArmyListId(game, side) {
+
+  const sideOffset =
+    side === "winner"
+      ? 1
+      : 2;
+
+  return (
+    900000000 +
+    getArmyListNumber(game.sourceIndex || game.id) * 2 +
+    sideOffset
+  );
+
+}
+
+function getArmyListNumber(value) {
+
+  const number =
+    Number(value);
+
+  return Number.isFinite(number)
+    ? number
+    : 0;
+
+}
+
+function getLegacyStandaloneArmyListObjects() {
 
   const sheet =
     getArmyListSheet();

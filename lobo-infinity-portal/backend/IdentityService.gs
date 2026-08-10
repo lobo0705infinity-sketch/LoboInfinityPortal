@@ -7,6 +7,15 @@
 
 function resolveCanonicalPlayerIdentityByEmail(email, options) {
 
+  const forensicStart =
+    enterApiForensicFunction(
+      "resolveCanonicalPlayerIdentityByEmail",
+      "identityLookup",
+      {}
+    );
+
+  try {
+
   const normalized =
     getIdentityServiceString(email)
       .toLowerCase();
@@ -47,6 +56,25 @@ function resolveCanonicalPlayerIdentityByEmail(email, options) {
 
   return playerSheetResolution;
 
+  }
+  catch (err) {
+    recordApiForensicException(
+      "resolveCanonicalPlayerIdentityByEmail",
+      "identityLookup",
+      forensicStart,
+      err
+    );
+    throw err;
+  }
+  finally {
+    exitApiForensicFunction(
+      "resolveCanonicalPlayerIdentityByEmail",
+      "identityLookup",
+      forensicStart,
+      {}
+    );
+  }
+
 }
 
 function buildCanonicalPlayerIdentityByEmailMap(options) {
@@ -80,23 +108,75 @@ function buildCanonicalPlayerIdentityByEmailMap(options) {
 
 function getAuthLeagueIdentityByEmail(email) {
 
-  return resolveCanonicalPlayerIdentityByEmail(
-    email,
-    {
-      includeInactive: true
-    }
-  );
+  const forensicStart =
+    enterApiForensicFunction(
+      "getAuthLeagueIdentityByEmail",
+      "identityLookup",
+      {}
+    );
+
+  try {
+    return resolveCanonicalPlayerIdentityByEmail(
+      email,
+      {
+        includeInactive: true
+      }
+    );
+  }
+  catch (err) {
+    recordApiForensicException(
+      "getAuthLeagueIdentityByEmail",
+      "identityLookup",
+      forensicStart,
+      err
+    );
+    throw err;
+  }
+  finally {
+    exitApiForensicFunction(
+      "getAuthLeagueIdentityByEmail",
+      "identityLookup",
+      forensicStart,
+      {}
+    );
+  }
 
 }
 
 function getAuthCanonicalPlayerIdentityByEmail(email) {
 
-  return resolveCanonicalPlayerIdentityByEmail(
-    email,
-    {
-      includeInactive: true
-    }
-  );
+  const forensicStart =
+    enterApiForensicFunction(
+      "getAuthCanonicalPlayerIdentityByEmail",
+      "identityLookup",
+      {}
+    );
+
+  try {
+    return resolveCanonicalPlayerIdentityByEmail(
+      email,
+      {
+        includeInactive: true
+      }
+    );
+  }
+  catch (err) {
+    recordApiForensicException(
+      "getAuthCanonicalPlayerIdentityByEmail",
+      "identityLookup",
+      forensicStart,
+      err
+    );
+    throw err;
+  }
+  finally {
+    exitApiForensicFunction(
+      "getAuthCanonicalPlayerIdentityByEmail",
+      "identityLookup",
+      forensicStart,
+      {}
+    );
+  }
 
 }
 
@@ -119,6 +199,15 @@ function getCanonicalPlayerFromUser(user) {
 }
 
 function resolveCanonicalPlayerIdentityFromPlayersSheet(email, options) {
+
+  const forensicStart =
+    enterApiForensicFunction(
+      "resolveCanonicalPlayerIdentityFromPlayersSheet",
+      "playersSheetLookup",
+      {}
+    );
+
+  try {
 
   const sheetResolution =
     readIdentityServicePlayersSheet(options || {});
@@ -180,9 +269,37 @@ function resolveCanonicalPlayerIdentityFromPlayersSheet(email, options) {
     "Players"
   );
 
+  }
+  catch (err) {
+    recordApiForensicException(
+      "resolveCanonicalPlayerIdentityFromPlayersSheet",
+      "playersSheetLookup",
+      forensicStart,
+      err
+    );
+    throw err;
+  }
+  finally {
+    exitApiForensicFunction(
+      "resolveCanonicalPlayerIdentityFromPlayersSheet",
+      "playersSheetLookup",
+      forensicStart,
+      {}
+    );
+  }
+
 }
 
 function resolveCanonicalPlayerIdentityFromEventParticipants(email) {
+
+  const forensicStart =
+    enterApiForensicFunction(
+      "resolveCanonicalPlayerIdentityFromEventParticipants",
+      "registrationLookup",
+      {}
+    );
+
+  try {
 
   const sheet =
     SpreadsheetApp
@@ -328,9 +445,37 @@ function resolveCanonicalPlayerIdentityFromEventParticipants(email) {
     "Event Participants"
   );
 
+  }
+  catch (err) {
+    recordApiForensicException(
+      "resolveCanonicalPlayerIdentityFromEventParticipants",
+      "registrationLookup",
+      forensicStart,
+      err
+    );
+    throw err;
+  }
+  finally {
+    exitApiForensicFunction(
+      "resolveCanonicalPlayerIdentityFromEventParticipants",
+      "registrationLookup",
+      forensicStart,
+      {}
+    );
+  }
+
 }
 
 function readIdentityServicePlayersSheet(options) {
+
+  const forensicStart =
+    enterApiForensicFunction(
+      "readIdentityServicePlayersSheet",
+      "playersSheetLookup",
+      {}
+    );
+
+  try {
 
   const settings =
     options || {};
@@ -425,6 +570,25 @@ function readIdentityServicePlayersSheet(options) {
     reason: "",
     status: "MATCH"
   };
+
+  }
+  catch (err) {
+    recordApiForensicException(
+      "readIdentityServicePlayersSheet",
+      "playersSheetLookup",
+      forensicStart,
+      err
+    );
+    throw err;
+  }
+  finally {
+    exitApiForensicFunction(
+      "readIdentityServicePlayersSheet",
+      "playersSheetLookup",
+      forensicStart,
+      {}
+    );
+  }
 
 }
 

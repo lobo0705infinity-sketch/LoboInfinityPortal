@@ -70,8 +70,6 @@ const AUTOMATION_EVENT_DEFINITIONS = [
   ["leagueChampion", "Hall of Fame", "high", "League Champion"],
   ["hallOfFame", "Hall of Fame", "high", "Hall of Fame"],
   ["recordBroken", "Records", "high", "Record Broken"],
-  ["armyListSubmitted", "Army Lists", "normal", "Army List Submitted"],
-  ["armyListApproved", "Army Lists", "normal", "Army List Approved"],
   ["playerJoined", "Identity", "normal", "Player Joined"],
   ["identityLinked", "Identity", "normal", "Identity Linked"],
   ["commissionerNews", "News", "normal", "Commissioner News"],
@@ -516,18 +514,9 @@ function buildAutomationDiscordPayload(item) {
   const template =
     getAutomationTemplateForEvent(item.eventType);
 
-  const teamSummary =
-    payload.teamAName && payload.teamBName
-      ? getAutomationString(payload.teamAName) +
-        " vs " +
-        getAutomationString(payload.teamBName)
-      : "";
-
   const context = {
     player: getAutomationString(payload.player),
-    division:
-      teamSummary ||
-      getAutomationString(payload.division),
+    division: getAutomationString(payload.division),
     message:
       getAutomationString(payload.message) ||
       item.eventType

@@ -55,11 +55,6 @@ const FORM = {
 
 };
 
-const GAME_ENGINE_FORM_HEADERS = {
-  PLAYER1_ARMY_CODE: "Player 1 Army Code",
-  PLAYER2_ARMY_CODE: "Player 2 Army Code"
-};
-
 function getFormResponses() {
 
   const targetSpreadsheetId =
@@ -82,13 +77,7 @@ function getFormResponses() {
       .getDataRange()
       .getValues();
 
-  const headers =
-    values.shift() || [];
-
-  values.forEach(function(row) {
-    row.__formHeaders =
-      headers;
-  });
+  values.shift();
 
   return values;
 
@@ -245,7 +234,6 @@ function getGameEngineHeaders() {
     "Event ID",
     "Game Type",
     "Game Result",
-    "Army Code",
     "Army List ID"
   ]];
 
@@ -272,10 +260,10 @@ function getGameAnalyticsHeaders() {
     "Event ID",
     "Game Type",
     "Game Result",
-    "Winner Army Code",
-    "Loser Army Code",
     "Winner Army List ID",
-    "Loser Army List ID"
+    "Loser Army List ID",
+    "Winner Army Code",
+    "Loser Army Code"
   ]];
 
 }
@@ -331,14 +319,7 @@ function buildPlayerRow(row, playerNumber, winner) {
   // IMPORTANT:
   // Keep faction information even if the game is a draw.
 
-  if (winner === 0) {
-
-    faction =
-      playerIsOne
-        ? row[FORM.WINNINGFACTION]
-        : row[FORM.LOSINGFACTION];
-
-  } else if (playerIsOne) {
+  if (playerIsOne) {
 
     faction =
       winner === 2
@@ -403,18 +384,6 @@ function buildPlayerRow(row, playerNumber, winner) {
 
     gameResult,
 
-    playerIsOne
-      ? getGameEngineFormValue(
-          row,
-          GAME_ENGINE_FORM_HEADERS.PLAYER1_ARMY_CODE,
-          FORM.PLAYER1_ARMY_CODE
-        )
-      : getGameEngineFormValue(
-          row,
-          GAME_ENGINE_FORM_HEADERS.PLAYER2_ARMY_CODE,
-          FORM.PLAYER2_ARMY_CODE
-        ),
-
     armyListId
 
   ];
@@ -476,7 +445,7 @@ function getGameEngineFormValue(row, header, fallbackIndex) {
       : [];
 
   const index =
-    headers.map(getGameEngineString).indexOf(header);
+    headers.indexOf(header);
 
   if (index !== -1)
     return getGameEngineString(row[index]);
@@ -541,9 +510,6 @@ function buildAnalyticsRow(row, winner) {
 
   let firstTurnWinner = "Draw";
 
-  let winnerArmyCode = "";
-  let loserArmyCode = "";
-
   if (draw) {
 
     winnerPlayer = row[FORM.PLAYER1];
@@ -562,19 +528,6 @@ function buildAnalyticsRow(row, winner) {
 
     winnerVP = Number(row[FORM.P1VP]) || 0;
     loserVP = Number(row[FORM.P2VP]) || 0;
-
-    winnerArmyCode =
-      getGameEngineFormValue(
-        row,
-        GAME_ENGINE_FORM_HEADERS.PLAYER1_ARMY_CODE,
-        FORM.PLAYER1_ARMY_CODE
-      );
-    loserArmyCode =
-      getGameEngineFormValue(
-        row,
-        GAME_ENGINE_FORM_HEADERS.PLAYER2_ARMY_CODE,
-        FORM.PLAYER2_ARMY_CODE
-      );
 
     firstTurnWinner =
       row[FORM.FIRSTTURN] === "Player 1"
@@ -604,19 +557,6 @@ function buildAnalyticsRow(row, winner) {
       winnerVP = Number(row[FORM.P1VP]) || 0;
       loserVP = Number(row[FORM.P2VP]) || 0;
 
-      winnerArmyCode =
-        getGameEngineFormValue(
-          row,
-          GAME_ENGINE_FORM_HEADERS.PLAYER1_ARMY_CODE,
-          FORM.PLAYER1_ARMY_CODE
-        );
-      loserArmyCode =
-        getGameEngineFormValue(
-          row,
-          GAME_ENGINE_FORM_HEADERS.PLAYER2_ARMY_CODE,
-          FORM.PLAYER2_ARMY_CODE
-        );
-
       firstTurnWinner =
         isGameEngineFirstTurnPlayer(
           row,
@@ -644,19 +584,6 @@ function buildAnalyticsRow(row, winner) {
 
       winnerVP = Number(row[FORM.P2VP]) || 0;
       loserVP = Number(row[FORM.P1VP]) || 0;
-
-      winnerArmyCode =
-        getGameEngineFormValue(
-          row,
-          GAME_ENGINE_FORM_HEADERS.PLAYER2_ARMY_CODE,
-          FORM.PLAYER2_ARMY_CODE
-        );
-      loserArmyCode =
-        getGameEngineFormValue(
-          row,
-          GAME_ENGINE_FORM_HEADERS.PLAYER1_ARMY_CODE,
-          FORM.PLAYER1_ARMY_CODE
-        );
 
       firstTurnWinner =
         isGameEngineFirstTurnPlayer(
@@ -689,6 +616,16 @@ function buildAnalyticsRow(row, winner) {
       row,
       FORM.LOSER_ARMY_LIST_ID
     );
+
+  const winnerArmyCode =
+    winnerArmyListId
+      ? ""
+      : getGameEnginePlayerArmyCode(row, winner);
+
+  const loserArmyCode =
+    loserArmyListId
+      ? ""
+      : getGameEnginePlayerArmyCode(row, winner === 1 ? 2 : 1);
 
   return [
 
@@ -728,15 +665,32 @@ function buildAnalyticsRow(row, winner) {
 
     gameResult,
 
-    winnerArmyCode,
-
-    loserArmyCode,
-
     winnerArmyListId,
 
-    loserArmyListId
+    loserArmyListId,
+
+    winnerArmyCode,
+
+    loserArmyCode
 
   ];
+
+}
+
+function getGameEnginePlayerArmyCode(row, playerNumber) {
+
+  const column =
+    playerNumber === 1
+      ? FORM.PLAYER1_ARMY_CODE
+      : FORM.PLAYER2_ARMY_CODE;
+
+  if (
+    !row ||
+    row.length <= column
+  )
+    return "";
+
+  return String(row[column] || "").trim();
 
 }
 

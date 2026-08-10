@@ -384,6 +384,12 @@ function resolveArmyCodeProfiles(armyCode) {
   result.armyName =
     textContent(matchArmyDecoderFirst(body, /<h2 class="card-header-title">Army List:\s*([\s\S]*?)<\/h2>/));
 
+  const profileCards =
+    parseArmyDecoderProfileCards(body);
+
+  let profileCardIndex =
+    0;
+
   const groupPattern =
     /<div class="army-group-title">Group:\s*(\d+)<\/div>([\s\S]*?)(?=<div class="army-group-title">|<div class="army-list-footer">)/g;
 
@@ -398,9 +404,18 @@ function resolveArmyCodeProfiles(armyCode) {
       Math.max(result.combatGroups, combatGroup);
 
     parseArmyDecoderRows(groupMatch[2], combatGroup).forEach(function(profile) {
+      const profileCardMatch =
+        findArmyDecoderProfileCard(profileCards, profileCardIndex, profile);
+
+      const enrichedProfile =
+        mergeArmyDecoderProfileCard(profile, profileCardMatch.card);
+
+      profileCardIndex =
+        profileCardMatch.nextIndex;
+
       result.points += profile.points;
       result.swc += profile.swc;
-      result.roster.push(profile);
+      result.roster.push(enrichedProfile);
     });
 
     groupMatch =
@@ -408,6 +423,160 @@ function resolveArmyCodeProfiles(armyCode) {
   }
 
   return result;
+
+}
+
+function findArmyDecoderProfileCard(profileCards, startIndex, profile) {
+
+  const normalizedProfile =
+    normalizeArmyDecoderProfileCardName(profile && profile.decodedProfile);
+
+  for (let index = startIndex; index < profileCards.length; index += 1) {
+    const normalizedCard =
+      normalizeArmyDecoderProfileCardName(profileCards[index] && profileCards[index].unit);
+
+    if (normalizedCard && normalizedCard === normalizedProfile)
+      return {
+        card: profileCards[index],
+        nextIndex: index + 1
+      };
+  }
+
+  return {
+    card: profileCards[startIndex],
+    nextIndex: startIndex + 1
+  };
+
+}
+
+function normalizeArmyDecoderProfileCardName(value) {
+
+  return getArmyDecoderString(value)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+}
+
+function parseArmyDecoderProfileCards(body) {
+
+  const cards = [];
+  const cardPattern =
+    /<div class="card"\s+data-info="combinedId:[^"]*">([\s\S]*?)(?=<div class="card"\s+data-info="combinedId:|<div class="army-group-title">|<div class="army-list-footer">|$)/g;
+
+  let cardMatch =
+    cardPattern.exec(body);
+
+  while (cardMatch) {
+    cards.push(parseArmyDecoderProfileCard(cardMatch[0]));
+    cardMatch =
+      cardPattern.exec(body);
+  }
+
+  return cards;
+
+}
+
+function parseArmyDecoderProfileCard(cardHtml) {
+
+  const unit =
+    textContent(matchArmyDecoderFirst(cardHtml, /<h2 class="card-header-title">([\s\S]*?)<\/h2>/));
+
+  const troopType =
+    textContent(matchArmyDecoderFirst(cardHtml, /<div class="typ-and-category">\s*<div>([\s\S]*?)<\/div>/));
+
+  const equipment =
+    splitArmyDecoderProfileTokens(textContent(matchArmyDecoderFirst(cardHtml, /<b>\s*Equipment:\s*<\/b>\s*<span>([\s\S]*?)<\/span>/i)));
+
+  const skills =
+    splitArmyDecoderProfileTokens(textContent(matchArmyDecoderFirst(cardHtml, /<b>\s*Skills:\s*<\/b>\s*<span>([\s\S]*?)<\/span>/i)));
+
+  const weapons = [];
+  const weaponPattern =
+    /<td class="weapon-table-name-header">([\s\S]*?)<\/td>/g;
+
+  let weaponMatch =
+    weaponPattern.exec(cardHtml);
+
+  while (weaponMatch) {
+    const weapon =
+      textContent(weaponMatch[1]);
+
+    if (weapon)
+      weapons.push(weapon);
+
+    weaponMatch =
+      weaponPattern.exec(cardHtml);
+  }
+
+  const metadataText =
+    [unit]
+      .concat(equipment)
+      .concat(skills)
+      .concat(weapons)
+      .join(" ");
+
+  return {
+    chainOfCommand: /chain\s+of\s+command/i.test(metadataText),
+    doctor: /\bdoctor\b/i.test(metadataText),
+    engineer: /\bengineer\b/i.test(metadataText),
+    equipment: equipment,
+    forwardObserver: /forward\s+observer/i.test(metadataText),
+    hacker: hasArmyDecoderProfileSkill(skills, /\bhacker\b/i),
+    lieutenant: /\blieutenant\b/i.test(metadataText),
+    skills: skills,
+    specialist: /chain\s+of\s+command|\bdoctor\b|\bengineer\b|forward\s+observer|\bhacker\b|hacking\s+device|\bparamedic\b/i.test(metadataText),
+    troopType: troopType,
+    unit: unit,
+    weapons: weapons
+  };
+
+}
+
+function mergeArmyDecoderProfileCard(profile, card) {
+
+  const metadata =
+    card || {};
+
+  return {
+    combatGroup: profile.combatGroup,
+    chainOfCommand: Boolean(metadata.chainOfCommand),
+    decodedProfile: profile.decodedProfile,
+    doctor: Boolean(metadata.doctor),
+    engineer: Boolean(metadata.engineer),
+    equipment: metadata.equipment || [],
+    forwardObserver: Boolean(metadata.forwardObserver),
+    hacker: Boolean(metadata.hacker),
+    lieutenant: Boolean(metadata.lieutenant),
+    points: profile.points,
+    rawProfile: profile.rawProfile,
+    skills: metadata.skills || [],
+    specialist: Boolean(metadata.specialist),
+    swc: profile.swc,
+    troopType: metadata.troopType || "",
+    unit: metadata.unit || profile.decodedProfile,
+    weapons: metadata.weapons || []
+  };
+
+}
+
+function splitArmyDecoderProfileTokens(value) {
+
+  return getArmyDecoderString(value)
+    .split(/\s*,\s*/)
+    .map(function(token) {
+      return token.trim();
+    })
+    .filter(Boolean);
+
+}
+
+function hasArmyDecoderProfileSkill(skills, pattern) {
+
+  return splitArmyDecoderProfileTokens(skills).some(function(skill) {
+    return pattern.test(skill);
+  });
 
 }
 
@@ -431,8 +600,10 @@ function parseArmyDecoderRows(groupHtml, combatGroup) {
       parseArmyDecoderCost(costText);
 
     const decodedProfile =
-      textContent(rowHtml)
+      sanitizeArmyDecoderProfileText(
+        textContent(rowHtml)
         .replace(costText, "")
+      )
         .replace(/\s+/g, " ")
         .trim();
 
@@ -449,6 +620,13 @@ function parseArmyDecoderRows(groupHtml, combatGroup) {
   }
 
   return rows;
+
+}
+
+function sanitizeArmyDecoderProfileText(value) {
+
+  return getArmyDecoderString(value)
+    .replace(/\s+Army Code:\s+\S+[\s\S]*$/i, "");
 
 }
 
@@ -558,12 +736,26 @@ function extractArmyCodePayload(value) {
     text.match(/(?:list|army|code)[\/=]([A-Za-z0-9+/_=-]+)/i);
 
   if (match)
-    return match[1];
+    return decodeArmyCodePayload(match[1]);
 
   const tail =
     text.split(/[?#&/]/).filter(Boolean).pop() || text;
 
-  return tail.replace(/\s+/g, "");
+  return decodeArmyCodePayload(tail);
+
+}
+
+function decodeArmyCodePayload(value) {
+
+  const compact =
+    String(value || "").replace(/\s+/g, "");
+
+  try {
+    return decodeURIComponent(compact);
+  }
+  catch (err) {
+    return compact;
+  }
 
 }
 

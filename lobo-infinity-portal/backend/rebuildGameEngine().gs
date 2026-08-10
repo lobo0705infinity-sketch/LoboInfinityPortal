@@ -133,9 +133,15 @@ function rebuildGameEngine(importedRowNumber) {
       responses
     );
 
-  writeSheet(
-    CONFIG.SHEETS.ENGINE,
-    engine
+  const armyIntelligence =
+    buildArmyIntelligenceForGameEngineRows(
+      engine
+    );
+
+  persistGameEngineState(
+    engine,
+    analytics,
+    armyIntelligence
   );
 
   if (tracedRowAccepted) {
@@ -150,10 +156,14 @@ function rebuildGameEngine(importedRowNumber) {
     );
   }
 
-  writeSheet(
-    CONFIG.SHEETS.GAME_ANALYTICS,
-    analytics
-  );
+  if (typeof rebuildArmyListsReadModel === "function")
+    rebuildArmyListsReadModel();
+
+  if (typeof rebuildArmyIntelligenceReadModel === "function")
+    rebuildArmyIntelligenceReadModel();
+
+  if (typeof syncLegacyArmyIntelligenceSnapshotsForCurrentSources === "function")
+    syncLegacyArmyIntelligenceSnapshotsForCurrentSources();
 
   Logger.log(
     (engine.length - 1) +
@@ -167,64 +177,87 @@ function rebuildGameEngine(importedRowNumber) {
 
   return {
     engineRows: engine.length - 1,
-    analyticsRows: analytics.length - 1
+    analyticsRows: analytics.length - 1,
+    armyIntelligenceRows: armyIntelligence.length - 1
   };
 
 }
 
-function publishLatestGameSubmittedAutomationEvent(game) {
+function persistGameEngineState(
+  engine,
+  analytics,
+  armyIntelligence
+) {
 
-  try {
+  const targets = [
+    {
+      sheetName: CONFIG.SHEETS.ENGINE,
+      rows: engine
+    },
+    {
+      sheetName: CONFIG.SHEETS.GAME_ANALYTICS,
+      rows: analytics
+    },
+    {
+      sheetName: CONFIG.SHEETS.ARMY_INTELLIGENCE,
+      rows: armyIntelligence
+    }
+  ];
 
-    const submittedGame =
-      game || getDiscordLatestGame();
+  const spreadsheet =
+    lifGetTargetSpreadsheet_();
 
-    return publishGameSubmittedAutomationEvent(submittedGame);
+  targets.forEach(function(target) {
 
-  }
-  catch (err) {
+    if (!spreadsheet.getSheetByName(target.sheetName))
+      spreadsheet.insertSheet(target.sheetName);
 
-    Logger.log(
-      "Game submitted automation event failed: " +
-      String(err && err.message ? err.message : err)
+  });
+
+  targets.forEach(function(target) {
+
+    writeSheet(
+      target.sheetName,
+      target.rows
     );
 
-  }
+  });
 
 }
 
-function publishGameSubmittedAutomationEvent(game) {
+function publishLatestGameSubmittedAutomationEvent() {
 
   try {
 
     if (
-      typeof publishLeagueAutomationEvent !== "function" ||
-      !game
-    )
-      return {
-        success: true,
-        skipped: true
-      };
+      typeof publishLeagueAutomationEvent === "function"
+    ) {
+      const latestGame =
+        getDiscordLatestGame();
 
-    return publishLeagueAutomationEvent({
-      eventType: "gameSubmitted",
-      category: "Match Results",
-      priority: "high",
-      player:
-        game && game.winner
-          ? game.winner
-          : "",
-      division:
-        game && game.division
-          ? game.division
-          : "",
-      message:
-        game && game.summary
-          ? game.summary
-          : "A league game was submitted.",
-      payload:
-        JSON.stringify(game || {})
-    });
+      if (!latestGame)
+        return;
+
+      publishLeagueAutomationEvent({
+        eventType: "gameSubmitted",
+        category: "Match Results",
+        priority: "high",
+        player:
+          latestGame && latestGame.winner
+            ? latestGame.winner
+            : "",
+        division:
+          latestGame && latestGame.division
+            ? latestGame.division
+            : "",
+        message:
+          latestGame && latestGame.summary
+            ? latestGame.summary
+            : "A league game was submitted.",
+        payload:
+          JSON.stringify(latestGame || {})
+      });
+    }
 
   }
   catch (err) {

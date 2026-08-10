@@ -22,6 +22,19 @@ const GAME_SCORE_CORRECTION_AUDIT_HEADERS = [
   "Reason"
 ];
 
+const GAME_ARMY_CODE_CORRECTION_AUDIT_HEADERS = [
+  "Timestamp",
+  "Commissioner",
+  "Game ID",
+  "Event ID",
+  "Player 1",
+  "Player 2",
+  "Previous Player 1 Army Code",
+  "Previous Player 2 Army Code",
+  "New Player 1 Army Code",
+  "New Player 2 Army Code"
+];
+
 function correctGameScore(e, auth) {
 
   const params =
@@ -78,7 +91,9 @@ function correctGameScore(e, auth) {
   if (
     before.tp === after.tp &&
     before.op === after.op &&
-    before.vp === after.vp
+    before.vp === after.vp &&
+    getGameScoreCorrectionStoredResult(target.row) ===
+      getGameScoreCorrectionResult(after)
   )
     return gameScoreCorrectionFailure("Corrected scores match the stored scores.");
 
@@ -97,6 +112,20 @@ function correctGameScore(e, auth) {
       )
       .setValue(update.player2);
   });
+
+  const correctedResult =
+    getGameScoreCorrectionResult(after);
+
+  const storedResult =
+    getGameScoreCorrectionStoredResult(target.row);
+
+  if (correctedResult !== storedResult)
+    target.sheet
+      .getRange(
+        target.rowNumber,
+        FORM.GAME_RESULT + 1
+      )
+      .setValue(correctedResult);
 
   if (typeof rebuildEverything === "function")
     rebuildEverything();
@@ -420,6 +449,180 @@ function buildGameScoreCorrectionAfterSnapshot(before, updates) {
 
 }
 
+function repairHistoricalArmyCodes(e, auth) {
+
+  const params =
+    getApiParameters(e);
+
+  const gameId =
+    Number(getApiParameter(params, "gameId")) || 0;
+
+  if (!gameId)
+    return gameScoreCorrectionFailure("A valid gameId is required.");
+
+  const target =
+    getGameScoreCorrectionTarget(gameId);
+
+  if (!target.found)
+    return gameScoreCorrectionFailure(target.error);
+
+  const expectation =
+    validateGameScoreCorrectionExpectations(
+      params,
+      target
+    );
+
+  if (!expectation.valid)
+    return gameScoreCorrectionFailure(expectation.error);
+
+  const previousPlayer1ArmyCode =
+    getResultSubmissionString(
+      target.row[FORM.PLAYER1_ARMY_CODE]
+    );
+
+  const previousPlayer2ArmyCode =
+    getResultSubmissionString(
+      target.row[FORM.PLAYER2_ARMY_CODE]
+    );
+
+  const player1ArmyCode =
+    getResultSubmissionString(
+      getApiParameter(params, "player1ArmyCode")
+    );
+
+  const player2ArmyCode =
+    getResultSubmissionString(
+      getApiParameter(params, "player2ArmyCode")
+    );
+
+  if (!player1ArmyCode || !player2ArmyCode)
+    return gameScoreCorrectionFailure("Player 1 and Player 2 Army Codes are required.");
+
+  if (
+    previousPlayer1ArmyCode === player1ArmyCode &&
+    previousPlayer2ArmyCode === player2ArmyCode
+  )
+    return gameScoreCorrectionFailure("Submitted Army Codes match the stored Army Codes.");
+
+  target.sheet
+    .getRange(
+      target.rowNumber,
+      FORM.PLAYER1_ARMY_CODE + 1
+    )
+    .setValue(player1ArmyCode);
+
+  target.sheet
+    .getRange(
+      target.rowNumber,
+      FORM.PLAYER2_ARMY_CODE + 1
+    )
+    .setValue(player2ArmyCode);
+
+  if (typeof rebuildEverything === "function")
+    rebuildEverything();
+  else if (typeof rebuildGameEngine === "function")
+    rebuildGameEngine();
+
+  recordGameArmyCodeCorrectionAudit({
+    commissioner:
+      getGameScoreCorrectionCommissioner(auth),
+    eventId: target.eventId,
+    gameId: gameId,
+    player1: target.player1,
+    player2: target.player2,
+    previousPlayer1ArmyCode: previousPlayer1ArmyCode,
+    previousPlayer2ArmyCode: previousPlayer2ArmyCode,
+    player1ArmyCode: player1ArmyCode,
+    player2ArmyCode: player2ArmyCode
+  });
+
+  if (typeof invalidatePortalCacheGroup === "function")
+    invalidatePortalCacheGroup("all");
+
+  return jsonOutput({
+    success: true,
+    auditWritten: true,
+    cacheInvalidated: "all",
+    derivedAnalyticsRebuilt:
+      typeof rebuildEverything === "function",
+    gameEngineRebuilt:
+      typeof rebuildEverything === "function" ||
+      typeof rebuildGameEngine === "function",
+    gameId: gameId,
+    eventId: target.eventId,
+    players: {
+      player1: target.player1,
+      player2: target.player2
+    },
+    previousArmyCodes: {
+      player1: previousPlayer1ArmyCode,
+      player2: previousPlayer2ArmyCode
+    },
+    armyCodes: {
+      player1: player1ArmyCode,
+      player2: player2ArmyCode
+    }
+  });
+
+}
+
+function getGameScoreCorrectionResult(snapshot) {
+
+  const tp =
+    getGameScoreCorrectionPairScores(snapshot.tp);
+
+  if (tp.player1 !== tp.player2)
+    return tp.player1 > tp.player2
+      ? "Player 1 Victory"
+      : "Player 2 Victory";
+
+  const op =
+    getGameScoreCorrectionPairScores(snapshot.op);
+
+  if (op.player1 !== op.player2)
+    return op.player1 > op.player2
+      ? "Player 1 Victory"
+      : "Player 2 Victory";
+
+  const vp =
+    getGameScoreCorrectionPairScores(snapshot.vp);
+
+  if (vp.player1 !== vp.player2)
+    return vp.player1 > vp.player2
+      ? "Player 1 Victory"
+      : "Player 2 Victory";
+
+  return "Draw";
+
+}
+
+function getGameScoreCorrectionPairScores(value) {
+
+  const parts =
+    getResultSubmissionString(value)
+      .split("-");
+
+  return {
+    player1:
+      Number(parts[0]) || 0,
+    player2:
+      Number(parts[1]) || 0
+  };
+
+}
+
+function getGameScoreCorrectionStoredResult(row) {
+
+  return getGameEngineExplicitResult(row) === "player1"
+    ? "Player 1 Victory"
+    : getGameEngineExplicitResult(row) === "player2"
+      ? "Player 2 Victory"
+      : getGameEngineExplicitResult(row) === "draw"
+        ? "Draw"
+        : "";
+
+}
+
 function getGameScoreCorrectionPair(row, player1Column, player2Column) {
 
   return (
@@ -518,6 +721,56 @@ function getGameScoreCorrectionAuditSheet() {
 
   if (!matches)
     range.setValues([GAME_SCORE_CORRECTION_AUDIT_HEADERS]);
+
+  return sheet;
+
+}
+
+function recordGameArmyCodeCorrectionAudit(record) {
+
+  const sheet =
+    getGameArmyCodeCorrectionAuditSheet();
+
+  sheet.appendRow([
+    getResultSubmissionTimestamp(),
+    record.commissioner,
+    record.gameId,
+    record.eventId,
+    record.player1,
+    record.player2,
+    record.previousPlayer1ArmyCode,
+    record.previousPlayer2ArmyCode,
+    record.player1ArmyCode,
+    record.player2ArmyCode
+  ]);
+
+}
+
+function getGameArmyCodeCorrectionAuditSheet() {
+
+  const spreadsheet =
+    lifGetTargetSpreadsheet_();
+
+  let sheet =
+    spreadsheet.getSheetByName(CONFIG.SHEETS.GAME_ARMY_CODE_CORRECTION_AUDIT);
+
+  if (!sheet)
+    sheet =
+      spreadsheet.insertSheet(CONFIG.SHEETS.GAME_ARMY_CODE_CORRECTION_AUDIT);
+
+  const range =
+    sheet.getRange(1, 1, 1, GAME_ARMY_CODE_CORRECTION_AUDIT_HEADERS.length);
+
+  const headers =
+    range.getValues()[0];
+
+  const matches =
+    GAME_ARMY_CODE_CORRECTION_AUDIT_HEADERS.every(function(header, index) {
+      return headers[index] === header;
+    });
+
+  if (!matches)
+    range.setValues([GAME_ARMY_CODE_CORRECTION_AUDIT_HEADERS]);
 
   return sheet;
 

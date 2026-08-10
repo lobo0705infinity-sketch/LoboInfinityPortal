@@ -42,11 +42,13 @@ const CONFIG = {
 
     ARMY_LISTS: "Army Lists",
 
+    ARMY_LISTS_READ_MODEL: "Army Lists Read Model",
+
     ARMY_CODE_VALIDATION_AUDIT: "Army Code Validation Audit",
 
-    GAME_ARMY_CODE_CORRECTION_AUDIT: "Game Army Code Correction Audit",
-
     GAME_SCORE_CORRECTION_AUDIT: "Game Score Correction Audit",
+
+    GAME_ARMY_CODE_CORRECTION_AUDIT: "Game Army Code Correction Audit",
 
     COMMISSIONER_NEWS: "Commissioner News",
 
@@ -96,7 +98,11 @@ const CONFIG = {
 
     COMMUNITY_TIMELINE: "Community Timeline",
 
-    LEAGUE_OPERATIONS: "League Operations"
+    LEAGUE_OPERATIONS: "League Operations",
+
+    ARMY_INTELLIGENCE: "Army Intelligence",
+
+    ARMY_INTELLIGENCE_READ_MODEL: "Army Intelligence Read Model"
 
   },
 
@@ -146,9 +152,7 @@ const CONFIG = {
 
     GAME_RESULT: 13,
 
-    ARMY_CODE: 14,
-
-    ARMY_LIST_ID: 15
+    ARMY_LIST_ID: 14
 
   },
 

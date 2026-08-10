@@ -23,6 +23,15 @@ const PLAYER_REGISTRY_CACHE_TTL_SECONDS = 21600;
 
 function loadPlayers() {
 
+  const forensicStart =
+    enterApiForensicFunction(
+      "loadPlayers",
+      "playerRegistry",
+      {}
+    );
+
+  try {
+
   let timer =
     startDashboardEndpointSubStage(
       "dashboard.players.spreadsheet.getActive"
@@ -122,6 +131,25 @@ function loadPlayers() {
   );
 
   return normalized;
+
+  }
+  catch (err) {
+    recordApiForensicException(
+      "loadPlayers",
+      "playerRegistry",
+      forensicStart,
+      err
+    );
+    throw err;
+  }
+  finally {
+    exitApiForensicFunction(
+      "loadPlayers",
+      "playerRegistry",
+      forensicStart,
+      {}
+    );
+  }
 
 }
 
@@ -445,6 +473,15 @@ function findPlayerRegistryEntry(registry, playerName) {
 
 function buildPlayerRegistry() {
 
+  const forensicStart =
+    enterApiForensicFunction(
+      "buildPlayerRegistry",
+      "playerRegistry",
+      {}
+    );
+
+  try {
+
   const timer =
     startDashboardEndpointSubStage(
       "dashboard.players.buildRegistry"
@@ -500,6 +537,25 @@ function buildPlayerRegistry() {
   return clonePlayerRegistry(
     registry
   );
+
+  }
+  catch (err) {
+    recordApiForensicException(
+      "buildPlayerRegistry",
+      "playerRegistry",
+      forensicStart,
+      err
+    );
+    throw err;
+  }
+  finally {
+    exitApiForensicFunction(
+      "buildPlayerRegistry",
+      "playerRegistry",
+      forensicStart,
+      {}
+    );
+  }
 
 }
 

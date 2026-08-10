@@ -539,6 +539,9 @@ function getEventAnalyticsGameTypeIntelligence(context) {
           return {
             mission: mission.mission,
             games: mission.games,
+            averageTP: mission.averageTP,
+            averageOP: mission.averageOP,
+            averageVP: mission.averageVP,
             firstTurnWinRate: mission.firstTurnWinRate,
             mostSuccessfulFaction: mission.mostSuccessfulFaction,
             story:

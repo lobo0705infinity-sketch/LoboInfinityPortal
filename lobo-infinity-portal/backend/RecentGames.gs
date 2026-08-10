@@ -27,10 +27,10 @@ const RECENT_GAME_ANALYTICS_COLUMNS = {
   EVENT_ID: "Event ID",
   GAME_TYPE: "Game Type",
   GAME_RESULT: "Game Result",
-  WINNER_ARMY_CODE: "Winner Army Code",
-  LOSER_ARMY_CODE: "Loser Army Code",
   WINNER_ARMY_LIST_ID: "Winner Army List ID",
-  LOSER_ARMY_LIST_ID: "Loser Army List ID"
+  LOSER_ARMY_LIST_ID: "Loser Army List ID",
+  WINNER_ARMY_CODE: "Winner Army Code",
+  LOSER_ARMY_CODE: "Loser Army Code"
 };
 
 function getRecentGames(e) {
@@ -244,20 +244,20 @@ function getGameCenterCanonicalGames() {
 
   return dedupeGameCenterCanonicalGames(
     values
-      .map(function(row, index) {
-        return buildRecentGame(
-          row,
-          index + 1,
-          columns
-        );
-      })
-      .filter(function(game) {
-        return (
-          game.date !== "" &&
-          game.winner !== "" &&
-          game.loser !== ""
-        );
-      })
+    .map(function(row, index) {
+      return buildRecentGame(
+        row,
+        index + 1,
+        columns
+      );
+    })
+    .filter(function(game) {
+      return (
+        game.date !== "" &&
+        game.winner !== "" &&
+        game.loser !== ""
+      );
+    })
   )
     .sort(sortGameCenterCanonicalGames);
 
@@ -581,6 +581,8 @@ function buildGameCenterGameResponse(game, context) {
     result: playerFields.result,
     player1Faction: playerFields.player1Faction,
     player2Faction: playerFields.player2Faction,
+    player1ArmyCode: playerFields.player1ArmyCode,
+    player2ArmyCode: playerFields.player2ArmyCode,
     team: team,
     tp: playerFields.tp,
     op: playerFields.op,
@@ -626,6 +628,8 @@ function buildGameCenterPlayerFields(recent) {
       result: recent.winnerDisplayName,
       player1Faction: recent.loserFaction,
       player2Faction: recent.winnerFaction,
+      player1ArmyCode: recent.loserArmyCode,
+      player2ArmyCode: recent.winnerArmyCode,
       tp: invertGameCenterScore(recent.tp),
       op: invertGameCenterScore(recent.op),
       vp: invertGameCenterScore(recent.vp)
@@ -650,6 +654,8 @@ function buildGameCenterPlayerFields(recent) {
         : recent.winnerDisplayName,
     player1Faction: recent.winnerFaction,
     player2Faction: recent.loserFaction,
+    player1ArmyCode: recent.winnerArmyCode,
+    player2ArmyCode: recent.loserArmyCode,
     tp: recent.tp,
     op: recent.op,
     vp: recent.vp
@@ -828,8 +834,6 @@ function buildRecentGameFromLinkedNews(gameId) {
     loserDisplayName: parsed.loser,
     winnerFaction: "",
     loserFaction: "",
-    winnerArmyCode: "",
-    loserArmyCode: "",
     mission: parsed.mission,
     tp: "",
     op: parsed.op,
@@ -899,10 +903,10 @@ function buildRecentGameResponse(game) {
       getPlayerDisplayName(game.loser),
     winnerFaction: game.winnerFaction,
     loserFaction: game.loserFaction,
-    winnerArmyCode: game.winnerArmyCode || "",
-    loserArmyCode: game.loserArmyCode || "",
     winnerArmyListId: game.winnerArmyListId || "",
     loserArmyListId: game.loserArmyListId || "",
+    winnerArmyCode: game.winnerArmyCode || "",
+    loserArmyCode: game.loserArmyCode || "",
     gameResult:
       getRecentGameResult(game),
     mission: game.mission,
@@ -1066,16 +1070,6 @@ function getRecentGameColumns(headers) {
         headers,
         RECENT_GAME_ANALYTICS_COLUMNS.GAME_RESULT
       ),
-    winnerArmyCode:
-      getRecentGameOptionalColumn(
-        headers,
-        RECENT_GAME_ANALYTICS_COLUMNS.WINNER_ARMY_CODE
-      ),
-    loserArmyCode:
-      getRecentGameOptionalColumn(
-        headers,
-        RECENT_GAME_ANALYTICS_COLUMNS.LOSER_ARMY_CODE
-      ),
     winnerArmyListId:
       getRecentGameOptionalColumn(
         headers,
@@ -1085,6 +1079,16 @@ function getRecentGameColumns(headers) {
       getRecentGameOptionalColumn(
         headers,
         RECENT_GAME_ANALYTICS_COLUMNS.LOSER_ARMY_LIST_ID
+      ),
+    winnerArmyCode:
+      getRecentGameOptionalColumn(
+        headers,
+        RECENT_GAME_ANALYTICS_COLUMNS.WINNER_ARMY_CODE
+      ),
+    loserArmyCode:
+      getRecentGameOptionalColumn(
+        headers,
+        RECENT_GAME_ANALYTICS_COLUMNS.LOSER_ARMY_CODE
       )
   };
 
@@ -1144,18 +1148,6 @@ function buildRecentGame(
       canonicalizeArmyName(
         row[columns.loserFaction]
       ),
-    winnerArmyCode:
-      columns.winnerArmyCode === -1
-        ? ""
-        : getRecentGameString(
-            row[columns.winnerArmyCode]
-          ),
-    loserArmyCode:
-      columns.loserArmyCode === -1
-        ? ""
-        : getRecentGameString(
-            row[columns.loserArmyCode]
-          ),
     mission:
       getRecentGameString(
         row[columns.mission]
@@ -1207,7 +1199,19 @@ function buildRecentGame(
       getRecentGameArmyListId(
         row,
         columns.loserArmyListId
-      )
+      ),
+    winnerArmyCode:
+      columns.winnerArmyCode === -1
+        ? ""
+        : getRecentGameString(
+            row[columns.winnerArmyCode]
+          ),
+    loserArmyCode:
+      columns.loserArmyCode === -1
+        ? ""
+        : getRecentGameString(
+            row[columns.loserArmyCode]
+          )
   };
 
 }

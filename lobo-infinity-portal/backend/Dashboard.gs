@@ -30,6 +30,22 @@ function getDashboard() {
 
   timer =
     startDashboardEndpointSubStage(
+      "dashboard.sheetLookup.mainMan"
+    );
+
+  const standings =
+    ss.getSheetByName(CONFIG.SHEETS.MAIN_MAN);
+
+  endDashboardEndpointSubStage(
+    "dashboard.sheetLookup.mainMan",
+    timer,
+    {
+      sheet: CONFIG.SHEETS.MAIN_MAN
+    }
+  );
+
+  timer =
+    startDashboardEndpointSubStage(
       "dashboard.sheetLookup.factionAnalytics"
     );
 
@@ -43,6 +59,15 @@ function getDashboard() {
       sheet: CONFIG.SHEETS.FACTION_ANALYTICS
     }
   );
+
+  if (!standings) {
+
+    return jsonOutput({
+      success: false,
+      error: "Main Man Standings not found."
+    });
+
+  }
 
   timer =
     startDashboardEndpointSubStage(
@@ -71,35 +96,72 @@ function getDashboard() {
 
   timer =
     startDashboardEndpointSubStage(
-      "dashboard.standings.mainMan"
+      "dashboard.read.mainManStandings"
     );
 
-  const mainManResponse =
-    buildStandingsResponse(
-      getStandingsDivisionConfig("main"),
-      dashboardContext
-    );
+  const values =
+    standings
+      .getRange(2, 1, standings.getLastRow() - 1, getDashboardStandingsColumnCount())
+      .getValues();
 
   endDashboardEndpointSubStage(
-    "dashboard.standings.mainMan",
+    "dashboard.read.mainManStandings",
     timer,
     {
-      eventId: mainManResponse.eventId,
-      rows: mainManResponse.standings.length
+      sheet: CONFIG.SHEETS.MAIN_MAN,
+      rows: values.length,
+      columns: getDashboardStandingsColumnCount()
     }
   );
 
   const leader =
-    mainManResponse.summary.leader || {};
+    values[0] || [];
 
-  const mainManStandings =
-    mainManResponse.standings;
+  let gamesPlayed = 0;
+  let activePlayers = 0;
+  const mainManStandings = [];
 
-  const gamesPlayed =
-    mainManResponse.summary.gamesPlayed;
+  timer =
+    startDashboardEndpointSubStage(
+      "dashboard.loop.mainManStandings"
+    );
 
-  const activePlayers =
-    mainManResponse.summary.activePlayers;
+  values.forEach(function(r) {
+
+    gamesPlayed +=
+      Number(r[CONFIG.STANDINGS.GAMES]);
+
+    if (Number(r[CONFIG.STANDINGS.GAMES]) > 0)
+      activePlayers++;
+
+    mainManStandings.push({
+      rank: r[CONFIG.STANDINGS.RANK],
+      player: r[CONFIG.STANDINGS.PLAYER],
+      displayName:
+        getDashboardPlayerDisplayName(
+          dashboardContext,
+          r[CONFIG.STANDINGS.PLAYER]
+        ),
+      games: r[CONFIG.STANDINGS.GAMES],
+      wins: r[CONFIG.STANDINGS.WINS],
+      losses: r[CONFIG.STANDINGS.LOSSES],
+      tp: r[CONFIG.STANDINGS.TP],
+      op: r[CONFIG.STANDINGS.OP],
+      vp: r[CONFIG.STANDINGS.VP]
+    });
+
+  });
+
+  endDashboardEndpointSubStage(
+    "dashboard.loop.mainManStandings",
+    timer,
+    {
+      rows: values.length
+    }
+  );
+
+  gamesPlayed =
+    Math.floor(gamesPlayed / 2);
 
   let topFaction = "";
 
@@ -146,6 +208,23 @@ function getDashboard() {
     {}
   );
 
+  timer =
+    startDashboardEndpointSubStage(
+      "dashboard.lookup.leaderDisplayName"
+    );
+
+  const leaderDisplayName =
+    getDashboardPlayerDisplayName(
+      dashboardContext,
+      leader[CONFIG.STANDINGS.PLAYER]
+    );
+
+  endDashboardEndpointSubStage(
+    "dashboard.lookup.leaderDisplayName",
+    timer,
+    {}
+  );
+
   endDashboardEndpointSubStage(
     "dashboard.total",
     dashboardStart,
@@ -155,20 +234,15 @@ function getDashboard() {
   return jsonOutput({
     success: true,
     leader: {
-      rank: leader.rank || 0,
-      player: leader.player || "",
-      displayName: leader.displayName || leader.player || "",
-      games: leader.games || 0,
-      wins: leader.wins || 0,
-      losses: leader.losses || 0,
-      draws: leader.draws || 0,
-      tp: leader.tp || 0,
-      op: leader.op || 0,
-      vp: leader.vp || 0,
-      faction: leader.faction || "",
-      favoriteArmy: leader.favoriteArmy || leader.faction || "",
-      favoriteFaction: leader.favoriteFaction || leader.favoriteArmy || leader.faction || "",
-      preferredArmy: leader.preferredArmy || leader.favoriteArmy || leader.faction || ""
+      rank: leader[CONFIG.STANDINGS.RANK],
+      player: leader[CONFIG.STANDINGS.PLAYER],
+      displayName: leaderDisplayName,
+      games: leader[CONFIG.STANDINGS.GAMES],
+      wins: leader[CONFIG.STANDINGS.WINS],
+      losses: leader[CONFIG.STANDINGS.LOSSES],
+      tp: leader[CONFIG.STANDINGS.TP],
+      op: leader[CONFIG.STANDINGS.OP],
+      vp: leader[CONFIG.STANDINGS.VP]
     },
     topFaction: topFaction,
     gamesPlayed: gamesPlayed,
@@ -489,36 +563,44 @@ function endDashboardEndpointSubStage(stageName, startTime, details) {
 
 function getLeader() {
 
-  const dashboardContext =
-    buildDashboardRequestContext();
+  const sheet =
+    SpreadsheetApp
+      .getActiveSpreadsheet()
+      .getSheetByName(CONFIG.SHEETS.MAIN_MAN);
 
-  const response =
-    buildStandingsResponse(
-      getStandingsDivisionConfig("main"),
-      dashboardContext
-    );
+  if (!sheet)
+    return jsonOutput({
+      success: false,
+      error: "Standings sheet not found."
+    });
 
-  const leader =
-    response.summary.leader;
+  const values =
+    sheet
+      .getDataRange()
+      .getValues();
 
-  if (!leader)
+  if (values.length < 2)
     return jsonOutput({
       success: false,
       error: "No standings."
     });
 
+  const l = values[1];
+
   return jsonOutput({
     success: true,
-    rank: leader.rank,
-    player: leader.player,
-    displayName: leader.displayName,
-    games: leader.games,
-    wins: leader.wins,
-    losses: leader.losses,
-    draws: leader.draws,
-    tp: leader.tp,
-    op: leader.op,
-    vp: leader.vp
+    rank: l[CONFIG.STANDINGS.RANK],
+    player: l[CONFIG.STANDINGS.PLAYER],
+    displayName:
+      getPlayerDisplayName(
+        l[CONFIG.STANDINGS.PLAYER]
+      ),
+    games: l[CONFIG.STANDINGS.GAMES],
+    wins: l[CONFIG.STANDINGS.WINS],
+    losses: l[CONFIG.STANDINGS.LOSSES],
+    tp: l[CONFIG.STANDINGS.TP],
+    op: l[CONFIG.STANDINGS.OP],
+    vp: l[CONFIG.STANDINGS.VP]
   });
 
 }

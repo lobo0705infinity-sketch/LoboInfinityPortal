@@ -1,150 +1,626 @@
-/*******************************************************
+﻿/*******************************************************
  * ArmyIntelligenceApi.gs
  *
  * Disposable decoded army-list snapshots. Source game and
  * community army-list records remain authoritative.
  *******************************************************/
 
-const ARMY_INTELLIGENCE_SHEET_NAME = "Army List Intelligence";
-
-const ARMY_INTELLIGENCE_HEADERS = [
-  "Snapshot Key",
-  "Source Type",
-  "Source ID",
-  "Source Player",
-  "Player",
-  "Opponent",
-  "Faction",
-  "Sectorial",
-  "Game Type",
-  "Event",
-  "Mission",
-  "Date",
-  "Result",
-  "Army Code Hash",
-  "Army Code",
-  "Decode Status",
-  "Decoded At",
-  "Decode Error",
-  "Decoded JSON"
+const ARMY_INTELLIGENCE_READ_MODEL_KEY = "armyIntelligence:v4";
+const ARMY_INTELLIGENCE_READ_MODEL_CHUNK_SIZE = 45000;
+const ARMY_INTELLIGENCE_READ_MODEL_HEADERS = [
+  "Key",
+  "Generated At",
+  "Chunk Index",
+  "Payload JSON Chunk"
 ];
-
-const ARMY_INTELLIGENCE_COLUMNS = {
-  SNAPSHOT_KEY: 0,
-  SOURCE_TYPE: 1,
-  SOURCE_ID: 2,
-  SOURCE_PLAYER: 3,
-  PLAYER: 4,
-  OPPONENT: 5,
-  FACTION: 6,
-  SECTORIAL: 7,
-  GAME_TYPE: 8,
-  EVENT: 9,
-  MISSION: 10,
-  DATE: 11,
-  RESULT: 12,
-  ARMY_CODE_HASH: 13,
-  ARMY_CODE: 14,
-  DECODE_STATUS: 15,
-  DECODED_AT: 16,
-  DECODE_ERROR: 17,
-  DECODED_JSON: 18
-};
 
 function getArmyIntelligence(e) {
 
-  const sources =
-    buildArmyIntelligenceSources();
+  const readModel =
+    readArmyIntelligenceReadModelPayload();
 
-  const snapshots =
-    getArmyIntelligenceSnapshotMap();
+  if (readModel)
+    return jsonOutput(readModel);
+
+  return jsonOutput(
+    rebuildArmyIntelligenceReadModelPayloadAndPersist()
+  );
+
+}
+
+function rebuildArmyIntelligenceReadModel() {
+
+  const payload =
+    rebuildArmyIntelligenceReadModelPayloadAndPersist();
+
+  return {
+    lists: payload.lists.length
+  };
+
+}
+
+function rebuildArmyIntelligenceReadModelPayloadAndPersist() {
+
+  const payload =
+    rebuildArmyIntelligenceReadModelPayload();
+
+  const rows =
+    buildArmyIntelligenceReadModelRowsFromPayload(
+      payload
+    );
+
+  const spreadsheet =
+    lifGetTargetSpreadsheet_();
+
+  if (!spreadsheet.getSheetByName(CONFIG.SHEETS.ARMY_INTELLIGENCE_READ_MODEL))
+    spreadsheet.insertSheet(CONFIG.SHEETS.ARMY_INTELLIGENCE_READ_MODEL);
+
+  writeSheet(
+    CONFIG.SHEETS.ARMY_INTELLIGENCE_READ_MODEL,
+    rows
+  );
+
+  return payload;
+
+}
+
+function rebuildArmyIntelligenceReadModelPayload() {
 
   const knownArmyListRegistry =
     buildKnownArmyListRegistry();
 
-  const lists =
-    sources.map(function(source) {
-      const snapshot =
-        snapshots[source.snapshotKey] ||
-        createPendingArmyIntelligenceSnapshot(source);
+  const responseLists =
+    buildArmyIntelligenceListsFromCanonicalSources(
+      knownArmyListRegistry.counts
+    );
 
-      return mergeArmyIntelligenceSourceAndSnapshot(
-        source,
-        snapshot,
-        knownArmyListRegistry.counts
-      );
-    });
-
-  return jsonOutput({
+  return {
     success: true,
     armyLists: knownArmyListRegistry.lists,
-    lists: lists,
-    summary: buildArmyIntelligenceSummary(lists)
+    lists: responseLists,
+    summary: buildArmyIntelligenceSummary(responseLists)
+  };
+
+}
+
+function buildArmyIntelligenceReadModelRows(armyIntelligenceRows) {
+
+  const payload =
+    buildArmyIntelligenceReadModelPayloadFromRows(
+      armyIntelligenceRows
+    );
+
+  return buildArmyIntelligenceReadModelRowsFromPayload(payload);
+
+}
+
+function buildArmyIntelligenceReadModelRowsFromPayload(payload) {
+
+  const generatedAt =
+    new Date().toISOString();
+
+  const json =
+    JSON.stringify(payload);
+
+  const rows = [
+    ARMY_INTELLIGENCE_READ_MODEL_HEADERS
+  ];
+
+  for (
+    let offset = 0, index = 1;
+    offset < json.length;
+    offset += ARMY_INTELLIGENCE_READ_MODEL_CHUNK_SIZE, index += 1
+  )
+    rows.push([
+      ARMY_INTELLIGENCE_READ_MODEL_KEY,
+      generatedAt,
+      index,
+      json.slice(
+        offset,
+        offset + ARMY_INTELLIGENCE_READ_MODEL_CHUNK_SIZE
+      )
+    ]);
+
+  if (rows.length === 1)
+    rows.push([
+      ARMY_INTELLIGENCE_READ_MODEL_KEY,
+      generatedAt,
+      1,
+      json
+    ]);
+
+  return rows;
+
+}
+
+function buildArmyIntelligenceReadModelPayloadFromRows(armyIntelligenceRows) {
+
+  const responseLists =
+    mapDeterministicArmyIntelligenceRows(
+      armyIntelligenceRows
+    );
+
+  const armyLists =
+    buildArmyIntelligenceArmyListsFromReadModelLists(
+      responseLists
+    );
+
+  return {
+    success: true,
+    armyLists: armyLists,
+    lists: responseLists,
+    summary: buildArmyIntelligenceSummary(responseLists)
+  };
+
+}
+
+function buildArmyIntelligenceArmyListsFromReadModelLists(lists) {
+
+  return lists.map(function(list) {
+
+    const decoded =
+      list.decoded || {};
+
+    const totals =
+      decoded.totals || {};
+
+    return {
+      id: Number(list.sourceId) || 0,
+      armyCode: getArmyIntelligenceString(list.armyCode),
+      armyLink: "",
+      armyName: getArmyIntelligenceString(decoded.listName),
+      faction: getArmyIntelligenceString(list.faction),
+      player: getArmyIntelligenceString(list.player),
+      playerDisplayName: getArmyIntelligenceString(list.player),
+      points: Number(totals.points) || 0,
+      sectorial: getArmyIntelligenceString(list.sectorial),
+      source: "League",
+      submissionDate: getArmyIntelligenceString(list.date),
+      swc: Number(totals.swc) || 0
+    };
+
   });
 
 }
 
-function refreshArmyIntelligence(e) {
+function readArmyIntelligenceReadModelPayload() {
 
-  const parameters =
-    getApiParameters(e);
+  const sheet =
+    SpreadsheetApp
+      .getActive()
+      .getSheetByName(CONFIG.SHEETS.ARMY_INTELLIGENCE_READ_MODEL);
 
-  const sources =
-    buildArmyIntelligenceSources();
-
-  ensureArmyIntelligenceSheet();
-
-  const snapshotsJson =
-    getApiParameter(parameters, "snapshots");
-
-  if (!snapshotsJson) {
-    return jsonOutput({
-      success: true,
-      status: "Ready",
-      sourceCount: sources.length,
-      pendingCount: countPendingArmyIntelligenceSources(sources),
-      message: "Army Intelligence source inventory refreshed. Run the decoder worker to update snapshots."
-    });
-  }
-
-  const snapshots =
-    JSON.parse(snapshotsJson);
-
-  if (!Array.isArray(snapshots)) {
-    return jsonOutput({
-      success: false,
-      error: "snapshots must be a JSON array."
-    });
-  }
-
-  const sourceByKey = {};
-  sources.forEach(function(source) {
-    sourceByKey[source.snapshotKey] = source;
-  });
+  if (!sheet || sheet.getLastRow() < 2)
+    return null;
 
   const rows =
-    snapshots
-      .map(function(snapshot) {
-        const source =
-          sourceByKey[getArmyIntelligenceString(snapshot.snapshotKey)];
-
-        if (!source)
-          return null;
-
-        return buildArmyIntelligenceSnapshotRow(source, snapshot);
-      })
+    sheet
+      .getRange(
+        2,
+        1,
+        sheet.getLastRow() - 1,
+        ARMY_INTELLIGENCE_READ_MODEL_HEADERS.length
+      )
+      .getValues()
       .filter(function(row) {
-        return row !== null;
+        return row[0] === ARMY_INTELLIGENCE_READ_MODEL_KEY;
+      })
+      .sort(function(left, right) {
+        return Number(left[2]) - Number(right[2]);
       });
 
-  upsertArmyIntelligenceRows(rows);
-  invalidatePortalCacheGroup("armyIntelligence");
+  if (rows.length === 0)
+    return null;
 
-  return jsonOutput({
-    success: true,
-    status: "Refreshed",
-    updated: rows.length,
-    sourceCount: sources.length
+  const json =
+    rows.map(function(row) {
+      return getArmyIntelligenceString(row[3]);
+    }).join("");
+
+  if (!json)
+    return null;
+
+  const payload =
+    JSON.parse(json);
+
+  payload.success = true;
+
+  return normalizeArmyIntelligenceReadModelRoleFlags(payload);
+
+}
+
+function normalizeArmyIntelligenceReadModelRoleFlags(payload) {
+
+  (payload.lists || []).forEach(function(list) {
+
+    ((list.decoded || {}).combatGroups || []).forEach(function(group) {
+
+      (group.entries || []).forEach(function(entry) {
+
+        entry.hacker =
+          hasArmyIntelligenceProfileToken(
+            getArmyIntelligenceStringArray(entry.skills),
+            /\bhacker\b/i
+          );
+
+      });
+
+    });
+
+  });
+
+  return payload;
+
+}
+
+function buildArmyIntelligenceListsFromCanonicalSources(knownArmyListCounts) {
+
+  return buildArmyIntelligenceSources()
+    .map(function(source) {
+      const snapshot =
+        buildLegacyArmyIntelligenceSnapshot(source);
+
+      if (!snapshot)
+        return mergeArmyIntelligenceSourceAndSnapshot(
+          source,
+          {
+            armyCodeHash: source.armyCodeHash,
+            decodedAt: "",
+            decodedJson: "",
+            error: "Army Code could not be decoded.",
+            snapshotKey: source.snapshotKey,
+            status: "failed"
+          },
+          knownArmyListCounts
+        );
+
+      return mergeArmyIntelligenceSourceAndSnapshot(
+        source,
+        {
+          armyCodeHash: source.armyCodeHash,
+          decodedAt: snapshot.decodedAt,
+          decodedJson: JSON.stringify(snapshot.decoded),
+          error: snapshot.error,
+          snapshotKey: source.snapshotKey,
+          status: snapshot.status
+        },
+        knownArmyListCounts
+      );
+    });
+
+}
+
+function getDeterministicArmyIntelligenceLists() {
+
+  let lists =
+    mapDeterministicArmyIntelligenceRows(
+      readPersistedDeterministicArmyIntelligenceRows()
+    );
+
+  if (lists.length === 0)
+    lists =
+      mapDeterministicArmyIntelligenceRows(
+        buildCurrentDeterministicArmyIntelligenceRows()
+      );
+
+  if (lists.length === 0)
+    lists =
+      mapDeterministicArmyIntelligenceRows(
+        buildApprovedArmyListIntelligenceRows()
+      );
+
+  return lists;
+
+}
+
+function mapDeterministicArmyIntelligenceRows(rows) {
+
+  if (rows.length < 2)
+    return [];
+
+  return rows
+    .slice(1)
+    .map(buildDeterministicArmyIntelligenceList)
+    .filter(function(list) {
+      return list && list.status === "decoded";
+    });
+
+}
+
+function readPersistedDeterministicArmyIntelligenceRows() {
+
+  const sheet =
+    SpreadsheetApp
+      .getActive()
+      .getSheetByName(CONFIG.SHEETS.ARMY_INTELLIGENCE);
+
+  if (!sheet)
+    return [];
+
+  return sheet
+    .getDataRange()
+    .getValues();
+
+}
+
+function buildCurrentDeterministicArmyIntelligenceRows() {
+
+  const sheet =
+    SpreadsheetApp
+      .getActive()
+      .getSheetByName(CONFIG.SHEETS.ENGINE);
+
+  if (!sheet)
+    return [];
+
+  const gameEngineRows =
+    sheet
+      .getDataRange()
+      .getValues();
+
+  if (gameEngineRows.length < 2)
+    return [];
+
+  return buildArmyIntelligenceForGameEngineRows(
+    gameEngineRows
+  );
+
+}
+
+function buildApprovedArmyListIntelligenceRows() {
+
+  const rows = [
+    ARMY_INTELLIGENCE_HEADERS
+  ];
+
+  getArmyListObjects()
+    .filter(function(list) {
+      return list.approved && list.armyCode;
+    })
+    .forEach(function(list) {
+
+      const decoded =
+        buildArmyDiagnosticDecode(
+          decodeArmyCode(list.armyCode)
+        );
+
+      if (!decoded.success)
+        return;
+
+      rows.push(
+        buildArmyIntelligenceRow(
+          list,
+          buildArmyDiagnosticSnapshot(
+            list,
+            decoded
+          )
+        )
+      );
+
+    });
+
+  return rows;
+
+}
+
+function buildDeterministicArmyIntelligenceList(row) {
+
+  const armyListId =
+    getArmyIntelligenceString(row[0]);
+
+  if (!armyListId)
+    return null;
+
+  const snapshot =
+    parseDeterministicArmyIntelligenceSnapshot(row[10]);
+
+  const faction =
+    getArmyIntelligenceString(row[4]);
+
+  const sectorial =
+    getArmyIntelligenceString(row[5]) || faction;
+
+  const decoded =
+    buildDeterministicArmyIntelligenceDecodedList(row, snapshot);
+
+  return {
+    armyCode: getArmyIntelligenceString(row[2]),
+    armyCodeHash: armyListId,
+    date: getArmyIntelligenceString(row[1]),
+    decoded: decoded,
+    decodedAt: getArmyIntelligenceString(row[1]),
+    error: "",
+    event: "",
+    faction: faction,
+    gameType: "League",
+    knownArmyLists: 1,
+    mission: "",
+    opponent: "",
+    player: getArmyIntelligenceString(row[3]),
+    result: "",
+    sectorial: sectorial,
+    snapshotKey: armyListId,
+    sourceId: armyListId,
+    sourcePlayer: getArmyIntelligenceString(row[3]),
+    sourceType: "league",
+    status: decoded ? "decoded" : "failed"
+  };
+
+}
+
+function parseDeterministicArmyIntelligenceSnapshot(value) {
+
+  const text =
+    getArmyIntelligenceString(value);
+
+  if (!text)
+    return null;
+
+  try {
+    return JSON.parse(text);
+  }
+  catch (err) {
+    return null;
+  }
+
+}
+
+function buildDeterministicArmyIntelligenceDecodedList(row, snapshot) {
+
+  if (!snapshot)
+    return null;
+
+  const units =
+    Array.isArray(snapshot.units)
+      ? snapshot.units
+      : [];
+
+  const entries =
+    units.map(function(unit) {
+      return buildDeterministicArmyIntelligenceDecodedEntry(unit);
+    });
+
+  return {
+    combatGroups: [
+      {
+        combatGroup: 1,
+        entries: entries
+      }
+    ],
+    decoderVersion:
+      getArmyIntelligenceString(snapshot.decoderVersion) ||
+      getArmyIntelligenceString(row[2]),
+    faction: getArmyIntelligenceString(row[4]),
+    listName: getArmyIntelligenceString(row[6]) || "Army List " + getArmyIntelligenceString(row[0]),
+    orderCounts: {
+      impetuous: 0,
+      irregular: 0,
+      lieutenant: 0,
+      regular: Number(row[9]) || entries.length
+    },
+    sectorial: getArmyIntelligenceString(row[5]) || getArmyIntelligenceString(row[4]),
+    totals: {
+      combatGroups: 1,
+      points: Number(row[7]) || Number(snapshot.points) || 0,
+      swc: Number(row[8]) || Number(snapshot.swc) || 0
+    }
+  };
+
+}
+
+function buildDeterministicArmyIntelligenceDecodedEntry(unit) {
+
+  const profile =
+    getArmyIntelligenceString(unit && unit.decodedProfile) ||
+    getArmyIntelligenceString(unit && unit.profile) ||
+    "Unknown Profile";
+
+  const equipment =
+    getArmyIntelligenceStringArray(unit && unit.equipment);
+
+  const skills =
+    getArmyIntelligenceStringArray(unit && unit.skills);
+
+  const weapons =
+    getArmyIntelligenceStringArray(unit && unit.weapons);
+
+  const chainOfCommand =
+    Boolean(unit && unit.chainOfCommand) ||
+    hasArmyIntelligenceProfileToken(skills, /chain\s+of\s+command/i);
+
+  const doctor =
+    Boolean(unit && unit.doctor) ||
+    hasArmyIntelligenceProfileToken(skills, /\bdoctor\b/i);
+
+  const engineer =
+    Boolean(unit && unit.engineer) ||
+    hasArmyIntelligenceProfileToken(skills, /\bengineer\b/i);
+
+  const forwardObserver =
+    Boolean(unit && unit.forwardObserver) ||
+    hasArmyIntelligenceProfileToken(skills, /forward\s+observer/i);
+
+  const hacker =
+    hasArmyIntelligenceProfileToken(skills, /\bhacker\b/i);
+
+  const lieutenant =
+    Boolean(unit && unit.lieutenant) ||
+    hasArmyIntelligenceProfileToken(skills.concat([profile]), /\blieutenant\b/i);
+
+  return {
+    combatGroup: Number(unit && unit.combatGroup) || 1,
+    chainOfCommand: chainOfCommand,
+    combinedId: profile,
+    doctor: doctor,
+    engineer: engineer,
+    equipment: equipment,
+    forwardObserver: forwardObserver,
+    hacker: hacker,
+    lieutenant: lieutenant,
+    orderTypes: [],
+    points: Number(unit && unit.points) || 0,
+    profile: profile,
+    skills: skills,
+    specialist:
+      Boolean(unit && unit.specialist) ||
+      chainOfCommand ||
+      doctor ||
+      engineer ||
+      forwardObserver ||
+      hacker ||
+      hasArmyIntelligenceProfileToken(skills, /\bparamedic\b/i),
+    structure: null,
+    swc: Number(unit && unit.swc) || 0,
+    troopType: getArmyIntelligenceString(unit && unit.troopType),
+    unit: getArmyIntelligenceString(unit && unit.unit) || profile,
+    weapons: weapons,
+    wounds: null
+  };
+
+}
+
+function buildDeterministicArmyIntelligenceArmyLists(lists) {
+
+  const listsById =
+    getArmyIntelligenceSourceListLookup();
+
+  return lists.map(function(list) {
+    const source =
+      listsById[list.sourceId] || {};
+
+    return {
+      id: Number(list.sourceId) || 0,
+      armyCode: getArmyIntelligenceString(source.armyCode),
+      armyLink: getArmyIntelligenceString(source.armyLink),
+      armyName:
+        getArmyIntelligenceString(source.armyName) ||
+        getArmyIntelligenceString(list.decoded && list.decoded.listName),
+      faction:
+        getArmyIntelligenceString(source.faction) ||
+        getArmyIntelligenceString(list.faction),
+      player:
+        getArmyIntelligenceString(source.player) ||
+        getArmyIntelligenceString(list.player),
+      playerDisplayName:
+        getArmyIntelligenceString(source.playerDisplayName) ||
+        getArmyIntelligenceString(source.player) ||
+        getArmyIntelligenceString(list.player),
+      points:
+        Number(source.points) ||
+        Number(list.decoded && list.decoded.totals && list.decoded.totals.points) ||
+        0,
+      sectorial:
+        getArmyIntelligenceString(source.sectorial) ||
+        getArmyIntelligenceString(list.sectorial),
+      source: "League",
+      submissionDate:
+        getArmyIntelligenceString(source.submissionDate) ||
+        getArmyIntelligenceString(list.date),
+      swc:
+        Number(source.swc) ||
+        Number(list.decoded && list.decoded.totals && list.decoded.totals.swc) ||
+        0
+    };
   });
 
 }
@@ -152,8 +628,16 @@ function refreshArmyIntelligence(e) {
 function buildArmyIntelligenceSources() {
 
   const sources = [];
+  const armyListsById =
+    getArmyIntelligenceSourceListLookup();
+  const armyListsByPlayerAndFaction =
+    getArmyIntelligencePlayerFactionListLookup(armyListsById);
 
-  appendArmyIntelligenceRecentGameSources(sources);
+  appendArmyIntelligenceRecentGameSources(
+    sources,
+    armyListsById,
+    armyListsByPlayerAndFaction
+  );
   appendArmyIntelligenceTeamTournamentSources(sources);
 
   const seen = {};
@@ -171,7 +655,11 @@ function buildArmyIntelligenceSources() {
 
 }
 
-function appendArmyIntelligenceRecentGameSources(sources) {
+function appendArmyIntelligenceRecentGameSources(
+  sources,
+  armyListsById,
+  armyListsByPlayerAndFaction
+) {
 
   const games =
     typeof getAllRecentGameObjects === "function"
@@ -202,7 +690,15 @@ function appendArmyIntelligenceRecentGameSources(sources) {
     })
     .forEach(function(game) {
       appendArmyIntelligenceParticipantSource(sources, {
-        armyCode: game.winnerArmyCode,
+        armyCode:
+          getArmyIntelligenceGameArmyCode(
+            game.winnerArmyCode,
+            game.winnerArmyListId,
+            armyListsById,
+            game.winnerDisplayName || game.winner,
+            game.winnerFaction,
+            armyListsByPlayerAndFaction
+          ),
         date: game.date,
         event: game.eventName || game.eventId || "",
         faction: game.winnerFaction,
@@ -221,7 +717,15 @@ function appendArmyIntelligenceRecentGameSources(sources) {
       });
 
       appendArmyIntelligenceParticipantSource(sources, {
-        armyCode: game.loserArmyCode,
+        armyCode:
+          getArmyIntelligenceGameArmyCode(
+            game.loserArmyCode,
+            game.loserArmyListId,
+            armyListsById,
+            game.loserDisplayName || game.loser,
+            game.loserFaction,
+            armyListsByPlayerAndFaction
+          ),
         date: game.date,
         event: game.eventName || game.eventId || "",
         faction: game.loserFaction,
@@ -238,6 +742,201 @@ function appendArmyIntelligenceRecentGameSources(sources) {
         sourcePlayer: "loser",
         sourceType: game.gameType === "casual" ? "casual" : "league"
       });
+    });
+
+}
+
+function getArmyIntelligenceGameArmyCode(
+  value,
+  armyListId,
+  armyListsById,
+  player,
+  faction,
+  armyListsByPlayerAndFaction
+) {
+
+  const direct =
+    getArmyIntelligenceString(value);
+
+  if (direct)
+    return direct;
+
+  const id =
+    getArmyIntelligenceString(armyListId);
+
+  if (!id || !armyListsById || !armyListsById[id])
+    return getArmyIntelligencePlayerFactionArmyCode(
+      player,
+      faction,
+      armyListsByPlayerAndFaction
+    );
+
+  return getArmyIntelligenceString(
+    armyListsById[id].armyCode
+  );
+
+}
+
+function getArmyIntelligencePlayerFactionArmyCode(
+  player,
+  faction,
+  armyListsByPlayerAndFaction
+) {
+
+  const key =
+    getArmyIntelligencePlayerFactionKey(
+      player,
+      faction
+    );
+
+  if (
+    !key ||
+    !armyListsByPlayerAndFaction ||
+    !armyListsByPlayerAndFaction[key]
+  )
+    return "";
+
+  return getArmyIntelligenceString(
+    armyListsByPlayerAndFaction[key].armyCode
+  );
+
+}
+
+function getArmyIntelligencePlayerFactionListLookup(armyListsById) {
+
+  const lookup = {};
+
+  Object.keys(armyListsById || {})
+    .forEach(function(id) {
+      const list =
+        armyListsById[id];
+
+      if (!list || !list.armyCode)
+        return;
+
+      [
+        list.player,
+        list.playerDisplayName
+      ].forEach(function(player) {
+        const key =
+          getArmyIntelligencePlayerFactionKey(
+            player,
+            list.faction
+          );
+
+        if (key)
+          lookup[key] = list;
+      });
+    });
+
+  return lookup;
+
+}
+
+function getArmyIntelligencePlayerFactionKey(player, faction) {
+
+  const playerKey =
+    normalizeArmyIntelligenceKeyPart(player);
+
+  const factionKey =
+    normalizeArmyIntelligenceKeyPart(
+      canonicalizeArmyParentFaction(faction)
+    );
+
+  return playerKey && factionKey
+    ? playerKey + ":" + factionKey
+    : "";
+
+}
+
+function syncLegacyArmyIntelligenceSnapshotsForCurrentSources() {
+
+  const sources =
+    buildArmyIntelligenceSources();
+
+  return {
+    sourceCount: sources.length,
+    updated: 0
+  };
+
+}
+
+function buildLegacyArmyIntelligenceSnapshot(source) {
+
+  const decoded =
+    buildArmyDiagnosticDecode(
+      decodeArmyCode(source.armyCode)
+    );
+
+  if (!decoded.success)
+    return null;
+
+  return {
+    decoded: buildLegacyArmyIntelligenceDecodedList(decoded),
+    decodedAt: new Date().toISOString(),
+    error: "",
+    snapshotKey: source.snapshotKey,
+    status: "decoded"
+  };
+
+}
+
+function buildLegacyArmyIntelligenceDecodedList(decoded) {
+
+  const shared =
+    decoded.sharedDecode || {};
+
+  const entries =
+    (decoded.profiles || []).map(function(unit) {
+      return buildDeterministicArmyIntelligenceDecodedEntry(unit);
+    });
+
+  return {
+    armyCode: getArmyIntelligenceString(shared.raw || ""),
+    combatGroups:
+      buildLegacyArmyIntelligenceCombatGroups(entries),
+    decoderVersion: decoded.decoderVersion,
+    faction: shared.faction || "",
+    listName: shared.armyName || "",
+    orderCounts: {
+      impetuous: 0,
+      irregular: 0,
+      lieutenant: 0,
+      regular: decoded.unitCount || 0,
+      tacticalAwareness: 0
+    },
+    sectorial: shared.sectorial || shared.faction || "",
+    totals: {
+      combatGroups: shared.combatGroups || 0,
+      points: decoded.points || 0,
+      swc: decoded.swc || 0
+    },
+    units: entries
+  };
+
+}
+
+function buildLegacyArmyIntelligenceCombatGroups(entries) {
+
+  const groups = {};
+
+  entries.forEach(function(entry) {
+    const group =
+      Number(entry.combatGroup) || 1;
+
+    if (!groups[group])
+      groups[group] = [];
+
+    groups[group].push(entry);
+  });
+
+  return Object.keys(groups)
+    .sort()
+    .map(function(group) {
+      return {
+        combatGroup: Number(group),
+        entries: groups[group]
+      };
     });
 
 }
@@ -344,50 +1043,6 @@ function appendArmyIntelligenceParticipantSource(sources, source) {
 
 }
 
-function getArmyIntelligenceSnapshotMap() {
-
-  const sheet =
-    ensureArmyIntelligenceSheet();
-
-  const rows =
-    getArmyIntelligenceObjectsFromSheet(sheet);
-
-  const snapshots = {};
-
-  rows.forEach(function(row) {
-    const snapshotKey =
-      getArmyIntelligenceString(row["Snapshot Key"]);
-
-    if (!snapshotKey)
-      return;
-
-    snapshots[snapshotKey] = {
-      armyCodeHash: getArmyIntelligenceString(row["Army Code Hash"]),
-      decodedAt: getArmyIntelligenceString(row["Decoded At"]),
-      decodedJson: getArmyIntelligenceString(row["Decoded JSON"]),
-      error: getArmyIntelligenceString(row["Decode Error"]),
-      snapshotKey: snapshotKey,
-      status: getArmyIntelligenceString(row["Decode Status"]) || "pending"
-    };
-  });
-
-  return snapshots;
-
-}
-
-function createPendingArmyIntelligenceSnapshot(source) {
-
-  return {
-    armyCodeHash: source.armyCodeHash,
-    decodedAt: "",
-    decodedJson: "",
-    error: "",
-    snapshotKey: source.snapshotKey,
-    status: "pending"
-  };
-
-}
-
 function mergeArmyIntelligenceSourceAndSnapshot(source, snapshot, knownArmyListCounts) {
 
   const decoded =
@@ -397,6 +1052,7 @@ function mergeArmyIntelligenceSourceAndSnapshot(source, snapshot, knownArmyListC
     decoded && decoded.faction ? decoded.faction : source.faction;
 
   return {
+    armyCode: source.armyCode,
     armyCodeHash: source.armyCodeHash,
     date: source.date,
     decodedAt: snapshot.decodedAt,
@@ -603,109 +1259,6 @@ function getArmyIntelligenceProfileAggregationLabel(entry) {
 
 }
 
-function upsertArmyIntelligenceRows(rows) {
-
-  if (rows.length === 0)
-    return;
-
-  const sheet =
-    ensureArmyIntelligenceSheet();
-
-  const currentRows =
-    getArmyIntelligenceObjectsFromSheet(sheet);
-
-  const rowNumbersByKey = {};
-
-  currentRows.forEach(function(row, index) {
-    const key =
-      getArmyIntelligenceString(row["Snapshot Key"]);
-
-    if (key)
-      rowNumbersByKey[key] = index + 2;
-  });
-
-  rows.forEach(function(row) {
-    const key =
-      row[ARMY_INTELLIGENCE_COLUMNS.SNAPSHOT_KEY];
-
-    if (rowNumbersByKey[key]) {
-      sheet
-        .getRange(rowNumbersByKey[key], 1, 1, ARMY_INTELLIGENCE_HEADERS.length)
-        .setValues([row]);
-    } else {
-      sheet.appendRow(row);
-    }
-  });
-
-}
-
-function buildArmyIntelligenceSnapshotRow(source, snapshot) {
-
-  const decoded =
-    snapshot.decoded || null;
-
-  return [
-    source.snapshotKey,
-    source.sourceType,
-    source.sourceId,
-    source.sourcePlayer,
-    source.player,
-    source.opponent,
-    source.faction,
-    source.sectorial,
-    source.gameType,
-    source.event,
-    source.mission,
-    source.date,
-    source.result,
-    source.armyCodeHash,
-    source.armyCode,
-    getArmyIntelligenceString(snapshot.status) || (decoded ? "decoded" : "failed"),
-    getArmyIntelligenceString(snapshot.decodedAt) || new Date().toISOString(),
-    getArmyIntelligenceString(snapshot.error),
-    decoded ? JSON.stringify(decoded) : ""
-  ];
-
-}
-
-function ensureArmyIntelligenceSheet() {
-
-  const spreadsheet =
-    lifGetTargetSpreadsheet_();
-
-  let sheet =
-    spreadsheet.getSheetByName(ARMY_INTELLIGENCE_SHEET_NAME);
-
-  if (!sheet) {
-    sheet =
-      spreadsheet.insertSheet(ARMY_INTELLIGENCE_SHEET_NAME);
-  }
-
-  if (sheet.getLastRow() === 0) {
-    sheet.appendRow(ARMY_INTELLIGENCE_HEADERS);
-  } else {
-    const headerRange =
-      sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), ARMY_INTELLIGENCE_HEADERS.length));
-
-    const headers =
-      headerRange.getValues()[0].map(getArmyIntelligenceString);
-
-    const missing =
-      ARMY_INTELLIGENCE_HEADERS.filter(function(header) {
-        return headers.indexOf(header) === -1;
-      });
-
-    if (missing.length > 0) {
-      sheet
-        .getRange(1, headers.filter(function(header) { return header !== ""; }).length + 1, 1, missing.length)
-        .setValues([missing]);
-    }
-  }
-
-  return sheet;
-
-}
-
 function getArmyIntelligenceObjectsFromSheet(sheet) {
 
   if (!sheet || sheet.getLastRow() < 2)
@@ -746,19 +1299,6 @@ function parseArmyIntelligenceSnapshotJson(value) {
 
 }
 
-function countPendingArmyIntelligenceSources(sources) {
-
-  const snapshots =
-    getArmyIntelligenceSnapshotMap();
-
-  return sources.filter(function(source) {
-    const snapshot =
-      snapshots[source.snapshotKey];
-
-    return !snapshot || snapshot.status !== "decoded";
-  }).length;
-
-}
 
 function getArmyIntelligenceHash(value) {
 
@@ -856,5 +1396,37 @@ function getArmyIntelligenceString(value) {
     return "";
 
   return String(value).trim();
+
+}
+
+function getArmyIntelligenceStringArray(value) {
+
+  if (Array.isArray(value))
+    return value
+      .map(function(item) {
+        return getArmyIntelligenceString(item);
+      })
+      .filter(Boolean);
+
+  const text =
+    getArmyIntelligenceString(value);
+
+  if (!text)
+    return [];
+
+  return text
+    .split(/\s*,\s*/)
+    .map(function(item) {
+      return item.trim();
+    })
+    .filter(Boolean);
+
+}
+
+function hasArmyIntelligenceProfileToken(values, pattern) {
+
+  return getArmyIntelligenceStringArray(values).some(function(value) {
+    return pattern.test(value);
+  });
 
 }

@@ -52,7 +52,7 @@ const DISCORD_DEFAULT_CONFIG = [
   ],
   [
     "automationEvents",
-    "gameSubmitted,achievementUnlocked,promotion,relegation,seasonStart,seasonEnd,leagueNews,commissionerNews,newStream,armyListOfTheWeek,playerOfTheWeek,missionRotation,factionLeaderChanges,hallOfFameInduction,leagueRecordsBroken",
+    "gameSubmitted,achievementUnlocked,promotion,relegation,seasonStart,seasonEnd,leagueNews,commissionerNews,newStream,playerOfTheWeek,missionRotation,factionLeaderChanges,hallOfFameInduction,leagueRecordsBroken",
     "Comma-separated enabled automation event keys."
   ],
   [
@@ -87,7 +87,6 @@ const DISCORD_EVENT_LABELS = {
   leagueNews: "League News",
   commissionerNews: "Commissioner News",
   newStream: "New Stream",
-  armyListOfTheWeek: "Army List of the Week",
   playerOfTheWeek: "Player of the Week",
   missionRotation: "Mission Rotation",
   factionLeaderChanges: "Faction Leader Changes",
@@ -435,9 +434,6 @@ function buildDiscordAnnouncementPayload(event, params) {
 
     case "newStream":
       return buildDiscordStreamPayload();
-
-    case "armyListOfTheWeek":
-      return buildDiscordArmyListPayload();
 
     case "playerOfTheWeek":
       return buildDiscordPlayerOfTheWeekPayload();

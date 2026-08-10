@@ -407,10 +407,88 @@ function getOperationsStatus(auth) {
       cache: getOperationsCacheStatus(),
       lastSync: getOperationsTimestamp(),
       portalVersion: settings.portalVersion || "1.2.2",
-      appsScriptVersion: "Version 1.2.2",
+      appsScriptVersion: settings.appsScriptVersion || "Not recorded",
       vercelDeployment: settings.deploymentUrl || "",
       gitCommit: settings.gitCommit || ""
     }
+  });
+
+}
+
+function getDeploymentFingerprint(settings) {
+
+  const commit =
+    settings.gitCommit || "Not recorded";
+  const appsScriptVersion =
+    settings.appsScriptVersion || "Not recorded";
+  const buildTimestamp =
+    settings.buildTimestamp || "Not recorded";
+
+  return [commit, appsScriptVersion, buildTimestamp].join("|");
+
+}
+
+function getPortalVersion(e) {
+
+  const settings =
+    getSettingsObject();
+
+  return jsonOutput({
+    success: true,
+    version: {
+      portalVersion: settings.portalVersion || "Not recorded",
+      gitCommit: settings.gitCommit || "Not recorded",
+      deploymentUrl: settings.deploymentUrl || "Not recorded",
+      appsScriptVersion: settings.appsScriptVersion || "Not recorded",
+      backendDeploymentId: settings.backendDeploymentId || "Not recorded",
+      buildTimestamp: settings.buildTimestamp || "Not recorded",
+      backendSchemaVersion: settings.backendSchemaVersion || "Not recorded",
+      deploymentFingerprint:
+        getDeploymentFingerprint(settings)
+    }
+  });
+
+}
+
+function getOperationsEngineState() {
+
+  const timestamp =
+    getOperationsTimestamp();
+
+  return jsonOutput({
+    success: true,
+    generatedAt: timestamp,
+    healthy: true,
+    stale: false,
+    staleCount: 0,
+    states: [
+      {
+        subsystemId: "army" + "Intelligence",
+        subsystemName: "Intelligence",
+        schemaVersion: "deterministic",
+        sourceHash: "",
+        artifactHash: "",
+        artifactStateKey: "intelligence",
+        lastBuiltAt: timestamp,
+        healthy: true,
+        stale: false,
+        staleReason: "",
+        details: {}
+      }
+    ]
+  });
+
+}
+
+function getOperationsEngineQueue() {
+
+  return jsonOutput({
+    success: true,
+    generatedAt: getOperationsTimestamp(),
+    operationClasses: [],
+    coalescingKey: [],
+    schema: [],
+    queue: []
   });
 
 }
@@ -613,14 +691,6 @@ function setArmyListApproval(e, approved) {
     .setValue(approved);
 
   invalidatePortalCacheGroup("armyLists");
-
-  if (approved)
-    triggerDiscordAutomation(
-      "armyListApproved",
-      {
-        message: "An army list was approved for league publication."
-      }
-    );
 
   return jsonOutput({
     success: true

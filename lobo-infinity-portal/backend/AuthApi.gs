@@ -55,7 +55,6 @@ const PERMISSION_MIN_ROLE = {
   manageNews: USER_ROLES.ASSISTANT,
   manageStreams: USER_ROLES.ASSISTANT,
   manageSettings: USER_ROLES.COMMISSIONER,
-  dataCorrections: USER_ROLES.COMMISSIONER,
   runSeasonControl: USER_ROLES.COMMISSIONER,
   runLeagueAudit: USER_ROLES.COMMISSIONER,
   manageCache: USER_ROLES.COMMISSIONER,
@@ -64,24 +63,53 @@ const PERMISSION_MIN_ROLE = {
 
 function getAuthSession(e) {
 
-  ensureUsersSheet();
+  const forensicStart =
+    enterApiForensicFunction(
+      "getAuthSession",
+      "authentication",
+      {}
+    );
 
-  const auth =
-    getRequestUser(e);
+  try {
 
-  return jsonOutput({
-    success: true,
-    authenticated: auth.authenticated,
-    code: auth.code || "",
-    stage: auth.stage || "",
-    diagnostics: auth.diagnostics || {},
-    user: auth.user,
-    permissions: getRolePermissions(auth.user.role),
-    oauthConfigured:
-      getRequestOAuthClientId(e) !== "" ||
-      isGoogleOAuthConfigured(),
-    error: auth.error || ""
-  });
+    ensureUsersSheet();
+
+    const auth =
+      getRequestUser(e);
+
+    setApiForensicAuthState(auth);
+
+    return jsonOutput({
+      success: true,
+      authenticated: auth.authenticated,
+      code: auth.code || "",
+      stage: auth.stage || "",
+      diagnostics: auth.diagnostics || {},
+      user: auth.user,
+      permissions: getRolePermissions(auth.user.role),
+      oauthConfigured:
+        getRequestOAuthClientId(e) !== "" ||
+        isGoogleOAuthConfigured(),
+      error: auth.error || ""
+    });
+  }
+  catch (err) {
+    recordApiForensicException(
+      "getAuthSession",
+      "authentication",
+      forensicStart,
+      err
+    );
+    throw err;
+  }
+  finally {
+    exitApiForensicFunction(
+      "getAuthSession",
+      "authentication",
+      forensicStart,
+      {}
+    );
+  }
 
 }
 
@@ -681,6 +709,15 @@ function logAuthorizationDiagnostic(stage, auth, permission, reason) {
 
 function getRequestUser(e) {
 
+  const forensicStart =
+    enterApiForensicFunction(
+      "getRequestUser",
+      "authentication",
+      {}
+    );
+
+  try {
+
   const authTimings = [];
 
   const authValidationStart =
@@ -1038,6 +1075,25 @@ function getRequestUser(e) {
       )
   };
 
+  }
+  catch (err) {
+    recordApiForensicException(
+      "getRequestUser",
+      "authentication",
+      forensicStart,
+      err
+    );
+    throw err;
+  }
+  finally {
+    exitApiForensicFunction(
+      "getRequestUser",
+      "authentication",
+      forensicStart,
+      {}
+    );
+  }
+
 }
 
 const PORTAL_DISPLAY_NAME_RESERVED = [
@@ -1374,6 +1430,15 @@ function activatePortalUser(sheet, columns, rowNumber) {
 
 function verifyGoogleIdentityToken(token, requestClientId) {
 
+  const forensicStart =
+    enterApiForensicFunction(
+      "verifyGoogleIdentityToken",
+      "tokenVerification",
+      {}
+    );
+
+  try {
+
   const settings =
     getSettingsObjectSafe();
 
@@ -1557,6 +1622,25 @@ function verifyGoogleIdentityToken(token, requestClientId) {
         )
     };
 
+  }
+
+  }
+  catch (err) {
+    recordApiForensicException(
+      "verifyGoogleIdentityToken",
+      "tokenVerification",
+      forensicStart,
+      err
+    );
+    throw err;
+  }
+  finally {
+    exitApiForensicFunction(
+      "verifyGoogleIdentityToken",
+      "tokenVerification",
+      forensicStart,
+      {}
+    );
   }
 
 }
@@ -1762,6 +1846,15 @@ function hashAuthDiagnosticValue(value) {
 
 function ensureUsersSheet() {
 
+  const forensicStart =
+    enterApiForensicFunction(
+      "ensureUsersSheet",
+      "usersSheetLookup",
+      {}
+    );
+
+  try {
+
   const spreadsheet =
     lifGetTargetSpreadsheet_();
 
@@ -1775,6 +1868,25 @@ function ensureUsersSheet() {
   ensureUsersColumns(sheet);
 
   return sheet;
+
+  }
+  catch (err) {
+    recordApiForensicException(
+      "ensureUsersSheet",
+      "usersSheetLookup",
+      forensicStart,
+      err
+    );
+    throw err;
+  }
+  finally {
+    exitApiForensicFunction(
+      "ensureUsersSheet",
+      "usersSheetLookup",
+      forensicStart,
+      {}
+    );
+  }
 
 }
 

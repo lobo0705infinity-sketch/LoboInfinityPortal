@@ -1,5 +1,4 @@
 
-
 function handleLoboFormSubmit(e) {
   if (!e || !e.range || !e.namedValues) throw new Error("A spreadsheet form-submit event is required.");
   const lock = LockService.getScriptLock();

@@ -9,6 +9,15 @@ var EVENT_HOME_FORENSIC_CONTEXT = null;
 
 function getEventHome(e) {
 
+  const forensicStart =
+    enterApiForensicFunction(
+      "getEventHome",
+      "eventHome",
+      {}
+    );
+
+  try {
+
   ensureEventHomePipelineContext();
 
   resetEventHomeForensicMetrics();
@@ -203,6 +212,8 @@ function getEventHome(e) {
       {}
     );
 
+  setApiForensicAuthState(auth);
+
   endEventHomeSubStage(
     "eventHome.authContext.getRequestUser",
     authStart,
@@ -221,7 +232,10 @@ function getEventHome(e) {
       "eventHome.participantLoading.currentPlayer.lookup",
       function() {
         return auth.authenticated
-          ? getEventRegistrationForUser(event, auth.user)
+          ? getEventRegistrationForPlayer(
+              event.id,
+              getEventParticipantKey(event, auth.user)
+            )
           : null;
       },
       {
@@ -271,7 +285,7 @@ function getEventHome(e) {
       "eventHome.registrationLookup.buildPayload"
     );
 
-  const rawRegistration =
+  const registration =
     measureEventHomeOperation(
       "eventHome.registrationLookup.buildPayload.call",
       function() {
@@ -287,12 +301,6 @@ function getEventHome(e) {
       {
         registrations: registrations.length
       }
-    );
-
-  const registration =
-    resolveEventHomeTeamTournamentRegistrationPayload(
-      event,
-      rawRegistration
     );
 
   endEventHomeSubStage(
@@ -442,13 +450,10 @@ function getEventHome(e) {
     measureEventHomeOperation(
       "eventHome.playerStatus.build",
       function() {
-        return buildEventHomePlayerStatus(
-          registration,
-          registration.currentPlayer || currentPlayer
-        );
+        return buildEventHomePlayerStatus(registration, currentPlayer);
       },
       {
-        hasCurrentPlayer: registration.currentPlayer !== null
+        hasCurrentPlayer: currentPlayer !== null
       }
     );
 
@@ -456,7 +461,7 @@ function getEventHome(e) {
     "eventHome.playerStatus",
     playerStatusStart,
     {
-      hasCurrentPlayer: registration.currentPlayer !== null
+      hasCurrentPlayer: currentPlayer !== null
     }
   );
 
@@ -509,6 +514,25 @@ function getEventHome(e) {
       eventType: event.type
     }
   );
+
+  }
+  catch (err) {
+    recordApiForensicException(
+      "getEventHome",
+      "eventHome",
+      forensicStart,
+      err
+    );
+    throw err;
+  }
+  finally {
+    exitApiForensicFunction(
+      "getEventHome",
+      "eventHome",
+      forensicStart,
+      {}
+    );
+  }
 
 }
 
@@ -1373,41 +1397,6 @@ function buildEventHomeQuickActions(event, registration, currentPlayer) {
     );
 
   return actions;
-
-}
-
-function resolveEventHomeTeamTournamentRegistrationPayload(event, registration) {
-
-  if (
-    !event ||
-    event.type !== "Team Tournament" ||
-    !registration ||
-    typeof getTeamTournamentTeams !== "function" ||
-    typeof resolveTeamTournamentRegistrationMembership !== "function"
-  )
-    return registration;
-
-  const teams =
-    getTeamTournamentTeams(event.id);
-
-  const visibleRegistrations =
-    resolveTeamTournamentRegistrationMembership(
-      registration.registrations || [],
-      teams
-    );
-
-  const currentPlayer =
-    registration.currentPlayer
-      ? resolveTeamTournamentRegistrationMembership(
-          [registration.currentPlayer],
-          teams
-        )[0]
-      : null;
-
-  return Object.assign({}, registration, {
-    currentPlayer: currentPlayer,
-    registrations: visibleRegistrations
-  });
 
 }
 

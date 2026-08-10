@@ -23,8 +23,7 @@ const PORTAL_CACHE_GROUPS = {
   leagueOperations: ["leagueOperations", "home", "eventHome", "eventManager"],
   hallOfFame: ["hallOfFame", "records", "home"],
   analytics: ["intelligence", "records", "home", "notifications", "timeline"],
-  armyLists: ["armyLists", "player", "faction", "searchData", "home", "armyIntelligence"],
-  armyIntelligence: ["armyIntelligence"],
+  armyLists: ["armyLists", "player", "faction", "searchData", "home"],
   streams: ["streams", "home"],
   search: ["searchData", "searchIndex"],
   news: ["news", "home", "notifications", "timeline"],
@@ -33,7 +32,7 @@ const PORTAL_CACHE_GROUPS = {
   seasonCommand: ["seasonCommandCenter", "communityCommandCenter", "schedulingCenter", "matchFinder"],
   scheduling: ["seasonCommandCenter", "communityCommandCenter", "schedulingCenter", "matchFinder", "notifications"],
   operations: ["operationsSummary", "operationsLifecycle", "operationsIdentity", "operationsContent", "operationsDiscord", "operationsNotifications", "operationsAudit", "integrity"],
-  all: ["dashboard", "home", "leader", "recentGames", "standings", "players", "player", "factions", "faction", "missions", "mission", "leagueOperations", "intelligence", "records", "hallOfFame", "comparison", "timeline", "news", "settings", "events", "event", "eventHome", "eventManager", "eventTemplates", "eventSeasons", "eventRounds", "eventMigrationValidation", "teamTournament", "eventRegistration", "seasonCommandCenter", "communityCommandCenter", "schedulingCenter", "matchFinder", "streams", "searchData", "searchIndex", "armyLists", "armyIntelligence", "operationsSummary", "operationsLifecycle", "operationsIdentity", "operationsContent", "operationsDiscord", "operationsNotifications", "operationsAudit", "integrity"]
+  all: ["dashboard", "home", "leader", "recentGames", "standings", "players", "player", "factions", "faction", "missions", "mission", "leagueOperations", "intelligence", "records", "hallOfFame", "comparison", "timeline", "news", "settings", "events", "event", "eventHome", "eventManager", "eventTemplates", "eventSeasons", "eventRounds", "eventMigrationValidation", "teamTournament", "eventRegistration", "seasonCommandCenter", "communityCommandCenter", "schedulingCenter", "matchFinder", "streams", "searchData", "searchIndex", "armyLists", "operationsSummary", "operationsLifecycle", "operationsIdentity", "operationsContent", "operationsDiscord", "operationsNotifications", "operationsAudit", "integrity"]
 };
 
 const PORTAL_CACHE_ENDPOINT_GROUP = {
@@ -73,8 +72,7 @@ const PORTAL_CACHE_ENDPOINT_GROUP = {
   streams: "streams",
   searchData: "search",
   searchIndex: "search",
-  armyLists: "armyLists",
-  armyIntelligence: "armyIntelligence"
+  armyLists: "armyLists"
 };
 
 function getCachedApiResponse(e, action, producer) {
@@ -216,14 +214,9 @@ function buildPortalCachePayload(action, content, createdAt) {
 
   const ttl =
     getPortalCacheTtl(action);
-  const cacheContent =
-    sanitizePortalCacheContent(
-      action,
-      content
-    );
 
   return JSON.stringify({
-    content: cacheContent,
+    content: content,
     metadata: {
       action: action,
       createdAt: createdAt,
@@ -234,32 +227,9 @@ function buildPortalCachePayload(action, content, createdAt) {
       ttlSeconds: ttl,
       version: getPortalCacheVersion(),
       status: "fresh",
-      size: cacheContent.length
+      size: content.length
     }
   });
-
-}
-
-function sanitizePortalCacheContent(action, content) {
-
-  if (action !== "players")
-    return content;
-
-  try {
-    const parsed =
-      JSON.parse(content);
-
-    if (
-      parsed &&
-      typeof parsed === "object"
-    )
-      delete parsed.pipelineDiagnostics;
-
-    return JSON.stringify(parsed);
-  }
-  catch (err) {
-    return content;
-  }
 
 }
 
@@ -308,6 +278,9 @@ function jsonFromCachePayload(payload) {
 
   const parsed =
     JSON.parse(payload);
+
+  if (typeof clearApiPipelineContext === "function")
+    clearApiPipelineContext();
 
   return ContentService
     .createTextOutput(parsed.content)
@@ -529,11 +502,9 @@ function getPortalCacheKey(e, action) {
   )
     parts.push("eventContextSchema=13.0");
 
-  if (action === "players")
-    parts.push("communityPlayerRegistrySchema=5.4");
-
   if (
     [
+      "players",
       "searchData",
       "searchIndex"
     ].indexOf(action) !== -1
