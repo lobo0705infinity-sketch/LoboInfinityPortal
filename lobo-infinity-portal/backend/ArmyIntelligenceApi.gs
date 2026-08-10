@@ -883,8 +883,9 @@ function buildLegacyArmyIntelligenceSnapshot(source) {
     Logger.log(
       JSON.stringify({
         armyListId: source.armyListId,
-        condition: "Boolean(decoded.success)",
-        conditionResult: Boolean(decoded.success),
+        returnStatement: "return null after !decoded.success",
+        condition: "!decoded.success",
+        conditionResult: !decoded.success,
         variables: {
           decodedSuccess: decoded.success
         }
