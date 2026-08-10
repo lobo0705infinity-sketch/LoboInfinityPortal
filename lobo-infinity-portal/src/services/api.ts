@@ -3406,7 +3406,10 @@ export async function getArmyLists(
 export async function getArmyIntelligence(
   options: ApiOptions = {},
 ): Promise<ArmyIntelligenceData> {
-  const payload = await request('armyIntelligence', options)
+  const payload = await request('armyIntelligence', {
+    ...options,
+    redirect: 'follow',
+  })
   return normalizeArmyIntelligencePayload(payload)
 }
 

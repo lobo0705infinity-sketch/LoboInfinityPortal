@@ -2,6 +2,7 @@ export type ApiOptions = {
   eventId?: string
   gameId?: number
   gameType?: string
+  redirect?: RequestRedirect
   signal?: AbortSignal
 }
 
@@ -319,6 +320,7 @@ async function requestInternal(
   const requestRevision = cacheRevision
   let requestFinished = false
   const pending = fetch(url, {
+    redirect: options.redirect,
     signal: options.signal,
   })
     .then(async (response) => {
