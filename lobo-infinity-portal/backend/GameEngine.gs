@@ -62,9 +62,19 @@ const GAME_ENGINE_FORM_HEADERS = {
 
 function getFormResponses() {
 
-  const sheet =
+  const targetSpreadsheetId =
+    String(
+      PropertiesService
+        .getScriptProperties()
+        .getProperty("LIF_TARGET_SPREADSHEET_ID") || ""
+    ).trim();
+
+  const spreadsheet =
     SpreadsheetApp
-      .getActive()
+      .openById(targetSpreadsheetId);
+
+  const sheet =
+    spreadsheet
       .getSheetByName(CONFIG.SHEETS.FORM);
 
   const values =
