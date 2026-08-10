@@ -141,6 +141,45 @@ function decodeArmyCode(value) {
 
 }
 
+function testDecodeArmyCode() {
+
+  const armyListId =
+    "4190960343";
+
+  const source =
+    getArmyIntelligenceSourceListLookup()[armyListId];
+
+  if (!source)
+    throw new Error("Canonical Army Intelligence source not found for Army List ID " + armyListId + ".");
+
+  const armyCode =
+    source.armyCode;
+
+  const decoded =
+    decodeArmyCode(armyCode);
+
+  Logger.log(
+    JSON.stringify(decoded)
+  );
+
+  Logger.log(
+    JSON.stringify({
+      exceptions: decoded.exceptions,
+      faction: decoded.faction,
+      parserFailure: decoded.parserFailure,
+      parserWarnings: decoded.parserWarnings,
+      points: decoded.points,
+      sectorial: decoded.sectorial,
+      unitCount: decoded.unitCount,
+      valid: decoded.valid,
+      validation: decoded.validation
+    })
+  );
+
+  return decoded;
+
+}
+
 function buildArmyDecodeEmptyResult(raw, extracted, validation) {
 
   return {
