@@ -133,10 +133,82 @@ function rebuildGameEngine(importedRowNumber) {
       responses
     );
 
-  const armyIntelligence =
-    buildArmyIntelligenceForGameEngineRows(
-      engine
+  let armyIntelligence;
+  let armyIntelligenceSkipped = false;
+
+  try {
+    armyIntelligence =
+      buildArmyIntelligenceForGameEngineRows(
+        engine
+      );
+  }
+  catch (error) {
+    armyIntelligenceSkipped = true;
+
+    const timestamp =
+      new Date();
+
+    const message =
+      error && error.message
+        ? String(error.message)
+        : String(error);
+
+    const armyListIdMatch =
+      message.match(/Army List ID\s+(\d+)/i);
+
+    const armyListId =
+      armyListIdMatch
+        ? armyListIdMatch[1]
+        : "";
+
+    const stack =
+      error && error.stack
+        ? String(error.stack)
+        : "";
+
+    const spreadsheet =
+      lifGetTargetSpreadsheet_();
+
+    const importLog =
+      lifEnsureImportLog_(spreadsheet);
+
+    lifWriteImportLog_(
+      importLog,
+      "rebuild:" + timestamp.toISOString(),
+      "rebuild",
+      "",
+      "Army Intelligence Skipped",
+      JSON.stringify({
+        timestamp: timestamp.toISOString(),
+        armyListId: armyListId,
+        message: message,
+        stack: stack
+      })
     );
+
+    Logger.log(
+      "Army Intelligence skipped: " +
+      JSON.stringify({
+        timestamp: timestamp.toISOString(),
+        armyListId: armyListId,
+        message: message,
+        stack: stack
+      })
+    );
+
+    const existingArmyIntelligenceSheet =
+      spreadsheet.getSheetByName(
+        CONFIG.SHEETS.ARMY_INTELLIGENCE
+      );
+
+    armyIntelligence =
+      existingArmyIntelligenceSheet &&
+      existingArmyIntelligenceSheet.getLastRow() > 0
+        ? existingArmyIntelligenceSheet
+            .getDataRange()
+            .getValues()
+        : [ARMY_INTELLIGENCE_HEADERS];
+  }
 
   persistGameEngineState(
     engine,
@@ -176,9 +248,13 @@ function rebuildGameEngine(importedRowNumber) {
   );
 
   return {
+    status: armyIntelligenceSkipped
+      ? "Rebuild completed with Army Intelligence skipped."
+      : "Rebuild completed.",
     engineRows: engine.length - 1,
     analyticsRows: analytics.length - 1,
-    armyIntelligenceRows: armyIntelligence.length - 1
+    armyIntelligenceRows: armyIntelligence.length - 1,
+    armyIntelligenceSkipped: armyIntelligenceSkipped
   };
 
 }
