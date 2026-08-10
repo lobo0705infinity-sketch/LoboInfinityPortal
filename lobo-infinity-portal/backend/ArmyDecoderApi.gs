@@ -29,6 +29,16 @@ function decodeArmyCode(value) {
       "Army Code is empty.",
       "unexpected EOF"
     );
+    Logger.log(
+      JSON.stringify({
+        returnStatement: "return normalizeArmyDecodeResult(result) after !extracted",
+        condition: "!extracted",
+        conditionResult: !extracted,
+        variables: {
+          extracted: extracted
+        }
+      })
+    );
     return normalizeArmyDecodeResult(result);
   }
 
@@ -39,6 +49,16 @@ function decodeArmyCode(value) {
       "encoding",
       validation.reason,
       "bad token"
+    );
+    Logger.log(
+      JSON.stringify({
+        returnStatement: "return normalizeArmyDecodeResult(result) after !validation.valid",
+        condition: "!validation.valid",
+        conditionResult: !validation.valid,
+        variables: {
+          validationValid: validation.valid
+        }
+      })
     );
     return normalizeArmyDecodeResult(result);
   }
@@ -105,6 +125,16 @@ function decodeArmyCode(value) {
       "decodeArmyCode",
       String(err),
       getArmyDecoderFailureReason(String(err))
+    );
+    Logger.log(
+      JSON.stringify({
+        returnStatement: "return normalizeArmyDecodeResult(result) from catch (err)",
+        condition: "catch (err)",
+        conditionResult: true,
+        variables: {
+          error: String(err)
+        }
+      })
     );
     return normalizeArmyDecodeResult(result);
   }
