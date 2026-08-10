@@ -18,7 +18,7 @@ function handleLoboFormSubmit(e) {
       throw new Error(errors.join(" "));
     }
 
-    const sheet = lifEnsureCanonicalSheet_(target, formType);
+    const sheet = lifEnsureCanonicalSheet_(target);
     const row = lifBuildCanonicalRow_(submission);
     sheet.appendRow(row);
     const targetRow = sheet.getLastRow();
@@ -219,12 +219,9 @@ function lifCanonicalArmyListId_(armyCode) {
   return String(buildCanonicalArmyCodeArmyListId(armyCode));
 }
 
-function lifEnsureCanonicalSheet_(spreadsheet, formType) {
-  const sheetName = formType === LIF_FORMS.TYPES.TEAM
-    ? "Team Tournament Results"
-    : LIF_FORMS.TARGET_SHEET;
-  let sheet = spreadsheet.getSheetByName(sheetName);
-  if (!sheet) sheet = spreadsheet.insertSheet(sheetName);
+function lifEnsureCanonicalSheet_(spreadsheet) {
+  let sheet = spreadsheet.getSheetByName(LIF_FORMS.TARGET_SHEET);
+  if (!sheet) sheet = spreadsheet.insertSheet(LIF_FORMS.TARGET_SHEET);
   if (sheet.getLastRow() === 0) sheet.appendRow(LIF_FORMS.CANONICAL_HEADERS.slice());
   const headers = sheet.getRange(1, 1, 1, LIF_FORMS.CANONICAL_HEADERS.length).getValues()[0];
   LIF_FORMS.CANONICAL_HEADERS.forEach(function(header, index) {
