@@ -1652,12 +1652,12 @@ function appendCanonicalGameSubmittedArmyList(lookup, game, side) {
       : null;
 
   const id =
+    armyListId ||
     (
       armyCode
         ? buildCanonicalGameSubmittedArmyListId(game, side)
         : 0
-    ) ||
-    armyListId;
+    );
 
   if (!id)
     return;
