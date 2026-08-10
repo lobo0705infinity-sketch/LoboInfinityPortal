@@ -797,6 +797,17 @@ function buildArmyIntelligenceForGameEngineRows(gameEngineRows) {
     const list =
       listsById[id] || null;
 
+    Logger.log(
+      JSON.stringify({
+        event: "armyIntelligenceSourceLookup",
+        requestedArmyListId: String(id),
+        exists: Boolean(list),
+        first20Keys: list
+          ? []
+          : Object.keys(listsById).slice(0, 20)
+      })
+    );
+
     if (!list)
       throw new Error(
         "Army Intelligence source list not found for Army List ID " +
@@ -876,9 +887,26 @@ function getArmyIntelligenceSourceListLookup() {
   getArmyListObjects()
     .forEach(function(list) {
 
+      Logger.log(
+        JSON.stringify({
+          event: "armyIntelligenceSourceInsert",
+          sourceRowNumber:
+            getArmyListNumber(list.sourceGameId || list.sortIndex) + 1,
+          sourceArmyCode: getArmyListString(list.armyCode),
+          sourceArmyListId: String(list.id)
+        })
+      );
+
       lookup[String(list.id)] = list;
 
     });
+
+  Logger.log(
+    JSON.stringify({
+      event: "armyIntelligenceSourceLookupComplete",
+      size: Object.keys(lookup).length
+    })
+  );
 
   return lookup;
 
