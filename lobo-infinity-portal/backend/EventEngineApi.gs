@@ -1964,8 +1964,7 @@ function getEventEngineRowsNoEnsure(sheetName) {
     );
 
   const sheet =
-    SpreadsheetApp
-      .getActive()
+    lifGetTargetSpreadsheet_()
       .getSheetByName(sheetName);
 
   endDashboardEndpointSubStage(

@@ -585,8 +585,7 @@ function getAllRecentGameObjects() {
     measureEventHomeOperationIfAvailable(
       "eventHome.sheetLookup.gameAnalytics",
       function() {
-        return SpreadsheetApp
-          .getActive()
+        return lifGetTargetSpreadsheet_()
           .getSheetByName(CONFIG.SHEETS.GAME_ANALYTICS);
       },
       {

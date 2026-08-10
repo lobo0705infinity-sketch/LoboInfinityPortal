@@ -198,8 +198,7 @@ function buildArmyListsReadModelRowsFromPayload(payload) {
 function readArmyListsReadModelPayload() {
 
   const sheet =
-    SpreadsheetApp
-      .getActive()
+    lifGetTargetSpreadsheet_()
       .getSheetByName(CONFIG.SHEETS.ARMY_LISTS_READ_MODEL);
 
   if (!sheet || sheet.getLastRow() < 2)
@@ -1548,8 +1547,7 @@ function getCanonicalGameSubmittedArmyListObjects() {
 function getCanonicalArmyListRecentGames() {
 
   const sheet =
-    SpreadsheetApp
-      .getActive()
+    lifGetTargetSpreadsheet_()
       .getSheetByName(CONFIG.SHEETS.FORM);
 
   if (!sheet)

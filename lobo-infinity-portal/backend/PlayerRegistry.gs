@@ -38,8 +38,7 @@ function loadPlayers() {
     );
 
   const sheet =
-    SpreadsheetApp
-      .getActive()
+    lifGetTargetSpreadsheet_()
       .getSheetByName(CONFIG.SHEETS.PLAYERS);
 
   endDashboardEndpointSubStage(
@@ -191,8 +190,7 @@ function ensurePlayerDisplayNameColumn(sheet, headers) {
 function setLeaguePlayerDisplayName(playerName, displayName) {
 
   const sheet =
-    SpreadsheetApp
-      .getActive()
+    lifGetTargetSpreadsheet_()
       .getSheetByName(CONFIG.SHEETS.PLAYERS);
 
   if (!sheet)

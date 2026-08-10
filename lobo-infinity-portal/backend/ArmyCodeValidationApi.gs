@@ -404,8 +404,7 @@ function getArmyCodeValidationThresholdsFromSettings(eventId) {
 
   try {
     const sheet =
-      SpreadsheetApp
-        .getActive()
+      lifGetTargetSpreadsheet_()
         .getSheetByName(CONFIG.SHEETS.SETTINGS);
 
     if (!sheet)

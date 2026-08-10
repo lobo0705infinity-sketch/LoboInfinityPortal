@@ -731,8 +731,7 @@ function getSeasonArchiveRowsSafe() {
 
   try {
     const sheet =
-      SpreadsheetApp
-        .getActive()
+      lifGetTargetSpreadsheet_()
         .getSheetByName(CONFIG.SHEETS.SEASON_ARCHIVE);
 
     if (!sheet)

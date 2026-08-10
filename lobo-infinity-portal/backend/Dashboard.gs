@@ -564,8 +564,7 @@ function endDashboardEndpointSubStage(stageName, startTime, details) {
 function getLeader() {
 
   const sheet =
-    SpreadsheetApp
-      .getActiveSpreadsheet()
+    lifGetTargetSpreadsheet_()
       .getSheetByName(CONFIG.SHEETS.MAIN_MAN);
 
   if (!sheet)

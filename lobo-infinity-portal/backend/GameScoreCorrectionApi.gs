@@ -179,8 +179,7 @@ function correctGameScore(e, auth) {
 function getGameScoreCorrectionTarget(gameId) {
 
   const sheet =
-    SpreadsheetApp
-      .getActive()
+    lifGetTargetSpreadsheet_()
       .getSheetByName(CONFIG.SHEETS.FORM);
 
   if (!sheet)

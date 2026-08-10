@@ -25,8 +25,7 @@ function getCommissionerNews() {
 function getManualCommissionerNews() {
 
   const sheet =
-    SpreadsheetApp
-      .getActive()
+    lifGetTargetSpreadsheet_()
       .getSheetByName(CONFIG.SHEETS.COMMISSIONER_NEWS);
 
   if (!sheet)

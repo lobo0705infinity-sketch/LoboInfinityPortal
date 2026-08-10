@@ -109,8 +109,7 @@ function writeSheet(sheetName, rows) {
   }
 
   const sheet =
-    SpreadsheetApp
-      .getActive()
+    lifGetTargetSpreadsheet_()
       .getSheetByName(sheetName);
 
   sheet.clearContents();

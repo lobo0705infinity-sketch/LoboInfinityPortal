@@ -186,8 +186,7 @@ function buildArmyIntelligenceArmyListsFromReadModelLists(lists) {
 function readArmyIntelligenceReadModelPayload() {
 
   const sheet =
-    SpreadsheetApp
-      .getActive()
+    lifGetTargetSpreadsheet_()
       .getSheetByName(CONFIG.SHEETS.ARMY_INTELLIGENCE_READ_MODEL);
 
   if (!sheet || sheet.getLastRow() < 2)
@@ -330,8 +329,7 @@ function mapDeterministicArmyIntelligenceRows(rows) {
 function readPersistedDeterministicArmyIntelligenceRows() {
 
   const sheet =
-    SpreadsheetApp
-      .getActive()
+    lifGetTargetSpreadsheet_()
       .getSheetByName(CONFIG.SHEETS.ARMY_INTELLIGENCE);
 
   if (!sheet)
@@ -346,8 +344,7 @@ function readPersistedDeterministicArmyIntelligenceRows() {
 function buildCurrentDeterministicArmyIntelligenceRows() {
 
   const sheet =
-    SpreadsheetApp
-      .getActive()
+    lifGetTargetSpreadsheet_()
       .getSheetByName(CONFIG.SHEETS.ENGINE);
 
   if (!sheet)

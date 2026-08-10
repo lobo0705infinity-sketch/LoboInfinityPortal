@@ -95,8 +95,7 @@ function getRecentGames(e) {
   }
 
   const sheet =
-    SpreadsheetApp
-      .getActive()
+    lifGetTargetSpreadsheet_()
       .getSheetByName(CONFIG.SHEETS.GAME_ANALYTICS);
 
   if (!sheet)
@@ -221,8 +220,7 @@ function getGameCenterCanonicalGames() {
       .sort(sortGameCenterCanonicalGames);
 
   const sheet =
-    SpreadsheetApp
-      .getActive()
+    lifGetTargetSpreadsheet_()
       .getSheetByName(CONFIG.SHEETS.GAME_ANALYTICS);
 
   if (!sheet)

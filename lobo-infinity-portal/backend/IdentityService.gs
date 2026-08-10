@@ -302,8 +302,7 @@ function resolveCanonicalPlayerIdentityFromEventParticipants(email) {
   try {
 
   const sheet =
-    SpreadsheetApp
-      .getActive()
+    lifGetTargetSpreadsheet_()
       .getSheetByName(CONFIG.SHEETS.EVENT_PARTICIPANTS);
 
   if (!sheet)
@@ -481,8 +480,7 @@ function readIdentityServicePlayersSheet(options) {
     options || {};
 
   const sheet =
-    SpreadsheetApp
-      .getActive()
+    lifGetTargetSpreadsheet_()
       .getSheetByName(CONFIG.SHEETS.PLAYERS);
 
   if (!sheet)

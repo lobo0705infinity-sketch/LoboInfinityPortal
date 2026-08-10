@@ -1306,8 +1306,7 @@ function syncEventParticipantDisplayName(user, displayName) {
     return;
 
   const sheet =
-    SpreadsheetApp
-      .getActive()
+    lifGetTargetSpreadsheet_()
       .getSheetByName(CONFIG.SHEETS.EVENT_PARTICIPANTS);
 
   if (!sheet)

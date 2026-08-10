@@ -193,8 +193,7 @@ function submitLeagueResult(e) {
         : getResultSubmissionArmyListId(playerArmyList, playerArmyCode);
 
     const sheet =
-      SpreadsheetApp
-        .getActive()
+      lifGetTargetSpreadsheet_()
         .getSheetByName(CONFIG.SHEETS.FORM);
 
     if (!sheet)
@@ -416,8 +415,7 @@ function submitCasualResult(e) {
         : getResultSubmissionArmyListId(playerArmyList, playerArmyCode);
 
     const sheet =
-      SpreadsheetApp
-        .getActive()
+      lifGetTargetSpreadsheet_()
         .getSheetByName(CONFIG.SHEETS.FORM);
 
     if (!sheet)
@@ -509,8 +507,7 @@ function linkHistoricalArmyLists(e) {
       return resultSubmissionFailure(loserArmyList.error);
 
     const sheet =
-      SpreadsheetApp
-        .getActive()
+      lifGetTargetSpreadsheet_()
         .getSheetByName(CONFIG.SHEETS.FORM);
 
     if (!sheet)
@@ -710,8 +707,7 @@ function normalizeResultSubmissionArmyCode(value) {
 function getResultSubmissionFormRowNumberForGameId(gameId) {
 
   const sheet =
-    SpreadsheetApp
-      .getActive()
+    lifGetTargetSpreadsheet_()
       .getSheetByName(CONFIG.SHEETS.FORM);
 
   if (!sheet)

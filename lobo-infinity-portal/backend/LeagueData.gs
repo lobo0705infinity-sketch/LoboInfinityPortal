@@ -16,8 +16,7 @@ function loadLeagueData() {
     );
 
   const sheet =
-    SpreadsheetApp
-      .getActive()
+    lifGetTargetSpreadsheet_()
       .getSheetByName(CONFIG.SHEETS.ENGINE);
 
   endDashboardEndpointSubStage(
