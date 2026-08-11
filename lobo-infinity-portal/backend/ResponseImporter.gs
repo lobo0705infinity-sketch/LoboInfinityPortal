@@ -75,16 +75,16 @@ function lifReadSubmission_(named, formType, timestamp, targetSpreadsheet) {
 
 function lifResolveTeamTournamentImportContext_(spreadsheet, selectedPlayer) {
   if (!spreadsheet) throw new Error("The target portal spreadsheet is required for Team Tournament imports.");
-  const eventId = lifResolveActiveTeamTournamentEventId_(spreadsheet);
+  const tournamentOptions = lifGetTeamTournamentFormOptions_();
   const selectedKey = lifNormalize_(selectedPlayer);
-  const registration = lifGetActiveTeamTournamentRegistrations_(spreadsheet, eventId)
-    .filter(function(row) {
-      return lifNormalize_(row["Player"]) === selectedKey || lifNormalize_(row["Display Name"]) === selectedKey;
+  const registeredPlayer = tournamentOptions.players
+    .filter(function(player) {
+      return lifNormalize_(player) === selectedKey;
     })[0];
-  if (!registration) throw new Error("Selected Player is not registered in the active Team Tournament.");
+  if (!registeredPlayer) throw new Error("Selected Player is not registered in the active Team Tournament.");
   return {
-    eventId: eventId,
-    player: String(registration["Player"] || registration["Display Name"] || selectedPlayer).trim()
+    eventId: tournamentOptions.eventId,
+    player: String(registeredPlayer).trim()
   };
 }
 
@@ -110,14 +110,6 @@ function lifResolveActiveTeamTournamentEventId_(spreadsheet) {
   if (events.length === 1) return String(events[0]["ID"] || "").trim();
   if (!events.length) throw new Error("No active Team Tournament event was found.");
   throw new Error("Multiple Team Tournament events are active; the current event is ambiguous.");
-}
-
-function lifGetActiveTeamTournamentRegistrations_(spreadsheet, eventId) {
-  return lifReadSheetObjects_(spreadsheet, "Event Participants").filter(function(registration) {
-    const status = lifNormalize_(registration["Status"]);
-    return String(registration["Event ID"] || "").trim() === eventId &&
-      (status === "registered" || status === "active");
-  });
 }
 
 function lifResolveLeagueImportContext_(spreadsheet, selectedPlayer) {
