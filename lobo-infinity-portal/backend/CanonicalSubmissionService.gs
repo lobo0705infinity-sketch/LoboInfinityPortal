@@ -64,12 +64,13 @@ function canonicalSubmitGoogleFormGame_(command, workflow) {
 
   lifWriteImportLog_(log, responseKey, workflow, targetRow, "Imported", "");
   SpreadsheetApp.flush();
-  canonicalSubmissionRunImportRebuild_(
-    log,
-    responseKey,
-    workflow,
-    targetRow
-  );
+  coordinateCanonicalRebuild({
+    importLog: log,
+    responseKey: responseKey,
+    workflow: workflow,
+    targetRow: targetRow,
+    logMissing: true
+  });
 
   return canonicalSubmissionSuccess_(
     "Imported",
@@ -112,7 +113,11 @@ function canonicalSubmitPortalGame_(command, workflow) {
     validation.value,
     row
   );
-  canonicalSubmissionRunRebuild_(false);
+  coordinateCanonicalRebuild({
+    workflow: workflow,
+    targetRow: null,
+    logMissing: false
+  });
 
   if (typeof publishLatestGameSubmittedAutomationEvent === "function")
     publishLatestGameSubmittedAutomationEvent();
@@ -197,7 +202,11 @@ function canonicalSubmitPortalTeamTournamentGame_(command) {
   const targetRow = sheet.getLastRow();
 
   SpreadsheetApp.flush();
-  canonicalSubmissionRunRebuild_(true);
+  coordinateCanonicalRebuild({
+    workflow: "team-tournament",
+    targetRow: targetRow,
+    logMissing: true
+  });
 
   return canonicalSubmissionSuccess_(
     "Submitted",
@@ -322,42 +331,6 @@ function canonicalSubmissionRecordPortalAudit_(commissionerContext, workflow, va
       loserArmyListId: row[FORM.LOSER_ARMY_LIST_ID]
     }
   );
-}
-
-function canonicalSubmissionRunImportRebuild_(log, responseKey, workflow, targetRow) {
-  const functionName = typeof rebuildEverything === "function"
-    ? "rebuildEverything"
-    : typeof rebuildGameEngine === "function"
-      ? "rebuildGameEngine"
-      : "none";
-
-  try {
-    canonicalSubmissionRunRebuild_(true);
-  } catch (error) {
-    lifWriteImportLog_(
-      log,
-      responseKey,
-      workflow,
-      targetRow,
-      "Rebuild Failed",
-      JSON.stringify({
-        timestamp: new Date().toISOString(),
-        functionName: functionName,
-        message: error && error.message ? String(error.message) : String(error),
-        stack: error && error.stack ? String(error.stack) : ""
-      })
-    );
-    throw error;
-  }
-}
-
-function canonicalSubmissionRunRebuild_(logMissing) {
-  if (typeof rebuildEverything === "function")
-    rebuildEverything();
-  else if (typeof rebuildGameEngine === "function")
-    rebuildGameEngine();
-  else if (logMissing)
-    Logger.log("Import complete. Deterministic rebuild function is not present in this Apps Script runtime.");
 }
 
 function canonicalSubmissionWorkflow_(value) {
