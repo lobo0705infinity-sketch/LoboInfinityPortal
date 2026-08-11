@@ -42,6 +42,16 @@ function getRecentGames(e) {
       e.parameter &&
       e.parameter.playerName;
 
+    const eventId =
+      e &&
+      e.parameter &&
+      e.parameter.eventId;
+
+    const eventScope =
+      playerName && !eventId
+        ? "all"
+        : eventId;
+
     const sourceGames =
       playerName
         ? getPlayerRecentGameObjectsFromGameEngine(
@@ -56,9 +66,7 @@ function getRecentGames(e) {
             sourceGames,
             playerName
           ),
-          e &&
-          e.parameter &&
-          e.parameter.eventId,
+          eventScope,
           e &&
           e.parameter &&
           e.parameter.gameType
