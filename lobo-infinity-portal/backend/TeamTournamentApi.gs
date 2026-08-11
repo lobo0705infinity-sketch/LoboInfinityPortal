@@ -1000,14 +1000,16 @@ function saveTeamTournamentResult(e) {
       error: commissionerContext.error
     });
 
-  const submission =
-    submitCanonicalGame({
+  const command =
+    createSubmissionCommand({
       source: "portal",
       workflow: "team-tournament",
       params: params,
       auth: auth,
       commissionerContext: commissionerContext
     });
+  const submission =
+    submitCanonicalGame(command);
 
   if (!submission.success)
     return jsonOutput({
@@ -1015,40 +1017,47 @@ function saveTeamTournamentResult(e) {
       error: submission.error
     });
 
+  return buildTeamTournamentSubmissionResponse_(
+    submission,
+    params,
+    auth,
+    commissionerContext
+  );
+
+}
+
+function buildTeamTournamentSubmissionResponse_(submission, params, auth, commissionerContext) {
   const eventId = submission.context.eventId;
   const assignment = submission.context.assignment;
   const timestamp = submission.context.timestamp;
   const canonicalSubmission = submission.context.submission;
   const targetRow = submission.targetRow;
-
-  const result =
-    {
-      eventId: eventId,
-      resultId: "canonical-game-" + targetRow,
-      roundId: assignment.roundId,
-      round: assignment.round,
-      teamA: assignment.teamA,
-      teamB: assignment.teamB,
-      player: assignment.player,
-      opponent: assignment.opponent,
-      tournamentPoints: getTeamTournamentString(params.tournamentPoints),
-      objectivePoints: getTeamTournamentString(params.objectivePoints),
-      victoryPoints: getTeamTournamentString(params.victoryPoints),
-      winningFaction: getTeamTournamentWinningFaction_(canonicalSubmission),
-      firstTurn: lifResolveCanonicalFirstTurn_(canonicalSubmission),
-      bestMoment: getTeamTournamentString(params.bestMoment),
-      notes: getTeamTournamentString(params.notes),
-      status: "Submitted",
-      submittedBy:
-        commissionerContext.enabled
-          ? commissionerContext.commissioner
-          : getCanonicalPlayerFromUser(auth.user) || auth.user.email || assignment.player,
-      createdAt: timestamp,
-      updatedAt: timestamp,
-      table: assignment.table,
-      mission: assignment.mission,
-      winner: getTeamTournamentString(params.winner)
-    };
+  const result = {
+    eventId: eventId,
+    resultId: "canonical-game-" + targetRow,
+    roundId: assignment.roundId,
+    round: assignment.round,
+    teamA: assignment.teamA,
+    teamB: assignment.teamB,
+    player: assignment.player,
+    opponent: assignment.opponent,
+    tournamentPoints: getTeamTournamentString(params.tournamentPoints),
+    objectivePoints: getTeamTournamentString(params.objectivePoints),
+    victoryPoints: getTeamTournamentString(params.victoryPoints),
+    winningFaction: getTeamTournamentWinningFaction_(canonicalSubmission),
+    firstTurn: lifResolveCanonicalFirstTurn_(canonicalSubmission),
+    bestMoment: getTeamTournamentString(params.bestMoment),
+    notes: getTeamTournamentString(params.notes),
+    status: "Submitted",
+    submittedBy: commissionerContext.enabled
+      ? commissionerContext.commissioner
+      : getCanonicalPlayerFromUser(auth.user) || auth.user.email || assignment.player,
+    createdAt: timestamp,
+    updatedAt: timestamp,
+    table: assignment.table,
+    mission: assignment.mission,
+    winner: getTeamTournamentString(params.winner)
+  };
 
   if (typeof recordResultSubmissionCommissionerAudit === "function")
     recordResultSubmissionCommissionerAudit(
@@ -1072,7 +1081,6 @@ function saveTeamTournamentResult(e) {
       result: result
     }
   );
-
 }
 
 function getTeamTournamentCanonicalGameResult_(winner, assignment) {

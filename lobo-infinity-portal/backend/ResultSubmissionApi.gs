@@ -17,14 +17,16 @@ function submitLeagueResult(e) {
     if (commissionerContext.error)
       return resultSubmissionFailure(commissionerContext.error);
 
-    const submission =
-      submitCanonicalGame({
+    const command =
+      createSubmissionCommand({
         source: "portal",
         workflow: "league",
         params: params,
         auth: auth,
         commissionerContext: commissionerContext
       });
+    const submission =
+      submitCanonicalGame(command);
 
     if (!submission.success)
       return resultSubmissionFailure(submission.error);
@@ -52,14 +54,16 @@ function submitCasualResult(e) {
     if (commissionerContext.error)
       return resultSubmissionFailure(commissionerContext.error);
 
-    const submission =
-      submitCanonicalGame({
+    const command =
+      createSubmissionCommand({
         source: "portal",
         workflow: "casual",
         params: params,
         auth: auth,
         commissionerContext: commissionerContext
       });
+    const submission =
+      submitCanonicalGame(command);
 
     if (!submission.success)
       return resultSubmissionFailure(submission.error);

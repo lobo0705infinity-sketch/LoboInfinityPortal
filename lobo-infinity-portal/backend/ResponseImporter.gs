@@ -10,7 +10,7 @@ function handleLoboFormSubmit(e) {
     const target = SpreadsheetApp.openById(lifRequireProperty_(LIF_FORMS.PROPERTIES.TARGET_SPREADSHEET_ID));
     const log = lifEnsureImportLog_(target);
 
-    submitCanonicalGame({
+    const command = createSubmissionCommand({
       source: "google-form",
       workflow: formType,
       namedValues: e.namedValues,
@@ -19,6 +19,8 @@ function handleLoboFormSubmit(e) {
       importLog: log,
       responseKey: responseKey
     });
+
+    submitCanonicalGame(command);
   } finally {
     lock.releaseLock();
   }
