@@ -685,6 +685,22 @@ function getTeamTournamentRuntimeCacheKey(eventId) {
 
 }
 
+function invalidateTeamTournamentRuntimeCache(eventId) {
+
+  const cacheKey =
+    getTeamTournamentRuntimeCacheKey(eventId);
+
+  CacheService
+    .getScriptCache()
+    .removeAll([
+      cacheKey,
+      getPortalStaleCacheKey(cacheKey)
+    ]);
+
+  invalidatePortalCacheGroup("events");
+
+}
+
 function measureTeamTournamentOperation(stageName, operation, details) {
 
   const start =
@@ -1071,8 +1087,6 @@ function buildTeamTournamentSubmissionResponse_(submission, params, auth, commis
         result: result.winner
       }
     );
-
-  invalidatePortalCacheGroup("events");
 
   return buildTeamTournamentMutationResponse(
     "result",

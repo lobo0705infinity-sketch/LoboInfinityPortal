@@ -72,6 +72,9 @@ function canonicalSubmitGoogleFormGame_(command, workflow) {
     logMissing: true
   });
 
+  if (workflow === "team-tournament")
+    invalidateTeamTournamentRuntimeCache(submission.eventId);
+
   return canonicalSubmissionSuccess_(
     "Imported",
     row,
@@ -207,6 +210,8 @@ function canonicalSubmitPortalTeamTournamentGame_(command) {
     targetRow: targetRow,
     logMissing: true
   });
+
+  invalidateTeamTournamentRuntimeCache(validation.value.eventId);
 
   return canonicalSubmissionSuccess_(
     "Submitted",

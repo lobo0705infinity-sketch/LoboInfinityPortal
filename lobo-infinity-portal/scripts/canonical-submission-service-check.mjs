@@ -148,6 +148,9 @@ const context = vm.createContext({
   invalidateResultSubmissionCaches() {
     events.push('cache')
   },
+  invalidateTeamTournamentRuntimeCache() {
+    events.push('team-runtime-cache')
+  },
   getTeamTournamentTimestamp: () => '2026-08-11 12:17:18',
   parseTeamTournamentSubmittedScore(value) {
     const [left, right] = string(value).split('-').map(Number)
@@ -244,10 +247,12 @@ for (const workflow of ['league', 'casual', 'team-tournament']) {
   })
   assert.equal(result.success, true)
   assertRow(`Google Form ${workflow}`, result.row, expected)
-  assert.deepEqual(events, [
+  const expectedEvents = [
     'idempotency', 'context', `validate:google-form:${workflow}`, 'canonical-sheet', 'factory',
     'append', 'import-log:Imported', 'flush', 'rebuild',
-  ], `Google Form ${workflow} rebuild order changed`)
+  ]
+  if (workflow === 'team-tournament') expectedEvents.push('team-runtime-cache')
+  assert.deepEqual(events, expectedEvents, `Google Form ${workflow} rebuild order changed`)
 }
 
 const portalParams = {
@@ -294,6 +299,7 @@ const expectedTeamRow = buildCanonicalGameRow(legacyGoogleCommand(teamResult.con
 assertRow('Portal Team Tournament', teamResult.row, expectedTeamRow)
 assert.deepEqual(events, [
   'validate:portal:team-tournament', 'canonical-sheet', 'factory', 'append', 'flush', 'rebuild',
+  'team-runtime-cache',
 ], 'Portal Team Tournament rebuild order changed')
 
 reset()
