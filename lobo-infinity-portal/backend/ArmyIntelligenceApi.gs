@@ -647,6 +647,7 @@ function buildArmyIntelligenceSources() {
     armyListsById,
     armyListsByPlayerAndFaction
   );
+  appendArmyIntelligenceTeamTournamentSources(sources);
 
   const seen = {};
 
@@ -722,12 +723,7 @@ function appendArmyIntelligenceRecentGameSources(
         sectorial: game.winnerFaction,
         sourceId: game.id,
         sourcePlayer: "winner",
-        sourceType:
-          game.gameType === "casual"
-            ? "casual"
-            : game.gameType === "tournament"
-              ? "tournament"
-              : "league"
+        sourceType: game.gameType === "casual" ? "casual" : "league"
       });
 
       appendArmyIntelligenceParticipantSource(sources, {
@@ -755,12 +751,7 @@ function appendArmyIntelligenceRecentGameSources(
         sectorial: game.loserFaction,
         sourceId: game.id,
         sourcePlayer: "loser",
-        sourceType:
-          game.gameType === "casual"
-            ? "casual"
-            : game.gameType === "tournament"
-              ? "tournament"
-              : "league"
+        sourceType: game.gameType === "casual" ? "casual" : "league"
       });
     });
 
@@ -971,6 +962,56 @@ function buildLegacyArmyIntelligenceCombatGroups(entries) {
         entries: groups[group]
       };
     });
+
+}
+
+function appendArmyIntelligenceTeamTournamentSources(sources) {
+
+  const spreadsheet =
+    lifGetTargetSpreadsheet_();
+
+  const sheet =
+    spreadsheet.getSheetByName(CONFIG.SHEETS.TEAM_TOURNAMENT_RESULTS);
+
+  if (!sheet || sheet.getLastRow() < 2)
+    return;
+
+  const rows =
+    getArmyIntelligenceObjectsFromSheet(sheet);
+
+  rows.forEach(function(row, index) {
+    appendArmyIntelligenceParticipantSource(sources, {
+      armyCode: row["Player 1 Army Code"],
+      date: row["Created At"] || row["Updated At"],
+      event: row["Event ID"],
+      faction: row["Winning Faction"],
+      gameType: "Tournament",
+      mission: row["Mission"],
+      opponent: row["Opponent"],
+      player: row["Player"],
+      result: getArmyIntelligenceTournamentResult(row, row["Player"]),
+      sectorial: row["Winning Faction"],
+      sourceId: row["Result ID"] || index + 1,
+      sourcePlayer: "player1",
+      sourceType: "tournament"
+    });
+
+    appendArmyIntelligenceParticipantSource(sources, {
+      armyCode: row["Player 2 Army Code"],
+      date: row["Created At"] || row["Updated At"],
+      event: row["Event ID"],
+      faction: "",
+      gameType: "Tournament",
+      mission: row["Mission"],
+      opponent: row["Player"],
+      player: row["Opponent"],
+      result: getArmyIntelligenceTournamentResult(row, row["Opponent"]),
+      sectorial: "",
+      sourceId: row["Result ID"] || index + 1,
+      sourcePlayer: "player2",
+      sourceType: "tournament"
+    });
+  });
 
 }
 
@@ -1299,6 +1340,23 @@ function getArmyIntelligenceHash(value) {
 
     return ("0" + value.toString(16)).slice(-2);
   }).join("");
+
+}
+
+function getArmyIntelligenceTournamentResult(row, player) {
+
+  const winner =
+    getArmyIntelligenceString(row["Winner"]);
+
+  if (!winner)
+    return "";
+
+  if (winner.toLowerCase() === "draw")
+    return "Draw";
+
+  return normalizeArmyIntelligenceKeyPart(winner) === normalizeArmyIntelligenceKeyPart(player)
+    ? "Win"
+    : "Loss";
 
 }
 
