@@ -502,7 +502,7 @@ function diagnoseArmyList(e) {
 
   const decoded =
     buildArmyDiagnosticDecode(
-      decodeArmyCode(source.list.armyCode)
+      CanonicalDecoderGateway.decode(source.list.armyCode)
     );
 
   const validation =
@@ -823,7 +823,7 @@ function buildArmyIntelligenceForGameEngineRows(gameEngineRows) {
 
     const decoded =
       buildArmyDiagnosticDecode(
-        decodeArmyCode(list.armyCode)
+        CanonicalDecoderGateway.decode(list.armyCode)
       );
 
     if (!decoded.success)
@@ -1674,7 +1674,7 @@ function appendCanonicalGameSubmittedArmyList(lookup, game, side) {
 
   const decoded =
     armyCode
-      ? decodeArmyCode(armyCode)
+      ? CanonicalDecoderGateway.decode(armyCode)
       : null;
 
   const id =

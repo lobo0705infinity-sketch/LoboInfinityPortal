@@ -1158,11 +1158,15 @@ function getTeamTournamentWinningFaction_(submission) {
 
 function getTeamTournamentArmyCodeFaction(armyCode) {
 
-  if (!armyCode || typeof decodeArmyCode !== "function")
+  if (
+    !armyCode ||
+    typeof CanonicalDecoderGateway === "undefined" ||
+    typeof CanonicalDecoderGateway.decode !== "function"
+  )
     return "";
 
   const decoded =
-    decodeArmyCode(armyCode);
+    CanonicalDecoderGateway.decode(armyCode);
 
   return canonicalizeArmyName(
     decoded.sectorial ||

@@ -390,7 +390,7 @@ function buildApprovedArmyListIntelligenceRows() {
 
       const decoded =
         buildArmyDiagnosticDecode(
-          decodeArmyCode(list.armyCode)
+          CanonicalDecoderGateway.decode(list.armyCode)
         );
 
       if (!decoded.success)
@@ -875,7 +875,7 @@ function buildLegacyArmyIntelligenceSnapshot(source) {
 
   const decoded =
     buildArmyDiagnosticDecode(
-      decodeArmyCode(source.armyCode)
+      CanonicalDecoderGateway.decode(source.armyCode)
     );
 
   if (!decoded.success) {

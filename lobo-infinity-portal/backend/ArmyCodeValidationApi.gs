@@ -317,7 +317,7 @@ function getArmyCodeValidationSeverity(issues) {
 
 function decodeSubmittedArmyCode(value) {
 
-  return decodeArmyCode(value);
+  return CanonicalDecoderGateway.decode(value);
 
 }
 

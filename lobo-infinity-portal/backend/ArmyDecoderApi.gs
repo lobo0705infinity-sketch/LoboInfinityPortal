@@ -5,142 +5,6 @@
  * Shared production Infinity Army Code decoder.
  *******************************************************/
 
-const ARMY_DECODER_VERSION = "army-decoder-v1";
-
-function decodeArmyCode(value) {
-
-  const raw =
-    getArmyDecoderString(value);
-
-  const extracted =
-    extractArmyCodePayload(raw);
-
-  const validation =
-    inspectArmyCodeEncoding(extracted);
-
-  const result =
-    buildArmyDecodeEmptyResult(raw, extracted, validation);
-
-  if (!extracted) {
-    result.parserWarnings.push("Army Code is empty.");
-    result.exceptions.push("empty");
-    result.parserFailure = buildArmyDecoderParserFailure(
-      "input",
-      "Army Code is empty.",
-      "unexpected EOF"
-    );
-    Logger.log(
-      JSON.stringify({
-        returnStatement: "return normalizeArmyDecodeResult(result) after !extracted",
-        condition: "!extracted",
-        conditionResult: !extracted,
-        variables: {
-          extracted: extracted
-        }
-      })
-    );
-    return normalizeArmyDecodeResult(result);
-  }
-
-  if (!validation.valid) {
-    result.parserWarnings.push(validation.reason);
-    result.exceptions.push(validation.reason);
-    result.parserFailure = buildArmyDecoderParserFailure(
-      "encoding",
-      validation.reason,
-      "bad token"
-    );
-    Logger.log(
-      JSON.stringify({
-        returnStatement: "return normalizeArmyDecodeResult(result) after !validation.valid",
-        condition: "!validation.valid",
-        conditionResult: !validation.valid,
-        variables: {
-          validationValid: validation.valid
-        }
-      })
-    );
-    return normalizeArmyDecodeResult(result);
-  }
-
-  try {
-    const binary =
-      parseArmyCodeBinary(extracted);
-
-    result.armyName =
-      binary.listName;
-    result.combatGroups =
-      binary.combatGroupCount;
-    result.sectorial =
-      normalizeArmyDecoderName(binary.sectorialSlug);
-    result.faction =
-      getArmyDecoderParentFaction(result.sectorial);
-    result.roster =
-      buildArmyDecoderBinaryRoster(binary);
-    result.parserTrace =
-      binary.parserTrace;
-
-    const resolved =
-      resolveArmyCodeProfiles(extracted);
-
-    result.parserWarnings =
-      result.parserWarnings.concat(resolved.parserWarnings);
-
-    if (resolved.roster.length > 0)
-      result.roster =
-        resolved.roster;
-
-    result.points =
-      resolved.points;
-    result.swc =
-      resolved.swc;
-
-    if (resolved.combatGroups > 0)
-      result.combatGroups =
-        resolved.combatGroups;
-
-    if (resolved.sectorial)
-      result.sectorial =
-        resolved.sectorial;
-
-    if (resolved.faction)
-      result.faction =
-        resolved.faction;
-
-    if (resolved.armyName)
-      result.armyName =
-        resolved.armyName;
-
-    result.unitCount =
-      result.roster.length;
-    result.valid =
-      true;
-
-    return normalizeArmyDecodeResult(result);
-  }
-  catch (err) {
-    result.parserWarnings.push("Decoder exception: " + String(err));
-    result.exceptions.push(String(err));
-    result.parserFailure = buildArmyDecoderParserFailure(
-      "decodeArmyCode",
-      String(err),
-      getArmyDecoderFailureReason(String(err))
-    );
-    Logger.log(
-      JSON.stringify({
-        returnStatement: "return normalizeArmyDecodeResult(result) from catch (err)",
-        condition: "catch (err)",
-        conditionResult: true,
-        variables: {
-          error: String(err)
-        }
-      })
-    );
-    return normalizeArmyDecodeResult(result);
-  }
-
-}
-
 function testDecodeArmyCode() {
 
   const armyListId =
@@ -156,7 +20,7 @@ function testDecodeArmyCode() {
     source.armyCode;
 
   const decoded =
-    decodeArmyCode(armyCode);
+    CanonicalDecoderGateway.decode(armyCode);
 
   Logger.log(
     JSON.stringify(decoded)
@@ -177,54 +41,6 @@ function testDecodeArmyCode() {
   );
 
   return decoded;
-
-}
-
-function buildArmyDecodeEmptyResult(raw, extracted, validation) {
-
-  return {
-    armyName: "",
-    combatGroups: 0,
-    decoderVersion: ARMY_DECODER_VERSION,
-    derived: {},
-    exceptions: [],
-    extractedCode: extracted,
-    extractedLength: extracted.length,
-    faction: "",
-    parserFailure: null,
-    parserTrace: [],
-    parserWarnings: [],
-    points: 0,
-    rawLength: raw.length,
-    roster: [],
-    sectorial: "",
-    swc: 0,
-    unitCount: 0,
-    validation: validation,
-    valid: false
-  };
-
-}
-
-function normalizeArmyDecodeResult(result) {
-
-  result.derived = {
-    armyName: result.armyName,
-    combatGroups: result.combatGroups,
-    faction: result.faction,
-    points: result.points,
-    sectorial: result.sectorial,
-    swc: result.swc,
-    unitCount: result.unitCount
-  };
-
-  result.decoder =
-    result.decoderVersion;
-
-  result.warnings =
-    result.parserWarnings;
-
-  return result;
 
 }
 
@@ -752,44 +568,6 @@ function buildArmyDecoderTrace(label, startOffset, endOffset, value) {
     startOffset: startOffset,
     token: String(value)
   };
-
-}
-
-function buildArmyDecoderParserFailure(location, exception, reason) {
-
-  return {
-    badToken: reason === "bad token" ? exception : "",
-    exception: exception,
-    location: location,
-    reason: reason,
-    token: exception,
-    unexpectedEof: reason === "unexpected EOF",
-    unknownSkill: reason === "unknown skill" ? exception : "",
-    unknownTroop: reason === "unknown troop" ? exception : "",
-    unknownWeapon: reason === "unknown weapon" ? exception : "",
-    unsupportedProfile: reason === "unsupported profile" ? exception : ""
-  };
-
-}
-
-function getArmyDecoderFailureReason(message) {
-
-  if (/unexpected eof/i.test(message))
-    return "unexpected EOF";
-
-  if (/unknown weapon/i.test(message))
-    return "unknown weapon";
-
-  if (/unknown skill/i.test(message))
-    return "unknown skill";
-
-  if (/unknown troop/i.test(message))
-    return "unknown troop";
-
-  if (/unsupported profile/i.test(message))
-    return "unsupported profile";
-
-  return "parser exception";
 
 }
 
