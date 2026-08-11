@@ -96,7 +96,7 @@ function getTeamTournament(e) {
     buildTeamTournamentResultStatuses(pairings, results);
 
   const standings =
-    buildTeamTournamentStandings(eventId, teams, results, []);
+    buildTeamTournamentStandings(eventId, teams, [], runtime.recentGames);
 
   const registrations =
     resolveTeamTournamentRegistrationMembership(
