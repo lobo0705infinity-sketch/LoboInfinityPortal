@@ -18,15 +18,8 @@ function handleLoboFormSubmit(e) {
       throw new Error(errors.join(" "));
     }
 
-    let targetRow;
-    if (formType === LIF_FORMS.TYPES.TEAM) {
-      targetRow = lifImportTeamTournamentSubmission_(submission);
-    } else {
-      const sheet = lifEnsureCanonicalSheet_(target);
-      const row = lifBuildCanonicalRow_(submission);
-      sheet.appendRow(row);
-      targetRow = sheet.getLastRow();
-    }
+    if (formType === LIF_FORMS.TYPES.TEAM) lifValidateTeamTournamentSubmission_(submission);
+    const targetRow = lifAppendCanonicalGameSubmission_(target, submission);
     lifWriteImportLog_(log, responseKey, formType, targetRow, "Imported", "");
     SpreadsheetApp.flush();
     lifRunDeterministicRebuild_(log, responseKey, formType, targetRow);
@@ -181,6 +174,7 @@ function lifLeagueRowIsActive_(row) {
 
 function lifBuildCanonicalRow_(s) {
   if (s.formType === LIF_FORMS.TYPES.LEAGUE) return lifBuildCanonicalLeagueRow_(s);
+  if (s.formType === LIF_FORMS.TYPES.TEAM) return lifBuildCanonicalGameRow_(s, "tournament");
   const winner = lifDetermineWinner_(s);
   const playerWins = winner === s.player || winner === "Draw";
   return [
@@ -189,12 +183,12 @@ function lifBuildCanonicalRow_(s) {
     Number(s.playerVp), Number(s.opponentVp), s.firstTurn === "Player" ? s.player : s.opponent,
     playerWins ? s.playerFaction : s.opponentFaction,
     playerWins ? s.opponentFaction : s.playerFaction, s.bestMoment, s.eventId,
-    s.formType === LIF_FORMS.TYPES.CASUAL ? "casual" : s.formType === LIF_FORMS.TYPES.LEAGUE ? "league" : "team-tournament",
+    "casual",
     winner, s.playerArmyCode, s.opponentArmyCode, "", ""
   ];
 }
 
-function lifImportTeamTournamentSubmission_(submission) {
+function lifValidateTeamTournamentSubmission_(submission) {
   const eventId = String(submission.eventId || "").trim();
   const registration = getEventRegistrationForPlayer(eventId, submission.player);
   const currentRound = getTeamTournamentCurrentRound(eventId);
@@ -219,46 +213,7 @@ function lifImportTeamTournamentSubmission_(submission) {
     throw new Error("This Team Tournament match has already been submitted.");
   }
 
-  const timestamp = getTeamTournamentTimestamp();
-  const winner = params.winner;
-  const resultId = "result-" + Utilities.getUuid();
-  const resultsSheet = ensureTeamTournamentResultsSheet();
-  upsertTeamTournamentCompositeRow(
-    resultsSheet,
-    TEAM_TOURNAMENT_RESULT_HEADERS,
-    ["Event ID", "Result ID"],
-    [eventId, resultId],
-    [
-      eventId,
-      resultId,
-      assignment.roundId,
-      String(submission.round || assignment.round || "").trim(),
-      String(submission.team || assignment.teamA || "").trim(),
-      String(submission.opponentTeam || assignment.teamB || "").trim(),
-      submission.player,
-      submission.opponent,
-      params.tournamentPoints,
-      params.objectivePoints,
-      params.victoryPoints,
-      winner === submission.player
-        ? submission.playerFaction
-        : winner === submission.opponent
-          ? submission.opponentFaction
-          : "",
-      submission.firstTurn === "Player" ? submission.player : submission.opponent,
-      submission.bestMoment,
-      submission.notes,
-      "Submitted",
-      submission.player,
-      timestamp,
-      timestamp,
-      assignment.table,
-      submission.mission,
-      winner
-    ]
-  );
-  invalidatePortalCacheGroup("events");
-  return resultsSheet.getLastRow();
+  return assignment;
 }
 
 function lifTeamTournamentScore_(playerScore, opponentScore) {
@@ -266,6 +221,10 @@ function lifTeamTournamentScore_(playerScore, opponentScore) {
 }
 
 function lifBuildCanonicalLeagueRow_(s) {
+  return lifBuildCanonicalGameRow_(s, "league");
+}
+
+function lifBuildCanonicalGameRow_(s, gameType) {
   const winner = lifDetermineWinner_(s);
   const playerWins = winner === s.player || winner === "Draw";
   const playerFaction = typeof canonicalizeArmyName === "function" ? canonicalizeArmyName(s.playerFaction) : String(s.playerFaction || "").trim();
@@ -280,14 +239,26 @@ function lifBuildCanonicalLeagueRow_(s) {
     String(s.player || "").trim(), String(s.opponent || "").trim(),
     Number(s.playerTp), Number(s.opponentTp), Number(s.playerOp), Number(s.opponentOp),
     Number(s.playerVp), Number(s.opponentVp),
-    s.firstTurn === "Player" ? String(s.player || "").trim() : String(s.opponent || "").trim(),
+    lifResolveCanonicalFirstTurn_(s),
     playerWins ? playerFaction : opponentFaction, playerWins ? opponentFaction : playerFaction,
-    String(s.bestMoment || "").trim(), String(s.eventId || "").trim(), "league",
+    String(s.bestMoment || "").trim(), String(s.eventId || "").trim(), String(gameType || "league").trim(),
     winner === "Draw" ? "Draw" : playerWins ? "Player 1 Victory" : "Player 2 Victory",
     playerArmyCode, opponentArmyCode,
     playerWins ? playerArmyListId : opponentArmyListId,
     playerWins ? opponentArmyListId : playerArmyListId
   ];
+}
+
+function lifResolveCanonicalFirstTurn_(submission) {
+  const firstTurn = String(submission.firstTurn || "").trim();
+  const normalized = lifNormalize_(firstTurn);
+  if (normalized === "player" || normalized === lifNormalize_(submission.player)) {
+    return String(submission.player || "").trim();
+  }
+  if (normalized === "opponent" || normalized === lifNormalize_(submission.opponent)) {
+    return String(submission.opponent || "").trim();
+  }
+  return firstTurn;
 }
 
 function lifFormatPortalDate_(date, format) {
@@ -308,6 +279,12 @@ function lifEnsureCanonicalSheet_(spreadsheet) {
     if (!String(headers[index] || "").trim()) sheet.getRange(1, index + 1).setValue(header);
   });
   return sheet;
+}
+
+function lifAppendCanonicalGameSubmission_(spreadsheet, submission) {
+  const sheet = lifEnsureCanonicalSheet_(spreadsheet);
+  sheet.appendRow(lifBuildCanonicalRow_(submission));
+  return sheet.getLastRow();
 }
 
 function lifEnsureImportLog_(spreadsheet) {
@@ -334,9 +311,7 @@ function lifRunDeterministicRebuild_(log, responseKey, formType, targetRow) {
       ? "rebuildGameEngine"
       : "none";
   try {
-    if (functionName === "rebuildEverything") rebuildEverything();
-    else if (functionName === "rebuildGameEngine") rebuildGameEngine();
-    else Logger.log("Import complete. Deterministic rebuild function is not present in this Apps Script runtime.");
+    lifRunCanonicalGamePipeline_();
   } catch (error) {
     lifWriteImportLog_(log, responseKey, formType, targetRow, "Rebuild Failed", JSON.stringify({
       timestamp: new Date().toISOString(),
@@ -346,4 +321,10 @@ function lifRunDeterministicRebuild_(log, responseKey, formType, targetRow) {
     }));
     throw error;
   }
+}
+
+function lifRunCanonicalGamePipeline_() {
+  if (typeof rebuildEverything === "function") rebuildEverything();
+  else if (typeof rebuildGameEngine === "function") rebuildGameEngine();
+  else Logger.log("Import complete. Deterministic rebuild function is not present in this Apps Script runtime.");
 }

@@ -44,31 +44,6 @@ const TEAM_TOURNAMENT_INVITATION_HEADERS = [
   "Updated At"
 ];
 
-const TEAM_TOURNAMENT_RESULT_HEADERS = [
-  "Event ID",
-  "Result ID",
-  "Round ID",
-  "Round",
-  "Team A",
-  "Team B",
-  "Player",
-  "Opponent",
-  "Tournament Points",
-  "Objective Points",
-  "Victory Points",
-  "Winning Faction",
-  "First Turn",
-  "Best Moment",
-  "Notes",
-  "Status",
-  "Submitted By",
-  "Created At",
-  "Updated At",
-  "Table",
-  "Mission",
-  "Winner"
-];
-
 function getTeamTournament(e) {
 
   const params =
@@ -121,7 +96,7 @@ function getTeamTournament(e) {
     buildTeamTournamentResultStatuses(pairings, results);
 
   const standings =
-    buildTeamTournamentStandings(eventId, teams, results, runtime.recentGames);
+    buildTeamTournamentStandings(eventId, teams, results, []);
 
   const registrations =
     resolveTeamTournamentRegistrationMembership(
@@ -499,7 +474,6 @@ function buildTeamTournamentRuntime(eventId) {
           teams: spreadsheet.getSheetByName(CONFIG.SHEETS.TEAM_TOURNAMENT_TEAMS),
           pairings: spreadsheet.getSheetByName(CONFIG.SHEETS.TEAM_TOURNAMENT_PAIRINGS),
           invitations: spreadsheet.getSheetByName(CONFIG.SHEETS.TEAM_TOURNAMENT_INVITATIONS),
-          results: spreadsheet.getSheetByName(CONFIG.SHEETS.TEAM_TOURNAMENT_RESULTS),
           registrations: spreadsheet.getSheetByName(CONFIG.SHEETS.EVENT_PARTICIPANTS)
         };
       },
@@ -521,28 +495,43 @@ function buildTeamTournamentRuntime(eventId) {
       }
     );
 
+  const teams =
+    measureTeamTournamentOperation(
+      "teamTournament.teams.load",
+      function() {
+        return getTeamTournamentTeams(eventId, sheets.teams);
+      },
+      {
+        eventId: eventId
+      }
+    );
+
+  const pairings =
+    measureTeamTournamentOperation(
+      "teamTournament.pairings.load",
+      function() {
+        return getTeamTournamentPairings(eventId, sheets.pairings);
+      },
+      {
+        eventId: eventId
+      }
+    );
+
+  const recentGames =
+    measureTeamTournamentOperation(
+      "teamTournament.recentGames.load",
+      function() {
+        return getAllRecentGameObjectsForEvent(eventId, "tournament");
+      },
+      {
+        eventId: eventId
+      }
+    );
+
   const runtime = {
     event: event,
-    teams:
-      measureTeamTournamentOperation(
-        "teamTournament.teams.load",
-        function() {
-          return getTeamTournamentTeams(eventId, sheets.teams);
-        },
-        {
-          eventId: eventId
-        }
-      ),
-    pairings:
-      measureTeamTournamentOperation(
-        "teamTournament.pairings.load",
-        function() {
-          return getTeamTournamentPairings(eventId, sheets.pairings);
-        },
-        {
-          eventId: eventId
-        }
-      ),
+    teams: teams,
+    pairings: pairings,
     invitations:
       measureTeamTournamentOperation(
         "teamTournament.invitations.load",
@@ -557,7 +546,12 @@ function buildTeamTournamentRuntime(eventId) {
       measureTeamTournamentOperation(
         "teamTournament.results.load",
         function() {
-          return getTeamTournamentResults(eventId, sheets.results);
+          return buildTeamTournamentResultsFromCanonicalGames(
+            eventId,
+            teams,
+            pairings,
+            recentGames
+          );
         },
         {
           eventId: eventId
@@ -573,16 +567,7 @@ function buildTeamTournamentRuntime(eventId) {
           eventId: eventId
         }
       ),
-    recentGames:
-      measureTeamTournamentOperation(
-        "teamTournament.recentGames.load",
-        function() {
-          return getAllRecentGameObjectsForEvent(eventId);
-        },
-        {
-          eventId: eventId
-        }
-      )
+    recentGames: recentGames
   };
 
   writeTeamTournamentRuntimeCache(eventId, runtime);
@@ -1104,17 +1089,72 @@ function saveTeamTournamentResult(e) {
       error: "This match has already been submitted."
     });
 
-  const resultId =
-    "result-" +
-    Utilities.getUuid();
-
   const timestamp =
     getTeamTournamentTimestamp();
+
+  const tournamentPoints =
+    parseTeamTournamentSubmittedScore(params.tournamentPoints);
+
+  const objectivePoints =
+    parseTeamTournamentSubmittedScore(params.objectivePoints);
+
+  const victoryPoints =
+    parseTeamTournamentSubmittedScore(params.victoryPoints);
+
+  const playerArmyCode =
+    getTeamTournamentString(params.playerArmyCode || params.player1ArmyCode);
+
+  const opponentArmyCode =
+    getTeamTournamentString(params.opponentArmyCode || params.player2ArmyCode);
+
+  const playerFaction =
+    canonicalizeArmyName(params.playerFaction) ||
+    getTeamTournamentArmyCodeFaction(playerArmyCode);
+
+  const opponentFaction =
+    canonicalizeArmyName(params.opponentFaction) ||
+    getTeamTournamentArmyCodeFaction(opponentArmyCode);
+
+  const canonicalSubmission = {
+    timestamp: timestamp,
+    formType: LIF_FORMS.TYPES.TEAM,
+    eventId: eventId,
+    division: "Team Tournament",
+    round: assignment.round,
+    team: assignment.teamA,
+    opponentTeam: assignment.teamB,
+    mission: assignment.mission,
+    player: assignment.player,
+    opponent: assignment.opponent,
+    playerFaction: playerFaction,
+    opponentFaction: opponentFaction,
+    playerArmyCode: playerArmyCode,
+    opponentArmyCode: opponentArmyCode,
+    playerTp: tournamentPoints.left,
+    opponentTp: tournamentPoints.right,
+    playerOp: objectivePoints.left,
+    opponentOp: objectivePoints.right,
+    playerVp: victoryPoints.left,
+    opponentVp: victoryPoints.right,
+    gameResult: getTeamTournamentCanonicalGameResult_(params.winner, assignment),
+    firstTurn: getTeamTournamentCanonicalFirstTurn_(params.firstTurn, assignment),
+    bestMoment: getTeamTournamentString(params.bestMoment),
+    notes: getTeamTournamentString(params.notes)
+  };
+
+  const targetRow =
+    lifAppendCanonicalGameSubmission_(
+      lifGetTargetSpreadsheet_(),
+      canonicalSubmission
+    );
+
+  SpreadsheetApp.flush();
+  lifRunCanonicalGamePipeline_();
 
   const result =
     {
       eventId: eventId,
-      resultId: resultId,
+      resultId: "canonical-game-" + targetRow,
       roundId: assignment.roundId,
       round: assignment.round,
       teamA: assignment.teamA,
@@ -1124,10 +1164,10 @@ function saveTeamTournamentResult(e) {
       tournamentPoints: getTeamTournamentString(params.tournamentPoints),
       objectivePoints: getTeamTournamentString(params.objectivePoints),
       victoryPoints: getTeamTournamentString(params.victoryPoints),
-      winningFaction: "",
-      firstTurn: "",
+      winningFaction: getTeamTournamentWinningFaction_(canonicalSubmission),
+      firstTurn: lifResolveCanonicalFirstTurn_(canonicalSubmission),
       bestMoment: getTeamTournamentString(params.bestMoment),
-      notes: "",
+      notes: getTeamTournamentString(params.notes),
       status: "Submitted",
       submittedBy:
         commissionerContext.enabled
@@ -1139,43 +1179,6 @@ function saveTeamTournamentResult(e) {
       mission: assignment.mission,
       winner: getTeamTournamentString(params.winner)
     };
-
-  upsertTeamTournamentCompositeRow(
-    ensureTeamTournamentResultsSheet(),
-    TEAM_TOURNAMENT_RESULT_HEADERS,
-    [
-      "Event ID",
-      "Result ID"
-    ],
-    [
-      eventId,
-      resultId
-    ],
-    [
-      result.eventId,
-      result.resultId,
-      result.roundId,
-      result.round,
-      result.teamA,
-      result.teamB,
-      result.player,
-      result.opponent,
-      result.tournamentPoints,
-      result.objectivePoints,
-      result.victoryPoints,
-      result.winningFaction,
-      result.firstTurn,
-      result.bestMoment,
-      result.notes,
-      result.status,
-      result.submittedBy,
-      result.createdAt,
-      result.updatedAt,
-      result.table,
-      result.mission,
-      result.winner
-    ]
-  );
 
   if (typeof recordResultSubmissionCommissionerAudit === "function")
     recordResultSubmissionCommissionerAudit(
@@ -1198,6 +1201,81 @@ function saveTeamTournamentResult(e) {
     {
       result: result
     }
+  );
+
+}
+
+function getTeamTournamentCanonicalGameResult_(winner, assignment) {
+
+  const value =
+    getTeamTournamentString(winner);
+
+  if (teamTournamentSameValue(value, "Draw"))
+    return "Draw";
+
+  if (
+    teamTournamentSameValue(value, "Player Victory") ||
+    teamTournamentSameValue(value, assignment.player)
+  )
+    return "Player Victory";
+
+  if (
+    teamTournamentSameValue(value, "Opponent Victory") ||
+    teamTournamentSameValue(value, assignment.opponent)
+  )
+    return "Opponent Victory";
+
+  return value;
+
+}
+
+function getTeamTournamentCanonicalFirstTurn_(firstTurn, assignment) {
+
+  const value =
+    getTeamTournamentString(firstTurn);
+
+  if (
+    teamTournamentSameValue(value, "Player") ||
+    teamTournamentSameValue(value, assignment.player)
+  )
+    return "Player";
+
+  if (
+    teamTournamentSameValue(value, "Opponent") ||
+    teamTournamentSameValue(value, assignment.opponent)
+  )
+    return "Opponent";
+
+  return value;
+
+}
+
+function getTeamTournamentWinningFaction_(submission) {
+
+  const winner =
+    lifDetermineWinner_(submission);
+
+  if (winner === "Draw")
+    return "";
+
+  return winner === submission.player
+    ? canonicalizeArmyName(submission.playerFaction)
+    : canonicalizeArmyName(submission.opponentFaction);
+
+}
+
+function getTeamTournamentArmyCodeFaction(armyCode) {
+
+  if (!armyCode || typeof decodeArmyCode !== "function")
+    return "";
+
+  const decoded =
+    decodeArmyCode(armyCode);
+
+  return canonicalizeArmyName(
+    decoded.sectorial ||
+    decoded.faction ||
+    ""
   );
 
 }
@@ -1586,38 +1664,227 @@ function getTeamTournamentInvitations(eventId, sheet) {
 
 }
 
-function getTeamTournamentResults(eventId, sheet) {
+function getTeamTournamentResults(eventId) {
 
-  return getTeamTournamentRows(
-    sheet || getTeamTournamentRuntimeSheet(CONFIG.SHEETS.TEAM_TOURNAMENT_RESULTS)
-  ).filter(function(row) {
-    return row["Event ID"] === eventId;
-  }).map(function(row) {
-    return {
-      eventId: row["Event ID"],
-      resultId: row["Result ID"],
-      roundId: row["Round ID"],
-      round: row["Round"],
-      teamA: row["Team A"],
-      teamB: row["Team B"],
-      table: row["Table"],
-      player: row["Player"],
-      opponent: row["Opponent"],
-      mission: row["Mission"],
-      winner: row["Winner"],
-      tournamentPoints: row["Tournament Points"],
-      objectivePoints: row["Objective Points"],
-      victoryPoints: row["Victory Points"],
-      winningFaction: row["Winning Faction"],
-      firstTurn: row["First Turn"],
-      bestMoment: row["Best Moment"],
-      notes: row["Notes"],
-      status: row["Status"],
-      submittedBy: row["Submitted By"],
-      createdAt: row["Created At"],
-      updatedAt: row["Updated At"]
-    };
+  return buildTeamTournamentResultsFromCanonicalGames(
+    eventId,
+    getTeamTournamentTeams(eventId),
+    getTeamTournamentPairings(eventId),
+    getAllRecentGameObjectsForEvent(eventId, "tournament")
+  );
+
+}
+
+function buildTeamTournamentResultsFromCanonicalGames(eventId, teams, pairings, recentGames) {
+
+  const assignments = [];
+
+  (pairings || []).forEach(function(pairing) {
+    parseTeamTournamentPlayerPairings(pairing).forEach(function(assignment) {
+      assignments.push({
+        assignment: assignment,
+        used: false
+      });
+    });
   });
+
+  const membership =
+    buildTeamTournamentMembershipLookup(teams || []);
+
+  return (recentGames || [])
+    .slice()
+    .sort(function(left, right) {
+      return Number(left.id) - Number(right.id);
+    })
+    .map(function(game) {
+      const assignmentEntry =
+        findTeamTournamentCanonicalGameAssignment_(
+          game,
+          assignments
+        );
+
+      const assignment =
+        assignmentEntry
+          ? assignmentEntry.assignment
+          : buildTeamTournamentCanonicalGameAssignmentFromTeams_(
+              game,
+              pairings || [],
+              membership
+            );
+
+      if (!assignment)
+        return null;
+
+      if (assignmentEntry)
+        assignmentEntry.used = true;
+
+      return buildTeamTournamentResultFromCanonicalGame_(
+        eventId,
+        assignment,
+        game
+      );
+    })
+    .filter(function(result) {
+      return result !== null;
+    });
+
+}
+
+function findTeamTournamentCanonicalGameAssignment_(game, assignments) {
+
+  const matching =
+    assignments.filter(function(entry) {
+      return !entry.used && teamTournamentCanonicalGameMatchesAssignment_(game, entry.assignment);
+    });
+
+  if (!matching.length)
+    return null;
+
+  const mission =
+    getTeamTournamentString(game.mission);
+
+  if (mission !== "") {
+    const missionMatch =
+      matching.filter(function(entry) {
+        return teamTournamentSameValue(entry.assignment.mission, mission);
+      })[0];
+
+    if (missionMatch)
+      return missionMatch;
+  }
+
+  return matching[0];
+
+}
+
+function teamTournamentCanonicalGameMatchesAssignment_(game, assignment) {
+
+  return (
+    (
+      teamTournamentCanonicalGamePlayerMatches_(game, "winner", assignment.player) &&
+      teamTournamentCanonicalGamePlayerMatches_(game, "loser", assignment.opponent)
+    ) ||
+    (
+      teamTournamentCanonicalGamePlayerMatches_(game, "winner", assignment.opponent) &&
+      teamTournamentCanonicalGamePlayerMatches_(game, "loser", assignment.player)
+    )
+  );
+
+}
+
+function teamTournamentCanonicalGamePlayerMatches_(game, side, player) {
+
+  const gameKeys = [
+    game[side],
+    game[side + "DisplayName"]
+  ].map(normalizeTeamTournamentPlayerKey);
+
+  const playerKeys = [
+    player,
+    typeof getPlayerDisplayName === "function" ? getPlayerDisplayName(player) : player
+  ].map(normalizeTeamTournamentPlayerKey);
+
+  return gameKeys.some(function(gameKey) {
+    return gameKey !== "" && playerKeys.indexOf(gameKey) !== -1;
+  });
+
+}
+
+function buildTeamTournamentCanonicalGameAssignmentFromTeams_(game, pairings, membership) {
+
+  const winnerTeam =
+    findTeamTournamentMembership(
+      membership,
+      game.winner,
+      game.winnerDisplayName
+    );
+
+  const loserTeam =
+    findTeamTournamentMembership(
+      membership,
+      game.loser,
+      game.loserDisplayName
+    );
+
+  if (winnerTeam === "" || loserTeam === "" || teamTournamentSameValue(winnerTeam, loserTeam))
+    return null;
+
+  const pairing =
+    (pairings || []).filter(function(candidate) {
+      return (
+        (
+          teamTournamentSameValue(candidate.teamA, winnerTeam) &&
+          teamTournamentSameValue(candidate.teamB, loserTeam)
+        ) ||
+        (
+          teamTournamentSameValue(candidate.teamA, loserTeam) &&
+          teamTournamentSameValue(candidate.teamB, winnerTeam)
+        )
+      );
+    })[0];
+
+  if (!pairing)
+    return null;
+
+  const winnerIsTeamA =
+    teamTournamentSameValue(pairing.teamA, winnerTeam);
+
+  return {
+    roundId: pairing.roundId,
+    round: pairing.round,
+    teamA: pairing.teamA,
+    teamB: pairing.teamB,
+    table: "",
+    player: winnerIsTeamA ? game.winner : game.loser,
+    opponent: winnerIsTeamA ? game.loser : game.winner,
+    mission: game.mission || pairing.round
+  };
+
+}
+
+function buildTeamTournamentResultFromCanonicalGame_(eventId, assignment, game) {
+
+  const playerIsWinnerSide =
+    teamTournamentCanonicalGamePlayerMatches_(game, "winner", assignment.player);
+
+  const draw =
+    teamTournamentSameValue(game.gameResult, "Draw");
+
+  return {
+    eventId: eventId,
+    resultId: "canonical-game-" + getTeamTournamentString(game.id),
+    roundId: assignment.roundId,
+    round: assignment.round,
+    teamA: assignment.teamA,
+    teamB: assignment.teamB,
+    table: assignment.table,
+    player: assignment.player,
+    opponent: assignment.opponent,
+    mission: game.mission || assignment.mission,
+    winner: draw ? "Draw" : game.winner,
+    tournamentPoints: orientTeamTournamentCanonicalGameScore_(game.tp, playerIsWinnerSide),
+    objectivePoints: orientTeamTournamentCanonicalGameScore_(game.op, playerIsWinnerSide),
+    victoryPoints: orientTeamTournamentCanonicalGameScore_(game.vp, playerIsWinnerSide),
+    winningFaction: draw ? "" : game.winnerFaction,
+    firstTurn: game.firstTurn,
+    bestMoment: game.bestMoment,
+    notes: "",
+    status: "Submitted",
+    submittedBy: "Canonical Game Engine",
+    createdAt: game.date,
+    updatedAt: game.date
+  };
+
+}
+
+function orientTeamTournamentCanonicalGameScore_(value, keepOrder) {
+
+  const score =
+    parseTeamTournamentScore(value);
+
+  return keepOrder
+    ? score.left + "-" + score.right
+    : score.right + "-" + score.left;
 
 }
 
@@ -2225,7 +2492,6 @@ function ensureTeamTournamentSheets() {
   ensureTeamTournamentTeamsSheet();
   ensureTeamTournamentPairingsSheet();
   ensureTeamTournamentInvitationsSheet();
-  ensureTeamTournamentResultsSheet();
 
 }
 
@@ -2252,15 +2518,6 @@ function ensureTeamTournamentInvitationsSheet() {
   return ensureEventEngineSheet(
     CONFIG.SHEETS.TEAM_TOURNAMENT_INVITATIONS,
     TEAM_TOURNAMENT_INVITATION_HEADERS
-  );
-
-}
-
-function ensureTeamTournamentResultsSheet() {
-
-  return ensureEventEngineSheet(
-    CONFIG.SHEETS.TEAM_TOURNAMENT_RESULTS,
-    TEAM_TOURNAMENT_RESULT_HEADERS
   );
 
 }
