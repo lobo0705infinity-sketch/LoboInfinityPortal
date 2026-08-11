@@ -1178,9 +1178,7 @@ function getEventAnalyticsTeamStandings(context) {
   if (context.eventType === "Team Tournament")
     return buildTeamTournamentStandings(
       context.eventId,
-      getEventAnalyticsTeams(context.eventId),
-      getEventAnalyticsResults(context.eventId),
-      getAllRecentGameObjectsForEvent(context.eventId)
+      getEventAnalyticsTeams(context.eventId)
     ).map(function(row) {
       return {
         eventId: context.eventId,
