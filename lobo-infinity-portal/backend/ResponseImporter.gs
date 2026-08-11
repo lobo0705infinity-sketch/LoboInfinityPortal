@@ -18,10 +18,15 @@ function handleLoboFormSubmit(e) {
       throw new Error(errors.join(" "));
     }
 
-    const sheet = lifEnsureCanonicalSheet_(target);
-    const row = lifBuildCanonicalRow_(submission);
-    sheet.appendRow(row);
-    const targetRow = sheet.getLastRow();
+    let targetRow;
+    if (formType === LIF_FORMS.TYPES.TEAM) {
+      targetRow = lifImportTeamTournamentSubmission_(submission);
+    } else {
+      const sheet = lifEnsureCanonicalSheet_(target);
+      const row = lifBuildCanonicalRow_(submission);
+      sheet.appendRow(row);
+      targetRow = sheet.getLastRow();
+    }
     lifWriteImportLog_(log, responseKey, formType, targetRow, "Imported", "");
     SpreadsheetApp.flush();
     lifRunDeterministicRebuild_(log, responseKey, formType, targetRow);
@@ -62,6 +67,7 @@ function lifReadSubmission_(named, formType, timestamp, targetSpreadsheet) {
     timestamp: timestamp || new Date(), formType: formType,
     eventId: formType === LIF_FORMS.TYPES.CASUAL ? "" : leagueContext ? leagueContext.eventId : teamTournamentContext.eventId,
     division: formType === LIF_FORMS.TYPES.CASUAL ? "Casual" : leagueContext ? leagueContext.division : get(f.DIVISION) || "Team Tournament",
+    round: get(f.ROUND), team: get(f.TEAM) || get("Your Team"), opponentTeam: get(f.OPPONENT_TEAM),
     mission: get(f.MISSION), player: leagueContext ? leagueContext.player : teamTournamentContext ? teamTournamentContext.player : selectedPlayer, opponent: get(f.OPPONENT),
     playerFaction: get(f.PLAYER_FACTION), opponentFaction: get(f.OPPONENT_FACTION),
     playerArmyCode: lifNormalizeArmyCode_(get(f.PLAYER_ARMY_CODE)),
@@ -186,6 +192,77 @@ function lifBuildCanonicalRow_(s) {
     s.formType === LIF_FORMS.TYPES.CASUAL ? "casual" : s.formType === LIF_FORMS.TYPES.LEAGUE ? "league" : "team-tournament",
     winner, s.playerArmyCode, s.opponentArmyCode, "", ""
   ];
+}
+
+function lifImportTeamTournamentSubmission_(submission) {
+  const eventId = String(submission.eventId || "").trim();
+  const registration = getEventRegistrationForPlayer(eventId, submission.player);
+  const currentRound = getTeamTournamentCurrentRound(eventId);
+  const pairings = getTeamTournamentPairings(eventId);
+  const params = {
+    opponent: submission.opponent,
+    mission: submission.mission,
+    tournamentPoints: lifTeamTournamentScore_(submission.playerTp, submission.opponentTp),
+    objectivePoints: lifTeamTournamentScore_(submission.playerOp, submission.opponentOp),
+    victoryPoints: lifTeamTournamentScore_(submission.playerVp, submission.opponentVp),
+    winner: lifDetermineWinner_(submission)
+  };
+  const event = getEventByIdSnapshot(eventId);
+  const assignment = registration
+    ? resolveTeamTournamentResultAssignment(event, currentRound, registration, pairings, params)
+    : null;
+  if (!assignment) throw new Error("No active Team Tournament pairing was found for the submitted player.");
+
+  const resultValidation = validateTeamTournamentResultSubmission(params, assignment);
+  if (resultValidation.length) throw new Error(resultValidation.join(" "));
+  if (hasSubmittedTeamTournamentResult(getTeamTournamentResults(eventId), assignment)) {
+    throw new Error("This Team Tournament match has already been submitted.");
+  }
+
+  const timestamp = getTeamTournamentTimestamp();
+  const winner = params.winner;
+  const resultId = "result-" + Utilities.getUuid();
+  const resultsSheet = ensureTeamTournamentResultsSheet();
+  upsertTeamTournamentCompositeRow(
+    resultsSheet,
+    TEAM_TOURNAMENT_RESULT_HEADERS,
+    ["Event ID", "Result ID"],
+    [eventId, resultId],
+    [
+      eventId,
+      resultId,
+      assignment.roundId,
+      String(submission.round || assignment.round || "").trim(),
+      String(submission.team || assignment.teamA || "").trim(),
+      String(submission.opponentTeam || assignment.teamB || "").trim(),
+      submission.player,
+      submission.opponent,
+      params.tournamentPoints,
+      params.objectivePoints,
+      params.victoryPoints,
+      winner === submission.player
+        ? submission.playerFaction
+        : winner === submission.opponent
+          ? submission.opponentFaction
+          : "",
+      submission.firstTurn === "Player" ? submission.player : submission.opponent,
+      submission.bestMoment,
+      submission.notes,
+      "Submitted",
+      submission.player,
+      timestamp,
+      timestamp,
+      assignment.table,
+      submission.mission,
+      winner
+    ]
+  );
+  invalidatePortalCacheGroup("events");
+  return resultsSheet.getLastRow();
+}
+
+function lifTeamTournamentScore_(playerScore, opponentScore) {
+  return String(Number(playerScore)) + "-" + String(Number(opponentScore));
 }
 
 function lifBuildCanonicalLeagueRow_(s) {
