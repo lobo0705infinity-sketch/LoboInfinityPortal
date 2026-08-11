@@ -182,9 +182,14 @@ function lifBuildCanonicalRow_(s) {
 
 function lifValidateTeamTournamentSubmission_(submission) {
   const eventId = String(submission.eventId || "").trim();
-  const registration = getEventRegistrationForPlayer(eventId, submission.player);
   const currentRound = getTeamTournamentCurrentRound(eventId);
   const pairings = getTeamTournamentPairings(eventId);
+  const registration = {
+    player: String(submission.player || "").trim(),
+    displayName: String(submission.player || "").trim(),
+    team: String(submission.team || "").trim(),
+    preferredTeam: String(submission.team || "").trim()
+  };
   const params = {
     opponent: submission.opponent,
     mission: submission.mission,
@@ -194,9 +199,7 @@ function lifValidateTeamTournamentSubmission_(submission) {
     winner: lifDetermineWinner_(submission)
   };
   const event = getEventByIdSnapshot(eventId);
-  const assignment = registration
-    ? resolveTeamTournamentResultAssignment(event, currentRound, registration, pairings, params)
-    : null;
+  const assignment = resolveTeamTournamentResultAssignment(event, currentRound, registration, pairings, params);
   if (!assignment) throw new Error("No active Team Tournament pairing was found for the submitted player.");
 
   const resultValidation = validateTeamTournamentResultSubmission(params, assignment);
