@@ -17,8 +17,8 @@ function submitLeagueResult(e) {
     if (commissionerContext.error)
       return resultSubmissionFailure(commissionerContext.error);
 
-    const validation =
-      validateCanonicalGame({
+    const submission =
+      submitCanonicalGame({
         source: "portal",
         workflow: "league",
         params: params,
@@ -26,115 +26,15 @@ function submitLeagueResult(e) {
         commissionerContext: commissionerContext
       });
 
-    if (!validation.valid)
-      return resultSubmissionFailure(validation.error);
-
-    const validated = validation.value;
-    const eventId = validated.eventId;
-    const player = validated.player;
-    const opponent = validated.opponent;
-    const playerTp = validated.playerTp;
-    const opponentTp = validated.opponentTp;
-    const playerOp = validated.playerOp;
-    const opponentOp = validated.opponentOp;
-    const playerVp = validated.playerVp;
-    const opponentVp = validated.opponentVp;
-    const playerFaction = validated.playerFaction;
-    const opponentFaction = validated.opponentFaction;
-    const playerArmyList = validated.playerArmyList;
-    const opponentArmyList = validated.opponentArmyList;
-    const playerIsWinner = validated.playerIsWinner;
-    const resultIsDraw = validated.resultIsDraw;
-
-    const submissionTimestamp =
-      getResultSubmissionTimestamp();
-
-    const submissionDate =
-      getResultSubmissionDate();
-
-    const playerArmyCode =
-      getResultSubmissionArmyCode(
-        params.playerArmyCode ||
-        (playerArmyList.list && playerArmyList.list.armyCode)
-      );
-    const opponentArmyCode =
-      getResultSubmissionArmyCode(
-        params.opponentArmyCode ||
-        (opponentArmyList.list && opponentArmyList.list.armyCode)
-      );
-
-    const row =
-      buildCanonicalGameRow({
-        timestamp: submissionTimestamp,
-        date: submissionDate,
-        division: getResultSubmissionString(params.division),
-        mission: getResultSubmissionString(params.mission),
-        player: player,
-        opponent: opponent,
-        playerTp: playerTp,
-        opponentTp: opponentTp,
-        playerOp: playerOp,
-        opponentOp: opponentOp,
-        playerVp: playerVp,
-        opponentVp: opponentVp,
-        firstTurn: getResultSubmissionString(params.firstTurn),
-        playerFaction: playerFaction,
-        opponentFaction: opponentFaction,
-        bestMoment: getResultSubmissionString(params.bestMoment),
-        eventId: eventId,
-        gameType: "league",
-        outcome: resultIsDraw
-          ? "draw"
-          : playerIsWinner
-            ? "player"
-            : "opponent",
-        playerArmyCode: playerArmyCode,
-        opponentArmyCode: opponentArmyCode,
-        playerArmyListId: getResultSubmissionArmyListId(playerArmyList, playerArmyCode),
-        opponentArmyListId: getResultSubmissionArmyListId(opponentArmyList, opponentArmyCode)
-      });
-
-    const sheet =
-      lifGetTargetSpreadsheet_()
-        .getSheetByName(CONFIG.SHEETS.FORM);
-
-    if (!sheet)
-      return resultSubmissionFailure("Result datastore was not found.");
-
-    ensureResultSubmissionArmyListHeaders(sheet);
-
-    sheet.appendRow(row);
-
-    recordResultSubmissionCommissionerAudit(
-      commissionerContext,
-      "league",
-      {
-        eventId: eventId,
-        player: player,
-        opponent: opponent,
-        mission: row[FORM.MISSION],
-        result: row[FORM.GAME_RESULT],
-        winnerArmyListId: row[FORM.WINNER_ARMY_LIST_ID],
-        loserArmyListId: row[FORM.LOSER_ARMY_LIST_ID]
-      }
-    );
-
-    if (typeof rebuildEverything === "function")
-      rebuildEverything();
-    else if (typeof rebuildGameEngine === "function")
-      rebuildGameEngine();
-
-    if (typeof publishLatestGameSubmittedAutomationEvent === "function")
-      publishLatestGameSubmittedAutomationEvent();
-
-    invalidateResultSubmissionCaches();
+    if (!submission.success)
+      return resultSubmissionFailure(submission.error);
 
     return jsonOutput({
       success: true,
       status: "Submitted",
-      eventId: eventId,
-      player: player,
-      opponent: opponent
+      eventId: submission.context.eventId,
+      player: submission.context.player,
+      opponent: submission.context.opponent
     });
   });
 
@@ -152,8 +52,8 @@ function submitCasualResult(e) {
     if (commissionerContext.error)
       return resultSubmissionFailure(commissionerContext.error);
 
-    const validation =
-      validateCanonicalGame({
+    const submission =
+      submitCanonicalGame({
         source: "portal",
         workflow: "casual",
         params: params,
@@ -161,115 +61,16 @@ function submitCasualResult(e) {
         commissionerContext: commissionerContext
       });
 
-    if (!validation.valid)
-      return resultSubmissionFailure(validation.error);
-
-    const validated = validation.value;
-    const player = validated.player;
-    const opponent = validated.opponent;
-    const playerTp = validated.playerTp;
-    const opponentTp = validated.opponentTp;
-    const playerOp = validated.playerOp;
-    const opponentOp = validated.opponentOp;
-    const playerVp = validated.playerVp;
-    const opponentVp = validated.opponentVp;
-    const playerFaction = validated.playerFaction;
-    const opponentFaction = validated.opponentFaction;
-    const playerArmyList = validated.playerArmyList;
-    const opponentArmyList = validated.opponentArmyList;
-    const playerIsWinner = validated.playerIsWinner;
-    const resultIsDraw = validated.resultIsDraw;
-
-    const submissionTimestamp =
-      getResultSubmissionTimestamp();
-
-    const submissionDate =
-      getResultSubmissionDate();
-
-    const playerArmyCode =
-      getResultSubmissionArmyCode(
-        params.playerArmyCode ||
-        (playerArmyList.list && playerArmyList.list.armyCode)
-      );
-    const opponentArmyCode =
-      getResultSubmissionArmyCode(
-        params.opponentArmyCode ||
-        (opponentArmyList.list && opponentArmyList.list.armyCode)
-      );
-
-    const row =
-      buildCanonicalGameRow({
-        timestamp: submissionTimestamp,
-        date: submissionDate,
-        division: "Casual",
-        mission: getResultSubmissionString(params.mission),
-        player: player,
-        opponent: opponent,
-        playerTp: playerTp,
-        opponentTp: opponentTp,
-        playerOp: playerOp,
-        opponentOp: opponentOp,
-        playerVp: playerVp,
-        opponentVp: opponentVp,
-        firstTurn: getResultSubmissionString(params.firstTurn),
-        playerFaction: playerFaction,
-        opponentFaction: opponentFaction,
-        bestMoment: getResultSubmissionString(params.bestMoment),
-        eventId: "",
-        gameType: "casual",
-        outcome: resultIsDraw
-          ? "draw"
-          : playerIsWinner
-            ? "player"
-            : "opponent",
-        playerArmyCode: playerArmyCode,
-        opponentArmyCode: opponentArmyCode,
-        playerArmyListId: getResultSubmissionArmyListId(playerArmyList, playerArmyCode),
-        opponentArmyListId: getResultSubmissionArmyListId(opponentArmyList, opponentArmyCode)
-      });
-
-    const sheet =
-      lifGetTargetSpreadsheet_()
-        .getSheetByName(CONFIG.SHEETS.FORM);
-
-    if (!sheet)
-      return resultSubmissionFailure("Result datastore was not found.");
-
-    ensureResultSubmissionArmyListHeaders(sheet);
-
-    sheet.appendRow(row);
-
-    recordResultSubmissionCommissionerAudit(
-      commissionerContext,
-      "casual",
-      {
-        eventId: "",
-        player: player,
-        opponent: opponent,
-        mission: row[FORM.MISSION],
-        result: row[FORM.GAME_RESULT],
-        winnerArmyListId: row[FORM.WINNER_ARMY_LIST_ID],
-        loserArmyListId: row[FORM.LOSER_ARMY_LIST_ID]
-      }
-    );
-
-    if (typeof rebuildEverything === "function")
-      rebuildEverything();
-    else if (typeof rebuildGameEngine === "function")
-      rebuildGameEngine();
-
-    if (typeof publishLatestGameSubmittedAutomationEvent === "function")
-      publishLatestGameSubmittedAutomationEvent();
-
-    invalidateResultSubmissionCaches();
+    if (!submission.success)
+      return resultSubmissionFailure(submission.error);
 
     return jsonOutput({
       success: true,
       status: "Submitted",
       eventId: "",
       gameType: "casual",
-      player: player,
-      opponent: opponent
+      player: submission.context.player,
+      opponent: submission.context.opponent
     });
   });
 

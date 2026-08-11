@@ -56,7 +56,7 @@ const context = vm.createContext({
 })
 
 vm.runInContext(fs.readFileSync('backend/GameFactory.gs', 'utf8'), context)
-vm.runInContext(fs.readFileSync('backend/ResponseImporter.gs', 'utf8'), context)
+vm.runInContext(fs.readFileSync('backend/CanonicalSubmissionService.gs', 'utf8'), context)
 
 const oldDetermineWinner = (submission) => {
   if (submission.gameResult === 'Draw') return 'Draw'
@@ -209,16 +209,21 @@ const submissions = [
 
 for (const [label, submission] of submissions) {
   const before = oldImportedCanonicalRow(submission)
-  const after = context.lifBuildCanonicalRow_(submission)
+  const after = context.buildCanonicalGameRow(
+    context.canonicalSubmissionBuildGoogleFormGameCommand_(submission),
+  )
   assertRowsEqual(label, before, after)
 }
 
 const resultSubmissionSource = fs.readFileSync('backend/ResultSubmissionApi.gs', 'utf8')
 assert.doesNotMatch(resultSubmissionSource, /row\[FORM\.[A-Z0-9_]+\]\s*=/)
-assert.equal((resultSubmissionSource.match(/buildCanonicalGameRow\s*\(/g) || []).length, 2)
+assert.equal((resultSubmissionSource.match(/buildCanonicalGameRow\s*\(/g) || []).length, 0)
 
 const responseImporterSource = fs.readFileSync('backend/ResponseImporter.gs', 'utf8')
-assert.equal((responseImporterSource.match(/buildCanonicalGameRow\s*\(/g) || []).length, 1)
+assert.equal((responseImporterSource.match(/buildCanonicalGameRow\s*\(/g) || []).length, 0)
 assert.doesNotMatch(responseImporterSource, /function lifBuildCanonicalGameRow_\s*\(/)
+
+const submissionServiceSource = fs.readFileSync('backend/CanonicalSubmissionService.gs', 'utf8')
+assert.equal((submissionServiceSource.match(/buildCanonicalGameRow\s*\(/g) || []).length, 3)
 
 console.log('PASS: Canonical rows are identical before and after the extraction.')

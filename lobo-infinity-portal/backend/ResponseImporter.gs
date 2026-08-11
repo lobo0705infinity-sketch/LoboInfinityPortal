@@ -9,23 +9,16 @@ function handleLoboFormSubmit(e) {
     const responseKey = sourceSheet.getSheetId() + ":" + e.range.getRow();
     const target = SpreadsheetApp.openById(lifRequireProperty_(LIF_FORMS.PROPERTIES.TARGET_SPREADSHEET_ID));
     const log = lifEnsureImportLog_(target);
-    if (lifWasImported_(log, responseKey)) return;
 
-    const submission = lifReadSubmission_(e.namedValues, formType, e.values && e.values[0], target);
-    const errors = validateCanonicalGame({
+    submitCanonicalGame({
       source: "google-form",
       workflow: formType,
-      submission: submission
-    }).errors;
-    if (errors.length) {
-      lifWriteImportLog_(log, responseKey, formType, "", "Rejected", errors.join(" "));
-      throw new Error(errors.join(" "));
-    }
-
-    const targetRow = lifAppendCanonicalGameSubmission_(target, submission);
-    lifWriteImportLog_(log, responseKey, formType, targetRow, "Imported", "");
-    SpreadsheetApp.flush();
-    lifRunDeterministicRebuild_(log, responseKey, formType, targetRow);
+      namedValues: e.namedValues,
+      timestamp: e.values && e.values[0],
+      targetSpreadsheet: target,
+      importLog: log,
+      responseKey: responseKey
+    });
   } finally {
     lock.releaseLock();
   }
@@ -167,48 +160,6 @@ function lifLeagueRowIsActive_(row) {
   return !terminal[lifNormalize_(row["Status"])] && !terminal[lifNormalize_(row["Lifecycle Stage"])] && lifNormalize_(row["Archive"]) !== "archived";
 }
 
-function lifBuildCanonicalRow_(s) {
-  const casual = s.formType === LIF_FORMS.TYPES.CASUAL;
-  const command = {
-    division: s.division,
-    mission: s.mission,
-    player: s.player,
-    opponent: s.opponent,
-    playerTp: s.playerTp,
-    opponentTp: s.opponentTp,
-    playerOp: s.playerOp,
-    opponentOp: s.opponentOp,
-    playerVp: s.playerVp,
-    opponentVp: s.opponentVp,
-    firstTurn: s.firstTurn,
-    firstTurnMode: casual ? "legacy-casual" : "canonical",
-    playerFaction: s.playerFaction,
-    opponentFaction: s.opponentFaction,
-    canonicalizeFactions: !casual,
-    bestMoment: s.bestMoment,
-    eventId: s.eventId,
-    gameType: casual
-      ? "casual"
-      : s.formType === LIF_FORMS.TYPES.TEAM
-        ? "tournament"
-        : "league",
-    gameResult: s.gameResult,
-    gameResultMode: casual ? "winner-name" : "canonical",
-    playerArmyCode: s.playerArmyCode,
-    opponentArmyCode: s.opponentArmyCode,
-    deriveArmyListIds: !casual
-  };
-
-  if (casual) {
-    command.timestamp = s.timestamp;
-    command.date = new Date();
-    command.playerArmyListId = "";
-    command.opponentArmyListId = "";
-  }
-
-  return buildCanonicalGameRow(command);
-}
-
 function lifResolveCanonicalFirstTurn_(submission) {
   const firstTurn = String(submission.firstTurn || "").trim();
   const normalized = lifNormalize_(firstTurn);
@@ -232,12 +183,6 @@ function lifEnsureCanonicalSheet_(spreadsheet) {
   return sheet;
 }
 
-function lifAppendCanonicalGameSubmission_(spreadsheet, submission) {
-  const sheet = lifEnsureCanonicalSheet_(spreadsheet);
-  sheet.appendRow(lifBuildCanonicalRow_(submission));
-  return sheet.getLastRow();
-}
-
 function lifEnsureImportLog_(spreadsheet) {
   let sheet = spreadsheet.getSheetByName(LIF_FORMS.IMPORT_LOG_SHEET);
   if (!sheet) sheet = spreadsheet.insertSheet(LIF_FORMS.IMPORT_LOG_SHEET);
@@ -253,29 +198,4 @@ function lifWasImported_(log, key) {
 
 function lifWriteImportLog_(log, key, type, row, status, message) {
   log.appendRow([key, type, new Date(), row, status, message]);
-}
-
-function lifRunDeterministicRebuild_(log, responseKey, formType, targetRow) {
-  const functionName = typeof rebuildEverything === "function"
-    ? "rebuildEverything"
-    : typeof rebuildGameEngine === "function"
-      ? "rebuildGameEngine"
-      : "none";
-  try {
-    lifRunCanonicalGamePipeline_();
-  } catch (error) {
-    lifWriteImportLog_(log, responseKey, formType, targetRow, "Rebuild Failed", JSON.stringify({
-      timestamp: new Date().toISOString(),
-      functionName: functionName,
-      message: error && error.message ? String(error.message) : String(error),
-      stack: error && error.stack ? String(error.stack) : ""
-    }));
-    throw error;
-  }
-}
-
-function lifRunCanonicalGamePipeline_() {
-  if (typeof rebuildEverything === "function") rebuildEverything();
-  else if (typeof rebuildGameEngine === "function") rebuildGameEngine();
-  else Logger.log("Import complete. Deterministic rebuild function is not present in this Apps Script runtime.");
 }

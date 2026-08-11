@@ -1000,8 +1000,8 @@ function saveTeamTournamentResult(e) {
       error: commissionerContext.error
     });
 
-  const validation =
-    validateCanonicalGame({
+  const submission =
+    submitCanonicalGame({
       source: "portal",
       workflow: "team-tournament",
       params: params,
@@ -1009,76 +1009,17 @@ function saveTeamTournamentResult(e) {
       commissionerContext: commissionerContext
     });
 
-  if (!validation.valid)
+  if (!submission.success)
     return jsonOutput({
       success: false,
-      error: validation.error
+      error: submission.error
     });
 
-  const eventId = validation.value.eventId;
-  const assignment = validation.value.assignment;
-
-  const timestamp =
-    getTeamTournamentTimestamp();
-
-  const tournamentPoints =
-    parseTeamTournamentSubmittedScore(params.tournamentPoints);
-
-  const objectivePoints =
-    parseTeamTournamentSubmittedScore(params.objectivePoints);
-
-  const victoryPoints =
-    parseTeamTournamentSubmittedScore(params.victoryPoints);
-
-  const playerArmyCode =
-    getTeamTournamentString(params.playerArmyCode || params.player1ArmyCode);
-
-  const opponentArmyCode =
-    getTeamTournamentString(params.opponentArmyCode || params.player2ArmyCode);
-
-  const playerFaction =
-    canonicalizeArmyName(params.playerFaction) ||
-    getTeamTournamentArmyCodeFaction(playerArmyCode);
-
-  const opponentFaction =
-    canonicalizeArmyName(params.opponentFaction) ||
-    getTeamTournamentArmyCodeFaction(opponentArmyCode);
-
-  const canonicalSubmission = {
-    timestamp: timestamp,
-    formType: LIF_FORMS.TYPES.TEAM,
-    eventId: eventId,
-    division: "Team Tournament",
-    round: assignment.round,
-    team: assignment.teamA,
-    opponentTeam: assignment.teamB,
-    mission: assignment.mission,
-    player: assignment.player,
-    opponent: assignment.opponent,
-    playerFaction: playerFaction,
-    opponentFaction: opponentFaction,
-    playerArmyCode: playerArmyCode,
-    opponentArmyCode: opponentArmyCode,
-    playerTp: tournamentPoints.left,
-    opponentTp: tournamentPoints.right,
-    playerOp: objectivePoints.left,
-    opponentOp: objectivePoints.right,
-    playerVp: victoryPoints.left,
-    opponentVp: victoryPoints.right,
-    gameResult: getTeamTournamentCanonicalGameResult_(params.winner, assignment),
-    firstTurn: getTeamTournamentCanonicalFirstTurn_(params.firstTurn, assignment),
-    bestMoment: getTeamTournamentString(params.bestMoment),
-    notes: getTeamTournamentString(params.notes)
-  };
-
-  const targetRow =
-    lifAppendCanonicalGameSubmission_(
-      lifGetTargetSpreadsheet_(),
-      canonicalSubmission
-    );
-
-  SpreadsheetApp.flush();
-  lifRunCanonicalGamePipeline_();
+  const eventId = submission.context.eventId;
+  const assignment = submission.context.assignment;
+  const timestamp = submission.context.timestamp;
+  const canonicalSubmission = submission.context.submission;
+  const targetRow = submission.targetRow;
 
   const result =
     {
