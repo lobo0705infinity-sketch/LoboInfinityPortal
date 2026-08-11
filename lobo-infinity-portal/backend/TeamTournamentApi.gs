@@ -96,7 +96,11 @@ function getTeamTournament(e) {
     buildTeamTournamentResultStatuses(pairings, results);
 
   const standings =
-    buildTeamTournamentStandings(eventId, teams);
+    buildTeamTournamentStandings(
+      eventId,
+      teams,
+      runtime.recentGames
+    );
 
   const registrations =
     resolveTeamTournamentRegistrationMembership(
@@ -1329,10 +1333,12 @@ function buildTeamTournamentMutationResponse(kind, eventId, payload) {
 
 }
 
-function buildTeamTournamentStandings(eventId, teams) {
+function buildTeamTournamentStandings(eventId, teams, canonicalGames) {
 
   const games =
-    getTeamTournamentCanonicalGames_(eventId);
+    Array.isArray(canonicalGames)
+      ? canonicalGames
+      : getTeamTournamentCanonicalGames_(eventId);
 
   const membership =
     buildTeamTournamentMembershipLookup(teams);
