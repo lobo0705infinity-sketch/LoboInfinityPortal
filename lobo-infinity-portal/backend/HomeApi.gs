@@ -14,7 +14,12 @@ function getHome() {
 
   const recentGames =
     JSON.parse(
-      getRecentGames().getContent()
+      getRecentGames({
+        parameter: {
+          eventId: "all",
+          gameType: "all"
+        }
+      }).getContent()
     );
 
   const news =
