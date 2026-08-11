@@ -521,7 +521,7 @@ function buildTeamTournamentRuntime(eventId) {
     measureTeamTournamentOperation(
       "teamTournament.recentGames.load",
       function() {
-        return getAllRecentGameObjectsForEvent(eventId, "tournament");
+        return getTeamTournamentCanonicalGames_(eventId);
       },
       {
         eventId: eventId
@@ -1332,7 +1332,7 @@ function buildTeamTournamentMutationResponse(kind, eventId, payload) {
 function buildTeamTournamentStandings(eventId, teams, tournamentResults, recentGames) {
 
   const games =
-    recentGames || getAllRecentGameObjectsForEvent(eventId);
+    recentGames || getTeamTournamentCanonicalGames_(eventId);
 
   const results =
     tournamentResults || [];
@@ -1670,8 +1670,49 @@ function getTeamTournamentResults(eventId) {
     eventId,
     getTeamTournamentTeams(eventId),
     getTeamTournamentPairings(eventId),
-    getAllRecentGameObjectsForEvent(eventId, "tournament")
+    getTeamTournamentCanonicalGames_(eventId)
   );
+
+}
+
+function getTeamTournamentCanonicalGames_(eventId) {
+
+  const rows =
+    getLeagueDataForEvent(
+      eventId,
+      "tournament"
+    );
+
+  const games = [];
+
+  for (
+    let index = 0;
+    index < rows.length;
+    index += 2
+  ) {
+    const game =
+      buildRecentGameFromGameEngineRows(
+        rows[index],
+        rows[index + 1],
+        index
+      );
+
+    if (game)
+      games.push(game);
+  }
+
+  return games.sort(function(left, right) {
+
+    const dateOrder =
+      right.sortDate.getTime() -
+      left.sortDate.getTime();
+
+    if (dateOrder !== 0)
+      return dateOrder;
+
+    return right.sourceIndex - left.sourceIndex;
+
+  });
 
 }
 
