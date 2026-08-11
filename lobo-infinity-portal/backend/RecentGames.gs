@@ -37,14 +37,24 @@ function getRecentGames(e) {
 
   if (typeof getAllRecentGameObjects === "function")
   {
+    const playerName =
+      e &&
+      e.parameter &&
+      e.parameter.playerName;
+
+    const sourceGames =
+      playerName
+        ? getPlayerRecentGameObjectsFromGameEngine(
+            playerName
+          )
+        : getAllRecentGameObjects();
+
     const filteredGames =
       filterRecentGamesByGameId(
         filterRecentGamesByEvent(
           filterRecentGamesByPlayer(
-            getAllRecentGameObjects(),
-            e &&
-            e.parameter &&
-            e.parameter.playerName
+            sourceGames,
+            playerName
           ),
           e &&
           e.parameter &&
@@ -185,6 +195,202 @@ function getRecentGames(e) {
     success: true,
     games: games
   });
+
+}
+
+function getPlayerRecentGameObjectsFromGameEngine(playerName) {
+
+  const communityPlayer =
+    typeof findCommunityPlayerProfileRecord === "function"
+      ? findCommunityPlayerProfileRecord(playerName)
+      : null;
+
+  const target =
+    getCommunityPlayerKey(
+      communityPlayer
+        ? communityPlayer.player
+        : playerName
+    );
+
+  if (target === "")
+    return [];
+
+  const rows =
+    getLeagueDataForEvent(
+      "all",
+      "all"
+    );
+
+  return rows
+    .map(function(row, index) {
+
+      if (
+        getCommunityPlayerKey(
+          row[CONFIG.ENGINE.PLAYER]
+        ) !== target
+      )
+        return null;
+
+      const firstRowIndex =
+        index % 2 === 0
+          ? index
+          : index - 1;
+
+      return buildRecentGameFromGameEngineRows(
+        rows[firstRowIndex],
+        rows[firstRowIndex + 1],
+        firstRowIndex
+      );
+
+    })
+    .filter(function(game) {
+      return Boolean(game);
+    })
+    .sort(function(a, b) {
+
+      const dateOrder =
+        b.sortDate.getTime() -
+        a.sortDate.getTime();
+
+      if (dateOrder !== 0)
+        return dateOrder;
+
+      return b.sourceIndex - a.sourceIndex;
+
+    });
+
+}
+
+function buildRecentGameFromGameEngineRows(
+  firstRow,
+  secondRow,
+  firstRowIndex
+) {
+
+  if (!firstRow || !secondRow)
+    return null;
+
+  const firstResult =
+    getRecentGameString(
+      firstRow[CONFIG.ENGINE.RESULT]
+    ).toUpperCase();
+
+  const draw =
+    firstResult === "D" ||
+    getRecentGameString(
+      firstRow[CONFIG.ENGINE.GAME_RESULT]
+    ).toLowerCase() === "draw";
+
+  const winnerRow =
+    firstResult === "L"
+      ? secondRow
+      : firstRow;
+
+  const loserRow =
+    winnerRow === firstRow
+      ? secondRow
+      : firstRow;
+
+  const rawDate =
+    firstRow[CONFIG.ENGINE.DATE];
+
+  const sortDate =
+    getRecentGameDate(rawDate);
+
+  const gameType =
+    getGameEngineRowGameType(firstRow) ||
+    "league";
+
+  const firstTurnRow =
+    getRecentGameString(
+      firstRow[CONFIG.ENGINE.FIRST_TURN]
+    ).toLowerCase() === "yes"
+      ? firstRow
+      : getRecentGameString(
+          secondRow[CONFIG.ENGINE.FIRST_TURN]
+        ).toLowerCase() === "yes"
+        ? secondRow
+        : null;
+
+  return {
+    id: (firstRowIndex / 2) + 1,
+    sourceIndex: firstRowIndex + 1,
+    sortDate: sortDate,
+    date:
+      formatRecentGameDate(
+        rawDate,
+        sortDate
+      ),
+    division:
+      getRecentGameString(
+        firstRow[CONFIG.ENGINE.DIVISION]
+      ),
+    winner:
+      getRecentGameString(
+        winnerRow[CONFIG.ENGINE.PLAYER]
+      ),
+    loser:
+      getRecentGameString(
+        loserRow[CONFIG.ENGINE.PLAYER]
+      ),
+    winnerFaction:
+      canonicalizeArmyName(
+        winnerRow[CONFIG.ENGINE.FACTION]
+      ),
+    loserFaction:
+      canonicalizeArmyName(
+        loserRow[CONFIG.ENGINE.FACTION]
+      ),
+    mission:
+      getRecentGameString(
+        firstRow[CONFIG.ENGINE.MISSION]
+      ),
+    tp:
+      getRecentGameScore(
+        winnerRow[CONFIG.ENGINE.TP],
+        loserRow[CONFIG.ENGINE.TP]
+      ),
+    op:
+      getRecentGameScore(
+        winnerRow[CONFIG.ENGINE.OP],
+        loserRow[CONFIG.ENGINE.OP]
+      ),
+    vp:
+      getRecentGameScore(
+        winnerRow[CONFIG.ENGINE.VP],
+        loserRow[CONFIG.ENGINE.VP]
+      ),
+    bestMoment: "",
+    firstTurn:
+      firstTurnRow
+        ? getRecentGameString(
+            firstTurnRow[CONFIG.ENGINE.PLAYER]
+          )
+        : "",
+    gameResult:
+      draw
+        ? "Draw"
+        : getRecentGameString(
+            firstRow[CONFIG.ENGINE.GAME_RESULT]
+          ),
+    gameType: gameType,
+    eventId:
+      gameType === "casual"
+        ? ""
+        : getRecentGameString(
+            firstRow[CONFIG.ENGINE.EVENT_ID]
+          ) || EVENT_ENGINE_DEFAULT_EVENT_ID,
+    winnerArmyListId:
+      getRecentGameString(
+        winnerRow[CONFIG.ENGINE.ARMY_LIST_ID]
+      ),
+    loserArmyListId:
+      getRecentGameString(
+        loserRow[CONFIG.ENGINE.ARMY_LIST_ID]
+      ),
+    winnerArmyCode: "",
+    loserArmyCode: ""
+  };
 
 }
 
