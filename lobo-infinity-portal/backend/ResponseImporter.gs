@@ -164,48 +164,45 @@ function lifLeagueRowIsActive_(row) {
 }
 
 function lifBuildCanonicalRow_(s) {
-  if (s.formType === LIF_FORMS.TYPES.LEAGUE || s.formType === LIF_FORMS.TYPES.TEAM) {
-    return lifBuildCanonicalGameRow_(
-      s,
-      s.formType === LIF_FORMS.TYPES.TEAM ? "tournament" : "league"
-    );
-  }
-  const winner = lifDetermineWinner_(s);
-  const playerWins = winner === s.player || winner === "Draw";
-  return [
-    s.timestamp, s.division, new Date(), s.mission, s.player, s.opponent,
-    Number(s.playerTp), Number(s.opponentTp), Number(s.playerOp), Number(s.opponentOp),
-    Number(s.playerVp), Number(s.opponentVp), s.firstTurn === "Player" ? s.player : s.opponent,
-    playerWins ? s.playerFaction : s.opponentFaction,
-    playerWins ? s.opponentFaction : s.playerFaction, s.bestMoment, s.eventId,
-    "casual",
-    winner, s.playerArmyCode, s.opponentArmyCode, "", ""
-  ];
-}
+  const casual = s.formType === LIF_FORMS.TYPES.CASUAL;
+  const command = {
+    division: s.division,
+    mission: s.mission,
+    player: s.player,
+    opponent: s.opponent,
+    playerTp: s.playerTp,
+    opponentTp: s.opponentTp,
+    playerOp: s.playerOp,
+    opponentOp: s.opponentOp,
+    playerVp: s.playerVp,
+    opponentVp: s.opponentVp,
+    firstTurn: s.firstTurn,
+    firstTurnMode: casual ? "legacy-casual" : "canonical",
+    playerFaction: s.playerFaction,
+    opponentFaction: s.opponentFaction,
+    canonicalizeFactions: !casual,
+    bestMoment: s.bestMoment,
+    eventId: s.eventId,
+    gameType: casual
+      ? "casual"
+      : s.formType === LIF_FORMS.TYPES.TEAM
+        ? "tournament"
+        : "league",
+    gameResult: s.gameResult,
+    gameResultMode: casual ? "winner-name" : "canonical",
+    playerArmyCode: s.playerArmyCode,
+    opponentArmyCode: s.opponentArmyCode,
+    deriveArmyListIds: !casual
+  };
 
-function lifBuildCanonicalGameRow_(s, gameType) {
-  const winner = lifDetermineWinner_(s);
-  const playerWins = winner === s.player || winner === "Draw";
-  const playerFaction = typeof canonicalizeArmyName === "function" ? canonicalizeArmyName(s.playerFaction) : String(s.playerFaction || "").trim();
-  const opponentFaction = typeof canonicalizeArmyName === "function" ? canonicalizeArmyName(s.opponentFaction) : String(s.opponentFaction || "").trim();
-  const playerArmyCode = lifNormalizeArmyCode_(s.playerArmyCode);
-  const opponentArmyCode = lifNormalizeArmyCode_(s.opponentArmyCode);
-  const playerArmyListId = lifCanonicalArmyListId_(playerArmyCode);
-  const opponentArmyListId = lifCanonicalArmyListId_(opponentArmyCode);
-  return [
-    lifFormatPortalDate_(new Date(), "yyyy-MM-dd HH:mm:ss"), String(s.division || "").trim(),
-    lifFormatPortalDate_(new Date(), "yyyy-MM-dd"), String(s.mission || "").trim(),
-    String(s.player || "").trim(), String(s.opponent || "").trim(),
-    Number(s.playerTp), Number(s.opponentTp), Number(s.playerOp), Number(s.opponentOp),
-    Number(s.playerVp), Number(s.opponentVp),
-    lifResolveCanonicalFirstTurn_(s),
-    playerWins ? playerFaction : opponentFaction, playerWins ? opponentFaction : playerFaction,
-    String(s.bestMoment || "").trim(), String(s.eventId || "").trim(), String(gameType || "league").trim(),
-    winner === "Draw" ? "Draw" : playerWins ? "Player 1 Victory" : "Player 2 Victory",
-    playerArmyCode, opponentArmyCode,
-    playerWins ? playerArmyListId : opponentArmyListId,
-    playerWins ? opponentArmyListId : playerArmyListId
-  ];
+  if (casual) {
+    command.timestamp = s.timestamp;
+    command.date = new Date();
+    command.playerArmyListId = "";
+    command.opponentArmyListId = "";
+  }
+
+  return buildCanonicalGameRow(command);
 }
 
 function lifResolveCanonicalFirstTurn_(submission) {
@@ -218,15 +215,6 @@ function lifResolveCanonicalFirstTurn_(submission) {
     return String(submission.opponent || "").trim();
   }
   return firstTurn;
-}
-
-function lifFormatPortalDate_(date, format) {
-  return Utilities.formatDate(date, Session.getScriptTimeZone(), format);
-}
-
-function lifCanonicalArmyListId_(armyCode) {
-  if (!armyCode || typeof buildCanonicalArmyCodeArmyListId !== "function") return "";
-  return String(buildCanonicalArmyCodeArmyListId(armyCode));
 }
 
 function lifEnsureCanonicalSheet_(spreadsheet) {

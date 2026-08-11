@@ -137,37 +137,12 @@ function submitLeagueResult(e) {
     const resultIsDraw =
       normalizeResultSubmissionValue(submittedResult) === "draw";
 
-    const row = [];
-    row[FORM.TIMESTAMP] = getResultSubmissionTimestamp();
-    row[FORM.DIVISION] = getResultSubmissionString(params.division);
-    row[FORM.DATE] = getResultSubmissionDate();
-    row[FORM.MISSION] = getResultSubmissionString(params.mission);
-    row[FORM.PLAYER1] = player;
-    row[FORM.PLAYER2] = opponent;
-    row[FORM.P1TP] = playerTp;
-    row[FORM.P2TP] = opponentTp;
-    row[FORM.P1OP] = playerOp;
-    row[FORM.P2OP] = opponentOp;
-    row[FORM.P1VP] = playerVp;
-    row[FORM.P2VP] = opponentVp;
-    row[FORM.FIRSTTURN] = getResultSubmissionString(params.firstTurn);
-    row[FORM.WINNINGFACTION] =
-      resultIsDraw || playerIsWinner
-        ? playerFaction
-        : opponentFaction;
-    row[FORM.LOSINGFACTION] =
-      resultIsDraw || playerIsWinner
-        ? opponentFaction
-        : playerFaction;
-    row[FORM.MOMENT] = getResultSubmissionString(params.bestMoment);
-    row[FORM.EVENT_ID] = eventId;
-    row[FORM.GAME_TYPE] = "league";
-    row[FORM.GAME_RESULT] =
-      resultIsDraw
-        ? "Draw"
-        : playerIsWinner
-          ? "Player 1 Victory"
-          : "Player 2 Victory";
+    const submissionTimestamp =
+      getResultSubmissionTimestamp();
+
+    const submissionDate =
+      getResultSubmissionDate();
+
     const playerArmyCode =
       getResultSubmissionArmyCode(
         params.playerArmyCode ||
@@ -179,18 +154,36 @@ function submitLeagueResult(e) {
         (opponentArmyList.list && opponentArmyList.list.armyCode)
       );
 
-    row[FORM.PLAYER1_ARMY_CODE] =
-      playerArmyCode;
-    row[FORM.PLAYER2_ARMY_CODE] =
-      opponentArmyCode;
-    row[FORM.WINNER_ARMY_LIST_ID] =
-      resultIsDraw || playerIsWinner
-        ? getResultSubmissionArmyListId(playerArmyList, playerArmyCode)
-        : getResultSubmissionArmyListId(opponentArmyList, opponentArmyCode);
-    row[FORM.LOSER_ARMY_LIST_ID] =
-      resultIsDraw || playerIsWinner
-        ? getResultSubmissionArmyListId(opponentArmyList, opponentArmyCode)
-        : getResultSubmissionArmyListId(playerArmyList, playerArmyCode);
+    const row =
+      buildCanonicalGameRow({
+        timestamp: submissionTimestamp,
+        date: submissionDate,
+        division: getResultSubmissionString(params.division),
+        mission: getResultSubmissionString(params.mission),
+        player: player,
+        opponent: opponent,
+        playerTp: playerTp,
+        opponentTp: opponentTp,
+        playerOp: playerOp,
+        opponentOp: opponentOp,
+        playerVp: playerVp,
+        opponentVp: opponentVp,
+        firstTurn: getResultSubmissionString(params.firstTurn),
+        playerFaction: playerFaction,
+        opponentFaction: opponentFaction,
+        bestMoment: getResultSubmissionString(params.bestMoment),
+        eventId: eventId,
+        gameType: "league",
+        outcome: resultIsDraw
+          ? "draw"
+          : playerIsWinner
+            ? "player"
+            : "opponent",
+        playerArmyCode: playerArmyCode,
+        opponentArmyCode: opponentArmyCode,
+        playerArmyListId: getResultSubmissionArmyListId(playerArmyList, playerArmyCode),
+        opponentArmyListId: getResultSubmissionArmyListId(opponentArmyList, opponentArmyCode)
+      });
 
     const sheet =
       lifGetTargetSpreadsheet_()
@@ -359,37 +352,12 @@ function submitCasualResult(e) {
     const resultIsDraw =
       normalizeResultSubmissionValue(submittedResult) === "draw";
 
-    const row = [];
-    row[FORM.TIMESTAMP] = getResultSubmissionTimestamp();
-    row[FORM.DIVISION] = "Casual";
-    row[FORM.DATE] = getResultSubmissionDate();
-    row[FORM.MISSION] = getResultSubmissionString(params.mission);
-    row[FORM.PLAYER1] = player;
-    row[FORM.PLAYER2] = opponent;
-    row[FORM.P1TP] = playerTp;
-    row[FORM.P2TP] = opponentTp;
-    row[FORM.P1OP] = playerOp;
-    row[FORM.P2OP] = opponentOp;
-    row[FORM.P1VP] = playerVp;
-    row[FORM.P2VP] = opponentVp;
-    row[FORM.FIRSTTURN] = getResultSubmissionString(params.firstTurn);
-    row[FORM.WINNINGFACTION] =
-      resultIsDraw || playerIsWinner
-        ? playerFaction
-        : opponentFaction;
-    row[FORM.LOSINGFACTION] =
-      resultIsDraw || playerIsWinner
-        ? opponentFaction
-        : playerFaction;
-    row[FORM.MOMENT] = getResultSubmissionString(params.bestMoment);
-    row[FORM.EVENT_ID] = "";
-    row[FORM.GAME_TYPE] = "casual";
-    row[FORM.GAME_RESULT] =
-      resultIsDraw
-        ? "Draw"
-        : playerIsWinner
-          ? "Player 1 Victory"
-          : "Player 2 Victory";
+    const submissionTimestamp =
+      getResultSubmissionTimestamp();
+
+    const submissionDate =
+      getResultSubmissionDate();
+
     const playerArmyCode =
       getResultSubmissionArmyCode(
         params.playerArmyCode ||
@@ -401,18 +369,36 @@ function submitCasualResult(e) {
         (opponentArmyList.list && opponentArmyList.list.armyCode)
       );
 
-    row[FORM.PLAYER1_ARMY_CODE] =
-      playerArmyCode;
-    row[FORM.PLAYER2_ARMY_CODE] =
-      opponentArmyCode;
-    row[FORM.WINNER_ARMY_LIST_ID] =
-      resultIsDraw || playerIsWinner
-        ? getResultSubmissionArmyListId(playerArmyList, playerArmyCode)
-        : getResultSubmissionArmyListId(opponentArmyList, opponentArmyCode);
-    row[FORM.LOSER_ARMY_LIST_ID] =
-      resultIsDraw || playerIsWinner
-        ? getResultSubmissionArmyListId(opponentArmyList, opponentArmyCode)
-        : getResultSubmissionArmyListId(playerArmyList, playerArmyCode);
+    const row =
+      buildCanonicalGameRow({
+        timestamp: submissionTimestamp,
+        date: submissionDate,
+        division: "Casual",
+        mission: getResultSubmissionString(params.mission),
+        player: player,
+        opponent: opponent,
+        playerTp: playerTp,
+        opponentTp: opponentTp,
+        playerOp: playerOp,
+        opponentOp: opponentOp,
+        playerVp: playerVp,
+        opponentVp: opponentVp,
+        firstTurn: getResultSubmissionString(params.firstTurn),
+        playerFaction: playerFaction,
+        opponentFaction: opponentFaction,
+        bestMoment: getResultSubmissionString(params.bestMoment),
+        eventId: "",
+        gameType: "casual",
+        outcome: resultIsDraw
+          ? "draw"
+          : playerIsWinner
+            ? "player"
+            : "opponent",
+        playerArmyCode: playerArmyCode,
+        opponentArmyCode: opponentArmyCode,
+        playerArmyListId: getResultSubmissionArmyListId(playerArmyList, playerArmyCode),
+        opponentArmyListId: getResultSubmissionArmyListId(opponentArmyList, opponentArmyCode)
+      });
 
     const sheet =
       lifGetTargetSpreadsheet_()
