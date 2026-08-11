@@ -1179,6 +1179,7 @@ function getEventAnalyticsTeamStandings(context) {
     return buildTeamTournamentStandings(
       context.eventId,
       getEventAnalyticsTeams(context.eventId),
+      getEventAnalyticsResults(context.eventId),
       getAllRecentGameObjectsForEvent(context.eventId)
     ).map(function(row) {
       return {

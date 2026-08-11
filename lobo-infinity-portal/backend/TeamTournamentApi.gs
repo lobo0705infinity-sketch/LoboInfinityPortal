@@ -96,11 +96,7 @@ function getTeamTournament(e) {
     buildTeamTournamentResultStatuses(pairings, results);
 
   const standings =
-    buildTeamTournamentStandings(
-      eventId,
-      teams,
-      runtime.recentGames
-    );
+    buildTeamTournamentStandings(eventId, teams, results, []);
 
   const registrations =
     resolveTeamTournamentRegistrationMembership(
@@ -1333,49 +1329,24 @@ function buildTeamTournamentMutationResponse(kind, eventId, payload) {
 
 }
 
-function buildTeamTournamentStandings(eventId, teams, canonicalGames) {
+function buildTeamTournamentStandings(eventId, teams, tournamentResults, recentGames) {
 
   const games =
-    Array.isArray(canonicalGames)
-      ? canonicalGames
-      : getTeamTournamentCanonicalGames_(eventId);
+    recentGames || getTeamTournamentCanonicalGames_(eventId);
 
-  const membership =
-    buildTeamTournamentMembershipLookup(teams);
+  const results =
+    tournamentResults || [];
 
   return teams
     .map(function(team) {
       const players =
         splitTeamTournamentPlayers(team.players);
 
-      const teamName =
-        getTeamTournamentString(team.teamName);
-
       const teamGames =
         games.filter(function(game) {
-          const winnerTeam =
-            findTeamTournamentMembership(
-              membership,
-              game.winner,
-              game.winnerDisplayName
-            );
-
-          const loserTeam =
-            findTeamTournamentMembership(
-              membership,
-              game.loser,
-              game.loserDisplayName
-            );
-
           return (
-            teamTournamentSameValue(
-              winnerTeam,
-              teamName
-            ) ||
-            teamTournamentSameValue(
-              loserTeam,
-              teamName
-            )
+            players.indexOf(game.winner) !== -1 ||
+            players.indexOf(game.loser) !== -1
           );
         });
 
@@ -1395,14 +1366,7 @@ function buildTeamTournamentStandings(eventId, teams, canonicalGames) {
             teamTournamentScoreIsDraw(game.vp)
           );
         const winnerOnTeam =
-          teamTournamentSameValue(
-            findTeamTournamentMembership(
-              membership,
-              game.winner,
-              game.winnerDisplayName
-            ),
-            teamName
-          );
+          players.indexOf(game.winner) !== -1;
 
         const score =
           parseTeamTournamentScore(game.tp);
@@ -1413,15 +1377,9 @@ function buildTeamTournamentStandings(eventId, teams, canonicalGames) {
 
         if (isDraw) {
           draws++;
-          tp += winnerOnTeam
-            ? score.left
-            : score.right;
-          op += winnerOnTeam
-            ? objective.left
-            : objective.right;
-          vp += winnerOnTeam
-            ? victory.left
-            : victory.right;
+          tp += score.left;
+          op += objective.left;
+          vp += victory.left;
         }
         else if (winnerOnTeam) {
           wins++;
@@ -1436,6 +1394,47 @@ function buildTeamTournamentStandings(eventId, teams, canonicalGames) {
           vp += victory.right;
         }
       });
+
+      results
+        .filter(function(result) {
+          return result.status !== "Rejected" &&
+            (result.teamA === team.teamName || result.teamB === team.teamName);
+        })
+        .forEach(function(result) {
+          const teamIsA =
+            result.teamA === team.teamName;
+
+          const score =
+            parseTeamTournamentScore(result.tournamentPoints);
+          const objective =
+            parseTeamTournamentScore(result.objectivePoints);
+          const victory =
+            parseTeamTournamentScore(result.victoryPoints);
+
+          const teamTp =
+            teamIsA ? score.left : score.right;
+          const otherTp =
+            teamIsA ? score.right : score.left;
+          const teamOp =
+            teamIsA ? objective.left : objective.right;
+          const otherOp =
+            teamIsA ? objective.right : objective.left;
+          const teamVp =
+            teamIsA ? victory.left : victory.right;
+          const otherVp =
+            teamIsA ? victory.right : victory.left;
+
+          if (teamTp === otherTp && teamOp === otherOp && teamVp === otherVp)
+            draws++;
+          else if (teamTp > otherTp)
+            wins++;
+          else if (otherTp > teamTp)
+            losses++;
+
+          tp += teamTp;
+          op += teamOp;
+          vp += teamVp;
+        });
 
       return {
         rank: 0,
