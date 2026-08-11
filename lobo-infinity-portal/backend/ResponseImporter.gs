@@ -12,7 +12,11 @@ function handleLoboFormSubmit(e) {
     if (lifWasImported_(log, responseKey)) return;
 
     const submission = lifReadSubmission_(e.namedValues, formType, e.values && e.values[0], target);
-    const errors = lifValidateSubmission_(submission);
+    const errors = validateCanonicalGame({
+      source: "google-form",
+      workflow: formType,
+      submission: submission
+    }).errors;
     if (errors.length) {
       lifWriteImportLog_(log, responseKey, formType, "", "Rejected", errors.join(" "));
       throw new Error(errors.join(" "));

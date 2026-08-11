@@ -7,7 +7,7 @@ function read(path) {
 
 const submitResult = read('src/pages/SubmitResult.tsx')
 const api = read('src/services/api.ts')
-const backend = read('backend/ResultSubmissionApi.gs')
+const validationService = read('backend/CanonicalValidationService.gs')
 
 const casualSubmit = extractFunctionBlock(submitResult, 'async function submitCasual')
 const leagueSubmit = extractFunctionBlock(submitResult, 'async function submit(event')
@@ -89,8 +89,8 @@ assert.match(
   'submitLeagueResult must continue to serialize league submission fields including bestMoment.',
 )
 assert.match(
-  backend,
-  /if \(getResultSubmissionString\(params\.bestMoment\) === ""\)\s*return resultSubmissionFailure\("Best Moment is required\."\);/,
+  validationService,
+  /if \(getResultSubmissionString\(params\.bestMoment\) === ""\)\s*return canonicalValidationFailure_\("Best Moment is required\."\);/,
   'Backend Best Moment validation must remain required.',
 )
 assert.match(

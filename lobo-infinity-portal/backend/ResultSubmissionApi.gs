@@ -17,125 +17,34 @@ function submitLeagueResult(e) {
     if (commissionerContext.error)
       return resultSubmissionFailure(commissionerContext.error);
 
-    const eventId =
-      resolveEventId(params.eventId || EVENT_ENGINE_DEFAULT_EVENT_ID);
+    const validation =
+      validateCanonicalGame({
+        source: "portal",
+        workflow: "league",
+        params: params,
+        auth: auth,
+        commissionerContext: commissionerContext
+      });
 
-    const event =
-      getEventByIdSnapshot(eventId) ||
-      getCurrentLeagueEventSnapshot();
+    if (!validation.valid)
+      return resultSubmissionFailure(validation.error);
 
-    if (!event)
-      return resultSubmissionFailure("Event was not found.");
-
-    if (!isLeagueResultEventAcceptingResults(event))
-      return resultSubmissionFailure("This event is not currently accepting results.");
-
-    const player =
-      getResultSubmissionString(params.player) ||
-      (auth && auth.user ? getCanonicalPlayerFromUser(auth.user) : "");
-
-    const opponent =
-      getResultSubmissionString(params.opponent);
-
-    if (player === "" || opponent === "")
-      return resultSubmissionFailure("Player and opponent are required.");
-
-    if (normalizeResultSubmissionValue(player) === normalizeResultSubmissionValue(opponent))
-      return resultSubmissionFailure("Opponent must be a different player.");
-
-    const registrations =
-      getEventRegistrationRows(eventId);
-
-    if (!commissionerContext.override &&
-        !isResultSubmissionRegisteredPlayer(registrations, player))
-      return resultSubmissionFailure("Player is not registered for this event.");
-
-    if (!commissionerContext.override &&
-        !isResultSubmissionRegisteredPlayer(registrations, opponent))
-      return resultSubmissionFailure("Opponent is not registered for this event.");
-
-    if (!commissionerContext.override &&
-        hasExistingLeagueResult(eventId, player, opponent))
-      return resultSubmissionFailure("This match has already been reported.");
-
-    const playerTp =
-      parseResultSubmissionScore(params.playerTournamentPoints);
-    const opponentTp =
-      parseResultSubmissionScore(params.opponentTournamentPoints);
-    const playerOp =
-      parseResultSubmissionScore(params.playerObjectivePoints);
-    const opponentOp =
-      parseResultSubmissionScore(params.opponentObjectivePoints);
-    const playerVp =
-      parseResultSubmissionScore(params.playerVictoryPoints);
-    const opponentVp =
-      parseResultSubmissionScore(params.opponentVictoryPoints);
-
-    if (
-      playerTp === null ||
-      opponentTp === null ||
-      playerOp === null ||
-      opponentOp === null ||
-      playerVp === null ||
-      opponentVp === null
-    )
-      return resultSubmissionFailure("Scores must be non-negative numbers.");
-
-    if (playerTp + opponentTp > 10)
-      return resultSubmissionFailure("Tournament Points cannot total more than 10.");
-
-    const winner =
-      getResultSubmissionString(params.winner);
-
-    const playerFaction =
-      canonicalizeArmyName(params.playerFaction);
-
-    const opponentFaction =
-      canonicalizeArmyName(params.opponentFaction);
-
-    if (playerFaction === "" || opponentFaction === "")
-      return resultSubmissionFailure("Both factions are required.");
-
-    const playerArmyList =
-      validateResultSubmissionArmyListId(
-        params.playerArmyListId,
-        player,
-        playerFaction,
-        params.playerArmyCode
-      );
-
-    if (!playerArmyList.valid)
-      return resultSubmissionFailure(playerArmyList.error);
-
-    const opponentArmyList =
-      validateResultSubmissionArmyListId(
-        params.opponentArmyListId,
-        opponent,
-        opponentFaction,
-        params.opponentArmyCode
-      );
-
-    if (!opponentArmyList.valid)
-      return resultSubmissionFailure(opponentArmyList.error);
-
-    const expectedWinner =
-      determineLeagueSubmissionWinner(
-        player,
-        opponent,
-        playerTp,
-        opponentTp,
-        playerOp,
-        opponentOp,
-        playerVp,
-        opponentVp
-      );
-    const submittedResult =
-      winner !== "" ? winner : expectedWinner;
-
-    const playerIsWinner =
-      normalizeResultSubmissionValue(submittedResult) === normalizeResultSubmissionValue(player);
-    const resultIsDraw =
-      normalizeResultSubmissionValue(submittedResult) === "draw";
+    const validated = validation.value;
+    const eventId = validated.eventId;
+    const player = validated.player;
+    const opponent = validated.opponent;
+    const playerTp = validated.playerTp;
+    const opponentTp = validated.opponentTp;
+    const playerOp = validated.playerOp;
+    const opponentOp = validated.opponentOp;
+    const playerVp = validated.playerVp;
+    const opponentVp = validated.opponentVp;
+    const playerFaction = validated.playerFaction;
+    const opponentFaction = validated.opponentFaction;
+    const playerArmyList = validated.playerArmyList;
+    const opponentArmyList = validated.opponentArmyList;
+    const playerIsWinner = validated.playerIsWinner;
+    const resultIsDraw = validated.resultIsDraw;
 
     const submissionTimestamp =
       getResultSubmissionTimestamp();
@@ -243,114 +152,33 @@ function submitCasualResult(e) {
     if (commissionerContext.error)
       return resultSubmissionFailure(commissionerContext.error);
 
-    const player =
-      getResultSubmissionString(params.player) ||
-      (auth && auth.user
-        ? getCanonicalPlayerFromUser(auth.user) ||
-          auth.user.playerDisplayName ||
-          auth.user.displayName ||
-          auth.user.email
-        : "");
+    const validation =
+      validateCanonicalGame({
+        source: "portal",
+        workflow: "casual",
+        params: params,
+        auth: auth,
+        commissionerContext: commissionerContext
+      });
 
-    const opponent =
-      getResultSubmissionString(params.opponent);
+    if (!validation.valid)
+      return resultSubmissionFailure(validation.error);
 
-    if (player === "" || opponent === "")
-      return resultSubmissionFailure("Players are required.");
-
-    if (normalizeResultSubmissionValue(player) === normalizeResultSubmissionValue(opponent))
-      return resultSubmissionFailure("Opponent must be a different player.");
-
-    const playerFaction =
-      canonicalizeArmyName(params.playerFaction);
-
-    const opponentFaction =
-      canonicalizeArmyName(params.opponentFaction);
-
-    if (playerFaction === "")
-      return resultSubmissionFailure("Player faction is required.");
-
-    if (opponentFaction === "")
-      return resultSubmissionFailure("Opponent faction is required.");
-
-    const playerArmyList =
-      validateResultSubmissionArmyListId(
-        params.playerArmyListId,
-        player,
-        playerFaction,
-        params.playerArmyCode
-      );
-
-    if (!playerArmyList.valid)
-      return resultSubmissionFailure(playerArmyList.error);
-
-    const opponentArmyList =
-      validateResultSubmissionArmyListId(
-        params.opponentArmyListId,
-        opponent,
-        opponentFaction,
-        params.opponentArmyCode
-      );
-
-    if (!opponentArmyList.valid)
-      return resultSubmissionFailure(opponentArmyList.error);
-
-    if (getResultSubmissionString(params.mission) === "")
-      return resultSubmissionFailure("Mission is required.");
-
-    if (getResultSubmissionString(params.firstTurn) === "")
-      return resultSubmissionFailure("First Turn is required.");
-
-    if (getResultSubmissionString(params.bestMoment) === "")
-      return resultSubmissionFailure("Best Moment is required.");
-
-    const playerTp =
-      parseResultSubmissionScore(params.playerTournamentPoints);
-    const opponentTp =
-      parseResultSubmissionScore(params.opponentTournamentPoints);
-    const playerOp =
-      parseResultSubmissionScore(params.playerObjectivePoints);
-    const opponentOp =
-      parseResultSubmissionScore(params.opponentObjectivePoints);
-    const playerVp =
-      parseResultSubmissionScore(params.playerVictoryPoints);
-    const opponentVp =
-      parseResultSubmissionScore(params.opponentVictoryPoints);
-
-    if (
-      playerTp === null ||
-      opponentTp === null ||
-      playerOp === null ||
-      opponentOp === null ||
-      playerVp === null ||
-      opponentVp === null
-    )
-      return resultSubmissionFailure("Scores must be non-negative numbers.");
-
-    if (playerTp + opponentTp > 10)
-      return resultSubmissionFailure("Tournament Points cannot total more than 10.");
-
-    const winner =
-      getResultSubmissionString(params.winner);
-
-    const expectedWinner =
-      determineLeagueSubmissionWinner(
-        player,
-        opponent,
-        playerTp,
-        opponentTp,
-        playerOp,
-        opponentOp,
-        playerVp,
-        opponentVp
-      );
-    const submittedResult =
-      winner !== "" ? winner : expectedWinner;
-
-    const playerIsWinner =
-      normalizeResultSubmissionValue(submittedResult) === normalizeResultSubmissionValue(player);
-    const resultIsDraw =
-      normalizeResultSubmissionValue(submittedResult) === "draw";
+    const validated = validation.value;
+    const player = validated.player;
+    const opponent = validated.opponent;
+    const playerTp = validated.playerTp;
+    const opponentTp = validated.opponentTp;
+    const playerOp = validated.playerOp;
+    const opponentOp = validated.opponentOp;
+    const playerVp = validated.playerVp;
+    const opponentVp = validated.opponentVp;
+    const playerFaction = validated.playerFaction;
+    const opponentFaction = validated.opponentFaction;
+    const playerArmyList = validated.playerArmyList;
+    const opponentArmyList = validated.opponentArmyList;
+    const playerIsWinner = validated.playerIsWinner;
+    const resultIsDraw = validated.resultIsDraw;
 
     const submissionTimestamp =
       getResultSubmissionTimestamp();

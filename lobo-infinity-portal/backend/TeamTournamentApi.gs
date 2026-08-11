@@ -1000,94 +1000,23 @@ function saveTeamTournamentResult(e) {
       error: commissionerContext.error
     });
 
-  const eventId =
-    resolveEventId(params.eventId || EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID);
-
-  const event =
-    getEventByIdSnapshot(eventId) ||
-    getEventByIdSnapshot(EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID);
-
-  if (!event || getTeamTournamentString(event.type) !== "Team Tournament")
-    return jsonOutput({
-      success: false,
-      error: "Portal result submission is only enabled for Team Tournament events."
+  const validation =
+    validateCanonicalGame({
+      source: "portal",
+      workflow: "team-tournament",
+      params: params,
+      auth: auth,
+      commissionerContext: commissionerContext
     });
 
-  const selectedPlayer =
-    commissionerContext.enabled
-      ? getTeamTournamentString(params.player)
-      : "";
-
-  const registration =
-    commissionerContext.enabled && selectedPlayer !== ""
-      ? getEventRegistrationForPlayer(eventId, selectedPlayer)
-      : getEventRegistrationForPlayer(
-          eventId,
-          getEventParticipantKey(event, auth.user)
-        );
-
-  if ((!registration || registration.status === "Withdrawn") &&
-      !commissionerContext.override)
+  if (!validation.valid)
     return jsonOutput({
       success: false,
-      error: "You must be registered for this Team Tournament before submitting a result."
+      error: validation.error
     });
 
-  const currentRound =
-    getTeamTournamentCurrentRound(eventId);
-
-  if (!isTeamTournamentRoundActive(event, currentRound))
-    return jsonOutput({
-      success: false,
-      error: "This Team Tournament round is not currently accepting results."
-    });
-
-  const pairings =
-    getTeamTournamentPairings(eventId);
-
-  let assignment =
-    registration
-      ? resolveTeamTournamentResultAssignment(
-          event,
-          currentRound,
-          registration,
-          pairings,
-          params
-        )
-      : null;
-
-  if (!assignment && commissionerContext.override)
-    assignment =
-      buildCommissionerTeamTournamentOverrideAssignment(
-        eventId,
-        currentRound,
-        params
-      );
-
-  if (!assignment)
-    return jsonOutput({
-      success: false,
-      error: "No active table pairing was found for your registration."
-    });
-
-  const resultValidation =
-    validateTeamTournamentResultSubmission(params, assignment);
-
-  if (resultValidation.length > 0)
-    return jsonOutput({
-      success: false,
-      error: resultValidation.join(" ")
-    });
-
-  const results =
-    getTeamTournamentResults(eventId);
-
-  if (!commissionerContext.override &&
-      hasSubmittedTeamTournamentResult(results, assignment))
-    return jsonOutput({
-      success: false,
-      error: "This match has already been submitted."
-    });
+  const eventId = validation.value.eventId;
+  const assignment = validation.value.assignment;
 
   const timestamp =
     getTeamTournamentTimestamp();
@@ -2216,54 +2145,6 @@ function resolveTeamTournamentResultAssignment(
 
   return null;
 }
-function validateTeamTournamentResultSubmission(params, assignment) {
- 
-  const issues = [];
-  const winner =
-    getTeamTournamentString(params.winner);
-  const tournamentPoints =
-    parseTeamTournamentSubmittedScore(params.tournamentPoints);
-  const objectivePoints =
-    parseTeamTournamentSubmittedScore(params.objectivePoints);
-  const victoryPoints =
-    parseTeamTournamentSubmittedScore(params.victoryPoints);
-  const submittedOpponent =
-    getTeamTournamentString(params.opponent);
- 
-  if (assignment.opponent === "" && submittedOpponent === "")
-    issues.push("Opponent could not be resolved from the published pairing.");
- 
-  [
-    ["roundId", "roundId", "Round"],
-    ["teamA", "teamA", "Team"],
-    ["teamB", "teamB", "Opponent team"],
-    ["player", "player", "Player"],
-    ["opponent", "opponent", "Opponent"],
-    ["mission", "mission", "Mission"],
-    ["table", "table", "Table"]
-  ].forEach(function(check) {
-    const submitted =
-      getTeamTournamentString(params[check[0]]);
-    const expected =
-      getTeamTournamentString(assignment[check[1]]);
-
-    if (submitted !== "" && expected !== "" && !teamTournamentSameValue(submitted, expected))
-      issues.push(check[2] + " does not match the published pairing.");
-  });
-
-  if (!tournamentPoints.valid || !objectivePoints.valid || !victoryPoints.valid)
-    issues.push("Scores must use the published you-opponent format, for example 7-3.");
-
-  if (tournamentPoints.valid && tournamentPoints.left + tournamentPoints.right > 10)
-    issues.push("Tournament Points cannot total more than 10.");
-
-  if (winner === "")
-    issues.push("Game Result is required.");
-
-  return issues;
-
-}
-
 function buildCommissionerTeamTournamentOverrideAssignment(
   eventId,
   currentRound,
