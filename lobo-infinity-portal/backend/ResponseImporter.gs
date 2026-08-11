@@ -18,7 +18,6 @@ function handleLoboFormSubmit(e) {
       throw new Error(errors.join(" "));
     }
 
-    if (formType === LIF_FORMS.TYPES.TEAM) lifValidateTeamTournamentSubmission_(submission);
     const targetRow = lifAppendCanonicalGameSubmission_(target, submission);
     lifWriteImportLog_(log, responseKey, formType, targetRow, "Imported", "");
     SpreadsheetApp.flush();
@@ -165,8 +164,12 @@ function lifLeagueRowIsActive_(row) {
 }
 
 function lifBuildCanonicalRow_(s) {
-  if (s.formType === LIF_FORMS.TYPES.LEAGUE) return lifBuildCanonicalLeagueRow_(s);
-  if (s.formType === LIF_FORMS.TYPES.TEAM) return lifBuildCanonicalGameRow_(s, "tournament");
+  if (s.formType === LIF_FORMS.TYPES.LEAGUE || s.formType === LIF_FORMS.TYPES.TEAM) {
+    return lifBuildCanonicalGameRow_(
+      s,
+      s.formType === LIF_FORMS.TYPES.TEAM ? "tournament" : "league"
+    );
+  }
   const winner = lifDetermineWinner_(s);
   const playerWins = winner === s.player || winner === "Draw";
   return [
@@ -178,45 +181,6 @@ function lifBuildCanonicalRow_(s) {
     "casual",
     winner, s.playerArmyCode, s.opponentArmyCode, "", ""
   ];
-}
-
-function lifValidateTeamTournamentSubmission_(submission) {
-  const eventId = String(submission.eventId || "").trim();
-  const currentRound = getTeamTournamentCurrentRound(eventId);
-  const pairings = getTeamTournamentPairings(eventId);
-  const registration = {
-    player: String(submission.player || "").trim(),
-    displayName: String(submission.player || "").trim(),
-    team: String(submission.team || "").trim(),
-    preferredTeam: String(submission.team || "").trim()
-  };
-  const params = {
-    opponent: submission.opponent,
-    mission: submission.mission,
-    tournamentPoints: lifTeamTournamentScore_(submission.playerTp, submission.opponentTp),
-    objectivePoints: lifTeamTournamentScore_(submission.playerOp, submission.opponentOp),
-    victoryPoints: lifTeamTournamentScore_(submission.playerVp, submission.opponentVp),
-    winner: lifDetermineWinner_(submission)
-  };
-  const event = getEventByIdSnapshot(eventId);
-  const assignment = resolveTeamTournamentResultAssignment(event, currentRound, registration, pairings, params);
-  if (!assignment) throw new Error("No active Team Tournament pairing was found for the submitted player.");
-
-  const resultValidation = validateTeamTournamentResultSubmission(params, assignment);
-  if (resultValidation.length) throw new Error(resultValidation.join(" "));
-  if (hasSubmittedTeamTournamentResult(getTeamTournamentResults(eventId), assignment)) {
-    throw new Error("This Team Tournament match has already been submitted.");
-  }
-
-  return assignment;
-}
-
-function lifTeamTournamentScore_(playerScore, opponentScore) {
-  return String(Number(playerScore)) + "-" + String(Number(opponentScore));
-}
-
-function lifBuildCanonicalLeagueRow_(s) {
-  return lifBuildCanonicalGameRow_(s, "league");
 }
 
 function lifBuildCanonicalGameRow_(s, gameType) {
