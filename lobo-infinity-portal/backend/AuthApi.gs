@@ -1502,14 +1502,25 @@ function verifyGoogleIdentityToken(token, requestClientId) {
 
   try {
 
-    const response =
-      UrlFetchApp.fetch(
-        "https://oauth2.googleapis.com/tokeninfo?id_token=" +
-          encodeURIComponent(token),
-        {
-          muteHttpExceptions: true
-        }
+    let response;
+
+    try {
+      response =
+        UrlFetchApp.fetch(
+          "https://oauth2.googleapis.com/tokeninfo?id_token=" +
+            encodeURIComponent(token),
+          {
+            muteHttpExceptions: true
+          }
+        );
+    }
+    catch (fetchErr) {
+      logGoogleTokenVerificationFetchException(fetchErr);
+
+      return buildGoogleTokenVerificationExceptionFailure(
+        tokenDiagnostics
       );
+    }
 
     if (response.getResponseCode() !== 200)
       return buildAuthVerificationFailure(
@@ -1604,22 +1615,9 @@ function verifyGoogleIdentityToken(token, requestClientId) {
   }
   catch (err) {
 
-    return {
-      valid: false,
-      code: "AUTH_GOOGLE_TOKEN_VERIFICATION_EXCEPTION",
-      stage: "googleTokenVerification",
-      error: "Google credential verification failed unexpectedly.",
-      diagnostics:
-        buildAuthDiagnostics(
-          "googleTokenVerification",
-          "AUTH_GOOGLE_TOKEN_VERIFICATION_EXCEPTION",
-          "Google token verification threw an exception.",
-          {
-            exception: String(err),
-            token: tokenDiagnostics
-          }
-        )
-    };
+    return buildGoogleTokenVerificationExceptionFailure(
+      tokenDiagnostics
+    );
 
   }
 
@@ -1641,6 +1639,59 @@ function verifyGoogleIdentityToken(token, requestClientId) {
       {}
     );
   }
+
+}
+
+function buildGoogleTokenVerificationExceptionFailure(tokenDiagnostics) {
+
+  return {
+    valid: false,
+    code: "AUTH_GOOGLE_TOKEN_VERIFICATION_EXCEPTION",
+    stage: "googleTokenVerification",
+    error: "Google credential verification failed unexpectedly.",
+    diagnostics:
+      buildAuthDiagnostics(
+        "googleTokenVerification",
+        "AUTH_GOOGLE_TOKEN_VERIFICATION_EXCEPTION",
+        "Google token verification threw an exception.",
+        {
+          token: tokenDiagnostics
+        }
+      )
+  };
+
+}
+
+function logGoogleTokenVerificationFetchException(err) {
+
+  const diagnostic = {
+    requestId:
+      API_PIPELINE_CONTEXT && API_PIPELINE_CONTEXT.requestId
+        ? API_PIPELINE_CONTEXT.requestId
+        : "",
+    stage: "googleTokenVerification.tokeninfoFetch",
+    code: "AUTH_GOOGLE_TOKEN_VERIFICATION_EXCEPTION",
+    exception: {
+      name:
+        err && err.name
+          ? String(err.name)
+          : "Error",
+      message:
+        err && err.message
+          ? String(err.message)
+          : String(err),
+      stack:
+        err && err.stack
+          ? String(err.stack)
+          : ""
+    },
+    timestamp: new Date().toISOString()
+  };
+
+  Logger.log(
+    "GOOGLE_TOKEN_VERIFICATION_EXCEPTION " +
+    JSON.stringify(diagnostic)
+  );
 
 }
 
