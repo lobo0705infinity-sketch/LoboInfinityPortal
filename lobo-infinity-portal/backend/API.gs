@@ -7,21 +7,70 @@
 
 var API_PIPELINE_CONTEXT = null;
 
-function createApiPipelineContext(action) {
+function createApiPipelineContext(action, requestId) {
   return {
     requestId:
-      "api-" + Math.random().toString(36).slice(2),
+      requestId || "api-" + Math.random().toString(36).slice(2),
     action: action,
     startTime: Date.now(),
     currentStage: "requestReceived",
     currentFunction: "",
     authenticated: false,
+    credentialPresent: false,
     userEmail: "",
     stageStarts: {},
     stages: {},
     logs: [],
     functionStack: []
   };
+}
+
+function getApiCorrelationRequestId(e) {
+  try {
+    const requestId =
+      e && e.parameter && e.parameter.requestId
+        ? String(e.parameter.requestId)
+        : "";
+
+    return /^[A-Za-z0-9._:-]{1,128}$/.test(requestId)
+      ? requestId
+      : "";
+  }
+  catch (err) {
+    return "";
+  }
+}
+
+function logAuthSessionCorrelation(values) {
+  try {
+    if (!API_PIPELINE_CONTEXT || API_PIPELINE_CONTEXT.action !== "session")
+      return;
+
+    const details = values || {};
+
+    if (details.credentialPresent === true)
+      API_PIPELINE_CONTEXT.credentialPresent = true;
+
+    Logger.log(
+      "AUTH_SESSION_CORRELATION " +
+        JSON.stringify({
+          requestId: API_PIPELINE_CONTEXT.requestId || "",
+          action: "session",
+          method: "POST",
+          timestamp: getApiForensicTimestamp(),
+          requestReceived: details.requestReceived === true,
+          requestCompleted: details.requestCompleted === true,
+          jsonGenerated: details.jsonGenerated === true,
+          exceptionThrown: details.exceptionThrown === true,
+          authenticationResult: details.authenticationResult || "",
+          credentialPresent:
+            details.credentialPresent === true ||
+            API_PIPELINE_CONTEXT.credentialPresent === true
+        })
+    );
+  }
+  catch (err) {
+  }
 }
 
 function getApiForensicTimestamp() {
@@ -1142,7 +1191,20 @@ function doPost(e) {
         : "";
 
     API_PIPELINE_CONTEXT =
-      createApiPipelineContext(action);
+      createApiPipelineContext(
+        action,
+        action === "session" ? getApiCorrelationRequestId(e) : ""
+      );
+
+    if (action === "session") {
+      logAuthSessionCorrelation({
+        requestReceived: true,
+        credentialPresent: !!(
+          e && e.parameter &&
+          (e.parameter.authToken || e.parameter.idToken || e.parameter.credential)
+        )
+      });
+    }
 
     recordApiPipelineStage(
       "requestReceived",
@@ -1169,6 +1231,11 @@ function doPost(e) {
     return handleApiPost(e, action);
   }
   catch (err) {
+    logAuthSessionCorrelation({
+      exceptionThrown: true,
+      credentialPresent:
+        API_PIPELINE_CONTEXT && API_PIPELINE_CONTEXT.credentialPresent === true
+    });
     return jsonExceptionOutput(
       err,
       action,
@@ -1544,6 +1611,18 @@ function jsonOutput(data) {
 
   const finalJson =
     JSON.stringify(data);
+
+  if (API_PIPELINE_CONTEXT && API_PIPELINE_CONTEXT.action === "session") {
+    logAuthSessionCorrelation({
+      requestCompleted: true,
+      jsonGenerated: true,
+      authenticationResult:
+        data && data.authenticated
+          ? "authenticated"
+          : (data && data.code ? String(data.code) : "unauthenticated"),
+      credentialPresent: API_PIPELINE_CONTEXT.credentialPresent === true
+    });
+  }
 
   const output =
     ContentService

@@ -441,6 +441,12 @@ async function postRequestInternal(
     body.set('oauthClientId', activeOAuthClientId)
   }
 
+  const requestId = createRequestId(action)
+
+  if (action === 'session') {
+    body.set('requestId', requestId)
+  }
+
   if (action !== 'heartbeat' && action !== 'session') {
     invalidateAffectedCaches(action, params)
   }
@@ -473,7 +479,6 @@ async function postRequestInternal(
       idToken: body.get('idToken') ?? '',
     },
   )
-  const requestId = createRequestId(action)
   const requestStartedAt = new Date().toISOString()
   const requestDiagnosticBase = buildApiRequestDiagnostic({
     action,
@@ -492,6 +497,7 @@ async function postRequestInternal(
   if (action === 'session') {
     logSessionRequestForensic('request', {
       action,
+      credentialPresent: activeAuthToken !== '',
       method: 'POST',
       requestId,
       url: url.toString(),
@@ -727,6 +733,7 @@ function logSessionRequestForensic(
     httpStatus: details.status ?? '',
     responseContentType: details.contentType ?? '',
     responseBodyPreview: details.bodyPreview ?? '',
+    credentialPresent: details.credentialPresent ?? '',
     exceptionName: details.exceptionName ?? '',
     exceptionMessage: details.exceptionMessage ?? '',
     exceptionStack: details.exceptionStack ?? '',

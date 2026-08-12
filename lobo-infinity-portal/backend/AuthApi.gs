@@ -79,6 +79,17 @@ function getAuthSession(e) {
 
     setApiForensicAuthState(auth);
 
+    logAuthSessionCorrelation({
+      authenticationResult:
+        auth.authenticated
+          ? "authenticated"
+          : (auth.code || "unauthenticated"),
+      credentialPresent: !!(
+        e && e.parameter &&
+        (e.parameter.authToken || e.parameter.idToken || e.parameter.credential)
+      )
+    });
+
     return jsonOutput({
       success: true,
       authenticated: auth.authenticated,
@@ -731,6 +742,10 @@ function getRequestUser(e) {
 
   const token =
     tokenSelection.token;
+
+  logAuthSessionCorrelation({
+    credentialPresent: token !== ""
+  });
 
   const tokenFormat =
     tokenSelection.tokenFormat;
@@ -1428,6 +1443,10 @@ function activatePortalUser(sheet, columns, rowNumber) {
 }
 
 function verifyGoogleIdentityToken(token, requestClientId) {
+
+  logAuthSessionCorrelation({
+    credentialPresent: getAuthString(token) !== ""
+  });
 
   const forensicStart =
     enterApiForensicFunction(
