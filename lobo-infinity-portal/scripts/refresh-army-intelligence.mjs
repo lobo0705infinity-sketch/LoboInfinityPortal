@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-import { createHash } from 'node:crypto'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { createRequire } from 'node:module'
@@ -11,6 +10,7 @@ import {
 
 const require = createRequire(import.meta.url)
 const CanonicalSnapshotFactory = require('../backend/CanonicalSnapshotFactory.gs')
+const CanonicalSourceDiscovery = require('../backend/CanonicalSourceDiscovery.gs')
 
 const args = new Set(process.argv.slice(2))
 const options = parseArgs(process.argv.slice(2))
@@ -118,7 +118,6 @@ async function loadLiveSources(apiUrl) {
     getAction(apiUrl, 'events').catch(() => null),
   ])
 
-  const sources = []
   const eventIds = new Set()
   const eventNames = new Map()
 
@@ -133,76 +132,20 @@ async function loadLiveSources(apiUrl) {
     eventNames.set(events.currentEvent.id, events.currentEvent.name || '')
   }
 
-  for (const game of [...recentGames, ...casualGames, ...sourceIdCasualGames]) {
-    pushParticipantSource(sources, {
-      armyCode: game.winnerArmyCode,
-      date: game.date,
-      event: game.eventName || eventNames.get(game.eventId) || game.eventId || '',
-      faction: game.winnerFaction,
-      gameType: formatGameType(game.gameType),
-      mission: game.mission,
-      opponent: game.loserDisplayName || game.loser,
-      player: game.winnerDisplayName || game.winner,
-      result: String(game.gameResult || '').toLowerCase() === 'draw' ? 'Draw' : 'Win',
-      sectorial: game.winnerFaction,
-      sourceId: game.id,
-      sourcePlayer: 'winner',
-      sourceType: game.gameType === 'casual' ? 'casual' : 'league',
-    })
-    pushParticipantSource(sources, {
-      armyCode: game.loserArmyCode,
-      date: game.date,
-      event: game.eventName || eventNames.get(game.eventId) || game.eventId || '',
-      faction: game.loserFaction,
-      gameType: formatGameType(game.gameType),
-      mission: game.mission,
-      opponent: game.winnerDisplayName || game.winner,
-      player: game.loserDisplayName || game.loser,
-      result: String(game.gameResult || '').toLowerCase() === 'draw' ? 'Draw' : 'Loss',
-      sectorial: game.loserFaction,
-      sourceId: game.id,
-      sourcePlayer: 'loser',
-      sourceType: game.gameType === 'casual' ? 'casual' : 'league',
-    })
-  }
-
+  const tournamentResults = []
   for (const eventId of eventIds) {
     const payload = await getAction(apiUrl, 'teamTournament', { eventId }).catch(() => null)
     for (const result of payload?.results || []) {
-      pushParticipantSource(sources, {
-        armyCode: result.player1ArmyCode,
-        date: result.createdAt || result.updatedAt,
-        event: eventNames.get(eventId) || eventId,
-        faction: result.winningFaction,
-        gameType: 'Tournament',
-        mission: result.mission,
-        opponent: result.opponent,
-        player: result.player,
-        result: tournamentResult(result, result.player),
-        sectorial: result.winningFaction,
-        sourceId: result.resultId,
-        sourcePlayer: 'player1',
-        sourceType: 'tournament',
-      })
-      pushParticipantSource(sources, {
-        armyCode: result.player2ArmyCode,
-        date: result.createdAt || result.updatedAt,
-        event: eventNames.get(eventId) || eventId,
-        faction: '',
-        gameType: 'Tournament',
-        mission: result.mission,
-        opponent: result.player,
-        player: result.opponent,
-        result: tournamentResult(result, result.opponent),
-        sectorial: '',
-        sourceId: result.resultId,
-        sourcePlayer: 'player2',
-        sourceType: 'tournament',
-      })
+      tournamentResults.push({ eventId, eventName: eventNames.get(eventId) || '', result })
     }
   }
 
-  return uniqueSources(sources)
+  return CanonicalSourceDiscovery.discover(nodeDiscoveryOptions({
+    deduplicateGames: false,
+    eventNames,
+    games: [...recentGames, ...casualGames, ...sourceIdCasualGames],
+    tournamentResults,
+  }))
 }
 
 async function loadSnapshotState(apiUrl) {
@@ -281,41 +224,22 @@ function readAuthToken(options) {
   return String(options.authToken || process.env.LOBO_GOOGLE_ID_TOKEN || process.env.GOOGLE_ID_TOKEN || '').trim()
 }
 
-function pushParticipantSource(sources, source) {
-  const armyCode = String(source.armyCode || '').trim()
-  if (!armyCode) return
-
-  const armyCodeHash = sha256(armyCode)
-  const player = String(source.player || '').trim()
-  const sourceType = String(source.sourceType || '').trim()
-  const sourceId = String(source.sourceId || '').trim()
-  const sourcePlayer = String(source.sourcePlayer || '').trim()
-
-  sources.push({
-    ...source,
-    armyCode,
-    armyCodeHash,
-    player,
-    snapshotKey: [
-      sourceType,
-      sourceId,
-      sourcePlayer,
-      slugKey(player),
-      armyCodeHash,
-    ].join(':'),
-    sourceId,
-    sourcePlayer,
-    sourceType,
-  })
-}
-
-function uniqueSources(sources) {
-  const seen = new Set()
-  return sources.filter((source) => {
-    if (seen.has(source.snapshotKey)) return false
-    seen.add(source.snapshotKey)
-    return true
-  })
+function nodeDiscoveryOptions({ deduplicateGames, eventNames, games, tournamentResults }) {
+  return {
+    deduplicateGames,
+    formatGameType,
+    games,
+    hashArmyCode: sha256,
+    includeArmyListId: false,
+    normalizeAll: false,
+    normalizeKey: slugKey,
+    normalizeString: (value) => String(value || '').trim(),
+    resolveArmyCode: (game, side) => side === 'winner' ? game.winnerArmyCode : game.loserArmyCode,
+    resolveEventName: (game) => game.eventName || eventNames.get(game.eventId) || game.eventId || '',
+    sources: [],
+    tournamentResult,
+    tournamentResults,
+  }
 }
 
 function matchesSourceFilters(source, filters) {
@@ -326,8 +250,13 @@ function matchesSourceFilters(source, filters) {
 }
 
 function fixtureSources() {
-  const sources = []
-  pushParticipantSource(sources, {
+  const discoveryOptions = nodeDiscoveryOptions({
+    deduplicateGames: false,
+    eventNames: new Map(),
+    games: [],
+    tournamentResults: [],
+  })
+  discoveryOptions.sources = [{
     armyCode: 'gr8Kb3BlcmF0aW9ucwhGb3IgV29ya4EsAgEBAAUAhK0BAgAAhusBAgAAh2oBBQAAgkgBBgAAh1IBAQACAQAKAIJQAQEAAIJTAQEAAIJTAQEAADIBAQAAh28CAQAAh28CAQAAh28BAgAAh0YBAgAAglQBAQAAh2YBAgA%3D',
     date: '2026-07-03',
     event: 'Fixture',
@@ -341,8 +270,8 @@ function fixtureSources() {
     sourceId: 'fixture-1',
     sourcePlayer: 'winner',
     sourceType: 'league',
-  })
-  return sources
+  }]
+  return CanonicalSourceDiscovery.discover(discoveryOptions)
 }
 
 async function readApiUrl() {
@@ -388,7 +317,7 @@ function tournamentResult(result, player) {
 }
 
 function sha256(value) {
-  return createHash('sha256').update(String(value)).digest('hex')
+  return require('node:crypto').createHash('sha256').update(String(value)).digest('hex')
 }
 
 function slugKey(value) {

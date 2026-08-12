@@ -652,38 +652,10 @@ function buildDeterministicArmyIntelligenceArmyLists(lists) {
 
 function buildArmyIntelligenceSources() {
 
-  const sources = [];
   const armyListsById =
     getArmyIntelligenceSourceListLookup();
   const armyListsByPlayerAndFaction =
     getArmyIntelligencePlayerFactionListLookup(armyListsById);
-
-  appendArmyIntelligenceRecentGameSources(
-    sources,
-    armyListsById,
-    armyListsByPlayerAndFaction
-  );
-
-  const seen = {};
-
-  return sources.filter(function(source) {
-    if (!source.armyCode)
-      return false;
-
-    if (seen[source.snapshotKey])
-      return false;
-
-    seen[source.snapshotKey] = true;
-    return true;
-  });
-
-}
-
-function appendArmyIntelligenceRecentGameSources(
-  sources,
-  armyListsById,
-  armyListsByPlayerAndFaction
-) {
 
   const games =
     typeof getAllRecentGameObjects === "function"
@@ -695,80 +667,33 @@ function appendArmyIntelligenceRecentGameSources(
       ? getAllRecentGameObjectsForEvent("all", "casual")
       : [];
 
-  const seenGames = {};
-
-  games
-    .concat(casualGames)
-    .filter(function(game) {
-      const key =
-        [
-          getArmyIntelligenceString(game.id),
-          getArmyIntelligenceString(game.gameType)
-        ].join(":");
-
-      if (seenGames[key])
-        return false;
-
-      seenGames[key] = true;
-      return true;
-    })
-    .forEach(function(game) {
-      appendArmyIntelligenceParticipantSource(sources, {
-        armyCode:
-          getArmyIntelligenceGameArmyCode(
-            game.winnerArmyCode,
-            game.winnerArmyListId,
-            armyListsById,
-            game.winnerDisplayName || game.winner,
-            game.winnerFaction,
-            armyListsByPlayerAndFaction
-          ),
-        armyListId: game.winnerArmyListId,
-        date: game.date,
-        event: game.eventName || game.eventId || "",
-        faction: game.winnerFaction,
-        gameType: formatArmyIntelligenceGameType(game.gameType),
-        mission: game.mission,
-        opponent: game.loserDisplayName || game.loser,
-        player: game.winnerDisplayName || game.winner,
-        result:
-          getArmyIntelligenceString(game.gameResult).toLowerCase() === "draw"
-            ? "Draw"
-            : "Win",
-        sectorial: game.winnerFaction,
-        sourceId: game.id,
-        sourcePlayer: "winner",
-        sourceType: game.gameType === "casual" ? "casual" : "league"
-      });
-
-      appendArmyIntelligenceParticipantSource(sources, {
-        armyCode:
-          getArmyIntelligenceGameArmyCode(
-            game.loserArmyCode,
-            game.loserArmyListId,
-            armyListsById,
-            game.loserDisplayName || game.loser,
-            game.loserFaction,
-            armyListsByPlayerAndFaction
-          ),
-        armyListId: game.loserArmyListId,
-        date: game.date,
-        event: game.eventName || game.eventId || "",
-        faction: game.loserFaction,
-        gameType: formatArmyIntelligenceGameType(game.gameType),
-        mission: game.mission,
-        opponent: game.winnerDisplayName || game.winner,
-        player: game.loserDisplayName || game.loser,
-        result:
-          getArmyIntelligenceString(game.gameResult).toLowerCase() === "draw"
-            ? "Draw"
-            : "Loss",
-        sectorial: game.loserFaction,
-        sourceId: game.id,
-        sourcePlayer: "loser",
-        sourceType: game.gameType === "casual" ? "casual" : "league"
-      });
-    });
+  return CanonicalSourceDiscovery.discover({
+    deduplicateGames: true,
+    formatGameType: formatArmyIntelligenceGameType,
+    games: games.concat(casualGames),
+    hashArmyCode: getArmyIntelligenceHash,
+    includeArmyListId: true,
+    normalizeAll: true,
+    normalizeKey: normalizeArmyIntelligenceKeyPart,
+    normalizeString: getArmyIntelligenceString,
+    resolveArmyCode: function(game, side, player, faction) {
+      return getArmyIntelligenceGameArmyCode(
+        side === "winner" ? game.winnerArmyCode : game.loserArmyCode,
+        side === "winner" ? game.winnerArmyListId : game.loserArmyListId,
+        armyListsById,
+        player,
+        faction,
+        armyListsByPlayerAndFaction
+      );
+    },
+    resolveEventName: function(game) {
+      return game.eventName || game.eventId || "";
+    },
+    tournamentResult: function() {
+      return "";
+    },
+    tournamentResults: []
+  });
 
 }
 
@@ -884,59 +809,6 @@ function syncLegacyArmyIntelligenceSnapshotsForCurrentSources() {
     sourceCount: sources.length,
     updated: 0
   };
-
-}
-
-function appendArmyIntelligenceParticipantSource(sources, source) {
-
-  const armyCode =
-    getArmyIntelligenceString(source.armyCode);
-
-  if (!armyCode)
-    return;
-
-  const armyCodeHash =
-    getArmyIntelligenceHash(armyCode);
-
-  const sourceType =
-    getArmyIntelligenceString(source.sourceType);
-
-  const sourceId =
-    getArmyIntelligenceString(source.sourceId);
-
-  const sourcePlayer =
-    getArmyIntelligenceString(source.sourcePlayer);
-
-  const player =
-    getArmyIntelligenceString(source.player);
-
-  const snapshotKey =
-    [
-      sourceType,
-      sourceId,
-      sourcePlayer,
-      normalizeArmyIntelligenceKeyPart(player),
-      armyCodeHash
-    ].join(":");
-
-  sources.push({
-    armyCode: armyCode,
-    armyCodeHash: armyCodeHash,
-    armyListId: getArmyIntelligenceString(source.armyListId),
-    date: getArmyIntelligenceString(source.date),
-    event: getArmyIntelligenceString(source.event),
-    faction: getArmyIntelligenceString(source.faction),
-    gameType: getArmyIntelligenceString(source.gameType),
-    mission: getArmyIntelligenceString(source.mission),
-    opponent: getArmyIntelligenceString(source.opponent),
-    player: player,
-    result: getArmyIntelligenceString(source.result),
-    sectorial: getArmyIntelligenceString(source.sectorial),
-    snapshotKey: snapshotKey,
-    sourceId: sourceId,
-    sourcePlayer: sourcePlayer,
-    sourceType: sourceType
-  });
 
 }
 
