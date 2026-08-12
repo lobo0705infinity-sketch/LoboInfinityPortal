@@ -10,6 +10,7 @@ import {
 const require = createRequire(import.meta.url)
 const CanonicalSnapshotFactory = require('../backend/CanonicalSnapshotFactory.gs')
 const CanonicalSourceDiscovery = require('../backend/CanonicalSourceDiscovery.gs')
+const CanonicalArmyCodeResolver = require('../backend/CanonicalArmyCodeResolver.gs')
 
 const DEFAULT_REFRESH_BATCH_LIMIT = 4
 
@@ -289,7 +290,11 @@ function nodeDiscoveryOptions({ deduplicateGames, eventNames, games, tournamentR
     normalizeAll: false,
     normalizeKey: slugKey,
     normalizeString: (value) => String(value || '').trim(),
-    resolveArmyCode: (game, side) => side === 'winner' ? game.winnerArmyCode : game.loserArmyCode,
+    resolveArmyCode: (game, side) => CanonicalArmyCodeResolver.resolveGameSideCode(
+      game,
+      side,
+      (value) => String(value || '').trim(),
+    ),
     resolveEventName: (game) => game.eventName || eventNames.get(game.eventId) || game.eventId || '',
     tournamentResult,
     tournamentResults,

@@ -1623,19 +1623,16 @@ function appendCanonicalGameSubmittedArmyList(lookup, game, side) {
   const isWinner =
     side === "winner";
 
-  const armyCode =
-    getArmyListString(
-      isWinner
-        ? game.winnerArmyCode
-        : game.loserArmyCode
-    );
+  const resolved =
+    CanonicalArmyCodeResolver.resolveSubmittedArmyList({
+      game: game,
+      normalizeNumber: getArmyListNumber,
+      normalizeString: getArmyListString,
+      side: side
+    });
 
-  const armyListId =
-    getArmyListNumber(
-      isWinner
-        ? game.winnerArmyListId
-        : game.loserArmyListId
-    );
+  const armyCode = resolved.armyCode;
+  const armyListId = resolved.armyListId;
 
   if (!armyCode && !armyListId)
     return;
@@ -1666,13 +1663,7 @@ function appendCanonicalGameSubmittedArmyList(lookup, game, side) {
       ? CanonicalDecoderGateway.decode(armyCode)
       : null;
 
-  const id =
-    armyListId ||
-    (
-      armyCode
-        ? buildCanonicalGameSubmittedArmyListId(game, side)
-        : 0
-    );
+  const id = resolved.id;
 
   if (!id)
     return;
@@ -1831,60 +1822,39 @@ function buildCanonicalGameSubmittedArmyListValidation(
 
 function buildCanonicalGameSubmittedArmyListId(game, side) {
 
-  const armyCode =
-    getArmyListString(
-      side === "winner"
-        ? game.winnerArmyCode
-        : game.loserArmyCode
-    );
-
-  if (armyCode)
-    return buildCanonicalArmyCodeArmyListId(armyCode);
-
-  return buildCanonicalGameSideArmyListId(
-    game,
-    side
-  );
+  return CanonicalArmyCodeResolver.resolveSubmittedArmyList({
+    game: game,
+    normalizeNumber: getArmyListNumber,
+    normalizeString: getArmyListString,
+    side: side
+  }).id;
 
 }
 
 function buildCanonicalArmyCodeArmyListId(armyCode) {
 
-  const identity =
-    normalizeCanonicalArmyListCode(armyCode);
-
-  if (!identity)
-    return 0;
-
-  let hash = 5381;
-
-  for (let index = 0; index < identity.length; index++)
-    hash = (hash * 33) ^ identity.charCodeAt(index);
-
-  return 800000000 + (hash >>> 0);
+  return CanonicalArmyCodeResolver.buildArmyCodeId(
+    armyCode,
+    getArmyListString
+  );
 
 }
 
 function normalizeCanonicalArmyListCode(value) {
 
-  return getArmyListString(value)
-    .replace(/\s+/g, "")
-    .replace(/-/g, "")
-    .replace(/_/g, "");
+  return CanonicalArmyCodeResolver.normalizeSubmittedCodeIdentity(
+    value,
+    getArmyListString
+  );
 
 }
 
 function buildCanonicalGameSideArmyListId(game, side) {
 
-  const sideOffset =
-    side === "winner"
-      ? 1
-      : 2;
-
-  return (
-    900000000 +
-    getArmyListNumber(game.sourceIndex || game.id) * 2 +
-    sideOffset
+  return CanonicalArmyCodeResolver.buildGameSideId(
+    game,
+    side,
+    getArmyListNumber
   );
 
 }

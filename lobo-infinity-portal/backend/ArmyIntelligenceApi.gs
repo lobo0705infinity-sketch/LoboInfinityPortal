@@ -655,7 +655,10 @@ function buildArmyIntelligenceSources() {
   const armyListsById =
     getArmyIntelligenceSourceListLookup();
   const armyListsByPlayerAndFaction =
-    getArmyIntelligencePlayerFactionListLookup(armyListsById);
+    CanonicalArmyCodeResolver.buildPlayerFactionLookup(
+      armyListsById,
+      getArmyIntelligencePlayerFactionKey
+    );
 
   const games =
     typeof getAllRecentGameObjects === "function"
@@ -677,14 +680,20 @@ function buildArmyIntelligenceSources() {
     normalizeKey: normalizeArmyIntelligenceKeyPart,
     normalizeString: getArmyIntelligenceString,
     resolveArmyCode: function(game, side, player, faction) {
-      return getArmyIntelligenceGameArmyCode(
-        side === "winner" ? game.winnerArmyCode : game.loserArmyCode,
-        side === "winner" ? game.winnerArmyListId : game.loserArmyListId,
-        armyListsById,
-        player,
-        faction,
-        armyListsByPlayerAndFaction
-      );
+      return CanonicalArmyCodeResolver.resolveWithFallback({
+        armyListId: side === "winner" ? game.winnerArmyListId : game.loserArmyListId,
+        directCode: CanonicalArmyCodeResolver.resolveGameSideCode(
+          game,
+          side,
+          getArmyIntelligenceString
+        ),
+        faction: faction,
+        getPlayerFactionKey: getArmyIntelligencePlayerFactionKey,
+        listsById: armyListsById,
+        normalizeString: getArmyIntelligenceString,
+        player: player,
+        playerFactionLookup: armyListsByPlayerAndFaction
+      });
     },
     resolveEventName: function(game) {
       return game.eventName || game.eventId || "";
@@ -694,93 +703,6 @@ function buildArmyIntelligenceSources() {
     },
     tournamentResults: []
   });
-
-}
-
-function getArmyIntelligenceGameArmyCode(
-  value,
-  armyListId,
-  armyListsById,
-  player,
-  faction,
-  armyListsByPlayerAndFaction
-) {
-
-  const direct =
-    getArmyIntelligenceString(value);
-
-  if (direct)
-    return direct;
-
-  const id =
-    getArmyIntelligenceString(armyListId);
-
-  if (!id || !armyListsById || !armyListsById[id])
-    return getArmyIntelligencePlayerFactionArmyCode(
-      player,
-      faction,
-      armyListsByPlayerAndFaction
-    );
-
-  return getArmyIntelligenceString(
-    armyListsById[id].armyCode
-  );
-
-}
-
-function getArmyIntelligencePlayerFactionArmyCode(
-  player,
-  faction,
-  armyListsByPlayerAndFaction
-) {
-
-  const key =
-    getArmyIntelligencePlayerFactionKey(
-      player,
-      faction
-    );
-
-  if (
-    !key ||
-    !armyListsByPlayerAndFaction ||
-    !armyListsByPlayerAndFaction[key]
-  )
-    return "";
-
-  return getArmyIntelligenceString(
-    armyListsByPlayerAndFaction[key].armyCode
-  );
-
-}
-
-function getArmyIntelligencePlayerFactionListLookup(armyListsById) {
-
-  const lookup = {};
-
-  Object.keys(armyListsById || {})
-    .forEach(function(id) {
-      const list =
-        armyListsById[id];
-
-      if (!list || !list.armyCode)
-        return;
-
-      [
-        list.player,
-        list.playerDisplayName
-      ].forEach(function(player) {
-        const key =
-          getArmyIntelligencePlayerFactionKey(
-            player,
-            list.faction
-          );
-
-        if (key)
-          lookup[key] = list;
-      });
-    });
-
-  return lookup;
 
 }
 
