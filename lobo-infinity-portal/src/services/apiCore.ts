@@ -323,7 +323,15 @@ async function requestInternal(
   })
     .then(async (response) => {
       const responseText = await response.text()
-      const payload = parseApiResponseText(responseText, action)
+      const payload = parseApiResponseText(responseText, action, {
+        caller,
+        contentType: response.headers.get('content-type') ?? '',
+        fromCache: false,
+        method: 'GET',
+        requestId,
+        status: response.status,
+        url: redactUrl(url.toString()),
+      })
       requestFinished = true
       recordApiRequestFinished({
         ...requestDiagnosticBase,
@@ -515,9 +523,13 @@ async function postRequestInternal(
       })
     }
     payload = parseApiResponseText(responseText, action, {
+      caller,
+      contentType: response.headers.get('content-type') ?? '',
+      fromCache: false,
       method: 'POST',
       requestId,
-      url: url.toString(),
+      status: response.status,
+      url: redactUrl(url.toString()),
     })
   } catch (error) {
     const end = performance.now()
@@ -609,8 +621,12 @@ function parseApiResponseText(
   responseText: string,
   action: string,
   forensicContext: {
+    caller?: string
+    contentType?: string
+    fromCache?: boolean
     method?: string
     requestId?: string
+    status?: number
     url?: string
   } = {},
 ) {
@@ -626,6 +642,24 @@ function parseApiResponseText(
       },
     )
 
+    try {
+      logApiJsonParseException({
+        action,
+        bodyPreview: redactApiParseFailurePreview(responseText),
+        caller: forensicContext.caller ?? '',
+        contentType: forensicContext.contentType ?? '',
+        fromCache: forensicContext.fromCache === true,
+        method: forensicContext.method ?? '',
+        requestId: forensicContext.requestId ?? '',
+        stack: error instanceof Error ? error.stack || '' : parseException.stack || '',
+        status: forensicContext.status ?? 0,
+        timestamp: new Date().toISOString(),
+        url: forensicContext.url ?? '',
+      })
+    } catch {
+      // Observability must never alter the existing parse-failure behavior.
+    }
+
     if (action === 'session') {
       logSessionRequestForensic('responseParsingException', {
         action,
@@ -640,6 +674,44 @@ function parseApiResponseText(
 
     throw parseException
   }
+}
+
+function logApiJsonParseException(fields: {
+  action: string
+  bodyPreview: string
+  caller: string
+  contentType: string
+  fromCache: boolean
+  method: string
+  requestId: string
+  stack: string
+  status: number
+  timestamp: string
+  url: string
+}) {
+  Object.entries({
+    requestId: fields.requestId,
+    apiAction: fields.action,
+    requestUrl: fields.url,
+    httpMethod: fields.method,
+    httpStatus: fields.status,
+    responseContentType: fields.contentType,
+    responseFromCache: fields.fromCache,
+    responseBodyPreview: fields.bodyPreview,
+    exceptionStack: fields.stack,
+    callingFunction: fields.caller,
+    timestamp: fields.timestamp,
+  }).forEach(([field, value]) => {
+    console.error(`[api-json-parse-forensic]\n${field}=${String(value)}`)
+  })
+}
+
+function redactApiParseFailurePreview(responseText: string) {
+  return responseText
+    .slice(0, 200)
+    .replace(/(authToken|credential|idToken)=([^&\s"'<>]+)/gi, '$1=[REDACTED]')
+    .replace(/("(?:authToken|credential|idToken)"\s*:\s*")[^"]+/gi, '$1[REDACTED]')
+    .replace(/eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g, '[REDACTED_JWT]')
 }
 
 function logSessionRequestForensic(
