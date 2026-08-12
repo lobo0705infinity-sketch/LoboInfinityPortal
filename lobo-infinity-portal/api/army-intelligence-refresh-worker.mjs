@@ -2,10 +2,14 @@ import { createHash } from 'node:crypto'
 import { mkdtemp } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { createRequire } from 'node:module'
 import {
   ARMY_INTELLIGENCE_DECODER_VERSION,
   decodeArmyListToFiles,
 } from '../scripts/infinity-army-decode.mjs'
+
+const require = createRequire(import.meta.url)
+const CanonicalSnapshotFactory = require('../backend/CanonicalSnapshotFactory.gs')
 
 const DEFAULT_REFRESH_BATCH_LIMIT = 4
 
@@ -72,13 +76,14 @@ export default async function handler(request, response) {
           input: source.armyCode,
           outputDir,
         })
-        snapshots.push({
-          decoded: result.list,
-          decodedAt: new Date().toISOString(),
-          error: '',
-          snapshotKey: source.snapshotKey,
-          status: 'decoded',
-        })
+        snapshots.push(
+          CanonicalSnapshotFactory.createRefreshSnapshot(
+            source.snapshotKey,
+            result.list,
+            '',
+            'decoded',
+          ),
+        )
         processed.push({
           listName: result.list?.listName || source.mission || '',
           player: source.player,
@@ -96,13 +101,14 @@ export default async function handler(request, response) {
           snapshotKey: source.snapshotKey,
         }
         failures.push(failure)
-        snapshots.push({
-          decoded: null,
-          decodedAt: new Date().toISOString(),
-          error: message,
-          snapshotKey: source.snapshotKey,
-          status: 'failed',
-        })
+        snapshots.push(
+          CanonicalSnapshotFactory.createRefreshSnapshot(
+            source.snapshotKey,
+            null,
+            message,
+            'failed',
+          ),
+        )
         processed.push({
           ...failure,
           status: 'failed',

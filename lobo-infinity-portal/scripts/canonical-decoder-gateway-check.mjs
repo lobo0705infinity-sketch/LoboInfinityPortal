@@ -61,7 +61,7 @@ const callers = [
   ['Game Engine deterministic snapshots', 'backend/ArmyListApi.gs', 'buildArmyIntelligenceForGameEngineRows'],
   ['Game-submitted Army List registration', 'backend/ArmyListApi.gs', 'appendCanonicalGameSubmittedArmyList'],
   ['Approved Army Intelligence snapshots', 'backend/ArmyIntelligenceApi.gs', 'buildApprovedArmyListIntelligenceRows'],
-  ['Army Intelligence snapshot generation', 'backend/ArmyIntelligenceApi.gs', 'buildLegacyArmyIntelligenceSnapshot'],
+  ['Army Intelligence snapshot generation', 'backend/ArmyIntelligenceApi.gs', 'buildArmyIntelligenceListsFromCanonicalSources'],
   ['Team Tournament faction resolution', 'backend/TeamTournamentApi.gs', 'getTeamTournamentArmyCodeFaction'],
   ['Apps Script decoder test entry point', 'backend/ArmyDecoderApi.gs', 'testDecodeArmyCode'],
 ]

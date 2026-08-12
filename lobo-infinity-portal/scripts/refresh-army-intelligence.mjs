@@ -3,10 +3,14 @@
 import { createHash } from 'node:crypto'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { createRequire } from 'node:module'
 import {
   ARMY_INTELLIGENCE_DECODER_VERSION,
   decodeArmyListToFiles,
 } from './infinity-army-decode.mjs'
+
+const require = createRequire(import.meta.url)
+const CanonicalSnapshotFactory = require('../backend/CanonicalSnapshotFactory.gs')
 
 const args = new Set(process.argv.slice(2))
 const options = parseArgs(process.argv.slice(2))
@@ -51,26 +55,28 @@ for (const source of candidates) {
       outputDir: decodedDir,
     })
 
-    snapshots.push({
-      decoded: result.list,
-      decodedAt: new Date().toISOString(),
-      error: '',
-      snapshotKey: source.snapshotKey,
-      status: 'decoded',
-    })
+    snapshots.push(
+      CanonicalSnapshotFactory.createRefreshSnapshot(
+        source.snapshotKey,
+        result.list,
+        '',
+        'decoded',
+      ),
+    )
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
     failures.push({
       reason: message,
       snapshotKey: source.snapshotKey,
     })
-    snapshots.push({
-      decoded: null,
-      decodedAt: new Date().toISOString(),
-      error: message,
-      snapshotKey: source.snapshotKey,
-      status: 'failed',
-    })
+    snapshots.push(
+      CanonicalSnapshotFactory.createRefreshSnapshot(
+        source.snapshotKey,
+        null,
+        message,
+        'failed',
+      ),
+    )
   }
 }
 

@@ -256,8 +256,32 @@ function buildArmyIntelligenceListsFromCanonicalSources(knownArmyListCounts) {
 
   return buildArmyIntelligenceSources()
     .map(function(source) {
+      const decoded =
+        buildArmyDiagnosticDecode(
+          CanonicalDecoderGateway.decode(source.armyCode)
+        );
+
+      if (!decoded.success) {
+        Logger.log(
+          JSON.stringify({
+            armyListId: source.armyListId,
+            returnStatement: "return null after !decoded.success",
+            condition: "!decoded.success",
+            conditionResult: !decoded.success,
+            variables: {
+              decodedSuccess: decoded.success
+            }
+          })
+        );
+      }
+
       const snapshot =
-        buildLegacyArmyIntelligenceSnapshot(source);
+        CanonicalSnapshotFactory.createLegacySnapshot(
+          source,
+          decoded,
+          buildDeterministicArmyIntelligenceDecodedEntry,
+          getArmyIntelligenceString
+        );
 
       if (!snapshot) {
         Logger.log(
@@ -273,28 +297,20 @@ function buildArmyIntelligenceListsFromCanonicalSources(knownArmyListCounts) {
 
         return mergeArmyIntelligenceSourceAndSnapshot(
           source,
-          {
-            armyCodeHash: source.armyCodeHash,
-            decodedAt: "",
-            decodedJson: "",
-            error: "Army Code could not be decoded.",
-            snapshotKey: source.snapshotKey,
-            status: "failed"
-          },
+          CanonicalSnapshotFactory.createLegacyStorageSnapshot(
+            source,
+            snapshot
+          ),
           knownArmyListCounts
         );
       }
 
       return mergeArmyIntelligenceSourceAndSnapshot(
         source,
-        {
-          armyCodeHash: source.armyCodeHash,
-          decodedAt: snapshot.decodedAt,
-          decodedJson: JSON.stringify(snapshot.decoded),
-          error: snapshot.error,
-          snapshotKey: source.snapshotKey,
-          status: snapshot.status
-        },
+        CanonicalSnapshotFactory.createLegacyStorageSnapshot(
+          source,
+          snapshot
+        ),
         knownArmyListCounts
       );
     });
@@ -399,7 +415,7 @@ function buildApprovedArmyListIntelligenceRows() {
       rows.push(
         buildArmyIntelligenceRow(
           list,
-          buildArmyDiagnosticSnapshot(
+          CanonicalSnapshotFactory.createDeterministicSnapshot(
             list,
             decoded
           )
@@ -868,99 +884,6 @@ function syncLegacyArmyIntelligenceSnapshotsForCurrentSources() {
     sourceCount: sources.length,
     updated: 0
   };
-
-}
-
-function buildLegacyArmyIntelligenceSnapshot(source) {
-
-  const decoded =
-    buildArmyDiagnosticDecode(
-      CanonicalDecoderGateway.decode(source.armyCode)
-    );
-
-  if (!decoded.success) {
-    Logger.log(
-      JSON.stringify({
-        armyListId: source.armyListId,
-        returnStatement: "return null after !decoded.success",
-        condition: "!decoded.success",
-        conditionResult: !decoded.success,
-        variables: {
-          decodedSuccess: decoded.success
-        }
-      })
-    );
-
-    return null;
-  }
-
-  return {
-    decoded: buildLegacyArmyIntelligenceDecodedList(decoded),
-    decodedAt: new Date().toISOString(),
-    error: "",
-    snapshotKey: source.snapshotKey,
-    status: "decoded"
-  };
-
-}
-
-function buildLegacyArmyIntelligenceDecodedList(decoded) {
-
-  const shared =
-    decoded.sharedDecode || {};
-
-  const entries =
-    (decoded.profiles || []).map(function(unit) {
-      return buildDeterministicArmyIntelligenceDecodedEntry(unit);
-    });
-
-  return {
-    armyCode: getArmyIntelligenceString(shared.raw || ""),
-    combatGroups:
-      buildLegacyArmyIntelligenceCombatGroups(entries),
-    decoderVersion: decoded.decoderVersion,
-    faction: shared.faction || "",
-    listName: shared.armyName || "",
-    orderCounts: {
-      impetuous: 0,
-      irregular: 0,
-      lieutenant: 0,
-      regular: decoded.unitCount || 0,
-      tacticalAwareness: 0
-    },
-    sectorial: shared.sectorial || shared.faction || "",
-    totals: {
-      combatGroups: shared.combatGroups || 0,
-      points: decoded.points || 0,
-      swc: decoded.swc || 0
-    },
-    units: entries
-  };
-
-}
-
-function buildLegacyArmyIntelligenceCombatGroups(entries) {
-
-  const groups = {};
-
-  entries.forEach(function(entry) {
-    const group =
-      Number(entry.combatGroup) || 1;
-
-    if (!groups[group])
-      groups[group] = [];
-
-    groups[group].push(entry);
-  });
-
-  return Object.keys(groups)
-    .sort()
-    .map(function(group) {
-      return {
-        combatGroup: Number(group),
-        entries: groups[group]
-      };
-    });
 
 }
 

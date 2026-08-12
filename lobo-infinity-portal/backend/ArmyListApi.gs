@@ -517,7 +517,7 @@ function diagnoseArmyList(e) {
     );
 
   const currentSnapshot =
-    buildArmyDiagnosticSnapshot(
+    CanonicalSnapshotFactory.createDeterministicSnapshot(
       source.list,
       decoded
     );
@@ -763,22 +763,6 @@ function buildArmyDiagnosticCombatGroups(profiles) {
 
 }
 
-function buildArmyDiagnosticSnapshot(list, decoded) {
-
-  return {
-    decoderVersion: decoded.decoderVersion,
-    id: "army-list-" + list.id,
-    timestamp: new Date().toISOString(),
-    generated: true,
-    source: "Army Lists sheet",
-    units: decoded.profiles,
-    unitCount: decoded.unitCount,
-    points: decoded.points,
-    swc: decoded.swc
-  };
-
-}
-
 function buildArmyIntelligenceForGameEngineRows(gameEngineRows) {
 
   const requiredIds =
@@ -839,7 +823,7 @@ function buildArmyIntelligenceForGameEngineRows(gameEngineRows) {
       );
 
     const snapshot =
-      buildArmyDiagnosticSnapshot(
+      CanonicalSnapshotFactory.createDeterministicSnapshot(
         list,
         decoded
       );
