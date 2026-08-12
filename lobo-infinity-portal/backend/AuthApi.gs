@@ -1534,10 +1534,14 @@ function verifyGoogleIdentityToken(token, requestClientId) {
         );
     }
     catch (fetchErr) {
-      logGoogleTokenVerificationFetchException(fetchErr);
+      const exception =
+        getGoogleTokenVerificationExceptionDiagnostics(fetchErr);
+
+      logGoogleTokenVerificationFetchException(exception);
 
       return buildGoogleTokenVerificationExceptionFailure(
-        tokenDiagnostics
+        tokenDiagnostics,
+        exception
       );
     }
 
@@ -1635,7 +1639,8 @@ function verifyGoogleIdentityToken(token, requestClientId) {
   catch (err) {
 
     return buildGoogleTokenVerificationExceptionFailure(
-      tokenDiagnostics
+      tokenDiagnostics,
+      getGoogleTokenVerificationExceptionDiagnostics(err)
     );
 
   }
@@ -1661,7 +1666,10 @@ function verifyGoogleIdentityToken(token, requestClientId) {
 
 }
 
-function buildGoogleTokenVerificationExceptionFailure(tokenDiagnostics) {
+function buildGoogleTokenVerificationExceptionFailure(
+  tokenDiagnostics,
+  exception
+) {
 
   return {
     valid: false,
@@ -1674,6 +1682,11 @@ function buildGoogleTokenVerificationExceptionFailure(tokenDiagnostics) {
         "AUTH_GOOGLE_TOKEN_VERIFICATION_EXCEPTION",
         "Google token verification threw an exception.",
         {
+          exception: exception || {
+            name: "Error",
+            message: "",
+            stack: ""
+          },
           token: tokenDiagnostics
         }
       )
@@ -1681,7 +1694,38 @@ function buildGoogleTokenVerificationExceptionFailure(tokenDiagnostics) {
 
 }
 
-function logGoogleTokenVerificationFetchException(err) {
+function getGoogleTokenVerificationExceptionDiagnostics(err) {
+
+  return {
+    name:
+      err && err.name
+        ? redactGoogleCredentialFromExceptionText(err.name)
+        : "Error",
+    message:
+      redactGoogleCredentialFromExceptionText(
+        err && err.message
+          ? err.message
+          : err
+      ),
+    stack:
+      redactGoogleCredentialFromExceptionText(
+        err && err.stack
+          ? err.stack
+          : ""
+      )
+  };
+
+}
+
+function redactGoogleCredentialFromExceptionText(value) {
+
+  return String(value === undefined || value === null ? "" : value)
+    .replace(/(id_token=)[^&\s]+/gi, "$1[REDACTED]")
+    .replace(/eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g, "[REDACTED_JWT]");
+
+}
+
+function logGoogleTokenVerificationFetchException(exception) {
 
   const diagnostic = {
     requestId:
@@ -1690,20 +1734,7 @@ function logGoogleTokenVerificationFetchException(err) {
         : "",
     stage: "googleTokenVerification.tokeninfoFetch",
     code: "AUTH_GOOGLE_TOKEN_VERIFICATION_EXCEPTION",
-    exception: {
-      name:
-        err && err.name
-          ? String(err.name)
-          : "Error",
-      message:
-        err && err.message
-          ? String(err.message)
-          : String(err),
-      stack:
-        err && err.stack
-          ? String(err.stack)
-          : ""
-    },
+    exception: exception,
     timestamp: new Date().toISOString()
   };
 
