@@ -481,6 +481,17 @@ async function postRequestInternal(
   let responseText = ''
   let payload: unknown
 
+  if (action === 'session') {
+    logSessionRequestForensic('request', {
+      body: sanitizeSessionRequestBody(body),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
+      method: 'POST',
+      url: url.toString(),
+    })
+  }
+
   try {
     response = await fetch(url, {
       body,
@@ -488,6 +499,16 @@ async function postRequestInternal(
       signal: options.signal,
     })
     responseText = await response.text()
+    if (action === 'session') {
+      logSessionRequestForensic('response', {
+        bodyPrefix: responseText.slice(0, 200),
+        contentType: response.headers.get('content-type') ?? '',
+        status: response.status,
+      })
+      logSessionRequestForensic('responseParsing', {
+        begins: true,
+      })
+    }
     payload = parseApiResponseText(responseText, action)
   } catch (error) {
     const end = performance.now()
@@ -579,7 +600,7 @@ function parseApiResponseText(responseText: string, action: string) {
   try {
     return JSON.parse(responseText) as unknown
   } catch (error) {
-    throw new Error(
+    const parseException = new Error(
       `${action} response could not be parsed as JSON: ${
         error instanceof Error ? error.message : String(error)
       }`,
@@ -587,7 +608,38 @@ function parseApiResponseText(responseText: string, action: string) {
         cause: error,
       },
     )
+
+    if (action === 'session') {
+      logSessionRequestForensic('responseParsingException', {
+        exception: parseException.stack || parseException.message,
+      })
+    }
+
+    throw parseException
   }
+}
+
+function sanitizeSessionRequestBody(body: URLSearchParams) {
+  const sanitized = new URLSearchParams(body)
+
+  ;['authToken', 'credential', 'idToken'].forEach((field) => {
+    if (sanitized.has(field)) {
+      sanitized.set(field, '[REDACTED]')
+    }
+  })
+
+  return sanitized.toString()
+}
+
+function logSessionRequestForensic(
+  stage: string,
+  details: Record<string, unknown>,
+) {
+  console.info('[auth-session-forensic]', {
+    stage,
+    timestamp: new Date().toISOString(),
+    ...details,
+  })
 }
 
 function readApiPayloadError(payload: unknown) {

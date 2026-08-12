@@ -575,7 +575,14 @@ function AuthProvider({ children }: { children: ReactNode }) {
       ),
       persistCredential: (value) =>
         window.localStorage.setItem(authStorageKey, value),
-      requestSession: () => getSession(),
+      requestSession: () => {
+        console.info('[auth-session-forensic]', {
+          caller: 'AuthContext.applyCredential',
+          stage: 'sessionRequestEntered',
+          timestamp: new Date().toISOString(),
+        })
+        return getSession()
+      },
       shouldInvalidateCredential: shouldClearStoredAuthToken,
       startedAt: start,
       synchronizeIdentity: synchronizeSessionIdentity,
@@ -823,7 +830,14 @@ function AuthProvider({ children }: { children: ReactNode }) {
       })),
       readPersistedCredential: () =>
         window.localStorage.getItem(authStorageKey) ?? '',
-      requestSession: () => getSession(),
+      requestSession: () => {
+        console.info('[auth-session-forensic]', {
+          caller: 'AuthContext.refreshSession',
+          stage: 'sessionRequestEntered',
+          timestamp: new Date().toISOString(),
+        })
+        return getSession()
+      },
       shouldInvalidateCredential: shouldClearStoredAuthToken,
       startedAt: start,
       synchronizeIdentity: synchronizeSessionIdentity,
