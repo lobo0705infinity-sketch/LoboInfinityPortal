@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
   type ReactNode,
+  type SetStateAction,
 } from 'react'
 import {
   type AuthSession,
@@ -37,6 +38,7 @@ import {
   synchronizeIdentity,
   type UnifiedIdentityReport,
 } from '../services/identity/IdentityService'
+import { CanonicalSessionLifecycleCoordinator } from './CanonicalSessionLifecycleCoordinator'
 import { isLikelyGoogleJwt } from './googleJwt'
 
 type GoogleCredentialResponse = {
@@ -442,6 +444,34 @@ function AuthProvider({ children }: { children: ReactNode }) {
     })
   }, [recordAuthFlowEvent, session.authenticated, session.code, session.stage, updateAuthFlowDiagnostics])
 
+  const clearSessionIdentity = useCallback(() => {
+    setIdentity(null)
+    clearCachedIdentityReport()
+  }, [])
+
+  const synchronizeSessionIdentity = useCallback(async (
+    nextSession: AuthSession,
+    credential: string,
+  ) => {
+    const report = await synchronizeIdentity(nextSession, credential)
+    setIdentity(report)
+    recordClientDiagnostic(
+      'identitySynchronization',
+      report.synchronized ? 'success' : 'failure',
+      0,
+      `${report.identityHealth}:${report.mismatches[0] || 'synchronized'}`,
+    )
+  }, [])
+
+  const transitionSessionState = useCallback((
+    transition: SetStateAction<AuthSession>,
+    reason: string,
+  ) => {
+    pendingStateUpdateAtRef.current = performance.now()
+    authTransitionReasonRef.current = reason
+    setSession(transition)
+  }, [])
+
   const applyCredential = useCallback(async (credential: string) => {
     const start = performance.now()
     retryCountRef.current += 1
@@ -488,76 +518,47 @@ function AuthProvider({ children }: { children: ReactNode }) {
       setStatus('ready')
       return
     }
-    setStatus('loading')
-    recordClientDiagnostic('oauth', 'attempt', 0, 'credential_received')
-    window.localStorage.setItem(authStorageKey, credential)
-    recordCredentialBoundary('localStorageCredentialWritten', credential, {
-      storageKey: authStorageKey,
-    })
-    recordCredentialBoundary('setApiAuthTokenFromApplyCredential', credential)
-    setApiAuthToken(credential)
-
-    try {
-      const nextSession = await getSession()
-      recordClientDiagnostic(
-        'oauth',
-        nextSession.authenticated ? 'success' : 'failure',
-        performance.now() - start,
-        `${nextSession.stage || 'session'}:${nextSession.code || 'NO_CODE'}`,
-      )
-
-      if (
-        !nextSession.authenticated &&
-        shouldClearStoredAuthToken(nextSession.code)
-      ) {
-        authTransitionReasonRef.current = 'token_invalidation'
-        window.localStorage.removeItem(authStorageKey)
-        setApiAuthToken('')
-      }
-
-      if (!nextSession.authenticated) {
-        recordAuthFailure({
-          appsScriptRejectedCredential: Boolean(credential),
-          automaticBrowserRetry: false,
-          code: nextSession.code || 'AUTH_SESSION_REJECTED',
-          gisReturnedCredential: true,
-          message: nextSession.error || 'Apps Script rejected credential.',
-          retryCount,
-          stage: nextSession.stage || 'session',
-        })
-      }
-
-      if (nextSession.authenticated) {
-        const report = await synchronizeIdentity(nextSession, credential)
-        setIdentity(report)
-        recordClientDiagnostic(
-          'identitySynchronization',
-          report.synchronized ? 'success' : 'failure',
-          0,
-          `${report.identityHealth}:${report.mismatches[0] || 'synchronized'}`,
-        )
-      } else {
-        setIdentity(null)
-        clearCachedIdentityReport()
-      }
-
-      pendingStateUpdateAtRef.current = performance.now()
-      authTransitionReasonRef.current = nextSession.authenticated
-        ? 'google_sign_in'
-        : 'session_rejected'
-      setSession(nextSession)
-    } catch (error) {
-      recordClientDiagnostic(
+    await CanonicalSessionLifecycleCoordinator.createSession({
+      activateCredential: setApiAuthToken,
+      clearActiveCredential: () => setApiAuthToken(''),
+      clearIdentity: clearSessionIdentity,
+      clearPersistedCredential: () => window.localStorage.removeItem(authStorageKey),
+      credential,
+      guestUser,
+      lifecycleCompleted: (elapsedMs) => {
+        setInitialization((current) => ({
+          ...current,
+          completedAt: new Date().toISOString(),
+          googleCredentialMs: Math.round(elapsedMs),
+        }))
+        setStatus('ready')
+      },
+      lifecycleStarted: () => {
+        setStatus('loading')
+        recordClientDiagnostic('oauth', 'attempt', 0, 'credential_received')
+      },
+      onCredentialActivated: (value) =>
+        recordCredentialBoundary('setApiAuthTokenFromApplyCredential', value),
+      onCredentialPersisted: (value) =>
+        recordCredentialBoundary('localStorageCredentialWritten', value, {
+          storageKey: authStorageKey,
+        }),
+      onSessionRejected: (nextSession) => recordAuthFailure({
+        appsScriptRejectedCredential: Boolean(credential),
+        automaticBrowserRetry: false,
+        code: nextSession.code || 'AUTH_SESSION_REJECTED',
+        gisReturnedCredential: true,
+        message: nextSession.error || 'Apps Script rejected credential.',
+        retryCount,
+        stage: nextSession.stage || 'session',
+      }),
+      onSessionRequestException: (error, elapsedMs) => recordClientDiagnostic(
         'oauth',
         'failure',
-        performance.now() - start,
+        elapsedMs,
         error instanceof Error ? error.message : 'session_request_failed',
-      )
-      window.localStorage.removeItem(authStorageKey)
-      setApiAuthToken('')
-      setIdentity(null)
-      clearCachedIdentityReport()
-      recordAuthFailure({
+      ),
+      onSessionRequestFailed: (error) => recordAuthFailure({
         appsScriptRejectedCredential: false,
         automaticBrowserRetry: false,
         code: 'AUTH_SESSION_REQUEST_FAILED',
@@ -565,31 +566,28 @@ function AuthProvider({ children }: { children: ReactNode }) {
         message: error instanceof Error ? error.message : 'session_request_failed',
         retryCount,
         stage: 'frontendSession',
-      })
-      pendingStateUpdateAtRef.current = performance.now()
-      authTransitionReasonRef.current = 'session_request_failed'
-      setSession((current) => ({
-        ...current,
-        authenticated: false,
-        code: 'AUTH_SESSION_REQUEST_FAILED',
-        diagnostics: {},
-        error: error instanceof Error ? error.message : 'Session unavailable.',
-        permissions: {},
-        stage: 'frontendSession',
-        user: guestUser,
-      }))
-    } finally {
-      setInitialization((current) => ({
-        ...current,
-        completedAt: new Date().toISOString(),
-        googleCredentialMs: Math.round(performance.now() - start),
-      }))
-      setStatus('ready')
-    }
+      }),
+      onSessionResolved: (nextSession, elapsedMs) => recordClientDiagnostic(
+        'oauth',
+        nextSession.authenticated ? 'success' : 'failure',
+        elapsedMs,
+        `${nextSession.stage || 'session'}:${nextSession.code || 'NO_CODE'}`,
+      ),
+      persistCredential: (value) =>
+        window.localStorage.setItem(authStorageKey, value),
+      requestSession: () => getSession(),
+      shouldInvalidateCredential: shouldClearStoredAuthToken,
+      startedAt: start,
+      synchronizeIdentity: synchronizeSessionIdentity,
+      transitionSession: transitionSessionState,
+    })
   }, [
+    clearSessionIdentity,
     recordAuthFailure,
     recordAuthFlowEvent,
     recordCredentialBoundary,
+    synchronizeSessionIdentity,
+    transitionSessionState,
     updateAuthFlowDiagnostics,
   ])
 
@@ -763,19 +761,29 @@ function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshSession = useCallback(async () => {
     const start = performance.now()
-    refreshSessionRunningRef.current = true
-    setStatus('loading')
-    const storedToken = window.localStorage.getItem(authStorageKey) ?? ''
-    if (storedToken) {
-      recordCredentialBoundary('localStorageCredentialReadForRefresh', storedToken, {
-        storageKey: authStorageKey,
-      })
-      if (!isLikelyGoogleJwt(storedToken)) {
-        const storedTokenFormat = await getCredentialDiagnostics(storedToken)
-        window.localStorage.removeItem(authStorageKey)
-        setApiAuthToken('')
-        setIdentity(null)
-        clearCachedIdentityReport()
+    return CanonicalSessionLifecycleCoordinator.refreshSession({
+      activateCredential: setApiAuthToken,
+      clearActiveCredential: () => setApiAuthToken(''),
+      clearIdentity: clearSessionIdentity,
+      clearPersistedCredential: () => window.localStorage.removeItem(authStorageKey),
+      describeCredential: getCredentialDiagnostics,
+      guestUser,
+      isCredentialValid: isLikelyGoogleJwt,
+      lifecycleCompleted: () => {
+        refreshSessionRunningRef.current = false
+        setStatus('ready')
+      },
+      lifecycleStarted: () => {
+        refreshSessionRunningRef.current = true
+        setStatus('loading')
+      },
+      onCredentialActivated: (storedToken) =>
+        recordCredentialBoundary('setApiAuthTokenFromRefreshSession', storedToken),
+      onCredentialRead: (storedToken) =>
+        recordCredentialBoundary('localStorageCredentialReadForRefresh', storedToken, {
+          storageKey: authStorageKey,
+        }),
+      onInvalidStoredCredential: (storedTokenFormat, elapsedMs) => {
         recordAuthFlowEvent('invalidStoredTokenCleared', {
           storageKey: authStorageKey,
           token: storedTokenFormat,
@@ -783,120 +791,51 @@ function AuthProvider({ children }: { children: ReactNode }) {
         recordClientDiagnostic(
           'oauthRefresh',
           'failure',
-          performance.now() - start,
+          elapsedMs,
           'frontendStoredCredential:AUTH_GOOGLE_TOKEN_MALFORMED',
         )
-        pendingStateUpdateAtRef.current = performance.now()
-        authTransitionReasonRef.current = 'token_invalidation'
-        setSession((current) => ({
-          ...current,
-          authenticated: false,
-          code: '',
-          diagnostics: {},
-          error: '',
-          permissions: {},
-          stage: '',
-          user: guestUser,
-        }))
-        setInitialization((current) => ({
-          ...current,
-          completedAt: new Date().toISOString(),
-          sessionVerificationMs: Math.round(performance.now() - start),
-        }))
-        setStatus('ready')
-        refreshSessionRunningRef.current = false
-        return false
-      }
-      recordCredentialBoundary('setApiAuthTokenFromRefreshSession', storedToken)
-    }
-    setApiAuthToken(storedToken)
-
-    try {
-      const nextSession = await getSession()
-      recordClientDiagnostic(
-        'oauthRefresh',
-        nextSession.authenticated ? 'success' : 'failure',
-        performance.now() - start,
-        `${nextSession.stage || 'session'}:${nextSession.code || 'NO_CODE'}`,
-      )
-
-      if (
-        !nextSession.authenticated &&
-        shouldClearStoredAuthToken(nextSession.code)
-      ) {
-        authTransitionReasonRef.current = 'token_invalidation'
-        window.localStorage.removeItem(authStorageKey)
-        setApiAuthToken('')
-      }
-
-      if (nextSession.authenticated && storedToken) {
-        const report = await synchronizeIdentity(nextSession, storedToken)
-        setIdentity(report)
-        recordClientDiagnostic(
-          'identitySynchronization',
-          report.synchronized ? 'success' : 'failure',
-          0,
-          `${report.identityHealth}:${report.mismatches[0] || 'synchronized'}`,
-        )
-      } else {
-        setIdentity(null)
-        clearCachedIdentityReport()
-      }
-
-      pendingStateUpdateAtRef.current = performance.now()
-      authTransitionReasonRef.current = nextSession.authenticated
-        ? 'session_restored'
-        : nextSession.code === 'AUTH_GOOGLE_TOKEN_EXPIRED'
-          ? 'session_expiration'
-          : 'session_refresh_result'
-      setSession(nextSession)
-      setInitialization((current) => ({
-        ...current,
-        completedAt: new Date().toISOString(),
-        sessionVerificationMs: Math.round(performance.now() - start),
-      }))
-      return nextSession.authenticated
-    } catch (error) {
-      recordClientDiagnostic(
+      },
+      onSessionRequestException: (error, elapsedMs) => recordClientDiagnostic(
         'oauthRefresh',
         'failure',
-        performance.now() - start,
+        elapsedMs,
         error instanceof Error ? error.message : 'session_request_failed',
-      )
-      window.localStorage.removeItem(authStorageKey)
-      setApiAuthToken('')
-      setIdentity(null)
-      clearCachedIdentityReport()
-      recordAuthFailure({
+      ),
+      onSessionRequestFailed: (error, hadCredential) => recordAuthFailure({
         appsScriptRejectedCredential: false,
-        automaticBrowserRetry: Boolean(storedToken),
+        automaticBrowserRetry: hadCredential,
         code: 'AUTH_SESSION_REQUEST_FAILED',
-        gisReturnedCredential: Boolean(storedToken),
+        gisReturnedCredential: hadCredential,
         message: error instanceof Error ? error.message : 'session_request_failed',
         retryCount: retryCountRef.current,
         stage: 'frontendSessionRefresh',
-      })
-      pendingStateUpdateAtRef.current = performance.now()
-      authTransitionReasonRef.current = 'session_request_failed'
-      setSession((current) => ({
+      }),
+      onSessionResolved: (nextSession, elapsedMs) => recordClientDiagnostic(
+        'oauthRefresh',
+        nextSession.authenticated ? 'success' : 'failure',
+        elapsedMs,
+        `${nextSession.stage || 'session'}:${nextSession.code || 'NO_CODE'}`,
+      ),
+      onVerificationCompleted: (elapsedMs) => setInitialization((current) => ({
         ...current,
-        authenticated: false,
-        code: 'AUTH_SESSION_REQUEST_FAILED',
-        diagnostics: {},
-        error: error instanceof Error ? error.message : 'Session unavailable.',
-        permissions: {},
-        stage: 'frontendSession',
-        user: guestUser,
-      }))
-      return false
-    } finally {
-      refreshSessionRunningRef.current = false
-      setStatus('ready')
-    }
+        completedAt: new Date().toISOString(),
+        sessionVerificationMs: Math.round(elapsedMs),
+      })),
+      readPersistedCredential: () =>
+        window.localStorage.getItem(authStorageKey) ?? '',
+      requestSession: () => getSession(),
+      shouldInvalidateCredential: shouldClearStoredAuthToken,
+      startedAt: start,
+      synchronizeIdentity: synchronizeSessionIdentity,
+      transitionSession: transitionSessionState,
+    })
   }, [
+    clearSessionIdentity,
     recordAuthFailure,
     recordAuthFlowEvent,
     recordCredentialBoundary,
+    synchronizeSessionIdentity,
+    transitionSessionState,
   ])
 
   useEffect(() => {
@@ -966,24 +905,16 @@ function AuthProvider({ children }: { children: ReactNode }) {
   }, [ensureGoogleClientReady, recordAuthFlowEvent, refreshSession])
 
   const signOut = useCallback(() => {
-    authTransitionReasonRef.current = 'manual_sign_out'
-    window.localStorage.removeItem(authStorageKey)
-    setApiAuthToken('')
-    window.google?.accounts.id.cancel()
-    void signOutOfFirebase()
-    setIdentity(null)
-    clearCachedIdentityReport()
-    setSession((current) => ({
-      ...current,
-      authenticated: false,
-      code: '',
-      diagnostics: {},
-      error: '',
-      permissions: {},
-      stage: '',
-      user: guestUser,
-    }))
-  }, [])
+    CanonicalSessionLifecycleCoordinator.destroySession({
+      cancelGoogleIdentity: () => window.google?.accounts.id.cancel(),
+      clearActiveCredential: () => setApiAuthToken(''),
+      clearIdentity: clearSessionIdentity,
+      clearPersistedCredential: () => window.localStorage.removeItem(authStorageKey),
+      destroyExternalIdentity: () => void signOutOfFirebase(),
+      guestUser,
+      transitionSession: transitionSessionState,
+    })
+  }, [clearSessionIdentity, transitionSessionState])
 
   const renderSignInButton = useCallback((
     element: HTMLElement,

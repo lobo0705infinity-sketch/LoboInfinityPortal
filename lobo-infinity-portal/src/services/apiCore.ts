@@ -7,6 +7,7 @@ export type ApiOptions = {
 }
 
 import { isLikelyGoogleJwt } from '../auth/googleJwt'
+import { CanonicalSessionLifecycleCoordinator } from '../auth/CanonicalSessionLifecycleCoordinator'
 import {
   createRequestId,
   getCurrentRoute,
@@ -129,9 +130,6 @@ export const API_URL = import.meta.env.VITE_API_URL as string
 let activeAuthToken = ''
 let activeOAuthClientId = ''
 let activeAuthTokenVersion = 0
-let sessionRecoveryHandler: SessionRecoveryHandler | null = null
-let pendingSessionRecovery: Promise<boolean> | null = null
-
 const frontendCacheTtlMs = 300_000
 const clientCacheVersion = 'client-cache-v2'
 const clientCacheSchemaVersion = 1
@@ -207,7 +205,7 @@ export function getActiveApiAuthToken() {
 }
 
 export function setSessionRecoveryHandler(handler: SessionRecoveryHandler | null) {
-  sessionRecoveryHandler = handler
+  CanonicalSessionLifecycleCoordinator.registerRecoveryHandler(handler)
 }
 
 export function setApiOAuthClientId(clientId: string) {
@@ -545,17 +543,7 @@ async function postRequestInternal(
 }
 
 async function recoverExpiredSession() {
-  if (!sessionRecoveryHandler) {
-    return false
-  }
-
-  pendingSessionRecovery ??= sessionRecoveryHandler()
-    .catch(() => false)
-    .finally(() => {
-      pendingSessionRecovery = null
-    })
-
-  return pendingSessionRecovery
+  return CanonicalSessionLifecycleCoordinator.recoverSession()
 }
 
 function buildApiRequestDiagnostic({
