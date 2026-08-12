@@ -18,6 +18,7 @@ import {
 } from '../services/api'
 import { getSession, getSettings } from '../services/lightApi'
 import {
+  getActiveApiAuthToken,
   getActiveAuthTokenVersion,
   recordClientDiagnostic,
   setApiAuthToken,
@@ -764,11 +765,24 @@ function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshSession = useCallback(async () => {
     const start = performance.now()
+    const credentialAtRefreshStart =
+      window.localStorage.getItem(authStorageKey) ?? ''
     return CanonicalSessionLifecycleCoordinator.refreshSession({
       activateCredential: setApiAuthToken,
-      clearActiveCredential: () => setApiAuthToken(''),
+      clearActiveCredential: () => {
+        if (getActiveApiAuthToken() === credentialAtRefreshStart) {
+          setApiAuthToken('')
+        }
+      },
       clearIdentity: clearSessionIdentity,
-      clearPersistedCredential: () => window.localStorage.removeItem(authStorageKey),
+      clearPersistedCredential: () => {
+        if (
+          (window.localStorage.getItem(authStorageKey) ?? '') ===
+          credentialAtRefreshStart
+        ) {
+          window.localStorage.removeItem(authStorageKey)
+        }
+      },
       describeCredential: getCredentialDiagnostics,
       guestUser,
       isCredentialValid: isLikelyGoogleJwt,
@@ -824,8 +838,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
         completedAt: new Date().toISOString(),
         sessionVerificationMs: Math.round(elapsedMs),
       })),
-      readPersistedCredential: () =>
-        window.localStorage.getItem(authStorageKey) ?? '',
+      readPersistedCredential: () => credentialAtRefreshStart,
       requestSession: () => {
         logAuthContextSessionForensic('refreshSession.sessionRequestEntered')
         return getSession()
