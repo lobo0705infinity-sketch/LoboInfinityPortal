@@ -1671,25 +1671,32 @@ function buildGoogleTokenVerificationExceptionFailure(
   exception
 ) {
 
+  const preservedException =
+    exception || {
+      name: "Error",
+      message: "",
+      stack: ""
+    };
+
+  const diagnostics =
+    buildAuthDiagnostics(
+      "googleTokenVerification",
+      "AUTH_GOOGLE_TOKEN_VERIFICATION_EXCEPTION",
+      "Google token verification threw an exception.",
+      {
+        exception: preservedException,
+        token: tokenDiagnostics
+      }
+    );
+
+  diagnostics.exception = preservedException;
+
   return {
     valid: false,
     code: "AUTH_GOOGLE_TOKEN_VERIFICATION_EXCEPTION",
     stage: "googleTokenVerification",
     error: "Google credential verification failed unexpectedly.",
-    diagnostics:
-      buildAuthDiagnostics(
-        "googleTokenVerification",
-        "AUTH_GOOGLE_TOKEN_VERIFICATION_EXCEPTION",
-        "Google token verification threw an exception.",
-        {
-          exception: exception || {
-            name: "Error",
-            message: "",
-            stack: ""
-          },
-          token: tokenDiagnostics
-        }
-      )
+    diagnostics: diagnostics
   };
 
 }
