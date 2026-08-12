@@ -881,7 +881,7 @@ function getRequestUser(e) {
     isConfiguredCommissionerEmail(verified.email);
 
   const leagueIdentity =
-    getAuthLeagueIdentityByEmail(verified.email);
+    getAuthCanonicalPlayerIdentityByEmail(verified.email);
 
   let rowNumber =
     getUserRowNumber(

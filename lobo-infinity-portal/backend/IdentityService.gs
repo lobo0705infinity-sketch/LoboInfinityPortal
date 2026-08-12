@@ -106,43 +106,6 @@ function buildCanonicalPlayerIdentityByEmailMap(options) {
 
 }
 
-function getAuthLeagueIdentityByEmail(email) {
-
-  const forensicStart =
-    enterApiForensicFunction(
-      "getAuthLeagueIdentityByEmail",
-      "identityLookup",
-      {}
-    );
-
-  try {
-    return resolveCanonicalPlayerIdentityByEmail(
-      email,
-      {
-        includeInactive: true
-      }
-    );
-  }
-  catch (err) {
-    recordApiForensicException(
-      "getAuthLeagueIdentityByEmail",
-      "identityLookup",
-      forensicStart,
-      err
-    );
-    throw err;
-  }
-  finally {
-    exitApiForensicFunction(
-      "getAuthLeagueIdentityByEmail",
-      "identityLookup",
-      forensicStart,
-      {}
-    );
-  }
-
-}
-
 function getAuthCanonicalPlayerIdentityByEmail(email) {
 
   const forensicStart =
