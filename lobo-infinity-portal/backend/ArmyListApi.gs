@@ -295,9 +295,14 @@ function submitArmyList(e) {
     );
 
   const canOverride =
-    auth.authenticated &&
-    typeof userHasPermission === "function" &&
-    userHasPermission(auth.user.role, "viewOperations");
+    requireApiPermission(
+      e,
+      "viewOperations",
+      function() {
+        return true;
+      },
+      auth
+    ) === true;
 
   if (validation.suspicious && !(overrideRequested && canOverride)) {
     return jsonOutput({

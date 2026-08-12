@@ -401,6 +401,7 @@ function respondSchedulingRequest(e) {
 
   const result =
     updateSchedulingRequestStatus(
+      e,
       requestId,
       context,
       status,
@@ -2058,7 +2059,7 @@ function saveSchedulingRequestRecord(record) {
 
 }
 
-function updateSchedulingRequestStatus(requestId, context, status, responseMessage) {
+function updateSchedulingRequestStatus(e, requestId, context, status, responseMessage) {
 
   const sheet =
     ensureSchedulingRequestsSheet();
@@ -2088,7 +2089,14 @@ function updateSchedulingRequestStatus(requestId, context, status, responseMessa
       getSchedulingKey(context.participantKey) === getSchedulingKey(toPlayer);
 
     const canManage =
-      userHasPermission(context.auth.user.role, "viewOperations");
+      requireApiPermission(
+        e,
+        "viewOperations",
+        function() {
+          return true;
+        },
+        context.auth
+      ) === true;
 
     if (!isParticipant && !canManage)
       return {

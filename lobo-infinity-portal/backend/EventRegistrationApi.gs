@@ -47,7 +47,7 @@ function getEventRegistration(e) {
         registrations,
         currentPlayer,
         {
-          includeRegistrationDetails: canViewEventRegistrationDetails(auth)
+          includeRegistrationDetails: canViewEventRegistrationDetails(e, auth)
         }
       )
   });
@@ -566,14 +566,16 @@ function buildEventRegistrationPayload(event, registrations, currentPlayer, opti
 
 }
 
-function canViewEventRegistrationDetails(auth) {
+function canViewEventRegistrationDetails(e, auth) {
 
-  return (
-    auth &&
-    auth.authenticated &&
-    auth.user &&
-    userHasPermission(auth.user.role, "runSeasonControl")
-  );
+  return requireApiPermission(
+    e,
+    "runSeasonControl",
+    function() {
+      return true;
+    },
+    auth
+  ) === true;
 
 }
 

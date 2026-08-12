@@ -12,7 +12,7 @@ function submitLeagueResult(e) {
       getApiParameters(e);
 
     const commissionerContext =
-      getResultSubmissionCommissionerContext(auth, params);
+      getResultSubmissionCommissionerContext(e, auth, params);
 
     if (commissionerContext.error)
       return resultSubmissionFailure(commissionerContext.error);
@@ -49,7 +49,7 @@ function submitCasualResult(e) {
       getApiParameters(e);
 
     const commissionerContext =
-      getResultSubmissionCommissionerContext(auth, params);
+      getResultSubmissionCommissionerContext(e, auth, params);
 
     if (commissionerContext.error)
       return resultSubmissionFailure(commissionerContext.error);
@@ -424,7 +424,7 @@ function ensureResultSubmissionArmyListHeaders(sheet) {
 
 }
 
-function getResultSubmissionCommissionerContext(auth, params) {
+function getResultSubmissionCommissionerContext(e, auth, params) {
 
   const enabled =
     getResultSubmissionBoolean(params.commissionerMode);
@@ -441,10 +441,14 @@ function getResultSubmissionCommissionerContext(auth, params) {
     };
 
   const allowed =
-    auth &&
-    auth.user &&
-    typeof userHasPermission === "function" &&
-    userHasPermission(auth.user.role, "runSeasonControl");
+    requireApiPermission(
+      e,
+      "runSeasonControl",
+      function() {
+        return true;
+      },
+      auth
+    ) === true;
 
   if (!allowed)
     return {

@@ -566,10 +566,10 @@ function updateNotificationState(e) {
 
 }
 
-function requireApiPermission(e, permission, handler) {
+function requireApiPermission(e, permission, handler, resolvedAuth) {
 
   const auth =
-    getRequestUser(e);
+    resolvedAuth || getRequestUser(e);
 
   logAuthorizationDiagnostic(
     "authorization.check",
