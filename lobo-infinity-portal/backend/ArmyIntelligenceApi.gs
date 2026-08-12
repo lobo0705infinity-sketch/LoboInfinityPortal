@@ -299,7 +299,8 @@ function buildArmyIntelligenceListsFromCanonicalSources(knownArmyListCounts) {
           source,
           CanonicalSnapshotFactory.createLegacyStorageSnapshot(
             source,
-            snapshot
+            snapshot,
+            decoded
           ),
           knownArmyListCounts
         );
@@ -309,7 +310,8 @@ function buildArmyIntelligenceListsFromCanonicalSources(knownArmyListCounts) {
         source,
         CanonicalSnapshotFactory.createLegacyStorageSnapshot(
           source,
-          snapshot
+          snapshot,
+          decoded
         ),
         knownArmyListCounts
       );

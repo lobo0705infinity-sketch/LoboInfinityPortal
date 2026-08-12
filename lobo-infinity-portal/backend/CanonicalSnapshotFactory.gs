@@ -78,14 +78,14 @@ var CanonicalSnapshotFactory = (function() {
 
   }
 
-  function createLegacyStorageSnapshot(source, snapshot) {
+  function createLegacyStorageSnapshot(source, snapshot, decoderFailure) {
 
     if (!snapshot)
       return {
         armyCodeHash: source.armyCodeHash,
         decodedAt: "",
         decodedJson: "",
-        error: "Army Code could not be decoded.",
+        error: serializeDecoderFailure(decoderFailure),
         snapshotKey: source.snapshotKey,
         status: "failed"
       };
@@ -98,6 +98,20 @@ var CanonicalSnapshotFactory = (function() {
       snapshotKey: source.snapshotKey,
       status: snapshot.status
     };
+
+  }
+
+  function serializeDecoderFailure(decoderFailure) {
+
+    if (!decoderFailure)
+      return "Army Code could not be decoded.";
+
+    try {
+      return JSON.stringify(decoderFailure);
+    }
+    catch (err) {
+      return String(decoderFailure);
+    }
 
   }
 
