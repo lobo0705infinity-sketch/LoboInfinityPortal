@@ -576,11 +576,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
       persistCredential: (value) =>
         window.localStorage.setItem(authStorageKey, value),
       requestSession: () => {
-        console.info('[auth-session-forensic]', {
-          caller: 'AuthContext.applyCredential',
-          stage: 'sessionRequestEntered',
-          timestamp: new Date().toISOString(),
-        })
+        logAuthContextSessionForensic('applyCredential.sessionRequestEntered')
         return getSession()
       },
       shouldInvalidateCredential: shouldClearStoredAuthToken,
@@ -831,11 +827,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
       readPersistedCredential: () =>
         window.localStorage.getItem(authStorageKey) ?? '',
       requestSession: () => {
-        console.info('[auth-session-forensic]', {
-          caller: 'AuthContext.refreshSession',
-          stage: 'sessionRequestEntered',
-          timestamp: new Date().toISOString(),
-        })
+        logAuthContextSessionForensic('refreshSession.sessionRequestEntered')
         return getSession()
       },
       shouldInvalidateCredential: shouldClearStoredAuthToken,
@@ -1025,6 +1017,27 @@ export function useAuth() {
   }
 
   return context
+}
+
+function logAuthContextSessionForensic(stage: string) {
+  const fields = {
+    stage,
+    timestamp: new Date().toISOString(),
+    requestUrl: '',
+    apiAction: 'session',
+    httpMethod: 'POST',
+    httpStatus: '',
+    responseContentType: '',
+    responseBodyPreview: '',
+    exceptionName: '',
+    exceptionMessage: '',
+    exceptionStack: '',
+    requestId: '',
+  }
+
+  Object.entries(fields).forEach(([field, value]) => {
+    console.info(`[auth-session-forensic]\n${field}=${value}`)
+  })
 }
 
 export default AuthProvider

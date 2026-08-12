@@ -483,11 +483,9 @@ async function postRequestInternal(
 
   if (action === 'session') {
     logSessionRequestForensic('request', {
-      body: sanitizeSessionRequestBody(body),
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      },
+      action,
       method: 'POST',
+      requestId,
       url: url.toString(),
     })
   }
@@ -501,15 +499,26 @@ async function postRequestInternal(
     responseText = await response.text()
     if (action === 'session') {
       logSessionRequestForensic('response', {
-        bodyPrefix: responseText.slice(0, 200),
+        action,
+        bodyPreview: sanitizeSessionResponsePreview(responseText),
         contentType: response.headers.get('content-type') ?? '',
+        method: 'POST',
+        requestId,
         status: response.status,
+        url: url.toString(),
       })
       logSessionRequestForensic('responseParsing', {
-        begins: true,
+        action,
+        method: 'POST',
+        requestId,
+        url: url.toString(),
       })
     }
-    payload = parseApiResponseText(responseText, action)
+    payload = parseApiResponseText(responseText, action, {
+      method: 'POST',
+      requestId,
+      url: url.toString(),
+    })
   } catch (error) {
     const end = performance.now()
     recordApiRequestFinished({
@@ -596,7 +605,15 @@ function buildApiRequestDiagnostic({
   }
 }
 
-function parseApiResponseText(responseText: string, action: string) {
+function parseApiResponseText(
+  responseText: string,
+  action: string,
+  forensicContext: {
+    method?: string
+    requestId?: string
+    url?: string
+  } = {},
+) {
   try {
     return JSON.parse(responseText) as unknown
   } catch (error) {
@@ -611,7 +628,13 @@ function parseApiResponseText(responseText: string, action: string) {
 
     if (action === 'session') {
       logSessionRequestForensic('responseParsingException', {
-        exception: parseException.stack || parseException.message,
+        action,
+        exceptionMessage: parseException.message,
+        exceptionName: parseException.name,
+        exceptionStack: parseException.stack || '',
+        method: forensicContext.method ?? '',
+        requestId: forensicContext.requestId ?? '',
+        url: forensicContext.url ?? '',
       })
     }
 
@@ -619,27 +642,64 @@ function parseApiResponseText(responseText: string, action: string) {
   }
 }
 
-function sanitizeSessionRequestBody(body: URLSearchParams) {
-  const sanitized = new URLSearchParams(body)
-
-  ;['authToken', 'credential', 'idToken'].forEach((field) => {
-    if (sanitized.has(field)) {
-      sanitized.set(field, '[REDACTED]')
-    }
-  })
-
-  return sanitized.toString()
-}
-
 function logSessionRequestForensic(
   stage: string,
   details: Record<string, unknown>,
 ) {
-  console.info('[auth-session-forensic]', {
+  const fields = {
     stage,
     timestamp: new Date().toISOString(),
-    ...details,
+    requestUrl: details.url ?? '',
+    apiAction: details.action ?? '',
+    httpMethod: details.method ?? '',
+    httpStatus: details.status ?? '',
+    responseContentType: details.contentType ?? '',
+    responseBodyPreview: details.bodyPreview ?? '',
+    exceptionName: details.exceptionName ?? '',
+    exceptionMessage: details.exceptionMessage ?? '',
+    exceptionStack: details.exceptionStack ?? '',
+    requestId: details.requestId ?? '',
+  }
+
+  Object.entries(fields).forEach(([field, value]) => {
+    console.info(`[auth-session-forensic]\n${field}=${String(value)}`)
   })
+}
+
+function sanitizeSessionResponsePreview(responseText: string) {
+  try {
+    const payload = JSON.parse(responseText) as unknown
+    return JSON.stringify(redactSessionForensicValue(payload)).slice(0, 200)
+  } catch {
+    return responseText.slice(0, 200)
+  }
+}
+
+function redactSessionForensicValue(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map(redactSessionForensicValue)
+  }
+
+  if (!value || typeof value !== 'object') {
+    return value
+  }
+
+  const sensitiveFields = new Set([
+    'authToken',
+    'avatarUrl',
+    'credential',
+    'displayName',
+    'email',
+    'idToken',
+    'leaguePlayer',
+  ])
+
+  return Object.fromEntries(
+    Object.entries(value as Record<string, unknown>).map(([key, entry]) => [
+      key,
+      sensitiveFields.has(key) ? '[REDACTED]' : redactSessionForensicValue(entry),
+    ]),
+  )
 }
 
 function readApiPayloadError(payload: unknown) {
