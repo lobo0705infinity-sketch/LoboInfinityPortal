@@ -66,6 +66,12 @@ assert.match(
 
 assert.match(
   teamTournament,
+  /function getTeamTournament\(e\)\s*\{[\s\S]*?getResultSubmissionCommissionerContext\(\s*e,\s*auth,\s*params\s*\)[\s\S]*?const eventId/,
+  'Team Tournament reads must pass the request event into commissioner context resolution.',
+)
+
+assert.match(
+  teamTournament,
   /recordResultSubmissionCommissionerAudit/,
   'Tournament commissioner submissions must write an audit record.',
 )

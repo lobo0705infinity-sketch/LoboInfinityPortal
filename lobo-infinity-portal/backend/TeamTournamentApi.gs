@@ -54,7 +54,7 @@ function getTeamTournament(e) {
 
   const commissionerContext =
     typeof getResultSubmissionCommissionerContext === "function"
-      ? getResultSubmissionCommissionerContext(auth, params)
+      ? getResultSubmissionCommissionerContext(e, auth, params)
       : { enabled: false, override: false, reason: "", commissioner: "" };
 
   if (commissionerContext.error)
