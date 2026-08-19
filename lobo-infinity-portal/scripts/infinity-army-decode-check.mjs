@@ -1,10 +1,12 @@
 import { mkdtemp } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { createRequire } from 'node:module'
 import {
   ARMY_INTELLIGENCE_DECODER_VERSION,
   decodeArmyListToFiles,
   hasExactSkillToken,
+  normalizeArmyCodeForInfinityDataTransport,
 } from './infinity-army-decode.mjs'
 
 const forWorkCode =
@@ -15,6 +17,11 @@ const samCaledonianCode =
   'gS4aY2FsZWRvbmlhbi1oaWdobGFuZGVyLWFybXkOV2hlcmUncyBXYWxEb26BLAIBAQAJAIEbAQEAAIX1AQEAAIEDAQEAAID1AQcAAIEHAQIAAID7AQIAAIEIAQIAAID1AQgAAID1AQEAAgEABgCCqAGJIwAAgPUBBwAAgPUBAgAAgPUBBwAAhiIBBwAAgPUBAgA%3D'
 const xtaproShasvastiiCode =
   'glsKc2hhc3Zhc3RpaQEggSwBAQEABgCB%2FwEBAACHUgEBAACB9gEIAACFFgEFAACFDAEGAACCAAEDAA%3D%3D'
+const tartaryPercentEncodedCode =
+  'gTEHdGFydGFyeRtUYWNrc3NzIHRlYW1zICAzIG1vcmUgZGlzY2%2BBLAIBAAcBhH4BBAAChzYBAwADhfQBAQAEgPIBg0UABYDuAQUABoRuAZBWAAeA5QEDAAIACAGA5wECAAKA8AECAAOA8AECAASA8QEBAAWHNQEEAAaBCQECAAeA8gGDRQAIh1IBAQA%3D7'
+
+const require = createRequire(import.meta.url)
+const CanonicalArmyCodeResolver = require('../backend/CanonicalArmyCodeResolver.gs')
 
 const expectedProfiles = [
   'RUDRA FTO',
@@ -49,6 +56,10 @@ const samResult = await decodeArmyListToFiles({
 })
 const xtaproResult = await decodeArmyListToFiles({
   input: xtaproShasvastiiCode,
+  outputDir,
+})
+const tartaryResult = await decodeArmyListToFiles({
+  input: tartaryPercentEncodedCode,
   outputDir,
 })
 
@@ -156,6 +167,34 @@ assertEqual(xtaproEntries.length, 6, 'xtapro Shasvastii entry count')
 assertEqual(xtaproSeedSoldier?.points, 17, 'xtapro Seed-Soldier points')
 assertEqual(xtaproResult.list.incomplete, false, 'xtapro Shasvastii decode completeness')
 assertEqual((xtaproResult.list.warnings ?? []).length, 0, 'xtapro Shasvastii decode warnings')
+assertEqual(tartaryResult.list.sectorial, 'Tartary Army Corps', 'percent-encoded Tartary sectorial')
+assertEqual(tartaryResult.list.armyCode, tartaryPercentEncodedCode, 'percent-encoded Tartary canonical source')
+assertEqual(
+  normalizeArmyCodeForInfinityDataTransport(tartaryPercentEncodedCode).endsWith('=7'),
+  false,
+  'percent-encoded Tartary transport padding',
+)
+assertEqual(
+  normalizeArmyCodeForInfinityDataTransport('ordinaryArmyCode'),
+  'ordinaryArmyCode',
+  'ordinary transport code',
+)
+assertEqual(
+  normalizeArmyCodeForInfinityDataTransport('%252B'),
+  '%2B',
+  'transport code decoded exactly once',
+)
+assertThrows(
+  () => normalizeArmyCodeForInfinityDataTransport('%invalid'),
+  URIError,
+  'malformed percent-encoded transport code',
+)
+assertEqual(
+  CanonicalArmyCodeResolver.buildArmyCodeId(tartaryPercentEncodedCode, (value) => String(value || '').trim()),
+  4304763863,
+  'percent-encoded Tartary canonical Army List ID',
+)
+assertEqual(panoceaniaResult.list.combatGroups.length > 0, true, 'ordinary non-percent-encoded decode')
 
 console.log(JSON.stringify({
   csvPath: result.csvPath,
@@ -175,4 +214,15 @@ function assertEqual(actual, expected, label) {
   if (actual !== expected) {
     throw new Error(`${label}: expected ${expected}, received ${actual}`)
   }
+}
+
+function assertThrows(callback, expectedError, label) {
+  try {
+    callback()
+  } catch (error) {
+    if (error instanceof expectedError) return
+    throw new Error(`${label}: expected ${expectedError.name}, received ${error}`)
+  }
+
+  throw new Error(`${label}: expected ${expectedError.name}`)
 }

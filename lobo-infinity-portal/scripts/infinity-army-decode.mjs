@@ -24,6 +24,7 @@ export const ARMY_INTELLIGENCE_DECODER_VERSION = 'army-intelligence-decoder-v4'
 
 const parentFactionBySectorialSlug = new Map([
   ['operations', 'ALEPH'],
+  ['tartary', 'Ariadna'],
 ])
 
 export async function decodeArmyListToFiles({
@@ -180,7 +181,7 @@ export function decodeArmyCode(input) {
 
 async function fetchInfinityDataOverview(armyCode) {
   const url = new URL(`${infinityDataBaseUrl.replace(/\/+$/, '')}/generate`)
-  url.searchParams.set('armyData', armyCode)
+  url.searchParams.set('armyData', normalizeArmyCodeForInfinityDataTransport(armyCode))
   url.searchParams.set('unit', 'inch')
   url.searchParams.set('style', 'a4_overview')
   url.searchParams.set('showEquipmentWeapons', 'on')
@@ -199,6 +200,15 @@ async function fetchInfinityDataOverview(armyCode) {
   }
 
   return body
+}
+
+export function normalizeArmyCodeForInfinityDataTransport(armyCode) {
+  const decoded = decodeURIComponent(armyCode)
+  const padding = decoded.match(/=+/)
+
+  return padding
+    ? decoded.slice(0, padding.index + padding[0].length)
+    : decoded
 }
 
 function parseInfinityDataOverview(html) {
@@ -593,6 +603,9 @@ function parseProfileStructure(block) {
 function normalizeSectorialName(slug) {
   if (slug === 'operations') {
     return 'Operations Subsection'
+  }
+  if (slug === 'tartary') {
+    return 'Tartary Army Corps'
   }
   return slug
     .split('-')
