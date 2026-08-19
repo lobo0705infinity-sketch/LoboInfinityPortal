@@ -286,7 +286,7 @@ assert.doesNotMatch(
 )
 assert.match(
   page,
-  /selectedExplorerScope[\s\S]*getSelectedExplorerScope\(selectedSectorial\)[\s\S]*selectedScopeLists[\s\S]*intelligenceListMatchesSelectedScope\(list, selectedExplorerScope\)[\s\S]*matchingLists[\s\S]*selectedScopeLists\.filter\(\(list\) => matchesResultFilter\(list, resultFilter\)\)[\s\S]*selectedArmyListExplorerRows[\s\S]*buildExplorerRowsFromSelectedLists\(matchingLists\)[\s\S]*selectedFaction=\{selectedExplorerScope\.label \|\| selectedSectorial\}/,
+  /selectedExplorerScope[\s\S]*getSelectedExplorerScope\(selectedSectorial\)[\s\S]*selectedScopeLists[\s\S]*intelligenceListMatchesSelectedScope\(list, selectedExplorerScope\)[\s\S]*matchingLists[\s\S]*selectedScopeLists\.filter\(\(list\) => matchesResultFilter\(list, resultFilter\)\)[\s\S]*selectedArmyListExplorerRows[\s\S]*buildExplorerRowsFromSelectedLists\(matchingLists, data\.armyLists\)[\s\S]*selectedFaction=\{selectedExplorerScope\.label \|\| selectedSectorial\}/,
   'Army Intelligence Explorer must use the selected item scope for both rows and modal title.',
 )
 assert.match(
@@ -306,7 +306,7 @@ assert.match(
 )
 assert.match(
   page,
-  /selectedArmyListExplorerRows[\s\S]*buildExplorerRowsFromSelectedLists\(matchingLists\)[\s\S]*selectedKnownArmyLists = selectedArmyListExplorerRows\.length[\s\S]*buildArmyListExplorerSummary\(selectedArmyListExplorerRows, selectedExplorerScope\)[\s\S]*buildArmyAnalysis\(matchingLists\)/,
+  /selectedArmyListExplorerRows[\s\S]*buildExplorerRowsFromSelectedLists\(matchingLists, data\.armyLists\)[\s\S]*selectedKnownArmyLists = selectedArmyListExplorerRows\.length[\s\S]*buildArmyListExplorerSummary\(selectedArmyListExplorerRows, selectedExplorerScope\)[\s\S]*buildArmyAnalysis\(matchingLists\)/,
   'Army Intelligence summary metrics and explorer rows must derive from the same filtered Army Intelligence collection.',
 )
 assert.match(
@@ -341,8 +341,8 @@ assert.match(
 )
 assert.match(
   page,
-  /getArmyIntelligenceListTarget[\s\S]*\/army-list\//,
-  'Army List Explorer rows must open the existing army-list target instead of creating a new viewer.',
+  /ArmyIntelligenceOpenList[\s\S]*getInfinityArmyTarget\(armyCode\)[\s\S]*target="_blank"/,
+  'Army List Explorer rows must use the shared Infinity Army target in a new tab.',
 )
 assert.match(
   page,

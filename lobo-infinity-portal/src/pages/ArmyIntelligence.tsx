@@ -1,12 +1,14 @@
 import { type KeyboardEvent, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import InteractiveMetricCard from '../components/InteractiveMetricCard'
 import Skeleton from '../components/Skeleton'
 import lieutenantOrderReference from '../../docs/mockups/lieutenant-order-reference.png'
 import { CANONICAL_ARMY_REGISTRY } from '../config/armies'
 import { readArmyIntelligenceFactionParam } from '../services/armyIntelligenceNavigation'
+import { getCanonicalArmyListBySourceId } from '../services/armyIntelligenceExplorer'
 import { getArmyParentFaction, normalizeArmyForDisplay } from '../services/armyIdentity'
+import { getInfinityArmyTarget } from '../services/infinityArmyLinks'
 import {
   apiClient,
   type ArmyIntelligenceArmyList,
@@ -274,8 +276,8 @@ function ArmyIntelligenceContent({
     [resultFilter, selectedScopeLists],
   )
   const selectedArmyListExplorerRows = useMemo(
-    () => buildExplorerRowsFromSelectedLists(matchingLists),
-    [matchingLists],
+    () => buildExplorerRowsFromSelectedLists(matchingLists, data.armyLists),
+    [data.armyLists, matchingLists],
   )
   const selectedKnownArmyLists = selectedArmyListExplorerRows.length
   const explorerPlayerOptions = useMemo(
@@ -990,9 +992,7 @@ function ArmyListExplorer({
                     <td>{formatExplorerDate(list.submissionDate)}</td>
                     <td>{list.source || 'Community Library'}</td>
                     <td>
-                      <Link to={getArmyIntelligenceListTarget(list)}>
-                        Open List
-                      </Link>
+                      <ArmyIntelligenceOpenList armyCode={list.armyCode} />
                     </td>
                   </tr>
                 ))}
@@ -1358,21 +1358,33 @@ function getIntelligenceParentFaction(list: ArmyIntelligenceList) {
     normalizeArmyForDisplay(list.faction)
 }
 
-function buildExplorerRowsFromSelectedLists(lists: UniqueArmyIntelligenceList[]): ArmyIntelligenceArmyList[] {
-  return lists.map((list, index) => ({
-    id: getStableExplorerRowId(list, index),
-    armyCode: '',
-    armyLink: '',
-    armyName: list.decoded?.listName || 'Untitled Army List',
-    faction: getIntelligenceParentFaction(list),
-    player: list.player || list.sourcePlayer,
-    playerDisplayName: list.player || list.sourcePlayer || 'Unknown Player',
-    points: list.decoded?.totals.points ?? 0,
-    sectorial: getDecodedSectorial(list),
-    source: formatIntelligenceSource(list),
-    submissionDate: list.date || list.decodedAt,
-    swc: list.decoded?.totals.swc ?? 0,
-  }))
+function buildExplorerRowsFromSelectedLists(
+  lists: UniqueArmyIntelligenceList[],
+  canonicalArmyLists: ArmyIntelligenceArmyList[],
+): ArmyIntelligenceArmyList[] {
+  return lists.map((list, index) => {
+    const canonicalList = getCanonicalArmyListBySourceId(list.sourceId, canonicalArmyLists)
+
+    return {
+      id: canonicalList?.id ?? getStableExplorerRowId(list, index),
+      armyCode: canonicalList?.armyCode ?? '',
+      armyLink: canonicalList?.armyLink ?? '',
+      armyName: canonicalList?.armyName || list.decoded?.listName || 'Untitled Army List',
+      faction: canonicalList?.faction || getIntelligenceParentFaction(list),
+      player: canonicalList?.player || list.player || list.sourcePlayer,
+      playerDisplayName:
+        canonicalList?.playerDisplayName ||
+        canonicalList?.player ||
+        list.player ||
+        list.sourcePlayer ||
+        'Unknown Player',
+      points: canonicalList?.points ?? list.decoded?.totals.points ?? 0,
+      sectorial: canonicalList?.sectorial || getDecodedSectorial(list),
+      source: canonicalList?.source || formatIntelligenceSource(list),
+      submissionDate: canonicalList?.submissionDate || list.date || list.decodedAt,
+      swc: canonicalList?.swc ?? list.decoded?.totals.swc ?? 0,
+    }
+  })
 }
 
 function getStableExplorerRowId(list: ArmyIntelligenceList, index: number) {
@@ -1585,10 +1597,27 @@ function getExplorerDateTime(value: string) {
   return Number.isNaN(date.getTime()) ? 0 : date.getTime()
 }
 
-function getArmyIntelligenceListTarget(list: ArmyIntelligenceArmyList) {
-  const value = (list.armyCode || list.armyLink || String(list.id)).trim()
+function ArmyIntelligenceOpenList({ armyCode }: { armyCode: string }) {
+  const target = getInfinityArmyTarget(armyCode)
 
-  return `/army-list/${encodeURIComponent(value)}`
+  if (target.status === 'available') {
+    return (
+      <a href={target.href} rel="noreferrer" target="_blank">
+        Open List
+      </a>
+    )
+  }
+
+  return (
+    <button
+      aria-label={`Open List unavailable: ${target.reason}`}
+      disabled
+      title={target.reason}
+      type="button"
+    >
+      Open List
+    </button>
+  )
 }
 
 function buildArmyAnalysis(lists: ArmyIntelligenceList[]): ArmyAnalysis {
