@@ -1,10 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 
 function ProfileMenu({ mobile = false }: { mobile?: boolean }) {
   const auth = useAuth()
   const [isOpen, setIsOpen] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [signingIn, setSigningIn] = useState(false)
   const buttonRef = useRef<HTMLDivElement | null>(null)
   const renderedButtonRef = useRef<HTMLElement | null>(null)
   const panelId = mobile ? 'mobile-profile-menu-panel' : 'profile-menu-panel'
@@ -15,9 +18,24 @@ function ProfileMenu({ mobile = false }: { mobile?: boolean }) {
     isAtLeastRole,
     oauthConfigured,
     renderSignInButton,
+    signInWithPassword,
     signOut,
     user,
   } = auth
+
+  async function handleNativeSignIn(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setSigningIn(true)
+
+    try {
+      const signedIn = await signInWithPassword(email, password)
+      if (signedIn) {
+        setPassword('')
+      }
+    } finally {
+      setSigningIn(false)
+    }
+  }
 
   useEffect(() => {
     if (
@@ -58,10 +76,38 @@ function ProfileMenu({ mobile = false }: { mobile?: boolean }) {
   if (!authenticated) {
     return (
       <div className={mobile ? 'profile-menu signed-out mobile-profile-menu' : 'profile-menu signed-out'}>
+        <form className="native-signin-form" onSubmit={handleNativeSignIn}>
+          <label>
+            <span>Email</span>
+            <input
+              autoComplete="email"
+              onChange={(event) => setEmail(event.target.value)}
+              required
+              type="email"
+              value={email}
+            />
+          </label>
+          <label>
+            <span>Password</span>
+            <input
+              autoComplete="current-password"
+              onChange={(event) => setPassword(event.target.value)}
+              required
+              type="password"
+              value={password}
+            />
+          </label>
+          <button disabled={signingIn} type="submit">
+            {signingIn ? 'Signing In…' : 'Sign In'}
+          </button>
+        </form>
         {oauthConfigured ? (
-          <div aria-label="Sign In" className="google-signin-shell">
-            <span aria-hidden="true" className="google-signin-fallback">Sign In</span>
-            <div ref={buttonRef} className="google-signin-slot" />
+          <div className="google-signin-fallback-group">
+            <small>Use Google Sign-In</small>
+            <div aria-label="Use Google Sign-In" className="google-signin-shell">
+              <span aria-hidden="true" className="google-signin-fallback">Use Google Sign-In</span>
+              <div ref={buttonRef} className="google-signin-slot" />
+            </div>
           </div>
         ) : (
           <div className="oauth-pending" title="Add Google OAuth Client ID in Settings">

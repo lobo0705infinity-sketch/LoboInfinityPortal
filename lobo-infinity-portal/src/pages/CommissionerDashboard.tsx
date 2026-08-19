@@ -816,6 +816,10 @@ function IdentityManagementPanel({
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState('all')
   const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [passwordEmail, setPasswordEmail] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [passwordMessage, setPasswordMessage] = useState('')
   const records = data.identity.records.filter((record) =>
     identityRecordMatches(record, query, filter),
   )
@@ -860,6 +864,43 @@ function IdentityManagementPanel({
       emails: selectedEmails.join(','),
     })
     setSelectedIds([])
+  }
+
+  function openPasswordForm(record: OperationsIdentityRecord) {
+    setPasswordEmail(record.googleEmail)
+    setNewPassword('')
+    setConfirmPassword('')
+    setPasswordMessage('')
+  }
+
+  function closePasswordForm() {
+    setPasswordEmail('')
+    setNewPassword('')
+    setConfirmPassword('')
+    setPasswordMessage('')
+  }
+
+  async function savePassword(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+
+    if (newPassword !== confirmPassword) {
+      setPasswordMessage('Passwords do not match.')
+      return
+    }
+
+    try {
+      await onAction('setNativeUserPassword', {
+        email: passwordEmail,
+        newPassword,
+      })
+      setNewPassword('')
+      setConfirmPassword('')
+      setPasswordMessage('Password saved. Existing native sessions were revoked.')
+    } catch (error) {
+      setPasswordMessage(
+        error instanceof Error ? error.message : 'Password could not be saved.',
+      )
+    }
   }
 
   return (
@@ -922,6 +963,36 @@ function IdentityManagementPanel({
           Repair Missing Accounts
         </button>
       </div>
+      {passwordEmail ? (
+        <form className="operations-form" onSubmit={savePassword}>
+          <Input
+            label="New Password"
+            onChange={setNewPassword}
+            type="password"
+            value={newPassword}
+          />
+          <Input
+            label="Confirm Password"
+            onChange={setConfirmPassword}
+            type="password"
+            value={confirmPassword}
+          />
+          <div className="operations-actions wrap operations-form-wide">
+            <button
+              disabled={
+                newPassword === '' ||
+                confirmPassword === '' ||
+                workingAction !== ''
+              }
+              type="submit"
+            >
+              Save
+            </button>
+            <button onClick={closePasswordForm} type="button">Cancel</button>
+            <span aria-live="polite">{passwordMessage}</span>
+          </div>
+        </form>
+      ) : null}
       <dl className="operations-metrics compact">
         <Metric label="Records" value={records.length} />
         <Metric label="Selected" value={selectedEmails.length} />
@@ -947,6 +1018,7 @@ function IdentityManagementPanel({
           <span>Linked</span>
           <span>Enabled</span>
           <span>Flags</span>
+          <span>Password</span>
         </div>
         {records.map((record) => (
           <div className="table-row" key={record.id} role="row">
@@ -969,6 +1041,20 @@ function IdentityManagementPanel({
             <span>{record.linked ? 'Yes' : 'No'}</span>
             <span>{record.enabled ? 'Yes' : 'No'}</span>
             <span>{identityFlags(record).join(', ') || 'Clean'}</span>
+            <span>
+              <button
+                disabled={
+                  !canManage ||
+                  !record.googleEmail ||
+                  !record.portalUser ||
+                  workingAction !== ''
+                }
+                onClick={() => openPasswordForm(record)}
+                type="button"
+              >
+                Set Password
+              </button>
+            </span>
           </div>
         ))}
       </div>

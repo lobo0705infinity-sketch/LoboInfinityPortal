@@ -21,6 +21,7 @@ const USER_ROLE_ORDER = [
 
 const USER_HEADERS = [
   "Google Email",
+  "Password Hash",
   "Display Name",
   "Role",
   "Enabled",
@@ -121,6 +122,68 @@ function getAuthSession(e) {
       {}
     );
   }
+
+}
+
+function nativeLogin(e) {
+
+  const email =
+    getAuthString(
+      e && e.parameter
+        ? e.parameter.email
+        : ""
+    );
+  const password =
+    e && e.parameter && e.parameter.password !== undefined
+      ? String(e.parameter.password)
+      : "";
+  const session = createNativeSession(email, password);
+
+  if (!session)
+    return jsonOutput({
+      success: false,
+      authenticated: false,
+      code: "AUTH_INVALID_CREDENTIALS",
+      stage: "credentialVerification",
+      user: buildGuestUser(),
+      permissions: getRolePermissions(USER_ROLES.GUEST),
+      error: "Invalid email or password."
+    });
+
+  return jsonOutput({
+    success: true,
+    authenticated: true,
+    code: "AUTH_OK",
+    stage: "sessionValidation",
+    sessionToken: session.token,
+    expiresAt: session.expiresAt,
+    user: session.user,
+    permissions: getRolePermissions(session.user.role)
+  });
+
+}
+
+function nativeLogout(e) {
+
+  const token =
+    getAuthString(
+      e && e.parameter
+        ? e.parameter.sessionToken
+        : ""
+    );
+
+  destroyNativeSession(token);
+
+  const user = buildGuestUser();
+
+  return jsonOutput({
+    success: true,
+    authenticated: false,
+    code: "AUTH_LOGGED_OUT",
+    stage: "sessionDestruction",
+    user: user,
+    permissions: getRolePermissions(user.role)
+  });
 
 }
 
@@ -728,6 +791,35 @@ function getRequestUser(e) {
     );
 
   try {
+
+  const hasNativeSessionToken = !!(
+    e &&
+    e.parameter &&
+    Object.prototype.hasOwnProperty.call(e.parameter, "sessionToken")
+  );
+
+  if (hasNativeSessionToken) {
+    const nativeSession =
+      validateNativeSession(e.parameter.sessionToken);
+
+    if (!nativeSession)
+      return {
+        authenticated: false,
+        code: "AUTH_NATIVE_SESSION_INVALID",
+        stage: "sessionValidation",
+        user: buildGuestUser(),
+        error: "Session is invalid or expired.",
+        diagnostics: {}
+      };
+
+    return {
+      authenticated: true,
+      code: "AUTH_OK",
+      stage: "sessionValidation",
+      user: nativeSession.user,
+      diagnostics: {}
+    };
+  }
 
   const authTimings = [];
 
@@ -2042,6 +2134,7 @@ function getUsersColumns(sheet) {
 
   return {
     email: headers.indexOf("Google Email"),
+    passwordHash: headers.indexOf("Password Hash"),
     displayName: headers.indexOf("Display Name"),
     role: headers.indexOf("Role"),
     enabled: headers.indexOf("Enabled"),
@@ -2070,6 +2163,7 @@ function createUserRow(sheet, columns, verified, role, enabled, leagueIdentity) 
     getAuthTimestamp();
 
   row[columns.email] = verified.email;
+  row[columns.passwordHash] = "";
   row[columns.displayName] =
     getAuthString(leagueIdentity && leagueIdentity.player) ||
     verified.displayName ||
@@ -2096,6 +2190,341 @@ function createUserRow(sheet, columns, verified, role, enabled, leagueIdentity) 
   sheet.appendRow(row);
 
   return sheet.getLastRow();
+
+}
+
+const USER_PASSWORD_HASH_ALGORITHM = "pbkdf2-sha256";
+const USER_PASSWORD_HASH_ITERATIONS = 20000;
+const USER_PASSWORD_HASH_BYTES = 32;
+const NATIVE_SESSION_PROPERTY_PREFIX = "native-session:";
+const NATIVE_SESSION_LIFETIME_MS = 7 * 24 * 60 * 60 * 1000;
+
+function hashUserPassword(password) {
+
+  const value = String(password === undefined || password === null ? "" : password);
+
+  if (value === "")
+    throw new Error("Password is required.");
+
+  const salt =
+    Utilities.computeDigest(
+      Utilities.DigestAlgorithm.SHA_256,
+      Utilities.newBlob(
+        Utilities.getUuid() + Utilities.getUuid()
+      ).getBytes()
+    );
+
+  const derived =
+    deriveUserPasswordHash(
+      value,
+      salt,
+      USER_PASSWORD_HASH_ITERATIONS
+    );
+
+  return [
+    USER_PASSWORD_HASH_ALGORITHM,
+    USER_PASSWORD_HASH_ITERATIONS,
+    Utilities.base64EncodeWebSafe(salt),
+    Utilities.base64EncodeWebSafe(derived)
+  ].join("$");
+
+}
+
+function setUserPasswordByEmail(email, password) {
+
+  const sheet = ensureUsersSheet();
+  const columns = getUsersColumns(sheet);
+  const rowNumber = getUserRowNumber(sheet, columns, email);
+
+  if (rowNumber === -1)
+    return false;
+
+  const passwordHash = hashUserPassword(password);
+
+  sheet
+    .getRange(rowNumber, columns.passwordHash + 1)
+    .setValue(passwordHash);
+
+  return true;
+
+}
+
+function verifyUserPasswordByEmail(email, password) {
+
+  const sheet = ensureUsersSheet();
+  const columns = getUsersColumns(sheet);
+  const rowNumber = getUserRowNumber(sheet, columns, email);
+
+  if (rowNumber === -1)
+    return false;
+
+  const stored =
+    getAuthString(
+      sheet
+        .getRange(rowNumber, columns.passwordHash + 1)
+        .getValue()
+    );
+
+  return verifyUserPasswordHash(password, stored);
+
+}
+
+function verifyUserPasswordHash(password, storedHash) {
+
+  const parts = getAuthString(storedHash).split("$");
+
+  if (
+    parts.length !== 4 ||
+    parts[0] !== USER_PASSWORD_HASH_ALGORITHM
+  )
+    return false;
+
+  const iterations = Number(parts[1]);
+
+  if (
+    !Number.isInteger(iterations) ||
+    iterations < 1
+  )
+    return false;
+
+  try {
+    const salt = Utilities.base64DecodeWebSafe(parts[2]);
+    const expected = Utilities.base64DecodeWebSafe(parts[3]);
+    const actual = deriveUserPasswordHash(password, salt, iterations);
+
+    return constantTimeByteArraysEqual(actual, expected);
+  }
+  catch (err) {
+    return false;
+  }
+
+}
+
+function deriveUserPasswordHash(password, salt, iterations) {
+
+  const passwordBytes =
+    Utilities.newBlob(
+      String(password === undefined || password === null ? "" : password)
+    ).getBytes();
+  const block = salt.concat([0, 0, 0, 1]);
+  let value =
+    Utilities.computeHmacSha256Signature(block, passwordBytes);
+  const result = value.slice();
+
+  for (let iteration = 1; iteration < iterations; iteration++) {
+    value = Utilities.computeHmacSha256Signature(value, passwordBytes);
+
+    for (let index = 0; index < USER_PASSWORD_HASH_BYTES; index++)
+      result[index] = (result[index] ^ value[index]) & 255;
+  }
+
+  return result;
+
+}
+
+function constantTimeByteArraysEqual(left, right) {
+
+  const leftLength = left && left.length ? left.length : 0;
+  const rightLength = right && right.length ? right.length : 0;
+  const length = Math.max(leftLength, rightLength);
+  let difference = leftLength ^ rightLength;
+
+  for (let index = 0; index < length; index++)
+    difference |= ((left[index % (leftLength || 1)] || 0) & 255) ^
+      ((right[index % (rightLength || 1)] || 0) & 255);
+
+  return difference === 0;
+
+}
+
+function createNativeSession(email, password) {
+
+  const normalizedEmail =
+    getAuthString(email)
+      .toLowerCase();
+
+  if (
+    normalizedEmail === "" ||
+    !verifyUserPasswordByEmail(normalizedEmail, password)
+  )
+    return null;
+
+  const user = getUserByEmail(normalizedEmail);
+
+  if (!user.enabled || user.email !== normalizedEmail)
+    return null;
+
+  const token = generateNativeSessionToken();
+  const expiresAt = Date.now() + NATIVE_SESSION_LIFETIME_MS;
+
+  PropertiesService
+    .getScriptProperties()
+    .setProperty(
+      getNativeSessionPropertyKey(token),
+      JSON.stringify({
+        email: normalizedEmail,
+        expiresAt: expiresAt
+      })
+    );
+
+  return {
+    token: token,
+    expiresAt: new Date(expiresAt).toISOString(),
+    user: user
+  };
+
+}
+
+function validateNativeSession(token) {
+
+  const value = getAuthString(token);
+
+  if (value === "")
+    return null;
+
+  const properties = PropertiesService.getScriptProperties();
+  const propertyKey = getNativeSessionPropertyKey(value);
+  const stored = properties.getProperty(propertyKey);
+
+  if (!stored)
+    return null;
+
+  try {
+    const record = JSON.parse(stored);
+    const email = getAuthString(record.email).toLowerCase();
+    const expiresAt = Number(record.expiresAt);
+
+    if (
+      email === "" ||
+      !Number.isFinite(expiresAt) ||
+      expiresAt <= Date.now()
+    ) {
+      properties.deleteProperty(propertyKey);
+      return null;
+    }
+
+    const user = getUserByEmail(email);
+
+    if (!user.enabled || user.email !== email)
+      return null;
+
+    return {
+      expiresAt: new Date(expiresAt).toISOString(),
+      user: user
+    };
+  }
+  catch (err) {
+    properties.deleteProperty(propertyKey);
+    return null;
+  }
+
+}
+
+function destroyNativeSession(token) {
+
+  const value = getAuthString(token);
+
+  if (value === "")
+    return false;
+
+  const properties = PropertiesService.getScriptProperties();
+  const propertyKey = getNativeSessionPropertyKey(value);
+  const existed = properties.getProperty(propertyKey) !== null;
+
+  properties.deleteProperty(propertyKey);
+
+  return existed;
+
+}
+
+function destroyNativeSessionsByEmail(email) {
+
+  const normalizedEmail =
+    getAuthString(email)
+      .toLowerCase();
+
+  if (normalizedEmail === "")
+    return 0;
+
+  const properties = PropertiesService.getScriptProperties();
+  const stored = properties.getProperties();
+  let destroyed = 0;
+
+  Object.keys(stored).forEach(function(key) {
+    if (key.indexOf(NATIVE_SESSION_PROPERTY_PREFIX) !== 0)
+      return;
+
+    try {
+      const record = JSON.parse(stored[key]);
+
+      if (getAuthString(record.email).toLowerCase() !== normalizedEmail)
+        return;
+
+      properties.deleteProperty(key);
+      destroyed++;
+    }
+    catch (err) {
+      return;
+    }
+  });
+
+  return destroyed;
+
+}
+
+function setNativeUserPassword(e) {
+
+  const email =
+    getAuthString(
+      e && e.parameter
+        ? e.parameter.email
+        : ""
+    ).toLowerCase();
+  const newPassword =
+    e && e.parameter && e.parameter.newPassword !== undefined
+      ? String(e.parameter.newPassword)
+      : "";
+
+  if (!setUserPasswordByEmail(email, newPassword))
+    return jsonOutput({
+      success: false,
+      code: "USER_NOT_FOUND",
+      error: "Existing portal user account not found."
+    });
+
+  destroyNativeSessionsByEmail(email);
+
+  return jsonOutput({
+    success: true
+  });
+
+}
+
+function generateNativeSessionToken() {
+
+  const entropy =
+    Utilities.newBlob(
+      Utilities.getUuid() + Utilities.getUuid() + Utilities.getUuid()
+    ).getBytes();
+
+  return Utilities.base64EncodeWebSafe(
+    Utilities.computeDigest(
+      Utilities.DigestAlgorithm.SHA_256,
+      entropy
+    )
+  );
+
+}
+
+function getNativeSessionPropertyKey(token) {
+
+  return NATIVE_SESSION_PROPERTY_PREFIX +
+    Utilities.base64EncodeWebSafe(
+      Utilities.computeDigest(
+        Utilities.DigestAlgorithm.SHA_256,
+        getAuthString(token)
+      )
+    );
 
 }
 

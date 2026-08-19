@@ -91,6 +91,42 @@ export async function getSession(options: ApiOptions = {}): Promise<AuthSession>
   }
 }
 
+export type NativeLoginResult = AuthSession & {
+  expiresAt: string
+  sessionToken: string
+  success: boolean
+}
+
+export async function nativeLogin(
+  email: string,
+  password: string,
+  options: ApiOptions = {},
+): Promise<NativeLoginResult> {
+  const payload = await postRequest('nativeLogin', options, { email, password })
+  const record = asRecord(payload)
+
+  return {
+    authenticated: getBoolean(record, 'authenticated'),
+    code: getString(record, 'code'),
+    diagnostics: getRecord(record, 'diagnostics'),
+    error: getString(record, 'error'),
+    expiresAt: getString(record, 'expiresAt'),
+    oauthConfigured: false,
+    permissions: normalizeBooleanRecord(getRecord(record, 'permissions')),
+    sessionToken: getString(record, 'sessionToken'),
+    stage: getString(record, 'stage'),
+    success: getBoolean(record, 'success'),
+    user: normalizePortalUser(getRecord(record, 'user')),
+  }
+}
+
+export async function nativeLogout(
+  sessionToken: string,
+  options: ApiOptions = {},
+): Promise<void> {
+  await postRequest('nativeLogout', options, { sessionToken })
+}
+
 export async function getSettings(
   options: ApiOptions = {},
 ): Promise<PortalSettings> {

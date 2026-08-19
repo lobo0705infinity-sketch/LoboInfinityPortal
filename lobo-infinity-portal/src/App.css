@@ -550,6 +550,61 @@
 .profile-menu.signed-out {
   display: flex;
   align-items: center;
+  gap: 8px;
+}
+
+.native-signin-form,
+.google-signin-fallback-group {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.native-signin-form label {
+  display: grid;
+  gap: 2px;
+  color: var(--text-muted);
+  font-size: 0.66rem;
+  font-weight: 800;
+}
+
+.native-signin-form input {
+  width: 142px;
+  min-height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 8px;
+  color: var(--text);
+  background: var(--panel);
+  font: inherit;
+}
+
+.native-signin-form button {
+  min-height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: var(--text);
+  background: var(--panel);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 900;
+}
+
+.native-signin-form button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.google-signin-fallback-group {
+  flex-direction: column;
+  align-items: center;
+}
+
+.google-signin-fallback-group > small {
+  color: var(--text-muted);
+  font-size: 0.66rem;
+  font-weight: 800;
 }
 
 .google-signin-shell,
@@ -10978,8 +11033,17 @@ a {
   }
 
   .mobile-profile-menu.signed-out {
-    align-items: center;
+    align-items: stretch;
     min-height: 44px;
+  }
+
+  .mobile-profile-menu.signed-out .native-signin-form {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .mobile-profile-menu.signed-out .native-signin-form input {
+    width: 120px;
   }
 
   .mobile-profile-menu.signed-out .auth-inline-error {

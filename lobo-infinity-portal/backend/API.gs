@@ -1254,6 +1254,17 @@ function handleApiPost(e, action) {
     case "session":
       return getAuthSession(e);
 
+    case "nativeLogin":
+      return nativeLogin(e);
+
+    case "nativeLogout":
+      return nativeLogout(e);
+
+    case "setNativeUserPassword":
+      return requireApiPermission(e, "manageSettings", function() {
+        return setNativeUserPassword(e);
+      });
+
     case "submitArmyList":
       return legacyStandaloneArmyListWorkflowDisabled();
 

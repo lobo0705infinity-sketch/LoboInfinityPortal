@@ -16,12 +16,19 @@ import {
   type PortalUser,
   type UserRole,
 } from '../services/api'
-import { getSession, getSettings } from '../services/lightApi'
+import {
+  getSession,
+  getSettings,
+  nativeLogin as requestNativeLogin,
+  nativeLogout as requestNativeLogout,
+} from '../services/lightApi'
 import {
   getActiveApiAuthToken,
   getActiveAuthTokenVersion,
+  getActiveNativeSessionToken,
   recordClientDiagnostic,
   setApiAuthToken,
+  setApiNativeSessionToken,
   setApiOAuthClientId,
   setSessionRecoveryHandler,
 } from '../services/apiCore'
@@ -111,7 +118,8 @@ type AuthContextValue = {
     element: HTMLElement,
     options?: SignInButtonRenderOptions,
   ) => void
-  signOut: () => void
+  signInWithPassword: (email: string, password: string) => Promise<boolean>
+  signOut: () => Promise<void>
   stage: string
   status: 'loading' | 'ready'
   user: PortalUser
@@ -194,6 +202,7 @@ const guestUser: PortalUser = {
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 const authStorageKey = 'lobo-google-id-token'
+const nativeSessionStorageKey = 'lobo-session-token'
 const googleInitializationTimeoutMs = 1200
 
 const initialInitializationMetrics: AuthInitializationMetrics = {
@@ -595,6 +604,53 @@ function AuthProvider({ children }: { children: ReactNode }) {
     updateAuthFlowDiagnostics,
   ])
 
+  const signInWithPassword = useCallback(async (
+    email: string,
+    password: string,
+  ) => {
+    setStatus('loading')
+
+    try {
+      const result = await requestNativeLogin(email, password)
+      const nextSession: AuthSession = {
+        authenticated: result.authenticated,
+        code: result.code,
+        diagnostics: result.diagnostics,
+        error: result.error,
+        oauthConfigured: Boolean(clientIdRef.current),
+        permissions: result.permissions,
+        stage: result.stage,
+        user: result.user,
+      }
+
+      if (!result.success || !result.authenticated || !result.sessionToken) {
+        transitionSessionState(nextSession, 'native_login_rejected')
+        return false
+      }
+
+      window.localStorage.setItem(nativeSessionStorageKey, result.sessionToken)
+      setApiNativeSessionToken(result.sessionToken)
+      setApiAuthToken('')
+      clearSessionIdentity()
+      transitionSessionState(nextSession, 'native_login')
+      return true
+    } catch {
+      transitionSessionState({
+        authenticated: false,
+        code: 'AUTH_LOGIN_FAILED',
+        diagnostics: {},
+        error: 'Unable to sign in.',
+        oauthConfigured: Boolean(clientIdRef.current),
+        permissions: {},
+        stage: 'credentialVerification',
+        user: guestUser,
+      }, 'native_login_failed')
+      return false
+    } finally {
+      setStatus('ready')
+    }
+  }, [clearSessionIdentity, transitionSessionState])
+
   const ensureGoogleClientReady = useCallback(async () => {
     const start = performance.now()
     const clientId = clientIdRef.current
@@ -765,6 +821,49 @@ function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshSession = useCallback(async () => {
     const start = performance.now()
+    const nativeSessionToken =
+      window.localStorage.getItem(nativeSessionStorageKey) ?? ''
+
+    if (nativeSessionToken) {
+      refreshSessionRunningRef.current = true
+      setStatus('loading')
+      setApiNativeSessionToken(nativeSessionToken)
+      setApiAuthToken('')
+
+      try {
+        const nextSession = await getSession()
+
+        if (nextSession.authenticated) {
+          clearSessionIdentity()
+          transitionSessionState(nextSession, 'native_session_restored')
+          return true
+        }
+
+        window.localStorage.removeItem(nativeSessionStorageKey)
+        setApiNativeSessionToken('')
+        transitionSessionState(nextSession, 'native_session_rejected')
+        return false
+      } catch {
+        window.localStorage.removeItem(nativeSessionStorageKey)
+        setApiNativeSessionToken('')
+        transitionSessionState({
+          authenticated: false,
+          code: 'AUTH_SESSION_REQUEST_FAILED',
+          diagnostics: {},
+          error: 'Unable to restore session.',
+          oauthConfigured: Boolean(clientIdRef.current),
+          permissions: {},
+          stage: 'sessionValidation',
+          user: guestUser,
+        }, 'native_session_restore_failed')
+        return false
+      } finally {
+        refreshSessionRunningRef.current = false
+        setStatus('ready')
+      }
+    }
+
+    setApiNativeSessionToken('')
     const credentialAtRefreshStart =
       window.localStorage.getItem(authStorageKey) ?? ''
     return CanonicalSessionLifecycleCoordinator.refreshSession({
@@ -923,7 +1022,34 @@ function AuthProvider({ children }: { children: ReactNode }) {
     void bootstrap()
   }, [ensureGoogleClientReady, recordAuthFlowEvent, refreshSession])
 
-  const signOut = useCallback(() => {
+  const signOut = useCallback(async () => {
+    const nativeSessionToken =
+      window.localStorage.getItem(nativeSessionStorageKey) ??
+      getActiveNativeSessionToken()
+
+    if (nativeSessionToken) {
+      try {
+        await requestNativeLogout(nativeSessionToken)
+      } finally {
+        window.localStorage.removeItem(nativeSessionStorageKey)
+        setApiNativeSessionToken('')
+        setApiAuthToken('')
+        clearSessionIdentity()
+        transitionSessionState({
+          authenticated: false,
+          code: 'AUTH_LOGGED_OUT',
+          diagnostics: {},
+          error: '',
+          oauthConfigured: Boolean(clientIdRef.current),
+          permissions: {},
+          stage: 'sessionDestruction',
+          user: guestUser,
+        }, 'native_logout')
+        setStatus('ready')
+      }
+      return
+    }
+
     CanonicalSessionLifecycleCoordinator.destroySession({
       cancelGoogleIdentity: () => window.google?.accounts.id.cancel(),
       clearActiveCredential: () => setApiAuthToken(''),
@@ -1002,6 +1128,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
       permissions: session.permissions,
       refreshSession,
       renderSignInButton,
+      signInWithPassword,
       signOut,
       stage: session.stage,
       status,
@@ -1014,6 +1141,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
       refreshSession,
       renderSignInButton,
       session,
+      signInWithPassword,
       signOut,
       status,
     ],

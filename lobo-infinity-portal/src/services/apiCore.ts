@@ -128,6 +128,7 @@ export type ClientDiagnosticMetric = {
 export const API_URL = import.meta.env.VITE_API_URL as string
 
 let activeAuthToken = ''
+let activeNativeSessionToken = ''
 let activeOAuthClientId = ''
 let activeAuthTokenVersion = 0
 const frontendCacheTtlMs = 300_000
@@ -204,6 +205,22 @@ export function getActiveApiAuthToken() {
   return activeAuthToken
 }
 
+export function setApiNativeSessionToken(token: string) {
+  if (token === activeNativeSessionToken) {
+    return
+  }
+
+  activeNativeSessionToken = token
+  activeAuthTokenVersion += 1
+  frontendResponseCache.clear()
+  inFlightRequests.clear()
+  clearSessionResponseCache(token ? 'native_session_changed' : 'native_session_cleared')
+}
+
+export function getActiveNativeSessionToken() {
+  return activeNativeSessionToken
+}
+
 export function setSessionRecoveryHandler(handler: SessionRecoveryHandler | null) {
   CanonicalSessionLifecycleCoordinator.registerRecoveryHandler(handler)
 }
@@ -238,11 +255,15 @@ async function requestInternal(
     url.searchParams.set('authToken', activeAuthToken)
   }
 
+  if (activeNativeSessionToken) {
+    url.searchParams.set('sessionToken', activeNativeSessionToken)
+  }
+
   if (activeOAuthClientId) {
     url.searchParams.set('oauthClientId', activeOAuthClientId)
   }
 
-  const cacheKey = url.toString()
+  const cacheKey = `${redactUrl(url.toString())}|${getSessionCacheAuthScope()}`
   const sessionCacheKey = buildSessionCacheKey(action, params)
   const eventId = options.eventId ?? params.eventId ?? ''
   const cachePolicy = getCachePolicy(action)
@@ -437,6 +458,10 @@ async function postRequestInternal(
     body.set('authToken', activeAuthToken)
   }
 
+  if (activeNativeSessionToken) {
+    body.set('sessionToken', activeNativeSessionToken)
+  }
+
   if (activeOAuthClientId) {
     body.set('oauthClientId', activeOAuthClientId)
   }
@@ -451,7 +476,7 @@ async function postRequestInternal(
     invalidateAffectedCaches(action, params)
   }
 
-  const cacheKey = `${url.toString()}|${body.toString()}`
+  const cacheKey = `${url.toString()}|${redactPostBody(body)}`
   const routePath = typeof window !== 'undefined'
     ? `${window.location.pathname}${window.location.search}`
     : 'unknown'
@@ -715,8 +740,8 @@ function logApiJsonParseException(fields: {
 function redactApiParseFailurePreview(responseText: string) {
   return responseText
     .slice(0, 200)
-    .replace(/(authToken|credential|idToken)=([^&\s"'<>]+)/gi, '$1=[REDACTED]')
-    .replace(/("(?:authToken|credential|idToken)"\s*:\s*")[^"]+/gi, '$1[REDACTED]')
+    .replace(/(authToken|credential|idToken|sessionToken)=([^&\s"'<>]+)/gi, '$1=[REDACTED]')
+    .replace(/("(?:authToken|credential|idToken|sessionToken)"\s*:\s*")[^"]+/gi, '$1[REDACTED]')
     .replace(/eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g, '[REDACTED_JWT]')
 }
 
@@ -771,6 +796,9 @@ function redactSessionForensicValue(value: unknown): unknown {
     'email',
     'idToken',
     'leaguePlayer',
+    'newPassword',
+    'password',
+    'sessionToken',
   ])
 
   return Object.fromEntries(
@@ -823,7 +851,30 @@ function redactUrl(value: string) {
   url.searchParams.delete('authToken')
   url.searchParams.delete('credential')
   url.searchParams.delete('idToken')
+  url.searchParams.delete('newPassword')
+  url.searchParams.delete('password')
+  url.searchParams.delete('sessionToken')
   return url.toString()
+}
+
+function redactPostBody(body: URLSearchParams) {
+  const redacted = new URLSearchParams(body)
+  const sensitiveFields = [
+    'authToken',
+    'credential',
+    'idToken',
+    'newPassword',
+    'password',
+    'sessionToken',
+  ]
+
+  sensitiveFields.forEach((field) => {
+    if (redacted.has(field)) {
+      redacted.set(field, '[REDACTED]')
+    }
+  })
+
+  return redacted.toString()
 }
 
 function buildSessionCacheKey(action: string, params: RequestParams) {
@@ -841,6 +892,10 @@ function getSessionStorageKey(cacheKey: string) {
 }
 
 function getSessionCacheAuthScope() {
+  if (activeNativeSessionToken) {
+    return `native:${hashCacheKey(activeNativeSessionToken)}`
+  }
+
   return activeAuthToken ? `auth:${hashCacheKey(activeAuthToken)}` : 'auth:anonymous'
 }
 
