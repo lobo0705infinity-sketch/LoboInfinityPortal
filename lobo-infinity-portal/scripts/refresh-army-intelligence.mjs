@@ -23,7 +23,7 @@ const decodedDir = resolve(outDir, 'decoded')
 
 const sources = useFixture
   ? fixtureSources()
-  : await loadLiveSources(options.apiUrl || await readApiUrl())
+  : await loadLiveSources(options.apiUrl || await readApiUrl(), readSessionToken(options))
 const snapshotState = useFixture
   ? new Map()
   : await loadSnapshotState(options.apiUrl || await readApiUrl()).catch(() => new Map())
@@ -57,8 +57,8 @@ for (const source of candidates) {
     })
 
     snapshots.push(
-      CanonicalSnapshotFactory.createRefreshSnapshot(
-        source.snapshotKey,
+      CanonicalSnapshotFactory.createSourceRefreshSnapshot(
+        source,
         result.list,
         '',
         'decoded',
@@ -71,8 +71,8 @@ for (const source of candidates) {
       snapshotKey: source.snapshotKey,
     })
     snapshots.push(
-      CanonicalSnapshotFactory.createRefreshSnapshot(
-        source.snapshotKey,
+      CanonicalSnapshotFactory.createSourceRefreshSnapshot(
+        source,
         null,
         message,
         'failed',
@@ -95,7 +95,7 @@ const payloadPath = resolve(outDir, 'army-intelligence-refresh-payload.json')
 await writeFile(payloadPath, `${JSON.stringify(payload, null, 2)}\n`, 'utf8')
 
 if (!dryRun && snapshots.length > 0) {
-  await postSnapshots(options.apiUrl || await readApiUrl(), snapshots, readAuthToken(options))
+  await postSnapshots(options.apiUrl || await readApiUrl(), snapshots, readSessionToken(options))
 }
 
 console.log(JSON.stringify({
@@ -107,46 +107,9 @@ console.log(JSON.stringify({
   sources: payload.sources,
 }, null, 2))
 
-async function loadLiveSources(apiUrl) {
-  const targetedCasualGame =
-    options.sourceType === 'casual' && options.sourceId
-      ? getAction(apiUrl, 'recentGames', { gameId: options.sourceId, gameType: 'casual' }).then((payload) => payload.games || [])
-      : Promise.resolve([])
-  const [recentGames, casualGames, sourceIdCasualGames, events] = await Promise.all([
-    getAction(apiUrl, 'recentGames').then((payload) => payload.games || []),
-    getAction(apiUrl, 'recentGames', { gameType: 'casual' }).then((payload) => payload.games || []),
-    targetedCasualGame,
-    getAction(apiUrl, 'events').catch(() => null),
-  ])
-
-  const eventIds = new Set()
-  const eventNames = new Map()
-
-  for (const event of events?.events || []) {
-    if (event?.id) {
-      eventIds.add(event.id)
-      eventNames.set(event.id, event.name || event.eventName || '')
-    }
-  }
-  if (events?.currentEvent?.id) {
-    eventIds.add(events.currentEvent.id)
-    eventNames.set(events.currentEvent.id, events.currentEvent.name || '')
-  }
-
-  const tournamentResults = []
-  for (const eventId of eventIds) {
-    const payload = await getAction(apiUrl, 'teamTournament', { eventId }).catch(() => null)
-    for (const result of payload?.results || []) {
-      tournamentResults.push({ eventId, eventName: eventNames.get(eventId) || '', result })
-    }
-  }
-
-  return CanonicalSourceDiscovery.discover(nodeDiscoveryOptions({
-    deduplicateGames: false,
-    eventNames,
-    games: [...recentGames, ...casualGames, ...sourceIdCasualGames],
-    tournamentResults,
-  }))
+async function loadLiveSources(apiUrl, sessionToken) {
+  const payload = await getAction(apiUrl, 'armyIntelligenceSources', { sessionToken })
+  return Array.isArray(payload.sources) ? payload.sources : []
 }
 
 async function loadSnapshotState(apiUrl) {
@@ -198,12 +161,12 @@ async function getAction(apiUrl, action, params = {}) {
   return JSON.parse(text)
 }
 
-async function postSnapshots(apiUrl, snapshots, authToken = '') {
+async function postSnapshots(apiUrl, snapshots, sessionToken = '') {
   const body = new URLSearchParams()
   body.set('action', 'refreshArmyIntelligence')
   body.set('snapshots', JSON.stringify(snapshots))
-  if (authToken) {
-    body.set('authToken', authToken)
+  if (sessionToken) {
+    body.set('sessionToken', sessionToken)
   }
 
   const response = await fetch(apiUrl, {
@@ -221,8 +184,8 @@ async function postSnapshots(apiUrl, snapshots, authToken = '') {
   }
 }
 
-function readAuthToken(options) {
-  return String(options.authToken || process.env.LOBO_GOOGLE_ID_TOKEN || process.env.GOOGLE_ID_TOKEN || '').trim()
+function readSessionToken(options) {
+  return String(options.sessionToken || process.env.LOBO_SESSION_TOKEN || '').trim()
 }
 
 function nodeDiscoveryOptions({ deduplicateGames, eventNames, games, tournamentResults }) {

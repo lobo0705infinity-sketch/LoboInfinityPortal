@@ -14,6 +14,225 @@ const ARMY_INTELLIGENCE_READ_MODEL_HEADERS = [
   "Payload JSON Chunk"
 ];
 
+function getArmyIntelligenceSources() {
+
+  return jsonOutput({
+    success: true,
+    sources: buildArmyIntelligenceSources()
+  });
+
+}
+
+function refreshArmyIntelligence(e) {
+
+  const parameters =
+    getApiParameters(e);
+
+  const snapshotsJson =
+    getApiParameter(parameters, "snapshots");
+
+  if (!snapshotsJson)
+    return jsonOutput({
+      success: true,
+      sourceCount: buildArmyIntelligenceSources().length,
+      status: "Ready",
+      updated: 0
+    });
+
+  const snapshots =
+    JSON.parse(snapshotsJson);
+
+  if (!Array.isArray(snapshots))
+    throw new Error("snapshots must be a JSON array.");
+
+  const authoritativeSources =
+    buildArmyIntelligenceSources();
+
+  const sourcesByKey = {};
+
+  authoritativeSources.forEach(function(source) {
+    sourcesByKey[source.snapshotKey] = source;
+  });
+
+  const rows =
+    snapshots.map(function(snapshot) {
+      const source =
+        sourcesByKey[
+          getArmyIntelligenceString(snapshot && snapshot.snapshotKey)
+        ];
+
+      if (!source)
+        throw new Error("Army Intelligence snapshot source is not authoritative.");
+
+      validateArmyIntelligenceRefreshSnapshot(source, snapshot);
+
+      return buildPersistedArmyIntelligenceSnapshotRow(source, snapshot);
+    });
+
+  upsertPersistedArmyIntelligenceSnapshotRows(rows);
+  rebuildArmyIntelligenceReadModelPayloadAndPersist();
+  invalidatePortalCacheGroup("armyIntelligence");
+
+  return jsonOutput({
+    success: true,
+    sourceCount: authoritativeSources.length,
+    status: "Refreshed",
+    updated: rows.length
+  });
+
+}
+
+function validateArmyIntelligenceRefreshSnapshot(source, snapshot) {
+
+  if (!snapshot || typeof snapshot !== "object")
+    throw new Error("Invalid Army Intelligence snapshot.");
+
+  const expected = {
+    armyCodeHash: getArmyIntelligenceString(source.armyCodeHash),
+    armyListId: getArmyIntelligenceString(source.armyListId),
+    snapshotKey: getArmyIntelligenceString(source.snapshotKey),
+    sourceId: getArmyIntelligenceString(source.sourceId),
+    sourcePlayer: getArmyIntelligenceString(source.sourcePlayer),
+    sourceType: getArmyIntelligenceString(source.sourceType)
+  };
+
+  Object.keys(expected).forEach(function(key) {
+    if (getArmyIntelligenceString(snapshot[key]) !== expected[key])
+      throw new Error("Army Intelligence snapshot identity mismatch: " + key + ".");
+  });
+
+  const status =
+    getArmyIntelligenceString(snapshot.status);
+
+  if (status !== "decoded" && status !== "failed")
+    throw new Error("Invalid Army Intelligence snapshot status.");
+
+  if (status === "decoded") {
+    if (!snapshot.decoded || typeof snapshot.decoded !== "object")
+      throw new Error("Decoded Army Intelligence snapshot is missing its payload.");
+
+    const decoderVersion =
+      getArmyIntelligenceString(snapshot.decoded.decoderVersion);
+
+    if (!decoderVersion || decoderVersion !== getArmyIntelligenceString(snapshot.decoderVersion))
+      throw new Error("Army Intelligence decoder version mismatch.");
+
+    if (getArmyIntelligenceHash(snapshot.decoded.armyCode) !== expected.armyCodeHash)
+      throw new Error("Army Intelligence snapshot Army Code mismatch.");
+  }
+
+}
+
+function buildPersistedArmyIntelligenceSnapshotRow(source, snapshot) {
+
+  const decoded =
+    snapshot.decoded || null;
+
+  const totals =
+    decoded && decoded.totals
+      ? decoded.totals
+      : {};
+
+  const entries =
+    getPersistedArmyIntelligenceDecodedEntries(decoded);
+
+  const envelope = {
+    armyCodeHash: source.armyCodeHash,
+    armyListId: source.armyListId || "",
+    decoded: decoded,
+    decodedAt: snapshot.decodedAt || new Date().toISOString(),
+    decoderVersion: snapshot.decoderVersion || "",
+    error: snapshot.error || "",
+    snapshotKey: source.snapshotKey,
+    sourceId: source.sourceId,
+    sourcePlayer: source.sourcePlayer,
+    sourceType: source.sourceType,
+    status: snapshot.status
+  };
+
+  return [
+    getPersistedArmyIntelligenceStorageKey(source),
+    envelope.decodedAt,
+    envelope.decoderVersion,
+    source.player,
+    decoded && decoded.faction ? decoded.faction : source.faction,
+    decoded && decoded.sectorial ? decoded.sectorial : source.sectorial,
+    decoded && decoded.listName ? decoded.listName : source.mission,
+    Number(totals.points) || 0,
+    Number(totals.swc) || 0,
+    entries.length,
+    JSON.stringify(envelope)
+  ];
+
+}
+
+function getPersistedArmyIntelligenceStorageKey(source) {
+
+  const armyListId =
+    getArmyIntelligenceString(source.armyListId);
+
+  return armyListId
+    ? "army-list:" + armyListId
+    : "army-code:" + getArmyIntelligenceString(source.armyCodeHash);
+
+}
+
+function getPersistedArmyIntelligenceDecodedEntries(decoded) {
+
+  const entries = [];
+
+  ((decoded && decoded.combatGroups) || []).forEach(function(group) {
+    (group.entries || []).forEach(function(entry) {
+      entries.push(entry);
+    });
+  });
+
+  return entries;
+
+}
+
+function upsertPersistedArmyIntelligenceSnapshotRows(rows) {
+
+  if (rows.length === 0)
+    return;
+
+  const spreadsheet =
+    lifGetTargetSpreadsheet_();
+
+  let sheet =
+    spreadsheet.getSheetByName(CONFIG.SHEETS.ARMY_INTELLIGENCE);
+
+  if (!sheet)
+    sheet = spreadsheet.insertSheet(CONFIG.SHEETS.ARMY_INTELLIGENCE);
+
+  if (sheet.getLastRow() === 0)
+    sheet.appendRow(ARMY_INTELLIGENCE_HEADERS);
+
+  const keys = {};
+
+  if (sheet.getLastRow() > 1)
+    sheet
+      .getRange(2, 1, sheet.getLastRow() - 1, 1)
+      .getValues()
+      .forEach(function(row, index) {
+        const key = getArmyIntelligenceString(row[0]);
+        if (key)
+          keys[key] = index + 2;
+      });
+
+  rows.forEach(function(row) {
+    const key = getArmyIntelligenceString(row[0]);
+
+    if (keys[key])
+      sheet.getRange(keys[key], 1, 1, ARMY_INTELLIGENCE_HEADERS.length).setValues([row]);
+    else {
+      sheet.appendRow(row);
+      keys[key] = sheet.getLastRow();
+    }
+  });
+
+}
+
 function getArmyIntelligence(e) {
 
   const readModel =
@@ -254,65 +473,31 @@ function normalizeArmyIntelligenceReadModelRoleFlags(payload) {
 
 function buildArmyIntelligenceListsFromCanonicalSources(knownArmyListCounts) {
 
+  const snapshots =
+    getPersistedArmyIntelligenceSnapshotLookup();
+
   return buildArmyIntelligenceSources()
     .map(function(source) {
-      const decoded =
-        buildArmyDiagnosticDecode(
-          CanonicalDecoderGateway.decode(source.armyCode)
-        );
-
-      if (!decoded.success) {
-        Logger.log(
-          JSON.stringify({
-            armyListId: source.armyListId,
-            returnStatement: "return null after !decoded.success",
-            condition: "!decoded.success",
-            conditionResult: !decoded.success,
-            variables: {
-              decodedSuccess: decoded.success
-            }
-          })
-        );
-      }
-
       const snapshot =
-        CanonicalSnapshotFactory.createLegacySnapshot(
-          source,
-          decoded,
-          buildDeterministicArmyIntelligenceDecodedEntry,
-          getArmyIntelligenceString
-        );
-
-      if (!snapshot) {
-        Logger.log(
-          JSON.stringify({
-            armyListId: source.armyListId,
-            condition: "Boolean(snapshot)",
-            conditionResult: Boolean(snapshot),
-            variables: {
-              snapshot: snapshot
-            }
-          })
-        );
-
-        return mergeArmyIntelligenceSourceAndSnapshot(
-          source,
-          CanonicalSnapshotFactory.createLegacyStorageSnapshot(
-            source,
-            snapshot,
-            decoded
-          ),
-          knownArmyListCounts
-        );
-      }
+        findPersistedArmyIntelligenceSnapshot(source, snapshots);
 
       return mergeArmyIntelligenceSourceAndSnapshot(
         source,
-        CanonicalSnapshotFactory.createLegacyStorageSnapshot(
-          source,
-          snapshot,
-          decoded
-        ),
+        snapshot
+          ? {
+              decodedAt: snapshot.decodedAt,
+              decodedJson: snapshot.decoded
+                ? JSON.stringify(snapshot.decoded)
+                : "",
+              error: snapshot.error || "",
+              status: snapshot.status
+            }
+          : {
+              decodedAt: "",
+              decodedJson: "",
+              error: "Persisted Army Intelligence snapshot is missing.",
+              status: "pending"
+            },
         knownArmyListCounts
       );
     });
@@ -321,24 +506,11 @@ function buildArmyIntelligenceListsFromCanonicalSources(knownArmyListCounts) {
 
 function getDeterministicArmyIntelligenceLists() {
 
-  let lists =
+  return (
     mapDeterministicArmyIntelligenceRows(
       readPersistedDeterministicArmyIntelligenceRows()
-    );
-
-  if (lists.length === 0)
-    lists =
-      mapDeterministicArmyIntelligenceRows(
-        buildCurrentDeterministicArmyIntelligenceRows()
-      );
-
-  if (lists.length === 0)
-    lists =
-      mapDeterministicArmyIntelligenceRows(
-        buildApprovedArmyListIntelligenceRows()
-      );
-
-  return lists;
+    )
+  );
 
 }
 
@@ -396,37 +568,7 @@ function buildCurrentDeterministicArmyIntelligenceRows() {
 
 function buildApprovedArmyListIntelligenceRows() {
 
-  const rows = [
-    ARMY_INTELLIGENCE_HEADERS
-  ];
-
-  getArmyListObjects()
-    .filter(function(list) {
-      return list.approved && list.armyCode;
-    })
-    .forEach(function(list) {
-
-      const decoded =
-        buildArmyDiagnosticDecode(
-          CanonicalDecoderGateway.decode(list.armyCode)
-        );
-
-      if (!decoded.success)
-        return;
-
-      rows.push(
-        buildArmyIntelligenceRow(
-          list,
-          CanonicalSnapshotFactory.createDeterministicSnapshot(
-            list,
-            decoded
-          )
-        )
-      );
-
-    });
-
-  return rows;
+  return readPersistedDeterministicArmyIntelligenceRows();
 
 }
 
@@ -441,6 +583,11 @@ function buildDeterministicArmyIntelligenceList(row) {
   const snapshot =
     parseDeterministicArmyIntelligenceSnapshot(row[10]);
 
+  const identity =
+    snapshot && snapshot.armyCodeHash
+      ? snapshot
+      : {};
+
   const faction =
     getArmyIntelligenceString(row[4]);
 
@@ -451,12 +598,16 @@ function buildDeterministicArmyIntelligenceList(row) {
     buildDeterministicArmyIntelligenceDecodedList(row, snapshot);
 
   return {
-    armyCode: getArmyIntelligenceString(row[2]),
-    armyCodeHash: armyListId,
+    armyCode:
+      getArmyIntelligenceString(
+        snapshot && snapshot.decoded && snapshot.decoded.armyCode
+      ),
+    armyCodeHash:
+      getArmyIntelligenceString(identity.armyCodeHash) || armyListId,
     date: getArmyIntelligenceString(row[1]),
     decoded: decoded,
     decodedAt: getArmyIntelligenceString(row[1]),
-    error: "",
+    error: getArmyIntelligenceString(identity.error),
     event: "",
     faction: faction,
     gameType: "League",
@@ -466,11 +617,16 @@ function buildDeterministicArmyIntelligenceList(row) {
     player: getArmyIntelligenceString(row[3]),
     result: "",
     sectorial: sectorial,
-    snapshotKey: armyListId,
-    sourceId: armyListId,
-    sourcePlayer: getArmyIntelligenceString(row[3]),
-    sourceType: "league",
-    status: decoded ? "decoded" : "failed"
+    snapshotKey:
+      getArmyIntelligenceString(identity.snapshotKey) || armyListId,
+    sourceId:
+      getArmyIntelligenceString(identity.armyListId) || armyListId,
+    sourcePlayer:
+      getArmyIntelligenceString(identity.sourcePlayer) || getArmyIntelligenceString(row[3]),
+    sourceType:
+      getArmyIntelligenceString(identity.sourceType) || "league",
+    status:
+      getArmyIntelligenceString(identity.status) || (decoded ? "decoded" : "failed")
   };
 
 }
@@ -496,6 +652,9 @@ function buildDeterministicArmyIntelligenceDecodedList(row, snapshot) {
 
   if (!snapshot)
     return null;
+
+  if (snapshot.status === "decoded" && snapshot.decoded)
+    return snapshot.decoded;
 
   const units =
     Array.isArray(snapshot.units)
@@ -705,6 +864,73 @@ function buildArmyIntelligenceSources() {
     },
     tournamentResults: []
   });
+
+}
+
+function getPersistedArmyIntelligenceSnapshotLookup() {
+
+  const lookup = {
+    byArmyCodeHash: {},
+    byArmyListId: {}
+  };
+
+  const rows =
+    readPersistedDeterministicArmyIntelligenceRows();
+
+  if (rows.length < 2)
+    return lookup;
+
+  rows.slice(1).forEach(function(row) {
+    const snapshot =
+      parseDeterministicArmyIntelligenceSnapshot(row[10]);
+
+    if (!snapshot || !snapshot.armyCodeHash)
+      return;
+
+    const armyCodeHash =
+      getArmyIntelligenceString(snapshot.armyCodeHash);
+
+    const armyListId =
+      getArmyIntelligenceString(snapshot.armyListId);
+
+    if (armyCodeHash)
+      lookup.byArmyCodeHash[armyCodeHash] = snapshot;
+
+    if (armyListId)
+      lookup.byArmyListId[armyListId] = snapshot;
+  });
+
+  return lookup;
+
+}
+
+function findPersistedArmyIntelligenceSnapshot(source, lookup) {
+
+  const armyListId =
+    getArmyIntelligenceString(source.armyListId);
+
+  const armyCodeHash =
+    getArmyIntelligenceString(source.armyCodeHash);
+
+  const snapshot =
+    (armyListId && lookup.byArmyListId[armyListId]) ||
+    (armyCodeHash && lookup.byArmyCodeHash[armyCodeHash]) ||
+    null;
+
+  if (!snapshot)
+    return null;
+
+  if (getArmyIntelligenceString(snapshot.armyCodeHash) !== armyCodeHash)
+    return null;
+
+  if (
+    armyListId &&
+    getArmyIntelligenceString(snapshot.armyListId) &&
+    getArmyIntelligenceString(snapshot.armyListId) !== armyListId
+  )
+    return null;
+
+  return snapshot;
 
 }
 

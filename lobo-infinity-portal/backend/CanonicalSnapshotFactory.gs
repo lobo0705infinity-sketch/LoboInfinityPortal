@@ -78,6 +78,27 @@ var CanonicalSnapshotFactory = (function() {
 
   }
 
+  function createSourceRefreshSnapshot(source, decoded, error, status) {
+
+    return {
+      armyCodeHash: source.armyCodeHash,
+      armyListId: source.armyListId || "",
+      decoded: decoded || null,
+      decodedAt: new Date().toISOString(),
+      decoderVersion:
+        decoded && decoded.decoderVersion
+          ? decoded.decoderVersion
+          : "",
+      error: error || "",
+      snapshotKey: source.snapshotKey,
+      sourceId: source.sourceId,
+      sourcePlayer: source.sourcePlayer,
+      sourceType: source.sourceType,
+      status: status
+    };
+
+  }
+
   function createLegacyStorageSnapshot(source, snapshot, decoderFailure) {
 
     if (!snapshot)
@@ -144,7 +165,8 @@ var CanonicalSnapshotFactory = (function() {
     createDeterministicSnapshot: createDeterministicSnapshot,
     createLegacySnapshot: createLegacySnapshot,
     createLegacyStorageSnapshot: createLegacyStorageSnapshot,
-    createRefreshSnapshot: createRefreshSnapshot
+    createRefreshSnapshot: createRefreshSnapshot,
+    createSourceRefreshSnapshot: createSourceRefreshSnapshot
   });
 
 })();

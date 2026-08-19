@@ -113,6 +113,7 @@ const endpointPolicy = {
   rebuildAchievements: { authRequired: true, userScoped: false },
   rebuildStatistics: { authRequired: true, userScoped: false },
   records: { authRequired: false, userScoped: false },
+  armyIntelligenceSources: { authRequired: true, userScoped: false },
   refreshArmyIntelligence: { authRequired: true, userScoped: false },
   refreshCache: { authRequired: true, userScoped: false },
   registerForEvent: { authRequired: true, userScoped: true },

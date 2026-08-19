@@ -776,9 +776,11 @@ function buildArmyIntelligenceForGameEngineRows(gameEngineRows) {
   const listsById =
     getArmyIntelligenceSourceListLookup();
 
-  const rows = [
-    ARMY_INTELLIGENCE_HEADERS
-  ];
+  const rows =
+    readPersistedDeterministicArmyIntelligenceRows();
+
+  const snapshots =
+    getPersistedArmyIntelligenceSnapshotLookup();
 
   requiredIds.forEach(function(id) {
 
@@ -810,34 +812,30 @@ function buildArmyIntelligenceForGameEngineRows(gameEngineRows) {
           " does not have an Army Code."
       );
 
-    const decoded =
-      buildArmyDiagnosticDecode(
-        CanonicalDecoderGateway.decode(list.armyCode)
+    const armyCodeHash =
+      getArmyIntelligenceHash(list.armyCode);
+
+    const snapshot =
+      findPersistedArmyIntelligenceSnapshot(
+        {
+          armyCodeHash: armyCodeHash,
+          armyListId: String(list.id)
+        },
+        snapshots
       );
 
-    if (!decoded.success)
+    if (!snapshot || snapshot.status !== "decoded")
       throw new Error(
-        "Army Intelligence snapshot generation failed for Army List ID " +
+        "Persisted Army Intelligence snapshot is missing for Army List ID " +
           id +
           "."
       );
 
-    const snapshot =
-      CanonicalSnapshotFactory.createDeterministicSnapshot(
-        list,
-        decoded
-      );
-
-    rows.push(
-      buildArmyIntelligenceRow(
-        list,
-        snapshot
-      )
-    );
-
   });
 
-  return rows;
+  return rows.length > 0
+    ? rows
+    : [ARMY_INTELLIGENCE_HEADERS];
 
 }
 

@@ -65,7 +65,8 @@ assert.doesNotMatch(backend, /function getArmyIntelligenceGameArmyCode|function 
 assert.match(armyLists, /CanonicalArmyCodeResolver\.resolveSubmittedArmyList\(\{/)
 assert.match(armyLists, /CanonicalArmyCodeResolver\.buildArmyCodeId\(/)
 assert.match(armyLists, /CanonicalArmyCodeResolver\.buildGameSideId\(/)
-assert.match(worker, /CanonicalArmyCodeResolver\.resolveGameSideCode\(/)
+assert.match(worker, /loadAuthoritativeSources[\s\S]*armyIntelligenceSources/)
+assert.doesNotMatch(worker, /CanonicalArmyCodeResolver\.resolveGameSideCode\(/)
 assert.match(cli, /CanonicalArmyCodeResolver\.resolveGameSideCode\(/)
 
 const workerCode = resolver.resolveGameSideCode(game, 'winner', normalizeString)
@@ -91,11 +92,8 @@ assert.equal(
   createHash('sha256').update(discovery).digest('hex'),
   '5eb62663ba0828bef86648ea3858b8da3fed726361a8587a0335c9375500b31e',
 )
-assert.equal(
-  createHash('sha256').update(snapshotFactory).digest('hex'),
-  '51dadb6a98220f601fb0d161638ba70aa37cc3c50b35bab90d1ac06139c52fc2',
-)
-pass('Source Discovery and Snapshot Factory unchanged')
+assert.match(snapshotFactory, /createSourceRefreshSnapshot/)
+pass('Source Discovery unchanged and Snapshot Factory owns source snapshots')
 pass('CanonicalArmyCodeResolver is the sole public Army Code resolution owner')
 
 function legacyArmyCodeId(value) {

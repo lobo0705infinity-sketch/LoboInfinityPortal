@@ -169,7 +169,7 @@ try {
 function assertDelegates(source) {
   assert.ok(source.includes("require('../backend/CanonicalSnapshotFactory.gs')"))
   assert.equal(
-    source.match(/CanonicalSnapshotFactory\.createRefreshSnapshot\(/g)?.length,
+    source.match(/CanonicalSnapshotFactory\.createSourceRefreshSnapshot\(/g)?.length,
     2,
   )
 }

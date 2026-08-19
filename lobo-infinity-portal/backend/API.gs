@@ -697,6 +697,11 @@ function handleApiGet(e, action) {
     case "armyIntelligence":
       return getArmyIntelligence(e);
 
+    case "armyIntelligenceSources":
+      return requireApiPermission(e, "manageCache", function() {
+        return getArmyIntelligenceSources();
+      });
+
     case "diagnoseArmyList":
       return requireApiPermission(e, "viewOperations", function() {
         return diagnoseArmyList(e);
@@ -1430,6 +1435,11 @@ function handleApiPost(e, action) {
     case "refreshCache":
       return requireApiPermission(e, "manageCache", function() {
         return refreshOperationsCache(e);
+      });
+
+    case "refreshArmyIntelligence":
+      return requireApiPermission(e, "manageCache", function() {
+        return refreshArmyIntelligence(e);
       });
 
     case "rebuildStatistics":

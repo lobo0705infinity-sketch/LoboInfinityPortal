@@ -12,7 +12,7 @@ import type {
 import { formatNotificationTimestamp } from './formatting'
 import {
   API_URL,
-  getActiveApiAuthToken,
+  getActiveNativeSessionToken,
   postRequest,
   request,
   setApiAuthToken,
@@ -4053,7 +4053,7 @@ export async function refreshArmyIntelligenceSnapshots(
   const response = await fetch('/api/army-intelligence-refresh-worker', {
     body: JSON.stringify({
       apiUrl: API_URL,
-      authToken: getActiveApiAuthToken(),
+      sessionToken: getActiveNativeSessionToken(),
       batchLimit: refreshRequest.batchLimit || 4,
       excludeSnapshotKeys: refreshRequest.excludeSnapshotKeys || [],
       sectorial: refreshRequest.sectorial || '',

@@ -55,13 +55,13 @@ const canonicalArmyFixtureByName = new Set(canonicalArmyFixtureNames)
 
 assert.match(
   backend,
-  /ARMY_INTELLIGENCE_SHEET_NAME = "Army List Intelligence"/,
-  'Army Intelligence snapshots must use the disposable Army List Intelligence sheet.',
+  /CONFIG\.SHEETS\.ARMY_INTELLIGENCE/,
+  'Army Intelligence snapshots must use the canonical Army Intelligence sheet.',
 )
 assert.match(
   backend,
-  /"Snapshot Key"[\s\S]*"Decoded JSON"/,
-  'Army Intelligence sheet must include source, hash, status, error, and decoded JSON columns.',
+  /buildPersistedArmyIntelligenceSnapshotRow[\s\S]*armyCodeHash[\s\S]*decoderVersion[\s\S]*JSON\.stringify\(envelope\)/,
+  'Army Intelligence rows must persist canonical identity and decoded snapshot JSON.',
 )
 assert.match(
   backend,
@@ -70,8 +70,8 @@ assert.match(
 )
 assert.match(
   backend,
-  /appendArmyIntelligenceRecentGameSources/,
-  'Backend must include League and Casual recent-game army codes.',
+  /CanonicalSourceDiscovery\.discover\(\{/,
+  'Backend must discover authoritative League and Casual source Army Codes.',
 )
 assert.match(
   backend,
@@ -95,8 +95,8 @@ assert.match(
 )
 assert.match(
   backend,
-  /appendArmyIntelligenceTeamTournamentSources/,
-  'Backend must include Tournament army codes.',
+  /function getArmyIntelligenceSources[\s\S]*buildArmyIntelligenceSources/,
+  'Backend must expose its authoritative source inventory only through the protected router.',
 )
 assert.doesNotMatch(
   backend,
@@ -200,7 +200,7 @@ assert.match(
 )
 assert.match(
   apiClient,
-  /refreshArmyIntelligenceSnapshots[\s\S]*\/api\/army-intelligence-refresh-worker[\s\S]*getActiveApiAuthToken/,
+  /refreshArmyIntelligenceSnapshots[\s\S]*\/api\/army-intelligence-refresh-worker[\s\S]*getActiveNativeSessionToken/,
   'API client must invoke the authenticated Army Intelligence decoder worker.',
 )
 assert.match(
@@ -490,7 +490,7 @@ assert.match(
 )
 assert.match(
   worker,
-  /postSnapshots[\s\S]*authToken/,
+  /postSnapshots[\s\S]*sessionToken/,
   'Commissioner decoder worker must write snapshots through the authenticated Apps Script endpoint.',
 )
 assert.match(
@@ -1553,8 +1553,8 @@ assert.match(
 )
 assert.match(
   refresh,
-  /getAction\(apiUrl, 'recentGames', \{ gameType: 'casual' \}\)/,
-  'Refresh script must explicitly query casual recent-game army codes.',
+  /getAction\(apiUrl, 'armyIntelligenceSources', \{ sessionToken \}\)/,
+  'Refresh script must load the backend-authoritative Army Code inventory.',
 )
 assert.doesNotMatch(
   refresh,
@@ -1583,7 +1583,7 @@ assert.match(
 )
 assert.match(
   refresh,
-  /status: 'failed'/,
+  /createSourceRefreshSnapshot\([\s\S]*null,[\s\S]*message,[\s\S]*'failed'/,
   'Refresh script must preserve failed decodes as snapshot rows.',
 )
 assert.match(
@@ -1593,7 +1593,7 @@ assert.match(
 )
 assert.match(
   refresh,
-  /readAuthToken[\s\S]*body\.set\('authToken', authToken\)/,
+  /readSessionToken[\s\S]*body\.set\('sessionToken', sessionToken\)/,
   'Refresh script must support authenticated Commissioner snapshot writes.',
 )
 assert.doesNotMatch(

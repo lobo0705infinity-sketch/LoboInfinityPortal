@@ -9,8 +9,6 @@ import {
 
 const require = createRequire(import.meta.url)
 const CanonicalSnapshotFactory = require('../backend/CanonicalSnapshotFactory.gs')
-const CanonicalSourceDiscovery = require('../backend/CanonicalSourceDiscovery.gs')
-const CanonicalArmyCodeResolver = require('../backend/CanonicalArmyCodeResolver.gs')
 
 const DEFAULT_REFRESH_BATCH_LIMIT = 4
 
@@ -24,7 +22,7 @@ export default async function handler(request, response) {
   try {
     const body = await readJsonBody(request)
     const apiUrl = String(body.apiUrl || process.env.VITE_API_URL || '').trim()
-    const authToken = String(body.authToken || '').trim()
+    const sessionToken = String(body.sessionToken || '').trim()
     const batchLimit = Math.max(1, Number(body.batchLimit) || DEFAULT_REFRESH_BATCH_LIMIT)
     const requestedSectorial = String(body.sectorial || '').trim()
     const requestedSnapshotKeys = Array.isArray(body.snapshotKeys)
@@ -39,13 +37,13 @@ export default async function handler(request, response) {
       return
     }
 
-    if (!authToken) {
-      response.status(401).json({ error: 'Sign in with Google to continue.', success: false })
+    if (!sessionToken) {
+      response.status(401).json({ error: 'Commissioner authentication is required.', success: false })
       return
     }
 
     const sources = filterRequestedSources(
-      await loadLiveSources(apiUrl),
+      await loadAuthoritativeSources(apiUrl, sessionToken),
       {
         sectorial: requestedSectorial,
         excludeSnapshotKeys: excludedSnapshotKeys,
@@ -78,8 +76,8 @@ export default async function handler(request, response) {
           outputDir,
         })
         snapshots.push(
-          CanonicalSnapshotFactory.createRefreshSnapshot(
-            source.snapshotKey,
+          CanonicalSnapshotFactory.createSourceRefreshSnapshot(
+            source,
             result.list,
             '',
             'decoded',
@@ -103,8 +101,8 @@ export default async function handler(request, response) {
         }
         failures.push(failure)
         snapshots.push(
-          CanonicalSnapshotFactory.createRefreshSnapshot(
-            source.snapshotKey,
+          CanonicalSnapshotFactory.createSourceRefreshSnapshot(
+            source,
             null,
             message,
             'failed',
@@ -118,7 +116,7 @@ export default async function handler(request, response) {
     }
 
     if (snapshots.length > 0) {
-      await postSnapshots(apiUrl, snapshots, authToken)
+      await postSnapshots(apiUrl, snapshots, sessionToken)
     }
 
     response.status(200).json({
@@ -173,41 +171,9 @@ function filterRequestedSources(sources, filters) {
   })
 }
 
-async function loadLiveSources(apiUrl) {
-  const [recentGames, casualGames, events] = await Promise.all([
-    getAction(apiUrl, 'recentGames').then((payload) => payload.games || []),
-    getAction(apiUrl, 'recentGames', { gameType: 'casual' }).then((payload) => payload.games || []),
-    getAction(apiUrl, 'events').catch(() => null),
-  ])
-
-  const eventIds = new Set()
-  const eventNames = new Map()
-
-  for (const event of events?.events || []) {
-    if (event?.id) {
-      eventIds.add(event.id)
-      eventNames.set(event.id, event.name || event.eventName || '')
-    }
-  }
-  if (events?.currentEvent?.id) {
-    eventIds.add(events.currentEvent.id)
-    eventNames.set(events.currentEvent.id, events.currentEvent.name || '')
-  }
-
-  const tournamentResults = []
-  for (const eventId of eventIds) {
-    const payload = await getAction(apiUrl, 'teamTournament', { eventId }).catch(() => null)
-    for (const result of payload?.results || []) {
-      tournamentResults.push({ eventId, eventName: eventNames.get(eventId) || '', result })
-    }
-  }
-
-  return CanonicalSourceDiscovery.discover(nodeDiscoveryOptions({
-    deduplicateGames: true,
-    eventNames,
-    games: [...recentGames, ...casualGames],
-    tournamentResults,
-  }))
+async function loadAuthoritativeSources(apiUrl, sessionToken) {
+  const payload = await getAction(apiUrl, 'armyIntelligenceSources', { sessionToken })
+  return Array.isArray(payload.sources) ? payload.sources : []
 }
 
 async function loadSnapshotState(apiUrl) {
@@ -259,10 +225,10 @@ async function getAction(apiUrl, action, params = {}) {
   return JSON.parse(text)
 }
 
-async function postSnapshots(apiUrl, snapshots, authToken) {
+async function postSnapshots(apiUrl, snapshots, sessionToken) {
   const body = new URLSearchParams()
   body.set('action', 'refreshArmyIntelligence')
-  body.set('authToken', authToken)
+  body.set('sessionToken', sessionToken)
   body.set('snapshots', JSON.stringify(snapshots))
 
   const response = await fetch(apiUrl, {
@@ -278,47 +244,4 @@ async function postSnapshots(apiUrl, snapshots, authToken) {
   if (payload.success === false) {
     throw new Error(payload.error || 'refreshArmyIntelligence failed.')
   }
-}
-
-function nodeDiscoveryOptions({ deduplicateGames, eventNames, games, tournamentResults }) {
-  return {
-    deduplicateGames,
-    formatGameType,
-    games,
-    hashArmyCode: sha256,
-    includeArmyListId: false,
-    normalizeAll: false,
-    normalizeKey: slugKey,
-    normalizeString: (value) => String(value || '').trim(),
-    resolveArmyCode: (game, side) => CanonicalArmyCodeResolver.resolveGameSideCode(
-      game,
-      side,
-      (value) => String(value || '').trim(),
-    ),
-    resolveEventName: (game) => game.eventName || eventNames.get(game.eventId) || game.eventId || '',
-    tournamentResult,
-    tournamentResults,
-  }
-}
-
-function tournamentResult(result, player) {
-  const winner = String(result.winner || '').trim()
-  if (!winner) return ''
-  if (winner.toLowerCase() === 'draw') return 'Draw'
-  return slugKey(winner) === slugKey(player) ? 'Win' : 'Loss'
-}
-
-function formatGameType(value) {
-  const normalized = String(value || '').toLowerCase()
-  if (normalized === 'casual') return 'Casual'
-  if (normalized === 'tournament') return 'Tournament'
-  return 'League'
-}
-
-function slugKey(value) {
-  return String(value || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-')
-}
-
-function sha256(value) {
-  return require('node:crypto').createHash('sha256').update(String(value)).digest('hex')
 }
