@@ -523,6 +523,7 @@ export type ArmyIntelligenceDecodedList = {
 }
 
 export type ArmyIntelligenceList = {
+  armyCode: string
   armyCodeHash: string
   date: string
   decoded: ArmyIntelligenceDecodedList | null
@@ -5759,6 +5760,7 @@ function normalizeArmyIntelligenceList(item: unknown): ArmyIntelligenceList {
   const status = getString(record, 'status')
 
   return {
+    armyCode: getString(record, 'armyCode'),
     armyCodeHash: getString(record, 'armyCodeHash'),
     date: getString(record, 'date'),
     decoded: record.decoded ? normalizeArmyIntelligenceDecodedList(record.decoded) : null,

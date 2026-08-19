@@ -6,7 +6,7 @@ import Skeleton from '../components/Skeleton'
 import lieutenantOrderReference from '../../docs/mockups/lieutenant-order-reference.png'
 import { CANONICAL_ARMY_REGISTRY } from '../config/armies'
 import { readArmyIntelligenceFactionParam } from '../services/armyIntelligenceNavigation'
-import { getCanonicalArmyListBySourceId } from '../services/armyIntelligenceExplorer'
+import { getCanonicalArmyListForIntelligenceSource } from '../services/armyIntelligenceExplorer'
 import { getArmyParentFaction, normalizeArmyForDisplay } from '../services/armyIdentity'
 import { getInfinityArmyTarget } from '../services/infinityArmyLinks'
 import {
@@ -1363,7 +1363,7 @@ function buildExplorerRowsFromSelectedLists(
   canonicalArmyLists: ArmyIntelligenceArmyList[],
 ): ArmyIntelligenceArmyList[] {
   return lists.map((list, index) => {
-    const canonicalList = getCanonicalArmyListBySourceId(list.sourceId, canonicalArmyLists)
+    const canonicalList = getCanonicalArmyListForIntelligenceSource(list, canonicalArmyLists)
 
     return {
       id: canonicalList?.id ?? getStableExplorerRowId(list, index),
