@@ -7,11 +7,12 @@ import {
   type ReactNode,
 } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigationType, useParams } from 'react-router-dom'
-import AuthProvider from './auth/AuthContext'
+import AuthProvider, { useAuth } from './auth/AuthContext'
 import ApplicationErrorBoundary from './components/ApplicationErrorBoundary'
 import Breadcrumbs from './components/Breadcrumbs'
 import DeepLinkRedirect from './components/DeepLinkRedirect'
 import Header from './components/Header'
+import CommissionerLogin from './components/CommissionerLogin'
 import GlobalFooter from './components/GlobalFooter'
 import Loading from './components/Loading'
 import RouteMeta from './components/RouteMeta'
@@ -47,7 +48,6 @@ const LeagueOperations = lazyRoute('LeagueOperations', () => import('./pages/Lea
 const MatchFinder = lazyRoute('MatchFinder', () => import('./pages/MatchFinder'))
 const MissionProfile = lazyRoute('MissionProfile', () => import('./pages/MissionProfile'))
 const Missions = lazyRoute('Missions', () => import('./pages/Missions'))
-const MyProfile = lazyRoute('MyProfile', () => import('./pages/MyProfile'))
 const PastEvents = lazyRoute('PastEvents', () => import('./pages/PastEvents'))
 const PlayerComparison = lazyRoute('PlayerComparison', () => import('./pages/PlayerComparison'))
 const PlayerProfile = lazyRoute('PlayerProfile', () => import('./pages/PlayerProfile'))
@@ -74,8 +74,14 @@ function App() {
 }
 
 function AuthShell() {
+  const auth = useAuth()
   const location = useLocation()
   const routeKey = `${location.pathname}${location.search}${location.hash}`
+  const commissionerRoute =
+    location.pathname.startsWith('/commissioner') ||
+    location.pathname === '/diagnostics' ||
+    location.pathname === '/integrity' ||
+    location.pathname === '/automation'
 
   useEffect(() => {
     recordRouteDiagnostic({
@@ -100,7 +106,7 @@ function AuthShell() {
           <Breadcrumbs />
           <ApplicationErrorBoundary componentName="RouteContent" resetKey={routeKey}>
             <Suspense fallback={<RouteLoading />}>
-              <Routes>
+              {commissionerRoute && !auth.authenticated ? <CommissionerLogin /> : <Routes>
                 <Route path="/" element={<MeasuredRoute name="Dashboard"><Dashboard /></MeasuredRoute>} />
                 <Route path="/standings" element={<MeasuredRoute name="Standings"><Standings /></MeasuredRoute>} />
                 <Route path="/league-operations" element={<MeasuredRoute name="LeagueOperations"><LeagueOperations /></MeasuredRoute>} />
@@ -155,7 +161,7 @@ function AuthShell() {
                 <Route path="/integrity" element={<MeasuredRoute name="LeagueIntegrity"><LeagueIntegrity /></MeasuredRoute>} />
                 <Route path="/alerts" element={<Navigate replace to="/dashboard" />} />
                 <Route path="/notifications" element={<Navigate replace to="/dashboard" />} />
-                <Route path="/profile" element={<MeasuredRoute name="MyProfile"><MyProfile /></MeasuredRoute>} />
+                <Route path="/profile" element={<Navigate replace to="/players" />} />
                 <Route path="/achievement/:achievementId" element={<DeepLinkRedirect target="achievement" />} />
                 <Route path="/schedule" element={<MeasuredRoute name="Schedule"><Schedule /></MeasuredRoute>} />
                 <Route path="/timeline" element={<Navigate replace to="/dashboard" />} />
@@ -166,7 +172,7 @@ function AuthShell() {
                 <Route path="/army-list/:id" element={<DeepLinkRedirect target="armyLists" />} />
                 <Route path="/army-lists/submit" element={<MeasuredRoute name="SubmitArmyList"><SubmitArmyList /></MeasuredRoute>} />
                 <Route path="/rules" element={<MeasuredRoute name="Rules"><Rules /></MeasuredRoute>} />
-              </Routes>
+              </Routes>}
             </Suspense>
           </ApplicationErrorBoundary>
           <GlobalFooter />

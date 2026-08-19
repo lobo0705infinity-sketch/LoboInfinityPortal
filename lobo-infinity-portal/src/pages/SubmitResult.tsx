@@ -11,7 +11,6 @@ import {
   getCanonicalMissionName,
   getCanonicalMissionOptions,
 } from '../config/missions'
-import { GOOGLE_FORM_URLS } from '../config/googleForms'
 import './SubmitResult.css'
 import {
   apiClient,
@@ -70,64 +69,7 @@ type PickerOption = {
 }
 
 function SubmitResult() {
-  return (
-    <main className="portal-shell">
-      <section className="page-header" aria-labelledby="submit-game-title">
-        <p className="eyebrow">Game Submission</p>
-        <h1 id="submit-game-title">Submit Game</h1>
-        <p>Choose the type of game you want to submit.</p>
-      </section>
-
-      <section className="operations-grid" aria-label="Google Forms game submissions">
-        <GoogleFormLauncher
-          buttonLabel="Submit League Game"
-          description="Submit an official League game."
-          label="League Game"
-          url={GOOGLE_FORM_URLS.league}
-        />
-        <GoogleFormLauncher
-          buttonLabel="Submit Team Tournament Game"
-          description="Submit an official Team Tournament game."
-          label="Team Tournament"
-          url={GOOGLE_FORM_URLS.teamTournament}
-        />
-        <GoogleFormLauncher
-          buttonLabel="Submit Casual Game"
-          description="Submit a Casual game for lifetime statistics."
-          label="Casual Game"
-          url={GOOGLE_FORM_URLS.casual}
-        />
-      </section>
-    </main>
-  )
-}
-
-function GoogleFormLauncher({
-  buttonLabel,
-  description,
-  label,
-  url,
-}: {
-  buttonLabel: string
-  description: string
-  label: string
-  url: string
-}) {
-  return (
-    <article className="panel operations-panel">
-      <p className="eyebrow">Google Form</p>
-      <h2>{label}</h2>
-      <p>{description}</p>
-      <a
-        className="submit-match-button"
-        href={url}
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        {buttonLabel}
-      </a>
-    </article>
-  )
+  return <LegacySubmitResult />
 }
 
 export function LegacySubmitResult() {
@@ -534,12 +476,6 @@ export function LegacySubmitResult() {
           </Link>
         </section>
 
-        {!auth.authenticated ? (
-          <section className="dashboard-state" aria-label="Authentication required">
-            <p role="alert">Sign in with a Portal account to submit a casual game.</p>
-          </section>
-        ) : null}
-
         {state.status === 'loading' ? (
           <section className="panel" aria-label="Submission options loading">
             <Skeleton label="Submission options loading" rows={4} />
@@ -567,8 +503,12 @@ export function LegacySubmitResult() {
               value={casualResult.player}
             />
           ) : (
-            <ReadOnlyField
-              label="Player"
+            <SearchableSelect
+              label="Your Player"
+              onChange={(value) => updateCasualField('player', value)}
+              options={allPlayerOptions}
+              placeholder="Search active players"
+              required
               value={casualResult.player}
             />
           )}
@@ -693,7 +633,7 @@ export function LegacySubmitResult() {
             />
           </label>
           <div className="army-list-form-actions">
-            <button disabled={!auth.authenticated || state.status === 'submitting'} type="submit">
+            <button disabled={state.status === 'submitting'} type="submit">
               {state.status === 'submitting' ? 'Submitting...' : 'Submit Game'}
             </button>
             {state.status === 'success' ? <p role="status">{state.message}</p> : null}
@@ -713,7 +653,7 @@ export function LegacySubmitResult() {
         commissionerOverride={isCommissionerOverride}
         commissionerReason={commissionerReason}
         data={teamTournament}
-        disabled={!auth.authenticated || state.status === 'loading'}
+        disabled={state.status === 'loading'}
         eventHome={eventHome}
         isCommissioner={canOverrideOpponentFilter}
         setCommissionerMode={setCommissionerMode}
@@ -786,12 +726,6 @@ export function LegacySubmitResult() {
         </Link>
       </section>
 
-      {!auth.authenticated ? (
-        <section className="dashboard-state" aria-label="Authentication required">
-          <p role="alert">Sign in with an enabled league account to submit a result.</p>
-        </section>
-      ) : null}
-
       {state.status === 'loading' ? (
         <section className="panel" aria-label="Submission context loading">
           <Skeleton label="Submission context loading" rows={4} />
@@ -845,9 +779,22 @@ export function LegacySubmitResult() {
             value={leagueResult.player}
           />
         ) : (
-          <ReadOnlyField
-            label="Player"
-            value={leagueResult.player || auth.user.canonicalPlayer || auth.user.leaguePlayer}
+          <SearchableSelect
+            label="Your Player"
+            onChange={(value) => {
+              const registration = eventHome?.registration.registrations.find((entry) => (
+                sameValue(entry.player, value) || sameValue(entry.displayName, value)
+              ))
+              updateField('player', value)
+              updateField('division', registration?.notes || getPlayerOptionMeta(allPlayerOptions, value))
+              updateField('opponent', '')
+              updateField('winner', '')
+              setShowAllOpponents(false)
+            }}
+            options={allPlayerOptions}
+            placeholder="Search active players"
+            required
+            value={leagueResult.player}
           />
         )}
         <SearchableSelect
@@ -971,7 +918,7 @@ export function LegacySubmitResult() {
           />
         </label>
         <div className="army-list-form-actions">
-          <button disabled={!auth.authenticated || state.status === 'submitting'} type="submit">
+          <button disabled={state.status === 'submitting'} type="submit">
             {state.status === 'submitting' ? 'Submitting...' : 'Submit Game'}
           </button>
           {state.status === 'success' ? <p role="status">{state.message}</p> : null}

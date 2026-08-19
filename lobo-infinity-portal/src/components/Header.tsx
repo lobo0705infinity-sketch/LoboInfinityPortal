@@ -129,7 +129,7 @@ function Header() {
               <NotificationCenter compact />
             </>
           ) : null}
-          <ProfileMenu mobile />
+          {auth.authenticated ? <ProfileMenu mobile /> : null}
         </div>
       </div>
 
@@ -165,7 +165,7 @@ function Header() {
         <GlobalSearch />
         <QuickJump />
         <NotificationCenter />
-        <ProfileMenu />
+        {auth.authenticated ? <ProfileMenu /> : null}
         <div className="header-status" aria-label="Portal status">
           <span className="status-light" />
           <span>Live</span>

@@ -1254,19 +1254,14 @@ function handleApiPost(e, action) {
     case "session":
       return getAuthSession(e);
 
-    case "nativeLogin":
-      return nativeLogin(e);
+    case "commissionerLogin":
+      return commissionerLogin(e);
 
-    case "nativeLogout":
-      return nativeLogout(e);
-
-    case "setNativeUserPassword":
-      return requireApiPermission(e, "manageSettings", function() {
-        return setNativeUserPassword(e);
-      });
+    case "commissionerLogout":
+      return commissionerLogout(e);
 
     case "submitArmyList":
-      return legacyStandaloneArmyListWorkflowDisabled();
+      return submitArmyList(e);
 
     case "submitLeagueResult":
       return submitLeagueResult(e);

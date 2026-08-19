@@ -7,7 +7,7 @@
 
 function submitLeagueResult(e) {
 
-  return requireApiPermission(e, "canSubmitLeagueGames", function(auth) {
+  const auth = getRequestUser(e);
     const params =
       getApiParameters(e);
 
@@ -38,13 +38,12 @@ function submitLeagueResult(e) {
       player: submission.context.player,
       opponent: submission.context.opponent
     });
-  });
 
 }
 
 function submitCasualResult(e) {
 
-  return requireApiPermission(e, "canSubmitCasualGames", function(auth) {
+  const auth = getRequestUser(e);
     const params =
       getApiParameters(e);
 
@@ -76,7 +75,6 @@ function submitCasualResult(e) {
       player: submission.context.player,
       opponent: submission.context.opponent
     });
-  });
 
 }
 

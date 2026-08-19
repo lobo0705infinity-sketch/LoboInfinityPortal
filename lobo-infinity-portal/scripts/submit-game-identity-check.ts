@@ -34,20 +34,20 @@ assert.match(
 
 assert.match(
   resultSubmissionSource,
-  /submitCasualResult[\s\S]*requireApiPermission\(e,\s*"canSubmitCasualGames"/,
-  'Casual game submission must not use the legacy League Member submitLists permission.',
+  /function submitCasualResult\(e\)[\s\S]*const auth = getRequestUser\(e\);/,
+  'Casual game submission must accept anonymous requests while retaining optional Commissioner context.',
 )
 
 assert.match(
   resultSubmissionSource,
-  /submitLeagueResult[\s\S]*requireApiPermission\(e,\s*"canSubmitLeagueGames"/,
-  'League game submission must keep a League Member authorization requirement.',
+  /function submitLeagueResult\(e\)[\s\S]*const auth = getRequestUser\(e\);/,
+  'League game submission must accept explicit Player identity without player authentication.',
 )
 
 assert.match(
   apiSource,
-  /case "submitArmyList":[\s\S]*requireApiPermission\(e,\s*"canSubmitArmyLists"/,
-  'Army list submission must not use the legacy League Member submitLists permission.',
+  /case "submitArmyList":[\s\S]*return submitArmyList\(e\);/,
+  'Army list submission must accept an explicit Player identity without player authentication.',
 )
 
 assert.match(

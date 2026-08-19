@@ -97,12 +97,11 @@ export type NativeLoginResult = AuthSession & {
   success: boolean
 }
 
-export async function nativeLogin(
-  email: string,
+export async function commissionerLogin(
   password: string,
   options: ApiOptions = {},
 ): Promise<NativeLoginResult> {
-  const payload = await postRequest('nativeLogin', options, { email, password })
+  const payload = await postRequest('commissionerLogin', options, { password })
   const record = asRecord(payload)
 
   return {
@@ -120,11 +119,11 @@ export async function nativeLogin(
   }
 }
 
-export async function nativeLogout(
+export async function commissionerLogout(
   sessionToken: string,
   options: ApiOptions = {},
 ): Promise<void> {
-  await postRequest('nativeLogout', options, { sessionToken })
+  await postRequest('commissionerLogout', options, { sessionToken })
 }
 
 export async function getSettings(

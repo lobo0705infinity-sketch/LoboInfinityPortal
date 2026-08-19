@@ -221,14 +221,14 @@ assert.match(
 
 assert.match(
   resultSubmissionApi,
-  /submitCasualResult[\s\S]*requireApiPermission\(e,\s*"canSubmitCasualGames"/,
-  'Casual result submission must enforce the casual-game permission on the backend.',
+  /function submitCasualResult\(e\)[\s\S]*const auth = getRequestUser\(e\);/,
+  'Casual result submission must allow anonymous Player selection.',
 )
 
 assert.match(
   resultSubmissionApi,
-  /submitLeagueResult[\s\S]*requireApiPermission\(e,\s*"canSubmitLeagueGames"/,
-  'League result submission must enforce the league-game permission on the backend.',
+  /function submitLeagueResult\(e\)[\s\S]*const auth = getRequestUser\(e\);/,
+  'League result submission must allow anonymous Player selection.',
 )
 
 assert.match(

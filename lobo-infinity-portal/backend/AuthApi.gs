@@ -85,10 +85,7 @@ function getAuthSession(e) {
         auth.authenticated
           ? "authenticated"
           : (auth.code || "unauthenticated"),
-      credentialPresent: !!(
-        e && e.parameter &&
-        (e.parameter.authToken || e.parameter.idToken || e.parameter.credential)
-      )
+      credentialPresent: !!(e && e.parameter && e.parameter.sessionToken)
     });
 
     return jsonOutput({
@@ -99,9 +96,7 @@ function getAuthSession(e) {
       diagnostics: auth.diagnostics || {},
       user: auth.user,
       permissions: getRolePermissions(auth.user.role),
-      oauthConfigured:
-        getRequestOAuthClientId(e) !== "" ||
-        isGoogleOAuthConfigured(),
+      oauthConfigured: false,
       error: auth.error || ""
     });
   }
@@ -125,19 +120,13 @@ function getAuthSession(e) {
 
 }
 
-function nativeLogin(e) {
+function commissionerLogin(e) {
 
-  const email =
-    getAuthString(
-      e && e.parameter
-        ? e.parameter.email
-        : ""
-    );
   const password =
     e && e.parameter && e.parameter.password !== undefined
       ? String(e.parameter.password)
       : "";
-  const session = createNativeSession(email, password);
+  const session = createCommissionerSession(password);
 
   if (!session)
     return jsonOutput({
@@ -147,7 +136,7 @@ function nativeLogin(e) {
       stage: "credentialVerification",
       user: buildGuestUser(),
       permissions: getRolePermissions(USER_ROLES.GUEST),
-      error: "Invalid email or password."
+      error: "Invalid Commissioner password."
     });
 
   return jsonOutput({
@@ -163,7 +152,7 @@ function nativeLogin(e) {
 
 }
 
-function nativeLogout(e) {
+function commissionerLogout(e) {
 
   const token =
     getAuthString(
@@ -820,6 +809,15 @@ function getRequestUser(e) {
       diagnostics: {}
     };
   }
+
+  return {
+    authenticated: false,
+    code: "AUTH_SESSION_MISSING",
+    stage: "sessionValidation",
+    user: buildGuestUser(),
+    error: "Commissioner authentication is required.",
+    diagnostics: {}
+  };
 
   const authTimings = [];
 
@@ -2337,40 +2335,46 @@ function constantTimeByteArraysEqual(left, right) {
 
 }
 
-function createNativeSession(email, password) {
+function createCommissionerSession(password) {
 
-  const normalizedEmail =
-    getAuthString(email)
-      .toLowerCase();
+  const sheet = ensureUsersSheet();
+  const columns = getUsersColumns(sheet);
+  const values = sheet.getDataRange().getValues();
+  let commissioner = null;
 
-  if (
-    normalizedEmail === "" ||
-    !verifyUserPasswordByEmail(normalizedEmail, password)
-  )
-    return null;
+  for (let index = 1; index < values.length; index++) {
+    if (
+      normalizeUserRole(values[index][columns.role]) !== USER_ROLES.COMMISSIONER ||
+      !getAuthBoolean(values[index][columns.enabled])
+    )
+      continue;
 
-  const user = getUserByEmail(normalizedEmail);
+    const storedHash = getAuthString(values[index][columns.passwordHash]);
 
-  if (!user.enabled || user.email !== normalizedEmail)
+    if (verifyUserPasswordHash(password, storedHash)) {
+      commissioner = readUserRow(sheet, columns, index + 1);
+      break;
+    }
+  }
+
+  if (!commissioner)
     return null;
 
   const token = generateNativeSessionToken();
   const expiresAt = Date.now() + NATIVE_SESSION_LIFETIME_MS;
 
-  PropertiesService
-    .getScriptProperties()
-    .setProperty(
-      getNativeSessionPropertyKey(token),
-      JSON.stringify({
-        email: normalizedEmail,
-        expiresAt: expiresAt
-      })
-    );
+  PropertiesService.getScriptProperties().setProperty(
+    getNativeSessionPropertyKey(token),
+    JSON.stringify({
+      email: getAuthString(commissioner.email).toLowerCase(),
+      expiresAt: expiresAt
+    })
+  );
 
   return {
     token: token,
     expiresAt: new Date(expiresAt).toISOString(),
-    user: user
+    user: commissioner
   };
 
 }
@@ -2405,7 +2409,11 @@ function validateNativeSession(token) {
 
     const user = getUserByEmail(email);
 
-    if (!user.enabled || user.email !== email)
+    if (
+      !user.enabled ||
+      user.email !== email ||
+      normalizeUserRole(user.role) !== USER_ROLES.COMMISSIONER
+    )
       return null;
 
     return {
@@ -2469,34 +2477,6 @@ function destroyNativeSessionsByEmail(email) {
   });
 
   return destroyed;
-
-}
-
-function setNativeUserPassword(e) {
-
-  const email =
-    getAuthString(
-      e && e.parameter
-        ? e.parameter.email
-        : ""
-    ).toLowerCase();
-  const newPassword =
-    e && e.parameter && e.parameter.newPassword !== undefined
-      ? String(e.parameter.newPassword)
-      : "";
-
-  if (!setUserPasswordByEmail(email, newPassword))
-    return jsonOutput({
-      success: false,
-      code: "USER_NOT_FOUND",
-      error: "Existing portal user account not found."
-    });
-
-  destroyNativeSessionsByEmail(email);
-
-  return jsonOutput({
-    success: true
-  });
 
 }
 

@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import {
@@ -44,7 +44,7 @@ const initialSubmission: ArmyListSubmission = {
 
 function SubmitArmyList() {
   const auth = useAuth()
-  const playerName = auth.user.canonicalPlayer || auth.user.leaguePlayer
+  const [players, setPlayers] = useState<string[]>([])
   const [submission, setSubmission] =
     useState<ArmyListSubmission>(initialSubmission)
   const [state, setState] = useState<SubmissionState>({
@@ -56,6 +56,16 @@ function SubmitArmyList() {
     auth.hasPermission('viewOperations') ||
     auth.isAtLeastRole('Assistant Commissioner')
 
+  useEffect(() => {
+    const controller = new AbortController()
+    apiClient.getPlayers({ signal: controller.signal }).then((divisions) => {
+      setPlayers(Array.from(new Set(divisions.flatMap((division) =>
+        division.standings.map((standing) => standing.player).filter(Boolean),
+      ))).sort((left, right) => left.localeCompare(right)))
+    }).catch(() => undefined)
+    return () => controller.abort()
+  }, [])
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setState({
@@ -65,8 +75,7 @@ function SubmitArmyList() {
     try {
       await apiClient.submitArmyList({
         ...submission,
-        player: submission.player.trim() || playerName,
-        submitterEmail: auth.user.email,
+        player: submission.player.trim(),
         validationOverride: state.status === 'warning' && overrideConfirmed,
         validationOverrideReason: overrideReason,
       })
@@ -135,26 +144,14 @@ function SubmitArmyList() {
         </Link>
       </section>
 
-      {!auth.authenticated ? (
-        <section className="dashboard-state" aria-label="Authentication required">
-          <p role="alert">
-            Sign in with a Portal account to submit an army list.
-          </p>
-        </section>
-      ) : null}
-
       <form className="army-list-form panel" onSubmit={(event) => void handleSubmit(event)}>
-        <FormField
-          label="Player"
+        <SelectField
+          label="Your Player"
           onChange={(value) => updateField('player', value)}
+          options={players}
+          placeholder="Select player"
           required
-          value={submission.player || playerName}
-        />
-        <FormField
-          label="Google Email"
-          onChange={() => undefined}
-          type="email"
-          value={auth.user.email}
+          value={submission.player}
         />
         <SelectField
           label="Faction"
@@ -244,7 +241,7 @@ function SubmitArmyList() {
 
         <div className="army-list-form-actions">
           <button
-            disabled={state.status === 'submitting' || !auth.authenticated}
+            disabled={state.status === 'submitting'}
             type="submit"
           >
             {state.status === 'submitting'
