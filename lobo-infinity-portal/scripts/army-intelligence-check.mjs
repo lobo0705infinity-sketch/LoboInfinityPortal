@@ -11,6 +11,7 @@ const armyIdentity = read('src/services/armyIdentity.ts')
 const interactiveMetricCard = read('src/components/InteractiveMetricCard.tsx')
 const page = read('src/pages/ArmyIntelligence.tsx')
 const commissioner = read('src/pages/CommissionerDashboard.tsx')
+const commissionerSystem = read('src/pages/CommissionerSystem.tsx')
 const decoder = read('scripts/infinity-army-decode.mjs')
 const refresh = read('scripts/refresh-army-intelligence.mjs')
 const worker = read('api/army-intelligence-refresh-worker.mjs')
@@ -1545,6 +1546,21 @@ assert.doesNotMatch(
   commissioner,
   /Refresh Army Intelligence/,
   'Commissioner dashboard must not expose a manual Refresh Army Intelligence maintenance button.',
+)
+assert.match(
+  commissionerSystem,
+  /isAtLeastRole\('Commissioner'\)[\s\S]*Refresh Army Intelligence/,
+  'Commissioner System must expose Army Intelligence refresh only to a Commissioner.',
+)
+assert.match(
+  commissionerSystem,
+  /refreshArmyIntelligenceSnapshots\([\s\S]*excludeSnapshotKeys:[\s\S]*if \(!result\.hasMore\) break/,
+  'Commissioner System must process every protected Vercel refresh batch.',
+)
+assert.match(
+  commissionerSystem,
+  /getArmyIntelligence\(\)[\s\S]*summary\.sectorials\.length[\s\S]*processed[\s\S]*decoded[\s\S]*failed[\s\S]*sectorials/,
+  'Commissioner System must report the rebuilt Army Intelligence result.',
 )
 assert.match(
   refresh,

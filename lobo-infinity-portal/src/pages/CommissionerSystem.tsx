@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import Loading from '../components/Loading'
+import { apiClient } from '../services/api'
 
 const systemWorkflows = [
   {
@@ -60,6 +62,45 @@ const emergencyWorkflows = [
 
 function CommissionerSystem() {
   const auth = useAuth()
+  const [refreshingArmyIntelligence, setRefreshingArmyIntelligence] = useState(false)
+  const [armyIntelligenceMessage, setArmyIntelligenceMessage] = useState('')
+
+  async function refreshArmyIntelligence() {
+    setRefreshingArmyIntelligence(true)
+    setArmyIntelligenceMessage('')
+
+    try {
+      const processedSnapshotKeys: string[] = []
+      let decoded = 0
+      let failed = 0
+
+      while (true) {
+        const result = await apiClient.refreshArmyIntelligenceSnapshots({
+          batchLimit: 4,
+          excludeSnapshotKeys: processedSnapshotKeys,
+        })
+
+        decoded += result.decoded
+        failed += result.failed
+        processedSnapshotKeys.push(...result.processed.map((item) => item.snapshotKey))
+
+        if (!result.hasMore) break
+      }
+
+      const intelligence = await apiClient.getArmyIntelligence()
+      const sectorials = intelligence.summary.sectorials.length
+      const processed = decoded + failed
+      setArmyIntelligenceMessage(
+        `Army Intelligence refreshed: ${processed} processed, ${decoded} decoded, ${failed} failed, ${sectorials} sectorials.`,
+      )
+    } catch (error) {
+      setArmyIntelligenceMessage(
+        error instanceof Error ? error.message : 'Army Intelligence refresh failed.',
+      )
+    } finally {
+      setRefreshingArmyIntelligence(false)
+    }
+  }
 
   if (auth.status === 'loading') {
     return (
@@ -133,6 +174,28 @@ function CommissionerSystem() {
           <Link to="/commissioner/automation">Open Queue Recovery</Link>
         </div>
       </section>
+
+      {auth.isAtLeastRole('Commissioner') ? (
+        <section className="panel operations-panel" aria-labelledby="army-intelligence-refresh-title">
+          <div className="panel-heading">
+            <p className="eyebrow">Army Intelligence</p>
+            <h2 id="army-intelligence-refresh-title">Decoded Snapshot Maintenance</h2>
+            <p>Decode authoritative Army Codes and rebuild the persisted Army Intelligence read model.</p>
+          </div>
+          <div className="operations-actions">
+            <button
+              disabled={refreshingArmyIntelligence}
+              onClick={() => void refreshArmyIntelligence()}
+              type="button"
+            >
+              {refreshingArmyIntelligence ? 'Refreshing Army Intelligence...' : 'Refresh Army Intelligence'}
+            </button>
+          </div>
+          {armyIntelligenceMessage ? (
+            <p className="operations-feedback" role="status">{armyIntelligenceMessage}</p>
+          ) : null}
+        </section>
+      ) : null}
     </main>
   )
 }
