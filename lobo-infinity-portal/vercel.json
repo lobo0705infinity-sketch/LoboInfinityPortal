@@ -1,6 +1,6 @@
 {
   "installCommand": "npm install",
-  "buildCommand": "npm run build:vercel",
+  "buildCommand": "npm run release:fingerprint && tsc -b && vite build",
   "outputDirectory": "dist",
   "routes": [
     {
