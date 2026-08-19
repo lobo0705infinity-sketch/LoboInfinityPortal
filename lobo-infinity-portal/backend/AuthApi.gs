@@ -152,6 +152,63 @@ function commissionerLogin(e) {
 
 }
 
+function getCommissionerPasswordStatus() {
+
+  return jsonOutput({
+    success: true,
+    configured: commissionerPasswordConfigured()
+  });
+
+}
+
+function setupCommissionerPassword(e) {
+
+  const password =
+    e && e.parameter && e.parameter.password !== undefined
+      ? String(e.parameter.password)
+      : "";
+  const lock = LockService.getScriptLock();
+
+  lock.waitLock(30000);
+
+  try {
+    if (commissionerPasswordConfigured())
+      return jsonOutput({
+        success: false,
+        authenticated: false,
+        code: "AUTH_COMMISSIONER_ALREADY_CONFIGURED",
+        stage: "credentialSetup",
+        user: buildGuestUser(),
+        permissions: getRolePermissions(USER_ROLES.GUEST),
+        error: "Commissioner access is already configured."
+      });
+
+    const passwordHash = hashUserPassword(password);
+
+    PropertiesService.getScriptProperties().setProperty(
+      COMMISSIONER_PASSWORD_HASH_PROPERTY,
+      passwordHash
+    );
+
+    const session = createCommissionerSessionRecord();
+
+    return jsonOutput({
+      success: true,
+      authenticated: true,
+      code: "AUTH_OK",
+      stage: "sessionValidation",
+      sessionToken: session.token,
+      expiresAt: session.expiresAt,
+      user: session.user,
+      permissions: getRolePermissions(session.user.role)
+    });
+  }
+  finally {
+    lock.releaseLock();
+  }
+
+}
+
 function commissionerLogout(e) {
 
   const token =
@@ -2196,6 +2253,7 @@ const USER_PASSWORD_HASH_ITERATIONS = 20000;
 const USER_PASSWORD_HASH_BYTES = 32;
 const NATIVE_SESSION_PROPERTY_PREFIX = "native-session:";
 const NATIVE_SESSION_LIFETIME_MS = 7 * 24 * 60 * 60 * 1000;
+const COMMISSIONER_PASSWORD_HASH_PROPERTY = "commissioner:passwordHash";
 
 function hashUserPassword(password) {
 
@@ -2337,36 +2395,38 @@ function constantTimeByteArraysEqual(left, right) {
 
 function createCommissionerSession(password) {
 
-  const sheet = ensureUsersSheet();
-  const columns = getUsersColumns(sheet);
-  const values = sheet.getDataRange().getValues();
-  let commissioner = null;
+  const storedHash =
+    PropertiesService.getScriptProperties().getProperty(
+      COMMISSIONER_PASSWORD_HASH_PROPERTY
+    );
 
-  for (let index = 1; index < values.length; index++) {
-    if (
-      normalizeUserRole(values[index][columns.role]) !== USER_ROLES.COMMISSIONER ||
-      !getAuthBoolean(values[index][columns.enabled])
-    )
-      continue;
-
-    const storedHash = getAuthString(values[index][columns.passwordHash]);
-
-    if (verifyUserPasswordHash(password, storedHash)) {
-      commissioner = readUserRow(sheet, columns, index + 1);
-      break;
-    }
-  }
-
-  if (!commissioner)
+  if (!verifyUserPasswordHash(password, storedHash))
     return null;
+
+  return createCommissionerSessionRecord();
+
+}
+
+function commissionerPasswordConfigured() {
+
+  return getAuthString(
+    PropertiesService.getScriptProperties().getProperty(
+      COMMISSIONER_PASSWORD_HASH_PROPERTY
+    )
+  ) !== "";
+
+}
+
+function createCommissionerSessionRecord() {
 
   const token = generateNativeSessionToken();
   const expiresAt = Date.now() + NATIVE_SESSION_LIFETIME_MS;
+  const commissioner = buildCommissionerUser();
 
   PropertiesService.getScriptProperties().setProperty(
     getNativeSessionPropertyKey(token),
     JSON.stringify({
-      email: getAuthString(commissioner.email).toLowerCase(),
+      commissioner: true,
       expiresAt: expiresAt
     })
   );
@@ -2395,11 +2455,10 @@ function validateNativeSession(token) {
 
   try {
     const record = JSON.parse(stored);
-    const email = getAuthString(record.email).toLowerCase();
     const expiresAt = Number(record.expiresAt);
 
     if (
-      email === "" ||
+      record.commissioner !== true ||
       !Number.isFinite(expiresAt) ||
       expiresAt <= Date.now()
     ) {
@@ -2407,18 +2466,9 @@ function validateNativeSession(token) {
       return null;
     }
 
-    const user = getUserByEmail(email);
-
-    if (
-      !user.enabled ||
-      user.email !== email ||
-      normalizeUserRole(user.role) !== USER_ROLES.COMMISSIONER
-    )
-      return null;
-
     return {
       expiresAt: new Date(expiresAt).toISOString(),
-      user: user
+      user: buildCommissionerUser()
     };
   }
   catch (err) {
@@ -3745,6 +3795,18 @@ function buildGuestUser() {
     lastPage: "",
     searchHistory: []
   };
+
+}
+
+function buildCommissionerUser() {
+
+  const user = buildGuestUser();
+
+  user.displayName = "Commissioner";
+  user.role = USER_ROLES.COMMISSIONER;
+  user.enabled = true;
+
+  return user;
 
 }
 

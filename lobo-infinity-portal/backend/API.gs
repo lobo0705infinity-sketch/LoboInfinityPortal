@@ -638,6 +638,9 @@ function handleApiGet(e, action) {
     case "session":
       return getAuthSession(e);
 
+    case "commissionerPasswordStatus":
+      return getCommissionerPasswordStatus();
+
     case "myProfile":
       return getMyProfile(e);
 
@@ -1256,6 +1259,12 @@ function handleApiPost(e, action) {
 
     case "commissionerLogin":
       return commissionerLogin(e);
+
+    case "commissionerPasswordStatus":
+      return getCommissionerPasswordStatus();
+
+    case "setupCommissionerPassword":
+      return setupCommissionerPassword(e);
 
     case "commissionerLogout":
       return commissionerLogout(e);

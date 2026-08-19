@@ -122,9 +122,12 @@ function Sidebar() {
           items={resolvedCommunityItems}
           label="Community"
         />
-        {auth.isAtLeastRole('Commissioner') ? (
-          <SidebarSection items={commissionerItems} label="Commissioner" />
-        ) : null}
+        <SidebarSection
+          items={auth.isAtLeastRole('Commissioner')
+            ? commissionerItems
+            : [{ icon: 'dashboard', label: 'Commissioner', to: '/commissioner' }]}
+          label="Commissioner"
+        />
       </nav>
     </aside>
   )

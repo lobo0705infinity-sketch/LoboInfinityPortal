@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import type { AuthSession, PortalPermissions, PortalUser, UserRole } from '../services/api'
-import { commissionerLogin, commissionerLogout, getSession } from '../services/lightApi'
+import { commissionerLogin, commissionerLogout, getSession, setupCommissionerPassword } from '../services/lightApi'
 import { getActiveNativeSessionToken, setApiNativeSessionToken, setSessionRecoveryHandler } from '../services/apiCore'
 import type { UnifiedIdentityReport } from '../services/identity/IdentityService'
 
@@ -17,6 +17,7 @@ type AuthContextValue = {
   isAtLeastRole: (role: UserRole) => boolean
   permissions: PortalPermissions
   refreshSession: () => Promise<boolean>
+  createCommissionerPassword: (password: string) => Promise<boolean>
   signInWithPassword: (password: string) => Promise<boolean>
   signOut: () => Promise<void>
   stage: string
@@ -62,23 +63,36 @@ function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
+  const acceptAuthentication = useCallback((result: Awaited<ReturnType<typeof commissionerLogin>>) => {
+    if (!result.success || !result.authenticated || result.user.role !== 'Commissioner' || !result.sessionToken) {
+      setSession({ ...emptySession, code: result.code, error: result.error, stage: result.stage })
+      return false
+    }
+    window.localStorage.setItem(storageKey, result.sessionToken)
+    setApiNativeSessionToken(result.sessionToken)
+    setSession({ authenticated: true, code: result.code, diagnostics: result.diagnostics, error: '', oauthConfigured: false, permissions: result.permissions, stage: result.stage, user: result.user })
+    return true
+  }, [])
+
   const signInWithPassword = useCallback(async (password: string) => {
     setStatus('loading')
     try {
-      const result = await commissionerLogin(password)
-      if (!result.success || !result.authenticated || result.user.role !== 'Commissioner' || !result.sessionToken) {
-        setSession({ ...emptySession, code: result.code, error: result.error, stage: result.stage })
-        return false
-      }
-      window.localStorage.setItem(storageKey, result.sessionToken)
-      setApiNativeSessionToken(result.sessionToken)
-      setSession({ authenticated: true, code: result.code, diagnostics: result.diagnostics, error: '', oauthConfigured: false, permissions: result.permissions, stage: result.stage, user: result.user })
-      return true
+      return acceptAuthentication(await commissionerLogin(password))
     } catch {
       setSession({ ...emptySession, code: 'AUTH_LOGIN_FAILED', error: 'Unable to sign in.', stage: 'credentialVerification' })
       return false
     } finally { setStatus('ready') }
-  }, [])
+  }, [acceptAuthentication])
+
+  const createCommissionerPassword = useCallback(async (password: string) => {
+    setStatus('loading')
+    try {
+      return acceptAuthentication(await setupCommissionerPassword(password))
+    } catch {
+      setSession({ ...emptySession, code: 'AUTH_SETUP_FAILED', error: 'Unable to configure Commissioner access.', stage: 'credentialSetup' })
+      return false
+    } finally { setStatus('ready') }
+  }, [acceptAuthentication])
 
   const signOut = useCallback(async () => {
     const token = window.localStorage.getItem(storageKey) ?? getActiveNativeSessionToken()
@@ -97,9 +111,9 @@ function AuthProvider({ children }: { children: ReactNode }) {
     hasPermission: (permission) => session.permissions[permission] === true,
     identity: null, initialization,
     isAtLeastRole: (role) => roleOrder.indexOf(session.user.role) >= roleOrder.indexOf(role),
-    permissions: session.permissions, refreshSession, signInWithPassword, signOut,
+    permissions: session.permissions, refreshSession, createCommissionerPassword, signInWithPassword, signOut,
     stage: session.stage, status, user: session.user,
-  }), [initialization, refreshSession, session, signInWithPassword, signOut, status])
+  }), [createCommissionerPassword, initialization, refreshSession, session, signInWithPassword, signOut, status])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

@@ -97,6 +97,13 @@ export type NativeLoginResult = AuthSession & {
   success: boolean
 }
 
+export async function getCommissionerPasswordStatus(
+  options: ApiOptions = {},
+): Promise<boolean> {
+  const payload = await postRequest('commissionerPasswordStatus', options, {})
+  return getBoolean(asRecord(payload), 'configured')
+}
+
 export async function commissionerLogin(
   password: string,
   options: ApiOptions = {},
@@ -124,6 +131,28 @@ export async function commissionerLogout(
   options: ApiOptions = {},
 ): Promise<void> {
   await postRequest('commissionerLogout', options, { sessionToken })
+}
+
+export async function setupCommissionerPassword(
+  password: string,
+  options: ApiOptions = {},
+): Promise<NativeLoginResult> {
+  const payload = await postRequest('setupCommissionerPassword', options, { password })
+  const record = asRecord(payload)
+
+  return {
+    authenticated: getBoolean(record, 'authenticated'),
+    code: getString(record, 'code'),
+    diagnostics: getRecord(record, 'diagnostics'),
+    error: getString(record, 'error'),
+    expiresAt: getString(record, 'expiresAt'),
+    oauthConfigured: false,
+    permissions: normalizeBooleanRecord(getRecord(record, 'permissions')),
+    sessionToken: getString(record, 'sessionToken'),
+    stage: getString(record, 'stage'),
+    success: getBoolean(record, 'success'),
+    user: normalizePortalUser(getRecord(record, 'user')),
+  }
 }
 
 export async function getSettings(
