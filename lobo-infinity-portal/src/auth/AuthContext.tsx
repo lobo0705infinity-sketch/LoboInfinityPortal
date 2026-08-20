@@ -76,8 +76,10 @@ function AuthProvider({ children }: { children: ReactNode }) {
 
   const signInWithPassword = useCallback(async (password: string) => {
     setStatus('loading')
+    let result: Awaited<ReturnType<typeof commissionerLogin>>
+
     try {
-      return acceptAuthentication(await commissionerLogin(password))
+      result = await commissionerLogin(password)
     } catch {
       setSession({
         ...emptySession,
@@ -85,8 +87,13 @@ function AuthProvider({ children }: { children: ReactNode }) {
         error: 'Commissioner login service is temporarily unavailable. Please try again.',
         stage: 'credentialVerification',
       })
+      setStatus('ready')
       return false
-    } finally { setStatus('ready') }
+
+    }
+
+    try { return acceptAuthentication(result) }
+    finally { setStatus('ready') }
   }, [acceptAuthentication])
 
   const createCommissionerPassword = useCallback(async (password: string) => {

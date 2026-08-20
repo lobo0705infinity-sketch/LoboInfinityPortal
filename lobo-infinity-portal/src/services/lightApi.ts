@@ -108,7 +108,22 @@ export async function commissionerLogin(
   password: string,
   options: ApiOptions = {},
 ): Promise<NativeLoginResult> {
-  const payload = await postRequest('commissionerLogin', options, { password })
+  if (options.signal?.aborted) {
+    throw options.signal.reason
+  }
+
+  const response = await fetch('/api/commissioner-login', {
+    body: JSON.stringify({ password }),
+    headers: { 'content-type': 'application/json' },
+    method: 'POST',
+    signal: options.signal,
+  })
+  const payload = await response.json() as unknown
+
+  if (!response.ok) {
+    throw new Error('Commissioner login request failed.')
+  }
+
   const record = asRecord(payload)
 
   return {
