@@ -47,6 +47,7 @@ function game(id, date, winner, loser, tp, op, vp, gameResult = 'Player 1 Victor
 const productionFixtures = [
   game(57, '2026-08-11', 'xtapro', 'Zhukov2', '5-2', '8-6', '184-64'),
   game(37, '2026-07-23', 'Erichagz', 'krazyglue04', '5-0', '10-0', '300-74'),
+  game(61, '2026-08-19', 'Nighthawkmk2', 'KaktusGalaxus', '5-0', '10-0', '300-144'),
 ]
 const highestVp = sandbox.getHighestIndividualGameScore(productionFixtures, 'vp', 'Individual VP')
 
@@ -74,6 +75,7 @@ const largestVictoryBefore = sandbox.getBiggestVictories(opFixtures)[0]
 
 const checks = [
   ['Highest VP evaluates individual VP', highestVp.player === 'Erichagz' && highestVp.value === 300 && highestVp.id === 37],
+  ['Equal game records remain with the first player to achieve them', highestVp.player === 'Erichagz'],
   ['Combined OP is not interpreted as VP', highestVp.value !== 14],
   ['Highest OP evaluates individual OP, not margin', highestOp.player === 'Player A' && highestOp.value === 10],
   ['Longest win streak is consecutive, not career wins', winStreak.player === 'Winner' && winStreak.value === 3],

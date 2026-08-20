@@ -222,15 +222,15 @@ function getHighestIndividualGameScore(
         return b.value - a.value;
 
       const dateOrder =
-        getRecentGameDate(b.date).getTime() -
-        getRecentGameDate(a.date).getTime();
+        getRecentGameDate(a.date).getTime() -
+        getRecentGameDate(b.date).getTime();
 
       if (dateOrder !== 0)
         return dateOrder;
 
       const sourceOrder =
-        (Number(b.id) || 0) -
-        (Number(a.id) || 0);
+        (Number(a.id) || 0) -
+        (Number(b.id) || 0);
 
       if (sourceOrder !== 0)
         return sourceOrder;
