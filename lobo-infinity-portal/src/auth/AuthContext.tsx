@@ -79,7 +79,12 @@ function AuthProvider({ children }: { children: ReactNode }) {
     try {
       return acceptAuthentication(await commissionerLogin(password))
     } catch {
-      setSession({ ...emptySession, code: 'AUTH_LOGIN_FAILED', error: 'Unable to sign in.', stage: 'credentialVerification' })
+      setSession({
+        ...emptySession,
+        code: 'AUTH_LOGIN_FAILED',
+        error: 'Commissioner login service is temporarily unavailable. Please try again.',
+        stage: 'credentialVerification',
+      })
       return false
     } finally { setStatus('ready') }
   }, [acceptAuthentication])

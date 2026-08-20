@@ -2362,19 +2362,199 @@ function deriveUserPasswordHash(password, salt, iterations) {
     Utilities.newBlob(
       String(password === undefined || password === null ? "" : password)
     ).getBytes();
+  const hmacKey = createUserPasswordHmacSha256Key(passwordBytes);
   const block = salt.concat([0, 0, 0, 1]);
   let value =
-    Utilities.computeHmacSha256Signature(block, passwordBytes);
+    computeUserPasswordHmacSha256(block, hmacKey);
   const result = value.slice();
 
   for (let iteration = 1; iteration < iterations; iteration++) {
-    value = Utilities.computeHmacSha256Signature(value, passwordBytes);
+    value = computeUserPasswordHmacSha256(value, hmacKey);
 
     for (let index = 0; index < USER_PASSWORD_HASH_BYTES; index++)
       result[index] = (result[index] ^ value[index]) & 255;
   }
 
   return result;
+
+}
+
+const USER_PASSWORD_SHA256_INITIAL_STATE = [
+  0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
+  0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
+];
+const USER_PASSWORD_SHA256_ROUND_CONSTANTS = [
+  0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
+  0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+  0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
+  0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+  0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc,
+  0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+  0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7,
+  0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+  0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13,
+  0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+  0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3,
+  0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+  0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5,
+  0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+  0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
+  0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+];
+
+function createUserPasswordHmacSha256Key(key) {
+
+  let normalizedKey = normalizeUserPasswordBytes(key);
+
+  if (normalizedKey.length > 64)
+    normalizedKey = computeUserPasswordSha256(normalizedKey);
+
+  while (normalizedKey.length < 64)
+    normalizedKey.push(0);
+
+  const innerPad = new Array(64);
+  const outerPad = new Array(64);
+
+  for (let index = 0; index < 64; index++) {
+    innerPad[index] = normalizedKey[index] ^ 0x36;
+    outerPad[index] = normalizedKey[index] ^ 0x5c;
+  }
+
+  return { innerPad: innerPad, outerPad: outerPad };
+
+}
+
+function computeUserPasswordHmacSha256(message, key) {
+
+  const preparedKey = key && key.innerPad && key.outerPad
+    ? key
+    : createUserPasswordHmacSha256Key(key);
+
+  const innerHash =
+    computeUserPasswordSha256(
+      preparedKey.innerPad.concat(normalizeUserPasswordBytes(message))
+    );
+
+  return computeUserPasswordSha256(preparedKey.outerPad.concat(innerHash));
+
+}
+
+function computeUserPasswordSha256(input) {
+
+  const bytes = normalizeUserPasswordBytes(input);
+  const bitLength = bytes.length * 8;
+  const highBitLength = Math.floor(bitLength / 0x100000000);
+  const lowBitLength = bitLength >>> 0;
+
+  bytes.push(0x80);
+
+  while (bytes.length % 64 !== 56)
+    bytes.push(0);
+
+  for (let shift = 24; shift >= 0; shift -= 8)
+    bytes.push((highBitLength >>> shift) & 255);
+
+  for (let shift = 24; shift >= 0; shift -= 8)
+    bytes.push((lowBitLength >>> shift) & 255);
+
+  const state = USER_PASSWORD_SHA256_INITIAL_STATE.slice();
+  const words = new Array(64);
+
+  for (let offset = 0; offset < bytes.length; offset += 64) {
+    for (let index = 0; index < 16; index++) {
+      const position = offset + index * 4;
+      words[index] = (
+        (bytes[position] << 24) |
+        (bytes[position + 1] << 16) |
+        (bytes[position + 2] << 8) |
+        bytes[position + 3]
+      ) >>> 0;
+    }
+
+    for (let index = 16; index < 64; index++) {
+      const left = words[index - 15];
+      const right = words[index - 2];
+      const sigma0 =
+        (rotateUserPasswordWordRight(left, 7) ^
+          rotateUserPasswordWordRight(left, 18) ^
+          (left >>> 3)) >>> 0;
+      const sigma1 =
+        (rotateUserPasswordWordRight(right, 17) ^
+          rotateUserPasswordWordRight(right, 19) ^
+          (right >>> 10)) >>> 0;
+
+      words[index] =
+        (words[index - 16] + sigma0 + words[index - 7] + sigma1) >>> 0;
+    }
+
+    let a = state[0];
+    let b = state[1];
+    let c = state[2];
+    let d = state[3];
+    let e = state[4];
+    let f = state[5];
+    let g = state[6];
+    let h = state[7];
+
+    for (let index = 0; index < 64; index++) {
+      const sum1 =
+        (rotateUserPasswordWordRight(e, 6) ^
+          rotateUserPasswordWordRight(e, 11) ^
+          rotateUserPasswordWordRight(e, 25)) >>> 0;
+      const choice = ((e & f) ^ (~e & g)) >>> 0;
+      const temporary1 =
+        (h + sum1 + choice + USER_PASSWORD_SHA256_ROUND_CONSTANTS[index] + words[index]) >>> 0;
+      const sum0 =
+        (rotateUserPasswordWordRight(a, 2) ^
+          rotateUserPasswordWordRight(a, 13) ^
+          rotateUserPasswordWordRight(a, 22)) >>> 0;
+      const majority = ((a & b) ^ (a & c) ^ (b & c)) >>> 0;
+      const temporary2 = (sum0 + majority) >>> 0;
+
+      h = g;
+      g = f;
+      f = e;
+      e = (d + temporary1) >>> 0;
+      d = c;
+      c = b;
+      b = a;
+      a = (temporary1 + temporary2) >>> 0;
+    }
+
+    state[0] = (state[0] + a) >>> 0;
+    state[1] = (state[1] + b) >>> 0;
+    state[2] = (state[2] + c) >>> 0;
+    state[3] = (state[3] + d) >>> 0;
+    state[4] = (state[4] + e) >>> 0;
+    state[5] = (state[5] + f) >>> 0;
+    state[6] = (state[6] + g) >>> 0;
+    state[7] = (state[7] + h) >>> 0;
+  }
+
+  const digest = [];
+
+  state.forEach(function(word) {
+    digest.push((word >>> 24) & 255);
+    digest.push((word >>> 16) & 255);
+    digest.push((word >>> 8) & 255);
+    digest.push(word & 255);
+  });
+
+  return digest;
+
+}
+
+function normalizeUserPasswordBytes(bytes) {
+
+  return Array.prototype.map.call(bytes || [], function(value) {
+    return Number(value) & 255;
+  });
+
+}
+
+function rotateUserPasswordWordRight(value, shift) {
+
+  return ((value >>> shift) | (value << (32 - shift))) >>> 0;
 
 }
 
