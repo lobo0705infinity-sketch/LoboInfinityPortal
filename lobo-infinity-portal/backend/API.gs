@@ -960,6 +960,11 @@ function handleApiGet(e, action) {
         return deleteCanonicalPlayer(e);
       });
 
+    case "setCanonicalPlayerDisplayName":
+      return requireApiPermission(e, "runSeasonControl", function() {
+        return setCanonicalPlayerDisplayName(e);
+      });
+
     case "approveArmyList":
       return legacyStandaloneArmyListWorkflowDisabled();
 

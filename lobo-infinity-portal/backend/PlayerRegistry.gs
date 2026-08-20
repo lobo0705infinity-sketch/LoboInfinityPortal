@@ -263,6 +263,42 @@ function setLeaguePlayerDisplayName(playerName, displayName) {
 
 }
 
+function setCanonicalPlayerDisplayName(e) {
+
+  const params =
+    getApiParameters(e);
+
+  const playerName =
+    getPlayerRegistryString(
+      params.playerName || params.player
+    );
+
+  const displayName =
+    getPlayerRegistryString(
+      params.displayName
+    );
+
+  if (playerName === "")
+    return jsonOutput({
+      success: false,
+      error: "Canonical Player Handle is required."
+    });
+
+  if (displayName === "")
+    return jsonOutput({
+      success: false,
+      error: "Display Name is required."
+    });
+
+  return jsonOutput(
+    setLeaguePlayerDisplayName(
+      playerName,
+      displayName
+    )
+  );
+
+}
+
 function createCanonicalPlayer(playerName) {
 
   const handle =

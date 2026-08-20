@@ -4,6 +4,11 @@ import { useAuth } from '../auth/AuthContext'
 import Loading from '../components/Loading'
 import { apiClient } from '../services/api'
 
+type CommissionerPlayer = {
+  displayName: string
+  player: string
+}
+
 const playerWorkflows = [
   {
     body: 'Browse public competitive records, divisions, rankings, and profile pages.',
@@ -49,17 +54,21 @@ const playerWorkflows = [
 
 function CommissionerPlayers() {
   const auth = useAuth()
-  const [players, setPlayers] = useState<string[]>([])
+  const [players, setPlayers] = useState<CommissionerPlayer[]>([])
   const [selectedPlayer, setSelectedPlayer] = useState('')
+  const [editingDisplayName, setEditingDisplayName] = useState(false)
+  const [displayName, setDisplayName] = useState('')
+  const [savingDisplayName, setSavingDisplayName] = useState(false)
   const [loadingPlayers, setLoadingPlayers] = useState(false)
   const [deletingPlayer, setDeletingPlayer] = useState(false)
   const [feedback, setFeedback] = useState<{ message: string; status: 'error' | 'success' } | null>(null)
   const canDeletePlayers = auth.authenticated && auth.hasPermission('runSeasonControl')
 
   const sortedPlayers = useMemo(
-    () => players.slice().sort((left, right) => left.localeCompare(right)),
+    () => players.slice().sort((left, right) => left.player.localeCompare(right.player)),
     [players],
   )
+  const selectedPlayerRecord = players.find((player) => player.player === selectedPlayer)
 
   useEffect(() => {
     if (!canDeletePlayers) {
@@ -71,9 +80,18 @@ function CommissionerPlayers() {
     apiClient.getPlayers()
       .then((divisions) => {
         if (!active) return
-        setPlayers(Array.from(new Set(
-          divisions.flatMap((division) => division.standings.map((player) => player.player)),
-        )).filter(Boolean))
+        const records = new Map<string, CommissionerPlayer>()
+        divisions.forEach((division) => {
+          division.standings.forEach((player) => {
+            if (player.player) {
+              records.set(player.player, {
+                displayName: player.displayName || player.player,
+                player: player.player,
+              })
+            }
+          })
+        })
+        setPlayers(Array.from(records.values()))
       })
       .catch((error: unknown) => {
         if (!active) return
@@ -101,8 +119,9 @@ function CommissionerPlayers() {
 
     try {
       const result = await apiClient.deleteCanonicalPlayer(selectedPlayer)
-      setPlayers((current) => current.filter((player) => player !== result.player))
+      setPlayers((current) => current.filter((player) => player.player !== result.player))
       setSelectedPlayer('')
+      setEditingDisplayName(false)
       setFeedback({ message: `${result.player} was deleted.`, status: 'success' })
     } catch (error: unknown) {
       setFeedback({
@@ -111,6 +130,50 @@ function CommissionerPlayers() {
       })
     } finally {
       setDeletingPlayer(false)
+    }
+  }
+
+  function editDisplayName() {
+    if (!selectedPlayerRecord) return
+    setDisplayName(selectedPlayerRecord.displayName)
+    setEditingDisplayName(true)
+    setFeedback(null)
+  }
+
+  function cancelDisplayNameEdit() {
+    setEditingDisplayName(false)
+    setDisplayName('')
+  }
+
+  async function saveDisplayName() {
+    if (!selectedPlayerRecord || savingDisplayName || !displayName.trim()) return
+
+    setSavingDisplayName(true)
+    setFeedback(null)
+
+    try {
+      const result = await apiClient.setCanonicalPlayerDisplayName(
+        selectedPlayerRecord.player,
+        displayName.trim(),
+      )
+      setPlayers((current) => current.map((player) => (
+        player.player === result.player
+          ? { ...player, displayName: result.displayName }
+          : player
+      )))
+      setEditingDisplayName(false)
+      setDisplayName('')
+      setFeedback({
+        message: `${result.player} now displays as ${result.displayName}.`,
+        status: 'success',
+      })
+    } catch (error: unknown) {
+      setFeedback({
+        message: error instanceof Error ? error.message : 'Display Name could not be updated.',
+        status: 'error',
+      })
+    } finally {
+      setSavingDisplayName(false)
     }
   }
 
@@ -191,24 +254,66 @@ function CommissionerPlayers() {
             <label>
               <span>Player</span>
               <select
-                disabled={loadingPlayers || deletingPlayer}
-                onChange={(event) => setSelectedPlayer(event.target.value)}
+                disabled={loadingPlayers || deletingPlayer || savingDisplayName}
+                onChange={(event) => {
+                  setSelectedPlayer(event.target.value)
+                  setEditingDisplayName(false)
+                  setDisplayName('')
+                }}
                 value={selectedPlayer}
               >
                 <option value="">Select Player</option>
                 {sortedPlayers.map((player) => (
-                  <option key={player} value={player}>{player}</option>
+                  <option key={player.player} value={player.player}>
+                    {player.displayName === player.player
+                      ? player.player
+                      : `${player.displayName} (${player.player})`}
+                  </option>
                 ))}
               </select>
             </label>
             <button
-              disabled={!selectedPlayer || loadingPlayers || deletingPlayer}
+              disabled={!selectedPlayer || loadingPlayers || deletingPlayer || savingDisplayName}
+              onClick={editDisplayName}
+              type="button"
+            >
+              Edit Display Name
+            </button>
+            <button
+              disabled={!selectedPlayer || loadingPlayers || deletingPlayer || savingDisplayName}
               onClick={() => void deleteSelectedPlayer()}
               type="button"
             >
               {deletingPlayer ? 'Deleting Player...' : 'Delete Player'}
             </button>
           </div>
+          {editingDisplayName ? (
+            <div className="operations-form">
+              <label>
+                <span>Display Name</span>
+                <input
+                  autoFocus
+                  disabled={savingDisplayName}
+                  onChange={(event) => setDisplayName(event.target.value)}
+                  value={displayName}
+                />
+              </label>
+              <button
+                disabled={!displayName.trim() || savingDisplayName}
+                onClick={() => void saveDisplayName()}
+                type="button"
+              >
+                {savingDisplayName ? 'Saving...' : 'Save'}
+              </button>
+              <button
+                disabled={savingDisplayName}
+                onClick={cancelDisplayNameEdit}
+                type="button"
+              >
+                Cancel
+              </button>
+            </div>
+          ) : null}
           {feedback ? (
             <p className={`operations-feedback ${feedback.status}`} role="status">
               {feedback.message}

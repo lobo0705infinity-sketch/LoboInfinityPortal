@@ -2630,6 +2630,11 @@ export type ApiClient = {
     player: string,
     options?: ApiOptions,
   ) => Promise<{ player: string; removedParticipantRows: number }>
+  setCanonicalPlayerDisplayName: (
+    playerName: string,
+    displayName: string,
+    options?: ApiOptions,
+  ) => Promise<{ player: string; displayName: string }>
   getSearchData: (options?: ApiOptions) => Promise<SearchData>
   getSearchIndex: (options?: ApiOptions) => Promise<SearchData>
   getPlayer: (
@@ -3234,6 +3239,28 @@ export async function deleteCanonicalPlayer(
   return {
     player: getRequiredString(record, 'player'),
     removedParticipantRows: getNumber(record, 'removedParticipantRows'),
+  }
+}
+
+export async function setCanonicalPlayerDisplayName(
+  playerName: string,
+  displayName: string,
+  options: ApiOptions = {},
+): Promise<{ player: string; displayName: string }> {
+  const payload = await postRequest(
+    'setCanonicalPlayerDisplayName',
+    options,
+    { playerName, displayName },
+  )
+  const record = asRecord(payload, 'Edit Display Name response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Display Name could not be updated.')
+  }
+
+  return {
+    player: getRequiredString(record, 'player'),
+    displayName: getRequiredString(record, 'displayName'),
   }
 }
 
@@ -4154,6 +4181,7 @@ export const apiClient: ApiClient = {
   getAllStandings,
   getPlayers,
   deleteCanonicalPlayer,
+  setCanonicalPlayerDisplayName,
   getSearchData,
   getSearchIndex,
   getPlayer,
