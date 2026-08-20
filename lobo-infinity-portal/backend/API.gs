@@ -955,6 +955,11 @@ function handleApiGet(e, action) {
         return updateOperationsSettings(e);
       });
 
+    case "deleteCanonicalPlayer":
+      return requireApiPermission(e, "runSeasonControl", function() {
+        return deleteCanonicalPlayer(e);
+      });
+
     case "approveArmyList":
       return legacyStandaloneArmyListWorkflowDisabled();
 

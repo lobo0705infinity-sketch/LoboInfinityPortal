@@ -1,6 +1,8 @@
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import Loading from '../components/Loading'
+import { apiClient } from '../services/api'
 
 const playerWorkflows = [
   {
@@ -47,6 +49,70 @@ const playerWorkflows = [
 
 function CommissionerPlayers() {
   const auth = useAuth()
+  const [players, setPlayers] = useState<string[]>([])
+  const [selectedPlayer, setSelectedPlayer] = useState('')
+  const [loadingPlayers, setLoadingPlayers] = useState(false)
+  const [deletingPlayer, setDeletingPlayer] = useState(false)
+  const [feedback, setFeedback] = useState<{ message: string; status: 'error' | 'success' } | null>(null)
+  const canDeletePlayers = auth.authenticated && auth.hasPermission('runSeasonControl')
+
+  const sortedPlayers = useMemo(
+    () => players.slice().sort((left, right) => left.localeCompare(right)),
+    [players],
+  )
+
+  useEffect(() => {
+    if (!canDeletePlayers) {
+      return
+    }
+
+    let active = true
+    setLoadingPlayers(true)
+    apiClient.getPlayers()
+      .then((divisions) => {
+        if (!active) return
+        setPlayers(Array.from(new Set(
+          divisions.flatMap((division) => division.standings.map((player) => player.player)),
+        )).filter(Boolean))
+      })
+      .catch((error: unknown) => {
+        if (!active) return
+        setFeedback({
+          message: error instanceof Error ? error.message : 'Players could not be loaded.',
+          status: 'error',
+        })
+      })
+      .finally(() => {
+        if (active) setLoadingPlayers(false)
+      })
+
+    return () => { active = false }
+  }, [canDeletePlayers])
+
+  async function deleteSelectedPlayer() {
+    if (!selectedPlayer || deletingPlayer) return
+
+    if (!window.confirm(
+      `Delete ${selectedPlayer}? Deletion is only permitted when the Player has no historical dependencies.`,
+    )) return
+
+    setDeletingPlayer(true)
+    setFeedback(null)
+
+    try {
+      const result = await apiClient.deleteCanonicalPlayer(selectedPlayer)
+      setPlayers((current) => current.filter((player) => player !== result.player))
+      setSelectedPlayer('')
+      setFeedback({ message: `${result.player} was deleted.`, status: 'success' })
+    } catch (error: unknown) {
+      setFeedback({
+        message: error instanceof Error ? error.message : 'Player could not be deleted.',
+        status: 'error',
+      })
+    } finally {
+      setDeletingPlayer(false)
+    }
+  }
 
   if (auth.status === 'loading') {
     return (
@@ -111,6 +177,45 @@ function CommissionerPlayers() {
           <Link to="/match-finder">Open Availability</Link>
         </div>
       </section>
+
+      {canDeletePlayers ? (
+        <section className="panel operations-panel" aria-labelledby="delete-player-title">
+          <div className="panel-heading">
+            <p className="eyebrow">Canonical Players</p>
+            <h2 id="delete-player-title">Delete Player</h2>
+            <p>
+              Remove an accidental or test Player only when no historical dependencies exist.
+            </p>
+          </div>
+          <div className="operations-form">
+            <label>
+              <span>Player</span>
+              <select
+                disabled={loadingPlayers || deletingPlayer}
+                onChange={(event) => setSelectedPlayer(event.target.value)}
+                value={selectedPlayer}
+              >
+                <option value="">Select Player</option>
+                {sortedPlayers.map((player) => (
+                  <option key={player} value={player}>{player}</option>
+                ))}
+              </select>
+            </label>
+            <button
+              disabled={!selectedPlayer || loadingPlayers || deletingPlayer}
+              onClick={() => void deleteSelectedPlayer()}
+              type="button"
+            >
+              {deletingPlayer ? 'Deleting Player...' : 'Delete Player'}
+            </button>
+          </div>
+          {feedback ? (
+            <p className={`operations-feedback ${feedback.status}`} role="status">
+              {feedback.message}
+            </p>
+          ) : null}
+        </section>
+      ) : null}
     </main>
   )
 }

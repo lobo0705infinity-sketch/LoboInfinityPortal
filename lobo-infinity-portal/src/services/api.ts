@@ -2626,6 +2626,10 @@ export type ApiClient = {
   ) => Promise<DivisionStandings>
   getAllStandings: (options?: ApiOptions) => Promise<DivisionStandings[]>
   getPlayers: (options?: ApiOptions) => Promise<DivisionStandings[]>
+  deleteCanonicalPlayer: (
+    player: string,
+    options?: ApiOptions,
+  ) => Promise<{ player: string; removedParticipantRows: number }>
   getSearchData: (options?: ApiOptions) => Promise<SearchData>
   getSearchIndex: (options?: ApiOptions) => Promise<SearchData>
   getPlayer: (
@@ -3214,6 +3218,23 @@ export async function getPlayers(
     buildAnalyticsRequestParams(options),
   )
   return normalizePlayersPayload(payload)
+}
+
+export async function deleteCanonicalPlayer(
+  player: string,
+  options: ApiOptions = {},
+): Promise<{ player: string; removedParticipantRows: number }> {
+  const payload = await postRequest('deleteCanonicalPlayer', options, { player })
+  const record = asRecord(payload, 'Delete Player response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Player could not be deleted.')
+  }
+
+  return {
+    player: getRequiredString(record, 'player'),
+    removedParticipantRows: getNumber(record, 'removedParticipantRows'),
+  }
 }
 
 export async function getSearchData(
@@ -4132,6 +4153,7 @@ export const apiClient: ApiClient = {
   getStandings,
   getAllStandings,
   getPlayers,
+  deleteCanonicalPlayer,
   getSearchData,
   getSearchIndex,
   getPlayer,
