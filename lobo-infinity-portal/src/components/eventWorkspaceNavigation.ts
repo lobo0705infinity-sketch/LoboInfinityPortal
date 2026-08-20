@@ -283,7 +283,6 @@ function getRouteCapability(
 ): EventCapability | null {
   const queryEventId = new URLSearchParams(search).get('eventId')
 
-  if (pathname === '/match-finder' && queryEventId) return 'matchFinder'
   if (pathname === '/standings' && queryEventId) return 'standings'
   if (pathname === '/players' && queryEventId) return 'players'
   if (pathname === '/factions' && queryEventId) return 'factions'

@@ -45,7 +45,6 @@ const GameDetails = lazyRoute('GameDetails', () => import('./pages/GameDetails')
 const HallOfFame = lazyRoute('HallOfFame', () => import('./pages/HallOfFame'))
 const LeagueIntegrity = lazyRoute('LeagueIntegrity', () => import('./pages/LeagueIntegrity'))
 const LeagueOperations = lazyRoute('LeagueOperations', () => import('./pages/LeagueOperations'))
-const MatchFinder = lazyRoute('MatchFinder', () => import('./pages/MatchFinder'))
 const MissionProfile = lazyRoute('MissionProfile', () => import('./pages/MissionProfile'))
 const Missions = lazyRoute('Missions', () => import('./pages/Missions'))
 const PastEvents = lazyRoute('PastEvents', () => import('./pages/PastEvents'))
@@ -113,7 +112,7 @@ function AuthShell() {
                 <Route path="/community" element={<MeasuredRoute name="Players"><Players /></MeasuredRoute>} />
                 <Route path="/players" element={<MeasuredRoute name="Players"><Players /></MeasuredRoute>} />
                 <Route path="/rivalries" element={<MeasuredRoute name="Rivalries"><Rivalries /></MeasuredRoute>} />
-                <Route path="/match-finder" element={<MeasuredRoute name="MatchFinder"><MatchFinder /></MeasuredRoute>} />
+                <Route path="/match-finder" element={<Navigate replace to="/event/event-current-league" />} />
                 <Route path="/compare" element={<MeasuredRoute name="PlayerComparison"><PlayerComparison /></MeasuredRoute>} />
                 <Route path="/players/:playerName" element={<MeasuredRoute name="PlayerProfile"><PlayerProfile /></MeasuredRoute>} />
                 <Route path="/player/:playerName" element={<MeasuredRoute name="PlayerProfile"><PlayerProfile /></MeasuredRoute>} />

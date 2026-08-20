@@ -303,11 +303,23 @@ function normalizeEventHomeSection(section: string | undefined): EventHomeSectio
 }
 
 function isVisibleEventNavigationItem(item: { href: string; label: string }) {
-  return !isSubmitGameReference(item.label, item.href)
+  return (
+    !isSubmitGameReference(item.label, item.href) &&
+    !isMatchFinderReference(item.label, item.href)
+  )
 }
 
 function isVisibleEventQuickAction(action: EventHomeData['quickActions'][number]) {
-  return !isSubmitGameReference(action.label, action.href, action.action)
+  return (
+    !isSubmitGameReference(action.label, action.href, action.action) &&
+    !isMatchFinderReference(action.label, action.href, action.action)
+  )
+}
+
+function isMatchFinderReference(label: string, href = '', action = '') {
+  const text = `${label} ${href} ${action}`.toLowerCase()
+
+  return text.includes('match finder') || text.includes('/match-finder') || action === 'matchFinder'
 }
 
 function isSubmitGameReference(label: string, href = '', action = '') {

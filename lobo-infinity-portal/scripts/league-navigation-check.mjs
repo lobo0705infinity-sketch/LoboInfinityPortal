@@ -27,6 +27,16 @@ const routes = [
     selector: 'main.event-overview-shell',
   },
   {
+    actualRoute: `/match-finder?eventId=${eventId}`,
+    activeLabel: 'Overview',
+    component: 'EventHome redirect',
+    expectedRoute: `/event/${eventId}`,
+    item: 'Obsolete Match Finder redirect',
+    requiredText: ['July 2026 League'],
+    rejectedText: ['Match Finder', 'Chronological Event History'],
+    selector: 'main.event-overview-shell',
+  },
+  {
     actualRoute: `/event/${eventId}/registration`,
     activeLabel: 'Registration',
     component: 'EventHome registration',
@@ -35,15 +45,6 @@ const routes = [
     requiredText: ['Registration'],
     rejectedText: ['Season Progress', 'Chronological Event History'],
     selector: 'main[data-event-section="registration"]',
-  },
-  {
-    actualRoute: `/match-finder?eventId=${eventId}`,
-    activeLabel: 'Match Finder',
-    component: 'MatchFinder',
-    expectedRoute: `/match-finder?eventId=${eventId}`,
-    item: 'Match Finder',
-    requiredText: ['Match Finder'],
-    rejectedText: ['Chronological Event History'],
   },
   {
     actualRoute: `/standings?eventId=${eventId}`,

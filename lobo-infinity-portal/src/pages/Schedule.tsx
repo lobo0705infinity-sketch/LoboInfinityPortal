@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import Skeleton from '../components/Skeleton'
 import type { SchedulingCenterData, SchedulingRequest } from '../services/api'
 import { schedulingRepository } from '../services/data'
@@ -59,9 +59,6 @@ function Schedule() {
         <p className="eyebrow">Schedule</p>
         <h1 id="schedule-title">{eventName} Schedule</h1>
         <p>Round progress, pending requests, and upcoming scheduled matches for the selected event.</p>
-        <Link className="submit-match-button" to={`/match-finder?eventId=${encodeURIComponent(eventId)}`}>
-          Open Match Finder
-        </Link>
       </section>
 
       {state.status === 'loading' ? <ScheduleSkeleton /> : null}

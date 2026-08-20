@@ -859,12 +859,6 @@ function NotesMediaPanel({
         <Metric label="Discord" value={player.discordHandle} />
         <Metric label="Current Tournament" value={currentTournament} />
       </dl>
-      <Link
-        className="profile-action-link"
-        to={player.scheduleLink || `/match-finder?opponent=${encodeURIComponent(player.name)}`}
-      >
-        Schedule Match
-      </Link>
     </section>
   )
 }

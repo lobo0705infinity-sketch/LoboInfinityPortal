@@ -15,7 +15,6 @@ const routeLoaders = new Map<string, () => Promise<unknown>>([
   ['/faction-detail', () => import('../pages/FactionProfile')],
   ['/hall-of-fame', () => import('../pages/HallOfFame')],
   ['/integrity', () => import('../pages/LeagueIntegrity')],
-  ['/match-finder', () => import('../pages/MatchFinder')],
   ['/missions', () => import('../pages/Missions')],
   ['/mission-detail', () => import('../pages/MissionProfile')],
   ['/players', () => import('../pages/Players')],

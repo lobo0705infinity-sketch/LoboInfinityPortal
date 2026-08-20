@@ -3,7 +3,6 @@ import type { PortalIconName } from '../components/PortalIcon'
 export type EventCapability =
   | 'overview'
   | 'registration'
-  | 'matchFinder'
   | 'submitResult'
   | 'standings'
   | 'schedule'
@@ -39,7 +38,6 @@ type NavigableEventCapability = Exclude<EventCapability, 'submitResult'>
 export const capabilityLabels: Record<NavigableEventCapability, string> = {
   factions: 'Factions',
   map: 'Map',
-  matchFinder: 'Match Finder',
   objectives: 'Objectives',
   overview: 'Overview',
   pairings: 'Pairings',
@@ -57,7 +55,6 @@ export const capabilityLabels: Record<NavigableEventCapability, string> = {
 const capabilityIcons: Record<NavigableEventCapability, PortalIconName> = {
   factions: 'factions',
   map: 'timeline',
-  matchFinder: 'compare',
   objectives: 'missions',
   overview: 'dashboard',
   pairings: 'compare',
@@ -75,7 +72,6 @@ const capabilityIcons: Record<NavigableEventCapability, PortalIconName> = {
 const defaultCapabilityRoutes: Record<NavigableEventCapability, string> = {
   factions: '/factions?eventId=:eventId',
   map: '/event/:eventId#map',
-  matchFinder: '/match-finder?eventId=:eventId',
   objectives: '/event/:eventId#objectives',
   overview: '/event/:eventId',
   pairings: '/event/:eventId#pairings',
@@ -91,7 +87,6 @@ const defaultCapabilityRoutes: Record<NavigableEventCapability, string> = {
 }
 
 const mobileNavTargets: Partial<Record<EventCapability, string>> = {
-  matchFinder: '/match-finder',
   standings: '/standings',
 }
 
@@ -99,7 +94,6 @@ export const currentEventNavigation: EventNavigationConfig = {
   capabilities: [
     'overview',
     'registration',
-    'matchFinder',
     'standings',
     'schedule',
     'statistics',

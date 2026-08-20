@@ -20,9 +20,9 @@ const eventWorkflows = [
     to: '#event-manager-panel',
   },
   {
-    body: 'Use scheduling and match finder tools for league availability and generated pairings.',
+    body: 'Use Commissioner scheduling tools for league availability and generated pairings.',
     label: 'Schedule Generation',
-    to: '/match-finder',
+    to: '/commissioner?section=scheduling',
   },
   {
     body: 'Review current pairings and event match assignments.',

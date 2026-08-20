@@ -37,9 +37,9 @@ const playerWorkflows = [
     to: '/army-lists',
   },
   {
-    body: 'Review availability, scheduling requests, and match finder player state.',
+    body: 'Review availability, scheduling requests, and Commissioner scheduling state.',
     label: 'Availability',
-    to: '/match-finder',
+    to: '/commissioner?section=scheduling',
   },
   {
     body: 'Review player awards, unlock rules, and achievement state.',
@@ -239,7 +239,7 @@ function CommissionerPlayers() {
           <Link to="/commissioner?section=users">Open Player Identity Tools</Link>
           <Link to="/players">Open Player Directory</Link>
           <Link to="/army-lists">Open Army Lists</Link>
-          <Link to="/match-finder">Open Availability</Link>
+          <Link to="/commissioner?section=scheduling">Open Availability</Link>
         </div>
       </section>
 

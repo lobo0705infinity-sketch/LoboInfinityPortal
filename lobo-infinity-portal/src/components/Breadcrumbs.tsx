@@ -15,7 +15,6 @@ const routeLabels: Record<string, string> = {
   '/hall-of-fame': 'Hall of Fame',
   '/integrity': 'Audit',
   '/league-operations': 'Mission & Map',
-  '/match-finder': 'Match Finder',
   '/profile': 'My Profile',
   '/commissioner/army-list-links': 'Army List Links',
   '/commissioner/game-center': 'Game Center',
@@ -25,7 +24,6 @@ const routeLabels: Record<string, string> = {
 
 const eventScopedRoutes: Record<string, string> = {
   '/analytics': 'Statistics',
-  '/match-finder': 'Match Finder',
 }
 
 function Breadcrumbs() {

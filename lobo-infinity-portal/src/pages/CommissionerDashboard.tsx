@@ -446,6 +446,10 @@ function getRequestedCommandCenterPanel(search: string) {
     return 'eventManager'
   }
 
+  if (section === 'scheduling' || section === 'availability') {
+    return 'scheduling'
+  }
+
   return ''
 }
 
