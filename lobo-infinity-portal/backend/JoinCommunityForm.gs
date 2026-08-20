@@ -1,10 +1,5 @@
 function createJoinCommunityForm(responseSpreadsheetId) {
-  const existingId = String(
-    lifGetProperties_().getProperty(LIF_FORMS.PROPERTIES.JOIN_FORM_ID) || ""
-  ).trim();
-  const form = existingId
-    ? FormApp.openById(existingId)
-    : FormApp.create(LIF_FORMS.FORM_TITLES.JOIN);
+  const form = lifGetJoinCommunityFormForInstallation_();
 
   form.getItems().slice().reverse().forEach(function(item) {
     form.deleteItem(item);
@@ -25,8 +20,49 @@ function createJoinCommunityForm(responseSpreadsheetId) {
     "Enter the public Lobo/Infinity handle you use for games."
   );
 
-  if (form.getDestinationId() !== responseSpreadsheetId)
-    lifLinkForm_(form, responseSpreadsheetId);
+  lifEnsureJoinCommunityFormDestination_(form, responseSpreadsheetId);
 
   return form;
+}
+
+function lifGetJoinCommunityFormForInstallation_() {
+  const properties = lifGetProperties_();
+  const existingId = String(
+    properties.getProperty(LIF_FORMS.PROPERTIES.JOIN_FORM_ID) || ""
+  ).trim();
+
+  if (existingId)
+    return FormApp.openById(existingId);
+
+  const files = DriveApp.getFilesByName(LIF_FORMS.FORM_TITLES.JOIN);
+
+  while (files.hasNext()) {
+    const file = files.next();
+
+    if (file.getMimeType() !== MimeType.GOOGLE_FORMS)
+      continue;
+
+    const form = FormApp.openById(file.getId());
+    properties.setProperty(LIF_FORMS.PROPERTIES.JOIN_FORM_ID, form.getId());
+    return form;
+  }
+
+  const form = FormApp.create(LIF_FORMS.FORM_TITLES.JOIN);
+  properties.setProperty(LIF_FORMS.PROPERTIES.JOIN_FORM_ID, form.getId());
+  return form;
+}
+
+function lifEnsureJoinCommunityFormDestination_(form, responseSpreadsheetId) {
+  let destinationId = "";
+
+  try {
+    destinationId = String(form.getDestinationId() || "").trim();
+  }
+  catch (err) {
+    if (String(err).toLowerCase().indexOf("no response destination") === -1)
+      throw err;
+  }
+
+  if (destinationId !== responseSpreadsheetId)
+    lifLinkForm_(form, responseSpreadsheetId);
 }

@@ -21,6 +21,78 @@ const checks = [
   ['Public Players page opens Join form safely', players.includes('Join Community') && players.includes('target="_blank"') && players.includes('rel="noopener noreferrer"')],
 ]
 
+const joinFormFunctions = [
+  'lifGetJoinCommunityFormForInstallation_',
+  'lifEnsureJoinCommunityFormDestination_',
+].map((name) => extractFunction(form, name)).join('\n')
+
+function runJoinFormScenario({ destinationId = null, propertyId = '', recoverableForm = null }) {
+  const propertyValues = { join: propertyId }
+  let created = 0
+  let linked = 0
+  const makeForm = (id, initialDestination) => ({
+    destinationId: initialDestination,
+    getDestinationId() {
+      if (!this.destinationId) throw new Error('Exception: The form currently has no response destination.')
+      return this.destinationId
+    },
+    getId: () => id,
+  })
+  const storedForm = propertyId ? makeForm(propertyId, destinationId) : null
+  const discoveredForm = recoverableForm ? makeForm(recoverableForm.id, recoverableForm.destinationId) : null
+  const formsById = {}
+  if (storedForm) formsById[storedForm.getId()] = storedForm
+  if (discoveredForm) formsById[discoveredForm.getId()] = discoveredForm
+  const iterator = {
+    consumed: false,
+    hasNext() { return Boolean(discoveredForm) && !this.consumed },
+    next() {
+      this.consumed = true
+      return { getId: () => discoveredForm.getId(), getMimeType: () => 'google-form' }
+    },
+  }
+  const formSandbox = {
+    DriveApp: { getFilesByName: () => iterator },
+    FormApp: {
+      create: () => {
+        created += 1
+        const createdForm = makeForm('created-form', null)
+        formsById[createdForm.getId()] = createdForm
+        return createdForm
+      },
+      openById: (id) => formsById[id],
+    },
+    LIF_FORMS: { FORM_TITLES: { JOIN: 'Join the Lobo Infinity Community' }, PROPERTIES: { JOIN_FORM_ID: 'join' } },
+    MimeType: { GOOGLE_FORMS: 'google-form' },
+    lifGetProperties_: () => ({
+      getProperty: (key) => propertyValues[key] || '',
+      setProperty: (key, value) => { propertyValues[key] = value },
+    }),
+    lifLinkForm_: (targetForm, targetSpreadsheetId) => {
+      linked += 1
+      targetForm.destinationId = targetSpreadsheetId
+      return targetForm
+    },
+  }
+  vm.createContext(formSandbox)
+  vm.runInContext(joinFormFunctions, formSandbox)
+  const selected = formSandbox.lifGetJoinCommunityFormForInstallation_()
+  formSandbox.lifEnsureJoinCommunityFormDestination_(selected, 'existing-response-spreadsheet')
+  const rerun = formSandbox.lifGetJoinCommunityFormForInstallation_()
+  formSandbox.lifEnsureJoinCommunityFormDestination_(rerun, 'existing-response-spreadsheet')
+  return { created, linked, propertyId: propertyValues.join, sameForm: selected === rerun }
+}
+
+const freshFormScenario = runJoinFormScenario({})
+const recoveredFormScenario = runJoinFormScenario({ recoverableForm: { id: 'partial-form', destinationId: null } })
+const linkedFormScenario = runJoinFormScenario({ destinationId: 'existing-response-spreadsheet', propertyId: 'known-form' })
+checks.push(
+  ['Fresh Form without destination links to existing response spreadsheet', freshFormScenario.created === 1 && freshFormScenario.linked === 1],
+  ['Partially created unlinked Form is recovered and linked', recoveredFormScenario.created === 0 && recoveredFormScenario.linked === 1 && recoveredFormScenario.propertyId === 'partial-form'],
+  ['Correctly linked existing Form destination remains unchanged', linkedFormScenario.created === 0 && linkedFormScenario.linked === 0],
+  ['Installer rerun reuses the same Join Form', freshFormScenario.sameForm && freshFormScenario.created === 1],
+)
+
 const rows = [
   ['Player', 'Display Name', 'Division', 'Active'],
 ]
