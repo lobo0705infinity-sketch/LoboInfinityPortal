@@ -63,8 +63,6 @@ function buildCommunityPlayerRegistryRows() {
   const records = {};
   const registry =
     buildPlayerRegistry();
-  const leagueIdentityByEmail =
-    buildCommunityLeagueIdentityByEmailMap();
   const eventsById =
     buildCommunityEventsById();
 
@@ -84,14 +82,6 @@ function buildCommunityPlayerRegistryRows() {
           active: player.active !== false,
           source: "Player Registry"
         }
-      );
-    });
-
-  getCommunityPortalUsers(leagueIdentityByEmail)
-    .forEach(function(user) {
-      upsertCommunityPlayerRecord(
-        records,
-        user
       );
     });
 
