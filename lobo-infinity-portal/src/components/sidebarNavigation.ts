@@ -22,11 +22,6 @@ export const topLevelItems: NavigationItem[] = [
 
 export const authenticatedTopLevelItems: NavigationItem[] = [
   {
-    icon: 'players',
-    label: 'My Profile',
-    to: '/profile',
-  },
-  {
     icon: 'missions',
     label: 'Mission & Map',
     to: '/league-operations',

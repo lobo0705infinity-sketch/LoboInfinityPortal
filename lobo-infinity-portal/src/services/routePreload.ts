@@ -20,7 +20,6 @@ const routeLoaders = new Map<string, () => Promise<unknown>>([
   ['/mission-detail', () => import('../pages/MissionProfile')],
   ['/players', () => import('../pages/Players')],
   ['/player-detail', () => import('../pages/PlayerProfile')],
-  ['/profile', () => import('../pages/MyProfile')],
   ['/rivalries', () => import('../pages/Rivalries')],
   ['/rules', () => import('../pages/Rules')],
   ['/schedule', () => import('../pages/Schedule')],
