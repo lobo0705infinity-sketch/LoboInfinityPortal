@@ -7,7 +7,7 @@
 
 const HALL_OF_FAME_LIMIT = 10;
 const HALL_OF_FAME_SNAPSHOT_TTL_SECONDS = 900;
-const HALL_OF_FAME_SCHEMA_VERSION = "2.5.4.1";
+const HALL_OF_FAME_SCHEMA_VERSION = "2.5.4.2";
 
 function getRecords(e) {
 
@@ -337,12 +337,12 @@ function getCareerLeaders(careers, key) {
 function buildHallOfFameRecordBook(games, standings, careers, records) {
 
   return [
-    buildRecordBookItem("Highest VP Ever", records.highestScoringGame),
-    buildRecordBookItem("Highest OP Ever", records.largestOPMargin),
+    buildRecordBookItem("Highest VP Ever", records.highestIndividualVP),
+    buildRecordBookItem("Highest OP Ever", records.highestIndividualOP),
     buildRecordBookItem("Largest Victory", records.largestVPMargin),
     buildRecordBookItem("Smallest Victory", records.closestGame),
-    buildRecordBookItem("Longest Win Streak", getRecordBookCareerLeader(careers, "wins")),
-    buildRecordBookItem("Longest Losing Streak", getRecordBookCareerLeader(careers, "losses")),
+    buildRecordBookItem("Longest Win Streak", getLongestGameResultStreak(games, "W")),
+    buildRecordBookItem("Longest Losing Streak", getLongestGameResultStreak(games, "L")),
     buildRecordBookItem("Most Played Opponent", getMostPlayedOpponentRecord(games)),
     buildRecordBookItem("Most Played Mission", getMostPlayedMissionRecord(games)),
     buildRecordBookItem("Most Played Faction", getMostPlayedFactionRecord(games)),

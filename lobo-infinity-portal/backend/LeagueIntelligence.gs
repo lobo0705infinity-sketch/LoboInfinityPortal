@@ -170,6 +170,238 @@ function getHighestScoringGames(games) {
 
 }
 
+function getHighestIndividualGameScore(
+  games,
+  key,
+  label
+) {
+
+  const records = [];
+
+  games.forEach(function(game) {
+
+    const score =
+      getLeagueScoreParts(
+        game[key]
+      );
+
+    [
+      {
+        player: game.winner,
+        value: score.winner
+      },
+      {
+        player: game.loser,
+        value: score.loser
+      }
+    ].forEach(function(side) {
+
+      const record =
+        buildGameInsight(
+          game,
+          side.value,
+          label
+        );
+
+      record.player = side.player;
+      record.displayName =
+        getPlayerDisplayName(
+          side.player
+        );
+
+      records.push(record);
+
+    });
+
+  });
+
+  return records
+    .sort(function(a, b) {
+
+      if (b.value !== a.value)
+        return b.value - a.value;
+
+      const dateOrder =
+        getRecentGameDate(b.date).getTime() -
+        getRecentGameDate(a.date).getTime();
+
+      if (dateOrder !== 0)
+        return dateOrder;
+
+      const sourceOrder =
+        (Number(b.id) || 0) -
+        (Number(a.id) || 0);
+
+      if (sourceOrder !== 0)
+        return sourceOrder;
+
+      return String(a.player).localeCompare(
+        String(b.player)
+      );
+
+    })[0] || null;
+
+}
+
+function getLongestGameResultStreak(
+  games,
+  result
+) {
+
+  const playerGames = {};
+
+  games.forEach(function(game) {
+
+    const draw =
+      getLeagueIntelligenceGameResult(game) ===
+      "D";
+
+    [
+      {
+        player: game.winner,
+        gameResult: draw ? "D" : "W"
+      },
+      {
+        player: game.loser,
+        gameResult: draw ? "D" : "L"
+      }
+    ].forEach(function(entry) {
+
+      const player =
+        String(entry.player || "").trim();
+
+      if (!player)
+        return;
+
+      if (!playerGames[player])
+        playerGames[player] = [];
+
+      playerGames[player].push({
+        date: game.date,
+        id: game.id,
+        result: entry.gameResult
+      });
+
+    });
+
+  });
+
+  const records = [];
+
+  Object.keys(playerGames)
+    .forEach(function(player) {
+
+      const orderedGames =
+        playerGames[player]
+          .slice()
+          .sort(function(a, b) {
+
+            const dateOrder =
+              getRecentGameDate(a.date).getTime() -
+              getRecentGameDate(b.date).getTime();
+
+            if (dateOrder !== 0)
+              return dateOrder;
+
+            return (
+              (Number(a.id) || 0) -
+              (Number(b.id) || 0)
+            );
+
+          });
+
+      let current = 0;
+      let longest = 0;
+
+      orderedGames.forEach(function(game) {
+
+        if (game.result === result) {
+          current++;
+          longest = Math.max(longest, current);
+        }
+        else {
+          current = 0;
+        }
+
+      });
+
+      if (longest === 0)
+        return;
+
+      const displayName =
+        getPlayerDisplayName(player);
+
+      records.push({
+        player: player,
+        displayName: displayName,
+        value: longest,
+        story:
+          displayName +
+          " recorded a " +
+          longest +
+          "-game " +
+          (
+            result === "W"
+              ? "win streak."
+              : "losing streak."
+          )
+      });
+
+    });
+
+  return records
+    .sort(function(a, b) {
+
+      if (b.value !== a.value)
+        return b.value - a.value;
+
+      return a.player.localeCompare(
+        b.player
+      );
+
+    })[0] || null;
+
+}
+
+function getLeagueIntelligenceGameResult(game) {
+
+  const explicitResult =
+    String(
+      game && game.gameResult || ""
+    ).trim().toLowerCase();
+
+  if (
+    explicitResult === "draw" ||
+    explicitResult === "d"
+  )
+    return "D";
+
+  const tp =
+    getLeagueScoreParts(
+      game && game.tp
+    );
+
+  const op =
+    getLeagueScoreParts(
+      game && game.op
+    );
+
+  const vp =
+    getLeagueScoreParts(
+      game && game.vp
+    );
+
+  if (
+    tp.winner === tp.loser &&
+    op.winner === op.loser &&
+    vp.winner === vp.loser
+  )
+    return "D";
+
+  return "W";
+
+}
+
 function getBiggestVictories(games) {
 
   return games
@@ -564,6 +796,18 @@ function getRelegationBattle(divisions) {
 function getLeagueRecords(games) {
 
   return {
+    highestIndividualVP:
+      getHighestIndividualGameScore(
+        games,
+        "vp",
+        "Individual VP"
+      ),
+    highestIndividualOP:
+      getHighestIndividualGameScore(
+        games,
+        "op",
+        "Individual OP"
+      ),
     largestVPMargin:
       getBiggestVictories(games)[0] || null,
     largestOPMargin:

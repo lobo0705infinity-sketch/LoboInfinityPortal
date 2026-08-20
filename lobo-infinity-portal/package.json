@@ -79,6 +79,7 @@
     "test:player-deletion": "node scripts/player-deletion-check.mjs",
     "test:player-display-name": "node scripts/player-display-name-check.mjs",
     "test:canonical-player-listing": "node scripts/canonical-player-listing-check.mjs",
+    "test:hall-of-fame-record-book": "node scripts/hall-of-fame-record-book-check.mjs",
     "test:player-identity": "node scripts/player-identity-check.mjs",
     "test:faction-portraits": "node --experimental-strip-types scripts/faction-portrait-check.ts",
     "test:players-portraits": "node --experimental-strip-types scripts/player-portrait-check.ts players",
