@@ -76,19 +76,26 @@ function lifSetSettingValue_(key, value, description) {
   const sheet = ensureSettingsSheet();
   const columns = getSettingsColumns(sheet);
   const values = sheet.getDataRange().getValues();
+  let updated = false;
 
   for (let index = 1; index < values.length; index++) {
     if (String(values[index][columns.key] || "").trim() !== key)
       continue;
     sheet.getRange(index + 1, columns.value + 1).setValue(value);
-    return;
+    updated = true;
+    break;
   }
 
-  const row = Array(Math.max(sheet.getLastColumn(), 3)).fill("");
-  row[columns.key] = key;
-  row[columns.value] = value;
-  row[columns.description] = description;
-  sheet.appendRow(row);
+  if (!updated) {
+    const row = Array(Math.max(sheet.getLastColumn(), 3)).fill("");
+    row[columns.key] = key;
+    row[columns.value] = value;
+    row[columns.description] = description;
+    sheet.appendRow(row);
+  }
+
+  if (typeof invalidatePortalCacheGroup === "function")
+    invalidatePortalCacheGroup("settings");
 }
 
 function uninstallLoboGoogleFormsTriggers() {
