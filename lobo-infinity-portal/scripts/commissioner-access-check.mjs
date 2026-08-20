@@ -18,6 +18,8 @@ assert.match(sidebar, /label: 'Commissioner', to: '\/commissioner'/)
 assert.match(login, /Set Up Commissioner Access/)
 assert.match(login, /Commissioner Login/)
 assert.match(login, /Passwords do not match\./)
+assert.match(login, /getCommissionerPasswordStatus\(\)[\s\S]*\.then\(\(value\) => \{ if \(active\) setConfigured\(value\) \}\)[\s\S]*\.catch\(\(\) => \{ if \(active\) setConfigured\(true\) \}\)/)
+assert.doesNotMatch(login, /Unable to load Commissioner access\./)
 assert.doesNotMatch(login, /username|email|Google/i)
 
 console.log('commissioner access checks passed')

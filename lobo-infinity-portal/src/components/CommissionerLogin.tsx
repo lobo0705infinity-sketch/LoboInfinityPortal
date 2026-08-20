@@ -14,7 +14,7 @@ function CommissionerLogin() {
     let active = true
     getCommissionerPasswordStatus()
       .then((value) => { if (active) setConfigured(value) })
-      .catch(() => { if (active) setMessage('Unable to load Commissioner access.') })
+      .catch(() => { if (active) setConfigured(true) })
     return () => { active = false }
   }, [])
 
