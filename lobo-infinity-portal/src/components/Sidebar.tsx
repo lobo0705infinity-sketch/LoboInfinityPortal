@@ -12,6 +12,7 @@ import {
   authenticatedTopLevelItems,
   commissionerItems,
   communityItems,
+  getJoinCommunityNavigationItem,
   topLevelItems,
   type NavigationItem,
 } from './sidebarNavigation'
@@ -52,6 +53,9 @@ function Sidebar() {
   const resolvedExpandedEventId =
     knownExpandedEvent ? expandedEventId : selectedEventId
   const discordLink = getDiscordCommunityLink(settings)
+  const joinCommunityItem = getJoinCommunityNavigationItem(
+    settings?.joinCommunityFormUrl ?? '',
+  )
   const resolvedCommunityItems = discordLink
     ? [
         ...communityItems,
@@ -88,6 +92,9 @@ function Sidebar() {
         {topLevelItems.map((item) => (
           <SidebarLink item={item} key={item.to} />
         ))}
+        {joinCommunityItem ? (
+          <SidebarLink item={joinCommunityItem} />
+        ) : null}
         {auth.authenticated
           ? authenticatedTopLevelItems.map((item) => (
               <SidebarLink item={item} key={item.to} />

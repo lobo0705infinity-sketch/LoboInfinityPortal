@@ -8,6 +8,9 @@ const importer = read('backend/ResponseImporter.gs')
 const registry = read('backend/PlayerRegistry.gs')
 const installer = read('backend/Installer.gs')
 const players = read('src/pages/Players.tsx')
+const sidebar = read('src/components/Sidebar.tsx')
+const mobileNavigation = read('src/components/MobileNavigationDrawer.tsx')
+const sidebarNavigation = read('src/components/sidebarNavigation.ts')
 
 const checks = [
   ['Join form has one required Handle field', form.includes('LIF_FORMS.FIELDS.PLAYER_HANDLE') && form.includes('setCollectEmail(false)') && !form.includes('Discord Name') && !form.includes('Real Name')],
@@ -18,7 +21,7 @@ const checks = [
   ['No Users or authentication record is created', !form.includes('ensureUsersSheet') && !importer.includes('createUserRow') && !registry.includes('ensureUsersSheet')],
   ['Existing form IDs remain configured', constants.includes('LEAGUE_FORM_ID') && constants.includes('TEAM_FORM_ID') && constants.includes('CASUAL_FORM_ID')],
   ['Installer is additive and idempotent', installer.includes('function installJoinCommunityForm()') && installer.includes('RESPONSE_SPREADSHEET_ID')],
-  ['Public Players page opens Join form safely', players.includes('Join Community') && players.includes('target="_blank"') && players.includes('rel="noopener noreferrer"')],
+  ['Public navigation opens configured Join form safely', sidebarNavigation.includes('Join the Lobo Game Network') && sidebarNavigation.includes('external: true') && sidebar.includes('settings?.joinCommunityFormUrl') && mobileNavigation.includes('settings?.joinCommunityFormUrl') && !players.includes('Join Community')],
 ]
 
 const joinFormFunctions = [

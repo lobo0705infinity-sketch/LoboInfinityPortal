@@ -28,6 +28,21 @@ export const authenticatedTopLevelItems: NavigationItem[] = [
   },
 ]
 
+export function getJoinCommunityNavigationItem(
+  joinCommunityFormUrl: string,
+): NavigationItem | null {
+  if (!joinCommunityFormUrl) {
+    return null
+  }
+
+  return {
+    external: true,
+    icon: 'players',
+    label: 'Join the Lobo Game Network',
+    to: joinCommunityFormUrl,
+  }
+}
+
 export const communityItems: NavigationItem[] = [
   {
     icon: 'players',

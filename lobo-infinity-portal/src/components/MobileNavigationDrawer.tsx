@@ -13,6 +13,7 @@ import {
   authenticatedTopLevelItems,
   commissionerItems,
   communityItems,
+  getJoinCommunityNavigationItem,
   topLevelItems,
   type NavigationItem,
 } from './sidebarNavigation'
@@ -167,6 +168,9 @@ function MobileNavigationDrawer({
   const resolvedExpandedEventId =
     knownExpandedEvent ? expandedEventId : selectedEventId
   const discordLink = getDiscordCommunityLink(settings)
+  const joinCommunityItem = getJoinCommunityNavigationItem(
+    settings?.joinCommunityFormUrl ?? '',
+  )
   const resolvedCommunityItems = discordLink
     ? [
         ...communityItems,
@@ -212,6 +216,9 @@ function MobileNavigationDrawer({
         {topLevelItems.map((item) => (
           <MobileSidebarLink item={item} key={item.to} onNavigate={onClose} />
         ))}
+        {joinCommunityItem ? (
+          <MobileSidebarLink item={joinCommunityItem} onNavigate={onClose} />
+        ) : null}
         {authenticated ? (
           authenticatedTopLevelItems.map((item) => (
             <MobileSidebarLink item={item} key={item.to} onNavigate={onClose} />
