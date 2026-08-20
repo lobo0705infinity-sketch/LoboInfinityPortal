@@ -360,7 +360,7 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
       ) : null}
 
       {showOverview || activeSection === 'standings' || activeSection === 'pairings' ? (
-      <section className="team-tournament-grid">
+      <section className={`team-tournament-grid${activeSection === 'standings' ? ' team-tournament-standings-grid' : ''}`}>
         {showOverview || activeSection === 'standings' ? (
         <TeamStandings standings={data.standings} />
         ) : null}
@@ -705,7 +705,7 @@ function TeamStandings({
       data-tournament-section="standings"
       id="team-tournament-standings"
     >
-      <div className="panel-heading">
+      <div className="panel-heading team-standings-heading">
         <p className="eyebrow">Team Standings</p>
         <h2>Rankings</h2>
       </div>
@@ -714,6 +714,11 @@ function TeamStandings({
       ) : (
         <div className="team-tournament-table-shell">
           <table className="team-tournament-table">
+            <colgroup>
+              <col className="team-standings-rank-column" />
+              <col className="team-standings-name-column" />
+              <col span={6} className="team-standings-stat-column" />
+            </colgroup>
             <thead>
               <tr>
                 <th>Rank</th>
