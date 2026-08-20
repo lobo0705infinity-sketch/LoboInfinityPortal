@@ -1233,6 +1233,7 @@ function emptySettings() {
     discordServerName: 'Lobo Infinity League Discord',
     gitCommit: '',
     googleFormUrl: '',
+    joinCommunityFormUrl: '',
     googleOAuthClientId: '',
     leagueLogo: '',
     leagueName: 'Lobo Infinity League',

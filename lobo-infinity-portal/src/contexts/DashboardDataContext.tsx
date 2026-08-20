@@ -549,6 +549,7 @@ function createEmptySettings(): PortalSettings {
     discordServerName: 'Lobo Infinity League Discord',
     gitCommit: '',
     googleFormUrl: '',
+    joinCommunityFormUrl: '',
     googleOAuthClientId: '',
     leagueLogo: '',
     leagueName: '',

@@ -75,6 +75,7 @@
     "test:standings-integrity": "node scripts/standings-integrity-check.mjs",
     "test:player-profile": "node scripts/player-profile-check.mjs",
     "test:player-registry": "node scripts/player-registry-context-check.mjs",
+    "test:player-onboarding": "node scripts/player-onboarding-check.mjs",
     "test:player-identity": "node scripts/player-identity-check.mjs",
     "test:faction-portraits": "node --experimental-strip-types scripts/faction-portrait-check.ts",
     "test:players-portraits": "node --experimental-strip-types scripts/player-portrait-check.ts players",

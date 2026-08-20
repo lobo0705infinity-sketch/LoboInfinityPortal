@@ -10,6 +10,11 @@ function handleLoboFormSubmit(e) {
     const target = SpreadsheetApp.openById(lifRequireProperty_(LIF_FORMS.PROPERTIES.TARGET_SPREADSHEET_ID));
     const log = lifEnsureImportLog_(target);
 
+    if (formType === LIF_FORMS.TYPES.JOIN) {
+      lifImportCommunityPlayer_(e, log, responseKey);
+      return;
+    }
+
     const command = createSubmissionCommand({
       source: "google-form",
       workflow: formType,
@@ -33,7 +38,8 @@ function lifResolveFormType_(sheet) {
   const mappings = [
     [LIF_FORMS.PROPERTIES.LEAGUE_FORM_ID, LIF_FORMS.TYPES.LEAGUE],
     [LIF_FORMS.PROPERTIES.TEAM_FORM_ID, LIF_FORMS.TYPES.TEAM],
-    [LIF_FORMS.PROPERTIES.CASUAL_FORM_ID, LIF_FORMS.TYPES.CASUAL]
+    [LIF_FORMS.PROPERTIES.CASUAL_FORM_ID, LIF_FORMS.TYPES.CASUAL],
+    [LIF_FORMS.PROPERTIES.JOIN_FORM_ID, LIF_FORMS.TYPES.JOIN]
   ];
   for (let i = 0; i < mappings.length; i += 1) {
     const id = props.getProperty(mappings[i][0]);
@@ -42,6 +48,37 @@ function lifResolveFormType_(sheet) {
   if (sheetName === LIF_FORMS.TARGET_SHEET) return LIF_FORMS.TYPES.LEAGUE;
   if (sheetName === "Form Responses 15") return LIF_FORMS.TYPES.TEAM;
   throw new Error("The response sheet is not linked to an installed Lobo form.");
+}
+
+function lifImportCommunityPlayer_(e, log, responseKey) {
+  if (lifWasImported_(log, responseKey))
+    return;
+
+  const values = e.namedValues || {};
+  const handle = String(
+    (values[LIF_FORMS.FIELDS.PLAYER_HANDLE] || [""])[0] || ""
+  ).trim();
+  const result = createCanonicalPlayer(handle);
+
+  lifWriteImportLog_(
+    log,
+    responseKey,
+    LIF_FORMS.TYPES.JOIN,
+    result.row || "",
+    result.duplicate ? "Duplicate" : "Imported",
+    result.duplicate
+      ? "Canonical Player already exists; no changes were made."
+      : "Canonical Player created."
+  );
+
+  if (!result.duplicate && typeof refreshCasualSubmissionForm === "function") {
+    try {
+      refreshCasualSubmissionForm();
+    }
+    catch (err) {
+      Logger.log("Casual form player refresh skipped: " + err);
+    }
+  }
 }
 
 function lifReadSubmission_(named, formType, timestamp, targetSpreadsheet) {

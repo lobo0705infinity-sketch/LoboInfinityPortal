@@ -263,6 +263,81 @@ function setLeaguePlayerDisplayName(playerName, displayName) {
 
 }
 
+function createCanonicalPlayer(playerName) {
+
+  const handle =
+    getPlayerRegistryString(playerName);
+
+  if (handle === "")
+    throw new Error("Player Name / Handle is required.");
+
+  const sheet =
+    lifGetTargetSpreadsheet_()
+      .getSheetByName(CONFIG.SHEETS.PLAYERS);
+
+  if (!sheet)
+    throw new Error("Players sheet not found.");
+
+  const values =
+    sheet
+      .getDataRange()
+      .getValues();
+
+  const headers =
+    values.length > 0
+      ? values[0]
+      : [];
+
+  const columns =
+    ensurePlayerDisplayNameColumn(
+      sheet,
+      headers
+    );
+
+  const normalizedHandle =
+    handle.toLowerCase();
+
+  const duplicate =
+    values
+      .slice(1)
+      .some(function(row) {
+        return getPlayerRegistryString(
+          row[columns.player]
+        ).toLowerCase() === normalizedHandle;
+      });
+
+  if (duplicate)
+    return {
+      success: false,
+      duplicate: true,
+      player: handle
+    };
+
+  const row =
+    Array(Math.max(sheet.getLastColumn(), headers.length, 4))
+      .fill("");
+
+  row[columns.player] = handle;
+  row[columns.displayName] = handle;
+  row[columns.division] = "";
+  row[columns.active] = true;
+
+  sheet.appendRow(row);
+
+  invalidatePlayerRegistryCache();
+
+  if (typeof invalidatePortalCacheGroup === "function")
+    invalidatePortalCacheGroup("all");
+
+  return {
+    success: true,
+    duplicate: false,
+    player: handle,
+    row: sheet.getLastRow()
+  };
+
+}
+
 function createPlayer(row) {
 
   return {

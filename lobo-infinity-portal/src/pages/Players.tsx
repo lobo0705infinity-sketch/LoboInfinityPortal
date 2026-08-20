@@ -440,6 +440,16 @@ function CommunityHubSection() {
         </ul>
       )}
       <div className="players-community-actions">
+        {settings?.joinCommunityFormUrl ? (
+          <a
+            className="page-header-action players-join-action"
+            href={settings.joinCommunityFormUrl}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Join Community
+          </a>
+        ) : null}
         <DiscordCommunityLink className="page-header-action players-discord-action" icon>
           Join Discord
         </DiscordCommunityLink>

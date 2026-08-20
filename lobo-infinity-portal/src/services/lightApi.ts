@@ -316,6 +316,7 @@ function normalizeSettings(record: Record<string, unknown>): PortalSettings {
       getString(record, 'discordServerName') || 'Lobo Infinity League Discord',
     gitCommit: getString(record, 'gitCommit'),
     googleFormUrl: getString(record, 'googleFormUrl'),
+    joinCommunityFormUrl: getString(record, 'joinCommunityFormUrl'),
     googleOAuthClientId: getString(record, 'googleOAuthClientId'),
     leagueLogo: getString(record, 'leagueLogo'),
     leagueName: getString(record, 'leagueName') || 'Lobo Infinity League',

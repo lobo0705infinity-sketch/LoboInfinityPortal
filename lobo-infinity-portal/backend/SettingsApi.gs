@@ -28,6 +28,11 @@ const DEFAULT_SETTINGS = [
     "Match Submission Google Form URL."
   ],
   [
+    "joinCommunityFormUrl",
+    "",
+    "Public new-player community onboarding form URL."
+  ],
+  [
     "discordInvite",
     "",
     "Discord invite URL."

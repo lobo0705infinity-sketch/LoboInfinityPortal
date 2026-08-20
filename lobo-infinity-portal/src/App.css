@@ -2069,6 +2069,11 @@
   background: rgba(76, 201, 240, 0.18);
 }
 
+.players-join-action {
+  min-height: 40px;
+  padding: 0 18px;
+}
+
 .players-community-collapse {
   min-height: 32px;
   border: 1px solid var(--border);
