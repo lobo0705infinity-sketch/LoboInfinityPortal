@@ -80,6 +80,7 @@ function buildCommunityPlayerRegistryRows() {
             player.player,
           division: player.division,
           active: player.active !== false,
+          canonical: true,
           source: "Player Registry"
         }
       );
@@ -264,10 +265,15 @@ function applyCommunityGameStatistics(records) {
       return;
 
     const record =
-      records[getCommunityPlayerKey(player)];
-
-    if (!record)
-      return;
+      upsertCommunityPlayerRecord(
+        records,
+        {
+          player: player,
+          displayName: player,
+          canonical: false,
+          source: "Game Engine"
+        }
+      );
 
     record.games += 1;
     record.tp += Number(row[CONFIG.ENGINE.TP]) || 0;
@@ -326,6 +332,7 @@ function upsertCommunityPlayerRecord(records, input) {
       division:
         getCommunityPlayerRegistryString(input.division),
       active: input.active !== false,
+      canonical: input.canonical === true,
       portalUser: !!input.portalUser,
       activeLeagueRegistration: false,
       activeTournamentRegistration: false,
@@ -346,6 +353,9 @@ function upsertCommunityPlayerRecord(records, input) {
 
   const record =
     records[key];
+
+  record.canonical =
+    record.canonical || input.canonical === true;
 
   if (input.portalUser)
     record.displayName =
@@ -407,6 +417,7 @@ function finalizeCommunityPlayerRecord(record) {
 
   return {
     eventId: "",
+    canonical: record.canonical === true,
     rank: record.rank,
     player: record.player,
     displayName:

@@ -4756,6 +4756,7 @@ function normalizeStanding(item: unknown): Standing {
 
   return {
     eventId: getString(record, 'eventId'),
+    canonical: getBoolean(record, 'canonical'),
     rank: getRequiredNumber(record, 'rank'),
     player: getRequiredString(record, 'player'),
     displayName: getString(record, 'displayName') || getRequiredString(record, 'player'),

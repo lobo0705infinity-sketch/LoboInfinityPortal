@@ -5,6 +5,7 @@ import Loading from '../components/Loading'
 import { apiClient } from '../services/api'
 
 type CommissionerPlayer = {
+  canonical: boolean
   displayName: string
   player: string
 }
@@ -85,6 +86,7 @@ function CommissionerPlayers() {
           division.standings.forEach((player) => {
             if (player.player) {
               records.set(player.player, {
+                canonical: player.canonical === true,
                 displayName: player.displayName || player.player,
                 player: player.player,
               })
@@ -108,7 +110,7 @@ function CommissionerPlayers() {
   }, [canDeletePlayers])
 
   async function deleteSelectedPlayer() {
-    if (!selectedPlayer || deletingPlayer) return
+    if (!selectedPlayerRecord?.canonical || deletingPlayer) return
 
     if (!window.confirm(
       `Delete ${selectedPlayer}? Deletion is only permitted when the Player has no historical dependencies.`,
@@ -134,7 +136,7 @@ function CommissionerPlayers() {
   }
 
   function editDisplayName() {
-    if (!selectedPlayerRecord) return
+    if (!selectedPlayerRecord?.canonical) return
     setDisplayName(selectedPlayerRecord.displayName)
     setEditingDisplayName(true)
     setFeedback(null)
@@ -265,22 +267,23 @@ function CommissionerPlayers() {
                 <option value="">Select Player</option>
                 {sortedPlayers.map((player) => (
                   <option key={player.player} value={player.player}>
-                    {player.displayName === player.player
+                    {(player.displayName === player.player
                       ? player.player
-                      : `${player.displayName} (${player.player})`}
+                      : `${player.displayName} (${player.player})`) +
+                      (player.canonical ? '' : ' — Historical')}
                   </option>
                 ))}
               </select>
             </label>
             <button
-              disabled={!selectedPlayer || loadingPlayers || deletingPlayer || savingDisplayName}
+              disabled={!selectedPlayerRecord?.canonical || loadingPlayers || deletingPlayer || savingDisplayName}
               onClick={editDisplayName}
               type="button"
             >
               Edit Display Name
             </button>
             <button
-              disabled={!selectedPlayer || loadingPlayers || deletingPlayer || savingDisplayName}
+              disabled={!selectedPlayerRecord?.canonical || loadingPlayers || deletingPlayer || savingDisplayName}
               onClick={() => void deleteSelectedPlayer()}
               type="button"
             >

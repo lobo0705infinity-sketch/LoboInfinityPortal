@@ -9,6 +9,7 @@ export type DashboardSummary = {
 
 export type Standing = {
   eventId?: string
+  canonical?: boolean
   rank: number
   player: string
   displayName: string
