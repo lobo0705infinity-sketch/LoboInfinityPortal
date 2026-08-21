@@ -372,7 +372,7 @@ function LiveTransmissions({
       return {
         action: 'View Report',
         detail: `${formatMissionLabel(game.mission)} - ${isDraw ? 'draw' : 'defeated'} - ${formatObjectiveScore(game)}`,
-        label: 'Combat Report Received',
+        label: `${formatTransmissionGameType(game.gameType)} · Combat Report Received`,
         time: game.date,
         title: getGameHeadline(game),
         to: `/games/${game.id}`,
@@ -409,6 +409,19 @@ function LiveTransmissions({
       </div>
     </section>
   )
+}
+
+function formatTransmissionGameType(gameType?: string) {
+  switch ((gameType || 'league').trim().toLowerCase()) {
+    case 'casual':
+      return 'Casual'
+    case 'tournament':
+    case 'team tournament':
+    case 'team-tournament':
+      return 'Team Tournament'
+    default:
+      return 'League'
+  }
 }
 
 function WeeklyOperations({

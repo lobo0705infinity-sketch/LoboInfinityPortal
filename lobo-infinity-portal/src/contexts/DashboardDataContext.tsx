@@ -94,7 +94,9 @@ function loadDashboardSummary() {
 }
 
 function loadRecentGames() {
-  return recentGamesCache.load('recentGames', () => gameRepository.getRecentGames())
+  return recentGamesCache.load('recentGames', () =>
+    gameRepository.getRecentGames({ gameType: 'all' }),
+  )
 }
 
 function loadIntelligence() {

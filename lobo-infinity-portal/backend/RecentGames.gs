@@ -52,11 +52,18 @@ function getRecentGames(e) {
         ? "all"
         : eventId;
 
+    const requestedGameType =
+      e &&
+      e.parameter &&
+      e.parameter.gameType;
+
     const sourceGames =
       playerName
         ? getPlayerRecentGameObjectsFromGameEngine(
             playerName
           )
+        : resolveLeagueGameTypeScope(requestedGameType) === "all"
+        ? getAllRecentGameObjectsFromGameEngine()
         : getAllRecentGameObjects();
 
     const filteredGames =
@@ -67,9 +74,7 @@ function getRecentGames(e) {
             playerName
           ),
           eventScope,
-          e &&
-          e.parameter &&
-          e.parameter.gameType
+          requestedGameType
         ),
         e &&
         e.parameter &&
@@ -202,6 +207,45 @@ function getRecentGames(e) {
   return jsonOutput({
     success: true,
     games: games
+  });
+
+}
+
+function getAllRecentGameObjectsFromGameEngine() {
+
+  const rows =
+    getLeagueDataForEvent(
+      "all",
+      "all"
+    );
+
+  const games = [];
+
+  for (
+    let index = 0;
+    index < rows.length;
+    index += 2
+  ) {
+    const game =
+      buildRecentGameFromGameEngineRows(
+        rows[index],
+        rows[index + 1],
+        index
+      );
+
+    if (game)
+      games.push(game);
+  }
+
+  return games.sort(function(a, b) {
+    const dateOrder =
+      b.sortDate.getTime() -
+      a.sortDate.getTime();
+
+    if (dateOrder !== 0)
+      return dateOrder;
+
+    return b.sourceIndex - a.sourceIndex;
   });
 
 }

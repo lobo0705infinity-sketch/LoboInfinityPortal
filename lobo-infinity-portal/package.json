@@ -67,6 +67,7 @@
     "test:operations-engine": "node scripts/operations-engine-check.mjs",
     "test:game-center": "node --experimental-strip-types scripts/game-center-check.ts",
     "test:dashboard-links": "node scripts/dashboard-links-check.mjs",
+    "test:dashboard-network-feed": "node scripts/dashboard-network-feed-check.mjs",
     "test:dashboard-performance": "node scripts/dashboard-performance-check.mjs",
     "test:player-comparison": "node scripts/player-comparison-check.mjs",
     "test:community-links": "node scripts/community-links-check.mjs",
