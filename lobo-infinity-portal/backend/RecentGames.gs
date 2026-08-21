@@ -47,15 +47,19 @@ function getRecentGames(e) {
       e.parameter &&
       e.parameter.eventId;
 
-    const eventScope =
-      playerName && !eventId
-        ? "all"
-        : eventId;
-
     const requestedGameType =
       e &&
       e.parameter &&
       e.parameter.gameType;
+
+    const eventScope =
+      !eventId &&
+      (
+        playerName ||
+        resolveLeagueGameTypeScope(requestedGameType) === "all"
+      )
+        ? "all"
+        : eventId;
 
     const sourceGames =
       playerName

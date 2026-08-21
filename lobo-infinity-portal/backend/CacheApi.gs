@@ -484,7 +484,7 @@ function getPortalCacheKey(e, action) {
     parts.push("schema=2.5.4.1");
 
   if (action === "recentGames")
-    parts.push("schema=network2");
+    parts.push("schema=network3");
 
   if (
     [

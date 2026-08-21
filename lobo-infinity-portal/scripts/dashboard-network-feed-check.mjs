@@ -41,7 +41,13 @@ const checks = [
     label: 'Recent-games cache schema invalidates the former League-only all-types payload',
     pass:
       cacheApi.includes('if (action === "recentGames")') &&
-      cacheApi.includes('parts.push("schema=network2")'),
+      cacheApi.includes('parts.push("schema=network3")'),
+  },
+  {
+    label: 'All-types requests are independent of the selected League event',
+    pass:
+      recentGames.includes('resolveLeagueGameTypeScope(requestedGameType) === "all"') &&
+      /const eventScope =\s*!eventId[\s\S]*?\? "all"\s*: eventId;/.test(recentGames),
   },
 ]
 
