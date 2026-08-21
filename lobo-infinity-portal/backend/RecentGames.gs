@@ -63,7 +63,7 @@ function getRecentGames(e) {
             playerName
           )
         : resolveLeagueGameTypeScope(requestedGameType) === "all"
-        ? getAllRecentGameObjectsFromGameEngine()
+        ? getAllRecentGameObjectsFromCanonicalResponses()
         : getAllRecentGameObjects();
 
     const filteredGames =
@@ -211,26 +211,39 @@ function getRecentGames(e) {
 
 }
 
-function getAllRecentGameObjectsFromGameEngine() {
+function getAllRecentGameObjectsFromCanonicalResponses() {
 
   const rows =
-    getLeagueDataForEvent(
-      "all",
-      "all"
-    );
+    getFormResponses();
 
   const games = [];
+
+  const columns =
+    getRecentGameColumns(
+      getGameAnalyticsHeaders()[0]
+    );
 
   for (
     let index = 0;
     index < rows.length;
-    index += 2
+    index += 1
   ) {
+    const row = rows[index];
+
+    if (!row || !validateGame(row))
+      continue;
+
+    const winner =
+      determineWinner(row);
+
     const game =
-      buildRecentGameFromGameEngineRows(
-        rows[index],
-        rows[index + 1],
-        index
+      buildRecentGame(
+        buildAnalyticsRow(
+          row,
+          winner
+        ),
+        index + 1,
+        columns
       );
 
     if (game)

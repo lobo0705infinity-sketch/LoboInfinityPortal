@@ -25,13 +25,15 @@ const checks = [
     pass: dashboard.includes('to: `/games/${game.id}`'),
   },
   {
-    label: 'The all-types feed reads the authoritative Game Engine instead of a display-only source',
+    label: 'The all-types feed reuses the authoritative canonical response-to-game projection',
     pass:
-      recentGames.includes('function getAllRecentGameObjectsFromGameEngine()') &&
-      recentGames.includes('getLeagueDataForEvent(') &&
-      recentGames.includes('"all",\n      "all"') &&
+      recentGames.includes('function getAllRecentGameObjectsFromCanonicalResponses()') &&
+      recentGames.includes('getFormResponses()') &&
+      recentGames.includes('validateGame(row)') &&
+      recentGames.includes('determineWinner(row)') &&
+      recentGames.includes('buildAnalyticsRow(') &&
       recentGames.includes('resolveLeagueGameTypeScope(requestedGameType) === "all"') &&
-      recentGames.includes('getAllRecentGameObjectsFromGameEngine()') &&
+      recentGames.includes('getAllRecentGameObjectsFromCanonicalResponses()') &&
       recentGames.includes('b.sortDate.getTime() -') &&
       recentGames.includes('b.sourceIndex -'),
   },
@@ -39,7 +41,7 @@ const checks = [
     label: 'Recent-games cache schema invalidates the former League-only all-types payload',
     pass:
       cacheApi.includes('if (action === "recentGames")') &&
-      cacheApi.includes('parts.push("schema=network1")'),
+      cacheApi.includes('parts.push("schema=network2")'),
   },
 ]
 
