@@ -1401,6 +1401,7 @@ function getEventAnalyticsProfileResults(context) {
         player: game.winner,
         opponent: game.loser,
         winningFaction: canonicalizeArmyName(game.winnerFaction),
+        losingFaction: canonicalizeArmyName(game.loserFaction),
         mission: game.mission,
         tournamentPoints: game.tp,
         objectivePoints: game.op,

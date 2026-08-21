@@ -24,6 +24,8 @@ const sandbox = {
   canonicalizeArmyName: (value) => String(value || ''),
   getEventAnalyticsResults: () => sandbox.results,
   getEventAnalyticsString: (value) => value == null ? '' : String(value).trim(),
+  getAllRecentGameObjectsForEvent: () => sandbox.recentGames,
+  recentGames: [],
   results: [],
 }
 vm.createContext(sandbox)
@@ -40,6 +42,7 @@ vm.runInContext(
     extractFunction(eventAnalytics, 'getEventAnalyticsWinningScore_'),
     extractFunction(eventAnalytics, 'getEventAnalyticsMissions'),
     extractFunction(eventAnalytics, 'buildEventAnalyticsGames'),
+    extractFunction(eventAnalytics, 'getEventAnalyticsProfileResults'),
   ].join('\n'),
   sandbox,
 )
@@ -130,6 +133,34 @@ assert.deepEqual(
 )
 assert.ok(projectedMatchups.every((game) => game.loserFaction !== ''))
 
+const casualMatchups = [
+  [50, 'Lobo', 'Kiratze', 'Operations Subsection', 'Ramah Taskforce', 'Hardlock'],
+  [49, 'Lobo', 'Retrofuturist', 'Corregidor Jurisdictional Command', 'Yu Jing', "Dead Man's Switch"],
+  [48, 'Lobo', 'KharuS', 'Corregidor Jurisdictional Command', 'Military Orders', 'Corporate Appropriation'],
+  [43, 'Fantasy', 'Sam', 'Tunguska Jurisdictional Command', 'Ramah Taskforce', 'Hardlock'],
+  [42, 'Sam', 'Fantasy', 'Ramah Taskforce', 'Tunguska Jurisdictional Command', 'B-Pong'],
+  [38, 'Sam', 'xtapro', 'Caledonian Highlander Army', 'Shasvastii Expeditionary Force', 'Corporate Appropriation'],
+  [36, 'Lobo', 'ADangerousFrog', 'Operations Subsection', 'PanOceania', 'Neutralization'],
+  [9, 'Lobo', 'Brooke', 'Operations Subsection', 'Next Wave', 'Neutralization'],
+  [6, 'brickwarrior', 'EihaMagniese', 'Operations Subsection', 'Starmada', 'Provisioning'],
+].map(([id, winner, loser, winnerFaction, loserFaction, mission]) => ({
+  id, winner, loser, winnerFaction, loserFaction, mission,
+  date: '2026-08-01', tp: '5-0', op: '9-2', vp: '201-221', firstTurn: winner,
+}))
+sandbox.recentGames = casualMatchups
+const casualAdapterResults = sandbox.getEventAnalyticsProfileResults({
+  isLeague: true,
+  gameType: 'casual',
+})
+const casualRecentGames = sandbox.buildEventAnalyticsGames(casualAdapterResults)
+assert.ok(casualRecentGames.every((game) => game.winnerFaction && game.loserFaction))
+const deadMansSwitch = casualRecentGames.find((game) => game.mission === "Dead Man's Switch")
+assert.equal(deadMansSwitch.winnerFaction, 'Corregidor Jurisdictional Command')
+assert.equal(deadMansSwitch.loserFaction, 'Yu Jing')
+assert.equal(deadMansSwitch.tp, '5-0')
+assert.equal(deadMansSwitch.op, '9-2')
+assert.equal(deadMansSwitch.vp, '201-221')
+
 sandbox.results = [
   { ...outbreak[0], firstTurn: '' },
   { ...outbreak[1], firstTurn: 'denscott' },
@@ -151,6 +182,11 @@ assert.doesNotMatch(
   extractFunction(eventAnalytics, 'buildEventAnalyticsGames'),
   /loserFaction:\s*""/,
   'Event Analytics must not manufacture a blank losing faction.',
+)
+assert.match(
+  extractFunction(eventAnalytics, 'getEventAnalyticsProfileResults'),
+  /losingFaction:\s*canonicalizeArmyName\(game\.loserFaction\)/,
+  'Casual Event Analytics must preserve the canonical game-specific losing faction.',
 )
 
 console.log('event analytics mission checks passed')
