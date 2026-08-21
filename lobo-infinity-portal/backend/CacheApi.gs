@@ -483,6 +483,9 @@ function getPortalCacheKey(e, action) {
   if (action === "hallOfFame")
     parts.push("schema=2.5.4.1");
 
+  if (action === "recentGames")
+    parts.push("schema=network1");
+
   if (
     [
       "players",

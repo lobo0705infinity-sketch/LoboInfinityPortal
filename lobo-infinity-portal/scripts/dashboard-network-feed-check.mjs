@@ -5,6 +5,7 @@ const root = process.cwd()
 const context = read('src/contexts/DashboardDataContext.tsx')
 const dashboard = read('src/pages/Dashboard.tsx')
 const recentGames = read('backend/RecentGames.gs')
+const cacheApi = read('backend/CacheApi.gs')
 
 const checks = [
   {
@@ -33,6 +34,12 @@ const checks = [
       recentGames.includes('getAllRecentGameObjectsFromGameEngine()') &&
       recentGames.includes('b.sortDate.getTime() -') &&
       recentGames.includes('b.sourceIndex -'),
+  },
+  {
+    label: 'Recent-games cache schema invalidates the former League-only all-types payload',
+    pass:
+      cacheApi.includes('if (action === "recentGames")') &&
+      cacheApi.includes('parts.push("schema=network1")'),
   },
 ]
 
