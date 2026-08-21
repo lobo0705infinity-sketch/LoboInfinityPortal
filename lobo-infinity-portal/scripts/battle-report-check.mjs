@@ -3,6 +3,7 @@ import { resolve } from 'node:path'
 
 const root = process.cwd()
 const gameDetails = read('src/pages/GameDetails.tsx')
+const gameDetailsCss = read('src/pages/GameDetails.css')
 const recentGamesApi = read('backend/RecentGames.gs')
 const gameEngine = read('backend/GameEngine.gs')
 
@@ -16,10 +17,11 @@ const checks = [
       gameDetails.includes('No memorable moment was submitted for this battle.'),
   },
   {
-    label: 'Battle Report uses shared OperatorBadge component',
+    label: 'Battle Report removes OperatorBadge hover presentation locally',
     pass:
-      gameDetails.includes("import OperatorBadge from '../components/OperatorBadge'") &&
-      gameDetails.includes('<OperatorBadge'),
+      !gameDetails.includes("import OperatorBadge from '../components/OperatorBadge'") &&
+      !gameDetails.includes('<OperatorBadge') &&
+      !gameDetailsCss.includes('.battle-report-participant .operator-badge'),
   },
   {
     label: 'Battle Report does not use generic score formatter for TP/OP/VP',
@@ -58,14 +60,24 @@ const checks = [
       recentGamesApi.includes('loserArmyCode: game.loserArmyCode || ""'),
   },
   {
-    label: 'Battle Report Army List dossier links use participant armyCode',
+    label: 'Battle Report removes Force Manifests without changing shared army data contracts',
     pass:
-      gameDetails.includes('armyCode: string') &&
-      gameDetails.includes('armyCode: game.winnerArmyCode') &&
-      gameDetails.includes('armyCode: game.loserArmyCode') &&
-      gameDetails.includes('<ArmyDossierLink armyCode={participant.armyCode} />') &&
-      gameDetails.includes('function getArmyDossierTarget(armyCode: string)') &&
-      gameDetails.includes("href: `/army-list/${encodeURIComponent(value)}`"),
+      !gameDetails.includes('Force Manifests') &&
+      !gameDetails.includes('title="Army Lists"') &&
+      recentGamesApi.includes('winnerArmyCode: game.winnerArmyCode || ""') &&
+      recentGamesApi.includes('loserArmyCode: game.loserArmyCode || ""'),
+  },
+  {
+    label: 'Battle Report lower row contains objectives and verification in a responsive two-column grid',
+    pass:
+      gameDetails.includes('battle-report-grid battle-report-grid-secondary') &&
+      gameDetails.includes('title="Mission Objectives"') &&
+      gameDetails.includes('title="Verification Stamp"') &&
+      gameDetailsCss.includes('.battle-report-grid-secondary') &&
+      gameDetailsCss.includes('grid-template-columns: repeat(2, minmax(0, 1fr))') &&
+      gameDetailsCss.includes('@media (max-width: 1180px)') &&
+      gameDetailsCss.includes('.battle-report-grid-primary') &&
+      gameDetailsCss.includes('grid-template-columns: 1fr;'),
   },
   {
     label: 'Battle Report linked-news fallback is secondary to canonical form lookup',

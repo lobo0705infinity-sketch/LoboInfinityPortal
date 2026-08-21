@@ -35,7 +35,7 @@ expect(/factionIcons\[preferredFaction\]/.test(registry), 'Exact existing factio
 expect(/return factionIconsByKey\.get\(aliasKey \|\| key\) \?\? LoboDefault/.test(registry), 'Unknown factions must still use LoboDefault.')
 expect(/"Steel Phalanx": SteelPhalanx/.test(registry), 'Existing Steel Phalanx mapping changed or disappeared.')
 expect(/"Imperial Service": ImperialService/.test(registry), 'Existing Imperial Service mapping changed or disappeared.')
-expect(/preferredFaction=\{participant\.faction\}/.test(gameDetails), 'Game Details participant badges must receive participant faction values.')
+expect(!/<OperatorBadge/.test(gameDetails), 'Game Details must not render Operator Badge hover overlays.')
 expect(/preferredFaction=\{displayFaction\}/.test(armyLists), 'Army List Library badges must receive display faction values.')
 
 if (failures.length) {

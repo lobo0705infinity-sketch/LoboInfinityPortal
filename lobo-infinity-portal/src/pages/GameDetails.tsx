@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState, type Dispatch, type ReactNode, type SetStateAction } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import EntityPreviousNext from '../components/EntityPreviousNext'
-import OperatorBadge from '../components/OperatorBadge'
 import Skeleton from '../components/Skeleton'
 import { getCanonicalMissionName } from '../config/missions'
 import { apiClient, type CommissionerNewsItem, type RecentGame, type StreamedGame } from '../services/api'
@@ -25,63 +24,11 @@ type GameDetailsState =
     }
 
 type BattleParticipant = {
-  armyCode: string
   displayName: string
-  division: string
   faction: string
-  label: string
-  name: string
   result: string
   scoreTone: 'cyan' | 'red'
 }
-
-const armyListCardLayoutCss = `
-  .battle-report-armies {
-    grid-template-columns: repeat(2, minmax(280px, 1fr));
-    gap: 16px;
-    align-items: stretch;
-  }
-
-  .battle-report-army {
-    display: flex;
-    min-width: 0;
-    min-height: 100%;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    text-align: center;
-  }
-
-  .battle-report-army .operator-badge {
-    flex: 0 0 auto;
-    margin-inline: auto;
-  }
-
-  .battle-report-army-copy {
-    width: 100%;
-    justify-items: center;
-    gap: 6px;
-  }
-
-  .battle-report-army strong,
-  .battle-report-army span {
-    max-width: 100%;
-    overflow-wrap: anywhere;
-  }
-
-  .battle-report-army a {
-    grid-column: auto;
-    max-width: 100%;
-    margin-top: auto;
-    overflow-wrap: anywhere;
-  }
-
-  @media (max-width: 760px) {
-    .battle-report-armies {
-      grid-template-columns: 1fr;
-    }
-  }
-`
 
 function GameDetails() {
   const { id } = useParams<{ id: string }>()
@@ -321,9 +268,9 @@ function BattleReport({ game, stream }: { game: RecentGame; stream: StreamedGame
         </header>
 
         <section className={isDraw ? 'battle-report-versus is-draw' : 'battle-report-versus'} aria-label="Battle result">
-          <ParticipantPanel participant={participants[0]} game={game} />
+          <ParticipantPanel participant={participants[0]} />
           <Scoreboard isDraw={isDraw} scores={scores} />
-          <ParticipantPanel participant={participants[1]} game={game} />
+          <ParticipantPanel participant={participants[1]} />
         </section>
 
         <section className="battle-report-grid battle-report-grid-primary">
@@ -364,35 +311,7 @@ function BattleReport({ game, stream }: { game: RecentGame; stream: StreamedGame
           </BattleCard>
         </section>
 
-        <section className="battle-report-grid">
-          <BattleCard title="Army Lists" eyebrow="Force Manifests" wide>
-            <style>{armyListCardLayoutCss}</style>
-            <div className="battle-report-armies">
-              {participants.map((participant) => (
-                <article className={`battle-report-army is-${participant.scoreTone}`} key={participant.name}>
-                  <OperatorBadge
-                    competitiveHome={participant.division || 'Casual Player'}
-                    player={{
-                      displayName: participant.displayName,
-                      division: participant.division,
-                      favoriteFaction: participant.faction,
-                      name: participant.name,
-                      rank: 0,
-                    }}
-                    preferredFaction={participant.faction}
-                    rank={0}
-                    showBadges={false}
-                  />
-                  <div className="battle-report-army-copy">
-                    <strong>{participant.displayName}</strong>
-                    <span>{participant.faction || 'Army not recorded'}</span>
-                  </div>
-                  <ArmyDossierLink armyCode={participant.armyCode} />
-                </article>
-              ))}
-            </div>
-          </BattleCard>
-
+        <section className="battle-report-grid battle-report-grid-secondary">
           <BattleCard title="Mission Objectives" eyebrow="Scoring">
             <dl className="battle-report-objectives">
               {scores.map((score) => (
@@ -407,8 +326,6 @@ function BattleReport({ game, stream }: { game: RecentGame; stream: StreamedGame
             </dl>
           </BattleCard>
 
-          {stream ? <StreamPanel game={game} stream={stream} /> : null}
-
           <BattleCard title="Verification Stamp" eyebrow="Official Record">
             <dl className="battle-report-verification">
               <div className="battle-report-verification-status">
@@ -422,6 +339,8 @@ function BattleReport({ game, stream }: { game: RecentGame; stream: StreamedGame
               {stream ? <Fact label="Stream" value={stream.title || 'Linked stream'} /> : null}
             </dl>
           </BattleCard>
+
+          {stream ? <StreamPanel game={game} stream={stream} /> : null}
         </section>
 
         <nav className="battle-report-footer-nav" aria-label="Battle report footer navigation">
@@ -433,22 +352,9 @@ function BattleReport({ game, stream }: { game: RecentGame; stream: StreamedGame
   )
 }
 
-function ParticipantPanel({ game, participant }: { game: RecentGame; participant: BattleParticipant }) {
+function ParticipantPanel({ participant }: { participant: BattleParticipant }) {
   return (
     <article className={`battle-report-participant is-${participant.scoreTone}`}>
-      <OperatorBadge
-        competitiveHome={game.division || 'Casual Player'}
-        player={{
-          displayName: participant.displayName,
-          division: game.division,
-          favoriteFaction: participant.faction,
-          name: participant.name,
-          rank: 0,
-        }}
-        preferredFaction={participant.faction}
-        rank={0}
-        showBadges={false}
-      />
       <div className="battle-report-participant-copy">
         <span>{participant.result}</span>
         <h2>{participant.displayName}</h2>
@@ -462,44 +368,6 @@ function ParticipantPanel({ game, participant }: { game: RecentGame; participant
       </div>
     </article>
   )
-}
-
-function ArmyDossierLink({ armyCode }: { armyCode: string }) {
-  const target = getArmyDossierTarget(armyCode)
-
-  if (!target) {
-    return null
-  }
-
-  if (target.external) {
-    return (
-      <a href={target.href} rel="noreferrer" target="_blank">
-        View Army Dossier
-      </a>
-    )
-  }
-
-  return <Link to={target.href}>View Army Dossier</Link>
-}
-
-function getArmyDossierTarget(armyCode: string) {
-  const value = armyCode.trim()
-
-  if (!value) {
-    return null
-  }
-
-  if (/^https?:\/\//i.test(value)) {
-    return {
-      external: true,
-      href: value,
-    }
-  }
-
-  return {
-    external: false,
-    href: `/army-list/${encodeURIComponent(value)}`,
-  }
 }
 
 function Scoreboard({
@@ -553,7 +421,7 @@ function BattleCard({
 
 function StreamPanel({ game, stream }: { game: RecentGame; stream: StreamedGame }) {
   return (
-    <BattleCard title="Stream / VOD" eyebrow="Transmission">
+    <BattleCard title="Stream / VOD" eyebrow="Transmission" wide>
       <div className="battle-report-stream">
         {stream.thumbnailUrl ? (
           <img alt="" loading="lazy" src={stream.thumbnailUrl} />
@@ -610,22 +478,14 @@ type ScoreLabel = 'TP' | 'OP' | 'VP'
 function buildParticipants(game: RecentGame, isDraw: boolean): [BattleParticipant, BattleParticipant] {
   return [
     {
-      armyCode: game.winnerArmyCode,
       displayName: formatPlayerName(game.winner, game.winnerDisplayName),
-      division: game.division,
       faction: game.winnerFaction,
-      label: isDraw ? 'Player One' : 'Winner',
-      name: game.winner,
       result: isDraw ? 'Draw' : 'Winner',
       scoreTone: 'cyan',
     },
     {
-      armyCode: game.loserArmyCode,
       displayName: formatPlayerName(game.loser, game.loserDisplayName),
-      division: game.division,
       faction: game.loserFaction,
-      label: isDraw ? 'Player Two' : 'Defeated',
-      name: game.loser,
       result: isDraw ? 'Draw' : 'Defeated',
       scoreTone: 'red',
     },
