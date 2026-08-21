@@ -361,14 +361,31 @@ function getEventAnalyticsMissions(context) {
           winnerTP: 0,
           winnerOP: 0,
           winnerVP: 0,
+          firstTurnGames: 0,
+          firstTurnWins: 0,
           factions: {},
           lastPlayed: ""
         };
 
       missions[mission].games += 1;
-      missions[mission].winnerTP += Number(result.tournamentPoints) || 0;
-      missions[mission].winnerOP += Number(result.objectivePoints) || 0;
-      missions[mission].winnerVP += Number(result.victoryPoints) || 0;
+      missions[mission].winnerTP +=
+        getEventAnalyticsWinningScore_(result, "tournamentPoints");
+      missions[mission].winnerOP +=
+        getEventAnalyticsWinningScore_(result, "objectivePoints");
+      missions[mission].winnerVP +=
+        getEventAnalyticsWinningScore_(result, "victoryPoints");
+
+      const firstTurn =
+        getEventAnalyticsString(result.firstTurn);
+      const winner =
+        getEventAnalyticsString(result.winner);
+
+      if (firstTurn && winner) {
+        missions[mission].firstTurnGames += 1;
+
+        if (teamTournamentSameValue(firstTurn, winner))
+          missions[mission].firstTurnWins += 1;
+      }
 
       const faction =
         canonicalizeArmyName(result.winningFaction);
@@ -397,12 +414,33 @@ function getEventAnalyticsMissions(context) {
         averageTP: games > 0 ? mission.winnerTP / games : 0,
         averageOP: games > 0 ? mission.winnerOP / games : 0,
         averageVP: games > 0 ? mission.winnerVP / games : 0,
-        firstTurnWinRate: 0,
+        firstTurnWinRate:
+          mission.firstTurnGames > 0
+            ? mission.firstTurnWins / mission.firstTurnGames * 100
+            : 0,
         mostSuccessfulFaction:
           getEventAnalyticsTopKey(mission.factions),
         lastPlayed: mission.lastPlayed
       };
     });
+
+}
+
+function getEventAnalyticsWinningScore_(result, field) {
+
+  const score =
+    parseTeamTournamentScore(result[field]);
+
+  if (!score.valid)
+    return 0;
+
+  if (teamTournamentSameValue(result.player, result.winner))
+    return score.left;
+
+  if (teamTournamentSameValue(result.opponent, result.winner))
+    return score.right;
+
+  return 0;
 
 }
 
