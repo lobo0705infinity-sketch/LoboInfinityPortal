@@ -29,12 +29,32 @@ const checks = [
       /careerSummary:\s*buildPlayerCareerSummary\(/.test(playersApi),
   },
   {
-    label: 'Zero-game profile has empty-state availability and recent games',
+    label: 'Zero-game profile retains its recent-games empty state without Operations Profile',
     pass:
       playersApi.includes('function buildEmptyPlayerAvailability') &&
       playerProfile.includes('No recorded games yet.') &&
-      playerProfile.includes('value={player.availability.status}') &&
-      playerProfile.includes('value={currentTournament}'),
+      !playerProfile.includes('Notes & Media') &&
+      !playerProfile.includes('Operations Profile') &&
+      !playerProfile.includes('profile-v21-notes') &&
+      !playerProfile.includes('<NotesMediaPanel'),
+  },
+  {
+    label: 'Public profile does not render availability, Discord, or tournament fields in a notes panel',
+    pass:
+      !playerProfile.includes('label="Availability"') &&
+      !playerProfile.includes('label="Preferred Days"') &&
+      !playerProfile.includes('label="Preferred Time"') &&
+      !playerProfile.includes('label="Discord"') &&
+      !playerProfile.includes('label="Current Tournament"'),
+  },
+  {
+    label: 'Player profile keeps hero, career, achievements, recent games, and Army Lists',
+    pass:
+      playerProfile.includes('<PlayerProfileDossier') &&
+      playerProfile.includes('<PerformanceOverview') &&
+      playerProfile.includes('<AchievementPreview') &&
+      playerProfile.includes('<RecentGamesPanel') &&
+      playerProfile.includes('<ArmyListsPanel'),
   },
   {
     label: 'Public profile exposes the shared automatic Primary Faction',

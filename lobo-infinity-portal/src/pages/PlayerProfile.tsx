@@ -306,7 +306,6 @@ function PlayerProfileDossier({
           <PerformanceOverview career={career} player={player} />
           <RecentGamesPanel games={recentGames} player={player} />
           <ArmyListsPanel player={player} />
-          <NotesMediaPanel currentTournament={currentTournament} player={player} />
         </div>
         <aside className="profile-v21-aside" aria-label="Player analytics">
           <FactionBreakdown career={career} player={player} />
@@ -835,30 +834,6 @@ function ArmyListsPanel({ player }: { player: PlayerProfileData }) {
           ))}
         </div>
       ) : null}
-    </section>
-  )
-}
-
-function NotesMediaPanel({
-  currentTournament,
-  player,
-}: {
-  currentTournament: string
-  player: PlayerProfileData
-}) {
-  return (
-    <section className="panel profile-v21-notes" id="profile-notes" aria-labelledby="notes-title">
-      <div className="panel-heading">
-        <p className="eyebrow">Notes & Media</p>
-        <h2 id="notes-title">Operations Profile</h2>
-      </div>
-      <dl className="profile-metric-list">
-        <Metric label="Availability" value={player.availability.status} />
-        <Metric label="Preferred Days" value={player.availability.preferredDays} />
-        <Metric label="Preferred Time" value={player.availability.preferredTimes} />
-        <Metric label="Discord" value={player.discordHandle} />
-        <Metric label="Current Tournament" value={currentTournament} />
-      </dl>
     </section>
   )
 }
@@ -2145,8 +2120,7 @@ const playerProfileStyles = `
 .player-achievement-panel,
 .profile-v21-rivals,
 .profile-v21-activity,
-.profile-v21-army-lists,
-.profile-v21-notes {
+.profile-v21-army-lists {
   border-color: rgba(76, 201, 240, 0.24);
   border-radius: 0;
   background:
@@ -2482,10 +2456,6 @@ const playerProfileStyles = `
 }
 
 .profile-v21-army-lists .army-list-mini-grid {
-  margin-top: 14px;
-}
-
-.profile-v21-notes .profile-action-link {
   margin-top: 14px;
 }
 
