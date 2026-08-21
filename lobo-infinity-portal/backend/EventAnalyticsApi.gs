@@ -1362,7 +1362,7 @@ function buildEventAnalyticsGames(results) {
         loser: loser,
         loserDisplayName: loser,
         winnerFaction: canonicalizeArmyName(result.winningFaction) || "",
-        loserFaction: "",
+        loserFaction: canonicalizeArmyName(result.losingFaction) || "",
         mission: result.mission || "",
         tp: String(result.tournamentPoints || ""),
         op: String(result.objectivePoints || ""),

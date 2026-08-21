@@ -30,11 +30,16 @@ vm.createContext(sandbox)
 vm.runInContext(
   [
     extractFunction(teamTournament, 'getTeamTournamentString'),
+    extractFunction(teamTournament, 'normalizeTeamTournamentPlayerKey'),
     extractFunction(teamTournament, 'teamTournamentSameValue'),
     extractFunction(teamTournament, 'parseTeamTournamentScore'),
+    extractFunction(teamTournament, 'teamTournamentCanonicalGamePlayerMatches_'),
+    extractFunction(teamTournament, 'orientTeamTournamentCanonicalGameScore_'),
+    extractFunction(teamTournament, 'buildTeamTournamentResultFromCanonicalGame_'),
     extractFunction(eventAnalytics, 'getEventAnalyticsTopKey'),
     extractFunction(eventAnalytics, 'getEventAnalyticsWinningScore_'),
     extractFunction(eventAnalytics, 'getEventAnalyticsMissions'),
+    extractFunction(eventAnalytics, 'buildEventAnalyticsGames'),
   ].join('\n'),
   sandbox,
 )
@@ -76,6 +81,55 @@ assert.equal(summary.averageOP, 9)
 assert.ok(Math.abs(summary.averageVP - 232.83333333333334) < 1e-10)
 assert.ok(Math.abs(summary.firstTurnWinRate - 83.33333333333334) < 1e-10)
 
+const game61 = {
+  id: 61,
+  winner: 'Nighthawkmk2',
+  winnerDisplayName: 'Nighthawkmk2',
+  loser: 'KaktusGalaxus',
+  loserDisplayName: 'KaktusGalaxus',
+  winnerFaction: 'Operations Subsection',
+  loserFaction: 'Tartary Army Corps',
+  gameResult: 'Player 1 Victory',
+  mission: 'Outbreak',
+  tp: '5-0',
+  op: '10-0',
+  vp: '300-144',
+  firstTurn: 'KaktusGalaxus',
+  date: '2026-08-19',
+}
+const adapted61 = sandbox.buildTeamTournamentResultFromCanonicalGame_(
+  'event-august-2026-team-tournament',
+  { player: 'Nighthawkmk2', opponent: 'KaktusGalaxus', roundId: '1', round: '1', teamA: 'A', teamB: 'B', table: '1' },
+  game61,
+)
+assert.equal(adapted61.winningFaction, 'Operations Subsection')
+assert.equal(adapted61.losingFaction, 'Tartary Army Corps')
+
+const projectedMatchups = sandbox.buildEventAnalyticsGames([
+  ['PinkFox', 'Chainsaw', 'Operations Subsection', 'Torchlight Brigade'],
+  ['Diabloknk', 'Denscott', 'Next Wave', 'O-12'],
+  ['xtapro', 'Zhukov2', 'ALEPH', 'Qapu Khalqi'],
+  ['King Butt', 'Defuser', 'Yu Jing', 'Force de Réponse Rapide Merovingienne'],
+  ['brickwarrior', 'THE FLOOP DROOPSBY', 'Operations Subsection', 'Kestrel Colonial Force'],
+  ['Nighthawkmk2', 'KaktusGalaxus', 'Operations Subsection', 'Tartary Army Corps'],
+].map(([winner, loser, winningFaction, losingFaction]) => ({
+  winner, player: winner, opponent: loser, winningFaction, losingFaction,
+  tournamentPoints: '5-0', objectivePoints: '10-0', victoryPoints: '300-100',
+  mission: 'Outbreak', status: 'Submitted', updatedAt: '2026-08-19',
+})))
+assert.deepEqual(
+  projectedMatchups.map((game) => `${game.winnerFaction} vs ${game.loserFaction}`),
+  [
+    'Operations Subsection vs Torchlight Brigade',
+    'Next Wave vs O-12',
+    'ALEPH vs Qapu Khalqi',
+    'Yu Jing vs Force de Réponse Rapide Merovingienne',
+    'Operations Subsection vs Kestrel Colonial Force',
+    'Operations Subsection vs Tartary Army Corps',
+  ],
+)
+assert.ok(projectedMatchups.every((game) => game.loserFaction !== ''))
+
 sandbox.results = [
   { ...outbreak[0], firstTurn: '' },
   { ...outbreak[1], firstTurn: 'denscott' },
@@ -92,6 +146,11 @@ assert.doesNotMatch(
   extractFunction(eventAnalytics, 'getEventAnalyticsMissions'),
   /Number\(result\.(tournamentPoints|objectivePoints|victoryPoints)\)/,
   'Paired scores must not be coerced directly to scalar numbers.',
+)
+assert.doesNotMatch(
+  extractFunction(eventAnalytics, 'buildEventAnalyticsGames'),
+  /loserFaction:\s*""/,
+  'Event Analytics must not manufacture a blank losing faction.',
 )
 
 console.log('event analytics mission checks passed')

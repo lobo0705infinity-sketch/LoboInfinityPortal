@@ -1803,6 +1803,7 @@ function buildTeamTournamentResultFromCanonicalGame_(eventId, assignment, game) 
     objectivePoints: orientTeamTournamentCanonicalGameScore_(game.op, playerIsWinnerSide),
     victoryPoints: orientTeamTournamentCanonicalGameScore_(game.vp, playerIsWinnerSide),
     winningFaction: draw ? "" : game.winnerFaction,
+    losingFaction: draw ? "" : game.loserFaction,
     firstTurn: game.firstTurn,
     bestMoment: game.bestMoment,
     notes: "",
