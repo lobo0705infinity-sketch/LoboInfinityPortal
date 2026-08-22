@@ -104,20 +104,22 @@ function linkHistoricalArmyLists(e) {
       return resultSubmissionFailure("Game was not found.");
 
     const winnerArmyList =
-      validateResultSubmissionArmyListId(
+      validateHistoricalArmyListLink(
         params.winnerArmyListId,
         game.winner,
-        game.winnerFaction
+        game.winnerFaction,
+        game.winnerArmyCode
       );
 
     if (!winnerArmyList.valid)
       return resultSubmissionFailure(winnerArmyList.error);
 
     const loserArmyList =
-      validateResultSubmissionArmyListId(
+      validateHistoricalArmyListLink(
         params.loserArmyListId,
         game.loser,
-        game.loserFaction
+        game.loserFaction,
+        game.loserArmyCode
       );
 
     if (!loserArmyList.valid)
@@ -191,6 +193,61 @@ function linkHistoricalArmyLists(e) {
       loserArmyListId: loserArmyList.id
     });
   });
+
+}
+
+function validateHistoricalArmyListLink(value, player, faction, armyCode) {
+
+  const normalizedArmyCode =
+    normalizeResultSubmissionArmyCode(armyCode);
+
+  if (!normalizedArmyCode)
+    return validateResultSubmissionArmyListId(
+      value,
+      player,
+      faction
+    );
+
+  const requestedId =
+    getResultSubmissionString(value);
+
+  const derivedId =
+    typeof buildCanonicalArmyCodeArmyListId === "function"
+      ? String(buildCanonicalArmyCodeArmyListId(normalizedArmyCode))
+      : "";
+
+  if (!derivedId)
+    return {
+      valid: false,
+      id: "",
+      list: null,
+      error: "The stored Army Code could not produce a canonical Army List identity."
+    };
+
+  if (requestedId && requestedId !== derivedId)
+    return {
+      valid: false,
+      id: "",
+      list: null,
+      error: "Selected Army List does not match the stored game-specific Army Code."
+    };
+
+  const list =
+    getResultSubmissionApprovedArmyListById(derivedId);
+
+  if (!list)
+    return {
+      valid: false,
+      id: "",
+      list: null,
+      error: "The stored game-specific Army Code has no approved canonical Army List identity."
+    };
+
+  return {
+    valid: true,
+    id: derivedId,
+    list: list
+  };
 
 }
 

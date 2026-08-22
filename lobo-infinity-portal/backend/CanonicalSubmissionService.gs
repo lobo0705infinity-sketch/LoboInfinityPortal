@@ -257,14 +257,12 @@ function canonicalSubmissionBuildGoogleFormGameCommand_(submission) {
     gameResultMode: casual ? "winner-name" : "canonical",
     playerArmyCode: submission.playerArmyCode,
     opponentArmyCode: submission.opponentArmyCode,
-    deriveArmyListIds: !casual
+    deriveArmyListIds: true
   };
 
   if (casual) {
     command.timestamp = submission.timestamp;
     command.date = new Date();
-    command.playerArmyListId = "";
-    command.opponentArmyListId = "";
   }
 
   return command;

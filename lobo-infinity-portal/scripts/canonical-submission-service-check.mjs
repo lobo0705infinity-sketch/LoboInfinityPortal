@@ -139,7 +139,7 @@ const context = vm.createContext({
   recordResultSubmissionCommissionerAudit() {
     events.push('audit')
   },
-  rebuildEverything() {
+  coordinateCanonicalRebuild() {
     events.push('rebuild')
   },
   publishLatestGameSubmittedAutomationEvent() {
@@ -220,13 +220,11 @@ const legacyGoogleCommand = (submission) => {
     gameResultMode: casual ? 'winner-name' : 'canonical',
     playerArmyCode: submission.playerArmyCode,
     opponentArmyCode: submission.opponentArmyCode,
-    deriveArmyListIds: !casual,
+    deriveArmyListIds: true,
   }
   if (casual) {
     command.timestamp = submission.timestamp
     command.date = new FixedDate()
-    command.playerArmyListId = ''
-    command.opponentArmyListId = ''
   }
   return command
 }
@@ -247,6 +245,8 @@ for (const workflow of ['league', 'casual', 'team-tournament']) {
   })
   assert.equal(result.success, true)
   assertRow(`Google Form ${workflow}`, result.row, expected)
+  assert.equal(result.row[21], armyListId(commonGoogle.playerArmyCode), `${workflow} winner Army List ID must be derived`)
+  assert.equal(result.row[22], armyListId(commonGoogle.opponentArmyCode), `${workflow} loser Army List ID must be derived`)
   const expectedEvents = [
     'idempotency', 'context', `validate:google-form:${workflow}`, 'canonical-sheet', 'factory',
     'append', 'import-log:Imported', 'flush', 'rebuild',
@@ -254,6 +254,17 @@ for (const workflow of ['league', 'casual', 'team-tournament']) {
   if (workflow === 'team-tournament') expectedEvents.push('team-runtime-cache')
   assert.deepEqual(events, expectedEvents, `Google Form ${workflow} rebuild order changed`)
 }
+
+assert.equal(
+  armyListId(commonGoogle.playerArmyCode),
+  armyListId('AAABBB'),
+  'Existing Casual Army Codes must retain their deterministic identity',
+)
+assert.notEqual(
+  armyListId('NEW-CASUAL-ARMY-CODE'),
+  armyListId(commonGoogle.playerArmyCode),
+  'A new Casual Army Code must derive a distinct deterministic identity',
+)
 
 const portalParams = {
   division: 'Division A', mission: 'Panic Room', firstTurn: 'Alice', bestMoment: 'A crit',
@@ -338,6 +349,8 @@ for (const caller of callers) {
   assert.doesNotMatch(caller, /validateCanonicalGame\s*\(|buildCanonicalGameRow\s*\(|\.appendRow\s*\(|rebuildEverything\s*\(|rebuildGameEngine\s*\(/)
 }
 assert.equal((service.match(/function\s+submitCanonicalGame\s*\(/g) || []).length, 1)
+assert.match(service, /playerArmyCode:\s*submission\.playerArmyCode[\s\S]*opponentArmyCode:\s*submission\.opponentArmyCode[\s\S]*deriveArmyListIds:\s*true/)
+assert.doesNotMatch(service, /if \(casual\)[\s\S]{0,240}playerArmyListId\s*=\s*""/)
 assert.doesNotMatch(importer, /function\s+lifAppendCanonicalGameSubmission_\s*\(|function\s+lifRunCanonicalGamePipeline_\s*\(/)
 
 console.log('Canonical Submission Service rows: PASS')

@@ -79,6 +79,8 @@ const oldImportedCanonicalRow = (submission) => {
   if (submission.formType === 'casual') {
     const winner = oldDetermineWinner(submission)
     const playerWins = winner === submission.player || winner === 'Draw'
+    const playerArmyListId = String(buildArmyListId(submission.playerArmyCode))
+    const opponentArmyListId = String(buildArmyListId(submission.opponentArmyCode))
     return [
       submission.timestamp,
       submission.division,
@@ -101,8 +103,8 @@ const oldImportedCanonicalRow = (submission) => {
       winner,
       submission.playerArmyCode,
       submission.opponentArmyCode,
-      '',
-      '',
+      playerWins ? playerArmyListId : opponentArmyListId,
+      playerWins ? opponentArmyListId : playerArmyListId,
     ]
   }
 
@@ -218,6 +220,8 @@ for (const [label, submission] of submissions) {
 const resultSubmissionSource = fs.readFileSync('backend/ResultSubmissionApi.gs', 'utf8')
 assert.doesNotMatch(resultSubmissionSource, /row\[FORM\.[A-Z0-9_]+\]\s*=/)
 assert.equal((resultSubmissionSource.match(/buildCanonicalGameRow\s*\(/g) || []).length, 0)
+assert.match(resultSubmissionSource, /function validateHistoricalArmyListLink\([\s\S]*buildCanonicalArmyCodeArmyListId\(normalizedArmyCode\)/)
+assert.match(resultSubmissionSource, /requestedId && requestedId !== derivedId[\s\S]*Selected Army List does not match the stored game-specific Army Code\./)
 
 const responseImporterSource = fs.readFileSync('backend/ResponseImporter.gs', 'utf8')
 assert.equal((responseImporterSource.match(/buildCanonicalGameRow\s*\(/g) || []).length, 0)
