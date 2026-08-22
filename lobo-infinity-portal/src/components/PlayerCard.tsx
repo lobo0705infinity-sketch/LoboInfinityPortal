@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { Standing } from '../types/dashboard'
 import {
@@ -12,6 +12,7 @@ import {
   type FactionPortrait,
 } from '../config/factionPortraits'
 import { resolvePlayerFactionIdentity } from '../services/playerFactionIdentity'
+import FactionPortraitImage from './FactionPortraitImage'
 
 type PlayerCardProps = {
   divisionLabel?: string
@@ -135,47 +136,22 @@ function PlayerCardPortrait({
   onError: () => void
   portrait: FactionPortrait
 }) {
-  const originalSrc = portrait.src
-  const cardSrc = getPlayerCardPortraitSrc(originalSrc)
-  const [src, setSrc] = useState(cardSrc)
-
-  useEffect(() => {
-    setSrc(cardSrc)
-  }, [cardSrc])
-
   return (
     <span
       className="player-card-portrait"
       aria-label={`${portrait.faction} portrait`}
     >
-      <img
+      <FactionPortraitImage
         alt={portrait.alt}
-        decoding="async"
         height={432}
         loading="lazy"
-        onError={() => {
-          if (src !== originalSrc) {
-            setSrc(originalSrc)
-            return
-          }
-
-          onError()
-        }}
-        src={src}
+        onError={onError}
+        sizes="(max-width: 700px) 38vw, 320px"
+        src={portrait.src}
         width={320}
       />
     </span>
   )
-}
-
-function getPlayerCardPortraitSrc(src: string) {
-  const match = src.match(/^\/faction-portraits\/([^/]+)\.png$/)
-
-  if (!match) {
-    return src
-  }
-
-  return `/faction-portraits/cards/${match[1]}.webp`
 }
 
 function getPlayerCardHomeLabel({

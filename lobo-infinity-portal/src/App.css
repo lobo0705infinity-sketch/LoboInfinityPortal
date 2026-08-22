@@ -2352,6 +2352,10 @@
   pointer-events: none;
 }
 
+.player-card-portrait picture {
+  display: contents;
+}
+
 .player-card-portrait img {
   display: block;
   width: 100%;
@@ -4559,6 +4563,10 @@
   z-index: 0;
   opacity: 0.16;
   pointer-events: none;
+}
+
+.army-list-library-portrait picture {
+  display: contents;
 }
 
 .army-list-library-portrait img {

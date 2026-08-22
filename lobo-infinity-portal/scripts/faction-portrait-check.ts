@@ -8,6 +8,7 @@ import {
   resolvePlayerFactionPortrait,
   resolvePlayerFactionPortraitDetails,
 } from '../src/config/factionPortraits.ts'
+import { FACTION_PORTRAIT_DERIVATIVES } from '../src/config/factionPortraitDerivatives.ts'
 
 const expected = [
   ['ALEPH', '/faction-portraits/aleph.png'],
@@ -139,20 +140,22 @@ for (const [faction, src] of expected) {
     failures.push(`${faction} portrait asset at ${publicPath} must not be empty.`)
   }
 
-  const cardDerivativePath = resolve(
-    process.cwd(),
-    'public',
-    'faction-portraits',
-    'cards',
-    src.replace('/faction-portraits/', '').replace(/\.png$/, '.webp'),
-  )
+  const portraitId = src.replace('/faction-portraits/', '').replace(/\.png$/, '')
+  const derivatives = FACTION_PORTRAIT_DERIVATIVES[portraitId] ?? []
 
-  if (!existsSync(cardDerivativePath)) {
-    failures.push(`${faction} card portrait derivative is missing at ${cardDerivativePath}.`)
-  } else if (statSync(cardDerivativePath).size === 0) {
-    failures.push(`${faction} card portrait derivative at ${cardDerivativePath} must not be empty.`)
-  } else if (!isWebpFile(cardDerivativePath)) {
-    failures.push(`${faction} card portrait derivative must be WebP: ${cardDerivativePath}.`)
+  if (derivatives.map(({ width }) => width).join(',') !== '320,640,960') {
+    failures.push(`${faction} must provide 320, 640, and 960 pixel responsive derivatives.`)
+  }
+
+  for (const derivative of derivatives) {
+    const derivativePath = resolve(process.cwd(), 'public', derivative.src.replace(/^\//, ''))
+    if (!/^\/faction-portraits\/optimized\/[a-z0-9-]+\.\d+\.[a-f0-9]{12}\.webp$/.test(derivative.src)) {
+      failures.push(`${faction} derivative is not content hashed: ${derivative.src}.`)
+    } else if (!existsSync(derivativePath) || statSync(derivativePath).size === 0) {
+      failures.push(`${faction} derivative is missing or empty: ${derivativePath}.`)
+    } else if (!isWebpFile(derivativePath)) {
+      failures.push(`${faction} derivative must be WebP: ${derivativePath}.`)
+    }
   }
 
   const duplicatedPath = resolve(process.cwd(), 'public', 'public', src.replace(/^\//, ''))
@@ -468,6 +471,7 @@ function assertSourceContracts() {
   const playerProfile = readFileSync(resolve(process.cwd(), 'src', 'pages', 'PlayerProfile.tsx'), 'utf8')
   const myProfile = readFileSync(resolve(process.cwd(), 'src', 'pages', 'MyProfile.tsx'), 'utf8')
   const portraits = readFileSync(resolve(process.cwd(), 'src', 'config', 'factionPortraits.ts'), 'utf8')
+  const portraitImage = readFileSync(resolve(process.cwd(), 'src', 'components', 'FactionPortraitImage.tsx'), 'utf8')
 
   if (
     !/resolvePlayerFactionIdentity\(player\)/.test(playerCard) ||
@@ -476,20 +480,28 @@ function assertSourceContracts() {
     failures.push('Player cards must use the shared player faction identity portrait path.')
   }
 
-  if (
-    !/getPlayerCardPortraitSrc\(originalSrc\)/.test(playerCard) ||
-    !/\/faction-portraits\/cards\/\$\{match\[1\]\}\.webp/.test(playerCard) ||
-    !/setSrc\(originalSrc\)/.test(playerCard)
-  ) {
-    failures.push('Player cards must use optimized card portrait derivatives with original PNG fallback.')
+  if (!/FactionPortraitImage/.test(playerCard) || !/sizes="\(max-width: 700px\) 38vw, 320px"/.test(playerCard)) {
+    failures.push('Player cards must use responsive optimized portrait delivery.')
   }
 
-  if (!/loading="lazy"/.test(playerCard) || !/decoding="async"/.test(playerCard)) {
+  if (!/loading="lazy"/.test(playerCard) || !/decoding="async"/.test(portraitImage)) {
     failures.push('Player card portraits must lazy-load and decode asynchronously.')
   }
 
   if (!/width=\{320\}/.test(playerCard) || !/height=\{432\}/.test(playerCard)) {
     failures.push('Player card portraits must declare stable intrinsic dimensions.')
+  }
+
+  if (
+    !/<source sizes=\{sizes\} srcSet=\{srcSet\} type="image\/webp"/.test(portraitImage) ||
+    !/src=\{src\}/.test(portraitImage) ||
+    !/setUseOptimized\(false\)/.test(portraitImage)
+  ) {
+    failures.push('Responsive portraits must retain their original PNG fallback after derivative failure.')
+  }
+
+  if (!/FactionPortraitImage/.test(playerProfile) || !/FactionPortraitImage/.test(myProfile)) {
+    failures.push('Player profiles must use responsive optimized portrait delivery.')
   }
 
   if (

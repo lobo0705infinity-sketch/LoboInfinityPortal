@@ -3,6 +3,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 import OperatorBadge from '../components/OperatorBadge'
 import { getOperatorBadgeDetails } from '../components/operatorBadgeDetails'
 import PrimaryFactionCard from '../components/PrimaryFactionCard'
+import FactionPortraitImage from '../components/FactionPortraitImage'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
 import { getArmyParentFaction } from '../services/armyIdentity'
@@ -355,12 +356,14 @@ function PublicPlayerFactionPortrait({
       className={`profile-v21-faction-portrait${className ? ` ${className}` : ''}`}
       aria-label={`${portrait.faction} portrait`}
     >
-      <img
+      <FactionPortraitImage
         alt={portrait.alt}
-        decoding="async"
+        height={600}
         loading="lazy"
         onError={() => setVisible(false)}
+        sizes="(max-width: 760px) 44vw, (max-width: 1180px) 32vw, 390px"
         src={portrait.src}
+        width={428}
       />
     </aside>
   )
@@ -1889,6 +1892,10 @@ const playerProfileStyles = `
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
     0 22px 58px rgba(0, 0, 0, 0.42);
+}
+
+.profile-v21-faction-portrait picture {
+  display: contents;
 }
 
 .profile-v21-faction-portrait img {

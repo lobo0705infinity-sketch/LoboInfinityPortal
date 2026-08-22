@@ -4,6 +4,7 @@ import { useAuth } from '../auth/AuthContext'
 import BarChart, { type BarChartPoint } from '../components/BarChart'
 import OperatorBadge from '../components/OperatorBadge'
 import PrimaryFactionCard from '../components/PrimaryFactionCard'
+import FactionPortraitImage from '../components/FactionPortraitImage'
 import Skeleton from '../components/Skeleton'
 import { getCanonicalArmyOptions, normalizeArmyForDisplay } from '../services/armyIdentity'
 import type { FactionPortrait } from '../config/factionPortraits'
@@ -671,12 +672,14 @@ function FactionPortraitPanel({ portrait }: { portrait: FactionPortrait }) {
 
   return (
     <aside className="my-profile-faction-portrait" aria-label={`${portrait.faction} portrait`}>
-      <img
+      <FactionPortraitImage
         alt={portrait.alt}
-        decoding="async"
+        height={600}
         loading="eager"
         onError={() => setVisible(false)}
+        sizes="(max-width: 760px) 44vw, (max-width: 1180px) 34vw, 430px"
         src={portrait.src}
+        width={430}
       />
     </aside>
   )

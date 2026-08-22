@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import OperatorBadge from '../components/OperatorBadge'
+import FactionPortraitImage from '../components/FactionPortraitImage'
 import Skeleton from '../components/Skeleton'
 import { normalizeArmyForDisplay } from '../services/armyIdentity'
 import {
@@ -366,11 +367,13 @@ function ArmyListCard({
     <article className={`army-list-card army-list-library-card is-${list.result.toLowerCase()}`}>
       {portraitPath ? (
         <span className="army-list-library-portrait" aria-label={`${displayFaction} portrait`}>
-          <img
+          <FactionPortraitImage
             alt={`${displayFaction} portrait`}
-            decoding="async"
+            height={600}
             loading="lazy"
+            sizes="(max-width: 760px) 100vw, 50vw"
             src={portraitPath}
+            width={428}
           />
         </span>
       ) : null}
