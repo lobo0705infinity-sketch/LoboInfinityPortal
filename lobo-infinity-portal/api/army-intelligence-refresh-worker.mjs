@@ -14,7 +14,7 @@ const CanonicalSnapshotFactory = require('../backend/CanonicalSnapshotFactory.gs
 const DEFAULT_REFRESH_BATCH_LIMIT = 4
 
 export default async function handler(request, response) {
-  const automatic = request.method === 'GET'
+  const automatic = isScheduledRequest(request)
 
   if (!automatic && request.method !== 'POST') {
     response.setHeader('allow', 'GET, POST')
@@ -41,7 +41,7 @@ export default async function handler(request, response) {
       return
     }
 
-    if (automatic && !isAuthorizedCronRequest(request, workerToken)) {
+    if (automatic && !isAuthorizedScheduledRequest(request, workerToken)) {
       response.status(401).json({ error: 'Automatic refresh authentication is required.', success: false })
       return
     }
@@ -165,8 +165,7 @@ export function selectRefreshCandidates(sources, state) {
   })
 }
 
-function isAuthorizedCronRequest(request, workerToken) {
-  const configuredCronSecret = String(process.env.CRON_SECRET || '').trim()
+function isAuthorizedScheduledRequest(request, workerToken) {
   const authorization = String(request.headers?.authorization || '').trim()
   const suppliedSecret = authorization.startsWith('Bearer ')
     ? authorization.slice('Bearer '.length).trim()
@@ -174,8 +173,14 @@ function isAuthorizedCronRequest(request, workerToken) {
 
   return Boolean(
     workerToken &&
-    configuredCronSecret &&
-    safeEqual(suppliedSecret, configuredCronSecret),
+    safeEqual(suppliedSecret, workerToken),
+  )
+}
+
+function isScheduledRequest(request) {
+  const authorization = String(request.headers?.authorization || '').trim()
+  return request.method === 'GET' || (
+    request.method === 'POST' && authorization.startsWith('Bearer ')
   )
 }
 

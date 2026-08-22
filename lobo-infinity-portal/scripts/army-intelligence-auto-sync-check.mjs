@@ -5,6 +5,7 @@ import { selectRefreshCandidates } from '../api/army-intelligence-refresh-worker
 const worker = readFileSync('api/army-intelligence-refresh-worker.mjs', 'utf8')
 const api = readFileSync('backend/API.gs', 'utf8')
 const intelligence = readFileSync('backend/ArmyIntelligenceApi.gs', 'utf8')
+const scheduler = readFileSync('backend/ArmyIntelligenceScheduler.gs', 'utf8')
 const submission = readFileSync('backend/CanonicalSubmissionService.gs', 'utf8')
 const vercel = JSON.parse(readFileSync('vercel.json', 'utf8'))
 
@@ -33,8 +34,7 @@ assert.deepEqual(
   ['new', 'failed'],
   'Automatic synchronization must reuse current snapshots and retry only missing/failed snapshots.',
 )
-assert.match(worker, /request\.method === 'GET'/)
-assert.match(worker, /CRON_SECRET/)
+assert.match(worker, /isScheduledRequest\(request\)/)
 assert.match(worker, /ARMY_INTELLIGENCE_WORKER_TOKEN/)
 assert.match(worker, /selectRefreshCandidates\(sources, state\)/)
 assert.match(worker, /postSnapshots\(apiUrl, snapshots, upstreamCredential\)/)
@@ -47,9 +47,13 @@ assert.doesNotMatch(
   /army-intelligence-refresh-worker|UrlFetchApp/,
   'Canonical game submission must remain independent from external decoding availability.',
 )
-assert.ok(
-  vercel.crons.some((cron) => cron.path === '/api/army-intelligence-refresh-worker'),
-  'Vercel must schedule the existing decoder worker for automatic retry.',
-)
+assert.equal(vercel.crons, undefined, 'Vercel Hobby deployment must not require cron support.')
+assert.match(scheduler, /runScheduledArmyIntelligenceRefresh/)
+assert.match(scheduler, /UrlFetchApp\.fetch\([\s\S]*ARMY_INTELLIGENCE_SCHEDULER_URL/)
+assert.match(scheduler, /Authorization: "Bearer " \+ token/)
+assert.match(scheduler, /everyMinutes\(5\)/)
+assert.match(scheduler, /getProjectTriggers\(\)[\s\S]*deleteTrigger/)
+assert.match(scheduler, /LockService\.getScriptLock\(\)[\s\S]*tryLock/)
+assert.doesNotMatch(scheduler, /decodeArmyList|armyCode|buildArmyIntelligence|rebuildGameEngine/i)
 
 console.log('Army Intelligence automatic synchronization checks passed.')

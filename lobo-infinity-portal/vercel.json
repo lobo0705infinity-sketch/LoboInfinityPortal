@@ -2,12 +2,6 @@
   "installCommand": "npm install",
   "buildCommand": "npm run build:vercel",
   "outputDirectory": "dist",
-  "crons": [
-    {
-      "path": "/api/army-intelligence-refresh-worker",
-      "schedule": "*/5 * * * *"
-    }
-  ],
   "headers": [
     {
       "source": "/assets/(.*)",
