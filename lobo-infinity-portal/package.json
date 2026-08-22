@@ -69,6 +69,8 @@
     "test:dashboard-links": "node scripts/dashboard-links-check.mjs",
     "test:dashboard-network-feed": "node scripts/dashboard-network-feed-check.mjs",
     "test:dashboard-performance": "node scripts/dashboard-performance-check.mjs",
+    "test:lazy-data-provider": "node scripts/lazy-data-provider-check.mjs",
+    "test:lazy-data-provider:bundle": "vite build --manifest && node scripts/lazy-data-provider-bundle-check.mjs",
     "test:player-comparison": "node scripts/player-comparison-check.mjs",
     "test:community-links": "node scripts/community-links-check.mjs",
     "test:primary-faction-card": "node scripts/primary-faction-card-check.mjs",

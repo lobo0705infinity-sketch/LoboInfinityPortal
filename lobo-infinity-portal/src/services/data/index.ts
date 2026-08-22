@@ -1,31 +1,27 @@
 import type { DataProvider, DataProviderKind } from './DataProvider'
 import type { DataProviderHealth } from './DataProvider'
-import { getFirebaseEnvironmentDiagnostics } from '../../firebase/firebaseConfig'
-import {
-  dualCompareProvider,
-  getProviderComparisonDiagnostics,
-} from './providers/DualCompareProvider'
-import { firestoreProvider } from './providers/FirestoreProvider'
-import {
-  firestoreAccessMatrix,
-  firestoreSecurityRulesVersion,
-  getFirestoreBootstrapReport,
-  type FirestoreBootstrapReport,
-} from './providers/FirestoreBootstrap'
-import {
-  getLastFirestoreDataMigrationReport,
-  runFirestoreDataMigration,
-} from './providers/FirestoreMigrationService'
-import {
-  getMigrationVerificationReport,
-  type MigrationVerificationReport,
-} from './providers/FirestoreMigrationVerification'
+import type { FirestoreBootstrapReport } from './providers/FirestoreBootstrap'
+import type { MigrationVerificationReport } from './providers/FirestoreMigrationVerification'
 import { googleSheetsProvider } from './providers/GoogleSheetsProvider'
 import { mockProvider } from './providers/MockProvider'
 
 const configuredProvider = (
   import.meta.env.VITE_DATA_PROVIDER ?? 'google'
 ).toLowerCase() as DataProviderKind
+
+const firestoreProvider = createLazyDataProvider(
+  'firestore',
+  'Firestore Provider',
+  'Firebase Firestore',
+  async () => (await import('./providers/FirestoreProvider')).firestoreProvider,
+)
+
+const dualCompareProvider = createLazyDataProvider(
+  'dual',
+  'Dual Compare Provider',
+  'Google Sheets primary, Firestore comparison',
+  async () => (await import('./providers/DualCompareProvider')).dualCompareProvider,
+)
 
 function selectDataProvider(provider: DataProviderKind): DataProvider {
   if (provider === 'dual') {
@@ -57,11 +53,30 @@ export const standingsRepository = dataProvider.standings
 export const teamRepository = dataProvider.teams
 
 export async function getDataProviderDiagnostics() {
+  const [
+    firebaseConfig,
+    bootstrapTools,
+    comparisonTools,
+    migrationTools,
+    verificationTools,
+  ] = await Promise.all([
+    import('../../firebase/firebaseConfig'),
+    import('./providers/FirestoreBootstrap'),
+    import('./providers/DualCompareProvider'),
+    import('./providers/FirestoreMigrationService'),
+    import('./providers/FirestoreMigrationVerification'),
+  ])
+
   const [bootstrap, health, migration] = await Promise.all([
     withTimeout(
-      getFirestoreBootstrapReport(),
+      bootstrapTools.getFirestoreBootstrapReport(),
       10_000,
-      createBootstrapFailure('Firestore bootstrap timed out after 10 seconds.'),
+      createBootstrapFailure(
+        'Firestore bootstrap timed out after 10 seconds.',
+        firebaseConfig.getFirebaseEnvironmentDiagnostics(),
+        bootstrapTools.firestoreAccessMatrix,
+        bootstrapTools.firestoreSecurityRulesVersion,
+      ),
     ),
     withTimeout(
       dataProvider.getHealth(),
@@ -69,7 +84,7 @@ export async function getDataProviderDiagnostics() {
       createProviderHealthFailure('Provider health check timed out after 10 seconds.'),
     ),
     withTimeout(
-      getMigrationVerificationReport(),
+      verificationTools.getMigrationVerificationReport(),
       15_000,
       createMigrationVerificationFailure(
         'Migration verification timed out after 15 seconds.',
@@ -80,14 +95,63 @@ export async function getDataProviderDiagnostics() {
   return {
     active: dataProvider.metadata,
     bootstrap,
-    comparison: getProviderComparisonDiagnostics(),
+    comparison: comparisonTools.getProviderComparisonDiagnostics(),
     health,
-    migrationRun: getLastFirestoreDataMigrationReport(),
+    migrationRun: migrationTools.getLastFirestoreDataMigrationReport(),
     migration,
   }
 }
 
+function createLazyDataProvider(
+  kind: DataProviderKind,
+  name: string,
+  storage: string,
+  load: () => Promise<DataProvider>,
+): DataProvider {
+  let pending: Promise<DataProvider> | null = null
+  const loadOnce = () => (pending ??= load())
+  const repository = <TRepository extends keyof DataProvider>(
+    key: TRepository,
+  ) =>
+    new Proxy({} as DataProvider[TRepository], {
+      get(_target, method) {
+        return async (...args: unknown[]) => {
+          const provider = await loadOnce()
+          const target = provider[key] as Record<PropertyKey, unknown>
+          const operation = target[method]
+
+          if (typeof operation !== 'function') {
+            throw new Error(
+              `${name} does not implement ${String(key)}.${String(method)}.`,
+            )
+          }
+
+          return operation(...args)
+        }
+      },
+    })
+
+  return {
+    analytics: repository('analytics'),
+    dashboard: repository('dashboard'),
+    events: repository('events'),
+    games: repository('games'),
+    notifications: repository('notifications'),
+    players: repository('players'),
+    registrations: repository('registrations'),
+    scheduling: repository('scheduling'),
+    standings: repository('standings'),
+    teams: repository('teams'),
+    getHealth: async () => (await loadOnce()).getHealth(),
+    metadata: { kind, name, storage },
+  }
+}
+
 export async function runDataMigrationToFirestore() {
+  const { runFirestoreDataMigration } = await import(
+    './providers/FirestoreMigrationService'
+  )
+
   return runFirestoreDataMigration()
 }
 
@@ -123,11 +187,14 @@ function createProviderHealthFailure(message: string): DataProviderHealth {
   }
 }
 
-function createBootstrapFailure(message: string): FirestoreBootstrapReport {
-  const environment = getFirebaseEnvironmentDiagnostics()
-
+function createBootstrapFailure(
+  message: string,
+  environment: FirestoreBootstrapReport['environment'],
+  accessMatrix: FirestoreBootstrapReport['accessMatrix'],
+  securityRulesVersion: string,
+): FirestoreBootstrapReport {
   return {
-    accessMatrix: firestoreAccessMatrix,
+    accessMatrix,
     authentication: fail('FAILED: Firebase Auth check did not complete.'),
     collectionsInitialized: fail('BOOTSTRAP REQUIRED: Collections were not verified.'),
     connection: fail(`FAILED: ${message}`),
@@ -151,7 +218,7 @@ function createBootstrapFailure(message: string): FirestoreBootstrapReport {
       version: 0,
     },
     security: warn('CONNECTING: Security status was not verified.'),
-    securityRulesVersion: firestoreSecurityRulesVersion,
+    securityRulesVersion,
     seed: fail('BOOTSTRAP REQUIRED: Seed data was not verified.'),
     sdk: fail('FAILED: Firebase SDK check did not complete.'),
     user: {
