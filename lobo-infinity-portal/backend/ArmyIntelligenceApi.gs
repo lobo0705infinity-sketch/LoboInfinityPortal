@@ -7,8 +7,8 @@
 
 const ARMY_INTELLIGENCE_READ_MODEL_KEY = "armyIntelligence:v4";
 const ARMY_INTELLIGENCE_READ_MODEL_CHUNK_SIZE = 45000;
-const ARMY_INTELLIGENCE_WORKER_TOKEN_HASH_PROPERTY =
-  "armyIntelligence:workerTokenHash";
+const ARMY_INTELLIGENCE_WORKER_TOKEN_HASH =
+  "9c2e1f7183cd69428e8c67d6a4ce00466978e0e258e89e1192aa846200749b69";
 const ARMY_INTELLIGENCE_READ_MODEL_HEADERS = [
   "Key",
   "Generated At",
@@ -50,11 +50,7 @@ function isAuthorizedArmyIntelligenceWorkerRequest(e) {
     return false;
 
   const storedHash =
-    getArmyIntelligenceString(
-      PropertiesService.getScriptProperties().getProperty(
-        ARMY_INTELLIGENCE_WORKER_TOKEN_HASH_PROPERTY
-      )
-    );
+    getArmyIntelligenceString(ARMY_INTELLIGENCE_WORKER_TOKEN_HASH);
 
   if (!storedHash)
     return false;
@@ -63,21 +59,6 @@ function isAuthorizedArmyIntelligenceWorkerRequest(e) {
     getArmyIntelligenceHash(token),
     storedHash
   );
-
-}
-
-function rotateArmyIntelligenceWorkerToken() {
-
-  const token =
-    Utilities.getUuid().replace(/-/g, "") +
-    Utilities.getUuid().replace(/-/g, "");
-
-  PropertiesService.getScriptProperties().setProperty(
-    ARMY_INTELLIGENCE_WORKER_TOKEN_HASH_PROPERTY,
-    getArmyIntelligenceHash(token)
-  );
-
-  return token;
 
 }
 
