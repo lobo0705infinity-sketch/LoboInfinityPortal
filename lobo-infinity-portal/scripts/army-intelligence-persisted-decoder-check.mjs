@@ -13,17 +13,17 @@ const client = read('src/services/api.ts')
 
 assert.match(
   router,
-  /case "armyIntelligenceSources"[\s\S]*requireApiPermission\(e, "manageCache"/,
+  /case "armyIntelligenceSources"[\s\S]*requireArmyIntelligenceWorkerOrPermission/,
   'Authoritative Army Intelligence sources must be Commissioner-protected.',
 )
 assert.match(
   router,
-  /case "refreshArmyIntelligence"[\s\S]*requireApiPermission\(e, "manageCache"/,
+  /case "refreshArmyIntelligence"[\s\S]*requireArmyIntelligenceWorkerOrPermission/,
   'Snapshot ingestion must be Commissioner-protected.',
 )
 assert.match(worker, /loadAuthoritativeSources[\s\S]*armyIntelligenceSources/)
 assert.match(worker, /createSourceRefreshSnapshot/)
-assert.match(worker, /body\.set\('sessionToken', sessionToken\)/)
+assert.match(worker, /Object\.entries\(credential\)[\s\S]*body\.set\(key, value\)/)
 assert.doesNotMatch(worker, /authToken|Sign in with Google/)
 assert.match(client, /sessionToken: getActiveNativeSessionToken\(\)/)
 

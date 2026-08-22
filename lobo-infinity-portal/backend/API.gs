@@ -698,7 +698,7 @@ function handleApiGet(e, action) {
       return getArmyIntelligence(e);
 
     case "armyIntelligenceSources":
-      return requireApiPermission(e, "manageCache", function() {
+      return requireArmyIntelligenceWorkerOrPermission(e, function() {
         return getArmyIntelligenceSources();
       });
 
@@ -1448,7 +1448,7 @@ function handleApiPost(e, action) {
       });
 
     case "refreshArmyIntelligence":
-      return requireApiPermission(e, "manageCache", function() {
+      return requireArmyIntelligenceWorkerOrPermission(e, function() {
         return refreshArmyIntelligence(e);
       });
 

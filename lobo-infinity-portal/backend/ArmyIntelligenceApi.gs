@@ -7,6 +7,8 @@
 
 const ARMY_INTELLIGENCE_READ_MODEL_KEY = "armyIntelligence:v4";
 const ARMY_INTELLIGENCE_READ_MODEL_CHUNK_SIZE = 45000;
+const ARMY_INTELLIGENCE_WORKER_TOKEN_HASH_PROPERTY =
+  "armyIntelligence:workerTokenHash";
 const ARMY_INTELLIGENCE_READ_MODEL_HEADERS = [
   "Key",
   "Generated At",
@@ -20,6 +22,78 @@ function getArmyIntelligenceSources() {
     success: true,
     sources: buildArmyIntelligenceSources()
   });
+
+}
+
+function requireArmyIntelligenceWorkerOrPermission(e, handler) {
+
+  if (isAuthorizedArmyIntelligenceWorkerRequest(e))
+    return handler({
+      authenticated: true,
+      machine: true,
+      user: {
+        enabled: true,
+        role: "Commissioner"
+      }
+    });
+
+  return requireApiPermission(e, "manageCache", handler);
+
+}
+
+function isAuthorizedArmyIntelligenceWorkerRequest(e) {
+
+  const parameters = getApiParameters(e);
+  const token = getApiParameter(parameters, "workerToken");
+
+  if (!token)
+    return false;
+
+  const storedHash =
+    getArmyIntelligenceString(
+      PropertiesService.getScriptProperties().getProperty(
+        ARMY_INTELLIGENCE_WORKER_TOKEN_HASH_PROPERTY
+      )
+    );
+
+  if (!storedHash)
+    return false;
+
+  return constantTimeArmyIntelligenceStringEqual(
+    getArmyIntelligenceHash(token),
+    storedHash
+  );
+
+}
+
+function rotateArmyIntelligenceWorkerToken() {
+
+  const token =
+    Utilities.getUuid().replace(/-/g, "") +
+    Utilities.getUuid().replace(/-/g, "");
+
+  PropertiesService.getScriptProperties().setProperty(
+    ARMY_INTELLIGENCE_WORKER_TOKEN_HASH_PROPERTY,
+    getArmyIntelligenceHash(token)
+  );
+
+  return token;
+
+}
+
+function constantTimeArmyIntelligenceStringEqual(left, right) {
+
+  const leftText = getArmyIntelligenceString(left);
+  const rightText = getArmyIntelligenceString(right);
+  const length = Math.max(leftText.length, rightText.length);
+  let difference = leftText.length ^ rightText.length;
+
+  for (let index = 0; index < length; index++)
+    difference |=
+      (leftText.charCodeAt(index % (leftText.length || 1)) || 0) ^
+      (rightText.charCodeAt(index % (rightText.length || 1)) || 0);
+
+  return difference === 0;
 
 }
 

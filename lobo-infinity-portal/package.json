@@ -61,6 +61,7 @@
     "test:army-diagnostics": "node scripts/army-diagnostics-check.mjs",
     "test:army-identity": "node --experimental-strip-types scripts/army-identity-check.ts",
     "test:army-intelligence": "node scripts/army-intelligence-check.mjs",
+    "test:army-intelligence-auto-sync": "node scripts/army-intelligence-auto-sync-check.mjs",
     "test:army-code-validation": "node scripts/army-code-validation-check.mjs",
     "test:game-army-code-correction": "node scripts/game-army-code-correction-check.mjs",
     "test:game-score-correction": "node scripts/game-score-correction-check.mjs",

@@ -176,8 +176,8 @@ assert.match(
 )
 assert.match(
   apiRouter,
-  /case "refreshArmyIntelligence"[\s\S]*requireApiPermission\(e, "manageCache"/,
-  'Refresh Army Intelligence must be Commissioner-only through manageCache permission.',
+  /case "refreshArmyIntelligence"[\s\S]*requireArmyIntelligenceWorkerOrPermission/,
+  'Refresh Army Intelligence must use the protected Commissioner-or-worker boundary.',
 )
 assert.match(
   apiClient,
@@ -491,8 +491,8 @@ assert.match(
 )
 assert.match(
   worker,
-  /postSnapshots[\s\S]*sessionToken/,
-  'Commissioner decoder worker must write snapshots through the authenticated Apps Script endpoint.',
+  /postSnapshots[\s\S]*upstreamCredential/,
+  'Decoder worker must write snapshots through an authenticated Apps Script credential.',
 )
 assert.match(
   worker,
