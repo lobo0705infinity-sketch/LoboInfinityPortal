@@ -1397,6 +1397,9 @@ function handleApiPost(e, action) {
         return repairHistoricalArmyCodes(e, auth);
       });
 
+    case "linkHistoricalArmyLists":
+      return linkHistoricalArmyLists(e);
+
     case "saveStream":
       return requireApiPermission(e, "manageStreams", function() {
         return saveOperationsStream(e);

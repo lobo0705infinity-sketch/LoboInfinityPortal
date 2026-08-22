@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 
 const files = {
   api: read('backend/API.gs'),
+  canonicalSubmission: read('backend/CanonicalSubmissionService.gs'),
   config: read('backend/Config.gs'),
   gameEngine: read('backend/GameEngine.gs'),
   recentGames: read('backend/RecentGames.gs'),
@@ -23,7 +24,7 @@ const checks = [
   ],
   [
     'Game Engine per-player rows preserve Army List ID',
-    files.config.includes('ARMY_LIST_ID: 15') &&
+    files.config.includes('ARMY_LIST_ID: 14') &&
       files.gameEngine.includes('"Army List ID"') &&
       files.gameEngine.includes('getGameEnginePlayerArmyListId'),
   ],
@@ -47,8 +48,8 @@ const checks = [
     files.resultSubmission.includes('validateResultSubmissionArmyListId(') &&
       files.resultSubmission.includes('getResultSubmissionApprovedArmyListById') &&
       files.resultSubmission.includes('resultSubmissionArmyListMatchesFaction') &&
-      files.resultSubmission.includes('playerArmyListId') &&
-      files.resultSubmission.includes('opponentArmyListId'),
+      files.canonicalSubmission.includes('playerArmyListId') &&
+      files.canonicalSubmission.includes('opponentArmyListId'),
   ],
   [
     'Historical relinking writes canonical storage and records audit',
@@ -59,8 +60,12 @@ const checks = [
   ],
   [
     'Commissioner link endpoints are auth protected and registered',
-    files.api.includes('case "armyListLinkCandidates"') &&
-      files.api.includes('case "linkHistoricalArmyLists"') &&
+      files.api.includes('case "armyListLinkCandidates"') &&
+      postRouter().includes('case "linkHistoricalArmyLists":') &&
+      postRouter().includes('return linkHistoricalArmyLists(e);') &&
+      getRouter().includes('case "linkHistoricalArmyLists":') &&
+      getRouter().includes('return legacyStandaloneArmyListWorkflowDisabled();') &&
+      files.resultSubmission.includes('return requireApiPermission(e, "viewOperations"') &&
       files.securityAudit.includes('armyListLinkCandidates: { authRequired: true') &&
       files.securityAudit.includes('linkHistoricalArmyLists: { authRequired: true'),
   ],
@@ -85,6 +90,19 @@ const checks = [
       files.commissionerLinks.includes('Winner Army List') &&
       files.commissionerLinks.includes('Loser Army List') &&
       files.commissionerLinks.includes('apiClient.linkHistoricalArmyLists'),
+  ],
+  [
+    'Stored Army Codes expose and preselect deterministic link candidates',
+    files.resultSubmission.includes('winnerVerifiedArmyListId') &&
+      files.resultSubmission.includes('loserVerifiedArmyListId') &&
+      files.resultSubmission.includes('function getHistoricalArmyListVerifiedCandidateId') &&
+      files.resultSubmission.includes('buildCanonicalArmyCodeArmyListId(normalizedArmyCode)') &&
+      files.serviceApi.includes("winnerVerifiedArmyListId: getString(record, 'winnerVerifiedArmyListId')") &&
+      files.serviceApi.includes("loserVerifiedArmyListId: getString(record, 'loserVerifiedArmyListId')") &&
+      files.commissionerLinks.includes('String(list.id) === verifiedArmyListId') &&
+      files.commissionerLinks.includes('Verified from stored game Army Code') &&
+      files.commissionerLinks.includes('game?.winnerVerifiedArmyListId') &&
+      files.commissionerLinks.includes('game?.loserVerifiedArmyListId'),
   ],
   [
     'Commissioner page is routed and discoverable',
@@ -117,4 +135,18 @@ console.log(`Army list tracking regression checks passed (${checks.length}).`)
 
 function read(path) {
   return readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
+}
+
+function getRouter() {
+  return files.api.slice(
+    files.api.indexOf('function handleApiGet'),
+    files.api.indexOf('function doPost'),
+  )
+}
+
+function postRouter() {
+  return files.api.slice(
+    files.api.indexOf('function handleApiPost'),
+    files.api.indexOf('function jsonOutput'),
+  )
 }

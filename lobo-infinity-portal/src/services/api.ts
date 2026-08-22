@@ -1191,8 +1191,13 @@ export type SearchData = {
 }
 
 export type ArmyListLinkCandidates = {
-  games: RecentGame[]
+  games: ArmyListLinkGame[]
   armyLists: ArmyList[]
+}
+
+export type ArmyListLinkGame = RecentGame & {
+  winnerVerifiedArmyListId: string
+  loserVerifiedArmyListId: string
 }
 
 export type HomeData = {
@@ -8634,8 +8639,18 @@ function normalizeArmyListLinkCandidatesPayload(payload: unknown): ArmyListLinkC
   }
 
   return {
-    games: getRequiredArray(record, 'games').map(normalizeRecentGame),
+    games: getRequiredArray(record, 'games').map(normalizeArmyListLinkGame),
     armyLists: getRequiredArray(record, 'armyLists').map(normalizeArmyList),
+  }
+}
+
+function normalizeArmyListLinkGame(item: unknown): ArmyListLinkGame {
+  const record = asRecord(item, 'Army list link game')
+
+  return {
+    ...normalizeRecentGame(record),
+    winnerVerifiedArmyListId: getString(record, 'winnerVerifiedArmyListId'),
+    loserVerifiedArmyListId: getString(record, 'loserVerifiedArmyListId'),
   }
 }
 

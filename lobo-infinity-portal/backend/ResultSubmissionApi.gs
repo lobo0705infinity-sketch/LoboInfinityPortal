@@ -254,12 +254,21 @@ function validateHistoricalArmyListLink(value, player, faction, armyCode) {
 function getArmyListLinkCandidates(e) {
 
   return requireApiPermission(e, "viewOperations", function() {
+    const games =
+      typeof getAllRecentGameObjectsForEvent === "function"
+        ? getAllRecentGameObjectsForEvent("all", "all")
+        : [];
+
+    games.forEach(function(game) {
+      game.winnerVerifiedArmyListId =
+        getHistoricalArmyListVerifiedCandidateId(game.winnerArmyCode);
+      game.loserVerifiedArmyListId =
+        getHistoricalArmyListVerifiedCandidateId(game.loserArmyCode);
+    });
+
     return jsonOutput({
       success: true,
-      games:
-        typeof getAllRecentGameObjectsForEvent === "function"
-          ? getAllRecentGameObjectsForEvent("all", "all")
-          : [],
+      games: games,
       armyLists:
         typeof getArmyListObjects === "function"
           ? getArmyListObjects()
@@ -269,6 +278,23 @@ function getArmyListLinkCandidates(e) {
           : []
     });
   });
+
+}
+
+function getHistoricalArmyListVerifiedCandidateId(armyCode) {
+
+  const normalizedArmyCode =
+    normalizeResultSubmissionArmyCode(armyCode);
+
+  if (
+    !normalizedArmyCode ||
+    typeof buildCanonicalArmyCodeArmyListId !== "function"
+  )
+    return "";
+
+  return String(
+    buildCanonicalArmyCodeArmyListId(normalizedArmyCode)
+  );
 
 }
 

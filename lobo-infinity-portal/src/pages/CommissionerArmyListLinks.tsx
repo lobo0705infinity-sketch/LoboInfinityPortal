@@ -7,11 +7,11 @@ import {
   getCanonicalArmyName,
   normalizeArmyForDisplay,
 } from '../services/armyIdentity'
-import { apiClient, type ArmyList, type RecentGame } from '../services/api'
+import { apiClient, type ArmyList, type ArmyListLinkGame } from '../services/api'
 
 type LinkState =
   | { status: 'loading' }
-  | { status: 'success'; games: RecentGame[]; armyLists: ArmyList[] }
+  | { status: 'success'; games: ArmyListLinkGame[]; armyLists: ArmyList[] }
   | { status: 'error'; message: string }
 
 function CommissionerArmyListLinks() {
@@ -68,23 +68,37 @@ function CommissionerArmyListLinks() {
   const winnerOptions = useMemo(
     () =>
       selectedGame
-        ? buildArmyListOptions(armyLists, selectedGame.winner, selectedGame.winnerFaction)
-        : buildArmyListOptions([], '', ''),
+        ? buildArmyListOptions(
+            armyLists,
+            selectedGame.winner,
+            selectedGame.winnerFaction,
+            selectedGame.winnerVerifiedArmyListId,
+          )
+        : buildArmyListOptions([], '', '', ''),
     [armyLists, selectedGame],
   )
   const loserOptions = useMemo(
     () =>
       selectedGame
-        ? buildArmyListOptions(armyLists, selectedGame.loser, selectedGame.loserFaction)
-        : buildArmyListOptions([], '', ''),
+        ? buildArmyListOptions(
+            armyLists,
+            selectedGame.loser,
+            selectedGame.loserFaction,
+            selectedGame.loserVerifiedArmyListId,
+          )
+        : buildArmyListOptions([], '', '', ''),
     [armyLists, selectedGame],
   )
 
   function chooseGame(gameId: string) {
     const game = games.find((candidate) => String(candidate.id) === gameId) || null
     setSelectedGameId(gameId)
-    setWinnerArmyListId(game?.winnerArmyListId || '')
-    setLoserArmyListId(game?.loserArmyListId || '')
+    setWinnerArmyListId(
+      game?.winnerArmyListId || game?.winnerVerifiedArmyListId || '',
+    )
+    setLoserArmyListId(
+      game?.loserArmyListId || game?.loserVerifiedArmyListId || '',
+    )
     setMessage('')
   }
 
@@ -264,7 +278,7 @@ function LinkPageLoading() {
   )
 }
 
-function ReadOnlyGameSummary({ game }: { game: RecentGame }) {
+function ReadOnlyGameSummary({ game }: { game: ArmyListLinkGame }) {
   return (
     <div className="army-list-form-wide dashboard-state">
       <h2>Game #{game.id}</h2>
@@ -303,14 +317,20 @@ function buildArmyListOptions(
   armyLists: ArmyList[],
   player: string,
   faction: string,
+  verifiedArmyListId: string,
 ) {
   return [
     { label: 'Army List not submitted', value: '' },
     ...armyLists
       .filter((list) => (
         list.approved &&
-        sameValue(list.player, player) &&
-        armyListMatchesSelectedFaction(list, faction)
+        (
+          String(list.id) === verifiedArmyListId ||
+          (
+            sameValue(list.player, player) &&
+            armyListMatchesSelectedFaction(list, faction)
+          )
+        )
       ))
       .sort((left, right) => {
         const nameComparison = left.armyName.localeCompare(right.armyName)
@@ -318,7 +338,9 @@ function buildArmyListOptions(
         return Number(left.id) - Number(right.id)
       })
       .map((list) => ({
-        label: `${list.armyName || `Army List #${list.id}`} - ${list.sectorial || list.faction} - #${list.id}`,
+        label: String(list.id) === verifiedArmyListId
+          ? `Verified from stored game Army Code - #${list.id}`
+          : `${list.armyName || `Army List #${list.id}`} - ${list.sectorial || list.faction} - #${list.id}`,
         value: String(list.id),
       })),
   ]
