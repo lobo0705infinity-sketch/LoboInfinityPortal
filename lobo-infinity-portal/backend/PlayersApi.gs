@@ -751,6 +751,13 @@ function getPlayer(e) {
       registeredPlayer.player
     );
 
+  const profileData =
+    buildPlayerProfileSupplement_(
+      registeredPlayer.player,
+      registeredPlayer,
+      e
+    );
+
   return jsonOutput({
 
     success: true,
@@ -852,7 +859,13 @@ function getPlayer(e) {
           registeredPlayer.player
         )
 
-    }
+    },
+
+    recentGames:
+      profileData.recentGames,
+
+    profileStandings:
+      profileData.profileStandings
 
   });
 
@@ -876,6 +889,12 @@ function getCommunityPlayerProfile(requestedName) {
   const armyLists =
     getPlayerArmyLists(
       playerName
+    );
+  const profileData =
+    buildPlayerProfileSupplement_(
+      playerName,
+      null,
+      null
     );
 
   return jsonOutput({
@@ -952,8 +971,101 @@ function getCommunityPlayerProfile(requestedName) {
         buildPlayerCareerSummary(
           playerName
         )
-    }
+    },
+    recentGames:
+      profileData.recentGames,
+    profileStandings:
+      profileData.profileStandings
   });
+
+}
+
+function buildPlayerProfileSupplement_(playerName, registeredPlayer, e) {
+
+  const recentGames =
+    getPlayerRecentGameObjectsFromGameEngine(
+      playerName
+    )
+      .slice(0, RECENT_GAMES_LIMIT);
+
+  return {
+    recentGames: recentGames,
+    profileStandings:
+      buildPlayerProfileStandingSnapshot_(
+        registeredPlayer,
+        e &&
+        e.parameter &&
+        e.parameter.profileEventId
+      )
+  };
+
+}
+
+function buildPlayerProfileStandingSnapshot_(registeredPlayer, eventId) {
+
+  if (!registeredPlayer)
+    return [];
+
+  const divisionConfig =
+    getPlayerProfileDivisionConfig_(
+      registeredPlayer.division
+    );
+
+  if (!divisionConfig)
+    return [];
+
+  const snapshot =
+    buildEventStandingsResponse(
+      divisionConfig,
+      eventId
+    );
+
+  const target =
+    getCommunityPlayerKey(
+      registeredPlayer.player
+    );
+
+  const standing =
+    snapshot.standings.filter(function(row) {
+      return getCommunityPlayerKey(row.player) === target;
+    })[0];
+
+  if (!standing)
+    return [];
+
+  return [{
+    eventId: snapshot.eventId,
+    event: snapshot.event,
+    division: snapshot.division,
+    divisionLabel: snapshot.divisionLabel,
+    standings: [standing],
+    summary: {
+      leader: snapshot.summary.leader,
+      players: snapshot.summary.players,
+      gamesPlayed: snapshot.summary.gamesPlayed,
+      activePlayers: snapshot.summary.activePlayers
+    }
+  }];
+
+}
+
+function getPlayerProfileDivisionConfig_(divisionLabel) {
+
+  const keys = ["main", "pga", "pgb"];
+
+  for (let index = 0; index < keys.length; index++) {
+    const config =
+      getStandingsDivisionConfig(keys[index]);
+
+    if (
+      config &&
+      getCommunityPlayerKey(config.label) ===
+        getCommunityPlayerKey(divisionLabel)
+    )
+      return config;
+  }
+
+  return null;
 
 }
 

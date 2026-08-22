@@ -20,7 +20,6 @@ import type {
   RecentGame,
 } from '../services/api'
 import { request } from '../services/apiCore'
-import { standingsRepository } from '../services/data'
 import {
   formatObjectiveScore,
   formatPlayerName,
@@ -36,11 +35,8 @@ import {
   getProfileClassifications,
   isActiveEventRegistration,
 } from '../services/playerClassification'
-import {
-  resolvePlayerLeagueModel,
-  type PlayerLeagueModel,
-} from '../services/playerLeagueModel'
-import type { DivisionStandings } from '../types/dashboard'
+import type { PlayerLeagueModel } from '../services/playerLeagueModel'
+import type { Standing } from '../types/dashboard'
 import { getDivisionStyle } from '../utils/divisions'
 
 type ProfileState =
@@ -53,9 +49,10 @@ type ProfileState =
       status: 'error'
     }
   | {
-      allStandings: DivisionStandings[]
+      leagueModel: PlayerLeagueModel | null
       player: PlayerProfileData
       playerName: string
+      recentGames: RecentGame[]
       status: 'success'
     }
 
@@ -67,8 +64,6 @@ function PlayerProfile() {
   const [profileState, setProfileState] = useState<ProfileState>({
     status: 'idle',
   })
-  const [recentGames, setRecentGames] = useState<RecentGame[]>([])
-
   useEffect(() => {
     if (!decodedPlayerName) {
       return
@@ -76,19 +71,15 @@ function PlayerProfile() {
 
     const controller = new AbortController()
 
-    Promise.all([
-      getPlayerProfileForCareer(decodedPlayerName, controller.signal),
-      getRecentGamesForPlayer(decodedPlayerName, controller.signal),
-      getProfileStandings(eventId, controller.signal),
-    ])
-      .then(([profile, games, allStandings]) => {
+    getPlayerProfileForCareer(decodedPlayerName, eventId, controller.signal)
+      .then(({ leagueModel, player, recentGames }) => {
         setProfileState({
-          allStandings,
-          player: profile,
+          leagueModel,
+          player,
           playerName: decodedPlayerName,
+          recentGames: filterGamesForPlayer(recentGames, decodedPlayerName, player),
           status: 'success',
         })
-        setRecentGames(filterGamesForPlayer(games, decodedPlayerName, profile))
       })
       .catch((profileError: unknown) => {
         if (controller.signal.aborted) {
@@ -159,14 +150,11 @@ function PlayerProfile() {
   }
 
   const player = profileState.player
+  const recentGames = profileState.recentGames
   const career = player.careerSummary ?? buildFallbackCareerSummary(player, recentGames)
   const displayName = formatPlayerName(player.name, player.displayName)
   const classifications = getProfileClassifications(player, career)
-  const leagueModel = resolvePlayerLeagueModel(profileState.allStandings, [
-    player.name,
-    player.displayName,
-    decodedPlayerName,
-  ])
+  const leagueModel = profileState.leagueModel
 
   return (
     <>
@@ -946,25 +934,23 @@ function Metric({
 
 async function getPlayerProfileForCareer(
   playerName: string,
+  eventId: string,
   signal: AbortSignal,
-): Promise<PlayerProfileData> {
+): Promise<{
+  leagueModel: PlayerLeagueModel | null
+  player: PlayerProfileData
+  recentGames: RecentGame[]
+}> {
   const payload = await request(
     'player',
     { signal },
-    { name: playerName },
+    { name: playerName, ...(eventId ? { profileEventId: eventId } : {}) },
   )
 
   return normalizePlayerProfilePayload(payload)
 }
 
-function getProfileStandings(eventId: string, signal: AbortSignal) {
-  return standingsRepository.getAllStandings({
-    ...(eventId ? { eventId } : {}),
-    signal,
-  })
-}
-
-function normalizePlayerProfilePayload(payload: unknown): PlayerProfileData {
+function normalizePlayerProfilePayload(payload: unknown) {
   const record = isRecord(payload) ? payload : {}
 
   if (record.success === false) {
@@ -978,7 +964,7 @@ function normalizePlayerProfilePayload(payload: unknown): PlayerProfileData {
     throw new Error('Player profile could not be loaded.')
   }
 
-  return {
+  const normalizedPlayer: PlayerProfileData = {
     armyListSummary: normalizePlayerArmyListSummary(player.armyListSummary),
     armyLists: getLocalArray(player, 'armyLists').map(normalizePlayerArmyList),
     availability: normalizePlayerAvailability(player.availability),
@@ -1024,6 +1010,65 @@ function normalizePlayerProfilePayload(payload: unknown): PlayerProfileData {
     tp: getLocalNumber(player, 'tp'),
     vp: getLocalNumber(player, 'vp'),
     wins: getLocalNumber(player, 'wins'),
+  }
+
+  return {
+    leagueModel: normalizePlayerLeagueModel(record.profileStandings),
+    player: normalizedPlayer,
+    recentGames: getLocalArray(record, 'recentGames').map(normalizePlayerRecentGame),
+  }
+}
+
+function normalizePlayerLeagueModel(value: unknown): PlayerLeagueModel | null {
+  const divisions = Array.isArray(value) ? value : []
+  const division = isRecord(divisions[0]) ? divisions[0] : null
+
+  if (!division) {
+    return null
+  }
+
+  const standings = getLocalArray(division, 'standings')
+  const standingRecord = isRecord(standings[0]) ? standings[0] : null
+
+  if (!standingRecord) {
+    return null
+  }
+
+  const standing = normalizePlayerStanding(standingRecord)
+  const event = isRecord(division.event) ? division.event : {}
+  const summary = isRecord(division.summary) ? division.summary : {}
+
+  return {
+    currentLeague: getConfiguredEventDisplayName({
+      eventId: getLocalString(event, 'id') || getLocalString(division, 'eventId') || standing.eventId,
+      eventName: getLocalString(event, 'name'),
+    }),
+    division: standing.division || getLocalString(division, 'divisionLabel'),
+    divisionPopulation: getLocalNumber(summary, 'players'),
+    preferredArmy: standing.favoriteArmy || standing.faction || '',
+    rank: standing.rank,
+    standing,
+  }
+}
+
+function normalizePlayerStanding(record: Record<string, unknown>): Standing {
+  const player = getLocalString(record, 'player')
+
+  return {
+    eventId: getLocalString(record, 'eventId'),
+    rank: getLocalNumber(record, 'rank'),
+    player,
+    displayName: getLocalString(record, 'displayName') || player,
+    division: getLocalString(record, 'division'),
+    games: getLocalNumber(record, 'games'),
+    wins: getLocalNumber(record, 'wins'),
+    losses: getLocalNumber(record, 'losses'),
+    draws: getLocalNumber(record, 'draws'),
+    tp: getLocalNumber(record, 'tp'),
+    op: getLocalNumber(record, 'op'),
+    vp: getLocalNumber(record, 'vp'),
+    faction: getLocalString(record, 'faction'),
+    favoriteArmy: getLocalString(record, 'favoriteArmy'),
   }
 }
 
@@ -1178,21 +1223,6 @@ function normalizePlayerRecordSummary(value: unknown): PlayerRecordSummary {
     winPercentage: getLocalNumber(record, 'winPercentage'),
     wins: getLocalNumber(record, 'wins'),
   }
-}
-
-async function getRecentGamesForPlayer(
-  playerName: string,
-  signal: AbortSignal,
-): Promise<RecentGame[]> {
-  const payload = await request(
-    'recentGames',
-    { signal },
-    { gameType: 'all', playerName },
-  )
-  const record = isRecord(payload) ? payload : {}
-  const games = Array.isArray(record.games) ? record.games : []
-
-  return games.map(normalizePlayerRecentGame)
 }
 
 function normalizePlayerRecentGame(item: unknown): RecentGame {

@@ -54,9 +54,9 @@ const resolveLeagueGameTypeScope = extractFunction(leagueData, 'resolveLeagueGam
 const getDivisionIdentity = extractFunction(divisions, 'getDivisionIdentity')
 
 assert.match(
-  playerProfile,
-  /request\(\s*'recentGames',[\s\S]*\{\s*gameType:\s*'all',\s*playerName\s*\}/,
-  'Public player profiles must request recentGames with gameType=all.',
+  extractFunction(playersApi, 'buildPlayerProfileSupplement_'),
+  /getPlayerRecentGameObjectsFromGameEngine\(\s*playerName\s*\)/,
+  'Public player profiles must embed the canonical all-game-type recent-games projection.',
 )
 
 assert.match(

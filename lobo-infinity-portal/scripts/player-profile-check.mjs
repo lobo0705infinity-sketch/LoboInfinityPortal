@@ -99,9 +99,11 @@ const checks = [
       ].join('\n')),
   },
   {
-    label: 'Player profile recent games request includes all game types',
+    label: 'Player profile embeds recent games from the all-game-type Game Engine projection',
     pass:
-      playerProfile.includes("{ gameType: 'all', playerName }"),
+      playersApi.includes('getPlayerRecentGameObjectsFromGameEngine') &&
+      playersApi.includes('.slice(0, RECENT_GAMES_LIMIT)') &&
+      playerProfile.includes("getLocalArray(record, 'recentGames')"),
   },
   {
     label: 'Career summaries classify Game Engine rows with Game Engine schema',

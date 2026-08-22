@@ -16,7 +16,7 @@ const PORTAL_STALE_CACHE_TTL_SECONDS = 21600;
 
 const PORTAL_CACHE_GROUPS = {
   dashboard: ["dashboard", "home", "leader", "recentGames"],
-  standings: ["standings", "dashboard", "home", "players", "searchData", "intelligence", "records", "hallOfFame"],
+  standings: ["standings", "dashboard", "home", "players", "player", "searchData", "intelligence", "records", "hallOfFame"],
   players: ["players", "player", "searchData", "home", "dashboard", "comparison"],
   factions: ["factions", "faction", "searchData", "home", "intelligence"],
   missions: ["missions", "mission", "searchData", "home", "intelligence"],
@@ -485,6 +485,9 @@ function getPortalCacheKey(e, action) {
 
   if (action === "recentGames")
     parts.push("schema=network3");
+
+  if (action === "player")
+    parts.push("profileSchema=fanout1");
 
   if (
     [
