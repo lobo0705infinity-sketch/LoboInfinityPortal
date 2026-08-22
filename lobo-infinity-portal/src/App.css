@@ -5209,6 +5209,13 @@
   text-decoration: none;
 }
 
+.army-intelligence-explorer-table a,
+.army-intelligence-explorer-table button {
+  display: inline-flex;
+  justify-content: center;
+  white-space: nowrap;
+}
+
 .army-intelligence-explorer-stats {
   display: grid;
   gap: 0.65rem;

@@ -345,6 +345,11 @@ assert.match(
   'Army List Explorer rows must use the shared Infinity Army target in a new tab.',
 )
 assert.match(
+  appCss,
+  /\.army-intelligence-explorer-table a,\s*\.army-intelligence-explorer-table button\s*\{[\s\S]*display: inline-flex;[\s\S]*justify-content: center;[\s\S]*white-space: nowrap;/,
+  'Army List Explorer Open List controls must remain centered on one line.',
+)
+assert.match(
   page,
   /Average Wounds \/ Structure per Model[\s\S]*averageDurability/,
   'Army Intelligence page must show average Wounds or Structure per selected model.',
