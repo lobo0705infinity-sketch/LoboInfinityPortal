@@ -11,6 +11,19 @@ for (const file of readdirSync(backendDir)) {
 
   const path = join(backendDir, file)
   const source = readFileSync(path, 'utf8')
+  failures.push(...findInitializationOrderFailures(source, file))
+}
+
+if (failures.length > 0) {
+  console.error('API initialization order check failed:')
+  failures.forEach((failure) => console.error(`- ${failure}`))
+  process.exit(1)
+}
+
+console.log('API initialization order check passed.')
+
+export function findInitializationOrderFailures(source, file = 'fixture.gs') {
+  const sourceFailures = []
   const lines = source.split(/\r?\n/)
 
   for (let index = 0; index < lines.length; index += 1) {
@@ -56,18 +69,14 @@ for (const file of readdirSync(backendDir)) {
     })
 
     pendingLine.forEach((lineNumber, identifier) => {
-      failures.push(`${file}:${lineNumber} ${name}() references ${identifier} before declaration`)
+      sourceFailures.push(
+        `${file}:${lineNumber} ${name}() references ${identifier} before declaration`,
+      )
     })
   }
-}
 
-if (failures.length > 0) {
-  console.error('API initialization order check failed:')
-  failures.forEach((failure) => console.error(`- ${failure}`))
-  process.exit(1)
+  return sourceFailures
 }
-
-console.log('API initialization order check passed.')
 
 function collectFunctionBody(lines, startIndex) {
   const body = []
@@ -96,10 +105,18 @@ function collectFunctionBody(lines, startIndex) {
 function usesIdentifier(line, identifier, declarationName) {
   if (declarationName === identifier) {
     const afterEquals = line.split('=').slice(1).join('=')
-    return new RegExp(`\\b${identifier}\\b`).test(stripStrings(stripLineComment(afterEquals)))
+    return standaloneIdentifierPattern(identifier).test(
+      stripStrings(stripLineComment(afterEquals)),
+    )
   }
 
-  return new RegExp(`\\b${identifier}\\b`).test(stripStrings(stripLineComment(line)))
+  return standaloneIdentifierPattern(identifier).test(
+    stripStrings(stripLineComment(line)),
+  )
+}
+
+function standaloneIdentifierPattern(identifier) {
+  return new RegExp(`(^|[^.\\w$])${identifier}\\b`)
 }
 
 function stripLineComment(line) {
