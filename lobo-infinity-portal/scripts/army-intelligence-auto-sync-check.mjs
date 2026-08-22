@@ -40,6 +40,7 @@ assert.match(worker, /selectRefreshCandidates\(sources, state\)/)
 assert.match(worker, /postSnapshots\(apiUrl, snapshots, upstreamCredential\)/)
 assert.match(api, /case "armyIntelligenceSources"[\s\S]*requireArmyIntelligenceWorkerOrPermission/)
 assert.match(api, /case "refreshArmyIntelligence"[\s\S]*requireArmyIntelligenceWorkerOrPermission/)
+assert.match(api, /case "installArmyIntelligenceScheduler"[\s\S]*requireArmyIntelligenceWorkerOrPermission/)
 assert.match(intelligence, /requireArmyIntelligenceWorkerOrPermission[\s\S]*requireApiPermission\(e, "manageCache", handler\)/)
 assert.match(intelligence, /refreshArmyIntelligence[\s\S]*upsertPersistedArmyIntelligenceSnapshotRows\(rows\)[\s\S]*rebuildArmyIntelligenceReadModelPayloadAndPersist/)
 assert.doesNotMatch(
@@ -53,6 +54,7 @@ assert.match(scheduler, /UrlFetchApp\.fetch\([\s\S]*ARMY_INTELLIGENCE_SCHEDULER_
 assert.match(scheduler, /Authorization: "Bearer " \+ token/)
 assert.match(scheduler, /everyMinutes\(5\)/)
 assert.match(scheduler, /getProjectTriggers\(\)[\s\S]*deleteTrigger/)
+assert.match(scheduler, /initialResult = runScheduledArmyIntelligenceRefresh\(\)[\s\S]*newTrigger/)
 assert.match(scheduler, /LockService\.getScriptLock\(\)[\s\S]*tryLock/)
 assert.doesNotMatch(scheduler, /decodeArmyList|armyCode|buildArmyIntelligence|rebuildGameEngine/i)
 

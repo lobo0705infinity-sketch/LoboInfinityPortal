@@ -12,7 +12,18 @@ const ARMY_INTELLIGENCE_SCHEDULER_TOKEN_PROPERTY =
 const ARMY_INTELLIGENCE_SCHEDULER_URL =
   "https://lobo-infinity-portal.vercel.app/api/army-intelligence-refresh-worker";
 
-function installArmyIntelligenceRefreshScheduler() {
+function installArmyIntelligenceRefreshScheduler(e) {
+
+  const parameters = e ? getApiParameters(e) : {};
+  const suppliedToken = e
+    ? getApiParameter(parameters, "workerToken")
+    : "";
+
+  if (suppliedToken)
+    PropertiesService.getScriptProperties().setProperty(
+      ARMY_INTELLIGENCE_SCHEDULER_TOKEN_PROPERTY,
+      suppliedToken
+    );
 
   const token = getArmyIntelligenceSchedulerToken_();
 
@@ -20,6 +31,8 @@ function installArmyIntelligenceRefreshScheduler() {
     throw new Error(
       "Set the ARMY_INTELLIGENCE_WORKER_TOKEN Script Property before installing the scheduler."
     );
+
+  const initialResult = runScheduledArmyIntelligenceRefresh();
 
   ScriptApp.getProjectTriggers().forEach(function(trigger) {
     if (trigger.getHandlerFunction() === ARMY_INTELLIGENCE_SCHEDULER_HANDLER)
@@ -32,8 +45,6 @@ function installArmyIntelligenceRefreshScheduler() {
       .timeBased()
       .everyMinutes(5)
       .create();
-
-  const initialResult = runScheduledArmyIntelligenceRefresh();
 
   return {
     cadenceMinutes: 5,

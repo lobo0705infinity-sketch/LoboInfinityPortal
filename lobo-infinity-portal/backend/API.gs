@@ -1452,6 +1452,11 @@ function handleApiPost(e, action) {
         return refreshArmyIntelligence(e);
       });
 
+    case "installArmyIntelligenceScheduler":
+      return requireArmyIntelligenceWorkerOrPermission(e, function() {
+        return jsonOutput(installArmyIntelligenceRefreshScheduler(e));
+      });
+
     case "rebuildStatistics":
       return requireApiPermission(e, "manageCache", function() {
         return rebuildOperationsStatistics();
