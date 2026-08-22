@@ -860,7 +860,7 @@ function RecentGamesPanel({
                     {formatGameType(game.gameType || 'league')} / {getCanonicalMissionName(game.mission) || 'Mission not recorded'}
                   </small>
                 </div>
-                <div>
+                <div className="player-recent-game-meta">
                   <span>{getPlayerArmy(game, player) || 'Army not recorded'}</span>
                   <small>{game.date || 'Date not recorded'}</small>
                 </div>
@@ -2793,6 +2793,13 @@ const playerProfileStyles = `
   color: var(--text-muted);
   font-size: 0.78rem;
   font-weight: 800;
+}
+
+.player-recent-game-meta {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
 }
 
 .player-result-chip {

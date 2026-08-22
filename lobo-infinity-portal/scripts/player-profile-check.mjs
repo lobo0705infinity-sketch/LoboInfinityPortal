@@ -57,6 +57,14 @@ const checks = [
       playerProfile.includes('<ArmyListsPanel'),
   },
   {
+    label: 'Recent Games visually separates faction and date without changing either value',
+    pass:
+      playerProfile.includes('<div className="player-recent-game-meta">') &&
+      playerProfile.includes("<span>{getPlayerArmy(game, player) || 'Army not recorded'}</span>") &&
+      playerProfile.includes("<small>{game.date || 'Date not recorded'}</small>") &&
+      /\.player-recent-game-meta\s*\{[\s\S]*display: flex;[\s\S]*flex-wrap: wrap;[\s\S]*gap: 0\.35rem;/.test(playerProfile),
+  },
+  {
     label: 'Public profile exposes the shared automatic Primary Faction',
     pass:
       playersApi.includes('const gameDerivedFavoriteFaction =') &&
