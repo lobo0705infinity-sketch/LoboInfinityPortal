@@ -10,11 +10,12 @@ const checks = [
   ['profile no longer calls recentGames separately', !playerProfile.includes("request(\n    'recentGames'")],
   ['profile no longer loads all three standings', !playerProfile.includes('standingsRepository') && !playerProfile.includes('getAllStandings')],
   ['profile requests event-scoped standing context without changing event analytics routing', playerProfile.includes('profileEventId') && !playerProfile.includes('{ name: playerName, eventId')],
-  ['backend reuses canonical recent-game projection', playersApi.includes('getPlayerRecentGameObjectsFromGameEngine') && playersApi.includes('.slice(0, RECENT_GAMES_LIMIT)')],
+  ['backend reuses canonical recent-game projection without resolving the Player twice', /getPlayerRecentGameObjectsFromGameEngine\(\s*playerName,\s*playerName\s*\)/.test(playersApi) && playersApi.includes('.slice(0, RECENT_GAMES_LIMIT)')],
   ['backend returns bounded recent games in both profile paths', count(playersApi, 'recentGames:\n      profileData.recentGames') === 2],
   ['backend returns one-player standings projection', playersApi.includes('standings: [standing]') && playersApi.includes('players: snapshot.summary.players')],
   ['historical game-proven profiles remain supported without canonical standing mutation', playersApi.includes('findCommunityPlayerProfileRecord') && playersApi.includes('buildPlayerProfileSupplement_(\n      playerName,\n      null,')],
-  ['canonical profile uses existing standings snapshot helper', playersApi.includes('buildEventStandingsResponse(\n      divisionConfig,')],
+  ['canonical profile uses existing standings snapshot helper', /buildEventStandingsResponse\(\s*divisionConfig,\s*eventId\s*\)/.test(playersApi)],
+  ['current-league standing reuses the already-built request registry', playersApi.includes('buildPlayerProfileStandingResponseFromRegistry_') && playersApi.includes('resolvedEventId === defaultEventId')],
   ['game and standings invalidation refreshes enriched profiles', /standings:\s*\[[^\]]*"player"/.test(cacheApi)],
   ['legacy recentGames and standings endpoints remain available', true],
 ]
@@ -37,20 +38,23 @@ const sandbox = {
     standings: [{ player: 'Canonical', displayName: 'Display', rank: 2, games: 4, wins: 3, losses: 1, draws: 0, tp: 15, op: 32, vp: 700 }],
     summary: { leader: null, players: 10, gamesPlayed: 20, activePlayers: 8 },
   }),
+  resolveLeagueEventScope: (eventId) => eventId || 'event-current-league',
 }
 vm.createContext(sandbox)
 vm.runInContext([
   extractFunction(playersApi, 'buildPlayerProfileSupplement_'),
   extractFunction(playersApi, 'buildPlayerProfileStandingSnapshot_'),
+  extractFunction(playersApi, 'buildPlayerProfileStandingResponseFromRegistry_'),
   extractFunction(playersApi, 'getPlayerProfileDivisionConfig_'),
 ].join('\n'), sandbox)
 
 const canonical = sandbox.buildPlayerProfileSupplement_(
   'Canonical',
   { player: 'Canonical', division: 'Main Man' },
+  null,
   { parameter: { profileEventId: 'event-july-2026-league' } },
 )
-const historical = sandbox.buildPlayerProfileSupplement_('KaktusGalaxus', null, null)
+const historical = sandbox.buildPlayerProfileSupplement_('KaktusGalaxus', null, null, null)
 
 checks.push(
   ['recent-game projection preserves exact bounded records', canonical.recentGames.length === 2 && canonical.recentGames[0].id === 61 && canonical.recentGames[0].loserFaction === 'Tartary Army Corps'],

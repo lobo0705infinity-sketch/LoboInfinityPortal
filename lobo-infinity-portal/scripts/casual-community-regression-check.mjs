@@ -55,7 +55,7 @@ const getDivisionIdentity = extractFunction(divisions, 'getDivisionIdentity')
 
 assert.match(
   extractFunction(playersApi, 'buildPlayerProfileSupplement_'),
-  /getPlayerRecentGameObjectsFromGameEngine\(\s*playerName\s*\)/,
+  /getPlayerRecentGameObjectsFromGameEngine\(\s*playerName,\s*playerName\s*\)/,
   'Public player profiles must embed the canonical all-game-type recent-games projection.',
 )
 

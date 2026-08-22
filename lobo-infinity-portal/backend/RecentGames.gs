@@ -267,10 +267,12 @@ function getAllRecentGameObjectsFromCanonicalResponses() {
 
 }
 
-function getPlayerRecentGameObjectsFromGameEngine(playerName) {
+function getPlayerRecentGameObjectsFromGameEngine(playerName, canonicalPlayerName) {
 
   const communityPlayer =
-    typeof findCommunityPlayerProfileRecord === "function"
+    canonicalPlayerName
+      ? { player: canonicalPlayerName }
+      : typeof findCommunityPlayerProfileRecord === "function"
       ? findCommunityPlayerProfileRecord(playerName)
       : null;
 

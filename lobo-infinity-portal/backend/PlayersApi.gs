@@ -755,6 +755,7 @@ function getPlayer(e) {
     buildPlayerProfileSupplement_(
       registeredPlayer.player,
       registeredPlayer,
+      registry,
       e
     );
 
@@ -894,6 +895,7 @@ function getCommunityPlayerProfile(requestedName) {
     buildPlayerProfileSupplement_(
       playerName,
       null,
+      null,
       null
     );
 
@@ -980,10 +982,11 @@ function getCommunityPlayerProfile(requestedName) {
 
 }
 
-function buildPlayerProfileSupplement_(playerName, registeredPlayer, e) {
+function buildPlayerProfileSupplement_(playerName, registeredPlayer, registry, e) {
 
   const recentGames =
     getPlayerRecentGameObjectsFromGameEngine(
+      playerName,
       playerName
     )
       .slice(0, RECENT_GAMES_LIMIT);
@@ -993,6 +996,7 @@ function buildPlayerProfileSupplement_(playerName, registeredPlayer, e) {
     profileStandings:
       buildPlayerProfileStandingSnapshot_(
         registeredPlayer,
+        registry,
         e &&
         e.parameter &&
         e.parameter.profileEventId
@@ -1001,7 +1005,7 @@ function buildPlayerProfileSupplement_(playerName, registeredPlayer, e) {
 
 }
 
-function buildPlayerProfileStandingSnapshot_(registeredPlayer, eventId) {
+function buildPlayerProfileStandingSnapshot_(registeredPlayer, registry, eventId) {
 
   if (!registeredPlayer)
     return [];
@@ -1014,11 +1018,24 @@ function buildPlayerProfileStandingSnapshot_(registeredPlayer, eventId) {
   if (!divisionConfig)
     return [];
 
+  const resolvedEventId =
+    resolveLeagueEventScope(eventId);
+
+  const defaultEventId =
+    resolveLeagueEventScope("");
+
   const snapshot =
-    buildEventStandingsResponse(
-      divisionConfig,
-      eventId
-    );
+    registry &&
+    resolvedEventId === defaultEventId
+      ? buildPlayerProfileStandingResponseFromRegistry_(
+          registry,
+          divisionConfig,
+          resolvedEventId
+        )
+      : buildEventStandingsResponse(
+          divisionConfig,
+          eventId
+        );
 
   const target =
     getCommunityPlayerKey(
@@ -1046,6 +1063,30 @@ function buildPlayerProfileStandingSnapshot_(registeredPlayer, eventId) {
       activePlayers: snapshot.summary.activePlayers
     }
   }];
+
+}
+
+function buildPlayerProfileStandingResponseFromRegistry_(registry, divisionConfig, eventId) {
+
+  const standings =
+    standingsRowsToObjects(
+      buildDivisionTable(
+        registry,
+        divisionConfig.label
+      ),
+      eventId
+    );
+
+  return {
+    eventId: eventId,
+    event:
+      getStandingsEventSnapshot(eventId),
+    division: divisionConfig.key,
+    divisionLabel: divisionConfig.label,
+    standings: standings,
+    summary:
+      buildStandingsSummary(standings)
+  };
 
 }
 
