@@ -511,6 +511,15 @@ function buildAutomationDiscordPayload(item) {
   const payload =
     parseAutomationPayload(item.payload);
 
+  const eventPayload =
+    parseAutomationPayload(payload.payload);
+
+  if (
+    item.eventType === "gameSubmitted" &&
+    (eventPayload.gameId || eventPayload.id)
+  )
+    return buildDiscordGamePayload(eventPayload);
+
   const template =
     getAutomationTemplateForEvent(item.eventType);
 

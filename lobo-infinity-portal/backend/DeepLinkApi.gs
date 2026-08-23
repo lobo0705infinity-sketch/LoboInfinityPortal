@@ -41,7 +41,7 @@ function getDeepLinkPath(type, data) {
     case "game":
     case "gameSubmitted":
     case "matchResult":
-      return "/game/" + encodeURIComponent(getDeepLinkId(data.gameId || data.id));
+      return "/games/" + encodeURIComponent(getDeepLinkId(data.gameId || data.id));
 
     case "player":
     case "playerOfTheWeek":

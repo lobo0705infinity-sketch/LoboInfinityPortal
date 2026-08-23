@@ -72,6 +72,8 @@ function canonicalSubmitGoogleFormGame_(command, workflow) {
     logMissing: true
   });
 
+  canonicalSubmissionPublishGameAutomation_(targetRow);
+
   if (workflow === "team-tournament")
     invalidateTeamTournamentRuntimeCache(submission.eventId);
 
@@ -109,6 +111,7 @@ function canonicalSubmitPortalGame_(command, workflow) {
 
   ensureResultSubmissionArmyListHeaders(sheet);
   sheet.appendRow(row);
+  const targetRow = sheet.getLastRow();
 
   canonicalSubmissionRecordPortalAudit_(
     command.commissionerContext,
@@ -122,8 +125,7 @@ function canonicalSubmitPortalGame_(command, workflow) {
     logMissing: false
   });
 
-  if (typeof publishLatestGameSubmittedAutomationEvent === "function")
-    publishLatestGameSubmittedAutomationEvent();
+  canonicalSubmissionPublishGameAutomation_(targetRow);
 
   invalidateResultSubmissionCaches();
 
@@ -211,6 +213,8 @@ function canonicalSubmitPortalTeamTournamentGame_(command) {
     logMissing: true
   });
 
+  canonicalSubmissionPublishGameAutomation_(targetRow);
+
   invalidateTeamTournamentRuntimeCache(validation.value.eventId);
 
   return canonicalSubmissionSuccess_(
@@ -226,6 +230,30 @@ function canonicalSubmitPortalTeamTournamentGame_(command) {
       submission: submission
     }
   );
+}
+
+function canonicalSubmissionPublishGameAutomation_(targetRow) {
+  if (typeof publishLatestGameSubmittedAutomationEvent !== "function")
+    return;
+
+  const gameId = Number(targetRow) - 1;
+  const submittedGame =
+    typeof getAllRecentGameObjects === "function" && gameId > 0
+      ? getAllRecentGameObjects().filter(function(game) {
+          return Number(game.id) === gameId;
+        })[0] || null
+      : null;
+
+  if (!submittedGame) {
+    Logger.log(
+      "Game submitted automation skipped because canonical Game ID " +
+      gameId +
+      " was not available after rebuild."
+    );
+    return;
+  }
+
+  publishLatestGameSubmittedAutomationEvent(submittedGame);
 }
 
 function canonicalSubmissionBuildGoogleFormGameCommand_(submission) {

@@ -301,15 +301,23 @@ function persistGameEngineState(
 
 }
 
-function publishLatestGameSubmittedAutomationEvent() {
+function publishLatestGameSubmittedAutomationEvent(game) {
+
+  const submittedGame =
+    game || getDiscordLatestGame();
+
+  return publishGameSubmittedAutomationEvent(submittedGame);
+
+}
+
+function publishGameSubmittedAutomationEvent(game) {
 
   try {
 
     if (
       typeof publishLeagueAutomationEvent === "function"
     ) {
-      const latestGame =
-        getDiscordLatestGame();
+      const latestGame = game;
 
       if (!latestGame)
         return;
