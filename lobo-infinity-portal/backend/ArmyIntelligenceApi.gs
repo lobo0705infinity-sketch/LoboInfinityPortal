@@ -290,8 +290,41 @@ function upsertPersistedArmyIntelligenceSnapshotRows(rows) {
 
 function getArmyIntelligence(e) {
 
+  const parameters =
+    getApiParameters(e);
+
+  const scope =
+    getApiParameter(parameters, "scope")
+      .toLowerCase();
+
   const readModel =
     readArmyIntelligenceReadModelPayload();
+
+  if (scope) {
+    if (!readModel)
+      return jsonOutput({
+        success: false,
+        error: "Army Intelligence read model is temporarily unavailable."
+      });
+
+    if (scope === "summary")
+      return jsonOutput(
+        buildArmyIntelligencePublicSummaryProjection(readModel)
+      );
+
+    if (scope === "faction")
+      return jsonOutput(
+        buildArmyIntelligencePublicFactionProjection(
+          readModel,
+          getApiParameter(parameters, "faction")
+        )
+      );
+
+    return jsonOutput({
+      success: false,
+      error: "Unsupported Army Intelligence scope."
+    });
+  }
 
   if (readModel)
     return jsonOutput(readModel);
@@ -299,6 +332,218 @@ function getArmyIntelligence(e) {
   return jsonOutput(
     rebuildArmyIntelligenceReadModelPayloadAndPersist()
   );
+
+}
+
+function buildArmyIntelligencePublicSummaryProjection(readModel) {
+
+  const summary =
+    readModel && readModel.summary || {};
+
+  const optionsByKey = {};
+
+  (Array.isArray(readModel.lists) ? readModel.lists : [])
+    .filter(isArmyIntelligencePublicDecodedSource)
+    .forEach(function(list) {
+      const decoded = list.decoded || {};
+      const faction =
+        canonicalizeArmyParentFaction(
+          normalizeArmyIntelligencePublicArmyName(
+            decoded.faction || list.faction
+          )
+        );
+
+      [
+        faction,
+        normalizeArmyIntelligencePublicArmyName(
+          decoded.sectorial || list.sectorial
+        )
+      ].forEach(function(name) {
+        const key =
+          normalizeArmyIntelligencePublicIdentity(name);
+
+        if (
+          key &&
+          Object.prototype.hasOwnProperty.call(ARMY_REGISTRY_PARENT_MAP, name) &&
+          !optionsByKey[key]
+        )
+          optionsByKey[key] = name;
+      });
+    });
+
+  return {
+    success: true,
+    scope: "summary",
+    options: Object.keys(optionsByKey)
+      .map(function(key) {
+        return optionsByKey[key];
+      })
+      .sort(function(left, right) {
+        return left.localeCompare(right);
+      }),
+    decodedLists: Number(summary.decodedLists) || 0,
+    pendingLists: Number(summary.pendingLists) || 0,
+    failedLists: Number(summary.failedLists) || 0
+  };
+
+}
+
+function buildArmyIntelligencePublicFactionProjection(readModel, requestedFaction) {
+
+  const faction =
+    normalizeArmyIntelligencePublicArmyName(requestedFaction);
+
+  if (!faction)
+    return {
+      success: false,
+      error: "A faction or sectorial is required."
+    };
+
+  const uniqueByIdentity = {};
+  const uniqueLists = [];
+
+  (Array.isArray(readModel.lists) ? readModel.lists : [])
+    .filter(function(list) {
+      return isArmyIntelligencePublicDecodedSource(list) &&
+        normalizeArmyIntelligencePublicArmyName(
+          list.decoded && list.decoded.sectorial || list.sectorial
+        ) === faction;
+    })
+    .forEach(function(list) {
+      const identity =
+        buildArmyIntelligencePublicListIdentity(list);
+
+      if (!identity)
+        return;
+
+      const result =
+        getArmyIntelligenceString(list.result)
+          .toLowerCase();
+
+      const existing =
+        uniqueByIdentity[identity];
+
+      if (existing) {
+        if (result && existing.results.indexOf(result) === -1)
+          existing.results.push(result);
+
+        return;
+      }
+
+      const projection =
+        Object.assign({}, list, {
+          results: result ? [result] : []
+        });
+
+      uniqueByIdentity[identity] = projection;
+      uniqueLists.push(projection);
+    });
+
+  return {
+    success: true,
+    scope: "faction",
+    faction: faction,
+    lists: uniqueLists,
+    armyLists: buildArmyIntelligencePublicFactionArmyLists(
+      uniqueLists,
+      Array.isArray(readModel.armyLists) ? readModel.armyLists : []
+    )
+  };
+
+}
+
+function isArmyIntelligencePublicDecodedSource(list) {
+
+  const sourceType =
+    getArmyIntelligenceString(list && list.sourceType)
+      .toLowerCase();
+
+  return Boolean(
+    list &&
+    list.status === "decoded" &&
+    list.decoded &&
+    ["league", "casual", "tournament"].indexOf(sourceType) !== -1
+  );
+
+}
+
+function buildArmyIntelligencePublicListIdentity(list) {
+
+  const player =
+    normalizeArmyIntelligencePublicIdentity(list && list.player);
+
+  const armyCodeHash =
+    getArmyIntelligenceString(list && list.armyCodeHash)
+      .toLowerCase();
+
+  return player && armyCodeHash
+    ? player + ":" + armyCodeHash
+    : "";
+
+}
+
+function buildArmyIntelligencePublicFactionArmyLists(lists, armyLists) {
+
+  const projected = [];
+
+  lists.forEach(function(list) {
+    const sourceId =
+      getArmyIntelligenceString(list.sourceId);
+
+    const armyCode =
+      getArmyIntelligenceString(list.armyCode);
+
+    const match =
+      armyLists.find(function(candidate) {
+        return sourceId &&
+          getArmyIntelligenceString(candidate.id) === sourceId;
+      }) ||
+      armyLists.find(function(candidate) {
+        return armyCode &&
+          getArmyIntelligenceString(candidate.armyCode) === armyCode;
+      });
+
+    if (match)
+      projected.push(match);
+  });
+
+  return projected;
+
+}
+
+function normalizeArmyIntelligencePublicArmyName(value) {
+
+  const canonical =
+    canonicalizeArmyName(value);
+
+  const key =
+    normalizeArmyIntelligencePublicIdentity(canonical);
+
+  const explicitNames = {
+    "force de reponse rapide merovingienne": "Force de Réponse Rapide Merovingienne",
+    "starco free company of the star": "StarCo"
+  };
+
+  if (explicitNames[key])
+    return explicitNames[key];
+
+  const registryName =
+    Object.keys(ARMY_REGISTRY_PARENT_MAP)
+      .find(function(name) {
+        return normalizeArmyIntelligencePublicIdentity(name) === key;
+      });
+
+  return registryName || canonical;
+
+}
+
+function normalizeArmyIntelligencePublicIdentity(value) {
+
+  return getArmyIntelligenceString(value)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 
 }
 

@@ -286,13 +286,13 @@ assert.doesNotMatch(
 )
 assert.match(
   page,
-  /selectedExplorerScope[\s\S]*getSelectedExplorerScope\(selectedSectorial\)[\s\S]*selectedScopeLists[\s\S]*intelligenceListMatchesSelectedScope\(list, selectedExplorerScope\)[\s\S]*matchingLists[\s\S]*selectedScopeLists\.filter\(\(list\) => matchesResultFilter\(list, resultFilter\)\)[\s\S]*selectedArmyListExplorerRows[\s\S]*buildExplorerRowsFromSelectedLists\(matchingLists, data\.armyLists\)[\s\S]*selectedFaction=\{selectedExplorerScope\.label \|\| selectedSectorial\}/,
+  /selectedExplorerScope[\s\S]*getSelectedExplorerScope\(selectedSectorial\)[\s\S]*selectedScopeLists[\s\S]*intelligenceListMatchesSelectedScope\(list, selectedExplorerScope\)[\s\S]*matchingLists[\s\S]*selectedScopeLists\.filter\(\(list\) => matchesResultFilter\(list, resultFilter\)\)[\s\S]*selectedArmyListExplorerRows[\s\S]*buildExplorerRowsFromSelectedLists\(matchingLists, factionData\?\.armyLists \?\? \[\]\)[\s\S]*selectedFaction=\{selectedExplorerScope\.label \|\| selectedSectorial\}/,
   'Army Intelligence Explorer must use the selected item scope for both rows and modal title.',
 )
 assert.match(
   page,
-  /sectorials = useMemo\([\s\S]*buildArmyIntelligenceSelectorOptions\(uniqueDecodedLists\)[\s\S]*function buildArmyIntelligenceSelectorOptions[\s\S]*addArmyIntelligenceSelectorOption[\s\S]*normalizeArmyForDisplay[\s\S]*getArmyIntelligenceSelectorOptionKey/,
-  'Army Intelligence selector options must canonicalize and de-duplicate decoded faction and sectorial values before rendering.',
+  /getArmyIntelligenceSummary[\s\S]*const sectorials = summary\.options/,
+  'Army Intelligence selector options must come from the bounded canonical summary projection.',
 )
 assert.match(
   armyIdentity,
@@ -306,7 +306,7 @@ assert.match(
 )
 assert.match(
   page,
-  /selectedArmyListExplorerRows[\s\S]*buildExplorerRowsFromSelectedLists\(matchingLists, data\.armyLists\)[\s\S]*selectedKnownArmyLists = selectedArmyListExplorerRows\.length[\s\S]*buildArmyListExplorerSummary\(selectedArmyListExplorerRows, selectedExplorerScope\)[\s\S]*buildArmyAnalysis\(matchingLists\)/,
+  /selectedArmyListExplorerRows[\s\S]*buildExplorerRowsFromSelectedLists\(matchingLists, factionData\?\.armyLists \?\? \[\]\)[\s\S]*selectedKnownArmyLists = selectedArmyListExplorerRows\.length[\s\S]*buildArmyListExplorerSummary\(selectedArmyListExplorerRows, selectedExplorerScope\)[\s\S]*buildArmyAnalysis\(matchingLists\)/,
   'Army Intelligence summary metrics and explorer rows must derive from the same filtered Army Intelligence collection.',
 )
 assert.match(

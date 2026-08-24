@@ -12,9 +12,10 @@ import { getInfinityArmyTarget } from '../services/infinityArmyLinks'
 import {
   apiClient,
   type ArmyIntelligenceArmyList,
-  type ArmyIntelligenceData,
   type ArmyIntelligenceDecodedEntry,
+  type ArmyIntelligenceFactionData,
   type ArmyIntelligenceList,
+  type ArmyIntelligenceSummaryData,
   type OperationsQueueData,
   type OperationsQueueItem,
   type OperationsStateData,
@@ -25,13 +26,19 @@ type ArmyIntelligenceState =
       status: 'loading'
     }
   | {
-      data: ArmyIntelligenceData
+      data: ArmyIntelligenceSummaryData
       status: 'success'
     }
   | {
       error: string
       status: 'error'
     }
+
+type ArmyIntelligenceFactionState =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { data: ArmyIntelligenceFactionData; status: 'success' }
+  | { error: string; status: 'error' }
 
 type AnalysisResultFilter = 'all' | 'winning' | 'losing'
 type ArmyListExplorerSort = 'submissionDate' | 'player' | 'sectorial' | 'points'
@@ -169,7 +176,7 @@ function ArmyIntelligence() {
 
   const loadArmyIntelligence = useCallback((signal?: AbortSignal) =>
     apiClient
-      .getArmyIntelligence(signal ? { signal } : {})
+      .getArmyIntelligenceSummary(signal ? { signal } : {})
       .then((data) => {
         setState({
           data,
@@ -229,13 +236,16 @@ function ArmyIntelligence() {
 }
 
 function ArmyIntelligenceContent({
-  data,
+  data: summary,
 }: {
-  data: ArmyIntelligenceData
+  data: ArmyIntelligenceSummaryData
 }) {
   const [searchParams] = useSearchParams()
   const requestedFaction = readArmyIntelligenceFactionParam(searchParams)
   const [selectedSectorial, setSelectedSectorial] = useState(requestedFaction)
+  const [factionState, setFactionState] = useState<ArmyIntelligenceFactionState>(
+    requestedFaction ? { status: 'loading' } : { status: 'idle' },
+  )
   const [resultFilter, setResultFilter] = useState<AnalysisResultFilter>('all')
   const [modelEquipmentFilter, setModelEquipmentFilter] = useState('')
   const [modelSearchFilter, setModelSearchFilter] = useState('')
@@ -248,18 +258,16 @@ function ArmyIntelligenceContent({
   const [explorerSearch, setExplorerSearch] = useState('')
   const [explorerSectorialFilter, setExplorerSectorialFilter] = useState('')
   const [explorerSort, setExplorerSort] = useState<ArmyListExplorerSort>('submissionDate')
+  const factionData = factionState.status === 'success' ? factionState.data : null
   const decodedLists = useMemo(
-    () => data.lists.filter(isDecodedList),
-    [data.lists],
+    () => (factionData?.lists ?? []).filter(isDecodedList),
+    [factionData?.lists],
   )
   const uniqueDecodedLists = useMemo(
     () => deduplicateSubmittedArmyLists(decodedLists),
     [decodedLists],
   )
-  const sectorials = useMemo(
-    () => buildArmyIntelligenceSelectorOptions(uniqueDecodedLists),
-    [uniqueDecodedLists],
-  )
+  const sectorials = summary.options
   const selectedExplorerScope = useMemo(
     () => getSelectedExplorerScope(selectedSectorial),
     [selectedSectorial],
@@ -276,8 +284,8 @@ function ArmyIntelligenceContent({
     [resultFilter, selectedScopeLists],
   )
   const selectedArmyListExplorerRows = useMemo(
-    () => buildExplorerRowsFromSelectedLists(matchingLists, data.armyLists),
-    [data.armyLists, matchingLists],
+    () => buildExplorerRowsFromSelectedLists(matchingLists, factionData?.armyLists ?? []),
+    [factionData?.armyLists, matchingLists],
   )
   const selectedKnownArmyLists = selectedArmyListExplorerRows.length
   const explorerPlayerOptions = useMemo(
@@ -342,6 +350,37 @@ function ArmyIntelligenceContent({
 
     setSelectedSectorial(requestedFaction)
   }, [requestedFaction, selectedSectorial])
+
+  useEffect(() => {
+    if (!selectedSectorial) {
+      setFactionState({ status: 'idle' })
+      return
+    }
+
+    const controller = new AbortController()
+    const requestedSectorial = selectedSectorial
+
+    setFactionState({ status: 'loading' })
+    void apiClient
+      .getArmyIntelligenceFaction(requestedSectorial, { signal: controller.signal })
+      .then((data) => {
+        if (!controller.signal.aborted && requestedSectorial === selectedSectorial) {
+          setFactionState({ data, status: 'success' })
+        }
+      })
+      .catch((error: unknown) => {
+        if (controller.signal.aborted) {
+          return
+        }
+
+        setFactionState({
+          error: error instanceof Error ? error.message : 'Army Intelligence faction data could not be loaded.',
+          status: 'error',
+        })
+      })
+
+    return () => controller.abort()
+  }, [selectedSectorial])
 
   useEffect(() => {
     if (modelSkillFilter && !skillOptions.includes(modelSkillFilter)) {
@@ -425,6 +464,14 @@ function ArmyIntelligenceContent({
       {!selectedSectorial ? (
         <section className="panel army-intelligence-empty" aria-label="Choose a sectorial">
           <p>Choose a sectorial to view army-list analysis.</p>
+        </section>
+      ) : factionState.status === 'loading' ? (
+        <section className="army-intelligence-summary" aria-label="Selected Army Intelligence loading">
+          <Skeleton label={`${selectedSectorial} intelligence loading`} rows={5} />
+        </section>
+      ) : factionState.status === 'error' ? (
+        <section className="dashboard-state" aria-label="Selected Army Intelligence error">
+          <p role="alert">{factionState.error}</p>
         </section>
       ) : matchingLists.length === 0 ? (
         <section className="panel army-intelligence-empty" aria-label="No matching army lists">
@@ -1273,12 +1320,16 @@ function deduplicateSubmittedArmyLists(lists: ArmyIntelligenceList[]): UniqueArm
       const existing = uniqueByKey.get(key)
       if (existing) {
         normalizeResultValue(list.result).forEach((result) => existing.resultSet.add(result))
+        ;(list.results ?? []).forEach((result) => existing.resultSet.add(result))
         return
       }
 
+      const resultSet = normalizeResultValue(list.result)
+      ;(list.results ?? []).forEach((result) => resultSet.add(result))
+
       uniqueByKey.set(key, {
         ...list,
-        resultSet: normalizeResultValue(list.result),
+        resultSet,
       })
     })
 
@@ -1308,31 +1359,6 @@ function normalizeResultValue(value: string) {
 
 function getDecodedSectorial(list: ArmyIntelligenceList) {
   return normalizeSectorialDisplayName(normalizeArmyForDisplay(list.decoded?.sectorial || list.sectorial || ''))
-}
-
-function buildArmyIntelligenceSelectorOptions(lists: UniqueArmyIntelligenceList[]) {
-  const optionsByKey = new Map<string, string>()
-
-  lists.forEach((list) => {
-    addArmyIntelligenceSelectorOption(optionsByKey, getIntelligenceParentFaction(list))
-    addArmyIntelligenceSelectorOption(optionsByKey, getDecodedSectorial(list))
-  })
-
-  return Array.from(optionsByKey.values()).sort((left, right) => left.localeCompare(right))
-}
-
-function addArmyIntelligenceSelectorOption(optionsByKey: Map<string, string>, value: string) {
-  const displayName = normalizeSectorialDisplayName(normalizeArmyForDisplay(value))
-  const registryEntry = CANONICAL_ARMY_REGISTRY.find((army) => army.active && army.name === displayName)
-  const key = getArmyIntelligenceSelectorOptionKey(displayName)
-
-  if (registryEntry && key && !optionsByKey.has(key)) {
-    optionsByKey.set(key, displayName)
-  }
-}
-
-function getArmyIntelligenceSelectorOptionKey(value: string) {
-  return value.trim().toLowerCase().replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim()
 }
 
 function getSelectedExplorerScope(selectedItem: string): ArmyIntelligenceSelectionScope {

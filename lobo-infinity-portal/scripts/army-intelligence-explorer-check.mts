@@ -52,7 +52,7 @@ if (target.status === 'available') {
 }
 
 const page = readFileSync(new URL('../src/pages/ArmyIntelligence.tsx', import.meta.url), 'utf8')
-assert.match(page, /buildExplorerRowsFromSelectedLists\(matchingLists, data\.armyLists\)/)
+assert.match(page, /buildExplorerRowsFromSelectedLists\(matchingLists, factionData\?\.armyLists \?\? \[\]\)/)
 assert.match(page, /getCanonicalArmyListForIntelligenceSource\(list, canonicalArmyLists\)/)
 assert.match(page, /<ArmyIntelligenceOpenList armyCode=\{list\.armyCode\} \/>/)
 assert.match(page, /getInfinityArmyTarget\(armyCode\)/)

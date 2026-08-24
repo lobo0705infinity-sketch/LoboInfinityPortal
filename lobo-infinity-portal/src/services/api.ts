@@ -537,6 +537,7 @@ export type ArmyIntelligenceList = {
   opponent: string
   player: string
   result: string
+  results?: string[]
   sectorial: string
   snapshotKey: string
   sourceId: string
@@ -618,6 +619,19 @@ export type ArmyIntelligenceData = {
   armyLists: ArmyIntelligenceArmyList[]
   lists: ArmyIntelligenceList[]
   summary: ArmyIntelligenceSummary
+}
+
+export type ArmyIntelligenceSummaryData = {
+  decodedLists: number
+  failedLists: number
+  options: string[]
+  pendingLists: number
+}
+
+export type ArmyIntelligenceFactionData = {
+  armyLists: ArmyIntelligenceArmyList[]
+  faction: string
+  lists: ArmyIntelligenceList[]
 }
 
 export type PlayerArmyListSummary = {
@@ -2671,6 +2685,11 @@ export type ApiClient = {
   getStreams: (options?: ApiOptions) => Promise<StreamedGame[]>
   getArmyLists: (options?: ApiOptions) => Promise<ArmyListsData>
   getArmyIntelligence: (options?: ApiOptions) => Promise<ArmyIntelligenceData>
+  getArmyIntelligenceSummary: (options?: ApiOptions) => Promise<ArmyIntelligenceSummaryData>
+  getArmyIntelligenceFaction: (
+    faction: string,
+    options?: ApiOptions,
+  ) => Promise<ArmyIntelligenceFactionData>
   getCommunityCommandCenter: (
     options?: ApiOptions,
   ) => Promise<CommunityCommandCenterData>
@@ -3468,6 +3487,38 @@ export async function getArmyIntelligence(
   return normalizeArmyIntelligencePayload(payload)
 }
 
+export async function getArmyIntelligenceSummary(
+  options: ApiOptions = {},
+): Promise<ArmyIntelligenceSummaryData> {
+  const payload = await request(
+    'armyIntelligence',
+    {
+      ...options,
+      redirect: 'follow',
+    },
+    { scope: 'summary' },
+  )
+  return normalizeArmyIntelligenceSummaryProjection(payload)
+}
+
+export async function getArmyIntelligenceFaction(
+  faction: string,
+  options: ApiOptions = {},
+): Promise<ArmyIntelligenceFactionData> {
+  const payload = await request(
+    'armyIntelligence',
+    {
+      ...options,
+      redirect: 'follow',
+    },
+    {
+      faction,
+      scope: 'faction',
+    },
+  )
+  return normalizeArmyIntelligenceFactionProjection(payload)
+}
+
 export async function validateArmyCode(
   armyCode: string,
   event: string,
@@ -4205,6 +4256,8 @@ export const apiClient: ApiClient = {
   getStreams,
   getArmyLists,
   getArmyIntelligence,
+  getArmyIntelligenceSummary,
+  getArmyIntelligenceFaction,
   validateArmyCode,
   getFlaggedArmySubmissions,
   auditArmyCodeSubmissions,
@@ -5794,6 +5847,35 @@ function normalizeArmyIntelligencePayload(payload: unknown): ArmyIntelligenceDat
   }
 }
 
+function normalizeArmyIntelligenceSummaryProjection(payload: unknown): ArmyIntelligenceSummaryData {
+  const record = asRecord(payload, 'Army Intelligence summary response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Army Intelligence summary failed.')
+  }
+
+  return {
+    decodedLists: getNumber(record, 'decodedLists'),
+    failedLists: getNumber(record, 'failedLists'),
+    options: getRequiredArray(record, 'options').map((option) => String(option)),
+    pendingLists: getNumber(record, 'pendingLists'),
+  }
+}
+
+function normalizeArmyIntelligenceFactionProjection(payload: unknown): ArmyIntelligenceFactionData {
+  const record = asRecord(payload, 'Army Intelligence faction response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Army Intelligence faction failed.')
+  }
+
+  return {
+    armyLists: getArray(record, 'armyLists').map(normalizeArmyIntelligenceArmyList),
+    faction: getRequiredString(record, 'faction'),
+    lists: getRequiredArray(record, 'lists').map(normalizeArmyIntelligenceList),
+  }
+}
+
 function normalizeArmyIntelligenceArmyList(item: unknown): ArmyIntelligenceArmyList {
   const record = asRecord(item, 'Army Intelligence army list')
 
@@ -5832,6 +5914,9 @@ function normalizeArmyIntelligenceList(item: unknown): ArmyIntelligenceList {
     opponent: getString(record, 'opponent'),
     player: getString(record, 'player'),
     result: getString(record, 'result'),
+    results: getArray(record, 'results')
+      .map((result) => String(result).trim().toLowerCase())
+      .filter(Boolean),
     sectorial: getString(record, 'sectorial'),
     snapshotKey: getRequiredString(record, 'snapshotKey'),
     sourceId: getString(record, 'sourceId'),
