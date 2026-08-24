@@ -1209,13 +1209,21 @@ function getPlayerArmyLists(playerName) {
       summary: buildPlayerArmyListSummary([])
     };
 
+  const readModel =
+    readArmyListsReadModelPayload();
+
   const lists =
-    getArmyListObjects()
+    (
+      readModel &&
+      Array.isArray(readModel.lists)
+        ? readModel.lists
+        : []
+    )
       .filter(function(list) {
 
         return (
           list.approved &&
-          list.player.toLowerCase() === normalizedPlayer
+          getArmyListString(list.player).toLowerCase() === normalizedPlayer
         );
 
       });
