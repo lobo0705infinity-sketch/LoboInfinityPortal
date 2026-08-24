@@ -24,6 +24,8 @@ assert.match(header, /body\.style\.top = `-\$\{scrollY\}px`/)
 assert.match(header, /return \(\) => \{[\s\S]*?body\.style\.position = previousBodyStyles\.position/)
 assert.match(header, /window\.scrollTo\(scrollX, scrollY\)/)
 assert.match(header, /\}, \[isMobileMenuOpen\]\)/)
+assert.match(header, /window\.matchMedia\('\(max-width: 920px\)'\)/)
+assert.match(header, /if \(!event\.matches\) \{\s*setActiveMobilePanel\(null\)/)
 
 assert.match(drawer, /className="mobile-menu-sheet sidebar"/)
 assert.match(drawer, /<MobileEventSelector/)

@@ -111,6 +111,22 @@ function Header() {
     setActiveMobilePanel(null)
   }, [location.pathname, location.search, location.hash])
 
+  useEffect(() => {
+    const mobileShell = window.matchMedia('(max-width: 920px)')
+
+    function handleShellChange(event: MediaQueryListEvent) {
+      if (!event.matches) {
+        setActiveMobilePanel(null)
+      }
+    }
+
+    mobileShell.addEventListener('change', handleShellChange)
+
+    return () => {
+      mobileShell.removeEventListener('change', handleShellChange)
+    }
+  }, [])
+
   return (
     <header
       className={
