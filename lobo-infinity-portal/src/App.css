@@ -10765,7 +10765,7 @@ a {
   display: none;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 920px) {
   .app-shell {
     --mobile-header-height: 60px;
     --mobile-nav-height: 74px;
@@ -11094,6 +11094,10 @@ a {
     text-decoration: none;
   }
 
+}
+
+@media (max-width: 760px) {
+
   .portal-shell {
     min-height: calc(100dvh - var(--mobile-header-height));
   }
@@ -11186,7 +11190,7 @@ a {
 }
 
 /* Mobile Experience v1: drawer navigation and high-traffic page polish */
-@media (max-width: 760px) {
+@media (max-width: 920px) {
   .app-shell {
     --mobile-nav-height: 0px;
   }
@@ -11251,6 +11255,10 @@ a {
   .mobile-menu-sheet .sidebar-event-summary {
     min-height: 48px;
   }
+
+}
+
+@media (max-width: 760px) {
 
   .portal-shell,
   .event-overview-shell {
