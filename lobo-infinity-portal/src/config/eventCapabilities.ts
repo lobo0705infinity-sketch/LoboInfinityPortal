@@ -36,7 +36,6 @@ const leagueCapabilities: EventCapability[] = [
   'overview',
   'registration',
   'standings',
-  'schedule',
   'statistics',
   'rules',
 ]

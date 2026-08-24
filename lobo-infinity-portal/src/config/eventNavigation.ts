@@ -95,7 +95,6 @@ export const currentEventNavigation: EventNavigationConfig = {
     'overview',
     'registration',
     'standings',
-    'schedule',
     'statistics',
     'rules',
   ],
