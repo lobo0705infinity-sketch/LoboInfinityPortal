@@ -4,7 +4,6 @@ import { resolve } from 'node:path'
 const root = process.cwd()
 
 const files = {
-  dashboard: read('src/pages/Dashboard.tsx'),
   myProfile: read('src/pages/MyProfile.tsx'),
   playerProfile: read('src/pages/PlayerProfile.tsx'),
   component: read('src/components/PrimaryFactionCard.tsx'),
@@ -75,13 +74,6 @@ const checks = [
       /function buildArmyIntelligenceSelectorOptions[\s\S]*getIntelligenceParentFaction\(list\)[\s\S]*getDecodedSectorial\(list\)/.test(
         files.armyIntelligence,
       ),
-  },
-  {
-    label: 'Commander Overview renders Primary Faction through the shared card',
-    pass:
-      files.dashboard.includes("import PrimaryFactionCard from '../components/PrimaryFactionCard'") &&
-      /<PrimaryFactionCard faction=\{leader\?\.faction \|\| leader\?\.favoriteArmy\} \/>/.test(files.dashboard) &&
-      !files.dashboard.includes('<dt>Primary Faction</dt>'),
   },
   {
     label: 'Public Player Profile renders Primary Faction through the shared card',

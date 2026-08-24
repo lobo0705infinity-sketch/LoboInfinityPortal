@@ -255,7 +255,7 @@
 
 .dashboard-community-card {
   display: grid;
-  grid-column: span 2;
+  grid-column: 1 / -1;
   gap: 18px;
   align-content: start;
 }
@@ -350,7 +350,7 @@
 
 .dashboard-ops-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.92fr) minmax(0, 1.03fr) minmax(0, 0.88fr);
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 1.03fr) minmax(0, 0.88fr);
   gap: 12px;
 }
 
@@ -431,8 +431,7 @@
 }
 
 .dashboard-transmission b,
-.dashboard-operation-action,
-.dashboard-commander-body > a {
+.dashboard-operation-action {
   color: #4cc9f0;
   font-size: 0.72rem;
   font-weight: 950;
@@ -471,74 +470,6 @@
   border-radius: 4px;
   padding: 12px;
   background: rgba(76, 201, 240, 0.06);
-}
-
-.dashboard-commander-body {
-  display: grid;
-  gap: 18px;
-  padding: 18px;
-}
-
-.dashboard-commander-body > img {
-  width: min(160px, 52%);
-  justify-self: center;
-  border: 1px solid rgba(178, 18, 42, 0.68);
-  border-radius: 999px;
-  padding: 12px;
-  background: rgba(5, 6, 8, 0.74);
-  filter: drop-shadow(0 0 18px rgba(76, 201, 240, 0.28));
-}
-
-.dashboard-commander-body > div {
-  display: grid;
-  justify-items: center;
-  text-align: center;
-}
-
-.dashboard-commander-body span {
-  color: #b2122a;
-  font-size: 0.76rem;
-  font-weight: 950;
-  text-transform: uppercase;
-}
-
-.dashboard-commander-body strong {
-  color: #f4f6f8;
-  font-size: clamp(1.8rem, 3vw, 2.45rem);
-  line-height: 1.05;
-}
-
-.dashboard-commander-body small {
-  color: #b2122a;
-  font-weight: 950;
-  text-transform: uppercase;
-}
-
-.dashboard-commander-body dl {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0;
-  margin: 0;
-}
-
-.dashboard-commander-body dl div {
-  border-top: 1px solid rgba(42, 59, 73, 0.76);
-  padding: 14px 10px;
-}
-
-.dashboard-commander-body dt {
-  color: #7e8b95;
-  font-size: 0.68rem;
-  font-weight: 950;
-  text-transform: uppercase;
-}
-
-.dashboard-commander-body dd {
-  margin: 6px 0 0;
-  color: #f4f6f8;
-  font-size: 1.28rem;
-  font-weight: 900;
-  overflow-wrap: anywhere;
 }
 
 .dashboard-community-intel-list {
@@ -712,8 +643,5 @@
     width: 100%;
   }
 
-  .dashboard-commander-body dl {
-    grid-template-columns: 1fr;
-  }
 }
 
