@@ -73,7 +73,10 @@ for (const [faction, maximumBytes] of targets) {
 }
 
 assert.match(page, /getArmyIntelligenceSummary/)
-assert.match(page, /getArmyIntelligenceFaction\(requestedSectorial, \{ signal: controller\.signal \}\)/)
+assert.match(
+  page,
+  /getArmyIntelligenceFaction\(requestedSectorial, \{[\s\S]*?cacheMode: 'stale-while-revalidate',[\s\S]*?signal: controller\.signal,[\s\S]*?\}\)/,
+)
 assert.match(page, /return \(\) => controller\.abort\(\)/, 'Selection changes must cancel stale faction requests.')
 assert.doesNotMatch(page, /\.getArmyIntelligence\(signal/)
 assert.match(api, /getArmyIntelligence[\s\S]*getArmyIntelligenceSummary[\s\S]*getArmyIntelligenceFaction/)

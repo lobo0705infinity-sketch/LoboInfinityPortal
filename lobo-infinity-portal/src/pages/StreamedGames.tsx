@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import Skeleton from '../components/Skeleton'
 import { filterCanonicalMissionNames } from '../config/missions'
+import { useApiCacheRevalidation } from '../hooks/useApiCacheRevalidation'
 import { apiClient, type StreamedGame } from '../services/api'
 
 type StreamsState =
@@ -31,26 +32,35 @@ function StreamedGames() {
   const [playerFilter, setPlayerFilter] = useState('all')
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest')
 
+  const applyStreams = useCallback((streams: StreamedGame[]) => {
+    const linkedStreamId = Number(searchParams.get('streamId')) || null
+    setStreamsState({ streams, status: 'success' })
+    setSelectedStreamId((current) =>
+      streams.find((stream) => stream.id === current)?.id ??
+      streams.find((stream) => stream.id === linkedStreamId)?.id ??
+      streams.find((stream) => stream.featured)?.id ??
+      streams[0]?.id ??
+      null,
+    )
+  }, [searchParams])
+
+  useApiCacheRevalidation({
+    action: 'streams',
+    read: () => apiClient.getStreams({
+      cacheMode: 'stale-while-revalidate',
+    }),
+    apply: applyStreams,
+  })
+
   useEffect(() => {
     const controller = new AbortController()
 
     apiClient
       .getStreams({
+        cacheMode: 'stale-while-revalidate',
         signal: controller.signal,
       })
-      .then((streams) => {
-        const linkedStreamId = Number(searchParams.get('streamId')) || null
-        setStreamsState({
-          streams,
-          status: 'success',
-        })
-        setSelectedStreamId(
-          streams.find((stream) => stream.id === linkedStreamId)?.id ??
-            streams.find((stream) => stream.featured)?.id ??
-            streams[0]?.id ??
-            null,
-        )
-      })
+      .then(applyStreams)
       .catch((error: unknown) => {
         if (!controller.signal.aborted) {
           setStreamsState({
@@ -66,7 +76,7 @@ function StreamedGames() {
     return () => {
       controller.abort()
     }
-  }, [searchParams])
+  }, [applyStreams])
 
   const streams =
     streamsState.status === 'success' ? streamsState.streams : emptyStreams

@@ -12,10 +12,11 @@ const migratedPages = {
   factions: read('src/pages/Factions.tsx'),
   faction: read('src/pages/FactionProfile.tsx'),
   hallOfFame: read('src/pages/HallOfFame.tsx'),
+  streams: read('src/pages/StreamedGames.tsx'),
 }
 const excludedPages = [
   'src/pages/PlayerProfile.tsx',
-  'src/pages/ArmyIntelligence.tsx',
+  'src/pages/ArmyLists.tsx',
   'src/pages/SubmitResult.tsx',
   'src/pages/Schedule.tsx',
   'src/pages/CommissionerDashboard.tsx',
@@ -46,6 +47,14 @@ for (const [action, page] of Object.entries(migratedPages)) {
   assert.match(page, /useApiCacheRevalidation/, `${action} must reactively replace stale data.`)
   assert.doesNotMatch(page, /setTimeout\([\s\S]{0,120},\s*[1-9]\d{2,}\s*\)/, `${action} must not impose a material render timer.`)
 }
+
+const armyIntelligence = read('src/pages/ArmyIntelligence.tsx')
+assert.match(armyIntelligence, /getArmyIntelligenceSummary\(\{[\s\S]*?cacheMode: 'stale-while-revalidate'/)
+assert.match(armyIntelligence, /params: \{ scope: 'summary' \}/)
+assert.match(armyIntelligence, /getArmyIntelligenceFaction\(selectedSectorial, \{[\s\S]*?cacheMode: 'stale-while-revalidate'/)
+assert.match(armyIntelligence, /faction: selectedSectorial,[\s\S]*?scope: 'faction'/)
+assert.match(armyIntelligence, /data\.faction === selectedSectorial/)
+assert.doesNotMatch(armyIntelligence, /getArmyIntelligence\([^S]/)
 
 assert.match(dashboard, /dashboardSWR = \{ cacheMode: 'stale-while-revalidate' as const \}/)
 for (const page of excludedPages) {

@@ -64,8 +64,8 @@ for (const cache of [memory, session]) {
   assert.equal(cache.has('streams'), true)
 }
 
-assert.doesNotMatch(armyIntelligence, /cacheMode: 'stale-while-revalidate'/)
-assert.doesNotMatch(streams, /cacheMode: 'stale-while-revalidate'/)
+assert.match(armyIntelligence, /cacheMode: 'stale-while-revalidate'/)
+assert.match(streams, /cacheMode: 'stale-while-revalidate'/)
 assert.doesNotMatch(armyLists, /cacheMode: 'stale-while-revalidate'/)
 
 console.log('Army Intelligence refresh cache invalidation regression passed.')
