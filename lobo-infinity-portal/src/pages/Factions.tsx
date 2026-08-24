@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import Skeleton from '../components/Skeleton'
+import { useApiCacheRevalidation } from '../hooks/useApiCacheRevalidation'
 import { apiClient, type FactionSummary } from '../services/api'
 
 type FactionsState =
@@ -23,11 +24,24 @@ function Factions() {
     status: 'idle',
   })
 
+  useApiCacheRevalidation({
+    action: 'factions',
+    params: eventId ? { eventId } : {},
+    read: () => apiClient.getFactions({
+      cacheMode: 'stale-while-revalidate',
+      eventId,
+    }),
+    apply: (factions) => {
+      setFactionsState({ factions, status: 'success' })
+    },
+  })
+
   useEffect(() => {
     const controller = new AbortController()
 
     apiClient
       .getFactions({
+        cacheMode: 'stale-while-revalidate',
         eventId,
         signal: controller.signal,
       })

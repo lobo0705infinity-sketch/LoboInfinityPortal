@@ -6,7 +6,8 @@ const dashboard = read('src/pages/Dashboard.tsx')
 const failures = []
 
 assert(
-  /function loadDashboardSummary\(\) \{\s*return dashboardRepository\.getDashboard\(\)\s*\}/.test(context),
+  /function loadDashboardSummary\(\) \{\s*return dashboardRepository\.getDashboard\(dashboardSWR\)\s*\}/.test(context) &&
+    /dashboardSWR = \{ cacheMode: 'stale-while-revalidate' as const \}/.test(context),
   'The primary Dashboard request must use the API cache directly, without a second 30-second cache.',
 )
 assert(
@@ -36,7 +37,8 @@ assert(
   'Already-requested public Dashboard sections must replace stale values after revalidation.',
 )
 assert(
-  /if \(sessionCached\)[\s\S]*?if \(stale\) \{\s*revalidateCachedRequest[\s\S]*?return sessionCached\.data/.test(core),
+  /sessionCached && \(sessionCached\.expiresAt > Date\.now\(\) \|\| staleWhileRevalidate\)/.test(core) &&
+    /if \(stale\) \{\s*revalidateCachedRequest[\s\S]*?return sessionCached\.data/.test(core),
   'Stale Dashboard data must return before background network completion.',
 )
 assert(

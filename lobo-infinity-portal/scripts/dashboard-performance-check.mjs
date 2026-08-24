@@ -105,7 +105,7 @@ assert(
 )
 assert(
   !/createDashboardCache/.test(context) &&
-    /return dashboardRepository\.getDashboard\(\)/.test(context),
+    /return dashboardRepository\.getDashboard\(dashboardSWR\)/.test(context),
   'Dashboard must use the shared API cache as its single public-data freshness authority.',
 )
 

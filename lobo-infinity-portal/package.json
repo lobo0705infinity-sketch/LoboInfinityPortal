@@ -79,6 +79,7 @@
     "test:dashboard-performance": "node scripts/dashboard-performance-check.mjs",
     "test:dashboard-deferred-loading": "node scripts/dashboard-deferred-loading-check.mjs",
     "test:dashboard-swr": "node scripts/dashboard-swr-check.mjs",
+    "test:public-read-swr": "node scripts/public-read-swr-check.mjs",
     "test:lazy-data-provider": "node scripts/lazy-data-provider-check.mjs",
     "test:lazy-data-provider:bundle": "vite build --manifest && node scripts/lazy-data-provider-bundle-check.mjs",
     "test:player-comparison": "node scripts/player-comparison-check.mjs",

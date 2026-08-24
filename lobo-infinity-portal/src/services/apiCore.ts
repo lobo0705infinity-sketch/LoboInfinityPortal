@@ -1,4 +1,5 @@
 export type ApiOptions = {
+  cacheMode?: 'fresh-required' | 'stale-while-revalidate'
   eventId?: string
   gameId?: number
   gameType?: string
@@ -18,6 +19,8 @@ import {
 import { buildInfo } from './buildInfo'
 
 type RequestParams = Record<string, string>
+
+export const apiCacheRevalidatedEvent = 'lobo:cache-revalidated'
 
 type CacheEntry = {
   action: string
@@ -274,6 +277,7 @@ async function requestInternal(
   const duplicate = apiRequestHistory.some((entry) => entry.cacheKey === cacheKey)
   const cached = frontendResponseCache.get(cacheKey)
   const canShareInFlightRequest = !options.signal
+  const staleWhileRevalidate = options.cacheMode === 'stale-while-revalidate'
 
   if (!bypassCache && cached && cached.expiresAt > Date.now()) {
     const now = performance.now()
@@ -281,9 +285,21 @@ async function requestInternal(
     return cached.payload
   }
 
+  if (
+    !bypassCache &&
+    staleWhileRevalidate &&
+    cached &&
+    cached.staleUntil > Date.now()
+  ) {
+    const now = performance.now()
+    recordApiTiming(action, 'stale', 0, true, now, now, cacheKey, routePath, caller, duplicate)
+    revalidateCachedRequest(action, options, params, sessionCacheKey, cacheKey, eventId)
+    return cached.payload
+  }
+
   const sessionCached = bypassCache ? null : readSessionResponseCache(sessionCacheKey)
 
-  if (sessionCached) {
+  if (sessionCached && (sessionCached.expiresAt > Date.now() || staleWhileRevalidate)) {
     frontendResponseCache.set(cacheKey, {
       action,
       eventId: sessionCached.eventId,
@@ -1058,7 +1074,7 @@ function revalidateCachedRequest(
       lastRevalidationTimestamp = new Date().toISOString()
       if (typeof window !== 'undefined') {
         window.dispatchEvent(
-          new CustomEvent('lobo:cache-revalidated', {
+          new CustomEvent(apiCacheRevalidatedEvent, {
             detail: { action, cacheKey: sessionCacheKey, eventId, payload },
           }),
         )
@@ -1075,6 +1091,26 @@ function revalidateCachedRequest(
     .finally(() => {
       backgroundRevalidations.delete(cacheKey)
     })
+}
+
+export function isApiCacheRevalidation(
+  event: Event,
+  action: string,
+  params: RequestParams = {},
+) {
+  if (!(event instanceof CustomEvent)) {
+    return false
+  }
+
+  const detail = event.detail as {
+    action?: unknown
+    cacheKey?: unknown
+  } | null
+
+  return (
+    detail?.action === action &&
+    detail.cacheKey === buildSessionCacheKey(action, params)
+  )
 }
 
 function invalidateAffectedCaches(action: string, params: RequestParams) {

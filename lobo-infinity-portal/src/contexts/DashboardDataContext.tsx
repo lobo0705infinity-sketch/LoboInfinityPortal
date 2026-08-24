@@ -48,6 +48,7 @@ const pendingCommunityRequests = new Map<
   string,
   Promise<CommunityCommandCenterData>
 >()
+const dashboardSWR = { cacheMode: 'stale-while-revalidate' as const }
 
 export type DashboardDeferredKey =
   | 'allStandings'
@@ -79,7 +80,7 @@ function loadCommunityCommandCenter(cacheKey: string) {
 }
 
 function loadDashboardSummary() {
-  return dashboardRepository.getDashboard()
+  return dashboardRepository.getDashboard(dashboardSWR)
 }
 
 const dashboardCacheRevalidatedEvent = 'lobo:cache-revalidated'
@@ -135,31 +136,31 @@ function getDeferredSectionForCacheRevalidation(event: Event) {
 }
 
 function loadRecentGames() {
-  return gameRepository.getRecentGames({ gameType: 'all' })
+  return gameRepository.getRecentGames({ ...dashboardSWR, gameType: 'all' })
 }
 
 function loadIntelligence() {
-  return analyticsRepository.getAnalytics()
+  return analyticsRepository.getAnalytics(dashboardSWR)
 }
 
 function loadRecords() {
-  return analyticsRepository.getRecords()
+  return analyticsRepository.getRecords(dashboardSWR)
 }
 
 function loadHallOfFame() {
-  return analyticsRepository.getHallOfFame()
+  return analyticsRepository.getHallOfFame(dashboardSWR)
 }
 
 function loadStreams() {
-  return apiClient.getStreams()
+  return apiClient.getStreams(dashboardSWR)
 }
 
 function loadAllStandings() {
-  return standingsRepository.getAllStandings()
+  return standingsRepository.getAllStandings(dashboardSWR)
 }
 
 function loadArmyLists() {
-  return apiClient.getArmyLists().then((data) => ({
+  return apiClient.getArmyLists(dashboardSWR).then((data) => ({
     community: data.community,
     lists: data.lists,
   }))

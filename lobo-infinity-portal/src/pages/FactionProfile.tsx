@@ -4,6 +4,7 @@ import BarChart from '../components/BarChart'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
 import { getCanonicalMissionName } from '../config/missions'
+import { useApiCacheRevalidation } from '../hooks/useApiCacheRevalidation'
 import {
   apiClient,
   type ArmyList,
@@ -40,6 +41,23 @@ function FactionProfile() {
     status: 'idle',
   })
 
+  useApiCacheRevalidation({
+    action: 'faction',
+    params: {
+      name: decodedFactionName,
+      ...(eventId ? { eventId } : {}),
+    },
+    read: () => apiClient.getFaction(decodedFactionName, {
+      cacheMode: 'stale-while-revalidate',
+      eventId,
+    }),
+    apply: (faction) => {
+      if (decodedFactionName) {
+        setProfileState({ faction, factionName: decodedFactionName, status: 'success' })
+      }
+    },
+  })
+
   useEffect(() => {
     if (!decodedFactionName) {
       return
@@ -49,6 +67,7 @@ function FactionProfile() {
 
     apiClient
       .getFaction(decodedFactionName, {
+        cacheMode: 'stale-while-revalidate',
         eventId,
         signal: controller.signal,
       })

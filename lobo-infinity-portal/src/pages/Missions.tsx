@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import Skeleton from '../components/Skeleton'
 import { filterCanonicalMissionRecords } from '../config/missions'
+import { useApiCacheRevalidation } from '../hooks/useApiCacheRevalidation'
 import { apiClient, type MissionSummary } from '../services/api'
 
 const currentLeagueEventId = 'event-current-league'
@@ -60,12 +61,33 @@ function Missions() {
   const [missionsState, setMissionsState] = useState<MissionsState>({
     status: 'idle',
   })
+  const requestParams = {
+    ...(eventId ? { eventId } : {}),
+    ...(gameType ? { gameType } : {}),
+  }
+
+  useApiCacheRevalidation({
+    action: 'missions',
+    params: requestParams,
+    read: () => apiClient.getMissions({
+      cacheMode: 'stale-while-revalidate',
+      eventId,
+      gameType,
+    }),
+    apply: (missions) => {
+      setMissionsState({
+        missions: filterCanonicalMissionRecords(missions),
+        status: 'success',
+      })
+    },
+  })
 
   useEffect(() => {
     const controller = new AbortController()
 
     apiClient
       .getMissions({
+        cacheMode: 'stale-while-revalidate',
         eventId,
         gameType,
         signal: controller.signal,

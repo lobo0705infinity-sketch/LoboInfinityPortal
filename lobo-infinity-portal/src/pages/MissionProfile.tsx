@@ -4,6 +4,7 @@ import BarChart from '../components/BarChart'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
 import { getCanonicalMissionName } from '../config/missions'
+import { useApiCacheRevalidation } from '../hooks/useApiCacheRevalidation'
 import {
   apiClient,
   type MissionBestMoment,
@@ -39,6 +40,25 @@ function MissionProfile() {
     status: 'idle',
   })
 
+  useApiCacheRevalidation({
+    action: 'mission',
+    params: {
+      name: canonicalMissionName,
+      ...(eventId ? { eventId } : {}),
+      ...(gameType ? { gameType } : {}),
+    },
+    read: () => apiClient.getMission(canonicalMissionName, {
+      cacheMode: 'stale-while-revalidate',
+      eventId,
+      gameType,
+    }),
+    apply: (mission) => {
+      if (canonicalMissionName) {
+        setProfileState({ mission, missionName: canonicalMissionName, status: 'success' })
+      }
+    },
+  })
+
   useEffect(() => {
     if (!canonicalMissionName) {
       return
@@ -48,6 +68,7 @@ function MissionProfile() {
 
     apiClient
       .getMission(canonicalMissionName, {
+        cacheMode: 'stale-while-revalidate',
         eventId,
         gameType,
         signal: controller.signal,

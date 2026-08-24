@@ -6,6 +6,7 @@ import PlayerCard from '../components/PlayerCard'
 import Skeleton from '../components/Skeleton'
 import { getDiscordCommunityLink } from '../config/communityLinks'
 import { useSettings } from '../contexts/SettingsContext'
+import { useApiCacheRevalidation } from '../hooks/useApiCacheRevalidation'
 import { apiClient } from '../services/api'
 import {
   getStandingClassifications,
@@ -50,11 +51,24 @@ function Players() {
     status: 'loading',
   })
 
+  useApiCacheRevalidation({
+    action: 'players',
+    params: eventId ? { eventId } : {},
+    read: () => apiClient.getPlayers({
+      cacheMode: 'stale-while-revalidate',
+      eventId,
+    }),
+    apply: (divisions) => {
+      setPlayersState({ divisions, status: 'success' })
+    },
+  })
+
   useEffect(() => {
     const controller = new AbortController()
 
     apiClient
       .getPlayers({
+        cacheMode: 'stale-while-revalidate',
         eventId,
         signal: controller.signal,
       })

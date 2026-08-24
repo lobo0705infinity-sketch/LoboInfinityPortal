@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import BarChart from '../components/BarChart'
 import Skeleton from '../components/Skeleton'
+import { useApiCacheRevalidation } from '../hooks/useApiCacheRevalidation'
 import {
   apiClient,
   type HallOfFameCareer,
@@ -39,11 +40,24 @@ function HallOfFame() {
   })
   const [showSecondarySections, setShowSecondarySections] = useState(false)
 
+  useApiCacheRevalidation({
+    action: 'hallOfFame',
+    params: eventId ? { eventId } : {},
+    read: () => apiClient.getHallOfFame({
+      cacheMode: 'stale-while-revalidate',
+      eventId,
+    }),
+    apply: (data) => {
+      setHallState({ data, status: 'success' })
+    },
+  })
+
   useEffect(() => {
     const controller = new AbortController()
 
     apiClient
       .getHallOfFame({
+        cacheMode: 'stale-while-revalidate',
         eventId,
         signal: controller.signal,
       })
