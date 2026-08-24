@@ -337,6 +337,7 @@ async function requestInternal(
 
   const start = performance.now()
   const requestRevision = cacheRevision
+  const requestAuthTokenVersion = activeAuthTokenVersion
   let requestFinished = false
   const pending = fetch(url, {
     redirect: options.redirect,
@@ -385,7 +386,10 @@ async function requestInternal(
         throw new Error(friendlySessionExpiredMessage)
       }
 
-      if (requestRevision === cacheRevision) {
+      if (
+        requestRevision === cacheRevision &&
+        requestAuthTokenVersion === activeAuthTokenVersion
+      ) {
         const timestamp = Date.now()
         frontendResponseCache.set(cacheKey, {
           action,
@@ -1043,6 +1047,14 @@ function revalidateCachedRequest(
   backgroundRefreshCount += 1
   requestInternal(action, { eventId }, params, true, true)
     .then((payload) => {
+      const refreshed = frontendResponseCache.get(cacheKey)
+
+      // A mutation or auth transition may invalidate an in-flight refresh. In that
+      // case requestInternal deliberately does not cache it, so it must not update UI.
+      if (!refreshed || refreshed.expiresAt <= Date.now()) {
+        return
+      }
+
       lastRevalidationTimestamp = new Date().toISOString()
       if (typeof window !== 'undefined') {
         window.dispatchEvent(
@@ -1204,12 +1216,13 @@ function getMutationInvalidationGroups(action: string) {
       return ['eventHome', 'registration', 'teamTournament', 'players', 'schedule']
     case 'eventManagerEvent':
     case 'eventManagerLifecycle':
-    case 'eventManagerCurrentEvent':
     case 'eventManagerRegistration':
     case 'eventManagerParticipant':
     case 'eventManagerTeam':
     case 'eventManagerPairing':
       return ['events', 'eventHome', 'eventManager', 'registration', 'teamTournament', 'standings', 'analytics', 'schedule']
+    case 'eventManagerCurrentEvent':
+      return ['events', 'eventHome', 'eventManager', 'registration', 'teamTournament', 'standings', 'analytics', 'schedule', 'dashboard']
     case 'seasonAvailability':
     case 'schedulingAvailability':
     case 'createSchedulingRequest':

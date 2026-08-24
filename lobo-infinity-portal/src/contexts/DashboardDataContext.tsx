@@ -44,17 +44,6 @@ type DashboardDataProviderProps = {
 }
 
 const DashboardDataContext = createContext<DashboardDataContextValue | null>(null)
-const dashboardCache = createDashboardCache<DashboardData>()
-const recentGamesCache = createDashboardCache<RecentGame[]>()
-const intelligenceCache = createDashboardCache<LeagueIntelligenceData>()
-const recordsCache = createDashboardCache<Record<string, LeagueRecordValue>>()
-const hallOfFameCache = createDashboardCache<HallOfFameData>()
-const streamsCache = createDashboardCache<StreamedGame[]>()
-const allStandingsCache = createDashboardCache<DivisionStandings[]>()
-const armyListsCache = createDashboardCache<{
-  community: ArmyListCommunitySummary
-  lists: ArmyList[]
-}>()
 const pendingCommunityRequests = new Map<
   string,
   Promise<CommunityCommandCenterData>
@@ -90,44 +79,90 @@ function loadCommunityCommandCenter(cacheKey: string) {
 }
 
 function loadDashboardSummary() {
-  return dashboardCache.load('dashboard', () => dashboardRepository.getDashboard())
+  return dashboardRepository.getDashboard()
+}
+
+const dashboardCacheRevalidatedEvent = 'lobo:cache-revalidated'
+
+type CacheRevalidatedDetail = {
+  action?: unknown
+  cacheKey?: unknown
+  eventId?: unknown
+}
+
+function isDashboardCacheRevalidation(event: Event) {
+  if (!(event instanceof CustomEvent)) {
+    return false
+  }
+
+  const detail = event.detail as CacheRevalidatedDetail | null
+
+  return (
+    detail?.action === 'dashboard' &&
+    detail.eventId === '' &&
+    typeof detail.cacheKey === 'string' &&
+    detail.cacheKey.endsWith('|dashboard?')
+  )
+}
+
+function getDeferredSectionForCacheRevalidation(event: Event) {
+  if (!(event instanceof CustomEvent)) {
+    return null
+  }
+
+  const detail = event.detail as CacheRevalidatedDetail | null
+
+  switch (detail?.action) {
+    case 'standings':
+      return 'allStandings'
+    case 'armyLists':
+      return 'armyLists'
+    case 'hallOfFame':
+      return 'hallOfFame'
+    case 'intelligence':
+      return 'intelligence'
+    case 'records':
+      return 'records'
+    case 'recentGames':
+      return typeof detail.cacheKey === 'string' && detail.cacheKey.includes('gameType=all')
+        ? 'recentGames'
+        : null
+    case 'streams':
+      return 'streams'
+    default:
+      return null
+  }
 }
 
 function loadRecentGames() {
-  return recentGamesCache.load('recentGames', () =>
-    gameRepository.getRecentGames({ gameType: 'all' }),
-  )
+  return gameRepository.getRecentGames({ gameType: 'all' })
 }
 
 function loadIntelligence() {
-  return intelligenceCache.load('intelligence', () => analyticsRepository.getAnalytics())
+  return analyticsRepository.getAnalytics()
 }
 
 function loadRecords() {
-  return recordsCache.load('records', () => analyticsRepository.getRecords())
+  return analyticsRepository.getRecords()
 }
 
 function loadHallOfFame() {
-  return hallOfFameCache.load('hallOfFame', () => analyticsRepository.getHallOfFame())
+  return analyticsRepository.getHallOfFame()
 }
 
 function loadStreams() {
-  return streamsCache.load('streams', () => apiClient.getStreams())
+  return apiClient.getStreams()
 }
 
 function loadAllStandings() {
-  return allStandingsCache.load('allStandings', () =>
-    standingsRepository.getAllStandings(),
-  )
+  return standingsRepository.getAllStandings()
 }
 
 function loadArmyLists() {
-  return armyListsCache.load('armyLists', () =>
-    apiClient.getArmyLists().then((data) => ({
-      community: data.community,
-      lists: data.lists,
-    })),
-  )
+  return apiClient.getArmyLists().then((data) => ({
+    community: data.community,
+    lists: data.lists,
+  }))
 }
 
 export function DashboardDataProvider({
@@ -163,19 +198,61 @@ export function DashboardDataProvider({
   useEffect(() => {
     let isActive = true
 
-    loadDashboardSummary()
-      .then((data) => {
-        if (!isActive) {
-          return
-        }
+    const applyDashboard = (data: DashboardData) => {
+      if (!isActive) {
+        return
+      }
 
-        setHomeState((current) => ({
-          ...current,
-          dashboard: data,
-          status: 'success',
-          error: null,
-        }))
-      })
+      setHomeState((current) => ({
+        ...current,
+        dashboard: data,
+        status: 'success',
+        error: null,
+      }))
+    }
+
+    const handleCacheRevalidated = (event: Event) => {
+      if (isDashboardCacheRevalidation(event)) {
+        // apiCore publishes this event only after replacing its memory cache.
+        // This normalized reread is therefore local and does not issue a second request.
+        void loadDashboardSummary().then(applyDashboard).catch(() => {
+          // The already-rendered stale Dashboard remains usable on refresh failure.
+        })
+        return
+      }
+
+      const section = getDeferredSectionForCacheRevalidation(event)
+      if (!section || !requestedDeferredSections.current.has(section)) {
+        return
+      }
+
+      void loadDashboardDeferredSection(section)
+        .then((updater) => {
+          if (!isActive) {
+            return
+          }
+
+          setHomeState((current) => ({
+            ...current,
+            deferred: updater(current.deferred),
+            deferredStatus: {
+              ...current.deferredStatus,
+              [section]: 'success',
+            },
+          }))
+        })
+        .catch(() => {
+          // Retain the already-rendered stale deferred section on refresh failure.
+        })
+    }
+
+    window.addEventListener(
+      dashboardCacheRevalidatedEvent,
+      handleCacheRevalidated,
+    )
+
+    loadDashboardSummary()
+      .then(applyDashboard)
       .catch((error: unknown) => {
         if (!isActive) {
           return
@@ -194,6 +271,10 @@ export function DashboardDataProvider({
 
     return () => {
       isActive = false
+      window.removeEventListener(
+        dashboardCacheRevalidatedEvent,
+        handleCacheRevalidated,
+      )
     }
   }, [])
 
@@ -360,55 +441,6 @@ type DashboardDeferredData = {
   records: Record<string, LeagueRecordValue>
   streams: StreamedGame[]
   recentGames: RecentGame[]
-}
-
-type DashboardCacheEntry<T> = {
-  expiresAt: number
-  pending: Promise<T> | null
-  value: T | null
-}
-
-const dashboardCacheTtlMs = 30_000
-
-function createDashboardCache<T>() {
-  const entries = new Map<string, DashboardCacheEntry<T>>()
-
-  return {
-    load(key: string, loader: () => Promise<T>) {
-      const now = Date.now()
-      const existing = entries.get(key)
-
-      if (existing?.value && existing.expiresAt > now) {
-        return Promise.resolve(existing.value)
-      }
-
-      if (existing?.pending) {
-        return existing.pending
-      }
-
-      const pending = loader()
-        .then((value) => {
-          entries.set(key, {
-            expiresAt: Date.now() + dashboardCacheTtlMs,
-            pending: null,
-            value,
-          })
-          return value
-        })
-        .catch((error: unknown) => {
-          entries.delete(key)
-          throw error
-        })
-
-      entries.set(key, {
-        expiresAt: 0,
-        pending,
-        value: existing?.value ?? null,
-      })
-
-      return pending
-    },
-  }
 }
 
 async function loadDashboardDeferredSection(section: DashboardDeferredKey) {

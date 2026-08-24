@@ -103,10 +103,9 @@ assert(
   'Dashboard deferred loader must avoid duplicate requests when sections re-enter the viewport.',
 )
 assert(
-  /createDashboardCache/.test(context) &&
-    /existing\?\.value && existing\.expiresAt > now/.test(context) &&
-    /existing\?\.pending/.test(context),
-  'Dashboard deferred data must preserve existing cache and in-flight request behavior.',
+  !/createDashboardCache/.test(context) &&
+    /return dashboardRepository\.getDashboard\(\)/.test(context),
+  'Dashboard must use the shared API cache as its single public-data freshness authority.',
 )
 
 if (failures.length > 0) {
