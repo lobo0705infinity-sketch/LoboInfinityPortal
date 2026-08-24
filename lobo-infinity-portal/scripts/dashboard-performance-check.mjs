@@ -93,10 +93,11 @@ assert(
   'Dashboard must use a reusable one-shot IntersectionObserver deferred-section pattern.',
 )
 assert(
-  /deferredObserverDelayMs = 3200/.test(dashboard) &&
+  !/deferredObserverDelayMs|setTimeout\(.*3200|3200/.test(dashboard) &&
     /deferredObserverRootMargin = '80px 0px'/.test(dashboard) &&
-    /window\.setTimeout/.test(dashboard),
-  'Dashboard deferred observers must wait past the LCP window and use a narrower forward margin.',
+    /const observer = new IntersectionObserver/.test(dashboard) &&
+    /observer\.observe\(element\)/.test(dashboard),
+  'Dashboard deferred observers must install immediately while preserving the visibility margin.',
 )
 assert(
   /requestedDeferredSections\.current\.has\(section\)/.test(context),

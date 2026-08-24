@@ -76,6 +76,7 @@
     "test:dashboard-links": "node scripts/dashboard-links-check.mjs",
     "test:dashboard-network-feed": "node scripts/dashboard-network-feed-check.mjs",
     "test:dashboard-performance": "node scripts/dashboard-performance-check.mjs",
+    "test:dashboard-deferred-loading": "node scripts/dashboard-deferred-loading-check.mjs",
     "test:dashboard-swr": "node scripts/dashboard-swr-check.mjs",
     "test:lazy-data-provider": "node scripts/lazy-data-provider-check.mjs",
     "test:lazy-data-provider:bundle": "vite build --manifest && node scripts/lazy-data-provider-bundle-check.mjs",

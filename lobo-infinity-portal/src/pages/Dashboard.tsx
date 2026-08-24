@@ -29,7 +29,6 @@ import '../App.css'
 import './Dashboard.css'
 
 const dashboardHero = '/dashboard/dashboard-hero.webp'
-const deferredObserverDelayMs = 3200
 const deferredObserverRootMargin = '80px 0px'
 
 preloadDashboardHero()
@@ -622,31 +621,23 @@ function useDashboardDeferredOnDemand(
       return
     }
 
-    let observer: IntersectionObserver | null = null
-    const timeout = window.setTimeout(() => {
-      if (requested.current) {
-        return
-      }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting || requested.current) {
+          return
+        }
 
-      observer = new IntersectionObserver(
-        ([entry]) => {
-          if (!entry?.isIntersecting || requested.current) {
-            return
-          }
+        requested.current = true
+        loadDeferredSections(sections)
+        observer.disconnect()
+      },
+      { rootMargin: deferredObserverRootMargin },
+    )
 
-          requested.current = true
-          loadDeferredSections(sections)
-          observer?.disconnect()
-        },
-        { rootMargin: deferredObserverRootMargin },
-      )
-
-      observer.observe(element)
-    }, deferredObserverDelayMs)
+    observer.observe(element)
 
     return () => {
-      window.clearTimeout(timeout)
-      observer?.disconnect()
+      observer.disconnect()
     }
   }, [enabled, loadDeferredSections, sections])
 
