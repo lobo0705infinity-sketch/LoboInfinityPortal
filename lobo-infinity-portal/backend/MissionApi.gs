@@ -99,6 +99,9 @@ function buildMissionApiSummaries(eventId, gameType) {
   const registry =
     buildMissionRegistry();
 
+  const allRecentGames =
+    getAllRecentGameObjects();
+
   const scopedGames =
     getLeagueDataForEvent(
       eventId || "all",
@@ -121,18 +124,20 @@ function buildMissionApiSummaries(eventId, gameType) {
     .map(function(mission) {
 
       return buildMissionApiSummary(
-        mission
+        mission,
+        allRecentGames
       );
 
     });
 
 }
 
-function buildMissionApiSummary(mission) {
+function buildMissionApiSummary(mission, allRecentGames) {
 
   const recentGames =
     getMissionRecentGames(
-      mission.mission
+      mission.mission,
+      allRecentGames
     );
 
   return {
@@ -299,9 +304,12 @@ function getMissionMostPlayedFaction(missionName) {
 
 }
 
-function getMissionRecentGames(missionName) {
+function getMissionRecentGames(missionName, allRecentGames) {
 
-  return getAllRecentGameObjects()
+  return (
+    allRecentGames ||
+    getAllRecentGameObjects()
+  )
     .filter(function(game) {
 
       return game.mission === missionName;

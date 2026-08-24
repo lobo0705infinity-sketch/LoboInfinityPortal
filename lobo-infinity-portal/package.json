@@ -54,6 +54,7 @@
     "test:player-portrait-consistency": "node --experimental-strip-types scripts/player-portrait-consistency-check.mjs",
     "test:mission-scopes": "node scripts/mission-scope-check.mjs",
     "test:event-analytics-missions": "node scripts/event-analytics-mission-check.mjs",
+    "test:mission-recent-games-reuse": "node scripts/mission-recent-games-reuse-check.mjs",
     "test:team-membership": "node scripts/team-membership-check.mjs",
     "test:notifications": "node --experimental-strip-types scripts/notification-timestamp-check.ts",
     "test:achievements": "node scripts/achievement-rules-check.mjs",
