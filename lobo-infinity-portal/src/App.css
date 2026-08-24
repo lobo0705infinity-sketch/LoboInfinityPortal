@@ -10804,6 +10804,8 @@ a {
     border: 0;
     padding: 0;
     background: rgba(0, 0, 0, 0.48);
+    overscroll-behavior: contain;
+    touch-action: none;
   }
 
   .mobile-menu-button,
@@ -11205,18 +11207,23 @@ a {
 
   .mobile-menu-sheet.sidebar {
     border-radius: 0;
-    bottom: 0;
+    bottom: auto;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: 18px;
-    height: auto;
+    height: calc(100dvh - var(--mobile-header-height) - var(--mobile-safe-top, 0px));
     left: 0;
-    max-height: none;
+    max-height: calc(100dvh - var(--mobile-header-height) - var(--mobile-safe-top, 0px));
     min-height: auto;
-    overscroll-behavior: contain;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
     padding: 18px 14px calc(18px + var(--mobile-safe-bottom));
     right: auto;
-    top: var(--mobile-header-height);
+    top: calc(var(--mobile-header-height) + var(--mobile-safe-top, 0px));
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
     width: min(84vw, 328px);
     z-index: 110;
   }

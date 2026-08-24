@@ -19,7 +19,7 @@ assert.match(nativeMobile, /@media \(max-width: 920px\) \{[\s\S]*?\.portal-heade
 assert.match(nativeMobile, /@media \(max-width: 920px\) \{[\s\S]*?\.mobile-app-bar \{[\s\S]*?display: grid;/)
 assert.match(nativeMobile, /@media \(max-width: 920px\) \{[\s\S]*?\.mobile-menu-sheet \{[\s\S]*?position: fixed;/)
 assert.match(mobileDrawer, /@media \(max-width: 920px\) \{[\s\S]*?\.app-shell > \.sidebar \{\s*display: none;/)
-assert.match(mobileDrawer, /@media \(max-width: 920px\) \{[\s\S]*?\.mobile-menu-sheet\.sidebar \{[\s\S]*?overscroll-behavior: contain;[\s\S]*?width: min\(84vw, 328px\);/)
+assert.match(mobileDrawer, /@media \(max-width: 920px\) \{[\s\S]*?\.mobile-menu-sheet\.sidebar \{[\s\S]*?overscroll-behavior-y: contain;[\s\S]*?width: min\(84vw, 328px\);/)
 assert.match(nativeMobile, /\.mobile-menu-sheet \{[\s\S]*?overflow-y: auto;/)
 
 // Page-specific phone layouts remain at their existing breakpoint.

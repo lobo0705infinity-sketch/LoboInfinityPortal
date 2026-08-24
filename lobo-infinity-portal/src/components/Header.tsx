@@ -66,6 +66,48 @@ function Header() {
   }, [activeMobilePanel])
 
   useEffect(() => {
+    if (!isMobileMenuOpen) {
+      return
+    }
+
+    const body = document.body
+    const root = document.documentElement
+    const scrollX = window.scrollX
+    const scrollY = window.scrollY
+    const previousBodyStyles = {
+      left: body.style.left,
+      overflow: body.style.overflow,
+      position: body.style.position,
+      right: body.style.right,
+      top: body.style.top,
+      width: body.style.width,
+    }
+    const previousRootOverflow = root.style.overflow
+    const previousScrollBehavior = root.style.scrollBehavior
+
+    root.style.overflow = 'hidden'
+    body.style.left = '0'
+    body.style.overflow = 'hidden'
+    body.style.position = 'fixed'
+    body.style.right = '0'
+    body.style.top = `-${scrollY}px`
+    body.style.width = '100%'
+
+    return () => {
+      root.style.overflow = previousRootOverflow
+      body.style.left = previousBodyStyles.left
+      body.style.overflow = previousBodyStyles.overflow
+      body.style.position = previousBodyStyles.position
+      body.style.right = previousBodyStyles.right
+      body.style.top = previousBodyStyles.top
+      body.style.width = previousBodyStyles.width
+      root.style.scrollBehavior = 'auto'
+      window.scrollTo(scrollX, scrollY)
+      root.style.scrollBehavior = previousScrollBehavior
+    }
+  }, [isMobileMenuOpen])
+
+  useEffect(() => {
     setActiveMobilePanel(null)
   }, [location.pathname, location.search, location.hash])
 
