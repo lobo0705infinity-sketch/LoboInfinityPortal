@@ -25,6 +25,7 @@ const events = []
 const rows = []
 let googleSubmission = null
 let validationFailure = ''
+let automationFailure = false
 
 const string = (value) => String(value ?? '').trim()
 const normalizeArmyCode = (value) => string(value).replace(/\s+/g, '').replace(/[-_]/g, '')
@@ -142,8 +143,9 @@ const context = vm.createContext({
   coordinateCanonicalRebuild() {
     events.push('rebuild')
   },
-  publishLatestGameSubmittedAutomationEvent() {
+  enqueueGameSubmittedAutomationEvent() {
     events.push('automation')
+    if (automationFailure) throw new Error('Automation enqueue unavailable')
   },
   invalidateResultSubmissionCaches() {
     events.push('cache')
@@ -178,6 +180,7 @@ const reset = () => {
   events.length = 0
   rows.length = 0
   validationFailure = ''
+  automationFailure = false
 }
 
 const commonGoogle = {
@@ -249,7 +252,7 @@ for (const workflow of ['league', 'casual', 'team-tournament']) {
   assert.equal(result.row[22], armyListId(commonGoogle.opponentArmyCode), `${workflow} loser Army List ID must be derived`)
   const expectedEvents = [
     'idempotency', 'context', `validate:google-form:${workflow}`, 'canonical-sheet', 'factory',
-    'append', 'import-log:Imported', 'flush', 'rebuild',
+    'append', 'import-log:Imported', 'flush', 'automation', 'rebuild',
   ]
   if (workflow === 'team-tournament') expectedEvents.push('team-runtime-cache')
   assert.deepEqual(events, expectedEvents, `Google Form ${workflow} rebuild order changed`)
@@ -292,7 +295,7 @@ for (const workflow of ['league', 'casual']) {
   assertRow(`Portal ${workflow}`, result.row, expected)
   assert.deepEqual(events, [
     `validate:portal:${workflow}`, 'factory', 'army-list-headers', 'append',
-    'audit', 'rebuild', 'automation', 'cache',
+    'audit', 'automation', 'rebuild', 'cache',
   ], `Portal ${workflow} rebuild order changed`)
 }
 
@@ -309,7 +312,7 @@ const teamResult = context.submitCanonicalGame({
 const expectedTeamRow = buildCanonicalGameRow(legacyGoogleCommand(teamResult.context.submission))
 assertRow('Portal Team Tournament', teamResult.row, expectedTeamRow)
 assert.deepEqual(events, [
-  'validate:portal:team-tournament', 'canonical-sheet', 'factory', 'append', 'flush', 'rebuild',
+  'validate:portal:team-tournament', 'canonical-sheet', 'factory', 'append', 'flush', 'automation', 'rebuild',
   'team-runtime-cache',
 ], 'Portal Team Tournament rebuild order changed')
 
@@ -321,6 +324,15 @@ const rejected = context.submitCanonicalGame({
 assert.equal(rejected.success, false)
 assert.equal(rejected.error, 'Mission is required.')
 assert.deepEqual(events, ['validate:portal:casual'], 'Rejected submissions must not append or rebuild')
+
+reset()
+automationFailure = true
+context.submitCanonicalGame({
+  source: 'portal', workflow: 'casual', params: portalParams, auth: {}, commissionerContext: {},
+})
+assert.ok(events.indexOf('append') < events.indexOf('automation'), 'Persistence must precede automation enqueue')
+assert.ok(events.indexOf('automation') < events.indexOf('rebuild'), 'Automation enqueue must precede rebuild')
+assert.ok(events.includes('rebuild'), 'Automation enqueue failure must not prevent rebuild')
 
 const importer = fs.readFileSync('backend/ResponseImporter.gs', 'utf8')
 const resultApi = fs.readFileSync('backend/ResultSubmissionApi.gs', 'utf8')

@@ -64,6 +64,10 @@ function canonicalSubmitGoogleFormGame_(command, workflow) {
 
   lifWriteImportLog_(log, responseKey, workflow, targetRow, "Imported", "");
   SpreadsheetApp.flush();
+  canonicalSubmissionEnqueueGameAutomation_(targetRow, {
+    eventId: submission.eventId,
+    gameType: canonicalSubmissionGameType_(workflow)
+  });
   coordinateCanonicalRebuild({
     importLog: log,
     responseKey: responseKey,
@@ -71,8 +75,6 @@ function canonicalSubmitGoogleFormGame_(command, workflow) {
     targetRow: targetRow,
     logMissing: true
   });
-
-  canonicalSubmissionPublishGameAutomation_(targetRow);
 
   if (workflow === "team-tournament")
     invalidateTeamTournamentRuntimeCache(submission.eventId);
@@ -119,13 +121,15 @@ function canonicalSubmitPortalGame_(command, workflow) {
     validation.value,
     row
   );
+  canonicalSubmissionEnqueueGameAutomation_(targetRow, {
+    eventId: validation.value.eventId,
+    gameType: canonicalSubmissionGameType_(workflow)
+  });
   coordinateCanonicalRebuild({
     workflow: workflow,
     targetRow: null,
     logMissing: false
   });
-
-  canonicalSubmissionPublishGameAutomation_(targetRow);
 
   invalidateResultSubmissionCaches();
 
@@ -207,13 +211,15 @@ function canonicalSubmitPortalTeamTournamentGame_(command) {
   const targetRow = sheet.getLastRow();
 
   SpreadsheetApp.flush();
+  canonicalSubmissionEnqueueGameAutomation_(targetRow, {
+    eventId: validation.value.eventId,
+    gameType: "tournament"
+  });
   coordinateCanonicalRebuild({
     workflow: "team-tournament",
     targetRow: targetRow,
     logMissing: true
   });
-
-  canonicalSubmissionPublishGameAutomation_(targetRow);
 
   invalidateTeamTournamentRuntimeCache(validation.value.eventId);
 
@@ -232,28 +238,38 @@ function canonicalSubmitPortalTeamTournamentGame_(command) {
   );
 }
 
-function canonicalSubmissionPublishGameAutomation_(targetRow) {
-  if (typeof publishLatestGameSubmittedAutomationEvent !== "function")
-    return;
-
+function canonicalSubmissionEnqueueGameAutomation_(targetRow, context) {
   const gameId = Number(targetRow) - 1;
-  const submittedGame =
-    typeof getAllRecentGameObjects === "function" && gameId > 0
-      ? getAllRecentGameObjects().filter(function(game) {
-          return Number(game.id) === gameId;
-        })[0] || null
-      : null;
 
-  if (!submittedGame) {
-    Logger.log(
-      "Game submitted automation skipped because canonical Game ID " +
-      gameId +
-      " was not available after rebuild."
-    );
-    return;
+  if (
+    gameId <= 0 ||
+    typeof enqueueGameSubmittedAutomationEvent !== "function"
+  )
+    return null;
+
+  try {
+    return enqueueGameSubmittedAutomationEvent({
+      eventId: canonicalSubmissionString_(context && context.eventId),
+      gameId: gameId,
+      gameType: canonicalSubmissionString_(context && context.gameType)
+    });
   }
+  catch (error) {
+    Logger.log(
+      "Game submitted automation enqueue failed for canonical Game ID " +
+      gameId +
+      ": " +
+      String(error && error.message ? error.message : error)
+    );
+    return null;
+  }
+}
 
-  publishLatestGameSubmittedAutomationEvent(submittedGame);
+function canonicalSubmissionGameType_(workflow) {
+  if (workflow === "team-tournament")
+    return "tournament";
+
+  return workflow === "casual" ? "casual" : "league";
 }
 
 function canonicalSubmissionBuildGoogleFormGameCommand_(submission) {

@@ -455,6 +455,202 @@ function publishLeagueAutomationEvent(event) {
 
 }
 
+const AUTOMATION_QUEUE_BATCH_LIMIT = 4;
+const AUTOMATION_QUEUE_SELECTION_WINDOW = 100;
+const AUTOMATION_GAME_EVENT_LOOKBACK = 100;
+
+function enqueueGameSubmittedAutomationEvent(identity) {
+
+  const gameId = Number(identity && identity.gameId);
+
+  if (!Number.isInteger(gameId) || gameId <= 0)
+    throw new Error("A canonical Game ID is required for game automation.");
+
+  const eventId = "gameSubmitted-game-" + gameId;
+
+  if (hasRecentAutomationEventId_(eventId))
+    return {
+      duplicate: true,
+      eventId: eventId,
+      success: true
+    };
+
+  const rules = getAutomationRules();
+  const rule = rules.gameSubmitted || buildDefaultAutomationRule("gameSubmitted");
+
+  if (!rule.enabled)
+    return {
+      eventId: eventId,
+      reason: "Automation rule disabled.",
+      skipped: true,
+      success: true
+    };
+
+  const payload = JSON.stringify({
+    eventId: getAutomationString(identity.eventId),
+    gameId: gameId,
+    gameType: getAutomationString(identity.gameType)
+  });
+  const destinations = getRuleDestinations(rule);
+  const timestamp = getAutomationTimestamp();
+  const eventRecord = {
+      category: "Match Results",
+      destinations: destinations.join(","),
+      division: "",
+      eventId: eventId,
+      eventType: "gameSubmitted",
+      message: "A game was submitted.",
+      payload: payload,
+      player: "",
+      priority: "high",
+      status: "Published",
+      timestamp: timestamp
+  };
+
+  ensureAutomationEventsSheet().appendRow([
+      eventRecord.eventId,
+      eventRecord.eventType,
+      eventRecord.category,
+      eventRecord.priority,
+      eventRecord.player,
+      eventRecord.division,
+      eventRecord.timestamp,
+      eventRecord.message,
+      eventRecord.payload,
+      eventRecord.destinations,
+      eventRecord.status
+  ]);
+
+  if (destinations.length > 0) {
+    const queueRows = destinations.map(function(destination) {
+      const queueId = eventId + "-" + destination;
+      return [
+          queueId,
+          eventId,
+          "gameSubmitted",
+          destination,
+          "Pending",
+          timestamp,
+          0,
+          "",
+          "",
+          JSON.stringify({
+            payload: JSON.parse(payload)
+          })
+      ];
+    });
+    const queueSheet = ensureAutomationQueueSheet();
+    queueSheet
+      .getRange(
+        queueSheet.getLastRow() + 1,
+        1,
+        queueRows.length,
+        AUTOMATION_QUEUE_HEADERS.length
+      )
+      .setValues(queueRows);
+  }
+
+  return {
+    eventId: eventId,
+    queued: destinations.length,
+    success: true
+  };
+
+}
+
+function hasRecentAutomationEventId_(eventId) {
+
+  const sheet = ensureAutomationEventsSheet();
+  const lastRow = sheet.getLastRow();
+
+  if (lastRow <= 1)
+    return false;
+
+  const firstRow = Math.max(2, lastRow - AUTOMATION_GAME_EVENT_LOOKBACK + 1);
+  const values = sheet
+    .getRange(firstRow, 1, lastRow - firstRow + 1, 1)
+    .getValues();
+
+  return values.some(function(row) {
+    return getAutomationString(row[0]) === eventId;
+  });
+
+}
+
+function processAutomationQueueBatch(e) {
+
+  const parameters = getApiParameters(e);
+  const requestedLimit = Number(getApiParameter(parameters, "batchLimit"));
+  const batchLimit = Math.max(
+    1,
+    Math.min(AUTOMATION_QUEUE_BATCH_LIMIT, requestedLimit || AUTOMATION_QUEUE_BATCH_LIMIT)
+  );
+  const items = selectPendingAutomationQueueItems_(batchLimit);
+  const results = items.map(function(item) {
+    try {
+      return processAutomationQueueItem(item, false);
+    }
+    catch (error) {
+      updateAutomationQueueItem(
+        item.queueId,
+        "Retry",
+        Number(item.attempts) + 1,
+        String(error && error.message ? error.message : error),
+        item.rowNumber
+      );
+      return {
+        error: String(error && error.message ? error.message : error),
+        queueId: item.queueId,
+        success: false
+      };
+    }
+  });
+
+  return jsonOutput({
+    attempted: items.length,
+    batchLimit: batchLimit,
+    failed: results.filter(function(result) { return result.success === false; }).length,
+    results: results,
+    success: true
+  });
+
+}
+
+function selectPendingAutomationQueueItems_(limit) {
+
+  const sheet = ensureAutomationQueueSheet();
+  const lastRow = sheet.getLastRow();
+
+  if (lastRow <= 1)
+    return [];
+
+  const firstRow = Math.max(2, lastRow - AUTOMATION_QUEUE_SELECTION_WINDOW + 1);
+  const values = sheet
+    .getRange(
+      firstRow,
+      1,
+      lastRow - firstRow + 1,
+      AUTOMATION_QUEUE_HEADERS.length
+    )
+    .getValues();
+  const retryLimit = Number(getDiscordConfig().retryLimit) || 3;
+
+  return values
+    .map(function(row, index) {
+      const item = buildAutomationQueueItem(row);
+      item.rowNumber = firstRow + index;
+      return item;
+    })
+    .filter(function(item) {
+      return (
+        (item.status === "Pending" || item.status === "Retry") &&
+        Number(item.attempts) < retryLimit
+      );
+    })
+    .slice(0, limit);
+
+}
+
 function processAutomationQueueItem(item, force) {
 
   if (item.destination === "discord")
@@ -467,7 +663,8 @@ function processAutomationQueueItem(item, force) {
     item.queueId,
     "Sent",
     Number(item.attempts) + 1,
-    "Queued for " + item.destination + " destination."
+    "Queued for " + item.destination + " destination.",
+    item.rowNumber
   );
 
   return {
@@ -499,7 +696,8 @@ function processDiscordQueueItem(item, force) {
     item.queueId,
     result.success ? "Sent" : "Retry",
     Number(item.attempts) + 1,
-    result.error || result.failure || ""
+    result.error || result.failure || "",
+    item.rowNumber
   );
 
   return result;
@@ -517,8 +715,12 @@ function buildAutomationDiscordPayload(item) {
   if (
     item.eventType === "gameSubmitted" &&
     (eventPayload.gameId || eventPayload.id)
-  )
-    return buildDiscordGamePayload(eventPayload);
+  ) {
+    const game = buildAutomationGamePayloadById_(
+      eventPayload.gameId || eventPayload.id
+    );
+    return buildDiscordGamePayload(game || eventPayload);
+  }
 
   const template =
     getAutomationTemplateForEvent(item.eventType);
@@ -575,6 +777,35 @@ function buildAutomationDiscordPayload(item) {
     title: title,
     message: message
   });
+
+}
+
+function buildAutomationGamePayloadById_(gameId) {
+
+  const target = Number(gameId);
+
+  if (!Number.isInteger(target) || target <= 0)
+    return null;
+
+  const sheet = lifGetTargetSpreadsheet_().getSheetByName(CONFIG.SHEETS.FORM);
+
+  if (!sheet || target + 1 > sheet.getLastRow())
+    return null;
+
+  const row = sheet
+    .getRange(target + 1, 1, 1, sheet.getLastColumn())
+    .getValues()[0];
+
+  if (!row || !validateGame(row))
+    return null;
+
+  const winner = determineWinner(row);
+  const analyticsRow = buildAnalyticsRow(row, winner);
+  return buildRecentGame(
+    analyticsRow,
+    target,
+    getRecentGameColumns(getGameAnalyticsHeaders()[0])
+  );
 
 }
 
@@ -926,12 +1157,12 @@ function setAutomationTemplateValues(templateId, updates) {
 
 }
 
-function updateAutomationQueueItem(queueId, status, attempts, reason) {
+function updateAutomationQueueItem(queueId, status, attempts, reason, knownRowNumber) {
 
   const sheet =
     ensureAutomationQueueSheet();
 
-  const rowNumber =
+  const rowNumber = Number(knownRowNumber) ||
     findAutomationSheetRow(sheet, 1, queueId);
 
   if (!rowNumber)

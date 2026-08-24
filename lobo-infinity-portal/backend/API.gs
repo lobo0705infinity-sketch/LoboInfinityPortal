@@ -1455,6 +1455,11 @@ function handleApiPost(e, action) {
         return refreshArmyIntelligence(e);
       });
 
+    case "processAutomationQueueBatch":
+      return requireArmyIntelligenceWorkerOrPermission(e, function() {
+        return processAutomationQueueBatch(e);
+      });
+
     case "installArmyIntelligenceScheduler":
       return requireArmyIntelligenceWorkerOrPermission(e, function() {
         return jsonOutput(installArmyIntelligenceRefreshScheduler(e));
