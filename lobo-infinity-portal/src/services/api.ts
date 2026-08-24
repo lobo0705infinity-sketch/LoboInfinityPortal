@@ -13,6 +13,7 @@ import { formatNotificationTimestamp } from './formatting'
 import {
   API_URL,
   getActiveNativeSessionToken,
+  invalidateApiCacheGroup,
   postRequest,
   request,
   setApiAuthToken,
@@ -4175,6 +4176,8 @@ export async function refreshArmyIntelligenceSnapshots(
   if (!response.ok || payload.success === false) {
     throw new Error(getString(payload, 'error') || 'Army Intelligence refresh failed.')
   }
+
+  invalidateApiCacheGroup('armyIntelligence')
 
   return {
     candidateCount: getNumber(payload, 'candidateCount'),

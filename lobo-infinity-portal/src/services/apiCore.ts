@@ -1113,6 +1113,10 @@ export function isApiCacheRevalidation(
   )
 }
 
+export function invalidateApiCacheGroup(group: string) {
+  invalidateCacheGroups([group], '', `manual:${group}`)
+}
+
 function invalidateAffectedCaches(action: string, params: RequestParams) {
   const groups = getMutationInvalidationGroups(action)
   const eventId = params.eventId ?? ''
@@ -1126,8 +1130,12 @@ function invalidateAffectedCaches(action: string, params: RequestParams) {
     return
   }
 
+  invalidateCacheGroups(groups, eventId, `mutation:${action}`)
+}
+
+function invalidateCacheGroups(groups: string[], eventId: string, reason: string) {
   cacheRevision += 1
-  lastInvalidationReason = `mutation:${action}:${groups.join(',')}`
+  lastInvalidationReason = `${reason}:${groups.join(',')}`
   inFlightRequests.clear()
   const match = (entry: Pick<CacheEntry, 'eventId' | 'group'>) =>
     groups.includes(entry.group) &&
@@ -1140,7 +1148,7 @@ function invalidateAffectedCaches(action: string, params: RequestParams) {
   })
 
   clearSessionResponseCacheByPredicate(
-    `mutation:${action}`,
+    reason,
     (entry) =>
       groups.includes(entry.group) &&
       (!eventId || !entry.eventId || entry.eventId === eventId),
