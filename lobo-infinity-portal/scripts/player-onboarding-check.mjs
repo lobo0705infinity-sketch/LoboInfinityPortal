@@ -9,7 +9,7 @@ const registry = read('backend/PlayerRegistry.gs')
 const installer = read('backend/Installer.gs')
 const players = read('src/pages/Players.tsx')
 const sidebar = read('src/components/Sidebar.tsx')
-const mobileNavigation = read('src/components/MobileNavigationDrawer.tsx')
+const mobileNavigation = read('src/pages/MobileMenu.tsx')
 const sidebarNavigation = read('src/components/sidebarNavigation.ts')
 
 const checks = [

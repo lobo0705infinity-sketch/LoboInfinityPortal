@@ -15,7 +15,7 @@ const files = {
   dashboard: read('src/pages/Dashboard.tsx'),
   eventHome: read('src/pages/EventHome.tsx'),
   footer: read('src/components/GlobalFooter.tsx'),
-  mobileNavigation: read('src/components/MobileNavigationDrawer.tsx'),
+  mobileNavigation: read('src/pages/MobileMenu.tsx'),
   navigation: read('src/components/Sidebar.tsx'),
   players: read('src/pages/Players.tsx'),
   teamTournament: read('src/pages/TeamTournament.tsx'),

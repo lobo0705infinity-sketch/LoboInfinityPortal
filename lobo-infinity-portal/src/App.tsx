@@ -15,6 +15,7 @@ import Header from './components/Header'
 import CommissionerLogin from './components/CommissionerLogin'
 import GlobalFooter from './components/GlobalFooter'
 import Loading from './components/Loading'
+import MobileBottomNavigation from './components/MobileBottomNavigation'
 import RouteMeta from './components/RouteMeta'
 import Sidebar from './components/Sidebar'
 import UserActivityTracker from './components/UserActivityTracker'
@@ -47,6 +48,7 @@ const LeagueIntegrity = lazyRoute('LeagueIntegrity', () => import('./pages/Leagu
 const LeagueOperations = lazyRoute('LeagueOperations', () => import('./pages/LeagueOperations'))
 const MissionProfile = lazyRoute('MissionProfile', () => import('./pages/MissionProfile'))
 const Missions = lazyRoute('Missions', () => import('./pages/Missions'))
+const MobileMenu = lazyRoute('MobileMenu', () => import('./pages/MobileMenu'))
 const PastEvents = lazyRoute('PastEvents', () => import('./pages/PastEvents'))
 const PlayerComparison = lazyRoute('PlayerComparison', () => import('./pages/PlayerComparison'))
 const PlayerProfile = lazyRoute('PlayerProfile', () => import('./pages/PlayerProfile'))
@@ -123,6 +125,7 @@ function AuthShell() {
                 <Route path="/factions/:name" element={<MeasuredRoute name="FactionProfile"><FactionProfile /></MeasuredRoute>} />
                 <Route path="/faction/:name" element={<MeasuredRoute name="FactionProfile"><FactionProfile /></MeasuredRoute>} />
                 <Route path="/missions" element={<MeasuredRoute name="Missions"><Missions /></MeasuredRoute>} />
+                <Route path="/menu" element={<MeasuredRoute name="MobileMenu"><MobileMenu /></MeasuredRoute>} />
                 <Route path="/missions/:missionName" element={<MeasuredRoute name="MissionProfile"><MissionProfile /></MeasuredRoute>} />
                 <Route path="/mission/:missionName" element={<MeasuredRoute name="MissionProfile"><MissionProfile /></MeasuredRoute>} />
                 <Route path="/season/:seasonName" element={<DeepLinkRedirect target="season" />} />
@@ -176,6 +179,7 @@ function AuthShell() {
           </ApplicationErrorBoundary>
           <GlobalFooter />
         </div>
+        <MobileBottomNavigation />
       </div>
     </SettingsProvider>
   )
