@@ -697,6 +697,11 @@ function handleApiGet(e, action) {
     case "armyIntelligence":
       return getArmyIntelligence(e);
 
+    case "pageAnalytics":
+      return requireApiPermission(e, "manageSettings", function() {
+        return getPageAnalytics();
+      });
+
     case "armyIntelligenceSources":
       return requireArmyIntelligenceWorkerOrPermission(e, function() {
         return getArmyIntelligenceSources();
@@ -1303,6 +1308,9 @@ function handleApiPost(e, action) {
 
     case "heartbeat":
       return updateHeartbeat(e);
+
+    case "recordPageView":
+      return recordPageView(e);
 
     case "notificationState":
       return updateNotificationState(e);

@@ -100,7 +100,9 @@ const CONFIG = {
 
     ARMY_INTELLIGENCE: "Army Intelligence",
 
-    ARMY_INTELLIGENCE_READ_MODEL: "Army Intelligence Read Model"
+    ARMY_INTELLIGENCE_READ_MODEL: "Army Intelligence Read Model",
+
+    PAGE_ANALYTICS: "Page Analytics"
 
   },
 

@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import Loading from '../components/Loading'
 import { apiClient } from '../services/api'
+import { getPageAnalytics, type PageAnalyticsReportRow } from '../services/lightApi'
 
 const systemWorkflows = [
   {
@@ -64,6 +65,29 @@ function CommissionerSystem() {
   const auth = useAuth()
   const [refreshingArmyIntelligence, setRefreshingArmyIntelligence] = useState(false)
   const [armyIntelligenceMessage, setArmyIntelligenceMessage] = useState('')
+  const [pageAnalytics, setPageAnalytics] = useState<PageAnalyticsReportRow[]>([])
+  const [pageAnalyticsError, setPageAnalyticsError] = useState('')
+  const [pageAnalyticsLoading, setPageAnalyticsLoading] = useState(true)
+  const canViewPageAnalytics = auth.hasPermission('manageSettings')
+
+  useEffect(() => {
+    if (auth.status !== 'ready' || !auth.authenticated || !canViewPageAnalytics) return
+
+    let active = true
+
+    void getPageAnalytics()
+      .then((pages) => {
+        if (active) setPageAnalytics(pages)
+      })
+      .catch(() => {
+        if (active) setPageAnalyticsError('Page analytics are temporarily unavailable.')
+      })
+      .finally(() => {
+        if (active) setPageAnalyticsLoading(false)
+      })
+
+    return () => { active = false }
+  }, [auth.authenticated, auth.status, canViewPageAnalytics])
 
   async function refreshArmyIntelligence() {
     setRefreshingArmyIntelligence(true)
@@ -174,6 +198,36 @@ function CommissionerSystem() {
           <Link to="/commissioner/automation">Open Queue Recovery</Link>
         </div>
       </section>
+
+      {canViewPageAnalytics ? (
+        <section className="panel operations-panel" aria-labelledby="page-analytics-title">
+          <div className="panel-heading">
+            <p className="eyebrow">Portal Usage</p>
+            <h2 id="page-analytics-title">Page Views</h2>
+            <p>Anonymous community page views since tracking was enabled. Commissioner traffic is excluded.</p>
+          </div>
+          {pageAnalyticsLoading ? <Loading /> : null}
+          {pageAnalyticsError ? <p className="operations-feedback" role="alert">{pageAnalyticsError}</p> : null}
+          {!pageAnalyticsLoading && !pageAnalyticsError ? (
+            <div className="standings-table page-analytics-table" role="table" aria-label="Page view counts">
+              <div className="table-row table-head" role="row">
+                <span role="columnheader">Page</span>
+                <span role="columnheader">7 Days</span>
+                <span role="columnheader">30 Days</span>
+                <span role="columnheader">All Time</span>
+              </div>
+              {pageAnalytics.map((page) => (
+                <div className="table-row" key={page.pageKey} role="row">
+                  <strong role="cell">{page.displayName}</strong>
+                  <span role="cell">{page.last7Days.toLocaleString()}</span>
+                  <span role="cell">{page.last30Days.toLocaleString()}</span>
+                  <span role="cell">{page.allTime.toLocaleString()}</span>
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </section>
+      ) : null}
 
       {auth.isAtLeastRole('Commissioner') ? (
         <section className="panel operations-panel" aria-labelledby="army-intelligence-refresh-title">

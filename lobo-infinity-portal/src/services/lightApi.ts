@@ -5,7 +5,8 @@ import type {
   PortalUser,
   SearchData,
 } from './api'
-import { postRequest, request, type ApiOptions } from './apiCore'
+import { API_URL, postRequest, request, type ApiOptions } from './apiCore'
+import type { PageAnalyticsKey } from './pageAnalytics'
 import { formatNotificationTimestamp } from './formatting'
 
 let settingsCache: PortalSettings | null = null
@@ -206,6 +207,46 @@ export async function heartbeat(
   await postRequest('heartbeat', options, params)
 }
 
+export type PageAnalyticsReportRow = {
+  allTime: number
+  displayName: string
+  last30Days: number
+  last7Days: number
+  pageKey: PageAnalyticsKey
+}
+
+export function recordPageView(pageKey: PageAnalyticsKey): void {
+  try {
+    const url = new URL(API_URL)
+    url.searchParams.set('action', 'recordPageView')
+    const body = new URLSearchParams({ pageKey })
+
+    void fetch(url, {
+      body,
+      keepalive: true,
+      method: 'POST',
+    }).catch(() => undefined)
+  } catch {
+    // Analytics must never affect navigation or page rendering.
+  }
+}
+
+export async function getPageAnalytics(
+  options: ApiOptions = {},
+): Promise<PageAnalyticsReportRow[]> {
+  const payload = await request('pageAnalytics', options)
+  return getArray(asRecord(payload), 'pages').map((item) => {
+    const record = asRecord(item)
+    return {
+      allTime: getNumber(record, 'allTime'),
+      displayName: getString(record, 'displayName'),
+      last30Days: getNumber(record, 'last30Days'),
+      last7Days: getNumber(record, 'last7Days'),
+      pageKey: getString(record, 'pageKey') as PageAnalyticsKey,
+    }
+  })
+}
+
 export async function getSearchIndex(
   options: ApiOptions = {},
 ): Promise<SearchData> {
@@ -355,6 +396,11 @@ function getString(record: Record<string, unknown>, key: string): string {
 
 function getBoolean(record: Record<string, unknown>, key: string): boolean {
   return record[key] === true
+}
+
+function getNumber(record: Record<string, unknown>, key: string): number {
+  const value = Number(record[key])
+  return Number.isFinite(value) ? value : 0
 }
 
 function getStringArray(record: Record<string, unknown>, key: string): string[] {
