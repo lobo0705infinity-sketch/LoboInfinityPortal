@@ -25,6 +25,7 @@ import {
 } from '../contexts/DashboardDataContext'
 import { useSettings } from '../contexts/SettingsContext'
 import { getDiscordCommunityLink } from '../config/communityLinks'
+import { getCanonicalMissionName } from '../config/missions'
 import '../App.css'
 import './Dashboard.css'
 
@@ -95,12 +96,6 @@ function DashboardContent({
   const hallOfFame = homeData.hallOfFame
   const intelligence = homeData.intelligence
   const armyListCommunity = homeData.armyListCommunity
-  const featuredGame = games[0]
-  const mostPlayedMission =
-    intelligence?.records.mostActiveMission &&
-    !('winner' in intelligence.records.mostActiveMission)
-      ? intelligence.records.mostActiveMission.name
-      : ''
   const authenticatedCanonicalPlayer = auth.user.canonicalPlayer || auth.user.leaguePlayer
   const currentPlayerModel = resolvePlayerLeagueModel(
     homeData.allStandings,
@@ -179,9 +174,8 @@ function DashboardContent({
       <section className="dashboard-ops-grid" aria-label="Command operations">
         <LiveTransmissions games={games} />
         <WeeklyOperations
-          featuredGame={featuredGame}
+          currentOperationsMissions={data.currentOperationsMissions}
           intelligence={intelligence}
-          mostPlayedMission={mostPlayedMission || featuredGame?.mission || ''}
         />
         <CommunityIntelligence
           armyListCommunity={armyListCommunity}
@@ -418,17 +412,27 @@ function formatTransmissionGameType(gameType?: string) {
 }
 
 function WeeklyOperations({
-  featuredGame,
+  currentOperationsMissions,
   intelligence,
-  mostPlayedMission,
 }: {
-  featuredGame?: RecentGame
+  currentOperationsMissions: string[]
   intelligence: LeagueIntelligenceData | null
-  mostPlayedMission: string
 }) {
   const ref = useDashboardDeferredOnDemand(['recentGames', 'intelligence'])
-  const missionTrend = intelligence?.missionTrends[0]
-  const secondTrend = intelligence?.missionTrends[1]
+  const [alphaMission = '', bravoMission = ''] = currentOperationsMissions
+  const findMissionTrend = (mission: string) => {
+    const canonicalMission = getCanonicalMissionName(mission)
+
+    if (!canonicalMission) {
+      return undefined
+    }
+
+    return intelligence?.missionTrends.find(
+      (trend) => getCanonicalMissionName(trend.mission) === canonicalMission,
+    )
+  }
+  const missionTrend = findMissionTrend(alphaMission)
+  const secondTrend = findMissionTrend(bravoMission)
 
   return (
     <section ref={ref} className="panel dashboard-weekly-ops" aria-labelledby="weekly-ops-title">
@@ -439,15 +443,15 @@ function WeeklyOperations({
       <div className="dashboard-operation-list">
         <DashboardOperation
           label="Mission Alpha"
-          mission={missionTrend?.mission || featuredGame?.mission || mostPlayedMission}
-          notes={missionTrend?.story || 'Mission briefing pending from current dashboard activity.'}
-          to={missionTrend?.mission ? `/missions/${encodeURIComponent(missionTrend.mission)}` : '/missions'}
+          mission={alphaMission}
+          notes={missionTrend?.story || 'No games recorded yet.'}
+          to={alphaMission ? `/missions/${encodeURIComponent(alphaMission)}` : '/missions'}
         />
         <DashboardOperation
           label="Mission Bravo"
-          mission={secondTrend?.mission || mostPlayedMission}
-          notes={secondTrend?.story || 'Secondary mission signal pending from current dashboard activity.'}
-          to={secondTrend?.mission ? `/missions/${encodeURIComponent(secondTrend.mission)}` : '/missions'}
+          mission={bravoMission}
+          notes={secondTrend?.story || 'No games recorded yet.'}
+          to={bravoMission ? `/missions/${encodeURIComponent(bravoMission)}` : '/missions'}
         />
       </div>
       <Link className="dashboard-operation-action" to="/missions">View All Missions</Link>

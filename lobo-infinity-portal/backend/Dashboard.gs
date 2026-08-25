@@ -210,6 +210,31 @@ function getDashboard() {
 
   timer =
     startDashboardEndpointSubStage(
+      "dashboard.read.leagueOperations"
+    );
+
+  const currentOperationsMissions =
+    buildLeagueOperationsPayload(
+      getLeagueOperationsCurrentRow()
+    ).missions
+      .slice(0, 2)
+      .map(function(operation) {
+        return operation.mission;
+      })
+      .filter(function(mission) {
+        return mission !== "";
+      });
+
+  endDashboardEndpointSubStage(
+    "dashboard.read.leagueOperations",
+    timer,
+    {
+      missions: currentOperationsMissions.length
+    }
+  );
+
+  timer =
+    startDashboardEndpointSubStage(
       "dashboard.lookup.leaderDisplayName"
     );
 
@@ -248,7 +273,8 @@ function getDashboard() {
     gamesPlayed: gamesPlayed,
     activePlayers: activePlayers,
     mainManStandings: mainManStandings,
-    leagueOverview: leagueOverview
+    leagueOverview: leagueOverview,
+    currentOperationsMissions: currentOperationsMissions
   });
 
 }

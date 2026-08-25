@@ -679,6 +679,7 @@ type DashboardApiResponse = {
   activePlayers: number
   mainManStandings: Standing[]
   leagueOverview?: LeagueOverview
+  currentOperationsMissions: string[]
 }
 
 export type PlayerProfileData = {
@@ -4329,6 +4330,7 @@ function normalizeDashboardPayload(payload: unknown): DashboardData {
   const response = parseDashboardApiResponse(payload)
 
   return {
+    currentOperationsMissions: response.currentOperationsMissions,
     summary: {
       leagueLeader: response.leader.displayName || response.leader.player,
       gamesPlayed: response.gamesPlayed,
@@ -4713,6 +4715,9 @@ function parseDashboardApiResponse(payload: unknown): DashboardApiResponse {
     activePlayers: getRequiredNumber(record, 'activePlayers'),
     mainManStandings,
     leagueOverview: overview ? normalizeLeagueOverview(overview) : undefined,
+    currentOperationsMissions: getArray(record, 'currentOperationsMissions').map((mission) =>
+      String(mission ?? '').trim(),
+    ).filter(Boolean),
   }
 }
 

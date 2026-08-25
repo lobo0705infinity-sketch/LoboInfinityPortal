@@ -359,6 +359,7 @@ export const firestoreProviderImpl: DataProvider = {
       const allRows = standings.flatMap((division) => division.standings)
 
       return {
+        currentOperationsMissions: [],
         leagueOverview: {
           divisions: standings.map((division) => ({
             activePlayers: division.summary.activePlayers,

@@ -1267,6 +1267,8 @@ function getMutationInvalidationGroups(action: string) {
       return ['events', 'eventHome', 'eventManager', 'registration', 'teamTournament', 'standings', 'analytics', 'schedule']
     case 'eventManagerCurrentEvent':
       return ['events', 'eventHome', 'eventManager', 'registration', 'teamTournament', 'standings', 'analytics', 'schedule', 'dashboard']
+    case 'leagueOperationsSave':
+      return ['leagueOperations', 'dashboard']
     case 'seasonAvailability':
     case 'schedulingAvailability':
     case 'createSchedulingRequest':
