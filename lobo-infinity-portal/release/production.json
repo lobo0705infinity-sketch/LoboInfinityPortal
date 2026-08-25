@@ -3,7 +3,7 @@
   "productionBranch": "main",
   "frontendVersion": "0.0.0",
   "frontendCommit": "217c9903f43f8488aed6781880f6f7d5225af6f5",
-  "appsScriptVersion": 229,
+  "appsScriptVersion": 291,
   "appsScriptDeploymentId": "AKfycbx38UitMXyXYG6av0dq9YlTiIY2wcoaHyr_Xh5bYKPdZH2fojk8g8pZZpHmzoyRj7SMzw",
   "appsScriptUrl": "https://script.google.com/macros/s/AKfycbx38UitMXyXYG6av0dq9YlTiIY2wcoaHyr_Xh5bYKPdZH2fojk8g8pZZpHmzoyRj7SMzw/exec",
   "vercelProject": "lobo-infinity-portal",
