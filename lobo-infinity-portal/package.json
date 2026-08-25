@@ -29,6 +29,8 @@
     "release:apps-script:syntax": "node scripts/apps-script-syntax-check.mjs",
     "release:deploy:guarded": "node scripts/deploy-production-guarded.mjs",
     "release:post-deploy:verify": "node scripts/post-deploy-production-verify.mjs",
+    "release:build:prebuilt": "vercel build --prod && npm run release:vercel-output",
+    "release:vercel-output": "node scripts/vercel-output-functions-check.mjs",
     "faction-portraits:cards": "node scripts/generate-faction-card-portraits.mjs",
     "faction-portraits:responsive": "node scripts/generate-responsive-faction-portraits.mjs",
     "dashboard:hero": "node scripts/generate-dashboard-hero.mjs",
