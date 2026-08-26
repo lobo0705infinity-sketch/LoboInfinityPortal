@@ -708,7 +708,8 @@ function ensureEventManagerEventDefaults(eventId, eventName, eventType) {
       "Pairings and games resolve here.",
       "Event automation",
       getEventManagerTimestamp(),
-      getEventManagerTimestamp()
+      getEventManagerTimestamp(),
+      ""
     ]
   );
 

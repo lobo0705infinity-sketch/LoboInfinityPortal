@@ -131,6 +131,9 @@ function getTeamTournament(e) {
       event: event,
       status: event.status || "Planning",
       currentRound: getTeamTournamentCurrentRound(eventId),
+      rounds: getEventEngineSnapshot().rounds.filter(function(round) {
+        return round.eventId === eventId;
+      }),
       registration:
         buildEventRegistrationPayload(
           event,
@@ -833,6 +836,31 @@ function saveTeamTournamentPairing(e) {
         error: "Both teams are required."
       });
 
+    if (teamTournamentSameValue(teamA, teamB))
+      return jsonOutput({
+        success: false,
+        error: "A team cannot play itself."
+      });
+
+    const eventTeams =
+      getTeamTournamentTeams(eventId);
+
+    const canonicalTeamA =
+      eventTeams.find(function(team) {
+        return teamTournamentSameValue(team.teamName, teamA);
+      });
+
+    const canonicalTeamB =
+      eventTeams.find(function(team) {
+        return teamTournamentSameValue(team.teamName, teamB);
+      });
+
+    if (!canonicalTeamA || !canonicalTeamB)
+      return jsonOutput({
+        success: false,
+        error: "Both teams must belong to this Team Tournament."
+      });
+
     const sheet =
       ensureTeamTournamentPairingsSheet();
 
@@ -849,6 +877,28 @@ function saveTeamTournamentPairing(e) {
           getTeamTournamentString(pairing.teamA).toLowerCase() === teamA.toLowerCase() &&
           getTeamTournamentString(pairing.teamB).toLowerCase() === teamB.toLowerCase()
         );
+      });
+
+    const repeatedTeam =
+      existingPairings.find(function(pairing) {
+        if (getTeamTournamentString(pairing.roundId) !== roundId)
+          return false;
+
+        if (pairing === existingPairing)
+          return false;
+
+        return (
+          teamTournamentSameValue(pairing.teamA, teamA) ||
+          teamTournamentSameValue(pairing.teamB, teamA) ||
+          teamTournamentSameValue(pairing.teamA, teamB) ||
+          teamTournamentSameValue(pairing.teamB, teamB)
+        );
+      });
+
+    if (repeatedTeam)
+      return jsonOutput({
+        success: false,
+        error: "A team may appear only once in a round."
       });
 
     const playerPairings =
@@ -1179,35 +1229,98 @@ function getTeamTournamentArmyCodeFaction(armyCode) {
 function advanceTeamTournamentRound(e) {
 
   return requireApiPermission(e, "runSeasonControl", function() {
-    const params =
-      getApiParameters(e);
+    const lock = LockService.getScriptLock();
+    lock.waitLock(10000);
 
-    const eventId =
-      resolveEventId(params.eventId || EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID);
+    try {
+      const params = getApiParameters(e);
+      const eventId = resolveEventId(params.eventId || EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID);
+      const event = getEventByIdSnapshot(eventId);
+      const currentRound = getTeamTournamentCurrentRound(eventId);
 
-    const lifecycleStage =
-      getTeamTournamentString(params.lifecycleStage) || "Round 1";
+      if (!event || !currentRound)
+        throw new Error("The current Team Tournament round could not be resolved.");
 
-    const status =
-      getTeamTournamentString(params.status) || lifecycleStage;
+      const mission = getCanonicalMissionName(params.mission);
+      const validMissions = getCanonicalMissions();
 
-    updateEventManagerEventFields(eventId, {
-      "Lifecycle Stage": lifecycleStage,
-      "Status": status
-    });
+      if (!mission || validMissions.indexOf(mission) === -1)
+        throw new Error("A valid Mission is required.");
 
-    invalidatePortalCacheGroup("events");
+      const pairings = getTeamTournamentPairings(eventId).filter(function(pairing) {
+        return getTeamTournamentString(pairing.roundId) === getTeamTournamentString(currentRound.id);
+      });
+      const results = getTeamTournamentResults(eventId);
 
-    return buildTeamTournamentMutationResponse(
-      "round",
-      eventId,
-      {
-        lifecycleStage: lifecycleStage,
-        status: status
-      }
-    );
+      if (pairings.length === 0)
+        throw new Error("The current round has no team matchups.");
+
+      pairings.forEach(function(pairing) {
+        const resultIds = {};
+        results.forEach(function(result) {
+          const sameRound = getTeamTournamentString(result.roundId) === getTeamTournamentString(currentRound.id);
+          const sameTeams =
+            (teamTournamentSameValue(result.teamA, pairing.teamA) && teamTournamentSameValue(result.teamB, pairing.teamB)) ||
+            (teamTournamentSameValue(result.teamA, pairing.teamB) && teamTournamentSameValue(result.teamB, pairing.teamA));
+          if (sameRound && sameTeams && getTeamTournamentString(result.status).toLowerCase() !== "rejected")
+            resultIds[getTeamTournamentString(result.resultId)] = true;
+        });
+        if (Object.keys(resultIds).length < 5)
+          throw new Error(pairing.teamA + " vs " + pairing.teamB + " is not complete (5 results required).");
+      });
+
+      const nextNumber = Number(currentRound.number) + 1;
+      const nextName = "Round " + nextNumber;
+      const nextId = "round-" + eventId.replace(/^event-/, "") + "-" + nextNumber;
+      const rounds = getEventEngineSnapshot().rounds.filter(function(round) {
+        return round.eventId === eventId;
+      });
+
+      if (rounds.some(function(round) { return round.id === nextId || Number(round.number) === nextNumber; }))
+        throw new Error(nextName + " already exists.");
+
+      updateTeamTournamentRoundStatus_(currentRound.id, "Completed");
+      upsertEventEngineRow(
+        ensureEventEngineSheet(CONFIG.SHEETS.EVENT_ROUNDS, EVENT_ENGINE_ROUND_HEADERS),
+        EVENT_ENGINE_ROUND_HEADERS,
+        "ID",
+        nextId,
+        [nextId, eventId, currentRound.seasonId || "", nextName, nextNumber, currentRound.type || "Team Round", "", "", "Active", "", "Pairing reminders", getTeamTournamentTimestamp(), getTeamTournamentTimestamp(), mission]
+      );
+      updateEventManagerEventFields(eventId, { "Lifecycle Stage": nextName });
+      invalidateEventEngineSnapshotCache();
+      invalidateTeamTournamentRuntimeCache(eventId);
+      invalidatePortalCacheGroup("events");
+
+      return buildTeamTournamentMutationResponse("round", eventId, {
+        lifecycleStage: nextName,
+        status: event.status,
+        round: { id: nextId, eventId: eventId, seasonId: currentRound.seasonId || "", name: nextName, number: nextNumber, type: currentRound.type || "Team Round", status: "Active", mission: mission }
+      });
+    } finally {
+      lock.releaseLock();
+    }
   });
 
+}
+
+function updateTeamTournamentRoundStatus_(roundId, status) {
+  const sheet = ensureEventEngineSheet(CONFIG.SHEETS.EVENT_ROUNDS, EVENT_ENGINE_ROUND_HEADERS);
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0].map(getTeamTournamentString);
+  const idIndex = headers.indexOf("ID");
+  const statusIndex = headers.indexOf("Status");
+  const updatedAtIndex = headers.indexOf("Updated At");
+
+  for (let row = 1; row < data.length; row++) {
+    if (getTeamTournamentString(data[row][idIndex]) !== roundId)
+      continue;
+    sheet.getRange(row + 1, statusIndex + 1).setValue(status);
+    sheet.getRange(row + 1, updatedAtIndex + 1).setValue(getTeamTournamentTimestamp());
+    return;
+  }
+
+  throw new Error("Round not found: " + roundId);
 }
 
 function buildTeamTournamentMutationResponse(kind, eventId, payload) {
@@ -1835,7 +1948,18 @@ function getTeamTournamentCurrentRound(eventId) {
         return round.eventId === eventId;
       });
 
-  return rounds[0] || null;
+  if (rounds.length === 0)
+    return null;
+
+  const activeRounds = rounds.filter(function(round) {
+    return getTeamTournamentString(round.status).toLowerCase() === "active";
+  });
+
+  return (activeRounds.length === 1 ? activeRounds : rounds)
+    .slice()
+    .sort(function(left, right) {
+      return Number(right.number) - Number(left.number);
+    })[0] || null;
 
 }
 
@@ -2091,6 +2215,20 @@ function resolveTeamTournamentResultAssignment(
 
     const selectedOpponent =
       getTeamTournamentString(params.opponent);
+
+    const membership =
+      buildTeamTournamentMembershipLookup(getTeamTournamentTeams(event.id));
+
+    const opponentTeam =
+      membership[getTeamTournamentString(selectedOpponent).toLowerCase()] || "";
+
+    const expectedOpponentTeam =
+      teamTournamentSameValue(activePairings[index].teamA, team)
+        ? activePairings[index].teamB
+        : activePairings[index].teamA;
+
+    if (!opponentTeam || !teamTournamentSameValue(opponentTeam, expectedOpponentTeam))
+      return null;
 
     return {
       roundId: getTeamTournamentString(activePairings[index].roundId),
