@@ -18,15 +18,14 @@ export const topLevelItems: NavigationItem[] = [
     label: 'Submit Game',
     to: '/submit-game',
   },
-]
-
-export const authenticatedTopLevelItems: NavigationItem[] = [
   {
     icon: 'missions',
     label: 'Mission & Map',
     to: '/league-operations',
   },
 ]
+
+export const authenticatedTopLevelItems: NavigationItem[] = []
 
 export function getJoinCommunityNavigationItem(
   joinCommunityFormUrl: string,
