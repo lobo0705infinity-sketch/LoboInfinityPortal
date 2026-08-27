@@ -76,7 +76,16 @@ function lifImportCommunityPlayer_(e, log, responseKey) {
       refreshCasualSubmissionForm();
     }
     catch (err) {
-      Logger.log("Casual form player refresh skipped: " + err);
+      const safeMessage = "Casual Form player synchronization failed: " + String(err && err.message || err || "Unknown error");
+      lifWriteImportLog_(
+        log,
+        responseKey + ":casual-form-sync",
+        LIF_FORMS.TYPES.CASUAL,
+        result.row || "",
+        "Sync Failed",
+        safeMessage
+      );
+      Logger.log(safeMessage);
     }
   }
 }
