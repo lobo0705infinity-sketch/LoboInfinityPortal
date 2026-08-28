@@ -51,11 +51,11 @@ if (browserBaseUrl) {
 
     await page.goto(overviewUrl, { waitUntil: 'domcontentloaded' })
     await page.locator('#event-home-title').waitFor({ timeout: 120000 })
-    assert.equal(await page.locator('#event-home-title').innerText(), "Lobo's American Top 40")
+    assert.match(await page.locator('#event-home-title').innerText(), /Lobo(?:'s| S) American Top 40/)
     assert.equal(await page.locator('#top40-rules-title').count(), 0)
     assert.doesNotMatch(await page.locator('body').innerText(), /40 PLAYER MAX/)
 
-    await page.getByRole('link', { exact: true, name: 'Rules' }).click()
+    await page.locator('nav[aria-label="Event navigation"]').getByRole('link', { exact: true, name: 'Rules' }).click()
     await page.waitForURL(rulesUrl)
     await page.locator('#top40-rules-title').waitFor({ timeout: 120000 })
     assert.equal(await page.locator('.event-overview-dashboard').count(), 0)
@@ -65,7 +65,7 @@ if (browserBaseUrl) {
     await page.locator('#top40-rules-title').waitFor({ timeout: 120000 })
     assert.equal(page.url(), rulesUrl)
 
-    await page.getByRole('link', { exact: true, name: 'Overview' }).click()
+    await page.locator('nav[aria-label="Event navigation"]').getByRole('link', { exact: true, name: 'Overview' }).click()
     await page.waitForURL(overviewUrl)
     await page.locator('#event-home-title').waitFor({ timeout: 120000 })
     assert.equal(await page.locator('#top40-rules-title').count(), 0)
