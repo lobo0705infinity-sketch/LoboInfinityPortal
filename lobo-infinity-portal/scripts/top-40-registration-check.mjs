@@ -37,9 +37,12 @@ assert.match(eventHomeSource, /registrationRepository\.register\(/)
 assert.match(eventHomeSource, /playerRepository\s*\.getAllPlayers/)
 assert.match(eventHomeSource, /getCanonicalArmyOptions\(\)\.map/)
 const registrationPageSource = eventHomeSource.match(
-  /function EventRegistrationPage\([\s\S]*?\nfunction EventBracketPage/,
+  /function EventRegistrationPage\([\s\S]*?\nfunction IndividualDoubleEliminationRegistrationForm/,
 )?.[0] ?? ''
 assert.doesNotMatch(registrationPageSource, /ITS ID|\bELO\b/)
+assert.match(registrationPageSource, /individualTournament/)
+assert.match(registrationPageSource, /registeredCount\} \/ \$\{data\.registration\.capacity\.maximumPlayers/)
+assert.match(registrationPageSource, /!individualTournament \|\| data\.registration\.capacity\.waitlistEnabled/)
 assert.match(apiSource, /itsName\?: string/)
 assert.match(apiSource, /itsName: getString\(record, 'itsName'\)/)
 

@@ -542,19 +542,26 @@ function EventStatusCard({ card }: { card: StatusCard }) {
 }
 
 function PlayerStatusCard({ data }: { data: EventHomeData }) {
+  const individualTournament =
+    data.event.type === 'Individual Double Elimination'
+
   return (
     <section className="panel event-home-panel" id="registration">
       <div className="panel-heading">
         <p className="eyebrow">Your Status</p>
         <h2>{data.playerStatus.registrationStatus}</h2>
       </div>
-      <EventMetric label="Team" value={data.playerStatus.currentTeam || 'Not assigned'} />
-      <EventMetric
-        label="Captain"
-        value={data.playerStatus.captain ? 'Yes' : 'No'}
-      />
-      <EventMetric label="Next Match" value={data.playerStatus.upcomingMatch} />
-      <p>{data.playerStatus.outstandingAction}</p>
+      {individualTournament ? null : (
+        <>
+          <EventMetric label="Team" value={data.playerStatus.currentTeam || 'Not assigned'} />
+          <EventMetric
+            label="Captain"
+            value={data.playerStatus.captain ? 'Yes' : 'No'}
+          />
+          <EventMetric label="Next Match" value={data.playerStatus.upcomingMatch} />
+          <p>{data.playerStatus.outstandingAction}</p>
+        </>
+      )}
     </section>
   )
 }
@@ -568,6 +575,15 @@ function EventRegistrationPage({
   eventNavigationItems: Array<{ href: string; label: string }>
   quickActions: EventHomeData['quickActions']
 }) {
+  const individualTournament =
+    data.event.type === 'Individual Double Elimination'
+  const registeredPlayers =
+    individualTournament &&
+    !data.registration.capacity.unlimited &&
+    data.registration.capacity.maximumPlayers > 0
+      ? `${data.registration.registeredCount} / ${data.registration.capacity.maximumPlayers}`
+      : data.registration.registeredCount
+
   return (
     <main className="portal-shell event-overview-shell" data-event-section="registration">
       <section className="page-header" aria-labelledby="event-registration-title">
@@ -591,8 +607,10 @@ function EventRegistrationPage({
             <p className="eyebrow">Registration Window</p>
             <h2>{data.registration.status}</h2>
           </div>
-          <EventMetric label="Registered Players" value={data.registration.registeredCount} />
-          <EventMetric label="Waitlist" value={data.registration.waitlistCount} />
+          <EventMetric label="Registered Players" value={registeredPlayers} />
+          {!individualTournament || data.registration.capacity.waitlistEnabled ? (
+            <EventMetric label="Waitlist" value={data.registration.waitlistCount} />
+          ) : null}
           <EventMetric
             label="Opens"
             value={formatDate(data.registration.registrationWindow.startDate)}
@@ -604,7 +622,7 @@ function EventRegistrationPage({
         </section>
       </section>
 
-      {data.event.type === 'Individual Double Elimination' ? (
+      {individualTournament ? (
         <IndividualDoubleEliminationRegistrationForm
           eventId={data.event.id}
           registrationOpen={data.registration.registrationOpen}
