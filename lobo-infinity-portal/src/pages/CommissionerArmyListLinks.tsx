@@ -293,7 +293,7 @@ function ReadOnlyGameSummary({ game }: { game: ArmyListLinkGame }) {
   )
 }
 
-function filterGames(games: RecentGame[], search: string) {
+function filterGames(games: ArmyListLinkGame[], search: string) {
   const query = normalizeKey(search)
   if (!query) return games
 
@@ -363,7 +363,7 @@ function armyListMatchesSelectedFaction(list: ArmyList, faction: string) {
   return Boolean(selectedParent && listParent && sameValue(selectedParent, listParent))
 }
 
-function formatGameOption(game: RecentGame) {
+function formatGameOption(game: ArmyListLinkGame) {
   return [
     `#${game.id}`,
     game.date,

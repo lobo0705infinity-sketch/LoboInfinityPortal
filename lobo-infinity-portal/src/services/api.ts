@@ -1604,7 +1604,7 @@ export type EventRegistrationEntry = {
   eventId: string
   faction: string
   freeAgent: boolean
-  itsName: string
+  itsName?: string
   notes: string
   player: string
   preferredTeam: string

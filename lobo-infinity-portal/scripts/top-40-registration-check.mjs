@@ -37,7 +37,7 @@ assert.match(eventHomeSource, /registrationRepository\.register\(/)
 assert.match(eventHomeSource, /playerRepository\s*\.getAllPlayers/)
 assert.match(eventHomeSource, /getCanonicalArmyOptions\(\)\.map/)
 assert.doesNotMatch(eventHomeSource, /ITS ID|\bELO\b/)
-assert.match(apiSource, /itsName: string/)
+assert.match(apiSource, /itsName\?: string/)
 assert.match(apiSource, /itsName: getString\(record, 'itsName'\)/)
 
 function createHarness({ eventType = 'Individual Double Elimination', rows = [] } = {}) {

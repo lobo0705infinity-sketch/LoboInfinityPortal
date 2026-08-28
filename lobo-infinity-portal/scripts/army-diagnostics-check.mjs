@@ -8,6 +8,12 @@ const router = read('backend/API.gs')
 const clientApi = read('src/services/api.ts')
 const armyListsPage = read('src/pages/ArmyLists.tsx')
 const validationApi = read('backend/ArmyCodeValidationApi.gs')
+const decoderGateway = read('backend/CanonicalDecoderGateway.gs')
+const intelligenceApi = read('backend/ArmyIntelligenceApi.gs')
+const scheduler = read('backend/ArmyIntelligenceScheduler.gs')
+const snapshotFactory = read('backend/CanonicalSnapshotFactory.gs')
+const standaloneDecoder = read('scripts/infinity-army-decode.mjs')
+const worker = read('api/army-intelligence-refresh-worker.mjs')
 
 const checks = [
   [
@@ -19,32 +25,32 @@ const checks = [
     'diagnoseArmyList must be commissioner/operations gated.',
   ],
   [
-    /function decodeArmyCode\(value\)[\s\S]*decoderVersion[\s\S]*parserWarnings[\s\S]*parserTrace[\s\S]*roster/,
-    'shared production decoder must produce roster, warnings, traces, and version metadata.',
+    /decodeArmyListToFiles[\s\S]*decodeArmyCode[\s\S]*decoderVersion:[\s\S]*combatGroups:[\s\S]*totals,[\s\S]*warnings/,
+    'standalone production decoder must produce versioned groups, totals, profiles, and warnings.',
   ],
   [
-    /decodeArmyCode\(source\.list\.armyCode\)/,
-    'diagnostics must use the shared production decoder.',
+    /CanonicalDecoderGateway\.decode\(source\.list\.armyCode\)/,
+    'Apps Script diagnostics must use the canonical decoder gateway.',
   ],
   [
-    /decodeSubmittedArmyCode\(value\)[\s\S]*return decodeArmyCode\(value\)/,
-    'validation must use the shared production decoder.',
+    /decodeSubmittedArmyCode\(value\)[\s\S]*return CanonicalDecoderGateway\.decode\(value\)/,
+    'Apps Script validation must use the canonical decoder gateway.',
   ],
   [
     /validateStoredArmyCodeForDiagnostics[\s\S]*empty[\s\S]*truncated[\s\S]*invalidCharacters[\s\S]*whitespaceCorruption[\s\S]*clipboardTruncation[\s\S]*duplicateEncoding[\s\S]*missingFooter/,
     'stored Army Code validation must cover corruption and truncation modes.',
   ],
   [
-    /buildArmyDecoderParserFailure[\s\S]*badToken[\s\S]*location[\s\S]*unexpectedEof[\s\S]*unknownSkill[\s\S]*unknownTroop[\s\S]*unknownWeapon/,
-    'parser failures must expose exact failure categories.',
+    /canonicalDecoderGatewayBuildParserFailure_[\s\S]*badToken[\s\S]*location[\s\S]*unexpectedEof[\s\S]*unknownSkill[\s\S]*unknownTroop[\s\S]*unknownWeapon/,
+    'canonical gateway parser failures must expose exact failure categories.',
   ],
   [
     /parserTrace\.push\(buildArmyDecoderTrace/,
     'decoder must emit per-unit parser trace entries.',
   ],
   [
-    /unitCount:\s*decoded\.unitCount[\s\S]*points:\s*decoded\.points[\s\S]*swc:\s*decoded\.swc/,
-    'snapshot unit count and points must come from the shared decoder.',
+    /createSourceRefreshSnapshot\(source, decoded, error, status\)[\s\S]*decoded:\s*decoded[\s\S]*decoderVersion:[\s\S]*decoded\.decoderVersion/,
+    'canonical snapshots must retain the standalone decoder payload and version.',
   ],
   [
     /decoderVersion:\s*decoded\.decoderVersion/,
@@ -81,6 +87,38 @@ const checks = [
   [
     /getDisplayedArmyUnits\(list\)/,
     'diagnostic request must be tied to the currently displayed army row.',
+  ],
+  [
+    /from '\.\.\/scripts\/infinity-army-decode\.mjs'[\s\S]*decodeArmyListToFiles\(\{[\s\S]*input: source\.armyCode/,
+    'Vercel worker must own production decoding through the standalone decoder.',
+  ],
+  [
+    /loadAuthoritativeSources[\s\S]*armyIntelligenceSources/,
+    'Vercel worker must load protected authoritative Army Intelligence sources.',
+  ],
+  [
+    /CanonicalSnapshotFactory\.createSourceRefreshSnapshot[\s\S]*postSnapshots/,
+    'Vercel worker must construct canonical snapshots before persistence.',
+  ],
+  [
+    /case "refreshArmyIntelligence"[\s\S]*requireArmyIntelligenceWorkerOrPermission/,
+    'snapshot ingestion must remain worker-or-Commissioner protected.',
+  ],
+  [
+    /validateArmyIntelligenceRefreshSnapshot[\s\S]*identity mismatch[\s\S]*decoder version mismatch[\s\S]*Army Code mismatch/,
+    'snapshot persistence must validate identity, decoder version, and Army Code hash.',
+  ],
+  [
+    /getArmyIntelligence\(e\)[\s\S]*readArmyIntelligenceReadModelPayload/,
+    'Army Intelligence reads must consume the persisted read model.',
+  ],
+  [
+    /ARMY_INTELLIGENCE_SCHEDULER_URL[\s\S]*army-intelligence-refresh-worker[\s\S]*runScheduledMaintenanceWorker_/,
+    'Apps Script scheduler must invoke the protected Vercel worker.',
+  ],
+  [
+    /Persisted Army Intelligence snapshot is missing/,
+    'missing snapshots must remain explicit instead of synchronously decoding.',
   ],
 ]
 
@@ -129,7 +167,7 @@ function read(path) {
 }
 
 function sourceFor(pattern) {
-  const text = `${backendApi}\n${decoderApi}\n${validationApi}\n${router}\n${clientApi}\n${armyListsPage}`
+  const text = `${backendApi}\n${decoderApi}\n${validationApi}\n${decoderGateway}\n${intelligenceApi}\n${scheduler}\n${snapshotFactory}\n${standaloneDecoder}\n${worker}\n${router}\n${clientApi}\n${armyListsPage}`
   pattern.lastIndex = 0
   return text
 }

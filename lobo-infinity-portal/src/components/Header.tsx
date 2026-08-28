@@ -54,7 +54,7 @@ function Header() {
           <Link
             aria-label="Submit Game"
             className="mobile-header-action mobile-submit-action"
-            onClick={() => setActiveMobilePanel(null)}
+            onClick={() => setIsMobileSearchOpen(false)}
             to={submitGamePath}
           >
             <PortalIcon name="submit" />

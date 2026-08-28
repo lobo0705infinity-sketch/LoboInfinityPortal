@@ -16,6 +16,8 @@ const dashboard = read('src/pages/Dashboard.tsx')
 const recentGames = read('backend/RecentGames.gs')
 const gameEngine = read('backend/GameEngine.gs')
 const resultSubmission = read('backend/ResultSubmissionApi.gs')
+const canonicalSubmission = read('backend/CanonicalSubmissionService.gs')
+const gameFactory = read('backend/GameFactory.gs')
 const playersApi = read('backend/PlayersApi.gs')
 const apiTypes = read('src/services/api.ts')
 const gameResults = read('src/services/gameResults.ts')
@@ -44,11 +46,17 @@ check(
   'Submit Game stores explicit game result labels',
   submitResult.includes('Player 1 Victory') &&
     submitResult.includes('Player 2 Victory') &&
-    resultSubmission.includes('row[FORM.GAME_RESULT]'),
+    canonicalSubmission.includes('outcome: validated.resultIsDraw') &&
+    gameFactory.includes('function canonicalGameResult_') &&
+    /return outcome === "player"[\s\S]*\? "Player 1 Victory"[\s\S]*: "Player 2 Victory"/.test(gameFactory),
 )
 check(
   'Backend submission preserves player/opponent armies for draws',
-  (resultSubmission.match(/resultIsDraw \|\| playerIsWinner/g) || []).length >= 4,
+  gameFactory.includes('const playerIsWinner = outcome !== "opponent"') &&
+    gameFactory.includes('playerIsWinner ? playerFaction : opponentFaction') &&
+    gameFactory.includes('playerIsWinner ? opponentFaction : playerFaction') &&
+    gameFactory.includes('playerIsWinner ? playerArmyListId : opponentArmyListId') &&
+    gameFactory.includes('playerIsWinner ? opponentArmyListId : playerArmyListId'),
 )
 check(
   'Recent game payload exposes gameResult',
@@ -64,7 +72,7 @@ check(
 )
 check(
   'Game Engine draw player rows keep each player faction',
-  /winner === 0[\s\S]*playerIsOne[\s\S]*row\[FORM\.WINNINGFACTION\][\s\S]*row\[FORM\.LOSINGFACTION\]/.test(
+  /const playerIsOne = playerNumber === 1[\s\S]*if \(playerIsOne\)[\s\S]*winner === 2[\s\S]*row\[FORM\.LOSINGFACTION\][\s\S]*row\[FORM\.WINNINGFACTION\][\s\S]*winner === 1[\s\S]*row\[FORM\.LOSINGFACTION\][\s\S]*row\[FORM\.WINNINGFACTION\]/.test(
     gameEngine,
   ),
 )

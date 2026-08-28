@@ -68,8 +68,8 @@ const checks = [
     'Commissioner overrides must be logged with a reason.',
   ],
   [
-    /function decodeSubmittedArmyCode\(value\)[\s\S]*return decodeArmyCode\(value\)/,
-    'Validation must consume the shared production decoder.',
+    /function decodeSubmittedArmyCode\(value\)[\s\S]*return CanonicalDecoderGateway\.decode\(value\)/,
+    'Validation must consume the canonical decoder gateway.',
   ],
   [
     /decoderVersion:\s*decoded\.decoderVersion/,

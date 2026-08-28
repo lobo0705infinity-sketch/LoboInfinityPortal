@@ -95,8 +95,16 @@ function buildCommunityPlayerRegistryRows() {
     records
   );
 
+  const favoriteArmyMaps =
+    buildCommunityResolvedFavoriteArmyMaps();
+
   return Object.values(records)
-    .map(finalizeCommunityPlayerRecord)
+    .map(function(record) {
+      return finalizeCommunityPlayerRecord(
+        record,
+        favoriteArmyMaps
+      );
+    })
     .sort(sortCommunityPlayerRecords)
     .map(function(player, index) {
       player.rank = index + 1;
@@ -317,6 +325,145 @@ function applyCommunityGameStatistics(records) {
 
 }
 
+function buildCommunityPreferredFactionMap(valuesByPlayerKey) {
+
+  const map = {};
+
+  Object.keys(valuesByPlayerKey)
+    .forEach(function(playerKey) {
+      const result =
+        MOSTCOMMON(
+          valuesByPlayerKey[playerKey]
+        );
+
+      if (
+        result &&
+        result.count > 0 &&
+        result.value
+      )
+        map[playerKey] =
+          canonicalizeArmyName(result.value);
+    });
+
+  return map;
+
+}
+
+function buildCommunityResolvedFavoriteArmyMaps(options) {
+
+  const gameFavoriteByPlayerKey =
+    options &&
+    options.gameFavoriteByPlayerKey
+      ? options.gameFavoriteByPlayerKey
+      : buildCommunityGameFavoriteArmyMap();
+  const armyListFavoriteByPlayerKey =
+    buildCommunityArmyListFavoriteArmyMap();
+  const resolvedFavoriteByPlayerKey = {};
+
+  Object.keys(gameFavoriteByPlayerKey)
+    .forEach(function(playerKey) {
+      const favorite =
+        canonicalizeArmyName(gameFavoriteByPlayerKey[playerKey]);
+
+      if (favorite)
+        resolvedFavoriteByPlayerKey[playerKey] = favorite;
+    });
+
+  Object.keys(armyListFavoriteByPlayerKey)
+    .forEach(function(playerKey) {
+      if (resolvedFavoriteByPlayerKey[playerKey])
+        return;
+
+      const favorite =
+        canonicalizeArmyName(armyListFavoriteByPlayerKey[playerKey]);
+
+      if (favorite)
+        resolvedFavoriteByPlayerKey[playerKey] = favorite;
+    });
+
+  return {
+    gameFavoriteByPlayerKey: gameFavoriteByPlayerKey,
+    armyListFavoriteByPlayerKey: armyListFavoriteByPlayerKey,
+    resolvedFavoriteByPlayerKey: resolvedFavoriteByPlayerKey
+  };
+
+}
+
+function buildCommunityGameFavoriteArmyMap() {
+
+  const valuesByPlayerKey = {};
+
+  getLeagueDataForEvent(
+    "all",
+    "all"
+  ).forEach(function(row) {
+    const player =
+      getCommunityPlayerRegistryString(row[CONFIG.ENGINE.PLAYER]);
+    const faction =
+      canonicalizeArmyName(row[CONFIG.ENGINE.FACTION]);
+
+    if (!player || !faction)
+      return;
+
+    const playerKey =
+      getCommunityPlayerKey(player);
+
+    if (!valuesByPlayerKey[playerKey])
+      valuesByPlayerKey[playerKey] = [];
+
+    valuesByPlayerKey[playerKey].push(faction);
+  });
+
+  return buildCommunityPreferredFactionMap(valuesByPlayerKey);
+
+}
+
+function buildCommunityArmyListFavoriteArmyMap() {
+
+  const valuesByPlayerKey = {};
+
+  if (typeof getArmyListObjects !== "function")
+    return {};
+
+  getArmyListObjects()
+    .forEach(function(list) {
+      const player =
+        getCommunityPlayerRegistryString(list.player);
+      const playerDisplayName =
+        getCommunityPlayerRegistryString(list.playerDisplayName);
+      const favoriteArmy =
+        getCommunityArmyListPreferredArmy(list);
+
+      if (!list.approved || !player || !favoriteArmy)
+        return;
+
+      [player, playerDisplayName]
+        .forEach(function(value) {
+          const playerKey =
+            getCommunityPlayerKey(value);
+
+          if (!playerKey)
+            return;
+
+          if (!valuesByPlayerKey[playerKey])
+            valuesByPlayerKey[playerKey] = [];
+
+          valuesByPlayerKey[playerKey].push(favoriteArmy);
+        });
+    });
+
+  return buildCommunityPreferredFactionMap(valuesByPlayerKey);
+
+}
+
+function getCommunityArmyListPreferredArmy(list) {
+
+  return canonicalizeArmyName(list.sectorial) ||
+    canonicalizeArmyName(list.faction) ||
+    "";
+
+}
+
 function upsertCommunityPlayerRecord(records, input) {
 
   const key =
@@ -391,11 +538,26 @@ function upsertCommunityPlayerRecord(records, input) {
 
 }
 
-function finalizeCommunityPlayerRecord(record) {
+function finalizeCommunityPlayerRecord(record, favoriteArmyMaps) {
 
+  const playerKey =
+    getCommunityPlayerKey(record.player);
+  const maps =
+    favoriteArmyMaps ||
+    buildCommunityResolvedFavoriteArmyMaps();
+  const gameDerivedFavoriteFaction =
+    maps.gameFavoriteByPlayerKey &&
+    maps.gameFavoriteByPlayerKey[playerKey]
+      ? canonicalizeArmyName(maps.gameFavoriteByPlayerKey[playerKey])
+      : "";
+  const armyListDerivedFavoriteFaction =
+    maps.armyListFavoriteByPlayerKey &&
+    maps.armyListFavoriteByPlayerKey[playerKey]
+      ? canonicalizeArmyName(maps.armyListFavoriteByPlayerKey[playerKey])
+      : "";
   const favoriteArmy =
-    getCommunityMostPlayedArmy(record.factionCounts) ||
-    record.favoriteFaction ||
+    gameDerivedFavoriteFaction ||
+    armyListDerivedFavoriteFaction ||
     "";
   const currentWinStreak =
     getCommunityCurrentWinStreak(record.results);
@@ -433,6 +595,10 @@ function finalizeCommunityPlayerRecord(record) {
     vp: record.vp,
     faction: favoriteArmy,
     favoriteArmy: favoriteArmy,
+    favoriteFaction: favoriteArmy,
+    preferredArmy: favoriteArmy,
+    gameDerivedFavoriteFaction: gameDerivedFavoriteFaction,
+    armyListDerivedFavoriteFaction: armyListDerivedFavoriteFaction,
     currentWinStreak: currentWinStreak,
     statusBadges: statusBadges,
     gameTypes: gameTypes,

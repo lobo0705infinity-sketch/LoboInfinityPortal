@@ -58,22 +58,19 @@ const checks = [
       files.navigation.includes("export const armyIntelligenceFactionParam = 'faction'") &&
       files.navigation.includes('URLSearchParams') &&
       files.navigation.includes('readArmyIntelligenceFactionParam') &&
-      files.armyIntelligence.includes("import { Link, useSearchParams } from 'react-router-dom'") &&
+      files.armyIntelligence.includes("import { useSearchParams } from 'react-router-dom'") &&
       files.armyIntelligence.includes("import { readArmyIntelligenceFactionParam } from '../services/armyIntelligenceNavigation'") &&
       files.armyIntelligence.includes('const [searchParams] = useSearchParams()') &&
       files.armyIntelligence.includes('const requestedFaction = readArmyIntelligenceFactionParam(searchParams)') &&
       files.armyIntelligence.includes("const [selectedSectorial, setSelectedSectorial] = useState(requestedFaction)") &&
-      /useEffect\(\(\) => \{[\s\S]*setSelectedSectorial\(requestedFaction\)[\s\S]*\}, \[requestedFaction, selectedSectorial\]\)/.test(files.armyIntelligence),
+      /useEffect\(\(\) => \{[\s\S]*requestedFaction === selectedSectorial[\s\S]*setSelectedSectorial\(requestedFaction\)[\s\S]*\}, \[requestedFaction, selectedSectorial\]\)/.test(files.armyIntelligence),
   },
   {
     label: 'Army Intelligence selector includes parent factions and sectorials from the same loaded data',
     pass:
-      /const sectorials = useMemo\([\s\S]*buildArmyIntelligenceSelectorOptions\(uniqueDecodedLists\)[\s\S]*\[uniqueDecodedLists\]/.test(
-        files.armyIntelligence,
-      ) &&
-      /function buildArmyIntelligenceSelectorOptions[\s\S]*getIntelligenceParentFaction\(list\)[\s\S]*getDecodedSectorial\(list\)/.test(
-        files.armyIntelligence,
-      ),
+      files.armyIntelligence.includes('data: ArmyIntelligenceSummaryData') &&
+      files.armyIntelligence.includes('const sectorials = summary.options') &&
+      files.armyIntelligence.includes("apiClient.getArmyIntelligenceSummary"),
   },
   {
     label: 'Public Player Profile renders Primary Faction through the shared card',

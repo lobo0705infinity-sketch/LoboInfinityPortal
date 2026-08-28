@@ -321,6 +321,12 @@ function decodeSubmittedArmyCode(value) {
 
 }
 
+function getArmyCodeValidationTimestamp() {
+
+  return getOperationsTimestamp();
+
+}
+
 function getArmyCodeValidationThresholds(eventId) {
 
   const normalizedEvent =
