@@ -35,8 +35,8 @@ function getEventHome(e) {
   const params =
     getApiParameters(e);
 
-  const eventId =
-    resolveEventId(params.eventId || EVENT_ENGINE_DEFAULT_EVENT_ID);
+  const requestedEventId = String(params.eventId || "").trim();
+  const eventId = resolveEventId(requestedEventId || EVENT_ENGINE_DEFAULT_EVENT_ID);
 
   endEventHomeSubStage(
     "eventHome.requestParameters",
@@ -103,9 +103,16 @@ function getEventHome(e) {
     measureEventHomeOperation(
       "eventHome.eventLookup.currentLeagueFallback",
       function() {
-        return getCurrentLeagueEventSnapshot();
+        return requestedEventId ? null : getCurrentLeagueEventSnapshot();
       },
       {}
+    );
+
+  if (!event)
+    return returnEventHomeResponse(
+      { success: false, error: "Event not found." },
+      totalStart,
+      { eventId: eventId, notFound: true }
     );
 
   endEventHomeSubStage(

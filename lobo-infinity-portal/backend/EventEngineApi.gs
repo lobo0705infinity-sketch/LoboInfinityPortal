@@ -141,13 +141,15 @@ function getEvent(e) {
   const params =
     getEventEngineParams(e);
 
-  const eventId =
-    getEventEngineString(params.eventId || params.id) ||
-    EVENT_ENGINE_DEFAULT_EVENT_ID;
+  const requestedEventId = getEventEngineString(params.eventId || params.id);
+  const eventId = requestedEventId || EVENT_ENGINE_DEFAULT_EVENT_ID;
 
   const event =
     getEventByIdSnapshot(eventId) ||
-    getCurrentLeagueEventSnapshot();
+    (requestedEventId ? null : getCurrentLeagueEventSnapshot());
+
+  if (!event)
+    return jsonOutput({ success: false, error: "Event not found." });
 
   return jsonOutput({
     success: true,

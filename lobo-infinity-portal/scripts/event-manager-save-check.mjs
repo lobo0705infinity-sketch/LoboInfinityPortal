@@ -5,7 +5,6 @@ import { chromium } from 'playwright'
 const port = 4179
 const origin = `http://127.0.0.1:${port}`
 const apiUrl = 'https://event-manager-test.invalid/exec'
-const top40Id = 'event-lobo-s-american-top-40'
 
 const leagueEvent = event({
   id: 'event-current-league',
@@ -87,43 +86,21 @@ try {
   await page.goto(`${origin}/commissioner/events`)
   await page.getByRole('heading', { name: 'Event Manager' }).waitFor()
 
-  await page.getByRole('button', { name: /Create New Event/ }).click()
-  await assertText(page, 'New event draft ready.')
-  let form = page.locator('form').filter({ has: page.getByRole('heading', { name: 'Create Event' }) })
-  await field(form, 'Name').fill("Lobo's American Top 40")
-  await field(form, 'Type', 'select').selectOption('Individual Double Elimination')
-  await field(form, 'Registration', 'select').selectOption('Registration Closed')
-  await field(form, 'Rules', 'textarea').fill('Maximum Players: 40')
-  await form.getByRole('button', { name: 'Save Event' }).click()
-  await assertText(page, 'Event created.')
-
-  assert.equal(mutationCount, 1, 'Create must invoke the mutation exactly once.')
-  assert.equal(mutations[0].eventId, undefined, 'New drafts must not inherit an existing event ID.')
-  assert.equal(mutations[0].name, "Lobo's American Top 40")
-  assert.equal(mutations[0].type, 'Individual Double Elimination')
-  assert.equal(mutations[0].lifecycleStage, 'Planning')
-  assert.equal(mutations[0].status, 'Planning')
-  assert.equal(mutations[0].registration, 'Registration Closed')
-  assert.equal(mutations[0].rules, 'Maximum Players: 40')
-  assert.equal(mutations[0].startDate, '')
-  assert.equal(mutations[0].endDate, '')
-
-  form = page.locator('form').filter({ has: page.getByRole('heading', { name: 'Event Details' }) })
-  await field(form, 'Name').fill("Lobo's American Top 40 Updated")
+  assert.equal(await page.getByRole('button', { name: /Create New Event/ }).count(), 0,
+    'Commissioner must not expose canonical event creation.')
+  let form = page.locator('form').filter({ has: page.getByRole('heading', { name: 'Event Details' }) })
+  await field(form, 'Name').fill('July 2026 League Updated')
   await form.getByRole('button', { name: 'Save Event' }).click()
   await assertText(page, 'Event saved.')
-  assert.equal(mutationCount, 2, 'Existing-event save must invoke one mutation.')
-  assert.equal(mutations[1].eventId, top40Id, 'Existing-event save must retain its canonical ID.')
+  assert.equal(mutationCount, 1, 'Existing-event save must invoke one mutation.')
+  assert.equal(mutations[0].eventId, leagueEvent.id, 'Existing-event save must retain its canonical ID.')
 
-  await page.getByRole('button', { name: /Create New Event/ }).click()
-  form = page.locator('form').filter({ has: page.getByRole('heading', { name: 'Create Event' }) })
   await field(form, 'Name').fill('Reject Me')
-  await field(form, 'Type', 'select').selectOption('Individual Double Elimination')
   await form.getByRole('button', { name: 'Save Event' }).click()
   await assertText(page, 'Safe backend rejection.')
-  assert.equal(mutationCount, 3, 'Rejected create must not retry the mutation.')
+  assert.equal(mutationCount, 2, 'Rejected existing-event save must not retry the mutation.')
 
-  console.log('PASS: Create New Event behavior submits the exact draft once, updates existing events, and renders success or safe backend failure.')
+  console.log('PASS: Commissioner event operations hide provisioning, update existing events, and render success or safe backend failure.')
 } finally {
   await browser?.close()
   server.kill()

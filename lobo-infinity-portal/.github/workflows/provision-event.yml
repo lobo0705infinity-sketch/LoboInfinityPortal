@@ -1,0 +1,31 @@
+name: Provision Event
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: Explicit create, update, read, or validate operation
+        required: true
+        type: choice
+        options: [create, update, read, validate]
+      definition:
+        description: Event definition JSON
+        required: true
+        type: string
+
+jobs:
+  provision:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Provision canonical event
+        env:
+          EVENT_DEFINITION: ${{ inputs.definition }}
+          EVENT_OPERATION: ${{ inputs.operation }}
+          EVENT_PROVISIONING_TOKEN: ${{ secrets.EVENT_PROVISIONING_TOKEN }}
+        run: npm run event:create -- --operation "$EVENT_OPERATION" --definition "$EVENT_DEFINITION"

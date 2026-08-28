@@ -12,8 +12,8 @@ function buildEventAnalyticsContext(e) {
   const params =
     getApiParameters(e);
 
-  const eventId =
-    resolveEventId(params.eventId || EVENT_ENGINE_DEFAULT_EVENT_ID);
+  const requestedEventId = getEventAnalyticsString(params.eventId);
+  const eventId = resolveEventId(requestedEventId || EVENT_ENGINE_DEFAULT_EVENT_ID);
 
   const gameType =
     normalizeGameType(params.gameType || "league");
@@ -25,11 +25,13 @@ function buildEventAnalyticsContext(e) {
         : null
     ) ||
     (
-      typeof getCurrentLeagueEventSnapshot === "function"
+      !requestedEventId && typeof getCurrentLeagueEventSnapshot === "function"
         ? getCurrentLeagueEventSnapshot()
         : null
-    ) ||
-    buildEventAnalyticsFallbackEvent(eventId);
+    );
+
+  if (!event)
+    throw new Error("Event not found.");
 
   return {
     eventId: event.id || eventId,

@@ -24,101 +24,216 @@ function saveEventManagerEvent(e) {
   return requireApiPermission(e, "runSeasonControl", function(auth) {
     const params =
       getApiParameters(e);
+    const result = saveCanonicalEventDefinition(params, {
+      actor: auth,
+      mode: "upsert"
+    });
 
-    const existingId =
-      getEventManagerString(params.eventId || params.id);
+    if (!result.success)
+      return jsonOutput(result);
 
-    const eventId =
-      existingId ||
-      buildEventManagerEventId(params.name, params.type);
-
-    if (eventId === "")
-      return jsonOutput({
-        success: false,
-        error: "Event name is required."
-      });
-
-    const existing =
-      getEventByIdSnapshot(eventId);
-
-    const now =
-      getEventManagerTimestamp();
-
-    const eventName =
-      getEventManagerString(params.name) ||
-      (existing ? existing.name : "");
-
-    if (eventName === "")
-      return jsonOutput({
-        success: false,
-        error: "Event name is required."
-      });
-
-    const eventType =
-      getEventManagerString(params.type) ||
-      (existing ? existing.type : "Custom");
-
-    const templateId =
-      getEventManagerTemplateId(eventType);
-
-    upsertEventEngineRow(
-      ensureEventEngineSheet(CONFIG.SHEETS.EVENTS, EVENT_ENGINE_EVENT_HEADERS),
-      EVENT_ENGINE_EVENT_HEADERS,
-      "ID",
-      eventId,
-      [
-        eventId,
-        existing ? existing.communityId : EVENT_ENGINE_COMMUNITY_ID,
-        existing ? existing.seriesId : EVENT_ENGINE_DEFAULT_SERIES_ID,
-        existing ? existing.templateId : templateId,
-        eventName,
-        getEventManagerString(params.description) ||
-          (existing ? existing.description : ""),
-        eventType,
-        getEventManagerString(params.lifecycleStage) ||
-          (existing ? existing.lifecycleStage : "Planning"),
-        getEventManagerString(params.status) ||
-          (existing ? existing.status : "Planning"),
-        getEventManagerString(params.owner) ||
-          (existing ? existing.owner : "Commissioner"),
-        getEventManagerString(params.commissioners) ||
-          (existing ? existing.commissioners : ""),
-        getEventManagerString(params.startDate) ||
-          (existing ? existing.startDate : ""),
-        getEventManagerString(params.endDate) ||
-          (existing ? existing.endDate : ""),
-        getEventManagerString(params.registration) ||
-          (existing ? existing.registration : "Registration Closed"),
-        getEventManagerString(params.participants) ||
-          (existing ? existing.participants : "Event Participants"),
-        getEventManagerString(params.rules) ||
-          (existing ? existing.rules : eventType + " rules"),
-        getEventManagerString(params.scoringModel) ||
-          (existing ? existing.scoringModel : "Event scoring"),
-        getEventManagerString(params.standingsModel) ||
-          (existing ? existing.standingsModel : "Event standings"),
-        getEventManagerString(params.automation) ||
-          (existing ? existing.automation : "Existing Automation Center"),
-        getEventManagerString(params.discord) ||
-          (existing ? existing.discord : "Existing Discord configuration"),
-        getEventManagerString(params.achievements) ||
-          (existing ? existing.achievements : "Event scoped achievements"),
-        getEventManagerString(params.history) ||
-          (existing ? existing.history : eventType + " history"),
-        getEventManagerString(params.archive) ||
-          (existing ? existing.archive : "Not archived"),
-        existing && existing.createdAt ? existing.createdAt : now,
-        now
-      ]
-    );
-
-    ensureEventManagerEventDefaults(eventId, eventName, eventType);
-    recordEventManagerAudit(auth, eventId, "Event saved", eventName);
-    invalidateEventManagerCaches();
-
-    return buildEventManagerResponse(eventId);
+    return buildEventManagerResponse(result.eventId);
   });
 
+}
+
+function provisionEvent(e) {
+
+  if (!isAuthorizedArmyIntelligenceWorkerRequest(e))
+    return jsonOutput({
+      success: false,
+      error: "Event provisioning authorization is required.",
+      code: "PROVISIONING_UNAUTHORIZED"
+    });
+
+  const params = getApiParameters(e);
+  const operation = getEventManagerString(params.operation).toLowerCase();
+
+  if (["create", "update", "read", "validate"].indexOf(operation) === -1)
+    return jsonOutput({ success: false, error: "Invalid provisioning operation." });
+
+  const eventId =
+    getEventManagerString(params.eventId || params.id) ||
+    buildEventManagerEventId(params.name, params.type);
+
+  if (operation === "read")
+    return buildEventProvisioningReadResponse(eventId);
+
+  const validation = validateEventProvisioningDefinition(params, operation);
+  if (!validation.success)
+    return jsonOutput(validation);
+
+  if (operation === "validate")
+    return jsonOutput({
+      success: true,
+      eventId: validation.eventId,
+      definition: validation.definition,
+      persisted: false
+    });
+
+  const result = saveCanonicalEventDefinition(validation.definition, {
+    actor: {
+      machine: true,
+      user: { email: "event-provisioning", role: "Provisioner" }
+    },
+    mode: operation
+  });
+
+  if (!result.success)
+    return jsonOutput(result);
+
+  return buildEventProvisioningReadResponse(result.eventId);
+}
+
+function validateEventProvisioningDefinition(params, operation) {
+
+  const supportedTypes = [
+    "League",
+    "Team Tournament",
+    "Individual Double Elimination",
+    "ITS Tournament",
+    "Narrative Campaign",
+    "Casual Event",
+    "Custom"
+  ];
+  const lifecycleStages = [
+    "Planning", "Registration Open", "Registration Closed", "Roster Locked",
+    "Round 1", "Round 2", "Final Round", "Awards", "Archived"
+  ];
+  const registrationStates = ["Registration Open", "Registration Closed"];
+  const name = getEventManagerString(params.name);
+  const type = getEventManagerString(params.type);
+  const lifecycleStage = getEventManagerString(params.lifecycleStage || params.status) || "Planning";
+  const status = getEventManagerString(params.status || params.lifecycleStage) || "Planning";
+  const registration = getEventManagerString(params.registration) || "Registration Closed";
+  const maximumPlayers = Number(params.maximumPlayers || 0);
+  const startDate = getEventManagerString(params.startDate);
+  const endDate = getEventManagerString(params.endDate);
+  const eventId = buildEventManagerEventId(name, type);
+
+  if (!name)
+    return { success: false, error: "Event name is required." };
+  if (supportedTypes.indexOf(type) === -1)
+    return { success: false, error: "Unsupported event type." };
+  if (lifecycleStages.indexOf(lifecycleStage) === -1 || lifecycleStages.indexOf(status) === -1)
+    return { success: false, error: "Invalid event lifecycle or status." };
+  if (registrationStates.indexOf(registration) === -1)
+    return { success: false, error: "Invalid registration state." };
+  if (!Number.isInteger(maximumPlayers) || maximumPlayers <= 0)
+    return { success: false, error: "Maximum Players must be a positive whole number." };
+  if ((startDate && !/^\d{4}-\d{2}-\d{2}$/.test(startDate)) ||
+      (endDate && !/^\d{4}-\d{2}-\d{2}$/.test(endDate)) ||
+      (startDate && endDate && endDate < startDate))
+    return { success: false, error: "Event dates are invalid." };
+  if (!eventId)
+    return { success: false, error: "Canonical event ID could not be generated." };
+
+  return {
+    success: true,
+    eventId: eventId,
+    definition: {
+      eventId: eventId,
+      name: name,
+      type: type,
+      description: getEventManagerString(params.description),
+      lifecycleStage: lifecycleStage,
+      status: status,
+      registration: registration,
+      startDate: startDate,
+      endDate: endDate,
+      rules: "Maximum Players: " + maximumPlayers,
+      maximumPlayers: maximumPlayers
+    }
+  };
+}
+
+function saveCanonicalEventDefinition(params, options) {
+
+  const mode = getEventManagerString(options && options.mode).toLowerCase() || "upsert";
+  const existingId = getEventManagerString(params.eventId || params.id);
+  const eventId = existingId || buildEventManagerEventId(params.name, params.type);
+
+  if (!eventId)
+    return { success: false, error: "Event name is required." };
+
+  const existing = getEventByIdSnapshot(eventId);
+  if (mode === "create" && existing)
+    return { success: false, error: "Event already exists." };
+  if (mode === "update" && !existing)
+    return { success: false, error: "Event not found." };
+
+  const now = getEventManagerTimestamp();
+  const eventName = getEventManagerString(params.name) || (existing ? existing.name : "");
+  if (!eventName)
+    return { success: false, error: "Event name is required." };
+
+  const eventType = getEventManagerString(params.type) || (existing ? existing.type : "Custom");
+  const templateId = getEventManagerTemplateId(eventType);
+
+  upsertEventEngineRow(
+    ensureEventEngineSheet(CONFIG.SHEETS.EVENTS, EVENT_ENGINE_EVENT_HEADERS),
+    EVENT_ENGINE_EVENT_HEADERS,
+    "ID",
+    eventId,
+    [
+      eventId,
+      existing ? existing.communityId : EVENT_ENGINE_COMMUNITY_ID,
+      existing ? existing.seriesId : EVENT_ENGINE_DEFAULT_SERIES_ID,
+      existing ? existing.templateId : templateId,
+      eventName,
+      getEventManagerString(params.description) || (existing ? existing.description : ""),
+      eventType,
+      getEventManagerString(params.lifecycleStage) || (existing ? existing.lifecycleStage : "Planning"),
+      getEventManagerString(params.status) || (existing ? existing.status : "Planning"),
+      getEventManagerString(params.owner) || (existing ? existing.owner : "Commissioner"),
+      getEventManagerString(params.commissioners) || (existing ? existing.commissioners : ""),
+      getEventManagerString(params.startDate) || (existing ? existing.startDate : ""),
+      getEventManagerString(params.endDate) || (existing ? existing.endDate : ""),
+      getEventManagerString(params.registration) || (existing ? existing.registration : "Registration Closed"),
+      getEventManagerString(params.participants) || (existing ? existing.participants : "Event Participants"),
+      getEventManagerString(params.rules) || (existing ? existing.rules : eventType + " rules"),
+      getEventManagerString(params.scoringModel) || (existing ? existing.scoringModel : "Event scoring"),
+      getEventManagerString(params.standingsModel) || (existing ? existing.standingsModel : "Event standings"),
+      getEventManagerString(params.automation) || (existing ? existing.automation : "Existing Automation Center"),
+      getEventManagerString(params.discord) || (existing ? existing.discord : "Existing Discord configuration"),
+      getEventManagerString(params.achievements) || (existing ? existing.achievements : "Event scoped achievements"),
+      getEventManagerString(params.history) || (existing ? existing.history : eventType + " history"),
+      getEventManagerString(params.archive) || (existing ? existing.archive : "Not archived"),
+      existing && existing.createdAt ? existing.createdAt : now,
+      now
+    ]
+  );
+
+  ensureEventManagerEventDefaults(eventId, eventName, eventType);
+  recordEventManagerAudit(options && options.actor, eventId, "Event saved", eventName);
+  invalidateEventManagerCaches();
+
+  return { success: true, eventId: eventId };
+}
+
+function buildEventProvisioningReadResponse(eventId) {
+
+  if (!eventId)
+    return jsonOutput({ success: false, error: "Event name or event ID is required." });
+
+  const event = getEventByIdSnapshot(eventId);
+  if (!event)
+    return jsonOutput({ success: false, error: "Event not found." });
+
+  const participants = getEventRegistrationRows(eventId).filter(function(entry) {
+    return entry.status !== "Withdrawn";
+  });
+  const capacity = typeof getEventRegistrationCapacity === "function"
+    ? getEventRegistrationCapacity(event)
+    : { maximumPlayers: 0 };
+
+  return jsonOutput({
+    success: true,
+    event: event,
+    eventId: event.id,
+    maximumPlayers: capacity.maximumPlayers,
+    participantCount: participants.length
+  });
 }
 
 function setEventManagerRegistration(e) {

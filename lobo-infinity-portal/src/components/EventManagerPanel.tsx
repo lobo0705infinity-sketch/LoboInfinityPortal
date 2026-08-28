@@ -39,7 +39,6 @@ type ParticipantForm = {
 function EventManagerPanel({ canManage }: { canManage: boolean }) {
   const [state, setState] = useState<EventManagerState>({ status: 'loading' })
   const [selectedEventId, setSelectedEventId] = useState('event-current-league')
-  const [isCreatingEvent, setIsCreatingEvent] = useState(false)
   const initialEventId = useRef('event-current-league')
   const [workingAction, setWorkingAction] = useState('')
   const [actionError, setActionError] = useState('')
@@ -88,7 +87,6 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
   })
 
   function applyManagerData(data: EventManagerData) {
-    setIsCreatingEvent(false)
     setSelectedEventId(data.selectedEvent.id)
     setEventForm({
       description: data.selectedEvent.description,
@@ -217,11 +215,6 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
       return
     }
 
-    if (isCreatingEvent) {
-      await createEvent()
-      return
-    }
-
     try {
       await runManagerAction(
         'saveEvent',
@@ -236,44 +229,6 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     } catch {
       // runManagerAction has already rendered the safe backend error.
     }
-  }
-
-  async function createEvent() {
-    try {
-      await runManagerAction(
-        'createEvent',
-        () =>
-          eventRepository.saveEvent({
-            ...eventForm,
-            lifecycleStage: 'Planning',
-            status: 'Planning',
-          }),
-        'Event created.',
-        'Saving event...',
-      )
-    } catch {
-      // runManagerAction has already rendered the safe backend error.
-    }
-  }
-
-  function startCreateEvent() {
-    setSelectedEventId('')
-    setIsCreatingEvent(true)
-    setActionError('')
-    setActionMessage('New event draft ready.')
-    setEventForm({
-      description: '',
-      endDate: '',
-      lifecycleStage: 'Planning',
-      name: '',
-      registration: 'Registration Closed',
-      rules: '',
-      scoringModel: '',
-      standingsModel: '',
-      startDate: '',
-      status: 'Planning',
-      type: 'Custom',
-    })
   }
 
   async function saveLeagueOperations(event: FormEvent<HTMLFormElement>) {
@@ -447,19 +402,6 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
 
       <div className="event-manager-layout">
         <section className="event-manager-list" aria-label="Events">
-          <button
-            className={
-              isCreatingEvent
-                ? 'event-manager-event active'
-                : 'event-manager-event'
-            }
-            disabled={!canManage || workingAction !== ''}
-            onClick={startCreateEvent}
-            type="button"
-          >
-            <strong>Create New Event</strong>
-            <span>Start a standalone event draft</span>
-          </button>
           {data.events.map((summary) => (
             <button
               className={
@@ -484,16 +426,16 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
         </section>
 
         <section className="event-manager-detail">
-          {!isCreatingEvent ? <div className="event-manager-summary">
+          <div className="event-manager-summary">
             <Metric label="Lifecycle" value={data.diagnostics.lifecycleStage} />
             <Metric label="Registration" value={data.diagnostics.registrationStatus} />
             <Metric label="Participants" value={data.diagnostics.participantCount} />
             <Metric label="Teams" value={data.diagnostics.teamCount} />
             <Metric label="Health" value={data.diagnostics.eventHealth} />
-          </div> : null}
+          </div>
 
           <form className="event-manager-form" onSubmit={saveSelectedEvent}>
-            <h3>{isCreatingEvent ? 'Create Event' : 'Event Details'}</h3>
+            <h3>Event Details</h3>
             <label>
               Name
               <input
@@ -610,35 +552,35 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
               <button disabled={!canManage || workingAction !== ''} type="submit">
                 Save Event
               </button>
-              {!isCreatingEvent ? <button
+              <button
                 disabled={!canManage || workingAction !== ''}
                 onClick={() => void applyLifecycle()}
                 type="button"
               >
                 Apply Lifecycle
-              </button> : null}
-              {!isCreatingEvent ? <button
+              </button>
+              <button
                 disabled={!canManage || workingAction !== ''}
                 onClick={() => void setRegistration('Registration Open', 'openRegistration')}
                 type="button"
               >
                 Open Registration
-              </button> : null}
-              {!isCreatingEvent ? <button
+              </button>
+              <button
                 disabled={!canManage || workingAction !== ''}
                 onClick={() => void setRegistration('Registration Open', 'reopenRegistration')}
                 type="button"
               >
                 Reopen Registration
-              </button> : null}
-              {!isCreatingEvent ? <button
+              </button>
+              <button
                 disabled={!canManage || workingAction !== ''}
                 onClick={() => void setRegistration('Registration Closed', 'closeRegistration')}
                 type="button"
               >
                 Close Registration
-              </button> : null}
-              {!isCreatingEvent ? <button
+              </button>
+              <button
                 disabled={!canManage || workingAction !== ''}
                 onClick={() =>
                   void runManagerAction('currentEvent', () =>
@@ -650,8 +592,8 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
                 type="button"
               >
                 Set Current Active Event
-              </button> : null}
-              {!isCreatingEvent ? <button
+              </button>
+              <button
                 disabled={!canManage || workingAction !== ''}
                 onClick={() =>
                   void runManagerAction('archive', () =>
@@ -666,7 +608,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
                 type="button"
               >
                 Archive
-              </button> : null}
+              </button>
             </div>
             <div aria-live="polite" className="event-manager-wide">
               {actionError ? (
@@ -687,7 +629,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
             </div>
           </form>
 
-          {!isCreatingEvent && data.selectedEvent.type === 'League' ? (
+          {data.selectedEvent.type === 'League' ? (
             <form className="event-manager-form" onSubmit={saveLeagueOperations}>
               <h3>Mission & Map</h3>
               <label>
@@ -776,7 +718,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
             </form>
           ) : null}
 
-          {!isCreatingEvent ? <ParticipantsPanel
+          <ParticipantsPanel
             canManage={canManage}
             form={participantForm}
             onChange={setParticipantForm}
@@ -784,9 +726,9 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
             onSubmit={saveParticipant}
             participants={data.participants}
             working={workingAction !== ''}
-          /> : null}
+          />
 
-          {!isCreatingEvent && isTeamTournament ? (
+          {isTeamTournament ? (
             <TeamOperationsPanel
               canManage={canManage}
               onPairingSubmit={savePairing}

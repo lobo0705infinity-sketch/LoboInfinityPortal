@@ -860,6 +860,9 @@ function handleApiGet(e, action) {
     case "eventManagerEvent":
       return saveEventManagerEvent(e);
 
+    case "provisionEvent":
+      return provisionEvent(e);
+
     case "eventManagerRegistration":
       return setEventManagerRegistration(e);
 
@@ -1338,6 +1341,9 @@ function handleApiPost(e, action) {
 
     case "eventManagerEvent":
       return saveEventManagerEvent(e);
+
+    case "provisionEvent":
+      return provisionEvent(e);
 
     case "eventManagerRegistration":
       return setEventManagerRegistration(e);
