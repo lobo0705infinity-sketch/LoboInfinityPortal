@@ -161,10 +161,11 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     action: string,
     handler: () => Promise<EventManagerData>,
     successMessage = 'Event Manager updated.',
+    pendingMessage = '',
   ) {
     setWorkingAction(action)
     setActionError('')
-    setActionMessage('')
+    setActionMessage(pendingMessage)
 
     try {
       const data = await handler()
@@ -172,6 +173,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
       setActionMessage(successMessage)
       return data
     } catch (error) {
+      setActionMessage('')
       setActionError(
         error instanceof Error
           ? error.message
@@ -203,6 +205,18 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
   async function saveSelectedEvent(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
+    if (!eventForm.name.trim()) {
+      setActionMessage('')
+      setActionError('Event name is required.')
+      return
+    }
+
+    if (!eventForm.type.trim()) {
+      setActionMessage('')
+      setActionError('Event type is required.')
+      return
+    }
+
     if (isCreatingEvent) {
       await createEvent()
       return
@@ -217,6 +231,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
             eventId: selectedEventId,
           }),
         'Event saved.',
+        'Saving event...',
       )
     } catch {
       // runManagerAction has already rendered the safe backend error.
@@ -234,6 +249,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
             status: 'Planning',
           }),
         'Event created.',
+        'Saving event...',
       )
     } catch {
       // runManagerAction has already rendered the safe backend error.
@@ -244,7 +260,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     setSelectedEventId('')
     setIsCreatingEvent(true)
     setActionError('')
-    setActionMessage('')
+    setActionMessage('New event draft ready.')
     setEventForm({
       description: '',
       endDate: '',
@@ -409,16 +425,6 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
         participants, teams, pairings, archive state, and the current active
         event.
       </p>
-      {actionError ? (
-        <p className="form-error" role="alert">
-          {actionError}
-        </p>
-      ) : null}
-      {actionMessage ? (
-        <p className="form-success" role="status">
-          {actionMessage}
-        </p>
-      ) : null}
       <div className="event-manager-toolbar">
         <label>
           Current Active Event
@@ -661,6 +667,23 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
               >
                 Archive
               </button> : null}
+            </div>
+            <div aria-live="polite" className="event-manager-wide">
+              {actionError ? (
+                <p className="form-error" role="alert">
+                  {actionError}
+                </p>
+              ) : null}
+              {actionMessage ? (
+                <p className="form-success" role="status">
+                  {actionMessage}
+                </p>
+              ) : null}
+              {!canManage ? (
+                <p className="form-error" role="alert">
+                  Commissioner event permission is required.
+                </p>
+              ) : null}
             </div>
           </form>
 
