@@ -388,6 +388,9 @@ function saveEventManagerParticipant(e) {
     const eventId =
       resolveEventId(params.eventId || EVENT_ENGINE_DEFAULT_EVENT_ID);
 
+    if (getEventManagerString(params.seedAssignments) !== "")
+      return saveEventManagerSeeding_(eventId, params.seedAssignments, auth);
+
     const player =
       getEventManagerString(params.player);
 
@@ -417,6 +420,128 @@ function saveEventManagerParticipant(e) {
 
     return buildEventManagerResponse(eventId);
   });
+
+}
+
+function saveEventManagerSeeding_(eventId, serializedAssignments, auth) {
+
+  const event = getEventById(eventId);
+
+  if (!event || event.type !== "Individual Double Elimination")
+    throw new Error("Tournament seeding is only available for Individual Double Elimination events.");
+
+  let assignments;
+
+  try {
+    assignments = JSON.parse(serializedAssignments);
+  } catch (error) {
+    throw new Error("Seed assignments are invalid.");
+  }
+
+  if (!Array.isArray(assignments))
+    throw new Error("Seed assignments are invalid.");
+
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+
+  try {
+    const sheet = ensureEventEngineSheet(
+      CONFIG.SHEETS.EVENT_PARTICIPANTS,
+      EVENT_ENGINE_PARTICIPANT_HEADERS
+    );
+    const data = sheet.getDataRange().getValues();
+    const headers = data[0].map(getEventManagerString);
+    const eventIdIndex = headers.indexOf("Event ID");
+    const playerIndex = headers.indexOf("Player");
+    const seedIndex = headers.indexOf("Seed");
+    const statusIndex = headers.indexOf("Status");
+    const registeredPlayers = [];
+
+    for (let row = 1; row < data.length; row++) {
+      if (
+        getEventManagerString(data[row][eventIdIndex]) === eventId &&
+        getEventManagerString(data[row][statusIndex]) === "Registered"
+      )
+        registeredPlayers.push(getEventManagerString(data[row][playerIndex]));
+    }
+
+    const validationError = validateEventManagerSeedAssignments_(
+      assignments,
+      registeredPlayers
+    );
+
+    if (validationError !== "")
+      throw new Error(validationError);
+
+    const seedsByPlayer = {};
+    assignments.forEach(function(assignment) {
+      seedsByPlayer[getEventManagerString(assignment.player).toLowerCase()] =
+        Number(assignment.seed);
+    });
+
+    const seedValues = [];
+    for (let row = 1; row < data.length; row++) {
+      const isTarget =
+        getEventManagerString(data[row][eventIdIndex]) === eventId &&
+        getEventManagerString(data[row][statusIndex]) === "Registered";
+      const playerKey = getEventManagerString(data[row][playerIndex]).toLowerCase();
+      seedValues.push([
+        isTarget ? seedsByPlayer[playerKey] : data[row][seedIndex]
+      ]);
+    }
+
+    if (seedValues.length > 0)
+      sheet.getRange(2, seedIndex + 1, seedValues.length, 1).setValues(seedValues);
+
+    SpreadsheetApp.flush();
+    recordEventManagerAudit(auth, eventId, "Tournament seeding updated", assignments.length + " players");
+    invalidateEventManagerCaches();
+  } finally {
+    lock.releaseLock();
+  }
+
+  return buildEventManagerResponse(eventId);
+
+}
+
+function validateEventManagerSeedAssignments_(assignments, registeredPlayers) {
+
+  const playerKeys = {};
+  const seedKeys = {};
+  const registeredKeys = {};
+  const count = registeredPlayers.length;
+  const error = "Every registered player must have a unique seed from 1 to " + count + ".";
+
+  if (count === 0)
+    return "No registered players to seed.";
+
+  registeredPlayers.forEach(function(player) {
+    registeredKeys[getEventManagerString(player).toLowerCase()] = true;
+  });
+
+  if (assignments.length !== count)
+    return error;
+
+  for (let index = 0; index < assignments.length; index++) {
+    const playerKey = getEventManagerString(assignments[index].player).toLowerCase();
+    const seed = Number(assignments[index].seed);
+
+    if (
+      playerKey === "" ||
+      !registeredKeys[playerKey] ||
+      playerKeys[playerKey] ||
+      !Number.isInteger(seed) ||
+      seed < 1 ||
+      seed > count ||
+      seedKeys[seed]
+    )
+      return error;
+
+    playerKeys[playerKey] = true;
+    seedKeys[seed] = true;
+  }
+
+  return "";
 
 }
 

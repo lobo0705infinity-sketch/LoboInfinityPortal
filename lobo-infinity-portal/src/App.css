@@ -11027,6 +11027,52 @@ a {
 
 }
 
+.event-manager-seeding-header,
+.event-manager-seeding-row {
+  grid-template-columns: 80px minmax(140px, 1fr) minmax(120px, 1fr) minmax(140px, 1fr);
+}
+
+.event-manager-seeding-row input {
+  min-height: 40px;
+  width: 72px;
+}
+
+.tournament-player-table {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.tournament-player-row {
+  align-items: center;
+  background: rgba(15, 23, 42, 0.45);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 8px;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 70px minmax(140px, 1fr) minmax(120px, 1fr) minmax(140px, 1fr);
+  padding: 0.8rem;
+}
+
+.tournament-player-header {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 720px) {
+  .event-manager-seeding-header,
+  .event-manager-seeding-row,
+  .tournament-player-row {
+    grid-template-columns: 64px minmax(110px, 1fr) minmax(110px, 1fr) minmax(130px, 1fr);
+  }
+
+  .event-manager-table,
+  .tournament-player-table {
+    overflow-x: auto;
+  }
+}
+
 @media (max-width: 760px) {
 
   .portal-shell {

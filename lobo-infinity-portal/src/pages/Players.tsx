@@ -7,7 +7,7 @@ import Skeleton from '../components/Skeleton'
 import { getDiscordCommunityLink } from '../config/communityLinks'
 import { useSettings } from '../contexts/SettingsContext'
 import { useApiCacheRevalidation } from '../hooks/useApiCacheRevalidation'
-import { apiClient } from '../services/api'
+import { apiClient, type EventRegistrationData } from '../services/api'
 import {
   getStandingClassifications,
   statusFilterMatches,
@@ -40,7 +40,7 @@ type PlayersState =
 
 type EventTypeState =
   | { eventId: string; status: 'loading' }
-  | { eventId: string; eventType: string; status: 'success' }
+  | { eventId: string; eventType: string; registration: EventRegistrationData; status: 'success' }
   | { error: string; eventId: string; status: 'error' }
 
 function Players() {
@@ -118,6 +118,7 @@ function Players() {
         setEventTypeState({
           eventId,
           eventType: registration.eventType,
+          registration,
           status: 'success',
         })
       })
@@ -138,6 +139,26 @@ function Players() {
     eventTypeState.status === 'success' &&
     eventTypeState.eventId === eventId &&
     eventTypeState.eventType === 'Individual Double Elimination'
+  const individualParticipants = useMemo(() => {
+    if (!individualTournament || eventTypeState.status !== 'success') {
+      return []
+    }
+
+    return eventTypeState.registration.registrations
+      .filter((participant) => participant.status === 'Registered')
+      .slice()
+      .sort((left, right) => {
+        const leftSeed = Number(left.seed)
+        const rightSeed = Number(right.seed)
+        const leftSeeded = Number.isInteger(leftSeed) && leftSeed > 0
+        const rightSeeded = Number.isInteger(rightSeed) && rightSeed > 0
+
+        if (leftSeeded && rightSeeded) return leftSeed - rightSeed
+        if (leftSeeded) return -1
+        if (rightSeeded) return 1
+        return (left.displayName || left.player).localeCompare(right.displayName || right.player)
+      })
+  }, [eventTypeState, individualTournament])
 
   const players = useMemo(() => {
     if (playersState.status !== 'success') {
@@ -364,18 +385,41 @@ function Players() {
         </>
       ) : null}
 
-      <section className="players-grid" aria-label="Portal players">
-        {(eventScoped ? filteredPlayers : communityPlayers).map((player) => (
+      {individualTournament ? (
+        <section className="tournament-player-table" aria-label="Tournament players">
+          {individualParticipants.length > 0 ? (
+            <>
+              <div className="tournament-player-row tournament-player-header">
+                <strong>Seed</strong>
+                <strong>Player</strong>
+                <strong>ITS Name</strong>
+                <strong>Faction</strong>
+              </div>
+              {individualParticipants.map((participant) => (
+                <div className="tournament-player-row" key={participant.player}>
+                  <span>{participant.seed || '—'}</span>
+                  <strong>{participant.displayName || participant.player}</strong>
+                  <span>{participant.itsName || '—'}</span>
+                  <span>{participant.faction || '—'}</span>
+                </div>
+              ))}
+            </>
+          ) : null}
+        </section>
+      ) : (
+        <section className="players-grid" aria-label="Portal players">
+          {(eventScoped ? filteredPlayers : communityPlayers).map((player) => (
           <PlayerCard
             divisionLabel={individualTournament ? undefined : player.divisionLabel}
             eventId={eventId}
             key={`${player.division}-${player.player}`}
             player={player}
           />
-        ))}
-      </section>
+          ))}
+        </section>
+      )}
 
-      {eventScoped && filteredPlayers.length === 0 ? (
+      {eventScoped && (individualTournament ? individualParticipants.length === 0 : filteredPlayers.length === 0) ? (
         <section className="dashboard-state" aria-label="No event participants">
           <p>No players are registered for this event.</p>
         </section>

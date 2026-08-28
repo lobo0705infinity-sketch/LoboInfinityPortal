@@ -319,10 +319,28 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
         freeAgent: String(participant.freeAgent),
         player: participant.player,
         preferredTeam: participant.preferredTeam,
+        seed: participant.seed,
         status,
         team: participant.team,
       }),
     )
+  }
+
+  async function saveSeeding(assignments: Array<{ player: string; seed: number }>) {
+    try {
+      await runManagerAction(
+        'seeding',
+        () =>
+          eventRepository.saveParticipant({
+            eventId: selectedEventId,
+            seedAssignments: JSON.stringify(assignments),
+          }),
+        'Seeding saved.',
+        'Saving seeding...',
+      )
+    } catch {
+      // runManagerAction has already rendered the safe backend error.
+    }
   }
 
   async function saveTeam(event: FormEvent<HTMLFormElement>) {
@@ -368,6 +386,8 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
 
   const { data } = state
   const isTeamTournament = data.selectedEvent.type === 'Team Tournament'
+  const isIndividualDoubleElimination =
+    data.selectedEvent.type === 'Individual Double Elimination'
 
   return (
     <div className="event-manager">
@@ -728,6 +748,16 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
             working={workingAction !== ''}
           />
 
+          {isIndividualDoubleElimination ? (
+            <TournamentSeedingPanel
+              canManage={canManage}
+              key={`${data.selectedEvent.id}-${data.generatedAt}`}
+              onSave={saveSeeding}
+              participants={data.participants}
+              working={workingAction !== ''}
+            />
+          ) : null}
+
           {isTeamTournament ? (
             <TeamOperationsPanel
               canManage={canManage}
@@ -751,6 +781,98 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
         </section>
       </div>
     </div>
+  )
+}
+
+function TournamentSeedingPanel({
+  canManage,
+  onSave,
+  participants,
+  working,
+}: {
+  canManage: boolean
+  onSave: (assignments: Array<{ player: string; seed: number }>) => Promise<void>
+  participants: EventRegistrationEntry[]
+  working: boolean
+}) {
+  const registered = participants.filter((participant) => participant.status === 'Registered')
+  const [seeds, setSeeds] = useState<Record<string, string>>(() =>
+    Object.fromEntries(registered.map((participant) => [participant.player, participant.seed])),
+  )
+  const [validationError, setValidationError] = useState('')
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const values = registered.map((participant) => Number(seeds[participant.player]))
+    const valid =
+      values.length > 0 &&
+      values.every(
+        (seed) => Number.isInteger(seed) && seed >= 1 && seed <= registered.length,
+      ) &&
+      new Set(values).size === registered.length
+
+    if (!valid) {
+      setValidationError(
+        `Every registered player must have a unique seed from 1 to ${registered.length}.`,
+      )
+      return
+    }
+
+    setValidationError('')
+    await onSave(
+      registered.map((participant, index) => ({
+        player: participant.player,
+        seed: values[index],
+      })),
+    )
+  }
+
+  return (
+    <section className="event-manager-subpanel">
+      <h3>Tournament Seeding</h3>
+      {registered.length === 0 ? (
+        <p>No registered players to seed.</p>
+      ) : (
+        <form onSubmit={submit}>
+          <div className="event-manager-table" role="table" aria-label="Tournament seeding">
+            <div className="event-manager-row event-manager-seeding-header" role="row">
+              <strong>Seed</strong>
+              <strong>Player</strong>
+              <strong>ITS Name</strong>
+              <strong>Faction</strong>
+            </div>
+            {registered.map((participant) => (
+              <div className="event-manager-row event-manager-seeding-row" key={participant.player} role="row">
+                <input
+                  aria-label={`Seed for ${participant.displayName || participant.player}`}
+                  disabled={!canManage || working}
+                  max={registered.length}
+                  min={1}
+                  onChange={(event) =>
+                    setSeeds((current) => ({
+                      ...current,
+                      [participant.player]: event.target.value,
+                    }))
+                  }
+                  step={1}
+                  type="number"
+                  value={seeds[participant.player] ?? ''}
+                />
+                <span>{participant.displayName || participant.player}</span>
+                <span>{participant.itsName || '—'}</span>
+                <span>{participant.faction || '—'}</span>
+              </div>
+            ))}
+          </div>
+          {validationError ? <p role="alert">{validationError}</p> : null}
+          <div className="event-manager-actions">
+            <button disabled={!canManage || working} type="submit">
+              Save Seeding
+            </button>
+          </div>
+        </form>
+      )}
+    </section>
   )
 }
 
