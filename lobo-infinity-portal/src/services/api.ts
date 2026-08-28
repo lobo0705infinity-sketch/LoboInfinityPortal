@@ -145,6 +145,7 @@ export type FlaggedArmySubmissionsData = {
 }
 
 export type LeagueResultSubmission = {
+  matchId?: string
   eventId: string
   round: string
   division: string
@@ -2818,6 +2819,10 @@ export type ApiClient = {
     submission: LeagueResultSubmission,
     options?: ApiOptions,
   ) => Promise<void>
+  submitTop40Result: (
+    submission: LeagueResultSubmission,
+    options?: ApiOptions,
+  ) => Promise<void>
   submitCasualResult: (
     submission: CasualResultSubmission,
     options?: ApiOptions,
@@ -3522,14 +3527,17 @@ export type EventBracketMatch = {
   seedB: number | null
   status: string
   deadline: string
+  gameId: number | null
   winner: string
 }
 
 export type EventBracketData = {
+  champion?: string
   eventId: string
   generated: boolean
   matches: EventBracketMatch[]
   readiness: EventBracketReadiness
+  tournamentComplete?: boolean
 }
 
 export async function getArmyIntelligenceSummary(
@@ -3985,6 +3993,19 @@ export async function submitLeagueResult(
   normalizeMutationPayload(payload, 'Result submission failed.')
 }
 
+export async function submitTop40Result(
+  submission: LeagueResultSubmission,
+  options: ApiOptions = {},
+): Promise<void> {
+  normalizeMutationPayload(await postRequest('submitTop40Result', options, {
+    ...submission,
+    matchId: submission.matchId ?? '',
+    commissionerMode: submission.commissionerMode ? 'true' : '',
+    commissionerOverride: submission.commissionerOverride ? 'true' : '',
+    commissionerReason: submission.commissionerReason ?? '',
+  }), 'Top 40 result submission failed.')
+}
+
 export async function submitCasualResult(
   submission: CasualResultSubmission,
   options: ApiOptions = {},
@@ -4372,6 +4393,7 @@ export const apiClient: ApiClient = {
   submitArmyList,
   submitCasualResult,
   submitLeagueResult,
+  submitTop40Result,
   linkHistoricalArmyLists,
   voteArmyList,
   getOperations,
@@ -8816,7 +8838,9 @@ function normalizeEventBracketPayload(payload: unknown): EventBracketData {
   const readiness = getRequiredRecord(bracket, 'readiness')
   return {
     eventId: getString(bracket, 'eventId'),
+    champion: getString(bracket, 'champion'),
     generated: getOptionalBoolean(bracket, 'generated') ?? false,
+    tournamentComplete: getOptionalBoolean(bracket, 'tournamentComplete') ?? false,
     readiness: {
       capacity: getNumber(readiness, 'capacity'),
       ready: getOptionalBoolean(readiness, 'ready') ?? false,
@@ -8847,6 +8871,7 @@ function normalizeEventBracketPayload(payload: unknown): EventBracketData {
         seedB: getString(match, 'seedB') === '' ? null : getNumber(match, 'seedB'),
         status: getString(match, 'status'),
         deadline: getString(match, 'deadline'),
+        gameId: getString(match, 'gameId') === '' ? null : getNumber(match, 'gameId'),
         winner: getString(match, 'winner'),
       }
     }),

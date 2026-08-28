@@ -163,6 +163,7 @@ const endpointPolicy = {
   streams: { authRequired: false, userScoped: false },
   submitArmyList: { authRequired: false, userScoped: false },
   submitCasualResult: { authRequired: false, userScoped: false },
+  submitTop40Result: { authRequired: false, userScoped: false },
   submitLeagueResult: { authRequired: false, userScoped: false },
   teamTournament: { authRequired: true, userScoped: true },
   teamTournamentDiagnostic: { authRequired: true, userScoped: false },

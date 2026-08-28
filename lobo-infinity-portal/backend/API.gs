@@ -928,6 +928,9 @@ function handleApiGet(e, action) {
     case "submitCasualResult":
       return submitCasualResult(e);
 
+    case "submitTop40Result":
+      return submitTop40Result(e);
+
     case "updateProfile":
       return updateMyProfile(e);
 
@@ -1309,6 +1312,9 @@ function handleApiPost(e, action) {
 
     case "submitCasualResult":
       return submitCasualResult(e);
+
+    case "submitTop40Result":
+      return submitTop40Result(e);
 
     case "voteArmyList":
       return requireApiPermission(e, "vote", function() {

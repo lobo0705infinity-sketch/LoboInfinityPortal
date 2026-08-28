@@ -421,7 +421,10 @@ function DoubleEliminationBracketPage({
       {bracket && !bracket.generated ? <section className="panel event-home-panel">
         <p>Bracket generation is pending completion of registration and seeding.</p>
       </section> : null}
-      {bracket?.generated ? <BracketStructure matches={bracket.matches} /> : null}
+      {bracket?.generated ? <>
+        {bracket.tournamentComplete && bracket.champion ? <section className="panel event-home-panel"><h2>Lobo's American Top 40 Champion</h2><p>{bracket.champion}</p></section> : null}
+        <BracketStructure matches={bracket.matches} />
+      </> : null}
     </main>
   )
 }
@@ -445,6 +448,7 @@ function BracketStructure({ matches }: { matches: EventBracketMatch[] }) {
                       <span>{formatBracketPlayer(match.playerA, match.playerASource, match.seedA)}</span>
                       <span>{formatBracketPlayer(match.playerB, match.playerBSource, match.seedB)}</span>
                       <small>{getBracketMatchStatus(match)}</small>
+                      {match.status === 'Completed' && match.winner ? <small>Winner: {match.winner}</small> : null}
                       {match.status === 'Active' && match.deadline ? <small>Deadline: {formatBracketDeadline(match.deadline)}</small> : null}
                     </article>
                   ))}

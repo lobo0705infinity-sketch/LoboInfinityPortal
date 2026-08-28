@@ -1247,6 +1247,7 @@ function getMutationInvalidationGroups(action: string) {
     case 'teamTournamentResult':
       return ['dashboard', 'eventHome', 'teamTournament', 'standings', 'analytics', 'records', 'players']
     case 'submitCasualResult':
+    case 'submitTop40Result':
       return ['dashboard', 'analytics', 'records', 'players']
     case 'teamTournamentTeam':
     case 'teamTournamentPairing':

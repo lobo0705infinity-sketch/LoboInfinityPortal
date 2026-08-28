@@ -15,7 +15,36 @@ function validateCanonicalGame(command) {
   if (source === "portal" && workflow === "team-tournament")
     return canonicalValidatePortalTeamTournamentGame_(input);
 
+  if (source === "portal" && workflow === "top-40")
+    return canonicalValidatePortalTop40Game_(input);
+
   return canonicalValidationFailure_("Canonical game validation workflow is not supported.");
+}
+
+function canonicalValidatePortalTop40Game_(command) {
+  const params = command.params || {};
+  const bracket = validateTop40BracketSubmission_(params);
+  if (!bracket.valid) return canonicalValidationFailure_(bracket.error);
+  if (getResultSubmissionString(params.mission) === "")
+    return canonicalValidationFailure_("Mission is required.");
+  if (getResultSubmissionString(params.firstTurn) === "")
+    return canonicalValidationFailure_("First Turn is required.");
+  if (getResultSubmissionString(params.bestMoment) === "")
+    return canonicalValidationFailure_("Best Moment is required.");
+  const scores = canonicalReadPortalScores_(params);
+  if (!scores.valid) return canonicalValidationFailure_("Scores must be non-negative numbers.");
+  if (scores.playerTp + scores.opponentTp > 10) return canonicalValidationFailure_("Tournament Points cannot total more than 10.");
+  const playerFaction = canonicalizeArmyName(params.playerFaction);
+  const opponentFaction = canonicalizeArmyName(params.opponentFaction);
+  if (!playerFaction || !opponentFaction) return canonicalValidationFailure_("Both factions are required.");
+  const playerArmyList = validateResultSubmissionArmyListId(params.playerArmyListId, bracket.player, playerFaction, params.playerArmyCode || params.player1ArmyCode);
+  if (!playerArmyList.valid) return canonicalValidationFailure_(playerArmyList.error);
+  const opponentArmyList = validateResultSubmissionArmyListId(params.opponentArmyListId, bracket.opponent, opponentFaction, params.opponentArmyCode || params.player2ArmyCode);
+  if (!opponentArmyList.valid) return canonicalValidationFailure_(opponentArmyList.error);
+  return canonicalValidationSuccess_(canonicalBuildPortalValidationValue_(
+    bracket.eventId, bracket.player, bracket.opponent, scores, params.winner,
+    playerFaction, opponentFaction, playerArmyList, opponentArmyList
+  ));
 }
 
 function canonicalValidateGoogleFormGame_(submission) {

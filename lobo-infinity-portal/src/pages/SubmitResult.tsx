@@ -18,6 +18,7 @@ import {
   type CasualResultSubmission,
   type ArmyList,
   type EventHomeData,
+  type EventBracketData,
   type LeagueResultSubmission,
   type SearchData,
   type TeamTournamentData,
@@ -149,6 +150,7 @@ export function LegacySubmitResult() {
   const shouldShowGameTypeSelector = !selectedGameType
   const [eventHome, setEventHome] = useState<EventHomeData | null>(null)
   const [teamTournament, setTeamTournament] = useState<TeamTournamentData | null>(null)
+  const [eventBracket, setEventBracket] = useState<EventBracketData | null>(null)
   const [searchIndex, setSearchIndex] = useState<SearchData | null>(null)
   const [showAllOpponents, setShowAllOpponents] = useState(false)
   const [commissionerMode, setCommissionerMode] = useState(false)
@@ -399,13 +401,30 @@ export function LegacySubmitResult() {
             home.statistics.currentRound,
         }))
 
-        if (isTournamentEventType(home.event.type)) {
+        if (home.event.type === 'Team Tournament') {
           const tournament = await apiClient.getTeamTournament(eventId, {
             signal: controller.signal,
           })
 
           if (!controller.signal.aborted) {
             setTeamTournament(tournament)
+          }
+        }
+
+        if (home.event.type === 'Individual Double Elimination') {
+          const bracket = await apiClient.getEventBracket(home.event.id, { signal: controller.signal })
+          if (!controller.signal.aborted) {
+            setEventBracket(bracket)
+            const active = bracket.matches.filter((match) => match.status === 'Active' && (sameValue(match.playerA, player) || sameValue(match.playerB, player)))
+            if (active.length === 1) {
+              const match = active[0]
+              setLeagueResult((current) => ({
+                ...current,
+                matchId: match.matchId,
+                opponent: sameValue(match.playerA, player) ? match.playerB : match.playerA,
+                winner: '',
+              }))
+            }
           }
         }
 
@@ -440,6 +459,20 @@ export function LegacySubmitResult() {
     isCasualRoute,
     shouldShowGameTypeSelector,
   ])
+
+  useEffect(() => {
+    if (eventHome?.event.type !== 'Individual Double Elimination' || !eventBracket) return
+    const player = leagueResult.player
+    const active = eventBracket.matches.filter((match) => match.status === 'Active' && (sameValue(match.playerA, player) || sameValue(match.playerB, player)))
+    setLeagueResult((current) => {
+      if (active.length !== 1) return { ...current, matchId: '', opponent: '', winner: '' }
+      const match = active[0]
+      const opponent = sameValue(match.playerA, player) ? match.playerB : match.playerA
+      const playerRegistration = eventHome.registration.registrations.find((entry) => sameValue(entry.player, player) || sameValue(entry.displayName, player))
+      const opponentRegistration = eventHome.registration.registrations.find((entry) => sameValue(entry.player, opponent) || sameValue(entry.displayName, opponent))
+      return { ...current, matchId: match.matchId, opponent, playerFaction: current.playerFaction || playerRegistration?.faction || '', opponentFaction: opponentRegistration?.faction || current.opponentFaction, winner: '' }
+    })
+  }, [eventBracket, eventHome, leagueResult.player])
 
   function updateCasualField(field: keyof CasualResultSubmission, value: string) {
     setCasualResult((current) => ({
@@ -506,6 +539,11 @@ export function LegacySubmitResult() {
             description="Submit an individual table result for the Team Tournament."
             label="Tournament"
             to="/submit-game?eventId=event-august-2026-team-tournament&gameType=event"
+          />
+          <SubmissionChoice
+            description="Submit an Active Lobo's American Top 40 bracket match."
+            label="Top 40"
+            to="/submit-game?eventId=event-lobo-s-american-top-40&gameType=event"
           />
           <SubmissionChoice
             description="Record a non-event game for lifetime analytics and activity feeds."
@@ -742,7 +780,10 @@ export function LegacySubmitResult() {
       ...leagueResult,
       bestMoment: getFormDataString(new FormData(event.currentTarget), 'bestMoment'),
     }
-    const validation = validateLeagueResult(eventHome, submission, {
+    const validation = eventHome.event.type === 'Individual Double Elimination' ? validateTop40Result(submission, {
+      factions: factionOptions,
+      missions: missionOptions,
+    }) : validateLeagueResult(eventHome, submission, {
       commissionerMode: isCommissionerSubmission,
       commissionerOverride: isCommissionerOverride,
       factions: factionOptions,
@@ -760,7 +801,11 @@ export function LegacySubmitResult() {
     setState({ status: 'submitting' })
 
     try {
-      await apiClient.submitLeagueResult(buildCommissionerPayload(submission))
+      if (eventHome.event.type === 'Individual Double Elimination') {
+        await apiClient.submitTop40Result(buildCommissionerPayload(submission))
+      } else {
+        await apiClient.submitLeagueResult(buildCommissionerPayload(submission))
+      }
       setState({
         message: 'Result submitted. Standings will refresh from the official event data.',
         status: 'success',
@@ -802,14 +847,17 @@ export function LegacySubmitResult() {
           />
         ) : null}
         <ReadOnlyField label="Event" value={eventHome?.event.name || eventId} />
-        <ReadOnlyField
-          label="Round"
-          value={leagueResult.round}
-        />
-        <ReadOnlyField
-          label="Division"
-          value={leagueResult.division}
-        />
+        {eventHome?.event.type === 'Individual Double Elimination' ? (
+          <ReadOnlyField label="Match" value={leagueResult.matchId || 'No Active match'} />
+        ) : (
+          <>
+            <ReadOnlyField label="Round" value={leagueResult.round} />
+            <ReadOnlyField label="Division" value={leagueResult.division} />
+          </>
+        )}
+        {eventHome?.event.type === 'Individual Double Elimination' ? (
+          <ReadOnlyField label="Opponent" value={leagueResult.opponent || 'No Active match'} />
+        ) : null}
         <SearchableSelect
           label="Mission"
           onChange={(value) => updateField('mission', value)}
@@ -855,15 +903,15 @@ export function LegacySubmitResult() {
             value={leagueResult.player}
           />
         )}
-        <SearchableSelect
+        {eventHome?.event.type !== 'Individual Double Elimination' ? <SearchableSelect
           label={isCommissionerSubmission ? 'Player 2' : 'Opponent'}
           onChange={(value) => updateField('opponent', value)}
           options={isCommissionerOverride ? allPlayerOptions.filter((option) => !sameValue(option.value, leagueResult.player)) : leagueOpponentOptions}
           placeholder="Search eligible opponents"
           required
           value={leagueResult.opponent}
-        />
-        {canOverrideOpponentFilter && !isCommissionerSubmission ? (
+        /> : null}
+        {eventHome?.event.type !== 'Individual Double Elimination' && canOverrideOpponentFilter && !isCommissionerSubmission ? (
           <label className="event-registration-check">
             <input
               checked={showAllOpponents}
@@ -917,7 +965,7 @@ export function LegacySubmitResult() {
         <SelectField
           label="Game Result"
           onChange={(value) => updateField('winner', value)}
-          options={buildGameResultOptions(leagueResult.player, leagueResult.opponent)}
+          options={buildGameResultOptions(leagueResult.player, leagueResult.opponent).filter((option) => eventHome?.event.type !== 'Individual Double Elimination' || option !== 'Draw')}
           required
           value={leagueResult.winner}
         />
@@ -1578,6 +1626,28 @@ function getTournamentAssignment(
     teamAId: resultStatus?.teamAId || data.teams.find((candidate) => sameValue(candidate.teamName, table.teamA))?.teamId || '',
     teamBId: resultStatus?.teamBId || data.teams.find((candidate) => sameValue(candidate.teamName, table.teamB))?.teamId || '',
   }
+}
+
+function validateTop40Result(
+  submission: LeagueResultSubmission,
+  options: { factions: PickerOption[]; missions: PickerOption[] },
+) {
+  const issues: string[] = []
+  if (!submission.player.trim()) issues.push('Player is required.')
+  if (!submission.matchId || !submission.opponent.trim()) issues.push('An Active Top 40 bracket match is required.')
+  if (!submission.playerFaction.trim() || !submission.opponentFaction.trim()) issues.push('Both factions are required.')
+  if (!submission.player1ArmyCode?.trim() || !submission.player2ArmyCode?.trim()) issues.push('Player 1 Army Code and Player 2 Army Code are required.')
+  if (submission.playerFaction && !optionContains(options.factions, submission.playerFaction)) issues.push('Registered Faction must be selected from the faction database.')
+  if (submission.opponentFaction && !optionContains(options.factions, submission.opponentFaction)) issues.push('Opponent Faction must be selected from the faction database.')
+  if (!submission.mission.trim() || !optionContains(options.missions, submission.mission)) issues.push('Mission must be selected from the mission database.')
+  if (!submission.firstTurn.trim()) issues.push('First Turn is required.')
+  if (!submission.bestMoment.trim()) issues.push('Best Moment is required.')
+  if (!submission.winner.trim()) issues.push('Game Result is required.')
+  if (submission.winner === 'Draw') issues.push('Top 40 bracket matches require a winner.')
+  const scores = [submission.playerTournamentPoints, submission.opponentTournamentPoints, submission.playerObjectivePoints, submission.opponentObjectivePoints, submission.playerVictoryPoints, submission.opponentVictoryPoints].map(parseScore)
+  if (scores.some((score) => score === null)) issues.push('Scores must be non-negative numbers.')
+  if (scores[0] !== null && scores[1] !== null && scores[0] + scores[1] > 10) issues.push('Tournament Points cannot total more than 10.')
+  return issues
 }
 
 function buildOpposingTeamRosterOptions(data: TeamTournamentData | null, opponentTeam: string) {
