@@ -17,6 +17,7 @@ import {
   getEventNavigationConfig,
 } from '../config/eventNavigation'
 import { type EventHomeData } from '../services/api'
+import { getDoubleEliminationBracketReadiness } from '../services/bracketReadiness'
 import { eventRepository, playerRepository, registrationRepository } from '../services/data'
 import { useSettings } from '../contexts/SettingsContext'
 import type { LeagueEvent } from '../types/dashboard'
@@ -341,12 +342,38 @@ function EventBracketPage({
   data: EventHomeData
   eventNavigationItems: Array<{ href: string; label: string }>
 }) {
+  if (data.event.type !== 'Individual Double Elimination') {
+    return (
+      <main className="portal-shell event-overview-shell" data-event-section="bracket">
+        <section className="page-header" aria-labelledby="event-bracket-title">
+          <p className="eyebrow">{data.event.name}</p>
+          <h1 id="event-bracket-title">Tournament Bracket</h1>
+          <p>The double-elimination bracket will be published here.</p>
+        </section>
+        <nav className="event-home-nav" aria-label="Event navigation">
+          {eventNavigationItems.map((item) => (
+            <Link key={`${item.label}-${item.href}`} to={item.href}>
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+      </main>
+    )
+  }
+
+  const readiness = getDoubleEliminationBracketReadiness({
+    capacity: data.registration.capacity.maximumPlayers,
+    eventType: data.event.type,
+    participants: data.registration.registrations,
+    registrationStatus: data.registration.status,
+  })
+
   return (
     <main className="portal-shell event-overview-shell" data-event-section="bracket">
       <section className="page-header" aria-labelledby="event-bracket-title">
         <p className="eyebrow">{data.event.name}</p>
         <h1 id="event-bracket-title">Tournament Bracket</h1>
-        <p>The double-elimination bracket will be published here.</p>
+        <p>Bracket has not been generated.</p>
       </section>
 
       <nav className="event-home-nav" aria-label="Event navigation">
@@ -356,6 +383,25 @@ function EventBracketPage({
           </Link>
         ))}
       </nav>
+
+      <section className="event-overview-status-grid" aria-label="Bracket readiness">
+        <EventMetric
+          label="Registered Players"
+          value={`${readiness.registeredCount} / ${readiness.capacity || '—'}`}
+        />
+        <EventMetric
+          label="Seeded Players"
+          value={`${readiness.seededCount} / ${readiness.registeredCount}`}
+        />
+        <EventMetric
+          label="Registration"
+          value={readiness.registrationClosed ? 'Closed' : 'Open'}
+        />
+      </section>
+
+      <section className="panel event-home-panel">
+        <p>Bracket generation is pending completion of registration and seeding.</p>
+      </section>
     </main>
   )
 }

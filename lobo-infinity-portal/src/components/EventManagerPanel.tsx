@@ -4,6 +4,7 @@ import {
   type EventRegistrationEntry,
 } from '../services/api'
 import { eventRepository } from '../services/data'
+import { getDoubleEliminationBracketReadiness } from '../services/bracketReadiness'
 import Skeleton from './Skeleton'
 import TeamPairingEditor from './TeamPairingEditor'
 
@@ -749,13 +750,21 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
           />
 
           {isIndividualDoubleElimination ? (
-            <TournamentSeedingPanel
-              canManage={canManage}
-              key={`${data.selectedEvent.id}-${data.generatedAt}`}
-              onSave={saveSeeding}
-              participants={data.participants}
-              working={workingAction !== ''}
-            />
+            <>
+              <TournamentSeedingPanel
+                canManage={canManage}
+                key={`${data.selectedEvent.id}-${data.generatedAt}`}
+                onSave={saveSeeding}
+                participants={data.participants}
+                working={workingAction !== ''}
+              />
+              <BracketGenerationPanel
+                capacity={data.registration.capacity.maximumPlayers}
+                eventType={data.selectedEvent.type}
+                participants={data.participants}
+                registrationStatus={data.registration.status}
+              />
+            </>
           ) : null}
 
           {isTeamTournament ? (
@@ -781,6 +790,66 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
         </section>
       </div>
     </div>
+  )
+}
+
+function BracketGenerationPanel({
+  capacity,
+  eventType,
+  participants,
+  registrationStatus,
+}: {
+  capacity: number
+  eventType: string
+  participants: EventRegistrationEntry[]
+  registrationStatus: string
+}) {
+  const [message, setMessage] = useState('')
+  const readiness = getDoubleEliminationBracketReadiness({
+    capacity,
+    eventType,
+    participants,
+    registrationStatus,
+  })
+
+  return (
+    <section className="event-manager-subpanel">
+      <h3>Bracket Generation</h3>
+      <div className="event-manager-summary" aria-label="Bracket readiness">
+        <Metric
+          label="Registered Players"
+          value={`${readiness.registeredCount} / ${readiness.capacity || '—'}`}
+        />
+        <Metric
+          label="Seeded Players"
+          value={`${readiness.seededCount} / ${readiness.registeredCount}`}
+        />
+        <Metric
+          label="Registration"
+          value={readiness.registrationClosed ? 'Closed' : 'Open'}
+        />
+        <Metric label="Bracket" value="Not Generated" />
+      </div>
+      <div aria-live="polite">
+        {readiness.ready ? (
+          <p>Ready to generate bracket.</p>
+        ) : (
+          readiness.reasons.map((reason) => <p key={reason}>{reason}</p>)
+        )}
+        {message ? <p className="form-success" role="status">{message}</p> : null}
+      </div>
+      <div className="event-manager-actions">
+        <button
+          disabled={!readiness.ready}
+          onClick={() =>
+            setMessage('Bracket generation is ready. Generator implementation is the next step.')
+          }
+          type="button"
+        >
+          Generate Bracket
+        </button>
+      </div>
+    </section>
   )
 }
 
