@@ -39,6 +39,7 @@ type ParticipantForm = {
 function EventManagerPanel({ canManage }: { canManage: boolean }) {
   const [state, setState] = useState<EventManagerState>({ status: 'loading' })
   const [selectedEventId, setSelectedEventId] = useState('event-current-league')
+  const [isCreatingEvent, setIsCreatingEvent] = useState(false)
   const initialEventId = useRef('event-current-league')
   const [workingAction, setWorkingAction] = useState('')
   const [actionError, setActionError] = useState('')
@@ -55,15 +56,6 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     startDate: '',
     status: '',
     type: 'League',
-  })
-  const [newEventForm, setNewEventForm] = useState({
-    description: '',
-    endDate: '',
-    name: '',
-    registration: 'Registration Closed',
-    rules: '',
-    startDate: '',
-    type: 'Custom',
   })
   const [participantForm, setParticipantForm] = useState({
     captain: 'false',
@@ -96,6 +88,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
   })
 
   function applyManagerData(data: EventManagerData) {
+    setIsCreatingEvent(false)
     setSelectedEventId(data.selectedEvent.id)
     setEventForm({
       description: data.selectedEvent.description,
@@ -210,6 +203,11 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
   async function saveSelectedEvent(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
+    if (isCreatingEvent) {
+      await createEvent()
+      return
+    }
+
     try {
       await runManagerAction(
         'saveEvent',
@@ -225,15 +223,13 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     }
   }
 
-  async function createEvent(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-
+  async function createEvent() {
     try {
       await runManagerAction(
         'createEvent',
         () =>
           eventRepository.saveEvent({
-            ...newEventForm,
+            ...eventForm,
             lifecycleStage: 'Planning',
             status: 'Planning',
           }),
@@ -242,6 +238,26 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     } catch {
       // runManagerAction has already rendered the safe backend error.
     }
+  }
+
+  function startCreateEvent() {
+    setSelectedEventId('')
+    setIsCreatingEvent(true)
+    setActionError('')
+    setActionMessage('')
+    setEventForm({
+      description: '',
+      endDate: '',
+      lifecycleStage: 'Planning',
+      name: '',
+      registration: 'Registration Closed',
+      rules: '',
+      scoringModel: '',
+      standingsModel: '',
+      startDate: '',
+      status: 'Planning',
+      type: 'Custom',
+    })
   }
 
   async function saveLeagueOperations(event: FormEvent<HTMLFormElement>) {
@@ -425,6 +441,19 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
 
       <div className="event-manager-layout">
         <section className="event-manager-list" aria-label="Events">
+          <button
+            className={
+              isCreatingEvent
+                ? 'event-manager-event active'
+                : 'event-manager-event'
+            }
+            disabled={!canManage || workingAction !== ''}
+            onClick={startCreateEvent}
+            type="button"
+          >
+            <strong>Create New Event</strong>
+            <span>Start a standalone event draft</span>
+          </button>
           {data.events.map((summary) => (
             <button
               className={
@@ -449,16 +478,16 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
         </section>
 
         <section className="event-manager-detail">
-          <div className="event-manager-summary">
+          {!isCreatingEvent ? <div className="event-manager-summary">
             <Metric label="Lifecycle" value={data.diagnostics.lifecycleStage} />
             <Metric label="Registration" value={data.diagnostics.registrationStatus} />
             <Metric label="Participants" value={data.diagnostics.participantCount} />
             <Metric label="Teams" value={data.diagnostics.teamCount} />
             <Metric label="Health" value={data.diagnostics.eventHealth} />
-          </div>
+          </div> : null}
 
           <form className="event-manager-form" onSubmit={saveSelectedEvent}>
-            <h3>Event Details</h3>
+            <h3>{isCreatingEvent ? 'Create Event' : 'Event Details'}</h3>
             <label>
               Name
               <input
@@ -575,35 +604,35 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
               <button disabled={!canManage || workingAction !== ''} type="submit">
                 Save Event
               </button>
-              <button
+              {!isCreatingEvent ? <button
                 disabled={!canManage || workingAction !== ''}
                 onClick={() => void applyLifecycle()}
                 type="button"
               >
                 Apply Lifecycle
-              </button>
-              <button
+              </button> : null}
+              {!isCreatingEvent ? <button
                 disabled={!canManage || workingAction !== ''}
                 onClick={() => void setRegistration('Registration Open', 'openRegistration')}
                 type="button"
               >
                 Open Registration
-              </button>
-              <button
+              </button> : null}
+              {!isCreatingEvent ? <button
                 disabled={!canManage || workingAction !== ''}
                 onClick={() => void setRegistration('Registration Open', 'reopenRegistration')}
                 type="button"
               >
                 Reopen Registration
-              </button>
-              <button
+              </button> : null}
+              {!isCreatingEvent ? <button
                 disabled={!canManage || workingAction !== ''}
                 onClick={() => void setRegistration('Registration Closed', 'closeRegistration')}
                 type="button"
               >
                 Close Registration
-              </button>
-              <button
+              </button> : null}
+              {!isCreatingEvent ? <button
                 disabled={!canManage || workingAction !== ''}
                 onClick={() =>
                   void runManagerAction('currentEvent', () =>
@@ -615,8 +644,8 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
                 type="button"
               >
                 Set Current Active Event
-              </button>
-              <button
+              </button> : null}
+              {!isCreatingEvent ? <button
                 disabled={!canManage || workingAction !== ''}
                 onClick={() =>
                   void runManagerAction('archive', () =>
@@ -631,11 +660,11 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
                 type="button"
               >
                 Archive
-              </button>
+              </button> : null}
             </div>
           </form>
 
-          {data.selectedEvent.type === 'League' ? (
+          {!isCreatingEvent && data.selectedEvent.type === 'League' ? (
             <form className="event-manager-form" onSubmit={saveLeagueOperations}>
               <h3>Mission & Map</h3>
               <label>
@@ -724,7 +753,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
             </form>
           ) : null}
 
-          <ParticipantsPanel
+          {!isCreatingEvent ? <ParticipantsPanel
             canManage={canManage}
             form={participantForm}
             onChange={setParticipantForm}
@@ -732,9 +761,9 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
             onSubmit={saveParticipant}
             participants={data.participants}
             working={workingAction !== ''}
-          />
+          /> : null}
 
-          {isTeamTournament ? (
+          {!isCreatingEvent && isTeamTournament ? (
             <TeamOperationsPanel
               canManage={canManage}
               onPairingSubmit={savePairing}
@@ -754,80 +783,6 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
             />
           ) : null}
 
-          <form className="event-manager-form" onSubmit={createEvent}>
-            <h3>Create Event</h3>
-            <label>
-              Event Name
-              <input
-                disabled={!canManage}
-                onChange={(event) =>
-                  setNewEventForm((current) => ({
-                    ...current,
-                    name: event.target.value,
-                  }))
-                }
-                value={newEventForm.name}
-              />
-            </label>
-            <label>
-              Type
-              <EventTypeSelect
-                disabled={!canManage}
-                onChange={(type) =>
-                  setNewEventForm((current) => ({
-                    ...current,
-                    type,
-                  }))
-                }
-                value={newEventForm.type}
-              />
-            </label>
-            <label>
-              Start Date
-              <input
-                disabled={!canManage}
-                onChange={(event) =>
-                  setNewEventForm((current) => ({
-                    ...current,
-                    startDate: event.target.value,
-                  }))
-                }
-                type="date"
-                value={newEventForm.startDate}
-              />
-            </label>
-            <label>
-              End Date
-              <input
-                disabled={!canManage}
-                onChange={(event) =>
-                  setNewEventForm((current) => ({
-                    ...current,
-                    endDate: event.target.value,
-                  }))
-                }
-                type="date"
-                value={newEventForm.endDate}
-              />
-            </label>
-            <label className="event-manager-wide">
-              Description
-              <textarea
-                disabled={!canManage}
-                onChange={(event) =>
-                  setNewEventForm((current) => ({
-                    ...current,
-                    description: event.target.value,
-                  }))
-                }
-                rows={2}
-                value={newEventForm.description}
-              />
-            </label>
-            <button disabled={!canManage || workingAction !== ''} type="submit">
-              Create Event
-            </button>
-          </form>
         </section>
       </div>
     </div>
