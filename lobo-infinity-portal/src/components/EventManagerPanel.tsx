@@ -167,6 +167,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
   async function runManagerAction(
     action: string,
     handler: () => Promise<EventManagerData>,
+    successMessage = 'Event Manager updated.',
   ) {
     setWorkingAction(action)
     setActionError('')
@@ -175,7 +176,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     try {
       const data = await handler()
       applyManagerData(data)
-      setActionMessage('Event Manager updated.')
+      setActionMessage(successMessage)
       return data
     } catch (error) {
       setActionError(
@@ -209,24 +210,38 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
   async function saveSelectedEvent(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    await runManagerAction('saveEvent', () =>
-      eventRepository.saveEvent({
-        ...eventForm,
-        eventId: selectedEventId,
-      }),
-    )
+    try {
+      await runManagerAction(
+        'saveEvent',
+        () =>
+          eventRepository.saveEvent({
+            ...eventForm,
+            eventId: selectedEventId,
+          }),
+        'Event saved.',
+      )
+    } catch {
+      // runManagerAction has already rendered the safe backend error.
+    }
   }
 
   async function createEvent(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    await runManagerAction('createEvent', () =>
-      eventRepository.saveEvent({
-        ...newEventForm,
-        lifecycleStage: 'Planning',
-        status: 'Planning',
-      }),
-    )
+    try {
+      await runManagerAction(
+        'createEvent',
+        () =>
+          eventRepository.saveEvent({
+            ...newEventForm,
+            lifecycleStage: 'Planning',
+            status: 'Planning',
+          }),
+        'Event created.',
+      )
+    } catch {
+      // runManagerAction has already rendered the safe backend error.
+    }
   }
 
   async function saveLeagueOperations(event: FormEvent<HTMLFormElement>) {
