@@ -140,6 +140,6 @@ assert.match(
   eventHomeSource,
   /The double-elimination bracket will be published here\./,
 )
-assert.doesNotMatch(eventHomeSource, /Winners Bracket|Losers Bracket|Grand Final|Generate Bracket/)
+assert.doesNotMatch(eventHomeSource, /Generate Bracket|generateBracket|bracketRecords|matchAdvancement/)
 
 console.log('Top 40 event shell checks passed')

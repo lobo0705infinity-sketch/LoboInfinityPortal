@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState, type FormEvent } from 'react'
+import { lazy, Suspense, useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import DiscordCommunityLink from '../components/DiscordCommunityLink'
@@ -800,6 +800,10 @@ function QuickActions({
 }
 
 function EventRules({ data }: { data: EventHomeData }) {
+  if (data.event.id === 'event-lobo-s-american-top-40') {
+    return <Top40Rules />
+  }
+
   return (
     <section className="panel event-home-panel" id="rules">
       <div className="panel-heading">
@@ -810,6 +814,159 @@ function EventRules({ data }: { data: EventHomeData }) {
       <EventMetric label="Standings" value={data.event.standingsModel} />
       <p>{data.event.rules || 'Event rules will be posted by the Commissioner.'}</p>
     </section>
+  )
+}
+
+function Top40Rules() {
+  return (
+    <section className="top40-rules" id="rules" aria-labelledby="top40-rules-title">
+      <div className="panel top40-rules-heading">
+        <p className="eyebrow">Official Event Rules</p>
+        <h2 id="top40-rules-title">Lobo&apos;s American Top 40</h2>
+        <p>
+          An individual double-elimination Infinity tournament for players
+          across the Americas.
+        </p>
+        <div className="top40-rule-highlights" aria-label="Defining tournament rules">
+          <strong>40 Player Max</strong>
+          <strong>Seeded by Corvus Belli ELO</strong>
+          <strong>Double Elimination</strong>
+          <strong>7+ Days per Active Match</strong>
+        </div>
+        <p className="top40-rule-warning">No Automatic Forfeits</p>
+      </div>
+
+      <div className="top40-rules-grid">
+        <RuleCard title="Event Format">
+          <p>
+            Lobo&apos;s American Top 40 is open to a maximum of 40 players.
+            Players remain in the tournament until they have lost twice.
+          </p>
+          <RuleList items={[
+            'First loss → move to the Losers Bracket.',
+            'Second loss → eliminated.',
+            'The tournament concludes with the Grand Final.',
+          ]} />
+        </RuleCard>
+
+        <RuleCard title="Registration">
+          <p>Registration is limited to 40 players.</p>
+          <p>
+            Players use their existing Lobo player identity and provide their
+            Corvus Belli ITS Name and Faction. Registration does not guarantee
+            a particular seed.
+          </p>
+        </RuleCard>
+
+        <RuleCard title="Seeding">
+          <p>
+            Initial seeding is determined by the Commissioner using Corvus
+            Belli ELO rankings. The Commissioner establishes the final order
+            before bracket generation. Initial seeds lock when the bracket is generated.
+          </p>
+        </RuleCard>
+
+        <RuleCard title="Double-Elimination Bracket">
+          <p>The seeded structure consists of:</p>
+          <RuleList items={['Winners Bracket', 'Losers Bracket', 'Grand Final']} />
+          <p>
+            The tournament may begin below capacity. Byes are assigned by seed,
+            with the highest seeds receiving available byes. A bye is not a
+            played game or tournament-statistics victory.
+          </p>
+        </RuleCard>
+
+        <RuleCard title="Rolling Match Schedule">
+          <p>
+            Top 40 does not wait for every player to complete a traditional
+            round. A matchup becomes Active as soon as both players are known.
+            Once activated, players receive at least 7 full days to schedule
+            and complete the game. Later matches may begin while other portions
+            of the bracket remain in play.
+          </p>
+        </RuleCard>
+
+        <RuleCard title="Match Deadlines" tone="warning">
+          <p>
+            Players must communicate and make a reasonable scheduling effort.
+            There are no automatic forfeits. If a match misses its deadline,
+            the Commissioner determines the resolution.
+          </p>
+          <RuleList items={['Deadline Extension', 'Forfeit', 'Other Commissioner Ruling']} />
+          <p>The portal never eliminates a player merely because a deadline expires.</p>
+        </RuleCard>
+
+        <RuleCard title="Missions">
+          <p>
+            Each matchup or bracket stage receives a Commissioner-assigned mission.
+            The mission shown in the Lobo Infinity Portal is the mission that must
+            be played. Known missions may later link to Mission Geist.
+          </p>
+        </RuleCard>
+
+        <RuleCard title="Game Results">
+          <p>
+            Completed games use the existing canonical Lobo Infinity Portal
+            submission architecture. The bracket determines the opponent.
+          </p>
+          <RuleList items={[
+            'Mission', 'Result', 'Tournament Points', 'Objective Points',
+            'Victory Points', 'First Turn', 'Factions', 'Army Codes', 'Best Moment',
+          ]} compact />
+        </RuleCard>
+
+        <RuleCard title="Army Lists and Factions">
+          <p>
+            Players register a faction. Army Codes from individual games use
+            the existing canonical Game Engine and Army Intelligence systems.
+            Top 40 does not introduce an army-list lock.
+          </p>
+        </RuleCard>
+
+        <RuleCard title="Commissioner Authority">
+          <p>The Commissioner has final authority over:</p>
+          <RuleList items={[
+            'Seeding', 'Match Deadlines', 'Extensions', 'Forfeits',
+            'Result Corrections', 'Bracket Corrections', 'Rules Disputes',
+          ]} compact />
+          <p>
+            Normal progression should ultimately follow valid submitted results;
+            Commissioner intervention is reserved for exceptional situations.
+          </p>
+        </RuleCard>
+      </div>
+
+      <section className="panel top40-champion-rule" aria-label="Champion rule">
+        <p className="eyebrow">Champion</p>
+        <p>The tournament continues until one double-elimination champion remains.</p>
+        <strong>Lobo&apos;s American Top 40 Champion</strong>
+      </section>
+    </section>
+  )
+}
+
+function RuleCard({
+  children,
+  title,
+  tone = 'default',
+}: {
+  children: ReactNode
+  title: string
+  tone?: 'default' | 'warning'
+}) {
+  return (
+    <article className={`panel top40-rule-card ${tone}`}>
+      <h3>{title}</h3>
+      {children}
+    </article>
+  )
+}
+
+function RuleList({ items, compact = false }: { items: string[]; compact?: boolean }) {
+  return (
+    <ul className={compact ? 'top40-rule-list compact' : 'top40-rule-list'}>
+      {items.map((item) => <li key={item}>{item}</li>)}
+    </ul>
   )
 }
 

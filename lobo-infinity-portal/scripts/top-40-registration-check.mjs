@@ -36,7 +36,10 @@ assert.match(eventHomeSource, />\s*Faction\s*</)
 assert.match(eventHomeSource, /registrationRepository\.register\(/)
 assert.match(eventHomeSource, /playerRepository\s*\.getAllPlayers/)
 assert.match(eventHomeSource, /getCanonicalArmyOptions\(\)\.map/)
-assert.doesNotMatch(eventHomeSource, /ITS ID|\bELO\b/)
+const registrationPageSource = eventHomeSource.match(
+  /function EventRegistrationPage\([\s\S]*?\nfunction EventBracketPage/,
+)?.[0] ?? ''
+assert.doesNotMatch(registrationPageSource, /ITS ID|\bELO\b/)
 assert.match(apiSource, /itsName\?: string/)
 assert.match(apiSource, /itsName: getString\(record, 'itsName'\)/)
 

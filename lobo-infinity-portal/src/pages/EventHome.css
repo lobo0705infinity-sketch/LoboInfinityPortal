@@ -118,20 +118,106 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.top40-rules {
+  display: grid;
+  gap: 18px;
+  grid-column: 1 / -1;
+}
+
+.top40-rules-heading {
+  background:
+    radial-gradient(circle at 82% 22%, rgba(240, 177, 62, 0.2), transparent 30%),
+    linear-gradient(135deg, rgba(76, 201, 240, 0.12), transparent 48%),
+    var(--panel-strong);
+}
+
+.top40-rules-heading h2 {
+  margin-bottom: 8px;
+}
+
+.top40-rule-highlights {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 18px;
+}
+
+.top40-rule-highlights strong {
+  border: 1px solid rgba(76, 201, 240, 0.32);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  padding: 12px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.top40-rule-warning {
+  border-left: 4px solid var(--gold);
+  color: var(--gold);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  margin: 16px 0 0;
+  padding: 8px 12px;
+  text-transform: uppercase;
+}
+
+.top40-rules-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.top40-rule-card h3 {
+  margin-bottom: 10px;
+}
+
+.top40-rule-card.warning {
+  border-color: rgba(240, 177, 62, 0.42);
+}
+
+.top40-rule-list {
+  display: grid;
+  gap: 7px;
+  margin: 12px 0;
+  padding-left: 20px;
+}
+
+.top40-rule-list.compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.top40-champion-rule {
+  border-color: rgba(240, 177, 62, 0.46);
+  text-align: center;
+}
+
+.top40-champion-rule strong {
+  color: var(--gold);
+  display: block;
+  font-size: clamp(1.35rem, 3vw, 2.2rem);
+  margin-top: 10px;
+}
+
 @media (max-width: 920px) {
   .event-overview-dashboard {
     grid-template-columns: 1fr;
   }
 
   .event-overview-status-grid,
-  .event-overview-metrics {
+  .event-overview-metrics,
+  .top40-rule-highlights {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 520px) {
   .event-overview-status-grid,
-  .event-overview-metrics {
+  .event-overview-metrics,
+  .top40-rule-highlights,
+  .top40-rules-grid,
+  .top40-rule-list.compact {
     grid-template-columns: 1fr;
   }
 }
