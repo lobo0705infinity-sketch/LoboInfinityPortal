@@ -16,8 +16,7 @@ import {
   buildCapabilityNavigation,
   getEventNavigationConfig,
 } from '../config/eventNavigation'
-import { type EventHomeData } from '../services/api'
-import { getDoubleEliminationBracketReadiness } from '../services/bracketReadiness'
+import { apiClient, type EventBracketData, type EventBracketMatch, type EventHomeData } from '../services/api'
 import { eventRepository, playerRepository, registrationRepository } from '../services/data'
 import { useSettings } from '../contexts/SettingsContext'
 import type { LeagueEvent } from '../types/dashboard'
@@ -361,19 +360,37 @@ function EventBracketPage({
     )
   }
 
-  const readiness = getDoubleEliminationBracketReadiness({
-    capacity: data.registration.capacity.maximumPlayers,
-    eventType: data.event.type,
-    participants: data.registration.registrations,
-    registrationStatus: data.registration.status,
-  })
+  return <DoubleEliminationBracketPage data={data} eventNavigationItems={eventNavigationItems} />
+}
+
+function DoubleEliminationBracketPage({
+  data,
+  eventNavigationItems,
+}: {
+  data: EventHomeData
+  eventNavigationItems: Array<{ href: string; label: string }>
+}) {
+  const [bracket, setBracket] = useState<EventBracketData | null>(null)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    const controller = new AbortController()
+    apiClient.getEventBracket(data.event.id, { signal: controller.signal })
+      .then(setBracket)
+      .catch((reason: unknown) => {
+        if (!controller.signal.aborted) setError(reason instanceof Error ? reason.message : 'Bracket could not be loaded.')
+      })
+    return () => controller.abort()
+  }, [data.event.id])
+
+  const readiness = bracket?.readiness
 
   return (
     <main className="portal-shell event-overview-shell" data-event-section="bracket">
       <section className="page-header" aria-labelledby="event-bracket-title">
         <p className="eyebrow">{data.event.name}</p>
         <h1 id="event-bracket-title">Tournament Bracket</h1>
-        <p>Bracket has not been generated.</p>
+        <p>{bracket?.generated ? 'Seeded double-elimination bracket.' : 'Bracket has not been generated.'}</p>
       </section>
 
       <nav className="event-home-nav" aria-label="Event navigation">
@@ -384,7 +401,7 @@ function EventBracketPage({
         ))}
       </nav>
 
-      <section className="event-overview-status-grid" aria-label="Bracket readiness">
+      {!bracket?.generated && readiness ? <section className="event-overview-status-grid" aria-label="Bracket readiness">
         <EventMetric
           label="Registered Players"
           value={`${readiness.registeredCount} / ${readiness.capacity || '—'}`}
@@ -397,13 +414,53 @@ function EventBracketPage({
           label="Registration"
           value={readiness.registrationClosed ? 'Closed' : 'Open'}
         />
-      </section>
+      </section> : null}
 
-      <section className="panel event-home-panel">
+      {error ? <section className="panel event-home-panel"><p role="alert">{error}</p></section> : null}
+      {!bracket ? <Skeleton label="Tournament bracket loading" rows={4} /> : null}
+      {bracket && !bracket.generated ? <section className="panel event-home-panel">
         <p>Bracket generation is pending completion of registration and seeding.</p>
-      </section>
+      </section> : null}
+      {bracket?.generated ? <BracketStructure matches={bracket.matches} /> : null}
     </main>
   )
+}
+
+function BracketStructure({ matches }: { matches: EventBracketMatch[] }) {
+  return (
+    <section className="event-bracket-structure" aria-label="Tournament bracket">
+      {(['Winners', 'Losers', 'Grand Final'] as const).map((bracketName) => {
+        const bracketMatches = matches.filter((match) => match.bracket === bracketName)
+        const rounds = [...new Set(bracketMatches.map((match) => match.bracketRound))]
+        return (
+          <section className="panel event-bracket-area" key={bracketName}>
+            <h2>{bracketName === 'Grand Final' ? 'Grand Final' : `${bracketName} Bracket`}</h2>
+            <div className="event-bracket-rounds">
+              {rounds.map((round) => (
+                <div className="event-bracket-round" key={round}>
+                  <h3>{bracketName === 'Grand Final' ? 'Winner Takes All' : `Round ${round}`}</h3>
+                  {bracketMatches.filter((match) => match.bracketRound === round).map((match) => (
+                    <article className="event-bracket-match" key={match.matchId}>
+                      <strong>{match.matchId}</strong>
+                      <span>{formatBracketPlayer(match.playerA, match.playerASource, match.seedA)}</span>
+                      <span>{formatBracketPlayer(match.playerB, match.playerBSource, match.seedB)}</span>
+                      <small>{match.status}</small>
+                    </article>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </section>
+        )
+      })}
+    </section>
+  )
+}
+
+function formatBracketPlayer(player: string, source: string, seed: number | null) {
+  if (player === 'BYE' || source === 'BYE') return 'BYE'
+  if (player) return seed ? `${seed}. ${player}` : player
+  return source ? `TBD — ${source}` : 'TBD'
 }
 
 function EventRulesPage({
@@ -951,7 +1008,7 @@ function Top40Rules() {
           <RuleList items={[
             'First loss → move to the Losers Bracket.',
             'Second loss → eliminated.',
-            'The tournament concludes with the Grand Final.',
+            'Grand Final — Winner Takes All is the one exception to the normal two-loss elimination structure.',
           ]} />
         </RuleCard>
 
@@ -979,6 +1036,14 @@ function Top40Rules() {
             The tournament may begin below capacity. Byes are assigned by seed,
             with the highest seeds receiving available byes. A bye is not a
             played game or tournament-statistics victory.
+          </p>
+          <h4>Grand Final — Winner Takes All</h4>
+          <p>
+            The winner of the Winners Bracket plays the winner of the Losers
+            Bracket in a single Grand Final. The winner of that game is
+            Lobo&apos;s American Top 40 Champion, regardless of previous losses.
+            This is the one exception to the normal two-loss elimination structure.
+            There is no bracket reset or second Grand Final.
           </p>
         </RuleCard>
 
@@ -1044,7 +1109,7 @@ function Top40Rules() {
 
       <section className="panel top40-champion-rule" aria-label="Champion rule">
         <p className="eyebrow">Champion</p>
-        <p>The tournament continues until one double-elimination champion remains.</p>
+        <p>One Grand Final decides the championship. Winner takes all.</p>
         <strong>Lobo&apos;s American Top 40 Champion</strong>
       </section>
     </section>

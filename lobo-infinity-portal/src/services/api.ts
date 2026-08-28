@@ -2731,6 +2731,8 @@ export type ApiClient = {
     eventId?: string,
     options?: ApiOptions,
   ) => Promise<EventHomeData>
+  getEventBracket: (eventId: string, options?: ApiOptions) => Promise<EventBracketData>
+  generateEventBracket: (eventId: string, options?: ApiOptions) => Promise<EventBracketData>
   getEventManager: (
     eventId?: string,
     options?: ApiOptions,
@@ -3490,6 +3492,43 @@ export async function getArmyIntelligence(
   return normalizeArmyIntelligencePayload(payload)
 }
 
+export type EventBracketReadiness = {
+  capacity: number
+  ready: boolean
+  reasons: string[]
+  registeredCount: number
+  registrationClosed: boolean
+  seededCount: number
+}
+
+export type EventBracketMatch = {
+  bracket: 'Winners' | 'Losers' | 'Grand Final'
+  bracketRound: number
+  eventId: string
+  loser: string
+  matchId: string
+  nextLoserMatch: string
+  nextLoserSlot: string
+  nextWinnerMatch: string
+  nextWinnerSlot: string
+  playerA: string
+  playerASource: string
+  playerB: string
+  playerBSource: string
+  position: number
+  seedA: number | null
+  seedB: number | null
+  status: string
+  winner: string
+}
+
+export type EventBracketData = {
+  eventId: string
+  generated: boolean
+  matches: EventBracketMatch[]
+  readiness: EventBracketReadiness
+}
+
 export async function getArmyIntelligenceSummary(
   options: ApiOptions = {},
 ): Promise<ArmyIntelligenceSummaryData> {
@@ -3674,6 +3713,20 @@ export async function getEventHome(
 ): Promise<EventHomeData> {
   const payload = await request('eventHome', options, { eventId })
   return normalizeEventHomePayload(payload)
+}
+
+export async function getEventBracket(
+  eventId: string,
+  options: ApiOptions = {},
+): Promise<EventBracketData> {
+  return normalizeEventBracketPayload(await request('eventBracket', options, { eventId }))
+}
+
+export async function generateEventBracket(
+  eventId: string,
+  options: ApiOptions = {},
+): Promise<EventBracketData> {
+  return normalizeEventBracketPayload(await postRequest('eventBracketGenerate', options, { eventId }))
 }
 
 export async function getEventManager(
@@ -4279,6 +4332,8 @@ export const apiClient: ApiClient = {
   getTeamTournament,
   getEventRegistration,
   getEventHome,
+  getEventBracket,
+  generateEventBracket,
   getLeagueOperations,
   getEventManager,
   registerForEvent,
@@ -8736,6 +8791,48 @@ function normalizeArmyListLinkCandidatesPayload(payload: unknown): ArmyListLinkC
   return {
     games: getRequiredArray(record, 'games').map(normalizeArmyListLinkGame),
     armyLists: getRequiredArray(record, 'armyLists').map(normalizeArmyList),
+  }
+}
+
+function normalizeEventBracketPayload(payload: unknown): EventBracketData {
+  const response = asRecord(payload, 'Event bracket response')
+  if (response.success === false) throw new Error(getString(response, 'error') || 'Bracket request failed.')
+  const bracket = getRequiredRecord(response, 'bracket')
+  const readiness = getRequiredRecord(bracket, 'readiness')
+  return {
+    eventId: getString(bracket, 'eventId'),
+    generated: getOptionalBoolean(bracket, 'generated') ?? false,
+    readiness: {
+      capacity: getNumber(readiness, 'capacity'),
+      ready: getOptionalBoolean(readiness, 'ready') ?? false,
+      reasons: getArray(readiness, 'reasons').map(String),
+      registeredCount: getNumber(readiness, 'registeredCount'),
+      registrationClosed: getOptionalBoolean(readiness, 'registrationClosed') ?? false,
+      seededCount: getNumber(readiness, 'seededCount'),
+    },
+    matches: getArray(bracket, 'matches').map((item) => {
+      const match = asRecord(item, 'Event bracket match')
+      return {
+        bracket: getString(match, 'bracket') as EventBracketMatch['bracket'],
+        bracketRound: getNumber(match, 'bracketRound'),
+        eventId: getString(match, 'eventId'),
+        loser: getString(match, 'loser'),
+        matchId: getString(match, 'matchId'),
+        nextLoserMatch: getString(match, 'nextLoserMatch'),
+        nextLoserSlot: getString(match, 'nextLoserSlot'),
+        nextWinnerMatch: getString(match, 'nextWinnerMatch'),
+        nextWinnerSlot: getString(match, 'nextWinnerSlot'),
+        playerA: getString(match, 'playerA'),
+        playerASource: getString(match, 'playerASource'),
+        playerB: getString(match, 'playerB'),
+        playerBSource: getString(match, 'playerBSource'),
+        position: getNumber(match, 'position'),
+        seedA: getString(match, 'seedA') === '' ? null : getNumber(match, 'seedA'),
+        seedB: getString(match, 'seedB') === '' ? null : getNumber(match, 'seedB'),
+        status: getString(match, 'status'),
+        winner: getString(match, 'winner'),
+      }
+    }),
   }
 }
 

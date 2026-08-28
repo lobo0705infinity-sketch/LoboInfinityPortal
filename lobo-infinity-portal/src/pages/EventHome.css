@@ -221,3 +221,39 @@
     grid-template-columns: 1fr;
   }
 }
+.event-bracket-structure {
+  display: grid;
+  gap: 1rem;
+}
+
+.event-bracket-area {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.event-bracket-rounds {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.event-bracket-round {
+  display: grid;
+  flex: 0 0 min(18rem, 82vw);
+  gap: 0.75rem;
+  align-content: start;
+}
+
+.event-bracket-match {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.8rem;
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.14));
+  border-radius: 0.65rem;
+}
+
+.event-bracket-match span,
+.event-bracket-match small {
+  overflow-wrap: anywhere;
+}

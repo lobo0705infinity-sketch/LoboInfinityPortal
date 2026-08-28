@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import {
+  apiClient,
+  type EventBracketData,
   type EventManagerData,
   type EventRegistrationEntry,
 } from '../services/api'
 import { eventRepository } from '../services/data'
-import { getDoubleEliminationBracketReadiness } from '../services/bracketReadiness'
 import Skeleton from './Skeleton'
 import TeamPairingEditor from './TeamPairingEditor'
 
@@ -759,10 +760,8 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
                 working={workingAction !== ''}
               />
               <BracketGenerationPanel
-                capacity={data.registration.capacity.maximumPlayers}
-                eventType={data.selectedEvent.type}
-                participants={data.participants}
-                registrationStatus={data.registration.status}
+                canManage={canManage}
+                eventId={data.selectedEvent.id}
               />
             </>
           ) : null}
@@ -793,62 +792,53 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
   )
 }
 
-function BracketGenerationPanel({
-  capacity,
-  eventType,
-  participants,
-  registrationStatus,
-}: {
-  capacity: number
-  eventType: string
-  participants: EventRegistrationEntry[]
-  registrationStatus: string
-}) {
+function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; eventId: string }) {
   const [message, setMessage] = useState('')
-  const readiness = getDoubleEliminationBracketReadiness({
-    capacity,
-    eventType,
-    participants,
-    registrationStatus,
-  })
+  const [error, setError] = useState('')
+  const [generating, setGenerating] = useState(false)
+  const [bracket, setBracket] = useState<EventBracketData | null>(null)
+  const loadBracket = useCallback(() => {
+    apiClient.getEventBracket(eventId).then(setBracket).catch((reason: unknown) =>
+      setError(reason instanceof Error ? reason.message : 'Bracket status could not be loaded.'),
+    )
+  }, [eventId])
+  useEffect(loadBracket, [loadBracket])
 
+  async function generateBracket() {
+    setGenerating(true)
+    setMessage('Generating bracket...')
+    setError('')
+    try {
+      setBracket(await apiClient.generateEventBracket(eventId))
+      setMessage('Bracket generated.')
+    } catch (reason) {
+      setMessage('')
+      setError(reason instanceof Error ? reason.message : 'Bracket could not be generated.')
+    } finally {
+      setGenerating(false)
+    }
+  }
+
+  const readiness = bracket?.readiness
   return (
     <section className="event-manager-subpanel">
       <h3>Bracket Generation</h3>
       <div className="event-manager-summary" aria-label="Bracket readiness">
-        <Metric
-          label="Registered Players"
-          value={`${readiness.registeredCount} / ${readiness.capacity || '—'}`}
-        />
-        <Metric
-          label="Seeded Players"
-          value={`${readiness.seededCount} / ${readiness.registeredCount}`}
-        />
-        <Metric
-          label="Registration"
-          value={readiness.registrationClosed ? 'Closed' : 'Open'}
-        />
-        <Metric label="Bracket" value="Not Generated" />
+        <Metric label="Registered Players" value={readiness ? `${readiness.registeredCount} / ${readiness.capacity || '—'}` : 'Loading'} />
+        <Metric label="Seeded Players" value={readiness ? `${readiness.seededCount} / ${readiness.registeredCount}` : 'Loading'} />
+        <Metric label="Registration" value={readiness ? (readiness.registrationClosed ? 'Closed' : 'Open') : 'Loading'} />
+        <Metric label="Bracket" value={bracket?.generated ? 'Generated' : 'Not Generated'} />
       </div>
       <div aria-live="polite">
-        {readiness.ready ? (
-          <p>Ready to generate bracket.</p>
-        ) : (
-          readiness.reasons.map((reason) => <p key={reason}>{reason}</p>)
-        )}
+        {bracket?.generated ? <p>Bracket Generated</p> : readiness?.ready ? <p>Ready to generate bracket.</p> : readiness?.reasons.map((reason) => <p key={reason}>{reason}</p>)}
         {message ? <p className="form-success" role="status">{message}</p> : null}
+        {error ? <p className="form-error" role="alert">{error}</p> : null}
       </div>
-      <div className="event-manager-actions">
-        <button
-          disabled={!readiness.ready}
-          onClick={() =>
-            setMessage('Bracket generation is ready. Generator implementation is the next step.')
-          }
-          type="button"
-        >
-          Generate Bracket
+      {!bracket?.generated ? <div className="event-manager-actions">
+        <button disabled={!canManage || !readiness?.ready || generating} onClick={generateBracket} type="button">
+          {generating ? 'Generating bracket...' : 'Generate Bracket'}
         </button>
-      </div>
+      </div> : null}
     </section>
   )
 }

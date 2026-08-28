@@ -84,6 +84,8 @@ const CONFIG = {
 
     EVENT_ROUNDS: "Event Rounds",
 
+    EVENT_BRACKET_MATCHES: "Event Bracket Matches",
+
     EVENT_LIFECYCLE_AUDIT: "Event Lifecycle Audit",
 
     TEAM_TOURNAMENT_TEAMS: "Team Tournament Teams",

@@ -612,6 +612,9 @@ function handleApiGet(e, action) {
     case "eventHome":
       return getEventHome(e);
 
+    case "eventBracket":
+      return getEventBracket(e);
+
     case "eventManager":
       return getEventManager(e);
 
@@ -874,6 +877,9 @@ function handleApiGet(e, action) {
 
     case "eventManagerParticipant":
       return saveEventManagerParticipant(e);
+
+    case "eventBracketGenerate":
+      return generateEventBracket(e);
 
     case "eventManagerTeam":
       return saveEventManagerTeam(e);
@@ -1356,6 +1362,9 @@ function handleApiPost(e, action) {
 
     case "eventManagerParticipant":
       return saveEventManagerParticipant(e);
+
+    case "eventBracketGenerate":
+      return generateEventBracket(e);
 
     case "eventManagerTeam":
       return saveEventManagerTeam(e);

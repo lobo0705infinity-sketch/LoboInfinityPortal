@@ -62,9 +62,10 @@ assert.match(eventHomeSource, /Registered Players/)
 assert.match(eventHomeSource, /Seeded Players/)
 assert.doesNotMatch(eventHomeSource.slice(eventHomeSource.indexOf('function EventBracketPage'), eventHomeSource.indexOf('function EventRulesPage')), /Generate Bracket/)
 assert.match(managerSource, /<h3>Bracket Generation<\/h3>/)
-assert.match(managerSource, />\s*Generate Bracket\s*<\/button>/)
-assert.match(managerSource, /disabled=\{!readiness\.ready\}/)
-assert.match(managerSource, /Generator implementation is the next step\./)
+assert.match(managerSource, /Generate Bracket/)
+assert.match(managerSource, /!readiness\?\.ready/)
+assert.match(managerSource, /apiClient\.generateEventBracket\(eventId\)/)
+assert.match(managerSource, /Bracket generated\./)
 
 const generationPanel = managerSource.slice(
   managerSource.indexOf('function BracketGenerationPanel'),
@@ -76,8 +77,6 @@ assert.match(helperSource, /participant\.status === 'Registered'/)
 assert.match(helperSource, /seed === index \+ 1/)
 assert.match(seedingSource, /function saveEventManagerSeeding_/)
 
-for (const forbidden of ['Winners Bracket', 'Losers Bracket', 'Grand Final', 'Match ID']) {
-  assert.doesNotMatch(generationPanel, new RegExp(forbidden))
-}
+assert.doesNotMatch(generationPanel, /Generator implementation is the next step/)
 
 console.log('Top 40 bracket readiness regression passed.')
