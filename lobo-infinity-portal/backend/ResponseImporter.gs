@@ -15,10 +15,13 @@ function handleLoboFormSubmit(e) {
       return;
     }
 
+    const namedValues = formType === LIF_FORMS.TYPES.CASUAL
+      ? lifBuildCasualNamedValuesFromResponseRow_(e)
+      : e.namedValues;
     const command = createSubmissionCommand({
       source: "google-form",
       workflow: formType,
-      namedValues: e.namedValues,
+      namedValues: namedValues,
       timestamp: e.values && e.values[0],
       targetSpreadsheet: target,
       importLog: log,
@@ -88,6 +91,33 @@ function lifImportCommunityPlayer_(e, log, responseKey) {
       Logger.log(safeMessage);
     }
   }
+}
+
+function lifBuildCasualNamedValuesFromResponseRow_(e) {
+  const sheet = e.range.getSheet();
+  const lastColumn = sheet.getLastColumn();
+  const headers = sheet.getRange(1, 1, 1, lastColumn).getDisplayValues()[0];
+  const values = sheet.getRange(e.range.getRow(), 1, 1, lastColumn).getDisplayValues()[0];
+  return lifCollapseCasualResponseColumns_(headers, values);
+}
+
+function lifCollapseCasualResponseColumns_(headers, values) {
+  const grouped = {};
+  (headers || []).forEach(function(header, index) {
+    const title = String(header || "").trim();
+    if (!title) return;
+    const value = String((values || [])[index] || "").trim();
+    if (!grouped[title]) grouped[title] = [];
+    if (value && grouped[title].indexOf(value) < 0) grouped[title].push(value);
+  });
+  const namedValues = {};
+  Object.keys(grouped).forEach(function(title) {
+    if (grouped[title].length > 1) {
+      throw new Error("Casual response has conflicting values for duplicate header: " + title + ".");
+    }
+    namedValues[title] = [grouped[title][0] || ""];
+  });
+  return namedValues;
 }
 
 function lifReadSubmission_(named, formType, timestamp, targetSpreadsheet) {
