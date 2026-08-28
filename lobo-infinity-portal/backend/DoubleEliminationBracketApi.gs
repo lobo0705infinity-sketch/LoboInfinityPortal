@@ -2,7 +2,7 @@ const DOUBLE_ELIMINATION_BRACKET_HEADERS = [
   "Event ID", "Match ID", "Bracket", "Bracket Round", "Position",
   "Player A", "Seed A", "Player B", "Seed B", "Player A Source", "Player B Source",
   "Status", "Winner", "Loser", "Next Winner Match", "Next Winner Slot",
-  "Next Loser Match", "Next Loser Slot", "Created At"
+  "Next Loser Match", "Next Loser Slot", "Created At", "Activated At", "Deadline"
 ];
 
 function getEventBracket(e) {
@@ -39,12 +39,15 @@ function generateEventBracket(e) {
           return { player: entry.player, seed: Number(entry.seed), itsName: entry.itsName || "", faction: entry.faction || "" };
         });
       const matches = buildDoubleEliminationBracket_(eventId, entrants);
+      activatePlayableEventBracketMatches_(matches, new Date());
       validateDoubleEliminationBracket_(matches, entrants);
+      validateEventBracketLifecycle_(matches);
       let persisted;
       try {
         persistEventBracketMatches_(eventId, matches);
         persisted = readEventBracketMatches_(eventId);
         validateDoubleEliminationBracket_(persisted, entrants);
+        validateEventBracketLifecycle_(persisted);
       } catch (persistenceError) {
         removeEventBracketMatches_(eventId);
         throw persistenceError;
@@ -56,6 +59,107 @@ function generateEventBracket(e) {
       lock.releaseLock();
     }
   });
+}
+
+function updateEventBracketDeadline(e) {
+  return requireApiPermission(e, "runSeasonControl", function(auth) {
+    const params = getApiParameters(e);
+    const eventId = getEventManagerString(params.eventId);
+    const matchId = getEventManagerString(params.matchId);
+    if (eventId === "" || matchId === "") throw new Error("Event ID and Match ID are required.");
+    const lock = LockService.getScriptLock();
+    lock.waitLock(10000);
+    try {
+      if (!getEventByIdNoEnsure(eventId)) throw new Error("Event not found.");
+      const sheet = ensureEventEngineSheet(CONFIG.SHEETS.EVENT_BRACKET_MATCHES, DOUBLE_ELIMINATION_BRACKET_HEADERS);
+      const values = sheet.getDataRange().getValues();
+      if (values.length < 2) throw new Error("Bracket match not found.");
+      const headers = values[0].map(getEventManagerString);
+      const eventIndex = headers.indexOf("Event ID");
+      const matchIndex = headers.indexOf("Match ID");
+      const statusIndex = headers.indexOf("Status");
+      const activatedIndex = headers.indexOf("Activated At");
+      const deadlineIndex = headers.indexOf("Deadline");
+      let rowIndex = -1;
+      for (let row = 1; row < values.length; row++) {
+        if (getEventManagerString(values[row][eventIndex]) === eventId && getEventManagerString(values[row][matchIndex]) === matchId) {
+          rowIndex = row;
+          break;
+        }
+      }
+      if (rowIndex === -1) throw new Error("Bracket match not found.");
+      if (getEventManagerString(values[rowIndex][statusIndex]) !== "Active") throw new Error("Only Active match deadlines can be edited.");
+      const activatedAt = getEventManagerString(values[rowIndex][activatedIndex]);
+      const deadline = validateEventBracketDeadline_(activatedAt, params.deadline);
+      sheet.getRange(rowIndex + 1, deadlineIndex + 1).setValue(deadline);
+      SpreadsheetApp.flush();
+      recordEventManagerAudit(auth, eventId, "Bracket deadline updated", matchId + " deadline " + deadline);
+      invalidateEventManagerCaches();
+      const event = getEventById(eventId);
+      return jsonOutput({ success: true, bracket: buildEventBracketProjection_(event, getEventRegistrationRows(eventId)) });
+    } finally {
+      lock.releaseLock();
+    }
+  });
+}
+
+function activatePlayableEventBracketMatches_(matches, activatedAt) {
+  const activationDate = activatedAt instanceof Date ? activatedAt : new Date(activatedAt);
+  if (isNaN(activationDate.getTime())) throw new Error("Bracket activation timestamp is invalid.");
+  const activatedText = formatEventBracketTimestamp_(activationDate);
+  const deadlineText = formatEventBracketTimestamp_(new Date(activationDate.getTime() + 7 * 24 * 60 * 60 * 1000));
+  matches.forEach(function(match) {
+    const bothPlayersKnown = isRealEventBracketPlayer_(match.playerA) && isRealEventBracketPlayer_(match.playerB);
+    const resolved = match.status === "Completed" || match.status === "Bye Advanced" || match.winner !== "";
+    if (bothPlayersKnown && !resolved && !match.activatedAt) {
+      match.status = "Active";
+      match.activatedAt = activatedText;
+      match.deadline = deadlineText;
+    }
+  });
+  return matches;
+}
+
+function isRealEventBracketPlayer_(player) {
+  const value = getEventManagerString(player);
+  return value !== "" && value !== "BYE";
+}
+
+function formatEventBracketTimestamp_(value) {
+  return Utilities.formatDate(value, Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm:ss");
+}
+
+function parseEventBracketTimestamp_(value) {
+  const text = getEventManagerString(value);
+  if (text === "") return null;
+  if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(text))
+    return Utilities.parseDate(text, Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm:ss");
+  const parsed = new Date(text);
+  return isNaN(parsed.getTime()) ? null : parsed;
+}
+
+function validateEventBracketDeadline_(activatedAt, proposedDeadline) {
+  const activated = parseEventBracketTimestamp_(activatedAt);
+  const deadline = parseEventBracketTimestamp_(proposedDeadline);
+  if (!activated || !deadline) throw new Error("Enter a valid deadline.");
+  if (deadline.getTime() <= activated.getTime()) throw new Error("Deadline must be after Activated At.");
+  return formatEventBracketTimestamp_(deadline);
+}
+
+function validateEventBracketLifecycle_(matches) {
+  matches.forEach(function(match) {
+    if (match.status === "Active") {
+      const activated = parseEventBracketTimestamp_(match.activatedAt);
+      const deadline = parseEventBracketTimestamp_(match.deadline);
+      if (!activated || !deadline || deadline.getTime() - activated.getTime() !== 7 * 24 * 60 * 60 * 1000)
+        throw new Error("Active bracket match lifecycle is invalid.");
+      if (!isRealEventBracketPlayer_(match.playerA) || !isRealEventBracketPlayer_(match.playerB))
+        throw new Error("Only matches with two real players may be Active.");
+    }
+    if (match.status === "Bye Advanced" && (match.activatedAt || match.deadline))
+      throw new Error("Bye matches cannot have activation deadlines.");
+  });
+  return true;
 }
 
 function buildEventBracketProjection_(event, participants, suppliedMatches) {
@@ -97,7 +201,7 @@ function buildDoubleEliminationBracket_(eventId, entrants) {
   const rounds = Math.log(capacity) / Math.log(2);
   const matches = [];
   function makeMatch(id, bracket, round, position) {
-    return { eventId:eventId, matchId:id, bracket:bracket, bracketRound:round, position:position, playerA:"", seedA:"", playerB:"", seedB:"", playerASource:"", playerBSource:"", status:"Pending", winner:"", loser:"", nextWinnerMatch:"", nextWinnerSlot:"", nextLoserMatch:"", nextLoserSlot:"" };
+    return { eventId:eventId, matchId:id, bracket:bracket, bracketRound:round, position:position, playerA:"", seedA:"", playerB:"", seedB:"", playerASource:"", playerBSource:"", status:"Pending", winner:"", loser:"", nextWinnerMatch:"", nextWinnerSlot:"", nextLoserMatch:"", nextLoserSlot:"", activatedAt:"", deadline:"" };
   }
   for (let round = 1; round <= rounds; round++) {
     const count = capacity / Math.pow(2, round);
@@ -185,7 +289,7 @@ function persistEventBracketMatches_(eventId, matches) {
   const existing = getEventEngineRows(sheet).filter(function(row){return row["Event ID"] === eventId;});
   if (existing.length) throw new Error("Bracket has already been generated.");
   const now = getEventManagerTimestamp();
-  const rows = matches.map(function(m){return [m.eventId,m.matchId,m.bracket,m.bracketRound,m.position,m.playerA,m.seedA,m.playerB,m.seedB,m.playerASource,m.playerBSource,m.status,m.winner,m.loser,m.nextWinnerMatch,m.nextWinnerSlot,m.nextLoserMatch,m.nextLoserSlot,now];});
+  const rows = matches.map(function(m){return [m.eventId,m.matchId,m.bracket,m.bracketRound,m.position,m.playerA,m.seedA,m.playerB,m.seedB,m.playerASource,m.playerBSource,m.status,m.winner,m.loser,m.nextWinnerMatch,m.nextWinnerSlot,m.nextLoserMatch,m.nextLoserSlot,now,m.activatedAt||"",m.deadline||""];});
   if (rows.length) sheet.getRange(sheet.getLastRow()+1,1,rows.length,DOUBLE_ELIMINATION_BRACKET_HEADERS.length).setValues(rows);
   SpreadsheetApp.flush();
 }
@@ -193,7 +297,7 @@ function persistEventBracketMatches_(eventId, matches) {
 function readEventBracketMatches_(eventId) {
   const sheet = getEventEngineRuntimeSheet(CONFIG.SHEETS.EVENT_BRACKET_MATCHES);
   if (!sheet) return [];
-  return getEventEngineRows(sheet).filter(function(row){return row["Event ID"] === eventId;}).map(function(row){return { eventId:row["Event ID"],matchId:row["Match ID"],bracket:row["Bracket"],bracketRound:Number(row["Bracket Round"]),position:Number(row["Position"]),playerA:row["Player A"]||"",seedA:row["Seed A"]===""?"":Number(row["Seed A"]),playerB:row["Player B"]||"",seedB:row["Seed B"]===""?"":Number(row["Seed B"]),playerASource:row["Player A Source"]||"",playerBSource:row["Player B Source"]||"",status:row["Status"]||"Pending",winner:row["Winner"]||"",loser:row["Loser"]||"",nextWinnerMatch:row["Next Winner Match"]||"",nextWinnerSlot:row["Next Winner Slot"]||"",nextLoserMatch:row["Next Loser Match"]||"",nextLoserSlot:row["Next Loser Slot"]||""};});
+  return getEventEngineRows(sheet).filter(function(row){return row["Event ID"] === eventId;}).map(function(row){return { eventId:row["Event ID"],matchId:row["Match ID"],bracket:row["Bracket"],bracketRound:Number(row["Bracket Round"]),position:Number(row["Position"]),playerA:row["Player A"]||"",seedA:row["Seed A"]===""?"":Number(row["Seed A"]),playerB:row["Player B"]||"",seedB:row["Seed B"]===""?"":Number(row["Seed B"]),playerASource:row["Player A Source"]||"",playerBSource:row["Player B Source"]||"",status:row["Status"]||"Pending",winner:row["Winner"]||"",loser:row["Loser"]||"",nextWinnerMatch:row["Next Winner Match"]||"",nextWinnerSlot:row["Next Winner Slot"]||"",nextLoserMatch:row["Next Loser Match"]||"",nextLoserSlot:row["Next Loser Slot"]||"",activatedAt:row["Activated At"]||"",deadline:row["Deadline"]||""};});
 }
 
 function removeEventBracketMatches_(eventId) {

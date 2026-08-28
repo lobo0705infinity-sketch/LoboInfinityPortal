@@ -797,6 +797,8 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
   const [error, setError] = useState('')
   const [generating, setGenerating] = useState(false)
   const [bracket, setBracket] = useState<EventBracketData | null>(null)
+  const [deadlineDrafts, setDeadlineDrafts] = useState<Record<string, string>>({})
+  const [savingDeadline, setSavingDeadline] = useState('')
   const loadBracket = useCallback(() => {
     apiClient.getEventBracket(eventId).then(setBracket).catch((reason: unknown) =>
       setError(reason instanceof Error ? reason.message : 'Bracket status could not be loaded.'),
@@ -819,7 +821,28 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
     }
   }
 
+  async function saveDeadline(matchId: string) {
+    const deadline = deadlineDrafts[matchId]
+    if (!deadline) {
+      setError('Enter a valid deadline.')
+      return
+    }
+    setSavingDeadline(matchId)
+    setMessage('Saving deadline...')
+    setError('')
+    try {
+      setBracket(await apiClient.updateEventBracketDeadline(eventId, matchId, deadline.replace('T', ' ') + ':00'))
+      setMessage('Deadline saved.')
+    } catch (reason) {
+      setMessage('')
+      setError(reason instanceof Error ? reason.message : 'Deadline could not be saved.')
+    } finally {
+      setSavingDeadline('')
+    }
+  }
+
   const readiness = bracket?.readiness
+  const activeMatches = bracket?.matches.filter((match) => match.status === 'Active') ?? []
   return (
     <section className="event-manager-subpanel">
       <h3>Bracket Generation</h3>
@@ -839,8 +862,36 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
           {generating ? 'Generating bracket...' : 'Generate Bracket'}
         </button>
       </div> : null}
+      {bracket?.generated ? <section aria-labelledby="active-bracket-matches-title">
+        <h4 id="active-bracket-matches-title">Active Matches</h4>
+        {activeMatches.length === 0 ? <p>No active bracket matches.</p> : activeMatches.map((match) => (
+          <div className="event-manager-row" key={match.matchId}>
+            <div>
+              <strong>{match.matchId}</strong>
+              <span>{match.playerA} vs {match.playerB}</span>
+              <small>Activated At: {formatBracketTimestamp(match.activatedAt)}</small>
+            </div>
+            <label>
+              Deadline
+              <input
+                disabled={!canManage || savingDeadline !== ''}
+                onChange={(event) => setDeadlineDrafts((current) => ({ ...current, [match.matchId]: event.target.value }))}
+                type="datetime-local"
+                value={deadlineDrafts[match.matchId] ?? match.deadline.replace(' ', 'T').slice(0, 16)}
+              />
+            </label>
+            <button disabled={!canManage || savingDeadline !== ''} onClick={() => saveDeadline(match.matchId)} type="button">
+              {savingDeadline === match.matchId ? 'Saving...' : 'Edit Deadline'}
+            </button>
+          </div>
+        ))}
+      </section> : null}
     </section>
   )
+}
+
+function formatBracketTimestamp(value: string) {
+  return value ? value.replace('T', ' ') : 'Not set'
 }
 
 function TournamentSeedingPanel({

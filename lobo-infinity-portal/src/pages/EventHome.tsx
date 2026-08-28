@@ -444,7 +444,8 @@ function BracketStructure({ matches }: { matches: EventBracketMatch[] }) {
                       <strong>{match.matchId}</strong>
                       <span>{formatBracketPlayer(match.playerA, match.playerASource, match.seedA)}</span>
                       <span>{formatBracketPlayer(match.playerB, match.playerBSource, match.seedB)}</span>
-                      <small>{match.status}</small>
+                      <small>{getBracketMatchStatus(match)}</small>
+                      {match.status === 'Active' && match.deadline ? <small>Deadline: {formatBracketDeadline(match.deadline)}</small> : null}
                     </article>
                   ))}
                 </div>
@@ -455,6 +456,21 @@ function BracketStructure({ matches }: { matches: EventBracketMatch[] }) {
       })}
     </section>
   )
+}
+
+function getBracketMatchStatus(match: EventBracketMatch) {
+  if (match.status === 'Active' && match.deadline) {
+    const deadline = new Date(match.deadline.replace(' ', 'T'))
+    if (!Number.isNaN(deadline.getTime()) && deadline.getTime() < Date.now()) return 'Past Deadline'
+    return 'Active'
+  }
+  if (match.status === 'Pending') return 'Waiting for opponent'
+  return match.status
+}
+
+function formatBracketDeadline(value: string) {
+  const parsed = new Date(value.replace(' ', 'T'))
+  return Number.isNaN(parsed.getTime()) ? value : parsed.toLocaleString()
 }
 
 function formatBracketPlayer(player: string, source: string, seed: number | null) {

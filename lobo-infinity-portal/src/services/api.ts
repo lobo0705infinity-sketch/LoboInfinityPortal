@@ -2733,6 +2733,7 @@ export type ApiClient = {
   ) => Promise<EventHomeData>
   getEventBracket: (eventId: string, options?: ApiOptions) => Promise<EventBracketData>
   generateEventBracket: (eventId: string, options?: ApiOptions) => Promise<EventBracketData>
+  updateEventBracketDeadline: (eventId: string, matchId: string, deadline: string, options?: ApiOptions) => Promise<EventBracketData>
   getEventManager: (
     eventId?: string,
     options?: ApiOptions,
@@ -3502,6 +3503,7 @@ export type EventBracketReadiness = {
 }
 
 export type EventBracketMatch = {
+  activatedAt: string
   bracket: 'Winners' | 'Losers' | 'Grand Final'
   bracketRound: number
   eventId: string
@@ -3519,6 +3521,7 @@ export type EventBracketMatch = {
   seedA: number | null
   seedB: number | null
   status: string
+  deadline: string
   winner: string
 }
 
@@ -3727,6 +3730,17 @@ export async function generateEventBracket(
   options: ApiOptions = {},
 ): Promise<EventBracketData> {
   return normalizeEventBracketPayload(await postRequest('eventBracketGenerate', options, { eventId }))
+}
+
+export async function updateEventBracketDeadline(
+  eventId: string,
+  matchId: string,
+  deadline: string,
+  options: ApiOptions = {},
+): Promise<EventBracketData> {
+  return normalizeEventBracketPayload(
+    await postRequest('eventBracketDeadline', options, { eventId, matchId, deadline }),
+  )
 }
 
 export async function getEventManager(
@@ -4334,6 +4348,7 @@ export const apiClient: ApiClient = {
   getEventHome,
   getEventBracket,
   generateEventBracket,
+  updateEventBracketDeadline,
   getLeagueOperations,
   getEventManager,
   registerForEvent,
@@ -8813,6 +8828,7 @@ function normalizeEventBracketPayload(payload: unknown): EventBracketData {
     matches: getArray(bracket, 'matches').map((item) => {
       const match = asRecord(item, 'Event bracket match')
       return {
+        activatedAt: getString(match, 'activatedAt'),
         bracket: getString(match, 'bracket') as EventBracketMatch['bracket'],
         bracketRound: getNumber(match, 'bracketRound'),
         eventId: getString(match, 'eventId'),
@@ -8830,6 +8846,7 @@ function normalizeEventBracketPayload(payload: unknown): EventBracketData {
         seedA: getString(match, 'seedA') === '' ? null : getNumber(match, 'seedA'),
         seedB: getString(match, 'seedB') === '' ? null : getNumber(match, 'seedB'),
         status: getString(match, 'status'),
+        deadline: getString(match, 'deadline'),
         winner: getString(match, 'winner'),
       }
     }),
