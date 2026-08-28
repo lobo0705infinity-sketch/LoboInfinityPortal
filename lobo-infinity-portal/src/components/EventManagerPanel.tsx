@@ -862,7 +862,7 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
           {generating ? 'Generating bracket...' : 'Generate Bracket'}
         </button>
       </div> : null}
-      {bracket?.generated ? <section aria-labelledby="active-bracket-matches-title">
+      {bracket ? <section aria-labelledby="active-bracket-matches-title">
         <h4 id="active-bracket-matches-title">Active Matches</h4>
         {activeMatches.length === 0 ? <p>No active bracket matches.</p> : activeMatches.map((match) => (
           <div className="event-manager-row" key={match.matchId}>

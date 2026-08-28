@@ -88,6 +88,7 @@ assert.doesNotMatch(source, /EVENT_PROVISIONING_TOKEN|submitLeagueResult|createG
 assert.match(routerSource, /case "eventBracketDeadline":\s*return updateEventBracketDeadline\(e\);/)
 assert.match(apiSource, /postRequest\('eventBracketDeadline'/)
 assert.match(managerSource, /No active bracket matches\./)
+assert.match(managerSource, /\{bracket \? <section aria-labelledby="active-bracket-matches-title">/)
 assert.match(managerSource, /type="datetime-local"/)
 assert.match(publicSource, /Past Deadline/)
 assert.match(publicSource, /Waiting for opponent/)
