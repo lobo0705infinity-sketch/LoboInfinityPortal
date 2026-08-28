@@ -2,6 +2,7 @@ import type { PortalIconName } from '../components/PortalIcon'
 
 export type EventCapability =
   | 'overview'
+  | 'bracket'
   | 'registration'
   | 'submitResult'
   | 'standings'
@@ -36,6 +37,7 @@ export type EventCapabilityNavigationItem = {
 type NavigableEventCapability = Exclude<EventCapability, 'submitResult'>
 
 export const capabilityLabels: Record<NavigableEventCapability, string> = {
+  bracket: 'Bracket',
   factions: 'Factions',
   map: 'Map',
   objectives: 'Objectives',
@@ -53,6 +55,7 @@ export const capabilityLabels: Record<NavigableEventCapability, string> = {
 }
 
 const capabilityIcons: Record<NavigableEventCapability, PortalIconName> = {
+  bracket: 'compare',
   factions: 'factions',
   map: 'timeline',
   objectives: 'missions',
@@ -70,6 +73,7 @@ const capabilityIcons: Record<NavigableEventCapability, PortalIconName> = {
 }
 
 const defaultCapabilityRoutes: Record<NavigableEventCapability, string> = {
+  bracket: '/event/:eventId/bracket',
   factions: '/factions?eventId=:eventId',
   map: '/event/:eventId#map',
   objectives: '/event/:eventId#objectives',
@@ -125,6 +129,23 @@ export const eventNavigation: EventNavigationConfig[] = [
       teams: '/event/:eventId/tournament/teams',
     },
     type: 'Team Tournament',
+  },
+  {
+    capabilities: [
+      'overview',
+      'registration',
+      'bracket',
+      'players',
+      'results',
+      'statistics',
+      'rules',
+    ],
+    id: 'event-lobo-s-american-top-40',
+    label: "Lobo's American Top 40",
+    routeOverrides: {
+      rules: '/event/:eventId#rules',
+    },
+    type: 'Individual Double Elimination',
   },
 ]
 

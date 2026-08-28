@@ -124,6 +124,15 @@ function EventHome() {
     )
   }
 
+  if (selectedSection === 'bracket') {
+    return (
+      <EventBracketPage
+        data={data}
+        eventNavigationItems={eventNavigationItems}
+      />
+    )
+  }
+
   return (
     <main className="portal-shell event-overview-shell">
       <section
@@ -292,14 +301,44 @@ function EventDiscordCallout() {
   )
 }
 
-type EventHomeSection = 'overview' | 'registration'
+type EventHomeSection = 'bracket' | 'overview' | 'registration'
 
 function normalizeEventHomeSection(section: string | undefined): EventHomeSection {
+  if (section === 'bracket') {
+    return 'bracket'
+  }
+
   if (section === 'registration') {
     return 'registration'
   }
 
   return 'overview'
+}
+
+function EventBracketPage({
+  data,
+  eventNavigationItems,
+}: {
+  data: EventHomeData
+  eventNavigationItems: Array<{ href: string; label: string }>
+}) {
+  return (
+    <main className="portal-shell event-overview-shell" data-event-section="bracket">
+      <section className="page-header" aria-labelledby="event-bracket-title">
+        <p className="eyebrow">{data.event.name}</p>
+        <h1 id="event-bracket-title">Tournament Bracket</h1>
+        <p>The double-elimination bracket will be published here.</p>
+      </section>
+
+      <nav className="event-home-nav" aria-label="Event navigation">
+        {eventNavigationItems.map((item) => (
+          <Link key={`${item.label}-${item.href}`} to={item.href}>
+            {item.label}
+          </Link>
+        ))}
+      </nav>
+    </main>
+  )
 }
 
 function isVisibleEventNavigationItem(item: { href: string; label: string }) {

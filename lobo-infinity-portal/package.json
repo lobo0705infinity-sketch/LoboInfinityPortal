@@ -47,6 +47,7 @@
     "test:api-init-order": "node scripts/api-init-order-regression-check.mjs",
     "league:navigation": "node scripts/league-navigation-check.mjs",
     "test:league-schedule-navigation": "node scripts/league-schedule-navigation-check.mjs",
+    "test:top-40-shell": "node --experimental-strip-types scripts/top-40-shell-check.mts",
     "team-tournament:routing": "node scripts/team-tournament-routing-check.mjs",
     "test:team-tournament-rounds": "node scripts/team-tournament-rounds-check.mjs",
     "test:commissioner-submit": "node scripts/commissioner-submit-check.mjs",

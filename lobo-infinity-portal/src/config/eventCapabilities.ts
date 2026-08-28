@@ -4,6 +4,7 @@ import type { LeagueEvent } from '../types/dashboard'
 export type { EventCapability } from './eventNavigation'
 
 const labelCapabilities: Record<string, EventCapability> = {
+  bracket: 'bracket',
   factions: 'factions',
   map: 'map',
   objectives: 'objectives',
@@ -51,10 +52,26 @@ const tournamentCapabilities: EventCapability[] = [
   'rules',
 ]
 
+const individualDoubleEliminationCapabilities: EventCapability[] = [
+  'overview',
+  'registration',
+  'bracket',
+  'players',
+  'results',
+  'statistics',
+  'rules',
+]
+
 export function resolveEventCapabilities(
   event: LeagueEvent,
   navigation: Array<{ href: string; label: string }> = [],
 ): EventCapability[] {
+  const type = event.type.toLowerCase()
+
+  if (type === 'individual double elimination') {
+    return individualDoubleEliminationCapabilities
+  }
+
   if (event.capabilities.length > 0) {
     return filterOperationalEventCapabilities(
       event,
@@ -72,8 +89,6 @@ export function resolveEventCapabilities(
       ...navigationCapabilities,
     ])
   }
-
-  const type = event.type.toLowerCase()
 
   if (type.includes('campaign')) {
     return campaignCapabilities
@@ -129,7 +144,11 @@ export function getEventOverviewKind(capabilities: EventCapability[]) {
     return 'campaign'
   }
 
-  if (capabilities.includes('teams') || capabilities.includes('pairings')) {
+  if (
+    capabilities.includes('bracket') ||
+    capabilities.includes('teams') ||
+    capabilities.includes('pairings')
+  ) {
     return 'tournament'
   }
 

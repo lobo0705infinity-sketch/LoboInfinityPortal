@@ -845,6 +845,7 @@ function EventTypeSelect({
     >
       <option>League</option>
       <option>Team Tournament</option>
+      <option>Individual Double Elimination</option>
       <option>ITS Tournament</option>
       <option>Narrative Campaign</option>
       <option>Casual Event</option>
