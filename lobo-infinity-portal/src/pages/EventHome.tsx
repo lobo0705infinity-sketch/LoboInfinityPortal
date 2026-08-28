@@ -112,7 +112,9 @@ function EventHome() {
     recentTimeline.length > 0 && hasEventTimeline(capabilities)
   const showNews = news.length > 0
   const showPlayerStatus = hasEventCapability(capabilities, 'registration')
-  const showRules = hasEventCapability(capabilities, 'rules')
+  const showRules =
+    hasEventCapability(capabilities, 'rules') &&
+    data.event.id !== 'event-lobo-s-american-top-40'
   const showCommissionerWorkflow = auth.isAtLeastRole('Commissioner')
 
   if (selectedSection === 'registration') {
@@ -128,6 +130,18 @@ function EventHome() {
   if (selectedSection === 'bracket') {
     return (
       <EventBracketPage
+        data={data}
+        eventNavigationItems={eventNavigationItems}
+      />
+    )
+  }
+
+  if (
+    selectedSection === 'rules' &&
+    data.event.id === 'event-lobo-s-american-top-40'
+  ) {
+    return (
+      <EventRulesPage
         data={data}
         eventNavigationItems={eventNavigationItems}
       />
@@ -302,7 +316,7 @@ function EventDiscordCallout() {
   )
 }
 
-type EventHomeSection = 'bracket' | 'overview' | 'registration'
+type EventHomeSection = 'bracket' | 'overview' | 'registration' | 'rules'
 
 function normalizeEventHomeSection(section: string | undefined): EventHomeSection {
   if (section === 'bracket') {
@@ -311,6 +325,10 @@ function normalizeEventHomeSection(section: string | undefined): EventHomeSectio
 
   if (section === 'registration') {
     return 'registration'
+  }
+
+  if (section === 'rules') {
+    return 'rules'
   }
 
   return 'overview'
@@ -338,6 +356,34 @@ function EventBracketPage({
           </Link>
         ))}
       </nav>
+    </main>
+  )
+}
+
+function EventRulesPage({
+  data,
+  eventNavigationItems,
+}: {
+  data: EventHomeData
+  eventNavigationItems: Array<{ href: string; label: string }>
+}) {
+  return (
+    <main className="portal-shell event-overview-shell" data-event-section="rules">
+      <section className="page-header" aria-labelledby="event-rules-page-title">
+        <p className="eyebrow">{data.event.name}</p>
+        <h1 id="event-rules-page-title">Event Rules</h1>
+        <p>Official tournament format, scheduling, and administration rules.</p>
+      </section>
+
+      <nav className="event-home-nav" aria-label="Event navigation">
+        {eventNavigationItems.map((item) => (
+          <Link key={`${item.label}-${item.href}`} to={item.href}>
+            {item.label}
+          </Link>
+        ))}
+      </nav>
+
+      <Top40Rules />
     </main>
   )
 }
@@ -800,10 +846,6 @@ function QuickActions({
 }
 
 function EventRules({ data }: { data: EventHomeData }) {
-  if (data.event.id === 'event-lobo-s-american-top-40') {
-    return <Top40Rules />
-  }
-
   return (
     <section className="panel event-home-panel" id="rules">
       <div className="panel-heading">

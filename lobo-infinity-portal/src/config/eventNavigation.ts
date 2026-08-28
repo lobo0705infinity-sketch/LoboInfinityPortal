@@ -143,7 +143,7 @@ export const eventNavigation: EventNavigationConfig[] = [
     id: 'event-lobo-s-american-top-40',
     label: "Lobo's American Top 40",
     routeOverrides: {
-      rules: '/event/:eventId#rules',
+      rules: '/event/:eventId/rules',
     },
     type: 'Individual Double Elimination',
   },

@@ -97,7 +97,7 @@ assert.deepEqual(
     '/players?eventId=event-lobo-s-american-top-40',
     '/event/event-lobo-s-american-top-40#results',
     '/analytics?eventId=event-lobo-s-american-top-40',
-    '/event/event-lobo-s-american-top-40#rules',
+    '/event/event-lobo-s-american-top-40/rules',
   ],
 )
 for (const excluded of ['teams', 'standings', 'schedule', 'submitResult', 'pairings']) {
