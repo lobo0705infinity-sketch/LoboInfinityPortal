@@ -9,8 +9,8 @@ function getEventBracket(e) {
   const params = getApiParameters(e);
   const eventId = getEventManagerString(params.eventId);
   if (eventId === "") throw new Error("Event ID is required.");
-  const event = getEventByIdNoEnsure(eventId);
-  if (!event) throw new Error("Event not found.");
+  if (!getEventByIdNoEnsure(eventId)) throw new Error("Event not found.");
+  const event = getEventById(eventId);
   const participants = getEventRegistrationRows(eventId);
   return jsonOutput({ success: true, bracket: buildEventBracketProjection_(event, participants) });
 }
@@ -22,8 +22,8 @@ function generateEventBracket(e) {
     const lock = LockService.getScriptLock();
     lock.waitLock(10000);
     try {
-      const event = getEventByIdNoEnsure(eventId);
-      if (!event) throw new Error("Event not found.");
+      if (!getEventByIdNoEnsure(eventId)) throw new Error("Event not found.");
+      const event = getEventById(eventId);
       if (event.type !== "Individual Double Elimination")
         throw new Error("Bracket generation is only available for Individual Double Elimination events.");
       if (readEventBracketMatches_(eventId).length > 0)
