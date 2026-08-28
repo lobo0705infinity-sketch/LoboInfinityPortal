@@ -85,7 +85,8 @@ const EVENT_ENGINE_PARTICIPANT_HEADERS = [
   "Captain",
   "Free Agent",
   "Faction",
-  "Updated At"
+  "Updated At",
+  "ITS Name"
 ];
 
 const EVENT_ENGINE_SEASON_HEADERS = [

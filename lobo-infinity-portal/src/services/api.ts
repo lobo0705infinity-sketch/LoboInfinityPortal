@@ -1604,6 +1604,7 @@ export type EventRegistrationEntry = {
   eventId: string
   faction: string
   freeAgent: boolean
+  itsName: string
   notes: string
   player: string
   preferredTeam: string
@@ -6808,6 +6809,7 @@ function normalizeEventRegistrationEntry(
     eventId: getString(record, 'eventId'),
     faction: getString(record, 'faction'),
     freeAgent: getOptionalBoolean(record, 'freeAgent') ?? false,
+    itsName: getString(record, 'itsName'),
     notes: getString(record, 'notes'),
     player: getString(record, 'player'),
     preferredTeam: getString(record, 'preferredTeam'),

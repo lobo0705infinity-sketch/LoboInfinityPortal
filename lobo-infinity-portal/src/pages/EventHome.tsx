@@ -1,10 +1,11 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState, type FormEvent } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import DiscordCommunityLink from '../components/DiscordCommunityLink'
 import PortalIcon from '../components/PortalIcon'
 import Skeleton from '../components/Skeleton'
 import { getDiscordCommunityLink } from '../config/communityLinks'
+import { getCanonicalArmyOptions } from '../services/armyIdentity'
 import {
   getEventOverviewKind,
   hasEventCapability,
@@ -16,7 +17,7 @@ import {
   getEventNavigationConfig,
 } from '../config/eventNavigation'
 import { type EventHomeData } from '../services/api'
-import { eventRepository } from '../services/data'
+import { eventRepository, playerRepository, registrationRepository } from '../services/data'
 import { useSettings } from '../contexts/SettingsContext'
 import type { LeagueEvent } from '../types/dashboard'
 import './EventHome.css'
@@ -557,12 +558,154 @@ function EventRegistrationPage({
         </section>
       </section>
 
+      {data.event.type === 'Individual Double Elimination' ? (
+        <IndividualDoubleEliminationRegistrationForm
+          eventId={data.event.id}
+          registrationOpen={data.registration.registrationOpen}
+        />
+      ) : null}
+
       {quickActions.length > 0 ? (
         <section className="event-overview-dashboard">
           <QuickActions actions={quickActions} />
         </section>
       ) : null}
     </main>
+  )
+}
+
+function IndividualDoubleEliminationRegistrationForm({
+  eventId,
+  registrationOpen,
+}: {
+  eventId: string
+  registrationOpen: boolean
+}) {
+  const [player, setPlayer] = useState('')
+  const [itsName, setItsName] = useState('')
+  const [faction, setFaction] = useState('')
+  const [players, setPlayers] = useState<string[]>([])
+  const [error, setError] = useState('')
+  const [message, setMessage] = useState('')
+  const [working, setWorking] = useState(false)
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    playerRepository
+      .getAllPlayers({ signal: controller.signal })
+      .then((divisions) => {
+        const canonicalPlayers = new Map<string, string>()
+
+        divisions.forEach((division) => {
+          division.standings.forEach((standing) => {
+            if (standing.canonical !== true) {
+              return
+            }
+
+            const value = standing.player.trim()
+            if (value) {
+              canonicalPlayers.set(value.toLowerCase(), value)
+            }
+          })
+        })
+
+        setPlayers(
+          Array.from(canonicalPlayers.values()).sort((left, right) =>
+            left.localeCompare(right),
+          ),
+        )
+      })
+      .catch((loadError: unknown) => {
+        if (!controller.signal.aborted) {
+          setError(
+            loadError instanceof Error
+              ? loadError.message
+              : 'Community Players could not be loaded.',
+          )
+        }
+      })
+
+    return () => controller.abort()
+  }, [])
+
+  async function submitRegistration(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setWorking(true)
+    setError('')
+    setMessage('')
+
+    try {
+      await registrationRepository.register({
+        eventId,
+        faction,
+        itsName,
+        player,
+      })
+      setMessage('Registration submitted.')
+    } catch (submitError) {
+      setError(
+        submitError instanceof Error
+          ? submitError.message
+          : 'Registration could not be submitted.',
+      )
+    } finally {
+      setWorking(false)
+    }
+  }
+
+  return (
+    <section className="panel event-home-panel">
+      <div className="panel-heading">
+        <p className="eyebrow">American Top 40</p>
+        <h2>Register</h2>
+      </div>
+      <form className="event-manager-form compact" onSubmit={submitRegistration}>
+        <label>
+          Player
+          <select
+            disabled={!registrationOpen || working}
+            onChange={(event) => setPlayer(event.target.value)}
+            required
+            value={player}
+          >
+            <option value="">Select Player</option>
+            {players.map((option) => (
+              <option key={option} value={option}>{option}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Corvus Belli ITS Name
+          <input
+            disabled={!registrationOpen || working}
+            onChange={(event) => setItsName(event.target.value)}
+            required
+            type="text"
+            value={itsName}
+          />
+        </label>
+        <label>
+          Faction
+          <select
+            disabled={!registrationOpen || working}
+            onChange={(event) => setFaction(event.target.value)}
+            required
+            value={faction}
+          >
+            <option value="">Select Faction</option>
+            {getCanonicalArmyOptions().map((option) => (
+              <option key={option} value={option}>{option}</option>
+            ))}
+          </select>
+        </label>
+        <button disabled={!registrationOpen || working || message !== ''} type="submit">
+          {working ? 'Registering…' : 'Register'}
+        </button>
+      </form>
+      {error ? <p role="alert">{error}</p> : null}
+      {message ? <p role="status">{message}</p> : null}
+    </section>
   )
 }
 

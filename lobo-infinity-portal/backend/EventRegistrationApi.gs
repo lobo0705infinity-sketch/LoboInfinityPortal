@@ -56,15 +56,6 @@ function getEventRegistration(e) {
 
 function registerForEvent(e) {
 
-  const auth =
-    getRequestUser(e);
-
-  if (!auth.authenticated)
-    return jsonOutput({
-      success: false,
-      error: "Authentication is required."
-    });
-
   const params =
     getApiParameters(e);
 
@@ -74,6 +65,21 @@ function registerForEvent(e) {
   const event =
     getEventByIdSnapshot(eventId) ||
     getCurrentLeagueEventSnapshot();
+
+  if (isIndividualDoubleEliminationEvent(event))
+    return registerForIndividualDoubleEliminationEvent(
+      eventId,
+      params
+    );
+
+  const auth =
+    getRequestUser(e);
+
+  if (!auth.authenticated)
+    return jsonOutput({
+      success: false,
+      error: "Authentication is required."
+    });
 
   if (!canUserParticipateInEvent(event, auth.user))
     return jsonOutput({
@@ -108,6 +114,183 @@ function registerForEvent(e) {
       eventId: eventId
     }
   });
+
+}
+
+function registerForIndividualDoubleEliminationEvent(eventId, params) {
+
+  const player =
+    resolveIndividualDoubleEliminationPlayer(params.player);
+
+  if (player === "")
+    return jsonOutput({
+      success: false,
+      error: "A valid Community Player is required."
+    });
+
+  const itsName =
+    getEventRegistrationString(params.itsName);
+
+  if (itsName === "")
+    return jsonOutput({
+      success: false,
+      error: "Corvus Belli ITS Name is required."
+    });
+
+  const faction =
+    resolveIndividualDoubleEliminationFaction(params.faction);
+
+  if (faction === "")
+    return jsonOutput({
+      success: false,
+      error: "A valid Faction is required."
+    });
+
+  const lock =
+    LockService.getScriptLock();
+
+  lock.waitLock(10000);
+
+  try {
+    const event =
+      getEventByIdSnapshot(eventId);
+
+    if (!isIndividualDoubleEliminationEvent(event))
+      return jsonOutput({
+        success: false,
+        error: "Anonymous registration is not available for this Event."
+      });
+
+    if (!isEventRegistrationOpen(event))
+      return jsonOutput({
+        success: false,
+        error: "Registration is closed for this Event."
+      });
+
+    if (getEventRegistrationForPlayer(eventId, player))
+      return jsonOutput({
+        success: false,
+        code: "ALREADY_REGISTERED",
+        error: "Already Registered."
+      });
+
+    const capacity =
+      getEventRegistrationCapacity(event);
+
+    if (capacity.maximumPlayers <= 0)
+      return jsonOutput({
+        success: false,
+        error: "Maximum Players must be configured for this Event."
+      });
+
+    if (
+      countRegisteredEventParticipants(eventId) >=
+      capacity.maximumPlayers
+    )
+      return jsonOutput({
+        success: false,
+        code: "CAPACITY_FULL",
+        error: "Registration is full for this Event."
+      });
+
+    upsertEventRegistrationRow(
+      eventId,
+      {
+        email: "",
+        leaguePlayer: player,
+        playerDisplayName: player
+      },
+      {
+        faction: faction,
+        itsName: itsName
+      },
+      "Registered"
+    );
+
+    invalidateEventRegistrationCaches();
+  }
+  finally {
+    lock.releaseLock();
+  }
+
+  return getEventRegistration({
+    parameter: {
+      eventId: eventId
+    }
+  });
+
+}
+
+function isIndividualDoubleEliminationEvent(event) {
+
+  return !!event &&
+    getEventRegistrationString(event.type) ===
+      "Individual Double Elimination";
+
+}
+
+function resolveIndividualDoubleEliminationPlayer(value) {
+
+  const target =
+    getEventRegistrationString(value).toLowerCase();
+
+  if (target === "")
+    return "";
+
+  const registry =
+    buildPlayerRegistry();
+
+  const keys =
+    Object.keys(registry);
+
+  for (let index = 0; index < keys.length; index++) {
+    const player =
+      registry[keys[index]];
+
+    if (!player || player.active === false)
+      continue;
+
+    const canonicalPlayer =
+      getEventRegistrationString(player.player);
+
+    const displayName =
+      getEventRegistrationString(player.displayName);
+
+    if (
+      canonicalPlayer.toLowerCase() === target ||
+      displayName.toLowerCase() === target
+    )
+      return canonicalPlayer;
+  }
+
+  return "";
+
+}
+
+function resolveIndividualDoubleEliminationFaction(value) {
+
+  const faction =
+    canonicalizeArmyName(value);
+
+  if (faction === "")
+    return "";
+
+  const validFactions =
+    getCanonicalArmyOptions();
+
+  return validFactions.indexOf(faction) === -1
+    ? ""
+    : faction;
+
+}
+
+function countRegisteredEventParticipants(eventId) {
+
+  return getEventRegistrationRows(eventId)
+    .filter(function(registration) {
+      return registration.status === "Registered";
+    })
+    .length;
 
 }
 
@@ -302,7 +485,7 @@ function manageEventRegistration(e) {
     measureEventApprovalOperation(
       "approval.statusUpdate.upsertRegistrationRow",
       function() {
-        upsertEventRegistrationRow(
+        upsertManagedEventRegistrationRow(
           eventId,
           user,
           params,
@@ -367,6 +550,58 @@ function manageEventRegistration(e) {
 
     return response;
   });
+
+}
+
+function upsertManagedEventRegistrationRow(eventId, user, params, status) {
+
+  const event =
+    getEventByIdSnapshot(eventId);
+
+  if (!isIndividualDoubleEliminationEvent(event)) {
+    upsertEventRegistrationRow(eventId, user, params, status);
+    return;
+  }
+
+  const lock =
+    LockService.getScriptLock();
+
+  lock.waitLock(10000);
+
+  try {
+    const player =
+      getCanonicalPlayerFromUser(user);
+
+    const existing =
+      getEventRegistrationForPlayer(eventId, player);
+
+    const increasesRegisteredCount =
+      status === "Registered" &&
+      (!existing || existing.status !== "Registered");
+
+    if (increasesRegisteredCount) {
+      const capacity =
+        getEventRegistrationCapacity(event);
+
+      if (capacity.maximumPlayers <= 0)
+        throw new Error(
+          "Maximum Players must be configured for this Event."
+        );
+
+      if (
+        countRegisteredEventParticipants(eventId) >=
+        capacity.maximumPlayers
+      )
+        throw new Error(
+          "Registration is full for this Event."
+        );
+    }
+
+    upsertEventRegistrationRow(eventId, user, params, status);
+  }
+  finally {
+    lock.releaseLock();
+  }
 
 }
 
@@ -621,6 +856,13 @@ function upsertEventRegistrationRow(eventId, user, params, status) {
   const preferredTeam =
     getEventRegistrationString(params.preferredTeam || team);
 
+  const itsName =
+    params.itsName !== undefined
+      ? getEventRegistrationString(params.itsName)
+      : existing
+        ? getEventRegistrationString(existing.itsName)
+        : "";
+
   measureEventApprovalOperation(
     "approval.spreadsheetWrite.upsertCompositeRow",
     function() {
@@ -651,7 +893,8 @@ function upsertEventRegistrationRow(eventId, user, params, status) {
           getEventRegistrationBoolean(params.captain),
           getEventRegistrationBoolean(params.freeAgent),
           canonicalizeArmyName(params.faction),
-          now
+          now,
+          itsName
         ]
       );
     },
@@ -788,7 +1031,8 @@ function mapEventRegistrationRow(row) {
     captain: getEventRegistrationBoolean(row["Captain"]),
     freeAgent: getEventRegistrationBoolean(row["Free Agent"]),
     faction: canonicalizeArmyName(row["Faction"]),
-    updatedAt: row["Updated At"] || row["Registered At"]
+    updatedAt: row["Updated At"] || row["Registered At"],
+    itsName: row["ITS Name"] || ""
   };
 
 }
