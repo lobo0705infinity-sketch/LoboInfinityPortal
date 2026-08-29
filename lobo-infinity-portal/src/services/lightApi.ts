@@ -358,6 +358,7 @@ function normalizeSettings(record: Record<string, unknown>): PortalSettings {
     gitCommit: getString(record, 'gitCommit'),
     googleFormUrl: getString(record, 'googleFormUrl'),
     joinCommunityFormUrl: getString(record, 'joinCommunityFormUrl'),
+    top40GameSubmissionFormUrl: getString(record, 'top40GameSubmissionFormUrl'),
     googleOAuthClientId: getString(record, 'googleOAuthClientId'),
     leagueLogo: getString(record, 'leagueLogo'),
     leagueName: getString(record, 'leagueName') || 'Lobo Infinity League',

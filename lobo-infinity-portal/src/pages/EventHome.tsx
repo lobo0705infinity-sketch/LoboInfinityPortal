@@ -34,6 +34,7 @@ const CommissionerEventWorkflow = lazy(
 
 function EventHome() {
   const auth = useAuth()
+  const { settings } = useSettings()
   const { eventId, section } = useParams<{ eventId: string; section?: string }>()
   const selectedEventId = eventId ? decodeURIComponent(eventId) : defaultEventId
   const selectedSection = normalizeEventHomeSection(section)
@@ -181,6 +182,14 @@ function EventHome() {
       </section>
 
       <EventDiscordCallout />
+
+      {data.event.id === 'event-lobo-s-american-top-40' && settings?.top40GameSubmissionFormUrl ? (
+        <section className="panel event-home-panel">
+          <h2>Report a Top 40 Game</h2>
+          <p>Use the dedicated tournament form for a completed Active bracket match.</p>
+          <a className="event-home-primary-action" href={settings.top40GameSubmissionFormUrl} target="_blank" rel="noreferrer">Submit Top 40 Game</a>
+        </section>
+      ) : null}
 
       <nav className="event-home-nav" aria-label="Event navigation">
         {eventNavigationItems.map((item) => (

@@ -49,35 +49,41 @@ function submitTop40Result(e) {
   const lock = LockService.getScriptLock();
   lock.waitLock(10000);
   try {
-    const before = validateTop40BracketSubmission_(params);
-    if (!before.valid) return resultSubmissionFailure(before.error);
-    if (before.match.gameId) {
-      if (before.match.status === "Completed")
-        return jsonOutput({ success:true, status:"Already Submitted", gameId:Number(before.match.gameId), matchId:before.match.matchId });
-      try {
-        const recovered = applyTop40BracketProgression_(before.eventId, before.match.matchId, Number(before.match.gameId), before.winner, before.loser, new Date());
-        return jsonOutput({ success:true, status:"Recovered", gameId:Number(before.match.gameId), bracket:recovered });
-      } catch (error) {
-        return resultSubmissionFailure("Game recorded; bracket progression requires Commissioner attention. " + String(error.message || error));
-      }
-    }
-    const commissionerContext = getResultSubmissionCommissionerContext(e, auth, params);
-    if (commissionerContext.error) return resultSubmissionFailure(commissionerContext.error);
-    params.mission = before.mission;
-    const submission = submitCanonicalGame(createSubmissionCommand({ source:"portal", workflow:"top-40", params:params, auth:auth, commissionerContext:commissionerContext }));
-    if (!submission.success) return resultSubmissionFailure(submission.error);
-    const gameId = Number(submission.context.gameId);
-    if (!gameId) return resultSubmissionFailure("Game recorded; bracket progression requires Commissioner attention.");
-    setEventBracketMatchGameId_(before.eventId, before.match.matchId, gameId);
-    try {
-      const bracket = applyTop40BracketProgression_(before.eventId, before.match.matchId, gameId, before.winner, before.loser, new Date());
-      return jsonOutput({ success:true, status:"Submitted", gameId:gameId, matchId:before.match.matchId, bracket:bracket });
-    } catch (error) {
-      return resultSubmissionFailure("Game recorded; bracket progression requires Commissioner attention. " + String(error.message || error));
-    }
+    return jsonOutput(submitTop40ResultService_(params, auth, e));
+  } catch (error) {
+    return resultSubmissionFailure(String(error && error.message || error));
   } finally {
     lock.releaseLock();
   }
+}
+
+function submitTop40ResultService_(params, auth, requestEvent) {
+    const before = validateTop40BracketSubmission_(params);
+    if (!before.valid) throw new Error(before.error);
+    if (before.match.gameId) {
+      if (before.match.status === "Completed")
+        return { success:true, status:"Already Submitted", gameId:Number(before.match.gameId), matchId:before.match.matchId };
+      try {
+        const recovered = applyTop40BracketProgression_(before.eventId, before.match.matchId, Number(before.match.gameId), before.winner, before.loser, new Date());
+        return { success:true, status:"Recovered", gameId:Number(before.match.gameId), bracket:recovered };
+      } catch (error) {
+        throw new Error("Game recorded; bracket progression requires Commissioner attention. " + String(error.message || error));
+      }
+    }
+    const commissionerContext = getResultSubmissionCommissionerContext(requestEvent || {}, auth || {}, params);
+    if (commissionerContext.error) throw new Error(commissionerContext.error);
+    params.mission = before.mission;
+    const submission = submitCanonicalGame(createSubmissionCommand({ source:"portal", workflow:"top-40", params:params, auth:auth, commissionerContext:commissionerContext }));
+    if (!submission.success) throw new Error(submission.error);
+    const gameId = Number(submission.context.gameId);
+    if (!gameId) throw new Error("Game recorded; bracket progression requires Commissioner attention.");
+    setEventBracketMatchGameId_(before.eventId, before.match.matchId, gameId);
+    try {
+      const bracket = applyTop40BracketProgression_(before.eventId, before.match.matchId, gameId, before.winner, before.loser, new Date());
+      return { success:true, status:"Submitted", gameId:gameId, matchId:before.match.matchId, bracket:bracket };
+    } catch (error) {
+      throw new Error("Game recorded; bracket progression requires Commissioner attention. " + String(error.message || error));
+    }
 }
 
 function awardEventBracketForfeit(e) {

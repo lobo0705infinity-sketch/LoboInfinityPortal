@@ -15,9 +15,13 @@ function handleLoboFormSubmit(e) {
       return;
     }
 
-    const namedValues = formType === LIF_FORMS.TYPES.CASUAL
+    const namedValues = formType === LIF_FORMS.TYPES.CASUAL || formType === LIF_FORMS.TYPES.TOP40
       ? lifBuildCasualNamedValuesFromResponseRow_(e)
       : e.namedValues;
+    if (formType === LIF_FORMS.TYPES.TOP40) {
+      importTop40FormSubmission_(namedValues, e.values && e.values[0], responseKey, log, target, e.range.getRow());
+      return;
+    }
     const command = createSubmissionCommand({
       source: "google-form",
       workflow: formType,
@@ -42,6 +46,7 @@ function lifResolveFormType_(sheet) {
     [LIF_FORMS.PROPERTIES.LEAGUE_FORM_ID, LIF_FORMS.TYPES.LEAGUE],
     [LIF_FORMS.PROPERTIES.TEAM_FORM_ID, LIF_FORMS.TYPES.TEAM],
     [LIF_FORMS.PROPERTIES.CASUAL_FORM_ID, LIF_FORMS.TYPES.CASUAL],
+    [LIF_FORMS.PROPERTIES.TOP40_FORM_ID, LIF_FORMS.TYPES.TOP40],
     [LIF_FORMS.PROPERTIES.JOIN_FORM_ID, LIF_FORMS.TYPES.JOIN]
   ];
   for (let i = 0; i < mappings.length; i += 1) {
@@ -132,7 +137,7 @@ function lifReadSubmission_(named, formType, timestamp, targetSpreadsheet) {
     : null;
   return {
     timestamp: timestamp || new Date(), formType: formType,
-    eventId: formType === LIF_FORMS.TYPES.CASUAL ? "" : leagueContext ? leagueContext.eventId : teamTournamentContext.eventId,
+    eventId: formType === LIF_FORMS.TYPES.CASUAL ? "" : leagueContext ? leagueContext.eventId : teamTournamentContext ? teamTournamentContext.eventId : "",
     division: formType === LIF_FORMS.TYPES.CASUAL ? "Casual" : leagueContext ? leagueContext.division : get(f.DIVISION) || "Team Tournament",
     round: get(f.ROUND), team: get(f.TEAM) || get("Your Team"), opponentTeam: get(f.OPPONENT_TEAM),
     mission: get(f.MISSION), player: leagueContext ? leagueContext.player : teamTournamentContext ? teamTournamentContext.player : selectedPlayer, opponent: get(f.OPPONENT),

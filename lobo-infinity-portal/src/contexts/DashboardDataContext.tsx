@@ -585,6 +585,7 @@ function createEmptySettings(): PortalSettings {
     gitCommit: '',
     googleFormUrl: '',
     joinCommunityFormUrl: '',
+    top40GameSubmissionFormUrl: '',
     googleOAuthClientId: '',
     leagueLogo: '',
     leagueName: '',

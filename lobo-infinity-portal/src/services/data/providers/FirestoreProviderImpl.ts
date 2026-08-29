@@ -1235,6 +1235,7 @@ function emptySettings() {
     gitCommit: '',
     googleFormUrl: '',
     joinCommunityFormUrl: '',
+    top40GameSubmissionFormUrl: '',
     googleOAuthClientId: '',
     leagueLogo: '',
     leagueName: 'Lobo Infinity League',
