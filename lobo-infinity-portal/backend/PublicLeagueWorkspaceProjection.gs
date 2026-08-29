@@ -11,10 +11,13 @@ const PUBLIC_LEAGUE_WORKSPACE_PROJECTION_DIRTY_PROPERTY =
 
 function refreshPublicLeagueWorkspaceProjection(e) {
   return requireArmyIntelligenceWorkerOrPermission(e, function() {
-    const projection = publishPublicLeagueWorkspaceProjection_();
+    const parameters = getApiParameters(e);
+    const section = getApiParameter(parameters, "section") || "dashboard";
+    const projection = publishPublicLeagueWorkspaceProjectionSection_(section);
     return jsonOutput({
       success: true,
       generatedAt: projection.generatedAt,
+      section: section,
       fileId: getPublicLeagueWorkspaceProjectionFileId_()
     });
   });
@@ -24,7 +27,7 @@ function markPublicLeagueWorkspaceProjectionDirty_() {
   try {
     PropertiesService.getScriptProperties().setProperty(
       PUBLIC_LEAGUE_WORKSPACE_PROJECTION_DIRTY_PROPERTY,
-      "true"
+      JSON.stringify(["dashboard", "factions", "missions", "hallOfFame", "leagueOperations"])
     );
   }
   catch (error) {
@@ -34,13 +37,20 @@ function markPublicLeagueWorkspaceProjectionDirty_() {
 
 function publishDirtyPublicLeagueWorkspaceProjectionBestEffort_() {
   const properties = PropertiesService.getScriptProperties();
-  if (!properties.getProperty(PUBLIC_LEAGUE_WORKSPACE_PROJECTION_DIRTY_PROPERTY))
+  const dirty = JSON.parse(
+    properties.getProperty(PUBLIC_LEAGUE_WORKSPACE_PROJECTION_DIRTY_PROPERTY) || "[]"
+  );
+  if (!dirty.length)
     return { refreshed: false, success: true };
 
   try {
-    const projection = publishPublicLeagueWorkspaceProjection_();
-    properties.deleteProperty(PUBLIC_LEAGUE_WORKSPACE_PROJECTION_DIRTY_PROPERTY);
-    return { refreshed: true, generatedAt: projection.generatedAt, success: true };
+    const section = dirty.shift();
+    const projection = publishPublicLeagueWorkspaceProjectionSection_(section);
+    if (dirty.length)
+      properties.setProperty(PUBLIC_LEAGUE_WORKSPACE_PROJECTION_DIRTY_PROPERTY, JSON.stringify(dirty));
+    else
+      properties.deleteProperty(PUBLIC_LEAGUE_WORKSPACE_PROJECTION_DIRTY_PROPERTY);
+    return { refreshed: true, generatedAt: projection.generatedAt, section: section, remaining: dirty.length, success: true };
   }
   catch (error) {
     console.error("PUBLIC_LEAGUE_WORKSPACE_PROJECTION_REFRESH_FAILED " + String(error));
@@ -56,6 +66,44 @@ function publishPublicLeagueWorkspaceProjection_() {
   file.setDescription(
     "Prepared public League workspace projection. Canonical data remains in the Lobo Apps Script project."
   );
+  return projection;
+}
+
+function publishPublicLeagueWorkspaceProjectionSection_(section) {
+  const allowed = ["dashboard", "factions", "missions", "hallOfFame", "leagueOperations"];
+  if (allowed.indexOf(section) === -1)
+    throw new Error("Invalid public League workspace projection section.");
+
+  const file = getOrCreatePublicLeagueWorkspaceProjectionFile_();
+  let projection = {};
+  try { projection = JSON.parse(file.getBlob().getDataAsString() || "{}"); }
+  catch (error) { projection = {}; }
+  projection.schemaVersion = 1;
+  projection.generatedAt = new Date().toISOString();
+
+  const parse = function(output) {
+    const value = JSON.parse(output.getContent());
+    delete value.pipelineDiagnostics;
+    return value;
+  };
+  if (section === "factions") projection.factions = parse(getFactions({ parameter: {} }));
+  if (section === "leagueOperations") projection.leagueOperations = parse(getLeagueOperations());
+  if (section === "hallOfFame") projection.hallOfFame = parse(getHallOfFame({ parameter: {} }));
+  if (section === "missions") {
+    projection.missions = {};
+    [["current-league", "event-current-league", "league"], ["tournament", "event-august-2026-team-tournament", "tournament"], ["casual", "", "casual"], ["all", "", "all"]].forEach(function(scope) {
+      projection.missions[scope[0]] = parse(getMissions({ parameter: { eventId: scope[1], gameType: scope[2] } }));
+    });
+  }
+  if (section === "dashboard") {
+    const factions = projection.factions || parse(getFactions({ parameter: {} }));
+    const operations = projection.leagueOperations || parse(getLeagueOperations());
+    projection.dashboard = buildPublicLeagueDashboardProjection_(factions, operations);
+    projection.factions = projection.factions || factions;
+    projection.leagueOperations = projection.leagueOperations || operations;
+  }
+  file.setContent(JSON.stringify(projection));
+  file.setDescription("Prepared public League workspace projection. Canonical data remains in the Lobo Apps Script project.");
   return projection;
 }
 

@@ -13,7 +13,7 @@ export default async function handler(request, response) {
   }
   const startedAt = performance.now()
   const configuredFileId = String(process.env.PUBLIC_LEAGUE_WORKSPACE_PROJECTION_FILE_ID || '').trim()
-  const fileId = configuredFileId || await bootstrapProjectionFileId()
+  const fileId = configuredFileId || await bootstrapProjectionFileId(section)
   if (!fileId) {
     response.status(503).json({ error: 'Public League workspace projection is not configured.', success: false })
     return
@@ -40,11 +40,11 @@ export default async function handler(request, response) {
   }
 }
 
-async function bootstrapProjectionFileId() {
+async function bootstrapProjectionFileId(section) {
   const apiUrl = String(process.env.VITE_API_URL || '').trim()
   const workerToken = String(process.env.ARMY_INTELLIGENCE_WORKER_TOKEN || '').trim()
   if (!apiUrl || !workerToken) return ''
-  const body = new URLSearchParams({ action: 'refreshPublicLeagueWorkspaceProjection', workerToken })
+  const body = new URLSearchParams({ action: 'refreshPublicLeagueWorkspaceProjection', section, workerToken })
   const upstream = await fetch(apiUrl, { body, method: 'POST', redirect: 'follow' })
   const payload = await upstream.json()
   if (!upstream.ok || payload?.success !== true) throw new Error(payload?.error || `Projection bootstrap returned HTTP ${upstream.status}.`)

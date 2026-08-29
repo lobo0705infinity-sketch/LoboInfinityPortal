@@ -13,6 +13,8 @@ const operations = read('src/pages/LeagueOperations.tsx')
 
 assert.match(backend, /buildPublicLeagueDashboardProjection_/)
 assert.match(backend, /getPublicPlayersProjectionFileId_/)
+assert.match(backend, /publishPublicLeagueWorkspaceProjectionSection_/)
+assert.match(backend, /remaining: dirty\.length/)
 assert.doesNotMatch(backend, /dashboard: parse\(getDashboard\(\)\)/)
 assert.match(backend, /getFactions\(\{ parameter: \{\} \}\)/)
 assert.match(backend, /getHallOfFame\(\{ parameter: \{\} \}\)/)
