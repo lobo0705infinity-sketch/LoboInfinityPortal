@@ -37,7 +37,7 @@ function saveEventBracketMissions(e) {
       const validated = validateEventBracketMissionAssignments_(eventId, matches, assignments);
       persistEventBracketMissionAssignments_(eventId, validated);
       recordEventManagerAudit(auth, eventId, "Bracket missions saved", validated.filter(function(item){ return item.mission; }).length + " assigned rounds");
-      invalidateEventManagerCaches();
+      invalidateEventManagerCaches(eventId);
       return jsonOutput({ success:true, bracket:buildEventBracketProjection_(getEventById(eventId), getEventRegistrationRows(eventId), matches) });
     } finally { lock.releaseLock(); }
   });
@@ -113,7 +113,7 @@ function awardEventBracketForfeit(e) {
       completeEventBracketMatch_(matches, match, winner, loser, "Forfeit", "", new Date());
       writeEventBracketMatches_(eventId, matches);
       recordEventManagerAudit(auth, eventId, "Bracket match awarded by forfeit", matchId + " awarded to " + winner);
-      invalidateEventManagerCaches();
+      invalidateEventManagerCaches(eventId);
       return jsonOutput({ success:true, status:"Forfeit Awarded", bracket:buildEventBracketProjection_(event, getEventRegistrationRows(eventId), matches) });
     } finally { lock.releaseLock(); }
   });
@@ -160,7 +160,7 @@ function applyTop40BracketProgression_(eventId, matchId, gameId, winner, loser, 
   if (match.status !== "Active" || Number(match.gameId) !== Number(gameId)) throw new Error("Bracket match is not recoverable from this Game.");
   completeEventBracketMatch_(matches, match, winner, loser, "Played", gameId, now);
   writeEventBracketMatches_(eventId, matches);
-  invalidateEventManagerCaches();
+  invalidateEventManagerCaches(eventId);
   return buildEventBracketProjection_(getEventById(eventId), getEventRegistrationRows(eventId), matches);
 }
 
@@ -248,7 +248,7 @@ function generateEventBracket(e) {
         throw persistenceError;
       }
       recordEventManagerAudit(auth, eventId, "Tournament bracket generated", matches.length + " matches");
-      invalidateEventManagerCaches();
+      invalidateEventManagerCaches(eventId);
       return jsonOutput({ success: true, bracket: buildEventBracketProjection_(event, participants, persisted) });
     } finally {
       lock.releaseLock();
@@ -289,7 +289,7 @@ function updateEventBracketDeadline(e) {
       sheet.getRange(rowIndex + 1, deadlineIndex + 1).setValue(deadline);
       SpreadsheetApp.flush();
       recordEventManagerAudit(auth, eventId, "Bracket deadline updated", matchId + " deadline " + deadline);
-      invalidateEventManagerCaches();
+      invalidateEventManagerCaches(eventId);
       const event = getEventById(eventId);
       return jsonOutput({ success: true, bracket: buildEventBracketProjection_(event, getEventRegistrationRows(eventId)) });
     } finally {

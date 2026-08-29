@@ -1,0 +1,31 @@
+import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
+
+const read = (file) => readFileSync(new URL(`../${file}`, import.meta.url), 'utf8')
+const backend = read('backend/PublicEventProjection.gs')
+const api = read('api/public-event-projection.mjs')
+const page = read('src/pages/EventHome.tsx')
+const client = read('src/services/publicEventProjection.ts')
+const registration = read('backend/EventRegistrationApi.gs')
+const bracket = read('backend/DoubleEliminationBracketApi.gs')
+
+assert.match(backend, /TOP40_PUBLIC_EVENT_ID = "event-lobo-s-american-top-40"/)
+assert.match(backend, /DriveApp\.createFile/)
+assert.match(backend, /setContent\(json\)/)
+assert.match(backend, /validateTop40PublicProjection_/)
+assert.match(backend, /home\.eligibleOpponents = \[\]/)
+assert.match(backend, /registrationStatus: "Not Registered"/)
+assert.match(api, /TOP40_PUBLIC_PROJECTION_FILE_ID/)
+assert.doesNotMatch(api, /VITE_API_URL|script\.google\.com|eventHome|eventBracket/)
+assert.match(api, /stale-while-revalidate=86400/)
+assert.match(client, /\/api\/public-event-projection\?eventId=/)
+assert.match(client, /public event projection event isolation failed/i)
+assert.match(page, /usePreparedPublicProjection/)
+assert.match(page, /getPublicEventProjection/)
+assert.match(page, /initialBracket/)
+assert.match(page, /if \(initialBracket\) return/)
+assert.match(page, /return <Top40StaticRulesPage \/>/)
+assert.match(registration, /publishTop40PublicProjectionBestEffort_\(eventId\)/)
+assert.match(bracket, /invalidateEventManagerCaches\(eventId\)/)
+
+console.log('Top 40 prepared public projection regression passed.')

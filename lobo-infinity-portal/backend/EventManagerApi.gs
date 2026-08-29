@@ -206,7 +206,7 @@ function saveCanonicalEventDefinition(params, options) {
 
   ensureEventManagerEventDefaults(eventId, eventName, eventType);
   recordEventManagerAudit(options && options.actor, eventId, "Event saved", eventName);
-  invalidateEventManagerCaches();
+  invalidateEventManagerCaches(eventId);
 
   return { success: true, eventId: eventId };
 }
@@ -266,7 +266,7 @@ function setEventManagerRegistration(e) {
     updateEventManagerEventFields(eventId, fields);
 
     recordEventManagerAudit(auth, eventId, "Registration updated", registration);
-    invalidateEventManagerCaches();
+    invalidateEventManagerCaches(eventId);
 
     return buildEventManagerResponse(eventId);
   });
@@ -307,7 +307,7 @@ function setEventManagerLifecycle(e) {
       "Lifecycle updated",
       JSON.stringify(fields)
     );
-    invalidateEventManagerCaches();
+    invalidateEventManagerCaches(eventId);
 
     return buildEventManagerResponse(eventId);
   });
@@ -372,7 +372,7 @@ function setEventManagerCurrentEvent(e) {
     }
 
     recordEventManagerAudit(auth, eventId, "Current event selected", eventId);
-    invalidateEventManagerCaches();
+    invalidateEventManagerCaches(eventId);
 
     return buildEventManagerResponse(eventId);
   });
@@ -416,7 +416,7 @@ function saveEventManagerParticipant(e) {
     );
 
     recordEventManagerAudit(auth, eventId, "Participant updated", player);
-    invalidateEventManagerCaches();
+    invalidateEventManagerCaches(eventId);
 
     return buildEventManagerResponse(eventId);
   });
@@ -495,7 +495,7 @@ function saveEventManagerSeeding_(eventId, serializedAssignments, auth) {
 
     SpreadsheetApp.flush();
     recordEventManagerAudit(auth, eventId, "Tournament seeding updated", assignments.length + " players");
-    invalidateEventManagerCaches();
+    invalidateEventManagerCaches(eventId);
   } finally {
     lock.releaseLock();
   }
@@ -595,7 +595,7 @@ function saveEventManagerTeam(e) {
     );
 
     recordEventManagerAudit(auth, eventId, "Team saved", teamName);
-    invalidateEventManagerCaches();
+    invalidateEventManagerCaches(eventId);
 
     return buildEventManagerResponse(eventId);
   });
@@ -678,7 +678,7 @@ function saveEventManagerPairing(e) {
       "Pairing saved",
       teamA + " vs " + teamB
     );
-    invalidateEventManagerCaches();
+    invalidateEventManagerCaches(eventId);
 
     return buildEventManagerResponse(eventId);
   });
@@ -985,7 +985,7 @@ function buildEventManagerEventId(name, type) {
 
 }
 
-function invalidateEventManagerCaches() {
+function invalidateEventManagerCaches(eventId) {
 
   if (typeof invalidateEventEngineSnapshotCache === "function")
     invalidateEventEngineSnapshotCache();
@@ -994,6 +994,9 @@ function invalidateEventManagerCaches() {
 
   if (typeof invalidateEventRegistrationCaches === "function")
     invalidateEventRegistrationCaches();
+
+  if (typeof publishTop40PublicProjectionBestEffort_ === "function")
+    publishTop40PublicProjectionBestEffort_(eventId);
 
 }
 

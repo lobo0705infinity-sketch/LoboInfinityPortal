@@ -615,6 +615,9 @@ function handleApiGet(e, action) {
     case "eventBracket":
       return getEventBracket(e);
 
+    case "refreshTop40PublicProjection":
+      return refreshTop40PublicProjection(e);
+
     case "eventManager":
       return getEventManager(e);
 
@@ -1386,6 +1389,9 @@ function handleApiPost(e, action) {
 
     case "eventBracketMissions":
       return saveEventBracketMissions(e);
+
+    case "refreshTop40PublicProjection":
+      return refreshTop40PublicProjection(e);
 
     case "eventManagerTeam":
       return saveEventManagerTeam(e);

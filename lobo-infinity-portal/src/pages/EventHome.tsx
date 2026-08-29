@@ -19,13 +19,14 @@ import {
 import { apiClient, type EventBracketData, type EventBracketMatch, type EventHomeData } from '../services/api'
 import { eventRepository, playerRepository, registrationRepository } from '../services/data'
 import { getEventResultTimelineItems } from '../services/eventResults'
+import { getPublicEventProjection } from '../services/publicEventProjection'
 import { useSettings } from '../contexts/SettingsContext'
 import type { LeagueEvent } from '../types/dashboard'
 import './EventHome.css'
 
 type EventHomeState =
   | { status: 'loading' }
-  | { data: EventHomeData; status: 'success' }
+  | { bracket?: EventBracketData; data: EventHomeData; status: 'success' }
   | { error: string; status: 'error' }
 
 const defaultEventId = 'event-current-league'
@@ -39,16 +40,28 @@ function EventHome() {
   const { eventId, section } = useParams<{ eventId: string; section?: string }>()
   const selectedEventId = eventId ? decodeURIComponent(eventId) : defaultEventId
   const selectedSection = normalizeEventHomeSection(section)
+  const isTop40 = selectedEventId === 'event-lobo-s-american-top-40'
+  const usePreparedPublicProjection = isTop40 && !auth.isAtLeastRole('Commissioner')
   const [state, setState] = useState<EventHomeState>({ status: 'loading' })
 
   useEffect(() => {
     const controller = new AbortController()
 
-    eventRepository
-      .getEventHome(selectedEventId, { signal: controller.signal })
-      .then((data) => {
+    if (isTop40 && selectedSection === 'rules') {
+      return () => controller.abort()
+    }
+
+    const request = usePreparedPublicProjection
+      ? getPublicEventProjection(selectedEventId, { signal: controller.signal })
+          .then((projection) => ({ bracket: projection.bracket, data: projection.home }))
+      : eventRepository
+          .getEventHome(selectedEventId, { signal: controller.signal })
+          .then((data) => ({ data }))
+
+    request
+      .then((result) => {
         setState({
-          data,
+          ...result,
           status: 'success',
         })
       })
@@ -69,7 +82,11 @@ function EventHome() {
     return () => {
       controller.abort()
     }
-  }, [selectedEventId])
+  }, [isTop40, selectedEventId, selectedSection, usePreparedPublicProjection])
+
+  if (isTop40 && selectedSection === 'rules') {
+    return <Top40StaticRulesPage />
+  }
 
   if (state.status === 'loading') {
     return (
@@ -132,6 +149,7 @@ function EventHome() {
   if (selectedSection === 'bracket') {
     return (
       <EventBracketPage
+        bracket={state.bracket}
         data={data}
         eventNavigationItems={eventNavigationItems}
       />
@@ -405,9 +423,11 @@ function EventResultsPage({
 }
 
 function EventBracketPage({
+  bracket,
   data,
   eventNavigationItems,
 }: {
+  bracket?: EventBracketData
   data: EventHomeData
   eventNavigationItems: Array<{ href: string; label: string }>
 }) {
@@ -430,20 +450,24 @@ function EventBracketPage({
     )
   }
 
-  return <DoubleEliminationBracketPage data={data} eventNavigationItems={eventNavigationItems} />
+  return <DoubleEliminationBracketPage initialBracket={bracket} data={data} eventNavigationItems={eventNavigationItems} />
 }
 
 function DoubleEliminationBracketPage({
+  initialBracket,
   data,
   eventNavigationItems,
 }: {
+  initialBracket?: EventBracketData
   data: EventHomeData
   eventNavigationItems: Array<{ href: string; label: string }>
 }) {
-  const [bracket, setBracket] = useState<EventBracketData | null>(null)
+  const [bracket, setBracket] = useState<EventBracketData | null>(initialBracket ?? null)
   const [error, setError] = useState('')
 
   useEffect(() => {
+    if (initialBracket) return
+
     const controller = new AbortController()
     apiClient.getEventBracket(data.event.id, { signal: controller.signal })
       .then(setBracket)
@@ -451,7 +475,7 @@ function DoubleEliminationBracketPage({
         if (!controller.signal.aborted) setError(reason instanceof Error ? reason.message : 'Bracket could not be loaded.')
       })
     return () => controller.abort()
-  }, [data.event.id])
+  }, [data.event.id, initialBracket])
 
   const readiness = bracket?.readiness
 
@@ -578,6 +602,29 @@ function EventRulesPage({
         ))}
       </nav>
 
+      <Top40Rules />
+    </main>
+  )
+}
+
+function Top40StaticRulesPage() {
+  const config = getEventNavigationConfig('event-lobo-s-american-top-40')
+  const eventNavigationItems = config
+    ? buildCapabilityNavigation(config).map((item) => ({ href: item.to, label: item.label }))
+    : []
+
+  return (
+    <main className="portal-shell event-overview-shell" data-event-section="rules">
+      <section className="page-header" aria-labelledby="event-rules-page-title">
+        <p className="eyebrow">Lobo&apos;s American Top 40</p>
+        <h1 id="event-rules-page-title">Event Rules</h1>
+        <p>Official tournament format, scheduling, and administration rules.</p>
+      </section>
+      <nav className="event-home-nav" aria-label="Event navigation">
+        {eventNavigationItems.map((item) => (
+          <Link key={`${item.label}-${item.href}`} to={item.href}>{item.label}</Link>
+        ))}
+      </nav>
       <Top40Rules />
     </main>
   )

@@ -10,6 +10,7 @@
   "scripts": {
     "test:top-40-form": "node scripts/top-40-form-check.mjs",
     "test:top-40-results": "node --experimental-strip-types scripts/top-40-results-check.mts",
+    "test:top-40-public-projection": "node scripts/top-40-public-projection-check.mjs",
     "test:submit-game-form-cards": "node scripts/submit-game-google-form-cards-check.mjs",
     "test:commissioner-password-verifier": "node scripts/commissioner-password-verifier-check.mjs",
     "test:commissioner-login-contract": "node scripts/commissioner-login-contract-check.mjs",

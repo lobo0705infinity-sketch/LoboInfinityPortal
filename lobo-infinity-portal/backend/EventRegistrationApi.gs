@@ -108,6 +108,8 @@ function registerForEvent(e) {
   );
 
   invalidateEventRegistrationCaches();
+  if (typeof publishTop40PublicProjectionBestEffort_ === "function")
+    publishTop40PublicProjectionBestEffort_(eventId);
 
   return getEventRegistration({
     parameter: {
@@ -212,6 +214,9 @@ function registerForIndividualDoubleEliminationEvent(eventId, params) {
   finally {
     lock.releaseLock();
   }
+
+  if (typeof publishTop40PublicProjectionBestEffort_ === "function")
+    publishTop40PublicProjectionBestEffort_(eventId);
 
   return getEventRegistration({
     parameter: {
@@ -355,6 +360,8 @@ function withdrawEventRegistration(e) {
   );
 
   invalidateEventRegistrationCaches();
+  if (typeof publishTop40PublicProjectionBestEffort_ === "function")
+    publishTop40PublicProjectionBestEffort_(eventId);
 
   return getEventRegistration({
     parameter: {
@@ -503,6 +510,8 @@ function manageEventRegistration(e) {
       "approval.cacheInvalidation.eventRegistrationCaches",
       function() {
         invalidateEventRegistrationCaches();
+        if (typeof publishTop40PublicProjectionBestEffort_ === "function")
+          publishTop40PublicProjectionBestEffort_(eventId);
       },
       {
         eventId: eventId

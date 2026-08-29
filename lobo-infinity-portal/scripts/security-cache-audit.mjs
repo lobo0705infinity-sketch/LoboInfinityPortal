@@ -126,6 +126,7 @@ const endpointPolicy = {
   processAutomationQueueBatch: { authRequired: true, userScoped: false },
   provisionEvent: { authRequired: true, userScoped: false },
   refreshArmyIntelligence: { authRequired: true, userScoped: false },
+  refreshTop40PublicProjection: { authRequired: true, userScoped: false },
   refreshCache: { authRequired: true, userScoped: false },
   registerForEvent: { authRequired: true, userScoped: true },
   rejectArmyList: { authRequired: true, userScoped: false },
