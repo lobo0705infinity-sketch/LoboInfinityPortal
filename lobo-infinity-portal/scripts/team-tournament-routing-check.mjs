@@ -214,6 +214,13 @@ const teamTournamentPayload = {
 function createServer() {
   return http.createServer((request, response) => {
     const pathname = decodeURIComponent(new URL(request.url ?? '/', 'http://local').pathname)
+
+    if (pathname === '/api/public-team-tournament-projection') {
+      response.setHeader('Content-Type', 'application/json')
+      response.end(JSON.stringify(teamTournamentPayload))
+      return
+    }
+
     let file = path.normalize(path.join(root, pathname))
 
     if (!file.startsWith(root)) {
