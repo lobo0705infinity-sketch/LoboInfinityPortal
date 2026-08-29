@@ -450,6 +450,7 @@ function BracketStructure({ matches }: { matches: EventBracketMatch[] }) {
                       <small>{getBracketMatchStatus(match)}</small>
                       <small>Mission: {match.mission || 'Not assigned'}</small>
                       {match.status === 'Completed' && match.winner ? <small>Winner: {match.winner}</small> : null}
+                      {match.status === 'Completed' && match.resolution === 'Forfeit' ? <small>Forfeit</small> : null}
                       {match.status === 'Active' && match.deadline ? <small>Deadline: {formatBracketDeadline(match.deadline)}</small> : null}
                     </article>
                   ))}

@@ -2,7 +2,7 @@ const DOUBLE_ELIMINATION_BRACKET_HEADERS = [
   "Event ID", "Match ID", "Bracket", "Bracket Round", "Position",
   "Player A", "Seed A", "Player B", "Seed B", "Player A Source", "Player B Source",
   "Status", "Winner", "Loser", "Next Winner Match", "Next Winner Slot",
-  "Next Loser Match", "Next Loser Slot", "Created At", "Activated At", "Deadline", "Game ID"
+  "Next Loser Match", "Next Loser Slot", "Created At", "Activated At", "Deadline", "Game ID", "Resolution"
 ];
 
 const EVENT_BRACKET_MISSION_HEADERS = [
@@ -80,6 +80,39 @@ function submitTop40Result(e) {
   }
 }
 
+function awardEventBracketForfeit(e) {
+  return requireApiPermission(e, "runSeasonControl", function(auth) {
+    const params = getApiParameters(e);
+    const eventId = getEventManagerString(params.eventId);
+    const matchId = getEventManagerString(params.matchId);
+    const winner = getEventManagerString(params.winner);
+    const lock = LockService.getScriptLock();
+    lock.waitLock(10000);
+    try {
+      const event = getEventByIdNoEnsure(eventId);
+      if (!event || event.type !== "Individual Double Elimination")
+        throw new Error("Forfeits are only available for Individual Double Elimination events.");
+      const matches = readEventBracketMatches_(eventId);
+      const match = matches.filter(function(item){ return item.matchId === matchId; })[0];
+      if (!match) throw new Error("Bracket match not found.");
+      if (match.status === "Completed") {
+        if (match.resolution === "Forfeit" && match.winner === winner)
+          return jsonOutput({ success:true, status:"Already Awarded", bracket:buildEventBracketProjection_(event, getEventRegistrationRows(eventId), matches) });
+        throw new Error("Bracket match is already completed.");
+      }
+      if (match.status !== "Active") throw new Error("Only Active matches may be awarded by forfeit.");
+      if (winner !== match.playerA && winner !== match.playerB)
+        throw new Error("Forfeit winner must be Player A or Player B.");
+      const loser = winner === match.playerA ? match.playerB : match.playerA;
+      completeEventBracketMatch_(matches, match, winner, loser, "Forfeit", "", new Date());
+      writeEventBracketMatches_(eventId, matches);
+      recordEventManagerAudit(auth, eventId, "Bracket match awarded by forfeit", matchId + " awarded to " + winner);
+      invalidateEventManagerCaches();
+      return jsonOutput({ success:true, status:"Forfeit Awarded", bracket:buildEventBracketProjection_(event, getEventRegistrationRows(eventId), matches) });
+    } finally { lock.releaseLock(); }
+  });
+}
+
 function validateTop40BracketSubmission_(params) {
   const eventId = getEventManagerString(params.eventId);
   const event = getEventByIdNoEnsure(eventId);
@@ -119,14 +152,28 @@ function applyTop40BracketProgression_(eventId, matchId, gameId, winner, loser, 
     throw new Error("Bracket match is already linked to another Game.");
   }
   if (match.status !== "Active" || Number(match.gameId) !== Number(gameId)) throw new Error("Bracket match is not recoverable from this Game.");
-  placeEventBracketPlayer_(byId, match.nextWinnerMatch, match.nextWinnerSlot, winner, getEventBracketPlayerSeed_(match, winner));
-  placeEventBracketPlayer_(byId, match.nextLoserMatch, match.nextLoserSlot, loser, getEventBracketPlayerSeed_(match, loser));
-  match.status="Completed"; match.winner=winner; match.loser=loser;
-  resolveEventBracketByes_(matches);
-  activatePlayableEventBracketMatches_(matches, now);
+  completeEventBracketMatch_(matches, match, winner, loser, "Played", gameId, now);
   writeEventBracketMatches_(eventId, matches);
   invalidateEventManagerCaches();
   return buildEventBracketProjection_(getEventById(eventId), getEventRegistrationRows(eventId), matches);
+}
+
+function completeEventBracketMatch_(matches, match, winner, loser, resolution, gameId, now) {
+  const byId = {}; matches.forEach(function(item){ byId[item.matchId] = item; });
+  if (match.status !== "Active") throw new Error("Only Active matches may be completed.");
+  if (winner !== match.playerA && winner !== match.playerB) throw new Error("Winner must be a bracket participant.");
+  if (loser !== match.playerA && loser !== match.playerB) throw new Error("Loser must be a bracket participant.");
+  if (winner === loser) throw new Error("Winner and loser must be different players.");
+  placeEventBracketPlayer_(byId, match.nextWinnerMatch, match.nextWinnerSlot, winner, getEventBracketPlayerSeed_(match, winner));
+  placeEventBracketPlayer_(byId, match.nextLoserMatch, match.nextLoserSlot, loser, getEventBracketPlayerSeed_(match, loser));
+  match.status = "Completed";
+  match.winner = winner;
+  match.loser = loser;
+  match.resolution = resolution;
+  match.gameId = gameId || "";
+  resolveEventBracketByes_(matches);
+  activatePlayableEventBracketMatches_(matches, now);
+  return matches;
 }
 
 function placeEventBracketPlayer_(byId, targetId, slot, player, seed) {
@@ -510,7 +557,7 @@ function persistEventBracketMatches_(eventId, matches) {
   const existing = getEventEngineRows(sheet).filter(function(row){return row["Event ID"] === eventId;});
   if (existing.length) throw new Error("Bracket has already been generated.");
   const now = getEventManagerTimestamp();
-  const rows = matches.map(function(m){return [m.eventId,m.matchId,m.bracket,m.bracketRound,m.position,m.playerA,m.seedA,m.playerB,m.seedB,m.playerASource,m.playerBSource,m.status,m.winner,m.loser,m.nextWinnerMatch,m.nextWinnerSlot,m.nextLoserMatch,m.nextLoserSlot,now,m.activatedAt||"",m.deadline||"",m.gameId||""];});
+  const rows = matches.map(function(m){return [m.eventId,m.matchId,m.bracket,m.bracketRound,m.position,m.playerA,m.seedA,m.playerB,m.seedB,m.playerASource,m.playerBSource,m.status,m.winner,m.loser,m.nextWinnerMatch,m.nextWinnerSlot,m.nextLoserMatch,m.nextLoserSlot,now,m.activatedAt||"",m.deadline||"",m.gameId||"",m.resolution||""];});
   if (rows.length) sheet.getRange(sheet.getLastRow()+1,1,rows.length,DOUBLE_ELIMINATION_BRACKET_HEADERS.length).setValues(rows);
   SpreadsheetApp.flush();
 }
@@ -518,7 +565,7 @@ function persistEventBracketMatches_(eventId, matches) {
 function readEventBracketMatches_(eventId) {
   const sheet = getEventEngineRuntimeSheet(CONFIG.SHEETS.EVENT_BRACKET_MATCHES);
   if (!sheet) return [];
-  return getEventEngineRows(sheet).filter(function(row){return row["Event ID"] === eventId;}).map(function(row){return { eventId:row["Event ID"],matchId:row["Match ID"],bracket:row["Bracket"],bracketRound:Number(row["Bracket Round"]),position:Number(row["Position"]),playerA:row["Player A"]||"",seedA:row["Seed A"]===""?"":Number(row["Seed A"]),playerB:row["Player B"]||"",seedB:row["Seed B"]===""?"":Number(row["Seed B"]),playerASource:row["Player A Source"]||"",playerBSource:row["Player B Source"]||"",status:row["Status"]||"Pending",winner:row["Winner"]||"",loser:row["Loser"]||"",nextWinnerMatch:row["Next Winner Match"]||"",nextWinnerSlot:row["Next Winner Slot"]||"",nextLoserMatch:row["Next Loser Match"]||"",nextLoserSlot:row["Next Loser Slot"]||"",activatedAt:row["Activated At"]||"",deadline:row["Deadline"]||"",gameId:row["Game ID"]===""?"":Number(row["Game ID"])};});
+  return getEventEngineRows(sheet).filter(function(row){return row["Event ID"] === eventId;}).map(function(row){return { eventId:row["Event ID"],matchId:row["Match ID"],bracket:row["Bracket"],bracketRound:Number(row["Bracket Round"]),position:Number(row["Position"]),playerA:row["Player A"]||"",seedA:row["Seed A"]===""?"":Number(row["Seed A"]),playerB:row["Player B"]||"",seedB:row["Seed B"]===""?"":Number(row["Seed B"]),playerASource:row["Player A Source"]||"",playerBSource:row["Player B Source"]||"",status:row["Status"]||"Pending",winner:row["Winner"]||"",loser:row["Loser"]||"",nextWinnerMatch:row["Next Winner Match"]||"",nextWinnerSlot:row["Next Winner Slot"]||"",nextLoserMatch:row["Next Loser Match"]||"",nextLoserSlot:row["Next Loser Slot"]||"",activatedAt:row["Activated At"]||"",deadline:row["Deadline"]||"",gameId:row["Game ID"]===""?"":Number(row["Game ID"]),resolution:row["Resolution"]||""};});
 }
 
 function setEventBracketMatchGameId_(eventId, matchId, gameId) {
@@ -535,7 +582,7 @@ function setEventBracketMatchGameId_(eventId, matchId, gameId) {
 function writeEventBracketMatches_(eventId, matches) {
   const sheet=ensureEventEngineSheet(CONFIG.SHEETS.EVENT_BRACKET_MATCHES,DOUBLE_ELIMINATION_BRACKET_HEADERS);
   const range=sheet.getDataRange(); const values=range.getValues(); const headers=values[0].map(getEventManagerString); const matchById={}; matches.forEach(function(match){matchById[match.matchId]=match;}); let found=0;
-  for(let row=1;row<values.length;row++) if(getEventManagerString(values[row][headers.indexOf("Event ID")])===eventId){ const m=matchById[getEventManagerString(values[row][headers.indexOf("Match ID")])]; if(!m) throw new Error("Bracket match persistence row is missing."); found++; const record={"Player A":m.playerA,"Seed A":m.seedA,"Player B":m.playerB,"Seed B":m.seedB,"Status":m.status,"Winner":m.winner,"Loser":m.loser,"Activated At":m.activatedAt,"Deadline":m.deadline,"Game ID":m.gameId}; Object.keys(record).forEach(function(key){values[row][headers.indexOf(key)]=record[key]||"";}); }
+  for(let row=1;row<values.length;row++) if(getEventManagerString(values[row][headers.indexOf("Event ID")])===eventId){ const m=matchById[getEventManagerString(values[row][headers.indexOf("Match ID")])]; if(!m) throw new Error("Bracket match persistence row is missing."); found++; const record={"Player A":m.playerA,"Seed A":m.seedA,"Player B":m.playerB,"Seed B":m.seedB,"Status":m.status,"Winner":m.winner,"Loser":m.loser,"Activated At":m.activatedAt,"Deadline":m.deadline,"Game ID":m.gameId,"Resolution":m.resolution}; Object.keys(record).forEach(function(key){values[row][headers.indexOf(key)]=record[key]||"";}); }
   if(found!==matches.length) throw new Error("Bracket persistence is incomplete.");
   range.setValues(values);
   SpreadsheetApp.flush();

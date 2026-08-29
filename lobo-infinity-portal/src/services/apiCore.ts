@@ -1265,6 +1265,7 @@ function getMutationInvalidationGroups(action: string) {
     case 'eventManagerParticipant':
     case 'eventBracketGenerate':
     case 'eventBracketDeadline':
+    case 'eventBracketForfeit':
     case 'eventBracketMissions':
     case 'eventManagerTeam':
     case 'eventManagerPairing':

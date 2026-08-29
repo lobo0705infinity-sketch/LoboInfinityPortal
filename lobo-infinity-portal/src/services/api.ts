@@ -2735,6 +2735,7 @@ export type ApiClient = {
   getEventBracket: (eventId: string, options?: ApiOptions) => Promise<EventBracketData>
   generateEventBracket: (eventId: string, options?: ApiOptions) => Promise<EventBracketData>
   updateEventBracketDeadline: (eventId: string, matchId: string, deadline: string, options?: ApiOptions) => Promise<EventBracketData>
+  awardEventBracketForfeit: (eventId: string, matchId: string, winner: string, options?: ApiOptions) => Promise<EventBracketData>
   saveEventBracketMissions: (eventId: string, assignments: EventBracketMission[], options?: ApiOptions) => Promise<EventBracketData>
   getEventManager: (
     eventId?: string,
@@ -3530,6 +3531,7 @@ export type EventBracketMatch = {
   status: string
   deadline: string
   gameId: number | null
+  resolution: string
   winner: string
 }
 
@@ -3757,6 +3759,17 @@ export async function updateEventBracketDeadline(
 ): Promise<EventBracketData> {
   return normalizeEventBracketPayload(
     await postRequest('eventBracketDeadline', options, { eventId, matchId, deadline }),
+  )
+}
+
+export async function awardEventBracketForfeit(
+  eventId: string,
+  matchId: string,
+  winner: string,
+  options: ApiOptions = {},
+): Promise<EventBracketData> {
+  return normalizeEventBracketPayload(
+    await postRequest('eventBracketForfeit', options, { eventId, matchId, winner }),
   )
 }
 
@@ -4392,6 +4405,7 @@ export const apiClient: ApiClient = {
   getEventBracket,
   generateEventBracket,
   updateEventBracketDeadline,
+  awardEventBracketForfeit,
   saveEventBracketMissions,
   getLeagueOperations,
   getEventManager,
@@ -8896,6 +8910,7 @@ function normalizeEventBracketPayload(payload: unknown): EventBracketData {
         status: getString(match, 'status'),
         deadline: getString(match, 'deadline'),
         gameId: getString(match, 'gameId') === '' ? null : getNumber(match, 'gameId'),
+        resolution: getString(match, 'resolution'),
         winner: getString(match, 'winner'),
       }
     }),

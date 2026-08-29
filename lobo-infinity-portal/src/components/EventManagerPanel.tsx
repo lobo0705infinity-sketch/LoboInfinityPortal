@@ -800,6 +800,8 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
   const [bracket, setBracket] = useState<EventBracketData | null>(null)
   const [deadlineDrafts, setDeadlineDrafts] = useState<Record<string, string>>({})
   const [savingDeadline, setSavingDeadline] = useState('')
+  const [forfeitWinners, setForfeitWinners] = useState<Record<string, string>>({})
+  const [awardingForfeit, setAwardingForfeit] = useState('')
   const [missionDrafts, setMissionDrafts] = useState<Record<string, string>>({})
   const [savingMissions, setSavingMissions] = useState(false)
   const loadBracket = useCallback(() => {
@@ -868,6 +870,27 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
       setError(reason instanceof Error ? reason.message : 'Missions could not be saved.')
     } finally {
       setSavingMissions(false)
+    }
+  }
+
+  async function awardForfeit(match: EventBracketData['matches'][number]) {
+    const winner = forfeitWinners[match.matchId]
+    if (!winner) {
+      setError('Choose Player A or Player B as the forfeit winner.')
+      return
+    }
+    if (!window.confirm(`Award this match to ${winner} by forfeit?`)) return
+    setAwardingForfeit(match.matchId)
+    setMessage('Awarding forfeit...')
+    setError('')
+    try {
+      setBracket(await apiClient.awardEventBracketForfeit(eventId, match.matchId, winner))
+      setMessage('Forfeit awarded.')
+    } catch (reason) {
+      setMessage('')
+      setError(reason instanceof Error ? reason.message : 'Forfeit could not be awarded.')
+    } finally {
+      setAwardingForfeit('')
     }
   }
 
@@ -941,6 +964,21 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
             </label>
             <button disabled={!canManage || savingDeadline !== ''} onClick={() => saveDeadline(match.matchId)} type="button">
               {savingDeadline === match.matchId ? 'Saving...' : 'Edit Deadline'}
+            </button>
+            <label>
+              Forfeit Winner
+              <select
+                disabled={!canManage || awardingForfeit !== ''}
+                onChange={(event) => setForfeitWinners((current) => ({ ...current, [match.matchId]: event.target.value }))}
+                value={forfeitWinners[match.matchId] || ''}
+              >
+                <option value="">Choose winner</option>
+                <option value={match.playerA}>{match.playerA}</option>
+                <option value={match.playerB}>{match.playerB}</option>
+              </select>
+            </label>
+            <button disabled={!canManage || awardingForfeit !== ''} onClick={() => void awardForfeit(match)} type="button">
+              {awardingForfeit === match.matchId ? 'Awarding...' : 'Award Forfeit'}
             </button>
           </div>
         ))}

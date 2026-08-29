@@ -884,6 +884,9 @@ function handleApiGet(e, action) {
     case "eventBracketDeadline":
       return updateEventBracketDeadline(e);
 
+    case "eventBracketForfeit":
+      return awardEventBracketForfeit(e);
+
     case "eventManagerTeam":
       return saveEventManagerTeam(e);
 
@@ -1377,6 +1380,9 @@ function handleApiPost(e, action) {
 
     case "eventBracketDeadline":
       return updateEventBracketDeadline(e);
+
+    case "eventBracketForfeit":
+      return awardEventBracketForfeit(e);
 
     case "eventBracketMissions":
       return saveEventBracketMissions(e);
