@@ -74,11 +74,11 @@ function getDashboard() {
       "dashboard.standings.mainMan"
     );
 
-  const mainManResponse =
-    buildStandingsResponse(
-      getStandingsDivisionConfig("main"),
-      dashboardContext
-    );
+  const leagueStandings = buildAllLeagueStandingsResponses(
+    EVENT_ENGINE_DEFAULT_EVENT_ID,
+    dashboardContext
+  );
+  const mainManResponse = leagueStandings[0];
 
   endDashboardEndpointSubStage(
     "dashboard.standings.mainMan",
@@ -136,9 +136,7 @@ function getDashboard() {
     );
 
   const leagueOverview =
-    buildLeagueOverview(
-      dashboardContext
-    );
+    buildLeagueOverview(dashboardContext, leagueStandings);
 
   endDashboardEndpointSubStage(
     "dashboard.calculation.leagueOverview",
@@ -214,7 +212,7 @@ function getDashboardStandingsColumnCount() {
   ) + 1;
 }
 
-function buildLeagueOverview(dashboardContext) {
+function buildLeagueOverview(dashboardContext, preparedDivisions) {
 
   const cachedOverview =
     readDashboardLeagueOverviewCache();
@@ -233,7 +231,7 @@ function buildLeagueOverview(dashboardContext) {
       "dashboard.standings.main"
     );
 
-  const main =
+  const main = preparedDivisions && preparedDivisions[0] ? preparedDivisions[0] :
     buildStandingsResponse({
       key: "main",
       label: CONFIG.DIVISIONS.MAIN_MAN
@@ -252,7 +250,7 @@ function buildLeagueOverview(dashboardContext) {
       "dashboard.standings.pga"
     );
 
-  const pga =
+  const pga = preparedDivisions && preparedDivisions[1] ? preparedDivisions[1] :
     buildStandingsResponse({
       key: "pga",
       label: CONFIG.DIVISIONS.PGA
@@ -271,7 +269,7 @@ function buildLeagueOverview(dashboardContext) {
       "dashboard.standings.pgb"
     );
 
-  const pgb =
+  const pgb = preparedDivisions && preparedDivisions[2] ? preparedDivisions[2] :
     buildStandingsResponse({
       key: "pgb",
       label: CONFIG.DIVISIONS.PGB

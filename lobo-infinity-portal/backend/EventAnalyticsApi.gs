@@ -62,20 +62,7 @@ function getEventAnalyticsPlayers(context) {
     context.isLeague &&
     context.gameType === "league"
   )
-    return [
-      buildEventStandingsResponse(
-        getStandingsDivisionConfig("main"),
-        context.eventId
-      ),
-      buildEventStandingsResponse(
-        getStandingsDivisionConfig("pga"),
-        context.eventId
-      ),
-      buildEventStandingsResponse(
-        getStandingsDivisionConfig("pgb"),
-        context.eventId
-      )
-    ];
+    return buildAllLeagueStandingsResponses(context.eventId);
 
   if (context.isLeague)
     return getEventAnalyticsGameEnginePlayers(context);
