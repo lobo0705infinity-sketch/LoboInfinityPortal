@@ -9,6 +9,7 @@
   },
   "scripts": {
     "test:top-40-form": "node scripts/top-40-form-check.mjs",
+    "test:submit-game-form-cards": "node scripts/submit-game-google-form-cards-check.mjs",
     "test:commissioner-password-verifier": "node scripts/commissioner-password-verifier-check.mjs",
     "test:commissioner-login-contract": "node scripts/commissioner-login-contract-check.mjs",
     "check:army-intelligence-explorer": "node --experimental-strip-types scripts/army-intelligence-explorer-check.mts",

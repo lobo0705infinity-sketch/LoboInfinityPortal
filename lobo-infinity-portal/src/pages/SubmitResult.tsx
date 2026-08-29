@@ -98,6 +98,12 @@ function SubmitResult() {
           label="Casual Game"
           url={GOOGLE_FORM_URLS.casual}
         />
+        <GoogleFormLauncher
+          buttonLabel="Submit Top 40 Game"
+          description="Submit a Top 40 tournament game."
+          label="Lobo's American Top 40"
+          url={GOOGLE_FORM_URLS.top40}
+        />
       </section>
     </main>
   )
