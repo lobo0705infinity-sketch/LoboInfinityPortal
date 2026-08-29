@@ -13,6 +13,7 @@
     "test:top-40-public-projection": "node scripts/top-40-public-projection-check.mjs",
     "test:public-analytics-projection": "node scripts/public-analytics-projection-check.mjs",
     "test:public-team-tournament-projection": "node scripts/public-team-tournament-projection-check.mjs",
+    "test:public-players-projection": "node scripts/public-players-projection-check.mjs",
     "test:submit-game-form-cards": "node scripts/submit-game-google-form-cards-check.mjs",
     "test:commissioner-password-verifier": "node scripts/commissioner-password-verifier-check.mjs",
     "test:commissioner-login-contract": "node scripts/commissioner-login-contract-check.mjs",

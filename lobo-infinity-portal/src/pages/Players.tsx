@@ -8,6 +8,7 @@ import { getDiscordCommunityLink } from '../config/communityLinks'
 import { useSettings } from '../contexts/SettingsContext'
 import { useApiCacheRevalidation } from '../hooks/useApiCacheRevalidation'
 import { apiClient, type EventRegistrationData } from '../services/api'
+import { getPublicPlayersProjection } from '../services/publicPlayersProjection'
 import {
   getStandingClassifications,
   statusFilterMatches,
@@ -62,10 +63,9 @@ function Players() {
   useApiCacheRevalidation({
     action: 'players',
     params: eventId ? { eventId } : {},
-    read: () => apiClient.getPlayers({
-      cacheMode: 'stale-while-revalidate',
-      eventId,
-    }),
+    read: () => eventScoped
+      ? apiClient.getPlayers({ cacheMode: 'stale-while-revalidate', eventId })
+      : getPublicPlayersProjection(),
     apply: (divisions) => {
       setPlayersState({ divisions, status: 'success' })
     },
@@ -74,12 +74,15 @@ function Players() {
   useEffect(() => {
     const controller = new AbortController()
 
-    apiClient
-      .getPlayers({
-        cacheMode: 'stale-while-revalidate',
-        eventId,
-        signal: controller.signal,
-      })
+    const load = eventScoped
+      ? apiClient.getPlayers({
+          cacheMode: 'stale-while-revalidate',
+          eventId,
+          signal: controller.signal,
+        })
+      : getPublicPlayersProjection({ signal: controller.signal })
+
+    load
       .then((divisions) => {
         setPlayersState({
           divisions,
@@ -103,7 +106,7 @@ function Players() {
     return () => {
       controller.abort()
     }
-  }, [eventId])
+  }, [eventId, eventScoped])
 
   useEffect(() => {
     if (!eventScoped) {

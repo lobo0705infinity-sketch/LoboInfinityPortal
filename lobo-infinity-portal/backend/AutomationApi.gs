@@ -472,6 +472,8 @@ function enqueueGameSubmittedAutomationEvent(identity) {
     markPublicAnalyticsProjectionDirty_(identity && identity.eventId);
   if (typeof markPublicTeamTournamentProjectionDirty_ === "function")
     markPublicTeamTournamentProjectionDirty_(identity && identity.eventId);
+  if (typeof markPublicPlayersProjectionDirty_ === "function")
+    markPublicPlayersProjectionDirty_();
 
   if (hasRecentAutomationEventId_(eventId))
     return {
@@ -621,12 +623,18 @@ function processAutomationQueueBatch(e) {
       ? publishDirtyPublicTeamTournamentProjectionBestEffort_()
       : { refreshed: false, success: true };
 
+  const playersProjection =
+    typeof publishDirtyPublicPlayersProjectionBestEffort_ === "function"
+      ? publishDirtyPublicPlayersProjectionBestEffort_()
+      : { refreshed: false, success: true };
+
   return jsonOutput({
     analyticsProjection: analyticsProjection,
     attempted: items.length,
     batchLimit: batchLimit,
     failed: results.filter(function(result) { return result.success === false; }).length,
     results: results,
+    playersProjection: playersProjection,
     teamTournamentProjection: teamTournamentProjection,
     success: true
   });

@@ -29,6 +29,8 @@ function publishTop40PublicProjectionBestEffort_(eventId) {
     markPublicAnalyticsProjectionDirty_(eventId);
   if (typeof markPublicTeamTournamentProjectionDirty_ === "function")
     markPublicTeamTournamentProjectionDirty_(eventId);
+  if (typeof markPublicPlayersProjectionDirty_ === "function")
+    markPublicPlayersProjectionDirty_();
 
   if (String(eventId || "") !== TOP40_PUBLIC_EVENT_ID)
     return;

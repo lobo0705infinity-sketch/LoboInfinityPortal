@@ -624,6 +624,9 @@ function handleApiGet(e, action) {
     case "refreshPublicTeamTournamentProjection":
       return refreshPublicTeamTournamentProjection(e);
 
+    case "refreshPublicPlayersProjection":
+      return refreshPublicPlayersProjection(e);
+
     case "eventManager":
       return getEventManager(e);
 
@@ -1404,6 +1407,9 @@ function handleApiPost(e, action) {
 
     case "refreshPublicTeamTournamentProjection":
       return refreshPublicTeamTournamentProjection(e);
+
+    case "refreshPublicPlayersProjection":
+      return refreshPublicPlayersProjection(e);
 
     case "eventManagerTeam":
       return saveEventManagerTeam(e);

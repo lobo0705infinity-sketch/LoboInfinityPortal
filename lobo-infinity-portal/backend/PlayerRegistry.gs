@@ -717,6 +717,9 @@ function invalidatePlayerRegistryCache() {
   playerDisplayNameCache =
     null;
 
+  if (typeof markPublicPlayersProjectionDirty_ === "function")
+    markPublicPlayersProjectionDirty_();
+
   try {
     CacheService
       .getScriptCache()

@@ -5044,7 +5044,7 @@ function normalizePlayerProfileRecord(
   }
 }
 
-function normalizePlayersPayload(payload: unknown): DivisionStandings[] {
+export function normalizePlayersPayload(payload: unknown): DivisionStandings[] {
   const record = asRecord(payload, 'Players response')
 
   if (record.success === false) {
