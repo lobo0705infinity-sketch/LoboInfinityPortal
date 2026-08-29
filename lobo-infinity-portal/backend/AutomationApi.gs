@@ -468,6 +468,9 @@ function enqueueGameSubmittedAutomationEvent(identity) {
 
   const eventId = "gameSubmitted-game-" + gameId;
 
+  if (typeof markPublicAnalyticsProjectionDirty_ === "function")
+    markPublicAnalyticsProjectionDirty_(identity && identity.eventId);
+
   if (hasRecentAutomationEventId_(eventId))
     return {
       duplicate: true,
@@ -606,7 +609,13 @@ function processAutomationQueueBatch(e) {
     }
   });
 
+  const analyticsProjection =
+    typeof publishDirtyPublicAnalyticsProjectionsBestEffort_ === "function"
+      ? publishDirtyPublicAnalyticsProjectionsBestEffort_()
+      : { refreshed: false, success: true };
+
   return jsonOutput({
+    analyticsProjection: analyticsProjection,
     attempted: items.length,
     batchLimit: batchLimit,
     failed: results.filter(function(result) { return result.success === false; }).length,

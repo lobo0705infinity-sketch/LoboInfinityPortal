@@ -998,6 +998,9 @@ function invalidateEventManagerCaches(eventId) {
   if (typeof publishTop40PublicProjectionBestEffort_ === "function")
     publishTop40PublicProjectionBestEffort_(eventId);
 
+  if (typeof markPublicAnalyticsProjectionDirty_ === "function")
+    markPublicAnalyticsProjectionDirty_(eventId);
+
 }
 
 function recordEventManagerAudit(auth, eventId, action, detail) {

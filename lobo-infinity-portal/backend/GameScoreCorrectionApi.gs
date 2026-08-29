@@ -151,6 +151,9 @@ function correctGameScore(e, auth) {
   if (typeof invalidatePortalCacheGroup === "function")
     invalidatePortalCacheGroup("all");
 
+  if (typeof markPublicAnalyticsProjectionDirty_ === "function")
+    markPublicAnalyticsProjectionDirty_(target.eventId);
+
   return jsonOutput({
     success: true,
     auditWritten: true,
