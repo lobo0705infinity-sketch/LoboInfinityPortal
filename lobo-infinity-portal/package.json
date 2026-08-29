@@ -124,6 +124,7 @@
     "test:dashboard-commander-removal": "node scripts/dashboard-commander-removal-check.mjs",
     "test:draws": "node scripts/draw-support-check.mjs",
     "test:standings-integrity": "node scripts/standings-integrity-check.mjs",
+    "test:standings-prepared-read": "node scripts/standings-prepared-read-check.mjs",
     "test:player-profile": "node scripts/player-profile-check.mjs",
     "test:player-profile-fanout": "node scripts/player-profile-fanout-check.mjs",
     "test:player-profile-army-lists": "node scripts/player-profile-army-list-read-model-check.mjs",

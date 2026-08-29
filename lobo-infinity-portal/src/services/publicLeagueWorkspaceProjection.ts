@@ -3,11 +3,12 @@ import {
   normalizeFactionsPayload,
   normalizeLeagueOperationsPayload,
   normalizeMissionsPayload,
+  normalizePlayersPayload,
   type FactionSummary,
   type LeagueOperationsData,
   type MissionSummary,
 } from './api'
-import type { DashboardData } from '../types/dashboard'
+import type { DashboardData, DivisionKey, DivisionStandings } from '../types/dashboard'
 
 type LeagueSection = 'dashboard' | 'factions' | 'missions' | 'leagueOperations'
 
@@ -33,4 +34,17 @@ export const publicLeagueWorkspace = {
   },
   getLeagueOperations: async (signal?: AbortSignal): Promise<LeagueOperationsData> =>
     normalizeLeagueOperationsPayload(await readSection('leagueOperations', signal)),
+  getStandings: async (
+    division: DivisionKey,
+    signal?: AbortSignal,
+  ): Promise<DivisionStandings> => {
+    const dashboard = await readSection('dashboard', signal)
+    const divisions = normalizePlayersPayload({
+      divisions: dashboard?.divisionStandings,
+      success: true,
+    })
+    const selected = divisions.find((item) => item.division === division)
+    if (!selected) throw new Error('Prepared League standings are unavailable for this division.')
+    return selected
+  },
 }

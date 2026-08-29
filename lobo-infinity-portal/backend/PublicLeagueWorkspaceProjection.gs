@@ -178,6 +178,7 @@ function buildPublicLeagueDashboardProjection_(factions, leagueOperations) {
     gamesPlayed: Number(main.summary.gamesPlayed) || 0,
     activePlayers: Number(main.summary.activePlayers) || 0,
     mainManStandings: main.standings || [],
+    divisionStandings: divisions,
     leagueOverview: {
       divisions: divisions.map(function(division) {
         return {
@@ -212,6 +213,8 @@ function getPublicLeagueDashboardTopFaction_() {
 
 function validatePublicLeagueWorkspaceProjection_(projection) {
   if (!projection || !projection.generatedAt || !projection.dashboard ||
+      !Array.isArray(projection.dashboard.divisionStandings) ||
+      projection.dashboard.divisionStandings.length !== 3 ||
       !Array.isArray(projection.factions && projection.factions.factions) ||
       !projection.missions ||
       !projection.leagueOperations || !projection.leagueOperations.operations)
