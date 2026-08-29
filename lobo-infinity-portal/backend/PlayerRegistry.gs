@@ -719,6 +719,8 @@ function invalidatePlayerRegistryCache() {
 
   if (typeof markPublicPlayersProjectionDirty_ === "function")
     markPublicPlayersProjectionDirty_();
+  if (typeof markPublicLeagueWorkspaceProjectionDirty_ === "function")
+    markPublicLeagueWorkspaceProjectionDirty_();
 
   try {
     CacheService

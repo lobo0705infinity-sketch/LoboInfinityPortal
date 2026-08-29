@@ -121,6 +121,8 @@ function saveLeagueOperations(e) {
         .setValues([row]);
 
     invalidatePortalCacheGroup("leagueOperations");
+    if (typeof markPublicLeagueWorkspaceProjectionDirty_ === "function")
+      markPublicLeagueWorkspaceProjectionDirty_();
 
     if (typeof recordEventManagerAudit === "function")
       recordEventManagerAudit(

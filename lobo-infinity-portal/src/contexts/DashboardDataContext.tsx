@@ -24,6 +24,7 @@ import type {
   StreamedGame,
 } from '../services/api'
 import { apiClient } from '../services/api'
+import { publicLeagueWorkspace } from '../services/publicLeagueWorkspaceProjection'
 import type { DashboardData, DivisionStandings } from '../types/dashboard'
 
 type DashboardDataContextValue = {
@@ -80,7 +81,7 @@ function loadCommunityCommandCenter(cacheKey: string) {
 }
 
 function loadDashboardSummary() {
-  return dashboardRepository.getDashboard(dashboardSWR)
+  return publicLeagueWorkspace.getDashboard()
 }
 
 const dashboardCacheRevalidatedEvent = 'lobo:cache-revalidated'

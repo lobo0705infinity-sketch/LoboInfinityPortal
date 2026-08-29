@@ -4457,7 +4457,7 @@ export const apiClient: ApiClient = {
   refreshArmyIntelligenceSnapshots,
 }
 
-function normalizeDashboardPayload(payload: unknown): DashboardData {
+export function normalizeDashboardPayload(payload: unknown): DashboardData {
   const response = parseDashboardApiResponse(payload)
 
   return {
@@ -5129,7 +5129,7 @@ function normalizeGameScoreCorrectionScores(record: Record<string, unknown>) {
   }
 }
 
-function normalizeFactionsPayload(payload: unknown): FactionSummary[] {
+export function normalizeFactionsPayload(payload: unknown): FactionSummary[] {
   const record = asRecord(payload, 'Factions response')
 
   if (record.success === false) {
@@ -5234,7 +5234,7 @@ function normalizeFactionBestMoment(item: unknown): FactionBestMoment {
   }
 }
 
-function normalizeMissionsPayload(payload: unknown): MissionSummary[] {
+export function normalizeMissionsPayload(payload: unknown): MissionSummary[] {
   const record = asRecord(payload, 'Missions response')
 
   if (record.success === false) {
@@ -5462,7 +5462,7 @@ function normalizeRecordsPayload(
   return normalizeLeagueRecords(getRequiredRecord(record, 'records'))
 }
 
-function normalizeHallOfFamePayload(payload: unknown): HallOfFameData {
+export function normalizeHallOfFamePayload(payload: unknown): HallOfFameData {
   const record = asRecord(payload, 'Hall of Fame response')
 
   if (record.success === false) {
@@ -6856,7 +6856,7 @@ function normalizeEventManagerPayload(payload: unknown): EventManagerData {
   }
 }
 
-function normalizeLeagueOperationsPayload(payload: unknown): LeagueOperationsData {
+export function normalizeLeagueOperationsPayload(payload: unknown): LeagueOperationsData {
   const record = asRecord(payload, 'League operations response')
 
   if (record.success === false) {

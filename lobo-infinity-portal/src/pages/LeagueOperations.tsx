@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import Skeleton from '../components/Skeleton'
-import { eventRepository } from '../services/data'
 import type { LeagueOperationsData } from '../services/api'
+import { publicLeagueWorkspace } from '../services/publicLeagueWorkspaceProjection'
 
 type LeagueOperationsState =
   | { status: 'loading' }
@@ -14,8 +14,8 @@ function LeagueOperations() {
   useEffect(() => {
     const controller = new AbortController()
 
-    eventRepository
-      .getLeagueOperations({ signal: controller.signal })
+    publicLeagueWorkspace
+      .getLeagueOperations(controller.signal)
       .then((data) => {
         if (!controller.signal.aborted) {
           setState({ data, status: 'success' })

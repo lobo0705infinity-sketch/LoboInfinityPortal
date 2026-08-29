@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import BarChart from '../components/BarChart'
 import Skeleton from '../components/Skeleton'
@@ -13,6 +13,7 @@ import {
   type HallOfFameTimelineItem,
   type LeagueRecordValue,
 } from '../services/api'
+import { publicLeagueWorkspace } from '../services/publicLeagueWorkspaceProjection'
 import {
   formatPercentage,
   formatPlayerName,
@@ -39,14 +40,14 @@ function HallOfFame() {
     status: 'idle',
   })
   const [showSecondarySections, setShowSecondarySections] = useState(false)
+  const readHallOfFame = useCallback((signal?: AbortSignal) => eventId
+    ? apiClient.getHallOfFame({ cacheMode: 'stale-while-revalidate', eventId, signal })
+    : publicLeagueWorkspace.getHallOfFame(signal), [eventId])
 
   useApiCacheRevalidation({
     action: 'hallOfFame',
     params: eventId ? { eventId } : {},
-    read: () => apiClient.getHallOfFame({
-      cacheMode: 'stale-while-revalidate',
-      eventId,
-    }),
+    read: () => readHallOfFame(),
     apply: (data) => {
       setHallState({ data, status: 'success' })
     },
@@ -55,12 +56,7 @@ function HallOfFame() {
   useEffect(() => {
     const controller = new AbortController()
 
-    apiClient
-      .getHallOfFame({
-        cacheMode: 'stale-while-revalidate',
-        eventId,
-        signal: controller.signal,
-      })
+    readHallOfFame(controller.signal)
       .then((data) => {
         setHallState({
           data,
@@ -84,7 +80,7 @@ function HallOfFame() {
     return () => {
       controller.abort()
     }
-  }, [eventId])
+  }, [readHallOfFame])
 
   useEffect(() => {
     if (hallState.status !== 'success') {
