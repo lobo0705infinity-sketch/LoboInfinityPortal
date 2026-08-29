@@ -12,7 +12,7 @@ const hall = read('src/pages/HallOfFame.tsx')
 const operations = read('src/pages/LeagueOperations.tsx')
 
 assert.match(backend, /buildPublicLeagueDashboardProjection_/)
-assert.match(backend, /getPublicPlayersProjectionFileId_/)
+assert.match(backend, /getEventAnalyticsPlayers\(context\)/)
 assert.match(backend, /publishPublicLeagueWorkspaceProjectionSection_/)
 assert.match(backend, /remaining: dirty\.length/)
 assert.doesNotMatch(backend, /dashboard: parse\(getDashboard\(\)\)/)

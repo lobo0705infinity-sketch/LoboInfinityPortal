@@ -141,21 +141,18 @@ function buildPublicLeagueWorkspaceProjection_() {
 }
 
 function buildPublicLeagueDashboardProjection_(factions, leagueOperations) {
-  const playersFileId = getPublicPlayersProjectionFileId_();
-  if (!playersFileId)
-    throw new Error("Public Players projection is required for the League Dashboard projection.");
-
-  const playersProjection = JSON.parse(
-    DriveApp.getFileById(playersFileId).getBlob().getDataAsString()
-  );
-  const divisions = (playersProjection.divisions || []).filter(function(division) {
+  const context = buildEventAnalyticsContext({ parameter: {
+    eventId: "event-current-league",
+    gameType: "league"
+  }});
+  const divisions = (getEventAnalyticsPlayers(context) || []).filter(function(division) {
     return ["main", "pga", "pgb"].indexOf(division.division) !== -1;
   });
   const main = divisions.filter(function(division) {
     return division.division === "main";
   })[0];
   if (!main || !main.summary)
-    throw new Error("Public Players projection does not contain Main Man standings.");
+    throw new Error("Canonical League analytics does not contain Main Man standings.");
 
   const leader = main.summary.leader || {};
   return {
