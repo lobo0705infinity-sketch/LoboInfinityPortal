@@ -14,7 +14,8 @@ export default async function handler(request, response) {
     return
   }
 
-  const fileId = String(process.env.TOP40_PUBLIC_PROJECTION_FILE_ID || '').trim()
+  const configuredFileId = String(process.env.TOP40_PUBLIC_PROJECTION_FILE_ID || '').trim()
+  const fileId = configuredFileId || await bootstrapProjectionFileId()
   if (!fileId) {
     response.status(503).json({ error: 'Public event projection is not configured.', success: false })
     return
@@ -45,6 +46,7 @@ export default async function handler(request, response) {
     response.setHeader('server-timing', `projection-source;dur=${sourceMs.toFixed(1)}, total;dur=${totalMs.toFixed(1)}`)
     response.setHeader('x-lobo-projection-generated-at', String(projection.generatedAt || ''))
     response.setHeader('x-lobo-projection-bytes', String(Buffer.byteLength(body)))
+    if (!configuredFileId) response.setHeader('x-lobo-projection-bootstrap-file-id', fileId)
     response.status(200).send(body)
   } catch (error) {
     response.setHeader('cache-control', 'no-store')
@@ -53,4 +55,21 @@ export default async function handler(request, response) {
       success: false,
     })
   }
+}
+
+async function bootstrapProjectionFileId() {
+  const apiUrl = String(process.env.VITE_API_URL || '').trim()
+  const workerToken = String(process.env.ARMY_INTELLIGENCE_WORKER_TOKEN || '').trim()
+  if (!apiUrl || !workerToken) return ''
+
+  const body = new URLSearchParams({
+    action: 'refreshTop40PublicProjection',
+    workerToken,
+  })
+  const response = await fetch(apiUrl, { body, method: 'POST', redirect: 'follow' })
+  const payload = await response.json()
+  if (!response.ok || payload?.success !== true) {
+    throw new Error(payload?.error || `Projection bootstrap returned HTTP ${response.status}.`)
+  }
+  return String(payload.fileId || '').trim()
 }
