@@ -357,7 +357,7 @@ function buildCommunityResolvedFavoriteArmyMaps(options) {
       ? options.gameFavoriteByPlayerKey
       : buildCommunityGameFavoriteArmyMap();
   const armyListFavoriteByPlayerKey =
-    buildCommunityArmyListFavoriteArmyMap();
+    buildCommunityArmyListFavoriteArmyMap(options);
   const resolvedFavoriteByPlayerKey = {};
 
   Object.keys(gameFavoriteByPlayerKey)
@@ -418,14 +418,15 @@ function buildCommunityGameFavoriteArmyMap() {
 
 }
 
-function buildCommunityArmyListFavoriteArmyMap() {
+function buildCommunityArmyListFavoriteArmyMap(options) {
 
   const valuesByPlayerKey = {};
+  const lists =
+    options && Array.isArray(options.armyLists)
+      ? options.armyLists
+      : getCommunityPersistedArmyListIdentities();
 
-  if (typeof getArmyListObjects !== "function")
-    return {};
-
-  getArmyListObjects()
+  lists
     .forEach(function(list) {
       const player =
         getCommunityPlayerRegistryString(list.player);
@@ -453,6 +454,20 @@ function buildCommunityArmyListFavoriteArmyMap() {
     });
 
   return buildCommunityPreferredFactionMap(valuesByPlayerKey);
+
+}
+
+function getCommunityPersistedArmyListIdentities() {
+
+  if (typeof readArmyListsReadModelPayload !== "function")
+    return [];
+
+  const payload =
+    readArmyListsReadModelPayload();
+
+  return payload && Array.isArray(payload.lists)
+    ? payload.lists
+    : [];
 
 }
 
