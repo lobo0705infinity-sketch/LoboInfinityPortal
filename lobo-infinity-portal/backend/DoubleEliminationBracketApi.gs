@@ -5,6 +5,10 @@ const DOUBLE_ELIMINATION_BRACKET_HEADERS = [
   "Next Loser Match", "Next Loser Slot", "Created At", "Activated At", "Deadline", "Game ID"
 ];
 
+const EVENT_BRACKET_MISSION_HEADERS = [
+  "Event ID", "Bracket", "Bracket Round", "Mission", "Updated At"
+];
+
 function getEventBracket(e) {
   const params = getApiParameters(e);
   const eventId = getEventManagerString(params.eventId);
@@ -13,6 +17,30 @@ function getEventBracket(e) {
   const event = getEventById(eventId);
   const participants = getEventRegistrationRows(eventId);
   return jsonOutput({ success: true, bracket: buildEventBracketProjection_(event, participants) });
+}
+
+function saveEventBracketMissions(e) {
+  return requireApiPermission(e, "runSeasonControl", function(auth) {
+    const params = getApiParameters(e);
+    const eventId = getEventManagerString(params.eventId);
+    const lock = LockService.getScriptLock();
+    lock.waitLock(10000);
+    try {
+      const event = getEventByIdNoEnsure(eventId);
+      if (!event || event.type !== "Individual Double Elimination")
+        throw new Error("Mission assignment is only available for Individual Double Elimination events.");
+      const matches = readEventBracketMatches_(eventId);
+      if (!matches.length) throw new Error("Generate the bracket before assigning missions.");
+      let assignments;
+      try { assignments = JSON.parse(getEventManagerString(params.assignments) || "[]"); }
+      catch (error) { throw new Error("Mission assignments are invalid."); }
+      const validated = validateEventBracketMissionAssignments_(eventId, matches, assignments);
+      persistEventBracketMissionAssignments_(eventId, validated);
+      recordEventManagerAudit(auth, eventId, "Bracket missions saved", validated.filter(function(item){ return item.mission; }).length + " assigned rounds");
+      invalidateEventManagerCaches();
+      return jsonOutput({ success:true, bracket:buildEventBracketProjection_(getEventById(eventId), getEventRegistrationRows(eventId), matches) });
+    } finally { lock.releaseLock(); }
+  });
 }
 
 function submitTop40Result(e) {
@@ -35,6 +63,7 @@ function submitTop40Result(e) {
     }
     const commissionerContext = getResultSubmissionCommissionerContext(e, auth, params);
     if (commissionerContext.error) return resultSubmissionFailure(commissionerContext.error);
+    params.mission = before.mission;
     const submission = submitCanonicalGame(createSubmissionCommand({ source:"portal", workflow:"top-40", params:params, auth:auth, commissionerContext:commissionerContext }));
     if (!submission.success) return resultSubmissionFailure(submission.error);
     const gameId = Number(submission.context.gameId);
@@ -68,6 +97,8 @@ function validateTop40BracketSubmission_(params) {
   const match = active[0];
   if (requestedMatchId && requestedMatchId !== match.matchId) return { valid:false, error:"Bracket Match does not match the player's Active match." };
   if (!isRealEventBracketPlayer_(match.playerA) || !isRealEventBracketPlayer_(match.playerB)) return { valid:false, error:"Only real Active matches may be submitted." };
+  const mission = getEventBracketMission_(eventId, match.bracket, match.bracketRound);
+  if (!mission) return { valid:false, error:"A mission has not been assigned to this bracket round." };
   const opponent = match.playerA === player ? match.playerB : match.playerA;
   const winnerValue = getEventManagerString(params.winner);
   if (winnerValue === "Draw") return { valid:false, error:"Top 40 bracket matches require a winner." };
@@ -75,7 +106,7 @@ function validateTop40BracketSubmission_(params) {
   if (winnerValue === "Player Victory" || winnerValue === player) winner = player;
   if (winnerValue === "Opponent Victory" || winnerValue === opponent) winner = opponent;
   if (!winner) return { valid:false, error:"Top 40 bracket matches require a winner." };
-  return { valid:true, eventId:eventId, match:match, player:player, opponent:opponent, winner:winner, loser:winner === player ? opponent : player };
+  return { valid:true, eventId:eventId, match:match, player:player, opponent:opponent, winner:winner, loser:winner === player ? opponent : player, mission:mission };
 }
 
 function applyTop40BracketProgression_(eventId, matchId, gameId, winner, loser, now) {
@@ -269,15 +300,97 @@ function validateEventBracketLifecycle_(matches) {
 
 function buildEventBracketProjection_(event, participants, suppliedMatches) {
   const matches = suppliedMatches || readEventBracketMatches_(event.id);
+  const missions = readEventBracketMissionAssignments_(event.id);
+  const missionByRound = {};
+  missions.forEach(function(item){ missionByRound[eventBracketRoundKey_(item.bracket, item.bracketRound)] = item.mission; });
+  const projectedMatches = matches.map(function(match){
+    const copy = {};
+    Object.keys(match).forEach(function(key){ copy[key] = match[key]; });
+    copy.mission = missionByRound[eventBracketRoundKey_(match.bracket, match.bracketRound)] || "";
+    return copy;
+  });
   const grandFinal = matches.filter(function(match){ return match.matchId === "GF-M1"; })[0] || null;
   return {
     eventId: event.id,
     generated: matches.length > 0,
     readiness: buildEventBracketReadiness_(event, participants),
-    matches: matches,
+    matches: projectedMatches,
+    missions: missions,
     champion: grandFinal && grandFinal.status === "Completed" ? grandFinal.winner : "",
     tournamentComplete: !!(grandFinal && grandFinal.status === "Completed")
   };
+}
+
+function eventBracketRoundKey_(bracket, bracketRound) {
+  return getEventManagerString(bracket) + ":" + Number(bracketRound || 1);
+}
+
+function discoverEventBracketRounds_(matches) {
+  const seen = {};
+  return matches.map(function(match){ return { bracket:match.bracket, bracketRound:Number(match.bracketRound) }; }).filter(function(item){
+    const key = eventBracketRoundKey_(item.bracket, item.bracketRound);
+    if (seen[key]) return false;
+    seen[key] = true;
+    return true;
+  });
+}
+
+function validateEventBracketMissionAssignments_(eventId, matches, assignments) {
+  if (!Array.isArray(assignments)) throw new Error("Mission assignments are invalid.");
+  const rounds = discoverEventBracketRounds_(matches);
+  const validRounds = {};
+  rounds.forEach(function(item){ validRounds[eventBracketRoundKey_(item.bracket,item.bracketRound)] = item; });
+  const existing = {};
+  readEventBracketMissionAssignments_(eventId).forEach(function(item){ existing[eventBracketRoundKey_(item.bracket,item.bracketRound)] = item.mission; });
+  const supplied = {};
+  assignments.forEach(function(item){
+    const bracket = getEventManagerString(item && item.bracket);
+    const bracketRound = Number(item && item.bracketRound);
+    const key = eventBracketRoundKey_(bracket, bracketRound);
+    if (!validRounds[key]) throw new Error("Bracket mission round is invalid.");
+    if (Object.prototype.hasOwnProperty.call(supplied,key)) throw new Error("Bracket mission rounds must be unique.");
+    const rawMission = getEventManagerString(item && item.mission);
+    const mission = rawMission ? getCanonicalMissionName(rawMission) : "";
+    if (rawMission && !mission) throw new Error("Select a mission from the canonical mission list.");
+    supplied[key] = mission;
+  });
+  return rounds.map(function(round){
+    const key = eventBracketRoundKey_(round.bracket,round.bracketRound);
+    const mission = Object.prototype.hasOwnProperty.call(supplied,key) ? supplied[key] : (existing[key] || "");
+    const changed = (existing[key] || "") !== mission;
+    if (changed && matches.some(function(match){ return eventBracketRoundKey_(match.bracket,match.bracketRound) === key && match.status === "Completed"; }))
+      throw new Error("This mission cannot be changed because games in this bracket round have already been completed.");
+    return { eventId:eventId, bracket:round.bracket, bracketRound:round.bracketRound, mission:mission };
+  });
+}
+
+function readEventBracketMissionAssignments_(eventId) {
+  const sheet = getEventEngineRuntimeSheet(CONFIG.SHEETS.EVENT_BRACKET_MISSIONS);
+  if (!sheet) return [];
+  return getEventEngineRows(sheet).filter(function(row){ return getEventManagerString(row["Event ID"]) === eventId && getEventManagerString(row["Mission"]); }).map(function(row){
+    return { eventId:eventId, bracket:getEventManagerString(row["Bracket"]), bracketRound:Number(row["Bracket Round"]), mission:getCanonicalMissionName(row["Mission"]) };
+  }).filter(function(item){ return item.mission; });
+}
+
+function getEventBracketMission_(eventId, bracket, bracketRound) {
+  const key = eventBracketRoundKey_(bracket, bracketRound);
+  const assignment = readEventBracketMissionAssignments_(eventId).filter(function(item){ return eventBracketRoundKey_(item.bracket,item.bracketRound) === key; })[0];
+  return assignment ? assignment.mission : "";
+}
+
+function persistEventBracketMissionAssignments_(eventId, assignments) {
+  const sheet = ensureEventEngineSheet(CONFIG.SHEETS.EVENT_BRACKET_MISSIONS, EVENT_BRACKET_MISSION_HEADERS);
+  const values = sheet.getDataRange().getValues();
+  const headers = values.length ? values[0].map(getEventManagerString) : EVENT_BRACKET_MISSION_HEADERS.slice();
+  const eventIndex = headers.indexOf("Event ID");
+  const retained = values.slice(1).filter(function(row){ return getEventManagerString(row[eventIndex]) !== eventId && row.some(function(value){ return getEventManagerString(value); }); });
+  const now = getEventManagerTimestamp();
+  const eventRows = assignments.filter(function(item){ return item.mission; }).map(function(item){ return [eventId,item.bracket,item.bracketRound,item.mission,now]; });
+  const finalRows = [headers].concat(retained,eventRows);
+  const rowCount = Math.max(values.length, finalRows.length);
+  while (finalRows.length < rowCount) finalRows.push(headers.map(function(){ return ""; }));
+  sheet.getRange(1,1,rowCount,headers.length).setValues(finalRows);
+  SpreadsheetApp.flush();
 }
 
 function buildEventBracketReadiness_(event, participants) {

@@ -1378,6 +1378,9 @@ function handleApiPost(e, action) {
     case "eventBracketDeadline":
       return updateEventBracketDeadline(e);
 
+    case "eventBracketMissions":
+      return saveEventBracketMissions(e);
+
     case "eventManagerTeam":
       return saveEventManagerTeam(e);
 

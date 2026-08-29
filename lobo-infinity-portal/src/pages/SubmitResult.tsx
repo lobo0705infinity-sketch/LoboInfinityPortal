@@ -421,6 +421,7 @@ export function LegacySubmitResult() {
               setLeagueResult((current) => ({
                 ...current,
                 matchId: match.matchId,
+                mission: match.mission || '',
                 opponent: sameValue(match.playerA, player) ? match.playerB : match.playerA,
                 winner: '',
               }))
@@ -470,7 +471,7 @@ export function LegacySubmitResult() {
       const opponent = sameValue(match.playerA, player) ? match.playerB : match.playerA
       const playerRegistration = eventHome.registration.registrations.find((entry) => sameValue(entry.player, player) || sameValue(entry.displayName, player))
       const opponentRegistration = eventHome.registration.registrations.find((entry) => sameValue(entry.player, opponent) || sameValue(entry.displayName, opponent))
-      return { ...current, matchId: match.matchId, opponent, playerFaction: current.playerFaction || playerRegistration?.faction || '', opponentFaction: opponentRegistration?.faction || current.opponentFaction, winner: '' }
+      return { ...current, matchId: match.matchId, mission: match.mission || '', opponent, playerFaction: current.playerFaction || playerRegistration?.faction || '', opponentFaction: opponentRegistration?.faction || current.opponentFaction, winner: '' }
     })
   }, [eventBracket, eventHome, leagueResult.player])
 
@@ -858,14 +859,18 @@ export function LegacySubmitResult() {
         {eventHome?.event.type === 'Individual Double Elimination' ? (
           <ReadOnlyField label="Opponent" value={leagueResult.opponent || 'No Active match'} />
         ) : null}
-        <SearchableSelect
-          label="Mission"
-          onChange={(value) => updateField('mission', value)}
-          options={missionOptions}
-          placeholder="Search event missions"
-          required
-          value={leagueResult.mission}
-        />
+        {eventHome?.event.type === 'Individual Double Elimination' ? (
+          <ReadOnlyField label="Mission" value={leagueResult.mission || 'Mission not assigned'} />
+        ) : (
+          <SearchableSelect
+            label="Mission"
+            onChange={(value) => updateField('mission', value)}
+            options={missionOptions}
+            placeholder="Search event missions"
+            required
+            value={leagueResult.mission}
+          />
+        )}
         {isCommissionerSubmission ? (
           <SearchableSelect
             label="Player 1"
@@ -1639,7 +1644,8 @@ function validateTop40Result(
   if (!submission.player1ArmyCode?.trim() || !submission.player2ArmyCode?.trim()) issues.push('Player 1 Army Code and Player 2 Army Code are required.')
   if (submission.playerFaction && !optionContains(options.factions, submission.playerFaction)) issues.push('Registered Faction must be selected from the faction database.')
   if (submission.opponentFaction && !optionContains(options.factions, submission.opponentFaction)) issues.push('Opponent Faction must be selected from the faction database.')
-  if (!submission.mission.trim() || !optionContains(options.missions, submission.mission)) issues.push('Mission must be selected from the mission database.')
+  if (!submission.mission.trim()) issues.push('A mission has not been assigned to this bracket round.')
+  else if (!optionContains(options.missions, submission.mission)) issues.push('Mission must be selected from the mission database.')
   if (!submission.firstTurn.trim()) issues.push('First Turn is required.')
   if (!submission.bestMoment.trim()) issues.push('Best Moment is required.')
   if (!submission.winner.trim()) issues.push('Game Result is required.')

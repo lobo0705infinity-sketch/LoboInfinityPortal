@@ -6,6 +6,7 @@ import {
   type EventRegistrationEntry,
 } from '../services/api'
 import { eventRepository } from '../services/data'
+import { getCanonicalMissionOptions } from '../config/missions'
 import Skeleton from './Skeleton'
 import TeamPairingEditor from './TeamPairingEditor'
 
@@ -799,8 +800,16 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
   const [bracket, setBracket] = useState<EventBracketData | null>(null)
   const [deadlineDrafts, setDeadlineDrafts] = useState<Record<string, string>>({})
   const [savingDeadline, setSavingDeadline] = useState('')
+  const [missionDrafts, setMissionDrafts] = useState<Record<string, string>>({})
+  const [savingMissions, setSavingMissions] = useState(false)
   const loadBracket = useCallback(() => {
-    apiClient.getEventBracket(eventId).then(setBracket).catch((reason: unknown) =>
+    apiClient.getEventBracket(eventId).then((nextBracket) => {
+      setBracket(nextBracket)
+      setMissionDrafts(Object.fromEntries(nextBracket.missions.map((assignment) => [
+        `${assignment.bracket}:${assignment.bracketRound}`,
+        assignment.mission,
+      ])))
+    }).catch((reason: unknown) =>
       setError(reason instanceof Error ? reason.message : 'Bracket status could not be loaded.'),
     )
   }, [eventId])
@@ -841,6 +850,27 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
     }
   }
 
+  async function saveMissions() {
+    if (!bracket) return
+    setSavingMissions(true)
+    setMessage('Saving missions...')
+    setError('')
+    try {
+      const rounds = discoverBracketRounds(bracket)
+      setBracket(await apiClient.saveEventBracketMissions(eventId, rounds.map((round) => ({
+        bracket: round.bracket,
+        bracketRound: round.bracketRound,
+        mission: missionDrafts[round.key] || '',
+      }))))
+      setMessage('Missions saved.')
+    } catch (reason) {
+      setMessage('')
+      setError(reason instanceof Error ? reason.message : 'Missions could not be saved.')
+    } finally {
+      setSavingMissions(false)
+    }
+  }
+
   const readiness = bracket?.readiness
   const activeMatches = bracket?.matches.filter((match) => match.status === 'Active') ?? []
   return (
@@ -862,6 +892,35 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
           {generating ? 'Generating bracket...' : 'Generate Bracket'}
         </button>
       </div> : null}
+      <section aria-labelledby="bracket-missions-title">
+        <h4 id="bracket-missions-title">Bracket Missions</h4>
+        {!bracket?.generated ? <p>Generate the bracket before assigning missions.</p> : (
+          <>
+            {(['Winners', 'Losers', 'Grand Final'] as const).map((bracketName) => {
+              const rounds = discoverBracketRounds(bracket).filter((round) => round.bracket === bracketName)
+              return rounds.length ? <div key={bracketName} className="event-manager-mission-group">
+                <strong>{bracketName === 'Grand Final' ? 'Grand Final' : `${bracketName} Bracket`}</strong>
+                {rounds.map((round) => <label key={round.key}>
+                  {bracketName === 'Grand Final' ? 'Mission' : `Round ${round.bracketRound}`}
+                  <select
+                    disabled={!canManage || savingMissions}
+                    onChange={(event) => setMissionDrafts((current) => ({ ...current, [round.key]: event.target.value }))}
+                    value={missionDrafts[round.key] || ''}
+                  >
+                    <option value="">Unassigned</option>
+                    {getCanonicalMissionOptions().map((mission) => <option key={mission.value} value={mission.value}>{mission.label}</option>)}
+                  </select>
+                </label>)}
+              </div> : null
+            })}
+            <div className="event-manager-actions">
+              <button disabled={!canManage || savingMissions} onClick={() => void saveMissions()} type="button">
+                {savingMissions ? 'Saving missions...' : 'Save Missions'}
+              </button>
+            </div>
+          </>
+        )}
+      </section>
       {bracket ? <section aria-labelledby="active-bracket-matches-title">
         <h4 id="active-bracket-matches-title">Active Matches</h4>
         {activeMatches.length === 0 ? <p>No active bracket matches.</p> : activeMatches.map((match) => (
@@ -888,6 +947,16 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
       </section> : null}
     </section>
   )
+}
+
+function discoverBracketRounds(bracket: EventBracketData) {
+  const seen = new Set<string>()
+  return bracket.matches.flatMap((match) => {
+    const key = `${match.bracket}:${match.bracketRound}`
+    if (seen.has(key)) return []
+    seen.add(key)
+    return [{ bracket: match.bracket, bracketRound: match.bracketRound, key }]
+  })
 }
 
 function formatBracketTimestamp(value: string) {

@@ -25,8 +25,8 @@ function canonicalValidatePortalTop40Game_(command) {
   const params = command.params || {};
   const bracket = validateTop40BracketSubmission_(params);
   if (!bracket.valid) return canonicalValidationFailure_(bracket.error);
-  if (getResultSubmissionString(params.mission) === "")
-    return canonicalValidationFailure_("Mission is required.");
+  if (!bracket.mission)
+    return canonicalValidationFailure_("A mission has not been assigned to this bracket round.");
   if (getResultSubmissionString(params.firstTurn) === "")
     return canonicalValidationFailure_("First Turn is required.");
   if (getResultSubmissionString(params.bestMoment) === "")

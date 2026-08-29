@@ -39,6 +39,7 @@ const endpointPolicy = {
   eventBracket: { authRequired: false, userScoped: false },
   eventBracketGenerate: { authRequired: true, userScoped: false },
   eventBracketDeadline: { authRequired: true, userScoped: false },
+  eventBracketMissions: { authRequired: true, userScoped: false },
   eventHome: { authRequired: false, userScoped: true },
   eventLifecycle: { authRequired: true, userScoped: false },
   eventLifecycleTransition: { authRequired: true, userScoped: false },

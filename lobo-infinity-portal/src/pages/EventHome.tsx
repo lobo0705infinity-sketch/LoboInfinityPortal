@@ -448,6 +448,7 @@ function BracketStructure({ matches }: { matches: EventBracketMatch[] }) {
                       <span>{formatBracketPlayer(match.playerA, match.playerASource, match.seedA)}</span>
                       <span>{formatBracketPlayer(match.playerB, match.playerBSource, match.seedB)}</span>
                       <small>{getBracketMatchStatus(match)}</small>
+                      <small>Mission: {match.mission || 'Not assigned'}</small>
                       {match.status === 'Completed' && match.winner ? <small>Winner: {match.winner}</small> : null}
                       {match.status === 'Active' && match.deadline ? <small>Deadline: {formatBracketDeadline(match.deadline)}</small> : null}
                     </article>
