@@ -1,17 +1,15 @@
 import {
   normalizeDashboardPayload,
   normalizeFactionsPayload,
-  normalizeHallOfFamePayload,
   normalizeLeagueOperationsPayload,
   normalizeMissionsPayload,
   type FactionSummary,
-  type HallOfFameData,
   type LeagueOperationsData,
   type MissionSummary,
 } from './api'
 import type { DashboardData } from '../types/dashboard'
 
-type LeagueSection = 'dashboard' | 'factions' | 'missions' | 'hallOfFame' | 'leagueOperations'
+type LeagueSection = 'dashboard' | 'factions' | 'missions' | 'leagueOperations'
 
 async function readSection(section: LeagueSection, signal?: AbortSignal) {
   const startedAt = performance.now()
@@ -33,8 +31,6 @@ export const publicLeagueWorkspace = {
     const scopes = await readSection('missions', signal)
     return normalizeMissionsPayload(scopes?.[scope])
   },
-  getHallOfFame: async (signal?: AbortSignal): Promise<HallOfFameData> =>
-    normalizeHallOfFamePayload(await readSection('hallOfFame', signal)),
   getLeagueOperations: async (signal?: AbortSignal): Promise<LeagueOperationsData> =>
     normalizeLeagueOperationsPayload(await readSection('leagueOperations', signal)),
 }

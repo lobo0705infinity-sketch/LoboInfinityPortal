@@ -21,6 +21,7 @@ const excludedPages = [
   'src/pages/Schedule.tsx',
   'src/pages/CommissionerDashboard.tsx',
 ].map(read)
+const leagueProjectionApi = read('api/public-league-workspace-projection.mjs')
 
 assert.match(core, /cacheMode\?: 'fresh-required' \| 'stale-while-revalidate'/)
 assert.match(core, /const staleWhileRevalidate = options\.cacheMode === 'stale-while-revalidate'/)
@@ -42,7 +43,12 @@ assert.match(hook, /if \(active\)/)
 assert.match(hook, /window\.removeEventListener/)
 
 for (const [action, page] of Object.entries(migratedPages)) {
-  assert.match(page, /cacheMode: 'stale-while-revalidate'/, `${action} must opt into SWR.`)
+  if (action === 'missions' || action === 'factions') {
+    assert.match(page, /publicLeagueWorkspace/, `${action} must use the prepared League projection.`)
+    assert.match(leagueProjectionApi, /stale-while-revalidate=86400/)
+  } else {
+    assert.match(page, /cacheMode: 'stale-while-revalidate'/, `${action} must opt into SWR.`)
+  }
   assert.match(page, new RegExp(`action: '${action}'`), `${action} must subscribe to its exact refresh identity.`)
   assert.match(page, /useApiCacheRevalidation/, `${action} must reactively replace stale data.`)
   assert.doesNotMatch(page, /setTimeout\([\s\S]{0,120},\s*[1-9]\d{2,}\s*\)/, `${action} must not impose a material render timer.`)

@@ -27,7 +27,7 @@ function markPublicLeagueWorkspaceProjectionDirty_() {
   try {
     PropertiesService.getScriptProperties().setProperty(
       PUBLIC_LEAGUE_WORKSPACE_PROJECTION_DIRTY_PROPERTY,
-      JSON.stringify(["dashboard", "factions", "missions", "hallOfFame", "leagueOperations"])
+      JSON.stringify(["dashboard", "factions", "missions", "leagueOperations"])
     );
   }
   catch (error) {
@@ -70,7 +70,7 @@ function publishPublicLeagueWorkspaceProjection_() {
 }
 
 function publishPublicLeagueWorkspaceProjectionSection_(section) {
-  const allowed = ["dashboard", "factions", "missions", "hallOfFame", "leagueOperations"];
+  const allowed = ["dashboard", "factions", "missions", "leagueOperations"];
   if (allowed.indexOf(section) === -1)
     throw new Error("Invalid public League workspace projection section.");
 
@@ -88,7 +88,6 @@ function publishPublicLeagueWorkspaceProjectionSection_(section) {
   };
   if (section === "factions") projection.factions = parse(getFactions({ parameter: {} }));
   if (section === "leagueOperations") projection.leagueOperations = parse(getLeagueOperations());
-  if (section === "hallOfFame") projection.hallOfFame = parse(getHallOfFame({ parameter: {} }));
   if (section === "missions") {
     projection.missions = {};
     [["current-league", "event-current-league", "league"], ["tournament", "event-august-2026-team-tournament", "tournament"], ["casual", "", "casual"], ["all", "", "all"]].forEach(function(scope) {
@@ -135,18 +134,18 @@ function buildPublicLeagueWorkspaceProjection_() {
     dashboard: buildPublicLeagueDashboardProjection_(factions, leagueOperations),
     factions: factions,
     missions: missions,
-    hallOfFame: parse(getHallOfFame({ parameter: {} })),
     leagueOperations: leagueOperations
   };
 }
 
 function buildPublicLeagueDashboardProjection_(factions, leagueOperations) {
-  const context = buildEventAnalyticsContext({ parameter: {
-    eventId: "event-current-league",
-    gameType: "league"
-  }});
-  const divisions = (getEventAnalyticsPlayers(context) || []).filter(function(division) {
-    return ["main", "pga", "pgb"].indexOf(division.division) !== -1;
+  const eventId = resolveLeagueEventScope("event-current-league");
+  const context = buildLeagueStandingsContext(eventId);
+  const divisions = ["main", "pga", "pgb"].map(function(key) {
+    return buildLeagueDivisionStandingsFromContext(
+      getStandingsDivisionConfig(key),
+      context
+    );
   });
   const main = divisions.filter(function(division) {
     return division.division === "main";
@@ -157,8 +156,23 @@ function buildPublicLeagueDashboardProjection_(factions, leagueOperations) {
   const leader = main.summary.leader || {};
   return {
     success: true,
-    leader: leader,
-    topFaction: factions.factions.length ? factions.factions[0].name : "",
+    leader: {
+      rank: leader.rank || 0,
+      player: leader.player || "",
+      displayName: leader.displayName || leader.player || "",
+      games: leader.games || 0,
+      wins: leader.wins || 0,
+      losses: leader.losses || 0,
+      draws: leader.draws || 0,
+      tp: leader.tp || 0,
+      op: leader.op || 0,
+      vp: leader.vp || 0,
+      faction: leader.faction || "",
+      favoriteArmy: leader.favoriteArmy || leader.faction || "",
+      favoriteFaction: leader.favoriteFaction || leader.favoriteArmy || leader.faction || "",
+      preferredArmy: leader.preferredArmy || leader.favoriteArmy || leader.faction || ""
+    },
+    topFaction: getPublicLeagueDashboardTopFaction_(),
     gamesPlayed: Number(main.summary.gamesPlayed) || 0,
     activePlayers: Number(main.summary.activePlayers) || 0,
     mainManStandings: main.standings || [],
@@ -186,10 +200,18 @@ function buildPublicLeagueDashboardProjection_(factions, leagueOperations) {
   };
 }
 
+function getPublicLeagueDashboardTopFaction_() {
+  const sheet = lifGetTargetSpreadsheet_()
+    .getSheetByName(CONFIG.SHEETS.FACTION_ANALYTICS);
+  return sheet && sheet.getLastRow() > 1
+    ? sheet.getRange(2, 1, 1, 1).getValue() || ""
+    : "";
+}
+
 function validatePublicLeagueWorkspaceProjection_(projection) {
   if (!projection || !projection.generatedAt || !projection.dashboard ||
       !Array.isArray(projection.factions && projection.factions.factions) ||
-      !projection.missions || !projection.hallOfFame ||
+      !projection.missions ||
       !projection.leagueOperations || !projection.leagueOperations.operations)
     throw new Error("Public League workspace projection is invalid.");
 

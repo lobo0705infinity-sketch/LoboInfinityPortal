@@ -1,4 +1,4 @@
-const sections = new Set(['dashboard', 'factions', 'missions', 'hallOfFame', 'leagueOperations'])
+const sections = new Set(['dashboard', 'factions', 'missions', 'leagueOperations'])
 
 export default async function handler(request, response) {
   if (request.method !== 'GET') {
