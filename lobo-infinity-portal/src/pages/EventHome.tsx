@@ -18,6 +18,7 @@ import {
 } from '../config/eventNavigation'
 import { apiClient, type EventBracketData, type EventBracketMatch, type EventHomeData } from '../services/api'
 import { eventRepository, playerRepository, registrationRepository } from '../services/data'
+import { getEventResultTimelineItems } from '../services/eventResults'
 import { useSettings } from '../contexts/SettingsContext'
 import type { LeagueEvent } from '../types/dashboard'
 import './EventHome.css'
@@ -131,6 +132,18 @@ function EventHome() {
   if (selectedSection === 'bracket') {
     return (
       <EventBracketPage
+        data={data}
+        eventNavigationItems={eventNavigationItems}
+      />
+    )
+  }
+
+  if (
+    selectedSection === 'results' &&
+    data.event.id === 'event-lobo-s-american-top-40'
+  ) {
+    return (
+      <EventResultsPage
         data={data}
         eventNavigationItems={eventNavigationItems}
       />
@@ -325,7 +338,7 @@ function EventDiscordCallout() {
   )
 }
 
-type EventHomeSection = 'bracket' | 'overview' | 'registration' | 'rules'
+type EventHomeSection = 'bracket' | 'overview' | 'registration' | 'results' | 'rules'
 
 function normalizeEventHomeSection(section: string | undefined): EventHomeSection {
   if (section === 'bracket') {
@@ -336,11 +349,59 @@ function normalizeEventHomeSection(section: string | undefined): EventHomeSectio
     return 'registration'
   }
 
+  if (section === 'results') {
+    return 'results'
+  }
+
   if (section === 'rules') {
     return 'rules'
   }
 
   return 'overview'
+}
+
+function EventResultsPage({
+  data,
+  eventNavigationItems,
+}: {
+  data: EventHomeData
+  eventNavigationItems: Array<{ href: string; label: string }>
+}) {
+  const results = getEventResultTimelineItems(data.timeline)
+
+  return (
+    <main className="portal-shell event-overview-shell" data-event-section="results">
+      <section className="page-header" aria-labelledby="event-results-title">
+        <p className="eyebrow">{data.event.name}</p>
+        <h1 id="event-results-title">Results</h1>
+        <p>Completed games reported for this event.</p>
+      </section>
+
+      <nav className="event-home-nav" aria-label="Event navigation">
+        {eventNavigationItems.map((item) => (
+          <Link key={`${item.label}-${item.href}`} to={item.href}>
+            {item.label}
+          </Link>
+        ))}
+      </nav>
+
+      <section className="panel event-home-panel" aria-label="Event results">
+        {results.length === 0 ? (
+          <p>No results have been reported for this event yet.</p>
+        ) : (
+          <div className="event-home-timeline">
+            {results.map((item) => (
+              <article key={`${item.title}-${item.timestamp}`}>
+                <span>{item.type}</span>
+                <strong>{item.title}</strong>
+                <p>{item.body}</p>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+    </main>
+  )
 }
 
 function EventBracketPage({

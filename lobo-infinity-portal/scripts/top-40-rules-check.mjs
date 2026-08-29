@@ -23,7 +23,7 @@ for (const text of [
   assert.ok(source.includes(text), `Top 40 rules must include: ${text}`)
 }
 
-assert.match(source, /type EventHomeSection = 'bracket' \| 'overview' \| 'registration' \| 'rules'/)
+assert.match(source, /type EventHomeSection = 'bracket' \| 'overview' \| 'registration' \| 'results' \| 'rules'/)
 assert.match(source, /hasEventCapability\(capabilities, 'rules'\) &&[\s\S]*data\.event\.id !== 'event-lobo-s-american-top-40'/)
 assert.match(source, /function EventRulesPage[\s\S]*<Top40Rules \/>/)
 assert.match(source, /Grand Final — Winner Takes All/)

@@ -95,7 +95,7 @@ assert.deepEqual(
     '/event/event-lobo-s-american-top-40/registration',
     '/event/event-lobo-s-american-top-40/bracket',
     '/players?eventId=event-lobo-s-american-top-40',
-    '/event/event-lobo-s-american-top-40#results',
+    '/event/event-lobo-s-american-top-40/results',
     '/analytics?eventId=event-lobo-s-american-top-40',
     '/event/event-lobo-s-american-top-40/rules',
   ],
@@ -132,7 +132,7 @@ assert.deepEqual(Array.from(teamTournament?.capabilities ?? []), [
 ])
 
 assert.match(appSource, /path="\/event\/:eventId\/:section"/)
-assert.match(eventHomeSource, /type EventHomeSection = 'bracket' \| 'overview' \| 'registration'/)
+assert.match(eventHomeSource, /type EventHomeSection = 'bracket' \| 'overview' \| 'registration' \| 'results' \| 'rules'/)
 assert.match(eventHomeSource, /selectedSection === 'bracket'/)
 assert.match(eventHomeSource, /data-event-section="bracket"/)
 assert.match(eventHomeSource, />Tournament Bracket<\/h1>/)
