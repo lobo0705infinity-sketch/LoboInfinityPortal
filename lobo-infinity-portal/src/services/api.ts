@@ -6536,7 +6536,7 @@ function normalizeSchedulingRequest(item: unknown): SchedulingRequest {
   }
 }
 
-function normalizeTeamTournamentPayload(payload: unknown): TeamTournamentData {
+export function normalizeTeamTournamentPayload(payload: unknown): TeamTournamentData {
   const record = asRecord(payload, 'Team tournament response')
 
   if (record.success === false) {

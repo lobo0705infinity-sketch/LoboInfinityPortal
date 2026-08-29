@@ -127,6 +127,7 @@ const endpointPolicy = {
   provisionEvent: { authRequired: true, userScoped: false },
   refreshArmyIntelligence: { authRequired: true, userScoped: false },
   refreshPublicAnalyticsProjection: { authRequired: true, userScoped: false },
+  refreshPublicTeamTournamentProjection: { authRequired: true, userScoped: false },
   refreshTop40PublicProjection: { authRequired: true, userScoped: false },
   refreshCache: { authRequired: true, userScoped: false },
   registerForEvent: { authRequired: true, userScoped: true },

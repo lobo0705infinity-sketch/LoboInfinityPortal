@@ -22,6 +22,7 @@ import {
 import { registrationRepository, teamRepository } from '../services/data'
 import { formatPlayerName } from '../services/formatting'
 import { getGameHeadline } from '../services/gameResults'
+import { getPublicTeamTournamentProjection } from '../services/publicTeamTournamentProjection'
 import './TeamTournament.css'
 
 type TournamentState =
@@ -58,8 +59,11 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
   useEffect(() => {
     const controller = new AbortController()
 
-    teamRepository
-      .getTeamTournament(activeEventId, { signal: controller.signal })
+    const load = auth.authenticated
+      ? teamRepository.getTeamTournament(activeEventId, { signal: controller.signal })
+      : getPublicTeamTournamentProjection({ eventId: activeEventId, signal: controller.signal })
+
+    load
       .then((data) => setState({ data, status: 'success' }))
       .catch((error: unknown) => {
         if (controller.signal.aborted) {
@@ -78,7 +82,7 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
     return () => {
       controller.abort()
     }
-  }, [activeEventId])
+  }, [activeEventId, auth.authenticated])
 
   async function register(params: Record<string, string>) {
     setWorking('register')

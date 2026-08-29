@@ -153,6 +153,8 @@ function correctGameScore(e, auth) {
 
   if (typeof markPublicAnalyticsProjectionDirty_ === "function")
     markPublicAnalyticsProjectionDirty_(target.eventId);
+  if (typeof markPublicTeamTournamentProjectionDirty_ === "function")
+    markPublicTeamTournamentProjectionDirty_(target.eventId);
 
   return jsonOutput({
     success: true,

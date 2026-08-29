@@ -1325,6 +1325,9 @@ function updateTeamTournamentRoundStatus_(roundId, status) {
 
 function buildTeamTournamentMutationResponse(kind, eventId, payload) {
 
+  if (typeof markPublicTeamTournamentProjectionDirty_ === "function")
+    markPublicTeamTournamentProjectionDirty_(eventId);
+
   return jsonOutput({
     success: true,
     mutation: Object.assign(
