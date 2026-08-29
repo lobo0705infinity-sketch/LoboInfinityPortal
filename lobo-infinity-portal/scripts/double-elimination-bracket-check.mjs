@@ -3,7 +3,12 @@ import fs from 'node:fs'
 import vm from 'node:vm'
 
 const source = fs.readFileSync('backend/DoubleEliminationBracketApi.gs', 'utf8')
-const context = vm.createContext({ console, Set })
+const context = vm.createContext({
+  console, Date, Set,
+  getEventManagerString: (value) => value == null ? '' : String(value).trim(),
+  Utilities: { formatDate: (date) => date.toISOString().slice(0, 19).replace('T', ' ') },
+  Session: { getScriptTimeZone: () => 'UTC' },
+})
 vm.runInContext(source, context)
 
 const sizes = [2, 3, 4, 5, 8, 9, 16, 17, 28, 32, 37, 40]
@@ -40,6 +45,22 @@ for (const size of sizes) {
   const playerAppearances = initial.flatMap((match) => [match.playerA, match.playerB]).filter((player) => player !== 'BYE')
   assert.equal(new Set(playerAppearances).size, size, `${size}: entrants appear once initially`)
   console.log(`PASS ${size}: capacity ${capacity}, byes ${byes.length}, structural PASS`)
+}
+
+for (const size of [17, 37, 40]) {
+  const field = entrants(size)
+  const matches = context.buildDoubleEliminationBracket_('event-completion-fixture', field)
+  context.activatePlayableEventBracketMatches_(matches, new Date('2026-09-01T12:00:00Z'))
+  let guard = 0
+  while (matches.find((match) => match.matchId === 'GF-M1').status !== 'Completed') {
+    const active = matches.find((match) => match.status === 'Active')
+    assert.ok(active, `${size}: structural byes must not stall tournament progression`)
+    context.completeEventBracketMatch_(matches, active, active.playerA, active.playerB, 'Played', ++guard, new Date(2026, 8, guard + 1))
+    assert.ok(guard < 100, `${size}: completion must terminate`)
+  }
+  const grandFinal = matches.find((match) => match.matchId === 'GF-M1')
+  assert.ok(grandFinal.winner, `${size}: completion produces a Champion`)
+  assert.equal(matches.filter((match) => match.status === 'Active').length, 0, `${size}: no Active matches remain`)
 }
 
 assert.match(source, /requireApiPermission\(e, "runSeasonControl"/)

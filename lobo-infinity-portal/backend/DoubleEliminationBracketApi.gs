@@ -194,7 +194,13 @@ function resolveEventBracketByes_(matches) {
     const a=isRealEventBracketPlayer_(match.playerA), b=isRealEventBracketPlayer_(match.playerB);
     const aBye=match.playerA==="BYE" || (!match.playerA && match.playerASource==="BYE");
     const bBye=match.playerB==="BYE" || (!match.playerB && match.playerBSource==="BYE");
-    if ((a && bBye) || (b && aBye)) { const winner=a?match.playerA:match.playerB; match.status="Bye Advanced"; match.winner=winner; match.loser="BYE"; placeEventBracketPlayer_(byId,match.nextWinnerMatch,match.nextWinnerSlot,winner,getEventBracketPlayerSeed_(match,winner)); changed=true; }
+    if ((a && bBye) || (b && aBye) || (aBye && bBye)) {
+      const winner=a?match.playerA:b?match.playerB:"BYE";
+      match.status="Bye Advanced"; match.winner=winner; match.loser="BYE";
+      placeEventBracketPlayer_(byId,match.nextWinnerMatch,match.nextWinnerSlot,winner,getEventBracketPlayerSeed_(match,winner));
+      if (match.bracket === "Winners") placeEventBracketPlayer_(byId,match.nextLoserMatch,match.nextLoserSlot,"BYE","");
+      changed=true;
+    }
   }); }
 }
 
@@ -522,14 +528,7 @@ function buildDoubleEliminationBracket_(eventId, entrants) {
   gf.playerASource="Winner W"+rounds+"-M1"; gf.playerBSource="Winner L"+loserRounds+"-M1";
   gf.nextWinnerMatch="CHAMPION"; gf.nextLoserMatch="RUNNER_UP";
 
-  matches.filter(function(match) { return match.bracket === "Winners" && match.bracketRound === 1; }).forEach(function(match) {
-    const players = [match.playerA, match.playerB].filter(function(player){ return player && player !== "BYE"; });
-    if (players.length === 1) {
-      match.status="Bye Advanced"; match.winner=players[0]; match.loser="BYE";
-      const target=byId[match.nextWinnerMatch];
-      if (target) { const slot=match.nextWinnerSlot; target[slot === "A" ? "playerA" : "playerB"]=players[0]; target[slot === "A" ? "seedA" : "seedB"]=match.playerA===players[0]?match.seedA:match.seedB; }
-    }
-  });
+  resolveEventBracketByes_(matches);
   return matches;
 }
 
