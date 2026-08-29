@@ -80,6 +80,8 @@ function publishPublicLeagueWorkspaceProjectionSection_(section) {
   catch (error) { projection = {}; }
   projection.schemaVersion = 1;
   projection.generatedAt = new Date().toISOString();
+  delete projection.hallOfFame;
+  delete projection.records;
 
   const parse = function(output) {
     const value = JSON.parse(output.getContent());
