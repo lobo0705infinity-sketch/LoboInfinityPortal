@@ -144,6 +144,7 @@
     "test:portrait-quality": "node scripts/portrait-quality-check.mjs",
     "test:players-portraits": "node --experimental-strip-types scripts/player-portrait-check.ts players",
     "test:public-player-profile-portraits": "node --experimental-strip-types scripts/player-portrait-check.ts public-profiles",
+    "test:public-generation-foundation": "node scripts/public-generation-foundation-check.mjs",
     "test:player-portrait-consistency": "node --experimental-strip-types scripts/player-portrait-check.ts consistency",
     "rules:check": "node scripts/firestore-rules-check.mjs",
     "security:cache": "node scripts/security-cache-audit.mjs",
