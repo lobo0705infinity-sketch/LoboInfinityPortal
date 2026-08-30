@@ -70,7 +70,8 @@ const checks = [
     pass:
       files.armyIntelligence.includes('data: ArmyIntelligenceSummaryData') &&
       files.armyIntelligence.includes('const sectorials = summary.options') &&
-      files.armyIntelligence.includes("apiClient.getArmyIntelligenceSummary"),
+      files.armyIntelligence.includes("publicArmyWorkspace") &&
+      files.armyIntelligence.includes(".getIntelligenceSummary"),
   },
   {
     label: 'Public Player Profile renders Primary Faction through the shared card',

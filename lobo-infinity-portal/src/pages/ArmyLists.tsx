@@ -14,6 +14,7 @@ import {
 import { formatPlayerName } from '../services/formatting'
 import { getInfinityArmyTarget } from '../services/infinityArmyLinks'
 import { resolvePlayerFactionIdentity } from '../services/playerFactionIdentity'
+import { publicArmyWorkspace } from '../services/publicArmyWorkspaceProjection'
 
 type ArmyListFilter = {
   event: string
@@ -69,10 +70,8 @@ function ArmyLists() {
   useEffect(() => {
     const controller = new AbortController()
 
-    apiClient
-      .getSubmittedArmyListLibrary({
-        signal: controller.signal,
-      })
+    publicArmyWorkspace
+      .getArmyLists(controller.signal)
       .then((lists) => {
         setState({
           lists,

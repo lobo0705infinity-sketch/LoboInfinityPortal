@@ -579,6 +579,9 @@ function rebuildArmyIntelligenceReadModelPayloadAndPersist() {
     rows
   );
 
+  if (typeof markPublicArmyWorkspaceProjectionDirty_ === "function")
+    markPublicArmyWorkspaceProjectionDirty_(["intelligence"]);
+
   return payload;
 
 }

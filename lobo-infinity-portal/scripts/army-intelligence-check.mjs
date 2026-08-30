@@ -221,8 +221,8 @@ assert.match(
 )
 assert.match(
   page,
-  /getArmyIntelligence/,
-  'Army Intelligence page must read decoded snapshot data.',
+  /publicArmyWorkspace[\s\S]*getIntelligenceSummary[\s\S]*getIntelligenceFaction/,
+  'Army Intelligence page must read prepared decoded snapshot projections.',
 )
 assert.match(
   page,
@@ -291,7 +291,7 @@ assert.match(
 )
 assert.match(
   page,
-  /getArmyIntelligenceSummary[\s\S]*const sectorials = summary\.options/,
+  /getIntelligenceSummary[\s\S]*const sectorials = summary\.options/,
   'Army Intelligence selector options must come from the bounded canonical summary projection.',
 )
 assert.match(

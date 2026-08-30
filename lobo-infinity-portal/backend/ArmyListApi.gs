@@ -134,6 +134,9 @@ function rebuildArmyListsReadModelPayloadAndPersist() {
     rows
   );
 
+  if (typeof markPublicArmyWorkspaceProjectionDirty_ === "function")
+    markPublicArmyWorkspaceProjectionDirty_(["armyLists"]);
+
   return payload;
 
 }

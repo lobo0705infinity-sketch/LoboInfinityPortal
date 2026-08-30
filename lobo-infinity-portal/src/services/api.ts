@@ -3009,6 +3009,21 @@ export async function getSubmittedArmyListLibrary(
     }),
     getEvents(options).catch(() => null),
   ])
+  return buildSubmittedArmyListLibraryFromSources(games, casualGames, tournamentGames, eventCatalog)
+}
+
+export function buildSubmittedArmyListLibraryFromSources(
+  gamesPayload: unknown,
+  casualGamesPayload: unknown,
+  tournamentGamesPayload: unknown,
+  eventCatalogPayload: unknown,
+): SubmittedArmyListEntry[] {
+  const games = Array.isArray(gamesPayload) ? gamesPayload : normalizeRecentGamesPayload(gamesPayload)
+  const casualGames = Array.isArray(casualGamesPayload) ? casualGamesPayload : normalizeRecentGamesPayload(casualGamesPayload)
+  const tournamentGames = Array.isArray(tournamentGamesPayload) ? tournamentGamesPayload : normalizeRecentGamesPayload(tournamentGamesPayload)
+  const eventCatalog = eventCatalogPayload == null
+    ? null
+    : normalizeEventCatalogPayload(eventCatalogPayload)
   const eventNames = new Map<string, string>()
 
   eventCatalog?.events.forEach((event) => {
@@ -5987,7 +6002,7 @@ function normalizeArmyIntelligencePayload(payload: unknown): ArmyIntelligenceDat
   }
 }
 
-function normalizeArmyIntelligenceSummaryProjection(payload: unknown): ArmyIntelligenceSummaryData {
+export function normalizeArmyIntelligenceSummaryProjection(payload: unknown): ArmyIntelligenceSummaryData {
   const record = asRecord(payload, 'Army Intelligence summary response')
 
   if (record.success === false) {
@@ -6002,7 +6017,7 @@ function normalizeArmyIntelligenceSummaryProjection(payload: unknown): ArmyIntel
   }
 }
 
-function normalizeArmyIntelligenceFactionProjection(payload: unknown): ArmyIntelligenceFactionData {
+export function normalizeArmyIntelligenceFactionProjection(payload: unknown): ArmyIntelligenceFactionData {
   const record = asRecord(payload, 'Army Intelligence faction response')
 
   if (record.success === false) {

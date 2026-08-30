@@ -114,6 +114,7 @@ const endpointPolicy = {
   player: { authRequired: false, userScoped: false },
   players: { authRequired: false, userScoped: false },
   refreshPublicLeagueWorkspaceProjection: { authRequired: true, userScoped: false },
+  refreshPublicArmyWorkspaceProjection: { authRequired: true, userScoped: false },
   previewDiscordAnnouncement: { authRequired: true, userScoped: false },
   publishAutomationEvent: { authRequired: true, userScoped: false },
   recentGames: { authRequired: false, userScoped: false },

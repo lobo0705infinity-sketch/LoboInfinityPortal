@@ -3,10 +3,10 @@ import { useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import InteractiveMetricCard from '../components/InteractiveMetricCard'
 import Skeleton from '../components/Skeleton'
-import { useApiCacheRevalidation } from '../hooks/useApiCacheRevalidation'
 import lieutenantOrderReference from '../../docs/mockups/lieutenant-order-reference.png'
 import { CANONICAL_ARMY_REGISTRY } from '../config/armies'
 import { readArmyIntelligenceFactionParam } from '../services/armyIntelligenceNavigation'
+import { publicArmyWorkspace } from '../services/publicArmyWorkspaceProjection'
 import { getCanonicalArmyListForIntelligenceSource } from '../services/armyIntelligenceExplorer'
 import { getArmyParentFaction, normalizeArmyForDisplay } from '../services/armyIdentity'
 import { getInfinityArmyTarget } from '../services/infinityArmyLinks'
@@ -176,11 +176,8 @@ function ArmyIntelligence() {
   })
 
   const loadArmyIntelligence = useCallback((signal?: AbortSignal) =>
-    apiClient
-      .getArmyIntelligenceSummary({
-        cacheMode: 'stale-while-revalidate',
-        ...(signal ? { signal } : {}),
-      })
+    publicArmyWorkspace
+      .getIntelligenceSummary(signal)
       .then((data) => {
         setState({
           data,
@@ -201,17 +198,6 @@ function ArmyIntelligence() {
           status: 'error',
         })
       }), [])
-
-  useApiCacheRevalidation({
-    action: 'armyIntelligence',
-    params: { scope: 'summary' },
-    read: () => apiClient.getArmyIntelligenceSummary({
-      cacheMode: 'stale-while-revalidate',
-    }),
-    apply: (data) => {
-      setState({ data, status: 'success' })
-    },
-  })
 
   useEffect(() => {
     const controller = new AbortController()
@@ -273,24 +259,6 @@ function ArmyIntelligenceContent({
   const [explorerSearch, setExplorerSearch] = useState('')
   const [explorerSectorialFilter, setExplorerSectorialFilter] = useState('')
   const [explorerSort, setExplorerSort] = useState<ArmyListExplorerSort>('submissionDate')
-
-  useApiCacheRevalidation({
-    action: 'armyIntelligence',
-    params: {
-      faction: selectedSectorial,
-      scope: 'faction',
-    },
-    read: () => selectedSectorial
-      ? apiClient.getArmyIntelligenceFaction(selectedSectorial, {
-          cacheMode: 'stale-while-revalidate',
-        })
-      : Promise.reject(new Error('No Army Intelligence faction is selected.')),
-    apply: (data) => {
-      if (selectedSectorial && data.faction === selectedSectorial) {
-        setFactionState({ data, status: 'success' })
-      }
-    },
-  })
 
   const factionData = factionState.status === 'success' ? factionState.data : null
   const decodedLists = useMemo(
@@ -395,11 +363,8 @@ function ArmyIntelligenceContent({
     const requestedSectorial = selectedSectorial
 
     setFactionState({ status: 'loading' })
-    void apiClient
-      .getArmyIntelligenceFaction(requestedSectorial, {
-        cacheMode: 'stale-while-revalidate',
-        signal: controller.signal,
-      })
+    void publicArmyWorkspace
+      .getIntelligenceFaction(requestedSectorial, controller.signal)
       .then((data) => {
         if (!controller.signal.aborted && requestedSectorial === selectedSectorial) {
           setFactionState({ data, status: 'success' })

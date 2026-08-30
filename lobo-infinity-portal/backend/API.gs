@@ -630,6 +630,9 @@ function handleApiGet(e, action) {
     case "refreshPublicLeagueWorkspaceProjection":
       return refreshPublicLeagueWorkspaceProjection(e);
 
+    case "refreshPublicArmyWorkspaceProjection":
+      return refreshPublicArmyWorkspaceProjection(e);
+
     case "eventManager":
       return getEventManager(e);
 
@@ -1416,6 +1419,9 @@ function handleApiPost(e, action) {
 
     case "refreshPublicLeagueWorkspaceProjection":
       return refreshPublicLeagueWorkspaceProjection(e);
+
+    case "refreshPublicArmyWorkspaceProjection":
+      return refreshPublicArmyWorkspaceProjection(e);
 
     case "eventManagerTeam":
       return saveEventManagerTeam(e);
