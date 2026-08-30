@@ -557,7 +557,11 @@ function BESTFACTION(player){
 
   if(!player) return "";
 
-  const games = PLAYERGAMES(player);
+  return buildBestFactionSummaryFromGames_(PLAYERGAMES(player));
+
+}
+
+function buildBestFactionSummaryFromGames_(games){
 
   if(games.length===0) return "";
 

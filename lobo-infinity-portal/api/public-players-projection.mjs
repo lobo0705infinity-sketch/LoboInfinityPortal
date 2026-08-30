@@ -23,12 +23,15 @@ export default async function handler(request, response) {
     if (!source.ok) throw new Error(`Projection source returned HTTP ${source.status}.`)
 
     const artifact = await source.json()
-    if (artifact?.eventId !== '' || !Array.isArray(artifact?.divisions)) {
+    if (artifact?.eventId !== '' || !Array.isArray(artifact?.divisions) ||
+        !Array.isArray(artifact?.comparison?.players) ||
+        !Array.isArray(artifact?.comparison?.headToHead)) {
       throw new Error('Public Players projection is invalid.')
     }
 
     const body = JSON.stringify({
       divisions: artifact.divisions,
+      comparison: artifact.comparison,
       eventId: '',
       generatedAt: artifact.generatedAt,
       success: true,

@@ -119,6 +119,7 @@
     "test:lazy-data-provider": "node scripts/lazy-data-provider-check.mjs",
     "test:lazy-data-provider:bundle": "vite build --manifest && node scripts/lazy-data-provider-bundle-check.mjs",
     "test:player-comparison": "node scripts/player-comparison-check.mjs",
+    "test:player-comparison-prepared-read": "node scripts/player-comparison-prepared-read-check.mjs",
     "test:community-links": "node scripts/community-links-check.mjs",
     "test:primary-faction-card": "node scripts/primary-faction-card-check.mjs",
     "test:dashboard-api": "node scripts/dashboard-api-contract-check.mjs",

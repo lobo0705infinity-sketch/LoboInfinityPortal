@@ -5607,7 +5607,7 @@ function normalizeHallOfFameTimelineItem(item: unknown): HallOfFameTimelineItem 
   }
 }
 
-function normalizePlayerComparisonPayload(
+export function normalizePlayerComparisonPayload(
   payload: unknown,
 ): PlayerComparisonData {
   const record = asRecord(payload, 'Player comparison response')
