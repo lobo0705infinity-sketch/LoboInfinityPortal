@@ -11,9 +11,13 @@ assert.match(simple, /function runBuildSimplePublicGenerationCandidate\(\)/)
 assert.match(simple, /function buildSimplePublicPlayers_\(/)
 assert.match(simple, /function buildSimplePublicGames_\(/)
 assert.match(simple, /function buildSimplePublicEvents_\(/)
+assert.match(simple, /function buildSimplePublicMissions_\(/)
+assert.match(simple, /function buildSimplePublicFactions_\(/)
+assert.match(simple, /function buildSimplePublicStandings_\(/)
 assert.doesNotMatch(api, /runBuildSimplePublicGenerationCandidate/)
 assert.doesNotMatch(simple, /processAutomationQueueBatch|rebuildGameEngine|decodeArmy|refreshArmyIntelligence/)
 assert.doesNotMatch(simple, /PublicPlayersProjection|PublicLeagueWorkspaceProjection|PublicDetailProjection/)
+assert.doesNotMatch(simple, /getStandings|rebuildStandings|PUBLIC_LEAGUE_WORKSPACE|PUBLIC_ANALYTICS/)
 assert.doesNotMatch(simple, /doGet|doPost|requireApiPermission|UrlFetchApp/)
 
 const FORM = {
@@ -28,6 +32,8 @@ const sandbox = {
   EVENT_ENGINE_DEFAULT_EVENT_ID: 'event-current-league',
   TOP40_PUBLIC_EVENT_ID: 'event-lobo-s-american-top-40',
   EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID: 'event-august-2026-team-tournament',
+  CONFIG: { DIVISIONS: { MAIN_MAN: 'Main Man', PGA: 'Proving Grounds A', PGB: 'Proving Grounds B' } },
+  normalizeGameType: (value) => ['tournament', 'casual', 'narrative'].includes(String(value).toLowerCase()) ? String(value).toLowerCase() : 'league',
   determineWinner: (row) => row[FORM.GAME_RESULT] === 'Player 2' ? 2 : row[FORM.GAME_RESULT] === 'Draw' ? 0 : 1,
   getPlayerRegistryColumns: () => ({ player: 0, displayName: 1, division: 2, active: 3 }),
   normalizePublicGenerationValue_: (value) => String(value ?? ''),
@@ -49,6 +55,7 @@ vm.createContext(sandbox)
 
 const functionNames = [
   'simplePublicGenerationColumns_', 'simplePublicGenerationValue_',
+  'buildSimplePublicGameContext_',
   'buildSimplePublicGames_', 'buildSimplePublicPlayers_', 'addSimplePublicPlayerGame_',
   'compareSimplePublicPlayerRecords_', 'mostFrequentSimplePublicValue_',
   'finalizeSimplePublicPlayer_', 'buildSimplePublicMetric_',
@@ -56,6 +63,11 @@ const functionNames = [
   'calculateSimplePublicLongestWinStreak_', 'calculateSimplePublicGamesThisMonth_',
   'buildSimplePublicAvailabilityMap_', 'buildSimplePublicRegistrationMap_',
   'buildSimplePublicEvents_',
+  'simplePublicPercentage_', 'simplePublicAverage_', 'simplePublicMostFrequent_',
+  'simplePublicGameReferences_', 'buildSimplePublicMissions_',
+  'addSimplePublicFactionResult_', 'summarizeSimplePublicFactionResults_',
+  'buildSimplePublicFactions_', 'isSimplePublicCurrentLeagueGame_',
+  'buildSimplePublicStandings_',
 ]
 for (const name of functionNames) {
   const start = simple.indexOf(`function ${name}`)
@@ -73,17 +85,40 @@ const headers = ['Timestamp', 'Division', 'Date', 'Mission', 'Player 1', 'Player
   'Player 1 TP', 'Player 2 TP', 'Player 1 OP', 'Player 2 OP', 'Player 1 VP', 'Player 2 VP',
   'First Turn', 'Winning Faction', 'Losing Faction', 'Best Moment', 'Event ID', 'Game Type',
   'Game Result', 'Player 1 Army Code', 'Player 2 Army Code', 'Winner Army List ID', 'Loser Army List ID']
-const game73 = ['', 'Main Man', '2026-08-29', "Dead Man's Switch", 'Lobo', 'Nighthawkmk2',
-  5, 0, 8, 1, 262, 122, 'Player 1', 'Corregidor Jurisdictional Command', 'Shindenbutai',
-  'Moment', 'event-current-league', 'League', 'Player 1', 'SECRET-LOBO', 'SECRET-NIGHT',
-  '3296098999', '4483300877']
+function gameRow(id, division, date, mission, player1, player2, p1tp, p2tp, p1op, p2op,
+  p1vp, p2vp, faction1, faction2, result = 'Player 1', eventId = 'event-current-league', gameType = 'League') {
+  const row = ['', division, date, mission, player1, player2, p1tp, p2tp, p1op, p2op, p1vp, p2vp,
+    'Player 1', faction1, faction2, `Moment ${id}`, eventId, gameType, result,
+    `SECRET-${id}-A`, `SECRET-${id}-B`, '', '']
+  row.gameId = id
+  return row
+}
+const game73 = gameRow(73, 'Main Man', '2026-08-29', "Dead Man's Switch", 'Lobo', 'Nighthawkmk2',
+  5, 0, 8, 1, 262, 122, 'Corregidor Jurisdictional Command', 'Shindenbutai')
+game73[21] = '3296098999'; game73[22] = '4483300877'
+const gameRows = Array.from({ length: 73 }, () => [])
+for (const row of [
+  gameRow(21, 'Main Man', '2026-08-01', 'Supplies', 'Lobo', 'Vision', 5, 0, 7, 2, 200, 100, 'Corregidor Jurisdictional Command', 'Nomads'),
+  gameRow(27, 'Main Man', '2026-08-05', 'Looting and Sabotaging', 'Lobo', 'Igor Your Humble Servant', 5, 0, 7, 2, 200, 100, 'Corregidor Jurisdictional Command', 'PanOceania'),
+  gameRow(40, 'Main Man', '2026-08-12', 'Supremacy', 'Lobo', 'Vision', 5, 0, 7, 2, 200, 100, 'Corregidor Jurisdictional Command', 'Nomads'),
+  gameRow(67, 'Main Man', '2026-08-25', 'Firefight', 'Lobo', 'Igor Your Humble Servant', 5, 0, 8, 2, 213, 100, 'Corregidor Jurisdictional Command', 'PanOceania'),
+  game73,
+  gameRow(22, 'Main Man', '2026-08-02', 'Supplies', 'Nighthawkmk2', 'Vision', 5, 0, 8, 2, 200, 100, 'Shindenbutai', 'Nomads'),
+  gameRow(30, 'Main Man', '2026-08-06', 'Supremacy', 'Nighthawkmk2', 'Igor Your Humble Servant', 5, 0, 8, 2, 200, 100, 'Shindenbutai', 'PanOceania'),
+  gameRow(50, 'Main Man', '2026-08-18', 'Firefight', 'Vision', 'Nighthawkmk2', 5, 1, 8, 4, 250, 214, 'Nomads', 'Shindenbutai'),
+  gameRow(60, 'Main Man', '2026-08-20', 'Casual Mission', 'Lobo', 'Vision', 5, 0, 10, 0, 300, 0, 'Corregidor Jurisdictional Command', 'Nomads', 'Player 1', 'event-current-league', 'Casual'),
+  gameRow(61, 'Proving Grounds A', '2026-08-21', 'Draw Mission', 'PG Alpha', 'PG Beta', 2, 2, 5, 5, 150, 150, 'Ariadna', 'Haqqislam', 'Draw')
+]) gameRows[row.gameId - 1] = row
 const frozen = {
-  gamesTable: { headers, rows: [...Array.from({ length: 72 }, () => []), game73] },
+  gamesTable: { headers, rows: gameRows },
   playersTable: { headers: ['Player', 'Display Name', 'Division', 'Active'], rows: [
     ['Lobo', 'Lobo', 'Main Man', 'true'],
     ['Nighthawkmk2', 'Nighthawkmk2', 'Main Man', 'true'],
     ['Vision', 'Vision', 'Main Man', 'true'],
     ['Igor Your Humble Servant', 'Igor Your Humble Servant', 'Main Man', 'true'],
+    ['PG Alpha', 'PG Alpha', 'Proving Grounds A', 'true'],
+    ['PG Beta', 'PG Beta', 'Proving Grounds A', 'true'],
+    ['PG Gamma', 'PG Gamma', 'Proving Grounds B', 'true'],
   ] },
   eventsTable: { headers: ['ID', 'Name', 'Type', 'Status', 'Commissioners', 'Owner', 'Permissions', 'Automation', 'Private Notes'], rows: [
     ['event-current-league', 'League', 'League', 'Active', 'Secret', 'Secret', 'Secret', 'Secret', 'Secret'],
@@ -97,37 +132,76 @@ sandbox.sanitizePublicGenerationGame_ = (row, index) => ({
   gameId: index - 1, date: row[2], division: row[1], mission: row[3], player1: row[4], player2: row[5],
   player1Faction: row[13], player2Faction: row[14], player1ArmyListId: row[21], player2ArmyListId: row[22],
   player1Tp: Number(row[6]), player2Tp: Number(row[7]), player1Op: Number(row[8]), player2Op: Number(row[9]),
-  player1Vp: Number(row[10]), player2Vp: Number(row[11]), winner: row[4], eventId: row[16], gameType: row[17],
+  player1Vp: Number(row[10]), player2Vp: Number(row[11]),
+  winner: row[18] === 'Draw' ? 'Draw' : row[18] === 'Player 2' ? row[5] : row[4], eventId: row[16], gameType: row[17],
 })
 
-const events = sandbox.buildSimplePublicEvents_(frozen)
-const players = sandbox.buildSimplePublicPlayers_(frozen, events)
-const games = sandbox.buildSimplePublicGames_(frozen, players, events)
-assert.equal(players.length, 4)
-assert.equal(players.find((player) => player.player === 'Lobo').wins, 1)
-assert.equal(games.length, 1)
-assert.equal(games[0].id, 73)
-assert.equal(games[0].winnerArmyListId, '3296098999')
-assert.equal(games[0].loserArmyListId, '4483300877')
-assert.equal('winnerArmyCode' in games[0], false)
-assert.equal('loserArmyCode' in games[0], false)
+const context = sandbox.buildSimplePublicGameContext_(frozen)
+const events = sandbox.buildSimplePublicEvents_(frozen, context)
+const players = sandbox.buildSimplePublicPlayers_(frozen, events, context)
+const games = sandbox.buildSimplePublicGames_(frozen, players, events, context)
+const missions = sandbox.buildSimplePublicMissions_(context)
+const factions = sandbox.buildSimplePublicFactions_(context, players)
+const standings = sandbox.buildSimplePublicStandings_(frozen, players, context)
+assert.equal(players.length, 7)
+const persistedGame73 = games.find((game) => game.id === 73)
+assert.ok(persistedGame73)
+assert.equal(persistedGame73.winnerArmyListId, '3296098999')
+assert.equal(persistedGame73.loserArmyListId, '4483300877')
+assert.equal('winnerArmyCode' in persistedGame73, false)
+assert.equal('loserArmyCode' in persistedGame73, false)
 assert.equal(events.length, 3)
 for (const event of events) {
   for (const forbidden of ['commissioners', 'owner', 'permissions', 'automation', 'history', 'privateNotes'])
     assert.equal(forbidden in event, false)
 }
-sandbox.assertNoForbiddenPublicGenerationKeys_({ players, games, events }, 'simple')
+sandbox.assertNoForbiddenPublicGenerationKeys_({ players, games, events, missions, factions, standings }, 'simple')
+
+const mainMan = standings.find((division) => division.division === 'Main Man')
+const lobo = mainMan.standings.find((row) => row.player === 'Lobo')
+assert.deepEqual(JSON.parse(JSON.stringify(lobo)), {
+  rank: 1, player: 'Lobo', displayName: 'Lobo', games: 5, wins: 5, losses: 0, draws: 0,
+  tp: 25, op: 37, vp: 1075,
+})
+const night = mainMan.standings.find((row) => row.player === 'Nighthawkmk2')
+assert.deepEqual(JSON.parse(JSON.stringify(night)), {
+  rank: 2, player: 'Nighthawkmk2', displayName: 'Nighthawkmk2', games: 4, wins: 2, losses: 2, draws: 0,
+  tp: 11, op: 21, vp: 736,
+})
+assert.equal(standings.length, 3)
+const drawRows = standings.find((division) => division.division === 'Proving Grounds A').standings
+assert.equal(drawRows.find((row) => row.player === 'PG Alpha').draws, 1)
+assert.equal(drawRows.find((row) => row.player === 'PG Beta').draws, 1)
+assert.ok(missions.find((mission) => mission.mission === "Dead Man's Switch").recentGames.some((game) => game.id === 73))
+assert.ok(factions.find((faction) => faction.name === 'Corregidor Jurisdictional Command').recentGames.some((game) => game.id === 73))
+assert.ok(factions.find((faction) => faction.name === 'Shindenbutai').recentGames.some((game) => game.id === 73))
+for (const row of standings) assert.equal('event' in row, false)
+assert.deepEqual(Object.keys(missions[0]).sort(), [
+  'averageOP', 'averageTP', 'averageVP', 'bestMoments', 'divisionBreakdown', 'firstTurnWinRate',
+  'games', 'lastPlayed', 'mission', 'mostPlayedFaction', 'mostSuccessfulFaction', 'recentGames',
+].sort())
+assert.deepEqual(Object.keys(factions[0]).sort(), [
+  'averageOP', 'averageTP', 'averageVP', 'bestMoments', 'divisionBreakdown', 'draws', 'games',
+  'lastPlayed', 'losses', 'matchupSummary', 'matchups', 'mostPlayedMission', 'name', 'recentGames',
+  'topPlayer', 'topPlayerDisplayName', 'winRate', 'wins',
+].sort())
+assert.deepEqual(Object.keys(standings[0]).sort(), [
+  'activePlayers', 'division', 'divisionLabel', 'eventId', 'gamesPlayed', 'players', 'standings',
+].sort())
+assert.deepEqual(Object.keys(standings[0].standings[0]).sort(), [
+  'displayName', 'draws', 'games', 'losses', 'op', 'player', 'rank', 'tp', 'vp', 'wins',
+].sort())
 
 // Frozen cutoff and determinism: post-capture mutation cannot enter the existing G.
 const frozenCopy = structuredClone(frozen)
 const first = JSON.stringify({
-  players: sandbox.buildSimplePublicPlayers_(frozenCopy, sandbox.buildSimplePublicEvents_(frozenCopy)),
-  events: sandbox.buildSimplePublicEvents_(frozenCopy),
+  context: sandbox.buildSimplePublicGameContext_(frozenCopy),
+  events: sandbox.buildSimplePublicEvents_(frozenCopy, sandbox.buildSimplePublicGameContext_(frozenCopy)),
 })
 frozen.gamesTable.rows.push([...game73.slice(0, 4), 'Later', 'Player', ...game73.slice(6)])
 const second = JSON.stringify({
-  players: sandbox.buildSimplePublicPlayers_(frozenCopy, sandbox.buildSimplePublicEvents_(frozenCopy)),
-  events: sandbox.buildSimplePublicEvents_(frozenCopy),
+  context: sandbox.buildSimplePublicGameContext_(frozenCopy),
+  events: sandbox.buildSimplePublicEvents_(frozenCopy, sandbox.buildSimplePublicGameContext_(frozenCopy)),
 })
 assert.equal(first, second)
 
@@ -137,4 +211,4 @@ assert.match(simple, /livePointer: false/)
 assert.doesNotMatch(simple, /PUBLIC_GENERATION_ACTIVE_BUILD_PROPERTY/)
 assert.match(foundation, /function createImmutablePublicGenerationFile_/)
 
-console.log('Simplified three-domain public generation regression passed.')
+console.log('Simplified six-domain public generation regression passed.')
