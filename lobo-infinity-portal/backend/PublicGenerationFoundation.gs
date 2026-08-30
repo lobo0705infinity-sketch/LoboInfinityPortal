@@ -319,6 +319,12 @@ function sanitizePublicGenerationGame_(row, sourceRow) {
   const winner = determineWinner(row);
   const player1Faction = winner === 2 ? row[FORM.LOSINGFACTION] : row[FORM.WINNINGFACTION];
   const player2Faction = winner === 2 ? row[FORM.WINNINGFACTION] : row[FORM.LOSINGFACTION];
+  const player1ArmyListId = winner === 2
+    ? row[FORM.LOSER_ARMY_LIST_ID]
+    : row[FORM.WINNER_ARMY_LIST_ID];
+  const player2ArmyListId = winner === 2
+    ? row[FORM.WINNER_ARMY_LIST_ID]
+    : row[FORM.LOSER_ARMY_LIST_ID];
   return {
     gameId: sourceRow - 1,
     sourceRow: sourceRow,
@@ -329,6 +335,8 @@ function sanitizePublicGenerationGame_(row, sourceRow) {
     player2: String(row[FORM.PLAYER2] || ""),
     player1Faction: String(player1Faction || ""),
     player2Faction: String(player2Faction || ""),
+    player1ArmyListId: String(player1ArmyListId || ""),
+    player2ArmyListId: String(player2ArmyListId || ""),
     player1Tp: Number(row[FORM.P1TP]) || 0,
     player2Tp: Number(row[FORM.P2TP]) || 0,
     player1Op: Number(row[FORM.P1OP]) || 0,
