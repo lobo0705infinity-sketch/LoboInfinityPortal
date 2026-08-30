@@ -1,5 +1,7 @@
 const sections = new Set(['games', 'players', 'factions', 'missions'])
 
+export const config = { maxDuration: 300 }
+
 export default async function handler(request, response) {
   if (request.method !== 'GET') {
     response.setHeader('allow', 'GET')
