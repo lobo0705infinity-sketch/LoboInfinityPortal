@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
+import vm from 'node:vm'
 
 const complete = fs.readFileSync('backend/PublicGenerationComplete.gs', 'utf8')
 const foundation = fs.readFileSync('backend/PublicGenerationFoundation.gs', 'utf8')
@@ -32,5 +33,60 @@ assert.match(complete, /Game 73 semantic fixture failed/)
 assert.match(complete, /Three-division League semantic validation failed/)
 assert.match(complete, /assertNoForbiddenPublicGenerationKeys_/)
 assert.match(complete, /createImmutablePublicGenerationFile_/)
+assert.match(complete, /sanitizeCompletePublicGenerationLeague_/)
+assert.match(complete, /PUBLIC_GENERATION_PUBLIC_LEAGUE_EVENT_FIELDS/)
+assert.match(complete, /createOrValidateCompletePublicGenerationFile_/)
+
+const allowlistMatch = complete.match(
+  /const PUBLIC_GENERATION_PUBLIC_LEAGUE_EVENT_FIELDS = \[[\s\S]*?\];/,
+)
+const sanitizerStart = complete.indexOf('function sanitizeCompletePublicGenerationLeague_')
+const writerStart = complete.indexOf('function writeCompletePublicGenerationArtifact_', sanitizerStart)
+assert.ok(allowlistMatch && sanitizerStart > -1 && writerStart > sanitizerStart)
+const sandbox = {
+  JSON,
+  Object,
+  parsePublicGenerationJson_: (value, fallback) => {
+    try { return JSON.parse(String(value || '')) } catch { return fallback }
+  },
+}
+vm.createContext(sandbox)
+vm.runInContext(
+  `${allowlistMatch[0]}\n${complete.slice(sanitizerStart, writerStart)}`,
+  sandbox,
+)
+const canonicalLeagueFixture = {
+  dashboard: {
+    divisionStandings: [{
+      division: 'main',
+      event: {
+        id: 'event-current-league',
+        name: 'Current League',
+        type: 'League',
+        status: 'Active',
+        scoringModel: 'TP/OP/VP',
+        commissioners: 'Commissioner',
+        owner: 'Commissioner',
+        permissions: { manage: true },
+        automation: 'Enabled',
+        privateNotes: 'never public',
+      },
+      standings: [{ player: 'Lobo', wins: 1 }],
+    }],
+  },
+}
+const publicLeagueFixture = sandbox.sanitizeCompletePublicGenerationLeague_(canonicalLeagueFixture)
+const event = publicLeagueFixture.dashboard.divisionStandings[0].event
+assert.deepEqual(JSON.parse(JSON.stringify(event)), {
+  id: 'event-current-league',
+  name: 'Current League',
+  type: 'League',
+  status: 'Active',
+  scoringModel: 'TP/OP/VP',
+})
+assert.equal('commissioners' in event, false)
+assert.equal('permissions' in event, false)
+assert.equal('owner' in event, false)
+assert.equal(publicLeagueFixture.dashboard.divisionStandings[0].standings[0].player, 'Lobo')
 
 console.log('Complete unpublished public-generation checks passed.')

@@ -21,6 +21,27 @@ const PUBLIC_GENERATION_COMPLETE_OPTIONAL_SOURCES = {
   armyIntelligenceSummary: "PUBLIC_ARMY_INTELLIGENCE_SUMMARY_FILE_ID",
   armyIntelligenceDetail: "PUBLIC_ARMY_INTELLIGENCE_DETAIL_FILE_ID"
 };
+const PUBLIC_GENERATION_PUBLIC_LEAGUE_EVENT_FIELDS = [
+  "id",
+  "communityId",
+  "seriesId",
+  "templateId",
+  "name",
+  "description",
+  "type",
+  "lifecycleStage",
+  "status",
+  "startDate",
+  "endDate",
+  "registration",
+  "participants",
+  "rules",
+  "scoringModel",
+  "standingsModel",
+  "requiresLeagueMembership",
+  "createdAt",
+  "updatedAt"
+];
 
 function runBuildCompletePublicGenerationCandidate() {
   const result = buildCompletePublicGenerationCandidate_();
@@ -154,7 +175,9 @@ function buildCompletePublicGenerationRequiredStage_(record, started) {
     core: buildPublicGenerationCoreSection_(context.frozen),
     games: buildCompletePublicGenerationGames_(context.frozen),
     players: context.frozen.preparedSources.players.value,
-    league: context.frozen.preparedSources.league.value,
+    league: sanitizeCompletePublicGenerationLeague_(
+      context.frozen.preparedSources.league.value
+    ),
     analytics: context.frozen.preparedSources.analytics.value,
     detail: context.frozen.preparedSources.detail.value,
     top40: context.frozen.preparedSources.top40.value,
@@ -247,6 +270,26 @@ function buildCompletePublicGenerationGames_(frozen) {
   };
 }
 
+function sanitizeCompletePublicGenerationLeague_(source) {
+  const output = parsePublicGenerationJson_(JSON.stringify(source || {}), {});
+  const divisions = output && output.dashboard && output.dashboard.divisionStandings;
+  if (!Array.isArray(divisions)) return output;
+  divisions.forEach(function(division) {
+    if (!division || !division.event) return;
+    division.event = buildCompletePublicGenerationLeagueEvent_(division.event);
+  });
+  return output;
+}
+
+function buildCompletePublicGenerationLeagueEvent_(event) {
+  const output = {};
+  PUBLIC_GENERATION_PUBLIC_LEAGUE_EVENT_FIELDS.forEach(function(key) {
+    if (Object.prototype.hasOwnProperty.call(event || {}, key))
+      output[key] = event[key];
+  });
+  return output;
+}
+
 function writeCompletePublicGenerationArtifact_(folder, record, key, data, required, isManifest) {
   const artifact = isManifest ? data : {
     schemaVersion: PUBLIC_GENERATION_COMPLETE_SCHEMA_VERSION,
@@ -260,7 +303,7 @@ function writeCompletePublicGenerationArtifact_(folder, record, key, data, requi
   const json = stablePublicGenerationJson_(artifact);
   const hash = sha256PublicGenerationText_(json);
   const bytes = utf8PublicGenerationByteCount_(json);
-  const file = createImmutablePublicGenerationFile_(folder, key + ".json", json);
+  const file = createOrValidateCompletePublicGenerationFile_(folder, key + ".json", json);
   validatePersistedPublicGenerationText_(file, json, hash, bytes);
   return {
     fileId: file.getId(),
@@ -271,6 +314,17 @@ function writeCompletePublicGenerationArtifact_(folder, record, key, data, requi
     required: required === true,
     readBack: true
   };
+}
+
+function createOrValidateCompletePublicGenerationFile_(folder, name, content) {
+  const existing = folder.getFilesByName(name);
+  if (!existing.hasNext())
+    return createImmutablePublicGenerationFile_(folder, name, content);
+  const file = existing.next();
+  const persisted = file.getBlob().getDataAsString("UTF-8");
+  if (persisted !== content)
+    throw new Error("Incomplete generation artifact differs and cannot be overwritten: " + name);
+  return file;
 }
 
 function validateCompletePublicGenerationArtifactReference_(record, key, required) {
