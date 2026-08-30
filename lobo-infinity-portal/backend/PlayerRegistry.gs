@@ -721,6 +721,8 @@ function invalidatePlayerRegistryCache() {
     markPublicPlayersProjectionDirty_();
   if (typeof markPublicLeagueWorkspaceProjectionDirty_ === "function")
     markPublicLeagueWorkspaceProjectionDirty_();
+  if (typeof markPublicDetailProjectionDirty_ === "function")
+    markPublicDetailProjectionDirty_(["players", "games"]);
 
   try {
     CacheService

@@ -159,6 +159,8 @@ function correctGameScore(e, auth) {
     markPublicPlayersProjectionDirty_();
   if (typeof markPublicLeagueWorkspaceProjectionDirty_ === "function")
     markPublicLeagueWorkspaceProjectionDirty_();
+  if (typeof markPublicDetailProjectionDirty_ === "function")
+    markPublicDetailProjectionDirty_(["games", "players", "factions", "missions"]);
 
   return jsonOutput({
     success: true,

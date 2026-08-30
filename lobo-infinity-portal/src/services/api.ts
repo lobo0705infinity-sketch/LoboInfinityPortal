@@ -5154,7 +5154,7 @@ export function normalizeFactionsPayload(payload: unknown): FactionSummary[] {
   return getRequiredArray(record, 'factions').map(normalizeFactionSummary)
 }
 
-function normalizeFactionPayload(payload: unknown): FactionProfileData {
+export function normalizeFactionPayload(payload: unknown): FactionProfileData {
   const record = asRecord(payload, 'Faction response')
 
   if (record.success === false) {
@@ -5259,7 +5259,7 @@ export function normalizeMissionsPayload(payload: unknown): MissionSummary[] {
   return getRequiredArray(record, 'missions').map(normalizeMissionSummary)
 }
 
-function normalizeMissionPayload(payload: unknown): MissionProfileData {
+export function normalizeMissionPayload(payload: unknown): MissionProfileData {
   const record = asRecord(payload, 'Mission response')
 
   if (record.success === false) {

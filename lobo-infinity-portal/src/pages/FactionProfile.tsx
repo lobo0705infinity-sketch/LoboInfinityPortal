@@ -4,15 +4,15 @@ import BarChart from '../components/BarChart'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
 import { getCanonicalMissionName } from '../config/missions'
-import { useApiCacheRevalidation } from '../hooks/useApiCacheRevalidation'
 import {
-  apiClient,
+  normalizeFactionPayload,
   type ArmyList,
   type FactionBestMoment,
   type FactionMatchup,
   type FactionProfileData,
   type RecentGame,
 } from '../services/api'
+import { publicDetailProjection } from '../services/publicDetailProjection'
 import { formatObjectiveScore, formatPlayerName } from '../services/formatting'
 import { getGameHeadline } from '../services/gameResults'
 import { getInfinityArmyTarget } from '../services/infinityArmyLinks'
@@ -41,23 +41,6 @@ function FactionProfile() {
     status: 'idle',
   })
 
-  useApiCacheRevalidation({
-    action: 'faction',
-    params: {
-      name: decodedFactionName,
-      ...(eventId ? { eventId } : {}),
-    },
-    read: () => apiClient.getFaction(decodedFactionName, {
-      cacheMode: 'stale-while-revalidate',
-      eventId,
-    }),
-    apply: (faction) => {
-      if (decodedFactionName) {
-        setProfileState({ faction, factionName: decodedFactionName, status: 'success' })
-      }
-    },
-  })
-
   useEffect(() => {
     if (!decodedFactionName) {
       return
@@ -65,13 +48,10 @@ function FactionProfile() {
 
     const controller = new AbortController()
 
-    apiClient
-      .getFaction(decodedFactionName, {
-        cacheMode: 'stale-while-revalidate',
-        eventId,
-        signal: controller.signal,
-      })
-      .then((faction) => {
+    publicDetailProjection
+      .getFaction(decodedFactionName, controller.signal)
+      .then((payload) => {
+        const faction = normalizeFactionPayload(payload)
         setProfileState({
           faction,
           factionName: decodedFactionName,

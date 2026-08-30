@@ -478,6 +478,8 @@ function enqueueGameSubmittedAutomationEvent(identity) {
     markPublicLeagueWorkspaceProjectionDirty_();
   if (typeof markPublicArmyWorkspaceProjectionDirty_ === "function")
     markPublicArmyWorkspaceProjectionDirty_(["armyLists"]);
+  if (typeof markPublicDetailProjectionDirty_ === "function")
+    markPublicDetailProjectionDirty_(["games", "players", "factions", "missions"]);
 
   if (hasRecentAutomationEventId_(eventId))
     return {
@@ -642,9 +644,15 @@ function processAutomationQueueBatch(e) {
       ? publishDirtyPublicArmyWorkspaceProjectionBestEffort_()
       : { refreshed: false, success: true };
 
+  const detailProjection =
+    typeof publishDirtyPublicDetailProjectionBestEffort_ === "function"
+      ? publishDirtyPublicDetailProjectionBestEffort_()
+      : { refreshed: false, success: true };
+
   return jsonOutput({
     analyticsProjection: analyticsProjection,
     armyWorkspaceProjection: armyWorkspaceProjection,
+    detailProjection: detailProjection,
     attempted: items.length,
     batchLimit: batchLimit,
     failed: results.filter(function(result) { return result.success === false; }).length,

@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import { filterCanonicalMissionRecords } from '../config/missions'
 import { apiClient } from '../services/api'
+import { getPublicPlayersProjection } from '../services/publicPlayersProjection'
+import { publicDetailProjection } from '../services/publicDetailProjection'
+import { publicLeagueWorkspace } from '../services/publicLeagueWorkspaceProjection'
 import { formatPlayerName } from '../services/formatting'
 import { getGameHeadline } from '../services/gameResults'
 import PreviousNextNav from './PreviousNextNav'
@@ -85,7 +88,7 @@ async function getEntities(type: EntityType, signal: AbortSignal, eventId = '') 
   const eventQuery = eventId ? `?eventId=${encodeURIComponent(eventId)}` : ''
 
   if (type === 'player') {
-    const divisions = await apiClient.getPlayers({ eventId, signal })
+    const divisions = eventId ? await apiClient.getPlayers({ eventId, signal }) : await getPublicPlayersProjection({ signal })
 
     return divisions.flatMap((division) =>
       division.standings.map((player) => ({
@@ -96,7 +99,7 @@ async function getEntities(type: EntityType, signal: AbortSignal, eventId = '') 
   }
 
   if (type === 'faction') {
-    const factions = await apiClient.getFactions({ eventId, signal })
+    const factions = eventId ? await apiClient.getFactions({ eventId, signal }) : await publicLeagueWorkspace.getFactions(signal)
 
     return factions.map((faction) => ({
       label: faction.name,
@@ -105,7 +108,7 @@ async function getEntities(type: EntityType, signal: AbortSignal, eventId = '') 
   }
 
   if (type === 'mission') {
-    const missions = await apiClient.getMissions({ eventId, signal })
+    const missions = eventId ? await apiClient.getMissions({ eventId, signal }) : await publicLeagueWorkspace.getMissions('current-league', signal)
 
     return filterCanonicalMissionRecords(missions).map((mission) => ({
       label: mission.mission,
@@ -113,7 +116,9 @@ async function getEntities(type: EntityType, signal: AbortSignal, eventId = '') 
     }))
   }
 
-  const games = await apiClient.getRecentGames({ eventId, signal })
+  const games = eventId
+    ? await apiClient.getRecentGames({ eventId, signal })
+    : (await publicDetailProjection.getGames(signal)).games
 
   return games.map((game) => ({
     label: getGameHeadline(game),

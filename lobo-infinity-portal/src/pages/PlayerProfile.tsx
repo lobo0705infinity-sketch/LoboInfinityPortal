@@ -19,7 +19,7 @@ import type {
   PlayerRecordSummary,
   RecentGame,
 } from '../services/api'
-import { request } from '../services/apiCore'
+import { publicDetailProjection } from '../services/publicDetailProjection'
 import {
   formatObjectiveScore,
   formatPlayerName,
@@ -941,11 +941,8 @@ async function getPlayerProfileForCareer(
   player: PlayerProfileData
   recentGames: RecentGame[]
 }> {
-  const payload = await request(
-    'player',
-    { signal },
-    { name: playerName, ...(eventId ? { profileEventId: eventId } : {}) },
-  )
+  void eventId
+  const payload = await publicDetailProjection.getPlayer(playerName, signal)
 
   return normalizePlayerProfilePayload(payload)
 }

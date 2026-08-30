@@ -1,11 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Skeleton from '../components/Skeleton'
-import {
-  apiClient,
-  type HomeData,
-  type RecentGame,
-} from '../services/api'
+import { type RecentGame } from '../services/api'
+import { publicDetailProjection } from '../services/publicDetailProjection'
 import {
   formatObjectiveScore,
   formatPlayerName,
@@ -18,7 +15,7 @@ type RivalriesState =
       status: 'loading'
     }
   | {
-      data: HomeData
+      data: { recentGames: RecentGame[] }
       status: 'success'
     }
   | {
@@ -49,9 +46,9 @@ function Rivalries() {
   useEffect(() => {
     const controller = new AbortController()
 
-    apiClient
-      .getHome({ signal: controller.signal })
-      .then((data) => setState({ data, status: 'success' }))
+    publicDetailProjection
+      .getGames(controller.signal)
+      .then((data) => setState({ data: { recentGames: data.games }, status: 'success' }))
       .catch((error: unknown) => {
         if (controller.signal.aborted) {
           return

@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import Skeleton from '../components/Skeleton'
 import { filterCanonicalMissionNames } from '../config/missions'
-import { useApiCacheRevalidation } from '../hooks/useApiCacheRevalidation'
-import { apiClient, type StreamedGame } from '../services/api'
+import { type StreamedGame } from '../services/api'
+import { publicDetailProjection } from '../services/publicDetailProjection'
 
 type StreamsState =
   | {
@@ -44,23 +44,12 @@ function StreamedGames() {
     )
   }, [searchParams])
 
-  useApiCacheRevalidation({
-    action: 'streams',
-    read: () => apiClient.getStreams({
-      cacheMode: 'stale-while-revalidate',
-    }),
-    apply: applyStreams,
-  })
-
   useEffect(() => {
     const controller = new AbortController()
 
-    apiClient
-      .getStreams({
-        cacheMode: 'stale-while-revalidate',
-        signal: controller.signal,
-      })
-      .then(applyStreams)
+    publicDetailProjection
+      .getGames(controller.signal)
+      .then((data) => applyStreams(data.streams))
       .catch((error: unknown) => {
         if (!controller.signal.aborted) {
           setStreamsState({

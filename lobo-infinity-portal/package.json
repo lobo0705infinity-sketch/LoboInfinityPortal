@@ -16,6 +16,7 @@
     "test:public-players-projection": "node scripts/public-players-projection-check.mjs",
     "test:public-league-workspace-projection": "node scripts/public-league-workspace-projection-check.mjs",
     "test:public-army-workspace-projection": "node scripts/public-army-workspace-projection-check.mjs",
+    "test:public-detail-projection": "node scripts/public-detail-projection-check.mjs",
     "test:league-standings-performance": "node scripts/league-standings-performance-check.mjs",
     "test:favorite-army-performance": "node scripts/favorite-army-performance-check.mjs",
     "test:submit-game-form-cards": "node scripts/submit-game-google-form-cards-check.mjs",

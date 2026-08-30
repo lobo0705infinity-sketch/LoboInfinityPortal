@@ -3,7 +3,8 @@ import { Link, useParams } from 'react-router-dom'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
 import { getCanonicalMissionName } from '../config/missions'
-import { apiClient, type CommissionerNewsItem, type RecentGame, type StreamedGame } from '../services/api'
+import { type CommissionerNewsItem, type RecentGame, type StreamedGame } from '../services/api'
+import { publicDetailProjection } from '../services/publicDetailProjection'
 import { formatPlayerName } from '../services/formatting'
 import { getGameTimelineResult, isDrawGame } from '../services/gameResults'
 import './GameDetails.css'
@@ -44,13 +45,10 @@ function GameDetails() {
 
     const controller = new AbortController()
 
-    apiClient
-      .getRecentGames({
-        gameId,
-        signal: controller.signal,
-      })
-      .then((games) => {
-        const game = games.find((candidate) => candidate.id === gameId)
+    publicDetailProjection
+      .getGames(controller.signal)
+      .then((data) => {
+        const game = data.games.find((candidate) => candidate.id === gameId)
 
         if (game) {
           setGameState({
@@ -59,34 +57,19 @@ function GameDetails() {
             status: 'success',
             stream: null,
           })
-          void loadLinkedStream(gameId, controller.signal, setGameState)
+          applyLinkedStream(gameId, data.streams, setGameState)
           return
         }
 
-        return apiClient.getNews({ signal: controller.signal }).then((news) => {
-          const linkedGame = buildNewsLinkedGame(gameId, news)
+        const linkedGame = buildNewsLinkedGame(gameId, data.news)
 
-          if (linkedGame) {
-            setGameState({
-              game: linkedGame,
-              gameId,
-              status: 'success',
-              stream: null,
-            })
-            void loadLinkedStream(gameId, controller.signal, setGameState)
-            return
-          }
-
-          setGameState({
-            gameId,
-            status: 'not-found',
-          })
-        })
-      })
-      .then((result) => {
-        if (result) {
+        if (linkedGame) {
+          setGameState({ game: linkedGame, gameId, status: 'success', stream: null })
+          applyLinkedStream(gameId, data.streams, setGameState)
           return
         }
+
+        setGameState({ gameId, status: 'not-found' })
       })
       .catch(() => {
         if (!controller.signal.aborted) {
@@ -137,22 +120,17 @@ function GameDetails() {
   return <BattleReport game={gameState.game} stream={gameState.stream} />
 }
 
-function loadLinkedStream(
+function applyLinkedStream(
   gameId: number,
-  signal: AbortSignal,
+  streams: StreamedGame[],
   setGameState: Dispatch<SetStateAction<GameDetailsState>>,
 ) {
-  return apiClient
-    .getStreams({ signal })
-    .then((streams) => {
-      const stream = streams.find((candidate) => candidate.gameId === gameId) ?? null
-      setGameState((current) =>
-        current.status === 'success' && current.gameId === gameId
-          ? { ...current, stream }
-          : current,
-      )
-    })
-    .catch(() => undefined)
+  const stream = streams.find((candidate) => candidate.gameId === gameId) ?? null
+  setGameState((current) =>
+    current.status === 'success' && current.gameId === gameId
+      ? { ...current, stream }
+      : current,
+  )
 }
 
 function buildNewsLinkedGame(gameId: number, news: CommissionerNewsItem[]): RecentGame | null {

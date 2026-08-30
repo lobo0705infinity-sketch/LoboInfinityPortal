@@ -633,6 +633,9 @@ function handleApiGet(e, action) {
     case "refreshPublicArmyWorkspaceProjection":
       return refreshPublicArmyWorkspaceProjection(e);
 
+    case "refreshPublicDetailProjection":
+      return refreshPublicDetailProjection(e);
+
     case "eventManager":
       return getEventManager(e);
 
@@ -1027,22 +1030,22 @@ function handleApiGet(e, action) {
 
     case "saveStream":
       return requireApiPermission(e, "manageStreams", function() {
-        return saveOperationsStream(e);
+        return savePublicDetailStream_(e);
       });
 
     case "deleteStream":
       return requireApiPermission(e, "manageStreams", function() {
-        return deleteOperationsStream(e);
+        return deletePublicDetailStream_(e);
       });
 
     case "saveNews":
       return requireApiPermission(e, "manageNews", function() {
-        return saveOperationsNews(e);
+        return savePublicDetailNews_(e);
       });
 
     case "deleteNews":
       return requireApiPermission(e, "manageNews", function() {
-        return deleteOperationsNews(e);
+        return deletePublicDetailNews_(e);
       });
 
     case "saveAlert":
@@ -1423,6 +1426,9 @@ function handleApiPost(e, action) {
     case "refreshPublicArmyWorkspaceProjection":
       return refreshPublicArmyWorkspaceProjection(e);
 
+    case "refreshPublicDetailProjection":
+      return refreshPublicDetailProjection(e);
+
     case "eventManagerTeam":
       return saveEventManagerTeam(e);
 
@@ -1482,22 +1488,22 @@ function handleApiPost(e, action) {
 
     case "saveStream":
       return requireApiPermission(e, "manageStreams", function() {
-        return saveOperationsStream(e);
+        return savePublicDetailStream_(e);
       });
 
     case "deleteStream":
       return requireApiPermission(e, "manageStreams", function() {
-        return deleteOperationsStream(e);
+        return deletePublicDetailStream_(e);
       });
 
     case "saveNews":
       return requireApiPermission(e, "manageNews", function() {
-        return saveOperationsNews(e);
+        return savePublicDetailNews_(e);
       });
 
     case "deleteNews":
       return requireApiPermission(e, "manageNews", function() {
-        return deleteOperationsNews(e);
+        return deletePublicDetailNews_(e);
       });
 
     case "saveAlert":

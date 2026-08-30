@@ -4,13 +4,13 @@ import BarChart from '../components/BarChart'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
 import { getCanonicalMissionName } from '../config/missions'
-import { useApiCacheRevalidation } from '../hooks/useApiCacheRevalidation'
 import {
-  apiClient,
+  normalizeMissionPayload,
   type MissionBestMoment,
   type MissionProfileData,
   type RecentGame,
 } from '../services/api'
+import { publicDetailProjection } from '../services/publicDetailProjection'
 import { formatObjectiveScore } from '../services/formatting'
 import { getGameHeadline } from '../services/gameResults'
 
@@ -40,25 +40,6 @@ function MissionProfile() {
     status: 'idle',
   })
 
-  useApiCacheRevalidation({
-    action: 'mission',
-    params: {
-      name: canonicalMissionName,
-      ...(eventId ? { eventId } : {}),
-      ...(gameType ? { gameType } : {}),
-    },
-    read: () => apiClient.getMission(canonicalMissionName, {
-      cacheMode: 'stale-while-revalidate',
-      eventId,
-      gameType,
-    }),
-    apply: (mission) => {
-      if (canonicalMissionName) {
-        setProfileState({ mission, missionName: canonicalMissionName, status: 'success' })
-      }
-    },
-  })
-
   useEffect(() => {
     if (!canonicalMissionName) {
       return
@@ -66,14 +47,10 @@ function MissionProfile() {
 
     const controller = new AbortController()
 
-    apiClient
-      .getMission(canonicalMissionName, {
-        cacheMode: 'stale-while-revalidate',
-        eventId,
-        gameType,
-        signal: controller.signal,
-      })
-      .then((mission) => {
+    publicDetailProjection
+      .getMission(canonicalMissionName, controller.signal)
+      .then((payload) => {
+        const mission = normalizeMissionPayload(payload)
         setProfileState({
           mission,
           missionName: canonicalMissionName,
