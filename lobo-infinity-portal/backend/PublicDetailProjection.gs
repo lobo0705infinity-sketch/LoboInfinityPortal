@@ -67,7 +67,7 @@ function publishPublicDetailProjectionSection_(section) {
   if (section === "games") {
     artifact.games = JSON.parse(getRecentGames({ parameter: { eventId: "all", gameType: "all" } }).getContent()).games || [];
     artifact.streams = JSON.parse(getStreams().getContent()).streams || [];
-    artifact.news = JSON.parse(getNews().getContent()).news || [];
+    artifact.news = JSON.parse(getCommissionerNews().getContent()).news || [];
   }
   if (section === "players") artifact.players = buildPublicDetailPlayerProfiles_();
   if (section === "factions") artifact.factions = buildPublicDetailFactionProfiles_();
