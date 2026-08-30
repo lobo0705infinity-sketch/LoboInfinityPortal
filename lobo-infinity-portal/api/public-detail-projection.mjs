@@ -54,6 +54,11 @@ async function bootstrapProjectionFileId(section) {
     headers: { 'content-type': 'application/x-www-form-urlencoded;charset=UTF-8' },
   })
   const payload = await upstream.json()
-  if (!upstream.ok || payload?.success !== true) throw new Error(payload?.error || `Projection bootstrap returned HTTP ${upstream.status}.`)
+  if (!upstream.ok || payload?.success !== true) {
+    throw new Error(
+      payload?.error || payload?.message ||
+      `Projection bootstrap returned HTTP ${upstream.status} (${Object.keys(payload || {}).join(',') || 'empty'}).`,
+    )
+  }
   return String(payload.fileId || '').trim()
 }
