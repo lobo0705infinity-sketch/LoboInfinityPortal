@@ -152,6 +152,7 @@
     "test:canonical-rebuild-recovery": "node scripts/canonical-rebuild-recovery-check.mjs",
     "test:public-projection-reliability": "node scripts/public-projection-reliability-check.mjs",
     "test:prepared-projection-owner-maintenance": "node scripts/prepared-projection-owner-maintenance-check.mjs",
+    "test:scheduler-lock-boundary": "node scripts/scheduler-lock-boundary-check.mjs",
     "security:armies": "node scripts/army-registry-audit.mjs"
   },
   "dependencies": {

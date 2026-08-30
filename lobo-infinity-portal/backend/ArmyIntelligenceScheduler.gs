@@ -72,48 +72,49 @@ function runScheduledArmyIntelligenceRefresh() {
     return skipped;
   }
 
+  let token = "";
   try {
-    const token = getArmyIntelligenceSchedulerToken_();
+    token = getArmyIntelligenceSchedulerToken_();
 
     if (!token)
       throw new Error("Army Intelligence scheduler credential is not configured.");
-
-    const intelligence = runScheduledMaintenanceWorker_(
-      ARMY_INTELLIGENCE_SCHEDULER_URL,
-      token
-    );
-    const automation = runScheduledMaintenanceWorker_(
-      AUTOMATION_QUEUE_WORKER_URL,
-      token
-    );
-    const payload = intelligence.payload;
-    const result = {
-      automation: automation,
-      decoded: Number(payload.decoded) || 0,
-      failed: Number(payload.failed) || 0,
-      hasMore: payload.hasMore === true,
-      remaining: Number(payload.remaining) || 0,
-      status: intelligence.success && automation.success
-        ? "Succeeded"
-        : "Failed",
-      success: intelligence.success && automation.success,
-      timestamp: new Date().toISOString(),
-      updated: Number(payload.updated) || 0,
-      workerHttpStatus: intelligence.workerHttpStatus
-    };
-
-    Logger.log("ARMY_INTELLIGENCE_SCHEDULER " + JSON.stringify(result));
-
-    if (!result.success)
-      throw new Error(
-        "Scheduled maintenance worker failed."
-      );
-
-    return result;
   }
   finally {
     lock.releaseLock();
   }
+
+  const intelligence = runScheduledMaintenanceWorker_(
+    ARMY_INTELLIGENCE_SCHEDULER_URL,
+    token
+  );
+  const automation = runScheduledMaintenanceWorker_(
+    AUTOMATION_QUEUE_WORKER_URL,
+    token
+  );
+  const payload = intelligence.payload;
+  const result = {
+    automation: automation,
+    decoded: Number(payload.decoded) || 0,
+    failed: Number(payload.failed) || 0,
+    hasMore: payload.hasMore === true,
+    remaining: Number(payload.remaining) || 0,
+    status: intelligence.success && automation.success
+      ? "Succeeded"
+      : "Failed",
+    success: intelligence.success && automation.success,
+    timestamp: new Date().toISOString(),
+    updated: Number(payload.updated) || 0,
+    workerHttpStatus: intelligence.workerHttpStatus
+  };
+
+  Logger.log("ARMY_INTELLIGENCE_SCHEDULER " + JSON.stringify(result));
+
+  if (!result.success)
+    throw new Error(
+      "Scheduled maintenance worker failed."
+    );
+
+  return result;
 
 }
 
