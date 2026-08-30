@@ -9,11 +9,72 @@
 const PUBLIC_SNAPSHOT_V1_SCHEMA_VERSION = 1;
 const PUBLIC_SNAPSHOT_V1_ROOT_PROPERTY = "PUBLIC_SNAPSHOT_V1_ROOT_FOLDER_ID";
 const PUBLIC_SNAPSHOT_V1_ROOT_NAME = "Lobo Public Snapshots V1";
+const PUBLIC_SNAPSHOT_V1_PROOF_ID = "20260830T222502Z";
+const PUBLIC_SNAPSHOT_PUBLISH_TOKEN_PROPERTY = "LOBO_SNAPSHOT_PUBLISH_TOKEN";
+const PUBLIC_SNAPSHOT_PUBLISH_URL = "https://lobo-infinity-portal.vercel.app/api/public-snapshot-publish";
+const PUBLIC_SNAPSHOT_PUBLIC_FILES = [
+  "snapshot.json", "players.json", "games.json", "events.json",
+  "missions.json", "factions.json", "standings.json"
+];
 
 function runBuildPublicSnapshotV1() {
   const result = buildPublicSnapshotV1_();
   Logger.log("PUBLIC_SNAPSHOT_V1 " + JSON.stringify(result));
   return result;
+}
+
+function runPublishPublicSnapshotV1Proof(publicationToken) {
+  const properties = PropertiesService.getScriptProperties();
+  const suppliedToken = String(publicationToken || "").trim();
+  if (suppliedToken) properties.setProperty(PUBLIC_SNAPSHOT_PUBLISH_TOKEN_PROPERTY, suppliedToken);
+  const token = suppliedToken || String(properties.getProperty(PUBLIC_SNAPSHOT_PUBLISH_TOKEN_PROPERTY) || "").trim();
+  if (!token) throw new Error("Missing LOBO_SNAPSHOT_PUBLISH_TOKEN Script Property.");
+
+  const rootId = String(properties.getProperty(PUBLIC_SNAPSHOT_V1_ROOT_PROPERTY) || "").trim();
+  if (!rootId) throw new Error("Public Snapshot V1 root folder is not configured.");
+  const matches = DriveApp.getFolderById(rootId).getFoldersByName(PUBLIC_SNAPSHOT_V1_PROOF_ID);
+  if (!matches.hasNext()) throw new Error("Validated proof snapshot not found: " + PUBLIC_SNAPSHOT_V1_PROOF_ID);
+  const folder = matches.next();
+  if (matches.hasNext()) throw new Error("Duplicate proof snapshot folders found.");
+
+  const files = {};
+  PUBLIC_SNAPSHOT_PUBLIC_FILES.forEach(function(filename) {
+    const fileMatches = folder.getFilesByName(filename);
+    if (!fileMatches.hasNext()) throw new Error("Proof snapshot file not found: " + filename);
+    files[filename] = fileMatches.next().getBlob().getDataAsString("UTF-8");
+    if (fileMatches.hasNext()) throw new Error("Duplicate proof snapshot file: " + filename);
+  });
+  const metadata = JSON.parse(files["snapshot.json"]);
+  if (metadata.snapshotId !== PUBLIC_SNAPSHOT_V1_PROOF_ID || metadata.status !== "validated" ||
+      metadata.published !== false || metadata.livePointer !== false)
+    throw new Error("Proof snapshot metadata is not a validated unpublished snapshot.");
+
+  const response = UrlFetchApp.fetch(PUBLIC_SNAPSHOT_PUBLISH_URL, {
+    method: "post",
+    contentType: "application/json",
+    headers: { Authorization: "Bearer " + token },
+    muteHttpExceptions: true,
+    payload: JSON.stringify({
+      snapshotId: metadata.snapshotId,
+      sourceCutoff: metadata.sourceCutoff,
+      files: files
+    })
+  });
+  const statusCode = response.getResponseCode();
+  const result = JSON.parse(response.getContentText() || "{}");
+  if (statusCode < 200 || statusCode >= 300 || result.success !== true)
+    throw new Error("Public snapshot publication failed (HTTP " + statusCode + "): " + String(result.error || "Unknown error"));
+  const proof = {
+    success: true,
+    snapshotId: result.snapshotId,
+    sourceCutoff: result.sourceCutoff,
+    filesUploaded: result.uploaded,
+    files: result.files,
+    publishedToBlob: true,
+    livePointer: false
+  };
+  Logger.log("PUBLIC_SNAPSHOT_V1_PUBLICATION " + JSON.stringify(proof));
+  return proof;
 }
 
 function buildPublicSnapshotV1_() {
