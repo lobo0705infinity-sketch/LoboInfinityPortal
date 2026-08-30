@@ -15,19 +15,14 @@ export default async function handler(request, response) {
 
   try {
     const sourceStartedAt = performance.now()
-    const source = await fetch(
-      `https://drive.usercontent.google.com/download?id=${encodeURIComponent(fileId)}&export=download&confirm=t`,
-      { redirect: 'follow' },
-    )
-    const sourceMs = performance.now() - sourceStartedAt
-    if (!source.ok) throw new Error(`Projection source returned HTTP ${source.status}.`)
-
-    const artifact = await source.json()
-    if (artifact?.eventId !== '' || !Array.isArray(artifact?.divisions) ||
-        !Array.isArray(artifact?.comparison?.players) ||
-        !Array.isArray(artifact?.comparison?.headToHead)) {
-      throw new Error('Public Players projection is invalid.')
+    let artifact = await readProjectionArtifact(fileId)
+    if (!isValidProjection(artifact)) {
+      const refreshedFileId = await bootstrapProjectionFileId()
+      if (!refreshedFileId) throw new Error('Public Players projection could not be refreshed.')
+      artifact = await readProjectionArtifact(refreshedFileId)
     }
+    const sourceMs = performance.now() - sourceStartedAt
+    if (!isValidProjection(artifact)) throw new Error('Public Players projection is invalid.')
 
     const body = JSON.stringify({
       divisions: artifact.divisions,
@@ -51,6 +46,22 @@ export default async function handler(request, response) {
       success: false,
     })
   }
+}
+
+async function readProjectionArtifact(fileId) {
+  const source = await fetch(
+    `https://drive.usercontent.google.com/download?id=${encodeURIComponent(fileId)}&export=download&confirm=t`,
+    { redirect: 'follow' },
+  )
+  if (!source.ok) throw new Error(`Projection source returned HTTP ${source.status}.`)
+  return source.json()
+}
+
+function isValidProjection(artifact) {
+  return artifact?.eventId === '' &&
+    Array.isArray(artifact?.divisions) &&
+    Array.isArray(artifact?.comparison?.players) &&
+    Array.isArray(artifact?.comparison?.headToHead)
 }
 
 async function bootstrapProjectionFileId() {
