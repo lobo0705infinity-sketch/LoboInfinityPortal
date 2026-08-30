@@ -84,7 +84,7 @@ assert.throws(() => context.completeEventBracketMatch_(wrongPlayer, wrongMatch, 
 
 assert.match(bracketSource, /function awardEventBracketForfeit\(e\)[\s\S]*requireApiPermission\(e, "runSeasonControl"/)
 assert.match(bracketSource, /completeEventBracketMatch_\(matches, match, winner, loser, "Forfeit", "", new Date\(\)\)/)
-assert.doesNotMatch(bracketSource.match(/function awardEventBracketForfeit[\s\S]*?\n}\n/)[0], /submitCanonicalGame|createSubmissionCommand/)
+assert.doesNotMatch(bracketSource.match(/function awardEventBracketForfeit[\s\S]*?(?=\r?\nfunction validateTop40BracketSubmission_)/)[0], /submitCanonicalGame|createSubmissionCommand/)
 assert.match(routerSource, /case "eventBracketForfeit":\s*return awardEventBracketForfeit\(e\);/)
 assert.match(securitySource, /eventBracketForfeit: \{ authRequired: true, userScoped: false \}/)
 assert.match(apiSource, /postRequest\('eventBracketForfeit'/)
