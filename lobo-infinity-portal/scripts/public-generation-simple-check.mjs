@@ -55,6 +55,8 @@ vm.createContext(sandbox)
 
 const functionNames = [
   'simplePublicGenerationColumns_', 'simplePublicGenerationValue_',
+  'normalizeSimplePublicPlayerIdentity_', 'buildSimplePublicPlayerIdentityIndex_',
+  'resolveSimplePublicPlayerIdentity_',
   'buildSimplePublicGameContext_',
   'buildSimplePublicGames_', 'buildSimplePublicPlayers_', 'addSimplePublicPlayerGame_',
   'compareSimplePublicPlayerRecords_', 'mostFrequentSimplePublicValue_',
@@ -96,7 +98,11 @@ function gameRow(id, division, date, mission, player1, player2, p1tp, p2tp, p1op
 const game73 = gameRow(73, 'Main Man', '2026-08-29', "Dead Man's Switch", 'Lobo', 'Nighthawkmk2',
   5, 0, 8, 1, 262, 122, 'Corregidor Jurisdictional Command', 'Shindenbutai')
 game73[21] = '3296098999'; game73[22] = '4483300877'
-const gameRows = Array.from({ length: 73 }, () => [])
+const gameRows = Array.from({ length: 73 }, (_, index) => gameRow(
+  index + 1, 'Community', '2026-07-01', 'Casual Mission', 'Vision',
+  'Igor Your Humble Servant', 3, 1, 6, 3, 180, 120, 'Nomads', 'PanOceania',
+  'Player 1', 'event-current-league', 'Casual'
+))
 for (const row of [
   gameRow(21, 'Main Man', '2026-08-01', 'Supplies', 'Lobo', 'Vision', 5, 0, 7, 2, 200, 100, 'Corregidor Jurisdictional Command', 'Nomads'),
   gameRow(27, 'Main Man', '2026-08-05', 'Looting and Sabotaging', 'Lobo', 'Igor Your Humble Servant', 5, 0, 7, 2, 200, 100, 'Corregidor Jurisdictional Command', 'PanOceania'),
@@ -105,6 +111,7 @@ for (const row of [
   game73,
   gameRow(22, 'Main Man', '2026-08-02', 'Supplies', 'Nighthawkmk2', 'Vision', 5, 0, 8, 2, 200, 100, 'Shindenbutai', 'Nomads'),
   gameRow(30, 'Main Man', '2026-08-06', 'Supremacy', 'Nighthawkmk2', 'Igor Your Humble Servant', 5, 0, 8, 2, 200, 100, 'Shindenbutai', 'PanOceania'),
+  gameRow(32, 'Proving Grounds A', '2026-07-13', 'Area of Interest', '  blitchga ', 'ZHUKOV2  ', 5, 0, 8, 2, 200, 100, 'Operations Subsection', 'Oban'),
   gameRow(50, 'Main Man', '2026-08-18', 'Firefight', 'Vision', 'Nighthawkmk2', 5, 1, 8, 4, 250, 214, 'Nomads', 'Shindenbutai'),
   gameRow(60, 'Main Man', '2026-08-20', 'Casual Mission', 'Lobo', 'Vision', 5, 0, 10, 0, 300, 0, 'Corregidor Jurisdictional Command', 'Nomads', 'Player 1', 'event-current-league', 'Casual'),
   gameRow(61, 'Proving Grounds A', '2026-08-21', 'Draw Mission', 'PG Alpha', 'PG Beta', 2, 2, 5, 5, 150, 150, 'Ariadna', 'Haqqislam', 'Draw')
@@ -119,6 +126,8 @@ const frozen = {
     ['PG Alpha', 'PG Alpha', 'Proving Grounds A', 'true'],
     ['PG Beta', 'PG Beta', 'Proving Grounds A', 'true'],
     ['PG Gamma', 'PG Gamma', 'Proving Grounds B', 'true'],
+    ['Blitchga', 'Blitchga', 'Proving Grounds A', 'true'],
+    ['Zhukov2', 'Zhukov2', 'Proving Grounds A', 'true'],
   ] },
   eventsTable: { headers: ['ID', 'Name', 'Type', 'Status', 'Commissioners', 'Owner', 'Permissions', 'Automation', 'Private Notes'], rows: [
     ['event-current-league', 'League', 'League', 'Active', 'Secret', 'Secret', 'Secret', 'Secret', 'Secret'],
@@ -136,20 +145,34 @@ sandbox.sanitizePublicGenerationGame_ = (row, index) => ({
   winner: row[18] === 'Draw' ? 'Draw' : row[18] === 'Player 2' ? row[5] : row[4], eventId: row[16], gameType: row[17],
 })
 
-const context = sandbox.buildSimplePublicGameContext_(frozen)
+const identityIndex = sandbox.buildSimplePublicPlayerIdentityIndex_(frozen)
+const context = sandbox.buildSimplePublicGameContext_(frozen, identityIndex)
 const events = sandbox.buildSimplePublicEvents_(frozen, context)
 const players = sandbox.buildSimplePublicPlayers_(frozen, events, context)
 const games = sandbox.buildSimplePublicGames_(frozen, players, events, context)
 const missions = sandbox.buildSimplePublicMissions_(context)
 const factions = sandbox.buildSimplePublicFactions_(context, players)
 const standings = sandbox.buildSimplePublicStandings_(frozen, players, context)
-assert.equal(players.length, 7)
+assert.equal(players.length, 9)
+assert.equal(games.length, 73)
+const game32 = games.find((game) => game.id === 32)
+assert.equal(game32.winner, 'Blitchga')
+assert.equal(game32.loser, 'Zhukov2')
+assert.equal(game32.winnerDisplayName, 'Blitchga')
+assert.equal(game32.loserDisplayName, 'Zhukov2')
+const playerIds = new Set(players.map((player) => player.player))
+assert.equal(context.filter((game) => playerIds.has(game.player1) && playerIds.has(game.player2)).length, 73)
+const unresolved = games.filter((game) => game.winner !== 'Draw' &&
+  (!playerIds.has(game.winner) || !playerIds.has(game.loser)))
+assert.deepEqual(unresolved, [])
 const persistedGame73 = games.find((game) => game.id === 73)
 assert.ok(persistedGame73)
 assert.equal(persistedGame73.winnerArmyListId, '3296098999')
 assert.equal(persistedGame73.loserArmyListId, '4483300877')
 assert.equal('winnerArmyCode' in persistedGame73, false)
 assert.equal('loserArmyCode' in persistedGame73, false)
+assert.equal(persistedGame73.winner, 'Lobo')
+assert.equal(persistedGame73.loser, 'Nighthawkmk2')
 assert.equal(events.length, 3)
 for (const event of events) {
   for (const forbidden of ['commissioners', 'owner', 'permissions', 'automation', 'history', 'privateNotes'])
@@ -204,6 +227,13 @@ const second = JSON.stringify({
   events: sandbox.buildSimplePublicEvents_(frozenCopy, sandbox.buildSimplePublicGameContext_(frozenCopy)),
 })
 assert.equal(first, second)
+
+const unmatched = structuredClone(frozen)
+unmatched.gamesTable.rows[31][4] = 'Missing Player'
+assert.throws(
+  () => sandbox.buildSimplePublicGameContext_(unmatched, sandbox.buildSimplePublicPlayerIdentityIndex_(unmatched)),
+  /does not resolve to the Player Registry for Game 32/
+)
 
 // The owner path is isolated and explicitly unpublished.
 assert.match(simple, /published: false/)

@@ -49,7 +49,8 @@ function buildSimplePublicGenerationCandidate_() {
     record.completedStages = ["reserved", "frozen-input"];
     writePublicGenerationBuildRecord_(storage, record);
 
-    const gameContext = buildSimplePublicGameContext_(frozen);
+    const playerIdentityIndex = buildSimplePublicPlayerIdentityIndex_(frozen);
+    const gameContext = buildSimplePublicGameContext_(frozen, playerIdentityIndex);
     const publicEvents = buildSimplePublicEvents_(frozen, gameContext);
     const publicPlayers = buildSimplePublicPlayers_(frozen, publicEvents, gameContext);
     const publicGames = buildSimplePublicGames_(frozen, publicPlayers, publicEvents, gameContext);
@@ -191,10 +192,56 @@ function simplePublicGenerationValue_(row, columns, labels) {
   return "";
 }
 
-function buildSimplePublicGameContext_(frozen) {
+function normalizeSimplePublicPlayerIdentity_(value) {
+  return typeof getCommunityPlayerKey === "function"
+    ? getCommunityPlayerKey(value)
+    : String(value || "").trim().toLowerCase();
+}
+
+function buildSimplePublicPlayerIdentityIndex_(frozen) {
+  const columns = getPlayerRegistryColumns(frozen.playersTable.headers || []);
+  const index = {};
+  (frozen.playersTable.rows || []).forEach(function(row) {
+    const player = String(row[columns.player] || "").trim();
+    if (!player) return;
+    const key = normalizeSimplePublicPlayerIdentity_(player);
+    if (index[key] && index[key].player !== player)
+      throw new Error("Frozen Player Registry contains a normalized identity collision: " + player);
+    index[key] = {
+      player: player,
+      displayName: String(columns.displayName >= 0 ? row[columns.displayName] || player : player).trim()
+    };
+  });
+  return index;
+}
+
+function resolveSimplePublicPlayerIdentity_(identityIndex, rawIdentity, gameId) {
+  const resolved = identityIndex[normalizeSimplePublicPlayerIdentity_(rawIdentity)];
+  if (!resolved)
+    throw new Error("Frozen Game player does not resolve to the Player Registry for Game " +
+      gameId + ": " + String(rawIdentity || "").trim());
+  return resolved;
+}
+
+function buildSimplePublicGameContext_(frozen, playerIdentityIndex) {
+  const identityIndex = playerIdentityIndex || buildSimplePublicPlayerIdentityIndex_(frozen);
   return (frozen.gamesTable.rows || []).map(function(row, index) {
     const game = sanitizePublicGenerationGame_(row, index + 2);
     if (!game.player1 || !game.player2) return null;
+    const rawPlayer1 = game.player1;
+    const rawPlayer2 = game.player2;
+    const player1 = resolveSimplePublicPlayerIdentity_(identityIndex, rawPlayer1, game.gameId);
+    const player2 = resolveSimplePublicPlayerIdentity_(identityIndex, rawPlayer2, game.gameId);
+    const winnerKey = normalizeSimplePublicPlayerIdentity_(game.winner);
+    game.player1 = player1.player;
+    game.player1DisplayName = player1.displayName;
+    game.player2 = player2.player;
+    game.player2DisplayName = player2.displayName;
+    if (winnerKey !== "draw") {
+      if (winnerKey === normalizeSimplePublicPlayerIdentity_(rawPlayer1)) game.winner = player1.player;
+      else if (winnerKey === normalizeSimplePublicPlayerIdentity_(rawPlayer2)) game.winner = player2.player;
+      else throw new Error("Frozen Game winner does not match either participant for Game " + game.gameId);
+    }
     game.eventId = String(game.eventId || EVENT_ENGINE_DEFAULT_EVENT_ID).trim();
     game.bestMoment = String(row[FORM.MOMENT] || "");
     game.firstTurn = String(row[FORM.FIRSTTURN] || "");
@@ -205,12 +252,14 @@ function buildSimplePublicGameContext_(frozen) {
 function buildSimplePublicGames_(frozen, players, events, gameContext) {
   const eventNames = {};
   events.forEach(function(event) { eventNames[event.id] = event.name; });
-  const displayNames = {};
-  players.forEach(function(player) { displayNames[player.player.toLowerCase()] = player.displayName; });
   return (gameContext || buildSimplePublicGameContext_(frozen)).map(function(source) {
     const winnerIsPlayer1 = source.winner === source.player1;
     const draw = source.winner === "Draw";
     const loser = draw ? "Draw" : winnerIsPlayer1 ? source.player2 : source.player1;
+    const winnerDisplayName = winnerIsPlayer1
+      ? source.player1DisplayName : source.player2DisplayName;
+    const loserDisplayName = winnerIsPlayer1
+      ? source.player2DisplayName : source.player1DisplayName;
     const winnerFaction = draw ? source.player1Faction : winnerIsPlayer1 ? source.player1Faction : source.player2Faction;
     const loserFaction = draw ? source.player2Faction : winnerIsPlayer1 ? source.player2Faction : source.player1Faction;
     const winnerArmyListId = draw ? source.player1ArmyListId : winnerIsPlayer1 ? source.player1ArmyListId : source.player2ArmyListId;
@@ -223,9 +272,9 @@ function buildSimplePublicGames_(frozen, players, events, gameContext) {
       date: source.date,
       division: source.division,
       winner: source.winner,
-      winnerDisplayName: draw ? "Draw" : displayNames[source.winner.toLowerCase()] || source.winner,
+      winnerDisplayName: draw ? "Draw" : winnerDisplayName,
       loser: loser,
-      loserDisplayName: draw ? "Draw" : displayNames[loser.toLowerCase()] || loser,
+      loserDisplayName: draw ? "Draw" : loserDisplayName,
       winnerFaction: winnerFaction,
       loserFaction: loserFaction,
       mission: source.mission,
