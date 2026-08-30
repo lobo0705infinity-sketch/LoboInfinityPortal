@@ -13,14 +13,14 @@ export default async function handler(request, response) {
     response.status(400).json({ error: 'A valid public detail section is required.', success: false })
     return
   }
-  const startedAt = performance.now()
-  const configuredFileId = String(process.env.PUBLIC_DETAIL_PROJECTION_FILE_ID || '').trim()
-  const fileId = configuredFileId || await bootstrapProjectionFileId(section)
-  if (!fileId) {
-    response.status(503).json({ error: 'Public detail projection is not configured.', success: false })
-    return
-  }
   try {
+    const startedAt = performance.now()
+    const configuredFileId = String(process.env.PUBLIC_DETAIL_PROJECTION_FILE_ID || '').trim()
+    const fileId = configuredFileId || await bootstrapProjectionFileId(section)
+    if (!fileId) {
+      response.status(503).json({ error: 'Public detail projection is not configured.', success: false })
+      return
+    }
     const sourceStartedAt = performance.now()
     const source = await fetch(`https://drive.usercontent.google.com/download?id=${encodeURIComponent(fileId)}&export=download&confirm=t`, { redirect: 'follow' })
     const sourceMs = performance.now() - sourceStartedAt
@@ -47,7 +47,12 @@ async function bootstrapProjectionFileId(section) {
   const workerToken = String(process.env.ARMY_INTELLIGENCE_WORKER_TOKEN || '').trim()
   if (!apiUrl || !workerToken) return ''
   const body = new URLSearchParams({ action: 'refreshPublicDetailProjection', section, workerToken })
-  const upstream = await fetch(apiUrl, { body, method: 'POST', redirect: 'follow' })
+  const upstream = await fetch(apiUrl, {
+    body,
+    method: 'POST',
+    redirect: 'follow',
+    headers: { 'content-type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+  })
   const payload = await upstream.json()
   if (!upstream.ok || payload?.success !== true) throw new Error(payload?.error || `Projection bootstrap returned HTTP ${upstream.status}.`)
   return String(payload.fileId || '').trim()
