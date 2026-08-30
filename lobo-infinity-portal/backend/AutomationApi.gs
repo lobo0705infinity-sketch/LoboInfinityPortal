@@ -691,15 +691,19 @@ function markCanonicalRebuildRecoveryProjectionsDirty_() {
 }
 
 function runPreparedProjectionRecoveryMaintenance() {
-  markCanonicalRebuildRecoveryProjectionsDirty_();
-  const maintenance = JSON.parse(
-    processAutomationQueueBatch().getContent()
-  );
+  const marked = markPublicProjectionRecoveryBatch_([
+    { propertyName: PUBLIC_ANALYTICS_DIRTY_EVENTS_PROPERTY, keys: [EVENT_ENGINE_DEFAULT_EVENT_ID] },
+    { propertyName: PUBLIC_PLAYERS_PROJECTION_DIRTY_PROPERTY, keys: ["players"] },
+    { propertyName: PUBLIC_LEAGUE_WORKSPACE_PROJECTION_DIRTY_PROPERTY, keys: ["dashboard"] }
+  ]);
   const result = {
-    success: maintenance.success !== false,
+    success: true,
     recoveryRequested: true,
-    maintenanceRun: true,
-    maintenance: maintenance,
+    maintenanceRun: false,
+    obligationsMarked: Object.keys(marked),
+    publicationsAttempted: 0,
+    publicationsSucceeded: 0,
+    publicationsPending: 3,
     obligations: getPreparedProjectionReliabilityStatus_()
   };
   Logger.log(JSON.stringify(result));

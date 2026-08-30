@@ -6,8 +6,11 @@ const values = new Map()
 const properties = {
   getProperty: (key) => values.get(key) ?? null,
   setProperty: (key, value) => values.set(key, String(value)),
+  setProperties: (entries) => Object.entries(entries).forEach(([key, value]) => values.set(key, String(value))),
   deleteProperty: (key) => values.delete(key),
 }
+let lockAvailable = true
+let lockAttempts = 0
 const context = {
   console,
   Date,
@@ -17,10 +20,35 @@ const context = {
   Object,
   String,
   PropertiesService: { getScriptProperties: () => properties },
-  LockService: { getScriptLock: () => ({ waitLock() {}, releaseLock() {} }) },
+  LockService: { getScriptLock: () => ({
+    waitLock() {},
+    tryLock() { lockAttempts += 1; return lockAvailable },
+    releaseLock() {},
+  }) },
 }
 vm.createContext(context)
 vm.runInContext(fs.readFileSync('backend/PublicProjectionReliability.gs', 'utf8'), context)
+
+// Owner recovery establishes multiple projection families under one short lock.
+context.markPublicProjectionRecoveryBatch_([
+  { propertyName: 'PLAYERS', keys: ['players'] },
+  { propertyName: 'ANALYTICS', keys: ['league'] },
+  { propertyName: 'LEAGUE', keys: ['dashboard'] },
+])
+assert.equal(lockAttempts, 1)
+assert.equal(context.countPendingPublicProjectionObligations_('PLAYERS'), 1)
+assert.equal(context.countPendingPublicProjectionObligations_('ANALYTICS'), 1)
+assert.equal(context.countPendingPublicProjectionObligations_('LEAGUE'), 1)
+
+// A busy lock fails once and cannot partially mark a batch.
+lockAvailable = false
+assert.throws(() => context.markPublicProjectionRecoveryBatch_([
+  { propertyName: 'BUSY_A', keys: ['a'] },
+  { propertyName: 'BUSY_B', keys: ['b'] },
+]), /lock is busy/)
+assert.equal(values.has('BUSY_A'), false)
+assert.equal(values.has('BUSY_B'), false)
+lockAvailable = true
 
 const key = 'TEST_PROJECTION_DIRTY'
 context.markPublicProjectionRequired_(key, ['players'])

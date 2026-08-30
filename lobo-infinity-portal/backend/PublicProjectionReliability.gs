@@ -5,23 +5,51 @@
 function markPublicProjectionRequired_(propertyName, keys) {
   return withPublicProjectionStateLock_(function() {
     const state = readPublicProjectionState_(propertyName);
-    const now = new Date().toISOString();
-    (keys || ["default"]).forEach(function(key) {
-      const name = String(key || "default");
-      const current = state.obligations[name] || {};
-      const generation = Math.max(
-        Date.now(),
-        Number(current.requiredGeneration) + 1 || 1,
-        Number(current.lastSuccessGeneration) + 1 || 1
-      );
-      state.obligations[name] = Object.assign({}, current, {
-        dirty: true,
-        requiredAt: now,
-        requiredGeneration: generation
-      });
-    });
+    markPublicProjectionStateRequired_(state, keys, new Date().toISOString());
     writePublicProjectionState_(propertyName, state);
     return state;
+  });
+}
+
+function markPublicProjectionRecoveryBatch_(targets) {
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(1000))
+    throw new Error("Prepared projection recovery lock is busy; no obligations were changed.");
+  try {
+    const updates = {};
+    const states = {};
+    const now = new Date().toISOString();
+    (targets || []).forEach(function(target) {
+      const propertyName = String(target.propertyName || "");
+      if (!propertyName)
+        throw new Error("Prepared projection recovery target is missing a property name.");
+      const state = readPublicProjectionState_(propertyName);
+      markPublicProjectionStateRequired_(state, target.keys, now);
+      states[propertyName] = state;
+      updates[propertyName] = JSON.stringify(state);
+    });
+    PropertiesService.getScriptProperties().setProperties(updates, false);
+    return states;
+  }
+  finally {
+    lock.releaseLock();
+  }
+}
+
+function markPublicProjectionStateRequired_(state, keys, now) {
+  (keys || ["default"]).forEach(function(key) {
+    const name = String(key || "default");
+    const current = state.obligations[name] || {};
+    const generation = Math.max(
+      Date.now(),
+      Number(current.requiredGeneration) + 1 || 1,
+      Number(current.lastSuccessGeneration) + 1 || 1
+    );
+    state.obligations[name] = Object.assign({}, current, {
+      dirty: true,
+      requiredAt: now,
+      requiredGeneration: generation
+    });
   });
 }
 
