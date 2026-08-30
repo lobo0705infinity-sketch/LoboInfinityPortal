@@ -115,7 +115,10 @@ function buildPublicDetailFactionProfiles_() {
   const summaries = buildFactionApiSummaries();
   const leagueGames = getLeagueData();
   const recentGames = getAllRecentGameObjects();
-  const armyLists = getArmyListObjects();
+  const armyListPayload = readArmyListsReadModelPayload();
+  const armyLists = armyListPayload && Array.isArray(armyListPayload.lists)
+    ? armyListPayload.lists
+    : [];
   const profiles = {};
   summaries.forEach(function(faction) {
     const factionGames = getFactionEngineGames(faction.name, leagueGames);
