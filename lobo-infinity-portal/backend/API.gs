@@ -1546,6 +1546,11 @@ function handleApiPost(e, action) {
         return processAutomationQueueBatch(e);
       });
 
+    case "requestCanonicalRebuildRecovery":
+      return requireArmyIntelligenceWorkerOrPermission(e, function() {
+        return requestCanonicalRebuildRecovery(e);
+      });
+
     case "installArmyIntelligenceScheduler":
       return requireArmyIntelligenceWorkerOrPermission(e, function() {
         return jsonOutput(installArmyIntelligenceRefreshScheduler(e));

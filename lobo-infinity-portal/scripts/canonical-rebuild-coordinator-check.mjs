@@ -17,6 +17,7 @@ await import(`data:text/javascript;base64,${Buffer.from(coordinatorAwareRegressi
 const failureLog = []
 let rebuildCalls = 0
 let rebuildShouldFail = false
+const scriptProperties = new Map()
 
 class FixedDate extends Date {
   constructor(...args) {
@@ -27,6 +28,15 @@ class FixedDate extends Date {
 const context = vm.createContext({
   Date: FixedDate,
   Logger: { log() {} },
+  LockService: {
+    getScriptLock: () => ({ waitLock() {}, releaseLock() {} }),
+  },
+  PropertiesService: {
+    getScriptProperties: () => ({
+      getProperty: (key) => scriptProperties.get(key) ?? null,
+      setProperty: (key, value) => scriptProperties.set(key, value),
+    }),
+  },
   rebuildEverything() {
     rebuildCalls += 1
     if (rebuildShouldFail) throw new Error('Controlled rebuild failure')

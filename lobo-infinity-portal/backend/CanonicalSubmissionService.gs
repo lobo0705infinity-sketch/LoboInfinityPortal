@@ -59,6 +59,9 @@ function canonicalSubmitGoogleFormGame_(command, workflow) {
   const row = buildCanonicalGameRow(
     canonicalSubmissionBuildGoogleFormGameCommand_(submission)
   );
+  const rebuildObligation = typeof markCanonicalRebuildRequired_ === "function"
+    ? markCanonicalRebuildRequired_({ reason: "canonical-game-append", workflow: workflow })
+    : null;
   sheet.appendRow(row);
   const targetRow = sheet.getLastRow();
 
@@ -73,7 +76,8 @@ function canonicalSubmitGoogleFormGame_(command, workflow) {
     responseKey: responseKey,
     workflow: workflow,
     targetRow: targetRow,
-    logMissing: true
+    logMissing: true,
+    rebuildObligation: rebuildObligation
   });
 
   if (workflow === "team-tournament")
@@ -112,6 +116,9 @@ function canonicalSubmitPortalGame_(command, workflow) {
     return canonicalSubmissionFailure_("Result datastore was not found.", validation);
 
   ensureResultSubmissionArmyListHeaders(sheet);
+  const rebuildObligation = typeof markCanonicalRebuildRequired_ === "function"
+    ? markCanonicalRebuildRequired_({ reason: "canonical-game-append", workflow: workflow })
+    : null;
   sheet.appendRow(row);
   const targetRow = sheet.getLastRow();
 
@@ -128,7 +135,8 @@ function canonicalSubmitPortalGame_(command, workflow) {
   coordinateCanonicalRebuild({
     workflow: workflow,
     targetRow: null,
-    logMissing: false
+    logMissing: false,
+    rebuildObligation: rebuildObligation
   });
 
   invalidateResultSubmissionCaches();
@@ -209,6 +217,9 @@ function canonicalSubmitPortalTeamTournamentGame_(command) {
   const row = buildCanonicalGameRow(
     canonicalSubmissionBuildGoogleFormGameCommand_(submission)
   );
+  const rebuildObligation = typeof markCanonicalRebuildRequired_ === "function"
+    ? markCanonicalRebuildRequired_({ reason: "canonical-game-append", workflow: "team-tournament" })
+    : null;
   sheet.appendRow(row);
   const targetRow = sheet.getLastRow();
 
@@ -220,7 +231,8 @@ function canonicalSubmitPortalTeamTournamentGame_(command) {
   coordinateCanonicalRebuild({
     workflow: "team-tournament",
     targetRow: targetRow,
-    logMissing: true
+    logMissing: true,
+    rebuildObligation: rebuildObligation
   });
 
   invalidateTeamTournamentRuntimeCache(validation.value.eventId);

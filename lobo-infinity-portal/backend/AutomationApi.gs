@@ -592,6 +592,11 @@ function hasRecentAutomationEventId_(eventId) {
 
 function processAutomationQueueBatch(e) {
 
+  const canonicalRebuildRecovery =
+    typeof recoverPendingCanonicalRebuildBestEffort_ === "function"
+      ? recoverPendingCanonicalRebuildBestEffort_()
+      : { attempted: false, required: false, success: true };
+
   const parameters = getApiParameters(e);
   const requestedLimit = Number(getApiParameter(parameters, "batchLimit"));
   const batchLimit = Math.max(
@@ -650,6 +655,7 @@ function processAutomationQueueBatch(e) {
       : { refreshed: false, success: true };
 
   return jsonOutput({
+    canonicalRebuildRecovery: canonicalRebuildRecovery,
     analyticsProjection: analyticsProjection,
     armyWorkspaceProjection: armyWorkspaceProjection,
     detailProjection: detailProjection,
@@ -663,6 +669,19 @@ function processAutomationQueueBatch(e) {
     success: true
   });
 
+}
+
+function markCanonicalRebuildRecoveryProjectionsDirty_() {
+  if (typeof markPublicAnalyticsProjectionDirty_ === "function")
+    markPublicAnalyticsProjectionDirty_(EVENT_ENGINE_DEFAULT_EVENT_ID);
+  if (typeof markPublicPlayersProjectionDirty_ === "function")
+    markPublicPlayersProjectionDirty_();
+  if (typeof markPublicLeagueWorkspaceProjectionDirty_ === "function")
+    markPublicLeagueWorkspaceProjectionDirty_();
+  if (typeof markPublicArmyWorkspaceProjectionDirty_ === "function")
+    markPublicArmyWorkspaceProjectionDirty_(["armyLists"]);
+  if (typeof markPublicDetailProjectionDirty_ === "function")
+    markPublicDetailProjectionDirty_(["games", "players", "factions", "missions"]);
 }
 
 function selectPendingAutomationQueueItems_(limit) {
