@@ -25,15 +25,7 @@ function markPublicArmyWorkspaceProjectionDirty_(sections) {
     const requested = Array.isArray(sections) && sections.length
       ? sections
       : ["armyLists", "intelligence"];
-    const properties = PropertiesService.getScriptProperties();
-    const existing = JSON.parse(properties.getProperty(PUBLIC_ARMY_WORKSPACE_DIRTY_PROPERTY) || "[]");
-    const values = existing.concat(requested).filter(function(value, index, all) {
-      return all.indexOf(value) === index;
-    });
-    properties.setProperty(
-      PUBLIC_ARMY_WORKSPACE_DIRTY_PROPERTY,
-      JSON.stringify(values)
-    );
+    markPublicProjectionRequired_(PUBLIC_ARMY_WORKSPACE_DIRTY_PROPERTY, requested);
   }
   catch (error) {
     console.error("PUBLIC_ARMY_WORKSPACE_DIRTY_MARK_FAILED " + String(error));
@@ -41,32 +33,31 @@ function markPublicArmyWorkspaceProjectionDirty_(sections) {
 }
 
 function publishDirtyPublicArmyWorkspaceProjectionBestEffort_() {
-  const properties = PropertiesService.getScriptProperties();
-  const dirty = JSON.parse(properties.getProperty(PUBLIC_ARMY_WORKSPACE_DIRTY_PROPERTY) || "[]");
-  if (!dirty.length) return { refreshed: false, success: true };
+  const obligation = getNextPublicProjectionObligation_(PUBLIC_ARMY_WORKSPACE_DIRTY_PROPERTY);
+  if (!obligation) return { refreshed: false, success: true };
   try {
-    const section = dirty.shift();
-    const result = publishPublicArmyWorkspaceProjectionSection_(section);
-    if (dirty.length) properties.setProperty(PUBLIC_ARMY_WORKSPACE_DIRTY_PROPERTY, JSON.stringify(dirty));
-    else properties.deleteProperty(PUBLIC_ARMY_WORKSPACE_DIRTY_PROPERTY);
-    return { refreshed: true, generatedAt: result.generatedAt, section: section, remaining: dirty.length, success: true };
+    beginPublicProjectionAttempt_(PUBLIC_ARMY_WORKSPACE_DIRTY_PROPERTY, obligation);
+    const result = publishPublicArmyWorkspaceProjectionSection_(obligation.key, obligation.requiredGeneration);
+    const acknowledgement = acknowledgePublicProjection_(PUBLIC_ARMY_WORKSPACE_DIRTY_PROPERTY, obligation, result);
+    return { acknowledgement: acknowledgement, refreshed: true, generatedAt: result.generatedAt, section: obligation.key, remaining: countPendingPublicProjectionObligations_(PUBLIC_ARMY_WORKSPACE_DIRTY_PROPERTY), success: true };
   }
   catch (error) {
+    failPublicProjectionAttempt_(PUBLIC_ARMY_WORKSPACE_DIRTY_PROPERTY, obligation, "publication", error);
     console.error("PUBLIC_ARMY_WORKSPACE_REFRESH_FAILED " + String(error));
     return { refreshed: false, success: false, error: String(error && error.message || error) };
   }
 }
 
-function publishPublicArmyWorkspaceProjectionSection_(section) {
-  if (section === "armyLists") return publishPublicArmyListsProjection_();
-  if (section === "intelligence") return publishPublicArmyIntelligenceProjections_();
+function publishPublicArmyWorkspaceProjectionSection_(section, generation) {
+  if (section === "armyLists") return publishPublicArmyListsProjection_(generation);
+  if (section === "intelligence") return publishPublicArmyIntelligenceProjections_(generation);
   throw new Error("Invalid public Army workspace projection section.");
 }
 
-function publishPublicArmyListsProjection_() {
+function publishPublicArmyListsProjection_(generation) {
   const parse = function(output) { return JSON.parse(output.getContent()); };
   const generatedAt = new Date().toISOString();
-  const artifact = {
+  let artifact = {
     schemaVersion: 1,
     generatedAt: generatedAt,
     games: parse(getRecentGames({ parameter: {} })),
@@ -78,12 +69,12 @@ function publishPublicArmyListsProjection_() {
     PUBLIC_ARMY_LISTS_PROJECTION_FILE_PROPERTY,
     "Lobo Infinity Portal - Public Army Lists Projection.json"
   );
-  file.setContent(JSON.stringify(artifact));
+  artifact = writeAndValidatePublicProjectionArtifact_(file, artifact, generation);
   file.setDescription("Prepared public Army Lists inputs. Canonical data remains in Apps Script and the Game Engine.");
   return artifact;
 }
 
-function publishPublicArmyIntelligenceProjections_() {
+function publishPublicArmyIntelligenceProjections_(generation) {
   const readModel = readArmyIntelligenceReadModelPayload();
   if (!readModel) throw new Error("Army Intelligence read model is unavailable.");
   const generatedAt = new Date().toISOString();
@@ -92,8 +83,8 @@ function publishPublicArmyIntelligenceProjections_() {
   summary.options.forEach(function(option) {
     details[option] = buildArmyIntelligencePublicFactionProjection(readModel, option);
   });
-  const detailArtifact = { schemaVersion: 1, generatedAt: generatedAt, details: details };
-  const summaryArtifact = { schemaVersion: 1, generatedAt: generatedAt, projection: summary };
+  let detailArtifact = { schemaVersion: 1, generatedAt: generatedAt, details: details };
+  let summaryArtifact = { schemaVersion: 1, generatedAt: generatedAt, projection: summary };
   const detailFile = getOrCreatePublicArmyProjectionFile_(
     PUBLIC_ARMY_INTELLIGENCE_DETAIL_FILE_PROPERTY,
     "Lobo Infinity Portal - Public Army Intelligence Detail.json"
@@ -102,8 +93,8 @@ function publishPublicArmyIntelligenceProjections_() {
     PUBLIC_ARMY_INTELLIGENCE_SUMMARY_FILE_PROPERTY,
     "Lobo Infinity Portal - Public Army Intelligence Summary.json"
   );
-  detailFile.setContent(JSON.stringify(detailArtifact));
-  summaryFile.setContent(JSON.stringify(summaryArtifact));
+  detailArtifact = writeAndValidatePublicProjectionArtifact_(detailFile, detailArtifact, generation);
+  summaryArtifact = writeAndValidatePublicProjectionArtifact_(summaryFile, summaryArtifact, generation);
   detailFile.setDescription("Prepared public Army Intelligence detail. No decoding occurs during public reads.");
   summaryFile.setDescription("Prepared public Army Intelligence summary. No detailed model is read during public navigation.");
   return summaryArtifact;

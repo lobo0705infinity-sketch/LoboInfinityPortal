@@ -17,7 +17,7 @@ assert.match(backend, /buildPublicAnalyticsFactions_\(getEventAnalyticsFactions\
 assert.match(backend, /buildPublicAnalyticsMissions_\(getEventAnalyticsMissions\(context\)\)/)
 assert.match(backend, /buildPublicAnalyticsRecordBook_\(buildPublicAnalyticsRecords_\(context\)\)/)
 assert.doesNotMatch(backend, /Army Code|email|commissioner|token/i)
-assert.match(backend, /setContent\(json\)/)
+assert.match(backend, /writeAndValidatePublicProjectionArtifact_/)
 assert.match(backend, /validatePublicAnalyticsProjection_/)
 assert.match(backend, /value\.eventId !== eventId/)
 assert.match(api, /PUBLIC_ANALYTICS_PROJECTION_FILE_ID/)

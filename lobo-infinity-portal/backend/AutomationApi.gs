@@ -634,6 +634,11 @@ function processAutomationQueueBatch(e) {
       ? publishDirtyPublicTeamTournamentProjectionBestEffort_()
       : { refreshed: false, success: true };
 
+  const top40Projection =
+    typeof publishDirtyTop40PublicProjectionBestEffort_ === "function"
+      ? publishDirtyTop40PublicProjectionBestEffort_()
+      : { refreshed: false, success: true };
+
   const playersProjection =
     typeof publishDirtyPublicPlayersProjectionBestEffort_ === "function"
       ? publishDirtyPublicPlayersProjectionBestEffort_()
@@ -666,6 +671,7 @@ function processAutomationQueueBatch(e) {
     leagueWorkspaceProjection: leagueWorkspaceProjection,
     playersProjection: playersProjection,
     teamTournamentProjection: teamTournamentProjection,
+    top40Projection: top40Projection,
     success: true
   });
 

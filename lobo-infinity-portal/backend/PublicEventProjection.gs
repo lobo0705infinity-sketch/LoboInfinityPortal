@@ -11,6 +11,8 @@ const TOP40_PUBLIC_PROJECTION_FILE_PROPERTY =
   "TOP40_PUBLIC_PROJECTION_FILE_ID";
 const TOP40_PUBLIC_PROJECTION_FILE_NAME =
   "Lobo Infinity Portal - Top 40 Public Projection.json";
+const TOP40_PUBLIC_PROJECTION_DIRTY_PROPERTY =
+  "TOP40_PUBLIC_PROJECTION_DIRTY";
 
 function refreshTop40PublicProjection(e) {
   return requireArmyIntelligenceWorkerOrPermission(e, function() {
@@ -37,10 +39,15 @@ function publishTop40PublicProjectionBestEffort_(eventId) {
   if (String(eventId || "") !== TOP40_PUBLIC_EVENT_ID)
     return;
 
+  markPublicProjectionRequired_(TOP40_PUBLIC_PROJECTION_DIRTY_PROPERTY, [TOP40_PUBLIC_EVENT_ID]);
+  const obligation = getNextPublicProjectionObligation_(TOP40_PUBLIC_PROJECTION_DIRTY_PROPERTY);
   try {
-    publishTop40PublicProjection_();
+    beginPublicProjectionAttempt_(TOP40_PUBLIC_PROJECTION_DIRTY_PROPERTY, obligation);
+    const projection = publishTop40PublicProjection_(obligation.requiredGeneration);
+    acknowledgePublicProjection_(TOP40_PUBLIC_PROJECTION_DIRTY_PROPERTY, obligation, projection);
   }
   catch (error) {
+    failPublicProjectionAttempt_(TOP40_PUBLIC_PROJECTION_DIRTY_PROPERTY, obligation, "publication", error);
     console.error(
       "TOP40_PUBLIC_PROJECTION_REFRESH_FAILED " +
       JSON.stringify({
@@ -51,17 +58,31 @@ function publishTop40PublicProjectionBestEffort_(eventId) {
   }
 }
 
-function publishTop40PublicProjection_() {
-  const projection = buildTop40PublicProjection_();
+function publishDirtyTop40PublicProjectionBestEffort_() {
+  const obligation = getNextPublicProjectionObligation_(TOP40_PUBLIC_PROJECTION_DIRTY_PROPERTY);
+  if (!obligation) return { refreshed: false, success: true };
+  try {
+    beginPublicProjectionAttempt_(TOP40_PUBLIC_PROJECTION_DIRTY_PROPERTY, obligation);
+    const projection = publishTop40PublicProjection_(obligation.requiredGeneration);
+    const acknowledgement = acknowledgePublicProjection_(TOP40_PUBLIC_PROJECTION_DIRTY_PROPERTY, obligation, projection);
+    return { acknowledgement: acknowledgement, refreshed: true, generatedAt: projection.generatedAt, success: true };
+  }
+  catch (error) {
+    failPublicProjectionAttempt_(TOP40_PUBLIC_PROJECTION_DIRTY_PROPERTY, obligation, "publication", error);
+    return { error: String(error && error.message || error), refreshed: false, success: false };
+  }
+}
+
+function publishTop40PublicProjection_(generation) {
+  let projection = buildTop40PublicProjection_();
   validateTop40PublicProjection_(projection);
-  const json = JSON.stringify(projection);
   const file = getOrCreateTop40PublicProjectionFile_();
 
   // setContent replaces the artifact only after the complete projection
   // has been built and validated, preserving the last known good file on
   // any earlier failure. Canonical callers already hold their own mutation
   // locks where required; the projection must never acquire a nested lock.
-  file.setContent(json);
+  projection = writeAndValidatePublicProjectionArtifact_(file, projection, generation);
   file.setDescription(
     "Prepared public Top 40 event projection. Canonical data remains in the Lobo Apps Script project."
   );

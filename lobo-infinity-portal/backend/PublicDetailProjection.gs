@@ -27,12 +27,8 @@ function markPublicDetailProjectionDirty_(sections) {
       : PUBLIC_DETAIL_PROJECTION_SECTIONS;
     if (requested.indexOf("players") !== -1)
       requested = requested.filter(function(value) { return value !== "players"; }).concat(PUBLIC_DETAIL_PLAYER_CHUNKS);
-    const properties = PropertiesService.getScriptProperties();
-    const existing = JSON.parse(properties.getProperty(PUBLIC_DETAIL_PROJECTION_DIRTY_PROPERTY) || "[]");
-    const dirty = existing.concat(requested).filter(function(value, index, values) {
-      return PUBLIC_DETAIL_PROJECTION_SECTIONS.indexOf(value) !== -1 && values.indexOf(value) === index;
-    });
-    properties.setProperty(PUBLIC_DETAIL_PROJECTION_DIRTY_PROPERTY, JSON.stringify(dirty));
+    requested = requested.filter(function(value) { return PUBLIC_DETAIL_PROJECTION_SECTIONS.indexOf(value) !== -1; });
+    markPublicProjectionRequired_(PUBLIC_DETAIL_PROJECTION_DIRTY_PROPERTY, requested);
   }
   catch (error) {
     console.error("PUBLIC_DETAIL_DIRTY_MARK_FAILED " + String(error));
@@ -40,23 +36,22 @@ function markPublicDetailProjectionDirty_(sections) {
 }
 
 function publishDirtyPublicDetailProjectionBestEffort_() {
-  const properties = PropertiesService.getScriptProperties();
-  const dirty = JSON.parse(properties.getProperty(PUBLIC_DETAIL_PROJECTION_DIRTY_PROPERTY) || "[]");
-  if (!dirty.length) return { refreshed: false, success: true };
+  const obligation = getNextPublicProjectionObligation_(PUBLIC_DETAIL_PROJECTION_DIRTY_PROPERTY);
+  if (!obligation) return { refreshed: false, success: true };
   try {
-    const section = dirty.shift();
-    const artifact = publishPublicDetailProjectionSection_(section);
-    if (dirty.length) properties.setProperty(PUBLIC_DETAIL_PROJECTION_DIRTY_PROPERTY, JSON.stringify(dirty));
-    else properties.deleteProperty(PUBLIC_DETAIL_PROJECTION_DIRTY_PROPERTY);
-    return { refreshed: true, generatedAt: artifact.generatedAt, section: section, remaining: dirty.length, success: true };
+    beginPublicProjectionAttempt_(PUBLIC_DETAIL_PROJECTION_DIRTY_PROPERTY, obligation);
+    const artifact = publishPublicDetailProjectionSection_(obligation.key, obligation.requiredGeneration);
+    const acknowledgement = acknowledgePublicProjection_(PUBLIC_DETAIL_PROJECTION_DIRTY_PROPERTY, obligation, artifact);
+    return { acknowledgement: acknowledgement, refreshed: true, generatedAt: artifact.generatedAt, section: obligation.key, remaining: countPendingPublicProjectionObligations_(PUBLIC_DETAIL_PROJECTION_DIRTY_PROPERTY), success: true };
   }
   catch (error) {
+    failPublicProjectionAttempt_(PUBLIC_DETAIL_PROJECTION_DIRTY_PROPERTY, obligation, "publication", error);
     console.error("PUBLIC_DETAIL_REFRESH_FAILED " + String(error));
     return { refreshed: false, success: false, error: String(error && error.message || error) };
   }
 }
 
-function publishPublicDetailProjectionSection_(section) {
+function publishPublicDetailProjectionSection_(section, generation) {
   if (PUBLIC_DETAIL_PROJECTION_SECTIONS.indexOf(section) === -1)
     throw new Error("Invalid public detail projection section.");
 
@@ -83,7 +78,7 @@ function publishPublicDetailProjectionSection_(section) {
   if (section === "missions") artifact.missions = buildPublicDetailMissionProfiles_();
 
   validatePublicDetailProjectionSection_(artifact, section);
-  file.setContent(JSON.stringify(artifact));
+  artifact = writeAndValidatePublicProjectionArtifact_(file, artifact, generation);
   file.setDescription("Prepared public detail/community data. Canonical data remains in Apps Script and the Game Engine.");
   return artifact;
 }

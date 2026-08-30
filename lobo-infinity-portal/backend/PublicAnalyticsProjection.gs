@@ -27,16 +27,8 @@ function refreshPublicAnalyticsProjection(e) {
 
 function markPublicAnalyticsProjectionDirty_(eventId) {
   try {
-    const properties = PropertiesService.getScriptProperties();
-    const current = parsePublicAnalyticsDirtyEvents_(
-      properties.getProperty(PUBLIC_ANALYTICS_DIRTY_EVENTS_PROPERTY)
-    );
     const resolved = getEventAnalyticsString(eventId) || EVENT_ENGINE_DEFAULT_EVENT_ID;
-    current[resolved] = true;
-    properties.setProperty(
-      PUBLIC_ANALYTICS_DIRTY_EVENTS_PROPERTY,
-      JSON.stringify(Object.keys(current).sort())
-    );
+    markPublicProjectionRequired_(PUBLIC_ANALYTICS_DIRTY_EVENTS_PROPERTY, [resolved]);
   }
   catch (error) {
     console.error("PUBLIC_ANALYTICS_DIRTY_MARK_FAILED " + String(error));
@@ -44,28 +36,27 @@ function markPublicAnalyticsProjectionDirty_(eventId) {
 }
 
 function publishDirtyPublicAnalyticsProjectionsBestEffort_() {
-  const properties = PropertiesService.getScriptProperties();
-  const dirty = parsePublicAnalyticsDirtyEvents_(
-    properties.getProperty(PUBLIC_ANALYTICS_DIRTY_EVENTS_PROPERTY)
-  );
-
-  if (Object.keys(dirty).length === 0)
+  const obligation = getNextPublicProjectionObligation_(PUBLIC_ANALYTICS_DIRTY_EVENTS_PROPERTY);
+  if (!obligation)
     return { refreshed: false, success: true };
 
   try {
-    const projection = publishPublicAnalyticsProjection_();
-    properties.deleteProperty(PUBLIC_ANALYTICS_DIRTY_EVENTS_PROPERTY);
+    beginPublicProjectionAttempt_(PUBLIC_ANALYTICS_DIRTY_EVENTS_PROPERTY, obligation);
+    const projection = publishPublicAnalyticsProjection_(obligation.requiredGeneration);
+    const acknowledgement = acknowledgePublicProjection_(PUBLIC_ANALYTICS_DIRTY_EVENTS_PROPERTY, obligation, projection);
     return {
       refreshed: true,
+      acknowledgement: acknowledgement,
       generatedAt: projection.generatedAt,
       success: true
     };
   }
   catch (error) {
+    failPublicProjectionAttempt_(PUBLIC_ANALYTICS_DIRTY_EVENTS_PROPERTY, obligation, "publication", error);
     console.error(
       "PUBLIC_ANALYTICS_PROJECTION_REFRESH_FAILED " +
       JSON.stringify({
-        eventIds: Object.keys(dirty),
+        eventIds: [obligation.key],
         message: error && error.message ? String(error.message) : String(error)
       })
     );
@@ -77,13 +68,11 @@ function publishDirtyPublicAnalyticsProjectionsBestEffort_() {
   }
 }
 
-function publishPublicAnalyticsProjection_() {
-  const projection = buildPublicAnalyticsProjection_();
+function publishPublicAnalyticsProjection_(generation) {
+  let projection = buildPublicAnalyticsProjection_();
   validatePublicAnalyticsProjection_(projection);
-  const json = JSON.stringify(projection);
   const file = getOrCreatePublicAnalyticsProjectionFile_();
-
-  file.setContent(json);
+  projection = writeAndValidatePublicProjectionArtifact_(file, projection, generation);
   file.setDescription(
     "Prepared public Statistics projection. Canonical data remains in the Lobo Apps Script project."
   );

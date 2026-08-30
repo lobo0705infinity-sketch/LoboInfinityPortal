@@ -11,7 +11,7 @@ const bracket = read('backend/DoubleEliminationBracketApi.gs')
 
 assert.match(backend, /TOP40_PUBLIC_EVENT_ID = "event-lobo-s-american-top-40"/)
 assert.match(backend, /DriveApp\.createFile/)
-assert.match(backend, /setContent\(json\)/)
+assert.match(backend, /writeAndValidatePublicProjectionArtifact_/)
 assert.match(backend, /validateTop40PublicProjection_/)
 assert.match(backend, /home\.eligibleOpponents = \[\]/)
 assert.match(backend, /registrationStatus: "Not Registered"/)

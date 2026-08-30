@@ -12,7 +12,7 @@ const correction = read('backend/GameScoreCorrectionApi.gs')
 
 assert.match(backend, /getTeamTournament\(\{[\s\S]*?eventId: PUBLIC_TEAM_TOURNAMENT_EVENT_ID/)
 assert.match(backend, /validatePublicTeamTournamentProjection_/)
-assert.match(backend, /file\.setContent\(JSON\.stringify\(projection\)\)/)
+assert.match(backend, /writeAndValidatePublicProjectionArtifact_/)
 assert.match(backend, /tournament\.registration\.currentPlayer = null/)
 assert.match(backend, /tournament\.invitations = \[\]/)
 assert.match(backend, /delete result\.armyCode/)

@@ -1550,6 +1550,10 @@ function handleApiPost(e, action) {
       return requireArmyIntelligenceWorkerOrPermission(e, function() {
         return requestCanonicalRebuildRecovery(e);
       });
+    case "requestPreparedProjectionRecovery":
+      return requestPreparedProjectionRecovery(e);
+    case "getPreparedProjectionReliabilityStatus":
+      return getPreparedProjectionReliabilityStatus(e);
 
     case "installArmyIntelligenceScheduler":
       return requireArmyIntelligenceWorkerOrPermission(e, function() {

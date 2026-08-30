@@ -128,6 +128,8 @@ const endpointPolicy = {
   installArmyIntelligenceScheduler: { authRequired: true, userScoped: false },
   processAutomationQueueBatch: { authRequired: true, userScoped: false },
   requestCanonicalRebuildRecovery: { authRequired: true, userScoped: false },
+  requestPreparedProjectionRecovery: { authRequired: true, userScoped: false },
+  getPreparedProjectionReliabilityStatus: { authRequired: true, userScoped: false },
   provisionEvent: { authRequired: true, userScoped: false },
   refreshArmyIntelligence: { authRequired: true, userScoped: false },
   refreshPublicAnalyticsProjection: { authRequired: true, userScoped: false },

@@ -25,10 +25,7 @@ function refreshPublicLeagueWorkspaceProjection(e) {
 
 function markPublicLeagueWorkspaceProjectionDirty_() {
   try {
-    PropertiesService.getScriptProperties().setProperty(
-      PUBLIC_LEAGUE_WORKSPACE_PROJECTION_DIRTY_PROPERTY,
-      JSON.stringify(["dashboard", "factions", "missions", "leagueOperations"])
-    );
+    markPublicProjectionRequired_(PUBLIC_LEAGUE_WORKSPACE_PROJECTION_DIRTY_PROPERTY, ["dashboard", "factions", "missions", "leagueOperations"]);
   }
   catch (error) {
     console.error("PUBLIC_LEAGUE_WORKSPACE_DIRTY_MARK_FAILED " + String(error));
@@ -36,40 +33,35 @@ function markPublicLeagueWorkspaceProjectionDirty_() {
 }
 
 function publishDirtyPublicLeagueWorkspaceProjectionBestEffort_() {
-  const properties = PropertiesService.getScriptProperties();
-  const dirty = JSON.parse(
-    properties.getProperty(PUBLIC_LEAGUE_WORKSPACE_PROJECTION_DIRTY_PROPERTY) || "[]"
-  );
-  if (!dirty.length)
+  const obligation = getNextPublicProjectionObligation_(PUBLIC_LEAGUE_WORKSPACE_PROJECTION_DIRTY_PROPERTY);
+  if (!obligation)
     return { refreshed: false, success: true };
 
   try {
-    const section = dirty.shift();
-    const projection = publishPublicLeagueWorkspaceProjectionSection_(section);
-    if (dirty.length)
-      properties.setProperty(PUBLIC_LEAGUE_WORKSPACE_PROJECTION_DIRTY_PROPERTY, JSON.stringify(dirty));
-    else
-      properties.deleteProperty(PUBLIC_LEAGUE_WORKSPACE_PROJECTION_DIRTY_PROPERTY);
-    return { refreshed: true, generatedAt: projection.generatedAt, section: section, remaining: dirty.length, success: true };
+    beginPublicProjectionAttempt_(PUBLIC_LEAGUE_WORKSPACE_PROJECTION_DIRTY_PROPERTY, obligation);
+    const projection = publishPublicLeagueWorkspaceProjectionSection_(obligation.key, obligation.requiredGeneration);
+    const acknowledgement = acknowledgePublicProjection_(PUBLIC_LEAGUE_WORKSPACE_PROJECTION_DIRTY_PROPERTY, obligation, projection);
+    return { acknowledgement: acknowledgement, refreshed: true, generatedAt: projection.generatedAt, section: obligation.key, remaining: countPendingPublicProjectionObligations_(PUBLIC_LEAGUE_WORKSPACE_PROJECTION_DIRTY_PROPERTY), success: true };
   }
   catch (error) {
+    failPublicProjectionAttempt_(PUBLIC_LEAGUE_WORKSPACE_PROJECTION_DIRTY_PROPERTY, obligation, "publication", error);
     console.error("PUBLIC_LEAGUE_WORKSPACE_PROJECTION_REFRESH_FAILED " + String(error));
     return { refreshed: false, success: false, error: String(error && error.message || error) };
   }
 }
 
 function publishPublicLeagueWorkspaceProjection_() {
-  const projection = buildPublicLeagueWorkspaceProjection_();
+  let projection = buildPublicLeagueWorkspaceProjection_();
   validatePublicLeagueWorkspaceProjection_(projection);
   const file = getOrCreatePublicLeagueWorkspaceProjectionFile_();
-  file.setContent(JSON.stringify(projection));
+  projection = writeAndValidatePublicProjectionArtifact_(file, projection, Date.now());
   file.setDescription(
     "Prepared public League workspace projection. Canonical data remains in the Lobo Apps Script project."
   );
   return projection;
 }
 
-function publishPublicLeagueWorkspaceProjectionSection_(section) {
+function publishPublicLeagueWorkspaceProjectionSection_(section, generation) {
   const allowed = ["dashboard", "factions", "missions", "leagueOperations"];
   if (allowed.indexOf(section) === -1)
     throw new Error("Invalid public League workspace projection section.");
@@ -103,7 +95,7 @@ function publishPublicLeagueWorkspaceProjectionSection_(section) {
     projection.factions = projection.factions || factions;
     projection.leagueOperations = projection.leagueOperations || operations;
   }
-  file.setContent(JSON.stringify(projection));
+  projection = writeAndValidatePublicProjectionArtifact_(file, projection, generation);
   file.setDescription("Prepared public League workspace projection. Canonical data remains in the Lobo Apps Script project.");
   return projection;
 }

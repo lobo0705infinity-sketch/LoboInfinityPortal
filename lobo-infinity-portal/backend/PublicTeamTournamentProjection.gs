@@ -32,10 +32,7 @@ function markPublicTeamTournamentProjectionDirty_(eventId) {
     return;
 
   try {
-    PropertiesService.getScriptProperties().setProperty(
-      PUBLIC_TEAM_TOURNAMENT_DIRTY_PROPERTY,
-      PUBLIC_TEAM_TOURNAMENT_EVENT_ID
-    );
+    markPublicProjectionRequired_(PUBLIC_TEAM_TOURNAMENT_DIRTY_PROPERTY, [PUBLIC_TEAM_TOURNAMENT_EVENT_ID]);
   }
   catch (error) {
     console.error("PUBLIC_TEAM_TOURNAMENT_DIRTY_MARK_FAILED " + String(error));
@@ -43,20 +40,23 @@ function markPublicTeamTournamentProjectionDirty_(eventId) {
 }
 
 function publishDirtyPublicTeamTournamentProjectionBestEffort_() {
-  const properties = PropertiesService.getScriptProperties();
-  if (!properties.getProperty(PUBLIC_TEAM_TOURNAMENT_DIRTY_PROPERTY))
+  const obligation = getNextPublicProjectionObligation_(PUBLIC_TEAM_TOURNAMENT_DIRTY_PROPERTY);
+  if (!obligation)
     return { refreshed: false, success: true };
 
   try {
-    const projection = publishPublicTeamTournamentProjection_();
-    properties.deleteProperty(PUBLIC_TEAM_TOURNAMENT_DIRTY_PROPERTY);
+    beginPublicProjectionAttempt_(PUBLIC_TEAM_TOURNAMENT_DIRTY_PROPERTY, obligation);
+    const projection = publishPublicTeamTournamentProjection_(obligation.requiredGeneration);
+    const acknowledgement = acknowledgePublicProjection_(PUBLIC_TEAM_TOURNAMENT_DIRTY_PROPERTY, obligation, projection);
     return {
       refreshed: true,
+      acknowledgement: acknowledgement,
       generatedAt: projection.generatedAt,
       success: true
     };
   }
   catch (error) {
+    failPublicProjectionAttempt_(PUBLIC_TEAM_TOURNAMENT_DIRTY_PROPERTY, obligation, "publication", error);
     console.error(
       "PUBLIC_TEAM_TOURNAMENT_PROJECTION_REFRESH_FAILED " +
       JSON.stringify({
@@ -72,11 +72,11 @@ function publishDirtyPublicTeamTournamentProjectionBestEffort_() {
   }
 }
 
-function publishPublicTeamTournamentProjection_() {
-  const projection = buildPublicTeamTournamentProjection_();
+function publishPublicTeamTournamentProjection_(generation) {
+  let projection = buildPublicTeamTournamentProjection_();
   validatePublicTeamTournamentProjection_(projection);
   const file = getOrCreatePublicTeamTournamentProjectionFile_();
-  file.setContent(JSON.stringify(projection));
+  projection = writeAndValidatePublicProjectionArtifact_(file, projection, generation);
   file.setDescription(
     "Prepared public Team Tournament projection. Canonical data remains in the Lobo Apps Script project."
   );

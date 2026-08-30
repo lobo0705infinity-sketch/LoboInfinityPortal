@@ -13,7 +13,7 @@ const eventProjection = read('backend/PublicEventProjection.gs')
 
 assert.match(backend, /getPlayers\(\{ parameter: \{\} \}\)/)
 assert.match(backend, /validatePublicPlayersProjection_/)
-assert.match(backend, /file\.setContent\(JSON\.stringify\(projection\)\)/)
+assert.match(backend, /writeAndValidatePublicProjectionArtifact_/)
 assert.doesNotMatch(backend, /email|notes|password|armyCode|session|token/i)
 assert.match(api, /PUBLIC_PLAYERS_PROJECTION_FILE_ID/)
 assert.match(api, /stale-while-revalidate=86400/)

@@ -23,10 +23,7 @@ function refreshPublicPlayersProjection(e) {
 
 function markPublicPlayersProjectionDirty_() {
   try {
-    PropertiesService.getScriptProperties().setProperty(
-      PUBLIC_PLAYERS_PROJECTION_DIRTY_PROPERTY,
-      "true"
-    );
+    markPublicProjectionRequired_(PUBLIC_PLAYERS_PROJECTION_DIRTY_PROPERTY, ["players"]);
   }
   catch (error) {
     console.error("PUBLIC_PLAYERS_DIRTY_MARK_FAILED " + String(error));
@@ -34,20 +31,23 @@ function markPublicPlayersProjectionDirty_() {
 }
 
 function publishDirtyPublicPlayersProjectionBestEffort_() {
-  const properties = PropertiesService.getScriptProperties();
-  if (!properties.getProperty(PUBLIC_PLAYERS_PROJECTION_DIRTY_PROPERTY))
+  const obligation = getNextPublicProjectionObligation_(PUBLIC_PLAYERS_PROJECTION_DIRTY_PROPERTY);
+  if (!obligation)
     return { refreshed: false, success: true };
 
   try {
-    const projection = publishPublicPlayersProjection_();
-    properties.deleteProperty(PUBLIC_PLAYERS_PROJECTION_DIRTY_PROPERTY);
+    beginPublicProjectionAttempt_(PUBLIC_PLAYERS_PROJECTION_DIRTY_PROPERTY, obligation);
+    const projection = publishPublicPlayersProjection_(obligation.requiredGeneration);
+    const acknowledgement = acknowledgePublicProjection_(PUBLIC_PLAYERS_PROJECTION_DIRTY_PROPERTY, obligation, projection);
     return {
+      acknowledgement: acknowledgement,
       refreshed: true,
       generatedAt: projection.generatedAt,
       success: true
     };
   }
   catch (error) {
+    failPublicProjectionAttempt_(PUBLIC_PLAYERS_PROJECTION_DIRTY_PROPERTY, obligation, "publication", error);
     console.error(
       "PUBLIC_PLAYERS_PROJECTION_REFRESH_FAILED " +
       JSON.stringify({
@@ -62,11 +62,11 @@ function publishDirtyPublicPlayersProjectionBestEffort_() {
   }
 }
 
-function publishPublicPlayersProjection_() {
-  const projection = buildPublicPlayersProjection_();
+function publishPublicPlayersProjection_(generation) {
+  let projection = buildPublicPlayersProjection_();
   validatePublicPlayersProjection_(projection);
   const file = getOrCreatePublicPlayersProjectionFile_();
-  file.setContent(JSON.stringify(projection));
+  projection = writeAndValidatePublicProjectionArtifact_(file, projection, generation);
   file.setDescription(
     "Prepared public community Players projection. Canonical data remains in the Lobo Apps Script project."
   );
