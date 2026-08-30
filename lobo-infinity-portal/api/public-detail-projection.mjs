@@ -27,11 +27,16 @@ export default async function handler(request, response) {
     const sourceMs = performance.now() - sourceStartedAt
     if (!source.ok) throw new Error(`Projection source returned HTTP ${source.status}.`)
     const artifact = await source.json()
+    const requestedName = String(request.query?.name || '').trim()
     const projection = section === 'games'
-      ? { games: artifact.games, news: artifact.news, streams: artifact.streams }
+      ? { games: artifact.games, rivalryGames: artifact.rivalryGames, news: artifact.news, streams: artifact.streams }
       : section.startsWith('players:') ? artifact.players : artifact[section]
     if (!artifact?.generatedAt || projection == null) throw new Error('Public detail projection section is unavailable.')
-    const body = JSON.stringify({ generatedAt: artifact.generatedAt, projection, success: true })
+    const selectedProjection = requestedName && section !== 'games'
+      ? findCaseInsensitive(projection, requestedName)
+      : projection
+    if (selectedProjection == null) throw new Error('Public detail projection record is unavailable.')
+    const body = JSON.stringify({ generatedAt: artifact.generatedAt, projection: selectedProjection, success: true })
     response.setHeader('cache-control', 'public, s-maxage=30, stale-while-revalidate=86400')
     response.setHeader('content-type', 'application/json; charset=utf-8')
     response.setHeader('server-timing', `projection-source;dur=${sourceMs.toFixed(1)}, total;dur=${(performance.now() - startedAt).toFixed(1)}`)
@@ -42,6 +47,11 @@ export default async function handler(request, response) {
     response.setHeader('cache-control', 'no-store')
     response.status(502).json({ error: error instanceof Error ? error.message : String(error), success: false })
   }
+}
+
+function findCaseInsensitive(records, name) {
+  const key = Object.keys(records || {}).find((candidate) => candidate.toLowerCase() === name.toLowerCase())
+  return key ? records[key] : undefined
 }
 
 async function bootstrapProjectionFileId(section) {

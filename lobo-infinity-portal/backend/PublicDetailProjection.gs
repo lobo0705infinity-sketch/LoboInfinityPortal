@@ -68,7 +68,8 @@ function publishPublicDetailProjectionSection_(section) {
   artifact.generatedAt = new Date().toISOString();
 
   if (section === "games") {
-    artifact.games = JSON.parse(getRecentGames({ parameter: { eventId: "all", gameType: "all" } }).getContent()).games || [];
+    artifact.rivalryGames = JSON.parse(getRecentGames({ parameter: { eventId: "all", gameType: "all" } }).getContent()).games || [];
+    artifact.games = getAllRecentGameObjectsFromCanonicalResponses();
     artifact.streams = JSON.parse(getStreams().getContent()).streams || [];
     artifact.news = JSON.parse(getCommissionerNews().getContent()).news || [];
   }
@@ -176,7 +177,7 @@ function buildPublicDetailMissionProfiles_() {
 
 function validatePublicDetailProjectionSection_(artifact, section) {
   if (!artifact || !artifact.generatedAt) throw new Error("Public detail projection is invalid.");
-  if (section === "games" && (!Array.isArray(artifact.games) || !Array.isArray(artifact.streams) || !Array.isArray(artifact.news)))
+  if (section === "games" && (!Array.isArray(artifact.games) || !Array.isArray(artifact.rivalryGames) || !Array.isArray(artifact.streams) || !Array.isArray(artifact.news)))
     throw new Error("Public game/community projection is invalid.");
   const value = section.indexOf("players:") === 0 ? artifact.players : artifact[section];
   if (section !== "games" && (!value || Array.isArray(value)))

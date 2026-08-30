@@ -48,7 +48,7 @@ function Rivalries() {
 
     publicDetailProjection
       .getGames(controller.signal)
-      .then((data) => setState({ data: { recentGames: data.games }, status: 'success' }))
+      .then((data) => setState({ data: { recentGames: data.rivalryGames }, status: 'success' }))
       .catch((error: unknown) => {
         if (controller.signal.aborted) {
           return

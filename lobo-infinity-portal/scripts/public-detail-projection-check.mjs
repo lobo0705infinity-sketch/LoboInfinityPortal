@@ -14,7 +14,8 @@ const pages = [
   'src/pages/StreamedGames.tsx',
 ].map(read).join('\n')
 
-assert.match(backend, /getRecentGames\([\s\S]*eventId: "all"[\s\S]*gameType: "all"/)
+assert.match(backend, /artifact\.rivalryGames = JSON\.parse\(getRecentGames/)
+assert.match(backend, /artifact\.games = getAllRecentGameObjectsFromCanonicalResponses\(\)/)
 assert.match(backend, /getStreams\(\)/)
 assert.match(backend, /getPlayer\(/)
 assert.match(backend, /buildPublicDetailFactionProfiles_/)
@@ -22,7 +23,7 @@ assert.match(backend, /buildPublicDetailMissionProfiles_/)
 assert.match(backend, /players:8/)
 assert.doesNotMatch(backend, /CanonicalDecoderGateway|decode\(|getCanonicalGameSubmittedArmyListObjects/)
 assert.match(endpoint, /stale-while-revalidate=86400/)
-assert.match(service, /\/api\/public-detail-projection\?section=/)
+assert.match(service, /\/api\/public-detail-projection\?\$\{query\.toString\(\)\}/)
 assert.match(pages, /publicDetailProjection/)
 assert.doesNotMatch(pages, /\.getHome\(/)
 assert.doesNotMatch(pages, /apiClient\s*\.getStreams\(/)
