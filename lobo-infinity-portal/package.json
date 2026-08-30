@@ -151,6 +151,7 @@
     "test:game-automation-background": "node scripts/game-automation-background-check.mjs",
     "test:canonical-rebuild-recovery": "node scripts/canonical-rebuild-recovery-check.mjs",
     "test:public-projection-reliability": "node scripts/public-projection-reliability-check.mjs",
+    "test:prepared-projection-owner-maintenance": "node scripts/prepared-projection-owner-maintenance-check.mjs",
     "security:armies": "node scripts/army-registry-audit.mjs"
   },
   "dependencies": {

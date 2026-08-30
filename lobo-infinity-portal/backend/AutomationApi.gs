@@ -690,6 +690,22 @@ function markCanonicalRebuildRecoveryProjectionsDirty_() {
     markPublicDetailProjectionDirty_(["games", "players", "factions", "missions"]);
 }
 
+function runPreparedProjectionRecoveryMaintenance() {
+  markCanonicalRebuildRecoveryProjectionsDirty_();
+  const maintenance = JSON.parse(
+    processAutomationQueueBatch().getContent()
+  );
+  const result = {
+    success: maintenance.success !== false,
+    recoveryRequested: true,
+    maintenanceRun: true,
+    maintenance: maintenance,
+    obligations: getPreparedProjectionReliabilityStatus_()
+  };
+  Logger.log(JSON.stringify(result));
+  return result;
+}
+
 function selectPendingAutomationQueueItems_(limit) {
 
   const sheet = ensureAutomationQueueSheet();
