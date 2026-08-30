@@ -4,7 +4,8 @@
 
 const PUBLIC_DETAIL_PROJECTION_FILE_PROPERTY = "PUBLIC_DETAIL_PROJECTION_FILE_ID";
 const PUBLIC_DETAIL_PROJECTION_DIRTY_PROPERTY = "PUBLIC_DETAIL_PROJECTION_DIRTY";
-const PUBLIC_DETAIL_PROJECTION_SECTIONS = ["games", "players", "factions", "missions"];
+const PUBLIC_DETAIL_PLAYER_CHUNKS = ["players:0", "players:1", "players:2", "players:3", "players:4", "players:5", "players:6", "players:7", "players:8"];
+const PUBLIC_DETAIL_PROJECTION_SECTIONS = ["games", "factions", "missions"].concat(PUBLIC_DETAIL_PLAYER_CHUNKS);
 
 function refreshPublicDetailProjection(e) {
   return requireArmyIntelligenceWorkerOrPermission(e, function() {
@@ -21,9 +22,11 @@ function refreshPublicDetailProjection(e) {
 
 function markPublicDetailProjectionDirty_(sections) {
   try {
-    const requested = Array.isArray(sections) && sections.length
+    let requested = Array.isArray(sections) && sections.length
       ? sections
       : PUBLIC_DETAIL_PROJECTION_SECTIONS;
+    if (requested.indexOf("players") !== -1)
+      requested = requested.filter(function(value) { return value !== "players"; }).concat(PUBLIC_DETAIL_PLAYER_CHUNKS);
     const properties = PropertiesService.getScriptProperties();
     const existing = JSON.parse(properties.getProperty(PUBLIC_DETAIL_PROJECTION_DIRTY_PROPERTY) || "[]");
     const dirty = existing.concat(requested).filter(function(value, index, values) {
@@ -69,7 +72,12 @@ function publishPublicDetailProjectionSection_(section) {
     artifact.streams = JSON.parse(getStreams().getContent()).streams || [];
     artifact.news = JSON.parse(getCommissionerNews().getContent()).news || [];
   }
-  if (section === "players") artifact.players = buildPublicDetailPlayerProfiles_();
+  if (section.indexOf("players:") === 0) {
+    artifact.players = artifact.players || {};
+    const chunkIndex = Number(section.split(":")[1]);
+    const profiles = buildPublicDetailPlayerProfilesChunk_(chunkIndex, 5);
+    Object.keys(profiles).forEach(function(name) { artifact.players[name] = profiles[name]; });
+  }
   if (section === "factions") artifact.factions = buildPublicDetailFactionProfiles_();
   if (section === "missions") artifact.missions = buildPublicDetailMissionProfiles_();
 
@@ -79,7 +87,7 @@ function publishPublicDetailProjectionSection_(section) {
   return artifact;
 }
 
-function buildPublicDetailPlayerProfiles_() {
+function buildPublicDetailPlayerProfilesChunk_(chunkIndex, chunkSize) {
   const divisions = JSON.parse(getPlayers({ parameter: {} }).getContent()).divisions || [];
   const names = [];
   divisions.forEach(function(division) {
@@ -88,7 +96,7 @@ function buildPublicDetailPlayerProfiles_() {
     });
   });
   const profiles = {};
-  names.forEach(function(name) {
+  names.slice(chunkIndex * chunkSize, (chunkIndex + 1) * chunkSize).forEach(function(name) {
     const value = JSON.parse(getPlayer({ parameter: { name: name } }).getContent());
     if (value.success && value.player && value.player.name) {
       if (value.player.availability) {
@@ -104,21 +112,61 @@ function buildPublicDetailPlayerProfiles_() {
 }
 
 function buildPublicDetailFactionProfiles_() {
-  const response = JSON.parse(getFactions({ parameter: {} }).getContent());
+  const summaries = buildFactionApiSummaries();
+  const leagueGames = getLeagueData();
+  const recentGames = getAllRecentGameObjects();
+  const armyLists = getArmyListObjects();
   const profiles = {};
-  (response.factions || []).forEach(function(row) {
-    const value = JSON.parse(getFaction({ parameter: { name: row.name } }).getContent());
-    if (value.success && value.faction && value.faction.name) profiles[value.faction.name] = value;
+  summaries.forEach(function(faction) {
+    const factionGames = getFactionEngineGames(faction.name, leagueGames);
+    const factionRecentGames = getFactionRecentGames(faction.name, recentGames);
+    const matchups = getFactionMatchups(faction.name, recentGames);
+    profiles[faction.name] = { success: true, faction: {
+      name: faction.name,
+      games: faction.games,
+      wins: faction.wins,
+      losses: faction.losses,
+      draws: faction.draws || 0,
+      winRate: faction.winRate,
+      averageTP: faction.averageTP,
+      averageOP: faction.averageOP,
+      averageVP: faction.averageVP,
+      topPlayer: faction.topPlayer,
+      topPlayerDisplayName: getPlayerDisplayName(faction.topPlayer),
+      lastPlayed: faction.lastPlayed,
+      mostPlayedMission: getFactionMostPlayedMission(factionGames),
+      divisionBreakdown: getFactionDivisionBreakdownCounts(factionGames),
+      recentGames: factionRecentGames,
+      bestMoments: getFactionBestMoments(factionRecentGames),
+      matchups: matchups.rows,
+      matchupSummary: matchups.overall,
+      armyLists: getFactionArmyLists(faction.name, armyLists)
+    }};
   });
   return profiles;
 }
 
 function buildPublicDetailMissionProfiles_() {
-  const response = JSON.parse(getMissions({ parameter: { eventId: "event-current-league", gameType: "league" } }).getContent());
+  const summaries = buildMissionApiSummaries("event-current-league", "league");
+  const recentGames = getAllRecentGameObjects();
+  const leagueGames = getLeagueData();
   const profiles = {};
-  (response.missions || []).forEach(function(row) {
-    const value = JSON.parse(getMission({ parameter: { name: row.mission, eventId: "event-current-league", gameType: "league" } }).getContent());
-    if (value.success && value.mission && value.mission.mission) profiles[value.mission.mission] = value;
+  summaries.forEach(function(mission) {
+    const missionGames = getMissionRecentGames(mission.mission, recentGames);
+    profiles[mission.mission] = { success: true, mission: {
+      mission: mission.mission,
+      games: mission.games,
+      averageTP: mission.averageTP,
+      averageOP: mission.averageOP,
+      averageVP: mission.averageVP,
+      firstTurnWinRate: mission.firstTurnWinRate,
+      mostSuccessfulFaction: mission.mostSuccessfulFaction,
+      lastPlayed: mission.lastPlayed,
+      mostPlayedFaction: getMissionMostPlayedFaction(mission.mission, leagueGames),
+      recentGames: missionGames,
+      bestMoments: getMissionBestMoments(missionGames),
+      divisionBreakdown: getMissionDivisionBreakdown(missionGames)
+    }};
   });
   return profiles;
 }
@@ -127,7 +175,8 @@ function validatePublicDetailProjectionSection_(artifact, section) {
   if (!artifact || !artifact.generatedAt) throw new Error("Public detail projection is invalid.");
   if (section === "games" && (!Array.isArray(artifact.games) || !Array.isArray(artifact.streams) || !Array.isArray(artifact.news)))
     throw new Error("Public game/community projection is invalid.");
-  if (section !== "games" && (!artifact[section] || Array.isArray(artifact[section])))
+  const value = section.indexOf("players:") === 0 ? artifact.players : artifact[section];
+  if (section !== "games" && (!value || Array.isArray(value)))
     throw new Error("Public profile projection is invalid.");
 }
 

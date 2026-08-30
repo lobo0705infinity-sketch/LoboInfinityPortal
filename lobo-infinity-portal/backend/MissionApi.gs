@@ -251,11 +251,11 @@ function getMissionMostSuccessfulFaction(factions) {
 
 }
 
-function getMissionMostPlayedFaction(missionName) {
+function getMissionMostPlayedFaction(missionName, leagueGames) {
 
   const counts = {};
 
-  getLeagueData()
+  (leagueGames || getLeagueData())
     .forEach(function(game) {
 
       if (

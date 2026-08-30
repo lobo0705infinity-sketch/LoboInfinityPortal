@@ -1241,7 +1241,7 @@ function getPlayerArmyLists(playerName) {
 
 }
 
-function getFactionArmyLists(factionName) {
+function getFactionArmyLists(factionName, allArmyLists) {
 
   const normalizedFaction =
     canonicalizeArmyName(factionName);
@@ -1254,7 +1254,7 @@ function getFactionArmyLists(factionName) {
     };
 
   const lists =
-    getArmyListObjects()
+    (allArmyLists || getArmyListObjects())
       .filter(function(list) {
 
         return (
@@ -1281,7 +1281,7 @@ function getFactionArmyLists(factionName) {
 
 }
 
-function getFactionMatchups(factionName) {
+function getFactionMatchups(factionName, allRecentGames) {
 
   const normalizedFaction =
     String(factionName || "")
@@ -1290,7 +1290,7 @@ function getFactionMatchups(factionName) {
 
   const matchups = {};
 
-  getAllRecentGameObjects()
+  (allRecentGames || getAllRecentGameObjects())
     .forEach(function(game) {
 
       const winnerFaction =

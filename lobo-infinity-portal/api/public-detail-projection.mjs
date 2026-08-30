@@ -1,4 +1,5 @@
-const sections = new Set(['games', 'players', 'factions', 'missions'])
+const playerChunks = Array.from({ length: 9 }, (_, index) => `players:${index}`)
+const sections = new Set(['games', 'players', 'factions', 'missions', ...playerChunks])
 
 export const config = { maxDuration: 300 }
 
@@ -28,13 +29,14 @@ export default async function handler(request, response) {
     const artifact = await source.json()
     const projection = section === 'games'
       ? { games: artifact.games, news: artifact.news, streams: artifact.streams }
-      : artifact[section]
+      : section.startsWith('players:') ? artifact.players : artifact[section]
     if (!artifact?.generatedAt || projection == null) throw new Error('Public detail projection section is unavailable.')
     const body = JSON.stringify({ generatedAt: artifact.generatedAt, projection, success: true })
     response.setHeader('cache-control', 'public, s-maxage=30, stale-while-revalidate=86400')
     response.setHeader('content-type', 'application/json; charset=utf-8')
     response.setHeader('server-timing', `projection-source;dur=${sourceMs.toFixed(1)}, total;dur=${(performance.now() - startedAt).toFixed(1)}`)
     response.setHeader('x-lobo-projection-bytes', String(Buffer.byteLength(body)))
+    if (!configuredFileId) response.setHeader('x-lobo-projection-bootstrap-file-id', fileId)
     response.status(200).send(body)
   } catch (error) {
     response.setHeader('cache-control', 'no-store')
