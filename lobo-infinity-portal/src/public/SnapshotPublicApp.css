@@ -1117,6 +1117,256 @@ main.snapshot-event-page[data-event="current-league-overview"] .snapshot-event-o
   }
 }
 
+/* Current League schedule: display-ready snapshot remaining-matchup data only. */
+main.snapshot-event-page[data-event="current-league-schedule"] {
+  gap: clamp(0.72rem, 1.45vw, 1rem);
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] > .snapshot-event-hero {
+  min-height: 138px;
+  padding: clamp(1rem, 2.4vw, 1.5rem);
+  border-color: rgba(76, 201, 240, 0.3);
+  background:
+    linear-gradient(110deg, rgba(9, 21, 31, 0.98), rgba(11, 22, 31, 0.88) 58%, rgba(36, 11, 17, 0.9)),
+    radial-gradient(circle at 83% 15%, rgba(193, 18, 31, 0.23), transparent 34%);
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] > .snapshot-event-hero h1 {
+  font-size: clamp(1.55rem, 3.2vw, 2.2rem);
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] > .snapshot-metric-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] > .snapshot-metric-grid .snapshot-metric-card {
+  min-height: 74px;
+  padding: 0.68rem 0.76rem;
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-current-league-schedule {
+  display: grid;
+  gap: 0.68rem;
+  width: 100%;
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-current-league-schedule-heading {
+  display: grid;
+  gap: 0.12rem;
+  padding: 0.1rem 0.2rem;
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-current-league-schedule-heading .eyebrow,
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-current-league-schedule-heading h2 {
+  margin: 0;
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-current-league-schedule-heading h2 {
+  color: #f8fbff;
+  font-size: clamp(1.3rem, 2.3vw, 1.7rem);
+  letter-spacing: 0.01em;
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-division-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.28rem;
+  min-height: 0;
+  overflow-x: auto;
+  border: 1px solid rgba(76, 201, 240, 0.28);
+  border-radius: 10px;
+  padding: 0.3rem;
+  background: linear-gradient(90deg, rgba(11, 21, 30, 0.96), rgba(7, 12, 18, 0.92));
+  scrollbar-color: rgba(76, 201, 240, 0.44) transparent;
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-division-switcher button {
+  min-height: 35px;
+  flex: 1 0 max-content;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  padding: 0.5rem 0.82rem;
+  color: #b8c9d5;
+  background: transparent;
+  font: inherit;
+  font-size: 0.69rem;
+  font-weight: 800;
+  letter-spacing: 0.045em;
+  line-height: 1;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-division-switcher button[aria-pressed="true"] {
+  border-color: rgba(217, 54, 68, 0.68);
+  color: #ffffff;
+  background: linear-gradient(180deg, rgba(193, 18, 31, 0.3), rgba(193, 18, 31, 0.1));
+  box-shadow: inset 0 -2px 0 #d93140;
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-division-switcher button:hover,
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-division-switcher button:focus-visible {
+  border-color: rgba(110, 220, 255, 0.68);
+  color: #ffffff;
+  outline: none;
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-division-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.24rem 0.2rem 0.04rem;
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-division-heading > div {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-division-heading h3,
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-division-heading p {
+  margin: 0;
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-division-heading h3 {
+  color: #f8fbff;
+  font-size: clamp(1.1rem, 2vw, 1.38rem);
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-division-heading span,
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-division-heading p {
+  color: #9fb2c0;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.065em;
+  text-transform: uppercase;
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-table-panel {
+  width: 100%;
+  overflow: hidden;
+  border-color: rgba(102, 155, 182, 0.34);
+  background: linear-gradient(145deg, rgba(15, 27, 38, 0.97), rgba(7, 12, 18, 0.95));
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-table-shell {
+  width: 100%;
+  margin: 0;
+  overflow-x: auto;
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-table {
+  width: 100%;
+  min-width: 850px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-table th,
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-table td {
+  border-bottom-color: rgba(137, 169, 191, 0.18);
+  padding: 0.7rem 0.82rem;
+  color: #dce7ee;
+  font-size: clamp(0.84rem, 1.08vw, 0.96rem);
+  vertical-align: top;
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-table th {
+  color: #f7fbff;
+  background: linear-gradient(90deg, rgba(76, 201, 240, 0.16), rgba(14, 23, 34, 0.98) 72%);
+  font-size: 0.66rem;
+  letter-spacing: 0.07em;
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-table th:nth-child(1),
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-table td:nth-child(1) { width: 23%; }
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-table th:nth-child(2),
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-table td:nth-child(2) { width: 15%; text-align: center; }
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-table th:nth-child(3),
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-table td:nth-child(3) { width: 15%; text-align: center; }
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-table th:nth-child(4),
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-table td:nth-child(4) { width: 47%; }
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-table td:first-child a {
+  color: #f6fbff;
+  font-size: 1.03em;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-table td:first-child a:hover,
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-table td:first-child a:focus-visible {
+  color: #6edcff;
+  text-decoration: underline;
+  outline: none;
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-table td:nth-child(2),
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-table td:nth-child(3) {
+  color: #f8fbff;
+  font-weight: 800;
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-opponents {
+  color: #c9d7e1;
+  line-height: 1.55;
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-complete {
+  background: linear-gradient(90deg, rgba(66, 201, 136, 0.12), transparent 60%);
+  box-shadow: inset 3px 0 0 rgba(66, 201, 136, 0.68);
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-complete td:nth-child(3),
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-complete-label {
+  color: #8df0b6;
+  font-weight: 850;
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-table tbody tr:hover {
+  background: rgba(76, 201, 240, 0.08);
+}
+
+main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-table tbody tr.snapshot-schedule-complete:hover {
+  background: linear-gradient(90deg, rgba(66, 201, 136, 0.19), rgba(76, 201, 240, 0.07) 72%);
+}
+
+@media (max-width: 920px) {
+  main.snapshot-event-page[data-event="current-league-schedule"] > .snapshot-metric-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  main.snapshot-event-page[data-event="current-league-schedule"] > .snapshot-event-hero {
+    min-height: 124px;
+  }
+
+  main.snapshot-event-page[data-event="current-league-schedule"] > .snapshot-metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-division-switcher {
+    justify-content: flex-start;
+  }
+
+  main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-division-switcher button {
+    flex-basis: auto;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.64rem;
+  }
+
+  main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-division-heading,
+  main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-division-heading > div {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.18rem;
+  }
+}
+
 /* Current League registration only: the form destination is configured per event. */
 main.snapshot-event-page[data-event="current-league-registration"] {
   gap: clamp(0.72rem, 1.45vw, 0.98rem);

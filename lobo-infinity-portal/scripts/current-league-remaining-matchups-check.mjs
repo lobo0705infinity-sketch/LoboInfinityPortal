@@ -7,7 +7,13 @@ const app = fs.readFileSync('src/public/SnapshotPublicApp.tsx', 'utf8')
 
 assert.match(source, /buildPublicSnapshotRemainingMatchups_\(frozen\.playersTable, games \|\| \[\]\)/)
 assert.match(source, /isPublicSnapshotCurrentLeagueGame_\(game\)/)
-assert.doesNotMatch(app, /remainingMatchups|RemainingMatchup/)
+const scheduleComponent = app.match(/function CurrentLeagueSchedule\([\s\S]*?(?=\nfunction EventHero)/)?.[0] || ''
+assert.match(scheduleComponent, /remainingMatchups/)
+assert.match(scheduleComponent, /opponentsCompleted/)
+assert.match(scheduleComponent, /opponentsRemaining/)
+assert.match(scheduleComponent, /remainingOpponents/)
+assert.match(scheduleComponent, /divisionLabel==='Main Man'/)
+assert.doesNotMatch(scheduleComponent, /\bgames\b|completedOpponents|new Set|new Map|\.filter\(/)
 
 const FORM = {
   DIVISION: 1, DATE: 2, PLAYER1: 4, PLAYER2: 5,
