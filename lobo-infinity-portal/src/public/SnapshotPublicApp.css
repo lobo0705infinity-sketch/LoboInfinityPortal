@@ -603,13 +603,13 @@
 main.snapshot-public-page[data-page="dashboard"] > .page-header {
   position: relative;
   min-height: 0;
-  aspect-ratio: 1859 / 675;
+  aspect-ratio: 1859 / 711;
   overflow: hidden;
   border-color: rgba(76, 201, 240, 0.34);
   padding: 0;
   background-color: #05090d;
   background-image: url("../assets/lobo-infinity-portal-hero.png");
-  background-position: 50% 10%;
+  background-position: 50% 20%;
   background-repeat: no-repeat;
   background-size: cover;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(193, 18, 31, 0.1);
