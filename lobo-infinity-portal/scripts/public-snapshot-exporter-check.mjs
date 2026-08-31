@@ -15,6 +15,7 @@ assert.match(source, /livePointer: false/)
 assert.match(source, /duplicate Game ID/)
 assert.match(source, /function runHourlyPublicSnapshot\(\)/)
 assert.match(source, /function installHourlyPublicSnapshotTrigger\(\)/)
+assert.match(source, /remainingMatchups:\s*remainingMatchups/)
 
 function extractFunctions(text) {
   const functions = new Map()
@@ -143,7 +144,9 @@ const functions = [
   'publicSnapshotPlayerSort_', 'publicSnapshotMostFrequent_', 'publicSnapshotAverage_',
   'publicSnapshotPercentage_', 'publicSnapshotRecentGames_', 'buildPublicSnapshotMissions_',
   'buildPublicSnapshotFactions_', 'summarizePublicSnapshotFaction_',
-  'isPublicSnapshotCurrentLeagueGame_', 'buildPublicSnapshotStandings_',
+  'isPublicSnapshotCurrentLeagueGame_', 'getPublicSnapshotCurrentLeagueDivisions_',
+  'isPublicSnapshotCompletedGame_', 'buildPublicSnapshotRemainingMatchups_',
+  'validatePublicSnapshotRemainingMatchups_', 'buildPublicSnapshotStandings_',
   'stablePublicSnapshotJson_', 'assertPublicSnapshotSafe_',
   'calculatePublicSnapshotLeagueRecord_', 'validatePublicSnapshotDatasets_',
   'buildPublicSnapshotArmyLists_', 'buildPublicSnapshotDecodedArmy_',
@@ -241,7 +244,14 @@ assert.equal(JSON.stringify(games).toLowerCase().includes('armycode'), false)
 const armyLists = [
   { id: '3296098999' }, { id: '4483300877' }, { id: '4113389343' },
 ]
-const datasets = { players, games, events, missions, factions, standings, 'army-lists': armyLists }
+const schedule = sandbox.buildPublicSnapshotSchedule_({
+  playersTable,
+  leagueOperationsTable: { headers: [], rows: [] },
+  schedulingTable: { headers: [], rows: [] },
+}, standings, events, context)
+assert.equal(schedule.length, 1)
+assert.equal(schedule[0].remainingMatchups.length, 3)
+const datasets = { players, games, events, missions, factions, standings, schedule, 'army-lists': armyLists }
 assert.doesNotThrow(() => sandbox.validatePublicSnapshotDatasets_(datasets, context))
 assert.throws(() => sandbox.validatePublicSnapshotDatasets_({
   ...datasets, games: [...games, games[0]],

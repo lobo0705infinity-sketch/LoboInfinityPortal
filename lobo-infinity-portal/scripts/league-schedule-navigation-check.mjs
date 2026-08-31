@@ -18,10 +18,12 @@ const teamTournament = eventNavigation.match(
   /export const eventNavigation:[\s\S]*?capabilities:\s*\[([\s\S]*?)\][\s\S]*?id:\s*'event-august-2026-team-tournament'/,
 )?.[1] ?? ''
 const capabilityNames = (source) => [...source.matchAll(/'([^']+)'/g)].map((match) => match[1])
-const expectedLeague = ['overview', 'registration', 'standings', 'statistics', 'rules']
+// Statistics intentionally remains directly routable but is no longer exposed in Current League navigation.
+const expectedCurrentLeague = ['overview', 'registration', 'standings', 'rules']
+const expectedNormalLeague = ['overview', 'registration', 'standings', 'statistics', 'rules']
 
-assert.deepEqual(capabilityNames(currentLeague), expectedLeague)
-assert.deepEqual(capabilityNames(normalLeague), expectedLeague)
+assert.deepEqual(capabilityNames(currentLeague), expectedCurrentLeague)
+assert.deepEqual(capabilityNames(normalLeague), expectedNormalLeague)
 assert.ok(!currentLeague.includes("'schedule'"))
 assert.ok(!normalLeague.includes("'schedule'"))
 

@@ -148,6 +148,7 @@
     "test:public-generation-complete": "node scripts/public-generation-complete-check.mjs",
     "test:public-generation-simple": "node scripts/public-generation-simple-check.mjs",
     "test:public-snapshot-exporter": "node scripts/public-snapshot-exporter-check.mjs",
+    "test:current-league-remaining-matchups": "node scripts/current-league-remaining-matchups-check.mjs",
     "test:public-snapshot-publication": "node scripts/public-snapshot-publication-check.mjs",
     "test:public-snapshot-react-cutover": "node scripts/public-snapshot-react-cutover-check.mjs",
     "test:snapshot-native-public-app": "node scripts/snapshot-native-public-app-check.mjs",

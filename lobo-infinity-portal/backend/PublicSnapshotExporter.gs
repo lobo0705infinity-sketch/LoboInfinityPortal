@@ -166,7 +166,7 @@ function buildPublicSnapshotV1_() {
     const standings = buildPublicSnapshotStandings_(frozen.playersTable, games);
     const armyLists = buildPublicSnapshotArmyLists_(frozen.armyLists);
     const armyIntelligence = buildPublicSnapshotArmyIntelligence_(frozen.armyIntelligence);
-    const schedule = buildPublicSnapshotSchedule_(frozen, standings, events);
+    const schedule = buildPublicSnapshotSchedule_(frozen, standings, events, games);
     const statistics = buildPublicSnapshotStatistics_(players, publicGames, frozen.hallOfFame);
     const community = buildPublicSnapshotCommunity_(frozen);
     const datasets = {
@@ -716,6 +716,172 @@ function isPublicSnapshotCurrentLeagueGame_(game) {
   return game.eventId === EVENT_ENGINE_DEFAULT_EVENT_ID && type === "league";
 }
 
+function getPublicSnapshotCurrentLeagueDivisions_() {
+  return [CONFIG.DIVISIONS.MAIN_MAN, CONFIG.DIVISIONS.PGA, CONFIG.DIVISIONS.PGB];
+}
+
+function isPublicSnapshotCompletedGame_(game) {
+  return Boolean(game && game.gameId && String(game.date || "").trim() &&
+    String(game.player1 || "").trim() && String(game.player2 || "").trim());
+}
+
+function buildPublicSnapshotRemainingMatchups_(playersTable, games) {
+  const divisionLabels = getPublicSnapshotCurrentLeagueDivisions_();
+  const knownDivisions = {};
+  divisionLabels.forEach(function(division) { knownDivisions[division] = true; });
+
+  const playerIndex = buildPublicSnapshotPlayerIndex_(playersTable);
+  const rosterByKey = {};
+  const rosterByDivision = {};
+  divisionLabels.forEach(function(division) { rosterByDivision[division] = []; });
+  Object.keys(playerIndex).sort().forEach(function(key) {
+    const player = playerIndex[key];
+    if (!player.active || !knownDivisions[player.division]) return;
+    const record = { key: key, player: player.player, displayName: player.displayName, division: player.division };
+    rosterByKey[key] = record;
+    rosterByDivision[player.division].push(record);
+  });
+
+  divisionLabels.forEach(function(division) {
+    rosterByDivision[division].sort(function(left, right) {
+      return left.displayName.localeCompare(right.displayName) || left.player.localeCompare(right.player);
+    });
+  });
+
+  const completedByDivision = {};
+  const completedByPlayer = {};
+  divisionLabels.forEach(function(division) { completedByDivision[division] = {}; });
+  Object.keys(rosterByKey).forEach(function(key) { completedByPlayer[key] = {}; });
+
+  (games || []).forEach(function(game) {
+    if (!isPublicSnapshotCurrentLeagueGame_(game) || !isPublicSnapshotCompletedGame_(game)) return;
+    const player1Key = normalizePublicSnapshotIdentity_(game.player1);
+    const player2Key = normalizePublicSnapshotIdentity_(game.player2);
+    const player1 = rosterByKey[player1Key];
+    const player2 = rosterByKey[player2Key];
+    if (!player1 || !player2 || player1Key === player2Key || player1.division !== player2.division) return;
+    if (String(game.division || "").trim() !== player1.division) return;
+    const ordered = [player1Key, player2Key].sort();
+    const pairKey = ordered[0] + "\u0000" + ordered[1];
+    if (completedByDivision[player1.division][pairKey]) return;
+    completedByDivision[player1.division][pairKey] = true;
+    completedByPlayer[player1Key][player2Key] = true;
+    completedByPlayer[player2Key][player1Key] = true;
+  });
+
+  return divisionLabels.map(function(division) {
+    const roster = rosterByDivision[division];
+    const completedUniqueMatchups = Object.keys(completedByDivision[division]).length;
+    const totalPossibleUniqueMatchups = roster.length > 1 ? roster.length * (roster.length - 1) / 2 : 0;
+    return {
+      eventId: EVENT_ENGINE_DEFAULT_EVENT_ID,
+      division: division,
+      divisionLabel: division,
+      playerCount: roster.length,
+      totalPossibleUniqueMatchups: totalPossibleUniqueMatchups,
+      completedUniqueMatchups: completedUniqueMatchups,
+      remainingUniqueMatchups: totalPossibleUniqueMatchups - completedUniqueMatchups,
+      players: roster.map(function(player) {
+        const completedOpponents = roster.filter(function(opponent) {
+          return opponent.key !== player.key && completedByPlayer[player.key][opponent.key];
+        });
+        const remainingOpponents = roster.filter(function(opponent) {
+          return opponent.key !== player.key && !completedByPlayer[player.key][opponent.key];
+        });
+        const projectOpponent = function(opponent) {
+          return { player: opponent.player, displayName: opponent.displayName };
+        };
+        return {
+          player: player.player,
+          displayName: player.displayName,
+          opponentsCompleted: completedOpponents.length,
+          opponentsRemaining: remainingOpponents.length,
+          completedOpponents: completedOpponents.map(projectOpponent),
+          remainingOpponents: remainingOpponents.map(projectOpponent)
+        };
+      })
+    };
+  });
+}
+
+function validatePublicSnapshotRemainingMatchups_(remainingMatchups) {
+  const expectedDivisions = getPublicSnapshotCurrentLeagueDivisions_();
+  if (!Array.isArray(remainingMatchups) || remainingMatchups.length !== expectedDivisions.length)
+    throw new Error("Public snapshot remaining-matchup divisions are incomplete.");
+
+  expectedDivisions.forEach(function(division) {
+    const value = remainingMatchups.filter(function(item) { return item.division === division; })[0];
+    if (!value || !Array.isArray(value.players))
+      throw new Error("Public snapshot remaining-matchup division is missing: " + division);
+    const byPlayer = {};
+    value.players.forEach(function(player) {
+      const key = normalizePublicSnapshotIdentity_(player.player);
+      if (!key || byPlayer[key]) throw new Error("Public snapshot remaining-matchup player is invalid.");
+      byPlayer[key] = player;
+    });
+    if (value.playerCount !== value.players.length)
+      throw new Error("Public snapshot remaining-matchup player count is invalid: " + division);
+
+    const completedPairs = {};
+    value.players.forEach(function(player) {
+      const playerKey = normalizePublicSnapshotIdentity_(player.player);
+      const completed = player.completedOpponents || [];
+      const remaining = player.remainingOpponents || [];
+      const seen = {};
+      completed.concat(remaining).forEach(function(opponent) {
+        const opponentKey = normalizePublicSnapshotIdentity_(opponent.player);
+        if (!opponentKey || opponentKey === playerKey || !byPlayer[opponentKey] || seen[opponentKey])
+          throw new Error("Public snapshot remaining-matchup opponent is invalid: " + player.player);
+        seen[opponentKey] = true;
+      });
+      if (Object.keys(seen).length !== value.players.length - 1 ||
+          Number(player.opponentsCompleted) !== completed.length ||
+          Number(player.opponentsRemaining) !== remaining.length)
+        throw new Error("Public snapshot remaining-matchup counts are invalid: " + player.player);
+      completed.forEach(function(opponent) {
+        const opponentKey = normalizePublicSnapshotIdentity_(opponent.player);
+        const reverse = byPlayer[opponentKey].completedOpponents || [];
+        if (!reverse.some(function(item) { return normalizePublicSnapshotIdentity_(item.player) === playerKey; }))
+          throw new Error("Public snapshot remaining-matchup completion is not symmetric.");
+        const pair = [playerKey, opponentKey].sort();
+        completedPairs[pair[0] + "\u0000" + pair[1]] = true;
+      });
+      remaining.forEach(function(opponent) {
+        const opponentKey = normalizePublicSnapshotIdentity_(opponent.player);
+        const reverse = byPlayer[opponentKey].remainingOpponents || [];
+        if (!reverse.some(function(item) { return normalizePublicSnapshotIdentity_(item.player) === playerKey; }))
+          throw new Error("Public snapshot remaining-matchup remainder is not symmetric.");
+      });
+    });
+    const total = value.players.length > 1 ? value.players.length * (value.players.length - 1) / 2 : 0;
+    if (value.totalPossibleUniqueMatchups !== total ||
+        value.completedUniqueMatchups !== Object.keys(completedPairs).length ||
+        value.remainingUniqueMatchups !== total - Object.keys(completedPairs).length)
+      throw new Error("Public snapshot remaining-matchup division totals are invalid: " + division);
+  });
+}
+
+function runAuditCurrentLeagueRemainingMatchups() {
+  const spreadsheet = lifGetTargetSpreadsheet_();
+  const playersTable = freezePublicSnapshotTable_(readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.PLAYERS));
+  const gamesTable = freezePublicSnapshotTable_(readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.FORM));
+  const games = buildPublicSnapshotGameContext_(gamesTable, buildPublicSnapshotPlayerIndex_(playersTable));
+  const remainingMatchups = buildPublicSnapshotRemainingMatchups_(playersTable, games);
+  validatePublicSnapshotRemainingMatchups_(remainingMatchups);
+  return {
+    eventId: EVENT_ENGINE_DEFAULT_EVENT_ID,
+    divisions: remainingMatchups.map(function(division) {
+      return {
+        division: division.division,
+        players: division.playerCount,
+        totalPossibleUniqueMatchups: division.totalPossibleUniqueMatchups,
+        completedUniqueMatchups: division.completedUniqueMatchups,
+        remainingUniqueMatchups: division.remainingUniqueMatchups
+      };
+    })
+  };
+}
+
 function buildPublicSnapshotStandings_(playersTable, games) {
   const index = buildPublicSnapshotPlayerIndex_(playersTable); const records = {};
   Object.keys(index).forEach(function(key) {
@@ -863,7 +1029,7 @@ function buildPublicSnapshotDecodedArmy_(decoded) {
   };
 }
 
-function buildPublicSnapshotSchedule_(frozen, standings, events) {
+function buildPublicSnapshotSchedule_(frozen, standings, events, games) {
   const operationsRows = frozen.leagueOperationsTable.rows || [];
   const operation = operationsRows.length ? operationsRows[operationsRows.length - 1] : [];
   const requests = (frozen.schedulingTable.rows || []).filter(function(row) { return String(row[0] || "").trim(); })
@@ -877,6 +1043,7 @@ function buildPublicSnapshotSchedule_(frozen, standings, events) {
       };
     });
   const leagueEvent = (events || []).filter(function(event) { return event.id === EVENT_ENGINE_DEFAULT_EVENT_ID; })[0] || null;
+  const remainingMatchups = buildPublicSnapshotRemainingMatchups_(frozen.playersTable, games || []);
   return [{
     eventId: EVENT_ENGINE_DEFAULT_EVENT_ID, eventName: leagueEvent ? leagueEvent.name : "Current League",
     currentSeason: leagueEvent ? leagueEvent.name : "Current League",
@@ -894,6 +1061,7 @@ function buildPublicSnapshotSchedule_(frozen, standings, events) {
         completionPercentage: publicSnapshotPercentage_(division.gamesPlayed, possible)
       };
     }),
+    remainingMatchups: remainingMatchups,
     requests: requests
   }];
 }
@@ -1111,6 +1279,9 @@ function validatePublicSnapshotDatasets_(datasets, gameContext) {
   });
   if (!datasets.games.length || !datasets.players.length || datasets.standings.length !== 3)
     throw new Error("Public snapshot counts are not sane.");
+  if (!Array.isArray(datasets.schedule) || datasets.schedule.length !== 1)
+    throw new Error("Public snapshot schedule dataset is not sane.");
+  validatePublicSnapshotRemainingMatchups_(datasets.schedule[0].remainingMatchups);
   [CONFIG.DIVISIONS.MAIN_MAN, CONFIG.DIVISIONS.PGA, CONFIG.DIVISIONS.PGB].forEach(function(division) {
     if (!datasets.standings.some(function(row) { return row.division === division; }))
       throw new Error("Public snapshot standings division is missing: " + division);
