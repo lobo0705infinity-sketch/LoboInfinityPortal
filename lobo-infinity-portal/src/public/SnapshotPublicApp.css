@@ -357,3 +357,244 @@
   .snapshot-metric-grid { grid-template-columns: 1fr; }
   .snapshot-tabs a { padding: 0.65rem 0.8rem; }
 }
+
+/* Presentation-only refinement: snapshot-native markup and behavior are preserved. */
+.snapshot-public-page {
+  gap: clamp(0.85rem, 1.8vw, 1.2rem);
+  padding-bottom: clamp(1.5rem, 4vw, 3rem);
+}
+
+.snapshot-public-page .page-header {
+  min-height: unset;
+  padding: clamp(1.1rem, 2.8vw, 1.8rem);
+}
+
+.snapshot-public-page .page-header h1 {
+  margin: 0.18rem 0 0.3rem;
+  font-size: clamp(2rem, 4.4vw, 3.35rem);
+  letter-spacing: -0.025em;
+}
+
+.snapshot-public-page .page-header > p:not(.eyebrow) {
+  max-width: 68ch;
+  margin-bottom: 0;
+  color: var(--text-soft);
+  font-weight: 700;
+}
+
+.snapshot-panel,
+.snapshot-card,
+.snapshot-record {
+  border-color: rgba(76, 201, 240, 0.16);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+}
+
+.snapshot-panel {
+  background:
+    linear-gradient(135deg, rgba(76, 201, 240, 0.035), transparent 38%),
+    var(--panel);
+}
+
+.snapshot-panel .panel-heading {
+  min-height: 72px;
+  align-content: center;
+  padding: 0.9rem 1.2rem;
+  border-bottom: 1px solid rgba(76, 201, 240, 0.1);
+  background: linear-gradient(90deg, rgba(76, 201, 240, 0.075), transparent 58%);
+}
+
+.snapshot-panel .panel-heading h2 {
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  letter-spacing: -0.01em;
+}
+
+.snapshot-panel-body {
+  padding: clamp(0.95rem, 2vw, 1.25rem);
+}
+
+.snapshot-card-grid {
+  gap: clamp(0.75rem, 1.7vw, 1rem);
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+
+.snapshot-card {
+  position: relative;
+  min-height: 112px;
+  padding: 1rem 1.1rem;
+  background:
+    linear-gradient(145deg, rgba(76, 201, 240, 0.055), transparent 62%),
+    var(--panel);
+}
+
+.snapshot-card h2,
+.snapshot-card h3 {
+  margin: 0 0 0.45rem;
+  color: var(--text);
+  font-size: 1.06rem;
+  line-height: 1.2;
+}
+
+.snapshot-card p {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.snapshot-link-card:hover,
+.snapshot-link-card:focus-visible {
+  border-color: rgba(76, 201, 240, 0.48);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(76, 201, 240, 0.08);
+  transform: translateY(-3px);
+}
+
+.snapshot-metric-grid {
+  gap: 0.75rem;
+}
+
+.snapshot-metric-card {
+  min-height: 104px;
+  padding: 0.9rem 1rem 0.95rem 1.12rem;
+  border-color: rgba(76, 201, 240, 0.18);
+  border-radius: 12px;
+}
+
+.snapshot-metric-card span {
+  margin-bottom: 0.42rem;
+  font-size: 0.64rem;
+}
+
+.snapshot-metric-card strong {
+  font-size: clamp(1.28rem, 2.2vw, 1.78rem);
+  overflow-wrap: anywhere;
+}
+
+.snapshot-filter-row {
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.8rem;
+  border: 1px solid rgba(76, 201, 240, 0.13);
+  border-radius: 12px;
+  background: rgba(8, 13, 19, 0.58);
+}
+
+.snapshot-filter-row select {
+  flex: 1 1 220px;
+  min-height: 42px;
+  border: 1px solid rgba(76, 201, 240, 0.24);
+  border-radius: 8px;
+  padding: 0.55rem 0.7rem;
+  color: var(--text);
+  background: var(--panel-strong);
+}
+
+.snapshot-event-hero {
+  min-height: 210px;
+  padding: clamp(1.25rem, 3vw, 2.2rem);
+  border-radius: 14px;
+}
+
+.snapshot-event-hero h1 {
+  max-width: 18ch;
+  margin: 0.25rem 0 0.45rem;
+  font-size: clamp(2.15rem, 4.8vw, 3.9rem);
+  line-height: 0.94;
+}
+
+.snapshot-event-tagline {
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.snapshot-event-status {
+  padding: 0.43rem 0.65rem;
+  font-size: 0.65rem;
+}
+
+.snapshot-tabs {
+  gap: 0.35rem;
+  padding: 0.34rem;
+  border-radius: 10px;
+}
+
+.snapshot-tabs a {
+  padding: 0.56rem 0.78rem;
+  font-size: 0.7rem;
+}
+
+.snapshot-event-overview {
+  gap: 0.9rem;
+}
+
+.snapshot-overview-copy {
+  font-size: 0.95rem;
+  line-height: 1.62;
+}
+
+.snapshot-table-shell,
+.snapshot-panel .table-wrapper {
+  scrollbar-color: rgba(76, 201, 240, 0.4) rgba(8, 13, 19, 0.45);
+}
+
+.snapshot-data-table th,
+.snapshot-data-table td,
+.snapshot-panel .table-wrapper th,
+.snapshot-panel .table-wrapper td {
+  padding: 0.72rem 0.85rem;
+}
+
+.snapshot-data-table th,
+.snapshot-panel .table-wrapper th {
+  font-size: 0.64rem;
+}
+
+.snapshot-data-table td,
+.snapshot-panel .table-wrapper td {
+  font-size: 0.86rem;
+}
+
+.snapshot-record-list {
+  gap: 0.65rem;
+}
+
+.snapshot-record {
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  background: rgba(8, 13, 19, 0.56);
+}
+
+.snapshot-record p {
+  margin: 0.2rem 0;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+  line-height: 1.42;
+}
+
+.snapshot-table-badge {
+  padding: 0.24rem 0.48rem;
+  font-size: 0.68rem;
+}
+
+@media (max-width: 720px) {
+  .snapshot-public-page {
+    gap: 0.75rem;
+  }
+
+  .snapshot-public-page .page-header,
+  .snapshot-event-hero {
+    padding: 1rem;
+  }
+
+  .snapshot-event-hero {
+    min-height: 188px;
+  }
+
+  .snapshot-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .snapshot-metric-card {
+    min-height: 88px;
+  }
+}
