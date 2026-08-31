@@ -14,7 +14,7 @@ const checks = [
   [!publicApp.includes('CommissionerEventWorkflow'), 'no Commissioner workflow in public events'],
   [!publicApp.includes('publicEventProjection') && !publicApp.includes('publicTeamTournamentProjection'), 'no event projection dependency'],
   [!publicApp.includes('capabilities'), 'no Event Engine capabilities dependency'],
-  [client.includes("PUBLIC_SNAPSHOT_ID = '20260831T045141Z'"), 'fixed snapshot ID'],
+  [client.includes('PUBLIC_SNAPSHOT_POINTER_URL') && client.includes('pointerPromise'), 'session-pinned current snapshot'],
   [!client.includes('/api/'), 'no snapshot fallback'],
   [!lightApi.includes("request('searchIndex'"), 'local snapshot search'],
   [!lightApi.includes("request('notifications'"), 'snapshot community notifications'],

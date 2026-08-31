@@ -1,5 +1,5 @@
 import type { EventBracketData, EventHomeData, EventRegistrationData } from './api'
-import { PUBLIC_SNAPSHOT_ID, getPublicSnapshotDataset } from './publicSnapshot'
+import { getPinnedPublicSnapshot, getPublicSnapshotDataset } from './publicSnapshot'
 
 type SnapshotEvent = Record<string, any> & { id: string; name: string; type: string }
 
@@ -34,6 +34,7 @@ export type PublicEventProjection = {
 }
 
 export async function getPublicEventProjection(eventId: string, options: { signal?: AbortSignal } = {}) {
+  const snapshot = await getPinnedPublicSnapshot(options.signal)
   const events = await getPublicSnapshotDataset<SnapshotEvent[]>('events', options.signal)
   const event = events.find((item) => item.id === eventId)
   if (!event) throw new Error('Public event could not be found in the fixed snapshot.')
@@ -45,7 +46,7 @@ export async function getPublicEventProjection(eventId: string, options: { signa
   const bracketMatches = Array.isArray(event.bracket) ? event.bracket : []
   return {
     eventId,
-    generatedAt: PUBLIC_SNAPSHOT_ID,
+    generatedAt: snapshot.snapshotId,
     schemaVersion: 1,
     home: {
       currentRound: event.currentRound ?? null,

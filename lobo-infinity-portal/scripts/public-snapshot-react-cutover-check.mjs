@@ -7,10 +7,11 @@ const eventProjection = read('src/services/publicEventProjection.ts')
 const teamProjection = read('src/services/publicTeamTournamentProjection.ts')
 
 const checks = [
-  [client.includes("PUBLIC_SNAPSHOT_ID = '20260831T045141Z'"), 'fixed snapshot ID'],
+  [client.includes('PUBLIC_SNAPSHOT_POINTER_URL') && client.includes('public-snapshots/current.json'), 'current snapshot pointer'],
   [client.includes('ecwefvuvauaqpary.public.blob.vercel-storage.com'), 'Blob base'],
   [client.includes("'army-intelligence-detail'"), '13-dataset allowlist'],
   [client.includes("cache: 'force-cache'"), 'immutable cache behavior'],
+  [client.includes("cache: 'no-cache'"), 'mutable pointer cache behavior'],
   [!client.includes('API_URL') && !client.includes('/api/'), 'no Apps Script or endpoint fallback'],
   [api.includes('...publicSnapshotApi'), 'public API compatibility adapter'],
   [!eventProjection.includes('/api/public-event-projection'), 'event projection uses snapshot'],

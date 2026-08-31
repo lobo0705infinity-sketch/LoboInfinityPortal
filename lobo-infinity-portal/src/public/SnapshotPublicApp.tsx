@@ -1,6 +1,5 @@
 import { lazy, Suspense, type ReactNode } from 'react'
 import { Link, Navigate, Route, Routes, useLocation, useParams, useSearchParams } from 'react-router-dom'
-import { PUBLIC_SNAPSHOT_ID } from '../services/publicSnapshot'
 import { useSnapshotData } from './useSnapshotData'
 import SnapshotArmyIntelligence from './SnapshotArmyIntelligence'
 import type { PublicArmyList, PublicCommunity, PublicEvent, PublicFaction, PublicGame, PublicMission, PublicPlayer, PublicSchedule, PublicStanding, PublicStandingsDivision, PublicStatistics } from './snapshotTypes'
@@ -62,7 +61,7 @@ function Dashboard() {
   const standings = useSnapshotData<PublicStandingsDivision[]>('standings')
   return <DataGate states={[players, games, standings]}>{() => {
     const leader = standings.data?.[0]?.standings?.[0]
-    return <Page title="League Dashboard" eyebrow={`Snapshot ${PUBLIC_SNAPSHOT_ID}`} intro="Lobo Infinity League command overview.">
+    return <Page title="League Dashboard" eyebrow="Current public snapshot" intro="Lobo Infinity League command overview.">
       <MetricGrid items={[['Players', players.data!.length], ['Games', games.data!.length], ['League Leader', leader?.displayName ?? '—'], ['Leader Record', leader ? `${leader.wins}-${leader.losses}-${leader.draws}` : '—']]} />
       <Panel title="Recent Games"><GameTable games={[...games.data!].slice(-8).reverse()} /></Panel>
     </Page>
