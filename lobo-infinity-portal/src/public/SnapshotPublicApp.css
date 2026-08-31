@@ -1935,3 +1935,162 @@ main.snapshot-public-page[data-page="players"] .snapshot-player-directory-record
     flex-basis: auto;
   }
 }
+
+/* Missions directory only: event membership is read from immutable public game records. */
+main.snapshot-public-page[data-page="missions"] {
+  gap: clamp(0.72rem, 1.45vw, 1rem);
+}
+
+main.snapshot-public-page[data-page="missions"] > .snapshot-missions-hero {
+  position: relative;
+  min-height: 0;
+  aspect-ratio: 1680 / 600;
+  overflow: hidden;
+  border: 1px solid rgba(133, 194, 98, 0.34);
+  border-radius: 12px;
+  background-color: #05080c;
+  background-image: url("../assets/missions-hero.png");
+  background-position: center 48%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(76, 201, 240, 0.1);
+}
+
+main.snapshot-public-page[data-page="missions"] > .snapshot-missions-hero > * {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+main.snapshot-public-page[data-page="missions"] > .snapshot-missions-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 0;
+  border: 1px solid rgba(76, 201, 240, 0.25);
+  border-radius: 10px;
+  padding: 0.4rem 0.55rem 0.4rem 0.8rem;
+  background: linear-gradient(90deg, rgba(11, 21, 30, 0.96), rgba(7, 12, 18, 0.92));
+}
+
+main.snapshot-public-page[data-page="missions"] > .snapshot-missions-controls label {
+  color: #dcebf4;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+main.snapshot-public-page[data-page="missions"] > .snapshot-missions-controls select {
+  min-width: min(310px, 100%);
+  margin-left: auto;
+  border: 1px solid rgba(76, 201, 240, 0.26);
+  border-radius: 7px;
+  padding: 0.48rem 2rem 0.48rem 0.65rem;
+  color: #f8fbff;
+  background-color: rgba(14, 25, 35, 0.94);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+main.snapshot-public-page[data-page="missions"] > .snapshot-missions-controls select:focus-visible {
+  border-color: #6edcff;
+  outline: 2px solid rgba(110, 220, 255, 0.26);
+  outline-offset: 2px;
+}
+
+main.snapshot-public-page[data-page="missions"] > .snapshot-missions-table-panel {
+  width: 100%;
+  overflow: hidden;
+  border-color: rgba(102, 155, 182, 0.34);
+  background: linear-gradient(145deg, rgba(15, 27, 38, 0.97), rgba(7, 12, 18, 0.95));
+}
+
+main.snapshot-public-page[data-page="missions"] > .snapshot-missions-table-panel > .table-wrapper {
+  width: 100%;
+  margin: 0;
+  overflow-x: auto;
+}
+
+main.snapshot-public-page[data-page="missions"] > .snapshot-missions-table-panel table {
+  width: 100%;
+  min-width: 620px;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+main.snapshot-public-page[data-page="missions"] > .snapshot-missions-table-panel th,
+main.snapshot-public-page[data-page="missions"] > .snapshot-missions-table-panel td {
+  border-bottom-color: rgba(137, 169, 191, 0.18);
+  padding: 0.8rem 0.9rem;
+  color: #dce7ee;
+  font-size: clamp(0.88rem, 1.1vw, 1rem);
+}
+
+main.snapshot-public-page[data-page="missions"] > .snapshot-missions-table-panel th {
+  color: #f7fbff;
+  background: linear-gradient(90deg, rgba(133, 194, 98, 0.17), rgba(14, 23, 34, 0.98) 72%);
+  font-size: 0.68rem;
+  letter-spacing: 0.075em;
+}
+
+main.snapshot-public-page[data-page="missions"] > .snapshot-missions-table-panel th:first-child,
+main.snapshot-public-page[data-page="missions"] > .snapshot-missions-table-panel td:first-child { width: 58%; text-align: left; }
+
+main.snapshot-public-page[data-page="missions"] > .snapshot-missions-table-panel th:nth-child(n + 2),
+main.snapshot-public-page[data-page="missions"] > .snapshot-missions-table-panel td:nth-child(n + 2) { width: 21%; text-align: center; }
+
+main.snapshot-public-page[data-page="missions"] > .snapshot-missions-table-panel td:first-child a {
+  color: #f6fbff;
+  font-size: 1.03em;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+main.snapshot-public-page[data-page="missions"] > .snapshot-missions-table-panel td:first-child a:hover,
+main.snapshot-public-page[data-page="missions"] > .snapshot-missions-table-panel td:first-child a:focus-visible {
+  color: #82e6ff;
+  text-decoration: underline;
+  outline: none;
+}
+
+main.snapshot-public-page[data-page="missions"] > .snapshot-missions-table-panel td:nth-child(n + 2) {
+  color: #f8fbff;
+  font-weight: 800;
+}
+
+main.snapshot-public-page[data-page="missions"] > .snapshot-missions-table-panel tbody tr:hover {
+  background: rgba(76, 201, 240, 0.085);
+}
+
+@media (max-width: 920px) {
+  main.snapshot-public-page[data-page="missions"] > .snapshot-missions-hero {
+    aspect-ratio: 1680 / 760;
+    background-position: center center;
+  }
+}
+
+@media (max-width: 640px) {
+  main.snapshot-public-page[data-page="missions"] > .snapshot-missions-hero {
+    aspect-ratio: 1680 / 1000;
+    background-size: contain;
+    background-position: center;
+  }
+
+  main.snapshot-public-page[data-page="missions"] > .snapshot-missions-controls {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  main.snapshot-public-page[data-page="missions"] > .snapshot-missions-controls select {
+    width: 100%;
+    margin-left: 0;
+  }
+}
