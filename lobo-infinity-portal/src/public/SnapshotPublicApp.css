@@ -598,3 +598,133 @@
     min-height: 88px;
   }
 }
+
+/* Dashboard-only visual identity: semantic headings remain for accessibility. */
+main.snapshot-public-page[data-page="dashboard"] > .page-header {
+  position: relative;
+  min-height: 0;
+  aspect-ratio: 2 / 1;
+  overflow: hidden;
+  border-color: rgba(76, 201, 240, 0.34);
+  padding: 0;
+  background-color: #05090d;
+  background-image: url("../assets/league-dashboard-hero.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(193, 18, 31, 0.1);
+}
+
+main.snapshot-public-page[data-page="dashboard"] > .page-header::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 22%;
+  background: linear-gradient(0deg, rgba(5, 7, 11, 0.26), transparent);
+  content: "";
+  pointer-events: none;
+}
+
+main.snapshot-public-page[data-page="dashboard"] > .page-header .eyebrow,
+main.snapshot-public-page[data-page="dashboard"] > .page-header h1,
+main.snapshot-public-page[data-page="dashboard"] > .page-header > p:not(.eyebrow) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+main.snapshot-public-page[data-page="dashboard"] > .snapshot-metric-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid rgba(76, 201, 240, 0.2);
+  border-radius: 12px;
+  background: rgba(8, 13, 19, 0.82);
+  box-shadow: var(--shadow-card);
+}
+
+main.snapshot-public-page[data-page="dashboard"] .snapshot-metric-card {
+  min-height: 74px;
+  border: 0;
+  border-right: 1px solid rgba(76, 201, 240, 0.14);
+  border-radius: 0;
+  padding: 0.78rem 0.95rem 0.8rem 1.05rem;
+  background: linear-gradient(135deg, rgba(76, 201, 240, 0.07), transparent 65%);
+  box-shadow: none;
+}
+
+main.snapshot-public-page[data-page="dashboard"] .snapshot-metric-card:last-child {
+  border-right: 0;
+}
+
+main.snapshot-public-page[data-page="dashboard"] .snapshot-metric-card span {
+  margin-bottom: 0.22rem;
+  color: #aebbc8;
+  font-size: 0.66rem;
+}
+
+main.snapshot-public-page[data-page="dashboard"] .snapshot-metric-card strong {
+  color: #ffffff;
+  font-size: clamp(1.15rem, 2vw, 1.65rem);
+  line-height: 1.08;
+}
+
+.snapshot-public-page .snapshot-game-link,
+.snapshot-public-page .table-wrapper a {
+  color: #6edcff;
+}
+
+.snapshot-public-page .snapshot-data-table th,
+.snapshot-public-page .table-wrapper th {
+  color: #f7fbff;
+  background: linear-gradient(90deg, rgba(76, 201, 240, 0.14), rgba(14, 23, 34, 0.98) 72%);
+}
+
+.snapshot-public-page .snapshot-data-table td,
+.snapshot-public-page .table-wrapper td {
+  color: #d5e0ea;
+}
+
+.snapshot-public-page .snapshot-data-table tbody tr:hover,
+.snapshot-public-page .table-wrapper tbody tr:hover {
+  background: rgba(76, 201, 240, 0.075);
+}
+
+.snapshot-public-page .snapshot-table-badge {
+  border-color: rgba(76, 201, 240, 0.32);
+  color: #d7f5ff;
+  background: rgba(76, 201, 240, 0.11);
+}
+
+.snapshot-public-page .snapshot-panel .panel-heading .eyebrow {
+  color: #8acfe5;
+}
+
+.snapshot-public-page .snapshot-panel .panel-heading h2,
+.snapshot-public-page .snapshot-card h2,
+.snapshot-public-page .snapshot-card h3 {
+  color: #fbfdff;
+}
+
+@media (max-width: 760px) {
+  main.snapshot-public-page[data-page="dashboard"] > .page-header {
+    aspect-ratio: 2 / 1;
+    border-radius: 14px;
+  }
+
+  main.snapshot-public-page[data-page="dashboard"] > .snapshot-metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  main.snapshot-public-page[data-page="dashboard"] .snapshot-metric-card:nth-child(2) {
+    border-right: 0;
+  }
+
+  main.snapshot-public-page[data-page="dashboard"] .snapshot-metric-card:nth-child(-n + 2) {
+    border-bottom: 1px solid rgba(76, 201, 240, 0.14);
+  }
+}
