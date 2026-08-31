@@ -918,7 +918,7 @@ main.snapshot-event-page[data-event="current-league-overview"] {
 
 main.snapshot-event-page[data-event="current-league-overview"] > .snapshot-event-hero {
   min-height: 0;
-  aspect-ratio: 1672 / 790;
+  aspect-ratio: 1672 / 760;
   padding: 0;
   background-color: #05080c;
   background-image: url("../assets/current-league-overview-hero.png");
@@ -998,7 +998,7 @@ main.snapshot-event-page[data-event="current-league-overview"] > .snapshot-metri
 main.snapshot-event-page[data-event="current-league-overview"] > .snapshot-metric-grid .snapshot-metric-card:nth-child(5)::before { background: #59cef1; }
 
 main.snapshot-event-page[data-event="current-league-overview"] .snapshot-event-overview {
-  grid-template-columns: minmax(230px, 0.52fr) minmax(0, 1.48fr);
+  grid-template-columns: 1fr;
   gap: 0.8rem;
   align-items: start;
 }
@@ -1019,6 +1019,34 @@ main.snapshot-event-page[data-event="current-league-overview"] .snapshot-event-o
 
 main.snapshot-event-page[data-event="current-league-overview"] .snapshot-event-overview > .snapshot-panel:first-child .snapshot-panel-body {
   padding: 0.88rem 0.94rem 1rem;
+}
+
+main.snapshot-event-page[data-event="current-league-overview"] .snapshot-current-league-overview > .snapshot-panel:first-child {
+  width: min(100%, 23rem);
+}
+
+main.snapshot-event-page[data-event="current-league-overview"] .snapshot-league-rules-cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  margin-top: 0.72rem;
+  border: 1px solid rgba(76, 201, 240, 0.44);
+  border-radius: 7px;
+  padding: 0.42rem 0.62rem;
+  color: #dff8ff;
+  background: rgba(76, 201, 240, 0.09);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.045em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+main.snapshot-event-page[data-event="current-league-overview"] .snapshot-league-rules-cta:hover,
+main.snapshot-event-page[data-event="current-league-overview"] .snapshot-league-rules-cta:focus-visible {
+  border-color: #6edcff;
+  color: #ffffff;
+  background: rgba(76, 201, 240, 0.18);
 }
 
 main.snapshot-event-page[data-event="current-league-overview"] .snapshot-overview-copy {
