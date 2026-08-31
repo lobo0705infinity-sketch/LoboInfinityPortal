@@ -137,10 +137,11 @@ const sandbox = {
 }
 vm.createContext(sandbox)
 const functions = [
-  'normalizePublicSnapshotIdentity_', 'buildPublicSnapshotPlayerIndex_',
+  'normalizePublicSnapshotIdentity_', 'buildPublicSnapshotPlayerIndex_', 'findPublicSnapshotRegistryIdentity_',
   'resolvePublicSnapshotParticipant_', 'buildPublicSnapshotGameContext_',
   'publicSnapshotColumns_', 'publicSnapshotCell_', 'buildPublicSnapshotEvents_',
-  'buildPublicSnapshotGames_', 'publicSnapshotScore_', 'buildPublicSnapshotPlayers_',
+  'buildPublicSnapshotGames_', 'publicSnapshotScore_', 'ensurePublicSnapshotPlayerRecord_',
+  'resolvePublicSnapshotDirectoryParticipant_', 'buildPublicSnapshotPlayers_',
   'publicSnapshotPlayerSort_', 'publicSnapshotMostFrequent_', 'publicSnapshotAverage_',
   'publicSnapshotPercentage_', 'publicSnapshotRecentGames_', 'buildPublicSnapshotMissions_',
   'buildPublicSnapshotFactions_', 'summarizePublicSnapshotFaction_',
@@ -220,7 +221,7 @@ assert.equal(games.length, 73)
 assert.deepEqual(games.filter((game) => game.id === 32).map((game) => [game.winner, game.loser]), [['Blitchga', 'Zhukov2']])
 const game36 = games.find((game) => game.id === 36)
 assert.equal(game36.loser, 'ADangerousFrog')
-assert.equal(players.some((player) => player.player === 'ADangerousFrog'), false)
+assert.equal(players.some((player) => player.player === 'ADangerousFrog'), true)
 const game73Out = games.find((game) => game.id === 73)
 assert.deepEqual([game73Out.winner, game73Out.loser, game73Out.mission, game73Out.tp, game73Out.op, game73Out.vp],
   ['Lobo', 'Nighthawkmk2', "Dead Man's Switch", '5–0', '8–1', '262–122'])
@@ -263,6 +264,29 @@ const allowedGameKeys = ['id', 'eventId', 'eventName', 'gameType', 'date', 'divi
 assert.deepEqual(Object.keys(game73Out).sort(), allowedGameKeys.sort())
 assert.deepEqual(Object.keys(standings[0].standings[0]).sort(),
   ['rank', 'player', 'displayName', 'games', 'wins', 'losses', 'draws', 'tp', 'op', 'vp'].sort())
+
+const directoryPlayersTable = { headers: playersTable.headers, rows: [
+  ...playersTable.rows, ['aro_wax', 'Wax', 'Community', 'false'],
+] }
+const directoryIndex = sandbox.buildPublicSnapshotPlayerIndex_(directoryPlayersTable)
+const directoryGames = sandbox.buildPublicSnapshotGameContext_({ headers, rows: [
+  gameRow(1, 'Community', '2026-08-01', 'Casual Mission', 'Wax', 'ADangerousFrog', 5, 0, 7, 1, 200, 100, 'Nomads', 'Ariadna', 'Player 1', 'Casual'),
+] }, directoryIndex)
+const directory = sandbox.buildPublicSnapshotPlayers_(directoryPlayersTable, directoryGames, {
+  'event-team': { participants: [
+    { player: 'dangerous@example.test', displayName: 'ADangerousFrog', status: 'Approved', role: 'Player' },
+    { player: 'team-only@example.test', displayName: 'Team Only', status: 'Approved', role: 'Player' },
+    { player: 'withdrawn@example.test', displayName: 'Withdrawn Only', status: 'Withdrawn', role: 'Player' },
+  ] },
+})
+assert.equal(directory.filter((player) => player.player === 'aro_wax').length, 1)
+assert.equal(directory.some((player) => player.player === 'Wax'), false)
+assert.equal(directory.find((player) => player.player === 'ADangerousFrog').games, 1)
+assert.equal(directory.find((player) => player.player === 'Team Only').division, 'Community')
+assert.deepEqual(JSON.parse(JSON.stringify(directory.find((player) => player.player === 'Withdrawn Only').eventParticipations)), [
+  { eventId: 'event-team', status: 'Withdrawn', role: 'Player' },
+])
+assert.equal(JSON.stringify(directory).includes('@example.test'), false)
 
 const publicArmy = sandbox.buildPublicSnapshotArmyLists_({ lists: [
   { id: '3296098999', player: 'Lobo', armyCode: 'SECRET-A', armyLink: 'https://infinitytheuniverse.com/army/list/3296098999', approved: true },

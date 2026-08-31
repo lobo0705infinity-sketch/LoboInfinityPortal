@@ -34,7 +34,7 @@ const sandbox = {
 vm.createContext(sandbox)
 
 for (const name of [
-  'normalizePublicSnapshotIdentity_', 'buildPublicSnapshotPlayerIndex_',
+  'normalizePublicSnapshotIdentity_', 'buildPublicSnapshotPlayerIndex_', 'findPublicSnapshotRegistryIdentity_',
   'resolvePublicSnapshotParticipant_', 'buildPublicSnapshotGameContext_',
   'isPublicSnapshotCurrentLeagueGame_', 'getPublicSnapshotCurrentLeagueDivisions_',
   'isPublicSnapshotCompletedGame_', 'buildPublicSnapshotRemainingMatchups_',

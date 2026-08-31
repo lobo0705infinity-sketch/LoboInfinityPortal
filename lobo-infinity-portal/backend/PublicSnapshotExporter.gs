@@ -158,8 +158,9 @@ function buildPublicSnapshotV1_() {
     const frozen = capturePublicSnapshotSource_(snapshotId);
     const playerIndex = buildPublicSnapshotPlayerIndex_(frozen.playersTable);
     const games = buildPublicSnapshotGameContext_(frozen.gamesTable, playerIndex);
-    const events = buildPublicSnapshotEvents_(frozen.eventsTable, games, buildPublicSnapshotEventState_(frozen));
-    const players = buildPublicSnapshotPlayers_(frozen.playersTable, games);
+    const eventState = buildPublicSnapshotEventState_(frozen);
+    const events = buildPublicSnapshotEvents_(frozen.eventsTable, games, eventState);
+    const players = buildPublicSnapshotPlayers_(frozen.playersTable, games, eventState);
     const publicGames = buildPublicSnapshotGames_(games, events);
     const missions = buildPublicSnapshotMissions_(games);
     const factions = buildPublicSnapshotFactions_(games, players);
@@ -357,9 +358,18 @@ function buildPublicSnapshotPlayerIndex_(table) {
   return index;
 }
 
+function findPublicSnapshotRegistryIdentity_(index, raw) {
+  const key = normalizePublicSnapshotIdentity_(raw);
+  if (!key) return null;
+  if (index[key]) return index[key];
+  return Object.keys(index).map(function(indexKey) { return index[indexKey]; }).filter(function(player) {
+    return normalizePublicSnapshotIdentity_(player.displayName) === key;
+  })[0] || null;
+}
+
 function resolvePublicSnapshotParticipant_(index, raw) {
   const historical = String(raw || "").trim();
-  return index[normalizePublicSnapshotIdentity_(historical)] || {
+  return findPublicSnapshotRegistryIdentity_(index, historical) || {
     player: historical, displayName: historical, division: "", active: false, historical: true
   };
 }
@@ -512,19 +522,52 @@ function publicSnapshotScore_(player1, player2, winnerIsPlayer1, draw) {
     (winnerIsPlayer1 || draw ? player2 : player1);
 }
 
-function buildPublicSnapshotPlayers_(table, games) {
+function ensurePublicSnapshotPlayerRecord_(records, source) {
+  const player = String(source && source.player || "").trim();
+  const key = normalizePublicSnapshotIdentity_(player);
+  if (!key) return null;
+  if (!records[key]) {
+    records[key] = {
+      player: player,
+      displayName: String(source.displayName || player).trim(),
+      division: String(source.division || "Community").trim() || "Community",
+      active: source.active === true,
+      historical: source.historical === true,
+      eventParticipations: [],
+      games: 0, wins: 0, losses: 0, draws: 0,
+      tp: 0, op: 0, vp: 0, factions: {}, missions: {}, lastActive: ""
+    };
+  }
+  return records[key];
+}
+
+function resolvePublicSnapshotDirectoryParticipant_(index, records, participant) {
+  const registered = findPublicSnapshotRegistryIdentity_(index, participant.player) ||
+    findPublicSnapshotRegistryIdentity_(index, participant.displayName);
+  if (registered) return registered;
+  const candidates = [participant.player, participant.displayName];
+  for (let position = 0; position < candidates.length; position += 1) {
+    const existing = records[normalizePublicSnapshotIdentity_(candidates[position])];
+    if (existing) return existing;
+  }
+  const displayName = String(participant.displayName || participant.player || "").trim();
+  return displayName ? {
+    player: displayName, displayName: displayName, division: "Community", active: false, historical: true
+  } : null;
+}
+
+function buildPublicSnapshotPlayers_(table, games, eventState) {
   const index = buildPublicSnapshotPlayerIndex_(table); const records = {};
   Object.keys(index).forEach(function(key) {
     const source = index[key];
-    records[key] = {
-      player: source.player, displayName: source.displayName, division: source.division,
-      active: source.active, games: 0, wins: 0, losses: 0, draws: 0,
-      tp: 0, op: 0, vp: 0, factions: {}, missions: {}, lastActive: ""
-    };
+    ensurePublicSnapshotPlayerRecord_(records, source);
   });
   games.forEach(function(game) {
     [[game.player1, 1], [game.player2, 2]].forEach(function(tuple) {
-      const record = records[normalizePublicSnapshotIdentity_(tuple[0])];
+      const record = ensurePublicSnapshotPlayerRecord_(records, {
+        player: tuple[0], displayName: tuple[0] === game.player1 ? game.player1DisplayName : game.player2DisplayName,
+        division: "Community", active: false, historical: true
+      });
       if (!record) return;
       const side = tuple[1]; const draw = game.winner === "Draw";
       record.games += 1;
@@ -536,6 +579,22 @@ function buildPublicSnapshotPlayers_(table, games) {
       record.factions[faction] = (record.factions[faction] || 0) + 1;
       record.missions[game.mission] = (record.missions[game.mission] || 0) + 1;
       if (String(game.date) > record.lastActive) record.lastActive = String(game.date);
+    });
+  });
+  Object.keys(eventState || {}).forEach(function(eventId) {
+    const participants = eventState[eventId] && eventState[eventId].participants || [];
+    participants.forEach(function(participant) {
+      const source = resolvePublicSnapshotDirectoryParticipant_(index, records, participant);
+      const record = source && ensurePublicSnapshotPlayerRecord_(records, source);
+      if (!record) return;
+      const participation = {
+        eventId: eventId,
+        status: String(participant.status || "").trim(),
+        role: String(participant.role || "").trim()
+      };
+      if (!record.eventParticipations.some(function(value) {
+        return value.eventId === participation.eventId && value.status === participation.status && value.role === participation.role;
+      })) record.eventParticipations.push(participation);
     });
   });
   const divisions = {};
@@ -560,6 +619,10 @@ function buildPublicSnapshotPlayers_(table, games) {
       faction: favoriteFaction, favoriteFaction: favoriteFaction, favoriteArmy: favoriteFaction,
       lastActive: record.lastActive,
       statusBadges: record.active ? ["League Player"] : record.games ? ["Casual Player"] : ["New Player"],
+      historical: record.historical,
+      eventParticipations: record.eventParticipations.slice().sort(function(left, right) {
+        return left.eventId.localeCompare(right.eventId) || left.status.localeCompare(right.status) || left.role.localeCompare(right.role);
+      }),
       favoriteMission: favoriteMission
     };
   });
