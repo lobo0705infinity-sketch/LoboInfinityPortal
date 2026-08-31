@@ -1950,7 +1950,7 @@ main.snapshot-public-page[data-page="missions"] > .snapshot-missions-hero {
   border-radius: 12px;
   background-color: #05080c;
   background-image: url("../assets/missions-hero.png");
-  background-position: center 48%;
+  background-position: center 28%;
   background-repeat: no-repeat;
   background-size: cover;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(76, 201, 240, 0.1);
