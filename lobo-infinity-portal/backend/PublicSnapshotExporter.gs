@@ -201,8 +201,8 @@ function capturePublicSnapshotSource_(snapshotId) {
   const gamesTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.FORM);
   const playersTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.PLAYERS);
   const eventsTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.EVENTS);
-  const armyLists = readArmyListsReadModelPayload() || { lists: [], community: {} };
-  const armyIntelligence = readArmyIntelligenceReadModelPayload() || null;
+  const armyLists = readPublicSnapshotPersistedArmyLists_();
+  const armyIntelligence = readPublicSnapshotPersistedArmyIntelligence_();
   const leagueOperationsTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.LEAGUE_OPERATIONS);
   const schedulingTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.SCHEDULING_REQUESTS);
   const settingsTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.SETTINGS);
@@ -215,7 +215,7 @@ function capturePublicSnapshotSource_(snapshotId) {
   const bracketMissionsTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.EVENT_BRACKET_MISSIONS);
   const teamsTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.TEAM_TOURNAMENT_TEAMS);
   const pairingsTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.TEAM_TOURNAMENT_PAIRINGS);
-  const hallOfFame = typeof getHallOfFameSnapshot === "function" ? getHallOfFameSnapshot() : null;
+  const hallOfFame = buildPublicSnapshotHallOfFameStrict_(armyLists);
   return {
     snapshotId: snapshotId,
     sourceCutoff: new Date().toISOString(),
@@ -223,7 +223,7 @@ function capturePublicSnapshotSource_(snapshotId) {
     playersTable: freezePublicSnapshotTable_(playersTable),
     eventsTable: freezePublicSnapshotTable_(eventsTable),
     armyLists: JSON.parse(JSON.stringify(armyLists)),
-    armyIntelligence: armyIntelligence ? JSON.parse(JSON.stringify(armyIntelligence)) : null,
+    armyIntelligence: JSON.parse(JSON.stringify(armyIntelligence)),
     leagueOperationsTable: freezePublicSnapshotTable_(leagueOperationsTable),
     schedulingTable: freezePublicSnapshotTable_(schedulingTable),
     settingsTable: freezePublicSnapshotTable_(settingsTable),
@@ -236,9 +236,23 @@ function capturePublicSnapshotSource_(snapshotId) {
     bracketMissionsTable: freezePublicSnapshotTable_(bracketMissionsTable),
     teamsTable: freezePublicSnapshotTable_(teamsTable),
     pairingsTable: freezePublicSnapshotTable_(pairingsTable),
-    hallOfFame: hallOfFame ? JSON.parse(JSON.stringify(hallOfFame)) : null,
+    hallOfFame: JSON.parse(JSON.stringify(hallOfFame)),
     readCount: 17
   };
+}
+
+function readPublicSnapshotPersistedArmyLists_() {
+  const model = readArmyListsReadModelPayload();
+  if (!model || !Array.isArray(model.lists))
+    throw new Error("Public snapshot Army Lists persisted model unavailable.");
+  return model;
+}
+
+function readPublicSnapshotPersistedArmyIntelligence_() {
+  const model = readArmyIntelligenceReadModelPayload();
+  if (!model || !Array.isArray(model.lists))
+    throw new Error("Public snapshot Army Intelligence persisted model unavailable.");
+  return model;
 }
 
 function freezePublicSnapshotTable_(table) {
@@ -815,6 +829,43 @@ function buildPublicSnapshotSchedule_(frozen, standings, events) {
     }),
     requests: requests
   }];
+}
+
+function buildPublicSnapshotHallOfFameStrict_(armyListsReadModel) {
+  const registry = buildPlayerRegistry();
+  updateRegistryStatistics(registry);
+  const displayNames = buildHallOfFameDisplayNameMap(registry);
+  const games = getAllRecentGameObjects();
+  const achievementsByPlayer = buildHallOfFameAchievementIndex(
+    getAllHallOfFameAchievementRecords()
+  );
+  const armyListCounts = buildHallOfFameArmyListCountIndex(
+    Array.isArray(armyListsReadModel.lists) ? armyListsReadModel.lists : []
+  );
+  const standings = getHallOfFameStandingsFromRegistry(registry, displayNames);
+  const context = {
+    registry: registry, displayNames: displayNames, games: games,
+    achievementsByPlayer: achievementsByPlayer, armyListCounts: armyListCounts,
+    standings: standings, seasonHistory: buildSeasonHistoryCards()
+  };
+  const records = getLeagueRecords(games);
+  const careers = buildHallOfFameCareers(standings, context);
+  return {
+    leaders: {
+      tournamentPoints: getHallOfFameLeaders(standings, "tp"),
+      objectivePoints: getHallOfFameLeaders(standings, "op"),
+      victoryPoints: getHallOfFameLeaders(standings, "vp"),
+      wins: getHallOfFameLeaders(standings, "wins"),
+      draws: getHallOfFameLeaders(standings, "draws"),
+      games: getHallOfFameLeaders(standings, "games")
+    },
+    records: records,
+    careerLeaders: buildHallOfFameCareerLeaders(careers),
+    recordBook: buildHallOfFameRecordBook(games, standings, careers, records),
+    leagueHistory: buildLeagueHistoryTimeline(standings, records),
+    seasonHistory: context.seasonHistory,
+    playerCareers: careers.slice(0, HALL_OF_FAME_LIMIT)
+  };
 }
 
 function buildPublicSnapshotStatistics_(players, games, hallOfFame) {

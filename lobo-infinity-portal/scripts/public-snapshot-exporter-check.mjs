@@ -14,6 +14,53 @@ assert.match(source, /livePointer: false/)
 assert.match(source, /duplicate Game ID/)
 assert.doesNotMatch(source, /current\.json/)
 
+function extractFunctions(text) {
+  const functions = new Map()
+  const pattern = /function\s+([A-Za-z_$][\w$]*)\s*\([^)]*\)\s*\{/g
+  let match
+  while ((match = pattern.exec(text))) {
+    const start = match.index
+    let depth = 0; let began = false; let end = pattern.lastIndex - 1
+    for (; end < text.length; end += 1) {
+      if (text[end] === '{') { depth += 1; began = true }
+      if (text[end] === '}') depth -= 1
+      if (began && depth === 0) { end += 1; break }
+    }
+    functions.set(match[1], text.slice(start, end))
+    pattern.lastIndex = end
+  }
+  return functions
+}
+
+const backendFunctions = new Map()
+for (const filename of fs.readdirSync('backend').filter((name) => name.endsWith('.gs'))) {
+  for (const [name, body] of extractFunctions(fs.readFileSync(`backend/${filename}`, 'utf8'))) {
+    backendFunctions.set(name, { body, filename })
+  }
+}
+const reachable = new Map()
+const pending = ['runBuildPublicSnapshotV1']
+while (pending.length) {
+  const name = pending.pop()
+  if (reachable.has(name) || !backendFunctions.has(name)) continue
+  const definition = backendFunctions.get(name)
+  reachable.set(name, definition)
+  for (const call of definition.body.matchAll(/\b([A-Za-z_$][\w$]*)\s*\(/g)) {
+    if (!reachable.has(call[1]) && backendFunctions.has(call[1])) pending.push(call[1])
+  }
+}
+const urlFetchReachable = [...reachable].filter(([, definition]) => /\bUrlFetchApp\b/.test(definition.body))
+assert.deepEqual(urlFetchReachable, [], `snapshot build reaches UrlFetch: ${urlFetchReachable.map(([name, value]) => `${value.filename}:${name}`).join(', ')}`)
+const forbiddenArmyCalls = [
+  'canonicalDecoderGatewayDecode_', 'resolveArmyCodeProfiles', 'decodeArmyCode',
+  'refreshArmyIntelligence', 'rebuildArmyIntelligenceReadModelPayloadAndPersist',
+  'getArmyListObjects', 'getCanonicalGameSubmittedArmyListObjects',
+  'appendCanonicalGameSubmittedArmyList',
+]
+assert.deepEqual(forbiddenArmyCalls.filter((name) => reachable.has(name)), [],
+  `snapshot build reaches Army decoding/reconstruction: ${forbiddenArmyCalls.filter((name) => reachable.has(name)).join(', ')}`)
+assert.equal(reachable.has('runPublishPublicSnapshotV1Proof'), false)
+
 const FORM = {
   DATE: 2, DIVISION: 1, MISSION: 3, PLAYER1: 4, PLAYER2: 5,
   P1TP: 6, P2TP: 7, P1OP: 8, P2OP: 9, P1VP: 10, P2VP: 11,
@@ -149,11 +196,34 @@ assert.deepEqual(Object.keys(game73Out).sort(), allowedGameKeys.sort())
 assert.deepEqual(Object.keys(standings[0].standings[0]).sort(),
   ['rank', 'player', 'displayName', 'games', 'wins', 'losses', 'draws', 'tp', 'op', 'vp'].sort())
 
-const publicArmy = sandbox.buildPublicSnapshotArmyLists_({ lists: [{
-  id: '3296098999', player: 'Lobo', armyCode: 'SECRET', armyLink: 'https://infinitytheuniverse.com/army/list/3296098999', approved: true,
-}] })
-assert.equal(publicArmy.length, 1)
+const publicArmy = sandbox.buildPublicSnapshotArmyLists_({ lists: [
+  { id: '3296098999', player: 'Lobo', armyCode: 'SECRET-A', armyLink: 'https://infinitytheuniverse.com/army/list/3296098999', approved: true },
+  { id: '4483300877', player: 'Nighthawkmk2', armyCode: 'SECRET-B', approved: true },
+  { id: '4113389343', player: 'Nighthawkmk2', armyCode: 'SECRET-C', approved: true },
+] })
+assert.deepEqual(publicArmy.map((list) => list.id), ['3296098999', '4483300877', '4113389343'])
 assert.equal('armyCode' in publicArmy[0], false)
 assert.equal(publicArmy[0].armyLink.includes('3296098999'), true)
+
+const persistedSandbox = { Array, Error }
+vm.createContext(persistedSandbox)
+for (const name of ['readPublicSnapshotPersistedArmyLists_', 'readPublicSnapshotPersistedArmyIntelligence_']) {
+  const definition = backendFunctions.get(name)
+  assert.ok(definition, `missing ${name}`)
+  vm.runInContext(definition.body, persistedSandbox)
+}
+persistedSandbox.readArmyListsReadModelPayload = () => ({ lists: [{ id: '3296098999' }, { id: '4483300877' }, { id: '4113389343' }] })
+persistedSandbox.readArmyIntelligenceReadModelPayload = () => ({ lists: [], summary: { decodedLists: 103, pendingLists: 0, failedLists: 0 } })
+assert.equal(persistedSandbox.readPublicSnapshotPersistedArmyLists_().lists.length, 3)
+assert.equal(persistedSandbox.readPublicSnapshotPersistedArmyIntelligence_().summary.decodedLists, 103)
+let decoderCalls = 0; let urlFetchCalls = 0
+persistedSandbox.CanonicalDecoderGateway = { decode() { decoderCalls += 1 } }
+persistedSandbox.UrlFetchApp = { fetch() { urlFetchCalls += 1 } }
+persistedSandbox.readArmyListsReadModelPayload = () => null
+assert.throws(() => persistedSandbox.readPublicSnapshotPersistedArmyLists_(), /Army Lists persisted model unavailable/)
+persistedSandbox.readArmyIntelligenceReadModelPayload = () => null
+assert.throws(() => persistedSandbox.readPublicSnapshotPersistedArmyIntelligence_(), /Army Intelligence persisted model unavailable/)
+assert.equal(decoderCalls, 0)
+assert.equal(urlFetchCalls, 0)
 
 console.log('Public Snapshot Exporter V1 regression passed.')
