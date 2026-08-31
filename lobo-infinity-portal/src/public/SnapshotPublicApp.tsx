@@ -119,7 +119,105 @@ function DashboardGameTable({games}:{games:PublicGame[]}) {
   return games.length ? <div className="table-wrapper snapshot-table-shell snapshot-dashboard-games"><table className="snapshot-data-table"><thead><tr><th>Game</th><th>Date</th><th>Players</th><th>Event / Type</th><th>Mission</th><th>TP</th><th>OP</th><th>VP</th></tr></thead><tbody>{games.map(game=><tr key={game.id}><td><Link className="snapshot-game-link" to={`/games/${game.id}`}>#{game.id}</Link></td><td>{formatDate(game.date)}</td><td><strong>{game.winnerDisplayName}</strong><span className="snapshot-versus">vs</span>{game.loserDisplayName}</td><td><span className="snapshot-dashboard-game-event">{game.eventName || game.gameType || '—'}</span>{game.eventName && game.gameType && game.gameType !== game.eventName ? <small>{game.gameType}</small> : null}</td><td><span className="snapshot-table-badge">{game.mission}</span></td><td>{game.tp}</td><td>{game.op}</td><td>{game.vp}</td></tr>)}</tbody></table></div> : <PublicEmptyState message="No public games are available in this snapshot." />
 }
 
-function Players() { const state=useSnapshotData<PublicPlayer[]>('players'); return <DataGate states={[state]}>{()=><Page title="Players" eyebrow="Current public directory"><CardGrid>{state.data!.map(p=><LinkCard key={p.player} to={`/players/${encodeURIComponent(p.player)}`} title={p.displayName} meta={`${p.divisionLabel || p.division} · ${p.games} games · ${p.wins}-${p.losses}-${p.draws}`} />)}</CardGrid></Page>}</DataGate> }
+function Players() {
+  const players = useSnapshotData<PublicPlayer[]>('players')
+  const events = useSnapshotData<PublicEvent[]>('events')
+  return <DataGate states={[players, events]}>{() => <PlayersDirectory players={players.data!} events={events.data!} />}</DataGate>
+}
+
+type PlayerDirectoryEntry = {
+  key: string
+  player: string
+  displayName: string
+  context: string
+  profile?: PublicPlayer
+}
+
+function PlayersDirectory({ players, events }: { players: PublicPlayer[]; events: PublicEvent[] }) {
+  const [selectedEventId, setSelectedEventId] = useState('all')
+  const [selectedLeagueDivision, setSelectedLeagueDivision] = useState('Main Man')
+  const playerById = new Map(players.map(player => [player.player, player]))
+  const currentLeague = events.find(event => event.id === 'event-current-league')
+  const leagueEntries = currentLeague ? eventPlayerEntries(currentLeague, playerById) : []
+  const leagueDivisions = [...new Set(leagueEntries.map(entry => entry.profile?.divisionLabel || entry.profile?.division).filter(Boolean) as string[])]
+    .sort((left, right) => left === 'Main Man' ? -1 : right === 'Main Man' ? 1 : left.localeCompare(right))
+  const defaultLeagueDivision = leagueDivisions.includes('Main Man') ? 'Main Man' : leagueDivisions[0] || ''
+  const selectedEvent = selectedEventId === 'all' ? undefined : events.find(event => event.id === selectedEventId)
+  const activeLeagueDivision = selectedLeagueDivision === 'all'
+    ? ''
+    : leagueDivisions.includes(selectedLeagueDivision) ? selectedLeagueDivision : defaultLeagueDivision
+  const allEntries = players.map(player => ({
+    key: player.player,
+    player: player.player,
+    displayName: player.displayName,
+    context: player.divisionLabel || player.division || 'Portal player',
+    profile: player,
+  }))
+  const eventEntries = selectedEvent ? eventPlayerEntries(selectedEvent, playerById) : allEntries
+  const visibleEntries = selectedEvent?.id === currentLeague?.id && activeLeagueDivision
+    ? leagueEntries.filter(entry => (entry.profile?.divisionLabel || entry.profile?.division) === activeLeagueDivision)
+    : eventEntries
+
+  return <main className="portal-shell snapshot-public-page snapshot-players-page" data-page="players">
+    <header className="snapshot-players-hero" aria-labelledby="players-title">
+      <p className="eyebrow">Lobo Infinity Portal</p>
+      <h1 id="players-title">Players</h1>
+    </header>
+    <section className="snapshot-players-controls" aria-label="Player directory filters">
+      <label htmlFor="players-event-filter">Event:</label>
+      <select id="players-event-filter" value={selectedEventId} onChange={event => {
+        const nextEventId = event.target.value
+        setSelectedEventId(nextEventId)
+        if (nextEventId === currentLeague?.id) setSelectedLeagueDivision(defaultLeagueDivision)
+      }}>
+        <option value="all">All Events</option>
+        {events.map(event => <option key={event.id} value={event.id}>{event.name}</option>)}
+      </select>
+    </section>
+    {selectedEvent?.id === currentLeague?.id ? <nav className="snapshot-players-division-switcher" aria-label="Current League player divisions">
+      {leagueDivisions.map(division => <button type="button" key={division} aria-pressed={activeLeagueDivision === division} onClick={() => setSelectedLeagueDivision(division)}>{division}</button>)}
+      <button type="button" aria-pressed={!activeLeagueDivision} onClick={() => setSelectedLeagueDivision('all')}>All League Players</button>
+    </nav> : null}
+    <section className="snapshot-player-directory" aria-label="Player directory">
+      {visibleEntries.length ? visibleEntries.map(entry => <PlayerDirectoryCard key={entry.key} entry={entry} />) : <PublicEmptyState message="No registered players are available for this event in the current snapshot." />}
+    </section>
+  </main>
+}
+
+function eventPlayerEntries(event: PublicEvent, playerById: Map<string, PublicPlayer>): PlayerDirectoryEntry[] {
+  const seen = new Set<string>()
+  return event.participants.flatMap((participant, index) => {
+    const player = participantText(participant, 'player')
+    if (!player || seen.has(player)) return []
+    seen.add(player)
+    const profile = playerById.get(player)
+    return [{
+      key: `${event.id}-${player}-${index}`,
+      player,
+      displayName: profile?.displayName || participantText(participant, 'displayName') || player,
+      context: event.id === 'event-current-league'
+        ? profile?.divisionLabel || profile?.division || event.name
+        : participantText(participant, 'team') || event.name,
+      profile,
+    }]
+  })
+}
+
+function participantText(participant: Record<string, unknown>, key: string) {
+  const value = participant[key]
+  return typeof value === 'string' ? value.trim() : ''
+}
+
+function PlayerDirectoryCard({ entry }: { entry: PlayerDirectoryEntry }) {
+  const content = <>
+    <span className="snapshot-player-directory-context">{entry.context}</span>
+    <strong>{entry.displayName}</strong>
+    {entry.profile ? <span className="snapshot-player-directory-record">{entry.profile.games} Games · {entry.profile.wins}-{entry.profile.losses}-{entry.profile.draws}</span> : null}
+  </>
+  return entry.profile
+    ? <Link className="snapshot-player-directory-entry" to={`/players/${encodeURIComponent(entry.profile.player)}`}>{content}</Link>
+    : <article className="snapshot-player-directory-entry">{content}</article>
+}
 function PlayerProfile(){const {playerName=''}=useParams();const players=useSnapshotData<PublicPlayer[]>('players');const games=useSnapshotData<PublicGame[]>('games');return <DataGate states={[players,games]}>{()=>{const p=players.data!.find(x=>x.player===decodeURIComponent(playerName));if(!p)return <Missing label="Player"/>;const history=games.data!.filter(g=>g.winner===p.player||g.loser===p.player);return <Page title={p.displayName} eyebrow={p.divisionLabel||p.division}><MetricGrid items={[['Games',p.games],['Record',`${p.wins}-${p.losses}-${p.draws}`],['TP',p.tp],['OP',p.op],['VP',p.vp],['Faction',p.favoriteArmy||p.favoriteFaction||p.faction||'—']]} /><Panel title="Game History"><GameTable games={history}/></Panel></Page>}}</DataGate>}
 function Games(){const state=useSnapshotData<PublicGame[]>('games');return <DataGate states={[state]}>{()=><Page title="Games & Results" eyebrow="Immutable public results"><GameTable games={[...state.data!].reverse()}/></Page>}</DataGate>}
 function GameDetail(){const {id=''}=useParams();const state=useSnapshotData<PublicGame[]>('games');return <DataGate states={[state]}>{()=>{const g=state.data!.find(x=>String(x.id)===id);if(!g)return <Missing label="Game"/>;return <Page title={`Game ${g.id}`} eyebrow={`${g.eventName} · ${g.division}`} intro={`${g.winnerDisplayName} vs ${g.loserDisplayName}`}><MetricGrid items={[['Winner',g.winnerDisplayName],['Mission',g.mission],['TP',g.tp],['OP',g.op],['VP',g.vp],['Date',formatDate(g.date)]]}/><Panel title="Factions"><p>{g.winnerFaction} vs {g.loserFaction}</p></Panel>{g.bestMoment?<Panel title="Best Moment"><p>{g.bestMoment}</p></Panel>:null}</Page>}}</DataGate>}
