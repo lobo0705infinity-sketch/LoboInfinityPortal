@@ -415,7 +415,7 @@ function ArmyListCard({
           </div>
         </dl>
         <div className="army-list-actions army-list-library-actions">
-          <ArmyListExternalLink armyCode={list.armyCode} />
+          <ArmyListExternalLink armyCode={list.armyCode} armyLink={list.armyLink} />
           <Link to={list.battleReportPath}>View Battle Report</Link>
           {canDiagnose ? (
             <button
@@ -543,7 +543,10 @@ function DiagnosticList({ title, values }: { title: string; values: string[] }) 
   )
 }
 
-function ArmyListExternalLink({ armyCode }: { armyCode: string }) {
+function ArmyListExternalLink({ armyCode, armyLink }: { armyCode: string; armyLink?: string }) {
+  if (armyLink) {
+    return <a href={armyLink} rel="noreferrer" target="_blank">View in Infinity Army</a>
+  }
   const target = getInfinityArmyTarget(armyCode)
 
   if (target.status === 'available') {

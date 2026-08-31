@@ -10,6 +10,7 @@ import type {
   Standing,
 } from '../types/dashboard'
 import { formatNotificationTimestamp } from './formatting'
+import { publicSnapshotApi } from './publicSnapshotApi'
 import {
   API_URL,
   getActiveNativeSessionToken,
@@ -809,6 +810,8 @@ export type SubmittedArmyListEntry = {
   id: string
   gameId: number
   armyCode: string
+  armyLink?: string
+  armyName?: string
   battleReportPath: string
   date: string
   eventId: string
@@ -4470,6 +4473,7 @@ export const apiClient: ApiClient = {
   getOperationsSeason,
   operationsAction,
   refreshArmyIntelligenceSnapshots,
+  ...publicSnapshotApi,
 }
 
 export function normalizeDashboardPayload(payload: unknown): DashboardData {

@@ -1,32 +1,33 @@
-import {
-  normalizePlayerComparisonPayload,
-  normalizePlayersPayload,
-  type PlayerComparisonData,
-} from './api'
-import type { DivisionStandings } from '../types/dashboard'
+import { normalizePlayerComparisonPayload, type PlayerComparisonData } from './api'
+import type { DivisionKey, DivisionStandings, Standing } from '../types/dashboard'
+import { getPublicSnapshotDataset } from './publicSnapshot'
 
-export async function getPublicPlayersProjection({
-  signal,
-}: {
-  signal?: AbortSignal
-} = {}): Promise<DivisionStandings[]> {
-  const startedAt = performance.now()
-  const response = await fetch('/api/public-players-projection', { signal })
-  const payload = await response.json()
-  if (!response.ok || payload?.success !== true) {
-    throw new Error(payload?.error || 'Player data could not be loaded.')
-  }
-  if (payload?.eventId !== '') {
-    throw new Error('Public Players projection scope is invalid.')
-  }
+type SnapshotPlayer = Standing & { division: string }
+type SnapshotGame = { winner: string; loser: string; gameResult?: string }
 
-  const result = normalizePlayersPayload(payload)
-  performance.measure('lobo:public-players-projection', {
-    start: startedAt,
-    end: performance.now(),
-    detail: { playerCount: result.reduce((total, division) => total + division.standings.length, 0) },
-  })
-  return result
+const divisions: Array<{ key: DivisionKey; label: string }> = [
+  { key: 'main', label: 'Main Man' },
+  { key: 'pga', label: 'Proving Grounds A' },
+  { key: 'pgb', label: 'Proving Grounds B' },
+  { key: 'casual', label: 'Casual' },
+]
+
+export async function getPublicPlayersProjection({ signal }: { signal?: AbortSignal } = {}) {
+  const players = await getPublicSnapshotDataset<SnapshotPlayer[]>('players', signal)
+  return divisions.map(({ key, label }): DivisionStandings => {
+    const standings = players.filter((player) => player.division === label)
+    return {
+      division: key,
+      divisionLabel: label,
+      standings,
+      summary: {
+        activePlayers: standings.filter((player) => player.games > 0).length,
+        gamesPlayed: Math.round(standings.reduce((total, player) => total + player.games, 0) / 2),
+        leader: standings[0] ?? null,
+        players: standings.length,
+      },
+    }
+  }).filter((division) => division.standings.length > 0)
 }
 
 export type PublicPlayersComparisonProjection = {
@@ -36,54 +37,30 @@ export type PublicPlayersComparisonProjection = {
 
 export async function getPublicPlayersComparisonProjection({
   signal,
-}: {
-  signal?: AbortSignal
-} = {}): Promise<PublicPlayersComparisonProjection> {
-  const startedAt = performance.now()
-  const response = await fetch('/api/public-players-projection', { signal })
-  const payload = await response.json()
-  if (!response.ok || payload?.success !== true || payload?.eventId !== '') {
-    throw new Error(payload?.error || 'Player comparison data could not be loaded.')
-  }
-
-  const divisions = normalizePlayersPayload(payload)
-  const comparisonPlayers = Array.isArray(payload?.comparison?.players)
-    ? payload.comparison.players
-    : []
-  const headToHeadRows = Array.isArray(payload?.comparison?.headToHead)
-    ? payload.comparison.headToHead
-    : []
-
-  performance.measure('lobo:public-players-comparison-projection', {
-    start: startedAt,
-    end: performance.now(),
-    detail: { playerCount: comparisonPlayers.length },
-  })
-
+}: { signal?: AbortSignal } = {}): Promise<PublicPlayersComparisonProjection> {
+  const [playerDivisions, players, games] = await Promise.all([
+    getPublicPlayersProjection({ signal }),
+    getPublicSnapshotDataset<SnapshotPlayer[]>('players', signal),
+    getPublicSnapshotDataset<SnapshotGame[]>('games', signal),
+  ])
   return {
-    divisions,
+    divisions: playerDivisions,
     getComparison(left, right) {
-      const players = [left, right].map((name) =>
-        comparisonPlayers.find((player: { name?: unknown }) => player?.name === name),
+      const selected = [left, right].map((name) => players.find((player) => player.player === name))
+      if (!selected[0] || !selected[1]) throw new Error('One or both players could not be found.')
+      const resolvedPlayers = selected as [SnapshotPlayer, SnapshotPlayer]
+      const headToHead = games.filter((game) =>
+        (game.winner === left && game.loser === right) ||
+        (game.winner === right && game.loser === left),
       )
-      if (!players[0] || !players[1]) {
-        throw new Error('One or both players could not be found.')
-      }
-
-      const ordered = [left, right].sort()
-      const row = headToHeadRows.find(
-        (item: { left?: unknown; right?: unknown }) =>
-          item?.left === ordered[0] && item?.right === ordered[1],
-      )
-      const leftIsStoredLeft = left === ordered[0]
       return normalizePlayerComparisonPayload({
         success: true,
-        players,
+        players: resolvedPlayers.map((player) => ({ ...player, name: player.player })),
         headToHead: {
-          games: row?.games ?? 0,
-          leftWins: leftIsStoredLeft ? row?.leftWins ?? 0 : row?.rightWins ?? 0,
-          rightWins: leftIsStoredLeft ? row?.rightWins ?? 0 : row?.leftWins ?? 0,
-          draws: row?.draws ?? 0,
+          games: headToHead.length,
+          leftWins: headToHead.filter((game) => game.winner === left).length,
+          rightWins: headToHead.filter((game) => game.winner === right).length,
+          draws: headToHead.filter((game) => game.gameResult === 'Draw').length,
         },
       })
     },

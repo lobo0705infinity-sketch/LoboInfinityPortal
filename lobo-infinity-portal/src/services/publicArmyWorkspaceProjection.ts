@@ -1,37 +1,55 @@
 import {
-  buildSubmittedArmyListLibraryFromSources,
   normalizeArmyIntelligenceFactionProjection,
   normalizeArmyIntelligenceSummaryProjection,
   type ArmyIntelligenceFactionData,
   type ArmyIntelligenceSummaryData,
   type SubmittedArmyListEntry,
 } from './api'
+import { getPublicSnapshotDataset } from './publicSnapshot'
 
-async function readSection(section: string, options: { faction?: string; signal?: AbortSignal } = {}) {
-  const query = new URLSearchParams({ section })
-  if (options.faction) query.set('faction', options.faction)
-  const startedAt = performance.now()
-  const response = await fetch(`/api/public-army-workspace-projection?${query}`, { signal: options.signal })
-  const payload = await response.json()
-  if (!response.ok || payload?.success !== true || payload?.projection == null) {
-    throw new Error(payload?.error || 'Army public data could not be loaded.')
-  }
-  performance.measure(`lobo:public-army-${section}`, { start: startedAt, end: performance.now() })
-  return payload.projection
+type SnapshotArmyList = Omit<SubmittedArmyListEntry, 'armyCode' | 'gameType' | 'result'> & {
+  armyLink?: string
+  armyName?: string
+  gameType: string
+  result: string
 }
 
 export const publicArmyWorkspace = {
   getArmyLists: async (signal?: AbortSignal): Promise<SubmittedArmyListEntry[]> => {
-    const artifact = await readSection('armyLists', { signal })
-    return buildSubmittedArmyListLibraryFromSources(
-      artifact?.games,
-      artifact?.casualGames,
-      artifact?.tournamentGames,
-      artifact?.events,
-    )
+    const lists = await getPublicSnapshotDataset<SnapshotArmyList[]>('army-lists', signal)
+    return lists.map((list) => ({
+      ...list,
+      armyCode: '',
+      armyLink: list.armyLink ?? '',
+      armyName: list.armyName ?? '',
+      gameType: normalizeGameType(list.gameType),
+      result: normalizeResult(list.result),
+    }))
   },
-  getIntelligenceSummary: async (signal?: AbortSignal): Promise<ArmyIntelligenceSummaryData> =>
-    normalizeArmyIntelligenceSummaryProjection(await readSection('intelligenceSummary', { signal })),
-  getIntelligenceFaction: async (faction: string, signal?: AbortSignal): Promise<ArmyIntelligenceFactionData> =>
-    normalizeArmyIntelligenceFactionProjection(await readSection('intelligenceFaction', { faction, signal })),
+  getIntelligenceSummary: async (signal?: AbortSignal): Promise<ArmyIntelligenceSummaryData> => {
+    const summary = await getPublicSnapshotDataset<unknown[]>('army-intelligence-summary', signal)
+    return normalizeArmyIntelligenceSummaryProjection(summary[0])
+  },
+  getIntelligenceFaction: async (
+    faction: string,
+    signal?: AbortSignal,
+  ): Promise<ArmyIntelligenceFactionData> => {
+    const details = await getPublicSnapshotDataset<Array<{ faction: string }>>(
+      'army-intelligence-detail', signal,
+    )
+    const detail = details.find((item) => item.faction === faction)
+    if (!detail) throw new Error('Army Intelligence detail is unavailable for this faction.')
+    return normalizeArmyIntelligenceFactionProjection(detail)
+  },
+}
+
+function normalizeGameType(value: string): SubmittedArmyListEntry['gameType'] {
+  if (/casual/i.test(value)) return 'Casual'
+  if (/tournament/i.test(value)) return 'Tournament'
+  return 'League'
+}
+
+function normalizeResult(value: string): SubmittedArmyListEntry['result'] {
+  if (value === 'Loss' || value === 'Draw') return value
+  return 'Win'
 }
