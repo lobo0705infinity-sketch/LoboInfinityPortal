@@ -1125,7 +1125,8 @@ main.snapshot-event-page[data-event="current-league-schedule"] {
 main.snapshot-event-page[data-event="current-league-schedule"] > .snapshot-event-hero {
   position: relative;
   min-height: 0;
-  aspect-ratio: 1536 / 820;
+  /* Top-anchored crop retains the title and all three figures; it removes only the decorative lower artwork controls. */
+  aspect-ratio: 1536 / 740;
   overflow: hidden;
   padding: 0;
   border-color: rgba(76, 201, 240, 0.3);
