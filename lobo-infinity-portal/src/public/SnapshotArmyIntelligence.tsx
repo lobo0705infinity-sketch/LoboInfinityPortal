@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { type ReactNode, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import InteractiveMetricCard from '../components/InteractiveMetricCard'
 import { useSnapshotData } from './useSnapshotData'
 import './SnapshotArmyIntelligence.css'
 
@@ -77,6 +78,8 @@ type DetailGroup = {
 
 type ResultFilter = 'all' | 'winning' | 'losing'
 type UsageSort = 'coverage' | 'selections' | 'points' | 'alphabetical'
+type ExplorerSort = 'submissionDate' | 'player' | 'sectorial' | 'points'
+type MetricIcon = 'impetuous' | 'irregular' | 'lieutenant' | 'lists' | 'points' | 'regular' | 'tactical' | 'wounds'
 
 type UsageRow = {
   equipment: string[]
@@ -91,13 +94,18 @@ type UsageRow = {
   weapons: string[]
 }
 
+type RoleRow = {
+  label: string
+  profiles: UsageRow[]
+}
+
 export default function SnapshotArmyIntelligence() {
   const summary = useSnapshotData<Summary[]>('army-intelligence-summary')
   const [params, setParams] = useSearchParams()
   const selected = params.get('faction') ?? ''
 
   if (summary.error) return <PageState title="Army Intelligence unavailable" message={summary.error} error />
-  if (!summary.data) return <PageState title="Loading Army Intelligence" message="Loading public coverage and faction options…" />
+  if (!summary.data) return <PageState title="Loading Army Intelligence" message="Loading public coverage and faction options..." />
 
   const data = summary.data[0]
   if (!data?.available) return <PageState title="Army Intelligence unavailable" message="Persisted public intelligence is not available in this snapshot." error />
@@ -117,25 +125,25 @@ export default function SnapshotArmyIntelligence() {
       </div>
     </header>
 
-    <section className="panel snapshot-intelligence-selector" aria-label="Army selection">
+    <section className="panel snapshot-intelligence-selector" aria-label="Army Intelligence analysis controls">
       <label>
-        <span>Faction or sectorial</span>
+        <span>Select sectorial</span>
         <select value={selected} onChange={(event) => {
           const next = new URLSearchParams(params)
           if (event.target.value) next.set('faction', event.target.value)
           else next.delete('faction')
           setParams(next)
         }}>
-          <option value="">Choose an army to analyze</option>
+          <option value="">Choose a sectorial</option>
           {data.options.map((option) => <option key={option} value={option}>{option}</option>)}
         </select>
       </label>
-      <p>Select a faction or sectorial to load its persisted intelligence detail.</p>
+      <p>Select a faction or sectorial to load its persisted intelligence detail from this immutable public snapshot.</p>
     </section>
 
     {selected
       ? <ArmyIntelligenceDetail selected={selected} />
-      : <PageState compact title="Select an army" message="Choose a faction or sectorial above to explore its lists, profiles, roles, and equipment." />}
+      : <PageState compact title="Select an army" message="Choose a faction or sectorial to view army-list analysis." />}
   </main>
 }
 
@@ -147,11 +155,15 @@ function ArmyIntelligenceDetail({ selected }: { selected: string }) {
   const [skill, setSkill] = useState('')
   const [weapon, setWeapon] = useState('')
   const [equipment, setEquipment] = useState('')
-  const [sort, setSort] = useState<UsageSort>('coverage')
-  const [listSearch, setListSearch] = useState('')
+  const [sort, setSort] = useState<UsageSort>('alphabetical')
+  const [explorerOpen, setExplorerOpen] = useState(false)
+  const [explorerSearch, setExplorerSearch] = useState('')
+  const [explorerPlayer, setExplorerPlayer] = useState('')
+  const [explorerSectorial, setExplorerSectorial] = useState('')
+  const [explorerSort, setExplorerSort] = useState<ExplorerSort>('submissionDate')
 
   if (detail.error) return <PageState compact error title="Detail could not be loaded" message="The immutable Army Intelligence detail file is unavailable. No live fallback was attempted." />
-  if (!detail.data) return <PageState compact title={`Loading ${selected}`} message="Loading persisted profiles, lists, and composition data…" />
+  if (!detail.data) return <PageState compact title={`Loading ${selected}`} message="Loading persisted profiles, lists, and composition data..." />
 
   const scope = selectScope(detail.data, selected)
   if (!scope.length) return <PageState compact title="No intelligence" message={`${selected} has no persisted intelligence group in this snapshot.`} />
@@ -172,76 +184,178 @@ function ArmyIntelligenceDetail({ selected }: { selected: string }) {
       && (!weapon || row.weapons.includes(weapon))
       && (!equipment || row.equipment.includes(equipment))
   }), sort, lists.length)
-  const visibleLists = publicLists
-    .filter((list) => !listSearch.trim() || `${list.playerDisplayName} ${list.armyName} ${list.sectorial}`.toLowerCase().includes(listSearch.trim().toLowerCase()))
-    .sort((a, b) => b.submissionDate.localeCompare(a.submissionDate))
   const entries = lists.flatMap(getEntries)
   const orderTotals = lists.map((list) => list.decoded?.orderCounts ?? {})
-  const avg = (key: string) => round(average(orderTotals.map((orders) => Number(orders[key] ?? 0))))
+  const avg = (...keys: string[]) => round(average(orderTotals.map((orders) => keys.reduce((value, key) => value || Number(orders[key] ?? 0), 0))))
   const roleRows = buildRoles(usage)
   const missions = countValues(lists.map((list) => list.mission).filter(Boolean))
+  const players = unique(publicLists.map((list) => list.playerDisplayName || list.player).filter(Boolean))
+  const sectorials = unique(publicLists.map((list) => list.sectorial || list.faction).filter(Boolean))
+  const visibleLists = sortExplorerLists(publicLists.filter((list) => {
+    const query = explorerSearch.trim().toLowerCase()
+    const player = list.playerDisplayName || list.player
+    const sectorial = list.sectorial || list.faction
+    return (!query || `${player} ${list.armyName} ${sectorial}`.toLowerCase().includes(query))
+      && (!explorerPlayer || player === explorerPlayer)
+      && (!explorerSectorial || sectorial === explorerSectorial)
+  }), explorerSort)
+  const averagePoints = round(average(lists.map((list) => Number(list.decoded?.totals.points ?? 0))))
+  const averageDurability = round(average(entries.map((entry) => Number(entry.wounds ?? entry.structure ?? 0)).filter((value) => value > 0)))
 
   return <>
-    <section className="panel snapshot-intelligence-controls" aria-label="Intelligence filters">
-      <label><span>Analyze</span><select value={resultFilter} onChange={(event) => setResultFilter(event.target.value as ResultFilter)}><option value="all">All decoded lists</option><option value="winning">Winning lists</option><option value="losing">Losing lists</option></select></label>
-      <label><span>Profile search</span><input type="search" placeholder="Troop or profile" value={search} onChange={(event) => setSearch(event.target.value)} /></label>
-      <label><span>Troop type</span><select value={troopType} onChange={(event) => setTroopType(event.target.value)}><option value="">All types</option>{troopTypes.map((value) => <option key={value}>{value}</option>)}</select></label>
-      <label><span>Skill</span><select value={skill} onChange={(event) => setSkill(event.target.value)}><option value="">All skills</option>{skills.map((value) => <option key={value}>{value}</option>)}</select></label>
-      <label><span>Weapon</span><select value={weapon} onChange={(event) => setWeapon(event.target.value)}><option value="">All weapons</option>{weapons.map((value) => <option key={value}>{value}</option>)}</select></label>
-      <label><span>Equipment</span><select value={equipment} onChange={(event) => setEquipment(event.target.value)}><option value="">All equipment</option>{equipmentOptions.map((value) => <option key={value}>{value}</option>)}</select></label>
-      <label><span>Sort profiles</span><select value={sort} onChange={(event) => setSort(event.target.value as UsageSort)}><option value="coverage">List coverage</option><option value="selections">Total selections</option><option value="points">Points</option><option value="alphabetical">Alphabetical</option></select></label>
+    <section className="panel snapshot-intelligence-controls" aria-label="Model Usage filters">
+      <label><span>Analyze</span><select value={resultFilter} onChange={(event) => setResultFilter(event.target.value as ResultFilter)}><option value="all">All Army Lists</option><option value="winning">Army Lists with a Winning Record</option><option value="losing">Army Lists with a Losing Record</option></select></label>
+      <label><span>Type</span><select value={troopType} onChange={(event) => setTroopType(event.target.value)}><option value="">All Types</option>{troopTypes.map((value) => <option key={value}>{value}</option>)}</select></label>
+      <label><span>Sort</span><select value={sort} onChange={(event) => setSort(event.target.value as UsageSort)}><option value="alphabetical">Alphabetically</option><option value="coverage">List Coverage</option><option value="selections">Total Selections</option><option value="points">Points: High to Low</option></select></label>
+      <label><span>Search</span><input type="search" placeholder="Troop or profile" value={search} onChange={(event) => setSearch(event.target.value)} /></label>
+      <label><span>Skill</span><select value={skill} onChange={(event) => setSkill(event.target.value)}><option value="">All Skills</option>{skills.map((value) => <option key={value}>{value}</option>)}</select></label>
+      <label><span>Weapon</span><select value={weapon} onChange={(event) => setWeapon(event.target.value)}><option value="">All Weapons</option>{weapons.map((value) => <option key={value}>{value}</option>)}</select></label>
+      <label><span>Equipment</span><select value={equipment} onChange={(event) => setEquipment(event.target.value)}><option value="">All Equipment</option>{equipmentOptions.map((value) => <option key={value}>{value}</option>)}</select></label>
     </section>
 
     {lists.length ? <>
-      <section className="snapshot-intelligence-metrics" aria-label={`${selected} intelligence summary`}>
-        <Metric label="Decoded lists" value={lists.length} />
-        <Metric label="Public lists" value={publicLists.length} />
-        <Metric label="Average points" value={round(average(lists.map((list) => Number(list.decoded?.totals.points ?? 0))))} />
-        <Metric label="Average SWC" value={round(average(lists.map((list) => Number(list.decoded?.totals.swc ?? 0))))} />
-        <Metric label="Regular orders" value={avg('regular')} />
-        <Metric label="Irregular orders" value={avg('irregular')} />
-        <Metric label="Models analyzed" value={entries.length} />
-        <Metric label="Profiles found" value={usage.length} />
+      <IntelligenceBrief
+        faction={selected}
+        lists={lists.length}
+        mission={missions[0]?.label ?? ''}
+        primaryProfile={usage[0]?.name ?? ''}
+        roles={roleRows}
+      />
+
+      <section className="snapshot-intelligence-metrics snapshot-intelligence-mature-metrics" aria-label={`${selected} intelligence summary`}>
+        <IntelligenceMetric icon="lists" label="Known Army Lists" value={publicLists.length} helper="Browse submitted army lists" onActivate={() => setExplorerOpen(true)} />
+        <IntelligenceMetric icon="regular" label="Average Regular Orders" value={avg('regular')} />
+        <IntelligenceMetric icon="irregular" label="Average Irregular Orders" value={avg('irregular')} />
+        <IntelligenceMetric icon="tactical" label="Average Tactical Awareness Orders" value={avg('tacticalAwareness', 'tactical')} />
+        <IntelligenceMetric icon="impetuous" label="Average Impetuous Orders" value={avg('impetuous')} />
+        <IntelligenceMetric icon="lieutenant" label="Average Lieutenant Orders" value={avg('lieutenant')} />
+        <IntelligenceMetric icon="wounds" label="Average Wounds / Structure per Model" value={averageDurability} />
+        <IntelligenceMetric icon="points" label="Average Points" value={averagePoints} />
       </section>
 
-      <section className="snapshot-intelligence-layout">
-        <Panel eyebrow="Local analysis" title="Intelligence Brief">
-          <ul className="snapshot-intelligence-brief">
-            <li><strong>{usage[0]?.name ?? 'No profile'}</strong> has the broadest list coverage.</li>
-            <li><strong>{roleRows.find((row) => row.label === 'Specialists')?.profiles.length ?? 0}</strong> specialist profiles appear in this selection.</li>
-            <li><strong>{missions[0]?.label ?? 'No mission recorded'}</strong> is the most represented mission.</li>
-            <li><strong>{scope.map((group) => group.faction).join(', ')}</strong> is represented by {lists.length} decoded public lists.</li>
-          </ul>
-        </Panel>
-        <Panel eyebrow="Composition" title="Role Coverage">
-          <div className="snapshot-role-grid">{roleRows.map((row) => <article key={row.label}><span>{row.label}</span><strong>{row.profiles.length}</strong><small>{row.profiles.slice(0, 4).join(', ') || 'None recorded'}</small></article>)}</div>
-        </Panel>
+      <UsagePanel items={visibleUsage} listCount={lists.length} title="Model Usage" wide />
+
+      <section className="snapshot-intelligence-role-grid" aria-label="Role usage breakdowns">
+        {roleRows.map((row) => <RoleDisclosure key={row.label} row={row} listCount={lists.length} />)}
       </section>
 
-      <Panel eyebrow="Unit intelligence" title={`Model Usage — ${selected}`}>
-        {visibleUsage.length ? <div className="snapshot-intelligence-table"><table><thead><tr><th>Unit / profile</th><th>Type</th><th>Points</th><th>Lists</th><th>Selections</th><th>Coverage</th><th>Roles</th></tr></thead><tbody>{visibleUsage.map((row) => <tr key={row.name}><td><strong>{row.name}</strong>{row.profiles.length > 1 ? <small>{row.profiles.slice(0, 3).join(' · ')}</small> : null}</td><td>{row.troopType || '—'}</td><td>{row.points || '—'}</td><td>{row.listCount}</td><td>{row.selections}</td><td>{Math.round((row.listCount / lists.length) * 100)}%</td><td>{row.roles.join(', ') || '—'}</td></tr>)}</tbody></table></div> : <Empty message="No profiles match the current filters." />}
-      </Panel>
-
-      <Panel eyebrow="Submitted forces" title="Army List Explorer">
-        <div className="snapshot-list-search"><input type="search" placeholder="Search player, list, or sectorial" value={listSearch} onChange={(event) => setListSearch(event.target.value)} /><span>{visibleLists.length} lists</span></div>
-        {visibleLists.length ? <div className="snapshot-intelligence-table"><table><thead><tr><th>Date</th><th>Player</th><th>Army</th><th>Faction / sectorial</th><th>Points</th><th>SWC</th><th>Source</th><th>Public link</th></tr></thead><tbody>{visibleLists.map((list) => <tr key={list.id}><td>{formatDate(list.submissionDate)}</td><td><strong>{list.playerDisplayName || list.player}</strong></td><td>{list.armyName}</td><td>{list.sectorial || list.faction}</td><td>{list.points}</td><td>{list.swc}</td><td>{list.source}</td><td>{list.armyLink ? <a href={list.armyLink} target="_blank" rel="noreferrer">Open list</a> : '—'}</td></tr>)}</tbody></table></div> : <Empty message="No submitted lists match this search." />}
-      </Panel>
-    </> : <PageState compact title="No matching intelligence" message="No decoded lists match the selected army and result filter." />}
+      <ArmyListExplorer
+        lists={visibleLists}
+        open={explorerOpen}
+        players={players}
+        player={explorerPlayer}
+        search={explorerSearch}
+        sectorial={explorerSectorial}
+        sectorials={sectorials}
+        sort={explorerSort}
+        onClose={() => setExplorerOpen(false)}
+        onPlayerChange={setExplorerPlayer}
+        onSearchChange={setExplorerSearch}
+        onSectorialChange={setExplorerSectorial}
+        onSortChange={setExplorerSort}
+      />
+    </> : <PageState compact title="No matching intelligence" message="No decoded lists match the selected sectorial and result filter." />}
   </>
 }
 
-function Panel({ eyebrow, title, children }: { eyebrow: string; title: string; children: React.ReactNode }) {
-  return <section className="panel snapshot-intelligence-panel"><div className="panel-heading"><p className="eyebrow">{eyebrow}</p><h2>{title}</h2></div><div className="snapshot-intelligence-panel-body">{children}</div></section>
+function IntelligenceBrief({ faction, lists, mission, primaryProfile, roles }: { faction: string; lists: number; mission: string; primaryProfile: string; roles: RoleRow[] }) {
+  const specialists = roles.find((row) => row.label === 'Specialist Operatives')?.profiles.length ?? 0
+  const strongestRole = [...roles].sort((a, b) => b.profiles.length - a.profiles.length)[0]
+  return <section className="panel snapshot-intelligence-brief-panel" aria-labelledby="snapshot-intelligence-brief-title">
+    <div className="snapshot-intelligence-brief-header"><span>Intelligence Brief</span><h2 id="snapshot-intelligence-brief-title">{faction}</h2></div>
+    <ul>
+      <li><strong>{primaryProfile || 'No profile recorded'}</strong><span>has the broadest list coverage in the selected sample.</span></li>
+      <li><strong>{specialists} specialist profiles</strong><span>appear across the submitted forces.</span></li>
+      <li><strong>{strongestRole?.label ?? 'No role coverage'}</strong><span>is the most represented operational role.</span></li>
+      <li><strong>{mission || 'No mission recorded'}</strong><span>is the most represented mission across {lists} decoded lists.</span></li>
+    </ul>
+  </section>
 }
 
-function Metric({ label, value }: { label: string; value: number | string }) {
-  return <article><span>{label}</span><strong>{value}</strong></article>
+function IntelligenceMetric({ icon, label, value, helper, onActivate }: { icon: MetricIcon; label: string; value: number; helper?: string; onActivate?: () => void }) {
+  return <InteractiveMetricCard
+    ariaLabel={onActivate ? `Browse ${label}` : label}
+    className="snapshot-intelligence-metric"
+    helperText={helper}
+    icon={<MetricIcon icon={icon} />}
+    label={label}
+    onActivate={onActivate}
+    value={formatNumber(value)}
+  />
+}
+
+function MetricIcon({ icon }: { icon: MetricIcon }) {
+  return <span className={`snapshot-intelligence-metric-icon is-${icon}`} aria-hidden="true" />
+}
+
+function UsagePanel({ items, listCount, title, wide = false }: { items: UsageRow[]; listCount: number; title: string; wide?: boolean }) {
+  return <Panel eyebrow="Unit intelligence" title={title} className={wide ? 'snapshot-intelligence-panel-wide' : ''}>
+    {items.length ? <div className="snapshot-intelligence-usage-groups">
+      {items.map((row) => <details className="snapshot-intelligence-usage-group" key={row.name}>
+        <summary>
+          <span className="snapshot-intelligence-profile-cell"><strong>{row.name}</strong><small>{row.troopType || 'Profile'} {row.profiles.length > 1 ? `- ${row.profiles.length} profiles` : ''}</small></span>
+          <span>{row.points || '—'} pts</span>
+          <span>{row.listCount} lists</span>
+          <span>{listCount ? Math.round((row.listCount / listCount) * 100) : 0}% coverage</span>
+        </summary>
+        <div className="snapshot-intelligence-profile-usage">
+          <p><strong>Profiles</strong> {row.profiles.join(' · ') || row.name}</p>
+          <p><strong>Roles</strong> {row.roles.join(', ') || 'None recorded'}</p>
+          <p><strong>Skills</strong> {row.skills.join(', ') || 'None recorded'}</p>
+          <p><strong>Weapons</strong> {row.weapons.join(', ') || 'None recorded'}</p>
+          <p><strong>Equipment</strong> {row.equipment.join(', ') || 'None recorded'}</p>
+        </div>
+      </details>)}
+    </div> : <Empty message="No profiles match the current filters." />}
+  </Panel>
+}
+
+function RoleDisclosure({ row, listCount }: { row: RoleRow; listCount: number }) {
+  return <details className="snapshot-intelligence-role-disclosure">
+    <summary><span>Role coverage</span><strong>{row.label}</strong><small>{row.profiles.length} profiles</small></summary>
+    <UsagePanel items={row.profiles} listCount={listCount} title={row.label} />
+  </details>
+}
+
+function ArmyListExplorer({ lists, open, players, player, search, sectorial, sectorials, sort, onClose, onPlayerChange, onSearchChange, onSectorialChange, onSortChange }: {
+  lists: ArmyList[]
+  open: boolean
+  players: string[]
+  player: string
+  search: string
+  sectorial: string
+  sectorials: string[]
+  sort: ExplorerSort
+  onClose: () => void
+  onPlayerChange: (value: string) => void
+  onSearchChange: (value: string) => void
+  onSectorialChange: (value: string) => void
+  onSortChange: (value: ExplorerSort) => void
+}) {
+  if (!open) return null
+  return <div className="snapshot-intelligence-explorer-backdrop" role="presentation" onMouseDown={onClose}>
+    <section className="snapshot-intelligence-explorer-panel" role="dialog" aria-modal="true" aria-label="Army List Explorer" onMouseDown={(event) => event.stopPropagation()}>
+      <header className="snapshot-intelligence-explorer-header"><div><p className="eyebrow">Army List Explorer</p><h2>Submitted forces</h2></div><button type="button" onClick={onClose}>Close</button></header>
+      <div className="snapshot-intelligence-explorer-stats"><article><span>Visible lists</span><strong>{lists.length}</strong></article><article><span>Players</span><strong>{new Set(lists.map((list) => list.playerDisplayName || list.player)).size}</strong></article><article><span>Sectorials</span><strong>{new Set(lists.map((list) => list.sectorial || list.faction)).size}</strong></article></div>
+      <section className="snapshot-intelligence-explorer-controls" aria-label="Army List Explorer controls">
+        <label><span>Search</span><input type="search" placeholder="Player, list, or sectorial" value={search} onChange={(event) => onSearchChange(event.target.value)} /></label>
+        <label><span>Player</span><select value={player} onChange={(event) => onPlayerChange(event.target.value)}><option value="">All players</option>{players.map((value) => <option key={value}>{value}</option>)}</select></label>
+        <label><span>Sectorial</span><select value={sectorial} onChange={(event) => onSectorialChange(event.target.value)}><option value="">All sectorials</option>{sectorials.map((value) => <option key={value}>{value}</option>)}</select></label>
+        <label><span>Sort</span><select value={sort} onChange={(event) => onSortChange(event.target.value as ExplorerSort)}><option value="submissionDate">Newest submission</option><option value="player">Player</option><option value="sectorial">Sectorial</option><option value="points">Points</option></select></label>
+      </section>
+      {lists.length ? <div className="snapshot-intelligence-table snapshot-intelligence-explorer-table"><table><thead><tr><th>Date</th><th>Player</th><th>Army</th><th>Faction / sectorial</th><th>Points</th><th>SWC</th><th>Source</th><th>Public link</th></tr></thead><tbody>{lists.map((list) => <tr key={list.id}><td>{formatDate(list.submissionDate)}</td><td><strong>{list.playerDisplayName || list.player}</strong></td><td>{list.armyName}</td><td>{list.sectorial || list.faction}</td><td>{list.points}</td><td>{list.swc}</td><td>{list.source}</td><td>{list.armyLink ? <a href={list.armyLink} target="_blank" rel="noreferrer">Open list</a> : '—'}</td></tr>)}</tbody></table></div> : <Empty message="No army lists match the current explorer filters." />}
+    </section>
+  </div>
+}
+
+function Panel({ eyebrow, title, children, className = '' }: { eyebrow: string; title: string; children: ReactNode; className?: string }) {
+  return <section className={`panel snapshot-intelligence-panel ${className}`}><div className="panel-heading"><p className="eyebrow">{eyebrow}</p><h2>{title}</h2></div><div className="snapshot-intelligence-panel-body">{children}</div></section>
 }
 
 function Empty({ message }: { message: string }) { return <div className="snapshot-intelligence-empty"><strong>No matching data</strong><p>{message}</p></div> }
 
 function PageState({ title, message, compact = false, error = false }: { title: string; message: string; compact?: boolean; error?: boolean }) {
-  return <section className={`panel snapshot-intelligence-state${compact ? ' compact' : ''}${error ? ' error' : ''}`} role={error ? 'alert' : undefined}><span className="snapshot-intelligence-state-mark" aria-hidden="true">{error ? '!' : '⌁'}</span><div><h2>{title}</h2><p>{message}</p></div></section>
+  return <section className={`panel snapshot-intelligence-state${compact ? ' compact' : ''}${error ? ' error' : ''}`} role={error ? 'alert' : undefined}><span className="snapshot-intelligence-state-mark" aria-hidden="true">{error ? '!' : 'i'}</span><div><h2>{title}</h2><p>{message}</p></div></section>
 }
 
 function selectScope(groups: DetailGroup[], selected: string) {
@@ -283,16 +397,16 @@ export function buildUsage(lists: DecodedList[]): UsageRow[] {
   return [...rows.values()].map(({ listIds: _listIds, ...row }) => row)
 }
 
-function buildRoles(rows: UsageRow[]) {
-  const labels = ['Lieutenants', 'Hackers', 'Specialists', 'Doctors', 'Engineers', 'Forward Observers', 'Chain of Command']
-  return labels.map((label) => ({ label, profiles: rows.filter((row) => row.roles.includes(label)).map((row) => row.name) }))
+function buildRoles(rows: UsageRow[]): RoleRow[] {
+  const labels = ['Lieutenant Choices', 'Hackers', 'Specialist Operatives', 'Doctors', 'Engineers', 'Forward Observers', 'Chain of Command']
+  return labels.map((label) => ({ label, profiles: rows.filter((row) => row.roles.includes(label)).map((row) => row) }))
 }
 
 function entryRoles(entry: Entry) {
   const roles: string[] = []
-  if (entry.lieutenant) roles.push('Lieutenants')
+  if (entry.lieutenant) roles.push('Lieutenant Choices')
   if (entry.hacker) roles.push('Hackers')
-  if (entry.specialist) roles.push('Specialists')
+  if (entry.specialist) roles.push('Specialist Operatives')
   if (entry.doctor) roles.push('Doctors')
   if (entry.engineer) roles.push('Engineers')
   if (entry.forwardObserver) roles.push('Forward Observers')
@@ -309,6 +423,15 @@ function sortUsage(rows: UsageRow[], sort: UsageSort, listCount: number) {
   })
 }
 
+function sortExplorerLists(rows: ArmyList[], sort: ExplorerSort) {
+  return [...rows].sort((a, b) => {
+    if (sort === 'player') return (a.playerDisplayName || a.player).localeCompare(b.playerDisplayName || b.player)
+    if (sort === 'sectorial') return (a.sectorial || a.faction).localeCompare(b.sectorial || b.faction)
+    if (sort === 'points') return Number(b.points) - Number(a.points) || b.submissionDate.localeCompare(a.submissionDate)
+    return b.submissionDate.localeCompare(a.submissionDate)
+  })
+}
+
 function countValues(values: string[]) {
   const counts = new Map<string, number>()
   values.forEach((value) => counts.set(value, (counts.get(value) ?? 0) + 1))
@@ -317,6 +440,7 @@ function countValues(values: string[]) {
 
 function average(values: number[]) { return values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0 }
 function round(value: number) { return Math.round(value * 10) / 10 }
+function formatNumber(value: number) { return Number.isInteger(value) ? String(value) : value.toFixed(1) }
 function normalize(value: string) { return value.trim().toLocaleLowerCase() }
 function unique(values: string[]) { return [...new Set(values)].sort((a, b) => a.localeCompare(b)) }
 function formatDate(value: string) { const date = new Date(`${value}T00:00:00`); return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString() }
