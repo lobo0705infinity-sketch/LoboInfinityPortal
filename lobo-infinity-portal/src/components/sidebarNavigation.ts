@@ -49,16 +49,6 @@ export const communityItems: NavigationItem[] = [
     to: '/players',
   },
   {
-    icon: 'hall',
-    label: 'Hall of Fame',
-    to: '/hall-of-fame',
-  },
-  {
-    icon: 'compare',
-    label: 'Compare',
-    to: '/compare',
-  },
-  {
     icon: 'missions',
     label: 'Missions',
     to: '/missions',
