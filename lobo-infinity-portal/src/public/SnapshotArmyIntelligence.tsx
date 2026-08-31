@@ -146,6 +146,7 @@ function ArmyIntelligenceDetail({ selected }: { selected: string }) {
   const [troopType, setTroopType] = useState('')
   const [skill, setSkill] = useState('')
   const [weapon, setWeapon] = useState('')
+  const [equipment, setEquipment] = useState('')
   const [sort, setSort] = useState<UsageSort>('coverage')
   const [listSearch, setListSearch] = useState('')
 
@@ -162,12 +163,14 @@ function ArmyIntelligenceDetail({ selected }: { selected: string }) {
   const troopTypes = unique(usage.map((row) => row.troopType).filter(Boolean))
   const skills = unique(usage.flatMap((row) => row.skills))
   const weapons = unique(usage.flatMap((row) => row.weapons))
+  const equipmentOptions = unique(usage.flatMap((row) => row.equipment))
   const visibleUsage = sortUsage(usage.filter((row) => {
     const query = search.trim().toLowerCase()
     return (!query || `${row.name} ${row.profiles.join(' ')}`.toLowerCase().includes(query))
       && (!troopType || row.troopType === troopType)
       && (!skill || row.skills.includes(skill))
       && (!weapon || row.weapons.includes(weapon))
+      && (!equipment || row.equipment.includes(equipment))
   }), sort, lists.length)
   const visibleLists = publicLists
     .filter((list) => !listSearch.trim() || `${list.playerDisplayName} ${list.armyName} ${list.sectorial}`.toLowerCase().includes(listSearch.trim().toLowerCase()))
@@ -185,6 +188,7 @@ function ArmyIntelligenceDetail({ selected }: { selected: string }) {
       <label><span>Troop type</span><select value={troopType} onChange={(event) => setTroopType(event.target.value)}><option value="">All types</option>{troopTypes.map((value) => <option key={value}>{value}</option>)}</select></label>
       <label><span>Skill</span><select value={skill} onChange={(event) => setSkill(event.target.value)}><option value="">All skills</option>{skills.map((value) => <option key={value}>{value}</option>)}</select></label>
       <label><span>Weapon</span><select value={weapon} onChange={(event) => setWeapon(event.target.value)}><option value="">All weapons</option>{weapons.map((value) => <option key={value}>{value}</option>)}</select></label>
+      <label><span>Equipment</span><select value={equipment} onChange={(event) => setEquipment(event.target.value)}><option value="">All equipment</option>{equipmentOptions.map((value) => <option key={value}>{value}</option>)}</select></label>
       <label><span>Sort profiles</span><select value={sort} onChange={(event) => setSort(event.target.value as UsageSort)}><option value="coverage">List coverage</option><option value="selections">Total selections</option><option value="points">Points</option><option value="alphabetical">Alphabetical</option></select></label>
     </section>
 
