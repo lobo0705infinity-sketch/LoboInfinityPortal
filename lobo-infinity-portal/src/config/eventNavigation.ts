@@ -99,7 +99,6 @@ export const currentEventNavigation: EventNavigationConfig = {
     'overview',
     'registration',
     'standings',
-    'statistics',
     'rules',
   ],
   id: 'event-current-league',

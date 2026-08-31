@@ -114,7 +114,6 @@ assert.deepEqual(Array.from(currentEventNavigation.capabilities), [
   'overview',
   'registration',
   'standings',
-  'statistics',
   'rules',
 ])
 const teamTournament = eventNavigation.find(
