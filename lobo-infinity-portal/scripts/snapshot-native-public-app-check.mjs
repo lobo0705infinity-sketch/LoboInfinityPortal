@@ -3,6 +3,7 @@ import fs from 'node:fs'
 const read = (file) => fs.readFileSync(new URL(`../${file}`, import.meta.url), 'utf8')
 const app = read('src/App.tsx')
 const publicApp = read('src/public/SnapshotPublicApp.tsx')
+const armyIntelligence = read('src/public/SnapshotArmyIntelligence.tsx')
 const client = read('src/services/publicSnapshot.ts')
 const lightApi = read('src/services/lightApi.ts')
 
@@ -17,7 +18,7 @@ const checks = [
   [!client.includes('/api/'), 'no snapshot fallback'],
   [!lightApi.includes("request('searchIndex'"), 'local snapshot search'],
   [!lightApi.includes("request('notifications'"), 'snapshot community notifications'],
-  [publicApp.includes("'army-intelligence-detail'"), 'lazy Army Intelligence detail'],
+  [publicApp.includes('<SnapshotArmyIntelligence />') && armyIntelligence.includes("'army-intelligence-detail'"), 'lazy Army Intelligence detail'],
   ...requiredRoutes.map((route) => [publicApp.includes(`path=\"${route}\"`), `route ${route}`]),
 ]
 

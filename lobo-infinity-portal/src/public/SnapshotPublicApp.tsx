@@ -1,7 +1,8 @@
-import { lazy, Suspense, useState, type ReactNode } from 'react'
+import { lazy, Suspense, type ReactNode } from 'react'
 import { Link, Navigate, Route, Routes, useLocation, useParams, useSearchParams } from 'react-router-dom'
 import { PUBLIC_SNAPSHOT_ID } from '../services/publicSnapshot'
 import { useSnapshotData } from './useSnapshotData'
+import SnapshotArmyIntelligence from './SnapshotArmyIntelligence'
 import type { PublicArmyList, PublicCommunity, PublicEvent, PublicFaction, PublicGame, PublicMission, PublicPlayer, PublicSchedule, PublicStanding, PublicStandingsDivision, PublicStatistics } from './snapshotTypes'
 import './SnapshotPublicApp.css'
 
@@ -32,7 +33,7 @@ export default function SnapshotPublicApp() {
     <Route path="/analytics" element={<Analytics />} />
     <Route path="/hall-of-fame" element={<HallOfFame />} />
     <Route path="/army-lists" element={<ArmyLists />} />
-    <Route path="/army-intelligence" element={<ArmyIntelligence />} />
+    <Route path="/army-intelligence" element={<SnapshotArmyIntelligence />} />
     <Route path="/intelligence" element={<Navigate replace to="/army-intelligence" />} />
     <Route path="/schedule" element={<Schedule />} />
     <Route path="/league-operations" element={<Schedule />} />
@@ -84,8 +85,6 @@ function Analytics(){const factions=useSnapshotData<PublicFaction[]>('factions')
 function HallOfFame(){const stats=useSnapshotData<PublicStatistics[]>('statistics');return <DataGate states={[stats]}>{()=>{const s=stats.data![0]??{};return <Page title="Hall of Fame" eyebrow="League records"><ObjectPanels value={s.records??s.leaders??s}/></Page>}}</DataGate>}
 
 function ArmyLists(){const state=useSnapshotData<PublicArmyList[]>('army-lists');return <DataGate states={[state]}>{()=><Page title="Army Lists" eyebrow="Public submitted lists"><div className="table-wrapper"><table><thead><tr><th>Player</th><th>Faction</th><th>Mission</th><th>Opponent</th><th>Result</th><th>List</th></tr></thead><tbody>{state.data!.map(l=><tr key={l.id}><td>{l.playerDisplayName||l.player}</td><td>{l.sectorial||l.faction}</td><td>{l.mission}</td><td>{l.opponentDisplayName||l.opponent}</td><td>{l.result}</td><td>{l.armyLink?<a href={l.armyLink} rel="noreferrer" target="_blank">Open</a>:'—'}</td></tr>)}</tbody></table></div></Page>}</DataGate>}
-function ArmyIntelligence(){const summary=useSnapshotData<Array<Record<string,unknown>>>('army-intelligence-summary');const [show,setShow]=useState(false);return <DataGate states={[summary]}>{()=><Page title="Army Intelligence" eyebrow="Persisted public analysis"><ObjectPanels value={summary.data![0]??{}}/><button className="event-home-primary-action" onClick={()=>setShow(true)} type="button">Load Detailed Intelligence</button>{show?<ArmyDetail/>:null}</Page>}</DataGate>}
-function ArmyDetail(){const detail=useSnapshotData<Array<Record<string,unknown>>>('army-intelligence-detail');return <DataGate states={[detail]}>{()=><Panel title="Faction Intelligence"><p>{detail.data!.length} faction detail groups loaded.</p><div className="snapshot-chip-row">{detail.data!.map((x,i)=><span className="status-badge" key={i}>{String(x.faction??`Group ${i+1}`)}</span>)}</div></Panel>}</DataGate>}
 function Schedule(){const state=useSnapshotData<PublicSchedule[]>('schedule');return <DataGate states={[state]}>{()=>{const s=state.data![0];return <Page title="Schedule / Mission & Map" eyebrow={s?.currentSeason||'League Operations'}><MetricGrid items={[['Event',s?.eventName||'—'],['League Week',s?.weekNumber||'—'],['Updated',formatDate(s?.updatedAt||'')]]}/><Panel title="Missions"><CardGrid>{(s?.missions??[]).map(m=><article className="snapshot-card" key={m.mission}><h3>{m.mission}</h3><p>{m.maps?.join(' · ')||'Map assignment pending'}</p></article>)}</CardGrid></Panel></Page>}}</DataGate>}
 function Community(){const state=useSnapshotData<PublicCommunity[]>('community');return <DataGate states={[state]}>{()=>{const c=state.data![0]??({} as PublicCommunity);return <Page title="Community" eyebrow={c.settings?.discordServerName||'Lobo Infinity League'}><MetricGrid items={[['Streams',c.streams?.length??0],['News',c.news?.length??0],['Timeline Updates',c.timeline?.length??0]]}/><RecordList title="News" records={c.news}/><RecordList title="Streams" records={c.streams}/><RecordList title="Timeline" records={c.timeline}/></Page>}}</DataGate>}
 function Events(){const state=useSnapshotData<PublicEvent[]>('events');return <DataGate states={[state]}>{()=><Page title="Events" eyebrow="Public event network"><CardGrid>{state.data!.map(e=><LinkCard key={e.id} to={`/event/${e.id}`} title={e.name} meta={`${e.type} · ${e.status}`} />)}</CardGrid></Page>}</DataGate>}
