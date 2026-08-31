@@ -26,6 +26,60 @@ function runBuildPublicSnapshotV1() {
 }
 
 function runPublishPublicSnapshotV1Proof(publicationToken) {
+  return publishLatestPublicSnapshotV1_(true, publicationToken);
+}
+
+function runHourlyPublicSnapshot() {
+  const started = Date.now();
+  const build = buildPublicSnapshotV1_();
+  if (!build || build.success !== true || build.status !== "validated") {
+    const failed = {
+      success: false, stage: "build", snapshotId: build && build.snapshotId,
+      error: build && build.error ? build.error : "Public snapshot build failed.",
+      pointerUpdated: false, elapsedMs: Date.now() - started
+    };
+    Logger.log("PUBLIC_SNAPSHOT_HOURLY " + JSON.stringify(failed));
+    return failed;
+  }
+  try {
+    const publication = publishLatestPublicSnapshotV1_(true, null, build.snapshotId);
+    const result = {
+      success: true, stage: "complete", snapshotId: build.snapshotId,
+      sourceCutoff: build.sourceCutoff, status: "published",
+      filesUploaded: publication.filesUploaded, publishedToBlob: true,
+      pointerUpdated: true, current: publication.current,
+      elapsedMs: Date.now() - started
+    };
+    Logger.log("PUBLIC_SNAPSHOT_HOURLY " + JSON.stringify(result));
+    return result;
+  } catch (error) {
+    const failed = {
+      success: false, stage: "publication", snapshotId: build.snapshotId,
+      sourceCutoff: build.sourceCutoff,
+      error: String(error && error.message ? error.message : error).slice(0, 500),
+      pointerUpdated: false, elapsedMs: Date.now() - started
+    };
+    Logger.log("PUBLIC_SNAPSHOT_HOURLY " + JSON.stringify(failed));
+    return failed;
+  }
+}
+
+function installHourlyPublicSnapshotTrigger() {
+  const handler = "runHourlyPublicSnapshot";
+  ScriptApp.getProjectTriggers().forEach(function(trigger) {
+    if (trigger.getHandlerFunction() === handler) ScriptApp.deleteTrigger(trigger);
+  });
+  ScriptApp.newTrigger(handler).timeBased().everyHours(1).create();
+  const count = ScriptApp.getProjectTriggers().filter(function(trigger) {
+    return trigger.getHandlerFunction() === handler;
+  }).length;
+  if (count !== 1) throw new Error("Expected exactly one hourly Public Snapshot trigger.");
+  const result = { success: true, functionName: handler, frequency: "hourly", triggerCount: count };
+  Logger.log("PUBLIC_SNAPSHOT_TRIGGER " + JSON.stringify(result));
+  return result;
+}
+
+function publishLatestPublicSnapshotV1_(activate, publicationToken, expectedSnapshotId) {
   const properties = PropertiesService.getScriptProperties();
   const suppliedToken = String(publicationToken || "").trim();
   if (suppliedToken) properties.setProperty(PUBLIC_SNAPSHOT_PUBLISH_TOKEN_PROPERTY, suppliedToken);
@@ -35,6 +89,8 @@ function runPublishPublicSnapshotV1Proof(publicationToken) {
   const rootId = String(properties.getProperty(PUBLIC_SNAPSHOT_V1_ROOT_PROPERTY) || "").trim();
   if (!rootId) throw new Error("Public Snapshot V1 root folder is not configured.");
   const proofId = getLatestValidatedPublicSnapshotId_(properties);
+  if (expectedSnapshotId && proofId !== expectedSnapshotId)
+    throw new Error("Latest validated snapshot changed before publication.");
   const matches = DriveApp.getFolderById(rootId).getFoldersByName(proofId);
   if (!matches.hasNext()) throw new Error("Validated proof snapshot not found: " + proofId);
   const folder = matches.next();
@@ -60,6 +116,7 @@ function runPublishPublicSnapshotV1Proof(publicationToken) {
     payload: JSON.stringify({
       snapshotId: metadata.snapshotId,
       sourceCutoff: metadata.sourceCutoff,
+      activate: activate === true,
       files: files
     })
   });
@@ -67,6 +124,8 @@ function runPublishPublicSnapshotV1Proof(publicationToken) {
   const result = JSON.parse(response.getContentText() || "{}");
   if (statusCode < 200 || statusCode >= 300 || result.success !== true)
     throw new Error("Public snapshot publication failed (HTTP " + statusCode + "): " + String(result.error || "Unknown error"));
+  if (activate === true && (result.activated !== true || !result.current || result.current.snapshotId !== proofId))
+    throw new Error("Public snapshot activation did not return the expected current pointer.");
   const proof = {
     success: true,
     snapshotId: result.snapshotId,
@@ -74,7 +133,8 @@ function runPublishPublicSnapshotV1Proof(publicationToken) {
     filesUploaded: result.uploaded,
     files: result.files,
     publishedToBlob: true,
-    livePointer: false
+    livePointer: result.activated === true,
+    current: result.current || null
   };
   Logger.log("PUBLIC_SNAPSHOT_V1_PUBLICATION " + JSON.stringify(proof));
   return proof;

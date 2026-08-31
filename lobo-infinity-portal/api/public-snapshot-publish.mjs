@@ -1,5 +1,5 @@
 import { createHash, timingSafeEqual } from 'node:crypto'
-import { put } from '@vercel/blob'
+import { BlobNotFoundError, head, put } from '@vercel/blob'
 
 export const PUBLIC_SNAPSHOT_FILES = Object.freeze([
   'snapshot.json',
@@ -38,7 +38,7 @@ export default async function handler(request, response) {
   }
 
   try {
-    const result = await publishPublicSnapshot(request.body, { putObject: put })
+    const result = await publishPublicSnapshot(request.body, { headObject: head, putObject: put })
     response.status(200).json({ success: true, ...result })
   } catch (error) {
     response.status(400).json({
@@ -48,7 +48,11 @@ export default async function handler(request, response) {
   }
 }
 
-export async function publishPublicSnapshot(rawBody, { putObject = put } = {}) {
+export async function publishPublicSnapshot(rawBody, {
+  fetchObject = fetch,
+  headObject = head,
+  putObject = put,
+} = {}) {
   const body = typeof rawBody === 'string' ? JSON.parse(rawBody) : rawBody
   if (!body || typeof body !== 'object' || Array.isArray(body)) {
     throw new Error('A JSON publication payload is required.')
@@ -56,6 +60,7 @@ export async function publishPublicSnapshot(rawBody, { putObject = put } = {}) {
 
   const snapshotId = String(body.snapshotId || '').trim()
   const sourceCutoff = String(body.sourceCutoff || '').trim()
+  const activate = body.activate === true
   if (!SNAPSHOT_ID_PATTERN.test(snapshotId)) throw new Error('Invalid snapshot ID.')
   if (!sourceCutoff || Number.isNaN(Date.parse(sourceCutoff))) throw new Error('Invalid source cutoff.')
   if (!body.files || typeof body.files !== 'object' || Array.isArray(body.files)) {
@@ -89,12 +94,25 @@ export async function publishPublicSnapshot(rawBody, { putObject = put } = {}) {
 
   const files = []
   for (const artifact of prepared) {
-    const blob = await putObject(artifact.pathname, artifact.text, {
-      access: 'public',
-      addRandomSuffix: false,
-      cacheControlMaxAge: 31_536_000,
-      contentType: 'application/json; charset=utf-8',
-    })
+    let blob = null
+    try {
+      const existing = await headObject(artifact.pathname)
+      if (existing.size !== artifact.byteCount) throw new Error(`Immutable snapshot object differs: ${artifact.filename}`)
+      const response = await fetchObject(existing.url)
+      if (!response.ok) throw new Error(`Immutable snapshot object could not be verified: ${artifact.filename}`)
+      const existingText = await response.text()
+      const existingHash = createHash('sha256').update(existingText, 'utf8').digest('hex')
+      if (existingHash !== artifact.contentHash) throw new Error(`Immutable snapshot object differs: ${artifact.filename}`)
+      blob = existing
+    } catch (error) {
+      if (!(error instanceof BlobNotFoundError)) throw error
+      blob = await putObject(artifact.pathname, artifact.text, {
+        access: 'public',
+        addRandomSuffix: false,
+        cacheControlMaxAge: 31_536_000,
+        contentType: 'application/json; charset=utf-8',
+      })
+    }
     files.push({
       filename: artifact.filename,
       pathname: artifact.pathname,
@@ -104,7 +122,37 @@ export async function publishPublicSnapshot(rawBody, { putObject = put } = {}) {
     })
   }
 
-  return { snapshotId, sourceCutoff, files, uploaded: files.length }
+  let current = null
+  if (activate) {
+    if (files.length !== PUBLIC_SNAPSHOT_FILES.length) {
+      throw new Error('The complete snapshot must be uploaded before activation.')
+    }
+    const pointer = {
+      schemaVersion: 1,
+      snapshotId,
+      sourceCutoff,
+      publishedAt: new Date().toISOString(),
+      basePath: `public-snapshots/${snapshotId}/`,
+    }
+    const text = JSON.stringify(pointer)
+    const pathname = 'public-snapshots/current.json'
+    const blob = await putObject(pathname, text, {
+      access: 'public',
+      addRandomSuffix: false,
+      allowOverwrite: true,
+      cacheControlMaxAge: 60,
+      contentType: 'application/json; charset=utf-8',
+    })
+    current = {
+      pathname,
+      byteCount: Buffer.byteLength(text, 'utf8'),
+      contentHash: createHash('sha256').update(text, 'utf8').digest('hex'),
+      url: blob.url,
+      ...pointer,
+    }
+  }
+
+  return { snapshotId, sourceCutoff, files, uploaded: files.length, activated: Boolean(current), current }
 }
 
 function safeEqual(left, right) {

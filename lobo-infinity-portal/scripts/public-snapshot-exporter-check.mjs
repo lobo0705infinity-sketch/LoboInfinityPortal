@@ -8,12 +8,13 @@ assert.match(source, /function runBuildPublicSnapshotV1\(\)/)
 assert.doesNotMatch(api, /runBuildPublicSnapshotV1/)
 assert.doesNotMatch(source, /PublicGeneration|processAutomationQueueBatch|rebuildGameEngine|decodeArmy|refreshArmyIntelligence/)
 assert.doesNotMatch(source, /PUBLIC_.*DIRTY|doGet|doPost|requireApiPermission/)
-assert.match(source, /function runPublishPublicSnapshotV1Proof[\s\S]*UrlFetchApp\.fetch\(PUBLIC_SNAPSHOT_PUBLISH_URL/)
+assert.match(source, /function runPublishPublicSnapshotV1Proof[\s\S]*publishLatestPublicSnapshotV1_\(true/)
 assert.doesNotMatch(source, /20260830T222502Z/)
 assert.match(source, /published: false/)
 assert.match(source, /livePointer: false/)
 assert.match(source, /duplicate Game ID/)
-assert.doesNotMatch(source, /current\.json/)
+assert.match(source, /function runHourlyPublicSnapshot\(\)/)
+assert.match(source, /function installHourlyPublicSnapshotTrigger\(\)/)
 
 function extractFunctions(text) {
   const functions = new Map()
@@ -77,7 +78,29 @@ for (const forbidden of ['buildPublicSnapshotV1_', 'canonicalDecoderGatewayDecod
   'rebuildGameEngine', 'refreshArmyIntelligence']) {
   assert.equal(publicationReachable.has(forbidden), false, `publication reaches ${forbidden}`)
 }
-assert.equal((backendFunctions.get('runPublishPublicSnapshotV1Proof').body.match(/UrlFetchApp\.fetch/g) || []).length, 1)
+const publicationUrlFetchReachable = [...publicationReachable].filter(([, definition]) => /\bUrlFetchApp\b/.test(definition.body))
+assert.deepEqual(publicationUrlFetchReachable.map(([name]) => name), ['publishLatestPublicSnapshotV1_'])
+
+const hourlyReachable = new Map()
+const hourlyPending = ['runHourlyPublicSnapshot']
+while (hourlyPending.length) {
+  const name = hourlyPending.pop()
+  if (hourlyReachable.has(name) || !backendFunctions.has(name)) continue
+  const definition = backendFunctions.get(name)
+  hourlyReachable.set(name, definition)
+  for (const call of definition.body.matchAll(/\b([A-Za-z_$][\w$]*)\s*\(/g)) {
+    if (!hourlyReachable.has(call[1]) && backendFunctions.has(call[1])) hourlyPending.push(call[1])
+  }
+}
+const hourlyUrlFetchReachable = [...hourlyReachable].filter(([, definition]) => /\bUrlFetchApp\b/.test(definition.body))
+assert.deepEqual(hourlyUrlFetchReachable.map(([name]) => name), ['publishLatestPublicSnapshotV1_'])
+for (const forbidden of ['canonicalDecoderGatewayDecode_', 'rebuildGameEngine', 'refreshArmyIntelligence']) {
+  assert.equal(hourlyReachable.has(forbidden), false, `hourly snapshot reaches ${forbidden}`)
+}
+const triggerBody = backendFunctions.get('installHourlyPublicSnapshotTrigger').body
+assert.match(triggerBody, /getHandlerFunction\(\) === handler/)
+assert.match(triggerBody, /everyHours\(1\)/)
+assert.doesNotMatch(triggerBody, /deleteTrigger\(trigger\)[\s\S]*getHandlerFunction\(\) !== handler/)
 
 const selectionSandbox = {
   PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_PROPERTY: 'PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_ID',
