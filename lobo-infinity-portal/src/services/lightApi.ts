@@ -8,6 +8,7 @@ import type {
 import { API_URL, postRequest, request, type ApiOptions } from './apiCore'
 import type { PageAnalyticsKey } from './pageAnalytics'
 import { formatNotificationTimestamp } from './formatting'
+import { getPublicSnapshotDataset } from './publicSnapshot'
 
 let settingsCache: PortalSettings | null = null
 let settingsRequest: Promise<PortalSettings> | null = null
@@ -250,23 +251,37 @@ export async function getPageAnalytics(
 export async function getSearchIndex(
   options: ApiOptions = {},
 ): Promise<SearchData> {
-  const payload = await request('searchIndex', options)
-  const record = asRecord(payload)
-
+  const [rawPlayers, factions, games, missions, armyLists] = await Promise.all([
+    getPublicSnapshotDataset<Array<Record<string, unknown>>>('players', options.signal),
+    getPublicSnapshotDataset<SearchData['factions']>('factions', options.signal),
+    getPublicSnapshotDataset<SearchData['games']>('games', options.signal),
+    getPublicSnapshotDataset<SearchData['missions']>('missions', options.signal),
+    getPublicSnapshotDataset<SearchData['armyLists']>('army-lists', options.signal),
+  ])
+  const grouped = new Map<string, Array<Record<string, unknown>>>()
+  rawPlayers.forEach((player) => {
+    const label = String(player.divisionLabel || player.division || 'Players')
+    grouped.set(label, [...(grouped.get(label) ?? []), player])
+  })
   return {
-    armyLists: getArray(record, 'armyLists') as SearchData['armyLists'],
-    factions: getArray(record, 'factions') as SearchData['factions'],
-    games: getArray(record, 'games') as SearchData['games'],
-    missions: getArray(record, 'missions') as SearchData['missions'],
-    players: getArray(record, 'players') as SearchData['players'],
+    armyLists,
+    factions,
+    games,
+    missions,
+    players: [...grouped].map(([divisionLabel, standings]) => ({
+      division: divisionLabel,
+      divisionLabel,
+      standings,
+      summary: { activePlayers: standings.length, gamesPlayed: 0, leader: standings[0] ?? null, players: standings.length },
+    })) as SearchData['players'],
   }
 }
 
 export async function getNotifications(
   options: ApiOptions = {},
 ): Promise<LeagueNotification[]> {
-  const payload = await request('notifications', options)
-  return getArray(asRecord(payload), 'notifications').map((item) => {
+  const community = await getPublicSnapshotDataset<Array<{ notifications?: unknown[] }>>('community', options.signal)
+  return (community[0]?.notifications ?? []).map((item) => {
     const record = asRecord(item)
 
     return {

@@ -1,0 +1,111 @@
+import { lazy, Suspense, useState, type ReactNode } from 'react'
+import { Link, Navigate, Route, Routes, useParams, useSearchParams } from 'react-router-dom'
+import { PUBLIC_SNAPSHOT_ID } from '../services/publicSnapshot'
+import { useSnapshotData } from './useSnapshotData'
+import type { PublicArmyList, PublicCommunity, PublicEvent, PublicFaction, PublicGame, PublicMission, PublicPlayer, PublicSchedule, PublicStanding, PublicStandingsDivision, PublicStatistics } from './snapshotTypes'
+import './SnapshotPublicApp.css'
+
+const SubmitResult = lazy(() => import('../pages/SubmitResult'))
+const SubmitArmyList = lazy(() => import('../pages/SubmitArmyList'))
+const Rules = lazy(() => import('../pages/Rules'))
+
+export default function SnapshotPublicApp() {
+  return <Routes>
+    <Route path="/" element={<Dashboard />} />
+    <Route path="/dashboard" element={<Dashboard />} />
+    <Route path="/players" element={<Players />} />
+    <Route path="/community" element={<Community />} />
+    <Route path="/players/:playerName" element={<PlayerProfile />} />
+    <Route path="/player/:playerName" element={<PlayerProfile />} />
+    <Route path="/games" element={<Games />} />
+    <Route path="/games/:id" element={<GameDetail />} />
+    <Route path="/game/:id" element={<GameDetail />} />
+    <Route path="/standings" element={<Standings />} />
+    <Route path="/factions" element={<Factions />} />
+    <Route path="/factions/:name" element={<FactionProfile />} />
+    <Route path="/faction/:name" element={<FactionProfile />} />
+    <Route path="/missions" element={<Missions />} />
+    <Route path="/missions/:missionName" element={<MissionProfile />} />
+    <Route path="/mission/:missionName" element={<MissionProfile />} />
+    <Route path="/compare" element={<Compare />} />
+    <Route path="/rivalries" element={<Rivalries />} />
+    <Route path="/analytics" element={<Analytics />} />
+    <Route path="/hall-of-fame" element={<HallOfFame />} />
+    <Route path="/army-lists" element={<ArmyLists />} />
+    <Route path="/army-intelligence" element={<ArmyIntelligence />} />
+    <Route path="/intelligence" element={<Navigate replace to="/army-intelligence" />} />
+    <Route path="/schedule" element={<Schedule />} />
+    <Route path="/league-operations" element={<Schedule />} />
+    <Route path="/streams" element={<Community />} />
+    <Route path="/events" element={<Events />} />
+    <Route path="/event/:eventId" element={<EventPage />} />
+    <Route path="/event/:eventId/:section" element={<EventPage />} />
+    <Route path="/event/:eventId/tournament/:section" element={<EventPage />} />
+    <Route path="/team-tournament" element={<Navigate replace to="/event/event-august-2026-team-tournament" />} />
+    <Route path="/submit-game" element={<Suspense fallback={<Loading />}><SubmitResult /></Suspense>} />
+    <Route path="/event/:eventId/submit-result" element={<Navigate replace to="/submit-game" />} />
+    <Route path="/casual-result" element={<Navigate replace to="/submit-game?gameType=casual" />} />
+    <Route path="/army-lists/submit" element={<Suspense fallback={<Loading />}><SubmitArmyList /></Suspense>} />
+    <Route path="/rules" element={<Suspense fallback={<Loading />}><Rules /></Suspense>} />
+    <Route path="/match-finder" element={<Navigate replace to="/event/event-current-league" />} />
+    <Route path="/news" element={<Navigate replace to="/community" />} />
+    <Route path="/notifications" element={<Navigate replace to="/community" />} />
+    <Route path="/timeline" element={<Navigate replace to="/community" />} />
+    <Route path="*" element={<NotFound />} />
+  </Routes>
+}
+
+function Dashboard() {
+  const players = useSnapshotData<PublicPlayer[]>('players')
+  const games = useSnapshotData<PublicGame[]>('games')
+  const standings = useSnapshotData<PublicStandingsDivision[]>('standings')
+  return <DataGate states={[players, games, standings]}>{() => {
+    const leader = standings.data?.[0]?.standings?.[0]
+    return <Page title="League Dashboard" eyebrow={`Snapshot ${PUBLIC_SNAPSHOT_ID}`} intro="Lobo Infinity League command overview.">
+      <MetricGrid items={[['Players', players.data!.length], ['Games', games.data!.length], ['League Leader', leader?.displayName ?? '—'], ['Leader Record', leader ? `${leader.wins}-${leader.losses}-${leader.draws}` : '—']]} />
+      <Panel title="Recent Games"><GameTable games={[...games.data!].slice(-8).reverse()} /></Panel>
+    </Page>
+  }}</DataGate>
+}
+
+function Players() { const state=useSnapshotData<PublicPlayer[]>('players'); return <DataGate states={[state]}>{()=><Page title="Players" eyebrow="Current public directory"><CardGrid>{state.data!.map(p=><LinkCard key={p.player} to={`/players/${encodeURIComponent(p.player)}`} title={p.displayName} meta={`${p.divisionLabel || p.division} · ${p.games} games · ${p.wins}-${p.losses}-${p.draws}`} />)}</CardGrid></Page>}</DataGate> }
+function PlayerProfile(){const {playerName=''}=useParams();const players=useSnapshotData<PublicPlayer[]>('players');const games=useSnapshotData<PublicGame[]>('games');return <DataGate states={[players,games]}>{()=>{const p=players.data!.find(x=>x.player===decodeURIComponent(playerName));if(!p)return <Missing label="Player"/>;const history=games.data!.filter(g=>g.winner===p.player||g.loser===p.player);return <Page title={p.displayName} eyebrow={p.divisionLabel||p.division}><MetricGrid items={[['Games',p.games],['Record',`${p.wins}-${p.losses}-${p.draws}`],['TP',p.tp],['OP',p.op],['VP',p.vp],['Faction',p.favoriteArmy||p.favoriteFaction||p.faction||'—']]} /><Panel title="Game History"><GameTable games={history}/></Panel></Page>}}</DataGate>}
+function Games(){const state=useSnapshotData<PublicGame[]>('games');return <DataGate states={[state]}>{()=><Page title="Games & Results" eyebrow="Immutable public results"><GameTable games={[...state.data!].reverse()}/></Page>}</DataGate>}
+function GameDetail(){const {id=''}=useParams();const state=useSnapshotData<PublicGame[]>('games');return <DataGate states={[state]}>{()=>{const g=state.data!.find(x=>String(x.id)===id);if(!g)return <Missing label="Game"/>;return <Page title={`Game ${g.id}`} eyebrow={`${g.eventName} · ${g.division}`} intro={`${g.winnerDisplayName} vs ${g.loserDisplayName}`}><MetricGrid items={[['Winner',g.winnerDisplayName],['Mission',g.mission],['TP',g.tp],['OP',g.op],['VP',g.vp],['Date',formatDate(g.date)]]}/><Panel title="Factions"><p>{g.winnerFaction} vs {g.loserFaction}</p></Panel>{g.bestMoment?<Panel title="Best Moment"><p>{g.bestMoment}</p></Panel>:null}</Page>}}</DataGate>}
+function Standings(){const state=useSnapshotData<PublicStandingsDivision[]>('standings');return <DataGate states={[state]}>{()=><Page title="Current League Standings" eyebrow="Snapshot standings">{state.data!.map(d=><Panel key={d.division} title={d.divisionLabel}><StandingsTable rows={d.standings}/></Panel>)}</Page>}</DataGate>}
+function Factions(){const state=useSnapshotData<PublicFaction[]>('factions');return <DataGate states={[state]}>{()=><Page title="Factions" eyebrow="Faction performance"><CardGrid>{state.data!.map(f=><LinkCard key={f.name} to={`/factions/${encodeURIComponent(f.name)}`} title={f.name} meta={`${f.games} games · ${f.wins}-${f.losses}-${f.draws} · ${formatPercent(f.winRate)}`} />)}</CardGrid></Page>}</DataGate>}
+function FactionProfile(){const {name=''}=useParams();const factions=useSnapshotData<PublicFaction[]>('factions');return <DataGate states={[factions]}>{()=>{const f=factions.data!.find(x=>x.name===decodeURIComponent(name));if(!f)return <Missing label="Faction"/>;return <Page title={f.name} eyebrow="Faction Profile"><MetricGrid items={[['Games',f.games],['Record',`${f.wins}-${f.losses}-${f.draws}`],['Win Rate',formatPercent(f.winRate)],['Average TP',f.averageTP],['Average OP',f.averageOP],['Average VP',f.averageVP],['Top Player',f.topPlayerDisplayName||f.topPlayer],['Most Played Mission',f.mostPlayedMission]]}/></Page>}}</DataGate>}
+function Missions(){const state=useSnapshotData<PublicMission[]>('missions');return <DataGate states={[state]}>{()=><Page title="Missions" eyebrow="Mission performance"><CardGrid>{state.data!.map(m=><LinkCard key={m.mission} to={`/missions/${encodeURIComponent(m.mission)}`} title={m.mission} meta={`${m.games} games · ${formatPercent(m.firstTurnWinRate)} first-turn win rate`} />)}</CardGrid></Page>}</DataGate>}
+function MissionProfile(){const {missionName=''}=useParams();const state=useSnapshotData<PublicMission[]>('missions');return <DataGate states={[state]}>{()=>{const m=state.data!.find(x=>x.mission===decodeURIComponent(missionName));if(!m)return <Missing label="Mission"/>;return <Page title={m.mission} eyebrow="Mission Profile"><MetricGrid items={[['Games',m.games],['Average TP',m.averageTP],['Average OP',m.averageOP],['Average VP',m.averageVP],['First-turn Win Rate',formatPercent(m.firstTurnWinRate)],['Most Successful Faction',m.mostSuccessfulFaction],['Most Played Faction',m.mostPlayedFaction],['Last Played',formatDate(m.lastPlayed)]]}/></Page>}}</DataGate>}
+
+function Compare(){const players=useSnapshotData<PublicPlayer[]>('players');const [params,setParams]=useSearchParams();return <DataGate states={[players]}>{()=>{const left=params.get('left')||players.data![0]?.player||'';const right=params.get('right')||players.data![1]?.player||'';const selected=[players.data!.find(p=>p.player===left),players.data!.find(p=>p.player===right)];return <Page title="Compare Players" eyebrow="Snapshot comparison"><div className="snapshot-filter-row">{[left,right].map((value,index)=><select key={index} value={value} onChange={e=>{const next=new URLSearchParams(params);next.set(index?'right':'left',e.target.value);setParams(next)}}>{players.data!.map(p=><option key={p.player} value={p.player}>{p.displayName}</option>)}</select>)}</div><div className="snapshot-compare-grid">{selected.map(p=>p?<Panel key={p.player} title={p.displayName}><MetricGrid items={[['Games',p.games],['Wins',p.wins],['TP',p.tp],['OP',p.op],['VP',p.vp]]}/></Panel>:null)}</div></Page>}}</DataGate>}
+function Rivalries(){const games=useSnapshotData<PublicGame[]>('games');return <DataGate states={[games]}>{()=>{const pairs=new Map<string,{players:string;games:number}>();for(const g of games.data!){const names=[g.winnerDisplayName,g.loserDisplayName].sort();const key=names.join('|');const row=pairs.get(key)??{players:names.join(' vs '),games:0};row.games++;pairs.set(key,row)}return <Page title="Rivalries" eyebrow="Head-to-head history"><CardGrid>{[...pairs.values()].sort((a,b)=>b.games-a.games).slice(0,30).map(r=><article className="panel snapshot-card" key={r.players}><h2>{r.players}</h2><p>{r.games} games</p></article>)}</CardGrid></Page>}}</DataGate>}
+function Analytics(){const factions=useSnapshotData<PublicFaction[]>('factions');const missions=useSnapshotData<PublicMission[]>('missions');const games=useSnapshotData<PublicGame[]>('games');return <DataGate states={[factions,missions,games]}>{()=><Page title="League Statistics" eyebrow="Snapshot analytics"><MetricGrid items={[['Games',games.data!.length],['Factions',factions.data!.length],['Missions',missions.data!.length],['Most Active Faction',[...factions.data!].sort((a,b)=>b.games-a.games)[0]?.name||'—'],['Most Played Mission',[...missions.data!].sort((a,b)=>b.games-a.games)[0]?.mission||'—']]}/></Page>}</DataGate>}
+function HallOfFame(){const stats=useSnapshotData<PublicStatistics[]>('statistics');return <DataGate states={[stats]}>{()=>{const s=stats.data![0]??{};return <Page title="Hall of Fame" eyebrow="League records"><ObjectPanels value={s.records??s.leaders??s}/></Page>}}</DataGate>}
+
+function ArmyLists(){const state=useSnapshotData<PublicArmyList[]>('army-lists');return <DataGate states={[state]}>{()=><Page title="Army Lists" eyebrow="Public submitted lists"><div className="table-wrapper"><table><thead><tr><th>Player</th><th>Faction</th><th>Mission</th><th>Opponent</th><th>Result</th><th>List</th></tr></thead><tbody>{state.data!.map(l=><tr key={l.id}><td>{l.playerDisplayName||l.player}</td><td>{l.sectorial||l.faction}</td><td>{l.mission}</td><td>{l.opponentDisplayName||l.opponent}</td><td>{l.result}</td><td>{l.armyLink?<a href={l.armyLink} rel="noreferrer" target="_blank">Open</a>:'—'}</td></tr>)}</tbody></table></div></Page>}</DataGate>}
+function ArmyIntelligence(){const summary=useSnapshotData<Array<Record<string,unknown>>>('army-intelligence-summary');const [show,setShow]=useState(false);return <DataGate states={[summary]}>{()=><Page title="Army Intelligence" eyebrow="Persisted public analysis"><ObjectPanels value={summary.data![0]??{}}/><button className="event-home-primary-action" onClick={()=>setShow(true)} type="button">Load Detailed Intelligence</button>{show?<ArmyDetail/>:null}</Page>}</DataGate>}
+function ArmyDetail(){const detail=useSnapshotData<Array<Record<string,unknown>>>('army-intelligence-detail');return <DataGate states={[detail]}>{()=><Panel title="Faction Intelligence"><p>{detail.data!.length} faction detail groups loaded.</p><div className="snapshot-chip-row">{detail.data!.map((x,i)=><span className="status-badge" key={i}>{String(x.faction??`Group ${i+1}`)}</span>)}</div></Panel>}</DataGate>}
+function Schedule(){const state=useSnapshotData<PublicSchedule[]>('schedule');return <DataGate states={[state]}>{()=>{const s=state.data![0];return <Page title="Schedule / Mission & Map" eyebrow={s?.currentSeason||'League Operations'}><MetricGrid items={[['Event',s?.eventName||'—'],['League Week',s?.weekNumber||'—'],['Updated',formatDate(s?.updatedAt||'')]]}/><Panel title="Missions"><CardGrid>{(s?.missions??[]).map(m=><article className="snapshot-card" key={m.mission}><h3>{m.mission}</h3><p>{m.maps?.join(' · ')||'Map assignment pending'}</p></article>)}</CardGrid></Panel></Page>}}</DataGate>}
+function Community(){const state=useSnapshotData<PublicCommunity[]>('community');return <DataGate states={[state]}>{()=>{const c=state.data![0]??({} as PublicCommunity);return <Page title="Community" eyebrow={c.settings?.discordServerName||'Lobo Infinity League'}><MetricGrid items={[['Streams',c.streams?.length??0],['News',c.news?.length??0],['Timeline Updates',c.timeline?.length??0]]}/><RecordList title="News" records={c.news}/><RecordList title="Streams" records={c.streams}/><RecordList title="Timeline" records={c.timeline}/></Page>}}</DataGate>}
+function Events(){const state=useSnapshotData<PublicEvent[]>('events');return <DataGate states={[state]}>{()=><Page title="Events" eyebrow="Public event network"><CardGrid>{state.data!.map(e=><LinkCard key={e.id} to={`/event/${e.id}`} title={e.name} meta={`${e.type} · ${e.status}`} />)}</CardGrid></Page>}</DataGate>}
+
+function EventPage(){const {eventId='',section='overview'}=useParams();const events=useSnapshotData<PublicEvent[]>('events');const games=useSnapshotData<PublicGame[]>('games');const standings=useSnapshotData<PublicStandingsDivision[]>('standings');const schedule=useSnapshotData<PublicSchedule[]>('schedule');return <DataGate states={[events,games,standings,schedule]}>{()=>{const event=events.data!.find(e=>e.id===eventId);if(!event)return <Missing label="Event"/>;const eventGames=games.data!.filter(g=>g.eventId===event.id);const isLeague=event.id==='event-current-league';const isTeam=/team tournament/i.test(event.type);const nav=isLeague?['overview','standings','statistics','schedule','registration']:isTeam?['overview','teams','pairings','results','registration']:['overview','players','bracket','rounds','missions','results','registration'];return <Page title={event.name} eyebrow={event.type} intro={event.description}><nav className="event-home-nav">{nav.map(n=><Link key={n} to={`/event/${event.id}${n==='overview'?'':`/${n}`}`}>{titleCase(n)}</Link>)}</nav><MetricGrid items={[['Status',event.status||event.lifecycleStage],['Registered',event.registeredCount??event.participants?.length??0],['Completed Games',event.completedGames??eventGames.length],['Start',formatDate(event.startDate)],['End',formatDate(event.endDate)]]}/><EventSection section={section} event={event} games={eventGames} standings={standings.data!} schedule={schedule.data!}/></Page>}}</DataGate>}
+function EventSection({section,event,games,standings,schedule}:{section:string;event:PublicEvent;games:PublicGame[];standings:PublicStandingsDivision[];schedule:PublicSchedule[]}){if(section==='standings')return <>{standings.map(d=><Panel key={d.division} title={d.divisionLabel}><StandingsTable rows={d.standings}/></Panel>)}</>;if(section==='statistics')return <MetricGrid items={[['Games',games.length],['Players',event.registeredCount||event.participants?.length||0],['Rounds',event.rounds?.length||0]]}/>;if(section==='schedule')return <Panel title="Mission & Map"><RecordList records={schedule[0]?.missions??[]}/></Panel>;if(section==='teams')return <RecordList title="Teams" records={event.teams}/>;if(section==='pairings')return <RecordList title="Pairings" records={event.pairings}/>;if(section==='bracket')return <RecordList title="Bracket" records={event.bracket}/>;if(section==='rounds')return <RecordList title="Rounds" records={event.rounds}/>;if(section==='missions')return <RecordList title="Missions" records={event.bracketMissions}/>;if(section==='players'||section==='registration')return <RecordList title={section==='players'?'Participants':'Registration'} records={event.participants}/>;if(section==='results')return <Panel title="Results"><GameTable games={games}/></Panel>;return <><Panel title="Event Overview"><p>{event.rules||'Public event information will be updated in the next snapshot.'}</p></Panel><Panel title="Recent Results"><GameTable games={[...games].slice(-8).reverse()}/></Panel></>}
+
+function DataGate({states,children}:{states:Array<{data?:unknown;error?:string}>;children:()=>ReactNode}){const error=states.find(s=>s.error)?.error;if(error)return <main className="portal-shell"><section className="dashboard-state"><p role="alert">{error}</p></section></main>;if(states.some(s=>s.data===undefined))return <Loading/>;return <>{children()}</>}
+function Loading(){return <main className="portal-shell"><section className="dashboard-state"><p>Loading public snapshot…</p></section></main>}
+function Missing({label}:{label:string}){return <Page title={`${label} not found`} eyebrow="Snapshot data"><p>The requested {label.toLowerCase()} is not present in this snapshot.</p></Page>}
+function NotFound(){return <Missing label="Page"/>}
+function Page({title,eyebrow,intro,children}:{title:string;eyebrow:string;intro?:string;children:ReactNode}){return <main className="portal-shell snapshot-public-page"><section className="page-header"><p className="eyebrow">{eyebrow}</p><h1>{title}</h1>{intro?<p>{intro}</p>:null}</section>{children}</main>}
+function Panel({title,children}:{title:string;children:ReactNode}){return <section className="panel snapshot-panel"><div className="panel-heading"><h2>{title}</h2></div>{children}</section>}
+function MetricGrid({items}:{items:Array<[string,string|number]>}){return <section className="event-overview-status-grid">{items.map(([label,value])=><article className="event-overview-status-card neutral" key={label}><span>{label}</span><strong>{value||'—'}</strong></article>)}</section>}
+function CardGrid({children}:{children:ReactNode}){return <section className="snapshot-card-grid">{children}</section>}
+function LinkCard({to,title,meta}:{to:string;title:string;meta:string}){return <Link className="panel snapshot-card snapshot-link-card" to={to}><h2>{title}</h2><p>{meta}</p></Link>}
+function StandingsTable({rows}:{rows:PublicStanding[]}){return <div className="table-wrapper"><table><thead><tr><th>Rank</th><th>Player</th><th>G</th><th>W</th><th>L</th><th>D</th><th>TP</th><th>OP</th><th>VP</th></tr></thead><tbody>{rows.map(r=><tr key={r.player}><td>{r.rank}</td><td><Link to={`/players/${encodeURIComponent(r.player)}`}>{r.displayName||r.player}</Link></td><td>{r.games}</td><td>{r.wins}</td><td>{r.losses}</td><td>{r.draws}</td><td>{r.tp}</td><td>{r.op}</td><td>{r.vp}</td></tr>)}</tbody></table></div>}
+function GameTable({games}:{games:PublicGame[]}){return <div className="table-wrapper"><table><thead><tr><th>Game</th><th>Date</th><th>Players</th><th>Mission</th><th>TP</th><th>OP</th><th>VP</th></tr></thead><tbody>{games.map(g=><tr key={g.id}><td><Link to={`/games/${g.id}`}>#{g.id}</Link></td><td>{formatDate(g.date)}</td><td>{g.winnerDisplayName} vs {g.loserDisplayName}</td><td>{g.mission}</td><td>{g.tp}</td><td>{g.op}</td><td>{g.vp}</td></tr>)}</tbody></table></div>}
+function RecordList({title,records=[]}:{title?:string;records?:Array<Record<string,unknown>>}){return <Panel title={title||'Details'}>{records.length?<div className="snapshot-record-list">{records.map((record,index)=><article className="snapshot-record" key={index}>{Object.entries(record).filter(([,v])=>['string','number','boolean'].includes(typeof v)).slice(0,8).map(([k,v])=><p key={k}><strong>{titleCase(k)}:</strong> {String(v)}</p>)}</article>)}</div>:<p>No public entries are available in this snapshot.</p>}</Panel>}
+function ObjectPanels({value}:{value:unknown}){if(!value||typeof value!=='object')return <Panel title="Records"><p>No public records are available.</p></Panel>;return <div className="snapshot-record-list">{Object.entries(value as Record<string,unknown>).slice(0,30).map(([key,val])=><article className="panel snapshot-record" key={key}><h3>{titleCase(key)}</h3><p>{typeof val==='object'?JSON.stringify(val):String(val)}</p></article>)}</div>}
+function formatDate(value:string){if(!value)return '—';const d=new Date(value);return Number.isNaN(d.getTime())?value:d.toLocaleDateString()}
+function formatPercent(value:number){return `${value>1?value:(value*100)}%`}
+function titleCase(value:string){return value.replace(/([A-Z])/g,' $1').replace(/[-_]/g,' ').replace(/\b\w/g,c=>c.toUpperCase()).trim()}

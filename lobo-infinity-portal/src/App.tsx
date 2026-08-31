@@ -61,6 +61,7 @@ const StreamedGames = lazyRoute('StreamedGames', () => import('./pages/StreamedG
 const SubmitArmyList = lazyRoute('SubmitArmyList', () => import('./pages/SubmitArmyList'))
 const SubmitResult = lazyRoute('SubmitResult', () => import('./pages/SubmitResult'))
 const TeamTournament = lazyRoute('TeamTournament', () => import('./pages/TeamTournament'))
+const SnapshotPublicApp = lazyRoute('SnapshotPublicApp', () => import('./public/SnapshotPublicApp'))
 
 function App() {
   return (
@@ -107,7 +108,7 @@ function AuthShell() {
           <Breadcrumbs />
           <ApplicationErrorBoundary componentName="RouteContent" resetKey={routeKey}>
             <Suspense fallback={<RouteLoading />}>
-              {commissionerRoute && !auth.authenticated ? <CommissionerLogin /> : <Routes>
+              {!commissionerRoute ? <SnapshotPublicApp /> : !auth.authenticated ? <CommissionerLogin /> : <Routes>
                 <Route path="/" element={<MeasuredRoute name="Dashboard"><Dashboard /></MeasuredRoute>} />
                 <Route path="/standings" element={<MeasuredRoute name="Standings"><Standings /></MeasuredRoute>} />
                 <Route path="/league-operations" element={<MeasuredRoute name="LeagueOperations"><LeagueOperations /></MeasuredRoute>} />
