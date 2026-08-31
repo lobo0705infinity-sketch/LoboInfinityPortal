@@ -10,11 +10,14 @@ const PUBLIC_SNAPSHOT_V1_SCHEMA_VERSION = 1;
 const PUBLIC_SNAPSHOT_V1_ROOT_PROPERTY = "PUBLIC_SNAPSHOT_V1_ROOT_FOLDER_ID";
 const PUBLIC_SNAPSHOT_V1_ROOT_NAME = "Lobo Public Snapshots V1";
 const PUBLIC_SNAPSHOT_V1_PROOF_ID = "20260830T222502Z";
+const PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_PROPERTY = "PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_ID";
 const PUBLIC_SNAPSHOT_PUBLISH_TOKEN_PROPERTY = "LOBO_SNAPSHOT_PUBLISH_TOKEN";
 const PUBLIC_SNAPSHOT_PUBLISH_URL = "https://lobo-infinity-portal.vercel.app/api/public-snapshot-publish";
 const PUBLIC_SNAPSHOT_PUBLIC_FILES = [
   "snapshot.json", "players.json", "games.json", "events.json",
-  "missions.json", "factions.json", "standings.json"
+  "missions.json", "factions.json", "standings.json", "army-lists.json",
+  "army-intelligence-summary.json", "army-intelligence-detail.json",
+  "schedule.json", "statistics.json", "community.json"
 ];
 
 function runBuildPublicSnapshotV1() {
@@ -32,8 +35,10 @@ function runPublishPublicSnapshotV1Proof(publicationToken) {
 
   const rootId = String(properties.getProperty(PUBLIC_SNAPSHOT_V1_ROOT_PROPERTY) || "").trim();
   if (!rootId) throw new Error("Public Snapshot V1 root folder is not configured.");
-  const matches = DriveApp.getFolderById(rootId).getFoldersByName(PUBLIC_SNAPSHOT_V1_PROOF_ID);
-  if (!matches.hasNext()) throw new Error("Validated proof snapshot not found: " + PUBLIC_SNAPSHOT_V1_PROOF_ID);
+  const proofId = String(properties.getProperty(PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_PROPERTY) ||
+    PUBLIC_SNAPSHOT_V1_PROOF_ID).trim();
+  const matches = DriveApp.getFolderById(rootId).getFoldersByName(proofId);
+  if (!matches.hasNext()) throw new Error("Validated proof snapshot not found: " + proofId);
   const folder = matches.next();
   if (matches.hasNext()) throw new Error("Duplicate proof snapshot folders found.");
 
@@ -45,7 +50,7 @@ function runPublishPublicSnapshotV1Proof(publicationToken) {
     if (fileMatches.hasNext()) throw new Error("Duplicate proof snapshot file: " + filename);
   });
   const metadata = JSON.parse(files["snapshot.json"]);
-  if (metadata.snapshotId !== PUBLIC_SNAPSHOT_V1_PROOF_ID || metadata.status !== "validated" ||
+  if (metadata.snapshotId !== proofId || metadata.status !== "validated" ||
       metadata.published !== false || metadata.livePointer !== false)
     throw new Error("Proof snapshot metadata is not a validated unpublished snapshot.");
 
@@ -86,15 +91,24 @@ function buildPublicSnapshotV1_() {
     const frozen = capturePublicSnapshotSource_(snapshotId);
     const playerIndex = buildPublicSnapshotPlayerIndex_(frozen.playersTable);
     const games = buildPublicSnapshotGameContext_(frozen.gamesTable, playerIndex);
-    const events = buildPublicSnapshotEvents_(frozen.eventsTable, games);
+    const events = buildPublicSnapshotEvents_(frozen.eventsTable, games, buildPublicSnapshotEventState_(frozen));
     const players = buildPublicSnapshotPlayers_(frozen.playersTable, games);
     const publicGames = buildPublicSnapshotGames_(games, events);
     const missions = buildPublicSnapshotMissions_(games);
     const factions = buildPublicSnapshotFactions_(games, players);
     const standings = buildPublicSnapshotStandings_(frozen.playersTable, games);
+    const armyLists = buildPublicSnapshotArmyLists_(frozen.armyLists);
+    const armyIntelligence = buildPublicSnapshotArmyIntelligence_(frozen.armyIntelligence);
+    const schedule = buildPublicSnapshotSchedule_(frozen, standings, events);
+    const statistics = buildPublicSnapshotStatistics_(players, publicGames, frozen.hallOfFame);
+    const community = buildPublicSnapshotCommunity_(frozen);
     const datasets = {
       players: players, games: publicGames, events: events,
-      missions: missions, factions: factions, standings: standings
+      missions: missions, factions: factions, standings: standings,
+      "army-lists": armyLists,
+      "army-intelligence-summary": armyIntelligence.summary,
+      "army-intelligence-detail": armyIntelligence.detail,
+      schedule: schedule, statistics: statistics, community: community
     };
     const files = {}; let totalBytes = 0;
     Object.keys(datasets).forEach(function(name) {
@@ -117,20 +131,29 @@ function buildPublicSnapshotV1_() {
       livePointer: false,
       files: {
         players: "players.json", games: "games.json", events: "events.json",
-        missions: "missions.json", factions: "factions.json", standings: "standings.json"
+        missions: "missions.json", factions: "factions.json", standings: "standings.json",
+        armyLists: "army-lists.json",
+        armyIntelligenceSummary: "army-intelligence-summary.json",
+        armyIntelligenceDetail: "army-intelligence-detail.json",
+        schedule: "schedule.json", statistics: "statistics.json", community: "community.json"
       }
     };
     files.snapshot = writePublicSnapshotFile_(folder, "snapshot.json", metadata);
     totalBytes += files.snapshot.byteCount;
     validatePublicSnapshotFile_(files.snapshot.fileId, snapshotId, frozen.sourceCutoff, true);
+    PropertiesService.getScriptProperties().setProperty(PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_PROPERTY, snapshotId);
     return {
       success: true, snapshotId: snapshotId, sourceCutoff: frozen.sourceCutoff,
       status: "validated", published: false, livePointer: false,
-      elapsedMs: Date.now() - started, canonicalReads: 3, driveWrites: 7,
+      elapsedMs: Date.now() - started, canonicalReads: frozen.readCount, driveWrites: 13,
       totalBytes: totalBytes, maxLockHoldMs: 0,
       records: {
         players: players.length, games: publicGames.length, events: events.length,
-        missions: missions.length, factions: factions.length, standings: standings.length
+        missions: missions.length, factions: factions.length, standings: standings.length,
+        armyLists: armyLists.length,
+        armyIntelligenceDetails: armyIntelligence.detail.length,
+        schedule: schedule[0].requests.length, statistics: statistics[0].playerCareers.length,
+        community: community[0].streams.length + community[0].news.length + community[0].timeline.length
       }, files: files
     };
   }
@@ -178,12 +201,43 @@ function capturePublicSnapshotSource_(snapshotId) {
   const gamesTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.FORM);
   const playersTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.PLAYERS);
   const eventsTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.EVENTS);
+  const armyLists = readArmyListsReadModelPayload() || { lists: [], community: {} };
+  const armyIntelligence = readArmyIntelligenceReadModelPayload() || null;
+  const leagueOperationsTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.LEAGUE_OPERATIONS);
+  const schedulingTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.SCHEDULING_REQUESTS);
+  const settingsTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.SETTINGS);
+  const streamsTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.STREAMS);
+  const newsTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.COMMISSIONER_NEWS);
+  const timelineTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.COMMUNITY_TIMELINE);
+  const participantsTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.EVENT_PARTICIPANTS);
+  const roundsTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.EVENT_ROUNDS);
+  const bracketTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.EVENT_BRACKET_MATCHES);
+  const bracketMissionsTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.EVENT_BRACKET_MISSIONS);
+  const teamsTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.TEAM_TOURNAMENT_TEAMS);
+  const pairingsTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.TEAM_TOURNAMENT_PAIRINGS);
+  const hallOfFame = typeof getHallOfFameSnapshot === "function" ? getHallOfFameSnapshot() : null;
   return {
     snapshotId: snapshotId,
     sourceCutoff: new Date().toISOString(),
     gamesTable: freezePublicSnapshotTable_(gamesTable),
     playersTable: freezePublicSnapshotTable_(playersTable),
-    eventsTable: freezePublicSnapshotTable_(eventsTable)
+    eventsTable: freezePublicSnapshotTable_(eventsTable),
+    armyLists: JSON.parse(JSON.stringify(armyLists)),
+    armyIntelligence: armyIntelligence ? JSON.parse(JSON.stringify(armyIntelligence)) : null,
+    leagueOperationsTable: freezePublicSnapshotTable_(leagueOperationsTable),
+    schedulingTable: freezePublicSnapshotTable_(schedulingTable),
+    settingsTable: freezePublicSnapshotTable_(settingsTable),
+    streamsTable: freezePublicSnapshotTable_(streamsTable),
+    newsTable: freezePublicSnapshotTable_(newsTable),
+    timelineTable: freezePublicSnapshotTable_(timelineTable),
+    participantsTable: freezePublicSnapshotTable_(participantsTable),
+    roundsTable: freezePublicSnapshotTable_(roundsTable),
+    bracketTable: freezePublicSnapshotTable_(bracketTable),
+    bracketMissionsTable: freezePublicSnapshotTable_(bracketMissionsTable),
+    teamsTable: freezePublicSnapshotTable_(teamsTable),
+    pairingsTable: freezePublicSnapshotTable_(pairingsTable),
+    hallOfFame: hallOfFame ? JSON.parse(JSON.stringify(hallOfFame)) : null,
+    readCount: 17
   };
 }
 
@@ -279,11 +333,12 @@ function publicSnapshotCell_(row, columns, labels) {
   return "";
 }
 
-function buildPublicSnapshotEvents_(table, games) {
+function buildPublicSnapshotEvents_(table, games, eventState) {
   const columns = publicSnapshotColumns_(table.headers || []);
   return (table.rows || []).map(function(row) {
     const id = publicSnapshotCell_(row, columns, ["id", "event id"]);
     if (!id) return null;
+    const state = eventState && eventState[id] || {};
     return {
       id: id, name: publicSnapshotCell_(row, columns, ["name"]),
       description: publicSnapshotCell_(row, columns, ["description"]),
@@ -295,9 +350,54 @@ function buildPublicSnapshotEvents_(table, games) {
       rules: publicSnapshotCell_(row, columns, ["rules"]),
       scoringModel: publicSnapshotCell_(row, columns, ["scoring model"]),
       standingsModel: publicSnapshotCell_(row, columns, ["standings model"]),
-      completedGames: games.filter(function(game) { return game.eventId === id; }).length
+      completedGames: games.filter(function(game) { return game.eventId === id; }).length,
+      registeredCount: (state.participants || []).length,
+      participants: state.participants || [], rounds: state.rounds || [],
+      bracket: state.bracket || [], bracketMissions: state.bracketMissions || [],
+      teams: state.teams || [], pairings: state.pairings || []
     };
   }).filter(Boolean);
+}
+
+function buildPublicSnapshotEventState_(frozen) {
+  const output = {};
+  const add = function(eventId, key, value) {
+    if (!eventId) return;
+    if (!output[eventId]) output[eventId] = {};
+    if (!output[eventId][key]) output[eventId][key] = [];
+    output[eventId][key].push(value);
+  };
+  buildPublicSnapshotRows_(frozen.participantsTable, {
+    eventId: ["event id"], player: ["player"], displayName: ["display name"], role: ["role"],
+    status: ["status"], registeredAt: ["registered at"], seed: ["seed"], team: ["team"],
+    preferredTeam: ["preferred team"], captain: ["captain"], freeAgent: ["free agent"],
+    faction: ["faction"], updatedAt: ["updated at"], itsName: ["its name"]
+  }).forEach(function(row) { const id = row.eventId; delete row.eventId; add(id, "participants", row); });
+  buildPublicSnapshotRows_(frozen.roundsTable, {
+    id: ["id"], eventId: ["event id"], name: ["name"], number: ["number"], type: ["type"],
+    startDate: ["start date"], endDate: ["end date"], status: ["status"], games: ["games"],
+    mission: ["mission"]
+  }).forEach(function(row) { const id = row.eventId; delete row.eventId; add(id, "rounds", row); });
+  buildPublicSnapshotRows_(frozen.bracketTable, {
+    eventId: ["event id"], matchId: ["match id"], bracket: ["bracket"], bracketRound: ["bracket round"],
+    position: ["position"], playerA: ["player a"], seedA: ["seed a"], playerB: ["player b"],
+    seedB: ["seed b"], status: ["status"], winner: ["winner"], loser: ["loser"],
+    deadline: ["deadline"], gameId: ["game id"], resolution: ["resolution"]
+  }).forEach(function(row) { const id = row.eventId; delete row.eventId; add(id, "bracket", row); });
+  buildPublicSnapshotRows_(frozen.bracketMissionsTable, {
+    eventId: ["event id"], bracket: ["bracket"], bracketRound: ["bracket round"], mission: ["mission"]
+  }).forEach(function(row) { const id = row.eventId; delete row.eventId; add(id, "bracketMissions", row); });
+  buildPublicSnapshotRows_(frozen.teamsTable, {
+    eventId: ["event id"], teamId: ["team id"], teamName: ["team name"], captain: ["captain"],
+    players: ["players"], factionRestrictions: ["faction restrictions"], logoUrl: ["logo url"],
+    status: ["status"], createdAt: ["created at"], updatedAt: ["updated at"]
+  }).forEach(function(row) { const id = row.eventId; delete row.eventId; add(id, "teams", row); });
+  buildPublicSnapshotRows_(frozen.pairingsTable, {
+    eventId: ["event id"], roundId: ["round id"], round: ["round"], teamA: ["team a"],
+    teamB: ["team b"], playerPairings: ["player pairings"], status: ["status"], results: ["results"],
+    createdAt: ["created at"], updatedAt: ["updated at"]
+  }).forEach(function(row) { const id = row.eventId; delete row.eventId; add(id, "pairings", row); });
+  return output;
 }
 
 function buildPublicSnapshotGames_(games, events) {
@@ -578,6 +678,230 @@ function buildPublicSnapshotStandings_(playersTable, games) {
   });
 }
 
+function buildPublicSnapshotArmyLists_(readModel) {
+  return (readModel && Array.isArray(readModel.lists) ? readModel.lists : []).map(function(list) {
+    return {
+      id: String(list.id || ""), gameId: Number(list.gameId) || 0,
+      player: String(list.player || "").trim(),
+      playerDisplayName: String(list.playerDisplayName || list.player || "").trim(),
+      faction: String(list.faction || "").trim(), sectorial: String(list.sectorial || "").trim(),
+      mission: String(list.mission || "").trim(), eventId: String(list.eventId || "").trim(),
+      eventName: String(list.eventName || list.event || "").trim(),
+      gameType: String(list.gameType || list.source || "").trim(),
+      date: String(list.date || list.submissionDate || ""),
+      submissionDate: String(list.submissionDate || list.date || ""),
+      opponent: String(list.opponent || "").trim(),
+      opponentDisplayName: String(list.opponentDisplayName || list.opponent || "").trim(),
+      result: String(list.result || "").trim(), armyName: String(list.armyName || "").trim(),
+      armyLink: String(list.armyLink || "").trim(), score: Number(list.score) || 0,
+      battleReportPath: String(list.battleReportPath || "").trim(), approved: list.approved !== false
+    };
+  }).filter(function(list) { return list.id && list.player; });
+}
+
+function buildPublicSnapshotArmyIntelligence_(readModel) {
+  if (!readModel) return {
+    summary: [{ available: false, decodedLists: 0, pendingLists: 0, failedLists: 0, options: [] }],
+    detail: []
+  };
+  const publicSummary = buildArmyIntelligencePublicSummaryProjection(readModel);
+  const summary = [{
+    available: true, decodedLists: Number(publicSummary.decodedLists) || 0,
+    pendingLists: Number(publicSummary.pendingLists) || 0,
+    failedLists: Number(publicSummary.failedLists) || 0,
+    options: (publicSummary.options || []).map(String)
+  }];
+  const detail = (publicSummary.options || []).map(function(option) {
+    const source = buildArmyIntelligencePublicFactionProjection(readModel, option);
+    return {
+      faction: String(source.faction || option),
+      lists: (source.lists || []).map(function(list) {
+        const decoded = list.decoded || {};
+        return {
+          sourceId: String(list.sourceId || ""), sourceType: String(list.sourceType || ""),
+          player: String(list.player || ""), date: String(list.date || ""),
+          event: String(list.event || ""), gameType: String(list.gameType || ""),
+          mission: String(list.mission || ""), opponent: String(list.opponent || ""),
+          result: String(list.result || ""), results: (list.results || []).map(String),
+          faction: String(decoded.faction || list.faction || ""),
+          sectorial: String(decoded.sectorial || list.sectorial || ""),
+          status: String(list.status || ""), decodedAt: String(list.decodedAt || ""),
+          decoded: buildPublicSnapshotDecodedArmy_(decoded)
+        };
+      }),
+      armyLists: (source.armyLists || []).map(function(list) {
+        return {
+          id: String(list.id || ""), player: String(list.player || ""),
+          playerDisplayName: String(list.playerDisplayName || list.player || ""),
+          faction: String(list.faction || ""), sectorial: String(list.sectorial || ""),
+          armyName: String(list.armyName || ""), armyLink: String(list.armyLink || ""),
+          points: Number(list.points) || 0, swc: Number(list.swc) || 0,
+          source: String(list.source || ""), submissionDate: String(list.submissionDate || "")
+        };
+      })
+    };
+  });
+  return { summary: summary, detail: detail };
+}
+
+function buildPublicSnapshotDecodedArmy_(decoded) {
+  return {
+    decoderVersion: String(decoded.decoderVersion || ""), faction: String(decoded.faction || ""),
+    sectorial: String(decoded.sectorial || ""), listName: String(decoded.listName || ""),
+    totals: {
+      combatGroups: Number(decoded.totals && decoded.totals.combatGroups) || 0,
+      points: Number(decoded.totals && decoded.totals.points) || 0,
+      swc: Number(decoded.totals && decoded.totals.swc) || 0
+    },
+    orderCounts: {
+      regular: Number(decoded.orderCounts && decoded.orderCounts.regular) || 0,
+      irregular: Number(decoded.orderCounts && decoded.orderCounts.irregular) || 0,
+      impetuous: Number(decoded.orderCounts && decoded.orderCounts.impetuous) || 0,
+      lieutenant: Number(decoded.orderCounts && decoded.orderCounts.lieutenant) || 0
+    },
+    combatGroups: (decoded.combatGroups || []).map(function(group) {
+      return {
+        combatGroup: Number(group.combatGroup) || 0,
+        entries: (group.entries || []).map(function(entry) {
+          return {
+            combatGroup: Number(entry.combatGroup) || 0, combinedId: String(entry.combinedId || ""),
+            profile: String(entry.profile || ""), unit: String(entry.unit || ""),
+            troopType: String(entry.troopType || ""), points: Number(entry.points) || 0,
+            swc: Number(entry.swc) || 0, structure: entry.structure == null ? null : Number(entry.structure),
+            wounds: entry.wounds == null ? null : Number(entry.wounds),
+            chainOfCommand: Boolean(entry.chainOfCommand), doctor: Boolean(entry.doctor),
+            engineer: Boolean(entry.engineer), forwardObserver: Boolean(entry.forwardObserver),
+            hacker: Boolean(entry.hacker), lieutenant: Boolean(entry.lieutenant),
+            specialist: Boolean(entry.specialist), equipment: (entry.equipment || []).map(String),
+            orderTypes: (entry.orderTypes || []).map(String), skills: (entry.skills || []).map(String),
+            weapons: (entry.weapons || []).map(String)
+          };
+        })
+      };
+    })
+  };
+}
+
+function buildPublicSnapshotSchedule_(frozen, standings, events) {
+  const operationsRows = frozen.leagueOperationsTable.rows || [];
+  const operation = operationsRows.length ? operationsRows[operationsRows.length - 1] : [];
+  const requests = (frozen.schedulingTable.rows || []).filter(function(row) { return String(row[0] || "").trim(); })
+    .map(function(row) {
+      return {
+        id: String(row[0] || ""), fromPlayer: String(row[1] || ""), toPlayer: String(row[2] || ""),
+        proposedDate: String(row[3] || ""), proposedTime: String(row[4] || ""),
+        location: String(row[5] || ""), status: String(row[7] || "Pending"),
+        createdAt: String(row[9] || ""), updatedAt: String(row[10] || ""),
+        eventId: String(row[11] || EVENT_ENGINE_DEFAULT_EVENT_ID)
+      };
+    });
+  const leagueEvent = (events || []).filter(function(event) { return event.id === EVENT_ENGINE_DEFAULT_EVENT_ID; })[0] || null;
+  return [{
+    eventId: EVENT_ENGINE_DEFAULT_EVENT_ID, eventName: leagueEvent ? leagueEvent.name : "Current League",
+    currentSeason: leagueEvent ? leagueEvent.name : "Current League",
+    weekNumber: String(operation[0] || ""),
+    missions: [
+      { mission: String(operation[1] || ""), maps: [String(operation[2] || ""), String(operation[3] || "")] },
+      { mission: String(operation[4] || ""), maps: [String(operation[5] || ""), String(operation[6] || "")] }
+    ],
+    updatedAt: String(operation[7] || ""),
+    divisionProgress: (standings || []).map(function(division) {
+      const possible = division.players > 1 ? division.players * (division.players - 1) / 2 : 0;
+      return {
+        division: division.division, players: division.players, gamesCompleted: division.gamesPlayed,
+        gamesRemaining: Math.max(0, possible - division.gamesPlayed),
+        completionPercentage: publicSnapshotPercentage_(division.gamesPlayed, possible)
+      };
+    }),
+    requests: requests
+  }];
+}
+
+function buildPublicSnapshotStatistics_(players, games, hallOfFame) {
+  const sorted = function(field) {
+    return players.slice().sort(function(left, right) { return right[field] - left[field] || left.player.localeCompare(right.player); })
+      .slice(0, 10).map(function(player) {
+        return {
+          division: player.division, player: player.player, displayName: player.displayName,
+          rank: player.rank, games: player.games, wins: player.wins, losses: player.losses,
+          draws: player.draws, tp: player.tp, op: player.op, vp: player.vp
+        };
+      });
+  };
+  const result = {
+    leaders: { wins: sorted("wins"), draws: sorted("draws"), games: sorted("games"),
+      tournamentPoints: sorted("tp"), objectivePoints: sorted("op"), victoryPoints: sorted("vp") },
+    records: buildPublicSnapshotRecords_(games), careerLeaders: {}, recordBook: [],
+    leagueHistory: [], seasonHistory: [], playerCareers: []
+  };
+  if (hallOfFame && typeof hallOfFame === "object") {
+    ["careerLeaders", "recordBook", "leagueHistory", "seasonHistory", "playerCareers"].forEach(function(key) {
+      if (hallOfFame[key]) result[key] = pickPublicHallOfFameValue_(hallOfFame[key]);
+    });
+  }
+  return [result];
+}
+
+function buildPublicSnapshotRecords_(games) {
+  const highest = (games || []).slice().sort(function(left, right) {
+    const a = String(left.vp || "").split(/[–-]/).reduce(function(sum, value) { return sum + (Number(value) || 0); }, 0);
+    const b = String(right.vp || "").split(/[–-]/).reduce(function(sum, value) { return sum + (Number(value) || 0); }, 0);
+    return b - a;
+  })[0] || null;
+  return { highestScoringGame: highest ? { gameId: highest.id, value: highest.vp,
+    label: highest.winner + " vs " + highest.loser } : null };
+}
+
+function pickPublicHallOfFameValue_(value) {
+  if (Array.isArray(value)) return value.map(pickPublicHallOfFameValue_);
+  if (!value || typeof value !== "object") return value;
+  const allowed = ["achievementPoints", "achievements", "achievementsEarned", "awards", "body",
+    "championships", "date", "details", "displayName", "division", "draws", "finalRank", "games",
+    "hallOfFameEntries", "holder", "id", "losses", "movement", "op", "player", "promotions",
+    "rank", "record", "relegations", "season", "seasons", "seasonsPlayed", "specialAwards", "story",
+    "timestamp", "title", "tp", "type", "value", "vp", "winPercentage", "wins"];
+  const output = {};
+  allowed.forEach(function(key) { if (value[key] !== undefined) output[key] = pickPublicHallOfFameValue_(value[key]); });
+  return output;
+}
+
+function buildPublicSnapshotCommunity_(frozen) {
+  const settings = {}; const settingsColumns = publicSnapshotColumns_(frozen.settingsTable.headers || []);
+  (frozen.settingsTable.rows || []).forEach(function(row) {
+    const key = publicSnapshotCell_(row, settingsColumns, ["key"]);
+    if (["currentSeason", "joinCommunityFormUrl", "discordInvite", "discordServerName",
+      "top40GameSubmissionFormUrl"].indexOf(key) !== -1)
+      settings[key] = publicSnapshotCell_(row, settingsColumns, ["value"]);
+  });
+  const streams = buildPublicSnapshotRows_(frozen.streamsTable, {
+    date: ["date"], division: ["division"], mission: ["mission"], player1: ["player 1"],
+    player1Faction: ["player 1 faction"], player2: ["player 2"], player2Faction: ["player 2 faction"],
+    youtubeUrl: ["youtube url"], featured: ["featured"], title: ["stream title"], streamer: ["streamer"],
+    platform: ["platform"], description: ["description"], thumbnailUrl: ["thumbnail url"],
+    active: ["active"], gameId: ["battle report id"], streamType: ["stream type"]
+  }).filter(function(stream) { return stream.youtubeUrl && String(stream.active).toLowerCase() !== "false"; });
+  const news = buildPublicSnapshotRows_(frozen.newsTable, {
+    id: ["id"], title: ["title"], body: ["body"], timestamp: ["date", "timestamp"],
+    type: ["type"], link: ["link"], relatedPlayer: ["related player"],
+    relatedFaction: ["related faction"], relatedMission: ["related mission"]
+  }).filter(function(item) { return item.title && item.body; });
+  const timeline = buildPublicSnapshotRows_(frozen.timelineTable, {
+    id: ["id"], title: ["title"], body: ["body"], timestamp: ["timestamp", "date"],
+    type: ["type"], link: ["link"], relatedPlayer: ["related player"],
+    relatedFaction: ["related faction"], relatedMission: ["related mission"]
+  }).filter(function(item) { return item.title || item.body; });
+  return [{ settings: settings, streams: streams, news: news, timeline: timeline, notifications: [] }];
+}
+
+function buildPublicSnapshotRows_(table, shape) {
+  const columns = publicSnapshotColumns_(table.headers || []);
+  return (table.rows || []).map(function(row) {
+    const output = {};
+    Object.keys(shape).forEach(function(key) { output[key] = publicSnapshotCell_(row, columns, shape[key]); });
+    return output;
+  });
+}
+
 function stablePublicSnapshotJson_(value) {
   if (value === null || typeof value !== "object") return JSON.stringify(value);
   if (Array.isArray(value)) return "[" + value.map(stablePublicSnapshotJson_).join(",") + "]";
@@ -634,7 +958,9 @@ function assertPublicSnapshotSafe_(value, path) {
 }
 
 function validatePublicSnapshotV1_(snapshotId, sourceCutoff, datasets, files, gameContext) {
-  ["players", "games", "events", "missions", "factions", "standings"].forEach(function(name) {
+  ["players", "games", "events", "missions", "factions", "standings", "army-lists",
+    "army-intelligence-summary", "army-intelligence-detail", "schedule", "statistics",
+    "community"].forEach(function(name) {
     if (!files[name]) throw new Error("Required public snapshot file is missing: " + name);
     validatePublicSnapshotFile_(files[name].fileId, snapshotId, sourceCutoff, false);
   });
@@ -677,6 +1003,10 @@ function validatePublicSnapshotDatasets_(datasets, gameContext) {
       game73[0].op !== "8–1" || game73[0].vp !== "262–122" ||
       game73[0].winnerArmyListId !== "3296098999" || game73[0].loserArmyListId !== "4483300877")
     throw new Error("Public snapshot Game 73 acceptance fixture failed.");
+  ["3296098999", "4483300877", "4113389343"].forEach(function(id) {
+    if (!datasets["army-lists"].some(function(list) { return String(list.id) === id; }))
+      throw new Error("Public snapshot Army List fixture is missing: " + id);
+  });
   const main = datasets.standings.filter(function(row) { return row.division === CONFIG.DIVISIONS.MAIN_MAN; })[0];
   const lobo = main && main.standings.filter(function(row) { return row.player === "Lobo"; })[0];
   const nighthawkmk2 = main && main.standings.filter(function(row) {

@@ -14,16 +14,16 @@ const result = await publishPublicSnapshot({ snapshotId, sourceCutoff, files }, 
     return { url: `https://example.public.blob.vercel-storage.com/${pathname}` }
   },
 })
-assert.equal(result.uploaded, 7)
+assert.equal(result.uploaded, PUBLIC_SNAPSHOT_FILES.length)
 assert.deepEqual(uploads.map(({ pathname }) => pathname), PUBLIC_SNAPSHOT_FILES.map((name) => `public-snapshots/${snapshotId}/${name}`))
 assert.ok(uploads.every(({ options }) => options.access === 'public' && options.addRandomSuffix === false))
 assert.ok(uploads.every(({ options }) => !Object.hasOwn(options, 'allowOverwrite') || options.allowOverwrite === false))
 
 for (const invalid of ['../games.json', 'games.json/../secret', 'unknown.json']) {
-  await assert.rejects(() => publishPublicSnapshot({ snapshotId, sourceCutoff, files: { ...files, [invalid]: '{}' } }, { putObject: async () => ({}) }), /seven allowlisted/)
+  await assert.rejects(() => publishPublicSnapshot({ snapshotId, sourceCutoff, files: { ...files, [invalid]: '{}' } }, { putObject: async () => ({}) }), /allowlisted/)
 }
 const incomplete = { ...files }; delete incomplete['games.json']
-await assert.rejects(() => publishPublicSnapshot({ snapshotId, sourceCutoff, files: incomplete }, { putObject: async () => ({}) }), /seven allowlisted/)
+await assert.rejects(() => publishPublicSnapshot({ snapshotId, sourceCutoff, files: incomplete }, { putObject: async () => ({}) }), /allowlisted/)
 await assert.rejects(() => publishPublicSnapshot({ snapshotId: '../bad', sourceCutoff, files }, { putObject: async () => ({}) }), /Invalid snapshot ID/)
 
 async function invoke(request) {

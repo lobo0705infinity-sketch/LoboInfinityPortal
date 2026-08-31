@@ -9,10 +9,16 @@ export const PUBLIC_SNAPSHOT_FILES = Object.freeze([
   'missions.json',
   'factions.json',
   'standings.json',
+  'army-lists.json',
+  'army-intelligence-summary.json',
+  'army-intelligence-detail.json',
+  'schedule.json',
+  'statistics.json',
+  'community.json',
 ])
 
 const SNAPSHOT_ID_PATTERN = /^\d{8}T\d{6}Z$/
-const MAX_PUBLICATION_BYTES = 1_000_000
+const MAX_PUBLICATION_BYTES = 4_000_000
 
 export default async function handler(request, response) {
   if (request.method !== 'POST') {
@@ -53,13 +59,13 @@ export async function publishPublicSnapshot(rawBody, { putObject = put } = {}) {
   if (!SNAPSHOT_ID_PATTERN.test(snapshotId)) throw new Error('Invalid snapshot ID.')
   if (!sourceCutoff || Number.isNaN(Date.parse(sourceCutoff))) throw new Error('Invalid source cutoff.')
   if (!body.files || typeof body.files !== 'object' || Array.isArray(body.files)) {
-    throw new Error('The seven snapshot files are required.')
+    throw new Error('The complete snapshot files are required.')
   }
 
   const names = Object.keys(body.files).sort()
   const expectedNames = [...PUBLIC_SNAPSHOT_FILES].sort()
   if (names.length !== expectedNames.length || names.some((name, index) => name !== expectedNames[index])) {
-    throw new Error('Exactly the seven allowlisted snapshot files are required.')
+    throw new Error('Exactly the allowlisted snapshot files are required.')
   }
 
   let totalBytes = 0

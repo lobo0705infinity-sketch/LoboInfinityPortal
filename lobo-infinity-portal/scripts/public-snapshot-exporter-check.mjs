@@ -40,7 +40,11 @@ const functions = [
   'buildPublicSnapshotFactions_', 'summarizePublicSnapshotFaction_',
   'isPublicSnapshotCurrentLeagueGame_', 'buildPublicSnapshotStandings_',
   'stablePublicSnapshotJson_', 'assertPublicSnapshotSafe_',
-  'calculatePublicSnapshotLeagueRecord_', 'validatePublicSnapshotDatasets_'
+  'calculatePublicSnapshotLeagueRecord_', 'validatePublicSnapshotDatasets_',
+  'buildPublicSnapshotArmyLists_', 'buildPublicSnapshotDecodedArmy_',
+  'buildPublicSnapshotSchedule_', 'buildPublicSnapshotStatistics_',
+  'buildPublicSnapshotRecords_', 'pickPublicHallOfFameValue_',
+  'buildPublicSnapshotCommunity_', 'buildPublicSnapshotRows_'
 ]
 for (const name of functions) {
   const start = source.indexOf(`function ${name}`)
@@ -129,7 +133,10 @@ for (const event of events) for (const key of ['commissioners', 'owner', 'permis
   assert.equal(key in event, false)
 sandbox.assertPublicSnapshotSafe_({ players, games, events, missions, factions, standings }, 'snapshot')
 assert.equal(JSON.stringify(games).toLowerCase().includes('armycode'), false)
-const datasets = { players, games, events, missions, factions, standings }
+const armyLists = [
+  { id: '3296098999' }, { id: '4483300877' }, { id: '4113389343' },
+]
+const datasets = { players, games, events, missions, factions, standings, 'army-lists': armyLists }
 assert.doesNotThrow(() => sandbox.validatePublicSnapshotDatasets_(datasets, context))
 assert.throws(() => sandbox.validatePublicSnapshotDatasets_({
   ...datasets, games: [...games, games[0]],
@@ -141,5 +148,12 @@ const allowedGameKeys = ['id', 'eventId', 'eventName', 'gameType', 'date', 'divi
 assert.deepEqual(Object.keys(game73Out).sort(), allowedGameKeys.sort())
 assert.deepEqual(Object.keys(standings[0].standings[0]).sort(),
   ['rank', 'player', 'displayName', 'games', 'wins', 'losses', 'draws', 'tp', 'op', 'vp'].sort())
+
+const publicArmy = sandbox.buildPublicSnapshotArmyLists_({ lists: [{
+  id: '3296098999', player: 'Lobo', armyCode: 'SECRET', armyLink: 'https://infinitytheuniverse.com/army/list/3296098999', approved: true,
+}] })
+assert.equal(publicArmy.length, 1)
+assert.equal('armyCode' in publicArmy[0], false)
+assert.equal(publicArmy[0].armyLink.includes('3296098999'), true)
 
 console.log('Public Snapshot Exporter V1 regression passed.')
