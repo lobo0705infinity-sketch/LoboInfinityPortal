@@ -22,6 +22,7 @@ export type EventNavigationConfig = {
   capabilities: EventCapability[]
   id: string
   label: string
+  registrationUrl?: string
   routeOverrides?: Partial<Record<EventCapability, string>>
   type: string
 }
@@ -103,6 +104,7 @@ export const currentEventNavigation: EventNavigationConfig = {
   ],
   id: 'event-current-league',
   label: 'July 2026 League',
+  registrationUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSerLRnrnHyT7O0euglu_drx1yFzfvU2OdlidMXCDIt0ZYOp6Q/viewform?usp=dialog',
   type: 'League',
 }
 

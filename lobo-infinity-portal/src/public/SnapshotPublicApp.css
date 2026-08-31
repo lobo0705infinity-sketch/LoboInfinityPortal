@@ -1117,6 +1117,133 @@ main.snapshot-event-page[data-event="current-league-overview"] .snapshot-event-o
   }
 }
 
+/* Current League registration only: the form destination is configured per event. */
+main.snapshot-event-page[data-event="current-league-registration"] {
+  gap: clamp(0.72rem, 1.45vw, 0.98rem);
+}
+
+main.snapshot-event-page[data-event="current-league-registration"] > .snapshot-event-hero {
+  min-height: 0;
+  aspect-ratio: 1536 / 700;
+  padding: 0;
+  overflow: hidden;
+  background-color: #05080c;
+  background-image: url("../assets/current-league-registration-hero.png");
+  background-position: center 47%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(193, 18, 31, 0.12);
+}
+
+main.snapshot-event-page[data-event="current-league-registration"] > .snapshot-event-hero::before {
+  display: none;
+}
+
+main.snapshot-event-page[data-event="current-league-registration"] > .snapshot-event-hero > * {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+main.snapshot-event-page[data-event="current-league-registration"] > .snapshot-tabs {
+  gap: 0.28rem;
+  min-height: 0;
+  padding: 0.3rem;
+  border-color: rgba(76, 201, 240, 0.28);
+  border-radius: 10px;
+  background: linear-gradient(90deg, rgba(11, 21, 30, 0.96), rgba(7, 12, 18, 0.92));
+}
+
+main.snapshot-event-page[data-event="current-league-registration"] > .snapshot-tabs a {
+  padding: 0.5rem 0.78rem;
+  color: #b8c9d5;
+  font-size: 0.69rem;
+}
+
+main.snapshot-event-page[data-event="current-league-registration"] > .snapshot-tabs a.active {
+  border-color: rgba(217, 54, 68, 0.68);
+  background: linear-gradient(180deg, rgba(193, 18, 31, 0.3), rgba(193, 18, 31, 0.1));
+  box-shadow: inset 0 -2px 0 #d93140;
+}
+
+main.snapshot-event-page[data-event="current-league-registration"] .snapshot-current-league-registration-panel {
+  width: min(100%, 43rem);
+  border: 1px solid rgba(102, 155, 182, 0.34);
+  border-left: 3px solid #d93140;
+  border-radius: 12px;
+  padding: clamp(1.1rem, 2.4vw, 1.6rem);
+  background:
+    linear-gradient(90deg, rgba(193, 18, 31, 0.08), transparent 34%),
+    linear-gradient(145deg, rgba(15, 27, 38, 0.97), rgba(7, 12, 18, 0.95));
+  box-shadow: var(--shadow-panel);
+}
+
+main.snapshot-event-page[data-event="current-league-registration"] .snapshot-current-league-registration-panel .eyebrow {
+  margin-bottom: 0.35rem;
+  color: #6edcff;
+}
+
+main.snapshot-event-page[data-event="current-league-registration"] .snapshot-current-league-registration-panel h2 {
+  margin: 0;
+  color: #f8fbff;
+  font-size: clamp(1.55rem, 3vw, 2.15rem);
+}
+
+main.snapshot-event-page[data-event="current-league-registration"] .snapshot-current-league-registration-panel > p:not(.eyebrow) {
+  max-width: 54ch;
+  margin: 0.62rem 0 1.05rem;
+  color: #cbd8e1;
+  font-size: 0.96rem;
+  line-height: 1.55;
+}
+
+main.snapshot-event-page[data-event="current-league-registration"] .snapshot-registration-form-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  border: 1px solid rgba(217, 54, 68, 0.88);
+  border-radius: 7px;
+  padding: 0.62rem 0.92rem;
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(193, 18, 31, 0.88), rgba(104, 8, 20, 0.9));
+  box-shadow: inset 0 -2px 0 rgba(255, 255, 255, 0.09), 0 8px 22px rgba(193, 18, 31, 0.16);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.055em;
+  text-decoration: none;
+}
+
+main.snapshot-event-page[data-event="current-league-registration"] .snapshot-registration-form-cta:hover,
+main.snapshot-event-page[data-event="current-league-registration"] .snapshot-registration-form-cta:focus-visible {
+  border-color: #ff6a75;
+  background: linear-gradient(135deg, #d93140, #7b0e1b);
+  outline: none;
+}
+
+@media (max-width: 920px) {
+  main.snapshot-event-page[data-event="current-league-registration"] > .snapshot-event-hero {
+    aspect-ratio: 1536 / 940;
+    background-position: center;
+    background-size: contain;
+  }
+}
+
+@media (max-width: 560px) {
+  main.snapshot-event-page[data-event="current-league-registration"] > .snapshot-tabs a {
+    padding: 0.48rem 0.68rem;
+  }
+
+  main.snapshot-event-page[data-event="current-league-registration"] .snapshot-current-league-registration-panel {
+    width: 100%;
+  }
+}
+
 /* Current League standings only: existing snapshot rows and player links are preserved. */
 main.snapshot-public-page[data-page="current-league-standings"] {
   gap: clamp(0.72rem, 1.45vw, 1rem);
