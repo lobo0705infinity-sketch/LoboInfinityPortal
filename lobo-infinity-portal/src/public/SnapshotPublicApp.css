@@ -1123,26 +1123,33 @@ main.snapshot-event-page[data-event="current-league-schedule"] {
 }
 
 main.snapshot-event-page[data-event="current-league-schedule"] > .snapshot-event-hero {
-  min-height: 138px;
-  padding: clamp(1rem, 2.4vw, 1.5rem);
+  position: relative;
+  min-height: 0;
+  aspect-ratio: 1536 / 820;
+  overflow: hidden;
+  padding: 0;
   border-color: rgba(76, 201, 240, 0.3);
-  background:
-    linear-gradient(110deg, rgba(9, 21, 31, 0.98), rgba(11, 22, 31, 0.88) 58%, rgba(36, 11, 17, 0.9)),
-    radial-gradient(circle at 83% 15%, rgba(193, 18, 31, 0.23), transparent 34%);
+  background-color: #05080c;
+  background-image: url("../assets/current-league-schedule-hero.png");
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(193, 18, 31, 0.1);
 }
 
-main.snapshot-event-page[data-event="current-league-schedule"] > .snapshot-event-hero h1 {
-  font-size: clamp(1.55rem, 3.2vw, 2.2rem);
+main.snapshot-event-page[data-event="current-league-schedule"] > .snapshot-event-hero::before {
+  display: none;
 }
 
-main.snapshot-event-page[data-event="current-league-schedule"] > .snapshot-metric-grid {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 0.5rem;
-}
-
-main.snapshot-event-page[data-event="current-league-schedule"] > .snapshot-metric-grid .snapshot-metric-card {
-  min-height: 74px;
-  padding: 0.68rem 0.76rem;
+main.snapshot-event-page[data-event="current-league-schedule"] > .snapshot-event-hero > * {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-current-league-schedule {
@@ -1335,18 +1342,15 @@ main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedul
 }
 
 @media (max-width: 920px) {
-  main.snapshot-event-page[data-event="current-league-schedule"] > .snapshot-metric-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  main.snapshot-event-page[data-event="current-league-schedule"] > .snapshot-event-hero {
+    aspect-ratio: 1536 / 1024;
+    background-size: contain;
   }
 }
 
 @media (max-width: 560px) {
   main.snapshot-event-page[data-event="current-league-schedule"] > .snapshot-event-hero {
-    min-height: 124px;
-  }
-
-  main.snapshot-event-page[data-event="current-league-schedule"] > .snapshot-metric-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    background-position: center;
   }
 
   main.snapshot-event-page[data-event="current-league-schedule"] .snapshot-schedule-division-switcher {
