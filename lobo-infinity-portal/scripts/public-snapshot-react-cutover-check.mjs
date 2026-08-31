@@ -15,6 +15,7 @@ const checks = [
   [api.includes('...publicSnapshotApi'), 'public API compatibility adapter'],
   [!eventProjection.includes('/api/public-event-projection'), 'event projection uses snapshot'],
   [!teamProjection.includes('/api/public-team-tournament-projection'), 'Team Tournament uses snapshot'],
+  [eventProjection.includes('capabilities: Array.isArray(event.capabilities) ? event.capabilities : []'), 'EventHome capabilities compatibility'],
 ]
 
 for (const [passed, label] of checks) {

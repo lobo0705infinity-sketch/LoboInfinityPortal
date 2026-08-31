@@ -37,6 +37,10 @@ export async function getPublicEventProjection(eventId: string, options: { signa
   const events = await getPublicSnapshotDataset<SnapshotEvent[]>('events', options.signal)
   const event = events.find((item) => item.id === eventId)
   if (!event) throw new Error('Public event could not be found in the fixed snapshot.')
+  const compatibleEvent = {
+    ...event,
+    capabilities: Array.isArray(event.capabilities) ? event.capabilities : [],
+  }
   const registrations = registrationFor(event)
   const bracketMatches = Array.isArray(event.bracket) ? event.bracket : []
   return {
@@ -46,7 +50,7 @@ export async function getPublicEventProjection(eventId: string, options: { signa
     home: {
       currentRound: event.currentRound ?? null,
       eligibleOpponents: [],
-      event,
+      event: compatibleEvent,
       navigation: Array.isArray(event.navigation) ? event.navigation : [],
       news: Array.isArray(event.news) ? event.news : [],
       playerStatus: { captain: false, currentTeam: '', notifications: [], outstandingAction: '', registrationStatus: '', upcomingMatch: '' },
