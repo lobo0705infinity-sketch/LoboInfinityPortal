@@ -2094,3 +2094,156 @@ main.snapshot-public-page[data-page="missions"] > .snapshot-missions-table-panel
     margin-left: 0;
   }
 }
+
+/* Streams directory only: displays the immutable community snapshot as supplied. */
+main.snapshot-public-page[data-page="streams"] {
+  gap: clamp(0.7rem, 1.35vw, 1rem);
+}
+
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-header {
+  display: grid;
+  gap: 0.24rem;
+  border-left: 3px solid var(--blue);
+  padding: 0.15rem 0 0.15rem 0.8rem;
+}
+
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-header h1,
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-header p {
+  margin: 0;
+}
+
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-header h1 {
+  color: #f7fbff;
+  font-family: "Bebas Neue", Rajdhani, Inter, sans-serif;
+  font-size: clamp(2rem, 3.5vw, 3.1rem);
+  letter-spacing: 0.035em;
+  line-height: 0.94;
+  text-transform: uppercase;
+}
+
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-header p {
+  color: #b9c9d5;
+  font-size: clamp(0.88rem, 1.1vw, 1rem);
+  font-weight: 650;
+}
+
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory {
+  width: 100%;
+  overflow: hidden;
+  border-color: rgba(102, 155, 182, 0.34);
+  background: linear-gradient(145deg, rgba(15, 27, 38, 0.97), rgba(7, 12, 18, 0.95));
+}
+
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory > .table-wrapper {
+  width: 100%;
+  margin: 0;
+  overflow-x: auto;
+}
+
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory table {
+  width: 100%;
+  min-width: 790px;
+  border-collapse: collapse;
+}
+
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory th,
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory td {
+  border-bottom-color: rgba(137, 169, 191, 0.18);
+  padding: 0.76rem 0.85rem;
+  color: #dce7ee;
+  font-size: clamp(0.84rem, 1.05vw, 0.96rem);
+  vertical-align: middle;
+}
+
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory th {
+  color: #f7fbff;
+  background: linear-gradient(90deg, rgba(76, 201, 240, 0.17), rgba(14, 23, 34, 0.98) 72%);
+  font-size: 0.68rem;
+  letter-spacing: 0.075em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory th:nth-child(1),
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory td:nth-child(1) { width: 12%; white-space: nowrap; }
+
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory th:nth-child(2),
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory td:nth-child(2) { width: 38%; }
+
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory th:nth-child(3),
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory td:nth-child(3) { width: 18%; }
+
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory th:nth-child(4),
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory td:nth-child(4) { width: 20%; }
+
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory th:nth-child(5),
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory td:nth-child(5) { width: 12%; text-align: right; }
+
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory tbody tr:hover {
+  background: rgba(76, 201, 240, 0.075);
+}
+
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory td:nth-child(2) strong {
+  color: #f7fbff;
+  font-size: 1.04em;
+  font-weight: 850;
+}
+
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory td:nth-child(2) strong span {
+  margin: 0 0.28rem;
+  color: #74dff8;
+  font-size: 0.78em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory td:nth-child(2) small {
+  display: block;
+  margin-top: 0.2rem;
+  color: #9db2c0;
+  font-size: 0.78em;
+  font-weight: 650;
+}
+
+main.snapshot-public-page[data-page="streams"] .snapshot-streams-mission {
+  display: inline-block;
+  border: 1px solid rgba(76, 201, 240, 0.28);
+  border-radius: 999px;
+  padding: 0.2rem 0.46rem;
+  color: #d9f7ff;
+  background: rgba(76, 201, 240, 0.09);
+  font-size: 0.76em;
+  font-weight: 800;
+}
+
+main.snapshot-public-page[data-page="streams"] .snapshot-streams-watch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  border: 1px solid rgba(217, 54, 68, 0.72);
+  border-radius: 7px;
+  padding: 0.35rem 0.72rem;
+  color: #ffffff;
+  background: linear-gradient(180deg, rgba(193, 18, 31, 0.38), rgba(193, 18, 31, 0.16));
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+main.snapshot-public-page[data-page="streams"] .snapshot-streams-watch:hover,
+main.snapshot-public-page[data-page="streams"] .snapshot-streams-watch:focus-visible {
+  border-color: #ff7180;
+  box-shadow: 0 0 0 3px rgba(217, 54, 68, 0.18), 0 0 18px rgba(193, 18, 31, 0.22);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 640px) {
+  main.snapshot-public-page[data-page="streams"] > .snapshot-streams-header h1 {
+    font-size: 2rem;
+  }
+}
