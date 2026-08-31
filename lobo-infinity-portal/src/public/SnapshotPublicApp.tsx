@@ -37,7 +37,7 @@ export default function SnapshotPublicApp() {
     <Route path="/intelligence" element={<Navigate replace to="/army-intelligence" />} />
     <Route path="/schedule" element={<Schedule />} />
     <Route path="/league-operations" element={<Schedule />} />
-    <Route path="/streams" element={<Streams />} />
+    <Route path="/streams" element={<StreamsDirectory />} />
     <Route path="/events" element={<Events />} />
     <Route path="/event/:eventId" element={<EventPage />} />
     <Route path="/event/:eventId/:section" element={<EventPage />} />
@@ -238,7 +238,29 @@ function ArmyLists(){const state=useSnapshotData<PublicArmyList[]>('army-lists')
 function Schedule(){const state=useSnapshotData<PublicSchedule[]>('schedule');return <DataGate states={[state]}>{()=>{const s=state.data![0];return <Page title="Schedule / Mission & Map" eyebrow={s?.currentSeason||'League Operations'}><MetricGrid items={[['Event',s?.eventName||'—'],['League Week',s?.weekNumber||'—'],['Updated',formatDate(s?.updatedAt||'')]]}/><Panel title="Missions"><CardGrid>{(s?.missions??[]).map(m=><article className="snapshot-card" key={m.mission}><h3>{m.mission}</h3><p>{m.maps?.join(' · ')||'Map assignment pending'}</p></article>)}</CardGrid></Panel></Page>}}</DataGate>}
 function Community(){const state=useSnapshotData<PublicCommunity[]>('community');return <DataGate states={[state]}>{()=>{const c=state.data![0]??({} as PublicCommunity);return <Page title="Community" eyebrow={c.settings?.discordServerName||'Lobo Infinity League'}><MetricGrid items={[['Streams',c.streams?.length??0],['News',c.news?.length??0],['Timeline Updates',c.timeline?.length??0]]}/><RecordList title="News" records={c.news}/><RecordList title="Streams" records={c.streams}/><RecordList title="Timeline" records={c.timeline}/></Page>}}</DataGate>}
 type PublicStream = { date: string; division: string; mission: string; player1: string; player2: string; title: string; youtubeUrl: string }
-function Streams(){const state=useSnapshotData<PublicCommunity[]>('community');return <DataGate states={[state]}>{()=>{const community=state.data![0]??({} as PublicCommunity);const streams=community.streams as PublicStream[];return <main className="portal-shell snapshot-public-page" data-page="streams"><header className="snapshot-streams-header"><h1>Streams</h1><p>Watch games from across the Lobo Infinity community.</p></header>{streams.length?<section className="panel snapshot-streams-directory"><div className="table-wrapper"><table><thead><tr><th>Date</th><th>Matchup</th><th>Division</th><th>Mission</th><th>Watch</th></tr></thead><tbody>{streams.map((stream,index)=><tr key={`${stream.youtubeUrl}-${index}`}><td>{formatDate(stream.date)}</td><td><strong>{stream.player1} <span>vs</span> {stream.player2}</strong>{stream.title?<small>{stream.title}</small>:null}</td><td>{stream.division}</td><td><span className="snapshot-streams-mission">{stream.mission}</span></td><td><a className="snapshot-streams-watch" href={stream.youtubeUrl} target="_blank" rel="noopener noreferrer">Watch</a></td></tr>)}</tbody></table></div></section>:<PublicEmptyState message="No public streams are available in this snapshot."/>}</main>}}</DataGate>}
+function getYouTubeThumbnailUrl(value:string){try{const url=new URL(value);const host=url.hostname.toLowerCase().replace(/^www\./,'');const id=host==='youtu.be'?url.pathname.split('/').filter(Boolean)[0]:(host==='youtube.com'||host.endsWith('.youtube.com'))?(url.searchParams.get('v')||url.pathname.match(/^\/(?:embed|shorts)\/([^/?]+)/)?.[1]||''):'';return /^[A-Za-z0-9_-]{11}$/.test(id)?`https://i.ytimg.com/vi/${id}/hqdefault.jpg`:''}catch{return ''}}
+function StreamsDirectory(){
+  const state=useSnapshotData<PublicCommunity[]>('community')
+  return <DataGate states={[state]}>{()=>{
+    const community=state.data![0]??({} as PublicCommunity)
+    const streams=community.streams as PublicStream[]
+    return <main className="portal-shell snapshot-public-page" data-page="streams">
+      <header className="snapshot-streams-header"><h1>Streams</h1><p>Watch games from across the Lobo Infinity community.</p></header>
+      {streams.length?<section className="panel snapshot-streams-directory"><div className="table-wrapper"><table>
+        <thead><tr><th>Thumbnail</th><th>Matchup / Title</th><th>Date</th><th>Division</th><th>Mission</th><th>Watch</th></tr></thead>
+        <tbody>{streams.map((stream,index)=>{
+          const thumbnail=getYouTubeThumbnailUrl(stream.youtubeUrl)
+          return <tr key={`${stream.youtubeUrl}-${index}`}>
+            <td className="snapshot-streams-thumbnail">{thumbnail?<img src={thumbnail} alt={`Thumbnail for ${stream.player1} versus ${stream.player2}`} loading="lazy"/>:<span>Preview unavailable</span>}</td>
+            <td><strong>{stream.player1} <span>vs</span> {stream.player2}</strong>{stream.title?<small>{stream.title}</small>:null}</td>
+            <td>{formatDate(stream.date)}</td><td>{stream.division}</td><td><span className="snapshot-streams-mission">{stream.mission}</span></td>
+            <td><a className="snapshot-streams-watch" href={stream.youtubeUrl} target="_blank" rel="noopener noreferrer">Watch</a></td>
+          </tr>
+        })}</tbody>
+      </table></div></section>:<PublicEmptyState message="No public streams are available in this snapshot."/>}
+    </main>
+  }}</DataGate>
+}
 function Events(){const state=useSnapshotData<PublicEvent[]>('events');return <DataGate states={[state]}>{()=><Page title="Events" eyebrow="Public event network"><CardGrid>{state.data!.map(e=><LinkCard key={e.id} to={`/event/${e.id}`} title={e.name} meta={`${e.type} · ${e.status}`} />)}</CardGrid></Page>}</DataGate>}
 
 function EventPage(){const {eventId='',section='overview'}=useParams();const events=useSnapshotData<PublicEvent[]>('events');const games=useSnapshotData<PublicGame[]>('games');const standings=useSnapshotData<PublicStandingsDivision[]>('standings');const schedule=useSnapshotData<PublicSchedule[]>('schedule');return <DataGate states={[events,games,standings,schedule]}>{()=>{const event=events.data!.find(e=>e.id===eventId);if(!event)return <Missing label="Event"/>;const eventGames=games.data!.filter(g=>g.eventId===event.id);const isLeague=event.id==='event-current-league';const isLeagueRegistration=isLeague&&section==='registration';const isLeagueSchedule=isLeague&&section==='schedule';const isTeam=/team tournament/i.test(event.type);const nav=isLeague?['overview','standings','schedule','registration']:isTeam?['overview','teams','pairings','results','registration']:['overview','players','bracket','rounds','missions','results','registration'];const registrationUrl=getEventNavigationConfig(event.id)?.registrationUrl;return <main className="portal-shell snapshot-public-page snapshot-event-page" data-event={isLeague&&section==='overview'?'current-league-overview':isLeagueRegistration?'current-league-registration':isLeagueSchedule?'current-league-schedule':undefined}><EventHero event={event}/><PublicTabs eventId={event.id} items={nav}/>{!isLeagueRegistration&&!isLeagueSchedule?<MetricGrid items={[['Status',event.status||event.lifecycleStage],['Registered',event.registeredCount??event.participants?.length??0],['Completed Games',event.completedGames??eventGames.length],['Start',formatDate(event.startDate)],['End',formatDate(event.endDate)]]}/>:null}<EventSection section={section} event={event} games={eventGames} standings={standings.data!} schedule={schedule.data!} registrationUrl={registrationUrl}/></main>}}</DataGate>}

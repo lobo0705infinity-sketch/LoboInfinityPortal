@@ -2097,14 +2097,14 @@ main.snapshot-public-page[data-page="missions"] > .snapshot-missions-table-panel
 
 /* Streams directory only: displays the immutable community snapshot as supplied. */
 main.snapshot-public-page[data-page="streams"] {
-  gap: clamp(0.7rem, 1.35vw, 1rem);
+  gap: clamp(0.48rem, 1vw, 0.72rem);
 }
 
 main.snapshot-public-page[data-page="streams"] > .snapshot-streams-header {
   display: grid;
-  gap: 0.24rem;
+  gap: 0.12rem;
   border-left: 3px solid var(--blue);
-  padding: 0.15rem 0 0.15rem 0.8rem;
+  padding: 0.05rem 0 0.1rem 0.72rem;
 }
 
 main.snapshot-public-page[data-page="streams"] > .snapshot-streams-header h1,
@@ -2115,7 +2115,7 @@ main.snapshot-public-page[data-page="streams"] > .snapshot-streams-header p {
 main.snapshot-public-page[data-page="streams"] > .snapshot-streams-header h1 {
   color: #f7fbff;
   font-family: "Bebas Neue", Rajdhani, Inter, sans-serif;
-  font-size: clamp(2rem, 3.5vw, 3.1rem);
+  font-size: clamp(1.7rem, 2.8vw, 2.4rem);
   letter-spacing: 0.035em;
   line-height: 0.94;
   text-transform: uppercase;
@@ -2142,7 +2142,7 @@ main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory > .
 
 main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory table {
   width: 100%;
-  min-width: 790px;
+  min-width: 970px;
   border-collapse: collapse;
 }
 
@@ -2165,19 +2165,22 @@ main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory th 
 }
 
 main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory th:nth-child(1),
-main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory td:nth-child(1) { width: 12%; white-space: nowrap; }
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory td:nth-child(1) { width: 13%; }
 
 main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory th:nth-child(2),
-main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory td:nth-child(2) { width: 38%; }
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory td:nth-child(2) { width: 31%; }
 
 main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory th:nth-child(3),
-main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory td:nth-child(3) { width: 18%; }
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory td:nth-child(3) { width: 12%; white-space: nowrap; }
 
 main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory th:nth-child(4),
-main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory td:nth-child(4) { width: 20%; }
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory td:nth-child(4) { width: 17%; }
 
 main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory th:nth-child(5),
-main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory td:nth-child(5) { width: 12%; text-align: right; }
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory td:nth-child(5) { width: 17%; }
+
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory th:nth-child(6),
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory td:nth-child(6) { width: 10%; text-align: right; }
 
 main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory tbody tr:hover {
   background: rgba(76, 201, 240, 0.075);
@@ -2203,6 +2206,31 @@ main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory td:
   color: #9db2c0;
   font-size: 0.78em;
   font-weight: 650;
+}
+
+main.snapshot-public-page[data-page="streams"] .snapshot-streams-thumbnail {
+  padding: 0.48rem 0.65rem;
+}
+
+main.snapshot-public-page[data-page="streams"] .snapshot-streams-thumbnail img,
+main.snapshot-public-page[data-page="streams"] .snapshot-streams-thumbnail span {
+  display: block;
+  width: 116px;
+  aspect-ratio: 16 / 9;
+  border: 1px solid rgba(76, 201, 240, 0.24);
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+main.snapshot-public-page[data-page="streams"] .snapshot-streams-thumbnail span {
+  display: grid;
+  place-items: center;
+  padding: 0.35rem;
+  color: #aabac5;
+  background: linear-gradient(135deg, rgba(76, 201, 240, 0.1), rgba(14, 23, 34, 0.92));
+  font-size: 0.65rem;
+  font-weight: 750;
+  text-align: center;
 }
 
 main.snapshot-public-page[data-page="streams"] .snapshot-streams-mission {
@@ -2244,6 +2272,6 @@ main.snapshot-public-page[data-page="streams"] .snapshot-streams-watch:focus-vis
 
 @media (max-width: 640px) {
   main.snapshot-public-page[data-page="streams"] > .snapshot-streams-header h1 {
-    font-size: 2rem;
+    font-size: 1.7rem;
   }
 }
