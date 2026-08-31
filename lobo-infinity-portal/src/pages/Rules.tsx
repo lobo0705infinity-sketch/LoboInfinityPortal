@@ -44,7 +44,7 @@ function Rules() {
   const sections = useMemo(() => rulebook?.sections ?? [], [rulebook])
 
   return (
-    <main className="portal-shell">
+    <main className={`portal-shell${eventId === 'event-current-league' ? ' current-league-rules-page' : ''}`}>
       <section className="page-header" aria-labelledby="rules-title">
         <p className="eyebrow">{rulebook?.eventType ?? 'Rules Reference'}</p>
         <h1 id="rules-title">{rulebook?.title ?? eventConfig.label}</h1>
