@@ -9,7 +9,6 @@
 const PUBLIC_SNAPSHOT_V1_SCHEMA_VERSION = 1;
 const PUBLIC_SNAPSHOT_V1_ROOT_PROPERTY = "PUBLIC_SNAPSHOT_V1_ROOT_FOLDER_ID";
 const PUBLIC_SNAPSHOT_V1_ROOT_NAME = "Lobo Public Snapshots V1";
-const PUBLIC_SNAPSHOT_V1_PROOF_ID = "20260830T222502Z";
 const PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_PROPERTY = "PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_ID";
 const PUBLIC_SNAPSHOT_PUBLISH_TOKEN_PROPERTY = "LOBO_SNAPSHOT_PUBLISH_TOKEN";
 const PUBLIC_SNAPSHOT_PUBLISH_URL = "https://lobo-infinity-portal.vercel.app/api/public-snapshot-publish";
@@ -35,8 +34,7 @@ function runPublishPublicSnapshotV1Proof(publicationToken) {
 
   const rootId = String(properties.getProperty(PUBLIC_SNAPSHOT_V1_ROOT_PROPERTY) || "").trim();
   if (!rootId) throw new Error("Public Snapshot V1 root folder is not configured.");
-  const proofId = String(properties.getProperty(PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_PROPERTY) ||
-    PUBLIC_SNAPSHOT_V1_PROOF_ID).trim();
+  const proofId = getLatestValidatedPublicSnapshotId_(properties);
   const matches = DriveApp.getFolderById(rootId).getFoldersByName(proofId);
   if (!matches.hasNext()) throw new Error("Validated proof snapshot not found: " + proofId);
   const folder = matches.next();
@@ -80,6 +78,15 @@ function runPublishPublicSnapshotV1Proof(publicationToken) {
   };
   Logger.log("PUBLIC_SNAPSHOT_V1_PUBLICATION " + JSON.stringify(proof));
   return proof;
+}
+
+function getLatestValidatedPublicSnapshotId_(properties) {
+  const snapshotId = String(
+    properties.getProperty(PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_PROPERTY) || ""
+  ).trim();
+  if (!/^\d{8}T\d{6}Z$/.test(snapshotId))
+    throw new Error("Latest validated Public Snapshot V1 identity is unavailable.");
+  return snapshotId;
 }
 
 function buildPublicSnapshotV1_() {

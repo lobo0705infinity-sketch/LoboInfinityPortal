@@ -2,8 +2,15 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import handler, { PUBLIC_SNAPSHOT_FILES, publishPublicSnapshot } from '../api/public-snapshot-publish.mjs'
 
-const snapshotId = '20260830T222502Z'
-const sourceCutoff = '2026-08-30T22:25:05.453Z'
+const snapshotId = '20260831T044344Z'
+const sourceCutoff = '2026-08-31T04:43:55.151Z'
+assert.equal(PUBLIC_SNAPSHOT_FILES.length, 13)
+assert.deepEqual(PUBLIC_SNAPSHOT_FILES, [
+  'snapshot.json', 'players.json', 'games.json', 'events.json', 'missions.json',
+  'factions.json', 'standings.json', 'army-lists.json',
+  'army-intelligence-summary.json', 'army-intelligence-detail.json',
+  'schedule.json', 'statistics.json', 'community.json',
+])
 const files = Object.fromEntries(PUBLIC_SNAPSHOT_FILES.map((filename) => [filename, JSON.stringify({ snapshotId, sourceCutoff, data: [] })]))
 files['snapshot.json'] = JSON.stringify({ snapshotId, sourceCutoff, status: 'validated', published: false, livePointer: false })
 

@@ -9,6 +9,7 @@ assert.doesNotMatch(api, /runBuildPublicSnapshotV1/)
 assert.doesNotMatch(source, /PublicGeneration|processAutomationQueueBatch|rebuildGameEngine|decodeArmy|refreshArmyIntelligence/)
 assert.doesNotMatch(source, /PUBLIC_.*DIRTY|doGet|doPost|requireApiPermission/)
 assert.match(source, /function runPublishPublicSnapshotV1Proof[\s\S]*UrlFetchApp\.fetch\(PUBLIC_SNAPSHOT_PUBLISH_URL/)
+assert.doesNotMatch(source, /20260830T222502Z/)
 assert.match(source, /published: false/)
 assert.match(source, /livePointer: false/)
 assert.match(source, /duplicate Game ID/)
@@ -60,6 +61,40 @@ const forbiddenArmyCalls = [
 assert.deepEqual(forbiddenArmyCalls.filter((name) => reachable.has(name)), [],
   `snapshot build reaches Army decoding/reconstruction: ${forbiddenArmyCalls.filter((name) => reachable.has(name)).join(', ')}`)
 assert.equal(reachable.has('runPublishPublicSnapshotV1Proof'), false)
+
+const publicationReachable = new Map()
+const publicationPending = ['runPublishPublicSnapshotV1Proof']
+while (publicationPending.length) {
+  const name = publicationPending.pop()
+  if (publicationReachable.has(name) || !backendFunctions.has(name)) continue
+  const definition = backendFunctions.get(name)
+  publicationReachable.set(name, definition)
+  for (const call of definition.body.matchAll(/\b([A-Za-z_$][\w$]*)\s*\(/g)) {
+    if (!publicationReachable.has(call[1]) && backendFunctions.has(call[1])) publicationPending.push(call[1])
+  }
+}
+for (const forbidden of ['buildPublicSnapshotV1_', 'canonicalDecoderGatewayDecode_',
+  'rebuildGameEngine', 'refreshArmyIntelligence']) {
+  assert.equal(publicationReachable.has(forbidden), false, `publication reaches ${forbidden}`)
+}
+assert.equal((backendFunctions.get('runPublishPublicSnapshotV1Proof').body.match(/UrlFetchApp\.fetch/g) || []).length, 1)
+
+const selectionSandbox = {
+  PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_PROPERTY: 'PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_ID',
+  Error, String,
+}
+vm.createContext(selectionSandbox)
+vm.runInContext(backendFunctions.get('getLatestValidatedPublicSnapshotId_').body, selectionSandbox)
+const selectedIds = {
+  PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_ID: '20260831T044344Z',
+}
+const selectionProperties = { getProperty: (key) => selectedIds[key] || '' }
+assert.equal(selectionSandbox.getLatestValidatedPublicSnapshotId_(selectionProperties), '20260831T044344Z')
+assert.notEqual(selectionSandbox.getLatestValidatedPublicSnapshotId_(selectionProperties), '20260830T222502Z')
+delete selectedIds.PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_ID
+assert.throws(() => selectionSandbox.getLatestValidatedPublicSnapshotId_(selectionProperties), /identity is unavailable/)
+selectedIds.PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_ID = 'failed-snapshot'
+assert.throws(() => selectionSandbox.getLatestValidatedPublicSnapshotId_(selectionProperties), /identity is unavailable/)
 
 const FORM = {
   DATE: 2, DIVISION: 1, MISSION: 3, PLAYER1: 4, PLAYER2: 5,
