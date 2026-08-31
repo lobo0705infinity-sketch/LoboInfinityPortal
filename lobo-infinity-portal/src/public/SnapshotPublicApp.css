@@ -2100,31 +2100,30 @@ main.snapshot-public-page[data-page="streams"] {
   gap: clamp(0.48rem, 1vw, 0.72rem);
 }
 
-main.snapshot-public-page[data-page="streams"] > .snapshot-streams-header {
-  display: grid;
-  gap: 0.12rem;
-  border-left: 3px solid var(--blue);
-  padding: 0.05rem 0 0.1rem 0.72rem;
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-hero {
+  position: relative;
+  min-height: 0;
+  aspect-ratio: 1536 / 630;
+  overflow: hidden;
+  border: 1px solid rgba(76, 201, 240, 0.32);
+  border-radius: 12px;
+  background-color: #05080c;
+  background-image: url("../assets/streams-hero.png");
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(76, 201, 240, 0.1);
 }
 
-main.snapshot-public-page[data-page="streams"] > .snapshot-streams-header h1,
-main.snapshot-public-page[data-page="streams"] > .snapshot-streams-header p {
-  margin: 0;
-}
-
-main.snapshot-public-page[data-page="streams"] > .snapshot-streams-header h1 {
-  color: #f7fbff;
-  font-family: "Bebas Neue", Rajdhani, Inter, sans-serif;
-  font-size: clamp(1.7rem, 2.8vw, 2.4rem);
-  letter-spacing: 0.035em;
-  line-height: 0.94;
-  text-transform: uppercase;
-}
-
-main.snapshot-public-page[data-page="streams"] > .snapshot-streams-header p {
-  color: #b9c9d5;
-  font-size: clamp(0.88rem, 1.1vw, 1rem);
-  font-weight: 650;
+main.snapshot-public-page[data-page="streams"] > .snapshot-streams-hero > * {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 main.snapshot-public-page[data-page="streams"] > .snapshot-streams-directory {
@@ -2215,7 +2214,7 @@ main.snapshot-public-page[data-page="streams"] .snapshot-streams-thumbnail {
 main.snapshot-public-page[data-page="streams"] .snapshot-streams-thumbnail img,
 main.snapshot-public-page[data-page="streams"] .snapshot-streams-thumbnail span {
   display: block;
-  width: 116px;
+  width: 160px;
   aspect-ratio: 16 / 9;
   border: 1px solid rgba(76, 201, 240, 0.24);
   border-radius: 5px;
@@ -2270,8 +2269,16 @@ main.snapshot-public-page[data-page="streams"] .snapshot-streams-watch:focus-vis
   transform: translateY(-1px);
 }
 
+@media (max-width: 920px) {
+  main.snapshot-public-page[data-page="streams"] > .snapshot-streams-hero {
+    aspect-ratio: 1536 / 780;
+  }
+}
+
 @media (max-width: 640px) {
-  main.snapshot-public-page[data-page="streams"] > .snapshot-streams-header h1 {
-    font-size: 1.7rem;
+  main.snapshot-public-page[data-page="streams"] > .snapshot-streams-hero {
+    aspect-ratio: 1536 / 1024;
+    background-size: contain;
+    background-position: center;
   }
 }

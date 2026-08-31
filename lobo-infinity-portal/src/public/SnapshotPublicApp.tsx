@@ -245,7 +245,7 @@ function StreamsDirectory(){
     const community=state.data![0]??({} as PublicCommunity)
     const streams=community.streams as PublicStream[]
     return <main className="portal-shell snapshot-public-page" data-page="streams">
-      <header className="snapshot-streams-header"><h1>Streams</h1><p>Watch games from across the Lobo Infinity community.</p></header>
+      <header className="snapshot-streams-hero"><h1>Streams</h1><p>Watch games from across the Lobo Infinity community.</p></header>
       {streams.length?<section className="panel snapshot-streams-directory"><div className="table-wrapper"><table>
         <thead><tr><th>Thumbnail</th><th>Matchup / Title</th><th>Date</th><th>Division</th><th>Mission</th><th>Watch</th></tr></thead>
         <tbody>{streams.map((stream,index)=>{
