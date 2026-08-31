@@ -56,16 +56,66 @@ export default function SnapshotPublicApp() {
 }
 
 function Dashboard() {
-  const players = useSnapshotData<PublicPlayer[]>('players')
   const games = useSnapshotData<PublicGame[]>('games')
-  const standings = useSnapshotData<PublicStandingsDivision[]>('standings')
-  return <DataGate states={[players, games, standings]}>{() => {
-    const leader = standings.data?.[0]?.standings?.[0]
-    return <Page title="League Dashboard" eyebrow="Current public snapshot" intro="Lobo Infinity League command overview.">
-      <MetricGrid items={[['Players', players.data!.length], ['Games', games.data!.length], ['League Leader', leader?.displayName ?? '—'], ['Leader Record', leader ? `${leader.wins}-${leader.losses}-${leader.draws}` : '—']]} />
-      <Panel title="Recent Games"><GameTable games={[...games.data!].slice(-8).reverse()} /></Panel>
+  const events = useSnapshotData<PublicEvent[]>('events')
+  return <DataGate states={[games, events]}>{() => {
+    const programs = [
+      { tone: 'league', event: events.data!.find(event => event.id === 'event-current-league'), to: '/event/event-current-league', action: 'View League' },
+      { tone: 'top-40', event: events.data!.find(event => event.id === 'event-lobo-s-american-top-40'), to: '/event/event-lobo-s-american-top-40', action: 'View Top 40' },
+      { tone: 'team-tournament', event: events.data!.find(event => event.id === 'event-august-2026-team-tournament'), to: '/event/event-august-2026-team-tournament', action: 'View Tournament' }
+    ].filter((program): program is { tone: string; event: PublicEvent; to: string; action: string } => Boolean(program.event))
+    const quickAccess = [
+      ['Players', '/players'], ['Standings', '/standings'], ['Games', '/games'], ['Factions', '/factions'], ['Missions', '/missions'],
+      ['Schedule', '/schedule'], ['Community', '/community'], ['Streams', '/streams'], ['Events', '/events'], ['Submit Game', '/submit-game']
+    ] as const
+    return <Page title="Lobo Infinity Portal" eyebrow="Current public snapshot" intro="Lobo Infinity Portal community command network.">
+      <section className="snapshot-dashboard-section snapshot-dashboard-programs" aria-labelledby="dashboard-programs-title">
+        <div className="snapshot-dashboard-section-heading">
+          <p className="eyebrow">Portal programs</p>
+          <h2 id="dashboard-programs-title">What&apos;s Happening</h2>
+        </div>
+        <div className="snapshot-dashboard-program-grid">
+          {programs.map(program => <DashboardProgramCard key={program.tone} {...program} />)}
+        </div>
+      </section>
+      <section className="snapshot-dashboard-section snapshot-dashboard-activity" aria-labelledby="dashboard-activity-title">
+        <div className="snapshot-dashboard-section-heading">
+          <p className="eyebrow">Across the portal</p>
+          <h2 id="dashboard-activity-title">Recent Activity</h2>
+        </div>
+        <Panel title="Recent Games Across the Portal"><DashboardGameTable games={[...games.data!].slice(-8).reverse()} /></Panel>
+      </section>
+      <section className="snapshot-dashboard-section snapshot-dashboard-quick-access" aria-labelledby="dashboard-quick-access-title">
+        <div className="snapshot-dashboard-section-heading">
+          <p className="eyebrow">Navigate the portal</p>
+          <h2 id="dashboard-quick-access-title">Quick Access</h2>
+        </div>
+        <nav className="snapshot-dashboard-link-grid" aria-label="Portal quick access">
+          {quickAccess.map(([label, to]) => <Link key={to} to={to}>{label}</Link>)}
+        </nav>
+      </section>
     </Page>
   }}</DataGate>
+}
+
+function DashboardProgramCard({event,to,action,tone}:{event:PublicEvent;to:string;action:string;tone:string}) {
+  const metrics: Array<[string,string|number]> = []
+  if (event.lifecycleStage && event.lifecycleStage !== event.status) metrics.push(['Stage', event.lifecycleStage])
+  metrics.push(['Registered', event.registeredCount], ['Completed Games', event.completedGames])
+  return <article className={`snapshot-dashboard-program snapshot-dashboard-program--${tone}`}>
+    <div className="snapshot-dashboard-program-heading">
+      <p>{event.type}</p><span>{event.status || event.lifecycleStage}</span>
+    </div>
+    <h3>{event.name}</h3>
+    <dl className="snapshot-dashboard-program-metrics">
+      {metrics.map(([label,value]) => <div key={label}><dt>{label}</dt><dd>{value ?? '—'}</dd></div>)}
+    </dl>
+    <Link className="snapshot-dashboard-program-link" to={to}>{action}</Link>
+  </article>
+}
+
+function DashboardGameTable({games}:{games:PublicGame[]}) {
+  return games.length ? <div className="table-wrapper snapshot-table-shell snapshot-dashboard-games"><table className="snapshot-data-table"><thead><tr><th>Game</th><th>Date</th><th>Players</th><th>Event / Type</th><th>Mission</th><th>TP</th><th>OP</th><th>VP</th></tr></thead><tbody>{games.map(game=><tr key={game.id}><td><Link className="snapshot-game-link" to={`/games/${game.id}`}>#{game.id}</Link></td><td>{formatDate(game.date)}</td><td><strong>{game.winnerDisplayName}</strong><span className="snapshot-versus">vs</span>{game.loserDisplayName}</td><td><span className="snapshot-dashboard-game-event">{game.eventName || game.gameType || '—'}</span>{game.eventName && game.gameType && game.gameType !== game.eventName ? <small>{game.gameType}</small> : null}</td><td><span className="snapshot-table-badge">{game.mission}</span></td><td>{game.tp}</td><td>{game.op}</td><td>{game.vp}</td></tr>)}</tbody></table></div> : <PublicEmptyState message="No public games are available in this snapshot." />
 }
 
 function Players() { const state=useSnapshotData<PublicPlayer[]>('players'); return <DataGate states={[state]}>{()=><Page title="Players" eyebrow="Current public directory"><CardGrid>{state.data!.map(p=><LinkCard key={p.player} to={`/players/${encodeURIComponent(p.player)}`} title={p.displayName} meta={`${p.divisionLabel || p.division} · ${p.games} games · ${p.wins}-${p.losses}-${p.draws}`} />)}</CardGrid></Page>}</DataGate> }
@@ -98,7 +148,7 @@ function DataGate({states,children}:{states:Array<{data?:unknown;error?:string}>
 function Loading(){return <main className="portal-shell"><section className="dashboard-state"><p>Loading public snapshot…</p></section></main>}
 function Missing({label}:{label:string}){return <Page title={`${label} not found`} eyebrow="Snapshot data"><p>The requested {label.toLowerCase()} is not present in this snapshot.</p></Page>}
 function NotFound(){return <Missing label="Page"/>}
-function Page({title,eyebrow,intro,children}:{title:string;eyebrow:string;intro?:string;children:ReactNode}){return <main className="portal-shell snapshot-public-page" data-page={title==='League Dashboard'?'dashboard':undefined}><section className="page-header"><p className="eyebrow">{eyebrow}</p><h1>{title}</h1>{intro?<p>{intro}</p>:null}</section>{children}</main>}
+function Page({title,eyebrow,intro,children}:{title:string;eyebrow:string;intro?:string;children:ReactNode}){return <main className="portal-shell snapshot-public-page" data-page={title==='Lobo Infinity Portal'?'dashboard':undefined}><section className="page-header"><p className="eyebrow">{eyebrow}</p><h1>{title}</h1>{intro?<p>{intro}</p>:null}</section>{children}</main>}
 function Panel({title,children}:{title:string;children:ReactNode}){return <section className="panel snapshot-panel"><div className="panel-heading"><p className="eyebrow">Public Snapshot</p><h2>{title}</h2></div><div className="snapshot-panel-body">{children}</div></section>}
 function MetricGrid({items}:{items:Array<[string,string|number]>}){return <section className="snapshot-metric-grid">{items.map(([label,value],index)=><article className={`snapshot-metric-card tone-${index%4}`} key={label}><span>{label}</span><strong>{value||'—'}</strong></article>)}</section>}
 function CardGrid({children}:{children:ReactNode}){return <section className="snapshot-card-grid">{children}</section>}
