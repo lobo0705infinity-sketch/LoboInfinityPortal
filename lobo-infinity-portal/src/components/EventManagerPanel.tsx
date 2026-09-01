@@ -39,10 +39,20 @@ type ParticipantForm = {
   team: string
 }
 
-function EventManagerPanel({ canManage }: { canManage: boolean }) {
+export type EventManagerFocus = 'all' | 'league' | 'top40' | 'team'
+
+function EventManagerPanel({
+  canManage,
+  focus = 'all',
+  initialEventId = 'event-current-league',
+}: {
+  canManage: boolean
+  focus?: EventManagerFocus
+  initialEventId?: string
+}) {
   const [state, setState] = useState<EventManagerState>({ status: 'loading' })
-  const [selectedEventId, setSelectedEventId] = useState('event-current-league')
-  const initialEventId = useRef('event-current-league')
+  const [selectedEventId, setSelectedEventId] = useState(initialEventId)
+  const initialEventIdRef = useRef(initialEventId)
   const [workingAction, setWorkingAction] = useState('')
   const [actionError, setActionError] = useState('')
   const [actionMessage, setActionMessage] = useState('')
@@ -137,7 +147,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     const controller = new AbortController()
 
     eventRepository
-      .getEventManager(initialEventId.current, { signal: controller.signal })
+      .getEventManager(initialEventIdRef.current, { signal: controller.signal })
       .then(applyManagerData)
       .catch((error: unknown) => {
         if (controller.signal.aborted) {
@@ -391,6 +401,45 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
   const isTeamTournament = data.selectedEvent.type === 'Team Tournament'
   const isIndividualDoubleElimination =
     data.selectedEvent.type === 'Individual Double Elimination'
+
+  if (focus === 'league') {
+    return (
+      <div className="event-manager">
+        <div className="panel-heading"><p className="eyebrow">League Operations</p><h2>Mission &amp; Map</h2></div>
+        {data.selectedEvent.type === 'League' ? (
+          <form className="event-manager-form" onSubmit={saveLeagueOperations}>
+            <label>Week Number<input disabled={!canManage} onChange={(event) => setLeagueOperationsForm((current) => ({ ...current, weekNumber: event.target.value }))} value={leagueOperationsForm.weekNumber} /></label>
+            <LeagueOperationsSelect disabled={!canManage} label="Mission 1" onChange={(mission1) => setLeagueOperationsForm((current) => ({ ...current, mission1 }))} options={data.leagueOperations.missionOptions} value={leagueOperationsForm.mission1} />
+            <LeagueOperationsMapInput disabled={!canManage} label="Mission 1 Map 1" onChange={(mission1MapA) => setLeagueOperationsForm((current) => ({ ...current, mission1MapA }))} value={leagueOperationsForm.mission1MapA} />
+            <LeagueOperationsMapInput disabled={!canManage} label="Mission 1 Map 2" onChange={(mission1MapB) => setLeagueOperationsForm((current) => ({ ...current, mission1MapB }))} value={leagueOperationsForm.mission1MapB} />
+            <LeagueOperationsSelect disabled={!canManage} label="Mission 2" onChange={(mission2) => setLeagueOperationsForm((current) => ({ ...current, mission2 }))} options={data.leagueOperations.missionOptions} value={leagueOperationsForm.mission2} />
+            <LeagueOperationsMapInput disabled={!canManage} label="Mission 2 Map 1" onChange={(mission2MapA) => setLeagueOperationsForm((current) => ({ ...current, mission2MapA }))} value={leagueOperationsForm.mission2MapA} />
+            <LeagueOperationsMapInput disabled={!canManage} label="Mission 2 Map 2" onChange={(mission2MapB) => setLeagueOperationsForm((current) => ({ ...current, mission2MapB }))} value={leagueOperationsForm.mission2MapB} />
+            <div className="event-manager-actions event-manager-wide"><button disabled={!canManage || workingAction !== ''} type="submit">Save Mission &amp; Map</button><a className="button-link" href="/league-operations">View Public Page</a></div>
+            <div aria-live="polite" className="event-manager-wide">{actionError ? <p className="form-error" role="alert">{actionError}</p> : null}{actionMessage ? <p className="form-success" role="status">{actionMessage}</p> : null}</div>
+          </form>
+        ) : <p>This tool is available for League events only.</p>}
+      </div>
+    )
+  }
+
+  if (focus === 'top40') {
+    return (
+      <div className="event-manager">
+        <div className="panel-heading"><p className="eyebrow">Tournament Operations</p><h2>Top 40 Operations</h2></div>
+        {isIndividualDoubleElimination ? <><TournamentSeedingPanel canManage={canManage} key={`${data.selectedEvent.id}-${data.generatedAt}`} onSave={saveSeeding} participants={data.participants} working={workingAction !== ''} /><BracketGenerationPanel canManage={canManage} eventId={data.selectedEvent.id} /></> : <p>This tool is available for the Top 40 event only.</p>}
+      </div>
+    )
+  }
+
+  if (focus === 'team') {
+    return (
+      <div className="event-manager">
+        <div className="panel-heading"><p className="eyebrow">Tournament Operations</p><h2>Team Tournament Operations</h2></div>
+        {isTeamTournament ? <TeamOperationsPanel canManage={canManage} onPairingSubmit={savePairing} onTeamChange={setTeamForm} onTeamSubmit={saveTeam} pairings={data.pairings} rounds={data.rounds} currentRound={data.events.find((event) => event.event.id === data.selectedEvent.id)?.currentRound ?? data.rounds[0] ?? null} teamForm={teamForm} teams={data.teams} working={workingAction !== ''} /> : <p>This tool is available for Team Tournament events only.</p>}
+      </div>
+    )
+  }
 
   return (
     <div className="event-manager">

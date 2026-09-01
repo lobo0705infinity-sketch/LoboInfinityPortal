@@ -33,7 +33,8 @@ const AutomationCenter = lazyRoute('AutomationCenter', () => import('./pages/Aut
 const CommunityManager = lazyRoute('CommunityManager', () => import('./pages/CommunityManager'))
 const CommissionerArmyListLinks = lazyRoute('CommissionerArmyListLinks', () => import('./pages/CommissionerArmyListLinks'))
 const CommissionerDashboard = lazyRoute('CommissionerDashboard', () => import('./pages/CommissionerDashboard'))
-const CommissionerEvents = lazyRoute('CommissionerEvents', () => import('./pages/CommissionerEvents'))
+const CommissionerEventManager = lazyRoute('CommissionerEventManager', () => import('./pages/CommissionerEventManager'))
+const CommissionerEventOperations = lazyRoute('CommissionerEventOperations', () => import('./pages/CommissionerEventOperations'))
 const CommissionerGameCenter = lazyRoute('CommissionerGameCenter', () => import('./pages/CommissionerGameCenter'))
 const CommissionerGameScoreCorrection = lazyRoute('CommissionerGameScoreCorrection', () => import('./pages/CommissionerGameScoreCorrection'))
 const CommissionerPlayers = lazyRoute('CommissionerPlayers', () => import('./pages/CommissionerPlayers'))
@@ -166,14 +167,18 @@ function AuthShell() {
                     { title: 'Event Manager', description: 'Event setup, registration, participants, lifecycle, and archive.', to: '/commissioner/events/manage' },
                     { title: 'Scheduling Monitor', description: 'Outstanding League scheduling and Commissioner oversight.', to: '/commissioner?section=scheduling' },
                     { title: 'Portal Settings', description: 'Retained operational portal settings.', to: '/commissioner?section=settings' },
-                    { title: 'League Mission & Map', description: 'Weekly and current League mission and map administration.', to: '/commissioner/events/manage' },
-                    { title: 'Top 40 Operations', description: 'Seeding, bracket generation, missions, deadlines, and forfeits.', to: '/commissioner/events/manage' },
-                    { title: 'Team Tournament Operations', description: 'Teams, pairings, and required tournament administration.', to: '/commissioner/events/manage' },
+                    { title: 'League Mission & Map', description: 'Weekly and current League mission and map administration.', to: '/commissioner/events/league-mission-map' },
+                    { title: 'Top 40 Operations', description: 'Seeding, bracket generation, missions, deadlines, and forfeits.', to: '/commissioner/events/top-40' },
+                    { title: 'Team Tournament Operations', description: 'Teams, pairings, and required tournament administration.', to: '/commissioner/events/team-tournament' },
                   ]}
                   description="Event administration and tournament operations."
                   title="Events"
                 />} />
-                <Route path="/commissioner/events/manage" element={<MeasuredRoute name="CommissionerEvents"><CommissionerEvents /></MeasuredRoute>} />
+                <Route path="/commissioner/events/manage" element={<MeasuredRoute name="CommissionerEventManager"><CommissionerEventManager /></MeasuredRoute>} />
+                <Route path="/commissioner/events/manage/details" element={<MeasuredRoute name="CommissionerEventManager"><CommissionerEventManager /></MeasuredRoute>} />
+                <Route path="/commissioner/events/manage/registration" element={<MeasuredRoute name="CommissionerEventManager"><CommissionerEventManager /></MeasuredRoute>} />
+                <Route path="/commissioner/events/manage/participants" element={<MeasuredRoute name="CommissionerEventManager"><CommissionerEventManager /></MeasuredRoute>} />
+                <Route path="/commissioner/events/:operation" element={<MeasuredRoute name="CommissionerEventOperations"><CommissionerEventOperations /></MeasuredRoute>} />
                 <Route path="/commissioner/event-manager" element={<Navigate replace to="/commissioner/events/manage" />} />
                 <Route path="/commissioner/players" element={<CommissionerLauncher
                   cards={[
