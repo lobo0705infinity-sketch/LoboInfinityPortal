@@ -16,6 +16,7 @@ assert.match(source, /duplicate Game ID/)
 assert.match(source, /function runHourlyPublicSnapshot\(\)/)
 assert.match(source, /function installHourlyPublicSnapshotTrigger\(\)/)
 assert.match(source, /remainingMatchups:\s*remainingMatchups/)
+assert.equal((source.match(/armyLink:\s*buildPublicSnapshotArmyLink_\(list\.armyLink, list\.armyCode\)/g) || []).length, 2)
 
 function extractFunctions(text) {
   const functions = new Map()
@@ -128,7 +129,7 @@ const FORM = {
   WINNER_ARMY_LIST_ID: 21, LOSER_ARMY_LIST_ID: 22,
 }
 const sandbox = {
-  console, Date, JSON, Math, Number, Object, String, FORM,
+  console, Date, JSON, Math, Number, Object, String, FORM, encodeURIComponent, decodeURIComponent,
   EVENT_ENGINE_DEFAULT_EVENT_ID: 'event-current-league',
   CONFIG: { DIVISIONS: { MAIN_MAN: 'Main Man', PGA: 'Proving Grounds A', PGB: 'Proving Grounds B' } },
   determineWinner: (row) => row[FORM.GAME_RESULT] === 'Player 2' ? 2 : row[FORM.GAME_RESULT] === 'Draw' ? 0 : 1,
@@ -150,7 +151,7 @@ const functions = [
   'validatePublicSnapshotRemainingMatchups_', 'buildPublicSnapshotStandings_',
   'stablePublicSnapshotJson_', 'assertPublicSnapshotSafe_',
   'calculatePublicSnapshotLeagueRecord_', 'validatePublicSnapshotDatasets_',
-  'buildPublicSnapshotArmyLists_', 'buildPublicSnapshotDecodedArmy_',
+  'buildPublicSnapshotArmyLink_', 'buildPublicSnapshotArmyLists_', 'buildPublicSnapshotDecodedArmy_',
   'buildPublicSnapshotSchedule_', 'buildPublicSnapshotStatistics_',
   'buildPublicSnapshotRecords_', 'pickPublicHallOfFameValue_',
   'buildPublicSnapshotCommunity_', 'buildPublicSnapshotRows_'
@@ -290,12 +291,14 @@ assert.equal(JSON.stringify(directory).includes('@example.test'), false)
 
 const publicArmy = sandbox.buildPublicSnapshotArmyLists_({ lists: [
   { id: '3296098999', player: 'Lobo', armyCode: 'SECRET-A', armyLink: 'https://infinitytheuniverse.com/army/list/3296098999', approved: true },
-  { id: '4483300877', player: 'Nighthawkmk2', armyCode: 'SECRET-B', approved: true },
+  { id: '4483300877', player: 'Nighthawkmk2', armyCode: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890%3D', approved: true },
   { id: '4113389343', player: 'Nighthawkmk2', armyCode: 'SECRET-C', approved: true },
 ] })
 assert.deepEqual(publicArmy.map((list) => list.id), ['3296098999', '4483300877', '4113389343'])
 assert.equal('armyCode' in publicArmy[0], false)
 assert.equal(publicArmy[0].armyLink.includes('3296098999'), true)
+assert.equal(publicArmy[1].armyLink, 'https://infinitytheuniverse.com/army/list/ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890%3D')
+assert.equal(publicArmy[2].armyLink, '')
 
 const persistedSandbox = { Array, Error }
 vm.createContext(persistedSandbox)

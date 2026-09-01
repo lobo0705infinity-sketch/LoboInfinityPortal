@@ -1003,7 +1003,7 @@ function buildPublicSnapshotArmyLists_(readModel) {
       opponent: String(list.opponent || "").trim(),
       opponentDisplayName: String(list.opponentDisplayName || list.opponent || "").trim(),
       result: String(list.result || "").trim(), armyName: String(list.armyName || "").trim(),
-      armyLink: String(list.armyLink || "").trim(), score: Number(list.score) || 0,
+      armyLink: buildPublicSnapshotArmyLink_(list.armyLink, list.armyCode), score: Number(list.score) || 0,
       battleReportPath: String(list.battleReportPath || "").trim(), approved: list.approved !== false
     };
   }).filter(function(list) { return list.id && list.player; });
@@ -1044,7 +1044,7 @@ function buildPublicSnapshotArmyIntelligence_(readModel) {
           id: String(list.id || ""), player: String(list.player || ""),
           playerDisplayName: String(list.playerDisplayName || list.player || ""),
           faction: String(list.faction || ""), sectorial: String(list.sectorial || ""),
-          armyName: String(list.armyName || ""), armyLink: String(list.armyLink || ""),
+          armyName: String(list.armyName || ""), armyLink: buildPublicSnapshotArmyLink_(list.armyLink, list.armyCode),
           points: Number(list.points) || 0, swc: Number(list.swc) || 0,
           source: String(list.source || ""), submissionDate: String(list.submissionDate || "")
         };
@@ -1052,6 +1052,29 @@ function buildPublicSnapshotArmyIntelligence_(readModel) {
     };
   });
   return { summary: summary, detail: detail };
+}
+
+// A submitted Infinity Army code is never exposed as a public snapshot field.
+// The Corvus Belli list URL is the deliberate public projection used by the
+// Explorer; retain a submitted URL when one already exists.
+function buildPublicSnapshotArmyLink_(armyLink, armyCode) {
+  const existing = String(armyLink || "").trim();
+  if (existing) return existing;
+
+  const code = String(armyCode || "").trim();
+  if (
+    !code ||
+    code.indexOf("...") !== -1 ||
+    /\s/.test(code) ||
+    !/[A-Za-z0-9_%+\/=\-]{24,}/.test(code)
+  ) return "";
+
+  try {
+    return "https://infinitytheuniverse.com/army/list/" +
+      encodeURIComponent(decodeURIComponent(code));
+  } catch (error) {
+    return "https://infinitytheuniverse.com/army/list/" + encodeURIComponent(code);
+  }
 }
 
 function buildPublicSnapshotDecodedArmy_(decoded) {

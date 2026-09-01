@@ -183,7 +183,7 @@
 .snapshot-intelligence-role-disclosure .panel-heading { min-height: auto; padding: 0.7rem 0.85rem; }
 
 .snapshot-intelligence-explorer-backdrop { position: fixed; z-index: 80; inset: 0; display: grid; place-items: center; padding: clamp(0.7rem, 2vw, 1.4rem); background: rgba(2, 5, 8, 0.79); backdrop-filter: blur(5px); }
-.snapshot-intelligence-explorer-panel { width: min(1240px, 100%); max-height: min(820px, 94vh); overflow: auto; border: 1px solid rgba(76, 201, 240, 0.35); border-radius: 13px; background: #0b121a; box-shadow: 0 30px 90px rgba(0, 0, 0, 0.62); }
+.snapshot-intelligence-explorer-panel { width: min(1240px, 100%); min-width: 0; max-height: min(820px, 94vh); overflow: auto; border: 1px solid rgba(76, 201, 240, 0.35); border-radius: 13px; background: #0b121a; box-shadow: 0 30px 90px rgba(0, 0, 0, 0.62); }
 .snapshot-intelligence-explorer-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-bottom: 1px solid rgba(76, 201, 240, 0.17); padding: 1rem 1.15rem; background: linear-gradient(90deg, rgba(76, 201, 240, 0.1), transparent 55%); }
 .snapshot-intelligence-explorer-header p, .snapshot-intelligence-explorer-header h2 { margin: 0; }
 .snapshot-intelligence-explorer-header h2 { color: #fff; font-size: 1.45rem; }

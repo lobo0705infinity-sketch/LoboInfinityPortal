@@ -34,7 +34,7 @@ assert(decoded.some((list) => list.mission), 'mission intelligence data')
 assert(decoded.some((list) => list.result || list.results?.length), 'result filter data')
 assert(groups.some((group) => group.armyLists.some((list) => list.playerDisplayName && list.submissionDate)), 'public list explorer data')
 
-for (const required of ['Faction or sectorial', 'Winning lists', 'Losing lists', 'Profile search', 'Troop type', 'Skill', 'Weapon', 'Equipment', 'Sort profiles', 'Model Usage', 'Role Coverage', 'Army List Explorer']) {
+for (const required of ['Select sectorial', 'Army Lists with a Winning Record', 'Army Lists with a Losing Record', 'Troop or profile', 'All Types', 'All Skills', 'All Weapons', 'All Equipment', 'Alphabetically', 'Model Usage', 'Role coverage', 'Army List Explorer']) {
   assert(source.includes(required), `feature mapping: ${required}`)
 }
 assert(app.includes('<SnapshotArmyIntelligence />'), 'snapshot-native route component')
