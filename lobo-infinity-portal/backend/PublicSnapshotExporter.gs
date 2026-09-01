@@ -157,7 +157,12 @@ function buildPublicSnapshotV1_() {
     const playerIndex = buildPublicSnapshotPlayerIndex_(frozen.playersTable);
     const games = buildPublicSnapshotGameContext_(frozen.gamesTable, playerIndex);
     const eventState = buildPublicSnapshotEventState_(frozen);
-    const events = buildPublicSnapshotEvents_(frozen.eventsTable, games, eventState);
+    const events = buildPublicSnapshotEvents_(
+      frozen.eventsTable,
+      games,
+      eventState,
+      frozen.teamTournamentProjection
+    );
     const players = buildPublicSnapshotPlayers_(frozen.playersTable, games, eventState);
     const publicGames = buildPublicSnapshotGames_(games, events);
     const missions = buildPublicSnapshotMissions_(games);
@@ -282,6 +287,7 @@ function capturePublicSnapshotSource_(snapshotId) {
   const teamsTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.TEAM_TOURNAMENT_TEAMS);
   const pairingsTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.TEAM_TOURNAMENT_PAIRINGS);
   const hallOfFame = buildPublicSnapshotHallOfFameStrict_(armyLists);
+  const teamTournamentProjection = readPublicSnapshotTeamTournamentProjection_();
   return {
     snapshotId: snapshotId,
     sourceCutoff: new Date().toISOString(),
@@ -302,9 +308,46 @@ function capturePublicSnapshotSource_(snapshotId) {
     bracketMissionsTable: freezePublicSnapshotTable_(bracketMissionsTable),
     teamsTable: freezePublicSnapshotTable_(teamsTable),
     pairingsTable: freezePublicSnapshotTable_(pairingsTable),
+    teamTournamentProjection: JSON.parse(JSON.stringify(teamTournamentProjection)),
     hallOfFame: JSON.parse(JSON.stringify(hallOfFame)),
-    readCount: 17
+    readCount: 18
   };
+}
+
+function readPublicSnapshotTeamTournamentProjection_() {
+  const eventId = "event-august-2026-team-tournament";
+  const fileId = typeof getPublicTeamTournamentProjectionFileId_ === "function"
+    ? getPublicTeamTournamentProjectionFileId_()
+    : PropertiesService.getScriptProperties().getProperty(
+        "PUBLIC_TEAM_TOURNAMENT_PROJECTION_FILE_ID"
+      );
+  if (!fileId)
+    throw new Error("Public Team Tournament projection is not configured.");
+
+  let projection;
+  try {
+    projection = JSON.parse(
+      DriveApp.getFileById(fileId).getBlob().getDataAsString("UTF-8")
+    );
+  }
+  catch (error) {
+    throw new Error(
+      "Public Team Tournament projection could not be read: " +
+      String(error && error.message ? error.message : error)
+    );
+  }
+
+  if (
+    !projection ||
+    projection.eventId !== eventId ||
+    !projection.tournament ||
+    !projection.tournament.event ||
+    projection.tournament.event.id !== eventId ||
+    !Array.isArray(projection.tournament.standings)
+  )
+    throw new Error("Public Team Tournament projection failed event isolation.");
+
+  return projection;
 }
 
 function readPublicSnapshotPersistedArmyLists_() {
@@ -422,13 +465,13 @@ function publicSnapshotCell_(row, columns, labels) {
   return "";
 }
 
-function buildPublicSnapshotEvents_(table, games, eventState) {
+function buildPublicSnapshotEvents_(table, games, eventState, teamTournamentProjection) {
   const columns = publicSnapshotColumns_(table.headers || []);
   return (table.rows || []).map(function(row) {
     const id = publicSnapshotCell_(row, columns, ["id", "event id"]);
     if (!id) return null;
     const state = eventState && eventState[id] || {};
-    return {
+    const event = {
       id: id, name: publicSnapshotCell_(row, columns, ["name"]),
       description: publicSnapshotCell_(row, columns, ["description"]),
       type: publicSnapshotCell_(row, columns, ["type"]),
@@ -445,6 +488,11 @@ function buildPublicSnapshotEvents_(table, games, eventState) {
       bracket: state.bracket || [], bracketMissions: state.bracketMissions || [],
       teams: state.teams || [], pairings: state.pairings || []
     };
+    if (teamTournamentProjection && id === teamTournamentProjection.eventId)
+      event.standings = JSON.parse(
+        JSON.stringify(teamTournamentProjection.tournament.standings)
+      );
+    return event;
   }).filter(Boolean);
 }
 

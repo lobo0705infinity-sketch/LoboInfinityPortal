@@ -21,6 +21,9 @@ assert.match(source, /function runHourlyPublicSnapshot\(\)/)
 assert.match(source, /function installHourlyPublicSnapshotTrigger\(\)/)
 assert.match(source, /remainingMatchups:\s*remainingMatchups/)
 assert.equal((source.match(/armyLink:\s*buildPublicSnapshotArmyLink_\(list\.armyLink, list\.armyCode\)/g) || []).length, 2)
+assert.match(source, /function readPublicSnapshotTeamTournamentProjection_\(\)/)
+assert.match(source, /teamTournamentProjection: JSON\.parse\(JSON\.stringify\(teamTournamentProjection\)\)/)
+assert.match(source, /event\.standings = JSON\.parse\([\s\S]*?teamTournamentProjection\.tournament\.standings/)
 
 function extractFunctions(text) {
   const functions = new Map()
