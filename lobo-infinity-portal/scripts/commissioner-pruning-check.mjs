@@ -15,6 +15,7 @@ const app = read('src/App.tsx')
 const api = read('src/services/api.ts')
 const apiRouter = read('backend/API.gs')
 const operationsApi = read('backend/OperationsApi.gs')
+const streamsApi = read('backend/StreamsApi.gs')
 const settingsContext = read('src/contexts/SettingsContext.tsx')
 const activityTracker = read('src/components/UserActivityTracker.tsx')
 const launcher = read('src/components/CommissionerLauncher.tsx')
@@ -101,7 +102,16 @@ assert.match(community, /Delete Stream/)
 assert.doesNotMatch(community, /getOperationsContent|Skeleton|NewsManager|AlertsManager|TimelineManager|Discord & Automation/)
 assert.match(api, /function getCommissionerStreams[\s\S]*request\('operationsContent',[\s\S]*scope: 'streams'/)
 assert.match(apiRouter, /case "operationsContent":[\s\S]*getOperationsContentDashboard\(e\)/)
-assert.match(operationsApi, /function getOperationsContentDashboard\(e\)[\s\S]*e\.parameter\.scope === "streams"[\s\S]*streams: getOperationsStreams\(\)/)
+assert.match(operationsApi, /function getOperationsContentDashboard\(e\)[\s\S]*e\.parameter\.scope === "streams"[\s\S]*streams: getCommissionerStreamsReadOnly\(\)/)
+assert.match(operationsApi, /function getCommissionerStreamsReadOnly\(\)[\s\S]*getStreamsSheetForRead_\(\)[\s\S]*enrichFromRecentGames: false/)
+const commissionerStreamsReadOnly =
+  operationsApi.match(/function getCommissionerStreamsReadOnly\(\) \{[\s\S]*?\n\}/)?.[0] || ''
+assert.doesNotMatch(commissionerStreamsReadOnly, /ensureStreamsSheet\(|getAllRecentGameObjects\(/)
+const streamsSheetReadOnly =
+  streamsApi.match(/function getStreamsSheetForRead_\(\) \{[\s\S]*?\n\}/)?.[0] || ''
+assert.match(streamsSheetReadOnly, /lifGetTargetSpreadsheet_\(\)/)
+assert.match(streamsSheetReadOnly, /getSheetByName/)
+assert.doesNotMatch(streamsSheetReadOnly, /insertSheet|migrateLegacyStreamsSheet|ensureStreamsHeaders/)
 
 assert.match(system, /if \(!showLegacyTools\)[\s\S]*System & Recovery/)
 assert.match(system, /Operations Engine/)

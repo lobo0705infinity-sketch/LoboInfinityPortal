@@ -164,7 +164,7 @@ function getOperationsContentDashboard(e) {
   )
     return jsonOutput({
       success: true,
-      streams: getOperationsStreams()
+      streams: getCommissionerStreamsReadOnly()
     });
 
   const armyLists =
@@ -1955,6 +1955,83 @@ function getOperationsStreams() {
           row,
           index + 1,
           columns
+        );
+
+      return {
+        id: stream.sourceIndex,
+        date: stream.date,
+        division: stream.division,
+        mission: stream.mission,
+        player1: stream.player1,
+        player1Faction: stream.player1Faction,
+        player2: stream.player2,
+        player2Faction: stream.player2Faction,
+        youtubeUrl: stream.youtubeUrl,
+        featured: stream.featured,
+        title: stream.title,
+        streamer: stream.streamer,
+        platform: stream.platform,
+        description: stream.description,
+        thumbnailUrl: stream.thumbnailUrl,
+        active: stream.active,
+        gameId: stream.gameId,
+        streamType: stream.streamType
+      };
+
+    })
+    .filter(function(stream) {
+
+      return stream.title || stream.youtubeUrl || stream.player1 || stream.player2;
+
+    });
+
+}
+
+// This is intentionally separate from getOperationsStreams(). The normal
+// operations/public consumers retain their existing schema enforcement and
+// game-enrichment behavior; the Commissioner list needs only stored rows.
+function getCommissionerStreamsReadOnly() {
+
+  const sheet =
+    getStreamsSheetForRead_();
+
+  if (!sheet)
+    return [];
+
+  const lastRow =
+    sheet.getLastRow();
+
+  const lastColumn =
+    sheet.getLastColumn();
+
+  if (
+    lastRow <= 1 ||
+    lastColumn === 0
+  )
+    return [];
+
+  const values =
+    sheet
+      .getRange(1, 1, lastRow, lastColumn)
+      .getValues();
+
+  const headers =
+    values.shift();
+
+  const columns =
+    getStreamColumns(headers);
+
+  return values
+    .map(function(row, index) {
+
+      const stream =
+        buildStream(
+          row,
+          index + 1,
+          columns,
+          {
+            enrichFromRecentGames: false
+          }
         );
 
       return {
