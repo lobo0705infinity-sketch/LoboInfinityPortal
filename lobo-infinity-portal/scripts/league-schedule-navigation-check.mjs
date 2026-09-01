@@ -19,12 +19,12 @@ const teamTournament = eventNavigation.match(
 )?.[1] ?? ''
 const capabilityNames = (source) => [...source.matchAll(/'([^']+)'/g)].map((match) => match[1])
 // Statistics intentionally remains directly routable but is no longer exposed in Current League navigation.
-const expectedCurrentLeague = ['overview', 'registration', 'standings', 'rules']
+const expectedCurrentLeague = ['overview', 'registration', 'standings', 'schedule', 'rules']
 const expectedNormalLeague = ['overview', 'registration', 'standings', 'statistics', 'rules']
 
 assert.deepEqual(capabilityNames(currentLeague), expectedCurrentLeague)
 assert.deepEqual(capabilityNames(normalLeague), expectedNormalLeague)
-assert.ok(!currentLeague.includes("'schedule'"))
+assert.ok(currentLeague.includes("'schedule'"))
 assert.ok(!normalLeague.includes("'schedule'"))
 
 // Desktop and mobile must continue deriving event links from the same canonical builder.
@@ -46,6 +46,7 @@ assert.match(eventNavigation, /id:\s*'event-august-2026-team-tournament'/)
 
 // Schedule remains a supported capability and a directly routed page.
 assert.match(eventNavigation, /schedule:\s*'\/schedule\?eventId=:eventId'/)
+assert.match(eventNavigation, /currentEventNavigation[\s\S]*?routeOverrides:\s*\{[\s\S]*?schedule:\s*'\/event\/:eventId\/schedule'/)
 assert.match(app, /<Route path="\/schedule"/)
 
 console.log('League Schedule navigation regression passed.')

@@ -100,11 +100,15 @@ export const currentEventNavigation: EventNavigationConfig = {
     'overview',
     'registration',
     'standings',
+    'schedule',
     'rules',
   ],
   id: 'event-current-league',
   label: 'July 2026 League',
   registrationUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSerLRnrnHyT7O0euglu_drx1yFzfvU2OdlidMXCDIt0ZYOp6Q/viewform?usp=dialog',
+  routeOverrides: {
+    schedule: '/event/:eventId/schedule',
+  },
   type: 'League',
 }
 

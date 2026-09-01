@@ -28,10 +28,10 @@ const currentLeague = eventNavigation.slice(
   eventNavigation.indexOf('export const currentEventNavigation'),
   eventNavigation.indexOf('export const eventNavigation:'),
 )
-for (const capability of ['overview', 'registration', 'standings', 'statistics', 'rules']) {
+for (const capability of ['overview', 'registration', 'standings', 'schedule', 'rules']) {
   assert.match(currentLeague, new RegExp(`'${capability}'`))
 }
-assert.doesNotMatch(currentLeague, /'schedule'/)
+assert.doesNotMatch(currentLeague, /'statistics'/)
 assert.doesNotMatch(currentLeague, /league-operations|Mission & Map/)
 assert.match(eventNavigation, /id: 'event-august-2026-team-tournament'/)
 assert.match(mobileBottomNavigation, /mobilePrimaryItems/)
