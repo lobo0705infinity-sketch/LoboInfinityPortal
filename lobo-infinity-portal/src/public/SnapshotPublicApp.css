@@ -1126,7 +1126,8 @@ main.snapshot-event-page[data-event="team-tournament-standings"] > .snapshot-tea
   position: relative;
   width: 100%;
   min-height: 0;
-  aspect-ratio: 1536 / 860;
+  /* 25% shorter than the approved candidate: retain the title, rider, and August lockup in the desktop crop. */
+  aspect-ratio: 1536 / 645;
   overflow: hidden;
   border: 1px solid rgba(217, 54, 68, 0.34);
   border-radius: 12px;
@@ -1139,7 +1140,7 @@ main.snapshot-event-page[data-event="team-tournament-standings"] > .snapshot-tea
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
+  object-position: center 13%;
 }
 
 main.snapshot-event-page[data-event="team-tournament-standings"] > .snapshot-tabs {
