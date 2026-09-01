@@ -42,6 +42,10 @@ function UserActivityTracker() {
       return
     }
 
+    if (location.pathname === '/commissioner' && !location.search) {
+      return
+    }
+
     const updateLastPage = () => {
       void heartbeat({
         lastPage: `${location.pathname}${location.search}`,

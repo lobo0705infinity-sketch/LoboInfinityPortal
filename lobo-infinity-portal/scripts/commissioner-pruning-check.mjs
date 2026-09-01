@@ -10,6 +10,9 @@ const games = read('src/pages/CommissionerGameCenter.tsx')
 const players = read('src/pages/CommissionerPlayers.tsx')
 const community = read('src/pages/CommunityManager.tsx')
 const system = read('src/pages/CommissionerSystem.tsx')
+const app = read('src/App.tsx')
+const settingsContext = read('src/contexts/SettingsContext.tsx')
+const activityTracker = read('src/components/UserActivityTracker.tsx')
 
 const commissionerNavigation = navigation.slice(navigation.indexOf('export const commissionerItems'))
 
@@ -32,6 +35,24 @@ assert.match(dashboard, /requestedPanel === 'operations'[\s\S]*OperationsEngineD
 assert.match(dashboard, /requestedPanel === 'scheduling'[\s\S]*CommissionerSchedulingPanel/)
 assert.match(dashboard, /requestedPanel === 'settings'[\s\S]*SettingsPanel/)
 assert.match(dashboard, /showLegacyFields \?/)
+
+const commandCenter = dashboard.slice(
+  dashboard.indexOf('function CompactCommandCenter()'),
+  dashboard.indexOf('function OperationsSummary'),
+)
+
+assert.match(dashboard, /requiresDashboardData[\s\S]*showLegacyTools \|\| requestedPanel === 'identity' \|\| requestedPanel === 'settings'/)
+assert.match(dashboard, /if \(!showLegacyTools && \(!requestedPanel \|\| requestedPanel === 'eventManager'\)\)[\s\S]*return <CompactCommandCenter \/>/)
+assert.doesNotMatch(commandCenter, /apiClient|data\.|Skeleton|Audit issues|Unlinked users|Pending streams|Notifications/)
+assert.match(commandCenter, /\['Events'.*?\/commissioner\/events/)
+assert.match(commandCenter, /\['Games & Army Lists'.*?\/commissioner\/game-center/)
+assert.match(commandCenter, /\['Players & Access'.*?\/commissioner\/players/)
+assert.match(commandCenter, /\['Community'.*?\/commissioner\/community-manager/)
+assert.match(commandCenter, /\['System & Recovery'.*?\/commissioner\/system/)
+assert.match(app, /staticCommissionerCommandCenter[\s\S]*location\.pathname === '\/commissioner' && !location\.search/)
+assert.match(app, /<SettingsProvider enabled=\{!staticCommissionerCommandCenter\}>/)
+assert.match(settingsContext, /if \(!enabled\)[\s\S]*return/)
+assert.match(activityTracker, /location\.pathname === '\/commissioner' && !location\.search/)
 
 assert.doesNotMatch(events, /const eventWorkflows/)
 assert.match(events, /<EventManagerPanel/)

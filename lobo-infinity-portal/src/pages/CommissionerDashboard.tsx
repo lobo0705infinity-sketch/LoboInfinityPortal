@@ -64,6 +64,9 @@ function CommissionerDashboard() {
   const auth = useAuth()
   const location = useLocation()
   const requestedPanel = getRequestedCommandCenterPanel(location.search)
+  const showLegacyTools = new URLSearchParams(location.search).get('legacy') === '1'
+  const requiresDashboardData =
+    showLegacyTools || requestedPanel === 'identity' || requestedPanel === 'settings'
   const [state, setState] = useState<OperationsState>({
     status: 'loading',
   })
@@ -138,7 +141,8 @@ function CommissionerDashboard() {
     if (
       auth.status !== 'ready' ||
       !auth.authenticated ||
-      !canViewOperations
+      !canViewOperations ||
+      !requiresDashboardData
     ) {
       return
     }
@@ -149,10 +153,16 @@ function CommissionerDashboard() {
     return () => {
       controller.abort()
     }
-  }, [auth.authenticated, auth.status, canViewOperations, loadOperations])
+  }, [
+    auth.authenticated,
+    auth.status,
+    canViewOperations,
+    loadOperations,
+    requiresDashboardData,
+  ])
 
   useEffect(() => {
-    if (!requestedPanel || state.status !== 'success') {
+    if (!requiresDashboardData || !requestedPanel || state.status !== 'success') {
       return
     }
 
@@ -203,6 +213,30 @@ function CommissionerDashboard() {
     )
   }
 
+  if (!showLegacyTools && (!requestedPanel || requestedPanel === 'eventManager')) {
+    return <CompactCommandCenter />
+  }
+
+  if (!showLegacyTools && requestedPanel === 'operations') {
+    return (
+      <main className="portal-shell">
+        <PageHeader />
+        <OperationsEngineDashboard />
+      </main>
+    )
+  }
+
+  if (!showLegacyTools && requestedPanel === 'scheduling') {
+    return (
+      <main className="portal-shell">
+        <PageHeader />
+        <section className="panel operations-panel">
+          <CommissionerSchedulingPanel />
+        </section>
+      </main>
+    )
+  }
+
   if (state.status === 'loading') {
     return (
       <main className="portal-shell">
@@ -236,7 +270,6 @@ function CommissionerDashboard() {
   }
 
   const { data } = state
-  const showLegacyTools = new URLSearchParams(location.search).get('legacy') === '1'
 
   if (!showLegacyTools) {
     if (requestedPanel === 'identity') {
@@ -257,26 +290,6 @@ function CommissionerDashboard() {
       )
     }
 
-    if (requestedPanel === 'operations') {
-      return (
-        <main className="portal-shell">
-          <PageHeader />
-          <OperationsEngineDashboard />
-        </main>
-      )
-    }
-
-    if (requestedPanel === 'scheduling') {
-      return (
-        <main className="portal-shell">
-          <PageHeader />
-          <section className="panel operations-panel">
-            <CommissionerSchedulingPanel />
-          </section>
-        </main>
-      )
-    }
-
     if (requestedPanel === 'settings') {
       return (
         <main className="portal-shell">
@@ -290,7 +303,7 @@ function CommissionerDashboard() {
       )
     }
 
-    return <CompactCommandCenter data={data} />
+    return <CompactCommandCenter />
   }
 
   return (
@@ -777,42 +790,23 @@ function PageHeader() {
     <section className="page-header" aria-labelledby="commissioner-title">
       <p className="eyebrow">League Operations</p>
       <h1 id="commissioner-title">Command Center</h1>
-      <p>Action-required League operations and direct paths to the active Commissioner tools.</p>
+      <p>Commissioner administration and league operations.</p>
     </section>
   )
 }
 
-function CompactCommandCenter({ data }: { data: OperationsDashboardData }) {
-  const attention = [
-    ['Audit issues', data.audit.summary.critical + data.audit.summary.warning, '/commissioner/system/audit'],
-    ['Unlinked users', data.summary.identityStatus.unlinkedUsers, '/commissioner?section=users'],
-    ['Pending streams', data.summary.pendingStreams, '/commissioner/community-manager'],
-    ['Notifications', data.summary.notificationStatus.total, '/commissioner/system'],
-  ] as const
-
+function CompactCommandCenter() {
   const sections = [
     ['Events', 'Event setup, registration, participants, League operations, brackets, teams, and pairings.', '/commissioner/events'],
-    ['Games & Army Lists', 'Canonical game search, score corrections, historical list links, and exception review.', '/commissioner/game-center'],
-    ['Players & Access', 'Identity mapping, account access, display-name corrections, and safe player cleanup.', '/commissioner/players'],
-    ['Community', 'Canonical Streams records plus Discord and automation administration.', '/commissioner/community-manager'],
-    ['System & Recovery', 'Read-only integrity and operations status, with clearly separated break-glass recovery.', '/commissioner/system'],
+    ['Games & Army Lists', 'Game search, score corrections, historical Army List links, and Army Code Validation.', '/commissioner/game-center'],
+    ['Players & Access', 'Identity management, account access, display-name corrections, and safe player cleanup.', '/commissioner/players'],
+    ['Community', 'Streams, Discord, and automation administration.', '/commissioner/community-manager'],
+    ['System & Recovery', 'System status, diagnostics, and exceptional recovery tools.', '/commissioner/system'],
   ] as const
 
   return (
     <main className="portal-shell">
       <PageHeader />
-      <section className="operations-summary" aria-label="Commissioner attention summary">
-        {attention.map(([label, value, to]) => (
-          <Link className="stat-card operations-stat" key={label} to={to}>
-            <div className="stat-card-header">
-              <span className="stat-card-icon">OPS</span>
-              <span className="stat-card-label">{label}</span>
-            </div>
-            <strong>{value}</strong>
-            <p>Review only when attention is required</p>
-          </Link>
-        ))}
-      </section>
       <section className="operations-grid" aria-label="Commissioner operational sections">
         {sections.map(([title, body, to]) => (
           <Link className="panel operations-panel" key={title} to={to}>

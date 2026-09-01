@@ -84,6 +84,8 @@ function AuthShell() {
     location.pathname === '/diagnostics' ||
     location.pathname === '/integrity' ||
     location.pathname === '/automation'
+  const staticCommissionerCommandCenter =
+    location.pathname === '/commissioner' && !location.search
 
   useEffect(() => {
     recordRouteDiagnostic({
@@ -97,7 +99,7 @@ function AuthShell() {
   }, [location.pathname, routeKey])
 
   return (
-    <SettingsProvider>
+    <SettingsProvider enabled={!staticCommissionerCommandCenter}>
       <div className="app-shell auth-ready">
         <RouteMeta />
         <UserActivityTracker />
