@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import Loading from '../components/Loading'
 import { apiClient } from '../services/api'
@@ -63,6 +63,8 @@ const emergencyWorkflows = [
 
 function CommissionerSystem() {
   const auth = useAuth()
+  const location = useLocation()
+  const showLegacyTools = new URLSearchParams(location.search).get('legacy') === '1'
   const [refreshingArmyIntelligence, setRefreshingArmyIntelligence] = useState(false)
   const [armyIntelligenceMessage, setArmyIntelligenceMessage] = useState('')
   const [pageAnalytics, setPageAnalytics] = useState<PageAnalyticsReportRow[]>([])
@@ -71,7 +73,7 @@ function CommissionerSystem() {
   const canViewPageAnalytics = auth.hasPermission('manageSettings')
 
   useEffect(() => {
-    if (auth.status !== 'ready' || !auth.authenticated || !canViewPageAnalytics) return
+    if (auth.status !== 'ready' || !auth.authenticated || !canViewPageAnalytics || !showLegacyTools) return
 
     let active = true
 
@@ -147,6 +149,58 @@ function CommissionerSystem() {
             account to inspect system health and recovery tools.
           </p>
         </section>
+      </main>
+    )
+  }
+
+  if (!showLegacyTools) {
+    return (
+      <main className="portal-shell">
+        <section className="page-header" aria-labelledby="commissioner-system-title">
+          <p className="eyebrow">Commissioner</p>
+          <h1 id="commissioner-system-title">System & Recovery</h1>
+          <p>Read-only operating status and exceptional recovery tools. Routine maintenance remains automated.</p>
+        </section>
+
+        <section className="operations-grid" aria-label="System status and recovery">
+          <Link className="panel operations-panel" to="/commissioner/system/audit">
+            <p className="eyebrow">Status</p>
+            <h2>Integrity</h2>
+            <p className="operations-empty">Review League health, audit findings, and the approved break-glass repair actions.</p>
+          </Link>
+          <Link className="panel operations-panel" to="/commissioner?section=operations">
+            <p className="eyebrow">Status</p>
+            <h2>Operations Engine</h2>
+            <p className="operations-empty">Inspect scheduled work, failures, queue state, and recent operation history.</p>
+          </Link>
+          <Link className="panel operations-panel" to="/commissioner/automation">
+            <p className="eyebrow">Recovery</p>
+            <h2>Automation Queue</h2>
+            <p className="operations-empty">Review and recover failed automation work only when normal processing needs intervention.</p>
+          </Link>
+        </section>
+
+        {auth.isAtLeastRole('Commissioner') ? (
+          <section className="panel operations-panel emergency-recovery-panel" aria-labelledby="army-intelligence-refresh-title">
+            <div className="panel-heading">
+              <p className="eyebrow">Recovery / Advanced</p>
+              <h2 id="army-intelligence-refresh-title">Army Intelligence Refresh</h2>
+              <p>Use only when the scheduled refresh cannot recover current authoritative Army List intelligence.</p>
+            </div>
+            <div className="operations-actions">
+              <button
+                disabled={refreshingArmyIntelligence}
+                onClick={() => void refreshArmyIntelligence()}
+                type="button"
+              >
+                {refreshingArmyIntelligence ? 'Refreshing Army Intelligence...' : 'Refresh Army Intelligence'}
+              </button>
+            </div>
+            {armyIntelligenceMessage ? (
+              <p className="operations-feedback" role="status">{armyIntelligenceMessage}</p>
+            ) : null}
+          </section>
+        ) : null}
       </main>
     )
   }

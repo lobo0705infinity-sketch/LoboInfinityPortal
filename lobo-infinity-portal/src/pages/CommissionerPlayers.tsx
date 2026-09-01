@@ -10,49 +10,6 @@ type CommissionerPlayer = {
   player: string
 }
 
-const playerWorkflows = [
-  {
-    body: 'Browse public competitive records, divisions, rankings, and profile pages.',
-    label: 'Player Profiles',
-    to: '/players',
-  },
-  {
-    body: 'Manage commissioner roles, portal accounts, identity records, and access state.',
-    label: 'Commissioner Permissions',
-    to: '/commissioner?section=users',
-  },
-  {
-    body: 'Review canonical player identity, league assignment, and Players sheet matching.',
-    label: 'League Assignment',
-    to: '/commissioner?section=users',
-  },
-  {
-    body: 'Resolve display names, Google email links, missing emails, and duplicate accounts.',
-    label: 'Display Name Management',
-    to: '/commissioner?section=users',
-  },
-  {
-    body: 'Review submitted lists and list approval workflows.',
-    label: 'Army Lists',
-    to: '/army-lists',
-  },
-  {
-    body: 'Review availability, scheduling requests, and Commissioner scheduling state.',
-    label: 'Availability',
-    to: '/commissioner?section=scheduling',
-  },
-  {
-    body: 'Review player awards, unlock rules, and achievement state.',
-    label: 'Achievements',
-    to: '/hall-of-fame',
-  },
-  {
-    body: 'Find players by name, profile, faction, division, or competitive identity.',
-    label: 'Player Search',
-    to: '/players',
-  },
-]
-
 function CommissionerPlayers() {
   const auth = useAuth()
   const [players, setPlayers] = useState<CommissionerPlayer[]>([])
@@ -210,36 +167,21 @@ function CommissionerPlayers() {
         <p className="eyebrow">Commissioner</p>
         <h1 id="commissioner-players-title">Players</h1>
         <p>
-          Player profiles, permissions, identity resolution, availability,
-          army lists, and achievement operations.
+          Identity, account access, display-name corrections, and safe
+          canonical player administration.
         </p>
-      </section>
-
-      <section className="operations-grid" aria-label="Player workflows">
-        {playerWorkflows.map((workflow) => (
-          <Link className="panel operations-panel" key={workflow.label} to={workflow.to}>
-            <p className="eyebrow">Players</p>
-            <h2>{workflow.label}</h2>
-            <p className="operations-empty">{workflow.body}</p>
-          </Link>
-        ))}
       </section>
 
       <section className="panel operations-panel">
         <div className="panel-heading">
           <p className="eyebrow">Identity Tools</p>
-          <h2>Player Administration</h2>
+          <h2>Identity & Access</h2>
           <p>
-            Detailed identity records, account repair actions, role management,
-            and audit history remain in Command Center under the player identity
-            panel.
+            Manage player identity records, account state, and repair actions.
           </p>
         </div>
         <div className="operations-actions wrap">
           <Link to="/commissioner?section=users">Open Player Identity Tools</Link>
-          <Link to="/players">Open Player Directory</Link>
-          <Link to="/army-lists">Open Army Lists</Link>
-          <Link to="/commissioner?section=scheduling">Open Availability</Link>
         </div>
       </section>
 

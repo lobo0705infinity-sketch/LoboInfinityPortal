@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import Loading from '../components/Loading'
 import Skeleton from '../components/Skeleton'
@@ -98,6 +99,7 @@ function CommunityManager() {
   const [message, setMessage] = useState('')
   const canManageContent =
     auth.hasPermission('manageNews') || auth.hasPermission('manageStreams')
+  const showLegacyContent = new URLSearchParams(window.location.search).get('legacy') === '1'
 
   const loadContent = useCallback(async (signal?: AbortSignal) => {
     try {
@@ -213,27 +215,41 @@ function CommunityManager() {
         </section>
       ) : null}
       <section className="operations-grid two-column" aria-label="Community manager modules">
-        <NewsManager
-          items={state.data.news}
-          onAction={runAction}
-          workingAction={workingAction}
-        />
         <StreamsManager
           items={state.data.streams}
           onAction={runAction}
           recentGames={state.data.summary.recentMatchSubmissions}
           workingAction={workingAction}
         />
-        <AlertsManager
-          items={state.data.alerts}
-          onAction={runAction}
-          workingAction={workingAction}
-        />
-        <TimelineManager
-          items={state.data.timeline}
-          onAction={runAction}
-          workingAction={workingAction}
-        />
+        <section className="panel operations-panel">
+          <PanelTitle count={0} eyebrow="Community" title="Discord & Automation" />
+          <p className="operations-empty">
+            Configure Discord, review automation health, recover the queue, and
+            manage active automation rules in one dedicated workspace.
+          </p>
+          <div className="operations-actions">
+            <Link to="/commissioner/automation">Open Discord & Automation</Link>
+          </div>
+        </section>
+        {showLegacyContent ? (
+          <>
+            <NewsManager
+              items={state.data.news}
+              onAction={runAction}
+              workingAction={workingAction}
+            />
+            <AlertsManager
+              items={state.data.alerts}
+              onAction={runAction}
+              workingAction={workingAction}
+            />
+            <TimelineManager
+              items={state.data.timeline}
+              onAction={runAction}
+              workingAction={workingAction}
+            />
+          </>
+        ) : null}
       </section>
     </main>
   )
@@ -243,8 +259,8 @@ function PageHeader() {
   return (
     <section className="page-header" aria-labelledby="community-manager-title">
       <p className="eyebrow">Commissioner</p>
-      <h1 id="community-manager-title">Community Manager</h1>
-      <p>Manage portal-wide News, Streams, Alerts, and Timeline entries.</p>
+      <h1 id="community-manager-title">Community</h1>
+      <p>Manage canonical Streams records and access Discord and automation administration.</p>
     </section>
   )
 }

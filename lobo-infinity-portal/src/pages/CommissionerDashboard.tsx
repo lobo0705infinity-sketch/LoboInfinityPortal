@@ -236,6 +236,62 @@ function CommissionerDashboard() {
   }
 
   const { data } = state
+  const showLegacyTools = new URLSearchParams(location.search).get('legacy') === '1'
+
+  if (!showLegacyTools) {
+    if (requestedPanel === 'identity') {
+      return (
+        <main className="portal-shell">
+          <PageHeader />
+          {loadingPanels.includes('identity') ? (
+            <section className="panel operations-panel"><Skeleton label="Identity management loading" rows={8} /></section>
+          ) : (
+            <IdentityManagementPanel
+              canManage={auth.hasPermission('manageSettings')}
+              data={data}
+              onAction={runAction}
+              workingAction={workingAction}
+            />
+          )}
+        </main>
+      )
+    }
+
+    if (requestedPanel === 'operations') {
+      return (
+        <main className="portal-shell">
+          <PageHeader />
+          <OperationsEngineDashboard />
+        </main>
+      )
+    }
+
+    if (requestedPanel === 'scheduling') {
+      return (
+        <main className="portal-shell">
+          <PageHeader />
+          <section className="panel operations-panel">
+            <CommissionerSchedulingPanel />
+          </section>
+        </main>
+      )
+    }
+
+    if (requestedPanel === 'settings') {
+      return (
+        <main className="portal-shell">
+          <PageHeader />
+          <SettingsPanel
+            canManage={auth.hasPermission('manageSettings')}
+            onAction={runAction}
+            settings={data.settings}
+          />
+        </main>
+      )
+    }
+
+    return <CompactCommandCenter data={data} />
+  }
 
   return (
     <main className="portal-shell">
@@ -387,6 +443,7 @@ function CommissionerDashboard() {
           canManage={auth.hasPermission('manageSettings')}
           onAction={runAction}
           settings={data.settings}
+          showLegacyFields={showLegacyTools}
         />
         <PermissionMatrix />
       </section>
@@ -439,7 +496,7 @@ function getRequestedCommandCenterPanel(search: string) {
   }
 
   if (section === 'operations' || section === 'system') {
-    return 'audit'
+    return 'operations'
   }
 
   if (section === 'events') {
@@ -448,6 +505,10 @@ function getRequestedCommandCenterPanel(search: string) {
 
   if (section === 'scheduling' || section === 'availability') {
     return 'scheduling'
+  }
+
+  if (section === 'settings') {
+    return 'settings'
   }
 
   return ''
@@ -715,9 +776,53 @@ function PageHeader() {
   return (
     <section className="page-header" aria-labelledby="commissioner-title">
       <p className="eyebrow">League Operations</p>
-      <h1 id="commissioner-title">Commissioner Dashboard</h1>
-      <p>Operations console for identity, content, season control, cache, audit, and deployment status.</p>
+      <h1 id="commissioner-title">Command Center</h1>
+      <p>Action-required League operations and direct paths to the active Commissioner tools.</p>
     </section>
+  )
+}
+
+function CompactCommandCenter({ data }: { data: OperationsDashboardData }) {
+  const attention = [
+    ['Audit issues', data.audit.summary.critical + data.audit.summary.warning, '/commissioner/system/audit'],
+    ['Unlinked users', data.summary.identityStatus.unlinkedUsers, '/commissioner?section=users'],
+    ['Pending streams', data.summary.pendingStreams, '/commissioner/community-manager'],
+    ['Notifications', data.summary.notificationStatus.total, '/commissioner/system'],
+  ] as const
+
+  const sections = [
+    ['Events', 'Event setup, registration, participants, League operations, brackets, teams, and pairings.', '/commissioner/events'],
+    ['Games & Army Lists', 'Canonical game search, score corrections, historical list links, and exception review.', '/commissioner/game-center'],
+    ['Players & Access', 'Identity mapping, account access, display-name corrections, and safe player cleanup.', '/commissioner/players'],
+    ['Community', 'Canonical Streams records plus Discord and automation administration.', '/commissioner/community-manager'],
+    ['System & Recovery', 'Read-only integrity and operations status, with clearly separated break-glass recovery.', '/commissioner/system'],
+  ] as const
+
+  return (
+    <main className="portal-shell">
+      <PageHeader />
+      <section className="operations-summary" aria-label="Commissioner attention summary">
+        {attention.map(([label, value, to]) => (
+          <Link className="stat-card operations-stat" key={label} to={to}>
+            <div className="stat-card-header">
+              <span className="stat-card-icon">OPS</span>
+              <span className="stat-card-label">{label}</span>
+            </div>
+            <strong>{value}</strong>
+            <p>Review only when attention is required</p>
+          </Link>
+        ))}
+      </section>
+      <section className="operations-grid" aria-label="Commissioner operational sections">
+        {sections.map(([title, body, to]) => (
+          <Link className="panel operations-panel" key={title} to={to}>
+            <p className="eyebrow">Commissioner</p>
+            <h2>{title}</h2>
+            <p className="operations-empty">{body}</p>
+          </Link>
+        ))}
+      </section>
+    </main>
   )
 }
 
@@ -2051,10 +2156,12 @@ function SettingsPanel({
   canManage,
   onAction,
   settings,
+  showLegacyFields = false,
 }: {
   canManage: boolean
   onAction: OperationsAction
   settings: PortalSettings
+  showLegacyFields?: boolean
 }) {
   const [draft, setDraft] = useState(settings)
 
@@ -2072,9 +2179,13 @@ function SettingsPanel({
         <Input disabled={!canManage} label="Google Form URL" onChange={(value) => setDraft({ ...draft, googleFormUrl: value })} value={draft.googleFormUrl} />
         <Input disabled={!canManage} label="Discord Invite URL" onChange={(value) => setDraft({ ...draft, discordInvite: value })} value={draft.discordInvite} />
         <Input disabled={!canManage} label="Discord Server Name" onChange={(value) => setDraft({ ...draft, discordServerName: value })} value={draft.discordServerName} />
-        <Input disabled={!canManage} label="Portal Version" onChange={(value) => setDraft({ ...draft, portalVersion: value })} value={draft.portalVersion} />
-        <Input disabled={!canManage} label="Git Commit" onChange={(value) => setDraft({ ...draft, gitCommit: value })} value={draft.gitCommit} />
-        <Input disabled={!canManage} label="Deployment URL" onChange={(value) => setDraft({ ...draft, deploymentUrl: value })} value={draft.deploymentUrl} />
+        {showLegacyFields ? (
+          <>
+            <Input disabled={!canManage} label="Portal Version" onChange={(value) => setDraft({ ...draft, portalVersion: value })} value={draft.portalVersion} />
+            <Input disabled={!canManage} label="Git Commit" onChange={(value) => setDraft({ ...draft, gitCommit: value })} value={draft.gitCommit} />
+            <Input disabled={!canManage} label="Deployment URL" onChange={(value) => setDraft({ ...draft, deploymentUrl: value })} value={draft.deploymentUrl} />
+          </>
+        ) : null}
         <label className="operations-check">
           <input checked={draft.registrationOpen === 'true'} disabled={!canManage} onChange={(event) => setDraft({ ...draft, registrationOpen: String(event.target.checked) })} type="checkbox" />
           Registration open
