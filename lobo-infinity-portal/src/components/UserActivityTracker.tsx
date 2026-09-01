@@ -42,7 +42,7 @@ function UserActivityTracker() {
       return
     }
 
-    if (location.pathname === '/commissioner' && !location.search) {
+    if (location.pathname.startsWith('/commissioner')) {
       return
     }
 

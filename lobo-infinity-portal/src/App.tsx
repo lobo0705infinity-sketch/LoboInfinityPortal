@@ -13,6 +13,7 @@ import Breadcrumbs from './components/Breadcrumbs'
 import DeepLinkRedirect from './components/DeepLinkRedirect'
 import Header from './components/Header'
 import CommissionerLogin from './components/CommissionerLogin'
+import CommissionerLauncher from './components/CommissionerLauncher'
 import GlobalFooter from './components/GlobalFooter'
 import Loading from './components/Loading'
 import MobileBottomNavigation from './components/MobileBottomNavigation'
@@ -84,8 +85,6 @@ function AuthShell() {
     location.pathname === '/diagnostics' ||
     location.pathname === '/integrity' ||
     location.pathname === '/automation'
-  const staticCommissionerCommandCenter =
-    location.pathname === '/commissioner' && !location.search
 
   useEffect(() => {
     recordRouteDiagnostic({
@@ -99,7 +98,7 @@ function AuthShell() {
   }, [location.pathname, routeKey])
 
   return (
-    <SettingsProvider enabled={!staticCommissionerCommandCenter}>
+    <SettingsProvider enabled={!commissionerRoute}>
       <div className="app-shell auth-ready">
         <RouteMeta />
         <UserActivityTracker />
@@ -150,13 +149,61 @@ function AuthShell() {
                 <Route path="/event/:eventId/:section" element={<MeasuredRoute name="EventHome"><EventHome /></MeasuredRoute>} />
                 <Route path="/commissioner" element={<MeasuredRoute name="CommissionerDashboard"><CommissionerDashboard /></MeasuredRoute>} />
                 <Route path="/commissioner/army-list-links" element={<MeasuredRoute name="CommissionerArmyListLinks"><CommissionerArmyListLinks /></MeasuredRoute>} />
-                <Route path="/commissioner/game-center" element={<MeasuredRoute name="CommissionerGameCenter"><CommissionerGameCenter /></MeasuredRoute>} />
+                <Route path="/commissioner/game-center" element={<CommissionerLauncher
+                  cards={[
+                    { title: 'Game Center', description: 'Search and inspect canonical games.', to: '/commissioner/game-center/browse' },
+                    { title: 'Score Corrections', description: 'Open Game Center and choose a game for the canonical score-correction workflow.', to: '/commissioner/game-center/browse' },
+                    { title: 'Historical Army List Links', description: 'Correct historical game and Army List links.', to: '/commissioner/army-list-links' },
+                    { title: 'Army Code Validation', description: 'Review Army List code exceptions.', to: '/commissioner/army-code-validation' },
+                  ]}
+                  description="Canonical game and Army List administration."
+                  title="Games & Army Lists"
+                />} />
+                <Route path="/commissioner/game-center/browse" element={<MeasuredRoute name="CommissionerGameCenter"><CommissionerGameCenter /></MeasuredRoute>} />
                 <Route path="/commissioner/game-center/:gameId/score-correction" element={<MeasuredRoute name="CommissionerGameScoreCorrection"><CommissionerGameScoreCorrection /></MeasuredRoute>} />
-                <Route path="/commissioner/events" element={<MeasuredRoute name="CommissionerEvents"><CommissionerEvents /></MeasuredRoute>} />
-                <Route path="/commissioner/event-manager" element={<Navigate replace to="/commissioner/events" />} />
-                <Route path="/commissioner/players" element={<MeasuredRoute name="CommissionerPlayers"><CommissionerPlayers /></MeasuredRoute>} />
-                <Route path="/commissioner/community-manager" element={<MeasuredRoute name="CommunityManager"><CommunityManager /></MeasuredRoute>} />
-                <Route path="/commissioner/system" element={<MeasuredRoute name="CommissionerSystem"><CommissionerSystem /></MeasuredRoute>} />
+                <Route path="/commissioner/events" element={<CommissionerLauncher
+                  cards={[
+                    { title: 'Event Manager', description: 'Event setup, registration, participants, lifecycle, and archive.', to: '/commissioner/events/manage' },
+                    { title: 'Scheduling Monitor', description: 'Outstanding League scheduling and Commissioner oversight.', to: '/commissioner?section=scheduling' },
+                    { title: 'Portal Settings', description: 'Retained operational portal settings.', to: '/commissioner?section=settings' },
+                    { title: 'League Mission & Map', description: 'Weekly and current League mission and map administration.', to: '/commissioner/events/manage' },
+                    { title: 'Top 40 Operations', description: 'Seeding, bracket generation, missions, deadlines, and forfeits.', to: '/commissioner/events/manage' },
+                    { title: 'Team Tournament Operations', description: 'Teams, pairings, and required tournament administration.', to: '/commissioner/events/manage' },
+                  ]}
+                  description="Event administration and tournament operations."
+                  title="Events"
+                />} />
+                <Route path="/commissioner/events/manage" element={<MeasuredRoute name="CommissionerEvents"><CommissionerEvents /></MeasuredRoute>} />
+                <Route path="/commissioner/event-manager" element={<Navigate replace to="/commissioner/events/manage" />} />
+                <Route path="/commissioner/players" element={<CommissionerLauncher
+                  cards={[
+                    { title: 'Identity & Access', description: 'Account enable/disable, identity mapping, and repair.', to: '/commissioner?section=users' },
+                    { title: 'Player Corrections', description: 'Display-name correction and safe deletion of accidental or test players.', to: '/commissioner/players/corrections' },
+                  ]}
+                  description="Player identity, access, and canonical corrections."
+                  title="Players & Access"
+                />} />
+                <Route path="/commissioner/players/corrections" element={<MeasuredRoute name="CommissionerPlayers"><CommissionerPlayers /></MeasuredRoute>} />
+                <Route path="/commissioner/community-manager" element={<CommissionerLauncher
+                  cards={[
+                    { title: 'Streams Manager', description: 'Create, edit, and delete canonical Stream records.', to: '/commissioner/community-manager/streams' },
+                    { title: 'Discord & Automation', description: 'Discord settings, announcements, automation rules and templates, and queue recovery.', to: '/commissioner/automation' },
+                  ]}
+                  description="Community communications and automation administration."
+                  title="Community"
+                />} />
+                <Route path="/commissioner/community-manager/streams" element={<MeasuredRoute name="CommunityManager"><CommunityManager /></MeasuredRoute>} />
+                <Route path="/commissioner/system" element={<CommissionerLauncher
+                  cards={[
+                    { title: 'Integrity', description: 'League health, audit findings, report export, and approved emergency repairs.', to: '/commissioner/system/audit' },
+                    { title: 'Operations Engine', description: 'Scheduled work, failures, queue state, and recent operational history.', to: '/commissioner?section=operations' },
+                    { title: 'Automation Queue', description: 'Failed and retry automation recovery.', to: '/commissioner/automation' },
+                    { title: 'Army Intelligence Recovery', description: 'Break-glass manual Army Intelligence refresh.', to: '/commissioner/system/recovery' },
+                  ]}
+                  description="System status and exceptional recovery tools."
+                  title="System & Recovery"
+                />} />
+                <Route path="/commissioner/system/recovery" element={<MeasuredRoute name="CommissionerSystem"><CommissionerSystem /></MeasuredRoute>} />
                 <Route path="/commissioner/army-code-validation" element={<MeasuredRoute name="ArmyCodeValidation"><ArmyCodeValidation /></MeasuredRoute>} />
                 <Route path="/commissioner/system/diagnostics" element={<MeasuredRoute name="Diagnostics"><Diagnostics /></MeasuredRoute>} />
                 <Route path="/commissioner/system/audit" element={<MeasuredRoute name="LeagueIntegrity"><LeagueIntegrity /></MeasuredRoute>} />
