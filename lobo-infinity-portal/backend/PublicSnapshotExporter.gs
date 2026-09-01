@@ -25,8 +25,8 @@ function runBuildPublicSnapshotV1() {
   return result;
 }
 
-function runPublishPublicSnapshotV1Proof(publicationToken) {
-  return publishLatestPublicSnapshotV1_(true, publicationToken);
+function runPublishPublicSnapshotV1Proof() {
+  return publishLatestPublicSnapshotV1_(true);
 }
 
 function runHourlyPublicSnapshot() {
@@ -42,7 +42,7 @@ function runHourlyPublicSnapshot() {
     return failed;
   }
   try {
-    const publication = publishLatestPublicSnapshotV1_(true, null, build.snapshotId);
+    const publication = publishLatestPublicSnapshotV1_(true, build.snapshotId);
     const result = {
       success: true, stage: "complete", snapshotId: build.snapshotId,
       sourceCutoff: build.sourceCutoff, status: "published",
@@ -79,11 +79,9 @@ function installHourlyPublicSnapshotTrigger() {
   return result;
 }
 
-function publishLatestPublicSnapshotV1_(activate, publicationToken, expectedSnapshotId) {
+function publishLatestPublicSnapshotV1_(activate, expectedSnapshotId) {
   const properties = PropertiesService.getScriptProperties();
-  const suppliedToken = String(publicationToken || "").trim();
-  if (suppliedToken) properties.setProperty(PUBLIC_SNAPSHOT_PUBLISH_TOKEN_PROPERTY, suppliedToken);
-  const token = suppliedToken || String(properties.getProperty(PUBLIC_SNAPSHOT_PUBLISH_TOKEN_PROPERTY) || "").trim();
+  const token = String(properties.getProperty(PUBLIC_SNAPSHOT_PUBLISH_TOKEN_PROPERTY) || "").trim();
   if (!token) throw new Error("Missing LOBO_SNAPSHOT_PUBLISH_TOKEN Script Property.");
 
   const rootId = String(properties.getProperty(PUBLIC_SNAPSHOT_V1_ROOT_PROPERTY) || "").trim();
