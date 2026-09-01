@@ -4156,6 +4156,18 @@ export async function getOperationsContent(
   return normalizeOperationsPayload(payload)
 }
 
+// The Commissioner Streams Manager needs every canonical stream row, including
+// records that are intentionally not yet public. This reuses the existing
+// authenticated operations action with its narrow streams scope.
+export async function getCommissionerStreams(
+  options: ApiOptions = {},
+): Promise<StreamedGame[]> {
+  const payload = await request('operationsContent', options, {
+    scope: 'streams',
+  })
+  return normalizeStreamsPayload(payload)
+}
+
 export async function getOperationsDiscord(
   options: ApiOptions = {},
 ): Promise<OperationsDashboardData> {

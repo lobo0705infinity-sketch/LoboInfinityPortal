@@ -152,7 +152,20 @@ function getOperationsIdentityDashboard() {
 
 }
 
-function getOperationsContentDashboard() {
+function getOperationsContentDashboard(e) {
+
+  // Streams Manager needs the canonical stream rows, not the broad Community
+  // operations dashboard. Keep the existing permission boundary and action,
+  // while avoiding every unrelated dashboard read.
+  if (
+    e &&
+    e.parameter &&
+    e.parameter.scope === "streams"
+  )
+    return jsonOutput({
+      success: true,
+      streams: getOperationsStreams()
+    });
 
   const armyLists =
     getArmyListObjects();

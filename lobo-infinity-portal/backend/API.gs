@@ -779,7 +779,7 @@ function handleApiGet(e, action) {
 
     case "operationsContent":
       return requireApiPermission(e, "viewOperations", function() {
-        return getOperationsContentDashboard();
+        return getOperationsContentDashboard(e);
       });
 
     case "operationsDiscord":
