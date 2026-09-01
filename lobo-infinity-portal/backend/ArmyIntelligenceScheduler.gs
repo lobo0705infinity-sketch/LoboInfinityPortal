@@ -45,11 +45,11 @@ function installArmyIntelligenceRefreshScheduler(e) {
     ScriptApp
       .newTrigger(ARMY_INTELLIGENCE_SCHEDULER_HANDLER)
       .timeBased()
-      .everyMinutes(5)
+      .everyMinutes(30)
       .create();
 
   return {
-    cadenceMinutes: 5,
+    cadenceMinutes: 30,
     handler: ARMY_INTELLIGENCE_SCHEDULER_HANDLER,
     initialResult: initialResult,
     success: true,
