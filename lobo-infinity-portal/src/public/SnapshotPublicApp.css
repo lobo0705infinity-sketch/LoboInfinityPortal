@@ -1131,7 +1131,7 @@ main.snapshot-event-page[data-event="team-tournament-overview"] > .snapshot-team
   border-radius: 12px;
   background-color: #05080c;
   background-image: url("../assets/team-tournament-overview-hero.png");
-  background-position: center 67%;
+  background-position: center bottom;
   background-repeat: no-repeat;
   background-size: cover;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(193, 18, 31, 0.1);
