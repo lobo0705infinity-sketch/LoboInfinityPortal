@@ -82,6 +82,7 @@ function buildPlayerArmyUsageAudit_(players, games) {
   const errors = [];
   let drawGames = 0;
   let gameSides = 0;
+  let firstArmyUsageMismatchLogged = false;
 
   (games || []).forEach(function(game) {
     const draw = game.winner === "Draw";
@@ -132,14 +133,25 @@ function buildPlayerArmyUsageAudit_(players, games) {
     const usage = playerArmyUsageAuditFinalizeUsage_(expected.usage);
     const preferredArmy = playerArmyUsageAuditResolvePreferredArmy_(usage);
     const actualUsage = Array.isArray(player.armyUsage) ? player.armyUsage : [];
+    const normalizedActualUsage = stablePublicSnapshotJson_(actualUsage);
+    const normalizedReconstructedUsage = stablePublicSnapshotJson_(usage);
     const tied = usage.filter(function(entry) { return entry.tiedForHighestUsage; });
     const preferredUsage = usage.filter(function(entry) { return entry.army === preferredArmy; })[0] || null;
     if (Number(player.games) !== expected.games)
       errors.push(player.player + " game total does not match game sides.");
     if (Number(player.draws) !== expected.draws)
       errors.push(player.player + " draw total does not match draw game sides.");
-    if (JSON.stringify(actualUsage) !== JSON.stringify(usage))
+    if (normalizedActualUsage !== normalizedReconstructedUsage) {
       errors.push(player.player + " armyUsage does not match snapshot game history.");
+      if (!firstArmyUsageMismatchLogged) {
+        firstArmyUsageMismatchLogged = true;
+        Logger.log("PLAYER_ARMY_USAGE_AUDIT_FIRST_NORMALIZED_MISMATCH " + JSON.stringify({
+          player: player.displayName || player.player,
+          storedArmyUsage: normalizedActualUsage,
+          reconstructedArmyUsage: normalizedReconstructedUsage
+        }));
+      }
+    }
     if (String(player.preferredArmy || "") !== preferredArmy)
       errors.push(player.player + " preferredArmy does not match count and recency selection.");
     if (!expected.games && preferredArmy !== "No Army Selected")
