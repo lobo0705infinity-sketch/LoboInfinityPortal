@@ -1139,9 +1139,9 @@ main.snapshot-event-page[data-event="team-tournament-overview"] > .snapshot-team
 main.snapshot-event-page[data-event="team-tournament-overview"] > .snapshot-team-tournament-overview-hero img {
   display: block;
   width: 100%;
+  max-width: 900px;
   height: auto;
-  object-fit: contain;
-  object-position: center;
+  margin-inline: auto;
 }
 
 main.snapshot-event-page[data-event="team-tournament-overview"] > .snapshot-tabs {
