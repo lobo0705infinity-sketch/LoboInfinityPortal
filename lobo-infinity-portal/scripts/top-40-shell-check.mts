@@ -41,6 +41,10 @@ const eventHomeSource = readFileSync(
   new URL('../src/pages/EventHome.tsx', import.meta.url),
   'utf8',
 )
+const snapshotPublicAppSource = readFileSync(
+  new URL('../src/public/SnapshotPublicApp.tsx', import.meta.url),
+  'utf8',
+)
 const appSource = readFileSync(new URL('../src/App.tsx', import.meta.url), 'utf8')
 
 const existingEventTypes = [
@@ -71,7 +75,7 @@ const event = {
   id: top40.id,
   type: top40.type,
 } as LeagueEvent
-const expectedCapabilities = [
+const expectedResolvedCapabilities = [
   'overview',
   'registration',
   'bracket',
@@ -80,13 +84,19 @@ const expectedCapabilities = [
   'statistics',
   'rules',
 ]
-assert.deepEqual(Array.from(resolveEventCapabilities(event)), expectedCapabilities)
-assert.deepEqual(Array.from(top40.capabilities), expectedCapabilities)
+assert.deepEqual(Array.from(resolveEventCapabilities(event)), expectedResolvedCapabilities)
+assert.deepEqual(Array.from(top40.capabilities), [
+  'overview',
+  'registration',
+  'bracket',
+  'results',
+  'rules',
+])
 
 const navigation = buildCapabilityNavigation(top40)
 assert.deepEqual(
   Array.from(navigation, (item) => item.label),
-  ['Overview', 'Registration', 'Bracket', 'Players', 'Results', 'Statistics', 'Rules'],
+  ['Overview', 'Registration', 'Bracket', 'Results', 'Rules'],
 )
 assert.deepEqual(
   Array.from(navigation, (item) => item.to),
@@ -94,9 +104,7 @@ assert.deepEqual(
     '/event/event-lobo-s-american-top-40',
     '/event/event-lobo-s-american-top-40/registration',
     '/event/event-lobo-s-american-top-40/bracket',
-    '/players?eventId=event-lobo-s-american-top-40',
     '/event/event-lobo-s-american-top-40/results',
-    '/analytics?eventId=event-lobo-s-american-top-40',
     '/event/event-lobo-s-american-top-40/rules',
   ],
 )
@@ -104,6 +112,21 @@ for (const excluded of ['teams', 'standings', 'schedule', 'submitResult', 'pairi
   assert.ok(!top40.capabilities.includes(excluded as never))
 }
 assert.doesNotMatch(JSON.stringify(navigation), /match.?finder/i)
+assert.match(
+  snapshotPublicAppSource,
+  /isTop40\?\['overview','registration','bracket','results','rules'\]/,
+  'Snapshot public Top 40 tabs must use the same player-facing navigation.',
+)
+assert.match(
+  snapshotPublicAppSource,
+  /if\(section==='statistics'\)/,
+  'The underlying Top 40 Statistics route must remain available.',
+)
+assert.match(
+  snapshotPublicAppSource,
+  /if\(section==='players'\|\|section==='registration'\)/,
+  'The underlying Top 40 Players route must remain available.',
+)
 assert.equal(
   eventNavigationOptions.find((item) => item.id === top40.id),
   top40,
@@ -114,6 +137,7 @@ assert.deepEqual(Array.from(currentEventNavigation.capabilities), [
   'overview',
   'registration',
   'standings',
+  'schedule',
   'rules',
 ])
 const teamTournament = eventNavigation.find(
@@ -121,12 +145,10 @@ const teamTournament = eventNavigation.find(
 )
 assert.deepEqual(Array.from(teamTournament?.capabilities ?? []), [
   'overview',
-  'registration',
   'teams',
-  'pairings',
   'standings',
   'results',
-  'statistics',
+  'registration',
   'rules',
 ])
 

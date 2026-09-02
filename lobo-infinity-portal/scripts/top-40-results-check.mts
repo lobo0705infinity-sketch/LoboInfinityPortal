@@ -44,7 +44,7 @@ const top40Block = navigation.slice(
   navigation.lastIndexOf('capabilities: [', navigation.indexOf("id: 'event-lobo-s-american-top-40'")),
   navigation.indexOf("type: 'Individual Double Elimination'"),
 )
-assert.match(top40Block, /'overview',[\s\S]*'registration',[\s\S]*'bracket',[\s\S]*'players',[\s\S]*'results',[\s\S]*'statistics',[\s\S]*'rules'/)
+assert.match(top40Block, /'overview',[\s\S]*'registration',[\s\S]*'bracket',[\s\S]*'results',[\s\S]*'rules'/)
 assert.match(top40Block, /rules: '\/event\/:eventId\/rules'/)
 assert.match(top40Block, /results: '\/event\/:eventId\/results'/)
 

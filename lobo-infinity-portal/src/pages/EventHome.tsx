@@ -115,7 +115,8 @@ function EventHome() {
   const capabilities = resolveEventCapabilities(data.event, data.navigation)
   const configuredNavigation = getEventNavigationConfig(data.event.id)
   const playerNavigationCapabilities =
-    configuredNavigation?.id === 'event-august-2026-team-tournament'
+    (configuredNavigation?.id === 'event-august-2026-team-tournament' ||
+      configuredNavigation?.id === 'event-lobo-s-american-top-40')
       ? capabilities.filter((capability) => configuredNavigation.capabilities.includes(capability))
       : capabilities
   const eventNavigationItems = configuredNavigation
