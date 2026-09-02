@@ -114,10 +114,14 @@ function EventHome() {
   const countdown = getCountdownLabel(data.event)
   const capabilities = resolveEventCapabilities(data.event, data.navigation)
   const configuredNavigation = getEventNavigationConfig(data.event.id)
+  const playerNavigationCapabilities =
+    configuredNavigation?.id === 'event-august-2026-team-tournament'
+      ? capabilities.filter((capability) => configuredNavigation.capabilities.includes(capability))
+      : capabilities
   const eventNavigationItems = configuredNavigation
     ? buildCapabilityNavigation({
         ...configuredNavigation,
-        capabilities,
+        capabilities: playerNavigationCapabilities,
       }).map((item) => ({
         href: item.to,
         label: item.label,

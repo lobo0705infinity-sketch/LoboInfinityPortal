@@ -116,12 +116,10 @@ export const eventNavigation: EventNavigationConfig[] = [
   {
     capabilities: [
       'overview',
-      'registration',
       'teams',
-      'pairings',
       'standings',
       'results',
-      'statistics',
+      'registration',
       'rules',
     ],
     id: 'event-august-2026-team-tournament',
