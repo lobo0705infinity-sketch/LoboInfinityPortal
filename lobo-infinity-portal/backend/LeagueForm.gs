@@ -17,7 +17,37 @@ function refreshLeagueSubmissionForm() {
 }
 
 function synchronizeLeagueSubmissionFormMissionChoices() {
-  const formId = lifRequireProperty_(LIF_FORMS.PROPERTIES.LEAGUE_FORM_ID);
+  return synchronizeGameSubmissionFormMissionChoices_(
+    LIF_FORMS.PROPERTIES.LEAGUE_FORM_ID,
+    "League submission form",
+    lifGetLeagueMissionOptions_()
+  );
+}
+
+function synchronizeAllGameSubmissionFormMissionChoices() {
+  const missions = lifGetLeagueMissionOptions_();
+
+  return {
+    league: synchronizeGameSubmissionFormMissionChoices_(
+      LIF_FORMS.PROPERTIES.LEAGUE_FORM_ID,
+      "League submission form",
+      missions
+    ),
+    teamTournament: synchronizeGameSubmissionFormMissionChoices_(
+      LIF_FORMS.PROPERTIES.TEAM_FORM_ID,
+      "Team Tournament submission form",
+      missions
+    ),
+    casual: synchronizeGameSubmissionFormMissionChoices_(
+      LIF_FORMS.PROPERTIES.CASUAL_FORM_ID,
+      "Casual submission form",
+      missions
+    )
+  };
+}
+
+function synchronizeGameSubmissionFormMissionChoices_(formProperty, formLabel, missions) {
+  const formId = lifRequireProperty_(formProperty);
   const form = FormApp.openById(formId);
   const missionItems = form.getItems(FormApp.ItemType.LIST).filter(function(item) {
     return String(item.getTitle() || "").trim() === LIF_FORMS.FIELDS.MISSION;
@@ -25,13 +55,12 @@ function synchronizeLeagueSubmissionFormMissionChoices() {
 
   if (missionItems.length !== 1) {
     throw new Error(
-      "League submission form requires exactly one Mission dropdown; found " + missionItems.length + "."
+      formLabel + " requires exactly one Mission dropdown; found " + missionItems.length + "."
     );
   }
 
   const missionItem = missionItems[0].asListItem();
   const required = missionItem.isRequired();
-  const missions = lifGetLeagueMissionOptions_();
   missionItem.setChoiceValues(missions).setRequired(required);
 
   return {
