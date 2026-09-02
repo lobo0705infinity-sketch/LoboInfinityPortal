@@ -139,6 +139,25 @@ function getCanonicalArmyParentFaction(value) {
 
 }
 
+function getCanonicalArmyUsageProfile(value) {
+
+  const army =
+    canonicalizeArmyName(value);
+
+  if (!army || !Object.prototype.hasOwnProperty.call(ARMY_REGISTRY_PARENT_MAP, army))
+    return null;
+
+  const parentFaction =
+    ARMY_REGISTRY_PARENT_MAP[army];
+
+  return {
+    army: army,
+    parentFaction: parentFaction,
+    classification: army === parentFaction ? "vanilla" : "sectorial"
+  };
+
+}
+
 function getArmyRegistryString(value) {
 
   if (value === null || typeof value === "undefined")

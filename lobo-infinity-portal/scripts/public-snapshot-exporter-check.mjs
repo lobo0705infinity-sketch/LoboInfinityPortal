@@ -3,6 +3,7 @@ import fs from 'node:fs'
 import vm from 'node:vm'
 
 const source = fs.readFileSync('backend/PublicSnapshotExporter.gs', 'utf8')
+const armyRegistrySource = fs.readFileSync('backend/ArmyRegistry.gs', 'utf8')
 const api = fs.readFileSync('backend/API.gs', 'utf8')
 assert.match(source, /function runBuildPublicSnapshotV1\(\)/)
 assert.doesNotMatch(api, /runBuildPublicSnapshotV1/)
@@ -144,12 +145,15 @@ const sandbox = {
   getPlayerRegistryColumns: () => ({ player: 0, displayName: 1, division: 2, active: 3 }),
 }
 vm.createContext(sandbox)
+vm.runInContext(armyRegistrySource, sandbox)
 const functions = [
   'normalizePublicSnapshotIdentity_', 'buildPublicSnapshotPlayerIndex_', 'findPublicSnapshotRegistryIdentity_',
   'resolvePublicSnapshotParticipant_', 'buildPublicSnapshotGameContext_',
   'publicSnapshotColumns_', 'publicSnapshotCell_', 'buildPublicSnapshotEvents_',
   'buildPublicSnapshotGames_', 'publicSnapshotScore_', 'ensurePublicSnapshotPlayerRecord_',
   'resolvePublicSnapshotDirectoryParticipant_', 'buildPublicSnapshotPlayers_',
+  'recordPublicSnapshotArmyUsage_', 'isPublicSnapshotArmyUsageMoreRecent_',
+  'finalizePublicSnapshotArmyUsage_', 'resolvePublicSnapshotPreferredArmy_',
   'publicSnapshotPlayerSort_', 'publicSnapshotMostFrequent_', 'publicSnapshotAverage_',
   'publicSnapshotPercentage_', 'publicSnapshotRecentGames_', 'buildPublicSnapshotMissions_',
   'buildPublicSnapshotFactions_', 'summarizePublicSnapshotFaction_',
@@ -157,7 +161,7 @@ const functions = [
   'isPublicSnapshotCompletedGame_', 'buildPublicSnapshotRemainingMatchups_',
   'validatePublicSnapshotRemainingMatchups_', 'buildPublicSnapshotStandings_',
   'stablePublicSnapshotJson_', 'assertPublicSnapshotSafe_',
-  'calculatePublicSnapshotLeagueRecord_', 'validatePublicSnapshotDatasets_',
+  'calculatePublicSnapshotLeagueRecord_', 'validatePublicSnapshotArmyUsage_', 'validatePublicSnapshotDatasets_',
   'buildPublicSnapshotArmyLink_', 'buildPublicSnapshotArmyLists_', 'buildPublicSnapshotDecodedArmy_',
   'buildPublicSnapshotSchedule_', 'buildPublicSnapshotStatistics_',
   'buildPublicSnapshotRecords_', 'pickPublicHallOfFameValue_',
@@ -237,6 +241,18 @@ assert.equal(game73Out.winnerArmyListId, '3296098999')
 assert.equal(game73Out.loserArmyListId, '4483300877')
 assert.equal('winnerArmyCode' in game73Out, false)
 assert.equal('loserArmyCode' in game73Out, false)
+const drawGameOut = games.find((game) => game.id === 61)
+assert.deepEqual(
+  JSON.parse(JSON.stringify([drawGameOut.player1, drawGameOut.player1Faction, drawGameOut.player2, drawGameOut.player2Faction])),
+  ['PG Alpha', 'Ariadna', 'PG Beta', 'Haqqislam'],
+)
+const drawPlayer = players.find((player) => player.player === 'PG Alpha')
+assert.equal(drawPlayer.draws, 1)
+assert.equal(drawPlayer.preferredArmy, 'Ariadna')
+assert.deepEqual(JSON.parse(JSON.stringify(drawPlayer.armyUsage)), [{
+  army: 'Ariadna', parentFaction: 'Ariadna', classification: 'vanilla', games: 1,
+  mostRecentGameDate: '2026-08-21', mostRecentGameId: 61, tiedForHighestUsage: true,
+}])
 const main = standings.find((row) => row.division === 'Main Man')
 assert.deepEqual(JSON.parse(JSON.stringify(main.standings.find((row) => row.player === 'Lobo'))), {
   rank: 1, player: 'Lobo', displayName: 'Lobo', games: 5, wins: 5, losses: 0, draws: 0,
@@ -266,12 +282,31 @@ assert.throws(() => sandbox.validatePublicSnapshotDatasets_({
   ...datasets, games: [...games, games[0]],
 }, context), /duplicate Game ID/)
 
-const allowedGameKeys = ['id', 'eventId', 'eventName', 'gameType', 'date', 'division', 'winner',
+const allowedGameKeys = ['id', 'eventId', 'eventName', 'gameType', 'date', 'division',
+  'player1', 'player1DisplayName', 'player1Faction', 'player2', 'player2DisplayName', 'player2Faction', 'winner',
   'winnerDisplayName', 'loser', 'loserDisplayName', 'winnerFaction', 'loserFaction', 'mission',
   'tp', 'op', 'vp', 'bestMoment', 'firstTurn', 'winnerArmyListId', 'loserArmyListId']
 assert.deepEqual(Object.keys(game73Out).sort(), allowedGameKeys.sort())
 assert.deepEqual(Object.keys(standings[0].standings[0]).sort(),
   ['rank', 'player', 'displayName', 'games', 'wins', 'losses', 'draws', 'tp', 'op', 'vp'].sort())
+
+const usageGames = [
+  { gameId: 101, date: '2026-09-01', player1: 'Tie Player', player1DisplayName: 'Tie Player', player1Faction: 'Military Orders', player2: 'Opponent A', player2DisplayName: 'Opponent A', player2Faction: 'Yu Jing', winner: 'Tie Player', mission: 'M1', player1Tp: 1, player2Tp: 0, player1Op: 1, player2Op: 0, player1Vp: 1, player2Vp: 0 },
+  { gameId: 102, date: '2026-09-02', player1: 'Tie Player', player1DisplayName: 'Tie Player', player1Faction: 'Kestrel Colonial Force', player2: 'Opponent B', player2DisplayName: 'Opponent B', player2Faction: 'Yu Jing', winner: 'Tie Player', mission: 'M2', player1Tp: 1, player2Tp: 0, player1Op: 1, player2Op: 0, player1Vp: 1, player2Vp: 0 },
+  { gameId: 103, date: '2026-09-03', player1: 'Tie Player', player1DisplayName: 'Tie Player', player1Faction: 'Military Orders', player2: 'Opponent C', player2DisplayName: 'Opponent C', player2Faction: 'Yu Jing', winner: 'Tie Player', mission: 'M3', player1Tp: 1, player2Tp: 0, player1Op: 1, player2Op: 0, player1Vp: 1, player2Vp: 0 },
+  { gameId: 104, date: '2026-09-04', player1: 'Tie Player', player1DisplayName: 'Tie Player', player1Faction: 'Kestrel Colonial Force', player2: 'Opponent D', player2DisplayName: 'Opponent D', player2Faction: 'Yu Jing', winner: 'Tie Player', mission: 'M4', player1Tp: 1, player2Tp: 0, player1Op: 1, player2Op: 0, player1Vp: 1, player2Vp: 0 },
+  { gameId: 105, date: '2026-09-05', player1: 'Vanilla Player', player1DisplayName: 'Vanilla Player', player1Faction: 'Vanilla PanOceania', player2: 'Opponent E', player2DisplayName: 'Opponent E', player2Faction: 'Yu Jing', winner: 'Vanilla Player', mission: 'M5', player1Tp: 1, player2Tp: 0, player1Op: 1, player2Op: 0, player1Vp: 1, player2Vp: 0 },
+]
+const usagePlayers = sandbox.buildPublicSnapshotPlayers_({ headers: playersTable.headers, rows: [
+  ['Tie Player', 'Tie Player', 'Community', 'false'], ['Vanilla Player', 'Vanilla Player', 'Community', 'false'], ['No Army', 'No Army', 'Community', 'false'],
+] }, usageGames, {})
+const tiedPlayer = usagePlayers.find((player) => player.player === 'Tie Player')
+assert.equal(tiedPlayer.preferredArmy, 'Kestrel Colonial Force')
+assert.deepEqual(JSON.parse(JSON.stringify(tiedPlayer.armyUsage.map((entry) => [entry.army, entry.games, entry.tiedForHighestUsage]))), [
+  ['Kestrel Colonial Force', 2, true], ['Military Orders', 2, true],
+])
+assert.equal(usagePlayers.find((player) => player.player === 'Vanilla Player').preferredArmy, 'PanOceania')
+assert.equal(usagePlayers.find((player) => player.player === 'No Army').preferredArmy, 'No Army Selected')
 
 const directoryPlayersTable = { headers: playersTable.headers, rows: [
   ...playersTable.rows, ['aro_wax', 'Wax', 'Community', 'false'],

@@ -546,6 +546,12 @@ function buildPublicSnapshotGames_(games, events) {
     return {
       id: source.gameId, eventId: source.eventId, eventName: names[source.eventId] || "",
       gameType: source.gameType, date: source.date, division: source.division,
+      player1: source.player1,
+      player1DisplayName: source.player1DisplayName,
+      player1Faction: source.player1Faction,
+      player2: source.player2,
+      player2DisplayName: source.player2DisplayName,
+      player2Faction: source.player2Faction,
       winner: source.winner,
       winnerDisplayName: draw ? "Draw" : winnerIsPlayer1 ? source.player1DisplayName : source.player2DisplayName,
       loser: loser,
@@ -581,7 +587,7 @@ function ensurePublicSnapshotPlayerRecord_(records, source) {
       historical: source.historical === true,
       eventParticipations: [],
       games: 0, wins: 0, losses: 0, draws: 0,
-      tp: 0, op: 0, vp: 0, factions: {}, missions: {}, lastActive: ""
+      tp: 0, op: 0, vp: 0, factions: {}, armyUsage: {}, missions: {}, lastActive: ""
     };
   }
   return records[key];
@@ -623,6 +629,7 @@ function buildPublicSnapshotPlayers_(table, games, eventState) {
       record.vp += side === 1 ? game.player1Vp : game.player2Vp;
       const faction = side === 1 ? game.player1Faction : game.player2Faction;
       record.factions[faction] = (record.factions[faction] || 0) + 1;
+      recordPublicSnapshotArmyUsage_(record, faction, game);
       record.missions[game.mission] = (record.missions[game.mission] || 0) + 1;
       if (String(game.date) > record.lastActive) record.lastActive = String(game.date);
     });
@@ -656,6 +663,8 @@ function buildPublicSnapshotPlayers_(table, games, eventState) {
   return Object.keys(records).sort().map(function(key) {
     const record = records[key];
     const favoriteFaction = publicSnapshotMostFrequent_(record.factions);
+    const armyUsage = finalizePublicSnapshotArmyUsage_(record.armyUsage);
+    const preferredArmy = resolvePublicSnapshotPreferredArmy_(armyUsage);
     const favoriteMission = publicSnapshotMostFrequent_(record.missions);
     return {
       player: record.player, displayName: record.displayName,
@@ -663,6 +672,8 @@ function buildPublicSnapshotPlayers_(table, games, eventState) {
       games: record.games, wins: record.wins, losses: record.losses, draws: record.draws,
       tp: record.tp, op: record.op, vp: record.vp,
       faction: favoriteFaction, favoriteFaction: favoriteFaction, favoriteArmy: favoriteFaction,
+      preferredArmy: preferredArmy,
+      armyUsage: armyUsage,
       lastActive: record.lastActive,
       statusBadges: record.active ? ["League Player"] : record.games ? ["Casual Player"] : ["New Player"],
       historical: record.historical,
@@ -1100,6 +1111,71 @@ function buildPublicSnapshotArmyIntelligence_(readModel) {
   return { summary: summary, detail: detail };
 }
 
+function recordPublicSnapshotArmyUsage_(record, faction, game) {
+  const profile = getCanonicalArmyUsageProfile(faction);
+  if (!profile) return;
+  const key = profile.army;
+  const existing = record.armyUsage[key] || {
+    army: profile.army,
+    parentFaction: profile.parentFaction,
+    classification: profile.classification,
+    games: 0,
+    mostRecentGameDate: "",
+    mostRecentGameId: 0
+  };
+  existing.games += 1;
+  if (isPublicSnapshotArmyUsageMoreRecent_(game, existing)) {
+    existing.mostRecentGameDate = String(game.date || "");
+    existing.mostRecentGameId = Number(game.gameId) || 0;
+  }
+  record.armyUsage[key] = existing;
+}
+
+function isPublicSnapshotArmyUsageMoreRecent_(game, usage) {
+  const date = String(game && game.date || "");
+  const currentDate = String(usage && usage.mostRecentGameDate || "");
+  if (date !== currentDate) return date > currentDate;
+  return (Number(game && game.gameId) || 0) > (Number(usage && usage.mostRecentGameId) || 0);
+}
+
+function finalizePublicSnapshotArmyUsage_(usageByArmy) {
+  const usage = Object.keys(usageByArmy || {}).map(function(key) {
+    const value = usageByArmy[key];
+    return {
+      army: value.army,
+      parentFaction: value.parentFaction,
+      classification: value.classification,
+      games: value.games,
+      mostRecentGameDate: value.mostRecentGameDate,
+      mostRecentGameId: value.mostRecentGameId,
+      tiedForHighestUsage: false
+    };
+  });
+  const highestGames = usage.reduce(function(highest, entry) {
+    return Math.max(highest, Number(entry.games) || 0);
+  }, 0);
+  usage.forEach(function(entry) {
+    entry.tiedForHighestUsage = highestGames > 0 && entry.games === highestGames;
+  });
+  return usage.sort(function(left, right) {
+    return right.games - left.games ||
+      String(right.mostRecentGameDate).localeCompare(String(left.mostRecentGameDate)) ||
+      right.mostRecentGameId - left.mostRecentGameId ||
+      left.army.localeCompare(right.army);
+  });
+}
+
+function resolvePublicSnapshotPreferredArmy_(armyUsage) {
+  const usage = (armyUsage || []).filter(function(entry) { return entry.games > 0; });
+  if (!usage.length) return "No Army Selected";
+  usage.sort(function(left, right) {
+    return right.games - left.games ||
+      String(right.mostRecentGameDate).localeCompare(String(left.mostRecentGameDate)) ||
+      right.mostRecentGameId - left.mostRecentGameId;
+  });
+  return usage[0].army;
+}
+
 // A submitted Infinity Army code is never exposed as a public snapshot field.
 // The Corvus Belli list URL is the deliberate public projection used by the
 // Explorer; retain a submitted URL when one already exists.
@@ -1403,6 +1479,39 @@ function calculatePublicSnapshotLeagueRecord_(games, player) {
   }, { games: 0, wins: 0, losses: 0, draws: 0, tp: 0, op: 0, vp: 0 });
 }
 
+function validatePublicSnapshotArmyUsage_(players, publicGames, gameContext) {
+  const expectedByPlayer = {};
+  (gameContext || []).forEach(function(game) {
+    const publicGame = (publicGames || []).filter(function(value) {
+      return String(value.id) === String(game.gameId);
+    })[0];
+    if (!publicGame) throw new Error("Public snapshot Army Usage game is missing: " + game.gameId);
+    ["player1", "player1DisplayName", "player1Faction", "player2", "player2DisplayName", "player2Faction"].forEach(function(field) {
+      if (String(publicGame[field] || "") !== String(game[field] || ""))
+        throw new Error("Public snapshot game side does not match canonical history: " + game.gameId + " " + field);
+    });
+    [[game.player1, game.player1Faction], [game.player2, game.player2Faction]].forEach(function(side) {
+      const player = String(side[0] || "").trim();
+      const key = normalizePublicSnapshotIdentity_(player);
+      if (!key) return;
+      if (!expectedByPlayer[key]) expectedByPlayer[key] = { games: 0, armyUsage: {} };
+      expectedByPlayer[key].games += 1;
+      recordPublicSnapshotArmyUsage_(expectedByPlayer[key], side[1], game);
+    });
+  });
+  (players || []).forEach(function(player) {
+    const key = normalizePublicSnapshotIdentity_(player.player);
+    const expected = expectedByPlayer[key] || { games: 0, armyUsage: {} };
+    const usage = finalizePublicSnapshotArmyUsage_(expected.armyUsage);
+    if (Number(player.games) !== expected.games)
+      throw new Error("Public snapshot Player game total does not match canonical history: " + player.player);
+    if (stablePublicSnapshotJson_(player.armyUsage || []) !== stablePublicSnapshotJson_(usage))
+      throw new Error("Public snapshot Player Army Usage does not match canonical history: " + player.player);
+    if (String(player.preferredArmy || "") !== resolvePublicSnapshotPreferredArmy_(usage))
+      throw new Error("Public snapshot Player preferred Army does not match canonical history: " + player.player);
+  });
+}
+
 function validatePublicSnapshotDatasets_(datasets, gameContext) {
   const gameIds = {};
   datasets.games.forEach(function(game) {
@@ -1440,6 +1549,7 @@ function validatePublicSnapshotDatasets_(datasets, gameContext) {
       return actual[field] !== expected[field];
     })) throw new Error("Public snapshot standings acceptance failed: " + tuple[0]);
   });
+  validatePublicSnapshotArmyUsage_(datasets.players, datasets.games, gameContext);
   assertPublicSnapshotSafe_(datasets, "snapshot");
   if (stablePublicSnapshotJson_(datasets.games).toLowerCase().indexOf("armycode") !== -1)
     throw new Error("Public snapshot Games contain raw Army Codes.");
