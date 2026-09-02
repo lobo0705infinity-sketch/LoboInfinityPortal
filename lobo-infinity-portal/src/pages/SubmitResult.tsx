@@ -72,14 +72,14 @@ type PickerOption = {
 
 function SubmitResult() {
   return (
-    <main className="portal-shell">
-      <section className="page-header" aria-labelledby="submit-game-title">
-        <p className="eyebrow">Game Submission</p>
-        <h1 id="submit-game-title">Submit Game</h1>
-        <p>Choose the type of game you want to submit.</p>
-      </section>
+    <main className="portal-shell submit-game-page">
+      <header
+        aria-label="Game Submission. Log your battles. Fuel the league."
+        className="submit-game-hero"
+        role="img"
+      />
 
-      <section className="operations-grid" aria-label="Google Forms game submissions">
+      <section className="submit-game-form-grid" aria-label="Google Forms game submissions">
         <GoogleFormLauncher
           buttonLabel="Submit League Game"
           description="Submit an official League game."
@@ -121,7 +121,7 @@ function GoogleFormLauncher({
   url: string
 }) {
   return (
-    <article className="panel operations-panel">
+    <article className="panel operations-panel submit-game-form-card">
       <p className="eyebrow">Google Form</p>
       <h2>{label}</h2>
       <p>{description}</p>

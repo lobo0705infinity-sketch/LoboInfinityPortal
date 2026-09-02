@@ -3,6 +3,8 @@ import fs from 'node:fs'
 
 const submit = fs.readFileSync('src/pages/SubmitResult.tsx', 'utf8')
 const forms = fs.readFileSync('src/config/googleForms.ts', 'utf8')
+const styles = fs.readFileSync('src/pages/SubmitResult.css', 'utf8')
+const publicSubmit = submit.split('export function LegacySubmitResult')[0]
 
 for (const expected of [
   ['League Game', 'GOOGLE_FORM_URLS.league'],
@@ -16,9 +18,15 @@ for (const expected of [
 
 assert.match(submit, /buttonLabel="Submit Top 40 Game"/)
 assert.match(submit, /description="Submit a Top 40 tournament game\."/)
+assert.match(publicSubmit, /className="submit-game-hero"/)
+assert.doesNotMatch(publicSubmit, /submit-game-title/)
 assert.doesNotMatch(submit, /registeredCount|registered players|acceptingResponses/)
 assert.match(forms, /top40:\s*'https:\/\/docs\.google\.com\/forms\/d\/e\/1FAIpQLSf7ydSIHZCI4lnRHJI1A7fWqLH_DlUfilZJzVm7qz_gK7jZaQ\/viewform'/)
 assert.equal((submit.match(/<GoogleFormLauncher/g) || []).length, 4)
+assert.match(styles, /game-submission-hero\.png/)
+assert.match(styles, /\.submit-game-hero[\s\S]*?aspect-ratio: 1536 \/ 740[\s\S]*?background-position: center top[\s\S]*?background-size: cover/)
+assert.match(styles, /@media \(max-width: 920px\)[\s\S]*?\.submit-game-hero[\s\S]*?background-position: left top/)
+assert.ok(fs.existsSync('src/assets/game-submission-hero.png'))
 
 console.log('PASS Submit Game renders four Google Form cards')
 console.log('PASS Top 40 card is unconditional and targets the canonical Form')
