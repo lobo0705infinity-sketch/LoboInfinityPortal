@@ -16,6 +16,31 @@ function refreshLeagueSubmissionForm() {
   return form.getPublishedUrl();
 }
 
+function synchronizeLeagueSubmissionFormMissionChoices() {
+  const formId = lifRequireProperty_(LIF_FORMS.PROPERTIES.LEAGUE_FORM_ID);
+  const form = FormApp.openById(formId);
+  const missionItems = form.getItems(FormApp.ItemType.LIST).filter(function(item) {
+    return String(item.getTitle() || "").trim() === LIF_FORMS.FIELDS.MISSION;
+  });
+
+  if (missionItems.length !== 1) {
+    throw new Error(
+      "League submission form requires exactly one Mission dropdown; found " + missionItems.length + "."
+    );
+  }
+
+  const missionItem = missionItems[0].asListItem();
+  const required = missionItem.isRequired();
+  const missions = lifGetLeagueMissionOptions_();
+  missionItem.setChoiceValues(missions).setRequired(required);
+
+  return {
+    formId: formId,
+    missionChoices: missions,
+    required: required
+  };
+}
+
 function lifGetLeagueFormForGeneration_() {
   const existingId = String(lifGetProperties_().getProperty(LIF_FORMS.PROPERTIES.LEAGUE_FORM_ID) || "").trim();
   const form = existingId ? FormApp.openById(existingId) : FormApp.create(LIF_FORMS.FORM_TITLES.LEAGUE);
