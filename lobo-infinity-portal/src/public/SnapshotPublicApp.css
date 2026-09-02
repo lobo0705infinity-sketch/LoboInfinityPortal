@@ -1123,25 +1123,32 @@ main.snapshot-event-page[data-event="team-tournament-overview"] {
 }
 
 main.snapshot-event-page[data-event="team-tournament-overview"] > .snapshot-team-tournament-overview-hero {
-  display: block;
-  width: 100%;
-  height: auto;
+  position: relative;
   min-height: 0;
-  overflow: visible;
+  aspect-ratio: 1536 / 760;
+  overflow: hidden;
   border: 1px solid rgba(217, 54, 68, 0.34);
   border-radius: 12px;
-  background:
-    radial-gradient(circle at 50% 50%, rgba(111, 173, 207, 0.13), transparent 48%),
-    linear-gradient(135deg, #080e14, #05080c 68%, #140b0e);
+  background-color: #05080c;
+  background-image: url("../assets/team-tournament-overview-hero.png");
+  background-position: center 67%;
+  background-repeat: no-repeat;
+  background-size: cover;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(193, 18, 31, 0.1);
 }
 
-main.snapshot-event-page[data-event="team-tournament-overview"] > .snapshot-team-tournament-overview-hero img {
-  display: block;
-  width: 100%;
-  max-width: 900px;
-  height: auto;
-  margin-inline: auto;
+@media (max-width: 920px) {
+  main.snapshot-event-page[data-event="team-tournament-overview"] > .snapshot-team-tournament-overview-hero {
+    aspect-ratio: 1536 / 760;
+  }
+}
+
+@media (max-width: 720px) {
+  main.snapshot-event-page[data-event="team-tournament-overview"] > .snapshot-team-tournament-overview-hero {
+    aspect-ratio: 1536 / 1024;
+    background-position: center;
+    background-size: contain;
+  }
 }
 
 main.snapshot-event-page[data-event="team-tournament-overview"] > .snapshot-tabs {
