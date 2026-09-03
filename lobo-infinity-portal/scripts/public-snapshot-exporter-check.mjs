@@ -12,6 +12,7 @@ assert.doesNotMatch(source, /PUBLIC_.*DIRTY|doGet|doPost|requireApiPermission/)
 assert.match(source, /function runPublishPublicSnapshotV1Proof[\s\S]*publishLatestPublicSnapshotV1_\(true/)
 assert.match(source, /function runPublishPublicSnapshotV1Proof\(\)\s*\{/)
 assert.doesNotMatch(source, /function runPublishPublicSnapshotV1Proof\([^)]*\w[^)]*\)/)
+assert.match(source, /function runPublishPublicSnapshot20260903T042240ZProof\(\)\s*\{\s*return publishLatestPublicSnapshotV1_\(true, "20260903T042240Z"\);\s*\}/)
 assert.doesNotMatch(source, /setProperty\(PUBLIC_SNAPSHOT_PUBLISH_TOKEN_PROPERTY/)
 assert.doesNotMatch(source, /setProperties\([^)]*PUBLIC_SNAPSHOT_PUBLISH_TOKEN_PROPERTY/)
 assert.doesNotMatch(source, /20260830T222502Z/)
@@ -73,9 +74,10 @@ const forbiddenArmyCalls = [
 assert.deepEqual(forbiddenArmyCalls.filter((name) => reachable.has(name)), [],
   `snapshot build reaches Army decoding/reconstruction: ${forbiddenArmyCalls.filter((name) => reachable.has(name)).join(', ')}`)
 assert.equal(reachable.has('runPublishPublicSnapshotV1Proof'), false)
+assert.equal(reachable.has('runPublishPublicSnapshot20260903T042240ZProof'), false)
 
 const publicationReachable = new Map()
-const publicationPending = ['runPublishPublicSnapshotV1Proof']
+const publicationPending = ['runPublishPublicSnapshot20260903T042240ZProof']
 while (publicationPending.length) {
   const name = publicationPending.pop()
   if (publicationReachable.has(name) || !backendFunctions.has(name)) continue
@@ -130,6 +132,73 @@ delete selectedIds.PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_ID
 assert.throws(() => selectionSandbox.getLatestValidatedPublicSnapshotId_(selectionProperties), /identity is unavailable/)
 selectedIds.PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_ID = 'failed-snapshot'
 assert.throws(() => selectionSandbox.getLatestValidatedPublicSnapshotId_(selectionProperties), /identity is unavailable/)
+
+const exactSnapshotId = '20260903T042240Z'
+const exactSourceCutoff = '2026-09-03T04:22:50.243Z'
+let exactUrlFetchCalls = 0
+let exactDriveReads = 0
+let exactLatestValidatedId = exactSnapshotId
+const exactFiles = Object.fromEntries([
+  'snapshot.json', 'players.json', 'games.json', 'events.json', 'missions.json', 'mission-catalog.json',
+  'factions.json', 'standings.json', 'army-lists.json', 'army-intelligence-summary.json',
+  'army-intelligence-detail.json', 'schedule.json', 'statistics.json', 'community.json',
+].map((filename) => [filename, JSON.stringify({
+  snapshotId: exactSnapshotId, sourceCutoff: exactSourceCutoff,
+  ...(filename === 'snapshot.json' ? { status: 'validated', published: false, livePointer: false } : { data: [] }),
+})]))
+const exactPublicationSandbox = {
+  Error, JSON, Logger: { log() {} }, String,
+  PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_PROPERTY: 'PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_ID',
+  PUBLIC_SNAPSHOT_PUBLISH_TOKEN_PROPERTY: 'LOBO_SNAPSHOT_PUBLISH_TOKEN',
+  PUBLIC_SNAPSHOT_V1_ROOT_PROPERTY: 'PUBLIC_SNAPSHOT_V1_ROOT_FOLDER_ID',
+  PUBLIC_SNAPSHOT_PUBLISH_URL: 'https://example.test/api/public-snapshot-publish',
+  PUBLIC_SNAPSHOT_PUBLIC_FILES: Object.keys(exactFiles),
+  PropertiesService: { getScriptProperties: () => ({
+    getProperty: (key) => key === 'PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_ID' ? exactLatestValidatedId
+      : key === 'LOBO_SNAPSHOT_PUBLISH_TOKEN' ? 'token' : 'root',
+  }) },
+  DriveApp: { getFolderById: () => {
+    exactDriveReads += 1
+    return { getFoldersByName: () => {
+      let folderRead = false
+      return { hasNext: () => !folderRead, next: () => {
+        folderRead = true
+        return { getFilesByName: (filename) => {
+          let fileRead = false
+          return { hasNext: () => !fileRead, next: () => {
+            fileRead = true
+            return { getBlob: () => ({ getDataAsString: () => exactFiles[filename] }) }
+          } }
+        } }
+      } }
+    } }
+  } },
+  UrlFetchApp: { fetch: () => {
+    exactUrlFetchCalls += 1
+    return { getResponseCode: () => 200, getContentText: () => JSON.stringify({
+      success: true, activated: true, snapshotId: exactSnapshotId, sourceCutoff: exactSourceCutoff,
+      uploaded: 14, files: [], current: { snapshotId: exactSnapshotId },
+    }) }
+  } },
+}
+vm.createContext(exactPublicationSandbox)
+for (const name of ['getLatestValidatedPublicSnapshotId_', 'publishLatestPublicSnapshotV1_', 'runPublishPublicSnapshot20260903T042240ZProof']) {
+  vm.runInContext(backendFunctions.get(name).body, exactPublicationSandbox)
+}
+assert.equal(exactPublicationSandbox.runPublishPublicSnapshot20260903T042240ZProof().snapshotId, exactSnapshotId)
+assert.equal(exactUrlFetchCalls, 1)
+exactLatestValidatedId = '20260903T050000Z'
+assert.throws(() => exactPublicationSandbox.runPublishPublicSnapshot20260903T042240ZProof(), /changed before publication/)
+assert.equal(exactUrlFetchCalls, 1)
+assert.equal(exactDriveReads, 1)
+exactLatestValidatedId = ''
+assert.throws(() => exactPublicationSandbox.runPublishPublicSnapshot20260903T042240ZProof(), /identity is unavailable/)
+assert.equal(exactUrlFetchCalls, 1)
+assert.equal(exactDriveReads, 1)
+exactLatestValidatedId = 'malformed-snapshot'
+assert.throws(() => exactPublicationSandbox.runPublishPublicSnapshot20260903T042240ZProof(), /identity is unavailable/)
+assert.equal(exactUrlFetchCalls, 1)
+assert.equal(exactDriveReads, 1)
 
 const FORM = {
   DATE: 2, DIVISION: 1, MISSION: 3, PLAYER1: 4, PLAYER2: 5,

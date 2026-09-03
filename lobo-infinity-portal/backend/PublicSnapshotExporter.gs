@@ -29,6 +29,10 @@ function runPublishPublicSnapshotV1Proof() {
   return publishLatestPublicSnapshotV1_(true);
 }
 
+function runPublishPublicSnapshot20260903T042240ZProof() {
+  return publishLatestPublicSnapshotV1_(true, "20260903T042240Z");
+}
+
 function runHourlyPublicSnapshot() {
   const started = Date.now();
   const build = buildPublicSnapshotV1_();
