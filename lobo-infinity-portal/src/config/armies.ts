@@ -52,9 +52,9 @@ export const CANONICAL_ARMY_REGISTRY: readonly ArmyRegistryEntry[] = [
   { active: true, aliases: ['vanilla tohaa'], id: 'tohaa', name: 'Tohaa', parentFaction: 'Tohaa', type: 'Vanilla' },
   { active: true, id: 'dashat-company', name: 'Dashat Company', parentFaction: 'Non-Aligned Armies', type: 'NA2' },
   { active: true, id: 'druze-bayram-security', name: 'Druze Bayram Security', parentFaction: 'Non-Aligned Armies', type: 'NA2' },
-  { active: true, id: 'foreign-company', name: 'Foreign Company', parentFaction: 'Non-Aligned Armies', type: 'NA2' },
+  { active: false, id: 'foreign-company', name: 'Foreign Company', parentFaction: 'Non-Aligned Armies', type: 'NA2' },
   { active: true, id: 'ikari-company', name: 'Ikari Company', parentFaction: 'Non-Aligned Armies', type: 'NA2' },
-  { active: true, id: 'spiral-corps', name: 'Spiral Corps', parentFaction: 'Non-Aligned Armies', type: 'NA2' },
+  { active: false, id: 'spiral-corps', name: 'Spiral Corps', parentFaction: 'Non-Aligned Armies', type: 'NA2' },
   { active: true, aliases: ['starco free company of the star', 'starco-free-company-of-the-star', 'starco. free company of the star'], id: 'starco', name: 'StarCo', parentFaction: 'Non-Aligned Armies', type: 'NA2' },
   { active: true, id: 'white-company', name: 'White Company', parentFaction: 'Non-Aligned Armies', type: 'NA2' },
 ] as const

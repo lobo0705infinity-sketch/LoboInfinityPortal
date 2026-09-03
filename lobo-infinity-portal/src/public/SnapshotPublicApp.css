@@ -3,6 +3,52 @@
   gap: 1.25rem;
 }
 
+.snapshot-player-profile-hero {
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(76, 201, 240, 0.2);
+  border-radius: 18px;
+  background: #05080c;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.3);
+}
+
+.snapshot-player-profile-hero img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.snapshot-player-profile-identity {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem 1.25rem;
+  padding: 0 0.25rem;
+}
+
+.snapshot-player-profile-identity h1 {
+  margin: 0;
+  color: var(--text-strong);
+  font-size: clamp(1.7rem, 3.2vw, 2.6rem);
+}
+
+.snapshot-player-profile-identity .eyebrow {
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .snapshot-player-profile-hero {
+    border-radius: 12px;
+  }
+
+  .snapshot-player-profile-identity {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
 .snapshot-panel {
   overflow: hidden;
 }

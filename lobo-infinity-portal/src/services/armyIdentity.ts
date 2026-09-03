@@ -19,7 +19,7 @@ const armyIdentityByKey = new Map<string, ArmyRegistryEntry>()
 const armyIdentityByName = new Map<string, ArmyRegistryEntry>()
 const activeArmyIdentities = CANONICAL_ARMY_REGISTRY.filter((army) => army.active)
 
-activeArmyIdentities.forEach((army) => {
+CANONICAL_ARMY_REGISTRY.forEach((army) => {
   armyIdentityByName.set(army.name, army)
   getArmyRegistryIdentityValues(army).forEach((value) => {
     const key = normalizeArmyIdentityKey(value)
