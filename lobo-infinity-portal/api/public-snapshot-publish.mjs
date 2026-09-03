@@ -7,6 +7,7 @@ export const PUBLIC_SNAPSHOT_FILES = Object.freeze([
   'games.json',
   'events.json',
   'missions.json',
+  'mission-catalog.json',
   'factions.json',
   'standings.json',
   'army-lists.json',

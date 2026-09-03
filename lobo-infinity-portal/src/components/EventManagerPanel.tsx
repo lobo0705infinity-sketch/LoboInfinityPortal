@@ -6,7 +6,11 @@ import {
   type EventRegistrationEntry,
 } from '../services/api'
 import { eventRepository } from '../services/data'
-import { getCanonicalMissionOptions } from '../config/missions'
+import { getCanonicalMissionOptions, isCanonicalMission } from '../config/missions'
+import {
+  getPublicMissionGeistCatalog,
+  type MissionGeistCatalogMission,
+} from '../services/publicSnapshot'
 import Skeleton from './Skeleton'
 import TeamPairingEditor from './TeamPairingEditor'
 
@@ -91,13 +95,50 @@ function EventManagerPanel({
   })
   const [leagueOperationsForm, setLeagueOperationsForm] = useState({
     mission1: '',
+    mission1GeistId: '',
     mission1MapA: '',
     mission1MapB: '',
     mission2: '',
+    mission2GeistId: '',
     mission2MapA: '',
     mission2MapB: '',
     weekNumber: '',
   })
+  const [leagueMissionCatalog, setLeagueMissionCatalog] = useState<MissionGeistCatalogMission[]>([])
+  const [leagueMissionCatalogError, setLeagueMissionCatalogError] = useState('')
+  const selectedEventType = state.status === 'success' ? state.data.selectedEvent.type : ''
+
+  useEffect(() => {
+    const needsLeagueMissionCatalog =
+      focus === 'league' ||
+      (focus === 'all' && selectedEventType === 'League')
+    if (!needsLeagueMissionCatalog) return
+
+    const controller = new AbortController()
+    setLeagueMissionCatalogError('')
+    getPublicMissionGeistCatalog(controller.signal)
+      .then((catalog) => {
+        if (!controller.signal.aborted) {
+          setLeagueMissionCatalog(
+            catalog.missions.filter((mission) => isCanonicalMission(mission.name)).sort((left, right) =>
+              left.sourceCollectionName.localeCompare(right.sourceCollectionName)
+              || left.name.localeCompare(right.name)
+              || left.id.localeCompare(right.id)),
+          )
+        }
+      })
+      .catch((error: unknown) => {
+        if (!controller.signal.aborted) {
+          setLeagueMissionCatalogError(
+            error instanceof Error
+              ? error.message
+              : 'Mission catalog could not be loaded.',
+          )
+        }
+      })
+
+    return () => controller.abort()
+  }, [focus, selectedEventType])
 
   function applyManagerData(data: EventManagerData) {
     setSelectedEventId(data.selectedEvent.id)
@@ -116,9 +157,11 @@ function EventManagerPanel({
     })
     setLeagueOperationsForm({
       mission1: data.leagueOperations.missions[0]?.mission ?? '',
+      mission1GeistId: data.leagueOperations.missions[0]?.missionGeistId ?? '',
       mission1MapA: data.leagueOperations.missions[0]?.maps[0] ?? '',
       mission1MapB: data.leagueOperations.missions[0]?.maps[1] ?? '',
       mission2: data.leagueOperations.missions[1]?.mission ?? '',
+      mission2GeistId: data.leagueOperations.missions[1]?.missionGeistId ?? '',
       mission2MapA: data.leagueOperations.missions[1]?.maps[0] ?? '',
       mission2MapB: data.leagueOperations.missions[1]?.maps[1] ?? '',
       weekNumber: data.leagueOperations.weekNumber,
@@ -254,9 +297,11 @@ function EventManagerPanel({
       const operations = await eventRepository.saveLeagueOperations(leagueOperationsForm)
       setLeagueOperationsForm({
         mission1: operations.missions[0]?.mission ?? '',
+        mission1GeistId: operations.missions[0]?.missionGeistId ?? '',
         mission1MapA: operations.missions[0]?.maps[0] ?? '',
         mission1MapB: operations.missions[0]?.maps[1] ?? '',
         mission2: operations.missions[1]?.mission ?? '',
+        mission2GeistId: operations.missions[1]?.missionGeistId ?? '',
         mission2MapA: operations.missions[1]?.maps[0] ?? '',
         mission2MapB: operations.missions[1]?.maps[1] ?? '',
         weekNumber: operations.weekNumber,
@@ -409,13 +454,28 @@ function EventManagerPanel({
         {data.selectedEvent.type === 'League' ? (
           <form className="event-manager-form" onSubmit={saveLeagueOperations}>
             <label>Week Number<input disabled={!canManage} onChange={(event) => setLeagueOperationsForm((current) => ({ ...current, weekNumber: event.target.value }))} value={leagueOperationsForm.weekNumber} /></label>
-            <LeagueOperationsSelect disabled={!canManage} label="Mission 1" onChange={(mission1) => setLeagueOperationsForm((current) => ({ ...current, mission1 }))} options={data.leagueOperations.missionOptions} value={leagueOperationsForm.mission1} />
+            <LeagueOperationsSelect
+              disabled={!canManage || leagueMissionCatalog.length === 0}
+              label="Mission 1"
+              missionGeistId={leagueOperationsForm.mission1GeistId}
+              onChange={(selection) => setLeagueOperationsForm((current) => ({ ...current, mission1: selection.mission, mission1GeistId: selection.missionGeistId }))}
+              options={leagueMissionCatalog}
+              value={leagueOperationsForm.mission1}
+            />
             <LeagueOperationsMapInput disabled={!canManage} label="Mission 1 Map 1" onChange={(mission1MapA) => setLeagueOperationsForm((current) => ({ ...current, mission1MapA }))} value={leagueOperationsForm.mission1MapA} />
             <LeagueOperationsMapInput disabled={!canManage} label="Mission 1 Map 2" onChange={(mission1MapB) => setLeagueOperationsForm((current) => ({ ...current, mission1MapB }))} value={leagueOperationsForm.mission1MapB} />
-            <LeagueOperationsSelect disabled={!canManage} label="Mission 2" onChange={(mission2) => setLeagueOperationsForm((current) => ({ ...current, mission2 }))} options={data.leagueOperations.missionOptions} value={leagueOperationsForm.mission2} />
+            <LeagueOperationsSelect
+              disabled={!canManage || leagueMissionCatalog.length === 0}
+              label="Mission 2"
+              missionGeistId={leagueOperationsForm.mission2GeistId}
+              onChange={(selection) => setLeagueOperationsForm((current) => ({ ...current, mission2: selection.mission, mission2GeistId: selection.missionGeistId }))}
+              options={leagueMissionCatalog}
+              value={leagueOperationsForm.mission2}
+            />
             <LeagueOperationsMapInput disabled={!canManage} label="Mission 2 Map 1" onChange={(mission2MapA) => setLeagueOperationsForm((current) => ({ ...current, mission2MapA }))} value={leagueOperationsForm.mission2MapA} />
             <LeagueOperationsMapInput disabled={!canManage} label="Mission 2 Map 2" onChange={(mission2MapB) => setLeagueOperationsForm((current) => ({ ...current, mission2MapB }))} value={leagueOperationsForm.mission2MapB} />
             <div className="event-manager-actions event-manager-wide"><button disabled={!canManage || workingAction !== ''} type="submit">Save Mission &amp; Map</button><a className="button-link" href="/league-operations">View Public Page</a></div>
+            {leagueMissionCatalogError ? <p className="form-error event-manager-wide" role="alert">{leagueMissionCatalogError}</p> : null}
             <div aria-live="polite" className="event-manager-wide">{actionError ? <p className="form-error" role="alert">{actionError}</p> : null}{actionMessage ? <p className="form-success" role="status">{actionMessage}</p> : null}</div>
           </form>
         ) : <p>This tool is available for League events only.</p>}
@@ -718,12 +778,17 @@ function EventManagerPanel({
                 />
               </label>
               <LeagueOperationsSelect
-                disabled={!canManage}
+                disabled={!canManage || leagueMissionCatalog.length === 0}
                 label="Mission 1"
-                onChange={(mission1) =>
-                  setLeagueOperationsForm((current) => ({ ...current, mission1 }))
+                missionGeistId={leagueOperationsForm.mission1GeistId}
+                onChange={(selection) =>
+                  setLeagueOperationsForm((current) => ({
+                    ...current,
+                    mission1: selection.mission,
+                    mission1GeistId: selection.missionGeistId,
+                  }))
                 }
-                options={data.leagueOperations.missionOptions}
+                options={leagueMissionCatalog}
                 value={leagueOperationsForm.mission1}
               />
               <LeagueOperationsMapInput
@@ -749,12 +814,17 @@ function EventManagerPanel({
                 value={leagueOperationsForm.mission1MapB}
               />
               <LeagueOperationsSelect
-                disabled={!canManage}
+                disabled={!canManage || leagueMissionCatalog.length === 0}
                 label="Mission 2"
-                onChange={(mission2) =>
-                  setLeagueOperationsForm((current) => ({ ...current, mission2 }))
+                missionGeistId={leagueOperationsForm.mission2GeistId}
+                onChange={(selection) =>
+                  setLeagueOperationsForm((current) => ({
+                    ...current,
+                    mission2: selection.mission,
+                    mission2GeistId: selection.missionGeistId,
+                  }))
                 }
-                options={data.leagueOperations.missionOptions}
+                options={leagueMissionCatalog}
                 value={leagueOperationsForm.mission2}
               />
               <LeagueOperationsMapInput
@@ -787,6 +857,11 @@ function EventManagerPanel({
                   View Public Page
                 </a>
               </div>
+              {leagueMissionCatalogError ? (
+                <p className="form-error event-manager-wide" role="alert">
+                  {leagueMissionCatalogError}
+                </p>
+              ) : null}
             </form>
           ) : null}
 
@@ -1203,28 +1278,42 @@ function RegistrationSelect({
 function LeagueOperationsSelect({
   disabled,
   label,
+  missionGeistId,
   onChange,
   options,
   value,
 }: {
   disabled: boolean
   label: string
-  onChange: (value: string) => void
-  options: string[]
+  missionGeistId: string
+  onChange: (selection: { mission: string; missionGeistId: string }) => void
+  options: MissionGeistCatalogMission[]
   value: string
 }) {
+  const selectedValue = missionGeistId || (value ? `legacy:${value}` : '')
+
   return (
     <label>
       {label}
       <select
         disabled={disabled}
-        onChange={(event) => onChange(event.target.value)}
-        value={value}
+        onChange={(event) => {
+          const mission = options.find((option) => option.id === event.target.value)
+          onChange(mission
+            ? { mission: mission.name, missionGeistId: mission.id }
+            : { mission: '', missionGeistId: '' })
+        }}
+        value={selectedValue}
       >
         <option value="">Select {label}</option>
+        {!missionGeistId && value ? (
+          <option disabled value={`legacy:${value}`}>
+            Legacy — {value} (identity not recorded)
+          </option>
+        ) : null}
         {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
+          <option key={option.id} value={option.id}>
+            {option.sourceCollectionName || option.sourceCollectionId} — {option.name}
           </option>
         ))}
       </select>

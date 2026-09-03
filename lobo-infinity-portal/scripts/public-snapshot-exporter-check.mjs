@@ -62,7 +62,8 @@ while (pending.length) {
   }
 }
 const urlFetchReachable = [...reachable].filter(([, definition]) => /\bUrlFetchApp\b/.test(definition.body))
-assert.deepEqual(urlFetchReachable, [], `snapshot build reaches UrlFetch: ${urlFetchReachable.map(([name, value]) => `${value.filename}:${name}`).join(', ')}`)
+assert.deepEqual(urlFetchReachable.map(([name]) => name), ['fetchMissionGeistListing_'],
+  `snapshot build may fetch only the Mission Geist catalog: ${urlFetchReachable.map(([name, value]) => `${value.filename}:${name}`).join(', ')}`)
 const forbiddenArmyCalls = [
   'canonicalDecoderGatewayDecode_', 'resolveArmyCodeProfiles', 'decodeArmyCode',
   'refreshArmyIntelligence', 'rebuildArmyIntelligenceReadModelPayloadAndPersist',
@@ -103,7 +104,8 @@ while (hourlyPending.length) {
   }
 }
 const hourlyUrlFetchReachable = [...hourlyReachable].filter(([, definition]) => /\bUrlFetchApp\b/.test(definition.body))
-assert.deepEqual(hourlyUrlFetchReachable.map(([name]) => name), ['publishLatestPublicSnapshotV1_'])
+assert.deepEqual(hourlyUrlFetchReachable.map(([name]) => name).sort(),
+  ['fetchMissionGeistListing_', 'publishLatestPublicSnapshotV1_'])
 for (const forbidden of ['canonicalDecoderGatewayDecode_', 'rebuildGameEngine', 'refreshArmyIntelligence']) {
   assert.equal(hourlyReachable.has(forbidden), false, `hourly snapshot reaches ${forbidden}`)
 }
@@ -163,7 +165,7 @@ const functions = [
   'stablePublicSnapshotJson_', 'assertPublicSnapshotSafe_',
   'calculatePublicSnapshotLeagueRecord_', 'validatePublicSnapshotArmyUsage_', 'validatePublicSnapshotDatasets_',
   'buildPublicSnapshotArmyLink_', 'buildPublicSnapshotArmyLists_', 'buildPublicSnapshotDecodedArmy_',
-  'buildPublicSnapshotSchedule_', 'buildPublicSnapshotStatistics_',
+  'buildPublicSnapshotLeagueMission_', 'buildPublicSnapshotSchedule_', 'buildPublicSnapshotStatistics_',
   'buildPublicSnapshotRecords_', 'pickPublicHallOfFameValue_',
   'buildPublicSnapshotCommunity_', 'buildPublicSnapshotRows_'
 ]
@@ -178,6 +180,9 @@ for (const name of functions) {
   }
   vm.runInContext(source.slice(start, end), sandbox)
 }
+const missionGeistValidator = backendFunctions.get('validateMissionGeistCatalog_')
+assert.ok(missionGeistValidator, 'missing validateMissionGeistCatalog_')
+vm.runInContext(missionGeistValidator.body, sandbox)
 
 const headers = ['Timestamp', 'Division', 'Date', 'Mission', 'Player 1', 'Player 2',
   'Player 1 TP', 'Player 2 TP', 'Player 1 OP', 'Player 2 OP', 'Player 1 VP', 'Player 2 VP',
@@ -276,7 +281,16 @@ const schedule = sandbox.buildPublicSnapshotSchedule_({
 }, standings, events, context)
 assert.equal(schedule.length, 1)
 assert.equal(schedule[0].remainingMatchups.length, 3)
-const datasets = { players, games, events, missions, factions, standings, schedule, 'army-lists': armyLists }
+const missionCatalog = {
+  schemaVersion: '1.0.0', contentHash: 'sha256-fixture', generatedAt: '2026-09-02T00:00:00Z',
+  attribution: 'Courtesy of Mission Geist',
+  missions: [{
+    id: 'fixture-mission', name: 'Fixture Mission', canonicalUrl: 'https://infinitygeist.com/mission/fixture-mission',
+    rights: { ip: 'Fixture Creator', official: false }, sourceCollectionId: 'fixture-season',
+    sourceCollectionName: 'Fixture Season', current: true,
+  }],
+}
+const datasets = { players, games, events, missions, 'mission-catalog': missionCatalog, factions, standings, schedule, 'army-lists': armyLists }
 assert.doesNotThrow(() => sandbox.validatePublicSnapshotDatasets_(datasets, context))
 assert.throws(() => sandbox.validatePublicSnapshotDatasets_({
   ...datasets, games: [...games, games[0]],

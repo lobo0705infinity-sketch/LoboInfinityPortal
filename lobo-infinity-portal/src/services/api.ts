@@ -1696,6 +1696,7 @@ export type EventManagerData = {
 export type LeagueOperationsMission = {
   maps: string[]
   mission: string
+  missionGeistId?: string
 }
 
 export type LeagueOperationsData = {

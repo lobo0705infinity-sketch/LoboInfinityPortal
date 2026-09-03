@@ -12,7 +12,9 @@ const LEAGUE_OPERATIONS_HEADERS = [
   "Mission 2 Map A",
   "Mission 2 Map B",
   "Updated At",
-  "Updated By"
+  "Updated By",
+  "Mission 1 Mission Geist ID",
+  "Mission 2 Mission Geist ID"
 ];
 
 function getLeagueOperations() {
@@ -42,6 +44,18 @@ function saveLeagueOperations(e) {
 
     const mission2 =
       getCanonicalMissionName(params.mission2);
+
+    const mission1GeistId =
+      validateLeagueOperationsMissionGeistId_(
+        mission1,
+        getLeagueOperationsString(params.mission1GeistId)
+      );
+
+    const mission2GeistId =
+      validateLeagueOperationsMissionGeistId_(
+        mission2,
+        getLeagueOperationsString(params.mission2GeistId)
+      );
 
     const mission1MapA =
       getLeagueOperationsString(params.mission1MapA);
@@ -107,7 +121,9 @@ function saveLeagueOperations(e) {
       mission2MapA,
       mission2MapB,
       updatedAt,
-      updatedBy
+      updatedBy,
+      mission1GeistId,
+      mission2GeistId
     ];
 
     const nextRow =
@@ -143,24 +159,30 @@ function buildLeagueOperationsPayload(row) {
   const safeRow =
     row || [];
 
+  const mission1 = {
+    mission: getLeagueOperationsString(safeRow[1]),
+    maps: [
+      getLeagueOperationsString(safeRow[2]),
+      getLeagueOperationsString(safeRow[3])
+    ]
+  };
+
+  const mission2 = {
+    mission: getLeagueOperationsString(safeRow[4]),
+    maps: [
+      getLeagueOperationsString(safeRow[5]),
+      getLeagueOperationsString(safeRow[6])
+    ]
+  };
+
+  const mission1GeistId = getLeagueOperationsString(safeRow[9]);
+  const mission2GeistId = getLeagueOperationsString(safeRow[10]);
+  if (mission1GeistId) mission1.missionGeistId = mission1GeistId;
+  if (mission2GeistId) mission2.missionGeistId = mission2GeistId;
+
   return {
     weekNumber: getLeagueOperationsString(safeRow[0]),
-    missions: [
-      {
-        mission: getLeagueOperationsString(safeRow[1]),
-        maps: [
-          getLeagueOperationsString(safeRow[2]),
-          getLeagueOperationsString(safeRow[3])
-        ]
-      },
-      {
-        mission: getLeagueOperationsString(safeRow[4]),
-        maps: [
-          getLeagueOperationsString(safeRow[5]),
-          getLeagueOperationsString(safeRow[6])
-        ]
-      }
-    ],
+    missions: [mission1, mission2],
     updatedAt: getLeagueOperationsString(safeRow[7]),
     updatedBy: getLeagueOperationsString(safeRow[8]),
     missionOptions: getCanonicalMissionsForOperations()
@@ -219,6 +241,20 @@ function ensureLeagueOperationsSheet() {
     sheet
       .getRange(1, 1, 1, LEAGUE_OPERATIONS_HEADERS.length)
       .setValues([LEAGUE_OPERATIONS_HEADERS]);
+  } else {
+    const headerCount = Math.max(sheet.getLastColumn(), 1);
+    const currentHeaders = sheet
+      .getRange(1, 1, 1, headerCount)
+      .getValues()[0]
+      .map(getLeagueOperationsString);
+    const missingHeaders = LEAGUE_OPERATIONS_HEADERS.filter(function(header) {
+      return currentHeaders.indexOf(header) === -1;
+    });
+    if (missingHeaders.length > 0) {
+      sheet
+        .getRange(1, headerCount + 1, 1, missingHeaders.length)
+        .setValues([missingHeaders]);
+    }
   }
 
   return sheet;
@@ -234,5 +270,30 @@ function getLeagueOperationsString(value) {
     return "";
 
   return String(value).trim();
+
+}
+
+function validateLeagueOperationsMissionGeistId_(mission, missionGeistId) {
+
+  if (!missionGeistId)
+    return "";
+
+  const cached =
+    typeof readMissionGeistCachedCatalog_ === "function"
+      ? readMissionGeistCachedCatalog_(PropertiesService.getScriptProperties())
+      : null;
+
+  if (!cached || !cached.catalog)
+    throw new Error("The prepared Mission Geist catalog is unavailable. Refresh the Commissioner page and try again.");
+
+  const catalogMission =
+    (cached.catalog.missions || []).filter(function(item) {
+      return String(item && item.id || "").trim() === missionGeistId;
+    })[0];
+
+  if (!catalogMission || getCanonicalMissionName(catalogMission.name) !== mission)
+    throw new Error("The selected Mission Geist identity does not match the selected mission.");
+
+  return missionGeistId;
 
 }

@@ -2,7 +2,7 @@ const PUBLIC_BLOB_ORIGIN = 'https://ecwefvuvauaqpary.public.blob.vercel-storage.
 export const PUBLIC_SNAPSHOT_POINTER_URL = `${PUBLIC_BLOB_ORIGIN}public-snapshots/current.json`
 
 export const PUBLIC_SNAPSHOT_DATASETS = [
-  'players', 'games', 'events', 'missions', 'factions', 'standings',
+  'players', 'games', 'events', 'missions', 'mission-catalog', 'factions', 'standings',
   'army-lists', 'army-intelligence-summary', 'army-intelligence-detail',
   'schedule', 'statistics', 'community', 'snapshot',
 ] as const
@@ -22,6 +22,24 @@ export type PublicSnapshotPointer = {
   sourceCutoff: string
   publishedAt?: string
   basePath: string
+}
+
+export type MissionGeistCatalogMission = {
+  id: string
+  name: string
+  canonicalUrl: string
+  rights: Record<string, unknown>
+  sourceCollectionId: string
+  sourceCollectionName: string
+  current: boolean
+}
+
+export type MissionGeistCatalog = {
+  schemaVersion: string
+  contentHash: string
+  generatedAt: string
+  attribution: string
+  missions: MissionGeistCatalogMission[]
 }
 
 const cache = new Map<PublicSnapshotDataset, Promise<unknown>>()
@@ -65,6 +83,10 @@ export function getPublicSnapshotDataset<T>(
   cache.set(dataset, pending)
   pending.catch(() => cache.delete(dataset))
   return pending as Promise<T>
+}
+
+export function getPublicMissionGeistCatalog(signal?: AbortSignal) {
+  return getPublicSnapshotDataset<MissionGeistCatalog>('mission-catalog', signal)
 }
 
 async function readPublicSnapshotFile<T>(dataset: PublicSnapshotDataset, signal?: AbortSignal) {
