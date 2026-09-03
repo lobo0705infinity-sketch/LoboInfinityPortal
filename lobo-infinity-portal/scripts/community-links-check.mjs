@@ -32,13 +32,14 @@ const checkedSource = [
 const hardcodedDiscordInvites = checkedSource.filter((path) =>
   /https?:\/\/(?:www\.)?(?:discord\.gg|discord(?:app)?\.com\/invite)\S*/i.test(read(path)),
 )
+const authoritativeInvite = 'https://discord.gg/p77TWjzXfM'
 
 const checks = [
   {
     label: 'Community links expose Discord through a single resolver',
     pass:
       files.communityConfig.includes('function getCommunityLinks(') &&
-      files.communityConfig.includes("settings?.discordInvite.trim()") &&
+      files.communityConfig.includes(`LOBO_DISCORD_INVITE_URL = '${authoritativeInvite}'`) &&
       files.communityConfig.includes('function getDiscordCommunityLink('),
   },
   {
@@ -159,8 +160,11 @@ const checks = [
       files.api.includes('discordServerName: string'),
   },
   {
-    label: 'No hardcoded Discord invite URLs remain in portal source',
-    pass: hardcodedDiscordInvites.length === 0,
+    label: 'The only hardcoded Discord invite is the authoritative shared resolver',
+    pass:
+      hardcodedDiscordInvites.length === 1 &&
+      hardcodedDiscordInvites[0].replaceAll('\\', '/').endsWith('/src/config/communityLinks.ts') &&
+      !checkedSource.some((path) => read(path).includes('AvKDK4sX')),
     detail: hardcodedDiscordInvites.join(', '),
   },
 ]

@@ -17,10 +17,11 @@ export type CommunityLinkConfig = {
 
 export type CommunityLinksConfig = Partial<Record<CommunityLinkKey, CommunityLinkConfig>>
 
+export const LOBO_DISCORD_INVITE_URL = 'https://discord.gg/p77TWjzXfM'
+
 export function getCommunityLinks(
   settings: PortalSettings | null | undefined,
 ): CommunityLinksConfig {
-  const discordUrl = settings?.discordInvite.trim() ?? ''
   const discordServerName =
     settings?.discordServerName.trim() || 'Lobo Infinity League Discord'
 
@@ -29,7 +30,7 @@ export function getCommunityLinks(
       key: 'discord',
       label: 'Discord',
       serverName: discordServerName,
-      url: discordUrl,
+      url: LOBO_DISCORD_INVITE_URL,
     },
   }
 }
