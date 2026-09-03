@@ -14,6 +14,7 @@ assert.match(source, /function runPublishPublicSnapshotV1Proof\(\)\s*\{/)
 assert.doesNotMatch(source, /function runPublishPublicSnapshotV1Proof\([^)]*\w[^)]*\)/)
 assert.match(source, /function runPublishPublicSnapshot20260903T042240ZProof\(\)\s*\{\s*return publishLatestPublicSnapshotV1_\(true, "20260903T042240Z"\);\s*\}/)
 assert.match(source, /function runPublishPublicSnapshot20260903T130548ZProof\(\)\s*\{\s*return publishLatestPublicSnapshotV1_\(true, "20260903T130548Z"\);\s*\}/)
+assert.match(source, /function runPublishPublicSnapshot20260903T194207ZProof\(\)\s*\{\s*return publishLatestPublicSnapshotV1_\(true, "20260903T194207Z"\);\s*\}/)
 assert.match(source, /function runInspectLatestValidatedPublicSnapshotV1\(\)/)
 assert.doesNotMatch(source, /setProperty\(PUBLIC_SNAPSHOT_PUBLISH_TOKEN_PROPERTY/)
 assert.doesNotMatch(source, /setProperties\([^)]*PUBLIC_SNAPSHOT_PUBLISH_TOKEN_PROPERTY/)
@@ -79,7 +80,7 @@ assert.equal(reachable.has('runPublishPublicSnapshotV1Proof'), false)
 assert.equal(reachable.has('runPublishPublicSnapshot20260903T042240ZProof'), false)
 
 const publicationReachable = new Map()
-const publicationPending = ['runPublishPublicSnapshot20260903T130548ZProof']
+const publicationPending = ['runPublishPublicSnapshot20260903T194207ZProof']
 while (publicationPending.length) {
   const name = publicationPending.pop()
   if (publicationReachable.has(name) || !backendFunctions.has(name)) continue
@@ -158,8 +159,8 @@ assert.throws(() => selectionSandbox.getLatestValidatedPublicSnapshotId_(selecti
 selectedIds.PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_ID = 'failed-snapshot'
 assert.throws(() => selectionSandbox.getLatestValidatedPublicSnapshotId_(selectionProperties), /identity is unavailable/)
 
-const exactSnapshotId = '20260903T130548Z'
-const exactSourceCutoff = '2026-09-03T13:06:10.647Z'
+const exactSnapshotId = '20260903T194207Z'
+const exactSourceCutoff = '2026-09-03T19:42:20.182Z'
 let exactUrlFetchCalls = 0
 let exactDriveReads = 0
 let exactLatestValidatedId = exactSnapshotId
@@ -207,21 +208,21 @@ const exactPublicationSandbox = {
   } },
 }
 vm.createContext(exactPublicationSandbox)
-for (const name of ['getLatestValidatedPublicSnapshotId_', 'publishLatestPublicSnapshotV1_', 'runPublishPublicSnapshot20260903T130548ZProof']) {
+for (const name of ['getLatestValidatedPublicSnapshotId_', 'publishLatestPublicSnapshotV1_', 'runPublishPublicSnapshot20260903T194207ZProof']) {
   vm.runInContext(backendFunctions.get(name).body, exactPublicationSandbox)
 }
-assert.equal(exactPublicationSandbox.runPublishPublicSnapshot20260903T130548ZProof().snapshotId, exactSnapshotId)
+assert.equal(exactPublicationSandbox.runPublishPublicSnapshot20260903T194207ZProof().snapshotId, exactSnapshotId)
 assert.equal(exactUrlFetchCalls, 1)
 exactLatestValidatedId = '20260903T050000Z'
-assert.throws(() => exactPublicationSandbox.runPublishPublicSnapshot20260903T130548ZProof(), /changed before publication/)
+assert.throws(() => exactPublicationSandbox.runPublishPublicSnapshot20260903T194207ZProof(), /changed before publication/)
 assert.equal(exactUrlFetchCalls, 1)
 assert.equal(exactDriveReads, 1)
 exactLatestValidatedId = ''
-assert.throws(() => exactPublicationSandbox.runPublishPublicSnapshot20260903T130548ZProof(), /identity is unavailable/)
+assert.throws(() => exactPublicationSandbox.runPublishPublicSnapshot20260903T194207ZProof(), /identity is unavailable/)
 assert.equal(exactUrlFetchCalls, 1)
 assert.equal(exactDriveReads, 1)
 exactLatestValidatedId = 'malformed-snapshot'
-assert.throws(() => exactPublicationSandbox.runPublishPublicSnapshot20260903T130548ZProof(), /identity is unavailable/)
+assert.throws(() => exactPublicationSandbox.runPublishPublicSnapshot20260903T194207ZProof(), /identity is unavailable/)
 assert.equal(exactUrlFetchCalls, 1)
 assert.equal(exactDriveReads, 1)
 

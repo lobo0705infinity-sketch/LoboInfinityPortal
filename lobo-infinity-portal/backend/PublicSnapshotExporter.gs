@@ -37,6 +37,10 @@ function runPublishPublicSnapshot20260903T130548ZProof() {
   return publishLatestPublicSnapshotV1_(true, "20260903T130548Z");
 }
 
+function runPublishPublicSnapshot20260903T194207ZProof() {
+  return publishLatestPublicSnapshotV1_(true, "20260903T194207Z");
+}
+
 function runInspectLatestValidatedPublicSnapshotV1() {
   const properties = PropertiesService.getScriptProperties();
   const snapshotId = getLatestValidatedPublicSnapshotId_(properties);
