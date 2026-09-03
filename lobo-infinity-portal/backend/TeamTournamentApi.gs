@@ -1208,20 +1208,33 @@ function getTeamTournamentWinningFaction_(submission) {
 
 function getTeamTournamentArmyCodeFaction(armyCode) {
 
-  if (
-    !armyCode ||
-    typeof CanonicalDecoderGateway === "undefined" ||
-    typeof CanonicalDecoderGateway.decode !== "function"
-  )
+  const normalizedArmyCode =
+    getTeamTournamentString(armyCode);
+
+  if (!normalizedArmyCode)
     return "";
 
-  const decoded =
-    CanonicalDecoderGateway.decode(armyCode);
+  const persisted =
+    getPersistedCanonicalArmyListDecode(
+      buildCanonicalArmyCodeArmyListId(normalizedArmyCode),
+      normalizedArmyCode,
+      getPersistedArmyIntelligenceSnapshotLookup()
+    );
+
+  if (persisted)
+    return canonicalizeArmyName(
+      persisted.derived.sectorial ||
+      persisted.derived.faction ||
+      ""
+    );
+
+  const structural =
+    decodeSubmittedArmyCodeStructurally(normalizedArmyCode);
 
   return canonicalizeArmyName(
-    decoded.sectorial ||
-    decoded.faction ||
-    ""
+    structural.valid && structural.derived
+      ? structural.derived.sectorial || structural.derived.faction
+      : ""
   );
 
 }

@@ -37,14 +37,13 @@ const fixtures = [
 ]
 
 for (const [label, armyCode] of fixtures) {
-  const before = runDecoder({ source: baselineDecoder, expression: 'decodeArmyCode(armyCode)', armyCode })
   const after = runDecoder({
     source: `${currentDecoder}\n${gateway}`,
     expression: 'CanonicalDecoderGateway.decode(armyCode)',
     armyCode,
   })
 
-  assert.deepEqual(after, before, `${label} output changed`)
+  assert.equal(typeof after.valid, 'boolean', `${label} did not return the decoder contract`)
 }
 
 const currentContext = createContext()
@@ -55,16 +54,7 @@ assert.equal(
   'decoder version changed',
 )
 
-const callers = [
-  ['Army Code Validation', 'backend/ArmyCodeValidationApi.gs', 'decodeSubmittedArmyCode'],
-  ['Army List diagnostics', 'backend/ArmyListApi.gs', 'diagnoseArmyList'],
-  ['Game Engine deterministic snapshots', 'backend/ArmyListApi.gs', 'buildArmyIntelligenceForGameEngineRows'],
-  ['Game-submitted Army List registration', 'backend/ArmyListApi.gs', 'appendCanonicalGameSubmittedArmyList'],
-  ['Approved Army Intelligence snapshots', 'backend/ArmyIntelligenceApi.gs', 'buildApprovedArmyListIntelligenceRows'],
-  ['Army Intelligence snapshot generation', 'backend/ArmyIntelligenceApi.gs', 'buildArmyIntelligenceListsFromCanonicalSources'],
-  ['Team Tournament faction resolution', 'backend/TeamTournamentApi.gs', 'getTeamTournamentArmyCodeFaction'],
-  ['Apps Script decoder test entry point', 'backend/ArmyDecoderApi.gs', 'testDecodeArmyCode'],
-]
+const callers = []
 
 for (const [label, path, functionName] of callers) {
   const source = fs.readFileSync(path, 'utf8')
@@ -73,6 +63,26 @@ for (const [label, path, functionName] of callers) {
     body,
     /CanonicalDecoderGateway\.decode\s*\(/,
     `${label} does not delegate to CanonicalDecoderGateway`,
+  )
+}
+
+const zeroNetworkCallers = [
+  ['Normal Army Code validation', 'backend/ArmyCodeValidationApi.gs', 'validateArmyCode'],
+  ['Army List submission', 'backend/ArmyListApi.gs', 'submitArmyList'],
+  ['Game-submitted Army List registration', 'backend/ArmyListApi.gs', 'appendCanonicalGameSubmittedArmyList'],
+  ['Team Tournament faction resolution', 'backend/TeamTournamentApi.gs', 'getTeamTournamentArmyCodeFaction'],
+  ['Commissioner Army audit', 'backend/ArmyCodeValidationApi.gs', 'auditArmyCodeSubmissions'],
+  ['Commissioner Army diagnostic', 'backend/ArmyListApi.gs', 'diagnoseArmyList'],
+  ['Manual decoder diagnostic', 'backend/ArmyDecoderApi.gs', 'testDecodeArmyCode'],
+]
+
+for (const [label, path, functionName] of zeroNetworkCallers) {
+  const source = fs.readFileSync(path, 'utf8')
+  const body = extractFunction(source, functionName)
+  assert.doesNotMatch(
+    body,
+    /CanonicalDecoderGateway|resolveArmyCodeProfiles|UrlFetchApp/,
+    `${label} can still reach the Apps Script Army decoder`,
   )
 }
 
@@ -92,14 +102,12 @@ assert.equal(
   'CanonicalDecoderGateway must have exactly one definition',
 )
 
-console.log('PASS - Decoder output identical')
-console.log('PASS - Decoder failures identical')
+console.log('PASS - Retired decoder preserves a local compatibility contract')
+console.log('PASS - External resolver is unreachable')
 console.log('PASS - Decoder version unchanged')
-console.log('PASS - Army Code Validation caller delegates')
-console.log('PASS - Army List diagnostics caller delegates')
-console.log('PASS - Game Engine deterministic snapshot caller delegates')
-console.log('PASS - Army Intelligence snapshot caller delegates')
-console.log('PASS - Team Tournament faction resolution caller delegates')
+console.log('PASS - Army Code validation is local/persisted')
+console.log('PASS - Army List diagnostics are local/persisted')
+console.log('PASS - Normal submission and validation callers remain zero-network')
 
 function runDecoder({ source, expression, armyCode }) {
   const context = createContext()
@@ -132,10 +140,7 @@ function createContext() {
       log: () => {},
     },
     UrlFetchApp: {
-      fetch: () => ({
-        getContentText: () => resolverHtml,
-        getResponseCode: () => 200,
-      }),
+      fetch: () => { throw new Error('Apps Script external decoder fetch reached') },
     },
     Utilities: {
       base64Decode: (value) => Array.from(Buffer.from(padBase64(value), 'base64')),

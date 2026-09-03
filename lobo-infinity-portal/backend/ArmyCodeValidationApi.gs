@@ -27,8 +27,7 @@ const ARMY_CODE_VALIDATION_DEFAULTS = {
   minimumPointTolerance: 5,
   maximumPointTolerance: 0,
   errorPointTolerance: 100,
-  minimumUnitCount: 8,
-  resolverUrl: "https://infinity.2nirwana.de/cards"
+  minimumUnitCount: 8
 };
 
 function validateArmyCode(e) {
@@ -37,7 +36,7 @@ function validateArmyCode(e) {
     getApiParameters(e);
 
   const validation =
-    validateSubmittedArmyCode(
+    validateSubmittedArmyCodeWithoutExternalDecode(
       getApiParameter(params, "armyCode"),
       getApiParameter(params, "event")
     );
@@ -100,7 +99,7 @@ function auditArmyCodeSubmissions(e) {
     lists
       .map(function(list) {
         const validation =
-          validateSubmittedArmyCode(
+          validateSubmittedArmyCodeWithoutExternalDecode(
             list.armyCode,
             list.event
           );
@@ -142,6 +141,57 @@ function auditArmyCodeSubmissions(e) {
 
 function validateSubmittedArmyCode(armyCode, eventId) {
 
+  return validateSubmittedArmyCodeWithoutExternalDecode(
+    armyCode,
+    eventId
+  );
+
+}
+
+function validateSubmittedArmyCodeWithoutExternalDecode(armyCode, eventId) {
+
+  const structural =
+    decodeSubmittedArmyCodeStructurally(armyCode);
+
+  if (!structural.valid)
+    return buildSubmittedArmyCodeValidationReport(
+      structural,
+      eventId
+    );
+
+  const normalizedArmyCode =
+    getArmyCodeValidationString(armyCode);
+  const armyListId =
+    buildCanonicalArmyCodeArmyListId(normalizedArmyCode);
+  const persisted =
+    getPersistedCanonicalArmyListDecode(
+      armyListId,
+      normalizedArmyCode,
+      getPersistedArmyIntelligenceSnapshotLookup()
+    );
+
+  if (persisted)
+    return buildSubmittedArmyCodeValidationReport(
+      {
+        decoder: "persisted-army-intelligence",
+        decoderVersion: "persisted",
+        derived: persisted.derived,
+        exceptions: [],
+        valid: true,
+        warnings: persisted.parserWarnings || []
+      },
+      eventId
+    );
+
+  return buildPendingSubmittedArmyCodeValidation(
+    structural,
+    eventId
+  );
+
+}
+
+function buildSubmittedArmyCodeValidationReport(decoded, eventId) {
+
   const timestamp =
     getArmyCodeValidationTimestamp();
 
@@ -149,8 +199,6 @@ function validateSubmittedArmyCode(armyCode, eventId) {
     getArmyCodeValidationThresholds(eventId);
 
   const issues = [];
-  const decoded =
-    decodeSubmittedArmyCode(armyCode);
 
   if (!decoded.valid) {
     issues.push(buildArmyCodeValidationIssue(
@@ -293,6 +341,109 @@ function validateSubmittedArmyCode(armyCode, eventId) {
 
 }
 
+function decodeSubmittedArmyCodeStructurally(value) {
+
+  const raw =
+    getArmyCodeValidationString(value);
+  const extracted =
+    extractArmyCodePayload(raw);
+  const encoding =
+    inspectArmyCodeEncoding(extracted);
+  const emptyDerived = {
+    armyName: "",
+    combatGroups: 0,
+    faction: "",
+    points: 0,
+    sectorial: "",
+    swc: 0,
+    unitCount: 0
+  };
+
+  if (!extracted || !encoding.valid)
+    return {
+      decoder: "local-structural",
+      decoderVersion: CANONICAL_DECODER_VERSION,
+      derived: emptyDerived,
+      exceptions: [
+        !extracted
+          ? "Army Code is empty."
+          : encoding.reason
+      ],
+      valid: false,
+      warnings: []
+    };
+
+  try {
+    const binary =
+      parseArmyCodeBinary(extracted);
+    const sectorial =
+      normalizeArmyDecoderName(binary.sectorialSlug);
+    const roster =
+      buildArmyDecoderBinaryRoster(binary);
+
+    return {
+      decoder: "local-structural",
+      decoderVersion: CANONICAL_DECODER_VERSION,
+      derived: {
+        armyName: getArmyCodeValidationString(binary.listName),
+        combatGroups: Number(binary.combatGroupCount) || 0,
+        faction: getArmyDecoderParentFaction(sectorial),
+        points: 0,
+        sectorial: sectorial,
+        swc: 0,
+        unitCount: roster.length
+      },
+      exceptions: [],
+      valid: true,
+      warnings: []
+    };
+  }
+  catch (error) {
+    return {
+      decoder: "local-structural",
+      decoderVersion: CANONICAL_DECODER_VERSION,
+      derived: emptyDerived,
+      exceptions: [
+        error && error.message
+          ? error.message
+          : String(error)
+      ],
+      valid: false,
+      warnings: []
+    };
+  }
+
+}
+
+function buildPendingSubmittedArmyCodeValidation(structural, eventId) {
+
+  const thresholds =
+    getArmyCodeValidationThresholds(eventId);
+
+  return {
+    blocking: false,
+    derived: structural.derived,
+    decoder: structural.decoder,
+    decoderVersion: structural.decoderVersion,
+    exceptions: structural.exceptions,
+    issues: [
+      buildArmyCodeValidationIssue(
+        "Info",
+        "pending",
+        "Army Code is structurally valid and pending profile enrichment."
+      )
+    ],
+    severity: "Info",
+    status: "pending",
+    suspicious: false,
+    thresholds: thresholds,
+    timestamp: getArmyCodeValidationTimestamp(),
+    valid: true,
+    warnings: []
+  };
+
+}
+
 function buildArmyCodeValidationIssue(severity, code, message) {
 
   return {
@@ -317,7 +468,7 @@ function getArmyCodeValidationSeverity(issues) {
 
 function decodeSubmittedArmyCode(value) {
 
-  return CanonicalDecoderGateway.decode(value);
+  return decodeSubmittedArmyCodeStructurally(value);
 
 }
 

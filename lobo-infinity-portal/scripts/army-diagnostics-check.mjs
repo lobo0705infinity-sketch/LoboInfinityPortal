@@ -29,12 +29,12 @@ const checks = [
     'standalone production decoder must produce versioned groups, totals, profiles, and warnings.',
   ],
   [
-    /CanonicalDecoderGateway\.decode\(source\.list\.armyCode\)/,
-    'Apps Script diagnostics must use the canonical decoder gateway.',
+    /getPersistedArmyDiagnosticSharedDecode\(source\.list\)/,
+    'Apps Script diagnostics must use local structure and persisted Army Intelligence.',
   ],
   [
-    /decodeSubmittedArmyCode\(value\)[\s\S]*return CanonicalDecoderGateway\.decode\(value\)/,
-    'Apps Script validation must use the canonical decoder gateway.',
+    /decodeSubmittedArmyCode\(value\)[\s\S]*return decodeSubmittedArmyCodeStructurally\(value\)/,
+    'Apps Script validation must remain zero-network.',
   ],
   [
     /validateStoredArmyCodeForDiagnostics[\s\S]*empty[\s\S]*truncated[\s\S]*invalidCharacters[\s\S]*whitespaceCorruption[\s\S]*clipboardTruncation[\s\S]*duplicateEncoding[\s\S]*missingFooter/,

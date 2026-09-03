@@ -36,8 +36,8 @@ const checks = [
     'Empty Army Codes must be rejected.',
   ],
   [
-    /Decoder warning:[\s\S]*parserWarnings\.push/,
-    'Decoder warnings must generate validation warnings.',
+    /parserWarnings:[\s\S]*External profile decoding is retired in Apps Script/,
+    'Retired external enrichment must remain explicit in decoder warnings.',
   ],
   [
     /The Army Code could not be decoded\./,
@@ -68,8 +68,8 @@ const checks = [
     'Commissioner overrides must be logged with a reason.',
   ],
   [
-    /function decodeSubmittedArmyCode\(value\)[\s\S]*return CanonicalDecoderGateway\.decode\(value\)/,
-    'Validation must consume the canonical decoder gateway.',
+    /function decodeSubmittedArmyCode\(value\)[\s\S]*return decodeSubmittedArmyCodeStructurally\(value\)/,
+    'Validation must remain local and structurally decode without the external gateway.',
   ],
   [
     /decoderVersion:\s*decoded\.decoderVersion/,

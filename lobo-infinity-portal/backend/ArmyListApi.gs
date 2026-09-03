@@ -144,7 +144,7 @@ function rebuildArmyListsReadModelPayloadAndPersist() {
 function rebuildArmyListsReadModelPayload() {
 
   const lists =
-    getArmyListObjects()
+    getCanonicalGameSubmittedArmyListObjects()
       .filter(function(list) {
 
         return list.approved;
@@ -282,7 +282,7 @@ function submitArmyList(e) {
     getApiParameter(parameters, "armyCode");
 
   const validation =
-    validateSubmittedArmyCode(
+    validateSubmittedArmyCodeWithoutExternalDecode(
       armyCode,
       getApiParameter(parameters, "event")
     );
@@ -510,7 +510,7 @@ function diagnoseArmyList(e) {
 
   const decoded =
     buildArmyDiagnosticDecode(
-      CanonicalDecoderGateway.decode(source.list.armyCode)
+      getPersistedArmyDiagnosticSharedDecode(source.list)
     );
 
   const validation =
@@ -573,6 +573,95 @@ function diagnoseArmyList(e) {
     success: true,
     report: report
   });
+
+}
+
+function getPersistedArmyDiagnosticSharedDecode(list) {
+
+  const armyCode = getArmyListString(list && list.armyCode);
+  const extracted = extractArmyCodePayload(armyCode);
+  const encoding = inspectArmyCodeEncoding(extracted);
+  const structural = decodeSubmittedArmyCodeStructurally(armyCode);
+  const armyListId =
+    getArmyListString(list && list.id) ||
+    buildCanonicalArmyCodeArmyListId(armyCode);
+  const snapshot =
+    findPersistedArmyIntelligenceSnapshot(
+      {
+        armyCodeHash: getArmyIntelligenceHash(armyCode),
+        armyListId: armyListId
+      },
+      getPersistedArmyIntelligenceSnapshotLookup()
+    );
+  const persisted =
+    snapshot && snapshot.status === "decoded" && snapshot.decoded
+      ? snapshot.decoded
+      : null;
+  const groups =
+    persisted && Array.isArray(persisted.combatGroups)
+      ? persisted.combatGroups
+      : [];
+  const roster = [];
+
+  groups.forEach(function(group, groupIndex) {
+    (Array.isArray(group.entries) ? group.entries : [])
+      .forEach(function(entry) {
+        const profile = Object.assign({}, entry);
+        profile.combatGroup =
+          Number(profile.combatGroup) ||
+          Number(group.combatGroup) ||
+          groupIndex + 1;
+        roster.push(profile);
+      });
+  });
+
+  const totals = persisted && persisted.totals ? persisted.totals : {};
+  const warnings =
+    persisted && Array.isArray(persisted.warnings)
+      ? persisted.warnings.map(function(warning) {
+          return getArmyListString(
+            warning && typeof warning === "object"
+              ? warning.message || warning.reason
+              : warning
+          );
+        }).filter(Boolean)
+      : [];
+
+  if (!persisted)
+    warnings.push(
+      "Fresh profile decoding requires the Vercel Army Intelligence worker."
+    );
+
+  return {
+    armyName:
+      getArmyListString(persisted && persisted.listName) ||
+      getArmyListString(structural.derived && structural.derived.armyName),
+    combatGroups:
+      Number(totals.combatGroups) || groups.length ||
+      Number(structural.derived && structural.derived.combatGroups) || 0,
+    decoderVersion:
+      getArmyListString(persisted && persisted.decoderVersion) ||
+      structural.decoderVersion,
+    exceptions: structural.exceptions || [],
+    extractedCode: extracted,
+    faction:
+      getArmyListString(persisted && persisted.faction) ||
+      getArmyListString(structural.derived && structural.derived.faction),
+    parserFailure: null,
+    parserTrace: [],
+    parserWarnings: warnings,
+    persisted: Boolean(persisted),
+    points: Number(totals.points) || 0,
+    raw: armyCode,
+    roster: roster,
+    sectorial:
+      getArmyListString(persisted && persisted.sectorial) ||
+      getArmyListString(structural.derived && structural.derived.sectorial),
+    swc: Number(totals.swc) || 0,
+    unitCount: roster.length,
+    valid: structural.valid,
+    validation: encoding
+  };
 
 }
 
@@ -719,6 +808,7 @@ function buildArmyDiagnosticDecode(sharedDecode) {
     decoderVersion: sharedDecode.decoderVersion,
     parserFailure: sharedDecode.parserFailure,
     parserTrace: sharedDecode.parserTrace,
+    persisted: Boolean(sharedDecode.persisted),
     points: sharedDecode.points,
     profiles: profiles,
     sharedDecode: sharedDecode,
@@ -736,6 +826,7 @@ function buildArmyDiagnosticDecode(sharedDecode) {
         };
       }),
     unitCount: sharedDecode.unitCount,
+    requiresVercelDecode: !sharedDecode.persisted,
     warnings: sharedDecode.parserWarnings
   };
 
@@ -1157,11 +1248,13 @@ function buildArmyDiagnosticReport(source, validation, decoded, snapshot, compar
     pipeline: pipeline,
     selfHealing: selfHealing,
     recommendation:
-      decoded.parserFailure
-        ? "Fix the stored Army Code or add support for the offending decoded payload format."
-        : comparison.missingUnits.length > 0
-          ? "Rebuild snapshot and clear only the armyLists cache entry."
-          : "No action required."
+      decoded.requiresVercelDecode
+        ? "Run the Vercel Army Intelligence refresh to produce a fresh persisted decode."
+        : decoded.parserFailure
+          ? "Fix the stored Army Code or add support for the offending decoded payload format."
+          : comparison.missingUnits.length > 0
+            ? "Rebuild snapshot and clear only the armyLists cache entry."
+            : "No action required."
   };
 
 }
@@ -1507,13 +1600,30 @@ function isFactionMatchupScoreDraw(value) {
 
 function getArmyListObjects() {
 
-  return getCanonicalGameSubmittedArmyListObjects();
+  try {
+
+    const payload =
+      readArmyListsReadModelPayload();
+
+    return payload && Array.isArray(payload.lists)
+      ? payload.lists
+      : [];
+
+  } catch (error) {
+
+    return [];
+
+  }
 
 }
 
 function getCanonicalGameSubmittedArmyListObjects() {
 
   const lookup = {};
+  const persistedArmyIntelligence =
+    typeof getPersistedArmyIntelligenceSnapshotLookup === "function"
+      ? getPersistedArmyIntelligenceSnapshotLookup()
+      : { byArmyCodeHash: {}, byArmyListId: {} };
 
   getCanonicalArmyListRecentGames()
     .forEach(function(game) {
@@ -1521,13 +1631,15 @@ function getCanonicalGameSubmittedArmyListObjects() {
       appendCanonicalGameSubmittedArmyList(
         lookup,
         game,
-        "winner"
+        "winner",
+        persistedArmyIntelligence
       );
 
       appendCanonicalGameSubmittedArmyList(
         lookup,
         game,
-        "loser"
+        "loser",
+        persistedArmyIntelligence
       );
 
     });
@@ -1627,7 +1739,7 @@ function buildCanonicalArmyListGameSubmission(row, sourceIndex) {
 
 }
 
-function appendCanonicalGameSubmittedArmyList(lookup, game, side) {
+function appendCanonicalGameSubmittedArmyList(lookup, game, side, persistedArmyIntelligence) {
 
   const isWinner =
     side === "winner";
@@ -1667,15 +1779,17 @@ function appendCanonicalGameSubmittedArmyList(lookup, game, side) {
         : game.loserFaction
     );
 
-  const decoded =
-    armyCode
-      ? CanonicalDecoderGateway.decode(armyCode)
-      : null;
-
   const id = resolved.id;
 
   if (!id)
     return;
+
+  const decoded =
+    getPersistedCanonicalArmyListDecode(
+      id,
+      armyCode,
+      persistedArmyIntelligence
+    );
 
   const existing =
     lookup[id];
@@ -1762,6 +1876,85 @@ function appendCanonicalGameSubmittedArmyList(lookup, game, side) {
 
 }
 
+function getPersistedCanonicalArmyListDecode(id, armyCode, lookup) {
+
+  const armyListId =
+    getArmyListString(id);
+  const normalizedArmyCode =
+    getArmyListString(armyCode);
+
+  if (
+    !armyListId ||
+    !normalizedArmyCode ||
+    !lookup ||
+    typeof getArmyIntelligenceHash !== "function"
+  )
+    return null;
+
+  const armyCodeHash =
+    getArmyIntelligenceHash(normalizedArmyCode);
+  const byId =
+    lookup.byArmyListId || {};
+  const byHash =
+    lookup.byArmyCodeHash || {};
+  const snapshot =
+    byId[armyListId] || byHash[armyCodeHash] || null;
+
+  if (
+    !snapshot ||
+    getArmyListString(snapshot.armyListId) !== armyListId ||
+    getArmyListString(snapshot.armyCodeHash) !== armyCodeHash ||
+    snapshot.status !== "decoded" ||
+    !snapshot.decoded ||
+    typeof snapshot.decoded !== "object" ||
+    getArmyIntelligenceHash(snapshot.decoded.armyCode) !== armyCodeHash
+  )
+    return null;
+
+  const persisted =
+    snapshot.decoded;
+  const totals =
+    persisted.totals || {};
+  const combatGroups =
+    Array.isArray(persisted.combatGroups)
+      ? persisted.combatGroups
+      : [];
+  const unitCount =
+    combatGroups.reduce(function(total, group) {
+      return total + (
+        group && Array.isArray(group.entries)
+          ? group.entries.length
+          : 0
+      );
+    }, 0);
+  const warnings =
+    Array.isArray(persisted.warnings)
+      ? persisted.warnings.map(function(warning) {
+          return getArmyListString(
+            warning && typeof warning === "object"
+              ? warning.message || warning.reason
+              : warning
+          );
+        }).filter(Boolean)
+      : [];
+
+  return {
+    valid: true,
+    parserWarnings: warnings,
+    derived: {
+      armyName: getArmyListString(persisted.listName),
+      combatGroups:
+        Number(totals.combatGroups) || combatGroups.length,
+      faction: getArmyListString(persisted.faction),
+      points: Number(totals.points) || 0,
+      sectorial: getArmyListString(persisted.sectorial),
+      swc: Number(totals.swc) || 0,
+      unitCount: unitCount
+    }
+  };
+
+}
+
 function buildCanonicalGameSubmittedArmyListDescription(game, opponent) {
 
   const parts = [];
@@ -1797,7 +1990,7 @@ function buildCanonicalGameSubmittedArmyListValidation(
     status:
       valid
         ? "decoded"
-        : "unavailable",
+        : "pending",
     warnings:
       decoded && decoded.parserWarnings
         ? decoded.parserWarnings

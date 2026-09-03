@@ -109,6 +109,9 @@ function refreshArmyIntelligence(e) {
     sourcesByKey[source.snapshotKey] = source;
   });
 
+  const persistedSnapshots =
+    getPersistedArmyIntelligenceSnapshotLookup();
+
   const rows =
     snapshots.map(function(snapshot) {
       const source =
@@ -121,11 +124,26 @@ function refreshArmyIntelligence(e) {
 
       validateArmyIntelligenceRefreshSnapshot(source, snapshot);
 
+      const persisted =
+        findPersistedArmyIntelligenceSnapshot(
+          source,
+          persistedSnapshots
+        );
+
+      if (
+        snapshot.status === "failed" &&
+        persisted &&
+        persisted.status === "decoded"
+      )
+        return null;
+
       return buildPersistedArmyIntelligenceSnapshotRow(source, snapshot);
-    });
+    })
+    .filter(Boolean);
 
   upsertPersistedArmyIntelligenceSnapshotRows(rows);
   rebuildArmyIntelligenceReadModelPayloadAndPersist();
+  rebuildArmyListsReadModelPayloadAndPersist();
   invalidatePortalCacheGroup("armyIntelligence");
 
   return jsonOutput({
