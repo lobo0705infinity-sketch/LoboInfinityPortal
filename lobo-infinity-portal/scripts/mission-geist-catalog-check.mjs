@@ -50,7 +50,7 @@ for (const name of [
   'copyMissionGeistRights_', 'validateMissionGeistCatalog_', 'buildMissionGeistCatalog_',
   'parseMissionGeistCatalogJson_', 'isMissionGeistCacheManifest_',
   'readMissionGeistCachedCatalog_', 'isMissionGeistCachedCatalogFresh_',
-  'getMissionGeistCatalogForPublicSnapshot_',
+  'buildMissionGeistCacheManifest_', 'getMissionGeistCatalogForPublicSnapshot_',
 ]) vm.runInContext(extract(name), sandbox)
 
 const catalog = sandbox.buildMissionGeistCatalog_(listing)
@@ -80,5 +80,72 @@ sandbox.DriveApp = { getFileById: () => ({ getBlob: () => ({ getDataAsString: ()
 sandbox.UrlFetchApp = { fetch() { fetchCalls += 1; throw new Error('fresh cache should not fetch') } }
 assert.equal(sandbox.getMissionGeistCatalogForPublicSnapshot_().contentHash, 'sha256-example')
 assert.equal(fetchCalls, 0)
+
+function setCachedCatalog({ cachedAt, manifestContentHash = catalog.contentHash, fileCatalog = catalog } = {}) {
+  properties.values = cachedAt === undefined ? {} : {
+    MISSION_GEIST_CATALOG_CACHE_MANIFEST: JSON.stringify({
+      schemaVersion: 1, fileId: 'cached-file', contentHash: manifestContentHash, cachedAt,
+    }),
+  }
+  sandbox.DriveApp = {
+    getFileById: () => ({ getBlob: () => ({ getDataAsString: () => JSON.stringify(fileCatalog) }) }),
+  }
+}
+
+const staleAt = new Date(Date.now() - (6 * 60 * 60 * 1000) - 1000).toISOString()
+const refreshedListing = {
+  ...listing,
+  contentHash: 'sha256-refreshed',
+  generatedAt: '2026-09-03T00:00:00Z',
+  seasons: [{
+    ...listing.seasons[0],
+    missions: [{
+      ...listing.seasons[0].missions[0],
+      canonicalUrl: 'https://infinitygeist.com/mission/s17-annihilation-refreshed',
+    }],
+  }],
+}
+let createdCatalogJson = ''
+sandbox.getOrCreateMissionGeistCacheFolder_ = () => ({
+  createFile: (_name, contents) => {
+    createdCatalogJson = contents
+    return { getId: () => 'refreshed-file' }
+  },
+})
+sandbox.MimeType = { PLAIN_TEXT: 'text/plain' }
+sandbox.stableMissionGeistCatalogJson_ = JSON.stringify
+
+setCachedCatalog({ cachedAt: staleAt })
+fetchCalls = 0
+sandbox.fetchMissionGeistListing_ = () => { fetchCalls += 1; return refreshedListing }
+const refreshedCatalog = sandbox.getMissionGeistCatalogForPublicSnapshot_()
+assert.equal(fetchCalls, 1)
+assert.equal(refreshedCatalog.contentHash, 'sha256-refreshed')
+assert.equal(refreshedCatalog.generatedAt, '2026-09-03T00:00:00Z')
+assert.match(createdCatalogJson, /sha256-refreshed/)
+
+setCachedCatalog({ cachedAt: staleAt })
+fetchCalls = 0
+sandbox.fetchMissionGeistListing_ = () => { fetchCalls += 1; throw new Error('urlfetch quota exhausted') }
+const fallbackCatalog = sandbox.getMissionGeistCatalogForPublicSnapshot_()
+assert.equal(fetchCalls, 1)
+assert.deepEqual(JSON.parse(JSON.stringify(fallbackCatalog)), JSON.parse(JSON.stringify(catalog)))
+assert.equal(fallbackCatalog.contentHash, catalog.contentHash)
+assert.equal(fallbackCatalog.generatedAt, catalog.generatedAt)
+assert.equal(fallbackCatalog.schemaVersion, catalog.schemaVersion)
+assert.equal(fallbackCatalog.attribution, catalog.attribution)
+assert.deepEqual(
+  JSON.parse(JSON.stringify(fallbackCatalog.missions[0].rights)),
+  JSON.parse(JSON.stringify(catalog.missions[0].rights)),
+)
+
+setCachedCatalog()
+assert.throws(() => sandbox.getMissionGeistCatalogForPublicSnapshot_(), /urlfetch quota exhausted/)
+
+setCachedCatalog({ cachedAt: staleAt, manifestContentHash: 'sha256-mismatched' })
+assert.throws(() => sandbox.getMissionGeistCatalogForPublicSnapshot_(), /urlfetch quota exhausted/)
+
+setCachedCatalog({ cachedAt: new Date(Date.now() + 60 * 1000).toISOString() })
+assert.throws(() => sandbox.getMissionGeistCatalogForPublicSnapshot_(), /urlfetch quota exhausted/)
 
 console.log('Mission Geist catalog regression passed: snapshot-only cached catalog with no Portal runtime request.')

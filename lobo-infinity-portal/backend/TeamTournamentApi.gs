@@ -1255,6 +1255,7 @@ function advanceTeamTournamentRound(e) {
         throw new Error("The current Team Tournament round could not be resolved.");
 
       const mission = getCanonicalMissionName(params.mission);
+      const missionGeistId = validatePersistedMissionGeistSelection_(mission, params.missionGeistId);
       const validMissions = getCanonicalMissions();
 
       if (!mission || validMissions.indexOf(mission) === -1)
@@ -1298,7 +1299,7 @@ function advanceTeamTournamentRound(e) {
         EVENT_ENGINE_ROUND_HEADERS,
         "ID",
         nextId,
-        [nextId, eventId, currentRound.seasonId || "", nextName, nextNumber, currentRound.type || "Team Round", "", "", "Active", "", "Pairing reminders", getTeamTournamentTimestamp(), getTeamTournamentTimestamp(), mission]
+        [nextId, eventId, currentRound.seasonId || "", nextName, nextNumber, currentRound.type || "Team Round", "", "", "Active", "", "Pairing reminders", getTeamTournamentTimestamp(), getTeamTournamentTimestamp(), mission, missionGeistId]
       );
       updateEventManagerEventFields(eventId, { "Lifecycle Stage": nextName });
       invalidateEventEngineSnapshotCache();
@@ -1308,7 +1309,7 @@ function advanceTeamTournamentRound(e) {
       return buildTeamTournamentMutationResponse("round", eventId, {
         lifecycleStage: nextName,
         status: event.status,
-        round: { id: nextId, eventId: eventId, seasonId: currentRound.seasonId || "", name: nextName, number: nextNumber, type: currentRound.type || "Team Round", status: "Active", mission: mission }
+        round: { id: nextId, eventId: eventId, seasonId: currentRound.seasonId || "", name: nextName, number: nextNumber, type: currentRound.type || "Team Round", status: "Active", mission: mission, missionGeistId: missionGeistId }
       });
     } finally {
       lock.releaseLock();

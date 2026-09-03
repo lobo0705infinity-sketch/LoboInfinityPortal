@@ -33,6 +33,85 @@ function runPublishPublicSnapshot20260903T042240ZProof() {
   return publishLatestPublicSnapshotV1_(true, "20260903T042240Z");
 }
 
+function runPublishPublicSnapshot20260903T130548ZProof() {
+  return publishLatestPublicSnapshotV1_(true, "20260903T130548Z");
+}
+
+function runInspectLatestValidatedPublicSnapshotV1() {
+  const properties = PropertiesService.getScriptProperties();
+  const snapshotId = getLatestValidatedPublicSnapshotId_(properties);
+  const rootId = String(properties.getProperty(PUBLIC_SNAPSHOT_V1_ROOT_PROPERTY) || "").trim();
+  if (!rootId) throw new Error("Public Snapshot V1 root folder is not configured.");
+
+  const matches = DriveApp.getFolderById(rootId).getFoldersByName(snapshotId);
+  if (!matches.hasNext()) throw new Error("Validated proof snapshot not found: " + snapshotId);
+  const folder = matches.next();
+  if (matches.hasNext()) throw new Error("Duplicate proof snapshot folders found.");
+
+  let fileCount = 0;
+  const folderFiles = folder.getFiles();
+  while (folderFiles.hasNext()) {
+    folderFiles.next();
+    fileCount += 1;
+  }
+
+  const files = {};
+  let allRequiredFilesExact = true;
+  PUBLIC_SNAPSHOT_PUBLIC_FILES.forEach(function(filename) {
+    const fileMatches = folder.getFilesByName(filename);
+    if (!fileMatches.hasNext()) {
+      allRequiredFilesExact = false;
+      return;
+    }
+    const file = fileMatches.next();
+    if (fileMatches.hasNext()) allRequiredFilesExact = false;
+    files[filename] = file;
+  });
+  if (!allRequiredFilesExact)
+    throw new Error("Latest validated snapshot does not contain exactly one of every required file.");
+
+  const metadata = JSON.parse(files["snapshot.json"].getBlob().getDataAsString("UTF-8"));
+  validatePublicSnapshotFile_(
+    files["snapshot.json"].getId(), snapshotId, metadata.sourceCutoff, true, "snapshot.json"
+  );
+  if (metadata.snapshotId !== snapshotId || metadata.status !== "validated")
+    throw new Error("Latest snapshot metadata is not validated.");
+
+  const gamesEnvelope = JSON.parse(files["games.json"].getBlob().getDataAsString("UTF-8"));
+  if (gamesEnvelope.snapshotId !== snapshotId || gamesEnvelope.sourceCutoff !== metadata.sourceCutoff ||
+      !Array.isArray(gamesEnvelope.data))
+    throw new Error("Latest snapshot Games metadata is invalid.");
+  assertPublicSnapshotSafe_(gamesEnvelope, "snapshot", "games.json");
+
+  const games = gamesEnvelope.data;
+  const deadMansSwitchCorrect = games.some(function(game) {
+    return game.winner === "Lobo" && game.loser === "Nighthawkmk2" &&
+      game.mission === "Dead Man's Switch" && game.op === "8–2";
+  });
+  const theDigPresent = games.some(function(game) {
+    return game.winner === "Lobo" && game.loser === "ADangerousFrog" && game.mission === "The Dig";
+  });
+  const doubleBindPresent = games.some(function(game) {
+    return game.winner === "Lobo" && game.loser === "ADangerousFrog" && game.mission === "Double Bind";
+  });
+  const result = {
+    snapshotId: snapshotId,
+    sourceCutoff: metadata.sourceCutoff || "",
+    generatedAt: metadata.generatedAt || metadata.createdAt || "",
+    status: metadata.status || "",
+    published: metadata.published === true,
+    livePointer: metadata.livePointer === true,
+    fileCount: fileCount,
+    allRequiredFilesExact: allRequiredFilesExact,
+    gameCount: games.length,
+    deadMansSwitchCorrect: deadMansSwitchCorrect,
+    theDigPresent: theDigPresent,
+    doubleBindPresent: doubleBindPresent
+  };
+  Logger.log("PUBLIC_SNAPSHOT_V1_INSPECTION " + JSON.stringify(result));
+  return result;
+}
+
 function runHourlyPublicSnapshot() {
   const started = Date.now();
   const build = buildPublicSnapshotV1_();
@@ -161,16 +240,20 @@ function buildPublicSnapshotV1_() {
     const playerIndex = buildPublicSnapshotPlayerIndex_(frozen.playersTable);
     const games = buildPublicSnapshotGameContext_(frozen.gamesTable, playerIndex);
     const eventState = buildPublicSnapshotEventState_(frozen);
+    const missionCatalog = frozen.missionCatalog;
+    enrichPublicSnapshotMissionGeistEventState_(eventState, missionCatalog);
     const events = buildPublicSnapshotEvents_(
       frozen.eventsTable,
       games,
       eventState,
       frozen.teamTournamentProjection
     );
+    const projectedEventState = {};
+    events.forEach(function(event) { projectedEventState[event.id] = event; });
+    enrichPublicSnapshotMissionGeistEventState_(projectedEventState, missionCatalog);
     const players = buildPublicSnapshotPlayers_(frozen.playersTable, games, eventState);
     const publicGames = buildPublicSnapshotGames_(games, events);
     const missions = buildPublicSnapshotMissions_(games);
-    const missionCatalog = frozen.missionCatalog;
     const factions = buildPublicSnapshotFactions_(games, players);
     const standings = buildPublicSnapshotStandings_(frozen.playersTable, games);
     const armyLists = buildPublicSnapshotArmyLists_(frozen.armyLists);
@@ -222,7 +305,7 @@ function buildPublicSnapshotV1_() {
     };
     files.snapshot = writePublicSnapshotFile_(folder, "snapshot.json", metadata);
     totalBytes += files.snapshot.byteCount;
-    validatePublicSnapshotFile_(files.snapshot.fileId, snapshotId, frozen.sourceCutoff, true);
+    validatePublicSnapshotFile_(files.snapshot.fileId, snapshotId, frozen.sourceCutoff, true, "snapshot.json");
     PropertiesService.getScriptProperties().setProperty(PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_PROPERTY, snapshotId);
     return {
       success: true, snapshotId: snapshotId, sourceCutoff: frozen.sourceCutoff,
@@ -527,7 +610,7 @@ function buildPublicSnapshotEventState_(frozen) {
   buildPublicSnapshotRows_(frozen.roundsTable, {
     id: ["id"], eventId: ["event id"], name: ["name"], number: ["number"], type: ["type"],
     startDate: ["start date"], endDate: ["end date"], status: ["status"], games: ["games"],
-    mission: ["mission"]
+    mission: ["mission"], missionGeistId: ["mission geist id"]
   }).forEach(function(row) { const id = row.eventId; delete row.eventId; add(id, "rounds", row); });
   buildPublicSnapshotRows_(frozen.bracketTable, {
     eventId: ["event id"], matchId: ["match id"], bracket: ["bracket"], bracketRound: ["bracket round"],
@@ -536,7 +619,7 @@ function buildPublicSnapshotEventState_(frozen) {
     deadline: ["deadline"], gameId: ["game id"], resolution: ["resolution"]
   }).forEach(function(row) { const id = row.eventId; delete row.eventId; add(id, "bracket", row); });
   buildPublicSnapshotRows_(frozen.bracketMissionsTable, {
-    eventId: ["event id"], bracket: ["bracket"], bracketRound: ["bracket round"], mission: ["mission"]
+    eventId: ["event id"], bracket: ["bracket"], bracketRound: ["bracket round"], mission: ["mission"], missionGeistId: ["mission geist id"]
   }).forEach(function(row) { const id = row.eventId; delete row.eventId; add(id, "bracketMissions", row); });
   buildPublicSnapshotRows_(frozen.teamsTable, {
     eventId: ["event id"], teamId: ["team id"], teamName: ["team name"], captain: ["captain"],
@@ -549,6 +632,38 @@ function buildPublicSnapshotEventState_(frozen) {
     createdAt: ["created at"], updatedAt: ["updated at"]
   }).forEach(function(row) { const id = row.eventId; delete row.eventId; add(id, "pairings", row); });
   return output;
+}
+
+function enrichPublicSnapshotMissionGeistEventState_(eventState, missionCatalog) {
+  const byId = {};
+  (missionCatalog && missionCatalog.missions || []).forEach(function(mission) {
+    const id = String(mission && mission.id || "").trim();
+    if (id) byId[id] = mission;
+  });
+  Object.keys(eventState || {}).forEach(function(eventId) {
+    ["rounds", "bracketMissions"].forEach(function(key) {
+      (eventState[eventId][key] || []).forEach(function(assignment) {
+        const id = String(assignment.missionGeistId || "").trim();
+        if (!id) { delete assignment.missionGeistId; return; }
+        const mission = byId[id];
+        if (!mission || getCanonicalMissionName(mission.name) !== getCanonicalMissionName(assignment.mission))
+          throw new Error("Public snapshot Mission Geist identity does not match its mission assignment.");
+        assignment.missionGeistCanonicalUrl = String(mission.canonicalUrl || "").trim();
+        if (!assignment.missionGeistCanonicalUrl)
+          throw new Error("Public snapshot Mission Geist assignment is missing its canonical URL.");
+      });
+    });
+    (eventState[eventId].bracket || []).forEach(function(match) {
+      const assignment = (eventState[eventId].bracketMissions || []).filter(function(item) {
+        return String(item.bracket) === String(match.bracket) && Number(item.bracketRound) === Number(match.bracketRound);
+      })[0];
+      if (assignment && assignment.missionGeistId) {
+        match.missionGeistId = assignment.missionGeistId;
+        match.missionGeistCanonicalUrl = assignment.missionGeistCanonicalUrl;
+      }
+    });
+  });
+  return eventState;
 }
 
 function buildPublicSnapshotGames_(games, events) {
@@ -1461,7 +1576,7 @@ function writePublicSnapshotFile_(folder, name, value) {
     file: name, fileId: file.getId(), byteCount: utf8PublicSnapshotBytes_(text),
     sha256: sha256PublicSnapshotText_(text)
   };
-  validatePublicSnapshotFile_(reference.fileId, value.snapshotId, value.sourceCutoff, name === "snapshot.json");
+  validatePublicSnapshotFile_(reference.fileId, value.snapshotId, value.sourceCutoff, name === "snapshot.json", name);
   const persisted = DriveApp.getFileById(reference.fileId).getBlob().getDataAsString("UTF-8");
   if (reference.sha256 !== sha256PublicSnapshotText_(persisted) ||
       reference.byteCount !== utf8PublicSnapshotBytes_(persisted))
@@ -1469,26 +1584,32 @@ function writePublicSnapshotFile_(folder, name, value) {
   return reference;
 }
 
-function validatePublicSnapshotFile_(fileId, snapshotId, sourceCutoff, metadata) {
+function validatePublicSnapshotFile_(fileId, snapshotId, sourceCutoff, metadata, filename) {
   const text = DriveApp.getFileById(fileId).getBlob().getDataAsString("UTF-8");
   let value = null;
   try { value = JSON.parse(text); } catch (error) { throw new Error("Public snapshot JSON is invalid."); }
   if (!value || value.snapshotId !== snapshotId || value.sourceCutoff !== sourceCutoff)
     throw new Error("Public snapshot metadata mismatch.");
-  if (!metadata && !Array.isArray(value.data)) throw new Error("Public snapshot data file is invalid.");
-  assertPublicSnapshotSafe_(value, "snapshot");
+  if (!metadata && !Array.isArray(value.data)) {
+    if (filename !== "mission-catalog.json") throw new Error("Public snapshot data file is invalid.");
+    validateMissionGeistCatalog_(value.data);
+  }
+  assertPublicSnapshotSafe_(value, "snapshot", filename);
 }
 
-function assertPublicSnapshotSafe_(value, path) {
+function assertPublicSnapshotSafe_(value, path, filename) {
   if (!value || typeof value !== "object") return;
   Object.keys(value).forEach(function(key) {
     const normalized = key.replace(/[^a-z0-9]/gi, "").toLowerCase();
+    const missionGeistRightsAuthor = filename === "mission-catalog.json" &&
+      key === "author" && typeof value[key] === "string" &&
+      /^snapshot\.data\.missions\.\d+\.rights\.author$/.test(path + "." + key);
     ["armycode", "auth", "commissioner", "credential", "email", "password",
       "privatenote", "secret", "session", "token", "webhook"].forEach(function(forbidden) {
-      if (normalized.indexOf(forbidden) !== -1)
+      if (!missionGeistRightsAuthor && normalized.indexOf(forbidden) !== -1)
         throw new Error("Public snapshot contains forbidden key at " + path + "." + key);
     });
-    assertPublicSnapshotSafe_(value[key], path + "." + key);
+    assertPublicSnapshotSafe_(value[key], path + "." + key, filename);
   });
 }
 
@@ -1497,7 +1618,7 @@ function validatePublicSnapshotV1_(snapshotId, sourceCutoff, datasets, files, ga
     "army-intelligence-summary", "army-intelligence-detail", "schedule", "statistics",
     "community"].forEach(function(name) {
     if (!files[name]) throw new Error("Required public snapshot file is missing: " + name);
-    validatePublicSnapshotFile_(files[name].fileId, snapshotId, sourceCutoff, false);
+    validatePublicSnapshotFile_(files[name].fileId, snapshotId, sourceCutoff, false, name + ".json");
   });
   validatePublicSnapshotDatasets_(datasets, gameContext);
 }
@@ -1569,12 +1690,32 @@ function validatePublicSnapshotDatasets_(datasets, gameContext) {
     if (!datasets.standings.some(function(row) { return row.division === division; }))
       throw new Error("Public snapshot standings division is missing: " + division);
   });
-  const game73 = datasets.games.filter(function(game) { return Number(game.id) === 73; });
+  const game73 = datasets.games.filter(function(game) {
+    return String(game.winnerArmyListId) === "3296098999" &&
+      String(game.loserArmyListId) === "4483300877";
+  });
+  const canonicalGame73 = (gameContext || []).filter(function(game) {
+    const winnerIsPlayer1 = game.winner === game.player1;
+    const winnerArmyListId = winnerIsPlayer1 ? game.player1ArmyListId : game.player2ArmyListId;
+    const loserArmyListId = winnerIsPlayer1 ? game.player2ArmyListId : game.player1ArmyListId;
+    return String(winnerArmyListId) === "3296098999" && String(loserArmyListId) === "4483300877";
+  });
   if (game73.length !== 1 || game73[0].winner !== "Lobo" || game73[0].loser !== "Nighthawkmk2" ||
-      game73[0].mission !== "Dead Man's Switch" || game73[0].tp !== "5–0" ||
-      game73[0].op !== "8–1" || game73[0].vp !== "262–122" ||
+      game73[0].mission !== "Dead Man's Switch" || canonicalGame73.length !== 1 ||
       game73[0].winnerArmyListId !== "3296098999" || game73[0].loserArmyListId !== "4483300877")
     throw new Error("Public snapshot Game 73 acceptance fixture failed.");
+  const canonicalGame73WinnerIsPlayer1 = canonicalGame73[0].winner === canonicalGame73[0].player1;
+  ["tp", "op", "vp"].forEach(function(field) {
+    const prefix = field === "tp" ? "Tp" : field === "op" ? "Op" : "Vp";
+    const expected = publicSnapshotScore_(
+      canonicalGame73[0]["player1" + prefix],
+      canonicalGame73[0]["player2" + prefix],
+      canonicalGame73WinnerIsPlayer1,
+      false
+    );
+    if (game73[0][field] !== expected)
+      throw new Error("Public snapshot Game 73 score does not match canonical history: " + field);
+  });
   ["3296098999", "4483300877", "4113389343"].forEach(function(id) {
     if (!datasets["army-lists"].some(function(list) { return String(list.id) === id; }))
       throw new Error("Public snapshot Army List fixture is missing: " + id);
@@ -1592,11 +1733,9 @@ function validatePublicSnapshotDatasets_(datasets, gameContext) {
     })) throw new Error("Public snapshot standings acceptance failed: " + tuple[0]);
   });
   validatePublicSnapshotArmyUsage_(datasets.players, datasets.games, gameContext);
-  assertPublicSnapshotSafe_(datasets, "snapshot");
+  Object.keys(datasets).forEach(function(name) {
+    assertPublicSnapshotSafe_({ data: datasets[name] }, "snapshot", name + ".json");
+  });
   if (stablePublicSnapshotJson_(datasets.games).toLowerCase().indexOf("armycode") !== -1)
     throw new Error("Public snapshot Games contain raw Army Codes.");
-}
-
-function runPublishPublicSnapshot20260903T130548ZProof() {
-  return publishLatestPublicSnapshotV1_(true, "20260903T130548Z");
 }

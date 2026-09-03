@@ -118,7 +118,8 @@ const EVENT_ENGINE_ROUND_HEADERS = [
   "Automation",
   "Created At",
   "Updated At",
-  "Mission"
+  "Mission",
+  "Mission Geist ID"
 ];
 
 function getEvents(e) {
@@ -1396,7 +1397,8 @@ function getEventRoundObjects() {
         automation: row["Automation"],
         createdAt: row["Created At"],
         updatedAt: row["Updated At"],
-        mission: row["Mission"]
+        mission: row["Mission"],
+        missionGeistId: row["Mission Geist ID"] || ""
       };
     });
 

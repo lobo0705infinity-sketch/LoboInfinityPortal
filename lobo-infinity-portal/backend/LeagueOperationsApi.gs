@@ -275,25 +275,6 @@ function getLeagueOperationsString(value) {
 
 function validateLeagueOperationsMissionGeistId_(mission, missionGeistId) {
 
-  if (!missionGeistId)
-    return "";
-
-  const cached =
-    typeof readMissionGeistCachedCatalog_ === "function"
-      ? readMissionGeistCachedCatalog_(PropertiesService.getScriptProperties())
-      : null;
-
-  if (!cached || !cached.catalog)
-    throw new Error("The prepared Mission Geist catalog is unavailable. Refresh the Commissioner page and try again.");
-
-  const catalogMission =
-    (cached.catalog.missions || []).filter(function(item) {
-      return String(item && item.id || "").trim() === missionGeistId;
-    })[0];
-
-  if (!catalogMission || getCanonicalMissionName(catalogMission.name) !== mission)
-    throw new Error("The selected Mission Geist identity does not match the selected mission.");
-
-  return missionGeistId;
+  return validatePersistedMissionGeistSelection_(mission, missionGeistId);
 
 }

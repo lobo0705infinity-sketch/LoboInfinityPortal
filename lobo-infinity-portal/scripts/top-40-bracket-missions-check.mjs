@@ -20,6 +20,7 @@ const context = vm.createContext({
   Set,
   getEventManagerString: (value) => value == null ? '' : String(value).trim(),
   getCanonicalMissionName: (value) => canonicalMissions.has(String(value)) ? String(value) : '',
+  validatePersistedMissionGeistSelection_: (mission, id) => id ? `${id}` : '',
   Utilities: { formatDate: (date) => date.toISOString().slice(0, 19).replace('T', ' '), parseDate: (value) => new Date(String(value).replace(' ', 'T') + 'Z') },
   Session: { getScriptTimeZone: () => 'UTC' },
 })

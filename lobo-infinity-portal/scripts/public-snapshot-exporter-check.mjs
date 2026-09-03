@@ -13,6 +13,8 @@ assert.match(source, /function runPublishPublicSnapshotV1Proof[\s\S]*publishLate
 assert.match(source, /function runPublishPublicSnapshotV1Proof\(\)\s*\{/)
 assert.doesNotMatch(source, /function runPublishPublicSnapshotV1Proof\([^)]*\w[^)]*\)/)
 assert.match(source, /function runPublishPublicSnapshot20260903T042240ZProof\(\)\s*\{\s*return publishLatestPublicSnapshotV1_\(true, "20260903T042240Z"\);\s*\}/)
+assert.match(source, /function runPublishPublicSnapshot20260903T130548ZProof\(\)\s*\{\s*return publishLatestPublicSnapshotV1_\(true, "20260903T130548Z"\);\s*\}/)
+assert.match(source, /function runInspectLatestValidatedPublicSnapshotV1\(\)/)
 assert.doesNotMatch(source, /setProperty\(PUBLIC_SNAPSHOT_PUBLISH_TOKEN_PROPERTY/)
 assert.doesNotMatch(source, /setProperties\([^)]*PUBLIC_SNAPSHOT_PUBLISH_TOKEN_PROPERTY/)
 assert.doesNotMatch(source, /20260830T222502Z/)
@@ -93,6 +95,29 @@ for (const forbidden of ['buildPublicSnapshotV1_', 'canonicalDecoderGatewayDecod
 }
 const publicationUrlFetchReachable = [...publicationReachable].filter(([, definition]) => /\bUrlFetchApp\b/.test(definition.body))
 assert.deepEqual(publicationUrlFetchReachable.map(([name]) => name), ['publishLatestPublicSnapshotV1_'])
+
+const inspectionReachable = new Map()
+const inspectionPending = ['runInspectLatestValidatedPublicSnapshotV1']
+while (inspectionPending.length) {
+  const name = inspectionPending.pop()
+  if (inspectionReachable.has(name) || !backendFunctions.has(name)) continue
+  const definition = backendFunctions.get(name)
+  inspectionReachable.set(name, definition)
+  for (const call of definition.body.matchAll(/\b([A-Za-z_$][\w$]*)\s*\(/g)) {
+    if (!inspectionReachable.has(call[1]) && backendFunctions.has(call[1])) inspectionPending.push(call[1])
+  }
+}
+assert.equal([...inspectionReachable].some(([, definition]) => /\bUrlFetchApp\b/.test(definition.body)), false)
+for (const forbidden of [
+  'runBuildPublicSnapshotV1', 'buildPublicSnapshotV1_', 'runPublishPublicSnapshotV1Proof',
+  'publishLatestPublicSnapshotV1_', 'createPublicSnapshotFolder_', 'writePublicSnapshotFile_',
+  'canonicalDecoderGatewayDecode_', 'fetchMissionGeistListing_',
+]) assert.equal(inspectionReachable.has(forbidden), false, `latest snapshot inspection reaches ${forbidden}`)
+const inspectionSource = backendFunctions.get('runInspectLatestValidatedPublicSnapshotV1').body
+assert.doesNotMatch(inspectionSource, /setProperty|setProperties|createFile|createFolder|setContent|moveTo|trash|UrlFetchApp/)
+assert.match(inspectionSource, /game\.op === "8–2"/)
+assert.match(inspectionSource, /game\.mission === "The Dig"/)
+assert.match(inspectionSource, /game\.mission === "Double Bind"/)
 
 const hourlyReachable = new Map()
 const hourlyPending = ['runHourlyPublicSnapshot']
@@ -231,7 +256,7 @@ const functions = [
   'isPublicSnapshotCurrentLeagueGame_', 'getPublicSnapshotCurrentLeagueDivisions_',
   'isPublicSnapshotCompletedGame_', 'buildPublicSnapshotRemainingMatchups_',
   'validatePublicSnapshotRemainingMatchups_', 'buildPublicSnapshotStandings_',
-  'stablePublicSnapshotJson_', 'assertPublicSnapshotSafe_',
+  'stablePublicSnapshotJson_', 'assertPublicSnapshotSafe_', 'validatePublicSnapshotFile_',
   'calculatePublicSnapshotLeagueRecord_', 'validatePublicSnapshotArmyUsage_', 'validatePublicSnapshotDatasets_',
   'buildPublicSnapshotArmyLink_', 'buildPublicSnapshotArmyLists_', 'buildPublicSnapshotDecodedArmy_',
   'buildPublicSnapshotLeagueMission_', 'buildPublicSnapshotSchedule_', 'buildPublicSnapshotStatistics_',
@@ -297,6 +322,10 @@ const eventsTable = { headers: ['ID', 'Name', 'Type', 'Status', 'Commissioners',
 ] }
 const index = sandbox.buildPublicSnapshotPlayerIndex_(playersTable)
 const context = sandbox.buildPublicSnapshotGameContext_({ headers, rows: gameRows }, index)
+const historicalGame73Context = context.find((game) => game.gameId === 73)
+historicalGame73Context.gameId = 173
+historicalGame73Context.player2Op = 2
+context.find((game) => game.gameId === 40).player2Op = 3
 const events = sandbox.buildPublicSnapshotEvents_(eventsTable, context)
 const players = sandbox.buildPublicSnapshotPlayers_(playersTable, context)
 const games = sandbox.buildPublicSnapshotGames_(context, events)
@@ -308,11 +337,13 @@ assert.deepEqual(games.filter((game) => game.id === 32).map((game) => [game.winn
 const game36 = games.find((game) => game.id === 36)
 assert.equal(game36.loser, 'ADangerousFrog')
 assert.equal(players.some((player) => player.player === 'ADangerousFrog'), true)
-const game73Out = games.find((game) => game.id === 73)
+const game73Out = games.find((game) => game.winnerArmyListId === '3296098999' && game.loserArmyListId === '4483300877')
+assert.equal(game73Out.id, 173)
 assert.deepEqual([game73Out.winner, game73Out.loser, game73Out.mission, game73Out.tp, game73Out.op, game73Out.vp],
-  ['Lobo', 'Nighthawkmk2', "Dead Man's Switch", '5–0', '8–1', '262–122'])
+  ['Lobo', 'Nighthawkmk2', "Dead Man's Switch", '5–0', '8–2', '262–122'])
 assert.equal(game73Out.winnerArmyListId, '3296098999')
 assert.equal(game73Out.loserArmyListId, '4483300877')
+assert.equal(games.find((game) => game.id === 40).op, '7–3')
 assert.equal('winnerArmyCode' in game73Out, false)
 assert.equal('loserArmyCode' in game73Out, false)
 const drawGameOut = games.find((game) => game.id === 61)
@@ -355,12 +386,89 @@ const missionCatalog = {
   attribution: 'Courtesy of Mission Geist',
   missions: [{
     id: 'fixture-mission', name: 'Fixture Mission', canonicalUrl: 'https://infinitygeist.com/mission/fixture-mission',
-    rights: { ip: 'Fixture Creator', official: false }, sourceCollectionId: 'fixture-season',
+    rights: {
+      ip: 'A Tale of Miniatures and Dice', official: false,
+      set: 'Operation Hungry Walrus (Phase 1)', author: 'Bromad Academy', needs_review: true,
+    }, sourceCollectionId: 'fixture-season',
     sourceCollectionName: 'Fixture Season', current: true,
   }],
 }
+const snapshotId = '20260903T031440Z'
+const sourceCutoff = '2026-09-03T03:14:40.000Z'
+const fileContents = {
+  players: JSON.stringify({ schemaVersion: 1, snapshotId, sourceCutoff, data: [] }),
+  missionCatalog: JSON.stringify({ schemaVersion: 1, snapshotId, sourceCutoff, data: missionCatalog }),
+  playersWithAuthor: JSON.stringify({ schemaVersion: 1, snapshotId, sourceCutoff, data: [{ author: 'Portal User' }] }),
+  missionCatalogWrongPath: JSON.stringify({
+    schemaVersion: 1, snapshotId, sourceCutoff, data: { ...missionCatalog, author: 'Wrong Path' },
+  }),
+  missionCatalogNonStringAuthor: JSON.stringify({
+    schemaVersion: 1, snapshotId, sourceCutoff,
+    data: { ...missionCatalog, missions: [{ ...missionCatalog.missions[0], rights: { ...missionCatalog.missions[0].rights, author: true } }] },
+  }),
+  authToken: JSON.stringify({ schemaVersion: 1, snapshotId, sourceCutoff, data: [{ authToken: 'secret' }] }),
+  authentication: JSON.stringify({ schemaVersion: 1, snapshotId, sourceCutoff, data: [{ authentication: 'secret' }] }),
+  token: JSON.stringify({ schemaVersion: 1, snapshotId, sourceCutoff, data: [{ token: 'secret' }] }),
+  invalidMissionCatalog: JSON.stringify({ schemaVersion: 1, snapshotId, sourceCutoff, data: { missions: [] } }),
+  unrelatedObject: JSON.stringify({ schemaVersion: 1, snapshotId, sourceCutoff, data: { unexpected: true } }),
+  metadata: JSON.stringify({ schemaVersion: 1, snapshotId, sourceCutoff, files: {} }),
+}
+sandbox.DriveApp = {
+  getFileById: (fileId) => ({ getBlob: () => ({ getDataAsString: () => fileContents[fileId] }) }),
+}
+assert.doesNotThrow(() => sandbox.validatePublicSnapshotFile_('players', snapshotId, sourceCutoff, false, 'players.json'))
+assert.doesNotThrow(() => sandbox.validatePublicSnapshotFile_('missionCatalog', snapshotId, sourceCutoff, false, 'mission-catalog.json'))
+assert.throws(
+  () => sandbox.validatePublicSnapshotFile_('playersWithAuthor', snapshotId, sourceCutoff, false, 'players.json'),
+  /forbidden key at snapshot\.data\.0\.author/,
+)
+assert.throws(
+  () => sandbox.validatePublicSnapshotFile_('missionCatalogWrongPath', snapshotId, sourceCutoff, false, 'mission-catalog.json'),
+  /forbidden key at snapshot\.data\.author/,
+)
+assert.throws(
+  () => sandbox.validatePublicSnapshotFile_('missionCatalogNonStringAuthor', snapshotId, sourceCutoff, false, 'mission-catalog.json'),
+  /forbidden key at snapshot\.data\.missions\.0\.rights\.author/,
+)
+for (const [fileId, key] of [['authToken', 'authToken'], ['authentication', 'authentication'], ['token', 'token']]) {
+  assert.throws(
+    () => sandbox.validatePublicSnapshotFile_(fileId, snapshotId, sourceCutoff, false, 'players.json'),
+    new RegExp(`forbidden key at snapshot\\.data\\.0\\.${key}`),
+  )
+}
+assert.throws(
+  () => sandbox.validatePublicSnapshotFile_('invalidMissionCatalog', snapshotId, sourceCutoff, false, 'mission-catalog.json'),
+  /Mission Geist catalog metadata is incomplete/,
+)
+assert.throws(
+  () => sandbox.validatePublicSnapshotFile_('unrelatedObject', snapshotId, sourceCutoff, false, 'unrelated.json'),
+  /Public snapshot data file is invalid/,
+)
+assert.doesNotThrow(() => sandbox.validatePublicSnapshotFile_('metadata', snapshotId, sourceCutoff, true, 'snapshot.json'))
 const datasets = { players, games, events, missions, 'mission-catalog': missionCatalog, factions, standings, schedule, 'army-lists': armyLists }
 assert.doesNotThrow(() => sandbox.validatePublicSnapshotDatasets_(datasets, context))
+const cloneDatasets = () => JSON.parse(JSON.stringify(datasets))
+const withChangedHistoricalGame = (change) => {
+  const copy = cloneDatasets()
+  Object.assign(copy.games.find((game) => game.winnerArmyListId === '3296098999'), change)
+  return copy
+}
+assert.throws(
+  () => sandbox.validatePublicSnapshotDatasets_(withChangedHistoricalGame({ op: '8–1' }), context),
+  /score does not match canonical history: op/,
+)
+assert.throws(
+  () => sandbox.validatePublicSnapshotDatasets_(withChangedHistoricalGame({ winner: 'Wrong Player' }), context),
+  /Game 73 acceptance fixture failed/,
+)
+assert.throws(
+  () => sandbox.validatePublicSnapshotDatasets_(withChangedHistoricalGame({ winnerArmyListId: 'wrong-id' }), context),
+  /Game 73 acceptance fixture failed/,
+)
+assert.throws(
+  () => sandbox.validatePublicSnapshotDatasets_(withChangedHistoricalGame({ mission: 'Wrong Mission' }), context),
+  /Game 73 acceptance fixture failed/,
+)
 assert.throws(() => sandbox.validatePublicSnapshotDatasets_({
   ...datasets, games: [...games, games[0]],
 }, context), /duplicate Game ID/)

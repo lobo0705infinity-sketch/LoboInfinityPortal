@@ -18,7 +18,7 @@ assert.match(tournament, /lock\.waitLock\(10000\)/, 'round creation uses the exi
 assert.match(tournament, /Object\.keys\(resultIds\)\.length < 5/, 'round completion requires five distinct canonical results per matchup')
 assert.match(tournament, /getCanonicalMissionName\(params\.mission\)/, 'Mission is validated through the canonical registry')
 assert.match(tournament, /updateTeamTournamentRoundStatus_\(currentRound\.id, "Completed"\)/, 'current canonical round is completed')
-assert.match(tournament, /"Active"[\s\S]*mission\]/, 'next canonical round is Active and stores Mission')
+assert.match(tournament, /"Active"[\s\S]*mission[\s\S]*missionGeistId/, 'next canonical round is Active and stores Mission identity')
 assert.doesNotMatch(tournament.match(/function advanceTeamTournamentRound[\s\S]*?\n}\n/)?.[0] ?? '', /saveTeamTournamentPairing/, 'advancement does not generate pairings')
 
 assert.match(tournament, /A team cannot play itself/, 'backend rejects same-team matchups')
@@ -32,7 +32,7 @@ assert.match(pairingEditor, /Save Matchup/, 'Commissioner saves a team matchup')
 assert.doesNotMatch(pairingEditor, /Team A Player|Team B Player|Individual pairings/, 'Commissioner editor has no player assignments')
 assert.match(pairingEditor, /currentRound \? \[currentRound, \.\.\.rounds\]/, 'team matchup editor defaults to the canonical current round')
 assert.match(tournamentPage, /Create Next Round/, 'Pairings page exposes canonical next-round creation')
-assert.match(tournamentPage, /getCanonicalMissionOptions/, 'round form uses canonical Mission options')
+assert.match(tournamentPage, /getPublicMissionGeistCatalog/, 'round form uses the snapshot-native Mission Geist catalog')
 assert.match(tournamentPage, /<strong>Mission:<\/strong>/, 'public pairings display the current round Mission')
 
 assert.match(submitResult, /buildOpposingTeamRosterOptions/, 'team-only submissions offer the opposing roster')

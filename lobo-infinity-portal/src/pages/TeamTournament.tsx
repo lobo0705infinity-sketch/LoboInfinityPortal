@@ -10,7 +10,8 @@ import {
   getCanonicalArmyOptions,
 } from '../services/armyIdentity'
 import { getDiscordCommunityLink } from '../config/communityLinks'
-import { getCanonicalMissionOptions } from '../config/missions'
+import { isCanonicalMission } from '../config/missions'
+import { getPublicMissionGeistCatalog, type MissionGeistCatalogMission } from '../services/publicSnapshot'
 import { useSettings } from '../contexts/SettingsContext'
 import {
   type EventRegistrationData,
@@ -2027,13 +2028,22 @@ function RoundControlForm({
   disabled: boolean
   onSubmit: (params: Record<string, string>) => void
 }) {
+  const [missions, setMissions] = useState<MissionGeistCatalogMission[]>([])
+  const [selection, setSelection] = useState({ mission: '', missionGeistId: '' })
+  useEffect(() => {
+    const controller = new AbortController()
+    getPublicMissionGeistCatalog(controller.signal).then((catalog) => {
+      setMissions(catalog.missions.filter((mission) => isCanonicalMission(mission.name)))
+    }).catch(() => setMissions([]))
+    return () => controller.abort()
+  }, [])
   const currentNumber = Number(currentRound?.['number'] ?? 0)
   const currentName = String(currentRound?.['name'] ?? 'Round setup pending')
   const nextName = currentNumber > 0 ? `Round ${currentNumber + 1}` : 'Next round'
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const form = new FormData(event.currentTarget)
-    onSubmit(Object.fromEntries(form.entries()) as Record<string, string>)
+    onSubmit({ ...(Object.fromEntries(form.entries()) as Record<string, string>), ...selection })
   }
 
   return (
@@ -2042,7 +2052,7 @@ function RoundControlForm({
       <h2>Create Next Round</h2>
       <p>Current Round: <strong>{currentName}</strong></p>
       <p>Next Round: <strong>{nextName}</strong></p>
-      <label>Mission<select name="mission" defaultValue="" required><option value="">Select Mission</option>{getCanonicalMissionOptions().map((mission) => <option key={mission.value} value={mission.value}>{mission.label}</option>)}</select></label>
+      <label>Mission<select required value={selection.missionGeistId} onChange={(event) => { const mission = missions.find((item) => item.id === event.target.value); setSelection(mission ? { mission: mission.name, missionGeistId: mission.id } : { mission: '', missionGeistId: '' }) }}><option value="">Select Mission</option>{missions.map((mission) => <option key={mission.id} value={mission.id}>{mission.sourceCollectionName || mission.sourceCollectionId} — {mission.name}</option>)}</select></label>
       <button disabled={disabled} type="submit">
         Create {nextName}
       </button>

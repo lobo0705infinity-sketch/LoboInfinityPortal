@@ -3559,6 +3559,7 @@ export type EventBracketMission = {
   bracket: EventBracketMatch['bracket']
   bracketRound: number
   mission: string
+  missionGeistId?: string
 }
 
 export type EventBracketData = {
@@ -8953,6 +8954,7 @@ function normalizeEventBracketPayload(payload: unknown): EventBracketData {
       return {
         bracket: getString(assignment, 'bracket') as EventBracketMatch['bracket'],
         bracketRound: getNumber(assignment, 'bracketRound'),
+        missionGeistId: getString(assignment, 'missionGeistId') || undefined,
         mission: getString(assignment, 'mission'),
       }
     }),

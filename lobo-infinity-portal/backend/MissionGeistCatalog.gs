@@ -21,7 +21,18 @@ function getMissionGeistCatalogForPublicSnapshot_() {
     if (cached && isMissionGeistCachedCatalogFresh_(cached.manifest))
       return cached.catalog;
 
-    const listing = fetchMissionGeistListing_();
+    const cachedAt = Date.parse(String(cached && cached.manifest && cached.manifest.cachedAt || ""));
+    const hasValidStaleFallback = Boolean(
+      cached && Number.isFinite(cachedAt) && Date.now() - cachedAt >= MISSION_GEIST_CACHE_TTL_MS
+    );
+    let listing;
+    try {
+      listing = fetchMissionGeistListing_();
+    }
+    catch (error) {
+      if (hasValidStaleFallback) return cached.catalog;
+      throw error;
+    }
     const catalog = buildMissionGeistCatalog_(listing);
     if (cached && cached.catalog.contentHash === catalog.contentHash) {
       properties.setProperty(
@@ -133,6 +144,23 @@ function validateMissionGeistCatalog_(catalog) {
     if (ids[mission.id]) throw new Error("Mission Geist catalog contains a duplicate mission ID: " + mission.id);
     ids[mission.id] = true;
   });
+}
+
+function validatePersistedMissionGeistSelection_(mission, missionGeistId) {
+  const id = String(missionGeistId || "").trim();
+  if (!id) return "";
+
+  const cached = readMissionGeistCachedCatalog_(PropertiesService.getScriptProperties());
+  if (!cached || !cached.catalog)
+    throw new Error("The prepared Mission Geist catalog is unavailable. Refresh the Commissioner page and try again.");
+
+  const catalogMission = (cached.catalog.missions || []).filter(function(item) {
+    return String(item && item.id || "").trim() === id;
+  })[0];
+  if (!catalogMission || getCanonicalMissionName(catalogMission.name) !== getCanonicalMissionName(mission))
+    throw new Error("The selected Mission Geist identity does not match the selected mission.");
+
+  return id;
 }
 
 function getOrCreateMissionGeistCacheFolder_(properties) {

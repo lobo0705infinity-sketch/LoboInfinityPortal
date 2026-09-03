@@ -6,7 +6,7 @@ import {
   type EventRegistrationEntry,
 } from '../services/api'
 import { eventRepository } from '../services/data'
-import { getCanonicalMissionOptions, isCanonicalMission } from '../config/missions'
+import { isCanonicalMission } from '../config/missions'
 import {
   getPublicMissionGeistCatalog,
   type MissionGeistCatalogMission,
@@ -926,20 +926,28 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
   const [savingDeadline, setSavingDeadline] = useState('')
   const [forfeitWinners, setForfeitWinners] = useState<Record<string, string>>({})
   const [awardingForfeit, setAwardingForfeit] = useState('')
-  const [missionDrafts, setMissionDrafts] = useState<Record<string, string>>({})
+  const [missionDrafts, setMissionDrafts] = useState<Record<string, { mission: string; missionGeistId: string }>>({})
+  const [missionCatalog, setMissionCatalog] = useState<MissionGeistCatalogMission[]>([])
   const [savingMissions, setSavingMissions] = useState(false)
   const loadBracket = useCallback(() => {
     apiClient.getEventBracket(eventId).then((nextBracket) => {
       setBracket(nextBracket)
       setMissionDrafts(Object.fromEntries(nextBracket.missions.map((assignment) => [
         `${assignment.bracket}:${assignment.bracketRound}`,
-        assignment.mission,
+        { mission: assignment.mission, missionGeistId: assignment.missionGeistId || '' },
       ])))
     }).catch((reason: unknown) =>
       setError(reason instanceof Error ? reason.message : 'Bracket status could not be loaded.'),
     )
   }, [eventId])
   useEffect(loadBracket, [loadBracket])
+  useEffect(() => {
+    const controller = new AbortController()
+    getPublicMissionGeistCatalog(controller.signal).then((catalog) => {
+      setMissionCatalog(catalog.missions.filter((mission) => isCanonicalMission(mission.name)))
+    }).catch((reason: unknown) => setError(reason instanceof Error ? reason.message : 'Mission catalog could not be loaded.'))
+    return () => controller.abort()
+  }, [])
 
   async function generateBracket() {
     setGenerating(true)
@@ -986,7 +994,8 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
       setBracket(await apiClient.saveEventBracketMissions(eventId, rounds.map((round) => ({
         bracket: round.bracket,
         bracketRound: round.bracketRound,
-        mission: missionDrafts[round.key] || '',
+        mission: missionDrafts[round.key]?.mission || '',
+        missionGeistId: missionDrafts[round.key]?.missionGeistId || '',
       }))))
       setMessage('Missions saved.')
     } catch (reason) {
@@ -1047,17 +1056,16 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
               const rounds = discoverBracketRounds(bracket).filter((round) => round.bracket === bracketName)
               return rounds.length ? <div key={bracketName} className="event-manager-mission-group">
                 <strong>{bracketName === 'Grand Final' ? 'Grand Final' : `${bracketName} Bracket`}</strong>
-                {rounds.map((round) => <label key={round.key}>
-                  {bracketName === 'Grand Final' ? 'Mission' : `Round ${round.bracketRound}`}
-                  <select
+                {rounds.map((round) => <div key={round.key}>
+                  <LeagueOperationsSelect
                     disabled={!canManage || savingMissions}
-                    onChange={(event) => setMissionDrafts((current) => ({ ...current, [round.key]: event.target.value }))}
-                    value={missionDrafts[round.key] || ''}
-                  >
-                    <option value="">Unassigned</option>
-                    {getCanonicalMissionOptions().map((mission) => <option key={mission.value} value={mission.value}>{mission.label}</option>)}
-                  </select>
-                </label>)}
+                    label={bracketName === 'Grand Final' ? 'Mission' : `Round ${round.bracketRound}`}
+                    missionGeistId={missionDrafts[round.key]?.missionGeistId || ''}
+                    onChange={(selection) => setMissionDrafts((current) => ({ ...current, [round.key]: selection }))}
+                    options={missionCatalog}
+                    value={missionDrafts[round.key]?.mission || ''}
+                  />
+                </div>)}
               </div> : null
             })}
             <div className="event-manager-actions">

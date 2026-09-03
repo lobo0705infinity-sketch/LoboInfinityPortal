@@ -6,7 +6,7 @@ const DOUBLE_ELIMINATION_BRACKET_HEADERS = [
 ];
 
 const EVENT_BRACKET_MISSION_HEADERS = [
-  "Event ID", "Bracket", "Bracket Round", "Mission", "Updated At"
+  "Event ID", "Bracket", "Bracket Round", "Mission", "Updated At", "Mission Geist ID"
 ];
 
 function getEventBracket(e) {
@@ -400,7 +400,7 @@ function validateEventBracketMissionAssignments_(eventId, matches, assignments) 
   const validRounds = {};
   rounds.forEach(function(item){ validRounds[eventBracketRoundKey_(item.bracket,item.bracketRound)] = item; });
   const existing = {};
-  readEventBracketMissionAssignments_(eventId).forEach(function(item){ existing[eventBracketRoundKey_(item.bracket,item.bracketRound)] = item.mission; });
+  readEventBracketMissionAssignments_(eventId).forEach(function(item){ existing[eventBracketRoundKey_(item.bracket,item.bracketRound)] = item; });
   const supplied = {};
   assignments.forEach(function(item){
     const bracket = getEventManagerString(item && item.bracket);
@@ -411,15 +411,21 @@ function validateEventBracketMissionAssignments_(eventId, matches, assignments) 
     const rawMission = getEventManagerString(item && item.mission);
     const mission = rawMission ? getCanonicalMissionName(rawMission) : "";
     if (rawMission && !mission) throw new Error("Select a mission from the canonical mission list.");
-    supplied[key] = mission;
+    const missionGeistId = validatePersistedMissionGeistSelection_(
+      mission,
+      getEventManagerString(item && item.missionGeistId)
+    );
+    supplied[key] = { mission: mission, missionGeistId: missionGeistId };
   });
   return rounds.map(function(round){
     const key = eventBracketRoundKey_(round.bracket,round.bracketRound);
-    const mission = Object.prototype.hasOwnProperty.call(supplied,key) ? supplied[key] : (existing[key] || "");
-    const changed = (existing[key] || "") !== mission;
+    const existingAssignment = existing[key] || { mission:"", missionGeistId:"" };
+    const assignment = Object.prototype.hasOwnProperty.call(supplied,key) ? supplied[key] : existingAssignment;
+    const mission = assignment.mission;
+    const changed = existingAssignment.mission !== mission || existingAssignment.missionGeistId !== assignment.missionGeistId;
     if (changed && matches.some(function(match){ return eventBracketRoundKey_(match.bracket,match.bracketRound) === key && match.status === "Completed"; }))
       throw new Error("This mission cannot be changed because games in this bracket round have already been completed.");
-    return { eventId:eventId, bracket:round.bracket, bracketRound:round.bracketRound, mission:mission };
+    return { eventId:eventId, bracket:round.bracket, bracketRound:round.bracketRound, mission:mission, missionGeistId:assignment.missionGeistId || "" };
   });
 }
 
@@ -427,7 +433,7 @@ function readEventBracketMissionAssignments_(eventId) {
   const sheet = getEventEngineRuntimeSheet(CONFIG.SHEETS.EVENT_BRACKET_MISSIONS);
   if (!sheet) return [];
   return getEventEngineRows(sheet).filter(function(row){ return getEventManagerString(row["Event ID"]) === eventId && getEventManagerString(row["Mission"]); }).map(function(row){
-    return { eventId:eventId, bracket:getEventManagerString(row["Bracket"]), bracketRound:Number(row["Bracket Round"]), mission:getCanonicalMissionName(row["Mission"]) };
+    return { eventId:eventId, bracket:getEventManagerString(row["Bracket"]), bracketRound:Number(row["Bracket Round"]), mission:getCanonicalMissionName(row["Mission"]), missionGeistId:getEventManagerString(row["Mission Geist ID"]) };
   }).filter(function(item){ return item.mission; });
 }
 
@@ -444,7 +450,7 @@ function persistEventBracketMissionAssignments_(eventId, assignments) {
   const eventIndex = headers.indexOf("Event ID");
   const retained = values.slice(1).filter(function(row){ return getEventManagerString(row[eventIndex]) !== eventId && row.some(function(value){ return getEventManagerString(value); }); });
   const now = getEventManagerTimestamp();
-  const eventRows = assignments.filter(function(item){ return item.mission; }).map(function(item){ return [eventId,item.bracket,item.bracketRound,item.mission,now]; });
+  const eventRows = assignments.filter(function(item){ return item.mission; }).map(function(item){ return [eventId,item.bracket,item.bracketRound,item.mission,now,item.missionGeistId || ""]; });
   const finalRows = [headers].concat(retained,eventRows);
   const rowCount = Math.max(values.length, finalRows.length);
   while (finalRows.length < rowCount) finalRows.push(headers.map(function(){ return ""; }));

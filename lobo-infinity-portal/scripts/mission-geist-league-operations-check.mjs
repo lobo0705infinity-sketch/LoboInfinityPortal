@@ -4,6 +4,7 @@ import vm from 'node:vm'
 
 const read = (file) => fs.readFileSync(new URL(`../${file}`, import.meta.url), 'utf8')
 const leagueOperations = read('backend/LeagueOperationsApi.gs')
+const missionGeistCatalog = read('backend/MissionGeistCatalog.gs')
 const exporter = read('backend/PublicSnapshotExporter.gs')
 const panel = read('src/components/EventManagerPanel.tsx')
 const snapshotClient = read('src/services/publicSnapshot.ts')
@@ -54,6 +55,7 @@ const storageSandbox = {
   readMissionGeistCachedCatalog_: () => matchingCatalog,
 }
 vm.createContext(storageSandbox)
+vm.runInContext(extractFunction(missionGeistCatalog, 'validatePersistedMissionGeistSelection_'), storageSandbox)
 vm.runInContext(extractFunction(leagueOperations, 'validateLeagueOperationsMissionGeistId_'), storageSandbox)
 assert.equal(
   storageSandbox.validateLeagueOperationsMissionGeistId_('Provisioning', 's18_provisioning'),
