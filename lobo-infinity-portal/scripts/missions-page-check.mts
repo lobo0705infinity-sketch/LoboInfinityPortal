@@ -68,5 +68,17 @@ assert.match(publicApp, /<details className="snapshot-mission-geist-versions">/)
 assert.doesNotMatch(publicApp, /getPublicMissionGeistCatalog/)
 assert.doesNotMatch(publicApp, /fetch\([^)]*infinitygeist/i)
 assert.equal((publicApp.match(/function MissionCatalogNavigation/g) || []).length, 1)
+const formatMissionAverageSource = publicApp.match(/function formatMissionAverage\(value:number\)\{[^}]+\}/)?.[0]
+assert.ok(formatMissionAverageSource, 'missing Mission Profile average formatter')
+const formatMissionAverage = Function(`${formatMissionAverageSource.replace('(value:number)', '(value)')}; return formatMissionAverage`)()
+for (const [value, expected] of [[5, '5.00'], [4.5, '4.50'], [10, '10.00'], [6.1, '6.10'], [275, '275.00'], [238.9, '238.90'], [7.67, '7.67']] as const) {
+  assert.equal(formatMissionAverage(value), expected)
+}
+assert.match(publicApp, /\['Average TP',formatMissionAverage\(m\.averageTP\)\]/)
+assert.match(publicApp, /\['Average OP',formatMissionAverage\(m\.averageOP\)\]/)
+assert.match(publicApp, /\['Average VP',formatMissionAverage\(m\.averageVP\)\]/)
+assert.match(publicApp, /\['Games',m\.games\]/)
+assert.match(publicApp, /\['First-turn Win Rate',formatPercent\(m\.firstTurnWinRate\)\]/)
+assert.match(publicApp, /function MetricGrid\(\{items\}[\s\S]*<strong>\{value\|\|'—'\}<\/strong>/)
 
 console.log('PASS: Missions page winner-only averages and snapshot-native Mission Geist navigation')
