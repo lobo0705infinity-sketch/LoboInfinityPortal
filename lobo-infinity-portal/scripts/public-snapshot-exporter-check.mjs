@@ -77,7 +77,7 @@ assert.equal(reachable.has('runPublishPublicSnapshotV1Proof'), false)
 assert.equal(reachable.has('runPublishPublicSnapshot20260903T042240ZProof'), false)
 
 const publicationReachable = new Map()
-const publicationPending = ['runPublishPublicSnapshot20260903T042240ZProof']
+const publicationPending = ['runPublishPublicSnapshot20260903T130548ZProof']
 while (publicationPending.length) {
   const name = publicationPending.pop()
   if (publicationReachable.has(name) || !backendFunctions.has(name)) continue
@@ -133,8 +133,8 @@ assert.throws(() => selectionSandbox.getLatestValidatedPublicSnapshotId_(selecti
 selectedIds.PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_ID = 'failed-snapshot'
 assert.throws(() => selectionSandbox.getLatestValidatedPublicSnapshotId_(selectionProperties), /identity is unavailable/)
 
-const exactSnapshotId = '20260903T042240Z'
-const exactSourceCutoff = '2026-09-03T04:22:50.243Z'
+const exactSnapshotId = '20260903T130548Z'
+const exactSourceCutoff = '2026-09-03T13:06:10.647Z'
 let exactUrlFetchCalls = 0
 let exactDriveReads = 0
 let exactLatestValidatedId = exactSnapshotId
@@ -182,21 +182,21 @@ const exactPublicationSandbox = {
   } },
 }
 vm.createContext(exactPublicationSandbox)
-for (const name of ['getLatestValidatedPublicSnapshotId_', 'publishLatestPublicSnapshotV1_', 'runPublishPublicSnapshot20260903T042240ZProof']) {
+for (const name of ['getLatestValidatedPublicSnapshotId_', 'publishLatestPublicSnapshotV1_', 'runPublishPublicSnapshot20260903T130548ZProof']) {
   vm.runInContext(backendFunctions.get(name).body, exactPublicationSandbox)
 }
-assert.equal(exactPublicationSandbox.runPublishPublicSnapshot20260903T042240ZProof().snapshotId, exactSnapshotId)
+assert.equal(exactPublicationSandbox.runPublishPublicSnapshot20260903T130548ZProof().snapshotId, exactSnapshotId)
 assert.equal(exactUrlFetchCalls, 1)
 exactLatestValidatedId = '20260903T050000Z'
-assert.throws(() => exactPublicationSandbox.runPublishPublicSnapshot20260903T042240ZProof(), /changed before publication/)
+assert.throws(() => exactPublicationSandbox.runPublishPublicSnapshot20260903T130548ZProof(), /changed before publication/)
 assert.equal(exactUrlFetchCalls, 1)
 assert.equal(exactDriveReads, 1)
 exactLatestValidatedId = ''
-assert.throws(() => exactPublicationSandbox.runPublishPublicSnapshot20260903T042240ZProof(), /identity is unavailable/)
+assert.throws(() => exactPublicationSandbox.runPublishPublicSnapshot20260903T130548ZProof(), /identity is unavailable/)
 assert.equal(exactUrlFetchCalls, 1)
 assert.equal(exactDriveReads, 1)
 exactLatestValidatedId = 'malformed-snapshot'
-assert.throws(() => exactPublicationSandbox.runPublishPublicSnapshot20260903T042240ZProof(), /identity is unavailable/)
+assert.throws(() => exactPublicationSandbox.runPublishPublicSnapshot20260903T130548ZProof(), /identity is unavailable/)
 assert.equal(exactUrlFetchCalls, 1)
 assert.equal(exactDriveReads, 1)
 

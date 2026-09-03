@@ -1596,3 +1596,7 @@ function validatePublicSnapshotDatasets_(datasets, gameContext) {
   if (stablePublicSnapshotJson_(datasets.games).toLowerCase().indexOf("armycode") !== -1)
     throw new Error("Public snapshot Games contain raw Army Codes.");
 }
+
+function runPublishPublicSnapshot20260903T130548ZProof() {
+  return publishLatestPublicSnapshotV1_(true, "20260903T130548Z");
+}
