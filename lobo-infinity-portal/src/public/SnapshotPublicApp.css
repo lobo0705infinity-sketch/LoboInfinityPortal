@@ -20,6 +20,26 @@
   font-size: 0.82rem;
 }
 
+.snapshot-mission-geist-versions {
+  margin-top: 0.45rem;
+  font-size: 0.85rem;
+}
+
+.snapshot-mission-geist-versions summary {
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.snapshot-mission-geist-versions ul {
+  margin: 0.45rem 0;
+  padding-left: 1.2rem;
+}
+
+.snapshot-mission-geist-versions > span {
+  color: var(--muted-text, #aeb8c5);
+  font-size: 0.82rem;
+}
+
 .snapshot-player-profile-hero {
   width: 100%;
   margin: 0;

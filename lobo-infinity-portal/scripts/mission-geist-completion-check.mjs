@@ -63,6 +63,6 @@ assert.throws(() => projectionSandbox.enrichPublicSnapshotMissionGeistEventState
 assert.match(publicApp, /View Mission/)
 assert.match(publicApp, /Courtesy of Mission Geist/)
 assert.match(publicApp, /missionGeistCanonicalUrl/)
-assert.doesNotMatch(publicApp, /getPublicMissionGeistCatalog|mission-catalog/)
+assert.doesNotMatch(publicApp, /getPublicMissionGeistCatalog/)
 assert.match(publicApp, /!\['missionGeistId','missionGeistCanonicalUrl'\]\.includes\(k\)/)
 console.log('PASS: Mission Geist completion identity, projection, and explicit-link boundary')

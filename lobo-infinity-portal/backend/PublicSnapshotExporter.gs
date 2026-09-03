@@ -538,6 +538,12 @@ function buildPublicSnapshotGameContext_(table, playerIndex) {
       player1Tp: Number(row[FORM.P1TP]) || 0, player2Tp: Number(row[FORM.P2TP]) || 0,
       player1Op: Number(row[FORM.P1OP]) || 0, player2Op: Number(row[FORM.P2OP]) || 0,
       player1Vp: Number(row[FORM.P1VP]) || 0, player2Vp: Number(row[FORM.P2VP]) || 0,
+      player1TpValid: publicSnapshotScoreCellIsValid_(row[FORM.P1TP]),
+      player2TpValid: publicSnapshotScoreCellIsValid_(row[FORM.P2TP]),
+      player1OpValid: publicSnapshotScoreCellIsValid_(row[FORM.P1OP]),
+      player2OpValid: publicSnapshotScoreCellIsValid_(row[FORM.P2OP]),
+      player1VpValid: publicSnapshotScoreCellIsValid_(row[FORM.P1VP]),
+      player2VpValid: publicSnapshotScoreCellIsValid_(row[FORM.P2VP]),
       winner: winnerSide === 1 ? player1.player : winnerSide === 2 ? player2.player : "Draw",
       eventId: String(row[FORM.EVENT_ID] || EVENT_ENGINE_DEFAULT_EVENT_ID).trim() || EVENT_ENGINE_DEFAULT_EVENT_ID,
       gameType: String(row[FORM.GAME_TYPE] || "League").trim() || "League",
@@ -829,6 +835,24 @@ function publicSnapshotAverage_(value, count) {
   return count ? Math.round(value * 10 / count) / 10 : 0;
 }
 
+function publicSnapshotMissionAverage_(values) {
+  if (!values.length) return 0;
+  const total = values.reduce(function(sum, value) { return sum + value; }, 0);
+  return Math.round(total * 100 / values.length) / 100;
+}
+
+function publicSnapshotScoreCellIsValid_(value) {
+  return String(value === null || value === undefined ? "" : value).trim() !== "" &&
+    isFinite(Number(value));
+}
+
+function publicSnapshotWinnerScore_(game, winnerSide, score) {
+  const prefix = winnerSide === 1 ? "player1" : "player2";
+  const value = game[prefix + score];
+  const validity = game[prefix + score + "Valid"];
+  return validity === false || typeof value !== "number" || !isFinite(value) ? null : value;
+}
+
 function publicSnapshotPercentage_(value, count) {
   return count ? Math.round(value * 1000 / count) / 10 : 0;
 }
@@ -848,7 +872,7 @@ function buildPublicSnapshotMissions_(games) {
   });
   return Object.keys(groups).sort().map(function(mission) {
     const rows = groups[mission]; const factions = {}; const wins = {}; const divisions = {};
-    let tp = 0; let op = 0; let vp = 0; let firstTurnWins = 0;
+    const winnerScores = { tp: [], op: [], vp: [] }; let firstTurnWins = 0;
     rows.forEach(function(game) {
       divisions[game.division] = (divisions[game.division] || 0) + 1;
       [game.player1Faction, game.player2Faction].forEach(function(faction) {
@@ -857,8 +881,13 @@ function buildPublicSnapshotMissions_(games) {
       const winnerFaction = game.winner === game.player1 ? game.player1Faction :
         game.winner === game.player2 ? game.player2Faction : "";
       if (winnerFaction) wins[winnerFaction] = (wins[winnerFaction] || 0) + 1;
-      tp += game.player1Tp + game.player2Tp; op += game.player1Op + game.player2Op;
-      vp += game.player1Vp + game.player2Vp;
+      const winnerSide = game.winner === game.player1 ? 1 : game.winner === game.player2 ? 2 : 0;
+      if (winnerSide) {
+        [["Tp", winnerScores.tp], ["Op", winnerScores.op], ["Vp", winnerScores.vp]].forEach(function(entry) {
+          const score = publicSnapshotWinnerScore_(game, winnerSide, entry[0]);
+          if (score !== null) entry[1].push(score);
+        });
+      }
       const first = game.firstTurn === "Player 1" ? game.player1 :
         game.firstTurn === "Player 2" ? game.player2 : game.firstTurn;
       if (first && first === game.winner) firstTurnWins += 1;
@@ -869,9 +898,9 @@ function buildPublicSnapshotMissions_(games) {
     })[0] || "";
     return {
       mission: mission, games: rows.length,
-      averageTP: publicSnapshotAverage_(tp, rows.length * 2),
-      averageOP: publicSnapshotAverage_(op, rows.length * 2),
-      averageVP: publicSnapshotAverage_(vp, rows.length * 2),
+      averageTP: publicSnapshotMissionAverage_(winnerScores.tp),
+      averageOP: publicSnapshotMissionAverage_(winnerScores.op),
+      averageVP: publicSnapshotMissionAverage_(winnerScores.vp),
       firstTurnWinRate: publicSnapshotPercentage_(firstTurnWins, rows.length),
       mostSuccessfulFaction: successful, mostPlayedFaction: publicSnapshotMostFrequent_(factions),
       lastPlayed: rows.reduce(function(value, game) { return String(game.date) > value ? String(game.date) : value; }, ""),
