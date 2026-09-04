@@ -49,6 +49,11 @@ export const communityItems: NavigationItem[] = [
     to: '/players',
   },
   {
+    icon: 'factions',
+    label: 'Factions',
+    to: '/factions',
+  },
+  {
     icon: 'missions',
     label: 'Missions',
     to: '/missions',

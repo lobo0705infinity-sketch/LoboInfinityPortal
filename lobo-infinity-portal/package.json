@@ -146,6 +146,7 @@
     "test:match-finder-removal": "node scripts/match-finder-removal-check.mjs",
     "test:player-identity": "node scripts/player-identity-check.mjs",
     "test:faction-portraits": "node --experimental-strip-types scripts/faction-portrait-check.ts",
+    "test:faction-directory-profile": "node --experimental-strip-types scripts/faction-directory-profile-check.mts",
     "test:portrait-cache": "node scripts/portrait-cache-check.mjs",
     "test:portrait-quality": "node scripts/portrait-quality-check.mjs",
     "test:public-generation-foundation": "node scripts/public-generation-foundation-check.mjs",
