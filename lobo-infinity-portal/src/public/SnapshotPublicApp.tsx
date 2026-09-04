@@ -49,6 +49,8 @@ export default function SnapshotPublicApp() {
     <Route path="/league-operations" element={<LeagueOperations />} />
     <Route path="/streams" element={<StreamsDirectory />} />
     <Route path="/events" element={<Events />} />
+    <Route path="/event/:eventId/teams" element={<TeamTournamentTeamsRedirect />} />
+    <Route path="/event/:eventId/tournament/teams" element={<TeamTournamentTeamsRedirect />} />
     <Route path="/event/:eventId" element={<EventPage />} />
     <Route path="/event/:eventId/:section" element={<EventPage />} />
     <Route path="/event/:eventId/tournament/:section" element={<EventPage />} />
@@ -65,6 +67,8 @@ export default function SnapshotPublicApp() {
     <Route path="*" element={<NotFound />} />
   </Routes>
 }
+
+function TeamTournamentTeamsRedirect(){const {eventId=''}=useParams();return <Navigate replace to={`/event/${eventId}`}/>}
 
 function Dashboard() {
   const games = useSnapshotData<PublicGame[]>('games')
@@ -344,6 +348,8 @@ function TeamTournamentOverview({event,games}:{event:PublicEvent;games:PublicGam
 
     <p className="snapshot-team-tournament-description">{event.description}</p>
 
+    <TeamTournamentTeams teams={event.teams}/>
+
     <section className="snapshot-team-tournament-overview-panel snapshot-team-tournament-standings-preview">
       <header className="snapshot-team-tournament-overview-heading">
         <div><p className="eyebrow">Canonical standings</p><h2>Team Standings</h2></div>
@@ -368,12 +374,31 @@ function TeamTournamentOverview({event,games}:{event:PublicEvent;games:PublicGam
     </section>
   </section>
 }
+function TeamTournamentTeams({teams}:{teams:Array<Record<string,unknown>>}){
+  return <section className="snapshot-team-tournament-overview-panel snapshot-team-tournament-teams" aria-labelledby="team-tournament-teams-title">
+    <header className="snapshot-team-tournament-overview-heading"><div><p className="eyebrow">Registered rosters</p><h2 id="team-tournament-teams-title">Teams</h2></div></header>
+    {teams.length?<div className="snapshot-team-tournament-team-grid">{teams.map((team,index)=>{
+      const name=String(team.teamName??team.name??'').trim()
+      const captain=String(team.captain??'').trim()
+      const status=String(team.status??'').trim()
+      const restriction=String(team.factionRestrictions??'').trim()
+      const roster=Array.isArray(team.players)?team.players.map(String).map(player=>player.trim()).filter(Boolean):String(team.players??'').split(/[,;|]/).map(player=>player.trim()).filter(Boolean)
+      const meaningfulRestriction=restriction&&!/^(none|no restrictions?|unrestricted|n\/a|any)$/i.test(restriction)
+      return <article className="snapshot-team-tournament-team-card" key={String(team.teamId??'').trim()||name||String(index)}>
+        <div className="snapshot-team-tournament-team-card-heading"><p className="eyebrow">Team</p><h3>{name||'Unnamed Team'}</h3>{status?<span>{status}</span>:null}</div>
+        {captain?<p className="snapshot-team-tournament-team-captain"><span>Captain</span><strong>{captain}</strong></p>:null}
+        {roster.length?<div className="snapshot-team-tournament-roster"><span>Players</span><ul>{roster.map((player,playerIndex)=><li key={`${player}-${playerIndex}`}>{player}</li>)}</ul></div>:null}
+        {meaningfulRestriction?<p className="snapshot-team-tournament-team-restriction"><span>Faction Restrictions</span><strong>{restriction}</strong></p>:null}
+      </article>
+    })}</div>:<PublicEmptyState message="No teams are registered for this tournament yet."/>}
+  </section>
+}
 function CurrentLeagueOverview({event,games}:{event:PublicEvent;games:PublicGame[]}){const rulesDestination=buildCapabilityNavigationItem({id:event.id},'rules').to;return <section className="snapshot-event-overview snapshot-current-league-overview"><Panel title="League Rules"><p className="snapshot-overview-copy">{event.rules||event.description||'Public event information will be updated in the next snapshot.'}</p><Link className="snapshot-league-rules-cta" to={rulesDestination}>View League Rules</Link></Panel><Panel title="Recent Results"><GameTable games={[...games].slice(-8).reverse()}/></Panel></section>}
 function CurrentLeagueRegistration({registrationUrl}:{registrationUrl?:string}){if(!registrationUrl)return <PublicEmptyState message="League registration is not available in this snapshot."/>;return <section className="snapshot-current-league-registration-panel" aria-labelledby="current-league-registration-title"><p className="eyebrow">July 2026 League</p><h2 id="current-league-registration-title">League Registration</h2><p>Registration for the July 2026 League is handled through the official registration form.</p><a className="snapshot-registration-form-cta" href={registrationUrl} target="_blank" rel="noopener noreferrer">REGISTER FOR THE LEAGUE</a></section>}
 function CurrentLeagueSchedule({schedule}:{schedule:PublicSchedule[]}){const source=schedule.find(item=>item.eventId==='event-current-league')??schedule[0];const divisions=source?.remainingMatchups??[];const mainMan=divisions.find(division=>division.divisionLabel==='Main Man')??divisions[0];const [selectedDivision,setSelectedDivision]=useState(mainMan?.division??'');const selected=divisions.find(division=>division.division===selectedDivision)??mainMan;if(!selected)return <section className="snapshot-current-league-schedule"><PublicEmptyState message="Remaining matchups are not available in this snapshot."/></section>;return <section className="snapshot-current-league-schedule" aria-labelledby="current-league-schedule-title"><div className="snapshot-current-league-schedule-heading"><p className="eyebrow">League Match Schedule</p><h2 id="current-league-schedule-title">Remaining Matchups</h2></div><nav className="snapshot-standings-division-switcher snapshot-schedule-division-switcher" aria-label="Current League schedule divisions">{divisions.map(division=><button type="button" key={division.division} aria-pressed={selected.division===division.division} onClick={()=>setSelectedDivision(division.division)}>{division.divisionLabel}</button>)}</nav><section className="snapshot-schedule-division-heading"><div><h3>{selected.divisionLabel}</h3><span>{selected.playerCount} Players</span></div><p>Snapshot-derived required opponents</p></section><section className="panel snapshot-schedule-table-panel"><div className="table-wrapper snapshot-schedule-table-shell"><table className="snapshot-schedule-table"><thead><tr><th>Player</th><th>Opponents Completed</th><th>Opponents Remaining</th><th>Remaining Opponents</th></tr></thead><tbody>{selected.players.map(player=><tr className={player.opponentsRemaining===0?'snapshot-schedule-complete':''} key={player.player}><td><Link to={`/players/${encodeURIComponent(player.player)}`}>{player.displayName||player.player}</Link></td><td>{player.opponentsCompleted}</td><td>{player.opponentsRemaining}</td><td>{player.remainingOpponents.length?<span className="snapshot-schedule-opponents">{player.remainingOpponents.map(opponent=>opponent.displayName||opponent.player).join(' · ')}</span>:<span className="snapshot-schedule-complete-label">Complete</span>}</td></tr>)}</tbody></table></div></section></section>}
 
 function EventHero({event}:{event:PublicEvent}){return <header className={`snapshot-event-hero ${/tournament/i.test(event.type)?'tournament':'league'}`}><div><p className="eyebrow">{event.type}</p><h1>{event.name}</h1>{event.description?<p className="snapshot-event-tagline">{event.description}</p>:null}</div><span className="snapshot-event-status">{event.status||event.lifecycleStage}</span></header>}
-function PublicTabs({eventId,items,teamTournament=false}:{eventId:string;items:string[];teamTournament?:boolean}){const {pathname}=useLocation();return <nav aria-label="Event sections" className="snapshot-tabs">{items.map(item=>{const to=teamTournament&&item==='standings'?`/event/${eventId}/tournament/standings`:item==='rules'?`/rules?eventId=${encodeURIComponent(eventId)}`:`/event/${eventId}${item==='overview'?'':`/${item}`}`;const active=pathname===to||(item==='overview'&&pathname===`/event/${eventId}/overview`);return <Link aria-current={active?'page':undefined} className={active?'active':undefined} key={item} to={to}>{titleCase(item)}</Link>})}</nav>}
+function PublicTabs({eventId,items,teamTournament=false}:{eventId:string;items:string[];teamTournament?:boolean}){const {pathname}=useLocation();return <nav aria-label="Event sections" className="snapshot-tabs">{items.filter(item=>!(teamTournament&&item==='teams')).map(item=>{const to=teamTournament&&item==='standings'?`/event/${eventId}/tournament/standings`:item==='rules'?`/rules?eventId=${encodeURIComponent(eventId)}`:`/event/${eventId}${item==='overview'?'':`/${item}`}`;const active=pathname===to||(item==='overview'&&pathname===`/event/${eventId}/overview`);return <Link aria-current={active?'page':undefined} className={active?'active':undefined} key={item} to={to}>{titleCase(item)}</Link>})}</nav>}
 
 function MissionGeistLink({url}:{url?:string}){if(!url)return null;try{const parsed=new URL(url);if(parsed.protocol!=='https:'||parsed.hostname!=='infinitygeist.com')return null}catch{return null}return <p className="snapshot-mission-geist-link"><a href={url} target="_blank" rel="noopener noreferrer">View Mission</a><span>Courtesy of Mission Geist</span></p>}
 function MissionCatalogNavigation({mission,catalog}:{mission:{mission:string;missionGeistId?:string;missionGeistCanonicalUrl?:string};catalog:MissionGeistCatalogMission[]}){const navigation=resolveMissionGeistNavigation(mission,catalog);if(navigation.kind==='unmatched')return null;if(navigation.kind==='exact'||navigation.kind==='unique')return <MissionGeistLink url={navigation.records[0].canonicalUrl}/>;return <details className="snapshot-mission-geist-versions"><summary>View Mission</summary><ul>{navigation.records.map(item=><li key={item.id}><a href={item.canonicalUrl} target="_blank" rel="noopener noreferrer">{item.sourceCollectionName||item.sourceCollectionId}</a></li>)}</ul><span>Courtesy of Mission Geist</span></details>}

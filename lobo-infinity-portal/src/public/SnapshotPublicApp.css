@@ -1620,6 +1620,100 @@ main.snapshot-event-page[data-event="team-tournament-overview"] > .snapshot-tabs
 .snapshot-team-tournament-overview-link:hover,
 .snapshot-team-tournament-overview-link:focus-visible { color: #ffffff; }
 
+.snapshot-team-tournament-team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 0.75rem;
+  padding: 0.86rem 0.92rem;
+}
+
+.snapshot-team-tournament-team-card {
+  display: grid;
+  align-content: start;
+  gap: 0.72rem;
+  min-width: 0;
+  padding: 0.82rem 0.88rem;
+  border: 1px solid rgba(76, 201, 240, 0.18);
+  border-radius: 9px;
+  background: linear-gradient(145deg, rgba(9, 20, 28, 0.92), rgba(18, 13, 17, 0.82));
+}
+
+.snapshot-team-tournament-team-card-heading {
+  position: relative;
+  min-width: 0;
+  padding-right: 5rem;
+}
+
+.snapshot-team-tournament-team-card-heading .eyebrow { margin: 0 0 0.15rem; font-size: 0.56rem; }
+
+.snapshot-team-tournament-team-card-heading h3 {
+  margin: 0;
+  color: #f8fbff;
+  font-family: "Bebas Neue", Rajdhani, Inter, sans-serif;
+  font-size: clamp(1.12rem, 2vw, 1.38rem);
+  letter-spacing: 0.035em;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.snapshot-team-tournament-team-card-heading > span {
+  position: absolute;
+  top: 0;
+  right: 0;
+  max-width: 4.6rem;
+  overflow: hidden;
+  color: #8ae7f8;
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.055em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.snapshot-team-tournament-team-captain,
+.snapshot-team-tournament-team-restriction { margin: 0; }
+
+.snapshot-team-tournament-team-captain span,
+.snapshot-team-tournament-team-restriction span,
+.snapshot-team-tournament-roster > span {
+  display: block;
+  margin-bottom: 0.22rem;
+  color: #91a2ad;
+  font-size: 0.58rem;
+  font-weight: 850;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+
+.snapshot-team-tournament-team-captain strong,
+.snapshot-team-tournament-team-restriction strong {
+  color: #e8f0f5;
+  font-size: 0.86rem;
+  overflow-wrap: anywhere;
+}
+
+.snapshot-team-tournament-roster ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.34rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.snapshot-team-tournament-roster li {
+  min-width: 0;
+  padding: 0.26rem 0.45rem;
+  border: 1px solid rgba(155, 172, 184, 0.16);
+  border-radius: 999px;
+  color: #dce7ee;
+  background: rgba(4, 10, 15, 0.54);
+  font-size: 0.72rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
 .snapshot-team-tournament-standings-preview .snapshot-table-shell,
 .snapshot-team-tournament-results-panel .snapshot-table-shell {
   width: 100%;
@@ -1713,6 +1807,8 @@ main.snapshot-event-page[data-event="team-tournament-overview"] > .snapshot-tabs
   .snapshot-team-tournament-overview-heading { align-items: flex-start; flex-direction: column; gap: 0.35rem; }
   .snapshot-team-tournament-pairings { padding: 0.68rem; }
   .snapshot-team-tournament-pairings li { padding: 0.64rem 0.68rem; }
+  .snapshot-team-tournament-team-grid { grid-template-columns: minmax(0, 1fr); padding: 0.68rem; }
+  .snapshot-team-tournament-team-card { padding: 0.72rem; }
 }
 
 /* Team Tournament standings only: canonical snapshot rows are presented without event-status duplication. */

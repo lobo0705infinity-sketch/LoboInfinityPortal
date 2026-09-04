@@ -24,6 +24,7 @@
     "test:commissioner-login-contract": "node scripts/commissioner-login-contract-check.mjs",
     "check:army-intelligence-explorer": "node --experimental-strip-types scripts/army-intelligence-explorer-check.mts",
     "test:snapshot-army-intelligence": "node scripts/snapshot-army-intelligence-check.mjs",
+    "test:team-tournament-overview-teams": "node --experimental-strip-types scripts/team-tournament-overview-teams-check.mts",
     "test:current-snapshot-pointer": "node scripts/current-snapshot-pointer-check.mjs",
     "dev": "vite",
     "event:create": "node scripts/provision-event.mjs",

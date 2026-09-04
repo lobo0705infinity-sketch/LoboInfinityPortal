@@ -116,7 +116,6 @@ export const eventNavigation: EventNavigationConfig[] = [
   {
     capabilities: [
       'overview',
-      'teams',
       'standings',
       'results',
       'registration',
@@ -129,7 +128,6 @@ export const eventNavigation: EventNavigationConfig[] = [
       registration: '/event/:eventId/tournament/registration',
       results: '/event/:eventId/tournament/results',
       standings: '/event/:eventId/tournament/standings',
-      teams: '/event/:eventId/tournament/teams',
     },
     type: 'Team Tournament',
   },
