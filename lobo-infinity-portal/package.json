@@ -136,6 +136,7 @@
     "test:standings-integrity": "node scripts/standings-integrity-check.mjs",
     "test:standings-prepared-read": "node scripts/standings-prepared-read-check.mjs",
     "test:player-profile": "node scripts/player-profile-check.mjs",
+    "test:player-profile-game-history": "node --experimental-strip-types scripts/player-profile-game-history-check.mts",
     "test:player-profile-fanout": "node scripts/player-profile-fanout-check.mjs",
     "test:player-profile-army-lists": "node scripts/player-profile-army-list-read-model-check.mjs",
     "test:player-registry": "node scripts/player-registry-context-check.mjs",
