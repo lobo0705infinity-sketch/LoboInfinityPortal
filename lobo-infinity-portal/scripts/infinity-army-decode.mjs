@@ -20,7 +20,7 @@ const portalRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const defaultOutputDir = resolve(portalRoot, '.tmp', 'army-decode')
 const infinityDataBaseUrl =
   process.env.INFINITY_DATA_BASE_URL || 'https://infinity.2nirwana.de/cards'
-export const ARMY_INTELLIGENCE_DECODER_VERSION = 'army-intelligence-decoder-v4'
+export const ARMY_INTELLIGENCE_DECODER_VERSION = 'army-intelligence-decoder-v5'
 
 const parentFactionBySectorialSlug = new Map([
   ['operations', 'ALEPH'],
@@ -113,6 +113,38 @@ export function decodeArmyCode(input) {
     return value
   }
 
+  function nextBytesAre(expected) {
+    if (offset + expected.length > bytes.length) return false
+    return expected.every((value, index) => bytes[offset + index] === value)
+  }
+
+  function parseMemberModifiers(hasFollowingMember) {
+    if (nextBytesAre([0, 1])) {
+      offset += 2
+      const modifierCount = readVli()
+      const modifiers = []
+
+      for (let index = 0; index < modifierCount; index += 1) {
+        modifiers.push(readString())
+      }
+
+      return modifiers
+    }
+
+    const zeroOnlyFraming = hasFollowingMember ? [0, 0, 0] : [0, 0]
+    if (nextBytesAre(zeroOnlyFraming)) {
+      offset += 2
+      return []
+    }
+
+    if (nextBytesAre([0])) {
+      offset += 1
+      return []
+    }
+
+    throw new Error(`Unsupported Army code member framing at byte ${offset}.`)
+  }
+
   const sectorialId = readVli()
   const sectorialSlug = readString()
   const armyNameLength = bytes.readUInt8(offset)
@@ -138,18 +170,18 @@ export function decodeArmyCode(input) {
       const unitId = readVli()
       const groupId = readVli()
       const optionId = readVli()
-      const trailingZero = bytes.readUInt8(offset)
-      offset += 1
+      const hasFollowingMember = memberIndex < size - 1 && versionSwitch === 1
+      const modifiers = parseMemberModifiers(hasFollowingMember)
 
       members.push({
         combinedId: `${sectorialId}-${unitId}-${groupId}-${optionId}-1`,
         groupId,
+        modifiers,
         optionId,
-        trailingZero,
         unitId,
       })
 
-      if (memberIndex < size - 1 && versionSwitch === 1) {
+      if (hasFollowingMember) {
         readVli()
       }
     }

@@ -17,13 +17,13 @@ const sources = [
 const state = new Map([
   ['known', {
     armyCodeHash: 'known-hash',
-    decoderVersion: 'army-intelligence-decoder-v4',
+    decoderVersion: 'army-intelligence-decoder-v5',
     hasProfileMetadata: true,
     status: 'decoded',
   }],
   ['failed', {
     armyCodeHash: 'failed-hash',
-    decoderVersion: 'army-intelligence-decoder-v4',
+    decoderVersion: 'army-intelligence-decoder-v5',
     hasProfileMetadata: false,
     status: 'failed',
   }],

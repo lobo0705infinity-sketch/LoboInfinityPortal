@@ -98,12 +98,12 @@ assert.equal(readModel.lists[0].validation.status, 'pending')
 const snapshot = {
   ...source,
   decoded: {
-    armyCode, decoderVersion: 'army-intelligence-decoder-v4', faction: 'ALEPH',
+    armyCode, decoderVersion: 'army-intelligence-decoder-v5', faction: 'ALEPH',
     sectorial: 'OSS', listName: 'Decoded OSS',
     combatGroups: [{ entries: Array.from({ length: 10 }, () => ({})) }],
     totals: { combatGroups: 1, points: 300, swc: 6 }, warnings: [],
   },
-  decoderVersion: 'army-intelligence-decoder-v4', status: 'decoded',
+  decoderVersion: 'army-intelligence-decoder-v5', status: 'decoded',
 }
 
 const response = sandbox.refreshArmyIntelligence({ snapshots: JSON.stringify([snapshot]) })

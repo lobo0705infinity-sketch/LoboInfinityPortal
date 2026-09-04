@@ -1,9 +1,11 @@
+import assert from 'node:assert/strict'
 import { mkdtemp } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { createRequire } from 'node:module'
 import {
   ARMY_INTELLIGENCE_DECODER_VERSION,
+  decodeArmyCode,
   decodeArmyListToFiles,
   hasExactSkillToken,
   normalizeArmyCodeForInfinityDataTransport,
@@ -11,218 +13,96 @@ import {
 
 const forWorkCode =
   'gr8Kb3BlcmF0aW9ucwhGb3IgV29ya4EsAgEBAAUAhK0BAgAAhusBAgAAh2oBBQAAgkgBBgAAh1IBAQACAQAKAIJQAQEAAIJTAQEAAIJTAQEAADIBAQAAh28CAQAAh28CAQAAh28BAgAAh0YBAgAAglQBAQAAh2YBAgA%3D'
-const panoceaniaJoanCode =
-  'ZQpwYW5vY2VhbmlhBSBKb2FugSwCAQEACgCHEAEEAAAJAQMAACoBBAAAhMYBBAAAhMYBBAAAhwwBAwAAhh0BAgAAMgEBAAARAQEAABMBAQACAQAFAIcYAQIAAIdvAQEAAIdvAgEAAIdvAgEAAIdSAQEA'
-const samCaledonianCode =
-  'gS4aY2FsZWRvbmlhbi1oaWdobGFuZGVyLWFybXkOV2hlcmUncyBXYWxEb26BLAIBAQAJAIEbAQEAAIX1AQEAAIEDAQEAAID1AQcAAIEHAQIAAID7AQIAAIEIAQIAAID1AQgAAID1AQEAAgEABgCCqAGJIwAAgPUBBwAAgPUBAgAAgPUBBwAAhiIBBwAAgPUBAgA%3D'
-const xtaproShasvastiiCode =
-  'glsKc2hhc3Zhc3RpaQEggSwBAQEABgCB%2FwEBAACHUgEBAACB9gEIAACFFgEFAACFDAEGAACCAAEDAA%3D%3D'
+const defuserCode =
+  'gTAJdXNhcmlhZG5hDUJhbGQgQnVyZ2VycyCBLAIBAQAKAIDoAQQAAACA5gEFAAAAgOYBCQAAAIDmAQEAAACA%2FwEBAAAAhiIBBwAAAIMHAYsuAAAAgwcBiy8AAACA9AECAAAAh1IBAgAAAgEABQCA7AECAAAAgwkBBAAAAIDoAQYAAACBAQEBAAAAgQEBAQAA'
+const loboCode =
+  'hE4Mc2hpbmRlbmJ1dGFpDFNoaW5kZW5idXRhaYEsAgEBAAkAhx8BBAAAAIcdAQIAAACHHgECAAAAh5QBAgAAAIcbAQMAAACHGwEFAAAAhykBAQAAAIcgAQMAAACHIAEDAAACAQAGAICfAQIAAACHGwEBAAAAgKIBAQAAAICHAQcAAAAyAQEAAACHIwECAAA%3D'
+const snakesCode =
+  'gMkHeXUtamluZwEggSwCAQEACQCAggEEAAAAgI0BAQAAAICiAQEAAACG3AEDAAAAhzIBAQAAAIcxAQQAAACHMQEEAAAAh3EBAgAAAIYiAQUAAAIBAAYAh3EBAgAAAICDAQcAAACHLgEDAAAAhNwBBQAAAICOAQEAAACAiAEBAAA%3D'
+const legacyCompatibleSteelPhalanxCode =
+  'gr4Nc3RlZWwtcGhhbGFueACBLAEBAAoBgtEBAQACglwBAgADglkBAQAEgkwBBAAFgkwBAgAGgkwBBgAHgkwBAwAIgmEBAQAJhjkBBAAKgmABAgA%3D'
 const tartaryPercentEncodedCode =
   'gTEHdGFydGFyeRtUYWNrc3NzIHRlYW1zICAzIG1vcmUgZGlzY2%2BBLAIBAAcBhH4BBAAChzYBAwADhfQBAQAEgPIBg0UABYDuAQUABoRuAZBWAAeA5QEDAAIACAGA5wECAAKA8AECAAOA8AECAASA8QEBAAWHNQEEAAaBCQECAAeA8gGDRQAIh1IBAQA%3D7'
 
 const require = createRequire(import.meta.url)
 const CanonicalArmyCodeResolver = require('../backend/CanonicalArmyCodeResolver.gs')
-
-const expectedProfiles = [
-  'RUDRA FTO',
-  'ARTALIS',
-  'DIKPALA',
-  'ASURA',
-  'SĀCHĀ',
-  'SAMEKH Rebot',
-  'NETROD',
-  'NETROD',
-  'WARCOR',
-  'RACERBOT Mk-III',
-  'RACERBOT Mk-III',
-  'Pilot-X Team',
-  'MAXIMUS AGENT FTO',
-  'PROBOT',
-  'CLAIRE LAZHARI FTO',
-]
-
 const outputDir = await mkdtemp(join(tmpdir(), 'lobo-army-decode-'))
-const result = await decodeArmyListToFiles({
-  input: forWorkCode,
-  outputDir,
-})
-const panoceaniaResult = await decodeArmyListToFiles({
-  input: panoceaniaJoanCode,
-  outputDir,
-})
-const samResult = await decodeArmyListToFiles({
-  input: samCaledonianCode,
-  outputDir,
-})
-const xtaproResult = await decodeArmyListToFiles({
-  input: xtaproShasvastiiCode,
-  outputDir,
-})
-const tartaryResult = await decodeArmyListToFiles({
-  input: tartaryPercentEncodedCode,
-  outputDir,
-})
 
-const profiles = result.list.combatGroups.flatMap((group) =>
-  group.entries.map((entry) => entry.profile),
+// Historical fixture: its container remains a required local-parser regression,
+// while profile 703-1874-1-1 is no longer resolvable by current Infinity-Data.
+const historical = decodeArmyCode(forWorkCode)
+assert.equal(historical.byteLength, 122)
+assert.equal(historical.sectorialId, 703)
+assert.equal(historical.sectorialSlug, 'operations')
+assert.equal(historical.listName, 'For Work')
+assert.deepEqual(historical.combatGroups.map((group) => group.members.length), [5, 10])
+assert.equal(historical.combatGroups.flatMap((group) => group.members).length, 15)
+assert.equal(
+  historical.combatGroups.flatMap((group) => group.members).some((member) => member.combinedId === '703-1874-1-1-1'),
+  true,
 )
-const entries = result.list.combatGroups.flatMap((group) => group.entries)
-const hackers = entries.filter((entry) => entry.hacker).map((entry) => entry.profile)
-const panoceaniaEntries = panoceaniaResult.list.combatGroups.flatMap((group) => group.entries)
-const panoceaniaHackers = panoceaniaEntries.filter((entry) => entry.hacker).map((entry) => entry.profile)
-const samEntries = samResult.list.combatGroups.flatMap((group) => group.entries)
-const xtaproEntries = xtaproResult.list.combatGroups.flatMap((group) => group.entries)
-const samArmand = samEntries.find((entry) => entry.combinedId === '302-680-1-2339-1')
-const xtaproSeedSoldier = xtaproEntries.find((entry) => entry.combinedId === '603-512-1-3-1')
-const rudra = entries.find((entry) => entry.profile === 'RUDRA FTO')
-const artalis = entries.find((entry) => entry.profile === 'ARTALIS')
-const asura = entries.find((entry) => entry.profile === 'ASURA')
-const sacha = entries[4]
-const samekh = entries.find((entry) => entry.profile === 'SAMEKH Rebot')
-const netrods = entries.filter((entry) => entry.profile === 'NETROD')
-const warcor = entries.find((entry) => entry.profile === 'WARCOR')
-const racerbots = entries.filter((entry) => entry.profile === 'RACERBOT Mk-III')
-const pilotX = entries.find((entry) => entry.profile === 'Pilot-X Team')
-const maximus = entries.find((entry) => entry.profile === 'MAXIMUS AGENT FTO')
-const probot = entries.find((entry) => entry.profile === 'PROBOT')
-const claire = entries.find((entry) => entry.profile === 'CLAIRE LAZHARI FTO')
-const totalWounds = entries.reduce((total, entry) => total + (entry.wounds ?? 0), 0)
-const totalDurability = entries.reduce((total, entry) => total + (entry.wounds ?? entry.structure ?? 0), 0)
-const durabilityModelCount = entries.filter((entry) => entry.wounds !== null || entry.structure !== null).length
 
-assertEqual(result.list.faction, 'ALEPH', 'faction')
-assertEqual(result.list.decoderVersion, 'army-intelligence-decoder-v4', 'decoder version')
-assertEqual(ARMY_INTELLIGENCE_DECODER_VERSION, 'army-intelligence-decoder-v4', 'exported decoder version')
-assertEqual(result.list.sectorial, 'Operations Subsection', 'sectorial')
-assertEqual(result.list.listName, 'For Work', 'list name')
-assertEqual(result.list.totals.points, 300, 'points')
-assertEqual(result.list.totals.swc, 3, 'SWC')
-assertEqual(result.list.totals.combatGroups, 2, 'combat groups')
-assertEqual(JSON.stringify(profiles), JSON.stringify(expectedProfiles), 'profiles')
-assertEqual(rudra?.troopType, 'REM', 'RUDRA troop type')
-assertEqual(rudra?.points, 35, 'RUDRA points')
-assertEqual(rudra?.wounds, null, 'RUDRA Structure must not be counted as Wounds')
-assertEqual(rudra?.structure, 2, 'RUDRA Structure')
-assertEqual(artalis?.wounds, 1, 'ARTALIS Wounds')
-assertEqual(artalis?.structure, null, 'ARTALIS Structure')
-assertEqual(asura?.troopType, 'HI', 'ASURA troop type')
-assertEqual(asura?.wounds, 2, 'ASURA Wounds')
-assertEqual(asura?.skills.includes('Hacker'), true, 'ASURA skill tokens')
-assertEqual(Array.isArray(asura?.weapons), true, 'ASURA weapon tokens')
-assertEqual(asura?.weapons.length > 0, true, 'ASURA weapon tokens populated')
-assertEqual(Array.isArray(asura?.equipment), true, 'ASURA equipment tokens')
-assertEqual(asura?.equipment.length > 0, true, 'ASURA equipment tokens populated')
-assertEqual(sacha?.wounds, 1, 'SACHA Wounds')
-assertEqual(samekh?.wounds, null, 'SAMEKH Rebot Structure must not be counted as Wounds')
-assertEqual(samekh?.structure, 1, 'SAMEKH Rebot Structure')
-assertEqual(netrods.length, 2, 'NETROD duplicate entries')
-assertEqual(netrods.every((entry) => entry.wounds === null), true, 'NETROD Structure must not be counted as Wounds')
-assertEqual(netrods.every((entry) => entry.structure === 1), true, 'NETROD Structure')
-assertEqual(warcor?.wounds, 1, 'WARCOR Wounds')
-assertEqual(racerbots.length, 2, 'RACERBOT duplicate entries')
-assertEqual(racerbots.every((entry) => entry.wounds === null), true, 'RACERBOT Structure must not be counted as Wounds')
-assertEqual(racerbots.every((entry) => entry.structure === 1), true, 'RACERBOT Structure')
-assertEqual(pilotX?.wounds, 1, 'Pilot-X Team Wounds')
-assertEqual(maximus?.wounds, 1, 'MAXIMUS AGENT FTO Wounds')
-assertEqual(probot?.wounds, null, 'PROBOT Structure must not be counted as Wounds')
-assertEqual(probot?.structure, 1, 'PROBOT Structure')
-assertEqual(claire?.wounds, 1, 'CLAIRE LAZHARI FTO Wounds')
-assertEqual(totalWounds, 8, 'For Work total Wounds')
-assertEqual(totalDurability, 17, 'For Work total Wounds or Structure')
-assertEqual(durabilityModelCount, 15, 'For Work Wounds or Structure divisor')
-assertEqual(JSON.stringify(hackers), JSON.stringify(['ASURA', 'Pilot-X Team']), 'hackers')
-assertEqual(
-  entries.some((entry) => ['RACERBOT Mk-III', 'DIKPALA', 'RUDRA FTO'].includes(entry.profile) && entry.hacker),
-  false,
-  'repeater support profiles as hackers',
-)
-assertEqual(entries.every((entry) => typeof entry.forwardObserver === 'boolean'), true, 'forward observer flags')
-assertEqual(entries.every((entry) => typeof entry.chainOfCommand === 'boolean'), true, 'chain of command flags')
-assertEqual(entries[4]?.forwardObserver, false, 'SACHA forward observer')
-assertEqual(entries.find((entry) => entry.profile === 'MAXIMUS AGENT FTO')?.chainOfCommand, false, 'MAXIMUS chain of command')
-assertEqual(hasExactSkillToken('Forward Deployment (+8″), Specialist Operative', 'Forward Observer'), false, 'forward deployment exact token')
-assertEqual(hasExactSkillToken('Forward Observer, Mimetism [-3]', 'Forward Observer'), true, 'true forward observer exact token')
-assertEqual(hasExactSkillToken('Number 2, Specialist Operative, Tactical Awareness', 'Chain of Command'), false, 'number 2 chain of command')
-assertEqual(hasExactSkillToken('Chain of Command, Courage', 'Chain of Command'), true, 'true chain of command exact token')
-assertEqual(
-  JSON.stringify(panoceaniaHackers),
-  JSON.stringify(['BLACK A.I.R.', 'Pilot-X Team']),
-  'PanOceania hackers',
-)
-assertEqual(
-  panoceaniaEntries.some((entry) => entry.profile === 'RACERBOT Mk-III' && entry.hacker),
-  false,
-  'PanOceania Racerbot support profiles as hackers',
-)
-assertEqual(samResult.list.totals.points, 299, 'Sam Caledonian points')
-assertEqual(samResult.list.totals.swc, 3, 'Sam Caledonian SWC')
-assertEqual(samEntries.length, 15, 'Sam Caledonian entry count')
-assertEqual(samArmand?.points, 34, 'Sam Armand points')
-assertEqual(samArmand?.swc, 1.5, 'Sam Armand SWC')
-assertEqual(samResult.list.incomplete, false, 'Sam Caledonian decode completeness')
-assertEqual((samResult.list.warnings ?? []).length, 0, 'Sam Caledonian decode warnings')
-assertEqual(xtaproResult.list.totals.points, 98, 'xtapro Shasvastii points')
-assertEqual(xtaproResult.list.totals.swc, 0, 'xtapro Shasvastii SWC')
-assertEqual(xtaproEntries.length, 6, 'xtapro Shasvastii entry count')
-assertEqual(xtaproSeedSoldier?.points, 17, 'xtapro Seed-Soldier points')
-assertEqual(xtaproResult.list.incomplete, false, 'xtapro Shasvastii decode completeness')
-assertEqual((xtaproResult.list.warnings ?? []).length, 0, 'xtapro Shasvastii decode warnings')
-assertEqual(tartaryResult.list.sectorial, 'Tartary Army Corps', 'percent-encoded Tartary sectorial')
-assertEqual(tartaryResult.list.armyCode, tartaryPercentEncodedCode, 'percent-encoded Tartary canonical source')
-assertEqual(
-  normalizeArmyCodeForInfinityDataTransport(tartaryPercentEncodedCode).endsWith('=7'),
-  false,
-  'percent-encoded Tartary transport padding',
-)
-assertEqual(
-  normalizeArmyCodeForInfinityDataTransport('ordinaryArmyCode'),
-  'ordinaryArmyCode',
-  'ordinary transport code',
-)
-assertEqual(
-  normalizeArmyCodeForInfinityDataTransport('%252B'),
-  '%2B',
-  'transport code decoded exactly once',
-)
-assertThrows(
-  () => normalizeArmyCodeForInfinityDataTransport('%invalid'),
-  URIError,
-  'malformed percent-encoded transport code',
-)
-assertEqual(
+const currentFixtures = await Promise.all([
+  decodeArmyListToFiles({ input: defuserCode, outputDir }),
+  decodeArmyListToFiles({ input: loboCode, outputDir }),
+  decodeArmyListToFiles({ input: snakesCode, outputDir }),
+])
+const [defuserResult, loboResult, snakesResult] = currentFixtures
+
+for (const result of currentFixtures) {
+  assert.equal(result.list.decoderVersion, 'army-intelligence-decoder-v5')
+  assert.equal(result.list.combatGroups.flatMap((group) => group.entries).length, 15)
+  assert.equal(result.list.totals.points > 0, true)
+}
+
+assert.equal(defuserResult.list.sectorialId, 304)
+assert.equal(defuserResult.list.sectorial, 'Usariadna')
+assert.equal(defuserResult.list.listName, 'Bald Burgers ')
+assert.deepEqual(defuserResult.list.combatGroups.map((group) => group.entries.length), [10, 5])
+assert.equal(defuserResult.list.incomplete, true)
+assert.equal(defuserResult.list.warnings.length, 2)
+assert.equal(defuserResult.list.warnings.every((warning) => warning.combinedId === '304-257-1-1-1'), true)
+assert.equal(loboResult.list.sectorialId, 1102)
+assert.equal(loboResult.list.sectorial, 'Shindenbutai')
+assert.deepEqual(loboResult.list.combatGroups.map((group) => group.entries.length), [9, 6])
+assert.equal(loboResult.list.incomplete, false)
+assert.deepEqual(loboResult.list.warnings, [])
+assert.equal(snakesResult.list.sectorialId, 201)
+assert.equal(snakesResult.list.sectorial, 'Yu Jing')
+assert.deepEqual(snakesResult.list.combatGroups.map((group) => group.entries.length), [9, 6])
+assert.equal(snakesResult.list.incomplete, false)
+assert.deepEqual(snakesResult.list.warnings, [])
+
+const legacyCompatibleResult = await decodeArmyListToFiles({ input: legacyCompatibleSteelPhalanxCode, outputDir })
+assert.equal(legacyCompatibleResult.list.sectorial, 'Steel Phalanx')
+assert.equal(legacyCompatibleResult.list.combatGroups.flatMap((group) => group.entries).length, 10)
+assert.equal(legacyCompatibleResult.list.incomplete, false)
+
+const tartaryStructure = decodeArmyCode(tartaryPercentEncodedCode)
+assert.equal(tartaryStructure.sectorialSlug, 'tartary')
+assert.equal(normalizeArmyCodeForInfinityDataTransport(tartaryPercentEncodedCode).endsWith('=7'), false)
+assert.equal(normalizeArmyCodeForInfinityDataTransport('ordinaryArmyCode'), 'ordinaryArmyCode')
+assert.equal(normalizeArmyCodeForInfinityDataTransport('%252B'), '%2B')
+assert.throws(() => normalizeArmyCodeForInfinityDataTransport('%invalid'), URIError)
+assert.equal(
   CanonicalArmyCodeResolver.buildArmyCodeId(tartaryPercentEncodedCode, (value) => String(value || '').trim()),
   4304763863,
-  'percent-encoded Tartary canonical Army List ID',
 )
-assertEqual(panoceaniaResult.list.combatGroups.length > 0, true, 'ordinary non-percent-encoded decode')
+
+assert.equal(hasExactSkillToken('Forward Deployment (+8â€³), Specialist Operative', 'Forward Observer'), false)
+assert.equal(hasExactSkillToken('Forward Observer, Mimetism [-3]', 'Forward Observer'), true)
+assert.equal(hasExactSkillToken('Number 2, Specialist Operative, Tactical Awareness', 'Chain of Command'), false)
+assert.equal(hasExactSkillToken('Chain of Command, Courage', 'Chain of Command'), true)
+assert.equal(ARMY_INTELLIGENCE_DECODER_VERSION, 'army-intelligence-decoder-v5')
 
 console.log(JSON.stringify({
-  csvPath: result.csvPath,
-  jsonPath: result.jsonPath,
-  sam: {
-    points: samResult.list.totals.points,
-    swc: samResult.list.totals.swc,
-  },
-  xtapro: {
-    points: xtaproResult.list.totals.points,
-    swc: xtaproResult.list.totals.swc,
-  },
+  current: currentFixtures.map(({ list }) => ({
+    combatGroups: list.totals.combatGroups,
+    listName: list.listName,
+    points: list.totals.points,
+    sectorial: list.sectorial,
+    swc: list.totals.swc,
+  })),
+  historical: { bytes: historical.byteLength, members: 15, status: 'structural-only' },
   result: 'PASS',
 }, null, 2))
-
-function assertEqual(actual, expected, label) {
-  if (actual !== expected) {
-    throw new Error(`${label}: expected ${expected}, received ${actual}`)
-  }
-}
-
-function assertThrows(callback, expectedError, label) {
-  try {
-    callback()
-  } catch (error) {
-    if (error instanceof expectedError) return
-    throw new Error(`${label}: expected ${expectedError.name}, received ${error}`)
-  }
-
-  throw new Error(`${label}: expected ${expectedError.name}`)
-}

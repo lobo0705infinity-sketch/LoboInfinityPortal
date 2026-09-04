@@ -476,7 +476,7 @@ assert.match(
 )
 assert.match(
   decoder,
-  /ARMY_INTELLIGENCE_DECODER_VERSION = 'army-intelligence-decoder-v4'/,
+  /ARMY_INTELLIGENCE_DECODER_VERSION = 'army-intelligence-decoder-v5'/,
   'Standalone decoder must define the current Army Intelligence decoder version.',
 )
 assert.match(
@@ -2485,7 +2485,7 @@ function isCurrentSnapshot(snapshot, armyCodeHash) {
   return (
     snapshot.armyCodeHash === armyCodeHash &&
     snapshot.status === 'decoded' &&
-    snapshot.decoded?.decoderVersion === 'army-intelligence-decoder-v4' &&
+    snapshot.decoded?.decoderVersion === 'army-intelligence-decoder-v5' &&
     snapshotHasCompleteProfileMetadata(snapshot)
   )
 }
