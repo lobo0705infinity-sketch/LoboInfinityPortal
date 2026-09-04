@@ -13,6 +13,7 @@ import type { PublicGame } from '../src/public/snapshotTypes.ts'
 
 const root = fileURLToPath(new URL('../', import.meta.url))
 const app = readFileSync(`${root}src/public/SnapshotPublicApp.tsx`, 'utf8')
+const css = readFileSync(`${root}src/public/SnapshotPublicApp.css`, 'utf8')
 const nav = readFileSync(`${root}src/components/sidebarNavigation.ts`, 'utf8')
 const assets = readdirSync(`${root}public/assets/faction-profile-heroes`).filter((file) => file.endsWith('.png'))
 const active = CANONICAL_ARMY_REGISTRY.filter((army) => army.active)
@@ -59,5 +60,9 @@ assert.deepEqual(buildFactionPlayerPerformance(pano).map((row) => [row.player, r
 assert.deepEqual(summarizeFactionObservations([]), { games: 0, wins: 0, losses: 0, draws: 0, winRate: 0, averageTP: 0, averageOP: 0, averageVP: 0 })
 assert.match(app, /MissionCatalogNavigation mission={m} catalog={catalog}/)
 assert.doesNotMatch(app.match(/function FactionProfile[\s\S]*?function Missions/)?.[0] ?? '', /fetch\(|UrlFetchApp|apiClient/)
+assert.match(css, /\.snapshot-faction-directory\s*{[^}]*grid-auto-rows:\s*max-content;[^}]*align-content:\s*start;/s)
+assert.match(css, /\.snapshot-faction-group\s*{[^}]*grid-template-rows:\s*auto auto;[^}]*align-content:\s*start;/s)
+assert.match(css, /\.snapshot-faction-directory-grid\s*{[^}]*grid-auto-rows:\s*max-content;[^}]*align-items:\s*stretch;/s)
+assert.match(css, /\.snapshot-faction-directory-card\s*{[^}]*align-content:\s*start;[^}]*min-height:\s*0;[^}]*height:\s*auto;/s)
 
 console.log('Faction Directory/Profile regression passed (45 active factions; faction-side analytics; snapshot-only runtime).')
