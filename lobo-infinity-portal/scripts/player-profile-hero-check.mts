@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { createHash } from 'node:crypto'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { createServer } from 'vite'
 import { chromium, type Page } from 'playwright'
@@ -12,6 +13,7 @@ const assetDirectory = new URL('../public/assets/player-profile-heroes/', import
 const expected = new Map<string, string>([
   ['ALEPH', 'aleph.png'], ['Ariadna', 'ariadna.png'], ['PanOceania', 'panoceania.png'], ['Yu Jing', 'yu-jing.png'],
   ['Haqqislam', 'haqqislam.png'], ['Nomads', 'nomads.png'], ['Combined Army', 'combined-army.png'],
+  ['Military Orders', 'military-orders-43f4197b.png'],
   ['Tohaa', 'tohaa.png'], ['Hassassin Bahram', 'hassassin-bharam.png'],
   ['Morat Aggression Force', 'morat-agrression-force.png'],
   ['Neoterra Capitaline Army', 'neocapitaline-army.png'], ['Tartary Army Corps', 'tartary-army-korps.png'],
@@ -51,6 +53,11 @@ const reachableFiles = new Set([
 ])
 assert.deepEqual(assets.filter((file) => !reachableFiles.has(file)), [], 'every approved asset is reachable')
 for (const file of assets) assert.equal(existsSync(new URL(file, assetDirectory)), true)
+assert.equal(
+  createHash('sha256').update(readFileSync(new URL('military-orders-43f4197b.png', assetDirectory))).digest('hex').toUpperCase(),
+  '43F4197B711C7576A125D50990D828B5D12CA254A9842E4B6171550C94E74C51',
+  'Military Orders must resolve to the newly approved Player Profile artwork bytes',
+)
 
 const canonicalWithoutArtwork = CANONICAL_ARMY_REGISTRY
   .filter((army) => army.active)
@@ -79,6 +86,7 @@ async function verifyRenderedProfiles() {
   try {
     await verifyProfile(browser.newPage({ viewport: { width: 1280, height: 900 } }), port, 'ALEPH', 'aleph.png')
     await verifyProfile(browser.newPage({ viewport: { width: 1024, height: 900 } }), port, 'Tartary Army Corps', 'tartary-army-korps.png')
+    await verifyProfile(browser.newPage({ viewport: { width: 1280, height: 900 } }), port, 'Military Orders', 'military-orders-43f4197b.png')
     await verifyProfile(browser.newPage({ viewport: { width: 390, height: 844 } }), port, 'No Army Selected', 'no-army.png')
     const failedPage = await browser.newPage({ viewport: { width: 1280, height: 900 } })
     await mockSnapshot(failedPage, 'ALEPH')

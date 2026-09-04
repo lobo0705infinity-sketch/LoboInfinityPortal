@@ -32,7 +32,7 @@ const canonicalHeroFiles = {
   'Japanese Secessionist Army': 'jsa.png',
   'Kestrel Colonial Force': 'kestrel.png',
   Kosmoflot: 'kosmoflot.png',
-  'Military Orders': 'military-orders.png',
+  'Military Orders': 'military-orders-43f4197b.png',
   'Morat Aggression Force': 'morat-agrression-force.png',
   'Neoterra Capitaline Army': 'neocapitaline-army.png',
   'Next Wave': 'next-wave.png',
