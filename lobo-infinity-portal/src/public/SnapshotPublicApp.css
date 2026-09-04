@@ -40,6 +40,149 @@
   font-size: 0.82rem;
 }
 
+.snapshot-mission-profile {
+  align-content: start;
+}
+
+.snapshot-mission-profile-header {
+  margin-bottom: 0;
+}
+
+.snapshot-mission-dossier {
+  display: grid;
+  grid-template-columns: minmax(250px, 0.72fr) minmax(0, 1.28fr);
+  gap: 0.85rem;
+  align-items: stretch;
+}
+
+.snapshot-mission-identity {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1rem 1.1rem;
+  border-color: rgba(76, 201, 240, 0.28);
+  background:
+    linear-gradient(145deg, rgba(76, 201, 240, 0.1), transparent 62%),
+    var(--panel);
+}
+
+.snapshot-mission-identity .eyebrow,
+.snapshot-mission-identity h2,
+.snapshot-mission-identity > p {
+  margin: 0;
+}
+
+.snapshot-mission-identity h2 {
+  margin-top: 0.22rem;
+  color: var(--text-strong, #f6f9fc);
+  font-size: clamp(1.45rem, 2.6vw, 2.15rem);
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.snapshot-mission-identity > p:not(.eyebrow) {
+  margin-top: 0.65rem;
+  color: var(--text-soft);
+  line-height: 1.45;
+}
+
+.snapshot-mission-profile .snapshot-mission-geist-link a,
+.snapshot-mission-profile .snapshot-mission-geist-versions summary {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(76, 201, 240, 0.42);
+  border-radius: 8px;
+  padding: 0.55rem 0.85rem;
+  color: #f8fbff;
+  background: rgba(76, 201, 240, 0.12);
+  text-decoration: none;
+}
+
+.snapshot-mission-profile .snapshot-mission-geist-versions summary {
+  width: fit-content;
+}
+
+.snapshot-mission-primary-metrics,
+.snapshot-mission-primary-metrics .snapshot-metric-grid {
+  min-width: 0;
+  height: 100%;
+}
+
+.snapshot-mission-primary-metrics .snapshot-metric-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.snapshot-mission-primary-metrics .snapshot-metric-card {
+  min-height: 0;
+  padding: 0.78rem 0.88rem 0.82rem 1rem;
+}
+
+.snapshot-mission-context {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  padding: 0.85rem 1rem;
+}
+
+.snapshot-mission-context div {
+  min-width: 0;
+  padding: 0 1rem;
+  border-left: 1px solid rgba(76, 201, 240, 0.14);
+}
+
+.snapshot-mission-context div:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.snapshot-mission-context dt {
+  color: var(--text-muted);
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.snapshot-mission-context dd {
+  margin: 0.32rem 0 0;
+  color: var(--text-strong, #f6f9fc);
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 820px) {
+  .snapshot-mission-dossier {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .snapshot-mission-primary-metrics .snapshot-metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .snapshot-mission-context {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+
+  .snapshot-mission-context div,
+  .snapshot-mission-context div:first-child {
+    padding: 0 0 0.7rem;
+    border-width: 0 0 1px;
+    border-style: solid;
+    border-color: rgba(76, 201, 240, 0.14);
+  }
+
+  .snapshot-mission-context div:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+}
+
 .snapshot-player-profile-hero {
   width: 100%;
   margin: 0;

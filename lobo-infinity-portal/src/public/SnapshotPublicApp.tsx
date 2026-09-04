@@ -10,6 +10,7 @@ import { resolvePlayerProfileHero, type PlayerProfileHeroArtwork } from '../conf
 import { CANONICAL_ARMY_REGISTRY } from '../config/armies'
 import { resolveFactionProfileHero, type FactionProfileHeroArtwork } from '../config/factionProfileHeroArtwork'
 import { buildFactionMissionPerformance, buildFactionPlayerPerformance, getFactionGameObservations, summarizeFactionObservations, type FactionGameObservation } from './factionAnalytics'
+import { buildMissionFactionPerformance, getMissionGames } from './missionProfileAnalytics'
 import type { PublicArmyList, PublicCommunity, PublicEvent, PublicFaction, PublicGame, PublicMission, PublicPlayer, PublicSchedule, PublicStanding, PublicStandingsDivision, PublicStatistics, PublicTeamTournamentStanding } from './snapshotTypes'
 import './SnapshotPublicApp.css'
 
@@ -242,7 +243,43 @@ function FactionPlayersTable({players}:{players:ReturnType<typeof buildFactionPl
 function FactionRecentGames({observations}:{observations:FactionGameObservation[]}){return <Panel title="Recent Games">{observations.length?<div className="table-wrapper snapshot-table-shell"><table className="snapshot-data-table"><thead><tr><th>Date</th><th>Player</th><th>Opponent</th><th>Opponent Faction</th><th>Mission</th><th>Result</th><th>TP</th><th>OP</th><th>VP</th></tr></thead><tbody>{observations.map(r=><tr key={`${r.game.id}-${r.player}`}><td>{formatDate(r.game.date)}</td><td><Link to={`/players/${encodeURIComponent(r.player)}`}>{r.playerName}</Link></td><td>{r.opponentName}</td><td>{r.opponentFaction}</td><td><Link to={`/missions/${encodeURIComponent(r.game.mission)}`}>{r.game.mission}</Link></td><td>{r.result}</td><td>{formatOptionalScore(r.tp)}</td><td>{formatOptionalScore(r.op)}</td><td>{formatOptionalScore(r.vp)}</td></tr>)}</tbody></table></div>:<PublicEmptyState message="No recent games are available for this faction."/>}</Panel>}
 function Missions(){const missions=useSnapshotData<PublicMission[]>('missions');const events=useSnapshotData<PublicEvent[]>('events');const games=useSnapshotData<PublicGame[]>('games');const catalog=useSnapshotData<MissionGeistCatalog>('mission-catalog');return <DataGate states={[missions,events,games,catalog]}>{()=><MissionsDirectory missions={missions.data!} events={events.data!} games={games.data!} catalog={catalog.data!.missions}/>}</DataGate>}
 function MissionsDirectory({missions,events,games,catalog}:{missions:PublicMission[];events:PublicEvent[];games:PublicGame[];catalog:MissionGeistCatalogMission[]}){const[selectedEventId,setSelectedEventId]=useState('all');const missionNamesForSelectedEvent=new Set(selectedEventId==='all'?missions.map(mission=>mission.mission):games.filter(game=>game.eventId===selectedEventId).map(game=>game.mission));const visibleMissions=missions.filter(mission=>missionNamesForSelectedEvent.has(mission.mission));return <main className="portal-shell snapshot-public-page snapshot-missions-page" data-page="missions"><header className="snapshot-missions-hero" aria-labelledby="missions-title"><p className="eyebrow">Lobo Infinity Portal</p><h1 id="missions-title">Missions</h1></header><section className="snapshot-missions-controls" aria-label="Mission directory filters"><label htmlFor="missions-event-filter">Event:</label><select id="missions-event-filter" value={selectedEventId} onChange={event=>setSelectedEventId(event.target.value)}><option value="all">All Events</option>{events.map(event=><option key={event.id} value={event.id}>{event.name}</option>)}</select></section><section className="panel snapshot-missions-table-panel" aria-label="Mission directory">{visibleMissions.length?<div className="table-wrapper"><table className="snapshot-data-table"><thead><tr><th>Mission</th><th>Games Played</th><th>First-Turn Win Rate</th></tr></thead><tbody>{visibleMissions.map(mission=><tr key={mission.mission}><td><Link to={`/missions/${encodeURIComponent(mission.mission)}`}>{mission.mission}</Link><MissionCatalogNavigation mission={mission} catalog={catalog}/></td><td>{mission.games}</td><td>{formatPercent(mission.firstTurnWinRate)}</td></tr>)}</tbody></table></div>:<PublicEmptyState message="No missions are available for this event in the current snapshot."/>}</section></main>}
-function MissionProfile(){const {missionName=''}=useParams();const state=useSnapshotData<PublicMission[]>('missions');const catalog=useSnapshotData<MissionGeistCatalog>('mission-catalog');return <DataGate states={[state,catalog]}>{()=>{const m=state.data!.find(x=>x.mission===decodeURIComponent(missionName));if(!m)return <Missing label="Mission"/>;return <Page title={m.mission} eyebrow="Mission Profile"><MissionCatalogNavigation mission={m} catalog={catalog.data!.missions}/><MetricGrid items={[['Games',m.games],['Average TP',formatMissionAverage(m.averageTP)],['Average OP',formatMissionAverage(m.averageOP)],['Average VP',formatMissionAverage(m.averageVP)],['First-turn Win Rate',formatPercent(m.firstTurnWinRate)],['Most Successful Faction',m.mostSuccessfulFaction],['Most Played Faction',m.mostPlayedFaction],['Last Played',formatDate(m.lastPlayed)]]}/></Page>}}</DataGate>}
+function MissionProfile(){
+  const {missionName=''}=useParams()
+  const state=useSnapshotData<PublicMission[]>('missions')
+  const games=useSnapshotData<PublicGame[]>('games')
+  const catalog=useSnapshotData<MissionGeistCatalog>('mission-catalog')
+  return <DataGate states={[state,games,catalog]}>{()=>{
+    const m=state.data!.find(x=>x.mission===decodeURIComponent(missionName))
+    if(!m)return <Missing label="Mission"/>
+    const missionGames=getMissionGames(m.mission,games.data!)
+    const factionPerformance=buildMissionFactionPerformance(m.mission,games.data!)
+    return <main className="portal-shell snapshot-public-page snapshot-mission-profile" data-page="mission-profile">
+      <section className="page-header snapshot-mission-profile-header"><p className="eyebrow">Mission Profile</p><h1>{m.mission}</h1></section>
+      <section className="snapshot-mission-dossier">
+        <article className="panel snapshot-mission-identity">
+          <p className="eyebrow">Mission Intelligence</p>
+          <h2>{m.mission}</h2>
+          <p>{m.games ? m.games+' recorded '+(m.games===1?'game':'games')+' across the Lobo Infinity League.' : 'No games recorded yet for this mission.'}</p>
+          <MissionCatalogNavigation mission={m} catalog={catalog.data!.missions}/>
+        </article>
+        <div className="snapshot-mission-primary-metrics"><MetricGrid items={[['Games',m.games],['Average TP',formatMissionAverage(m.averageTP)],['Average OP',formatMissionAverage(m.averageOP)],['Average VP',formatMissionAverage(m.averageVP)],['First-turn Win Rate',formatPercent(m.firstTurnWinRate)]]}/></div>
+      </section>
+      <dl className="panel snapshot-mission-context">
+        <div><dt>Most Successful Faction</dt><dd>{m.mostSuccessfulFaction||'—'}</dd></div>
+        <div><dt>Most Played Faction</dt><dd>{m.mostPlayedFaction||'—'}</dd></div>
+        <div><dt>Last Played</dt><dd>{formatDate(m.lastPlayed)}</dd></div>
+      </dl>
+      <MissionFactionPerformanceTable rows={factionPerformance}/>
+      <MissionRecentGames games={missionGames.slice(0,10)}/>
+    </main>
+  }}</DataGate>
+}
+function MissionFactionPerformanceTable({rows}:{rows:ReturnType<typeof buildMissionFactionPerformance>}){
+  return <Panel title="Faction Performance">{rows.length?<div className="table-wrapper snapshot-table-shell"><table className="snapshot-data-table"><thead><tr><th>Faction</th><th>Games</th><th>W-L-D</th><th>Win %</th></tr></thead><tbody>{rows.map(row=><tr key={row.faction}><td><Link to={'/factions/'+encodeURIComponent(row.faction)}>{row.faction}</Link></td><td>{row.games}</td><td>{row.wins}-{row.losses}-{row.draws}</td><td>{formatPercent(row.winRate)}</td></tr>)}</tbody></table></div>:<PublicEmptyState message="No faction performance is available for this mission yet."/>}</Panel>
+}
+function MissionRecentGames({games}:{games:PublicGame[]}){
+  return <Panel title="Recent Games on This Mission">{games.length?<div className="table-wrapper snapshot-table-shell"><table className="snapshot-data-table"><thead><tr><th>Game</th><th>Date</th><th>Players</th><th>Faction Matchup</th><th>Winner</th><th>TP</th><th>OP</th><th>VP</th></tr></thead><tbody>{games.map(game=><tr key={game.id}><td><Link className="snapshot-game-link" to={'/games/'+game.id}>#{game.id}</Link></td><td>{formatDate(game.date)}</td><td>{game.player1DisplayName}<span className="snapshot-versus">vs</span>{game.player2DisplayName}</td><td>{game.player1Faction}<span className="snapshot-versus">vs</span>{game.player2Faction}</td><td>{game.winnerDisplayName||game.winner||'Draw'}</td><td>{game.tp}</td><td>{game.op}</td><td>{game.vp}</td></tr>)}</tbody></table></div>:<PublicEmptyState message="No games have been recorded for this mission yet."/>}</Panel>
+}
 
 function Compare(){const players=useSnapshotData<PublicPlayer[]>('players');const [params,setParams]=useSearchParams();return <DataGate states={[players]}>{()=>{const left=params.get('left')||players.data![0]?.player||'';const right=params.get('right')||players.data![1]?.player||'';const selected=[players.data!.find(p=>p.player===left),players.data!.find(p=>p.player===right)];return <Page title="Compare Players" eyebrow="Snapshot comparison"><div className="snapshot-filter-row">{[left,right].map((value,index)=><select key={index} value={value} onChange={e=>{const next=new URLSearchParams(params);next.set(index?'right':'left',e.target.value);setParams(next)}}>{players.data!.map(p=><option key={p.player} value={p.player}>{p.displayName}</option>)}</select>)}</div><div className="snapshot-compare-grid">{selected.map(p=>p?<Panel key={p.player} title={p.displayName}><MetricGrid items={[['Games',p.games],['Wins',p.wins],['TP',p.tp],['OP',p.op],['VP',p.vp]]}/></Panel>:null)}</div></Page>}}</DataGate>}
 function Rivalries(){const games=useSnapshotData<PublicGame[]>('games');return <DataGate states={[games]}>{()=>{const pairs=new Map<string,{players:string;games:number}>();for(const g of games.data!){const names=[g.winnerDisplayName,g.loserDisplayName].sort();const key=names.join('|');const row=pairs.get(key)??{players:names.join(' vs '),games:0};row.games++;pairs.set(key,row)}return <Page title="Rivalries" eyebrow="Head-to-head history"><CardGrid>{[...pairs.values()].sort((a,b)=>b.games-a.games).slice(0,30).map(r=><article className="panel snapshot-card" key={r.players}><h2>{r.players}</h2><p>{r.games} games</p></article>)}</CardGrid></Page>}}</DataGate>}

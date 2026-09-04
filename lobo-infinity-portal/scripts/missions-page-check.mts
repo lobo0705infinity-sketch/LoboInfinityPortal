@@ -2,9 +2,12 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import vm from 'node:vm'
 import { resolveMissionGeistNavigation } from '../src/config/missionGeistNavigation.ts'
+import { buildMissionFactionPerformance, getMissionGames } from '../src/public/missionProfileAnalytics.ts'
+import type { PublicGame } from '../src/public/snapshotTypes.ts'
 
 const exporter = fs.readFileSync('backend/PublicSnapshotExporter.gs', 'utf8')
 const publicApp = fs.readFileSync('src/public/SnapshotPublicApp.tsx', 'utf8')
+const publicCss = fs.readFileSync('src/public/SnapshotPublicApp.css', 'utf8')
 
 function extract(source: string, name: string) {
   const start = source.indexOf(`function ${name}`)
@@ -81,4 +84,30 @@ assert.match(publicApp, /\['Games',m\.games\]/)
 assert.match(publicApp, /\['First-turn Win Rate',formatPercent\(m\.firstTurnWinRate\)\]/)
 assert.match(publicApp, /function MetricGrid\(\{items\}[\s\S]*<strong>\{value\|\|'—'\}<\/strong>/)
 
-console.log('PASS: Missions page winner-only averages and snapshot-native Mission Geist navigation')
+const profileGames = [
+  { id: 1, mission: 'Profile Mission', date: '2026-01-01', player1: 'one', player1DisplayName: 'One', player1Faction: 'Faction A', player2: 'two', player2DisplayName: 'Two', player2Faction: 'Faction B', winner: 'one', winnerDisplayName: 'One', tp: '5-1', op: '8-3', vp: '250-100' },
+  { id: 2, mission: 'Profile Mission', date: '2026-01-02', player1: 'three', player1DisplayName: 'Three', player1Faction: 'Faction C', player2: 'one', player2DisplayName: 'One', player2Faction: 'Faction A', winner: 'three', winnerDisplayName: 'Three', tp: '5-2', op: '9-4', vp: '275-150' },
+  { id: 3, mission: 'Other Mission', date: '2026-01-03', player1: 'one', player1DisplayName: 'One', player1Faction: 'Faction A', player2: 'two', player2DisplayName: 'Two', player2Faction: 'Faction B', winner: 'one', winnerDisplayName: 'One', tp: '5-1', op: '8-3', vp: '250-100' },
+] as PublicGame[]
+assert.deepEqual(getMissionGames('Profile Mission', profileGames).map((game) => game.id), [2, 1])
+const profileFactions = buildMissionFactionPerformance('Profile Mission', profileGames)
+assert.deepEqual(profileFactions.map(({ faction, games, wins, losses, draws }) => ({ faction, games, wins, losses, draws })), [
+  { faction: 'Faction A', games: 2, wins: 1, losses: 1, draws: 0 },
+  { faction: 'Faction C', games: 1, wins: 1, losses: 0, draws: 0 },
+  { faction: 'Faction B', games: 1, wins: 0, losses: 1, draws: 0 },
+])
+assert.deepEqual(getMissionGames('No Games', profileGames), [])
+assert.deepEqual(buildMissionFactionPerformance('No Games', profileGames), [])
+
+assert.match(publicApp, /data-page="mission-profile"/)
+assert.match(publicApp, /className="snapshot-mission-dossier"/)
+assert.match(publicApp, /Mission Intelligence/)
+assert.match(publicApp, /title="Faction Performance"/)
+assert.match(publicApp, /title="Recent Games on This Mission"/)
+assert.match(publicApp, /useSnapshotData<PublicGame\[]>\('games'\)/)
+assert.equal((publicApp.match(/function MissionsDirectory/g) || []).length, 1, 'Missions directory must remain intact')
+assert.doesNotMatch(fs.readFileSync('src/public/missionProfileAnalytics.ts', 'utf8'), /preferredArmy|favoriteFaction/)
+assert.match(publicCss, /\.snapshot-mission-profile\s*\{\s*align-content:\s*start;/)
+assert.match(publicCss, /@media \(max-width:\s*820px\)[\s\S]*\.snapshot-mission-dossier\s*\{\s*grid-template-columns:\s*1fr;/)
+
+console.log('PASS: compact Mission Profile dossier, mission-side faction performance, recent games, winner-only averages, and snapshot-native Mission Geist navigation')
