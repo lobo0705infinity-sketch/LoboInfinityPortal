@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs'
 
 const read = (path) => readFileSync(path, 'utf8')
 const app = read('src/App.tsx')
+const snapshotApp = read('src/public/SnapshotPublicApp.tsx')
 const css = read('src/App.css')
 const header = read('src/components/Header.tsx')
 const bottom = read('src/components/MobileBottomNavigation.tsx')
@@ -10,6 +11,8 @@ const menu = read('src/pages/MobileMenu.tsx')
 const sidebar = read('src/components/sidebarNavigation.ts')
 
 assert.match(app, /path="\/menu"[\s\S]*?<MobileMenu/)
+assert.match(snapshotApp, /const MobileMenu = lazy\(\(\) => import\('\.\.\/pages\/MobileMenu'\)\)/)
+assert.match(snapshotApp, /path="\/menu"[\s\S]*?<MobileMenu/)
 assert.match(app, /<MobileBottomNavigation \/>/)
 assert.doesNotMatch(header, /MobileNavigationDrawer|mobile-menu-button|isMobileMenuOpen|body\.style\.position|scrollTo\(scrollX/)
 assert.doesNotMatch(app, /MobileNavigationDrawer/)
@@ -41,7 +44,7 @@ assert.match(css, /env\(safe-area-inset-bottom, 0px\)/)
 assert.match(css, /padding-bottom: calc\(var\(--mobile-nav-height\) \+ var\(--mobile-safe-bottom\) \+ 18px\)/)
 assert.doesNotMatch(css, /@media \(min-width: 921px\)[\s\S]*?\.mobile-bottom-navigation[\s\S]*?display: (?:grid|flex)/)
 
-for (const route of ['/', '/submit-game', '/players', '/hall-of-fame', '/compare', '/missions', '/streams', '/army-intelligence']) {
+for (const route of ['/', '/submit-game', '/league-operations', '/players', '/factions', '/missions', '/streams', '/army-intelligence']) {
   assert.ok(sidebar.includes(`to: '${route}'`), `${route} must remain canonical navigation metadata`)
 }
 

@@ -16,6 +16,7 @@ import './SnapshotPublicApp.css'
 const SubmitResult = lazy(() => import('../pages/SubmitResult'))
 const SubmitArmyList = lazy(() => import('../pages/SubmitArmyList'))
 const Rules = lazy(() => import('../pages/Rules'))
+const MobileMenu = lazy(() => import('../pages/MobileMenu'))
 
 export default function SnapshotPublicApp() {
   return <Routes>
@@ -33,6 +34,7 @@ export default function SnapshotPublicApp() {
     <Route path="/factions/:name" element={<FactionProfile />} />
     <Route path="/faction/:name" element={<FactionProfile />} />
     <Route path="/missions" element={<Missions />} />
+    <Route path="/menu" element={<Suspense fallback={<Loading />}><MobileMenu /></Suspense>} />
     <Route path="/missions/:missionName" element={<MissionProfile />} />
     <Route path="/mission/:missionName" element={<MissionProfile />} />
     <Route path="/compare" element={<Compare />} />
