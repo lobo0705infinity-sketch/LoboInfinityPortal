@@ -21,6 +21,9 @@
   --shadow-soft: 0 24px 54px rgba(0, 0, 0, 0.46);
   --shadow-panel: 0 12px 30px rgba(0, 0, 0, 0.34);
   --shadow-glow: 0 0 0 1px rgba(76, 201, 240, 0.22), 0 18px 42px rgba(0, 0, 0, 0.42);
+  --portal-content-standard: 1480px;
+  --portal-content-profile: 1320px;
+  --portal-content-wide: 1800px;
   display: grid;
   grid-template-columns: 300px minmax(0, 1fr);
   min-height: 100vh;
@@ -12206,6 +12209,34 @@ a {
 
   .mobile-navigation-event-selector {
     width: 100%;
+  }
+}
+
+/* Deliberate desktop page widths; the mobile shell remains full-width. */
+@media (min-width: 921px) {
+  .portal-shell {
+    width: min(100%, var(--portal-content-standard));
+    margin-inline: auto;
+  }
+
+  .portal-shell:is(
+      .snapshot-player-profile,
+      .snapshot-faction-profile,
+      .snapshot-mission-profile
+    ) {
+    width: min(100%, var(--portal-content-profile));
+  }
+
+  .portal-shell:is(
+      .snapshot-current-league-standings,
+      .snapshot-event-page,
+      .snapshot-intelligence-page,
+      .army-intelligence-page,
+      .event-overview-shell,
+      .game-center-page,
+      .score-correction-page
+    ) {
+    width: min(100%, var(--portal-content-wide));
   }
 }
 
