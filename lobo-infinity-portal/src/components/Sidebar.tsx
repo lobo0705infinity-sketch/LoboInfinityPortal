@@ -8,6 +8,7 @@ import {
 } from '../config/eventNavigation'
 import LeagueCrest from './LeagueCrest'
 import PortalIcon from './PortalIcon'
+import SponsorCredit from './SponsorCredit'
 import {
   authenticatedTopLevelItems,
   commissionerItems,
@@ -80,12 +81,15 @@ function Sidebar() {
 
   return (
     <aside className="sidebar" aria-label="Portal navigation">
-      <div className="sidebar-brand">
-        <LeagueCrest compact />
-        <div>
-          <strong>Lobo</strong>
-          <small>Infinity League</small>
+      <div className="sidebar-brand-stack">
+        <div className="sidebar-brand">
+          <LeagueCrest compact />
+          <div>
+            <strong>Lobo</strong>
+            <small>Infinity League</small>
+          </div>
         </div>
+        <SponsorCredit placement="sidebar" />
       </div>
 
       <nav className="sidebar-nav" aria-label="Portal sections">

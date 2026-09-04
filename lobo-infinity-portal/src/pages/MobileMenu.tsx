@@ -4,6 +4,7 @@ import { useAuth } from '../auth/AuthContext'
 import { getDiscordCommunityLink } from '../config/communityLinks'
 import { buildCapabilityNavigation, type EventNavigationConfig } from '../config/eventNavigation'
 import PortalIcon from '../components/PortalIcon'
+import SponsorCredit from '../components/SponsorCredit'
 import {
   authenticatedTopLevelItems,
   commissionerItems,
@@ -57,6 +58,8 @@ function MobileMenu() {
         <h1>More</h1>
         <p>Every league, event, community, and Commissioner destination in one place.</p>
       </header>
+
+      <SponsorCredit placement="mobile-menu" />
 
       <nav className="mobile-navigation-directory" aria-label="Complete portal navigation">
         <MenuSection items={playItems} label="Play" />

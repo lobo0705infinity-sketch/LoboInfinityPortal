@@ -60,6 +60,7 @@
     "responsive:check": "node scripts/responsive-regression.mjs",
     "test:responsive-shell": "node scripts/responsive-shell-breakpoint-check.mjs",
     "test:mobile-navigation": "node scripts/mobile-navigation-check.mjs",
+    "test:sponsor-backlink": "node scripts/sponsor-backlink-check.mjs",
     "test:mission-map-navigation": "node scripts/mission-map-navigation-check.mjs",
     "test:page-analytics": "node --experimental-strip-types scripts/page-analytics-check.mts",
     "api:init-order": "node scripts/api-init-order-check.mjs",

@@ -10114,6 +10114,69 @@ a {
   scroll-margin-top: 88px;
 }
 
+.sidebar-brand-stack {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.sponsor-credit {
+  display: grid;
+  gap: 0.18rem;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 750;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.sponsor-credit > span {
+  display: block;
+}
+
+.sponsor-credit a {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.14rem;
+  color: var(--blue);
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-decoration-color: rgba(76, 201, 240, 0.45);
+  text-underline-offset: 0.2em;
+}
+
+.sponsor-credit a:hover,
+.sponsor-credit a:focus-visible {
+  color: var(--text);
+  text-decoration-color: var(--blue);
+}
+
+.sponsor-credit--sidebar {
+  margin-inline: 0.5rem;
+  padding: 0.1rem 0.25rem 0;
+}
+
+.sponsor-credit--mobile-menu {
+  margin-inline: clamp(0.65rem, 3vw, 1rem);
+  border: 1px solid rgba(76, 201, 240, 0.16);
+  border-radius: 12px;
+  padding: 0.8rem 0.9rem;
+  background: rgba(8, 13, 19, 0.7);
+}
+
+.sponsor-credit--mobile-menu a {
+  min-height: 44px;
+  align-items: center;
+  padding-block: 0.45rem;
+}
+
+@media (max-width: 1024px) {
+  .sponsor-credit--sidebar {
+    display: none;
+  }
+}
+
 /* Current League Rules only: preserve the existing rulebook text and anchors. */
 .current-league-rules-page {
   background:
