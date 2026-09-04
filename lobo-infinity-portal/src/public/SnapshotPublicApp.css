@@ -1859,6 +1859,30 @@ main.snapshot-event-page[data-event="team-tournament-standings"] > .snapshot-tea
   object-position: center 13%;
 }
 
+main.snapshot-event-page[data-event="team-tournament-results"] > .snapshot-team-tournament-results-hero {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid rgba(76, 201, 240, 0.2);
+  border-radius: 18px;
+  background: #05080c;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.3);
+}
+
+main.snapshot-event-page[data-event="team-tournament-results"] > .snapshot-team-tournament-results-hero img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+@media (max-width: 600px) {
+  main.snapshot-event-page[data-event="team-tournament-results"] > .snapshot-team-tournament-results-hero {
+    border-radius: 12px;
+  }
+}
+
 main.snapshot-event-page[data-event="team-tournament-standings"] > .snapshot-tabs {
   gap: 0.28rem;
   min-height: 0;
