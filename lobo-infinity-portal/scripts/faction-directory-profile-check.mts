@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { createHash } from 'node:crypto'
 import { readFileSync, readdirSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { CANONICAL_ARMY_REGISTRY } from '../src/config/armies.ts'
@@ -16,6 +17,7 @@ const app = readFileSync(`${root}src/public/SnapshotPublicApp.tsx`, 'utf8')
 const css = readFileSync(`${root}src/public/SnapshotPublicApp.css`, 'utf8')
 const nav = readFileSync(`${root}src/components/sidebarNavigation.ts`, 'utf8')
 const assets = readdirSync(`${root}public/assets/faction-profile-heroes`).filter((file) => file.endsWith('.png'))
+const directoryHero = readFileSync(`${root}public/assets/faction-directory/faction-header-59140cf3.png`)
 const active = CANONICAL_ARMY_REGISTRY.filter((army) => army.active)
 
 assert.equal(active.length, 45)
@@ -25,6 +27,12 @@ assert.equal(active.some((army) => army.name === 'Spiral Corps'), false)
 assert.match(nav, /label:\s*'Factions',\s*to:\s*'\/factions'/)
 assert.match(app, /CANONICAL_ARMY_REGISTRY\.filter\(\(army\) => army\.active\)|CANONICAL_ARMY_REGISTRY\.filter\(a=>a\.active\)/)
 assert.match(app, /stats\?\.games\?\?0/)
+assert.match(app, /function Factions\(\)[\s\S]*?data-page="factions"[\s\S]*?snapshot-factions-directory-hero/)
+assert.match(app, /src="\/assets\/faction-directory\/faction-header-59140cf3\.png"/)
+assert.doesNotMatch(app.match(/function Factions\(\)[\s\S]*?function FactionProfile/)?.[0] ?? '', /<Page title="Factions"/)
+assert.equal(createHash('sha256').update(directoryHero).digest('hex'), '59140cf33e73ce661cf6edda612e614a6243ae9b78a970eaad99f6c6fcc6e413')
+assert.match(css, /\.snapshot-factions-directory-hero\s*\{[^}]*max-width:\s*1320px;[^}]*margin:\s*0 auto;[^}]*overflow:\s*hidden;/s)
+assert.match(css, /\.snapshot-factions-directory-hero img\s*\{[^}]*width:\s*100%;[^}]*height:\s*auto;[^}]*object-fit:\s*contain;/s)
 assert.match(app, /resolveFactionProfileHero\(factionName\)/)
 assert.match(app, /assets\/faction-profile-heroes|resolveFactionProfileHero/)
 assert.doesNotMatch(app.match(/function FactionProfile[\s\S]*?function Missions/)?.[0] ?? '', /resolvePlayerProfileHero/)

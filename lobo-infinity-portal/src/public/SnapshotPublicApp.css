@@ -207,6 +207,24 @@
   gap: 1rem;
 }
 
+.snapshot-factions-directory-hero {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid rgba(76, 201, 240, 0.2);
+  border-radius: 18px;
+  background: #05080c;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.3);
+}
+
+.snapshot-factions-directory-hero img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
 .snapshot-faction-group {
   display: grid;
   grid-template-rows: auto auto;
@@ -318,6 +336,10 @@
 }
 
 @media (max-width: 600px) {
+  .snapshot-factions-directory-hero {
+    border-radius: 12px;
+  }
+
   .snapshot-faction-profile-hero {
     border-radius: 12px;
   }
