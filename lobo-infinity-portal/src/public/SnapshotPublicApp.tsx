@@ -76,7 +76,7 @@ function Dashboard() {
     ].filter((program): program is { tone: string; event: PublicEvent; to: string; action: string } => Boolean(program.event))
     const quickAccess = [
       ['Players', '/players'], ['Standings', '/standings?eventId=event-current-league'], ['Games', '/games'], ['Factions', '/factions'], ['Missions', '/missions'],
-      ['Schedule', '/event/event-current-league/schedule'], ['Community', '/community'], ['Streams', '/streams'], ['Events', '/events'], ['Submit Game', '/submit-game']
+      ['Schedule', '/event/event-current-league/schedule'], ['Streams', '/streams'], ['Submit Game', '/submit-game']
     ] as const
     return <Page title="Lobo Infinity Portal" eyebrow="Current public snapshot" intro="Lobo Infinity Portal community command network.">
       <section className="snapshot-dashboard-section snapshot-dashboard-programs" aria-labelledby="dashboard-programs-title">

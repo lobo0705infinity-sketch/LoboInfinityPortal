@@ -6,8 +6,11 @@ const publicApp = read('src/public/SnapshotPublicApp.tsx')
 const armyIntelligence = read('src/public/SnapshotArmyIntelligence.tsx')
 const client = read('src/services/publicSnapshot.ts')
 const lightApi = read('src/services/lightApi.ts')
+const quickAccessSource = publicApp.match(/const quickAccess = \[([\s\S]*?)\]\s+as const/)?.[1] ?? ''
+const quickAccessEntries = [...quickAccessSource.matchAll(/\['([^']+)', '([^']+)'\]/g)].map((match) => `${match[1]}:${match[2]}`)
+const expectedQuickAccess = ['Players:/players', 'Standings:/standings?eventId=event-current-league', 'Games:/games', 'Factions:/factions', 'Missions:/missions', 'Schedule:/event/event-current-league/schedule', 'Streams:/streams', 'Submit Game:/submit-game']
 
-const requiredRoutes = ['/', '/players', '/players/:playerName', '/games/:id', '/standings', '/factions', '/missions', '/compare', '/rivalries', '/analytics', '/hall-of-fame', '/army-lists', '/army-intelligence', '/schedule', '/community', '/event/:eventId', '/submit-game', '/army-lists/submit']
+const requiredRoutes = ['/', '/players', '/players/:playerName', '/games/:id', '/standings', '/factions', '/missions', '/compare', '/rivalries', '/analytics', '/hall-of-fame', '/army-lists', '/army-intelligence', '/schedule', '/community', '/events', '/event/:eventId', '/submit-game', '/army-lists/submit']
 const checks = [
   [app.includes('!commissionerRoute ? <SnapshotPublicApp />'), 'public/Commissioner route separation'],
   [!publicApp.includes("../services/api") && !publicApp.includes('apiClient'), 'no legacy public API controller'],
@@ -19,6 +22,8 @@ const checks = [
   [!lightApi.includes("request('searchIndex'"), 'local snapshot search'],
   [!lightApi.includes("request('notifications'"), 'snapshot community notifications'],
   [publicApp.includes('<SnapshotArmyIntelligence />') && armyIntelligence.includes("'army-intelligence-detail'"), 'lazy Army Intelligence detail'],
+  [JSON.stringify(quickAccessEntries) === JSON.stringify(expectedQuickAccess), 'Dashboard Quick Access has exactly the approved eight destinations'],
+  [!quickAccessEntries.some((entry) => entry.startsWith('Community:') || entry.startsWith('Events:')), 'Dashboard Quick Access excludes Community and Events'],
   ...requiredRoutes.map((route) => [publicApp.includes(`path=\"${route}\"`), `route ${route}`]),
 ]
 
