@@ -64,5 +64,11 @@ assert.match(css, /\.snapshot-faction-directory\s*{[^}]*grid-auto-rows:\s*max-co
 assert.match(css, /\.snapshot-faction-group\s*{[^}]*grid-template-rows:\s*auto auto;[^}]*align-content:\s*start;/s)
 assert.match(css, /\.snapshot-faction-directory-grid\s*{[^}]*grid-auto-rows:\s*max-content;[^}]*align-items:\s*stretch;/s)
 assert.match(css, /\.snapshot-faction-directory-card\s*{[^}]*align-content:\s*start;[^}]*min-height:\s*0;[^}]*height:\s*auto;/s)
+assert.match(app, /army\.type==='Vanilla'\?' snapshot-faction-directory-card--vanilla':''/)
+assert.match(css, /\.snapshot-faction-group h2::after\s*{[^}]*linear-gradient/s)
+assert.match(css, /calc\(\(100% - 4\.25rem\) \/ 6\)/)
+assert.match(css, /\.snapshot-faction-directory-card--vanilla\s*{[^}]*border-color:[^}]*box-shadow:/s)
+assert.match(css, /\.snapshot-faction-directory-card > \.eyebrow\s*{[^}]*opacity:\s*0\.7;/s)
+assert.match(css, /\.snapshot-faction-directory-card dl\s*{[^}]*border-top:/s)
 
 console.log('Faction Directory/Profile regression passed (45 active factions; faction-side analytics; snapshot-only runtime).')
