@@ -10363,6 +10363,52 @@ a {
   }
 }
 
+/* Team Tournament Rules only: mirror the established framed Rules artwork treatment. */
+.team-tournament-rules-page {
+  background:
+    radial-gradient(circle at 80% 12%, rgba(201, 157, 66, 0.08), transparent 32%),
+    var(--portal-bg);
+}
+
+.team-tournament-rules-page > .page-header {
+  position: relative;
+  min-height: 0;
+  aspect-ratio: 1672 / 941;
+  margin: 0 clamp(18px, 4vw, 46px) clamp(0.7rem, 1.35vw, 1rem);
+  overflow: hidden;
+  padding: 0;
+  border-color: rgba(193, 146, 66, 0.34);
+  border-radius: 12px;
+  background-color: #090a08;
+  background-image: url("./assets/team-tournament-rules-hero.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(193, 49, 64, 0.1);
+}
+
+.team-tournament-rules-page > .page-header::before,
+.team-tournament-rules-page > .page-header::after {
+  display: none;
+}
+
+.team-tournament-rules-page > .page-header > * {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .team-tournament-rules-page > .page-header {
+    background-size: contain;
+  }
+}
+
 .match-report {
   background:
     radial-gradient(circle at 12% 0, rgba(76, 201, 240, 0.08), transparent 28%),

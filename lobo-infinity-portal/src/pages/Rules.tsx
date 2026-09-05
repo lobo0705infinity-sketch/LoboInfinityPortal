@@ -42,9 +42,14 @@ function Rules() {
   const rulebook =
     loadedRulebook?.id === rulebookId ? loadedRulebook.rulebook : null
   const sections = useMemo(() => rulebook?.sections ?? [], [rulebook])
+  const pageClassName = eventId === 'event-current-league'
+    ? ' current-league-rules-page'
+    : rulebookId === 'teamTournament'
+      ? ' team-tournament-rules-page'
+      : ''
 
   return (
-    <main className={`portal-shell${eventId === 'event-current-league' ? ' current-league-rules-page' : ''}`}>
+    <main className={`portal-shell${pageClassName}`}>
       <section className="page-header" aria-labelledby="rules-title">
         <p className="eyebrow">{rulebook?.eventType ?? 'Rules Reference'}</p>
         <h1 id="rules-title">{rulebook?.title ?? eventConfig.label}</h1>
