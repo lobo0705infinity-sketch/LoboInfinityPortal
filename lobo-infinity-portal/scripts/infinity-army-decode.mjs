@@ -32,20 +32,13 @@ export async function decodeArmyListToFiles({
   jsonPath,
   csvPath,
   outputDir = defaultOutputDir,
+  signal,
 } = {}) {
-  if (!input) {
-    throw new Error('Missing required --input value.')
-  }
-
-  const armyCode = normalizeArmyCodeInput(input)
-  const codeData = decodeArmyCode(armyCode)
-  const html = await fetchInfinityDataOverview(armyCode)
-  const resolved = parseInfinityDataOverview(html)
-  const list = buildStructuredList(armyCode, codeData, resolved)
+  const list = await decodeArmyList({ input, signal })
   const csv = toCsv(list)
 
   const safeName = slugify(list.listName || list.sectorial || 'army-list')
-  const codeHash = createHash('sha256').update(armyCode).digest('hex').slice(0, 12)
+  const codeHash = createHash('sha256').update(list.armyCode).digest('hex').slice(0, 12)
   const finalJsonPath = resolve(jsonPath || outputDir, jsonPath ? '' : `${safeName}-${codeHash}.json`)
   const finalCsvPath = resolve(csvPath || outputDir, csvPath ? '' : `${safeName}-${codeHash}.csv`)
 
@@ -59,6 +52,18 @@ export async function decodeArmyListToFiles({
     jsonPath: finalJsonPath,
     list,
   }
+}
+
+export async function decodeArmyList({ input, signal } = {}) {
+  if (!input) {
+    throw new Error('Missing required --input value.')
+  }
+
+  const armyCode = normalizeArmyCodeInput(input)
+  const codeData = decodeArmyCode(armyCode)
+  const html = await fetchInfinityDataOverview(armyCode, signal)
+  const resolved = parseInfinityDataOverview(html)
+  return buildStructuredList(armyCode, codeData, resolved)
 }
 
 export function normalizeArmyCodeInput(input) {
@@ -211,7 +216,7 @@ export function decodeArmyCode(input) {
   }
 }
 
-async function fetchInfinityDataOverview(armyCode) {
+async function fetchInfinityDataOverview(armyCode, signal) {
   const url = new URL(`${infinityDataBaseUrl.replace(/\/+$/, '')}/generate`)
   url.searchParams.set('armyData', normalizeArmyCodeForInfinityDataTransport(armyCode))
   url.searchParams.set('unit', 'inch')
@@ -221,6 +226,7 @@ async function fetchInfinityDataOverview(armyCode) {
 
   const response = await fetch(url, {
     redirect: 'follow',
+    signal,
     headers: {
       accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     },

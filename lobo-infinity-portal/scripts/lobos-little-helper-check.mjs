@@ -21,6 +21,7 @@ import {
 } from '../bot/lobos-little-helper.mjs'
 import { GatewayIntentBits } from 'discord.js'
 import { MISSION_COMMAND_DEFINITION } from '../bot/mission-command.mjs'
+import { INF_ID_COMMAND_DEFINITION } from '../bot/inf-id-command.mjs'
 
 const testCode = 'QUJDRA=='
 const readableImageBuffer = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x02])
@@ -47,6 +48,9 @@ assert.deepEqual(REQUIRED_INTENTS, [
 assert.equal(MISSION_COMMAND_DEFINITION.name, 'mission')
 assert.equal(MISSION_COMMAND_DEFINITION.options[0].name, 'scenario')
 assert.equal(MISSION_COMMAND_DEFINITION.options[0].required, true)
+assert.equal(INF_ID_COMMAND_DEFINITION.name, 'inf-id')
+assert.equal(INF_ID_COMMAND_DEFINITION.options[0].name, 'army-code')
+assert.equal(INF_ID_COMMAND_DEFINITION.options[0].required, true)
 assert.deepEqual(parseInfListCommand(`!!inf-list\r\n ${testCode}\r\n`), { armyCode: testCode })
 assert.equal(parseInfListCommand('!!inf-list-c anything'), null)
 assert.equal(parseInfListCommand('!!inf anything'), null)

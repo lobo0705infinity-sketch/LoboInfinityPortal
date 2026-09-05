@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
 import { createInfListMessageHandler } from './inf-list-command.mjs'
 import { createMissionInteractionHandler, ensureMissionCommand } from './mission-command.mjs'
+import { createInfIdInteractionHandler, ensureInfIdCommand } from './inf-id-command.mjs'
 
 export const BOT_NAME = "Lobo's Little Helper"
 export const DISCORD_TOKEN_ENV = 'DISCORD_BOT_TOKEN'
@@ -18,8 +19,10 @@ export function createLobosLittleHelper() {
   const client = new Client({ intents: REQUIRED_INTENTS })
   const handleMessage = createInfListMessageHandler()
   const handleMission = createMissionInteractionHandler()
+  const handleInfId = createInfIdInteractionHandler()
   client.on(Events.MessageCreate, handleMessage)
   client.on(Events.InteractionCreate, handleMission)
+  client.on(Events.InteractionCreate, handleInfId)
   client.on(Events.Error, () => {
     process.stderr.write(`${BOT_NAME} encountered a Discord client error.\n`)
   })
@@ -32,10 +35,11 @@ export async function startLobosLittleHelper({ token = process.env[DISCORD_TOKEN
   await client.login(token)
   try {
     const commands = await ensureMissionCommand(client)
+    const infIdCommands = await ensureInfIdCommand(client)
     const guildIds = [...client.guilds.cache.keys()]
-    process.stdout.write(`${BOT_NAME} ready: botUserId=${client.user.id} applicationId=${client.application.id} guildIds=${guildIds.join(',') || 'none'} interactionListeners=${client.listenerCount(Events.InteractionCreate)} missionCommands=${commands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'}\n`)
+    process.stdout.write(`${BOT_NAME} ready: botUserId=${client.user.id} applicationId=${client.application.id} guildIds=${guildIds.join(',') || 'none'} interactionListeners=${client.listenerCount(Events.InteractionCreate)} missionCommands=${commands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} infIdCommands=${infIdCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'}\n`)
   } catch {
-    process.stderr.write(`${BOT_NAME} could not register /mission.\n`)
+    process.stderr.write(`${BOT_NAME} could not register slash commands.\n`)
   }
   return client
 }
@@ -50,7 +54,7 @@ async function run() {
   await startLobosLittleHelper()
 }
 
-const INF_LIST_DESCRIPTION = 'ready for !!inf-list and /mission (not connected in dry-run mode)'
+const INF_LIST_DESCRIPTION = 'ready for !!inf-list, /mission, and /inf-id (not connected in dry-run mode)'
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
   await run()
