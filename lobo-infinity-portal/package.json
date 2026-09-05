@@ -107,6 +107,7 @@
     "test:army-diagnostics": "node scripts/army-diagnostics-check.mjs",
     "test:army-identity": "node --experimental-strip-types scripts/army-identity-check.ts",
     "test:army-intelligence": "node scripts/army-intelligence-check.mjs",
+    "test:lobos-little-helper": "node scripts/lobos-little-helper-check.mjs",
     "test:army-intelligence-scoped": "node --experimental-strip-types scripts/army-intelligence-scoped-contract-check.mts",
     "test:army-intelligence-refresh-cache": "node scripts/army-intelligence-refresh-cache-invalidation-check.mjs",
     "test:army-intelligence-streams-swr": "node scripts/army-intelligence-streams-swr-check.mjs",
@@ -174,6 +175,7 @@
   },
   "dependencies": {
     "@vercel/blob": "^2.8.0",
+    "discord.js": "^14.27.0",
     "firebase": "^12.15.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",

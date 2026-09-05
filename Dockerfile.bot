@@ -2,10 +2,10 @@ FROM node:24.13.0-bookworm-slim
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY lobo-infinity-portal/package.json lobo-infinity-portal/package-lock.json ./
 RUN npm ci
 RUN npx playwright install --with-deps chromium
 
-COPY . .
+COPY lobo-infinity-portal/ .
 
 CMD ["node", "bot/lobos-little-helper.mjs"]
