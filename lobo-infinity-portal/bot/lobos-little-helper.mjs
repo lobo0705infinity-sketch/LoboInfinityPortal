@@ -31,8 +31,9 @@ export async function startLobosLittleHelper({ token = process.env[DISCORD_TOKEN
   const client = createLobosLittleHelper()
   await client.login(token)
   try {
-    await ensureMissionCommand(client)
-    process.stdout.write(`${BOT_NAME} registered /mission and is ready.\n`)
+    const commands = await ensureMissionCommand(client)
+    const guildIds = [...client.guilds.cache.keys()]
+    process.stdout.write(`${BOT_NAME} ready: botUserId=${client.user.id} applicationId=${client.application.id} guildIds=${guildIds.join(',') || 'none'} interactionListeners=${client.listenerCount(Events.InteractionCreate)} missionCommands=${commands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'}\n`)
   } catch {
     process.stderr.write(`${BOT_NAME} could not register /mission.\n`)
   }

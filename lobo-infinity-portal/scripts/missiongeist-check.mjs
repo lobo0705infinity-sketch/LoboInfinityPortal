@@ -12,7 +12,7 @@ import {
   resolveMissionQuery,
   validateCanonicalMissionUrl,
 } from './missiongeist-scenarios.mjs'
-import { createMissionInteractionHandler, MISSION_COMMAND_DEFINITION } from '../bot/mission-command.mjs'
+import { createMissionInteractionHandler, ensureMissionCommand, MISSION_COMMAND_DEFINITION } from '../bot/mission-command.mjs'
 
 const fixtureListing = {
   contentHash: 'test', generatedAt: '2026-09-05T00:00:00Z', seasons: [
@@ -29,6 +29,7 @@ const fixtureMissions = flattenMissionGeistListing(fixtureListing)
 
 assert.equal(MISSION_COMMAND_DEFINITION.name, 'mission')
 assert.equal(MISSION_COMMAND_DEFINITION.options[0].required, true)
+await testGuildCommandRegistration()
 assert.equal(normalizeMissionName('  HIGHLY—Classified! '), 'highly classified')
 assert.equal(normalizeMissionName('Capture &   Protect'), 'capture and protect')
 for (const query of ['Supplies', 'supplies', 'SUPPLIES']) {
@@ -144,6 +145,30 @@ async function testInteractionResponses() {
   })
   assert.equal(attachmentReplies[0].files.length, 10, 'Discord attachment batch stays within ten files')
   assert.equal(attachmentFollowUps[0].files.length, 1, 'overflow attachments continue in order')
+}
+
+async function testGuildCommandRegistration() {
+  const deletedGlobals = []
+  const createdGuildCommands = []
+  const globalMission = { name: 'mission', delete: async () => deletedGlobals.push('mission') }
+  const client = {
+    application: { commands: { fetch: async () => [globalMission] } },
+    guilds: { cache: new Map([['guild-1', {
+      id: 'guild-1',
+      commands: {
+        fetch: async () => [],
+        create: async (definition) => {
+          createdGuildCommands.push(definition)
+          return { applicationId: 'app-1', guildId: 'guild-1', id: 'command-1' }
+        },
+      },
+    }]]) },
+  }
+  const commands = await ensureMissionCommand(client)
+  assert.equal(createdGuildCommands.length, 1, 'mission is registered in the bot guild')
+  assert.equal(createdGuildCommands[0].name, 'mission')
+  assert.deepEqual(deletedGlobals, ['mission'], 'only the obsolete global mission command is removed')
+  assert.deepEqual(commands, [{ applicationId: 'app-1', guildId: 'guild-1', id: 'command-1' }])
 }
 
 async function testCacheReuseAndConcurrency() {

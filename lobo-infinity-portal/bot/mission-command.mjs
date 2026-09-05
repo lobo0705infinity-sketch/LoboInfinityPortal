@@ -16,17 +16,28 @@ export const MISSION_COMMAND_DEFINITION = Object.freeze({
 })
 
 export async function ensureMissionCommand(client) {
-  if (!client?.application?.commands) return false
-  const commands = await client.application.commands.fetch()
-  const existing = commands.find((command) => command.name === MISSION_COMMAND)
-  if (!existing) await client.application.commands.create(MISSION_COMMAND_DEFINITION)
-  else if (existing.description !== MISSION_COMMAND_DEFINITION.description
-    || existing.options?.length !== MISSION_COMMAND_DEFINITION.options.length
-    || existing.options?.[0]?.name !== MISSION_OPTION
-    || existing.options?.[0]?.required !== true) {
-    await existing.edit(MISSION_COMMAND_DEFINITION)
+  if (!client?.application?.commands || !client?.guilds?.cache) return false
+  const guildCommands = []
+  for (const guild of client.guilds.cache.values()) {
+    const commands = await guild.commands.fetch()
+    let command = commands.find((candidate) => candidate.name === MISSION_COMMAND)
+    if (!command) command = await guild.commands.create(MISSION_COMMAND_DEFINITION)
+    else if (!commandMatchesDefinition(command)) command = await command.edit(MISSION_COMMAND_DEFINITION)
+    guildCommands.push({ applicationId: command.applicationId, guildId: guild.id, id: command.id })
   }
-  return true
+
+  const globalCommands = await client.application.commands.fetch()
+  const obsoleteGlobal = globalCommands.find((command) => command.name === MISSION_COMMAND)
+  if (obsoleteGlobal) await obsoleteGlobal.delete()
+  return guildCommands
+}
+
+function commandMatchesDefinition(command) {
+  return command.description === MISSION_COMMAND_DEFINITION.description
+    && command.options?.length === MISSION_COMMAND_DEFINITION.options.length
+    && command.options?.[0]?.name === MISSION_OPTION
+    && command.options?.[0]?.required === true
+    && command.options?.[0]?.type === ApplicationCommandOptionType.String
 }
 
 export function createMissionInteractionHandler({
