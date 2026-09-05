@@ -4,6 +4,27 @@ import { resolve } from 'node:path'
 const width = 2480
 const height = 3508
 const tileCapacity = 15
+export const A4_PDF_WIDTH_POINTS = (210 / 25.4) * 72
+export const A4_PDF_HEIGHT_POINTS = (297 / 25.4) * 72
+const PDF_ROUNDING_INSET_POINTS = 1
+
+export function calculatePdfImagePlacement(imageWidth, imageHeight, pageWidth = A4_PDF_WIDTH_POINTS, pageHeight = A4_PDF_HEIGHT_POINTS) {
+  const scale = Math.min(pageWidth / imageWidth, pageHeight / imageHeight)
+  const renderedWidth = imageWidth * scale
+  const renderedHeight = imageHeight * scale
+  return {
+    scale,
+    renderedWidth,
+    renderedHeight,
+    x: (pageWidth - renderedWidth) / 2,
+    y: (pageHeight - renderedHeight) / 2,
+  }
+}
+
+export function calculateA4PdfImagePlacement(imageWidth, imageHeight) {
+  const contained = calculatePdfImagePlacement(imageWidth, imageHeight, A4_PDF_WIDTH_POINTS - (PDF_ROUNDING_INSET_POINTS * 2), A4_PDF_HEIGHT_POINTS - (PDF_ROUNDING_INSET_POINTS * 2))
+  return { ...contained, x: contained.x + PDF_ROUNDING_INSET_POINTS, y: contained.y + PDF_ROUNDING_INSET_POINTS }
+}
 
 export async function renderIdentificationSheet({ army, entries, fireteams, fireteamMatches, outputDir, browser }) {
   await mkdir(outputDir, { recursive: true })
@@ -23,12 +44,25 @@ export async function renderIdentificationSheet({ army, entries, fireteams, fire
       const path = resolve(outputDir, name); await writeFile(path, buffer); outputPages.push({ path, name, buffer, width, height })
     }
     const pdfPath = resolve(outputDir, 'infinity-identification-sheet.pdf')
-    await page.pdf({ path: pdfPath, format: 'A4', printBackground: true, margin: { top: 0, right: 0, bottom: 0, left: 0 } })
+    await writeRasterPagesPdf({ browser, outputPages, pdfPath })
     const pdfBuffer = await readFile(pdfPath)
     const overflow = await page.locator('.page').evaluateAll((nodes) => nodes.map((node) => ({ clientHeight: node.clientHeight, scrollHeight: node.scrollHeight, clientWidth: node.clientWidth, scrollWidth: node.scrollWidth })))
     if (overflow.some((item) => item.scrollHeight - item.clientHeight > 1 || item.scrollWidth - item.clientWidth > 1)) throw new Error(`Identification sheet content overflowed its A4 page: ${JSON.stringify(overflow)}`)
     return { pages: outputPages, pdf: { path: pdfPath, name: 'infinity-identification-sheet.pdf', buffer: pdfBuffer }, pageCount: pages.length, tileCount: entries.length }
   } finally { await page.close() }
+}
+
+async function writeRasterPagesPdf({ browser, outputPages, pdfPath }) {
+  const pdfPage = await browser.newPage()
+  try {
+    const placement = calculateA4PdfImagePlacement(width, height)
+    const images = outputPages.map(({ buffer }) => `<section class="pdf-page"><img src="data:image/png;base64,${buffer.toString('base64')}" alt=""></section>`).join('')
+    const pdfMarkup = `<!doctype html><html><head><meta charset="utf-8"><style>@page{size:210mm 297mm;margin:0}*{box-sizing:border-box}html,body{margin:0;padding:0}.pdf-page{position:relative;width:${A4_PDF_WIDTH_POINTS}pt;height:${A4_PDF_HEIGHT_POINTS}pt;overflow:hidden;break-after:page;page-break-after:always}.pdf-page:last-child{break-after:auto;page-break-after:auto}.pdf-page img{position:absolute;left:${placement.x}pt;top:${placement.y}pt;width:${placement.renderedWidth}pt;height:${placement.renderedHeight}pt;display:block}</style></head><body>${images}</body></html>`
+    await pdfPage.setContent(pdfMarkup, { waitUntil: 'load' })
+    await pdfPage.pdf({ path: pdfPath, width: '210mm', height: '297mm', preferCSSPageSize: true, printBackground: true, margin: { top: 0, right: 0, bottom: 0, left: 0 } })
+  } finally {
+    await pdfPage.close()
+  }
 }
 
 function documentMarkup({ army, pages, fireteams, fireteamMatches }) {
