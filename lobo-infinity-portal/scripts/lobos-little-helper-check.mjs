@@ -20,6 +20,7 @@ import {
   createLobosLittleHelper,
 } from '../bot/lobos-little-helper.mjs'
 import { GatewayIntentBits } from 'discord.js'
+import { MISSION_COMMAND_DEFINITION } from '../bot/mission-command.mjs'
 
 const testCode = 'QUJDRA=='
 const readableImageBuffer = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x02])
@@ -43,6 +44,9 @@ assert.deepEqual(REQUIRED_INTENTS, [
   GatewayIntentBits.GuildMessages,
   GatewayIntentBits.MessageContent,
 ])
+assert.equal(MISSION_COMMAND_DEFINITION.name, 'mission')
+assert.equal(MISSION_COMMAND_DEFINITION.options[0].name, 'scenario')
+assert.equal(MISSION_COMMAND_DEFINITION.options[0].required, true)
 assert.deepEqual(parseInfListCommand(`!!inf-list\r\n ${testCode}\r\n`), { armyCode: testCode })
 assert.equal(parseInfListCommand('!!inf-list-c anything'), null)
 assert.equal(parseInfListCommand('!!inf anything'), null)
@@ -128,7 +132,7 @@ if (process.argv.includes('--live')) {
   }
 }
 
-console.log(`PASS - ${BOT_NAME} implements only !!inf-list${process.argv.includes('--live') ? ' with live renderer coverage' : ''}.`)
+console.log(`PASS - ${BOT_NAME} preserves !!inf-list and registers /mission${process.argv.includes('--live') ? ' with live renderer coverage' : ''}.`)
 
 function mockMessage(content, author = { bot: false }) {
   return {
