@@ -111,7 +111,41 @@ export async function renderInfListPng({ input, outputPath, browserType = chromi
 
   const browser = await browserType.launch({ headless: true })
   try {
-    const page = await browser.newPage({ deviceScaleFactor: 1, viewport: { width: 1200, height: 1600 } })
+    const primary = await captureRenderedOverview(browser, rendererViewUrl, { deviceScaleFactor: 1 })
+    let readable = null
+    try {
+      readable = await captureRenderedOverview(browser, rendererViewUrl, { deviceScaleFactor: 2 })
+    } catch {
+      // The established full-list image remains usable if the additive high-resolution capture fails.
+    }
+
+    const finalOutputPath = outputPath ? resolve(outputPath) : null
+    if (finalOutputPath) {
+      await mkdir(dirname(finalOutputPath), { recursive: true })
+      await writeFile(finalOutputPath, primary.imageBuffer)
+    }
+
+    return {
+      bytes: primary.imageBuffer.length,
+      height: primary.height,
+      imageBuffer: primary.imageBuffer,
+      officialArmyUrl: buildOfficialArmyUrl(armyCode),
+      outputPath: finalOutputPath,
+      readableBytes: readable?.imageBuffer.length ?? null,
+      readableHeight: readable?.height ?? null,
+      readableImageBuffer: readable?.imageBuffer ?? null,
+      readableWidth: readable?.width ?? null,
+      rendererViewUrl: rendererViewUrl.href,
+      width: primary.width,
+    }
+  } finally {
+    await browser.close()
+  }
+}
+
+async function captureRenderedOverview(browser, rendererViewUrl, { deviceScaleFactor }) {
+  const page = await browser.newPage({ deviceScaleFactor, viewport: { width: 1200, height: 1600 } })
+  try {
     await page.goto(rendererViewUrl.href, { timeout: 30_000, waitUntil: 'networkidle' })
     if (new URL(page.url()).origin !== rendererOrigin) {
       throw new InfListRenderError('renderer_invalid_redirect', 'Rendered page left the trusted Infinity-Data origin.')
@@ -121,29 +155,17 @@ export async function renderInfListPng({ input, outputPath, browserType = chromi
     await overview.waitFor({ state: 'visible', timeout: 15_000 })
     await page.evaluate(async () => document.fonts?.ready)
     const imageBuffer = await overview.screenshot({ animations: 'disabled', timeout: 15_000, type: 'png' })
-
     const box = await overview.boundingBox()
+    const width = box ? Math.round(box.width * deviceScaleFactor) : 0
+    const height = box ? Math.round(box.height * deviceScaleFactor) : 0
+
     if (!box || box.width < 400 || box.height < 400 || imageBuffer.length < 10_000) {
       throw new InfListRenderError('invalid_render', 'Rendered Army overview is unexpectedly small.')
     }
 
-    const finalOutputPath = outputPath ? resolve(outputPath) : null
-    if (finalOutputPath) {
-      await mkdir(dirname(finalOutputPath), { recursive: true })
-      await writeFile(finalOutputPath, imageBuffer)
-    }
-
-    return {
-      bytes: imageBuffer.length,
-      height: Math.round(box.height),
-      imageBuffer,
-      officialArmyUrl: buildOfficialArmyUrl(armyCode),
-      outputPath: finalOutputPath,
-      rendererViewUrl: rendererViewUrl.href,
-      width: Math.round(box.width),
-    }
+    return { height, imageBuffer, width }
   } finally {
-    await browser.close()
+    await page.close()
   }
 }
 

@@ -75,10 +75,14 @@ export function createInfListMessageHandler({
 
     try {
       const result = await withRenderSlot(() => render({ input: armyCode }))
+      const files = [{ attachment: result.imageBuffer, name: 'infinity-army-list.png' }]
+      if (result.readableImageBuffer) {
+        files.push({ attachment: result.readableImageBuffer, name: 'infinity-army-list-readable.png' })
+      }
       await message.reply({
         allowedMentions: { repliedUser: false },
         content: `${SUCCESS_TEXT}\n\n[Open in Infinity Army](${result.officialArmyUrl})`,
-        files: [{ attachment: result.imageBuffer, name: 'infinity-army-list.png' }],
+        files,
       })
     } catch (error) {
       await message.reply(messageForError(error))

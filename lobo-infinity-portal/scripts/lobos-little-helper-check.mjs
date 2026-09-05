@@ -23,12 +23,13 @@ import { GatewayIntentBits } from 'discord.js'
 
 const testCode = 'QUJDRA=='
 const imageBuffer = Buffer.from([0x89, 0x50, 0x4e, 0x47])
+const readableImageBuffer = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x02])
 const officialArmyUrl = buildOfficialArmyUrl(testCode)
 const renderCalls = []
 const handler = createInfListMessageHandler({
   render: async ({ input }) => {
     renderCalls.push(input)
-    return { imageBuffer, officialArmyUrl }
+    return { imageBuffer, officialArmyUrl, readableImageBuffer }
   },
 })
 
@@ -50,6 +51,8 @@ assert.equal(message.replies.length, 1)
 assert.equal(message.replies[0].content, `${SUCCESS_TEXT}\n\n[Open in Infinity Army](${officialArmyUrl})`)
 assert.equal(message.replies[0].files[0].attachment, imageBuffer)
 assert.equal(message.replies[0].files[0].name, 'infinity-army-list.png')
+assert.equal(message.replies[0].files[1].attachment, readableImageBuffer)
+assert.equal(message.replies[0].files[1].name, 'infinity-army-list-readable.png')
 
 message = mockMessage('!!inf-list')
 assert.equal(await handler(message), true)
@@ -109,6 +112,10 @@ if (process.argv.includes('--live')) {
   assert.ok(Buffer.isBuffer(livePng))
   assert.equal(livePng.subarray(0, 4).toString('hex'), '89504e47')
   assert.ok(livePng.length > 10_000)
+  const readablePng = liveMessage.replies[0].files[1].attachment
+  assert.ok(Buffer.isBuffer(readablePng))
+  assert.equal(readablePng.subarray(0, 4).toString('hex'), '89504e47')
+  assert.ok(readablePng.length > livePng.length)
 }
 
 console.log(`PASS - ${BOT_NAME} implements only !!inf-list${process.argv.includes('--live') ? ' with live renderer coverage' : ''}.`)
