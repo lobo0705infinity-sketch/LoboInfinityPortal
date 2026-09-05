@@ -66,16 +66,54 @@ else console.log('MissionGeist regression passed. Add --live for live resolution
 
 async function testInteractionResponses() {
   const replies = []
+  const lifecycle = []
   const handler = createMissionInteractionHandler({
-    retrieve: async () => ({ kind: 'ambiguous', query: 'class', matches: fixtureMissions.slice(0, 2) }),
-    logger: { error() {} },
+    retrieve: async () => {
+      lifecycle.push('retrieve')
+      return { kind: 'ambiguous', query: 'class', matches: fixtureMissions.slice(0, 2) }
+    },
+    logger: { error() {}, info() {} },
   })
   const handled = await handler({
-    commandName: 'mission', deferReply: async () => {}, editReply: async (value) => replies.push(value),
+    commandName: 'mission', deferred: false,
+    deferReply: async function () { lifecycle.push('defer'); this.deferred = true },
+    editReply: async (value) => replies.push(value),
     isChatInputCommand: () => true, options: { getString: () => 'class' },
   })
   assert.equal(handled, true)
+  assert.deepEqual(lifecycle, ['defer', 'retrieve'], 'Discord acknowledgement precedes all MissionGeist work')
   assert.match(replies[0], /multiple possible missions/)
+
+  const acknowledgementReplies = []
+  const acknowledgementErrors = []
+  const acknowledgementFailureHandler = createMissionInteractionHandler({
+    retrieve: async () => assert.fail('retrieve must not run after acknowledgement failure'),
+    logger: { error: (...values) => acknowledgementErrors.push(values), info() {} },
+  })
+  await acknowledgementFailureHandler({
+    commandName: 'mission', deferred: false, replied: false,
+    deferReply: async () => { throw new Error('acknowledgement rejected') },
+    isChatInputCommand: () => true, options: { getString: () => 'Supplies' },
+    reply: async (value) => acknowledgementReplies.push(value),
+  })
+  assert.equal(acknowledgementErrors.length, 1, 'acknowledgement failure is logged')
+  assert.equal(acknowledgementReplies.length, 1, 'pre-acknowledgement failure attempts a safe initial reply')
+  assert.equal(acknowledgementReplies[0].ephemeral, true)
+
+  const deferredErrors = []
+  const deferredReplies = []
+  const deferredFailureHandler = createMissionInteractionHandler({
+    retrieve: async () => { throw new Error('capture failed') },
+    logger: { error: (...values) => deferredErrors.push(values), info() {} },
+  })
+  await deferredFailureHandler({
+    commandName: 'mission', deferred: false, replied: false,
+    deferReply: async function () { this.deferred = true },
+    editReply: async (value) => deferredReplies.push(value),
+    isChatInputCommand: () => true, options: { getString: () => 'Supplies' },
+  })
+  assert.equal(deferredErrors.length, 1)
+  assert.deepEqual(deferredReplies, ["I couldn't retrieve that MissionGeist scenario right now."])
 
   const successReplies = []
   const successHandler = createMissionInteractionHandler({ retrieve: async () => ({

@@ -36,9 +36,12 @@ export function createMissionInteractionHandler({
 } = {}) {
   return async function handleMissionInteraction(interaction) {
     if (!interaction?.isChatInputCommand?.() || interaction.commandName !== MISSION_COMMAND) return false
-    const query = interaction.options.getString(MISSION_OPTION, true).trim()
-    await interaction.deferReply()
+    let query = ''
     try {
+      query = interaction.options.getString(MISSION_OPTION, true).trim()
+      logger.info?.(`MissionGeist interaction received: ${interaction.id || 'unknown interaction'}`)
+      await interaction.deferReply()
+      logger.info?.(`MissionGeist interaction acknowledged: ${interaction.id || 'unknown interaction'}`)
       const result = await withCaptureSlot(() => retrieve({ query }))
       if (result.kind === 'ambiguous') {
         await interaction.editReply(ambiguousMessage(result))
@@ -56,10 +59,19 @@ export function createMissionInteractionHandler({
         : ''
       const message = error instanceof MissionGeistError && error.code === 'catalog_unavailable'
         ? 'MissionGeist could not be reached right now.'
-        : "I found the MissionGeist page, but couldn't generate the scenario images."
-      await interaction.editReply(`${message}${link}`)
+        : "I couldn't retrieve that MissionGeist scenario right now."
+      await sendInteractionFailure(interaction, `${message}${link}`, logger)
     }
     return true
+  }
+}
+
+async function sendInteractionFailure(interaction, message, logger) {
+  try {
+    if (interaction.deferred || interaction.replied) await interaction.editReply(message)
+    else await interaction.reply({ content: message, ephemeral: true })
+  } catch (responseError) {
+    logger.error?.('MissionGeist Discord error response failed:', responseError)
   }
 }
 

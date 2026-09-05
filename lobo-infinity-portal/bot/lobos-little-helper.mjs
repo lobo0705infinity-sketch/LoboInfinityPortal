@@ -32,6 +32,7 @@ export async function startLobosLittleHelper({ token = process.env[DISCORD_TOKEN
   await client.login(token)
   try {
     await ensureMissionCommand(client)
+    process.stdout.write(`${BOT_NAME} registered /mission and is ready.\n`)
   } catch {
     process.stderr.write(`${BOT_NAME} could not register /mission.\n`)
   }

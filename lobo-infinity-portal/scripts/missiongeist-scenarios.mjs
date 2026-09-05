@@ -187,10 +187,6 @@ export async function captureMissionGeistScenario({
         })))
     })
     await page.waitForTimeout(300)
-    await page.addStyleTag({ content: `
-      #diceToggle, #dicePanel, #toTopBtn, #feedbackModal, #patchNotesModal { display: none !important; }
-    ` })
-
     const layout = await inspectScenarioLayout(page)
     const safeHeight = Math.min(layout.height, layout.documentHeight - layout.y)
     const safeWidth = Math.min(layout.width, layout.documentWidth - layout.x)
