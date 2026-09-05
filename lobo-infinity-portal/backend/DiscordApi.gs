@@ -477,6 +477,51 @@ function buildDiscordGamePayload(game) {
   const link =
     buildDeepLink("game", game);
 
+  if (isDiscordDrawGame(game)) {
+    const participants =
+      getDiscordGameParticipants(game);
+
+    const eventName =
+      getDiscordGameEventName(game);
+
+    const fields = [
+      buildDiscordField("Open", "[View Match](" + link.url + ")", false),
+      buildDiscordField("Tournament Points", result.tp, true),
+      buildDiscordField("Objective Points", result.op, true),
+      buildDiscordField("Victory Points", result.vp, true)
+    ];
+
+    if (eventName !== "")
+      fields.push(
+        buildDiscordField("Event", eventName, false)
+      );
+
+    fields.push(
+      buildDiscordField("Date", game.date || "Not recorded", true)
+    );
+
+    return {
+      content:
+        "\u2694 " +
+        result.division +
+        " Division",
+      embeds: [
+        buildDiscordEmbed({
+          title:
+            participants.player1 +
+            " vs " +
+            participants.player2,
+          description:
+            "The game ended in a draw.\nMission: " +
+            result.mission,
+          fields: fields,
+          url:
+            link.url
+        })
+      ]
+    };
+  }
+
   return {
     content:
       "⚔ " +
@@ -505,6 +550,108 @@ function buildDiscordGamePayload(game) {
       })
     ]
   };
+
+}
+
+function isDiscordDrawGame(game) {
+
+  return [
+    game && game.gameResult,
+    game && game.result,
+    game && game.winnerDisplayName,
+    game && game.winner
+  ].some(function(value) {
+    const normalized =
+      getDiscordString(value)
+        .toLowerCase();
+
+    return (
+      normalized === "draw" ||
+      normalized === "tie" ||
+      normalized === "tied"
+    );
+  });
+
+}
+
+function getDiscordGameParticipants(game) {
+
+  game = game || {};
+
+  return {
+    player1:
+      getDiscordParticipantName([
+        game.player1DisplayName,
+        game.player1,
+        game.winnerDisplayName,
+        game.winner
+      ]) || "Unknown player 1",
+    player2:
+      getDiscordParticipantName([
+        game.player2DisplayName,
+        game.player2,
+        game.loserDisplayName,
+        game.loser
+      ]) || "Unknown player 2"
+  };
+
+}
+
+function getDiscordParticipantName(values) {
+
+  for (let index = 0; index < values.length; index += 1) {
+    const value =
+      getDiscordString(values[index]);
+
+    const normalized =
+      value.toLowerCase();
+
+    if (
+      value !== "" &&
+      normalized !== "draw" &&
+      normalized !== "tie" &&
+      normalized !== "tied"
+    )
+      return value;
+  }
+
+  return "";
+
+}
+
+function getDiscordGameEventName(game) {
+
+  const direct =
+    getDiscordString(
+      game &&
+      (game.eventName || game.event)
+    );
+
+  if (direct !== "")
+    return direct;
+
+  const eventId =
+    getDiscordString(
+      game && game.eventId
+    );
+
+  if (
+    eventId === "" ||
+    typeof getEventByIdSnapshot !== "function"
+  )
+    return "";
+
+  try {
+    const event =
+      getEventByIdSnapshot(eventId);
+
+    return getDiscordString(
+      event && event.name
+    );
+  }
+  catch (err) {
+    return "";
+  }
 
 }
 
