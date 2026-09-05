@@ -115,7 +115,9 @@ if (process.argv.includes('--live')) {
   const readablePng = liveMessage.replies[0].files[1].attachment
   assert.ok(Buffer.isBuffer(readablePng))
   assert.equal(readablePng.subarray(0, 4).toString('hex'), '89504e47')
-  assert.ok(readablePng.length > livePng.length)
+  assert.ok(readablePng.length > 10_000)
+  assert.equal(readablePng.readUInt32BE(16), 686)
+  assert.equal(readablePng.readUInt32BE(20), 651)
 }
 
 console.log(`PASS - ${BOT_NAME} implements only !!inf-list${process.argv.includes('--live') ? ' with live renderer coverage' : ''}.`)

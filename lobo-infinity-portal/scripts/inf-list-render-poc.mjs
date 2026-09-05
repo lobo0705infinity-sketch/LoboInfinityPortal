@@ -9,6 +9,11 @@ const rendererOrigin = 'https://infinity.2nirwana.de'
 const rendererPath = '/cards/generate'
 const rendererViewPattern = /^\/cards\/view\/[A-Za-z0-9-]+$/
 const officialArmyOrigin = 'https://infinitytheuniverse.com'
+const officialArmyAppOrigins = new Set([
+  officialArmyOrigin,
+  'https://infinityuniverse.com',
+])
+const officialArmyPanelSelector = '#panel_lista'
 export const MAX_ARMY_CODE_LENGTH = 4096
 
 export class InfListRenderError extends Error {
@@ -114,9 +119,9 @@ export async function renderInfListPng({ input, outputPath, browserType = chromi
     const primary = await captureRenderedOverview(browser, rendererViewUrl, { deviceScaleFactor: 1 })
     let readable = null
     try {
-      readable = await captureRenderedOverview(browser, rendererViewUrl, { deviceScaleFactor: 2 })
+      readable = await captureOfficialArmyList(browser, buildOfficialArmyUrl(armyCode))
     } catch {
-      // The established full-list image remains usable if the additive high-resolution capture fails.
+      // The established full-list image remains usable if the additive official capture fails.
     }
 
     const finalOutputPath = outputPath ? resolve(outputPath) : null
@@ -141,6 +146,59 @@ export async function renderInfListPng({ input, outputPath, browserType = chromi
   } finally {
     await browser.close()
   }
+}
+
+async function captureOfficialArmyList(browser, officialArmyUrl) {
+  const page = await browser.newPage({ deviceScaleFactor: 1, viewport: { width: 1920, height: 1080 } })
+  try {
+    await page.goto(officialArmyUrl, { timeout: 60_000, waitUntil: 'domcontentloaded' })
+    await page.waitForLoadState('networkidle', { timeout: 60_000 }).catch(() => {})
+    if (!officialArmyAppOrigins.has(new URL(page.url()).origin)) {
+      throw new InfListRenderError('renderer_invalid_redirect', 'Official Infinity Army left the trusted application origin.')
+    }
+
+    const rejectConsent = page.getByRole('button', { name: 'Reject All' })
+    if (await rejectConsent.isVisible().catch(() => false)) {
+      await rejectConsent.click()
+    }
+
+    const armyPanel = page.locator(officialArmyPanelSelector)
+    await armyPanel.waitFor({ state: 'visible', timeout: 60_000 })
+    await waitForStableArmyPanel(page, armyPanel)
+    const imageBuffer = await armyPanel.screenshot({ animations: 'disabled', timeout: 30_000, type: 'png' })
+    const box = await armyPanel.boundingBox()
+    if (!box || box.width < 500 || box.height < 300 || imageBuffer.length < 10_000) {
+      throw new InfListRenderError('invalid_render', 'Official Infinity Army list panel is unexpectedly small.')
+    }
+
+    return {
+      height: imageBuffer.readUInt32BE(20),
+      imageBuffer,
+      width: imageBuffer.readUInt32BE(16),
+    }
+  } finally {
+    await page.close()
+  }
+}
+
+async function waitForStableArmyPanel(page, armyPanel) {
+  const deadline = Date.now() + 45_000
+  let previousText = ''
+  let stableReads = 0
+
+  while (Date.now() < deadline) {
+    const text = (await armyPanel.innerText()).replace(/\s+/g, ' ').trim()
+    if (text.includes('Main Section') && text.length > 200 && text === previousText) {
+      stableReads += 1
+      if (stableReads >= 2) return
+    } else {
+      stableReads = 0
+    }
+    previousText = text
+    await page.waitForTimeout(500)
+  }
+
+  throw new InfListRenderError('renderer_timeout', 'Official Infinity Army list panel did not finish rendering.')
 }
 
 async function captureRenderedOverview(browser, rendererViewUrl, { deviceScaleFactor }) {
