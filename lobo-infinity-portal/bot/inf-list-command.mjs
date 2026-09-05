@@ -75,9 +75,15 @@ export function createInfListMessageHandler({
 
     try {
       const result = await withRenderSlot(() => render({ input: armyCode }))
-      const files = [{ attachment: result.imageBuffer, name: 'infinity-army-list.png' }]
+      const files = []
       if (result.readableImageBuffer) {
         files.push({ attachment: result.readableImageBuffer, name: 'infinity-army-list-readable.png' })
+      }
+      for (const [index, profilePage] of result.profilePages.entries()) {
+        files.push({
+          attachment: profilePage.imageBuffer,
+          name: `infinity-army-profiles-${index + 1}.png`,
+        })
       }
       await message.reply({
         allowedMentions: { repliedUser: false },

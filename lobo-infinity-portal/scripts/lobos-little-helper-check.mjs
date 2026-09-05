@@ -22,14 +22,17 @@ import {
 import { GatewayIntentBits } from 'discord.js'
 
 const testCode = 'QUJDRA=='
-const imageBuffer = Buffer.from([0x89, 0x50, 0x4e, 0x47])
 const readableImageBuffer = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x02])
+const profilePages = [
+  { imageBuffer: Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x03]) },
+  { imageBuffer: Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x04]) },
+]
 const officialArmyUrl = buildOfficialArmyUrl(testCode)
 const renderCalls = []
 const handler = createInfListMessageHandler({
   render: async ({ input }) => {
     renderCalls.push(input)
-    return { imageBuffer, officialArmyUrl, readableImageBuffer }
+    return { officialArmyUrl, profilePages, readableImageBuffer }
   },
 })
 
@@ -49,10 +52,12 @@ assert.equal(await handler(message), true)
 assert.deepEqual(renderCalls, [testCode])
 assert.equal(message.replies.length, 1)
 assert.equal(message.replies[0].content, `${SUCCESS_TEXT}\n\n[Open in Infinity Army](${officialArmyUrl})`)
-assert.equal(message.replies[0].files[0].attachment, imageBuffer)
-assert.equal(message.replies[0].files[0].name, 'infinity-army-list.png')
-assert.equal(message.replies[0].files[1].attachment, readableImageBuffer)
-assert.equal(message.replies[0].files[1].name, 'infinity-army-list-readable.png')
+assert.equal(message.replies[0].files[0].attachment, readableImageBuffer)
+assert.equal(message.replies[0].files[0].name, 'infinity-army-list-readable.png')
+assert.equal(message.replies[0].files[1].attachment, profilePages[0].imageBuffer)
+assert.equal(message.replies[0].files[1].name, 'infinity-army-profiles-1.png')
+assert.equal(message.replies[0].files[2].attachment, profilePages[1].imageBuffer)
+assert.equal(message.replies[0].files[2].name, 'infinity-army-profiles-2.png')
 
 message = mockMessage('!!inf-list')
 assert.equal(await handler(message), true)
@@ -108,16 +113,19 @@ if (process.argv.includes('--live')) {
   assert.equal(await createInfListMessageHandler()(liveMessage), true)
   assert.equal(liveMessage.replies.length, 1)
   assert.match(liveMessage.replies[0].content, new RegExp(`^${SUCCESS_TEXT}\\n\\n\\[Open in Infinity Army\\]\\(https://infinitytheuniverse\\.com/army/list/`))
-  const livePng = liveMessage.replies[0].files[0].attachment
-  assert.ok(Buffer.isBuffer(livePng))
-  assert.equal(livePng.subarray(0, 4).toString('hex'), '89504e47')
-  assert.ok(livePng.length > 10_000)
-  const readablePng = liveMessage.replies[0].files[1].attachment
+  assert.equal(liveMessage.replies[0].files.length, 3)
+  const readablePng = liveMessage.replies[0].files[0].attachment
   assert.ok(Buffer.isBuffer(readablePng))
   assert.equal(readablePng.subarray(0, 4).toString('hex'), '89504e47')
   assert.ok(readablePng.length > 10_000)
   assert.equal(readablePng.readUInt32BE(16), 686)
   assert.equal(readablePng.readUInt32BE(20), 651)
+  for (const [index, file] of liveMessage.replies[0].files.slice(1).entries()) {
+    assert.equal(file.name, `infinity-army-profiles-${index + 1}.png`)
+    assert.ok(Buffer.isBuffer(file.attachment))
+    assert.equal(file.attachment.subarray(0, 4).toString('hex'), '89504e47')
+    assert.ok(file.attachment.length > 10_000)
+  }
 }
 
 console.log(`PASS - ${BOT_NAME} implements only !!inf-list${process.argv.includes('--live') ? ' with live renderer coverage' : ''}.`)
