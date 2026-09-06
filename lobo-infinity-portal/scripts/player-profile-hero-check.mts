@@ -34,7 +34,7 @@ const expected = new Map<string, string>([
 
 for (const [army, file] of expected) {
   const hero = resolvePlayerProfileHero(army)
-  assert.equal(hero?.src, `/assets/player-profile-heroes/${file}`, `${army} mapping`)
+  assert.equal(hero?.src, `/assets/player-profile-heroes/${file}?v=20260906-player-profiles`, `${army} mapping`)
   assert.equal(hero?.kind, 'army', `${army} is an army hero`)
 }
 

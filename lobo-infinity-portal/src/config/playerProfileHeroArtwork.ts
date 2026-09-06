@@ -6,6 +6,7 @@ export type PlayerProfileHeroArtwork = {
 }
 
 const HERO_BASE_PATH = '/assets/player-profile-heroes/'
+const HERO_VERSION = '20260906-player-profiles'
 
 const NO_ARMY_HERO: PlayerProfileHeroArtwork = {
   alt: 'Player Profile — no preferred army selected',
@@ -95,6 +96,6 @@ export function resolvePlayerProfileHero(
     alt: `Player Profile — preferred army: ${canonicalArmy}`,
     army: canonicalArmy,
     kind: 'army',
-    src: `${HERO_BASE_PATH}${file}`,
+    src: `${HERO_BASE_PATH}${file}?v=${HERO_VERSION}`,
   }
 }
