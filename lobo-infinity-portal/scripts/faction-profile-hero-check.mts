@@ -32,11 +32,11 @@ for (const faction of FACTION_PROFILE_HERO_CANONICAL_FACTIONS) {
 
 assert.equal(
   resolveFactionProfileHero('Caledonian Highlander Army')?.src,
-  '/assets/faction-profile-heroes/caledonian-highlander-army.png?v=20260906-faction-profiles-r2',
+  '/assets/faction-profile-heroes/caledonian-highlander-army.png?v=20260906-faction-profiles-r3',
 )
 assert.equal(
   resolveFactionProfileHero('Kosmoflot')?.src,
-  '/assets/faction-profile-heroes/kosmoflot.png?v=20260906-faction-profiles-r2',
+  '/assets/faction-profile-heroes/kosmoflot.png?v=20260906-faction-profiles-r3',
 )
 assert.equal(resolveFactionProfileHero('Unknown Army'), null)
 assert.notEqual(resolveFactionProfileHero('Tohaa')?.src, resolveFactionProfileHero('Next Wave')?.src)
