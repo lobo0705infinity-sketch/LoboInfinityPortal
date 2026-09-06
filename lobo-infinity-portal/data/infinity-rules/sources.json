@@ -8,7 +8,7 @@
   },
   "derivedIndex": {
     "path": "data/infinity-rules/rules-search-index.json",
-    "sha256": "1C363BF2F44B631DA1109F47D2D845F021A151031100AEB819DB243AF94EECA8",
+    "sha256": "FCCED62D58E30F470CDAFE5017A1C857DE3E17DE46C5099F2366DC7A6DB74213",
     "kind": "bounded-authoritative-excerpts",
     "notes": "Derived short search windows and trusted page metadata; complete PDFs and complete page transcriptions are not included."
   },
