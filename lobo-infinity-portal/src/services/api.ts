@@ -505,7 +505,7 @@ export type ArmyIntelligenceDecodedEntry = {
   troopType: string
   unit: string
   weapons: string[]
-  weaponProfiles?: Array<{ id?: number | null; burst: number | null; burstStatus?: string; mode?: string | null; name: string; source?: string | null; type?: string }>
+  weaponProfiles?: Array<{ id?: number | null; burst: number | null; burstStatus?: string; mode?: string | null; modeResolution?: string | null; name: string; source?: string | null; type?: string }>
   fireteamEligibility?: { state?: 'verified' | 'verified-false' | 'unknown'; teams: string[]; verified: boolean }
   wounds: number | null
 }
@@ -6179,6 +6179,7 @@ function normalizeArmyIntelligenceDecodedEntry(item: unknown): ArmyIntelligenceD
         id: weapon.id == null ? null : getNumber(weapon, 'id'),
         burstStatus: getString(weapon, 'burstStatus'),
         mode: weapon.mode == null ? null : getString(weapon, 'mode'),
+        modeResolution: weapon.modeResolution == null ? null : getString(weapon, 'modeResolution'),
         name: getString(weapon, 'name'),
         source: weapon.source == null ? null : getString(weapon, 'source'),
         type: getString(weapon, 'type'),

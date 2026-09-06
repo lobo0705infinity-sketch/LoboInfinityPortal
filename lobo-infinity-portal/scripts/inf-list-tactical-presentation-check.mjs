@@ -10,6 +10,8 @@ const analysis = classifyTacticalBrief([base, same, different], { faction: 'Fixt
 assert.equal(analysis.categories.aro.length, 2)
 assert.equal(analysis.categories.aro.find((x) => x.combinedId === '1-1').quantity, 2)
 assert.equal(formatBurst({ burst: 4 }), 'B4')
+assert.equal(formatBurst({ burst: 1, burstStatus: 'canonical', modeResolution: 'ambiguous' }), 'B1')
+assert.equal(formatBurst({ burst: 2, burstStatus: 'canonical', modeResolution: 'ambiguous' }), 'B2')
 assert.equal(formatBurst({ burst: '3' }), 'B3')
 assert.equal(formatBurst({ burst: null, burstStatus: 'unknown' }), 'Burst unavailable')
 assert.equal(formatBurst({ burst: null, burstStatus: 'ambiguous' }), 'Burst ambiguous')

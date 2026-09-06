@@ -41,7 +41,7 @@ function enrichEntry(entry, units, dataset, chartUnits, reference) {
   const group = unit?.profileGroups?.find((candidate) => candidate.id === groupId)
   const profile = group?.profiles?.find((candidate) => candidate.id === profileId) || null
   const option = group?.options?.find((candidate) => candidate.id === optionId)
-  const weaponProfiles = resolveCanonicalWeaponRecords(dataset, option?.weapons || []).filter((weapon) => weapon.name).map((weapon) => ({ id: weapon.id, name: weapon.name, mode: weapon.mode, variant: weapon.variant, type: weapon.type, burst: weapon.burst, burstStatus: weapon.burstStatus, source: weapon.sourceDatasetId }))
+  const weaponProfiles = resolveCanonicalWeaponRecords(dataset, option?.weapons || []).filter((weapon) => weapon.name).map((weapon) => ({ id: weapon.id, name: weapon.name, mode: weapon.mode, variant: weapon.variant, modeResolution: weapon.modeResolution, type: weapon.type, burst: weapon.burst, burstStatus: weapon.burstStatus, source: weapon.sourceDatasetId }))
   const teams = Array.from(new Set(chartUnits.get(unitId) || []))
   const fireteamEligibility = reference?.status === 'available' || reference?.status === 'none'
     ? { state: teams.length ? 'verified' : 'verified-false', verified: Boolean(teams.length), teams }
