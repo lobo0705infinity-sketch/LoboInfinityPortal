@@ -2,6 +2,7 @@ import { lazy, Suspense, useState, type ReactNode } from 'react'
 import { Link, Navigate, Route, Routes, useLocation, useParams, useSearchParams } from 'react-router-dom'
 import { buildCapabilityNavigationItem, getEventNavigationConfig } from '../config/eventNavigation'
 import { useSnapshotData } from './useSnapshotData'
+import { sortPublicStreamsByDate } from './streamOrdering'
 import type { MissionGeistCatalog, MissionGeistCatalogMission } from '../services/publicSnapshot'
 import { resolveMissionGeistNavigation } from '../config/missionGeistNavigation'
 import SnapshotArmyIntelligence from './SnapshotArmyIntelligence'
@@ -304,7 +305,7 @@ function StreamsDirectory(){
   const state=useSnapshotData<PublicCommunity[]>('community')
   return <DataGate states={[state]}>{()=>{
     const community=state.data![0]??({} as PublicCommunity)
-    const streams=community.streams as PublicStream[]
+    const streams=sortPublicStreamsByDate(community.streams as PublicStream[])
     return <main className="portal-shell snapshot-public-page" data-page="streams">
       <header className="snapshot-streams-hero"><h1>Streams</h1><p>Watch games from across the Lobo Infinity community.</p></header>
       {streams.length?<section className="panel snapshot-streams-directory"><div className="table-wrapper"><table>
