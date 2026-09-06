@@ -6672,6 +6672,236 @@
   padding: 18px;
 }
 
+.streams-manager-primary {
+  min-height: 42px;
+  border: 1px solid var(--blue);
+  border-radius: 12px;
+  padding: 10px 18px;
+  color: #061019;
+  background: var(--blue);
+  box-shadow: 0 8px 20px rgba(76, 201, 240, 0.2);
+  font: inherit;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.streams-manager-toolbar {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) repeat(2, minmax(150px, 0.35fr)) auto;
+  gap: 12px;
+  align-items: end;
+  padding: 16px 18px;
+  border-top: 1px solid rgba(160, 177, 199, 0.12);
+}
+
+.streams-manager-toolbar label {
+  display: grid;
+  gap: 6px;
+}
+
+.streams-manager-toolbar label > span {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.streams-manager-toolbar input,
+.streams-manager-toolbar select {
+  min-height: 42px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 9px 11px;
+  color: var(--text);
+  background: var(--panel-muted);
+  font: inherit;
+  font-weight: 800;
+}
+
+.streams-manager-toolbar > strong {
+  padding: 0 0 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.streams-manager-table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 0 18px 18px;
+}
+
+.streams-manager-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.streams-manager-table th,
+.streams-manager-table td {
+  border-bottom: 1px solid rgba(160, 177, 199, 0.14);
+  padding: 11px 12px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.streams-manager-table th {
+  color: var(--text-muted);
+  background: rgba(9, 14, 24, 0.92);
+  font-size: 0.7rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.streams-manager-table td {
+  color: var(--text-soft);
+  font-size: 0.84rem;
+  font-weight: 780;
+}
+
+.streams-manager-table td:first-child {
+  min-width: 220px;
+  max-width: 360px;
+}
+
+.streams-manager-table td strong,
+.streams-manager-table td small,
+.streams-manager-table td a {
+  display: block;
+}
+
+.streams-manager-table td strong {
+  color: var(--text);
+}
+
+.streams-manager-table td small,
+.streams-manager-table td a {
+  margin-top: 4px;
+  font-size: 0.76rem;
+}
+
+.streams-manager-table td a {
+  width: fit-content;
+  color: var(--blue);
+  font-weight: 900;
+}
+
+.streams-manager-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border: 1px solid rgba(76, 201, 240, 0.32);
+  border-radius: 999px;
+  padding: 3px 9px;
+  color: var(--blue);
+  background: rgba(76, 201, 240, 0.08);
+  font-size: 0.69rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.streams-manager-badge.visible {
+  border-color: rgba(45, 198, 83, 0.4);
+  color: #74df8d;
+  background: rgba(45, 198, 83, 0.09);
+}
+
+.streams-manager-badge.hidden {
+  border-color: rgba(160, 177, 199, 0.28);
+  color: var(--text-muted);
+  background: rgba(160, 177, 199, 0.07);
+}
+
+.streams-manager-actions {
+  display: flex;
+  gap: 7px;
+}
+
+.streams-manager-actions button {
+  min-height: 34px;
+  border: 1px solid rgba(76, 201, 240, 0.32);
+  border-radius: 9px;
+  padding: 6px 10px;
+  color: var(--blue);
+  background: var(--panel-strong);
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.streams-manager-actions button.danger {
+  border-color: rgba(239, 35, 60, 0.4);
+  color: #ff7d8d;
+}
+
+@media (max-width: 760px) {
+  .streams-manager-toolbar {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .streams-manager-toolbar label:first-child,
+  .streams-manager-toolbar > strong {
+    grid-column: 1 / -1;
+  }
+
+  .streams-manager-toolbar > strong {
+    padding: 0;
+  }
+
+  .streams-manager-table-wrap {
+    overflow: visible;
+  }
+
+  .streams-manager-table,
+  .streams-manager-table tbody {
+    display: grid;
+    gap: 10px;
+  }
+
+  .streams-manager-table thead {
+    display: none;
+  }
+
+  .streams-manager-table tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px 12px;
+    border: 1px solid rgba(76, 201, 240, 0.16);
+    border-radius: 14px;
+    padding: 12px;
+    background: rgba(18, 27, 37, 0.88);
+  }
+
+  .streams-manager-table td,
+  .streams-manager-table td:first-child {
+    display: block;
+    min-width: 0;
+    max-width: none;
+    border: 0;
+    padding: 0;
+  }
+
+  .streams-manager-table td:first-child,
+  .streams-manager-table td:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .streams-manager-table td::before {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--text-muted);
+    content: attr(data-label);
+    font-size: 0.65rem;
+    font-weight: 950;
+    text-transform: uppercase;
+  }
+
+  .streams-manager-actions button {
+    flex: 1;
+    min-height: 44px;
+  }
+}
+
 .operations-actions {
   display: flex;
   flex-wrap: wrap;

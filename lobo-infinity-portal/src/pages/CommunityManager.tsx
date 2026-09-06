@@ -50,6 +50,9 @@ function CommunityManager() {
   }>({ games: [], status: 'idle' })
   const [workingAction, setWorkingAction] = useState('')
   const [message, setMessage] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [platformFilter, setPlatformFilter] = useState('all')
+  const [visibilityFilter, setVisibilityFilter] = useState('all')
   const canManageStreams = auth.hasPermission('manageStreams')
 
   const loadStreams = useCallback(async (signal?: AbortSignal) => {
@@ -122,22 +125,45 @@ function CommunityManager() {
   }
 
   async function deleteStream() {
-    if (!draft.id || !window.confirm('Delete this Stream record?')) {
+    if (!draft.id) {
       return
     }
 
-    setWorkingAction('deleteStream')
+    await deleteStreamRecord(draft)
+  }
+
+  async function deleteStreamRecord(stream: StreamedGame) {
+    if (!window.confirm(`Delete “${getStreamTitle(stream)}”? This cannot be undone.`)) return
+
+    setWorkingAction(`delete-${stream.id}`)
     setMessage('')
 
     try {
-      await apiClient.operationsAction('deleteStream', { id: draft.id })
+      await apiClient.operationsAction('deleteStream', { id: stream.id })
       await loadStreams()
-      setDraft(defaultStream)
-      setEditorMode(null)
-      setGameQuery('')
+      if (draft.id === stream.id) {
+        setDraft(defaultStream)
+        setEditorMode(null)
+        setGameQuery('')
+      }
       setMessage('Stream deleted.')
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Stream could not be deleted.')
+    } finally {
+      setWorkingAction('')
+    }
+  }
+
+  async function setStreamVisibility(stream: StreamedGame) {
+    setWorkingAction(`visibility-${stream.id}`)
+    setMessage('')
+
+    try {
+      await apiClient.operationsAction('saveStream', { ...stream, active: !stream.active })
+      await loadStreams()
+      setMessage(`Stream ${stream.active ? 'hidden' : 'shown'}.`)
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Stream visibility could not be changed.')
     } finally {
       setWorkingAction('')
     }
@@ -193,7 +219,7 @@ function CommunityManager() {
             <p className="eyebrow">Canonical Streams</p>
             <h2 id="streams-list-title">Existing Streams</h2>
           </div>
-          <button onClick={openCreate} type="button">Add Stream</button>
+          <button className="streams-manager-primary" onClick={openCreate} type="button">Add Stream</button>
         </div>
         {streamsState.status === 'loading' ? (
           <p className="operations-empty" aria-live="polite">Loading Streams…</p>
@@ -202,7 +228,19 @@ function CommunityManager() {
           <p className="operations-empty" role="alert">{streamsState.error}</p>
         ) : null}
         {streamsState.status === 'success' ? (
-          <StreamList items={streamsState.streams} onEdit={openEdit} />
+          <StreamList
+            items={streamsState.streams}
+            onDelete={deleteStreamRecord}
+            onEdit={openEdit}
+            onVisibilityChange={setStreamVisibility}
+            platformFilter={platformFilter}
+            searchQuery={searchQuery}
+            setPlatformFilter={setPlatformFilter}
+            setSearchQuery={setSearchQuery}
+            setVisibilityFilter={setVisibilityFilter}
+            visibilityFilter={visibilityFilter}
+            workingAction={workingAction}
+          />
         ) : null}
       </section>
       {editorMode ? (
@@ -236,29 +274,107 @@ function PageHeader() {
 
 function StreamList({
   items,
+  onDelete,
   onEdit,
+  onVisibilityChange,
+  platformFilter,
+  searchQuery,
+  setPlatformFilter,
+  setSearchQuery,
+  setVisibilityFilter,
+  visibilityFilter,
+  workingAction,
 }: {
   items: StreamedGame[]
+  onDelete: (stream: StreamedGame) => void
   onEdit: (stream: StreamedGame) => void
+  onVisibilityChange: (stream: StreamedGame) => void
+  platformFilter: string
+  searchQuery: string
+  setPlatformFilter: (value: string) => void
+  setSearchQuery: (value: string) => void
+  setVisibilityFilter: (value: string) => void
+  visibilityFilter: string
+  workingAction: string
 }) {
   if (items.length === 0) {
     return <p className="operations-empty">No Streams configured.</p>
   }
 
-  return (
-    <div className="operations-stack">
-      {items.map((stream) => (
-        <article className="operations-record" key={stream.id}>
-          <span>{getStatusLine([stream.platform, stream.active ? 'Visible' : 'Hidden'])}</span>
-          <h3>{stream.title || stream.streamer || 'Untitled Stream'}</h3>
-          <p>{stream.youtubeUrl || `${stream.player1 || 'Player 1'} vs ${stream.player2 || 'Player 2'}`}</p>
-          <div className="operations-actions">
-            <button onClick={() => onEdit(stream)} type="button">Edit</button>
-          </div>
-        </article>
-      ))}
+  const platforms = Array.from(new Set(items.map((stream) => stream.platform).filter(Boolean)))
+  const normalizedQuery = searchQuery.trim().toLowerCase()
+  const filteredItems = items.filter((stream) => {
+    const title = getStreamTitle(stream).toLowerCase()
+    return (!normalizedQuery || title.includes(normalizedQuery))
+      && (platformFilter === 'all' || stream.platform === platformFilter)
+      && (visibilityFilter === 'all' || (stream.active ? 'visible' : 'hidden') === visibilityFilter)
+  })
+
+  return <>
+    <div className="streams-manager-toolbar" aria-label="Stream filters">
+      <label>
+        <span>Search streams</span>
+        <input onChange={(event) => setSearchQuery(event.target.value)} placeholder="Search by title" type="search" value={searchQuery} />
+      </label>
+      <label>
+        <span>Platform</span>
+        <select onChange={(event) => setPlatformFilter(event.target.value)} value={platformFilter}>
+          <option value="all">All platforms</option>
+          {platforms.map((platform) => <option key={platform} value={platform}>{platform}</option>)}
+        </select>
+      </label>
+      <label>
+        <span>Visibility</span>
+        <select onChange={(event) => setVisibilityFilter(event.target.value)} value={visibilityFilter}>
+          <option value="all">All visibility</option>
+          <option value="visible">Visible</option>
+          <option value="hidden">Hidden</option>
+        </select>
+      </label>
+      <strong>{filteredItems.length} of {items.length}</strong>
     </div>
-  )
+    {filteredItems.length ? (
+      <div className="streams-manager-table-wrap">
+        <table className="streams-manager-table">
+          <thead><tr><th>Stream</th><th>Platform</th><th>Visibility</th><th>Category</th><th>Date</th><th>Actions</th></tr></thead>
+          <tbody>{filteredItems.map((stream) => {
+            const safeUrl = getSafeStreamUrl(stream.youtubeUrl)
+            return <tr key={stream.id}>
+              <td data-label="Stream"><strong>{getStreamTitle(stream)}</strong>{safeUrl ? <a href={safeUrl} target="_blank" rel="noopener noreferrer">Open video</a> : <small>No valid video URL</small>}</td>
+              <td data-label="Platform"><span className="streams-manager-badge platform">{stream.platform || 'Unspecified'}</span></td>
+              <td data-label="Visibility"><span className={`streams-manager-badge ${stream.active ? 'visible' : 'hidden'}`}>{stream.active ? 'Visible' : 'Hidden'}</span></td>
+              <td data-label="Category"><strong>{stream.streamType || 'Standalone Stream'}</strong><small>{getStatusLine([stream.division, stream.mission])}</small></td>
+              <td data-label="Date">{formatManagerDate(stream.date)}</td>
+              <td data-label="Actions"><div className="streams-manager-actions">
+                <button onClick={() => onEdit(stream)} type="button">Edit</button>
+                <button disabled={workingAction !== ''} onClick={() => onVisibilityChange(stream)} type="button">{stream.active ? 'Hide' : 'Show'}</button>
+                <button className="danger" disabled={workingAction !== ''} onClick={() => onDelete(stream)} type="button">Delete</button>
+              </div></td>
+            </tr>
+          })}</tbody>
+        </table>
+      </div>
+    ) : <p className="operations-empty">No streams match the active search and filters.</p>}
+  </>
+}
+
+function getStreamTitle(stream: StreamedGame) {
+  return stream.title || stream.streamer || `${stream.player1 || 'Player 1'} vs ${stream.player2 || 'Player 2'}`
+}
+
+function getSafeStreamUrl(value: string) {
+  try {
+    const url = new URL(value)
+    return url.protocol === 'https:' || url.protocol === 'http:' ? url.toString() : ''
+  } catch {
+    return ''
+  }
+}
+
+function formatManagerDate(value: string) {
+  if (!value) return 'Not set'
+  const parsed = new Date(`${value}T00:00:00`)
+  return Number.isNaN(parsed.getTime()) ? value : parsed.toLocaleDateString()
 }
 
 function StreamEditor({
