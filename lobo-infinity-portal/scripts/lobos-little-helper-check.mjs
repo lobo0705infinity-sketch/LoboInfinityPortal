@@ -22,6 +22,7 @@ import {
 import { GatewayIntentBits } from 'discord.js'
 import { MISSION_COMMAND_DEFINITION } from '../bot/mission-command.mjs'
 import { INF_ID_COMMAND_DEFINITION } from '../bot/inf-id-command.mjs'
+import { RULES_COMMAND_DEFINITION } from '../bot/rules-command.mjs'
 
 const testCode = 'QUJDRA=='
 const readableImageBuffer = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x02])
@@ -51,6 +52,9 @@ assert.equal(MISSION_COMMAND_DEFINITION.options[0].required, true)
 assert.equal(INF_ID_COMMAND_DEFINITION.name, 'inf-id')
 assert.equal(INF_ID_COMMAND_DEFINITION.options[0].name, 'army-code')
 assert.equal(INF_ID_COMMAND_DEFINITION.options[0].required, true)
+assert.equal(RULES_COMMAND_DEFINITION.name, 'rules')
+assert.equal(RULES_COMMAND_DEFINITION.options[0].name, 'question')
+assert.equal(RULES_COMMAND_DEFINITION.options[0].required, true)
 assert.deepEqual(parseInfListCommand(`!!inf-list\r\n ${testCode}\r\n`), { armyCode: testCode })
 assert.equal(parseInfListCommand('!!inf-list-c anything'), null)
 assert.equal(parseInfListCommand('!!inf anything'), null)
@@ -136,7 +140,7 @@ if (process.argv.includes('--live')) {
   }
 }
 
-console.log(`PASS - ${BOT_NAME} preserves !!inf-list and registers /mission${process.argv.includes('--live') ? ' with live renderer coverage' : ''}.`)
+console.log(`PASS - ${BOT_NAME} preserves !!inf-list and registers /mission, /inf-id, and /rules${process.argv.includes('--live') ? ' with live renderer coverage' : ''}.`)
 
 function mockMessage(content, author = { bot: false }) {
   return {

@@ -1,0 +1,87 @@
+{
+  "manifestVersion": 1,
+  "retrievedAt": "2026-09-05T00:00:00-04:00",
+  "currentnessAnchor": {
+    "title": "ITS Season 18 + N5.3 Rules Update",
+    "published": "2026-09-01",
+    "url": "https://infinityuniverse.com/blog/infinity-rules-update-5-3"
+  },
+  "derivedIndex": {
+    "path": "data/infinity-rules/rules-search-index.json",
+    "sha256": "8EA898D63E75CE70161DD846C8F514C491B58AAC83B8F209DEAC9A399A6A31EF",
+    "kind": "bounded-authoritative-excerpts",
+    "notes": "Derived short search windows and trusted page metadata; complete PDFs and complete page transcriptions are not included."
+  },
+  "sources": [
+    {
+      "id": "infinity-rules-n5.3",
+      "title": "Infinity Rules",
+      "edition": "N5",
+      "version": "5.3",
+      "authority": 1,
+      "officialUrl": "https://experience.corvusbelli.com/en/resources/b46cbed7-784a-5219-b7ec-eec633265323?l=c07a5ffb-02c4-47e7-8f79-1f6e548a5503&_lang=en",
+      "localFile": ".tmp/infinity-rules-source/infinity-rules-n5.3-en.pdf",
+      "pageCount": 196,
+      "pageMapping": { "kind": "printed-equals-pdf", "pdfOffset": 0, "unnumberedPdfPages": [1, 196] },
+      "mappingChecks": [
+        { "pdfPage": 1, "printedPage": null, "observation": "Version cover; no printed page number" },
+        { "pdfPage": 50, "printedPage": "50" },
+        { "pdfPage": 99, "printedPage": "99" },
+        { "pdfPage": 147, "printedPage": "147" },
+        { "pdfPage": 196, "printedPage": null, "observation": "Back cover; no printed page number" }
+      ],
+      "sha256": "53921E91C2D3D62AD5F7125ABCD4174B2CF937D45320233EED5B6D301B66AF3F"
+    },
+    {
+      "id": "infinity-faq-n5-v0.1",
+      "title": "Infinity FAQs",
+      "edition": "N5",
+      "version": "0.1",
+      "authority": 1,
+      "officialUrl": "https://experience.corvusbelli.com/en/resources/e36f7f92-10db-5c9b-a40e-95117b15f0e8?l=c07a5ffb-02c4-47e7-8f79-1f6e548a5503&_lang=en",
+      "localFile": ".tmp/infinity-rules-source/infinity-faq-n5-v0.1-en.pdf",
+      "pageCount": 5,
+      "pageMapping": { "kind": "cover-then-printed", "unnumberedPdfPages": [1], "pdfOffset": -1 },
+      "mappingChecks": [
+        { "pdfPage": 1, "printedPage": null, "observation": "Version cover" },
+        { "pdfPage": 2, "printedPage": "1" },
+        { "pdfPage": 3, "printedPage": "2" },
+        { "pdfPage": 4, "printedPage": "3" },
+        { "pdfPage": 5, "printedPage": "4" }
+      ],
+      "sha256": "7BF26B7D039DB7826EF5500B1A2159FE54855B4E632133CAB416BECEE65B85AA"
+    },
+    {
+      "id": "its-season-18",
+      "title": "ITS Season 18: Overheat",
+      "season": 18,
+      "version": "2026.09.04",
+      "updated": "2026-09-04",
+      "authority": 1,
+      "scope": "ITS",
+      "officialUrl": "https://experience.corvusbelli.com/en/resources/a83f2e78-2275-565b-bebb-be488d1267db?l=c07a5ffb-02c4-47e7-8f79-1f6e548a5503&_lang=en",
+      "localFile": ".tmp/infinity-rules-source/its-season-18-en.pdf",
+      "pageCount": 139,
+      "pageMapping": { "kind": "printed-equals-pdf", "pdfOffset": 0 },
+      "mappingChecks": [
+        { "pdfPage": 1, "printedPage": "1" },
+        { "pdfPage": 35, "printedPage": "35" },
+        { "pdfPage": 70, "printedPage": "70" },
+        { "pdfPage": 105, "printedPage": "105" },
+        { "pdfPage": 139, "printedPage": "139" }
+      ],
+      "sha256": "004C693B1D9202CCEFF483277513D417F676135CC4D85BE805BFFF132DF048BB"
+    }
+  ],
+  "supplementary": [
+    {
+      "id": "official-wiki",
+      "title": "Infinity Wiki",
+      "version": "N5.3 + FAQ v0.1",
+      "authority": 3,
+      "officialUrl": "https://infinitythewiki.com/Introduction",
+      "stableRuleUrls": true,
+      "notes": "Searchable supplementary reference; the current PDF and FAQ remain controlling Level 1 sources."
+    }
+  ]
+}
