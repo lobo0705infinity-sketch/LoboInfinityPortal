@@ -1477,18 +1477,22 @@ function buildTeamTournamentStandings(eventId, teams, tournamentResults, recentG
         strengthOfSchedule: 0
       };
     })
-    .sort(function(left, right) {
-      return (
-        right.tournamentPoints - left.tournamentPoints ||
-        right.objectivePoints - left.objectivePoints ||
-        right.victoryPoints - left.victoryPoints ||
-        left.teamName.localeCompare(right.teamName)
-      );
-    })
+    .sort(compareTeamTournamentStandings)
     .map(function(team, index) {
       team.rank = index + 1;
       return team;
     });
+
+}
+
+function compareTeamTournamentStandings(left, right) {
+
+  return (
+    Number(right.objectivePoints) - Number(left.objectivePoints) ||
+    Number(right.tournamentPoints) - Number(left.tournamentPoints) ||
+    Number(right.victoryPoints) - Number(left.victoryPoints) ||
+    left.teamName.localeCompare(right.teamName)
+  );
 
 }
 
