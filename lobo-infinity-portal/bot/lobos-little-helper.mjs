@@ -3,7 +3,7 @@
 import { Client, Events, GatewayIntentBits } from 'discord.js'
 import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
-import { createInfListMessageHandler } from './inf-list-command.mjs'
+import { createInfListInteractionHandler, createInfListMessageHandler, ensureInfListCommand } from './inf-list-command.mjs'
 import { createMissionInteractionHandler, ensureMissionCommand } from './mission-command.mjs'
 import { createInfIdInteractionHandler, ensureInfIdCommand } from './inf-id-command.mjs'
 import { createRulesInteractionHandler, ensureRulesCommand } from './rules-command.mjs'
@@ -19,10 +19,12 @@ export const REQUIRED_INTENTS = Object.freeze([
 export function createLobosLittleHelper() {
   const client = new Client({ intents: REQUIRED_INTENTS })
   const handleMessage = createInfListMessageHandler()
+  const handleInfList = createInfListInteractionHandler()
   const handleMission = createMissionInteractionHandler()
   const handleInfId = createInfIdInteractionHandler()
   const handleRules = createRulesInteractionHandler()
   client.on(Events.MessageCreate, handleMessage)
+  client.on(Events.InteractionCreate, handleInfList)
   client.on(Events.InteractionCreate, handleMission)
   client.on(Events.InteractionCreate, handleInfId)
   client.on(Events.InteractionCreate, handleRules)
@@ -38,10 +40,11 @@ export async function startLobosLittleHelper({ token = process.env[DISCORD_TOKEN
   await client.login(token)
   try {
     const commands = await ensureMissionCommand(client)
+    const infListCommands = await ensureInfListCommand(client)
     const infIdCommands = await ensureInfIdCommand(client)
     const rulesCommands = await ensureRulesCommand(client)
     const guildIds = [...client.guilds.cache.keys()]
-    process.stdout.write(`${BOT_NAME} ready: botUserId=${client.user.id} applicationId=${client.application.id} guildIds=${guildIds.join(',') || 'none'} interactionListeners=${client.listenerCount(Events.InteractionCreate)} missionCommands=${commands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} infIdCommands=${infIdCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} rulesCommands=${rulesCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'}\n`)
+    process.stdout.write(`${BOT_NAME} ready: botUserId=${client.user.id} applicationId=${client.application.id} guildIds=${guildIds.join(',') || 'none'} interactionListeners=${client.listenerCount(Events.InteractionCreate)} missionCommands=${commands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} infListCommands=${infListCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} infIdCommands=${infIdCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} rulesCommands=${rulesCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'}\n`)
   } catch {
     process.stderr.write(`${BOT_NAME} could not register slash commands.\n`)
   }
@@ -58,7 +61,7 @@ async function run() {
   await startLobosLittleHelper()
 }
 
-const INF_LIST_DESCRIPTION = 'ready for !!inf-list, /mission, /inf-id, and /rules (not connected in dry-run mode)'
+const INF_LIST_DESCRIPTION = 'ready for !!inf-list, /inf-list, /mission, /inf-id, and /rules (not connected in dry-run mode)'
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
   await run()

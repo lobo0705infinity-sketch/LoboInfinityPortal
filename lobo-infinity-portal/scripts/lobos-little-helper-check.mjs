@@ -5,12 +5,16 @@ import { readFile } from 'node:fs/promises'
 import {
   InfListRenderError,
   buildOfficialArmyUrl,
+  renderInfListPng,
 } from './inf-list-render-poc.mjs'
 import {
   SUCCESS_TEXT,
   USAGE_TEXT,
+  INF_LIST_COMMAND_DEFINITION,
+  createInfListInteractionHandler,
   createConcurrencyLimiter,
   createInfListMessageHandler,
+  ensureInfListCommand,
   parseInfListCommand,
 } from '../bot/inf-list-command.mjs'
 import {
@@ -55,6 +59,24 @@ assert.equal(INF_ID_COMMAND_DEFINITION.options[0].required, true)
 assert.equal(RULES_COMMAND_DEFINITION.name, 'rules')
 assert.equal(RULES_COMMAND_DEFINITION.options[0].name, 'question')
 assert.equal(RULES_COMMAND_DEFINITION.options[0].required, true)
+assert.equal(INF_LIST_COMMAND_DEFINITION.name, 'inf-list')
+assert.equal(INF_LIST_COMMAND_DEFINITION.options[0].name, 'army-code')
+assert.equal(INF_LIST_COMMAND_DEFINITION.options[0].required, true)
+const registeredSlashCommands = []
+const commandClient = {
+  application: { commands: { fetch: async () => [] } },
+  guilds: { cache: new Map([['guild-1', { id: 'guild-1', commands: {
+    fetch: async () => registeredSlashCommands,
+    create: async (definition) => {
+      const command = { id: 'inf-list-1', name: definition.name, applicationId: 'app-1', guildId: 'guild-1', description: definition.description, options: [{ ...definition.options[0], maxLength: definition.options[0].max_length }] }
+      registeredSlashCommands.push(command)
+      return command
+    },
+  } }]]) },
+}
+assert.equal((await ensureInfListCommand(commandClient)).length, 1)
+assert.equal((await ensureInfListCommand(commandClient)).length, 1)
+assert.equal(registeredSlashCommands.filter((command) => command.id === 'inf-list-1').length, 1)
 assert.deepEqual(parseInfListCommand(`!!inf-list\r\n ${testCode}\r\n`), { armyCode: testCode })
 assert.equal(parseInfListCommand('!!inf-list-c anything'), null)
 assert.equal(parseInfListCommand('!!inf anything'), null)
@@ -70,6 +92,25 @@ assert.equal(message.replies[0].files[1].attachment, profilePages[0].imageBuffer
 assert.equal(message.replies[0].files[1].name, 'infinity-army-profiles-1.png')
 assert.equal(message.replies[0].files[2].attachment, profilePages[1].imageBuffer)
 assert.equal(message.replies[0].files[2].name, 'infinity-army-profiles-2.png')
+
+const slashRenderCalls = []
+const slashInteraction = mockInteraction(testCode)
+const slashHandler = createInfListInteractionHandler({
+  render: async ({ input }) => {
+    slashRenderCalls.push(input)
+    return { officialArmyUrl, profilePages, readableImageBuffer }
+  },
+  logger: { error() {} },
+})
+assert.equal(await slashHandler(slashInteraction), true)
+assert.equal(slashInteraction.deferred, true)
+assert.deepEqual(slashRenderCalls, [testCode])
+assert.deepEqual(slashInteraction.edits, message.replies)
+
+const invalidSlash = mockInteraction('not$a$code')
+assert.equal(await slashHandler(invalidSlash), true)
+assert.equal(invalidSlash.deferred, true)
+assert.deepEqual(invalidSlash.edits, ["That doesn't look like a valid Infinity Army code."])
 
 message = mockMessage('!!inf-list')
 assert.equal(await handler(message), true)
@@ -122,7 +163,8 @@ if (process.argv.includes('--live')) {
   const currentCode = memberFixtureSource.match(/const loboCode =\s*\n?\s*'([^']+)'/)?.[1]
   assert.ok(currentCode, 'Established current-format Lobo fixture was not found.')
   const liveMessage = mockMessage(`!!inf-list ${currentCode}`)
-  assert.equal(await createInfListMessageHandler()(liveMessage), true)
+  let legacyRendered
+  assert.equal(await createInfListMessageHandler({ render: async (args) => { legacyRendered = await renderInfListPng(args); return legacyRendered } })(liveMessage), true)
   assert.equal(liveMessage.replies.length, 1)
   assert.match(liveMessage.replies[0].content, new RegExp(`^${SUCCESS_TEXT}\\n\\n\\[Open in Infinity Army\\]\\(https://infinitytheuniverse\\.com/army/list/`))
   assert.equal(liveMessage.replies[0].files.length, 3)
@@ -138,9 +180,19 @@ if (process.argv.includes('--live')) {
     assert.equal(file.attachment.subarray(0, 4).toString('hex'), '89504e47')
     assert.ok(file.attachment.length > 10_000)
   }
+  const liveSlash = mockInteraction(currentCode)
+  let slashRendered
+  assert.equal(await createInfListInteractionHandler({ render: async (args) => { slashRendered = await renderInfListPng(args); return slashRendered } })(liveSlash), true)
+  assert.equal(liveSlash.deferred, true)
+  assert.equal(liveSlash.edits.length, 1)
+  assert.equal(liveSlash.edits[0].content, liveMessage.replies[0].content)
+  assert.deepEqual(liveSlash.edits[0].files.map((file) => file.name), liveMessage.replies[0].files.map((file) => file.name))
+  assert.equal(slashRendered.officialArmyUrl, legacyRendered.officialArmyUrl)
+  assert.deepEqual(slashRendered.profilePages.map((page) => page.sections), legacyRendered.profilePages.map((page) => page.sections))
+  assert.deepEqual(slashRendered.profilePages.map((page) => [page.width, page.height]), legacyRendered.profilePages.map((page) => [page.width, page.height]))
 }
 
-console.log(`PASS - ${BOT_NAME} preserves !!inf-list and registers /mission, /inf-id, and /rules${process.argv.includes('--live') ? ' with live renderer coverage' : ''}.`)
+console.log(`PASS - ${BOT_NAME} preserves !!inf-list and registers /inf-list, /mission, /inf-id, and /rules${process.argv.includes('--live') ? ' with live renderer coverage' : ''}.`)
 
 function mockMessage(content, author = { bot: false }) {
   return {
@@ -150,5 +202,19 @@ function mockMessage(content, author = { bot: false }) {
     async reply(response) {
       this.replies.push(response)
     },
+  }
+}
+
+function mockInteraction(armyCode) {
+  return {
+    commandName: 'inf-list',
+    deferred: false,
+    replied: false,
+    edits: [],
+    isChatInputCommand: () => true,
+    options: { getString: (name, required) => name === 'army-code' && required ? armyCode : null },
+    async deferReply() { this.deferred = true },
+    async editReply(response) { this.edits.push(response) },
+    async reply(response) { this.replied = true; this.edits.push(response) },
   }
 }
