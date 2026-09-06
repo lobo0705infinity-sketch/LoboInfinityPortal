@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { getDiscordCommunityLink } from '../config/communityLinks'
@@ -17,16 +16,11 @@ import { useSelectedEventNavigation } from '../components/useSelectedEventNaviga
 import { useSettings } from '../contexts/SettingsContext'
 import { preloadRoute } from '../services/routePreload'
 
-const expandedEventStorageKey = 'le'
-
 function MobileMenu() {
   const auth = useAuth()
   const { settings } = useSettings()
   const { eventOptions, prefetchEventNavigation, selectEvent, selectedEventId } = useSelectedEventNavigation()
-  const [expandedEventId, setExpandedEventId] = useState(() => selectedEventId || readExpandedEventId())
-  const expanded = eventOptions.some((event) => event.id === expandedEventId)
-    ? expandedEventId
-    : selectedEventId
+  const selectedEvent = eventOptions.find((event) => event.id === selectedEventId)
   const joinCommunityItem = getJoinCommunityNavigationItem(settings?.joinCommunityFormUrl ?? '')
   const discordLink = getDiscordCommunityLink(settings)
   const resolvedCommunityItems = discordLink
@@ -41,13 +35,7 @@ function MobileMenu() {
     ? commissionerItems
     : [{ icon: 'dashboard' as const, label: 'Commissioner', to: '/commissioner' }]
 
-  function expandEvent(eventId: string) {
-    setExpandedEventId(eventId)
-    writeExpandedEventId(eventId)
-  }
-
   function changeSelectedEvent(eventId: string) {
-    expandEvent(eventId)
     selectEvent(eventId)
   }
 
@@ -76,14 +64,7 @@ function MobileMenu() {
           ) : null}
           {eventOptions.length === 0 ? (
             <NoEventsNavigation commissioner={auth.isAtLeastRole('Commissioner')} />
-          ) : eventOptions.map((event) => (
-            <EventGroup
-              event={event}
-              expanded={expanded === event.id}
-              key={event.id}
-              onToggle={() => expandEvent(event.id)}
-            />
-          ))}
+          ) : selectedEvent ? <EventGroup event={selectedEvent} /> : null}
         </section>
 
         <MenuSection items={resolvedCommunityItems} label="Community" />
@@ -105,18 +86,16 @@ function MenuSection({ items, label }: { items: NavigationItem[]; label: string 
   )
 }
 
-function EventGroup({ event, expanded, onToggle }: { event: EventNavigationConfig; expanded: boolean; onToggle: () => void }) {
+function EventGroup({ event }: { event: EventNavigationConfig }) {
   return (
     <div className="mobile-navigation-event">
-      <button aria-expanded={expanded} className="sidebar-event-summary" onClick={onToggle} type="button">
+      <div className="sidebar-event-summary sidebar-event-summary-static">
         <span>{event.label}</span>
         <small>{event.type}</small>
-      </button>
-      {expanded ? (
-        <div className="mobile-navigation-links mobile-navigation-event-links">
-          {buildCapabilityNavigation(event).map((item) => <MenuLink item={item} key={`${event.id}-${item.label}`} />)}
-        </div>
-      ) : null}
+      </div>
+      <div className="mobile-navigation-links mobile-navigation-event-links">
+        {buildCapabilityNavigation(event).map((item) => <MenuLink item={item} key={`${event.id}-${item.label}`} />)}
+      </div>
     </div>
   )
 }
@@ -173,14 +152,6 @@ function NoEventsNavigation({ commissioner }: { commissioner: boolean }) {
       <Link className="mobile-navigation-link" to="/events">View Past Events</Link>
     </div>
   )
-}
-
-function readExpandedEventId() {
-  try { return window.sessionStorage.getItem(expandedEventStorageKey) || '' } catch { return '' }
-}
-
-function writeExpandedEventId(eventId: string) {
-  try { window.sessionStorage.setItem(expandedEventStorageKey, eventId) } catch { /* optional navigation memory */ }
 }
 
 export default MobileMenu

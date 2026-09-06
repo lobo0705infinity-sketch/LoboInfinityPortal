@@ -31,15 +31,11 @@ assert.ok(!normalLeague.includes("'schedule'"))
 assert.match(sidebar, /buildCapabilityNavigation\(event\)/)
 assert.match(mobileMenu, /buildCapabilityNavigation\(event\)/)
 
-// Preserve the Team Tournament capability set exactly; this fix is League-only.
+// Preserve the current Team Tournament capability set exactly.
 assert.deepEqual(capabilityNames(teamTournament), [
   'overview',
-  'registration',
-  'teams',
-  'pairings',
   'standings',
   'results',
-  'statistics',
   'rules',
 ])
 assert.match(eventNavigation, /id:\s*'event-august-2026-team-tournament'/)

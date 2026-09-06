@@ -10114,6 +10114,10 @@ a {
   scroll-margin-top: 88px;
 }
 
+.sidebar-event-summary-static {
+  cursor: default;
+}
+
 .sidebar-brand-stack {
   display: grid;
   gap: 0.55rem;
