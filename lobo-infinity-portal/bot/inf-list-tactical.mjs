@@ -1,4 +1,5 @@
 import { decodeArmyCode } from '../scripts/infinity-army-decode.mjs'
+import { buildCanonicalDataset, resolveCanonicalWeaponRecords } from '../scripts/infinity-army-canonical-dataset.mjs'
 
 const categories = [
   ['apex', 'Apex Gunfighters'],
@@ -11,7 +12,7 @@ const emptyMessage = 'None detected in this submitted list'
 const maxImageHeight = 7_500
 const imageWidth = 1_440
 
-export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads = [], metadata = {} }) {
+export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads = [], metadata = {}, canonicalDataset = null }) {
   const decoded = decodeArmyCode(armyCode)
   const members = decoded.combatGroups.flatMap((group) => group.members)
   const cardQueues = new Map()
@@ -26,12 +27,7 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
     equipment: new Map((metadata.equips || []).map((item) => [Number(item.id), item.name])),
     skills: new Map((metadata.skills || []).map((item) => [Number(item.id), item.name])),
   }
-  const weaponsById = new Map()
-  for (const weapon of metadata.weapons || []) {
-    const variants = weaponsById.get(Number(weapon.id)) || []
-    variants.push(weapon)
-    weaponsById.set(Number(weapon.id), variants)
-  }
+  const dataset = canonicalDataset || buildCanonicalDataset({ metadata, payloads: officialPayloads })
   const linkableUnitIds = canonicalLinkableUnitIds(officialPayloads)
 
   return members.map((member) => {
@@ -44,15 +40,14 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
     const skills = mergeNamedRefs(base?.skills, option?.skills, names.skills, card.skills)
     const equipment = mergeNamedRefs(base?.equip, option?.equip, names.equipment, card.equipment)
     const weaponRefs = [...(base?.weapons || []), ...(option?.weapons || [])]
-    const weapons = dedupeWeapons(weaponRefs.flatMap((ref) => {
-      const variants = weaponsById.get(Number(ref.id)) || []
-      return variants.map((variant) => ({
-        burst: finiteNumber(variant.burst),
-        mode: variant.mode || '',
-        name: variant.name || '',
-        type: variant.type || '',
-      }))
-    }))
+    const weapons = dedupeWeapons(resolveCanonicalWeaponRecords(dataset, weaponRefs).map((weapon) => ({
+      burst: weapon.burstStatus === 'canonical' ? finiteNumber(weapon.burst) : null,
+      burstStatus: weapon.burstStatus,
+      mode: weapon.mode || '',
+      name: weapon.name || '',
+      sourceDatasetId: weapon.sourceDatasetId,
+      type: weapon.type || '',
+    })))
     // Infinity-Data names are retained when canonical metadata is unavailable, but
     // their Burst remains unverified and therefore cannot qualify an Apex profile.
     for (const name of card.weapons || []) if (!weapons.some((weapon) => sameToken(weaponDisplay(weapon), name))) {

@@ -19,7 +19,7 @@ export async function getFireteamReference({ sectorialId, armyCode, browser, now
   const id = validateSectorialId(sectorialId)
   const path = resolve(cacheDir, `${id}.json`)
   const cached = await readCache(path)
-  if (cached && now - cached.cachedAt < maxAgeMs) return { ...cached, cacheStatus: 'hit' }
+  if (cached && Array.isArray(cached.units) && now - cached.cachedAt < maxAgeMs) return { ...cached, cacheStatus: 'hit' }
   try {
     const fresh = await captureOfficialPayload({ sectorialId: id, armyCode, browser })
     const normalized = normalizeOfficialPayload(fresh, now, id)
@@ -67,7 +67,28 @@ export function normalizeOfficialPayload({ body, headers }, cachedAt = Date.now(
     unit.unitId = official?.id ?? null
     unit.officialUnitName = official?.name ?? null
   }
-  return { status: chart.teams.length ? 'available' : 'none', sectorialId: sectorialId ?? null, payloadVersion: body.version ?? null, etag: headers?.etag ?? null, responseDate: headers?.date ?? null, cachedAt, fireteamChart: chart }
+  return { status: chart.teams.length ? 'available' : 'none', sectorialId: sectorialId ?? null, payloadVersion: body.version ?? null, etag: headers?.etag ?? null, responseDate: headers?.date ?? null, cachedAt, units: body.units.map(normalizeOfficialUnit), weapons: (body.filters?.weapons || []).map((weapon) => ({ id: Number(weapon.id) || null, name: String(weapon.name || ''), burst: Number.isFinite(Number(weapon.burst)) ? Number(weapon.burst) : null })), skills: body.filters?.skills || [], equip: body.filters?.equip || [], fireteamChart: chart }
+}
+
+function normalizeOfficialUnit(unit) {
+  return {
+    id: Number(unit.id) || null,
+    name: String(unit.name || ''),
+    slug: String(unit.slug || ''),
+    profileGroups: (unit.profileGroups || []).map((group) => ({
+      id: Number(group.id) || null,
+      profiles: (group.profiles || []).map((profile) => ({
+        id: Number(profile.id) || null,
+        name: String(profile.name || ''),
+        bs: Number.isFinite(Number(profile.bs)) ? Number(profile.bs) : null,
+      })),
+      options: (group.options || []).map((option) => ({
+        id: Number(option.id) || null,
+        name: String(option.name || ''),
+        weapons: (option.weapons || []).map((weapon) => ({ id: Number(weapon.id) || null, order: Number(weapon.order) || 0, mode: weapon.mode == null ? null : String(weapon.mode), variant: weapon.variant == null ? null : String(weapon.variant), name: weapon.name == null ? null : String(weapon.name) })),
+      })),
+    })),
+  }
 }
 
 export function relationshipMatchesEntry(unit, entry) {
