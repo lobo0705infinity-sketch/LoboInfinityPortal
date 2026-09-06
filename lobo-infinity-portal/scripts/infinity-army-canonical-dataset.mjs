@@ -62,10 +62,25 @@ export function resolveCanonicalWeaponRecords(dataset, references = []) {
     const matched = mode == null ? candidates : candidates.filter((weapon) => weapon.mode === String(mode) || weapon.variant === String(mode) || weapon.name === String(mode))
     const selected = matched.length === 1 ? matched[0] : candidates.length === 1 ? candidates[0] : null
     if (!selected) {
+      // Some official mode records intentionally share an ID and have no mode
+      // discriminator in the option reference.  They are still safe for a
+      // Burst value when the canonical records agree exactly on that value;
+      // do not claim that a particular mode was selected.
+      const invariant = invariantBurstRecord(candidates)
+      if (invariant) return { ...invariant, id: Number.isInteger(id) ? id : null, name: invariant.name || candidates[0]?.name || String(reference?.name || ''), mode: mode == null ? null : String(mode), modeResolution: 'ambiguous', sourceDatasetId: dataset?.datasetId || null }
       return { id: Number.isInteger(id) ? id : null, name: candidates[0]?.name || String(reference?.name || ''), mode: mode == null ? null : String(mode), burst: null, burstStatus: candidates.length ? 'ambiguous' : 'unknown', sourceDatasetId: dataset?.datasetId || null }
     }
     return { ...selected, sourceDatasetId: dataset?.datasetId || null }
   })
+}
+
+function invariantBurstRecord(candidates) {
+  if (!candidates.length) return null
+  const first = candidates[0]
+  if (candidates.some((candidate) => candidate.name !== first.name || candidate.type !== first.type || candidate.burstStatus !== first.burstStatus)) return null
+  if (first.burstStatus === 'canonical' && candidates.some((candidate) => candidate.burst !== first.burst)) return null
+  if (first.burstStatus === 'unknown' && candidates.length > 1) return null
+  return { ...first }
 }
 
 function sha256(value) {

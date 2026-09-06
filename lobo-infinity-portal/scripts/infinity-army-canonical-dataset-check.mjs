@@ -6,6 +6,12 @@ const metadata = { weapons: [
   { id: 2, name: 'Combi Rifle', type: 'WEAPON', burst: '3' },
   { id: 3, name: 'Armed Turret', mode: 'Rifle', burst: '3' },
   { id: 3, name: 'Armed Turret', mode: 'AP Rifle', burst: '3' },
+  { id: 6, name: 'Flammenspeer', mode: 'Blast Mode', burst: '1' },
+  { id: 6, name: 'Flammenspeer', mode: 'Hit Mode', burst: '1' },
+  { id: 7, name: 'Heavy Rocket Launcher', mode: 'Blast Mode', burst: '2' },
+  { id: 7, name: 'Heavy Rocket Launcher', mode: 'Hit Mode', burst: '2' },
+  { id: 8, name: 'Armed Turret', mode: 'Rifle', burst: '4' },
+  { id: 8, name: 'Armed Turret', mode: 'Missile Launcher', burst: '1' },
   { id: 4, name: 'Deployable Device', burst: '-' },
   { id: 5, name: 'Unknown Weapon' },
 ] }
@@ -18,7 +24,11 @@ assert.equal(resolveCanonicalWeaponRecords(dataset, [{ id: 1 }])[0].burst, 4)
 assert.equal(resolveCanonicalWeaponRecords(dataset, [{ id: 2 }])[0].burst, 3)
 assert.equal(resolveCanonicalWeaponRecords(dataset, [{ id: 4 }])[0].burstStatus, 'not-applicable')
 assert.equal(resolveCanonicalWeaponRecords(dataset, [{ id: 5 }])[0].burstStatus, 'unknown')
-assert.equal(resolveCanonicalWeaponRecords(dataset, [{ id: 3 }])[0].burstStatus, 'ambiguous')
+assert.equal(resolveCanonicalWeaponRecords(dataset, [{ id: 3 }])[0].burst, 3)
+assert.equal(resolveCanonicalWeaponRecords(dataset, [{ id: 6 }])[0].burst, 1)
+assert.equal(resolveCanonicalWeaponRecords(dataset, [{ id: 6 }])[0].modeResolution, 'ambiguous')
+assert.equal(resolveCanonicalWeaponRecords(dataset, [{ id: 7 }])[0].burst, 2)
+assert.equal(resolveCanonicalWeaponRecords(dataset, [{ id: 8 }])[0].burstStatus, 'ambiguous')
 assert.equal(resolveCanonicalWeaponRecords(dataset, [{ id: 3, mode: 'AP Rifle' }])[0].burst, 3)
 const same = buildCanonicalDataset({ metadata, payloads: [payload], capturedAt: 'different' })
 assert.equal(dataset.datasetId, same.datasetId)

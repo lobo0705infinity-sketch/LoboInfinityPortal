@@ -6,7 +6,7 @@ import { chromium } from 'playwright'
 import { classifyTacticalBrief, renderTacticalBrief, TACTICAL_EMPTY_MESSAGE } from '../bot/inf-list-tactical.mjs'
 import { createInfListResponse } from '../bot/inf-list-command.mjs'
 
-const weapon = (name, burst, type = 'WEAPON', mode = '') => ({ name, burst, type, mode })
+const weapon = (name, burst, type = 'WEAPON', mode = '', burstStatus) => ({ name, burst, type, mode, ...(burstStatus ? { burstStatus } : {}) })
 const profile = (combinedId, overrides = {}) => ({
   bs: 13, combinedId, equipment: [], linkability: 'unavailable', profileName: `Loadout ${combinedId}`,
   skills: [], unitId: Number(combinedId.replace(/\D/g, '')) || 1, unitName: `Unit ${combinedId}`, weapons: [], ...overrides,
@@ -29,11 +29,14 @@ const fixtures = [
   profile('duplicate', { skills: ['Minelayer'], equipment: ['AP Mine'] }),
   profile('duplicate', { skills: ['Minelayer'], equipment: ['AP Mine'] }),
   profile('malformed', { bs: 'thirteen', equipment: [null, 'TinBot Pitcher Defense'], skills: [null, 'Camouflage Unit', 'Hacker Support', 'Combat Jump Expert', 'Hidden Deployment Unit'], weapons: [weapon('Heavy Machine Gun', 'four'), weapon('Panzerfaust Specialist Rifle', null)] }),
+  profile('ambiguous-burst', { bs: 15, weapons: [weapon('Armed Turret', null, 'WEAPON', '', 'ambiguous')] }),
+  profile('unavailable-burst', { bs: 15, weapons: [weapon('Flammenspeer', null, 'WEAPON', '', 'unknown')] }),
 ]
 
 const analysis = classifyTacticalBrief(fixtures, { faction: 'Fixture', listName: 'Exact Profiles' })
 assert.deepEqual(analysis.categories.apex.map((item) => item.combinedId), ['apex'])
 assert.deepEqual(analysis.categories.apex[0].badges, ['Mimetism [-3]', 'MSV L2', 'BS Attack (−3)'])
+assert.equal(analysis.categories.apex.some((item) => ['ambiguous-burst', 'unavailable-burst'].includes(item.combinedId)), false)
 assert.deepEqual(analysis.networkSummary, { hackers: 1, pitcherCarriers: 1, fastPandaCarriers: 1, deployableRepeaterCarriers: 1 })
 assert.equal(analysis.categories.hacking.length, 1)
 assert.deepEqual(new Set(analysis.categories.aro.flatMap((item) => item.qualifyingWeapons.map((item) => item.name))), new Set(['MULTI Sniper Rifle', 'Panzerfaust', 'Flammenspeer', 'Heavy Rocket Launcher', 'Feuerbach']))
