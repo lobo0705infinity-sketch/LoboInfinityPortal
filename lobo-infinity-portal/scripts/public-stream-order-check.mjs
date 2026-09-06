@@ -22,6 +22,7 @@ assert.equal(parseCanonicalStreamDate('2026-02-30'), null)
 assert.equal(parseCanonicalStreamDate('2026/8/2'), null)
 assert.equal(parseCanonicalStreamDate('not-a-date'), null)
 assert.equal(parseCanonicalStreamDate(' 2026-08-02 '), Date.UTC(2026, 7, 2))
+assert.equal(parseCanonicalStreamDate('2026-08-02T04:00:00.000Z'), Date.UTC(2026, 7, 2, 4))
 
 const app = readFileSync(new URL('../src/public/SnapshotPublicApp.tsx', import.meta.url), 'utf8')
 const css = readFileSync(new URL('../src/public/SnapshotPublicApp.css', import.meta.url), 'utf8')
