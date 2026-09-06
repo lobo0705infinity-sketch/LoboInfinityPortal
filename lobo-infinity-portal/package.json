@@ -79,6 +79,7 @@
     "test:top-40-bracket-missions": "node scripts/top-40-bracket-missions-check.mjs",
     "test:top-40-forfeit": "node scripts/top-40-forfeit-check.mjs",
     "test:top-40-rules": "node scripts/top-40-rules-check.mjs",
+    "test:rules-interaction": "node scripts/infinity-rules-interaction-check.mjs",
     "team-tournament:routing": "node scripts/team-tournament-routing-check.mjs",
     "test:team-tournament-rounds": "node scripts/team-tournament-rounds-check.mjs",
     "test:commissioner-submit": "node scripts/commissioner-submit-check.mjs",
