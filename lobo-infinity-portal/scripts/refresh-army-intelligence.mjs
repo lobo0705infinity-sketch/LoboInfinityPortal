@@ -3,10 +3,12 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { createRequire } from 'node:module'
+import { chromium } from 'playwright'
 import {
   ARMY_INTELLIGENCE_DECODER_VERSION,
   decodeArmyListToFiles,
 } from './infinity-army-decode.mjs'
+import { createCanonicalEnricher } from './army-intelligence-canonical-enrichment.mjs'
 
 const require = createRequire(import.meta.url)
 const CanonicalSnapshotFactory = require('../backend/CanonicalSnapshotFactory.gs')
@@ -38,7 +40,8 @@ const candidates = sources
       current.armyCodeHash !== source.armyCodeHash ||
       current.status !== 'decoded' ||
       current.decoderVersion !== ARMY_INTELLIGENCE_DECODER_VERSION ||
-      !current.hasProfileMetadata
+      !current.hasProfileMetadata ||
+      !current.hasTacticalMetadata
     )
   })
   .slice(0, limit > 0 ? limit : undefined)
@@ -48,6 +51,14 @@ await mkdir(decodedDir, { recursive: true })
 
 const snapshots = []
 const failures = []
+let browser
+let enrich
+try {
+  browser = await chromium.launch({ headless: true })
+  enrich = await createCanonicalEnricher({ browser, cacheDir: resolve(outDir, 'fireteams') })
+} catch (error) {
+  failures.push({ reason: `Canonical enrichment unavailable: ${error instanceof Error ? error.message : String(error)}`, snapshotKey: '' })
+}
 
 for (const source of candidates) {
   try {
@@ -56,10 +67,13 @@ for (const source of candidates) {
       outputDir: decodedDir,
     })
 
+    if (!enrich) throw new Error('Canonical enrichment unavailable; decoded snapshot was not persisted.')
+    const enriched = await enrich(result.list)
+    if (enriched.enrichment?.status !== 'complete') throw new Error('Canonical enrichment incomplete; decoded snapshot was not persisted.')
     snapshots.push(
       CanonicalSnapshotFactory.createSourceRefreshSnapshot(
         source,
-        result.list,
+        enriched,
         '',
         'decoded',
       ),
@@ -80,6 +94,7 @@ for (const source of candidates) {
     )
   }
 }
+await browser?.close()
 
 const payload = {
   decoded: snapshots.filter((snapshot) => snapshot.status === 'decoded').length,
@@ -120,10 +135,16 @@ async function loadSnapshotState(apiUrl) {
       armyCodeHash: list.armyCodeHash,
       decoderVersion: list.decoded?.decoderVersion || '',
       hasProfileMetadata: snapshotHasDecodedProfileMetadata(list),
+      hasTacticalMetadata: snapshotHasTacticalMetadata(list),
       status: list.status,
     })
   }
   return state
+}
+
+function snapshotHasTacticalMetadata(list) {
+  if (list.status !== 'decoded' || !list.decoded || list.decoded.enrichment?.status !== 'complete') return false
+  return (list.decoded.combatGroups || []).every((group) => (group.entries || []).every((entry) => Object.hasOwn(entry, 'bs') && Object.hasOwn(entry, 'weaponProfiles') && Object.hasOwn(entry, 'fireteamEligibility')))
 }
 
 function snapshotHasDecodedProfileMetadata(list) {
@@ -225,7 +246,7 @@ function fixtureSources() {
     tournamentResults: [],
   })
   discoveryOptions.sources = [{
-    armyCode: 'gr8Kb3BlcmF0aW9ucwhGb3IgV29ya4EsAgEBAAUAhK0BAgAAhusBAgAAh2oBBQAAgkgBBgAAh1IBAQACAQAKAIJQAQEAAIJTAQEAAIJTAQEAADIBAQAAh28CAQAAh28CAQAAh28BAgAAh0YBAgAAglQBAQAAh2YBAgA%3D',
+    armyCode: 'gTEHdGFydGFyeRtUYWNrc3NzIHRlYW1zICAzIG1vcmUgZGlzY2%2BBLAIBAAcBhH4BBAAChzYBAwADhfQBAQAEgPIBg0UABYDuAQUABoRuAZBWAAeA5QEDAAIACAGA5wECAAKA8AECAAOA8AECAASA8QEBAAWHNQEEAAaBCQECAAeA8gGDRQAIh1IBAQA%3D7',
     date: '2026-07-03',
     event: 'Fixture',
     faction: 'ALEPH',

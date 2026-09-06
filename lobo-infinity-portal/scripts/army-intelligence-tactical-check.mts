@@ -1,0 +1,66 @@
+import assert from 'node:assert/strict'
+import { buildTacticalAnalysis } from '../src/services/armyIntelligenceTacticalAnalysis.ts'
+
+const entry = (combinedId: string, unit: string, profile: string, fields: Record<string, unknown> = {}) => ({
+  combatGroup: 1, chainOfCommand: false, combinedId, doctor: false, engineer: false,
+  equipment: [], forwardObserver: false, hacker: false, lieutenant: false, orderTypes: ['regular'],
+  points: 20, profile, skills: [], specialist: false, structure: null, swc: 0, troopType: 'LI',
+  unit, weapons: [], wounds: 1, ...fields,
+})
+const decodedList = (name: string, entries: unknown[]) => ({
+  armyCode: '', armyCodeHash: name, date: '', decodedAt: '', error: '', event: '', faction: 'Fixture',
+  gameType: 'League', knownArmyLists: 1, mission: '', opponent: '', player: name, result: 'Win', results: ['win'],
+  sectorial: 'Fixture', snapshotKey: name, sourceId: name, sourcePlayer: name, sourceType: 'League', status: 'decoded' as const,
+  decoded: { combatGroups: [{ combatGroup: 1, entries }], decoderVersion: 'fixture', faction: 'Fixture', listName: name,
+    orderCounts: { impetuous: 0, irregular: 0, lieutenant: 0, regular: entries.length }, sectorial: 'Fixture',
+    totals: { combatGroups: 1, points: 300, swc: 6 } },
+})
+
+const canonicalBurst = (name: string, burst: number | null, burstStatus = burst === null ? 'unknown' : 'canonical') => ({ name, burst, burstStatus })
+const apex = entry('1', 'APEX', 'HMG', { bs: 13, skills: ['Mimetism (-3)', 'Multispectral Visor L2', 'BS Attack (-3)'], weapons: ['HMG'], weaponProfiles: [canonicalBurst('HMG', 4)] })
+const boundaryFailBs = entry('2', 'LOW BS', 'HMG', { bs: 12, weapons: ['HMG'], weaponProfiles: [canonicalBurst('HMG', 4)] })
+const boundaryFailBurst = entry('3', 'LOW BURST', 'Rifle', { bs: 14, weapons: ['Rifle'], weaponProfiles: [canonicalBurst('Rifle', 3)] })
+const malformed = entry('4', 'UNKNOWN', 'Unknown', { bs: null, weaponProfiles: [canonicalBurst('HMG', null)] })
+const hacker = entry('5', 'HACKER', 'KHD + Pitcher', { hacker: true, equipment: ['Killer Hacking Device', 'Fast-Panda'], weapons: ['Pitcher'] })
+const deployable = entry('6', 'OBSERVER', 'Deployable Repeater', { equipment: ['Deployable   Repeater'] })
+const falsePositive = entry('7', 'REPEATER PANDA TROOP', 'TinBot', { equipment: ['Repeater', 'TinBot', 'ECM'] })
+const aro = entry('8', 'ARO', 'MULTI Sniper', { bs: 13, skills: ['Mimetism (-6)'], weapons: ['MULTI Sniper Rifle', 'Panzerfaust', 'Flammenspeer', 'Heavy Rocket Launcher', 'Feuerbach'], weaponProfiles: [canonicalBurst('MULTI Sniper Rifle', 2), canonicalBurst('Panzerfaust', 1)], fireteamEligibility: { state: 'verified', verified: true, teams: ['Core'] } })
+const alternative = entry('9', 'RAIDER', 'Airborne', { skills: ['Parachutist (Deployment Zone)', 'Combat Jump (+3)', 'Hidden Deployment'], weapons: ['Combi Rifle'] })
+const defensive = entry('10', 'SCOUT', 'Minelayer', { skills: ['Camouflage (-3)', 'Decoy (2)', 'Minelayer'], weapons: ['Shock Mines'] })
+const mimetismOnly = entry('11', 'NOT CAMO', 'Mimetism', { skills: ['Mimetism (-6)'] })
+const separateLoadout = entry('12', 'SCOUT', 'Rifle', { skills: [], weapons: ['Rifle'] })
+
+const analysis = buildTacticalAnalysis([
+  decodedList('One', [apex, apex, hacker, aro, alternative, defensive, falsePositive]),
+  decodedList('Two', [apex, deployable, aro, defensive, boundaryFailBs]),
+  decodedList('Three', [boundaryFailBurst, malformed, mimetismOnly, separateLoadout]),
+] as never)
+
+assert.equal(analysis.mode, 'Submitted-List Trends')
+assert.equal(analysis.listCount, 3)
+assert.equal(analysis.categories.find((item) => item.id === 'apex')?.profiles.length, 1)
+assert.equal(analysis.categories.find((item) => item.id === 'apex')?.profiles[0].listCount, 2, 'duplicate models count once per list')
+assert.equal(Math.round(analysis.categories.find((item) => item.id === 'apex')!.profiles[0].percentage), 67)
+assert.deepEqual(analysis.categories.find((item) => item.id === 'apex')!.profiles[0].badges, ['Mimetism (-3)', 'Multispectral Visor L2', 'BS Attack (-3)'])
+assert.equal(analysis.hackerListCount, 1)
+assert.equal(analysis.categories.find((item) => item.id === 'hacking')?.profiles.length, 2)
+assert.ok(!analysis.categories.find((item) => item.id === 'hacking')?.profiles.some((profile) => profile.unit.includes('PANDA TROOP')), 'names and ordinary Repeaters must not create delivery matches')
+assert.equal(analysis.categories.find((item) => item.id === 'aro')?.profiles.length, 1)
+assert.equal(analysis.categories.find((item) => item.id === 'aro')?.profiles[0].linkability, 'verified')
+assert.equal(analysis.categories.find((item) => item.id === 'alternative')?.profiles.length, 1)
+assert.equal(analysis.categories.find((item) => item.id === 'alternative')?.profiles[0].badges.filter((badge) => /Parachutist|Combat Jump|Hidden Deployment/.test(badge)).length, 3)
+assert.equal(analysis.categories.find((item) => item.id === 'defensive')?.profiles.length, 1)
+assert.ok(!analysis.categories.find((item) => item.id === 'defensive')?.profiles.some((profile) => profile.unit === 'NOT CAMO'))
+assert.equal(analysis.categories.find((item) => item.id === 'defensive')?.profiles.filter((profile) => profile.unit === 'SCOUT').length, 1, 'capabilities must not leak into a separate loadout')
+
+const observed = buildTacticalAnalysis([decodedList('Observed', [hacker, defensive])] as never)
+assert.equal(observed.mode, 'Observed Capabilities')
+assert.equal(observed.perListNetworks.length, 1)
+
+const variants = ['FastPanda', 'fast panda', 'FAST-PANDA', 'Deployable-Repeater', 'deployable repeater', 'PITCHER']
+for (const [index, value] of variants.entries()) {
+  const result = buildTacticalAnalysis([decodedList(`Variant ${index}`, [entry(`v${index}`, 'VARIANT', value, { equipment: [value] })])] as never)
+  assert.equal(result.categories.find((item) => item.id === 'hacking')?.profiles.length, 1, `${value} must normalize exactly`)
+}
+
+console.log('Army Intelligence tactical analysis passed (classification, boundaries, variants, loadout isolation, prevalence, and sample behavior).')

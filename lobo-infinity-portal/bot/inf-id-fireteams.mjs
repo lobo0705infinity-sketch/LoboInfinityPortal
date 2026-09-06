@@ -67,7 +67,21 @@ export function normalizeOfficialPayload({ body, headers }, cachedAt = Date.now(
     unit.unitId = official?.id ?? null
     unit.officialUnitName = official?.name ?? null
   }
-  return { status: chart.teams.length ? 'available' : 'none', sectorialId: sectorialId ?? null, payloadVersion: body.version ?? null, etag: headers?.etag ?? null, responseDate: headers?.date ?? null, cachedAt, units: body.units.map(normalizeOfficialUnit), weapons: (body.filters?.weapons || []).map((weapon) => ({ id: Number(weapon.id) || null, name: String(weapon.name || ''), burst: Number.isFinite(Number(weapon.burst)) ? Number(weapon.burst) : null })), skills: body.filters?.skills || [], equip: body.filters?.equip || [], fireteamChart: chart }
+  return { status: chart.teams.length ? 'available' : 'none', sectorialId: sectorialId ?? null, payloadVersion: body.version ?? null, etag: headers?.etag ?? null, responseDate: headers?.date ?? null, cachedAt, units: body.units.map(normalizeOfficialUnit), weapons: (body.filters?.weapons || []).map(normalizeOfficialWeapon), skills: body.filters?.skills || [], equip: body.filters?.equip || [], fireteamChart: chart }
+}
+
+function normalizeOfficialWeapon(weapon) {
+  const rawBurst = weapon?.burst
+  const numericBurst = Number(rawBurst)
+  return {
+    id: Number.isInteger(Number(weapon?.id)) ? Number(weapon.id) : null,
+    mode: weapon?.mode == null ? null : String(weapon.mode),
+    variant: weapon?.variant == null ? null : String(weapon.variant),
+    name: String(weapon?.name || ''),
+    type: String(weapon?.type || ''),
+    burst: rawBurst === '-' ? null : Number.isFinite(numericBurst) ? numericBurst : null,
+    burstStatus: rawBurst === '-' ? 'not-applicable' : Number.isFinite(numericBurst) ? 'canonical' : 'unknown',
+  }
 }
 
 function normalizeOfficialUnit(unit) {

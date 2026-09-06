@@ -106,7 +106,7 @@
     "test:release-tooling": "node scripts/release-tooling-check.mjs",
     "test:army-diagnostics": "node scripts/army-diagnostics-check.mjs",
     "test:army-identity": "node --experimental-strip-types scripts/army-identity-check.ts",
-    "test:army-intelligence": "node scripts/army-intelligence-check.mjs",
+    "test:army-intelligence": "node scripts/army-intelligence-check.mjs && node scripts/infinity-army-canonical-dataset-check.mjs && node scripts/army-intelligence-canonical-enrichment-check.mjs && node --experimental-strip-types scripts/army-intelligence-tactical-check.mts",
     "test:lobos-little-helper": "node scripts/lobos-little-helper-check.mjs",
     "test:inf-id-caledonian": "node scripts/inf-id-caledonian-check.mjs",
     "test:inf-list-tactical": "node scripts/inf-list-tactical-check.mjs",

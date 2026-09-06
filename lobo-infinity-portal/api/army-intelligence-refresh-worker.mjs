@@ -2,11 +2,13 @@ import { mkdtemp } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { createRequire } from 'node:module'
+import { chromium } from 'playwright'
 import { timingSafeEqual } from 'node:crypto'
 import {
   ARMY_INTELLIGENCE_DECODER_VERSION,
   decodeArmyListToFiles,
 } from '../scripts/infinity-army-decode.mjs'
+import { createCanonicalEnricher } from '../scripts/army-intelligence-canonical-enrichment.mjs'
 
 const require = createRequire(import.meta.url)
 const CanonicalSnapshotFactory = require('../backend/CanonicalSnapshotFactory.gs')
@@ -78,16 +80,27 @@ export default async function handler(request, response) {
     const failures = []
     const processed = []
 
+    let browser
+    let enrich
+    try {
+      browser = await chromium.launch({ headless: true })
+      enrich = await createCanonicalEnricher({ browser, cacheDir: '.tmp/army-intelligence-fireteams' })
+    } catch (error) {
+      failures.push({ reason: `Canonical enrichment unavailable: ${error instanceof Error ? error.message : String(error)}`, snapshotKey: '' })
+    }
     for (const source of candidates) {
       try {
-        const result = await decodeArmyListToFiles({
+    const result = await decodeArmyListToFiles({
           input: source.armyCode,
           outputDir,
-        })
+    })
+        if (!enrich) throw new Error('Canonical enrichment unavailable; decoded snapshot was not persisted.')
+        const enriched = await enrich(result.list)
+        if (enriched.enrichment?.status !== 'complete') throw new Error('Canonical enrichment incomplete; decoded snapshot was not persisted.')
         snapshots.push(
           CanonicalSnapshotFactory.createSourceRefreshSnapshot(
             source,
-            result.list,
+            enriched,
             '',
             'decoded',
           ),
@@ -123,6 +136,7 @@ export default async function handler(request, response) {
         })
       }
     }
+    await browser?.close()
 
     if (snapshots.length > 0) {
       await postSnapshots(apiUrl, snapshots, upstreamCredential)
@@ -160,7 +174,8 @@ export function selectRefreshCandidates(sources, state) {
       current.armyCodeHash !== source.armyCodeHash ||
       current.status !== 'decoded' ||
       current.decoderVersion !== ARMY_INTELLIGENCE_DECODER_VERSION ||
-      !current.hasProfileMetadata
+      !current.hasProfileMetadata ||
+      !current.hasTacticalMetadata
     )
   })
 }
@@ -231,10 +246,16 @@ async function loadSnapshotState(apiUrl) {
       armyCodeHash: list.armyCodeHash,
       decoderVersion: list.decoded?.decoderVersion || '',
       hasProfileMetadata: snapshotHasDecodedProfileMetadata(list),
+      hasTacticalMetadata: snapshotHasTacticalMetadata(list),
       status: list.status,
     })
   }
   return state
+}
+
+function snapshotHasTacticalMetadata(list) {
+  if (list.status !== 'decoded' || !list.decoded || list.decoded.enrichment?.status !== 'complete') return false
+  return (list.decoded.combatGroups || []).every((group) => (group.entries || []).every((entry) => Object.hasOwn(entry, 'bs') && Object.hasOwn(entry, 'weaponProfiles') && Object.hasOwn(entry, 'fireteamEligibility')))
 }
 
 function snapshotHasDecodedProfileMetadata(list) {

@@ -481,6 +481,11 @@ export type ArmyIntelligenceCount = {
 }
 
 export type ArmyIntelligenceDecodedEntry = {
+  bs?: number | null
+  canonicalProfile?: string | null
+  canonicalUnitId?: number | null
+  canonicalOptionId?: number | null
+  canonicalSource?: { datasetId?: string | null; payloadVersion: string | null; sectorialId: number | null }
   combatGroup: number
   chainOfCommand: boolean
   combinedId: string
@@ -500,6 +505,8 @@ export type ArmyIntelligenceDecodedEntry = {
   troopType: string
   unit: string
   weapons: string[]
+  weaponProfiles?: Array<{ id?: number | null; burst: number | null; burstStatus?: string; mode?: string | null; name: string; source?: string | null; type?: string }>
+  fireteamEligibility?: { state?: 'verified' | 'verified-false' | 'unknown'; teams: string[]; verified: boolean }
   wounds: number | null
 }
 
@@ -509,6 +516,7 @@ export type ArmyIntelligenceDecodedList = {
     entries: ArmyIntelligenceDecodedEntry[]
   }>
   decoderVersion: string
+  enrichment?: { capturedAt?: string; datasetId?: string; enrichedAt?: string; fireteamStatus?: string; officialUnitVersion?: string | null; payloadVersion?: string | null; provider?: string; sourceUrls?: string[]; status?: string }
   faction: string
   listName: string
   orderCounts: {
@@ -6117,6 +6125,10 @@ function normalizeArmyIntelligenceDecodedList(value: unknown): ArmyIntelligenceD
       }
     }),
     decoderVersion: getString(record, 'decoderVersion'),
+    enrichment: record.enrichment ? (() => {
+      const enrichment = asRecord(record.enrichment, 'Army Intelligence enrichment')
+      return { capturedAt: getString(enrichment, 'capturedAt'), datasetId: getString(enrichment, 'datasetId'), enrichedAt: getString(enrichment, 'enrichedAt'), fireteamStatus: getString(enrichment, 'fireteamStatus'), officialUnitVersion: enrichment.officialUnitVersion == null ? null : getString(enrichment, 'officialUnitVersion'), payloadVersion: enrichment.payloadVersion == null ? null : getString(enrichment, 'payloadVersion'), provider: getString(enrichment, 'provider'), sourceUrls: getArray(enrichment, 'sourceUrls').map(String), status: getString(enrichment, 'status') }
+    })() : undefined,
     faction: getString(record, 'faction'),
     listName: getString(record, 'listName'),
     orderCounts: {
@@ -6138,6 +6150,7 @@ function normalizeArmyIntelligenceDecodedEntry(item: unknown): ArmyIntelligenceD
   const record = asRecord(item, 'Decoded army entry')
 
   return {
+    bs: record.bs === null || record.bs === undefined || record.bs === '' ? null : getNumber(record, 'bs'),
     combatGroup: getNumber(record, 'combatGroup'),
     chainOfCommand: getBoolean(record, 'chainOfCommand'),
     combinedId: getString(record, 'combinedId'),
@@ -6159,6 +6172,30 @@ function normalizeArmyIntelligenceDecodedEntry(item: unknown): ArmyIntelligenceD
     troopType: getString(record, 'troopType'),
     unit: getString(record, 'unit'),
     weapons: getArray(record, 'weapons').map((entry) => String(entry)),
+    weaponProfiles: getArray(record, 'weaponProfiles').map((item) => {
+      const weapon = asRecord(item, 'Decoded weapon profile')
+      return {
+        burst: weapon.burst === null || weapon.burst === undefined || weapon.burst === '' ? null : getNumber(weapon, 'burst'),
+        id: weapon.id == null ? null : getNumber(weapon, 'id'),
+        burstStatus: getString(weapon, 'burstStatus'),
+        mode: weapon.mode == null ? null : getString(weapon, 'mode'),
+        name: getString(weapon, 'name'),
+        source: weapon.source == null ? null : getString(weapon, 'source'),
+        type: getString(weapon, 'type'),
+      }
+    }).filter((weapon) => weapon.name),
+    canonicalProfile: record.canonicalProfile == null ? null : getString(record, 'canonicalProfile'),
+    canonicalUnitId: record.canonicalUnitId == null ? null : getNumber(record, 'canonicalUnitId'),
+    canonicalOptionId: record.canonicalOptionId == null ? null : getNumber(record, 'canonicalOptionId'),
+    canonicalSource: record.canonicalSource ? (() => {
+      const source = asRecord(record.canonicalSource, 'Canonical source')
+      return { datasetId: source.datasetId == null ? null : getString(source, 'datasetId'), payloadVersion: source.payloadVersion == null ? null : getString(source, 'payloadVersion'), sectorialId: source.sectorialId == null ? null : getNumber(source, 'sectorialId') }
+    })() : undefined,
+    fireteamEligibility: record.fireteamEligibility ? (() => {
+      const eligibility = asRecord(record.fireteamEligibility, 'Fireteam eligibility')
+      const state = getString(eligibility, 'state')
+      return { state: state === 'verified' || state === 'verified-false' || state === 'unknown' ? state : 'unknown', teams: getArray(eligibility, 'teams').map(String), verified: getBoolean(eligibility, 'verified') }
+    })() : undefined,
     wounds: record.wounds === null || record.wounds === undefined || record.wounds === ''
       ? null
       : getNumber(record, 'wounds'),

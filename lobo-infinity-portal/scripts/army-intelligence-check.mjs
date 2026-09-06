@@ -141,18 +141,18 @@ assert.match(
 )
 assert.match(
   page,
-  /buildIntelligenceBrief\(matchingLists, analysis, selectedExplorerScope\.label \|\| selectedSectorial\)/,
-  'Army Intelligence Brief must be generated from the selected-scope list collection and its shared analysis.',
+  /buildTacticalAnalysis\(matchingLists\)/,
+  'Tactical intelligence must be generated from the selected-scope decoded list collection.',
 )
 assert.match(
   page,
-  /function buildIntelligenceBrief[\s\S]*decodedListCount < 2[\s\S]*return \[\]/,
-  'Army Intelligence Brief must suppress weak observations when too few lists are available.',
+  /analysis\.mode[\s\S]*analysis\.listCount < 3/,
+  'Tactical intelligence must label small samples as observed capabilities.',
 )
 assert.match(
   page,
-  /Additional Army Lists are needed before meaningful intelligence can be generated/,
-  'Army Intelligence Brief must expose the required low-data empty state.',
+  /observed capabilities, not reliable faction trends/,
+  'Tactical intelligence must expose the required low-data notice.',
 )
 assert.doesNotMatch(
   page,

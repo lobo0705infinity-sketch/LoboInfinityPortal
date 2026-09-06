@@ -1,6 +1,8 @@
 import { type ReactNode, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import InteractiveMetricCard from '../components/InteractiveMetricCard'
+import type { ArmyIntelligenceArmyList, ArmyIntelligenceList } from '../services/api'
+import { buildTacticalAnalysis, type TacticalProfile } from '../services/armyIntelligenceTacticalAnalysis'
 import { useSnapshotData } from './useSnapshotData'
 import './SnapshotArmyIntelligence.css'
 
@@ -12,7 +14,7 @@ type Summary = {
   pendingLists: number
 }
 
-type ArmyList = {
+type ArmyList = ArmyIntelligenceArmyList & {
   armyLink: string
   armyName: string
   faction: string
@@ -47,7 +49,7 @@ type Entry = {
   wounds: number | null
 }
 
-type DecodedList = {
+type DecodedList = ArmyIntelligenceList & {
   date: string
   decoded?: {
     combatGroups: Array<{ combatGroup: number; entries: Entry[] }>
@@ -188,7 +190,6 @@ function ArmyIntelligenceDetail({ selected }: { selected: string }) {
   const orderTotals = lists.map((list) => list.decoded?.orderCounts ?? {})
   const avg = (...keys: string[]) => round(average(orderTotals.map((orders) => keys.reduce((value, key) => value || Number(orders[key] ?? 0), 0))))
   const roleRows = buildRoles(usage)
-  const missions = countValues(lists.map((list) => list.mission).filter(Boolean))
   const players = unique(publicLists.map((list) => list.playerDisplayName || list.player).filter(Boolean))
   const sectorials = unique(publicLists.map((list) => list.sectorial || list.faction).filter(Boolean))
   const visibleLists = sortExplorerLists(publicLists.filter((list) => {
@@ -214,13 +215,7 @@ function ArmyIntelligenceDetail({ selected }: { selected: string }) {
     </section>
 
     {lists.length ? <>
-      <IntelligenceBrief
-        faction={selected}
-        lists={lists.length}
-        mission={missions[0]?.label ?? ''}
-        primaryProfile={usage[0]?.name ?? ''}
-        roles={roleRows}
-      />
+      <IntelligenceBrief analysis={buildTacticalAnalysis(lists)} faction={selected} />
 
       <section className="snapshot-intelligence-metrics snapshot-intelligence-mature-metrics" aria-label={`${selected} intelligence summary`}>
         <IntelligenceMetric icon="lists" label="Known Army Lists" value={publicLists.length} helper="Browse submitted army lists" onActivate={() => setExplorerOpen(true)} />
@@ -258,18 +253,22 @@ function ArmyIntelligenceDetail({ selected }: { selected: string }) {
   </>
 }
 
-function IntelligenceBrief({ faction, lists, mission, primaryProfile, roles }: { faction: string; lists: number; mission: string; primaryProfile: string; roles: RoleRow[] }) {
-  const specialists = roles.find((row) => row.label === 'Specialist Operatives')?.profiles.length ?? 0
-  const strongestRole = [...roles].sort((a, b) => b.profiles.length - a.profiles.length)[0]
+function IntelligenceBrief({ analysis, faction }: { analysis: ReturnType<typeof buildTacticalAnalysis>; faction: string }) {
   return <section className="panel snapshot-intelligence-brief-panel" aria-labelledby="snapshot-intelligence-brief-title">
-    <div className="snapshot-intelligence-brief-header"><span>Intelligence Brief</span><h2 id="snapshot-intelligence-brief-title">{faction}</h2></div>
-    <ul>
-      <li><strong>{primaryProfile || 'No profile recorded'}</strong><span>has the broadest list coverage in the selected sample.</span></li>
-      <li><strong>{specialists} specialist profiles</strong><span>appear across the submitted forces.</span></li>
-      <li><strong>{strongestRole?.label ?? 'No role coverage'}</strong><span>is the most represented operational role.</span></li>
-      <li><strong>{mission || 'No mission recorded'}</strong><span>is the most represented mission across {lists} decoded lists.</span></li>
-    </ul>
+    <div className="snapshot-intelligence-brief-header"><span>{analysis.mode}</span><h2 id="snapshot-intelligence-brief-title">{faction}</h2></div>
+    {analysis.listCount < 3 ? <p className="army-intelligence-sample-notice">Only {analysis.listCount} decoded {analysis.listCount === 1 ? 'list is' : 'lists are'} available. These are observed capabilities, not reliable faction trends.</p> : null}
+    <div className="army-intelligence-tactical-grid">{analysis.categories.map((category) => <article className="army-intelligence-tactical-panel" key={category.id}>
+      <header><h3>{category.title}</h3><p>{category.description}</p></header>
+      {category.id === 'hacking' ? <p className="army-intelligence-category-total"><strong>{analysis.hackerListCount}</strong> of {analysis.listCount} decoded lists contain at least one Hacker.</p> : null}
+      {category.profiles.length ? <div className="army-intelligence-tactical-profiles">{category.profiles.map((profile) => <SnapshotTacticalProfile category={category.id} key={profile.profileId} profile={profile} />)}</div> : <p className="army-intelligence-tactical-empty">{category.unavailableReason || 'No qualifying profiles were found in the submitted decoded sample.'}</p>}
+      {category.id === 'hacking' && analysis.perListNetworks.length ? <div className="army-intelligence-network-lists">{analysis.perListNetworks.map((row) => <p key={row.label}><strong>{row.label}</strong><span>{row.components.join(' · ')}</span></p>)}</div> : null}
+    </article>)}</div>
   </section>
+}
+
+function SnapshotTacticalProfile({ category, profile }: { category: string; profile: TacticalProfile }) {
+  const weapons = profile.weapons.filter((weapon, index) => category === 'apex' ? (weapon.burst ?? 0) >= 4 : category === 'aro' ? /sniper rifle|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach/i.test(weapon.name) : category === 'defensive' ? /mine|deployable/i.test(weapon.name) : category === 'alternative' ? index === 0 : false)
+  return <div className="army-intelligence-tactical-profile"><div><strong>{profile.unit}</strong><span>{profile.profile}</span></div><div className="army-intelligence-tactical-badges">{profile.bs !== null ? <span>BS {profile.bs}</span> : null}{weapons.map((weapon) => <span key={`${weapon.name}:${weapon.burst}`}>{weapon.name}{weapon.burst === null ? ' · Burst unavailable' : ` · Burst ${weapon.burst}`}</span>)}{profile.badges.map((badge) => <span key={badge}>{badge}</span>)}{profile.linkability === 'verified' ? <span className="is-verified">Verified linkable</span> : profile.linkability === 'verified-false' ? <span>Verified not linkable</span> : <span>Fireteam status unknown</span>}</div><small>{profile.listCount} {profile.listCount === 1 ? 'list' : 'lists'} · {Math.round(profile.percentage)}%</small></div>
 }
 
 function IntelligenceMetric({ icon, label, value, helper, onActivate }: { icon: MetricIcon; label: string; value: number; helper?: string; onActivate?: () => void }) {
@@ -432,7 +431,7 @@ function sortExplorerLists(rows: ArmyList[], sort: ExplorerSort) {
   })
 }
 
-function countValues(values: string[]) {
+export function countValues(values: string[]) {
   const counts = new Map<string, number>()
   values.forEach((value) => counts.set(value, (counts.get(value) ?? 0) + 1))
   return [...counts].map(([label, count]) => ({ label, count })).sort((a, b) => b.count - a.count || a.label.localeCompare(b.label))

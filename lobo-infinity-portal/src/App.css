@@ -6672,6 +6672,52 @@
   padding: 18px;
 }
 
+.army-intelligence-tactical-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.army-intelligence-tactical-panel {
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid rgba(76, 201, 240, 0.24);
+  border-radius: 10px;
+  background: rgba(4, 12, 18, 0.66);
+}
+
+.army-intelligence-tactical-panel header h3,
+.army-intelligence-tactical-panel header p,
+.army-intelligence-tactical-profile span,
+.army-intelligence-tactical-profile small,
+.army-intelligence-sample-notice,
+.army-intelligence-tactical-empty,
+.army-intelligence-category-total { margin: 0; }
+
+.army-intelligence-tactical-panel header p,
+.army-intelligence-tactical-empty,
+.army-intelligence-sample-notice,
+.army-intelligence-tactical-profile small { color: var(--text-muted); }
+
+.army-intelligence-tactical-panel header p { margin-top: 0.35rem; font-size: 0.82rem; }
+.army-intelligence-sample-notice { margin-top: 0.75rem; }
+.army-intelligence-category-total { margin-top: 0.75rem; }
+.army-intelligence-tactical-profiles { display: grid; gap: 0.65rem; margin-top: 0.85rem; }
+.army-intelligence-tactical-profile { display: grid; gap: 0.42rem; padding-top: 0.65rem; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+.army-intelligence-tactical-profile > div:first-child { display: flex; flex-wrap: wrap; gap: 0.35rem 0.65rem; }
+.army-intelligence-tactical-badges { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.army-intelligence-tactical-badges > span { padding: 0.2rem 0.45rem; border: 1px solid rgba(76, 201, 240, 0.28); border-radius: 999px; font-size: 0.7rem; }
+.army-intelligence-tactical-badges > .is-verified { border-color: rgba(92, 214, 133, 0.5); color: #8de5ab; }
+.army-intelligence-tactical-empty { margin-top: 0.8rem; font-size: 0.84rem; }
+.army-intelligence-network-lists { display: grid; gap: 0.35rem; margin-top: 0.75rem; }
+.army-intelligence-network-lists p { display: flex; flex-direction: column; margin: 0; font-size: 0.78rem; }
+
+@media (max-width: 760px) {
+  .army-intelligence-tactical-grid { grid-template-columns: 1fr; }
+  .army-intelligence-tactical-panel { padding: 0.85rem; }
+}
+
 .streams-manager-primary {
   min-height: 42px;
   border: 1px solid var(--blue);
