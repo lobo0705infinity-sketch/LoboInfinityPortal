@@ -4,6 +4,8 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright'
+import { buildSubmittedProfiles, classifyTacticalBrief, renderTacticalBrief } from '../bot/inf-list-tactical.mjs'
+import { decodeArmyCode } from './infinity-army-decode.mjs'
 
 const rendererOrigin = 'https://infinity.2nirwana.de'
 const rendererPath = '/cards/generate'
@@ -306,13 +308,28 @@ export async function renderInfListPng({ input, outputPath, browserType = chromi
 
   const browser = await browserType.launch({ headless: true })
   try {
-    const profilePages = await captureRenderedProfilePages(browser, rendererViewUrl)
-    let readable = null
+    const rendered = await captureRenderedProfilePages(browser, rendererViewUrl)
+    const profilePages = rendered.profilePages
+    let official = null
     try {
-      readable = await captureOfficialArmyList(browser, buildOfficialArmyUrl(armyCode))
+      official = await captureOfficialArmyList(browser, buildOfficialArmyUrl(armyCode))
     } catch {
       // The established full-list image remains usable if the additive official capture fails.
     }
+    const decoded = decodeArmyCode(armyCode)
+    const faction = official?.metadata?.factions?.find((item) => Number(item.id) === Number(decoded.sectorialId))
+    const submittedProfiles = buildSubmittedProfiles({
+      armyCode,
+      cards: rendered.cards,
+      metadata: official?.metadata,
+      officialPayloads: official?.payloads,
+    })
+    const tacticalAnalysis = classifyTacticalBrief(submittedProfiles, {
+      faction: faction?.name,
+      listName: decoded.listName,
+      sectorial: faction?.name,
+    })
+    const tacticalPages = await renderTacticalBrief({ analysis: tacticalAnalysis, browser })
 
     const finalOutputPath = outputPath ? resolve(outputPath) : null
     if (finalOutputPath) {
@@ -327,11 +344,13 @@ export async function renderInfListPng({ input, outputPath, browserType = chromi
       officialArmyUrl: buildOfficialArmyUrl(armyCode),
       outputPath: finalOutputPath,
       profilePages,
-      readableBytes: readable?.imageBuffer.length ?? null,
-      readableHeight: readable?.height ?? null,
-      readableImageBuffer: readable?.imageBuffer ?? null,
-      readableWidth: readable?.width ?? null,
+      readableBytes: official?.imageBuffer.length ?? null,
+      readableHeight: official?.height ?? null,
+      readableImageBuffer: official?.imageBuffer ?? null,
+      readableWidth: official?.width ?? null,
       rendererViewUrl: rendererViewUrl.href,
+      tacticalAnalysis,
+      tacticalPages,
       width: profilePages[0].width,
     }
   } finally {
@@ -344,6 +363,26 @@ async function captureRenderedProfilePages(browser, rendererViewUrl) {
   try {
     await loadRendererPage(page, rendererViewUrl)
     await page.addStyleTag({ content: profilePageStyles })
+    const cards = await page.locator('.card[data-info^="combinedId:"]').evaluateAll((nodes) => nodes.map((card) => {
+      const attributeRows = [...(card.querySelector('table.attribut')?.rows || [])].map((row) => [...row.cells].map((cell) => cell.textContent.trim()))
+      const headers = attributeRows[0] || []
+      const values = attributeRows[1] || []
+      const tokenText = (label) => {
+        const element = [...card.querySelectorAll('b')].find((node) => node.textContent.trim() === `${label}:`)
+        return element?.nextElementSibling?.textContent || ''
+      }
+      const split = (value) => value.split(',').map((token) => token.replace(/\s+/g, ' ').trim()).filter(Boolean)
+      const profileName = card.querySelector('.card-header-title')?.textContent?.replace(/\s+/g, ' ').trim() || ''
+      return {
+        bs: Number(values[headers.indexOf('BS')]),
+        combinedId: card.getAttribute('data-info')?.replace(/^combinedId:/, '') || '',
+        equipment: split(tokenText('Equipment')),
+        profileName,
+        skills: split(tokenText('Skills')),
+        unitName: profileName,
+        weapons: [...card.querySelectorAll('.weapon-table-name-header')].map((node) => node.textContent.replace(/\s+/g, ' ').trim()).filter((name) => name !== 'Weapon Name'),
+      }
+    }))
     const pagination = await page.evaluate(() => {
       const source = document.querySelector('.page')
       if (!source) throw new Error('Infinity-Data profile page was not found.')
@@ -402,7 +441,7 @@ async function captureRenderedProfilePages(browser, rendererViewUrl) {
       throw new InfListRenderError('invalid_render', 'Infinity-Data did not produce exactly two profile pages.')
     }
 
-    return await Promise.all([0, 1].map(async (index) => {
+    const profilePages = await Promise.all([0, 1].map(async (index) => {
       const pageLocator = pageLocators.nth(index)
       const imageBuffer = await pageLocator.screenshot({ animations: 'disabled', timeout: 30_000, type: 'png' })
       const box = await pageLocator.boundingBox()
@@ -417,6 +456,7 @@ async function captureRenderedProfilePages(browser, rendererViewUrl) {
         width: imageBuffer.readUInt32BE(16),
       }
     }))
+    return { cards, profilePages }
   } finally {
     await page.close()
   }
@@ -425,6 +465,15 @@ async function captureRenderedProfilePages(browser, rendererViewUrl) {
 async function captureOfficialArmyList(browser, officialArmyUrl) {
   const page = await browser.newPage({ deviceScaleFactor: 1, viewport: { width: 1920, height: 1080 } })
   try {
+    let metadata = null
+    const payloads = []
+    page.on('response', async (response) => {
+      const url = response.url()
+      try {
+        if (/\/army\/infinity\/en\/metadata$/.test(url)) metadata = await response.json()
+        else if (/\/army\/units\/en\/\d+$/.test(url)) payloads.push(await response.json())
+      } catch {}
+    })
     await page.goto(officialArmyUrl, { timeout: 60_000, waitUntil: 'domcontentloaded' })
     await page.waitForLoadState('networkidle', { timeout: 60_000 }).catch(() => {})
     if (!officialArmyAppOrigins.has(new URL(page.url()).origin)) {
@@ -448,6 +497,8 @@ async function captureOfficialArmyList(browser, officialArmyUrl) {
     return {
       height: imageBuffer.readUInt32BE(20),
       imageBuffer,
+      metadata,
+      payloads,
       width: imageBuffer.readUInt32BE(16),
     }
   } finally {

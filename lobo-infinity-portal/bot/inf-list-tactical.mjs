@@ -1,0 +1,229 @@
+import { decodeArmyCode } from '../scripts/infinity-army-decode.mjs'
+
+const categories = [
+  ['apex', 'Apex Gunfighters'],
+  ['hacking', 'Hacking Network'],
+  ['aro', 'ARO Pieces'],
+  ['alternative', 'Alternative Attack Vectors'],
+  ['defensive', 'Defensive Network'],
+]
+const emptyMessage = 'None detected in this submitted list'
+const maxImageHeight = 7_500
+const imageWidth = 1_440
+
+export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads = [], metadata = {} }) {
+  const decoded = decodeArmyCode(armyCode)
+  const members = decoded.combatGroups.flatMap((group) => group.members)
+  const cardQueues = new Map()
+  for (const card of cards) {
+    const queue = cardQueues.get(card.combinedId) || []
+    queue.push(card)
+    cardQueues.set(card.combinedId, queue)
+  }
+  const units = officialPayloads.flatMap((payload) => payload?.units || [])
+  const unitById = new Map(units.map((unit) => [Number(unit.id), unit]))
+  const names = {
+    equipment: new Map((metadata.equips || []).map((item) => [Number(item.id), item.name])),
+    skills: new Map((metadata.skills || []).map((item) => [Number(item.id), item.name])),
+  }
+  const weaponsById = new Map()
+  for (const weapon of metadata.weapons || []) {
+    const variants = weaponsById.get(Number(weapon.id)) || []
+    variants.push(weapon)
+    weaponsById.set(Number(weapon.id), variants)
+  }
+  const linkableUnitIds = canonicalLinkableUnitIds(officialPayloads)
+
+  return members.map((member) => {
+    const card = cardQueues.get(member.combinedId)?.shift() || {}
+    const unit = unitById.get(Number(member.unitId))
+    const group = unit?.profileGroups?.find((item) => Number(item.id) === Number(member.groupId))
+    const option = group?.options?.find((item) => Number(item.id) === Number(member.optionId))
+    const profileId = Number(member.combinedId.split('-').at(-1))
+    const base = group?.profiles?.find((item) => Number(item.id) === profileId) || group?.profiles?.[0]
+    const skills = mergeNamedRefs(base?.skills, option?.skills, names.skills, card.skills)
+    const equipment = mergeNamedRefs(base?.equip, option?.equip, names.equipment, card.equipment)
+    const weaponRefs = [...(base?.weapons || []), ...(option?.weapons || [])]
+    const weapons = dedupeWeapons(weaponRefs.flatMap((ref) => {
+      const variants = weaponsById.get(Number(ref.id)) || []
+      return variants.map((variant) => ({
+        burst: finiteNumber(variant.burst),
+        mode: variant.mode || '',
+        name: variant.name || '',
+        type: variant.type || '',
+      }))
+    }))
+    // Infinity-Data names are retained when canonical metadata is unavailable, but
+    // their Burst remains unverified and therefore cannot qualify an Apex profile.
+    for (const name of card.weapons || []) if (!weapons.some((weapon) => sameToken(weaponDisplay(weapon), name))) {
+      weapons.push({ burst: null, mode: '', name, type: '' })
+    }
+    return {
+      bs: finiteNumber(base?.bs ?? card.bs),
+      combinedId: member.combinedId,
+      equipment,
+      linkability: officialPayloads.length ? (linkableUnitIds.has(Number(member.unitId)) ? 'verified-linkable' : 'verified-not-linkable') : 'unavailable',
+      profileName: option?.name || card.profileName || group?.isc || unit?.isc || unit?.name || 'Profile unavailable',
+      skills,
+      unitId: Number(member.unitId),
+      unitName: unit?.isc || unit?.name || card.unitName || card.profileName || 'Unit unavailable',
+      weapons,
+    }
+  })
+}
+
+export function classifyTacticalBrief(profiles, army = {}) {
+  const aggregated = aggregateExactProfiles(profiles)
+  const result = Object.fromEntries(categories.map(([key]) => [key, []]))
+  for (const profile of aggregated) {
+    const enhancements = preferredMatches(profile.skills, [mimetismToken, msvToken, bsAttackMinusThreeToken])
+    const apexWeapons = profile.weapons.filter((weapon) => weapon.burst >= 4 && isRangedWeapon(weapon))
+    if (profile.bs >= 13 && apexWeapons.length) result.apex.push({ ...profile, badges: enhancements, qualifyingWeapons: apexWeapons })
+
+    const hackerTypes = unique([
+      ...exactMatches(profile.skills, [hackerToken]),
+      ...exactMatches(profile.equipment, [hackingDeviceToken]),
+    ])
+    const delivery = exactMatches([...profile.weapons.map(weaponDisplay), ...profile.equipment], [pitcherToken, fastPandaToken, deployableRepeaterToken])
+    if (hackerTypes.length || delivery.length) result.hacking.push({ ...profile, badges: [...hackerTypes, ...delivery], hackerTypes, delivery })
+
+    const aroWeapons = profile.weapons.filter((weapon) => aroWeaponToken(weaponDisplay(weapon)))
+    if (aroWeapons.length) result.aro.push({ ...profile, badges: enhancements.filter((badge) => mimetismToken(badge) || msvToken(badge)), qualifyingWeapons: aroWeapons })
+
+    const deployments = preferredMatches(profile.skills, [parachutistToken, combatJumpToken, hiddenDeploymentToken])
+    if (deployments.length) result.alternative.push({ ...profile, badges: deployments })
+
+    const defenses = preferredMatches(profile.skills, [camouflageToken, decoyToken, minelayerToken])
+    if (defenses.length) {
+      const deployables = minelayerAssociated(profile.weapons, profile.equipment)
+      result.defensive.push({ ...profile, badges: defenses, deployables })
+    }
+  }
+  result.apex.sort((a, b) => b.badges.length - a.badges.length || b.bs - a.bs || profileSort(a, b))
+  result.aro.sort((a, b) => linkRank(a) - linkRank(b) || profileSort(a, b))
+  for (const key of ['hacking', 'alternative', 'defensive']) result[key].sort(profileSort)
+  return {
+    army: { faction: army.faction || '', listName: army.listName || '', sectorial: army.sectorial || '' },
+    categories: result,
+    networkSummary: {
+      deployableRepeaterCarriers: countQuantity(result.hacking.filter((item) => item.delivery.some(deployableRepeaterToken))),
+      fastPandaCarriers: countQuantity(result.hacking.filter((item) => item.delivery.some(fastPandaToken))),
+      hackers: countQuantity(result.hacking.filter((item) => item.hackerTypes.length)),
+      pitcherCarriers: countQuantity(result.hacking.filter((item) => item.delivery.some(pitcherToken))),
+    },
+  }
+}
+
+export async function renderTacticalBrief({ analysis, browser }) {
+  const page = await browser.newPage({ deviceScaleFactor: 1, viewport: { width: imageWidth, height: 1_600 } })
+  try {
+    const categoryBlocks = categories.map(([key, title]) => ({ key, title, entries: analysis.categories[key] }))
+    const measured = await measureBlocks(page, analysis, categoryBlocks)
+    const pages = paginateBlocks(measured, maxImageHeight - 250)
+    const results = []
+    for (let index = 0; index < pages.length; index += 1) {
+      await page.setContent(markup(analysis, pages[index], index, pages.length), { waitUntil: 'load' })
+      await page.evaluate(async () => document.fonts?.ready)
+      const root = page.locator('.brief')
+      const imageBuffer = await root.screenshot({ animations: 'disabled', timeout: 30_000, type: 'png' })
+      results.push({ imageBuffer, width: imageBuffer.readUInt32BE(16), height: imageBuffer.readUInt32BE(20) })
+    }
+    return results
+  } finally { await page.close() }
+}
+
+async function measureBlocks(page, analysis, blocks) {
+  await page.setContent(markup(analysis, blocks, 0, 1), { waitUntil: 'load' })
+  return await page.locator('.category').evaluateAll((nodes, source) => nodes.map((node, index) => ({ ...source[index], height: Math.ceil(node.getBoundingClientRect().height) + 18 })), blocks)
+}
+
+function paginateBlocks(blocks, availableHeight) {
+  const pages = [[]]
+  let used = 0
+  for (const block of blocks) {
+    if (used && used + block.height > availableHeight) { pages.push([]); used = 0 }
+    pages.at(-1).push(block)
+    used += block.height
+  }
+  return pages
+}
+
+function markup(analysis, blocks, pageIndex, pageCount) {
+  const subtitle = [analysis.army.sectorial || analysis.army.faction, analysis.army.listName].filter(Boolean).map(escapeHtml).join(' · ')
+  return `<!doctype html><html><head><meta charset="utf-8"><style>${styles()}</style></head><body><main class="brief"><header><div class="brand">LOBO'S LITTLE HELPER</div><h1>TACTICAL INTELLIGENCE BRIEF</h1><h2>OBSERVED CAPABILITIES — SUBMITTED LIST</h2><p>${subtitle}</p></header><div class="categories">${blocks.map((block) => categoryMarkup(block, analysis)).join('')}</div>${pageCount > 1 ? `<footer>PAGE ${pageIndex + 1} OF ${pageCount}</footer>` : ''}</main></body></html>`
+}
+
+function categoryMarkup({ key, title, entries }, analysis) {
+  const summary = key === 'hacking' ? `<div class="summary"><b>NETWORK:</b> ${analysis.networkSummary.hackers} Hackers · ${analysis.networkSummary.pitcherCarriers} Pitcher · ${analysis.networkSummary.fastPandaCarriers} FastPanda · ${analysis.networkSummary.deployableRepeaterCarriers} Deployable Repeater</div>` : ''
+  const content = entries.length ? `<div class="grid">${entries.map((entry) => entryMarkup(key, entry)).join('')}</div>` : `<div class="empty">${emptyMessage}</div>`
+  return `<section class="category"><h3><span>${escapeHtml(title)}</span><small>${entries.length} exact profile${entries.length === 1 ? '' : 's'}</small></h3>${summary}${content}</section>`
+}
+
+function entryMarkup(key, entry) {
+  let detail = ''
+  if (key === 'apex' || key === 'aro') detail = `BS ${value(entry.bs)} · ${entry.qualifyingWeapons.map((weapon) => `${escapeHtml(weaponDisplay(weapon))} · B${value(weapon.burst)}`).join(' · ')}`
+  if (key === 'hacking') detail = [...entry.hackerTypes, ...entry.delivery].map(escapeHtml).join(' · ')
+  if (key === 'alternative') detail = `PRIMARY: ${escapeHtml(primaryWeapon(entry.weapons) || 'Unavailable')}`
+  if (key === 'defensive' && entry.deployables.length) detail = `DEPLOYABLE: ${entry.deployables.map(escapeHtml).join(' · ')}`
+  const fireteam = key === 'aro' ? `<span class="badge fireteam">${entry.linkability === 'verified-linkable' ? 'VERIFIED LINKABLE' : entry.linkability === 'unavailable' ? 'LINKABILITY UNAVAILABLE' : 'NOT LINKABLE IN CANONICAL CHART'}</span>` : ''
+  return `<article><div class="entry-head"><div><h4>${escapeHtml(entry.unitName)}</h4><p>${escapeHtml(entry.profileName)}</p></div><strong>×${entry.quantity}</strong></div><div class="detail">${detail || 'VERIFIED PROFILE COMPONENT'}</div><div class="badges">${entry.badges.map((badge) => `<span class="badge">${escapeHtml(badge)}</span>`).join('')}${fireteam}</div></article>`
+}
+
+function styles() { return `*{box-sizing:border-box}html,body{margin:0;background:#070b10;color:#eef2f6;font-family:Arial,sans-serif}.brief{width:${imageWidth}px;padding:48px 52px 38px;background:radial-gradient(circle at 90% 0,#263540 0,transparent 32%),#0b1117;border-top:12px solid #a7242b}header{padding:0 4px 30px;border-bottom:3px solid #53616d}.brand{color:#df3942;font-size:20px;font-weight:900;letter-spacing:5px}h1{margin:9px 0 2px;font-size:50px;line-height:1;letter-spacing:2px}header h2{margin:0;color:#aeb8c1;font-size:25px;letter-spacing:3px}header p{margin:12px 0 0;color:#dfe6eb;font-size:21px;font-weight:700}.categories{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px}.category{border:2px solid #53616d;background:#111a22;break-inside:avoid}.category:nth-child(1),.category:nth-child(2){grid-column:span 1}.category:nth-child(n+3){grid-column:1/-1}.category h3{display:flex;align-items:center;justify-content:space-between;margin:0;padding:13px 17px;background:#202c36;border-left:9px solid #c42e37;font-size:26px;letter-spacing:1px;text-transform:uppercase}.category h3 small{color:#aeb8c1;font-size:15px;letter-spacing:0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px}.category:nth-child(-n+2) .grid{grid-template-columns:1fr}.summary{padding:10px 15px;background:#701a20;color:#fff;font-size:17px}.empty{padding:26px 18px;color:#9faab3;font-size:20px;font-style:italic}article{min-width:0;padding:13px 15px;border:1px solid #40505d;border-left:6px solid #7f919f;background:#17222b}.entry-head{display:flex;gap:12px;justify-content:space-between}.entry-head div{min-width:0}h4{margin:0;color:#fff;font-size:21px;line-height:1.1;overflow-wrap:anywhere;text-transform:uppercase}.entry-head p{margin:4px 0 0;color:#b9c5cd;font-size:17px;line-height:1.2;overflow-wrap:anywhere}.entry-head strong{flex:none;color:#ef454f;font-size:24px}.detail{margin-top:9px;color:#fff;font-size:17px;font-weight:800;line-height:1.3;overflow-wrap:anywhere}.badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}.badge{padding:4px 8px;border:1px solid #8e9ba5;border-radius:3px;background:#263640;color:#e8edf0;font-size:14px;font-weight:800}.fireteam{border-color:#db3942;background:#5e171c}footer{padding-top:18px;text-align:right;color:#8e9aa4;font-size:14px;font-weight:800;letter-spacing:2px}` }
+
+function aggregateExactProfiles(profiles) {
+  const map = new Map()
+  for (const profile of profiles) {
+    const key = profile.combinedId || JSON.stringify([profile.unitId, profile.unitName, profile.profileName, profile.bs, profile.skills, profile.equipment, profile.weapons])
+    const existing = map.get(key)
+    if (existing) existing.quantity += 1
+    else map.set(key, { ...profile, quantity: 1 })
+  }
+  return [...map.values()]
+}
+
+function canonicalLinkableUnitIds(payloads) {
+  const ids = new Set()
+  for (const payload of payloads) {
+    const units = new Map((payload?.units || []).map((unit) => [unit.slug, Number(unit.id)]))
+    for (const team of payload?.fireteamChart?.teams || []) for (const member of team.units || []) {
+      const id = units.get(member.slug)
+      if (id) ids.add(id)
+    }
+  }
+  return ids
+}
+function mergeNamedRefs(base = [], option = [], lookup, fallback = []) { return unique([...base, ...option].map((ref) => lookup.get(Number(ref.id))).filter(Boolean).concat(fallback || [])) }
+function exactMatches(values, predicates) { return unique(values.filter((value) => predicates.some((predicate) => predicate(value)))) }
+function preferredMatches(values, predicates) { return predicates.flatMap((predicate) => { const matches = unique(values.filter(predicate)); return matches.length ? [matches.sort((a, b) => normalized(b).length - normalized(a).length)[0]] : [] }) }
+function normalized(value) { return String(value || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[−–—-]/g, ' ').replace(/[^a-z0-9+]+/g, ' ').replace(/\s+/g, ' ').trim() }
+function sameToken(a, b) { return normalized(a) === normalized(b) }
+function mimetismToken(v) { return /^mimetism(?:\s+(?:l(?:evel\s*)?)?\d+)?$/.test(normalized(v)) }
+function msvToken(v) { return /^(?:multispectral visor|msv)(?:\s+(?:l(?:evel\s*)?)?\d+)?$/.test(normalized(v)) }
+function bsAttackMinusThreeToken(v) { return /^bs attack\s+3$/.test(normalized(v)) }
+function hackerToken(v) { return /^hacker$/.test(normalized(v)) }
+function hackingDeviceToken(v) { return /^(?:(?:assault|defensive|evo|killer|plus|white|zero pain)\s+)?hacking device(?:\s+plus)?$/.test(normalized(v)) }
+function pitcherToken(v) { return /^pitcher$/.test(normalized(v)) }
+function fastPandaToken(v) { return /^fast\s*panda$/.test(normalized(v)) }
+function deployableRepeaterToken(v) { return /^deployable\s+repeater$/.test(normalized(v)) }
+function parachutistToken(v) { return /^parachutist(?:\s+(?:l(?:evel\s*)?)?\+?\d+)?$/.test(normalized(v)) }
+function combatJumpToken(v) { return /^combat jump(?:\s+(?:ph\s*)?\d+)?$/.test(normalized(v)) }
+function hiddenDeploymentToken(v) { return /^hidden deployment$/.test(normalized(v)) }
+function camouflageToken(v) { return /^camouflage(?:\s+(?:l(?:evel\s*)?)?\d+)?$/.test(normalized(v)) }
+function decoyToken(v) { return /^decoy(?:\s+\d+)?$/.test(normalized(v)) }
+function minelayerToken(v) { return /^minelayer$/.test(normalized(v)) }
+function aroWeaponToken(v) { return /^(?:(?:ap|viral|multi)\s+)?sniper rifle(?:\s+(?:burst|anti materiel|hit|blast) mode)?$|^(?:panzerfaust|flammenspeer|heavy rocket launcher|feuerbach)(?:\s+(?:burst|anti materiel|hit|blast) mode)?$/.test(normalized(v)) }
+function isRangedWeapon(w) { return normalized(w.type) !== 'cc' && !/\bcc weapon\b/.test(normalized(w.name)) }
+function minelayerAssociated(weapons, equipment) { return unique([...weapons.map(weaponDisplay), ...equipment].filter((v) => /(?:^|\s)(?:mine|mines)(?:\s|$)|deployable/i.test(normalized(v)))) }
+function primaryWeapon(weapons) { return weaponDisplay(weapons.find(isRangedWeapon) || weapons[0]) }
+function weaponDisplay(w) { return [w?.name, w?.mode].filter(Boolean).join(' — ') }
+function dedupeWeapons(weapons) { const seen = new Set(); return weapons.filter((weapon) => { const key = `${normalized(weaponDisplay(weapon))}:${weapon.burst ?? ''}`; if (seen.has(key)) return false; seen.add(key); return true }) }
+function unique(values) { return [...new Set(values)] }
+function finiteNumber(v) { const n = Number(v); return Number.isFinite(n) ? n : null }
+function countQuantity(items) { return items.reduce((sum, item) => sum + item.quantity, 0) }
+function profileSort(a, b) { return a.unitName.localeCompare(b.unitName) || a.profileName.localeCompare(b.profileName) }
+function linkRank(v) { return v.linkability === 'verified-linkable' ? 0 : v.linkability === 'unavailable' ? 2 : 1 }
+function value(v) { return Number.isFinite(v) ? v : 'Unavailable' }
+function escapeHtml(v) { return String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]) }
+
+export { emptyMessage as TACTICAL_EMPTY_MESSAGE }

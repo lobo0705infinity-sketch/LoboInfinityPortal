@@ -167,14 +167,20 @@ if (process.argv.includes('--live')) {
   assert.equal(await createInfListMessageHandler({ render: async (args) => { legacyRendered = await renderInfListPng(args); return legacyRendered } })(liveMessage), true)
   assert.equal(liveMessage.replies.length, 1)
   assert.match(liveMessage.replies[0].content, new RegExp(`^${SUCCESS_TEXT}\\n\\n\\[Open in Infinity Army\\]\\(https://infinitytheuniverse\\.com/army/list/`))
-  assert.equal(liveMessage.replies[0].files.length, 3)
+  assert.equal(liveMessage.replies[0].files.length, 4)
   const readablePng = liveMessage.replies[0].files[0].attachment
   assert.ok(Buffer.isBuffer(readablePng))
   assert.equal(readablePng.subarray(0, 4).toString('hex'), '89504e47')
   assert.ok(readablePng.length > 10_000)
   assert.equal(readablePng.readUInt32BE(16), 686)
   assert.equal(readablePng.readUInt32BE(20), 651)
-  for (const [index, file] of liveMessage.replies[0].files.slice(1).entries()) {
+  const tacticalPng = liveMessage.replies[0].files[1].attachment
+  assert.equal(liveMessage.replies[0].files[1].name, 'infinity-army-tactical-brief.png')
+  assert.equal(tacticalPng.readUInt32BE(16), 1440)
+  assert.ok(tacticalPng.readUInt32BE(20) <= 7500)
+  assert.deepEqual(Object.keys(legacyRendered.tacticalAnalysis.categories), ['apex', 'hacking', 'aro', 'alternative', 'defensive'])
+  assert.equal(Object.values(legacyRendered.tacticalAnalysis.categories).every((entries) => entries.length > 0), true)
+  for (const [index, file] of liveMessage.replies[0].files.slice(2).entries()) {
     assert.equal(file.name, `infinity-army-profiles-${index + 1}.png`)
     assert.ok(Buffer.isBuffer(file.attachment))
     assert.equal(file.attachment.subarray(0, 4).toString('hex'), '89504e47')
