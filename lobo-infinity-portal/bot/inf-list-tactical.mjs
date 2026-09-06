@@ -156,12 +156,13 @@ function categoryMarkup({ key, title, entries }, analysis) {
 
 function entryMarkup(key, entry) {
   let detail = ''
-  if (key === 'apex' || key === 'aro') detail = `BS ${value(entry.bs)} · ${entry.qualifyingWeapons.map((weapon) => `${escapeHtml(weaponDisplay(weapon))} · B${value(weapon.burst)}`).join(' · ')}`
+  if (key === 'apex' || key === 'aro') detail = `BS ${value(entry.bs)} · ${entry.qualifyingWeapons.map((weapon) => [escapeHtml(weaponDisplay(weapon)), formatBurst(weapon)].filter(Boolean).join(' · ')).join(' · ')}`
   if (key === 'hacking') detail = [...entry.hackerTypes, ...entry.delivery].map(escapeHtml).join(' · ')
   if (key === 'alternative') detail = `PRIMARY: ${escapeHtml(primaryWeapon(entry.weapons) || 'Unavailable')}`
   if (key === 'defensive' && entry.deployables.length) detail = `DEPLOYABLE: ${entry.deployables.map(escapeHtml).join(' · ')}`
   const fireteam = key === 'aro' ? `<span class="badge fireteam">${entry.linkability === 'verified-linkable' ? 'VERIFIED LINKABLE' : entry.linkability === 'unavailable' ? 'LINKABILITY UNAVAILABLE' : 'NOT LINKABLE IN CANONICAL CHART'}</span>` : ''
-  return `<article><div class="entry-head"><div><h4>${escapeHtml(entry.unitName)}</h4><p>${escapeHtml(entry.profileName)}</p></div><strong>×${entry.quantity}</strong></div><div class="detail">${detail || 'VERIFIED PROFILE COMPONENT'}</div><div class="badges">${entry.badges.map((badge) => `<span class="badge">${escapeHtml(badge)}</span>`).join('')}${fireteam}</div></article>`
+  const secondary = detail || loadoutDetail(entry)
+  return `<article><div class="entry-head"><div><h4>${escapeHtml(entry.unitName)}</h4><p>${escapeHtml(entry.profileName)}</p></div><strong>×${entry.quantity}</strong></div>${secondary ? `<div class="detail">${secondary}</div>` : ''}<div class="badges">${entry.badges.map((badge) => `<span class="badge">${escapeHtml(badge)}</span>`).join('')}${fireteam}</div></article>`
 }
 
 function styles() { return `*{box-sizing:border-box}html,body{margin:0;background:#070b10;color:#eef2f6;font-family:Arial,sans-serif}.brief{width:${imageWidth}px;padding:48px 52px 38px;background:radial-gradient(circle at 90% 0,#263540 0,transparent 32%),#0b1117;border-top:12px solid #a7242b}header{padding:0 4px 30px;border-bottom:3px solid #53616d}.brand{color:#df3942;font-size:20px;font-weight:900;letter-spacing:5px}h1{margin:9px 0 2px;font-size:50px;line-height:1;letter-spacing:2px}header h2{margin:0;color:#aeb8c1;font-size:25px;letter-spacing:3px}header p{margin:12px 0 0;color:#dfe6eb;font-size:21px;font-weight:700}.categories{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px}.category{border:2px solid #53616d;background:#111a22;break-inside:avoid}.category:nth-child(1),.category:nth-child(2){grid-column:span 1}.category:nth-child(n+3){grid-column:1/-1}.category h3{display:flex;align-items:center;justify-content:space-between;margin:0;padding:13px 17px;background:#202c36;border-left:9px solid #c42e37;font-size:26px;letter-spacing:1px;text-transform:uppercase}.category h3 small{color:#aeb8c1;font-size:15px;letter-spacing:0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px}.category:nth-child(-n+2) .grid{grid-template-columns:1fr}.summary{padding:10px 15px;background:#701a20;color:#fff;font-size:17px}.empty{padding:26px 18px;color:#9faab3;font-size:20px;font-style:italic}article{min-width:0;padding:13px 15px;border:1px solid #40505d;border-left:6px solid #7f919f;background:#17222b}.entry-head{display:flex;gap:12px;justify-content:space-between}.entry-head div{min-width:0}h4{margin:0;color:#fff;font-size:21px;line-height:1.1;overflow-wrap:anywhere;text-transform:uppercase}.entry-head p{margin:4px 0 0;color:#b9c5cd;font-size:17px;line-height:1.2;overflow-wrap:anywhere}.entry-head strong{flex:none;color:#ef454f;font-size:24px}.detail{margin-top:9px;color:#fff;font-size:17px;font-weight:800;line-height:1.3;overflow-wrap:anywhere}.badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}.badge{padding:4px 8px;border:1px solid #8e9ba5;border-radius:3px;background:#263640;color:#e8edf0;font-size:14px;font-weight:800}.fireteam{border-color:#db3942;background:#5e171c}footer{padding-top:18px;text-align:right;color:#8e9aa4;font-size:14px;font-weight:800;letter-spacing:2px}` }
@@ -169,7 +170,7 @@ function styles() { return `*{box-sizing:border-box}html,body{margin:0;backgroun
 function aggregateExactProfiles(profiles) {
   const map = new Map()
   for (const profile of profiles) {
-    const key = profile.combinedId || JSON.stringify([profile.unitId, profile.unitName, profile.profileName, profile.bs, profile.skills, profile.equipment, profile.weapons])
+    const key = profile.combinedId ? `${profile.combinedId}|${loadoutSignature(profile)}` : loadoutSignature(profile)
     const existing = map.get(key)
     if (existing) existing.quantity += 1
     else map.set(key, { ...profile, quantity: 1 })
@@ -219,6 +220,21 @@ function countQuantity(items) { return items.reduce((sum, item) => sum + item.qu
 function profileSort(a, b) { return a.unitName.localeCompare(b.unitName) || a.profileName.localeCompare(b.profileName) }
 function linkRank(v) { return v.linkability === 'verified-linkable' ? 0 : v.linkability === 'unavailable' ? 2 : 1 }
 function value(v) { return Number.isFinite(v) ? v : 'Unavailable' }
+function formatBurst(weapon) {
+  const raw = weapon?.burst
+  const burst = raw === null || raw === undefined || raw === '' ? null : finiteNumber(raw)
+  if (burst !== null) return `B${burst}`
+  if (weapon?.burstStatus === 'not-applicable') return ''
+  if (weapon?.burstStatus === 'ambiguous') return 'Burst ambiguous'
+  return 'Burst unavailable'
+}
+function loadoutSignature(profile) {
+  return JSON.stringify({ bs: finiteNumber(profile.bs), skills: [...(profile.skills || [])].map(normalized).sort(), equipment: [...(profile.equipment || [])].map(normalized).sort(), weapons: [...(profile.weapons || [])].map((weapon) => [normalized(weapon.name), normalized(weapon.mode), weapon.burst ?? null, weapon.burstStatus || '']).sort(), linkability: profile.linkability || 'unavailable' })
+}
+function loadoutDetail(entry) {
+  const parts = unique([...(entry.weapons || []).map(weaponDisplay), ...(entry.skills || []), ...(entry.equipment || [])].filter(Boolean))
+  return parts.length ? parts.slice(0, 4).map(escapeHtml).join(' · ') : ''
+}
 function escapeHtml(v) { return String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]) }
 
-export { emptyMessage as TACTICAL_EMPTY_MESSAGE }
+export { emptyMessage as TACTICAL_EMPTY_MESSAGE, formatBurst, aggregateExactProfiles, loadoutDetail }
