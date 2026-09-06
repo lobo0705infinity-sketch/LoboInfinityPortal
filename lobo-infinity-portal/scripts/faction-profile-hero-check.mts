@@ -26,16 +26,17 @@ assert.equal(FACTION_PROFILE_HERO_CANONICAL_FACTIONS.length, 45)
 for (const faction of FACTION_PROFILE_HERO_CANONICAL_FACTIONS) {
   const artwork = resolveFactionProfileHero(faction)
   assert.ok(artwork, `${faction} should resolve`)
-  assert.ok(assets.includes(artwork.src.split('/').pop() ?? ''), `${faction} asset should exist`)
+  const assetFile = artwork.src.split('/').pop()?.split('?')[0] ?? ''
+  assert.ok(assets.includes(assetFile), `${faction} asset should exist`)
 }
 
 assert.equal(
   resolveFactionProfileHero('Caledonian Highlander Army')?.src,
-  '/assets/faction-profile-heroes/caledonian-highlander-army.png',
+  '/assets/faction-profile-heroes/caledonian-highlander-army.png?v=20260905-approved',
 )
 assert.equal(
   resolveFactionProfileHero('Kosmoflot')?.src,
-  '/assets/faction-profile-heroes/kosmoflot.png',
+  '/assets/faction-profile-heroes/kosmoflot.png?v=20260905-approved',
 )
 assert.equal(resolveFactionProfileHero('Unknown Army'), null)
 assert.notEqual(resolveFactionProfileHero('Tohaa')?.src, resolveFactionProfileHero('Next Wave')?.src)

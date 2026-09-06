@@ -5,6 +5,7 @@ export type FactionProfileHeroArtwork = {
 }
 
 const FACTION_PROFILE_HERO_BASE_PATH = '/assets/faction-profile-heroes/'
+const FACTION_PROFILE_HERO_VERSION = '20260905-approved'
 
 const canonicalFactionProfileHeroFiles = {
   ALEPH: 'aleph.png',
@@ -71,6 +72,6 @@ export function resolveFactionProfileHero(
   return {
     alt: `Faction Profile — ${faction}`,
     faction,
-    src: `${FACTION_PROFILE_HERO_BASE_PATH}${file}`,
+    src: `${FACTION_PROFILE_HERO_BASE_PATH}${file}?v=${FACTION_PROFILE_HERO_VERSION}`,
   }
 }

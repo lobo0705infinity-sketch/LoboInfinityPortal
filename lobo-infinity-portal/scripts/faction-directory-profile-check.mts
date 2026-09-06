@@ -36,11 +36,11 @@ assert.match(css, /\.snapshot-factions-directory-hero img\s*\{[^}]*width:\s*100%
 assert.match(app, /resolveFactionProfileHero\(factionName\)/)
 assert.match(app, /assets\/faction-profile-heroes|resolveFactionProfileHero/)
 assert.doesNotMatch(app.match(/function FactionProfile[\s\S]*?function Missions/)?.[0] ?? '', /resolvePlayerProfileHero/)
-assert.equal(resolveFactionProfileHero('ALEPH')?.src, '/assets/faction-profile-heroes/aleph.png')
-assert.equal(resolveFactionProfileHero('Caledonian Highlander Army')?.src, '/assets/faction-profile-heroes/caledonian-highlander-army.png')
-assert.equal(resolveFactionProfileHero('Kosmoflot')?.src, '/assets/faction-profile-heroes/kosmoflot.png')
-assert.equal(resolveFactionProfileHero('Tohaa')?.src, '/assets/faction-profile-heroes/tohaa.png')
-assert.equal(resolveFactionProfileHero('Next Wave')?.src, '/assets/faction-profile-heroes/next-wave.png')
+assert.match(resolveFactionProfileHero('ALEPH')?.src || '', /^\/assets\/faction-profile-heroes\/aleph\.png\?v=/)
+assert.match(resolveFactionProfileHero('Caledonian Highlander Army')?.src || '', /^\/assets\/faction-profile-heroes\/caledonian-highlander-army\.png\?v=/)
+assert.match(resolveFactionProfileHero('Kosmoflot')?.src || '', /^\/assets\/faction-profile-heroes\/kosmoflot\.png\?v=/)
+assert.match(resolveFactionProfileHero('Tohaa')?.src || '', /^\/assets\/faction-profile-heroes\/tohaa\.png\?v=/)
+assert.match(resolveFactionProfileHero('Next Wave')?.src || '', /^\/assets\/faction-profile-heroes\/next-wave\.png\?v=/)
 assert.notEqual(resolveFactionProfileHero('Tohaa')?.src, resolveFactionProfileHero('Next Wave')?.src)
 
 const game = (overrides: Partial<PublicGame>): PublicGame => ({
