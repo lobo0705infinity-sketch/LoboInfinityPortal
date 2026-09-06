@@ -1,4 +1,5 @@
 import { mkdir, rm } from 'node:fs/promises'
+import { createHash } from 'node:crypto'
 import { resolve } from 'node:path'
 import { chromium } from 'playwright'
 import { decodeArmyCode, decodeArmyList, normalizeArmyCodeInput, normalizeArmyCodeForInfinityDataTransport } from '../scripts/infinity-army-decode.mjs'
@@ -15,13 +16,18 @@ export class InfIdError extends Error {
 
 export function createInfIdOutputDir() { return resolve('.tmp', 'inf-id-production', crypto.randomUUID()) }
 
-export async function generateInfId({ input, outputDir, browserFactory = () => chromium.launch({ headless: true }), dependencies = {} } = {}) {
+export async function generateInfId({ input, outputDir, browserFactory = () => chromium.launch({ headless: true }), dependencies = {}, logger = console } = {}) {
   const started = performance.now()
+  let stage = 'normalization'
+  let normalizedFingerprint = null
+  let sectorial = null
+  let currentEntry = null
   let armyCode
-  try { armyCode = normalizeArmyCodeInput(input) } catch (error) { throw new InfIdError('invalid_army_code', 'Invalid Infinity Army code.', { cause: error }) }
+  try { armyCode = normalizeArmyCodeInput(input); normalizedFingerprint = codeFingerprint(armyCode) } catch (error) { throw new InfIdError('invalid_army_code', 'Invalid Infinity Army code.', { cause: error }) }
   const decodeStart = performance.now()
   let raw, normalized
-  try { [raw, normalized] = await Promise.all([Promise.resolve(decodeArmyCode(armyCode)), decodeArmyList({ input: armyCode })]) } catch (error) { throw new InfIdError('decode_failed', 'Infinity Army code could not be decoded.', { cause: error }) }
+  stage = 'decoding'
+  try { [raw, normalized] = await Promise.all([Promise.resolve(decodeArmyCode(armyCode)), decodeArmyList({ input: armyCode })]); sectorial = normalized.sectorial || raw.sectorialSlug } catch (error) { throw new InfIdError('decode_failed', 'Infinity Army code could not be decoded.', { cause: error }) }
   const decodeMs = performance.now() - decodeStart
   const entries = mergeRoster(raw, normalized)
   if (!entries.length) throw new InfIdError('empty_roster', 'Infinity Army list is empty.')
@@ -31,6 +37,7 @@ export async function generateInfId({ input, outputDir, browserFactory = () => c
   try {
     browser = await browserFactory()
     const miniatureStart = performance.now()
+    stage = 'miniature resolution'
     const catalog = dependencies.supplementalCatalog || await loadSupplementalMiniatures()
     const infinityImages = dependencies.infinityImages || await inspectInfinityDataImages(armyCode, browser)
     const resolved = []
@@ -40,6 +47,7 @@ export async function generateInfId({ input, outputDir, browserFactory = () => c
       return imageFetches.get(url)
     }
     for (const entry of entries) {
+      currentEntry = entry
       let image = chooseMiniature({ rosterEntry: entry, infinityDataImage: infinityImages.get(entry.combinedId), supplementalCatalog: catalog })
       let imageDataUrl = null
       if (image.url) {
@@ -54,19 +62,31 @@ export async function generateInfId({ input, outputDir, browserFactory = () => c
       resolved.push({ ...entry, image, imageDataUrl })
     }
     const miniatureMs = performance.now() - miniatureStart
+    stage = 'Fireteam reference'
     const fireteamStart = performance.now()
     const fireteams = dependencies.fireteams || await getFireteamReference({ sectorialId: raw.sectorialId, armyCode, browser })
     const fireteamMatches = matchFireteamRoster(fireteams, resolved)
     const fireteamMs = performance.now() - fireteamStart
+    stage = 'PNG/PDF rendering'
     const renderStart = performance.now()
     const artifacts = await renderIdentificationSheet({ army: { faction: normalized.faction, sectorial: normalized.sectorial, sectorialId: raw.sectorialId, listName: normalized.listName }, entries: resolved, fireteams, fireteamMatches, outputDir: destination, browser })
     const renderMs = performance.now() - renderStart
     return { ...artifacts, armyCode, entries: resolved, fireteams, fireteamMatches, missingImageCount: resolved.filter((entry) => !entry.image.resolves).length, timings: { decodeMs, miniatureMs, fireteamMs, renderMs, totalMs: performance.now() - started }, outputDir: destination }
   } catch (error) {
+    logger.error?.('Infinity identification sheet generation failed:', {
+      stage,
+      sectorial: sectorial || normalized?.sectorial || raw?.sectorialSlug || null,
+      codeFingerprint: normalizedFingerprint,
+      combinedId: currentEntry?.combinedId || null,
+      imageAssetKey: currentEntry?.image?.key || null,
+      error: error?.message || String(error),
+    })
     await rm(destination, { recursive: true, force: true })
     throw error
   } finally { await browser?.close() }
 }
+
+function codeFingerprint(value) { return createHash('sha256').update(String(value)).digest('hex').slice(0, 12) }
 
 export async function cleanupInfId(result) {
   if (result?.outputDir) await rm(result.outputDir, { recursive: true, force: true })
