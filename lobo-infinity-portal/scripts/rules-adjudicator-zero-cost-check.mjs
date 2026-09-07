@@ -60,5 +60,14 @@ for (const testCase of benchmark.cases.filter((item) => item.category === 'UNRES
   assert.equal(result.contractPass, false, `Unsafe escalation was accepted: ${testCase.id}`)
 }
 
+for (const testCase of benchmark.cases.filter((item) => item.answerContract)) {
+  const semanticallyEmpty = structuredClone(referenceAnswers)
+  const target = semanticallyEmpty.find((item) => item.id === testCase.id)
+  target.answer = 'This answer keeps the expected conclusion and citations but omits the practical ruling.'
+  const result = evaluateRulesAnswers(benchmark, semanticallyEmpty)
+  assert.equal(result.contractPass, false, `Semantically empty answer was accepted: ${testCase.id}`)
+  assert.ok(result.failures.some((item) => item.id === testCase.id && !item.semanticContractMatch), `Semantic failure was not reported: ${testCase.id}`)
+}
+
 assert.equal(networkRequests, 0)
-console.log('Zero-cost rules grading passed: 100 audited cases, 207 fault injections, 0 network requests, 0 provider requests, approval gate locked.')
+console.log('Zero-cost rules grading passed: 100 audited cases, 212 fault injections, 5 semantic contracts, 0 network requests, 0 provider requests, approval gate locked.')
