@@ -5,7 +5,7 @@ import { join } from 'node:path'
 import { createDeepSeekFallback, shouldUseDeepSeek, readUsage, writeUsage } from '../bot/deepseek-rules.mjs'
 import { formatRulesDiscordResponse } from '../bot/rules-command.mjs'
 
-const base = { question: 'Can this interaction occur?', status: 'MULTIPLE RULES APPLY — INTERPRETATION MAY BE REQUIRED', rules: [{ sourceId: 'rules', sourceLabel: 'Rules', pageLabel: 'p. 10', excerpt: 'Only the supplied rule applies.' }], versions: [{ id: 'rules', version: '5.3' }] }
+const base = { question: 'Does Zero Pain suffer the -3 MOD when used through an enemy Repeater?', status: 'MULTIPLE RULES APPLY — INTERPRETATION MAY BE REQUIRED', rules: [{ sourceId: 'rules', sourceLabel: 'Rules', pageLabel: 'p. 10', excerpt: 'Only the supplied rule applies.' }], versions: [{ id: 'rules', version: '5.3' }] }
 const embed = formatRulesDiscordResponse({ ...base, deepSeek: { answer: 'The excerpts do not establish Firewall.', conclusion: 'Yes', interpretationRequired: true, evidenceIds: ['E1'] } }); const embedText = JSON.stringify(embed); assert.match(embedText, /EVIDENCE-BOUNDED INTERPRETATION/); assert.doesNotMatch(embedText, /undefined|null/)
 assert.equal(shouldUseDeepSeek({ ...base, status: 'DIRECT RULE REFERENCE' }), false)
 let calls = 0
