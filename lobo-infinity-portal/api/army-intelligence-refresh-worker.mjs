@@ -33,6 +33,7 @@ export default async function handler(request, response) {
     const apiUrl = String(body.apiUrl || process.env.VITE_API_URL || '').trim()
     const sessionToken = String(body.sessionToken || '').trim()
     const workerToken = String(process.env.ARMY_INTELLIGENCE_WORKER_TOKEN || '').trim()
+    const backfillToken = String(process.env.ARMY_INTELLIGENCE_BACKFILL_TOKEN || '').trim()
     const batchLimit = Math.max(1, Number(body.batchLimit) || DEFAULT_REFRESH_BATCH_LIMIT)
     const requestedSectorial = String(body.sectorial || '').trim()
     const requestedSnapshotKeys = Array.isArray(body.snapshotKeys)
@@ -47,7 +48,7 @@ export default async function handler(request, response) {
       return
     }
 
-    if (automatic && !isAuthorizedScheduledRequest(request, workerToken)) {
+    if (automatic && !isAuthorizedScheduledRequest(request, workerToken, backfillToken)) {
       response.status(401).json({ error: 'Automatic refresh authentication is required.', success: false })
       return
     }
@@ -185,21 +186,22 @@ export function selectRefreshCandidates(sources, state) {
   })
 }
 
-function isAuthorizedScheduledRequest(request, workerToken) {
+function isAuthorizedScheduledRequest(request, workerToken, backfillToken = '') {
   const authorization = String(request.headers?.authorization || '').trim()
   const suppliedSecret = authorization.startsWith('Bearer ')
     ? authorization.slice('Bearer '.length).trim()
     : ''
+  const suppliedBackfillSecret = String(request.headers?.['x-army-backfill-token'] || '').trim()
 
   return Boolean(
-    workerToken &&
-    safeEqual(suppliedSecret, workerToken),
+    (workerToken && safeEqual(suppliedSecret, workerToken)) ||
+    (backfillToken && safeEqual(suppliedBackfillSecret, backfillToken)),
   )
 }
 
 function isScheduledRequest(request) {
   const authorization = String(request.headers?.authorization || '').trim()
-  return request.method === 'GET' || (
+  return request.method === 'GET' || Boolean(request.headers?.['x-army-backfill-token']) || (
     request.method === 'POST' && authorization.startsWith('Bearer ')
   )
 }
