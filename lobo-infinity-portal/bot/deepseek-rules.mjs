@@ -80,7 +80,10 @@ export function createDeepSeekFallback({ fetchImpl = fetch, usagePath = process.
 function validateModelOutput(parsed, evidence) {
   if (!parsed || typeof parsed.answer !== 'string' || typeof parsed.conclusion !== 'string' || typeof parsed.interpretationRequired !== 'boolean' || !Array.isArray(parsed.evidenceIds)) return { ok: false, reason: 'strict output contract requires answer, conclusion, evidenceIds, and interpretationRequired' }
   const permitted = new Set(evidence.map((item) => item.id)); if (!parsed.evidenceIds.length || parsed.evidenceIds.some((id) => !permitted.has(id))) return { ok: false, reason: 'evidenceIds contain values outside the permitted evidence packet' }
-  const citedText = parsed.evidenceIds.map((id) => evidence.find((item) => item.id === id)?.excerpt || '').join(' ').toLowerCase(); const terms = parsed.conclusion.toLowerCase().split(/\W+/).filter((term) => term.length > 4); if (terms.length && !terms.some((term) => citedText.includes(term))) return { ok: false, reason: 'conclusion has no material term supported by cited excerpts', unsupported: true }
+  if (!parsed.answer.trim() || !parsed.conclusion.trim()) return { ok: false, reason: 'answer and conclusion must be non-empty' }
+  const citedText = parsed.evidenceIds.map((id) => evidence.find((item) => item.id === id)?.excerpt || '').join(' ').toLowerCase()
+  const answerTerms = parsed.answer.toLowerCase().split(/\W+/).filter((term) => term.length > 5)
+  if (!parsed.interpretationRequired && answerTerms.length && !answerTerms.some((term) => citedText.includes(term))) return { ok: false, reason: 'answer explanation is not supported by cited excerpts', unsupported: true }
   return { ok: true }
 }
 

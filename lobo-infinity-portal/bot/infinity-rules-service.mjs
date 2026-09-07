@@ -121,6 +121,7 @@ function compactExcerpt(result,question,max=650){
   return value
 }
 function sliceAtPhrase(text,phrase,max){const pattern=phrase.split(/\s+/).map((part)=>part.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('\\s+');const at=text.search(new RegExp(pattern,'i'));return text.slice(Math.max(0,at),Math.max(0,at)+max)}
+function extractChartRow(result){const lines=String(result.text||'').split(/\r?\n/).map((line)=>line.replace(/\s+/g,' ').trim()).filter(Boolean);const heading=lines.find((line)=>/NAME.*PS.*B.*TARGET.*SKILL TYPE/i.test(line))||'NAME | PS | B | TARGET | SKILL TYPE | SPECIAL MOD';const term=String(result.canonicalTerm||'').trim();const row=lines.find((line)=>term&&new RegExp(`^${term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\b`,'i').test(line))||lines.find((line)=>term&&line.toLowerCase().includes(term.toLowerCase()))||'Matching canonical chart row was not found.';return `${heading}\n${row}`.slice(0,650)}
 const clauseLabels=new Set(['REQUIREMENTS','EFFECTS','IMPORTANT','REMEMBER','CANCELLATION','ACTIVATION','FAQ','EXAMPLE'])
 const ruleTypeLine=/^(AUTOMATIC (?:SKILL|EQUIPMENT)|BASIC SHORT SKILL(?: \/ ARO)?|SHORT SKILL(?: \/ ARO)?|LONG SKILL|SPECIAL SKILL|OBLIGATORY|OPTIONAL(?:, NFB\.?)?|NFB,? OBLIGATORY\.?)$/i
 export function segmentRuleClauses(text,{ruleName}={}){
@@ -162,6 +163,7 @@ export function selectRelevantClauses(result,{question,targets=[],resolution,max
   for(const clause of [...selected])if(/(?:one of these is true|following requirements):?$/i.test(clause.text)){for(const dependency of clauses.slice(clause.index+1)){if(dependency.blockType!==clause.blockType)break;if(!selected.includes(dependency))selected.push({...dependency,score:clause.score-.1})}}
   for(const clause of [...selected])if(clause.blockType==='EFFECTS'){const requirement=[...clauses].slice(0,clause.index).reverse().find((candidate)=>candidate.blockType==='REQUIREMENTS');if(requirement&&!selected.includes(requirement)&&/\b(?:requires?|must|only|may)\b/i.test(clause.text))selected.push({...requirement,score:clause.score-.1})}
   selected.sort((a,b)=>a.index-b.index)
+  if (/name ps b target skill type/.test(String(result.normalized||'').toLowerCase())) return { excerpt: extractChartRow(result), clauses: [] }
   let previousBlock='';const includeHeader=/firewall|repeater|zero pain|comms attack/i.test(question);const header=includeHeader?String(result.text||'').split(/\n\s*(?:REQUIREMENTS|EFFECTS)\b/i)[0].trim():'';const excerpt=[header,selected.map((clause)=>{const label=clause.blockType!=='BODY'&&clause.blockType!==previousBlock?`${clause.blockType}\n`:'';previousBlock=clause.blockType;return`${label}${clause.text}`}).join('\n')].filter(Boolean).join('\n\n').slice(0,650)
   return{excerpt,clauses:selected.map((clause)=>clauseMetadata(result,clause))}
 }
