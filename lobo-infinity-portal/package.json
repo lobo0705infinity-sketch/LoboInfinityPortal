@@ -80,7 +80,7 @@
     "test:top-40-forfeit": "node scripts/top-40-forfeit-check.mjs",
     "test:top-40-rules": "node scripts/top-40-rules-check.mjs",
     "test:rules-interaction": "node scripts/infinity-rules-interaction-check.mjs",
-    "test:rules-benchmark": "node scripts/rules-adjudicator-benchmark-check.mjs && node scripts/rules-adjudicator-citation-audit.mjs && node scripts/rules-adjudicator-evaluate.mjs --self-test && node scripts/rules-adjudicator-zero-cost-check.mjs",
+    "test:rules-benchmark": "node scripts/rules-adjudicator-benchmark-check.mjs && node scripts/rules-adjudicator-citation-audit.mjs && node scripts/rules-adjudicator-evaluate.mjs --self-test && node scripts/rules-adjudicator-zero-cost-check.mjs && node scripts/rules-adjudicator-candidate-runner.mjs --mock",
     "team-tournament:routing": "node scripts/team-tournament-routing-check.mjs",
     "test:team-tournament-rounds": "node scripts/team-tournament-rounds-check.mjs",
     "test:commissioner-submit": "node scripts/commissioner-submit-check.mjs",
@@ -176,7 +176,9 @@
     "test:public-projection-reliability": "node scripts/public-projection-reliability-check.mjs",
     "test:prepared-projection-owner-maintenance": "node scripts/prepared-projection-owner-maintenance-check.mjs",
     "test:scheduler-lock-boundary": "node scripts/scheduler-lock-boundary-check.mjs",
-    "security:armies": "node scripts/army-registry-audit.mjs"
+    "security:armies": "node scripts/army-registry-audit.mjs",
+    "rules:candidate:mock": "node scripts/rules-adjudicator-candidate-runner.mjs --mock",
+    "rules:candidate:live": "node scripts/rules-adjudicator-candidate-runner.mjs --live"
   },
   "dependencies": {
     "@sparticuz/chromium": "^149.0.0",
