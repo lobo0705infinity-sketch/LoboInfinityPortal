@@ -7271,7 +7271,129 @@
         "BODY"
       ],
       "text": "K OPPONENT\n NAME PS B TARGET SKILL TYPE SPECIAL\n MOD MOD\n ASSISTED\n ,, ,, ,, ,, REM LONG SKILL TARGET GAINS MARKSMANSHIP.\n FIRE\n TAG, HI,\n REM, SHORT SKILL\nCARBONITE 0 0 7 2 DA AMMO, STATE: IMM-B, NON-LETHAL.\n HACKER, / ARO\n VH\nCONTROLLED SHORT SKILL +3/-3 PH MOD TO ALL TROOPERS PERFORMING\n ,, ,, ,, ,, ,,\n JUMP / ARO COMBAT JUMP.\n REPLACE THE HACKER WITH AN IMPERSONATION 2\nCYBERMASK ,, ,, ,, ,, ,, LONG SKILL\n MARKER.\nENHANCED\n ,, ,, ,, ,, REM LONG SKILL TARGET GAINS B2 IN ARO.\nREACTION\n TAG, HI,\nFAIRY DUST ,, ,, ,, ,, LONG SKILL TARGETS GAIN THE FIREWALL MODS.\n REM, VH\n TAG, HI,\n REM, SHORT SKILL\n OBLIVION 0 0 4 2 AP AMMO, NON-LETHAL, STATE: ISOLATED.\n HACKER, / ARO\n VH\n SHORT SKILL\nSPOTLIGHT 0 0 5 2 “ AP AMMO, STATE: TARGETED, NON-LETHAL.\n / ARO\n TOTAL SHORT SKILL\n 0 0 4 1 TAG DA AMMO, NON-LETHAL, STATE: POS/NORMAL.\n CONTROL / ARO\n SHORT SKILL\n TRINITY +3 0 6 3 HACKER TARGET SUFFERS 1 WOUND FOR EACH FAILED SR.\n / ARO\n\nWHITE NOISE - - ,, 1 ,, SHORT SKILL NFB, REFLECTIVE: CIRCULAR TEMPLATE.\n\n SHORT SKILL NULLIFIES COMMS ATTACK, B2 IN ARO, NON-\n ZERO PAIN 0 -3 ,, 2 ,,\n / ARO LETHAL.\n\n 193",
-      "sourceUrl": "https://experience.corvusbelli.com/en/resources/b46cbed7-784a-5219-b7ec-eec633265323?l=c07a5ffb-02c4-47e7-8f79-1f6e548a5503&_lang=en"
+      "sourceUrl": "https://experience.corvusbelli.com/en/resources/b46cbed7-784a-5219-b7ec-eec633265323?l=c07a5ffb-02c4-47e7-8f79-1f6e548a5503&_lang=en",
+      "chartRows": [
+        {
+          "name": "ASSISTED FIRE",
+          "attackMod": "—",
+          "opponentMod": "—",
+          "ps": "—",
+          "burst": ",, TA R",
+          "target": "REM G, HI, EM,",
+          "skillType": "LONG SKILL SHORT SKILL",
+          "special": "TARGET GAINS MARKSMANSHIP."
+        },
+        {
+          "name": "CARBONITE",
+          "attackMod": "0",
+          "opponentMod": "0",
+          "ps": "7",
+          "burst": "R 2 HA",
+          "target": "EM, CKER, VH",
+          "skillType": "SHORT SKILL / ARO",
+          "special": "DA AMMO, STATE: IMM-B, NON-LETHAL."
+        },
+        {
+          "name": "CONTROLLED JUMP",
+          "attackMod": "—",
+          "opponentMod": "—",
+          "ps": "—",
+          "burst": "—",
+          "target": "—",
+          "skillType": "SHORT SKILL + / ARO RE",
+          "special": "3/-3 PH MOD TO ALL TROOPERS PERFORMING COMBAT JUMP. PLACE THE HACKER WITH AN IMPERSONATION 2"
+        },
+        {
+          "name": "CYBERMASK",
+          "attackMod": "—",
+          "opponentMod": "—",
+          "ps": "—",
+          "burst": "—",
+          "target": "—",
+          "skillType": "LONG SKILL",
+          "special": "MARKER."
+        },
+        {
+          "name": "ENHANCED REACTION",
+          "attackMod": "—",
+          "opponentMod": "—",
+          "ps": "—",
+          "burst": ",, TA",
+          "target": "REM G, HI,",
+          "skillType": "LONG SKILL",
+          "special": "TARGET GAINS B2 IN ARO."
+        },
+        {
+          "name": "FAIRY DUST",
+          "attackMod": "—",
+          "opponentMod": "—",
+          "ps": "—",
+          "burst": ",, RE TA R",
+          "target": "M, VH G, HI, EM,",
+          "skillType": "LONG SKILL SHORT SKILL",
+          "special": "TARGETS GAIN THE FIREWALL MODS."
+        },
+        {
+          "name": "OBLIVION",
+          "attackMod": "0",
+          "opponentMod": "0",
+          "ps": "4",
+          "burst": "R 2 HA",
+          "target": "EM, CKER, VH",
+          "skillType": "SHORT SKILL / ARO SHORT SKILL",
+          "special": "AP AMMO, NON-LETHAL, STATE: ISOLATED."
+        },
+        {
+          "name": "SPOTLIGHT",
+          "attackMod": "0",
+          "opponentMod": "0",
+          "ps": "5",
+          "burst": "2",
+          "target": "—",
+          "skillType": "SHORT SKILL / ARO",
+          "special": "AP AMMO, STATE: TARGETED, NON-LETHAL."
+        },
+        {
+          "name": "TOTAL CONTROL",
+          "attackMod": "0",
+          "opponentMod": "0",
+          "ps": "4",
+          "burst": "1",
+          "target": "TAG",
+          "skillType": "/ ARO SHORT SKILL D / ARO SHORT SKILL",
+          "special": "A AMMO, NON-LETHAL, STATE: POS/NORMAL."
+        },
+        {
+          "name": "TRINITY",
+          "attackMod": "+3",
+          "opponentMod": "0",
+          "ps": "6",
+          "burst": "3 H",
+          "target": "ACKER",
+          "skillType": "SHORT SKILL TA / ARO",
+          "special": "RGET SUFFERS 1 WOUND FOR EACH FAILED SR."
+        },
+        {
+          "name": "WHITE NOISE",
+          "attackMod": "—",
+          "opponentMod": "—",
+          "ps": "—",
+          "burst": "1",
+          "target": "—",
+          "skillType": "/ ARO SHORT SKILL SHORT SKILL",
+          "special": "NFB, REFLECTIVE: CIRCULAR TEMPLATE. NULLIFIES COMMS ATTACK, B2 IN ARO, NON-"
+        },
+        {
+          "name": "ZERO PAIN",
+          "attackMod": "0",
+          "opponentMod": "-3",
+          "ps": "—",
+          "burst": "2",
+          "target": "—",
+          "skillType": "SHORT SKILL / ARO",
+          "special": "NULLIFIES COMMS ATTACK, B2 IN ARO, NON-LETHAL."
+        }
+      ]
     },
     {
       "sourceId": "infinity-rules-n5.3",
