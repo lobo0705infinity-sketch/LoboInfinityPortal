@@ -16,8 +16,13 @@ export function evaluateRulesAnswers(benchmark, candidatePayload) {
   const candidateAnswers = Array.isArray(candidatePayload) ? candidatePayload : candidatePayload?.answers
   if (!Array.isArray(candidateAnswers)) throw new Error('Candidate file must be an array or an object with an answers array.')
 
+  const expectedIds = new Set(benchmark.cases.map((item) => item.id))
+  const idCounts = new Map()
+  for (const answer of candidateAnswers) idCounts.set(answer?.id, (idCounts.get(answer?.id) || 0) + 1)
   const byId = new Map(candidateAnswers.map((answer) => [answer?.id, answer]))
-  const duplicateIds = candidateAnswers.length - byId.size
+  const duplicateIds = [...idCounts.values()].reduce((sum, count) => sum + Math.max(0, count - 1), 0)
+  const unexpectedIds = [...idCounts.keys()].filter((id) => !expectedIds.has(id))
+  const missingIds = [...expectedIds].filter((id) => !byId.has(id))
   const details = benchmark.cases.map((testCase) => {
     const candidate = byId.get(testCase.id)
     const expectedAnswer = testCase.approvedAnswer || testCase.draftAnswer || ''
@@ -51,11 +56,13 @@ export function evaluateRulesAnswers(benchmark, candidatePayload) {
     safeEscalationAccuracy: ratio((item) => item.safeEscalation),
     averageReferenceTermRecall: details.reduce((sum, item) => sum + item.referenceTermRecall, 0) / details.length,
   }
-  const contractPass = duplicateIds === 0 && scores.coverage === 1 && scores.conclusionAgreement === 1 && scores.citationValidity === 1 && scores.safeEscalationAccuracy === 1
+  const contractPass = candidateAnswers.length === benchmark.cases.length && duplicateIds === 0 && unexpectedIds.length === 0 && missingIds.length === 0 && scores.coverage === 1 && scores.conclusionAgreement === 1 && scores.citationValidity === 1 && scores.safeEscalationAccuracy === 1
   return {
     totalCases: benchmark.cases.length,
     submittedAnswers: candidateAnswers.length,
     duplicateIds,
+    unexpectedIds,
+    missingIds,
     approvedReferences,
     draftReferences: benchmark.cases.filter((item) => item.reviewStatus === 'VERIFIED_DRAFT').length,
     scores,
