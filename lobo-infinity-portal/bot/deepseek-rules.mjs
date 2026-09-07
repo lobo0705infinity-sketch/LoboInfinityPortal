@@ -48,7 +48,8 @@ export function createDeepSeekFallback({ fetchImpl = fetch, usagePath = process.
       const corrective = validationError ? ` Previous output failed validation: ${validationError}. Return a non-empty JSON object now.` : ''
       conversation[0].content = `${baseInstruction}${corrective}`
       if (conversation[1]?.role === 'user') { const request = JSON.parse(conversation[1].content); request.validationError = validationError; request.permittedEvidenceIds = evidence.map((item) => item.id); request.excerpts = evidence; conversation[1].content = JSON.stringify(request) }
-      const body = { model, temperature: 0, max_tokens: 1200, response_format: { type: 'json_object' }, thinking: { type: 'disabled' }, tools, messages: conversation }
+      const stage = conversation.some((message) => message.role === 'tool') ? 'final-answer' : 'tool-research'
+      const body = { model, temperature: 0, max_tokens: 3600, response_format: { type: 'json_object' }, thinking: { type: 'disabled' }, tools, messages: conversation }
       const response = await fetchImpl('https://api.deepseek.com/chat/completions', { method: 'POST', headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json' }, body: JSON.stringify(body), signal: AbortSignal.timeout(12000) })
       const contentType = String(response.headers?.get?.('content-type') || '').toLowerCase()
       const responseText = await response.text()
@@ -59,7 +60,10 @@ export function createDeepSeekFallback({ fetchImpl = fetch, usagePath = process.
       try { payload = JSON.parse(responseText) } catch { logger.warn?.('DeepSeek rules model error: invalid provider JSON'); return withLimitation(result, 'DeepSeek returned invalid JSON; returning the retrieval result.') }
       const content = payload?.choices?.[0]?.message?.content
       const toolCalls = payload?.choices?.[0]?.message?.tool_calls
+      const finishReason = payload?.choices?.[0]?.finish_reason ?? null
+      logger.info?.(`DeepSeek rules request: stage=${stage} finish_reason=${String(finishReason)} tool_call_count=${Array.isArray(toolCalls) ? toolCalls.length : 0} content_length=${typeof content === 'string' ? content.length : 0} remaining_requests=${2 - attempt} remaining_tool_calls=${6 - toolCallsUsed}`)
       if (Array.isArray(toolCalls) && toolCalls.length && corpus) {
+        if (attempt >= 2 || finishReason === 'length' && attempt >= 1) return withLimitation(result, 'DeepSeek research budget exhausted; returning the retrieval result.')
         if (toolCallsUsed + toolCalls.length > 6) return withLimitation(result, 'DeepSeek research tool limit reached; returning the retrieval result.')
         conversation.push(payload.choices[0].message)
         for (const call of toolCalls) {
@@ -75,7 +79,6 @@ export function createDeepSeekFallback({ fetchImpl = fetch, usagePath = process.
         }
         validationError = 'tool research completed; provide final JSON answer'; continue
       }
-      const finishReason = payload?.choices?.[0]?.finish_reason ?? null
       const reasoningPresent = Boolean(payload?.choices?.[0]?.message?.reasoning_content)
       logger.info?.(`DeepSeek rules response: finish_reason=${String(finishReason)} content_length=${typeof content === 'string' ? content.length : 0} reasoning_content_present=${reasoningPresent}`)
       let parsed = null

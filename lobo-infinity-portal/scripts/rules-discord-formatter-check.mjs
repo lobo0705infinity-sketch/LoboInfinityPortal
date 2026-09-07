@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { formatRulesDiscordResponse } from '../bot/rules-command.mjs'
 
 for (const conclusion of ['YES', 'NO', 'DEPENDS', 'UNRESOLVED', 'OTHER']) {
-  const payload = formatRulesDiscordResponse({ question: 'test', status: 'STATUS', versions: [], rules: [], deepSeek: { conclusion, interpretationRequired: conclusion === 'OTHER', answer: conclusion === 'UNRESOLVED' ? '' : `Answer ${conclusion}` } })
+  const payload = formatRulesDiscordResponse({ question: 'Does test?', status: 'STATUS', versions: [], rules: [], deepSeek: { conclusion, interpretationRequired: conclusion === 'OTHER', answer: conclusion === 'UNRESOLVED' ? '' : `Answer ${conclusion}` } })
   const serialized = JSON.stringify(payload)
   assert.doesNotMatch(serialized, /undefined|null/)
   assert.match(serialized, /EXPLICIT RULING|EXPLICIT RULES ANSWER|EVIDENCE-BOUNDED INTERPRETATION/)
