@@ -1425,8 +1425,8 @@
             "id": "aro",
             "description": "ARO suppression is lost",
             "patterns": [
-              "does\\s+not\\s+suppress.{0,40}aros?",
-              "aros?.{0,50}(?:valid|allowed)"
+              "does\\s+not\\s+suppress.{0,120}aros?",
+              "aros?.{0,80}(?:valid|allowed)"
             ]
           }
         ],
