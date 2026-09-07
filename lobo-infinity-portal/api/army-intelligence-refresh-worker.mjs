@@ -38,6 +38,7 @@ export default async function handler(request, response) {
     const backfillToken = String(process.env.ARMY_INTELLIGENCE_BACKFILL_TOKEN || '').trim()
     const batchLimit = Math.max(1, Number(body.batchLimit) || DEFAULT_REFRESH_BATCH_LIMIT)
     const requestedSectorial = String(body.sectorial || '').trim()
+    const publishPublicSnapshot = scopedBackfill && body.publishPublicSnapshot === true
     const requestedSnapshotKeys = Array.isArray(body.snapshotKeys)
       ? new Set(body.snapshotKeys.map((key) => String(key || '').trim()).filter(Boolean))
       : new Set()
@@ -152,8 +153,8 @@ export default async function handler(request, response) {
     }
     await browser?.close()
 
-    if (snapshots.length > 0) {
-      await postSnapshots(apiUrl, snapshots, upstreamCredential)
+    if (snapshots.length > 0 || publishPublicSnapshot) {
+      await postSnapshots(apiUrl, snapshots, upstreamCredential, publishPublicSnapshot)
     }
 
     response.status(200).json({
@@ -309,13 +310,14 @@ async function getAction(apiUrl, action, params = {}) {
   return JSON.parse(text)
 }
 
-async function postSnapshots(apiUrl, snapshots, credential) {
+async function postSnapshots(apiUrl, snapshots, credential, publishPublicSnapshot = false) {
   const body = new URLSearchParams()
   body.set('action', 'refreshArmyIntelligence')
   for (const [key, value] of Object.entries(credential)) {
     body.set(key, value)
   }
   body.set('snapshots', JSON.stringify(snapshots))
+  if (publishPublicSnapshot) body.set('publishPublicSnapshot', 'true')
 
   const response = await fetch(apiUrl, {
     body,

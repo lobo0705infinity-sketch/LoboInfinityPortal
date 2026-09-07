@@ -100,6 +100,19 @@ function refreshArmyIntelligence(e) {
   if (!Array.isArray(snapshots))
     throw new Error("snapshots must be a JSON array.");
 
+  const publishPublicSnapshot =
+    getApiParameter(parameters, "publishPublicSnapshot") === "true";
+
+  if (!snapshots.length && publishPublicSnapshot) {
+    const publication = runHourlyPublicSnapshot();
+    return jsonOutput({
+      success: publication && publication.success === true,
+      publication: publication,
+      status: publication && publication.success === true ? "Published" : "Publication failed",
+      updated: 0
+    });
+  }
+
   const authoritativeSources =
     buildArmyIntelligenceSources();
 
@@ -146,8 +159,11 @@ function refreshArmyIntelligence(e) {
   rebuildArmyListsReadModelPayloadAndPersist();
   invalidatePortalCacheGroup("armyIntelligence");
 
+  const publication = publishPublicSnapshot ? runHourlyPublicSnapshot() : null;
+
   return jsonOutput({
     success: true,
+    publication: publication,
     sourceCount: authoritativeSources.length,
     status: "Refreshed",
     updated: rows.length
