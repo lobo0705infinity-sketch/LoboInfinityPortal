@@ -2404,7 +2404,7 @@
       "approvedCitations": [],
       "candidateExpectation": null,
       "category": "MODIFIER_CALCULATION",
-      "draftAnswer": "For the MSV1 shooter, the return BS Attack changes the Smoke's Zero Visibility Zone into a Poor Visibility Zone for drawing LoF to that attacker. MSV1 reduces that Visibility MOD from -6 to -3. Partial Cover adds another -3 to the shooter's BS Attack, so the known total is -6 before Range or other MODs. The target also receives +3 on any Saving Roll from Partial Cover. For the target's return shot, the Smoke imposes -6 unless that target has a rule that reduces it.",
+      "draftAnswer": "For the MSV1 shooter's BS Attack, the return BS Attack makes that shooter the target of a BS Attack through the Smoke. The Smoke is therefore treated as Poor Visibility when the shooter draws LoF back, and MSV1 reduces that Visibility MOD from -6 to -3. Partial Cover adds another -3, so the shooter's known total is -6 before Range or other MODs. The target receives +3 on any Saving Roll from Partial Cover. For the target's return shot, being targeted through the Smoke also permits LoF by treating it as Poor Visibility, imposing -6 unless the target has a rule that reduces that MOD.",
       "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
       "draftCitations": [
         {
@@ -2426,7 +2426,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "modifier_calculation-01",
       "question": "I shoot through Smoke with MSV1, the target shoots back, and the target is in Cover; what MODs apply?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -2450,7 +2453,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "modifier_calculation-02",
       "question": "I shoot through Smoke with MSV1 and the target Dodges; what Visibility MOD applies?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -2474,7 +2480,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "modifier_calculation-03",
       "question": "I shoot a Mimetism (-6) target in Cover with MSV1; which MODs remain?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -2498,7 +2507,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "modifier_calculation-04",
       "question": "I shoot a Mimetism (-3) target through a Low Visibility Zone with MSV1; what Visibility and Mimetism MODs remain?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -2517,7 +2529,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "modifier_calculation-05",
       "question": "I shoot through overlapping Low and Poor Visibility Zones; which Visibility MOD applies?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -2541,14 +2556,17 @@
       "draftConclusion": "INTERPRETATION",
       "id": "modifier_calculation-06",
       "question": "A Hacker attacks through an enemy Repeater against a target protected by Firewall (-6); what WIP MOD applies?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
       "approvedCitations": [],
       "candidateExpectation": null,
       "category": "MODIFIER_CALCULATION",
-      "draftAnswer": "Start with the model's PH, add any genuinely applicable PH MOD, then apply the Template Dodge rule. A Template is normally Dodged on PH; use PH -3 if the model has no LoF to the attacker or the attack comes from a Deployable Weapon. Ordinary Difficult Terrain does not modify PH—it affects Movement—while Visibility Zone MODs expressly do not apply to Dodge. Without the exact source and value of the claimed terrain PH modifier, no single numeric target number can be given.",
+      "draftAnswer": "Ordinary Difficult Terrain does not modify the PH Roll for Dodge; it affects Movement instead. To Dodge a Template, roll against the model's PH, or PH-3 if the model has no LoF to the attacker or the Template comes from a Deployable Weapon. Apply any separate PH MOD that genuinely affects that Dodge. Visibility Zone MODs do not apply to Dodge. Without the model's PH and the Template circumstances, no single numeric target number can be stated.",
       "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
       "draftCitations": [
         {
@@ -2565,7 +2583,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "modifier_calculation-07",
       "question": "A model Dodges a Template Weapon with PH modified by terrain; how is the target number calculated?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -2589,7 +2610,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "modifier_calculation-08",
       "question": "A Trooper with Marksmanship shoots a target in Cover outside its weapon's good range; which MODs apply?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -2618,7 +2642,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "modifier_calculation-09",
       "question": "An Impersonation Marker is Discovered by a Trooper with Biometric Visor; what MOD applies?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -2652,7 +2679,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "modifier_calculation-10",
       "question": "A Fireteam member shoots with Burst and BS bonuses while affected by Mimetism and Cover; how are the modifiers combined?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -2747,9 +2777,9 @@
   },
   "schemaVersion": 1,
   "semanticAudit": {
-    "auditedCases": 85,
+    "auditedCases": 95,
     "totalCases": 100,
-    "lastAuditedCategory": "FAQ_ITS_OVERRIDE",
+    "lastAuditedCategory": "MODIFIER_CALCULATION",
     "updatedAt": "2026-09-07",
     "note": "Semantic audit is independent of player approval; approvedAnswer remains null until formally reviewed."
   },
