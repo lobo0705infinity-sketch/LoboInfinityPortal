@@ -5,7 +5,7 @@ export type FactionProfileHeroArtwork = {
 }
 
 const FACTION_PROFILE_HERO_BASE_PATH = '/assets/faction-profile-heroes/'
-const FACTION_PROFILE_HERO_VERSION = '20260906-faction-profiles-r4'
+const FACTION_PROFILE_HERO_VERSION = '20260906-faction-profiles-r5'
 
 const canonicalFactionProfileHeroFiles = {
   ALEPH: 'aleph.png',
