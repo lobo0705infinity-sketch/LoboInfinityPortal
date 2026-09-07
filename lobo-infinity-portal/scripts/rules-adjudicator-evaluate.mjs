@@ -39,12 +39,18 @@ export function evaluateRulesAnswers(benchmark, candidatePayload) {
       candidate?.conclusion === 'UNRESOLVED' &&
       /official corpus|tournament organizer|corvus belli|local event ruling/i.test(candidate?.answer || '')
     )
+    const contract = testCase.answerContract
+    const answerText = String(candidate?.answer || '')
+    const testPatterns = (patterns = []) => patterns.some((pattern) => new RegExp(pattern, 'iu').test(answerText))
+    const missingRequiredClaims = (contract?.requiredClaims || []).filter((claim) => !testPatterns(claim.patterns)).map((claim) => claim.id)
+    const presentForbiddenClaims = (contract?.forbiddenClaims || []).filter((claim) => testPatterns(claim.patterns)).map((claim) => claim.id)
+    const semanticContractMatch = !contract || (missingRequiredClaims.length === 0 && presentForbiddenClaims.length === 0)
     const referenceTerms = normalizedTerms(expectedAnswer)
     const candidateTerms = normalizedTerms(candidate?.answer)
     const referenceTermRecall = referenceTerms.size
       ? [...referenceTerms].filter((term) => candidateTerms.has(term)).length / referenceTerms.size
       : 0
-    return { id: testCase.id, category: testCase.category, answerPresent, conclusionMatch, citationMatch, safeEscalation, referenceTermRecall }
+    return { id: testCase.id, category: testCase.category, answerPresent, conclusionMatch, citationMatch, safeEscalation, semanticContractMatch, missingRequiredClaims, presentForbiddenClaims, referenceTermRecall }
   })
 
   const ratio = (predicate) => details.filter(predicate).length / details.length
@@ -54,9 +60,10 @@ export function evaluateRulesAnswers(benchmark, candidatePayload) {
     conclusionAgreement: ratio((item) => item.conclusionMatch),
     citationValidity: ratio((item) => item.citationMatch),
     safeEscalationAccuracy: ratio((item) => item.safeEscalation),
+    semanticContractAccuracy: ratio((item) => item.semanticContractMatch),
     averageReferenceTermRecall: details.reduce((sum, item) => sum + item.referenceTermRecall, 0) / details.length,
   }
-  const contractPass = candidateAnswers.length === benchmark.cases.length && duplicateIds === 0 && unexpectedIds.length === 0 && missingIds.length === 0 && scores.coverage === 1 && scores.conclusionAgreement === 1 && scores.citationValidity === 1 && scores.safeEscalationAccuracy === 1
+  const contractPass = candidateAnswers.length === benchmark.cases.length && duplicateIds === 0 && unexpectedIds.length === 0 && missingIds.length === 0 && scores.coverage === 1 && scores.conclusionAgreement === 1 && scores.citationValidity === 1 && scores.safeEscalationAccuracy === 1 && scores.semanticContractAccuracy === 1
   return {
     totalCases: benchmark.cases.length,
     submittedAnswers: candidateAnswers.length,
@@ -69,7 +76,7 @@ export function evaluateRulesAnswers(benchmark, candidatePayload) {
     contractPass,
     releaseEligible: contractPass && approvedReferences === benchmark.policy.approvedAnswersRequiredBeforeRelease,
     note: 'Reference-term recall is diagnostic only and is not proof of semantic correctness.',
-    failures: details.filter((item) => !item.answerPresent || !item.conclusionMatch || !item.citationMatch || !item.safeEscalation),
+    failures: details.filter((item) => !item.answerPresent || !item.conclusionMatch || !item.citationMatch || !item.safeEscalation || !item.semanticContractMatch),
   }
 }
 
