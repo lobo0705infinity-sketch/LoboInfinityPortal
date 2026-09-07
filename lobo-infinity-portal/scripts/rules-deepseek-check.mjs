@@ -44,13 +44,18 @@ const answer = await createDeepSeekRulesAnswer({
     assert.equal(sent.tools, undefined)
     assert.equal(sent.model, 'deepseek-v4-pro')
     assert.deepEqual(sent.thinking, { type: 'enabled' })
-    assert.equal(sent.reasoning_effort, 'max')
-    assert.equal(sent.max_tokens, 12000)
+    assert.equal(sent.reasoning_effort, 'high')
+    assert.equal(sent.max_tokens, 4000)
     return { ok: true, status: 200, headers: { get: () => 'application/json' }, text: async () => JSON.stringify({ choices: [{ finish_reason: 'stop', message: { content } }], usage: { prompt_tokens: 100, completion_tokens: 20 } }) }
   },
 })({ question: 'What happens through smoke?', corpus })
 assert.equal(calls, 1); assert.equal(answer.deepSeek.answer, 'Yes. Apply a -6 MOD.'); assert.equal(answer.deepSeek.sources[0].section, 'MSV1')
 assert.ok((await readFile(usagePath, 'utf8')).includes('promptTokens'))
+
+let timeoutCalls = 0
+const timeoutStarted = Date.now()
+const timedOut = await createDeepSeekRulesAnswer({ usagePath: join(dir, 'timeout.json'), requestTimeoutMs: 5, logger: { info() {}, warn() {} }, fetchImpl: async () => { timeoutCalls++; return await new Promise(() => {}) } })({ question: 'Timed request', corpus })
+assert.equal(timeoutCalls, 1); assert.match(timedOut.limitation, /timed out after 60 seconds/i); assert.ok(Date.now() - timeoutStarted < 1000)
 
 for (const [name, response] of [
   ['empty', { ok: true, status: 200, headers: { get: () => 'application/json' }, text: async () => '' }],

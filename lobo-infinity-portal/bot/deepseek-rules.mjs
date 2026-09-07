@@ -7,7 +7,8 @@ const V4_PRO_PRICING = Object.freeze({
   peak: { cacheHitInput: 0.044, cacheMissInput: 1.32, output: 3.96 },
 })
 const DEEPSEEK_RULES_MODEL = 'deepseek-v4-pro'
-const MAX_OUTPUT_TOKENS = 12000
+const MAX_OUTPUT_TOKENS = 4000
+const REQUEST_TIMEOUT_MS = 60000
 const ESTIMATED_TOKENS_PER_CHARACTER = 0.3
 let cachedCorpusPrompt
 
@@ -41,7 +42,7 @@ export function buildCompleteCorpusPrompt(corpus) {
   return text
 }
 
-export function createDeepSeekRulesAnswer({ fetchImpl = fetch, usagePath = process.env.DEEPSEEK_USAGE_PATH || DEFAULT_USAGE_PATH, now = () => Date.now(), logger = console } = {}) {
+export function createDeepSeekRulesAnswer({ fetchImpl = fetch, usagePath = process.env.DEEPSEEK_USAGE_PATH || DEFAULT_USAGE_PATH, now = () => Date.now(), logger = console, requestTimeoutMs = REQUEST_TIMEOUT_MS } = {}) {
   return async function answerRulesQuestion({ question, corpus }) {
     const cleanQuestion = String(question || '').trim()
     if (!cleanQuestion) throw new Error('A rules question is required.')
@@ -64,7 +65,7 @@ export function createDeepSeekRulesAnswer({ fetchImpl = fetch, usagePath = proce
     if (hourly + preflightCost > limits.hourly || monthly + preflightCost > limits.monthly) return unavailable(cleanQuestion, versions, 'DeepSeek spending limit reached.')
 
     try {
-      const response = await fetchImpl('https://api.deepseek.com/chat/completions', {
+      const response = await fetchWithHardTimeout(fetchImpl, 'https://api.deepseek.com/chat/completions', {
         method: 'POST',
         headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json' },
         body: JSON.stringify({
@@ -73,11 +74,10 @@ export function createDeepSeekRulesAnswer({ fetchImpl = fetch, usagePath = proce
           max_tokens: MAX_OUTPUT_TOKENS,
           response_format: { type: 'json_object' },
           thinking: { type: 'enabled' },
-          reasoning_effort: 'max',
+          reasoning_effort: 'high',
           messages: [{ role: 'system', content: corpusPrompt }, { role: 'user', content: cleanQuestion }],
         }),
-        signal: AbortSignal.timeout(120000),
-      })
+      }, requestTimeoutMs)
       const responseText = await response.text()
       if (!response.ok) return unavailable(cleanQuestion, versions, `DeepSeek was unavailable (HTTP ${response.status}).`)
       if (!String(response.headers?.get?.('content-type') || '').toLowerCase().includes('application/json') || !responseText.trim()) return unavailable(cleanQuestion, versions, 'DeepSeek returned an unusable response.')
@@ -108,8 +108,27 @@ export function createDeepSeekRulesAnswer({ fetchImpl = fetch, usagePath = proce
       }
     } catch (error) {
       logger.warn?.(`DeepSeek rules provider error: ${error instanceof Error ? error.message : 'request failed'}`)
+      if (error?.code === 'DEEPSEEK_TIMEOUT') return unavailable(cleanQuestion, versions, 'DeepSeek timed out after 60 seconds. Please try again later.')
       return unavailable(cleanQuestion, versions, 'DeepSeek was unavailable.')
     }
+  }
+}
+
+async function fetchWithHardTimeout(fetchImpl, url, options, timeoutMs) {
+  const controller = new AbortController()
+  let timer
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => {
+      controller.abort()
+      const error = new Error('request exceeded its hard deadline')
+      error.code = 'DEEPSEEK_TIMEOUT'
+      reject(error)
+    }, Math.max(1, Number(timeoutMs) || REQUEST_TIMEOUT_MS))
+  })
+  try {
+    return await Promise.race([fetchImpl(url, { ...options, signal: controller.signal }), timeout])
+  } finally {
+    clearTimeout(timer)
   }
 }
 
