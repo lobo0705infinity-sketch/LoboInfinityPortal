@@ -504,7 +504,45 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "zero-pain-unmodified",
+            "description": "Zero Pain's own Roll does not suffer Firewall",
+            "patterns": [
+              "zero\\s+pain.{0,80}(?:does\\s+not|doesn['’]?t).{0,40}(?:suffer|take|apply).{0,40}firewall",
+              "zero\\s+pain\\s+user['’]?s?\\s+(?:own\\s+)?roll.{0,50}(?:not|isn['’]?t).{0,30}(?:penal|modif)"
+            ]
+          },
+          {
+            "id": "firewall-target",
+            "description": "Firewall modifies the enemy attacking Comms Attack",
+            "patterns": [
+              "firewall.{0,100}(?:enemy|attacking\\s+hacker).{0,80}comms\\s+attack",
+              "(?:enemy|attacking\\s+hacker).{0,80}comms\\s+attack.{0,100}firewall"
+            ]
+          },
+          {
+            "id": "zero-pain-mod",
+            "description": "Zero Pain imposes -3 on the enemy Comms Attack",
+            "patterns": [
+              "zero\\s+pain.{0,120}(?:−|-)\\s*3.{0,80}enemy\\s+comms",
+              "(?:−|-)\\s*3\\s+wip.{0,100}enemy\\s+comms"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          {
+            "id": "firewall-on-zero-pain",
+            "description": "claims Firewall penalizes the Zero Pain Roll",
+            "patterns": [
+              "zero\\s+pain.{0,60}(?:suffers|takes|receives|applies).{0,40}firewall",
+              "firewall.{0,60}(?:penal|modif).{0,50}zero\\s+pain"
+            ]
+          }
+        ]
+      }
     },
     {
       "approvedAnswer": null,
@@ -1068,7 +1106,51 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "visibility-result",
+            "description": "MSV1 shooter's Visibility MOD is -3",
+            "patterns": [
+              "(?:−|-)\\s*3"
+            ]
+          },
+          {
+            "id": "return-attack",
+            "description": "the return BS Attack makes the MSV1 user a target",
+            "patterns": [
+              "return\\s+bs\\s+attack",
+              "target shoots back",
+              "target of a bs attack"
+            ]
+          },
+          {
+            "id": "poor-visibility",
+            "description": "Smoke is treated as Poor Visibility",
+            "patterns": [
+              "poor\\s+visibility"
+            ]
+          },
+          {
+            "id": "msv1-reduction",
+            "description": "MSV1 reduces the Poor Visibility MOD",
+            "patterns": [
+              "msv1.{0,60}reduce",
+              "reduces?.{0,60}msv1"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          {
+            "id": "wrong-final-mod",
+            "description": "claims the MSV1 shooter's final Visibility MOD is -6",
+            "patterns": [
+              "(?:visibility\\s+mod|shooter(?:'s)?\\s+(?:visibility\\s+)?mod).{0,20}(?:is|=|of)\\s*(?:−|-)\\s*6"
+            ]
+          }
+        ]
+      }
     },
     {
       "approvedAnswer": null,
@@ -1108,7 +1190,43 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "visibility-result",
+            "description": "MSV1 shooter's Visibility MOD is -6",
+            "patterns": [
+              "(?:−|-)\\s*6"
+            ]
+          },
+          {
+            "id": "dodge-not-bs",
+            "description": "Dodge is not a BS Attack",
+            "patterns": [
+              "dodge\\s+is\\s+not\\s+a?\\s*bs\\s+attack",
+              "dodge\\s+isn['’]?t\\s+a?\\s*bs\\s+attack"
+            ]
+          },
+          {
+            "id": "zero-zone",
+            "description": "the Zero Visibility Zone is not converted to Poor Visibility",
+            "patterns": [
+              "zero\\s+visibility.{0,80}(?:not|doesn['’]?t|isn['’]?t).{0,40}(?:poor|convert|treat)",
+              "does\\s+not\\s+(?:trigger|receive).{0,80}poor\\s+visibility"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          {
+            "id": "wrong-final-mod",
+            "description": "claims the MSV1 shooter's final Visibility MOD is -3",
+            "patterns": [
+              "(?:visibility\\s+mod|shooter(?:'s)?\\s+(?:visibility\\s+)?mod).{0,20}(?:is|=|of)\\s*(?:−|-)\\s*3"
+            ]
+          }
+        ]
+      }
     },
     {
       "approvedAnswer": null,
@@ -1144,7 +1262,51 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "no-break",
+            "description": "Dodge does not break Stealth in the Active Turn",
+            "patterns": [
+              "\\bno\\b",
+              "does\\s+not\\s+break\\s+stealth",
+              "doesn['’]?t\\s+break\\s+stealth"
+            ]
+          },
+          {
+            "id": "active-turn",
+            "description": "Stealth protection is evaluated in the user's Active Turn",
+            "patterns": [
+              "active\\s+turn"
+            ]
+          },
+          {
+            "id": "movement-label",
+            "description": "Dodge has the Movement Label",
+            "patterns": [
+              "movement\\s+label"
+            ]
+          },
+          {
+            "id": "aro-suppression",
+            "description": "enemies without LoF do not gain the otherwise-suppressed ARO",
+            "patterns": [
+              "(?:without|no|lack(?:ing)?)\\s+lof.{0,80}(?:aro|reaction)",
+              "(?:aro|reaction).{0,80}(?:without|no|lack(?:ing)?)\\s+lof"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          {
+            "id": "breaks-stealth",
+            "description": "claims Dodge breaks Stealth",
+            "patterns": [
+              "(?:dodge|declaring\\s+dodge)\\s+(?:does\\s+)?breaks?\\s+stealth"
+            ]
+          }
+        ]
+      }
     },
     {
       "approvedAnswer": null,
@@ -2121,7 +2283,52 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "permission",
+            "description": "MSV3 may BS Attack a Camouflaged Marker without Discover",
+            "patterns": [
+              "(?:may|can).{0,30}bs\\s+attack.{0,50}camouflaged\\s+marker",
+              "bs\\s+attack.{0,80}without.{0,30}discover"
+            ]
+          },
+          {
+            "id": "active-turn",
+            "description": "permission applies in the Active Turn",
+            "patterns": [
+              "active\\s+turn"
+            ]
+          },
+          {
+            "id": "lof",
+            "description": "the Marker must be in LoF",
+            "patterns": [
+              "\\blof\\b",
+              "line\\s+of\\s+fire"
+            ]
+          },
+          {
+            "id": "mimetism",
+            "description": "the Marker’s Mimetism MOD still applies",
+            "patterns": [
+              "apply.{0,40}mimetism",
+              "mimetism.{0,40}(?:still|appl)"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          {
+            "id": "discover-required",
+            "description": "claims MSV3 must Discover first",
+            "patterns": [
+              "msv3.{0,80}must.{0,30}discover\\s+(?:it\\s+)?first",
+              "must\\s+discover.{0,60}before.{0,30}bs\\s+attack"
+            ]
+          }
+        ]
+      }
     },
     {
       "approvedAnswer": null,
@@ -2798,5 +3005,11 @@
     "updatedAt": "2026-09-07",
     "note": "All 100 draft answers have completed semantic audit. Semantic audit is independent of player approval; approvedAnswer remains null until formally reviewed."
   },
-  "title": "Infinity N5 Rules Adjudicator Benchmark"
+  "title": "Infinity N5 Rules Adjudicator Benchmark",
+  "semanticContracts": {
+    "contractedCases": 5,
+    "totalCases": 100,
+    "status": "HIGH_RISK_REGRESSIONS_COMPLETE",
+    "note": "Contracts test practical claims beyond conclusion and citation matching. Expand to all 100 cases before a paid model evaluation."
+  }
 }
