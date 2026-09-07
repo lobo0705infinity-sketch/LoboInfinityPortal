@@ -2395,46 +2395,66 @@
       "id": "unresolved_unsupported-01",
       "category": "UNRESOLVED_UNSUPPORTED",
       "question": "A forum post says this rule works differently from the rulebook; which ruling is official?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Use the current official rulebook, FAQ, and ITS document in the activated corpus. A forum post is not an official ruling merely because it offers a different interpretation. It may be considered only if it can be verified as an official Corvus Belli ruling that applies to the current edition; otherwise the bot must not replace the published rule with it.",
+      "draftConclusion": "UNRESOLVED",
+      "draftCertainty": "SAFE ESCALATION",
+      "draftCitations": []
     },
     {
       "id": "unresolved_unsupported-02",
       "category": "UNRESOLVED_UNSUPPORTED",
       "question": "How should we resolve two current official rules that directly contradict one another?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "First apply normal authority and specificity: a current FAQ clarification controls the rule it clarifies, and a mission-specific ITS rule controls that mission. If two current official provisions still directly contradict after scope, timing, and specificity are checked, the corpus does not support a definitive answer. The bot must identify both provisions, label the conflict unresolved, and refer the question to the tournament organizer or Corvus Belli rather than inventing a priority rule.",
+      "draftConclusion": "UNRESOLVED",
+      "draftCertainty": "SAFE ESCALATION",
+      "draftCitations": []
     },
     {
       "id": "unresolved_unsupported-03",
       "category": "UNRESOLVED_UNSUPPORTED",
       "question": "What happens in an interaction that is not addressed by the Rules, FAQ, or ITS document?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "The official corpus does not determine the interaction. The bot must say that explicitly, state what facts and related rules were checked, and avoid creating a new rule by analogy. For an actual game, the tournament organizer must make a temporary table ruling; that ruling is local and is not presented as an official Infinity rule.",
+      "draftConclusion": "UNRESOLVED",
+      "draftCertainty": "SAFE ESCALATION",
+      "draftCitations": []
     },
     {
       "id": "unresolved_unsupported-04",
       "category": "UNRESOLVED_UNSUPPORTED",
       "question": "Can an old N4 FAQ decide an interaction not answered in N5?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "No. An N4 FAQ does not bind N5 when it is absent from the activated N5 corpus. It may be presented separately as historical context only if accurately sourced, clearly labeled non-current, and permitted by the tournament organizer. It cannot be cited as the official N5 answer.",
+      "draftConclusion": "UNRESOLVED",
+      "draftCertainty": "SAFE ESCALATION",
+      "draftCitations": []
     },
     {
       "id": "unresolved_unsupported-05",
       "category": "UNRESOLVED_UNSUPPORTED",
       "question": "What ruling should a tournament organizer use when the official corpus is genuinely silent?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "The tournament organizer should make the narrowest temporary ruling needed to continue play, record the exact facts, announce it to all affected players, and apply it consistently for the event. The ruling should be labeled a local event ruling—not an official rule—and revisited if Corvus Belli later publishes an answer.",
+      "draftConclusion": "UNRESOLVED",
+      "draftCertainty": "SAFE ESCALATION",
+      "draftCitations": []
     }
   ]
 }
