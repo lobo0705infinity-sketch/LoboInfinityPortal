@@ -1,0 +1,184 @@
+.top40-registration-page {
+  gap: clamp(0.8rem, 1.6vw, 1.2rem);
+}
+
+.top40-registration-hero {
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+.top40-registration-hero img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.top40-registration-page .event-home-nav a.active {
+  border-color: rgba(110, 220, 255, 0.72);
+  color: #ffffff;
+  box-shadow: inset 0 -2px 0 #6edcff;
+}
+
+.top40-registration-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  padding: clamp(1.1rem, 2.7vw, 2rem);
+}
+
+.top40-registration-summary h1,
+.top40-registration-summary p,
+.top40-registration-status h2,
+.top40-registration-status p,
+.top40-registration-roster h2,
+.top40-registration-roster p {
+  margin: 0;
+}
+
+.top40-registration-summary h1 {
+  margin-top: 0.35rem;
+  color: #ffffff;
+  font-size: clamp(1.65rem, 3vw, 2.6rem);
+}
+
+.top40-registration-summary div > p:last-child {
+  max-width: 52rem;
+  margin-top: 0.65rem;
+  color: #c9d7e1;
+}
+
+.top40-registration-cta {
+  flex: 0 0 auto;
+  border: 1px solid #ff7180;
+  border-radius: 8px;
+  padding: 0.9rem 1.35rem;
+  background: linear-gradient(180deg, #d93140, #a80f1d);
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(193, 18, 31, 0.28);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+}
+
+.top40-registration-cta:hover,
+.top40-registration-cta:focus-visible {
+  border-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(217, 54, 68, 0.2), 0 12px 28px rgba(193, 18, 31, 0.34);
+  outline: none;
+}
+
+.top40-registration-grid {
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.72fr) minmax(0, 1.7fr);
+  gap: clamp(0.8rem, 1.6vw, 1.2rem);
+  align-items: start;
+}
+
+.top40-registration-status,
+.top40-registration-roster {
+  padding: clamp(1rem, 2vw, 1.5rem);
+}
+
+.top40-registration-status {
+  border-top: 3px solid #6edcff;
+}
+
+.top40-registration-status.is-full {
+  border-top-color: #ff7180;
+}
+
+.top40-registration-status > strong {
+  display: block;
+  margin-top: 0.6rem;
+  color: #6edcff;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 1;
+}
+
+.top40-registration-status.is-full > strong {
+  color: #ff7180;
+}
+
+.top40-registration-status h2 {
+  margin-top: 0.75rem;
+  color: #ffffff;
+  font-size: clamp(1rem, 1.8vw, 1.3rem);
+}
+
+.top40-registration-status > p:last-child {
+  margin-top: 0.75rem;
+  color: #bdccd6;
+}
+
+.top40-registration-roster-heading {
+  margin-bottom: 1rem;
+}
+
+.top40-registration-roster h2 {
+  margin-top: 0.3rem;
+  color: #ffffff;
+}
+
+.top40-registration-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.top40-registration-list li {
+  display: grid;
+  grid-template-columns: 2.3rem minmax(0, 1fr);
+  align-items: center;
+  min-width: 0;
+  border: 1px solid rgba(110, 220, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(7, 16, 23, 0.72);
+}
+
+.top40-registration-list li span {
+  display: grid;
+  align-self: stretch;
+  place-items: center;
+  border-right: 1px solid rgba(110, 220, 255, 0.2);
+  color: #6edcff;
+  font-weight: 900;
+}
+
+.top40-registration-list li strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  padding: 0.72rem;
+  color: #eef7fb;
+}
+
+.top40-registration-empty {
+  border: 1px dashed rgba(110, 220, 255, 0.25);
+  border-radius: 8px;
+  padding: 1rem;
+  color: #bdccd6;
+}
+
+@media (max-width: 760px) {
+  .top40-registration-summary,
+  .top40-registration-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .top40-registration-cta {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 520px) {
+  .top40-registration-list {
+    grid-template-columns: 1fr;
+  }
+}

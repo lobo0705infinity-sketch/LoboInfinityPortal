@@ -139,6 +139,7 @@ export const eventNavigation: EventNavigationConfig[] = [
     ],
     id: 'event-lobo-s-american-top-40',
     label: "Lobo's American Top 40",
+    registrationUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSfCyQ-oaLlZf8-utdWm0Y2iWrU8QZiHLVBhWzmxaCUZj2cMqg/viewform',
     routeOverrides: {
       results: '/event/:eventId/results',
       rules: '/event/:eventId/rules',
