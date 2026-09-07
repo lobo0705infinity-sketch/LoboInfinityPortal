@@ -870,6 +870,19 @@
   border-radius: 14px;
 }
 
+.snapshot-top40-overview-hero {
+  margin: 0;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.snapshot-top40-overview-hero img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
 .snapshot-event-hero h1 {
   max-width: 18ch;
   margin: 0.25rem 0 0.45rem;
