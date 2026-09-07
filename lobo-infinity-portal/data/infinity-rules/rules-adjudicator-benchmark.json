@@ -2695,7 +2695,10 @@
       "draftConclusion": "UNRESOLVED",
       "id": "unresolved_unsupported-01",
       "question": "A forum post says this rule works differently from the rulebook; which ruling is official?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked for conservative authority handling and safe escalation; intentionally makes no unsupported official ruling and remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -2708,7 +2711,10 @@
       "draftConclusion": "UNRESOLVED",
       "id": "unresolved_unsupported-02",
       "question": "How should we resolve two current official rules that directly contradict one another?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked for conservative authority handling and safe escalation; intentionally makes no unsupported official ruling and remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -2721,7 +2727,10 @@
       "draftConclusion": "UNRESOLVED",
       "id": "unresolved_unsupported-03",
       "question": "What happens in an interaction that is not addressed by the Rules, FAQ, or ITS document?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked for conservative authority handling and safe escalation; intentionally makes no unsupported official ruling and remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -2734,7 +2743,10 @@
       "draftConclusion": "UNRESOLVED",
       "id": "unresolved_unsupported-04",
       "question": "Can an old N4 FAQ decide an interaction not answered in N5?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked for conservative authority handling and safe escalation; intentionally makes no unsupported official ruling and remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -2747,7 +2759,10 @@
       "draftConclusion": "UNRESOLVED",
       "id": "unresolved_unsupported-05",
       "question": "What ruling should a tournament organizer use when the official corpus is genuinely silent?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked for conservative authority handling and safe escalation; intentionally makes no unsupported official ruling and remains an unapproved draft."
     }
   ],
   "corpus": {
@@ -2777,11 +2792,11 @@
   },
   "schemaVersion": 1,
   "semanticAudit": {
-    "auditedCases": 95,
+    "auditedCases": 100,
     "totalCases": 100,
-    "lastAuditedCategory": "MODIFIER_CALCULATION",
+    "lastAuditedCategory": "UNRESOLVED_UNSUPPORTED",
     "updatedAt": "2026-09-07",
-    "note": "Semantic audit is independent of player approval; approvedAnswer remains null until formally reviewed."
+    "note": "All 100 draft answers have completed semantic audit. Semantic audit is independent of player approval; approvedAnswer remains null until formally reviewed."
   },
   "title": "Infinity N5 Rules Adjudicator Benchmark"
 }
