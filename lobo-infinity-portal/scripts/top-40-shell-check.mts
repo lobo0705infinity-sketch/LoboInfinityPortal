@@ -119,6 +119,11 @@ assert.match(
 )
 assert.match(
   snapshotPublicAppSource,
+  /src="\/assets\/events\/top-40-overview-v2\.png"/,
+  'The public Top 40 Overview must use the versioned artwork path.',
+)
+assert.match(
+  snapshotPublicAppSource,
   /if\(section==='statistics'\)/,
   'The underlying Top 40 Statistics route must remain available.',
 )

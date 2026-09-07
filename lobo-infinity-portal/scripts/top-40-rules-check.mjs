@@ -10,7 +10,7 @@ const source = await readFile(new URL('../src/components/Top40RulesPage.tsx', im
 const styles = await readFile(new URL('../src/components/Top40RulesPage.css', import.meta.url), 'utf8')
 const rulebook = await readFile(new URL('../src/content/rulebooks/top40.ts', import.meta.url), 'utf8')
 const navigation = await readFile(new URL('../src/config/eventNavigation.ts', import.meta.url), 'utf8')
-const artwork = await readFile(new URL('../public/assets/events/top-40-rules.png', import.meta.url))
+const artwork = await readFile(new URL('../public/assets/events/top-40-rules-v2.png', import.meta.url))
 
 const eventId = 'event-lobo-s-american-top-40'
 const expectedHash = '9e71cc4c09d6330aa0bd8d8974debd3ad1f58e7cd80c781e72fb69bf29834135'
@@ -29,7 +29,7 @@ assert.equal(createHash('sha256').update(artwork).digest('hex'), expectedHash)
 assert.match(eventHome, /isTop40 && selectedSection === 'rules'/)
 assert.match(eventHome, /return <Top40RulesPage \/>/)
 assert.match(publicApp, /path="\/event\/event-lobo-s-american-top-40\/rules" element=\{<Top40RulesPage \/>\}/)
-assert.match(source, /src="\/assets\/events\/top-40-rules\.png"/)
+assert.match(source, /src="\/assets\/events\/top-40-rules-v2\.png"/)
 assert.match(source, /<h2>On This Page<\/h2>/)
 assert.match(source, /href=\{`#\$\{section\.id\}`\}/)
 assert.doesNotMatch(eventHome, /function Top40Rules\(|No Automatic Forfeits|There is no bracket reset/)
