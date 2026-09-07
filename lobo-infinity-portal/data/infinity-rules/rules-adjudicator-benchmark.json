@@ -910,7 +910,7 @@
       "id": "timing_sequence-01",
       "category": "TIMING_SEQUENCE",
       "question": "If I have MSV1 and shoot through Smoke and the target shoots back, what is my Visibility MOD?",
-      "reviewStatus": "KNOWN_REGRESSION",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": {
         "expectedConclusion": "INTERPRETATION",
         "expectedCoreResult": "The MSV1 user's Visibility MOD is -3 because return fire makes that Trooper the target of a BS Attack, so the Zero Visibility Zone is treated as Poor Visibility for drawing LoF back; MSV1 reduces Poor Visibility to -3.",
@@ -922,13 +922,28 @@
         ]
       },
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "−3 Visibility MOD. The target's return BS Attack makes the MSV1 user the target of a BS Attack through the Zero Visibility Zone; for drawing LoF back, the zone becomes Poor Visibility, and MSV1 reduces Poor Visibility from −6 to −3.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 1"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 143,
+          "section": "ZERO VISIBILITY ZONE"
+        }
+      ]
     },
     {
       "id": "timing_sequence-02",
       "category": "TIMING_SEQUENCE",
       "question": "If I have MSV1 and shoot through Smoke and the target Dodges, what is my Visibility MOD?",
-      "reviewStatus": "KNOWN_REGRESSION",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": {
         "expectedConclusion": "INTERPRETATION",
         "expectedCoreResult": "The MSV1 user's Visibility MOD remains -6 when the target Dodges because the user is not the target of a BS Attack.",
@@ -939,13 +954,33 @@
         ]
       },
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "−6 Visibility MOD. Dodge is not a BS Attack, so the MSV1 user does not receive the rule that treats the Zero Visibility Zone as Poor Visibility when drawing LoF to an attacker. MSV1 therefore draws LoF through the Zero Visibility Zone at −6.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 79,
+          "section": "DODGE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 1"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 143,
+          "section": "ZERO VISIBILITY ZONE"
+        }
+      ]
     },
     {
       "id": "timing_sequence-03",
       "category": "TIMING_SEQUENCE",
       "question": "Does declaring Dodge break Stealth?",
-      "reviewStatus": "KNOWN_REGRESSION",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": {
         "expectedConclusion": "DEPENDS",
         "expectedCoreResult": "The answer depends on who declares Dodge and during which Turn; the bot must analyze Stealth's Active Turn and declaration requirements instead of treating the wording as unconditional.",
@@ -957,160 +992,445 @@
         ]
       },
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Not unconditionally. Stealth functions only during its user's Active Turn. Declaring Dodge in the Reactive Turn cannot 'break' an effect that is not active. During the user's Active Turn, Dodge is not one of the declarations Stealth lists as suppressing AROs, so declaring it grants AROs normally; Stealth itself remains an Automatic Skill.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 79,
+          "section": "DODGE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 112,
+          "section": "STEALTH"
+        }
+      ]
     },
     {
       "id": "timing_sequence-04",
       "category": "TIMING_SEQUENCE",
       "question": "When does a successful Discover cancel Camouflaged State?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "A successful Discover is resolved in step 5, Resolution. The Marker is then replaced by the represented Model or Token. Camouflaged State is canceled for the entire declared Order, even though the revealing event is resolved at the end.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 14,
+          "section": "ORDER EXPENDITURE SEQUENCE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 77,
+          "section": "DISCOVER"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 158,
+          "section": "CAMOUFLAGED STATE — CANCELLATION"
+        }
+      ]
     },
     {
       "id": "timing_sequence-05",
       "category": "TIMING_SEQUENCE",
       "question": "If both Troopers declare Dodge, are the Rolls Face to Face?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "No, not merely because both declared Dodge. Face to Face Rolls require the actions to affect each other. Two Dodge declarations that do not oppose an Attack are separate Normal PH Rolls.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 25,
+          "section": "FACE TO FACE ROLLS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 79,
+          "section": "DODGE"
+        }
+      ]
     },
     {
       "id": "timing_sequence-06",
       "category": "TIMING_SEQUENCE",
       "question": "When is Suppressive Fire cancelled during an Order?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Suppressive Fire is canceled as soon as a listed cancellation condition occurs—for example, the Trooper declares an Order, declares an ARO other than BS Attack with the SF profile, uses an ineligible weapon, fails Guts, enters a listed State, the army enters Loss of Lieutenant, or the Trooper joins a Fireteam. Its benefits do not continue after cancellation.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 171,
+          "section": "SUPPRESSIVE FIRE STATE"
+        }
+      ]
     },
     {
       "id": "timing_sequence-07",
       "category": "TIMING_SEQUENCE",
       "question": "If a Trooper enters a Mine's Trigger Area and then leaves it, does the Mine detonate?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Yes, if the Mine had a valid target at any point along that target's declared movement and the Mine's trigger conditions are met. Because the Order is resolved all at once, leaving the Trigger Area later in the same movement does not undo having entered it; place the template from the Mine to the valid position on the route.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 14,
+          "section": "ALL AT ONCE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 72,
+          "section": "MINES"
+        }
+      ]
     },
     {
       "id": "timing_sequence-08",
       "category": "TIMING_SEQUENCE",
       "question": "When are AROs checked during the Order Expenditure Sequence?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "AROs are checked twice: after the first Skill declaration and again after the second Skill, but the second check is only for Troopers that could not declare an ARO at the first check. Eligibility is measured using the Active Trooper's entire declared path as specified by ZoC, LoF, and Hacking Area rules.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 14,
+          "section": "ORDER EXPENDITURE SEQUENCE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 20,
+          "section": "ZONE OF CONTROL AND AROS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 55,
+          "section": "HACKING AREA IN ARO"
+        }
+      ]
     },
     {
       "id": "timing_sequence-09",
       "category": "TIMING_SEQUENCE",
       "question": "If a Hacker moves into Repeater range during the first Short Skill, when can enemies hack it?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Enemies can react once the Hacker's declared path brings it inside their Hacking Area. At the applicable ARO Check, measure from any point along the Active Trooper's path and from its Repeaters. A legal Hacking ARO may then be declared; it is not necessary for the Hacker to end the movement inside the area.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 14,
+          "section": "ORDER EXPENDITURE SEQUENCE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 55,
+          "section": "HACKING AREA IN ARO"
+        }
+      ]
     },
     {
       "id": "timing_sequence-10",
       "category": "TIMING_SEQUENCE",
       "question": "If a Camouflaged Trooper declares Move then BS Attack, when is the Marker replaced?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "The Marker is replaced when Camouflaged State is canceled, but that cancellation applies to the entirety of the Order. Declaring BS Attack as the second Skill reveals the Trooper for resolution and lets enemies that delayed against the Marker declare their ARO.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 157,
+          "section": "CAMOUFLAGED STATE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 158,
+          "section": "CAMOUFLAGED STATE — CANCELLATION"
+        }
+      ]
     },
     {
       "id": "timing_sequence-11",
       "category": "TIMING_SEQUENCE",
       "question": "If Smoke is placed during an Order, which attacks become Face to Face with the Smoke Roll?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "The Smoke Roll is Face to Face only against enemy Attacks that require a Roll and LoF and whose LoF crosses the Zero Visibility Zone generated by that Smoke Template. Other attacks are Normal Rolls. Enemy Dodges in the template area are Normal Rolls, and Multispectral Visor users do not make Face to Face Rolls against Smoke Ammunition.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 66,
+          "section": "SMOKE AMMUNITION"
+        }
+      ]
     },
     {
       "id": "timing_sequence-12",
       "category": "TIMING_SEQUENCE",
       "question": "If a Trooper falls Unconscious during a Coordinated Order, does it complete its declared Skill?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Normally yes. Orders and AROs are simultaneous, so a Trooper that enters Unconscious during Resolution still resolves a Skill it legally declared earlier in that Order. A specific cancellation rule or a failed Requirement can still turn that declaration into Idle.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 14,
+          "section": "ALL AT ONCE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 15,
+          "section": "SKILL REQUIREMENTS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 129,
+          "section": "COORDINATED ORDERS"
+        }
+      ]
     },
     {
       "id": "timing_sequence-13",
       "category": "TIMING_SEQUENCE",
       "question": "If a Fireteam member enters a Null State mid-Order, when is Fireteam composition recalculated?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "It depends which member is affected. If the Fireteam Leader enters a Null or Isolated State, the Fireteam is automatically canceled. If another member enters a Null State, that does not by itself invoke the Leader-cancellation clause; membership and any later bonus level are determined under the Fireteam Integrity and coherency rules after the Order's effects are applied.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 14,
+          "section": "ORDER EXPENDITURE SEQUENCE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 134,
+          "section": "FIRETEAM INTEGRITY"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 135,
+          "section": "FIRETEAM BONUSES"
+        }
+      ]
     },
     {
       "id": "timing_sequence-14",
       "category": "TIMING_SEQUENCE",
       "question": "If a model declares Discover and the target reveals voluntarily, what happens to the Discover Roll?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "The Discover Roll is unnecessary. If the Camouflaged target reveals by declaring an ARO, the active Trooper proceeds to resolve its declared Attack without first rolling Discover.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 77,
+          "section": "DISCOVER + ATTACK"
+        }
+      ]
     },
     {
       "id": "timing_sequence-15",
       "category": "TIMING_SEQUENCE",
       "question": "If a Trooper declares Reset before being targeted by a Hacking Program, can the Rolls become Face to Face?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Yes, if the later Hacking Attack is directed at the Resetting Trooper and the two Rolls can affect each other. Declarations are simultaneous, and Requirements are checked at Resolution; the earlier Reset can therefore oppose the subsequently declared Hacking Program in a Face to Face Roll.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 14,
+          "section": "ALL AT ONCE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 25,
+          "section": "FACE TO FACE ROLL: DODGE AND RESET"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 85,
+          "section": "RESET"
+        }
+      ]
     },
     {
       "id": "timing_sequence-16",
       "category": "TIMING_SEQUENCE",
       "question": "If an Impersonation Marker is discovered during the first Short Skill, what AROs are available afterward?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "An Impersonation Marker is not successfully Discovered during the first half of an Order because Discover Rolls resolve only after all declarations. Therefore discovery itself does not create a new mid-Order ARO window. A Trooper that delayed against the Marker may declare an ARO after the second Skill only if the Impersonated Trooper reveals; otherwise that delayed ARO is lost.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 14,
+          "section": "ORDER EXPENDITURE SEQUENCE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 166,
+          "section": "IMPERSONATION STATE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 167,
+          "section": "IMPERSONATION EXAMPLE"
+        }
+      ]
     },
     {
       "id": "timing_sequence-17",
       "category": "TIMING_SEQUENCE",
       "question": "When does Retreat begin if Army Points fall below the threshold during a Player Turn?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Retreat is checked at the beginning of that player's next Active Turn during the Tactical Phase. Falling below the threshold during the preceding Player Turn does not start Retreat immediately.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 16,
+          "section": "TACTICAL PHASE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 146,
+          "section": "RETREAT!"
+        }
+      ]
     },
     {
       "id": "timing_sequence-18",
       "category": "TIMING_SEQUENCE",
       "question": "If a Lieutenant enters a Null State during the Active Turn, when does Loss of Lieutenant apply?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Loss of Lieutenant is checked in the Tactical Phase of that player's next Active Turn. It does not begin immediately when the Lieutenant enters a Null State during the current Active Turn; recovery before the next check can prevent it.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 16,
+          "section": "TACTICAL PHASE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 18,
+          "section": "LOSS OF LIEUTENANT"
+        }
+      ]
     },
     {
       "id": "timing_sequence-19",
       "category": "TIMING_SEQUENCE",
       "question": "If a Peripheral is disconnected during an Order, does it finish its declared Skill?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Usually yes when disconnection is caused by the Controller entering a Null or Isolated State: the Peripheral enters Disconnected State at the end of that Order, after resolving its otherwise legal declaration. But a failed required Coherency Check can disconnect some Peripheral types immediately before movement, so the cause of disconnection matters.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 106,
+          "section": "PERIPHERAL"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 107,
+          "section": "PERIPHERAL (CONTROL)"
+        }
+      ]
     },
     {
       "id": "timing_sequence-20",
       "category": "TIMING_SEQUENCE",
       "question": "If a Trooper declares a Skill that later fails its Requirements, what happens to the declaration?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "For most Skills, Requirements are checked in step 5, Resolution. If they are not met, the action is canceled and becomes Idle; declared Disposable uses are still spent. Skills whose rules require checking at declaration—such as Move, Jump, Climb, and certain deployment Skills—are checked earlier.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 15,
+          "section": "SKILL REQUIREMENTS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 80,
+          "section": "IDLE"
+        }
+      ]
     },
     {
       "id": "ambiguous_missing_facts-01",
