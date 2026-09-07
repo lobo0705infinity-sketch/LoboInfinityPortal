@@ -95,7 +95,7 @@ export default async function handler(request, response) {
         executablePath: await serverlessChromium.executablePath(),
         headless: true,
       })
-      enrich = await createCanonicalEnricher({ browser, cacheDir: '.tmp/army-intelligence-fireteams' })
+      enrich = await createCanonicalEnricher({ browser, cacheDir: join(outputDir, 'fireteams') })
     } catch (error) {
       failures.push({ reason: `Canonical enrichment unavailable: ${error instanceof Error ? error.message : String(error)}`, snapshotKey: '' })
     }
