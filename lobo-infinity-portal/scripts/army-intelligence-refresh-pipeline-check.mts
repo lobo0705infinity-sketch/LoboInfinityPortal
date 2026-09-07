@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { selectRefreshCandidates } from '../api/army-intelligence-refresh-worker.mjs'
 import { buildTacticalAnalysis } from '../src/services/armyIntelligenceTacticalAnalysis.ts'
-import { ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION, snapshotHasCompleteTacticalMetadata } from './army-intelligence-snapshot-schema.mjs'
+import { ARMY_INTELLIGENCE_PIPELINE_VERSION, ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION, snapshotHasCompleteTacticalMetadata } from './army-intelligence-snapshot-schema.mjs'
 
 const source = { armyCodeHash: 'hash', snapshotKey: 'casual:82:winner:defuser:hash' }
 const weapon = (name: string, burst: number) => ({ name, burst, burstStatus: 'canonical', source: 'iad-fixture' })
@@ -12,7 +12,7 @@ const profile = (combinedId: string, unit: string, bs: number, weapons: Array<{ 
   orderTypes: ['regular'], points: 1, specialist: false, structure: null, swc: 0, troopType: 'MI', wounds: 1,
 })
 const decoded = {
-  armyCode: 'fixture', decoderVersion: 'army-intelligence-decoder-v5', tacticalSchemaVersion: ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION,
+  armyCode: 'fixture', decoderVersion: 'army-intelligence-decoder-v5', pipelineVersion: ARMY_INTELLIGENCE_PIPELINE_VERSION, tacticalSchemaVersion: ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION,
   enrichment: { status: 'complete' }, faction: 'Ariadna', sectorial: 'USAriadna Ranger Force', listName: 'Bald Burgers',
   totals: { combatGroups: 1, points: 300, swc: 5 }, orderCounts: { regular: 10, irregular: 0, impetuous: 0, lieutenant: 1 },
   combatGroups: [{ combatGroup: 1, entries: [
@@ -23,12 +23,13 @@ const decoded = {
     profile('304-230-1-5-1', 'GRUNT', 11, [{ name: 'AP Sniper Rifle', burst: 2 }]),
   ] }],
 }
-const current = { armyCodeHash: 'hash', decoderVersion: 'army-intelligence-decoder-v5', hasProfileMetadata: true, hasTacticalMetadata: true, status: 'decoded' }
+const current = { armyCodeHash: 'hash', decoderVersion: 'army-intelligence-decoder-v5', pipelineVersion: ARMY_INTELLIGENCE_PIPELINE_VERSION, hasProfileMetadata: true, hasTacticalMetadata: true, status: 'decoded' }
 
 assert.deepEqual(selectRefreshCandidates([source], new Map([[source.snapshotKey, current]])), [source], 'missing schema version must invalidate an otherwise current snapshot')
+assert.deepEqual(selectRefreshCandidates([source], new Map([[source.snapshotKey, { ...current, pipelineVersion: 'army-intelligence-pipeline-v0', tacticalSchemaVersion: ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION }]])), [source], 'older pipeline generation must invalidate an otherwise complete snapshot')
 assert.deepEqual(selectRefreshCandidates([source], new Map([[source.snapshotKey, { ...current, tacticalSchemaVersion: ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION, hasTacticalMetadata: false }]])), [source], 'incomplete tactical metadata must bypass normal freshness')
 
-const list = { ...source, tacticalSchemaVersion: ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION, status: 'decoded', decoded }
+const list = { ...source, pipelineVersion: ARMY_INTELLIGENCE_PIPELINE_VERSION, tacticalSchemaVersion: ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION, status: 'decoded', decoded }
 assert.equal(snapshotHasCompleteTacticalMetadata(list), true)
 assert.equal(snapshotHasCompleteTacticalMetadata({ ...list, decoded: { ...decoded, combatGroups: [{ combatGroup: 1, entries: [{ ...decoded.combatGroups[0].entries[0], bs: null }] }] } }), false)
 assert.equal(snapshotHasCompleteTacticalMetadata({ ...list, decoded: { ...decoded, combatGroups: [{ combatGroup: 1, entries: [{ ...decoded.combatGroups[0].entries[0], weaponProfiles: [{ name: 'AP Spitfire', burst: null, burstStatus: 'unknown' }] }] }] } }), false)

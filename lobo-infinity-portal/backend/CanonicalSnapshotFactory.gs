@@ -6,6 +6,7 @@
  */
 
 var ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION = "army-intelligence-tactical-v2";
+var ARMY_INTELLIGENCE_PIPELINE_VERSION = "army-intelligence-pipeline-v1";
 
 var CanonicalSnapshotFactory = (function() {
 
@@ -74,6 +75,7 @@ var CanonicalSnapshotFactory = (function() {
       decoded: decoded || null,
       decodedAt: new Date().toISOString(),
       error: error || "",
+      pipelineVersion: ARMY_INTELLIGENCE_PIPELINE_VERSION,
       snapshotKey: snapshotKey,
       status: status
     };
@@ -92,6 +94,7 @@ var CanonicalSnapshotFactory = (function() {
           ? decoded.decoderVersion
           : "",
       error: error || "",
+      pipelineVersion: ARMY_INTELLIGENCE_PIPELINE_VERSION,
       snapshotKey: source.snapshotKey,
       sourceId: source.sourceId,
       sourcePlayer: source.sourcePlayer,
@@ -170,6 +173,7 @@ var CanonicalSnapshotFactory = (function() {
     createLegacyStorageSnapshot: createLegacyStorageSnapshot,
     createRefreshSnapshot: createRefreshSnapshot,
     createSourceRefreshSnapshot: createSourceRefreshSnapshot,
+    pipelineVersion: ARMY_INTELLIGENCE_PIPELINE_VERSION,
     tacticalSchemaVersion: ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION
   });
 

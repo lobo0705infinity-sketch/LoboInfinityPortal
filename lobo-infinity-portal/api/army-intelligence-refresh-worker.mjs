@@ -11,6 +11,7 @@ import {
 } from '../scripts/infinity-army-decode.mjs'
 import { createCanonicalEnricher } from '../scripts/army-intelligence-canonical-enrichment.mjs'
 import {
+  ARMY_INTELLIGENCE_PIPELINE_VERSION,
   ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION,
   snapshotHasCompleteTacticalMetadata,
 } from '../scripts/army-intelligence-snapshot-schema.mjs'
@@ -39,6 +40,7 @@ export default async function handler(request, response) {
     const batchLimit = Math.max(1, Number(body.batchLimit) || DEFAULT_REFRESH_BATCH_LIMIT)
     const requestedSectorial = String(body.sectorial || '').trim()
     const publishPublicSnapshot = scopedBackfill && body.publishPublicSnapshot === true
+    const dryRun = scopedBackfill && body.dryRun === true
     const requestedSnapshotKeys = Array.isArray(body.snapshotKeys)
       ? new Set(body.snapshotKeys.map((key) => String(key || '').trim()).filter(Boolean))
       : new Set()
@@ -82,6 +84,25 @@ export default async function handler(request, response) {
     const allCandidates = selectRefreshCandidates(sources, state)
     const currentCount = sources.length - allCandidates.length
     const candidates = allCandidates.slice(0, batchLimit)
+
+    if (dryRun) {
+      const keyCounts = new Map()
+      for (const source of sources) keyCounts.set(source.snapshotKey, (keyCounts.get(source.snapshotKey) || 0) + 1)
+      response.status(200).json({
+        audit: true,
+        currentVersionSnapshots: currentCount,
+        duplicateSnapshotKeys: Array.from(keyCounts).filter(([, count]) => count > 1).map(([snapshotKey, count]) => ({ snapshotKey, count })),
+        missingStoredSnapshots: sources.filter((source) => !state.has(source.snapshotKey)).map((source) => source.snapshotKey),
+        obsoleteSnapshots: allCandidates.map((source) => source.snapshotKey),
+        pipelineVersion: ARMY_INTELLIGENCE_PIPELINE_VERSION,
+        staleSnapshots: allCandidates.length,
+        storedSnapshots: state.size,
+        success: true,
+        sourceSnapshotKeys: sources.map((source) => source.snapshotKey),
+        totalDistinctLists: new Set(sources.map((source) => source.snapshotKey)).size,
+      })
+      return
+    }
 
     const outputDir = await mkdtemp(join(tmpdir(), 'lobo-army-intelligence-'))
     const snapshots = []
@@ -188,6 +209,7 @@ export function selectRefreshCandidates(sources, state) {
       !current ||
       current.armyCodeHash !== source.armyCodeHash ||
       current.status !== 'decoded' ||
+      current.pipelineVersion !== ARMY_INTELLIGENCE_PIPELINE_VERSION ||
       current.decoderVersion !== ARMY_INTELLIGENCE_DECODER_VERSION ||
       current.tacticalSchemaVersion !== ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION ||
       !current.hasProfileMetadata ||
@@ -262,6 +284,7 @@ async function loadSnapshotState(apiUrl) {
     state.set(list.snapshotKey, {
       armyCodeHash: list.armyCodeHash,
       decoderVersion: list.decoded?.decoderVersion || '',
+      pipelineVersion: list.pipelineVersion || list.decoded?.pipelineVersion || '',
       hasProfileMetadata: snapshotHasDecodedProfileMetadata(list),
       hasTacticalMetadata: snapshotHasTacticalMetadata(list),
       tacticalSchemaVersion: list.tacticalSchemaVersion || list.decoded?.tacticalSchemaVersion || '',

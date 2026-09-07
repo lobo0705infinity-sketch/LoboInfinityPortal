@@ -10,6 +10,7 @@ import {
 } from './infinity-army-decode.mjs'
 import { createCanonicalEnricher } from './army-intelligence-canonical-enrichment.mjs'
 import {
+  ARMY_INTELLIGENCE_PIPELINE_VERSION,
   ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION,
   snapshotHasCompleteTacticalMetadata,
 } from './army-intelligence-snapshot-schema.mjs'
@@ -44,6 +45,7 @@ const candidates = sources
       current.armyCodeHash !== source.armyCodeHash ||
       current.status !== 'decoded' ||
       current.decoderVersion !== ARMY_INTELLIGENCE_DECODER_VERSION ||
+      current.pipelineVersion !== ARMY_INTELLIGENCE_PIPELINE_VERSION ||
       current.tacticalSchemaVersion !== ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION ||
       !current.hasProfileMetadata ||
       !current.hasTacticalMetadata
@@ -139,6 +141,7 @@ async function loadSnapshotState(apiUrl) {
     state.set(list.snapshotKey, {
       armyCodeHash: list.armyCodeHash,
       decoderVersion: list.decoded?.decoderVersion || '',
+      pipelineVersion: list.pipelineVersion || list.decoded?.pipelineVersion || '',
       hasProfileMetadata: snapshotHasDecodedProfileMetadata(list),
       hasTacticalMetadata: snapshotHasTacticalMetadata(list),
       tacticalSchemaVersion: list.tacticalSchemaVersion || list.decoded?.tacticalSchemaVersion || '',

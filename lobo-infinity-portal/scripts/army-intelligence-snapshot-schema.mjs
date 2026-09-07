@@ -1,9 +1,12 @@
 export const ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION = 'army-intelligence-tactical-v2'
+export const ARMY_INTELLIGENCE_PIPELINE_VERSION = 'army-intelligence-pipeline-v1'
 
 export function snapshotHasCompleteTacticalMetadata(list) {
   if (
     list?.status !== 'decoded' ||
     !list.decoded ||
+    list.pipelineVersion !== ARMY_INTELLIGENCE_PIPELINE_VERSION ||
+    list.decoded.pipelineVersion !== ARMY_INTELLIGENCE_PIPELINE_VERSION ||
     list.tacticalSchemaVersion !== ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION ||
     list.decoded.tacticalSchemaVersion !== ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION ||
     list.decoded.enrichment?.status !== 'complete'

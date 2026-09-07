@@ -210,6 +210,8 @@ function validateArmyIntelligenceRefreshSnapshot(source, snapshot) {
       throw new Error("Army Intelligence snapshot Army Code mismatch.");
 
     if (
+      getArmyIntelligenceString(snapshot.pipelineVersion) !== ARMY_INTELLIGENCE_PIPELINE_VERSION ||
+      getArmyIntelligenceString(snapshot.decoded.pipelineVersion) !== ARMY_INTELLIGENCE_PIPELINE_VERSION ||
       getArmyIntelligenceString(snapshot.tacticalSchemaVersion) !== ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION ||
       getArmyIntelligenceString(snapshot.decoded.tacticalSchemaVersion) !== ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION
     ) throw new Error("Army Intelligence tactical snapshot schema mismatch.");
@@ -267,6 +269,7 @@ function buildPersistedArmyIntelligenceSnapshotRow(source, snapshot) {
     decodedAt: snapshot.decodedAt || new Date().toISOString(),
     decoderVersion: snapshot.decoderVersion || "",
     error: snapshot.error || "",
+    pipelineVersion: snapshot.pipelineVersion || "",
     snapshotKey: source.snapshotKey,
     sourceId: source.sourceId,
     sourcePlayer: source.sourcePlayer,
@@ -863,6 +866,7 @@ function buildArmyIntelligenceListsFromCanonicalSources(knownArmyListCounts) {
                 ? JSON.stringify(snapshot.decoded)
                 : "",
               error: snapshot.error || "",
+              pipelineVersion: snapshot.pipelineVersion || "",
               tacticalSchemaVersion: snapshot.tacticalSchemaVersion || "",
               status: snapshot.status
             }
@@ -870,6 +874,7 @@ function buildArmyIntelligenceListsFromCanonicalSources(knownArmyListCounts) {
               decodedAt: "",
               decodedJson: "",
               error: "Persisted Army Intelligence snapshot is missing.",
+              pipelineVersion: "",
               tacticalSchemaVersion: "",
               status: "pending"
             },
@@ -1368,6 +1373,7 @@ function mergeArmyIntelligenceSourceAndSnapshot(source, snapshot, knownArmyListC
     sourceId: source.sourceId,
     sourcePlayer: source.sourcePlayer,
     sourceType: source.sourceType,
+    pipelineVersion: snapshot.pipelineVersion || "",
     tacticalSchemaVersion: snapshot.tacticalSchemaVersion || "",
     status: snapshot.status || "pending"
   };

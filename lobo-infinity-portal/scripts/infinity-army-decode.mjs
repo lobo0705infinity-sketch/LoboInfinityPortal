@@ -15,6 +15,7 @@ import { createHash } from 'node:crypto'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { ARMY_INTELLIGENCE_PIPELINE_VERSION } from './army-intelligence-snapshot-schema.mjs'
 
 const portalRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const defaultOutputDir = resolve(portalRoot, '.tmp', 'army-decode')
@@ -404,6 +405,7 @@ function buildStructuredList(armyCode, codeData, resolved) {
       entries: entries.filter((entry) => entry.combatGroup === group.combatGroup),
     })),
     decoderVersion: ARMY_INTELLIGENCE_DECODER_VERSION,
+    pipelineVersion: ARMY_INTELLIGENCE_PIPELINE_VERSION,
     faction: parentFactionBySectorialSlug.get(codeData.sectorialSlug) || codeData.sectorialSlug,
     incomplete: warnings.length > 0,
     listName: codeData.listName,
