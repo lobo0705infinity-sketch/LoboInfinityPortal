@@ -12,7 +12,7 @@ globalThis.fetch = async () => {
 
 assert.equal(benchmark.cases.length, 100)
 assert.equal(benchmark.semanticAudit?.auditedCases, 100)
-assert.equal(benchmark.semanticContracts?.contractedCases, 5)
+assert.equal(benchmark.semanticContracts?.contractedCases, 25)
 assert.ok(benchmark.cases.every((item) => item.semanticAuditStatus === 'PASSED'))
 assert.equal(benchmark.policy.networkRequestsDuringValidation, 0)
 assert.equal(benchmark.policy.paidProviderRequestsDuringValidation, 0)
@@ -70,4 +70,5 @@ for (const testCase of benchmark.cases.filter((item) => item.answerContract)) {
 }
 
 assert.equal(networkRequests, 0)
-console.log('Zero-cost rules grading passed: 100 audited cases, 212 fault injections, 5 semantic contracts, 0 network requests, 0 provider requests, approval gate locked.')
+const faultInjectionCount = benchmark.cases.length * 2 + 2 + benchmark.cases.filter((item) => item.category === 'UNRESOLVED_UNSUPPORTED').length + benchmark.cases.filter((item) => item.answerContract).length
+console.log(`Zero-cost rules grading passed: 100 audited cases, ${faultInjectionCount} fault injections, ${benchmark.semanticContracts.contractedCases} semantic contracts, 0 network requests, 0 provider requests, approval gate locked.`)
