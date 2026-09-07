@@ -2091,7 +2091,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "faq_its_override-01",
       "question": "How do Sixth Sense, MSV1, and a Zero Visibility Zone interact?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -2115,7 +2118,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "faq_its_override-02",
       "question": "Can an MSV3 Trooper attack a Camouflaged Marker without Discovering it first?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -2144,7 +2150,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "faq_its_override-03",
       "question": "What happens when a BS Attack hits a Camouflaged Marker whose represented model is in Total Cover?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -2173,14 +2182,17 @@
       "draftConclusion": "INTERPRETATION",
       "id": "faq_its_override-04",
       "question": "Which ITS missions change the definition of Specialist Troops?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
       "approvedCitations": [],
       "candidateExpectation": null,
       "category": "FAQ_ITS_OVERRIDE",
-      "draftAnswer": "Yes. In an ITS game, the selected mission's specific rules define its objectives, scoring, deployment zones, exclusions, end conditions, and scenario Skills. Those mission-specific provisions control that game where they differ from general rules; rules not modified by the mission continue to apply.",
+      "draftAnswer": "For an ITS game, the selected mission’s explicit scenario provisions govern that mission’s objectives, scoring, deployment, exclusions, end conditions, and scenario Skills. The core rules continue to apply except where the mission expressly provides a more specific rule.",
       "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
       "draftCitations": [
         {
@@ -2202,7 +2214,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "faq_its_override-05",
       "question": "Do ITS Season 18 mission rules override the core objective rules?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -2226,7 +2241,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "faq_its_override-06",
       "question": "How is Secure HVT scored in the current ITS season?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -2255,14 +2273,17 @@
       "draftConclusion": "INTERPRETATION",
       "id": "faq_its_override-07",
       "question": "What current FAQ changes affect Fireteams?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
       "approvedCitations": [],
       "candidateExpectation": null,
       "category": "FAQ_ITS_OVERRIDE",
-      "draftAnswer": "FAQ v0.1 contains no ruling that explicitly changes the Hidden Deployment rules in N5.3. Hidden Deployment therefore follows the core rule as written. Related FAQ rulings about Deployment repositioning and Marker interactions must be applied when their facts arise, but they do not amend Hidden Deployment itself.",
+      "draftAnswer": "A full review of Infinity FAQ v0.1 found no explicit amendment to Hidden Deployment. Apply the current N5.3 Hidden Deployment rules unless a later official FAQ or the selected ITS mission provides a specific exception.",
       "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
       "draftCitations": [
         {
@@ -2279,12 +2300,20 @@
           "page": 161,
           "section": "HIDDEN DEPLOYMENT STATE",
           "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 3,
+          "section": "FAQ REVIEW",
+          "sourceId": "infinity-faq-v0.1"
         }
       ],
       "draftConclusion": "INTERPRETATION",
       "id": "faq_its_override-08",
       "question": "What current FAQ changes affect Hidden Deployment?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -2313,14 +2342,17 @@
       "draftConclusion": "INTERPRETATION",
       "id": "faq_its_override-09",
       "question": "Does the current FAQ alter how Repeaters and Firewalls interact?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
       "approvedCitations": [],
       "candidateExpectation": null,
       "category": "FAQ_ITS_OVERRIDE",
-      "draftAnswer": "Combat Jump carries the Airborne Deployment and Superior Deployment labels, so mission restrictions on either label apply. Season 18 prohibits AD/Superior Deployment inside specified Exclusion Zones in Corporate Appropriation (p.50), B-Pong (p.56), Crossing Lines (p.60), Double Bind (p.69), and the attacker-side mission on p.95. Crossing Lines also prohibits Superior Deployment Skills other than Impersonation entirely (p.62), which prevents Combat Jump in that scenario.",
+      "draftAnswer": "Combat Jump carries the Airborne Deployment and Superior Deployment labels, so mission restrictions on either label apply. Season 18 prohibits AD/Superior Deployment inside specified Exclusion Zones in Corporate Appropriation (p.50), B-Pong (p.56), Crossing Lines (p.60), Double Bind (p.69), and Critical Intervention (p.95). Crossing Lines also prohibits Superior Deployment Skills other than Impersonation entirely (p.62), which prevents Combat Jump in that scenario.",
       "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
       "draftCitations": [
         {
@@ -2355,14 +2387,17 @@
         },
         {
           "page": 95,
-          "section": "FORCES AND DEPLOYMENT",
+          "section": "CRITICAL INTERVENTION — FORCES AND DEPLOYMENT",
           "sourceId": "its-season-18"
         }
       ],
       "draftConclusion": "INTERPRETATION",
       "id": "faq_its_override-10",
       "question": "Which ITS Season 18 rules restrict Combat Jump?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -2712,9 +2747,9 @@
   },
   "schemaVersion": 1,
   "semanticAudit": {
-    "auditedCases": 75,
+    "auditedCases": 85,
     "totalCases": 100,
-    "lastAuditedCategory": "AMBIGUOUS_MISSING_FACTS",
+    "lastAuditedCategory": "FAQ_ITS_OVERRIDE",
     "updatedAt": "2026-09-07",
     "note": "Semantic audit is independent of player approval; approvedAnswer remains null until formally reviewed."
   },
