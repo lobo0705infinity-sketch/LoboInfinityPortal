@@ -10,6 +10,7 @@ import { publicArmyWorkspace } from '../services/publicArmyWorkspaceProjection'
 import { getCanonicalArmyListForIntelligenceSource } from '../services/armyIntelligenceExplorer'
 import { getArmyParentFaction, normalizeArmyForDisplay } from '../services/armyIdentity'
 import { getInfinityArmyTarget } from '../services/infinityArmyLinks'
+import { buildTacticalAnalysis, type TacticalAnalysis, type TacticalProfile } from '../services/armyIntelligenceTacticalAnalysis'
 import {
   apiClient,
   type ArmyIntelligenceArmyList,
@@ -322,10 +323,7 @@ function ArmyIntelligenceContent({
     [selectedArmyListExplorerRows, selectedExplorerScope],
   )
   const analysis = useMemo(() => buildArmyAnalysis(matchingLists), [matchingLists])
-  const intelligenceBrief = useMemo(
-    () => buildIntelligenceBrief(matchingLists, analysis, selectedExplorerScope.label || selectedSectorial),
-    [analysis, matchingLists, selectedExplorerScope.label, selectedSectorial],
-  )
+  const tacticalAnalysis = useMemo(() => buildTacticalAnalysis(matchingLists), [matchingLists])
   const equipmentOptions = useMemo(() => buildEquipmentOptions(matchingLists), [matchingLists])
   const skillOptions = useMemo(() => buildSkillOptions(matchingLists), [matchingLists])
   const weaponOptions = useMemo(() => buildWeaponOptions(matchingLists), [matchingLists])
@@ -481,7 +479,7 @@ function ArmyIntelligenceContent({
         </section>
       ) : (
         <>
-          <IntelligenceBrief observations={intelligenceBrief} />
+          <IntelligenceBrief analysis={tacticalAnalysis} faction={selectedExplorerScope.label || selectedSectorial} />
 
           <section className="army-intelligence-summary" aria-label="Army Intelligence analysis summary">
             <MetricCard
@@ -1054,27 +1052,38 @@ function ArmyListExplorer({
   )
 }
 
-function IntelligenceBrief({ observations }: { observations: IntelligenceBriefObservation[] }) {
+function IntelligenceBrief({ analysis, faction }: { analysis: TacticalAnalysis; faction: string }) {
   return (
     <section className="panel army-intelligence-brief" aria-labelledby="army-intelligence-brief-title">
       <div className="army-intelligence-brief-header">
         <span aria-hidden="true">INTEL</span>
-        <h2 id="army-intelligence-brief-title">Intelligence Brief</h2>
+        <div><h2 id="army-intelligence-brief-title">{faction}</h2><p>{analysis.mode}</p></div>
       </div>
-      {observations.length > 0 ? (
-        <ul>
-          {observations.map((observation) => (
-            <li key={observation.id}>
-              <strong>{observation.heading}</strong>
-              <span>{observation.text}</span>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>Additional Army Lists are needed before meaningful intelligence can be generated.</p>
-      )}
+      {analysis.listCount < 3 ? <p className="army-intelligence-sample-notice">Only {analysis.listCount} decoded {analysis.listCount === 1 ? 'list is' : 'lists are'} available. These are observed capabilities, not reliable faction trends.</p> : null}
+      <div className="army-intelligence-tactical-grid">
+        {analysis.categories.map((category) => <article className="army-intelligence-tactical-panel" key={category.id}>
+          <header><h3>{category.title}</h3><p>{category.description}</p></header>
+          {category.id === 'hacking' ? <p className="army-intelligence-category-total"><strong>{analysis.hackerListCount}</strong> of {analysis.listCount} decoded lists contain at least one Hacker.</p> : null}
+          {category.profiles.length ? <div className="army-intelligence-tactical-profiles">{category.profiles.map((profile) => <TacticalProfileRow category={category.id} key={profile.profileId} profile={profile} />)}</div> : <p className="army-intelligence-tactical-empty">{category.unavailableReason || 'No qualifying profiles were found in the submitted decoded sample.'}</p>}
+          {category.id === 'hacking' && analysis.perListNetworks.length ? <div className="army-intelligence-network-lists">{analysis.perListNetworks.map((row) => <p key={row.label}><strong>{row.label}</strong><span>{row.components.join(' · ')}</span></p>)}</div> : null}
+        </article>)}
+      </div>
     </section>
   )
+}
+
+function TacticalProfileRow({ category, profile }: { category: string; profile: TacticalProfile }) {
+  const relevantWeapons = profile.weapons.filter((weapon, index) => category === 'apex' ? (weapon.burst ?? 0) >= 4 : category === 'aro' ? /sniper rifle|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach/i.test(weapon.name) : category === 'defensive' ? /mine|deployable/i.test(weapon.name) : category === 'alternative' ? index === 0 : false)
+  return <div className="army-intelligence-tactical-profile">
+    <div><strong>{profile.unit}</strong><span>{profile.profile}</span></div>
+    <div className="army-intelligence-tactical-badges">
+      {profile.bs !== null ? <span>BS {profile.bs}</span> : null}
+      {relevantWeapons.map((weapon) => <span key={`${weapon.name}:${weapon.burst}`}>{weapon.name}{weapon.burst === null ? ' · Burst unavailable' : ` · Burst ${weapon.burst}`}</span>)}
+      {profile.badges.map((badge) => <span key={badge}>{badge}</span>)}
+      {profile.linkability === 'verified' ? <span className="is-verified">Verified linkable</span> : profile.linkability === 'verified-false' ? <span>Verified not linkable</span> : <span>Fireteam status unknown</span>}
+    </div>
+    <small>{profile.listCount} {profile.listCount === 1 ? 'list' : 'lists'} · {Math.round(profile.percentage)}%</small>
+  </div>
 }
 
 function UsagePanel({
@@ -1682,7 +1691,7 @@ function buildArmyAnalysis(lists: ArmyIntelligenceList[]): ArmyAnalysis {
   }
 }
 
-function buildIntelligenceBrief(
+export function buildIntelligenceBrief(
   lists: ArmyIntelligenceList[],
   analysis: ArmyAnalysis,
   selectedScope: string,

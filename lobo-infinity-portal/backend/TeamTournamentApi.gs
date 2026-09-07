@@ -1746,6 +1746,132 @@ function getTeamTournamentCanonicalGames_(eventId) {
 
 }
 
+function parseTeamTournamentCanonicalDate_(value) {
+
+  if (value instanceof Date) {
+    const timestamp = value.getTime();
+    return isNaN(timestamp) ? null : timestamp;
+  }
+
+  if (typeof value === "number" && isFinite(value)) {
+    return Math.abs(value) < 100000000000
+      ? value * 1000
+      : value;
+  }
+
+  const text = getTeamTournamentString(value).trim();
+
+  if (text === "")
+    return null;
+
+  if (/^\d+(?:\.\d+)?$/.test(text)) {
+    const numeric = Number(text);
+    if (isFinite(numeric))
+      return Math.abs(numeric) < 100000000000 ? numeric * 1000 : numeric;
+  }
+
+  let match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(text);
+  let year;
+  let month;
+  let day;
+  let hour = 0;
+  let minute = 0;
+  let second = 0;
+  let millisecond = 0;
+
+  if (match) {
+    year = Number(match[1]);
+    month = Number(match[2]);
+    day = Number(match[3]);
+  } else {
+    match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,3}))?Z$/.exec(text);
+    if (match) {
+      year = Number(match[1]);
+      month = Number(match[2]);
+      day = Number(match[3]);
+      hour = Number(match[4]);
+      minute = Number(match[5]);
+      second = Number(match[6]);
+      millisecond = Number((match[7] || "").padEnd(3, "0") || 0);
+    } else {
+      match = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(text);
+      if (!match)
+        return null;
+      month = Number(match[1]);
+      day = Number(match[2]);
+      year = Number(match[3]);
+    }
+  }
+
+  if (
+    month < 1 || month > 12 ||
+    day < 1 || day > 31 ||
+    hour < 0 || hour > 23 ||
+    minute < 0 || minute > 59 ||
+    second < 0 || second > 59
+  )
+    return null;
+
+  const timestamp = Date.UTC(year, month - 1, day, hour, minute, second, millisecond);
+  const parsed = new Date(timestamp);
+
+  return parsed.getUTCFullYear() === year &&
+    parsed.getUTCMonth() === month - 1 &&
+    parsed.getUTCDate() === day &&
+    parsed.getUTCHours() === hour &&
+    parsed.getUTCMinutes() === minute &&
+    parsed.getUTCSeconds() === second &&
+    parsed.getUTCMilliseconds() === millisecond
+    ? timestamp
+    : null;
+
+}
+
+function getTeamTournamentCanonicalGameNumber_(game) {
+
+  const value = game && game.gameNumber != null
+    ? game.gameNumber
+    : game && game.id != null
+      ? game.id
+      : game && game.gameId != null
+        ? game.gameId
+        : null;
+  const text = getTeamTournamentString(value).trim();
+
+  return /^-?\d+(?:\.\d+)?$/.test(text) && isFinite(Number(text))
+    ? Number(text)
+    : null;
+
+}
+
+function compareTeamTournamentCanonicalGames_(left, right) {
+
+  const leftDate = parseTeamTournamentCanonicalDate_(left.game.date);
+  const rightDate = parseTeamTournamentCanonicalDate_(right.game.date);
+  const leftHasDate = leftDate !== null;
+  const rightHasDate = rightDate !== null;
+
+  if (leftHasDate !== rightHasDate)
+    return leftHasDate ? -1 : 1;
+
+  if (leftHasDate && leftDate !== rightDate)
+    return rightDate - leftDate;
+
+  const leftNumber = getTeamTournamentCanonicalGameNumber_(left.game);
+  const rightNumber = getTeamTournamentCanonicalGameNumber_(right.game);
+  const leftHasNumber = leftNumber !== null;
+  const rightHasNumber = rightNumber !== null;
+
+  if (leftHasNumber !== rightHasNumber)
+    return leftHasNumber ? -1 : 1;
+
+  if (leftHasNumber && leftNumber !== rightNumber)
+    return rightNumber - leftNumber;
+
+  return left.sourceIndex - right.sourceIndex;
+
+}
+
 function buildTeamTournamentResultsFromCanonicalGames(eventId, teams, pairings, recentGames) {
 
   const assignments = [];
@@ -1763,11 +1889,12 @@ function buildTeamTournamentResultsFromCanonicalGames(eventId, teams, pairings, 
     buildTeamTournamentMembershipLookup(teams || []);
 
   return (recentGames || [])
-    .slice()
-    .sort(function(left, right) {
-      return Number(left.id) - Number(right.id);
+    .map(function(game, sourceIndex) {
+      return { game: game, sourceIndex: sourceIndex };
     })
-    .map(function(game) {
+    .sort(compareTeamTournamentCanonicalGames_)
+    .map(function(item) {
+      const game = item.game;
       const assignmentEntry =
         findTeamTournamentCanonicalGameAssignment_(
           game,

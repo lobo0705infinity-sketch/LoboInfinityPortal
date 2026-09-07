@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright'
 import { buildSubmittedProfiles, classifyTacticalBrief, renderTacticalBrief } from '../bot/inf-list-tactical.mjs'
 import { decodeArmyCode } from './infinity-army-decode.mjs'
+import { buildCanonicalDataset } from './infinity-army-canonical-dataset.mjs'
 
 const rendererOrigin = 'https://infinity.2nirwana.de'
 const rendererPath = '/cards/generate'
@@ -321,6 +322,7 @@ export async function renderInfListPng({ input, outputPath, browserType = chromi
     const submittedProfiles = buildSubmittedProfiles({
       armyCode,
       cards: rendered.cards,
+      canonicalDataset: official?.canonicalDataset,
       metadata: official?.metadata,
       officialPayloads: official?.payloads,
     })
@@ -471,7 +473,7 @@ async function captureOfficialArmyList(browser, officialArmyUrl) {
       const url = response.url()
       try {
         if (/\/army\/infinity\/en\/metadata$/.test(url)) metadata = await response.json()
-        else if (/\/army\/units\/en\/\d+$/.test(url)) payloads.push(await response.json())
+        else if (/\/army\/units\/en\/\d+$/.test(url)) payloads.push({ ...(await response.json()), url })
       } catch {}
     })
     await page.goto(officialArmyUrl, { timeout: 60_000, waitUntil: 'domcontentloaded' })
@@ -499,6 +501,7 @@ async function captureOfficialArmyList(browser, officialArmyUrl) {
       imageBuffer,
       metadata,
       payloads,
+      canonicalDataset: buildCanonicalDataset({ metadata, payloads }),
       width: imageBuffer.readUInt32BE(16),
     }
   } finally {

@@ -1363,7 +1363,7 @@ function buildPublicSnapshotArmyLink_(armyLink, armyCode) {
 
 function buildPublicSnapshotDecodedArmy_(decoded) {
   return {
-    decoderVersion: String(decoded.decoderVersion || ""), faction: String(decoded.faction || ""),
+    decoderVersion: String(decoded.decoderVersion || ""), enrichment: decoded.enrichment || null, faction: String(decoded.faction || ""),
     sectorial: String(decoded.sectorial || ""), listName: String(decoded.listName || ""),
     totals: {
       combatGroups: Number(decoded.totals && decoded.totals.combatGroups) || 0,
@@ -1383,6 +1383,7 @@ function buildPublicSnapshotDecodedArmy_(decoded) {
           return {
             combatGroup: Number(entry.combatGroup) || 0, combinedId: String(entry.combinedId || ""),
             profile: String(entry.profile || ""), unit: String(entry.unit || ""),
+            bs: entry.bs == null ? null : Number(entry.bs),
             troopType: String(entry.troopType || ""), points: Number(entry.points) || 0,
             swc: Number(entry.swc) || 0, structure: entry.structure == null ? null : Number(entry.structure),
             wounds: entry.wounds == null ? null : Number(entry.wounds),
@@ -1391,7 +1392,17 @@ function buildPublicSnapshotDecodedArmy_(decoded) {
             hacker: Boolean(entry.hacker), lieutenant: Boolean(entry.lieutenant),
             specialist: Boolean(entry.specialist), equipment: (entry.equipment || []).map(String),
             orderTypes: (entry.orderTypes || []).map(String), skills: (entry.skills || []).map(String),
-            weapons: (entry.weapons || []).map(String)
+            weapons: (entry.weapons || []).map(String),
+            weaponProfiles: (entry.weaponProfiles || []).map(function(weapon) {
+              return { id: weapon.id == null ? null : Number(weapon.id), name: String(weapon.name || ""), mode: weapon.mode == null ? null : String(weapon.mode), variant: weapon.variant == null ? null : String(weapon.variant), modeResolution: weapon.modeResolution == null ? null : String(weapon.modeResolution), type: weapon.type == null ? "" : String(weapon.type), burst: weapon.burst == null ? null : Number(weapon.burst), burstStatus: String(weapon.burstStatus || "unknown"), source: weapon.source == null ? null : String(weapon.source) };
+            }),
+            fireteamEligibility: entry.fireteamEligibility
+              ? { state: String(entry.fireteamEligibility.state || "unknown"), verified: entry.fireteamEligibility.verified === true, teams: (entry.fireteamEligibility.teams || []).map(String) }
+              : null,
+            canonicalProfile: entry.canonicalProfile == null ? null : String(entry.canonicalProfile),
+            canonicalUnitId: entry.canonicalUnitId == null ? null : Number(entry.canonicalUnitId),
+            canonicalOptionId: entry.canonicalOptionId == null ? null : Number(entry.canonicalOptionId),
+            canonicalSource: entry.canonicalSource || null
           };
         })
       };
