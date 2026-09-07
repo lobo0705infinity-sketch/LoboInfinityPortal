@@ -6,7 +6,7 @@ const INPUT_USD_PER_MILLION = 0.14
 const OUTPUT_USD_PER_MILLION = 0.28
 
 export function shouldUseDeepSeek(result) {
-  return result.status !== 'DIRECT RULE REFERENCE'
+  return Boolean(result?.question && Array.isArray(result?.rules))
 }
 
 export function buildEvidencePacket(result) {
@@ -35,7 +35,7 @@ export function createDeepSeekFallback({ fetchImpl = fetch, usagePath = process.
     const monthly = current.reduce((sum, item) => sum + item.cost, 0)
     if (hourly >= limits.hourly || monthly >= limits.monthly) return withLimitation(result, 'DeepSeek spending limit reached; returning the retrieval result.')
     const permittedIds = evidence.map((item) => item.id)
-    const baseInstruction = `Answer only from the supplied excerpts. Permitted evidence IDs: ${permittedIds.join(', ')}. Return JSON only, using this complete example shape: {"answer":"text","conclusion":"text","evidenceIds":["E1"],"interpretationRequired":false}. The response must contain exactly answer, conclusion, evidenceIds, and interpretationRequired. evidenceIds must use only permitted IDs. Every material conclusion must be supported by a cited excerpt. Distinguish explicit rules from interpretation and say when unresolved. Preserve FAQ precedence and ITS scope.`
+    const baseInstruction = `Answer only from the supplied excerpts. For interaction questions, explain how each cited condition applies to the exact declared Skill, target, Repeater, and Firewall; do not infer Firewall merely because an enemy Repeater is involved. If excerpts do not establish every required condition, use conclusion UNRESOLVED. Permitted evidence IDs: ${permittedIds.join(', ')}. Return JSON only, using this complete example shape: {"answer":"text","conclusion":"YES|NO|DEPENDS|UNRESOLVED","evidenceIds":["E1"],"interpretationRequired":false}. The response must contain exactly answer, conclusion, evidenceIds, and interpretationRequired. evidenceIds must use only permitted IDs. Every material conclusion must be supported by a cited excerpt. Distinguish explicit rules from interpretation. Preserve FAQ precedence and ITS scope.`
     let validationError = ''
     let totalCost = 0
     try {
@@ -80,7 +80,10 @@ export function createDeepSeekFallback({ fetchImpl = fetch, usagePath = process.
 function validateModelOutput(parsed, evidence) {
   if (!parsed || typeof parsed.answer !== 'string' || typeof parsed.conclusion !== 'string' || typeof parsed.interpretationRequired !== 'boolean' || !Array.isArray(parsed.evidenceIds)) return { ok: false, reason: 'strict output contract requires answer, conclusion, evidenceIds, and interpretationRequired' }
   const permitted = new Set(evidence.map((item) => item.id)); if (!parsed.evidenceIds.length || parsed.evidenceIds.some((id) => !permitted.has(id))) return { ok: false, reason: 'evidenceIds contain values outside the permitted evidence packet' }
-  const citedText = parsed.evidenceIds.map((id) => evidence.find((item) => item.id === id)?.excerpt || '').join(' ').toLowerCase(); const terms = parsed.conclusion.toLowerCase().split(/\W+/).filter((term) => term.length > 4); if (terms.length && !terms.some((term) => citedText.includes(term))) return { ok: false, reason: 'conclusion has no material term supported by cited excerpts', unsupported: true }
+  if (!parsed.answer.trim() || !parsed.conclusion.trim()) return { ok: false, reason: 'answer and conclusion must be non-empty' }
+  const citedText = parsed.evidenceIds.map((id) => evidence.find((item) => item.id === id)?.excerpt || '').join(' ').toLowerCase()
+  const answerTerms = parsed.answer.toLowerCase().split(/\W+/).filter((term) => term.length > 5)
+  if (!parsed.interpretationRequired && answerTerms.length && !answerTerms.some((term) => citedText.includes(term))) return { ok: false, reason: 'answer explanation is not supported by cited excerpts', unsupported: true }
   return { ok: true }
 }
 
