@@ -1,0 +1,975 @@
+{
+  "schemaVersion": 1,
+  "title": "Infinity N5 Rules Adjudicator Benchmark",
+  "corpus": {
+    "rules": "N5.3",
+    "faq": "0.1",
+    "its": "Season 18"
+  },
+  "policy": {
+    "networkRequestsDuringValidation": 0,
+    "paidProviderRequestsDuringValidation": 0,
+    "approvedAnswersRequiredBeforeRelease": 100,
+    "releaseThresholds": {
+      "directLookupAccuracy": 1,
+      "complexAccuracy": 0.95,
+      "safeEscalationAccuracy": 1,
+      "citationValidity": 1
+    }
+  },
+  "expectedCategoryCounts": {
+    "DIRECT_DEFINITION": 20,
+    "TWO_RULE_INTERACTION": 20,
+    "TIMING_SEQUENCE": 20,
+    "AMBIGUOUS_MISSING_FACTS": 15,
+    "FAQ_ITS_OVERRIDE": 10,
+    "MODIFIER_CALCULATION": 10,
+    "UNRESOLVED_UNSUPPORTED": 5
+  },
+  "cases": [
+    {
+      "id": "direct_definition-01",
+      "category": "DIRECT_DEFINITION",
+      "question": "What does Mimetism do?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "direct_definition-02",
+      "category": "DIRECT_DEFINITION",
+      "question": "What does Dodge do?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "direct_definition-03",
+      "category": "DIRECT_DEFINITION",
+      "question": "What does Stealth do?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "direct_definition-04",
+      "category": "DIRECT_DEFINITION",
+      "question": "What does Sixth Sense do?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "direct_definition-05",
+      "category": "DIRECT_DEFINITION",
+      "question": "What does Multispectral Visor Level 1 do?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "direct_definition-06",
+      "category": "DIRECT_DEFINITION",
+      "question": "What does Multispectral Visor Level 2 do?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "direct_definition-07",
+      "category": "DIRECT_DEFINITION",
+      "question": "What does Multispectral Visor Level 3 do?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "direct_definition-08",
+      "category": "DIRECT_DEFINITION",
+      "question": "What does Zero Pain do?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "direct_definition-09",
+      "category": "DIRECT_DEFINITION",
+      "question": "What does a Repeater do?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "direct_definition-10",
+      "category": "DIRECT_DEFINITION",
+      "question": "What does Firewall do?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "direct_definition-11",
+      "category": "DIRECT_DEFINITION",
+      "question": "What does Discover do?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "direct_definition-12",
+      "category": "DIRECT_DEFINITION",
+      "question": "What does Suppressive Fire do?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "direct_definition-13",
+      "category": "DIRECT_DEFINITION",
+      "question": "What does Combat Jump do?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "direct_definition-14",
+      "category": "DIRECT_DEFINITION",
+      "question": "What does Hidden Deployment do?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "direct_definition-15",
+      "category": "DIRECT_DEFINITION",
+      "question": "What does Nanoscreen do?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "direct_definition-16",
+      "category": "DIRECT_DEFINITION",
+      "question": "What does Total Immunity do?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "direct_definition-17",
+      "category": "DIRECT_DEFINITION",
+      "question": "What does Marksmanship do?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "direct_definition-18",
+      "category": "DIRECT_DEFINITION",
+      "question": "What does Sensor do?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "direct_definition-19",
+      "category": "DIRECT_DEFINITION",
+      "question": "What does Spotlight do?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "direct_definition-20",
+      "category": "DIRECT_DEFINITION",
+      "question": "What does Guts Roll do?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "two_rule_interaction-01",
+      "category": "TWO_RULE_INTERACTION",
+      "question": "Does Zero Pain suffer the Firewall MOD when used through an enemy Repeater?",
+      "reviewStatus": "KNOWN_REGRESSION",
+      "candidateExpectation": {
+        "expectedConclusion": "INTERPRETATION",
+        "expectedCoreResult": "Zero Pain's own Roll does not take the Firewall MOD; Firewall modifies the enemy Comms Attack against the protected Trooper.",
+        "requiredConcepts": [
+          "Zero Pain",
+          "Firewall",
+          "Repeater",
+          "Comms Attack"
+        ]
+      },
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "two_rule_interaction-02",
+      "category": "TWO_RULE_INTERACTION",
+      "question": "Does MSV1 ignore Mimetism (-6)?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "two_rule_interaction-03",
+      "category": "TWO_RULE_INTERACTION",
+      "question": "Does Marksmanship ignore Cover?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "two_rule_interaction-04",
+      "category": "TWO_RULE_INTERACTION",
+      "question": "Can Sensor Discover a Camouflaged Marker?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "two_rule_interaction-05",
+      "category": "TWO_RULE_INTERACTION",
+      "question": "Does Sixth Sense negate Stealth?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "two_rule_interaction-06",
+      "category": "TWO_RULE_INTERACTION",
+      "question": "Can a Repeater extend the Hacking Area through another Repeater?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "two_rule_interaction-07",
+      "category": "TWO_RULE_INTERACTION",
+      "question": "Does Total Immunity ignore AP Ammunition?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "two_rule_interaction-08",
+      "category": "TWO_RULE_INTERACTION",
+      "question": "Does Nanoscreen provide Cover against a Template Weapon?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "two_rule_interaction-09",
+      "category": "TWO_RULE_INTERACTION",
+      "question": "Can Spotlight be declared through a Repeater?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "two_rule_interaction-10",
+      "category": "TWO_RULE_INTERACTION",
+      "question": "Does a Direct Template Weapon cancel Camouflaged State?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "two_rule_interaction-11",
+      "category": "TWO_RULE_INTERACTION",
+      "question": "Can a Trooper with Climbing Plus claim Cover while climbing?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "two_rule_interaction-12",
+      "category": "TWO_RULE_INTERACTION",
+      "question": "Does Super-Jump allow Cover while airborne?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "two_rule_interaction-13",
+      "category": "TWO_RULE_INTERACTION",
+      "question": "Does Shock Ammunition bypass Dogged?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "two_rule_interaction-14",
+      "category": "TWO_RULE_INTERACTION",
+      "question": "Does Viral Ammunition interact with Immunity (Shock)?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "two_rule_interaction-15",
+      "category": "TWO_RULE_INTERACTION",
+      "question": "Can Engineer remove Immobilized-B State?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "two_rule_interaction-16",
+      "category": "TWO_RULE_INTERACTION",
+      "question": "Can Doctor heal a Trooper using No Wound Incapacitation?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "two_rule_interaction-17",
+      "category": "TWO_RULE_INTERACTION",
+      "question": "Does a Deployable Repeater create a Hacking Area immediately?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "two_rule_interaction-18",
+      "category": "TWO_RULE_INTERACTION",
+      "question": "Can Berserk be used against a Camouflaged Marker?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "two_rule_interaction-19",
+      "category": "TWO_RULE_INTERACTION",
+      "question": "Does Biometric Visor affect Impersonation Discover rolls?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "two_rule_interaction-20",
+      "category": "TWO_RULE_INTERACTION",
+      "question": "Can a Fireteam bonus modify Discover?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "timing_sequence-01",
+      "category": "TIMING_SEQUENCE",
+      "question": "If I have MSV1 and shoot through Smoke and the target shoots back, what is my Visibility MOD?",
+      "reviewStatus": "KNOWN_REGRESSION",
+      "candidateExpectation": {
+        "expectedConclusion": "INTERPRETATION",
+        "expectedCoreResult": "The MSV1 user's Visibility MOD is -3 because return fire makes that Trooper the target of a BS Attack, so the Zero Visibility Zone is treated as Poor Visibility for drawing LoF back; MSV1 reduces Poor Visibility to -3.",
+        "requiredConcepts": [
+          "Multispectral Visor Level 1",
+          "Zero Visibility Zone",
+          "Poor Visibility Zone",
+          "target of a BS Attack"
+        ]
+      },
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "timing_sequence-02",
+      "category": "TIMING_SEQUENCE",
+      "question": "If I have MSV1 and shoot through Smoke and the target Dodges, what is my Visibility MOD?",
+      "reviewStatus": "KNOWN_REGRESSION",
+      "candidateExpectation": {
+        "expectedConclusion": "INTERPRETATION",
+        "expectedCoreResult": "The MSV1 user's Visibility MOD remains -6 when the target Dodges because the user is not the target of a BS Attack.",
+        "requiredConcepts": [
+          "Multispectral Visor Level 1",
+          "Zero Visibility Zone",
+          "Dodge"
+        ]
+      },
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "timing_sequence-03",
+      "category": "TIMING_SEQUENCE",
+      "question": "Does declaring Dodge break Stealth?",
+      "reviewStatus": "KNOWN_REGRESSION",
+      "candidateExpectation": {
+        "expectedConclusion": "DEPENDS",
+        "expectedCoreResult": "The answer depends on who declares Dodge and during which Turn; the bot must analyze Stealth's Active Turn and declaration requirements instead of treating the wording as unconditional.",
+        "requiredConcepts": [
+          "Stealth",
+          "Dodge",
+          "Active Turn",
+          "Reactive Turn"
+        ]
+      },
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "timing_sequence-04",
+      "category": "TIMING_SEQUENCE",
+      "question": "When does a successful Discover cancel Camouflaged State?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "timing_sequence-05",
+      "category": "TIMING_SEQUENCE",
+      "question": "If both Troopers declare Dodge, are the Rolls Face to Face?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "timing_sequence-06",
+      "category": "TIMING_SEQUENCE",
+      "question": "When is Suppressive Fire cancelled during an Order?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "timing_sequence-07",
+      "category": "TIMING_SEQUENCE",
+      "question": "If a Trooper enters a Mine's Trigger Area and then leaves it, does the Mine detonate?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "timing_sequence-08",
+      "category": "TIMING_SEQUENCE",
+      "question": "When are AROs checked during the Order Expenditure Sequence?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "timing_sequence-09",
+      "category": "TIMING_SEQUENCE",
+      "question": "If a Hacker moves into Repeater range during the first Short Skill, when can enemies hack it?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "timing_sequence-10",
+      "category": "TIMING_SEQUENCE",
+      "question": "If a Camouflaged Trooper declares Move then BS Attack, when is the Marker replaced?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "timing_sequence-11",
+      "category": "TIMING_SEQUENCE",
+      "question": "If Smoke is placed during an Order, which attacks become Face to Face with the Smoke Roll?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "timing_sequence-12",
+      "category": "TIMING_SEQUENCE",
+      "question": "If a Trooper falls Unconscious during a Coordinated Order, does it complete its declared Skill?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "timing_sequence-13",
+      "category": "TIMING_SEQUENCE",
+      "question": "If a Fireteam member enters a Null State mid-Order, when is Fireteam composition recalculated?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "timing_sequence-14",
+      "category": "TIMING_SEQUENCE",
+      "question": "If a model declares Discover and the target reveals voluntarily, what happens to the Discover Roll?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "timing_sequence-15",
+      "category": "TIMING_SEQUENCE",
+      "question": "If a Trooper declares Reset before being targeted by a Hacking Program, can the Rolls become Face to Face?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "timing_sequence-16",
+      "category": "TIMING_SEQUENCE",
+      "question": "If an Impersonation Marker is discovered during the first Short Skill, what AROs are available afterward?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "timing_sequence-17",
+      "category": "TIMING_SEQUENCE",
+      "question": "When does Retreat begin if Army Points fall below the threshold during a Player Turn?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "timing_sequence-18",
+      "category": "TIMING_SEQUENCE",
+      "question": "If a Lieutenant enters a Null State during the Active Turn, when does Loss of Lieutenant apply?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "timing_sequence-19",
+      "category": "TIMING_SEQUENCE",
+      "question": "If a Peripheral is disconnected during an Order, does it finish its declared Skill?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "timing_sequence-20",
+      "category": "TIMING_SEQUENCE",
+      "question": "If a Trooper declares a Skill that later fails its Requirements, what happens to the declaration?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "ambiguous_missing_facts-01",
+      "category": "AMBIGUOUS_MISSING_FACTS",
+      "question": "Can I shoot a Camouflaged Marker?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "ambiguous_missing_facts-02",
+      "category": "AMBIGUOUS_MISSING_FACTS",
+      "question": "Does Dodge avoid a Template Weapon?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "ambiguous_missing_facts-03",
+      "category": "AMBIGUOUS_MISSING_FACTS",
+      "question": "Can I hack an enemy TAG?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "ambiguous_missing_facts-04",
+      "category": "AMBIGUOUS_MISSING_FACTS",
+      "question": "Does Cover apply to this attack?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "ambiguous_missing_facts-05",
+      "category": "AMBIGUOUS_MISSING_FACTS",
+      "question": "Can this Trooper declare an ARO?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "ambiguous_missing_facts-06",
+      "category": "AMBIGUOUS_MISSING_FACTS",
+      "question": "Can I deploy here with Infiltration?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "ambiguous_missing_facts-07",
+      "category": "AMBIGUOUS_MISSING_FACTS",
+      "question": "Does Mimetism apply to this Roll?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "ambiguous_missing_facts-08",
+      "category": "AMBIGUOUS_MISSING_FACTS",
+      "question": "Can I use Combat Jump in this mission?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "ambiguous_missing_facts-09",
+      "category": "AMBIGUOUS_MISSING_FACTS",
+      "question": "Does this Specialist score the objective?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "ambiguous_missing_facts-10",
+      "category": "AMBIGUOUS_MISSING_FACTS",
+      "question": "Can I join these Troopers into a Fireteam?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "ambiguous_missing_facts-11",
+      "category": "AMBIGUOUS_MISSING_FACTS",
+      "question": "Does Sixth Sense let me shoot back?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "ambiguous_missing_facts-12",
+      "category": "AMBIGUOUS_MISSING_FACTS",
+      "question": "Can I Discover and shoot in the same Order?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "ambiguous_missing_facts-13",
+      "category": "AMBIGUOUS_MISSING_FACTS",
+      "question": "Does this weapon hit automatically?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "ambiguous_missing_facts-14",
+      "category": "AMBIGUOUS_MISSING_FACTS",
+      "question": "Can I reroll this failed Roll?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "ambiguous_missing_facts-15",
+      "category": "AMBIGUOUS_MISSING_FACTS",
+      "question": "Does the target receive a Guts Roll?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "faq_its_override-01",
+      "category": "FAQ_ITS_OVERRIDE",
+      "question": "How do Sixth Sense, MSV1, and a Zero Visibility Zone interact?",
+      "reviewStatus": "KNOWN_REGRESSION",
+      "candidateExpectation": {
+        "expectedConclusion": "INTERPRETATION",
+        "expectedCoreResult": "The applicable result must incorporate the current FAQ exception for Sixth Sense, MSV1, and Zero Visibility.",
+        "requiredConcepts": [
+          "Sixth Sense",
+          "Multispectral Visor Level 1",
+          "Zero Visibility Zone",
+          "FAQ"
+        ]
+      },
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "faq_its_override-02",
+      "category": "FAQ_ITS_OVERRIDE",
+      "question": "Can an MSV3 Trooper attack a Camouflaged Marker without Discovering it first?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "faq_its_override-03",
+      "category": "FAQ_ITS_OVERRIDE",
+      "question": "What happens when a BS Attack hits a Camouflaged Marker whose represented model is in Total Cover?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "faq_its_override-04",
+      "category": "FAQ_ITS_OVERRIDE",
+      "question": "Which ITS missions change the definition of Specialist Troops?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "faq_its_override-05",
+      "category": "FAQ_ITS_OVERRIDE",
+      "question": "Do ITS Season 18 mission rules override the core objective rules?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "faq_its_override-06",
+      "category": "FAQ_ITS_OVERRIDE",
+      "question": "How is Secure HVT scored in the current ITS season?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "faq_its_override-07",
+      "category": "FAQ_ITS_OVERRIDE",
+      "question": "What current FAQ changes affect Fireteams?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "faq_its_override-08",
+      "category": "FAQ_ITS_OVERRIDE",
+      "question": "What current FAQ changes affect Hidden Deployment?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "faq_its_override-09",
+      "category": "FAQ_ITS_OVERRIDE",
+      "question": "Does the current FAQ alter how Repeaters and Firewalls interact?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "faq_its_override-10",
+      "category": "FAQ_ITS_OVERRIDE",
+      "question": "Which ITS Season 18 rules restrict Combat Jump?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "modifier_calculation-01",
+      "category": "MODIFIER_CALCULATION",
+      "question": "I shoot through Smoke with MSV1, the target shoots back, and the target is in Cover; what MODs apply?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "modifier_calculation-02",
+      "category": "MODIFIER_CALCULATION",
+      "question": "I shoot through Smoke with MSV1 and the target Dodges; what Visibility MOD applies?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "modifier_calculation-03",
+      "category": "MODIFIER_CALCULATION",
+      "question": "I shoot a Mimetism (-6) target in Cover with MSV1; which MODs remain?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "modifier_calculation-04",
+      "category": "MODIFIER_CALCULATION",
+      "question": "I shoot a Mimetism (-3) target through a Low Visibility Zone with MSV1; what Visibility and Mimetism MODs remain?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "modifier_calculation-05",
+      "category": "MODIFIER_CALCULATION",
+      "question": "I shoot through overlapping Low and Poor Visibility Zones; which Visibility MOD applies?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "modifier_calculation-06",
+      "category": "MODIFIER_CALCULATION",
+      "question": "A Hacker attacks through an enemy Repeater against a target protected by Firewall (-6); what WIP MOD applies?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "modifier_calculation-07",
+      "category": "MODIFIER_CALCULATION",
+      "question": "A model Dodges a Template Weapon with PH modified by terrain; how is the target number calculated?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "modifier_calculation-08",
+      "category": "MODIFIER_CALCULATION",
+      "question": "A Trooper with Marksmanship shoots a target in Cover outside its weapon's good range; which MODs apply?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "modifier_calculation-09",
+      "category": "MODIFIER_CALCULATION",
+      "question": "An Impersonation Marker is Discovered by a Trooper with Biometric Visor; what MOD applies?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "modifier_calculation-10",
+      "category": "MODIFIER_CALCULATION",
+      "question": "A Fireteam member shoots with Burst and BS bonuses while affected by Mimetism and Cover; how are the modifiers combined?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "unresolved_unsupported-01",
+      "category": "UNRESOLVED_UNSUPPORTED",
+      "question": "A forum post says this rule works differently from the rulebook; which ruling is official?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "unresolved_unsupported-02",
+      "category": "UNRESOLVED_UNSUPPORTED",
+      "question": "How should we resolve two current official rules that directly contradict one another?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "unresolved_unsupported-03",
+      "category": "UNRESOLVED_UNSUPPORTED",
+      "question": "What happens in an interaction that is not addressed by the Rules, FAQ, or ITS document?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "unresolved_unsupported-04",
+      "category": "UNRESOLVED_UNSUPPORTED",
+      "question": "Can an old N4 FAQ decide an interaction not answered in N5?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    },
+    {
+      "id": "unresolved_unsupported-05",
+      "category": "UNRESOLVED_UNSUPPORTED",
+      "question": "What ruling should a tournament organizer use when the official corpus is genuinely silent?",
+      "reviewStatus": "PENDING",
+      "candidateExpectation": null,
+      "approvedAnswer": null,
+      "approvedCitations": []
+    }
+  ]
+}
