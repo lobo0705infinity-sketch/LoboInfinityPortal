@@ -4,7 +4,7 @@ export const PUBLIC_SNAPSHOT_POINTER_URL = `${PUBLIC_BLOB_ORIGIN}public-snapshot
 export const PUBLIC_SNAPSHOT_DATASETS = [
   'players', 'games', 'events', 'missions', 'mission-catalog', 'factions', 'standings',
   'army-lists', 'army-intelligence-summary', 'army-intelligence-detail',
-  'schedule', 'statistics', 'community', 'snapshot',
+  'schedule', 'statistics', 'community', 'top-40-registrations', 'snapshot',
 ] as const
 
 export type PublicSnapshotDataset = typeof PUBLIC_SNAPSHOT_DATASETS[number]

@@ -18,8 +18,9 @@ const eventHomeSource = readFileSync(
 )
 const apiSource = readFileSync(new URL('../src/services/api.ts', import.meta.url), 'utf8')
 const publicAppSource = readFileSync(new URL('../src/public/SnapshotPublicApp.tsx', import.meta.url), 'utf8')
-const publicProjectionSource = readFileSync(new URL('../backend/PublicEventProjection.gs', import.meta.url), 'utf8')
-const publicProjectionWorkerSource = readFileSync(new URL('../api/public-event-projection.mjs', import.meta.url), 'utf8')
+const publicSnapshotExporterSource = readFileSync(new URL('../backend/PublicSnapshotExporter.gs', import.meta.url), 'utf8')
+const publicSnapshotClientSource = readFileSync(new URL('../src/services/publicSnapshot.ts', import.meta.url), 'utf8')
+const publicSnapshotPublisherSource = readFileSync(new URL('../api/public-snapshot-publish.mjs', import.meta.url), 'utf8')
 const dedicatedPageSource = readFileSync(new URL('../src/components/Top40RegistrationPage.tsx', import.meta.url), 'utf8')
 const dedicatedPageStyles = readFileSync(new URL('../src/components/Top40RegistrationPage.css', import.meta.url), 'utf8')
 const eventNavigationSource = readFileSync(new URL('../src/config/eventNavigation.ts', import.meta.url), 'utf8')
@@ -36,14 +37,19 @@ assert.match(dedicatedPageSource, /rel="noopener noreferrer"/)
 assert.match(dedicatedPageSource, /REGISTER NOW/)
 assert.match(dedicatedPageSource, /\{full \? 'FULL' : 'OPEN'\}/)
 assert.match(dedicatedPageSource, /\{count\} \/ 40 PLAYERS REGISTERED/)
-assert.match(dedicatedPageSource, /No players have registered yet/)
+assert.match(dedicatedPageSource, /No players registered yet\./)
 assert.match(dedicatedPageSource, /reached its 40-player capacity/)
+assert.match(dedicatedPageSource, /Updated hourly/)
+assert.match(dedicatedPageSource, /Last updated:/)
+assert.match(dedicatedPageSource, /useSnapshotData<PublicTop40Registration>\('top-40-registrations'\)/)
+assert.doesNotMatch(dedicatedPageSource, /useEffect|fetch\(|\/api\/public-event-projection|Loading registration snapshot|HTTP \$\{response\.status\}/)
 assert.doesNotMatch(dedicatedPageSource, /Email Address|Discord Username|tournament rules/)
 assert.match(dedicatedPageStyles, /\.top40-registration-hero img[\s\S]*width: 100%;[\s\S]*height: auto;[\s\S]*object-fit: contain;/)
 assert.doesNotMatch(dedicatedPageStyles, /object-fit:\s*cover|filter:|\.top40-registration-hero::(?:before|after)/)
 assert.match(dedicatedPageStyles, /@media \(max-width: 760px\)[\s\S]*grid-template-columns: 1fr;/)
-assert.match(publicProjectionWorkerSource, /action: 'refreshTop40PublicProjection'/)
-assert.match(publicProjectionWorkerSource, /ARMY_INTELLIGENCE_WORKER_TOKEN/)
+assert.match(publicSnapshotClientSource, /'top-40-registrations'/)
+assert.match(publicSnapshotExporterSource, /"top-40-registrations\.json"/)
+assert.match(publicSnapshotPublisherSource, /'top-40-registrations\.json'/)
 
 function extractFunction(source, name) {
   const start = source.indexOf(`function ${name}(`)
@@ -60,81 +66,59 @@ function extractFunction(source, name) {
   throw new Error(`unterminated function ${name}`)
 }
 
-const responseHeaders = [
-  'Timestamp',
-  'Discord Username',
-  'Email Address',
-  'Lobo Portal Name',
-  'I have read and agree to the tournament rules',
-]
+const snapshotGeneratedAt = '2026-09-07T22:00:00.000Z'
 
-function responseSheet(name, rows) {
-  return {
-    getDataRange: () => ({ getDisplayValues: () => [responseHeaders, ...rows] }),
-    getName: () => name,
-  }
+function buildSanitizedRegistration(names) {
+  const context = { PUBLIC_SNAPSHOT_TOP40_REGISTRATION_LIMIT: 40 }
+  vm.createContext(context)
+  vm.runInContext(
+    extractFunction(publicSnapshotExporterSource, 'buildPublicSnapshotTop40Registrations_'),
+    context,
+  )
+  return context.buildPublicSnapshotTop40Registrations_({ names }, snapshotGeneratedAt)
 }
 
-function buildSanitizedRegistration(rows) {
-  const projectionContext = {
-    TOP40_PUBLIC_REGISTRATION_SOURCE_AUDIT: null,
-    TOP40_REGISTRATION_CAPACITY: 40,
-    TOP40_REGISTRATION_REQUIRED_HEADERS: responseHeaders.slice(1),
-    lifGetTargetSpreadsheet_: () => ({ getSheets: () => [responseSheet('Top 40 Registration Responses', rows)] }),
-  }
-  vm.createContext(projectionContext)
-  vm.runInContext(extractFunction(publicProjectionSource, 'buildTop40PublicRegistrationReadModel_'), projectionContext)
-  const registration = projectionContext.buildTop40PublicRegistrationReadModel_()
-  return {
-    audit: projectionContext.TOP40_PUBLIC_REGISTRATION_SOURCE_AUDIT,
-    registration,
-  }
-}
-
-{
-  const { audit, registration } = buildSanitizedRegistration([
-    ['2026-09-07', 'private-discord', 'private@example.com', '  Alpha  Wolf  ', 'I agree'],
-    ['2026-09-08', 'other-discord', 'other@example.com', 'alpha wolf', 'I agree'],
-    ['2026-09-09', 'blank-discord', 'blank@example.com', '   ', 'I agree'],
-    ['2026-09-10', 'control-discord', 'control@example.com', 'Bad\u0007Name', 'I agree'],
-    ['2026-09-11', 'final-discord', 'final@example.com', 'Bravo', 'I agree'],
-  ])
-  assert.deepEqual(JSON.parse(JSON.stringify(registration)), {
-    capacity: 40,
-    count: 2,
-    status: 'OPEN',
-    players: [{ order: 1, name: 'Alpha Wolf' }, { order: 2, name: 'Bravo' }],
-  })
-  assert.deepEqual(JSON.parse(JSON.stringify(audit)), {
-    portalNameHeader: 'Lobo Portal Name',
-    responseWorksheet: 'Top 40 Registration Responses',
-  })
-  const serialized = JSON.stringify(registration)
-  for (const privateValue of ['private-discord', 'private@example.com', 'I agree', '2026-09-07']) {
-    assert.equal(serialized.includes(privateValue), false)
-  }
-}
-
-assert.deepEqual(JSON.parse(JSON.stringify(buildSanitizedRegistration([]).registration)), {
-  capacity: 40,
-  count: 0,
-  status: 'OPEN',
+assert.deepEqual(JSON.parse(JSON.stringify(buildSanitizedRegistration([]))), {
+  generatedAt: snapshotGeneratedAt,
   players: [],
 })
+assert.deepEqual(JSON.parse(JSON.stringify(buildSanitizedRegistration(['  Solo  Player  ']))), {
+  generatedAt: snapshotGeneratedAt,
+  players: [{ name: 'Solo Player', position: 1 }],
+})
+assert.deepEqual(JSON.parse(JSON.stringify(buildSanitizedRegistration([
+  '  Alpha  Wolf  ',
+  'alpha wolf',
+  '   ',
+  'Bad\u0007Name',
+  'Bravo',
+]))), {
+  generatedAt: snapshotGeneratedAt,
+  players: [{ name: 'Alpha Wolf', position: 1 }, { name: 'Bravo', position: 2 }],
+})
 
-{
-  const rows = Array.from({ length: 40 }, (_, index) => [
-    `2026-09-${String(index + 1).padStart(2, '0')}`,
-    `discord-${index}`,
-    `private-${index}@example.com`,
-    `Player ${index + 1}`,
-    'I agree',
-  ])
-  const registration = buildSanitizedRegistration(rows).registration
-  assert.equal(registration.count, 40)
-  assert.equal(registration.status, 'FULL')
-  assert.equal(registration.players[39].order, 40)
+for (const count of [40, 45]) {
+  const registration = buildSanitizedRegistration(
+    Array.from({ length: count }, (_, index) => `Player ${index + 1}`),
+  )
+  assert.equal(registration.players.length, 40)
+  assert.equal(registration.players[39].position, 40)
 }
+
+const privacyFixture = buildSanitizedRegistration(['Public Player'])
+const serializedRegistration = JSON.stringify(privacyFixture)
+assert.deepEqual(Object.keys(privacyFixture).sort(), ['generatedAt', 'players'])
+assert.deepEqual(Object.keys(privacyFixture.players[0]).sort(), ['name', 'position'])
+for (const forbidden of [
+  'email', 'discord', 'agreement', 'timestamp', 'spreadsheet', 'formId', 'rowNumber',
+  'private@example.com', 'private-discord', 'I agree',
+]) {
+  assert.equal(serializedRegistration.toLowerCase().includes(forbidden.toLowerCase()), false)
+}
+
+assert.match(publicSnapshotExporterSource, /function readPublicSnapshotTop40RegistrationNames_\(\)[\s\S]*lifGetTargetSpreadsheet_\(\)/)
+assert.match(publicSnapshotExporterSource, /portalNameColumn[\s\S]*getRange\(2, source\.portalNameColumn, lastRow - 1, 1\)/)
+assert.match(publicSnapshotExporterSource, /portalNameHeader:[\s\S]*responseWorksheet:/)
 
 const participantHeadersMatch = eventEngineSource.match(
   /const EVENT_ENGINE_PARTICIPANT_HEADERS = \[([\s\S]*?)\];/,
@@ -346,29 +330,36 @@ if (browserBaseUrl) {
     for (const scenario of [
       {
         count: 2,
-        players: [{ order: 1, name: 'Alpha Wolf' }, { order: 2, name: 'Bravo' }],
+        players: [{ position: 1, name: 'Alpha Wolf' }, { position: 2, name: 'Bravo' }],
         status: 'OPEN',
         width: 1280,
       },
       {
         count: 40,
-        players: Array.from({ length: 40 }, (_, index) => ({ order: index + 1, name: `Player ${index + 1}` })),
+        players: Array.from({ length: 40 }, (_, index) => ({ position: index + 1, name: `Player ${index + 1}` })),
         status: 'FULL',
         width: 390,
       },
     ]) {
       const page = await browser.newPage({ viewport: { height: 900, width: scenario.width } })
-      await page.route('**/api/public-event-projection**', (route) => route.fulfill({
+      const requests = []
+      page.on('request', (request) => requests.push(request.url()))
+      await page.route('**/public-snapshots/current.json', (route) => route.fulfill({
         body: JSON.stringify({
-          projection: {
-            registration: {
-              capacity: 40,
-              count: scenario.count,
-              players: scenario.players,
-              status: scenario.status,
-            },
-          },
-          success: true,
+          schemaVersion: 1,
+          snapshotId: '20260907T220000Z',
+          sourceCutoff: snapshotGeneratedAt,
+          basePath: 'public-snapshots/20260907T220000Z/',
+        }),
+        contentType: 'application/json',
+        status: 200,
+      }))
+      await page.route('**/public-snapshots/20260907T220000Z/top-40-registrations.json', (route) => route.fulfill({
+        body: JSON.stringify({
+          schemaVersion: 1,
+          snapshotId: '20260907T220000Z',
+          sourceCutoff: snapshotGeneratedAt,
+          data: { generatedAt: snapshotGeneratedAt, players: scenario.players },
         }),
         contentType: 'application/json',
         status: 200,
@@ -390,9 +381,14 @@ if (browserBaseUrl) {
       assert.equal(await image.evaluate((node) => getComputedStyle(node).objectFit), 'contain')
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth), true)
       const html = await page.locator('body').innerText()
-      for (const privateValue of ['private@example.com', 'private-discord', 'I agree']) {
+      for (const privateValue of ['private@example.com', 'private-discord', 'I agree', 'Loading registration snapshot', 'HTTP 500']) {
         assert.equal(html.includes(privateValue), false)
       }
+      assert.ok(html.includes('Updated hourly'))
+      assert.ok(html.includes('Last updated:'))
+      assert.equal(requests.filter((url) => /public-snapshots\/current\.json/.test(url)).length, 1)
+      assert.equal(requests.filter((url) => /top-40-registrations\.json/.test(url)).length, 1)
+      assert.equal(requests.some((url) => /public-event-projection|script\.google|docs\.google\.com\/forms|spreadsheets|registration(?:-data)?\/api/i.test(url)), false)
       if (scenario.status === 'FULL') await page.getByText('reached its 40-player capacity', { exact: false }).waitFor()
       await page.close()
     }

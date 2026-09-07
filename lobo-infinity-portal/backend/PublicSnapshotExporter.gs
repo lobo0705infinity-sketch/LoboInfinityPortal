@@ -12,11 +12,18 @@ const PUBLIC_SNAPSHOT_V1_ROOT_NAME = "Lobo Public Snapshots V1";
 const PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_PROPERTY = "PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_ID";
 const PUBLIC_SNAPSHOT_PUBLISH_TOKEN_PROPERTY = "LOBO_SNAPSHOT_PUBLISH_TOKEN";
 const PUBLIC_SNAPSHOT_PUBLISH_URL = "https://lobo-infinity-portal.vercel.app/api/public-snapshot-publish";
+const PUBLIC_SNAPSHOT_TOP40_REGISTRATION_HEADERS = [
+  "Discord Username",
+  "Email Address",
+  "Lobo Portal Name",
+  "I have read and agree to the tournament rules"
+];
+const PUBLIC_SNAPSHOT_TOP40_REGISTRATION_LIMIT = 40;
 const PUBLIC_SNAPSHOT_PUBLIC_FILES = [
   "snapshot.json", "players.json", "games.json", "events.json",
   "missions.json", "mission-catalog.json", "factions.json", "standings.json", "army-lists.json",
   "army-intelligence-summary.json", "army-intelligence-detail.json",
-  "schedule.json", "statistics.json", "community.json"
+  "schedule.json", "statistics.json", "community.json", "top-40-registrations.json"
 ];
 
 function runBuildPublicSnapshotV1() {
@@ -271,13 +278,18 @@ function buildPublicSnapshotV1_() {
     );
     const statistics = buildPublicSnapshotStatistics_(players, publicGames, frozen.hallOfFame);
     const community = buildPublicSnapshotCommunity_(frozen);
+    const top40Registrations = buildPublicSnapshotTop40Registrations_(
+      frozen.top40RegistrationNames,
+      frozen.sourceCutoff
+    );
     const datasets = {
       players: players, games: publicGames, events: events,
       missions: missions, "mission-catalog": missionCatalog, factions: factions, standings: standings,
       "army-lists": armyLists,
       "army-intelligence-summary": armyIntelligence.summary,
       "army-intelligence-detail": armyIntelligence.detail,
-      schedule: schedule, statistics: statistics, community: community
+      schedule: schedule, statistics: statistics, community: community,
+      "top-40-registrations": top40Registrations
     };
     const files = {}; let totalBytes = 0;
     Object.keys(datasets).forEach(function(name) {
@@ -304,7 +316,8 @@ function buildPublicSnapshotV1_() {
         armyLists: "army-lists.json",
         armyIntelligenceSummary: "army-intelligence-summary.json",
         armyIntelligenceDetail: "army-intelligence-detail.json",
-        schedule: "schedule.json", statistics: "statistics.json", community: "community.json"
+        schedule: "schedule.json", statistics: "statistics.json", community: "community.json",
+        top40Registrations: "top-40-registrations.json"
       }
     };
     files.snapshot = writePublicSnapshotFile_(folder, "snapshot.json", metadata);
@@ -314,7 +327,7 @@ function buildPublicSnapshotV1_() {
     return {
       success: true, snapshotId: snapshotId, sourceCutoff: frozen.sourceCutoff,
       status: "validated", published: false, livePointer: false,
-      elapsedMs: Date.now() - started, canonicalReads: frozen.readCount, driveWrites: 14,
+      elapsedMs: Date.now() - started, canonicalReads: frozen.readCount, driveWrites: 15,
       totalBytes: totalBytes, maxLockHoldMs: 0,
       records: {
         players: players.length, games: publicGames.length, events: events.length,
@@ -323,7 +336,8 @@ function buildPublicSnapshotV1_() {
         armyLists: armyLists.length,
         armyIntelligenceDetails: armyIntelligence.detail.length,
         schedule: schedule[0].requests.length, statistics: statistics[0].playerCareers.length,
-        community: community[0].streams.length + community[0].news.length + community[0].timeline.length
+        community: community[0].streams.length + community[0].news.length + community[0].timeline.length,
+        top40Registrations: top40Registrations.players.length
       }, files: files
     };
   }
@@ -366,6 +380,66 @@ function readPublicSnapshotSheet_(spreadsheet, sheetName) {
   return { headers: values.shift() || [], rows: values };
 }
 
+function readPublicSnapshotTop40RegistrationNames_() {
+  const spreadsheet = lifGetTargetSpreadsheet_();
+  const requiredHeaders = PUBLIC_SNAPSHOT_TOP40_REGISTRATION_HEADERS.map(function(header) {
+    return header.toLowerCase();
+  });
+  const matches = spreadsheet.getSheets().map(function(sheet) {
+    const lastColumn = sheet.getLastColumn();
+    if (!lastColumn) return null;
+    const headers = sheet.getRange(1, 1, 1, lastColumn).getDisplayValues()[0].map(function(value) {
+      return String(value || "").trim();
+    });
+    const normalizedHeaders = headers.map(function(header) { return header.toLowerCase(); });
+    const matchesTop40Form = requiredHeaders.every(function(header) {
+      return normalizedHeaders.indexOf(header) !== -1;
+    });
+    if (!matchesTop40Form) return null;
+    return {
+      portalNameColumn: normalizedHeaders.indexOf("lobo portal name") + 1,
+      portalNameHeader: headers[normalizedHeaders.indexOf("lobo portal name")],
+      sheet: sheet
+    };
+  }).filter(Boolean);
+
+  if (matches.length !== 1)
+    throw new Error(
+      "Expected exactly one Top 40 form-response worksheet; found " + matches.length + "."
+    );
+
+  const source = matches[0];
+  const lastRow = source.sheet.getLastRow();
+  const values = lastRow > 1
+    ? source.sheet.getRange(2, source.portalNameColumn, lastRow - 1, 1).getDisplayValues()
+    : [];
+  return {
+    names: values.map(function(row) { return String(row[0] || ""); }),
+    portalNameHeader: source.portalNameHeader,
+    responseWorksheet: source.sheet.getName()
+  };
+}
+
+function buildPublicSnapshotTop40Registrations_(source, generatedAt) {
+  const seen = {};
+  const players = [];
+  (source && source.names ? source.names : []).some(function(rawValue) {
+    const raw = String(rawValue || "");
+    if (/[\u0000-\u001f\u007f]/.test(raw)) return false;
+    const name = raw.trim().replace(/\s+/g, " ");
+    if (!name || name.length > 80) return false;
+    const normalized = name.toLowerCase();
+    if (seen[normalized]) return false;
+    seen[normalized] = true;
+    players.push({ name: name, position: players.length + 1 });
+    return players.length >= PUBLIC_SNAPSHOT_TOP40_REGISTRATION_LIMIT;
+  });
+  return {
+    generatedAt: generatedAt,
+    players: players
+  };
+}
+
 function capturePublicSnapshotSource_(snapshotId) {
   const spreadsheet = lifGetTargetSpreadsheet_();
   const gamesTable = readPublicSnapshotSheet_(spreadsheet, CONFIG.SHEETS.FORM);
@@ -388,6 +462,7 @@ function capturePublicSnapshotSource_(snapshotId) {
   const missionCatalog = getMissionGeistCatalogForPublicSnapshot_();
   const hallOfFame = buildPublicSnapshotHallOfFameStrict_(armyLists);
   const teamTournamentProjection = readPublicSnapshotTeamTournamentProjection_();
+  const top40RegistrationSource = readPublicSnapshotTop40RegistrationNames_();
   return {
     snapshotId: snapshotId,
     sourceCutoff: new Date().toISOString(),
@@ -410,8 +485,13 @@ function capturePublicSnapshotSource_(snapshotId) {
     pairingsTable: freezePublicSnapshotTable_(pairingsTable),
     missionCatalog: JSON.parse(JSON.stringify(missionCatalog)),
     teamTournamentProjection: JSON.parse(JSON.stringify(teamTournamentProjection)),
+    top40RegistrationNames: {
+      names: top40RegistrationSource.names.slice(),
+      portalNameHeader: top40RegistrationSource.portalNameHeader,
+      responseWorksheet: top40RegistrationSource.responseWorksheet
+    },
     hallOfFame: JSON.parse(JSON.stringify(hallOfFame)),
-    readCount: 19
+    readCount: 20
   };
 }
 
@@ -1638,8 +1718,10 @@ function validatePublicSnapshotFile_(fileId, snapshotId, sourceCutoff, metadata,
   if (!value || value.snapshotId !== snapshotId || value.sourceCutoff !== sourceCutoff)
     throw new Error("Public snapshot metadata mismatch.");
   if (!metadata && !Array.isArray(value.data)) {
-    if (filename !== "mission-catalog.json") throw new Error("Public snapshot data file is invalid.");
-    validateMissionGeistCatalog_(value.data);
+    if (filename === "mission-catalog.json") validateMissionGeistCatalog_(value.data);
+    else if (filename === "top-40-registrations.json")
+      validatePublicSnapshotTop40Registrations_(value.data, sourceCutoff);
+    else throw new Error("Public snapshot data file is invalid.");
   }
   assertPublicSnapshotSafe_(value, "snapshot", filename);
 }
@@ -1663,7 +1745,7 @@ function assertPublicSnapshotSafe_(value, path, filename) {
 function validatePublicSnapshotV1_(snapshotId, sourceCutoff, datasets, files, gameContext) {
   ["players", "games", "events", "missions", "mission-catalog", "factions", "standings", "army-lists",
     "army-intelligence-summary", "army-intelligence-detail", "schedule", "statistics",
-    "community"].forEach(function(name) {
+    "community", "top-40-registrations"].forEach(function(name) {
     if (!files[name]) throw new Error("Required public snapshot file is missing: " + name);
     validatePublicSnapshotFile_(files[name].fileId, snapshotId, sourceCutoff, false, name + ".json");
   });
@@ -1723,6 +1805,7 @@ function validatePublicSnapshotArmyUsage_(players, publicGames, gameContext) {
 
 function validatePublicSnapshotDatasets_(datasets, gameContext) {
   validateMissionGeistCatalog_(datasets["mission-catalog"]);
+  validatePublicSnapshotTop40Registrations_(datasets["top-40-registrations"]);
   const gameIds = {};
   datasets.games.forEach(function(game) {
     if (gameIds[game.id]) throw new Error("Public snapshot contains duplicate Game ID: " + game.id);
@@ -1785,4 +1868,25 @@ function validatePublicSnapshotDatasets_(datasets, gameContext) {
   });
   if (stablePublicSnapshotJson_(datasets.games).toLowerCase().indexOf("armycode") !== -1)
     throw new Error("Public snapshot Games contain raw Army Codes.");
+}
+
+function validatePublicSnapshotTop40Registrations_(registration, sourceCutoff) {
+  if (!registration || !Array.isArray(registration.players) || registration.players.length > 40)
+    throw new Error("Public Top 40 registration snapshot is invalid.");
+  if (!registration.generatedAt || Number.isNaN(new Date(registration.generatedAt).getTime()))
+    throw new Error("Public Top 40 registration generation timestamp is invalid.");
+  if (sourceCutoff && registration.generatedAt !== sourceCutoff)
+    throw new Error("Public Top 40 registration timestamp does not match the snapshot cutoff.");
+  const seen = {};
+  registration.players.forEach(function(player, index) {
+    const name = String(player && player.name || "");
+    const normalized = name.toLowerCase();
+    if (!name || name !== name.trim() || name.length > 80 || /[\u0000-\u001f\u007f]/.test(name) ||
+        player.position !== index + 1 || Object.keys(player).sort().join(",") !== "name,position" ||
+        seen[normalized])
+      throw new Error("Public Top 40 registration player is invalid.");
+    seen[normalized] = true;
+  });
+  if (Object.keys(registration).sort().join(",") !== "generatedAt,players")
+    throw new Error("Public Top 40 registration snapshot contains unexpected fields.");
 }

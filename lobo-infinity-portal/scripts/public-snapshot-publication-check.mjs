@@ -5,12 +5,12 @@ import { BlobNotFoundError } from '@vercel/blob'
 
 const snapshotId = '20260831T044344Z'
 const sourceCutoff = '2026-08-31T04:43:55.151Z'
-assert.equal(PUBLIC_SNAPSHOT_FILES.length, 14)
+assert.equal(PUBLIC_SNAPSHOT_FILES.length, 15)
 assert.deepEqual(PUBLIC_SNAPSHOT_FILES, [
   'snapshot.json', 'players.json', 'games.json', 'events.json', 'missions.json', 'mission-catalog.json',
   'factions.json', 'standings.json', 'army-lists.json',
   'army-intelligence-summary.json', 'army-intelligence-detail.json',
-  'schedule.json', 'statistics.json', 'community.json',
+  'schedule.json', 'statistics.json', 'community.json', 'top-40-registrations.json',
 ])
 const files = Object.fromEntries(PUBLIC_SNAPSHOT_FILES.map((filename) => [filename, JSON.stringify({ snapshotId, sourceCutoff, data: [] })]))
 files['snapshot.json'] = JSON.stringify({ snapshotId, sourceCutoff, status: 'validated', published: false, livePointer: false })

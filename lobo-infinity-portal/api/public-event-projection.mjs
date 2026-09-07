@@ -15,8 +15,7 @@ export default async function handler(request, response) {
   }
 
   const configuredFileId = String(process.env.TOP40_PUBLIC_PROJECTION_FILE_ID || '').trim()
-  const refresh = await refreshProjection()
-  const fileId = configuredFileId || refresh.fileId
+  const fileId = configuredFileId || await bootstrapProjectionFileId()
   if (!fileId) {
     response.status(503).json({ error: 'Public event projection is not configured.', success: false })
     return
@@ -26,7 +25,7 @@ export default async function handler(request, response) {
     const sourceStartedAt = performance.now()
     const source = await fetch(
       `https://drive.usercontent.google.com/download?id=${encodeURIComponent(fileId)}&export=download&confirm=t`,
-      { redirect: 'follow', signal: AbortSignal.timeout(15000) },
+      { redirect: 'follow' },
     )
     const sourceMs = performance.now() - sourceStartedAt
     if (!source.ok) throw new Error(`Projection source returned HTTP ${source.status}.`)
@@ -47,8 +46,6 @@ export default async function handler(request, response) {
     response.setHeader('server-timing', `projection-source;dur=${sourceMs.toFixed(1)}, total;dur=${totalMs.toFixed(1)}`)
     response.setHeader('x-lobo-projection-generated-at', String(projection.generatedAt || ''))
     response.setHeader('x-lobo-projection-bytes', String(Buffer.byteLength(body)))
-    response.setHeader('x-lobo-registration-response-worksheet', refresh.responseWorksheet)
-    response.setHeader('x-lobo-registration-portal-name-header', refresh.portalNameHeader)
     if (!configuredFileId) response.setHeader('x-lobo-projection-bootstrap-file-id', fileId)
     response.status(200).send(body)
   } catch (error) {
@@ -60,28 +57,19 @@ export default async function handler(request, response) {
   }
 }
 
-async function refreshProjection() {
+async function bootstrapProjectionFileId() {
   const apiUrl = String(process.env.VITE_API_URL || '').trim()
   const workerToken = String(process.env.ARMY_INTELLIGENCE_WORKER_TOKEN || '').trim()
-  if (!apiUrl || !workerToken) return { fileId: '', portalNameHeader: '', responseWorksheet: '' }
+  if (!apiUrl || !workerToken) return ''
 
   const body = new URLSearchParams({
     action: 'refreshTop40PublicProjection',
     workerToken,
   })
-  const response = await fetch(apiUrl, {
-    body,
-    method: 'POST',
-    redirect: 'follow',
-    signal: AbortSignal.timeout(90000),
-  })
+  const response = await fetch(apiUrl, { body, method: 'POST', redirect: 'follow' })
   const payload = await response.json()
   if (!response.ok || payload?.success !== true) {
     throw new Error(payload?.error || `Projection bootstrap returned HTTP ${response.status}.`)
   }
-  return {
-    fileId: String(payload.fileId || '').trim(),
-    portalNameHeader: String(payload.portalNameHeader || '').trim(),
-    responseWorksheet: String(payload.responseWorksheet || '').trim(),
-  }
+  return String(payload.fileId || '').trim()
 }

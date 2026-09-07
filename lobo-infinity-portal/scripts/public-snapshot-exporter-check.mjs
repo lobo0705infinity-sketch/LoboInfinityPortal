@@ -168,6 +168,7 @@ const exactFiles = Object.fromEntries([
   'snapshot.json', 'players.json', 'games.json', 'events.json', 'missions.json', 'mission-catalog.json',
   'factions.json', 'standings.json', 'army-lists.json', 'army-intelligence-summary.json',
   'army-intelligence-detail.json', 'schedule.json', 'statistics.json', 'community.json',
+  'top-40-registrations.json',
 ].map((filename) => [filename, JSON.stringify({
   snapshotId: exactSnapshotId, sourceCutoff: exactSourceCutoff,
   ...(filename === 'snapshot.json' ? { status: 'validated', published: false, livePointer: false } : { data: [] }),
@@ -203,7 +204,7 @@ const exactPublicationSandbox = {
     exactUrlFetchCalls += 1
     return { getResponseCode: () => 200, getContentText: () => JSON.stringify({
       success: true, activated: true, snapshotId: exactSnapshotId, sourceCutoff: exactSourceCutoff,
-      uploaded: 14, files: [], current: { snapshotId: exactSnapshotId },
+      uploaded: 15, files: [], current: { snapshotId: exactSnapshotId },
     }) }
   } },
 }
@@ -259,7 +260,8 @@ const functions = [
   'isPublicSnapshotCompletedGame_', 'buildPublicSnapshotRemainingMatchups_',
   'validatePublicSnapshotRemainingMatchups_', 'buildPublicSnapshotStandings_',
   'stablePublicSnapshotJson_', 'assertPublicSnapshotSafe_', 'validatePublicSnapshotFile_',
-  'calculatePublicSnapshotLeagueRecord_', 'validatePublicSnapshotArmyUsage_', 'validatePublicSnapshotDatasets_',
+  'calculatePublicSnapshotLeagueRecord_', 'validatePublicSnapshotArmyUsage_', 'validatePublicSnapshotTop40Registrations_',
+  'validatePublicSnapshotDatasets_',
   'buildPublicSnapshotArmyLink_', 'buildPublicSnapshotArmyLists_', 'buildPublicSnapshotDecodedArmy_',
   'buildPublicSnapshotLeagueMission_', 'buildPublicSnapshotSchedule_', 'buildPublicSnapshotStatistics_',
   'buildPublicSnapshotRecords_', 'pickPublicHallOfFameValue_',
@@ -413,6 +415,9 @@ const fileContents = {
   token: JSON.stringify({ schemaVersion: 1, snapshotId, sourceCutoff, data: [{ token: 'secret' }] }),
   invalidMissionCatalog: JSON.stringify({ schemaVersion: 1, snapshotId, sourceCutoff, data: { missions: [] } }),
   unrelatedObject: JSON.stringify({ schemaVersion: 1, snapshotId, sourceCutoff, data: { unexpected: true } }),
+  top40Registrations: JSON.stringify({ schemaVersion: 1, snapshotId, sourceCutoff, data: {
+    generatedAt: sourceCutoff, players: [{ name: 'Public Player', position: 1 }],
+  } }),
   metadata: JSON.stringify({ schemaVersion: 1, snapshotId, sourceCutoff, files: {} }),
 }
 sandbox.DriveApp = {
@@ -420,6 +425,7 @@ sandbox.DriveApp = {
 }
 assert.doesNotThrow(() => sandbox.validatePublicSnapshotFile_('players', snapshotId, sourceCutoff, false, 'players.json'))
 assert.doesNotThrow(() => sandbox.validatePublicSnapshotFile_('missionCatalog', snapshotId, sourceCutoff, false, 'mission-catalog.json'))
+assert.doesNotThrow(() => sandbox.validatePublicSnapshotFile_('top40Registrations', snapshotId, sourceCutoff, false, 'top-40-registrations.json'))
 assert.throws(
   () => sandbox.validatePublicSnapshotFile_('playersWithAuthor', snapshotId, sourceCutoff, false, 'players.json'),
   /forbidden key at snapshot\.data\.0\.author/,
@@ -447,7 +453,11 @@ assert.throws(
   /Public snapshot data file is invalid/,
 )
 assert.doesNotThrow(() => sandbox.validatePublicSnapshotFile_('metadata', snapshotId, sourceCutoff, true, 'snapshot.json'))
-const datasets = { players, games, events, missions, 'mission-catalog': missionCatalog, factions, standings, schedule, 'army-lists': armyLists }
+const datasets = {
+  players, games, events, missions, 'mission-catalog': missionCatalog, factions, standings, schedule,
+  'army-lists': armyLists,
+  'top-40-registrations': { generatedAt: sourceCutoff, players: [] },
+}
 assert.doesNotThrow(() => sandbox.validatePublicSnapshotDatasets_(datasets, context))
 const cloneDatasets = () => JSON.parse(JSON.stringify(datasets))
 const withChangedHistoricalGame = (change) => {

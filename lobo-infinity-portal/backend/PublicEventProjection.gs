@@ -13,14 +13,6 @@ const TOP40_PUBLIC_PROJECTION_FILE_NAME =
   "Lobo Infinity Portal - Top 40 Public Projection.json";
 const TOP40_PUBLIC_PROJECTION_DIRTY_PROPERTY =
   "TOP40_PUBLIC_PROJECTION_DIRTY";
-const TOP40_REGISTRATION_CAPACITY = 40;
-const TOP40_REGISTRATION_REQUIRED_HEADERS = [
-  "Discord Username",
-  "Email Address",
-  "Lobo Portal Name",
-  "I have read and agree to the tournament rules"
-];
-var TOP40_PUBLIC_REGISTRATION_SOURCE_AUDIT = null;
 
 function refreshTop40PublicProjection(e) {
   return requireArmyIntelligenceWorkerOrPermission(e, function() {
@@ -29,13 +21,7 @@ function refreshTop40PublicProjection(e) {
       success: true,
       eventId: projection.eventId,
       generatedAt: projection.generatedAt,
-      fileId: getTop40PublicProjectionFileId_(),
-      responseWorksheet: TOP40_PUBLIC_REGISTRATION_SOURCE_AUDIT
-        ? TOP40_PUBLIC_REGISTRATION_SOURCE_AUDIT.responseWorksheet
-        : "",
-      portalNameHeader: TOP40_PUBLIC_REGISTRATION_SOURCE_AUDIT
-        ? TOP40_PUBLIC_REGISTRATION_SOURCE_AUDIT.portalNameHeader
-        : ""
+      fileId: getTop40PublicProjectionFileId_()
     });
   });
 }
@@ -105,7 +91,6 @@ function publishTop40PublicProjection_(generation) {
 }
 
 function buildTop40PublicProjection_() {
-  const registration = buildTop40PublicRegistrationReadModel_();
   const eventHomeResponse = JSON.parse(
     getEventHome({ parameter: { eventId: TOP40_PUBLIC_EVENT_ID } }).getContent()
   );
@@ -132,64 +117,11 @@ function buildTop40PublicProjection_() {
   };
 
   return {
-    schemaVersion: 2,
+    schemaVersion: 1,
     eventId: TOP40_PUBLIC_EVENT_ID,
     generatedAt: new Date().toISOString(),
     home: home,
-    bracket: bracketResponse.bracket,
-    registration: registration
-  };
-}
-
-function buildTop40PublicRegistrationReadModel_() {
-  const spreadsheet = lifGetTargetSpreadsheet_();
-  const matches = spreadsheet.getSheets().map(function(sheet) {
-    const values = sheet.getDataRange().getDisplayValues();
-    const headers = values.length ? values[0].map(function(value) {
-      return String(value || "").trim();
-    }) : [];
-    const normalizedHeaders = headers.map(function(value) {
-      return value.toLowerCase();
-    });
-    const required = TOP40_REGISTRATION_REQUIRED_HEADERS.every(function(header) {
-      return normalizedHeaders.indexOf(header.toLowerCase()) !== -1;
-    });
-    return required ? { sheet: sheet, headers: headers, values: values } : null;
-  }).filter(Boolean);
-
-  if (matches.length !== 1)
-    throw new Error(
-      "Expected exactly one Top 40 form-response worksheet; found " + matches.length + "."
-    );
-
-  const source = matches[0];
-  const portalNameIndex = source.headers.map(function(value) {
-    return value.toLowerCase();
-  }).indexOf("lobo portal name");
-  const seen = {};
-  const players = [];
-
-  source.values.slice(1).forEach(function(row) {
-    const raw = String(row[portalNameIndex] || "");
-    if (/[\u0000-\u001f\u007f]/.test(raw)) return;
-    const name = raw.trim().replace(/\s+/g, " ");
-    if (!name || name.length > 80) return;
-    const normalized = name.toLowerCase();
-    if (seen[normalized]) return;
-    seen[normalized] = true;
-    players.push({ order: players.length + 1, name: name });
-  });
-
-  TOP40_PUBLIC_REGISTRATION_SOURCE_AUDIT = {
-    responseWorksheet: source.sheet.getName(),
-    portalNameHeader: source.headers[portalNameIndex]
-  };
-
-  return {
-    capacity: TOP40_REGISTRATION_CAPACITY,
-    count: players.length,
-    status: players.length >= TOP40_REGISTRATION_CAPACITY ? "FULL" : "OPEN",
-    players: players
+    bracket: bracketResponse.bracket
   };
 }
 
@@ -207,24 +139,6 @@ function validateTop40PublicProjection_(projection) {
   if (!projection.bracket || projection.bracket.eventId !== TOP40_PUBLIC_EVENT_ID)
     throw new Error("Top 40 public bracket projection is invalid.");
 
-  const registration = projection.registration;
-  if (
-    !registration ||
-    registration.capacity !== TOP40_REGISTRATION_CAPACITY ||
-    registration.count !== registration.players.length ||
-    (registration.status !== "OPEN" && registration.status !== "FULL")
-  )
-    throw new Error("Top 40 public registration projection is invalid.");
-
-  registration.players.forEach(function(player, index) {
-    if (
-      !player ||
-      player.order !== index + 1 ||
-      !String(player.name || "").trim() ||
-      Object.keys(player).sort().join(",") !== "name,order"
-    )
-      throw new Error("Top 40 public registration player projection is invalid.");
-  });
 }
 
 function getOrCreateTop40PublicProjectionFile_() {

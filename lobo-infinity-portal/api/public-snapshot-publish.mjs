@@ -16,6 +16,7 @@ export const PUBLIC_SNAPSHOT_FILES = Object.freeze([
   'schedule.json',
   'statistics.json',
   'community.json',
+  'top-40-registrations.json',
 ])
 
 const SNAPSHOT_ID_PATTERN = /^\d{8}T\d{6}Z$/
