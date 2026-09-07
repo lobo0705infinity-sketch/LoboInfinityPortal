@@ -34,8 +34,13 @@ export function createDeepSeekFallback({ fetchImpl = fetch, usagePath = process.
     const hourly = current.filter((item) => now() - item.timestamp < 60 * 60 * 1000).reduce((sum, item) => sum + item.cost, 0)
     const monthly = current.reduce((sum, item) => sum + item.cost, 0)
     if (hourly >= limits.hourly || monthly >= limits.monthly) return withLimitation(result, 'DeepSeek spending limit reached; returning the retrieval result.')
-    const body = { model, temperature: 0, max_tokens: 700, messages: [{ role: 'system', content: 'Answer only from the supplied excerpts. Cite source, version, and page for every material claim. Distinguish EXPLICIT RULE from INTERPRETATION. If the excerpts do not resolve the question, say so. Never invent citations or rules. Preserve FAQ precedence and use ITS evidence only for ITS questions. Return JSON: {"answer":string,"classification":"EXPLICIT RULE|INTERPRETATION|UNRESOLVED","citations":[{"id":string}]}.' }, { role: 'user', content: JSON.stringify({ question: result.question, excerpts: evidence }) }] }
+    const permittedIds = evidence.map((item) => item.id)
+    const baseInstruction = `Answer only from the supplied excerpts. Permitted evidence IDs: ${permittedIds.join(', ')}. Return strict JSON with exactly answer, conclusion, evidenceIds, interpretationRequired. evidenceIds must use only permitted IDs. Every material conclusion must be supported by a cited excerpt. Distinguish explicit rules from interpretation and say when unresolved. Preserve FAQ precedence and ITS scope.`
+    let validationError = ''
+    let totalCost = 0
     try {
+      for (let attempt = 0; attempt < 2; attempt++) {
+      const body = { model, temperature: 0, max_tokens: 700, messages: [{ role: 'system', content: baseInstruction }, { role: 'user', content: JSON.stringify({ question: result.question, excerpts: evidence, validationError, permittedEvidenceIds: permittedIds }) }] }
       const response = await fetchImpl('https://api.deepseek.com/chat/completions', { method: 'POST', headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json' }, body: JSON.stringify(body), signal: AbortSignal.timeout(12000) })
       const contentType = String(response.headers?.get?.('content-type') || '').toLowerCase()
       const responseText = await response.text()
@@ -46,21 +51,32 @@ export function createDeepSeekFallback({ fetchImpl = fetch, usagePath = process.
       try { payload = JSON.parse(responseText) } catch { logger.warn?.('DeepSeek rules model error: invalid provider JSON'); return withLimitation(result, 'DeepSeek returned invalid JSON; returning the retrieval result.') }
       const content = payload?.choices?.[0]?.message?.content
       let parsed = null
-      try { if (typeof content === 'string' && content.trim()) parsed = JSON.parse(content) } catch { logger.warn?.('DeepSeek rules model error: invalid model JSON') }
-      const citations = Array.isArray(parsed?.citations) ? parsed.citations.filter((item) => evidence.some((entry) => entry.id === item?.id)) : []
-      if (!parsed?.answer || !['EXPLICIT RULE', 'INTERPRETATION', 'UNRESOLVED'].includes(parsed.classification) || !citations.length) return withLimitation(result, 'DeepSeek returned an unsupported answer; returning the retrieval result.')
+      try { if (typeof content === 'string' && content.trim()) parsed = JSON.parse(content) } catch { parsed = null }
       const promptTokens = Number(payload?.usage?.prompt_tokens || 0)
       const completionTokens = Number(payload?.usage?.completion_tokens || 0)
-      const cost = promptTokens / 1e6 * INPUT_USD_PER_MILLION + completionTokens / 1e6 * OUTPUT_USD_PER_MILLION
-      if (hourly + cost > limits.hourly || monthly + cost > limits.monthly) return withLimitation(result, 'DeepSeek response exceeded the configured spending limit; returning the retrieval result.')
-      usage.records.push({ timestamp: now(), cost, promptTokens, completionTokens, model })
-      await writeUsage(usagePath, usage)
-      return { ...result, deepSeek: { answer: parsed.answer, classification: parsed.classification, citations, cost }, status: 'DEEPSEEK EVIDENCE-BOUNDED ANSWER' }
+      const cost = promptTokens / 1e6 * INPUT_USD_PER_MILLION + completionTokens / 1e6 * OUTPUT_USD_PER_MILLION; totalCost += cost
+      usage.records.push({ timestamp: now(), cost, promptTokens, completionTokens, model }); await writeUsage(usagePath, usage)
+      const check = validateModelOutput(parsed, evidence)
+      if (check.ok) return { ...result, deepSeek: { answer: parsed.answer, conclusion: parsed.conclusion, interpretationRequired: parsed.interpretationRequired, evidenceIds: parsed.evidenceIds, cost: totalCost }, status: 'DEEPSEEK EVIDENCE-BOUNDED ANSWER' }
+      validationError = check.reason
+      logger.warn?.(`DeepSeek rules model validation error: ${check.reason}; evidence IDs returned: ${JSON.stringify(parsed?.evidenceIds ?? null)}`)
+      if (check.unsupported || attempt === 1) return withLimitation(result, 'DeepSeek returned an unsupported answer; returning the retrieval result.')
+      const nextHourly = hourly + totalCost; const nextMonthly = monthly + totalCost
+      if (nextHourly >= limits.hourly || nextMonthly >= limits.monthly) return withLimitation(result, 'DeepSeek spending limit reached; returning the retrieval result.')
+      }
+      return withLimitation(result, 'DeepSeek returned an unsupported answer; returning the retrieval result.')
     } catch (error) {
       logger.warn?.(`DeepSeek rules ${error?.source || 'provider'} error: ${error instanceof Error ? error.message : 'request failed'}`)
       return withLimitation(result, 'DeepSeek was unavailable; returning the retrieval result.')
     }
   }
+}
+
+function validateModelOutput(parsed, evidence) {
+  if (!parsed || typeof parsed.answer !== 'string' || typeof parsed.conclusion !== 'string' || typeof parsed.interpretationRequired !== 'boolean' || !Array.isArray(parsed.evidenceIds)) return { ok: false, reason: 'strict output contract requires answer, conclusion, evidenceIds, and interpretationRequired' }
+  const permitted = new Set(evidence.map((item) => item.id)); if (!parsed.evidenceIds.length || parsed.evidenceIds.some((id) => !permitted.has(id))) return { ok: false, reason: 'evidenceIds contain values outside the permitted evidence packet' }
+  const citedText = parsed.evidenceIds.map((id) => evidence.find((item) => item.id === id)?.excerpt || '').join(' ').toLowerCase(); const terms = parsed.conclusion.toLowerCase().split(/\W+/).filter((term) => term.length > 4); if (terms.length && !terms.some((term) => citedText.includes(term))) return { ok: false, reason: 'conclusion has no material term supported by cited excerpts', unsupported: true }
+  return { ok: true }
 }
 
 function withLimitation(result, message) { return { ...result, limitation: message } }
