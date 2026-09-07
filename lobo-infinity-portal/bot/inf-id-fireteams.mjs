@@ -52,7 +52,7 @@ async function captureOfficialPayload({ sectorialId, armyCode, browser }) {
       if (responseUrl !== endpoint) return
       try { captured = { body: await response.json(), headers: await response.allHeaders() } } catch {}
     })
-    await page.goto(`https://infinitytheuniverse.com/army/list/${encodeURIComponent(armyCode)}`, { waitUntil: 'commit', timeout: 45_000 }).catch(() => {})
+    await page.goto(`https://infinityuniverse.com/army/list/${encodeURIComponent(armyCode)}`, { waitUntil: 'commit', timeout: 45_000 }).catch(() => {})
     for (let elapsed = 0; !captured && elapsed < 45_000; elapsed += 500) await page.waitForTimeout(500)
     if (!captured) throw new Error('Official Infinity Army payload was not observed.')
     return captured
