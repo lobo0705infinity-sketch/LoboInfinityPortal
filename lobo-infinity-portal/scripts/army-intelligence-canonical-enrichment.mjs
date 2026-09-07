@@ -41,10 +41,11 @@ function enrichEntry(entry, units, dataset, chartUnits, reference) {
   const [sectorialId, unitId, groupId, optionId, profileId] = String(entry.combinedId || '').split('-').map(Number)
   const unit = units.find((candidate) => candidate.id === unitId)
   const group = unit?.profileGroups?.find((candidate) => candidate.id === groupId)
-  const profile = group?.profiles?.find((candidate) => candidate.id === profileId) || null
+  const profiles = group?.profiles || []
+  const profile = profiles.find((candidate) => candidate.id === profileId) || (profiles.length === 1 ? profiles[0] : null)
   const option = group?.options?.find((candidate) => candidate.id === optionId)
   const weaponReferences = [...(profile?.weapons || []), ...(option?.weapons || [])]
-  const weaponProfiles = resolveCanonicalWeaponRecords(dataset, weaponReferences).filter((weapon) => weapon.name).map((weapon) => ({ id: weapon.id, name: weapon.name, mode: weapon.mode, variant: weapon.variant, modeResolution: weapon.modeResolution, type: weapon.type, burst: weapon.burst, burstStatus: weapon.burstStatus, source: weapon.sourceDatasetId }))
+  const weaponProfiles = resolveCanonicalWeaponRecords(dataset, weaponReferences, { expandAmbiguousModes: true }).filter((weapon) => weapon.name).map((weapon) => ({ id: weapon.id, name: weapon.name, mode: weapon.mode, variant: weapon.variant, modeResolution: weapon.modeResolution, type: weapon.type, burst: weapon.burst, burstStatus: weapon.burstStatus, source: weapon.sourceDatasetId }))
   const teams = Array.from(new Set(chartUnits.get(unitId) || []))
   const fireteamEligibility = reference?.status === 'available' || reference?.status === 'none'
     ? { state: teams.length ? 'verified' : 'verified-false', verified: Boolean(teams.length), teams }

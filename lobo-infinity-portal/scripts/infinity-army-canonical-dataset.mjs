@@ -41,7 +41,7 @@ export function normalizeUnitPayload(payload = {}) {
 export function normalizeWeapon(weapon = {}) {
   const rawBurst = weapon.burst
   const burst = rawBurst === '-' ? null : (rawBurst == null || rawBurst === '' ? null : Number(rawBurst))
-  const burstStatus = rawBurst === '-' ? 'not-applicable' : Number.isFinite(burst) ? 'canonical' : 'unknown'
+  const burstStatus = rawBurst === '-' || (rawBurst == null && weapon.burstStatus === 'not-applicable') ? 'not-applicable' : Number.isFinite(burst) ? 'canonical' : 'unknown'
   return {
     id: Number.isInteger(Number(weapon.id)) ? Number(weapon.id) : null,
     mode: weapon.mode == null ? null : String(weapon.mode),
@@ -53,24 +53,27 @@ export function normalizeWeapon(weapon = {}) {
   }
 }
 
-export function resolveCanonicalWeaponRecords(dataset, references = []) {
+export function resolveCanonicalWeaponRecords(dataset, references = [], { expandAmbiguousModes = false } = {}) {
   const catalog = dataset?.metadata?.weapons || []
-  return references.map((reference) => {
+  return references.flatMap((reference) => {
     const id = Number(reference?.id)
     const candidates = catalog.filter((weapon) => weapon.id === id)
     const mode = reference?.mode ?? reference?.variant ?? reference?.name ?? null
     const matched = mode == null ? candidates : candidates.filter((weapon) => weapon.mode === String(mode) || weapon.variant === String(mode) || weapon.name === String(mode))
     const selected = matched.length === 1 ? matched[0] : candidates.length === 1 ? candidates[0] : null
     if (!selected) {
+      if (expandAmbiguousModes && mode == null && candidates.length > 1) {
+        return candidates.map((candidate) => ({ ...candidate, modeResolution: 'expanded', sourceDatasetId: dataset?.datasetId || null }))
+      }
       // Some official mode records intentionally share an ID and have no mode
       // discriminator in the option reference.  They are still safe for a
       // Burst value when the canonical records agree exactly on that value;
       // do not claim that a particular mode was selected.
       const invariant = invariantBurstRecord(candidates)
-      if (invariant) return { ...invariant, id: Number.isInteger(id) ? id : null, name: invariant.name || candidates[0]?.name || String(reference?.name || ''), mode: mode == null ? null : String(mode), modeResolution: 'ambiguous', sourceDatasetId: dataset?.datasetId || null }
-      return { id: Number.isInteger(id) ? id : null, name: candidates[0]?.name || String(reference?.name || ''), mode: mode == null ? null : String(mode), burst: null, burstStatus: candidates.length ? 'ambiguous' : 'unknown', sourceDatasetId: dataset?.datasetId || null }
+      if (invariant) return [{ ...invariant, id: Number.isInteger(id) ? id : null, name: invariant.name || candidates[0]?.name || String(reference?.name || ''), mode: mode == null ? null : String(mode), modeResolution: 'ambiguous', sourceDatasetId: dataset?.datasetId || null }]
+      return [{ id: Number.isInteger(id) ? id : null, name: candidates[0]?.name || String(reference?.name || ''), mode: mode == null ? null : String(mode), burst: null, burstStatus: candidates.length ? 'ambiguous' : 'unknown', sourceDatasetId: dataset?.datasetId || null }]
     }
-    return { ...selected, sourceDatasetId: dataset?.datasetId || null }
+    return [{ ...selected, sourceDatasetId: dataset?.datasetId || null }]
   })
 }
 

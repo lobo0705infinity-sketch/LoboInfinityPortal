@@ -45,15 +45,13 @@ async function readCache(path) {
 async function captureOfficialPayload({ sectorialId, armyCode, browser }) {
   const endpoint = fireteamEndpoint(sectorialId)
   try {
-    const response = await fetch(endpoint, {
-      headers: {
-        accept: 'application/json, text/plain, */*',
-        origin: 'https://infinityuniverse.com',
-        referer: 'https://infinityuniverse.com/',
-      },
-    })
-    if (response.ok) {
-      return { body: await response.json(), headers: Object.fromEntries(response.headers.entries()) }
+    const requestHeaders = { accept: 'application/json, text/plain, */*', origin: 'https://infinityuniverse.com', referer: 'https://infinityuniverse.com/' }
+    const [response, metadataResponse] = await Promise.all([
+      fetch(endpoint, { headers: requestHeaders }),
+      fetch('https://api.corvusbelli.com/army/infinity/en/metadata', { headers: requestHeaders }),
+    ])
+    if (response.ok && metadataResponse.ok) {
+      return { body: await response.json(), headers: Object.fromEntries(response.headers.entries()), metadata: await metadataResponse.json() }
     }
   } catch {}
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } })
@@ -71,7 +69,7 @@ async function captureOfficialPayload({ sectorialId, armyCode, browser }) {
   } finally { await page.close() }
 }
 
-export function normalizeOfficialPayload({ body, headers }, cachedAt = Date.now(), sectorialId = null) {
+export function normalizeOfficialPayload({ body, headers, metadata }, cachedAt = Date.now(), sectorialId = null) {
   if (!body || !Array.isArray(body.units) || !body.fireteamChart || !Array.isArray(body.fireteamChart.teams)) throw new Error('Official Infinity Army Fireteam payload is malformed.')
   const unitBySlug = new Map(body.units.map((unit) => [unit.slug, unit]))
   const chart = structuredClone(body.fireteamChart)
@@ -80,7 +78,7 @@ export function normalizeOfficialPayload({ body, headers }, cachedAt = Date.now(
     unit.unitId = official?.id ?? null
     unit.officialUnitName = official?.name ?? null
   }
-  return { status: chart.teams.length ? 'available' : 'none', sectorialId: sectorialId ?? null, payloadVersion: body.version ?? null, etag: headers?.etag ?? null, responseDate: headers?.date ?? null, cachedAt, units: body.units.map(normalizeOfficialUnit), weapons: (body.filters?.weapons || []).map(normalizeOfficialWeapon), skills: body.filters?.skills || [], equip: body.filters?.equip || [], fireteamChart: chart }
+  return { status: chart.teams.length ? 'available' : 'none', sectorialId: sectorialId ?? null, payloadVersion: body.version ?? null, etag: headers?.etag ?? null, responseDate: headers?.date ?? null, cachedAt, units: body.units.map(normalizeOfficialUnit), weapons: (metadata?.weapons || body.filters?.weapons || []).map(normalizeOfficialWeapon), skills: metadata?.skills || body.filters?.skills || [], equip: metadata?.equips || body.filters?.equip || [], fireteamChart: chart }
 }
 
 function normalizeOfficialWeapon(weapon) {
