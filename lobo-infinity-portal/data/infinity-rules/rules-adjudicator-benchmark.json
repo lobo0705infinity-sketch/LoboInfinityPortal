@@ -877,8 +877,8 @@
         },
         {
           "sourceId": "infinity-rules-n5.3",
-          "page": 165,
-          "section": "IMPERSONATION-1 STATE"
+          "page": 166,
+          "section": "IMPERSONATION STATE"
         }
       ]
     },
@@ -1601,7 +1601,7 @@
       "draftCitations": [
         {
           "sourceId": "infinity-rules-n5.3",
-          "page": 96,
+          "page": 97,
           "section": "INFILTRATION"
         },
         {
@@ -1649,8 +1649,8 @@
         },
         {
           "sourceId": "its-season-18",
-          "page": 17,
-          "section": "ITS GENERAL RULES"
+          "page": 16,
+          "section": "SCENARIOS"
         }
       ]
     },
@@ -1759,11 +1759,6 @@
       "draftCitations": [
         {
           "sourceId": "infinity-rules-n5.3",
-          "page": 37,
-          "section": "ATTACKS"
-        },
-        {
-          "sourceId": "infinity-rules-n5.3",
           "page": 43,
           "section": "TEMPLATE WEAPONS"
         },
@@ -1788,8 +1783,8 @@
       "draftCitations": [
         {
           "sourceId": "infinity-rules-n5.3",
-          "page": 17,
-          "section": "COMMAND TOKENS"
+          "page": 129,
+          "section": "EXAMPLE OF USE OF COMMAND TOKENS: REROLLING"
         },
         {
           "sourceId": "infinity-rules-n5.3",
@@ -2184,7 +2179,7 @@
         },
         {
           "sourceId": "infinity-rules-n5.3",
-          "page": 143,
+          "page": 144,
           "section": "VISIBILITY CONDITION"
         }
       ]
@@ -2232,7 +2227,7 @@
         },
         {
           "sourceId": "infinity-rules-n5.3",
-          "page": 143,
+          "page": 144,
           "section": "VISIBILITY CONDITION"
         }
       ]
@@ -2299,7 +2294,7 @@
         },
         {
           "sourceId": "infinity-rules-n5.3",
-          "page": 143,
+          "page": 144,
           "section": "DIFFICULT TERRAIN AND VISIBILITY CONDITION"
         }
       ]
