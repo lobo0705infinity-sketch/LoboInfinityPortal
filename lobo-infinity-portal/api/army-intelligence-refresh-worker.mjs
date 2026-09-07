@@ -2,7 +2,8 @@ import { mkdtemp } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { createRequire } from 'node:module'
-import { chromium } from 'playwright'
+import serverlessChromium from '@sparticuz/chromium'
+import { chromium as playwrightChromium } from 'playwright-core'
 import { timingSafeEqual } from 'node:crypto'
 import {
   ARMY_INTELLIGENCE_DECODER_VERSION,
@@ -88,7 +89,11 @@ export default async function handler(request, response) {
     let browser
     let enrich
     try {
-      browser = await chromium.launch({ headless: true })
+      browser = await playwrightChromium.launch({
+        args: serverlessChromium.args,
+        executablePath: await serverlessChromium.executablePath(),
+        headless: true,
+      })
       enrich = await createCanonicalEnricher({ browser, cacheDir: '.tmp/army-intelligence-fireteams' })
     } catch (error) {
       failures.push({ reason: `Canonical enrichment unavailable: ${error instanceof Error ? error.message : String(error)}`, snapshotKey: '' })
