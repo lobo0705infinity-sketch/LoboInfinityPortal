@@ -1436,136 +1436,396 @@
       "id": "ambiguous_missing_facts-01",
       "category": "AMBIGUOUS_MISSING_FACTS",
       "question": "Can I shoot a Camouflaged Marker?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "I need to know what rule would permit the Attack and whether the Marker has revealed. Normally you cannot declare an Attack against a Camouflaged Marker; you must Discover it first, commonly with Discover + Attack. Exceptions include Intuitive Attack with a suitable weapon and MSV3's Active-Turn BS Attack permission. If no exception applies, the Attack is illegal.",
+      "draftConclusion": "UNRESOLVED",
+      "draftCertainty": "NEEDS CLARIFICATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 49,
+          "section": "INTUITIVE ATTACK"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 77,
+          "section": "DISCOVER + ATTACK"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 3"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 157,
+          "section": "CAMOUFLAGED STATE"
+        }
+      ]
     },
     {
       "id": "ambiguous_missing_facts-02",
       "category": "AMBIGUOUS_MISSING_FACTS",
       "question": "Does Dodge avoid a Template Weapon?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "I need to know whether the template is Direct or Impact, whether the Dodger has LoF to the attacker, and whether the Dodge Roll succeeds. A successful Dodge can avoid a Template Attack affecting that Trooper. Dodge is normally PH, but Dodging a Template Weapon without LoF to the attacker applies PH−3. Direct Templates are not Face to Face with return Attacks; the Dodge itself may still oppose the Template as specified.",
+      "draftConclusion": "UNRESOLVED",
+      "draftCertainty": "NEEDS CLARIFICATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 43,
+          "section": "TEMPLATE WEAPONS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 45,
+          "section": "DIRECT TEMPLATE WEAPONS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 79,
+          "section": "DODGE"
+        }
+      ]
     },
     {
       "id": "ambiguous_missing_facts-03",
       "category": "AMBIGUOUS_MISSING_FACTS",
       "question": "Can I hack an enemy TAG?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "I need the TAG's exact profile/state, the Hacker's Device and Programs, and whether the TAG is inside the Hacker's Hacking Area. TAGs are normally Hackable, but the declared Program must be available to that Hacker, must allow that target, and must meet range/Hacking Area and State requirements.",
+      "draftConclusion": "UNRESOLVED",
+      "draftCertainty": "NEEDS CLARIFICATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 55,
+          "section": "HACKING AREA"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 58,
+          "section": "HACKING PROGRAMS QUICK REFERENCE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 59,
+          "section": "CARBONITE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 60,
+          "section": "OBLIVION"
+        }
+      ]
     },
     {
       "id": "ambiguous_missing_facts-04",
       "category": "AMBIGUOUS_MISSING_FACTS",
       "question": "Does Cover apply to this attack?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "I need the attack type, LoF, the target's contact with scenery, how much of its Silhouette is obscured, and any rule that removes Cover. Partial Cover requires contact with scenery that obscures part of the target's Silhouette; it gives −3 to the BS Attack and +3 to the Saving Roll. Total Cover blocks LoF-dependent BS Attacks. Marksmanship can ignore only the negative BS MOD from Partial Cover.",
+      "draftConclusion": "UNRESOLVED",
+      "draftCertainty": "NEEDS CLARIFICATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 41,
+          "section": "COVER"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 100,
+          "section": "MARKSMANSHIP"
+        }
+      ]
     },
     {
       "id": "ambiguous_missing_facts-05",
       "category": "AMBIGUOUS_MISSING_FACTS",
       "question": "Can this Trooper declare an ARO?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "I need the active Trooper's complete declared path and Skills, the reactive Trooper's LoF, ZoC/Hacking Area, State, and any relevant Skill such as Stealth or Sixth Sense. ARO eligibility is checked after each Skill declaration under the Order Expenditure Sequence; having LoF, ZoC, Hacking Area, or a special permission at the proper check determines whether an ARO exists.",
+      "draftConclusion": "UNRESOLVED",
+      "draftCertainty": "NEEDS CLARIFICATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 13,
+          "section": "ARO: AUTOMATIC REACTION ORDER"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 14,
+          "section": "ORDER EXPENDITURE SEQUENCE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 20,
+          "section": "ZONE OF CONTROL AND AROS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 55,
+          "section": "HACKING AREA IN ARO"
+        }
+      ]
     },
     {
       "id": "ambiguous_missing_facts-06",
       "category": "AMBIGUOUS_MISSING_FACTS",
       "question": "Can I deploy here with Infiltration?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "I need the Trooper's Infiltration value, intended position, table side, Exclusion Zone, and any mission deployment restrictions. Infiltration permits deployment outside the Deployment Zone in the user's half without a Roll; deploying in the opponent's half requires the specified PH Roll. A failed Roll moves the Trooper to the user's Deployment Zone edge and removes Marker/Decoy deployment options.",
+      "draftConclusion": "UNRESOLVED",
+      "draftCertainty": "NEEDS CLARIFICATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 96,
+          "section": "INFILTRATION"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 16,
+          "section": "DEPLOYMENT RESTRICTIONS"
+        }
+      ]
     },
     {
       "id": "ambiguous_missing_facts-07",
       "category": "AMBIGUOUS_MISSING_FACTS",
       "question": "Does Mimetism apply to this Roll?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "I need to know who is making which Roll, whether it is a BS Attack requiring LoF, Discover, CC Attack, or something else, and the user's printed Mimetism value. Mimetism applies its listed negative MOD to enemy LoF-dependent BS Attacks and Discover Rolls, but not to CC Attacks.",
+      "draftConclusion": "UNRESOLVED",
+      "draftCertainty": "NEEDS CLARIFICATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 102,
+          "section": "MIMETISM"
+        }
+      ]
     },
     {
       "id": "ambiguous_missing_facts-08",
       "category": "AMBIGUOUS_MISSING_FACTS",
       "question": "Can I use Combat Jump in this mission?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "I need the mission and any scenario-specific deployment rules, plus whether the Trooper and landing point meet Combat Jump's Requirements. Core Combat Jump is permitted, but missions can prohibit or modify Airborne Deployment, define Exclusion Zones, or change legal landing areas.",
+      "draftConclusion": "UNRESOLVED",
+      "draftCertainty": "NEEDS CLARIFICATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 89,
+          "section": "COMBAT JUMP"
+        },
+        {
+          "sourceId": "its-season-18",
+          "page": 17,
+          "section": "ITS GENERAL RULES"
+        }
+      ]
     },
     {
       "id": "ambiguous_missing_facts-09",
       "category": "AMBIGUOUS_MISSING_FACTS",
       "question": "Does this Specialist score the objective?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "I need the mission, the Trooper's exact Skills/profile, and which objective is being attempted. ITS normally recognizes Hackers, Doctors, Engineers, Forward Observers, Paramedics, Chain of Command, and Specialist Operatives as Specialists, but individual missions may restate the list or restrict how tasks are performed.",
+      "draftConclusion": "UNRESOLVED",
+      "draftCertainty": "NEEDS CLARIFICATION",
+      "draftCitations": [
+        {
+          "sourceId": "its-season-18",
+          "page": 17,
+          "section": "SPECIALIST TROOPS"
+        }
+      ]
     },
     {
       "id": "ambiguous_missing_facts-10",
       "category": "AMBIGUOUS_MISSING_FACTS",
       "question": "Can I join these Troopers into a Fireteam?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "I need the faction/sectorial, the exact Trooper profiles, the desired Fireteam type, and the current official Fireteams Chart. Fireteam legality is army-chart-specific: the minimum/maximum members, required units, wildcard notes, and availability must all permit the proposed team.",
+      "draftConclusion": "UNRESOLVED",
+      "draftCertainty": "NEEDS CLARIFICATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 132,
+          "section": "FIRETEAM CREATION"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 133,
+          "section": "FIRETEAMS CHARTS"
+        }
+      ]
     },
     {
       "id": "ambiguous_missing_facts-11",
       "category": "AMBIGUOUS_MISSING_FACTS",
       "question": "Does Sixth Sense let me shoot back?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "I need to know what action is directed at the Sixth Sense Trooper, whether it is an Attack, and what legal ARO it wants to declare. Sixth Sense allows responses only to Attacks directed at the user from outside LoF; it does not create a general right to shoot at every activation. The chosen BS Attack must still satisfy its own Requirements.",
+      "draftConclusion": "UNRESOLVED",
+      "draftCertainty": "NEEDS CLARIFICATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 39,
+          "section": "BS ATTACK"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 111,
+          "section": "SIXTH SENSE"
+        }
+      ]
     },
     {
       "id": "ambiguous_missing_facts-12",
       "category": "AMBIGUOUS_MISSING_FACTS",
       "question": "Can I Discover and shoot in the same Order?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Yes, if you mean the Discover + Attack maneuver and the second declaration is a legal Short Skill/Basic Short Skill. If the Marker reveals by ARO, no Discover Roll is needed; otherwise Discover must succeed before the Attack resolves. I need the intended Attack and target to confirm its Requirements.",
+      "draftConclusion": "UNRESOLVED",
+      "draftCertainty": "NEEDS CLARIFICATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 13,
+          "section": "TROOPER ACTIVATION"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 77,
+          "section": "DISCOVER + ATTACK"
+        }
+      ]
     },
     {
       "id": "ambiguous_missing_facts-13",
       "category": "AMBIGUOUS_MISSING_FACTS",
       "question": "Does this weapon hit automatically?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "I need the weapon or Skill and the mode being used. Direct Template Weapons do not make a BS Roll to hit affected targets, but legal template placement, target eligibility, Dodge, scenery, and cancellation can still prevent an effect. Other weapons normally require an Attack Roll unless their own rule says otherwise.",
+      "draftConclusion": "UNRESOLVED",
+      "draftCertainty": "NEEDS CLARIFICATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 37,
+          "section": "ATTACKS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 43,
+          "section": "TEMPLATE WEAPONS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 45,
+          "section": "DIRECT TEMPLATE WEAPONS"
+        }
+      ]
     },
     {
       "id": "ambiguous_missing_facts-14",
       "category": "AMBIGUOUS_MISSING_FACTS",
       "question": "Can I reroll this failed Roll?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "I need the Roll type and the rule, Skill, Equipment, or Command Token effect claimed to grant the reroll. Infinity has no universal permission to reroll a failure. A reroll is legal only when a specific rule permits it, such as an applicable Doctor/Engineer variant or Command Token operational use, and that rule controls the cost and replacement result.",
+      "draftConclusion": "UNRESOLVED",
+      "draftCertainty": "NEEDS CLARIFICATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 17,
+          "section": "COMMAND TOKENS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 90,
+          "section": "DOCTOR"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 91,
+          "section": "ENGINEER"
+        }
+      ]
     },
     {
       "id": "ambiguous_missing_facts-15",
       "category": "AMBIGUOUS_MISSING_FACTS",
       "question": "Does the target receive a Guts Roll?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "I need to know whether the Trooper survived, whether the successful Attack caused a Wound/State specified by the Guts rules, whether an exception such as Courage applies, and whether the scenario changes the result. A qualifying surviving Trooper makes one Guts Roll at the Conclusion of the Order; not every target of every Attack receives one.",
+      "draftConclusion": "UNRESOLVED",
+      "draftCertainty": "NEEDS CLARIFICATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 38,
+          "section": "GUTS ROLL"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 90,
+          "section": "COURAGE"
+        }
+      ]
     },
     {
       "id": "faq_its_override-01",
