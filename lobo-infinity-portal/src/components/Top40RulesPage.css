@@ -1,0 +1,56 @@
+.top40-rules-page {
+  display: grid;
+  gap: 18px;
+  overflow-x: clip;
+}
+
+.top40-rules-hero {
+  margin: 0 clamp(18px, 4vw, 46px);
+  overflow: hidden;
+  padding: 0;
+  border-color: rgba(193, 146, 66, 0.34);
+  border-radius: 12px;
+  background: #090a08;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(193, 49, 64, 0.1);
+}
+
+.top40-rules-hero img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.top40-rules-page .event-home-nav,
+.top40-rules-intro {
+  width: auto;
+  max-width: 1560px;
+  margin-inline: clamp(18px, 4vw, 46px);
+}
+
+.top40-rules-intro {
+  padding: clamp(1rem, 2vw, 1.4rem);
+  border-color: rgba(76, 201, 240, 0.26);
+  background: linear-gradient(145deg, rgba(14, 25, 34, 0.98), rgba(7, 12, 17, 0.96));
+}
+
+.top40-rules-intro h1 {
+  margin: 0.25rem 0 0.55rem;
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  line-height: 1.08;
+}
+
+.top40-rules-intro p:last-child {
+  max-width: 78ch;
+  margin: 0;
+  color: #d7e1e7;
+  line-height: 1.65;
+}
+
+@media (max-width: 720px) {
+  .top40-rules-hero,
+  .top40-rules-page .event-home-nav,
+  .top40-rules-intro {
+    margin-inline: 18px;
+  }
+}

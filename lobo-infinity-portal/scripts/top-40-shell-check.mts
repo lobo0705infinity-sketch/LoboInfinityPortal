@@ -145,12 +145,20 @@ const teamTournament = eventNavigation.find(
 )
 assert.deepEqual(Array.from(teamTournament?.capabilities ?? []), [
   'overview',
-  'teams',
   'standings',
   'results',
-  'registration',
   'rules',
 ])
+assert.match(
+  snapshotPublicAppSource,
+  /items\.filter\(item=>!\(teamTournament&&\(item==='teams'\|\|item==='registration'\)\)\)/,
+  'Public Team Tournament navigation must continue hiding Teams and Registration.',
+)
+assert.match(
+  snapshotPublicAppSource,
+  /item==='rules'&&eventId==='event-lobo-s-american-top-40'\?`\/event\/\$\{eventId\}\/rules`/,
+  'The public Top 40 Rules tab must use the event-specific route.',
+)
 
 assert.match(appSource, /path="\/event\/:eventId\/:section"/)
 assert.match(eventHomeSource, /type EventHomeSection = 'bracket' \| 'overview' \| 'registration' \| 'results' \| 'rules'/)
