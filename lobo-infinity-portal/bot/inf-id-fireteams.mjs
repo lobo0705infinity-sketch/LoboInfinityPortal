@@ -44,6 +44,18 @@ async function readCache(path) {
 
 async function captureOfficialPayload({ sectorialId, armyCode, browser }) {
   const endpoint = fireteamEndpoint(sectorialId)
+  try {
+    const response = await fetch(endpoint, {
+      headers: {
+        accept: 'application/json, text/plain, */*',
+        origin: 'https://infinityuniverse.com',
+        referer: 'https://infinityuniverse.com/',
+      },
+    })
+    if (response.ok) {
+      return { body: await response.json(), headers: Object.fromEntries(response.headers.entries()) }
+    }
+  } catch {}
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } })
   try {
     let captured
