@@ -43,6 +43,7 @@ export default async function handler(request, response) {
     const deferReadModelRebuild = scopedBackfill && body.deferReadModelRebuild === true
     const finalizeMigration = scopedBackfill && body.finalizeMigration === true
     const dryRun = scopedBackfill && body.dryRun === true
+    const exportSources = body.exportSources === true
     const requestedSnapshotKeys = Array.isArray(body.snapshotKeys)
       ? new Set(body.snapshotKeys.map((key) => String(key || '').trim()).filter(Boolean))
       : new Set()
@@ -52,6 +53,11 @@ export default async function handler(request, response) {
 
     if (!apiUrl) {
       response.status(500).json({ error: 'Missing API URL.', success: false })
+      return
+    }
+
+    if (exportSources && !isAuthorizedBackfillRequest(request, backfillToken)) {
+      response.status(401).json({ error: 'Backfill authentication is required for source export.', success: false })
       return
     }
 
@@ -74,8 +80,19 @@ export default async function handler(request, response) {
       ? { workerToken }
       : { sessionToken }
 
+    const authoritativeSources = await loadAuthoritativeSources(apiUrl, upstreamCredential)
+
+    if (exportSources) {
+      response.status(200).json({
+        sources: authoritativeSources.map(exportAuthoritativeSource),
+        success: true,
+        totalDistinctLists: new Set(authoritativeSources.map((source) => source.snapshotKey)).size,
+      })
+      return
+    }
+
     const sources = filterRequestedSources(
-      await loadAuthoritativeSources(apiUrl, upstreamCredential),
+      authoritativeSources,
       {
         sectorial: requestedSectorial,
         excludeSnapshotKeys: excludedSnapshotKeys,
@@ -208,6 +225,20 @@ export default async function handler(request, response) {
   }
 }
 
+export function exportAuthoritativeSource(source) {
+  return {
+    snapshotKey: String(source.snapshotKey || ''),
+    armyCode: String(source.armyCode || ''),
+    armyListId: String(source.armyListId || ''),
+    player: String(source.player || ''),
+    sourceId: String(source.sourceId || ''),
+    sourcePlayer: String(source.sourcePlayer || ''),
+    faction: String(source.faction || ''),
+    sectorial: String(source.sectorial || ''),
+    sourceType: String(source.sourceType || ''),
+  }
+}
+
 export function selectRefreshCandidates(sources, state) {
   return sources.filter((source) => {
     const current = state.get(source.snapshotKey)
@@ -235,6 +266,11 @@ function isAuthorizedScheduledRequest(request, workerToken, backfillToken = '') 
     (workerToken && safeEqual(suppliedSecret, workerToken)) ||
     (backfillToken && safeEqual(suppliedBackfillSecret, backfillToken)),
   )
+}
+
+function isAuthorizedBackfillRequest(request, backfillToken) {
+  const supplied = String(request.headers?.['x-army-backfill-token'] || '').trim()
+  return Boolean(backfillToken && safeEqual(supplied, backfillToken))
 }
 
 function isScheduledRequest(request) {
