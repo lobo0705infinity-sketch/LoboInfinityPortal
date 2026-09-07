@@ -35,12 +35,13 @@ export function createDeepSeekFallback({ fetchImpl = fetch, usagePath = process.
     const monthly = current.reduce((sum, item) => sum + item.cost, 0)
     if (hourly >= limits.hourly || monthly >= limits.monthly) return withLimitation(result, 'DeepSeek spending limit reached; returning the retrieval result.')
     const permittedIds = evidence.map((item) => item.id)
-    const baseInstruction = `Answer only from the supplied excerpts. Permitted evidence IDs: ${permittedIds.join(', ')}. Return strict JSON with exactly answer, conclusion, evidenceIds, interpretationRequired. evidenceIds must use only permitted IDs. Every material conclusion must be supported by a cited excerpt. Distinguish explicit rules from interpretation and say when unresolved. Preserve FAQ precedence and ITS scope.`
+    const baseInstruction = `Answer only from the supplied excerpts. Permitted evidence IDs: ${permittedIds.join(', ')}. Return JSON only, using this complete example shape: {"answer":"text","conclusion":"text","evidenceIds":["E1"],"interpretationRequired":false}. The response must contain exactly answer, conclusion, evidenceIds, and interpretationRequired. evidenceIds must use only permitted IDs. Every material conclusion must be supported by a cited excerpt. Distinguish explicit rules from interpretation and say when unresolved. Preserve FAQ precedence and ITS scope.`
     let validationError = ''
     let totalCost = 0
     try {
       for (let attempt = 0; attempt < 2; attempt++) {
-      const body = { model, temperature: 0, max_tokens: 700, messages: [{ role: 'system', content: baseInstruction }, { role: 'user', content: JSON.stringify({ question: result.question, excerpts: evidence, validationError, permittedEvidenceIds: permittedIds }) }] }
+      const corrective = validationError ? ` Previous output failed validation: ${validationError}. Return a non-empty JSON object now.` : ''
+      const body = { model, temperature: 0, max_tokens: 1200, response_format: { type: 'json_object' }, thinking: { type: 'disabled' }, messages: [{ role: 'system', content: `${baseInstruction}${corrective}` }, { role: 'user', content: JSON.stringify({ question: result.question, excerpts: evidence, permittedEvidenceIds: permittedIds, validationError }) }] }
       const response = await fetchImpl('https://api.deepseek.com/chat/completions', { method: 'POST', headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json' }, body: JSON.stringify(body), signal: AbortSignal.timeout(12000) })
       const contentType = String(response.headers?.get?.('content-type') || '').toLowerCase()
       const responseText = await response.text()
@@ -50,8 +51,12 @@ export function createDeepSeekFallback({ fetchImpl = fetch, usagePath = process.
       let payload
       try { payload = JSON.parse(responseText) } catch { logger.warn?.('DeepSeek rules model error: invalid provider JSON'); return withLimitation(result, 'DeepSeek returned invalid JSON; returning the retrieval result.') }
       const content = payload?.choices?.[0]?.message?.content
+      const finishReason = payload?.choices?.[0]?.finish_reason ?? null
+      const reasoningPresent = Boolean(payload?.choices?.[0]?.message?.reasoning_content)
+      logger.info?.(`DeepSeek rules response: finish_reason=${String(finishReason)} content_length=${typeof content === 'string' ? content.length : 0} reasoning_content_present=${reasoningPresent}`)
       let parsed = null
-      try { if (typeof content === 'string' && content.trim()) parsed = JSON.parse(content) } catch { parsed = null }
+      if (typeof content !== 'string' || !content.trim()) { validationError = 'provider returned null or empty message.content'; logger.warn?.(`DeepSeek rules provider-output error: ${validationError}; retrying=${attempt === 0}`); if (attempt === 1) return withLimitation(result, 'DeepSeek returned empty content; returning the retrieval result.'); continue }
+      try { parsed = JSON.parse(content) } catch { parsed = null }
       const promptTokens = Number(payload?.usage?.prompt_tokens || 0)
       const completionTokens = Number(payload?.usage?.completion_tokens || 0)
       const cost = promptTokens / 1e6 * INPUT_USD_PER_MILLION + completionTokens / 1e6 * OUTPUT_USD_PER_MILLION; totalCost += cost
