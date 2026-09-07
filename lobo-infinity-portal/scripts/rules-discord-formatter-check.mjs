@@ -14,4 +14,6 @@ const mimetism = JSON.stringify(formatRulesDiscordResponse({ question: 'What doe
 assert.match(mimetism, /EXPLICIT RULES ANSWER/); assert.doesNotMatch(mimetism, /\*\*YES\*\*/) 
 const zeroPain = JSON.stringify(formatRulesDiscordResponse({ question: 'Does Zero Pain suffer Firewall?', status: 'STATUS', versions: [], rules: [], deepSeek: { conclusion: 'UNRESOLVED', answer: 'UNRESOLVED', interpretationRequired: true } }))
 assert.equal((zeroPain.match(/UNRESOLVED/g) || []).length, 1)
+const internal = JSON.stringify(formatRulesDiscordResponse({ question: 'Does Zero Pain suffer Firewall?', status: 'STATUS', versions: [], rules: [], deepSeek: { conclusion: 'YES', answer: 'See E2 and E3/E4; E7 supports this.', interpretationRequired: true } }))
+assert.doesNotMatch(internal, /E2|E3|E4|E7/)
 console.log('Discord rules formatter conclusion and undefined/null regressions passed.')

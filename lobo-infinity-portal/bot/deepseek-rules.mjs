@@ -89,7 +89,7 @@ export function createDeepSeekFallback({ fetchImpl = fetch, usagePath = process.
       const cost = promptTokens / 1e6 * INPUT_USD_PER_MILLION + completionTokens / 1e6 * OUTPUT_USD_PER_MILLION; totalCost += cost
       usage.records.push({ timestamp: now(), cost, promptTokens, completionTokens, model }); await writeUsage(usagePath, usage)
       const check = validateModelOutput(parsed, evidence)
-      if (check.ok) return { ...result, deepSeek: { answer: parsed.answer, conclusion: parsed.conclusion, questionType: parsed.questionType || (/^(?:does|do|can|will|is|are|should)\b/i.test(result.question) ? 'binary' : 'explanatory'), certainty: parsed.certainty || (parsed.interpretationRequired ? 'EVIDENCE-BOUNDED INTERPRETATION' : 'EXPLICIT RULING'), interpretationRequired: parsed.interpretationRequired, evidenceIds: parsed.evidenceIds, cost: totalCost }, status: 'DEEPSEEK EVIDENCE-BOUNDED ANSWER' }
+      if (check.ok) { const interpreted = Boolean(parsed.interpretationRequired || result.noExplicitFaq || result.rules.length > 1); return { ...result, deepSeek: { answer: parsed.answer, conclusion: parsed.conclusion, questionType: parsed.questionType || (/^(?:does|do|can|will|is|are|should)\b/i.test(result.question) ? 'binary' : 'explanatory'), certainty: interpreted ? 'EVIDENCE-BOUNDED INTERPRETATION' : 'EXPLICIT RULING', interpretationRequired: interpreted, evidenceIds: parsed.evidenceIds, cost: totalCost }, status: 'DEEPSEEK EVIDENCE-BOUNDED ANSWER' } }
       validationError = check.reason
       logger.warn?.(`DeepSeek rules model validation error: ${check.reason}; evidence IDs returned: ${JSON.stringify(parsed?.evidenceIds ?? null)}`)
       if (check.unsupported || attempt === 1) return withLimitation(result, 'DeepSeek returned an unsupported answer; returning the retrieval result.')
@@ -110,6 +110,7 @@ function validateModelOutput(parsed, evidence) {
   if (!parsed.answer.trim() || !parsed.conclusion.trim()) return { ok: false, reason: 'answer and conclusion must be non-empty' }
   if (parsed.questionType !== undefined && !['binary', 'explanatory'].includes(parsed.questionType)) return { ok: false, reason: 'questionType must be binary or explanatory' }
   if (parsed.certainty !== undefined && !['EXPLICIT RULING', 'EVIDENCE-BOUNDED INTERPRETATION'].includes(parsed.certainty)) return { ok: false, reason: 'certainty must be explicit ruling or evidence-bounded interpretation' }
+  if (parsed.certainty === 'EXPLICIT RULING' && /no explicit (?:faq )?adjudication|not explicitly resolved/i.test(parsed.answer)) return { ok: false, reason: 'explicit certainty contradicts lack of explicit adjudication' }
   const citedText = parsed.evidenceIds.map((id) => evidence.find((item) => item.id === id)?.excerpt || '').join(' ').toLowerCase()
   const answerTerms = parsed.answer.toLowerCase().split(/\W+/).filter((term) => term.length > 5)
   if (!parsed.interpretationRequired && answerTerms.length && !answerTerms.some((term) => citedText.includes(term))) return { ok: false, reason: 'answer explanation is not supported by cited excerpts', unsupported: true }
