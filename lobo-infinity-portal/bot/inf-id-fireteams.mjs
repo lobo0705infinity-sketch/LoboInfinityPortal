@@ -48,7 +48,8 @@ async function captureOfficialPayload({ sectorialId, armyCode, browser }) {
   try {
     let captured
     page.on('response', async (response) => {
-      if (response.url() !== endpoint) return
+      const responseUrl = response.url().split('?')[0].replace(/\/$/, '')
+      if (responseUrl !== endpoint) return
       try { captured = { body: await response.json(), headers: await response.allHeaders() } } catch {}
     })
     await page.goto(`https://infinitytheuniverse.com/army/list/${encodeURIComponent(armyCode)}`, { waitUntil: 'commit', timeout: 45_000 }).catch(() => {})
