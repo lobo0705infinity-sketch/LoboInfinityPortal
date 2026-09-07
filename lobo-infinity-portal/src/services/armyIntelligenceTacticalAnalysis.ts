@@ -31,7 +31,7 @@ export type TacticalAnalysis = {
   perListNetworks: Array<{ label: string; components: string[] }>
 }
 
-const aroWeapon = /(?:sniper rifle|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach)/i
+const aroWeapon = /(?:sniper rifle|ap sniper rifle|multi sniper rifle|viral sniper rifle|plasma sniper rifle|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach)/i
 const deploymentSkill = /^(?:parachutist|combat jump|hidden deployment)(?:\s*[\[(].*[\])])?$/i
 const defensiveSkill = /^(?:camouflage|decoy|minelayer)(?:\s*[\[(].*[\])])?$/i
 const enhancement = /^(?:mimetism|multispectral visor|msv)(?:\s+(?:l|level)\s*\d+)?(?:\s*[\[(].*[\])])?$|^bs attack\s*\(\s*-3\s*\)$/i
@@ -79,10 +79,10 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
 
   return {
     categories: [
-      category('apex', 'Apex Gunfighters', 'BS 13+ profiles with a canonical numeric Burst 4+ ranged weapon.', (entry) => Number(entry.bs) >= 13 && canonicalWeapons(entry).some((weapon) => weapon.burstStatus === 'canonical' && weapon.burst !== null && weapon.burst >= 4), hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
+      category('apex', 'Apex Gunfighters', 'BS 13+ profiles with a canonical numeric Burst 4+ ranged weapon; Hidden Deployment with Burst 4+ takes precedence.', (entry) => isApexGunfighter(entry), hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
       category('hacking', 'Hacking Networks', 'Exact Hacker profiles, Hacking Devices, and verified repeater-delivery equipment.', (entry) => hackingComponents(entry).length > 0),
       category('aro', 'ARO Pieces', 'Profiles carrying a canonical Sniper Rifle, Panzerfaust, Flammenspeer, Heavy Rocket Launcher, or Feuerbach.', (entry) => canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name)))),
-      category('alternative', 'Alternative Attack Vectors', 'Profiles with Parachutist, Combat Jump, or Hidden Deployment.', (entry) => entry.skills.some((skill) => deploymentSkill.test(normalize(skill)))),
+      category('alternative', 'Alternative Attack Vectors', 'Profiles with Parachutist, Combat Jump, or Hidden Deployment, unless Apex Gunfighter takes precedence.', (entry) => entry.skills.some((skill) => deploymentSkill.test(normalize(skill))) && !isApexGunfighter(entry)),
       category('defensive', 'Defensive Network', 'Profiles with Camouflage, Decoy, or Minelayer; Mimetism alone does not qualify.', (entry) => entry.skills.some((skill) => defensiveSkill.test(normalize(skill)))),
     ],
     hackerListCount: hackerLists.size,
@@ -90,6 +90,12 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
     mode: decoded.length < 3 ? 'Observed Capabilities' : 'Submitted-List Trends',
     perListNetworks: decoded.length < 3 ? perListNetworks : [],
   }
+}
+
+function isApexGunfighter(entry: ArmyIntelligenceDecodedEntry) {
+  const hasBurst4 = canonicalWeapons(entry).some((weapon) => weapon.burstStatus === 'canonical' && weapon.burst !== null && weapon.burst >= 4)
+  if (!hasBurst4) return false
+  return Number(entry.bs) >= 13 || entry.skills.some((skill) => /^hidden deployment(?:\s*[\[(].*[\])])?$/i.test(normalize(skill)))
 }
 
 function toProfile(entry: ArmyIntelligenceDecodedEntry, listCount: number, denominator: number): TacticalProfile {

@@ -26,6 +26,9 @@ const deployable = entry('6', 'OBSERVER', 'Deployable Repeater', { equipment: ['
 const falsePositive = entry('7', 'REPEATER PANDA TROOP', 'TinBot', { equipment: ['Repeater', 'TinBot', 'ECM'] })
 const aro = entry('8', 'ARO', 'MULTI Sniper', { bs: 13, skills: ['Mimetism (-6)'], weapons: ['MULTI Sniper Rifle', 'Panzerfaust', 'Flammenspeer', 'Heavy Rocket Launcher', 'Feuerbach'], weaponProfiles: [canonicalBurst('MULTI Sniper Rifle', 2), canonicalBurst('Panzerfaust', 1)], fireteamEligibility: { state: 'verified', verified: true, teams: ['Core'] } })
 const alternative = entry('9', 'RAIDER', 'Airborne', { skills: ['Parachutist (Deployment Zone)', 'Combat Jump (+3)', 'Hidden Deployment'], weapons: ['Combi Rifle'] })
+const hiddenBurst = entry('13', 'UNKNOWN RANGER', 'AP Spitfire', { bs: 12, skills: ['Hidden Deployment'], weapons: ['AP Spitfire'], weaponProfiles: [canonicalBurst('AP Spitfire', 4)] })
+const suppliedArmyCode = decodeURIComponent('gTAJdXNhcmlhZG5hDUJhbGQgQnVyZ2VycyCBLAIBAQAKAIDoAQQAAACA5gEFAAAAgOYBCQAAAIDmAQEAAACA%2FwEBAAAAhiIBBwAAAIMHAYsuAAAAgwcBiy8AAACA9AECAAAAh1IBAgAAAgEABQCA7AECAAAAgwkBBAAAAIDoAQYAAACBAQEBAAAAgQEBAQAA')
+assert.ok(suppliedArmyCode.startsWith('gTAJdXNhcmlhZG5h'), 'supplied Unknown Ranger Army Code regression case must remain covered')
 const defensive = entry('10', 'SCOUT', 'Minelayer', { skills: ['Camouflage (-3)', 'Decoy (2)', 'Minelayer'], weapons: ['Shock Mines'] })
 const mimetismOnly = entry('11', 'NOT CAMO', 'Mimetism', { skills: ['Mimetism (-6)'] })
 const separateLoadout = entry('12', 'SCOUT', 'Rifle', { skills: [], weapons: ['Rifle'] })
@@ -52,6 +55,15 @@ assert.equal(analysis.categories.find((item) => item.id === 'alternative')?.prof
 assert.equal(analysis.categories.find((item) => item.id === 'defensive')?.profiles.length, 1)
 assert.ok(!analysis.categories.find((item) => item.id === 'defensive')?.profiles.some((profile) => profile.unit === 'NOT CAMO'))
 assert.equal(analysis.categories.find((item) => item.id === 'defensive')?.profiles.filter((profile) => profile.unit === 'SCOUT').length, 1, 'capabilities must not leak into a separate loadout')
+
+const sniperVariants = ['Sniper Rifle', 'AP Sniper Rifle', 'MULTI Sniper Rifle', 'Viral Sniper Rifle', 'Plasma Sniper Rifle']
+for (const [index, weapon] of sniperVariants.entries()) {
+  const result = buildTacticalAnalysis([decodedList(`Sniper ${index}`, [entry(`sniper-${index}`, 'SNIPER', weapon, { weapons: [weapon], weaponProfiles: [canonicalBurst(weapon, 2)] })])] as never)
+  assert.equal(result.categories.find((item) => item.id === 'aro')?.profiles.length, 1, `${weapon} must qualify as an ARO Piece`)
+}
+const hiddenBurstAnalysis = buildTacticalAnalysis([decodedList('Hidden Burst', [hiddenBurst])] as never)
+assert.equal(hiddenBurstAnalysis.categories.find((item) => item.id === 'apex')?.profiles[0].unit, 'UNKNOWN RANGER')
+assert.equal(hiddenBurstAnalysis.categories.find((item) => item.id === 'alternative')?.profiles.length, 0, 'Apex Gunfighter must take precedence over Hidden Deployment')
 
 const observed = buildTacticalAnalysis([decodedList('Observed', [hacker, defensive])] as never)
 assert.equal(observed.mode, 'Observed Capabilities')
