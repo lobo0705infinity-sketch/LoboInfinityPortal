@@ -411,7 +411,7 @@
       "id": "two_rule_interaction-01",
       "category": "TWO_RULE_INTERACTION",
       "question": "Does Zero Pain suffer the Firewall MOD when used through an enemy Repeater?",
-      "reviewStatus": "KNOWN_REGRESSION",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": {
         "expectedConclusion": "INTERPRETATION",
         "expectedCoreResult": "Zero Pain's own Roll does not take the Firewall MOD; Firewall modifies the enemy Comms Attack against the protected Trooper.",
@@ -423,178 +423,488 @@
         ]
       },
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "No. Zero Pain does not suffer Firewall itself. Zero Pain imposes a −3 WIP MOD on the enemy Comms Attacks it opposes; Firewall likewise applies its MOD to an enemy Comms Attack made against the protected Trooper. When an enemy Hacker attacks through your Repeater, that attacking Hacker's Comms Attack receives the applicable Firewall MOD—the Zero Pain user's own Roll does not.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 55,
+          "section": "FIREWALLS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 56,
+          "section": "REPEATER"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 61,
+          "section": "ZERO PAIN"
+        }
+      ]
     },
     {
       "id": "two_rule_interaction-02",
       "category": "TWO_RULE_INTERACTION",
       "question": "Does MSV1 ignore Mimetism (-6)?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "No. MSV1 reduces Mimetism (−6) to −3; it does not reduce it to 0. MSV1 reduces only Mimetism (−3) to 0.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 1"
+        }
+      ]
     },
     {
       "id": "two_rule_interaction-03",
       "category": "TWO_RULE_INTERACTION",
       "question": "Does Marksmanship ignore Cover?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Partly. When the Marksmanship user declares a BS Attack, it may ignore the −3 BS Attack MOD imposed by Partial Cover. The target still receives Partial Cover's +3 Saving Roll MOD; Marksmanship does not say to ignore that protection.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 41,
+          "section": "COVER"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 100,
+          "section": "MARKSMANSHIP"
+        }
+      ]
     },
     {
       "id": "two_rule_interaction-04",
       "category": "TWO_RULE_INTERACTION",
       "question": "Can Sensor Discover a Camouflaged Marker?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Yes. Declaring Sensor makes one Normal WIP+6 Roll to Discover all enemy Troopers, Weapons, and Equipment in Camouflaged or Hidden Deployment State inside the user's Zone of Control, without Range or Mimetism MODs and without requiring LoF. Sensor also grants +6 to ordinary Discover Rolls against Camouflage Markers.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 111,
+          "section": "SENSOR"
+        }
+      ]
     },
     {
       "id": "two_rule_interaction-05",
       "category": "TWO_RULE_INTERACTION",
       "question": "Does Sixth Sense negate Stealth?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Yes. Stealth explicitly states that it is not effective against Troopers with Sixth Sense. This means Stealth does not suppress that Sixth Sense Trooper's otherwise valid AROs.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 111,
+          "section": "SIXTH SENSE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 112,
+          "section": "STEALTH"
+        }
+      ]
     },
     {
       "id": "two_rule_interaction-06",
       "category": "TWO_RULE_INTERACTION",
       "question": "Can a Repeater extend the Hacking Area through another Repeater?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "No. Repeaters do not daisy-chain their Zones of Control. A Hacker's Hacking Area consists of the Hacker's own Zone of Control plus the Zones of Control of allied Repeaters and Deployable Repeaters. Each Repeater contributes its own Zone; being inside one Repeater does not cause another Repeater's Zone to be relayed through it.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 55,
+          "section": "HACKING AREA"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 56,
+          "section": "REPEATER"
+        }
+      ]
     },
     {
       "id": "two_rule_interaction-07",
       "category": "TWO_RULE_INTERACTION",
       "question": "Does Total Immunity ignore AP Ammunition?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "The question uses an obsolete or incomplete Skill name. N5.3 has specific Immunity types rather than a generic Total Immunity rule. If the Trooper has Immunity (AP), it ignores AP's special effect and treats it as Normal Ammunition; a different Immunity does not automatically protect against AP.",
+      "draftConclusion": "UNRESOLVED",
+      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 66,
+          "section": "AP AMMUNITION"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 96,
+          "section": "IMMUNITY AND CRITICAL HITS"
+        }
+      ]
     },
     {
       "id": "two_rule_interaction-08",
       "category": "TWO_RULE_INTERACTION",
       "question": "Does Nanoscreen provide Cover against a Template Weapon?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Nanoscreen does not grant Cover. Against a Direct Template BS Attack, there is no BS Attack Roll for its −3 MOD to affect, but the Nanoscreen user's +3 Saving Roll MOD still applies unless the Attack has the Comms Attack Trait. This is Nanoscreen protection, not Partial Cover.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 45,
+          "section": "DIRECT TEMPLATE WEAPONS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 125,
+          "section": "NANOSCREEN"
+        }
+      ]
     },
     {
       "id": "two_rule_interaction-09",
       "category": "TWO_RULE_INTERACTION",
       "question": "Can Spotlight be declared through a Repeater?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Yes, if the target is a legal Model inside the Hacker's Hacking Area. Hacking Programs act throughout the user's Hacking Area, and allied Repeaters extend that area; Spotlight's range is the Hacker's Hacking Area.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 55,
+          "section": "HACKING AREA"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 56,
+          "section": "REPEATER"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 60,
+          "section": "SPOTLIGHT"
+        }
+      ]
     },
     {
       "id": "two_rule_interaction-10",
       "category": "TWO_RULE_INTERACTION",
       "question": "Does a Direct Template Weapon cancel Camouflaged State?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Only if the Camouflaged Marker is legally affected and is forced to make a Saving Roll. You normally cannot choose a Camouflaged Marker as an Attack target without a rule such as Intuitive Attack. However, if a legal Direct Template Attack also affects the Marker and forces a Saving Roll, Camouflaged State is canceled for the entire Order.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 45,
+          "section": "DIRECT TEMPLATE WEAPONS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 49,
+          "section": "INTUITIVE ATTACK"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 157,
+          "section": "CAMOUFLAGED STATE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 158,
+          "section": "CAMOUFLAGED STATE — CANCELLATION"
+        }
+      ]
     },
     {
       "id": "two_rule_interaction-11",
       "category": "TWO_RULE_INTERACTION",
       "question": "Can a Trooper with Climbing Plus claim Cover while climbing?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "No. Climbing Plus allows other Skills while moving or hanging on a vertical surface, but it explicitly states that the Trooper does not benefit from Partial Cover MODs while on a vertical surface.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 88,
+          "section": "CLIMBING PLUS"
+        }
+      ]
     },
     {
       "id": "two_rule_interaction-12",
       "category": "TWO_RULE_INTERACTION",
       "question": "Does Super-Jump allow Cover while airborne?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "No. A Trooper cannot benefit from Partial Cover MODs during an Order in which it declares Jump. Super-Jump changes how Jump may be declared and performed; it does not remove Jump's Cover restriction.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 34,
+          "section": "JUMP"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 113,
+          "section": "SUPER-JUMP"
+        }
+      ]
     },
     {
       "id": "two_rule_interaction-13",
       "category": "TWO_RULE_INTERACTION",
       "question": "Does Shock Ammunition bypass Dogged?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Yes. Shock Ammunition cancels Dogged's special effects and causes the Trooper to pass directly to Dead State instead of continuing to function through Dogged.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 65,
+          "section": "SHOCK AMMUNITION"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 91,
+          "section": "DOGGED"
+        }
+      ]
     },
     {
       "id": "two_rule_interaction-14",
       "category": "TWO_RULE_INTERACTION",
       "question": "Does Viral Ammunition interact with Immunity (Shock)?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "The active N5.3 corpus does not define Viral Ammunition as a standalone ammunition rule, and N5 uses specific Immunity types rather than a generic interaction with 'Immunity (Shock).' The exact weapon profile and the exact Immunity printed on the target are required; the names alone do not support a ruling.",
+      "draftConclusion": "UNRESOLVED",
+      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 50,
+          "section": "WEAPON PROFILES"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 96,
+          "section": "IMMUNITY AND CRITICAL HITS"
+        }
+      ]
     },
     {
       "id": "two_rule_interaction-15",
       "category": "TWO_RULE_INTERACTION",
       "question": "Can Engineer remove Immobilized-B State?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Yes. With Silhouette contact and a successful Normal WIP Roll, Engineer may cancel all of the target's Engineer-cancelable States other than Unconscious, explicitly including Immobilized-B.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 91,
+          "section": "ENGINEER"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 165,
+          "section": "IMMOBILIZED-B STATE"
+        }
+      ]
     },
     {
       "id": "two_rule_interaction-16",
       "category": "TWO_RULE_INTERACTION",
       "question": "Can Doctor heal a Trooper using No Wound Incapacitation?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "No, not while the Trooper is using No Wound Incapacitation and remains out of Unconscious State. Doctor requires a target with VITA that is in Unconscious State. If the Trooper later is actually Unconscious and otherwise satisfies Doctor's Requirements, Doctor may be used normally.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 90,
+          "section": "DOCTOR"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 104,
+          "section": "NO WOUND INCAPACITATION"
+        }
+      ]
     },
     {
       "id": "two_rule_interaction-17",
       "category": "TWO_RULE_INTERACTION",
       "question": "Does a Deployable Repeater create a Hacking Area immediately?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Yes. A Deployable Repeater contains a Repeater, and Repeaters are automatically active. Once the Deployable Repeater Token has been legally placed on the table, its Zone of Control contributes to allied Hackers' Hacking Areas.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 55,
+          "section": "HACKING AREA"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 56,
+          "section": "REPEATER"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 122,
+          "section": "DEPLOYABLE REPEATER"
+        }
+      ]
     },
     {
       "id": "two_rule_interaction-18",
       "category": "TWO_RULE_INTERACTION",
       "question": "Can Berserk be used against a Camouflaged Marker?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "No, not by default. Berserk is an Attack and requires a target in LoF, while Attacks cannot normally be declared against a Camouflaged Marker and enemy Troopers cannot enter Silhouette contact with one. A separate rule that expressly allows attacking the Marker would be required.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 86,
+          "section": "BERSERK"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 157,
+          "section": "CAMOUFLAGED STATE"
+        }
+      ]
     },
     {
       "id": "two_rule_interaction-19",
       "category": "TWO_RULE_INTERACTION",
       "question": "Does Biometric Visor affect Impersonation Discover rolls?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Yes. A Biometric Visor ignores the WIP−3 MOD imposed by Impersonation-1 when Discovering that Marker. On a successful Discover, the Impersonation State is canceled and the Marker is replaced by the Model.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 120,
+          "section": "BIOMETRIC VISOR"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 165,
+          "section": "IMPERSONATION-1 STATE"
+        }
+      ]
     },
     {
       "id": "two_rule_interaction-20",
       "category": "TWO_RULE_INTERACTION",
       "question": "Can a Fireteam bonus modify Discover?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Yes, if the Fireteam qualifies for the Level 3 bonus: the relevant Fireteam members receive +3 to Discover Rolls. The separate BS Attack (+1 SD) and +1 BS Fireteam bonuses cannot be applied to Discover.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 135,
+          "section": "FIRETEAM BONUSES"
+        },
+        {
+          "sourceId": "infinity-faq-n5-v0.1",
+          "page": 3,
+          "section": "FIRETEAMS FAQ"
+        }
+      ]
     },
     {
       "id": "timing_sequence-01",
