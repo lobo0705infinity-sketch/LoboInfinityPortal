@@ -178,8 +178,8 @@ export function buildRulesReference(corpus,question,{maxResults=4}={}){
   const faq=faqIntent?(corpus.chunks.find((item)=>item.sourceId==='infinity-faq-n5-v0.1'&&item.canonicalTerm===faqTerm)??meaningful.find((item)=>item.sourceId==='infinity-faq-n5-v0.1'&&targets.some((target)=>item.normalized.includes(target)))):null
   if(faq&&!selected.some((item)=>item.sourceId===faq.sourceId&&item.pdfPage===faq.pdfPage))selected.unshift({...faq,displayRuleName:'FAQ CLARIFICATION'})
   if(!selected.length&&targets.length){const item=meaningful.find((candidate)=>asksIts||candidate.scope!=='ITS');if(item)selected.push(item)}
-  const metadataTerms=resolution.resolved.map((item)=>item.normalizedName)
-  for(const term of metadataTerms){const chart=corpus.chunks.find((chunk)=>chunk!==selected[0]&&chunk.normalized.includes(term)&&/name ps b target skill type/.test(chunk.normalized));if(chart&&!selected.some((item)=>item.sourceId===chart.sourceId&&item.pdfPage===chart.pdfPage))selected.push({...chart,displayRuleName:`${term.toUpperCase()} — PROGRAM CHART`})}
+  const metadataTerms=[...new Set([...resolution.resolved.map((item)=>item.normalizedName),...targets])]
+  for(const term of metadataTerms){const chart=corpus.chunks.find((chunk)=>chunk!==selected[0]&&chunk.normalized.includes(term)&&/name ps b target skill type/.test(chunk.normalized));if(chart&&!selected.some((item)=>item.sourceId===chart.sourceId&&item.pdfPage===chart.pdfPage))selected.push({...chart,canonicalTerm:term,displayRuleName:`${term.toUpperCase()} — PROGRAM CHART`})}
   selected.length=Math.min(selected.length,maxResults)
   const interactionConnector=/\b(and|through|while|when|with|without|against|same|see through|affects?|interacts?|versus|vs\.?|in a|in an)\b/i.test(clean),direct=(resolution.intent==='DIRECT_LOOKUP'&&!interactionConnector)||(selected.length===1&&targets.length===1&&!interactionConnector)
   let interactionEvidence=[]
