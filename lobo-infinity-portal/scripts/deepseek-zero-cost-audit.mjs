@@ -2,13 +2,13 @@ import assert from 'node:assert/strict'
 import { mkdtemp } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { createDeepSeekFallback } from '../bot/deepseek-rules.mjs'
+import { createDeepSeekRulesAnswer } from '../bot/deepseek-rules.mjs'
 
 process.env.DEEPSEEK_API_KEY = 'invalid-placeholder-key'
-const dir = await mkdtemp(join(tmpdir(), 'rules-audit-'))
-const questions = Array.from({ length: 50 }, (_, i) => `Mocked rules question ${i + 1}`)
-let calls = 0, realNetwork = 0
-const fallback = createDeepSeekFallback({ usagePath: join(dir, 'usage.json'), fetchImpl: async () => { calls++; return { ok: true, status: 200, headers: { get: () => 'application/json' }, text: async () => JSON.stringify({ choices: [{ message: { content: JSON.stringify({ answer: 'Supported by the supplied excerpt.', conclusion: 'UNRESOLVED', interpretationRequired: true, evidenceIds: ['E1'] }) } }], usage: { prompt_tokens: 1, completion_tokens: 1 } }) } }, logger: { info() {}, warn() {} } })
-for (const question of questions) { const before = calls; await fallback({ question, rules: [{ sourceId: 'rules', sourceLabel: 'Rules', pageLabel: 'p. 1', excerpt: 'Supplied excerpt.' }], versions: [{ id: 'rules', version: '5.3' }], status: 'DIRECT RULE REFERENCE' }); assert.ok(calls - before <= 1) }
-assert.equal(realNetwork, 0)
-console.log(`Validated ${questions.length} mocked questions; provider calls <=1 each; real network requests: 0`)
+const corpus = { manifest: { sources: [{ id: 'rules', title: 'Rules', version: 'N5.3', officialUrl: 'https://example.test' }, { id: 'faq', title: 'FAQ', version: 'v0.1', officialUrl: 'https://example.test' }, { id: 'its', title: 'ITS', version: '18', officialUrl: 'https://example.test' }] }, chunks: [{ sourceId: 'rules', printedPage: '1', pdfPage: 1, section: 'Rule', text: 'Complete rule text.' }, { sourceId: 'faq', printedPage: '1', pdfPage: 1, section: 'FAQ', text: 'Complete FAQ text.' }, { sourceId: 'its', printedPage: '1', pdfPage: 1, section: 'ITS', text: 'Complete ITS text.' }] }
+const dir = await mkdtemp(join(tmpdir(), 'rules-zero-cost-'))
+let calls = 0
+const provider = createDeepSeekRulesAnswer({ usagePath: join(dir, 'usage.json'), logger: { info() {}, warn() {} }, fetchImpl: async (_url, options) => { calls++; const body = JSON.parse(options.body); assert.match(body.messages[0].content, /Complete rule text/); assert.match(body.messages[0].content, /Complete FAQ text/); assert.match(body.messages[0].content, /Complete ITS text/); return { ok: true, status: 200, headers: { get: () => 'application/json' }, text: async () => JSON.stringify({ choices: [{ finish_reason: 'stop', message: { content: JSON.stringify({ answer: 'Answer.', conclusion: 'YES', certainty: 'EXPLICIT RULES ANSWER', citationIds: ['C0001'] }) } }], usage: { prompt_tokens: 1, completion_tokens: 1 } }) } } })
+for (let index = 1; index <= 50; index++) { const before = calls; await provider({ question: `Mocked question ${index}`, corpus }); assert.equal(calls - before, 1) }
+assert.equal(calls, 50)
+console.log('Validated 50 full-corpus mocked questions; one provider call each; real network requests: 0.')

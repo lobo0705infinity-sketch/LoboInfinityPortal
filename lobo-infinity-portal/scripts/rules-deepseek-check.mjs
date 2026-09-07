@@ -1,34 +1,80 @@
 import assert from 'node:assert/strict'
-import { mkdtemp, readFile } from 'node:fs/promises'
+import { mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { createDeepSeekFallback, shouldUseDeepSeek, readUsage, writeUsage } from '../bot/deepseek-rules.mjs'
-import { formatRulesDiscordResponse } from '../bot/rules-command.mjs'
+import { buildCompleteCorpusPrompt, calculateDeepSeekV4FlashCost, createDeepSeekRulesAnswer, isDeepSeekPeakPeriod, readUsage, validateDirectAnswer, writeUsage } from '../bot/deepseek-rules.mjs'
 
-const base = { question: 'Does Zero Pain suffer the -3 MOD when used through an enemy Repeater?', status: 'MULTIPLE RULES APPLY — INTERPRETATION MAY BE REQUIRED', rules: [{ sourceId: 'rules', sourceLabel: 'Rules', pageLabel: 'p. 10', excerpt: 'Only the supplied rule applies.' }], versions: [{ id: 'rules', version: '5.3' }] }
-const embed = formatRulesDiscordResponse({ ...base, deepSeek: { answer: 'The excerpts do not establish Firewall.', conclusion: 'Yes', interpretationRequired: true, evidenceIds: ['E1'] } }); const embedText = JSON.stringify(embed); assert.match(embedText, /EVIDENCE-BOUNDED INTERPRETATION/); assert.doesNotMatch(embedText, /undefined|null/)
-assert.equal(shouldUseDeepSeek({ ...base, status: 'DIRECT RULE REFERENCE' }), true)
+const corpus = {
+  manifest: { sources: [
+    { id: 'rules', title: 'Infinity Rules', version: 'N5.3', officialUrl: 'https://example.test/rules' },
+    { id: 'faq', title: 'Infinity FAQ', version: 'v0.1', officialUrl: 'https://example.test/faq' },
+    { id: 'its', title: 'ITS', version: '18', officialUrl: 'https://example.test/its' },
+  ] },
+  chunks: [
+    { sourceId: 'rules', printedPage: '125', pdfPage: 125, section: 'MSV1', text: 'MSV1 draws LoF through Zero Visibility Zones with a -6 MOD.' },
+    { sourceId: 'faq', printedPage: '2', pdfPage: 2, section: 'FAQ', text: 'FAQ clarification.' },
+    { sourceId: 'its', printedPage: '10', pdfPage: 10, section: 'ITS', text: 'ITS mission rule.' },
+  ],
+}
+const prompt = buildCompleteCorpusPrompt(corpus)
+assert.match(prompt, /MSV1 draws LoF/); assert.match(prompt, /FAQ clarification/); assert.match(prompt, /ITS mission rule/)
+assert.doesNotMatch(prompt, /search_rules|get_related_rules|get_rule_section/)
+
+process.env.DEEPSEEK_API_KEY = 'invalid-placeholder-key'
+process.env.DEEPSEEK_HOURLY_LIMIT_USD = '1'
+process.env.DEEPSEEK_MONTHLY_LIMIT_USD = '10'
+const dir = await mkdtemp(join(tmpdir(), 'deepseek-direct-rules-'))
+const usagePath = join(dir, 'usage.json')
 let calls = 0
-process.env.DEEPSEEK_API_KEY = 'test-key'
-const clear = await createDeepSeekFallback({ fetchImpl: async () => { calls++; throw new Error('must not call') } })({ ...base, status: 'DIRECT RULE REFERENCE' })
-assert.equal(calls, 1); assert.equal(clear.status, 'DIRECT RULE REFERENCE'); calls = 0
-const dir = await mkdtemp(join(tmpdir(), 'deepseek-rules-')); const usagePath = join(dir, 'usage.json')
+const content = JSON.stringify({ answer: 'Apply a -6 MOD.', conclusion: 'YES', certainty: 'EXPLICIT RULES ANSWER', citationIds: ['C0001'] })
+const answer = await createDeepSeekRulesAnswer({
+  usagePath,
+  logger: { info() {}, warn() {} },
+  fetchImpl: async (_url, options) => {
+    calls++
+    const sent = JSON.parse(options.body)
+    assert.equal(sent.messages.length, 2)
+    assert.match(sent.messages[0].content, /MSV1 draws LoF/)
+    assert.match(sent.messages[0].content, /FAQ clarification/)
+    assert.match(sent.messages[0].content, /ITS mission rule/)
+    assert.equal(sent.messages[1].content, 'What happens through smoke?')
+    assert.equal(sent.tools, undefined)
+    return { ok: true, status: 200, headers: { get: () => 'application/json' }, text: async () => JSON.stringify({ choices: [{ finish_reason: 'stop', message: { content } }], usage: { prompt_tokens: 100, completion_tokens: 20 } }) }
+  },
+})({ question: 'What happens through smoke?', corpus })
+assert.equal(calls, 1); assert.equal(answer.deepSeek.answer, 'Apply a -6 MOD.'); assert.equal(answer.deepSeek.sources[0].section, 'MSV1')
+assert.ok((await readFile(usagePath, 'utf8')).includes('promptTokens'))
+
+for (const [name, response] of [
+  ['empty', { ok: true, status: 200, headers: { get: () => 'application/json' }, text: async () => '' }],
+  ['html', { ok: true, status: 200, headers: { get: () => 'text/html' }, text: async () => '<html>' }],
+  ['http', { ok: false, status: 500, headers: { get: () => 'application/json' }, text: async () => '{}' }],
+  ['truncated', { ok: true, status: 200, headers: { get: () => 'application/json' }, text: async () => JSON.stringify({ choices: [{ finish_reason: 'length', message: { content } }], usage: { prompt_tokens: 1, completion_tokens: 1 } }) }],
+  ['tool', { ok: true, status: 200, headers: { get: () => 'application/json' }, text: async () => JSON.stringify({ choices: [{ finish_reason: 'tool_calls', message: { content: null, tool_calls: [{}] } }], usage: { prompt_tokens: 1, completion_tokens: 1 } }) }],
+]) {
+  let branchCalls = 0
+  const result = await createDeepSeekRulesAnswer({ usagePath: join(dir, `${name}.json`), logger: { info() {}, warn() {} }, fetchImpl: async () => { branchCalls++; return response } })({ question: name, corpus })
+  assert.equal(branchCalls, 1); assert.equal(result.deepSeek, undefined); assert.ok(result.limitation)
+}
+
+assert.equal(validateDirectAnswer({ answer: 'Answer', conclusion: 'YES', certainty: 'EXPLICIT RULES ANSWER', citationIds: ['C0001'] }, corpus).ok, true)
+for (const invalid of [
+  { answer: '', conclusion: 'YES', certainty: 'EXPLICIT RULES ANSWER', citationIds: ['C0001'] },
+  { answer: 'x', conclusion: 'MAYBE', certainty: 'EXPLICIT RULES ANSWER', citationIds: ['C0001'] },
+  { answer: 'x', conclusion: 'YES', certainty: 'CERTAIN', citationIds: ['C0001'] },
+  { answer: 'x', conclusion: 'YES', certainty: 'EXPLICIT RULES ANSWER', citationIds: ['BAD'] },
+]) assert.equal(validateDirectAnswer(invalid, corpus).ok, false)
+
 assert.deepEqual((await readUsage(join(dir, 'missing.json'))).records, [])
-for (const [index, raw] of ['', '   ', '{bad json', '{"records":{}}'].entries()) { const p = join(dir, `ledger-${index}.json`); await (await import('node:fs/promises')).writeFile(p, raw); assert.deepEqual((await readUsage(p, { warn() {} })).records, []) }
-await writeUsage(join(dir, 'valid.json'), { records: [{ timestamp: 1, cost: 0.01 }] }); assert.equal((await readUsage(join(dir, 'valid.json'))).records.length, 1)
-process.env.DEEPSEEK_API_KEY = 'test-key'; process.env.DEEPSEEK_MODEL = 'deepseek-v4-flash'; process.env.DEEPSEEK_HOURLY_LIMIT_USD = '1'; process.env.DEEPSEEK_MONTHLY_LIMIT_USD = '10'
-const answer = JSON.stringify({ answer: 'The supplied rule applies.', conclusion: 'The rule applies.', evidenceIds: ['E1'], interpretationRequired: true })
-const fallback = createDeepSeekFallback({ usagePath, fetchImpl: async (_url, options) => { calls++; const sent = JSON.parse(options.body); assert.equal(sent.response_format.type, 'json_object'); assert.deepEqual(sent.thinking, { type: 'disabled' }); assert.match(sent.messages[0].content, /JSON/); assert.match(sent.messages[1].content, /Only the supplied rule applies/); assert.doesNotMatch(sent.messages[1].content, /entire corpus/i); return { ok: true, status: 200, headers: { get: () => 'application/json' }, async text() { return JSON.stringify({ choices: [{ message: { content: answer }, finish_reason: 'stop' }], usage: { prompt_tokens: 10, completion_tokens: 10 } }) } } } })
-const result = await fallback(base); assert.equal(calls, 1); assert.equal(result.deepSeek.interpretationRequired, true)
-let retryCalls = 0
-const retried = await createDeepSeekFallback({ usagePath: join(dir, 'retry.json'), fetchImpl: async (_url, options) => { retryCalls++; const sent = JSON.parse(options.body); const content = retryCalls === 1 ? JSON.stringify({ answer: 'The rule applies.', conclusion: 'The rule applies.', evidenceIds: ['BAD'], interpretationRequired: false }) : answer; assert.match(sent.messages[1].content, retryCalls === 1 ? /E1/ : /outside the permitted/); return { ok: true, status: 200, headers: { get: () => 'application/json' }, text: async () => JSON.stringify({ choices: [{ message: { content } }], usage: { prompt_tokens: 10, completion_tokens: 10 } }) } } })(base)
-assert.equal(retryCalls, 1); assert.ok(retried.limitation)
-let emptyCalls = 0
-const emptyThenSuccess = await createDeepSeekFallback({ usagePath: join(dir, 'empty-retry.json'), fetchImpl: async () => { emptyCalls++; const content = emptyCalls === 1 ? null : answer; return { ok: true, status: 200, headers: { get: () => 'application/json' }, text: async () => JSON.stringify({ choices: [{ message: { content, ...(emptyCalls === 1 ? { reasoning_content: 'redacted' } : {}) }, finish_reason: emptyCalls === 1 ? 'stop' : 'stop' }], usage: { prompt_tokens: 10, completion_tokens: 10 } }) } } })(base)
-assert.equal(emptyCalls, 1); assert.ok(emptyThenSuccess.limitation)
-let unsupportedCalls = 0
-const unsupported = await createDeepSeekFallback({ usagePath: join(dir, 'unsupported.json'), fetchImpl: async () => { unsupportedCalls++; return { ok: true, status: 200, headers: { get: () => 'application/json' }, text: async () => JSON.stringify({ choices: [{ message: { content: JSON.stringify({ answer: 'Dragons are legal.', conclusion: 'YES', evidenceIds: ['E1'], interpretationRequired: false }) } }], usage: { prompt_tokens: 1, completion_tokens: 1 } }) } } })(base)
-assert.equal(unsupportedCalls, 1); assert.ok(unsupported.limitation)
-for (const provider of [{ headers: { get: () => 'application/json' }, status: 200, ok: true, text: async () => '' }, { headers: { get: () => 'text/html' }, status: 200, ok: true, text: async () => '<html>' }]) { const safe = await createDeepSeekFallback({ usagePath: join(dir, `provider-${calls}`), fetchImpl: async () => provider, logger: { warn() {} } })(base); assert.ok(safe.limitation); calls++ }
-const limited = createDeepSeekFallback({ usagePath, fetchImpl: async () => { throw new Error('blocked') } }); const again = await limited(base); assert.match(again.limitation, /DeepSeek/); assert.ok((await readFile(usagePath, 'utf8')).includes('promptTokens'))
-console.log('DeepSeek rules routing, evidence bounds, citation validation, failure fallback, and durable usage checks passed.')
+for (const [index, raw] of ['', ' ', '{bad', '{"records":{}}'].entries()) { const path = join(dir, `bad-${index}.json`); await writeFile(path, raw); assert.deepEqual((await readUsage(path, { warn() {} })).records, []) }
+await writeUsage(join(dir, 'atomic.json'), { records: [{ timestamp: 1, cost: 0.01 }] })
+
+const mondayPeak = Date.parse('2026-09-07T02:00:00Z')
+const mondayOffPeak = Date.parse('2026-09-07T12:00:00Z')
+assert.equal(isDeepSeekPeakPeriod(mondayPeak), true)
+assert.equal(isDeepSeekPeakPeriod(mondayOffPeak), false)
+assert.deepEqual(calculateDeepSeekV4FlashCost({ prompt_tokens: 200000, prompt_cache_hit_tokens: 150000, prompt_cache_miss_tokens: 50000, completion_tokens: 500 }, mondayPeak), {
+  promptTokens: 200000, completionTokens: 500, cacheHitTokens: 150000, cacheMissTokens: 50000, ratePeriod: 'peak', cost: 150000 / 1e6 * 0.014 + 50000 / 1e6 * 0.44 + 500 / 1e6 * 1.32,
+})
+assert.equal(calculateDeepSeekV4FlashCost({ prompt_tokens: 200000, completion_tokens: 500 }, mondayOffPeak).cost, 200000 / 1e6 * 0.22 + 500 / 1e6 * 0.66)
+console.log('Direct full-corpus DeepSeek path passed with exactly one mocked request and zero real network requests.')
