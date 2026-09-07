@@ -12,6 +12,8 @@ assert.equal(benchmark.cases.length, 100)
 assert.equal(benchmark.policy.networkRequestsDuringValidation, 0)
 assert.equal(benchmark.policy.paidProviderRequestsDuringValidation, 0)
 assert.equal(benchmark.policy.approvedAnswersRequiredBeforeRelease, 100)
+assert.equal(benchmark.semanticAudit?.auditedCases, 100)
+assert.equal(benchmark.semanticAudit?.totalCases, 100)
 
 const ids = new Set()
 const counts = Object.fromEntries([...allowedCategories].map((category) => [category, 0]))
@@ -24,6 +26,9 @@ for (const item of benchmark.cases) {
   assert.equal(typeof item.question, 'string')
   assert.ok(item.question.trim().length >= 8)
   counts[item.category]++
+  assert.equal(item.semanticAuditStatus, 'PASSED', `Semantic audit incomplete: ${item.id}`)
+  assert.equal(typeof item.semanticAuditDate, 'string', `Missing semantic audit date: ${item.id}`)
+  assert.ok(item.semanticAuditBasis?.trim(), `Missing semantic audit basis: ${item.id}`)
 
   if (item.reviewStatus === 'VERIFIED_DRAFT') {
     assert.ok(item.draftAnswer?.trim(), `Missing draft answer: ${item.id}`)
@@ -49,4 +54,4 @@ for (const item of benchmark.cases) {
 assert.deepEqual(counts, benchmark.expectedCategoryCounts)
 assert.equal(benchmark.cases.filter((item) => item.reviewStatus === 'VERIFIED_DRAFT').length, 100)
 assert.equal(benchmark.cases.filter((item) => item.reviewStatus === 'APPROVED').length, 0)
-console.log('Validated 100 citation-backed or safe-escalation draft answers, 0 falsely approved answers, and 0 network requests.')
+console.log('Validated 100 semantically audited, citation-backed or safe-escalation drafts; 0 falsely approved answers; 0 network requests.')
