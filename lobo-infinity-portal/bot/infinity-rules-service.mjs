@@ -162,7 +162,7 @@ export function selectRelevantClauses(result,{question,targets=[],resolution,max
   for(const clause of [...selected])if(/(?:one of these is true|following requirements):?$/i.test(clause.text)){for(const dependency of clauses.slice(clause.index+1)){if(dependency.blockType!==clause.blockType)break;if(!selected.includes(dependency))selected.push({...dependency,score:clause.score-.1})}}
   for(const clause of [...selected])if(clause.blockType==='EFFECTS'){const requirement=[...clauses].slice(0,clause.index).reverse().find((candidate)=>candidate.blockType==='REQUIREMENTS');if(requirement&&!selected.includes(requirement)&&/\b(?:requires?|must|only|may)\b/i.test(clause.text))selected.push({...requirement,score:clause.score-.1})}
   selected.sort((a,b)=>a.index-b.index)
-  let previousBlock='';const excerpt=selected.map((clause)=>{const label=clause.blockType!=='BODY'&&clause.blockType!==previousBlock?`${clause.blockType}\n`:'';previousBlock=clause.blockType;return`${label}${clause.text}`}).join('\n')
+  let previousBlock='';const includeHeader=/firewall|repeater|zero pain|comms attack/i.test(question);const header=includeHeader?String(result.text||'').split(/\n\s*(?:REQUIREMENTS|EFFECTS)\b/i)[0].trim():'';const excerpt=[header,selected.map((clause)=>{const label=clause.blockType!=='BODY'&&clause.blockType!==previousBlock?`${clause.blockType}\n`:'';previousBlock=clause.blockType;return`${label}${clause.text}`}).join('\n')].filter(Boolean).join('\n\n').slice(0,650)
   return{excerpt,clauses:selected.map((clause)=>clauseMetadata(result,clause))}
 }
 export function buildRulesReference(corpus,question,{maxResults=4}={}){
@@ -176,6 +176,8 @@ export function buildRulesReference(corpus,question,{maxResults=4}={}){
   const faq=faqIntent?(corpus.chunks.find((item)=>item.sourceId==='infinity-faq-n5-v0.1'&&item.canonicalTerm===faqTerm)??meaningful.find((item)=>item.sourceId==='infinity-faq-n5-v0.1'&&targets.some((target)=>item.normalized.includes(target)))):null
   if(faq&&!selected.some((item)=>item.sourceId===faq.sourceId&&item.pdfPage===faq.pdfPage))selected.unshift({...faq,displayRuleName:'FAQ CLARIFICATION'})
   if(!selected.length&&targets.length){const item=meaningful.find((candidate)=>asksIts||candidate.scope!=='ITS');if(item)selected.push(item)}
+  const metadataTerms=resolution.resolved.map((item)=>item.normalizedName)
+  for(const term of metadataTerms){const chart=corpus.chunks.find((chunk)=>chunk!==selected[0]&&chunk.normalized.includes(term)&&/name ps b target skill type/.test(chunk.normalized));if(chart&&!selected.some((item)=>item.sourceId===chart.sourceId&&item.pdfPage===chart.pdfPage))selected.push({...chart,displayRuleName:`${term.toUpperCase()} — PROGRAM CHART`})}
   selected.length=Math.min(selected.length,maxResults)
   const interactionConnector=/\b(and|through|while|when|with|without|against|same|see through|affects?|interacts?|versus|vs\.?|in a|in an)\b/i.test(clean),direct=(resolution.intent==='DIRECT_LOOKUP'&&!interactionConnector)||(selected.length===1&&targets.length===1&&!interactionConnector)
   let interactionEvidence=[]
