@@ -56,7 +56,7 @@ const answer = await createDeepSeekRulesAnswer({
     assert.equal(sent.model, 'deepseek-v4-pro')
     assert.deepEqual(sent.thinking, { type: 'enabled' })
     assert.equal(sent.reasoning_effort, 'high')
-    assert.equal(sent.max_tokens, 4000)
+    assert.equal(sent.max_tokens, 8000)
     return { ok: true, status: 200, headers: { get: () => 'application/json' }, text: async () => JSON.stringify({ choices: [{ finish_reason: 'stop', message: { content } }], usage: { prompt_tokens: 100, completion_tokens: 20 } }) }
   },
 })({ question: 'What happens through smoke?', corpus })

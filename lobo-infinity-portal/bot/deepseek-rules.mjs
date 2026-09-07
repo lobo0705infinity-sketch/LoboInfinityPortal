@@ -8,7 +8,7 @@ const V4_PRO_PRICING = Object.freeze({
   peak: { cacheHitInput: 0.044, cacheMissInput: 1.32, output: 3.96 },
 })
 const DEEPSEEK_RULES_MODEL = 'deepseek-v4-pro'
-const MAX_OUTPUT_TOKENS = 4000
+const MAX_OUTPUT_TOKENS = 8000
 const REQUEST_TIMEOUT_MS = 60000
 const ESTIMATED_TOKENS_PER_CHARACTER = 0.3
 const MAX_EVIDENCE_CHARACTERS = 60000
@@ -105,7 +105,10 @@ export function createDeepSeekRulesAnswer({ fetchImpl = fetch, usagePath = proce
       try { payload = JSON.parse(responseText) } catch { return unavailable(cleanQuestion, versions, 'DeepSeek returned an unusable response.') }
       const charge = await recordProviderUsage({ payload, usage, usagePath, now: timestamp, model })
       const choice = payload?.choices?.[0]
-      if (choice?.finish_reason === 'length' || choice?.message?.tool_calls?.length) return unavailable(cleanQuestion, versions, 'DeepSeek did not complete its answer.')
+      const finishReason = String(choice?.finish_reason || 'missing')
+      logger.info?.(`DeepSeek rules provider completion: finish_reason=${finishReason} content_length=${String(choice?.message?.content || '').length} reasoning_content_present=${Boolean(choice?.message?.reasoning_content)}`)
+      if (finishReason === 'length') return unavailable(cleanQuestion, versions, 'DeepSeek exhausted its answer budget before completing the response.')
+      if (choice?.message?.tool_calls?.length) return unavailable(cleanQuestion, versions, 'DeepSeek returned an unsupported tool request.')
       let parsed
       try { parsed = JSON.parse(choice?.message?.content) } catch { return unavailable(cleanQuestion, versions, 'DeepSeek returned an unusable answer.') }
       const checked = validateDirectAnswer(parsed, corpus, evidence.evidenceIds)
