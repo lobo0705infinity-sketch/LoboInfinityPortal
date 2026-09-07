@@ -1073,7 +1073,7 @@ function IntelligenceBrief({ analysis, faction }: { analysis: TacticalAnalysis; 
 }
 
 function TacticalProfileRow({ category, profile }: { category: string; profile: TacticalProfile }) {
-  const relevantWeapons = profile.weapons.filter((weapon, index) => category === 'apex' ? (weapon.burst ?? 0) >= 4 : category === 'aro' ? /sniper rifle|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach/i.test(weapon.name) : category === 'defensive' ? /mine|deployable/i.test(weapon.name) : category === 'alternative' ? index === 0 : false)
+  const relevantWeapons = profile.weapons.filter((weapon, index) => category === 'apex' ? (weapon.burst ?? 0) >= 4 : category === 'aro' ? /sniper rifle|missile launcher|portable autocannon|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach/i.test(weapon.name) : category === 'defensive' ? /mine|deployable/i.test(weapon.name) : category === 'alternative' ? index === 0 : false)
   return <div className="army-intelligence-tactical-profile">
     <div><strong>{profile.unit}</strong><span>{profile.profile}</span></div>
     <div className="army-intelligence-tactical-badges">

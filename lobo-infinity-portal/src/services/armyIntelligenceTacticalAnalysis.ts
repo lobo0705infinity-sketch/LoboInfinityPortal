@@ -31,7 +31,7 @@ export type TacticalAnalysis = {
   perListNetworks: Array<{ label: string; components: string[] }>
 }
 
-const aroWeapon = /(?:sniper rifle|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach)/i
+const aroWeapon = /(?:sniper rifle|ap sniper rifle|multi sniper rifle|viral sniper rifle|plasma sniper rifle|missile launcher|portable autocannon|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach)/i
 const deploymentSkill = /^(?:parachutist|combat jump|hidden deployment)(?:\s*[\[(].*[\])])?$/i
 const defensiveSkill = /^(?:camouflage|decoy|minelayer)(?:\s*[\[(].*[\])])?$/i
 const enhancement = /^(?:mimetism|multispectral visor|msv)(?:\s+(?:l|level)\s*\d+)?(?:\s*[\[(].*[\])])?$|^bs attack\s*\(\s*-3\s*\)$/i
@@ -81,7 +81,7 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
     categories: [
       category('apex', 'Apex Gunfighters', 'BS 13+ profiles with a canonical numeric Burst 4+ ranged weapon.', (entry) => Number(entry.bs) >= 13 && canonicalWeapons(entry).some((weapon) => weapon.burstStatus === 'canonical' && weapon.burst !== null && weapon.burst >= 4), hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
       category('hacking', 'Hacking Networks', 'Exact Hacker profiles, Hacking Devices, and verified repeater-delivery equipment.', (entry) => hackingComponents(entry).length > 0),
-      category('aro', 'ARO Pieces', 'Profiles carrying a canonical Sniper Rifle, Panzerfaust, Flammenspeer, Heavy Rocket Launcher, or Feuerbach.', (entry) => canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name)))),
+      category('aro', 'ARO Pieces', 'Profiles carrying a canonical sniper rifle, Missile Launcher, Portable Autocannon, Panzerfaust, Flammenspeer, Heavy Rocket Launcher, or Feuerbach.', (entry) => canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name)))),
       category('alternative', 'Alternative Attack Vectors', 'Profiles with Parachutist, Combat Jump, or Hidden Deployment.', (entry) => entry.skills.some((skill) => deploymentSkill.test(normalize(skill)))),
       category('defensive', 'Defensive Network', 'Profiles with Camouflage, Decoy, or Minelayer; Mimetism alone does not qualify.', (entry) => entry.skills.some((skill) => defensiveSkill.test(normalize(skill)))),
     ],

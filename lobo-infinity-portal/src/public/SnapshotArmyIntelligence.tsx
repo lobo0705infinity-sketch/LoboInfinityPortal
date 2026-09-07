@@ -267,7 +267,7 @@ function IntelligenceBrief({ analysis, faction }: { analysis: ReturnType<typeof 
 }
 
 function SnapshotTacticalProfile({ category, profile }: { category: string; profile: TacticalProfile }) {
-  const weapons = profile.weapons.filter((weapon, index) => category === 'apex' ? (weapon.burst ?? 0) >= 4 : category === 'aro' ? /sniper rifle|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach/i.test(weapon.name) : category === 'defensive' ? /mine|deployable/i.test(weapon.name) : category === 'alternative' ? index === 0 : false)
+  const weapons = profile.weapons.filter((weapon, index) => category === 'apex' ? (weapon.burst ?? 0) >= 4 : category === 'aro' ? /sniper rifle|missile launcher|portable autocannon|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach/i.test(weapon.name) : category === 'defensive' ? /mine|deployable/i.test(weapon.name) : category === 'alternative' ? index === 0 : false)
   return <div className="army-intelligence-tactical-profile"><div><strong>{profile.unit}</strong><span>{profile.profile}</span></div><div className="army-intelligence-tactical-badges">{profile.bs !== null ? <span>BS {profile.bs}</span> : null}{weapons.map((weapon) => <span key={`${weapon.name}:${weapon.burst}`}>{weapon.name}{weapon.burst === null ? ' · Burst unavailable' : ` · Burst ${weapon.burst}`}</span>)}{profile.badges.map((badge) => <span key={badge}>{badge}</span>)}{profile.linkability === 'verified' ? <span className="is-verified">Verified linkable</span> : profile.linkability === 'verified-false' ? <span>Verified not linkable</span> : <span>Fireteam status unknown</span>}</div><small>{profile.listCount} {profile.listCount === 1 ? 'list' : 'lists'} · {Math.round(profile.percentage)}%</small></div>
 }
 

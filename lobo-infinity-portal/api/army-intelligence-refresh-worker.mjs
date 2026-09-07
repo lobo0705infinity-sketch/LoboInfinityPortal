@@ -9,6 +9,10 @@ import {
   decodeArmyListToFiles,
 } from '../scripts/infinity-army-decode.mjs'
 import { createCanonicalEnricher } from '../scripts/army-intelligence-canonical-enrichment.mjs'
+import {
+  ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION,
+  snapshotHasCompleteTacticalMetadata,
+} from '../scripts/army-intelligence-snapshot-schema.mjs'
 
 const require = createRequire(import.meta.url)
 const CanonicalSnapshotFactory = require('../backend/CanonicalSnapshotFactory.gs')
@@ -174,6 +178,7 @@ export function selectRefreshCandidates(sources, state) {
       current.armyCodeHash !== source.armyCodeHash ||
       current.status !== 'decoded' ||
       current.decoderVersion !== ARMY_INTELLIGENCE_DECODER_VERSION ||
+      current.tacticalSchemaVersion !== ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION ||
       !current.hasProfileMetadata ||
       !current.hasTacticalMetadata
     )
@@ -247,6 +252,7 @@ async function loadSnapshotState(apiUrl) {
       decoderVersion: list.decoded?.decoderVersion || '',
       hasProfileMetadata: snapshotHasDecodedProfileMetadata(list),
       hasTacticalMetadata: snapshotHasTacticalMetadata(list),
+      tacticalSchemaVersion: list.tacticalSchemaVersion || list.decoded?.tacticalSchemaVersion || '',
       status: list.status,
     })
   }
@@ -254,8 +260,7 @@ async function loadSnapshotState(apiUrl) {
 }
 
 function snapshotHasTacticalMetadata(list) {
-  if (list.status !== 'decoded' || !list.decoded || list.decoded.enrichment?.status !== 'complete') return false
-  return (list.decoded.combatGroups || []).every((group) => (group.entries || []).every((entry) => Object.hasOwn(entry, 'bs') && Object.hasOwn(entry, 'weaponProfiles') && Object.hasOwn(entry, 'fireteamEligibility')))
+  return snapshotHasCompleteTacticalMetadata(list)
 }
 
 function snapshotHasDecodedProfileMetadata(list) {

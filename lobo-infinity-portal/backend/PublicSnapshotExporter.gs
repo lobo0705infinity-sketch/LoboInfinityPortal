@@ -1255,6 +1255,7 @@ function buildPublicSnapshotArmyIntelligence_(readModel) {
           faction: String(decoded.faction || list.faction || ""),
           sectorial: String(decoded.sectorial || list.sectorial || ""),
           status: String(list.status || ""), decodedAt: String(list.decodedAt || ""),
+          tacticalSchemaVersion: String(list.tacticalSchemaVersion || decoded.tacticalSchemaVersion || ""),
           decoded: buildPublicSnapshotDecodedArmy_(decoded)
         };
       }),
@@ -1363,7 +1364,7 @@ function buildPublicSnapshotArmyLink_(armyLink, armyCode) {
 
 function buildPublicSnapshotDecodedArmy_(decoded) {
   return {
-    decoderVersion: String(decoded.decoderVersion || ""), enrichment: decoded.enrichment || null, faction: String(decoded.faction || ""),
+    decoderVersion: String(decoded.decoderVersion || ""), tacticalSchemaVersion: String(decoded.tacticalSchemaVersion || ""), enrichment: decoded.enrichment || null, faction: String(decoded.faction || ""),
     sectorial: String(decoded.sectorial || ""), listName: String(decoded.listName || ""),
     totals: {
       combatGroups: Number(decoded.totals && decoded.totals.combatGroups) || 0,

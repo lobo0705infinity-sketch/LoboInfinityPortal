@@ -516,6 +516,7 @@ export type ArmyIntelligenceDecodedList = {
     entries: ArmyIntelligenceDecodedEntry[]
   }>
   decoderVersion: string
+  tacticalSchemaVersion?: string
   enrichment?: { capturedAt?: string; datasetId?: string; enrichedAt?: string; fireteamStatus?: string; officialUnitVersion?: string | null; payloadVersion?: string | null; provider?: string; sourceUrls?: string[]; status?: string }
   faction: string
   listName: string
@@ -555,6 +556,7 @@ export type ArmyIntelligenceList = {
   sourcePlayer: string
   sourceType: string
   status: 'decoded' | 'failed' | 'pending'
+  tacticalSchemaVersion?: string
 }
 
 export type ArmyIntelligenceArmyList = {

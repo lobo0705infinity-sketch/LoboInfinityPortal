@@ -192,7 +192,42 @@ function validateArmyIntelligenceRefreshSnapshot(source, snapshot) {
 
     if (getArmyIntelligenceHash(snapshot.decoded.armyCode) !== expected.armyCodeHash)
       throw new Error("Army Intelligence snapshot Army Code mismatch.");
+
+    if (
+      getArmyIntelligenceString(snapshot.tacticalSchemaVersion) !== ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION ||
+      getArmyIntelligenceString(snapshot.decoded.tacticalSchemaVersion) !== ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION
+    ) throw new Error("Army Intelligence tactical snapshot schema mismatch.");
+
+    validateArmyIntelligenceTacticalMetadata_(snapshot.decoded);
   }
+
+}
+
+function validateArmyIntelligenceTacticalMetadata_(decoded) {
+
+  if (!decoded.enrichment || decoded.enrichment.status !== "complete")
+    throw new Error("Army Intelligence tactical enrichment is incomplete.");
+
+  const entries = getPersistedArmyIntelligenceDecodedEntries(decoded);
+  if (!entries.length)
+    throw new Error("Army Intelligence tactical snapshot has no profiles.");
+
+  entries.forEach(function(entry) {
+    if (entry.bs == null || !isFinite(Number(entry.bs)) || !Array.isArray(entry.skills))
+      throw new Error("Army Intelligence profile BS or skills are incomplete.");
+
+    const sourceWeapons = Array.isArray(entry.weapons) ? entry.weapons : [];
+    const canonicalWeapons = Array.isArray(entry.weaponProfiles) ? entry.weaponProfiles : [];
+    if (sourceWeapons.length && !canonicalWeapons.length)
+      throw new Error("Army Intelligence canonical weapon metadata is incomplete.");
+
+    canonicalWeapons.forEach(function(weapon) {
+      const canonicalBurst = weapon.burstStatus === "canonical" && weapon.burst != null && isFinite(Number(weapon.burst));
+      const notApplicable = weapon.burstStatus === "not-applicable" && weapon.burst == null;
+      if (!getArmyIntelligenceString(weapon.name) || (!canonicalBurst && !notApplicable))
+        throw new Error("Army Intelligence canonical weapon Burst is incomplete.");
+    });
+  });
 
 }
 
@@ -220,6 +255,7 @@ function buildPersistedArmyIntelligenceSnapshotRow(source, snapshot) {
     sourceId: source.sourceId,
     sourcePlayer: source.sourcePlayer,
     sourceType: source.sourceType,
+    tacticalSchemaVersion: snapshot.tacticalSchemaVersion || "",
     status: snapshot.status
   };
 
@@ -811,12 +847,14 @@ function buildArmyIntelligenceListsFromCanonicalSources(knownArmyListCounts) {
                 ? JSON.stringify(snapshot.decoded)
                 : "",
               error: snapshot.error || "",
+              tacticalSchemaVersion: snapshot.tacticalSchemaVersion || "",
               status: snapshot.status
             }
           : {
               decodedAt: "",
               decodedJson: "",
               error: "Persisted Army Intelligence snapshot is missing.",
+              tacticalSchemaVersion: "",
               status: "pending"
             },
         knownArmyListCounts
@@ -1314,6 +1352,7 @@ function mergeArmyIntelligenceSourceAndSnapshot(source, snapshot, knownArmyListC
     sourceId: source.sourceId,
     sourcePlayer: source.sourcePlayer,
     sourceType: source.sourceType,
+    tacticalSchemaVersion: snapshot.tacticalSchemaVersion || "",
     status: snapshot.status || "pending"
   };
 
