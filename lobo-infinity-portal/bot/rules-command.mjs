@@ -23,15 +23,17 @@ export function createRulesInteractionHandler({retrieve=retrieveRulesReference,l
 
 export function formatRulesDiscordResponse(result){
   const fields=[]
-  if(result.deepSeek){fields.push({name:'ANSWER',value:`**${result.deepSeek.classification}**\n${result.deepSeek.answer}`,inline:false})}
-  for(const rule of result.rules.slice(0,4)){const scope=rule.scope==='ITS'?'ITS SEASON 18 — ':rule.sourceId.includes('faq')?'FAQ CLARIFICATION — ':'';const metadata=`**${scope}${rule.sourceLabel} — ${rule.pageLabel}**\n[Open official source](${rule.url})`;const excerpt=truncate(rule.excerpt,Math.max(0,1024-metadata.length-2));fields.push({name:truncate(rule.ruleName,256),value:`${metadata}\n${excerpt}`,inline:false})}
+  if(result.deepSeek){const conclusion=normalizeConclusion(result.deepSeek.conclusion);const certainty=result.deepSeek.interpretationRequired?'EVIDENCE-BOUNDED INTERPRETATION':'EXPLICIT RULING';const rawAnswer=typeof result.deepSeek.answer==='string'?result.deepSeek.answer.trim():'';const answer=rawAnswer||'The supplied official evidence does not conclusively resolve this interaction.';fields.push({name:'ANSWER',value:`**${certainty}**\n**${conclusion}**\n${answer}`,inline:false})}
+  for(const rule of result.rules.slice(0,4)){const scope=rule.scope==='ITS'?'ITS SEASON 18 — ':rule.sourceId.includes('faq')?'FAQ CLARIFICATION — ':'';const metadata=`**${scope}${rule.sourceLabel} — ${rule.pageLabel}**\n${rule.url?`[Open official source](${rule.url})`:''}`;const excerpt=truncate(rule.excerpt,Math.max(0,1024-metadata.length-2));fields.push({name:truncate(rule.ruleName||'RULE EXCERPT',256),value:`${metadata}\n${excerpt}`,inline:false})}
   if(!fields.length)fields.push({name:'STATUS',value:RULES_STATUS.NONE,inline:false})
   else fields.push({name:'STATUS',value:`**${result.status}**${result.noExplicitFaq?'\nNo explicit current FAQ adjudication of this exact combination was found in the activated corpus.':''}${result.limitation?`\n${result.limitation}`:''}`,inline:false})
   const versions=result.versions.map((item)=>item.label).join(' • ')
   const embed={title:'Infinity Rules Reference',description:truncate(`**Question**\n${result.question}`,1000),color:0x8b1e2d,fields,footer:{text:truncate(`Activated corpus: ${versions} • Retrieval reference only; no autonomous ruling.`,2048)}}
-  enforceEmbedLimit(embed);return{embeds:[embed],allowedMentions:{parse:[]}}
+  enforceEmbedLimit(embed);return scrubDiscordPayload({embeds:[embed],allowedMentions:{parse:[]}})
 }
+function scrubDiscordPayload(value,key=''){if(Array.isArray(value))return value.map((item)=>scrubDiscordPayload(item)).filter((item)=>item!==undefined);if(value&&typeof value==='object'){const out={};for(const [name,item] of Object.entries(value)){const clean=scrubDiscordPayload(item,name);if(clean===undefined)continue;if(typeof clean==='string'&&!clean.trim()&&(name==='name'||name==='value'||name==='url'||name==='text'))continue;out[name]=clean}return out}if(value===undefined||value===null)return undefined;return value}
 function truncate(value,max){const text=String(value??'');if(text.length<=max)return text;return `${text.slice(0,Math.max(0,max-1)).replace(/\s+\S*$/,'').trim()}…`}
 function embedSize(embed){return(embed.title?.length??0)+(embed.description?.length??0)+(embed.footer?.text?.length??0)+embed.fields.reduce((n,f)=>n+f.name.length+f.value.length,0)}
 function enforceEmbedLimit(embed){while(embedSize(embed)>5900){const candidate=[...embed.fields].reverse().find((field)=>field.name!=='STATUS'&&field.value.length>300);if(!candidate)break;candidate.value=truncate(candidate.value,candidate.value.length-200)}}
+function normalizeConclusion(value){const normalized=String(value||'').trim().toUpperCase();return ['YES','NO','DEPENDS','UNRESOLVED'].includes(normalized)?normalized:'INTERPRETATION'}
 function matches(command){const option=command.options?.[0];return command.description===RULES_COMMAND_DEFINITION.description&&command.options?.length===1&&option?.name===RULES_OPTION&&option?.required===true&&option?.type===ApplicationCommandOptionType.String&&option?.maxLength===1000}
