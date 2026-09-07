@@ -33,7 +33,7 @@ export function enrichDecodedList(list, reference) {
     ...list,
     tacticalSchemaVersion: ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION,
     combatGroups: list.combatGroups.map((group) => ({ ...group, entries: group.entries.map((entry) => enrichEntry(entry, units, dataset, chartUnits, reference)) })),
-    enrichment: { provider: 'Corvus Belli Infinity Army browser-observed payload', datasetId: dataset.datasetId, payloadVersion: reference?.payloadVersion || null, officialUnitVersion: dataset.officialUnitVersion, sourceUrls: dataset.sourceUrls, capturedAt: dataset.capturedAt, fireteamStatus: reference?.status || 'unknown', status: (reference?.status === 'available' || reference?.status === 'none') && units.length ? 'complete' : 'incomplete', enrichedAt: new Date().toISOString() },
+    enrichment: { provider: 'Corvus Belli Infinity Army browser-observed payload', datasetId: dataset.datasetId, payloadVersion: reference?.payloadVersion || null, officialUnitVersion: dataset.officialUnitVersion, sourceUrls: dataset.sourceUrls, capturedAt: dataset.capturedAt, fireteamStatus: reference?.status || 'unknown', unitCount: units.length, warning: reference?.warning || null, status: (reference?.status === 'available' || reference?.status === 'none') && units.length ? 'complete' : 'incomplete', enrichedAt: new Date().toISOString() },
   }
 }
 

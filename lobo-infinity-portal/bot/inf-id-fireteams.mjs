@@ -95,14 +95,25 @@ function normalizeOfficialUnit(unit) {
         id: Number(profile.id) || null,
         name: String(profile.name || ''),
         bs: Number.isFinite(Number(profile.bs)) ? Number(profile.bs) : null,
+        weapons: (profile.weapons || []).map(normalizeWeaponReference),
+        skills: (profile.skills || []).map(normalizeTraitReference),
       })),
       options: (group.options || []).map((option) => ({
         id: Number(option.id) || null,
         name: String(option.name || ''),
-        weapons: (option.weapons || []).map((weapon) => ({ id: Number(weapon.id) || null, order: Number(weapon.order) || 0, mode: weapon.mode == null ? null : String(weapon.mode), variant: weapon.variant == null ? null : String(weapon.variant), name: weapon.name == null ? null : String(weapon.name) })),
+        weapons: (option.weapons || []).map(normalizeWeaponReference),
+        skills: (option.skills || []).map(normalizeTraitReference),
       })),
     })),
   }
+}
+
+function normalizeWeaponReference(weapon) {
+  return { id: Number(weapon.id) || null, order: Number(weapon.order) || 0, mode: weapon.mode == null ? null : String(weapon.mode), variant: weapon.variant == null ? null : String(weapon.variant), name: weapon.name == null ? null : String(weapon.name) }
+}
+
+function normalizeTraitReference(trait) {
+  return { id: Number(trait.id) || null, order: Number(trait.order) || 0 }
 }
 
 export function relationshipMatchesEntry(unit, entry) {

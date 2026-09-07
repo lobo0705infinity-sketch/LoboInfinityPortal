@@ -107,7 +107,10 @@ export default async function handler(request, response) {
     })
         if (!enrich) throw new Error('Canonical enrichment unavailable; decoded snapshot was not persisted.')
         const enriched = await enrich(result.list)
-        if (enriched.enrichment?.status !== 'complete') throw new Error('Canonical enrichment incomplete; decoded snapshot was not persisted.')
+        if (enriched.enrichment?.status !== 'complete') {
+          const detail = [`fireteamStatus=${enriched.enrichment?.fireteamStatus || 'unknown'}`, `unitCount=${enriched.enrichment?.unitCount ?? 0}`, enriched.enrichment?.warning ? `warning=${enriched.enrichment.warning}` : ''].filter(Boolean).join('; ')
+          throw new Error(`Canonical enrichment incomplete (${detail}); decoded snapshot was not persisted.`)
+        }
         snapshots.push(
           CanonicalSnapshotFactory.createSourceRefreshSnapshot(
             source,
