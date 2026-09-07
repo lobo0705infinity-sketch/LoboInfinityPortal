@@ -18,9 +18,9 @@
       "id": "direct_definition-01",
       "question": "What does Mimetism do?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -40,9 +40,9 @@
       "id": "direct_definition-02",
       "question": "What does Dodge do?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -62,9 +62,9 @@
       "id": "direct_definition-03",
       "question": "What does Stealth do?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -75,23 +75,23 @@
       "draftCertainty": "EXPLICIT RULES ANSWER",
       "draftCitations": [
         {
-          "sourceId": "infinity-rules-n5.3",
           "page": 111,
-          "section": "SIXTH SENSE"
+          "section": "SIXTH SENSE",
+          "sourceId": "infinity-rules-n5.3"
         },
         {
-          "sourceId": "infinity-rules-n5.3",
           "page": 112,
-          "section": "STEALTH"
+          "section": "STEALTH",
+          "sourceId": "infinity-rules-n5.3"
         }
       ],
       "draftConclusion": "INTERPRETATION",
       "id": "direct_definition-04",
       "question": "What does Sixth Sense do?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -111,9 +111,9 @@
       "id": "direct_definition-05",
       "question": "What does Multispectral Visor Level 1 do?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -133,9 +133,9 @@
       "id": "direct_definition-06",
       "question": "What does Multispectral Visor Level 2 do?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -155,9 +155,9 @@
       "id": "direct_definition-07",
       "question": "What does Multispectral Visor Level 3 do?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -177,9 +177,9 @@
       "id": "direct_definition-08",
       "question": "What does Zero Pain do?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -199,9 +199,9 @@
       "id": "direct_definition-09",
       "question": "What does a Repeater do?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -221,9 +221,9 @@
       "id": "direct_definition-10",
       "question": "What does Firewall do?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -243,9 +243,9 @@
       "id": "direct_definition-11",
       "question": "What does Discover do?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -256,23 +256,23 @@
       "draftCertainty": "EXPLICIT RULES ANSWER",
       "draftCitations": [
         {
-          "sourceId": "infinity-rules-n5.3",
           "page": 85,
-          "section": "SUPPRESSIVE FIRE"
+          "section": "SUPPRESSIVE FIRE",
+          "sourceId": "infinity-rules-n5.3"
         },
         {
-          "sourceId": "infinity-rules-n5.3",
           "page": 171,
-          "section": "SUPPRESSIVE FIRE STATE"
+          "section": "SUPPRESSIVE FIRE STATE",
+          "sourceId": "infinity-rules-n5.3"
         }
       ],
       "draftConclusion": "INTERPRETATION",
       "id": "direct_definition-12",
       "question": "What does Suppressive Fire do?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -292,9 +292,9 @@
       "id": "direct_definition-13",
       "question": "What does Combat Jump do?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -305,23 +305,23 @@
       "draftCertainty": "EXPLICIT RULES ANSWER",
       "draftCitations": [
         {
-          "sourceId": "infinity-rules-n5.3",
           "page": 95,
-          "section": "HIDDEN DEPLOYMENT"
+          "section": "HIDDEN DEPLOYMENT",
+          "sourceId": "infinity-rules-n5.3"
         },
         {
-          "sourceId": "infinity-rules-n5.3",
           "page": 161,
-          "section": "HIDDEN DEPLOYMENT STATE"
+          "section": "HIDDEN DEPLOYMENT STATE",
+          "sourceId": "infinity-rules-n5.3"
         }
       ],
       "draftConclusion": "INTERPRETATION",
       "id": "direct_definition-14",
       "question": "What does Hidden Deployment do?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -341,9 +341,9 @@
       "id": "direct_definition-15",
       "question": "What does Nanoscreen do?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -363,9 +363,9 @@
       "id": "direct_definition-16",
       "question": "What does Total Immunity do?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -385,9 +385,9 @@
       "id": "direct_definition-17",
       "question": "What does Marksmanship do?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -407,9 +407,9 @@
       "id": "direct_definition-18",
       "question": "What does Sensor do?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -420,28 +420,28 @@
       "draftCertainty": "EXPLICIT RULES ANSWER",
       "draftCitations": [
         {
-          "sourceId": "infinity-rules-n5.3",
           "page": 58,
-          "section": "HACKING PROGRAMS CHART — SPOTLIGHT"
+          "section": "HACKING PROGRAMS CHART — SPOTLIGHT",
+          "sourceId": "infinity-rules-n5.3"
         },
         {
-          "sourceId": "infinity-rules-n5.3",
           "page": 60,
-          "section": "SPOTLIGHT"
+          "section": "SPOTLIGHT",
+          "sourceId": "infinity-rules-n5.3"
         },
         {
-          "sourceId": "infinity-rules-n5.3",
           "page": 171,
-          "section": "TARGETED STATE"
+          "section": "TARGETED STATE",
+          "sourceId": "infinity-rules-n5.3"
         }
       ],
       "draftConclusion": "INTERPRETATION",
       "id": "direct_definition-19",
       "question": "What does Spotlight do?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -461,9 +461,9 @@
       "id": "direct_definition-20",
       "question": "What does Guts Roll do?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -501,7 +501,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-01",
       "question": "Does Zero Pain suffer the Firewall MOD when used through an enemy Repeater?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -520,7 +523,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-02",
       "question": "Does MSV1 ignore Mimetism (-6)?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -544,7 +550,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-03",
       "question": "Does Marksmanship ignore Cover?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -563,7 +572,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-04",
       "question": "Can Sensor Discover a Camouflaged Marker?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -587,7 +599,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-05",
       "question": "Does Sixth Sense negate Stealth?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -611,7 +626,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-06",
       "question": "Can a Repeater extend the Hacking Area through another Repeater?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -635,7 +653,10 @@
       "draftConclusion": "UNRESOLVED",
       "id": "two_rule_interaction-07",
       "question": "Does Total Immunity ignore AP Ammunition?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -659,7 +680,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-08",
       "question": "Does Nanoscreen provide Cover against a Template Weapon?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -688,7 +712,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-09",
       "question": "Can Spotlight be declared through a Repeater?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -722,7 +749,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-10",
       "question": "Does a Direct Template Weapon cancel Camouflaged State?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -741,7 +771,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-11",
       "question": "Can a Trooper with Climbing Plus claim Cover while climbing?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -765,7 +798,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-12",
       "question": "Does Super-Jump allow Cover while airborne?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -789,31 +825,47 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-13",
       "question": "Does Shock Ammunition bypass Dogged?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
       "approvedCitations": [],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
-      "draftAnswer": "The active N5.3 corpus does not define Viral Ammunition as a standalone ammunition rule, and N5 uses specific Immunity types rather than a generic interaction with 'Immunity (Shock).' The exact weapon profile and the exact Immunity printed on the target are required; the names alone do not support a ruling.",
-      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "draftAnswer": "As written, this does not identify a valid N5.3 interaction. N5.3 does not define a standalone Viral Ammunition rule or an Immunity (Shock) entry. Viral-named weapons instead use their printed weapon profiles—for example, Normal (N) ammunition with the Bioweapon (DA+Shock) Trait. Resolve the exact Viral weapon profile against the exact Immunity printed on the target; do not infer an answer from the legacy names alone.",
+      "draftCertainty": "SAFE ESCALATION",
       "draftCitations": [
         {
-          "page": 50,
-          "section": "WEAPON PROFILES",
-          "sourceId": "infinity-rules-n5.3"
+          "sourceId": "infinity-rules-n5.3",
+          "page": 96,
+          "section": "IMMUNITY AND CRITICAL HITS"
         },
         {
-          "page": 96,
-          "section": "IMMUNITY AND CRITICAL HITS",
-          "sourceId": "infinity-rules-n5.3"
+          "sourceId": "infinity-rules-n5.3",
+          "page": 118,
+          "section": "VULNERABILITY — VIRAL EXAMPLE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 180,
+          "section": "VIRAL MARKSMAN RIFLE PROFILE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 185,
+          "section": "VIRAL SNIPER RIFLE PROFILE"
         }
       ],
       "draftConclusion": "UNRESOLVED",
       "id": "two_rule_interaction-14",
       "question": "Does Viral Ammunition interact with Immunity (Shock)?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -837,14 +889,17 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-15",
       "question": "Can Engineer remove Immobilized-B State?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
       "approvedCitations": [],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
-      "draftAnswer": "No, not while the Trooper is using No Wound Incapacitation and remains out of Unconscious State. Doctor requires a target with VITA that is in Unconscious State. If the Trooper later is actually Unconscious and otherwise satisfies Doctor's Requirements, Doctor may be used normally.",
+      "draftAnswer": "No, not while No Wound Incapacitation is active: the Trooper remains outside Unconscious State, while Doctor requires a VITA target in Unconscious State. If NWI was not activated and the Trooper is actually Unconscious, Doctor may be declared normally.",
       "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
       "draftCitations": [
         {
@@ -861,7 +916,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-16",
       "question": "Can Doctor heal a Trooper using No Wound Incapacitation?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -890,7 +948,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-17",
       "question": "Does a Deployable Repeater create a Hacking Area immediately?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -914,7 +975,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-18",
       "question": "Can Berserk be used against a Camouflaged Marker?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -938,7 +1002,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-19",
       "question": "Does Biometric Visor affect Impersonation Discover rolls?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -962,7 +1029,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-20",
       "question": "Can a Fireteam bonus modify Discover?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -2536,12 +2606,12 @@
     }
   },
   "schemaVersion": 1,
-  "title": "Infinity N5 Rules Adjudicator Benchmark",
   "semanticAudit": {
-    "auditedCases": 20,
+    "auditedCases": 40,
     "totalCases": 100,
-    "lastAuditedCategory": "DIRECT_DEFINITION",
+    "lastAuditedCategory": "TWO_RULE_INTERACTION",
     "updatedAt": "2026-09-07",
     "note": "Semantic audit is independent of player approval; approvedAnswer remains null until formally reviewed."
-  }
+  },
+  "title": "Infinity N5 Rules Adjudicator Benchmark"
 }
