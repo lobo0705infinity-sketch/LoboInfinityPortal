@@ -2140,91 +2140,256 @@
       "id": "modifier_calculation-01",
       "category": "MODIFIER_CALCULATION",
       "question": "I shoot through Smoke with MSV1, the target shoots back, and the target is in Cover; what MODs apply?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "For the MSV1 shooter, the return BS Attack changes the Smoke's Zero Visibility Zone into a Poor Visibility Zone for drawing LoF to that attacker. MSV1 reduces that Visibility MOD from -6 to -3. Partial Cover adds another -3 to the shooter's BS Attack, so the known total is -6 before Range or other MODs. The target also receives +3 on any Saving Roll from Partial Cover. For the target's return shot, the Smoke imposes -6 unless that target has a rule that reduces it.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 41,
+          "section": "COVER"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 1"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 144,
+          "section": "VISIBILITY CONDITION"
+        }
+      ]
     },
     {
       "id": "modifier_calculation-02",
       "category": "MODIFIER_CALCULATION",
       "question": "I shoot through Smoke with MSV1 and the target Dodges; what Visibility MOD applies?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "The MSV1 shooter's Visibility MOD is -6. Dodge is not a BS Attack, so it does not trigger the rule that lets the target treat the Zero Visibility Zone as Poor Visibility. MSV1 instead uses its direct rule for drawing LoF through a Zero Visibility Zone at -6. The Dodge itself takes no Visibility Zone MOD, because Dodge is expressly excepted from those MODs.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 1"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 143,
+          "section": "VISIBILITY CONDITION"
+        }
+      ]
     },
     {
       "id": "modifier_calculation-03",
       "category": "MODIFIER_CALCULATION",
       "question": "I shoot a Mimetism (-6) target in Cover with MSV1; which MODs remain?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "MSV1 reduces the target's Mimetism (-6) to -3. Partial Cover still imposes -3 because MSV1 does not cancel Cover. The known total on the BS Attack is therefore -6 before Range or other MODs. If hit, the target also receives +3 on its Saving Roll from Partial Cover.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 41,
+          "section": "COVER"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 1"
+        }
+      ]
     },
     {
       "id": "modifier_calculation-04",
       "category": "MODIFIER_CALCULATION",
       "question": "I shoot a Mimetism (-3) target through a Low Visibility Zone with MSV1; what Visibility and Mimetism MODs remain?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Both specified MODs become 0. MSV1 reduces Mimetism (-3) to 0 and reduces a Low Visibility Zone's -3 MOD to 0. Range, Cover, and any other applicable MODs are calculated separately.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 1"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 143,
+          "section": "VISIBILITY CONDITION"
+        }
+      ]
     },
     {
       "id": "modifier_calculation-05",
       "category": "MODIFIER_CALCULATION",
       "question": "I shoot through overlapping Low and Poor Visibility Zones; which Visibility MOD applies?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Apply only -6 for Visibility. Visibility Zone MODs never stack with one another; when multiple zones affect a Roll, use only the most restrictive MOD. Between Low Visibility (-3) and Poor Visibility (-6), that is -6. Other non-Visibility MODs may still stack normally.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 144,
+          "section": "VISIBILITY CONDITION"
+        }
+      ]
     },
     {
       "id": "modifier_calculation-06",
       "category": "MODIFIER_CALCULATION",
       "question": "A Hacker attacks through an enemy Repeater against a target protected by Firewall (-6); what WIP MOD applies?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Apply WIP -6. The enemy Repeater supplies Firewall (-3), while the protected target supplies Firewall (-6), but only one Firewall may apply. The protected player's controller chooses which applicable Firewall to use, so the rational choice is -6. If the Comms Attack causes a Saving Roll, the protected target also receives the Firewall's +3 Saving Roll MOD.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 55,
+          "section": "FIREWALLS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 56,
+          "section": "REPEATER"
+        }
+      ]
     },
     {
       "id": "modifier_calculation-07",
       "category": "MODIFIER_CALCULATION",
       "question": "A model Dodges a Template Weapon with PH modified by terrain; how is the target number calculated?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Start with the model's PH, add any genuinely applicable PH MOD, then apply the Template Dodge rule. A Template is normally Dodged on PH; use PH -3 if the model has no LoF to the attacker or the attack comes from a Deployable Weapon. Ordinary Difficult Terrain does not modify PH—it affects Movement—while Visibility Zone MODs expressly do not apply to Dodge. Without the exact source and value of the claimed terrain PH modifier, no single numeric target number can be given.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 44,
+          "section": "TEMPLATE WEAPONS AND EQUIPMENT"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 143,
+          "section": "DIFFICULT TERRAIN AND VISIBILITY CONDITION"
+        }
+      ]
     },
     {
       "id": "modifier_calculation-08",
       "category": "MODIFIER_CALCULATION",
       "question": "A Trooper with Marksmanship shoots a target in Cover outside its weapon's good range; which MODs apply?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Marksmanship ignores Partial Cover's -3 MOD to the BS Attack. The weapon's negative Range MOD still applies, as do Mimetism, Visibility, and any other applicable MODs. The target still receives +3 on its Saving Roll from Partial Cover. A numeric BS target cannot be calculated without the weapon and exact distance.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 41,
+          "section": "COVER"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 100,
+          "section": "MARKSMANSHIP"
+        }
+      ]
     },
     {
       "id": "modifier_calculation-09",
       "category": "MODIFIER_CALCULATION",
       "question": "An Impersonation Marker is Discovered by a Trooper with Biometric Visor; what MOD applies?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Against an IMP-1 Marker, Biometric Visor ignores the state's WIP -3 Discover MOD. Apply the normal Discover Range MOD and any other applicable MODs. If the Marker is IMP-2 instead, there is no IMP-1 WIP -3 for the Visor to cancel, so the exact Impersonation level must be known before stating a final total.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 77,
+          "section": "DISCOVER"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 120,
+          "section": "BIOMETRIC VISOR"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 166,
+          "section": "IMPERSONATION STATE"
+        }
+      ]
     },
     {
       "id": "modifier_calculation-10",
       "category": "MODIFIER_CALCULATION",
       "question": "A Fireteam member shoots with Burst and BS bonuses while affected by Mimetism and Cover; how are the modifiers combined?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Keep dice changes separate from the target number. The qualifying Fireteam's BS Attack (+1 SD) changes the dice rolled and discarded; it does not raise Burst or BS. Its +1 BS Attack bonus adds +1 to the BS Roll. Then add Range and subtract the target's Mimetism value and Partial Cover's -3, subject to the overall +/-12 cap. Formula: Success Value = BS + 1 + Range MOD - Mimetism MOD - 3 Cover + other applicable MODs. The target also receives +3 on its Saving Roll from Partial Cover. Exact dice and target number require the weapon, Fireteam level/composition, Range, and Mimetism value.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 23,
+          "section": "MODIFIERS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 41,
+          "section": "COVER"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 102,
+          "section": "MIMETISM"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 135,
+          "section": "FIRETEAM BONUSES"
+        }
+      ]
     },
     {
       "id": "unresolved_unsupported-01",
