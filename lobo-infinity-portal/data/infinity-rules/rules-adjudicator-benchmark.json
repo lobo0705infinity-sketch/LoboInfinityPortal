@@ -502,9 +502,9 @@
       "id": "two_rule_interaction-01",
       "question": "Does Zero Pain suffer the Firewall MOD when used through an enemy Repeater?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -524,9 +524,9 @@
       "id": "two_rule_interaction-02",
       "question": "Does MSV1 ignore Mimetism (-6)?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -551,9 +551,9 @@
       "id": "two_rule_interaction-03",
       "question": "Does Marksmanship ignore Cover?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -573,9 +573,9 @@
       "id": "two_rule_interaction-04",
       "question": "Can Sensor Discover a Camouflaged Marker?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -600,9 +600,9 @@
       "id": "two_rule_interaction-05",
       "question": "Does Sixth Sense negate Stealth?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -627,9 +627,9 @@
       "id": "two_rule_interaction-06",
       "question": "Can a Repeater extend the Hacking Area through another Repeater?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -654,9 +654,9 @@
       "id": "two_rule_interaction-07",
       "question": "Does Total Immunity ignore AP Ammunition?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -681,9 +681,9 @@
       "id": "two_rule_interaction-08",
       "question": "Does Nanoscreen provide Cover against a Template Weapon?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -713,9 +713,9 @@
       "id": "two_rule_interaction-09",
       "question": "Can Spotlight be declared through a Repeater?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -750,9 +750,9 @@
       "id": "two_rule_interaction-10",
       "question": "Does a Direct Template Weapon cancel Camouflaged State?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -772,9 +772,9 @@
       "id": "two_rule_interaction-11",
       "question": "Can a Trooper with Climbing Plus claim Cover while climbing?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -799,9 +799,9 @@
       "id": "two_rule_interaction-12",
       "question": "Does Super-Jump allow Cover while airborne?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -826,9 +826,9 @@
       "id": "two_rule_interaction-13",
       "question": "Does Shock Ammunition bypass Dogged?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -839,33 +839,33 @@
       "draftCertainty": "SAFE ESCALATION",
       "draftCitations": [
         {
-          "sourceId": "infinity-rules-n5.3",
           "page": 96,
-          "section": "IMMUNITY AND CRITICAL HITS"
+          "section": "IMMUNITY AND CRITICAL HITS",
+          "sourceId": "infinity-rules-n5.3"
         },
         {
-          "sourceId": "infinity-rules-n5.3",
           "page": 118,
-          "section": "VULNERABILITY — VIRAL EXAMPLE"
+          "section": "VULNERABILITY — VIRAL EXAMPLE",
+          "sourceId": "infinity-rules-n5.3"
         },
         {
-          "sourceId": "infinity-rules-n5.3",
           "page": 180,
-          "section": "VIRAL MARKSMAN RIFLE PROFILE"
+          "section": "VIRAL MARKSMAN RIFLE PROFILE",
+          "sourceId": "infinity-rules-n5.3"
         },
         {
-          "sourceId": "infinity-rules-n5.3",
           "page": 185,
-          "section": "VIRAL SNIPER RIFLE PROFILE"
+          "section": "VIRAL SNIPER RIFLE PROFILE",
+          "sourceId": "infinity-rules-n5.3"
         }
       ],
       "draftConclusion": "UNRESOLVED",
       "id": "two_rule_interaction-14",
       "question": "Does Viral Ammunition interact with Immunity (Shock)?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -890,9 +890,9 @@
       "id": "two_rule_interaction-15",
       "question": "Can Engineer remove Immobilized-B State?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -917,9 +917,9 @@
       "id": "two_rule_interaction-16",
       "question": "Can Doctor heal a Trooper using No Wound Incapacitation?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -949,9 +949,9 @@
       "id": "two_rule_interaction-17",
       "question": "Does a Deployable Repeater create a Hacking Area immediately?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -976,9 +976,9 @@
       "id": "two_rule_interaction-18",
       "question": "Can Berserk be used against a Camouflaged Marker?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -1003,9 +1003,9 @@
       "id": "two_rule_interaction-19",
       "question": "Does Biometric Visor affect Impersonation Discover rolls?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -1030,9 +1030,9 @@
       "id": "two_rule_interaction-20",
       "question": "Can a Fireteam bonus modify Discover?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditStatus": "PASSED",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
+      "semanticAuditStatus": "PASSED"
     },
     {
       "approvedAnswer": null,
@@ -1057,7 +1057,7 @@
           "sourceId": "infinity-rules-n5.3"
         },
         {
-          "page": 143,
+          "page": 144,
           "section": "ZERO VISIBILITY ZONE",
           "sourceId": "infinity-rules-n5.3"
         }
@@ -1065,7 +1065,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-01",
       "question": "If I have MSV1 and shoot through Smoke and the target shoots back, what is my Visibility MOD?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -1094,7 +1097,7 @@
           "sourceId": "infinity-rules-n5.3"
         },
         {
-          "page": 143,
+          "page": 144,
           "section": "ZERO VISIBILITY ZONE",
           "sourceId": "infinity-rules-n5.3"
         }
@@ -1102,7 +1105,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-02",
       "question": "If I have MSV1 and shoot through Smoke and the target Dodges, what is my Visibility MOD?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -1118,8 +1124,8 @@
         ]
       },
       "category": "TIMING_SEQUENCE",
-      "draftAnswer": "Not unconditionally. Stealth functions only during its user's Active Turn. Declaring Dodge in the Reactive Turn cannot 'break' an effect that is not active. During the user's Active Turn, Dodge is not one of the declarations Stealth lists as suppressing AROs, so declaring it grants AROs normally; Stealth itself remains an Automatic Skill.",
-      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "draftAnswer": "No. During the Trooper's Active Turn, Dodge is a Short Skill with the Movement Label, so it is one of the declarations that retains Stealth's ARO-suppression effect: enemies without LoF do not gain an ARO from that declaration, unless they have Sixth Sense. During the Reactive Turn, Stealth is not active in the first place.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
       "draftCitations": [
         {
           "page": 79,
@@ -1135,7 +1141,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-03",
       "question": "Does declaring Dodge break Stealth?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -1164,7 +1173,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-04",
       "question": "When does a successful Discover cancel Camouflaged State?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -1188,7 +1200,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-05",
       "question": "If both Troopers declare Dodge, are the Rolls Face to Face?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -1207,7 +1222,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-06",
       "question": "When is Suppressive Fire cancelled during an Order?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -1231,7 +1249,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-07",
       "question": "If a Trooper enters a Mine's Trigger Area and then leaves it, does the Mine detonate?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -1260,7 +1281,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-08",
       "question": "When are AROs checked during the Order Expenditure Sequence?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -1284,7 +1308,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-09",
       "question": "If a Hacker moves into Repeater range during the first Short Skill, when can enemies hack it?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -1308,7 +1335,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-10",
       "question": "If a Camouflaged Trooper declares Move then BS Attack, when is the Marker replaced?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -1327,7 +1357,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-11",
       "question": "If Smoke is placed during an Order, which attacks become Face to Face with the Smoke Roll?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -1356,14 +1389,17 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-12",
       "question": "If a Trooper falls Unconscious during a Coordinated Order, does it complete its declared Skill?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
       "approvedCitations": [],
       "candidateExpectation": null,
       "category": "TIMING_SEQUENCE",
-      "draftAnswer": "It depends which member is affected. If the Fireteam Leader enters a Null or Isolated State, the Fireteam is automatically canceled. If another member enters a Null State, that does not by itself invoke the Leader-cancellation clause; membership and any later bonus level are determined under the Fireteam Integrity and coherency rules after the Order's effects are applied.",
+      "draftAnswer": "If the Fireteam Leader enters a Null or Isolated State, the Fireteam is canceled. If a non-Leader member enters a Null State during Resolution, that does not retroactively change Rolls already resolved in the simultaneous Order, but the member cannot contribute to the Fireteam afterward; the Fireteam's later composition and bonuses use the remaining valid members.",
       "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
       "draftCitations": [
         {
@@ -1385,14 +1421,17 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-13",
       "question": "If a Fireteam member enters a Null State mid-Order, when is Fireteam composition recalculated?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
       "approvedCitations": [],
       "candidateExpectation": null,
       "category": "TIMING_SEQUENCE",
-      "draftAnswer": "The Discover Roll is unnecessary. If the Camouflaged target reveals by declaring an ARO, the active Trooper proceeds to resolve its declared Attack without first rolling Discover.",
+      "draftAnswer": "The Discover Roll is unnecessary if the Camouflaged target reveals by declaring an ARO. If the Active Trooper also declared an Attack as the other Skill, that Attack can be resolved without first rolling Discover. If only Discover was declared, Discover simply has no remaining effect; an Attack is not created automatically.",
       "draftCertainty": "EXPLICIT RULES ANSWER",
       "draftCitations": [
         {
@@ -1404,7 +1443,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-14",
       "question": "If a model declares Discover and the target reveals voluntarily, what happens to the Discover Roll?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -1433,7 +1475,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-15",
       "question": "If a Trooper declares Reset before being targeted by a Hacking Program, can the Rolls become Face to Face?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -1462,7 +1507,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-16",
       "question": "If an Impersonation Marker is discovered during the first Short Skill, what AROs are available afterward?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -1486,7 +1534,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-17",
       "question": "When does Retreat begin if Army Points fall below the threshold during a Player Turn?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -1510,7 +1561,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-18",
       "question": "If a Lieutenant enters a Null State during the Active Turn, when does Loss of Lieutenant apply?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -1534,7 +1588,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-19",
       "question": "If a Peripheral is disconnected during an Order, does it finish its declared Skill?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -1558,7 +1615,10 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-20",
       "question": "If a Trooper declares a Skill that later fails its Requirements, what happens to the declaration?",
-      "reviewStatus": "VERIFIED_DRAFT"
+      "reviewStatus": "VERIFIED_DRAFT",
+      "semanticAuditStatus": "PASSED",
+      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft."
     },
     {
       "approvedAnswer": null,
@@ -2607,9 +2667,9 @@
   },
   "schemaVersion": 1,
   "semanticAudit": {
-    "auditedCases": 40,
+    "auditedCases": 60,
     "totalCases": 100,
-    "lastAuditedCategory": "TWO_RULE_INTERACTION",
+    "lastAuditedCategory": "TIMING_SEQUENCE",
     "updatedAt": "2026-09-07",
     "note": "Semantic audit is independent of player approval; approvedAnswer remains null until formally reviewed."
   },
