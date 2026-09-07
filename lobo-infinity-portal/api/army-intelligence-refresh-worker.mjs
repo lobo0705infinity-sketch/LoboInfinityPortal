@@ -22,6 +22,7 @@ const DEFAULT_REFRESH_BATCH_LIMIT = 4
 
 export default async function handler(request, response) {
   const automatic = isScheduledRequest(request)
+  const scopedBackfill = Boolean(request.headers?.['x-army-backfill-token'])
 
   if (!automatic && request.method !== 'POST') {
     response.setHeader('allow', 'GET, POST')
@@ -30,7 +31,7 @@ export default async function handler(request, response) {
   }
 
   try {
-    const body = automatic ? {} : await readJsonBody(request)
+    const body = automatic && !scopedBackfill ? {} : await readJsonBody(request)
     const apiUrl = String(body.apiUrl || process.env.VITE_API_URL || '').trim()
     const sessionToken = String(body.sessionToken || '').trim()
     const workerToken = String(process.env.ARMY_INTELLIGENCE_WORKER_TOKEN || '').trim()
