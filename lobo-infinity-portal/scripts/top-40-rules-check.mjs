@@ -13,7 +13,7 @@ const navigation = await readFile(new URL('../src/config/eventNavigation.ts', im
 const artwork = await readFile(new URL('../public/assets/events/top-40-rules.png', import.meta.url))
 
 const eventId = 'event-lobo-s-american-top-40'
-const expectedHash = '410895faf93f5e628689cef0efc586ae9a18afa3a89b73eccfb2927078079bb1'
+const expectedHash = '9e71cc4c09d6330aa0bd8d8974debd3ad1f58e7cd80c781e72fb69bf29834135'
 const sectionIds = [
   'eligibility-and-field',
   'tournament-format-and-seeding',
