@@ -14,6 +14,7 @@ assert.equal(benchmark.policy.paidProviderRequestsDuringValidation, 0)
 assert.equal(benchmark.policy.approvedAnswersRequiredBeforeRelease, 100)
 assert.equal(benchmark.semanticAudit?.auditedCases, 100)
 assert.equal(benchmark.semanticAudit?.totalCases, 100)
+assert.equal(benchmark.semanticContracts?.contractedCases, 5)
 
 const ids = new Set()
 const counts = Object.fromEntries([...allowedCategories].map((category) => [category, 0]))
@@ -29,6 +30,14 @@ for (const item of benchmark.cases) {
   assert.equal(item.semanticAuditStatus, 'PASSED', `Semantic audit incomplete: ${item.id}`)
   assert.equal(typeof item.semanticAuditDate, 'string', `Missing semantic audit date: ${item.id}`)
   assert.ok(item.semanticAuditBasis?.trim(), `Missing semantic audit basis: ${item.id}`)
+
+  if (item.answerContract) {
+    assert.ok(item.answerContract.requiredClaims?.length, `Missing required semantic claims: ${item.id}`)
+    for (const claim of [...item.answerContract.requiredClaims, ...(item.answerContract.forbiddenClaims || [])]) {
+      assert.ok(claim.id?.trim() && claim.description?.trim() && claim.patterns?.length, `Malformed semantic claim: ${item.id}`)
+      for (const pattern of claim.patterns) assert.doesNotThrow(() => new RegExp(pattern, 'iu'), `Invalid semantic pattern: ${item.id}/${claim.id}`)
+    }
+  }
 
   if (item.reviewStatus === 'VERIFIED_DRAFT') {
     assert.ok(item.draftAnswer?.trim(), `Missing draft answer: ${item.id}`)
