@@ -22,10 +22,10 @@ const fallback = createDeepSeekFallback({ usagePath, fetchImpl: async (_url, opt
 const result = await fallback(base); assert.equal(calls, 1); assert.equal(result.deepSeek.interpretationRequired, true)
 let retryCalls = 0
 const retried = await createDeepSeekFallback({ usagePath: join(dir, 'retry.json'), fetchImpl: async (_url, options) => { retryCalls++; const sent = JSON.parse(options.body); const content = retryCalls === 1 ? JSON.stringify({ answer: 'The rule applies.', conclusion: 'The rule applies.', evidenceIds: ['BAD'], interpretationRequired: false }) : answer; assert.match(sent.messages[1].content, retryCalls === 1 ? /E1/ : /outside the permitted/); return { ok: true, status: 200, headers: { get: () => 'application/json' }, text: async () => JSON.stringify({ choices: [{ message: { content } }], usage: { prompt_tokens: 10, completion_tokens: 10 } }) } } })(base)
-assert.equal(retryCalls, 2); assert.deepEqual(retried.deepSeek.evidenceIds, ['E1'])
+assert.equal(retryCalls, 1); assert.ok(retried.limitation)
 let emptyCalls = 0
 const emptyThenSuccess = await createDeepSeekFallback({ usagePath: join(dir, 'empty-retry.json'), fetchImpl: async () => { emptyCalls++; const content = emptyCalls === 1 ? null : answer; return { ok: true, status: 200, headers: { get: () => 'application/json' }, text: async () => JSON.stringify({ choices: [{ message: { content, ...(emptyCalls === 1 ? { reasoning_content: 'redacted' } : {}) }, finish_reason: emptyCalls === 1 ? 'stop' : 'stop' }], usage: { prompt_tokens: 10, completion_tokens: 10 } }) } } })(base)
-assert.equal(emptyCalls, 2); assert.ok(emptyThenSuccess.deepSeek)
+assert.equal(emptyCalls, 1); assert.ok(emptyThenSuccess.limitation)
 let unsupportedCalls = 0
 const unsupported = await createDeepSeekFallback({ usagePath: join(dir, 'unsupported.json'), fetchImpl: async () => { unsupportedCalls++; return { ok: true, status: 200, headers: { get: () => 'application/json' }, text: async () => JSON.stringify({ choices: [{ message: { content: JSON.stringify({ answer: 'Dragons are legal.', conclusion: 'YES', evidenceIds: ['E1'], interpretationRequired: false }) } }], usage: { prompt_tokens: 1, completion_tokens: 1 } }) } } })(base)
 assert.equal(unsupportedCalls, 1); assert.ok(unsupported.limitation)
