@@ -12,7 +12,7 @@ globalThis.fetch = async () => {
 
 assert.equal(benchmark.cases.length, 100)
 assert.equal(benchmark.semanticAudit?.auditedCases, 100)
-assert.equal(benchmark.semanticContracts?.contractedCases, 25)
+assert.equal(benchmark.semanticContracts?.contractedCases, 44)
 assert.ok(benchmark.cases.every((item) => item.semanticAuditStatus === 'PASSED'))
 assert.equal(benchmark.policy.networkRequestsDuringValidation, 0)
 assert.equal(benchmark.policy.paidProviderRequestsDuringValidation, 0)
