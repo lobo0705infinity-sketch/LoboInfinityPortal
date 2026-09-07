@@ -20,7 +20,42 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "listed-mod",
+            "description": "applies the profile's negative MOD",
+            "patterns": [
+              "listed\\s+negative\\s+mod",
+              "mimetism\\s*\\((?:−|-)?(?:3|6)\\)"
+            ]
+          },
+          {
+            "id": "bs-and-discover",
+            "description": "affects BS Attacks and Discover",
+            "patterns": [
+              "bs\\s+attacks?.{0,100}discover",
+              "discover.{0,100}bs\\s+attacks?"
+            ]
+          },
+          {
+            "id": "lof",
+            "description": "requires LoF",
+            "patterns": [
+              "require(?:s|d)?\\s+lof"
+            ]
+          },
+          {
+            "id": "not-cc",
+            "description": "does not apply to CC Attacks",
+            "patterns": [
+              "does\\s+not\\s+apply\\s+to\\s+cc\\s+attacks?"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -42,7 +77,34 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "ph",
+            "description": "uses PH",
+            "patterns": [
+              "\\bph\\b"
+            ]
+          },
+          {
+            "id": "face-to-face",
+            "description": "opposes attacks Face to Face",
+            "patterns": [
+              "face\\s+to\\s+face"
+            ]
+          },
+          {
+            "id": "movement",
+            "description": "successful Dodge can move/change facing",
+            "patterns": [
+              "(?:dodge\\s+)?movement",
+              "change\\s+of\\s+facing"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -64,7 +126,42 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "active-turn",
+            "description": "functions in Active Turn",
+            "patterns": [
+              "active\\s+turn"
+            ]
+          },
+          {
+            "id": "protected-skills",
+            "description": "protects Idle/Cautious Movement/Movement Label skills",
+            "patterns": [
+              "cautious\\s+movement",
+              "movement\\s+label"
+            ]
+          },
+          {
+            "id": "suppresses-aro",
+            "description": "suppresses AROs without LoF",
+            "patterns": [
+              "suppress(?:es|ing)?.{0,50}aros?",
+              "enemies?.{0,40}(?:lack|without|no)\\s+lof"
+            ]
+          },
+          {
+            "id": "sixth-sense",
+            "description": "ineffective against Sixth Sense",
+            "patterns": [
+              "(?:ineffective|not\\s+effective).{0,30}sixth\\s+sense"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -91,7 +188,42 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "outside-lof",
+            "description": "responds to attacks outside LoF",
+            "patterns": [
+              "outside\\s+(?:its|their|the)\\s+lof"
+            ]
+          },
+          {
+            "id": "zero-vis",
+            "description": "ignores resulting Poor Visibility -6",
+            "patterns": [
+              "poor\\s+visibility",
+              "zero\\s+visibility"
+            ]
+          },
+          {
+            "id": "dodge-reset",
+            "description": "Dodge/Reset ignore most negative MODs",
+            "patterns": [
+              "dodge.{0,30}reset.{0,80}negative\\s+mods"
+            ]
+          },
+          {
+            "id": "beats-stealth",
+            "description": "Stealth ineffective",
+            "patterns": [
+              "stealth.{0,30}ineffective",
+              "enemy\\s+stealth.{0,30}not\\s+effective"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -113,7 +245,40 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "minus3-zero",
+            "description": "Mimetism -3 and Low Visibility become 0",
+            "patterns": [
+              "mimetism\\s*\\((?:−|-)\\s*3\\).{0,80}(?:to|becomes?)\\s*0"
+            ]
+          },
+          {
+            "id": "minus6-minus3",
+            "description": "Mimetism -6 and Poor Visibility become -3",
+            "patterns": [
+              "mimetism\\s*\\((?:−|-)\\s*6\\).{0,100}(?:−|-)\\s*3"
+            ]
+          },
+          {
+            "id": "zero-vis",
+            "description": "draws LoF through Zero Visibility at -6",
+            "patterns": [
+              "zero\\s+visibility.{0,80}(?:−|-)\\s*6"
+            ]
+          },
+          {
+            "id": "smoke-ftf",
+            "description": "no Face to Face against Smoke",
+            "patterns": [
+              "(?:does\\s+not|no).{0,50}face\\s+to\\s+face.{0,50}smoke"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -135,7 +300,40 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "mimetism-zero",
+            "description": "reduces Mimetism MODs to 0",
+            "patterns": [
+              "mimetism.{0,60}(?:to|becomes?)\\s*0"
+            ]
+          },
+          {
+            "id": "visibility-zero",
+            "description": "reduces Visibility MODs to 0",
+            "patterns": [
+              "visibility.{0,60}(?:to|becomes?)\\s*0"
+            ]
+          },
+          {
+            "id": "lof-zones",
+            "description": "draws LoF through Visibility Zones without MODs",
+            "patterns": [
+              "lof.{0,50}visibility\\s+zones?.{0,80}without"
+            ]
+          },
+          {
+            "id": "smoke-ftf",
+            "description": "no Face to Face against Smoke",
+            "patterns": [
+              "(?:does\\s+not|no).{0,50}face\\s+to\\s+face.{0,50}smoke"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -157,7 +355,43 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "msv2-benefits",
+            "description": "includes MSV2 benefits",
+            "patterns": [
+              "includes?\\s+msv2",
+              "msv2['’]?s"
+            ]
+          },
+          {
+            "id": "auto-discover",
+            "description": "Discover automatically succeeds",
+            "patterns": [
+              "automatically\\s+succeeds?.{0,30}discover",
+              "discover.{0,30}automatic"
+            ]
+          },
+          {
+            "id": "surprise",
+            "description": "ignores Surprise Attack MODs",
+            "patterns": [
+              "ignore(?:s)?\\s+(?:specified\\s+)?surprise\\s+attack"
+            ]
+          },
+          {
+            "id": "camo-attack",
+            "description": "Active Turn BS Attack against Camo Marker without Discover",
+            "patterns": [
+              "active\\s+turn.{0,100}bs\\s+attack.{0,100}camouflage",
+              "without.{0,30}discover"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -179,7 +413,43 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "two-dice",
+            "description": "rolls two WIP dice",
+            "patterns": [
+              "two\\s+wip\\s+dice",
+              "\\b2\\s+wip\\s+dice"
+            ]
+          },
+          {
+            "id": "enemy-minus3",
+            "description": "applies -3 WIP to enemy Comms Attacks",
+            "patterns": [
+              "(?:−|-)\\s*3\\s+wip.{0,50}enemy\\s+comms",
+              "enemy\\s+comms.{0,50}(?:−|-)\\s*3"
+            ]
+          },
+          {
+            "id": "nullifies",
+            "description": "winning Roll nullifies attack",
+            "patterns": [
+              "nullif(?:y|ies).{0,40}attack"
+            ]
+          },
+          {
+            "id": "aro-b2",
+            "description": "Burst 2 in ARO",
+            "patterns": [
+              "burst\\s*2\\s+in\\s+aro",
+              "\\bb2\\s+in\\s+aro"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -201,7 +471,41 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "extends-area",
+            "description": "extends same-army Hackers' Hacking Area",
+            "patterns": [
+              "extends?.{0,40}hacking\\s+area"
+            ]
+          },
+          {
+            "id": "enemy-use",
+            "description": "enemy Repeater can be used against enemy Hacker",
+            "patterns": [
+              "enemy\\s+repeater.{0,100}(?:enemy\\s+)?hacker"
+            ]
+          },
+          {
+            "id": "firewall",
+            "description": "enemy Repeater applies Firewall -3",
+            "patterns": [
+              "firewall\\s*\\((?:−|-)\\s*3\\)"
+            ]
+          },
+          {
+            "id": "reaction",
+            "description": "react to Hacker, not Repeater",
+            "patterns": [
+              "react.{0,40}hacker.{0,40}not.{0,30}repeater",
+              "not.{0,30}repeater.{0,50}(?:hacker|react)"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -223,7 +527,34 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "wip-mod",
+            "description": "negative WIP MOD on enemy Comms Attack",
+            "patterns": [
+              "negative\\s+wip\\s+mod.{0,80}comms\\s+attack",
+              "comms\\s+attack.{0,80}negative\\s+(?:wip\\s+)?mod"
+            ]
+          },
+          {
+            "id": "saving-plus3",
+            "description": "+3 Saving Roll to protected Trooper",
+            "patterns": [
+              "\\+\\s*3.{0,30}saving\\s+roll"
+            ]
+          },
+          {
+            "id": "one-only",
+            "description": "only one Firewall applies",
+            "patterns": [
+              "only\\s+one\\s+firewall"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -245,7 +576,47 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "lof",
+            "description": "requires LoF",
+            "patterns": [
+              "requires?\\s+lof"
+            ]
+          },
+          {
+            "id": "normal-wip",
+            "description": "Normal WIP Roll",
+            "patterns": [
+              "normal\\s+wip\\s+roll"
+            ]
+          },
+          {
+            "id": "mods",
+            "description": "applies Cover/Range/Mimetism MODs",
+            "patterns": [
+              "cover.{0,30}range.{0,30}mimetism"
+            ]
+          },
+          {
+            "id": "success",
+            "description": "success replaces Marker",
+            "patterns": [
+              "success.{0,50}replace.{0,40}marker"
+            ]
+          },
+          {
+            "id": "failure",
+            "description": "failure blocks same Trooper until next Player Turn",
+            "patterns": [
+              "failure.{0,100}same\\s+marker.{0,100}next\\s+player\\s+turn"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -272,7 +643,41 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "long-skill",
+            "description": "Long Skill enters Suppressive Fire State",
+            "patterns": [
+              "long\\s+skill.{0,80}suppressive\\s+fire\\s+state"
+            ]
+          },
+          {
+            "id": "sf-profile",
+            "description": "uses SF weapon profile",
+            "patterns": [
+              "sf\\s+profile"
+            ]
+          },
+          {
+            "id": "aro-b3",
+            "description": "B3 in ARO",
+            "patterns": [
+              "\\bb3\\s+in\\s+aro",
+              "burst\\s*3\\s+in\\s+aro"
+            ]
+          },
+          {
+            "id": "enemy-minus3",
+            "description": "imposes -3 in Face to Face within 24 inches",
+            "patterns": [
+              "(?:−|-)\\s*3.{0,60}face\\s+to\\s+face.{0,80}24"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -294,7 +699,40 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "off-table",
+            "description": "starts off-table until activated",
+            "patterns": [
+              "off[ -]?table.{0,40}activat"
+            ]
+          },
+          {
+            "id": "horizontal",
+            "description": "deploys on valid horizontal surface",
+            "patterns": [
+              "horizontal\\s+surface"
+            ]
+          },
+          {
+            "id": "ph-roll",
+            "description": "makes PH Roll after placement",
+            "patterns": [
+              "ph\\s+roll"
+            ]
+          },
+          {
+            "id": "failure",
+            "description": "failure uses failed-deployment procedure",
+            "patterns": [
+              "fail(?:s|ure).{0,80}(?:deployment|own\\s+deployment\\s+zone)"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -321,7 +759,47 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "no-model",
+            "description": "deploys without Model or Marker",
+            "patterns": [
+              "without.{0,30}(?:model|marker).{0,20}(?:or|and).{0,20}(?:model|marker)"
+            ]
+          },
+          {
+            "id": "secret-position",
+            "description": "secretly records position/state",
+            "patterns": [
+              "secret(?:ly)?\\s+record"
+            ]
+          },
+          {
+            "id": "not-table",
+            "description": "not considered on table",
+            "patterns": [
+              "not\\s+considered\\s+on\\s+the\\s+table"
+            ]
+          },
+          {
+            "id": "no-order",
+            "description": "normally contributes no Order",
+            "patterns": [
+              "(?:no|does\\s+not\\s+contribute).{0,20}order"
+            ]
+          },
+          {
+            "id": "cannot-regain",
+            "description": "cannot regain after cancellation",
+            "patterns": [
+              "(?:cannot|can['’]?t).{0,30}regain"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -343,7 +821,40 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "bs-minus3",
+            "description": "-3 to BS Attacks",
+            "patterns": [
+              "(?:−|-)\\s*3.{0,40}bs\\s+attack"
+            ]
+          },
+          {
+            "id": "save-plus3",
+            "description": "+3 Saving Rolls",
+            "patterns": [
+              "\\+\\s*3.{0,30}saving\\s+roll"
+            ]
+          },
+          {
+            "id": "not-comms",
+            "description": "does not apply to Comms Attacks",
+            "patterns": [
+              "does\\s+not\\s+apply.{0,30}comms\\s+attacks?"
+            ]
+          },
+          {
+            "id": "not-cc",
+            "description": "cannot be used against CC Attacks",
+            "patterns": [
+              "cannot\\s+be\\s+used.{0,30}cc\\s+attacks?"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -365,7 +876,33 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "not-defined",
+            "description": "N5.3 has no Total Immunity Skill",
+            "patterns": [
+              "n5\\.3.{0,50}(?:does\\s+not|doesn['’]?t).{0,40}(?:define|named).{0,30}total\\s+immunity"
+            ]
+          },
+          {
+            "id": "specific-immunity",
+            "description": "use specific listed Immunity type",
+            "patterns": [
+              "specific\\s+immunity.{0,50}(?:listed|unit\\s+profile)"
+            ]
+          },
+          {
+            "id": "examples",
+            "description": "mentions ARM/BTS/Enhanced types",
+            "patterns": [
+              "immunity\\s*\\((?:arm|bts|enhanced)\\)"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -387,7 +924,40 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "bs-attack",
+            "description": "applies when declaring BS Attack",
+            "patterns": [
+              "declares?\\s+a?\\s*bs\\s+attack"
+            ]
+          },
+          {
+            "id": "cover",
+            "description": "ignores negative BS MOD from Partial Cover",
+            "patterns": [
+              "ignore(?:s)?.{0,60}partial\\s+cover"
+            ]
+          },
+          {
+            "id": "nanoscreen",
+            "description": "ignores negative BS MOD from Nanoscreen",
+            "patterns": [
+              "ignore(?:s)?.{0,80}nanoscreen"
+            ]
+          },
+          {
+            "id": "not-all",
+            "description": "does not remove all Cover/attack effects",
+            "patterns": [
+              "does\\s+not\\s+(?:remove|ignore).{0,50}(?:every|all)"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -409,7 +979,47 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "sensor-roll",
+            "description": "Normal WIP+6 Roll",
+            "patterns": [
+              "normal\\s+wip\\s*\\+\\s*6\\s+roll"
+            ]
+          },
+          {
+            "id": "no-mods-lof",
+            "description": "no Range/Mimetism and no LoF required",
+            "patterns": [
+              "without.{0,40}range.{0,30}mimetism.{0,60}(?:without|no).{0,20}lof"
+            ]
+          },
+          {
+            "id": "targets",
+            "description": "finds Camouflaged/Hidden targets in ZoC",
+            "patterns": [
+              "(?:hidden\\s+deployment|camouflaged).{0,100}zone\\s+of\\s+control"
+            ]
+          },
+          {
+            "id": "ordinary-discover",
+            "description": "+6 to ordinary Discover",
+            "patterns": [
+              "\\+\\s*6.{0,50}(?:ordinary\\s+)?discover"
+            ]
+          },
+          {
+            "id": "blocks-recamo",
+            "description": "prevents regaining Camouflaged State in ZoC",
+            "patterns": [
+              "prevent.{0,60}regain.{0,50}camouflaged\\s+state"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -441,7 +1051,41 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "skill",
+            "description": "Short Skill/ARO Hacking Program",
+            "patterns": [
+              "short\\s+skill\\s*\\/\\s*aro.{0,50}hacking\\s+program"
+            ]
+          },
+          {
+            "id": "burst",
+            "description": "Burst 2",
+            "patterns": [
+              "burst\\s*2",
+              "\\bb2\\b"
+            ]
+          },
+          {
+            "id": "traits",
+            "description": "PS 5, AP, Non-Lethal",
+            "patterns": [
+              "ps\\s*5.{0,30}\\bap\\b.{0,30}non[ -]?lethal"
+            ]
+          },
+          {
+            "id": "targeted",
+            "description": "success applies Targeted State",
+            "patterns": [
+              "(?:successful|success).{0,50}targeted\\s+state"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -463,7 +1107,47 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "trigger",
+            "description": "survives successful Attack",
+            "patterns": [
+              "surviv(?:es|ed).{0,40}successful\\s+attack"
+            ]
+          },
+          {
+            "id": "timing",
+            "description": "one Normal WIP Roll at end of Order",
+            "patterns": [
+              "normal\\s+wip.{0,50}end\\s+of\\s+the\\s+order"
+            ]
+          },
+          {
+            "id": "success",
+            "description": "success holds position",
+            "patterns": [
+              "success.{0,30}(?:hold|remain)"
+            ]
+          },
+          {
+            "id": "choose-fail",
+            "description": "may choose to fail",
+            "patterns": [
+              "(?:choose|chooses).{0,20}(?:to\\s+)?fail"
+            ]
+          },
+          {
+            "id": "retreat",
+            "description": "failure seeks leave danger/LoF, better Cover, or Prone",
+            "patterns": [
+              "(?:leave|exit).{0,60}(?:danger|lof).{0,120}cover.{0,80}prone"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -3007,9 +3691,9 @@
   },
   "title": "Infinity N5 Rules Adjudicator Benchmark",
   "semanticContracts": {
-    "contractedCases": 5,
+    "contractedCases": 25,
     "totalCases": 100,
-    "status": "HIGH_RISK_REGRESSIONS_COMPLETE",
+    "status": "HIGH_RISK_AND_DIRECT_DEFINITIONS_COMPLETE",
     "note": "Contracts test practical claims beyond conclusion and citation matching. Expand to all 100 cases before a paid model evaluation."
   }
 }
