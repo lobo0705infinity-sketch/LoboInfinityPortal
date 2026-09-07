@@ -842,7 +842,7 @@
             "id": "not-comms",
             "description": "does not apply to Comms Attacks",
             "patterns": [
-              "does\\s+not\\s+apply.{0,30}comms\\s+attacks?"
+              "(?:do|does)\\s+not\\s+apply.{0,30}comms\\s+attacks?"
             ]
           },
           {
