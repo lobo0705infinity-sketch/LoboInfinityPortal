@@ -60,4 +60,4 @@ for (const testCase of benchmark.cases.filter((item) => item.category === 'UNRES
 }
 
 assert.equal(networkRequests, 0)
-console.log('Zero-cost rules grading passed: 100 audited cases, 205 fault injections, 0 network requests, 0 provider requests, approval gate locked.')
+console.log('Zero-cost rules grading passed: 100 audited cases, 207 fault injections, 0 network requests, 0 provider requests, approval gate locked.')
