@@ -61,6 +61,10 @@ for (const [index, weapon] of sniperVariants.entries()) {
   const result = buildTacticalAnalysis([decodedList(`Sniper ${index}`, [entry(`sniper-${index}`, 'SNIPER', weapon, { weapons: [weapon], weaponProfiles: [canonicalBurst(weapon, 2)] })])] as never)
   assert.equal(result.categories.find((item) => item.id === 'aro')?.profiles.length, 1, `${weapon} must qualify as an ARO Piece`)
 }
+for (const weapon of ['Missile Launcher', 'Portable Autocannon']) {
+  const result = buildTacticalAnalysis([decodedList(`ARO ${weapon}`, [entry(`aro-${weapon}`, 'ARO TEST', weapon, { weapons: [weapon], weaponProfiles: [canonicalBurst(`${weapon} (AP)`, 2)] })])] as never)
+  assert.equal(result.categories.find((item) => item.id === 'aro')?.profiles.length, 1, `${weapon} must qualify as an ARO Piece with display details`)
+}
 const hiddenBurstAnalysis = buildTacticalAnalysis([decodedList('Hidden Burst', [hiddenBurst])] as never)
 assert.equal(hiddenBurstAnalysis.categories.find((item) => item.id === 'apex')?.profiles[0].unit, 'UNKNOWN RANGER')
 assert.equal(hiddenBurstAnalysis.categories.find((item) => item.id === 'alternative')?.profiles.length, 0, 'Apex Gunfighter must take precedence over Hidden Deployment')
