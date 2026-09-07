@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { buildCompleteCorpusPrompt, calculateDeepSeekV4FlashCost, createDeepSeekRulesAnswer, isDeepSeekPeakPeriod, readUsage, validateDirectAnswer, writeUsage } from '../bot/deepseek-rules.mjs'
+import { buildCompleteCorpusPrompt, calculateDeepSeekV4ProCost, createDeepSeekRulesAnswer, isDeepSeekPeakPeriod, readUsage, validateDirectAnswer, writeUsage } from '../bot/deepseek-rules.mjs'
 
 const corpus = {
   manifest: { sources: [
@@ -18,6 +18,7 @@ const corpus = {
 }
 const prompt = buildCompleteCorpusPrompt(corpus)
 assert.match(prompt, /MSV1 draws LoF/); assert.match(prompt, /FAQ clarification/); assert.match(prompt, /ITS mission rule/)
+assert.match(prompt, /breaks Stealth/); assert.match(prompt, /Never state correct premises and then reverse their consequence/)
 assert.doesNotMatch(prompt, /search_rules|get_related_rules|get_rule_section/)
 
 process.env.DEEPSEEK_API_KEY = 'invalid-placeholder-key'
@@ -26,7 +27,8 @@ process.env.DEEPSEEK_MONTHLY_LIMIT_USD = '10'
 const dir = await mkdtemp(join(tmpdir(), 'deepseek-direct-rules-'))
 const usagePath = join(dir, 'usage.json')
 let calls = 0
-const content = JSON.stringify({ answer: 'Apply a -6 MOD.', conclusion: 'YES', certainty: 'EXPLICIT RULES ANSWER', citationIds: ['C0001'] })
+const validAnswer = { questionMeaning: 'Does the rule apply?', questionType: 'BINARY', requirementChecks: [{ requirement: 'The rule applies.', satisfied: true, explanation: 'The cited rule says so.', citationIds: ['C0001'] }], practicalResult: 'The rule applies.', requestedOutcomeApplies: true, answer: 'Yes. Apply a -6 MOD.', conclusion: 'YES', certainty: 'EXPLICIT RULES ANSWER', citationIds: ['C0001'] }
+const content = JSON.stringify(validAnswer)
 const answer = await createDeepSeekRulesAnswer({
   usagePath,
   logger: { info() {}, warn() {} },
@@ -39,10 +41,14 @@ const answer = await createDeepSeekRulesAnswer({
     assert.match(sent.messages[0].content, /ITS mission rule/)
     assert.equal(sent.messages[1].content, 'What happens through smoke?')
     assert.equal(sent.tools, undefined)
+    assert.equal(sent.model, 'deepseek-v4-pro')
+    assert.deepEqual(sent.thinking, { type: 'enabled' })
+    assert.equal(sent.reasoning_effort, 'max')
+    assert.equal(sent.max_tokens, 12000)
     return { ok: true, status: 200, headers: { get: () => 'application/json' }, text: async () => JSON.stringify({ choices: [{ finish_reason: 'stop', message: { content } }], usage: { prompt_tokens: 100, completion_tokens: 20 } }) }
   },
 })({ question: 'What happens through smoke?', corpus })
-assert.equal(calls, 1); assert.equal(answer.deepSeek.answer, 'Apply a -6 MOD.'); assert.equal(answer.deepSeek.sources[0].section, 'MSV1')
+assert.equal(calls, 1); assert.equal(answer.deepSeek.answer, 'Yes. Apply a -6 MOD.'); assert.equal(answer.deepSeek.sources[0].section, 'MSV1')
 assert.ok((await readFile(usagePath, 'utf8')).includes('promptTokens'))
 
 for (const [name, response] of [
@@ -57,12 +63,16 @@ for (const [name, response] of [
   assert.equal(branchCalls, 1); assert.equal(result.deepSeek, undefined); assert.ok(result.limitation)
 }
 
-assert.equal(validateDirectAnswer({ answer: 'Answer', conclusion: 'YES', certainty: 'EXPLICIT RULES ANSWER', citationIds: ['C0001'] }, corpus).ok, true)
+assert.equal(validateDirectAnswer(validAnswer, corpus).ok, true)
+const reversedStealth = { ...validAnswer, questionMeaning: 'Does Dodge remove Stealth protection?', practicalResult: 'Dodge does not qualify, so Stealth protection is lost.', requestedOutcomeApplies: true, answer: 'No. Dodge does not qualify for Stealth.', conclusion: 'NO' }
+assert.equal(validateDirectAnswer(reversedStealth, corpus).ok, false)
 for (const invalid of [
-  { answer: '', conclusion: 'YES', certainty: 'EXPLICIT RULES ANSWER', citationIds: ['C0001'] },
-  { answer: 'x', conclusion: 'MAYBE', certainty: 'EXPLICIT RULES ANSWER', citationIds: ['C0001'] },
-  { answer: 'x', conclusion: 'YES', certainty: 'CERTAIN', citationIds: ['C0001'] },
-  { answer: 'x', conclusion: 'YES', certainty: 'EXPLICIT RULES ANSWER', citationIds: ['BAD'] },
+  { ...validAnswer, answer: '' },
+  { ...validAnswer, conclusion: 'MAYBE' },
+  { ...validAnswer, certainty: 'CERTAIN' },
+  { ...validAnswer, citationIds: ['BAD'] },
+  { ...validAnswer, requestedOutcomeApplies: false },
+  { ...validAnswer, requirementChecks: [] },
 ]) assert.equal(validateDirectAnswer(invalid, corpus).ok, false)
 
 assert.deepEqual((await readUsage(join(dir, 'missing.json'))).records, [])
@@ -73,8 +83,8 @@ const mondayPeak = Date.parse('2026-09-07T02:00:00Z')
 const mondayOffPeak = Date.parse('2026-09-07T12:00:00Z')
 assert.equal(isDeepSeekPeakPeriod(mondayPeak), true)
 assert.equal(isDeepSeekPeakPeriod(mondayOffPeak), false)
-assert.deepEqual(calculateDeepSeekV4FlashCost({ prompt_tokens: 200000, prompt_cache_hit_tokens: 150000, prompt_cache_miss_tokens: 50000, completion_tokens: 500 }, mondayPeak), {
-  promptTokens: 200000, completionTokens: 500, cacheHitTokens: 150000, cacheMissTokens: 50000, ratePeriod: 'peak', cost: 150000 / 1e6 * 0.014 + 50000 / 1e6 * 0.44 + 500 / 1e6 * 1.32,
+assert.deepEqual(calculateDeepSeekV4ProCost({ prompt_tokens: 200000, prompt_cache_hit_tokens: 150000, prompt_cache_miss_tokens: 50000, completion_tokens: 500 }, mondayPeak), {
+  promptTokens: 200000, completionTokens: 500, cacheHitTokens: 150000, cacheMissTokens: 50000, ratePeriod: 'peak', cost: 150000 / 1e6 * 0.044 + 50000 / 1e6 * 1.32 + 500 / 1e6 * 3.96,
 })
-assert.equal(calculateDeepSeekV4FlashCost({ prompt_tokens: 200000, completion_tokens: 500 }, mondayOffPeak).cost, 200000 / 1e6 * 0.22 + 500 / 1e6 * 0.66)
+assert.equal(calculateDeepSeekV4ProCost({ prompt_tokens: 200000, completion_tokens: 500 }, mondayOffPeak).cost, 200000 / 1e6 * 0.66 + 500 / 1e6 * 1.98)
 console.log('Direct full-corpus DeepSeek path passed with exactly one mocked request and zero real network requests.')

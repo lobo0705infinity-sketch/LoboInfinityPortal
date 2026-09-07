@@ -2,11 +2,12 @@ import { readFile, writeFile, mkdir, rename } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 
 const DEFAULT_USAGE_PATH = resolve(import.meta.dirname, '..', '.tmp', 'deepseek-rules-usage.json')
-const V4_FLASH_PRICING = Object.freeze({
-  offPeak: { cacheHitInput: 0.007, cacheMissInput: 0.22, output: 0.66 },
-  peak: { cacheHitInput: 0.014, cacheMissInput: 0.44, output: 1.32 },
+const V4_PRO_PRICING = Object.freeze({
+  offPeak: { cacheHitInput: 0.022, cacheMissInput: 0.66, output: 1.98 },
+  peak: { cacheHitInput: 0.044, cacheMissInput: 1.32, output: 3.96 },
 })
-const MAX_OUTPUT_TOKENS = 1800
+const DEEPSEEK_RULES_MODEL = 'deepseek-v4-pro'
+const MAX_OUTPUT_TOKENS = 12000
 const ESTIMATED_TOKENS_PER_CHARACTER = 0.3
 let cachedCorpusPrompt
 
@@ -25,7 +26,10 @@ export function buildCompleteCorpusPrompt(corpus) {
     'You are the rules assistant for Corvus Belli Infinity. The complete activated rules corpus follows.',
     'Answer the user question from this corpus only. Apply FAQ precedence and ITS rules only in ITS contexts.',
     'Read across every relevant rule and exception yourself. Do not ask the caller to search, retrieve, validate, or interpret rules for you.',
-    'Return JSON only with exactly these fields: answer (string), conclusion (YES, NO, DEPENDS, UNRESOLVED, or INTERPRETATION), certainty (EXPLICIT RULES ANSWER or EVIDENCE-BOUNDED INTERPRETATION), and citationIds (array of corpus entry IDs).',
+    'Before answering, silently translate informal player wording into the practical rules question. For example, "breaks Stealth" means the declaration causes the Trooper to lose Stealth protection and permits an otherwise-suppressed ARO; it does not mean permanently removing the Skill.',
+    'Silently identify every requirement, test whether it is satisfied, determine the practical game result, and then verify that the YES/NO wording agrees with that result. Never state correct premises and then reverse their consequence.',
+    'Return JSON only with exactly these fields: questionMeaning (string), questionType (BINARY or EXPLANATORY), requirementChecks (array of objects containing requirement, satisfied (true, false, or null), explanation, and citationIds), practicalResult (string), requestedOutcomeApplies (boolean or null), answer (string), conclusion (YES, NO, DEPENDS, UNRESOLVED, or INTERPRETATION), certainty (EXPLICIT RULES ANSWER or EVIDENCE-BOUNDED INTERPRETATION), and citationIds (array of corpus entry IDs).',
+    'For a BINARY question, requestedOutcomeApplies must be true or false, conclusion must be YES when true and NO when false, and answer must begin with the same Yes or No. For an EXPLANATORY question, requestedOutcomeApplies must be null.',
     'Use EXPLICIT RULES ANSWER when the corpus directly states the answer, even if supporting context spans several entries. Use EVIDENCE-BOUNDED INTERPRETATION when the exact result must be inferred. Use UNRESOLVED when the corpus cannot answer.',
     'Cite only entry IDs that directly support the answer. Never mention entry IDs in the prose answer.',
     JSON.stringify({ sources, entries }),
@@ -40,7 +44,7 @@ export function createDeepSeekRulesAnswer({ fetchImpl = fetch, usagePath = proce
     if (!cleanQuestion) throw new Error('A rules question is required.')
     if (cleanQuestion.length > 1000) throw new Error('Rules question exceeds 1000 characters.')
     const key = String(process.env.DEEPSEEK_API_KEY || '')
-    const model = String(process.env.DEEPSEEK_MODEL || 'deepseek-v4-flash')
+    const model = DEEPSEEK_RULES_MODEL
     const versions = buildVersions(corpus)
     if (!key) return unavailable(cleanQuestion, versions, 'DeepSeek is not configured.')
 
@@ -53,7 +57,7 @@ export function createDeepSeekRulesAnswer({ fetchImpl = fetch, usagePath = proce
     const monthly = usage.records.filter((item) => calendarMonth(item.timestamp) === monthKey).reduce((sum, item) => sum + item.cost, 0)
     const estimatedInputTokens = Math.ceil((corpusPrompt.length + cleanQuestion.length) * ESTIMATED_TOKENS_PER_CHARACTER)
     // Cache hits are best-effort, so admission control assumes a peak-rate cache miss.
-    const preflightCost = estimatedInputTokens / 1e6 * V4_FLASH_PRICING.peak.cacheMissInput + MAX_OUTPUT_TOKENS / 1e6 * V4_FLASH_PRICING.peak.output
+    const preflightCost = estimatedInputTokens / 1e6 * V4_PRO_PRICING.peak.cacheMissInput + MAX_OUTPUT_TOKENS / 1e6 * V4_PRO_PRICING.peak.output
     if (hourly + preflightCost > limits.hourly || monthly + preflightCost > limits.monthly) return unavailable(cleanQuestion, versions, 'DeepSeek spending limit reached.')
 
     try {
@@ -65,7 +69,8 @@ export function createDeepSeekRulesAnswer({ fetchImpl = fetch, usagePath = proce
           temperature: 0,
           max_tokens: MAX_OUTPUT_TOKENS,
           response_format: { type: 'json_object' },
-          thinking: { type: 'disabled' },
+          thinking: { type: 'enabled' },
+          reasoning_effort: 'max',
           messages: [{ role: 'system', content: corpusPrompt }, { role: 'user', content: cleanQuestion }],
         }),
         signal: AbortSignal.timeout(120000),
@@ -108,13 +113,25 @@ export function createDeepSeekRulesAnswer({ fetchImpl = fetch, usagePath = proce
 export const createDeepSeekFallback = createDeepSeekRulesAnswer
 
 export function validateDirectAnswer(parsed, corpus) {
+  if (typeof parsed?.questionMeaning !== 'string' || !parsed.questionMeaning.trim()) return { ok: false, reason: 'missing interpreted question meaning' }
+  if (!['BINARY', 'EXPLANATORY'].includes(parsed?.questionType)) return { ok: false, reason: 'invalid question type' }
+  if (!Array.isArray(parsed?.requirementChecks) || parsed.requirementChecks.length === 0) return { ok: false, reason: 'missing requirement checks' }
+  if (typeof parsed?.practicalResult !== 'string' || !parsed.practicalResult.trim()) return { ok: false, reason: 'missing practical result' }
   if (!parsed || typeof parsed.answer !== 'string' || !parsed.answer.trim()) return { ok: false, reason: 'missing answer' }
   if (!['YES', 'NO', 'DEPENDS', 'UNRESOLVED', 'INTERPRETATION'].includes(parsed.conclusion)) return { ok: false, reason: 'invalid conclusion' }
   if (!['EXPLICIT RULES ANSWER', 'EVIDENCE-BOUNDED INTERPRETATION'].includes(parsed.certainty)) return { ok: false, reason: 'invalid certainty' }
   if (!Array.isArray(parsed.citationIds)) return { ok: false, reason: 'missing citationIds' }
   if (parsed.conclusion !== 'UNRESOLVED' && parsed.citationIds.length === 0) return { ok: false, reason: 'missing citations' }
   const maximum = corpus?.chunks?.length || 0
-  if (parsed.citationIds.some((id) => !/^C\d{4}$/.test(id) || Number(id.slice(1)) < 1 || Number(id.slice(1)) > maximum)) return { ok: false, reason: 'invalid citation ID' }
+  const validCitation = (id) => /^C\d{4}$/.test(id) && Number(id.slice(1)) >= 1 && Number(id.slice(1)) <= maximum
+  if (parsed.citationIds.some((id) => !validCitation(id))) return { ok: false, reason: 'invalid citation ID' }
+  if (parsed.requirementChecks.some((check) => !check || typeof check.requirement !== 'string' || !check.requirement.trim() || ![true, false, null].includes(check.satisfied) || typeof check.explanation !== 'string' || !check.explanation.trim() || !Array.isArray(check.citationIds) || check.citationIds.some((id) => !validCitation(id)))) return { ok: false, reason: 'invalid requirement check' }
+  if (parsed.questionType === 'BINARY') {
+    if (typeof parsed.requestedOutcomeApplies !== 'boolean') return { ok: false, reason: 'binary answer is missing its outcome' }
+    const expected = parsed.requestedOutcomeApplies ? 'YES' : 'NO'
+    if (parsed.conclusion !== expected) return { ok: false, reason: 'conclusion contradicts requested outcome' }
+    if (!new RegExp(`^${expected}\\b`, 'i').test(parsed.answer.trim())) return { ok: false, reason: 'answer prose contradicts conclusion' }
+  } else if (parsed.requestedOutcomeApplies !== null) return { ok: false, reason: 'explanatory answer must use a null requested outcome' }
   return { ok: true }
 }
 
@@ -128,7 +145,7 @@ function mapCitations(ids, corpus) {
 function buildVersions(corpus) { return (corpus?.manifest?.sources || []).map((source) => ({ id: source.id, version: source.version, label: source.id === 'its-season-18' ? 'ITS Season 18' : `${source.title} ${source.version}` })) }
 function unavailable(question, versions, limitation) { return { question, versions, status: 'AI RULES ANSWER UNAVAILABLE', limitation } }
 function calendarMonth(timestamp) { const date = new Date(Number(timestamp)); return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}` }
-export function calculateDeepSeekV4FlashCost(apiUsage, timestamp) {
+export function calculateDeepSeekV4ProCost(apiUsage, timestamp) {
   const promptTokens = Math.max(0, Number(apiUsage?.prompt_tokens || 0))
   const completionTokens = Math.max(0, Number(apiUsage?.completion_tokens || 0))
   const reportedHit = Math.max(0, Number(apiUsage?.prompt_cache_hit_tokens || 0))
@@ -137,7 +154,7 @@ export function calculateDeepSeekV4FlashCost(apiUsage, timestamp) {
   const cacheHitTokens = hasCacheBreakdown ? Math.min(promptTokens, reportedHit) : 0
   const cacheMissTokens = hasCacheBreakdown ? Math.max(0, Math.min(promptTokens, reportedMiss) + Math.max(0, promptTokens - reportedHit - reportedMiss)) : promptTokens
   const peak = isDeepSeekPeakPeriod(timestamp)
-  const rates = peak ? V4_FLASH_PRICING.peak : V4_FLASH_PRICING.offPeak
+  const rates = peak ? V4_PRO_PRICING.peak : V4_PRO_PRICING.offPeak
   const cost = cacheHitTokens / 1e6 * rates.cacheHitInput + cacheMissTokens / 1e6 * rates.cacheMissInput + completionTokens / 1e6 * rates.output
   return { promptTokens, completionTokens, cacheHitTokens, cacheMissTokens, ratePeriod: peak ? 'peak' : 'off-peak', cost }
 }
@@ -150,7 +167,7 @@ export function isDeepSeekPeakPeriod(timestamp) {
 }
 
 async function recordProviderUsage({ payload, usage, usagePath, now, model }) {
-  const charge = calculateDeepSeekV4FlashCost(payload?.usage, now)
+  const charge = calculateDeepSeekV4ProCost(payload?.usage, now)
   if (payload?.usage) {
     usage.records.push({ timestamp: now, cost: charge.cost, promptTokens: charge.promptTokens, completionTokens: charge.completionTokens, cacheHitTokens: charge.cacheHitTokens, cacheMissTokens: charge.cacheMissTokens, ratePeriod: charge.ratePeriod, model, outcome: 'provider-response' })
     await writeUsage(usagePath, usage)
