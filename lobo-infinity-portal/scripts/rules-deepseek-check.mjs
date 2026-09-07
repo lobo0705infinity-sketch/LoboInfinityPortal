@@ -19,6 +19,7 @@ const corpus = {
 const prompt = buildCompleteCorpusPrompt(corpus)
 assert.match(prompt, /MSV1 draws LoF/); assert.match(prompt, /FAQ clarification/); assert.match(prompt, /ITS mission rule/)
 assert.match(prompt, /breaks Stealth/); assert.match(prompt, /Never state correct premises and then reverse their consequence/)
+assert.match(prompt, /Active Trooper declaring Dodge/); assert.match(prompt, /Reactive Trooper’s Dodge/)
 assert.doesNotMatch(prompt, /search_rules|get_related_rules|get_rule_section/)
 
 process.env.DEEPSEEK_API_KEY = 'invalid-placeholder-key'
@@ -27,7 +28,7 @@ process.env.DEEPSEEK_MONTHLY_LIMIT_USD = '10'
 const dir = await mkdtemp(join(tmpdir(), 'deepseek-direct-rules-'))
 const usagePath = join(dir, 'usage.json')
 let calls = 0
-const validAnswer = { questionMeaning: 'Does the rule apply?', questionType: 'BINARY', requirementChecks: [{ requirement: 'The rule applies.', satisfied: true, explanation: 'The cited rule says so.', citationIds: ['C0001'] }], practicalResult: 'The rule applies.', requestedOutcomeApplies: true, answer: 'Yes. Apply a -6 MOD.', conclusion: 'YES', certainty: 'EXPLICIT RULES ANSWER', citationIds: ['C0001'] }
+const validAnswer = { questionMeaning: 'Does the rule apply?', questionType: 'BINARY', materialAmbiguities: [], assumptions: [], requirementChecks: [{ requirement: 'The rule applies.', satisfied: true, explanation: 'The cited rule says so.', citationIds: ['C0001'] }], practicalResult: 'The rule applies.', requestedOutcomeApplies: true, answer: 'Yes. Apply a -6 MOD.', conclusion: 'YES', certainty: 'EXPLICIT RULES ANSWER', citationIds: ['C0001'] }
 const content = JSON.stringify(validAnswer)
 const answer = await createDeepSeekRulesAnswer({
   usagePath,
@@ -66,6 +67,8 @@ for (const [name, response] of [
 assert.equal(validateDirectAnswer(validAnswer, corpus).ok, true)
 const reversedStealth = { ...validAnswer, questionMeaning: 'Does Dodge remove Stealth protection?', practicalResult: 'Dodge does not qualify, so Stealth protection is lost.', requestedOutcomeApplies: true, answer: 'No. Dodge does not qualify for Stealth.', conclusion: 'NO' }
 assert.equal(validateDirectAnswer(reversedStealth, corpus).ok, false)
+const ambiguousStealth = { ...validAnswer, questionMeaning: 'Does declaring Dodge remove Stealth protection?', materialAmbiguities: [{ missingFact: 'Whether the Dodge is declared by the Active or Reactive Trooper', alternatives: [{ state: 'Active Trooper declares Dodge', outcome: 'Stealth protection does not apply to that declaration.' }, { state: 'Reactive Trooper declares Dodge', outcome: 'Stealth is not operating for that Trooper.' }] }], practicalResult: 'The result differs by active/reactive role.', requestedOutcomeApplies: null, answer: 'It depends. An Active Trooper loses Stealth protection for the declaration; a Reactive Trooper is not using Stealth.', conclusion: 'DEPENDS' }
+assert.equal(validateDirectAnswer(ambiguousStealth, corpus).ok, true)
 for (const invalid of [
   { ...validAnswer, answer: '' },
   { ...validAnswer, conclusion: 'MAYBE' },
@@ -73,6 +76,8 @@ for (const invalid of [
   { ...validAnswer, citationIds: ['BAD'] },
   { ...validAnswer, requestedOutcomeApplies: false },
   { ...validAnswer, requirementChecks: [] },
+  { ...validAnswer, assumptions: ['Assume Reactive Turn'] },
+  { ...ambiguousStealth, conclusion: 'NO', requestedOutcomeApplies: false, answer: 'No. Dodge does not break Stealth.' },
 ]) assert.equal(validateDirectAnswer(invalid, corpus).ok, false)
 
 assert.deepEqual((await readUsage(join(dir, 'missing.json'))).records, [])

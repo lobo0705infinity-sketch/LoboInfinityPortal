@@ -27,8 +27,11 @@ export function buildCompleteCorpusPrompt(corpus) {
     'Answer the user question from this corpus only. Apply FAQ precedence and ITS rules only in ITS contexts.',
     'Read across every relevant rule and exception yourself. Do not ask the caller to search, retrieve, validate, or interpret rules for you.',
     'Before answering, silently translate informal player wording into the practical rules question. For example, "breaks Stealth" means the declaration causes the Trooper to lose Stealth protection and permits an otherwise-suppressed ARO; it does not mean permanently removing the Skill.',
+    'Do not silently assume an omitted game state, Turn, active/reactive role, target, declared Skill, range, equipment, or other fact when changing that fact could change the answer. Identify every material ambiguity and evaluate all of its alternatives.',
+    'If any material ambiguity has alternatives with different outcomes, conclusion must be DEPENDS, requestedOutcomeApplies must be null, and answer must begin "It depends." Explain each outcome concisely.',
+    'Specific interpretation example: "Does Dodge break Stealth?" is ambiguous unless the acting Trooper and Turn are clear. An Active Trooper declaring Dodge does not meet Stealth’s protected-declaration requirements and can permit an otherwise-suppressed ARO; a Reactive Trooper’s Dodge does not use Stealth because Stealth functions during its user’s Active Turn. The unqualified question therefore requires DEPENDS and both cases.',
     'Silently identify every requirement, test whether it is satisfied, determine the practical game result, and then verify that the YES/NO wording agrees with that result. Never state correct premises and then reverse their consequence.',
-    'Return JSON only with exactly these fields: questionMeaning (string), questionType (BINARY or EXPLANATORY), requirementChecks (array of objects containing requirement, satisfied (true, false, or null), explanation, and citationIds), practicalResult (string), requestedOutcomeApplies (boolean or null), answer (string), conclusion (YES, NO, DEPENDS, UNRESOLVED, or INTERPRETATION), certainty (EXPLICIT RULES ANSWER or EVIDENCE-BOUNDED INTERPRETATION), and citationIds (array of corpus entry IDs).',
+    'Return JSON only with exactly these fields: questionMeaning (string), questionType (BINARY or EXPLANATORY), materialAmbiguities (array of objects containing missingFact and alternatives, where alternatives is an array of at least two objects containing state and outcome), assumptions (always an empty array), requirementChecks (array of objects containing requirement, satisfied (true, false, or null), explanation, and citationIds), practicalResult (string), requestedOutcomeApplies (boolean or null), answer (string), conclusion (YES, NO, DEPENDS, UNRESOLVED, or INTERPRETATION), certainty (EXPLICIT RULES ANSWER or EVIDENCE-BOUNDED INTERPRETATION), and citationIds (array of corpus entry IDs).',
     'For a BINARY question, requestedOutcomeApplies must be true or false, conclusion must be YES when true and NO when false, and answer must begin with the same Yes or No. For an EXPLANATORY question, requestedOutcomeApplies must be null.',
     'Use EXPLICIT RULES ANSWER when the corpus directly states the answer, even if supporting context spans several entries. Use EVIDENCE-BOUNDED INTERPRETATION when the exact result must be inferred. Use UNRESOLVED when the corpus cannot answer.',
     'Cite only entry IDs that directly support the answer. Never mention entry IDs in the prose answer.',
@@ -116,6 +119,8 @@ export function validateDirectAnswer(parsed, corpus) {
   if (typeof parsed?.questionMeaning !== 'string' || !parsed.questionMeaning.trim()) return { ok: false, reason: 'missing interpreted question meaning' }
   if (!['BINARY', 'EXPLANATORY'].includes(parsed?.questionType)) return { ok: false, reason: 'invalid question type' }
   if (!Array.isArray(parsed?.requirementChecks) || parsed.requirementChecks.length === 0) return { ok: false, reason: 'missing requirement checks' }
+  if (!Array.isArray(parsed?.materialAmbiguities)) return { ok: false, reason: 'missing ambiguity analysis' }
+  if (!Array.isArray(parsed?.assumptions) || parsed.assumptions.length !== 0) return { ok: false, reason: 'answer made an unsupported assumption' }
   if (typeof parsed?.practicalResult !== 'string' || !parsed.practicalResult.trim()) return { ok: false, reason: 'missing practical result' }
   if (!parsed || typeof parsed.answer !== 'string' || !parsed.answer.trim()) return { ok: false, reason: 'missing answer' }
   if (!['YES', 'NO', 'DEPENDS', 'UNRESOLVED', 'INTERPRETATION'].includes(parsed.conclusion)) return { ok: false, reason: 'invalid conclusion' }
@@ -126,7 +131,13 @@ export function validateDirectAnswer(parsed, corpus) {
   const validCitation = (id) => /^C\d{4}$/.test(id) && Number(id.slice(1)) >= 1 && Number(id.slice(1)) <= maximum
   if (parsed.citationIds.some((id) => !validCitation(id))) return { ok: false, reason: 'invalid citation ID' }
   if (parsed.requirementChecks.some((check) => !check || typeof check.requirement !== 'string' || !check.requirement.trim() || ![true, false, null].includes(check.satisfied) || typeof check.explanation !== 'string' || !check.explanation.trim() || !Array.isArray(check.citationIds) || check.citationIds.some((id) => !validCitation(id)))) return { ok: false, reason: 'invalid requirement check' }
+  if (parsed.materialAmbiguities.some((ambiguity) => !ambiguity || typeof ambiguity.missingFact !== 'string' || !ambiguity.missingFact.trim() || !Array.isArray(ambiguity.alternatives) || ambiguity.alternatives.length < 2 || ambiguity.alternatives.some((alternative) => !alternative || typeof alternative.state !== 'string' || !alternative.state.trim() || typeof alternative.outcome !== 'string' || !alternative.outcome.trim()))) return { ok: false, reason: 'invalid ambiguity analysis' }
+  if (parsed.materialAmbiguities.length > 0) {
+    if (parsed.conclusion !== 'DEPENDS' || parsed.requestedOutcomeApplies !== null) return { ok: false, reason: 'ambiguous question must conclude DEPENDS' }
+    if (!/^it depends\b/i.test(parsed.answer.trim())) return { ok: false, reason: 'ambiguous answer must explain that it depends' }
+  }
   if (parsed.questionType === 'BINARY') {
+    if (parsed.materialAmbiguities.length > 0) return { ok: true }
     if (typeof parsed.requestedOutcomeApplies !== 'boolean') return { ok: false, reason: 'binary answer is missing its outcome' }
     const expected = parsed.requestedOutcomeApplies ? 'YES' : 'NO'
     if (parsed.conclusion !== expected) return { ok: false, reason: 'conclusion contradicts requested outcome' }
