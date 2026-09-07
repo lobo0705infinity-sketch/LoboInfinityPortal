@@ -34,7 +34,8 @@ export function createDeepSeekFallback({ fetchImpl = fetch, usagePath = process.
     const current = usage.records.filter((item) => now() - item.timestamp < 31 * 24 * 60 * 60 * 1000)
     const hourly = current.filter((item) => now() - item.timestamp < 60 * 60 * 1000).reduce((sum, item) => sum + item.cost, 0)
     const monthly = current.reduce((sum, item) => sum + item.cost, 0)
-    if (hourly >= limits.hourly || monthly >= limits.monthly) return withLimitation(result, 'DeepSeek spending limit reached; returning the retrieval result.')
+    const preflightCost = (12000 / 1e6 * INPUT_USD_PER_MILLION) + (3600 / 1e6 * OUTPUT_USD_PER_MILLION)
+    if (hourly + preflightCost >= limits.hourly || monthly + preflightCost >= limits.monthly) return withLimitation(result, 'DeepSeek spending limit reached; returning the retrieval result.')
     const permittedIds = evidence.map((item) => item.id)
     const baseInstruction = `Answer only from the supplied excerpts. For interaction questions, explain how each cited condition applies to the exact declared Skill, target, Repeater, and Firewall; do not infer Firewall merely because an enemy Repeater is involved. If excerpts do not establish every required condition, use conclusion UNRESOLVED. Permitted evidence IDs: ${permittedIds.join(', ')}. Return JSON only, using this complete example shape: {"answer":"text","conclusion":"YES|NO|DEPENDS|UNRESOLVED","evidenceIds":["E1"],"interpretationRequired":false}. The response must contain exactly answer, conclusion, evidenceIds, and interpretationRequired. evidenceIds must use only permitted IDs. Every material conclusion must be supported by a cited excerpt. Distinguish explicit rules from interpretation. Preserve FAQ precedence and ITS scope.`
     let validationError = ''
@@ -61,14 +62,13 @@ export function createDeepSeekFallback({ fetchImpl = fetch, usagePath = process.
       logger.info?.(`DeepSeek rules request: stage=${stage} finish_reason=${String(finishReason)} tool_call_count=${Array.isArray(toolCalls) ? toolCalls.length : 0} content_length=${typeof content === 'string' ? content.length : 0} remaining_requests=0`)
       if (Array.isArray(toolCalls) && toolCalls.length) return withLimitation(result, 'DeepSeek returned an unsupported tool-call response; returning the retrieval result.')
       const reasoningPresent = Boolean(payload?.choices?.[0]?.message?.reasoning_content)
+      const promptTokens = Number(payload?.usage?.prompt_tokens || 0), completionTokens = Number(payload?.usage?.completion_tokens || 0)
+      const cost = promptTokens / 1e6 * INPUT_USD_PER_MILLION + completionTokens / 1e6 * OUTPUT_USD_PER_MILLION
+      if (payload?.usage) { totalCost += cost; usage.records.push({ timestamp: now(), cost, promptTokens, completionTokens, model, outcome: 'provider-response' }); await writeUsage(usagePath, usage) }
       logger.info?.(`DeepSeek rules response: finish_reason=${String(finishReason)} content_length=${typeof content === 'string' ? content.length : 0} reasoning_content_present=${reasoningPresent}`)
       let parsed = null
       if (typeof content !== 'string' || !content.trim()) { validationError = 'provider returned null or empty message.content'; logger.warn?.(`DeepSeek rules provider-output error: ${validationError}; retrying=${attempt === 0}`); if (attempt === 1) return withLimitation(result, 'DeepSeek returned empty content; returning the retrieval result.'); continue }
       try { parsed = JSON.parse(content) } catch { parsed = null }
-      const promptTokens = Number(payload?.usage?.prompt_tokens || 0)
-      const completionTokens = Number(payload?.usage?.completion_tokens || 0)
-      const cost = promptTokens / 1e6 * INPUT_USD_PER_MILLION + completionTokens / 1e6 * OUTPUT_USD_PER_MILLION; totalCost += cost
-      usage.records.push({ timestamp: now(), cost, promptTokens, completionTokens, model }); await writeUsage(usagePath, usage)
       const check = validateModelOutput(parsed, evidence)
       if (check.ok) { const interpreted = Boolean(parsed.interpretationRequired || result.noExplicitFaq || result.rules.length > 1); return { ...result, deepSeek: { answer: parsed.answer, conclusion: parsed.conclusion, questionType: parsed.questionType || (/^(?:does|do|can|will|is|are|should)\b/i.test(result.question) ? 'binary' : 'explanatory'), certainty: interpreted ? 'EVIDENCE-BOUNDED INTERPRETATION' : 'EXPLICIT RULING', interpretationRequired: interpreted, evidenceIds: parsed.evidenceIds, cost: totalCost }, status: 'DEEPSEEK EVIDENCE-BOUNDED ANSWER' } }
       validationError = check.reason
