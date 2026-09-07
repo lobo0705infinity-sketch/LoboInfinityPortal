@@ -1,5 +1,6 @@
 import { readFile, writeFile, mkdir, rename } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
+import { normalizeRuleText, searchRules } from './infinity-rules-service.mjs'
 
 const DEFAULT_USAGE_PATH = resolve(import.meta.dirname, '..', '.tmp', 'deepseek-rules-usage.json')
 const V4_PRO_PRICING = Object.freeze({
@@ -10,22 +11,40 @@ const DEEPSEEK_RULES_MODEL = 'deepseek-v4-pro'
 const MAX_OUTPUT_TOKENS = 4000
 const REQUEST_TIMEOUT_MS = 60000
 const ESTIMATED_TOKENS_PER_CHARACTER = 0.3
-let cachedCorpusPrompt
+const MAX_EVIDENCE_CHARACTERS = 60000
 
-export function buildCompleteCorpusPrompt(corpus) {
-  if (cachedCorpusPrompt?.corpus === corpus) return cachedCorpusPrompt.text
+export function buildRulesEvidencePrompt(corpus, question) {
   if (!corpus?.manifest?.sources?.length || !corpus?.chunks?.length) throw new Error('The complete rules corpus is unavailable.')
   const sources = corpus.manifest.sources.map((source) => ({ id: source.id, title: source.title, version: source.version, officialUrl: source.officialUrl }))
-  const entries = corpus.chunks.map((chunk, index) => ({
+  const searchable = corpus.chunks.map((chunk) => chunk.normalized ? chunk : { ...chunk, normalized: normalizeRuleText(`${chunk.section || ''} ${(chunk.headings || []).join(' ')} ${chunk.text || ''}`), headings: chunk.headings || [], authority: chunk.authority ?? 99, scope: chunk.scope || 'CORE' })
+  const ranked = searchRules(searchable, question, { limit: 18 })
+  const key = (chunk) => `${chunk.sourceId}:${chunk.pdfPage}:${chunk.text}`
+  const originals = new Map(corpus.chunks.map((chunk, index) => [key(chunk), { chunk, index }]))
+  const selected = new Map()
+  const add = (candidate) => { const original = originals.get(key(candidate)); if (original) selected.set(original.index, original.chunk) }
+  ranked.slice(0, 10).forEach((candidate) => {
+    add(candidate)
+    corpus.chunks.filter((chunk) => chunk.sourceId === candidate.sourceId && chunk.pdfPage === candidate.pdfPage).forEach(add)
+  })
+  ranked.slice(0, 5).forEach((candidate) => corpus.chunks.filter((chunk) => chunk.sourceId === candidate.sourceId && Math.abs(chunk.pdfPage - candidate.pdfPage) === 1).forEach(add))
+  ranked.forEach(add)
+  const entries = []
+  let characters = 0
+  for (const [index, chunk] of selected) {
+    if (characters + String(chunk.text || '').length > MAX_EVIDENCE_CHARACTERS && entries.length >= 12) continue
+    characters += String(chunk.text || '').length
+    entries.push({
     id: `C${String(index + 1).padStart(4, '0')}`,
     sourceId: chunk.sourceId,
     page: chunk.printedPage || `PDF ${chunk.pdfPage}`,
     section: chunk.section,
     text: chunk.text,
-  }))
+    })
+  }
+  if (!entries.length) throw new Error('No relevant rules evidence was found.')
   const text = [
-    'You are the rules assistant for Corvus Belli Infinity. The complete activated rules corpus follows.',
-    'Answer the user question from this corpus only. Apply FAQ precedence and ITS rules only in ITS contexts.',
+    'You are the rules assistant for Corvus Belli Infinity. A deterministic search selected the official evidence below; the search did not answer or interpret the question.',
+    'Answer the user question from this evidence only. Apply FAQ precedence and ITS rules only in ITS contexts.',
     'Read across every relevant rule and exception yourself. Do not ask the caller to search, retrieve, validate, or interpret rules for you.',
     'Before answering, silently translate informal player wording into the practical rules question. For example, "breaks Stealth" means the declaration causes the Trooper to lose Stealth protection and permits an otherwise-suppressed ARO; it does not mean permanently removing the Skill.',
     'Do not silently assume an omitted game state, Turn, active/reactive role, target, declared Skill, range, equipment, or other fact when changing that fact could change the answer. Identify every material ambiguity and evaluate all of its alternatives.',
@@ -38,8 +57,7 @@ export function buildCompleteCorpusPrompt(corpus) {
     'Cite only entry IDs that directly support the answer. Never mention entry IDs in the prose answer.',
     JSON.stringify({ sources, entries }),
   ].join('\n')
-  cachedCorpusPrompt = { corpus, text }
-  return text
+  return { text, evidenceIds: new Set(entries.map((entry) => entry.id)), entryCount: entries.length, characterCount: characters }
 }
 
 export function createDeepSeekRulesAnswer({ fetchImpl = fetch, usagePath = process.env.DEEPSEEK_USAGE_PATH || DEFAULT_USAGE_PATH, now = () => Date.now(), logger = console, requestTimeoutMs = REQUEST_TIMEOUT_MS } = {}) {
@@ -52,7 +70,9 @@ export function createDeepSeekRulesAnswer({ fetchImpl = fetch, usagePath = proce
     const versions = buildVersions(corpus)
     if (!key) return unavailable(cleanQuestion, versions, 'DeepSeek is not configured.')
 
-    const corpusPrompt = buildCompleteCorpusPrompt(corpus)
+    let evidence
+    try { evidence = buildRulesEvidencePrompt(corpus, cleanQuestion) } catch { return unavailable(cleanQuestion, versions, 'No relevant official rules evidence was found.') }
+    const corpusPrompt = evidence.text
     const usage = await readUsage(usagePath, logger)
     const timestamp = now()
     const limits = { hourly: Number(process.env.DEEPSEEK_HOURLY_LIMIT_USD || 1), monthly: Number(process.env.DEEPSEEK_MONTHLY_LIMIT_USD || 10) }
@@ -88,12 +108,12 @@ export function createDeepSeekRulesAnswer({ fetchImpl = fetch, usagePath = proce
       if (choice?.finish_reason === 'length' || choice?.message?.tool_calls?.length) return unavailable(cleanQuestion, versions, 'DeepSeek did not complete its answer.')
       let parsed
       try { parsed = JSON.parse(choice?.message?.content) } catch { return unavailable(cleanQuestion, versions, 'DeepSeek returned an unusable answer.') }
-      const checked = validateDirectAnswer(parsed, corpus)
+      const checked = validateDirectAnswer(parsed, corpus, evidence.evidenceIds)
       if (!checked.ok) {
         logger.warn?.(`DeepSeek rules output rejected mechanically: ${checked.reason}`)
         return unavailable(cleanQuestion, versions, 'DeepSeek returned an unusable answer.')
       }
-      logger.info?.(`DeepSeek rules request: provider_calls=1 prompt_tokens=${charge.promptTokens} cache_hit_tokens=${charge.cacheHitTokens} cache_miss_tokens=${charge.cacheMissTokens} completion_tokens=${charge.completionTokens} rate_period=${charge.ratePeriod} cost_usd=${charge.cost.toFixed(6)} outcome=answered`)
+      logger.info?.(`DeepSeek rules request: provider_calls=1 evidence_entries=${evidence.entryCount} evidence_characters=${evidence.characterCount} prompt_tokens=${charge.promptTokens} cache_hit_tokens=${charge.cacheHitTokens} cache_miss_tokens=${charge.cacheMissTokens} completion_tokens=${charge.completionTokens} rate_period=${charge.ratePeriod} cost_usd=${charge.cost.toFixed(6)} outcome=answered`)
       return {
         question: cleanQuestion,
         versions,
@@ -134,7 +154,7 @@ async function fetchWithHardTimeout(fetchImpl, url, options, timeoutMs) {
 
 export const createDeepSeekFallback = createDeepSeekRulesAnswer
 
-export function validateDirectAnswer(parsed, corpus) {
+export function validateDirectAnswer(parsed, corpus, permittedEvidenceIds = null) {
   if (typeof parsed?.questionMeaning !== 'string' || !parsed.questionMeaning.trim()) return { ok: false, reason: 'missing interpreted question meaning' }
   if (!['BINARY', 'EXPLANATORY'].includes(parsed?.questionType)) return { ok: false, reason: 'invalid question type' }
   if (!Array.isArray(parsed?.requirementChecks) || parsed.requirementChecks.length === 0) return { ok: false, reason: 'missing requirement checks' }
@@ -147,7 +167,7 @@ export function validateDirectAnswer(parsed, corpus) {
   if (!Array.isArray(parsed.citationIds)) return { ok: false, reason: 'missing citationIds' }
   if (parsed.conclusion !== 'UNRESOLVED' && parsed.citationIds.length === 0) return { ok: false, reason: 'missing citations' }
   const maximum = corpus?.chunks?.length || 0
-  const validCitation = (id) => /^C\d{4}$/.test(id) && Number(id.slice(1)) >= 1 && Number(id.slice(1)) <= maximum
+  const validCitation = (id) => /^C\d{4}$/.test(id) && Number(id.slice(1)) >= 1 && Number(id.slice(1)) <= maximum && (!permittedEvidenceIds || permittedEvidenceIds.has(id))
   if (parsed.citationIds.some((id) => !validCitation(id))) return { ok: false, reason: 'invalid citation ID' }
   if (parsed.requirementChecks.some((check) => !check || typeof check.requirement !== 'string' || !check.requirement.trim() || ![true, false, null].includes(check.satisfied) || typeof check.explanation !== 'string' || !check.explanation.trim() || !Array.isArray(check.citationIds) || check.citationIds.some((id) => !validCitation(id)))) return { ok: false, reason: 'invalid requirement check' }
   if (parsed.materialAmbiguities.some((ambiguity) => !ambiguity || typeof ambiguity.missingFact !== 'string' || !ambiguity.missingFact.trim() || !Array.isArray(ambiguity.alternatives) || ambiguity.alternatives.length < 2 || ambiguity.alternatives.some((alternative) => !alternative || typeof alternative.state !== 'string' || !alternative.state.trim() || typeof alternative.outcome !== 'string' || !alternative.outcome.trim()))) return { ok: false, reason: 'invalid ambiguity analysis' }

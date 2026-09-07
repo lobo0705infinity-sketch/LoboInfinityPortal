@@ -2,7 +2,8 @@ import assert from 'node:assert/strict'
 import { mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { buildCompleteCorpusPrompt, calculateDeepSeekV4ProCost, createDeepSeekRulesAnswer, isDeepSeekPeakPeriod, readUsage, validateDirectAnswer, writeUsage } from '../bot/deepseek-rules.mjs'
+import { buildRulesEvidencePrompt, calculateDeepSeekV4ProCost, createDeepSeekRulesAnswer, isDeepSeekPeakPeriod, readUsage, validateDirectAnswer, writeUsage } from '../bot/deepseek-rules.mjs'
+import { loadProductionRulesCorpus } from '../bot/infinity-rules-service.mjs'
 
 const corpus = {
   manifest: { sources: [
@@ -16,11 +17,23 @@ const corpus = {
     { sourceId: 'its', printedPage: '10', pdfPage: 10, section: 'ITS', text: 'ITS mission rule.' },
   ],
 }
-const prompt = buildCompleteCorpusPrompt(corpus)
-assert.match(prompt, /MSV1 draws LoF/); assert.match(prompt, /FAQ clarification/); assert.match(prompt, /ITS mission rule/)
+const promptResult = buildRulesEvidencePrompt(corpus, 'What happens through smoke with MSV1?')
+const prompt = promptResult.text
+assert.match(prompt, /MSV1 draws LoF/)
 assert.match(prompt, /breaks Stealth/); assert.match(prompt, /Never state correct premises and then reverse their consequence/)
 assert.match(prompt, /Active Trooper declaring Dodge/); assert.match(prompt, /Reactive Trooper’s Dodge/)
 assert.doesNotMatch(prompt, /search_rules|get_related_rules|get_rule_section/)
+
+const productionCorpus = await loadProductionRulesCorpus()
+for (const [question, required] of [
+  ['does dodge break stealth', [/STEALTH/i, /DODGE/i]],
+  ['Does Zero Pain suffer Firewall through an enemy Repeater?', [/ZERO PAIN/i, /FIREWALL/i, /REPEATER/i]],
+  ['what happens when i shoot through smoke with msv 1 and my opponent dodges, what is my modifier to hit', [/SMOKE/i, /MULTISPECTRAL VISOR LEVEL 1/i]],
+]) {
+  const evidence = buildRulesEvidencePrompt(productionCorpus, question)
+  assert.ok(evidence.entryCount >= 1 && evidence.characterCount <= 60000)
+  for (const pattern of required) assert.match(evidence.text, pattern)
+}
 
 process.env.DEEPSEEK_API_KEY = 'invalid-placeholder-key'
 process.env.DEEPSEEK_HOURLY_LIMIT_USD = '1'
@@ -38,8 +51,6 @@ const answer = await createDeepSeekRulesAnswer({
     const sent = JSON.parse(options.body)
     assert.equal(sent.messages.length, 2)
     assert.match(sent.messages[0].content, /MSV1 draws LoF/)
-    assert.match(sent.messages[0].content, /FAQ clarification/)
-    assert.match(sent.messages[0].content, /ITS mission rule/)
     assert.equal(sent.messages[1].content, 'What happens through smoke?')
     assert.equal(sent.tools, undefined)
     assert.equal(sent.model, 'deepseek-v4-pro')
@@ -54,7 +65,7 @@ assert.ok((await readFile(usagePath, 'utf8')).includes('promptTokens'))
 
 let timeoutCalls = 0
 const timeoutStarted = Date.now()
-const timedOut = await createDeepSeekRulesAnswer({ usagePath: join(dir, 'timeout.json'), requestTimeoutMs: 5, logger: { info() {}, warn() {} }, fetchImpl: async () => { timeoutCalls++; return await new Promise(() => {}) } })({ question: 'Timed request', corpus })
+const timedOut = await createDeepSeekRulesAnswer({ usagePath: join(dir, 'timeout.json'), requestTimeoutMs: 5, logger: { info() {}, warn() {} }, fetchImpl: async () => { timeoutCalls++; return await new Promise(() => {}) } })({ question: 'Timed complete rule request', corpus })
 assert.equal(timeoutCalls, 1); assert.match(timedOut.limitation, /timed out after 60 seconds/i); assert.ok(Date.now() - timeoutStarted < 1000)
 
 for (const [name, response] of [
@@ -65,7 +76,7 @@ for (const [name, response] of [
   ['tool', { ok: true, status: 200, headers: { get: () => 'application/json' }, text: async () => JSON.stringify({ choices: [{ finish_reason: 'tool_calls', message: { content: null, tool_calls: [{}] } }], usage: { prompt_tokens: 1, completion_tokens: 1 } }) }],
 ]) {
   let branchCalls = 0
-  const result = await createDeepSeekRulesAnswer({ usagePath: join(dir, `${name}.json`), logger: { info() {}, warn() {} }, fetchImpl: async () => { branchCalls++; return response } })({ question: name, corpus })
+  const result = await createDeepSeekRulesAnswer({ usagePath: join(dir, `${name}.json`), logger: { info() {}, warn() {} }, fetchImpl: async () => { branchCalls++; return response } })({ question: `${name} complete rule`, corpus })
   assert.equal(branchCalls, 1); assert.equal(result.deepSeek, undefined); assert.ok(result.limitation)
 }
 
@@ -97,4 +108,4 @@ assert.deepEqual(calculateDeepSeekV4ProCost({ prompt_tokens: 200000, prompt_cach
   promptTokens: 200000, completionTokens: 500, cacheHitTokens: 150000, cacheMissTokens: 50000, ratePeriod: 'peak', cost: 150000 / 1e6 * 0.044 + 50000 / 1e6 * 1.32 + 500 / 1e6 * 3.96,
 })
 assert.equal(calculateDeepSeekV4ProCost({ prompt_tokens: 200000, completion_tokens: 500 }, mondayOffPeak).cost, 200000 / 1e6 * 0.66 + 500 / 1e6 * 1.98)
-console.log('Direct full-corpus DeepSeek path passed with exactly one mocked request and zero real network requests.')
+console.log('Retrieval-assisted DeepSeek path passed with exactly one mocked request and zero real network requests.')

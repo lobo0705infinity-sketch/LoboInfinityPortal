@@ -45,7 +45,7 @@ export function formatRulesDiscordResponse(result) {
     const citations = formatCitations(result.deepSeek.sources || []); if (citations) fields.push({ name: 'OFFICIAL SOURCES', value: truncate(citations, 1024), inline: false })
   } else fields.push({ name: 'STATUS', value: `**${result.status || 'AI RULES ANSWER UNAVAILABLE'}**\n${result.limitation || 'No answer was returned.'}`, inline: false })
   const versions = (result.versions || []).map((item) => item.label).join(' • ')
-  return scrubDiscordPayload({ embeds: [{ title: 'Infinity Rules Assistant', description: truncate(`**Question**\n${result.question}`, 1000), color: 0x8b1e2d, fields, footer: { text: truncate(`Activated corpus: ${versions} • AI answer from the complete activated corpus.`, 2048) } }], allowedMentions: { parse: [] } })
+  return scrubDiscordPayload({ embeds: [{ title: 'Infinity Rules Assistant', description: truncate(`**Question**\n${result.question}`, 1000), color: 0x8b1e2d, fields, footer: { text: truncate(`Activated corpus: ${versions} • AI answer from selected official evidence.`, 2048) } }], allowedMentions: { parse: [] } })
 }
 
 function formatCitations(sources) { return sources.slice(0, 8).map((source) => { const label = [source.title, source.version, source.page, source.section].filter(Boolean).join(' — '); return source.url ? `• [${label}](${source.url})` : `• ${label}` }).join('\n') }
