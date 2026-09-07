@@ -104,7 +104,7 @@ export function createDeepSeekFallback({ fetchImpl = fetch, usagePath = process.
   }
 }
 
-function validateModelOutput(parsed, evidence) {
+export function validateModelOutput(parsed, evidence) {
   if (!parsed || typeof parsed.answer !== 'string' || typeof parsed.conclusion !== 'string' || typeof parsed.interpretationRequired !== 'boolean' || !Array.isArray(parsed.evidenceIds)) return { ok: false, reason: 'strict output contract requires answer, conclusion, evidenceIds, and interpretationRequired' }
   const permitted = new Set(evidence.map((item) => item.id)); if (!parsed.evidenceIds.length || parsed.evidenceIds.some((id) => !permitted.has(id))) return { ok: false, reason: 'evidenceIds contain values outside the permitted evidence packet' }
   if (!parsed.answer.trim() || !parsed.conclusion.trim()) return { ok: false, reason: 'answer and conclusion must be non-empty' }
