@@ -31,181 +31,381 @@
       "id": "direct_definition-01",
       "category": "DIRECT_DEFINITION",
       "question": "What does Mimetism do?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Mimetism imposes the Unit Profile's listed negative MOD, normally -3 or -6, on enemy BS Attacks that require LoF and on Discover Rolls against the user. It does not apply to CC Attacks.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 102,
+          "section": "MIMETISM"
+        }
+      ]
     },
     {
       "id": "direct_definition-02",
       "category": "DIRECT_DEFINITION",
       "question": "What does Dodge do?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Dodge is a Short Skill/ARO using PH. It can oppose enemy Attacks in a Face to Face Roll; if successful, it can also provide Dodge movement and a change of facing, subject to the Skill's movement rules.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 79,
+          "section": "DODGE"
+        }
+      ]
     },
     {
       "id": "direct_definition-03",
       "category": "DIRECT_DEFINITION",
       "question": "What does Stealth do?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Stealth functions during the user's Active Turn. Cautious Movement, Idle, and Basic Short Skills with the Movement Label suppress AROs from enemies that lack LoF; declaring another Skill grants AROs normally. Stealth is ineffective against Sixth Sense.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 112,
+          "section": "STEALTH"
+        }
+      ]
     },
     {
       "id": "direct_definition-04",
       "category": "DIRECT_DEFINITION",
       "question": "What does Sixth Sense do?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Sixth Sense lets a Trooper respond to Attacks directed at it from outside its LoF, treats its LoF arc as 360 degrees for that response, ignores the -6 from a resulting Poor Visibility Zone when targeted through Zero Visibility, and makes enemy Stealth ineffective against it.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 111,
+          "section": "SIXTH SENSE"
+        }
+      ]
     },
     {
       "id": "direct_definition-05",
       "category": "DIRECT_DEFINITION",
       "question": "What does Multispectral Visor Level 1 do?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "MSV1 reduces Mimetism (-3) and Low Visibility MODs to 0; reduces Mimetism (-6) and Poor Visibility MODs to -3; and permits LoF through Zero Visibility at -6. It does not make Face to Face Rolls against Smoke Ammunition.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 1"
+        }
+      ]
     },
     {
       "id": "direct_definition-06",
       "category": "DIRECT_DEFINITION",
       "question": "What does Multispectral Visor Level 2 do?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "MSV2 reduces Mimetism and Visibility Zone MODs to 0, allows LoF through Visibility Zones without their MODs, and does not make Face to Face Rolls against Smoke Ammunition.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 2"
+        }
+      ]
     },
     {
       "id": "direct_definition-07",
       "category": "DIRECT_DEFINITION",
       "question": "What does Multispectral Visor Level 3 do?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "MSV3 includes MSV2's Mimetism and Visibility benefits, automatically succeeds at Discover against Camouflaged targets, ignores specified Surprise Attack MODs, and can BS Attack a Camouflaged Marker in LoF during the Active Turn without first Discovering it, while applying the Marker’s Mimetism.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 3"
+        }
+      ]
     },
     {
       "id": "direct_definition-08",
       "category": "DIRECT_DEFINITION",
       "question": "What does Zero Pain do?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Zero Pain is a Comms Attack that rolls two WIP dice in a Face to Face Roll to evade all enemy Comms Attacks, applies -3 WIP to those enemy Comms Attacks, and nullifies the Attack if either Zero Pain Roll wins. It has Burst 2 in ARO.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 61,
+          "section": "ZERO PAIN"
+        }
+      ]
     },
     {
       "id": "direct_definition-09",
       "category": "DIRECT_DEFINITION",
       "question": "What does a Repeater do?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "A Repeater extends the Hacking Area of every Hacker in the same Army List. A Hacker inside an enemy Repeater's Zone of Control may use that Repeater to attack enemy Hackers, applying Firewall (-3); opponents react to the Hacker, not to the Repeater being used.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 56,
+          "section": "REPEATER"
+        }
+      ]
     },
     {
       "id": "direct_definition-10",
       "category": "DIRECT_DEFINITION",
       "question": "What does Firewall do?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Firewall imposes its listed negative WIP MOD on an enemy declaring a Comms Attack against the protected Trooper and gives that Trooper +3 to Saving Rolls against the Comms Attack. Only one Firewall applies.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 55,
+          "section": "FIREWALL"
+        }
+      ]
     },
     {
       "id": "direct_definition-11",
       "category": "DIRECT_DEFINITION",
       "question": "What does Discover do?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Discover requires LoF and a Normal WIP Roll with applicable BS-Attack-style MODs such as Cover, Range, and Mimetism. Success replaces the Marker with its represented Model or Token; failure prevents that Trooper from attempting to Discover the same Marker again until the next Player Turn.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 77,
+          "section": "DISCOVER"
+        }
+      ]
     },
     {
       "id": "direct_definition-12",
       "category": "DIRECT_DEFINITION",
       "question": "What does Suppressive Fire do?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Suppressive Fire is a Long Skill that places the user in Suppressive Fire State with a suitable weapon. In that State it uses the weapon's SF profile, provides B3 in ARO against one target, and imposes -3 on enemies in Face to Face Rolls within 24 inches; the State has specific cancellation conditions.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 171,
+          "section": "SUPPRESSIVE FIRE STATE"
+        }
+      ]
     },
     {
       "id": "direct_definition-13",
       "category": "DIRECT_DEFINITION",
       "question": "What does Combat Jump do?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Combat Jump keeps the Trooper off-table until activated, then permits deployment onto a valid horizontal surface followed by a PH Roll. A success leaves it at the chosen landing point; a failure invokes the Skill's failed-deployment procedure.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 89,
+          "section": "COMBAT JUMP"
+        }
+      ]
     },
     {
       "id": "direct_definition-14",
       "category": "DIRECT_DEFINITION",
       "question": "What does Hidden Deployment do?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Hidden Deployment lets a Trooper deploy without placing a Model or Marker, using a secretly recorded position and state. The Trooper is not considered on the table and normally contributes no Order until revealed; once canceled, Hidden Deployment cannot be regained.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 161,
+          "section": "HIDDEN DEPLOYMENT STATE"
+        }
+      ]
     },
     {
       "id": "direct_definition-15",
       "category": "DIRECT_DEFINITION",
       "question": "What does Nanoscreen do?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Nanoscreen applies -3 to BS Attack Rolls against its user and +3 to the user's Saving Rolls against BS Attacks. These MODs do not apply to Comms Attacks, and Nanoscreen cannot be used against CC Attacks.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 125,
+          "section": "NANOSCREEN"
+        }
+      ]
     },
     {
       "id": "direct_definition-16",
       "category": "DIRECT_DEFINITION",
       "question": "What does Total Immunity do?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "N5.3 does not define a Skill named Total Immunity. The applicable rule is the specific Immunity listed on the Unit Profile, such as Immunity (ARM), (BTS), or (Enhanced); its exact effects depend on that listed type.",
+      "draftConclusion": "UNRESOLVED",
+      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 96,
+          "section": "IMMUNITY AND CRITICAL HITS"
+        }
+      ]
     },
     {
       "id": "direct_definition-17",
       "category": "DIRECT_DEFINITION",
       "question": "What does Marksmanship do?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Marksmanship applies when the user declares a BS Attack and allows the user to ignore the negative BS MODs imposed by Partial Cover and Nanoscreen. It does not remove every effect of Cover or every other attack MOD.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 100,
+          "section": "MARKSMANSHIP"
+        }
+      ]
     },
     {
       "id": "direct_definition-18",
       "category": "DIRECT_DEFINITION",
       "question": "What does Sensor do?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Sensor makes a Normal WIP+6 Roll, without Range or Mimetism MODs and without requiring LoF, to Discover all Hidden Deployment and Camouflaged enemies and deployables inside the user's Zone of Control. It also grants +6 to ordinary Discover against Camouflage Markers and prevents enemies regaining Camouflaged State inside that Zone of Control.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 111,
+          "section": "SENSOR"
+        }
+      ]
     },
     {
       "id": "direct_definition-19",
       "category": "DIRECT_DEFINITION",
       "question": "What does Spotlight do?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "Spotlight is a Short Skill/ARO Hacking Program with Burst 2, no Attack MOD, PS 5, AP and Non-Lethal traits. A successful effect places the target in Targeted State.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 60,
+          "section": "SPOTLIGHT"
+        }
+      ]
     },
     {
       "id": "direct_definition-20",
       "category": "DIRECT_DEFINITION",
       "question": "What does Guts Roll do?",
-      "reviewStatus": "PENDING",
+      "reviewStatus": "VERIFIED_DRAFT",
       "candidateExpectation": null,
       "approvedAnswer": null,
-      "approvedCitations": []
+      "approvedCitations": [],
+      "draftAnswer": "A qualifying Trooper that survives a successful Attack makes one Normal WIP Guts Roll at the end of the Order. Success holds position; the player may instead choose to fail, and a failed Roll requires the first available retreat response: leave the danger or LoF, gain better Cover, or go Prone, subject to the full movement rules.",
+      "draftConclusion": "INTERPRETATION",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 38,
+          "section": "GUTS ROLL"
+        }
+      ]
     },
     {
       "id": "two_rule_interaction-01",
