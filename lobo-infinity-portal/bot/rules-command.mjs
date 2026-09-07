@@ -1,5 +1,6 @@
 import { ApplicationCommandOptionType } from 'discord.js'
 import { buildRulesReference, loadProductionRulesCorpus, RULES_STATUS } from './infinity-rules-service.mjs'
+import { createDeepSeekFallback } from './deepseek-rules.mjs'
 
 export const RULES_COMMAND='rules'
 export const RULES_OPTION='question'
@@ -11,7 +12,7 @@ export async function ensureRulesCommand(client){
   const globals=await client.application.commands.fetch();const obsolete=globals.find((command)=>command.name===RULES_COMMAND);if(obsolete)await obsolete.delete();return registered
 }
 
-export async function retrieveRulesReference({question}){const corpus=await loadProductionRulesCorpus();return buildRulesReference(corpus,question)}
+export async function retrieveRulesReference({question}){const corpus=await loadProductionRulesCorpus();const retrieved=buildRulesReference(corpus,question);return createDeepSeekFallback()(retrieved)}
 
 export function createRulesInteractionHandler({retrieve=retrieveRulesReference,logger=console}={}){
   return async function handleRules(interaction){if(!interaction?.isChatInputCommand?.()||interaction.commandName!==RULES_COMMAND)return false
@@ -22,9 +23,10 @@ export function createRulesInteractionHandler({retrieve=retrieveRulesReference,l
 
 export function formatRulesDiscordResponse(result){
   const fields=[]
+  if(result.deepSeek){fields.push({name:'ANSWER',value:`**${result.deepSeek.classification}**\n${result.deepSeek.answer}`,inline:false})}
   for(const rule of result.rules.slice(0,4)){const scope=rule.scope==='ITS'?'ITS SEASON 18 — ':rule.sourceId.includes('faq')?'FAQ CLARIFICATION — ':'';const metadata=`**${scope}${rule.sourceLabel} — ${rule.pageLabel}**\n[Open official source](${rule.url})`;const excerpt=truncate(rule.excerpt,Math.max(0,1024-metadata.length-2));fields.push({name:truncate(rule.ruleName,256),value:`${metadata}\n${excerpt}`,inline:false})}
   if(!fields.length)fields.push({name:'STATUS',value:RULES_STATUS.NONE,inline:false})
-  else fields.push({name:'STATUS',value:`**${result.status}**${result.noExplicitFaq?'\nNo explicit current FAQ adjudication of this exact combination was found in the activated corpus.':''}`,inline:false})
+  else fields.push({name:'STATUS',value:`**${result.status}**${result.noExplicitFaq?'\nNo explicit current FAQ adjudication of this exact combination was found in the activated corpus.':''}${result.limitation?`\n${result.limitation}`:''}`,inline:false})
   const versions=result.versions.map((item)=>item.label).join(' • ')
   const embed={title:'Infinity Rules Reference',description:truncate(`**Question**\n${result.question}`,1000),color:0x8b1e2d,fields,footer:{text:truncate(`Activated corpus: ${versions} • Retrieval reference only; no autonomous ruling.`,2048)}}
   enforceEmbedLimit(embed);return{embeds:[embed],allowedMentions:{parse:[]}}
