@@ -12,7 +12,7 @@ export async function ensureRulesCommand(client){
   const globals=await client.application.commands.fetch();const obsolete=globals.find((command)=>command.name===RULES_COMMAND);if(obsolete)await obsolete.delete();return registered
 }
 
-export async function retrieveRulesReference({question}){const corpus=await loadProductionRulesCorpus();const retrieved=buildRulesReference(corpus,question);return createDeepSeekFallback()(retrieved)}
+export async function retrieveRulesReference({question}){const corpus=await loadProductionRulesCorpus();const retrieved=buildRulesReference(corpus,question);return createDeepSeekFallback({corpus})(retrieved)}
 
 export function createRulesInteractionHandler({retrieve=retrieveRulesReference,logger=console}={}){
   return async function handleRules(interaction){if(!interaction?.isChatInputCommand?.()||interaction.commandName!==RULES_COMMAND)return false

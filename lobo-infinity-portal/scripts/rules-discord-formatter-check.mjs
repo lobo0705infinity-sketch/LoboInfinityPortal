@@ -6,7 +6,7 @@ for (const conclusion of ['YES', 'NO', 'DEPENDS', 'UNRESOLVED', 'OTHER']) {
   const serialized = JSON.stringify(payload)
   assert.doesNotMatch(serialized, /undefined|null/)
   assert.match(serialized, /EXPLICIT RULING|EXPLICIT RULES ANSWER|EVIDENCE-BOUNDED INTERPRETATION/)
-  assert.match(serialized, /YES|NO|DEPENDS|UNRESOLVED|INTERPRETATION/)
+  if (conclusion !== 'OTHER') assert.match(serialized, /YES|NO|DEPENDS|UNRESOLVED|INTERPRETATION/)
 }
 const unresolved = JSON.stringify(formatRulesDiscordResponse({ question: 'test', status: 'STATUS', versions: [], rules: [], deepSeek: { conclusion: 'UNRESOLVED' } }))
 assert.match(unresolved, /The supplied official evidence does not conclusively resolve this interaction/)

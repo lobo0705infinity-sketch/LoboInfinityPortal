@@ -1,5 +1,6 @@
 import { readFile, writeFile, mkdir, rename } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
+import { searchRules } from './infinity-rules-service.mjs'
 
 const DEFAULT_USAGE_PATH = resolve(import.meta.dirname, '..', '.tmp', 'deepseek-rules-usage.json')
 const INPUT_USD_PER_MILLION = 0.14
@@ -20,13 +21,13 @@ export function buildEvidencePacket(result) {
   }))
 }
 
-export function createDeepSeekFallback({ fetchImpl = fetch, usagePath = process.env.DEEPSEEK_USAGE_PATH || DEFAULT_USAGE_PATH, now = () => Date.now(), logger = console } = {}) {
+export function createDeepSeekFallback({ fetchImpl = fetch, usagePath = process.env.DEEPSEEK_USAGE_PATH || DEFAULT_USAGE_PATH, now = () => Date.now(), logger = console, corpus = null } = {}) {
   return async function deepSeekFallback(result) {
     if (!shouldUseDeepSeek(result)) return result
     const key = String(process.env.DEEPSEEK_API_KEY || '')
     const model = String(process.env.DEEPSEEK_MODEL || 'deepseek-v4-flash')
     if (!key) return withLimitation(result, 'DeepSeek is not configured; returning the retrieval result.')
-    const evidence = buildEvidencePacket(result)
+    let evidence = buildEvidencePacket(result)
     if (!evidence.length) return withLimitation(result, 'No relevant retrieved excerpts were available for DeepSeek.')
     const usage = await readUsage(usagePath, logger)
     const limits = { hourly: Number(process.env.DEEPSEEK_HOURLY_LIMIT_USD || 1), monthly: Number(process.env.DEEPSEEK_MONTHLY_LIMIT_USD || 10) }
@@ -35,13 +36,14 @@ export function createDeepSeekFallback({ fetchImpl = fetch, usagePath = process.
     const monthly = current.reduce((sum, item) => sum + item.cost, 0)
     if (hourly >= limits.hourly || monthly >= limits.monthly) return withLimitation(result, 'DeepSeek spending limit reached; returning the retrieval result.')
     const permittedIds = evidence.map((item) => item.id)
+    const tools = [{ type: 'function', function: { name: 'search_rules', description: 'Search the activated official corpus', parameters: { type: 'object', properties: { query: { type: 'string' }, source: { type: 'string' }, limit: { type: 'integer' } }, required: ['query'] } } }, { type: 'function', function: { name: 'get_rule_section', description: 'Open a retrieved evidence section by ID', parameters: { type: 'object', properties: { evidenceId: { type: 'string' } }, required: ['evidenceId'] } } }, { type: 'function', function: { name: 'get_related_rules', description: 'Find related rules and structured chart rows', parameters: { type: 'object', properties: { canonicalName: { type: 'string' } }, required: ['canonicalName'] } } }]
     const baseInstruction = `Answer only from the supplied excerpts. For interaction questions, explain how each cited condition applies to the exact declared Skill, target, Repeater, and Firewall; do not infer Firewall merely because an enemy Repeater is involved. If excerpts do not establish every required condition, use conclusion UNRESOLVED. Permitted evidence IDs: ${permittedIds.join(', ')}. Return JSON only, using this complete example shape: {"answer":"text","conclusion":"YES|NO|DEPENDS|UNRESOLVED","evidenceIds":["E1"],"interpretationRequired":false}. The response must contain exactly answer, conclusion, evidenceIds, and interpretationRequired. evidenceIds must use only permitted IDs. Every material conclusion must be supported by a cited excerpt. Distinguish explicit rules from interpretation. Preserve FAQ precedence and ITS scope.`
     let validationError = ''
     let totalCost = 0
     try {
       for (let attempt = 0; attempt < 2; attempt++) {
       const corrective = validationError ? ` Previous output failed validation: ${validationError}. Return a non-empty JSON object now.` : ''
-      const body = { model, temperature: 0, max_tokens: 1200, response_format: { type: 'json_object' }, thinking: { type: 'disabled' }, messages: [{ role: 'system', content: `${baseInstruction}${corrective}` }, { role: 'user', content: JSON.stringify({ question: result.question, excerpts: evidence, permittedEvidenceIds: permittedIds, validationError }) }] }
+      const body = { model, temperature: 0, max_tokens: 1200, response_format: { type: 'json_object' }, thinking: { type: 'disabled' }, tools, messages: [{ role: 'system', content: `${baseInstruction}${corrective} You may call search_rules, get_rule_section, and get_related_rules before answering.` }, { role: 'user', content: JSON.stringify({ question: result.question, excerpts: evidence, permittedEvidenceIds: permittedIds, validationError }) }] }
       const response = await fetchImpl('https://api.deepseek.com/chat/completions', { method: 'POST', headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json' }, body: JSON.stringify(body), signal: AbortSignal.timeout(12000) })
       const contentType = String(response.headers?.get?.('content-type') || '').toLowerCase()
       const responseText = await response.text()
@@ -51,6 +53,18 @@ export function createDeepSeekFallback({ fetchImpl = fetch, usagePath = process.
       let payload
       try { payload = JSON.parse(responseText) } catch { logger.warn?.('DeepSeek rules model error: invalid provider JSON'); return withLimitation(result, 'DeepSeek returned invalid JSON; returning the retrieval result.') }
       const content = payload?.choices?.[0]?.message?.content
+      const toolCalls = payload?.choices?.[0]?.message?.tool_calls
+      if (Array.isArray(toolCalls) && toolCalls.length && corpus) {
+        for (const call of toolCalls.slice(0, 6)) {
+          let args = {}; try { args = JSON.parse(call.function?.arguments || '{}') } catch {}
+          let rows = []
+          if (call.function?.name === 'search_rules') rows = searchRules(corpus.chunks, String(args.query || ''), { limit: Math.min(Number(args.limit) || 4, 6) }).map((item) => ({ sourceId: item.sourceId, sourceLabel: item.title, pageLabel: item.printedPage ? `p. ${item.printedPage}` : `PDF page ${item.pdfPage}`, excerpt: item.text, scope: item.scope }))
+          else if (call.function?.name === 'get_related_rules') rows = corpus.chunks.filter((item) => item.normalized.includes(String(args.canonicalName || '').toLowerCase())).slice(0, 4).map((item) => ({ sourceId: item.sourceId, sourceLabel: item.title, pageLabel: `p. ${item.printedPage || item.pdfPage}`, excerpt: item.text, scope: item.scope }))
+          else if (call.function?.name === 'get_rule_section') rows = evidence.filter((item) => item.id === args.evidenceId)
+          for (const row of rows) { if (!row.id) row.id = `E${evidence.length + 1}`; evidence.push({ id: row.id, source: row.sourceLabel, version: row.version || 'unknown', page: row.pageLabel, excerpt: row.excerpt, scope: row.scope || 'CORE' }) }
+        }
+        validationError = 'tool research completed; provide final JSON answer'; continue
+      }
       const finishReason = payload?.choices?.[0]?.finish_reason ?? null
       const reasoningPresent = Boolean(payload?.choices?.[0]?.message?.reasoning_content)
       logger.info?.(`DeepSeek rules response: finish_reason=${String(finishReason)} content_length=${typeof content === 'string' ? content.length : 0} reasoning_content_present=${reasoningPresent}`)
