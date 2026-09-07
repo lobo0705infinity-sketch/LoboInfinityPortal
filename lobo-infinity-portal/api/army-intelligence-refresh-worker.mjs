@@ -40,6 +40,8 @@ export default async function handler(request, response) {
     const batchLimit = Math.max(1, Number(body.batchLimit) || DEFAULT_REFRESH_BATCH_LIMIT)
     const requestedSectorial = String(body.sectorial || '').trim()
     const publishPublicSnapshot = scopedBackfill && body.publishPublicSnapshot === true
+    const deferReadModelRebuild = scopedBackfill && body.deferReadModelRebuild === true
+    const finalizeMigration = scopedBackfill && body.finalizeMigration === true
     const dryRun = scopedBackfill && body.dryRun === true
     const requestedSnapshotKeys = Array.isArray(body.snapshotKeys)
       ? new Set(body.snapshotKeys.map((key) => String(key || '').trim()).filter(Boolean))
@@ -174,8 +176,12 @@ export default async function handler(request, response) {
     }
     await browser?.close()
 
-    if (snapshots.length > 0 || publishPublicSnapshot) {
-      await postSnapshots(apiUrl, snapshots, upstreamCredential, publishPublicSnapshot)
+    if (snapshots.length > 0 || publishPublicSnapshot || finalizeMigration) {
+      await postSnapshots(apiUrl, snapshots, upstreamCredential, {
+        deferReadModelRebuild,
+        finalizeMigration,
+        publishPublicSnapshot,
+      })
     }
 
     response.status(200).json({
@@ -333,14 +339,16 @@ async function getAction(apiUrl, action, params = {}) {
   return JSON.parse(text)
 }
 
-async function postSnapshots(apiUrl, snapshots, credential, publishPublicSnapshot = false) {
+async function postSnapshots(apiUrl, snapshots, credential, options = {}) {
   const body = new URLSearchParams()
   body.set('action', 'refreshArmyIntelligence')
   for (const [key, value] of Object.entries(credential)) {
     body.set(key, value)
   }
   body.set('snapshots', JSON.stringify(snapshots))
-  if (publishPublicSnapshot) body.set('publishPublicSnapshot', 'true')
+  if (options.deferReadModelRebuild) body.set('deferReadModelRebuild', 'true')
+  if (options.finalizeMigration) body.set('finalizeMigration', 'true')
+  if (options.publishPublicSnapshot) body.set('publishPublicSnapshot', 'true')
 
   const response = await fetch(apiUrl, {
     body,

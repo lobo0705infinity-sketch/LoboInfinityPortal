@@ -19,6 +19,9 @@ const state = new Map([
     armyCodeHash: 'known-hash',
     decoderVersion: 'army-intelligence-decoder-v5',
     hasProfileMetadata: true,
+    hasTacticalMetadata: true,
+    pipelineVersion: 'army-intelligence-pipeline-v1',
+    tacticalSchemaVersion: 'army-intelligence-tactical-v2',
     status: 'decoded',
   }],
   ['failed', {
@@ -37,7 +40,11 @@ assert.deepEqual(
 assert.match(worker, /isScheduledRequest\(request\)/)
 assert.match(worker, /ARMY_INTELLIGENCE_WORKER_TOKEN/)
 assert.match(worker, /selectRefreshCandidates\(sources, state\)/)
-assert.match(worker, /postSnapshots\(apiUrl, snapshots, upstreamCredential\)/)
+assert.match(worker, /postSnapshots\(apiUrl, snapshots, upstreamCredential/)
+assert.match(worker, /scopedBackfill && body\.deferReadModelRebuild === true/)
+assert.match(worker, /scopedBackfill && body\.finalizeMigration === true/)
+assert.match(worker, /body\.set\('deferReadModelRebuild', 'true'\)/)
+assert.match(worker, /body\.set\('finalizeMigration', 'true'\)/)
 assert.match(api, /case "armyIntelligenceSources"[\s\S]*requireArmyIntelligenceWorkerOrPermission/)
 assert.match(api, /case "refreshArmyIntelligence"[\s\S]*requireArmyIntelligenceWorkerOrPermission/)
 assert.match(api, /case "installArmyIntelligenceScheduler"[\s\S]*requireArmyIntelligenceWorkerOrPermission/)

@@ -34,9 +34,13 @@ let intelligenceRebuilds = 0
 let armyListRebuilds = 0
 let persistedWrites = 0
 let decoderCalls = 0
+let cacheInvalidations = 0
+let publications = 0
 
 const sandbox = {
   Array, Boolean, Date, Error, JSON, Number, Object,
+  ARMY_INTELLIGENCE_PIPELINE_VERSION: 'army-intelligence-pipeline-v1',
+  ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION: 'army-intelligence-tactical-v2',
   getApiParameters: (event) => event,
   getApiParameter: (parameters, key) => parameters[key] || '',
   buildArmyIntelligenceSources: () => [source],
@@ -46,6 +50,7 @@ const sandbox = {
   },
   getArmyIntelligenceString: (value) => String(value ?? '').trim(),
   getArmyIntelligenceHash: hash,
+  validateArmyIntelligenceTacticalMetadata_: () => {},
   buildPersistedArmyIntelligenceSnapshotRow: (_source, snapshot) => snapshot,
   upsertPersistedArmyIntelligenceSnapshotRows(rows) {
     if (rows.length === 0) return
@@ -62,7 +67,8 @@ const sandbox = {
     readModel = sandbox.rebuildArmyListsReadModelPayload()
     return readModel
   },
-  invalidatePortalCacheGroup: () => {},
+  invalidatePortalCacheGroup: () => { cacheInvalidations += 1 },
+  runHourlyPublicSnapshot: () => { publications += 1; return { success: true } },
   jsonOutput: (value) => value,
   readArmyListsReadModelPayload: () => readModel,
   buildArmyListCommunitySummary: (lists) => ({ totalLists: lists.length }),
@@ -97,8 +103,11 @@ assert.equal(readModel.lists[0].validation.status, 'pending')
 
 const snapshot = {
   ...source,
+  pipelineVersion: 'army-intelligence-pipeline-v1',
+  tacticalSchemaVersion: 'army-intelligence-tactical-v2',
   decoded: {
     armyCode, decoderVersion: 'army-intelligence-decoder-v5', faction: 'ALEPH',
+    pipelineVersion: 'army-intelligence-pipeline-v1', tacticalSchemaVersion: 'army-intelligence-tactical-v2',
     sectorial: 'OSS', listName: 'Decoded OSS',
     combatGroups: [{ entries: Array.from({ length: 10 }, () => ({})) }],
     totals: { combatGroups: 1, points: 300, swc: 6 }, warnings: [],
@@ -111,6 +120,28 @@ assert.equal(response.success, true)
 assert.equal(persistedWrites, 1)
 assert.equal(intelligenceRebuilds, 1)
 assert.equal(armyListRebuilds, 1)
+
+const deferred = sandbox.refreshArmyIntelligence({
+  deferReadModelRebuild: 'true',
+  snapshots: JSON.stringify([snapshot]),
+})
+assert.equal(deferred.success, true)
+assert.equal(deferred.status, 'Persisted')
+assert.equal(deferred.deferredReadModelRebuild, true)
+assert.equal(persistedWrites, 2)
+assert.equal(intelligenceRebuilds, 1, 'deferred persistence must not rebuild intelligence')
+assert.equal(armyListRebuilds, 1, 'deferred persistence must not rebuild army lists')
+
+const finalized = sandbox.refreshArmyIntelligence({
+  finalizeMigration: 'true',
+  snapshots: '[]',
+})
+assert.equal(finalized.success, true)
+assert.equal(finalized.status, 'Migration finalized')
+assert.equal(intelligenceRebuilds, 2)
+assert.equal(armyListRebuilds, 2)
+assert.equal(cacheInvalidations, 2, 'normal refresh and finalization each invalidate once')
+assert.equal(publications, 1, 'finalization must publish exactly once')
 let list = sandbox.getArmyListObjects()[0]
 assert.equal(list.id, armyListId)
 assert.equal(list.validation.status, 'decoded')
@@ -127,15 +158,15 @@ assert.throws(
   () => sandbox.refreshArmyIntelligence({ snapshots: JSON.stringify([stale]) }),
   /identity mismatch: armyCodeHash/,
 )
-assert.equal(persistedWrites, 2, 'rejected callbacks must not persist')
-assert.equal(armyListRebuilds, 2, 'rejected callbacks must not rebuild')
+assert.equal(persistedWrites, 3, 'rejected callbacks must not persist')
+assert.equal(armyListRebuilds, 3, 'rejected callbacks must not rebuild')
 assert.equal(sandbox.getArmyListObjects()[0].validation.status, 'decoded')
 assert.equal(decoderCalls, 0)
 
 const failed = { ...snapshot, decoded: null, error: 'temporary decoder failure', status: 'failed' }
 const failedResponse = sandbox.refreshArmyIntelligence({ snapshots: JSON.stringify([failed]) })
 assert.equal(failedResponse.updated, 0, 'failed callback must not downgrade a valid persisted decode')
-assert.equal(persistedWrites, 2)
+assert.equal(persistedWrites, 3)
 assert.equal(sandbox.getArmyListObjects()[0].validation.status, 'decoded')
 assert.equal(decoderCalls, 0)
 

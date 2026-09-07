@@ -2,7 +2,6 @@
 
 const endpoint = process.env.ARMY_INTELLIGENCE_MIGRATION_URL || 'https://lobo-infinity-portal.vercel.app/api/army-intelligence-refresh-worker'
 const token = String(process.env.ARMY_INTELLIGENCE_BACKFILL_TOKEN || '').trim()
-const batchSize = Math.min(5, Math.max(1, Number(process.env.ARMY_INTELLIGENCE_BATCH_SIZE) || 4))
 const requestTimeoutMs = Math.min(240_000, Math.max(30_000, Number(process.env.ARMY_INTELLIGENCE_REQUEST_TIMEOUT_MS) || 180_000))
 if (!token) throw new Error('ARMY_INTELLIGENCE_BACKFILL_TOKEN is required.')
 
@@ -20,44 +19,79 @@ async function call(body) {
   return payload
 }
 
-const initial = await call({ dryRun: true })
-const maximumBatches = Math.ceil(initial.staleSnapshots / batchSize) + 1
-const failures = []
-const excludedSnapshotKeys = new Set()
-let succeeded = 0
-let previousRemaining = initial.staleSnapshots + 1
-let remaining = initial.staleSnapshots
-
-console.log(JSON.stringify({ stage: 'initial', batchSize, maximumBatches, ...initial }))
-for (let batch = 1; batch <= maximumBatches && remaining > 0; batch += 1) {
-  const result = await call({ batchLimit: batchSize, excludeSnapshotKeys: Array.from(excludedSnapshotKeys) })
-  succeeded += result.decoded
-  for (const failure of result.failures || []) {
-    if (failure.snapshotKey) excludedSnapshotKeys.add(failure.snapshotKey)
-    failures.push(failure)
-  }
-  remaining = result.remaining
-  console.log(JSON.stringify({ stage: 'batch', batch, processed: result.processed.length, succeeded: result.decoded, failed: result.failed, remaining }))
-  if (remaining === 0) break
-  if (remaining >= previousRemaining) throw new Error(`Migration made no progress: remaining ${remaining}, previous ${previousRemaining}.`)
-  previousRemaining = remaining
+async function audit(snapshotKeys) {
+  return call({ dryRun: true, ...(snapshotKeys ? { snapshotKeys } : {}) })
 }
-if (remaining !== 0) throw new Error(`Migration stopped with ${remaining} unprocessed snapshots after ${maximumBatches} batches.`)
 
-const publication = await call({ snapshotKeys: ['__publish_only__'], publishPublicSnapshot: true, batchLimit: 1 })
-const finalAudit = await call({ dryRun: true })
+async function isCurrent(snapshotKey) {
+  const result = await audit([snapshotKey])
+  return result.totalDistinctLists === 1 && result.currentVersionSnapshots === 1 && result.staleSnapshots === 0
+}
+
+function classifyFailure(reason) {
+  const text = String(reason || '')
+  if (/Invalid IDs in Army Code/i.test(text)) return 'invalid-army-code'
+  if (/no decoded snapshot/i.test(text)) return 'empty-decoder-result'
+  return text.replace(/[a-f0-9]{32,}/gi, '<key>').slice(0, 180)
+}
+
+const initial = await audit()
+const keys = [...initial.obsoleteSnapshots]
+const failures = []
+let succeeded = 0
+let consecutiveCause = ''
+let consecutiveFailures = 0
+
+console.log(JSON.stringify({ stage: 'initial', total: initial.totalDistinctLists, current: initial.currentVersionSnapshots, remaining: keys.length }))
+for (let index = 0; index < keys.length; index += 1) {
+  const snapshotKey = keys[index]
+  if (await isCurrent(snapshotKey)) {
+    console.log(JSON.stringify({ stage: 'list', current: index + 1, key: snapshotKey, status: 'already-current', remaining: keys.length - index - 1 }))
+    continue
+  }
+
+  let result
+  let transportError = ''
+  try {
+    result = await call({ batchLimit: 1, deferReadModelRebuild: true, snapshotKeys: [snapshotKey] })
+  } catch (error) {
+    transportError = error instanceof Error ? error.message : String(error)
+  }
+
+  if (await isCurrent(snapshotKey)) {
+    succeeded += 1
+    consecutiveCause = ''
+    consecutiveFailures = 0
+    console.log(JSON.stringify({ stage: 'list', current: index + 1, key: snapshotKey, status: transportError ? 'persisted-after-ambiguous-response' : 'success', remaining: keys.length - index - 1 }))
+    continue
+  }
+
+  const workerFailure = result?.failures?.find((failure) => failure.snapshotKey === snapshotKey)
+  const reason = workerFailure?.reason || transportError || 'Worker returned no decoded snapshot.'
+  const cause = classifyFailure(reason)
+  failures.push({ snapshotKey, cause, reason })
+  consecutiveFailures = cause === consecutiveCause ? consecutiveFailures + 1 : 1
+  consecutiveCause = cause
+  console.log(JSON.stringify({ stage: 'list', current: index + 1, key: snapshotKey, status: 'failed', cause, reason, remaining: keys.length - index - 1 }))
+  if (consecutiveFailures >= 3 && !['invalid-army-code', 'empty-decoder-result'].includes(cause)) {
+    throw new Error(`Stopped after three consecutive unexplained failures with cause: ${cause}`)
+  }
+}
+
+const beforeFinalize = await audit()
+const failedKeys = new Set(failures.map((failure) => failure.snapshotKey))
+const validStale = beforeFinalize.obsoleteSnapshots.filter((key) => !failedKeys.has(key))
+if (validStale.length > 0) throw new Error(`${validStale.length} stale snapshots remain without explicit failures; finalization blocked.`)
+
+const finalization = await call({ finalizeMigration: true, snapshotKeys: ['__finalize_only__'] })
+const finalAudit = await audit()
 console.log(JSON.stringify({
   stage: 'complete',
-  pipelineVersion: finalAudit.pipelineVersion,
-  totalDistinctLists: initial.totalDistinctLists,
+  totalDistinctLists: finalAudit.totalDistinctLists,
   currentVersionSnapshots: finalAudit.currentVersionSnapshots,
   successfullyRefreshedSnapshots: succeeded,
   unchangedCurrentSnapshots: initial.currentVersionSnapshots,
   failedSnapshots: failures,
-  documentedFailureKeys: Array.from(excludedSnapshotKeys),
-  eligibleCurrentOrDocumentedFailure: finalAudit.currentVersionSnapshots + excludedSnapshotKeys.size === initial.totalDistinctLists,
-  duplicateSnapshotKeys: finalAudit.duplicateSnapshotKeys,
-  missingStoredSnapshots: finalAudit.missingStoredSnapshots,
-  staleSnapshotsAfterMigration: finalAudit.obsoleteSnapshots.filter((key) => !excludedSnapshotKeys.has(key)),
-  publicationRequested: publication.success === true,
+  staleSnapshotsAfterMigration: finalAudit.obsoleteSnapshots.filter((key) => !failedKeys.has(key)),
+  finalizationRequested: finalization.success === true,
 }, null, 2))

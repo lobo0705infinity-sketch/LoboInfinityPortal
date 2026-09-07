@@ -103,6 +103,26 @@ function refreshArmyIntelligence(e) {
   const publishPublicSnapshot =
     getApiParameter(parameters, "publishPublicSnapshot") === "true";
 
+  const deferReadModelRebuild =
+    getApiParameter(parameters, "deferReadModelRebuild") === "true";
+
+  const finalizeMigration =
+    getApiParameter(parameters, "finalizeMigration") === "true";
+
+  if (!snapshots.length && finalizeMigration) {
+    rebuildArmyIntelligenceReadModelPayloadAndPersist();
+    rebuildArmyListsReadModelPayloadAndPersist();
+    invalidatePortalCacheGroup("armyIntelligence");
+
+    const finalizedPublication = runHourlyPublicSnapshot();
+    return jsonOutput({
+      success: finalizedPublication && finalizedPublication.success === true,
+      publication: finalizedPublication,
+      status: finalizedPublication && finalizedPublication.success === true ? "Migration finalized" : "Publication failed",
+      updated: 0
+    });
+  }
+
   if (!snapshots.length && publishPublicSnapshot) {
     const publication = runHourlyPublicSnapshot();
     return jsonOutput({
@@ -155,6 +175,16 @@ function refreshArmyIntelligence(e) {
     .filter(Boolean);
 
   upsertPersistedArmyIntelligenceSnapshotRows(rows);
+
+  if (deferReadModelRebuild)
+    return jsonOutput({
+      deferredReadModelRebuild: true,
+      sourceCount: authoritativeSources.length,
+      status: "Persisted",
+      success: true,
+      updated: rows.length
+    });
+
   rebuildArmyIntelligenceReadModelPayloadAndPersist();
   rebuildArmyListsReadModelPayloadAndPersist();
   invalidatePortalCacheGroup("armyIntelligence");
