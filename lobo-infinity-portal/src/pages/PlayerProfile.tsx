@@ -346,6 +346,7 @@ function PublicPlayerFactionPortrait({
     >
       <FactionPortraitImage
         alt={portrait.alt}
+        canonicalSource
         height={600}
         loading="lazy"
         onError={() => setVisible(false)}

@@ -674,6 +674,7 @@ function FactionPortraitPanel({ portrait }: { portrait: FactionPortrait }) {
     <aside className="my-profile-faction-portrait" aria-label={`${portrait.faction} portrait`}>
       <FactionPortraitImage
         alt={portrait.alt}
+        canonicalSource
         height={600}
         loading="eager"
         onError={() => setVisible(false)}

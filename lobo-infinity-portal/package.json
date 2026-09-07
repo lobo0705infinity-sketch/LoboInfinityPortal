@@ -92,6 +92,7 @@
     "test:casual-response-mapping": "node scripts/casual-response-mapping-check.mjs",
     "test:players-portraits": "node --experimental-strip-types scripts/player-portrait-check.ts players",
     "test:public-player-profile-portraits": "node --experimental-strip-types scripts/player-portrait-check.ts public-profiles",
+    "test:player-artwork": "node --experimental-strip-types scripts/player-artwork-check.mts",
     "test:player-portrait-consistency": "node --experimental-strip-types scripts/player-portrait-check.ts consistency",
     "test:mission-scopes": "node scripts/mission-scope-check.mjs",
     "test:event-analytics-missions": "node scripts/event-analytics-mission-check.mjs",

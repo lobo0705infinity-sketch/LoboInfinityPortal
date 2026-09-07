@@ -3,6 +3,7 @@ import { FACTION_PORTRAIT_DERIVATIVES } from '../config/factionPortraitDerivativ
 
 type FactionPortraitImageProps = {
   alt: string
+  canonicalSource?: boolean
   className?: string
   height: number
   loading: 'eager' | 'lazy'
@@ -14,6 +15,7 @@ type FactionPortraitImageProps = {
 
 function FactionPortraitImage({
   alt,
+  canonicalSource = false,
   className,
   height,
   loading,
@@ -23,7 +25,10 @@ function FactionPortraitImage({
   width,
 }: FactionPortraitImageProps) {
   const [useOptimized, setUseOptimized] = useState(true)
-  const derivatives = useMemo(() => getPortraitDerivatives(src), [src])
+  const derivatives = useMemo(
+    () => canonicalSource ? undefined : getPortraitDerivatives(src),
+    [canonicalSource, src],
+  )
   const srcSet = derivatives
     ? derivatives.map(({ src: derivativeSrc, width: derivativeWidth }) => `${derivativeSrc} ${derivativeWidth}w`).join(', ')
     : ''
