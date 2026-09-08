@@ -2314,7 +2314,7 @@
       },
       "category": "TIMING_SEQUENCE",
       "draftAnswer": "−3 Visibility MOD. The target's return BS Attack makes the MSV1 user the target of a BS Attack through the Zero Visibility Zone; for drawing LoF back, the zone becomes Poor Visibility, and MSV1 reduces Poor Visibility from −6 to −3.",
-      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
       "draftCitations": [
         {
           "page": 125,
@@ -2393,7 +2393,7 @@
       },
       "category": "TIMING_SEQUENCE",
       "draftAnswer": "−6 Visibility MOD. Dodge is not a BS Attack, so the MSV1 user does not receive the rule that treats the Zero Visibility Zone as Poor Visibility when drawing LoF to an attacker. MSV1 therefore draws LoF through the Zero Visibility Zone at −6.",
-      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
       "draftCitations": [
         {
           "page": 79,
@@ -2469,8 +2469,8 @@
         ]
       },
       "category": "TIMING_SEQUENCE",
-      "draftAnswer": "No. During the Trooper's Active Turn, Dodge is a Short Skill with the Movement Label, so it is one of the declarations that retains Stealth's ARO-suppression effect: enemies without LoF do not gain an ARO from that declaration, unless they have Sixth Sense. During the Reactive Turn, Stealth is not active in the first place.",
-      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftAnswer": "It depends on whose Turn is being discussed. During the Stealth user's Active Turn, no: Dodge is a Short Skill with the Movement Label, so declaring it retains Stealth's ARO-suppression effect and enemies without LoF do not gain an ARO from that declaration, unless they have Sixth Sense. During the Reactive Turn, Stealth is not active, so Dodge cannot preserve or break an effect that is not functioning.",
+      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
       "draftCitations": [
         {
           "page": 79,
@@ -2483,7 +2483,7 @@
           "sourceId": "infinity-rules-n5.3"
         }
       ],
-      "draftConclusion": "INTERPRETATION",
+      "draftConclusion": "DEPENDS",
       "id": "timing_sequence-03",
       "question": "Does declaring Dodge break Stealth?",
       "reviewStatus": "VERIFIED_DRAFT",
