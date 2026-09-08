@@ -17,6 +17,20 @@ This report does not approve the benchmark, run a paid model, deploy code, or mo
 | Formal approvals | 0/100 |
 | Paid provider calls during audit | 0 |
 
+## Final zero-cost validation
+
+All executable checks passed with exit code 0:
+
+- Benchmark structure and semantic-audit gate: 100/100.
+- Citation source IDs and page ranges: 207/207 valid.
+- Citation section hints: 205/205 indexed citations corroborated.
+- Two citations point to pages intentionally absent from the bounded excerpt index: ITS Season 18 p.9 and FAQ v0.1 p.4. Both were checked during the source-wide review; they remain reported as transparent bounded-index warnings rather than being hidden or falsely auto-verified.
+- Fault-injection grading: 307/307 rejected.
+- Adversarial claim attacks: 390/390 rejected.
+- Model spending/request gate: passed and locked.
+- One-action approval workflow: passed in memory only; no approval was written.
+- Network requests: 0. Provider requests: 0.
+
 ## Corrected blockers
 
 These corrections are complete on `rules-adjudicator-v2`.
@@ -64,9 +78,8 @@ The benchmark still has 0 formal approvals because review completion and release
 
 ## Approval recommendation
 
-1. Re-run the complete zero-cost benchmark, citation, adversarial, model-gate, and approval checks.
-2. Only if every check passes, use the existing one-action formal approval command.
-3. After approval, authorize at most one paid candidate request as a smoke test; do not run a paid batch automatically.
+1. Use the existing one-action formal approval command only after the reviewer deliberately accepts this completed report.
+2. After approval, authorize at most one paid candidate request as a smoke test; do not run a paid batch automatically.
 
 ## Release boundary
 
