@@ -1074,12 +1074,12 @@ function IntelligenceBrief({ analysis, faction }: { analysis: TacticalAnalysis; 
 }
 
 function TacticalProfileRow({ category, profile }: { category: string; profile: TacticalProfile }) {
-  const relevantWeapons = profile.weapons.filter((weapon, index) => category === 'apex' ? (weapon.burst ?? 0) >= 4 : category === 'aro' ? /sniper rifle|missile launcher|portable autocannon|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach/i.test(weapon.name) : category === 'defensive' ? /mine|deployable/i.test(weapon.name) : category === 'alternative' ? index === 0 : false)
+  const relevantWeapons = profile.weapons.filter((weapon, index) => category === 'apex' || category === 'competent' ? (weapon.effectiveBurst ?? 0) >= 4 : category === 'valuableAro' || category === 'disposableAro' ? /sniper rifle|missile launcher|portable autocannon|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach|flash pulse/i.test(weapon.name) : category === 'defensive' ? /mine|deployable/i.test(weapon.name) : category === 'alternative' ? index === 0 : false)
   return <div className="army-intelligence-tactical-profile">
     <div><strong>{profile.unit}</strong><span>{profile.profile}</span></div>
     <div className="army-intelligence-tactical-badges">
       {profile.bs !== null ? <span>BS {profile.bs}</span> : null}
-      {relevantWeapons.map((weapon) => <span key={`${weapon.name}:${weapon.burst}`}>{weapon.name}{weapon.burst === null ? ' · Burst unavailable' : ` · Burst ${weapon.burst}`}</span>)}
+      {relevantWeapons.map((weapon) => <span key={`${weapon.name}:${weapon.burst}`}>{weapon.name}{weapon.effectiveBurst === null ? ' · Burst unavailable' : ` · Burst ${weapon.effectiveBurst}${weapon.burst !== weapon.effectiveBurst ? ` (base ${weapon.burst} + BS Attack)` : ''}`}</span>)}
       {profile.badges.map((badge) => <span key={badge}>{badge}</span>)}
       {profile.linkability === 'verified' ? <span className="is-verified">Verified linkable</span> : profile.linkability === 'verified-false' ? <span>Verified not linkable</span> : <span>Fireteam status unknown</span>}
     </div>

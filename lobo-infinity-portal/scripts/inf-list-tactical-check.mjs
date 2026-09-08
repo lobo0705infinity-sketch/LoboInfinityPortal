@@ -9,19 +9,21 @@ import { createInfListResponse } from '../bot/inf-list-command.mjs'
 const weapon = (name, burst, type = 'WEAPON', mode = '', burstStatus) => ({ name, burst, type, mode, ...(burstStatus ? { burstStatus } : {}) })
 const profile = (combinedId, overrides = {}) => ({
   bs: 13, combinedId, equipment: [], linkability: 'unavailable', profileName: `Loadout ${combinedId}`,
-  skills: [], unitId: Number(combinedId.replace(/\D/g, '')) || 1, unitName: `Unit ${combinedId}`, weapons: [], ...overrides,
+  points: 20, skills: [], unitId: Number(combinedId.replace(/\D/g, '')) || 1, unitName: `Unit ${combinedId}`, weapons: [], ...overrides,
 })
 
 const fixtures = [
   profile('bs12', { bs: 12, weapons: [weapon('Heavy Machine Gun', 4)] }),
+  profile('burst-bonus', { bs: 13, skills: ['BS Attack (+1B)', 'Albedo (-3)'], weapons: [weapon('AP Spitfire', 3)] }),
   profile('b3', { weapons: [weapon('Spitfire', 3)] }),
   profile('apex', { skills: ['Mimetism [-3]', 'MSV L2', 'BS Attack (−3)'], weapons: [weapon('Heavy Machine Gun', 4)] }),
   profile('apex'), // duplicate exact profile, deliberately different missing data must not aggregate into another ID
   profile('hack', { equipment: ['Killer Hacking Device', 'Fast-Panda', 'Deployable-Repeater', 'Repeater', 'TinBot'], skills: ['Hacker'], weapons: [weapon('Pitcher', 1)] }),
-  profile('aro-sniper', { linkability: 'verified-linkable', skills: ['Mimetism -6', 'MSV 1'], weapons: [weapon('MULTI Sniper Rifle', 2)] }),
-  profile('aro-pzf', { linkability: 'unavailable', weapons: [weapon('Panzerfaust', 1), weapon('Flammenspeer', 1)] }),
-  profile('aro-hrl', { weapons: [weapon('Heavy Rocket Launcher', 2), weapon('Feuerbach', 2)] }),
-  profile('deploy', { skills: ['Parachutist (+3)', 'Combat-Jump (PH=12)', 'Hidden Deployment'], weapons: [weapon('Combi Rifle', 3)] }),
+  profile('aro-sniper', { linkability: 'verified-linkable', skills: ['Total Reaction'], weapons: [weapon('MULTI Sniper Rifle', 2)] }),
+  profile('aro-pzf', { points: 14, linkability: 'unavailable', weapons: [weapon('Panzerfaust', 1), weapon('Flammenspeer', 1)] }),
+  profile('aro-hrl', { skills: ['Neurocinetics'], weapons: [weapon('Heavy Rocket Launcher', 2), weapon('Feuerbach', 2)] }),
+  profile('flash', { points: 8, weapons: [weapon('Flash Pulse', 1)] }),
+  profile('deploy', { skills: ['Parachutist (+3)', 'Combat-Jump (PH=12)', 'Hidden Deployment', 'Impersonation (-6)'], weapons: [weapon('Combi Rifle', 3)] }),
   profile('netrod', { unitName: 'Netrod', skills: ['Combat Jump (PH=12)'] }),
   profile('imetron', { unitName: 'Imetron', skills: ['Parachutist'] }),
   profile('defense', { skills: ['Camouflage (-3)', 'Decoy (2)', 'Minelayer'], weapons: [weapon('Shock Mine', 1)] }),
@@ -36,15 +38,18 @@ const fixtures = [
 ]
 
 const analysis = classifyTacticalBrief(fixtures, { faction: 'Fixture', listName: 'Exact Profiles' })
-assert.deepEqual(analysis.categories.apex.map((item) => item.combinedId), ['apex'])
-assert.deepEqual(analysis.categories.apex[0].badges, ['Mimetism [-3]', 'MSV L2', 'BS Attack (−3)'])
+assert.deepEqual(new Set(analysis.categories.apex.map((item) => item.combinedId)), new Set(['apex', 'burst-bonus']))
+assert.deepEqual(analysis.categories.apex.find((item) => item.combinedId === 'apex').badges, ['Mimetism [-3]', 'MSV L2', 'BS Attack (−3)'])
 assert.equal(analysis.categories.apex.some((item) => ['ambiguous-burst', 'unavailable-burst'].includes(item.combinedId)), false)
 assert.deepEqual(analysis.networkSummary, { hackers: 1, pitcherCarriers: 1, fastPandaCarriers: 1, deployableRepeaterCarriers: 1 })
 assert.equal(analysis.categories.hacking.length, 1)
-assert.deepEqual(new Set(analysis.categories.aro.flatMap((item) => item.qualifyingWeapons.map((item) => item.name))), new Set(['MULTI Sniper Rifle', 'Panzerfaust', 'Flammenspeer', 'Heavy Rocket Launcher', 'Feuerbach']))
-assert.equal(analysis.categories.aro[0].linkability, 'verified-linkable')
+assert.deepEqual(new Set(analysis.categories.competent.map((item) => item.combinedId)), new Set(['bs12', 'apex', 'burst-bonus', 'same-unit-b']))
+assert.equal(analysis.categories.competent.find((item) => item.combinedId === 'burst-bonus').qualifyingWeapons[0].burst, 4)
+assert.deepEqual(new Set(analysis.categories.valuableAro.flatMap((item) => item.qualifyingWeapons.map((item) => item.name))), new Set(['MULTI Sniper Rifle', 'Heavy Rocket Launcher', 'Feuerbach']))
+assert.deepEqual(new Set(analysis.categories.disposableAro.flatMap((item) => item.qualifyingWeapons.map((item) => item.name))), new Set(['Panzerfaust', 'Flammenspeer', 'Flash Pulse']))
+assert.equal(analysis.categories.valuableAro[0].linkability, 'verified-linkable')
 assert.equal(analysis.categories.alternative.length, 1)
-assert.equal(analysis.categories.alternative[0].badges.length, 3)
+assert.equal(analysis.categories.alternative[0].badges.length, 4)
 assert.equal(analysis.categories.alternative.some((item) => /netrod|imetron/i.test(item.unitName)), false)
 assert.deepEqual(new Set(analysis.categories.defensive.map((item) => item.combinedId)), new Set(['defense', 'duplicate', 'same-unit-a']))
 assert.equal(analysis.categories.defensive.find((item) => item.combinedId === 'duplicate').quantity, 2)

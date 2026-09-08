@@ -36,10 +36,11 @@ assert.equal(snapshotHasCompleteTacticalMetadata({ ...list, decoded: { ...decode
 
 const analysis = buildTacticalAnalysis([list] as never)
 const apex = analysis.categories.find((category) => category.id === 'apex')!.profiles
-const aro = analysis.categories.find((category) => category.id === 'aro')!.profiles
+const competent = analysis.categories.find((category) => category.id === 'competent')!.profiles
+const aro = analysis.categories.find((category) => category.id === 'disposableAro')!.profiles
 assert.ok(apex.some((item) => item.unit === 'UNKNOWN RANGER' && item.bs === 13 && item.weapons.some((item) => item.name === 'AP Spitfire' && item.burst === 4)))
-assert.equal(apex.filter((item) => item.unit.startsWith('BLACKJACK')).length, 1, 'AP HMG Blackjack must be restored as Apex')
-for (const expected of ['BLACKJACK AP HMG', 'BLACKJACK T2 SNIPER', 'MINUTEMAN', 'GRUNT']) assert.ok(aro.some((item) => item.unit === expected), `${expected} must be restored as an ARO piece`)
+assert.ok(competent.some((item) => item.unit === 'BLACKJACK AP HMG'), 'BS 13 B4 Blackjack must be a Competent Gunfighter')
+for (const expected of ['BLACKJACK AP HMG', 'BLACKJACK T2 SNIPER', 'MINUTEMAN', 'GRUNT']) assert.ok(aro.some((item) => item.unit === expected), `${expected} must be restored as a Disposable ARO piece`)
 const hiddenAnalysis = buildTacticalAnalysis([{ ...list, decoded: { ...decoded, combatGroups: [{ combatGroup: 1, entries: [profile('hidden', 'HIDDEN SCOUT', 11, [{ name: 'Rifle', burst: 3 }], ['Hidden Deployment'])] }] } }] as never)
 assert.ok(hiddenAnalysis.categories.find((category) => category.id === 'alternative')!.profiles.some((item) => item.unit === 'HIDDEN SCOUT'), 'Hidden Deployment categorization remains intact')
 

@@ -19,13 +19,15 @@ const decodedList = (name: string, entries: unknown[]) => ({
 const canonicalBurst = (name: string, burst: number | null, burstStatus = burst === null ? 'unknown' : 'canonical') => ({ name, burst, burstStatus })
 const apex = entry('1', 'APEX', 'HMG', { bs: 13, skills: ['Mimetism (-3)', 'Multispectral Visor L2', 'BS Attack (-3)'], weapons: ['HMG'], weaponProfiles: [canonicalBurst('HMG', 4)] })
 const boundaryFailBs = entry('2', 'LOW BS', 'HMG', { bs: 12, weapons: ['HMG'], weaponProfiles: [canonicalBurst('HMG', 4)] })
+const burstBonus = entry('bonus', 'BONUS', 'AP Spitfire', { bs: 13, skills: ['BS Attack (+1B)'], weapons: ['AP Spitfire'], weaponProfiles: [canonicalBurst('AP Spitfire', 3)] })
 const boundaryFailBurst = entry('3', 'LOW BURST', 'Rifle', { bs: 14, weapons: ['Rifle'], weaponProfiles: [canonicalBurst('Rifle', 3)] })
 const malformed = entry('4', 'UNKNOWN', 'Unknown', { bs: null, weaponProfiles: [canonicalBurst('HMG', null)] })
 const hacker = entry('5', 'HACKER', 'KHD + Pitcher', { hacker: true, equipment: ['Killer Hacking Device', 'Fast-Panda'], weapons: ['Pitcher'] })
 const deployable = entry('6', 'OBSERVER', 'Deployable Repeater', { equipment: ['Deployable   Repeater'] })
 const falsePositive = entry('7', 'REPEATER PANDA TROOP', 'TinBot', { equipment: ['Repeater', 'TinBot', 'ECM'] })
-const aro = entry('8', 'ARO', 'MULTI Sniper', { bs: 13, skills: ['Mimetism (-6)'], weapons: ['MULTI Sniper Rifle', 'Panzerfaust', 'Flammenspeer', 'Heavy Rocket Launcher', 'Feuerbach'], weaponProfiles: [canonicalBurst('MULTI Sniper Rifle', 2), canonicalBurst('Panzerfaust', 1)], fireteamEligibility: { state: 'verified', verified: true, teams: ['Core'] } })
-const alternative = entry('9', 'RAIDER', 'Airborne', { skills: ['Parachutist (Deployment Zone)', 'Combat Jump (+3)', 'Hidden Deployment'], weapons: ['Combi Rifle'] })
+const aro = entry('8', 'ARO', 'MULTI Sniper', { bs: 13, skills: ['Total Reaction'], weapons: ['MULTI Sniper Rifle'], weaponProfiles: [canonicalBurst('MULTI Sniper Rifle', 2)], fireteamEligibility: { state: 'verified', verified: true, teams: ['Core'] } })
+const disposable = entry('cheap', 'CHEAP ARO', 'Flash Pulse', { points: 8, weapons: ['Flash Pulse'], weaponProfiles: [canonicalBurst('Flash Pulse', 1)] })
+const alternative = entry('9', 'RAIDER', 'Airborne', { skills: ['Parachutist (Deployment Zone)', 'Combat Jump (+3)', 'Hidden Deployment', 'Impersonation (-6)'], weapons: ['Combi Rifle'] })
 const netrod = entry('netrod', 'NETROD', 'Combat Jump', { skills: ['Combat Jump (PH=12)'] })
 const imetron = entry('imetron', 'IMETRON', 'Parachutist', { skills: ['Parachutist'] })
 const defensive = entry('10', 'SCOUT', 'Minelayer', { skills: ['Camouflage (-3)', 'Decoy (2)', 'Minelayer'], weapons: ['Shock Mines'] })
@@ -33,8 +35,8 @@ const mimetismOnly = entry('11', 'NOT CAMO', 'Mimetism', { skills: ['Mimetism (-
 const separateLoadout = entry('12', 'SCOUT', 'Rifle', { skills: [], weapons: ['Rifle'] })
 
 const analysis = buildTacticalAnalysis([
-  decodedList('One', [apex, apex, hacker, aro, alternative, netrod, imetron, defensive, falsePositive]),
-  decodedList('Two', [apex, deployable, aro, defensive, boundaryFailBs]),
+  decodedList('One', [apex, apex, hacker, aro, disposable, alternative, netrod, imetron, defensive, falsePositive]),
+  decodedList('Two', [apex, deployable, aro, defensive, boundaryFailBs, burstBonus]),
   decodedList('Three', [boundaryFailBurst, malformed, mimetismOnly, separateLoadout]),
 ] as never)
 
@@ -47,10 +49,13 @@ assert.deepEqual(analysis.categories.find((item) => item.id === 'apex')!.profile
 assert.equal(analysis.hackerListCount, 1)
 assert.equal(analysis.categories.find((item) => item.id === 'hacking')?.profiles.length, 2)
 assert.ok(!analysis.categories.find((item) => item.id === 'hacking')?.profiles.some((profile) => profile.unit.includes('PANDA TROOP')), 'names and ordinary Repeaters must not create delivery matches')
-assert.equal(analysis.categories.find((item) => item.id === 'aro')?.profiles.length, 1)
-assert.equal(analysis.categories.find((item) => item.id === 'aro')?.profiles[0].linkability, 'verified')
+assert.equal(analysis.categories.find((item) => item.id === 'competent')?.profiles.length, 3)
+assert.equal(analysis.categories.find((item) => item.id === 'competent')?.profiles.find((profile) => profile.unit === 'BONUS')?.weapons[0].effectiveBurst, 4)
+assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles.length, 1)
+assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles[0].linkability, 'verified')
+assert.equal(analysis.categories.find((item) => item.id === 'disposableAro')?.profiles.length, 1)
 assert.equal(analysis.categories.find((item) => item.id === 'alternative')?.profiles.length, 1)
-assert.equal(analysis.categories.find((item) => item.id === 'alternative')?.profiles[0].badges.filter((badge) => /Parachutist|Combat Jump|Hidden Deployment/.test(badge)).length, 3)
+assert.equal(analysis.categories.find((item) => item.id === 'alternative')?.profiles[0].badges.filter((badge) => /Parachutist|Combat Jump|Hidden Deployment|Impersonation/.test(badge)).length, 4)
 assert.ok(!analysis.categories.find((item) => item.id === 'alternative')?.profiles.some((profile) => /netrod|imetron/i.test(profile.unit)))
 assert.equal(analysis.categories.find((item) => item.id === 'defensive')?.profiles.length, 1)
 assert.ok(!analysis.categories.find((item) => item.id === 'defensive')?.profiles.some((profile) => profile.unit === 'NOT CAMO'))

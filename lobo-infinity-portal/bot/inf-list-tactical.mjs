@@ -3,8 +3,10 @@ import { buildCanonicalDataset, resolveCanonicalWeaponRecords } from '../scripts
 
 const categories = [
   ['apex', 'Apex Gunfighters'],
+  ['competent', 'Competent Gunfighters'],
   ['hacking', 'Hacking Network'],
-  ['aro', 'ARO Pieces'],
+  ['valuableAro', 'Valuable ARO Pieces'],
+  ['disposableAro', 'Disposable ARO Pieces'],
   ['alternative', 'Alternative Attack Vectors'],
   ['defensive', 'Defensive Network'],
 ]
@@ -59,6 +61,7 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
       equipment,
       linkability: officialPayloads.length ? (linkableUnitIds.has(Number(member.unitId)) ? 'verified-linkable' : 'verified-not-linkable') : 'unavailable',
       profileName: option?.name || card.profileName || group?.isc || unit?.isc || unit?.name || 'Profile unavailable',
+      points: finiteNumber(option?.points ?? card.points),
       skills,
       unitId: Number(member.unitId),
       unitName: unit?.isc || unit?.name || card.unitName || card.profileName || 'Unit unavailable',
@@ -71,9 +74,13 @@ export function classifyTacticalBrief(profiles, army = {}) {
   const aggregated = aggregateExactProfiles(profiles)
   const result = Object.fromEntries(categories.map(([key]) => [key, []]))
   for (const profile of aggregated) {
-    const enhancements = preferredMatches(profile.skills, [mimetismToken, msvToken, bsAttackMinusThreeToken])
-    const apexWeapons = profile.weapons.filter((weapon) => weapon.burst >= 4 && isRangedWeapon(weapon))
-    if (profile.bs >= 13 && apexWeapons.length) result.apex.push({ ...profile, badges: enhancements, qualifyingWeapons: apexWeapons })
+    const enhancements = preferredMatches(profile.skills, [gunfighterMimetismToken, gunfighterMsvToken, bsAttackMinusThreeToken, albedoToken])
+    const burstBonus = bsAttackBurstBonus(profile.skills)
+    const effectiveWeapons = profile.weapons.map((weapon) => ({ ...weapon, baseBurst: weapon.burst, burst: weapon.burst === null ? null : weapon.burst + burstBonus }))
+    const apexWeapons = effectiveWeapons.filter((weapon) => isRangedWeapon(weapon) && ((weapon.burst === 5 && profile.bs >= 14) || (weapon.burst === 4 && profile.bs >= 13)))
+    if (enhancements.length && apexWeapons.length) result.apex.push({ ...profile, badges: enhancements, qualifyingWeapons: apexWeapons })
+    const competentWeapons = effectiveWeapons.filter((weapon) => weapon.burst === 4 && isRangedWeapon(weapon))
+    if ((profile.bs === 12 || profile.bs === 13) && competentWeapons.length) result.competent.push({ ...profile, badges: burstBonus ? preferredMatches(profile.skills, [bsAttackBurstToken]) : [], qualifyingWeapons: competentWeapons })
 
     const hackerTypes = unique([
       ...exactMatches(profile.skills, [hackerToken]),
@@ -83,9 +90,12 @@ export function classifyTacticalBrief(profiles, army = {}) {
     if (hackerTypes.length || delivery.length) result.hacking.push({ ...profile, badges: [...hackerTypes, ...delivery], hackerTypes, delivery })
 
     const aroWeapons = profile.weapons.filter((weapon) => aroWeaponToken(weaponDisplay(weapon)))
-    if (aroWeapons.length) result.aro.push({ ...profile, badges: enhancements.filter((badge) => mimetismToken(badge) || msvToken(badge)), qualifyingWeapons: aroWeapons })
+    const aroSkills = preferredMatches(profile.skills, [totalReactionToken, neurocineticsToken, bsAttackSdToken])
+    if (Number.isFinite(profile.points) && profile.points >= 15 && aroWeapons.length && aroSkills.length) result.valuableAro.push({ ...profile, badges: aroSkills, qualifyingWeapons: aroWeapons })
+    const disposableWeapons = profile.weapons.filter((weapon) => aroWeaponToken(weaponDisplay(weapon)) || flashPulseToken(weaponDisplay(weapon)))
+    if (Number.isFinite(profile.points) && profile.points <= 14 && disposableWeapons.length) result.disposableAro.push({ ...profile, badges: [], qualifyingWeapons: disposableWeapons })
 
-    const deployments = preferredMatches(profile.skills, [parachutistToken, combatJumpToken, hiddenDeploymentToken])
+    const deployments = preferredMatches(profile.skills, [parachutistToken, combatJumpToken, hiddenDeploymentToken, impersonationToken])
     if (deployments.length && !excludedAlternativeAttackVector(profile.unitName)) result.alternative.push({ ...profile, badges: deployments })
 
     const defenses = preferredMatches(profile.skills, [camouflageToken, decoyToken, minelayerToken])
@@ -95,8 +105,8 @@ export function classifyTacticalBrief(profiles, army = {}) {
     }
   }
   result.apex.sort((a, b) => b.badges.length - a.badges.length || b.bs - a.bs || profileSort(a, b))
-  result.aro.sort((a, b) => linkRank(a) - linkRank(b) || profileSort(a, b))
-  for (const key of ['hacking', 'alternative', 'defensive']) result[key].sort(profileSort)
+  for (const key of ['valuableAro', 'disposableAro']) result[key].sort((a, b) => linkRank(a) - linkRank(b) || profileSort(a, b))
+  for (const key of ['competent', 'hacking', 'alternative', 'defensive']) result[key].sort(profileSort)
   return {
     army: { faction: army.faction || '', listName: army.listName || '', sectorial: army.sectorial || '' },
     categories: result,
@@ -160,11 +170,11 @@ function categoryMarkup({ key, title, entries }, analysis) {
 
 function entryMarkup(key, entry) {
   let detail = ''
-  if (key === 'apex' || key === 'aro') detail = `BS ${value(entry.bs)} · ${entry.qualifyingWeapons.map((weapon) => [escapeHtml(weaponDisplay(weapon)), formatBurst(weapon)].filter(Boolean).join(' · ')).join(' · ')}`
+  if (['apex', 'competent', 'valuableAro', 'disposableAro'].includes(key)) detail = `${key.endsWith('Aro') ? `${value(entry.points)} pts · ` : ''}BS ${value(entry.bs)} · ${entry.qualifyingWeapons.map((weapon) => [escapeHtml(weaponDisplay(weapon)), formatBurst(weapon)].filter(Boolean).join(' · ')).join(' · ')}`
   if (key === 'hacking') detail = [...entry.hackerTypes, ...entry.delivery].map(escapeHtml).join(' · ')
   if (key === 'alternative') detail = `PRIMARY: ${escapeHtml(primaryWeapon(entry.weapons) || 'Unavailable')}`
   if (key === 'defensive' && entry.deployables.length) detail = `DEPLOYABLE: ${entry.deployables.map(escapeHtml).join(' · ')}`
-  const fireteam = key === 'aro' ? `<span class="badge fireteam">${entry.linkability === 'verified-linkable' ? 'VERIFIED LINKABLE' : entry.linkability === 'unavailable' ? 'LINKABILITY UNAVAILABLE' : 'NOT LINKABLE IN CANONICAL CHART'}</span>` : ''
+  const fireteam = key.endsWith('Aro') ? `<span class="badge fireteam">${entry.linkability === 'verified-linkable' ? 'VERIFIED LINKABLE' : entry.linkability === 'unavailable' ? 'LINKABILITY UNAVAILABLE' : 'NOT LINKABLE IN CANONICAL CHART'}</span>` : ''
   const secondary = detail || loadoutDetail(entry)
   return `<article><div class="entry-head"><div><h4>${escapeHtml(entry.unitName)}</h4><p>${escapeHtml(entry.profileName)}</p></div><strong>×${entry.quantity}</strong></div>${secondary ? `<div class="detail">${secondary}</div>` : ''}<div class="badges">${entry.badges.map((badge) => `<span class="badge">${escapeHtml(badge)}</span>`).join('')}${fireteam}</div></article>`
 }
@@ -200,7 +210,15 @@ function normalized(value) { return String(value || '').normalize('NFKD').replac
 function sameToken(a, b) { return normalized(a) === normalized(b) }
 function mimetismToken(v) { return /^mimetism(?:\s+(?:l(?:evel\s*)?)?\d+)?$/.test(normalized(v)) }
 function msvToken(v) { return /^(?:multispectral visor|msv)(?:\s+(?:l(?:evel\s*)?)?\d+)?$/.test(normalized(v)) }
+function gunfighterMimetismToken(v) { return /^mimetism\s+(?:3|6)$/.test(normalized(v)) }
+function gunfighterMsvToken(v) { return /^(?:multispectral visor|msv)\s+(?:l(?:evel\s*)?)?[123]$/.test(normalized(v)) }
 function bsAttackMinusThreeToken(v) { return /^bs attack\s+3$/.test(normalized(v)) }
+function albedoToken(v) { return /^albedo\s+(?:3|6)$/.test(normalized(v)) }
+function bsAttackBurstToken(v) { return /^bs attack\s+(?:\+\s*)?(?:(\d+)\s*)?(?:b|burst)$/.test(normalized(v)) }
+function bsAttackBurstBonus(skills) { for (const skill of skills || []) { const match = normalized(skill).match(/^bs attack\s+(?:\+\s*)?(?:(\d+)\s*)?(?:b|burst)$/); if (match) return Number(match[1] || 1) } return 0 }
+function totalReactionToken(v) { return /^total reaction$/.test(normalized(v)) }
+function neurocineticsToken(v) { return /^neurocinetics$/.test(normalized(v)) }
+function bsAttackSdToken(v) { return /^bs attack\s+\+?sd$/.test(normalized(v)) }
 function hackerToken(v) { return /^hacker$/.test(normalized(v)) }
 function hackingDeviceToken(v) { return /^(?:(?:assault|defensive|evo|killer|plus|white|zero pain)\s+)?hacking device(?:\s+plus)?$/.test(normalized(v)) }
 function pitcherToken(v) { return /^pitcher$/.test(normalized(v)) }
@@ -209,10 +227,12 @@ function deployableRepeaterToken(v) { return /^deployable\s+repeater$/.test(norm
 function parachutistToken(v) { return /^parachutist(?:\s+(?:l(?:evel\s*)?)?\+?\d+)?$/.test(normalized(v)) }
 function combatJumpToken(v) { return /^combat jump(?:\s+(?:ph\s*)?\d+)?$/.test(normalized(v)) }
 function hiddenDeploymentToken(v) { return /^hidden deployment$/.test(normalized(v)) }
+function impersonationToken(v) { return /^impersonation(?:\s+\d+)?$/.test(normalized(v)) }
 function camouflageToken(v) { return /^camouflage(?:\s+(?:l(?:evel\s*)?)?\d+)?$/.test(normalized(v)) }
 function decoyToken(v) { return /^decoy(?:\s+\d+)?$/.test(normalized(v)) }
 function minelayerToken(v) { return /^minelayer$/.test(normalized(v)) }
-function aroWeaponToken(v) { return /^(?:(?:ap|viral|multi)\s+)?sniper rifle(?:\s+(?:burst|anti materiel|hit|blast) mode)?$|^(?:panzerfaust|flammenspeer|heavy rocket launcher|feuerbach)(?:\s+(?:burst|anti materiel|hit|blast) mode)?$/.test(normalized(v)) }
+function aroWeaponToken(v) { return /^(?:(?:ap|viral|multi|plasma)\s+)?sniper rifle(?:\s+(?:burst|anti materiel|hit|blast) mode)?$|^(?:missile launcher|portable autocannon|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach)(?:\s+(?:burst|anti materiel|hit|blast) mode)?$/.test(normalized(v)) }
+function flashPulseToken(v) { return /^flash pulse$/.test(normalized(v)) }
 function isRangedWeapon(w) { return normalized(w.type) !== 'cc' && !/\bcc weapon\b/.test(normalized(w.name)) }
 function minelayerAssociated(weapons, equipment) { return unique([...weapons.map(weaponDisplay), ...equipment].filter((v) => /(?:^|\s)(?:mine|mines)(?:\s|$)|deployable/i.test(normalized(v)))) }
 function primaryWeapon(weapons) { return weaponDisplay(weapons.find(isRangedWeapon) || weapons[0]) }
@@ -227,13 +247,13 @@ function value(v) { return Number.isFinite(v) ? v : 'Unavailable' }
 function formatBurst(weapon) {
   const raw = weapon?.burst
   const burst = raw === null || raw === undefined || raw === '' ? null : finiteNumber(raw)
-  if (burst !== null) return `B${burst}`
+  if (burst !== null) return weapon?.baseBurst !== null && weapon?.baseBurst !== undefined && weapon.baseBurst !== burst ? `B${burst} (base B${weapon.baseBurst} + BS Attack)` : `B${burst}`
   if (weapon?.burstStatus === 'not-applicable') return ''
   if (weapon?.burstStatus === 'ambiguous') return 'Burst ambiguous'
   return 'Burst unavailable'
 }
 function loadoutSignature(profile) {
-  return JSON.stringify({ bs: finiteNumber(profile.bs), skills: [...(profile.skills || [])].map(normalized).sort(), equipment: [...(profile.equipment || [])].map(normalized).sort(), weapons: [...(profile.weapons || [])].map((weapon) => [normalized(weapon.name), normalized(weapon.mode), weapon.burst ?? null, weapon.burstStatus || '']).sort(), linkability: profile.linkability || 'unavailable' })
+  return JSON.stringify({ bs: finiteNumber(profile.bs), points: finiteNumber(profile.points), skills: [...(profile.skills || [])].map(normalized).sort(), equipment: [...(profile.equipment || [])].map(normalized).sort(), weapons: [...(profile.weapons || [])].map((weapon) => [normalized(weapon.name), normalized(weapon.mode), weapon.burst ?? null, weapon.burstStatus || '']).sort(), linkability: profile.linkability || 'unavailable' })
 }
 function loadoutDetail(entry) {
   const parts = unique([...(entry.weapons || []).map(weaponDisplay), ...(entry.skills || []), ...(entry.equipment || [])].filter(Boolean))

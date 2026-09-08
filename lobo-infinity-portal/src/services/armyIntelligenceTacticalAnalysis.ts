@@ -1,6 +1,6 @@
 import type { ArmyIntelligenceDecodedEntry, ArmyIntelligenceList } from './api'
 
-export type TacticalCategoryId = 'apex' | 'hacking' | 'aro' | 'alternative' | 'defensive'
+export type TacticalCategoryId = 'apex' | 'competent' | 'hacking' | 'valuableAro' | 'disposableAro' | 'alternative' | 'defensive'
 
 export type TacticalProfile = {
   badges: string[]
@@ -11,7 +11,7 @@ export type TacticalProfile = {
   profile: string
   profileId: string
   unit: string
-  weapons: Array<{ burst: number | null; name: string }>
+  weapons: Array<{ burst: number | null; effectiveBurst: number | null; name: string }>
   linkability: 'verified' | 'verified-false' | 'unknown'
 }
 
@@ -32,9 +32,11 @@ export type TacticalAnalysis = {
 }
 
 const aroWeapon = /(?:sniper rifle|ap sniper rifle|multi sniper rifle|viral sniper rifle|plasma sniper rifle|missile launcher|portable autocannon|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach)/i
-const deploymentSkill = /^(?:parachutist|combat jump|hidden deployment)(?:\s*[\[(].*[\])])?$/i
+const alternativeSkill = /^(?:parachutist|combat jump|hidden deployment|impersonation)(?:\s*[\[(].*[\])])?$/i
 const defensiveSkill = /^(?:camouflage|decoy|minelayer)(?:\s*[\[(].*[\])])?$/i
 const enhancement = /^(?:mimetism|multispectral visor|msv)(?:\s+(?:l|level)\s*\d+)?(?:\s*[\[(].*[\])])?$|^bs attack\s*\(\s*-3\s*\)$/i
+const gunfighterEnhancement = /^(?:mimetism|albedo)\s*[\[(]\s*-(?:3|6)\s*[\])]$|^(?:multispectral visor|msv)(?:\s+(?:l|level))?\s*[123]$|^bs attack\s*[\[(]\s*-3\s*[\])]$/i
+const valuableAroSkill = /^(?:total reaction|neurocinetics)$|^bs attack\s*[\[(]\s*\+?sd\s*[\])]$/i
 const deliveryEquipment = /^(?:pitcher|fast\s*-?\s*panda|deployable\s*-?\s*repeater)$/i
 const hackingDevice = /^(?:hacking device(?: plus)?|killer hacking device|evo hacking device)$/i
 
@@ -79,10 +81,12 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
 
   return {
     categories: [
-      category('apex', 'Apex Gunfighters', 'BS 13+ profiles with a canonical numeric Burst 4+ ranged weapon.', (entry) => Number(entry.bs) >= 13 && canonicalWeapons(entry).some((weapon) => weapon.burstStatus === 'canonical' && weapon.burst !== null && weapon.burst >= 4), hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
+      category('apex', 'Apex Gunfighters', 'Effective B5 with BS 14+, or effective B4 with BS 13+, plus MSV 1–3, Mimetism (-3/-6), BS Attack (-3), or Albedo (-3/-6).', (entry) => entry.skills.some((skill) => gunfighterEnhancement.test(normalize(skill))) && effectiveWeapons(entry).some((weapon) => (weapon.burst === 5 && Number(entry.bs) >= 14) || (weapon.burst === 4 && Number(entry.bs) >= 13)), hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
+      category('competent', 'Competent Gunfighters', 'BS 12 or 13 profiles with an effective Burst 4 weapon, including BS Attack (+Burst).', (entry) => (Number(entry.bs) === 12 || Number(entry.bs) === 13) && effectiveWeapons(entry).some((weapon) => weapon.burst === 4), hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
       category('hacking', 'Hacking Networks', 'Exact Hacker profiles, Hacking Devices, and verified repeater-delivery equipment.', (entry) => hackingComponents(entry).length > 0),
-      category('aro', 'ARO Pieces', 'Profiles carrying a canonical sniper rifle, Missile Launcher, Portable Autocannon, Panzerfaust, Flammenspeer, Heavy Rocket Launcher, or Feuerbach.', (entry) => canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name)))),
-      category('alternative', 'Alternative Attack Vectors', 'Profiles with Parachutist, Combat Jump, or Hidden Deployment; Netrods and Imetrons are excluded.', (entry) => !excludedAlternativeAttackVector(entry.unit) && entry.skills.some((skill) => deploymentSkill.test(normalize(skill)))),
+      category('valuableAro', 'Valuable ARO Pieces', '15+ point profiles with Total Reaction, Neurocinetics, or BS Attack (+SD), armed with an approved ARO weapon.', (entry) => entry.points >= 15 && entry.skills.some((skill) => valuableAroSkill.test(normalize(skill))) && canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name)))),
+      category('disposableAro', 'Disposable ARO Pieces', '14-point-or-less profiles armed with an approved ARO weapon or Flash Pulse.', (entry) => entry.points <= 14 && canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name)) || /^flash pulse$/i.test(normalize(weapon.name)))),
+      category('alternative', 'Alternative Attack Vectors', 'Profiles with Parachutist, Combat Jump, Hidden Deployment, or Impersonation; Netrods and Imetrons are excluded.', (entry) => !excludedAlternativeAttackVector(entry.unit) && entry.skills.some((skill) => alternativeSkill.test(normalize(skill)))),
       category('defensive', 'Defensive Network', 'Profiles with Camouflage, Decoy, or Minelayer; Mimetism alone does not qualify.', (entry) => entry.skills.some((skill) => defensiveSkill.test(normalize(skill)))),
     ],
     hackerListCount: hackerLists.size,
@@ -97,7 +101,7 @@ function excludedAlternativeAttackVector(unitName: string) {
 }
 
 function toProfile(entry: ArmyIntelligenceDecodedEntry, listCount: number, denominator: number): TacticalProfile {
-  const skills = entry.skills.map(normalize).filter((skill) => deploymentSkill.test(skill) || defensiveSkill.test(skill) || enhancement.test(skill))
+  const skills = entry.skills.map(normalize).filter((skill) => alternativeSkill.test(skill) || defensiveSkill.test(skill) || enhancement.test(skill) || valuableAroSkill.test(skill) || bsAttackBurstBonus([skill]) > 0)
   return {
     badges: unique([...skills, ...hackingComponents(entry)]),
     bs: entry.bs ?? null,
@@ -108,12 +112,25 @@ function toProfile(entry: ArmyIntelligenceDecodedEntry, listCount: number, denom
     profile: entry.profile || entry.unit,
     profileId: profileKey(entry),
     unit: entry.unit || entry.profile,
-    weapons: normalizedWeapons(entry),
+    weapons: normalizedWeapons(entry).map((weapon) => ({ ...weapon, effectiveBurst: weapon.burst === null ? null : weapon.burst + bsAttackBurstBonus(entry.skills) })),
   }
 }
 
 function canonicalWeapons(entry: ArmyIntelligenceDecodedEntry) {
   return entry.weaponProfiles?.map((weapon) => ({ name: normalize(weapon.name), burst: finiteOrNull(weapon.burst), burstStatus: weapon.burstStatus || 'unknown' })) || []
+}
+
+function effectiveWeapons(entry: ArmyIntelligenceDecodedEntry) {
+  const bonus = bsAttackBurstBonus(entry.skills)
+  return canonicalWeapons(entry).filter((weapon) => weapon.burstStatus === 'canonical').map((weapon) => ({ ...weapon, burst: weapon.burst === null ? null : weapon.burst + bonus }))
+}
+
+function bsAttackBurstBonus(skills: string[]) {
+  for (const skill of skills) {
+    const match = normalize(skill).match(/^bs attack\s*[\[(]\s*\+\s*(?:(\d+)\s*)?(?:b|burst)\s*[\])]$/i)
+    if (match) return Number(match[1] || 1)
+  }
+  return 0
 }
 
 function normalizedWeapons(entry: ArmyIntelligenceDecodedEntry) {

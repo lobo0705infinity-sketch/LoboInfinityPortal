@@ -178,7 +178,7 @@ if (process.argv.includes('--live')) {
   assert.equal(liveMessage.replies[0].files[1].name, 'infinity-army-tactical-brief.png')
   assert.equal(tacticalPng.readUInt32BE(16), 1440)
   assert.ok(tacticalPng.readUInt32BE(20) <= 7500)
-  assert.deepEqual(Object.keys(legacyRendered.tacticalAnalysis.categories), ['apex', 'hacking', 'aro', 'alternative', 'defensive'])
+  assert.deepEqual(Object.keys(legacyRendered.tacticalAnalysis.categories), ['apex', 'competent', 'hacking', 'valuableAro', 'disposableAro', 'alternative', 'defensive'])
   assert.equal(Object.values(legacyRendered.tacticalAnalysis.categories).every((entries) => entries.length > 0), true)
   for (const [index, file] of liveMessage.replies[0].files.slice(2).entries()) {
     assert.equal(file.name, `infinity-army-profiles-${index + 1}.png`)

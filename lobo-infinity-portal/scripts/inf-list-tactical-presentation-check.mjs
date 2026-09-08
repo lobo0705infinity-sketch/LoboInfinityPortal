@@ -2,13 +2,13 @@ import assert from 'node:assert/strict'
 import { classifyTacticalBrief, formatBurst, loadoutDetail, renderTacticalBrief } from '../bot/inf-list-tactical.mjs'
 import { chromium } from 'playwright'
 
-const p = (combinedId, overrides = {}) => ({ combinedId, unitId: 1, unitName: 'Beasthunter', profileName: 'Beasthunter', bs: 13, skills: [], equipment: [], weapons: [], linkability: 'unavailable', ...overrides })
-const base = p('1-1', { weapons: [{ name: 'MULTI Sniper Rifle', burst: null, burstStatus: 'unknown', type: 'WEAPON' }] })
-const same = p('1-1', { weapons: [{ name: 'MULTI Sniper Rifle', burst: null, burstStatus: 'unknown', type: 'WEAPON' }] })
+const p = (combinedId, overrides = {}) => ({ combinedId, unitId: 1, unitName: 'Beasthunter', profileName: 'Beasthunter', bs: 13, points: 14, skills: [], equipment: [], weapons: [], linkability: 'unavailable', ...overrides })
+const base = p('1-1', { weapons: [{ name: 'MULTI Sniper Rifle', burst: 2, burstStatus: 'canonical', type: 'WEAPON' }] })
+const same = p('1-1', { weapons: [{ name: 'MULTI Sniper Rifle', burst: 2, burstStatus: 'canonical', type: 'WEAPON' }] })
 const different = p('1-2', { profileName: 'Beasthunter — Panzerfaust', weapons: [{ name: 'Panzerfaust', burst: 1, type: 'WEAPON' }] })
 const analysis = classifyTacticalBrief([base, same, different], { faction: 'Fixture' })
-assert.equal(analysis.categories.aro.length, 2)
-assert.equal(analysis.categories.aro.find((x) => x.combinedId === '1-1').quantity, 2)
+assert.equal(analysis.categories.disposableAro.length, 2)
+assert.equal(analysis.categories.disposableAro.find((x) => x.combinedId === '1-1').quantity, 2)
 assert.equal(formatBurst({ burst: 4 }), 'B4')
 assert.equal(formatBurst({ burst: 1, burstStatus: 'canonical', modeResolution: 'ambiguous' }), 'B1')
 assert.equal(formatBurst({ burst: 2, burstStatus: 'canonical', modeResolution: 'ambiguous' }), 'B2')

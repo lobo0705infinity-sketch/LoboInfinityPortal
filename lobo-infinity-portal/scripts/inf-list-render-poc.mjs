@@ -365,7 +365,9 @@ async function captureRenderedProfilePages(browser, rendererViewUrl) {
   try {
     await loadRendererPage(page, rendererViewUrl)
     await page.addStyleTag({ content: profilePageStyles })
-    const cards = await page.locator('.card[data-info^="combinedId:"]').evaluateAll((nodes) => nodes.map((card) => {
+    const cards = await page.locator('.card[data-info^="combinedId:"]').evaluateAll((nodes) => {
+      const listPoints = [...document.querySelectorAll('.army-list-row')].map((row) => Number((row.textContent || '').match(/(\d+(?:\.\d+)?)\s*pts/i)?.[1] || Number.NaN))
+      return nodes.map((card, index) => {
       const attributeRows = [...(card.querySelector('table.attribut')?.rows || [])].map((row) => [...row.cells].map((cell) => cell.textContent.trim()))
       const headers = attributeRows[0] || []
       const values = attributeRows[1] || []
@@ -380,11 +382,13 @@ async function captureRenderedProfilePages(browser, rendererViewUrl) {
         combinedId: card.getAttribute('data-info')?.replace(/^combinedId:/, '') || '',
         equipment: split(tokenText('Equipment')),
         profileName,
+        points: Number.isFinite(listPoints[index]) ? listPoints[index] : null,
         skills: split(tokenText('Skills')),
         unitName: profileName,
         weapons: [...card.querySelectorAll('.weapon-table-name-header')].map((node) => node.textContent.replace(/\s+/g, ' ').trim()).filter((name) => name !== 'Weapon Name'),
-      }
-    }))
+        }
+      })
+    })
     const pagination = await page.evaluate(() => {
       const source = document.querySelector('.page')
       if (!source) throw new Error('Infinity-Data profile page was not found.')
