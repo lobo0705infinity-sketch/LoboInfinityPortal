@@ -1036,7 +1036,7 @@
         },
         {
           "page": 60,
-          "section": "SPOTLIGHT",
+          "section": "COMBAT",
           "sourceId": "infinity-rules-n5.3"
         },
         {
@@ -1621,7 +1621,7 @@
         },
         {
           "page": 60,
-          "section": "SPOTLIGHT",
+          "section": "COMBAT",
           "sourceId": "infinity-rules-n5.3"
         }
       ],
@@ -1696,7 +1696,7 @@
         },
         {
           "page": 3,
-          "section": "STATES FAQ",
+          "section": "Page text",
           "sourceId": "infinity-faq-n5-v0.1"
         }
       ],
@@ -4573,7 +4573,7 @@
       "draftCitations": [
         {
           "page": 3,
-          "section": "STATES FAQ",
+          "section": "Page text",
           "sourceId": "infinity-faq-n5-v0.1"
         },
         {
