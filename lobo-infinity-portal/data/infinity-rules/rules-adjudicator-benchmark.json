@@ -862,7 +862,7 @@
       "candidateExpectation": null,
       "category": "DIRECT_DEFINITION",
       "draftAnswer": "N5.3 does not define a Skill named Total Immunity. The applicable rule is the specific Immunity listed on the Unit Profile, such as Immunity (ARM), (BTS), or (Enhanced); its exact effects depend on that listed type.",
-      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "draftCertainty": "SAFE ESCALATION",
       "draftCitations": [
         {
           "page": 96,
@@ -874,7 +874,7 @@
       "id": "direct_definition-16",
       "question": "What does Total Immunity do?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
+      "semanticAuditBasis": "Confirmed against the N5.3 Immunity terminology and weapon/ammunition entries; legacy or incomplete names must not be converted into an unsupported ruling.",
       "semanticAuditDate": "2026-09-07",
       "semanticAuditStatus": "PASSED",
       "answerContract": {
@@ -1493,7 +1493,7 @@
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
       "draftAnswer": "The question uses an obsolete or incomplete Skill name. N5.3 has specific Immunity types rather than a generic Total Immunity rule. If the Trooper has Immunity (AP), it ignores AP's special effect and treats it as Normal Ammunition; a different Immunity does not automatically protect against AP.",
-      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "draftCertainty": "SAFE ESCALATION",
       "draftCitations": [
         {
           "page": 66,
@@ -1510,7 +1510,7 @@
       "id": "two_rule_interaction-07",
       "question": "Does Total Immunity ignore AP Ammunition?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
+      "semanticAuditBasis": "Confirmed against the N5.3 Immunity terminology and weapon/ammunition entries; legacy or incomplete names must not be converted into an unsupported ruling.",
       "semanticAuditDate": "2026-09-07",
       "semanticAuditStatus": "PASSED",
       "answerContract": {
@@ -1916,7 +1916,7 @@
       "id": "two_rule_interaction-14",
       "question": "Does Viral Ammunition interact with Immunity (Shock)?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
+      "semanticAuditBasis": "Confirmed against the N5.3 ammunition list, Immunity rules, and Viral-named weapon profiles; exact printed weapon and Immunity entries are required.",
       "semanticAuditDate": "2026-09-07",
       "semanticAuditStatus": "PASSED",
       "answerContract": {
