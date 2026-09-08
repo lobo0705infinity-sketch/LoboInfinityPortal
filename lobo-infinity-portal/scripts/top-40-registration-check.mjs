@@ -19,6 +19,7 @@ const eventHomeSource = readFileSync(
 const apiSource = readFileSync(new URL('../src/services/api.ts', import.meta.url), 'utf8')
 const publicAppSource = readFileSync(new URL('../src/public/SnapshotPublicApp.tsx', import.meta.url), 'utf8')
 const publicSnapshotExporterSource = readFileSync(new URL('../backend/PublicSnapshotExporter.gs', import.meta.url), 'utf8')
+const armyIntelligenceWorkerSource = readFileSync(new URL('../api/army-intelligence-refresh-worker.mjs', import.meta.url), 'utf8')
 const publicSnapshotClientSource = readFileSync(new URL('../src/services/publicSnapshot.ts', import.meta.url), 'utf8')
 const publicSnapshotPublisherSource = readFileSync(new URL('../api/public-snapshot-publish.mjs', import.meta.url), 'utf8')
 const dedicatedPageSource = readFileSync(new URL('../src/components/Top40RegistrationPage.tsx', import.meta.url), 'utf8')
@@ -117,6 +118,7 @@ for (const forbidden of [
 }
 
 assert.match(publicSnapshotExporterSource, /function readPublicSnapshotTop40RegistrationNames_\(\)[\s\S]*lifGetTargetSpreadsheet_\(\)/)
+assert.match(armyIntelligenceWorkerSource, /publishPublicSnapshot = automatic && body\.publishPublicSnapshot === true/)
 for (const header of [
   'Timestamp', 'Email address', 'Lobo Portal User Name', 'Discord Name', 'Tournament Rules agreement',
 ]) assert.ok(publicSnapshotExporterSource.includes(`"${header}"`))
