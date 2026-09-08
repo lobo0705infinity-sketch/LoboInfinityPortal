@@ -5,6 +5,7 @@ import { getOperatorBadgeDetails } from '../components/operatorBadgeDetails'
 import PrimaryFactionCard from '../components/PrimaryFactionCard'
 import FactionPortraitImage from '../components/FactionPortraitImage'
 import EntityPreviousNext from '../components/EntityPreviousNext'
+import InfinityArmyLink from '../components/InfinityArmyLink'
 import Skeleton from '../components/Skeleton'
 import { getArmyParentFaction } from '../services/armyIdentity'
 import {
@@ -888,9 +889,9 @@ function ArmyListMiniCard({ list }: { list: ArmyList }) {
       </p>
       <strong>Score {list.score}</strong>
       {target.status === 'available' ? (
-        <a href={target.href} rel="noreferrer" target="_blank">
+        <InfinityArmyLink armyCode={list.armyCode} href={target.href}>
           View in Infinity Army
-        </a>
+        </InfinityArmyLink>
       ) : (
         <button
           aria-label={`View in Infinity Army unavailable: ${target.reason}`}

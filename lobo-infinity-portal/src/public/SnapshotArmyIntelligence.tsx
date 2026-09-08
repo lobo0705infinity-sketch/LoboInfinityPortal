@@ -1,6 +1,7 @@
 import { type ReactNode, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import InteractiveMetricCard from '../components/InteractiveMetricCard'
+import InfinityArmyLink from '../components/InfinityArmyLink'
 import type { ArmyIntelligenceArmyList, ArmyIntelligenceList } from '../services/api'
 import { buildTacticalAnalysis, type TacticalProfile } from '../services/armyIntelligenceTacticalAnalysis'
 import { useSnapshotData } from './useSnapshotData'
@@ -342,7 +343,7 @@ function ArmyListExplorer({ lists, open, players, player, search, sectorial, sec
         <label><span>Sectorial</span><select value={sectorial} onChange={(event) => onSectorialChange(event.target.value)}><option value="">All sectorials</option>{sectorials.map((value) => <option key={value}>{value}</option>)}</select></label>
         <label><span>Sort</span><select value={sort} onChange={(event) => onSortChange(event.target.value as ExplorerSort)}><option value="submissionDate">Newest submission</option><option value="player">Player</option><option value="sectorial">Sectorial</option><option value="points">Points</option></select></label>
       </section>
-      {lists.length ? <div className="snapshot-intelligence-table snapshot-intelligence-explorer-table"><table><thead><tr><th>Date</th><th>Player</th><th>Army</th><th>Faction / sectorial</th><th>Points</th><th>SWC</th><th>Source</th><th>Public link</th></tr></thead><tbody>{lists.map((list) => <tr key={list.id}><td>{formatDate(list.submissionDate)}</td><td><strong>{list.playerDisplayName || list.player}</strong></td><td>{list.armyName}</td><td>{list.sectorial || list.faction}</td><td>{list.points}</td><td>{list.swc}</td><td>{list.source}</td><td>{list.armyLink ? <a href={list.armyLink} target="_blank" rel="noreferrer">Open list</a> : '—'}</td></tr>)}</tbody></table></div> : <Empty message="No army lists match the current explorer filters." />}
+      {lists.length ? <div className="snapshot-intelligence-table snapshot-intelligence-explorer-table"><table><thead><tr><th>Date</th><th>Player</th><th>Army</th><th>Faction / sectorial</th><th>Points</th><th>SWC</th><th>Source</th><th>Public link</th></tr></thead><tbody>{lists.map((list) => <tr key={list.id}><td>{formatDate(list.submissionDate)}</td><td><strong>{list.playerDisplayName || list.player}</strong></td><td>{list.armyName}</td><td>{list.sectorial || list.faction}</td><td>{list.points}</td><td>{list.swc}</td><td>{list.source}</td><td>{list.armyLink ? <InfinityArmyLink href={list.armyLink}>Open list</InfinityArmyLink> : '—'}</td></tr>)}</tbody></table></div> : <Empty message="No army lists match the current explorer filters." />}
     </section>
   </div>
 }

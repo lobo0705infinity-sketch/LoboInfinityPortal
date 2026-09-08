@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import OperatorBadge from '../components/OperatorBadge'
 import FactionPortraitImage from '../components/FactionPortraitImage'
+import InfinityArmyLink from '../components/InfinityArmyLink'
 import Skeleton from '../components/Skeleton'
 import { normalizeArmyForDisplay } from '../services/armyIdentity'
 import {
@@ -545,15 +546,15 @@ function DiagnosticList({ title, values }: { title: string; values: string[] }) 
 
 function ArmyListExternalLink({ armyCode, armyLink }: { armyCode: string; armyLink?: string }) {
   if (armyLink) {
-    return <a href={armyLink} rel="noreferrer" target="_blank">View in Infinity Army</a>
+    return <InfinityArmyLink armyCode={armyCode} href={armyLink}>View in Infinity Army</InfinityArmyLink>
   }
   const target = getInfinityArmyTarget(armyCode)
 
   if (target.status === 'available') {
     return (
-      <a href={target.href} rel="noreferrer" target="_blank">
+      <InfinityArmyLink armyCode={armyCode} href={target.href}>
         View in Infinity Army
-      </a>
+      </InfinityArmyLink>
     )
   }
 

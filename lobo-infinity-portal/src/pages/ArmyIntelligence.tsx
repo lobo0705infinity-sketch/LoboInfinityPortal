@@ -2,6 +2,7 @@ import { type KeyboardEvent, type ReactNode, useCallback, useEffect, useMemo, us
 import { useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import InteractiveMetricCard from '../components/InteractiveMetricCard'
+import InfinityArmyLink from '../components/InfinityArmyLink'
 import Skeleton from '../components/Skeleton'
 import lieutenantOrderReference from '../../docs/mockups/lieutenant-order-reference.png'
 import { CANONICAL_ARMY_REGISTRY } from '../config/armies'
@@ -1639,9 +1640,9 @@ function ArmyIntelligenceOpenList({ armyCode }: { armyCode: string }) {
 
   if (target.status === 'available') {
     return (
-      <a href={target.href} rel="noreferrer" target="_blank">
+      <InfinityArmyLink armyCode={armyCode} href={target.href}>
         Open List
-      </a>
+      </InfinityArmyLink>
     )
   }
 
