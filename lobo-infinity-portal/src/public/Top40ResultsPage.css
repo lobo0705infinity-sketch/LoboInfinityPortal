@@ -1,0 +1,231 @@
+.top40-results-page {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+  overflow-x: clip;
+}
+
+.top40-results-hero {
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  border-color: rgba(193, 146, 66, 0.34);
+  border-radius: 12px;
+  background: #090a08;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(193, 49, 64, 0.1);
+}
+
+.top40-results-hero img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.top40-results-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.top40-results-summary article {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+  padding: 1rem;
+}
+
+.top40-results-summary span {
+  color: var(--text-muted, #9eabb3);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.top40-results-summary strong {
+  font-size: clamp(1.45rem, 3vw, 2rem);
+}
+
+.top40-results-panel {
+  min-width: 0;
+  padding: clamp(1rem, 2vw, 1.4rem);
+}
+
+.top40-results-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.top40-results-heading h1 {
+  margin: 0.2rem 0 0;
+}
+
+.top40-results-filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.top40-results-filters label {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.top40-results-filters label span {
+  color: var(--text-muted, #9eabb3);
+  font-size: 0.7rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.top40-results-filters select,
+.top40-results-filters input {
+  max-width: 100%;
+  min-height: 42px;
+  padding: 0.55rem 0.7rem;
+  color: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 0.55rem;
+  background: rgba(4, 10, 14, 0.82);
+}
+
+.top40-results-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.top40-result-card {
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 0.75rem;
+  background: rgba(4, 10, 14, 0.68);
+}
+
+.top40-result-card header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 0.85rem;
+  background: rgba(193, 146, 66, 0.09);
+}
+
+.top40-result-card header div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.75rem;
+}
+
+.top40-result-card header span {
+  color: #d6b36b;
+}
+
+.top40-result-card header a {
+  flex: 0 0 auto;
+}
+
+.top40-result-matchup {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.top40-result-matchup > div {
+  display: grid;
+  min-width: 0;
+  gap: 0.2rem;
+}
+
+.top40-result-matchup > div:last-child {
+  text-align: right;
+}
+
+.top40-result-matchup span {
+  color: var(--text-muted, #9eabb3);
+  overflow-wrap: anywhere;
+}
+
+.top40-result-versus {
+  color: #d6b36b !important;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.top40-result-details {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.top40-result-details div {
+  min-width: 0;
+  padding: 0.7rem 0.85rem;
+}
+
+.top40-result-details dt {
+  color: var(--text-muted, #9eabb3);
+  font-size: 0.68rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.top40-result-details dd {
+  margin: 0.2rem 0 0;
+  overflow-wrap: anywhere;
+  font-weight: 700;
+}
+
+.top40-results-empty {
+  padding: clamp(2rem, 6vw, 4rem) 1rem;
+  text-align: center;
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  border-radius: 0.75rem;
+}
+
+.top40-results-empty h2 {
+  margin-top: 0;
+}
+
+.top40-results-empty p {
+  max-width: 50ch;
+  margin: 0 auto;
+  color: var(--text-muted, #9eabb3);
+}
+
+@media (max-width: 720px) {
+  .top40-results-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .top40-results-heading,
+  .top40-results-filters {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .top40-results-filters label,
+  .top40-results-filters select,
+  .top40-results-filters input {
+    width: 100%;
+  }
+
+  .top40-result-card header {
+    align-items: flex-start;
+  }
+
+  .top40-result-matchup {
+    gap: 0.55rem;
+    padding-inline: 0.75rem;
+  }
+
+  .top40-result-details {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

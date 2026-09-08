@@ -9,6 +9,7 @@ import SnapshotArmyIntelligence from './SnapshotArmyIntelligence'
 import Top40RulesPage from '../components/Top40RulesPage'
 import Top40RegistrationPage from '../components/Top40RegistrationPage'
 import Top40BracketPage from '../components/Top40BracketPage'
+import Top40ResultsPage from './Top40ResultsPage'
 import teamTournamentStandingsHero from '../assets/team-tournament-standings-hero.png'
 import { resolvePlayerProfileHero, type PlayerProfileHeroArtwork } from '../config/playerProfileHeroArtwork'
 import { CANONICAL_ARMY_REGISTRY } from '../config/armies'
@@ -59,6 +60,7 @@ export default function SnapshotPublicApp() {
     <Route path="/event/event-lobo-s-american-top-40/rules" element={<Top40RulesPage />} />
     <Route path="/event/event-lobo-s-american-top-40/registration" element={<Top40RegistrationPage />} />
     <Route path="/event/event-lobo-s-american-top-40/bracket" element={<Top40BracketPage />} />
+    <Route path="/event/event-lobo-s-american-top-40/results" element={<Top40ResultsPage />} />
     <Route path="/event/event-august-2026-team-tournament/registration" element={<Navigate replace to="/event/event-august-2026-team-tournament" />} />
     <Route path="/event/event-august-2026-team-tournament/tournament/registration" element={<Navigate replace to="/event/event-august-2026-team-tournament" />} />
     <Route path="/event/:eventId/teams" element={<TeamTournamentTeamsRedirect />} />
