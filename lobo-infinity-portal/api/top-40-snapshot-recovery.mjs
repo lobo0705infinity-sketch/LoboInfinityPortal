@@ -12,5 +12,6 @@ export default async function handler(request, response) {
     method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded;charset=UTF-8' }, body, redirect: 'follow',
   })
   const text = await upstream.text()
+  console.log('TOP40_RECOVERY_RESULT', text)
   response.status(upstream.ok ? 200 : 502).json({ success: upstream.ok, upstreamStatus: upstream.status, payload: JSON.parse(text) })
 }
