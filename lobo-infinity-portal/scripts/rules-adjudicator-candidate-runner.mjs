@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { evaluateRulesAnswers } from './rules-adjudicator-evaluate.mjs'
+import { assertRulesModelEvaluationAllowed } from './rules-adjudicator-model-gate.mjs'
 
 const root = new URL('../', import.meta.url)
 const args = new Set(process.argv.slice(2))
@@ -35,14 +36,9 @@ if (mock) {
     mode: 'AUDITED_REFERENCE_MOCK',
   }))
 } else {
-  if (process.env.ALLOW_PAID_RULES_BENCHMARK !== 'I_UNDERSTAND_THIS_COSTS_MONEY') {
-    throw new Error('Paid benchmark blocked. Set ALLOW_PAID_RULES_BENCHMARK=I_UNDERSTAND_THIS_COSTS_MONEY only after explicitly approving the cost.')
-  }
   const maximumArgument = process.argv.slice(2).find((value) => value.startsWith('--max-cases='))
   const maximum = Number(maximumArgument?.slice('--max-cases='.length))
-  if (!Number.isInteger(maximum) || maximum < 1 || maximum > 100) {
-    throw new Error('Live mode requires an explicit --max-cases=1..100 limit.')
-  }
+  assertRulesModelEvaluationAllowed({ benchmark, live: true, maximum })
   if (!process.env.DEEPSEEK_API_KEY) throw new Error('Live mode requires DEEPSEEK_API_KEY.')
   const { createDeepSeekRulesAnswer } = await import('../bot/deepseek-rules.mjs')
   const corpus = { manifest, chunks: index.chunks }
