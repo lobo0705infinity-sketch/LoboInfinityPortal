@@ -1438,7 +1438,7 @@
       "approvedCitations": [],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
-      "draftAnswer": "No. Repeaters do not daisy-chain their Zones of Control. A Hacker's Hacking Area consists of the Hacker's own Zone of Control plus the Zones of Control of allied Repeaters and Deployable Repeaters. Each Repeater contributes its own Zone; being inside one Repeater does not cause another Repeater's Zone to be relayed through it.",
+      "draftAnswer": "No daisy-chain is created or needed. A Hacker's Hacking Area directly includes the Hacker's own Zone of Control and the Zones of Control of every allied Repeater and Deployable Repeater. Each Repeater contributes only its own Zone; placing one Repeater inside another Repeater's Zone does not relay or extend that second Zone farther.",
       "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
       "draftCitations": [
         {
@@ -1456,7 +1456,7 @@
       "id": "two_rule_interaction-06",
       "question": "Can a Repeater extend the Hacking Area through another Repeater?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
+      "semanticAuditBasis": "Confirmed against the N5.3 Hacking Area definition and Repeater effects: every allied Repeater contributes its own ZoC directly, with no recursive relay rule.",
       "semanticAuditDate": "2026-09-07",
       "semanticAuditStatus": "PASSED",
       "answerContract": {
@@ -1671,8 +1671,8 @@
       "approvedCitations": [],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
-      "draftAnswer": "Only if the Camouflaged Marker is legally affected and is forced to make a Saving Roll. You normally cannot choose a Camouflaged Marker as an Attack target without a rule such as Intuitive Attack. However, if a legal Direct Template Attack also affects the Marker and forces a Saving Roll, Camouflaged State is canceled for the entire Order.",
-      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "draftAnswer": "Only if the Camouflaged Marker is legally affected and the Attack forces a Saving Roll. You normally cannot choose a Camouflaged Marker as an Attack target without a rule such as Intuitive Attack, but it may be indirectly affected by a Template aimed at a valid non-Camouflaged Main Target. When that legal Template Attack forces the Marker to make a Saving Roll, Camouflaged State is canceled for the entire Order.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
       "draftCitations": [
         {
           "page": 45,
@@ -1693,13 +1693,18 @@
           "page": 158,
           "section": "CAMOUFLAGED STATE — CANCELLATION",
           "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 3,
+          "section": "STATES FAQ",
+          "sourceId": "infinity-faq-n5-v0.1"
         }
       ],
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-10",
       "question": "Does a Direct Template Weapon cancel Camouflaged State?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
+      "semanticAuditBasis": "Confirmed against the N5.3 Camouflaged State restrictions/cancellation clauses and the current FAQ ruling for a BS Attack that forces a Camouflaged Marker to make a Saving Roll.",
       "semanticAuditDate": "2026-09-07",
       "semanticAuditStatus": "PASSED",
       "answerContract": {
