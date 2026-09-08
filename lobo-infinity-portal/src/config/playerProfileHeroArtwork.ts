@@ -6,12 +6,17 @@ export type PlayerProfileHeroArtwork = {
 }
 
 const HERO_BASE_PATH = '/assets/player-profile-heroes/'
+const HERO_ASSET_VERSION = '011fb9ba08fb'
+
+function getHeroAssetUrl(file: string) {
+  return `${HERO_BASE_PATH}${file}?v=${HERO_ASSET_VERSION}`
+}
 
 const NO_ARMY_HERO: PlayerProfileHeroArtwork = {
   alt: 'Player Profile — no preferred army selected',
   army: 'No Army Selected',
   kind: 'no-army',
-  src: `${HERO_BASE_PATH}no-army.png`,
+  src: getHeroAssetUrl('no-army.png'),
 }
 
 const canonicalHeroFiles = {
@@ -95,6 +100,6 @@ export function resolvePlayerProfileHero(
     alt: `Player Profile — preferred army: ${canonicalArmy}`,
     army: canonicalArmy,
     kind: 'army',
-    src: `${HERO_BASE_PATH}${file}`,
+    src: getHeroAssetUrl(file),
   }
 }

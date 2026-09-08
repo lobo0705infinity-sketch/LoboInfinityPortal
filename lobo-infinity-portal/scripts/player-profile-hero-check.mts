@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { createHash } from 'node:crypto'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { createServer } from 'vite'
-import { chromium, type Page } from 'playwright'
+import { chromium, type Browser, type Page } from 'playwright'
 import {
   PLAYER_PROFILE_HERO_CANONICAL_ARMIES,
   resolvePlayerProfileHero,
@@ -34,13 +34,13 @@ const expected = new Map<string, string>([
 
 for (const [army, file] of expected) {
   const hero = resolvePlayerProfileHero(army)
-  assert.equal(hero?.src, `/assets/player-profile-heroes/${file}`, `${army} mapping`)
+  assert.equal(hero?.src, `/assets/player-profile-heroes/${file}?v=011fb9ba08fb`, `${army} mapping`)
   assert.equal(hero?.kind, 'army', `${army} is an army hero`)
 }
 
 for (const value of ['No Army Selected', '', '   ', null, undefined]) {
   const hero = resolvePlayerProfileHero(value)
-  assert.equal(hero?.src, '/assets/player-profile-heroes/no-army.png')
+  assert.equal(hero?.src, '/assets/player-profile-heroes/no-army.png?v=011fb9ba08fb')
   assert.equal(hero?.kind, 'no-army')
 }
 assert.equal(resolvePlayerProfileHero('Unknown Expeditionary Command'), null)
@@ -48,15 +48,23 @@ assert.equal(resolvePlayerProfileHero('Unknown Expeditionary Command'), null)
 const assets = readdirSync(assetDirectory).filter((file) => file.endsWith('.png')).sort()
 assert.equal(assets.length, 46)
 const reachableFiles = new Set([
-  ...PLAYER_PROFILE_HERO_CANONICAL_ARMIES.map((army) => resolvePlayerProfileHero(army)?.src.split('/').pop()),
-  resolvePlayerProfileHero(null)?.src.split('/').pop(),
+  ...PLAYER_PROFILE_HERO_CANONICAL_ARMIES.map((army) => resolvePlayerProfileHero(army)?.src.split('/').pop()?.split('?')[0]),
+  resolvePlayerProfileHero(null)?.src.split('/').pop()?.split('?')[0],
 ])
 assert.deepEqual(assets.filter((file) => !reachableFiles.has(file)), [], 'every approved asset is reachable')
 for (const file of assets) assert.equal(existsSync(new URL(file, assetDirectory)), true)
 assert.equal(
   createHash('sha256').update(readFileSync(new URL('military-orders-43f4197b.png', assetDirectory))).digest('hex').toUpperCase(),
-  '43F4197B711C7576A125D50990D828B5D12CA254A9842E4B6171550C94E74C51',
-  'Military Orders must resolve to the newly approved Player Profile artwork bytes',
+  'C116BADABBA5699BC8FC823A5C3E1F33EBAB8486D65F8AEC94057AA92C7DA389',
+  'Military Orders must resolve to the current approved Player Profile artwork bytes',
+)
+const artworkCorpusRows = assets.map((file) =>
+  `${file}:${createHash('sha256').update(readFileSync(new URL(file, assetDirectory))).digest('hex').toUpperCase()}`,
+)
+assert.equal(
+  createHash('sha256').update(artworkCorpusRows.join('\n')).digest('hex').toUpperCase(),
+  '011FB9BA08FB6FEB1950AC782B09CD9EFA9B3B825CB2A907CC0D29C2CE11A143',
+  'Every Player Profile artwork file must match the approved source corpus.',
 )
 
 const canonicalWithoutArtwork = CANONICAL_ARMY_REGISTRY
@@ -74,8 +82,9 @@ const publicAppSource = readFileSync(new URL('../src/public/SnapshotPublicApp.ts
 assert.match(publicAppSource, /resolvePlayerProfileHero\(p\.preferredArmy\)/)
 assert.doesNotMatch(publicAppSource, /resolvePlayerProfileHero\([^)]*(favoriteFaction|armyUsage|history)/)
 
-await verifyRenderedProfiles()
-console.log(`Player Profile hero regression passed (${assets.length} assets; ${PLAYER_PROFILE_HERO_CANONICAL_ARMIES.length} army mappings).`)
+const sourceOnly = process.argv.includes('--source-only')
+if (!sourceOnly) await verifyRenderedProfiles()
+console.log(`Player Profile hero ${sourceOnly ? 'source audit' : 'regression'} passed (${assets.length} assets; ${PLAYER_PROFILE_HERO_CANONICAL_ARMIES.length} army mappings).`)
 
 async function verifyRenderedProfiles() {
   const server = await createServer({ mode: 'production', server: { host: '127.0.0.1', port: 4186, strictPort: false } })
@@ -84,14 +93,13 @@ async function verifyRenderedProfiles() {
   const port = typeof address === 'object' && address ? address.port : 4186
   const browser = await chromium.launch({ headless: true })
   try {
-    await verifyProfile(browser.newPage({ viewport: { width: 1280, height: 900 } }), port, 'ALEPH', 'aleph.png')
-    await verifyProfile(browser.newPage({ viewport: { width: 1024, height: 900 } }), port, 'Tartary Army Corps', 'tartary-army-korps.png')
-    await verifyProfile(browser.newPage({ viewport: { width: 1280, height: 900 } }), port, 'Military Orders', 'military-orders-43f4197b.png')
-    await verifyProfile(browser.newPage({ viewport: { width: 390, height: 844 } }), port, 'No Army Selected', 'no-army.png')
+    for (const preferredArmy of [...PLAYER_PROFILE_HERO_CANONICAL_ARMIES, 'No Army Selected']) {
+      await verifyProfileAtBothViewports(browser, port, preferredArmy)
+    }
     const failedPage = await browser.newPage({ viewport: { width: 1280, height: 900 } })
     await mockSnapshot(failedPage, 'ALEPH')
-    await failedPage.route('**/assets/player-profile-heroes/aleph.png', (route) => route.abort())
-    await failedPage.goto(`http://127.0.0.1:${port}/players/Test%20Pilot`, { waitUntil: 'networkidle' })
+    await failedPage.route('**/assets/player-profile-heroes/aleph.png*', (route) => route.abort())
+    await failedPage.goto(`http://127.0.0.1:${port}/players/Test%20Pilot`, { waitUntil: 'commit' })
     await failedPage.waitForSelector('.snapshot-player-profile-fallback')
     assert.equal(await failedPage.locator('.snapshot-player-profile-hero img').count(), 0)
     assert.equal(await failedPage.getByRole('heading', { name: 'Test Pilot' }).count(), 1)
@@ -102,17 +110,29 @@ async function verifyRenderedProfiles() {
   }
 }
 
+async function verifyProfileAtBothViewports(browser: Browser, port: number, preferredArmy: string) {
+  const artwork = resolvePlayerProfileHero(preferredArmy)
+  assert.ok(artwork, `${preferredArmy} must resolve Player Profile artwork`)
+  const file = artwork.src.split('/').pop()?.split('?')[0] ?? ''
+  const desktop = await verifyProfile(browser.newPage({ viewport: { width: 1280, height: 900 } }), port, preferredArmy, file)
+  const mobile = await verifyProfile(browser.newPage({ viewport: { width: 390, height: 844 } }), port, preferredArmy, file)
+  assert.equal(mobile.currentSrc, desktop.currentSrc, `${preferredArmy} desktop/mobile URL`)
+  assert.equal(mobile.sha256, desktop.sha256, `${preferredArmy} desktop/mobile bytes`)
+}
+
 async function verifyProfile(pagePromise: Promise<Page>, port: number, preferredArmy: string, file: string) {
   const page = await pagePromise
   await mockSnapshot(page, preferredArmy)
-  await page.goto(`http://127.0.0.1:${port}/players/Test%20Pilot`, { waitUntil: 'networkidle' })
+  await page.goto(`http://127.0.0.1:${port}/players/Test%20Pilot`, { waitUntil: 'commit' })
   const image = page.locator('.snapshot-player-profile-hero img')
   try {
     await image.waitFor({ timeout: 10_000 })
   } catch {
     throw new Error(`Player Profile hero did not render:\n${await page.locator('body').innerText()}`)
   }
-  assert.match(await image.getAttribute('src') ?? '', new RegExp(`${file.replace('.', '\\.')}$$`))
+  const expectedUrl = `/assets/player-profile-heroes/${file}?v=011fb9ba08fb`
+  assert.equal(await image.getAttribute('src'), expectedUrl)
+  assert.equal(await image.evaluate((element) => (element as HTMLImageElement).currentSrc), `http://127.0.0.1:${port}${expectedUrl}`)
   assert.equal(await page.getByRole('heading', { name: 'Test Pilot' }).count(), 1)
   assert.equal(await page.getByText('Game History', { exact: true }).count(), 1)
   assert.equal(await page.getByText('8-2-1', { exact: true }).count(), 1)
@@ -120,6 +140,7 @@ async function verifyProfile(pagePromise: Promise<Page>, port: number, preferred
     const img = document.querySelector('.snapshot-player-profile-hero img') as HTMLImageElement
     return {
       complete: img.complete && img.naturalWidth > 0,
+      currentSrc: img.currentSrc,
       objectFit: getComputedStyle(img).objectFit,
       overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
       ratio: img.getBoundingClientRect().width / img.getBoundingClientRect().height,
@@ -129,7 +150,14 @@ async function verifyProfile(pagePromise: Promise<Page>, port: number, preferred
   assert.equal(layout.objectFit, 'contain')
   assert.equal(layout.overflow, false)
   assert.ok(Math.abs(layout.ratio - 1670 / 942) < 0.02)
+  const response = await page.request.get(layout.currentSrc)
+  assert.equal(response.ok(), true)
+  const result = {
+    currentSrc: layout.currentSrc,
+    sha256: createHash('sha256').update(await response.body()).digest('hex').toUpperCase(),
+  }
   await page.close()
+  return result
 }
 
 async function mockSnapshot(page: Page, preferredArmy: string) {
