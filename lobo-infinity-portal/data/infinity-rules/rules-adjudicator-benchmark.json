@@ -36,8 +36,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Mimetism imposes the Unit Profile's listed negative MOD, normally -3 or -6, on enemy BS Attacks that require LoF and on Discover Rolls against the user. It does not apply to CC Attacks.",
+      "approvedCitations": [
+        {
+          "page": 102,
+          "section": "MIMETISM",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "DIRECT_DEFINITION",
       "draftAnswer": "Mimetism imposes the Unit Profile's listed negative MOD, normally -3 or -6, on enemy BS Attacks that require LoF and on Discover Rolls against the user. It does not apply to CC Attacks.",
@@ -52,10 +58,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "direct_definition-01",
       "question": "What does Mimetism do?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -85,8 +95,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Dodge is a Short Skill/ARO using PH. It can oppose enemy Attacks in a Face to Face Roll; if successful, it can also provide Dodge movement and a change of facing, subject to the Skill's movement rules.",
+      "approvedCitations": [
+        {
+          "page": 79,
+          "section": "DODGE",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "DIRECT_DEFINITION",
       "draftAnswer": "Dodge is a Short Skill/ARO using PH. It can oppose enemy Attacks in a Face to Face Roll; if successful, it can also provide Dodge movement and a change of facing, subject to the Skill's movement rules.",
@@ -101,10 +117,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "direct_definition-02",
       "question": "What does Dodge do?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -142,8 +162,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Stealth functions during the user's Active Turn. Cautious Movement, Idle, and Basic Short Skills with the Movement Label suppress AROs from enemies that lack LoF; declaring another Skill grants AROs normally. Stealth is ineffective against Sixth Sense.",
+      "approvedCitations": [
+        {
+          "page": 112,
+          "section": "STEALTH",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "DIRECT_DEFINITION",
       "draftAnswer": "Stealth functions during the user's Active Turn. Cautious Movement, Idle, and Basic Short Skills with the Movement Label suppress AROs from enemies that lack LoF; declaring another Skill grants AROs normally. Stealth is ineffective against Sixth Sense.",
@@ -158,10 +184,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "direct_definition-03",
       "question": "What does Stealth do?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -199,8 +229,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Sixth Sense lets a Trooper respond to Attacks directed at it from outside its LoF, using a 360-degree LoF arc for that response. It ignores the -6 MOD from the resulting Poor Visibility Zone when targeted by a BS Attack through a Zero Visibility Zone. When declaring Dodge or Reset, it also ignores negative MODs except the listed Immobilized-A, Immobilized-B, and Isolated penalties. Enemy Stealth is ineffective against it.",
+      "approvedCitations": [
+        {
+          "page": 111,
+          "section": "SIXTH SENSE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 112,
+          "section": "STEALTH",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "DIRECT_DEFINITION",
       "draftAnswer": "Sixth Sense lets a Trooper respond to Attacks directed at it from outside its LoF, using a 360-degree LoF arc for that response. It ignores the -6 MOD from the resulting Poor Visibility Zone when targeted by a BS Attack through a Zero Visibility Zone. When declaring Dodge or Reset, it also ignores negative MODs except the listed Immobilized-A, Immobilized-B, and Isolated penalties. Enemy Stealth is ineffective against it.",
@@ -220,10 +261,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "direct_definition-04",
       "question": "What does Sixth Sense do?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -259,8 +304,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "MSV1 reduces Mimetism (-3) and Low Visibility MODs to 0; reduces Mimetism (-6) and Poor Visibility MODs to -3; and permits LoF through Zero Visibility at -6. It does not make Face to Face Rolls against Smoke Ammunition.",
+      "approvedCitations": [
+        {
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 1",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "DIRECT_DEFINITION",
       "draftAnswer": "MSV1 reduces Mimetism (-3) and Low Visibility MODs to 0; reduces Mimetism (-6) and Poor Visibility MODs to -3; and permits LoF through Zero Visibility at -6. It does not make Face to Face Rolls against Smoke Ammunition.",
@@ -275,10 +326,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "direct_definition-05",
       "question": "What does Multispectral Visor Level 1 do?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -314,8 +369,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "MSV2 reduces Mimetism and Visibility Zone MODs to 0, allows LoF through Visibility Zones without their MODs, and does not make Face to Face Rolls against Smoke Ammunition.",
+      "approvedCitations": [
+        {
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 2",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "DIRECT_DEFINITION",
       "draftAnswer": "MSV2 reduces Mimetism and Visibility Zone MODs to 0, allows LoF through Visibility Zones without their MODs, and does not make Face to Face Rolls against Smoke Ammunition.",
@@ -330,10 +391,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "direct_definition-06",
       "question": "What does Multispectral Visor Level 2 do?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -372,8 +437,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "MSV3 includes MSV2's Mimetism and Visibility benefits, automatically succeeds at Discover against Camouflaged targets, ignores specified Surprise Attack MODs, and can BS Attack a Camouflaged Marker in LoF during the Active Turn without first Discovering it, while applying the Marker’s Mimetism.",
+      "approvedCitations": [
+        {
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 3",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "DIRECT_DEFINITION",
       "draftAnswer": "MSV3 includes MSV2's Mimetism and Visibility benefits, automatically succeeds at Discover against Camouflaged targets, ignores specified Surprise Attack MODs, and can BS Attack a Camouflaged Marker in LoF during the Active Turn without first Discovering it, while applying the Marker’s Mimetism.",
@@ -388,10 +459,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "direct_definition-07",
       "question": "What does Multispectral Visor Level 3 do?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -430,8 +505,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Zero Pain is a Comms Attack that rolls two WIP dice in a Face to Face Roll to evade all enemy Comms Attacks, applies -3 WIP to those enemy Comms Attacks, and nullifies the Attack if either Zero Pain Roll wins. It has Burst 2 in ARO.",
+      "approvedCitations": [
+        {
+          "page": 61,
+          "section": "ZERO PAIN",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "DIRECT_DEFINITION",
       "draftAnswer": "Zero Pain is a Comms Attack that rolls two WIP dice in a Face to Face Roll to evade all enemy Comms Attacks, applies -3 WIP to those enemy Comms Attacks, and nullifies the Attack if either Zero Pain Roll wins. It has Burst 2 in ARO.",
@@ -446,10 +527,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "direct_definition-08",
       "question": "What does Zero Pain do?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -486,8 +571,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "A Repeater extends the Hacking Area of every Hacker in the same Army List. A Hacker inside an enemy Repeater's Zone of Control may use that Repeater to attack enemy Hackers, applying Firewall (-3); opponents react to the Hacker, not to the Repeater being used.",
+      "approvedCitations": [
+        {
+          "page": 56,
+          "section": "REPEATER",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "DIRECT_DEFINITION",
       "draftAnswer": "A Repeater extends the Hacking Area of every Hacker in the same Army List. A Hacker inside an enemy Repeater's Zone of Control may use that Repeater to attack enemy Hackers, applying Firewall (-3); opponents react to the Hacker, not to the Repeater being used.",
@@ -502,10 +593,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "direct_definition-09",
       "question": "What does a Repeater do?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -535,8 +630,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Firewall imposes its listed negative WIP MOD on an enemy declaring a Comms Attack against the protected Trooper and gives that Trooper +3 to Saving Rolls against the Comms Attack. Only one Firewall applies.",
+      "approvedCitations": [
+        {
+          "page": 55,
+          "section": "FIREWALL",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "DIRECT_DEFINITION",
       "draftAnswer": "Firewall imposes its listed negative WIP MOD on an enemy declaring a Comms Attack against the protected Trooper and gives that Trooper +3 to Saving Rolls against the Comms Attack. Only one Firewall applies.",
@@ -551,10 +652,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "direct_definition-10",
       "question": "What does Firewall do?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -597,8 +702,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Discover requires LoF and a Normal WIP Roll with applicable BS-Attack-style MODs such as Cover, Range, and Mimetism. Success replaces the Marker with its represented Model or Token; failure prevents that Trooper from attempting to Discover the same Marker again until the next Player Turn.",
+      "approvedCitations": [
+        {
+          "page": 77,
+          "section": "DISCOVER",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "DIRECT_DEFINITION",
       "draftAnswer": "Discover requires LoF and a Normal WIP Roll with applicable BS-Attack-style MODs such as Cover, Range, and Mimetism. Success replaces the Marker with its represented Model or Token; failure prevents that Trooper from attempting to Discover the same Marker again until the next Player Turn.",
@@ -613,10 +724,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "direct_definition-11",
       "question": "What does Discover do?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -653,8 +768,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Suppressive Fire is a Long Skill that places the user in Suppressive Fire State with a suitable weapon. In that State it uses the weapon's SF profile, provides B3 in ARO against one target, and imposes -3 on enemies in Face to Face Rolls within 24 inches; the State has specific cancellation conditions.",
+      "approvedCitations": [
+        {
+          "page": 85,
+          "section": "SUPPRESSIVE FIRE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 171,
+          "section": "SUPPRESSIVE FIRE STATE",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "DIRECT_DEFINITION",
       "draftAnswer": "Suppressive Fire is a Long Skill that places the user in Suppressive Fire State with a suitable weapon. In that State it uses the weapon's SF profile, provides B3 in ARO against one target, and imposes -3 on enemies in Face to Face Rolls within 24 inches; the State has specific cancellation conditions.",
@@ -674,10 +800,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "direct_definition-12",
       "question": "What does Suppressive Fire do?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -713,8 +843,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Combat Jump keeps the Trooper off-table until activated, then permits deployment onto a valid horizontal surface followed by a PH Roll. A success leaves it at the chosen landing point; a failure invokes the Skill's failed-deployment procedure.",
+      "approvedCitations": [
+        {
+          "page": 89,
+          "section": "COMBAT JUMP",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "DIRECT_DEFINITION",
       "draftAnswer": "Combat Jump keeps the Trooper off-table until activated, then permits deployment onto a valid horizontal surface followed by a PH Roll. A success leaves it at the chosen landing point; a failure invokes the Skill's failed-deployment procedure.",
@@ -729,10 +865,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "direct_definition-13",
       "question": "What does Combat Jump do?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -775,8 +915,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Hidden Deployment lets a Trooper deploy without placing a Model or Marker, using a secretly recorded position and state. The Trooper is not considered on the table and normally contributes no Order until revealed; once canceled, Hidden Deployment cannot be regained.",
+      "approvedCitations": [
+        {
+          "page": 95,
+          "section": "HIDDEN DEPLOYMENT",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 161,
+          "section": "HIDDEN DEPLOYMENT STATE",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "DIRECT_DEFINITION",
       "draftAnswer": "Hidden Deployment lets a Trooper deploy without placing a Model or Marker, using a secretly recorded position and state. The Trooper is not considered on the table and normally contributes no Order until revealed; once canceled, Hidden Deployment cannot be regained.",
@@ -796,10 +947,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "direct_definition-14",
       "question": "What does Hidden Deployment do?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -835,8 +990,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Nanoscreen applies -3 to BS Attack Rolls against its user and +3 to the user's Saving Rolls against BS Attacks. These MODs do not apply to Comms Attacks, and Nanoscreen cannot be used against CC Attacks.",
+      "approvedCitations": [
+        {
+          "page": 125,
+          "section": "NANOSCREEN",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "DIRECT_DEFINITION",
       "draftAnswer": "Nanoscreen applies -3 to BS Attack Rolls against its user and +3 to the user's Saving Rolls against BS Attacks. These MODs do not apply to Comms Attacks, and Nanoscreen cannot be used against CC Attacks.",
@@ -851,10 +1012,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "direct_definition-15",
       "question": "What does Nanoscreen do?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -883,8 +1048,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "N5.3 does not define a Skill named Total Immunity. The applicable rule is the specific Immunity listed on the Unit Profile, such as Immunity (ARM), (BTS), or (Enhanced); its exact effects depend on that listed type.",
+      "approvedCitations": [
+        {
+          "page": 96,
+          "section": "IMMUNITY AND CRITICAL HITS",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "DIRECT_DEFINITION",
       "draftAnswer": "N5.3 does not define a Skill named Total Immunity. The applicable rule is the specific Immunity listed on the Unit Profile, such as Immunity (ARM), (BTS), or (Enhanced); its exact effects depend on that listed type.",
@@ -899,10 +1070,14 @@
       "draftConclusion": "UNRESOLVED",
       "id": "direct_definition-16",
       "question": "What does Total Immunity do?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Confirmed against the N5.3 Immunity terminology and weapon/ammunition entries; legacy or incomplete names must not be converted into an unsupported ruling.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "UNRESOLVED",
+      "approvedCertainty": "SAFE ESCALATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -938,8 +1113,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Marksmanship applies when the user declares a BS Attack and allows the user to ignore the negative BS MODs imposed by Partial Cover and Nanoscreen. It does not remove every effect of Cover or every other attack MOD.",
+      "approvedCitations": [
+        {
+          "page": 100,
+          "section": "MARKSMANSHIP",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "DIRECT_DEFINITION",
       "draftAnswer": "Marksmanship applies when the user declares a BS Attack and allows the user to ignore the negative BS MODs imposed by Partial Cover and Nanoscreen. It does not remove every effect of Cover or every other attack MOD.",
@@ -954,10 +1135,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "direct_definition-17",
       "question": "What does Marksmanship do?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -1000,8 +1185,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Sensor makes a Normal WIP+6 Roll, without Range or Mimetism MODs and without requiring LoF, to Discover all Hidden Deployment and Camouflaged enemies and deployables inside the user's Zone of Control. It also grants +6 to ordinary Discover against Camouflage Markers and prevents enemies regaining Camouflaged State inside that Zone of Control.",
+      "approvedCitations": [
+        {
+          "page": 111,
+          "section": "SENSOR",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "DIRECT_DEFINITION",
       "draftAnswer": "Sensor makes a Normal WIP+6 Roll, without Range or Mimetism MODs and without requiring LoF, to Discover all Hidden Deployment and Camouflaged enemies and deployables inside the user's Zone of Control. It also grants +6 to ordinary Discover against Camouflage Markers and prevents enemies regaining Camouflaged State inside that Zone of Control.",
@@ -1016,10 +1207,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "direct_definition-18",
       "question": "What does Sensor do?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -1056,8 +1251,24 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Spotlight is a Short Skill/ARO Hacking Program with Burst 2, no Attack MOD, PS 5, AP and Non-Lethal traits. A successful effect places the target in Targeted State.",
+      "approvedCitations": [
+        {
+          "page": 58,
+          "section": "HACKING PROGRAMS CHART — SPOTLIGHT",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 60,
+          "section": "COMBAT",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 171,
+          "section": "TARGETED STATE",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "DIRECT_DEFINITION",
       "draftAnswer": "Spotlight is a Short Skill/ARO Hacking Program with Burst 2, no Attack MOD, PS 5, AP and Non-Lethal traits. A successful effect places the target in Targeted State.",
@@ -1082,10 +1293,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "direct_definition-19",
       "question": "What does Spotlight do?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -1128,8 +1343,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "A qualifying Trooper that survives a successful Attack makes one Normal WIP Guts Roll at the end of the Order. Success holds position; the player may instead choose to fail, and a failed Roll requires the first available retreat response: leave the danger or LoF, gain better Cover, or go Prone, subject to the full movement rules.",
+      "approvedCitations": [
+        {
+          "page": 38,
+          "section": "GUTS ROLL",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "DIRECT_DEFINITION",
       "draftAnswer": "A qualifying Trooper that survives a successful Attack makes one Normal WIP Guts Roll at the end of the Order. Success holds position; the player may instead choose to fail, and a failed Roll requires the first available retreat response: leave the danger or LoF, gain better Cover, or go Prone, subject to the full movement rules.",
@@ -1144,10 +1365,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "direct_definition-20",
       "question": "What does Guts Roll do?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -1188,8 +1413,24 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "No. Zero Pain does not suffer Firewall itself. Zero Pain imposes a −3 WIP MOD on the enemy Comms Attacks it opposes; Firewall likewise applies its MOD to an enemy Comms Attack made against the protected Trooper. When an enemy Hacker attacks through your Repeater, that attacking Hacker's Comms Attack receives the applicable Firewall MOD—the Zero Pain user's own Roll does not.",
+      "approvedCitations": [
+        {
+          "page": 55,
+          "section": "FIREWALLS",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 56,
+          "section": "REPEATER",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 61,
+          "section": "ZERO PAIN",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": {
         "expectedConclusion": "INTERPRETATION",
         "expectedCoreResult": "Zero Pain's own Roll does not take the Firewall MOD; Firewall modifies the enemy Comms Attack against the protected Trooper.",
@@ -1223,10 +1464,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-01",
       "question": "Does Zero Pain suffer the Firewall MOD when used through an enemy Repeater?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -1256,8 +1501,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "No. MSV1 reduces Mimetism (−6) to −3; it does not reduce it to 0. MSV1 reduces only Mimetism (−3) to 0.",
+      "approvedCitations": [
+        {
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 1",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
       "draftAnswer": "No. MSV1 reduces Mimetism (−6) to −3; it does not reduce it to 0. MSV1 reduces only Mimetism (−3) to 0.",
@@ -1272,10 +1523,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-02",
       "question": "Does MSV1 ignore Mimetism (-6)?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -1298,8 +1553,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Partly. When the Marksmanship user declares a BS Attack, it may ignore the −3 BS Attack MOD imposed by Partial Cover. The target still receives Partial Cover's +3 Saving Roll MOD; Marksmanship does not say to ignore that protection.",
+      "approvedCitations": [
+        {
+          "page": 41,
+          "section": "COVER",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 100,
+          "section": "MARKSMANSHIP",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
       "draftAnswer": "Partly. When the Marksmanship user declares a BS Attack, it may ignore the −3 BS Attack MOD imposed by Partial Cover. The target still receives Partial Cover's +3 Saving Roll MOD; Marksmanship does not say to ignore that protection.",
@@ -1319,10 +1585,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-03",
       "question": "Does Marksmanship ignore Cover?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -1358,8 +1628,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Yes. Declaring Sensor makes one Normal WIP+6 Roll to Discover all enemy Troopers, Weapons, and Equipment in Camouflaged or Hidden Deployment State inside the user's Zone of Control, without Range or Mimetism MODs and without requiring LoF. Sensor also grants +6 to ordinary Discover Rolls against Camouflage Markers.",
+      "approvedCitations": [
+        {
+          "page": 111,
+          "section": "SENSOR",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
       "draftAnswer": "Yes. Declaring Sensor makes one Normal WIP+6 Roll to Discover all enemy Troopers, Weapons, and Equipment in Camouflaged or Hidden Deployment State inside the user's Zone of Control, without Range or Mimetism MODs and without requiring LoF. Sensor also grants +6 to ordinary Discover Rolls against Camouflage Markers.",
@@ -1374,10 +1650,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-04",
       "question": "Can Sensor Discover a Camouflaged Marker?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -1407,8 +1687,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Yes. Stealth explicitly states that it is not effective against Troopers with Sixth Sense. This means Stealth does not suppress that Sixth Sense Trooper's otherwise valid AROs.",
+      "approvedCitations": [
+        {
+          "page": 111,
+          "section": "SIXTH SENSE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 112,
+          "section": "STEALTH",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
       "draftAnswer": "Yes. Stealth explicitly states that it is not effective against Troopers with Sixth Sense. This means Stealth does not suppress that Sixth Sense Trooper's otherwise valid AROs.",
@@ -1428,10 +1719,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-05",
       "question": "Does Sixth Sense negate Stealth?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -1461,8 +1756,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "No. Repeaters do not daisy-chain; no chain is created or needed. A Hacker's Hacking Area directly includes the Hacker's own Zone of Control and the Zones of Control of every allied Repeater and Deployable Repeater. Each Repeater contributes only its own Zone; placing one Repeater inside another Repeater's Zone does not relay or extend that second Zone farther.",
+      "approvedCitations": [
+        {
+          "page": 55,
+          "section": "HACKING AREA",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 56,
+          "section": "REPEATER",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
       "draftAnswer": "No. Repeaters do not daisy-chain; no chain is created or needed. A Hacker's Hacking Area directly includes the Hacker's own Zone of Control and the Zones of Control of every allied Repeater and Deployable Repeater. Each Repeater contributes only its own Zone; placing one Repeater inside another Repeater's Zone does not relay or extend that second Zone farther.",
@@ -1482,10 +1788,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-06",
       "question": "Can a Repeater extend the Hacking Area through another Repeater?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Confirmed against the N5.3 Hacking Area definition and Repeater effects: every allied Repeater contributes its own ZoC directly, with no recursive relay rule.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -1521,8 +1831,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "The question uses an obsolete or incomplete Skill name. N5.3 has specific Immunity types rather than a generic Total Immunity rule. If the Trooper has Immunity (AP), it ignores AP's special effect and treats it as Normal Ammunition; a different Immunity does not automatically protect against AP.",
+      "approvedCitations": [
+        {
+          "page": 66,
+          "section": "AP AMMUNITION",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 96,
+          "section": "IMMUNITY AND CRITICAL HITS",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
       "draftAnswer": "The question uses an obsolete or incomplete Skill name. N5.3 has specific Immunity types rather than a generic Total Immunity rule. If the Trooper has Immunity (AP), it ignores AP's special effect and treats it as Normal Ammunition; a different Immunity does not automatically protect against AP.",
@@ -1542,10 +1863,14 @@
       "draftConclusion": "UNRESOLVED",
       "id": "two_rule_interaction-07",
       "question": "Does Total Immunity ignore AP Ammunition?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Confirmed against the N5.3 Immunity terminology and weapon/ammunition entries; legacy or incomplete names must not be converted into an unsupported ruling.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "UNRESOLVED",
+      "approvedCertainty": "SAFE ESCALATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -1575,8 +1900,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Nanoscreen does not grant Cover. Against a Direct Template BS Attack, there is no BS Attack Roll for its −3 MOD to affect, but the Nanoscreen user's +3 Saving Roll MOD still applies unless the Attack has the Comms Attack Trait. This is Nanoscreen protection, not Partial Cover.",
+      "approvedCitations": [
+        {
+          "page": 45,
+          "section": "DIRECT TEMPLATE WEAPONS",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 125,
+          "section": "NANOSCREEN",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
       "draftAnswer": "Nanoscreen does not grant Cover. Against a Direct Template BS Attack, there is no BS Attack Roll for its −3 MOD to affect, but the Nanoscreen user's +3 Saving Roll MOD still applies unless the Attack has the Comms Attack Trait. This is Nanoscreen protection, not Partial Cover.",
@@ -1596,10 +1932,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-08",
       "question": "Does Nanoscreen provide Cover against a Template Weapon?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -1635,8 +1975,24 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Yes, if the target is a legal Model inside the Hacker's Hacking Area. Hacking Programs act throughout the user's Hacking Area, and allied Repeaters extend that area; Spotlight's range is the Hacker's Hacking Area.",
+      "approvedCitations": [
+        {
+          "page": 55,
+          "section": "HACKING AREA",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 56,
+          "section": "REPEATER",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 60,
+          "section": "COMBAT",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
       "draftAnswer": "Yes, if the target is a legal Model inside the Hacker's Hacking Area. Hacking Programs act throughout the user's Hacking Area, and allied Repeaters extend that area; Spotlight's range is the Hacker's Hacking Area.",
@@ -1661,10 +2017,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-09",
       "question": "Can Spotlight be declared through a Repeater?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -1693,8 +2053,34 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Only if the Camouflaged Marker is legally affected and the Attack forces a Saving Roll. You normally cannot choose a Camouflaged Marker as an Attack target without a rule such as Intuitive Attack, but it may be indirectly affected by a Template aimed at a valid non-Camouflaged Main Target. When that legal Template Attack forces the Marker to make a Saving Roll, Camouflaged State is canceled for the entire Order.",
+      "approvedCitations": [
+        {
+          "page": 45,
+          "section": "DIRECT TEMPLATE WEAPONS",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 49,
+          "section": "INTUITIVE ATTACK",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 157,
+          "section": "CAMOUFLAGED STATE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 158,
+          "section": "CAMOUFLAGED STATE — CANCELLATION",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 3,
+          "section": "Page text",
+          "sourceId": "infinity-faq-n5-v0.1"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
       "draftAnswer": "Only if the Camouflaged Marker is legally affected and the Attack forces a Saving Roll. You normally cannot choose a Camouflaged Marker as an Attack target without a rule such as Intuitive Attack, but it may be indirectly affected by a Template aimed at a valid non-Camouflaged Main Target. When that legal Template Attack forces the Marker to make a Saving Roll, Camouflaged State is canceled for the entire Order.",
@@ -1729,10 +2115,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-10",
       "question": "Does a Direct Template Weapon cancel Camouflaged State?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Confirmed against the N5.3 Camouflaged State restrictions/cancellation clauses and the current FAQ ruling for a BS Attack that forces a Camouflaged Marker to make a Saving Roll.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -1761,8 +2151,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "No. Climbing Plus allows other Skills while moving or hanging on a vertical surface, but it explicitly states that the Trooper does not benefit from Partial Cover MODs while on a vertical surface.",
+      "approvedCitations": [
+        {
+          "page": 88,
+          "section": "CLIMBING PLUS",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
       "draftAnswer": "No. Climbing Plus allows other Skills while moving or hanging on a vertical surface, but it explicitly states that the Trooper does not benefit from Partial Cover MODs while on a vertical surface.",
@@ -1777,10 +2173,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-11",
       "question": "Can a Trooper with Climbing Plus claim Cover while climbing?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -1809,8 +2209,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "No. A Trooper cannot benefit from Partial Cover MODs during an Order in which it declares Jump. Super-Jump changes how Jump may be declared and performed; it does not remove Jump's Cover restriction.",
+      "approvedCitations": [
+        {
+          "page": 34,
+          "section": "JUMP",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 113,
+          "section": "SUPER-JUMP",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
       "draftAnswer": "No. A Trooper cannot benefit from Partial Cover MODs during an Order in which it declares Jump. Super-Jump changes how Jump may be declared and performed; it does not remove Jump's Cover restriction.",
@@ -1830,10 +2241,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-12",
       "question": "Does Super-Jump allow Cover while airborne?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -1862,8 +2277,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Yes. Shock Ammunition cancels Dogged's special effects and causes the Trooper to pass directly to Dead State instead of continuing to function through Dogged.",
+      "approvedCitations": [
+        {
+          "page": 65,
+          "section": "SHOCK AMMUNITION",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 91,
+          "section": "DOGGED",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
       "draftAnswer": "Yes. Shock Ammunition cancels Dogged's special effects and causes the Trooper to pass directly to Dead State instead of continuing to function through Dogged.",
@@ -1883,10 +2309,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-13",
       "question": "Does Shock Ammunition bypass Dogged?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -1934,8 +2364,29 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Yes—but only through the effects printed on the weapon profile. For a Viral-named weapon with Bioweapon (DA+Shock), Immunity (Shock) cancels only the Shock effect. It does not cancel DA: the target still makes the two Saving Rolls required by DA, using the weapon profile's listed Saving Attribute and Damage, and resolves any other printed effects normally. Always check the exact Viral weapon profile because “Viral” is a weapon name in N5.3, not a standalone Ammunition rule.",
+      "approvedCitations": [
+        {
+          "page": 96,
+          "section": "IMMUNITY AND CRITICAL HITS",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 118,
+          "section": "VULNERABILITY — VIRAL EXAMPLE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 180,
+          "section": "VIRAL MARKSMAN RIFLE PROFILE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 185,
+          "section": "VIRAL SNIPER RIFLE PROFILE",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
       "draftAnswer": "Yes—but only through the effects printed on the weapon profile. For a Viral-named weapon with Bioweapon (DA+Shock), Immunity (Shock) cancels only the Shock effect. It does not cancel DA: the target still makes the two Saving Rolls required by DA, using the weapon profile's listed Saving Attribute and Damage, and resolves any other printed effects normally. Always check the exact Viral weapon profile because “Viral” is a weapon name in N5.3, not a standalone Ammunition rule.",
@@ -1965,10 +2416,14 @@
       "draftConclusion": "YES",
       "id": "two_rule_interaction-14",
       "question": "Does Viral Ammunition interact with Immunity (Shock)?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the N5.3 Immunity rules and Viral-named weapon profiles. Immunity (Shock) removes only Shock; DA and all other printed profile effects remain.",
       "semanticAuditDate": "2026-09-08",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "YES",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -2004,8 +2459,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Yes. With Silhouette contact and a successful Normal WIP Roll, Engineer may cancel all of the target's Engineer-cancelable States other than Unconscious, explicitly including Immobilized-B.",
+      "approvedCitations": [
+        {
+          "page": 91,
+          "section": "ENGINEER",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 165,
+          "section": "IMMOBILIZED-B STATE",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
       "draftAnswer": "Yes. With Silhouette contact and a successful Normal WIP Roll, Engineer may cancel all of the target's Engineer-cancelable States other than Unconscious, explicitly including Immobilized-B.",
@@ -2025,10 +2491,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-15",
       "question": "Can Engineer remove Immobilized-B State?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -2064,8 +2534,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "No, not while No Wound Incapacitation is active: the Trooper remains outside Unconscious State, while Doctor requires a VITA target in Unconscious State. If NWI was not activated and the Trooper is actually Unconscious, Doctor may be declared normally.",
+      "approvedCitations": [
+        {
+          "page": 90,
+          "section": "DOCTOR",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 104,
+          "section": "NO WOUND INCAPACITATION",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
       "draftAnswer": "No, not while No Wound Incapacitation is active: the Trooper remains outside Unconscious State, while Doctor requires a VITA target in Unconscious State. If NWI was not activated and the Trooper is actually Unconscious, Doctor may be declared normally.",
@@ -2085,10 +2566,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-16",
       "question": "Can Doctor heal a Trooper using No Wound Incapacitation?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -2124,8 +2609,24 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Yes. A Deployable Repeater contains a Repeater, and Repeaters are automatically active. Once the Deployable Repeater Token has been legally placed on the table, its Zone of Control contributes to allied Hackers' Hacking Areas.",
+      "approvedCitations": [
+        {
+          "page": 55,
+          "section": "HACKING AREA",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 56,
+          "section": "REPEATER",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 122,
+          "section": "DEPLOYABLE REPEATER",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
       "draftAnswer": "Yes. A Deployable Repeater contains a Repeater, and Repeaters are automatically active. Once the Deployable Repeater Token has been legally placed on the table, its Zone of Control contributes to allied Hackers' Hacking Areas.",
@@ -2150,10 +2651,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-17",
       "question": "Does a Deployable Repeater create a Hacking Area immediately?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -2189,8 +2694,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "No, not by default. Berserk is an Attack and requires a target in LoF, while Attacks cannot normally be declared against a Camouflaged Marker and enemy Troopers cannot enter Silhouette contact with one. A separate rule that expressly allows attacking the Marker would be required.",
+      "approvedCitations": [
+        {
+          "page": 86,
+          "section": "BERSERK",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 157,
+          "section": "CAMOUFLAGED STATE",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
       "draftAnswer": "No, not by default. Berserk is an Attack and requires a target in LoF, while Attacks cannot normally be declared against a Camouflaged Marker and enemy Troopers cannot enter Silhouette contact with one. A separate rule that expressly allows attacking the Marker would be required.",
@@ -2210,10 +2726,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-18",
       "question": "Can Berserk be used against a Camouflaged Marker?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -2242,8 +2762,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Yes. A Biometric Visor ignores the WIP−3 MOD imposed by Impersonation-1 when Discovering that Marker. On a successful Discover, the Impersonation State is canceled and the Marker is replaced by the Model.",
+      "approvedCitations": [
+        {
+          "page": 120,
+          "section": "BIOMETRIC VISOR",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 166,
+          "section": "IMPERSONATION STATE",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
       "draftAnswer": "Yes. A Biometric Visor ignores the WIP−3 MOD imposed by Impersonation-1 when Discovering that Marker. On a successful Discover, the Impersonation State is canceled and the Marker is replaced by the Model.",
@@ -2263,10 +2794,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-19",
       "question": "Does Biometric Visor affect Impersonation Discover rolls?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -2295,8 +2830,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Yes, if the Fireteam qualifies for the Level 3 bonus: the relevant Fireteam members receive +3 to Discover Rolls. The separate BS Attack (+1 SD) and +1 BS Fireteam bonuses cannot be applied to Discover.",
+      "approvedCitations": [
+        {
+          "page": 135,
+          "section": "FIRETEAM BONUSES",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 3,
+          "section": "FIRETEAMS FAQ",
+          "sourceId": "infinity-faq-n5-v0.1"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
       "draftAnswer": "Yes, if the Fireteam qualifies for the Level 3 bonus: the relevant Fireteam members receive +3 to Discover Rolls. The separate BS Attack (+1 SD) and +1 BS Fireteam bonuses cannot be applied to Discover.",
@@ -2316,10 +2862,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "two_rule_interaction-20",
       "question": "Can a Fireteam bonus modify Discover?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -2366,8 +2916,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "−3 Visibility MOD. The target's return BS Attack makes the MSV1 user the target of a BS Attack through the Zero Visibility Zone; for drawing LoF back, the zone becomes Poor Visibility, and MSV1 reduces Poor Visibility from −6 to −3.",
+      "approvedCitations": [
+        {
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 1",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 144,
+          "section": "ZERO VISIBILITY ZONE",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": {
         "expectedConclusion": "INTERPRETATION",
         "expectedCoreResult": "The MSV1 user's Visibility MOD is -3 because return fire makes that Trooper the target of a BS Attack, so the Zero Visibility Zone is treated as Poor Visibility for drawing LoF back; MSV1 reduces Poor Visibility to -3.",
@@ -2396,10 +2957,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-01",
       "question": "If I have MSV1 and shoot through Smoke and the target shoots back, what is my Visibility MOD?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -2438,8 +3003,24 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "−6 Visibility MOD. Dodge is not a BS Attack, so the MSV1 user does not receive the rule that treats the Zero Visibility Zone as Poor Visibility when drawing LoF to an attacker. MSV1 therefore draws LoF through the Zero Visibility Zone at −6.",
+      "approvedCitations": [
+        {
+          "page": 79,
+          "section": "DODGE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 1",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 144,
+          "section": "ZERO VISIBILITY ZONE",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": {
         "expectedConclusion": "INTERPRETATION",
         "expectedCoreResult": "The MSV1 user's Visibility MOD remains -6 when the target Dodges because the user is not the target of a BS Attack.",
@@ -2472,10 +3053,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-02",
       "question": "If I have MSV1 and shoot through Smoke and the target Dodges, what is my Visibility MOD?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -2523,8 +3108,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Yes, during the Stealth user's Active Turn. Stealth suppresses AROs only when the user declares Cautious Movement, Idle, or a Basic Short Skill with the Movement Label. Dodge has the Movement Label, but it is a Short Skill/ARO—not a Basic Short Skill—so it does not satisfy Stealth's requirement. Enemies without LoF are therefore not prevented by Stealth from declaring an ARO. During the Reactive Turn, Stealth is not functioning, so there is no active Stealth effect to break.",
+      "approvedCitations": [
+        {
+          "page": 79,
+          "section": "DODGE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 112,
+          "section": "STEALTH",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": {
         "expectedConclusion": "YES",
         "expectedCoreResult": "During the Stealth user's Active Turn, Dodge does not satisfy Stealth because it is a Short Skill/ARO rather than a Basic Short Skill. Enemies without LoF are therefore not suppressed by Stealth. During the Reactive Turn, Stealth is not functioning.",
@@ -2553,10 +3149,14 @@
       "draftConclusion": "YES",
       "id": "timing_sequence-03",
       "question": "Does declaring Dodge break Stealth?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Corrected against the exact N5.3 Skill classifications: Stealth requires a Basic Short Skill with the Movement Label, while Dodge is a Short Skill/ARO.",
       "semanticAuditDate": "2026-09-08",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "YES",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -2586,8 +3186,24 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "A successful Discover is resolved in step 5, Resolution. The Marker is then replaced by the represented Model or Token. Camouflaged State is canceled for the entire declared Order, even though the revealing event is resolved at the end.",
+      "approvedCitations": [
+        {
+          "page": 14,
+          "section": "ORDER EXPENDITURE SEQUENCE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 77,
+          "section": "DISCOVER",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 158,
+          "section": "CAMOUFLAGED STATE — CANCELLATION",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TIMING_SEQUENCE",
       "draftAnswer": "A successful Discover is resolved in step 5, Resolution. The Marker is then replaced by the represented Model or Token. Camouflaged State is canceled for the entire declared Order, even though the revealing event is resolved at the end.",
@@ -2612,10 +3228,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-04",
       "question": "When does a successful Discover cancel Camouflaged State?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -2645,8 +3265,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "No, not merely because both declared Dodge. Face to Face Rolls require the actions to affect each other. Two Dodge declarations that do not oppose an Attack are separate Normal PH Rolls.",
+      "approvedCitations": [
+        {
+          "page": 25,
+          "section": "FACE TO FACE ROLLS",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 79,
+          "section": "DODGE",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TIMING_SEQUENCE",
       "draftAnswer": "No, not merely because both declared Dodge. Face to Face Rolls require the actions to affect each other. Two Dodge declarations that do not oppose an Attack are separate Normal PH Rolls.",
@@ -2666,10 +3297,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-05",
       "question": "If both Troopers declare Dodge, are the Rolls Face to Face?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -2698,8 +3333,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Suppressive Fire is canceled as soon as a listed cancellation condition occurs—for example, the Trooper declares an Order, declares an ARO other than BS Attack with the SF profile, uses an ineligible weapon, fails Guts, enters a listed State, the army enters Loss of Lieutenant, or the Trooper joins a Fireteam. Its benefits do not continue after cancellation.",
+      "approvedCitations": [
+        {
+          "page": 171,
+          "section": "SUPPRESSIVE FIRE STATE",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TIMING_SEQUENCE",
       "draftAnswer": "Suppressive Fire is canceled as soon as a listed cancellation condition occurs—for example, the Trooper declares an Order, declares an ARO other than BS Attack with the SF profile, uses an ineligible weapon, fails Guts, enters a listed State, the army enters Loss of Lieutenant, or the Trooper joins a Fireteam. Its benefits do not continue after cancellation.",
@@ -2714,10 +3355,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-06",
       "question": "When is Suppressive Fire cancelled during an Order?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -2747,8 +3392,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Yes, if the Mine had a valid target at any point along that target's declared movement and the Mine's trigger conditions are met. Because the Order is resolved all at once, leaving the Trigger Area later in the same movement does not undo having entered it; place the template from the Mine to the valid position on the route.",
+      "approvedCitations": [
+        {
+          "page": 14,
+          "section": "ALL AT ONCE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 72,
+          "section": "MINES",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TIMING_SEQUENCE",
       "draftAnswer": "Yes, if the Mine had a valid target at any point along that target's declared movement and the Mine's trigger conditions are met. Because the Order is resolved all at once, leaving the Trigger Area later in the same movement does not undo having entered it; place the template from the Mine to the valid position on the route.",
@@ -2768,10 +3424,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-07",
       "question": "If a Trooper enters a Mine's Trigger Area and then leaves it, does the Mine detonate?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -2808,8 +3468,24 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "AROs are checked twice: after the first Skill declaration and again after the second Skill, but the second check is only for Troopers that could not declare an ARO at the first check. Eligibility is measured using the Active Trooper's entire declared path as specified by ZoC, LoF, and Hacking Area rules.",
+      "approvedCitations": [
+        {
+          "page": 14,
+          "section": "ORDER EXPENDITURE SEQUENCE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 20,
+          "section": "ZONE OF CONTROL AND AROS",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 55,
+          "section": "HACKING AREA IN ARO",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TIMING_SEQUENCE",
       "draftAnswer": "AROs are checked twice: after the first Skill declaration and again after the second Skill, but the second check is only for Troopers that could not declare an ARO at the first check. Eligibility is measured using the Active Trooper's entire declared path as specified by ZoC, LoF, and Hacking Area rules.",
@@ -2834,10 +3510,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-08",
       "question": "When are AROs checked during the Order Expenditure Sequence?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -2866,8 +3546,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Enemies can react once the Hacker's declared path brings it inside their Hacking Area. At the applicable ARO Check, measure from any point along the Active Trooper's path and from its Repeaters. A legal Hacking ARO may then be declared; it is not necessary for the Hacker to end the movement inside the area.",
+      "approvedCitations": [
+        {
+          "page": 14,
+          "section": "ORDER EXPENDITURE SEQUENCE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 55,
+          "section": "HACKING AREA IN ARO",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TIMING_SEQUENCE",
       "draftAnswer": "Enemies can react once the Hacker's declared path brings it inside their Hacking Area. At the applicable ARO Check, measure from any point along the Active Trooper's path and from its Repeaters. A legal Hacking ARO may then be declared; it is not necessary for the Hacker to end the movement inside the area.",
@@ -2887,10 +3578,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-09",
       "question": "If a Hacker moves into Repeater range during the first Short Skill, when can enemies hack it?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -2920,8 +3615,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "The Marker is replaced when Camouflaged State is canceled, but that cancellation applies to the entirety of the Order. Declaring BS Attack as the second Skill reveals the Trooper for resolution and lets enemies that delayed against the Marker declare their ARO.",
+      "approvedCitations": [
+        {
+          "page": 157,
+          "section": "CAMOUFLAGED STATE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 158,
+          "section": "CAMOUFLAGED STATE — CANCELLATION",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TIMING_SEQUENCE",
       "draftAnswer": "The Marker is replaced when Camouflaged State is canceled, but that cancellation applies to the entirety of the Order. Declaring BS Attack as the second Skill reveals the Trooper for resolution and lets enemies that delayed against the Marker declare their ARO.",
@@ -2941,10 +3647,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-10",
       "question": "If a Camouflaged Trooper declares Move then BS Attack, when is the Marker replaced?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -2981,8 +3691,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "The Smoke Roll is Face to Face only against enemy Attacks that require a Roll and LoF and whose LoF crosses the Zero Visibility Zone generated by that Smoke Template. Other attacks are Normal Rolls. Enemy Dodges in the template area are Normal Rolls, and Multispectral Visor users do not make Face to Face Rolls against Smoke Ammunition.",
+      "approvedCitations": [
+        {
+          "page": 66,
+          "section": "SMOKE AMMUNITION",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TIMING_SEQUENCE",
       "draftAnswer": "The Smoke Roll is Face to Face only against enemy Attacks that require a Roll and LoF and whose LoF crosses the Zero Visibility Zone generated by that Smoke Template. Other attacks are Normal Rolls. Enemy Dodges in the template area are Normal Rolls, and Multispectral Visor users do not make Face to Face Rolls against Smoke Ammunition.",
@@ -2997,10 +3713,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-11",
       "question": "If Smoke is placed during an Order, which attacks become Face to Face with the Smoke Roll?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -3030,8 +3750,24 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Normally yes. Orders and AROs are simultaneous, so a Trooper that enters Unconscious during Resolution still resolves a Skill it legally declared earlier in that Order. A specific cancellation rule or a failed Requirement can still turn that declaration into Idle.",
+      "approvedCitations": [
+        {
+          "page": 14,
+          "section": "ALL AT ONCE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 15,
+          "section": "SKILL REQUIREMENTS",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 129,
+          "section": "COORDINATED ORDERS",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TIMING_SEQUENCE",
       "draftAnswer": "Normally yes. Orders and AROs are simultaneous, so a Trooper that enters Unconscious during Resolution still resolves a Skill it legally declared earlier in that Order. A specific cancellation rule or a failed Requirement can still turn that declaration into Idle.",
@@ -3056,10 +3792,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-12",
       "question": "If a Trooper falls Unconscious during a Coordinated Order, does it complete its declared Skill?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -3088,8 +3828,24 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "If the Fireteam Leader enters a Null or Isolated State, the Fireteam is canceled unless a specific rule such as Number 2 immediately supplies the applicable replacement. If a non-Leader enters a Null State during Resolution, it does not retroactively change Rolls already resolved in the simultaneous Order. That member leaves when the State is applied, and the Fireteam's later composition and bonuses use the remaining valid members.",
+      "approvedCitations": [
+        {
+          "page": 14,
+          "section": "ORDER EXPENDITURE SEQUENCE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 134,
+          "section": "FIRETEAM INTEGRITY",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 135,
+          "section": "FIRETEAM BONUSES",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TIMING_SEQUENCE",
       "draftAnswer": "If the Fireteam Leader enters a Null or Isolated State, the Fireteam is canceled unless a specific rule such as Number 2 immediately supplies the applicable replacement. If a non-Leader enters a Null State during Resolution, it does not retroactively change Rolls already resolved in the simultaneous Order. That member leaves when the State is applied, and the Fireteam's later composition and bonuses use the remaining valid members.",
@@ -3114,10 +3870,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-13",
       "question": "If a Fireteam member enters a Null State mid-Order, when is Fireteam composition recalculated?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Confirmed against N5.3 Order Resolution and Fireteam Integrity: a member entering a Null State leaves, composition is recalculated, and simultaneous Rolls already resolved are not retroactively changed; Leader and Number 2 rules remain controlling.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -3147,8 +3907,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "The Discover Roll is unnecessary if the Camouflaged target reveals by declaring an ARO. If the Active Trooper also declared an Attack as the other Skill, that Attack can be resolved without first rolling Discover. If only Discover was declared, Discover simply has no remaining effect; an Attack is not created automatically.",
+      "approvedCitations": [
+        {
+          "page": 77,
+          "section": "DISCOVER + ATTACK",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TIMING_SEQUENCE",
       "draftAnswer": "The Discover Roll is unnecessary if the Camouflaged target reveals by declaring an ARO. If the Active Trooper also declared an Attack as the other Skill, that Attack can be resolved without first rolling Discover. If only Discover was declared, Discover simply has no remaining effect; an Attack is not created automatically.",
@@ -3163,10 +3929,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-14",
       "question": "If a model declares Discover and the target reveals voluntarily, what happens to the Discover Roll?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -3198,8 +3968,24 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Yes, if the later Hacking Attack is directed at the Resetting Trooper and the two Rolls can affect each other. Declarations are simultaneous, and Requirements are checked at Resolution; the earlier Reset can therefore oppose the subsequently declared Hacking Program in a Face to Face Roll.",
+      "approvedCitations": [
+        {
+          "page": 14,
+          "section": "ALL AT ONCE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 25,
+          "section": "FACE TO FACE ROLL: DODGE AND RESET",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 85,
+          "section": "RESET",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TIMING_SEQUENCE",
       "draftAnswer": "Yes, if the later Hacking Attack is directed at the Resetting Trooper and the two Rolls can affect each other. Declarations are simultaneous, and Requirements are checked at Resolution; the earlier Reset can therefore oppose the subsequently declared Hacking Program in a Face to Face Roll.",
@@ -3224,10 +4010,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-15",
       "question": "If a Trooper declares Reset before being targeted by a Hacking Program, can the Rolls become Face to Face?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -3256,8 +4046,24 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "An Impersonation Marker is not successfully Discovered during the first half of an Order because Discover Rolls resolve only after all declarations. Therefore discovery itself does not create a new mid-Order ARO window. A Trooper that delayed against the Marker may declare an ARO after the second Skill only if the Impersonated Trooper reveals; otherwise that delayed ARO is lost.",
+      "approvedCitations": [
+        {
+          "page": 14,
+          "section": "ORDER EXPENDITURE SEQUENCE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 166,
+          "section": "IMPERSONATION STATE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 167,
+          "section": "IMPERSONATION EXAMPLE",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TIMING_SEQUENCE",
       "draftAnswer": "An Impersonation Marker is not successfully Discovered during the first half of an Order because Discover Rolls resolve only after all declarations. Therefore discovery itself does not create a new mid-Order ARO window. A Trooper that delayed against the Marker may declare an ARO after the second Skill only if the Impersonated Trooper reveals; otherwise that delayed ARO is lost.",
@@ -3282,10 +4088,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-16",
       "question": "If an Impersonation Marker is discovered during the first Short Skill, what AROs are available afterward?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -3314,8 +4124,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Retreat is checked at the beginning of that player's next Active Turn during the Tactical Phase. Falling below the threshold during the preceding Player Turn does not start Retreat immediately.",
+      "approvedCitations": [
+        {
+          "page": 16,
+          "section": "TACTICAL PHASE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 146,
+          "section": "RETREAT!",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TIMING_SEQUENCE",
       "draftAnswer": "Retreat is checked at the beginning of that player's next Active Turn during the Tactical Phase. Falling below the threshold during the preceding Player Turn does not start Retreat immediately.",
@@ -3335,10 +4156,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-17",
       "question": "When does Retreat begin if Army Points fall below the threshold during a Player Turn?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -3367,8 +4192,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Loss of Lieutenant is checked in the Tactical Phase of that player's next Active Turn. It does not begin immediately when the Lieutenant enters a Null State during the current Active Turn; recovery before the next check can prevent it.",
+      "approvedCitations": [
+        {
+          "page": 16,
+          "section": "TACTICAL PHASE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 18,
+          "section": "LOSS OF LIEUTENANT",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TIMING_SEQUENCE",
       "draftAnswer": "Loss of Lieutenant is checked in the Tactical Phase of that player's next Active Turn. It does not begin immediately when the Lieutenant enters a Null State during the current Active Turn; recovery before the next check can prevent it.",
@@ -3388,10 +4224,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-18",
       "question": "If a Lieutenant enters a Null State during the Active Turn, when does Loss of Lieutenant apply?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -3421,8 +4261,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Usually yes, but the cause and Peripheral type matter. If an ordinary Peripheral disconnects because its Controller enters a Null or Isolated State, it enters Disconnected State at the end of that Order, after resolving its otherwise legal declaration. A failed required Coherency Check disconnects a Synchronized or Control Peripheral immediately before movement, so it does not continue that movement. A Cyberplug is a separate exception: when its Controller enters a Null or Isolated State, it switches to its Autonomous Profile at the end of the Order instead of entering Disconnected State.",
+      "approvedCitations": [
+        {
+          "page": 106,
+          "section": "PERIPHERAL",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 107,
+          "section": "PERIPHERAL (CONTROL)",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TIMING_SEQUENCE",
       "draftAnswer": "Usually yes, but the cause and Peripheral type matter. If an ordinary Peripheral disconnects because its Controller enters a Null or Isolated State, it enters Disconnected State at the end of that Order, after resolving its otherwise legal declaration. A failed required Coherency Check disconnects a Synchronized or Control Peripheral immediately before movement, so it does not continue that movement. A Cyberplug is a separate exception: when its Controller enters a Null or Isolated State, it switches to its Autonomous Profile at the end of the Order instead of entering Disconnected State.",
@@ -3442,10 +4293,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-19",
       "question": "If a Peripheral is disconnected during an Order, does it finish its declared Skill?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Confirmed against N5.3 Peripheral, Coherency, and Cyberplug timing: Controller-caused changes occur at end of Order, while failed Coherency applies immediately before movement.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -3482,8 +4337,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "For most Skills, Requirements are checked in step 5, Resolution. If they are not met, the action is canceled and becomes Idle; declared Disposable uses are still spent. Skills whose rules require checking at declaration—such as Move, Jump, Climb, and certain deployment Skills—are checked earlier.",
+      "approvedCitations": [
+        {
+          "page": 15,
+          "section": "SKILL REQUIREMENTS",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 80,
+          "section": "IDLE",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "TIMING_SEQUENCE",
       "draftAnswer": "For most Skills, Requirements are checked in step 5, Resolution. If they are not met, the action is canceled and becomes Idle; declared Disposable uses are still spent. Skills whose rules require checking at declaration—such as Move, Jump, Climb, and certain deployment Skills—are checked earlier.",
@@ -3503,10 +4369,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-20",
       "question": "If a Trooper declares a Skill that later fails its Requirements, what happens to the declaration?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -3543,8 +4413,29 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "I need to know what rule would permit the Attack and whether the Marker has revealed. Normally you cannot declare an Attack against a Camouflaged Marker; you must Discover it first, commonly with Discover + Attack. Exceptions include Intuitive Attack with a suitable weapon and MSV3's Active-Turn BS Attack permission. If no exception applies, the Attack is illegal.",
+      "approvedCitations": [
+        {
+          "page": 49,
+          "section": "INTUITIVE ATTACK",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 77,
+          "section": "DISCOVER + ATTACK",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 3",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 157,
+          "section": "CAMOUFLAGED STATE",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "AMBIGUOUS_MISSING_FACTS",
       "draftAnswer": "I need to know what rule would permit the Attack and whether the Marker has revealed. Normally you cannot declare an Attack against a Camouflaged Marker; you must Discover it first, commonly with Discover + Attack. Exceptions include Intuitive Attack with a suitable weapon and MSV3's Active-Turn BS Attack permission. If no exception applies, the Attack is illegal.",
@@ -3574,10 +4465,14 @@
       "draftConclusion": "UNRESOLVED",
       "id": "ambiguous_missing_facts-01",
       "question": "Can I shoot a Camouflaged Marker?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "UNRESOLVED",
+      "approvedCertainty": "NEEDS CLARIFICATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -3620,8 +4515,24 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "I need to know whether the template is Direct or Impact, whether the Dodger has LoF to the attacker, and whether the Dodge succeeds. A successful Dodge avoids the Template Attack affecting that Trooper. Against a Direct Template Weapon, Dodge is a Normal PH Roll because the weapon makes no Attack Roll; against an Impact Template Attack that rolls to hit, Dodge can be Face to Face. Dodging a Template Weapon without LoF to the attacker applies PH−3.",
+      "approvedCitations": [
+        {
+          "page": 43,
+          "section": "TEMPLATE WEAPONS",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 45,
+          "section": "DIRECT TEMPLATE WEAPONS",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 79,
+          "section": "DODGE",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "AMBIGUOUS_MISSING_FACTS",
       "draftAnswer": "I need to know whether the template is Direct or Impact, whether the Dodger has LoF to the attacker, and whether the Dodge succeeds. A successful Dodge avoids the Template Attack affecting that Trooper. Against a Direct Template Weapon, Dodge is a Normal PH Roll because the weapon makes no Attack Roll; against an Impact Template Attack that rolls to hit, Dodge can be Face to Face. Dodging a Template Weapon without LoF to the attacker applies PH−3.",
@@ -3646,10 +4557,14 @@
       "draftConclusion": "UNRESOLVED",
       "id": "ambiguous_missing_facts-02",
       "question": "Does Dodge avoid a Template Weapon?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "UNRESOLVED",
+      "approvedCertainty": "NEEDS CLARIFICATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -3685,8 +4600,29 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "I need the TAG's exact profile/state, the Hacker's Device and Programs, and whether the TAG is inside the Hacker's Hacking Area. TAGs are normally Hackable, but the declared Program must be available to that Hacker, must allow that target, and must meet range/Hacking Area and State requirements.",
+      "approvedCitations": [
+        {
+          "page": 55,
+          "section": "HACKING AREA",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 58,
+          "section": "HACKING PROGRAMS QUICK REFERENCE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 59,
+          "section": "CARBONITE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 60,
+          "section": "OBLIVION",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "AMBIGUOUS_MISSING_FACTS",
       "draftAnswer": "I need the TAG's exact profile/state, the Hacker's Device and Programs, and whether the TAG is inside the Hacker's Hacking Area. TAGs are normally Hackable, but the declared Program must be available to that Hacker, must allow that target, and must meet range/Hacking Area and State requirements.",
@@ -3716,10 +4652,14 @@
       "draftConclusion": "UNRESOLVED",
       "id": "ambiguous_missing_facts-03",
       "question": "Can I hack an enemy TAG?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "UNRESOLVED",
+      "approvedCertainty": "NEEDS CLARIFICATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -3762,8 +4702,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "I need the attack type, LoF, the target's contact with scenery, how much of its Silhouette is obscured, and any rule that removes Cover. Partial Cover requires contact with scenery that obscures part of the target's Silhouette; it gives −3 to the BS Attack and +3 to the Saving Roll. Total Cover blocks LoF-dependent BS Attacks. Marksmanship can ignore only the negative BS MOD from Partial Cover.",
+      "approvedCitations": [
+        {
+          "page": 41,
+          "section": "COVER",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 100,
+          "section": "MARKSMANSHIP",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "AMBIGUOUS_MISSING_FACTS",
       "draftAnswer": "I need the attack type, LoF, the target's contact with scenery, how much of its Silhouette is obscured, and any rule that removes Cover. Partial Cover requires contact with scenery that obscures part of the target's Silhouette; it gives −3 to the BS Attack and +3 to the Saving Roll. Total Cover blocks LoF-dependent BS Attacks. Marksmanship can ignore only the negative BS MOD from Partial Cover.",
@@ -3783,10 +4734,14 @@
       "draftConclusion": "UNRESOLVED",
       "id": "ambiguous_missing_facts-04",
       "question": "Does Cover apply to this attack?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "UNRESOLVED",
+      "approvedCertainty": "NEEDS CLARIFICATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -3822,8 +4777,29 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "I need the Active Trooper's complete declared path and Skills, the Reactive Trooper's LoF, ZoC/Hacking Area, State, and relevant Skills such as Stealth or Sixth Sense. ARO eligibility is checked after each Skill declaration. If the Trooper had a valid ARO at the first check, it must declare then or lose it; the second check is for Troopers that gained eligibility only after the second Skill.",
+      "approvedCitations": [
+        {
+          "page": 13,
+          "section": "ARO: AUTOMATIC REACTION ORDER",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 14,
+          "section": "ORDER EXPENDITURE SEQUENCE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 20,
+          "section": "ZONE OF CONTROL AND AROS",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 55,
+          "section": "HACKING AREA IN ARO",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "AMBIGUOUS_MISSING_FACTS",
       "draftAnswer": "I need the Active Trooper's complete declared path and Skills, the Reactive Trooper's LoF, ZoC/Hacking Area, State, and relevant Skills such as Stealth or Sixth Sense. ARO eligibility is checked after each Skill declaration. If the Trooper had a valid ARO at the first check, it must declare then or lose it; the second check is for Troopers that gained eligibility only after the second Skill.",
@@ -3853,10 +4829,14 @@
       "draftConclusion": "UNRESOLVED",
       "id": "ambiguous_missing_facts-05",
       "question": "Can this Trooper declare an ARO?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "UNRESOLVED",
+      "approvedCertainty": "NEEDS CLARIFICATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -3899,8 +4879,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "I need the intended position, whether it is in your half or the opponent's half, any bracketed PH value on the profile, the enemy Deployment Zone, Exclusion Zones, and mission restrictions. Infiltration allows deployment outside your Deployment Zone within your half without a Roll. Deployment in the opponent's half requires a Normal PH−3 Roll, using any bracketed PH value specified by the Skill. A failed Roll places the Trooper in your Deployment Zone in contact with the table edge and removes Marker/Hidden Deployment options.",
+      "approvedCitations": [
+        {
+          "page": 97,
+          "section": "INFILTRATION",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 16,
+          "section": "DEPLOYMENT RESTRICTIONS",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "AMBIGUOUS_MISSING_FACTS",
       "draftAnswer": "I need the intended position, whether it is in your half or the opponent's half, any bracketed PH value on the profile, the enemy Deployment Zone, Exclusion Zones, and mission restrictions. Infiltration allows deployment outside your Deployment Zone within your half without a Roll. Deployment in the opponent's half requires a Normal PH−3 Roll, using any bracketed PH value specified by the Skill. A failed Roll places the Trooper in your Deployment Zone in contact with the table edge and removes Marker/Hidden Deployment options.",
@@ -3920,10 +4911,14 @@
       "draftConclusion": "UNRESOLVED",
       "id": "ambiguous_missing_facts-06",
       "question": "Can I deploy here with Infiltration?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "UNRESOLVED",
+      "approvedCertainty": "NEEDS CLARIFICATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -3960,8 +4955,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "I need to know who is making which Roll, whether it is a BS Attack requiring LoF, Discover, CC Attack, or something else, and the user's printed Mimetism value. Mimetism applies its listed negative MOD to enemy LoF-dependent BS Attacks and Discover Rolls, but not to CC Attacks.",
+      "approvedCitations": [
+        {
+          "page": 102,
+          "section": "MIMETISM",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "AMBIGUOUS_MISSING_FACTS",
       "draftAnswer": "I need to know who is making which Roll, whether it is a BS Attack requiring LoF, Discover, CC Attack, or something else, and the user's printed Mimetism value. Mimetism applies its listed negative MOD to enemy LoF-dependent BS Attacks and Discover Rolls, but not to CC Attacks.",
@@ -3976,10 +4977,14 @@
       "draftConclusion": "UNRESOLVED",
       "id": "ambiguous_missing_facts-07",
       "question": "Does Mimetism apply to this Roll?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "UNRESOLVED",
+      "approvedCertainty": "NEEDS CLARIFICATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -4015,8 +5020,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "I need the mission and any scenario-specific deployment rules, plus whether the Trooper and landing point meet Combat Jump's Requirements. Core Combat Jump is permitted, but missions can prohibit or modify Airborne Deployment, define Exclusion Zones, or change legal landing areas.",
+      "approvedCitations": [
+        {
+          "page": 89,
+          "section": "COMBAT JUMP",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 16,
+          "section": "SCENARIOS",
+          "sourceId": "its-season-18"
+        }
+      ],
       "candidateExpectation": null,
       "category": "AMBIGUOUS_MISSING_FACTS",
       "draftAnswer": "I need the mission and any scenario-specific deployment rules, plus whether the Trooper and landing point meet Combat Jump's Requirements. Core Combat Jump is permitted, but missions can prohibit or modify Airborne Deployment, define Exclusion Zones, or change legal landing areas.",
@@ -4036,10 +5052,14 @@
       "draftConclusion": "UNRESOLVED",
       "id": "ambiguous_missing_facts-08",
       "question": "Can I use Combat Jump in this mission?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "UNRESOLVED",
+      "approvedCertainty": "NEEDS CLARIFICATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -4068,8 +5088,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "I need the mission, the Trooper's exact Skills/profile, and which objective is being attempted. ITS normally recognizes Hackers, Doctors, Engineers, Forward Observers, Paramedics, Chain of Command, and Specialist Operatives as Specialists, but individual missions may restate the list or restrict how tasks are performed.",
+      "approvedCitations": [
+        {
+          "page": 17,
+          "section": "SPECIALIST TROOPS",
+          "sourceId": "its-season-18"
+        }
+      ],
       "candidateExpectation": null,
       "category": "AMBIGUOUS_MISSING_FACTS",
       "draftAnswer": "I need the mission, the Trooper's exact Skills/profile, and which objective is being attempted. ITS normally recognizes Hackers, Doctors, Engineers, Forward Observers, Paramedics, Chain of Command, and Specialist Operatives as Specialists, but individual missions may restate the list or restrict how tasks are performed.",
@@ -4084,10 +5110,14 @@
       "draftConclusion": "UNRESOLVED",
       "id": "ambiguous_missing_facts-09",
       "question": "Does this Specialist score the objective?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "UNRESOLVED",
+      "approvedCertainty": "NEEDS CLARIFICATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -4116,8 +5146,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "I need the faction/sectorial, the exact Trooper profiles, the desired Fireteam type, and the current official Fireteams Chart. Fireteam legality is army-chart-specific: the minimum/maximum members, required units, wildcard notes, and availability must all permit the proposed team.",
+      "approvedCitations": [
+        {
+          "page": 132,
+          "section": "FIRETEAM CREATION",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 133,
+          "section": "FIRETEAMS CHARTS",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "AMBIGUOUS_MISSING_FACTS",
       "draftAnswer": "I need the faction/sectorial, the exact Trooper profiles, the desired Fireteam type, and the current official Fireteams Chart. Fireteam legality is army-chart-specific: the minimum/maximum members, required units, wildcard notes, and availability must all permit the proposed team.",
@@ -4137,10 +5178,14 @@
       "draftConclusion": "UNRESOLVED",
       "id": "ambiguous_missing_facts-10",
       "question": "Can I join these Troopers into a Fireteam?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "UNRESOLVED",
+      "approvedCertainty": "NEEDS CLARIFICATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -4176,8 +5221,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "I need to know what action is directed at the Sixth Sense Trooper, whether it is an Attack, and what legal ARO it wants to declare. Sixth Sense allows responses only to Attacks directed at the user from outside LoF; it does not create a general right to shoot at every activation. The chosen BS Attack must still satisfy its own Requirements.",
+      "approvedCitations": [
+        {
+          "page": 39,
+          "section": "BS ATTACK",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 111,
+          "section": "SIXTH SENSE",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "AMBIGUOUS_MISSING_FACTS",
       "draftAnswer": "I need to know what action is directed at the Sixth Sense Trooper, whether it is an Attack, and what legal ARO it wants to declare. Sixth Sense allows responses only to Attacks directed at the user from outside LoF; it does not create a general right to shoot at every activation. The chosen BS Attack must still satisfy its own Requirements.",
@@ -4197,10 +5253,14 @@
       "draftConclusion": "UNRESOLVED",
       "id": "ambiguous_missing_facts-11",
       "question": "Does Sixth Sense let me shoot back?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "UNRESOLVED",
+      "approvedCertainty": "NEEDS CLARIFICATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -4237,8 +5297,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Yes, if you mean the Discover + Attack maneuver and the second declaration is a legal Short Skill/Basic Short Skill. If the Marker reveals by ARO, no Discover Roll is needed; otherwise Discover must succeed before the Attack resolves. I need the intended Attack and target to confirm its Requirements.",
+      "approvedCitations": [
+        {
+          "page": 13,
+          "section": "TROOPER ACTIVATION",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 77,
+          "section": "DISCOVER + ATTACK",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "AMBIGUOUS_MISSING_FACTS",
       "draftAnswer": "Yes, if you mean the Discover + Attack maneuver and the second declaration is a legal Short Skill/Basic Short Skill. If the Marker reveals by ARO, no Discover Roll is needed; otherwise Discover must succeed before the Attack resolves. I need the intended Attack and target to confirm its Requirements.",
@@ -4258,10 +5329,14 @@
       "draftConclusion": "UNRESOLVED",
       "id": "ambiguous_missing_facts-12",
       "question": "Can I Discover and shoot in the same Order?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "UNRESOLVED",
+      "approvedCertainty": "NEEDS CLARIFICATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -4297,8 +5372,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "I need the weapon or Skill and the mode being used. Direct Template Weapons do not make a BS Roll to hit affected targets, but legal template placement, target eligibility, Dodge, scenery, and cancellation can still prevent an effect. Other weapons normally require an Attack Roll unless their own rule says otherwise.",
+      "approvedCitations": [
+        {
+          "page": 43,
+          "section": "TEMPLATE WEAPONS",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 45,
+          "section": "DIRECT TEMPLATE WEAPONS",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "AMBIGUOUS_MISSING_FACTS",
       "draftAnswer": "I need the weapon or Skill and the mode being used. Direct Template Weapons do not make a BS Roll to hit affected targets, but legal template placement, target eligibility, Dodge, scenery, and cancellation can still prevent an effect. Other weapons normally require an Attack Roll unless their own rule says otherwise.",
@@ -4318,10 +5404,14 @@
       "draftConclusion": "UNRESOLVED",
       "id": "ambiguous_missing_facts-13",
       "question": "Does this weapon hit automatically?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "UNRESOLVED",
+      "approvedCertainty": "NEEDS CLARIFICATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -4357,8 +5447,24 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "I need the Roll type and the rule, Skill, Equipment, or Command Token effect claimed to grant the reroll. Infinity has no universal permission to reroll a failure. A reroll is legal only when a specific rule permits it, such as an applicable Doctor/Engineer variant or Command Token operational use, and that rule controls the cost and replacement result.",
+      "approvedCitations": [
+        {
+          "page": 129,
+          "section": "EXAMPLE OF USE OF COMMAND TOKENS: REROLLING",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 90,
+          "section": "DOCTOR",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 91,
+          "section": "ENGINEER",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "AMBIGUOUS_MISSING_FACTS",
       "draftAnswer": "I need the Roll type and the rule, Skill, Equipment, or Command Token effect claimed to grant the reroll. Infinity has no universal permission to reroll a failure. A reroll is legal only when a specific rule permits it, such as an applicable Doctor/Engineer variant or Command Token operational use, and that rule controls the cost and replacement result.",
@@ -4383,10 +5489,14 @@
       "draftConclusion": "UNRESOLVED",
       "id": "ambiguous_missing_facts-14",
       "question": "Can I reroll this failed Roll?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "UNRESOLVED",
+      "approvedCertainty": "NEEDS CLARIFICATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -4415,8 +5525,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "I need to know whether the Trooper survived in a non-Engaged, non-Null, non-IMM State; whether it suffered a successful Attack that triggers Guts; and whether Courage or another exception applies. A qualifying Trooper makes one Guts Roll at the end of the Order. An Attack with no PS value that causes no State does not require one.",
+      "approvedCitations": [
+        {
+          "page": 38,
+          "section": "GUTS ROLL",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 90,
+          "section": "COURAGE",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "AMBIGUOUS_MISSING_FACTS",
       "draftAnswer": "I need to know whether the Trooper survived in a non-Engaged, non-Null, non-IMM State; whether it suffered a successful Attack that triggers Guts; and whether Courage or another exception applies. A qualifying Trooper makes one Guts Roll at the end of the Order. An Attack with no PS value that causes no State does not require one.",
@@ -4436,10 +5557,14 @@
       "draftConclusion": "UNRESOLVED",
       "id": "ambiguous_missing_facts-15",
       "question": "Does the target receive a Guts Roll?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "UNRESOLVED",
+      "approvedCertainty": "NEEDS CLARIFICATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -4469,8 +5594,24 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "If a Trooper with MSV1 and Sixth Sense is the target of a BS Attack through a Zero Visibility Zone, the FAQ says it ignores the −6 MOD for drawing LoF through that zone. This specific FAQ ruling controls over a reading of the core MSV1 rule by itself.",
+      "approvedCitations": [
+        {
+          "page": 2,
+          "section": "SPECIAL SKILLS FAQ",
+          "sourceId": "infinity-faq-n5-v0.1"
+        },
+        {
+          "page": 111,
+          "section": "SIXTH SENSE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 1",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": {
         "expectedConclusion": "INTERPRETATION",
         "expectedCoreResult": "The applicable result must incorporate the current FAQ exception for Sixth Sense, MSV1, and Zero Visibility.",
@@ -4504,10 +5645,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "faq_its_override-01",
       "question": "How do Sixth Sense, MSV1, and a Zero Visibility Zone interact?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -4555,8 +5700,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Yes. During its Active Turn, an MSV3 Trooper may declare a BS Attack against a Camouflaged Marker in LoF without first Discovering it. It must apply the Mimetism MOD shown on the Marker, and normal Camouflaged State cancellation rules still apply.",
+      "approvedCitations": [
+        {
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 3",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 157,
+          "section": "CAMOUFLAGED STATE",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "FAQ_ITS_OVERRIDE",
       "draftAnswer": "Yes. During its Active Turn, an MSV3 Trooper may declare a BS Attack against a Camouflaged Marker in LoF without first Discovering it. It must apply the Mimetism MOD shown on the Marker, and normal Camouflaged State cancellation rules still apply.",
@@ -4576,10 +5732,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "faq_its_override-02",
       "question": "Can an MSV3 Trooper attack a Camouflaged Marker without Discovering it first?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -4609,8 +5769,24 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "The FAQ separates revealing the Marker from resolving the hit. If the BS Attack forces a Saving Roll, the Camouflaged Marker is revealed; however, the represented game element is not hit when it is actually in Total Cover from that Attack.",
+      "approvedCitations": [
+        {
+          "page": 3,
+          "section": "Page text",
+          "sourceId": "infinity-faq-n5-v0.1"
+        },
+        {
+          "page": 41,
+          "section": "TOTAL COVER",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 158,
+          "section": "CAMOUFLAGED STATE — CANCELLATION",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "FAQ_ITS_OVERRIDE",
       "draftAnswer": "The FAQ separates revealing the Marker from resolving the hit. If the BS Attack forces a Saving Roll, the Camouflaged Marker is revealed; however, the represented game element is not hit when it is actually in Total Cover from that Attack.",
@@ -4635,10 +5811,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "faq_its_override-03",
       "question": "What happens when a BS Attack hits a Camouflaged Marker whose represented model is in Total Cover?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -4674,8 +5854,24 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "None of the Season 18 mission entries in the activated corpus changes the categories of Troopers counted as Specialists: they repeat the general list—Hackers, Doctors, Engineers, Forward Observers, Paramedics, Chain of Command, and Specialist Operatives. Many missions do add a task restriction preventing Hackers, Doctors, and Engineers from using Repeaters or Peripheral (Servant) Models for Specialist tasks; that is a use restriction, not a changed definition.",
+      "approvedCitations": [
+        {
+          "page": 17,
+          "section": "SPECIALIST TROOPS",
+          "sourceId": "its-season-18"
+        },
+        {
+          "page": 49,
+          "section": "SPECIALIST TROOPS",
+          "sourceId": "its-season-18"
+        },
+        {
+          "page": 138,
+          "section": "SPECIALIST TROOPS",
+          "sourceId": "its-season-18"
+        }
+      ],
       "candidateExpectation": null,
       "category": "FAQ_ITS_OVERRIDE",
       "draftAnswer": "None of the Season 18 mission entries in the activated corpus changes the categories of Troopers counted as Specialists: they repeat the general list—Hackers, Doctors, Engineers, Forward Observers, Paramedics, Chain of Command, and Specialist Operatives. Many missions do add a task restriction preventing Hackers, Doctors, and Engineers from using Repeaters or Peripheral (Servant) Models for Specialist tasks; that is a use restriction, not a changed definition.",
@@ -4700,10 +5896,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "faq_its_override-04",
       "question": "Which ITS missions change the definition of Specialist Troops?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -4733,8 +5933,24 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "For an ITS game, the selected mission’s explicit scenario provisions govern that mission’s objectives, scoring, deployment, exclusions, end conditions, and scenario Skills. The core rules continue to apply except where the mission expressly provides a more specific rule.",
+      "approvedCitations": [
+        {
+          "page": 9,
+          "section": "RULES",
+          "sourceId": "its-season-18"
+        },
+        {
+          "page": 16,
+          "section": "SCENARIOS",
+          "sourceId": "its-season-18"
+        },
+        {
+          "page": 35,
+          "section": "ITS SCENARIOS",
+          "sourceId": "its-season-18"
+        }
+      ],
       "candidateExpectation": null,
       "category": "FAQ_ITS_OVERRIDE",
       "draftAnswer": "For an ITS game, the selected mission’s explicit scenario provisions govern that mission’s objectives, scoring, deployment, exclusions, end conditions, and scenario Skills. The core rules continue to apply except where the mission expressly provides a more specific rule.",
@@ -4759,10 +5975,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "faq_its_override-05",
       "question": "Do ITS Season 18 mission rules override the core objective rules?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -4806,8 +6026,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "At the end of the game, a player may replace one drawn Classified Objective with Secure HVT. It is accomplished when one non-Null Trooper is inside the enemy HVT's ZoC while the player's own HVT's ZoC contains no enemy Troopers other than those in Null State. It scores the same OP as one normal Classified in that mission. It is unavailable where the mission says Secure HVT is not used, and it cannot replace a Classified already renounced as an INTELCOM card.",
+      "approvedCitations": [
+        {
+          "page": 34,
+          "section": "SECURE HVT CLASSIFIED OBJECTIVE",
+          "sourceId": "its-season-18"
+        },
+        {
+          "page": 35,
+          "section": "SECURE HVT CLASSIFIED OBJECTIVE",
+          "sourceId": "its-season-18"
+        }
+      ],
       "candidateExpectation": null,
       "category": "FAQ_ITS_OVERRIDE",
       "draftAnswer": "At the end of the game, a player may replace one drawn Classified Objective with Secure HVT. It is accomplished when one non-Null Trooper is inside the enemy HVT's ZoC while the player's own HVT's ZoC contains no enemy Troopers other than those in Null State. It scores the same OP as one normal Classified in that mission. It is unavailable where the mission says Secure HVT is not used, and it cannot replace a Classified already renounced as an INTELCOM card.",
@@ -4827,10 +6058,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "faq_its_override-06",
       "question": "How is Secure HVT scored in the current ITS season?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -4866,8 +6101,24 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "FAQ v0.1 adds three Fireteam clarifications: BS Attack (+1 SD) and +1 BS bonuses do not apply to Discover; a Fireteam does not change type when it loses members; and losing a Trooper that was required to create the Fireteam does not cancel it because the chart's minimum applies only at creation, except where FT Master overrides.",
+      "approvedCitations": [
+        {
+          "page": 3,
+          "section": "FIRETEAMS FAQ",
+          "sourceId": "infinity-faq-n5-v0.1"
+        },
+        {
+          "page": 134,
+          "section": "FIRETEAM INTEGRITY",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 135,
+          "section": "FIRETEAM BONUSES",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "FAQ_ITS_OVERRIDE",
       "draftAnswer": "FAQ v0.1 adds three Fireteam clarifications: BS Attack (+1 SD) and +1 BS bonuses do not apply to Discover; a Fireteam does not change type when it loses members; and losing a Trooper that was required to create the Fireteam does not cancel it because the chart's minimum applies only at creation, except where FT Master overrides.",
@@ -4892,10 +6143,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "faq_its_override-07",
       "question": "What current FAQ changes affect Fireteams?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -4925,8 +6180,34 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Infinity FAQ v0.1 contains no explicit amendment or change to Hidden Deployment in the activated corpus. Apply the current N5.3 Hidden Deployment rules unless a later official FAQ or the selected ITS mission provides a specific exception.",
+      "approvedCitations": [
+        {
+          "page": 1,
+          "section": "BASIC RULES FAQ",
+          "sourceId": "infinity-faq-n5-v0.1"
+        },
+        {
+          "page": 2,
+          "section": "STATES FAQ",
+          "sourceId": "infinity-faq-n5-v0.1"
+        },
+        {
+          "page": 161,
+          "section": "HIDDEN DEPLOYMENT STATE",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 3,
+          "section": "FAQS",
+          "sourceId": "infinity-faq-n5-v0.1"
+        },
+        {
+          "page": 4,
+          "section": "FAQS",
+          "sourceId": "infinity-faq-n5-v0.1"
+        }
+      ],
       "candidateExpectation": null,
       "category": "FAQ_ITS_OVERRIDE",
       "draftAnswer": "Infinity FAQ v0.1 contains no explicit amendment or change to Hidden Deployment in the activated corpus. Apply the current N5.3 Hidden Deployment rules unless a later official FAQ or the selected ITS mission provides a specific exception.",
@@ -4961,10 +6242,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "faq_its_override-08",
       "question": "What current FAQ changes affect Hidden Deployment?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Source-wide review of all four printed pages in the activated Infinity FAQ v0.1 found no Hidden Deployment amendment; N5.3 remains controlling absent a mission-specific exception.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -5001,8 +6286,24 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Yes, it clarifies when a Hacking Device's Firewall operates: its Firewall MODs apply to any Comms Attack made against that Trooper unless the Hacking Device is disabled, for example because the Trooper is Isolated or in a Null State. The core rule still limits the interaction to one applicable Firewall.",
+      "approvedCitations": [
+        {
+          "page": 1,
+          "section": "QUANTRONIC COMBAT (HACKING) FAQ",
+          "sourceId": "infinity-faq-n5-v0.1"
+        },
+        {
+          "page": 55,
+          "section": "FIREWALLS",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 56,
+          "section": "REPEATER",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "FAQ_ITS_OVERRIDE",
       "draftAnswer": "Yes, it clarifies when a Hacking Device's Firewall operates: its Firewall MODs apply to any Comms Attack made against that Trooper unless the Hacking Device is disabled, for example because the Trooper is Isolated or in a Null State. The core rule still limits the interaction to one applicable Firewall.",
@@ -5027,10 +6328,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "faq_its_override-09",
       "question": "Does the current FAQ alter how Repeaters and Firewalls interact?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -5066,8 +6371,44 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Combat Jump carries the Airborne Deployment and Superior Deployment labels, so mission restrictions on either label apply. Season 18 prohibits AD/Superior Deployment inside specified Exclusion Zones in Corporate Appropriation (p.50), B-Pong (p.56), Crossing Lines (p.60), Double Bind (p.69), and Critical Intervention (p.95). Crossing Lines also prohibits Superior Deployment Skills other than Impersonation entirely (p.62), which prevents Combat Jump in that scenario.",
+      "approvedCitations": [
+        {
+          "page": 89,
+          "section": "COMBAT JUMP",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 50,
+          "section": "CORPORATE APPROPRIATION",
+          "sourceId": "its-season-18"
+        },
+        {
+          "page": 56,
+          "section": "B-PONG",
+          "sourceId": "its-season-18"
+        },
+        {
+          "page": 60,
+          "section": "CROSSING LINES",
+          "sourceId": "its-season-18"
+        },
+        {
+          "page": 62,
+          "section": "SUPERIOR DEPLOYMENT",
+          "sourceId": "its-season-18"
+        },
+        {
+          "page": 69,
+          "section": "DOUBLE BIND",
+          "sourceId": "its-season-18"
+        },
+        {
+          "page": 95,
+          "section": "CRITICAL INTERVENTION — FORCES AND DEPLOYMENT",
+          "sourceId": "its-season-18"
+        }
+      ],
       "candidateExpectation": null,
       "category": "FAQ_ITS_OVERRIDE",
       "draftAnswer": "Combat Jump carries the Airborne Deployment and Superior Deployment labels, so mission restrictions on either label apply. Season 18 prohibits AD/Superior Deployment inside specified Exclusion Zones in Corporate Appropriation (p.50), B-Pong (p.56), Crossing Lines (p.60), Double Bind (p.69), and Critical Intervention (p.95). Crossing Lines also prohibits Superior Deployment Skills other than Impersonation entirely (p.62), which prevents Combat Jump in that scenario.",
@@ -5112,10 +6453,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "faq_its_override-10",
       "question": "Which ITS Season 18 rules restrict Combat Jump?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Source-wide review of ITS Season 18 confirmed five mission Exclusion Zones affecting Airborne/Superior Deployment and Crossing Lines' broader Superior Deployment prohibition; Combat Jump carries both labels.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -5158,8 +6503,24 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "For the MSV1 shooter's BS Attack, the return BS Attack makes that shooter the target of a BS Attack through the Smoke. The Smoke is therefore treated as Poor Visibility when the shooter draws LoF back, and MSV1 reduces that Visibility MOD from -6 to -3. Partial Cover adds another -3, so the shooter's known total is -6 before Range or other MODs. The target receives +3 on any Saving Roll from Partial Cover. For the target's return shot, being targeted through the Smoke also permits LoF by treating it as Poor Visibility, imposing -6 unless the target has a rule that reduces that MOD.",
+      "approvedCitations": [
+        {
+          "page": 41,
+          "section": "COVER",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 1",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 144,
+          "section": "VISIBILITY CONDITION",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "MODIFIER_CALCULATION",
       "draftAnswer": "For the MSV1 shooter's BS Attack, the return BS Attack makes that shooter the target of a BS Attack through the Smoke. The Smoke is therefore treated as Poor Visibility when the shooter draws LoF back, and MSV1 reduces that Visibility MOD from -6 to -3. Partial Cover adds another -3, so the shooter's known total is -6 before Range or other MODs. The target receives +3 on any Saving Roll from Partial Cover. For the target's return shot, being targeted through the Smoke also permits LoF by treating it as Poor Visibility, imposing -6 unless the target has a rule that reduces that MOD.",
@@ -5184,10 +6545,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "modifier_calculation-01",
       "question": "I shoot through Smoke with MSV1, the target shoots back, and the target is in Cover; what MODs apply?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -5223,8 +6588,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "The MSV1 shooter's Visibility MOD is -6. Dodge is not a BS Attack, so it does not trigger the rule that lets the target treat the Zero Visibility Zone as Poor Visibility. MSV1 instead uses its direct rule for drawing LoF through a Zero Visibility Zone at -6. The Dodge itself takes no Visibility Zone MOD, because Dodge is expressly excepted from those MODs.",
+      "approvedCitations": [
+        {
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 1",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 144,
+          "section": "VISIBILITY CONDITION",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "MODIFIER_CALCULATION",
       "draftAnswer": "The MSV1 shooter's Visibility MOD is -6. Dodge is not a BS Attack, so it does not trigger the rule that lets the target treat the Zero Visibility Zone as Poor Visibility. MSV1 instead uses its direct rule for drawing LoF through a Zero Visibility Zone at -6. The Dodge itself takes no Visibility Zone MOD, because Dodge is expressly excepted from those MODs.",
@@ -5244,10 +6620,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "modifier_calculation-02",
       "question": "I shoot through Smoke with MSV1 and the target Dodges; what Visibility MOD applies?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -5283,8 +6663,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "MSV1 reduces the target's Mimetism (-6) to -3. Partial Cover still imposes -3 because MSV1 does not cancel Cover. The known total on the BS Attack is therefore -6 before Range or other MODs. If hit, the target also receives +3 on its Saving Roll from Partial Cover.",
+      "approvedCitations": [
+        {
+          "page": 41,
+          "section": "COVER",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 1",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "MODIFIER_CALCULATION",
       "draftAnswer": "MSV1 reduces the target's Mimetism (-6) to -3. Partial Cover still imposes -3 because MSV1 does not cancel Cover. The known total on the BS Attack is therefore -6 before Range or other MODs. If hit, the target also receives +3 on its Saving Roll from Partial Cover.",
@@ -5304,10 +6695,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "modifier_calculation-03",
       "question": "I shoot a Mimetism (-6) target in Cover with MSV1; which MODs remain?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -5343,8 +6738,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Both specified MODs become 0. MSV1 reduces Mimetism (-3) to 0 and reduces a Low Visibility Zone's -3 MOD to 0. Range, Cover, and any other applicable MODs are calculated separately.",
+      "approvedCitations": [
+        {
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 1",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 144,
+          "section": "VISIBILITY CONDITION",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "MODIFIER_CALCULATION",
       "draftAnswer": "Both specified MODs become 0. MSV1 reduces Mimetism (-3) to 0 and reduces a Low Visibility Zone's -3 MOD to 0. Range, Cover, and any other applicable MODs are calculated separately.",
@@ -5364,10 +6770,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "modifier_calculation-04",
       "question": "I shoot a Mimetism (-3) target through a Low Visibility Zone with MSV1; what Visibility and Mimetism MODs remain?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -5404,8 +6814,14 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Apply only -6 for Visibility. Visibility Zone MODs never stack with one another; when multiple zones affect a Roll, use only the most restrictive MOD. Between Low Visibility (-3) and Poor Visibility (-6), that is -6. Other non-Visibility MODs may still stack normally.",
+      "approvedCitations": [
+        {
+          "page": 144,
+          "section": "VISIBILITY CONDITION",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "MODIFIER_CALCULATION",
       "draftAnswer": "Apply only -6 for Visibility. Visibility Zone MODs never stack with one another; when multiple zones affect a Roll, use only the most restrictive MOD. Between Low Visibility (-3) and Poor Visibility (-6), that is -6. Other non-Visibility MODs may still stack normally.",
@@ -5420,10 +6836,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "modifier_calculation-05",
       "question": "I shoot through overlapping Low and Poor Visibility Zones; which Visibility MOD applies?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -5467,8 +6887,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Apply WIP -6. The enemy Repeater supplies Firewall (-3), while the protected target supplies Firewall (-6), but only one Firewall may apply. The protected player's controller chooses which applicable Firewall to use, so the rational choice is -6. If the Comms Attack causes a Saving Roll, the protected target also receives the Firewall's +3 Saving Roll MOD.",
+      "approvedCitations": [
+        {
+          "page": 55,
+          "section": "FIREWALLS",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 56,
+          "section": "REPEATER",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "MODIFIER_CALCULATION",
       "draftAnswer": "Apply WIP -6. The enemy Repeater supplies Firewall (-3), while the protected target supplies Firewall (-6), but only one Firewall may apply. The protected player's controller chooses which applicable Firewall to use, so the rational choice is -6. If the Comms Attack causes a Saving Roll, the protected target also receives the Firewall's +3 Saving Roll MOD.",
@@ -5488,10 +6919,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "modifier_calculation-06",
       "question": "A Hacker attacks through an enemy Repeater against a target protected by Firewall (-6); what WIP MOD applies?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -5536,8 +6971,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Ordinary Difficult Terrain does not modify the PH Roll for Dodge; it affects Movement instead. To Dodge a Template, roll against the model's PH, or PH-3 if the model has no LoF to the attacker or the Template comes from a Deployable Weapon. Apply any separate PH MOD that genuinely affects that Dodge. Visibility Zone MODs do not apply to Dodge. Without the model's PH and the Template circumstances, no single numeric target number can be stated.",
+      "approvedCitations": [
+        {
+          "page": 44,
+          "section": "TEMPLATE WEAPONS AND EQUIPMENT",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 144,
+          "section": "DIFFICULT TERRAIN AND VISIBILITY CONDITION",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "MODIFIER_CALCULATION",
       "draftAnswer": "Ordinary Difficult Terrain does not modify the PH Roll for Dodge; it affects Movement instead. To Dodge a Template, roll against the model's PH, or PH-3 if the model has no LoF to the attacker or the Template comes from a Deployable Weapon. Apply any separate PH MOD that genuinely affects that Dodge. Visibility Zone MODs do not apply to Dodge. Without the model's PH and the Template circumstances, no single numeric target number can be stated.",
@@ -5557,10 +7003,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "modifier_calculation-07",
       "question": "A model Dodges a Template Weapon with PH modified by terrain; how is the target number calculated?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -5603,8 +7053,19 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Marksmanship ignores Partial Cover's -3 MOD to the BS Attack. The weapon's negative Range MOD still applies, as do Mimetism, Visibility, and any other applicable MODs. The target still receives +3 on its Saving Roll from Partial Cover. A numeric BS target cannot be calculated without the weapon and exact distance.",
+      "approvedCitations": [
+        {
+          "page": 41,
+          "section": "COVER",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 100,
+          "section": "MARKSMANSHIP",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "MODIFIER_CALCULATION",
       "draftAnswer": "Marksmanship ignores Partial Cover's -3 MOD to the BS Attack. The weapon's negative Range MOD still applies, as do Mimetism, Visibility, and any other applicable MODs. The target still receives +3 on its Saving Roll from Partial Cover. A numeric BS target cannot be calculated without the weapon and exact distance.",
@@ -5624,10 +7085,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "modifier_calculation-08",
       "question": "A Trooper with Marksmanship shoots a target in Cover outside its weapon's good range; which MODs apply?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -5664,8 +7129,24 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Against an IMP-1 Marker, Biometric Visor ignores the state's WIP -3 Discover MOD. Apply the normal Discover Range MOD and any other applicable MODs. If the Marker is IMP-2 instead, there is no IMP-1 WIP -3 for the Visor to cancel, so the exact Impersonation level must be known before stating a final total.",
+      "approvedCitations": [
+        {
+          "page": 77,
+          "section": "DISCOVER",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 120,
+          "section": "BIOMETRIC VISOR",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 166,
+          "section": "IMPERSONATION STATE",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "MODIFIER_CALCULATION",
       "draftAnswer": "Against an IMP-1 Marker, Biometric Visor ignores the state's WIP -3 Discover MOD. Apply the normal Discover Range MOD and any other applicable MODs. If the Marker is IMP-2 instead, there is no IMP-1 WIP -3 for the Visor to cancel, so the exact Impersonation level must be known before stating a final total.",
@@ -5690,10 +7171,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "modifier_calculation-09",
       "question": "An Impersonation Marker is Discovered by a Trooper with Biometric Visor; what MOD applies?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -5750,8 +7235,29 @@
           }
         ]
       },
-      "approvedAnswer": null,
-      "approvedCitations": [],
+      "approvedAnswer": "Keep dice changes separate from the target number. The qualifying Fireteam's BS Attack (+1 SD) changes the dice rolled and discarded; it does not raise Burst or BS. Its +1 BS Attack bonus adds +1 to the BS Roll. Then add Range and subtract the target's Mimetism value and Partial Cover's -3, subject to the overall +/-12 cap. Formula: Success Value = BS + 1 + Range MOD - Mimetism MOD - 3 Cover + other applicable MODs. The target also receives +3 on its Saving Roll from Partial Cover. Exact dice and target number require the weapon, Fireteam level/composition, Range, and Mimetism value.",
+      "approvedCitations": [
+        {
+          "page": 23,
+          "section": "MODIFIERS",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 41,
+          "section": "COVER",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 102,
+          "section": "MIMETISM",
+          "sourceId": "infinity-rules-n5.3"
+        },
+        {
+          "page": 135,
+          "section": "FIRETEAM BONUSES",
+          "sourceId": "infinity-rules-n5.3"
+        }
+      ],
       "candidateExpectation": null,
       "category": "MODIFIER_CALCULATION",
       "draftAnswer": "Keep dice changes separate from the target number. The qualifying Fireteam's BS Attack (+1 SD) changes the dice rolled and discarded; it does not raise Burst or BS. Its +1 BS Attack bonus adds +1 to the BS Roll. Then add Range and subtract the target's Mimetism value and Partial Cover's -3, subject to the overall +/-12 cap. Formula: Success Value = BS + 1 + Range MOD - Mimetism MOD - 3 Cover + other applicable MODs. The target also receives +3 on its Saving Roll from Partial Cover. Exact dice and target number require the weapon, Fireteam level/composition, Range, and Mimetism value.",
@@ -5781,10 +7287,14 @@
       "draftConclusion": "INTERPRETATION",
       "id": "modifier_calculation-10",
       "question": "A Fireteam member shoots with Burst and BS bonuses while affected by Mimetism and Cover; how are the modifiers combined?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -5828,7 +7338,7 @@
           }
         ]
       },
-      "approvedAnswer": null,
+      "approvedAnswer": "Use the current official rulebook, FAQ, and ITS document in the activated corpus. A forum post is not an official ruling merely because it offers a different interpretation. It may be considered only if it can be verified as an official Corvus Belli ruling that applies to the current edition; otherwise the bot must not replace the published rule with it.",
       "approvedCitations": [],
       "candidateExpectation": null,
       "category": "UNRESOLVED_UNSUPPORTED",
@@ -5838,10 +7348,14 @@
       "draftConclusion": "UNRESOLVED",
       "id": "unresolved_unsupported-01",
       "question": "A forum post says this rule works differently from the rulebook; which ruling is official?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked for conservative authority handling and safe escalation; intentionally makes no unsupported official ruling and remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "UNRESOLVED",
+      "approvedCertainty": "SAFE ESCALATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -5892,7 +7406,7 @@
           }
         ]
       },
-      "approvedAnswer": null,
+      "approvedAnswer": "First apply normal authority and specificity: a current FAQ clarification controls the rule it clarifies, and a mission-specific ITS rule controls that mission. If two current official provisions still directly contradict after scope, timing, and specificity are checked, the corpus does not support a definitive answer. The bot must identify both provisions, label the conflict unresolved, and refer the question to the tournament organizer or Corvus Belli rather than inventing a priority rule.",
       "approvedCitations": [],
       "candidateExpectation": null,
       "category": "UNRESOLVED_UNSUPPORTED",
@@ -5902,10 +7416,14 @@
       "draftConclusion": "UNRESOLVED",
       "id": "unresolved_unsupported-02",
       "question": "How should we resolve two current official rules that directly contradict one another?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked for conservative authority handling and safe escalation; intentionally makes no unsupported official ruling and remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "UNRESOLVED",
+      "approvedCertainty": "SAFE ESCALATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -5956,7 +7474,7 @@
           }
         ]
       },
-      "approvedAnswer": null,
+      "approvedAnswer": "The official corpus does not determine the interaction. The bot must say that explicitly, state what facts and related rules were checked, and avoid creating a new rule by analogy. For an actual game, the tournament organizer must make a temporary table ruling; that ruling is local and is not presented as an official Infinity rule.",
       "approvedCitations": [],
       "candidateExpectation": null,
       "category": "UNRESOLVED_UNSUPPORTED",
@@ -5966,10 +7484,14 @@
       "draftConclusion": "UNRESOLVED",
       "id": "unresolved_unsupported-03",
       "question": "What happens in an interaction that is not addressed by the Rules, FAQ, or ITS document?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked for conservative authority handling and safe escalation; intentionally makes no unsupported official ruling and remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "UNRESOLVED",
+      "approvedCertainty": "SAFE ESCALATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -6015,7 +7537,7 @@
           }
         ]
       },
-      "approvedAnswer": null,
+      "approvedAnswer": "No. An N4 FAQ does not bind N5 when it is absent from the activated N5 corpus. It may be presented separately as historical context only if accurately sourced, clearly labeled non-current, and permitted by the tournament organizer. It cannot be cited as the official N5 answer.",
       "approvedCitations": [],
       "candidateExpectation": null,
       "category": "UNRESOLVED_UNSUPPORTED",
@@ -6025,10 +7547,14 @@
       "draftConclusion": "UNRESOLVED",
       "id": "unresolved_unsupported-04",
       "question": "Can an old N4 FAQ decide an interaction not answered in N5?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked for conservative authority handling and safe escalation; intentionally makes no unsupported official ruling and remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "UNRESOLVED",
+      "approvedCertainty": "SAFE ESCALATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     },
     {
       "answerContract": {
@@ -6087,7 +7613,7 @@
           }
         ]
       },
-      "approvedAnswer": null,
+      "approvedAnswer": "The tournament organizer should make the narrowest temporary ruling needed to continue play, record the exact facts, announce it to all affected players, and apply it consistently for the event. The ruling should be labeled a local event ruling—not an official rule—and revisited if Corvus Belli later publishes an answer.",
       "approvedCitations": [],
       "candidateExpectation": null,
       "category": "UNRESOLVED_UNSUPPORTED",
@@ -6097,10 +7623,14 @@
       "draftConclusion": "UNRESOLVED",
       "id": "unresolved_unsupported-05",
       "question": "What ruling should a tournament organizer use when the official corpus is genuinely silent?",
-      "reviewStatus": "VERIFIED_DRAFT",
+      "reviewStatus": "APPROVED",
       "semanticAuditBasis": "Checked for conservative authority handling and safe escalation; intentionally makes no unsupported official ruling and remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "approvedConclusion": "UNRESOLVED",
+      "approvedCertainty": "SAFE ESCALATION",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-09-08T05:38:15.051Z"
     }
   ],
   "corpus": {
@@ -6142,5 +7672,12 @@
     "status": "COMPLETE",
     "totalCases": 100
   },
-  "title": "Infinity N5 Rules Adjudicator Benchmark"
+  "title": "Infinity N5 Rules Adjudicator Benchmark",
+  "formalApproval": {
+    "approvedCases": 100,
+    "totalCases": 100,
+    "approvedBy": "Jake Strangeway (Lobo)",
+    "approvedAt": "2026-09-08T05:38:15.051Z",
+    "method": "EXPLICIT_ALL_CASE_REVIEW"
+  }
 }
