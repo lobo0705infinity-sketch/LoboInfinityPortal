@@ -14,7 +14,7 @@ assert.equal(benchmark.policy.paidProviderRequestsDuringValidation, 0)
 assert.equal(benchmark.policy.approvedAnswersRequiredBeforeRelease, 100)
 assert.equal(benchmark.semanticAudit?.auditedCases, 100)
 assert.equal(benchmark.semanticAudit?.totalCases, 100)
-assert.equal(benchmark.semanticContracts?.contractedCases, 61)
+assert.equal(benchmark.semanticContracts?.contractedCases, 76)
 
 const ids = new Set()
 const counts = Object.fromEntries([...allowedCategories].map((category) => [category, 0]))
