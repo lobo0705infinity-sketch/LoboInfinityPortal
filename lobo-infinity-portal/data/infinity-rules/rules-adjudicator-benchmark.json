@@ -3048,7 +3048,7 @@
       "approvedCitations": [],
       "candidateExpectation": null,
       "category": "TIMING_SEQUENCE",
-      "draftAnswer": "If the Fireteam Leader enters a Null or Isolated State, the Fireteam is canceled unless a specific rule such as Number 2 immediately supplies the applicable replacement. If a non-Leader enters a Null State during Resolution, that member leaves when the State is applied and the Fireteam's composition and bonuses are recalculated using the remaining valid members. Because Resolution is simultaneous, this does not retroactively change Rolls already resolved in that Order; the recalculated composition governs afterward.",
+      "draftAnswer": "If the Fireteam Leader enters a Null or Isolated State, the Fireteam is canceled unless a specific rule such as Number 2 immediately supplies the applicable replacement. If a non-Leader member enters a Null State during Resolution, that member leaves when the State is applied, but this does not retroactively change Rolls already resolved in the simultaneous Order. The Fireteam's later composition and bonuses use the remaining valid members.",
       "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
       "draftCitations": [
         {
