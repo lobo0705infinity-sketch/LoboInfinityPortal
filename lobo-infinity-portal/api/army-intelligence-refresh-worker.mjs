@@ -39,7 +39,7 @@ export default async function handler(request, response) {
     const backfillToken = String(process.env.ARMY_INTELLIGENCE_BACKFILL_TOKEN || '').trim()
     const batchLimit = Math.max(1, Number(body.batchLimit) || DEFAULT_REFRESH_BATCH_LIMIT)
     const requestedSectorial = String(body.sectorial || '').trim()
-    const publishPublicSnapshot = scopedBackfill && body.publishPublicSnapshot === true
+    const publishPublicSnapshot = automatic && body.publishPublicSnapshot === true
     const deferReadModelRebuild = scopedBackfill && body.deferReadModelRebuild === true
     const finalizeMigration = scopedBackfill && body.finalizeMigration === true
     const dryRun = scopedBackfill && body.dryRun === true
