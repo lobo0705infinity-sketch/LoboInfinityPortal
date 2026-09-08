@@ -1893,8 +1893,8 @@
       "approvedCitations": [],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
-      "draftAnswer": "As written, this does not identify a valid N5.3 interaction. N5.3 does not define a standalone Viral Ammunition rule or an Immunity (Shock) entry. Viral-named weapons instead use their printed weapon profiles—for example, Normal (N) ammunition with the Bioweapon (DA+Shock) Trait. Resolve the exact Viral weapon profile against the exact Immunity printed on the target; do not infer an answer from the legacy names alone.",
-      "draftCertainty": "SAFE ESCALATION",
+      "draftAnswer": "Yes—but only through the effects printed on the weapon profile. For a Viral-named weapon with Bioweapon (DA+Shock), Immunity (Shock) cancels only the Shock effect. It does not cancel DA: the target still makes the two Saving Rolls required by DA, using the weapon profile's listed Saving Attribute and Damage, and resolves any other printed effects normally. Always check the exact Viral weapon profile because “Viral” is a weapon name in N5.3, not a standalone Ammunition rule.",
+      "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
       "draftCitations": [
         {
           "page": 96,
@@ -1917,40 +1917,57 @@
           "sourceId": "infinity-rules-n5.3"
         }
       ],
-      "draftConclusion": "UNRESOLVED",
+      "draftConclusion": "YES",
       "id": "two_rule_interaction-14",
       "question": "Does Viral Ammunition interact with Immunity (Shock)?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditBasis": "Confirmed against the N5.3 ammunition list, Immunity rules, and Viral-named weapon profiles; exact printed weapon and Immunity entries are required.",
-      "semanticAuditDate": "2026-09-07",
+      "semanticAuditBasis": "Checked against the N5.3 Immunity rules and Viral-named weapon profiles. Immunity (Shock) removes only Shock; DA and all other printed profile effects remain.",
+      "semanticAuditDate": "2026-09-08",
       "semanticAuditStatus": "PASSED",
       "answerContract": {
         "requiredClaims": [
           {
-            "id": "invalid-names",
-            "description": "no standalone Viral Ammo/Immunity Shock interaction",
+            "id": "shock-only",
+            "description": "Immunity (Shock) cancels only the Shock effect",
             "patterns": [
-              "does\\s+not\\s+define.{0,80}viral\\s+ammunition",
-              "does\\s+not\\s+identify\\s+a\\s+valid"
+              "immunity\\s*\\(shock\\).{0,60}cancels?\\s+only\\s+(?:the\\s+)?shock",
+              "only\\s+(?:cancels?|removes?)\\s+(?:the\\s+)?shock"
+            ]
+          },
+          {
+            "id": "da-remains",
+            "description": "DA remains and requires two Saving Rolls",
+            "patterns": [
+              "does\\s+not\\s+cancel\\s+da.{0,80}two\\s+saving\\s+rolls",
+              "da.{0,60}two\\s+saving\\s+rolls"
             ]
           },
           {
             "id": "printed-profile",
-            "description": "use exact printed weapon profile",
+            "description": "use the exact printed weapon profile",
             "patterns": [
-              "printed\\s+weapon\\s+profiles?",
-              "exact\\s+viral\\s+weapon\\s+profile"
+              "exact\\s+viral\\s+weapon\\s+profile",
+              "weapon\\s+profile.{0,80}listed\\s+saving\\s+attribute"
             ]
           },
           {
-            "id": "exact-immunity",
-            "description": "compare exact target Immunity",
+            "id": "not-standalone-ammo",
+            "description": "Viral is not standalone Ammunition in N5.3",
             "patterns": [
-              "exact\\s+immunity"
+              "viral.{0,40}(?:not|isn['’]?t)\\s+a\\s+standalone\\s+ammunition"
             ]
           }
         ],
-        "forbiddenClaims": []
+        "forbiddenClaims": [
+          {
+            "id": "cancels-entire-attack",
+            "description": "must not claim Immunity (Shock) cancels the whole attack",
+            "patterns": [
+              "immunity\\s*\\(shock\\).{0,50}cancel(?:s|led)?\\s+(?:the\\s+)?(?:entire|whole)\\s+attack",
+              "no\\s+saving\\s+rolls"
+            ]
+          }
+        ]
       }
     },
     {
