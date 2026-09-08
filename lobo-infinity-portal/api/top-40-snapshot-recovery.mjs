@@ -4,7 +4,7 @@ export default async function handler(request, response) {
   const credential = String(process.env.ARMY_INTELLIGENCE_WORKER_TOKEN || '').trim()
   if (!apiUrl || !credential) return response.status(500).json({ error: 'Recovery environment unavailable.', success: false })
   const body = new URLSearchParams({
-    action: 'refreshArmyIntelligence', credential, snapshots: '[]', publishPublicSnapshot: 'true',
+    action: 'refreshArmyIntelligence', workerToken: credential, snapshots: '[]', publishPublicSnapshot: 'true',
   })
   const upstream = await fetch(apiUrl, {
     method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded;charset=UTF-8' }, body, redirect: 'follow',
