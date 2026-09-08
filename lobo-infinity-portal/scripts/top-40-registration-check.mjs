@@ -39,7 +39,7 @@ assert.match(dedicatedPageSource, /\{full \? 'FULL' : 'OPEN'\}/)
 assert.match(dedicatedPageSource, /\{count\} \/ 40 PLAYERS REGISTERED/)
 assert.match(dedicatedPageSource, /No players registered yet\./)
 assert.match(dedicatedPageSource, /reached its 40-player capacity/)
-assert.match(dedicatedPageSource, /Updated hourly/)
+assert.match(dedicatedPageSource, /Updated twice daily/)
 assert.match(dedicatedPageSource, /Last updated:/)
 assert.match(dedicatedPageSource, /useSnapshotData<PublicTop40Registration>\('top-40-registrations'\)/)
 assert.doesNotMatch(dedicatedPageSource, /useEffect|fetch\(|\/api\/public-event-projection|Loading registration snapshot|HTTP \$\{response\.status\}/)
@@ -117,6 +117,13 @@ for (const forbidden of [
 }
 
 assert.match(publicSnapshotExporterSource, /function readPublicSnapshotTop40RegistrationNames_\(\)[\s\S]*lifGetTargetSpreadsheet_\(\)/)
+for (const header of [
+  'Timestamp', 'Email address', 'Lobo Portal User Name', 'Discord Name', 'Tournament Rules agreement',
+]) assert.ok(publicSnapshotExporterSource.includes(`"${header}"`))
+assert.match(publicSnapshotExporterSource, /PUBLIC_SNAPSHOT_TOP40_REGISTRATION_SHEET = "Form Responses 2"/)
+assert.match(publicSnapshotExporterSource, /getSheetByName\(PUBLIC_SNAPSHOT_TOP40_REGISTRATION_SHEET\)/)
+assert.match(publicSnapshotExporterSource, /normalizedHeaders\.indexOf\("lobo portal user name"\)/)
+assert.doesNotMatch(publicSnapshotExporterSource, /"Discord Username"|"Email Address"|"Lobo Portal Name"|"I have read and agree to the tournament rules"/)
 assert.match(publicSnapshotExporterSource, /portalNameColumn[\s\S]*getRange\(2, source\.portalNameColumn, lastRow - 1, 1\)/)
 assert.match(publicSnapshotExporterSource, /portalNameHeader:[\s\S]*responseWorksheet:/)
 
@@ -384,7 +391,7 @@ if (browserBaseUrl) {
       for (const privateValue of ['private@example.com', 'private-discord', 'I agree', 'Loading registration snapshot', 'HTTP 500']) {
         assert.equal(html.includes(privateValue), false)
       }
-      assert.ok(html.includes('Updated hourly'))
+      assert.ok(html.includes('Updated twice daily'))
       assert.ok(html.includes('Last updated:'))
       assert.equal(requests.filter((url) => /public-snapshots\/current\.json/.test(url)).length, 1)
       assert.equal(requests.filter((url) => /top-40-registrations\.json/.test(url)).length, 1)

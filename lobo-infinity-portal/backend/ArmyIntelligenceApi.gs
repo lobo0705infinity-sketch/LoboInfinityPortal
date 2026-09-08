@@ -124,10 +124,12 @@ function refreshArmyIntelligence(e) {
   }
 
   if (!snapshots.length && publishPublicSnapshot) {
+    const triggerConfiguration = reconcileTwiceDailyPublicSnapshotTriggers();
     const publication = runScheduledPublicSnapshot();
     return jsonOutput({
       success: publication && publication.success === true,
       publication: publication,
+      triggerConfiguration: triggerConfiguration,
       status: publication && publication.success === true ? "Published" : "Publication failed",
       updated: 0
     });

@@ -12,11 +12,13 @@ const PUBLIC_SNAPSHOT_V1_ROOT_NAME = "Lobo Public Snapshots V1";
 const PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_PROPERTY = "PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_ID";
 const PUBLIC_SNAPSHOT_PUBLISH_TOKEN_PROPERTY = "LOBO_SNAPSHOT_PUBLISH_TOKEN";
 const PUBLIC_SNAPSHOT_PUBLISH_URL = "https://lobo-infinity-portal.vercel.app/api/public-snapshot-publish";
+const PUBLIC_SNAPSHOT_TOP40_REGISTRATION_SHEET = "Form Responses 2";
 const PUBLIC_SNAPSHOT_TOP40_REGISTRATION_HEADERS = [
-  "Discord Username",
-  "Email Address",
-  "Lobo Portal Name",
-  "I have read and agree to the tournament rules"
+  "Timestamp",
+  "Email address",
+  "Lobo Portal User Name",
+  "Discord Name",
+  "Tournament Rules agreement"
 ];
 const PUBLIC_SNAPSHOT_TOP40_REGISTRATION_LIMIT = 40;
 const PUBLIC_SNAPSHOT_PUBLIC_FILES = [
@@ -185,6 +187,24 @@ function installTwiceDailyPublicSnapshotTriggers() {
     hours: [0, 12], timezone: "America/New_York", triggerCount: count
   };
   Logger.log("PUBLIC_SNAPSHOT_TRIGGER " + JSON.stringify(result));
+  return result;
+}
+
+function reconcileTwiceDailyPublicSnapshotTriggers() {
+  const scheduledHandlers = ScriptApp.getProjectTriggers().map(function(trigger) {
+    return trigger.getHandlerFunction();
+  }).filter(function(handler) {
+    return handler === "runScheduledPublicSnapshot" || handler === "runHourlyPublicSnapshot";
+  });
+  if (scheduledHandlers.length === 2 &&
+      scheduledHandlers.every(function(handler) { return handler === "runScheduledPublicSnapshot"; })) {
+    return {
+      success: true, functionName: "runScheduledPublicSnapshot", frequency: "twice daily",
+      hours: [0, 12], timezone: "America/New_York", triggerCount: 2, changed: false
+    };
+  }
+  const result = installTwiceDailyPublicSnapshotTriggers();
+  result.changed = true;
   return result;
 }
 
@@ -399,33 +419,30 @@ function readPublicSnapshotSheet_(spreadsheet, sheetName) {
 
 function readPublicSnapshotTop40RegistrationNames_() {
   const spreadsheet = lifGetTargetSpreadsheet_();
+  const sheet = spreadsheet.getSheetByName(PUBLIC_SNAPSHOT_TOP40_REGISTRATION_SHEET);
+  if (!sheet)
+    throw new Error("Top 40 form-response worksheet not found: " + PUBLIC_SNAPSHOT_TOP40_REGISTRATION_SHEET + ".");
   const requiredHeaders = PUBLIC_SNAPSHOT_TOP40_REGISTRATION_HEADERS.map(function(header) {
     return header.toLowerCase();
   });
-  const matches = spreadsheet.getSheets().map(function(sheet) {
-    const lastColumn = sheet.getLastColumn();
-    if (!lastColumn) return null;
-    const headers = sheet.getRange(1, 1, 1, lastColumn).getDisplayValues()[0].map(function(value) {
+  const lastColumn = sheet.getLastColumn();
+  const headers = lastColumn
+    ? sheet.getRange(1, 1, 1, lastColumn).getDisplayValues()[0].map(function(value) {
       return String(value || "").trim();
-    });
-    const normalizedHeaders = headers.map(function(header) { return header.toLowerCase(); });
-    const matchesTop40Form = requiredHeaders.every(function(header) {
-      return normalizedHeaders.indexOf(header) !== -1;
-    });
-    if (!matchesTop40Form) return null;
-    return {
-      portalNameColumn: normalizedHeaders.indexOf("lobo portal name") + 1,
-      portalNameHeader: headers[normalizedHeaders.indexOf("lobo portal name")],
-      sheet: sheet
-    };
-  }).filter(Boolean);
-
-  if (matches.length !== 1)
-    throw new Error(
-      "Expected exactly one Top 40 form-response worksheet; found " + matches.length + "."
-    );
-
-  const source = matches[0];
+    })
+    : [];
+  const normalizedHeaders = headers.map(function(header) { return header.toLowerCase(); });
+  const missingHeaders = requiredHeaders.filter(function(header) {
+    return normalizedHeaders.indexOf(header) === -1;
+  });
+  if (missingHeaders.length)
+    throw new Error("Top 40 form-response worksheet is missing required headers: " + missingHeaders.join(", ") + ".");
+  const portalNameIndex = normalizedHeaders.indexOf("lobo portal user name");
+  const source = {
+    portalNameColumn: portalNameIndex + 1,
+    portalNameHeader: headers[portalNameIndex],
+    sheet: sheet
+  };
   const lastRow = source.sheet.getLastRow();
   const values = lastRow > 1
     ? source.sheet.getRange(2, source.portalNameColumn, lastRow - 1, 1).getDisplayValues()
