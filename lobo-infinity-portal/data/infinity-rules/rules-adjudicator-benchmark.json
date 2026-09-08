@@ -2483,7 +2483,7 @@
           "sourceId": "infinity-rules-n5.3"
         }
       ],
-      "draftConclusion": "DEPENDS",
+      "draftConclusion": "INTERPRETATION",
       "id": "timing_sequence-03",
       "question": "Does declaring Dodge break Stealth?",
       "reviewStatus": "VERIFIED_DRAFT",
