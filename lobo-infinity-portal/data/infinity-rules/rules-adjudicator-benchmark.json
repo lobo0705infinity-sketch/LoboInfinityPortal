@@ -5119,7 +5119,47 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft."
+      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "smoke-minus3",
+            "description": "MSV1 reduces Smoke/Poor Visibility from -6 to -3",
+            "patterns": [
+              "msv\\s*1.{0,100}(?:poor\\s+visibility|visibility\\s+mod).{0,100}(?:from\\s*)?(?:−|-)\\s*6.{0,30}(?:to\\s*)?(?:−|-)\\s*3"
+            ]
+          },
+          {
+            "id": "cover-minus3",
+            "description": "Partial Cover adds -3",
+            "patterns": [
+              "partial\\s+cover.{0,50}(?:adds?|imposes?).{0,20}(?:another\\s*)?(?:−|-)\\s*3"
+            ]
+          },
+          {
+            "id": "known-total-minus6",
+            "description": "known total is -6 before Range",
+            "patterns": [
+              "known\\s+total.{0,30}(?:−|-)\\s*6.{0,50}(?:before|excluding).{0,20}range"
+            ]
+          },
+          {
+            "id": "cover-save-plus3",
+            "description": "target gets +3 Saving Roll",
+            "patterns": [
+              "target.{0,60}\\+\\s*3.{0,40}saving\\s+roll"
+            ]
+          },
+          {
+            "id": "return-minus6",
+            "description": "target's return shot has -6 absent mitigation",
+            "patterns": [
+              "target['’]?s\\s+return\\s+shot.{0,150}(?:−|-)\\s*6"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -5146,7 +5186,40 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft."
+      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "shooter-minus6",
+            "description": "MSV1 shooter's Visibility MOD is -6",
+            "patterns": [
+              "msv\\s*1\\s+shooter['’]?s\\s+visibility\\s+mod.{0,20}(?:−|-)\\s*6"
+            ]
+          },
+          {
+            "id": "dodge-not-bs",
+            "description": "Dodge is not a BS Attack",
+            "patterns": [
+              "dodge\\s+is\\s+not\\s+a\\s+bs\\s+attack"
+            ]
+          },
+          {
+            "id": "zero-not-poor",
+            "description": "Dodge does not convert Zero to Poor Visibility",
+            "patterns": [
+              "dodge.{0,100}(?:does\\s+not|doesn['’]?t).{0,60}(?:poor\\s+visibility|treat\\s+the\\s+zero)"
+            ]
+          },
+          {
+            "id": "dodge-no-vis-mod",
+            "description": "Dodge itself takes no Visibility MOD",
+            "patterns": [
+              "dodge.{0,60}(?:takes?|has|receives?).{0,30}no\\s+visibility(?:\\s+zone)?\\s+mod"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -5173,7 +5246,40 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft."
+      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "mimetism-minus3",
+            "description": "MSV1 reduces Mimetism -6 to -3",
+            "patterns": [
+              "msv\\s*1.{0,60}mimetism\\s*\\((?:−|-)\\s*6\\).{0,30}(?:to\\s*)?(?:−|-)\\s*3"
+            ]
+          },
+          {
+            "id": "cover-minus3",
+            "description": "Partial Cover remains -3",
+            "patterns": [
+              "partial\\s+cover.{0,50}(?:still\\s+)?(?:imposes?|is|adds?).{0,20}(?:−|-)\\s*3"
+            ]
+          },
+          {
+            "id": "total-minus6",
+            "description": "known BS total is -6 before Range",
+            "patterns": [
+              "known\\s+total.{0,50}(?:−|-)\\s*6.{0,50}(?:before|excluding).{0,20}range"
+            ]
+          },
+          {
+            "id": "save-plus3",
+            "description": "Cover grants +3 Saving Roll",
+            "patterns": [
+              "target.{0,60}\\+\\s*3.{0,40}saving\\s+roll"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -5200,7 +5306,40 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft."
+      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "both-zero",
+            "description": "both specified MODs are 0",
+            "patterns": [
+              "both\\s+(?:specified\\s+)?mods?.{0,30}(?:become|are|to)\\s*0"
+            ]
+          },
+          {
+            "id": "mimetism-zero",
+            "description": "Mimetism -3 reduced to 0",
+            "patterns": [
+              "mimetism\\s*\\((?:−|-)\\s*3\\).{0,40}(?:to|becomes?)\\s*0"
+            ]
+          },
+          {
+            "id": "low-vis-zero",
+            "description": "Low Visibility -3 reduced to 0",
+            "patterns": [
+              "low\\s+visibility.{0,60}(?:−|-)\\s*3.{0,40}(?:to|becomes?)\\s*0"
+            ]
+          },
+          {
+            "id": "others-separate",
+            "description": "Range/Cover calculated separately",
+            "patterns": [
+              "(?:range|cover).{0,60}(?:separate|separately)"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -5222,7 +5361,41 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft."
+      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "visibility-minus6",
+            "description": "only -6 Visibility applies",
+            "patterns": [
+              "apply\\s+only\\s+(?:−|-)\\s*6.{0,30}visibility",
+              "visibility.{0,50}(?:is|=)\\s*(?:−|-)\\s*6"
+            ]
+          },
+          {
+            "id": "no-stack",
+            "description": "Visibility Zone MODs do not stack",
+            "patterns": [
+              "visibility\\s+zone\\s+mods?.{0,40}(?:never|do\\s+not|don['’]?t).{0,20}stack"
+            ]
+          },
+          {
+            "id": "most-restrictive",
+            "description": "use most restrictive MOD",
+            "patterns": [
+              "most\\s+restrictive\\s+mod"
+            ]
+          },
+          {
+            "id": "other-mods-stack",
+            "description": "non-Visibility MODs may stack",
+            "patterns": [
+              "non-?visibility\\s+mods?.{0,40}(?:may|can|still).{0,20}stack"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -5249,7 +5422,48 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft."
+      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "wip-minus6",
+            "description": "final applicable WIP MOD is -6",
+            "patterns": [
+              "apply\\s+wip\\s*(?:−|-)\\s*6",
+              "wip\\s+mod.{0,20}(?:is|=)\\s*(?:−|-)\\s*6"
+            ]
+          },
+          {
+            "id": "two-firewalls",
+            "description": "identifies Repeater -3 and target -6",
+            "patterns": [
+              "repeater.{0,50}firewall\\s*\\((?:−|-)\\s*3\\).{0,100}target.{0,50}firewall\\s*\\((?:−|-)\\s*6\\)"
+            ]
+          },
+          {
+            "id": "only-one",
+            "description": "only one Firewall applies",
+            "patterns": [
+              "only\\s+one\\s+firewall.{0,30}appl"
+            ]
+          },
+          {
+            "id": "controller-chooses",
+            "description": "protected player/controller chooses",
+            "patterns": [
+              "protected\\s+player['’]?s\\s+controller.{0,50}chooses?"
+            ]
+          },
+          {
+            "id": "save-plus3",
+            "description": "Firewall gives +3 Saving Roll",
+            "patterns": [
+              "firewall['’]?s\\s+\\+\\s*3\\s+saving\\s+roll\\s+mod"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -5276,7 +5490,49 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft."
+      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "terrain-no-ph",
+            "description": "Difficult Terrain does not modify Dodge PH",
+            "patterns": [
+              "difficult\\s+terrain.{0,60}(?:does\\s+not|doesn['’]?t).{0,30}modify.{0,30}ph"
+            ]
+          },
+          {
+            "id": "base-or-minus3",
+            "description": "Dodge uses PH or PH-3 without LoF/deployable",
+            "patterns": [
+              "ph\\s*(?:−|-)\\s*3.{0,80}(?:no|without).{0,20}lof",
+              "(?:no|without).{0,20}lof.{0,80}ph\\s*(?:−|-)\\s*3"
+            ]
+          },
+          {
+            "id": "deployable-minus3",
+            "description": "Deployable template also causes PH-3",
+            "patterns": [
+              "deployable\\s+weapon.{0,80}ph\\s*(?:−|-)\\s*3",
+              "ph\\s*(?:−|-)\\s*3.{0,80}deployable\\s+weapon"
+            ]
+          },
+          {
+            "id": "no-visibility",
+            "description": "Visibility MODs do not apply to Dodge",
+            "patterns": [
+              "visibility\\s+zone\\s+mods?.{0,40}(?:do\\s+not|don['’]?t).{0,30}dodge"
+            ]
+          },
+          {
+            "id": "insufficient-numeric",
+            "description": "no numeric target without PH/circumstances",
+            "patterns": [
+              "without.{0,40}(?:model['’]?s\\s+)?ph.{0,80}no\\s+single\\s+numeric\\s+target"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -5303,7 +5559,47 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft."
+      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "ignore-cover-bs",
+            "description": "Marksmanship ignores Cover -3 BS MOD",
+            "patterns": [
+              "marksmanship.{0,60}ignore.{0,50}(?:partial\\s+)?cover['’]?s\\s+(?:−|-)\\s*3.{0,30}bs"
+            ]
+          },
+          {
+            "id": "range-remains",
+            "description": "negative Range MOD still applies",
+            "patterns": [
+              "negative\\s+range\\s+mod.{0,30}still\\s+applies"
+            ]
+          },
+          {
+            "id": "other-mods-remain",
+            "description": "Mimetism/Visibility still apply",
+            "patterns": [
+              "mimetism.{0,40}visibility.{0,60}(?:still|applicable|apply)"
+            ]
+          },
+          {
+            "id": "save-plus3",
+            "description": "Cover +3 Saving Roll remains",
+            "patterns": [
+              "target.{0,50}still.{0,30}\\+\\s*3.{0,40}saving\\s+roll"
+            ]
+          },
+          {
+            "id": "needs-range",
+            "description": "numeric BS needs weapon and distance",
+            "patterns": [
+              "numeric\\s+bs.{0,60}(?:cannot|can['’]?t).{0,40}(?:weapon|distance)"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -5335,7 +5631,41 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft."
+      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "imp1-ignore",
+            "description": "Biometric Visor ignores IMP-1 WIP -3",
+            "patterns": [
+              "biometric\\s+visor.{0,60}ignore.{0,50}imp-?1.{0,40}wip\\s*(?:−|-)\\s*3",
+              "imp-?1.{0,80}biometric\\s+visor.{0,50}ignore.{0,50}wip\\s*(?:−|-)\\s*3"
+            ]
+          },
+          {
+            "id": "range-remains",
+            "description": "normal Discover Range MOD remains",
+            "patterns": [
+              "normal\\s+discover\\s+range\\s+mod"
+            ]
+          },
+          {
+            "id": "imp2-no-minus3",
+            "description": "IMP-2 has no IMP-1 -3 to cancel",
+            "patterns": [
+              "imp-?2.{0,80}no\\s+imp-?1\\s+wip\\s*(?:−|-)\\s*3"
+            ]
+          },
+          {
+            "id": "need-level",
+            "description": "exact level needed for final total",
+            "patterns": [
+              "exact\\s+impersonation\\s+level.{0,60}(?:known|final\\s+total)"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -5372,7 +5702,61 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft."
+      "semanticAuditBasis": "Recalculated against the cited current N5.3 rule text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "dice-separate",
+            "description": "dice changes separate from target number",
+            "patterns": [
+              "dice\\s+changes?.{0,40}separate.{0,50}target\\s+number"
+            ]
+          },
+          {
+            "id": "sd-not-b-bs",
+            "description": "BS Attack +1 SD changes dice, not Burst/BS",
+            "patterns": [
+              "bs\\s+attack\\s*\\(\\+\\s*1\\s+sd\\).{0,80}dice.{0,80}(?:does\\s+not|doesn['’]?t).{0,30}(?:burst|bs)"
+            ]
+          },
+          {
+            "id": "plus1-bs",
+            "description": "+1 BS bonus adds to BS Roll",
+            "patterns": [
+              "\\+\\s*1\\s+bs\\s+attack\\s+bonus.{0,50}(?:adds?|\\+\\s*1).{0,30}bs\\s+roll"
+            ]
+          },
+          {
+            "id": "formula",
+            "description": "combines BS +1, Range, Mimetism, Cover -3",
+            "patterns": [
+              "bs\\s*\\+\\s*1\\s*\\+\\s*range\\s+mod\\s*-\\s*mimetism\\s+mod\\s*-\\s*3\\s+cover"
+            ]
+          },
+          {
+            "id": "cap",
+            "description": "overall +/-12 cap",
+            "patterns": [
+              "(?:overall\\s+)?\\+/-\\s*12\\s+cap"
+            ]
+          },
+          {
+            "id": "save-plus3",
+            "description": "target gets +3 Saving Roll",
+            "patterns": [
+              "target.{0,50}\\+\\s*3.{0,40}saving\\s+roll"
+            ]
+          },
+          {
+            "id": "needs-facts",
+            "description": "exact result needs weapon/team/range/Mimetism",
+            "patterns": [
+              "exact\\s+(?:dice|target\\s+number).{0,100}(?:weapon|fireteam).{0,100}range.{0,80}mimetism"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -5490,9 +5874,9 @@
   },
   "title": "Infinity N5 Rules Adjudicator Benchmark",
   "semanticContracts": {
-    "contractedCases": 85,
+    "contractedCases": 95,
     "totalCases": 100,
-    "status": "HIGH_RISK_DIRECT_TWO_RULE_TIMING_AMBIGUITY_AND_OVERRIDES_COMPLETE",
-    "note": "Contracts test practical claims beyond conclusion and citation matching. All direct definitions, two-rule interactions, timing/sequence, ambiguous/missing-facts, FAQ/ITS override cases, and remaining known high-risk regressions are protected; 15 contracts remain before any paid model evaluation."
+    "status": "ALL_RULED_CATEGORIES_COMPLETE",
+    "note": "Contracts test practical claims beyond conclusion and citation matching. All direct definitions, two-rule interactions, timing/sequence, ambiguous/missing-facts, FAQ/ITS override, modifier-calculation cases, and remaining known high-risk regressions are protected; only the 5 unresolved/unsupported cases remain before any paid model evaluation."
   }
 }
