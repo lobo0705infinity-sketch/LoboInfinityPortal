@@ -2,7 +2,7 @@
 
 ## Outcome
 
-The benchmark is mechanically complete, but it should **not be formally approved yet**. The **3 blocking issues, 3 legacy-terminology rulings, and 2 core interaction rulings have now been resolved**. **4 rulings still deserve focused rules review**. The other **96 cases require no further manual rereading** before approval.
+The benchmark is mechanically complete, but it should **not be formally approved yet**. The **3 blocking issues, 3 legacy-terminology rulings, 2 core interaction rulings, and 2 timing rulings have now been resolved**. **2 exhaustive-corpus rulings still deserve focused review**. The other **98 cases require no further manual rereading** before approval.
 
 This report does not approve the benchmark, run a paid model, deploy code, or modify production.
 
@@ -29,14 +29,19 @@ These corrections are complete on `rules-adjudicator-v2`.
 
 ## Focused rules review
 
-These are plausible drafts, but each depends on timing interpretation or an exhaustive corpus claim. Review only these four; the report makes no claim that they are wrong.
+These are plausible drafts, but each makes an exhaustive corpus claim. Review only these two; the report makes no claim that they are wrong.
 
 | Case | Question | Why it merits review |
 |---|---|---|
-| `timing_sequence-13` | Fireteam member enters a Null State mid-Order | The non-retroactivity and later composition statements are timing interpretations. |
-| `timing_sequence-19` | Peripheral disconnected during an Order | Result changes with the cause and timing of disconnection. |
 | `faq_its_override-08` | What FAQ changes affect Hidden Deployment? | Claims an exhaustive FAQ review found no amendment; negative claims need source-level confirmation. |
 | `faq_its_override-10` | Which ITS Season 18 rules restrict Combat Jump? | Claims an exhaustive mission list and page-specific restrictions; verify completeness once. |
+
+## Resolved timing cases
+
+| Case | Resolution |
+|---|---|
+| `timing_sequence-13` | The answer now distinguishes Leader cancellation, the Number 2 exception, a non-Leader leaving when the Null State applies, and non-retroactivity for already-resolved simultaneous Rolls. |
+| `timing_sequence-19` | The answer now distinguishes end-of-Order Controller-caused disconnection, immediate failed-Coherency disconnection before movement, and the Cyberplug Autonomous Profile exception. |
 
 ## Resolved core-interaction cases
 
@@ -55,7 +60,7 @@ These are plausible drafts, but each depends on timing interpretation or an exha
 
 ## Approval recommendation
 
-1. Resolve or explicitly accept the four focused-review records.
+1. Resolve or explicitly accept the two exhaustive-corpus records.
 2. Re-run the zero-cost benchmark, citation, adversarial, model-gate, and approval checks.
 3. Only then use the existing one-action approval command.
 4. After approval, authorize at most one paid candidate request as a smoke test; do not run a paid batch automatically.
