@@ -1,3 +1,5 @@
+export const maxDuration = 300
+
 export default async function handler(request, response) {
   if (request.method !== 'POST') return response.status(405).json({ success: false })
   const apiUrl = String(process.env.VITE_API_URL || '').trim()
