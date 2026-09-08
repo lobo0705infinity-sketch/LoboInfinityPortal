@@ -4884,7 +4884,7 @@
       "approvedCitations": [],
       "candidateExpectation": null,
       "category": "FAQ_ITS_OVERRIDE",
-      "draftAnswer": "A full review of Infinity FAQ v0.1 found no explicit amendment to Hidden Deployment. Apply the current N5.3 Hidden Deployment rules unless a later official FAQ or the selected ITS mission provides a specific exception.",
+      "draftAnswer": "Infinity FAQ v0.1 contains no explicit amendment or change to Hidden Deployment in the activated corpus. Apply the current N5.3 Hidden Deployment rules unless a later official FAQ or the selected ITS mission provides a specific exception.",
       "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
       "draftCitations": [
         {
@@ -4904,8 +4904,13 @@
         },
         {
           "page": 3,
-          "section": "FAQ REVIEW",
-          "sourceId": "infinity-faq-v0.1"
+          "section": "FAQS",
+          "sourceId": "infinity-faq-n5-v0.1"
+        },
+        {
+          "page": 4,
+          "section": "FAQS",
+          "sourceId": "infinity-faq-n5-v0.1"
         }
       ],
       "draftConclusion": "INTERPRETATION",
@@ -4914,7 +4919,7 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft.",
+      "semanticAuditBasis": "Source-wide review of all four printed pages in the activated Infinity FAQ v0.1 found no Hidden Deployment amendment; N5.3 remains controlling absent a mission-specific exception.",
       "answerContract": {
         "requiredClaims": [
           {
@@ -5059,7 +5064,7 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft.",
+      "semanticAuditBasis": "Source-wide review of ITS Season 18 confirmed five mission Exclusion Zones affecting Airborne/Superior Deployment and Crossing Lines' broader Superior Deployment prohibition; Combat Jump carries both labels.",
       "answerContract": {
         "requiredClaims": [
           {
