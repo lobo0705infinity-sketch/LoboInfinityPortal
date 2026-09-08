@@ -2565,7 +2565,34 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "resolution",
+            "description": "Discover resolves in Resolution",
+            "patterns": [
+              "successful\\s+discover.{0,80}(?:step\\s*5|resolution)",
+              "(?:step\\s*5|resolution).{0,80}discover"
+            ]
+          },
+          {
+            "id": "replace-marker",
+            "description": "Marker is replaced by model or token",
+            "patterns": [
+              "marker.{0,50}replac(?:ed|ement).{0,60}(?:model|token)"
+            ]
+          },
+          {
+            "id": "whole-order",
+            "description": "cancellation applies for the entire Order",
+            "patterns": [
+              "cancel(?:ed|lation).{0,60}(?:entire|whole)\\s+(?:declared\\s+)?order"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -2592,7 +2619,34 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "not-ftf",
+            "description": "Two Dodges are not automatically Face to Face",
+            "patterns": [
+              "\\bno\\b.{0,100}(?:both|two).{0,30}dodge",
+              "not.{0,60}(?:merely|simply|automatically).{0,40}dodge"
+            ]
+          },
+          {
+            "id": "must-affect",
+            "description": "Face to Face requires actions to affect each other",
+            "patterns": [
+              "face\\s+to\\s+face.{0,80}affect\\s+each\\s+other"
+            ]
+          },
+          {
+            "id": "normal-rolls",
+            "description": "non-opposing Dodges are Normal Rolls",
+            "patterns": [
+              "dodge.{0,80}(?:separate\\s+)?normal\\s+(?:ph\\s+)?roll"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -2614,7 +2668,33 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "immediate-cancel",
+            "description": "Suppressive Fire cancels when a listed condition occurs",
+            "patterns": [
+              "suppressive\\s+fire.{0,60}cancel(?:ed|led).{0,60}(?:as\\s+soon\\s+as|when).{0,50}(?:condition|declares?|fails?|enters?|joins?)"
+            ]
+          },
+          {
+            "id": "examples",
+            "description": "names at least one cancellation condition",
+            "patterns": [
+              "(?:declares?\\s+an?\\s+(?:order|aro)|fails?\\s+guts|loss\\s+of\\s+lieutenant|joins?\\s+a?\\s*fireteam)"
+            ]
+          },
+          {
+            "id": "no-benefits",
+            "description": "benefits stop after cancellation",
+            "patterns": [
+              "benefits?.{0,40}(?:do\\s+not|don['’]?t|cease|stop).{0,30}(?:continue|apply)|after\\s+cancellation.{0,40}(?:no|without).{0,20}benefit"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -2641,7 +2721,34 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "yes-trigger",
+            "description": "Mine detonates if target entered valid Trigger Area",
+            "patterns": [
+              "\\byes\\b.{0,100}(?:mine|trigger)",
+              "mine.{0,80}(?:valid\\s+target|trigger\\s+area)"
+            ]
+          },
+          {
+            "id": "path-matters",
+            "description": "any point on declared path counts",
+            "patterns": [
+              "(?:any\\s+point|position).{0,80}(?:declared\\s+)?(?:movement|path|route)"
+            ]
+          },
+          {
+            "id": "leaving-does-not-undo",
+            "description": "later leaving does not prevent detonation",
+            "patterns": [
+              "leav(?:e|ing).{0,80}(?:does\\s+not|doesn['’]?t).{0,50}(?:undo|prevent|cancel)"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -2673,7 +2780,41 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "twice",
+            "description": "ARO checks happen twice",
+            "patterns": [
+              "(?:aros?|aro\\s+checks?).{0,40}(?:checked\\s+)?twice",
+              "twice.{0,40}aros?"
+            ]
+          },
+          {
+            "id": "after-skills",
+            "description": "checks follow first and second Skill",
+            "patterns": [
+              "after\\s+the\\s+first\\s+skill.{0,100}(?:after\\s+the\\s+)?second\\s+skill"
+            ]
+          },
+          {
+            "id": "second-limited",
+            "description": "second check only for Troopers unable at first",
+            "patterns": [
+              "second\\s+check.{0,100}(?:could\\s+not|couldn['’]?t|unable|no\\s+aro).{0,50}first"
+            ]
+          },
+          {
+            "id": "whole-path",
+            "description": "eligibility uses entire declared path",
+            "patterns": [
+              "(?:entire|whole).{0,20}(?:declared\\s+)?path"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -2700,7 +2841,33 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "path-enters-area",
+            "description": "enemy reaction begins when path enters Hacking Area",
+            "patterns": [
+              "(?:path|movement).{0,70}(?:inside|enters?|brings?).{0,40}hacking\\s+area"
+            ]
+          },
+          {
+            "id": "aro-check",
+            "description": "legal Hacking ARO at applicable check",
+            "patterns": [
+              "(?:hacking\\s+aro|aro\\s+check)"
+            ]
+          },
+          {
+            "id": "endpoint-not-required",
+            "description": "need not end inside area",
+            "patterns": [
+              "(?:not\\s+necessary|need\\s+not|doesn['’]?t\\s+need).{0,60}end.{0,40}(?:inside|within).{0,30}(?:area|range)"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -2727,7 +2894,34 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "bs-reveals",
+            "description": "second-skill BS Attack reveals/cancels Camouflage",
+            "patterns": [
+              "bs\\s+attack.{0,80}(?:reveal|cancel).{0,30}(?:trooper|camouflaged|state)",
+              "(?:reveal|cancel).{0,80}bs\\s+attack"
+            ]
+          },
+          {
+            "id": "entire-order",
+            "description": "cancellation applies to entire Order",
+            "patterns": [
+              "cancel(?:ed|lation).{0,60}(?:entire|whole).{0,20}order"
+            ]
+          },
+          {
+            "id": "delayed-aro",
+            "description": "delayed enemies may declare ARO",
+            "patterns": [
+              "delay(?:ed|ing).{0,70}(?:declare|make).{0,20}(?:their\\s+)?aro"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -2749,7 +2943,41 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "qualifying-attacks",
+            "description": "Smoke is FtF only with attacks requiring Roll and LoF crossing zone",
+            "patterns": [
+              "face\\s+to\\s+face.{0,100}(?:require|requiring).{0,30}(?:roll|lof)",
+              "(?:require|requiring).{0,30}(?:roll|lof).{0,100}zero\\s+visibility"
+            ]
+          },
+          {
+            "id": "others-normal",
+            "description": "other attacks are Normal Rolls",
+            "patterns": [
+              "other\\s+attacks?.{0,40}normal\\s+roll"
+            ]
+          },
+          {
+            "id": "dodges-normal",
+            "description": "enemy Dodges are Normal Rolls",
+            "patterns": [
+              "(?:enemy\\s+)?dodges?.{0,60}normal\\s+roll"
+            ]
+          },
+          {
+            "id": "msv-not-ftf",
+            "description": "MSV users do not FtF Smoke",
+            "patterns": [
+              "multispectral\\s+visor.{0,80}(?:do\\s+not|don['’]?t).{0,30}face\\s+to\\s+face.{0,30}smoke"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -2781,7 +3009,34 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "normally-yes",
+            "description": "Trooper normally completes legal declared Skill",
+            "patterns": [
+              "normally\\s+yes",
+              "still\\s+resolves?.{0,60}(?:skill|declaration)"
+            ]
+          },
+          {
+            "id": "simultaneous",
+            "description": "Orders and AROs are simultaneous",
+            "patterns": [
+              "(?:orders?\\s+and\\s+aros?|resolution).{0,50}simultaneous"
+            ]
+          },
+          {
+            "id": "exceptions",
+            "description": "specific cancellation or failed Requirement can make Idle",
+            "patterns": [
+              "(?:cancellation|failed\\s+requirement).{0,80}idle"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -2813,7 +3068,33 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "leader-cancels",
+            "description": "Null/Isolated Leader cancels Fireteam",
+            "patterns": [
+              "(?:leader|fireteam\\s+leader).{0,50}(?:null|isolated).{0,50}fireteam.{0,30}cancel"
+            ]
+          },
+          {
+            "id": "nonleader-no-retroactive",
+            "description": "non-Leader Null does not retroactively change resolved rolls",
+            "patterns": [
+              "non-?leader.{0,100}(?:not|doesn['’]?t).{0,40}retroactive"
+            ]
+          },
+          {
+            "id": "later-bonuses",
+            "description": "later composition/bonuses use remaining valid members",
+            "patterns": [
+              "(?:later|afterward).{0,60}(?:composition|bonuses?).{0,80}remaining\\s+valid\\s+members"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -2835,7 +3116,34 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "discover-unneeded",
+            "description": "Discover becomes unnecessary/no effect after reveal",
+            "patterns": [
+              "discover\\s+roll.{0,50}(?:unnecessary|no\\s+remaining\\s+effect)",
+              "discover.{0,60}(?:unnecessary|no\\s+remaining\\s+effect)"
+            ]
+          },
+          {
+            "id": "attack-resolves",
+            "description": "already-declared Attack can resolve without Discover",
+            "patterns": [
+              "attack.{0,60}resolv(?:e|ed).{0,50}without.{0,20}discover"
+            ]
+          },
+          {
+            "id": "no-created-attack",
+            "description": "Discover alone does not create an Attack",
+            "patterns": [
+              "attack.{0,30}(?:not|isn['’]?t).{0,30}(?:created|automatic)|does\\s+not.{0,30}create.{0,20}attack"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -2867,7 +3175,36 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "yes-ftf",
+            "description": "Reset can become Face to Face with later Hacking Attack",
+            "patterns": [
+              "\\byes\\b.{0,100}hacking",
+              "reset.{0,100}face\\s+to\\s+face"
+            ]
+          },
+          {
+            "id": "directed-at-resetter",
+            "description": "attack must target Resetting Trooper and interact",
+            "patterns": [
+              "(?:directed|targeted).{0,40}reset(?:ting)?\\s+trooper",
+              "rolls?.{0,40}affect\\s+each\\s+other"
+            ]
+          },
+          {
+            "id": "simultaneous-resolution",
+            "description": "declarations simultaneous/requirements at Resolution",
+            "patterns": [
+              "declarations?.{0,40}simultaneous",
+              "requirements?.{0,50}resolution"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -2899,7 +3236,33 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "not-mid-order",
+            "description": "Discover does not resolve in first half/mid-Order",
+            "patterns": [
+              "discover.{0,80}(?:not|doesn['’]?t).{0,50}(?:first\\s+half|mid-?order)|discover\\s+rolls?.{0,50}(?:after\\s+all\\s+declarations|resolution)"
+            ]
+          },
+          {
+            "id": "no-new-window",
+            "description": "discovery does not create a new ARO window",
+            "patterns": [
+              "discover(?:y)?.{0,60}(?:does\\s+not|doesn['’]?t).{0,40}(?:new\\s+)?(?:mid-?order\\s+)?aro\\s+window"
+            ]
+          },
+          {
+            "id": "delayed-condition",
+            "description": "delayed ARO only if Marker reveals",
+            "patterns": [
+              "delay(?:ed|ing).{0,80}aro.{0,80}(?:only\\s+if|if).{0,30}reveal"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -2926,7 +3289,33 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "next-active-turn",
+            "description": "Retreat checked at beginning of next Active Turn",
+            "patterns": [
+              "retreat.{0,60}(?:beginning|start).{0,40}next\\s+active\\s+turn"
+            ]
+          },
+          {
+            "id": "tactical-phase",
+            "description": "check is in Tactical Phase",
+            "patterns": [
+              "tactical\\s+phase"
+            ]
+          },
+          {
+            "id": "not-immediate",
+            "description": "dropping below threshold does not start immediately",
+            "patterns": [
+              "(?:below|under).{0,30}threshold.{0,60}(?:does\\s+not|doesn['’]?t).{0,30}(?:start|begin).{0,20}(?:retreat\\s+)?immediately"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -2953,7 +3342,33 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "next-tactical",
+            "description": "Loss of Lieutenant checked next Tactical Phase/Active Turn",
+            "patterns": [
+              "loss\\s+of\\s+lieutenant.{0,60}(?:tactical\\s+phase|next\\s+active\\s+turn)"
+            ]
+          },
+          {
+            "id": "not-immediate",
+            "description": "does not begin immediately on Null State",
+            "patterns": [
+              "(?:does\\s+not|doesn['’]?t).{0,30}(?:begin|apply|start).{0,20}immediately"
+            ]
+          },
+          {
+            "id": "recovery-matters",
+            "description": "recovery before check can prevent it",
+            "patterns": [
+              "recover(?:y|ed|ing).{0,60}(?:before|prevent)"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -2980,7 +3395,34 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "usually-finishes",
+            "description": "Peripheral usually finishes declared Skill",
+            "patterns": [
+              "usually\\s+yes",
+              "peripheral.{0,80}(?:finish|resolv).{0,40}(?:skill|declaration)"
+            ]
+          },
+          {
+            "id": "end-of-order",
+            "description": "Null/Isolated Controller disconnects it at end of Order",
+            "patterns": [
+              "(?:null|isolated).{0,80}(?:end\\s+of\\s+(?:that|the)\\s+order|disconnected).{0,50}"
+            ]
+          },
+          {
+            "id": "coherency-exception",
+            "description": "failed Coherency may disconnect before movement",
+            "patterns": [
+              "(?:failed\\s+)?(?:required\\s+)?coherency\\s+check.{0,80}(?:immediately|before\\s+movement|disconnect)"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -3007,7 +3449,41 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditStatus": "PASSED"
+      "semanticAuditStatus": "PASSED",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "resolution-check",
+            "description": "most Requirements checked at step 5 Resolution",
+            "patterns": [
+              "requirements?.{0,60}(?:step\\s*5|resolution)"
+            ]
+          },
+          {
+            "id": "becomes-idle",
+            "description": "failure cancels action and becomes Idle",
+            "patterns": [
+              "(?:not\\s+met|fail(?:ed|s)?).{0,60}(?:cancel|idle)",
+              "(?:cancel(?:ed|led)|becomes?).{0,30}idle"
+            ]
+          },
+          {
+            "id": "disposable-spent",
+            "description": "Disposable uses remain spent",
+            "patterns": [
+              "disposable.{0,50}(?:still\\s+)?spent"
+            ]
+          },
+          {
+            "id": "early-exceptions",
+            "description": "some Skills checked at declaration",
+            "patterns": [
+              "(?:move|jump|climb).{0,100}(?:checked|requirements?).{0,50}(?:declaration|earlier)"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -4234,9 +4710,9 @@
   },
   "title": "Infinity N5 Rules Adjudicator Benchmark",
   "semanticContracts": {
-    "contractedCases": 44,
+    "contractedCases": 61,
     "totalCases": 100,
-    "status": "HIGH_RISK_DIRECT_AND_TWO_RULE_COMPLETE",
-    "note": "Contracts test practical claims beyond conclusion and citation matching. Expand to all 100 cases before a paid model evaluation."
+    "status": "HIGH_RISK_DIRECT_TWO_RULE_AND_TIMING_COMPLETE",
+    "note": "Contracts test practical claims beyond conclusion and citation matching. All direct definitions, two-rule interactions, timing/sequence cases, and remaining known high-risk regressions are protected; 39 contracts remain before any paid model evaluation."
   }
 }
