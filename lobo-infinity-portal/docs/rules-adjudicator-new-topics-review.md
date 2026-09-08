@@ -4161,33 +4161,33 @@ All 400 answers are classified as explicit rules answers; no interpretive answer
 4. Table situation: Under PARACHUTIST, is it correct that By using this Special Skill, the player cannot place the Trooper in Prone State, or in Silhouette contact with enemy and neutral Models, Markers, or Tokens, or in contact with any scenario objective?
 5. Quick question — under PARACHUTIST, is it correct that By using this Special Skill, the player cannot place the Trooper in Prone State, or in Silhouette contact with enemy and neutral Models, Markers, or Tokens, or in contact with any scenario objective?
 
-## 298. Under PERIPHERAL, is it correct that Each reactive Trooper must choose only one of the Troopers (be it the Controll they are not obliged to choose the same target?
+## 298. Under PERIPHERAL, is it correct that During the Reactive Turn, both the Controller and the Peripherals gain their o declared AROs must be the same for both the Controller and the Peripherals?
 
-**Answer — EXPLICIT RULES ANSWER:** Yes. Each reactive Trooper must choose only one of the Troopers (be it the Controll they are not obliged to choose the same target.
+**Answer — EXPLICIT RULES ANSWER:** Yes. During the Reactive Turn, both the Controller and the Peripherals gain their o declared AROs must be the same for both the Controller and the Peripherals.
 
 **Source:** Infinity Rules N5.3, p. 106 — PERIPHERAL
 
 **Five searchable phrasings:**
 
-1. Under PERIPHERAL, is it correct that Each reactive Trooper must choose only one of the Troopers (be it the Controll they are not obliged to choose the same target?
-2. Rules check: Under PERIPHERAL, is it correct that Each reactive Trooper must choose only one of the Troopers (be it the Controll they are not obliged to choose the same target?
-3. In Infinity N5.3, under PERIPHERAL, is it correct that Each reactive Trooper must choose only one of the Troopers (be it the Controll they are not obliged to choose the same target?
-4. Table situation: Under PERIPHERAL, is it correct that Each reactive Trooper must choose only one of the Troopers (be it the Controll they are not obliged to choose the same target?
-5. Quick question — under PERIPHERAL, is it correct that Each reactive Trooper must choose only one of the Troopers (be it the Controll they are not obliged to choose the same target?
+1. Under PERIPHERAL, is it correct that During the Reactive Turn, both the Controller and the Peripherals gain their o declared AROs must be the same for both the Controller and the Peripherals?
+2. Rules check: Under PERIPHERAL, is it correct that During the Reactive Turn, both the Controller and the Peripherals gain their o declared AROs must be the same for both the Controller and the Peripherals?
+3. In Infinity N5.3, under PERIPHERAL, is it correct that During the Reactive Turn, both the Controller and the Peripherals gain their o declared AROs must be the same for both the Controller and the Peripherals?
+4. Table situation: Under PERIPHERAL, is it correct that During the Reactive Turn, both the Controller and the Peripherals gain their o declared AROs must be the same for both the Controller and the Peripherals?
+5. Quick question — under PERIPHERAL, is it correct that During the Reactive Turn, both the Controller and the Peripherals gain their o declared AROs must be the same for both the Controller and the Peripherals?
 
-## 299. Under PLACE DEPLOYABLE, is it correct that The Token representing the weapon, piece of Equipment, or Peripheral (Ancillar declared this Skill. The enemy may only react against the Trooper that declar Peripheral (Ancillary) that is placed on the table during that Order or ARO?
+## 299. Under PLACE DEPLOYABLE, is it correct that Once the Token has been placed on the table, the weapon, piece of Equipment, o Orders/AROs?
 
-**Answer — EXPLICIT RULES ANSWER:** Yes. The Token representing the weapon, piece of Equipment, or Peripheral (Ancillar declared this Skill. The enemy may only react against the Trooper that declar Peripheral (Ancillary) that is placed on the table during that Order or ARO.
+**Answer — EXPLICIT RULES ANSWER:** Yes. Once the Token has been placed on the table, the weapon, piece of Equipment, o Orders/AROs.
 
 **Source:** Infinity Rules N5.3, p. 82 — PLACE DEPLOYABLE
 
 **Five searchable phrasings:**
 
-1. Under PLACE DEPLOYABLE, is it correct that The Token representing the weapon, piece of Equipment, or Peripheral (Ancillar declared this Skill. The enemy may only react against the Trooper that declar Peripheral (Ancillary) that is placed on the table during that Order or ARO?
-2. Rules check: Under PLACE DEPLOYABLE, is it correct that The Token representing the weapon, piece of Equipment, or Peripheral (Ancillar declared this Skill. The enemy may only react against the Trooper that declar Peripheral (Ancillary) that is placed on the table during that Order or ARO?
-3. In Infinity N5.3, under PLACE DEPLOYABLE, is it correct that The Token representing the weapon, piece of Equipment, or Peripheral (Ancillar declared this Skill. The enemy may only react against the Trooper that declar Peripheral (Ancillary) that is placed on the table during that Order or ARO?
-4. Table situation: Under PLACE DEPLOYABLE, is it correct that The Token representing the weapon, piece of Equipment, or Peripheral (Ancillar declared this Skill. The enemy may only react against the Trooper that declar Peripheral (Ancillary) that is placed on the table during that Order or ARO?
-5. Quick question — under PLACE DEPLOYABLE, is it correct that The Token representing the weapon, piece of Equipment, or Peripheral (Ancillar declared this Skill. The enemy may only react against the Trooper that declar Peripheral (Ancillary) that is placed on the table during that Order or ARO?
+1. Under PLACE DEPLOYABLE, is it correct that Once the Token has been placed on the table, the weapon, piece of Equipment, o Orders/AROs?
+2. Rules check: Under PLACE DEPLOYABLE, is it correct that Once the Token has been placed on the table, the weapon, piece of Equipment, o Orders/AROs?
+3. In Infinity N5.3, under PLACE DEPLOYABLE, is it correct that Once the Token has been placed on the table, the weapon, piece of Equipment, o Orders/AROs?
+4. Table situation: Under PLACE DEPLOYABLE, is it correct that Once the Token has been placed on the table, the weapon, piece of Equipment, o Orders/AROs?
+5. Quick question — under PLACE DEPLOYABLE, is it correct that Once the Token has been placed on the table, the weapon, piece of Equipment, o Orders/AROs?
 
 ## 300. Under REPEATER, is it correct that Hackers within the Zone of Control of an enemy Repeater may use it to apply Hacking Programs against any enemy Hacker, but applying Firewall MODs (-3)?
 
@@ -4343,19 +4343,19 @@ All 400 answers are classified as explicit rules answers; no interpretive answer
 4. Table situation: Under TECHNORGANIC, is it correct that This Special Skill remains active even when its owner is in a Null State?
 5. Quick question — under TECHNORGANIC, is it correct that This Special Skill remains active even when its owner is in a Null State?
 
-## 311. Under TRANSMUTATION, what happens when the Trooper transforms?
+## 311. Under TRANSMUTATION, is it correct that The VITA/STR Attribute points of a Trooper possessing this Special Skill are s Unit Profiles also apply to the other Unit Profiles?
 
-**Answer — EXPLICIT RULES ANSWER:** When the Trooper transforms, the Model corresponding to the first Unit Profile is no alternative Model, place a Transmuted (TRANSMUTED) Token (or the corresp new profile.
+**Answer — EXPLICIT RULES ANSWER:** Yes. The VITA/STR Attribute points of a Trooper possessing this Special Skill are s Unit Profiles also apply to the other Unit Profiles.
 
 **Source:** Infinity Rules N5.3, p. 117 — TRANSMUTATION
 
 **Five searchable phrasings:**
 
-1. Under TRANSMUTATION, what happens when the Trooper transforms?
-2. Rules check: Under TRANSMUTATION, what happens when the Trooper transforms?
-3. In Infinity N5.3, under TRANSMUTATION, what happens when the Trooper transforms?
-4. Table situation: Under TRANSMUTATION, what happens when the Trooper transforms?
-5. Quick question — under TRANSMUTATION, what happens when the Trooper transforms?
+1. Under TRANSMUTATION, is it correct that The VITA/STR Attribute points of a Trooper possessing this Special Skill are s Unit Profiles also apply to the other Unit Profiles?
+2. Rules check: Under TRANSMUTATION, is it correct that The VITA/STR Attribute points of a Trooper possessing this Special Skill are s Unit Profiles also apply to the other Unit Profiles?
+3. In Infinity N5.3, under TRANSMUTATION, is it correct that The VITA/STR Attribute points of a Trooper possessing this Special Skill are s Unit Profiles also apply to the other Unit Profiles?
+4. Table situation: Under TRANSMUTATION, is it correct that The VITA/STR Attribute points of a Trooper possessing this Special Skill are s Unit Profiles also apply to the other Unit Profiles?
+5. Quick question — under TRANSMUTATION, is it correct that The VITA/STR Attribute points of a Trooper possessing this Special Skill are s Unit Profiles also apply to the other Unit Profiles?
 
 ## 312. Under TRIANGULATED FIRE, is it correct that The only exception are MODs that affect Burst (B), which are applied normally?
 
@@ -4399,19 +4399,19 @@ All 400 answers are classified as explicit rules answers; no interpretive answer
 4. Table situation: Under ZERO PAIN, is it correct that In the Active or Reactive Turn, this Program allows the user to make two WIP Rolls in a Face to Face Roll to evade all enemy Comms Attacks?
 5. Quick question — under ZERO PAIN, is it correct that In the Active or Reactive Turn, this Program allows the user to make two WIP Rolls in a Face to Face Roll to evade all enemy Comms Attacks?
 
-## 315. Under BERSERK, is it correct that If, when measuring to find where the Trooper can move, they cannot reach Silhouette contact with the target, the Trooper will perform an Idle and therefore will neither Move, nor perform the CC Attack)?
+## 315. Under BERSERK, what happens if a MOD appears between brackets?
 
-**Answer — EXPLICIT RULES ANSWER:** Yes. If, when measuring to find where the Trooper can move, they cannot reach Silhouette contact with the target, the Trooper will perform an Idle and therefore will neither Move, nor perform the CC Attack).
+**Answer — EXPLICIT RULES ANSWER:** If a MOD appears between brackets, for example Berserk (+3), that MOD is applied to the CC Attack.
 
 **Source:** Infinity Rules N5.3, p. 86 — BERSERK
 
 **Five searchable phrasings:**
 
-1. Under BERSERK, is it correct that If, when measuring to find where the Trooper can move, they cannot reach Silhouette contact with the target, the Trooper will perform an Idle and therefore will neither Move, nor perform the CC Attack)?
-2. Rules check: Under BERSERK, is it correct that If, when measuring to find where the Trooper can move, they cannot reach Silhouette contact with the target, the Trooper will perform an Idle and therefore will neither Move, nor perform the CC Attack)?
-3. In Infinity N5.3, under BERSERK, is it correct that If, when measuring to find where the Trooper can move, they cannot reach Silhouette contact with the target, the Trooper will perform an Idle and therefore will neither Move, nor perform the CC Attack)?
-4. Table situation: Under BERSERK, is it correct that If, when measuring to find where the Trooper can move, they cannot reach Silhouette contact with the target, the Trooper will perform an Idle and therefore will neither Move, nor perform the CC Attack)?
-5. Quick question — under BERSERK, is it correct that If, when measuring to find where the Trooper can move, they cannot reach Silhouette contact with the target, the Trooper will perform an Idle and therefore will neither Move, nor perform the CC Attack)?
+1. Under BERSERK, what happens if a MOD appears between brackets?
+2. Rules check: Under BERSERK, what happens if a MOD appears between brackets?
+3. In Infinity N5.3, under BERSERK, what happens if a MOD appears between brackets?
+4. Table situation: Under BERSERK, what happens if a MOD appears between brackets?
+5. Quick question — under BERSERK, what happens if a MOD appears between brackets?
 
 ## 316. Under CAMOUFLAGED, can restriction: You enter Silhouette contact with an Enemy Camouflaged Marker?
 
@@ -4763,33 +4763,33 @@ All 400 answers are classified as explicit rules answers; no interpretive answer
 4. Table situation: Under PARACHUTIST, is it correct that The player may deploy the Trooper on any surface of the game table, as long as that surface’s size is equal to or larger than their base and is in contact with the edge of the table?
 5. Quick question — under PARACHUTIST, is it correct that The player may deploy the Trooper on any surface of the game table, as long as that surface’s size is equal to or larger than their base and is in contact with the edge of the table?
 
-## 341. Under PERIPHERAL, is it correct that During the Reactive Turn, both the Controller and the Peripherals gain their o declared AROs must be the same for both the Controller and the Peripherals?
+## 341. Under PERIPHERAL, is it correct that A Controller and their Peripherals always belong to the same Combat Group. If Peripherals are moved as well?
 
-**Answer — EXPLICIT RULES ANSWER:** Yes. During the Reactive Turn, both the Controller and the Peripherals gain their o declared AROs must be the same for both the Controller and the Peripherals.
+**Answer — EXPLICIT RULES ANSWER:** Yes. A Controller and their Peripherals always belong to the same Combat Group. If Peripherals are moved as well.
 
 **Source:** Infinity Rules N5.3, p. 106 — PERIPHERAL
 
 **Five searchable phrasings:**
 
-1. Under PERIPHERAL, is it correct that During the Reactive Turn, both the Controller and the Peripherals gain their o declared AROs must be the same for both the Controller and the Peripherals?
-2. Rules check: Under PERIPHERAL, is it correct that During the Reactive Turn, both the Controller and the Peripherals gain their o declared AROs must be the same for both the Controller and the Peripherals?
-3. In Infinity N5.3, under PERIPHERAL, is it correct that During the Reactive Turn, both the Controller and the Peripherals gain their o declared AROs must be the same for both the Controller and the Peripherals?
-4. Table situation: Under PERIPHERAL, is it correct that During the Reactive Turn, both the Controller and the Peripherals gain their o declared AROs must be the same for both the Controller and the Peripherals?
-5. Quick question — under PERIPHERAL, is it correct that During the Reactive Turn, both the Controller and the Peripherals gain their o declared AROs must be the same for both the Controller and the Peripherals?
+1. Under PERIPHERAL, is it correct that A Controller and their Peripherals always belong to the same Combat Group. If Peripherals are moved as well?
+2. Rules check: Under PERIPHERAL, is it correct that A Controller and their Peripherals always belong to the same Combat Group. If Peripherals are moved as well?
+3. In Infinity N5.3, under PERIPHERAL, is it correct that A Controller and their Peripherals always belong to the same Combat Group. If Peripherals are moved as well?
+4. Table situation: Under PERIPHERAL, is it correct that A Controller and their Peripherals always belong to the same Combat Group. If Peripherals are moved as well?
+5. Quick question — under PERIPHERAL, is it correct that A Controller and their Peripherals always belong to the same Combat Group. If Peripherals are moved as well?
 
-## 342. Under PLACE DEPLOYABLE, is it correct that Once the Token has been placed on the table, the weapon, piece of Equipment, o Orders/AROs?
+## 342. Under PLACE DEPLOYABLE, is it correct that A weapon, piece of Equipment, or Peripheral (Ancillary) deployed on the battle destroyed, or in the case of Deployable Weapons until detonated?
 
-**Answer — EXPLICIT RULES ANSWER:** Yes. Once the Token has been placed on the table, the weapon, piece of Equipment, o Orders/AROs.
+**Answer — EXPLICIT RULES ANSWER:** Yes. A weapon, piece of Equipment, or Peripheral (Ancillary) deployed on the battle destroyed, or in the case of Deployable Weapons until detonated.
 
 **Source:** Infinity Rules N5.3, p. 82 — PLACE DEPLOYABLE
 
 **Five searchable phrasings:**
 
-1. Under PLACE DEPLOYABLE, is it correct that Once the Token has been placed on the table, the weapon, piece of Equipment, o Orders/AROs?
-2. Rules check: Under PLACE DEPLOYABLE, is it correct that Once the Token has been placed on the table, the weapon, piece of Equipment, o Orders/AROs?
-3. In Infinity N5.3, under PLACE DEPLOYABLE, is it correct that Once the Token has been placed on the table, the weapon, piece of Equipment, o Orders/AROs?
-4. Table situation: Under PLACE DEPLOYABLE, is it correct that Once the Token has been placed on the table, the weapon, piece of Equipment, o Orders/AROs?
-5. Quick question — under PLACE DEPLOYABLE, is it correct that Once the Token has been placed on the table, the weapon, piece of Equipment, o Orders/AROs?
+1. Under PLACE DEPLOYABLE, is it correct that A weapon, piece of Equipment, or Peripheral (Ancillary) deployed on the battle destroyed, or in the case of Deployable Weapons until detonated?
+2. Rules check: Under PLACE DEPLOYABLE, is it correct that A weapon, piece of Equipment, or Peripheral (Ancillary) deployed on the battle destroyed, or in the case of Deployable Weapons until detonated?
+3. In Infinity N5.3, under PLACE DEPLOYABLE, is it correct that A weapon, piece of Equipment, or Peripheral (Ancillary) deployed on the battle destroyed, or in the case of Deployable Weapons until detonated?
+4. Table situation: Under PLACE DEPLOYABLE, is it correct that A weapon, piece of Equipment, or Peripheral (Ancillary) deployed on the battle destroyed, or in the case of Deployable Weapons until detonated?
+5. Quick question — under PLACE DEPLOYABLE, is it correct that A weapon, piece of Equipment, or Peripheral (Ancillary) deployed on the battle destroyed, or in the case of Deployable Weapons until detonated?
 
 ## 343. Under REPEATER, is it correct that There can be no reaction against a Repeater that is being used by an enemy Hacker, only against the Hacker, if possible?
 
@@ -4917,19 +4917,19 @@ All 400 answers are classified as explicit rules answers; no interpretive answer
 4. Table situation: Under TECH-RECOVERY, does restriction. This Special Skill apply to Unconscious State, which must be canceled by applying the usual rules?
 5. Quick question — under TECH-RECOVERY, does restriction. This Special Skill apply to Unconscious State, which must be canceled by applying the usual rules?
 
-## 352. Under TRANSMUTATION, is it correct that The VITA/STR Attribute points of a Trooper possessing this Special Skill are s Unit Profiles also apply to the other Unit Profiles?
+## 352. Under TRANSMUTATION, is it correct that A Trooper with this Skill is deployed with their first Unit Profile?
 
-**Answer — EXPLICIT RULES ANSWER:** Yes. The VITA/STR Attribute points of a Trooper possessing this Special Skill are s Unit Profiles also apply to the other Unit Profiles.
+**Answer — EXPLICIT RULES ANSWER:** Yes. A Trooper with this Skill is deployed with their first Unit Profile.
 
 **Source:** Infinity Rules N5.3, p. 117 — TRANSMUTATION
 
 **Five searchable phrasings:**
 
-1. Under TRANSMUTATION, is it correct that The VITA/STR Attribute points of a Trooper possessing this Special Skill are s Unit Profiles also apply to the other Unit Profiles?
-2. Rules check: Under TRANSMUTATION, is it correct that The VITA/STR Attribute points of a Trooper possessing this Special Skill are s Unit Profiles also apply to the other Unit Profiles?
-3. In Infinity N5.3, under TRANSMUTATION, is it correct that The VITA/STR Attribute points of a Trooper possessing this Special Skill are s Unit Profiles also apply to the other Unit Profiles?
-4. Table situation: Under TRANSMUTATION, is it correct that The VITA/STR Attribute points of a Trooper possessing this Special Skill are s Unit Profiles also apply to the other Unit Profiles?
-5. Quick question — under TRANSMUTATION, is it correct that The VITA/STR Attribute points of a Trooper possessing this Special Skill are s Unit Profiles also apply to the other Unit Profiles?
+1. Under TRANSMUTATION, is it correct that A Trooper with this Skill is deployed with their first Unit Profile?
+2. Rules check: Under TRANSMUTATION, is it correct that A Trooper with this Skill is deployed with their first Unit Profile?
+3. In Infinity N5.3, under TRANSMUTATION, is it correct that A Trooper with this Skill is deployed with their first Unit Profile?
+4. Table situation: Under TRANSMUTATION, is it correct that A Trooper with this Skill is deployed with their first Unit Profile?
+5. Quick question — under TRANSMUTATION, is it correct that A Trooper with this Skill is deployed with their first Unit Profile?
 
 ## 353. Under TRIANGULATED FIRE, does triangulated Fire allow the user to hit a target farther away than the weapon’s Maximum Range. For example, a Combi Rifle can never hit a target at a distance of more than 48 inches?
 
@@ -4959,19 +4959,19 @@ All 400 answers are classified as explicit rules answers; no interpretive answer
 4. Table situation: Under ZERO PAIN, is it correct that A -3 WIP MOD is applied to the enemy Comms Attacks?
 5. Quick question — under ZERO PAIN, is it correct that A -3 WIP MOD is applied to the enemy Comms Attacks?
 
-## 355. Under BERSERK, what happens if a MOD appears between brackets?
+## 355. Under BERSERK, is it correct that This CC Special Skill may be declared without being in Silhouette contact with a target?
 
-**Answer — EXPLICIT RULES ANSWER:** If a MOD appears between brackets, for example Berserk (+3), that MOD is applied to the CC Attack.
+**Answer — EXPLICIT RULES ANSWER:** Yes. This CC Special Skill may be declared without being in Silhouette contact with a target.
 
 **Source:** Infinity Rules N5.3, p. 86 — BERSERK
 
 **Five searchable phrasings:**
 
-1. Under BERSERK, what happens if a MOD appears between brackets?
-2. Rules check: Under BERSERK, what happens if a MOD appears between brackets?
-3. In Infinity N5.3, under BERSERK, what happens if a MOD appears between brackets?
-4. Table situation: Under BERSERK, what happens if a MOD appears between brackets?
-5. Quick question — under BERSERK, what happens if a MOD appears between brackets?
+1. Under BERSERK, is it correct that This CC Special Skill may be declared without being in Silhouette contact with a target?
+2. Rules check: Under BERSERK, is it correct that This CC Special Skill may be declared without being in Silhouette contact with a target?
+3. In Infinity N5.3, under BERSERK, is it correct that This CC Special Skill may be declared without being in Silhouette contact with a target?
+4. Table situation: Under BERSERK, is it correct that This CC Special Skill may be declared without being in Silhouette contact with a target?
+5. Quick question — under BERSERK, is it correct that This CC Special Skill may be declared without being in Silhouette contact with a target?
 
 ## 356. Under CAMOUFLAGED, can restriction: You declare Attacks against Camouflaged Markers, it is necessary to Discover that Marker first (Discover + Attack maneuver), unless otherwise specified by a rule or Skill?
 
@@ -5295,33 +5295,33 @@ All 400 answers are classified as explicit rules answers; no interpretive answer
 4. Table situation: Under PARACHUTIST, is it correct that They may not be deployed within the enemy Deployment Zone?
 5. Quick question — under PARACHUTIST, is it correct that They may not be deployed within the enemy Deployment Zone?
 
-## 379. Under PERIPHERAL, is it correct that A Controller and their Peripherals always belong to the same Combat Group. If Peripherals are moved as well?
+## 379. Under PERIPHERAL, is it correct that If the player activates a Hacking Program that grants a MOD or State to the Co Peripherals?
 
-**Answer — EXPLICIT RULES ANSWER:** Yes. A Controller and their Peripherals always belong to the same Combat Group. If Peripherals are moved as well.
+**Answer — EXPLICIT RULES ANSWER:** Yes. If the player activates a Hacking Program that grants a MOD or State to the Co Peripherals.
 
 **Source:** Infinity Rules N5.3, p. 106 — PERIPHERAL
 
 **Five searchable phrasings:**
 
-1. Under PERIPHERAL, is it correct that A Controller and their Peripherals always belong to the same Combat Group. If Peripherals are moved as well?
-2. Rules check: Under PERIPHERAL, is it correct that A Controller and their Peripherals always belong to the same Combat Group. If Peripherals are moved as well?
-3. In Infinity N5.3, under PERIPHERAL, is it correct that A Controller and their Peripherals always belong to the same Combat Group. If Peripherals are moved as well?
-4. Table situation: Under PERIPHERAL, is it correct that A Controller and their Peripherals always belong to the same Combat Group. If Peripherals are moved as well?
-5. Quick question — under PERIPHERAL, is it correct that A Controller and their Peripherals always belong to the same Combat Group. If Peripherals are moved as well?
+1. Under PERIPHERAL, is it correct that If the player activates a Hacking Program that grants a MOD or State to the Co Peripherals?
+2. Rules check: Under PERIPHERAL, is it correct that If the player activates a Hacking Program that grants a MOD or State to the Co Peripherals?
+3. In Infinity N5.3, under PERIPHERAL, is it correct that If the player activates a Hacking Program that grants a MOD or State to the Co Peripherals?
+4. Table situation: Under PERIPHERAL, is it correct that If the player activates a Hacking Program that grants a MOD or State to the Co Peripherals?
+5. Quick question — under PERIPHERAL, is it correct that If the player activates a Hacking Program that grants a MOD or State to the Co Peripherals?
 
-## 380. Under PLACE DEPLOYABLE, is it correct that A weapon, piece of Equipment, or Peripheral (Ancillary) deployed on the battle destroyed, or in the case of Deployable Weapons until detonated?
+## 380. Under PLACE DEPLOYABLE, what happens when placing a Weapon?
 
-**Answer — EXPLICIT RULES ANSWER:** Yes. A weapon, piece of Equipment, or Peripheral (Ancillary) deployed on the battle destroyed, or in the case of Deployable Weapons until detonated.
+**Answer — EXPLICIT RULES ANSWER:** When placing a Weapon, piece of Equipment, or Peripheral (Ancillary), Deplo scenario, the Deployment restrictions it may impose.
 
 **Source:** Infinity Rules N5.3, p. 82 — PLACE DEPLOYABLE
 
 **Five searchable phrasings:**
 
-1. Under PLACE DEPLOYABLE, is it correct that A weapon, piece of Equipment, or Peripheral (Ancillary) deployed on the battle destroyed, or in the case of Deployable Weapons until detonated?
-2. Rules check: Under PLACE DEPLOYABLE, is it correct that A weapon, piece of Equipment, or Peripheral (Ancillary) deployed on the battle destroyed, or in the case of Deployable Weapons until detonated?
-3. In Infinity N5.3, under PLACE DEPLOYABLE, is it correct that A weapon, piece of Equipment, or Peripheral (Ancillary) deployed on the battle destroyed, or in the case of Deployable Weapons until detonated?
-4. Table situation: Under PLACE DEPLOYABLE, is it correct that A weapon, piece of Equipment, or Peripheral (Ancillary) deployed on the battle destroyed, or in the case of Deployable Weapons until detonated?
-5. Quick question — under PLACE DEPLOYABLE, is it correct that A weapon, piece of Equipment, or Peripheral (Ancillary) deployed on the battle destroyed, or in the case of Deployable Weapons until detonated?
+1. Under PLACE DEPLOYABLE, what happens when placing a Weapon?
+2. Rules check: Under PLACE DEPLOYABLE, what happens when placing a Weapon?
+3. In Infinity N5.3, under PLACE DEPLOYABLE, what happens when placing a Weapon?
+4. Table situation: Under PLACE DEPLOYABLE, what happens when placing a Weapon?
+5. Quick question — under PLACE DEPLOYABLE, what happens when placing a Weapon?
 
 ## 381. Under REPEATER, can this piece of Equipment is automatically active and be deactivated by its owner, unless its carrier is in Isolated State or any Null States?
 
@@ -5407,19 +5407,19 @@ All 400 answers are classified as explicit rules answers; no interpretive answer
 4. Table situation: Under TECH-RECOVERY, is it correct that Failing the Normal PH Roll has no negative consequences, and the Roll can be performed again in future Orders?
 5. Quick question — under TECH-RECOVERY, is it correct that Failing the Normal PH Roll has no negative consequences, and the Roll can be performed again in future Orders?
 
-## 387. Under TRANSMUTATION, is it correct that A Trooper with this Skill is deployed with their first Unit Profile?
+## 387. Under TRANSMUTATION, is it correct that This works the same way as Transmutation (X), but when the Unit Profile and placed, centered on the Model?
 
-**Answer — EXPLICIT RULES ANSWER:** Yes. A Trooper with this Skill is deployed with their first Unit Profile.
+**Answer — EXPLICIT RULES ANSWER:** Yes. This works the same way as Transmutation (X), but when the Unit Profile and placed, centered on the Model.
 
 **Source:** Infinity Rules N5.3, p. 117 — TRANSMUTATION
 
 **Five searchable phrasings:**
 
-1. Under TRANSMUTATION, is it correct that A Trooper with this Skill is deployed with their first Unit Profile?
-2. Rules check: Under TRANSMUTATION, is it correct that A Trooper with this Skill is deployed with their first Unit Profile?
-3. In Infinity N5.3, under TRANSMUTATION, is it correct that A Trooper with this Skill is deployed with their first Unit Profile?
-4. Table situation: Under TRANSMUTATION, is it correct that A Trooper with this Skill is deployed with their first Unit Profile?
-5. Quick question — under TRANSMUTATION, is it correct that A Trooper with this Skill is deployed with their first Unit Profile?
+1. Under TRANSMUTATION, is it correct that This works the same way as Transmutation (X), but when the Unit Profile and placed, centered on the Model?
+2. Rules check: Under TRANSMUTATION, is it correct that This works the same way as Transmutation (X), but when the Unit Profile and placed, centered on the Model?
+3. In Infinity N5.3, under TRANSMUTATION, is it correct that This works the same way as Transmutation (X), but when the Unit Profile and placed, centered on the Model?
+4. Table situation: Under TRANSMUTATION, is it correct that This works the same way as Transmutation (X), but when the Unit Profile and placed, centered on the Model?
+5. Quick question — under TRANSMUTATION, is it correct that This works the same way as Transmutation (X), but when the Unit Profile and placed, centered on the Model?
 
 ## 388. Under ZERO PAIN, what happens if the user wins with either Roll?
 
@@ -5435,19 +5435,19 @@ All 400 answers are classified as explicit rules answers; no interpretive answer
 4. Table situation: Under ZERO PAIN, what happens if the user wins with either Roll?
 5. Quick question — under ZERO PAIN, what happens if the user wins with either Roll?
 
-## 389. Under BERSERK, is it correct that This CC Special Skill may be declared without being in Silhouette contact with a target?
+## 389. Under BERSERK, is it correct that Although Berserk is a Long Skill, when performing it the user may still apply any (+1 SD) MOD they have?
 
-**Answer — EXPLICIT RULES ANSWER:** Yes. This CC Special Skill may be declared without being in Silhouette contact with a target.
+**Answer — EXPLICIT RULES ANSWER:** Yes. Although Berserk is a Long Skill, when performing it the user may still apply any (+1 SD) MOD they have.
 
 **Source:** Infinity Rules N5.3, p. 86 — BERSERK
 
 **Five searchable phrasings:**
 
-1. Under BERSERK, is it correct that This CC Special Skill may be declared without being in Silhouette contact with a target?
-2. Rules check: Under BERSERK, is it correct that This CC Special Skill may be declared without being in Silhouette contact with a target?
-3. In Infinity N5.3, under BERSERK, is it correct that This CC Special Skill may be declared without being in Silhouette contact with a target?
-4. Table situation: Under BERSERK, is it correct that This CC Special Skill may be declared without being in Silhouette contact with a target?
-5. Quick question — under BERSERK, is it correct that This CC Special Skill may be declared without being in Silhouette contact with a target?
+1. Under BERSERK, is it correct that Although Berserk is a Long Skill, when performing it the user may still apply any (+1 SD) MOD they have?
+2. Rules check: Under BERSERK, is it correct that Although Berserk is a Long Skill, when performing it the user may still apply any (+1 SD) MOD they have?
+3. In Infinity N5.3, under BERSERK, is it correct that Although Berserk is a Long Skill, when performing it the user may still apply any (+1 SD) MOD they have?
+4. Table situation: Under BERSERK, is it correct that Although Berserk is a Long Skill, when performing it the user may still apply any (+1 SD) MOD they have?
+5. Quick question — under BERSERK, is it correct that Although Berserk is a Long Skill, when performing it the user may still apply any (+1 SD) MOD they have?
 
 ## 390. Under CAMOUFLAGED, is it correct that To reveal a Camouflaged Marker, a Discover Roll must be passed, applying MODs listed for Discover, including the Marker’s Mimetism, if they have it?
 
