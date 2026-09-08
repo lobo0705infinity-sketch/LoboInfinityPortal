@@ -3048,7 +3048,7 @@
       "approvedCitations": [],
       "candidateExpectation": null,
       "category": "TIMING_SEQUENCE",
-      "draftAnswer": "If the Fireteam Leader enters a Null or Isolated State, the Fireteam is canceled. If a non-Leader member enters a Null State during Resolution, that does not retroactively change Rolls already resolved in the simultaneous Order, but the member cannot contribute to the Fireteam afterward; the Fireteam's later composition and bonuses use the remaining valid members.",
+      "draftAnswer": "If the Fireteam Leader enters a Null or Isolated State, the Fireteam is canceled unless a specific rule such as Number 2 immediately supplies the applicable replacement. If a non-Leader enters a Null State during Resolution, that member leaves when the State is applied and the Fireteam's composition and bonuses are recalculated using the remaining valid members. Because Resolution is simultaneous, this does not retroactively change Rolls already resolved in that Order; the recalculated composition governs afterward.",
       "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
       "draftCitations": [
         {
@@ -3071,7 +3071,7 @@
       "id": "timing_sequence-13",
       "question": "If a Fireteam member enters a Null State mid-Order, when is Fireteam composition recalculated?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
+      "semanticAuditBasis": "Confirmed against N5.3 Order Resolution and Fireteam Integrity: a member entering a Null State leaves, composition is recalculated, and simultaneous Rolls already resolved are not retroactively changed; Leader and Number 2 rules remain controlling.",
       "semanticAuditDate": "2026-09-07",
       "semanticAuditStatus": "PASSED",
       "answerContract": {
@@ -3380,7 +3380,7 @@
       "approvedCitations": [],
       "candidateExpectation": null,
       "category": "TIMING_SEQUENCE",
-      "draftAnswer": "Usually yes when disconnection is caused by the Controller entering a Null or Isolated State: the Peripheral enters Disconnected State at the end of that Order, after resolving its otherwise legal declaration. But a failed required Coherency Check can disconnect some Peripheral types immediately before movement, so the cause of disconnection matters.",
+      "draftAnswer": "Usually yes, but the cause and Peripheral type matter. If an ordinary Peripheral disconnects because its Controller enters a Null or Isolated State, it enters Disconnected State at the end of that Order, after resolving its otherwise legal declaration. A failed required Coherency Check disconnects a Synchronized or Control Peripheral immediately before movement, so it does not continue that movement. A Cyberplug is a separate exception: when its Controller enters a Null or Isolated State, it switches to its Autonomous Profile at the end of the Order instead of entering Disconnected State.",
       "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
       "draftCitations": [
         {
@@ -3398,7 +3398,7 @@
       "id": "timing_sequence-19",
       "question": "If a Peripheral is disconnected during an Order, does it finish its declared Skill?",
       "reviewStatus": "VERIFIED_DRAFT",
-      "semanticAuditBasis": "Checked against the cited official N5.3 rule text; remains an unapproved draft.",
+      "semanticAuditBasis": "Confirmed against N5.3 Peripheral, Coherency, and Cyberplug timing: Controller-caused changes occur at end of Order, while failed Coherency applies immediately before movement.",
       "semanticAuditDate": "2026-09-07",
       "semanticAuditStatus": "PASSED",
       "answerContract": {
