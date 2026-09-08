@@ -1,0 +1,871 @@
+{
+  "schemaVersion": 1,
+  "title": "Infinity Rules New-Topic Expansion",
+  "targetCanonicalQuestions": 400,
+  "targetQueryVariants": 2000,
+  "completedCanonicalQuestions": 20,
+  "completedQueryVariants": 100,
+  "formalApproval": null,
+  "cases": [
+    {
+      "id": "new-topic-001",
+      "category": "NEW_CORE_RULES",
+      "canonicalQuestion": "When can a Trooper use Alert?",
+      "draftAnswer": "A Trooper may use Alert if it was not activated by an Order or ARO during that Order and either it or an allied Trooper in its Zone of Control was targeted by an Attack.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "RULE",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 77,
+          "section": "ALERT!"
+        }
+      ],
+      "reviewStatus": "PENDING_RULES_REVIEW",
+      "queryVariants": [
+        {
+          "id": "new-topic-001-q1",
+          "question": "When can a Trooper use Alert?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-001-q2",
+          "question": "Rules check: When can a Trooper use Alert?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-001-q3",
+          "question": "In Infinity N5.3, when can a Trooper use Alert?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-001-q4",
+          "question": "At the table, how should we resolve this: when can a Trooper use Alert?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-001-q5",
+          "question": "Quick version: When can a model use Alert?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-002",
+      "category": "NEW_CORE_RULES",
+      "canonicalQuestion": "What does Alert let an eligible Trooper do?",
+      "draftAnswer": "At the Conclusion of the Order, after Saving Rolls, an eligible Trooper may turn on the spot to change its LoF angle. This is automatic, requires no Roll, does not change position, and generates no ARO.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "RULE",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 77,
+          "section": "ALERT!"
+        }
+      ],
+      "reviewStatus": "PENDING_RULES_REVIEW",
+      "queryVariants": [
+        {
+          "id": "new-topic-002-q1",
+          "question": "What does Alert let an eligible Trooper do?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-002-q2",
+          "question": "Rules check: What does Alert let an eligible Trooper do?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-002-q3",
+          "question": "In Infinity N5.3, what does Alert let an eligible Trooper do?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-002-q4",
+          "question": "At the table, how should we resolve this: what does Alert let an eligible Trooper do?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-002-q5",
+          "question": "Quick version: What does Alert let an eligible model do?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-003",
+      "category": "NEW_CORE_RULES",
+      "canonicalQuestion": "After failing to Discover a Marker, when may that same Trooper try again against it?",
+      "draftAnswer": "That Trooper cannot attempt to Discover the same Marker again until the next Player Turn. It may still Discover a different Marker, and a different friendly Trooper may attempt to Discover the original Marker.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "RULE",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 77,
+          "section": "DISCOVER"
+        }
+      ],
+      "reviewStatus": "PENDING_RULES_REVIEW",
+      "queryVariants": [
+        {
+          "id": "new-topic-003-q1",
+          "question": "After failing to Discover a Marker, when may that same Trooper try again against it?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-003-q2",
+          "question": "Rules check: After failing to Discover a Marker, when may that same Trooper try again against it?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-003-q3",
+          "question": "In Infinity N5.3, after failing to Discover a Marker, when may that same Trooper try again against it?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-003-q4",
+          "question": "At the table, how should we resolve this: after failing to Discover a Marker, when may that same Trooper try again against it?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-003-q5",
+          "question": "Quick version: After failing to Discover a Marker, when may that same model try again against it?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-004",
+      "category": "NEW_CORE_RULES",
+      "canonicalQuestion": "If a revealed Trooper enters Camouflaged or Impersonation State again, is it the same Marker for the failed-Discover restriction?",
+      "draftAnswer": "No. A Trooper that was revealed and later re-entered Camouflaged State or Impersonation-1 or Impersonation-2 State does not count as the same Marker for that restriction.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "RULE",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 77,
+          "section": "DISCOVER"
+        }
+      ],
+      "reviewStatus": "PENDING_RULES_REVIEW",
+      "queryVariants": [
+        {
+          "id": "new-topic-004-q1",
+          "question": "If a revealed Trooper enters Camouflaged or Impersonation State again, is it the same Marker for the failed-Discover restriction?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-004-q2",
+          "question": "Rules check: If a revealed Trooper enters Camouflaged or Impersonation State again, is it the same Marker for the failed-Discover restriction?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-004-q3",
+          "question": "In Infinity N5.3, if a revealed Trooper enters Camouflaged or Impersonation State again, is it the same Marker for the failed-Discover restriction?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-004-q4",
+          "question": "At the table, how should we resolve this: if a revealed Trooper enters Camouflaged or Impersonation State again, is it the same Marker for the failed-Discover restriction?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-004-q5",
+          "question": "Quick version: If a revealed model enters Camouflaged or Impersonation State again, is it the same Marker for the failed-Discover restriction?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-005",
+      "category": "NEW_CORE_RULES",
+      "canonicalQuestion": "Can an Active Trooper Discover one target and Attack a different target in the same Order?",
+      "draftAnswer": "Yes. Discover is a Basic Short Skill and may be combined with another Basic Short Skill or Short Skill; the Active Trooper may Discover one target and Attack a different target.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "RULE",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 77,
+          "section": "DISCOVER"
+        }
+      ],
+      "reviewStatus": "PENDING_RULES_REVIEW",
+      "queryVariants": [
+        {
+          "id": "new-topic-005-q1",
+          "question": "Can an Active Trooper Discover one target and Attack a different target in the same Order?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-005-q2",
+          "question": "Rules check: Can an Active Trooper Discover one target and Attack a different target in the same Order?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-005-q3",
+          "question": "In Infinity N5.3, can an Active Trooper Discover one target and Attack a different target in the same Order?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-005-q4",
+          "question": "At the table, how should we resolve this: can an Active Trooper Discover one target and Attack a different target in the same Order?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-005-q5",
+          "question": "Quick version: Can an Active model Discover one target and Attack a different target in the same Order?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-006",
+      "category": "NEW_CORE_RULES",
+      "canonicalQuestion": "What happens if a declared Skill fails its Requirements at Resolution?",
+      "draftAnswer": "The Trooper performs Idle instead. If the failed Skill used a Disposable weapon or piece of Equipment, the declared use is still expended; the Trooper also loses Camouflaged or Impersonation State if the failed declaration would normally cancel that State.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "RULE",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 80,
+          "section": "IDLE"
+        }
+      ],
+      "reviewStatus": "PENDING_RULES_REVIEW",
+      "queryVariants": [
+        {
+          "id": "new-topic-006-q1",
+          "question": "What happens if a declared Skill fails its Requirements at Resolution?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-006-q2",
+          "question": "Rules check: What happens if a declared Skill fails its Requirements at Resolution?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-006-q3",
+          "question": "In Infinity N5.3, what happens if a declared Skill fails its Requirements at Resolution?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-006-q4",
+          "question": "At the table, how should we resolve this: what happens if a declared Skill fails its Requirements at Resolution?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-006-q5",
+          "question": "Quick version: What happens if a declared Skill fails its Requirements at Resolution?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-007",
+      "category": "NEW_CORE_RULES",
+      "canonicalQuestion": "What does Look Out allow friendly Troopers to do?",
+      "draftAnswer": "Look Out allows the declaring player's other Troopers to modify their LoF without moving. Each modification counts as that Trooper's ARO and is resolved with a Normal or Face to Face Dodge (PH-3) Roll as applicable.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "RULE",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 81,
+          "section": "LOOK OUT!"
+        }
+      ],
+      "reviewStatus": "PENDING_RULES_REVIEW",
+      "queryVariants": [
+        {
+          "id": "new-topic-007-q1",
+          "question": "What does Look Out allow friendly Troopers to do?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-007-q2",
+          "question": "Rules check: What does Look Out allow friendly Troopers to do?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-007-q3",
+          "question": "In Infinity N5.3, what does Look Out allow friendly Troopers to do?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-007-q4",
+          "question": "At the table, how should we resolve this: what does Look Out allow friendly Troopers to do?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-007-q5",
+          "question": "Quick version: What does Look Out allow friendly models to do?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-008",
+      "category": "NEW_CORE_RULES",
+      "canonicalQuestion": "What must a Trooper see to declare Look Out?",
+      "draftAnswer": "The user must have LoF to an enemy Trooper or Marker that declares or performs an Order. The other friendly Troopers being alerted do not need LoF to that enemy to make their Look Out Dodge (PH-3) Roll.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "RULE",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 81,
+          "section": "LOOK OUT!"
+        }
+      ],
+      "reviewStatus": "PENDING_RULES_REVIEW",
+      "queryVariants": [
+        {
+          "id": "new-topic-008-q1",
+          "question": "What must a Trooper see to declare Look Out?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-008-q2",
+          "question": "Rules check: What must a Trooper see to declare Look Out?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-008-q3",
+          "question": "In Infinity N5.3, what must a Trooper see to declare Look Out?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-008-q4",
+          "question": "At the table, how should we resolve this: what must a Trooper see to declare Look Out?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-008-q5",
+          "question": "Quick version: What must a model see to declare Look Out?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-009",
+      "category": "NEW_CORE_RULES",
+      "canonicalQuestion": "Where may a Trooper place a Deployable during the Active Turn?",
+      "draftAnswer": "The Token or Model may be placed in Silhouette contact with the user or, if the user moved during the Order, in Silhouette contact with any part of the user's route. It must be fully supported and cannot be placed on a vertical surface.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "RULE",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 82,
+          "section": "PLACE DEPLOYABLE"
+        }
+      ],
+      "reviewStatus": "PENDING_RULES_REVIEW",
+      "queryVariants": [
+        {
+          "id": "new-topic-009-q1",
+          "question": "Where may a Trooper place a Deployable during the Active Turn?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-009-q2",
+          "question": "Rules check: Where may a Trooper place a Deployable during the Active Turn?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-009-q3",
+          "question": "In Infinity N5.3, where may a Trooper place a Deployable during the Active Turn?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-009-q4",
+          "question": "At the table, how should we resolve this: where may a Trooper place a Deployable during the Active Turn?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-009-q5",
+          "question": "Quick version: Where may a model place a Deployable during the Active Turn?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-010",
+      "category": "NEW_CORE_RULES",
+      "canonicalQuestion": "What are the Reactive Turn requirements for Place Deployable?",
+      "draftAnswer": "The user needs LoF to the Active Trooper and must place the Deployable in Silhouette contact with the user. The placed item appears at the Conclusion of the Order or ARO.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "RULE",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 82,
+          "section": "PLACE DEPLOYABLE"
+        }
+      ],
+      "reviewStatus": "PENDING_RULES_REVIEW",
+      "queryVariants": [
+        {
+          "id": "new-topic-010-q1",
+          "question": "What are the Reactive Turn requirements for Place Deployable?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-010-q2",
+          "question": "Rules check: What are the Reactive Turn requirements for Place Deployable?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-010-q3",
+          "question": "In Infinity N5.3, what are the Reactive Turn requirements for Place Deployable?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-010-q4",
+          "question": "At the table, how should we resolve this: what are the Reactive Turn requirements for Place Deployable?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-010-q5",
+          "question": "Quick version: What are the Reactive Turn requirements for Place Deployable?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-011",
+      "category": "NEW_CORE_RULES",
+      "canonicalQuestion": "When does a newly placed Deployable become active?",
+      "draftAnswer": "A Deployable placed with Place Deployable is put on the table at the Conclusion of the Order or ARO. Once it is on the table, it becomes active and may function in later Orders and AROs.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "RULE",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 82,
+          "section": "PLACE DEPLOYABLE"
+        }
+      ],
+      "reviewStatus": "PENDING_RULES_REVIEW",
+      "queryVariants": [
+        {
+          "id": "new-topic-011-q1",
+          "question": "When does a newly placed Deployable become active?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-011-q2",
+          "question": "Rules check: When does a newly placed Deployable become active?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-011-q3",
+          "question": "In Infinity N5.3, when does a newly placed Deployable become active?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-011-q4",
+          "question": "At the table, how should we resolve this: when does a newly placed Deployable become active?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-011-q5",
+          "question": "Quick version: When does a newly placed Deployable become active?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-012",
+      "category": "NEW_CORE_RULES",
+      "canonicalQuestion": "What does a Trooper need in order to declare Reload?",
+      "draftAnswer": "The Trooper must be in Unloaded State or have spent uses of a Disposable weapon or piece of Equipment, and must be inside the Zone of Control of a non-Null allied Trooper or game element with Baggage.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "RULE",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 83,
+          "section": "RELOAD"
+        }
+      ],
+      "reviewStatus": "PENDING_RULES_REVIEW",
+      "queryVariants": [
+        {
+          "id": "new-topic-012-q1",
+          "question": "What does a Trooper need in order to declare Reload?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-012-q2",
+          "question": "Rules check: What does a Trooper need in order to declare Reload?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-012-q3",
+          "question": "In Infinity N5.3, what does a Trooper need in order to declare Reload?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-012-q4",
+          "question": "At the table, how should we resolve this: what does a Trooper need in order to declare Reload?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-012-q5",
+          "question": "Quick version: What does a model need in order to declare Reload?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-013",
+      "category": "NEW_CORE_RULES",
+      "canonicalQuestion": "What does Reload restore?",
+      "draftAnswer": "Without a Roll, Reload cancels the user's Unloaded State or restores all expended uses of its Disposable weapons and Equipment. Only one allied Trooper may receive this effect per Order.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "RULE",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 83,
+          "section": "RELOAD"
+        }
+      ],
+      "reviewStatus": "PENDING_RULES_REVIEW",
+      "queryVariants": [
+        {
+          "id": "new-topic-013-q1",
+          "question": "What does Reload restore?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-013-q2",
+          "question": "Rules check: What does Reload restore?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-013-q3",
+          "question": "In Infinity N5.3, what does Reload restore?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-013-q4",
+          "question": "At the table, how should we resolve this: what does Reload restore?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-013-q5",
+          "question": "Quick version: What does Reload restore?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-014",
+      "category": "NEW_CORE_RULES",
+      "canonicalQuestion": "Does Reload recover Deployable weapons or Equipment already placed on the table?",
+      "draftAnswer": "No. Restoring Disposable uses does not affect weapons or Equipment already deployed on the table.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "RULE",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 83,
+          "section": "RELOAD"
+        }
+      ],
+      "reviewStatus": "PENDING_RULES_REVIEW",
+      "queryVariants": [
+        {
+          "id": "new-topic-014-q1",
+          "question": "Does Reload recover Deployable weapons or Equipment already placed on the table?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-014-q2",
+          "question": "Rules check: Does Reload recover Deployable weapons or Equipment already placed on the table?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-014-q3",
+          "question": "In Infinity N5.3, does Reload recover Deployable weapons or Equipment already placed on the table?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-014-q4",
+          "question": "At the table, how should we resolve this: does Reload recover Deployable weapons or Equipment already placed on the table?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-014-q5",
+          "question": "Quick version: Does Reload recover Deployable weapons or Equipment already placed on the table?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-015",
+      "category": "NEW_CORE_RULES",
+      "canonicalQuestion": "When does a placed FastPanda's Repeater become usable?",
+      "draftAnswer": "A FastPanda placed during an Order becomes active when that Order concludes. From that point, its Repeater may be used to make Attacks through the Hacking Area.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "RULE",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 83,
+          "section": "FASTPANDA"
+        }
+      ],
+      "reviewStatus": "PENDING_RULES_REVIEW",
+      "queryVariants": [
+        {
+          "id": "new-topic-015-q1",
+          "question": "When does a placed FastPanda's Repeater become usable?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-015-q2",
+          "question": "Rules check: When does a placed FastPanda's Repeater become usable?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-015-q3",
+          "question": "In Infinity N5.3, when does a placed FastPanda's Repeater become usable?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-015-q4",
+          "question": "At the table, how should we resolve this: when does a placed FastPanda's Repeater become usable?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-015-q5",
+          "question": "Quick version: When does a placed FastPanda's Repeater become usable?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-016",
+      "category": "NEW_CORE_RULES",
+      "canonicalQuestion": "Does picking up a Speedball item cancel a Marker State?",
+      "draftAnswer": "Yes. When an allied non-Null Trooper enters Silhouette contact and picks up a Speedball item, that action automatically cancels any Marker State the Trooper is in.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "RULE",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 84,
+          "section": "REQUEST SPEEDBALL"
+        }
+      ],
+      "reviewStatus": "PENDING_RULES_REVIEW",
+      "queryVariants": [
+        {
+          "id": "new-topic-016-q1",
+          "question": "Does picking up a Speedball item cancel a Marker State?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-016-q2",
+          "question": "Rules check: Does picking up a Speedball item cancel a Marker State?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-016-q3",
+          "question": "In Infinity N5.3, does picking up a Speedball item cancel a Marker State?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-016-q4",
+          "question": "At the table, how should we resolve this: does picking up a Speedball item cancel a Marker State?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-016-q5",
+          "question": "Quick version: Does picking up a Speedball item cancel a Marker State?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-017",
+      "category": "NEW_CORE_RULES",
+      "canonicalQuestion": "How many Speedball Item Tokens may one Trooper carry?",
+      "draftAnswer": "A Trooper cannot have more than one Speedball Item Token at a time. Speedball items are single-use and non-transferable.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "RULE",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 84,
+          "section": "REQUEST SPEEDBALL"
+        }
+      ],
+      "reviewStatus": "PENDING_RULES_REVIEW",
+      "queryVariants": [
+        {
+          "id": "new-topic-017-q1",
+          "question": "How many Speedball Item Tokens may one Trooper carry?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-017-q2",
+          "question": "Rules check: How many Speedball Item Tokens may one Trooper carry?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-017-q3",
+          "question": "In Infinity N5.3, how many Speedball Item Tokens may one Trooper carry?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-017-q4",
+          "question": "At the table, how should we resolve this: how many Speedball Item Tokens may one Trooper carry?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-017-q5",
+          "question": "Quick version: How many Speedball Item Tokens may one model carry?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-018",
+      "category": "NEW_CORE_RULES",
+      "canonicalQuestion": "Can Speedball items be used during the Reactive Turn?",
+      "draftAnswer": "Yes, unless an item's own rules say otherwise. Speedball items may be used in either the Active or Reactive Turn and are removed after use.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "YES",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 84,
+          "section": "REQUEST SPEEDBALL"
+        }
+      ],
+      "reviewStatus": "PENDING_RULES_REVIEW",
+      "queryVariants": [
+        {
+          "id": "new-topic-018-q1",
+          "question": "Can Speedball items be used during the Reactive Turn?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-018-q2",
+          "question": "Rules check: Can Speedball items be used during the Reactive Turn?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-018-q3",
+          "question": "In Infinity N5.3, can Speedball items be used during the Reactive Turn?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-018-q4",
+          "question": "At the table, how should we resolve this: can Speedball items be used during the Reactive Turn?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-018-q5",
+          "question": "Quick version: Can Speedball items be used during the Reactive Turn?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-019",
+      "category": "NEW_CORE_RULES",
+      "canonicalQuestion": "What modifiers apply to a Speculative Attack?",
+      "draftAnswer": "Apply the Speculative Attack MOD of -6 and the weapon's Range MOD. Do not apply other negative MODs such as Mimetism, Partial Cover, or Visibility Zones.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "RULE",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 48,
+          "section": "SPECULATIVE ATTACK"
+        }
+      ],
+      "reviewStatus": "PENDING_RULES_REVIEW",
+      "queryVariants": [
+        {
+          "id": "new-topic-019-q1",
+          "question": "What modifiers apply to a Speculative Attack?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-019-q2",
+          "question": "Rules check: What modifiers apply to a Speculative Attack?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-019-q3",
+          "question": "In Infinity N5.3, what modifiers apply to a Speculative Attack?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-019-q4",
+          "question": "At the table, how should we resolve this: what modifiers apply to a Speculative Attack?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-019-q5",
+          "question": "Quick version: What modifiers apply to a Speculative Attack?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-020",
+      "category": "NEW_CORE_RULES",
+      "canonicalQuestion": "What are the Burst and LoF rules for Speculative Attack?",
+      "draftAnswer": "Speculative Attack is a Long Skill using a weapon with the Speculative Attack Trait. It may attack a target outside LoF, its Burst is always 1 regardless of the weapon or Burst MODs, and a valid trajectory to the impact point must exist.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "RULE",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 48,
+          "section": "SPECULATIVE ATTACK"
+        }
+      ],
+      "reviewStatus": "PENDING_RULES_REVIEW",
+      "queryVariants": [
+        {
+          "id": "new-topic-020-q1",
+          "question": "What are the Burst and LoF rules for Speculative Attack?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-020-q2",
+          "question": "Rules check: What are the Burst and LoF rules for Speculative Attack?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-020-q3",
+          "question": "In Infinity N5.3, what are the Burst and LoF rules for Speculative Attack?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-020-q4",
+          "question": "At the table, how should we resolve this: what are the Burst and LoF rules for Speculative Attack?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-020-q5",
+          "question": "Quick version: What are the Burst and LoF rules for Speculative Attack?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ]
+    }
+  ]
+}
