@@ -5,6 +5,7 @@ import DiscordCommunityLink from '../components/DiscordCommunityLink'
 import PortalIcon from '../components/PortalIcon'
 import Skeleton from '../components/Skeleton'
 import Top40RulesPage from '../components/Top40RulesPage'
+import Top40BracketPage from '../components/Top40BracketPage'
 import { getDiscordCommunityLink } from '../config/communityLinks'
 import { getCanonicalArmyOptions } from '../services/armyIdentity'
 import {
@@ -48,7 +49,7 @@ function EventHome() {
   useEffect(() => {
     const controller = new AbortController()
 
-    if (isTop40 && selectedSection === 'rules') {
+    if (isTop40 && (selectedSection === 'rules' || selectedSection === 'bracket')) {
       return () => controller.abort()
     }
 
@@ -87,6 +88,10 @@ function EventHome() {
 
   if (isTop40 && selectedSection === 'rules') {
     return <Top40RulesPage />
+  }
+
+  if (isTop40 && selectedSection === 'bracket') {
+    return <Top40BracketPage />
   }
 
   if (state.status === 'loading') {
