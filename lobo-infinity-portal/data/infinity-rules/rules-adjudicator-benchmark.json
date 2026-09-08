@@ -4457,7 +4457,34 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "target-condition",
+            "description": "requires MSV1/Sixth Sense user to be targeted through Zero Visibility",
+            "patterns": [
+              "msv\\s*1.{0,80}sixth\\s+sense.{0,100}target.{0,80}zero\\s+visibility",
+              "target.{0,80}bs\\s+attack.{0,80}zero\\s+visibility"
+            ]
+          },
+          {
+            "id": "ignores-minus6",
+            "description": "FAQ says ignore the -6 LoF MOD",
+            "patterns": [
+              "(?:ignore|ignores).{0,40}(?:−|-)\\s*6.{0,80}(?:lof|zone)"
+            ]
+          },
+          {
+            "id": "faq-controls",
+            "description": "specific FAQ ruling controls over core-only reading",
+            "patterns": [
+              "faq.{0,80}(?:controls?|override|specific).{0,80}(?:core|msv\\s*1)"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -4561,7 +4588,34 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "faq-separates",
+            "description": "FAQ separates revealing from resolving hit",
+            "patterns": [
+              "faq.{0,80}separat.{0,80}(?:reveal|marker).{0,80}(?:resolv|hit)"
+            ]
+          },
+          {
+            "id": "saving-reveals",
+            "description": "Saving Roll reveals Marker",
+            "patterns": [
+              "saving\\s+roll.{0,60}(?:reveal|revealed)"
+            ]
+          },
+          {
+            "id": "total-cover-no-hit",
+            "description": "represented model in Total Cover is not hit",
+            "patterns": [
+              "(?:model|game\\s+element).{0,80}(?:not|isn['’]?t).{0,30}hit.{0,80}total\\s+cover",
+              "total\\s+cover.{0,80}(?:not|isn['’]?t).{0,30}hit"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -4593,7 +4647,40 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "none-change-definition",
+            "description": "no Season 18 mission changes Specialist categories",
+            "patterns": [
+              "none.{0,80}(?:season\\s*18|mission).{0,100}(?:changes?|alters?).{0,50}(?:definition|categories)"
+            ]
+          },
+          {
+            "id": "general-list",
+            "description": "states general Specialist list",
+            "patterns": [
+              "hackers?.{0,120}doctors?.{0,120}engineers?.{0,120}forward\\s+observers?.{0,120}paramedics?.{0,120}(?:chain\\s+of\\s+command|specialist\\s+operatives?)"
+            ]
+          },
+          {
+            "id": "task-restriction",
+            "description": "missions may restrict Repeater/Servant use for tasks",
+            "patterns": [
+              "(?:restriction|prevent).{0,100}(?:repeaters?|peripheral|servant).{0,100}specialist\\s+tasks?"
+            ]
+          },
+          {
+            "id": "not-redefinition",
+            "description": "restriction is not changed definition",
+            "patterns": [
+              "(?:not|isn['’]?t).{0,30}(?:a\\s+)?change(?:d)?\\s+definition|use\\s+restriction.{0,50}not.{0,30}(?:changed\\s+)?definition"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -4625,7 +4712,34 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "mission-specific-controls",
+            "description": "selected ITS mission controls objectives/scoring etc",
+            "patterns": [
+              "selected\\s+mission.{0,100}(?:govern|control|provision).{0,100}(?:objectives?|scoring)"
+            ]
+          },
+          {
+            "id": "core-default",
+            "description": "core rules still apply by default",
+            "patterns": [
+              "core\\s+rules.{0,50}(?:continue|still).{0,30}apply"
+            ]
+          },
+          {
+            "id": "specific-exception",
+            "description": "mission's more specific express rule overrides",
+            "patterns": [
+              "(?:except|unless).{0,80}mission.{0,80}(?:specific|express)",
+              "mission.{0,80}(?:specific|express).{0,80}(?:override|provides?)"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -4652,7 +4766,48 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "replace-one",
+            "description": "may replace one drawn Classified with Secure HVT",
+            "patterns": [
+              "replace.{0,40}one\\s+drawn\\s+classified.{0,50}secure\\s+hvt"
+            ]
+          },
+          {
+            "id": "enemy-hvt-condition",
+            "description": "non-Null Trooper inside enemy HVT ZoC",
+            "patterns": [
+              "non-?null\\s+trooper.{0,80}(?:inside|within).{0,40}enemy\\s+hvt.{0,20}zoc"
+            ]
+          },
+          {
+            "id": "own-hvt-clear",
+            "description": "own HVT ZoC has no non-Null enemies",
+            "patterns": [
+              "own\\s+hvt.{0,20}zoc.{0,100}no\\s+enemy\\s+troopers?.{0,50}(?:other\\s+than|except).{0,30}null"
+            ]
+          },
+          {
+            "id": "same-op",
+            "description": "scores same OP as normal Classified",
+            "patterns": [
+              "same\\s+op.{0,50}(?:normal\\s+)?classified"
+            ]
+          },
+          {
+            "id": "exceptions",
+            "description": "notes mission prohibition and INTELCOM renunciation",
+            "patterns": [
+              "unavailable.{0,60}mission.{0,60}not\\s+used",
+              "cannot\\s+replace.{0,80}intelcom"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -4684,7 +4839,40 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "discover-no-bonuses",
+            "description": "+1 SD/+1 BS do not apply to Discover",
+            "patterns": [
+              "(?:\\+\\s*1\\s+sd|bs\\s+attack\\s*\\(\\+\\s*1\\s+sd\\)).{0,100}\\+\\s*1\\s+bs.{0,100}(?:do\\s+not|don['’]?t).{0,30}discover"
+            ]
+          },
+          {
+            "id": "type-unchanged",
+            "description": "Fireteam does not change type after losing members",
+            "patterns": [
+              "fireteam.{0,50}(?:does\\s+not|doesn['’]?t).{0,30}change\\s+type.{0,50}los(?:e|es|ing|t)\\s+members?"
+            ]
+          },
+          {
+            "id": "required-member-no-cancel",
+            "description": "losing required creation member does not cancel team",
+            "patterns": [
+              "los(?:e|ing)\\s+a\\s+trooper.{0,80}required.{0,80}(?:does\\s+not|doesn['’]?t).{0,30}cancel"
+            ]
+          },
+          {
+            "id": "creation-minimum",
+            "description": "chart minimum applies only at creation with FT Master exception",
+            "patterns": [
+              "minimum.{0,50}only\\s+at\\s+creation.{0,80}ft\\s+master"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -4721,7 +4909,34 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "no-amendment",
+            "description": "FAQ v0.1 has no explicit Hidden Deployment amendment",
+            "patterns": [
+              "faq\\s+v?0\\.1.{0,100}no\\s+explicit\\s+(?:amendment|change).{0,50}hidden\\s+deployment",
+              "no\\s+explicit\\s+(?:amendment|change).{0,50}hidden\\s+deployment"
+            ]
+          },
+          {
+            "id": "use-core",
+            "description": "apply N5.3 Hidden Deployment rules",
+            "patterns": [
+              "apply.{0,40}n5\\.3.{0,50}hidden\\s+deployment"
+            ]
+          },
+          {
+            "id": "later-exception",
+            "description": "later FAQ or mission may specifically override",
+            "patterns": [
+              "(?:later\\s+official\\s+faq|selected\\s+its\\s+mission).{0,100}(?:specific\\s+exception|provides?)"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -4753,7 +4968,41 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "yes-clarifies",
+            "description": "FAQ clarifies Hacking Device Firewall operation",
+            "patterns": [
+              "\\byes\\b.{0,100}(?:clarif|firewall)",
+              "faq.{0,80}clarif.{0,80}firewall"
+            ]
+          },
+          {
+            "id": "all-comms-attacks",
+            "description": "Firewall applies to any Comms Attack against Trooper",
+            "patterns": [
+              "firewall\\s+mods?.{0,80}(?:any|all).{0,30}comms\\s+attacks?.{0,60}(?:against|target)"
+            ]
+          },
+          {
+            "id": "disabled-exception",
+            "description": "does not operate when Device disabled by Isolated/Null",
+            "patterns": [
+              "(?:unless|when).{0,50}hacking\\s+device.{0,40}disabled.{0,80}(?:isolated|null\\s+state)"
+            ]
+          },
+          {
+            "id": "one-firewall",
+            "description": "only one applicable Firewall",
+            "patterns": [
+              "(?:only|limits?).{0,30}one\\s+(?:applicable\\s+)?firewall"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -4805,7 +5054,40 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked against the cited current N5.3, FAQ v0.1, and/or ITS Season 18 text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "labels",
+            "description": "Combat Jump has Airborne and Superior Deployment labels",
+            "patterns": [
+              "combat\\s+jump.{0,80}airborne\\s+deployment.{0,80}superior\\s+deployment"
+            ]
+          },
+          {
+            "id": "zones-missions",
+            "description": "lists five missions restricting it in Exclusion Zones",
+            "patterns": [
+              "corporate\\s+appropriation.{0,100}b-?pong.{0,100}crossing\\s+lines.{0,100}double\\s+bind.{0,100}critical\\s+intervention"
+            ]
+          },
+          {
+            "id": "crossing-total-ban",
+            "description": "Crossing Lines prohibits Superior Deployment except Impersonation",
+            "patterns": [
+              "crossing\\s+lines.{0,100}prohibits?.{0,50}superior\\s+deployment.{0,80}(?:except|other\\s+than)\\s+impersonation"
+            ]
+          },
+          {
+            "id": "prevents-cj",
+            "description": "this prevents Combat Jump in Crossing Lines",
+            "patterns": [
+              "(?:prevents?|cannot\\s+use|prohibits?).{0,50}combat\\s+jump.{0,50}(?:scenario|crossing\\s+lines)"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -5208,9 +5490,9 @@
   },
   "title": "Infinity N5 Rules Adjudicator Benchmark",
   "semanticContracts": {
-    "contractedCases": 76,
+    "contractedCases": 85,
     "totalCases": 100,
-    "status": "HIGH_RISK_DIRECT_TWO_RULE_TIMING_AND_AMBIGUITY_COMPLETE",
-    "note": "Contracts test practical claims beyond conclusion and citation matching. All direct definitions, two-rule interactions, timing/sequence cases, ambiguous/missing-facts cases, and remaining known high-risk regressions are protected; 24 contracts remain before any paid model evaluation."
+    "status": "HIGH_RISK_DIRECT_TWO_RULE_TIMING_AMBIGUITY_AND_OVERRIDES_COMPLETE",
+    "note": "Contracts test practical claims beyond conclusion and citation matching. All direct definitions, two-rule interactions, timing/sequence, ambiguous/missing-facts, FAQ/ITS override cases, and remaining known high-risk regressions are protected; 15 contracts remain before any paid model evaluation."
   }
 }
