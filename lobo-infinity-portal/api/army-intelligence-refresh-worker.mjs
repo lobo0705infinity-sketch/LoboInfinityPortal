@@ -39,8 +39,7 @@ export default async function handler(request, response) {
     const backfillToken = String(process.env.ARMY_INTELLIGENCE_BACKFILL_TOKEN || '').trim()
     const batchLimit = Math.max(1, Number(body.batchLimit) || DEFAULT_REFRESH_BATCH_LIMIT)
     const requestedSectorial = String(body.sectorial || '').trim()
-    const oneTimeTop40Recovery = !automatic && !sessionToken && body.recoverTop40Snapshot === '20260907T230547Z'
-    const publishPublicSnapshot = (automatic || oneTimeTop40Recovery) && body.publishPublicSnapshot === true
+    const publishPublicSnapshot = automatic && body.publishPublicSnapshot === true
     const deferReadModelRebuild = scopedBackfill && body.deferReadModelRebuild === true
     const finalizeMigration = scopedBackfill && body.finalizeMigration === true
     const dryRun = scopedBackfill && body.dryRun === true
@@ -67,17 +66,17 @@ export default async function handler(request, response) {
       return
     }
 
-    if (!automatic && !oneTimeTop40Recovery && !sessionToken) {
+    if (!automatic && !sessionToken) {
       response.status(401).json({ error: 'Commissioner authentication is required.', success: false })
       return
     }
 
-    if ((automatic || oneTimeTop40Recovery) && !workerToken) {
+    if (automatic && !workerToken) {
       response.status(500).json({ error: 'Automatic refresh credential is unavailable.', success: false })
       return
     }
 
-    const upstreamCredential = automatic || oneTimeTop40Recovery
+    const upstreamCredential = automatic
       ? { workerToken }
       : { sessionToken }
 
