@@ -26,7 +26,13 @@ assert.throws(
 )
 
 const approved = structuredClone(benchmark)
-for (const item of approved.cases) item.reviewStatus = 'APPROVED'
+for (const item of approved.cases) {
+  item.reviewStatus = 'APPROVED'
+  item.approvedAnswer = item.draftAnswer
+  item.approvedCitations = item.draftCitations
+  item.approvedConclusion = item.draftConclusion
+  item.approvedCertainty = item.draftCertainty
+}
 assert.throws(
   () => assertRulesModelEvaluationAllowed({ benchmark: approved, live: true, maximum: 1, environment: {} }),
   /explicit cost authorization is missing/,
