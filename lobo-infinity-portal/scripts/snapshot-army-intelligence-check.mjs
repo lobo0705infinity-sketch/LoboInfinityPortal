@@ -2,6 +2,7 @@ import fs from 'node:fs'
 
 const base = 'https://ecwefvuvauaqpary.public.blob.vercel-storage.com/public-snapshots/20260831T045141Z/'
 const source = fs.readFileSync(new URL('../src/public/SnapshotArmyIntelligence.tsx', import.meta.url), 'utf8')
+const css = fs.readFileSync(new URL('../src/public/SnapshotArmyIntelligence.css', import.meta.url), 'utf8')
 const app = fs.readFileSync(new URL('../src/public/SnapshotPublicApp.tsx', import.meta.url), 'utf8')
 
 const [summaryResponse, detailResponse] = await Promise.all([
@@ -40,6 +41,18 @@ for (const required of ['Select sectorial', 'Army Lists with a Winning Record', 
 assert(app.includes('<SnapshotArmyIntelligence />'), 'snapshot-native route component')
 assert(source.indexOf("useSnapshotData<Summary[]>('army-intelligence-summary')") < source.indexOf('<ArmyIntelligenceDetail'), 'summary loads before detail component')
 assert(source.includes("useSnapshotData<DetailGroup[]>('army-intelligence-detail')"), 'detail uses immutable cached snapshot client')
+const detailLayout = source.slice(source.indexOf('function ArmyIntelligenceDetail'), source.indexOf('function IntelligenceBrief'))
+const summaryPosition = detailLayout.indexOf('snapshot-intelligence-mature-metrics')
+const filtersPosition = detailLayout.indexOf('aria-label="Model Usage filters"')
+const capabilitiesPosition = detailLayout.indexOf('<IntelligenceBrief')
+assert(summaryPosition >= 0 && summaryPosition < filtersPosition && filtersPosition < capabilitiesPosition,
+  'summary row appears above analyze/filter controls and Observed Capabilities')
+assert((detailLayout.match(/snapshot-intelligence-mature-metrics/g) || []).length === 1,
+  'no duplicate summary row remains below capability cards')
+assert(/\.snapshot-intelligence-metrics\s*\{[^}]*display:\s*grid[^}]*grid-template-columns:\s*repeat\(auto-fit,\s*minmax\(145px,\s*1fr\)\)/s.test(css),
+  'desktop summary uses a responsive grid')
+assert(/@media \(max-width:\s*640px\)[\s\S]*?\.snapshot-intelligence-metrics[^}]*grid-template-columns:\s*1fr/.test(css),
+  'mobile summary collapses to a single-column grid')
 for (const forbidden of ['apiClient', 'UrlFetch', 'decoder', 'refreshArmy', 'publicArmyWorkspace', 'preparedProjection', 'armyCode']) {
   assert(!source.includes(forbidden), `forbidden dependency absent: ${forbidden}`)
 }

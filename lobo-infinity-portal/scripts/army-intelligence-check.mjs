@@ -10,11 +10,32 @@ const armies = read('src/config/armies.ts')
 const armyIdentity = read('src/services/armyIdentity.ts')
 const interactiveMetricCard = read('src/components/InteractiveMetricCard.tsx')
 const page = read('src/pages/ArmyIntelligence.tsx')
+const pageLayout = page.slice(page.indexOf('<main className="portal-shell army-intelligence-page">'), page.indexOf('type ArmyIntelligenceOperationsStatusState'))
+const pageFactionSelector = pageLayout.indexOf('aria-label="Army Intelligence analysis controls"')
+const pageSummary = pageLayout.indexOf('aria-label="Army Intelligence analysis summary"')
+const pageFilters = pageLayout.indexOf('aria-label="Model Usage filters"')
+const pageCapabilities = pageLayout.indexOf('<IntelligenceBrief')
+assert.ok(pageFactionSelector < pageSummary && pageSummary < pageFilters && pageFilters < pageCapabilities,
+  'Army Intelligence summary row must follow the faction selector and precede filters and Observed Capabilities.')
+assert.equal((pageLayout.match(/aria-label="Army Intelligence analysis summary"/g) || []).length, 1,
+  'Army Intelligence page must render exactly one summary row.')
 const commissioner = read('src/pages/CommissionerDashboard.tsx')
 const commissionerSystem = read('src/pages/CommissionerSystem.tsx')
 const decoder = read('scripts/infinity-army-decode.mjs')
 const refresh = read('scripts/refresh-army-intelligence.mjs')
 const worker = read('api/army-intelligence-refresh-worker.mjs')
+const selectedFactionResults = page.slice(page.indexOf('matchingLists.length === 0'), page.indexOf('type ArmyIntelligenceOperationsStatusState'))
+const selectedFactionSummary = selectedFactionResults.indexOf('aria-label="Army Intelligence analysis summary"')
+const selectedFactionFilters = selectedFactionResults.indexOf('aria-label="Model Usage filters"')
+const selectedFactionCapabilities = selectedFactionResults.indexOf('<IntelligenceBrief')
+assert(selectedFactionSummary >= 0 && selectedFactionSummary < selectedFactionFilters && selectedFactionFilters < selectedFactionCapabilities,
+  'Every selected faction must render summary statistics before filters and Observed Capabilities.')
+assert.equal((selectedFactionResults.match(/aria-label="Army Intelligence analysis summary"/g) || []).length, 1,
+  'Every selected faction must render exactly one summary-statistics row.')
+assert.match(appCss, /\.army-intelligence-summary\s*\{[\s\S]*?grid-template-columns:\s*repeat\(8, minmax\(0, 1fr\)\)/,
+  'Army Intelligence summary must retain one eight-card desktop row.')
+assert.match(appCss, /@media \(min-width: 721px\) and \(max-width: 1200px\)[\s\S]*?\.army-intelligence-summary[\s\S]*?repeat\(4, minmax\(0, 1fr\)\)/,
+  'Army Intelligence summary must wrap cleanly on tablet widths.')
 const canonicalArmyFixtureNames = [
   'Ariadna',
   'Combined Army',

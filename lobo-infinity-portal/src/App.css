@@ -4845,8 +4845,14 @@
   box-sizing: border-box;
   display: grid;
   gap: 0.7rem;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(8, minmax(0, 1fr));
   padding: 20px;
+}
+
+@media (min-width: 721px) and (max-width: 1200px) {
+  .army-intelligence-summary {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 .army-intelligence-metric {
@@ -12628,4 +12634,3 @@ a {
     width: min(100%, var(--portal-content-wide));
   }
 }
-

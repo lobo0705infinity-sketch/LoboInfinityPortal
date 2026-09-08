@@ -204,20 +204,7 @@ function ArmyIntelligenceDetail({ selected }: { selected: string }) {
   const averageDurability = round(average(entries.map((entry) => Number(entry.wounds ?? entry.structure ?? 0)).filter((value) => value > 0)))
 
   return <>
-    <section className="panel snapshot-intelligence-controls" aria-label="Model Usage filters">
-      <label><span>Analyze</span><select value={resultFilter} onChange={(event) => setResultFilter(event.target.value as ResultFilter)}><option value="all">All Army Lists</option><option value="winning">Army Lists with a Winning Record</option><option value="losing">Army Lists with a Losing Record</option></select></label>
-      <label><span>Type</span><select value={troopType} onChange={(event) => setTroopType(event.target.value)}><option value="">All Types</option>{troopTypes.map((value) => <option key={value}>{value}</option>)}</select></label>
-      <label><span>Sort</span><select value={sort} onChange={(event) => setSort(event.target.value as UsageSort)}><option value="alphabetical">Alphabetically</option><option value="coverage">List Coverage</option><option value="selections">Total Selections</option><option value="points">Points: High to Low</option></select></label>
-      <label><span>Search</span><input type="search" placeholder="Troop or profile" value={search} onChange={(event) => setSearch(event.target.value)} /></label>
-      <label><span>Skill</span><select value={skill} onChange={(event) => setSkill(event.target.value)}><option value="">All Skills</option>{skills.map((value) => <option key={value}>{value}</option>)}</select></label>
-      <label><span>Weapon</span><select value={weapon} onChange={(event) => setWeapon(event.target.value)}><option value="">All Weapons</option>{weapons.map((value) => <option key={value}>{value}</option>)}</select></label>
-      <label><span>Equipment</span><select value={equipment} onChange={(event) => setEquipment(event.target.value)}><option value="">All Equipment</option>{equipmentOptions.map((value) => <option key={value}>{value}</option>)}</select></label>
-    </section>
-
-    {lists.length ? <>
-      <IntelligenceBrief analysis={buildTacticalAnalysis(lists)} faction={selected} />
-
-      <section className="snapshot-intelligence-metrics snapshot-intelligence-mature-metrics" aria-label={`${selected} intelligence summary`}>
+    <section className="snapshot-intelligence-metrics snapshot-intelligence-mature-metrics" aria-label={`${selected} intelligence summary`}>
         <IntelligenceMetric icon="lists" label="Known Army Lists" value={publicLists.length} helper="Browse submitted army lists" onActivate={() => setExplorerOpen(true)} />
         <IntelligenceMetric icon="regular" label="Average Regular Orders" value={avg('regular')} />
         <IntelligenceMetric icon="irregular" label="Average Irregular Orders" value={avg('irregular')} />
@@ -226,7 +213,20 @@ function ArmyIntelligenceDetail({ selected }: { selected: string }) {
         <IntelligenceMetric icon="lieutenant" label="Average Lieutenant Orders" value={avg('lieutenant')} />
         <IntelligenceMetric icon="wounds" label="Average Wounds / Structure per Model" value={averageDurability} />
         <IntelligenceMetric icon="points" label="Average Points" value={averagePoints} />
-      </section>
+    </section>
+
+    <section className="panel snapshot-intelligence-controls" aria-label="Model Usage filters">
+        <label><span>Analyze</span><select value={resultFilter} onChange={(event) => setResultFilter(event.target.value as ResultFilter)}><option value="all">All Army Lists</option><option value="winning">Army Lists with a Winning Record</option><option value="losing">Army Lists with a Losing Record</option></select></label>
+        <label><span>Type</span><select value={troopType} onChange={(event) => setTroopType(event.target.value)}><option value="">All Types</option>{troopTypes.map((value) => <option key={value}>{value}</option>)}</select></label>
+        <label><span>Sort</span><select value={sort} onChange={(event) => setSort(event.target.value as UsageSort)}><option value="alphabetical">Alphabetically</option><option value="coverage">List Coverage</option><option value="selections">Total Selections</option><option value="points">Points: High to Low</option></select></label>
+        <label><span>Search</span><input type="search" placeholder="Troop or profile" value={search} onChange={(event) => setSearch(event.target.value)} /></label>
+        <label><span>Skill</span><select value={skill} onChange={(event) => setSkill(event.target.value)}><option value="">All Skills</option>{skills.map((value) => <option key={value}>{value}</option>)}</select></label>
+        <label><span>Weapon</span><select value={weapon} onChange={(event) => setWeapon(event.target.value)}><option value="">All Weapons</option>{weapons.map((value) => <option key={value}>{value}</option>)}</select></label>
+        <label><span>Equipment</span><select value={equipment} onChange={(event) => setEquipment(event.target.value)}><option value="">All Equipment</option>{equipmentOptions.map((value) => <option key={value}>{value}</option>)}</select></label>
+    </section>
+
+    {lists.length ? <>
+      <IntelligenceBrief analysis={buildTacticalAnalysis(lists)} faction={selected} />
 
       <UsagePanel items={visibleUsage} listCount={lists.length} title="Model Usage" wide />
 

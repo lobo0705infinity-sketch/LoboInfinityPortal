@@ -445,19 +445,6 @@ function ArmyIntelligenceContent({
             ))}
           </select>
         </label>
-        <label>
-          <span>Analyze</span>
-          <select
-            onChange={(event) => setResultFilter(event.target.value as AnalysisResultFilter)}
-            value={resultFilter}
-          >
-            {resultFilterOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
         <ArmyIntelligenceOperationsStatus />
       </section>
 
@@ -479,8 +466,6 @@ function ArmyIntelligenceContent({
         </section>
       ) : (
         <>
-          <IntelligenceBrief analysis={tacticalAnalysis} faction={selectedExplorerScope.label || selectedSectorial} />
-
           <section className="army-intelligence-summary" aria-label="Army Intelligence analysis summary">
             <MetricCard
               actionLabel="Browse submitted army lists"
@@ -521,6 +506,19 @@ function ArmyIntelligenceContent({
           />
 
           <section className="panel army-intelligence-selector army-intelligence-model-controls" aria-label="Model Usage filters">
+            <label>
+              <span>Analyze</span>
+              <select
+                onChange={(event) => setResultFilter(event.target.value as AnalysisResultFilter)}
+                value={resultFilter}
+              >
+                {resultFilterOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
             <label>
               <span>Type</span>
               <select onChange={(event) => setModelTypeFilter(event.target.value)} value={modelTypeFilter}>
@@ -585,6 +583,8 @@ function ArmyIntelligenceContent({
               </select>
             </label>
           </section>
+
+          <IntelligenceBrief analysis={tacticalAnalysis} faction={selectedExplorerScope.label || selectedSectorial} />
 
           <UsagePanel
             items={filteredModelUsage}
