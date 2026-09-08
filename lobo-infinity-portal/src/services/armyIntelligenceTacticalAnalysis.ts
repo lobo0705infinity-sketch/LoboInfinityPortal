@@ -28,7 +28,7 @@ export type TacticalAnalysis = {
   hackerListCount: number
   listCount: number
   mode: 'Observed Capabilities' | 'Submitted-List Trends'
-  perListNetworks: Array<{ label: string; components: string[] }>
+  perListNetworks: Array<{ components: string[] }>
 }
 
 const aroWeapon = /(?:sniper rifle|ap sniper rifle|multi sniper rifle|viral sniper rifle|plasma sniper rifle|missile launcher|portable autocannon|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach)/i
@@ -74,7 +74,7 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
       if (isHacker(entry)) hackerLists.add(listIndex)
       hackingComponents(entry).forEach((item) => components.add(item))
     }
-    return { label: list.decoded!.listName || `Decoded list ${listIndex + 1}`, components: Array.from(components).sort() }
+    return { components: Array.from(components).sort() }
   }).filter((row) => row.components.length > 0)
 
   return {

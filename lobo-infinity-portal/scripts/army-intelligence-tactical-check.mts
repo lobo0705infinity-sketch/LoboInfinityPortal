@@ -53,9 +53,31 @@ assert.equal(analysis.categories.find((item) => item.id === 'defensive')?.profil
 assert.ok(!analysis.categories.find((item) => item.id === 'defensive')?.profiles.some((profile) => profile.unit === 'NOT CAMO'))
 assert.equal(analysis.categories.find((item) => item.id === 'defensive')?.profiles.filter((profile) => profile.unit === 'SCOUT').length, 1, 'capabilities must not leak into a separate loadout')
 
-const observed = buildTacticalAnalysis([decodedList('Observed', [hacker, defensive])] as never)
+const observedListName = 'Arbitrary private list label 91f04d'
+const observed = buildTacticalAnalysis([decodedList(observedListName, [hacker, defensive])] as never)
 assert.equal(observed.mode, 'Observed Capabilities')
 assert.equal(observed.perListNetworks.length, 1)
+assert.deepEqual(observed.perListNetworks[0], { components: ['Fast-Panda', 'Hacker', 'Killer Hacking Device', 'Pitcher'] })
+assert.ok(!JSON.stringify(observed).includes(observedListName), 'player-entered list names must not enter tactical capability presentation data')
+
+const privateListName = 'Don\u2019t hurt me daddy'
+const dartok = entry('morat-dartok-fto', 'DARTOK FTO', 'Hacker · Pitcher', {
+  bs: 11,
+  equipment: [],
+  fireteamEligibility: { state: 'verified', verified: true, teams: ['Core'] },
+  hacker: true,
+  weapons: ['Pitcher'],
+})
+const morat = buildTacticalAnalysis([decodedList(privateListName, [dartok])] as never)
+const dartokProfile = morat.categories.find((item) => item.id === 'hacking')?.profiles[0]
+assert.equal(dartokProfile?.unit, 'DARTOK FTO')
+assert.equal(dartokProfile?.profile, 'Hacker · Pitcher')
+assert.equal(dartokProfile?.bs, 11)
+assert.equal(dartokProfile?.linkability, 'verified')
+assert.equal(dartokProfile?.listCount, 1)
+assert.equal(dartokProfile?.percentage, 100)
+assert.deepEqual(morat.perListNetworks, [{ components: ['Hacker', 'Pitcher'] }])
+assert.ok(!JSON.stringify(morat).includes(privateListName), 'arbitrary player-entered list names must not appear in capability cards')
 
 const variants = ['FastPanda', 'fast panda', 'FAST-PANDA', 'Deployable-Repeater', 'deployable repeater', 'PITCHER']
 for (const [index, value] of variants.entries()) {

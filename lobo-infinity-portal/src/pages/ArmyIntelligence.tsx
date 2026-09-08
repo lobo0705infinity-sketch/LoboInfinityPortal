@@ -1065,7 +1065,7 @@ function IntelligenceBrief({ analysis, faction }: { analysis: TacticalAnalysis; 
           <header><h3>{category.title}</h3><p>{category.description}</p></header>
           {category.id === 'hacking' ? <p className="army-intelligence-category-total"><strong>{analysis.hackerListCount}</strong> of {analysis.listCount} decoded lists contain at least one Hacker.</p> : null}
           {category.profiles.length ? <div className="army-intelligence-tactical-profiles">{category.profiles.map((profile) => <TacticalProfileRow category={category.id} key={profile.profileId} profile={profile} />)}</div> : <p className="army-intelligence-tactical-empty">{category.unavailableReason || 'No qualifying profiles were found in the submitted decoded sample.'}</p>}
-          {category.id === 'hacking' && analysis.perListNetworks.length ? <div className="army-intelligence-network-lists">{analysis.perListNetworks.map((row) => <p key={row.label}><strong>{row.label}</strong><span>{row.components.join(' · ')}</span></p>)}</div> : null}
+          {category.id === 'hacking' && analysis.perListNetworks.length ? <div className="army-intelligence-network-lists">{analysis.perListNetworks.map((row, index) => <p key={`${index}:${row.components.join('|')}`}><span>{row.components.join(' · ')}</span></p>)}</div> : null}
         </article>)}
       </div>
     </section>
