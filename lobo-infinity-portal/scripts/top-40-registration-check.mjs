@@ -119,6 +119,7 @@ for (const forbidden of [
 
 assert.match(publicSnapshotExporterSource, /function readPublicSnapshotTop40RegistrationNames_\(\)[\s\S]*lifGetTargetSpreadsheet_\(\)/)
 assert.match(armyIntelligenceWorkerSource, /publishPublicSnapshot = automatic && body\.publishPublicSnapshot === true/)
+assert.match(armyIntelligenceWorkerSource, /body = request\.method === 'POST' \? await readJsonBody\(request\) : \{\}/)
 for (const header of [
   'Timestamp', 'Email address', 'Lobo Portal User Name', 'Discord Name', 'Tournament Rules agreement',
 ]) assert.ok(publicSnapshotExporterSource.includes(`"${header}"`))

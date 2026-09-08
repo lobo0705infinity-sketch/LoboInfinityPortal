@@ -118,7 +118,32 @@ function runScheduledArmyIntelligenceRefresh() {
 
 }
 
-function runScheduledMaintenanceWorker_(url, token) {
+function runPublishOnlyPublicSnapshotRefresh() {
+
+  const token = getArmyIntelligenceSchedulerToken_();
+
+  if (!token)
+    throw new Error("Army Intelligence scheduler credential is not configured.");
+
+  const result = runScheduledMaintenanceWorker_(
+    ARMY_INTELLIGENCE_SCHEDULER_URL,
+    token,
+    {
+      publishPublicSnapshot: true,
+      snapshotKeys: ["__publish_only__"]
+    }
+  );
+
+  Logger.log("PUBLIC_SNAPSHOT_PUBLISH_ONLY " + JSON.stringify(result));
+
+  if (!result.success)
+    throw new Error("Publish-only public snapshot refresh failed.");
+
+  return result;
+
+}
+
+function runScheduledMaintenanceWorker_(url, token, requestPayload) {
 
   try {
     const response = UrlFetchApp.fetch(url, {
@@ -128,7 +153,7 @@ function runScheduledMaintenanceWorker_(url, token) {
       },
       method: "post",
       muteHttpExceptions: true,
-      payload: "{}"
+      payload: JSON.stringify(requestPayload || {})
     });
     const statusCode = response.getResponseCode();
     const payload = parseArmyIntelligenceSchedulerResponse_(response.getContentText());

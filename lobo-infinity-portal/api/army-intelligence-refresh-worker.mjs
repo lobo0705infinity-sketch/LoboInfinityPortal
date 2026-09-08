@@ -32,7 +32,7 @@ export default async function handler(request, response) {
   }
 
   try {
-    const body = automatic && !scopedBackfill ? {} : await readJsonBody(request)
+    const body = request.method === 'POST' ? await readJsonBody(request) : {}
     const apiUrl = String(body.apiUrl || process.env.VITE_API_URL || '').trim()
     const sessionToken = String(body.sessionToken || '').trim()
     const workerToken = String(process.env.ARMY_INTELLIGENCE_WORKER_TOKEN || '').trim()
