@@ -9,8 +9,8 @@ const BENCHMARK_FILES = Object.freeze([
   'data/infinity-rules/rules-adjudicator-new-topics-500.json',
 ])
 const APPROVALS_FILE = 'data/infinity-rules/rules-benchmark-approvals.json'
-const STOP_WORDS = new Set(['a', 'an', 'and', 'at', 'can', 'could', 'do', 'does', 'for', 'how', 'i', 'if', 'in', 'is', 'it', 'of', 'on', 'ord', 'should', 'the', 'this', 'to', 'under', 'what', 'when', 'while', 'with'])
-cachedIndex
+const STOP_WORDS = new Set(['a', 'an', 'and', 'at', 'can', 'could', 'do', 'does', 'for', 'how', 'i', 'if', 'in', 'is', 'it', 'of', 'on', 'or', 'should', 'the', 'this', 'to', 'under', 'what', 'when', 'while', 'with'])
+let cachedIndex
 
 export async function loadRulesBenchmark({ force = false } = {}) {
   if (cachedIndex && !force) return cachedIndex
