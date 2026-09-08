@@ -2,7 +2,7 @@
 
 ## Outcome
 
-The benchmark is mechanically complete, but it should **not be formally approved yet**. The **3 blocking issues, 3 legacy-terminology rulings, 2 core interaction rulings, and 2 timing rulings have now been resolved**. **2 exhaustive-corpus rulings still deserve focused review**. The other **98 cases require no further manual rereading** before approval.
+The focused rules review is complete. All **100 benchmark answers** have now passed the rules-content review: 3 blockers were corrected, 3 legacy-terminology rulings were resolved, 2 core interactions were strengthened, 2 timing rulings were clarified, and the final 2 source-wide claims were checked. **No benchmark answers remain flagged for rules review.** Formal approval is still intentionally locked.
 
 This report does not approve the benchmark, run a paid model, deploy code, or modify production.
 
@@ -11,7 +11,7 @@ This report does not approve the benchmark, run a paid model, deploy code, or mo
 | Check | Result |
 |---|---:|
 | Benchmark cases | 100/100 complete |
-| Citation references | 197 validated |
+| Citation references | 207 validated |
 | Semantic contracts | 100/100 complete |
 | Adversarial mutations rejected | 390/390 |
 | Formal approvals | 0/100 |
@@ -27,14 +27,18 @@ These corrections are complete on `rules-adjudicator-v2`.
 | `timing_sequence-02` | MSV1 shooting through Smoke when the target Dodges | Certainty corrected to `EVIDENCE-BOUNDED INTERPRETATION`; −6 result retained. | Complete |
 | `timing_sequence-03` | Does declaring Dodge break Stealth? | Answer now leads with the Active/Reactive Turn distinction; certainty is `EVIDENCE-BOUNDED INTERPRETATION`. Stored conclusion remains schema-valid `INTERPRETATION`, while the candidate expectation remains conditional. | Complete |
 
-## Focused rules review
+## Remaining focused rules review
 
-These are plausible drafts, but each makes an exhaustive corpus claim. Review only these two; the report makes no claim that they are wrong.
+None.
 
-| Case | Question | Why it merits review |
-|---|---|---|
-| `faq_its_override-08` | What FAQ changes affect Hidden Deployment? | Claims an exhaustive FAQ review found no amendment; negative claims need source-level confirmation. |
-| `faq_its_override-10` | Which ITS Season 18 rules restrict Combat Jump? | Claims an exhaustive mission list and page-specific restrictions; verify completeness once. |
+The benchmark still has 0 formal approvals because review completion and release approval are deliberately separate actions.
+
+## Resolved source-wide cases
+
+| Case | Resolution |
+|---|---|
+| `faq_its_override-08` | All four printed pages of Infinity FAQ v0.1 were checked. No explicit Hidden Deployment amendment was found. An invalid duplicate source identifier was removed and valid FAQ-page coverage added. |
+| `faq_its_override-10` | ITS Season 18 was checked for Airborne Deployment and Superior Deployment restrictions. The five listed Exclusion-Zone missions and Crossing Lines' broader prohibition were confirmed. |
 
 ## Resolved timing cases
 
@@ -60,10 +64,9 @@ These are plausible drafts, but each makes an exhaustive corpus claim. Review on
 
 ## Approval recommendation
 
-1. Resolve or explicitly accept the two exhaustive-corpus records.
-2. Re-run the zero-cost benchmark, citation, adversarial, model-gate, and approval checks.
-3. Only then use the existing one-action approval command.
-4. After approval, authorize at most one paid candidate request as a smoke test; do not run a paid batch automatically.
+1. Re-run the complete zero-cost benchmark, citation, adversarial, model-gate, and approval checks.
+2. Only if every check passes, use the existing one-action formal approval command.
+3. After approval, authorize at most one paid candidate request as a smoke test; do not run a paid batch automatically.
 
 ## Release boundary
 
