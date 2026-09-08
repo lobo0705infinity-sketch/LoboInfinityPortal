@@ -2,7 +2,7 @@
 
 ## Outcome
 
-The benchmark is mechanically complete, but it should **not be formally approved yet**. The audit found **3 blocking answer/metadata issues** and **9 rulings that deserve one focused human rules review**. The other **88 cases require no further manual rereading** before approval.
+The benchmark is mechanically complete, but it should **not be formally approved yet**. The **3 blocking answer/metadata issues have been corrected**. **9 rulings still deserve one focused rules review**. The other **88 cases require no further manual rereading** before approval.
 
 This report does not approve the benchmark, run a paid model, deploy code, or modify production.
 
@@ -17,15 +17,15 @@ This report does not approve the benchmark, run a paid model, deploy code, or mo
 | Formal approvals | 0/100 |
 | Paid provider calls during audit | 0 |
 
-## Blocking corrections
+## Corrected blockers
 
-These should be corrected before the one-action approval is used.
+These corrections are complete on `rules-adjudicator-v2`.
 
 | Case | Question | Problem | Required correction |
 |---|---|---|---|
-| `timing_sequence-01` | MSV1 shooting through Smoke when the target shoots back | The answer is a multi-rule interpretation, but `draftCertainty` says `EXPLICIT RULES ANSWER`. | Change certainty to `EVIDENCE-BOUNDED INTERPRETATION`; retain the −3 result if the cited rule text supports the stated sequence. |
-| `timing_sequence-02` | MSV1 shooting through Smoke when the target Dodges | The answer is a multi-rule interpretation, but `draftCertainty` says `EXPLICIT RULES ANSWER`. | Change certainty to `EVIDENCE-BOUNDED INTERPRETATION`; retain the −6 result if the cited rule text supports it. |
-| `timing_sequence-03` | Does declaring Dodge break Stealth? | The contract expects a conditional answer (`DEPENDS`), while the draft opens with unconditional `No` and records `INTERPRETATION`. | Lead with the Active/Reactive Turn distinction and align conclusion/certainty with the contract. |
+| `timing_sequence-01` | MSV1 shooting through Smoke when the target shoots back | Certainty corrected to `EVIDENCE-BOUNDED INTERPRETATION`; −3 result retained. | Complete |
+| `timing_sequence-02` | MSV1 shooting through Smoke when the target Dodges | Certainty corrected to `EVIDENCE-BOUNDED INTERPRETATION`; −6 result retained. | Complete |
+| `timing_sequence-03` | Does declaring Dodge break Stealth? | Answer now leads with the Active/Reactive Turn distinction; certainty is `EVIDENCE-BOUNDED INTERPRETATION`. Stored conclusion remains schema-valid `INTERPRETATION`, while the candidate expectation remains conditional. | Complete |
 
 ## Focused rules review
 
@@ -45,11 +45,10 @@ These are plausible drafts, but each depends on interpretation, an exhaustive co
 
 ## Approval recommendation
 
-1. Correct the three blocking records.
-2. Resolve or explicitly accept the nine focused-review records.
-3. Re-run the zero-cost benchmark, citation, adversarial, model-gate, and approval checks.
-4. Only then use the existing one-action approval command.
-5. After approval, authorize at most one paid candidate request as a smoke test; do not run a paid batch automatically.
+1. Resolve or explicitly accept the nine focused-review records.
+2. Re-run the zero-cost benchmark, citation, adversarial, model-gate, and approval checks.
+3. Only then use the existing one-action approval command.
+4. After approval, authorize at most one paid candidate request as a smoke test; do not run a paid batch automatically.
 
 ## Release boundary
 
