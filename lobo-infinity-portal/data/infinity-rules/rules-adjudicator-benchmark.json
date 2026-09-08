@@ -3520,7 +3520,41 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "needs-exception-state",
+            "description": "asks what permits attack and whether Marker revealed",
+            "patterns": [
+              "need.{0,80}(?:permit|exception|rule).{0,80}(?:reveal|marker)"
+            ]
+          },
+          {
+            "id": "normally-no-attack",
+            "description": "normally cannot Attack a Camouflaged Marker",
+            "patterns": [
+              "normally.{0,50}(?:cannot|can['’]?t).{0,40}attack.{0,40}camouflaged\\s+marker"
+            ]
+          },
+          {
+            "id": "discover-first",
+            "description": "must Discover first or use Discover + Attack",
+            "patterns": [
+              "discover.{0,20}(?:first|\\+\\s*attack)"
+            ]
+          },
+          {
+            "id": "exceptions",
+            "description": "mentions Intuitive Attack or MSV3 exception",
+            "patterns": [
+              "intuitive\\s+attack",
+              "msv\\s*3|msv3"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -3552,7 +3586,47 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "needs-template-lof-success",
+            "description": "requests template type, LoF, and Dodge success",
+            "patterns": [
+              "need.{0,80}(?:direct|impact).{0,80}lof.{0,80}(?:succeed|success)"
+            ]
+          },
+          {
+            "id": "successful-avoids",
+            "description": "successful Dodge avoids Template Attack",
+            "patterns": [
+              "successful\\s+dodge.{0,60}(?:avoid|cancel|evade).{0,40}template"
+            ]
+          },
+          {
+            "id": "direct-normal",
+            "description": "Direct Template Dodge is Normal PH Roll",
+            "patterns": [
+              "direct\\s+template.{0,100}normal\\s+ph\\s+roll"
+            ]
+          },
+          {
+            "id": "impact-ftf",
+            "description": "Impact Template can be Face to Face",
+            "patterns": [
+              "impact\\s+template.{0,100}face\\s+to\\s+face"
+            ]
+          },
+          {
+            "id": "no-lof-minus3",
+            "description": "without LoF Dodge is PH-3",
+            "patterns": [
+              "without\\s+lof.{0,80}ph\\s*(?:−|-)\\s*3"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -3589,7 +3663,40 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "needs-profile-program-area",
+            "description": "needs TAG profile/state, device/program, and Hacking Area",
+            "patterns": [
+              "need.{0,100}(?:profile|state).{0,100}(?:device|program).{0,100}hacking\\s+area"
+            ]
+          },
+          {
+            "id": "tags-hackable",
+            "description": "TAGs normally Hackable",
+            "patterns": [
+              "tags?.{0,30}normally\\s+hackable|normally\\s+hackable.{0,30}tags?"
+            ]
+          },
+          {
+            "id": "program-legal",
+            "description": "Program must be available and allow target",
+            "patterns": [
+              "program.{0,80}(?:available|allow).{0,60}target"
+            ]
+          },
+          {
+            "id": "area-state",
+            "description": "range/Hacking Area and State Requirements apply",
+            "patterns": [
+              "(?:range|hacking\\s+area).{0,80}state.{0,30}requirements?"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -3616,7 +3723,47 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "needs-geometry",
+            "description": "needs attack, LoF, scenery contact and obscuration",
+            "patterns": [
+              "need.{0,100}lof.{0,100}(?:contact|scenery).{0,100}(?:obscur|silhouette)"
+            ]
+          },
+          {
+            "id": "partial-requirements",
+            "description": "Partial Cover requires scenery contact and obscuration",
+            "patterns": [
+              "partial\\s+cover.{0,100}contact.{0,80}(?:obscur|silhouette)"
+            ]
+          },
+          {
+            "id": "partial-effects",
+            "description": "Partial Cover gives -3 BS and +3 Save",
+            "patterns": [
+              "(?:−|-)\\s*3.{0,40}bs.{0,80}\\+\\s*3.{0,50}(?:saving|save)"
+            ]
+          },
+          {
+            "id": "total-blocks",
+            "description": "Total Cover blocks LoF-dependent BS Attacks",
+            "patterns": [
+              "total\\s+cover.{0,80}block.{0,60}(?:lof|bs\\s+attack)"
+            ]
+          },
+          {
+            "id": "marksmanship-limited",
+            "description": "Marksmanship ignores only negative BS MOD",
+            "patterns": [
+              "marksmanship.{0,80}ignore.{0,30}only.{0,60}(?:negative\\s+bs|bs\\s+mod)"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -3653,7 +3800,40 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "needs-full-context",
+            "description": "needs path/Skills, LoF, ZoC/Hacking Area and State",
+            "patterns": [
+              "need.{0,100}(?:path|skills).{0,100}lof.{0,100}(?:zoc|zone\\s+of\\s+control|hacking\\s+area)"
+            ]
+          },
+          {
+            "id": "checked-after-each",
+            "description": "ARO eligibility checked after each Skill",
+            "patterns": [
+              "aro\\s+eligibility.{0,60}after\\s+each\\s+skill"
+            ]
+          },
+          {
+            "id": "first-or-lose",
+            "description": "valid first-check ARO must be declared or lost",
+            "patterns": [
+              "first\\s+check.{0,100}(?:declare|lost|lose)"
+            ]
+          },
+          {
+            "id": "second-new-only",
+            "description": "second check only for newly eligible Troopers",
+            "patterns": [
+              "second\\s+check.{0,100}(?:gained|new(?:ly)?|only\\s+after).{0,50}eligib"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -3680,7 +3860,47 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "needs-position-zones",
+            "description": "needs intended position, table half, DZ/Exclusion and mission",
+            "patterns": [
+              "need.{0,100}(?:position|half).{0,120}(?:deployment\\s+zone|exclusion\\s+zone).{0,100}mission"
+            ]
+          },
+          {
+            "id": "own-half-no-roll",
+            "description": "own half outside DZ needs no Roll",
+            "patterns": [
+              "(?:your|own)\\s+half.{0,100}without\\s+a\\s+roll"
+            ]
+          },
+          {
+            "id": "enemy-half-ph3",
+            "description": "opponent half requires Normal PH-3",
+            "patterns": [
+              "opponent['’]?s\\s+half.{0,100}normal\\s+ph\\s*(?:−|-)\\s*3"
+            ]
+          },
+          {
+            "id": "failure-placement",
+            "description": "failed Roll places Trooper in own DZ at table edge",
+            "patterns": [
+              "failed\\s+roll.{0,100}(?:your|own)\\s+deployment\\s+zone.{0,80}table\\s+edge"
+            ]
+          },
+          {
+            "id": "failure-removes-marker",
+            "description": "failure removes Marker/Hidden Deployment",
+            "patterns": [
+              "failed\\s+roll.{0,160}(?:removes?|without|lose).{0,50}(?:marker|hidden\\s+deployment)"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -3702,7 +3922,41 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "needs-roll-type",
+            "description": "needs roller/roll type and printed Mimetism",
+            "patterns": [
+              "need.{0,100}(?:who|roll).{0,120}(?:bs\\s+attack|discover|cc\\s+attack).{0,100}mimetism"
+            ]
+          },
+          {
+            "id": "bs-discover",
+            "description": "applies to LoF BS Attacks and Discover",
+            "patterns": [
+              "(?:lof|line\\s+of\\s+fire).{0,60}bs\\s+attacks?.{0,80}discover",
+              "bs\\s+attacks?.{0,100}discover"
+            ]
+          },
+          {
+            "id": "listed-mod",
+            "description": "uses listed negative MOD",
+            "patterns": [
+              "listed\\s+negative\\s+mod"
+            ]
+          },
+          {
+            "id": "not-cc",
+            "description": "does not apply to CC Attacks",
+            "patterns": [
+              "(?:not|does\\s+not).{0,30}cc\\s+attacks?"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -3729,7 +3983,40 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "needs-mission-landing",
+            "description": "needs mission restrictions and landing requirements",
+            "patterns": [
+              "need.{0,100}mission.{0,100}(?:landing|combat\\s+jump).{0,80}requirements?"
+            ]
+          },
+          {
+            "id": "core-permitted",
+            "description": "core Combat Jump is permitted",
+            "patterns": [
+              "core\\s+combat\\s+jump.{0,40}permitted"
+            ]
+          },
+          {
+            "id": "mission-overrides",
+            "description": "missions may prohibit/modify Airborne Deployment",
+            "patterns": [
+              "missions?.{0,80}(?:prohibit|modify).{0,50}airborne\\s+deployment"
+            ]
+          },
+          {
+            "id": "zones-areas",
+            "description": "missions may change Exclusion Zones or landing areas",
+            "patterns": [
+              "(?:exclusion\\s+zones?|landing\\s+areas?).{0,80}(?:change|legal|define)"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -3751,7 +4038,33 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "needs-mission-profile-objective",
+            "description": "needs mission, exact profile/Skills and objective",
+            "patterns": [
+              "need.{0,100}mission.{0,100}(?:profile|skills).{0,100}objective"
+            ]
+          },
+          {
+            "id": "specialist-list",
+            "description": "lists recognized Specialist types",
+            "patterns": [
+              "hackers?.{0,150}doctors?.{0,150}engineers?.{0,150}(?:forward\\s+observers?|specialist\\s+operatives?)"
+            ]
+          },
+          {
+            "id": "mission-controls",
+            "description": "individual missions may restrict/restate",
+            "patterns": [
+              "(?:individual\\s+)?missions?.{0,80}(?:restate|restrict)"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -3778,7 +4091,33 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "needs-faction-profiles-type-chart",
+            "description": "needs faction, profiles, Fireteam type and current chart",
+            "patterns": [
+              "need.{0,100}(?:faction|sectorial).{0,100}profiles?.{0,100}fireteam\\s+type.{0,100}(?:chart|official)"
+            ]
+          },
+          {
+            "id": "chart-specific",
+            "description": "legality is army-chart-specific",
+            "patterns": [
+              "fireteam\\s+legality.{0,60}(?:army.?chart.?specific|chart)"
+            ]
+          },
+          {
+            "id": "all-constraints",
+            "description": "membership limits/required units/wildcards/availability must permit",
+            "patterns": [
+              "(?:minimum|maximum).{0,100}required\\s+units?.{0,100}wildcard.{0,100}availability"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -3805,7 +4144,40 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "needs-action-aro",
+            "description": "needs directed action/Attack and desired ARO",
+            "patterns": [
+              "need.{0,100}(?:action|attack).{0,100}(?:aro|declare)"
+            ]
+          },
+          {
+            "id": "only-directed-attacks",
+            "description": "Sixth Sense responds only to directed Attacks outside LoF",
+            "patterns": [
+              "sixth\\s+sense.{0,100}only.{0,80}attacks?.{0,80}(?:outside|without)\\s+(?:its\\s+)?lof"
+            ]
+          },
+          {
+            "id": "not-general",
+            "description": "does not grant shooting against every activation",
+            "patterns": [
+              "(?:does\\s+not|doesn['’]?t).{0,50}(?:general|every\\s+activation|right\\s+to\\s+shoot)"
+            ]
+          },
+          {
+            "id": "bs-requirements",
+            "description": "BS Attack must meet its Requirements",
+            "patterns": [
+              "bs\\s+attack.{0,60}(?:own\\s+)?requirements?"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -3832,7 +4204,41 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "conditional-yes",
+            "description": "Discover + Attack can be declared if legal",
+            "patterns": [
+              "\\byes\\b.{0,100}discover\\s*\\+\\s*attack",
+              "discover\\s*\\+\\s*attack.{0,100}legal"
+            ]
+          },
+          {
+            "id": "reveal-no-roll",
+            "description": "if Marker reveals, no Discover Roll",
+            "patterns": [
+              "marker\\s+reveals?.{0,60}no\\s+discover\\s+roll"
+            ]
+          },
+          {
+            "id": "otherwise-success-first",
+            "description": "otherwise Discover must succeed before Attack resolves",
+            "patterns": [
+              "otherwise.{0,60}discover.{0,40}succeed.{0,60}attack.{0,30}resolv"
+            ]
+          },
+          {
+            "id": "needs-target-attack",
+            "description": "needs intended Attack and target",
+            "patterns": [
+              "need.{0,60}(?:intended\\s+)?attack.{0,50}target"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -3859,7 +4265,40 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "needs-weapon-mode",
+            "description": "needs weapon/Skill and mode",
+            "patterns": [
+              "need.{0,60}(?:weapon|skill).{0,50}mode"
+            ]
+          },
+          {
+            "id": "direct-no-roll",
+            "description": "Direct Template Weapons make no BS hit Roll",
+            "patterns": [
+              "direct\\s+template\\s+weapons?.{0,80}(?:do\\s+not|don['’]?t|no).{0,40}(?:bs\\s+)?roll"
+            ]
+          },
+          {
+            "id": "not-guaranteed",
+            "description": "placement/eligibility/Dodge etc can prevent effect",
+            "patterns": [
+              "(?:placement|eligibility).{0,120}(?:dodge|scenery|cancellation).{0,100}(?:prevent|cancel)"
+            ]
+          },
+          {
+            "id": "others-roll",
+            "description": "other weapons normally require Attack Roll",
+            "patterns": [
+              "other\\s+weapons?.{0,60}(?:normally\\s+)?require.{0,30}attack\\s+roll"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -3891,7 +4330,40 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "needs-source",
+            "description": "needs Roll type and claimed reroll rule/effect",
+            "patterns": [
+              "need.{0,80}roll\\s+type.{0,100}(?:rule|skill|equipment|command\\s+token).{0,80}reroll"
+            ]
+          },
+          {
+            "id": "no-universal",
+            "description": "no universal reroll permission",
+            "patterns": [
+              "no\\s+universal\\s+(?:permission\\s+)?to\\s+reroll"
+            ]
+          },
+          {
+            "id": "specific-only",
+            "description": "reroll only if specific rule permits",
+            "patterns": [
+              "reroll.{0,50}(?:only\\s+when|only\\s+if).{0,40}specific\\s+rule"
+            ]
+          },
+          {
+            "id": "rule-controls",
+            "description": "granting rule controls cost/result",
+            "patterns": [
+              "rule.{0,60}controls?.{0,60}(?:cost|replacement\\s+result)"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -3918,7 +4390,33 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft."
+      "semanticAuditBasis": "Checked for correct clarification behavior and against the cited official N5.3/ITS text; remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "needs-state-trigger-exception",
+            "description": "needs survival/state, triggering Attack, and Courage/exception",
+            "patterns": [
+              "need.{0,100}(?:surviv|state).{0,100}(?:attack|guts).{0,100}(?:courage|exception)"
+            ]
+          },
+          {
+            "id": "qualifying-one-end",
+            "description": "qualifying Trooper rolls once at end of Order",
+            "patterns": [
+              "qualifying\\s+trooper.{0,60}(?:one|1)\\s+guts\\s+roll.{0,60}end\\s+of\\s+the\\s+order"
+            ]
+          },
+          {
+            "id": "no-ps-no-state",
+            "description": "no PS and no State means no Guts Roll",
+            "patterns": [
+              "no\\s+ps\\s+value.{0,80}no\\s+state.{0,60}(?:does\\s+not|doesn['’]?t).{0,30}(?:require|make).{0,20}(?:one|guts)"
+            ]
+          }
+        ],
+        "forbiddenClaims": []
+      }
     },
     {
       "approvedAnswer": null,
@@ -4710,9 +5208,9 @@
   },
   "title": "Infinity N5 Rules Adjudicator Benchmark",
   "semanticContracts": {
-    "contractedCases": 61,
+    "contractedCases": 76,
     "totalCases": 100,
-    "status": "HIGH_RISK_DIRECT_TWO_RULE_AND_TIMING_COMPLETE",
-    "note": "Contracts test practical claims beyond conclusion and citation matching. All direct definitions, two-rule interactions, timing/sequence cases, and remaining known high-risk regressions are protected; 39 contracts remain before any paid model evaluation."
+    "status": "HIGH_RISK_DIRECT_TWO_RULE_TIMING_AND_AMBIGUITY_COMPLETE",
+    "note": "Contracts test practical claims beyond conclusion and citation matching. All direct definitions, two-rule interactions, timing/sequence cases, ambiguous/missing-facts cases, and remaining known high-risk regressions are protected; 24 contracts remain before any paid model evaluation."
   }
 }
