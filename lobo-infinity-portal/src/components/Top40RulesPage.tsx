@@ -24,8 +24,8 @@ export default function Top40RulesPage() {
         <img
           alt="Lobo's American Top 40 Rules"
           height="941"
-          src="/assets/events/top-40-rules-v2.png"
-          width="1672"
+          src="/assets/events/top-40-rules.png?v=e49f616a"
+          width="1671"
         />
       </figure>
       <nav className="event-home-nav" aria-label="Event navigation">

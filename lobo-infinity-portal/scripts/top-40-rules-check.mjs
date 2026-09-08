@@ -10,10 +10,10 @@ const source = await readFile(new URL('../src/components/Top40RulesPage.tsx', im
 const styles = await readFile(new URL('../src/components/Top40RulesPage.css', import.meta.url), 'utf8')
 const rulebook = await readFile(new URL('../src/content/rulebooks/top40.ts', import.meta.url), 'utf8')
 const navigation = await readFile(new URL('../src/config/eventNavigation.ts', import.meta.url), 'utf8')
-const artwork = await readFile(new URL('../public/assets/events/top-40-rules-v2.png', import.meta.url))
+const artwork = await readFile(new URL('../public/assets/events/top-40-rules.png', import.meta.url))
 
 const eventId = 'event-lobo-s-american-top-40'
-const expectedHash = '9e71cc4c09d6330aa0bd8d8974debd3ad1f58e7cd80c781e72fb69bf29834135'
+const expectedHash = 'e49f616a495ebc69c578af8846510c72d0e0ddcec971513d48c144599d209dee'
 const sectionIds = [
   'eligibility-and-field',
   'tournament-format-and-seeding',
@@ -29,14 +29,14 @@ assert.equal(createHash('sha256').update(artwork).digest('hex'), expectedHash)
 assert.match(eventHome, /isTop40 && selectedSection === 'rules'/)
 assert.match(eventHome, /return <Top40RulesPage \/>/)
 assert.match(publicApp, /path="\/event\/event-lobo-s-american-top-40\/rules" element=\{<Top40RulesPage \/>\}/)
-assert.match(source, /src="\/assets\/events\/top-40-rules-v2\.png"/)
+assert.match(source, /src="\/assets\/events\/top-40-rules\.png\?v=e49f616a"/)
 assert.match(source, /<h2>On This Page<\/h2>/)
 assert.match(source, /href=\{`#\$\{section\.id\}`\}/)
 assert.doesNotMatch(eventHome, /function Top40Rules\(|No Automatic Forfeits|There is no bracket reset/)
 assert.match(styles, /\.top40-rules-hero img[\s\S]*width: 100%;[\s\S]*height: auto;[\s\S]*object-fit: contain;/)
 assert.doesNotMatch(styles, /object-fit:\s*cover|filter:|\.top40-rules-hero::(?:before|after)/)
 assert.match(source, /current-league-rules-page top40-rules-page/)
-assert.match(source, /height="941"[\s\S]*width="1672"/)
+assert.match(source, /height="941"[\s\S]*width="1671"/)
 assert.match(publicApp, /item==='rules'&&eventId==='event-lobo-s-american-top-40'\?`\/event\/\$\{eventId\}\/rules`/)
 
 for (const id of sectionIds) assert.ok(rulebook.includes(`id: '${id}'`), `missing section: ${id}`)
