@@ -2,7 +2,7 @@
 
 ## Outcome
 
-The benchmark is mechanically complete, but it should **not be formally approved yet**. The **3 blocking answer/metadata issues have been corrected**, and **3 legacy-terminology rulings have now been resolved**. **6 rulings still deserve focused rules review**. The other **91 cases require no further manual rereading** before approval.
+The benchmark is mechanically complete, but it should **not be formally approved yet**. The **3 blocking issues, 3 legacy-terminology rulings, and 2 core interaction rulings have now been resolved**. **4 rulings still deserve focused rules review**. The other **96 cases require no further manual rereading** before approval.
 
 This report does not approve the benchmark, run a paid model, deploy code, or modify production.
 
@@ -29,16 +29,21 @@ These corrections are complete on `rules-adjudicator-v2`.
 
 ## Focused rules review
 
-These are plausible drafts, but each depends on interpretation or an exhaustive corpus claim. Review only these six; the report makes no claim that they are wrong.
+These are plausible drafts, but each depends on timing interpretation or an exhaustive corpus claim. Review only these four; the report makes no claim that they are wrong.
 
 | Case | Question | Why it merits review |
 |---|---|---|
-| `two_rule_interaction-06` | Can a Repeater extend Hacking Area through another Repeater? | The “no daisy-chain” conclusion is inferred from how Hacking Area is constructed. |
-| `two_rule_interaction-10` | Does a Direct Template Weapon cancel Camouflaged State? | Depends on legal targeting, incidental template coverage, Saving Rolls, and cancellation timing. |
 | `timing_sequence-13` | Fireteam member enters a Null State mid-Order | The non-retroactivity and later composition statements are timing interpretations. |
 | `timing_sequence-19` | Peripheral disconnected during an Order | Result changes with the cause and timing of disconnection. |
 | `faq_its_override-08` | What FAQ changes affect Hidden Deployment? | Claims an exhaustive FAQ review found no amendment; negative claims need source-level confirmation. |
 | `faq_its_override-10` | Which ITS Season 18 rules restrict Combat Jump? | Claims an exhaustive mission list and page-specific restrictions; verify completeness once. |
+
+## Resolved core-interaction cases
+
+| Case | Resolution |
+|---|---|
+| `two_rule_interaction-06` | Hacking Area directly includes the ZoC of every allied Repeater; Repeaters do not recursively relay one another. The answer now states this distinction explicitly. |
+| `two_rule_interaction-10` | A Camouflaged Marker can be indirectly affected by a legal Template, and a forced Saving Roll cancels the State. The current FAQ citation was added and certainty corrected to `EXPLICIT RULES ANSWER`. |
 
 ## Resolved legacy-terminology cases
 
@@ -50,7 +55,7 @@ These are plausible drafts, but each depends on interpretation or an exhaustive 
 
 ## Approval recommendation
 
-1. Resolve or explicitly accept the six focused-review records.
+1. Resolve or explicitly accept the four focused-review records.
 2. Re-run the zero-cost benchmark, citation, adversarial, model-gate, and approval checks.
 3. Only then use the existing one-action approval command.
 4. After approval, authorize at most one paid candidate request as a smoke test; do not run a paid batch automatically.
