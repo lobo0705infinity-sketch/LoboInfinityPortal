@@ -1438,7 +1438,7 @@
       "approvedCitations": [],
       "candidateExpectation": null,
       "category": "TWO_RULE_INTERACTION",
-      "draftAnswer": "No daisy-chain is created or needed. A Hacker's Hacking Area directly includes the Hacker's own Zone of Control and the Zones of Control of every allied Repeater and Deployable Repeater. Each Repeater contributes only its own Zone; placing one Repeater inside another Repeater's Zone does not relay or extend that second Zone farther.",
+      "draftAnswer": "No. Repeaters do not daisy-chain; no chain is created or needed. A Hacker's Hacking Area directly includes the Hacker's own Zone of Control and the Zones of Control of every allied Repeater and Deployable Repeater. Each Repeater contributes only its own Zone; placing one Repeater inside another Repeater's Zone does not relay or extend that second Zone farther.",
       "draftCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
       "draftCitations": [
         {
