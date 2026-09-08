@@ -14,6 +14,9 @@ assert.deepEqual(PUBLIC_SNAPSHOT_FILES, [
 ])
 const files = Object.fromEntries(PUBLIC_SNAPSHOT_FILES.map((filename) => [filename, JSON.stringify({ snapshotId, sourceCutoff, data: [] })]))
 files['snapshot.json'] = JSON.stringify({ snapshotId, sourceCutoff, status: 'validated', published: false, livePointer: false })
+files['top-40-registrations.json'] = JSON.stringify({
+  snapshotId, sourceCutoff, data: { generatedAt: sourceCutoff, players: [{ name: 'Lobo', position: 1 }] },
+})
 
 const uploads = []
 const result = await publishPublicSnapshot({ snapshotId, sourceCutoff, files }, {
@@ -78,23 +81,38 @@ await assert.rejects(() => publishPublicSnapshot({ snapshotId, sourceCutoff, fil
 assert.equal(pointerFailureAttempts.at(-1), 'public-snapshots/current.json')
 
 const existingReads = []
+const existingWrites = []
 const existing = await publishPublicSnapshot({ snapshotId, sourceCutoff, files, activate: true }, {
   headObject: async (pathname) => {
+    if (pathname === 'public-snapshots/current.json') return {
+      pathname, size: 1, url: 'https://example/public-snapshots/current.json',
+    }
     const filename = pathname.split('/').at(-1)
     const text = files[filename]
     return { pathname, size: Buffer.byteLength(text), url: `https://example/${filename}` }
   },
   fetchObject: async (url) => {
     const filename = url.split('/').at(-1)
+    if (filename === 'current.json') return { ok: true, json: async () => ({
+      schemaVersion: 1, snapshotId, sourceCutoff,
+      basePath: `public-snapshots/${snapshotId}/`,
+    }) }
     existingReads.push(filename)
-    return { ok: true, text: async () => files[filename] }
+    return { ok: true, json: async () => {
+      const value = JSON.parse(files[filename])
+      if (filename === 'top-40-registrations.json') value.data.generatedAt = '2026-08-30T00:00:00.000Z'
+      return value
+    } }
   },
   putObject: async (pathname, text, options) => {
-    assert.equal(pathname, 'public-snapshots/current.json')
+    existingWrites.push(pathname)
     return { pathname, url: `https://example/${pathname}` }
   },
 })
-assert.equal(existing.activated, true)
+assert.equal(existing.unchanged, true)
+assert.equal(existing.uploaded, 0)
+assert.equal(existing.activated, false)
+assert.deepEqual(existingWrites, [])
 assert.deepEqual(existingReads, PUBLIC_SNAPSHOT_FILES)
 
 for (const invalid of ['../games.json', 'games.json/../secret', 'unknown.json']) {
@@ -122,5 +140,6 @@ const endpointSource = await readFile(new URL('../api/public-snapshot-publish.mj
 assert.doesNotMatch(endpointSource, /script\.google|googleusercontent|VITE_API_URL|projection|automation queue/i)
 assert.equal((endpointSource.match(/allowOverwrite:\s*true/g) || []).length, 1)
 assert.match(endpointSource, /if \(activate\)[\s\S]*public-snapshots\/current\.json/)
+assert.match(endpointSource, /snapshotDataMatchesCurrent/)
 
 console.log('Public snapshot Blob publication regression PASS')

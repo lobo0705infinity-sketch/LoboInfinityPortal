@@ -123,7 +123,7 @@ function runInspectLatestValidatedPublicSnapshotV1() {
   return result;
 }
 
-function runHourlyPublicSnapshot() {
+function runScheduledPublicSnapshot() {
   const started = Date.now();
   const build = buildPublicSnapshotV1_();
   if (!build || build.success !== true || build.status !== "validated") {
@@ -132,7 +132,7 @@ function runHourlyPublicSnapshot() {
       error: build && build.error ? build.error : "Public snapshot build failed.",
       pointerUpdated: false, elapsedMs: Date.now() - started
     };
-    Logger.log("PUBLIC_SNAPSHOT_HOURLY " + JSON.stringify(failed));
+    Logger.log("PUBLIC_SNAPSHOT_SCHEDULED " + JSON.stringify(failed));
     return failed;
   }
   try {
@@ -140,11 +140,13 @@ function runHourlyPublicSnapshot() {
     const result = {
       success: true, stage: "complete", snapshotId: build.snapshotId,
       sourceCutoff: build.sourceCutoff, status: "published",
-      filesUploaded: publication.filesUploaded, publishedToBlob: true,
-      pointerUpdated: true, current: publication.current,
+      filesUploaded: publication.filesUploaded,
+      publishedToBlob: publication.unchanged !== true,
+      unchanged: publication.unchanged === true,
+      pointerUpdated: publication.unchanged !== true, current: publication.current,
       elapsedMs: Date.now() - started
     };
-    Logger.log("PUBLIC_SNAPSHOT_HOURLY " + JSON.stringify(result));
+    Logger.log("PUBLIC_SNAPSHOT_SCHEDULED " + JSON.stringify(result));
     return result;
   } catch (error) {
     const failed = {
@@ -153,22 +155,35 @@ function runHourlyPublicSnapshot() {
       error: String(error && error.message ? error.message : error).slice(0, 500),
       pointerUpdated: false, elapsedMs: Date.now() - started
     };
-    Logger.log("PUBLIC_SNAPSHOT_HOURLY " + JSON.stringify(failed));
+    Logger.log("PUBLIC_SNAPSHOT_SCHEDULED " + JSON.stringify(failed));
     return failed;
   }
 }
 
-function installHourlyPublicSnapshotTrigger() {
-  const handler = "runHourlyPublicSnapshot";
+function installTwiceDailyPublicSnapshotTriggers() {
+  const handler = "runScheduledPublicSnapshot";
+  const obsoleteHandler = "runHourlyPublicSnapshot";
   ScriptApp.getProjectTriggers().forEach(function(trigger) {
-    if (trigger.getHandlerFunction() === handler) ScriptApp.deleteTrigger(trigger);
+    const triggerHandler = trigger.getHandlerFunction();
+    if (triggerHandler === handler || triggerHandler === obsoleteHandler)
+      ScriptApp.deleteTrigger(trigger);
   });
-  ScriptApp.newTrigger(handler).timeBased().everyHours(1).create();
+  [0, 12].forEach(function(hour) {
+    ScriptApp.newTrigger(handler).timeBased().atHour(hour).nearMinute(0)
+      .everyDays(1).inTimezone("America/New_York").create();
+  });
   const count = ScriptApp.getProjectTriggers().filter(function(trigger) {
     return trigger.getHandlerFunction() === handler;
   }).length;
-  if (count !== 1) throw new Error("Expected exactly one hourly Public Snapshot trigger.");
-  const result = { success: true, functionName: handler, frequency: "hourly", triggerCount: count };
+  const obsoleteCount = ScriptApp.getProjectTriggers().filter(function(trigger) {
+    return trigger.getHandlerFunction() === obsoleteHandler;
+  }).length;
+  if (count !== 2 || obsoleteCount !== 0)
+    throw new Error("Expected exactly two twice-daily Public Snapshot triggers and no hourly trigger.");
+  const result = {
+    success: true, functionName: handler, frequency: "twice daily",
+    hours: [0, 12], timezone: "America/New_York", triggerCount: count
+  };
   Logger.log("PUBLIC_SNAPSHOT_TRIGGER " + JSON.stringify(result));
   return result;
 }
@@ -216,7 +231,8 @@ function publishLatestPublicSnapshotV1_(activate, expectedSnapshotId) {
   const result = JSON.parse(response.getContentText() || "{}");
   if (statusCode < 200 || statusCode >= 300 || result.success !== true)
     throw new Error("Public snapshot publication failed (HTTP " + statusCode + "): " + String(result.error || "Unknown error"));
-  if (activate === true && (result.activated !== true || !result.current || result.current.snapshotId !== proofId))
+  if (activate === true && result.unchanged !== true &&
+      (result.activated !== true || !result.current || result.current.snapshotId !== proofId))
     throw new Error("Public snapshot activation did not return the expected current pointer.");
   const proof = {
     success: true,
@@ -224,7 +240,8 @@ function publishLatestPublicSnapshotV1_(activate, expectedSnapshotId) {
     sourceCutoff: result.sourceCutoff,
     filesUploaded: result.uploaded,
     files: result.files,
-    publishedToBlob: true,
+    publishedToBlob: result.unchanged !== true,
+    unchanged: result.unchanged === true,
     livePointer: result.activated === true,
     current: result.current || null
   };

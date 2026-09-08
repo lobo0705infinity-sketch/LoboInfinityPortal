@@ -114,7 +114,7 @@ function refreshArmyIntelligence(e) {
     rebuildArmyListsReadModelPayloadAndPersist();
     invalidatePortalCacheGroup("armyIntelligence");
 
-    const finalizedPublication = runHourlyPublicSnapshot();
+    const finalizedPublication = runScheduledPublicSnapshot();
     return jsonOutput({
       success: finalizedPublication && finalizedPublication.success === true,
       publication: finalizedPublication,
@@ -124,7 +124,7 @@ function refreshArmyIntelligence(e) {
   }
 
   if (!snapshots.length && publishPublicSnapshot) {
-    const publication = runHourlyPublicSnapshot();
+    const publication = runScheduledPublicSnapshot();
     return jsonOutput({
       success: publication && publication.success === true,
       publication: publication,
@@ -189,7 +189,7 @@ function refreshArmyIntelligence(e) {
   rebuildArmyListsReadModelPayloadAndPersist();
   invalidatePortalCacheGroup("armyIntelligence");
 
-  const publication = publishPublicSnapshot ? runHourlyPublicSnapshot() : null;
+  const publication = publishPublicSnapshot ? runScheduledPublicSnapshot() : null;
 
   return jsonOutput({
     success: true,

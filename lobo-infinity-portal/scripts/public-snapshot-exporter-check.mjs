@@ -22,8 +22,8 @@ assert.doesNotMatch(source, /20260830T222502Z/)
 assert.match(source, /published: false/)
 assert.match(source, /livePointer: false/)
 assert.match(source, /duplicate Game ID/)
-assert.match(source, /function runHourlyPublicSnapshot\(\)/)
-assert.match(source, /function installHourlyPublicSnapshotTrigger\(\)/)
+assert.match(source, /function runScheduledPublicSnapshot\(\)/)
+assert.match(source, /function installTwiceDailyPublicSnapshotTriggers\(\)/)
 assert.match(source, /remainingMatchups:\s*remainingMatchups/)
 assert.equal((source.match(/armyLink:\s*buildPublicSnapshotArmyLink_\(list\.armyLink, list\.armyCode\)/g) || []).length, 2)
 assert.match(source, /function readPublicSnapshotTeamTournamentProjection_\(\)/)
@@ -120,27 +120,69 @@ assert.match(inspectionSource, /game\.op === "8–2"/)
 assert.match(inspectionSource, /game\.mission === "The Dig"/)
 assert.match(inspectionSource, /game\.mission === "Double Bind"/)
 
-const hourlyReachable = new Map()
-const hourlyPending = ['runHourlyPublicSnapshot']
-while (hourlyPending.length) {
-  const name = hourlyPending.pop()
-  if (hourlyReachable.has(name) || !backendFunctions.has(name)) continue
+const scheduledReachable = new Map()
+const scheduledPending = ['runScheduledPublicSnapshot']
+while (scheduledPending.length) {
+  const name = scheduledPending.pop()
+  if (scheduledReachable.has(name) || !backendFunctions.has(name)) continue
   const definition = backendFunctions.get(name)
-  hourlyReachable.set(name, definition)
+  scheduledReachable.set(name, definition)
   for (const call of definition.body.matchAll(/\b([A-Za-z_$][\w$]*)\s*\(/g)) {
-    if (!hourlyReachable.has(call[1]) && backendFunctions.has(call[1])) hourlyPending.push(call[1])
+    if (!scheduledReachable.has(call[1]) && backendFunctions.has(call[1])) scheduledPending.push(call[1])
   }
 }
-const hourlyUrlFetchReachable = [...hourlyReachable].filter(([, definition]) => /\bUrlFetchApp\b/.test(definition.body))
-assert.deepEqual(hourlyUrlFetchReachable.map(([name]) => name).sort(),
+const scheduledUrlFetchReachable = [...scheduledReachable].filter(([, definition]) => /\bUrlFetchApp\b/.test(definition.body))
+assert.deepEqual(scheduledUrlFetchReachable.map(([name]) => name).sort(),
   ['fetchMissionGeistListing_', 'publishLatestPublicSnapshotV1_'])
 for (const forbidden of ['canonicalDecoderGatewayDecode_', 'rebuildGameEngine', 'refreshArmyIntelligence']) {
-  assert.equal(hourlyReachable.has(forbidden), false, `hourly snapshot reaches ${forbidden}`)
+  assert.equal(scheduledReachable.has(forbidden), false, `scheduled snapshot reaches ${forbidden}`)
 }
-const triggerBody = backendFunctions.get('installHourlyPublicSnapshotTrigger').body
+const triggerBody = backendFunctions.get('installTwiceDailyPublicSnapshotTriggers').body
 assert.match(triggerBody, /getHandlerFunction\(\) === handler/)
-assert.match(triggerBody, /everyHours\(1\)/)
+assert.match(triggerBody, /\[0, 12\]/)
+assert.match(triggerBody, /atHour\(hour\)\.nearMinute\(0\)/)
+assert.match(triggerBody, /everyDays\(1\)\.inTimezone\("America\/New_York"\)/)
+assert.doesNotMatch(source, /everyHours\(/)
 assert.doesNotMatch(triggerBody, /deleteTrigger\(trigger\)[\s\S]*getHandlerFunction\(\) !== handler/)
+
+const installedTriggers = [
+  { handler: 'runHourlyPublicSnapshot' },
+  { handler: 'runScheduledPublicSnapshot' },
+  { handler: 'unrelatedHandler' },
+]
+const triggerSandbox = {
+  Error,
+  Logger: { log() {} },
+  ScriptApp: {
+    getProjectTriggers: () => installedTriggers.map((trigger) => ({
+      getHandlerFunction: () => trigger.handler,
+      trigger,
+    })),
+    deleteTrigger: (wrapped) => installedTriggers.splice(installedTriggers.indexOf(wrapped.trigger), 1),
+    newTrigger: (handler) => {
+      const definition = { handler }
+      return {
+        timeBased() { return this },
+        atHour(hour) { definition.hour = hour; return this },
+        nearMinute(minute) { definition.minute = minute; return this },
+        everyDays(days) { definition.days = days; return this },
+        inTimezone(timezone) { definition.timezone = timezone; return this },
+        create() { installedTriggers.push(definition); return definition },
+      }
+    },
+  },
+}
+vm.createContext(triggerSandbox)
+vm.runInContext(triggerBody, triggerSandbox)
+const triggerResult = triggerSandbox.installTwiceDailyPublicSnapshotTriggers()
+assert.deepEqual(Array.from(triggerResult.hours), [0, 12])
+assert.equal(triggerResult.timezone, 'America/New_York')
+assert.deepEqual(installedTriggers.filter(({ handler }) => handler === 'runScheduledPublicSnapshot'), [
+  { handler: 'runScheduledPublicSnapshot', hour: 0, minute: 0, days: 1, timezone: 'America/New_York' },
+  { handler: 'runScheduledPublicSnapshot', hour: 12, minute: 0, days: 1, timezone: 'America/New_York' },
+])
+assert.equal(installedTriggers.some(({ handler }) => handler === 'runHourlyPublicSnapshot'), false)
+assert.equal(installedTriggers.some(({ handler }) => handler === 'unrelatedHandler'), true)
 
 const selectionSandbox = {
   PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_PROPERTY: 'PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_ID',

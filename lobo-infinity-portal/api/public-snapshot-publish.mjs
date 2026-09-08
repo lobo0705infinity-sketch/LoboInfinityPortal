@@ -94,6 +94,19 @@ export async function publishPublicSnapshot(rawBody, {
   })
   if (totalBytes > MAX_PUBLICATION_BYTES) throw new Error('Snapshot publication payload is too large.')
 
+  const currentSnapshot = await readCurrentSnapshot({ fetchObject, headObject })
+  if (currentSnapshot && await snapshotDataMatchesCurrent(prepared, currentSnapshot.baseUrl, fetchObject)) {
+    return {
+      snapshotId: currentSnapshot.pointer.snapshotId,
+      sourceCutoff: currentSnapshot.pointer.sourceCutoff,
+      files: [],
+      uploaded: 0,
+      activated: false,
+      current: currentSnapshot.pointer,
+      unchanged: true,
+    }
+  }
+
   const files = []
   for (const artifact of prepared) {
     let blob = null
@@ -124,7 +137,7 @@ export async function publishPublicSnapshot(rawBody, {
     })
   }
 
-  let current = null
+  let activatedCurrent = null
   if (activate) {
     if (files.length !== PUBLIC_SNAPSHOT_FILES.length) {
       throw new Error('The complete snapshot must be uploaded before activation.')
@@ -145,7 +158,7 @@ export async function publishPublicSnapshot(rawBody, {
       cacheControlMaxAge: 60,
       contentType: 'application/json; charset=utf-8',
     })
-    current = {
+    activatedCurrent = {
       pathname,
       byteCount: Buffer.byteLength(text, 'utf8'),
       contentHash: createHash('sha256').update(text, 'utf8').digest('hex'),
@@ -154,7 +167,56 @@ export async function publishPublicSnapshot(rawBody, {
     }
   }
 
-  return { snapshotId, sourceCutoff, files, uploaded: files.length, activated: Boolean(current), current }
+  return {
+    snapshotId,
+    sourceCutoff,
+    files,
+    uploaded: files.length,
+    activated: Boolean(activatedCurrent),
+    current: activatedCurrent,
+    unchanged: false,
+  }
+}
+
+async function readCurrentSnapshot({ fetchObject, headObject }) {
+  try {
+    const blob = await headObject('public-snapshots/current.json')
+    const response = await fetchObject(blob.url)
+    if (!response.ok) throw new Error('Current snapshot pointer could not be read.')
+    const current = await response.json()
+    if (!SNAPSHOT_ID_PATTERN.test(String(current.snapshotId || '')) || !current.basePath) {
+      throw new Error('Current snapshot pointer is invalid.')
+    }
+    return {
+      pointer: current,
+      baseUrl: new URL(`/${String(current.basePath).replace(/^\/+/, '')}`, blob.url).href,
+    }
+  } catch (error) {
+    if (error instanceof BlobNotFoundError) return null
+    throw error
+  }
+}
+
+async function snapshotDataMatchesCurrent(prepared, baseUrl, fetchObject) {
+  for (const artifact of prepared) {
+    const response = await fetchObject(new URL(artifact.filename, baseUrl).href)
+    if (!response.ok) throw new Error(`Current snapshot file could not be read: ${artifact.filename}`)
+    const incoming = JSON.parse(artifact.text)
+    const existing = await response.json()
+    const incomingData = artifact.filename === 'snapshot.json' ? incoming.files : incoming.data
+    const existingData = artifact.filename === 'snapshot.json' ? existing.files : existing.data
+    if (stableJson(incomingData) !== stableJson(existingData)) return false
+  }
+  return true
+}
+
+function stableJson(value) {
+  if (Array.isArray(value)) return `[${value.map(stableJson).join(',')}]`
+  if (value && typeof value === 'object') {
+    return `{${Object.keys(value).filter((key) => key !== 'generatedAt').sort()
+      .map((key) => `${JSON.stringify(key)}:${stableJson(value[key])}`).join(',')}}`
+  }
+  return JSON.stringify(value)
 }
 
 function safeEqual(left, right) {
