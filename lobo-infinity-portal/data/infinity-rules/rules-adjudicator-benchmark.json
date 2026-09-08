@@ -5772,7 +5772,48 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked for conservative authority handling and safe escalation; intentionally makes no unsupported official ruling and remains an unapproved draft."
+      "semanticAuditBasis": "Checked for conservative authority handling and safe escalation; intentionally makes no unsupported official ruling and remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "official-corpus",
+            "description": "uses current rulebook, FAQ, and ITS",
+            "patterns": [
+              "current\\s+official\\s+rulebook.{0,80}faq.{0,80}its"
+            ]
+          },
+          {
+            "id": "forum-not-official",
+            "description": "forum post is not automatically official",
+            "patterns": [
+              "forum\\s+post.{0,80}(?:not|isn['’]?t).{0,30}official\\s+ruling"
+            ]
+          },
+          {
+            "id": "verification-condition",
+            "description": "only consider if verified current Corvus Belli ruling",
+            "patterns": [
+              "verified.{0,60}official\\s+corvus\\s+belli\\s+ruling.{0,80}current\\s+edition"
+            ]
+          },
+          {
+            "id": "do-not-replace",
+            "description": "otherwise do not replace published rule",
+            "patterns": [
+              "otherwise.{0,60}(?:must\\s+not|cannot|can['’]?t).{0,50}replace\\s+the\\s+published\\s+rule"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          {
+            "id": "forum-controls",
+            "description": "claims a forum interpretation overrides official rules",
+            "patterns": [
+              "forum\\s+post.{0,80}(?:overrides?|controls?|takes\\s+precedence).{0,60}(?:rulebook|faq|official)"
+            ]
+          }
+        ]
+      }
     },
     {
       "approvedAnswer": null,
@@ -5788,7 +5829,55 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked for conservative authority handling and safe escalation; intentionally makes no unsupported official ruling and remains an unapproved draft."
+      "semanticAuditBasis": "Checked for conservative authority handling and safe escalation; intentionally makes no unsupported official ruling and remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "precedence",
+            "description": "FAQ controls clarification and mission ITS controls mission",
+            "patterns": [
+              "faq\\s+clarification.{0,60}controls?.{0,100}mission-?specific\\s+its\\s+rule.{0,50}controls?"
+            ]
+          },
+          {
+            "id": "check-scope",
+            "description": "checks scope, timing, and specificity",
+            "patterns": [
+              "scope.{0,40}timing.{0,40}specificity"
+            ]
+          },
+          {
+            "id": "unresolved",
+            "description": "remaining direct contradiction is unresolved/no definitive answer",
+            "patterns": [
+              "(?:directly\\s+)?contradict.{0,240}(?:unresolved|does\\s+not\\s+support\\s+a\\s+definitive\\s+answer|no\\s+definitive\\s+answer)"
+            ]
+          },
+          {
+            "id": "identify-both",
+            "description": "identify both provisions",
+            "patterns": [
+              "identify\\s+both\\s+provisions"
+            ]
+          },
+          {
+            "id": "escalate",
+            "description": "refer to TO or Corvus Belli instead of inventing priority",
+            "patterns": [
+              "(?:tournament\\s+organizer|corvus\\s+belli).{0,100}(?:rather\\s+than|instead\\s+of).{0,50}invent"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          {
+            "id": "invented-priority",
+            "description": "invents a universal priority rule",
+            "patterns": [
+              "always\\s+(?:use|follow).{0,40}(?:first|later|newer|rulebook).{0,40}(?:rule|provision)"
+            ]
+          }
+        ]
+      }
     },
     {
       "approvedAnswer": null,
@@ -5804,7 +5893,55 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked for conservative authority handling and safe escalation; intentionally makes no unsupported official ruling and remains an unapproved draft."
+      "semanticAuditBasis": "Checked for conservative authority handling and safe escalation; intentionally makes no unsupported official ruling and remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "not-determined",
+            "description": "official corpus does not determine interaction",
+            "patterns": [
+              "official\\s+corpus.{0,50}does\\s+not\\s+determine"
+            ]
+          },
+          {
+            "id": "explain-checks",
+            "description": "state facts and related rules checked",
+            "patterns": [
+              "state.{0,50}facts.{0,60}related\\s+rules.{0,40}checked"
+            ]
+          },
+          {
+            "id": "no-analogy",
+            "description": "avoid creating rule by analogy",
+            "patterns": [
+              "avoid.{0,40}creating\\s+a\\s+new\\s+rule.{0,30}analogy"
+            ]
+          },
+          {
+            "id": "temporary-to",
+            "description": "TO makes temporary table ruling",
+            "patterns": [
+              "tournament\\s+organizer.{0,60}temporary\\s+table\\s+ruling"
+            ]
+          },
+          {
+            "id": "local-not-official",
+            "description": "local ruling is not official",
+            "patterns": [
+              "ruling\\s+is\\s+local.{0,50}(?:not|isn['’]?t).{0,30}official"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          {
+            "id": "invent-answer",
+            "description": "claims a definitive official resolution despite silence",
+            "patterns": [
+              "official\\s+(?:answer|ruling)\\s+(?:is|must\\s+be).{0,80}(?:probably|by\\s+analogy|common\\s+sense)"
+            ]
+          }
+        ]
+      }
     },
     {
       "approvedAnswer": null,
@@ -5820,7 +5957,50 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked for conservative authority handling and safe escalation; intentionally makes no unsupported official ruling and remains an unapproved draft."
+      "semanticAuditBasis": "Checked for conservative authority handling and safe escalation; intentionally makes no unsupported official ruling and remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "no-binding",
+            "description": "N4 FAQ does not bind N5",
+            "patterns": [
+              "\\bno\\b.{0,80}n4\\s+faq.{0,50}does\\s+not\\s+bind\\s+n5",
+              "n4\\s+faq.{0,50}does\\s+not\\s+bind\\s+n5"
+            ]
+          },
+          {
+            "id": "historical-only",
+            "description": "may be historical context only",
+            "patterns": [
+              "historical\\s+context\\s+only"
+            ]
+          },
+          {
+            "id": "conditions",
+            "description": "must be sourced, non-current, and TO permitted",
+            "patterns": [
+              "accurately\\s+sourced.{0,80}(?:non-?current|not\\s+current).{0,80}tournament\\s+organizer"
+            ]
+          },
+          {
+            "id": "not-official-n5",
+            "description": "cannot cite it as official N5 answer",
+            "patterns": [
+              "cannot\\s+be\\s+cited.{0,60}official\\s+n5\\s+answer"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          {
+            "id": "n4-controls",
+            "description": "claims old N4 FAQ decides N5",
+            "patterns": [
+              "n4\\s+faq\\s+(?:decides?|controls?|binds?)\\s+n5",
+              "n4\\s+faq.{0,50}(?:is|provides?)\\s+the\\s+official\\s+n5"
+            ]
+          }
+        ]
+      }
     },
     {
       "approvedAnswer": null,
@@ -5836,7 +6016,63 @@
       "reviewStatus": "VERIFIED_DRAFT",
       "semanticAuditStatus": "PASSED",
       "semanticAuditDate": "2026-09-07",
-      "semanticAuditBasis": "Checked for conservative authority handling and safe escalation; intentionally makes no unsupported official ruling and remains an unapproved draft."
+      "semanticAuditBasis": "Checked for conservative authority handling and safe escalation; intentionally makes no unsupported official ruling and remains an unapproved draft.",
+      "answerContract": {
+        "requiredClaims": [
+          {
+            "id": "narrowest-temporary",
+            "description": "make narrowest temporary ruling needed",
+            "patterns": [
+              "narrowest\\s+temporary\\s+ruling"
+            ]
+          },
+          {
+            "id": "record-facts",
+            "description": "record exact facts",
+            "patterns": [
+              "record\\s+the\\s+exact\\s+facts"
+            ]
+          },
+          {
+            "id": "announce",
+            "description": "announce to affected players",
+            "patterns": [
+              "announce.{0,30}all\\s+affected\\s+players"
+            ]
+          },
+          {
+            "id": "consistent",
+            "description": "apply consistently for event",
+            "patterns": [
+              "apply.{0,30}consistently.{0,30}event"
+            ]
+          },
+          {
+            "id": "local-not-official",
+            "description": "label local event ruling, not official",
+            "patterns": [
+              "local\\s+event\\s+ruling.{0,30}(?:not|isn['’]?t).{0,30}official",
+              "local\\s+event\\s+ruling.{0,30}official\\s+rule"
+            ]
+          },
+          {
+            "id": "revisit",
+            "description": "revisit after Corvus Belli publishes",
+            "patterns": [
+              "revisit.{0,60}corvus\\s+belli.{0,60}publishes?"
+            ]
+          }
+        ],
+        "forbiddenClaims": [
+          {
+            "id": "pretend-official",
+            "description": "presents TO ruling as official Infinity rule",
+            "patterns": [
+              "tournament\\s+organizer['’]?s?\\s+ruling.{0,50}(?:is|becomes)\\s+(?:an?\\s+)?official"
+            ]
+          }
+        ]
+      }
     }
   ],
   "corpus": {
@@ -5874,9 +6110,9 @@
   },
   "title": "Infinity N5 Rules Adjudicator Benchmark",
   "semanticContracts": {
-    "contractedCases": 95,
+    "contractedCases": 100,
     "totalCases": 100,
-    "status": "ALL_RULED_CATEGORIES_COMPLETE",
-    "note": "Contracts test practical claims beyond conclusion and citation matching. All direct definitions, two-rule interactions, timing/sequence, ambiguous/missing-facts, FAQ/ITS override, modifier-calculation cases, and remaining known high-risk regressions are protected; only the 5 unresolved/unsupported cases remain before any paid model evaluation."
+    "status": "COMPLETE",
+    "note": "All 100 benchmark cases have structured semantic contracts covering required practical claims and prohibited unsupported rulings. The suite remains an offline draft benchmark; formal player approval is still required before release or paid model evaluation."
   }
 }
