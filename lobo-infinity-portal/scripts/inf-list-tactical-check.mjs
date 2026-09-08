@@ -22,6 +22,8 @@ const fixtures = [
   profile('aro-pzf', { linkability: 'unavailable', weapons: [weapon('Panzerfaust', 1), weapon('Flammenspeer', 1)] }),
   profile('aro-hrl', { weapons: [weapon('Heavy Rocket Launcher', 2), weapon('Feuerbach', 2)] }),
   profile('deploy', { skills: ['Parachutist (+3)', 'Combat-Jump (PH=12)', 'Hidden Deployment'], weapons: [weapon('Combi Rifle', 3)] }),
+  profile('netrod', { unitName: 'Netrod', skills: ['Combat Jump (PH=12)'] }),
+  profile('imetron', { unitName: 'Imetron', skills: ['Parachutist'] }),
   profile('defense', { skills: ['Camouflage (-3)', 'Decoy (2)', 'Minelayer'], weapons: [weapon('Shock Mine', 1)] }),
   profile('mim-only', { skills: ['Mimetism (-6)'] }),
   profile('same-unit-a', { unitId: 99, unitName: 'Same Unit', skills: ['Camouflage'], profileName: 'Camo loadout' }),
@@ -43,6 +45,7 @@ assert.deepEqual(new Set(analysis.categories.aro.flatMap((item) => item.qualifyi
 assert.equal(analysis.categories.aro[0].linkability, 'verified-linkable')
 assert.equal(analysis.categories.alternative.length, 1)
 assert.equal(analysis.categories.alternative[0].badges.length, 3)
+assert.equal(analysis.categories.alternative.some((item) => /netrod|imetron/i.test(item.unitName)), false)
 assert.deepEqual(new Set(analysis.categories.defensive.map((item) => item.combinedId)), new Set(['defense', 'duplicate', 'same-unit-a']))
 assert.equal(analysis.categories.defensive.find((item) => item.combinedId === 'duplicate').quantity, 2)
 assert.equal(analysis.categories.defensive.some((item) => item.combinedId === 'mim-only'), false)

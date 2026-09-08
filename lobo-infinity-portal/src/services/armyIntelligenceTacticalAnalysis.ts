@@ -82,7 +82,7 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
       category('apex', 'Apex Gunfighters', 'BS 13+ profiles with a canonical numeric Burst 4+ ranged weapon.', (entry) => Number(entry.bs) >= 13 && canonicalWeapons(entry).some((weapon) => weapon.burstStatus === 'canonical' && weapon.burst !== null && weapon.burst >= 4), hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
       category('hacking', 'Hacking Networks', 'Exact Hacker profiles, Hacking Devices, and verified repeater-delivery equipment.', (entry) => hackingComponents(entry).length > 0),
       category('aro', 'ARO Pieces', 'Profiles carrying a canonical sniper rifle, Missile Launcher, Portable Autocannon, Panzerfaust, Flammenspeer, Heavy Rocket Launcher, or Feuerbach.', (entry) => canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name)))),
-      category('alternative', 'Alternative Attack Vectors', 'Profiles with Parachutist, Combat Jump, or Hidden Deployment.', (entry) => entry.skills.some((skill) => deploymentSkill.test(normalize(skill)))),
+      category('alternative', 'Alternative Attack Vectors', 'Profiles with Parachutist, Combat Jump, or Hidden Deployment; Netrods and Imetrons are excluded.', (entry) => !excludedAlternativeAttackVector(entry.unit) && entry.skills.some((skill) => deploymentSkill.test(normalize(skill)))),
       category('defensive', 'Defensive Network', 'Profiles with Camouflage, Decoy, or Minelayer; Mimetism alone does not qualify.', (entry) => entry.skills.some((skill) => defensiveSkill.test(normalize(skill)))),
     ],
     hackerListCount: hackerLists.size,
@@ -90,6 +90,10 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
     mode: decoded.length < 3 ? 'Observed Capabilities' : 'Submitted-List Trends',
     perListNetworks: decoded.length < 3 ? perListNetworks : [],
   }
+}
+
+function excludedAlternativeAttackVector(unitName: string) {
+  return /^(?:netrods?|imetrons?)(?:\s|$)/i.test(normalize(unitName))
 }
 
 function toProfile(entry: ArmyIntelligenceDecodedEntry, listCount: number, denominator: number): TacticalProfile {

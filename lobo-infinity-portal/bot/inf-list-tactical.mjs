@@ -86,7 +86,7 @@ export function classifyTacticalBrief(profiles, army = {}) {
     if (aroWeapons.length) result.aro.push({ ...profile, badges: enhancements.filter((badge) => mimetismToken(badge) || msvToken(badge)), qualifyingWeapons: aroWeapons })
 
     const deployments = preferredMatches(profile.skills, [parachutistToken, combatJumpToken, hiddenDeploymentToken])
-    if (deployments.length) result.alternative.push({ ...profile, badges: deployments })
+    if (deployments.length && !excludedAlternativeAttackVector(profile.unitName)) result.alternative.push({ ...profile, badges: deployments })
 
     const defenses = preferredMatches(profile.skills, [camouflageToken, decoyToken, minelayerToken])
     if (defenses.length) {
@@ -107,6 +107,10 @@ export function classifyTacticalBrief(profiles, army = {}) {
       pitcherCarriers: countQuantity(result.hacking.filter((item) => item.delivery.some(pitcherToken))),
     },
   }
+}
+
+function excludedAlternativeAttackVector(unitName) {
+  return /^(?:netrods?|imetrons?)(?:\s|$)/i.test(String(unitName || '').trim())
 }
 
 export async function renderTacticalBrief({ analysis, browser }) {

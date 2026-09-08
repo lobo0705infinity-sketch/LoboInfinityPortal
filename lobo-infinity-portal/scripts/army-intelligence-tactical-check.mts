@@ -26,12 +26,14 @@ const deployable = entry('6', 'OBSERVER', 'Deployable Repeater', { equipment: ['
 const falsePositive = entry('7', 'REPEATER PANDA TROOP', 'TinBot', { equipment: ['Repeater', 'TinBot', 'ECM'] })
 const aro = entry('8', 'ARO', 'MULTI Sniper', { bs: 13, skills: ['Mimetism (-6)'], weapons: ['MULTI Sniper Rifle', 'Panzerfaust', 'Flammenspeer', 'Heavy Rocket Launcher', 'Feuerbach'], weaponProfiles: [canonicalBurst('MULTI Sniper Rifle', 2), canonicalBurst('Panzerfaust', 1)], fireteamEligibility: { state: 'verified', verified: true, teams: ['Core'] } })
 const alternative = entry('9', 'RAIDER', 'Airborne', { skills: ['Parachutist (Deployment Zone)', 'Combat Jump (+3)', 'Hidden Deployment'], weapons: ['Combi Rifle'] })
+const netrod = entry('netrod', 'NETROD', 'Combat Jump', { skills: ['Combat Jump (PH=12)'] })
+const imetron = entry('imetron', 'IMETRON', 'Parachutist', { skills: ['Parachutist'] })
 const defensive = entry('10', 'SCOUT', 'Minelayer', { skills: ['Camouflage (-3)', 'Decoy (2)', 'Minelayer'], weapons: ['Shock Mines'] })
 const mimetismOnly = entry('11', 'NOT CAMO', 'Mimetism', { skills: ['Mimetism (-6)'] })
 const separateLoadout = entry('12', 'SCOUT', 'Rifle', { skills: [], weapons: ['Rifle'] })
 
 const analysis = buildTacticalAnalysis([
-  decodedList('One', [apex, apex, hacker, aro, alternative, defensive, falsePositive]),
+  decodedList('One', [apex, apex, hacker, aro, alternative, netrod, imetron, defensive, falsePositive]),
   decodedList('Two', [apex, deployable, aro, defensive, boundaryFailBs]),
   decodedList('Three', [boundaryFailBurst, malformed, mimetismOnly, separateLoadout]),
 ] as never)
@@ -49,6 +51,7 @@ assert.equal(analysis.categories.find((item) => item.id === 'aro')?.profiles.len
 assert.equal(analysis.categories.find((item) => item.id === 'aro')?.profiles[0].linkability, 'verified')
 assert.equal(analysis.categories.find((item) => item.id === 'alternative')?.profiles.length, 1)
 assert.equal(analysis.categories.find((item) => item.id === 'alternative')?.profiles[0].badges.filter((badge) => /Parachutist|Combat Jump|Hidden Deployment/.test(badge)).length, 3)
+assert.ok(!analysis.categories.find((item) => item.id === 'alternative')?.profiles.some((profile) => /netrod|imetron/i.test(profile.unit)))
 assert.equal(analysis.categories.find((item) => item.id === 'defensive')?.profiles.length, 1)
 assert.ok(!analysis.categories.find((item) => item.id === 'defensive')?.profiles.some((profile) => profile.unit === 'NOT CAMO'))
 assert.equal(analysis.categories.find((item) => item.id === 'defensive')?.profiles.filter((profile) => profile.unit === 'SCOUT').length, 1, 'capabilities must not leak into a separate loadout')
