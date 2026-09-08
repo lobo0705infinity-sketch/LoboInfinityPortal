@@ -77,8 +77,8 @@ export function classifyTacticalBrief(profiles, army = {}) {
     const enhancements = preferredMatches(profile.skills, [gunfighterMimetismToken, gunfighterMsvToken, bsAttackMinusThreeToken, albedoToken])
     const burstBonus = bsAttackBurstBonus(profile.skills)
     const effectiveWeapons = profile.weapons.map((weapon) => ({ ...weapon, baseBurst: weapon.burst, burst: weapon.burst === null ? null : weapon.burst + burstBonus }))
-    const apexWeapons = effectiveWeapons.filter((weapon) => isRangedWeapon(weapon) && ((weapon.burst === 5 && profile.bs >= 14) || (weapon.burst === 4 && profile.bs >= 13)))
-    if (enhancements.length && apexWeapons.length) result.apex.push({ ...profile, badges: enhancements, qualifyingWeapons: apexWeapons })
+    const apexWeapons = effectiveWeapons.filter((weapon) => isRangedWeapon(weapon) && (weapon.burst >= 5 || (profile.bs >= 14 && weapon.burst >= 4) || (profile.bs === 13 && weapon.burst >= 4 && enhancements.length)))
+    if (apexWeapons.length) result.apex.push({ ...profile, badges: enhancements, qualifyingWeapons: apexWeapons })
     const competentWeapons = effectiveWeapons.filter((weapon) => weapon.burst === 4 && isRangedWeapon(weapon))
     if ((profile.bs === 12 || profile.bs === 13) && competentWeapons.length) result.competent.push({ ...profile, badges: burstBonus ? preferredMatches(profile.skills, [bsAttackBurstToken]) : [], qualifyingWeapons: competentWeapons })
 
@@ -218,7 +218,7 @@ function bsAttackBurstToken(v) { return /^bs attack\s+(?:\+\s*)?(?:(\d+)\s*)?(?:
 function bsAttackBurstBonus(skills) { for (const skill of skills || []) { const match = normalized(skill).match(/^bs attack\s+(?:\+\s*)?(?:(\d+)\s*)?(?:b|burst)$/); if (match) return Number(match[1] || 1) } return 0 }
 function totalReactionToken(v) { return /^total reaction$/.test(normalized(v)) }
 function neurocineticsToken(v) { return /^neurocinetics$/.test(normalized(v)) }
-function bsAttackSdToken(v) { return /^bs attack\s+\+?sd$/.test(normalized(v)) }
+function bsAttackSdToken(v) { return /^bs attack\s+\+(?:1)?sd$/.test(normalized(v)) }
 function hackerToken(v) { return /^hacker$/.test(normalized(v)) }
 function hackingDeviceToken(v) { return /^(?:(?:assault|defensive|evo|killer|plus|white|zero pain)\s+)?hacking device(?:\s+plus)?$/.test(normalized(v)) }
 function pitcherToken(v) { return /^pitcher$/.test(normalized(v)) }

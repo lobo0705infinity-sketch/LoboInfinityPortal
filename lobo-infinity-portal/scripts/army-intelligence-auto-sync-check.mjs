@@ -21,7 +21,7 @@ const state = new Map([
     hasProfileMetadata: true,
     hasTacticalMetadata: true,
     pipelineVersion: 'army-intelligence-pipeline-v1',
-    tacticalSchemaVersion: 'army-intelligence-tactical-v3',
+    tacticalSchemaVersion: 'army-intelligence-tactical-v4',
     status: 'decoded',
   }],
   ['failed', {

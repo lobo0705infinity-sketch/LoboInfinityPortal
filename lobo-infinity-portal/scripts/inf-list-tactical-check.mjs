@@ -17,9 +17,11 @@ const fixtures = [
   profile('burst-bonus', { bs: 13, skills: ['BS Attack (+1B)', 'Albedo (-3)'], weapons: [weapon('AP Spitfire', 3)] }),
   profile('b3', { weapons: [weapon('Spitfire', 3)] }),
   profile('apex', { skills: ['Mimetism [-3]', 'MSV L2', 'BS Attack (−3)'], weapons: [weapon('Heavy Machine Gun', 4)] }),
+  profile('bs14-apex', { bs: 14, weapons: [weapon('AP Heavy Machine Gun', 4)] }),
+  profile('b5-apex', { bs: 10, weapons: [weapon('Hyper-Rapid Magnetic Cannon', 5)] }),
   profile('apex'), // duplicate exact profile, deliberately different missing data must not aggregate into another ID
   profile('hack', { equipment: ['Killer Hacking Device', 'Fast-Panda', 'Deployable-Repeater', 'Repeater', 'TinBot'], skills: ['Hacker'], weapons: [weapon('Pitcher', 1)] }),
-  profile('aro-sniper', { linkability: 'verified-linkable', skills: ['Total Reaction'], weapons: [weapon('MULTI Sniper Rifle', 2)] }),
+  profile('aro-sniper', { linkability: 'verified-linkable', skills: ['BS Attack (+1SD)'], weapons: [weapon('MULTI Sniper Rifle', 2)] }),
   profile('aro-pzf', { points: 14, linkability: 'unavailable', weapons: [weapon('Panzerfaust', 1), weapon('Flammenspeer', 1)] }),
   profile('aro-hrl', { skills: ['Neurocinetics'], weapons: [weapon('Heavy Rocket Launcher', 2), weapon('Feuerbach', 2)] }),
   profile('flash', { points: 8, weapons: [weapon('Flash Pulse', 1)] }),
@@ -38,7 +40,7 @@ const fixtures = [
 ]
 
 const analysis = classifyTacticalBrief(fixtures, { faction: 'Fixture', listName: 'Exact Profiles' })
-assert.deepEqual(new Set(analysis.categories.apex.map((item) => item.combinedId)), new Set(['apex', 'burst-bonus']))
+assert.deepEqual(new Set(analysis.categories.apex.map((item) => item.combinedId)), new Set(['apex', 'burst-bonus', 'bs14-apex', 'b5-apex']))
 assert.deepEqual(analysis.categories.apex.find((item) => item.combinedId === 'apex').badges, ['Mimetism [-3]', 'MSV L2', 'BS Attack (−3)'])
 assert.equal(analysis.categories.apex.some((item) => ['ambiguous-burst', 'unavailable-burst'].includes(item.combinedId)), false)
 assert.deepEqual(analysis.networkSummary, { hackers: 1, pitcherCarriers: 1, fastPandaCarriers: 1, deployableRepeaterCarriers: 1 })
