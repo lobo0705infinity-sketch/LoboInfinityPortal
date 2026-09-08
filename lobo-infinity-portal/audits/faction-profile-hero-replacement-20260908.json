@@ -1,0 +1,419 @@
+﻿{
+    "generatedAt":  "2026-09-08T14:18:27.6020116Z",
+    "summary":  {
+                    "approvedSources":  45,
+                    "canonicalDestinations":  45,
+                    "exactByteMatches":  45,
+                    "missingAssets":  0,
+                    "unintendedBinaryDuplicates":  0,
+                    "playerProfileAssets":  0,
+                    "forbiddenStandaloneLatestUses":  0
+                },
+    "files":  [
+                  {
+                      "sourceFilename":  "Aleph.png",
+                      "visibleFactionTitle":  "ALEPH",
+                      "canonicalMappingKey":  "ALEPH",
+                      "destinationFilename":  "aleph.png",
+                      "sourceSha256":  "20d162971a631695bef361988f5a52b1fe7929a52eb2ddc6470049d0eb4cbadc",
+                      "destinationSha256":  "20d162971a631695bef361988f5a52b1fe7929a52eb2ddc6470049d0eb4cbadc",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Ariadna.png",
+                      "visibleFactionTitle":  "Ariadna",
+                      "canonicalMappingKey":  "Ariadna",
+                      "destinationFilename":  "ariadna.png",
+                      "sourceSha256":  "9a525f38b4841cc044435425b834a173df5f9cbb70dce5f04f540b39977837a6",
+                      "destinationSha256":  "9a525f38b4841cc044435425b834a173df5f9cbb70dce5f04f540b39977837a6",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Bakunin.png",
+                      "visibleFactionTitle":  "Bakunin Jurisdictional Command",
+                      "canonicalMappingKey":  "Bakunin Jurisdictional Command",
+                      "destinationFilename":  "bakunin-jurisdictional-command.png",
+                      "sourceSha256":  "2194779c7beac61164b8988a8010cccdc99b2d6b1a9262bc15f257d4291c8ca8",
+                      "destinationSha256":  "2194779c7beac61164b8988a8010cccdc99b2d6b1a9262bc15f257d4291c8ca8",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Caledonia latest.png",
+                      "visibleFactionTitle":  "Caledonian Highlander Army",
+                      "canonicalMappingKey":  "Caledonian Highlander Army",
+                      "destinationFilename":  "caledonian-highlander-army.png",
+                      "sourceSha256":  "ccf80d58dd5cf37438976ca9af07b446ee3e5d446ebad6fe67eeb54c71b9ab33",
+                      "destinationSha256":  "ccf80d58dd5cf37438976ca9af07b446ee3e5d446ebad6fe67eeb54c71b9ab33",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Combined Army.png",
+                      "visibleFactionTitle":  "Combined Army",
+                      "canonicalMappingKey":  "Combined Army",
+                      "destinationFilename":  "combined-army.png",
+                      "sourceSha256":  "d902665fa1da51ed6c9827329422046bfb8cc38e1474b19fe8beeb5dbefd73d4",
+                      "destinationSha256":  "d902665fa1da51ed6c9827329422046bfb8cc38e1474b19fe8beeb5dbefd73d4",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Corregidor.png",
+                      "visibleFactionTitle":  "Corregidor Jurisdictional Command",
+                      "canonicalMappingKey":  "Corregidor Jurisdictional Command",
+                      "destinationFilename":  "corregidor-jurisdictional-command.png",
+                      "sourceSha256":  "ea94c911c180e96e7ab935e02f3ecba1afd2657066751fb58c878473daa2627b",
+                      "destinationSha256":  "ea94c911c180e96e7ab935e02f3ecba1afd2657066751fb58c878473daa2627b",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Dahshat latest.png",
+                      "visibleFactionTitle":  "Dashat Company",
+                      "canonicalMappingKey":  "Dashat Company",
+                      "destinationFilename":  "dashat-company.png",
+                      "sourceSha256":  "95b607e6c1b0914092e2ca0408ea65cd92552341fe06ee773a2a4d27f58565e9",
+                      "destinationSha256":  "95b607e6c1b0914092e2ca0408ea65cd92552341fe06ee773a2a4d27f58565e9",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Druze.png",
+                      "visibleFactionTitle":  "Druze Bayram Security",
+                      "canonicalMappingKey":  "Druze Bayram Security",
+                      "destinationFilename":  "druze-bayram-security.png",
+                      "sourceSha256":  "cfad740ee0267692869962a0fead29d9a0a2260f9b7700d75b9237885a097966",
+                      "destinationSha256":  "cfad740ee0267692869962a0fead29d9a0a2260f9b7700d75b9237885a097966",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "FRRM latest.png",
+                      "visibleFactionTitle":  "Force de Réponse Rapide Merovingienne",
+                      "canonicalMappingKey":  "Force de Réponse Rapide Merovingienne",
+                      "destinationFilename":  "force-de-reponse-rapide-merovingienne.png",
+                      "sourceSha256":  "59c53bf9792f82aefe2bbd78695989aab76868de8a82960715c35c3c45a160b8",
+                      "destinationSha256":  "59c53bf9792f82aefe2bbd78695989aab76868de8a82960715c35c3c45a160b8",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Haqqislam.png",
+                      "visibleFactionTitle":  "Haqqislam",
+                      "canonicalMappingKey":  "Haqqislam",
+                      "destinationFilename":  "haqqislam.png",
+                      "sourceSha256":  "4b7da0d06f7b4a3ff9d6c71d0a0eee2e5623b0e44ab342b4bc28fdc393f27761",
+                      "destinationSha256":  "4b7da0d06f7b4a3ff9d6c71d0a0eee2e5623b0e44ab342b4bc28fdc393f27761",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Hassassin Bharam latest.png",
+                      "visibleFactionTitle":  "Hassassin Bahram",
+                      "canonicalMappingKey":  "Hassassin Bahram",
+                      "destinationFilename":  "hassassin-bahram.png",
+                      "sourceSha256":  "c0f59f1b39fe8cedd5bf6e0e6046f627ba2f873db1c88736cd5acd569c54d699",
+                      "destinationSha256":  "c0f59f1b39fe8cedd5bf6e0e6046f627ba2f873db1c88736cd5acd569c54d699",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Ikari.png",
+                      "visibleFactionTitle":  "Ikari Company",
+                      "canonicalMappingKey":  "Ikari Company",
+                      "destinationFilename":  "ikari-company.png",
+                      "sourceSha256":  "ad8a957ae6532d8c647fc8e4c83087268ea02d2f1f1fb23c24bb6a84fff0d4f0",
+                      "destinationSha256":  "ad8a957ae6532d8c647fc8e4c83087268ea02d2f1f1fb23c24bb6a84fff0d4f0",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Imperial Service.png",
+                      "visibleFactionTitle":  "Imperial Service",
+                      "canonicalMappingKey":  "Imperial Service",
+                      "destinationFilename":  "imperial-service.png",
+                      "sourceSha256":  "07c9f0d327b0a100a84f5478a4b03a5bcb85a5d0bf790d5bdd70b51c1bb7d05c",
+                      "destinationSha256":  "07c9f0d327b0a100a84f5478a4b03a5bcb85a5d0bf790d5bdd70b51c1bb7d05c",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Invincible Army latest.png",
+                      "visibleFactionTitle":  "Invincible Army",
+                      "canonicalMappingKey":  "Invincible Army",
+                      "destinationFilename":  "invincible-army.png",
+                      "sourceSha256":  "4c538c7317c0b666cb65bc5f96e1d957fefb9bb621179dff7d44b10580422bf6",
+                      "destinationSha256":  "4c538c7317c0b666cb65bc5f96e1d957fefb9bb621179dff7d44b10580422bf6",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "JSA.png",
+                      "visibleFactionTitle":  "Japanese Secessionist Army",
+                      "canonicalMappingKey":  "Japanese Secessionist Army",
+                      "destinationFilename":  "japanese-secessionist-army.png",
+                      "sourceSha256":  "f71ad58ff56af00a335deee03180c5e215e5e4193e1bf471fc129c800f51a119",
+                      "destinationSha256":  "f71ad58ff56af00a335deee03180c5e215e5e4193e1bf471fc129c800f51a119",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Kestrel.png",
+                      "visibleFactionTitle":  "Kestrel Colonial Force",
+                      "canonicalMappingKey":  "Kestrel Colonial Force",
+                      "destinationFilename":  "kestrel-colonial-force.png",
+                      "sourceSha256":  "f078c132efb89d4b65443ee6774feb559c2461cffbf787b51bcd11c148a2bbb3",
+                      "destinationSha256":  "f078c132efb89d4b65443ee6774feb559c2461cffbf787b51bcd11c148a2bbb3",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Kosmoflot latest.png",
+                      "visibleFactionTitle":  "Kosmoflot",
+                      "canonicalMappingKey":  "Kosmoflot",
+                      "destinationFilename":  "kosmoflot.png",
+                      "sourceSha256":  "479b9b7ac72ca1c94ba076cce370b4b6d7f29c8691ca732347179e9768a4e69e",
+                      "destinationSha256":  "479b9b7ac72ca1c94ba076cce370b4b6d7f29c8691ca732347179e9768a4e69e",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Military Orders.png",
+                      "visibleFactionTitle":  "Military Orders",
+                      "canonicalMappingKey":  "Military Orders",
+                      "destinationFilename":  "military-orders.png",
+                      "sourceSha256":  "f23bb42125bf32c345a123f64f5530eea18ecc64307c42f6e91352cbe5740a2f",
+                      "destinationSha256":  "f23bb42125bf32c345a123f64f5530eea18ecc64307c42f6e91352cbe5740a2f",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Morat.png",
+                      "visibleFactionTitle":  "Morat Aggression Force",
+                      "canonicalMappingKey":  "Morat Aggression Force",
+                      "destinationFilename":  "morat-aggression-force.png",
+                      "sourceSha256":  "fe8496a97cf99a4525ce37c6a59fc63349f7f67adbdf4680832600099ed942a3",
+                      "destinationSha256":  "fe8496a97cf99a4525ce37c6a59fc63349f7f67adbdf4680832600099ed942a3",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Neocapitaline Army.png",
+                      "visibleFactionTitle":  "Neoterra Capitaline Army",
+                      "canonicalMappingKey":  "Neoterra Capitaline Army",
+                      "destinationFilename":  "neoterra-capitaline-army.png",
+                      "sourceSha256":  "e43ff98105e264bbf4c08254dd2000e5c3235b3a688e3561610ffd2cc197d944",
+                      "destinationSha256":  "e43ff98105e264bbf4c08254dd2000e5c3235b3a688e3561610ffd2cc197d944",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Next Wave latest.png",
+                      "visibleFactionTitle":  "Next Wave",
+                      "canonicalMappingKey":  "Next Wave",
+                      "destinationFilename":  "next-wave.png",
+                      "sourceSha256":  "724297974c6383d756eaff9d65fcddc38967f2470386995eb7f660e704d7b54f",
+                      "destinationSha256":  "724297974c6383d756eaff9d65fcddc38967f2470386995eb7f660e704d7b54f",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Nomads.png",
+                      "visibleFactionTitle":  "Nomads",
+                      "canonicalMappingKey":  "Nomads",
+                      "destinationFilename":  "nomads.png",
+                      "sourceSha256":  "c0054004d8a31697e3252444b8fa0f3aa3f941c87d03f7ab7c745536de5b6149",
+                      "destinationSha256":  "c0054004d8a31697e3252444b8fa0f3aa3f941c87d03f7ab7c745536de5b6149",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "O-12 latest.png",
+                      "visibleFactionTitle":  "O-12",
+                      "canonicalMappingKey":  "O-12",
+                      "destinationFilename":  "o-12.png",
+                      "sourceSha256":  "1888e0c2df8c4a91695985d7c32f9294b3a1fb74acc74b8114b4fb3664e57044",
+                      "destinationSha256":  "1888e0c2df8c4a91695985d7c32f9294b3a1fb74acc74b8114b4fb3664e57044",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Oban latest.png",
+                      "visibleFactionTitle":  "Oban",
+                      "canonicalMappingKey":  "Oban",
+                      "destinationFilename":  "oban.png",
+                      "sourceSha256":  "ab428e019bfa3f69d12b7829bc23e25b45feb2a222e0aa59b8c11d60197d7087",
+                      "destinationSha256":  "ab428e019bfa3f69d12b7829bc23e25b45feb2a222e0aa59b8c11d60197d7087",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Onyx latest.png",
+                      "visibleFactionTitle":  "Onyx Contact Force",
+                      "canonicalMappingKey":  "Onyx Contact Force",
+                      "destinationFilename":  "onyx-contact-force.png",
+                      "sourceSha256":  "eaf513c540a3bf86eb5f053d0041703f843da686e43a6b1ceecd956cf17bee77",
+                      "destinationSha256":  "eaf513c540a3bf86eb5f053d0041703f843da686e43a6b1ceecd956cf17bee77",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Operation Subsection.png",
+                      "visibleFactionTitle":  "Operations Subsection",
+                      "canonicalMappingKey":  "Operations Subsection",
+                      "destinationFilename":  "operations-subsection.png",
+                      "sourceSha256":  "630b0a57701bff1eb8565d43cabc7735f10f09c354663260e077c97da3b927d1",
+                      "destinationSha256":  "630b0a57701bff1eb8565d43cabc7735f10f09c354663260e077c97da3b927d1",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Panoceania.png",
+                      "visibleFactionTitle":  "PanOceania",
+                      "canonicalMappingKey":  "PanOceania",
+                      "destinationFilename":  "panoceania.png",
+                      "sourceSha256":  "a90a282719e2603ea71ca9cf1af857bab8db8c084c338566f37fea481297b590",
+                      "destinationSha256":  "a90a282719e2603ea71ca9cf1af857bab8db8c084c338566f37fea481297b590",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Qapu Khalqi.png",
+                      "visibleFactionTitle":  "Qapu Khalqi",
+                      "canonicalMappingKey":  "Qapu Khalqi",
+                      "destinationFilename":  "qapu-khalqi.png",
+                      "sourceSha256":  "866f5129456ef1ee0ec5204e16c3f247d4a526172c61d555c13962415eb141f6",
+                      "destinationSha256":  "866f5129456ef1ee0ec5204e16c3f247d4a526172c61d555c13962415eb141f6",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Ramah.png",
+                      "visibleFactionTitle":  "Ramah Taskforce",
+                      "canonicalMappingKey":  "Ramah Taskforce",
+                      "destinationFilename":  "ramah-taskforce.png",
+                      "sourceSha256":  "a9469926695f03fc8d81e2002679b71823b516552e9124b98b816004b3cda184",
+                      "destinationSha256":  "a9469926695f03fc8d81e2002679b71823b516552e9124b98b816004b3cda184",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Shasvastii.png",
+                      "visibleFactionTitle":  "Shasvastii Expeditionary Force",
+                      "canonicalMappingKey":  "Shasvastii Expeditionary Force",
+                      "destinationFilename":  "shasvastii-expeditionary-force.png",
+                      "sourceSha256":  "0b2b1d46ddd9351e499f292930744eee4c5a1330815fa1b8817e4bb9b7c3cbf0",
+                      "destinationSha256":  "0b2b1d46ddd9351e499f292930744eee4c5a1330815fa1b8817e4bb9b7c3cbf0",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Shindnbutai.png",
+                      "visibleFactionTitle":  "Shindenbutai",
+                      "canonicalMappingKey":  "Shindenbutai",
+                      "destinationFilename":  "shindenbutai.png",
+                      "sourceSha256":  "aaf7e6e1bc27392c34ccca12fbeb1d01c2be43dc42a5d59dee309586a697c665",
+                      "destinationSha256":  "aaf7e6e1bc27392c34ccca12fbeb1d01c2be43dc42a5d59dee309586a697c665",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Shock Army.png",
+                      "visibleFactionTitle":  "Shock Army of Acontecimento",
+                      "canonicalMappingKey":  "Shock Army of Acontecimento",
+                      "destinationFilename":  "shock-army-of-acontecimento.png",
+                      "sourceSha256":  "6d542cba4061ab09df0ebbf3c24444152ea24953398f3d39cfb917667e9cf063",
+                      "destinationSha256":  "6d542cba4061ab09df0ebbf3c24444152ea24953398f3d39cfb917667e9cf063",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Starco.png",
+                      "visibleFactionTitle":  "StarCo",
+                      "canonicalMappingKey":  "StarCo",
+                      "destinationFilename":  "starco.png",
+                      "sourceSha256":  "41812764642d4c195bf1246c6e8bf64cfb56fb097e6c9d85dda30464ed43230d",
+                      "destinationSha256":  "41812764642d4c195bf1246c6e8bf64cfb56fb097e6c9d85dda30464ed43230d",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Starmada.png",
+                      "visibleFactionTitle":  "Starmada",
+                      "canonicalMappingKey":  "Starmada",
+                      "destinationFilename":  "starmada.png",
+                      "sourceSha256":  "cb11d5a0b0887aeae5cc4497d0501a5c68d690b4f089849bc37f3c29e6a207ef",
+                      "destinationSha256":  "cb11d5a0b0887aeae5cc4497d0501a5c68d690b4f089849bc37f3c29e6a207ef",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Steel Phalanx.png",
+                      "visibleFactionTitle":  "Steel Phalanx",
+                      "canonicalMappingKey":  "Steel Phalanx",
+                      "destinationFilename":  "steel-phalanx.png",
+                      "sourceSha256":  "eda521e7e6547cfa2b31bf65b6bb081563552d52a2e51514147869eeea7a405f",
+                      "destinationSha256":  "eda521e7e6547cfa2b31bf65b6bb081563552d52a2e51514147869eeea7a405f",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Svalarheima.png",
+                      "visibleFactionTitle":  "Svalarheima Winter Force",
+                      "canonicalMappingKey":  "Svalarheima Winter Force",
+                      "destinationFilename":  "svalarheima-winter-force.png",
+                      "sourceSha256":  "eaaab9505bf06b98856852324f10501314aeba61fca88222d39604dab1c5127d",
+                      "destinationSha256":  "eaaab9505bf06b98856852324f10501314aeba61fca88222d39604dab1c5127d",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Tartary Army.png",
+                      "visibleFactionTitle":  "Tartary Army Corps",
+                      "canonicalMappingKey":  "Tartary Army Corps",
+                      "destinationFilename":  "tartary-army-corps.png",
+                      "sourceSha256":  "0a413e855c967fa4b4148d31922252c15bd2ba58167c49499ab5d37bd313e60b",
+                      "destinationSha256":  "0a413e855c967fa4b4148d31922252c15bd2ba58167c49499ab5d37bd313e60b",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Tohaa latest.png",
+                      "visibleFactionTitle":  "Tohaa",
+                      "canonicalMappingKey":  "Tohaa",
+                      "destinationFilename":  "tohaa.png",
+                      "sourceSha256":  "2f9e7a27bb67a8985ae498c021c2860de6402cae6a0c8b80362db9064072f5e7",
+                      "destinationSha256":  "2f9e7a27bb67a8985ae498c021c2860de6402cae6a0c8b80362db9064072f5e7",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Torchlight.png",
+                      "visibleFactionTitle":  "Torchlight Brigade",
+                      "canonicalMappingKey":  "Torchlight Brigade",
+                      "destinationFilename":  "torchlight-brigade.png",
+                      "sourceSha256":  "9b8732ace17316a96ea9ff5dcf9eba2f97e7d1fb66a16521e18bcbc6bf8491f1",
+                      "destinationSha256":  "9b8732ace17316a96ea9ff5dcf9eba2f97e7d1fb66a16521e18bcbc6bf8491f1",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Tunguska.png",
+                      "visibleFactionTitle":  "Tunguska Jurisdictional Command",
+                      "canonicalMappingKey":  "Tunguska Jurisdictional Command",
+                      "destinationFilename":  "tunguska-jurisdictional-command.png",
+                      "sourceSha256":  "ff23277ff427b4adb0c58578f12c4d5dd841ad8a4f861c8e5ef0c7de5a0f0e4d",
+                      "destinationSha256":  "ff23277ff427b4adb0c58578f12c4d5dd841ad8a4f861c8e5ef0c7de5a0f0e4d",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Us Ariadna latest.png",
+                      "visibleFactionTitle":  "USAriadna Ranger Force",
+                      "canonicalMappingKey":  "USAriadna Ranger Force",
+                      "destinationFilename":  "usariadna-ranger-force.png",
+                      "sourceSha256":  "514198de31c9576179828b99a09767379834d181f1b7ca1f11aff10559bb6c50",
+                      "destinationSha256":  "514198de31c9576179828b99a09767379834d181f1b7ca1f11aff10559bb6c50",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Varuna.png",
+                      "visibleFactionTitle":  "Varuna Immediate Reaction Division",
+                      "canonicalMappingKey":  "Varuna Immediate Reaction Division",
+                      "destinationFilename":  "varuna-immediate-reaction-division.png",
+                      "sourceSha256":  "5f2e5b7a510806b31ad760ecdf400843aa8e254b2dffe702a6f9e1bd68c07270",
+                      "destinationSha256":  "5f2e5b7a510806b31ad760ecdf400843aa8e254b2dffe702a6f9e1bd68c07270",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "White Banner.png",
+                      "visibleFactionTitle":  "White Banner",
+                      "canonicalMappingKey":  "White Banner",
+                      "destinationFilename":  "white-banner.png",
+                      "sourceSha256":  "1d09256da441c9ebce8d4588013bd223ee52e8f78afe872de3c01d1cdfadf206",
+                      "destinationSha256":  "1d09256da441c9ebce8d4588013bd223ee52e8f78afe872de3c01d1cdfadf206",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "White Company latest.png",
+                      "visibleFactionTitle":  "White Company",
+                      "canonicalMappingKey":  "White Company",
+                      "destinationFilename":  "white-company.png",
+                      "sourceSha256":  "28569835756a5313f8ca3ef22fb6f0def2e32a0cb86f8d35e06c1e6e312280de",
+                      "destinationSha256":  "28569835756a5313f8ca3ef22fb6f0def2e32a0cb86f8d35e06c1e6e312280de",
+                      "exactByteMatch":  true
+                  },
+                  {
+                      "sourceFilename":  "Yu Jing.png",
+                      "visibleFactionTitle":  "Yu Jing",
+                      "canonicalMappingKey":  "Yu Jing",
+                      "destinationFilename":  "yu-jing.png",
+                      "sourceSha256":  "07c26a3363a942e537cc7407f8dbeac4414d86f19ce5177df3efd417e54a29d8",
+                      "destinationSha256":  "07c26a3363a942e537cc7407f8dbeac4414d86f19ce5177df3efd417e54a29d8",
+                      "exactByteMatch":  true
+                  }
+              ]
+}

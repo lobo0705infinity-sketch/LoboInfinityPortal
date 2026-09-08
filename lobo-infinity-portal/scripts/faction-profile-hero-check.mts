@@ -23,21 +23,33 @@ assert.equal(assets.length, 45)
 assert.deepEqual(actualMissing, expectedMissing)
 assert.equal(FACTION_PROFILE_HERO_CANONICAL_FACTIONS.length, 45)
 
+const resolvedPaths: string[] = []
+
 for (const faction of FACTION_PROFILE_HERO_CANONICAL_FACTIONS) {
   const artwork = resolveFactionProfileHero(faction)
   assert.ok(artwork, `${faction} should resolve`)
   const assetFile = artwork.src.split('/').pop()?.split('?')[0] ?? ''
   assert.ok(assets.includes(assetFile), `${faction} asset should exist`)
+  resolvedPaths.push(artwork.src)
 }
+
+assert.equal(new Set(FACTION_PROFILE_HERO_CANONICAL_FACTIONS).size, 45)
+assert.equal(new Set(resolvedPaths).size, 45)
+assert.equal(resolvedPaths.some((path) => path.includes('player-profile')), false)
+assert.equal(resolvedPaths.some((path) => /latest(?:\(\d+\))?\.png/i.test(path)), false)
 
 assert.equal(
   resolveFactionProfileHero('Caledonian Highlander Army')?.src,
-  '/assets/faction-profile-heroes/caledonian-highlander-army.png?v=3f3ddf7',
+  '/assets/faction-profile-heroes/caledonian-highlander-army.png?v=4be81bf7dc4d',
 )
 assert.equal(
   resolveFactionProfileHero('Kosmoflot')?.src,
-  '/assets/faction-profile-heroes/kosmoflot.png?v=3f3ddf7',
+  '/assets/faction-profile-heroes/kosmoflot.png?v=4be81bf7dc4d',
 )
+assert.equal(resolveFactionProfileHero('Dashat Company')?.src, '/assets/faction-profile-heroes/dashat-company.png?v=4be81bf7dc4d')
+assert.equal(resolveFactionProfileHero('O-12')?.src, '/assets/faction-profile-heroes/o-12.png?v=4be81bf7dc4d')
+assert.equal(resolveFactionProfileHero('Oban')?.src, '/assets/faction-profile-heroes/oban.png?v=4be81bf7dc4d')
+assert.equal(resolveFactionProfileHero('Tohaa')?.src, '/assets/faction-profile-heroes/tohaa.png?v=4be81bf7dc4d')
 assert.equal(resolveFactionProfileHero('Unknown Army'), null)
 assert.notEqual(resolveFactionProfileHero('Tohaa')?.src, resolveFactionProfileHero('Next Wave')?.src)
 
