@@ -26,11 +26,12 @@ const fixtures = [
   profile('aro-hrl', { skills: ['Neurocinetics'], weapons: [weapon('Heavy Rocket Launcher', 2), weapon('Feuerbach', 2)] }),
   profile('tankhunter', { points: 36, weapons: [{ ...weapon('Portable Autocannon', 2), modifiers: ['+1SD'] }] }),
   profile('flash', { points: 8, weapons: [weapon('Flash Pulse', 1)] }),
-  profile('pheroware', { equipment: ['Pheroware Tactics'] }),
+  profile('pheroware', { equipment: ['Pheroware Tactics'], skills: ['Total Reaction'] }),
+  profile('pt', { equipment: ['PT'], skills: ['Neurocinetics'] }),
   profile('sd-rifle', { points: 30, weapons: [{ ...weapon('Combi Rifle', 3), modifiers: ['+2SD'] }] }),
   profile('vision', { weapons: [weapon('Smoke Grenades', 1), weapon('Discoballer', 1)], equipment: ['Pheroware Mirroball'], skills: ['Eclipse'] }),
-  profile('apex-cc', { cc: 23, skills: ['Martial Arts L2', 'Natural Born Warrior', 'Berserk (+3)', 'CC Attack (+1B)'] }),
-  profile('cc-near-miss', { cc: 22, skills: ['Martial Arts L4'] }),
+  profile('apex-cc', { cc: 22, skills: ['Martial Arts L2', 'Natural Born Warrior', 'Berserk (+3)', 'CC Attack (+1B)'] }),
+  profile('cc-near-miss', { cc: 21, skills: ['Martial Arts L4'] }),
   profile('deploy', { skills: ['Parachutist (+3)', 'Combat-Jump (PH=12)', 'Hidden Deployment', 'Impersonation (-6)'], weapons: [weapon('Combi Rifle', 3)] }),
   profile('netrod', { unitName: 'Netrod', skills: ['Combat Jump (PH=12)'] }),
   profile('imetron', { unitName: 'Imetron', skills: ['Parachutist'] }),
@@ -46,18 +47,19 @@ const fixtures = [
 ]
 
 const analysis = classifyTacticalBrief(fixtures, { faction: 'Fixture', listName: 'Exact Profiles' })
-assert.deepEqual(new Set(analysis.categories.apex.map((item) => item.combinedId)), new Set(['apex', 'burst-bonus', 'bs14-apex', 'b5-apex']))
+assert.deepEqual(new Set(analysis.categories.apex.map((item) => item.combinedId)), new Set(['apex', 'burst-bonus', 'bs14-apex', 'b5-apex', 'sd-rifle']))
 assert.deepEqual(analysis.categories.apex.find((item) => item.combinedId === 'apex').badges, ['Mimetism [-3]', 'MSV L2', 'BS Attack (−3)'])
 assert.equal(analysis.categories.apex.some((item) => ['ambiguous-burst', 'unavailable-burst'].includes(item.combinedId)), false)
 assert.deepEqual(analysis.networkSummary, { hackers: 1, pitcherCarriers: 1, fastPandaCarriers: 1, deployableRepeaterCarriers: 1, repeaterCarriers: 1 })
 assert.equal(analysis.categories.hacking.length, 1)
 assert.equal(analysis.categories.valuableAro.some((item) => item.combinedId === 'pheroware'), true)
+assert.equal(analysis.categories.valuableAro.some((item) => item.combinedId === 'pt'), true)
 assert.equal(analysis.categories.disposableAro.some((item) => item.combinedId === 'sd-rifle'), true)
 assert.equal(analysis.categories.vision.some((item) => item.combinedId === 'vision'), true)
 assert.equal(analysis.categories.apexCc.some((item) => item.combinedId === 'apex-cc'), true)
 assert.equal(analysis.categories.apexCc.some((item) => item.combinedId === 'cc-near-miss'), false)
-assert.deepEqual(new Set(analysis.categories.competent.map((item) => item.combinedId)), new Set(['bs12', 'apex', 'burst-bonus', 'same-unit-b']))
-assert.equal(analysis.categories.competent.find((item) => item.combinedId === 'burst-bonus').qualifyingWeapons[0].burst, 4)
+assert.deepEqual(new Set(analysis.categories.competent.map((item) => item.combinedId)), new Set(['bs12', 'same-unit-b']))
+assert.equal(analysis.categories.apex.find((item) => item.combinedId === 'burst-bonus').qualifyingWeapons[0].burst, 4)
 assert.deepEqual(new Set(analysis.categories.valuableAro.flatMap((item) => item.qualifyingWeapons.map((item) => item.name))), new Set(['MULTI Sniper Rifle', 'Heavy Rocket Launcher', 'Feuerbach', 'Portable Autocannon']))
 assert.deepEqual(analysis.categories.valuableAro.find((item) => item.combinedId === 'tankhunter')?.badges, ['Portable Autocannon (+1SD)'])
 assert.equal(analysis.categories.competent.some((item) => item.combinedId === 'tankhunter'), false, 'B2 +1SD is only three dice')
@@ -78,8 +80,9 @@ const fireteamAnalysis = classifyTacticalBrief([
   profile('fusilier', { bs: 12, unitName: 'Fusilier', points: 10, fireteamTeams: ['Fusiliers'], weapons: [weapon('Combi Rifle', 3)] }),
   profile('moran', { unitName: 'Moran', equipment: ['Repeater'], skills: ['Minelayer'] }),
 ], { faction: 'White Company' })
-assert.deepEqual(new Set(fireteamAnalysis.categories.valuableAro.map((item) => item.combinedId)), new Set(['orc', 'hawkwood']))
-assert.deepEqual(new Set(fireteamAnalysis.categories.competent.map((item) => item.combinedId)), new Set(['hannibal', 'hawkwood', 'fusilier']))
+assert.deepEqual(new Set(fireteamAnalysis.categories.valuableAro.map((item) => item.combinedId)), new Set(['hawkwood']))
+assert.deepEqual(new Set(fireteamAnalysis.categories.competent.map((item) => item.combinedId)), new Set(['hawkwood', 'fusilier']))
+assert.equal(fireteamAnalysis.categories.apex.some((item) => item.combinedId === 'hannibal'), true)
 assert.deepEqual(fireteamAnalysis.categories.hacking.find((item) => item.combinedId === 'moran')?.roles, ['hacking', 'defensive'])
 assert.deepEqual(fireteamAnalysis.categories.defensive.find((item) => item.combinedId === 'moran')?.roles, ['hacking', 'defensive'])
 

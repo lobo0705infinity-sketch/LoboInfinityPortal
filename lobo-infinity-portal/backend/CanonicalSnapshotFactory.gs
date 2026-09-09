@@ -5,7 +5,7 @@
  * decoding, orchestration, persistence, and read-model responsibilities.
  */
 
-var ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION = "army-intelligence-tactical-v6";
+var ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION = "army-intelligence-tactical-v7";
 var ARMY_INTELLIGENCE_PIPELINE_VERSION = "army-intelligence-pipeline-v1";
 
 var CanonicalSnapshotFactory = (function() {

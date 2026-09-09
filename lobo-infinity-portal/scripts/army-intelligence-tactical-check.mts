@@ -30,11 +30,12 @@ const falsePositive = entry('7', 'REPEATER PANDA TROOP', 'TinBot', { equipment: 
 const aro = entry('8', 'ARO', 'MULTI Sniper', { bs: 13, skills: ['BS Attack (+1SD)'], weapons: ['MULTI Sniper Rifle'], weaponProfiles: [canonicalBurst('MULTI Sniper Rifle', 2)], fireteamEligibility: { state: 'verified', verified: true, teams: ['Core'] } })
 const tankhunter = entry('tankhunter', 'TANKHUNTER', 'Portable Autocannon', { bs: 13, points: 36, weapons: ['Portable Autocannon'], weaponProfiles: [{ ...canonicalBurst('Portable Autocannon', 2), modifiers: ['+1SD'] }] })
 const disposable = entry('cheap', 'CHEAP ARO', 'Flash Pulse', { points: 8, weapons: ['Flash Pulse'], weaponProfiles: [canonicalBurst('Flash Pulse', 1)] })
-const pherowareProfile = entry('pheroware', 'PHA', 'Pheroware', { equipment: ['Pheroware Tactics'] })
+const pherowareProfile = entry('pheroware', 'PHA', 'Pheroware', { equipment: ['Pheroware Tactics'], skills: ['Total Reaction'] })
+const ptProfile = entry('pt', 'PT USER', 'Pheroware', { equipment: ['PT'], skills: ['Neurocinetics'] })
 const sdWeaponProfile = entry('sd-weapon', 'SD', 'Combi Rifle', { points: 30, weapons: ['Combi Rifle'], weaponProfiles: [{ ...canonicalBurst('Combi Rifle', 3), modifiers: ['+2SD'] }] })
 const visionProfile = entry('vision', 'VISION', 'Control', { weapons: ['Smoke Grenade Launcher', 'Discoballer'], equipment: ['Pheroware Mirrorball'], skills: ['Eclipse'] })
-const apexCcProfile = entry('apex-cc', 'DUELIST', 'Blade', { cc: 23, skills: ['Martial Arts L1'] })
-const ccNearMiss = entry('cc-near', 'ALMOST', 'Blade', { cc: 22, skills: ['Natural Born Warrior'] })
+const apexCcProfile = entry('apex-cc', 'DUELIST', 'Blade', { cc: 22, skills: ['Martial Arts L1'] })
+const ccNearMiss = entry('cc-near', 'ALMOST', 'Blade', { cc: 21, skills: ['Natural Born Warrior'] })
 const alternative = entry('9', 'RAIDER', 'Airborne', { skills: ['Parachutist (Deployment Zone)', 'Combat Jump (+3)', 'Hidden Deployment', 'Impersonation (-6)'], weapons: ['Combi Rifle'] })
 const netrod = entry('netrod', 'NETROD', 'Combat Jump', { skills: ['Combat Jump (PH=12)'] })
 const imetron = entry('imetron', 'IMETRON', 'Parachutist', { skills: ['Parachutist'] })
@@ -45,13 +46,14 @@ const separateLoadout = entry('12', 'SCOUT', 'Rifle', { skills: [], weapons: ['R
 const analysis = buildTacticalAnalysis([
   decodedList('One', [apex, apex, bs14Apex, b5Apex, hacker, aro, tankhunter, disposable, alternative, netrod, imetron, defensive, falsePositive]),
   decodedList('Two', [apex, deployable, aro, defensive, boundaryFailBs, burstBonus, { ...hacker, combinedId: 'legacy-hacker', bs: null, fireteamEligibility: { state: 'unknown', verified: false, teams: [] } }]),
-  decodedList('Three', [boundaryFailBurst, malformed, mimetismOnly, separateLoadout, pherowareProfile, sdWeaponProfile, visionProfile, apexCcProfile, ccNearMiss]),
+  decodedList('Three', [boundaryFailBurst, malformed, mimetismOnly, separateLoadout, pherowareProfile, ptProfile, sdWeaponProfile, visionProfile, apexCcProfile, ccNearMiss]),
 ] as never)
 
 assert.equal(analysis.mode, 'Submitted-List Trends')
 assert.equal(analysis.listCount, 3)
-assert.equal(analysis.categories.find((item) => item.id === 'apex')?.profiles.length, 3)
+assert.equal(analysis.categories.find((item) => item.id === 'apex')?.profiles.length, 4)
 assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles.some((profile) => profile.unit === 'PHA'), true)
+assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles.some((profile) => profile.unit === 'PT USER'), true)
 assert.equal(analysis.categories.find((item) => item.id === 'disposableAro')?.profiles.some((profile) => profile.unit === 'SD'), true)
 assert.equal(analysis.categories.find((item) => item.id === 'vision')?.profiles.length, 1)
 assert.equal(analysis.categories.find((item) => item.id === 'apexCc')?.profiles.some((profile) => profile.unit === 'DUELIST'), true)
@@ -63,7 +65,7 @@ assert.equal(analysis.hackerListCount, 2)
 assert.equal(analysis.categories.find((item) => item.id === 'hacking')?.profiles.length, 3)
 assert.equal(analysis.categories.find((item) => item.id === 'hacking')?.profiles.find((profile) => profile.unit === 'HACKER')?.listCount, 2, 'duplicate displayed profiles must consolidate and count unique lists')
 assert.ok(analysis.categories.find((item) => item.id === 'hacking')?.profiles.some((profile) => profile.unit.includes('PANDA TROOP')), 'ordinary Repeaters must create hacking-network matches')
-assert.equal(analysis.categories.find((item) => item.id === 'competent')?.profiles.length, 3)
+assert.equal(analysis.categories.find((item) => item.id === 'competent')?.profiles.length, 2)
 assert.equal(analysis.categories.find((item) => item.id === 'competent')?.profiles.find((profile) => profile.unit === 'BONUS')?.weapons[0].effectiveBurst, 4)
 assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles.length, 4)
 assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles[0].linkability, 'verified')
@@ -90,8 +92,8 @@ const fireteamAnalysis = buildTacticalAnalysis([decodedList('Fireteam', [
   entry('hannibal', 'HANNIBAL', 'Marksman', { bs: 13, points: 33, skills: ['BS Attack (+1SD)'], weapons: ['MULTI Marksman Rifle'], weaponProfiles: [canonicalBurst('MULTI Marksman Rifle', 3)], fireteamEligibility: fireteam }),
   entry('moran', 'MORAN', 'Repeater Minelayer', { equipment: ['Repeater'], skills: ['Minelayer'] }),
 ])] as never)
-assert.ok(fireteamAnalysis.categories.find((item) => item.id === 'valuableAro')?.profiles.some((profile) => profile.unit === 'ORC'))
-assert.ok(fireteamAnalysis.categories.find((item) => item.id === 'competent')?.profiles.some((profile) => profile.unit === 'HANNIBAL'))
+assert.ok(!fireteamAnalysis.categories.find((item) => item.id === 'valuableAro')?.profiles.some((profile) => profile.unit === 'ORC'), 'Fireteam +1SD alone must not qualify Valuable ARO')
+assert.ok(fireteamAnalysis.categories.find((item) => item.id === 'apex')?.profiles.some((profile) => profile.unit === 'HANNIBAL'))
 assert.deepEqual(fireteamAnalysis.categories.find((item) => item.id === 'hacking')?.profiles.find((profile) => profile.unit === 'MORAN')?.roles, ['hacking', 'defensive'])
 
 const privateListName = 'Don\u2019t hurt me daddy'
@@ -131,5 +133,24 @@ assert.equal(duplicateHackingProfiles.filter((profile) => profile.unit === 'APSA
 assert.equal(duplicateHackingProfiles.find((profile) => profile.unit === 'APSARA')?.profile, 'Submachine Gun')
 const yaduProfiles = duplicateLoadouts.categories.flatMap((category) => category.profiles).filter((profile) => profile.unit === 'YADU')
 assert.deepEqual([...new Set(yaduProfiles.map((profile) => profile.profile))].sort(), ['Combi Rifle', 'Heavy Machine Gun', 'Submachine Gun'], 'distinct YADU loadouts must remain separate and receive weapon labels')
+
+const lamedhLists = Array.from({ length: 10 }, (_, index) => decodedList(`LAMEDH ${index}`, [
+  entry(`lamedh-${index}`, 'LAMEDH Robot', index === 0 ? 'LAMEDH Robot' : 'Flash Pulse', {
+    bs: 8,
+    canonicalUnitId: 4242,
+    canonicalOptionId: 1,
+    canonicalProfile: 'LAMEDH Robot',
+    equipment: ['Repeater'],
+    points: 7,
+    skills: ['Mimetism (-3)'],
+    weapons: index === 0 ? [] : ['Flash Pulse'],
+    weaponProfiles: index === 0 ? [] : [canonicalBurst('Flash Pulse', 1)],
+  }),
+]))
+const lamedhAnalysis = buildTacticalAnalysis(lamedhLists as never)
+const lamedhProfiles = lamedhAnalysis.categories.find((item) => item.id === 'hacking')?.profiles.filter((profile) => profile.unit === 'LAMEDH Robot') || []
+assert.equal(lamedhProfiles.length, 1, 'one canonical LAMEDH profile must render once even when legacy and enriched labels differ')
+assert.equal(lamedhProfiles[0].listCount, 10, 'one LAMEDH row must aggregate all ten unique submitted lists')
+assert.equal(lamedhProfiles[0].percentage, 100)
 
 console.log('Army Intelligence tactical analysis passed (classification, boundaries, variants, loadout isolation, prevalence, and sample behavior).')
