@@ -30,6 +30,22 @@ assert.equal(relationshipMatchesEntry(reference.fireteamChart.teams[0].units[0],
 assert.equal(relationshipMatchesEntry(reference.fireteamChart.teams[0].units[1], rosterEntry), false)
 assert.deepEqual(matchFireteamRoster(reference, [rosterEntry]).map((item) => item.unit), ['COYOTE'])
 
+const aliasReference = normalizeOfficialPayload({ body: {
+  version: 'alias-fixture',
+  units: [
+    { id: 2001, slug: 'nexus-operatives', name: 'NEXUS OPERATIVES', isc: 'NEXUS' },
+    { id: 2002, slug: 'unidron-batroids', name: 'UNIDRON BATROIDS', isc: 'UNIDRON' },
+    { id: 1594, slug: 'ajax-the-great', name: 'AJAX THE GREAT, MYRMIDON OFFICER', isc: 'AJAX' },
+  ],
+  fireteamChart: { teams: [
+    { name: 'Unidrons Fireteams', type: ['HARIS', 'CORE'], units: [{ min: 1, max: 5, name: 'UNIDRON', slug: 'chart-unidron-alias' }] },
+    { name: 'Wildcards', type: [], units: [{ min: 0, max: 3, name: 'NEXUS (Unidron)', slug: 'chart-nexus-alias' }, { min: 0, max: 1, name: 'AJAX FTO (Myrmidon)', slug: 'chart-ajax-alias' }] },
+  ] },
+}, headers: {} }, 1, 701)
+assert.equal(aliasReference.fireteamChart.teams[0].units[0].unitId, 2002)
+assert.equal(aliasReference.fireteamChart.teams[1].units[0].unitId, 2001)
+assert.equal(aliasReference.fireteamChart.teams[1].units[1].unitId, 1594)
+
 let cleanupCalls = 0
 const generated = { pages: [{ buffer: Buffer.from('png'), name: 'sheet.png' }], pdf: { buffer: Buffer.from('pdf'), name: 'sheet.pdf' }, missingImageCount: 1, outputDir: 'fixture' }
 const interaction = mockInteraction('CODE')

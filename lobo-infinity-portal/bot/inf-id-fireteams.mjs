@@ -74,11 +74,22 @@ export function normalizeOfficialPayload({ body, headers, metadata }, cachedAt =
   const unitBySlug = new Map(body.units.map((unit) => [unit.slug, unit]))
   const chart = structuredClone(body.fireteamChart)
   for (const team of chart.teams) for (const unit of team.units || []) {
-    const official = unitBySlug.get(unit.slug)
+    const official = unitBySlug.get(unit.slug) || resolveChartUnitByName(body.units, unit)
     unit.unitId = official?.id ?? null
     unit.officialUnitName = official?.name ?? null
   }
   return { status: chart.teams.length ? 'available' : 'none', sectorialId: sectorialId ?? null, payloadVersion: body.version ?? null, etag: headers?.etag ?? null, responseDate: headers?.date ?? null, cachedAt, units: body.units.map(normalizeOfficialUnit), weapons: (metadata?.weapons || body.filters?.weapons || []).map(normalizeOfficialWeapon), extras: metadata?.extras || body.filters?.extras || [], skills: metadata?.skills || body.filters?.skills || [], equip: metadata?.equips || body.filters?.equip || [], fireteamChart: chart }
+}
+
+function resolveChartUnitByName(units, chartUnit) {
+  const chartNames = [chartUnit?.name, String(chartUnit?.name || '').replace(/\s*\([^)]*\)\s*/g, ' ')]
+    .map(normalizeName)
+    .filter(Boolean)
+  const candidates = (units || []).filter((unit) => {
+    const officialNames = [unit?.name, unit?.isc].map(normalizeName).filter(Boolean)
+    return chartNames.some((chartName) => officialNames.some((officialName) => officialName === chartName || officialName.startsWith(`${chartName} `) || chartName.startsWith(`${officialName} `)))
+  })
+  return candidates.length === 1 ? candidates[0] : null
 }
 
 function normalizeOfficialWeapon(weapon) {
