@@ -505,7 +505,7 @@ export type ArmyIntelligenceDecodedEntry = {
   troopType: string
   unit: string
   weapons: string[]
-  weaponProfiles?: Array<{ id?: number | null; burst: number | null; burstStatus?: string; mode?: string | null; modeResolution?: string | null; name: string; source?: string | null; type?: string }>
+  weaponProfiles?: Array<{ id?: number | null; burst: number | null; burstStatus?: string; modifiers?: string[]; mode?: string | null; modeResolution?: string | null; name: string; source?: string | null; type?: string }>
   fireteamEligibility?: { state?: 'verified' | 'verified-false' | 'unknown'; teams: string[]; verified: boolean; memberships?: Array<{ team: string; minSize: number; required: boolean; requiredNames: string[]; memberName: string; countsAs: string }> }
   fireteamSdBonus?: number
   wounds: number | null
@@ -6199,6 +6199,7 @@ function normalizeArmyIntelligenceDecodedEntry(item: unknown): ArmyIntelligenceD
         burstStatus: getString(weapon, 'burstStatus'),
         mode: weapon.mode == null ? null : getString(weapon, 'mode'),
         modeResolution: weapon.modeResolution == null ? null : getString(weapon, 'modeResolution'),
+        modifiers: getArray(weapon, 'modifiers').map(String),
         name: getString(weapon, 'name'),
         source: weapon.source == null ? null : getString(weapon, 'source'),
         type: getString(weapon, 'type'),

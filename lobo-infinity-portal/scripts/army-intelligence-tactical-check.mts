@@ -28,6 +28,7 @@ const hacker = entry('5', 'HACKER', 'KHD + Pitcher', { hacker: true, equipment: 
 const deployable = entry('6', 'OBSERVER', 'Deployable Repeater', { equipment: ['Deployable   Repeater'] })
 const falsePositive = entry('7', 'REPEATER PANDA TROOP', 'TinBot', { equipment: ['Repeater', 'TinBot', 'ECM'] })
 const aro = entry('8', 'ARO', 'MULTI Sniper', { bs: 13, skills: ['BS Attack (+1SD)'], weapons: ['MULTI Sniper Rifle'], weaponProfiles: [canonicalBurst('MULTI Sniper Rifle', 2)], fireteamEligibility: { state: 'verified', verified: true, teams: ['Core'] } })
+const tankhunter = entry('tankhunter', 'TANKHUNTER', 'Portable Autocannon', { bs: 13, points: 36, weapons: ['Portable Autocannon'], weaponProfiles: [{ ...canonicalBurst('Portable Autocannon', 2), modifiers: ['+1SD'] }] })
 const disposable = entry('cheap', 'CHEAP ARO', 'Flash Pulse', { points: 8, weapons: ['Flash Pulse'], weaponProfiles: [canonicalBurst('Flash Pulse', 1)] })
 const alternative = entry('9', 'RAIDER', 'Airborne', { skills: ['Parachutist (Deployment Zone)', 'Combat Jump (+3)', 'Hidden Deployment', 'Impersonation (-6)'], weapons: ['Combi Rifle'] })
 const netrod = entry('netrod', 'NETROD', 'Combat Jump', { skills: ['Combat Jump (PH=12)'] })
@@ -37,7 +38,7 @@ const mimetismOnly = entry('11', 'NOT CAMO', 'Mimetism', { skills: ['Mimetism (-
 const separateLoadout = entry('12', 'SCOUT', 'Rifle', { skills: [], weapons: ['Rifle'] })
 
 const analysis = buildTacticalAnalysis([
-  decodedList('One', [apex, apex, bs14Apex, b5Apex, hacker, aro, disposable, alternative, netrod, imetron, defensive, falsePositive]),
+  decodedList('One', [apex, apex, bs14Apex, b5Apex, hacker, aro, tankhunter, disposable, alternative, netrod, imetron, defensive, falsePositive]),
   decodedList('Two', [apex, deployable, aro, defensive, boundaryFailBs, burstBonus, { ...hacker, combinedId: 'legacy-hacker', bs: null, fireteamEligibility: { state: 'unknown', verified: false, teams: [] } }]),
   decodedList('Three', [boundaryFailBurst, malformed, mimetismOnly, separateLoadout]),
 ] as never)
@@ -54,8 +55,10 @@ assert.equal(analysis.categories.find((item) => item.id === 'hacking')?.profiles
 assert.ok(analysis.categories.find((item) => item.id === 'hacking')?.profiles.some((profile) => profile.unit.includes('PANDA TROOP')), 'ordinary Repeaters must create hacking-network matches')
 assert.equal(analysis.categories.find((item) => item.id === 'competent')?.profiles.length, 3)
 assert.equal(analysis.categories.find((item) => item.id === 'competent')?.profiles.find((profile) => profile.unit === 'BONUS')?.weapons[0].effectiveBurst, 4)
-assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles.length, 1)
+assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles.length, 2)
 assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles[0].linkability, 'verified')
+assert.deepEqual(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles.find((profile) => profile.unit === 'TANKHUNTER')?.badges, ['Portable Autocannon (+1SD)'])
+assert.ok(!analysis.categories.find((item) => item.id === 'competent')?.profiles.some((profile) => profile.unit === 'TANKHUNTER'), 'B2 +1SD is only three dice')
 assert.equal(analysis.categories.find((item) => item.id === 'disposableAro')?.profiles.length, 1)
 assert.equal(analysis.categories.find((item) => item.id === 'alternative')?.profiles.length, 1)
 assert.equal(analysis.categories.find((item) => item.id === 'alternative')?.profiles[0].badges.filter((badge) => /Parachutist|Combat Jump|Hidden Deployment|Impersonation/.test(badge)).length, 4)
@@ -105,5 +108,18 @@ for (const [index, value] of variants.entries()) {
   const result = buildTacticalAnalysis([decodedList(`Variant ${index}`, [entry(`v${index}`, 'VARIANT', value, { equipment: [value] })])] as never)
   assert.equal(result.categories.find((item) => item.id === 'hacking')?.profiles.length, 1, `${value} must normalize exactly`)
 }
+
+const duplicateLoadouts = buildTacticalAnalysis([decodedList('Duplicate loadouts', [
+  entry('apsara-a', 'APSARA', 'APSARA', { bs: 13, points: 22, skills: ['Hacker'], equipment: ['Deployable Repeater'], weapons: ['Submachine Gun'], weaponProfiles: [canonicalBurst('Submachine Gun', 3)] }),
+  entry('apsara-b', 'APSARA', 'APSARA', { bs: 13, points: 22, skills: ['Hacker', 'Courage'], equipment: ['Deployable Repeater', 'TinBot'], weapons: ['Submachine Gun'], weaponProfiles: [canonicalBurst('Submachine Gun', 3)] }),
+  entry('yadu-hmg', 'YADU', 'YADU', { bs: 13, points: 40, weapons: ['Heavy Machine Gun'], weaponProfiles: [canonicalBurst('Heavy Machine Gun', 4)] }),
+  entry('yadu-smg', 'YADU', 'YADU', { bs: 13, points: 32, skills: ['BS Attack (+1SD)'], weapons: ['Submachine Gun'], weaponProfiles: [canonicalBurst('Submachine Gun', 3)] }),
+  entry('yadu-combi', 'YADU', 'YADU', { bs: 13, points: 34, skills: ['BS Attack (+1SD)'], weapons: ['Combi Rifle'], weaponProfiles: [canonicalBurst('Combi Rifle', 3)] }),
+])] as never)
+const duplicateHackingProfiles = duplicateLoadouts.categories.find((item) => item.id === 'hacking')?.profiles || []
+assert.equal(duplicateHackingProfiles.filter((profile) => profile.unit === 'APSARA').length, 1, 'identical visible APSARA loadouts must consolidate despite hidden skill/equipment differences')
+assert.equal(duplicateHackingProfiles.find((profile) => profile.unit === 'APSARA')?.profile, 'Submachine Gun')
+const yaduProfiles = duplicateLoadouts.categories.flatMap((category) => category.profiles).filter((profile) => profile.unit === 'YADU')
+assert.deepEqual([...new Set(yaduProfiles.map((profile) => profile.profile))].sort(), ['Combi Rifle', 'Heavy Machine Gun', 'Submachine Gun'], 'distinct YADU loadouts must remain separate and receive weapon labels')
 
 console.log('Army Intelligence tactical analysis passed (classification, boundaries, variants, loadout isolation, prevalence, and sample behavior).')

@@ -24,6 +24,7 @@ const fixtures = [
   profile('aro-sniper', { linkability: 'verified-linkable', skills: ['BS Attack (+1SD)'], weapons: [weapon('MULTI Sniper Rifle', 2)] }),
   profile('aro-pzf', { points: 14, linkability: 'unavailable', weapons: [weapon('Panzerfaust', 1), weapon('Flammenspeer', 1)] }),
   profile('aro-hrl', { skills: ['Neurocinetics'], weapons: [weapon('Heavy Rocket Launcher', 2), weapon('Feuerbach', 2)] }),
+  profile('tankhunter', { points: 36, weapons: [{ ...weapon('Portable Autocannon', 2), modifiers: ['+1SD'] }] }),
   profile('flash', { points: 8, weapons: [weapon('Flash Pulse', 1)] }),
   profile('deploy', { skills: ['Parachutist (+3)', 'Combat-Jump (PH=12)', 'Hidden Deployment', 'Impersonation (-6)'], weapons: [weapon('Combi Rifle', 3)] }),
   profile('netrod', { unitName: 'Netrod', skills: ['Combat Jump (PH=12)'] }),
@@ -47,7 +48,9 @@ assert.deepEqual(analysis.networkSummary, { hackers: 1, pitcherCarriers: 1, fast
 assert.equal(analysis.categories.hacking.length, 1)
 assert.deepEqual(new Set(analysis.categories.competent.map((item) => item.combinedId)), new Set(['bs12', 'apex', 'burst-bonus', 'same-unit-b']))
 assert.equal(analysis.categories.competent.find((item) => item.combinedId === 'burst-bonus').qualifyingWeapons[0].burst, 4)
-assert.deepEqual(new Set(analysis.categories.valuableAro.flatMap((item) => item.qualifyingWeapons.map((item) => item.name))), new Set(['MULTI Sniper Rifle', 'Heavy Rocket Launcher', 'Feuerbach']))
+assert.deepEqual(new Set(analysis.categories.valuableAro.flatMap((item) => item.qualifyingWeapons.map((item) => item.name))), new Set(['MULTI Sniper Rifle', 'Heavy Rocket Launcher', 'Feuerbach', 'Portable Autocannon']))
+assert.deepEqual(analysis.categories.valuableAro.find((item) => item.combinedId === 'tankhunter')?.badges, ['Portable Autocannon (+1SD)'])
+assert.equal(analysis.categories.competent.some((item) => item.combinedId === 'tankhunter'), false, 'B2 +1SD is only three dice')
 assert.deepEqual(new Set(analysis.categories.disposableAro.flatMap((item) => item.qualifyingWeapons.map((item) => item.name))), new Set(['Panzerfaust', 'Flammenspeer', 'Flash Pulse']))
 assert.equal(analysis.categories.valuableAro[0].linkability, 'verified-linkable')
 assert.equal(analysis.categories.alternative.length, 1)

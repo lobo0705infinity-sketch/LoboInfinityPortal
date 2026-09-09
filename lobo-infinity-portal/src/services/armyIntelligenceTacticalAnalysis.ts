@@ -86,7 +86,7 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
       }, hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
       category('competent', 'Competent Gunfighters', 'BS 12 or 13 profiles whose effective dice reach 4 through weapon Burst, BS Attack (+Burst), native +SD, Fireteam +1SD, or a combination.', (entry) => (Number(entry.bs) === 12 || Number(entry.bs) === 13) && effectiveSdWeapons(entry).some((weapon) => weapon.burst !== null && weapon.burst >= 4), hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
       category('hacking', 'Hacking Networks', 'Exact Hacker profiles, Hacking Devices, Repeaters, and verified repeater-delivery equipment.', (entry) => hackingComponents(entry).length > 0),
-      category('valuableAro', 'Valuable ARO Pieces', '15+ point profiles with an approved ARO weapon and Total Reaction, Neurocinetics, native BS Attack (+SD), or a legal Fireteam granting +1SD.', (entry) => entry.points >= 15 && (entry.skills.some((skill) => valuableAroSkill.test(normalize(skill))) || Number(entry.fireteamSdBonus) > 0) && canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name)))),
+      category('valuableAro', 'Valuable ARO Pieces', '15+ point profiles with an approved ARO weapon and Total Reaction, Neurocinetics, native BS Attack (+SD), weapon-specific +SD, or a legal Fireteam granting +1SD.', (entry) => entry.points >= 15 && canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name)) && (weaponSdBonus(weapon) > 0 || entry.skills.some((skill) => valuableAroSkill.test(normalize(skill))) || Number(entry.fireteamSdBonus) > 0))),
       category('disposableAro', 'Disposable ARO Pieces', '14-point-or-less profiles armed with an approved ARO weapon or Flash Pulse.', (entry) => entry.points <= 14 && canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name)) || /^flash pulse$/i.test(normalize(weapon.name)))),
       category('alternative', 'Alternative Attack Vectors', 'Profiles with Parachutist, Combat Jump, Hidden Deployment, or Impersonation; Netrods and Imetrons are excluded.', (entry) => !excludedAlternativeAttackVector(entry.unit) && entry.skills.some((skill) => alternativeSkill.test(normalize(skill)))),
       category('defensive', 'Defensive Network', 'Profiles with Camouflage, Decoy, or Minelayer; Mimetism alone does not qualify.', (entry) => entry.skills.some((skill) => defensiveSkill.test(normalize(skill)))),
@@ -110,22 +110,22 @@ function toProfile(entry: ArmyIntelligenceDecodedEntry, listCount: number, denom
   const burstBonus = bsAttackBurstBonus(entry.skills)
   const sdBonus = bsAttackSdBonus(entry.skills) + Number(entry.fireteamSdBonus || 0)
   return {
-    badges: unique([...skills, ...(entry.fireteamSdBonus ? ['Fireteam (+1SD)'] : []), ...hackingComponents(entry)]),
+    badges: unique([...skills, ...canonicalWeapons(entry).filter((weapon) => weaponSdBonus(weapon) > 0).map((weapon) => `${weapon.name} (+${weaponSdBonus(weapon)}SD)`), ...(entry.fireteamSdBonus ? ['Fireteam (+1SD)'] : []), ...hackingComponents(entry)]),
     bs: entry.bs ?? null,
     equipment: entry.equipment.filter((item) => deliveryEquipment.test(normalize(item)) || hackingDevice.test(normalize(item))),
     linkability: entry.fireteamEligibility?.state === 'verified' ? 'verified' : entry.fireteamEligibility?.state === 'verified-false' ? 'verified-false' : 'unknown',
     listCount,
     percentage: denominator ? (listCount / denominator) * 100 : 0,
-    profile: entry.profile || entry.unit,
+    profile: tacticalProfileLabel(entry),
     profileId: profileKey(entry),
     roles: [],
     unit: entry.unit || entry.profile,
-    weapons: normalizedWeapons(entry).map((weapon) => ({ ...weapon, effectiveBurst: weapon.burst === null ? null : weapon.burst + burstBonus, effectiveDice: weapon.burst === null ? null : weapon.burst + burstBonus + sdBonus })),
+    weapons: normalizedWeapons(entry).map((weapon) => ({ ...weapon, effectiveBurst: weapon.burst === null ? null : weapon.burst + burstBonus, effectiveDice: weapon.burst === null ? null : weapon.burst + burstBonus + sdBonus + weaponSdBonus(weapon) })),
   }
 }
 
 function canonicalWeapons(entry: ArmyIntelligenceDecodedEntry) {
-  return entry.weaponProfiles?.map((weapon) => ({ name: normalize(weapon.name), burst: finiteOrNull(weapon.burst), burstStatus: weapon.burstStatus || 'unknown' })) || []
+  return entry.weaponProfiles?.map((weapon) => ({ name: normalize(weapon.name), modifiers: weapon.modifiers || [], burst: finiteOrNull(weapon.burst), burstStatus: weapon.burstStatus || 'unknown' })) || []
 }
 
 function effectiveWeapons(entry: ArmyIntelligenceDecodedEntry) {
@@ -135,7 +135,15 @@ function effectiveWeapons(entry: ArmyIntelligenceDecodedEntry) {
 
 function effectiveSdWeapons(entry: ArmyIntelligenceDecodedEntry) {
   const bonus = bsAttackBurstBonus(entry.skills) + bsAttackSdBonus(entry.skills) + Number(entry.fireteamSdBonus || 0)
-  return canonicalWeapons(entry).filter((weapon) => weapon.burstStatus === 'canonical').map((weapon) => ({ ...weapon, burst: weapon.burst === null ? null : weapon.burst + bonus }))
+  return canonicalWeapons(entry).filter((weapon) => weapon.burstStatus === 'canonical').map((weapon) => ({ ...weapon, burst: weapon.burst === null ? null : weapon.burst + bonus + weaponSdBonus(weapon) }))
+}
+
+function weaponSdBonus(weapon: { modifiers?: string[] }) {
+  for (const modifier of weapon.modifiers || []) {
+    const match = normalize(modifier).match(/^\+\s*(?:(\d+)\s*)?sd$/i)
+    if (match) return Number(match[1] || 1)
+  }
+  return 0
 }
 
 function bsAttackBurstBonus(skills: string[]) {
@@ -196,9 +204,15 @@ function profileKey(entry: ArmyIntelligenceDecodedEntry) {
 
 function displayedProfileKey(entry: ArmyIntelligenceDecodedEntry) {
   const weapons = entry.weaponProfiles?.length
-    ? entry.weaponProfiles.map((weapon) => `${normalize(weapon.name).toLowerCase()}:${normalize(weapon.mode).toLowerCase()}:${weapon.burst ?? '?'}`).sort()
+    ? entry.weaponProfiles.map((weapon) => `${normalize(weapon.name).toLowerCase()}:${normalize(weapon.mode).toLowerCase()}:${weapon.burst ?? '?'}:${(weapon.modifiers || []).map((modifier) => normalize(modifier).toLowerCase()).sort().join(',')}`).sort()
     : entry.weapons.map((weapon) => normalize(weapon).toLowerCase()).sort()
-  return [normalize(entry.unit).toLowerCase(), normalize(entry.profile || entry.unit).toLowerCase(), weapons.join('|'), entry.skills.map((skill) => normalize(skill).toLowerCase()).sort().join('|'), entry.equipment.map((item) => normalize(item).toLowerCase()).sort().join('|')].join('::')
+  return [normalize(entry.unit).toLowerCase(), normalize(entry.profile || entry.unit).toLowerCase(), entry.bs ?? '', entry.points ?? '', weapons.join('|')].join('::')
+}
+
+function tacticalProfileLabel(entry: ArmyIntelligenceDecodedEntry) {
+  const profile = normalize(entry.profile || entry.unit)
+  if (profile.toLowerCase() !== normalize(entry.unit).toLowerCase()) return profile
+  return canonicalWeapons(entry)[0]?.name || profile
 }
 
 function mergeProfileEntries(left: ArmyIntelligenceDecodedEntry, right: ArmyIntelligenceDecodedEntry): ArmyIntelligenceDecodedEntry {
