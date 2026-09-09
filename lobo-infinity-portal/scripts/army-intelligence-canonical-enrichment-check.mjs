@@ -8,7 +8,7 @@ const list = { armyCode: 'x', combatGroups: [{ combatGroup: 1, entries: [
 const reference = {
   status: 'available', payloadVersion: 'fixture-1',
   units: [{ id: 10, name: 'CANONICAL UNIT', profileGroups: [
-    { id: 2, profiles: [{ id: 3, name: 'CANONICAL PROFILE A', bs: 14, weapons: [{ id: 4 }] }, { id: 1, name: 'CANONICAL PROFILE B', bs: 11 }], options: [
+    { id: 2, profiles: [{ id: 3, name: 'CANONICAL PROFILE A', bs: 14, cc: 22, weapons: [{ id: 4 }] }, { id: 1, name: 'CANONICAL PROFILE B', bs: 11, cc: 18 }], options: [
       { id: 7, weapons: [{ id: 1, extra: [308] }, { id: 2 }] }, { id: 8, weapons: [{ id: 3 }] },
     ] },
   ] }],

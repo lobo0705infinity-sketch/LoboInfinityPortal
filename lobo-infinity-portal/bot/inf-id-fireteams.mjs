@@ -106,6 +106,7 @@ function normalizeOfficialUnit(unit) {
         id: Number(profile.id) || null,
         name: String(profile.name || ''),
         bs: Number.isFinite(Number(profile.bs)) ? Number(profile.bs) : null,
+        cc: Number.isFinite(Number(profile.cc)) ? Number(profile.cc) : null,
         weapons: (profile.weapons || []).map(normalizeWeaponReference),
         skills: (profile.skills || []).map(normalizeTraitReference),
       })),

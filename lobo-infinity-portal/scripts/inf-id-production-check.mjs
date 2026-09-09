@@ -23,8 +23,9 @@ assert.equal(chooseMiniature({ rosterEntry, infinityDataImage: { url: 'https://i
 assert.equal(chooseMiniature({ rosterEntry, infinityDataImage: null, supplementalCatalog: catalog }).resolutionSource, 'supplemental-catalog')
 assert.equal(chooseMiniature({ rosterEntry: { ...rosterEntry, unitName: 'BAMBADROID' }, infinityDataImage: null, supplementalCatalog: catalog }).resolves, false)
 
-const officialFixture = { body: { version: 'fixture', units: [{ id: 1896, slug: 'coyotes' }], fireteamChart: { spec: {}, teams: [{ name: 'Surface', type: ['CORE'], units: [{ min: 0, max: 2, name: 'COYOTE', slug: 'coyotes' }, { min: 0, max: 2, name: 'BAMBADROID', slug: 'coyotes' }] }] } }, headers: { etag: 'fixture' } }
+const officialFixture = { body: { version: 'fixture', units: [{ id: 1896, slug: 'coyotes', profileGroups: [{ id: 1, profiles: [{ id: 1, bs: 12, cc: 21 }] }] }], fireteamChart: { spec: {}, teams: [{ name: 'Surface', type: ['CORE'], units: [{ min: 0, max: 2, name: 'COYOTE', slug: 'coyotes' }, { min: 0, max: 2, name: 'BAMBADROID', slug: 'coyotes' }] }] } }, headers: { etag: 'fixture' } }
 const reference = normalizeOfficialPayload(officialFixture, 1, 502)
+assert.equal(reference.units[0].profileGroups[0].profiles[0].cc, 21)
 assert.equal(relationshipMatchesEntry(reference.fireteamChart.teams[0].units[0], rosterEntry), true)
 assert.equal(relationshipMatchesEntry(reference.fireteamChart.teams[0].units[1], rosterEntry), false)
 assert.deepEqual(matchFireteamRoster(reference, [rosterEntry]).map((item) => item.unit), ['COYOTE'])
