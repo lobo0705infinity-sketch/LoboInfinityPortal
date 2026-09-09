@@ -28,7 +28,8 @@ const fixtures = [
   profile('aro-hrl', { skills: ['Neurocinetics'], weapons: [weapon('Heavy Rocket Launcher', 2), weapon('Feuerbach', 2)] }),
   profile('hrl-competent', { bs: 14, weapons: [weapon('Heavy Rocket Launcher', 3)] }),
   profile('hrl-bs-near-miss', { bs: 11, weapons: [weapon('Heavy Rocket Launcher', 3)] }),
-  profile('tankhunter', { points: 36, weapons: [{ ...weapon('Portable Autocannon', 2), modifiers: ['+1SD'] }] }),
+  profile('tankhunter', { points: 36, skills: ['Mimetism [-3]'], weapons: [{ ...weapon('Portable Autocannon', 2), modifiers: ['+1SD'] }] }),
+  profile('pac-near-miss', { points: 36, weapons: [{ ...weapon('Portable Autocannon', 2), modifiers: ['+1SD'] }] }),
   profile('flash', { points: 8, weapons: [weapon('Flash Pulse', 1)] }),
   profile('cheap-sd', { points: 13, skills: ['BS Attack (+1SD)'], weapons: [weapon('Submachine Gun', 3)] }),
   profile('pheroware', { equipment: ['Pheroware Tactics'], skills: ['Total Reaction'] }),
@@ -40,6 +41,8 @@ const fixtures = [
   profile('deploy', { skills: ['Parachutist (+3)', 'Combat-Jump (PH=12)', 'Hidden Deployment', 'Impersonation (-6)'], weapons: [weapon('Combi Rifle', 3)] }),
   profile('netrod', { unitName: 'Netrod', skills: ['Combat Jump (PH=12)'] }),
   profile('imetron', { unitName: 'Imetron', skills: ['Parachutist'] }),
+  profile('imetron-accented', { unitName: 'ÍMETRON', skills: ['Combat Jump (PH=12)'] }),
+  profile('imetron-accented', { unitName: 'ÍMETRON', skills: ['Combat Jump (PH=12)'] }),
   profile('defense', { skills: ['Camouflage (-3)', 'Decoy (2)', 'Minelayer'], weapons: [weapon('Shock Mine', 1)] }),
   profile('mim-only', { skills: ['Mimetism (-6)'] }),
   profile('same-unit-a', { unitId: 99, unitName: 'Same Unit', skills: ['Camouflage'], profileName: 'Camo loadout' }),
@@ -66,17 +69,19 @@ assert.equal(analysis.categories.disposableAro.some((item) => item.combinedId ==
 assert.equal(analysis.categories.vision.some((item) => item.combinedId === 'vision'), true)
 assert.equal(analysis.categories.apexCc.some((item) => item.combinedId === 'apex-cc'), true)
 assert.equal(analysis.categories.apexCc.some((item) => item.combinedId === 'cc-near-miss'), false)
-assert.deepEqual(new Set(analysis.categories.competent.map((item) => item.combinedId)), new Set(['bs12', 'same-unit-b', 'sd-rifle', 'hrl-competent']))
+assert.deepEqual(new Set(analysis.categories.competent.map((item) => item.combinedId)), new Set(['bs12', 'same-unit-b', 'sd-rifle', 'hrl-competent', 'tankhunter']))
 assert.equal(analysis.categories.competent.some((item) => item.combinedId === 'hrl-bs-near-miss'), false)
 assert.equal(analysis.categories.apex.find((item) => item.combinedId === 'burst-bonus').qualifyingWeapons[0].burst, 4)
 assert.deepEqual(new Set(analysis.categories.valuableAro.flatMap((item) => item.qualifyingWeapons.map((item) => item.name))), new Set(['MULTI Sniper Rifle', 'Heavy Rocket Launcher', 'Feuerbach', 'Portable Autocannon']))
 assert.deepEqual(analysis.categories.valuableAro.find((item) => item.combinedId === 'tankhunter')?.badges, ['Portable Autocannon (+1SD)'])
-assert.equal(analysis.categories.competent.some((item) => item.combinedId === 'tankhunter'), false, 'B2 +1SD is only three dice')
+assert.equal(analysis.categories.competent.some((item) => item.combinedId === 'tankhunter'), true, 'Portable Autocannon +1SD and Mimetism qualifies')
+assert.equal(analysis.categories.competent.some((item) => item.combinedId === 'pac-near-miss'), false, 'Portable Autocannon +1SD alone is insufficient')
 assert.deepEqual(new Set(analysis.categories.disposableAro.flatMap((item) => item.qualifyingWeapons.map((item) => item.name))), new Set(['Flash Pulse', 'Submachine Gun']))
 assert.equal(analysis.categories.valuableAro[0].linkability, 'verified-linkable')
 assert.equal(analysis.categories.alternative.length, 1)
 assert.equal(analysis.categories.alternative[0].badges.length, 4)
 assert.equal(analysis.categories.alternative.some((item) => /netrod|imetron/i.test(item.unitName)), false)
+assert.equal(analysis.categories.alternative.some((item) => item.combinedId === 'imetron-accented'), false)
 assert.deepEqual(new Set(analysis.categories.defensive.map((item) => item.combinedId)), new Set(['defense', 'duplicate', 'same-unit-a']))
 assert.equal(analysis.categories.defensive.find((item) => item.combinedId === 'duplicate').quantity, 2)
 assert.equal(analysis.categories.defensive.some((item) => item.combinedId === 'mim-only'), false)
@@ -96,6 +101,12 @@ assert.deepEqual(new Set(fireteamAnalysis.categories.competent.map((item) => ite
 assert.equal(fireteamAnalysis.categories.apex.some((item) => item.combinedId === 'hannibal'), true)
 assert.deepEqual(fireteamAnalysis.categories.hacking.find((item) => item.combinedId === 'moran')?.roles, ['hacking', 'defensive'])
 assert.deepEqual(fireteamAnalysis.categories.defensive.find((item) => item.combinedId === 'moran')?.roles, ['hacking', 'defensive'])
+
+const portableAutocannonFireteamAnalysis = classifyTacticalBrief([
+  profile('pac-fireteam', { unitName: 'PAC Fireteam', fireteamTeams: ['PAC Team'], skills: ['BS Attack (-3)'], weapons: [weapon('Portable Autocannon', 2)] }),
+  profile('pac-teammate', { unitName: 'PAC Teammate', fireteamTeams: ['PAC Team'] }),
+])
+assert.equal(portableAutocannonFireteamAnalysis.categories.competent.some((item) => item.combinedId === 'pac-fireteam'), true)
 
 const ajaxCode = 'gr4Nc3RlZWwtcGhhbGFueA9CdXJuaW5nIEJyaWRnZXOBLAIBAQAFAIY6AQMAAACCaAECAAAAh0ABAwAAAIJQAQEAAAAyAQEAAAIBAAoAgmIBAgAAAIJRAQEAAACCUQEBAAAAglMBAQAAAIJTAQEAAACCVAEBAAAAglkBAgAAAIJgAQEAAACCZAEDAAAAglsBBgAA'
 const ajaxProfiles = buildSubmittedProfiles({
