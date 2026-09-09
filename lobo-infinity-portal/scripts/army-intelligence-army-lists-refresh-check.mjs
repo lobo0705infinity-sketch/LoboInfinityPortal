@@ -141,7 +141,7 @@ assert.equal(finalized.status, 'Migration finalized')
 assert.equal(intelligenceRebuilds, 2)
 assert.equal(armyListRebuilds, 2)
 assert.equal(cacheInvalidations, 2, 'normal refresh and finalization each invalidate once')
-assert.equal(publications, 1, 'finalization must publish exactly once')
+assert.equal(publications, 0, 'finalization must keep public snapshot publication disabled')
 let list = sandbox.getArmyListObjects()[0]
 assert.equal(list.id, armyListId)
 assert.equal(list.validation.status, 'decoded')

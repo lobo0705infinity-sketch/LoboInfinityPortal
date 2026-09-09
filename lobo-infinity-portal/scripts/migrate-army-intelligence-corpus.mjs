@@ -58,11 +58,12 @@ for (let index = 0; index < keys.length; index += 1) {
     transportError = error instanceof Error ? error.message : String(error)
   }
 
-  if (await isCurrent(snapshotKey)) {
+  const processed = result?.processed?.find((item) => item.snapshotKey === snapshotKey)
+  if (processed?.status === 'decoded') {
     succeeded += 1
     consecutiveCause = ''
     consecutiveFailures = 0
-    console.log(JSON.stringify({ stage: 'list', current: index + 1, key: snapshotKey, status: transportError ? 'persisted-after-ambiguous-response' : 'success', remaining: keys.length - index - 1 }))
+    console.log(JSON.stringify({ stage: 'list', current: index + 1, key: snapshotKey, status: 'success', remaining: keys.length - index - 1 }))
     continue
   }
 
@@ -80,11 +81,14 @@ for (let index = 0; index < keys.length; index += 1) {
 
 const beforeFinalize = await audit()
 const failedKeys = new Set(failures.map((failure) => failure.snapshotKey))
-const validStale = beforeFinalize.obsoleteSnapshots.filter((key) => !failedKeys.has(key))
-if (validStale.length > 0) throw new Error(`${validStale.length} stale snapshots remain without explicit failures; finalization blocked.`)
+if (succeeded + initial.currentVersionSnapshots + failedKeys.size !== initial.totalDistinctLists)
+  throw new Error('Migration attempt census is incomplete; read-model finalization blocked.')
 
-const finalization = await call({ finalizeMigration: true, snapshotKeys: ['__finalize_only__'] })
+const finalization = await call({ finalizeMigration: true, publishPublicSnapshot: false, snapshotKeys: ['__finalize_only__'] })
 const finalAudit = await audit()
+const unexplainedStale = finalAudit.obsoleteSnapshots.filter((key) => !failedKeys.has(key))
+if (unexplainedStale.length > 0) throw new Error(`${unexplainedStale.length} stale snapshots remain after read-model finalization; publication remains blocked.`)
+if (finalAudit.duplicateSnapshotKeys.length > 0) throw new Error(`${finalAudit.duplicateSnapshotKeys.length} duplicate snapshot keys remain; publication remains blocked.`)
 console.log(JSON.stringify({
   stage: 'complete',
   totalDistinctLists: finalAudit.totalDistinctLists,
@@ -92,6 +96,6 @@ console.log(JSON.stringify({
   successfullyRefreshedSnapshots: succeeded,
   unchangedCurrentSnapshots: initial.currentVersionSnapshots,
   failedSnapshots: failures,
-  staleSnapshotsAfterMigration: finalAudit.obsoleteSnapshots.filter((key) => !failedKeys.has(key)),
+  staleSnapshotsAfterMigration: unexplainedStale,
   finalizationRequested: finalization.success === true,
 }, null, 2))

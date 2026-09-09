@@ -114,11 +114,13 @@ function refreshArmyIntelligence(e) {
     rebuildArmyListsReadModelPayloadAndPersist();
     invalidatePortalCacheGroup("armyIntelligence");
 
-    const finalizedPublication = runFullPublicSnapshotRefresh();
+    const finalizedPublication = publishPublicSnapshot
+      ? runFullPublicSnapshotRefresh()
+      : null;
     return jsonOutput({
-      success: finalizedPublication && finalizedPublication.success === true,
+      success: !publishPublicSnapshot || (finalizedPublication && finalizedPublication.success === true),
       publication: finalizedPublication,
-      status: finalizedPublication && finalizedPublication.success === true ? "Migration finalized" : "Publication failed",
+      status: !publishPublicSnapshot || (finalizedPublication && finalizedPublication.success === true) ? "Migration finalized" : "Publication failed",
       updated: 0
     });
   }
