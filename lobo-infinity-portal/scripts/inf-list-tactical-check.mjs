@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os'
 import { chromium } from 'playwright'
 import { buildSubmittedProfiles, classifyTacticalBrief, renderTacticalBrief, TACTICAL_EMPTY_MESSAGE } from '../bot/inf-list-tactical.mjs'
 import { createInfListResponse } from '../bot/inf-list-command.mjs'
+import { validateExactSectorialData } from './inf-list-render-poc.mjs'
 
 const weapon = (name, burst, type = 'WEAPON', mode = '', burstStatus) => ({ name, burst, type, mode, ...(burstStatus ? { burstStatus } : {}) })
 const profile = (combinedId, overrides = {}) => ({
@@ -111,32 +112,57 @@ assert.equal(portableAutocannonFireteamAnalysis.categories.competent.some((item)
 const ajaxCode = 'gr4Nc3RlZWwtcGhhbGFueA9CdXJuaW5nIEJyaWRnZXOBLAIBAQAFAIY6AQMAAACCaAECAAAAh0ABAwAAAIJQAQEAAAAyAQEAAAIBAAoAgmIBAgAAAIJRAQEAAACCUQEBAAAAglMBAQAAAIJTAQEAAACCVAEBAAAAglkBAgAAAIJgAQEAAACCZAEDAAAAglsBBgAA'
 const ajaxProfiles = buildSubmittedProfiles({
   armyCode: ajaxCode,
-  // Match the live Discord payload: Ajax's card does not expose BS Attack
-  // (+1B) in the skill collection consumed by the tactical classifier.
-  cards: [{ combinedId: '702-1594-1-3-1', bs: 13, profileName: 'AJAX (Forward Deployment [+8])', skills: [], weapons: ['MULTI Rifle', 'AP Heavy Pistol'] }],
-  metadata: { weapons: [{ id: 9001, name: 'MULTI Rifle', mode: '', type: 'WEAPON', burst: '3/1' }] },
-  officialPayloads: [{ units: [{ id: 1594, isc: 'AJAX', profileGroups: [{ id: 1, profiles: [{ id: 1, bs: 13, weapons: [{ id: 9001 }] }], options: [{ id: 3, name: 'AJAX (Forward Deployment [+8])' }] }] }] }],
+  cards: [{ combinedId: '702-610-1-2-1', bs: 13, profileName: 'AJAX', skills: [], weapons: ['MULTI Rifle'] }],
+  metadata: {
+    skills: [{ id: 201, name: 'BS Attack' }],
+    weapons: [
+      { id: 41, name: 'MULTI Rifle', mode: 'Anti-Materiel Mode', type: 'WEAPON', burst: '1' },
+      { id: 41, name: 'MULTI Rifle', mode: 'AP Mode', type: 'WEAPON', burst: '3' },
+      { id: 41, name: 'MULTI Rifle', mode: 'Shock Mode', type: 'WEAPON', burst: '3' },
+    ],
+  },
+  officialPayloads: [{
+    filters: { extras: [{ id: 8, name: '+1B' }] },
+    units: [{ id: 610, isc: 'Ajax the Great, Myrmidon Officer', profileGroups: [{ id: 1, profiles: [{ id: 1, bs: 13, skills: [{ id: 201, extra: [8] }], weapons: [] }], options: [{ id: 2, name: 'AJAX', weapons: [{ id: 41 }] }] }] }],
+  }],
 })
 const ajaxAnalysis = classifyTacticalBrief(ajaxProfiles)
-assert.equal(ajaxAnalysis.categories.apex.some((item) => item.combinedId === '702-1594-1-3-1'), false)
-assert.equal(ajaxAnalysis.categories.competent.some((item) => item.combinedId === '702-1594-1-3-1'), true)
-assert.equal(ajaxAnalysis.categories.competent.find((item) => item.combinedId === '702-1594-1-3-1')?.qualifyingWeapons[0].burst, 4)
-assert.deepEqual(ajaxAnalysis.categories.competent.find((item) => item.combinedId === '702-1594-1-3-1')?.badges, ['BS Attack (+1B) [verified profile]'])
+const ajaxCompetent = ajaxAnalysis.categories.competent.find((item) => item.combinedId === '702-610-1-2-1')
+assert.ok(ajaxCompetent, 'Ajax qualifies through official BS Attack (+1B), not an identity exception')
+assert.equal(ajaxCompetent.qualifyingWeapons.some((item) => item.name === 'MULTI Rifle' && item.burst === 4), true)
+assert.deepEqual(ajaxCompetent.badges, ['BS Attack (+1B)'])
 
-const ajaxLiveVariant = classifyTacticalBrief([profile('live-ajax', {
-  bs: 13,
-  unitId: null,
-  unitName: 'AJAX THE GREAT, MYRMIDON OFFICER',
-  weapons: [weapon('MULTI Rifle - AP Mode', 3)],
-})])
-assert.equal(ajaxLiveVariant.categories.competent.some((item) => item.combinedId === 'live-ajax'), true)
-assert.equal(ajaxLiveVariant.categories.competent.find((item) => item.combinedId === 'live-ajax')?.qualifyingWeapons[0].burst, 4)
+const onyxCode = 'glwEb255eAEggSwBAQEAAwCB7QEBAAAAge0BAQAAAIMPAQcAAA%3D%3D'
+const onyxPayload = {
+  url: 'https://api.corvusbelli.com/army/units/en/604',
+  filters: { extras: [] },
+  fireteamChart: { teams: [
+    { name: 'Unidrons Fireteams', type: ['CORE'], units: [{ name: 'UNIDRON', slug: 'unidron-batroids', required: true }] },
+    { name: 'Wildcards', type: [], units: [{ name: 'NEXUS', slug: 'nexus-operatives', comment: '(Unidron)' }] },
+  ] },
+  units: [
+    { id: 493, isc: 'Unidron Batroids', slug: 'unidron-batroids', profileGroups: [{ id: 1, profiles: [{ id: 1, bs: 11 }], options: [{ id: 1, name: 'UNIDRON' }] }] },
+    { id: 783, isc: 'Nexus Operatives', slug: 'nexus-operatives', profileGroups: [{ id: 1, profiles: [{ id: 1, bs: 13 }], options: [{ id: 7, name: 'NEXUS', weapons: [{ id: 41 }] }] }] },
+  ],
+}
+const onyxMetadata = { skills: [], weapons: [
+  { id: 41, name: 'MULTI Rifle', mode: 'Anti-Materiel Mode', type: 'WEAPON', burst: '1' },
+  { id: 41, name: 'MULTI Rifle', mode: 'AP Mode', type: 'WEAPON', burst: '3' },
+] }
+assert.deepEqual(validateExactSectorialData({ armyCode: onyxCode, metadata: onyxMetadata, payload: onyxPayload }), {
+  ok: true, issues: [], memberCount: 3, resolvedMemberCount: 3, sectorialId: 604, sourceUrl: onyxPayload.url,
+})
+const onyxAnalysis = classifyTacticalBrief(buildSubmittedProfiles({ armyCode: onyxCode, metadata: onyxMetadata, officialPayloads: [onyxPayload] }))
+assert.equal(onyxAnalysis.categories.competent.some((item) => item.unitId === 783), true, 'Nexus qualifies with a legal three-member Unidron Fireteam')
+assert.equal(Object.values(onyxAnalysis.categories).some((entries) => entries.length), true, 'Onyx tactical brief must not be entirely blank')
+assert.equal(validateExactSectorialData({ armyCode: onyxCode, metadata: onyxMetadata, payload: { ...onyxPayload, url: 'https://api.corvusbelli.com/army/units/en/601' } }).ok, false)
 
 const empty = classifyTacticalBrief([], { faction: 'Empty' })
-const browser = await chromium.launch({ headless: true })
-const keepOutput = process.argv.includes('--keep')
-const output = await mkdtemp(keepOutput ? resolve('.tmp', 'inf-list-tactical-audit-') : join(tmpdir(), 'inf-list-tactical-'))
-try {
+if (!process.argv.includes('--logic-only')) {
+  const browser = await chromium.launch({ headless: true })
+  const keepOutput = process.argv.includes('--keep')
+  const output = await mkdtemp(keepOutput ? resolve('.tmp', 'inf-list-tactical-audit-') : join(tmpdir(), 'inf-list-tactical-'))
+  try {
   const pages = await renderTacticalBrief({ analysis, browser })
   const emptyPages = await renderTacticalBrief({ analysis: empty, browser })
   assert.ok(pages.length >= 1 && pages.length <= 5)
@@ -156,7 +182,8 @@ try {
   assert.ok(response.files.length <= 10)
   assert.equal(JSON.stringify(empty).includes(TACTICAL_EMPTY_MESSAGE), false)
   console.log(JSON.stringify({ result: 'PASS', dimensions: pages.map(({ width, height }) => ({ width, height })), attachmentOrder: response.files.map((file) => file.name), output }, null, 2))
-} finally {
-  await browser.close()
-  if (!keepOutput) await rm(output, { recursive: true, force: true })
+  } finally {
+    await browser.close()
+    if (!keepOutput) await rm(output, { recursive: true, force: true })
+  }
 }

@@ -307,6 +307,11 @@ export async function renderInfListPng({ input, outputPath, browserType = chromi
   const armyCode = validateArmyCode(input)
   const decoded = decodeArmyCode(armyCode)
   const rendererViewUrl = await requestRendererView(armyCode, { fetchImpl })
+  const classificationData = await fetchOfficialClassificationData(decoded.sectorialId, fetchImpl)
+  const enrichment = validateExactSectorialData({ armyCode, ...classificationData })
+  if (!enrichment.ok) {
+    throw new InfListRenderError('classification_unavailable', `Exact sectorial enrichment failed: ${enrichment.issues.join('; ')}`)
+  }
 
   const browser = await browserType.launch({ headless: true })
   try {
@@ -314,17 +319,20 @@ export async function renderInfListPng({ input, outputPath, browserType = chromi
     const profilePages = rendered.profilePages
     let official = null
     try {
-      official = await captureOfficialArmyList(browser, buildOfficialArmyUrl(armyCode), decoded.sectorialId, fetchImpl)
+      official = await captureOfficialArmyList(browser, buildOfficialArmyUrl(armyCode))
     } catch {
       // The established full-list image remains usable if the additive official capture fails.
     }
-    const faction = official?.metadata?.factions?.find((item) => Number(item.id) === Number(decoded.sectorialId))
+    const officialPayloads = [classificationData.payload]
+    const metadata = classificationData.metadata
+    const canonicalDataset = buildCanonicalDataset({ metadata, payloads: officialPayloads })
+    const faction = metadata.factions?.find((item) => Number(item.id) === Number(decoded.sectorialId))
     const submittedProfiles = buildSubmittedProfiles({
       armyCode,
       cards: rendered.cards,
-      canonicalDataset: official?.canonicalDataset,
-      metadata: official?.metadata,
-      officialPayloads: official?.payloads,
+      canonicalDataset,
+      metadata,
+      officialPayloads,
     })
     const tacticalAnalysis = classifyTacticalBrief(submittedProfiles, {
       faction: faction?.name,
@@ -353,6 +361,7 @@ export async function renderInfListPng({ input, outputPath, browserType = chromi
       rendererViewUrl: rendererViewUrl.href,
       tacticalAnalysis,
       tacticalPages,
+      tacticalDiagnostics: enrichment,
       width: profilePages[0].width,
     }
   } finally {
@@ -472,7 +481,7 @@ async function captureRenderedProfilePages(browser, rendererViewUrl) {
   }
 }
 
-async function captureOfficialArmyList(browser, officialArmyUrl, sectorialId, fetchImpl = fetch) {
+async function captureOfficialArmyList(browser, officialArmyUrl) {
   const page = await browser.newPage({ deviceScaleFactor: 1, viewport: { width: 1920, height: 1080 } })
   try {
     let metadata = null
@@ -504,10 +513,6 @@ async function captureOfficialArmyList(browser, officialArmyUrl, sectorialId, fe
       throw new InfListRenderError('invalid_render', 'Official Infinity Army list panel is unexpectedly small.')
     }
 
-    const direct = await fetchOfficialClassificationData(sectorialId, fetchImpl)
-    if (!metadata && direct.metadata) metadata = direct.metadata
-    if (!payloads.some((payload) => Array.isArray(payload?.units)) && direct.payload) payloads.push(direct.payload)
-
     return {
       height: imageBuffer.readUInt32BE(20),
       imageBuffer,
@@ -518,6 +523,40 @@ async function captureOfficialArmyList(browser, officialArmyUrl, sectorialId, fe
     }
   } finally {
     await page.close()
+  }
+}
+
+export function validateExactSectorialData({ armyCode, metadata, payload }) {
+  const decoded = decodeArmyCode(armyCode)
+  const issues = []
+  const expectedPath = `/army/units/en/${Number(decoded.sectorialId)}`
+  let actualPath = ''
+  try { actualPath = new URL(payload?.url || '').pathname.replace(/\/$/, '') } catch {}
+  if (actualPath !== expectedPath) issues.push(`expected ${expectedPath}, received ${actualPath || 'no payload URL'}`)
+  if (!Array.isArray(metadata?.skills) || !Array.isArray(metadata?.weapons)) issues.push('official metadata is missing skills or weapons')
+  if (!Array.isArray(payload?.units)) issues.push('exact sectorial payload has no units')
+
+  const unitById = new Map((payload?.units || []).map((unit) => [Number(unit.id), unit]))
+  const members = decoded.combatGroups.flatMap((group) => group.members)
+  for (const member of members) {
+    const unit = unitById.get(Number(member.unitId))
+    const group = unit?.profileGroups?.find((item) => Number(item.id) === Number(member.groupId))
+    const option = group?.options?.find((item) => Number(item.id) === Number(member.optionId))
+    const profileId = Number(member.combinedId.split('-').at(-1))
+    const profile = group?.profiles?.find((item) => Number(item.id) === profileId)
+    if (!unit) issues.push(`${member.combinedId}: unit ${member.unitId} missing`)
+    else if (!group) issues.push(`${member.combinedId}: profile group ${member.groupId} missing`)
+    else if (!option) issues.push(`${member.combinedId}: option ${member.optionId} missing`)
+    else if (!profile) issues.push(`${member.combinedId}: profile ${profileId} missing`)
+  }
+
+  return {
+    ok: issues.length === 0,
+    issues,
+    memberCount: members.length,
+    resolvedMemberCount: members.length - issues.filter((issue) => /:\s/.test(issue) && !issue.startsWith('expected')).length,
+    sectorialId: Number(decoded.sectorialId),
+    sourceUrl: payload?.url || null,
   }
 }
 

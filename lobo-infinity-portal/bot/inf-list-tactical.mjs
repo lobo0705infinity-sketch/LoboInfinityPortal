@@ -27,11 +27,12 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
   }
   const units = officialPayloads.flatMap((payload) => payload?.units || [])
   const unitById = new Map(units.map((unit) => [Number(unit.id), unit]))
+  const dataset = canonicalDataset || buildCanonicalDataset({ metadata, payloads: officialPayloads })
   const names = {
     equipment: new Map((metadata.equips || []).map((item) => [Number(item.id), item.name])),
     skills: new Map((metadata.skills || []).map((item) => [Number(item.id), item.name])),
+    extras: new Map((dataset?.metadata?.extras || []).map((item) => [Number(item.id), item.name])),
   }
-  const dataset = canonicalDataset || buildCanonicalDataset({ metadata, payloads: officialPayloads })
   const linkableUnitIds = canonicalLinkableUnitIds(officialPayloads)
   const fireteamMembershipsByUnitId = canonicalFireteamMembershipsByUnitId(officialPayloads)
 
@@ -42,10 +43,10 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
     const option = group?.options?.find((item) => Number(item.id) === Number(member.optionId))
     const profileId = Number(member.combinedId.split('-').at(-1))
     const base = group?.profiles?.find((item) => Number(item.id) === profileId) || group?.profiles?.[0]
-    const skills = mergeNamedRefs(base?.skills, option?.skills, names.skills, card.skills)
-    const equipment = mergeNamedRefs(base?.equip, option?.equip, names.equipment, card.equipment)
+    const skills = mergeNamedRefs(base?.skills, option?.skills, names.skills, card.skills, names.extras)
+    const equipment = mergeNamedRefs(base?.equip, option?.equip, names.equipment, card.equipment, names.extras)
     const weaponRefs = [...(base?.weapons || []), ...(option?.weapons || [])]
-    const weapons = dedupeWeapons(resolveCanonicalWeaponRecords(dataset, weaponRefs).map((weapon) => ({
+    const weapons = dedupeWeapons(resolveCanonicalWeaponRecords(dataset, weaponRefs, { expandAmbiguousModes: true }).map((weapon) => ({
       burst: weapon.burstStatus === 'canonical' ? finiteNumber(weapon.burst) : null,
       burstStatus: weapon.burstStatus,
       mode: weapon.mode || '',
@@ -88,8 +89,7 @@ export function classifyTacticalBrief(profiles, army = {}) {
   for (const profile of aggregated) {
     const enhancements = preferredMatches(profile.skills, [gunfighterMimetismToken, gunfighterMsvToken, bsAttackMinusThreeToken, albedoToken])
     const parsedBurstBonus = bsAttackBurstBonus(profile.skills)
-    const verifiedBurstBonus = verifiedProfileBurstBonus(profile)
-    const burstBonus = Math.max(parsedBurstBonus, verifiedBurstBonus)
+    const burstBonus = parsedBurstBonus
     const nativeSdBonus = bsAttackSdBonus(profile.skills)
     const qualifyingFireteams = (profile.fireteamTeams || []).filter((team) => eligibleFireteams.has(team))
     const fireteamSdBonus = qualifyingFireteams.length ? 1 : 0
@@ -103,7 +103,7 @@ export function classifyTacticalBrief(profiles, army = {}) {
     const portableAutocannonEnhancements = preferredMatches(profile.skills, [gunfighterMimetismToken, bsAttackMinusThreeToken])
     const portableAutocannonWeapons = competentCandidates.filter((weapon) => portableAutocannonToken(weaponDisplay(weapon)) && weapon.nativeSdBonus + weapon.weaponSdBonus + weapon.fireteamSdBonus >= 1 && isRangedWeapon(weapon))
     const competentWeapons = dedupeWeapons([...(profile.bs === 12 || profile.bs === 13 ? standardCompetentWeapons : []), ...(profile.bs >= 12 ? hrlCompetentWeapons : []), ...(portableAutocannonEnhancements.length ? portableAutocannonWeapons : [])])
-    if (!apexWeapons.length && competentWeapons.length) result.competent.push({ ...profile, badges: unique([...portableAutocannonEnhancements, ...(parsedBurstBonus ? preferredMatches(profile.skills, [bsAttackBurstToken]) : []), ...(verifiedBurstBonus ? ['BS Attack (+1B) [verified profile]'] : []), ...(nativeSdBonus ? preferredMatches(profile.skills, [bsAttackSdToken]) : []), ...competentWeapons.filter((weapon) => weapon.weaponSdBonus).map((weapon) => `${weaponDisplay(weapon)} (+${weapon.weaponSdBonus}SD)`), ...(fireteamSdBonus ? ['Fireteam (+1SD)'] : [])]), qualifyingFireteams, qualifyingWeapons: competentWeapons })
+    if (!apexWeapons.length && competentWeapons.length) result.competent.push({ ...profile, badges: unique([...portableAutocannonEnhancements, ...(parsedBurstBonus ? preferredMatches(profile.skills, [bsAttackBurstToken]) : []), ...(nativeSdBonus ? preferredMatches(profile.skills, [bsAttackSdToken]) : []), ...competentWeapons.filter((weapon) => weapon.weaponSdBonus).map((weapon) => `${weaponDisplay(weapon)} (+${weapon.weaponSdBonus}SD)`), ...(fireteamSdBonus ? ['Fireteam (+1SD)'] : [])]), qualifyingFireteams, qualifyingWeapons: competentWeapons })
     const closeCombatBadges = preferredMatches(profile.skills, [martialArtsToken, naturalBornWarriorToken, berserkPlusThreeToken, ccAttackBurstToken])
     if (profile.cc >= 22 && closeCombatBadges.length) result.apexCc.push({ ...profile, badges: closeCombatBadges })
 
@@ -284,7 +284,17 @@ function legalFireteams(profiles) {
   }
   return legal
 }
-function mergeNamedRefs(base = [], option = [], lookup, fallback = []) { return unique([...base, ...option].map((ref) => lookup.get(Number(ref.id))).filter(Boolean).concat(fallback || [])) }
+function mergeNamedRefs(base = [], option = [], lookup, fallback = [], extras = new Map()) {
+  const official = [...base, ...option].map((ref) => {
+    const name = lookup.get(Number(ref.id))
+    if (!name) return null
+    const modifiers = (Array.isArray(ref.extra) ? ref.extra : ref.extra == null ? [] : [ref.extra])
+      .map((id) => extras.get(Number(id)))
+      .filter(Boolean)
+    return modifiers.length ? `${name} (${modifiers.join(', ')})` : name
+  }).filter(Boolean)
+  return unique(official.concat(fallback || []))
+}
 function exactMatches(values, predicates) { return unique(values.filter((value) => predicates.some((predicate) => predicate(value)))) }
 function preferredMatches(values, predicates) { return predicates.flatMap((predicate) => { const matches = unique(values.filter(predicate)); return matches.length ? [matches.sort((a, b) => normalized(b).length - normalized(a).length)[0]] : [] }) }
 function normalized(value) { return String(value || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[−–—-]/g, ' ').replace(/[^a-z0-9+]+/g, ' ').replace(/\s+/g, ' ').trim() }
@@ -297,15 +307,6 @@ function bsAttackMinusThreeToken(v) { return /^bs attack\s+3$/.test(normalized(v
 function albedoToken(v) { return /^albedo\s+(?:3|6)$/.test(normalized(v)) }
 function bsAttackBurstToken(v) { return /^bs attack\s+(?:\+\s*)?(?:(\d+)\s*)?(?:b|burst)$/.test(normalized(v)) }
 function bsAttackBurstBonus(skills) { for (const skill of skills || []) { const match = normalized(skill).match(/^bs attack\s+(?:\+\s*)?(?:(\d+)\s*)?(?:b|burst)$/); if (match) return Number(match[1] || 1) } return 0 }
-function verifiedProfileBurstBonus(profile) {
-  // Ajax's live official payload omits BS Attack (+1B) from the named skill
-  // collection consumed above. Scope the verified correction to Ajax's
-  // canonical identity and MULTI Rifle loadout while tolerating the alternate
-  // identity and mode strings emitted by the live renderer.
-  const ajaxIdentity = Number(profile?.unitId) === 1594 || /(?:^|-)1594(?:-|$)/.test(String(profile?.combinedId || '')) || /^ajax(?:\s|$)/.test(normalized(profile?.unitName))
-  const multiRifle = (profile.weapons || []).some((weapon) => /(?:^|\s)multi rifle(?:\s|$)/.test(normalized(weaponDisplay(weapon))))
-  return ajaxIdentity && multiRifle ? 1 : 0
-}
 function martialArtsToken(v) { return /^martial arts(?:\s+(?:l(?:evel\s*)?)?\d+)?$/.test(normalized(v)) }
 function naturalBornWarriorToken(v) { return /^natural born warrior$/.test(normalized(v)) }
 function berserkPlusThreeToken(v) { return /^berserk\s+\+?3$/.test(normalized(v)) }

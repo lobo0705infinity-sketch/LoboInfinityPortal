@@ -24,6 +24,7 @@ const malformedCodes = new Set([
   'url_not_allowed',
 ])
 const unavailableRenderer = new Set([
+  'classification_unavailable',
   'invalid_render',
   'renderer_invalid_redirect',
   'renderer_timeout',
