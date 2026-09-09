@@ -109,4 +109,17 @@ for (const [index, value] of variants.entries()) {
   assert.equal(result.categories.find((item) => item.id === 'hacking')?.profiles.length, 1, `${value} must normalize exactly`)
 }
 
+const duplicateLoadouts = buildTacticalAnalysis([decodedList('Duplicate loadouts', [
+  entry('apsara-a', 'APSARA', 'APSARA', { bs: 13, points: 22, skills: ['Hacker'], equipment: ['Deployable Repeater'], weapons: ['Submachine Gun'], weaponProfiles: [canonicalBurst('Submachine Gun', 3)] }),
+  entry('apsara-b', 'APSARA', 'APSARA', { bs: 13, points: 22, skills: ['Hacker', 'Courage'], equipment: ['Deployable Repeater', 'TinBot'], weapons: ['Submachine Gun'], weaponProfiles: [canonicalBurst('Submachine Gun', 3)] }),
+  entry('yadu-hmg', 'YADU', 'YADU', { bs: 13, points: 40, weapons: ['Heavy Machine Gun'], weaponProfiles: [canonicalBurst('Heavy Machine Gun', 4)] }),
+  entry('yadu-smg', 'YADU', 'YADU', { bs: 13, points: 32, skills: ['BS Attack (+1SD)'], weapons: ['Submachine Gun'], weaponProfiles: [canonicalBurst('Submachine Gun', 3)] }),
+  entry('yadu-combi', 'YADU', 'YADU', { bs: 13, points: 34, skills: ['BS Attack (+1SD)'], weapons: ['Combi Rifle'], weaponProfiles: [canonicalBurst('Combi Rifle', 3)] }),
+])] as never)
+const duplicateHackingProfiles = duplicateLoadouts.categories.find((item) => item.id === 'hacking')?.profiles || []
+assert.equal(duplicateHackingProfiles.filter((profile) => profile.unit === 'APSARA').length, 1, 'identical visible APSARA loadouts must consolidate despite hidden skill/equipment differences')
+assert.equal(duplicateHackingProfiles.find((profile) => profile.unit === 'APSARA')?.profile, 'Submachine Gun')
+const yaduProfiles = duplicateLoadouts.categories.flatMap((category) => category.profiles).filter((profile) => profile.unit === 'YADU')
+assert.deepEqual([...new Set(yaduProfiles.map((profile) => profile.profile))].sort(), ['Combi Rifle', 'Heavy Machine Gun', 'Submachine Gun'], 'distinct YADU loadouts must remain separate and receive weapon labels')
+
 console.log('Army Intelligence tactical analysis passed (classification, boundaries, variants, loadout isolation, prevalence, and sample behavior).')

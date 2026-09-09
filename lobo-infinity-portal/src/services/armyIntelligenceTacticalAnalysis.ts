@@ -116,7 +116,7 @@ function toProfile(entry: ArmyIntelligenceDecodedEntry, listCount: number, denom
     linkability: entry.fireteamEligibility?.state === 'verified' ? 'verified' : entry.fireteamEligibility?.state === 'verified-false' ? 'verified-false' : 'unknown',
     listCount,
     percentage: denominator ? (listCount / denominator) * 100 : 0,
-    profile: entry.profile || entry.unit,
+    profile: tacticalProfileLabel(entry),
     profileId: profileKey(entry),
     roles: [],
     unit: entry.unit || entry.profile,
@@ -204,9 +204,15 @@ function profileKey(entry: ArmyIntelligenceDecodedEntry) {
 
 function displayedProfileKey(entry: ArmyIntelligenceDecodedEntry) {
   const weapons = entry.weaponProfiles?.length
-    ? entry.weaponProfiles.map((weapon) => `${normalize(weapon.name).toLowerCase()}:${normalize(weapon.mode).toLowerCase()}:${weapon.burst ?? '?'}`).sort()
+    ? entry.weaponProfiles.map((weapon) => `${normalize(weapon.name).toLowerCase()}:${normalize(weapon.mode).toLowerCase()}:${weapon.burst ?? '?'}:${(weapon.modifiers || []).map((modifier) => normalize(modifier).toLowerCase()).sort().join(',')}`).sort()
     : entry.weapons.map((weapon) => normalize(weapon).toLowerCase()).sort()
-  return [normalize(entry.unit).toLowerCase(), normalize(entry.profile || entry.unit).toLowerCase(), weapons.join('|'), entry.skills.map((skill) => normalize(skill).toLowerCase()).sort().join('|'), entry.equipment.map((item) => normalize(item).toLowerCase()).sort().join('|')].join('::')
+  return [normalize(entry.unit).toLowerCase(), normalize(entry.profile || entry.unit).toLowerCase(), entry.bs ?? '', entry.points ?? '', weapons.join('|')].join('::')
+}
+
+function tacticalProfileLabel(entry: ArmyIntelligenceDecodedEntry) {
+  const profile = normalize(entry.profile || entry.unit)
+  if (profile.toLowerCase() !== normalize(entry.unit).toLowerCase()) return profile
+  return canonicalWeapons(entry)[0]?.name || profile
 }
 
 function mergeProfileEntries(left: ArmyIntelligenceDecodedEntry, right: ArmyIntelligenceDecodedEntry): ArmyIntelligenceDecodedEntry {
