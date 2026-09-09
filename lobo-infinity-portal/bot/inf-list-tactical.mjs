@@ -299,9 +299,12 @@ function bsAttackBurstToken(v) { return /^bs attack\s+(?:\+\s*)?(?:(\d+)\s*)?(?:
 function bsAttackBurstBonus(skills) { for (const skill of skills || []) { const match = normalized(skill).match(/^bs attack\s+(?:\+\s*)?(?:(\d+)\s*)?(?:b|burst)$/); if (match) return Number(match[1] || 1) } return 0 }
 function verifiedProfileBurstBonus(profile) {
   // Ajax's live official payload omits BS Attack (+1B) from the named skill
-  // collection consumed above. Scope the verified correction to his canonical
-  // unit ID and MULTI Rifle loadout so no other unresolved profile gains Burst.
-  return Number(profile?.unitId) === 1594 && (profile.weapons || []).some((weapon) => sameToken(weapon.name, 'MULTI Rifle')) ? 1 : 0
+  // collection consumed above. Scope the verified correction to Ajax's
+  // canonical identity and MULTI Rifle loadout while tolerating the alternate
+  // identity and mode strings emitted by the live renderer.
+  const ajaxIdentity = Number(profile?.unitId) === 1594 || /(?:^|-)1594(?:-|$)/.test(String(profile?.combinedId || '')) || /^ajax(?:\s|$)/.test(normalized(profile?.unitName))
+  const multiRifle = (profile.weapons || []).some((weapon) => /(?:^|\s)multi rifle(?:\s|$)/.test(normalized(weaponDisplay(weapon))))
+  return ajaxIdentity && multiRifle ? 1 : 0
 }
 function martialArtsToken(v) { return /^martial arts(?:\s+(?:l(?:evel\s*)?)?\d+)?$/.test(normalized(v)) }
 function naturalBornWarriorToken(v) { return /^natural born warrior$/.test(normalized(v)) }
