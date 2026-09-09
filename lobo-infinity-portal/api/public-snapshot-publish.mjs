@@ -51,6 +51,7 @@ export default async function handler(request, response) {
 }
 
 export async function publishPublicSnapshot(rawBody, {
+  compareCurrent = true,
   fetchObject = fetch,
   headObject = head,
   putObject = put,
@@ -95,7 +96,7 @@ export async function publishPublicSnapshot(rawBody, {
   if (totalBytes > MAX_PUBLICATION_BYTES) throw new Error('Snapshot publication payload is too large.')
 
   const currentSnapshot = await readCurrentSnapshot({ fetchObject, headObject })
-  if (currentSnapshot && await snapshotDataMatchesCurrent(prepared, currentSnapshot.baseUrl, fetchObject)) {
+  if (compareCurrent && currentSnapshot && await snapshotDataMatchesCurrent(prepared, currentSnapshot.baseUrl, fetchObject)) {
     return {
       snapshotId: currentSnapshot.pointer.snapshotId,
       sourceCutoff: currentSnapshot.pointer.sourceCutoff,

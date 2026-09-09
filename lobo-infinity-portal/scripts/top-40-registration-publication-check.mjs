@@ -14,6 +14,7 @@ const oldFiles = Object.fromEntries(PUBLIC_SNAPSHOT_FILES.map((filename) => [fil
     ? { generatedAt: currentCutoff, players: [{ name: 'Alpha', position: 1 }] }
     : [{ preserved: filename }],
 }]))
+delete oldFiles['top-40-registrations.json']
 oldFiles['snapshot.json'] = {
   schemaVersion: 1,
   snapshotId: currentId,
@@ -22,7 +23,9 @@ oldFiles['snapshot.json'] = {
   status: 'validated',
   published: false,
   livePointer: false,
-  files: Object.fromEntries(PUBLIC_SNAPSHOT_FILES.filter((name) => name !== 'snapshot.json').map((name) => [name, name])),
+  files: Object.fromEntries(PUBLIC_SNAPSHOT_FILES
+    .filter((name) => !['snapshot.json', 'top-40-registrations.json'].includes(name))
+    .map((name) => [name, name])),
 }
 
 const pointer = {
@@ -32,6 +35,7 @@ const pointer = {
   basePath: `public-snapshots/${currentId}/`,
 }
 const uploads = []
+const reads = []
 const result = await publishTop40RegistrationSnapshot({
   data: { players: [{ name: 'Alpha', position: 1 }, { name: 'Lobo', position: 2 }] },
 }, {
@@ -45,6 +49,8 @@ const result = await publishTop40RegistrationSnapshot({
   fetchObject: async (url) => {
     const filename = new URL(url).pathname.split('/').at(-1)
     if (filename === 'current.json') return { ok: true, json: async () => pointer }
+    reads.push(filename)
+    assert.notEqual(filename, 'top-40-registrations.json')
     return { ok: true, json: async () => structuredClone(oldFiles[filename]) }
   },
   putObject: async (pathname, text, options) => {
@@ -55,6 +61,7 @@ const result = await publishTop40RegistrationSnapshot({
 
 assert.equal(result.snapshotId, '20260908T223000Z')
 assert.equal(result.activated, true)
+assert.deepEqual(reads.sort(), PUBLIC_SNAPSHOT_FILES.filter((name) => name !== 'top-40-registrations.json').sort())
 assert.equal(uploads.length, PUBLIC_SNAPSHOT_FILES.length + 1)
 assert.equal(uploads.at(-1).pathname, 'public-snapshots/current.json')
 const published = Object.fromEntries(uploads.slice(0, -1).map((upload) => [upload.pathname.split('/').at(-1), JSON.parse(upload.text)]))
@@ -63,6 +70,10 @@ assert.deepEqual(published['top-40-registrations.json'].data.players, [
   { name: 'Lobo', position: 2 },
 ])
 assert.deepEqual(published['players.json'].data, oldFiles['players.json'].data)
+for (const filename of PUBLIC_SNAPSHOT_FILES.filter((name) => !['snapshot.json', 'top-40-registrations.json'].includes(name))) {
+  assert.deepEqual(published[filename].data, oldFiles[filename].data)
+}
+assert.equal(published['snapshot.json'].files.top40Registrations, 'top-40-registrations.json')
 assert.deepEqual(Object.keys(published['top-40-registrations.json'].data.players[1]).sort(), ['name', 'position'])
 
 for (const data of [

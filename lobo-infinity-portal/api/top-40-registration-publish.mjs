@@ -48,14 +48,24 @@ export async function publishTop40RegistrationSnapshot(rawBody, {
   const baseUrl = new URL(`/${String(current.basePath).replace(/^\/+/, '')}`, currentBlob.url)
   const files = {}
   for (const filename of PUBLIC_SNAPSHOT_FILES) {
+    if (filename === 'top-40-registrations.json') {
+      files[filename] = JSON.stringify({
+        schemaVersion: 1,
+        snapshotId,
+        sourceCutoff,
+        data: { generatedAt: sourceCutoff, players: registration.players },
+      })
+      continue
+    }
     const fileResponse = await fetchObject(new URL(filename, baseUrl).href)
     if (!fileResponse.ok) throw new Error(`Current snapshot file could not be read: ${filename}`)
     const value = await fileResponse.json()
     value.snapshotId = snapshotId
     value.sourceCutoff = sourceCutoff
-    if (filename === 'snapshot.json') value.createdAt = sourceCutoff
-    if (filename === 'top-40-registrations.json') {
-      value.data = { generatedAt: sourceCutoff, players: registration.players }
+    if (filename === 'snapshot.json') {
+      value.createdAt = sourceCutoff
+      value.files = value.files && typeof value.files === 'object' ? value.files : {}
+      value.files.top40Registrations = 'top-40-registrations.json'
     }
     files[filename] = JSON.stringify(value)
   }
@@ -67,6 +77,7 @@ export async function publishTop40RegistrationSnapshot(rawBody, {
   if (latest.snapshotId !== current.snapshotId) throw new Error('Current snapshot changed during Top 40 publication; retry safely.')
 
   return publishPublicSnapshot({ snapshotId, sourceCutoff, files, activate: true }, {
+    compareCurrent: false,
     fetchObject,
     headObject,
     putObject,
