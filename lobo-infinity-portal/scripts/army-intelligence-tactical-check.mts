@@ -49,9 +49,9 @@ assert.equal(analysis.categories.find((item) => item.id === 'apex')?.profiles[0]
 assert.equal(Math.round(analysis.categories.find((item) => item.id === 'apex')!.profiles[0].percentage), 67)
 assert.deepEqual(analysis.categories.find((item) => item.id === 'apex')!.profiles[0].badges, ['Mimetism (-3)', 'Multispectral Visor L2', 'BS Attack (-3)'])
 assert.equal(analysis.hackerListCount, 2)
-assert.equal(analysis.categories.find((item) => item.id === 'hacking')?.profiles.length, 2)
+assert.equal(analysis.categories.find((item) => item.id === 'hacking')?.profiles.length, 3)
 assert.equal(analysis.categories.find((item) => item.id === 'hacking')?.profiles.find((profile) => profile.unit === 'HACKER')?.listCount, 2, 'duplicate displayed profiles must consolidate and count unique lists')
-assert.ok(!analysis.categories.find((item) => item.id === 'hacking')?.profiles.some((profile) => profile.unit.includes('PANDA TROOP')), 'names and ordinary Repeaters must not create delivery matches')
+assert.ok(analysis.categories.find((item) => item.id === 'hacking')?.profiles.some((profile) => profile.unit.includes('PANDA TROOP')), 'ordinary Repeaters must create hacking-network matches')
 assert.equal(analysis.categories.find((item) => item.id === 'competent')?.profiles.length, 3)
 assert.equal(analysis.categories.find((item) => item.id === 'competent')?.profiles.find((profile) => profile.unit === 'BONUS')?.weapons[0].effectiveBurst, 4)
 assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles.length, 1)
@@ -70,6 +70,16 @@ assert.equal(observed.mode, 'Observed Capabilities')
 assert.equal(observed.perListNetworks.length, 1)
 assert.deepEqual(observed.perListNetworks[0], { components: ['Fast-Panda', 'Hacker', 'Killer Hacking Device', 'Pitcher'] })
 assert.ok(!JSON.stringify(observed).includes(observedListName), 'player-entered list names must not enter tactical capability presentation data')
+
+const fireteam = { state: 'verified', verified: true, teams: ['Orcs'] }
+const fireteamAnalysis = buildTacticalAnalysis([decodedList('Fireteam', [
+  entry('orc', 'ORC', 'Feuerbach', { bs: 14, points: 35, weapons: ['Feuerbach'], weaponProfiles: [canonicalBurst('Feuerbach', 2)], fireteamEligibility: fireteam }),
+  entry('hannibal', 'HANNIBAL', 'Marksman', { bs: 13, points: 33, skills: ['BS Attack (+1SD)'], weapons: ['MULTI Marksman Rifle'], weaponProfiles: [canonicalBurst('MULTI Marksman Rifle', 3)], fireteamEligibility: fireteam }),
+  entry('moran', 'MORAN', 'Repeater Minelayer', { equipment: ['Repeater'], skills: ['Minelayer'] }),
+])] as never)
+assert.ok(fireteamAnalysis.categories.find((item) => item.id === 'valuableAro')?.profiles.some((profile) => profile.unit === 'ORC'))
+assert.ok(fireteamAnalysis.categories.find((item) => item.id === 'competent')?.profiles.some((profile) => profile.unit === 'HANNIBAL'))
+assert.deepEqual(fireteamAnalysis.categories.find((item) => item.id === 'hacking')?.profiles.find((profile) => profile.unit === 'MORAN')?.roles, ['hacking', 'defensive'])
 
 const privateListName = 'Don\u2019t hurt me daddy'
 const dartok = entry('morat-dartok-fto', 'DARTOK FTO', 'Hacker · Pitcher', {

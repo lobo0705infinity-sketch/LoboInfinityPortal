@@ -6762,6 +6762,7 @@
 
 .army-intelligence-tactical-panel header p { margin-top: 0.35rem; font-size: 0.82rem; }
 .army-intelligence-sample-notice { margin-top: 0.75rem; }
+.army-intelligence-role-notice { margin: 0.75rem 0 0; color: var(--text-muted); font-size: 0.82rem; }
 .army-intelligence-category-total { margin-top: 0.75rem; }
 .army-intelligence-tactical-profiles { display: grid; gap: 0.65rem; margin-top: 0.85rem; }
 .army-intelligence-tactical-profile { display: grid; gap: 0.42rem; padding-top: 0.65rem; border-top: 1px solid rgba(255, 255, 255, 0.08); }
@@ -6769,6 +6770,7 @@
 .army-intelligence-tactical-badges { display: flex; flex-wrap: wrap; gap: 0.35rem; }
 .army-intelligence-tactical-badges > span { padding: 0.2rem 0.45rem; border: 1px solid rgba(76, 201, 240, 0.28); border-radius: 999px; font-size: 0.7rem; }
 .army-intelligence-tactical-badges > .is-verified { border-color: rgba(92, 214, 133, 0.5); color: #8de5ab; }
+.army-intelligence-tactical-badges > .is-multi-role { border-color: rgba(76, 201, 240, 0.75); color: #8de8fa; }
 .army-intelligence-tactical-empty { margin-top: 0.8rem; font-size: 0.84rem; }
 .army-intelligence-network-lists { display: grid; gap: 0.35rem; margin-top: 0.75rem; }
 .army-intelligence-network-lists p { display: flex; flex-direction: column; margin: 0; font-size: 0.78rem; }

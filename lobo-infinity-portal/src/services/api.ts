@@ -506,7 +506,8 @@ export type ArmyIntelligenceDecodedEntry = {
   unit: string
   weapons: string[]
   weaponProfiles?: Array<{ id?: number | null; burst: number | null; burstStatus?: string; mode?: string | null; modeResolution?: string | null; name: string; source?: string | null; type?: string }>
-  fireteamEligibility?: { state?: 'verified' | 'verified-false' | 'unknown'; teams: string[]; verified: boolean }
+  fireteamEligibility?: { state?: 'verified' | 'verified-false' | 'unknown'; teams: string[]; verified: boolean; memberships?: Array<{ team: string; minSize: number; required: boolean; requiredNames: string[]; memberName: string; countsAs: string }> }
+  fireteamSdBonus?: number
   wounds: number | null
 }
 
@@ -6199,7 +6200,11 @@ function normalizeArmyIntelligenceDecodedEntry(item: unknown): ArmyIntelligenceD
     fireteamEligibility: record.fireteamEligibility ? (() => {
       const eligibility = asRecord(record.fireteamEligibility, 'Fireteam eligibility')
       const state = getString(eligibility, 'state')
-      return { state: state === 'verified' || state === 'verified-false' || state === 'unknown' ? state : 'unknown', teams: getArray(eligibility, 'teams').map(String), verified: getBoolean(eligibility, 'verified') }
+      const memberships = eligibility.memberships == null ? undefined : getArray(eligibility, 'memberships').map((value) => {
+        const membership = asRecord(value, 'Fireteam membership')
+        return { team: getString(membership, 'team'), minSize: getNumber(membership, 'minSize'), required: getBoolean(membership, 'required'), requiredNames: getArray(membership, 'requiredNames').map(String), memberName: getString(membership, 'memberName'), countsAs: getString(membership, 'countsAs') }
+      })
+      return { state: state === 'verified' || state === 'verified-false' || state === 'unknown' ? state : 'unknown', teams: getArray(eligibility, 'teams').map(String), verified: getBoolean(eligibility, 'verified'), memberships }
     })() : undefined,
     wounds: record.wounds === null || record.wounds === undefined || record.wounds === ''
       ? null

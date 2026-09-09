@@ -22,12 +22,24 @@ export function enrichDecodedList(list, reference) {
   const units = Array.isArray(reference?.units) ? reference.units : []
   const dataset = buildCanonicalDataset({ metadata: { weapons: reference?.weapons || [] }, payloads: [{ version: reference?.payloadVersion, units }] })
   const chartUnits = new Map()
-  for (const team of reference?.fireteamChart?.teams || []) for (const unit of team.units || []) {
+  const typedTeams = (reference?.fireteamChart?.teams || []).filter((team) => Array.isArray(team.type) && team.type.length)
+  for (const team of typedTeams) {
+    const requiredNames = (team.units || []).filter((member) => member.required).map((member) => String(member.name || ''))
+    for (const unit of team.units || []) {
     const id = Number(unit.unitId)
     if (!Number.isInteger(id)) continue
     const teams = chartUnits.get(id) || []
-    teams.push(String(team.name || ''))
+    teams.push({ team: String(team.name || ''), minSize: fireteamMinimumSize(team.type), required: Boolean(unit.required), requiredNames, memberName: String(unit.name || ''), countsAs: '' })
     chartUnits.set(id, teams)
+    }
+  }
+  for (const wildcard of (reference?.fireteamChart?.teams || []).filter((team) => !Array.isArray(team.type) || !team.type.length).flatMap((team) => team.units || [])) {
+    const id = Number(wildcard.unitId)
+    if (!Number.isInteger(id)) continue
+    const memberships = chartUnits.get(id) || []
+    const countsAs = String(wildcard.comment || '').replace(/[()]/g, '').trim()
+    for (const team of typedTeams) memberships.push({ team: String(team.name || ''), minSize: fireteamMinimumSize(team.type), required: false, requiredNames: (team.units || []).filter((member) => member.required).map((member) => String(member.name || '')), memberName: String(wildcard.name || ''), countsAs })
+    chartUnits.set(id, memberships)
   }
   return {
     ...list,
@@ -47,12 +59,15 @@ function enrichEntry(entry, units, dataset, chartUnits, reference) {
   const option = group?.options?.find((candidate) => candidate.id === optionId)
   const weaponReferences = [...(profile?.weapons || []), ...(option?.weapons || [])]
   const weaponProfiles = resolveCanonicalWeaponRecords(dataset, weaponReferences, { expandAmbiguousModes: true }).filter((weapon) => weapon.name).map((weapon) => ({ id: weapon.id, name: weapon.name, mode: weapon.mode, variant: weapon.variant, modeResolution: weapon.modeResolution, type: weapon.type, burst: weapon.burst, burstStatus: weapon.burstStatus, source: weapon.sourceDatasetId }))
-  const teams = Array.from(new Set(chartUnits.get(unitId) || []))
+  const memberships = chartUnits.get(unitId) || []
+  const teams = Array.from(new Set(memberships.map((item) => item.team)))
   const fireteamEligibility = reference?.status === 'available' || reference?.status === 'none'
-    ? { state: teams.length ? 'verified' : 'verified-false', verified: Boolean(teams.length), teams }
+    ? { state: teams.length ? 'verified' : 'verified-false', verified: Boolean(teams.length), teams, memberships }
     : { state: 'unknown', verified: false, teams: [] }
   return { ...entry, bs: profile?.bs ?? null, weaponProfiles, fireteamEligibility, canonicalProfile: profile?.name || null, canonicalUnitId: unitId, canonicalOptionId: optionId, canonicalSource: { datasetId: dataset.datasetId, payloadVersion: reference?.payloadVersion || null, sectorialId } }
 }
+
+function fireteamMinimumSize(types) { return types.includes('DUO') ? 2 : types.includes('HARIS') ? 3 : 3 }
 
 function applyUnknownEnrichment(list) {
   return enrichDecodedList(list, { status: 'unknown', units: [], weapons: [], fireteamChart: [], payloadVersion: null })

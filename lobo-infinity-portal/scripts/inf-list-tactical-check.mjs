@@ -43,7 +43,7 @@ const analysis = classifyTacticalBrief(fixtures, { faction: 'Fixture', listName:
 assert.deepEqual(new Set(analysis.categories.apex.map((item) => item.combinedId)), new Set(['apex', 'burst-bonus', 'bs14-apex', 'b5-apex']))
 assert.deepEqual(analysis.categories.apex.find((item) => item.combinedId === 'apex').badges, ['Mimetism [-3]', 'MSV L2', 'BS Attack (−3)'])
 assert.equal(analysis.categories.apex.some((item) => ['ambiguous-burst', 'unavailable-burst'].includes(item.combinedId)), false)
-assert.deepEqual(analysis.networkSummary, { hackers: 1, pitcherCarriers: 1, fastPandaCarriers: 1, deployableRepeaterCarriers: 1 })
+assert.deepEqual(analysis.networkSummary, { hackers: 1, pitcherCarriers: 1, fastPandaCarriers: 1, deployableRepeaterCarriers: 1, repeaterCarriers: 1 })
 assert.equal(analysis.categories.hacking.length, 1)
 assert.deepEqual(new Set(analysis.categories.competent.map((item) => item.combinedId)), new Set(['bs12', 'apex', 'burst-bonus', 'same-unit-b']))
 assert.equal(analysis.categories.competent.find((item) => item.combinedId === 'burst-bonus').qualifyingWeapons[0].burst, 4)
@@ -57,6 +57,18 @@ assert.deepEqual(new Set(analysis.categories.defensive.map((item) => item.combin
 assert.equal(analysis.categories.defensive.find((item) => item.combinedId === 'duplicate').quantity, 2)
 assert.equal(analysis.categories.defensive.some((item) => item.combinedId === 'mim-only'), false)
 assert.equal(analysis.categories.defensive.some((item) => item.combinedId === 'same-unit-b'), false)
+
+const fireteamAnalysis = classifyTacticalBrief([
+  profile('orc', { bs: 14, unitName: 'ORC', points: 35, fireteamTeams: ['White Company'], weapons: [weapon('Feuerbach', 2)] }),
+  profile('hannibal', { bs: 13, unitName: 'Hannibal', points: 33, fireteamTeams: ['White Company'], skills: ['BS Attack (+1SD)'], weapons: [weapon('MULTI Marksman Rifle', 3)] }),
+  profile('hawkwood', { bs: 13, unitName: 'Hawkwood', points: 35, fireteamTeams: ['Fusiliers'], skills: ['BS Attack (+1SD)'], weapons: [weapon('K1 Sniper Rifle', 2)] }),
+  profile('fusilier', { bs: 12, unitName: 'Fusilier', points: 10, fireteamTeams: ['Fusiliers'], weapons: [weapon('Combi Rifle', 3)] }),
+  profile('moran', { unitName: 'Moran', equipment: ['Repeater'], skills: ['Minelayer'] }),
+], { faction: 'White Company' })
+assert.deepEqual(new Set(fireteamAnalysis.categories.valuableAro.map((item) => item.combinedId)), new Set(['orc', 'hawkwood']))
+assert.deepEqual(new Set(fireteamAnalysis.categories.competent.map((item) => item.combinedId)), new Set(['hannibal', 'hawkwood', 'fusilier']))
+assert.deepEqual(fireteamAnalysis.categories.hacking.find((item) => item.combinedId === 'moran')?.roles, ['hacking', 'defensive'])
+assert.deepEqual(fireteamAnalysis.categories.defensive.find((item) => item.combinedId === 'moran')?.roles, ['hacking', 'defensive'])
 
 const empty = classifyTacticalBrief([], { faction: 'Empty' })
 const browser = await chromium.launch({ headless: true })

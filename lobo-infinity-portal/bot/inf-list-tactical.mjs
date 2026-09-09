@@ -31,6 +31,7 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
   }
   const dataset = canonicalDataset || buildCanonicalDataset({ metadata, payloads: officialPayloads })
   const linkableUnitIds = canonicalLinkableUnitIds(officialPayloads)
+  const fireteamMembershipsByUnitId = canonicalFireteamMembershipsByUnitId(officialPayloads)
 
   return members.map((member) => {
     const card = cardQueues.get(member.combinedId)?.shift() || {}
@@ -59,6 +60,8 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
       bs: finiteNumber(base?.bs ?? card.bs),
       combinedId: member.combinedId,
       equipment,
+      fireteamMemberships: fireteamMembershipsByUnitId.get(Number(member.unitId)) || [],
+      fireteamTeams: unique((fireteamMembershipsByUnitId.get(Number(member.unitId)) || []).map((item) => item.team)),
       linkability: officialPayloads.length ? (linkableUnitIds.has(Number(member.unitId)) ? 'verified-linkable' : 'verified-not-linkable') : 'unavailable',
       profileName: option?.name || card.profileName || group?.isc || unit?.isc || unit?.name || 'Profile unavailable',
       points: finiteNumber(option?.points ?? card.points),
@@ -72,26 +75,30 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
 
 export function classifyTacticalBrief(profiles, army = {}) {
   const aggregated = aggregateExactProfiles(profiles)
+  const eligibleFireteams = legalFireteams(aggregated)
   const result = Object.fromEntries(categories.map(([key]) => [key, []]))
   for (const profile of aggregated) {
     const enhancements = preferredMatches(profile.skills, [gunfighterMimetismToken, gunfighterMsvToken, bsAttackMinusThreeToken, albedoToken])
     const burstBonus = bsAttackBurstBonus(profile.skills)
+    const nativeSdBonus = bsAttackSdBonus(profile.skills)
+    const qualifyingFireteams = (profile.fireteamTeams || []).filter((team) => eligibleFireteams.has(team))
+    const fireteamSdBonus = qualifyingFireteams.length ? 1 : 0
     const effectiveWeapons = profile.weapons.map((weapon) => ({ ...weapon, baseBurst: weapon.burst, burst: weapon.burst === null ? null : weapon.burst + burstBonus }))
     const apexWeapons = effectiveWeapons.filter((weapon) => isRangedWeapon(weapon) && (weapon.burst >= 5 || (profile.bs >= 14 && weapon.burst >= 4) || (profile.bs === 13 && weapon.burst >= 4 && enhancements.length)))
     if (apexWeapons.length) result.apex.push({ ...profile, badges: enhancements, qualifyingWeapons: apexWeapons })
-    const competentWeapons = effectiveWeapons.filter((weapon) => weapon.burst === 4 && isRangedWeapon(weapon))
-    if ((profile.bs === 12 || profile.bs === 13) && competentWeapons.length) result.competent.push({ ...profile, badges: burstBonus ? preferredMatches(profile.skills, [bsAttackBurstToken]) : [], qualifyingWeapons: competentWeapons })
+    const competentWeapons = effectiveWeapons.map((weapon) => ({ ...weapon, activeBurst: weapon.burst, burst: weapon.burst === null ? null : weapon.burst + nativeSdBonus + fireteamSdBonus, nativeSdBonus, fireteamSdBonus })).filter((weapon) => weapon.burst >= 4 && isRangedWeapon(weapon))
+    if ((profile.bs === 12 || profile.bs === 13) && competentWeapons.length) result.competent.push({ ...profile, badges: unique([...(burstBonus ? preferredMatches(profile.skills, [bsAttackBurstToken]) : []), ...(nativeSdBonus ? preferredMatches(profile.skills, [bsAttackSdToken]) : []), ...(fireteamSdBonus ? ['Fireteam (+1SD)'] : [])]), qualifyingFireteams, qualifyingWeapons: competentWeapons })
 
     const hackerTypes = unique([
       ...exactMatches(profile.skills, [hackerToken]),
       ...exactMatches(profile.equipment, [hackingDeviceToken]),
     ])
-    const delivery = exactMatches([...profile.weapons.map(weaponDisplay), ...profile.equipment], [pitcherToken, fastPandaToken, deployableRepeaterToken])
+    const delivery = exactMatches([...profile.weapons.map(weaponDisplay), ...profile.equipment], [pitcherToken, fastPandaToken, deployableRepeaterToken, repeaterToken])
     if (hackerTypes.length || delivery.length) result.hacking.push({ ...profile, badges: [...hackerTypes, ...delivery], hackerTypes, delivery })
 
     const aroWeapons = profile.weapons.filter((weapon) => aroWeaponToken(weaponDisplay(weapon)))
     const aroSkills = preferredMatches(profile.skills, [totalReactionToken, neurocineticsToken, bsAttackSdToken])
-    if (Number.isFinite(profile.points) && profile.points >= 15 && aroWeapons.length && aroSkills.length) result.valuableAro.push({ ...profile, badges: aroSkills, qualifyingWeapons: aroWeapons })
+    if (Number.isFinite(profile.points) && profile.points >= 15 && aroWeapons.length && (aroSkills.length || fireteamSdBonus)) result.valuableAro.push({ ...profile, badges: unique([...aroSkills, ...(fireteamSdBonus ? ['Fireteam (+1SD)'] : [])]), qualifyingFireteams, qualifyingWeapons: aroWeapons })
     const disposableWeapons = profile.weapons.filter((weapon) => aroWeaponToken(weaponDisplay(weapon)) || flashPulseToken(weaponDisplay(weapon)))
     if (Number.isFinite(profile.points) && profile.points <= 14 && disposableWeapons.length) result.disposableAro.push({ ...profile, badges: [], qualifyingWeapons: disposableWeapons })
 
@@ -107,6 +114,7 @@ export function classifyTacticalBrief(profiles, army = {}) {
   result.apex.sort((a, b) => b.badges.length - a.badges.length || b.bs - a.bs || profileSort(a, b))
   for (const key of ['valuableAro', 'disposableAro']) result[key].sort((a, b) => linkRank(a) - linkRank(b) || profileSort(a, b))
   for (const key of ['competent', 'hacking', 'alternative', 'defensive']) result[key].sort(profileSort)
+  addMultiRoleMetadata(result)
   return {
     army: { faction: army.faction || '', listName: army.listName || '', sectorial: army.sectorial || '' },
     categories: result,
@@ -115,6 +123,7 @@ export function classifyTacticalBrief(profiles, army = {}) {
       fastPandaCarriers: countQuantity(result.hacking.filter((item) => item.delivery.some(fastPandaToken))),
       hackers: countQuantity(result.hacking.filter((item) => item.hackerTypes.length)),
       pitcherCarriers: countQuantity(result.hacking.filter((item) => item.delivery.some(pitcherToken))),
+      repeaterCarriers: countQuantity(result.hacking.filter((item) => item.delivery.some(repeaterToken))),
     },
   }
 }
@@ -159,11 +168,11 @@ function paginateBlocks(blocks, availableHeight) {
 
 function markup(analysis, blocks, pageIndex, pageCount) {
   const subtitle = [analysis.army.sectorial || analysis.army.faction, analysis.army.listName].filter(Boolean).map(escapeHtml).join(' · ')
-  return `<!doctype html><html><head><meta charset="utf-8"><style>${styles()}</style></head><body><main class="brief"><header><div class="brand">LOBO'S LITTLE HELPER</div><h1>TACTICAL INTELLIGENCE BRIEF</h1><h2>OBSERVED CAPABILITIES — SUBMITTED LIST</h2><p>${subtitle}</p></header><div class="categories">${blocks.map((block) => categoryMarkup(block, analysis)).join('')}</div>${pageCount > 1 ? `<footer>PAGE ${pageIndex + 1} OF ${pageCount}</footer>` : ''}</main></body></html>`
+  return `<!doctype html><html><head><meta charset="utf-8"><style>${styles()}</style></head><body><main class="brief"><header><div class="brand">LOBO'S LITTLE HELPER</div><h1>TACTICAL INTELLIGENCE BRIEF</h1><h2>OBSERVED CAPABILITIES — SUBMITTED LIST</h2><p>${subtitle}</p><p class="role-note">Profiles may appear in multiple sections when they perform multiple tactical roles. Quantities represent models in the submitted list.</p></header><div class="categories">${blocks.map((block) => categoryMarkup(block, analysis)).join('')}</div>${pageCount > 1 ? `<footer>PAGE ${pageIndex + 1} OF ${pageCount}</footer>` : ''}</main></body></html>`
 }
 
 function categoryMarkup({ key, title, entries }, analysis) {
-  const summary = key === 'hacking' ? `<div class="summary"><b>NETWORK:</b> ${analysis.networkSummary.hackers} Hackers · ${analysis.networkSummary.pitcherCarriers} Pitcher · ${analysis.networkSummary.fastPandaCarriers} FastPanda · ${analysis.networkSummary.deployableRepeaterCarriers} Deployable Repeater</div>` : ''
+  const summary = key === 'hacking' ? `<div class="summary"><b>NETWORK:</b> ${analysis.networkSummary.hackers} Hackers · ${analysis.networkSummary.pitcherCarriers} Pitcher · ${analysis.networkSummary.fastPandaCarriers} FastPanda · ${analysis.networkSummary.deployableRepeaterCarriers} Deployable Repeater · ${analysis.networkSummary.repeaterCarriers} Repeater</div>` : ''
   const content = entries.length ? `<div class="grid">${entries.map((entry) => entryMarkup(key, entry)).join('')}</div>` : `<div class="empty">${emptyMessage}</div>`
   return `<section class="category"><h3><span>${escapeHtml(title)}</span><small>${entries.length} exact profile${entries.length === 1 ? '' : 's'}</small></h3>${summary}${content}</section>`
 }
@@ -176,10 +185,12 @@ function entryMarkup(key, entry) {
   if (key === 'defensive' && entry.deployables.length) detail = `DEPLOYABLE: ${entry.deployables.map(escapeHtml).join(' · ')}`
   const fireteam = key.endsWith('Aro') ? `<span class="badge fireteam">${entry.linkability === 'verified-linkable' ? 'VERIFIED LINKABLE' : entry.linkability === 'unavailable' ? 'LINKABILITY UNAVAILABLE' : 'NOT LINKABLE IN CANONICAL CHART'}</span>` : ''
   const secondary = detail || loadoutDetail(entry)
-  return `<article><div class="entry-head"><div><h4>${escapeHtml(entry.unitName)}</h4><p>${escapeHtml(entry.profileName)}</p></div><strong>×${entry.quantity}</strong></div>${secondary ? `<div class="detail">${secondary}</div>` : ''}<div class="badges">${entry.badges.map((badge) => `<span class="badge">${escapeHtml(badge)}</span>`).join('')}${fireteam}</div></article>`
+  const multiRole = entry.roles?.length > 1 ? `<span class="badge multi-role">MULTI-ROLE</span>` : ''
+  const otherRoles = entry.roles?.filter((role) => role !== key) || []
+  return `<article><div class="entry-head"><div><h4>${escapeHtml(entry.unitName)}</h4><p>${escapeHtml(entry.profileName)}</p></div><strong>×${entry.quantity}</strong></div>${secondary ? `<div class="detail">${secondary}</div>` : ''}<div class="badges">${multiRole}${entry.badges.map((badge) => `<span class="badge">${escapeHtml(badge)}</span>`).join('')}${fireteam}</div>${otherRoles.length ? `<div class="also">Also classified as: ${otherRoles.map((role) => escapeHtml(categories.find(([candidate]) => candidate === role)?.[1] || role)).join(' · ')}</div>` : ''}</article>`
 }
 
-function styles() { return `*{box-sizing:border-box}html,body{margin:0;background:#070b10;color:#eef2f6;font-family:Arial,sans-serif}.brief{width:${imageWidth}px;padding:48px 52px 38px;background:radial-gradient(circle at 90% 0,#263540 0,transparent 32%),#0b1117;border-top:12px solid #a7242b}header{padding:0 4px 30px;border-bottom:3px solid #53616d}.brand{color:#df3942;font-size:20px;font-weight:900;letter-spacing:5px}h1{margin:9px 0 2px;font-size:50px;line-height:1;letter-spacing:2px}header h2{margin:0;color:#aeb8c1;font-size:25px;letter-spacing:3px}header p{margin:12px 0 0;color:#dfe6eb;font-size:21px;font-weight:700}.categories{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px}.category{border:2px solid #53616d;background:#111a22;break-inside:avoid}.category:nth-child(1),.category:nth-child(2){grid-column:span 1}.category:nth-child(n+3){grid-column:1/-1}.category h3{display:flex;align-items:center;justify-content:space-between;margin:0;padding:13px 17px;background:#202c36;border-left:9px solid #c42e37;font-size:26px;letter-spacing:1px;text-transform:uppercase}.category h3 small{color:#aeb8c1;font-size:15px;letter-spacing:0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px}.category:nth-child(-n+2) .grid{grid-template-columns:1fr}.summary{padding:10px 15px;background:#701a20;color:#fff;font-size:17px}.empty{padding:26px 18px;color:#9faab3;font-size:20px;font-style:italic}article{min-width:0;padding:13px 15px;border:1px solid #40505d;border-left:6px solid #7f919f;background:#17222b}.entry-head{display:flex;gap:12px;justify-content:space-between}.entry-head div{min-width:0}h4{margin:0;color:#fff;font-size:21px;line-height:1.1;overflow-wrap:anywhere;text-transform:uppercase}.entry-head p{margin:4px 0 0;color:#b9c5cd;font-size:17px;line-height:1.2;overflow-wrap:anywhere}.entry-head strong{flex:none;color:#ef454f;font-size:24px}.detail{margin-top:9px;color:#fff;font-size:17px;font-weight:800;line-height:1.3;overflow-wrap:anywhere}.badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}.badge{padding:4px 8px;border:1px solid #8e9ba5;border-radius:3px;background:#263640;color:#e8edf0;font-size:14px;font-weight:800}.fireteam{border-color:#db3942;background:#5e171c}footer{padding-top:18px;text-align:right;color:#8e9aa4;font-size:14px;font-weight:800;letter-spacing:2px}` }
+function styles() { return `*{box-sizing:border-box}html,body{margin:0;background:#070b10;color:#eef2f6;font-family:Arial,sans-serif}.brief{width:${imageWidth}px;padding:48px 52px 38px;background:radial-gradient(circle at 90% 0,#263540 0,transparent 32%),#0b1117;border-top:12px solid #a7242b}header{padding:0 4px 30px;border-bottom:3px solid #53616d}.brand{color:#df3942;font-size:20px;font-weight:900;letter-spacing:5px}h1{margin:9px 0 2px;font-size:50px;line-height:1;letter-spacing:2px}header h2{margin:0;color:#aeb8c1;font-size:25px;letter-spacing:3px}header p{margin:12px 0 0;color:#dfe6eb;font-size:21px;font-weight:700}header .role-note{color:#aeb8c1;font-size:16px;font-weight:600}.categories{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px}.category{border:2px solid #53616d;background:#111a22;break-inside:avoid}.category:nth-child(1),.category:nth-child(2){grid-column:span 1}.category:nth-child(n+3){grid-column:1/-1}.category h3{display:flex;align-items:center;justify-content:space-between;margin:0;padding:13px 17px;background:#202c36;border-left:9px solid #c42e37;font-size:26px;letter-spacing:1px;text-transform:uppercase}.category h3 small{color:#aeb8c1;font-size:15px;letter-spacing:0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px}.category:nth-child(-n+2) .grid{grid-template-columns:1fr}.summary{padding:10px 15px;background:#701a20;color:#fff;font-size:17px}.empty{padding:26px 18px;color:#9faab3;font-size:20px;font-style:italic}article{min-width:0;padding:13px 15px;border:1px solid #40505d;border-left:6px solid #7f919f;background:#17222b}.entry-head{display:flex;gap:12px;justify-content:space-between}.entry-head div{min-width:0}h4{margin:0;color:#fff;font-size:21px;line-height:1.1;overflow-wrap:anywhere;text-transform:uppercase}.entry-head p{margin:4px 0 0;color:#b9c5cd;font-size:17px;line-height:1.2;overflow-wrap:anywhere}.entry-head strong{flex:none;color:#ef454f;font-size:24px}.detail{margin-top:9px;color:#fff;font-size:17px;font-weight:800;line-height:1.3;overflow-wrap:anywhere}.badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}.badge{padding:4px 8px;border:1px solid #8e9ba5;border-radius:3px;background:#263640;color:#e8edf0;font-size:14px;font-weight:800}.multi-role{border-color:#50c7df;background:#123f49}.fireteam{border-color:#db3942;background:#5e171c}.also{margin-top:8px;color:#9edbe7;font-size:14px;font-weight:700}footer{padding-top:18px;text-align:right;color:#8e9aa4;font-size:14px;font-weight:800;letter-spacing:2px}` }
 
 function aggregateExactProfiles(profiles) {
   const map = new Map()
@@ -203,6 +214,50 @@ function canonicalLinkableUnitIds(payloads) {
   }
   return ids
 }
+function canonicalFireteamMembershipsByUnitId(payloads) {
+  const result = new Map()
+  for (const payload of payloads) {
+    const units = new Map((payload?.units || []).map((unit) => [unit.slug, Number(unit.id)]))
+    const teams = (payload?.fireteamChart?.teams || []).filter((team) => Array.isArray(team.type) && team.type.length)
+    for (const team of teams) {
+      const requiredNames = (team.units || []).filter((member) => member.required).map((member) => String(member.name || ''))
+      for (const member of team.units || []) {
+      const id = Number(member.unitId || units.get(member.slug))
+      if (!Number.isInteger(id)) continue
+      const memberships = result.get(id) || []
+      memberships.push({ team: String(team.name || ''), minSize: fireteamMinimumSize(team.type), required: Boolean(member.required), requiredNames, memberName: String(member.name || ''), countsAs: '' })
+      result.set(id, memberships)
+      }
+    }
+    const wildcards = (payload?.fireteamChart?.teams || []).filter((team) => !Array.isArray(team.type) || !team.type.length).flatMap((team) => team.units || [])
+    for (const wildcard of wildcards) {
+      const id = Number(wildcard.unitId || units.get(wildcard.slug))
+      if (!Number.isInteger(id)) continue
+      const countsAs = String(wildcard.comment || '').replace(/[()]/g, '').trim()
+      const memberships = result.get(id) || []
+      for (const team of teams) memberships.push({ team: String(team.name || ''), minSize: fireteamMinimumSize(team.type), required: false, requiredNames: (team.units || []).filter((member) => member.required).map((member) => String(member.name || '')), memberName: String(wildcard.name || ''), countsAs })
+      result.set(id, memberships)
+    }
+  }
+  return result
+}
+function fireteamMinimumSize(types) { return types.includes('DUO') ? 2 : types.includes('HARIS') ? 3 : 3 }
+function legalFireteams(profiles) {
+  const byTeam = new Map()
+  for (const profile of profiles) for (const membership of profile.fireteamMemberships || (profile.fireteamTeams || []).map((team) => ({ team, minSize: 2, required: false, requiredNames: [], memberName: profile.unitName, countsAs: '' }))) {
+    const rows = byTeam.get(membership.team) || []
+    for (let index = 0; index < profile.quantity; index += 1) rows.push(membership)
+    byTeam.set(membership.team, rows)
+  }
+  const legal = new Set()
+  for (const [team, rows] of byTeam) {
+    const minimum = rows[0]?.minSize || 2
+    const requiredNames = unique((rows[0]?.requiredNames || []).map(normalized))
+    const hasRequired = !requiredNames.length || rows.some((row) => row.required || (normalized(row.countsAs) && requiredNames.some((name) => normalized(row.countsAs).startsWith(name) || name.startsWith(normalized(row.countsAs)))))
+    if (rows.length >= minimum && hasRequired) legal.add(team)
+  }
+  return legal
+}
 function mergeNamedRefs(base = [], option = [], lookup, fallback = []) { return unique([...base, ...option].map((ref) => lookup.get(Number(ref.id))).filter(Boolean).concat(fallback || [])) }
 function exactMatches(values, predicates) { return unique(values.filter((value) => predicates.some((predicate) => predicate(value)))) }
 function preferredMatches(values, predicates) { return predicates.flatMap((predicate) => { const matches = unique(values.filter(predicate)); return matches.length ? [matches.sort((a, b) => normalized(b).length - normalized(a).length)[0]] : [] }) }
@@ -219,11 +274,13 @@ function bsAttackBurstBonus(skills) { for (const skill of skills || []) { const 
 function totalReactionToken(v) { return /^total reaction$/.test(normalized(v)) }
 function neurocineticsToken(v) { return /^neurocinetics$/.test(normalized(v)) }
 function bsAttackSdToken(v) { return /^bs attack\s+\+(?:1)?sd$/.test(normalized(v)) }
+function bsAttackSdBonus(skills) { for (const skill of skills || []) { const match = normalized(skill).match(/^bs attack\s+\+(?:(\d+)\s*)?sd$/); if (match) return Number(match[1] || 1) } return 0 }
 function hackerToken(v) { return /^hacker$/.test(normalized(v)) }
 function hackingDeviceToken(v) { return /^(?:(?:assault|defensive|evo|killer|plus|white|zero pain)\s+)?hacking device(?:\s+plus)?$/.test(normalized(v)) }
 function pitcherToken(v) { return /^pitcher$/.test(normalized(v)) }
 function fastPandaToken(v) { return /^fast\s*panda$/.test(normalized(v)) }
 function deployableRepeaterToken(v) { return /^deployable\s+repeater$/.test(normalized(v)) }
+function repeaterToken(v) { return /^repeater$/.test(normalized(v)) }
 function parachutistToken(v) { return /^parachutist(?:\s+(?:l(?:evel\s*)?)?\+?\d+)?$/.test(normalized(v)) }
 function combatJumpToken(v) { return /^combat jump(?:\s+(?:ph\s*)?\d+)?$/.test(normalized(v)) }
 function hiddenDeploymentToken(v) { return /^hidden deployment$/.test(normalized(v)) }
@@ -231,7 +288,7 @@ function impersonationToken(v) { return /^impersonation(?:\s+\d+)?$/.test(normal
 function camouflageToken(v) { return /^camouflage(?:\s+(?:l(?:evel\s*)?)?\d+)?$/.test(normalized(v)) }
 function decoyToken(v) { return /^decoy(?:\s+\d+)?$/.test(normalized(v)) }
 function minelayerToken(v) { return /^minelayer$/.test(normalized(v)) }
-function aroWeaponToken(v) { return /^(?:(?:ap|viral|multi|plasma)\s+)?sniper rifle(?:\s+(?:burst|anti materiel|hit|blast) mode)?$|^(?:missile launcher|portable autocannon|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach)(?:\s+(?:burst|anti materiel|hit|blast) mode)?$/.test(normalized(v)) }
+function aroWeaponToken(v) { return /^(?:(?:ap|viral|multi|plasma|k1)\s+)?sniper rifle(?:\s+(?:burst|anti materiel|hit|blast) mode)?$|^(?:missile launcher|portable autocannon|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach)(?:\s+(?:burst|anti materiel|hit|blast) mode)?$/.test(normalized(v)) }
 function flashPulseToken(v) { return /^flash pulse$/.test(normalized(v)) }
 function isRangedWeapon(w) { return normalized(w.type) !== 'cc' && !/\bcc weapon\b/.test(normalized(w.name)) }
 function minelayerAssociated(weapons, equipment) { return unique([...weapons.map(weaponDisplay), ...equipment].filter((v) => /(?:^|\s)(?:mine|mines)(?:\s|$)|deployable/i.test(normalized(v)))) }
@@ -253,7 +310,17 @@ function formatBurst(weapon) {
   return 'Burst unavailable'
 }
 function loadoutSignature(profile) {
-  return JSON.stringify({ bs: finiteNumber(profile.bs), points: finiteNumber(profile.points), skills: [...(profile.skills || [])].map(normalized).sort(), equipment: [...(profile.equipment || [])].map(normalized).sort(), weapons: [...(profile.weapons || [])].map((weapon) => [normalized(weapon.name), normalized(weapon.mode), weapon.burst ?? null, weapon.burstStatus || '']).sort(), linkability: profile.linkability || 'unavailable' })
+  return JSON.stringify({ bs: finiteNumber(profile.bs), points: finiteNumber(profile.points), skills: [...(profile.skills || [])].map(normalized).sort(), equipment: [...(profile.equipment || [])].map(normalized).sort(), weapons: [...(profile.weapons || [])].map((weapon) => [normalized(weapon.name), normalized(weapon.mode), weapon.burst ?? null, weapon.burstStatus || '']).sort(), linkability: profile.linkability || 'unavailable', fireteamTeams: [...(profile.fireteamTeams || [])].sort() })
+}
+function addMultiRoleMetadata(result) {
+  const memberships = new Map()
+  for (const [key] of categories) for (const profile of result[key]) {
+    const id = `${profile.combinedId}|${loadoutSignature(profile)}`
+    const roles = memberships.get(id) || []
+    roles.push(key)
+    memberships.set(id, roles)
+  }
+  for (const [key] of categories) result[key] = result[key].map((profile) => ({ ...profile, roles: memberships.get(`${profile.combinedId}|${loadoutSignature(profile)}`) || [key] }))
 }
 function loadoutDetail(entry) {
   const parts = unique([...(entry.weapons || []).map(weaponDisplay), ...(entry.skills || []), ...(entry.equipment || [])].filter(Boolean))

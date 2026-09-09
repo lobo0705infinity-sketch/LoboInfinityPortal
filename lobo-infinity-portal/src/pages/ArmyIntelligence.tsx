@@ -1061,6 +1061,7 @@ function IntelligenceBrief({ analysis, faction }: { analysis: TacticalAnalysis; 
         <div><h2 id="army-intelligence-brief-title">{faction}</h2><p>{analysis.mode}</p></div>
       </div>
       {analysis.listCount < 3 ? <p className="army-intelligence-sample-notice">Only {analysis.listCount} decoded {analysis.listCount === 1 ? 'list is' : 'lists are'} available. These are observed capabilities, not reliable faction trends.</p> : null}
+      <p className="army-intelligence-role-notice">Profiles may appear in multiple sections when they perform multiple tactical roles. Quantities represent models, not classifications.</p>
       <div className="army-intelligence-tactical-grid">
         {analysis.categories.map((category) => <article className="army-intelligence-tactical-panel" key={category.id}>
           <header><h3>{category.title}</h3><p>{category.description}</p></header>
@@ -1074,17 +1075,23 @@ function IntelligenceBrief({ analysis, faction }: { analysis: TacticalAnalysis; 
 }
 
 function TacticalProfileRow({ category, profile }: { category: string; profile: TacticalProfile }) {
-  const relevantWeapons = profile.weapons.filter((weapon, index) => category === 'apex' || category === 'competent' ? (weapon.effectiveBurst ?? 0) >= 4 : category === 'valuableAro' || category === 'disposableAro' ? /sniper rifle|missile launcher|portable autocannon|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach|flash pulse/i.test(weapon.name) : category === 'defensive' ? /mine|deployable/i.test(weapon.name) : category === 'alternative' ? index === 0 : false)
+  const relevantWeapons = profile.weapons.filter((weapon, index) => category === 'apex' ? (weapon.effectiveBurst ?? 0) >= 4 : category === 'competent' ? (weapon.effectiveDice ?? 0) >= 4 : category === 'valuableAro' || category === 'disposableAro' ? /sniper rifle|missile launcher|portable autocannon|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach|flash pulse/i.test(weapon.name) : category === 'defensive' ? /mine|deployable/i.test(weapon.name) : category === 'alternative' ? index === 0 : false)
   return <div className="army-intelligence-tactical-profile">
     <div><strong>{profile.unit}</strong><span>{profile.profile}</span></div>
     <div className="army-intelligence-tactical-badges">
       {profile.bs !== null ? <span>BS {profile.bs}</span> : null}
-      {relevantWeapons.map((weapon) => <span key={`${weapon.name}:${weapon.burst}`}>{weapon.name}{weapon.effectiveBurst === null ? ' · Burst unavailable' : ` · Burst ${weapon.effectiveBurst}${weapon.burst !== weapon.effectiveBurst ? ` (base ${weapon.burst} + BS Attack)` : ''}`}</span>)}
+      {relevantWeapons.map((weapon) => <span key={`${weapon.name}:${weapon.burst}`}>{weapon.name}{weapon.effectiveBurst === null ? ' · Burst unavailable' : category === 'competent' && weapon.effectiveDice !== weapon.effectiveBurst ? ` · Effective dice ${weapon.effectiveDice} (Burst ${weapon.effectiveBurst} + SD)` : ` · Burst ${weapon.effectiveBurst}${weapon.burst !== weapon.effectiveBurst ? ` (base ${weapon.burst} + BS Attack)` : ''}`}</span>)}
+      {profile.roles.length > 1 ? <span className="is-multi-role">MULTI-ROLE</span> : null}
       {profile.badges.map((badge) => <span key={badge}>{badge}</span>)}
       {profile.linkability === 'verified' ? <span className="is-verified">Verified linkable</span> : profile.linkability === 'verified-false' ? <span>Verified not linkable</span> : <span>Fireteam status unknown</span>}
     </div>
+    {profile.roles.length > 1 ? <small>Also classified as: {profile.roles.filter((role) => role !== category).map(tacticalRoleTitle).join(' · ')}</small> : null}
     <small>{profile.listCount} {profile.listCount === 1 ? 'list' : 'lists'} · {Math.round(profile.percentage)}%</small>
   </div>
+}
+
+function tacticalRoleTitle(role: string) {
+  return ({ apex: 'Apex Gunfighters', competent: 'Competent Gunfighters', hacking: 'Hacking Network', valuableAro: 'Valuable ARO Pieces', disposableAro: 'Disposable ARO Pieces', alternative: 'Alternative Attack Vectors', defensive: 'Defensive Network' } as Record<string, string>)[role] || role
 }
 
 function UsagePanel({

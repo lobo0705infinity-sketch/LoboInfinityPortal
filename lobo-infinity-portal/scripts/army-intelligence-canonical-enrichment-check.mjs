@@ -13,7 +13,7 @@ const reference = {
     ] },
   ] }],
   weapons: [{ id: 1, name: 'Canonical HMG', burst: 4 }, { id: 2, name: 'Canonical Pistol', burst: 2 }, { id: 3, name: 'Other Rifle', burst: 3 }, { id: 4, name: 'Canonical Profile Weapon', burst: 2 }],
-  fireteamChart: { teams: [{ name: 'Verified Team', units: [{ unitId: 10 }] }] },
+  fireteamChart: { teams: [{ name: 'Verified Team', type: ['CORE'], units: [{ unitId: 10 }] }] },
 }
 const result = enrichDecodedList(list, reference)
 const [first, second] = result.combatGroups[0].entries

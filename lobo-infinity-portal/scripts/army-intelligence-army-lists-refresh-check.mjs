@@ -40,7 +40,7 @@ let publications = 0
 const sandbox = {
   Array, Boolean, Date, Error, JSON, Number, Object,
   ARMY_INTELLIGENCE_PIPELINE_VERSION: 'army-intelligence-pipeline-v1',
-  ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION: 'army-intelligence-tactical-v4',
+  ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION: 'army-intelligence-tactical-v5',
   getApiParameters: (event) => event,
   getApiParameter: (parameters, key) => parameters[key] || '',
   buildArmyIntelligenceSources: () => [source],
@@ -104,10 +104,10 @@ assert.equal(readModel.lists[0].validation.status, 'pending')
 const snapshot = {
   ...source,
   pipelineVersion: 'army-intelligence-pipeline-v1',
-  tacticalSchemaVersion: 'army-intelligence-tactical-v4',
+  tacticalSchemaVersion: 'army-intelligence-tactical-v5',
   decoded: {
     armyCode, decoderVersion: 'army-intelligence-decoder-v5', faction: 'ALEPH',
-    pipelineVersion: 'army-intelligence-pipeline-v1', tacticalSchemaVersion: 'army-intelligence-tactical-v4',
+    pipelineVersion: 'army-intelligence-pipeline-v1', tacticalSchemaVersion: 'army-intelligence-tactical-v5',
     sectorial: 'OSS', listName: 'Decoded OSS',
     combatGroups: [{ entries: Array.from({ length: 10 }, () => ({})) }],
     totals: { combatGroups: 1, points: 300, swc: 6 }, warnings: [],
