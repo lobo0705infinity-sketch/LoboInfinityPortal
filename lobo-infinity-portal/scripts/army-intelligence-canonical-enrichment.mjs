@@ -53,8 +53,17 @@ export function enrichDecodedList(list, reference) {
 function enrichEntry(entry, units, dataset, chartUnits, reference) {
   const [sectorialId, unitId, groupId, optionId, profileId] = String(entry.combinedId || '').split('-').map(Number)
   const unit = units.find((candidate) => candidate.id === unitId)
-  const group = unit?.profileGroups?.find((candidate) => candidate.id === groupId) ||
-    (groupId === 0 && unit?.profileGroups?.length === 1 ? unit.profileGroups[0] : null)
+  const profileGroups = unit?.profileGroups || []
+  const legacyProfileName = normalizeCanonicalProfileName(entry.profile || entry.unit)
+  const legacyGroups = groupId === 0
+    ? profileGroups.filter((candidate) => (candidate.profiles || []).some((item) => {
+        const canonicalName = normalizeCanonicalProfileName(item.name)
+        return Boolean(legacyProfileName && canonicalName) && (canonicalName.includes(legacyProfileName) || legacyProfileName.includes(canonicalName))
+      }))
+    : []
+  const group = profileGroups.find((candidate) => candidate.id === groupId) ||
+    (legacyGroups.length === 1 ? legacyGroups[0] : null) ||
+    (groupId === 0 && profileGroups.length === 1 ? profileGroups[0] : null)
   const profiles = group?.profiles || []
   const profile = profiles.find((candidate) => candidate.id === profileId) || (profiles.length === 1 ? profiles[0] : null)
   const option = group?.options?.find((candidate) => candidate.id === optionId)
@@ -66,6 +75,10 @@ function enrichEntry(entry, units, dataset, chartUnits, reference) {
     ? { state: teams.length ? 'verified' : 'verified-false', verified: Boolean(teams.length), teams, memberships }
     : { state: 'unknown', verified: false, teams: [] }
   return { ...entry, bs: profile?.bs ?? null, cc: profile?.cc ?? null, weaponProfiles, fireteamEligibility, canonicalProfile: profile?.name || null, canonicalUnitId: unitId, canonicalOptionId: optionId, canonicalSource: { datasetId: dataset.datasetId, payloadVersion: reference?.payloadVersion || null, sectorialId } }
+}
+
+function normalizeCanonicalProfileName(value) {
+  return String(value || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/gi, ' ').trim().toLowerCase()
 }
 
 function fireteamMinimumSize(types) { return types.includes('DUO') ? 2 : types.includes('HARIS') ? 3 : 3 }

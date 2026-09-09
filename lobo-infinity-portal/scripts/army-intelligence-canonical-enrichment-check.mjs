@@ -4,7 +4,7 @@ import { enrichDecodedList } from './army-intelligence-canonical-enrichment.mjs'
 const list = { armyCode: 'x', combatGroups: [{ combatGroup: 1, entries: [
   { combinedId: '502-10-2-7-3', unit: 'DISPLAY', profile: 'DISPLAY LOADOUT', weapons: ['Legacy Weapon'], skills: [], equipment: [] },
   { combinedId: '502-10-2-8-1', unit: 'DISPLAY', profile: 'OTHER LOADOUT', weapons: ['Other Weapon'], skills: [], equipment: [] },
-  { combinedId: '502-10-0-8-1', unit: 'DISPLAY', profile: 'LEGACY GROUP LOADOUT', weapons: ['Other Weapon'], skills: [], equipment: [] },
+  { combinedId: '502-10-0-8-1', unit: 'DISPLAY', profile: 'CANONICAL PROFILE B', weapons: ['Other Weapon'], skills: [], equipment: [] },
 ] }] }
 const reference = {
   status: 'available', payloadVersion: 'fixture-1',
@@ -12,6 +12,7 @@ const reference = {
     { id: 2, profiles: [{ id: 3, name: 'CANONICAL PROFILE A', bs: 14, cc: 22, weapons: [{ id: 4 }] }, { id: 1, name: 'CANONICAL PROFILE B', bs: 11, cc: 18 }], options: [
       { id: 7, weapons: [{ id: 1, extra: [308] }, { id: 2 }] }, { id: 8, weapons: [{ id: 3 }] },
     ] },
+    { id: 3, profiles: [{ id: 1, name: 'UNRELATED PERIPHERAL', bs: 9, cc: 12 }], options: [] },
   ] }],
   weapons: [{ id: 1, name: 'Canonical HMG', burst: 4 }, { id: 2, name: 'Canonical Pistol', burst: 2 }, { id: 3, name: 'Other Rifle', burst: 3 }, { id: 4, name: 'Canonical Profile Weapon', burst: 2 }],
   extras: [{ id: 308, name: '+1SD' }],
