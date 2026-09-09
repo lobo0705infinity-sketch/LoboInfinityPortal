@@ -992,8 +992,19 @@ function saveTeamTournamentRoundManagement(e) {
         return round.eventId === eventId;
       });
       const existingRound = rounds.find(function(round) {
-        return getTeamTournamentString(round.id) === roundId || Number(round.number) === roundNumber;
+        return getTeamTournamentString(round.id) === roundId;
       });
+      const duplicateRound = rounds.find(function(round) {
+        return getTeamTournamentNormalizedRoundNumber_(round) === roundNumber &&
+          getTeamTournamentString(round.id) !== roundId;
+      });
+      const historicalPairings = getTeamTournamentPairings(eventId);
+      const duplicatePairingRound = historicalPairings.find(function(pairing) {
+        return getTeamTournamentNormalizedRoundNumber_({ round: pairing.round }) === roundNumber &&
+          getTeamTournamentString(pairing.roundId) !== roundId;
+      });
+      if (duplicateRound || duplicatePairingRound)
+        throw new Error(roundName + " already exists.");
       const results = getTeamTournamentResults(eventId).filter(function(result) {
         return getTeamTournamentString(result.roundId) === roundId &&
           getTeamTournamentString(result.status).toLowerCase() !== "rejected";
@@ -1077,7 +1088,7 @@ function saveTeamTournamentRoundManagement(e) {
       if (Object.keys(assignedTeams).length !== teams.length)
         throw new Error("Every registered team must appear exactly once in the round.");
 
-      const existingRoundPairings = getTeamTournamentPairings(eventId).filter(function(pairing) {
+      const existingRoundPairings = historicalPairings.filter(function(pairing) {
         return getTeamTournamentString(pairing.roundId) === roundId;
       });
       if (existingRoundPairings.some(function(existing) {
@@ -2269,8 +2280,30 @@ function getTeamTournamentCurrentRound(eventId) {
   return (activeRounds.length === 1 ? activeRounds : rounds)
     .slice()
     .sort(function(left, right) {
-      return Number(right.number) - Number(left.number);
+      return getTeamTournamentNormalizedRoundNumber_(right) -
+        getTeamTournamentNormalizedRoundNumber_(left);
     })[0] || null;
+
+}
+
+function getTeamTournamentNormalizedRoundNumber_(round) {
+
+  if (!round)
+    return 0;
+
+  const values = [round.number, round.name, round.round];
+  let normalized = 0;
+  for (let index = 0; index < values.length; index += 1) {
+    const text = getTeamTournamentString(values[index]).trim();
+    const match = text.match(/^(?:round\s*)?(\d+)$/i);
+    if (match) {
+      const number = Number(match[1]);
+      if (Number.isInteger(number) && number > normalized)
+        normalized = number;
+    }
+  }
+
+  return normalized;
 
 }
 

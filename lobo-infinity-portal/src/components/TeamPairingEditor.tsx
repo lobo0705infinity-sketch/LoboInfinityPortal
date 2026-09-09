@@ -2,6 +2,7 @@ import { useMemo, useState, type FormEvent } from 'react'
 import { getCanonicalMissionOptions } from '../config/missions'
 import type { TeamTournamentPairing, TeamTournamentTeam } from '../services/api'
 import { samePlayer as same, teamRoster as roster, validateTeamTournamentRound as validateRoundDraft, type PlayerMatch, type TeamMatchDraft } from '../services/teamTournamentRoundManagement'
+import { getNextTeamTournamentRoundNumber, getTeamTournamentRoundNumber } from '../services/teamTournamentRounds'
 import './TeamPairingEditor.css'
 
 type Props = {
@@ -15,7 +16,7 @@ type Props = {
 
 
 export default function TeamPairingEditor({ currentRound, disabled, onSubmit, pairings = [], rounds = [], teams }: Props) {
-  const options = useMemo(() => roundOptions(rounds, currentRound), [rounds, currentRound])
+  const options = useMemo(() => roundOptions(rounds, currentRound, pairings), [rounds, currentRound, pairings])
   const [roundKey, setRoundKey] = useState(options.at(-1)?.key ?? '')
   const selectedRound = options.find((round) => round.key === roundKey) ?? options.at(-1)!
   const [mission, setMission] = useState(selectedRound.mission)
@@ -124,10 +125,13 @@ function PlayerSelect({ disabled, label, roster: players, selected, value, onCha
 }
 
 type RoundOption = { key: string; roundId: string; name: string; number: number; mission: string; next: boolean }
-function roundOptions(rounds: Array<Record<string, unknown>>, current?: Record<string, unknown> | null): RoundOption[] {
-  const existing = rounds.map((round) => ({ key: String(round.id), roundId: String(round.id), name: String(round.name), number: Number(round.number), mission: String(round.mission ?? ''), next: false })).filter((round) => round.roundId && round.number)
-  const currentNumber = Number(current?.number ?? Math.max(0, ...existing.map((round) => round.number)))
-  const number = currentNumber + 1
+function roundOptions(rounds: Array<Record<string, unknown>>, current: Record<string, unknown> | null | undefined, pairings: TeamTournamentPairing[]): RoundOption[] {
+  const existing = rounds.map((round) => {
+    const number = getTeamTournamentRoundNumber(round)
+    return { key: String(round.id), roundId: String(round.id), name: number === null ? '' : `Round ${number}`, number: number ?? 0, mission: String(round.mission ?? ''), next: false }
+  }).filter((round) => round.roundId && round.number)
+  const pairingHistory = pairings.map((pairing) => ({ round: pairing.round }))
+  const number = getNextTeamTournamentRoundNumber([...rounds, ...pairingHistory], current)
   return [...existing, { key: `new-${number}`, roundId: '', name: `Round ${number}`, number, mission: '', next: true }]
 }
 function loadDrafts(round: RoundOption, teams: TeamTournamentTeam[], pairings: TeamTournamentPairing[]): TeamMatchDraft[] {
