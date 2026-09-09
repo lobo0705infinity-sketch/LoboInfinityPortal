@@ -118,6 +118,7 @@ export const firestoreProvider: DataProvider = {
     getTeamTournament: callRepository('teams', 'getTeamTournament'),
     saveInvitation: callRepository('teams', 'saveInvitation'),
     savePairing: callRepository('teams', 'savePairing'),
+    saveRoundManagement: callRepository('teams', 'saveRoundManagement'),
     saveResult: callRepository('teams', 'saveResult'),
     saveTeam: callRepository('teams', 'saveTeam'),
   },

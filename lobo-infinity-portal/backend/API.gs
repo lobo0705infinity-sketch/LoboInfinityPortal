@@ -985,6 +985,9 @@ function handleApiGet(e, action) {
     case "teamTournamentPairing":
       return saveTeamTournamentPairing(e);
 
+    case "teamTournamentRoundManagement":
+      return saveTeamTournamentRoundManagement(e);
+
     case "teamTournamentInvitation":
       return saveTeamTournamentInvitation(e);
 
@@ -1449,6 +1452,9 @@ function handleApiPost(e, action) {
 
     case "teamTournamentPairing":
       return saveTeamTournamentPairing(e);
+
+    case "teamTournamentRoundManagement":
+      return saveTeamTournamentRoundManagement(e);
 
     case "teamTournamentInvitation":
       return saveTeamTournamentInvitation(e);

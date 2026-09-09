@@ -5,7 +5,7 @@ import {
   type EventManagerData,
   type EventRegistrationEntry,
 } from '../services/api'
-import { eventRepository } from '../services/data'
+import { eventRepository, teamRepository } from '../services/data'
 import { isCanonicalMission } from '../config/missions'
 import {
   getPublicMissionGeistCatalog,
@@ -418,12 +418,22 @@ function EventManagerPanel({
   }
 
   async function savePairing(params: Record<string, string>) {
-    await runManagerAction('pairing', () =>
-      eventRepository.savePairing({
+    setWorkingAction('pairing')
+    setActionError('')
+    setActionMessage('')
+    try {
+      await teamRepository.saveRoundManagement({
         ...params,
         eventId: selectedEventId,
-      }),
-    )
+      })
+      await loadManager(selectedEventId)
+      setActionMessage('Round and pairings published.')
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : 'Round publication failed.')
+      throw error
+    } finally {
+      setWorkingAction('')
+    }
   }
 
   if (state.status === 'loading') {

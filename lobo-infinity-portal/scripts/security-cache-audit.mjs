@@ -134,6 +134,7 @@ const endpointPolicy = {
   refreshArmyIntelligence: { authRequired: true, userScoped: false },
   refreshPublicAnalyticsProjection: { authRequired: true, userScoped: false },
   refreshPublicTeamTournamentProjection: { authRequired: true, userScoped: false },
+  teamTournamentRoundManagement: { authRequired: true, userScoped: false },
   refreshPublicPlayersProjection: { authRequired: true, userScoped: false },
   refreshTop40PublicProjection: { authRequired: true, userScoped: false },
   refreshCache: { authRequired: true, userScoped: false },

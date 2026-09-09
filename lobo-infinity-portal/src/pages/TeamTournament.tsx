@@ -237,11 +237,12 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
   async function savePairing(params: Record<string, string>) {
     setWorking('pairing')
     try {
-      const result = await teamRepository.savePairing({
+      await teamRepository.saveRoundManagement({
         ...params,
         eventId: activeEventId,
       })
-      setState((current) => applyTeamTournamentMutationState(current, result))
+      const data = await teamRepository.getTeamTournament(activeEventId)
+      setState({ data, status: 'success' })
     } finally {
       setWorking('')
     }

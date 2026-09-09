@@ -961,6 +961,169 @@ function saveTeamTournamentPairing(e) {
 
 }
 
+function saveTeamTournamentRoundManagement(e) {
+
+  return requireApiPermission(e, "runSeasonControl", function() {
+    const lock = LockService.getScriptLock();
+    lock.waitLock(10000);
+
+    try {
+      const params = getApiParameters(e);
+      const eventId = resolveEventId(params.eventId || EVENT_ENGINE_DEFAULT_TEAM_TOURNAMENT_ID);
+      const event = getEventByIdSnapshot(eventId);
+      const roundNumber = Number(params.roundNumber);
+      const roundName = "Round " + roundNumber;
+      const roundId = getTeamTournamentString(params.roundId) ||
+        "round-" + eventId.replace(/^event-/, "") + "-" + roundNumber;
+      const mission = getCanonicalMissionName(params.mission);
+      const missionGeistId = validatePersistedMissionGeistSelection_(mission, params.missionGeistId);
+      const pairings = JSON.parse(getTeamTournamentString(params.pairingsJson) || "[]");
+
+      if (!event || event.type !== "Team Tournament")
+        throw new Error("A valid Team Tournament event is required.");
+      if (!Number.isInteger(roundNumber) || roundNumber < 1)
+        throw new Error("A valid round is required.");
+      if (!mission || getCanonicalMissions().indexOf(mission) === -1)
+        throw new Error("A valid Mission is required.");
+      if (!Array.isArray(pairings) || pairings.length === 0)
+        throw new Error("At least one team pairing is required.");
+
+      const rounds = getEventEngineSnapshot().rounds.filter(function(round) {
+        return round.eventId === eventId;
+      });
+      const existingRound = rounds.find(function(round) {
+        return getTeamTournamentString(round.id) === roundId || Number(round.number) === roundNumber;
+      });
+      const results = getTeamTournamentResults(eventId).filter(function(result) {
+        return getTeamTournamentString(result.roundId) === roundId &&
+          getTeamTournamentString(result.status).toLowerCase() !== "rejected";
+      });
+      if (existingRound && results.length > 0)
+        throw new Error(roundName + " pairings cannot be edited after results are submitted.");
+
+      const teams = getTeamTournamentTeams(eventId).filter(function(team) {
+        return getTeamTournamentString(team.status).toLowerCase() !== "deleted";
+      });
+      const teamsById = {};
+      teams.forEach(function(team) { teamsById[team.teamId] = team; });
+      const assignedTeams = {};
+      const normalizedPairings = pairings.map(function(pairing, pairingIndex) {
+        const teamA = teamsById[getTeamTournamentString(pairing.teamAId)];
+        const teamB = teamsById[getTeamTournamentString(pairing.teamBId)];
+        if (!teamA || !teamB)
+          throw new Error("Pairing " + (pairingIndex + 1) + " contains a team outside this event.");
+        if (teamA.teamId === teamB.teamId)
+          throw new Error("A team cannot play itself.");
+        if (assignedTeams[teamA.teamId] || assignedTeams[teamB.teamId])
+          throw new Error("A team may appear only once in a round.");
+        assignedTeams[teamA.teamId] = true;
+        assignedTeams[teamB.teamId] = true;
+
+        const rosterA = splitTeamTournamentPlayers(teamA.players);
+        const rosterB = splitTeamTournamentPlayers(teamB.players);
+        const rosterAKeys = rosterA.map(normalizeTeamTournamentPlayerKey);
+        const rosterBKeys = rosterB.map(normalizeTeamTournamentPlayerKey);
+        const matches = Array.isArray(pairing.matches) ? pairing.matches : [];
+        const unpairedA = Array.isArray(pairing.unpairedA) ? pairing.unpairedA.map(getTeamTournamentString).filter(Boolean) : [];
+        const unpairedB = Array.isArray(pairing.unpairedB) ? pairing.unpairedB.map(getTeamTournamentString).filter(Boolean) : [];
+        const usedA = {};
+        const usedB = {};
+
+        matches.forEach(function(match, matchIndex) {
+          const playerA = getTeamTournamentString(match.teamAPlayer);
+          const playerB = getTeamTournamentString(match.teamBPlayer);
+          const keyA = normalizeTeamTournamentPlayerKey(playerA);
+          const keyB = normalizeTeamTournamentPlayerKey(playerB);
+          if (!playerA || !playerB)
+            throw new Error("Every player matchup must have two players.");
+          if (keyA === keyB)
+            throw new Error("A player cannot be paired against themselves.");
+          if (rosterAKeys.indexOf(keyA) === -1 || rosterBKeys.indexOf(keyB) === -1)
+            throw new Error("A player assignment is outside its registered team.");
+          if (usedA[keyA] || usedB[keyB])
+            throw new Error("A player may appear only once in a round pairing.");
+          usedA[keyA] = true;
+          usedB[keyB] = true;
+          match.table = matchIndex + 1;
+          match.teamAPlayer = playerA;
+          match.teamBPlayer = playerB;
+        });
+        unpairedA.forEach(function(player) {
+          const key = normalizeTeamTournamentPlayerKey(player);
+          if (rosterAKeys.indexOf(key) === -1 || usedA[key]) throw new Error("Invalid or duplicate Team A substitute.");
+          usedA[key] = true;
+        });
+        unpairedB.forEach(function(player) {
+          const key = normalizeTeamTournamentPlayerKey(player);
+          if (rosterBKeys.indexOf(key) === -1 || usedB[key]) throw new Error("Invalid or duplicate Team B substitute.");
+          usedB[key] = true;
+        });
+        if (Object.keys(usedA).length !== rosterAKeys.length || Object.keys(usedB).length !== rosterBKeys.length)
+          throw new Error("Every registered player must be matched or explicitly marked unpaired/substitute.");
+        if (unpairedA.length !== Math.max(0, rosterA.length - rosterB.length) ||
+            unpairedB.length !== Math.max(0, rosterB.length - rosterA.length))
+          throw new Error("Unpaired players are allowed only when team sizes differ.");
+
+        return {
+          teamA: teamA,
+          teamB: teamB,
+          playerPairings: matches.map(function(match) {
+            return "Table " + match.table + ": " + match.teamAPlayer + " vs " + match.teamBPlayer;
+          }).concat(unpairedA.map(function(player) { return "Substitute/Unpaired (" + teamA.teamName + "): " + player; }))
+            .concat(unpairedB.map(function(player) { return "Substitute/Unpaired (" + teamB.teamName + "): " + player; })).join("\n")
+        };
+      });
+
+      if (Object.keys(assignedTeams).length !== teams.length)
+        throw new Error("Every registered team must appear exactly once in the round.");
+
+      const existingRoundPairings = getTeamTournamentPairings(eventId).filter(function(pairing) {
+        return getTeamTournamentString(pairing.roundId) === roundId;
+      });
+      if (existingRoundPairings.some(function(existing) {
+        return !normalizedPairings.some(function(next) {
+          return teamTournamentSameValue(existing.teamA, next.teamA.teamName) &&
+            teamTournamentSameValue(existing.teamB, next.teamB.teamName);
+        });
+      })) throw new Error("Editing cannot omit an existing team pairing.");
+
+      const timestamp = getTeamTournamentTimestamp();
+      const pairingSheet = ensureTeamTournamentPairingsSheet();
+      normalizedPairings.forEach(function(pairing) {
+        upsertTeamTournamentCompositeRow(pairingSheet, TEAM_TOURNAMENT_PAIRING_HEADERS,
+          ["Event ID", "Round ID", "Team A", "Team B"],
+          [eventId, roundId, pairing.teamA.teamName, pairing.teamB.teamName],
+          [eventId, roundId, roundName, pairing.teamA.teamName, pairing.teamB.teamName,
+            pairing.playerPairings, "Scheduled", "", timestamp, timestamp]);
+      });
+
+      upsertEventEngineRow(
+        ensureEventEngineSheet(CONFIG.SHEETS.EVENT_ROUNDS, EVENT_ENGINE_ROUND_HEADERS),
+        EVENT_ENGINE_ROUND_HEADERS,
+        "ID",
+        roundId,
+        [roundId, eventId, existingRound ? existingRound.seasonId || "" : "", roundName, roundNumber,
+          existingRound ? existingRound.type || "Team Round" : "Team Round", "", "", "Active", "",
+          "Pairing reminders", existingRound ? existingRound.createdAt || timestamp : timestamp, timestamp, mission, missionGeistId]
+      );
+      updateEventManagerEventFields(eventId, { "Lifecycle Stage": roundName });
+      invalidateEventEngineSnapshotCache();
+      invalidateTeamTournamentRuntimeCache(eventId);
+      invalidatePortalCacheGroup("events");
+      if (typeof publishPublicTeamTournamentProjection_ === "function")
+        publishPublicTeamTournamentProjection_();
+
+      return buildTeamTournamentMutationResponse("roundManagement", eventId, {
+        lifecycleStage: roundName,
+        round: { id: roundId, eventId: eventId, name: roundName, number: roundNumber, status: "Active", mission: mission, missionGeistId: missionGeistId },
+        pairingsSaved: normalizedPairings.length
+      });
+    } finally {
+      lock.releaseLock();
+    }
+  });
+}
+
 function saveTeamTournamentInvitation(e) {
 
   return requireApiPermission(e, "runSeasonControl", function(auth) {

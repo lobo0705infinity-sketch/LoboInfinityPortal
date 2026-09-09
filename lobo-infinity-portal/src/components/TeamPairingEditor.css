@@ -90,6 +90,33 @@
   gap: 8px;
 }
 
+.team-pairing-matchup,
+.team-pairing-preview {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 10px;
+  background: rgba(2, 6, 23, 0.38);
+}
+
+.team-pairing-matchup h3,
+.team-pairing-preview h3,
+.team-pairing-preview p {
+  margin: 0;
+}
+
+.team-pairing-preview > div {
+  padding-top: 10px;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.team-pairing-substitutes {
+  margin: 0;
+  color: #fde68a;
+  font-weight: 800;
+}
+
 .team-pairing-row {
   display: grid;
   grid-template-columns: 72px minmax(0, 1fr) 36px minmax(0, 1fr);

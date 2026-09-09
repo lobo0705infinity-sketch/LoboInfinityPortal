@@ -1804,6 +1804,7 @@ export type TeamTournamentMutationResult =
   | { eventId: string; kind: 'invitation'; invitation: TeamTournamentInvitation }
   | { eventId: string; kind: 'result'; result: TeamTournamentResult }
   | { eventId: string; kind: 'round'; lifecycleStage: string; status: string }
+  | { eventId: string; kind: 'roundManagement'; lifecycleStage: string; pairingsSaved: number; round: Record<string, unknown> }
 
 export type EventRegistrationMutationResult =
   | EventRegistrationData
@@ -2813,6 +2814,10 @@ export type ApiClient = {
     options?: ApiOptions,
   ) => Promise<TeamTournamentMutationResult>
   saveTeamTournamentPairing: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<TeamTournamentMutationResult>
+  saveTeamTournamentRoundManagement: (
     params: Record<string, string>,
     options?: ApiOptions,
   ) => Promise<TeamTournamentMutationResult>
@@ -3947,6 +3952,14 @@ export async function saveTeamTournamentPairing(
   return normalizeTeamTournamentMutationPayload(payload)
 }
 
+export async function saveTeamTournamentRoundManagement(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<TeamTournamentMutationResult> {
+  const payload = await postRequest('teamTournamentRoundManagement', options, params)
+  return normalizeTeamTournamentMutationPayload(payload)
+}
+
 export async function saveTeamTournamentInvitation(
   params: Record<string, string>,
   options: ApiOptions = {},
@@ -4469,6 +4482,7 @@ export const apiClient: ApiClient = {
   registerTeamTournament,
   saveTeamTournamentTeam,
   saveTeamTournamentPairing,
+  saveTeamTournamentRoundManagement,
   saveTeamTournamentInvitation,
   saveTeamTournamentResult,
   advanceTeamTournamentRound,
@@ -6741,6 +6755,16 @@ function normalizeTeamTournamentMutationPayload(
       kind,
       lifecycleStage: getString(mutation, 'lifecycleStage'),
       status: getString(mutation, 'status'),
+    }
+  }
+
+  if (kind === 'roundManagement') {
+    return {
+      eventId,
+      kind,
+      lifecycleStage: getString(mutation, 'lifecycleStage'),
+      pairingsSaved: getNumber(mutation, 'pairingsSaved'),
+      round: getRequiredRecord(mutation, 'round'),
     }
   }
 

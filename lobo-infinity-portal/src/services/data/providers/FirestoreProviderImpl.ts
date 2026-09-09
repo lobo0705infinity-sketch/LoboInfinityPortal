@@ -698,6 +698,9 @@ export const firestoreProviderImpl: DataProvider = {
       await savePairingDocument(params)
       return buildTeamTournamentData(params.eventId)
     },
+    saveRoundManagement: async () => {
+      throw new Error('Atomic Team Tournament round management requires the canonical Google Sheets provider.')
+    },
     saveResult: async (params) => {
       const db = await getDb()
       const resultId = params.resultId || createId('result')

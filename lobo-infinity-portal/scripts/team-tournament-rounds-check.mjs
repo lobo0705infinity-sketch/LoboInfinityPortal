@@ -27,10 +27,10 @@ assert.match(tournament, /Both teams must belong to this Team Tournament/, 'back
 assert.match(tournament, /expectedOpponentTeam/, 'backend resolves the opposing team')
 assert.match(tournament, /membership\[getTeamTournamentString\(selectedOpponent\)\.toLowerCase\(\)\]/, 'backend validates the selected opponent roster membership')
 
-assert.match(pairingEditor, /Post Team Matchup/, 'Commissioner editor is team-matchup only')
-assert.match(pairingEditor, /Save Matchup/, 'Commissioner saves a team matchup')
-assert.doesNotMatch(pairingEditor, /Team A Player|Team B Player|Individual pairings/, 'Commissioner editor has no player assignments')
-assert.match(pairingEditor, /currentRound \? \[currentRound, \.\.\.rounds\]/, 'team matchup editor defaults to the canonical current round')
+assert.match(pairingEditor, /Round Management/, 'Commissioner editor exposes round management')
+assert.match(pairingEditor, /Publish Round and Pairings/, 'Commissioner atomically publishes a complete round')
+assert.match(pairingEditor, /Team A Player|Team B Player/, 'Commissioner assigns individual player opponents')
+assert.match(pairingEditor, /Complete Preview/, 'Commissioner reviews the complete round before publishing')
 assert.match(tournamentPage, /Create Next Round/, 'Pairings page exposes canonical next-round creation')
 assert.match(tournamentPage, /getPublicMissionGeistCatalog/, 'round form uses the snapshot-native Mission Geist catalog')
 assert.match(tournamentPage, /<strong>Mission:<\/strong>/, 'public pairings display the current round Mission')
@@ -39,4 +39,4 @@ assert.match(submitResult, /buildOpposingTeamRosterOptions/, 'team-only submissi
 assert.match(submitResult, /data\?\.tournamentResults\.some/, 'already-submitted state comes from canonical results')
 assert.match(submitResult, /commissionerMode[\s\S]{0,200}buildTournamentOpponentPickerOptions[\s\S]{0,200}: buildOpposingTeamRosterOptions/, 'only Commissioner mode can use the broad opponent picker')
 
-console.log('PASS: canonical Team Tournament round and team-only pairing contract')
+console.log('PASS: canonical Team Tournament round-management contract')
