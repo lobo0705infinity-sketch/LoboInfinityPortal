@@ -15,13 +15,14 @@ const metadata = { weapons: [
   { id: 4, name: 'Deployable Device', burst: '-' },
   { id: 5, name: 'Unknown Weapon' },
 ] }
-const payload = { version: '7.test', url: 'https://infinitytheuniverse.com/army/units/en/10', units: [{ id: 10 }], fireteamChart: { teams: [] } }
+const payload = { version: '7.test', url: 'https://infinitytheuniverse.com/army/units/en/10', units: [{ id: 10 }], filters: { extras: [{ id: 308, name: '+1SD' }] }, fireteamChart: { teams: [] } }
 const dataset = buildCanonicalDataset({ metadata, payloads: [payload], capturedAt: '2026-01-01T00:00:00.000Z' })
 assert.match(dataset.datasetId, /^iad-[a-f0-9]{24}$/)
 assert.equal(dataset.officialUnitVersion, '7.test')
 assert.ok(dataset.sourceUrls.includes(payload.url))
 assert.equal(resolveCanonicalWeaponRecords(dataset, [{ id: 1 }])[0].burst, 4)
 assert.equal(resolveCanonicalWeaponRecords(dataset, [{ id: 2 }])[0].burst, 3)
+assert.deepEqual(resolveCanonicalWeaponRecords(dataset, [{ id: 2, extra: [308] }])[0].modifiers, ['+1SD'])
 assert.equal(resolveCanonicalWeaponRecords(dataset, [{ id: 4 }])[0].burstStatus, 'not-applicable')
 assert.equal(resolveCanonicalWeaponRecords(dataset, [{ id: 5 }])[0].burstStatus, 'unknown')
 assert.equal(resolveCanonicalWeaponRecords(dataset, [{ id: 3 }])[0].burst, 3)

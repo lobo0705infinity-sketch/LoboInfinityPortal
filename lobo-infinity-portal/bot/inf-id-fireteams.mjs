@@ -19,7 +19,7 @@ export async function getFireteamReference({ sectorialId, armyCode, browser, now
   const id = validateSectorialId(sectorialId)
   const path = resolve(cacheDir, `${id}.json`)
   const cached = await readCache(path)
-  if (cached && Array.isArray(cached.units) && now - cached.cachedAt < maxAgeMs) return { ...cached, cacheStatus: 'hit' }
+  if (cached && Array.isArray(cached.units) && Array.isArray(cached.extras) && now - cached.cachedAt < maxAgeMs) return { ...cached, cacheStatus: 'hit' }
   try {
     const fresh = await captureOfficialPayload({ sectorialId: id, armyCode, browser })
     const normalized = normalizeOfficialPayload(fresh, now, id)
@@ -29,7 +29,7 @@ export async function getFireteamReference({ sectorialId, armyCode, browser, now
     await rename(temporary, path)
     return { ...normalized, cacheStatus: cached ? 'refresh' : 'miss' }
   } catch (error) {
-    if (cached && now - cached.cachedAt <= maxStaleMs) return { ...cached, cacheStatus: 'stale-fallback', warning: String(error?.message || error) }
+    if (cached && Array.isArray(cached.extras) && now - cached.cachedAt <= maxStaleMs) return { ...cached, cacheStatus: 'stale-fallback', warning: String(error?.message || error) }
     return { status: 'unavailable', sectorialId: id, cacheStatus: 'unavailable', warning: String(error?.message || error) }
   }
 }
@@ -78,7 +78,7 @@ export function normalizeOfficialPayload({ body, headers, metadata }, cachedAt =
     unit.unitId = official?.id ?? null
     unit.officialUnitName = official?.name ?? null
   }
-  return { status: chart.teams.length ? 'available' : 'none', sectorialId: sectorialId ?? null, payloadVersion: body.version ?? null, etag: headers?.etag ?? null, responseDate: headers?.date ?? null, cachedAt, units: body.units.map(normalizeOfficialUnit), weapons: (metadata?.weapons || body.filters?.weapons || []).map(normalizeOfficialWeapon), skills: metadata?.skills || body.filters?.skills || [], equip: metadata?.equips || body.filters?.equip || [], fireteamChart: chart }
+  return { status: chart.teams.length ? 'available' : 'none', sectorialId: sectorialId ?? null, payloadVersion: body.version ?? null, etag: headers?.etag ?? null, responseDate: headers?.date ?? null, cachedAt, units: body.units.map(normalizeOfficialUnit), weapons: (metadata?.weapons || body.filters?.weapons || []).map(normalizeOfficialWeapon), extras: metadata?.extras || body.filters?.extras || [], skills: metadata?.skills || body.filters?.skills || [], equip: metadata?.equips || body.filters?.equip || [], fireteamChart: chart }
 }
 
 function normalizeOfficialWeapon(weapon) {
@@ -120,7 +120,7 @@ function normalizeOfficialUnit(unit) {
 }
 
 function normalizeWeaponReference(weapon) {
-  return { id: Number(weapon.id) || null, order: Number(weapon.order) || 0, mode: weapon.mode == null ? null : String(weapon.mode), variant: weapon.variant == null ? null : String(weapon.variant), name: weapon.name == null ? null : String(weapon.name) }
+  return { id: Number(weapon.id) || null, order: Number(weapon.order) || 0, extra: Array.isArray(weapon.extra) ? weapon.extra.map(Number).filter(Number.isFinite) : [], mode: weapon.mode == null ? null : String(weapon.mode), variant: weapon.variant == null ? null : String(weapon.variant), name: weapon.name == null ? null : String(weapon.name) }
 }
 
 function normalizeTraitReference(trait) {

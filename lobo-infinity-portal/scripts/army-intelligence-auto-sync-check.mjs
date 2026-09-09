@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { selectRefreshCandidates } from '../api/army-intelligence-refresh-worker.mjs'
+import { ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION } from './army-intelligence-snapshot-schema.mjs'
 
 const worker = readFileSync('api/army-intelligence-refresh-worker.mjs', 'utf8')
 const api = readFileSync('backend/API.gs', 'utf8')
@@ -21,7 +22,7 @@ const state = new Map([
     hasProfileMetadata: true,
     hasTacticalMetadata: true,
     pipelineVersion: 'army-intelligence-pipeline-v1',
-    tacticalSchemaVersion: 'army-intelligence-tactical-v5',
+    tacticalSchemaVersion: ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION,
     status: 'decoded',
   }],
   ['failed', {

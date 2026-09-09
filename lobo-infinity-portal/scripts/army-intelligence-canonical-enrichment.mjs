@@ -20,7 +20,7 @@ export async function createCanonicalEnricher({ browser, cacheDir } = {}) {
 
 export function enrichDecodedList(list, reference) {
   const units = Array.isArray(reference?.units) ? reference.units : []
-  const dataset = buildCanonicalDataset({ metadata: { weapons: reference?.weapons || [] }, payloads: [{ version: reference?.payloadVersion, units }] })
+  const dataset = buildCanonicalDataset({ metadata: { weapons: reference?.weapons || [], extras: reference?.extras || [] }, payloads: [{ version: reference?.payloadVersion, units }] })
   const chartUnits = new Map()
   const typedTeams = (reference?.fireteamChart?.teams || []).filter((team) => Array.isArray(team.type) && team.type.length)
   for (const team of typedTeams) {
@@ -58,7 +58,7 @@ function enrichEntry(entry, units, dataset, chartUnits, reference) {
   const profile = profiles.find((candidate) => candidate.id === profileId) || (profiles.length === 1 ? profiles[0] : null)
   const option = group?.options?.find((candidate) => candidate.id === optionId)
   const weaponReferences = [...(profile?.weapons || []), ...(option?.weapons || [])]
-  const weaponProfiles = resolveCanonicalWeaponRecords(dataset, weaponReferences, { expandAmbiguousModes: true }).filter((weapon) => weapon.name).map((weapon) => ({ id: weapon.id, name: weapon.name, mode: weapon.mode, variant: weapon.variant, modeResolution: weapon.modeResolution, type: weapon.type, burst: weapon.burst, burstStatus: weapon.burstStatus, source: weapon.sourceDatasetId }))
+  const weaponProfiles = resolveCanonicalWeaponRecords(dataset, weaponReferences, { expandAmbiguousModes: true }).filter((weapon) => weapon.name).map((weapon) => ({ id: weapon.id, name: weapon.name, modifiers: weapon.modifiers || [], mode: weapon.mode, variant: weapon.variant, modeResolution: weapon.modeResolution, type: weapon.type, burst: weapon.burst, burstStatus: weapon.burstStatus, source: weapon.sourceDatasetId }))
   const memberships = chartUnits.get(unitId) || []
   const teams = Array.from(new Set(memberships.map((item) => item.team)))
   const fireteamEligibility = reference?.status === 'available' || reference?.status === 'none'

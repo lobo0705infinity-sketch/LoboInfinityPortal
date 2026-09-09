@@ -5,7 +5,8 @@ export const CANONICAL_DATASET_SCHEMA_VERSION = 'infinity-army-canonical-dataset
 export function buildCanonicalDataset({ metadata, payloads = [], capturedAt = new Date().toISOString(), language = 'en' } = {}) {
   const units = payloads.flatMap((payload) => payload?.units || [])
   const unitVersion = payloads.map((payload) => payload?.version).filter(Boolean).sort().join(',') || null
-  const normalizedMetadata = normalizeMetadata(metadata)
+  const payloadExtras = payloads.flatMap((payload) => payload?.filters?.extras || [])
+  const normalizedMetadata = normalizeMetadata({ ...metadata, extras: [...(metadata?.extras || []), ...payloadExtras] })
   const normalizedPayloads = payloads.map(normalizeUnitPayload)
   const metadataHash = sha256(normalizedMetadata)
   const unitPayloadHash = sha256(normalizedPayloads)
@@ -31,6 +32,7 @@ export function normalizeMetadata(metadata = {}) {
     weapons: (metadata.weapons || []).map((weapon) => normalizeWeapon(weapon)),
     skills: Array.isArray(metadata.skills) ? metadata.skills : [],
     equips: Array.isArray(metadata.equips) ? metadata.equips : [],
+    extras: dedupeById(Array.isArray(metadata.extras) ? metadata.extras : []),
   }
 }
 
@@ -58,23 +60,34 @@ export function resolveCanonicalWeaponRecords(dataset, references = [], { expand
   return references.flatMap((reference) => {
     const id = Number(reference?.id)
     const candidates = catalog.filter((weapon) => weapon.id === id)
+    const modifiers = resolveExtraNames(dataset, reference?.extra ?? reference?.extras)
     const mode = reference?.mode ?? reference?.variant ?? reference?.name ?? null
     const matched = mode == null ? candidates : candidates.filter((weapon) => weapon.mode === String(mode) || weapon.variant === String(mode) || weapon.name === String(mode))
     const selected = matched.length === 1 ? matched[0] : candidates.length === 1 ? candidates[0] : null
     if (!selected) {
       if (expandAmbiguousModes && mode == null && candidates.length > 1) {
-        return candidates.map((candidate) => ({ ...candidate, modeResolution: 'expanded', sourceDatasetId: dataset?.datasetId || null }))
+        return candidates.map((candidate) => ({ ...candidate, modifiers, modeResolution: 'expanded', sourceDatasetId: dataset?.datasetId || null }))
       }
       // Some official mode records intentionally share an ID and have no mode
       // discriminator in the option reference.  They are still safe for a
       // Burst value when the canonical records agree exactly on that value;
       // do not claim that a particular mode was selected.
       const invariant = invariantBurstRecord(candidates)
-      if (invariant) return [{ ...invariant, id: Number.isInteger(id) ? id : null, name: invariant.name || candidates[0]?.name || String(reference?.name || ''), mode: mode == null ? null : String(mode), modeResolution: 'ambiguous', sourceDatasetId: dataset?.datasetId || null }]
-      return [{ id: Number.isInteger(id) ? id : null, name: candidates[0]?.name || String(reference?.name || ''), mode: mode == null ? null : String(mode), burst: null, burstStatus: candidates.length ? 'ambiguous' : 'unknown', sourceDatasetId: dataset?.datasetId || null }]
+      if (invariant) return [{ ...invariant, modifiers, id: Number.isInteger(id) ? id : null, name: invariant.name || candidates[0]?.name || String(reference?.name || ''), mode: mode == null ? null : String(mode), modeResolution: 'ambiguous', sourceDatasetId: dataset?.datasetId || null }]
+      return [{ id: Number.isInteger(id) ? id : null, name: candidates[0]?.name || String(reference?.name || ''), modifiers, mode: mode == null ? null : String(mode), burst: null, burstStatus: candidates.length ? 'ambiguous' : 'unknown', sourceDatasetId: dataset?.datasetId || null }]
     }
-    return [{ ...selected, sourceDatasetId: dataset?.datasetId || null }]
+    return [{ ...selected, modifiers, sourceDatasetId: dataset?.datasetId || null }]
   })
+}
+
+function resolveExtraNames(dataset, value) {
+  const ids = Array.isArray(value) ? value : value == null ? [] : [value]
+  const extras = dataset?.metadata?.extras || []
+  return ids.map((id) => extras.find((extra) => Number(extra.id) === Number(id))?.name).filter(Boolean)
+}
+
+function dedupeById(values) {
+  return Array.from(new Map(values.map((value) => [Number(value?.id), value])).values())
 }
 
 function invariantBurstRecord(candidates) {

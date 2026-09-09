@@ -50,6 +50,7 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
       name: weapon.name || '',
       sourceDatasetId: weapon.sourceDatasetId,
       type: weapon.type || '',
+      modifiers: weapon.modifiers || [],
     })))
     // Infinity-Data names are retained when canonical metadata is unavailable, but
     // their Burst remains unverified and therefore cannot qualify an Apex profile.
@@ -86,8 +87,8 @@ export function classifyTacticalBrief(profiles, army = {}) {
     const effectiveWeapons = profile.weapons.map((weapon) => ({ ...weapon, baseBurst: weapon.burst, burst: weapon.burst === null ? null : weapon.burst + burstBonus }))
     const apexWeapons = effectiveWeapons.filter((weapon) => isRangedWeapon(weapon) && (weapon.burst >= 5 || (profile.bs >= 14 && weapon.burst >= 4) || (profile.bs === 13 && weapon.burst >= 4 && enhancements.length)))
     if (apexWeapons.length) result.apex.push({ ...profile, badges: enhancements, qualifyingWeapons: apexWeapons })
-    const competentWeapons = effectiveWeapons.map((weapon) => ({ ...weapon, activeBurst: weapon.burst, burst: weapon.burst === null ? null : weapon.burst + nativeSdBonus + fireteamSdBonus, nativeSdBonus, fireteamSdBonus })).filter((weapon) => weapon.burst >= 4 && isRangedWeapon(weapon))
-    if ((profile.bs === 12 || profile.bs === 13) && competentWeapons.length) result.competent.push({ ...profile, badges: unique([...(burstBonus ? preferredMatches(profile.skills, [bsAttackBurstToken]) : []), ...(nativeSdBonus ? preferredMatches(profile.skills, [bsAttackSdToken]) : []), ...(fireteamSdBonus ? ['Fireteam (+1SD)'] : [])]), qualifyingFireteams, qualifyingWeapons: competentWeapons })
+    const competentWeapons = effectiveWeapons.map((weapon) => ({ ...weapon, activeBurst: weapon.burst, burst: weapon.burst === null ? null : weapon.burst + nativeSdBonus + fireteamSdBonus + weaponSdBonus(weapon), nativeSdBonus, weaponSdBonus: weaponSdBonus(weapon), fireteamSdBonus })).filter((weapon) => weapon.burst >= 4 && isRangedWeapon(weapon))
+    if ((profile.bs === 12 || profile.bs === 13) && competentWeapons.length) result.competent.push({ ...profile, badges: unique([...(burstBonus ? preferredMatches(profile.skills, [bsAttackBurstToken]) : []), ...(nativeSdBonus ? preferredMatches(profile.skills, [bsAttackSdToken]) : []), ...competentWeapons.filter((weapon) => weapon.weaponSdBonus).map((weapon) => `${weaponDisplay(weapon)} (+${weapon.weaponSdBonus}SD)`), ...(fireteamSdBonus ? ['Fireteam (+1SD)'] : [])]), qualifyingFireteams, qualifyingWeapons: competentWeapons })
 
     const hackerTypes = unique([
       ...exactMatches(profile.skills, [hackerToken]),
@@ -98,7 +99,8 @@ export function classifyTacticalBrief(profiles, army = {}) {
 
     const aroWeapons = profile.weapons.filter((weapon) => aroWeaponToken(weaponDisplay(weapon)))
     const aroSkills = preferredMatches(profile.skills, [totalReactionToken, neurocineticsToken, bsAttackSdToken])
-    if (Number.isFinite(profile.points) && profile.points >= 15 && aroWeapons.length && (aroSkills.length || fireteamSdBonus)) result.valuableAro.push({ ...profile, badges: unique([...aroSkills, ...(fireteamSdBonus ? ['Fireteam (+1SD)'] : [])]), qualifyingFireteams, qualifyingWeapons: aroWeapons })
+    const weaponSdBadges = aroWeapons.filter((weapon) => weaponSdBonus(weapon)).map((weapon) => `${weaponDisplay(weapon)} (+${weaponSdBonus(weapon)}SD)`)
+    if (Number.isFinite(profile.points) && profile.points >= 15 && aroWeapons.length && (aroSkills.length || weaponSdBadges.length || fireteamSdBonus)) result.valuableAro.push({ ...profile, badges: unique([...aroSkills, ...weaponSdBadges, ...(fireteamSdBonus ? ['Fireteam (+1SD)'] : [])]), qualifyingFireteams, qualifyingWeapons: aroWeapons })
     const disposableWeapons = profile.weapons.filter((weapon) => aroWeaponToken(weaponDisplay(weapon)) || flashPulseToken(weaponDisplay(weapon)))
     if (Number.isFinite(profile.points) && profile.points <= 14 && disposableWeapons.length) result.disposableAro.push({ ...profile, badges: [], qualifyingWeapons: disposableWeapons })
 
@@ -275,6 +277,7 @@ function totalReactionToken(v) { return /^total reaction$/.test(normalized(v)) }
 function neurocineticsToken(v) { return /^neurocinetics$/.test(normalized(v)) }
 function bsAttackSdToken(v) { return /^bs attack\s+\+(?:1)?sd$/.test(normalized(v)) }
 function bsAttackSdBonus(skills) { for (const skill of skills || []) { const match = normalized(skill).match(/^bs attack\s+\+(?:(\d+)\s*)?sd$/); if (match) return Number(match[1] || 1) } return 0 }
+function weaponSdBonus(weapon) { for (const modifier of weapon?.modifiers || []) { const match = normalized(modifier).match(/^\+(?:(\d+)\s*)?sd$/); if (match) return Number(match[1] || 1) } return 0 }
 function hackerToken(v) { return /^hacker$/.test(normalized(v)) }
 function hackingDeviceToken(v) { return /^(?:(?:assault|defensive|evo|killer|plus|white|zero pain)\s+)?hacking device(?:\s+plus)?$/.test(normalized(v)) }
 function pitcherToken(v) { return /^pitcher$/.test(normalized(v)) }
@@ -294,7 +297,7 @@ function isRangedWeapon(w) { return normalized(w.type) !== 'cc' && !/\bcc weapon
 function minelayerAssociated(weapons, equipment) { return unique([...weapons.map(weaponDisplay), ...equipment].filter((v) => /(?:^|\s)(?:mine|mines)(?:\s|$)|deployable/i.test(normalized(v)))) }
 function primaryWeapon(weapons) { return weaponDisplay(weapons.find(isRangedWeapon) || weapons[0]) }
 function weaponDisplay(w) { return [w?.name, w?.mode].filter(Boolean).join(' — ') }
-function dedupeWeapons(weapons) { const seen = new Set(); return weapons.filter((weapon) => { const key = `${normalized(weaponDisplay(weapon))}:${weapon.burst ?? ''}`; if (seen.has(key)) return false; seen.add(key); return true }) }
+function dedupeWeapons(weapons) { const seen = new Set(); return weapons.filter((weapon) => { const key = `${normalized(weaponDisplay(weapon))}:${weapon.burst ?? ''}:${(weapon.modifiers || []).map(normalized).sort().join(',')}`; if (seen.has(key)) return false; seen.add(key); return true }) }
 function unique(values) { return [...new Set(values)] }
 function finiteNumber(v) { const n = Number(v); return Number.isFinite(n) ? n : null }
 function countQuantity(items) { return items.reduce((sum, item) => sum + item.quantity, 0) }
@@ -304,13 +307,21 @@ function value(v) { return Number.isFinite(v) ? v : 'Unavailable' }
 function formatBurst(weapon) {
   const raw = weapon?.burst
   const burst = raw === null || raw === undefined || raw === '' ? null : finiteNumber(raw)
-  if (burst !== null) return weapon?.baseBurst !== null && weapon?.baseBurst !== undefined && weapon.baseBurst !== burst ? `B${burst} (base B${weapon.baseBurst} + BS Attack)` : `B${burst}`
+  if (burst !== null) {
+    const sdBonus = Number(weapon?.nativeSdBonus || 0) + Number(weapon?.weaponSdBonus || 0) + Number(weapon?.fireteamSdBonus || 0)
+    const activeBurst = finiteNumber(weapon?.activeBurst)
+    if (sdBonus && activeBurst !== null) {
+      const activeLabel = weapon?.baseBurst !== null && weapon?.baseBurst !== undefined && weapon.baseBurst !== activeBurst ? `B${activeBurst} (base B${weapon.baseBurst} + BS Attack)` : `B${activeBurst}`
+      return `${activeLabel} +${sdBonus}SD (${burst} dice)`
+    }
+    return weapon?.baseBurst !== null && weapon?.baseBurst !== undefined && weapon.baseBurst !== burst ? `B${burst} (base B${weapon.baseBurst} + BS Attack)` : `B${burst}`
+  }
   if (weapon?.burstStatus === 'not-applicable') return ''
   if (weapon?.burstStatus === 'ambiguous') return 'Burst ambiguous'
   return 'Burst unavailable'
 }
 function loadoutSignature(profile) {
-  return JSON.stringify({ bs: finiteNumber(profile.bs), points: finiteNumber(profile.points), skills: [...(profile.skills || [])].map(normalized).sort(), equipment: [...(profile.equipment || [])].map(normalized).sort(), weapons: [...(profile.weapons || [])].map((weapon) => [normalized(weapon.name), normalized(weapon.mode), weapon.burst ?? null, weapon.burstStatus || '']).sort(), linkability: profile.linkability || 'unavailable', fireteamTeams: [...(profile.fireteamTeams || [])].sort() })
+  return JSON.stringify({ bs: finiteNumber(profile.bs), points: finiteNumber(profile.points), skills: [...(profile.skills || [])].map(normalized).sort(), equipment: [...(profile.equipment || [])].map(normalized).sort(), weapons: [...(profile.weapons || [])].map((weapon) => [normalized(weapon.name), normalized(weapon.mode), weapon.burst ?? null, weapon.burstStatus || '', ...(weapon.modifiers || []).map(normalized).sort()]).sort(), linkability: profile.linkability || 'unavailable', fireteamTeams: [...(profile.fireteamTeams || [])].sort() })
 }
 function addMultiRoleMetadata(result) {
   const memberships = new Map()
