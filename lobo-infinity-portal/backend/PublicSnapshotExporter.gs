@@ -14,16 +14,10 @@ const PUBLIC_SNAPSHOT_PUBLISH_TOKEN_PROPERTY = "LOBO_SNAPSHOT_PUBLISH_TOKEN";
 const PUBLIC_SNAPSHOT_PUBLISH_URL = "https://lobo-infinity-portal.vercel.app/api/public-snapshot-publish";
 const PUBLIC_SNAPSHOT_TOP40_PUBLISH_URL = "https://lobo-infinity-portal.vercel.app/api/top-40-registration-publish";
 const PUBLIC_SNAPSHOT_TOP40_REGISTRATION_SHEET = "Form Responses 2";
-const PUBLIC_SNAPSHOT_TOP40_REGISTRATION_HEADERS = {
-  timestamp: ["Timestamp"],
-  email: ["Email address", "Email Address"],
-  portalName: ["Lobo Portal User Name", "Lobo Portal Name"],
-  discord: ["Discord Name", "Discord Username"],
-  rulesAgreement: [
-    "Tournament Rules agreement",
-    "I have read and agree to the tournament rules"
-  ]
-};
+const PUBLIC_SNAPSHOT_TOP40_PORTAL_NAME_HEADERS = [
+  "Lobo Portal User Name",
+  "Lobo Portal Name"
+];
 const PUBLIC_SNAPSHOT_TOP40_REGISTRATION_LIMIT = 40;
 const PUBLIC_SNAPSHOT_PUBLIC_FILES = [
   "snapshot.json", "players.json", "games.json", "events.json",
@@ -466,18 +460,18 @@ function readPublicSnapshotTop40RegistrationNames_() {
       return String(value || "").trim();
     })
     : [];
-  const normalizedHeaders = headers.map(function(header) { return header.toLowerCase(); });
-  const headerIndexes = {};
-  const missingHeaders = Object.keys(PUBLIC_SNAPSHOT_TOP40_REGISTRATION_HEADERS).filter(function(key) {
-    const aliases = PUBLIC_SNAPSHOT_TOP40_REGISTRATION_HEADERS[key];
-    headerIndexes[key] = aliases.map(function(alias) {
-      return normalizedHeaders.indexOf(alias.toLowerCase());
-    }).filter(function(index) { return index >= 0; })[0];
-    return headerIndexes[key] === undefined;
-  });
-  if (missingHeaders.length)
-    throw new Error("Top 40 form-response worksheet is missing required headers: " + missingHeaders.join(", ") + ".");
-  const portalNameIndex = headerIndexes.portalName;
+  const normalizedHeaders = headers.map(normalizePublicSnapshotTop40Header_);
+  const portalNameAliases = PUBLIC_SNAPSHOT_TOP40_PORTAL_NAME_HEADERS.map(
+    normalizePublicSnapshotTop40Header_
+  );
+  const portalNameIndex = normalizedHeaders.map(function(header) {
+    return portalNameAliases.indexOf(header) >= 0;
+  }).indexOf(true);
+  if (portalNameIndex < 0)
+    throw new Error(
+      "Top 40 form-response worksheet is missing the portal-name field. Detected headers: " +
+      headers.map(function(header) { return String(header || "").slice(0, 120); }).join(" | ") + "."
+    );
   const source = {
     portalNameColumn: portalNameIndex + 1,
     portalNameHeader: headers[portalNameIndex],
@@ -492,6 +486,10 @@ function readPublicSnapshotTop40RegistrationNames_() {
     portalNameHeader: source.portalNameHeader,
     responseWorksheet: source.sheet.getName()
   };
+}
+
+function normalizePublicSnapshotTop40Header_(value) {
+  return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
 }
 
 function buildPublicSnapshotTop40Registrations_(source, generatedAt) {

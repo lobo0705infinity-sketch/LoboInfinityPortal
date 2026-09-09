@@ -91,16 +91,11 @@ function readRegistrationNames(headers, rows) {
   }
   const context = {
     PUBLIC_SNAPSHOT_TOP40_REGISTRATION_SHEET: 'Form Responses 2',
-    PUBLIC_SNAPSHOT_TOP40_REGISTRATION_HEADERS: {
-      timestamp: ['Timestamp'],
-      email: ['Email address', 'Email Address'],
-      portalName: ['Lobo Portal User Name', 'Lobo Portal Name'],
-      discord: ['Discord Name', 'Discord Username'],
-      rulesAgreement: ['Tournament Rules agreement', 'I have read and agree to the tournament rules'],
-    },
+    PUBLIC_SNAPSHOT_TOP40_PORTAL_NAME_HEADERS: ['Lobo Portal User Name', 'Lobo Portal Name'],
     lifGetTargetSpreadsheet_: () => ({ getSheetByName: (name) => name === 'Form Responses 2' ? sheet : null }),
   }
   vm.createContext(context)
+  vm.runInContext(extractFunction(publicSnapshotExporterSource, 'normalizePublicSnapshotTop40Header_'), context)
   vm.runInContext(extractFunction(publicSnapshotExporterSource, 'readPublicSnapshotTop40RegistrationNames_'), context)
   return JSON.parse(JSON.stringify(context.readPublicSnapshotTop40RegistrationNames_()))
 }
@@ -114,6 +109,11 @@ assert.deepEqual(readRegistrationNames(
   ['Timestamp', 'Email address', 'Lobo Portal User Name', 'Discord Name', 'Tournament Rules agreement'],
   [['date', 'private@example.com', 'Lobo', 'private-discord', 'I agree']],
 ), { names: ['Lobo'], portalNameHeader: 'Lobo Portal User Name', responseWorksheet: 'Form Responses 2' })
+
+assert.deepEqual(readRegistrationNames(
+  ['Timestamp', 'Email address', '  LOBO portal user-name!  ', 'Discord Name'],
+  [['date', 'private@example.com', 'Lobo', 'private-discord']],
+), { names: ['Lobo'], portalNameHeader: 'LOBO portal user-name!', responseWorksheet: 'Form Responses 2' })
 
 assert.deepEqual(JSON.parse(JSON.stringify(buildSanitizedRegistration([]))), {
   generatedAt: snapshotGeneratedAt,
@@ -156,14 +156,13 @@ for (const forbidden of [
 assert.match(publicSnapshotExporterSource, /function readPublicSnapshotTop40RegistrationNames_\(\)[\s\S]*lifGetTargetSpreadsheet_\(\)/)
 assert.match(armyIntelligenceWorkerSource, /publishPublicSnapshot = automatic && body\.publishPublicSnapshot === true/)
 assert.match(armyIntelligenceWorkerSource, /body = request\.method === 'POST' \? await readJsonBody\(request\) : \{\}/)
-for (const header of [
-  'Timestamp', 'Email address', 'Email Address', 'Lobo Portal User Name', 'Lobo Portal Name',
-  'Discord Name', 'Discord Username', 'Tournament Rules agreement',
-  'I have read and agree to the tournament rules',
-]) assert.ok(publicSnapshotExporterSource.includes(`"${header}"`))
+for (const header of ['Lobo Portal User Name', 'Lobo Portal Name']) {
+  assert.ok(publicSnapshotExporterSource.includes(`"${header}"`))
+}
 assert.match(publicSnapshotExporterSource, /PUBLIC_SNAPSHOT_TOP40_REGISTRATION_SHEET = "Form Responses 2"/)
 assert.match(publicSnapshotExporterSource, /getSheetByName\(PUBLIC_SNAPSHOT_TOP40_REGISTRATION_SHEET\)/)
-assert.match(publicSnapshotExporterSource, /headerIndexes\.portalName/)
+assert.match(publicSnapshotExporterSource, /function normalizePublicSnapshotTop40Header_/)
+assert.doesNotMatch(publicSnapshotExporterSource, /missing required headers: email|missing required headers: portalName|missing required headers: discord/)
 assert.match(publicSnapshotExporterSource, /portalNameColumn[\s\S]*getRange\(2, source\.portalNameColumn, lastRow - 1, 1\)/)
 assert.match(publicSnapshotExporterSource, /portalNameHeader:[\s\S]*responseWorksheet:/)
 
