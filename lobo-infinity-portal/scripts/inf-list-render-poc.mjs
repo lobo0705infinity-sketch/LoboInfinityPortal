@@ -374,7 +374,10 @@ async function captureRenderedProfilePages(browser, rendererViewUrl) {
       const tokenText = (...labels) => {
         const accepted = new Set(labels.map((label) => `${label}:`))
         const element = [...card.querySelectorAll('b')].find((node) => accepted.has(node.textContent.trim()))
-        return element?.nextElementSibling?.textContent || ''
+        if (!element) return ''
+        return [...function* followingSiblings() {
+          for (let node = element.nextSibling; node; node = node.nextSibling) yield node.textContent || ''
+        }()].join(' ').replace(/\s+/g, ' ').trim()
       }
       const split = (value) => value.split(',').map((token) => token.replace(/\s+/g, ' ').trim()).filter(Boolean)
       const profileName = card.querySelector('.card-header-title')?.textContent?.replace(/\s+/g, ' ').trim() || ''
