@@ -57,8 +57,11 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
     // Infinity-Data can expose inherited weapons that are absent from the selected
     // option's official weapon references. Recover those weapons only through an
     // exact canonical name match; otherwise retain the name with unverified Burst.
-    for (const name of card.weapons || []) if (!weapons.some((weapon) => sameToken(weaponDisplay(weapon), name))) {
-      weapons.push(resolveCanonicalCardWeapon(dataset, name) || { burst: null, mode: '', name, type: '' })
+    for (const name of card.weapons || []) {
+      const existingIndex = weapons.findIndex((weapon) => sameToken(weaponDisplay(weapon), name) || sameToken(weapon.name, name))
+      const recovered = resolveCanonicalCardWeapon(dataset, name)
+      if (existingIndex < 0) weapons.push(recovered || { burst: null, mode: '', name, type: '' })
+      else if (weapons[existingIndex].burst === null && recovered) weapons[existingIndex] = { ...recovered, modifiers: weapons[existingIndex].modifiers || recovered.modifiers }
     }
     return {
       bs: finiteNumber(base?.bs ?? card.bs),
