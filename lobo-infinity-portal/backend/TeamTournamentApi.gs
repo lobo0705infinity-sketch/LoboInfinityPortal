@@ -1030,58 +1030,9 @@ function saveTeamTournamentRoundManagement(e) {
         assignedTeams[teamA.teamId] = true;
         assignedTeams[teamB.teamId] = true;
 
-        const rosterA = splitTeamTournamentPlayers(teamA.players);
-        const rosterB = splitTeamTournamentPlayers(teamB.players);
-        const rosterAKeys = rosterA.map(normalizeTeamTournamentPlayerKey);
-        const rosterBKeys = rosterB.map(normalizeTeamTournamentPlayerKey);
-        const matches = Array.isArray(pairing.matches) ? pairing.matches : [];
-        const unpairedA = Array.isArray(pairing.unpairedA) ? pairing.unpairedA.map(getTeamTournamentString).filter(Boolean) : [];
-        const unpairedB = Array.isArray(pairing.unpairedB) ? pairing.unpairedB.map(getTeamTournamentString).filter(Boolean) : [];
-        const usedA = {};
-        const usedB = {};
-
-        matches.forEach(function(match, matchIndex) {
-          const playerA = getTeamTournamentString(match.teamAPlayer);
-          const playerB = getTeamTournamentString(match.teamBPlayer);
-          const keyA = normalizeTeamTournamentPlayerKey(playerA);
-          const keyB = normalizeTeamTournamentPlayerKey(playerB);
-          if (!playerA || !playerB)
-            throw new Error("Every player matchup must have two players.");
-          if (keyA === keyB)
-            throw new Error("A player cannot be paired against themselves.");
-          if (rosterAKeys.indexOf(keyA) === -1 || rosterBKeys.indexOf(keyB) === -1)
-            throw new Error("A player assignment is outside its registered team.");
-          if (usedA[keyA] || usedB[keyB])
-            throw new Error("A player may appear only once in a round pairing.");
-          usedA[keyA] = true;
-          usedB[keyB] = true;
-          match.table = matchIndex + 1;
-          match.teamAPlayer = playerA;
-          match.teamBPlayer = playerB;
-        });
-        unpairedA.forEach(function(player) {
-          const key = normalizeTeamTournamentPlayerKey(player);
-          if (rosterAKeys.indexOf(key) === -1 || usedA[key]) throw new Error("Invalid or duplicate Team A substitute.");
-          usedA[key] = true;
-        });
-        unpairedB.forEach(function(player) {
-          const key = normalizeTeamTournamentPlayerKey(player);
-          if (rosterBKeys.indexOf(key) === -1 || usedB[key]) throw new Error("Invalid or duplicate Team B substitute.");
-          usedB[key] = true;
-        });
-        if (Object.keys(usedA).length !== rosterAKeys.length || Object.keys(usedB).length !== rosterBKeys.length)
-          throw new Error("Every registered player must be matched or explicitly marked unpaired/substitute.");
-        if (unpairedA.length !== Math.max(0, rosterA.length - rosterB.length) ||
-            unpairedB.length !== Math.max(0, rosterB.length - rosterA.length))
-          throw new Error("Unpaired players are allowed only when team sizes differ.");
-
         return {
           teamA: teamA,
-          teamB: teamB,
-          playerPairings: matches.map(function(match) {
-            return "Table " + match.table + ": " + match.teamAPlayer + " vs " + match.teamBPlayer;
-          }).concat(unpairedA.map(function(player) { return "Substitute/Unpaired (" + teamA.teamName + "): " + player; }))
-            .concat(unpairedB.map(function(player) { return "Substitute/Unpaired (" + teamB.teamName + "): " + player; })).join("\n")
+          teamB: teamB
         };
       });
 
@@ -1101,11 +1052,16 @@ function saveTeamTournamentRoundManagement(e) {
       const timestamp = getTeamTournamentTimestamp();
       const pairingSheet = ensureTeamTournamentPairingsSheet();
       normalizedPairings.forEach(function(pairing) {
+        const storedPairing = existingRoundPairings.find(function(existing) {
+          return teamTournamentSameValue(existing.teamA, pairing.teamA.teamName) &&
+            teamTournamentSameValue(existing.teamB, pairing.teamB.teamName);
+        });
         upsertTeamTournamentCompositeRow(pairingSheet, TEAM_TOURNAMENT_PAIRING_HEADERS,
           ["Event ID", "Round ID", "Team A", "Team B"],
           [eventId, roundId, pairing.teamA.teamName, pairing.teamB.teamName],
           [eventId, roundId, roundName, pairing.teamA.teamName, pairing.teamB.teamName,
-            pairing.playerPairings, "Scheduled", "", timestamp, timestamp]);
+            storedPairing ? storedPairing.playerPairings : "", "Scheduled",
+            storedPairing ? storedPairing.results : "", storedPairing ? storedPairing.createdAt : timestamp, timestamp]);
       });
 
       upsertEventEngineRow(

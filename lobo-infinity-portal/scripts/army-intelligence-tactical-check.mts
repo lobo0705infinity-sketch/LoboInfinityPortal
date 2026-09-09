@@ -65,7 +65,7 @@ assert.equal(analysis.categories.find((item) => item.id === 'hacking')?.profiles
 assert.ok(analysis.categories.find((item) => item.id === 'hacking')?.profiles.some((profile) => profile.unit.includes('PANDA TROOP')), 'ordinary Repeaters must create hacking-network matches')
 assert.equal(analysis.categories.find((item) => item.id === 'competent')?.profiles.length, 3)
 assert.equal(analysis.categories.find((item) => item.id === 'competent')?.profiles.find((profile) => profile.unit === 'BONUS')?.weapons[0].effectiveBurst, 4)
-assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles.length, 3)
+assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles.length, 4)
 assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles[0].linkability, 'verified')
 assert.deepEqual(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles.find((profile) => profile.unit === 'TANKHUNTER')?.badges, ['Portable Autocannon (+1SD)'])
 assert.ok(!analysis.categories.find((item) => item.id === 'competent')?.profiles.some((profile) => profile.unit === 'TANKHUNTER'), 'B2 +1SD is only three dice')

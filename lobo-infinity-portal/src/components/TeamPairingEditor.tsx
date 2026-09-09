@@ -1,7 +1,7 @@
 import { useMemo, useState, type FormEvent } from 'react'
 import { getCanonicalMissionOptions } from '../config/missions'
 import type { TeamTournamentPairing, TeamTournamentTeam } from '../services/api'
-import { samePlayer as same, teamRoster as roster, validateTeamTournamentRound as validateRoundDraft, type PlayerMatch, type TeamMatchDraft } from '../services/teamTournamentRoundManagement'
+import { validateTeamTournamentRound as validateRoundDraft, type TeamMatchDraft } from '../services/teamTournamentRoundManagement'
 import { getNextTeamTournamentRoundNumber, getTeamTournamentRoundNumber } from '../services/teamTournamentRounds'
 import './TeamPairingEditor.css'
 
@@ -33,35 +33,14 @@ export default function TeamPairingEditor({ currentRound, disabled, onSubmit, pa
   }
 
   function updateDraft(index: number, patch: Partial<TeamMatchDraft>) {
-    setDrafts((current) => current.map((draft, draftIndex) => draftIndex === index ? normalizeDraft({ ...draft, ...patch }, teams) : draft))
-    setPreview(false)
-  }
-
-  function updatePlayer(draftIndex: number, rowIndex: number, side: keyof PlayerMatch, value: string) {
-    setDrafts((current) => current.map((draft, index) => index !== draftIndex ? draft : {
-      ...draft,
-      matches: draft.matches.map((row, matchIndex) => matchIndex === rowIndex ? { ...row, [side]: value } : row),
-    }))
+    setDrafts((current) => current.map((draft, draftIndex) => draftIndex === index ? { ...draft, ...patch } : draft))
     setPreview(false)
   }
 
   function submit(event: FormEvent) {
     event.preventDefault()
     if (!validation.valid || !mission || !preview) return
-    const payload = drafts.map((draft) => {
-      const teamA = teams.find((team) => team.teamId === draft.teamAId)!
-      const teamB = teams.find((team) => team.teamId === draft.teamBId)!
-      const rosterA = roster(teamA)
-      const rosterB = roster(teamB)
-      const matches = draft.matches.filter((row) => row.teamAPlayer && row.teamBPlayer)
-      return {
-        teamAId: draft.teamAId,
-        teamBId: draft.teamBId,
-        matches,
-        unpairedA: rosterA.filter((player) => !matches.some((row) => same(player, row.teamAPlayer))),
-        unpairedB: rosterB.filter((player) => !matches.some((row) => same(player, row.teamBPlayer))),
-      }
-    })
+    const payload = drafts.map((draft) => ({ teamAId: draft.teamAId, teamBId: draft.teamBId }))
     onSubmit({
       mission,
       missionGeistId: '',
@@ -75,7 +54,7 @@ export default function TeamPairingEditor({ currentRound, disabled, onSubmit, pa
     <form className="panel team-tournament-form team-pairing-editor" data-tournament-section="round-management" onSubmit={submit}>
       <p className="eyebrow">Commissioner</p>
       <h2>Round Management</h2>
-      <p>Build the complete round here. The event advances only after every team and player assignment saves successfully.</p>
+      <p>Assign which teams play each other. Individual games and opponents are recorded later under the published team matchup.</p>
       <div className="team-pairing-controls">
         <label>Round<select disabled={disabled} onChange={(event) => selectRound(event.target.value)} value={selectedRound.key}>{options.map((round) => <option key={round.key} value={round.key}>{round.name}{round.next ? ' (new)' : ''}</option>)}</select></label>
         <label>Mission<select disabled={disabled} onChange={(event) => { setMission(event.target.value); setPreview(false) }} value={mission}><option value="">Select mission</option>{getCanonicalMissionOptions().map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
@@ -83,25 +62,12 @@ export default function TeamPairingEditor({ currentRound, disabled, onSubmit, pa
       </div>
 
       {drafts.map((draft, draftIndex) => {
-        const teamA = teams.find((team) => team.teamId === draft.teamAId)
-        const teamB = teams.find((team) => team.teamId === draft.teamBId)
-        const rosterA = roster(teamA)
-        const rosterB = roster(teamB)
         return <section className="team-pairing-matchup" key={draftIndex}>
           <h3>Team Pairing {draftIndex + 1}</h3>
           <div className="team-pairing-controls">
             <label>Team A<select disabled={disabled} onChange={(event) => updateDraft(draftIndex, { teamAId: event.target.value })} value={draft.teamAId}><option value="">Select team</option>{teams.map((team) => <option disabled={usedByOther(drafts, draftIndex, team.teamId)} key={team.teamId} value={team.teamId}>{team.teamName}</option>)}</select></label>
             <label>Team B<select disabled={disabled} onChange={(event) => updateDraft(draftIndex, { teamBId: event.target.value })} value={draft.teamBId}><option value="">Select team</option>{teams.map((team) => <option disabled={team.teamId === draft.teamAId || usedByOther(drafts, draftIndex, team.teamId)} key={team.teamId} value={team.teamId}>{team.teamName}</option>)}</select></label>
           </div>
-          {teamA && teamB ? <div className="team-pairing-board" role="table" aria-label={`${teamA.teamName} versus ${teamB.teamName}`}>
-            {draft.matches.map((row, rowIndex) => <div className="team-pairing-row" role="row" key={rowIndex}>
-              <strong>Table {rowIndex + 1}</strong>
-              <PlayerSelect disabled={disabled} label="Team A Player" roster={rosterA} selected={draft.matches.map((item) => item.teamAPlayer)} value={row.teamAPlayer} onChange={(value) => updatePlayer(draftIndex, rowIndex, 'teamAPlayer', value)} />
-              <span className="team-pairing-vs">vs</span>
-              <PlayerSelect disabled={disabled} label="Team B Player" roster={rosterB} selected={draft.matches.map((item) => item.teamBPlayer)} value={row.teamBPlayer} onChange={(value) => updatePlayer(draftIndex, rowIndex, 'teamBPlayer', value)} />
-            </div>)}
-            {rosterA.length !== rosterB.length ? <p className="team-pairing-substitutes">Substitute/unpaired: {unassigned(rosterA, draft.matches.map((row) => row.teamAPlayer)).concat(unassigned(rosterB, draft.matches.map((row) => row.teamBPlayer))).join(', ') || 'select assignments'}</p> : null}
-          </div> : null}
         </section>
       })}
 
@@ -111,17 +77,13 @@ export default function TeamPairingEditor({ currentRound, disabled, onSubmit, pa
         {drafts.map((draft, index) => {
           const a = teams.find((team) => team.teamId === draft.teamAId)!
           const b = teams.find((team) => team.teamId === draft.teamBId)!
-          return <div key={index}><strong>{a.teamName} vs {b.teamName}</strong><ol>{draft.matches.filter((row) => row.teamAPlayer && row.teamBPlayer).map((row, rowIndex) => <li key={rowIndex}>{row.teamAPlayer} vs {row.teamBPlayer}</li>)}</ol>{roster(a).length !== roster(b).length ? <p>Substitute/unpaired: {unassigned(roster(a), draft.matches.map((row) => row.teamAPlayer)).concat(unassigned(roster(b), draft.matches.map((row) => row.teamBPlayer))).join(', ')}</p> : null}</div>
+          return <div key={index}><strong>{a.teamName} vs {b.teamName}</strong></div>
         })}
         <button disabled={disabled} type="submit">Publish Round and Pairings</button>
         <button disabled={disabled} onClick={() => setPreview(false)} type="button">Back to Editing</button>
       </section>}
     </form>
   )
-}
-
-function PlayerSelect({ disabled, label, roster: players, selected, value, onChange }: { disabled: boolean; label: string; roster: string[]; selected: string[]; value: string; onChange: (value: string) => void }) {
-  return <label>{label}<select disabled={disabled} onChange={(event) => onChange(event.target.value)} value={value}><option value="">{players.length ? 'Select player' : 'No player / unpaired'}</option>{players.map((player) => <option disabled={!same(player, value) && selected.some((item) => same(item, player))} key={player} value={player}>{player}</option>)}</select></label>
 }
 
 type RoundOption = { key: string; roundId: string; name: string; number: number; mission: string; next: boolean }
@@ -136,14 +98,8 @@ function roundOptions(rounds: Array<Record<string, unknown>>, current: Record<st
 }
 function loadDrafts(round: RoundOption, teams: TeamTournamentTeam[], pairings: TeamTournamentPairing[]): TeamMatchDraft[] {
   const stored = pairings.filter((pairing) => pairing.roundId === round.roundId)
-  if (stored.length) return stored.map((pairing) => normalizeDraft({ teamAId: teamId(teams, pairing.teamA), teamBId: teamId(teams, pairing.teamB), matches: parseLines(pairing.playerPairings) }, teams))
-  return Array.from({ length: Math.ceil(teams.length / 2) }, () => ({ teamAId: '', teamBId: '', matches: [] }))
+  if (stored.length) return stored.map((pairing) => ({ teamAId: teamId(teams, pairing.teamA), teamBId: teamId(teams, pairing.teamB) }))
+  return Array.from({ length: Math.ceil(teams.length / 2) }, () => ({ teamAId: '', teamBId: '' }))
 }
-function normalizeDraft(draft: TeamMatchDraft, teams: TeamTournamentTeam[]): TeamMatchDraft {
-  const count = Math.min(roster(teams.find((team) => team.teamId === draft.teamAId)).length, roster(teams.find((team) => team.teamId === draft.teamBId)).length)
-  return { ...draft, matches: Array.from({ length: count }, (_, index) => draft.matches[index] ?? { teamAPlayer: '', teamBPlayer: '' }) }
-}
-function parseLines(value: string): PlayerMatch[] { return value.split(/\r?\n/).map((line) => line.match(/^(?:Table\s+\d+:\s*)?(.+?)\s+vs\s+(.+)$/i)).filter(Boolean).map((match) => ({ teamAPlayer: match![1].trim(), teamBPlayer: match![2].trim() })) }
-function teamId(teams: TeamTournamentTeam[], name: string) { return teams.find((team) => same(team.teamName, name))?.teamId ?? '' }
-function unassigned(players: string[], selected: string[]) { return players.filter((player) => !selected.some((value) => same(value, player))) }
+function teamId(teams: TeamTournamentTeam[], name: string) { return teams.find((team) => team.teamName.trim().toLowerCase() === name.trim().toLowerCase())?.teamId ?? '' }
 function usedByOther(drafts: TeamMatchDraft[], index: number, id: string) { return drafts.some((draft, draftIndex) => draftIndex !== index && (draft.teamAId === id || draft.teamBId === id)) }

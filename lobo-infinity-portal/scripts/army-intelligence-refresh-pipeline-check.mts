@@ -6,7 +6,7 @@ import { ARMY_INTELLIGENCE_PIPELINE_VERSION, ARMY_INTELLIGENCE_TACTICAL_SCHEMA_V
 const source = { armyCodeHash: 'hash', snapshotKey: 'casual:82:winner:defuser:hash' }
 const weapon = (name: string, burst: number) => ({ name, burst, burstStatus: 'canonical', source: 'iad-fixture' })
 const profile = (combinedId: string, unit: string, bs: number, weapons: Array<{ name: string; burst: number }>, skills: string[] = []) => ({
-  bs, combatGroup: 1, combinedId, unit, profile: unit, skills, equipment: [], weapons: weapons.map((item) => item.name),
+  bs, cc: 10, combatGroup: 1, combinedId, unit, profile: unit, skills, equipment: [], weapons: weapons.map((item) => item.name),
   weaponProfiles: weapons.map((item) => weapon(item.name, item.burst)), fireteamEligibility: { state: 'verified-false', verified: false, teams: [] },
   chainOfCommand: false, doctor: false, engineer: false, forwardObserver: false, hacker: false, lieutenant: false,
   orderTypes: ['regular'], points: 1, specialist: false, structure: null, swc: 0, troopType: 'MI', wounds: 1,
