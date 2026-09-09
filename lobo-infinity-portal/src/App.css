@@ -52,6 +52,22 @@
   font-weight: 850;
 }
 
+.infinity-army-copy-action {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.infinity-army-copy-action button {
+  min-height: 44px;
+}
+
+.infinity-army-copy-action-feedback {
+  color: var(--text-soft);
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+
 .app-shell {
   --portal-bg: #05070b;
   --panel: #0f151c;
@@ -5738,6 +5754,67 @@
 }
 
 @media (max-width: 720px) {
+  .army-intelligence-explorer-panel {
+    max-width: calc(100vw - 1rem);
+    overflow-x: clip;
+  }
+
+  .army-intelligence-explorer-table {
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  .army-intelligence-explorer-table table,
+  .army-intelligence-explorer-table tbody,
+  .army-intelligence-explorer-table tr,
+  .army-intelligence-explorer-table td {
+    display: block;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .army-intelligence-explorer-table table {
+    min-width: 0;
+  }
+
+  .army-intelligence-explorer-table thead {
+    display: none;
+  }
+
+  .army-intelligence-explorer-table tr {
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 10px;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+  }
+
+  .army-intelligence-explorer-table td {
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
+    padding: 0.65rem 0.75rem;
+  }
+
+  .army-intelligence-explorer-table td::before {
+    color: var(--muted);
+    content: attr(data-label);
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.2rem;
+    text-transform: uppercase;
+  }
+
+  .army-intelligence-copy-cell,
+  .army-intelligence-copy-cell .infinity-army-copy-action,
+  .army-intelligence-copy-cell button {
+    width: 100%;
+  }
+
+  .army-intelligence-copy-cell button {
+    min-height: 48px;
+  }
+
   .army-intelligence-selector {
     gap: 0.8rem;
     grid-template-columns: 1fr;

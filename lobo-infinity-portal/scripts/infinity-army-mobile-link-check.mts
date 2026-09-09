@@ -7,6 +7,7 @@ import {
 } from '../src/services/infinityArmyLinks.ts'
 
 const component = read('src/components/InfinityArmyLink.tsx')
+const styles = read('src/App.css')
 const locations = [
   ['Army Lists', read('src/pages/ArmyLists.tsx'), 2],
   ['Faction Profile', read('src/pages/FactionProfile.tsx'), 1],
@@ -29,6 +30,8 @@ assert.match(component, /Open in Infinity Army App[\s\S]*Copy Army Code[\s\S]*Ca
 assert.match(component, /await navigator\.clipboard\.writeText\(decodedCode\)[\s\S]*attemptInfinityArmyAppLaunch\(\)/)
 assert.match(component, /Army code copied\. In Infinity Army, tap Load List to import it\./)
 assert.match(component, /Army code copied\./)
+assert.match(component, /copyOnly[\s\S]*Copy Army Code/, 'copy-only presentation is available without exposing the code')
+assert.doesNotMatch(component.match(/if \(copyOnly\)[\s\S]*?\n  }/)?.[0] ?? '', /decodedCode\}/, 'copy-only presentation does not render the army code')
 assert.match(component, /onClick=\{\(\) => setOpen\(false\)\}[^>]*>Cancel/)
 assert.match(component, /try \{ attemptInfinityArmyAppLaunch\(\) \} catch \{ \/\* The copied code remains available\. \*\//)
 assert.doesNotMatch(component, /window\.location(?:\.href)?\s*=/, 'failed app launch cannot navigate or break the portal')
@@ -49,6 +52,12 @@ assert.equal(isMobileOrTabletDevice(), true, 'iPad receives action sheet')
 setDevice('Mozilla/5.0 (Linux; Android 15; Pixel Tablet)', 5, true)
 assert.equal(isMobileOrTabletDevice(), true, 'Android tablet receives action sheet')
 assert.match(getInfinityArmyAppUrl(), /^intent:\/\/open#Intent;.*package=com\.infinityarmy;end$/)
+
+const intelligence = locations.find(([label]) => label === 'Army Intelligence')![1]
+assert.match(intelligence, /<InfinityArmyLink armyCode=\{armyCode\} copyOnly href=\{target\.href\}>[\s\S]*Copy Army Code/, 'Army Intelligence uses the copy-only action')
+assert.doesNotMatch(intelligence, /Open in Infinity Army App/, 'Army Intelligence does not offer the broken app action')
+assert.match(styles, /\.army-intelligence-explorer-table table[\s\S]*min-width:\s*0/, 'phone layout removes the wide-table minimum')
+assert.match(styles, /\.army-intelligence-copy-cell button[\s\S]*width:\s*100%/, 'phone copy action is full width')
 
 console.log(`Infinity Army mobile-link regression passed (${locations.length} link locations).`)
 

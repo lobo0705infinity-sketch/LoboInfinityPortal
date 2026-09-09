@@ -10,10 +10,11 @@ export function attemptInfinityArmyAppLaunch(appUrl = getInfinityArmyAppUrl()) {
   window.setTimeout(() => frame.remove(), 1500)
 }
 
-export default function InfinityArmyLink({ armyCode, children, className, href }: {
+export default function InfinityArmyLink({ armyCode, children, className, copyOnly = false, href }: {
   armyCode?: string
   children: ReactNode
   className?: string
+  copyOnly?: boolean
   href: string
 }) {
   const [open, setOpen] = useState(false)
@@ -40,6 +41,13 @@ export default function InfinityArmyLink({ armyCode, children, className, href }
     } catch {
       setFeedback('Unable to copy the army code. Please try again.')
     }
+  }
+
+  if (copyOnly) {
+    return <span className={`infinity-army-copy-action${className ? ` ${className}` : ''}`}>
+      <button onClick={() => void copy('Army code copied.')} type="button">Copy Army Code</button>
+      {feedback ? <span className="infinity-army-copy-action-feedback" role="status">{feedback}</span> : null}
+    </span>
   }
 
   async function openApp() {

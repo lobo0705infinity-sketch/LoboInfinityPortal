@@ -1032,14 +1032,14 @@ function ArmyListExplorer({
               <tbody>
                 {lists.map((list) => (
                   <tr key={`${list.source}:${list.id}:${list.armyCode}`}>
-                    <td>{formatExplorerPlayer(list)}</td>
-                    <td>{getExplorerSectorial(list) || 'Not recorded'}</td>
-                    <td>{list.armyName || 'Untitled Army List'}</td>
-                    <td>{formatNumber(list.points)}</td>
-                    <td>{formatNumber(list.swc)}</td>
-                    <td>{formatExplorerDate(list.submissionDate)}</td>
-                    <td>{list.source || 'Community Library'}</td>
-                    <td>
+                    <td data-label="Player">{formatExplorerPlayer(list)}</td>
+                    <td data-label="Sectorial">{getExplorerSectorial(list) || 'Not recorded'}</td>
+                    <td data-label="Army Name">{list.armyName || 'Untitled Army List'}</td>
+                    <td data-label="Points">{formatNumber(list.points)}</td>
+                    <td data-label="SWC">{formatNumber(list.swc)}</td>
+                    <td data-label="Submission Date">{formatExplorerDate(list.submissionDate)}</td>
+                    <td data-label="Source">{list.source || 'Community Library'}</td>
+                    <td className="army-intelligence-copy-cell" data-label="Army Code">
                       <ArmyIntelligenceOpenList armyCode={list.armyCode} />
                     </td>
                   </tr>
@@ -1647,20 +1647,20 @@ function ArmyIntelligenceOpenList({ armyCode }: { armyCode: string }) {
 
   if (target.status === 'available') {
     return (
-      <InfinityArmyLink armyCode={armyCode} href={target.href}>
-        Open List
+      <InfinityArmyLink armyCode={armyCode} copyOnly href={target.href}>
+        Copy Army Code
       </InfinityArmyLink>
     )
   }
 
   return (
     <button
-      aria-label={`Open List unavailable: ${target.reason}`}
+      aria-label={`Copy Army Code unavailable: ${target.reason}`}
       disabled
       title={target.reason}
       type="button"
     >
-      Open List
+      Copy Army Code
     </button>
   )
 }

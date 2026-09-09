@@ -362,7 +362,7 @@ assert.match(
 )
 assert.match(
   page,
-  /ArmyIntelligenceOpenList[\s\S]*getInfinityArmyTarget\(armyCode\)[\s\S]*InfinityArmyLink armyCode=\{armyCode\} href=\{target\.href\}/,
+  /ArmyIntelligenceOpenList[\s\S]*getInfinityArmyTarget\(armyCode\)[\s\S]*InfinityArmyLink armyCode=\{armyCode\} copyOnly href=\{target\.href\}/,
   'Army List Explorer rows must use the shared Infinity Army link behavior.',
 )
 assert.match(
