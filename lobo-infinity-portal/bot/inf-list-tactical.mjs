@@ -98,8 +98,10 @@ export function classifyTacticalBrief(profiles, army = {}) {
     const competentCandidates = effectiveWeapons.map((weapon) => ({ ...weapon, activeBurst: activeWeapons.find((candidate) => sameToken(weaponDisplay(candidate), weaponDisplay(weapon)))?.burst ?? weapon.burst, nativeSdBonus, weaponSdBonus: weaponSdBonus(weapon), fireteamSdBonus }))
     const standardCompetentWeapons = competentCandidates.filter((weapon) => weapon.burst >= 4 && competentGunfighterWeaponToken(weaponDisplay(weapon)) && isRangedWeapon(weapon))
     const hrlCompetentWeapons = competentCandidates.filter((weapon) => weapon.burst >= 3 && heavyRocketLauncherToken(weaponDisplay(weapon)) && isRangedWeapon(weapon))
-    const competentWeapons = dedupeWeapons([...(profile.bs === 12 || profile.bs === 13 ? standardCompetentWeapons : []), ...(profile.bs >= 12 ? hrlCompetentWeapons : [])])
-    if (!apexWeapons.length && competentWeapons.length) result.competent.push({ ...profile, badges: unique([...(burstBonus ? preferredMatches(profile.skills, [bsAttackBurstToken]) : []), ...(nativeSdBonus ? preferredMatches(profile.skills, [bsAttackSdToken]) : []), ...competentWeapons.filter((weapon) => weapon.weaponSdBonus).map((weapon) => `${weaponDisplay(weapon)} (+${weapon.weaponSdBonus}SD)`), ...(fireteamSdBonus ? ['Fireteam (+1SD)'] : [])]), qualifyingFireteams, qualifyingWeapons: competentWeapons })
+    const portableAutocannonEnhancements = preferredMatches(profile.skills, [gunfighterMimetismToken, bsAttackMinusThreeToken])
+    const portableAutocannonWeapons = competentCandidates.filter((weapon) => portableAutocannonToken(weaponDisplay(weapon)) && weapon.nativeSdBonus + weapon.weaponSdBonus + weapon.fireteamSdBonus >= 1 && isRangedWeapon(weapon))
+    const competentWeapons = dedupeWeapons([...(profile.bs === 12 || profile.bs === 13 ? standardCompetentWeapons : []), ...(profile.bs >= 12 ? hrlCompetentWeapons : []), ...(portableAutocannonEnhancements.length ? portableAutocannonWeapons : [])])
+    if (!apexWeapons.length && competentWeapons.length) result.competent.push({ ...profile, badges: unique([...portableAutocannonEnhancements, ...(burstBonus ? preferredMatches(profile.skills, [bsAttackBurstToken]) : []), ...(nativeSdBonus ? preferredMatches(profile.skills, [bsAttackSdToken]) : []), ...competentWeapons.filter((weapon) => weapon.weaponSdBonus).map((weapon) => `${weaponDisplay(weapon)} (+${weapon.weaponSdBonus}SD)`), ...(fireteamSdBonus ? ['Fireteam (+1SD)'] : [])]), qualifyingFireteams, qualifyingWeapons: competentWeapons })
     const closeCombatBadges = preferredMatches(profile.skills, [martialArtsToken, naturalBornWarriorToken, berserkPlusThreeToken, ccAttackBurstToken])
     if (profile.cc >= 22 && closeCombatBadges.length) result.apexCc.push({ ...profile, badges: closeCombatBadges })
 
@@ -150,7 +152,7 @@ export function classifyTacticalBrief(profiles, army = {}) {
 }
 
 function excludedAlternativeAttackVector(unitName) {
-  return /^(?:netrods?|imetrons?)(?:\s|$)/i.test(String(unitName || '').trim())
+  return /^(?:netrods?|imetrons?)(?:\s|$)/.test(normalized(unitName))
 }
 
 export async function renderTacticalBrief({ analysis, browser }) {
@@ -306,6 +308,7 @@ function pherowareToken(v) { return /^(?:pheroware(?:\s+tactics)?|pt)(?:\s+.*)?$
 function apexGunfighterWeaponToken(v) { return /(?:^|\s)(?:marksman rifle|spitfire|red fury|heavy machine gun|hmg|hyper rapid magnetic cannon|hrmc|thunderbolt)(?:\s+(?:ap|burst|anti materiel|hit|blast) mode)?$/.test(normalized(v)) }
 function competentGunfighterWeaponToken(v) { return apexGunfighterWeaponToken(v) || /(?:^|\s)rifle(?:\s+(?:ap|burst|anti materiel|hit|blast) mode)?$/.test(normalized(v)) }
 function heavyRocketLauncherToken(v) { return /^heavy rocket launcher(?:\s+(?:burst|anti materiel|hit|blast) mode)?$/.test(normalized(v)) }
+function portableAutocannonToken(v) { return /^portable autocannon(?:\s+(?:burst|anti materiel|hit|blast) mode)?$/.test(normalized(v)) }
 function resolveCanonicalCardWeapon(dataset, cardName) {
   const token = normalized(cardName)
   const exactDisplay = (dataset?.metadata?.weapons || []).filter((weapon) => normalized(weaponDisplay(weapon)) === token && weapon.burstStatus === 'canonical')
