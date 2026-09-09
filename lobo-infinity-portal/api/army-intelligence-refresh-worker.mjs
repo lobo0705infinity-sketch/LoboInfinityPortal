@@ -19,7 +19,7 @@ import {
 const require = createRequire(import.meta.url)
 const CanonicalSnapshotFactory = require('../backend/CanonicalSnapshotFactory.gs')
 
-const DEFAULT_REFRESH_BATCH_LIMIT = 4
+const DEFAULT_REFRESH_BATCH_LIMIT = 100
 
 export default async function handler(request, response) {
   const automatic = isScheduledRequest(request)
@@ -242,6 +242,14 @@ export function exportAuthoritativeSource(source) {
 export function selectRefreshCandidates(sources, state) {
   return sources.filter((source) => {
     const current = state.get(source.snapshotKey)
+    const unchangedCurrentSchemaFailure = Boolean(
+      current &&
+      current.armyCodeHash === source.armyCodeHash &&
+      current.status === 'failed' &&
+      current.pipelineVersion === ARMY_INTELLIGENCE_PIPELINE_VERSION &&
+      current.tacticalSchemaVersion === ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION
+    )
+    if (unchangedCurrentSchemaFailure) return false
     return (
       !current ||
       current.armyCodeHash !== source.armyCodeHash ||

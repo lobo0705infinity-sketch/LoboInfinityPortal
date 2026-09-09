@@ -26,6 +26,10 @@ const decoded = {
 const current = { armyCodeHash: 'hash', decoderVersion: 'army-intelligence-decoder-v5', pipelineVersion: ARMY_INTELLIGENCE_PIPELINE_VERSION, hasProfileMetadata: true, hasTacticalMetadata: true, status: 'decoded' }
 
 assert.deepEqual(selectRefreshCandidates([source], new Map([[source.snapshotKey, current]])), [source], 'missing schema version must invalidate an otherwise current snapshot')
+assert.deepEqual(selectRefreshCandidates([source], new Map([[source.snapshotKey, { ...current, tacticalSchemaVersion: 'army-intelligence-tactical-v4' }]])), [source], 'v4 snapshots must be stale under v5')
+assert.deepEqual(selectRefreshCandidates([source], new Map([[source.snapshotKey, { ...current, tacticalSchemaVersion: 'army-intelligence-tactical-v2' }]])), [source], 'v2 snapshots must be stale under v5')
+assert.deepEqual(selectRefreshCandidates([source], new Map([[source.snapshotKey, { ...current, status: 'failed', tacticalSchemaVersion: ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION }]])), [], 'unchanged invalid codes already attempted under v5 must not block later valid work or publication')
+assert.deepEqual(selectRefreshCandidates([source], new Map([[source.snapshotKey, { ...current, status: 'failed', tacticalSchemaVersion: 'army-intelligence-tactical-v4' }]])), [source], 'older-schema failures receive one v5 retry')
 assert.deepEqual(selectRefreshCandidates([source], new Map([[source.snapshotKey, { ...current, pipelineVersion: 'army-intelligence-pipeline-v0', tacticalSchemaVersion: ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION }]])), [source], 'older pipeline generation must invalidate an otherwise complete snapshot')
 assert.deepEqual(selectRefreshCandidates([source], new Map([[source.snapshotKey, { ...current, tacticalSchemaVersion: ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION, hasTacticalMetadata: false }]])), [source], 'incomplete tactical metadata must bypass normal freshness')
 

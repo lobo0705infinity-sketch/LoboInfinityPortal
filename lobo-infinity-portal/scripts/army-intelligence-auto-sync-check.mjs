@@ -35,11 +35,12 @@ const state = new Map([
 assert.deepEqual(
   selectRefreshCandidates(sources, state).map((source) => source.snapshotKey),
   ['new', 'failed'],
-  'Automatic synchronization must reuse current snapshots and retry only missing/failed snapshots.',
+  'Automatic synchronization must reuse current snapshots and retry missing/older-schema failures.',
 )
 assert.match(worker, /isScheduledRequest\(request\)/)
 assert.match(worker, /ARMY_INTELLIGENCE_WORKER_TOKEN/)
 assert.match(worker, /selectRefreshCandidates\(sources, state\)/)
+assert.match(worker, /const DEFAULT_REFRESH_BATCH_LIMIT = 100/)
 assert.match(worker, /postSnapshots\(apiUrl, snapshots, upstreamCredential/)
 assert.match(worker, /scopedBackfill && body\.deferReadModelRebuild === true/)
 assert.match(worker, /scopedBackfill && body\.finalizeMigration === true/)
