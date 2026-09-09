@@ -371,8 +371,9 @@ async function captureRenderedProfilePages(browser, rendererViewUrl) {
       const attributeRows = [...(card.querySelector('table.attribut')?.rows || [])].map((row) => [...row.cells].map((cell) => cell.textContent.trim()))
       const headers = attributeRows[0] || []
       const values = attributeRows[1] || []
-      const tokenText = (label) => {
-        const element = [...card.querySelectorAll('b')].find((node) => node.textContent.trim() === `${label}:`)
+      const tokenText = (...labels) => {
+        const accepted = new Set(labels.map((label) => `${label}:`))
+        const element = [...card.querySelectorAll('b')].find((node) => accepted.has(node.textContent.trim()))
         return element?.nextElementSibling?.textContent || ''
       }
       const split = (value) => value.split(',').map((token) => token.replace(/\s+/g, ' ').trim()).filter(Boolean)
@@ -383,7 +384,7 @@ async function captureRenderedProfilePages(browser, rendererViewUrl) {
         equipment: split(tokenText('Equipment')),
         profileName,
         points: Number.isFinite(listPoints[index]) ? listPoints[index] : null,
-        skills: split(tokenText('Skills')),
+        skills: split(tokenText('Skills', 'Special Skills')),
         unitName: profileName,
         weapons: [...card.querySelectorAll('.weapon-table-name-header')].map((node) => node.textContent.replace(/\s+/g, ' ').trim()).filter((name) => name !== 'Weapon Name'),
         }
