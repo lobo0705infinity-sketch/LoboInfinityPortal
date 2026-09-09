@@ -53,7 +53,8 @@ export function enrichDecodedList(list, reference) {
 function enrichEntry(entry, units, dataset, chartUnits, reference) {
   const [sectorialId, unitId, groupId, optionId, profileId] = String(entry.combinedId || '').split('-').map(Number)
   const unit = units.find((candidate) => candidate.id === unitId)
-  const group = unit?.profileGroups?.find((candidate) => candidate.id === groupId)
+  const group = unit?.profileGroups?.find((candidate) => candidate.id === groupId) ||
+    (groupId === 0 && unit?.profileGroups?.length === 1 ? unit.profileGroups[0] : null)
   const profiles = group?.profiles || []
   const profile = profiles.find((candidate) => candidate.id === profileId) || (profiles.length === 1 ? profiles[0] : null)
   const option = group?.options?.find((candidate) => candidate.id === optionId)

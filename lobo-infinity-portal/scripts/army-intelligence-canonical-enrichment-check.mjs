@@ -4,6 +4,7 @@ import { enrichDecodedList } from './army-intelligence-canonical-enrichment.mjs'
 const list = { armyCode: 'x', combatGroups: [{ combatGroup: 1, entries: [
   { combinedId: '502-10-2-7-3', unit: 'DISPLAY', profile: 'DISPLAY LOADOUT', weapons: ['Legacy Weapon'], skills: [], equipment: [] },
   { combinedId: '502-10-2-8-1', unit: 'DISPLAY', profile: 'OTHER LOADOUT', weapons: ['Other Weapon'], skills: [], equipment: [] },
+  { combinedId: '502-10-0-8-1', unit: 'DISPLAY', profile: 'LEGACY GROUP LOADOUT', weapons: ['Other Weapon'], skills: [], equipment: [] },
 ] }] }
 const reference = {
   status: 'available', payloadVersion: 'fixture-1',
@@ -17,7 +18,7 @@ const reference = {
   fireteamChart: { teams: [{ name: 'Verified Team', type: ['CORE'], units: [{ unitId: 10 }] }] },
 }
 const result = enrichDecodedList(list, reference)
-const [first, second] = result.combatGroups[0].entries
+const [first, second, legacyGroup] = result.combatGroups[0].entries
 assert.equal(first.bs, 14)
 assert.equal(first.canonicalProfile, 'CANONICAL PROFILE A')
 assert.deepEqual(first.weaponProfiles.map((weapon) => weapon.name), ['Canonical Profile Weapon', 'Canonical HMG', 'Canonical Pistol'])
@@ -25,6 +26,7 @@ assert.deepEqual(first.weaponProfiles.find((weapon) => weapon.name === 'Canonica
 assert.equal(first.fireteamEligibility.state, 'verified')
 assert.equal(second.bs, 11)
 assert.deepEqual(second.weaponProfiles.map((weapon) => weapon.name), ['Other Rifle'])
+assert.equal(legacyGroup.cc, 18)
 assert.equal(result.enrichment.status, 'complete')
 const unavailable = enrichDecodedList(list, { status: 'unavailable', units: [], weapons: [], fireteamChart: [], payloadVersion: null })
 assert.equal(unavailable.enrichment.status, 'incomplete')
