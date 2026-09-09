@@ -20,6 +20,7 @@ const require = createRequire(import.meta.url)
 const CanonicalSnapshotFactory = require('../backend/CanonicalSnapshotFactory.gs')
 
 const DEFAULT_REFRESH_BATCH_LIMIT = 100
+const APPS_SCRIPT_FETCH_ATTEMPTS = 3
 
 export default async function handler(request, response) {
   const automatic = isScheduledRequest(request)
@@ -375,10 +376,10 @@ async function getAction(apiUrl, action, params = {}) {
       url.searchParams.set(key, String(value))
     }
   }
-  const response = await fetch(url, { redirect: 'follow' })
+  const response = await fetchAppsScriptWithRetry(url, { redirect: 'follow' })
   const text = await response.text()
   if (!response.ok) {
-    throw new Error(`${action} failed with HTTP ${response.status}: ${text.slice(0, 180)}`)
+    throw new Error(`${action} failed with HTTP ${response.status}: ${text}`)
   }
   return JSON.parse(text)
 }
@@ -394,17 +395,36 @@ async function postSnapshots(apiUrl, snapshots, credential, options = {}) {
   if (options.finalizeMigration) body.set('finalizeMigration', 'true')
   if (options.publishPublicSnapshot) body.set('publishPublicSnapshot', 'true')
 
-  const response = await fetch(apiUrl, {
+  const response = await fetchAppsScriptWithRetry(apiUrl, {
     body,
     method: 'POST',
     redirect: 'follow',
   })
   const text = await response.text()
   if (!response.ok) {
-    throw new Error(`refreshArmyIntelligence failed with HTTP ${response.status}: ${text.slice(0, 180)}`)
+    throw new Error(`refreshArmyIntelligence failed with HTTP ${response.status}: ${text}`)
   }
   const payload = JSON.parse(text)
   if (payload.success === false) {
     throw new Error(payload.error || payload.message || 'refreshArmyIntelligence failed.')
   }
+}
+
+async function fetchAppsScriptWithRetry(url, options) {
+  let lastResponse
+  for (let attempt = 1; attempt <= APPS_SCRIPT_FETCH_ATTEMPTS; attempt += 1) {
+    const response = await fetch(url, options)
+    if (response.ok) return response
+
+    const text = await response.text()
+    lastResponse = new Response(text, {
+      headers: response.headers,
+      status: response.status,
+      statusText: response.statusText,
+    })
+    const transientGoogleResponse = response.status === 404 && /unable to open the file|Page Not Found/i.test(text)
+    if (!transientGoogleResponse || attempt === APPS_SCRIPT_FETCH_ATTEMPTS) return lastResponse
+    await new Promise((resolve) => setTimeout(resolve, attempt * 500))
+  }
+  return lastResponse
 }
