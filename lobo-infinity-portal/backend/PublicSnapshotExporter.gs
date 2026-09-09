@@ -15,6 +15,7 @@ const PUBLIC_SNAPSHOT_PUBLISH_URL = "https://lobo-infinity-portal.vercel.app/api
 const PUBLIC_SNAPSHOT_TOP40_PUBLISH_URL = "https://lobo-infinity-portal.vercel.app/api/top-40-registration-publish";
 const PUBLIC_SNAPSHOT_TOP40_REGISTRATION_SHEET = "Form Responses 2";
 const PUBLIC_SNAPSHOT_TOP40_PORTAL_NAME_HEADERS = [
+  "What is your Lobo Portal User Name?",
   "Lobo Portal User Name",
   "Lobo Portal Name"
 ];
@@ -489,7 +490,8 @@ function readPublicSnapshotTop40RegistrationNames_() {
 }
 
 function normalizePublicSnapshotTop40Header_(value) {
-  return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+  return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, "")
+    .replace(/^whatisyour/, "");
 }
 
 function buildPublicSnapshotTop40Registrations_(source, generatedAt) {

@@ -91,7 +91,9 @@ function readRegistrationNames(headers, rows) {
   }
   const context = {
     PUBLIC_SNAPSHOT_TOP40_REGISTRATION_SHEET: 'Form Responses 2',
-    PUBLIC_SNAPSHOT_TOP40_PORTAL_NAME_HEADERS: ['Lobo Portal User Name', 'Lobo Portal Name'],
+    PUBLIC_SNAPSHOT_TOP40_PORTAL_NAME_HEADERS: [
+      'What is your Lobo Portal User Name?', 'Lobo Portal User Name', 'Lobo Portal Name',
+    ],
     lifGetTargetSpreadsheet_: () => ({ getSheetByName: (name) => name === 'Form Responses 2' ? sheet : null }),
   }
   vm.createContext(context)
@@ -114,6 +116,12 @@ assert.deepEqual(readRegistrationNames(
   ['Timestamp', 'Email address', '  LOBO portal user-name!  ', 'Discord Name'],
   [['date', 'private@example.com', 'Lobo', 'private-discord']],
 ), { names: ['Lobo'], portalNameHeader: 'LOBO portal user-name!', responseWorksheet: 'Form Responses 2' })
+
+assert.deepEqual(readRegistrationNames(
+  ['Timestamp', 'What is your email address?', 'What is your Lobo Portal User Name?',
+    'What is your Discord Name?', 'I have read and agree to the Tournament Rules.'],
+  [['date', 'private@example.com', 'Lobo', 'private-discord', 'I agree']],
+), { names: ['Lobo'], portalNameHeader: 'What is your Lobo Portal User Name?', responseWorksheet: 'Form Responses 2' })
 
 assert.deepEqual(JSON.parse(JSON.stringify(buildSanitizedRegistration([]))), {
   generatedAt: snapshotGeneratedAt,
@@ -156,7 +164,7 @@ for (const forbidden of [
 assert.match(publicSnapshotExporterSource, /function readPublicSnapshotTop40RegistrationNames_\(\)[\s\S]*lifGetTargetSpreadsheet_\(\)/)
 assert.match(armyIntelligenceWorkerSource, /publishPublicSnapshot = automatic && body\.publishPublicSnapshot === true/)
 assert.match(armyIntelligenceWorkerSource, /body = request\.method === 'POST' \? await readJsonBody\(request\) : \{\}/)
-for (const header of ['Lobo Portal User Name', 'Lobo Portal Name']) {
+for (const header of ['What is your Lobo Portal User Name?', 'Lobo Portal User Name', 'Lobo Portal Name']) {
   assert.ok(publicSnapshotExporterSource.includes(`"${header}"`))
 }
 assert.match(publicSnapshotExporterSource, /PUBLIC_SNAPSHOT_TOP40_REGISTRATION_SHEET = "Form Responses 2"/)
