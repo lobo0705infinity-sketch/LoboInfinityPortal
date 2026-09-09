@@ -3,7 +3,7 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { tmpdir } from 'node:os'
 import { chromium } from 'playwright'
-import { classifyTacticalBrief, renderTacticalBrief, TACTICAL_EMPTY_MESSAGE } from '../bot/inf-list-tactical.mjs'
+import { buildSubmittedProfiles, classifyTacticalBrief, renderTacticalBrief, TACTICAL_EMPTY_MESSAGE } from '../bot/inf-list-tactical.mjs'
 import { createInfListResponse } from '../bot/inf-list-command.mjs'
 
 const weapon = (name, burst, type = 'WEAPON', mode = '', burstStatus) => ({ name, burst, type, mode, ...(burstStatus ? { burstStatus } : {}) })
@@ -96,6 +96,17 @@ assert.deepEqual(new Set(fireteamAnalysis.categories.competent.map((item) => ite
 assert.equal(fireteamAnalysis.categories.apex.some((item) => item.combinedId === 'hannibal'), true)
 assert.deepEqual(fireteamAnalysis.categories.hacking.find((item) => item.combinedId === 'moran')?.roles, ['hacking', 'defensive'])
 assert.deepEqual(fireteamAnalysis.categories.defensive.find((item) => item.combinedId === 'moran')?.roles, ['hacking', 'defensive'])
+
+const ajaxCode = 'gr4Nc3RlZWwtcGhhbGFueA9CdXJuaW5nIEJyaWRnZXOBLAIBAQAFAIY6AQMAAACCaAECAAAAh0ABAwAAAIJQAQEAAAAyAQEAAAIBAAoAgmIBAgAAAIJRAQEAAACCUQEBAAAAglMBAQAAAIJTAQEAAACCVAEBAAAAglkBAgAAAIJgAQEAAACCZAEDAAAAglsBBgAA'
+const ajaxProfiles = buildSubmittedProfiles({
+  armyCode: ajaxCode,
+  cards: [{ combinedId: '702-1594-1-3-1', bs: 13, profileName: 'AJAX (Forward Deployment [+8])', skills: ['BS Attack (+1B)'], weapons: ['MULTI Rifle', 'AP Heavy Pistol'] }],
+  metadata: { weapons: [{ id: 9001, name: 'MULTI Rifle', mode: 'Burst Mode', type: 'WEAPON', burst: 3 }, { id: 9001, name: 'MULTI Rifle', mode: 'Anti-materiel Mode', type: 'WEAPON', burst: 1 }] },
+})
+const ajaxAnalysis = classifyTacticalBrief(ajaxProfiles)
+assert.equal(ajaxAnalysis.categories.apex.some((item) => item.combinedId === '702-1594-1-3-1'), false)
+assert.equal(ajaxAnalysis.categories.competent.some((item) => item.combinedId === '702-1594-1-3-1'), true)
+assert.equal(ajaxAnalysis.categories.competent.find((item) => item.combinedId === '702-1594-1-3-1')?.qualifyingWeapons[0].burst, 4)
 
 const empty = classifyTacticalBrief([], { faction: 'Empty' })
 const browser = await chromium.launch({ headless: true })
