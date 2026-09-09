@@ -111,7 +111,9 @@ assert.equal(portableAutocannonFireteamAnalysis.categories.competent.some((item)
 const ajaxCode = 'gr4Nc3RlZWwtcGhhbGFueA9CdXJuaW5nIEJyaWRnZXOBLAIBAQAFAIY6AQMAAACCaAECAAAAh0ABAwAAAIJQAQEAAAAyAQEAAAIBAAoAgmIBAgAAAIJRAQEAAACCUQEBAAAAglMBAQAAAIJTAQEAAACCVAEBAAAAglkBAgAAAIJgAQEAAACCZAEDAAAAglsBBgAA'
 const ajaxProfiles = buildSubmittedProfiles({
   armyCode: ajaxCode,
-  cards: [{ combinedId: '702-1594-1-3-1', bs: 13, profileName: 'AJAX (Forward Deployment [+8])', skills: ['BS Attack (+1B)'], weapons: ['MULTI Rifle', 'AP Heavy Pistol'] }],
+  // Match the live Discord payload: Ajax's card does not expose BS Attack
+  // (+1B) in the skill collection consumed by the tactical classifier.
+  cards: [{ combinedId: '702-1594-1-3-1', bs: 13, profileName: 'AJAX (Forward Deployment [+8])', skills: [], weapons: ['MULTI Rifle', 'AP Heavy Pistol'] }],
   metadata: { weapons: [{ id: 9001, name: 'MULTI Rifle', mode: '', type: 'WEAPON', burst: '3/1' }] },
   officialPayloads: [{ units: [{ id: 1594, isc: 'AJAX', profileGroups: [{ id: 1, profiles: [{ id: 1, bs: 13, weapons: [{ id: 9001 }] }], options: [{ id: 3, name: 'AJAX (Forward Deployment [+8])' }] }] }] }],
 })
@@ -119,6 +121,7 @@ const ajaxAnalysis = classifyTacticalBrief(ajaxProfiles)
 assert.equal(ajaxAnalysis.categories.apex.some((item) => item.combinedId === '702-1594-1-3-1'), false)
 assert.equal(ajaxAnalysis.categories.competent.some((item) => item.combinedId === '702-1594-1-3-1'), true)
 assert.equal(ajaxAnalysis.categories.competent.find((item) => item.combinedId === '702-1594-1-3-1')?.qualifyingWeapons[0].burst, 4)
+assert.deepEqual(ajaxAnalysis.categories.competent.find((item) => item.combinedId === '702-1594-1-3-1')?.badges, ['BS Attack (+1B) [verified profile]'])
 
 const empty = classifyTacticalBrief([], { faction: 'Empty' })
 const browser = await chromium.launch({ headless: true })
