@@ -87,7 +87,9 @@ export function classifyTacticalBrief(profiles, army = {}) {
   const result = Object.fromEntries(categories.map(([key]) => [key, []]))
   for (const profile of aggregated) {
     const enhancements = preferredMatches(profile.skills, [gunfighterMimetismToken, gunfighterMsvToken, bsAttackMinusThreeToken, albedoToken])
-    const burstBonus = bsAttackBurstBonus(profile.skills)
+    const parsedBurstBonus = bsAttackBurstBonus(profile.skills)
+    const verifiedBurstBonus = verifiedProfileBurstBonus(profile)
+    const burstBonus = Math.max(parsedBurstBonus, verifiedBurstBonus)
     const nativeSdBonus = bsAttackSdBonus(profile.skills)
     const qualifyingFireteams = (profile.fireteamTeams || []).filter((team) => eligibleFireteams.has(team))
     const fireteamSdBonus = qualifyingFireteams.length ? 1 : 0
@@ -101,7 +103,7 @@ export function classifyTacticalBrief(profiles, army = {}) {
     const portableAutocannonEnhancements = preferredMatches(profile.skills, [gunfighterMimetismToken, bsAttackMinusThreeToken])
     const portableAutocannonWeapons = competentCandidates.filter((weapon) => portableAutocannonToken(weaponDisplay(weapon)) && weapon.nativeSdBonus + weapon.weaponSdBonus + weapon.fireteamSdBonus >= 1 && isRangedWeapon(weapon))
     const competentWeapons = dedupeWeapons([...(profile.bs === 12 || profile.bs === 13 ? standardCompetentWeapons : []), ...(profile.bs >= 12 ? hrlCompetentWeapons : []), ...(portableAutocannonEnhancements.length ? portableAutocannonWeapons : [])])
-    if (!apexWeapons.length && competentWeapons.length) result.competent.push({ ...profile, badges: unique([...portableAutocannonEnhancements, ...(burstBonus ? preferredMatches(profile.skills, [bsAttackBurstToken]) : []), ...(nativeSdBonus ? preferredMatches(profile.skills, [bsAttackSdToken]) : []), ...competentWeapons.filter((weapon) => weapon.weaponSdBonus).map((weapon) => `${weaponDisplay(weapon)} (+${weapon.weaponSdBonus}SD)`), ...(fireteamSdBonus ? ['Fireteam (+1SD)'] : [])]), qualifyingFireteams, qualifyingWeapons: competentWeapons })
+    if (!apexWeapons.length && competentWeapons.length) result.competent.push({ ...profile, badges: unique([...portableAutocannonEnhancements, ...(parsedBurstBonus ? preferredMatches(profile.skills, [bsAttackBurstToken]) : []), ...(verifiedBurstBonus ? ['BS Attack (+1B) [verified profile]'] : []), ...(nativeSdBonus ? preferredMatches(profile.skills, [bsAttackSdToken]) : []), ...competentWeapons.filter((weapon) => weapon.weaponSdBonus).map((weapon) => `${weaponDisplay(weapon)} (+${weapon.weaponSdBonus}SD)`), ...(fireteamSdBonus ? ['Fireteam (+1SD)'] : [])]), qualifyingFireteams, qualifyingWeapons: competentWeapons })
     const closeCombatBadges = preferredMatches(profile.skills, [martialArtsToken, naturalBornWarriorToken, berserkPlusThreeToken, ccAttackBurstToken])
     if (profile.cc >= 22 && closeCombatBadges.length) result.apexCc.push({ ...profile, badges: closeCombatBadges })
 
@@ -295,6 +297,12 @@ function bsAttackMinusThreeToken(v) { return /^bs attack\s+3$/.test(normalized(v
 function albedoToken(v) { return /^albedo\s+(?:3|6)$/.test(normalized(v)) }
 function bsAttackBurstToken(v) { return /^bs attack\s+(?:\+\s*)?(?:(\d+)\s*)?(?:b|burst)$/.test(normalized(v)) }
 function bsAttackBurstBonus(skills) { for (const skill of skills || []) { const match = normalized(skill).match(/^bs attack\s+(?:\+\s*)?(?:(\d+)\s*)?(?:b|burst)$/); if (match) return Number(match[1] || 1) } return 0 }
+function verifiedProfileBurstBonus(profile) {
+  // Ajax's live official payload omits BS Attack (+1B) from the named skill
+  // collection consumed above. Scope the verified correction to his canonical
+  // unit ID and MULTI Rifle loadout so no other unresolved profile gains Burst.
+  return Number(profile?.unitId) === 1594 && (profile.weapons || []).some((weapon) => sameToken(weapon.name, 'MULTI Rifle')) ? 1 : 0
+}
 function martialArtsToken(v) { return /^martial arts(?:\s+(?:l(?:evel\s*)?)?\d+)?$/.test(normalized(v)) }
 function naturalBornWarriorToken(v) { return /^natural born warrior$/.test(normalized(v)) }
 function berserkPlusThreeToken(v) { return /^berserk\s+\+?3$/.test(normalized(v)) }
