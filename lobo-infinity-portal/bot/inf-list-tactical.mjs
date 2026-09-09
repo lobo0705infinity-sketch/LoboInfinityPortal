@@ -303,17 +303,21 @@ function discoballerToken(v) { return /^discoballer$/.test(normalized(v)) }
 function pherowareMirrorballToken(v) { return /^(?:pheroware(?:\s+tactics)?|pt)\s+(?:mirroball|mirrorball)$/.test(normalized(v)) }
 function eclipseToken(v) { return /^eclipse(?:\s+.*)?$/.test(normalized(v)) }
 function pherowareToken(v) { return /^(?:pheroware(?:\s+tactics)?|pt)(?:\s+.*)?$/.test(normalized(v)) }
-function apexGunfighterWeaponToken(v) { return /(?:^|\s)(?:marksman rifle|spitfire|red fury|heavy machine gun|hmg|hyper rapid magnetic cannon|hrmc|thunderbolt)(?:\s+(?:burst|anti materiel|hit|blast) mode)?$/.test(normalized(v)) }
-function competentGunfighterWeaponToken(v) { return apexGunfighterWeaponToken(v) || /(?:^|\s)rifle(?:\s+(?:burst|anti materiel|hit|blast) mode)?$/.test(normalized(v)) }
+function apexGunfighterWeaponToken(v) { return /(?:^|\s)(?:marksman rifle|spitfire|red fury|heavy machine gun|hmg|hyper rapid magnetic cannon|hrmc|thunderbolt)(?:\s+(?:ap|burst|anti materiel|hit|blast) mode)?$/.test(normalized(v)) }
+function competentGunfighterWeaponToken(v) { return apexGunfighterWeaponToken(v) || /(?:^|\s)rifle(?:\s+(?:ap|burst|anti materiel|hit|blast) mode)?$/.test(normalized(v)) }
 function heavyRocketLauncherToken(v) { return /^heavy rocket launcher(?:\s+(?:burst|anti materiel|hit|blast) mode)?$/.test(normalized(v)) }
 function resolveCanonicalCardWeapon(dataset, cardName) {
   const token = normalized(cardName)
   const exactDisplay = (dataset?.metadata?.weapons || []).filter((weapon) => normalized(weaponDisplay(weapon)) === token && weapon.burstStatus === 'canonical')
   const exactName = (dataset?.metadata?.weapons || []).filter((weapon) => normalized(weapon.name) === token && weapon.burstStatus === 'canonical')
   const candidates = exactDisplay.length ? exactDisplay : exactName
-  if (!candidates.length) return null
+  if (!candidates.length) return verifiedRulesCardWeapon(cardName)
   const selected = [...candidates].sort((a, b) => b.burst - a.burst || String(a.mode || '').localeCompare(String(b.mode || '')))[0]
   return { ...selected, modifiers: [], sourceDatasetId: dataset?.datasetId || null }
+}
+function verifiedRulesCardWeapon(cardName) {
+  if (!sameToken(cardName, 'MULTI Rifle')) return null
+  return { burst: 3, burstStatus: 'verified-rules', mode: 'AP Mode', modifiers: [], name: 'MULTI Rifle', type: 'WEAPON' }
 }
 function totalReactionToken(v) { return /^total reaction$/.test(normalized(v)) }
 function neurocineticsToken(v) { return /^neurocinetics$/.test(normalized(v)) }
