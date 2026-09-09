@@ -109,6 +109,7 @@ try {
     decoded,
     decodedAt: '2026-08-12T12:34:56.789Z',
     error: '',
+    pipelineVersion: 'army-intelligence-pipeline-v1',
     snapshotKey: 'worker:key',
     status: 'decoded',
   })
@@ -116,6 +117,7 @@ try {
     decoded: null,
     decodedAt: '2026-08-12T12:34:56.789Z',
     error: 'decode failed',
+    pipelineVersion: 'army-intelligence-pipeline-v1',
     snapshotKey: 'worker:failed',
     status: 'failed',
   })
@@ -129,16 +131,16 @@ try {
     'units', 'unitCount', 'points', 'swc',
   ])
   assert.deepEqual(Object.keys(successfulRefresh), [
-    'decoded', 'decodedAt', 'error', 'snapshotKey', 'status',
+    'decoded', 'decodedAt', 'error', 'pipelineVersion', 'snapshotKey', 'status',
   ])
-  pass('Snapshot schema unchanged')
+  pass('Snapshot schema includes pipeline generation')
   assert.equal(deterministic.decoderVersion, decoded.decoderVersion)
   assert.equal(legacy.decoded.decoderVersion, decoded.decoderVersion)
   pass('Snapshot version unchanged')
 
   assert.equal(
     functionHash(armyListSource, 'buildArmyDiagnosticDecode'),
-    '8f505a4195dd323bebd87f5499d213c3f90059afba77a6480f877a9c1d55c04e',
+    'e0f44b3b752096521ea2b85f256ed67bdcd295381c71d5ca8dff080c5e14d4c1',
   )
   assert.equal(
     functionHash(intelligenceSource, 'buildDeterministicArmyIntelligenceDecodedEntry'),
@@ -148,7 +150,7 @@ try {
 
   assert.equal(
     functionHash(intelligenceSource, 'mergeArmyIntelligenceSourceAndSnapshot'),
-    '9ec6b947c0e82b9fb9d80e1a8c3bb2bc2a6b028991e02dcbc992146ea27acd33',
+    'd5ef4cfda88d590f8146f74d8aaa42f4f3530f50a4f5f3c2f74e559ce0442a85',
   )
   assert.equal(
     functionHash(armyListSource, 'buildArmyIntelligenceRow'),
