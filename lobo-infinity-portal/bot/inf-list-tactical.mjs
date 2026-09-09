@@ -4,7 +4,9 @@ import { buildCanonicalDataset, resolveCanonicalWeaponRecords } from '../scripts
 const categories = [
   ['apex', 'Apex Gunfighters'],
   ['competent', 'Competent Gunfighters'],
+  ['apexCc', 'Apex Close Combat Fighters'],
   ['hacking', 'Hacking Network'],
+  ['vision', 'Vision Control'],
   ['valuableAro', 'Valuable ARO Pieces'],
   ['disposableAro', 'Disposable ARO Pieces'],
   ['alternative', 'Alternative Attack Vectors'],
@@ -59,6 +61,7 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
     }
     return {
       bs: finiteNumber(base?.bs ?? card.bs),
+      cc: finiteNumber(base?.cc ?? card.cc),
       combinedId: member.combinedId,
       equipment,
       fireteamMemberships: fireteamMembershipsByUnitId.get(Number(member.unitId)) || [],
@@ -89,6 +92,8 @@ export function classifyTacticalBrief(profiles, army = {}) {
     if (apexWeapons.length) result.apex.push({ ...profile, badges: enhancements, qualifyingWeapons: apexWeapons })
     const competentWeapons = effectiveWeapons.map((weapon) => ({ ...weapon, activeBurst: weapon.burst, burst: weapon.burst === null ? null : weapon.burst + nativeSdBonus + fireteamSdBonus + weaponSdBonus(weapon), nativeSdBonus, weaponSdBonus: weaponSdBonus(weapon), fireteamSdBonus })).filter((weapon) => weapon.burst >= 4 && isRangedWeapon(weapon))
     if ((profile.bs === 12 || profile.bs === 13) && competentWeapons.length) result.competent.push({ ...profile, badges: unique([...(burstBonus ? preferredMatches(profile.skills, [bsAttackBurstToken]) : []), ...(nativeSdBonus ? preferredMatches(profile.skills, [bsAttackSdToken]) : []), ...competentWeapons.filter((weapon) => weapon.weaponSdBonus).map((weapon) => `${weaponDisplay(weapon)} (+${weapon.weaponSdBonus}SD)`), ...(fireteamSdBonus ? ['Fireteam (+1SD)'] : [])]), qualifyingFireteams, qualifyingWeapons: competentWeapons })
+    const closeCombatBadges = preferredMatches(profile.skills, [martialArtsToken, naturalBornWarriorToken, berserkPlusThreeToken, ccAttackBurstToken])
+    if (profile.cc >= 23 && closeCombatBadges.length) result.apexCc.push({ ...profile, badges: closeCombatBadges })
 
     const hackerTypes = unique([
       ...exactMatches(profile.skills, [hackerToken]),
@@ -96,13 +101,18 @@ export function classifyTacticalBrief(profiles, army = {}) {
     ])
     const delivery = exactMatches([...profile.weapons.map(weaponDisplay), ...profile.equipment], [pitcherToken, fastPandaToken, deployableRepeaterToken, repeaterToken])
     if (hackerTypes.length || delivery.length) result.hacking.push({ ...profile, badges: [...hackerTypes, ...delivery], hackerTypes, delivery })
+    const visionControl = preferredMatches([...profile.weapons.map(weaponDisplay), ...profile.equipment, ...profile.skills], [smokeGrenadeToken, smokeGrenadeLauncherToken, discoballerToken, pherowareMirrorballToken, eclipseToken])
+    if (visionControl.length) result.vision.push({ ...profile, badges: visionControl })
 
     const aroWeapons = profile.weapons.filter((weapon) => aroWeaponToken(weaponDisplay(weapon)))
     const aroSkills = preferredMatches(profile.skills, [totalReactionToken, neurocineticsToken, bsAttackSdToken])
     const weaponSdBadges = aroWeapons.filter((weapon) => weaponSdBonus(weapon)).map((weapon) => `${weaponDisplay(weapon)} (+${weaponSdBonus(weapon)}SD)`)
-    if (Number.isFinite(profile.points) && profile.points >= 15 && aroWeapons.length && (aroSkills.length || weaponSdBadges.length || fireteamSdBonus)) result.valuableAro.push({ ...profile, badges: unique([...aroSkills, ...weaponSdBadges, ...(fireteamSdBonus ? ['Fireteam (+1SD)'] : [])]), qualifyingFireteams, qualifyingWeapons: aroWeapons })
+    const pheroware = preferredMatches([...profile.skills, ...profile.equipment, ...profile.weapons.map(weaponDisplay)], [pherowareToken])
+    if (pheroware.length || (Number.isFinite(profile.points) && profile.points >= 15 && aroWeapons.length && (aroSkills.length || weaponSdBadges.length || fireteamSdBonus))) result.valuableAro.push({ ...profile, badges: unique([...pheroware, ...aroSkills, ...weaponSdBadges, ...(fireteamSdBonus ? ['Fireteam (+1SD)'] : [])]), qualifyingFireteams, qualifyingWeapons: aroWeapons })
     const disposableWeapons = profile.weapons.filter((weapon) => aroWeaponToken(weaponDisplay(weapon)) || flashPulseToken(weaponDisplay(weapon)))
-    if (Number.isFinite(profile.points) && profile.points <= 14 && disposableWeapons.length) result.disposableAro.push({ ...profile, badges: [], qualifyingWeapons: disposableWeapons })
+    const sdWeapons = profile.weapons.filter((weapon) => weaponSdBonus(weapon) > 0)
+    const qualifyingDisposableWeapons = dedupeWeapons([...disposableWeapons, ...sdWeapons])
+    if ((Number.isFinite(profile.points) && profile.points <= 14 && disposableWeapons.length) || sdWeapons.length) result.disposableAro.push({ ...profile, badges: sdWeapons.map((weapon) => `${weaponDisplay(weapon)} (+${weaponSdBonus(weapon)}SD)`), qualifyingWeapons: qualifyingDisposableWeapons })
 
     const deployments = preferredMatches(profile.skills, [parachutistToken, combatJumpToken, hiddenDeploymentToken, impersonationToken])
     if (deployments.length && !excludedAlternativeAttackVector(profile.unitName)) result.alternative.push({ ...profile, badges: deployments })
@@ -115,7 +125,7 @@ export function classifyTacticalBrief(profiles, army = {}) {
   }
   result.apex.sort((a, b) => b.badges.length - a.badges.length || b.bs - a.bs || profileSort(a, b))
   for (const key of ['valuableAro', 'disposableAro']) result[key].sort((a, b) => linkRank(a) - linkRank(b) || profileSort(a, b))
-  for (const key of ['competent', 'hacking', 'alternative', 'defensive']) result[key].sort(profileSort)
+  for (const key of ['competent', 'apexCc', 'hacking', 'vision', 'alternative', 'defensive']) result[key].sort(profileSort)
   addMultiRoleMetadata(result)
   return {
     army: { faction: army.faction || '', listName: army.listName || '', sectorial: army.sectorial || '' },
@@ -182,6 +192,7 @@ function categoryMarkup({ key, title, entries }, analysis) {
 function entryMarkup(key, entry) {
   let detail = ''
   if (['apex', 'competent', 'valuableAro', 'disposableAro'].includes(key)) detail = `${key.endsWith('Aro') ? `${value(entry.points)} pts · ` : ''}BS ${value(entry.bs)} · ${entry.qualifyingWeapons.map((weapon) => [escapeHtml(weaponDisplay(weapon)), formatBurst(weapon)].filter(Boolean).join(' · ')).join(' · ')}`
+  if (key === 'apexCc') detail = `CC ${value(entry.cc)}`
   if (key === 'hacking') detail = [...entry.hackerTypes, ...entry.delivery].map(escapeHtml).join(' · ')
   if (key === 'alternative') detail = `PRIMARY: ${escapeHtml(primaryWeapon(entry.weapons) || 'Unavailable')}`
   if (key === 'defensive' && entry.deployables.length) detail = `DEPLOYABLE: ${entry.deployables.map(escapeHtml).join(' · ')}`
@@ -273,6 +284,16 @@ function bsAttackMinusThreeToken(v) { return /^bs attack\s+3$/.test(normalized(v
 function albedoToken(v) { return /^albedo\s+(?:3|6)$/.test(normalized(v)) }
 function bsAttackBurstToken(v) { return /^bs attack\s+(?:\+\s*)?(?:(\d+)\s*)?(?:b|burst)$/.test(normalized(v)) }
 function bsAttackBurstBonus(skills) { for (const skill of skills || []) { const match = normalized(skill).match(/^bs attack\s+(?:\+\s*)?(?:(\d+)\s*)?(?:b|burst)$/); if (match) return Number(match[1] || 1) } return 0 }
+function martialArtsToken(v) { return /^martial arts(?:\s+(?:l(?:evel\s*)?)?\d+)?$/.test(normalized(v)) }
+function naturalBornWarriorToken(v) { return /^natural born warrior$/.test(normalized(v)) }
+function berserkPlusThreeToken(v) { return /^berserk\s+\+?3$/.test(normalized(v)) }
+function ccAttackBurstToken(v) { return /^cc attack\s+\+(?:(?:\d+\s*)?b|burst)$/.test(normalized(v)) }
+function smokeGrenadeToken(v) { return /^smoke grenades?$/.test(normalized(v)) }
+function smokeGrenadeLauncherToken(v) { return /^smoke grenade launchers?$/.test(normalized(v)) }
+function discoballerToken(v) { return /^discoballer$/.test(normalized(v)) }
+function pherowareMirrorballToken(v) { return /^pheroware\s+(?:mirroball|mirrorball)$/.test(normalized(v)) }
+function eclipseToken(v) { return /^eclipse(?:\s+.*)?$/.test(normalized(v)) }
+function pherowareToken(v) { return /(?:^|\s)pheroware(?:\s|$)/.test(normalized(v)) }
 function totalReactionToken(v) { return /^total reaction$/.test(normalized(v)) }
 function neurocineticsToken(v) { return /^neurocinetics$/.test(normalized(v)) }
 function bsAttackSdToken(v) { return /^bs attack\s+\+(?:1)?sd$/.test(normalized(v)) }

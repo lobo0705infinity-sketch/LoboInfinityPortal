@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { buildTacticalAnalysis } from '../src/services/armyIntelligenceTacticalAnalysis.ts'
 
 const entry = (combinedId: string, unit: string, profile: string, fields: Record<string, unknown> = {}) => ({
-  combatGroup: 1, chainOfCommand: false, combinedId, doctor: false, engineer: false,
+  combatGroup: 1, chainOfCommand: false, combinedId, cc: 10, doctor: false, engineer: false,
   equipment: [], forwardObserver: false, hacker: false, lieutenant: false, orderTypes: ['regular'],
   points: 20, profile, skills: [], specialist: false, structure: null, swc: 0, troopType: 'LI',
   unit, weapons: [], wounds: 1, ...fields,
@@ -30,6 +30,11 @@ const falsePositive = entry('7', 'REPEATER PANDA TROOP', 'TinBot', { equipment: 
 const aro = entry('8', 'ARO', 'MULTI Sniper', { bs: 13, skills: ['BS Attack (+1SD)'], weapons: ['MULTI Sniper Rifle'], weaponProfiles: [canonicalBurst('MULTI Sniper Rifle', 2)], fireteamEligibility: { state: 'verified', verified: true, teams: ['Core'] } })
 const tankhunter = entry('tankhunter', 'TANKHUNTER', 'Portable Autocannon', { bs: 13, points: 36, weapons: ['Portable Autocannon'], weaponProfiles: [{ ...canonicalBurst('Portable Autocannon', 2), modifiers: ['+1SD'] }] })
 const disposable = entry('cheap', 'CHEAP ARO', 'Flash Pulse', { points: 8, weapons: ['Flash Pulse'], weaponProfiles: [canonicalBurst('Flash Pulse', 1)] })
+const pherowareProfile = entry('pheroware', 'PHA', 'Pheroware', { equipment: ['Pheroware Tactics'] })
+const sdWeaponProfile = entry('sd-weapon', 'SD', 'Combi Rifle', { points: 30, weapons: ['Combi Rifle'], weaponProfiles: [{ ...canonicalBurst('Combi Rifle', 3), modifiers: ['+2SD'] }] })
+const visionProfile = entry('vision', 'VISION', 'Control', { weapons: ['Smoke Grenade Launcher', 'Discoballer'], equipment: ['Pheroware Mirrorball'], skills: ['Eclipse'] })
+const apexCcProfile = entry('apex-cc', 'DUELIST', 'Blade', { cc: 23, skills: ['Martial Arts L1'] })
+const ccNearMiss = entry('cc-near', 'ALMOST', 'Blade', { cc: 22, skills: ['Natural Born Warrior'] })
 const alternative = entry('9', 'RAIDER', 'Airborne', { skills: ['Parachutist (Deployment Zone)', 'Combat Jump (+3)', 'Hidden Deployment', 'Impersonation (-6)'], weapons: ['Combi Rifle'] })
 const netrod = entry('netrod', 'NETROD', 'Combat Jump', { skills: ['Combat Jump (PH=12)'] })
 const imetron = entry('imetron', 'IMETRON', 'Parachutist', { skills: ['Parachutist'] })
@@ -40,12 +45,17 @@ const separateLoadout = entry('12', 'SCOUT', 'Rifle', { skills: [], weapons: ['R
 const analysis = buildTacticalAnalysis([
   decodedList('One', [apex, apex, bs14Apex, b5Apex, hacker, aro, tankhunter, disposable, alternative, netrod, imetron, defensive, falsePositive]),
   decodedList('Two', [apex, deployable, aro, defensive, boundaryFailBs, burstBonus, { ...hacker, combinedId: 'legacy-hacker', bs: null, fireteamEligibility: { state: 'unknown', verified: false, teams: [] } }]),
-  decodedList('Three', [boundaryFailBurst, malformed, mimetismOnly, separateLoadout]),
+  decodedList('Three', [boundaryFailBurst, malformed, mimetismOnly, separateLoadout, pherowareProfile, sdWeaponProfile, visionProfile, apexCcProfile, ccNearMiss]),
 ] as never)
 
 assert.equal(analysis.mode, 'Submitted-List Trends')
 assert.equal(analysis.listCount, 3)
 assert.equal(analysis.categories.find((item) => item.id === 'apex')?.profiles.length, 3)
+assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles.some((profile) => profile.unit === 'PHA'), true)
+assert.equal(analysis.categories.find((item) => item.id === 'disposableAro')?.profiles.some((profile) => profile.unit === 'SD'), true)
+assert.equal(analysis.categories.find((item) => item.id === 'vision')?.profiles.length, 1)
+assert.equal(analysis.categories.find((item) => item.id === 'apexCc')?.profiles.some((profile) => profile.unit === 'DUELIST'), true)
+assert.equal(analysis.categories.find((item) => item.id === 'apexCc')?.profiles.some((profile) => profile.unit === 'ALMOST'), false)
 assert.equal(analysis.categories.find((item) => item.id === 'apex')?.profiles[0].listCount, 2, 'duplicate models count once per list')
 assert.equal(Math.round(analysis.categories.find((item) => item.id === 'apex')!.profiles[0].percentage), 67)
 assert.deepEqual(analysis.categories.find((item) => item.id === 'apex')!.profiles[0].badges, ['Mimetism (-3)', 'Multispectral Visor L2', 'BS Attack (-3)'])
@@ -55,11 +65,11 @@ assert.equal(analysis.categories.find((item) => item.id === 'hacking')?.profiles
 assert.ok(analysis.categories.find((item) => item.id === 'hacking')?.profiles.some((profile) => profile.unit.includes('PANDA TROOP')), 'ordinary Repeaters must create hacking-network matches')
 assert.equal(analysis.categories.find((item) => item.id === 'competent')?.profiles.length, 3)
 assert.equal(analysis.categories.find((item) => item.id === 'competent')?.profiles.find((profile) => profile.unit === 'BONUS')?.weapons[0].effectiveBurst, 4)
-assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles.length, 2)
+assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles.length, 3)
 assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles[0].linkability, 'verified')
 assert.deepEqual(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles.find((profile) => profile.unit === 'TANKHUNTER')?.badges, ['Portable Autocannon (+1SD)'])
 assert.ok(!analysis.categories.find((item) => item.id === 'competent')?.profiles.some((profile) => profile.unit === 'TANKHUNTER'), 'B2 +1SD is only three dice')
-assert.equal(analysis.categories.find((item) => item.id === 'disposableAro')?.profiles.length, 1)
+assert.equal(analysis.categories.find((item) => item.id === 'disposableAro')?.profiles.length, 3)
 assert.equal(analysis.categories.find((item) => item.id === 'alternative')?.profiles.length, 1)
 assert.equal(analysis.categories.find((item) => item.id === 'alternative')?.profiles[0].badges.filter((badge) => /Parachutist|Combat Jump|Hidden Deployment|Impersonation/.test(badge)).length, 4)
 assert.ok(!analysis.categories.find((item) => item.id === 'alternative')?.profiles.some((profile) => /netrod|imetron/i.test(profile.unit)))

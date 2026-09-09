@@ -17,7 +17,7 @@ export function snapshotHasCompleteTacticalMetadata(list) {
   if (!entries.length) return false
 
   return entries.every((entry) => {
-    if (entry.bs == null || !Number.isFinite(Number(entry.bs)) || !Array.isArray(entry.skills)) return false
+    if (entry.bs == null || !Number.isFinite(Number(entry.bs)) || entry.cc == null || !Number.isFinite(Number(entry.cc)) || !Array.isArray(entry.skills)) return false
     const sourceWeapons = Array.isArray(entry.weapons) ? entry.weapons : []
     const canonicalWeapons = Array.isArray(entry.weaponProfiles) ? entry.weaponProfiles : []
     if (sourceWeapons.length && !canonicalWeapons.length) return false

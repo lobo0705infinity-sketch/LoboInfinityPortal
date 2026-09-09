@@ -482,6 +482,7 @@ export type ArmyIntelligenceCount = {
 
 export type ArmyIntelligenceDecodedEntry = {
   bs?: number | null
+  cc?: number | null
   canonicalProfile?: string | null
   canonicalUnitId?: number | null
   canonicalOptionId?: number | null

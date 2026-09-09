@@ -64,7 +64,7 @@ function enrichEntry(entry, units, dataset, chartUnits, reference) {
   const fireteamEligibility = reference?.status === 'available' || reference?.status === 'none'
     ? { state: teams.length ? 'verified' : 'verified-false', verified: Boolean(teams.length), teams, memberships }
     : { state: 'unknown', verified: false, teams: [] }
-  return { ...entry, bs: profile?.bs ?? null, weaponProfiles, fireteamEligibility, canonicalProfile: profile?.name || null, canonicalUnitId: unitId, canonicalOptionId: optionId, canonicalSource: { datasetId: dataset.datasetId, payloadVersion: reference?.payloadVersion || null, sectorialId } }
+  return { ...entry, bs: profile?.bs ?? null, cc: profile?.cc ?? null, weaponProfiles, fireteamEligibility, canonicalProfile: profile?.name || null, canonicalUnitId: unitId, canonicalOptionId: optionId, canonicalSource: { datasetId: dataset.datasetId, payloadVersion: reference?.payloadVersion || null, sectorialId } }
 }
 
 function fireteamMinimumSize(types) { return types.includes('DUO') ? 2 : types.includes('HARIS') ? 3 : 3 }

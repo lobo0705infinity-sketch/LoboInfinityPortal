@@ -1,10 +1,11 @@
 import type { ArmyIntelligenceDecodedEntry, ArmyIntelligenceList } from './api'
 
-export type TacticalCategoryId = 'apex' | 'competent' | 'hacking' | 'valuableAro' | 'disposableAro' | 'alternative' | 'defensive'
+export type TacticalCategoryId = 'apex' | 'competent' | 'apexCc' | 'hacking' | 'vision' | 'valuableAro' | 'disposableAro' | 'alternative' | 'defensive'
 
 export type TacticalProfile = {
   badges: string[]
   bs: number | null
+  cc: number | null
   equipment: string[]
   listCount: number
   percentage: number
@@ -40,6 +41,12 @@ const gunfighterEnhancement = /^(?:mimetism|albedo)\s*[\[(]\s*-(?:3|6)\s*[\])]$|
 const valuableAroSkill = /^(?:total reaction|neurocinetics)$|^bs attack\s*[\[(]\s*\+\s*(?:1\s*)?sd\s*[\])]$/i
 const deliveryEquipment = /^(?:pitcher|fast\s*-?\s*panda|deployable\s*-?\s*repeater|repeater)$/i
 const hackingDevice = /^(?:hacking device(?: plus)?|killer hacking device|evo hacking device)$/i
+const martialArts = /^martial arts(?:\s+(?:l|level)?\s*\d+)?$/i
+const naturalBornWarrior = /^natural born warrior$/i
+const berserkPlusThree = /^berserk\s*\+?3$/i
+const ccAttackBurst = /^cc attack\s*\+(?:(?:\d+\s*)?b|burst)$/i
+const visionControl = /^(?:smoke grenades?|smoke grenade launchers?|discoballer|pheroware\s+(?:mirroball|mirrorball)|eclipse(?:\s+.*)?)$/i
+const pheroware = /(?:^|\s)pheroware(?:\s|$)/i
 
 export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAnalysis {
   const decoded = lists.filter((list) => list.status === 'decoded' && list.decoded)
@@ -85,9 +92,11 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
         return effectiveWeapons(entry).some((weapon) => weapon.burst !== null && (weapon.burst >= 5 || (Number(entry.bs) >= 14 && weapon.burst >= 4) || (Number(entry.bs) === 13 && weapon.burst >= 4 && enhanced)))
       }, hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
       category('competent', 'Competent Gunfighters', 'BS 12 or 13 profiles whose effective dice reach 4 through weapon Burst, BS Attack (+Burst), native +SD, Fireteam +1SD, or a combination.', (entry) => (Number(entry.bs) === 12 || Number(entry.bs) === 13) && effectiveSdWeapons(entry).some((weapon) => weapon.burst !== null && weapon.burst >= 4), hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
+      category('apexCc', 'Apex Close Combat Fighters', 'CC 23+ profiles with Martial Arts, Natural Born Warrior, Berserk (+3), or CC Attack (+B).', (entry) => Number(entry.cc) >= 23 && entry.skills.some((skill) => [martialArts, naturalBornWarrior, berserkPlusThree, ccAttackBurst].some((rule) => rule.test(normalize(skill))))),
       category('hacking', 'Hacking Networks', 'Exact Hacker profiles, Hacking Devices, Repeaters, and verified repeater-delivery equipment.', (entry) => hackingComponents(entry).length > 0),
-      category('valuableAro', 'Valuable ARO Pieces', '15+ point profiles with an approved ARO weapon and Total Reaction, Neurocinetics, native BS Attack (+SD), weapon-specific +SD, or a legal Fireteam granting +1SD.', (entry) => entry.points >= 15 && canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name)) && (weaponSdBonus(weapon) > 0 || entry.skills.some((skill) => valuableAroSkill.test(normalize(skill))) || Number(entry.fireteamSdBonus) > 0))),
-      category('disposableAro', 'Disposable ARO Pieces', '14-point-or-less profiles armed with an approved ARO weapon or Flash Pulse.', (entry) => entry.points <= 14 && canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name)) || /^flash pulse$/i.test(normalize(weapon.name)))),
+      category('vision', 'Vision Control', 'Profiles with Smoke Grenades, Smoke Grenade Launchers, Discoballer, Pheroware Mirrorball, or Eclipse.', (entry) => [...entry.skills, ...entry.equipment, ...entry.weapons].some((item) => visionControl.test(normalize(item)))),
+      category('valuableAro', 'Valuable ARO Pieces', 'Profiles with Pheroware, or 15+ point profiles with an approved ARO weapon and Total Reaction, Neurocinetics, native BS Attack (+SD), weapon-specific +SD, or a legal Fireteam granting +1SD.', (entry) => [...entry.skills, ...entry.equipment, ...entry.weapons].some((item) => pheroware.test(normalize(item))) || (entry.points >= 15 && canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name)) && (weaponSdBonus(weapon) > 0 || entry.skills.some((skill) => valuableAroSkill.test(normalize(skill))) || Number(entry.fireteamSdBonus) > 0)))),
+      category('disposableAro', 'Disposable ARO Pieces', 'Profiles with any weapon-specific +SD modifier, or 14-point-or-less profiles armed with an approved ARO weapon or Flash Pulse.', (entry) => canonicalWeapons(entry).some((weapon) => weaponSdBonus(weapon) > 0) || (entry.points <= 14 && canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name)) || /^flash pulse$/i.test(normalize(weapon.name))))),
       category('alternative', 'Alternative Attack Vectors', 'Profiles with Parachutist, Combat Jump, Hidden Deployment, or Impersonation; Netrods and Imetrons are excluded.', (entry) => !excludedAlternativeAttackVector(entry.unit) && entry.skills.some((skill) => alternativeSkill.test(normalize(skill)))),
       category('defensive', 'Defensive Network', 'Profiles with Camouflage, Decoy, or Minelayer; Mimetism alone does not qualify.', (entry) => entry.skills.some((skill) => defensiveSkill.test(normalize(skill)))),
     ]
@@ -112,6 +121,7 @@ function toProfile(entry: ArmyIntelligenceDecodedEntry, listCount: number, denom
   return {
     badges: unique([...skills, ...canonicalWeapons(entry).filter((weapon) => weaponSdBonus(weapon) > 0).map((weapon) => `${weapon.name} (+${weaponSdBonus(weapon)}SD)`), ...(entry.fireteamSdBonus ? ['Fireteam (+1SD)'] : []), ...hackingComponents(entry)]),
     bs: entry.bs ?? null,
+    cc: entry.cc ?? null,
     equipment: entry.equipment.filter((item) => deliveryEquipment.test(normalize(item)) || hackingDevice.test(normalize(item))),
     linkability: entry.fireteamEligibility?.state === 'verified' ? 'verified' : entry.fireteamEligibility?.state === 'verified-false' ? 'verified-false' : 'unknown',
     listCount,

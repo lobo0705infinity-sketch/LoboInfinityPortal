@@ -263,8 +263,8 @@ function validateArmyIntelligenceTacticalMetadata_(decoded) {
     throw new Error("Army Intelligence tactical snapshot has no profiles.");
 
   entries.forEach(function(entry) {
-    if (entry.bs == null || !isFinite(Number(entry.bs)) || !Array.isArray(entry.skills))
-      throw new Error("Army Intelligence profile BS or skills are incomplete.");
+    if (entry.bs == null || !isFinite(Number(entry.bs)) || entry.cc == null || !isFinite(Number(entry.cc)) || !Array.isArray(entry.skills))
+      throw new Error("Army Intelligence profile BS, CC, or skills are incomplete.");
 
     const sourceWeapons = Array.isArray(entry.weapons) ? entry.weapons : [];
     const canonicalWeapons = Array.isArray(entry.weaponProfiles) ? entry.weaponProfiles : [];

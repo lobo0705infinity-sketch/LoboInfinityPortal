@@ -8,7 +8,7 @@ import { createInfListResponse } from '../bot/inf-list-command.mjs'
 
 const weapon = (name, burst, type = 'WEAPON', mode = '', burstStatus) => ({ name, burst, type, mode, ...(burstStatus ? { burstStatus } : {}) })
 const profile = (combinedId, overrides = {}) => ({
-  bs: 13, combinedId, equipment: [], linkability: 'unavailable', profileName: `Loadout ${combinedId}`,
+  bs: 13, cc: 10, combinedId, equipment: [], linkability: 'unavailable', profileName: `Loadout ${combinedId}`,
   points: 20, skills: [], unitId: Number(combinedId.replace(/\D/g, '')) || 1, unitName: `Unit ${combinedId}`, weapons: [], ...overrides,
 })
 
@@ -26,6 +26,11 @@ const fixtures = [
   profile('aro-hrl', { skills: ['Neurocinetics'], weapons: [weapon('Heavy Rocket Launcher', 2), weapon('Feuerbach', 2)] }),
   profile('tankhunter', { points: 36, weapons: [{ ...weapon('Portable Autocannon', 2), modifiers: ['+1SD'] }] }),
   profile('flash', { points: 8, weapons: [weapon('Flash Pulse', 1)] }),
+  profile('pheroware', { equipment: ['Pheroware Tactics'] }),
+  profile('sd-rifle', { points: 30, weapons: [{ ...weapon('Combi Rifle', 3), modifiers: ['+2SD'] }] }),
+  profile('vision', { weapons: [weapon('Smoke Grenades', 1), weapon('Discoballer', 1)], equipment: ['Pheroware Mirroball'], skills: ['Eclipse'] }),
+  profile('apex-cc', { cc: 23, skills: ['Martial Arts L2', 'Natural Born Warrior', 'Berserk (+3)', 'CC Attack (+1B)'] }),
+  profile('cc-near-miss', { cc: 22, skills: ['Martial Arts L4'] }),
   profile('deploy', { skills: ['Parachutist (+3)', 'Combat-Jump (PH=12)', 'Hidden Deployment', 'Impersonation (-6)'], weapons: [weapon('Combi Rifle', 3)] }),
   profile('netrod', { unitName: 'Netrod', skills: ['Combat Jump (PH=12)'] }),
   profile('imetron', { unitName: 'Imetron', skills: ['Parachutist'] }),
@@ -46,12 +51,17 @@ assert.deepEqual(analysis.categories.apex.find((item) => item.combinedId === 'ap
 assert.equal(analysis.categories.apex.some((item) => ['ambiguous-burst', 'unavailable-burst'].includes(item.combinedId)), false)
 assert.deepEqual(analysis.networkSummary, { hackers: 1, pitcherCarriers: 1, fastPandaCarriers: 1, deployableRepeaterCarriers: 1, repeaterCarriers: 1 })
 assert.equal(analysis.categories.hacking.length, 1)
+assert.equal(analysis.categories.valuableAro.some((item) => item.combinedId === 'pheroware'), true)
+assert.equal(analysis.categories.disposableAro.some((item) => item.combinedId === 'sd-rifle'), true)
+assert.equal(analysis.categories.vision.some((item) => item.combinedId === 'vision'), true)
+assert.equal(analysis.categories.apexCc.some((item) => item.combinedId === 'apex-cc'), true)
+assert.equal(analysis.categories.apexCc.some((item) => item.combinedId === 'cc-near-miss'), false)
 assert.deepEqual(new Set(analysis.categories.competent.map((item) => item.combinedId)), new Set(['bs12', 'apex', 'burst-bonus', 'same-unit-b']))
 assert.equal(analysis.categories.competent.find((item) => item.combinedId === 'burst-bonus').qualifyingWeapons[0].burst, 4)
 assert.deepEqual(new Set(analysis.categories.valuableAro.flatMap((item) => item.qualifyingWeapons.map((item) => item.name))), new Set(['MULTI Sniper Rifle', 'Heavy Rocket Launcher', 'Feuerbach', 'Portable Autocannon']))
 assert.deepEqual(analysis.categories.valuableAro.find((item) => item.combinedId === 'tankhunter')?.badges, ['Portable Autocannon (+1SD)'])
 assert.equal(analysis.categories.competent.some((item) => item.combinedId === 'tankhunter'), false, 'B2 +1SD is only three dice')
-assert.deepEqual(new Set(analysis.categories.disposableAro.flatMap((item) => item.qualifyingWeapons.map((item) => item.name))), new Set(['Panzerfaust', 'Flammenspeer', 'Flash Pulse']))
+assert.deepEqual(new Set(analysis.categories.disposableAro.flatMap((item) => item.qualifyingWeapons.map((item) => item.name))), new Set(['Panzerfaust', 'Flammenspeer', 'Portable Autocannon', 'Flash Pulse', 'Combi Rifle']))
 assert.equal(analysis.categories.valuableAro[0].linkability, 'verified-linkable')
 assert.equal(analysis.categories.alternative.length, 1)
 assert.equal(analysis.categories.alternative[0].badges.length, 4)
