@@ -123,6 +123,15 @@ assert.equal(ajaxAnalysis.categories.competent.some((item) => item.combinedId ==
 assert.equal(ajaxAnalysis.categories.competent.find((item) => item.combinedId === '702-1594-1-3-1')?.qualifyingWeapons[0].burst, 4)
 assert.deepEqual(ajaxAnalysis.categories.competent.find((item) => item.combinedId === '702-1594-1-3-1')?.badges, ['BS Attack (+1B) [verified profile]'])
 
+const ajaxLiveVariant = classifyTacticalBrief([profile('live-ajax', {
+  bs: 13,
+  unitId: null,
+  unitName: 'AJAX THE GREAT, MYRMIDON OFFICER',
+  weapons: [weapon('MULTI Rifle - AP Mode', 3)],
+})])
+assert.equal(ajaxLiveVariant.categories.competent.some((item) => item.combinedId === 'live-ajax'), true)
+assert.equal(ajaxLiveVariant.categories.competent.find((item) => item.combinedId === 'live-ajax')?.qualifyingWeapons[0].burst, 4)
+
 const empty = classifyTacticalBrief([], { faction: 'Empty' })
 const browser = await chromium.launch({ headless: true })
 const keepOutput = process.argv.includes('--keep')
