@@ -101,7 +101,7 @@ const ajaxCode = 'gr4Nc3RlZWwtcGhhbGFueA9CdXJuaW5nIEJyaWRnZXOBLAIBAQAFAIY6AQMAAA
 const ajaxProfiles = buildSubmittedProfiles({
   armyCode: ajaxCode,
   cards: [{ combinedId: '702-1594-1-3-1', bs: 13, profileName: 'AJAX (Forward Deployment [+8])', skills: ['BS Attack (+1B)'], weapons: ['MULTI Rifle', 'AP Heavy Pistol'] }],
-  metadata: { weapons: [{ id: 9001, name: 'MULTI Rifle', mode: 'Burst Mode', type: 'WEAPON', burst: 3 }, { id: 9001, name: 'MULTI Rifle', mode: 'Anti-materiel Mode', type: 'WEAPON', burst: 1 }] },
+  metadata: { weapons: [{ id: 9001, name: 'MULTI Rifle', mode: '', type: 'WEAPON', burst: '3/1' }] },
   officialPayloads: [{ units: [{ id: 1594, isc: 'AJAX', profileGroups: [{ id: 1, profiles: [{ id: 1, bs: 13, weapons: [{ id: 9001 }] }], options: [{ id: 3, name: 'AJAX (Forward Deployment [+8])' }] }] }] }],
 })
 const ajaxAnalysis = classifyTacticalBrief(ajaxProfiles)
