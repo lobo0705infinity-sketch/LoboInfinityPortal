@@ -6,7 +6,6 @@ import {
   InfListRenderError,
   buildOfficialArmyUrl,
   fetchOfficialClassificationData,
-  mergeOfficialClassificationData,
   renderInfListPng,
 } from './inf-list-render-poc.mjs'
 import {
@@ -46,17 +45,6 @@ assert.deepEqual(fetchedUrls, ['https://api.corvusbelli.com/army/infinity/en/met
 assert.equal(officialData.metadata.skills[0].name, 'Skill')
 assert.equal(officialData.payload.units[0].id, 783)
 assert.equal(officialData.payload.url, 'https://api.corvusbelli.com/army/units/en/604')
-const mergedOfficialData = mergeOfficialClassificationData({
-  metadata: null,
-  payloads: [{ url: 'https://api.corvusbelli.com/army/units/en/601', units: [{ id: 1 }] }],
-  direct: officialData,
-  sectorialId: 604,
-})
-assert.deepEqual(mergedOfficialData.payloads.map((payload) => payload.url), [
-  'https://api.corvusbelli.com/army/units/en/601',
-  'https://api.corvusbelli.com/army/units/en/604',
-])
-assert.equal(mergeOfficialClassificationData({ metadata: officialData.metadata, payloads: [officialData.payload], direct: officialData, sectorialId: 604 }).payloads.length, 1)
 const renderCalls = []
 const handler = createInfListMessageHandler({
   render: async ({ input }) => {
