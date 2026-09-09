@@ -405,6 +405,6 @@ async function postSnapshots(apiUrl, snapshots, credential, options = {}) {
   }
   const payload = JSON.parse(text)
   if (payload.success === false) {
-    throw new Error(payload.error || 'refreshArmyIntelligence failed.')
+    throw new Error(payload.error || payload.message || 'refreshArmyIntelligence failed.')
   }
 }
