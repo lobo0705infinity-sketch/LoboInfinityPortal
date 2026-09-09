@@ -54,10 +54,11 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
       type: weapon.type || '',
       modifiers: weapon.modifiers || [],
     })))
-    // Infinity-Data names are retained when canonical metadata is unavailable, but
-    // their Burst remains unverified and therefore cannot qualify an Apex profile.
+    // Infinity-Data can expose inherited weapons that are absent from the selected
+    // option's official weapon references. Recover those weapons only through an
+    // exact canonical name match; otherwise retain the name with unverified Burst.
     for (const name of card.weapons || []) if (!weapons.some((weapon) => sameToken(weaponDisplay(weapon), name))) {
-      weapons.push({ burst: null, mode: '', name, type: '' })
+      weapons.push(resolveCanonicalCardWeapon(dataset, name) || { burst: null, mode: '', name, type: '' })
     }
     return {
       bs: finiteNumber(base?.bs ?? card.bs),
@@ -302,6 +303,15 @@ function pherowareToken(v) { return /^(?:pheroware(?:\s+tactics)?|pt)(?:\s+.*)?$
 function apexGunfighterWeaponToken(v) { return /(?:^|\s)(?:marksman rifle|spitfire|red fury|heavy machine gun|hmg|hyper rapid magnetic cannon|hrmc|thunderbolt)(?:\s+(?:burst|anti materiel|hit|blast) mode)?$/.test(normalized(v)) }
 function competentGunfighterWeaponToken(v) { return apexGunfighterWeaponToken(v) || /(?:^|\s)rifle(?:\s+(?:burst|anti materiel|hit|blast) mode)?$/.test(normalized(v)) }
 function heavyRocketLauncherToken(v) { return /^heavy rocket launcher(?:\s+(?:burst|anti materiel|hit|blast) mode)?$/.test(normalized(v)) }
+function resolveCanonicalCardWeapon(dataset, cardName) {
+  const token = normalized(cardName)
+  const exactDisplay = (dataset?.metadata?.weapons || []).filter((weapon) => normalized(weaponDisplay(weapon)) === token && weapon.burstStatus === 'canonical')
+  const exactName = (dataset?.metadata?.weapons || []).filter((weapon) => normalized(weapon.name) === token && weapon.burstStatus === 'canonical')
+  const candidates = exactDisplay.length ? exactDisplay : exactName
+  if (!candidates.length) return null
+  const selected = [...candidates].sort((a, b) => b.burst - a.burst || String(a.mode || '').localeCompare(String(b.mode || '')))[0]
+  return { ...selected, modifiers: [], sourceDatasetId: dataset?.datasetId || null }
+}
 function totalReactionToken(v) { return /^total reaction$/.test(normalized(v)) }
 function neurocineticsToken(v) { return /^neurocinetics$/.test(normalized(v)) }
 function bsAttackSdToken(v) { return /^bs attack\s+\+(?:\d+\s*)?sd$/.test(normalized(v)) }
