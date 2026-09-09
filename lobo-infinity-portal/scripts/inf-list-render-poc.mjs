@@ -505,8 +505,7 @@ async function captureOfficialArmyList(browser, officialArmyUrl, sectorialId, fe
     }
 
     const direct = await fetchOfficialClassificationData(sectorialId, fetchImpl)
-    if (!metadata && direct.metadata) metadata = direct.metadata
-    if (!payloads.some((payload) => Array.isArray(payload?.units)) && direct.payload) payloads.push(direct.payload)
+    ;({ metadata, payloads } = mergeOfficialClassificationData({ metadata, payloads, direct, sectorialId }))
 
     return {
       height: imageBuffer.readUInt32BE(20),
@@ -535,6 +534,17 @@ export async function fetchOfficialClassificationData(sectorialId, fetchImpl = f
   const body = payloadResponse?.ok ? await payloadResponse.json().catch(() => null) : null
   const payload = body && Array.isArray(body.units) ? { ...body, url: `https://api.corvusbelli.com/army/units/en/${id}` } : null
   return { metadata, payload }
+}
+
+export function mergeOfficialClassificationData({ metadata, payloads = [], direct = {}, sectorialId }) {
+  const target = `/army/units/en/${Number(sectorialId)}`
+  const hasTargetPayload = payloads.some((payload) => {
+    try { return new URL(payload?.url || '').pathname.replace(/\/$/, '') === target } catch { return false }
+  })
+  return {
+    metadata: metadata || direct.metadata || null,
+    payloads: hasTargetPayload || !direct.payload ? payloads : [...payloads, direct.payload],
+  }
 }
 
 async function waitForStableArmyPanel(page, armyPanel) {
