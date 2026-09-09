@@ -6,17 +6,28 @@ const requestTimeoutMs = Math.min(240_000, Math.max(30_000, Number(process.env.A
 if (!token) throw new Error('ARMY_INTELLIGENCE_BACKFILL_TOKEN is required.')
 
 async function call(body) {
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json', 'x-army-backfill-token': token },
-    body: JSON.stringify(body),
-    signal: AbortSignal.timeout(requestTimeoutMs),
-  })
-  const text = await response.text()
-  if (!response.ok) throw new Error(`Worker HTTP ${response.status}: ${text.slice(0, 500)}`)
-  const payload = JSON.parse(text)
-  if (payload.success !== true) throw new Error(payload.error || 'Worker request failed.')
-  return payload
+  let lastError
+  for (let attempt = 1; attempt <= 5; attempt += 1) {
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'x-army-backfill-token': token },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(requestTimeoutMs),
+      })
+      const text = await response.text()
+      if (!response.ok) throw new Error(`Worker HTTP ${response.status}: ${text.slice(0, 500)}`)
+      const payload = JSON.parse(text)
+      if (payload.success !== true) throw new Error(payload.error || 'Worker request failed.')
+      return payload
+    } catch (error) {
+      lastError = error
+      const message = error instanceof Error ? error.message : String(error)
+      if (!/armyIntelligence(?:Sources)? failed with HTTP 404|unable to open the file|Page Not Found|Unknown API action/i.test(message) || attempt === 5) throw error
+      await new Promise((resolve) => setTimeout(resolve, attempt * 1_000))
+    }
+  }
+  throw lastError
 }
 
 async function audit(snapshotKeys) {
@@ -45,11 +56,6 @@ let consecutiveFailures = 0
 console.log(JSON.stringify({ stage: 'initial', total: initial.totalDistinctLists, current: initial.currentVersionSnapshots, remaining: keys.length }))
 for (let index = 0; index < keys.length; index += 1) {
   const snapshotKey = keys[index]
-  if (await isCurrent(snapshotKey)) {
-    console.log(JSON.stringify({ stage: 'list', current: index + 1, key: snapshotKey, status: 'already-current', remaining: keys.length - index - 1 }))
-    continue
-  }
-
   let result
   let transportError = ''
   try {
