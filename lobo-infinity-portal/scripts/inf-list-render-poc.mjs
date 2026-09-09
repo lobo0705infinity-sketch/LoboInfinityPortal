@@ -305,6 +305,7 @@ export async function requestRendererView(armyCode, { fetchImpl = fetch, timeout
 
 export async function renderInfListPng({ input, outputPath, browserType = chromium, fetchImpl } = {}) {
   const armyCode = validateArmyCode(input)
+  const decoded = decodeArmyCode(armyCode)
   const rendererViewUrl = await requestRendererView(armyCode, { fetchImpl })
 
   const browser = await browserType.launch({ headless: true })
@@ -313,11 +314,10 @@ export async function renderInfListPng({ input, outputPath, browserType = chromi
     const profilePages = rendered.profilePages
     let official = null
     try {
-      official = await captureOfficialArmyList(browser, buildOfficialArmyUrl(armyCode))
+      official = await captureOfficialArmyList(browser, buildOfficialArmyUrl(armyCode), decoded.sectorialId, fetchImpl)
     } catch {
       // The established full-list image remains usable if the additive official capture fails.
     }
-    const decoded = decodeArmyCode(armyCode)
     const faction = official?.metadata?.factions?.find((item) => Number(item.id) === Number(decoded.sectorialId))
     const submittedProfiles = buildSubmittedProfiles({
       armyCode,
@@ -472,7 +472,7 @@ async function captureRenderedProfilePages(browser, rendererViewUrl) {
   }
 }
 
-async function captureOfficialArmyList(browser, officialArmyUrl) {
+async function captureOfficialArmyList(browser, officialArmyUrl, sectorialId, fetchImpl = fetch) {
   const page = await browser.newPage({ deviceScaleFactor: 1, viewport: { width: 1920, height: 1080 } })
   try {
     let metadata = null
@@ -504,6 +504,10 @@ async function captureOfficialArmyList(browser, officialArmyUrl) {
       throw new InfListRenderError('invalid_render', 'Official Infinity Army list panel is unexpectedly small.')
     }
 
+    const direct = await fetchOfficialClassificationData(sectorialId, fetchImpl)
+    if (!metadata && direct.metadata) metadata = direct.metadata
+    if (!payloads.some((payload) => Array.isArray(payload?.units)) && direct.payload) payloads.push(direct.payload)
+
     return {
       height: imageBuffer.readUInt32BE(20),
       imageBuffer,
@@ -515,6 +519,22 @@ async function captureOfficialArmyList(browser, officialArmyUrl) {
   } finally {
     await page.close()
   }
+}
+
+export async function fetchOfficialClassificationData(sectorialId, fetchImpl = fetch) {
+  const id = Number(sectorialId)
+  if (!Number.isInteger(id) || id < 1 || id > 9999) return { metadata: null, payload: null }
+  const headers = { accept: 'application/json, text/plain, */*', origin: 'https://infinityuniverse.com', referer: 'https://infinityuniverse.com/' }
+  const [metadataResult, payloadResult] = await Promise.allSettled([
+    fetchImpl('https://api.corvusbelli.com/army/infinity/en/metadata', { headers }),
+    fetchImpl(`https://api.corvusbelli.com/army/units/en/${id}`, { headers }),
+  ])
+  const metadataResponse = metadataResult.status === 'fulfilled' ? metadataResult.value : null
+  const payloadResponse = payloadResult.status === 'fulfilled' ? payloadResult.value : null
+  const metadata = metadataResponse?.ok ? await metadataResponse.json().catch(() => null) : null
+  const body = payloadResponse?.ok ? await payloadResponse.json().catch(() => null) : null
+  const payload = body && Array.isArray(body.units) ? { ...body, url: `https://api.corvusbelli.com/army/units/en/${id}` } : null
+  return { metadata, payload }
 }
 
 async function waitForStableArmyPanel(page, armyPanel) {
