@@ -5,6 +5,7 @@ import { readFile } from 'node:fs/promises'
 import {
   InfListRenderError,
   buildOfficialArmyUrl,
+  fetchOfficialClassificationData,
   renderInfListPng,
 } from './inf-list-render-poc.mjs'
 import {
@@ -35,6 +36,15 @@ const profilePages = [
   { imageBuffer: Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x04]) },
 ]
 const officialArmyUrl = buildOfficialArmyUrl(testCode)
+const fetchedUrls = []
+const officialData = await fetchOfficialClassificationData(604, async (url) => {
+  fetchedUrls.push(url)
+  return { ok: true, async json() { return url.endsWith('/metadata') ? { skills: [{ id: 1, name: 'Skill' }] } : { version: 'fixture', units: [{ id: 783 }] } } }
+})
+assert.deepEqual(fetchedUrls, ['https://api.corvusbelli.com/army/infinity/en/metadata', 'https://api.corvusbelli.com/army/units/en/604'])
+assert.equal(officialData.metadata.skills[0].name, 'Skill')
+assert.equal(officialData.payload.units[0].id, 783)
+assert.equal(officialData.payload.url, 'https://api.corvusbelli.com/army/units/en/604')
 const renderCalls = []
 const handler = createInfListMessageHandler({
   render: async ({ input }) => {
