@@ -91,8 +91,11 @@ export function classifyTacticalBrief(profiles, army = {}) {
     const effectiveWeapons = activeWeapons.map((weapon) => ({ ...weapon, burst: weapon.burst === null ? null : weapon.burst + nativeSdBonus + fireteamSdBonus + weaponSdBonus(weapon) }))
     const apexWeapons = effectiveWeapons.filter((weapon) => apexGunfighterWeaponToken(weaponDisplay(weapon)) && isRangedWeapon(weapon) && (weapon.burst >= 5 || (profile.bs >= 14 && weapon.burst >= 4) || (profile.bs === 13 && weapon.burst >= 4 && enhancements.length)))
     if (apexWeapons.length) result.apex.push({ ...profile, badges: enhancements, qualifyingWeapons: apexWeapons })
-    const competentWeapons = effectiveWeapons.map((weapon) => ({ ...weapon, activeBurst: activeWeapons.find((candidate) => sameToken(weaponDisplay(candidate), weaponDisplay(weapon)))?.burst ?? weapon.burst, nativeSdBonus, weaponSdBonus: weaponSdBonus(weapon), fireteamSdBonus })).filter((weapon) => weapon.burst >= 4 && competentGunfighterWeaponToken(weaponDisplay(weapon)) && isRangedWeapon(weapon))
-    if (!apexWeapons.length && (profile.bs === 12 || profile.bs === 13) && competentWeapons.length) result.competent.push({ ...profile, badges: unique([...(burstBonus ? preferredMatches(profile.skills, [bsAttackBurstToken]) : []), ...(nativeSdBonus ? preferredMatches(profile.skills, [bsAttackSdToken]) : []), ...competentWeapons.filter((weapon) => weapon.weaponSdBonus).map((weapon) => `${weaponDisplay(weapon)} (+${weapon.weaponSdBonus}SD)`), ...(fireteamSdBonus ? ['Fireteam (+1SD)'] : [])]), qualifyingFireteams, qualifyingWeapons: competentWeapons })
+    const competentCandidates = effectiveWeapons.map((weapon) => ({ ...weapon, activeBurst: activeWeapons.find((candidate) => sameToken(weaponDisplay(candidate), weaponDisplay(weapon)))?.burst ?? weapon.burst, nativeSdBonus, weaponSdBonus: weaponSdBonus(weapon), fireteamSdBonus }))
+    const standardCompetentWeapons = competentCandidates.filter((weapon) => weapon.burst >= 4 && competentGunfighterWeaponToken(weaponDisplay(weapon)) && isRangedWeapon(weapon))
+    const hrlCompetentWeapons = competentCandidates.filter((weapon) => weapon.burst >= 3 && heavyRocketLauncherToken(weaponDisplay(weapon)) && isRangedWeapon(weapon))
+    const competentWeapons = dedupeWeapons([...(profile.bs === 12 || profile.bs === 13 ? standardCompetentWeapons : []), ...(profile.bs >= 12 ? hrlCompetentWeapons : [])])
+    if (!apexWeapons.length && competentWeapons.length) result.competent.push({ ...profile, badges: unique([...(burstBonus ? preferredMatches(profile.skills, [bsAttackBurstToken]) : []), ...(nativeSdBonus ? preferredMatches(profile.skills, [bsAttackSdToken]) : []), ...competentWeapons.filter((weapon) => weapon.weaponSdBonus).map((weapon) => `${weaponDisplay(weapon)} (+${weapon.weaponSdBonus}SD)`), ...(fireteamSdBonus ? ['Fireteam (+1SD)'] : [])]), qualifyingFireteams, qualifyingWeapons: competentWeapons })
     const closeCombatBadges = preferredMatches(profile.skills, [martialArtsToken, naturalBornWarriorToken, berserkPlusThreeToken, ccAttackBurstToken])
     if (profile.cc >= 22 && closeCombatBadges.length) result.apexCc.push({ ...profile, badges: closeCombatBadges })
 
@@ -298,6 +301,7 @@ function eclipseToken(v) { return /^eclipse(?:\s+.*)?$/.test(normalized(v)) }
 function pherowareToken(v) { return /^(?:pheroware(?:\s+tactics)?|pt)(?:\s+.*)?$/.test(normalized(v)) }
 function apexGunfighterWeaponToken(v) { return /(?:^|\s)(?:marksman rifle|spitfire|red fury|heavy machine gun|hmg|hyper rapid magnetic cannon|hrmc|thunderbolt)(?:\s+(?:burst|anti materiel|hit|blast) mode)?$/.test(normalized(v)) }
 function competentGunfighterWeaponToken(v) { return apexGunfighterWeaponToken(v) || /(?:^|\s)rifle(?:\s+(?:burst|anti materiel|hit|blast) mode)?$/.test(normalized(v)) }
+function heavyRocketLauncherToken(v) { return /^heavy rocket launcher(?:\s+(?:burst|anti materiel|hit|blast) mode)?$/.test(normalized(v)) }
 function totalReactionToken(v) { return /^total reaction$/.test(normalized(v)) }
 function neurocineticsToken(v) { return /^neurocinetics$/.test(normalized(v)) }
 function bsAttackSdToken(v) { return /^bs attack\s+\+(?:\d+\s*)?sd$/.test(normalized(v)) }
