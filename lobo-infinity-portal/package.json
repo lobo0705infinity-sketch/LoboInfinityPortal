@@ -69,7 +69,7 @@
     "league:navigation": "node scripts/league-navigation-check.mjs",
     "test:league-schedule-navigation": "node scripts/league-schedule-navigation-check.mjs",
     "test:top-40-shell": "node --experimental-strip-types scripts/top-40-shell-check.mts",
-    "test:top-40-registration": "node scripts/top-40-registration-check.mjs",
+    "test:top-40-registration": "node scripts/top-40-registration-check.mjs && node scripts/top-40-registration-publication-check.mjs",
     "test:top-40-players": "node scripts/top-40-players-check.mjs",
     "test:top-40-seeding": "node scripts/top-40-seeding-check.mjs",
     "test:top-40-bracket-page": "node --experimental-strip-types scripts/top-40-bracket-page-check.mts",

@@ -132,10 +132,15 @@ while (scheduledPending.length) {
   }
 }
 const scheduledUrlFetchReachable = [...scheduledReachable].filter(([, definition]) => /\bUrlFetchApp\b/.test(definition.body))
-assert.deepEqual(scheduledUrlFetchReachable.map(([name]) => name).sort(),
-  ['fetchMissionGeistListing_', 'publishLatestPublicSnapshotV1_'])
+assert.deepEqual(scheduledUrlFetchReachable.map(([name]) => name),
+  ['runTop40RegistrationSnapshotRefresh'])
 for (const forbidden of ['canonicalDecoderGatewayDecode_', 'rebuildGameEngine', 'refreshArmyIntelligence']) {
   assert.equal(scheduledReachable.has(forbidden), false, `scheduled snapshot reaches ${forbidden}`)
+}
+for (const unrelated of ['runFullPublicSnapshotRefresh', 'buildPublicSnapshotV1_', 'fetchMissionGeistListing_',
+  'publishLatestPublicSnapshotV1_', 'readPublicSnapshotPersistedArmyLists_',
+  'readPublicSnapshotPersistedArmyIntelligence_']) {
+  assert.equal(scheduledReachable.has(unrelated), false, `Top 40 scheduler reaches ${unrelated}`)
 }
 const triggerBody = backendFunctions.get('installTwiceDailyPublicSnapshotTriggers').body
 assert.match(triggerBody, /getHandlerFunction\(\) === handler/)

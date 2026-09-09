@@ -114,7 +114,7 @@ function refreshArmyIntelligence(e) {
     rebuildArmyListsReadModelPayloadAndPersist();
     invalidatePortalCacheGroup("armyIntelligence");
 
-    const finalizedPublication = runScheduledPublicSnapshot();
+    const finalizedPublication = runFullPublicSnapshotRefresh();
     return jsonOutput({
       success: finalizedPublication && finalizedPublication.success === true,
       publication: finalizedPublication,
@@ -125,7 +125,7 @@ function refreshArmyIntelligence(e) {
 
   if (!snapshots.length && publishPublicSnapshot) {
     const triggerConfiguration = reconcileTwiceDailyPublicSnapshotTriggers();
-    const publication = runScheduledPublicSnapshot();
+    const publication = runFullPublicSnapshotRefresh();
     return jsonOutput({
       success: publication && publication.success === true,
       publication: publication,
@@ -191,7 +191,7 @@ function refreshArmyIntelligence(e) {
   rebuildArmyListsReadModelPayloadAndPersist();
   invalidatePortalCacheGroup("armyIntelligence");
 
-  const publication = publishPublicSnapshot ? runScheduledPublicSnapshot() : null;
+  const publication = publishPublicSnapshot ? runFullPublicSnapshotRefresh() : null;
 
   return jsonOutput({
     success: true,

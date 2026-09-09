@@ -12,14 +12,18 @@ const PUBLIC_SNAPSHOT_V1_ROOT_NAME = "Lobo Public Snapshots V1";
 const PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_PROPERTY = "PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_ID";
 const PUBLIC_SNAPSHOT_PUBLISH_TOKEN_PROPERTY = "LOBO_SNAPSHOT_PUBLISH_TOKEN";
 const PUBLIC_SNAPSHOT_PUBLISH_URL = "https://lobo-infinity-portal.vercel.app/api/public-snapshot-publish";
+const PUBLIC_SNAPSHOT_TOP40_PUBLISH_URL = "https://lobo-infinity-portal.vercel.app/api/top-40-registration-publish";
 const PUBLIC_SNAPSHOT_TOP40_REGISTRATION_SHEET = "Form Responses 2";
-const PUBLIC_SNAPSHOT_TOP40_REGISTRATION_HEADERS = [
-  "Timestamp",
-  "Email address",
-  "Lobo Portal User Name",
-  "Discord Name",
-  "Tournament Rules agreement"
-];
+const PUBLIC_SNAPSHOT_TOP40_REGISTRATION_HEADERS = {
+  timestamp: ["Timestamp"],
+  email: ["Email address", "Email Address"],
+  portalName: ["Lobo Portal User Name", "Lobo Portal Name"],
+  discord: ["Discord Name", "Discord Username"],
+  rulesAgreement: [
+    "Tournament Rules agreement",
+    "I have read and agree to the tournament rules"
+  ]
+};
 const PUBLIC_SNAPSHOT_TOP40_REGISTRATION_LIMIT = 40;
 const PUBLIC_SNAPSHOT_PUBLIC_FILES = [
   "snapshot.json", "players.json", "games.json", "events.json",
@@ -126,6 +130,40 @@ function runInspectLatestValidatedPublicSnapshotV1() {
 }
 
 function runScheduledPublicSnapshot() {
+  return runTop40RegistrationSnapshotRefresh();
+}
+
+function runTop40RegistrationSnapshotRefresh() {
+  const token = String(
+    PropertiesService.getScriptProperties().getProperty(PUBLIC_SNAPSHOT_PUBLISH_TOKEN_PROPERTY) || ""
+  ).trim();
+  if (!token) throw new Error("Missing LOBO_SNAPSHOT_PUBLISH_TOKEN Script Property.");
+  const source = readPublicSnapshotTop40RegistrationNames_();
+  const registration = buildPublicSnapshotTop40Registrations_(source, new Date().toISOString());
+  const response = UrlFetchApp.fetch(PUBLIC_SNAPSHOT_TOP40_PUBLISH_URL, {
+    method: "post",
+    contentType: "application/json",
+    headers: { Authorization: "Bearer " + token },
+    muteHttpExceptions: true,
+    payload: JSON.stringify({ data: registration })
+  });
+  const statusCode = response.getResponseCode();
+  const result = JSON.parse(response.getContentText() || "{}");
+  if (statusCode < 200 || statusCode >= 300 || result.success !== true)
+    throw new Error("Top 40 snapshot publication failed (HTTP " + statusCode + "): " + String(result.error || "Unknown error"));
+  const output = {
+    success: true,
+    snapshotId: result.snapshotId,
+    sourceCutoff: result.sourceCutoff,
+    registeredPlayers: registration.players.length,
+    pointerUpdated: result.activated === true,
+    unchanged: result.unchanged === true
+  };
+  Logger.log("TOP40_REGISTRATION_SNAPSHOT " + JSON.stringify(output));
+  return output;
+}
+
+function runFullPublicSnapshotRefresh() {
   const started = Date.now();
   const build = buildPublicSnapshotV1_();
   if (!build || build.success !== true || build.status !== "validated") {
@@ -422,9 +460,6 @@ function readPublicSnapshotTop40RegistrationNames_() {
   const sheet = spreadsheet.getSheetByName(PUBLIC_SNAPSHOT_TOP40_REGISTRATION_SHEET);
   if (!sheet)
     throw new Error("Top 40 form-response worksheet not found: " + PUBLIC_SNAPSHOT_TOP40_REGISTRATION_SHEET + ".");
-  const requiredHeaders = PUBLIC_SNAPSHOT_TOP40_REGISTRATION_HEADERS.map(function(header) {
-    return header.toLowerCase();
-  });
   const lastColumn = sheet.getLastColumn();
   const headers = lastColumn
     ? sheet.getRange(1, 1, 1, lastColumn).getDisplayValues()[0].map(function(value) {
@@ -432,12 +467,17 @@ function readPublicSnapshotTop40RegistrationNames_() {
     })
     : [];
   const normalizedHeaders = headers.map(function(header) { return header.toLowerCase(); });
-  const missingHeaders = requiredHeaders.filter(function(header) {
-    return normalizedHeaders.indexOf(header) === -1;
+  const headerIndexes = {};
+  const missingHeaders = Object.keys(PUBLIC_SNAPSHOT_TOP40_REGISTRATION_HEADERS).filter(function(key) {
+    const aliases = PUBLIC_SNAPSHOT_TOP40_REGISTRATION_HEADERS[key];
+    headerIndexes[key] = aliases.map(function(alias) {
+      return normalizedHeaders.indexOf(alias.toLowerCase());
+    }).filter(function(index) { return index >= 0; })[0];
+    return headerIndexes[key] === undefined;
   });
   if (missingHeaders.length)
     throw new Error("Top 40 form-response worksheet is missing required headers: " + missingHeaders.join(", ") + ".");
-  const portalNameIndex = normalizedHeaders.indexOf("lobo portal user name");
+  const portalNameIndex = headerIndexes.portalName;
   const source = {
     portalNameColumn: portalNameIndex + 1,
     portalNameHeader: headers[portalNameIndex],
