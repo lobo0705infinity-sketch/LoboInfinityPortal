@@ -61,7 +61,11 @@ function enrichEntry(entry, units, dataset, chartUnits, reference) {
         return Boolean(legacyProfileName && canonicalName) && (canonicalName.includes(legacyProfileName) || legacyProfileName.includes(canonicalName))
       }))
     : []
+  const optionGroups = groupId === 0
+    ? profileGroups.filter((candidate) => (candidate.options || []).some((item) => item.id === optionId))
+    : []
   const group = profileGroups.find((candidate) => candidate.id === groupId) ||
+    (optionGroups.length === 1 ? optionGroups[0] : null) ||
     (legacyGroups.length === 1 ? legacyGroups[0] : null) ||
     (groupId === 0 && profileGroups.length === 1 ? profileGroups[0] : null)
   const profiles = group?.profiles || []
