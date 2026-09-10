@@ -105,6 +105,13 @@ export default async function handler(request, response) {
     const currentCount = sources.length - allCandidates.length
     const candidates = allCandidates.slice(0, batchLimit)
 
+    logWorkerEvent('army_intelligence_invocation', {
+      candidateCount: allCandidates.length,
+      dryRun,
+      invocationSource: getInvocationSource(request),
+      snapshotKeys: candidates.map((source) => source.snapshotKey),
+    })
+
     if (dryRun) {
       const keyCounts = new Map()
       for (const source of sources) keyCounts.set(source.snapshotKey, (keyCounts.get(source.snapshotKey) || 0) + 1)
@@ -206,6 +213,15 @@ export default async function handler(request, response) {
     const durableCandidates = selectRefreshCandidates(sources, durableState)
     const durableKeyCounts = new Map()
     for (const source of sources) durableKeyCounts.set(source.snapshotKey, (durableKeyCounts.get(source.snapshotKey) || 0) + 1)
+    logWorkerEvent('army_intelligence_persisted_outcomes', {
+      invocationSource: getInvocationSource(request),
+      outcomes: processed.map((item) => ({
+        persisted: durableState.has(item.snapshotKey),
+        snapshotKey: item.snapshotKey,
+        status: durableState.get(item.snapshotKey)?.status || item.status,
+      })),
+      remaining: durableCandidates.length,
+    })
     response.status(200).json({
       candidateCount: allCandidates.length,
       currentCount: sources.length - durableCandidates.length,
@@ -229,6 +245,16 @@ export default async function handler(request, response) {
       success: false,
     })
   }
+}
+
+function getInvocationSource(request) {
+  if (String(request.headers?.['x-army-backfill-token'] || '').trim()) return 'backfill'
+  if (String(request.headers?.authorization || '').trim().startsWith('Bearer ')) return 'scheduled'
+  return 'commissioner'
+}
+
+function logWorkerEvent(event, fields) {
+  console.info(JSON.stringify({ event, ...fields }))
 }
 
 export function exportAuthoritativeSource(source) {
