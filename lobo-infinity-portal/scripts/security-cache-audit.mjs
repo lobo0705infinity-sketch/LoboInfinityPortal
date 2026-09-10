@@ -125,6 +125,7 @@ const endpointPolicy = {
   rebuildStatistics: { authRequired: true, userScoped: false },
   records: { authRequired: false, userScoped: false },
   armyIntelligenceSources: { authRequired: true, userScoped: false },
+  armyIntelligenceSnapshotState: { authRequired: true, userScoped: false },
   installArmyIntelligenceScheduler: { authRequired: true, userScoped: false },
   processAutomationQueueBatch: { authRequired: true, userScoped: false },
   requestCanonicalRebuildRecovery: { authRequired: true, userScoped: false },
