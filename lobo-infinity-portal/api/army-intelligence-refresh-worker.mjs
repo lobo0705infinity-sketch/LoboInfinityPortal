@@ -385,6 +385,8 @@ async function getAction(apiUrl, action, params = {}) {
 }
 
 async function postSnapshots(apiUrl, snapshots, credential, options = {}) {
+  const url = new URL(apiUrl)
+  url.searchParams.set('action', 'refreshArmyIntelligence')
   const body = new URLSearchParams()
   body.set('action', 'refreshArmyIntelligence')
   for (const [key, value] of Object.entries(credential)) {
@@ -395,7 +397,7 @@ async function postSnapshots(apiUrl, snapshots, credential, options = {}) {
   if (options.finalizeMigration) body.set('finalizeMigration', 'true')
   if (options.publishPublicSnapshot) body.set('publishPublicSnapshot', 'true')
 
-  const response = await fetchAppsScriptWithRetry(apiUrl, {
+  const response = await fetchAppsScriptWithRetry(url, {
     body,
     method: 'POST',
     redirect: 'follow',
