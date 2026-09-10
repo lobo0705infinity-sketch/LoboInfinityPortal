@@ -208,13 +208,13 @@ export default async function handler(request, response) {
     for (const source of sources) durableKeyCounts.set(source.snapshotKey, (durableKeyCounts.get(source.snapshotKey) || 0) + 1)
     response.status(200).json({
       candidateCount: allCandidates.length,
+      currentCount: sources.length - durableCandidates.length,
       decoded: snapshots.filter((snapshot) => snapshot.status === 'decoded').length,
       failed: failures.length,
       failures,
       hasMore: allCandidates.length > candidates.length,
       processed,
       remaining: durableCandidates.length,
-      currentCount: sources.length - durableCandidates.length,
       duplicateSnapshotKeys: Array.from(durableKeyCounts).filter(([, count]) => count > 1).map(([snapshotKey, count]) => ({ snapshotKey, count })),
       requestedSectorial,
       requestedSnapshotKeys: Array.from(requestedSnapshotKeys),
