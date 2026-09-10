@@ -224,8 +224,13 @@ function displayedProfileKey(entry: ArmyIntelligenceDecodedEntry) {
 
 function tacticalProfileLabel(entry: ArmyIntelligenceDecodedEntry) {
   const profile = normalize(entry.profile || entry.unit)
-  if (profile.toLowerCase() !== normalize(entry.unit).toLowerCase()) return profile
-  return canonicalWeapons(entry)[0]?.name || profile
+  const baseLabel = profile.toLowerCase() !== normalize(entry.unit).toLowerCase()
+    ? profile
+    : canonicalWeapons(entry)[0]?.name || profile
+  const apsaraVariant = normalize(entry.unit).toLowerCase() === 'apsara'
+    ? entry.skills.map(normalize).find((skill) => /^(?:remdriver|tagcom)(?:\s|$)/i.test(skill))?.match(/^(remdriver|tagcom)/i)?.[1]
+    : ''
+  return apsaraVariant ? `${baseLabel} · ${apsaraVariant}` : baseLabel
 }
 
 function mergeProfileEntries(left: ArmyIntelligenceDecodedEntry, right: ArmyIntelligenceDecodedEntry): ArmyIntelligenceDecodedEntry {

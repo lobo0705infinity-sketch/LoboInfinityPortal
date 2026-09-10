@@ -131,6 +131,15 @@ const duplicateLoadouts = buildTacticalAnalysis([decodedList('Duplicate loadouts
 const duplicateHackingProfiles = duplicateLoadouts.categories.find((item) => item.id === 'hacking')?.profiles || []
 assert.equal(duplicateHackingProfiles.filter((profile) => profile.unit === 'APSARA').length, 1, 'identical visible APSARA loadouts must consolidate despite hidden skill/equipment differences')
 assert.equal(duplicateHackingProfiles.find((profile) => profile.unit === 'APSARA')?.profile, 'Submachine Gun')
+const apsaraVariants = buildTacticalAnalysis([decodedList('APSARA variants', [
+  entry('703-1174-1-4-1', 'APSARA', 'APSARA', { canonicalUnitId: 1174, canonicalOptionId: 4, skills: ['Hacker', 'RemDriver [CC=15|BS=13|WIP=14]'], weapons: ['Submachine Gun'], weaponProfiles: [canonicalBurst('Submachine Gun', 3)] }),
+  entry('703-1174-1-3-1', 'APSARA', 'APSARA', { canonicalUnitId: 1174, canonicalOptionId: 3, skills: ['Hacker', 'TAGCom [Dodge (PH+3)|GizmoKit (PH+1)]'], weapons: ['Submachine Gun'], weaponProfiles: [canonicalBurst('Submachine Gun', 3)] }),
+])] as never)
+assert.deepEqual(
+  apsaraVariants.categories.find((item) => item.id === 'hacking')?.profiles.map((profile) => profile.profile).sort(),
+  ['Submachine Gun · RemDriver', 'Submachine Gun · TAGCom'],
+  'distinct APSARA canonical loadouts must expose their RemDriver/TAGCom identity instead of duplicate Submachine Gun labels',
+)
 const yaduProfiles = duplicateLoadouts.categories.flatMap((category) => category.profiles).filter((profile) => profile.unit === 'YADU')
 assert.deepEqual([...new Set(yaduProfiles.map((profile) => profile.profile))].sort(), ['Combi Rifle', 'Heavy Machine Gun', 'Submachine Gun'], 'distinct YADU loadouts must remain separate and receive weapon labels')
 
