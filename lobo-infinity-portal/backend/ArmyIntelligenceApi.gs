@@ -170,7 +170,8 @@ function refreshArmyIntelligence(e) {
       if (
         snapshot.status === "failed" &&
         persisted &&
-        persisted.status === "decoded"
+        persisted.status === "decoded" &&
+        !isDeterministicInvalidArmyIntelligenceFailure_(snapshot)
       )
         return null;
 
@@ -202,6 +203,18 @@ function refreshArmyIntelligence(e) {
     status: "Refreshed",
     updated: rows.length
   });
+
+}
+
+function isDeterministicInvalidArmyIntelligenceFailure_(snapshot) {
+
+  return Boolean(
+    snapshot &&
+    snapshot.status === "failed" &&
+    getArmyIntelligenceString(snapshot.pipelineVersion) === ARMY_INTELLIGENCE_PIPELINE_VERSION &&
+    getArmyIntelligenceString(snapshot.tacticalSchemaVersion) === ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION &&
+    /Invalid IDs in Army Code/i.test(getArmyIntelligenceString(snapshot.error))
+  );
 
 }
 

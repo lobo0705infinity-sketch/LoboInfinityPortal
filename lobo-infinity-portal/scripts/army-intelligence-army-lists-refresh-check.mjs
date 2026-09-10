@@ -6,6 +6,7 @@ const intelligenceSource = readFileSync('backend/ArmyIntelligenceApi.gs', 'utf8'
 const armyListSource = readFileSync('backend/ArmyListApi.gs', 'utf8')
 const selected = [
   extractFunction(intelligenceSource, 'refreshArmyIntelligence'),
+  extractFunction(intelligenceSource, 'isDeterministicInvalidArmyIntelligenceFailure_'),
   extractFunction(intelligenceSource, 'validateArmyIntelligenceRefreshSnapshot'),
   extractFunction(armyListSource, 'getArmyListObjects'),
   extractFunction(armyListSource, 'rebuildArmyListsReadModelPayload'),
@@ -169,6 +170,13 @@ assert.equal(failedResponse.updated, 0, 'failed callback must not downgrade a va
 assert.equal(persistedWrites, 3)
 assert.equal(sandbox.getArmyListObjects()[0].validation.status, 'decoded')
 assert.equal(decoderCalls, 0)
+
+const invalid = { ...failed, error: 'Infinity-Data decode failed: Invalid IDs in Army Code' }
+const invalidResponse = sandbox.refreshArmyIntelligence({ snapshots: JSON.stringify([invalid]) })
+assert.equal(invalidResponse.updated, 1, 'confirmed invalid codes must replace obsolete decoded tactical rows')
+assert.equal(persistedWrites, 4)
+assert.equal(persistedLookup.byArmyListId[armyListId].status, 'failed')
+assert.equal(sandbox.getArmyListObjects()[0].validation.status, 'pending')
 
 const refresh = extractFunction(intelligenceSource, 'refreshArmyIntelligence')
 assert.match(refresh, /upsertPersistedArmyIntelligenceSnapshotRows\(rows\);[\s\S]*rebuildArmyIntelligenceReadModelPayloadAndPersist\(\);[\s\S]*rebuildArmyListsReadModelPayloadAndPersist\(\);/)
