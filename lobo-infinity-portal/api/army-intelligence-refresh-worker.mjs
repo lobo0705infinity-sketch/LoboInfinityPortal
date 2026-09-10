@@ -100,7 +100,7 @@ export default async function handler(request, response) {
         snapshotKeys: requestedSnapshotKeys,
       },
     )
-    const state = await loadSnapshotState(apiUrl)
+    const state = await loadSnapshotState(apiUrl, upstreamCredential)
     const allCandidates = selectRefreshCandidates(sources, state)
     const currentCount = sources.length - allCandidates.length
     const candidates = allCandidates.slice(0, batchLimit)
@@ -202,18 +202,23 @@ export default async function handler(request, response) {
       })
     }
 
+    const durableState = await loadSnapshotState(apiUrl, upstreamCredential)
+    const durableCandidates = selectRefreshCandidates(sources, durableState)
+    const durableKeyCounts = new Map()
+    for (const source of sources) durableKeyCounts.set(source.snapshotKey, (durableKeyCounts.get(source.snapshotKey) || 0) + 1)
     response.status(200).json({
       candidateCount: allCandidates.length,
-      currentCount,
       decoded: snapshots.filter((snapshot) => snapshot.status === 'decoded').length,
       failed: failures.length,
       failures,
       hasMore: allCandidates.length > candidates.length,
       processed,
-      remaining: Math.max(0, allCandidates.length - candidates.length),
+      remaining: durableCandidates.length,
+      currentCount: sources.length - durableCandidates.length,
+      duplicateSnapshotKeys: Array.from(durableKeyCounts).filter(([, count]) => count > 1).map(([snapshotKey, count]) => ({ snapshotKey, count })),
       requestedSectorial,
       requestedSnapshotKeys: Array.from(requestedSnapshotKeys),
-      skipped: currentCount,
+      skipped: sources.length - durableCandidates.length,
       sourceCount: sources.length,
       success: true,
       updated: snapshots.length,
@@ -328,8 +333,8 @@ async function loadAuthoritativeSources(apiUrl, credential) {
   return Array.isArray(payload.sources) ? payload.sources : []
 }
 
-async function loadSnapshotState(apiUrl) {
-  const payload = await getAction(apiUrl, 'armyIntelligence')
+async function loadSnapshotState(apiUrl, credential) {
+  const payload = await getAction(apiUrl, 'armyIntelligenceSnapshotState', credential)
   const state = new Map()
   for (const list of payload.lists || []) {
     state.set(list.snapshotKey, {

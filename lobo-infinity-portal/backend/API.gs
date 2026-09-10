@@ -731,6 +731,11 @@ function handleApiGet(e, action) {
         return getArmyIntelligenceSources();
       });
 
+    case "armyIntelligenceSnapshotState":
+      return requireArmyIntelligenceWorkerOrPermission(e, function() {
+        return getArmyIntelligenceSnapshotState();
+      });
+
     case "diagnoseArmyList":
       return requireApiPermission(e, "viewOperations", function() {
         return diagnoseArmyList(e);

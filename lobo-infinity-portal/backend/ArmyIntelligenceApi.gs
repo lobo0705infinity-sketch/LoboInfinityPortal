@@ -455,6 +455,17 @@ function getArmyIntelligence(e) {
 
 }
 
+function getArmyIntelligenceSnapshotState() {
+
+  const registry = buildKnownArmyListRegistry();
+
+  return jsonOutput({
+    success: true,
+    lists: buildArmyIntelligenceListsFromCanonicalSources(registry.counts)
+  });
+
+}
+
 function buildArmyIntelligencePublicSummaryProjection(readModel) {
 
   const summary =

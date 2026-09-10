@@ -235,10 +235,23 @@ async function fetchInfinityDataOverview(armyCode, signal) {
 
   const body = await response.text()
   if (!response.ok || !body.includes('Army List:')) {
+    if (isDeterministicInvalidArmyCodeResponse(response.status, body)) {
+      throw new Error('Invalid IDs in Army Code: Infinity-Data deterministically rejected an out-of-date unit option.')
+    }
     throw new Error(`Infinity-Data decode failed with HTTP ${response.status}: ${body.slice(0, 180)}`)
   }
 
   return body
+}
+
+export function isDeterministicInvalidArmyCodeResponse(status, body) {
+  const html = String(body || '')
+  return Number(status) === 200 &&
+    !html.includes('Army List:') &&
+    /<title>\s*Errors in Army Code\s*<\/title>/i.test(html) &&
+    /could not resolved\.\s*Most likely it is out of date\./i.test(html) &&
+    /<th[^>]*>\s*ID\s*<\/th>[\s\S]*<th[^>]*>\s*Name\s*<\/th>[\s\S]*<th[^>]*>\s*Error\s*<\/th>/i.test(html) &&
+    /<td[^>]*>\s*\d+-\d+-\d+\s*<\/td>[\s\S]*<td[^>]*>[\s\S]*<\/td>[\s\S]*<td[^>]*>\s*Unit option not found in sectorial\s*<\/td>/i.test(html)
 }
 
 export function normalizeArmyCodeForInfinityDataTransport(armyCode) {
