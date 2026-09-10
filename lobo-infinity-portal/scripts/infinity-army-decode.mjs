@@ -250,7 +250,7 @@ export function isDeterministicInvalidArmyCodeResponse(status, body) {
     !html.includes('Army List:') &&
     /<title>\s*Errors in Army Code\s*<\/title>/i.test(html) &&
     /could not resolved\.\s*Most likely it is out of date\./i.test(html) &&
-    /<th[^>]*>\s*ID\s*<\/th>[\s\S]*<th[^>]*>\s*Name\s*<\/th>[\s\S]*<th[^>]*>\s*Error\s*<\/th>/i.test(html) &&
+    /<t[hd][^>]*>[\s\S]*?\bID\b[\s\S]*?<\/t[hd]>[\s\S]*?<t[hd][^>]*>[\s\S]*?\bName\b[\s\S]*?<\/t[hd]>[\s\S]*?<t[hd][^>]*>[\s\S]*?\bError\b[\s\S]*?<\/t[hd]>/i.test(html) &&
     /<td[^>]*>\s*\d+-\d+-\d+\s*<\/td>[\s\S]*<td[^>]*>[\s\S]*<\/td>[\s\S]*<td[^>]*>\s*Unit option not found in sectorial\s*<\/td>/i.test(html)
 }
 

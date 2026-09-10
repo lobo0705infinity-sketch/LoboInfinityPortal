@@ -8,6 +8,7 @@ const deterministic = `<!doctype html><html><head><title>Errors in Army Code</ti
 </body></html>`
 
 assert.equal(isDeterministicInvalidArmyCodeResponse(200, deterministic), true)
+assert.equal(isDeterministicInvalidArmyCodeResponse(200, deterministic.replaceAll('th>', 'td>')), true)
 assert.equal(isDeterministicInvalidArmyCodeResponse(503, deterministic), false)
 assert.equal(isDeterministicInvalidArmyCodeResponse(200, deterministic.replace('Most likely it is out of date.', 'Please retry.')), false)
 assert.equal(isDeterministicInvalidArmyCodeResponse(200, deterministic.replace('Unit option not found in sectorial', 'Temporary lookup error')), false)
