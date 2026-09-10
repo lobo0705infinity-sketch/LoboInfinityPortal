@@ -253,7 +253,8 @@ export function selectRefreshCandidates(sources, state) {
       current.armyCodeHash === source.armyCodeHash &&
       current.status === 'failed' &&
       current.pipelineVersion === ARMY_INTELLIGENCE_PIPELINE_VERSION &&
-      current.tacticalSchemaVersion === ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION
+      current.tacticalSchemaVersion === ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION &&
+      /^Invalid IDs in Army Code: Infinity-Data deterministically rejected an out-of-date unit option\.$/.test(current.error)
     )
     if (unchangedCurrentSchemaFailure) return false
     return (
@@ -340,6 +341,7 @@ async function loadSnapshotState(apiUrl, credential) {
     state.set(list.snapshotKey, {
       armyCodeHash: list.armyCodeHash,
       decoderVersion: list.decoded?.decoderVersion || '',
+      error: String(list.error || ''),
       pipelineVersion: list.pipelineVersion || list.decoded?.pipelineVersion || '',
       hasProfileMetadata: snapshotHasDecodedProfileMetadata(list),
       hasTacticalMetadata: snapshotHasTacticalMetadata(list),

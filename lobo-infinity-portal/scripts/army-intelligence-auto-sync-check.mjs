@@ -31,7 +31,16 @@ const state = new Map([
     hasProfileMetadata: false,
     status: 'failed',
   }],
+  ['isolated', {
+    armyCodeHash: 'isolated-hash',
+    error: 'Invalid IDs in Army Code: Infinity-Data deterministically rejected an out-of-date unit option.',
+    pipelineVersion: 'army-intelligence-pipeline-v1',
+    tacticalSchemaVersion: ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION,
+    status: 'failed',
+  }],
 ])
+
+sources.push({ snapshotKey: 'isolated', armyCodeHash: 'isolated-hash' })
 
 assert.deepEqual(
   selectRefreshCandidates(sources, state).map((source) => source.snapshotKey),
