@@ -1551,7 +1551,7 @@ function buildPublicSnapshotDecodedArmy_(decoded) {
             orderTypes: (entry.orderTypes || []).map(String), skills: (entry.skills || []).map(String),
             weapons: (entry.weapons || []).map(String),
             weaponProfiles: (entry.weaponProfiles || []).map(function(weapon) {
-              return { id: weapon.id == null ? null : Number(weapon.id), name: String(weapon.name || ""), mode: weapon.mode == null ? null : String(weapon.mode), variant: weapon.variant == null ? null : String(weapon.variant), modeResolution: weapon.modeResolution == null ? null : String(weapon.modeResolution), type: weapon.type == null ? "" : String(weapon.type), burst: weapon.burst == null ? null : Number(weapon.burst), burstStatus: String(weapon.burstStatus || "unknown"), source: weapon.source == null ? null : String(weapon.source) };
+              return { id: weapon.id == null ? null : Number(weapon.id), name: String(weapon.name || ""), mode: weapon.mode == null ? null : String(weapon.mode), variant: weapon.variant == null ? null : String(weapon.variant), modeResolution: weapon.modeResolution == null ? null : String(weapon.modeResolution), type: weapon.type == null ? "" : String(weapon.type), modifiers: (weapon.modifiers || []).map(String), burst: weapon.burst == null ? null : Number(weapon.burst), burstStatus: String(weapon.burstStatus || "unknown"), source: weapon.source == null ? null : String(weapon.source) };
             }),
             fireteamEligibility: entry.fireteamEligibility
               ? { state: String(entry.fireteamEligibility.state || "unknown"), verified: entry.fireteamEligibility.verified === true, teams: (entry.fireteamEligibility.teams || []).map(String) }
