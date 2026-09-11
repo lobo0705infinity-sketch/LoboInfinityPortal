@@ -33,7 +33,6 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
     skills: new Map((metadata.skills || []).map((item) => [Number(item.id), item.name])),
     extras: new Map((dataset?.metadata?.extras || []).map((item) => [Number(item.id), item.name])),
   }
-  const linkableUnitIds = canonicalLinkableUnitIds(officialPayloads)
   const fireteamMembershipsByUnitId = canonicalFireteamMembershipsByUnitId(officialPayloads)
 
   return members.map((member) => {
@@ -43,6 +42,10 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
     const option = group?.options?.find((item) => Number(item.id) === Number(member.optionId))
     const profileId = Number(member.combinedId.split('-').at(-1))
     const base = group?.profiles?.find((item) => Number(item.id) === profileId) || group?.profiles?.[0]
+    const fireteamMemberships = filterCanonicalFireteamMembershipsForProfile(
+      fireteamMembershipsByUnitId.get(Number(member.unitId)) || [],
+      [option?.name, card.profileName, base?.name, group?.isc],
+    )
     const skills = mergeNamedRefs(base?.skills, option?.skills, names.skills, card.skills, names.extras)
     const equipment = mergeNamedRefs(base?.equip, option?.equip, names.equipment, card.equipment, names.extras)
     const weaponRefs = [...(base?.weapons || []), ...(option?.weapons || [])]
@@ -69,9 +72,9 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
       cc: finiteNumber(base?.cc ?? card.cc),
       combinedId: member.combinedId,
       equipment,
-      fireteamMemberships: fireteamMembershipsByUnitId.get(Number(member.unitId)) || [],
-      fireteamTeams: unique((fireteamMembershipsByUnitId.get(Number(member.unitId)) || []).map((item) => item.team)),
-      linkability: officialPayloads.length ? (linkableUnitIds.has(Number(member.unitId)) ? 'verified-linkable' : 'verified-not-linkable') : 'unavailable',
+      fireteamMemberships,
+      fireteamTeams: unique(fireteamMemberships.map((item) => item.team)),
+      linkability: officialPayloads.length ? (fireteamMemberships.length ? 'verified-linkable' : 'verified-not-linkable') : 'unavailable',
       profileName: option?.name || card.profileName || group?.isc || unit?.isc || unit?.name || 'Profile unavailable',
       points: finiteNumber(option?.points ?? card.points),
       skills,
@@ -229,16 +232,16 @@ function aggregateExactProfiles(profiles) {
   return [...map.values()]
 }
 
-function canonicalLinkableUnitIds(payloads) {
-  const ids = new Set()
-  for (const payload of payloads) {
-    const units = new Map((payload?.units || []).map((unit) => [unit.slug, Number(unit.id)]))
-    for (const team of payload?.fireteamChart?.teams || []) for (const member of team.units || []) {
-      const id = units.get(member.slug)
-      if (id) ids.add(id)
-    }
-  }
-  return ids
+export function filterCanonicalFireteamMembershipsForProfile(memberships, profileNames = []) {
+  const selectedNames = profileNames.map(normalized).filter(Boolean)
+  return (memberships || []).filter((membership) => {
+    const chartName = normalized(membership?.memberName)
+    // The official chart can restrict an otherwise shared unit ID to its FTO
+    // sibling. Never let that eligibility leak onto the non-FTO profile.
+    if (/(?:^|\s)fto(?:\s|$)/.test(chartName))
+      return selectedNames.some((name) => /(?:^|\s)fto(?:\s|$)/.test(name))
+    return true
+  })
 }
 function canonicalFireteamMembershipsByUnitId(payloads) {
   const result = new Map()
