@@ -3,7 +3,7 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { tmpdir } from 'node:os'
 import { chromium } from 'playwright'
-import { buildSubmittedProfiles, classifyTacticalBrief, renderTacticalBrief, TACTICAL_EMPTY_MESSAGE } from '../bot/inf-list-tactical.mjs'
+import { buildSubmittedProfiles, classifyTacticalBrief, filterCanonicalFireteamMembershipsForProfile, renderTacticalBrief, TACTICAL_EMPTY_MESSAGE } from '../bot/inf-list-tactical.mjs'
 import { createInfListResponse } from '../bot/inf-list-command.mjs'
 import { validateExactSectorialData } from './inf-list-render-poc.mjs'
 
@@ -108,6 +108,20 @@ const portableAutocannonFireteamAnalysis = classifyTacticalBrief([
   profile('pac-teammate', { unitName: 'PAC Teammate', fireteamTeams: ['PAC Team'] }),
 ])
 assert.equal(portableAutocannonFireteamAnalysis.categories.competent.some((item) => item.combinedId === 'pac-fireteam'), true)
+
+const beasthunterMemberships = [{ team: 'Caledonian Fireteam', minSize: 3, required: false, requiredNames: [], memberName: 'BEASTHUNTER FTO', countsAs: '' }]
+const beasthunterFtoMemberships = filterCanonicalFireteamMembershipsForProfile(beasthunterMemberships, ['BEASTHUNTER FTO'])
+const beasthunterNonFtoMemberships = filterCanonicalFireteamMembershipsForProfile(beasthunterMemberships, ['BEASTHUNTERS'])
+assert.equal(beasthunterFtoMemberships.length, 1, 'Beasthunter FTO retains exact-profile Fireteam eligibility')
+assert.equal(beasthunterNonFtoMemberships.length, 0, 'non-FTO Beasthunter must not inherit its sibling Fireteam eligibility')
+const beasthunterAnalysis = classifyTacticalBrief([
+  profile('beasthunter-non-fto', { unitId: 700, unitName: 'Beasthunters Free Guild', profileName: 'BEASTHUNTERS', points: 17, linkability: 'verified-not-linkable', fireteamMemberships: beasthunterNonFtoMemberships, fireteamTeams: [], weapons: [weapon('Panzerfaust', 1)] }),
+  profile('beasthunter-fto', { unitId: 700, unitName: 'Beasthunters Free Guild', profileName: 'BEASTHUNTER FTO', points: 17, linkability: 'verified-linkable', fireteamMemberships: beasthunterFtoMemberships, fireteamTeams: ['Caledonian Fireteam'], weapons: [weapon('Panzerfaust', 1)] }),
+  profile('caledonian-teammate-1', { fireteamMemberships: [{ ...beasthunterMemberships[0], memberName: 'Teammate' }], fireteamTeams: ['Caledonian Fireteam'] }),
+  profile('caledonian-teammate-2', { fireteamMemberships: [{ ...beasthunterMemberships[0], memberName: 'Teammate' }], fireteamTeams: ['Caledonian Fireteam'] }),
+])
+assert.equal(beasthunterAnalysis.categories.valuableAro.some((item) => item.combinedId === 'beasthunter-fto'), true)
+assert.equal(beasthunterAnalysis.categories.valuableAro.some((item) => item.combinedId === 'beasthunter-non-fto'), false, 'non-FTO Beasthunter must not receive a Fireteam-derived Valuable ARO classification')
 
 const ajaxCode = 'gr4Nc3RlZWwtcGhhbGFueA9CdXJuaW5nIEJyaWRnZXOBLAIBAQAFAIY6AQMAAACCaAECAAAAh0ABAwAAAIJQAQEAAAAyAQEAAAIBAAoAgmIBAgAAAIJRAQEAAACCUQEBAAAAglMBAQAAAIJTAQEAAACCVAEBAAAAglkBAgAAAIJgAQEAAACCZAEDAAAAglsBBgAA'
 const ajaxProfiles = buildSubmittedProfiles({
