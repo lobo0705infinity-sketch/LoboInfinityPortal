@@ -31,7 +31,7 @@ assert.match(source, /teamTournamentProjection: JSON\.parse\(JSON\.stringify\(te
 assert.match(source, /event\.standings = JSON\.parse\([\s\S]*?teamTournamentProjection\.tournament\.standings/)
 assert.match(
   source,
-  /weaponProfiles:[\\s\\S]*?modifiers:\\s*\\(weapon\\.modifiers\\s*\\|\\|\\s*\\[\\]\\)\\.map\\(String\\)/,
+  /weaponProfiles:[\s\S]*?modifiers:\s*\(weapon\.modifiers\s*\|\|\s*\[\]\)\.map\(String\)/,
   'Army Intelligence public export must preserve weapon-specific modifiers such as +1SD',
 )
 
