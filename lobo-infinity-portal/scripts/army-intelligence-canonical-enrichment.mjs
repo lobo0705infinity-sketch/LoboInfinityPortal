@@ -73,12 +73,25 @@ function enrichEntry(entry, units, dataset, chartUnits, reference) {
   const option = group?.options?.find((candidate) => candidate.id === optionId)
   const weaponReferences = [...(profile?.weapons || []), ...(option?.weapons || [])]
   const weaponProfiles = resolveCanonicalWeaponRecords(dataset, weaponReferences, { expandAmbiguousModes: true }).filter((weapon) => weapon.name).map((weapon) => ({ id: weapon.id, name: weapon.name, modifiers: weapon.modifiers || [], mode: weapon.mode, variant: weapon.variant, modeResolution: weapon.modeResolution, type: weapon.type, burst: weapon.burst, burstStatus: weapon.burstStatus, source: weapon.sourceDatasetId }))
-  const memberships = chartUnits.get(unitId) || []
+  const memberships = filterCanonicalFireteamMembershipsForProfile(
+    chartUnits.get(unitId) || [],
+    [option?.name, entry.profile, profile?.name, group?.isc],
+  )
   const teams = Array.from(new Set(memberships.map((item) => item.team)))
   const fireteamEligibility = reference?.status === 'available' || reference?.status === 'none'
     ? { state: teams.length ? 'verified' : 'verified-false', verified: Boolean(teams.length), teams, memberships }
     : { state: 'unknown', verified: false, teams: [] }
   return { ...entry, bs: profile?.bs ?? null, cc: profile?.cc ?? null, weaponProfiles, fireteamEligibility, canonicalProfile: profile?.name || null, canonicalUnitId: unitId, canonicalOptionId: optionId, canonicalSource: { datasetId: dataset.datasetId, payloadVersion: reference?.payloadVersion || null, sectorialId } }
+}
+
+export function filterCanonicalFireteamMembershipsForProfile(memberships, profileNames = []) {
+  const selectedNames = profileNames.map(normalizeCanonicalProfileName).filter(Boolean)
+  return (memberships || []).filter((membership) => {
+    const chartName = normalizeCanonicalProfileName(membership?.memberName)
+    if (/(?:^|\s)fto(?:\s|$)/.test(chartName))
+      return selectedNames.some((name) => /(?:^|\s)fto(?:\s|$)/.test(name))
+    return true
+  })
 }
 
 function normalizeCanonicalProfileName(value) {

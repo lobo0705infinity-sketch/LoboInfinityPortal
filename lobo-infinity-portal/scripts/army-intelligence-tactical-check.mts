@@ -51,10 +51,10 @@ const analysis = buildTacticalAnalysis([
 
 assert.equal(analysis.mode, 'Submitted-List Trends')
 assert.equal(analysis.listCount, 3)
-assert.equal(analysis.categories.find((item) => item.id === 'apex')?.profiles.length, 4)
+assert.equal(analysis.categories.find((item) => item.id === 'apex')?.profiles.length, 2)
 assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles.some((profile) => profile.unit === 'PHA'), true)
 assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles.some((profile) => profile.unit === 'PT USER'), true)
-assert.equal(analysis.categories.find((item) => item.id === 'disposableAro')?.profiles.some((profile) => profile.unit === 'SD'), true)
+assert.equal(analysis.categories.find((item) => item.id === 'disposableAro')?.profiles.some((profile) => profile.unit === 'SD'), false)
 assert.equal(analysis.categories.find((item) => item.id === 'vision')?.profiles.length, 1)
 assert.equal(analysis.categories.find((item) => item.id === 'apexCc')?.profiles.some((profile) => profile.unit === 'DUELIST'), true)
 assert.equal(analysis.categories.find((item) => item.id === 'apexCc')?.profiles.some((profile) => profile.unit === 'ALMOST'), false)
@@ -71,7 +71,7 @@ assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.prof
 assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles[0].linkability, 'verified')
 assert.deepEqual(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles.find((profile) => profile.unit === 'TANKHUNTER')?.badges, ['Portable Autocannon (+1SD)'])
 assert.ok(!analysis.categories.find((item) => item.id === 'competent')?.profiles.some((profile) => profile.unit === 'TANKHUNTER'), 'B2 +1SD is only three dice')
-assert.equal(analysis.categories.find((item) => item.id === 'disposableAro')?.profiles.length, 3)
+assert.equal(analysis.categories.find((item) => item.id === 'disposableAro')?.profiles.length, 1)
 assert.equal(analysis.categories.find((item) => item.id === 'alternative')?.profiles.length, 1)
 assert.equal(analysis.categories.find((item) => item.id === 'alternative')?.profiles[0].badges.filter((badge) => /Parachutist|Combat Jump|Hidden Deployment|Impersonation/.test(badge)).length, 4)
 assert.ok(!analysis.categories.find((item) => item.id === 'alternative')?.profiles.some((profile) => /netrod|imetron/i.test(profile.unit)))
@@ -92,9 +92,17 @@ const fireteamAnalysis = buildTacticalAnalysis([decodedList('Fireteam', [
   entry('hannibal', 'HANNIBAL', 'Marksman', { bs: 13, points: 33, skills: ['BS Attack (+1SD)'], weapons: ['MULTI Marksman Rifle'], weaponProfiles: [canonicalBurst('MULTI Marksman Rifle', 3)], fireteamEligibility: fireteam }),
   entry('moran', 'MORAN', 'Repeater Minelayer', { equipment: ['Repeater'], skills: ['Minelayer'] }),
 ])] as never)
-assert.ok(!fireteamAnalysis.categories.find((item) => item.id === 'valuableAro')?.profiles.some((profile) => profile.unit === 'ORC'), 'Fireteam +1SD alone must not qualify Valuable ARO')
+assert.ok(fireteamAnalysis.categories.find((item) => item.id === 'valuableAro')?.profiles.some((profile) => profile.unit === 'ORC'), 'verified legal Fireteam +1SD qualifies an approved ARO weapon')
 assert.ok(fireteamAnalysis.categories.find((item) => item.id === 'apex')?.profiles.some((profile) => profile.unit === 'HANNIBAL'))
 assert.deepEqual(fireteamAnalysis.categories.find((item) => item.id === 'hacking')?.profiles.find((profile) => profile.unit === 'MORAN')?.roles, ['hacking', 'defensive'])
+
+const caledonianParity = buildTacticalAnalysis([decodedList('Caledonian parity', [
+  entry('mormaer', 'CALEDONIAN MORMAER', 'Heavy Machine Gun', { bs: 13, skills: ['BS Attack (-3)'], weapons: ['Heavy Machine Gun'], weaponProfiles: [canonicalBurst('Heavy Machine Gun', 4)] }),
+  entry('isobel', 'ISOBEL McGREGOR', 'T2 Rifle', { bs: 12, weapons: ['Assault Pistol'], weaponProfiles: [canonicalBurst('Assault Pistol', 4)] }),
+  entry('uxia', 'UXÍA McNEILL', 'Boarding Shotgun', { bs: 11, skills: ['BS Attack (+1B)', 'Camouflage', 'Mimetism (-3)'], weapons: ['Assault Pistol'], weaponProfiles: [canonicalBurst('Assault Pistol', 4)] }),
+])] as never)
+assert.deepEqual(caledonianParity.categories.find((item) => item.id === 'apex')?.profiles.map((profile) => profile.unit), ['CALEDONIAN MORMAER'])
+assert.ok(!caledonianParity.categories.find((item) => item.id === 'apex')?.profiles.some((profile) => profile.unit === 'ISOBEL McGREGOR' || profile.unit === 'UXÍA McNEILL'), 'high-Burst pistols must not leak into Apex Gunfighters')
 
 const privateListName = 'Don\u2019t hurt me daddy'
 const dartok = entry('morat-dartok-fto', 'DARTOK FTO', 'Hacker · Pitcher', {
@@ -141,7 +149,7 @@ assert.deepEqual(
   'distinct APSARA canonical loadouts must expose their RemDriver/TAGCom identity instead of duplicate Submachine Gun labels',
 )
 const yaduProfiles = duplicateLoadouts.categories.flatMap((category) => category.profiles).filter((profile) => profile.unit === 'YADU')
-assert.deepEqual([...new Set(yaduProfiles.map((profile) => profile.profile))].sort(), ['Combi Rifle', 'Heavy Machine Gun', 'Submachine Gun'], 'distinct YADU loadouts must remain separate and receive weapon labels')
+assert.deepEqual([...new Set(yaduProfiles.map((profile) => profile.profile))].sort(), ['Combi Rifle', 'Heavy Machine Gun'], 'only qualifying YADU gunfighter loadouts appear; Submachine Gun is not an approved gunfighter weapon')
 
 const lamedhLists = Array.from({ length: 10 }, (_, index) => decodedList(`LAMEDH ${index}`, [
   entry(`lamedh-${index}`, 'LAMEDH Robot', index === 0 ? 'LAMEDH Robot' : 'Flash Pulse', {

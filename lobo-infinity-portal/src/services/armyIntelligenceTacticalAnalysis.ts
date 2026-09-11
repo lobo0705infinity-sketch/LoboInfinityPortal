@@ -88,20 +88,30 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
 
   const qualifiesAsApex = (entry: ArmyIntelligenceDecodedEntry) => {
         const enhanced = entry.skills.some((skill) => gunfighterEnhancement.test(normalize(skill)))
-        return effectiveSdWeapons(entry).some((weapon) => weapon.burst !== null && (weapon.burst >= 5 || (Number(entry.bs) >= 14 && weapon.burst >= 4) || (Number(entry.bs) === 13 && weapon.burst >= 4 && enhanced)))
+        return effectiveSdWeapons(entry).some((weapon) => isRangedWeapon(weapon) && apexGunfighterWeapon(weapon) && weapon.burst !== null && (weapon.burst >= 5 || (Number(entry.bs) >= 14 && weapon.burst >= 4) || (Number(entry.bs) === 13 && weapon.burst >= 4 && enhanced)))
       }
+  const qualifiesAsCompetent = (entry: ArmyIntelligenceDecodedEntry) => {
+    const weapons = effectiveSdWeapons(entry)
+    const bs = Number(entry.bs)
+    const standard = (bs === 12 || bs === 13) && weapons.some((weapon) => isRangedWeapon(weapon) && competentGunfighterWeapon(weapon) && weapon.burst !== null && weapon.burst >= 4)
+    const heavyRocketLauncher = bs >= 12 && weapons.some((weapon) => isRangedWeapon(weapon) && heavyRocketLauncherWeapon(weapon) && weapon.burst !== null && weapon.burst >= 3)
+    const portableAutocannonEnhancement = entry.skills.some((skill) => /^(?:mimetism\s*[[(]\s*-(?:3|6)\s*[\])]|bs attack\s*[[(]\s*-3\s*[\])])$/i.test(normalize(skill)))
+    const sdBonus = bsAttackSdBonus(entry.skills) + Number(entry.fireteamSdBonus || 0)
+    const portableAutocannon = portableAutocannonEnhancement && weapons.some((weapon) => isRangedWeapon(weapon) && portableAutocannonWeapon(weapon) && sdBonus + weaponSdBonus(weapon) >= 1)
+    return standard || heavyRocketLauncher || portableAutocannon
+  }
   const categories: TacticalCategory[] = [
       category('apex', 'Apex Gunfighters', 'Effective dice include native Burst, BS Attack (+Burst), native +SD, verified Fireteam +1SD, and valid combinations. Qualifies at effective B5; BS 14+ with effective B4+; or BS 13 with effective B4+ plus MSV 1–3, Mimetism (-3/-6), BS Attack (-3), or Albedo (-3/-6).', qualifiesAsApex, hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
-      category('competent', 'Competent Gunfighters', 'BS 12 or 13 profiles whose effective dice reach 4 through weapon Burst, BS Attack (+Burst), native +SD, Fireteam +1SD, or a combination; Apex Gunfighters are excluded.', (entry) => !qualifiesAsApex(entry) && (Number(entry.bs) === 12 || Number(entry.bs) === 13) && effectiveSdWeapons(entry).some((weapon) => weapon.burst !== null && weapon.burst >= 4), hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
+      category('competent', 'Competent Gunfighters', 'BS 12 or 13 profiles whose effective dice reach 4 through an approved gunfighter weapon, BS Attack (+Burst), native +SD, Fireteam +1SD, or a combination. Heavy Rocket Launchers and enhanced Portable Autocannons use their verified special cases; Apex Gunfighters are excluded.', (entry) => !qualifiesAsApex(entry) && qualifiesAsCompetent(entry), hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
       category('apexCc', 'Apex Close Combat Fighters', 'CC 22+ profiles with Martial Arts, Natural Born Warrior, Berserk (+3), or CC Attack (+B).', (entry) => Number(entry.cc) >= 22 && entry.skills.some((skill) => [martialArts, naturalBornWarrior, berserkPlusThree, ccAttackBurst].some((rule) => rule.test(normalize(skill))))),
       category('hacking', 'Hacking Networks', 'Exact Hacker profiles, Hacking Devices, Repeaters, and verified repeater-delivery equipment.', (entry) => hackingComponents(entry).length > 0),
       category('vision', 'Vision Control', 'Profiles with Smoke Grenades, Smoke Grenade Launchers, Discoballer, Pheroware Mirrorball, or Eclipse.', (entry) => [...entry.skills, ...entry.equipment, ...entry.weapons].some((item) => visionControl.test(normalize(item)))),
-      category('valuableAro', 'Valuable ARO Pieces', 'Profiles with an approved ARO weapon or Pheroware capability, plus Total Reaction, Neurocinetics, native BS Attack (+SD), or weapon-specific +SD. Fireteam eligibility alone does not qualify.', (entry) => {
+      category('valuableAro', 'Valuable ARO Pieces', 'Profiles with an approved ARO weapon or Pheroware capability, plus Total Reaction, Neurocinetics, native BS Attack (+SD), weapon-specific +SD, or a verified legal Fireteam +1SD.', (entry) => {
         const hasAroCapability = canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name))) || [...entry.skills, ...entry.equipment, ...entry.weapons].some((item) => pheroware.test(normalize(item)))
-        const hasValuableModifier = entry.skills.some((skill) => valuableAroSkill.test(normalize(skill))) || canonicalWeapons(entry).some((weapon) => weaponSdBonus(weapon) > 0)
+        const hasValuableModifier = entry.skills.some((skill) => valuableAroSkill.test(normalize(skill))) || canonicalWeapons(entry).some((weapon) => weaponSdBonus(weapon) > 0) || Number(entry.fireteamSdBonus || 0) > 0
         return hasAroCapability && hasValuableModifier
       }),
-      category('disposableAro', 'Disposable ARO Pieces', 'Profiles with any weapon-specific +SD modifier, or 14-point-or-less profiles armed with an approved ARO weapon or Flash Pulse.', (entry) => canonicalWeapons(entry).some((weapon) => weaponSdBonus(weapon) > 0) || (entry.points <= 14 && canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name)) || /^flash pulse$/i.test(normalize(weapon.name))))),
+      category('disposableAro', 'Disposable ARO Pieces', 'Profiles below 14 points with an approved ARO weapon, Flash Pulse, weapon-specific +SD, or native BS Attack (+SD).', (entry) => entry.points < 14 && (canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name)) || /^flash pulse$/i.test(normalize(weapon.name)) || weaponSdBonus(weapon) > 0) || bsAttackSdBonus(entry.skills) > 0)),
       category('alternative', 'Alternative Attack Vectors', 'Profiles with Parachutist, Combat Jump, Hidden Deployment, or Impersonation; Netrods and Imetrons are excluded.', (entry) => !excludedAlternativeAttackVector(entry.unit) && entry.skills.some((skill) => alternativeSkill.test(normalize(skill)))),
       category('defensive', 'Defensive Network', 'Profiles with Camouflage, Decoy, or Minelayer; Mimetism alone does not qualify.', (entry) => entry.skills.some((skill) => defensiveSkill.test(normalize(skill)))),
     ]
@@ -140,7 +150,7 @@ function toProfile(entry: ArmyIntelligenceDecodedEntry, listCount: number, denom
 }
 
 function canonicalWeapons(entry: ArmyIntelligenceDecodedEntry) {
-  return entry.weaponProfiles?.map((weapon) => ({ name: normalize(weapon.name), modifiers: weapon.modifiers || [], burst: finiteOrNull(weapon.burst), burstStatus: weapon.burstStatus || 'unknown' })) || []
+  return entry.weaponProfiles?.map((weapon) => ({ name: normalize(weapon.name), mode: normalize(weapon.mode), type: normalize(weapon.type), modifiers: weapon.modifiers || [], burst: finiteOrNull(weapon.burst), burstStatus: weapon.burstStatus || 'unknown' })) || []
 }
 
 function effectiveSdWeapons(entry: ArmyIntelligenceDecodedEntry) {
@@ -154,6 +164,30 @@ function weaponSdBonus(weapon: { modifiers?: string[] }) {
     if (match) return Number(match[1] || 1)
   }
   return 0
+}
+
+function weaponRuleToken(weapon: { name?: string; mode?: string }) {
+  return normalize([weapon.name, weapon.mode].filter(Boolean).join(' ')).normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[−–—-]/g, ' ').replace(/[^a-z0-9+]+/g, ' ').replace(/\s+/g, ' ').trim()
+}
+
+function apexGunfighterWeapon(weapon: { name?: string; mode?: string }) {
+  return /(?:^|\s)(?:marksman rifle|spitfire|red fury|heavy machine gun|hmg|hyper rapid magnetic cannon|hrmc|thunderbolt)(?:\s+(?:ap|burst|anti materiel|hit|blast) mode)?$/.test(weaponRuleToken(weapon))
+}
+
+function competentGunfighterWeapon(weapon: { name?: string; mode?: string }) {
+  return apexGunfighterWeapon(weapon) || /(?:^|\s)rifle(?:\s+(?:ap|burst|anti materiel|hit|blast) mode)?$/.test(weaponRuleToken(weapon))
+}
+
+function heavyRocketLauncherWeapon(weapon: { name?: string; mode?: string }) {
+  return /^heavy rocket launcher(?:\s+(?:burst|anti materiel|hit|blast) mode)?$/.test(weaponRuleToken(weapon))
+}
+
+function portableAutocannonWeapon(weapon: { name?: string; mode?: string }) {
+  return /^portable autocannon(?:\s+(?:burst|anti materiel|hit|blast) mode)?$/.test(weaponRuleToken(weapon))
+}
+
+function isRangedWeapon(weapon: { name?: string; type?: string }) {
+  return weaponRuleToken({ name: weapon.type }) !== 'cc' && !/\bcc weapon\b/.test(weaponRuleToken(weapon))
 }
 
 function bsAttackBurstBonus(skills: string[]) {

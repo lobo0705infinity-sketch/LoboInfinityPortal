@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { enrichDecodedList } from './army-intelligence-canonical-enrichment.mjs'
+import { enrichDecodedList, filterCanonicalFireteamMembershipsForProfile } from './army-intelligence-canonical-enrichment.mjs'
 
 const list = { armyCode: 'x', combatGroups: [{ combatGroup: 1, entries: [
   { combinedId: '502-10-2-7-3', unit: 'DISPLAY', profile: 'DISPLAY LOADOUT', weapons: ['Legacy Weapon'], skills: [], equipment: [] },
@@ -43,4 +43,7 @@ assert.equal(unavailable.combatGroups[0].entries[0].fireteamEligibility.state, '
 const noChart = enrichDecodedList(list, { status: 'none', units: reference.units, weapons: reference.weapons, fireteamChart: { teams: [] }, payloadVersion: 'fixture-2' })
 assert.equal(noChart.enrichment.status, 'complete')
 assert.equal(noChart.combatGroups[0].entries[0].fireteamEligibility.state, 'verified-false')
+const beasthunterMemberships = [{ team: 'Caledonian Fireteam', memberName: 'BEASTHUNTER FTO' }]
+assert.equal(filterCanonicalFireteamMembershipsForProfile(beasthunterMemberships, ['BEASTHUNTER FTO']).length, 1)
+assert.equal(filterCanonicalFireteamMembershipsForProfile(beasthunterMemberships, ['BEASTHUNTERS']).length, 0, 'non-FTO profile must not inherit sibling FTO eligibility')
 console.log('Army Intelligence canonical enrichment passed (exact combinedId profile/options, source metadata, Fireteam true/unknown, and loadout isolation).')

@@ -1,4 +1,4 @@
-export const ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION = 'army-intelligence-tactical-v7'
+export const ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION = 'army-intelligence-tactical-v8'
 export const ARMY_INTELLIGENCE_PIPELINE_VERSION = 'army-intelligence-pipeline-v1'
 
 export function snapshotHasCompleteTacticalMetadata(list) {
