@@ -29,6 +29,11 @@ assert.equal((source.match(/armyLink:\s*buildPublicSnapshotArmyLink_\(list\.army
 assert.match(source, /function readPublicSnapshotTeamTournamentProjection_\(\)/)
 assert.match(source, /teamTournamentProjection: JSON\.parse\(JSON\.stringify\(teamTournamentProjection\)\)/)
 assert.match(source, /event\.standings = JSON\.parse\([\s\S]*?teamTournamentProjection\.tournament\.standings/)
+assert.match(
+  source,
+  /weaponProfiles:[\\s\\S]*?modifiers:\\s*\\(weapon\\.modifiers\\s*\\|\\|\\s*\\[\\]\\)\\.map\\(String\\)/,
+  'Army Intelligence public export must preserve weapon-specific modifiers such as +1SD',
+)
 
 function extractFunctions(text) {
   const functions = new Map()
