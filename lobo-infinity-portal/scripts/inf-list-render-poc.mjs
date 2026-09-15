@@ -540,7 +540,7 @@ export function validateExactSectorialData({ armyCode, metadata, payload }) {
   const members = decoded.combatGroups.flatMap((group) => group.members)
   for (const member of members) {
     const unit = unitById.get(Number(member.unitId))
-    const group = unit?.profileGroups?.find((item) => Number(item.id) === Number(member.groupId))
+    const group = resolveExactProfileGroup(unit, member)
     const option = group?.options?.find((item) => Number(item.id) === Number(member.optionId))
     const profileId = Number(member.combinedId.split('-').at(-1))
     const profile = group?.profiles?.find((item) => Number(item.id) === profileId)
@@ -558,6 +558,20 @@ export function validateExactSectorialData({ armyCode, metadata, payload }) {
     sectorialId: Number(decoded.sectorialId),
     sourceUrl: payload?.url || null,
   }
+}
+
+export function resolveExactProfileGroup(unit, member) {
+  const groups = Array.isArray(unit?.profileGroups) ? unit.profileGroups : []
+  const groupId = Number(member?.groupId)
+  const optionId = Number(member?.optionId)
+  const exact = groups.find((item) => Number(item.id) === groupId)
+  if (exact || groupId !== 0) return exact
+
+  const optionMatches = groups.filter((group) =>
+    (group.options || []).some((option) => Number(option.id) === optionId),
+  )
+  if (optionMatches.length === 1) return optionMatches[0]
+  return groups.length === 1 ? groups[0] : undefined
 }
 
 export async function fetchOfficialClassificationData(sectorialId, fetchImpl = fetch) {
