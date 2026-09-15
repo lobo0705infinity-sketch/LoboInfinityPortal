@@ -230,6 +230,119 @@
           "style": "RULEBOOK_WORDING"
         }
       ]
+    },
+    {
+      "id": "new-topic-2-504",
+      "category": "NEW_MULTI_RULE_INTERACTIONS",
+      "canonicalQuestion": "In a Coordinated Order, can Targetless or Deployable weapons choose different points when another participant uses a weapon that requires a target?",
+      "draftAnswer": "No. If one of the Skills in the Coordinated Order demands a Trooper, Marker, or mission objective as a target, all participating Troopers must act against that same single target. The Targetless or Deployable allowance to choose different points does not override that requirement in a mixed Coordinated Order.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "NO",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 129,
+          "section": "COMMAND — COORDINATED ORDERS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 130,
+          "section": "COMMAND — COORDINATED ORDER: TARGETLESS OR DEPLOYABLE TRAITS"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "approvedAnswer": "No. If one of the Skills in the Coordinated Order demands a Trooper, Marker, or mission objective as a target, all participating Troopers must act against that same single target. The Targetless or Deployable allowance to choose different points does not override that requirement in a mixed Coordinated Order.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "NO",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 129,
+          "section": "COMMAND — COORDINATED ORDERS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 130,
+          "section": "COMMAND — COORDINATED ORDER: TARGETLESS OR DEPLOYABLE TRAITS"
+        }
+      ],
+      "queryVariants": [
+        {
+          "id": "new-topic-2-504-q1",
+          "question": "In a Coordinated Order, can Targetless or Deployable weapons choose different points when another participant uses a weapon that requires a target?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-2-504-q2",
+          "question": "If I am doing a coordinated order with some targetless weapons and some without targetless can they target different things?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-504-q3",
+          "question": "Can a coordinated rifle and smoke grenade choose different targets?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-504-q4",
+          "question": "Can a Targetless weapon pick another point when the coordinated BS Attack also includes normal guns?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-504-q5",
+          "question": "Do Targetless weapons ignore the same-target requirement in a mixed Coordinated Order?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-2-504-q6",
+          "question": "Can I coordinate a normal gun at an enemy and throw smoke somewhere else?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-504-q7",
+          "question": "Can a coordinated deployable go somewhere else while the other troops shoot one target?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-504-q8",
+          "question": "If one coordinated trooper needs a target, may another use a Targetless weapon at a different point?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-504-q9",
+          "question": "Does the Targetless exception supersede the coordinated order single target bullet?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-2-504-q10",
+          "question": "In a mixed coordinated attack do smoke and rifles have to act against the same target?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-504-q11",
+          "question": "Can Targetless and non-Targetless attacks split targets in a coordinated order?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-504-q12",
+          "question": "Can coordinated mines be placed away from the target being shot by the other participants?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-504-q13",
+          "question": "What happens to Targetless weapons when any coordinated Skill demands a Trooper as its target?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-2-504-q14",
+          "question": "Do all troops share one target if a coordinated attack mixes guns and deployables?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-504-q15",
+          "question": "May a Targetless participant select an unrelated point in a Coordinated Order containing a targeted attack?",
+          "style": "RULES_CHECK"
+        }
+      ]
     }
   ]
 }
