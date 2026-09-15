@@ -396,6 +396,49 @@
         { "id": "new-topic-2-505-q14", "question": "What weapons does the Tacball have?", "style": "PLAYER_SHORTHAND" },
         { "id": "new-topic-2-505-q15", "question": "Tell me how the ITS Tacball functions", "style": "PLAYER_SHORTHAND" }
       ]
+    },
+    {
+      "id": "new-topic-2-506",
+      "category": "ITS_EXPLICIT_RULES",
+      "canonicalQuestion": "How does Request a Tacball work?",
+      "draftAnswer": "Request a Tacball is an Optional Attack Short Skill available only to a Trooper with Infinity Team-Ops, and it can be used only in the second Game Round. It requires no Roll. The Trooper places a 55 mm Tacball Token in Silhouette contact with any part of its route, chooses one unique, non-transferable item from the Tacball Chart, and applies that item at the end of the Order. The Token is Deployable Equipment and remains where deployed until the game ends, it is destroyed, or it is removed. Each player may use this Skill only once per game.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "INTERPRETATION",
+      "draftCitations": [
+        {
+          "sourceId": "its-season-18",
+          "page": 29,
+          "section": "REQUEST A TACBALL"
+        }
+      ],
+      "reviewStatus": "AUTO_VERIFIED_EXPLICIT",
+      "approvedAnswer": "Request a Tacball is an Optional Attack Short Skill available only to a Trooper with Infinity Team-Ops, and it can be used only in the second Game Round. It requires no Roll. The Trooper places a 55 mm Tacball Token in Silhouette contact with any part of its route, chooses one unique, non-transferable item from the Tacball Chart, and applies that item at the end of the Order. The Token is Deployable Equipment and remains where deployed until the game ends, it is destroyed, or it is removed. Each player may use this Skill only once per game.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCitations": [
+        {
+          "sourceId": "its-season-18",
+          "page": 29,
+          "section": "REQUEST A TACBALL"
+        }
+      ],
+      "queryVariants": [
+        { "id": "new-topic-2-506-q1", "question": "How does Request a Tacball work?", "style": "CANONICAL" },
+        { "id": "new-topic-2-506-q2", "question": "how does request tacball work?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-506-q3", "question": "What does Request a Tacball do?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-506-q4", "question": "Explain the Request a Tacball skill", "style": "RULES_CHECK" },
+        { "id": "new-topic-2-506-q5", "question": "When can I request a Tacball?", "style": "TABLE_SCENARIO" },
+        { "id": "new-topic-2-506-q6", "question": "Who can use Request a Tacball?", "style": "RULES_CHECK" },
+        { "id": "new-topic-2-506-q7", "question": "Does Request a Tacball require a roll?", "style": "RULEBOOK_WORDING" },
+        { "id": "new-topic-2-506-q8", "question": "Where do I place the Tacball token when I request it?", "style": "TABLE_SCENARIO" },
+        { "id": "new-topic-2-506-q9", "question": "Can I use Request a Tacball outside round two?", "style": "RULES_CHECK" },
+        { "id": "new-topic-2-506-q10", "question": "How often may a player Request a Tacball?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-506-q11", "question": "When does the Tacball item take effect?", "style": "TABLE_SCENARIO" },
+        { "id": "new-topic-2-506-q12", "question": "Are Tacball items transferable?", "style": "RULES_CHECK" },
+        { "id": "new-topic-2-506-q13", "question": "What happens to the Tacball token after deployment?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-506-q14", "question": "Is Request a Tacball an Attack Short Skill?", "style": "RULEBOOK_WORDING" },
+        { "id": "new-topic-2-506-q15", "question": "How do Team-Ops troops deploy their Tacball?", "style": "PLAYER_SHORTHAND" }
+      ]
     }
   ]
 }
