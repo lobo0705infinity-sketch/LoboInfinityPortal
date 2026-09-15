@@ -7,6 +7,7 @@ const BENCHMARK_FILES = Object.freeze([
   'data/infinity-rules/rules-adjudicator-expansion-400.json',
   'data/infinity-rules/rules-adjudicator-new-topics-400.json',
   'data/infinity-rules/rules-adjudicator-new-topics-500.json',
+  'data/infinity-rules/rules-benchmark-approved-updates-2026-09-15.json',
 ])
 const APPROVALS_FILE = 'data/infinity-rules/rules-benchmark-approvals.json'
 const STOP_WORDS = new Set(['a', 'an', 'and', 'at', 'can', 'could', 'do', 'does', 'for', 'how', 'i', 'if', 'in', 'is', 'it', 'of', 'on', 'or', 'should', 'the', 'this', 'to', 'under', 'what', 'when', 'while', 'with'])

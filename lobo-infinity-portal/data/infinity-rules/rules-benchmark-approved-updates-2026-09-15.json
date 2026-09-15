@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "title": "Approved Rules Benchmark Updates — 2026-09-15",
+  "cases": [
+    {
+      "id": "new-topic-2-501",
+      "category": "NEW_MULTI_RULE_INTERACTIONS",
+      "canonicalQuestion": "Does delaying an ARO cancel Hidden Deployment or Camouflaged State?",
+      "draftAnswer": "Delaying an ARO with a Trooper in Hidden Deployment cancels Hidden Deployment. By contrast, merely delaying an ARO with a Camouflaged Marker does not cancel Camouflaged State; that state is canceled only when one of its listed cancellation conditions occurs.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "INTERPRETATION",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 161,
+          "section": "HIDDEN DEPLOYMENT STATE — CANCELLATION"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 157,
+          "section": "CAMOUFLAGED STATE — CANCELLATION"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "approvedAnswer": "Delaying an ARO with a Trooper in Hidden Deployment cancels Hidden Deployment. By contrast, merely delaying an ARO with a Camouflaged Marker does not cancel Camouflaged State; that state is canceled only when one of its listed cancellation conditions occurs.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 161,
+          "section": "HIDDEN DEPLOYMENT STATE — CANCELLATION"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 157,
+          "section": "CAMOUFLAGED STATE — CANCELLATION"
+        }
+      ],
+      "queryVariants": [
+        {
+          "id": "new-topic-2-501-q1",
+          "question": "Does delaying an ARO cancel Hidden Deployment or Camouflaged State?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-2-501-q2",
+          "question": "If my hidden deployment trooper delays, does it reveal?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-501-q3",
+          "question": "Does choosing to delay break camouflage?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-501-q4",
+          "question": "What happens to Hidden Deployment when its trooper delays an ARO?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-501-q5",
+          "question": "Is Camouflaged State cancelled just because the marker delays its ARO?",
+          "style": "RULES_CHECK"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-2-502",
+      "category": "NEW_MULTI_RULE_INTERACTIONS",
+      "canonicalQuestion": "Can a Trooper use Cautious Movement inside an enemy's Zone of Control without Stealth?",
+      "draftAnswer": "The Trooper may declare Cautious Movement if it is otherwise eligible, but without Stealth it does not suppress AROs when the movement begins or ends inside the LoF or Zone of Control of an enemy Model or Marker. In that situation, enemies generate AROs as usual.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "YES",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 32,
+          "section": "CAUTIOUS MOVEMENT"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "approvedAnswer": "The Trooper may declare Cautious Movement if it is otherwise eligible, but without Stealth it does not suppress AROs when the movement begins or ends inside the LoF or Zone of Control of an enemy Model or Marker. In that situation, enemies generate AROs as usual.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "YES",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 32,
+          "section": "CAUTIOUS MOVEMENT"
+        }
+      ],
+      "queryVariants": [
+        {
+          "id": "new-topic-2-502-q1",
+          "question": "Can a Trooper use Cautious Movement inside an enemy's Zone of Control without Stealth?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-2-502-q2",
+          "question": "Can cautious move in zoc without stealth?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-502-q3",
+          "question": "Can I cautious move inside enemy ZoC if I do not have Stealth?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-502-q4",
+          "question": "Does Cautious Movement prevent AROs when I start or finish in an opponent's Zone of Control?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-502-q5",
+          "question": "What happens if a non-Stealth trooper Cautious Moves within enemy ZoC?",
+          "style": "RULEBOOK_WORDING"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-2-503",
+      "category": "NEW_MULTI_RULE_INTERACTIONS",
+      "canonicalQuestion": "Do you have to declare whether a HoloMask Trooper is Hackable?",
+      "draftAnswer": "No. A HoloMask bearer does not have to declare whether its real Unit Profile is Hackable. Its real identity and capabilities remain Private Information. A Hacking Program may still be declared, but its target Requirements are checked during Resolution; if they are not met, the declaration becomes Idle.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "NO",
+      "draftCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 164,
+          "section": "HOLOMASK STATE — PRIVATE INFORMATION"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 54,
+          "section": "HACKING DEVICES AND HACKING PROGRAMS: CHARACTERISTICS"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "approvedAnswer": "No. A HoloMask bearer does not have to declare whether its real Unit Profile is Hackable. Its real identity and capabilities remain Private Information. A Hacking Program may still be declared, but its target Requirements are checked during Resolution; if they are not met, the declaration becomes Idle.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "NO",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 164,
+          "section": "HOLOMASK STATE — PRIVATE INFORMATION"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 54,
+          "section": "HACKING DEVICES AND HACKING PROGRAMS: CHARACTERISTICS"
+        }
+      ],
+      "queryVariants": [
+        {
+          "id": "new-topic-2-503-q1",
+          "question": "Do you have to declare whether a HoloMask Trooper is Hackable?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-2-503-q2",
+          "question": "Do you have to declare if a holomask trooper is hackable?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-503-q3",
+          "question": "Must I tell my opponent that my HoloMasked model can be hacked?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-503-q4",
+          "question": "Is Hackable status Open Information while a Trooper is in HoloMask State?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-503-q5",
+          "question": "Can I ask whether an enemy HoloMask bearer is a valid hacking target before Resolution?",
+          "style": "RULEBOOK_WORDING"
+        }
+      ]
+    }
+  ]
+}

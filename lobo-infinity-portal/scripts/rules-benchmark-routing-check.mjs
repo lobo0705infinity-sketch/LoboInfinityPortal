@@ -6,9 +6,9 @@ import { retrieveRulesReference } from '../bot/rules-command.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1380)
+assert.equal(index.canonicalCases, 1383)
 
-for (const file of ['rules-adjudicator-benchmark.json', 'rules-adjudicator-expansion-400.json', 'rules-adjudicator-new-topics-400.json', 'rules-adjudicator-new-topics-500.json']) {
+for (const file of ['rules-adjudicator-benchmark.json', 'rules-adjudicator-expansion-400.json', 'rules-adjudicator-new-topics-400.json', 'rules-adjudicator-new-topics-500.json', 'rules-benchmark-approved-updates-2026-09-15.json']) {
   const document = JSON.parse(await readFile(resolve(root, 'data/infinity-rules', file), 'utf8'))
   for (const item of document.cases || []) {
     const questions = [item.question, item.canonicalQuestion, ...(item.queryVariants || []).map((variant) => variant.question)].filter(Boolean)
@@ -30,6 +30,10 @@ const naturalParaphrases = [
   ['Can a hidden deployment unit drop a mine and stay hidden?', 'new-topic-2-482'],
   ['Does stealth stop hacking AROs through a repeater?', 'new-topic-2-490'],
   ['What are the rules for dodging?', 'direct_definition-02'],
+  ['If my hidden deployment trooper delays, does it reveal?', 'new-topic-2-501'],
+  ['Does choosing to delay break camouflage?', 'new-topic-2-501'],
+  ['Can cautious move in zoc without stealth?', 'new-topic-2-502'],
+  ['Do you have to declare if a holomask trooper is hackable?', 'new-topic-2-503'],
 ]
 for (const [question, expectedId] of naturalParaphrases) {
   assert.equal((await findApprovedRulesAnswer(question))?.id, expectedId, question)
