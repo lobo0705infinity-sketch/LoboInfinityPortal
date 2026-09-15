@@ -6,7 +6,7 @@ import { retrieveRulesReference } from '../bot/rules-command.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1385)
+assert.equal(index.canonicalCases, 1386)
 
 for (const file of ['rules-adjudicator-benchmark.json', 'rules-adjudicator-expansion-400.json', 'rules-adjudicator-new-topics-400.json', 'rules-adjudicator-new-topics-500.json', 'rules-benchmark-approved-updates-2026-09-15.json']) {
   const document = JSON.parse(await readFile(resolve(root, 'data/infinity-rules', file), 'utf8'))
@@ -42,6 +42,8 @@ const naturalParaphrases = [
   ['Can Targetless and non-Targetless attacks split targets in a coordinated order?', 'new-topic-2-504'],
   ['What is a TacBall and how it works', 'new-topic-2-505'],
   ['How does Tacball work?', 'new-topic-2-505'],
+  ['how does request tacball work?', 'new-topic-2-506'],
+  ['When can I request a Tacball?', 'new-topic-2-506'],
 ]
 for (const [question, expectedId] of naturalParaphrases) {
   assert.equal((await findApprovedRulesAnswer(question))?.id, expectedId, question)
@@ -57,6 +59,12 @@ const tacball = await findApprovedRulesAnswer('What is a TacBall and how it work
 assert.equal(tacball?.conclusion, 'INTERPRETATION')
 assert.match(tacball?.answer || '', /stationary Deployable Weapon/i)
 assert.deepEqual(tacball?.citations.map((citation) => citation.page), [29, 30])
+const requestTacball = await findApprovedRulesAnswer('how does request tacball work?')
+assert.equal(requestTacball?.conclusion, 'INTERPRETATION')
+assert.match(requestTacball?.answer || '', /second Game Round/i)
+assert.match(requestTacball?.answer || '', /requires no Roll/i)
+assert.match(requestTacball?.answer || '', /only once per game/i)
+assert.deepEqual(requestTacball?.citations.map((citation) => citation.page), [29])
 for (const question of [
   'Can Alert place a Mine?',
   'When is Alert allowed?',
@@ -76,5 +84,9 @@ assert.equal(calls, 1)
 const matchedTacball = await retrieveRulesReference({ question: 'What is a TacBall and how it works', deepSeek: fallback })
 assert.equal(matchedTacball.answerSource, 'APPROVED_BENCHMARK')
 assert.equal(matchedTacball.benchmark.id, 'new-topic-2-505')
+assert.equal(calls, 1)
+const matchedRequestTacball = await retrieveRulesReference({ question: 'how does request tacball work?', deepSeek: fallback })
+assert.equal(matchedRequestTacball.answerSource, 'APPROVED_BENCHMARK')
+assert.equal(matchedRequestTacball.benchmark.id, 'new-topic-2-506')
 assert.equal(calls, 1)
 console.log(`PASS - ${index.canonicalCases} trusted benchmark rulings route before DeepSeek; unmatched questions fall back exactly once.`)
