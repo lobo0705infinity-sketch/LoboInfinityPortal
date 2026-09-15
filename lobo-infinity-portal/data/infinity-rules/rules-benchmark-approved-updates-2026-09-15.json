@@ -62,6 +62,56 @@
           "id": "new-topic-2-501-q5",
           "question": "Is Camouflaged State cancelled just because the marker delays its ARO?",
           "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-501-q6",
+          "question": "Does delaying your ARO cancel Hidden Deployment State?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-501-q7",
+          "question": "Does delaying an ARO break Hidden Deployment?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-501-q8",
+          "question": "If a Hidden Deployment model delays, is Hidden Deployment cancelled?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-501-q9",
+          "question": "Can a Trooper remain in Hidden Deployment after delaying its ARO?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-501-q10",
+          "question": "Do I reveal a Hidden Deployment Trooper when I choose to delay?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-501-q11",
+          "question": "What happens when a Hidden Deployment Trooper delays its reaction?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-501-q12",
+          "question": "Does holding an ARO with Hidden Deployment cancel the state?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-501-q13",
+          "question": "Is Hidden Deployment lost as soon as the Trooper delays an ARO?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-2-501-q14",
+          "question": "Can a hidden model delay without revealing?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-501-q15",
+          "question": "Does the special Hidden Deployment delay option reveal the Trooper?",
+          "style": "RULES_CHECK"
         }
       ]
     },
