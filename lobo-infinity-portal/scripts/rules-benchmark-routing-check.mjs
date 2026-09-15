@@ -6,7 +6,7 @@ import { retrieveRulesReference } from '../bot/rules-command.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1383)
+assert.equal(index.canonicalCases, 1384)
 
 for (const file of ['rules-adjudicator-benchmark.json', 'rules-adjudicator-expansion-400.json', 'rules-adjudicator-new-topics-400.json', 'rules-adjudicator-new-topics-500.json', 'rules-benchmark-approved-updates-2026-09-15.json']) {
   const document = JSON.parse(await readFile(resolve(root, 'data/infinity-rules', file), 'utf8'))
@@ -37,6 +37,9 @@ const naturalParaphrases = [
   ['Does choosing to delay break camouflage?', 'new-topic-2-501'],
   ['Can cautious move in zoc without stealth?', 'new-topic-2-502'],
   ['Do you have to declare if a holomask trooper is hackable?', 'new-topic-2-503'],
+  ['If I am doing a coordinated order with some targetless weapons and some without targetless can they target different things?', 'new-topic-2-504'],
+  ['Can a coordinated rifle and smoke grenade choose different targets?', 'new-topic-2-504'],
+  ['Can Targetless and non-Targetless attacks split targets in a coordinated order?', 'new-topic-2-504'],
 ]
 for (const [question, expectedId] of naturalParaphrases) {
   assert.equal((await findApprovedRulesAnswer(question))?.id, expectedId, question)
@@ -45,6 +48,9 @@ const holoMaskHackable = await findApprovedRulesAnswer('Do you have to declare i
 assert.equal(holoMaskHackable?.conclusion, 'DEPENDS')
 assert.match(holoMaskHackable?.answer || '', /enters or is inside an enemy Hacking Area/i)
 assert.match(holoMaskHackable?.answer || '', /lacks Hacker or Hackable status/i)
+const mixedCoordinatedTargetless = await findApprovedRulesAnswer('Can Targetless and non-Targetless attacks split targets in a coordinated order?')
+assert.equal(mixedCoordinatedTargetless?.conclusion, 'NO')
+assert.match(mixedCoordinatedTargetless?.answer || '', /all participating Troopers must act against that same single target/i)
 for (const question of [
   'Can Alert place a Mine?',
   'When is Alert allowed?',
