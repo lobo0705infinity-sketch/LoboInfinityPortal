@@ -1,5 +1,6 @@
 import { decodeArmyCode } from '../scripts/infinity-army-decode.mjs'
 import { buildCanonicalDataset, resolveCanonicalWeaponRecords } from '../scripts/infinity-army-canonical-dataset.mjs'
+import { resolveExactProfileGroup } from '../scripts/infinity-army-profile-resolution.mjs'
 
 const categories = [
   ['apex', 'Apex Gunfighters'],
@@ -38,7 +39,7 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
   return members.map((member) => {
     const card = cardQueues.get(member.combinedId)?.shift() || {}
     const unit = unitById.get(Number(member.unitId))
-    const group = unit?.profileGroups?.find((item) => Number(item.id) === Number(member.groupId))
+    const group = resolveExactProfileGroup(unit, member, { profileName: card.profileName })
     const option = group?.options?.find((item) => Number(item.id) === Number(member.optionId))
     const profileId = Number(member.combinedId.split('-').at(-1))
     const base = group?.profiles?.find((item) => Number(item.id) === profileId) || group?.profiles?.[0]
