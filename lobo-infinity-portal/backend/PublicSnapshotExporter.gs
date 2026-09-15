@@ -125,7 +125,7 @@ function runInspectLatestValidatedPublicSnapshotV1() {
 }
 
 function runScheduledPublicSnapshot() {
-  return runTop40RegistrationSnapshotRefresh();
+  return runFullPublicSnapshotRefresh();
 }
 
 function runTop40RegistrationSnapshotRefresh() {
