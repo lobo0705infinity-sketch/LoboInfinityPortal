@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
 import { chromium } from 'playwright'
 import { buildSubmittedProfiles, classifyTacticalBrief, filterCanonicalFireteamMembershipsForProfile, renderTacticalBrief, TACTICAL_EMPTY_MESSAGE } from '../bot/inf-list-tactical.mjs'
 import { createInfListResponse } from '../bot/inf-list-command.mjs'
-import { validateExactSectorialData } from './inf-list-render-poc.mjs'
+import { resolveExactProfileGroup, validateExactSectorialData } from './inf-list-render-poc.mjs'
 
 const weapon = (name, burst, type = 'WEAPON', mode = '', burstStatus) => ({ name, burst, type, mode, ...(burstStatus ? { burstStatus } : {}) })
 const profile = (combinedId, overrides = {}) => ({
@@ -54,6 +54,24 @@ const fixtures = [
   profile('ambiguous-burst', { bs: 15, weapons: [weapon('Armed Turret', null, 'WEAPON', '', 'ambiguous')] }),
   profile('unavailable-burst', { bs: 15, weapons: [weapon('Flammenspeer', null, 'WEAPON', '', 'unknown')] }),
 ]
+
+const legacyGroupZeroUnit = {
+  id: 1551,
+  profileGroups: [
+    { id: 2, options: [{ id: 7 }] },
+    { id: 4, options: [{ id: 1 }], profiles: [{ id: 1 }] },
+  ],
+}
+assert.equal(
+  resolveExactProfileGroup(legacyGroupZeroUnit, { groupId: 0, optionId: 1 })?.id,
+  4,
+  'legacy group 0 resolves through its unique official option instead of rejecting the list',
+)
+assert.equal(
+  resolveExactProfileGroup(legacyGroupZeroUnit, { groupId: 3, optionId: 1 }),
+  undefined,
+  'nonzero missing groups remain fail-closed',
+)
 
 const analysis = classifyTacticalBrief(fixtures, { faction: 'Fixture', listName: 'Exact Profiles' })
 assert.deepEqual(new Set(analysis.categories.apex.map((item) => item.combinedId)), new Set(['apex', 'burst-bonus', 'bs14-apex', 'b5-apex']))
