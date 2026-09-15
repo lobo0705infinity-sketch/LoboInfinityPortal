@@ -343,6 +343,59 @@
           "style": "RULES_CHECK"
         }
       ]
+    },
+    {
+      "id": "new-topic-2-505",
+      "category": "ITS_EXPLICIT_RULES",
+      "canonicalQuestion": "What is a Tacball and how does it work?",
+      "draftAnswer": "A Tacball is a stationary Deployable Weapon used by Team-Ops Units. It declares a BS Attack or CC Attack against any Order declared by an active enemy Model—but not a Marker—within its Line of Fire or in Silhouette contact. It has Total Reaction, a Combi Rifle, and a PARA CC Weapon (-3). It does not activate other Deployable Weapons or Equipment, is removed after suffering Wounds equal to its STR 1, and must be represented by a 55 mm Tacball Token or another S4 model or scenery piece.",
+      "draftCertainty": "EXPLICIT RULES ANSWER",
+      "draftConclusion": "INTERPRETATION",
+      "draftCitations": [
+        {
+          "sourceId": "its-season-18",
+          "page": 29,
+          "section": "TACBALL"
+        },
+        {
+          "sourceId": "its-season-18",
+          "page": 30,
+          "section": "ISC: TACBALL"
+        }
+      ],
+      "reviewStatus": "AUTO_VERIFIED_EXPLICIT",
+      "approvedAnswer": "A Tacball is a stationary Deployable Weapon used by Team-Ops Units. It declares a BS Attack or CC Attack against any Order declared by an active enemy Model—but not a Marker—within its Line of Fire or in Silhouette contact. It has Total Reaction, a Combi Rifle, and a PARA CC Weapon (-3). It does not activate other Deployable Weapons or Equipment, is removed after suffering Wounds equal to its STR 1, and must be represented by a 55 mm Tacball Token or another S4 model or scenery piece.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCitations": [
+        {
+          "sourceId": "its-season-18",
+          "page": 29,
+          "section": "TACBALL"
+        },
+        {
+          "sourceId": "its-season-18",
+          "page": 30,
+          "section": "ISC: TACBALL"
+        }
+      ],
+      "queryVariants": [
+        { "id": "new-topic-2-505-q1", "question": "What is a Tacball and how does it work?", "style": "CANONICAL" },
+        { "id": "new-topic-2-505-q2", "question": "What is a TacBall and how it works", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-505-q3", "question": "What is a Tacball?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-505-q4", "question": "How does Tacball work?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-505-q5", "question": "Explain the Tacball rules", "style": "RULES_CHECK" },
+        { "id": "new-topic-2-505-q6", "question": "How do I use a Tacball?", "style": "TABLE_SCENARIO" },
+        { "id": "new-topic-2-505-q7", "question": "What does the Tacball do?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-505-q8", "question": "Is a Tacball a deployable weapon?", "style": "RULES_CHECK" },
+        { "id": "new-topic-2-505-q9", "question": "Can the Tacball move?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-505-q10", "question": "What size token represents a Tacball?", "style": "RULEBOOK_WORDING" },
+        { "id": "new-topic-2-505-q11", "question": "Does a Tacball react to enemy orders?", "style": "TABLE_SCENARIO" },
+        { "id": "new-topic-2-505-q12", "question": "Can a Tacball attack a marker?", "style": "RULES_CHECK" },
+        { "id": "new-topic-2-505-q13", "question": "Does a Tacball trigger other deployables?", "style": "RULES_CHECK" },
+        { "id": "new-topic-2-505-q14", "question": "What weapons does the Tacball have?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-505-q15", "question": "Tell me how the ITS Tacball functions", "style": "PLAYER_SHORTHAND" }
+      ]
     }
   ]
 }
