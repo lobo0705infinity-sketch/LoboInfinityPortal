@@ -5,7 +5,8 @@ import { tmpdir } from 'node:os'
 import { chromium } from 'playwright'
 import { buildSubmittedProfiles, classifyTacticalBrief, filterCanonicalFireteamMembershipsForProfile, renderTacticalBrief, TACTICAL_EMPTY_MESSAGE } from '../bot/inf-list-tactical.mjs'
 import { createInfListResponse } from '../bot/inf-list-command.mjs'
-import { resolveExactProfileGroup, validateExactSectorialData } from './inf-list-render-poc.mjs'
+import { validateExactSectorialData } from './inf-list-render-poc.mjs'
+import { resolveExactProfileGroup } from './infinity-army-profile-resolution.mjs'
 
 const weapon = (name, burst, type = 'WEAPON', mode = '', burstStatus) => ({ name, burst, type, mode, ...(burstStatus ? { burstStatus } : {}) })
 const profile = (combinedId, overrides = {}) => ({
@@ -58,19 +59,24 @@ const fixtures = [
 const legacyGroupZeroUnit = {
   id: 1551,
   profileGroups: [
-    { id: 2, options: [{ id: 7 }] },
-    { id: 4, options: [{ id: 1 }], profiles: [{ id: 1 }] },
+    { id: 1, isc: 'Jazz&Billie, Tactical Hacking Team', options: [{ id: 1, name: 'JAZZ' }], profiles: [{ id: 1, name: 'JAZZ & BILLIE' }] },
+    { id: 2, isc: 'Billie, Customized Support Remote', options: [{ id: 1, name: 'BILLIE' }], profiles: [{ id: 1, name: 'BILLIE' }] },
   ],
 }
 assert.equal(
-  resolveExactProfileGroup(legacyGroupZeroUnit, { groupId: 0, optionId: 1 })?.id,
-  4,
-  'legacy group 0 resolves through its unique official option instead of rejecting the list',
+  resolveExactProfileGroup(legacyGroupZeroUnit, { combinedId: '502-1551-0-1-1', groupId: 0, optionId: 1 }, { profileName: 'BILLIE' })?.id,
+  2,
+  'ambiguous legacy group 0 resolves through the rendered exact profile name',
 )
 assert.equal(
-  resolveExactProfileGroup(legacyGroupZeroUnit, { groupId: 3, optionId: 1 }),
+  resolveExactProfileGroup(legacyGroupZeroUnit, { combinedId: '502-1551-3-1-1', groupId: 3, optionId: 1 }, { profileName: 'BILLIE' }),
   undefined,
   'nonzero missing groups remain fail-closed',
+)
+assert.equal(
+  resolveExactProfileGroup(legacyGroupZeroUnit, { combinedId: '502-1551-0-1-1', groupId: 0, optionId: 1 }, { allowAmbiguousLegacy: true })?.id,
+  1,
+  'preflight accepts a legacy group when at least one exact option/profile candidate exists',
 )
 
 const analysis = classifyTacticalBrief(fixtures, { faction: 'Fixture', listName: 'Exact Profiles' })
