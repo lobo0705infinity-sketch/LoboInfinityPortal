@@ -6,7 +6,7 @@ import { retrieveRulesReference } from '../bot/rules-command.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1384)
+assert.equal(index.canonicalCases, 1385)
 
 for (const file of ['rules-adjudicator-benchmark.json', 'rules-adjudicator-expansion-400.json', 'rules-adjudicator-new-topics-400.json', 'rules-adjudicator-new-topics-500.json', 'rules-benchmark-approved-updates-2026-09-15.json']) {
   const document = JSON.parse(await readFile(resolve(root, 'data/infinity-rules', file), 'utf8'))
@@ -40,6 +40,8 @@ const naturalParaphrases = [
   ['If I am doing a coordinated order with some targetless weapons and some without targetless can they target different things?', 'new-topic-2-504'],
   ['Can a coordinated rifle and smoke grenade choose different targets?', 'new-topic-2-504'],
   ['Can Targetless and non-Targetless attacks split targets in a coordinated order?', 'new-topic-2-504'],
+  ['What is a TacBall and how it works', 'new-topic-2-505'],
+  ['How does Tacball work?', 'new-topic-2-505'],
 ]
 for (const [question, expectedId] of naturalParaphrases) {
   assert.equal((await findApprovedRulesAnswer(question))?.id, expectedId, question)
@@ -51,6 +53,10 @@ assert.match(holoMaskHackable?.answer || '', /lacks Hacker or Hackable status/i)
 const mixedCoordinatedTargetless = await findApprovedRulesAnswer('Can Targetless and non-Targetless attacks split targets in a coordinated order?')
 assert.equal(mixedCoordinatedTargetless?.conclusion, 'NO')
 assert.match(mixedCoordinatedTargetless?.answer || '', /all participating Troopers must act against that same single target/i)
+const tacball = await findApprovedRulesAnswer('What is a TacBall and how it works')
+assert.equal(tacball?.conclusion, 'INTERPRETATION')
+assert.match(tacball?.answer || '', /stationary Deployable Weapon/i)
+assert.deepEqual(tacball?.citations.map((citation) => citation.page), [29, 30])
 for (const question of [
   'Can Alert place a Mine?',
   'When is Alert allowed?',
@@ -66,5 +72,9 @@ assert.equal(matched.answerSource, 'APPROVED_BENCHMARK')
 assert.equal(calls, 0)
 const unmatched = await retrieveRulesReference({ question: 'purple bananas orbit a quantum teapot', deepSeek: fallback })
 assert.equal(unmatched.status, 'FALLBACK')
+assert.equal(calls, 1)
+const matchedTacball = await retrieveRulesReference({ question: 'What is a TacBall and how it works', deepSeek: fallback })
+assert.equal(matchedTacball.answerSource, 'APPROVED_BENCHMARK')
+assert.equal(matchedTacball.benchmark.id, 'new-topic-2-505')
 assert.equal(calls, 1)
 console.log(`PASS - ${index.canonicalCases} trusted benchmark rulings route before DeepSeek; unmatched questions fall back exactly once.`)
