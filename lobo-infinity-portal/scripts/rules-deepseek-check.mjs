@@ -35,6 +35,28 @@ for (const [question, required] of [
   for (const pattern of required) assert.match(evidence.text, pattern)
 }
 
+for (const question of [
+  'What is a TacBall and how it works',
+  'What is a Tacball?',
+  'How does Tacball work?',
+  'Explain the Tacball rules',
+  'How do I use a Tacball?',
+  'What does the Tacball do?',
+  'Is a Tacball a deployable weapon?',
+  'Can the Tacball move?',
+  'What size token represents a Tacball?',
+  'How many wounds can a Tacball take?',
+  'Does a Tacball react to enemy orders?',
+  'Can a Tacball attack a marker?',
+  'Does a Tacball trigger other deployables?',
+  'What weapons does the Tacball have?',
+  'What are Tacball classified objectives?',
+]) {
+  const evidence = buildRulesEvidencePrompt(productionCorpus, question)
+  assert.match(evidence.text, /The Tacball is a Deployable Weapon/i, question)
+  assert.match(evidence.text, /Page 29 of 139/i, question)
+}
+
 process.env.DEEPSEEK_API_KEY = 'invalid-placeholder-key'
 process.env.DEEPSEEK_HOURLY_LIMIT_USD = '1'
 process.env.DEEPSEEK_MONTHLY_LIMIT_USD = '10'
