@@ -191,7 +191,6 @@ if (!process.argv.includes('--logic-only')) {
   assert.deepEqual(response.files.map((file) => file.name), [
     'infinity-army-list-readable.png',
     ...pages.map((_, index) => pages.length > 1 ? `infinity-army-tactical-brief-${index + 1}.png` : 'infinity-army-tactical-brief.png'),
-    'infinity-army-profiles-1.png', 'infinity-army-profiles-2.png',
   ])
   assert.ok(response.files.length <= 10)
   assert.equal(JSON.stringify(empty).includes(TACTICAL_EMPTY_MESSAGE), false)

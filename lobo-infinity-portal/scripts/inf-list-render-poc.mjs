@@ -303,7 +303,7 @@ export async function requestRendererView(armyCode, { fetchImpl = fetch, timeout
   }
 }
 
-export async function renderInfListPng({ input, outputPath, browserType = chromium, fetchImpl, includeProfilePages = true } = {}) {
+export async function renderInfListPng({ input, outputPath, browserType = chromium, fetchImpl } = {}) {
   const armyCode = validateArmyCode(input)
   const decoded = decodeArmyCode(armyCode)
   const rendererViewUrl = await requestRendererView(armyCode, { fetchImpl })
@@ -315,7 +315,7 @@ export async function renderInfListPng({ input, outputPath, browserType = chromi
 
   const browser = await browserType.launch({ headless: true })
   try {
-    const rendered = await captureRenderedProfilePages(browser, rendererViewUrl, { includeProfilePages })
+    const rendered = await captureRenderedProfilePages(browser, rendererViewUrl)
     const profilePages = rendered.profilePages
     let official = null
     try {
@@ -342,15 +342,15 @@ export async function renderInfListPng({ input, outputPath, browserType = chromi
     const tacticalPages = await renderTacticalBrief({ analysis: tacticalAnalysis, browser })
 
     const finalOutputPath = outputPath ? resolve(outputPath) : null
-    if (finalOutputPath && profilePages[0]) {
+    if (finalOutputPath) {
       await mkdir(dirname(finalOutputPath), { recursive: true })
       await writeFile(finalOutputPath, profilePages[0].imageBuffer)
     }
 
     return {
-      bytes: profilePages[0]?.imageBuffer.length ?? null,
-      height: profilePages[0]?.height ?? null,
-      imageBuffer: profilePages[0]?.imageBuffer ?? null,
+      bytes: profilePages[0].imageBuffer.length,
+      height: profilePages[0].height,
+      imageBuffer: profilePages[0].imageBuffer,
       officialArmyUrl: buildOfficialArmyUrl(armyCode),
       outputPath: finalOutputPath,
       profilePages,
@@ -362,14 +362,14 @@ export async function renderInfListPng({ input, outputPath, browserType = chromi
       tacticalAnalysis,
       tacticalPages,
       tacticalDiagnostics: enrichment,
-      width: profilePages[0]?.width ?? null,
+      width: profilePages[0].width,
     }
   } finally {
     await browser.close()
   }
 }
 
-async function captureRenderedProfilePages(browser, rendererViewUrl, { includeProfilePages = true } = {}) {
+async function captureRenderedProfilePages(browser, rendererViewUrl) {
   const page = await browser.newPage({ deviceScaleFactor: 1, viewport: { width: 1200, height: 1600 } })
   try {
     await loadRendererPage(page, rendererViewUrl)
@@ -402,7 +402,6 @@ async function captureRenderedProfilePages(browser, rendererViewUrl, { includePr
         }
       })
     })
-    if (!includeProfilePages) return { cards, profilePages: [] }
     const pagination = await page.evaluate(() => {
       const source = document.querySelector('.page')
       if (!source) throw new Error('Infinity-Data profile page was not found.')

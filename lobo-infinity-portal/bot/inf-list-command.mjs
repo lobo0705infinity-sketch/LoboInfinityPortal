@@ -74,10 +74,7 @@ export async function createInfListResponse({
   withRenderSlot = sharedRenderLimiter,
 } = {}) {
   const validatedArmyCode = validateArmyCode(armyCode)
-  const result = await withRenderSlot(() => render({
-    includeProfilePages: false,
-    input: validatedArmyCode,
-  }))
+  const result = await withRenderSlot(() => render({ input: validatedArmyCode }))
   const files = []
   if (result.readableImageBuffer) {
     files.push({ attachment: result.readableImageBuffer, name: 'infinity-army-list-readable.png' })

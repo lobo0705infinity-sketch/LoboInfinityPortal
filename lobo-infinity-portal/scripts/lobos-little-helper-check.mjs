@@ -96,7 +96,7 @@ assert.equal(parseInfListCommand('!!inf anything'), null)
 
 let message = mockMessage(`!!inf-list ${testCode}`)
 assert.equal(await handler(message), true)
-assert.deepEqual(renderCalls, [{ includeProfilePages: false, input: testCode }])
+assert.deepEqual(renderCalls, [{ input: testCode }])
 assert.equal(message.replies.length, 1)
 assert.equal(message.replies[0].content, `${SUCCESS_TEXT}\n\n[Open in Infinity Army](${officialArmyUrl})`)
 assert.equal(message.replies[0].files[0].attachment, readableImageBuffer)
