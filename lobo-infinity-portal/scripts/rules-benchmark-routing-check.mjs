@@ -41,6 +41,10 @@ const naturalParaphrases = [
 for (const [question, expectedId] of naturalParaphrases) {
   assert.equal((await findApprovedRulesAnswer(question))?.id, expectedId, question)
 }
+const holoMaskHackable = await findApprovedRulesAnswer('Do you have to declare if a holomask trooper is hackable?')
+assert.equal(holoMaskHackable?.conclusion, 'DEPENDS')
+assert.match(holoMaskHackable?.answer || '', /enters or is inside an enemy Hacking Area/i)
+assert.match(holoMaskHackable?.answer || '', /lacks Hacker or Hackable status/i)
 for (const question of [
   'Can Alert place a Mine?',
   'When is Alert allowed?',

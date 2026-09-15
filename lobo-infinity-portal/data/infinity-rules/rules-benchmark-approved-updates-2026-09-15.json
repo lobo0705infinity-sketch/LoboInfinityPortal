@@ -172,9 +172,9 @@
       "id": "new-topic-2-503",
       "category": "NEW_MULTI_RULE_INTERACTIONS",
       "canonicalQuestion": "Do you have to declare whether a HoloMask Trooper is Hackable?",
-      "draftAnswer": "No. A HoloMask bearer does not have to declare whether its real Unit Profile is Hackable. Its real identity and capabilities remain Private Information. A Hacking Program may still be declared, but its target Requirements are checked during Resolution; if they are not met, the declaration becomes Idle.",
+      "draftAnswer": "Normally, a HoloMask bearer's real Unit Profile and capabilities remain Private Information. However, if the HoloMask Trooper enters or is inside an enemy Hacking Area, its player must declare if the Trooper lacks Hacker or Hackable status.",
       "draftCertainty": "EXPLICIT RULES ANSWER",
-      "draftConclusion": "NO",
+      "draftConclusion": "DEPENDS",
       "draftCitations": [
         {
           "sourceId": "infinity-rules-n5.3",
@@ -188,9 +188,9 @@
         }
       ],
       "reviewStatus": "APPROVED",
-      "approvedAnswer": "No. A HoloMask bearer does not have to declare whether its real Unit Profile is Hackable. Its real identity and capabilities remain Private Information. A Hacking Program may still be declared, but its target Requirements are checked during Resolution; if they are not met, the declaration becomes Idle.",
+      "approvedAnswer": "Normally, a HoloMask bearer's real Unit Profile and capabilities remain Private Information. However, if the HoloMask Trooper enters or is inside an enemy Hacking Area, its player must declare if the Trooper lacks Hacker or Hackable status.",
       "approvedCertainty": "EXPLICIT RULES ANSWER",
-      "approvedConclusion": "NO",
+      "approvedConclusion": "DEPENDS",
       "approvedCitations": [
         {
           "sourceId": "infinity-rules-n5.3",
