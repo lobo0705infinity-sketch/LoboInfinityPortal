@@ -35,6 +35,9 @@ const profilePages = [
   { imageBuffer: Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x03]) },
   { imageBuffer: Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x04]) },
 ]
+const tacticalPages = [
+  { imageBuffer: Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x05]) },
+]
 const officialArmyUrl = buildOfficialArmyUrl(testCode)
 const fetchedUrls = []
 const officialData = await fetchOfficialClassificationData(604, async (url) => {
@@ -47,9 +50,9 @@ assert.equal(officialData.payload.units[0].id, 783)
 assert.equal(officialData.payload.url, 'https://api.corvusbelli.com/army/units/en/604')
 const renderCalls = []
 const handler = createInfListMessageHandler({
-  render: async ({ input }) => {
-    renderCalls.push(input)
-    return { officialArmyUrl, profilePages, readableImageBuffer }
+  render: async (options) => {
+    renderCalls.push(options)
+    return { officialArmyUrl, profilePages, readableImageBuffer, tacticalPages }
   },
 })
 
@@ -93,22 +96,21 @@ assert.equal(parseInfListCommand('!!inf anything'), null)
 
 let message = mockMessage(`!!inf-list ${testCode}`)
 assert.equal(await handler(message), true)
-assert.deepEqual(renderCalls, [testCode])
+assert.deepEqual(renderCalls, [{ includeProfilePages: false, input: testCode }])
 assert.equal(message.replies.length, 1)
 assert.equal(message.replies[0].content, `${SUCCESS_TEXT}\n\n[Open in Infinity Army](${officialArmyUrl})`)
 assert.equal(message.replies[0].files[0].attachment, readableImageBuffer)
 assert.equal(message.replies[0].files[0].name, 'infinity-army-list-readable.png')
-assert.equal(message.replies[0].files[1].attachment, profilePages[0].imageBuffer)
-assert.equal(message.replies[0].files[1].name, 'infinity-army-profiles-1.png')
-assert.equal(message.replies[0].files[2].attachment, profilePages[1].imageBuffer)
-assert.equal(message.replies[0].files[2].name, 'infinity-army-profiles-2.png')
+assert.equal(message.replies[0].files[1].attachment, tacticalPages[0].imageBuffer)
+assert.equal(message.replies[0].files[1].name, 'infinity-army-tactical-brief.png')
+assert.equal(message.replies[0].files.length, 2)
 
 const slashRenderCalls = []
 const slashInteraction = mockInteraction(testCode)
 const slashHandler = createInfListInteractionHandler({
   render: async ({ input }) => {
     slashRenderCalls.push(input)
-    return { officialArmyUrl, profilePages, readableImageBuffer }
+    return { officialArmyUrl, profilePages, readableImageBuffer, tacticalPages }
   },
   logger: { error() {} },
 })

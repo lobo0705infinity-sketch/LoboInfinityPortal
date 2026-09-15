@@ -74,7 +74,10 @@ export async function createInfListResponse({
   withRenderSlot = sharedRenderLimiter,
 } = {}) {
   const validatedArmyCode = validateArmyCode(armyCode)
-  const result = await withRenderSlot(() => render({ input: validatedArmyCode }))
+  const result = await withRenderSlot(() => render({
+    includeProfilePages: false,
+    input: validatedArmyCode,
+  }))
   const files = []
   if (result.readableImageBuffer) {
     files.push({ attachment: result.readableImageBuffer, name: 'infinity-army-list-readable.png' })
@@ -82,9 +85,6 @@ export async function createInfListResponse({
   for (const [index, tacticalPage] of (result.tacticalPages || []).entries()) {
     const suffix = result.tacticalPages.length > 1 ? `-${index + 1}` : ''
     files.push({ attachment: tacticalPage.imageBuffer, name: `infinity-army-tactical-brief${suffix}.png` })
-  }
-  for (const [index, profilePage] of result.profilePages.entries()) {
-    files.push({ attachment: profilePage.imageBuffer, name: `infinity-army-profiles-${index + 1}.png` })
   }
   return {
     allowedMentions: { repliedUser: false },
