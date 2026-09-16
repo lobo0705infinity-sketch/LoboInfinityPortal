@@ -45,6 +45,7 @@ const naturalParaphrases = [
   ['how does request tacball work?', 'new-topic-2-506'],
   ['When can I request a Tacball?', 'new-topic-2-506'],
   ['Can a unit and their synchronize peripheral pick up from the same panoply on the same order?', 'new-topic-2-507'],
+  ['Can a unit and their syncronize peripheral pik up from the same panopaly on the same order?', 'new-topic-2-507'],
 ]
 for (const [question, expectedId] of naturalParaphrases) {
   assert.equal((await findApprovedRulesAnswer(question))?.id, expectedId, question)
@@ -97,5 +98,9 @@ assert.equal(calls, 1)
 const matchedSynchronizedPanoply = await retrieveRulesReference({ question: 'Can a unit and their synchronize peripheral pick up from the same panoply on the same order?', deepSeek: fallback })
 assert.equal(matchedSynchronizedPanoply.answerSource, 'APPROVED_BENCHMARK')
 assert.equal(matchedSynchronizedPanoply.benchmark.id, 'new-topic-2-507')
+assert.equal(calls, 1)
+const matchedMisspelledPanoply = await retrieveRulesReference({ question: 'Can a unit and their syncronize peripheral pik up from the same panopaly on the same order?', deepSeek: fallback })
+assert.equal(matchedMisspelledPanoply.answerSource, 'APPROVED_BENCHMARK')
+assert.equal(matchedMisspelledPanoply.benchmark.id, 'new-topic-2-507')
 assert.equal(calls, 1)
 console.log(`PASS - ${index.canonicalCases} trusted benchmark rulings route before DeepSeek; unmatched questions fall back exactly once.`)

@@ -467,7 +467,8 @@
         { "id": "new-topic-2-507-q4", "question": "Can both a controller and synchronized peripheral roll on one Panoply during the same Order?", "style": "TABLE_SCENARIO" },
         { "id": "new-topic-2-507-q5", "question": "Do a controller and its synchronized peripheral each make a WIP Roll when using the same Panoply?", "style": "RULES_CHECK" },
         { "id": "new-topic-2-507-q6", "question": "Can synchronized models both get equipment from the same Panoply with one Order?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-507-q7", "question": "Does a Panoply allow a controller and Peripheral (Synchronized) to use it simultaneously?", "style": "RULEBOOK_WORDING" }
+        { "id": "new-topic-2-507-q7", "question": "Does a Panoply allow a controller and Peripheral (Synchronized) to use it simultaneously?", "style": "RULEBOOK_WORDING" },
+        { "id": "new-topic-2-507-q8", "question": "Can a unit and their syncronize peripheral pik up from the same panopaly on the same order?", "style": "PLAYER_TYPO" }
       ]
     }
   ]
