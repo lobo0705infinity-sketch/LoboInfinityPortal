@@ -39,6 +39,15 @@ const tacticalPages = [
   { imageBuffer: Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x05]) },
 ]
 const officialArmyUrl = buildOfficialArmyUrl(testCode)
+const legality = {
+  status: 'legal',
+  limits: { points: 300, swc: 6, troopers: 15 },
+  totals: { lieutenantCount: 1, points: 300, swc: 6, troopers: 15 },
+  unavailable: [],
+  violations: [],
+  version: 'fixture',
+}
+const legalityText = '✅ **LEGAL ARMY LIST**\n300/300 Points · 6/6 SWC · 15/15 Troopers'
 const fetchedUrls = []
 const officialData = await fetchOfficialClassificationData(604, async (url) => {
   fetchedUrls.push(url)
@@ -52,7 +61,7 @@ const renderCalls = []
 const handler = createInfListMessageHandler({
   render: async (options) => {
     renderCalls.push(options)
-    return { officialArmyUrl, profilePages, readableImageBuffer, tacticalPages }
+    return { legality, officialArmyUrl, profilePages, readableImageBuffer, tacticalPages }
   },
 })
 
@@ -98,7 +107,7 @@ let message = mockMessage(`!!inf-list ${testCode}`)
 assert.equal(await handler(message), true)
 assert.deepEqual(renderCalls, [{ input: testCode }])
 assert.equal(message.replies.length, 1)
-assert.equal(message.replies[0].content, `${SUCCESS_TEXT}\n\n[Open in Infinity Army](${officialArmyUrl})`)
+assert.equal(message.replies[0].content, `${legalityText}\n\n${SUCCESS_TEXT}\n\n[Open in Infinity Army](${officialArmyUrl})`)
 assert.equal(message.replies[0].files[0].attachment, readableImageBuffer)
 assert.equal(message.replies[0].files[0].name, 'infinity-army-list-readable.png')
 assert.equal(message.replies[0].files[1].attachment, tacticalPages[0].imageBuffer)
@@ -110,7 +119,7 @@ const slashInteraction = mockInteraction(testCode)
 const slashHandler = createInfListInteractionHandler({
   render: async ({ input }) => {
     slashRenderCalls.push(input)
-    return { officialArmyUrl, profilePages, readableImageBuffer, tacticalPages }
+    return { legality, officialArmyUrl, profilePages, readableImageBuffer, tacticalPages }
   },
   logger: { error() {} },
 })
@@ -178,7 +187,7 @@ if (process.argv.includes('--live')) {
   let legacyRendered
   assert.equal(await createInfListMessageHandler({ render: async (args) => { legacyRendered = await renderInfListPng(args); return legacyRendered } })(liveMessage), true)
   assert.equal(liveMessage.replies.length, 1)
-  assert.match(liveMessage.replies[0].content, new RegExp(`^${SUCCESS_TEXT}\\n\\n\\[Open in Infinity Army\\]\\(https://infinitytheuniverse\\.com/army/list/`))
+  assert.match(liveMessage.replies[0].content, /^(✅ \*\*LEGAL ARMY LIST\*\*|❌ \*\*ILLEGAL ARMY LIST\*\*|⚠️ \*\*ARMY LIST VALIDATION UNAVAILABLE\*\*)/)
   assert.equal(liveMessage.replies[0].files.length, 4)
   const readablePng = liveMessage.replies[0].files[0].attachment
   assert.ok(Buffer.isBuffer(readablePng))
