@@ -1,0 +1,67 @@
+#!/usr/bin/env node
+
+import assert from 'node:assert/strict'
+import { formatInfListLegality, validateInfListLegality } from '../bot/inf-list-legality.mjs'
+
+const payload = {
+  version: 'fixture-1',
+  units: [unit(10, 100, 2, [option(1, 20, 0, 'LINE TROOPER')]), unit(20, 200, 1, [option(1, 30, 1, 'OFFICER', 'LIEUTENANT')])],
+}
+const legal = validateInfListLegality({ decoded: decoded(100, [member(10, 1), member(10, 1), member(20, 1)]), payload })
+assert.equal(legal.status, 'legal')
+assert.deepEqual(legal.totals, { lieutenantCount: 1, points: 70, swc: 1, troopers: 3 })
+assert.match(formatInfListLegality(legal), /✅ \*\*LEGAL ARMY LIST\*\*/)
+assert.match(formatInfListLegality(legal), /70\/100 Points · 1\/2 SWC · 3\/15 Troopers/)
+
+const bonusSwc = validateInfListLegality({
+  decoded: decoded(100, [member(10, 1), member(20, 1)]),
+  payload: { ...payload, units: [unit(10, 100, 2, [option(1, 20, '+1', 'LIEUTENANT', 'LIEUTENANT')]), payload.units[1]] },
+})
+assert.equal(bonusSwc.limits.swc, 3)
+assert.equal(bonusSwc.totals.swc, 1)
+
+const illegal = validateInfListLegality({ decoded: decoded(50, [member(10, 1), member(10, 1), member(10, 1)]), payload })
+assert.equal(illegal.status, 'illegal')
+assert.ok(illegal.violations.some((issue) => issue.includes('exceeds AVA 2')))
+assert.ok(illegal.violations.some((issue) => issue.includes('exactly one Lieutenant')))
+
+const oversizedGroup = validateInfListLegality({
+  decoded: decoded(300, [...Array.from({ length: 10 }, () => member(10, 1)), member(20, 1)]),
+  payload: { ...payload, units: [unit(10, 100, 'T', [option(1, 5, 0, 'LINE TROOPER')]), payload.units[1]] },
+})
+assert.ok(oversizedGroup.violations.some((issue) => issue.includes('Combat Group 1 contains 11 Troopers')))
+
+const overBudget = validateInfListLegality({
+  decoded: decoded(50, [member(20, 1), member(30, 1)]),
+  payload: { ...payload, units: [...payload.units, unit(30, 300, 1, [option(1, 30, 1, 'HEAVY WEAPON')])] },
+})
+assert.ok(overBudget.violations.some((issue) => issue.includes('60 Points exceeds the 50 Point limit')))
+assert.ok(overBudget.violations.some((issue) => issue.includes('2 SWC exceeds the 1 SWC limit')))
+
+const fifteenTrooperLimit = validateInfListLegality({
+  decoded: decoded(300, [member(40, 1), member(20, 1)]),
+  payload: { ...payload, units: [...payload.units, unit(40, 400, 'T', [{ ...option(1, 20, 0, 'FIRETEAM'), minis: 15 }])] },
+})
+assert.ok(fifteenTrooperLimit.violations.some((issue) => issue.includes('16 Troopers exceeds the 15-Trooper limit')))
+
+const unavailable = validateInfListLegality({ decoded: decoded(300, [member(999, 1)]), payload })
+assert.equal(unavailable.status, 'unavailable')
+assert.match(formatInfListLegality(unavailable), /VALIDATION UNAVAILABLE/)
+
+console.log('PASS - inf-list legality uses current official profile data and fails closed.')
+
+function decoded(maxPoints, members) {
+  return { maxPoints, combatGroups: [{ combatGroup: 1, members }] }
+}
+
+function member(unitId, optionId) {
+  return { combinedId: `1-${unitId}-1-${optionId}-1`, groupId: 1, optionId, unitId }
+}
+
+function unit(id, canonical, ava, options) {
+  return { id, canonical, isc: `UNIT ${id}`, profileGroups: [{ id: 1, isc: `UNIT ${id}`, profiles: [{ id: 1, ava }], options }] }
+}
+
+function option(id, points, swc, name, orderType = 'REGULAR') {
+  return { disabled: false, id, minis: 1, name, orders: [{ type: orderType, total: 1 }], points, swc: String(swc) }
+}
