@@ -23,7 +23,9 @@ export function validateInfListLegality({ decoded, payload } = {}) {
       const group = resolveExactProfileGroup(unit, member, { allowAmbiguousLegacy: true })
       const option = group?.options?.find((candidate) => Number(candidate.id) === Number(member.optionId))
       const profileId = Number(String(member.combinedId || '').split('-').at(-1))
-      const profile = group?.profiles?.find((candidate) => Number(candidate.id) === profileId)
+      const profiles = group?.profiles || []
+      const profile = profiles.find((candidate) => Number(candidate.id) === profileId)
+        || (profiles.length === 1 ? profiles[0] : undefined)
       const label = option?.name || group?.isc || unit?.isc || member.combinedId || 'Unknown profile'
 
       if (!unit || !group || !option || !profile) {
