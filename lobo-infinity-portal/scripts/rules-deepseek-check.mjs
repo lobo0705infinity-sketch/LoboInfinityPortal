@@ -29,6 +29,7 @@ for (const [question, required] of [
   ['does dodge break stealth', [/STEALTH/i, /DODGE/i]],
   ['Does Zero Pain suffer Firewall through an enemy Repeater?', [/ZERO PAIN/i, /FIREWALL/i, /REPEATER/i]],
   ['what happens when i shoot through smoke with msv 1 and my opponent dodges, what is my modifier to hit', [/SMOKE/i, /MULTISPECTRAL VISOR LEVEL 1/i]],
+  ['Can a unit and their synchronized Peripheral both use the same Panoply in the same Order?', [/USE PANOPLIES/i, /PERIPHERAL/i]],
 ]) {
   const evidence = buildRulesEvidencePrompt(productionCorpus, question)
   assert.ok(evidence.entryCount >= 1 && evidence.characterCount <= 60000)

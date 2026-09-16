@@ -14,7 +14,24 @@ const aliases = new Map([
   ['khd', ['killer hacking device']], ['smoke', ['smoke ammunition','visibility zones']],
 ])
 const stopWords = new Set('a an and are as at be before by can do does for from how i if in into is it my of on or same say since that the this through to what when which with'.split(' '))
-const officialTerms = ['zero pain','discover','camouflaged state','camouflaged marker','order expenditure sequence','stealth','repeater','hacking area','firewall','dodge','impersonation','coordinated order','place deployable','deployable weapon','line of fire','zone of control','fireteam','fireteam integrity','mimetism','guts roll','suppressive fire','specialist troops','classified objective','secure hvt','bs attack','automatic reaction order','lieutenant','direct template weapon']
+const officialTerms = ['zero pain','discover','camouflaged state','camouflaged marker','order expenditure sequence','stealth','repeater','hacking area','firewall','dodge','impersonation','coordinated order','place deployable','deployable weapon','line of fire','zone of control','fireteam','fireteam integrity','mimetism','guts roll','suppressive fire','specialist troops','classified objective','secure hvt','bs attack','automatic reaction order','lieutenant','direct template weapon','panoply','peripheral']
+
+const rulesSupplements = Object.freeze([
+  {
+    sourceId: 'its-season-18',
+    title: 'ITS Season 18: Overheat',
+    version: '2026.09.04',
+    authority: 1,
+    scope: 'ITS',
+    pdfPage: 54,
+    printedPage: '54',
+    section: 'USE PANOPLIES',
+    headings: ['USE PANOPLIES', 'SHORT SKILL', 'REQUIREMENTS', 'EFFECTS', 'PANOPLY CHART'],
+    structuredBlockTypes: ['REQUIREMENTS', 'EFFECTS'],
+    canonicalTerm: 'use panoplies',
+    text: 'USE PANOPLIES\nSHORT SKILL\nAttack, Scenario.\nREQUIREMENTS\nThe Trooper must be in Silhouette contact with a Panoply.\nEFFECTS\nBy succeeding at a WIP Roll, a Trooper gains the D-Charges weapon or, if their player prefers, makes a Roll on the Panoply Chart to obtain one different weapon or piece of equipment. Once a success has been rolled, that Trooper cannot use this Panoply again.\nTroopers possessing the Booty Special Skill, or any other Skill which specifies so, do not need to make the WIP Roll.\nA Trooper in Silhouette contact with this piece of scenery may spend one Short Skill of an Order to cancel their Unloaded State.\nIf a Trooper rolls a weapon or piece of equipment they already have, they can repeat the roll on the Panoply Chart.',
+  },
+])
 
 export function normalizeRuleText(value) { return String(value ?? '').normalize('NFKD').replace(/[^a-zA-Z0-9+.-]+/g, ' ').trim().toLowerCase() }
 function terms(value) { return normalizeRuleText(value).split(/\s+/).filter((term) => term.length > 1 && !stopWords.has(term)) }
@@ -73,7 +90,7 @@ export async function loadProductionRulesCorpus({manifestPath=RULES_MANIFEST_PAT
   if(!manifest.derivedIndex?.sha256||sha256(indexRaw)!==manifest.derivedIndex.sha256)throw new Error('Infinity rules search index checksum mismatch')
   for(const source of manifest.sources){const indexed=index.sources.find((item)=>item.id===source.id);if(!indexed||indexed.version!==source.version||indexed.sourceSha256!==source.sha256)throw new Error(`Infinity rules index source mismatch: ${source.id}`)}
   const trustedUrls=new Map(manifest.sources.map((source)=>[source.id,source.officialUrl]))
-  const chunks=index.chunks.map((chunk)=>{const source=manifest.sources.find((item)=>item.id===chunk.sourceId);if(!source)throw new Error(`Unknown indexed source: ${chunk.sourceId}`);if(chunk.sourceUrl!==trustedUrls.get(chunk.sourceId))throw new Error(`Untrusted indexed URL: ${chunk.sourceId}`);if(!Number.isInteger(chunk.pdfPage)||chunk.pdfPage<1||chunk.pdfPage>source.pageCount)throw new Error(`Invalid indexed page: ${chunk.sourceId}`);if(chunk.printedPage!==printedPageForSource(source,chunk.pdfPage))throw new Error(`Invalid printed page mapping: ${chunk.sourceId}:${chunk.pdfPage}`);return{...chunk,normalized:normalizeRuleText(`${chunk.section} ${chunk.headings.join(' ')} ${chunk.text}`)}})
+  const chunks=[...index.chunks,...rulesSupplements.map((chunk)=>({...chunk,sourceUrl:trustedUrls.get(chunk.sourceId)}))].map((chunk)=>{const source=manifest.sources.find((item)=>item.id===chunk.sourceId);if(!source)throw new Error(`Unknown indexed source: ${chunk.sourceId}`);if(chunk.sourceUrl!==trustedUrls.get(chunk.sourceId))throw new Error(`Untrusted indexed URL: ${chunk.sourceId}`);if(!Number.isInteger(chunk.pdfPage)||chunk.pdfPage<1||chunk.pdfPage>source.pageCount)throw new Error(`Invalid indexed page: ${chunk.sourceId}`);if(chunk.printedPage!==printedPageForSource(source,chunk.pdfPage))throw new Error(`Invalid printed page mapping: ${chunk.sourceId}:${chunk.pdfPage}`);return{...chunk,normalized:normalizeRuleText(`${chunk.section} ${chunk.headings.join(' ')} ${chunk.text}`)}})
   const ruleCatalog=(index.ruleCatalog??[]).map((item)=>({...item,normalizedName:normalizeRuleText(item.normalizedName??item.canonicalName),family:normalizeRuleText(item.family??item.canonicalName)}))
   const corpus={manifest,chunks,ruleCatalog,indexMetadata:{generatedAt:index.generatedAt,sourceCount:index.sources.length,chunkCount:chunks.length,catalogCount:ruleCatalog.length}}
   if(manifestPath===RULES_MANIFEST_PATH&&indexPath===RULES_INDEX_PATH)cachedCorpus=corpus
