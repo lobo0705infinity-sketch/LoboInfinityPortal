@@ -195,6 +195,17 @@ assert.equal(onyxAnalysis.categories.competent.some((item) => item.unitId === 78
 assert.equal(Object.values(onyxAnalysis.categories).some((entries) => entries.length), true, 'Onyx tactical brief must not be entirely blank')
 assert.equal(validateExactSectorialData({ armyCode: onyxCode, metadata: onyxMetadata, payload: { ...onyxPayload, url: 'https://api.corvusbelli.com/army/units/en/601' } }).ok, false)
 
+// Corvus Belli occasionally renumbers a unit's sole base profile while old,
+// otherwise-valid Army codes retain the previous profile ID. The exact unit,
+// group, and option still resolve unambiguously in that case.
+const singletonRenumberedProfile = structuredClone(onyxPayload)
+singletonRenumberedProfile.units[0].profileGroups[0].profiles[0].id = 2
+assert.equal(validateExactSectorialData({ armyCode: onyxCode, metadata: onyxMetadata, payload: singletonRenumberedProfile }).ok, true)
+
+const ambiguousMissingProfile = structuredClone(singletonRenumberedProfile)
+ambiguousMissingProfile.units[0].profileGroups[0].profiles.push({ id: 3, bs: 12 })
+assert.equal(validateExactSectorialData({ armyCode: onyxCode, metadata: onyxMetadata, payload: ambiguousMissingProfile }).ok, false)
+
 const empty = classifyTacticalBrief([], { faction: 'Empty' })
 if (!process.argv.includes('--logic-only')) {
   const browser = await chromium.launch({ headless: true })
