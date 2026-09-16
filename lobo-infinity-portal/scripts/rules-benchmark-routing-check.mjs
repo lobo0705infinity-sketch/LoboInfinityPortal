@@ -6,7 +6,7 @@ import { retrieveRulesReference } from '../bot/rules-command.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1386)
+assert.equal(index.canonicalCases, 1387)
 
 for (const file of ['rules-adjudicator-benchmark.json', 'rules-adjudicator-expansion-400.json', 'rules-adjudicator-new-topics-400.json', 'rules-adjudicator-new-topics-500.json', 'rules-benchmark-approved-updates-2026-09-15.json']) {
   const document = JSON.parse(await readFile(resolve(root, 'data/infinity-rules', file), 'utf8'))
@@ -44,6 +44,7 @@ const naturalParaphrases = [
   ['How does Tacball work?', 'new-topic-2-505'],
   ['how does request tacball work?', 'new-topic-2-506'],
   ['When can I request a Tacball?', 'new-topic-2-506'],
+  ['Can a unit and their synchronize peripheral pick up from the same panoply on the same order?', 'new-topic-2-507'],
 ]
 for (const [question, expectedId] of naturalParaphrases) {
   assert.equal((await findApprovedRulesAnswer(question))?.id, expectedId, question)
@@ -65,6 +66,10 @@ assert.match(requestTacball?.answer || '', /second Game Round/i)
 assert.match(requestTacball?.answer || '', /requires no Roll/i)
 assert.match(requestTacball?.answer || '', /only once per game/i)
 assert.deepEqual(requestTacball?.citations.map((citation) => citation.page), [29])
+const synchronizedPanoply = await findApprovedRulesAnswer('Can a unit and their synchronize peripheral pick up from the same panoply on the same order?')
+assert.equal(synchronizedPanoply?.conclusion, 'YES')
+assert.match(synchronizedPanoply?.answer || '', /both Models are in Silhouette contact/i)
+assert.deepEqual(synchronizedPanoply?.citations.map((citation) => citation.page), [106, 54])
 for (const question of [
   'Can Alert place a Mine?',
   'When is Alert allowed?',
@@ -88,5 +93,9 @@ assert.equal(calls, 1)
 const matchedRequestTacball = await retrieveRulesReference({ question: 'how does request tacball work?', deepSeek: fallback })
 assert.equal(matchedRequestTacball.answerSource, 'APPROVED_BENCHMARK')
 assert.equal(matchedRequestTacball.benchmark.id, 'new-topic-2-506')
+assert.equal(calls, 1)
+const matchedSynchronizedPanoply = await retrieveRulesReference({ question: 'Can a unit and their synchronize peripheral pick up from the same panoply on the same order?', deepSeek: fallback })
+assert.equal(matchedSynchronizedPanoply.answerSource, 'APPROVED_BENCHMARK')
+assert.equal(matchedSynchronizedPanoply.benchmark.id, 'new-topic-2-507')
 assert.equal(calls, 1)
 console.log(`PASS - ${index.canonicalCases} trusted benchmark rulings route before DeepSeek; unmatched questions fall back exactly once.`)

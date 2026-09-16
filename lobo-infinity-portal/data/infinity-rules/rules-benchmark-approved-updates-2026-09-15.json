@@ -439,6 +439,36 @@
         { "id": "new-topic-2-506-q14", "question": "Is Request a Tacball an Attack Short Skill?", "style": "RULEBOOK_WORDING" },
         { "id": "new-topic-2-506-q15", "question": "How do Team-Ops troops deploy their Tacball?", "style": "PLAYER_SHORTHAND" }
       ]
+    },
+    {
+      "id": "new-topic-2-507",
+      "category": "ITS_INTERACTION",
+      "canonicalQuestion": "Can a Controller and its Peripheral (Synchronized) both use the same Panoply in the same Order?",
+      "approvedAnswer": "Yes—provided both Models are in Silhouette contact with the Panoply and the Peripheral remains in Coherency with its Controller. The Controller and Peripheral declare Use Panoplies as the same Short Skill, and each Trooper makes its own WIP Roll. Each successful Trooper independently gains D-Charges or rolls on the Panoply Chart. The rules do not limit a Panoply to one user per Order.",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedConclusion": "YES",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 106,
+          "section": "PERIPHERAL"
+        },
+        {
+          "sourceId": "its-season-18",
+          "page": 54,
+          "section": "USE PANOPLIES"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "queryVariants": [
+        { "id": "new-topic-2-507-q1", "question": "Can a Controller and its Peripheral (Synchronized) both use the same Panoply in the same Order?", "style": "CANONICAL" },
+        { "id": "new-topic-2-507-q2", "question": "Can a unit and their synchronize peripheral pick up from the same panoply on the same order?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-507-q3", "question": "Can a unit and its synchronized peripheral use the same Panoply in one Order?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-507-q4", "question": "Can both a controller and synchronized peripheral roll on one Panoply during the same Order?", "style": "TABLE_SCENARIO" },
+        { "id": "new-topic-2-507-q5", "question": "Do a controller and its synchronized peripheral each make a WIP Roll when using the same Panoply?", "style": "RULES_CHECK" },
+        { "id": "new-topic-2-507-q6", "question": "Can synchronized models both get equipment from the same Panoply with one Order?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-507-q7", "question": "Does a Panoply allow a controller and Peripheral (Synchronized) to use it simultaneously?", "style": "RULEBOOK_WORDING" }
+      ]
     }
   ]
 }
