@@ -547,7 +547,9 @@ export function validateExactSectorialData({ armyCode, metadata, payload }) {
     const group = resolveExactProfileGroup(unit, member, { allowAmbiguousLegacy: true })
     const option = group?.options?.find((item) => Number(item.id) === Number(member.optionId))
     const profileId = Number(member.combinedId.split('-').at(-1))
-    const profile = group?.profiles?.find((item) => Number(item.id) === profileId)
+    const profiles = group?.profiles || []
+    const profile = profiles.find((item) => Number(item.id) === profileId)
+      || (profiles.length === 1 ? profiles[0] : undefined)
     if (!unit) issues.push(`${member.combinedId}: unit ${member.unitId} missing`)
     else if (!group) issues.push(`${member.combinedId}: profile group ${member.groupId} missing`)
     else if (!option) issues.push(`${member.combinedId}: option ${member.optionId} missing`)
