@@ -8,6 +8,7 @@ import { buildSubmittedProfiles, classifyTacticalBrief, renderTacticalBrief } fr
 import { decodeArmyCode } from './infinity-army-decode.mjs'
 import { buildCanonicalDataset } from './infinity-army-canonical-dataset.mjs'
 import { resolveExactProfileGroup } from './infinity-army-profile-resolution.mjs'
+import { validateInfListLegality } from '../bot/inf-list-legality.mjs'
 
 const rendererOrigin = 'https://infinity.2nirwana.de'
 const rendererPath = '/cards/generate'
@@ -341,6 +342,7 @@ export async function renderInfListPng({ input, outputPath, browserType = chromi
       sectorial: faction?.name,
     })
     const tacticalPages = await renderTacticalBrief({ analysis: tacticalAnalysis, browser })
+    const legality = validateInfListLegality({ decoded, payload: classificationData.payload })
 
     const finalOutputPath = outputPath ? resolve(outputPath) : null
     if (finalOutputPath) {
@@ -352,6 +354,7 @@ export async function renderInfListPng({ input, outputPath, browserType = chromi
       bytes: profilePages[0].imageBuffer.length,
       height: profilePages[0].height,
       imageBuffer: profilePages[0].imageBuffer,
+      legality,
       officialArmyUrl: buildOfficialArmyUrl(armyCode),
       outputPath: finalOutputPath,
       profilePages,
