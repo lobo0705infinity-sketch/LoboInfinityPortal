@@ -468,7 +468,19 @@
         { "id": "new-topic-2-507-q5", "question": "Do a controller and its synchronized peripheral each make a WIP Roll when using the same Panoply?", "style": "RULES_CHECK" },
         { "id": "new-topic-2-507-q6", "question": "Can synchronized models both get equipment from the same Panoply with one Order?", "style": "PLAYER_SHORTHAND" },
         { "id": "new-topic-2-507-q7", "question": "Does a Panoply allow a controller and Peripheral (Synchronized) to use it simultaneously?", "style": "RULEBOOK_WORDING" },
-        { "id": "new-topic-2-507-q8", "question": "Can a unit and their syncronize peripheral pik up from the same panopaly on the same order?", "style": "PLAYER_TYPO" }
+        { "id": "new-topic-2-507-q8", "question": "Can a unit and their syncronize peripheral pik up from the same panopaly on the same order?", "style": "PLAYER_TYPO" },
+        { "id": "new-topic-2-507-q9", "question": "Can my trooper and sync bot both use the same Panoply with one Order?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-507-q10", "question": "Can a Controller and synchronized Peripheral each get an item from one Panoply in the same Order?", "style": "TABLE_SCENARIO" },
+        { "id": "new-topic-2-507-q11", "question": "If both the Controller and Peripheral are touching a Panoply, can they both roll on it?", "style": "TABLE_SCENARIO" },
+        { "id": "new-topic-2-507-q12", "question": "Does a synchronized Peripheral have to use a different Panoply from its Controller?", "style": "RULES_CHECK" },
+        { "id": "new-topic-2-507-q13", "question": "Can two synchronized Models loot the same Panoply during one Order?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-507-q14", "question": "Can a Peripheral (Synchronized) use a Panoply at the same time as its Controller?", "style": "RULEBOOK_WORDING" },
+        { "id": "new-topic-2-507-q15", "question": "Do the Controller and its synchronized Peripheral make separate WIP Rolls on the same Panoply?", "style": "RULES_CHECK" },
+        { "id": "new-topic-2-507-q16", "question": "Can a unit and its synced remote both take equipment from the same Panoply?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-507-q17", "question": "Does one Order let a Controller and synchronized Peripheral both declare Use Panoplies?", "style": "RULEBOOK_WORDING" },
+        { "id": "new-topic-2-507-q18", "question": "Can the Controller and sync peripheral use the same scenery Panoply together?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-507-q19", "question": "One Panoply, two synchronized Models: can both receive equipment in the same Order?", "style": "TABLE_SCENARIO" },
+        { "id": "new-topic-2-507-q20", "question": "Can both members of a Controller and Peripheral (Synchronized) pair successfully use one Panoply at once?", "style": "RULES_CHECK" }
       ]
     }
   ]

@@ -103,4 +103,23 @@ const matchedMisspelledPanoply = await retrieveRulesReference({ question: 'Can a
 assert.equal(matchedMisspelledPanoply.answerSource, 'APPROVED_BENCHMARK')
 assert.equal(matchedMisspelledPanoply.benchmark.id, 'new-topic-2-507')
 assert.equal(calls, 1)
+for (const question of [
+  'Can my trooper and sync bot both use the same Panoply with one Order?',
+  'Can a Controller and synchronized Peripheral each get an item from one Panoply in the same Order?',
+  'If both the Controller and Peripheral are touching a Panoply, can they both roll on it?',
+  'Does a synchronized Peripheral have to use a different Panoply from its Controller?',
+  'Can two synchronized Models loot the same Panoply during one Order?',
+  'Can a Peripheral (Synchronized) use a Panoply at the same time as its Controller?',
+  'Do the Controller and its synchronized Peripheral make separate WIP Rolls on the same Panoply?',
+  'Can a unit and its synced remote both take equipment from the same Panoply?',
+  'Does one Order let a Controller and synchronized Peripheral both declare Use Panoplies?',
+  'Can the Controller and sync peripheral use the same scenery Panoply together?',
+  'One Panoply, two synchronized Models: can both receive equipment in the same Order?',
+  'Can both members of a Controller and Peripheral (Synchronized) pair successfully use one Panoply at once?',
+]) {
+  const result = await retrieveRulesReference({ question, deepSeek: fallback })
+  assert.equal(result.answerSource, 'APPROVED_BENCHMARK', question)
+  assert.equal(result.benchmark.id, 'new-topic-2-507', question)
+}
+assert.equal(calls, 1)
 console.log(`PASS - ${index.canonicalCases} trusted benchmark rulings route before DeepSeek; unmatched questions fall back exactly once.`)
