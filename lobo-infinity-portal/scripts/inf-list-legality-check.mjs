@@ -48,6 +48,22 @@ const unavailable = validateInfListLegality({ decoded: decoded(300, [member(999,
 assert.equal(unavailable.status, 'unavailable')
 assert.match(formatInfListLegality(unavailable), /VALIDATION UNAVAILABLE/)
 
+const renumberedSingletonProfile = structuredClone(payload)
+renumberedSingletonProfile.units[0].profileGroups[0].profiles[0].id = 2
+const singletonResult = validateInfListLegality({
+  decoded: decoded(100, [member(10, 1), member(20, 1)]),
+  payload: renumberedSingletonProfile,
+})
+assert.equal(singletonResult.status, 'legal', 'a renumbered sole base profile remains unambiguous')
+
+const ambiguousMissingProfile = structuredClone(renumberedSingletonProfile)
+ambiguousMissingProfile.units[0].profileGroups[0].profiles.push({ id: 3, ava: 2 })
+const ambiguousResult = validateInfListLegality({
+  decoded: decoded(100, [member(10, 1), member(20, 1)]),
+  payload: ambiguousMissingProfile,
+})
+assert.equal(ambiguousResult.status, 'unavailable', 'multiple nonmatching base profiles remain fail-closed')
+
 console.log('PASS - inf-list legality uses current official profile data and fails closed.')
 
 function decoded(maxPoints, members) {
