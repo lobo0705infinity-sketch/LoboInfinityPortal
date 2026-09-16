@@ -1,5 +1,6 @@
 import { InfListRenderError, renderInfListPng, validateArmyCode } from '../scripts/inf-list-render-poc.mjs'
 import { ApplicationCommandOptionType } from 'discord.js'
+import { formatInfListLegality } from './inf-list-legality.mjs'
 
 export const INF_LIST_COMMAND = '!!inf-list'
 export const INF_LIST_SLASH_COMMAND = 'inf-list'
@@ -85,7 +86,7 @@ export async function createInfListResponse({
   }
   return {
     allowedMentions: { repliedUser: false },
-    content: `${SUCCESS_TEXT}\n\n[Open in Infinity Army](${result.officialArmyUrl})`,
+    content: `${formatInfListLegality(result.legality)}\n\n${SUCCESS_TEXT}\n\n[Open in Infinity Army](${result.officialArmyUrl})`,
     files,
   }
 }
