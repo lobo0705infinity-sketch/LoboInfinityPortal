@@ -97,7 +97,7 @@ export function classifyTacticalBrief(profiles, army = {}) {
     const nativeSdBonus = bsAttackSdBonus(profile.skills)
     const qualifyingFireteams = (profile.fireteamTeams || []).filter((team) => eligibleFireteams.has(team))
     const fireteamSdBonus = qualifyingFireteams.length ? 1 : 0
-    const activeWeapons = profile.weapons.map((weapon) => ({ ...weapon, baseBurst: weapon.burst, burst: weapon.burst === null ? null : weapon.burst + burstBonus }))
+    const activeWeapons = profile.weapons.map((weapon) => ({ ...weapon, baseBurst: weapon.burst, burst: weapon.burst === null ? null : weapon.burst + burstBonus + weaponBurstBonus(weapon) }))
     const effectiveWeapons = activeWeapons.map((weapon) => ({ ...weapon, burst: weapon.burst === null ? null : weapon.burst + nativeSdBonus + fireteamSdBonus + weaponSdBonus(weapon) }))
     const apexWeapons = effectiveWeapons.filter((weapon) => apexGunfighterWeaponToken(weaponDisplay(weapon)) && isRangedWeapon(weapon) && (weapon.burst >= 5 || (profile.bs >= 14 && weapon.burst >= 4) || (profile.bs === 13 && weapon.burst >= 4 && enhancements.length)))
     if (apexWeapons.length) result.apex.push({ ...profile, badges: enhancements, qualifyingWeapons: apexWeapons })
@@ -125,7 +125,8 @@ export function classifyTacticalBrief(profiles, army = {}) {
     const weaponSdBadges = aroWeapons.filter((weapon) => weaponSdBonus(weapon)).map((weapon) => `${weaponDisplay(weapon)} (+${weaponSdBonus(weapon)}SD)`)
     const pheroware = preferredMatches([...profile.skills, ...profile.equipment, ...profile.weapons.map(weaponDisplay)], [pherowareToken])
     const fireteamSdBadges = fireteamSdBonus ? ['Fireteam (+1SD)'] : []
-    if ((pheroware.length || aroWeapons.length) && (aroSkills.length || weaponSdBadges.length || fireteamSdBonus)) result.valuableAro.push({ ...profile, badges: unique([...pheroware, ...aroSkills, ...weaponSdBadges, ...fireteamSdBadges]), qualifyingFireteams, qualifyingWeapons: aroWeapons })
+    const proxyMkIvException = isProxyMkIv(profile)
+    if (proxyMkIvException || ((pheroware.length || aroWeapons.length) && (aroSkills.length || weaponSdBadges.length || fireteamSdBonus))) result.valuableAro.push({ ...profile, badges: unique([...pheroware, ...aroSkills, ...weaponSdBadges, ...fireteamSdBadges, ...(proxyMkIvException ? ['Proxy Mk IV exception'] : [])]), qualifyingFireteams, qualifyingWeapons: aroWeapons.length ? aroWeapons : profile.weapons.filter(isRangedWeapon) })
     const disposableWeapons = profile.weapons.filter((weapon) => aroWeaponToken(weaponDisplay(weapon)) || flashPulseToken(weaponDisplay(weapon)))
     const sdWeapons = profile.weapons.filter((weapon) => weaponSdBonus(weapon) > 0)
     const qualifyingDisposableWeapons = dedupeWeapons([...disposableWeapons, ...sdWeapons, ...(nativeSdBonus ? profile.weapons.filter(isRangedWeapon) : [])])
@@ -343,6 +344,8 @@ function neurocineticsToken(v) { return /^neurocinetics$/.test(normalized(v)) }
 function bsAttackSdToken(v) { return /^bs attack\s+\+(?:\d+\s*)?sd$/.test(normalized(v)) }
 function bsAttackSdBonus(skills) { for (const skill of skills || []) { const match = normalized(skill).match(/^bs attack\s+\+(?:(\d+)\s*)?sd$/); if (match) return Number(match[1] || 1) } return 0 }
 function weaponSdBonus(weapon) { for (const modifier of weapon?.modifiers || []) { const match = normalized(modifier).match(/^\+(?:(\d+)\s*)?sd$/); if (match) return Number(match[1] || 1) } return 0 }
+function weaponBurstBonus(weapon) { for (const modifier of weapon?.modifiers || []) { const match = normalized(modifier).match(/^\+(?:(\d+)\s*)?(?:b|burst)$/); if (match) return Number(match[1] || 1) } return 0 }
+function isProxyMkIv(profile) { return [profile?.unitName, profile?.profileName].some((value) => /^proxy\s+mk\s+(?:iv|4)(?:\s|$)/.test(normalized(value))) }
 function hackerToken(v) { return /^hacker$/.test(normalized(v)) }
 function hackingDeviceToken(v) { return /^(?:(?:assault|defensive|evo|killer|plus|white|zero pain)\s+)?hacking device(?:\s+plus)?$/.test(normalized(v)) }
 function pitcherToken(v) { return /^pitcher$/.test(normalized(v)) }
