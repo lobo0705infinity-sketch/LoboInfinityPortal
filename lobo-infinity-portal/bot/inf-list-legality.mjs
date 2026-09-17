@@ -26,14 +26,15 @@ export function validateInfListLegality({ decoded, payload } = {}) {
       const profiles = group?.profiles || []
       const profile = profiles.find((candidate) => Number(candidate.id) === profileId)
         || (profiles.length === 1 ? profiles[0] : undefined)
-      const label = option?.name || group?.isc || unit?.isc || member.combinedId || 'Unknown profile'
+      const legalityOption = resolveLegalityOption(unit, group, option, member)
+      const label = legalityOption?.name || option?.name || group?.isc || unit?.isc || member.combinedId || 'Unknown profile'
 
-      if (!unit || !group || !option || !profile) {
+      if (!unit || !group || !option || !profile || !legalityOption) {
         unavailable.push(`${label}: current official profile data did not resolve exactly.`)
         continue
       }
-      const swcValue = parseSwc(option.swc)
-      if (!Number.isFinite(Number(option.points)) || !swcValue) {
+      const swcValue = parseSwc(legalityOption.swc)
+      if (!Number.isFinite(Number(legalityOption.points)) || !swcValue) {
         unavailable.push(`${label}: official points or SWC data is missing.`)
         continue
       }
@@ -46,11 +47,11 @@ export function validateInfListLegality({ decoded, payload } = {}) {
         ava: profile.ava,
         avaKey: Number(unit.id),
         combatGroup: Number(combatGroup.combatGroup),
-        disabled: !isSelectableOption(unit, group, option),
+        disabled: legalityOption.disabled === true,
         label,
-        lieutenant: (option.orders || []).some((order) => String(order?.type).toUpperCase() === 'LIEUTENANT') ? 1 : 0,
-        minis: positiveInteger(option.minis, 1),
-        points: Number(option.points),
+        lieutenant: (legalityOption.orders || []).some((order) => String(order?.type).toUpperCase() === 'LIEUTENANT') ? 1 : 0,
+        minis: positiveInteger(legalityOption.minis, 1),
+        points: Number(legalityOption.points),
         swc: swcValue.cost,
         swcBonus: swcValue.bonus,
       })
@@ -106,19 +107,19 @@ export function validateInfListLegality({ decoded, payload } = {}) {
   })
 }
 
-function isSelectableOption(unit, group, option) {
-  if (option.disabled !== true) return true
+function resolveLegalityOption(unit, group, option, member) {
+  if (Number(member.groupId) !== 0) return option
 
-  // Army marks the component profiles of a combined option as disabled because
-  // they cannot be selected on their own. They remain legal when an enabled
-  // unit-level option includes that exact component (for example JAZZ & BILLIE).
-  return (unit?.options || []).some((parentOption) => (
-    parentOption.disabled !== true
+  // Legacy group 0 encodes a unit-level combined selection. Validate and total
+  // the enabled parent option, not only its first component profile. For
+  // example, JAZZ Hacker & BILLIE is 25 points and two Troopers.
+  return (unit?.options || []).find((parentOption) => (
+    Number(parentOption.id) === Number(member.optionId)
     && (parentOption.includes || []).some((included) => (
       Number(included.group) === Number(group.id)
       && Number(included.option) === Number(option.id)
     ))
-  ))
+  )) || option
 }
 
 export function formatInfListLegality(result) {
