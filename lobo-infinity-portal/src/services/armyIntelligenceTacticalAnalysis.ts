@@ -106,10 +106,10 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
       category('apexCc', 'Apex Close Combat Fighters', 'CC 22+ profiles with Martial Arts, Natural Born Warrior, Berserk (+3), or CC Attack (+B).', (entry) => Number(entry.cc) >= 22 && entry.skills.some((skill) => [martialArts, naturalBornWarrior, berserkPlusThree, ccAttackBurst].some((rule) => rule.test(normalize(skill))))),
       category('hacking', 'Hacking Networks', 'Exact Hacker profiles, Hacking Devices, Repeaters, and verified repeater-delivery equipment.', (entry) => hackingComponents(entry).length > 0),
       category('vision', 'Vision Control', 'Profiles with Smoke Grenades, Smoke Grenade Launchers, Discoballer, Pheroware Mirrorball, or Eclipse.', (entry) => [...entry.skills, ...entry.equipment, ...entry.weapons].some((item) => visionControl.test(normalize(item)))),
-      category('valuableAro', 'Valuable ARO Pieces', 'Profiles with an approved ARO weapon or Pheroware capability, plus Total Reaction, Neurocinetics, native BS Attack (+SD), weapon-specific +SD, or a verified legal Fireteam +1SD.', (entry) => {
+      category('valuableAro', 'Valuable ARO Pieces', 'Profiles with an approved ARO weapon or Pheroware capability, plus Total Reaction, Neurocinetics, native BS Attack (+SD), weapon-specific +SD, or a verified legal Fireteam +1SD. Proxy Mk IV is an explicit exception.', (entry) => {
         const hasAroCapability = canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name))) || [...entry.skills, ...entry.equipment, ...entry.weapons].some((item) => pheroware.test(normalize(item)))
         const hasValuableModifier = entry.skills.some((skill) => valuableAroSkill.test(normalize(skill))) || canonicalWeapons(entry).some((weapon) => weaponSdBonus(weapon) > 0) || Number(entry.fireteamSdBonus || 0) > 0
-        return hasAroCapability && hasValuableModifier
+        return isProxyMkIv(entry) || (hasAroCapability && hasValuableModifier)
       }),
       category('disposableAro', 'Disposable ARO Pieces', 'Profiles below 14 points with an approved ARO weapon, Flash Pulse, weapon-specific +SD, or native BS Attack (+SD).', (entry) => entry.points < 14 && (canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name)) || /^flash pulse$/i.test(normalize(weapon.name)) || weaponSdBonus(weapon) > 0) || bsAttackSdBonus(entry.skills) > 0)),
       category('alternative', 'Alternative Attack Vectors', 'Profiles with Parachutist, Combat Jump, Hidden Deployment, or Impersonation; Netrods and Imetrons are excluded.', (entry) => !excludedAlternativeAttackVector(entry.unit) && entry.skills.some((skill) => alternativeSkill.test(normalize(skill)))),
@@ -134,7 +134,7 @@ function toProfile(entry: ArmyIntelligenceDecodedEntry, listCount: number, denom
   const burstBonus = bsAttackBurstBonus(entry.skills)
   const sdBonus = bsAttackSdBonus(entry.skills) + Number(entry.fireteamSdBonus || 0)
   return {
-    badges: unique([...skills, ...canonicalWeapons(entry).filter((weapon) => weaponSdBonus(weapon) > 0).map((weapon) => `${weapon.name} (+${weaponSdBonus(weapon)}SD)`), ...(entry.fireteamSdBonus ? ['Fireteam (+1SD)'] : []), ...hackingComponents(entry)]),
+    badges: unique([...skills, ...canonicalWeapons(entry).filter((weapon) => weaponSdBonus(weapon) > 0).map((weapon) => `${weapon.name} (+${weaponSdBonus(weapon)}SD)`), ...canonicalWeapons(entry).filter((weapon) => weaponBurstBonus(weapon) > 0).map((weapon) => `${weapon.name} (+${weaponBurstBonus(weapon)}B)`), ...(entry.fireteamSdBonus ? ['Fireteam (+1SD)'] : []), ...(isProxyMkIv(entry) ? ['Proxy Mk IV exception'] : []), ...hackingComponents(entry)]),
     bs: entry.bs ?? null,
     cc: entry.cc ?? null,
     equipment: entry.equipment.filter((item) => deliveryEquipment.test(normalize(item)) || hackingDevice.test(normalize(item))),
@@ -145,7 +145,7 @@ function toProfile(entry: ArmyIntelligenceDecodedEntry, listCount: number, denom
     profileId: profileKey(entry),
     roles: [],
     unit: entry.unit || entry.profile,
-    weapons: normalizedWeapons(entry).map((weapon) => ({ ...weapon, effectiveBurst: weapon.burst === null ? null : weapon.burst + burstBonus, effectiveDice: weapon.burst === null ? null : weapon.burst + burstBonus + sdBonus + weaponSdBonus(weapon) })),
+    weapons: normalizedWeapons(entry).map((weapon) => ({ ...weapon, effectiveBurst: weapon.burst === null ? null : weapon.burst + burstBonus + weaponBurstBonus(weapon), effectiveDice: weapon.burst === null ? null : weapon.burst + burstBonus + weaponBurstBonus(weapon) + sdBonus + weaponSdBonus(weapon) })),
   }
 }
 
@@ -155,7 +155,7 @@ function canonicalWeapons(entry: ArmyIntelligenceDecodedEntry) {
 
 function effectiveSdWeapons(entry: ArmyIntelligenceDecodedEntry) {
   const bonus = bsAttackBurstBonus(entry.skills) + bsAttackSdBonus(entry.skills) + Number(entry.fireteamSdBonus || 0)
-  return canonicalWeapons(entry).filter((weapon) => weapon.burstStatus === 'canonical').map((weapon) => ({ ...weapon, burst: weapon.burst === null ? null : weapon.burst + bonus + weaponSdBonus(weapon) }))
+  return canonicalWeapons(entry).filter((weapon) => weapon.burstStatus === 'canonical').map((weapon) => ({ ...weapon, burst: weapon.burst === null ? null : weapon.burst + bonus + weaponBurstBonus(weapon) + weaponSdBonus(weapon) }))
 }
 
 function weaponSdBonus(weapon: { modifiers?: string[] }) {
@@ -164,6 +164,18 @@ function weaponSdBonus(weapon: { modifiers?: string[] }) {
     if (match) return Number(match[1] || 1)
   }
   return 0
+}
+
+function weaponBurstBonus(weapon: { modifiers?: string[] }) {
+  for (const modifier of weapon.modifiers || []) {
+    const match = normalize(modifier).match(/^\+\s*(?:(\d+)\s*)?(?:b|burst)$/i)
+    if (match) return Number(match[1] || 1)
+  }
+  return 0
+}
+
+function isProxyMkIv(entry: Pick<ArmyIntelligenceDecodedEntry, 'canonicalProfile' | 'profile' | 'unit'>) {
+  return [entry.unit, entry.profile, entry.canonicalProfile].some((value) => /^proxy\s+mk\s+(?:iv|4)(?:\s|$)/.test(normalize(value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()))
 }
 
 function weaponRuleToken(weapon: { name?: string; mode?: string }) {
