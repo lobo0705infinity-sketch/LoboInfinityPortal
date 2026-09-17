@@ -37,6 +37,8 @@ const fixtures = [
   profile('pheroware', { equipment: ['Pheroware Tactics'], skills: ['Total Reaction'] }),
   profile('pt', { equipment: ['PT'], skills: ['Neurocinetics'] }),
   profile('sd-rifle', { points: 30, weapons: [{ ...weapon('Combi Rifle', 3), modifiers: ['+2SD'] }] }),
+  profile('maximus', { bs: 13, unitName: 'MAXIMUS AGENT', weapons: [{ ...weapon('MULTI Rifle', 3), modifiers: ['+1B'] }] }),
+  profile('proxy-mk-iv', { bs: 13, points: 21, unitName: 'PROXY Mk.IV', profileName: 'PROXY Mk.IV', weapons: [weapon('Combi Rifle', 3)] }),
   profile('vision', { weapons: [weapon('Smoke Grenades', 1), weapon('Discoballer', 1)], equipment: ['Pheroware Mirroball'], skills: ['Eclipse'] }),
   profile('apex-cc', { cc: 22, skills: ['Martial Arts L2', 'Natural Born Warrior', 'Berserk (+3)', 'CC Attack (+1B)'] }),
   profile('cc-near-miss', { cc: 21, skills: ['Martial Arts L4'] }),
@@ -94,10 +96,13 @@ assert.equal(analysis.categories.disposableAro.some((item) => item.combinedId ==
 assert.equal(analysis.categories.vision.some((item) => item.combinedId === 'vision'), true)
 assert.equal(analysis.categories.apexCc.some((item) => item.combinedId === 'apex-cc'), true)
 assert.equal(analysis.categories.apexCc.some((item) => item.combinedId === 'cc-near-miss'), false)
-assert.deepEqual(new Set(analysis.categories.competent.map((item) => item.combinedId)), new Set(['bs12', 'same-unit-b', 'sd-rifle', 'hrl-competent', 'tankhunter']))
+assert.deepEqual(new Set(analysis.categories.competent.map((item) => item.combinedId)), new Set(['bs12', 'same-unit-b', 'sd-rifle', 'maximus', 'hrl-competent', 'tankhunter']))
+assert.equal(analysis.categories.competent.find((item) => item.combinedId === 'maximus')?.qualifyingWeapons[0].burst, 4, 'Maximus weapon-specific +1B must produce a B4 MULTI Rifle')
+assert.equal(analysis.categories.valuableAro.some((item) => item.combinedId === 'proxy-mk-iv'), true, 'Proxy Mk IV is an explicit Valuable ARO exception')
+assert.deepEqual(analysis.categories.valuableAro.find((item) => item.combinedId === 'proxy-mk-iv')?.badges, ['Proxy Mk IV exception'])
 assert.equal(analysis.categories.competent.some((item) => item.combinedId === 'hrl-bs-near-miss'), false)
 assert.equal(analysis.categories.apex.find((item) => item.combinedId === 'burst-bonus').qualifyingWeapons[0].burst, 4)
-assert.deepEqual(new Set(analysis.categories.valuableAro.flatMap((item) => item.qualifyingWeapons.map((item) => item.name))), new Set(['MULTI Sniper Rifle', 'Heavy Rocket Launcher', 'Feuerbach', 'Portable Autocannon']))
+assert.deepEqual(new Set(analysis.categories.valuableAro.flatMap((item) => item.qualifyingWeapons.map((item) => item.name))), new Set(['MULTI Sniper Rifle', 'Combi Rifle', 'Heavy Rocket Launcher', 'Feuerbach', 'Portable Autocannon']))
 assert.deepEqual(analysis.categories.valuableAro.find((item) => item.combinedId === 'tankhunter')?.badges, ['Portable Autocannon (+1SD)'])
 assert.equal(analysis.categories.competent.some((item) => item.combinedId === 'tankhunter'), true, 'Portable Autocannon +1SD and Mimetism qualifies')
 assert.equal(analysis.categories.competent.some((item) => item.combinedId === 'pac-near-miss'), false, 'Portable Autocannon +1SD alone is insufficient')
