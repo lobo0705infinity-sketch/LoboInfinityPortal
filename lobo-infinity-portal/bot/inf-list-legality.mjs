@@ -46,7 +46,7 @@ export function validateInfListLegality({ decoded, payload } = {}) {
         ava: profile.ava,
         avaKey: Number(unit.id),
         combatGroup: Number(combatGroup.combatGroup),
-        disabled: option.disabled === true,
+        disabled: !isSelectableOption(unit, group, option),
         label,
         lieutenant: (option.orders || []).some((order) => String(order?.type).toUpperCase() === 'LIEUTENANT') ? 1 : 0,
         minis: positiveInteger(option.minis, 1),
@@ -104,6 +104,21 @@ export function validateInfListLegality({ decoded, payload } = {}) {
     violations,
     version: payload.version || null,
   })
+}
+
+function isSelectableOption(unit, group, option) {
+  if (option.disabled !== true) return true
+
+  // Army marks the component profiles of a combined option as disabled because
+  // they cannot be selected on their own. They remain legal when an enabled
+  // unit-level option includes that exact component (for example JAZZ & BILLIE).
+  return (unit?.options || []).some((parentOption) => (
+    parentOption.disabled !== true
+    && (parentOption.includes || []).some((included) => (
+      Number(included.group) === Number(group.id)
+      && Number(included.option) === Number(option.id)
+    ))
+  ))
 }
 
 export function formatInfListLegality(result) {
