@@ -45,7 +45,7 @@ export function validateInfListLegality({ decoded, payload } = {}) {
 
       selections.push({
         ava: profile.ava,
-        avaKey: Number(unit.id),
+        avaKey: `${Number(unit.id)}:${Number(group.id)}:${Number(profile.id)}`,
         combatGroup: Number(combatGroup.combatGroup),
         disabled: legalityOption.disabled === true,
         label,
@@ -54,6 +54,9 @@ export function validateInfListLegality({ decoded, payload } = {}) {
         points: Number(legalityOption.points),
         swc: swcValue.cost,
         swcBonus: swcValue.bonus,
+        trooperPoolKey: countsAsOneTrooper(unit)
+          ? `${Number(combatGroup.combatGroup)}:${Number(unit.id)}`
+          : null,
       })
     }
   }
@@ -67,7 +70,7 @@ export function validateInfListLegality({ decoded, payload } = {}) {
 
   const points = sum(selections, 'points')
   const swc = sum(selections, 'swc')
-  const troopers = sum(selections, 'minis')
+  const troopers = countTroopers(selections)
   const lieutenantCount = sum(selections, 'lieutenant')
   const maxSwc = maxPoints / 50 + sum(selections, 'swcBonus')
 
@@ -77,8 +80,10 @@ export function validateInfListLegality({ decoded, payload } = {}) {
   if (lieutenantCount !== 1) violations.push(`The list must contain exactly one Lieutenant; found ${lieutenantCount}.`)
 
   const groupCounts = new Map()
+  for (const group of new Set(selections.map((selection) => selection.combatGroup))) {
+    groupCounts.set(group, countTroopers(selections.filter((selection) => selection.combatGroup === group)))
+  }
   for (const selection of selections) {
-    groupCounts.set(selection.combatGroup, (groupCounts.get(selection.combatGroup) || 0) + selection.minis)
     if (selection.disabled) violations.push(`${selection.label} is disabled in the current official Army data.`)
   }
   for (const [group, count] of groupCounts) {
@@ -139,6 +144,20 @@ function report(status, values) {
 function positiveInteger(value, fallback) {
   const parsed = Number(value)
   return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback
+}
+
+function countsAsOneTrooper(unit) {
+  return /counted\s+as\s+only\s+one\s+trooper/i.test(String(unit?.notes || ''))
+}
+
+function countTroopers(selections) {
+  const sharedPools = new Set()
+  let total = 0
+  for (const selection of selections) {
+    if (selection.trooperPoolKey) sharedPools.add(selection.trooperPoolKey)
+    else total += selection.minis
+  }
+  return total + sharedPools.size
 }
 
 function parseSwc(value) {
