@@ -482,6 +482,44 @@
         { "id": "new-topic-2-507-q19", "question": "One Panoply, two synchronized Models: can both receive equipment in the same Order?", "style": "TABLE_SCENARIO" },
         { "id": "new-topic-2-507-q20", "question": "Can both members of a Controller and Peripheral (Synchronized) pair successfully use one Panoply at once?", "style": "RULES_CHECK" }
       ]
+    },
+    {
+      "id": "new-topic-2-508",
+      "category": "NEW_MULTI_RULE_INTERACTIONS",
+      "canonicalQuestion": "Does FT Master override Loss of Lieutenant and keep the Fireteam Regular?",
+      "approvedAnswer": "No. FT Master does not override Loss of Lieutenant. Although FT Master normally makes all members of its Fireteam Regular during the Order Count step, Loss of Lieutenant makes all Troopers in the Army List Irregular. The official FT Master clarification expressly says that having an FT Master in a Fireteam does not prevent its members from suffering the effects of Loss of Lieutenant.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "NO",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 93,
+          "section": "FT MASTER — EFFECTS AND OFFICIAL CLARIFICATION"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 18,
+          "section": "LOSS OF LIEUTENANT — EFFECTS"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "queryVariants": [
+        { "id": "new-topic-2-508-q1", "question": "Does FT Master override Loss of Lieutenant and keep the Fireteam Regular?", "style": "CANONICAL" },
+        { "id": "new-topic-2-508-q2", "question": "silly won but does fireteam master override the loss of lt irregular orders", "style": "PLAYER_TYPO" },
+        { "id": "new-topic-2-508-q3", "question": "Does Fireteam Master override the loss of irregular orders?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-508-q4", "question": "Does FT Master stop Loss of Lieutenant from making the link Irregular?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-508-q5", "question": "Are members of a Fireteam with an FT Master Regular during Loss of Lieutenant?", "style": "TABLE_SCENARIO" },
+        { "id": "new-topic-2-508-q6", "question": "If my army is in Loss of Lieutenant, does Fireteam Master still make its members Regular?", "style": "TABLE_SCENARIO" },
+        { "id": "new-topic-2-508-q7", "question": "Can FT Master cancel the Irregular effect of Loss of Lieutenant?", "style": "RULES_CHECK" },
+        { "id": "new-topic-2-508-q8", "question": "Which takes precedence, FT Master or Loss of Lieutenant?", "style": "RULES_CHECK" },
+        { "id": "new-topic-2-508-q9", "question": "Does a Fireteam Master preserve Regular Orders in Loss of Lieutenant?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-508-q10", "question": "Do troops in an FT Master link become Irregular when the Lieutenant is lost?", "style": "TABLE_SCENARIO" },
+        { "id": "new-topic-2-508-q11", "question": "Does the FT Master Order Count effect supersede Loss of Lieutenant?", "style": "RULEBOOK_WORDING" },
+        { "id": "new-topic-2-508-q12", "question": "Can a Fireteam with FT Master contribute Regular Orders while in LoL?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-508-q13", "question": "Are FT Master Fireteam members exempt from Loss of Lieutenant?", "style": "RULES_CHECK" },
+        { "id": "new-topic-2-508-q14", "question": "My Lieutenant died but I have FT Master. Is that Fireteam still Regular?", "style": "TABLE_SCENARIO" },
+        { "id": "new-topic-2-508-q15", "question": "Does Fireteam Master prevent its members from suffering Loss of Lieutenant?", "style": "RULEBOOK_WORDING" }
+      ]
     }
   ]
 }

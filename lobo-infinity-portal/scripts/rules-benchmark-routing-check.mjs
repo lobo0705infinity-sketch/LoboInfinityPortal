@@ -6,7 +6,7 @@ import { retrieveRulesReference } from '../bot/rules-command.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1387)
+assert.equal(index.canonicalCases, 1388)
 
 for (const file of ['rules-adjudicator-benchmark.json', 'rules-adjudicator-expansion-400.json', 'rules-adjudicator-new-topics-400.json', 'rules-adjudicator-new-topics-500.json', 'rules-benchmark-approved-updates-2026-09-15.json']) {
   const document = JSON.parse(await readFile(resolve(root, 'data/infinity-rules', file), 'utf8'))
@@ -46,6 +46,9 @@ const naturalParaphrases = [
   ['When can I request a Tacball?', 'new-topic-2-506'],
   ['Can a unit and their synchronize peripheral pick up from the same panoply on the same order?', 'new-topic-2-507'],
   ['Can a unit and their syncronize peripheral pik up from the same panopaly on the same order?', 'new-topic-2-507'],
+  ['silly won but does fireteam master override the loss of lt irregular orders', 'new-topic-2-508'],
+  ['Does FT Master stop Loss of Lieutenant from making the link Irregular?', 'new-topic-2-508'],
+  ['Which takes precedence, FT Master or Loss of Lieutenant?', 'new-topic-2-508'],
 ]
 for (const [question, expectedId] of naturalParaphrases) {
   assert.equal((await findApprovedRulesAnswer(question))?.id, expectedId, question)
@@ -71,6 +74,11 @@ const synchronizedPanoply = await findApprovedRulesAnswer('Can a unit and their 
 assert.equal(synchronizedPanoply?.conclusion, 'YES')
 assert.match(synchronizedPanoply?.answer || '', /both Models are in Silhouette contact/i)
 assert.deepEqual(synchronizedPanoply?.citations.map((citation) => citation.page), [106, 54])
+const ftMasterLossOfLieutenant = await findApprovedRulesAnswer('silly won but does fireteam master override the loss of lt irregular orders')
+assert.equal(ftMasterLossOfLieutenant?.conclusion, 'NO')
+assert.match(ftMasterLossOfLieutenant?.answer || '', /does not override Loss of Lieutenant/i)
+assert.match(ftMasterLossOfLieutenant?.answer || '', /does not prevent its members from suffering the effects/i)
+assert.deepEqual(ftMasterLossOfLieutenant?.citations.map((citation) => citation.page), [93, 18])
 for (const question of [
   'Can Alert place a Mine?',
   'When is Alert allowed?',
@@ -120,6 +128,29 @@ for (const question of [
   const result = await retrieveRulesReference({ question, deepSeek: fallback })
   assert.equal(result.answerSource, 'APPROVED_BENCHMARK', question)
   assert.equal(result.benchmark.id, 'new-topic-2-507', question)
+}
+assert.equal(calls, 1)
+for (const question of [
+  'Does FT Master override Loss of Lieutenant and keep the Fireteam Regular?',
+  'silly won but does fireteam master override the loss of lt irregular orders',
+  'Does Fireteam Master override the loss of irregular orders?',
+  'Does FT Master stop Loss of Lieutenant from making the link Irregular?',
+  'Are members of a Fireteam with an FT Master Regular during Loss of Lieutenant?',
+  'If my army is in Loss of Lieutenant, does Fireteam Master still make its members Regular?',
+  'Can FT Master cancel the Irregular effect of Loss of Lieutenant?',
+  'Which takes precedence, FT Master or Loss of Lieutenant?',
+  'Does a Fireteam Master preserve Regular Orders in Loss of Lieutenant?',
+  'Do troops in an FT Master link become Irregular when the Lieutenant is lost?',
+  'Does the FT Master Order Count effect supersede Loss of Lieutenant?',
+  'Can a Fireteam with FT Master contribute Regular Orders while in LoL?',
+  'Are FT Master Fireteam members exempt from Loss of Lieutenant?',
+  'My Lieutenant died but I have FT Master. Is that Fireteam still Regular?',
+  'Does Fireteam Master prevent its members from suffering Loss of Lieutenant?',
+]) {
+  const result = await retrieveRulesReference({ question, deepSeek: fallback })
+  assert.equal(result.answerSource, 'APPROVED_BENCHMARK', question)
+  assert.equal(result.benchmark.id, 'new-topic-2-508', question)
+  assert.equal(result.deepSeek.conclusion, 'NO', question)
 }
 assert.equal(calls, 1)
 console.log(`PASS - ${index.canonicalCases} trusted benchmark rulings route before DeepSeek; unmatched questions fall back exactly once.`)
