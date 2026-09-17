@@ -70,12 +70,14 @@ const combinedUnit = unit(50, 500, 1, [
 combinedUnit.options = [{
   ...option(1, 25, 0.5, 'JAZZ Hacker & BILLIE'),
   includes: [{ q: 1, group: 1, option: 1 }],
+  minis: 2,
 }]
 const combinedOptionResult = validateInfListLegality({
-  decoded: decoded(100, [member(50, 1), member(20, 1)]),
+  decoded: decoded(100, [member(50, 1, 0), member(20, 1)]),
   payload: { ...payload, units: [combinedUnit, payload.units[1]] },
 })
 assert.equal(combinedOptionResult.status, 'legal', 'enabled combined Army options make their disabled component profiles legal')
+assert.deepEqual(combinedOptionResult.totals, { lieutenantCount: 1, points: 55, swc: 1.5, troopers: 3 })
 
 const disabledStandaloneUnit = unit(60, 600, 1, [{ ...option(1, 10, 0, 'RETIRED PROFILE'), disabled: true }])
 const disabledStandaloneResult = validateInfListLegality({
@@ -91,8 +93,8 @@ function decoded(maxPoints, members) {
   return { maxPoints, combatGroups: [{ combatGroup: 1, members }] }
 }
 
-function member(unitId, optionId) {
-  return { combinedId: `1-${unitId}-1-${optionId}-1`, groupId: 1, optionId, unitId }
+function member(unitId, optionId, groupId = 1) {
+  return { combinedId: `1-${unitId}-${groupId}-${optionId}-1`, groupId, optionId, unitId }
 }
 
 function unit(id, canonical, ava, options) {
