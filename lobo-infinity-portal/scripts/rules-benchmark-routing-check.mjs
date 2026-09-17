@@ -6,7 +6,7 @@ import { retrieveRulesReference } from '../bot/rules-command.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1388)
+assert.equal(index.canonicalCases, 1389)
 
 for (const file of ['rules-adjudicator-benchmark.json', 'rules-adjudicator-expansion-400.json', 'rules-adjudicator-new-topics-400.json', 'rules-adjudicator-new-topics-500.json', 'rules-benchmark-approved-updates-2026-09-15.json']) {
   const document = JSON.parse(await readFile(resolve(root, 'data/infinity-rules', file), 'utf8'))
@@ -49,6 +49,8 @@ const naturalParaphrases = [
   ['silly won but does fireteam master override the loss of lt irregular orders', 'new-topic-2-508'],
   ['Does FT Master stop Loss of Lieutenant from making the link Irregular?', 'new-topic-2-508'],
   ['Which takes precedence, FT Master or Loss of Lieutenant?', 'new-topic-2-508'],
+  ['Can a model squeeze through a gap if it is along the table edge?', 'new-topic-2-509'],
+  ['Can part of a model\'s base hang off the board while it moves past terrain?', 'new-topic-2-509'],
 ]
 for (const [question, expectedId] of naturalParaphrases) {
   assert.equal((await findApprovedRulesAnswer(question))?.id, expectedId, question)
@@ -110,6 +112,25 @@ assert.equal(calls, 1)
 const matchedMisspelledPanoply = await retrieveRulesReference({ question: 'Can a unit and their syncronize peripheral pik up from the same panopaly on the same order?', deepSeek: fallback })
 assert.equal(matchedMisspelledPanoply.answerSource, 'APPROVED_BENCHMARK')
 assert.equal(matchedMisspelledPanoply.benchmark.id, 'new-topic-2-507')
+assert.equal(calls, 1)
+for (const question of [
+  'Can a model squeeze through a gap if it is along the table edge?',
+  'Can a trooper squeeze between terrain and the table edge?',
+  "Can part of a model's base hang off the board while it moves past terrain?",
+  "Does a model's entire base have to fit through a gap beside the table edge?",
+  'Can I move through a narrow gap at the board edge if half the base stays supported?',
+  'Can my base overhang the table edge during a Move?',
+  'Can a model pass between a building and the edge of the board when the whole base does not fit?',
+  "How much of a trooper's base must remain on the table while moving along the edge?",
+]) {
+  const result = await retrieveRulesReference({ question, deepSeek: fallback })
+  assert.equal(result.answerSource, 'APPROVED_BENCHMARK', question)
+  assert.equal(result.benchmark.id, 'new-topic-2-509', question)
+  assert.equal(result.deepSeek.conclusion, 'DEPENDS', question)
+  assert.match(result.deepSeek.answer || '', /only half of the base must remain in contact/i, question)
+  assert.match(result.deepSeek.answer || '', /finish that Move on a surface equal to or larger than its entire base/i, question)
+  assert.deepEqual(result.deepSeek.sources.map((source) => source.page), ['p. 28', 'p. 31'], question)
+}
 assert.equal(calls, 1)
 for (const question of [
   'Can my trooper and sync bot both use the same Panoply with one Order?',
