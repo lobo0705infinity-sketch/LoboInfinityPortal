@@ -6,7 +6,7 @@ import { retrieveRulesReference } from '../bot/rules-command.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1389)
+assert.equal(index.canonicalCases, 1392)
 
 for (const file of ['rules-adjudicator-benchmark.json', 'rules-adjudicator-expansion-400.json', 'rules-adjudicator-new-topics-400.json', 'rules-adjudicator-new-topics-500.json', 'rules-benchmark-approved-updates-2026-09-15.json']) {
   const document = JSON.parse(await readFile(resolve(root, 'data/infinity-rules', file), 'utf8'))
@@ -50,7 +50,9 @@ const naturalParaphrases = [
   ['Does FT Master stop Loss of Lieutenant from making the link Irregular?', 'new-topic-2-508'],
   ['Which takes precedence, FT Master or Loss of Lieutenant?', 'new-topic-2-508'],
   ['Can a model squeeze through a gap if it is along the table edge?', 'new-topic-2-509'],
-  ['Can part of a model\'s base hang off the board while it moves past terrain?', 'new-topic-2-509'],
+  ['Can part of a model\'s base hang off the board while it moves past terrain?', 'new-topic-2-510'],
+  ['Can half my base hang past the board edge while Climbing?', 'new-topic-2-511'],
+  ['Can a model squeeze through a gap if it is along the table edge if it is jumping', 'new-topic-2-512'],
 ]
 for (const [question, expectedId] of naturalParaphrases) {
   assert.equal((await findApprovedRulesAnswer(question))?.id, expectedId, question)
@@ -116,24 +118,9 @@ assert.equal(calls, 1)
 for (const question of [
   'Can a model squeeze through a gap if it is along the table edge?',
   'Can a trooper squeeze between terrain and the table edge?',
-  "Can part of a model's base hang off the board while it moves past terrain?",
   "Does a model's entire base have to fit through a gap beside the table edge?",
-  'Can I move through a narrow gap at the board edge if half the base stays supported?',
-  'Can my base overhang the table edge during a Move?',
-  'Can a model pass between a building and the edge of the board when the whole base does not fit?',
-  "How much of a trooper's base must remain on the table while moving along the edge?",
-  'Can a trooper Jump across a gap beside the table edge?',
-  'Can I jump through the narrow space between terrain and the board edge?',
-  'Does the base need support while a model is Jumping over an edge gap?',
-  'Can a model leap over a gap along the edge of the table if its landing spot fits the whole base?',
-  'Can a trooper Climb through a narrow gap at the table edge?',
-  'Can half my base hang past the board edge while Climbing?',
-  'How much base contact does Climb require beside the table edge?',
-  'Can Climbing Plus move along a narrow table-edge surface with only half the base supported?',
   'Can I move jump or climb past terrain using the edge of the board?',
   'Does a trooper need its whole base supported when moving, jumping, or climbing near the table edge?',
-  'Can you squeeze by terrain at the board edge using Jump instead of Move?',
-  'Is it legal to climb around terrain when part of the base is off the table?',
 ]) {
   const result = await retrieveRulesReference({ question, deepSeek: fallback })
   assert.equal(result.answerSource, 'APPROVED_BENCHMARK', question)
@@ -146,6 +133,58 @@ for (const question of [
   assert.match(result.deepSeek.answer || '', /tournament-organizer ruling for Jump at the table edge/i, question)
   assert.equal(result.deepSeek.certainty, 'EVIDENCE-BOUNDED INTERPRETATION', question)
   assert.deepEqual(result.deepSeek.sources.map((source) => source.page), ['p. 28', 'p. 31', 'p. 32', 'p. 34', 'p. 10'], question)
+}
+assert.equal(calls, 1)
+for (const question of [
+  'Can a Trooper squeeze between terrain and the table edge using Move?',
+  'Can I move through a narrow gap at the board edge if half the base stays supported?',
+  'Can my base overhang the table edge during a Move?',
+  "Can part of a model's base hang off the board while it moves past terrain?",
+  "How much of a trooper's base must remain on the table while moving along the edge?",
+  'Can a model Move past a building at the board edge when the whole base does not fit?',
+]) {
+  const result = await retrieveRulesReference({ question, deepSeek: fallback })
+  assert.equal(result.answerSource, 'APPROVED_BENCHMARK', question)
+  assert.equal(result.benchmark.id, 'new-topic-2-510', question)
+  assert.equal(result.deepSeek.conclusion, 'YES', question)
+  assert.match(result.deepSeek.answer || '', /^Yes, provided at least half of the Trooper's base remains supported/i, question)
+  assert.deepEqual(result.deepSeek.sources.map((source) => source.page), ['p. 28', 'p. 31'], question)
+}
+assert.equal(calls, 1)
+for (const question of [
+  'Can a Trooper squeeze at the table edge using Climb or Climbing Plus?',
+  'Can a trooper Climb through a narrow gap at the table edge?',
+  'Can half my base hang past the board edge while Climbing?',
+  'How much base contact does Climb require beside the table edge?',
+  'Can Climbing Plus move along a narrow table-edge surface with only half the base supported?',
+  'Is it legal to climb around terrain when part of the base is off the table?',
+]) {
+  const result = await retrieveRulesReference({ question, deepSeek: fallback })
+  assert.equal(result.answerSource, 'APPROVED_BENCHMARK', question)
+  assert.equal(result.benchmark.id, 'new-topic-2-511', question)
+  assert.equal(result.deepSeek.conclusion, 'YES', question)
+  assert.match(result.deepSeek.answer || '', /^Yes, provided at least half of the Trooper's base underside remains in contact/i, question)
+  assert.deepEqual(result.deepSeek.sources.map((source) => source.page), ['p. 32', 'p. 10'], question)
+}
+assert.equal(calls, 1)
+for (const question of [
+  'Can a Trooper squeeze between terrain and the table edge while Jumping?',
+  'Can a model squeeze through a gap if it is along the table edge if it is jumping',
+  'Can a trooper Jump across a gap beside the table edge?',
+  'Can I jump through the narrow space between terrain and the board edge?',
+  'Does the base need support while a model is Jumping over an edge gap?',
+  'Can a model leap over a gap along the edge of the table if its landing spot fits the whole base?',
+  'Can you squeeze by terrain at the board edge using Jump instead of Move?',
+  'Can Super-Jump leave the physical table boundary during its trajectory?',
+]) {
+  const result = await retrieveRulesReference({ question, deepSeek: fallback })
+  assert.equal(result.answerSource, 'APPROVED_BENCHMARK', question)
+  assert.equal(result.benchmark.id, 'new-topic-2-512', question)
+  assert.equal(result.deepSeek.conclusion, 'UNRESOLVED', question)
+  assert.match(result.deepSeek.answer || '', /^Not explicitly resolved\./i, question)
+  assert.match(result.deepSeek.answer || '', /complete Silhouette/i, question)
+  assert.doesNotMatch(result.deepSeek.answer || '', /Move:|Climb or Climbing Plus:/i, question)
+  assert.deepEqual(result.deepSeek.sources.map((source) => source.page), ['p. 34', 'p. 10'], question)
 }
 assert.equal(calls, 1)
 for (const question of [
