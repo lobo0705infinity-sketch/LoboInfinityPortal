@@ -122,14 +122,26 @@ for (const question of [
   'Can my base overhang the table edge during a Move?',
   'Can a model pass between a building and the edge of the board when the whole base does not fit?',
   "How much of a trooper's base must remain on the table while moving along the edge?",
+  'Can a trooper Jump across a gap beside the table edge?',
+  'Can I jump through the narrow space between terrain and the board edge?',
+  'Does the base need support while a model is Jumping over an edge gap?',
+  'Can a model leap over a gap along the edge of the table if its landing spot fits the whole base?',
+  'Can a trooper Climb through a narrow gap at the table edge?',
+  'Can half my base hang past the board edge while Climbing?',
+  'How much base contact does Climb require beside the table edge?',
+  'Can Climbing Plus move along a narrow table-edge surface with only half the base supported?',
+  'Can I move jump or climb past terrain using the edge of the board?',
+  'Does a trooper need its whole base supported when moving, jumping, or climbing near the table edge?',
+  'Can you squeeze by terrain at the board edge using Jump instead of Move?',
+  'Is it legal to climb around terrain when part of the base is off the table?',
 ]) {
   const result = await retrieveRulesReference({ question, deepSeek: fallback })
   assert.equal(result.answerSource, 'APPROVED_BENCHMARK', question)
   assert.equal(result.benchmark.id, 'new-topic-2-509', question)
   assert.equal(result.deepSeek.conclusion, 'DEPENDS', question)
-  assert.match(result.deepSeek.answer || '', /only half of the base must remain in contact/i, question)
-  assert.match(result.deepSeek.answer || '', /finish that Move on a surface equal to or larger than its entire base/i, question)
-  assert.deepEqual(result.deepSeek.sources.map((source) => source.page), ['p. 28', 'p. 31'], question)
+  assert.match(result.deepSeek.answer || '', /at least half of the base must remain in contact/i, question)
+  assert.match(result.deepSeek.answer || '', /horizontal landing spot equal to or larger than the full base/i, question)
+  assert.deepEqual(result.deepSeek.sources.map((source) => source.page), ['p. 28', 'p. 31', 'p. 32', 'p. 34'], question)
 }
 assert.equal(calls, 1)
 for (const question of [

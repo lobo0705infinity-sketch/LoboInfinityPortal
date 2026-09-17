@@ -525,7 +525,7 @@
       "id": "new-topic-2-509",
       "category": "NEW_MULTI_RULE_INTERACTIONS",
       "canonicalQuestion": "Can a model squeeze through a gap if it is along the table edge?",
-      "approvedAnswer": "It depends. A Trooper may move along the table edge with part of its base overhanging the edge: only half of the base must remain in contact with the surface while moving, and the surface being traversed must be at least half as wide as the base. However, the Trooper must be able to finish that Move on a surface equal to or larger than its entire base. Therefore the move is legal if at least half the base remains supported throughout and the full base fits at the end; otherwise it is not legal.",
+      "approvedAnswer": "It depends on the Skill. With Move, a Trooper may travel along the table edge with part of its base overhanging: at least half of the base must remain in contact with the surface, the surface must be at least half as wide as the base, and the full base must fit at the end of that Move. Climb likewise requires at least half of the base to remain in contact with the vertical surface and a full-base surface at the end. Jump does not require supporting surface along its airborne trajectory, but it must be able to reach a horizontal landing spot equal to or larger than the full base, and the Jump ends when the Trooper touches a surface. Therefore a narrow edge route may be legal with Move or Climb under their half-base contact requirements, or may be crossed with Jump if a legal landing spot is reachable; otherwise it is not legal.",
       "approvedCertainty": "EXPLICIT RULES ANSWER",
       "approvedConclusion": "DEPENDS",
       "approvedCitations": [
@@ -538,6 +538,16 @@
           "sourceId": "infinity-rules-n5.3",
           "page": 31,
           "section": "GENERAL MOVEMENT RULES — SIBYLLA EXPLAINS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 32,
+          "section": "CLIMB — REQUIREMENTS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 34,
+          "section": "JUMP — REQUIREMENTS AND EFFECTS"
         }
       ],
       "reviewStatus": "APPROVED",
@@ -549,7 +559,19 @@
         { "id": "new-topic-2-509-q5", "question": "Can I move through a narrow gap at the board edge if half the base stays supported?", "style": "RULEBOOK_WORDING" },
         { "id": "new-topic-2-509-q6", "question": "Can my base overhang the table edge during a Move?", "style": "PLAYER_SHORTHAND" },
         { "id": "new-topic-2-509-q7", "question": "Can a model pass between a building and the edge of the board when the whole base does not fit?", "style": "TABLE_SCENARIO" },
-        { "id": "new-topic-2-509-q8", "question": "How much of a trooper's base must remain on the table while moving along the edge?", "style": "RULES_CHECK" }
+        { "id": "new-topic-2-509-q8", "question": "How much of a trooper's base must remain on the table while moving along the edge?", "style": "RULES_CHECK" },
+        { "id": "new-topic-2-509-q9", "question": "Can a trooper Jump across a gap beside the table edge?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-509-q10", "question": "Can I jump through the narrow space between terrain and the board edge?", "style": "TABLE_SCENARIO" },
+        { "id": "new-topic-2-509-q11", "question": "Does the base need support while a model is Jumping over an edge gap?", "style": "RULES_CHECK" },
+        { "id": "new-topic-2-509-q12", "question": "Can a model leap over a gap along the edge of the table if its landing spot fits the whole base?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-509-q13", "question": "Can a trooper Climb through a narrow gap at the table edge?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-509-q14", "question": "Can half my base hang past the board edge while Climbing?", "style": "TABLE_SCENARIO" },
+        { "id": "new-topic-2-509-q15", "question": "How much base contact does Climb require beside the table edge?", "style": "RULES_CHECK" },
+        { "id": "new-topic-2-509-q16", "question": "Can Climbing Plus move along a narrow table-edge surface with only half the base supported?", "style": "RULEBOOK_WORDING" },
+        { "id": "new-topic-2-509-q17", "question": "Can I move jump or climb past terrain using the edge of the board?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-509-q18", "question": "Does a trooper need its whole base supported when moving, jumping, or climbing near the table edge?", "style": "RULES_CHECK" },
+        { "id": "new-topic-2-509-q19", "question": "Can you squeeze by terrain at the board edge using Jump instead of Move?", "style": "TABLE_SCENARIO" },
+        { "id": "new-topic-2-509-q20", "question": "Is it legal to climb around terrain when part of the base is off the table?", "style": "PLAYER_SHORTHAND" }
       ]
     }
   ]
