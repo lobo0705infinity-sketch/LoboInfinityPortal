@@ -139,9 +139,13 @@ for (const question of [
   assert.equal(result.answerSource, 'APPROVED_BENCHMARK', question)
   assert.equal(result.benchmark.id, 'new-topic-2-509', question)
   assert.equal(result.deepSeek.conclusion, 'DEPENDS', question)
-  assert.match(result.deepSeek.answer || '', /at least half of the base must remain in contact/i, question)
-  assert.match(result.deepSeek.answer || '', /horizontal landing spot equal to or larger than the full base/i, question)
-  assert.deepEqual(result.deepSeek.sources.map((source) => source.page), ['p. 28', 'p. 31', 'p. 32', 'p. 34'], question)
+  assert.match(result.deepSeek.answer || '', /Move: Yes, provided at least half of the base remains supported/i, question)
+  assert.match(result.deepSeek.answer || '', /Climb or Climbing Plus: Yes/i, question)
+  assert.match(result.deepSeek.answer || '', /Jump or Super-Jump: The table-edge issue is not explicitly resolved/i, question)
+  assert.match(result.deepSeek.answer || '', /without passing through scenery/i, question)
+  assert.match(result.deepSeek.answer || '', /tournament-organizer ruling for Jump at the table edge/i, question)
+  assert.equal(result.deepSeek.certainty, 'EVIDENCE-BOUNDED INTERPRETATION', question)
+  assert.deepEqual(result.deepSeek.sources.map((source) => source.page), ['p. 28', 'p. 31', 'p. 32', 'p. 34', 'p. 10'], question)
 }
 assert.equal(calls, 1)
 for (const question of [

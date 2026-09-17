@@ -525,8 +525,8 @@
       "id": "new-topic-2-509",
       "category": "NEW_MULTI_RULE_INTERACTIONS",
       "canonicalQuestion": "Can a model squeeze through a gap if it is along the table edge?",
-      "approvedAnswer": "It depends on the Skill. With Move, a Trooper may travel along the table edge with part of its base overhanging: at least half of the base must remain in contact with the surface, the surface must be at least half as wide as the base, and the full base must fit at the end of that Move. Climb likewise requires at least half of the base to remain in contact with the vertical surface and a full-base surface at the end. Jump does not require supporting surface along its airborne trajectory, but it must be able to reach a horizontal landing spot equal to or larger than the full base, and the Jump ends when the Trooper touches a surface. Therefore a narrow edge route may be legal with Move or Climb under their half-base contact requirements, or may be crossed with Jump if a legal landing spot is reachable; otherwise it is not legal.",
-      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedAnswer": "It depends on the Skill. Move: Yes, provided at least half of the base remains supported throughout, the available surface is at least half the base's width, and the entire base fits at the end of the Move. Climb or Climbing Plus: Yes, provided at least half of the base's underside remains in contact with the vertical surface and the Trooper can finish on a surface large enough for the entire base; the rules do not say that the whole Silhouette must remain inside the physical table boundary. Jump or Super-Jump: The table-edge issue is not explicitly resolved. The complete Silhouette must follow the declared trajectory without passing through scenery, and the entire base must fit on the horizontal landing spot, but the rules do not state whether part of the airborne trajectory may extend beyond the physical table boundary. Agree before the game or obtain a tournament-organizer ruling for Jump at the table edge.",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
       "approvedConclusion": "DEPENDS",
       "approvedCitations": [
         {
@@ -548,6 +548,11 @@
           "sourceId": "infinity-rules-n5.3",
           "page": 34,
           "section": "JUMP — REQUIREMENTS AND EFFECTS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 10,
+          "section": "SILHOUETTES"
         }
       ],
       "reviewStatus": "APPROVED",
