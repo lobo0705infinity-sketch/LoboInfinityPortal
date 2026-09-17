@@ -87,6 +87,41 @@ const disabledStandaloneResult = validateInfListLegality({
 assert.equal(disabledStandaloneResult.status, 'illegal', 'a disabled profile without an enabled parent remains illegal')
 assert.ok(disabledStandaloneResult.violations.some((issue) => issue.includes('RETIRED PROFILE is disabled')))
 
+const posthumans = {
+  id: 597,
+  isc: 'Posthumans',
+  notes: 'All the Proxies of a G: Jumper trooper must be in the same Combat Group, where they are counted as only one trooper.',
+  profileGroups: [
+    { id: 1, isc: 'PROXY Mk.1', profiles: [{ id: 1, ava: 1 }], options: [option(1, 13, 0, 'PROXY Mk.1')] },
+    { id: 4, isc: 'PROXY Mk.4', profiles: [{ id: 1, ava: 1 }], options: [option(1, 30, 1.5, 'PROXY Mk.4')] },
+  ],
+}
+const pilotXTeam = {
+  id: 1903,
+  isc: 'Pilot-X Team',
+  notes: 'A Pilot-X Team is composed of 1 Pilot-X and 0 to 2 RacerBots Mk-III. All of them must belong to the same Combat Group.',
+  profileGroups: [
+    { id: 1, isc: 'Pilot-X', profiles: [{ id: 1, ava: 1 }], options: [option(2, 23, 0.5, 'Pilot-X Team')] },
+    { id: 2, isc: 'RacerBots', profiles: [{ id: 1, ava: 2 }], options: [option(1, 8, 0, 'RACERBOT Mk-III')] },
+  ],
+}
+const alephMember = (unitId, groupId, optionId) => ({ combinedId: `701-${unitId}-${groupId}-${optionId}-1`, groupId, optionId, unitId })
+const alephMembers = [
+  alephMember(597, 1, 1),
+  alephMember(597, 4, 1),
+  alephMember(1903, 1, 2),
+  alephMember(1903, 2, 1),
+  alephMember(1903, 2, 1),
+  member(20, 1),
+]
+const alephResult = validateInfListLegality({
+  decoded: decoded(300, alephMembers),
+  payload: { ...payload, units: [posthumans, pilotXTeam, payload.units[1]] },
+})
+assert.equal(alephResult.status, 'legal', 'distinct Proxy and Pilot-X Team profile groups must not share AVA')
+assert.equal(alephResult.totals.troopers, 5, 'multiple Posthuman Proxies in one Combat Group count as one Trooper')
+assert.equal(alephResult.violations.some((issue) => /PROXY|RACERBOT|Pilot-X/.test(issue)), false)
+
 console.log('PASS - inf-list legality uses current official profile data and fails closed.')
 
 function decoded(maxPoints, members) {
