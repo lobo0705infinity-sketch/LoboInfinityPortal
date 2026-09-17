@@ -64,6 +64,27 @@ const ambiguousResult = validateInfListLegality({
 })
 assert.equal(ambiguousResult.status, 'unavailable', 'multiple nonmatching base profiles remain fail-closed')
 
+const combinedUnit = unit(50, 500, 1, [
+  { ...option(1, 18, 0.5, 'JAZZ'), disabled: true },
+])
+combinedUnit.options = [{
+  ...option(1, 25, 0.5, 'JAZZ Hacker & BILLIE'),
+  includes: [{ q: 1, group: 1, option: 1 }],
+}]
+const combinedOptionResult = validateInfListLegality({
+  decoded: decoded(100, [member(50, 1), member(20, 1)]),
+  payload: { ...payload, units: [combinedUnit, payload.units[1]] },
+})
+assert.equal(combinedOptionResult.status, 'legal', 'enabled combined Army options make their disabled component profiles legal')
+
+const disabledStandaloneUnit = unit(60, 600, 1, [{ ...option(1, 10, 0, 'RETIRED PROFILE'), disabled: true }])
+const disabledStandaloneResult = validateInfListLegality({
+  decoded: decoded(100, [member(60, 1), member(20, 1)]),
+  payload: { ...payload, units: [disabledStandaloneUnit, payload.units[1]] },
+})
+assert.equal(disabledStandaloneResult.status, 'illegal', 'a disabled profile without an enabled parent remains illegal')
+assert.ok(disabledStandaloneResult.violations.some((issue) => issue.includes('RETIRED PROFILE is disabled')))
+
 console.log('PASS - inf-list legality uses current official profile data and fails closed.')
 
 function decoded(maxPoints, members) {
