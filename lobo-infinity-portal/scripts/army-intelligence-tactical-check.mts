@@ -33,6 +33,8 @@ const disposable = entry('cheap', 'CHEAP ARO', 'Flash Pulse', { points: 8, weapo
 const pherowareProfile = entry('pheroware', 'PHA', 'Pheroware', { equipment: ['Pheroware Tactics'], skills: ['Total Reaction'] })
 const ptProfile = entry('pt', 'PT USER', 'Pheroware', { equipment: ['PT'], skills: ['Neurocinetics'] })
 const sdWeaponProfile = entry('sd-weapon', 'SD', 'Combi Rifle', { points: 30, weapons: ['Combi Rifle'], weaponProfiles: [{ ...canonicalBurst('Combi Rifle', 3), modifiers: ['+2SD'] }] })
+const maximus = entry('maximus', 'MAXIMUS AGENT', 'MULTI Rifle', { bs: 13, weapons: ['MULTI Rifle'], weaponProfiles: [{ ...canonicalBurst('MULTI Rifle', 3), modifiers: ['+1B'] }] })
+const proxyMkIv = entry('proxy-mk-iv', 'PROXY Mk.IV', 'PROXY Mk.IV', { bs: 13, points: 21, weapons: ['Combi Rifle'], weaponProfiles: [canonicalBurst('Combi Rifle', 3)] })
 const visionProfile = entry('vision', 'VISION', 'Control', { weapons: ['Smoke Grenade Launcher', 'Discoballer'], equipment: ['Pheroware Mirrorball'], skills: ['Eclipse'] })
 const apexCcProfile = entry('apex-cc', 'DUELIST', 'Blade', { cc: 22, skills: ['Martial Arts L1'] })
 const ccNearMiss = entry('cc-near', 'ALMOST', 'Blade', { cc: 21, skills: ['Natural Born Warrior'] })
@@ -46,7 +48,7 @@ const separateLoadout = entry('12', 'SCOUT', 'Rifle', { skills: [], weapons: ['R
 const analysis = buildTacticalAnalysis([
   decodedList('One', [apex, apex, bs14Apex, b5Apex, hacker, aro, tankhunter, disposable, alternative, netrod, imetron, defensive, falsePositive]),
   decodedList('Two', [apex, deployable, aro, defensive, boundaryFailBs, burstBonus, { ...hacker, combinedId: 'legacy-hacker', bs: null, fireteamEligibility: { state: 'unknown', verified: false, teams: [] } }]),
-  decodedList('Three', [boundaryFailBurst, malformed, mimetismOnly, separateLoadout, pherowareProfile, ptProfile, sdWeaponProfile, visionProfile, apexCcProfile, ccNearMiss]),
+  decodedList('Three', [boundaryFailBurst, malformed, mimetismOnly, separateLoadout, pherowareProfile, ptProfile, sdWeaponProfile, maximus, proxyMkIv, visionProfile, apexCcProfile, ccNearMiss]),
 ] as never)
 
 assert.equal(analysis.mode, 'Submitted-List Trends')
@@ -65,9 +67,11 @@ assert.equal(analysis.hackerListCount, 2)
 assert.equal(analysis.categories.find((item) => item.id === 'hacking')?.profiles.length, 3)
 assert.equal(analysis.categories.find((item) => item.id === 'hacking')?.profiles.find((profile) => profile.unit === 'HACKER')?.listCount, 2, 'duplicate displayed profiles must consolidate and count unique lists')
 assert.ok(analysis.categories.find((item) => item.id === 'hacking')?.profiles.some((profile) => profile.unit.includes('PANDA TROOP')), 'ordinary Repeaters must create hacking-network matches')
-assert.equal(analysis.categories.find((item) => item.id === 'competent')?.profiles.length, 2)
+assert.equal(analysis.categories.find((item) => item.id === 'competent')?.profiles.length, 3)
+assert.equal(analysis.categories.find((item) => item.id === 'competent')?.profiles.find((profile) => profile.unit === 'MAXIMUS AGENT')?.weapons[0].effectiveBurst, 4, 'Maximus weapon-specific +1B must produce a B4 MULTI Rifle')
 assert.equal(analysis.categories.find((item) => item.id === 'competent')?.profiles.find((profile) => profile.unit === 'BONUS')?.weapons[0].effectiveBurst, 4)
-assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles.length, 4)
+assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles.length, 5)
+assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles.some((profile) => profile.unit === 'PROXY Mk.IV'), true, 'Proxy Mk IV is an explicit Valuable ARO exception')
 assert.equal(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles[0].linkability, 'verified')
 assert.deepEqual(analysis.categories.find((item) => item.id === 'valuableAro')?.profiles.find((profile) => profile.unit === 'TANKHUNTER')?.badges, ['Portable Autocannon (+1SD)'])
 assert.ok(!analysis.categories.find((item) => item.id === 'competent')?.profiles.some((profile) => profile.unit === 'TANKHUNTER'), 'B2 +1SD is only three dice')
