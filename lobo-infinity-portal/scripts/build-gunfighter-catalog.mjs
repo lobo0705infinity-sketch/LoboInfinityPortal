@@ -127,6 +127,8 @@ async function captureWeaponChartForArmyCode(browser, armyCode) {
   try {
     await page.goto(`https://infinityuniverse.com/army/list/${encodeURIComponent(armyCode)}`, { waitUntil: 'domcontentloaded', timeout: 90_000 })
     await page.waitForLoadState('networkidle', { timeout: 60_000 }).catch(() => {})
+    const reject = page.getByRole('button', { name: 'Reject All' })
+    if (await reject.isVisible().catch(() => false)) await reject.click()
     return await captureWeaponChart(page)
   } finally {
     await page.close()
