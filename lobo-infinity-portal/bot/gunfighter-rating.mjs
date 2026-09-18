@@ -154,9 +154,13 @@ export function expectedEffectFromHits({ expectedHits, mode, defender }) {
   // BS Attack (SR-1) subtracts one from each target Saving Roll.  Increasing
   // the failure threshold by one is the equivalent probability operation.
   const savingRollPenalty = Math.max(0, Number(mode.savingRollPenalty || 0))
-  const failureProbability = mode.save === 'PH'
-    ? 1 - Math.min(1, Math.max(0.05, (reduced - savingRollPenalty) / 20))
-    : Math.min(0.95, Math.max(0.05, Math.max(1, Number(mode.power) - (reduced + cover) + savingRollPenalty) / 20))
+  // N5 PS is added to the target's ARM/BTS (and Cover) to establish the
+  // Saving Roll Success Value. A roll above that value fails, so lower PS is
+  // more lethal. SR-X subtracts from the Success Value.
+  const successValue = mode.save === 'PH'
+    ? reduced - savingRollPenalty
+    : reduced + cover + Number(mode.power) - savingRollPenalty
+  const failureProbability = 1 - Math.min(1, Math.max(0, successValue / 20))
   const savesPerHit = Number(mode.saves || (/EXP/i.test(String(mode.ammo)) ? 3 : /DA/i.test(String(mode.ammo)) ? 2 : 1))
   const woundsPerFailure = Number(mode.woundsPerFailure || (/T2/i.test(String(mode.ammo)) ? 2 : 1))
   const failuresPerSave = mode.continuousDamage ? failureProbability / Math.max(0.05, 1 - failureProbability) : failureProbability
