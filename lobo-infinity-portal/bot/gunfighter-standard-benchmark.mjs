@@ -31,17 +31,17 @@ export function buildStandardGunfighterDefenders(weaponChart) {
     defender('swiss-guard-ml', 'Swiss Guard Missile Launcher', {
       bs: 15, wip: 13, ph: 14, arm: 5, bts: 6, vitality: 2,
       skills: ['Stealth', 'Mimetism (-6)', 'Surprise Attack (-3)', 'Camouflage', 'Hidden Deployment'],
-    }, [modifyModes(weapon('Missile Launcher'), { specialDice: 1 }), weapon('Light Shotgun'), weapon('Heavy Pistol'), weapon('Pulzar')]),
+    }, [modifyModes(weapon('Missile Launcher'), { specialDice: 1 })]),
     defender('black-air-msr', 'Black A.I.R. MULTI Sniper', {
       bs: 13, wip: 13, ph: 11, arm: 2, bts: 3, vitality: 1,
       skills: ['Combat Instinct', 'Mimetism (-3)', 'Number 2', 'Terrain (Total)', 'Neurocinetics'],
       equipment: ['Multispectral Visor L2'],
-    }, [weapon('MULTI Sniper Rifle'), weapon('Nanopulser'), weapon('Pistol')]),
+    }, [weapon('MULTI Sniper Rifle')]),
     defender('riot-grrrl-core-ml', 'Riot Grrl Core Missile Launcher', {
       bs: 13, wip: 13, ph: 13, arm: 3, bts: 3, vitality: 2,
       skills: ['Combat Instinct', 'Dodge (+3)', 'BS Attack (SR-1)', 'Frenzy', 'BS Attack (+1SD)'],
       equipment: ['Multispectral Visor L1'],
-    }, [weapon('Missile Launcher'), weapon('Boarding Pistol')]),
+    }, [weapon('Missile Launcher')]),
     defender('reaktion-zond-hmg', 'Reaktion Zond HMG', {
       bs: 11, wip: 13, ph: 10, arm: 0, bts: 3, structure: 1,
       skills: ['Climbing Plus', 'Courage', 'Remote Presence', 'Total Reaction'], equipment: ['360º Visor'],
