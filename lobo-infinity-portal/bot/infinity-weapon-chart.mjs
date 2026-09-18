@@ -39,7 +39,7 @@ export function normalizeWeaponChartRow(row = {}) {
     eclipse,
     nonLethal: traits.some((trait) => /non-lethal/i.test(trait)),
     ignoresCover: traits.some((trait) => /no cover/i.test(trait)),
-    continuousDamage: traits.some((trait) => /contin(?:u|ou)ous damage/i.test(trait)),
+    continuousDamage: traits.some((trait) => /continu?ous damage/i.test(trait)),
     disposableUses: inferDisposableUses(traits),
     state: inferState(traits, row.ammo),
   }
