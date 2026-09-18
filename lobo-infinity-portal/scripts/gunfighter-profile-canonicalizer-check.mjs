@@ -8,15 +8,19 @@ const dataset = {
     equips: [{ id: 2, name: 'X Visor' }],
     extras: [{ id: 10, name: '+1SD' }, { id: 11, name: 'SR-1' }],
   },
-  units: [{ id: 99, name: 'Test Gunfighter', profileGroups: [{ id: 7, profiles: [{ id: 2, bs: 13, ph: 11, arm: 3, bts: 6, w: 1, skills: [{ id: 1, extra: [11] }], equip: [{ id: 2 }] }], options: [{ id: 4, name: 'AP HMG', weapons: [{ id: 3, extra: [10] }] }] }] }],
+  units: [{ id: 99, name: 'Test Gunfighter', profileGroups: [{ id: 7, profiles: [{ id: 2, bs: 13, ph: 11, arm: 3, bts: 6, w: 1, skills: [{ id: 1, extra: [11] }], equip: [{ id: 2 }] }], options: [{ id: 4, name: 'AP HMG', weapons: [{ id: 3, extra: [10] }, { id: 8 }] }] }] }],
 }
-const chart = normalizeWeaponChartRows([{ id: 3, name: 'AP HMG', ranges: [{ min: 0, max: 16, modifier: 0 }, { min: 16, max: 32, modifier: 3 }], damage: 5, burst: 4, ammo: 'AP', saving: 'ARM/2', savingRolls: 1 }])
+const chart = normalizeWeaponChartRows([
+  { id: 3, name: 'AP HMG', ranges: [{ min: 0, max: 16, modifier: 0 }, { min: 16, max: 32, modifier: 3 }], damage: 5, burst: 4, ammo: 'AP', saving: 'ARM/2', savingRolls: 1 },
+  { id: 8, name: 'Pitcher', ranges: [{ min: 0, max: 8, modifier: 0 }], damage: '-', burst: 1, ammo: '', saving: '-', savingRolls: '-' },
+])
 const [profile] = buildCanonicalGunfighterProfiles({ dataset, weaponChart: chart, wildcardUnitIds: [99] })
 assert.equal(profile.fireteamCapable, true)
 assert.equal(profile.equipment[0], 'X Visor')
 assert.equal(profile.skills[0], 'BS Attack SR-1')
 assert.equal(profile.weapons[0].modes[0].specialDice, 1)
 assert.equal(profile.weapons[0].modes[0].saveDivisor, 2)
+assert.equal(profile.weapons.some((weapon) => weapon.name === 'Pitcher'), false, 'utility launchers without a target resolution must be excluded')
 assert.equal(profile.profileId, 2)
 
 const ftoDataset = structuredClone(dataset)

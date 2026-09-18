@@ -60,10 +60,16 @@ function resolveWeapons(references, chart, extras) {
     for (const record of selected.length ? selected : candidates) {
       const weapon = weaponChartRecordToGunfighterWeapon(record)
       applyWeaponModifiers(weapon.modes[0], modifierNames)
-      resolved.push(weapon)
+      weapon.modes = weapon.modes.filter(isBenchmarkAttackMode)
+      if (weapon.modes.length) resolved.push(weapon)
     }
   }
   return mergeWeapons(resolved)
+}
+
+function isBenchmarkAttackMode(mode) {
+  return Array.isArray(mode?.ranges) && mode.ranges.length > 0
+    && ['burst', 'power', 'ammo', 'save', 'attackType'].every((field) => mode[field] != null)
 }
 
 function applyWeaponModifiers(mode, modifiers) {
