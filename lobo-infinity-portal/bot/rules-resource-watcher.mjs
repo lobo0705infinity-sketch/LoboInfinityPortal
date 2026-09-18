@@ -7,15 +7,6 @@ export const DEFAULT_CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000
 export const DEFAULT_STATE_PATH = resolve(import.meta.dirname, '..', '.tmp', 'rules-resource-watcher.json')
 
 const markdownLinkPattern = /\[([^\]]+)]\((https?:\/\/[^\s)]+)\)/g
-const rulesTerms = /\b(rules?|r[eè]gles?|faq|its\s*\d+|season|saison|scenario|sc[eé]nario)\b/i
-const trustedRulesHosts = new Set([
-  'corvusbelli.com',
-  'downloads.corvusbelli.com',
-  'experience.corvusbelli.com',
-  'infinitythegame.com',
-  'infinityuniverse.com',
-])
-
 export function sha256(value) {
   return createHash('sha256').update(value).digest('hex').toUpperCase()
 }
@@ -31,14 +22,6 @@ export function parseResourceLinks(markdown = '') {
   }
   return [...new Map(links.map((link) => [link.url, link])).values()]
     .sort((a, b) => a.url.localeCompare(b.url))
-}
-
-export function isTrustedRulesResource({ label = '', url = '' } = {}) {
-  let parsed
-  try { parsed = new URL(url) } catch { return false }
-  const host = parsed.hostname.toLowerCase()
-  const trustedHost = [...trustedRulesHosts].some((allowed) => host === allowed || host.endsWith(`.${allowed}`))
-  return trustedHost && rulesTerms.test(`${label} ${parsed.pathname}`)
 }
 
 export function diffResourceLinks(previous = [], current = []) {
@@ -67,8 +50,8 @@ async function writeState(path, state) {
 }
 
 export async function checkRulesResources({
-  url = process.env.RULES_RESOURCES_URL || DEFAULT_RESOURCES_URL,
-  statePath = process.env.RULES_RESOURCES_STATE_PATH || DEFAULT_STATE_PATH,
+  url = process.env.INFINITY_RESOURCES_API_URL || DEFAULT_RESOURCES_URL,
+  statePath = process.env.INFINITY_RESOURCES_STATE_PATH || DEFAULT_STATE_PATH,
   fetchImpl = globalThis.fetch,
   onChange,
   logger = console,
@@ -90,7 +73,7 @@ export async function checkRulesResources({
   const previous = await readState(statePath)
   if (!previous) {
     await writeState(statePath, snapshot)
-    logger.info?.(`Rules resources baseline saved: links=${links.length} updated_at=${snapshot.endpointUpdatedAt}`)
+    logger.info?.(`Infinity resources baseline saved: links=${links.length} updated_at=${snapshot.endpointUpdatedAt}`)
     return { status: 'BASELINED', snapshot, changes: { added: [], removed: [], renamed: [] } }
   }
   if (previous.bodySha256 === snapshot.bodySha256) {
@@ -99,25 +82,24 @@ export async function checkRulesResources({
   }
 
   const changes = diffResourceLinks(previous.links || [], links)
-  const trustedRulesAdded = changes.added.filter(isTrustedRulesResource)
-  if (onChange) await onChange({ previous, snapshot, changes, trustedRulesAdded })
+  if (changes.added.length && onChange) await onChange({ previous, snapshot, changes })
   await writeState(statePath, snapshot)
-  logger.info?.(`Rules resources changed: added=${changes.added.length} removed=${changes.removed.length} renamed=${changes.renamed.length} trustedRulesAdded=${trustedRulesAdded.length}`)
-  return { status: 'CHANGED', snapshot, changes, trustedRulesAdded }
+  logger.info?.(`Infinity resources changed: added=${changes.added.length} removed=${changes.removed.length} renamed=${changes.renamed.length}`)
+  return { status: 'CHANGED', snapshot, changes }
 }
 
 export function startRulesResourceWatcher(options = {}) {
-  if (String(process.env.RULES_RESOURCES_WATCHER_ENABLED || 'true').toLowerCase() === 'false') {
+  if (String(process.env.INFINITY_RESOURCES_ANNOUNCER_ENABLED || 'true').toLowerCase() === 'false') {
     return { stop() {}, runNow: async () => ({ status: 'DISABLED' }) }
   }
-  const intervalMs = Math.max(60_000, Number(process.env.RULES_RESOURCES_CHECK_INTERVAL_MS) || DEFAULT_CHECK_INTERVAL_MS)
+  const intervalMs = Math.max(60_000, Number(process.env.INFINITY_RESOURCES_CHECK_INTERVAL_MS) || DEFAULT_CHECK_INTERVAL_MS)
   let stopped = false
   let running = null
   const runNow = async () => {
     if (running) return running
     running = checkRulesResources(options)
       .catch((error) => {
-        options.logger?.error?.(`Rules resources check failed: ${error instanceof Error ? error.message : String(error)}`)
+        options.logger?.error?.(`Infinity resources check failed: ${error instanceof Error ? error.message : String(error)}`)
         return { status: 'ERROR', error }
       })
       .finally(() => { running = null })
