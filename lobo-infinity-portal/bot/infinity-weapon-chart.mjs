@@ -47,7 +47,11 @@ export async function extractWeaponChartRows(page) {
     const weaponIds = new Map([...row.ownerDocument.querySelectorAll('#filtro_armas option')].map((option) => [option.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(), Number(option.value)]))
     const cells = [...row.querySelectorAll(':scope > td')]
     const nameCell = cells[0]
-    const rawName = nameCell?.innerText?.trim() || ''
+    // Most weapon rows are hidden by Army's client-side filter. `innerText`
+    // returns an empty string for those rows, silently limiting the benchmark
+    // to whichever weapons happen to be visible. `textContent` captures every
+    // row in the loaded chart, visible or not.
+    const rawName = nameCell?.textContent?.trim() || ''
     const modeElement = nameCell?.querySelector('.imp_sub_nombre, .arma_modo, .modo, small')
     const mode = modeElement?.textContent?.trim() || null
     const ranges = []
@@ -67,12 +71,12 @@ export async function extractWeaponChartRows(page) {
       name,
       mode,
       ranges,
-      damage: cells[2]?.innerText,
-      burst: cells[3]?.innerText,
-      ammo: cells[4]?.innerText,
-      saving: cells[5]?.innerText,
-      savingRolls: cells[6]?.innerText,
-      traits: (cells[7]?.innerText || '').split(/\s+-\s+|\n+/).map((value) => value.trim()).filter(Boolean),
+      damage: cells[2]?.textContent,
+      burst: cells[3]?.textContent,
+      ammo: cells[4]?.textContent,
+      saving: cells[5]?.textContent,
+      savingRolls: cells[6]?.textContent,
+      traits: (cells[7]?.textContent || '').split(/\s+-\s+|\n+/).map((value) => value.trim()).filter(Boolean),
     }
   }))
 }

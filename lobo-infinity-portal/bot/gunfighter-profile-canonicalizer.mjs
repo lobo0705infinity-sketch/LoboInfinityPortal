@@ -57,7 +57,11 @@ function resolveWeapons(references, chart, extras, armyWeapons) {
   for (const reference of references) {
     const officialNames = (armyWeapons.get(Number(reference.id)) || []).map((record) => normalize(record.name)).filter(Boolean)
     const namedCandidates = officialNames.flatMap((name) => chart.byName.get(name) || [])
-    const candidates = namedCandidates.length ? namedCandidates : chart.byId.get(Number(reference.id)) || chart.byName.get(normalize(reference.name)) || []
+    const unresolvedCandidates = namedCandidates.length ? namedCandidates : chart.byId.get(Number(reference.id)) || chart.byName.get(normalize(reference.name)) || []
+    const candidates = [...new Map(unresolvedCandidates.map((candidate) => [
+      [candidate.id, candidate.name, candidate.mode, candidate.damage, candidate.burst, candidate.ammo, candidate.saving, candidate.savingRolls].join(':'),
+      candidate,
+    ])).values()]
     const requestedMode = normalize(reference.mode || reference.variant)
     const selected = requestedMode ? candidates.filter((candidate) => normalize(candidate.mode).includes(requestedMode)) : candidates
     const modifierNames = (reference.extra || reference.extras || []).map((id) => extras.get(Number(id))?.name).filter(Boolean)

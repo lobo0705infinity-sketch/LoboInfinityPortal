@@ -1,5 +1,10 @@
 import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
 import { normalizeWeaponChartRow, weaponChartRecordToGunfighterWeapon } from '../bot/infinity-weapon-chart.mjs'
+
+const extractorSource = await readFile(new URL('../bot/infinity-weapon-chart.mjs', import.meta.url), 'utf8')
+assert.match(extractorSource, /nameCell\?\.textContent/, 'hidden weapon rows must be read with textContent')
+assert.doesNotMatch(extractorSource, /\.innerText/, 'innerText drops hidden Army weapon rows')
 
 const apHmg = normalizeWeaponChartRow({
   id: 3,
