@@ -3,6 +3,7 @@ import { buildCanonicalDataset, resolveCanonicalWeaponRecords } from '../scripts
 import { resolveExactProfileGroup } from '../scripts/infinity-army-profile-resolution.mjs'
 
 const categories = [
+  ['gunfighters', 'Top Gunfighter Ratings'],
   ['apex', 'Apex Gunfighters'],
   ['competent', 'Competent Gunfighters'],
   ['apexCc', 'Apex Close Combat Fighters'],
@@ -86,10 +87,11 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
   })
 }
 
-export function classifyTacticalBrief(profiles, army = {}) {
+export function classifyTacticalBrief(profiles, army = {}, gunfighterRatings = []) {
   const aggregated = aggregateExactProfiles(profiles)
   const eligibleFireteams = legalFireteams(aggregated)
   const result = Object.fromEntries(categories.map(([key]) => [key, []]))
+  result.gunfighters = mergeGunfighterRatings(aggregated, gunfighterRatings)
   for (const profile of aggregated) {
     const enhancements = preferredMatches(profile.skills, [gunfighterMimetismToken, gunfighterMsvToken, bsAttackMinusThreeToken, albedoToken])
     const parsedBurstBonus = bsAttackBurstBonus(profile.skills)
@@ -144,9 +146,14 @@ export function classifyTacticalBrief(profiles, army = {}) {
   result.apex.sort((a, b) => b.badges.length - a.badges.length || b.bs - a.bs || profileSort(a, b))
   for (const key of ['valuableAro', 'disposableAro']) result[key].sort((a, b) => linkRank(a) - linkRank(b) || profileSort(a, b))
   for (const key of ['competent', 'apexCc', 'hacking', 'vision', 'alternative', 'defensive']) result[key].sort(profileSort)
+  if (result.gunfighters.length) {
+    result.apex = []
+    result.competent = []
+  }
   addMultiRoleMetadata(result)
   return {
     army: { faction: army.faction || '', listName: army.listName || '', sectorial: army.sectorial || '' },
+    gunfighterBenchmark: { available: result.gunfighters.length > 0, fingerprint: army.gunfighterCatalogFingerprint || null },
     categories: result,
     networkSummary: {
       deployableRepeaterCarriers: countQuantity(result.hacking.filter((item) => item.delivery.some(deployableRepeaterToken))),
@@ -165,7 +172,9 @@ function excludedAlternativeAttackVector(unitName) {
 export async function renderTacticalBrief({ analysis, browser }) {
   const page = await browser.newPage({ deviceScaleFactor: 1, viewport: { width: imageWidth, height: 1_600 } })
   try {
-    const categoryBlocks = categories.map(([key, title]) => ({ key, title, entries: analysis.categories[key] }))
+    const categoryBlocks = categories
+      .filter(([key]) => analysis.gunfighterBenchmark?.available ? !['apex', 'competent'].includes(key) : key !== 'gunfighters')
+      .map(([key, title]) => ({ key, title, entries: analysis.categories[key] }))
     const measured = await measureBlocks(page, analysis, categoryBlocks)
     const pages = paginateBlocks(measured, maxImageHeight - 250)
     const results = []
@@ -209,6 +218,7 @@ function categoryMarkup({ key, title, entries }, analysis) {
 
 function entryMarkup(key, entry) {
   let detail = ''
+  if (key === 'gunfighters') detail = [`NORMAL ${formatRating(entry.normal)}`, entry.fireteam == null ? null : `FIRETEAM +1SD ${formatRating(entry.fireteam)}`].filter(Boolean).join(' · ')
   if (['apex', 'competent', 'valuableAro', 'disposableAro'].includes(key)) detail = `${key.endsWith('Aro') ? `${value(entry.points)} pts · ` : ''}BS ${value(entry.bs)} · ${entry.qualifyingWeapons.map((weapon) => [escapeHtml(weaponDisplay(weapon)), formatBurst(weapon)].filter(Boolean).join(' · ')).join(' · ')}`
   if (key === 'apexCc') detail = `CC ${value(entry.cc)}`
   if (key === 'hacking') detail = [...entry.hackerTypes, ...entry.delivery].map(escapeHtml).join(' · ')
@@ -232,6 +242,24 @@ function aggregateExactProfiles(profiles) {
     else map.set(key, { ...profile, quantity: 1 })
   }
   return [...map.values()]
+}
+
+function mergeGunfighterRatings(profiles, ratings) {
+  return (ratings || []).filter((rating) => rating?.status === 'matched' && rating.normal != null).map((rating) => {
+    const key = String(rating.key || '')
+    const profile = profiles.find((candidate) => canonicalKeyFromCombinedId(candidate.combinedId) === key)
+    return {
+      ...(profile || { combinedId: key, unitName: rating.unitName || 'Profile unavailable', profileName: rating.profileName || '', quantity: 1, weapons: [], skills: [], equipment: [] }),
+      badges: [],
+      normal: rating.normal,
+      fireteam: rating.fireteam,
+    }
+  })
+}
+
+function canonicalKeyFromCombinedId(value) {
+  const parts = String(value || '').split('-').map(Number)
+  return parts.length >= 5 && parts.slice(-4).every(Number.isInteger) ? parts.slice(-4).join(':') : ''
 }
 
 export function filterCanonicalFireteamMembershipsForProfile(memberships, profileNames = []) {
@@ -372,6 +400,7 @@ function countQuantity(items) { return items.reduce((sum, item) => sum + item.qu
 function profileSort(a, b) { return a.unitName.localeCompare(b.unitName) || a.profileName.localeCompare(b.profileName) }
 function linkRank(v) { return v.linkability === 'verified-linkable' ? 0 : v.linkability === 'unavailable' ? 2 : 1 }
 function value(v) { return Number.isFinite(v) ? v : 'Unavailable' }
+function formatRating(value) { return Number.isFinite(value) ? Number(value).toFixed(2) : 'Unavailable' }
 function formatBurst(weapon) {
   const raw = weapon?.burst
   const burst = raw === null || raw === undefined || raw === '' ? null : finiteNumber(raw)

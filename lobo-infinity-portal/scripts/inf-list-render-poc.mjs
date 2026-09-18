@@ -9,6 +9,8 @@ import { decodeArmyCode } from './infinity-army-decode.mjs'
 import { buildCanonicalDataset } from './infinity-army-canonical-dataset.mjs'
 import { resolveExactProfileGroup } from './infinity-army-profile-resolution.mjs'
 import { validateInfListLegality } from '../bot/inf-list-legality.mjs'
+import { loadGunfighterBenchmarkCatalog } from '../bot/gunfighter-catalog-store.mjs'
+import { rankArmyGunfighters } from '../bot/gunfighter-benchmark-catalog.mjs'
 
 const rendererOrigin = 'https://infinity.2nirwana.de'
 const rendererPath = '/cards/generate'
@@ -336,11 +338,14 @@ export async function renderInfListPng({ input, outputPath, browserType = chromi
       metadata,
       officialPayloads,
     })
+    const gunfighterCatalog = await loadGunfighterBenchmarkCatalog()
+    const gunfighterRatings = gunfighterCatalog ? rankArmyGunfighters(gunfighterCatalog, decoded, { limit: 4 }) : []
     const tacticalAnalysis = classifyTacticalBrief(submittedProfiles, {
       faction: faction?.name,
+      gunfighterCatalogFingerprint: gunfighterCatalog?.fingerprint,
       listName: decoded.listName,
       sectorial: faction?.name,
-    })
+    }, gunfighterRatings)
     const tacticalPages = await renderTacticalBrief({ analysis: tacticalAnalysis, browser })
     const legality = validateInfListLegality({ decoded, payload: classificationData.payload })
 

@@ -117,6 +117,12 @@ assert.equal(analysis.categories.defensive.find((item) => item.combinedId === 'd
 assert.equal(analysis.categories.defensive.some((item) => item.combinedId === 'mim-only'), false)
 assert.equal(analysis.categories.defensive.some((item) => item.combinedId === 'same-unit-b'), false)
 
+const ratedAnalysis = classifyTacticalBrief(fixtures, { faction: 'Fixture' }, [{ status: 'matched', key: canonicalKey(fixtures[0].combinedId), normal: 61.25, fireteam: 66.5 }])
+assert.equal(ratedAnalysis.gunfighterBenchmark.available, true)
+assert.equal(ratedAnalysis.categories.gunfighters[0].normal, 61.25)
+assert.equal(ratedAnalysis.categories.apex.length, 0, 'catalog ratings replace the legacy Apex section')
+assert.equal(ratedAnalysis.categories.competent.length, 0, 'catalog ratings replace the legacy Competent section')
+
 const fireteamAnalysis = classifyTacticalBrief([
   profile('orc', { bs: 14, unitName: 'ORC', points: 35, fireteamTeams: ['White Company'], weapons: [weapon('Feuerbach', 2)] }),
   profile('hannibal', { bs: 13, unitName: 'Hannibal', points: 33, fireteamTeams: ['White Company'], skills: ['BS Attack (+1SD)'], weapons: [weapon('MULTI Marksman Rifle', 3)] }),
@@ -212,6 +218,11 @@ ambiguousMissingProfile.units[0].profileGroups[0].profiles.push({ id: 3, bs: 12 
 assert.equal(validateExactSectorialData({ armyCode: onyxCode, metadata: onyxMetadata, payload: ambiguousMissingProfile }).ok, false)
 
 const empty = classifyTacticalBrief([], { faction: 'Empty' })
+
+function canonicalKey(combinedId) {
+  const numeric = String(combinedId).replace(/\D/g, '') || '1'
+  return `${Number(numeric)}:0:0:1`
+}
 if (!process.argv.includes('--logic-only')) {
   const browser = await chromium.launch({ headless: true })
   const keepOutput = process.argv.includes('--keep')
