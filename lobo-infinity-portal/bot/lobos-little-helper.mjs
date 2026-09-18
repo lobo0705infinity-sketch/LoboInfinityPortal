@@ -50,9 +50,11 @@ export async function startLobosLittleHelper({ token = process.env[DISCORD_TOKEN
       logger: console,
       onChange: async ({ changes }) => {
         const channelId = String(process.env.INFINITY_RESOURCES_CHANNEL_ID || '').trim()
-        if (!channelId) return
-        const channel = await client.channels.fetch(channelId)
-        if (!channel?.isTextBased?.()) throw new Error(`Infinity resources channel is not text-capable: ${channelId}`)
+        const channelName = String(process.env.INFINITY_RESOURCES_CHANNEL_NAME || 'tts-map-submissions').trim()
+        const channel = channelId
+          ? await client.channels.fetch(channelId)
+          : [...client.channels.cache.values()].find((candidate) => candidate?.isTextBased?.() && candidate.name === channelName)
+        if (!channel?.isTextBased?.()) throw new Error(`Infinity resources announcement channel was not found: ${channelId || `#${channelName}`}`)
         const added = changes.added.slice(0, 10).map((item) => `• **[${item.label}](${item.url})**`)
         const remaining = changes.added.length - added.length
         const lines = ['**New Infinity Resource Available**', '', ...added]
