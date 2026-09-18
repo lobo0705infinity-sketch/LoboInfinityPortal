@@ -20,7 +20,7 @@ export function buildStandardGunfighterDefenders(weaponChart) {
     defender('flash-pulse-bot', 'Flash Pulse REM', { bs: 8, wip: 13, ph: 10, arm: 0, bts: 3, structure: 1 }, [weapon('Flash Pulse')]),
     defender('bs12-mim3', 'BS12 Mimetism (-3)', { bs: 12, wip: 12, ph: 11, arm: 2, bts: 3, vitality: 1, skills: ['Mimetism (-3)'] }, [weapon('Combi Rifle')]),
     defender('swiss-guard', 'Swiss Guard archetype', { bs: 15, wip: 13, ph: 11, arm: 5, bts: 6, vitality: 2, skills: ['Mimetism (-6)'] }, [weapon('AP Heavy Machine Gun')]),
-    defender('black-air', 'Black A.I.R. archetype', { bs: 13, wip: 13, ph: 12, arm: 3, bts: 6, vitality: 1, skills: ['Mimetism (-6)'] }, [weapon('AP Spitfire')]),
+    defender('black-air', 'Black A.I.R. archetype', { bs: 13, wip: 13, ph: 12, arm: 3, bts: 6, vitality: 1, skills: ['Mimetism (-6)'] }, [weapon('Marksman Rifle')]),
     defender('riot-grrrl-core', 'Riot Grrl Core ARO', { bs: 13, wip: 12, ph: 13, arm: 3, bts: 6, vitality: 2, skills: ['BS Attack (+1SD)'] }, [weapon('Missile Launcher')]),
     defender('template-guard', 'Direct-template guard', { bs: 11, wip: 12, ph: 12, arm: 3, bts: 3, vitality: 1 }, [weapon('Heavy Flamethrower')]),
   ]
