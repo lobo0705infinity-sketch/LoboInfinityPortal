@@ -1,0 +1,54 @@
+name: Build Gunfighter Catalog
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/rules-resource-watcher
+    paths:
+      - .github/workflows/gunfighter-catalog.yml
+
+permissions:
+  contents: write
+
+jobs:
+  build-catalog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: lobo-infinity-portal
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/rules-resource-watcher
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: lobo-infinity-portal/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Generate official benchmark catalog
+        run: >-
+          npm run gunfighters:catalog --
+          --input 'gfYKY29ycmVnaWRvckFJcyB0aGF0IGFuIElndWFuYSBpbiB5b3VyIHBvY2tldCBvciBhcmUgeW91IGp1c3QgaGFwcHkgdG8gc2VlIG1lP4EsAgEBAAkAgaUBBAAAAIGlAQQAAACHaAEJAAAAgSgBAQAAAIYPAAEAAACBiwEGAAAAhisBAwAAAIGUAQMAAACBlAEDAAACAQAFAIGqAQEAAACBfwECAAAAh2UBAQAAAIEoAQoAAACBmgEBAAA%3D'
+      - name: Rank Corregidor test list
+        run: >-
+          npm run gunfighters:rank --
+          --input 'gfYKY29ycmVnaWRvckFJcyB0aGF0IGFuIElndWFuYSBpbiB5b3VyIHBvY2tldCBvciBhcmUgeW91IGp1c3QgaGFwcHkgdG8gc2VlIG1lP4EsAgEBAAkAgaUBBAAAAIGlAQQAAACHaAEJAAAAgSgBAQAAAIYPAAEAAACBiwEGAAAAhisBAwAAAIGUAQMAAACBlAEDAAACAQAFAIGqAQEAAACBfwECAAAAh2UBAQAAAIEoAQoAAACBmgEBAAA%3D'
+          --catalog data/infinity-army/gunfighter-benchmark-catalog.json
+          > .tmp/corregidor-gunfighter-ratings.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: corregidor-gunfighter-ratings
+          path: lobo-infinity-portal/.tmp/corregidor-gunfighter-ratings.json
+      - name: Commit versioned catalog
+        working-directory: .
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add lobo-infinity-portal/data/infinity-army/gunfighter-benchmark-catalog.json
+          git diff --cached --quiet && exit 0
+          git commit -m 'Refresh official gunfighter benchmark catalog'
+          git push origin HEAD:feature/rules-resource-watcher
