@@ -12,7 +12,7 @@ export const STATE_VALUES = Object.freeze({
   dead: 1,
   unconscious: 1,
   isolated: 0.9,
-  immobilized: 0.9,
+  immobilized: 0.5,
   stunned: 0.35,
   targeted: 0.25,
 })
@@ -185,8 +185,8 @@ function resolveExchange({ attack, aro, attacker, defender, mode }) {
     const returnEffect = expectedEffectFromHits({ expectedHits: Math.max(1, Number(aro.pool?.burst || 1)), mode: aro.mode, defender: attacker })
     return exchangeResult(attack, aro, { activeWin: roll.success, reactiveWin: 100, noEffect: 0, expectedActiveHits: roll.expectedHits, expectedReactiveHits: 1 }, effect, returnEffect)
   }
-  const activePool = applyOpponentFtfModifier(attack, defender, aro.type)
-  const reactivePool = applyOpponentFtfModifier(aro.pool, attacker, 'shoot')
+  const activePool = applyOpponentFtfModifier(attack, defender, aro.type, attacker)
+  const reactivePool = applyOpponentFtfModifier(aro.pool, attacker, 'shoot', defender)
   const f2f = resolveFaceToFace(activePool, reactivePool)
   const effect = expectedEffectFromHits({ expectedHits: f2f.expectedActiveHits, mode: withAttackSaveModifiers(mode, attack), defender })
   const returnEffect = aro.mode ? expectedEffectFromHits({ expectedHits: f2f.expectedReactiveHits, mode: aro.mode, defender: attacker }) : { total: 0 }
@@ -298,10 +298,16 @@ function expectedStateValue(mode, defender, expectedHits, failureProbability) {
   const states = Array.isArray(mode.states) ? mode.states : []
   if (!states.length) return 0
   const immunity = tokens(defender.skills).concat(tokens(defender.equipment))
+  const applicableStates = states.map((state) => state.toLowerCase()).filter((state) => {
+    if (state === 'isolated' && immunity.includes('warhorse')) return false
+    return !immunity.includes(`immunity ${state}`)
+  })
+  if (applicableStates.includes('isolated') && applicableStates.includes('immobilized')) {
+    return 0.9 * Math.min(1, expectedHits * failureProbability)
+  }
   let combined = 0
-  for (const state of states) {
-    if (immunity.includes(`immunity ${state.toLowerCase()}`)) continue
-    const value = STATE_VALUES[state.toLowerCase()] || 0
+  for (const state of applicableStates) {
+    const value = STATE_VALUES[state] || 0
     combined = 1 - (1 - combined) * (1 - value)
   }
   return Math.min(1, combined) * Math.min(1, expectedHits * failureProbability)
@@ -323,14 +329,15 @@ function mimetismModifier(defenderSkills, attackerEquipment) {
   return level === 1 ? Math.min(0, mimetism + 3) : 0
 }
 
-function applyOpponentFtfModifier(pool, opponent, opponentAction) {
+function applyOpponentFtfModifier(pool, opponent, opponentAction, protectedProfile) {
   if (!pool || !['shoot', 'smoke', 'eclipse', 'template'].includes(opponentAction)) return pool
   const skills = tokens(opponent.skills)
+  const protectedSkills = tokens(protectedProfile?.skills)
   let modifier = 0
   for (const skill of skills) {
     const bsAttack = skill.match(/^bs attack\s+-([0-9]+)$/)
     const surprise = skill.match(/^surprise attack\s+-([0-9]+)$/)
-    if (bsAttack) modifier -= Number(bsAttack[1])
+    if (bsAttack && !protectedSkills.includes('warhorse')) modifier -= Number(bsAttack[1])
     if (surprise) modifier -= Number(surprise[1])
   }
   if (!modifier) return pool
