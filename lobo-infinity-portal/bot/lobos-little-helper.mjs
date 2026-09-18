@@ -48,21 +48,16 @@ export async function startLobosLittleHelper({ token = process.env[DISCORD_TOKEN
     process.stdout.write(`${BOT_NAME} ready: botUserId=${client.user.id} applicationId=${client.application.id} guildIds=${guildIds.join(',') || 'none'} interactionListeners=${client.listenerCount(Events.InteractionCreate)} missionCommands=${commands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} infListCommands=${infListCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} infIdCommands=${infIdCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} rulesCommands=${rulesCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'}\n`)
     startRulesResourceWatcher({
       logger: console,
-      onChange: async ({ changes, trustedRulesAdded, snapshot }) => {
-        const channelId = String(process.env.RULES_RESOURCES_ALERT_CHANNEL_ID || '').trim()
+      onChange: async ({ changes }) => {
+        const channelId = String(process.env.INFINITY_RESOURCES_CHANNEL_ID || '').trim()
         if (!channelId) return
         const channel = await client.channels.fetch(channelId)
-        if (!channel?.isTextBased?.()) throw new Error(`Rules resources alert channel is not text-capable: ${channelId}`)
-        const added = changes.added.slice(0, 8).map((item) => `+ ${item.label}: ${item.url}`)
-        const removed = changes.removed.slice(0, 5).map((item) => `- ${item.label}: ${item.url}`)
-        const lines = [
-          `**Infinity resources changed** — source timestamp <t:${snapshot.endpointUpdatedAt}:f>`,
-          ...added,
-          ...removed,
-          trustedRulesAdded.length
-            ? `Trusted official rules candidates: ${trustedRulesAdded.length}. Corpus promotion remains benchmark-gated.`
-            : 'No new trusted official rules document was detected; the active rules corpus was not changed.',
-        ]
+        if (!channel?.isTextBased?.()) throw new Error(`Infinity resources channel is not text-capable: ${channelId}`)
+        const added = changes.added.slice(0, 10).map((item) => `• **[${item.label}](${item.url})**`)
+        const remaining = changes.added.length - added.length
+        const lines = ['**New Infinity Resource Available**', '', ...added]
+        if (remaining > 0) lines.push(`• …and ${remaining} more`)
+        lines.push('', `[View all resources](${process.env.RULES_RESOURCES_PAGE_URL || 'http://51.255.44.29/infinity/ressources'})`)
         await channel.send(lines.join('\n').slice(0, 1900))
       },
     })
