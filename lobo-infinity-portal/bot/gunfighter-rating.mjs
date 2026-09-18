@@ -189,8 +189,8 @@ function resolveExchange({ attack, aro, attacker, defender, mode }) {
     const returnEffect = expectedEffectFromHits({ expectedHits: Math.max(1, Number(aro.pool?.burst || 1)), mode: aro.mode, defender: attacker })
     return exchangeResult(attack, aro, { activeWin: roll.success, reactiveWin: 100, noEffect: 0, expectedActiveHits: roll.expectedHits, expectedReactiveHits: 1 }, effect, returnEffect)
   }
-  const activePool = applyOpponentFtfModifier(attack, defender, aro.type, attacker)
-  const reactivePool = applyOpponentFtfModifier(aro.pool, attacker, 'shoot', defender)
+  const activePool = applyOpponentFtfModifier(attack, defender, aro.type, attacker, { allowSurprise: false })
+  const reactivePool = applyOpponentFtfModifier(aro.pool, attacker, 'shoot', defender, { allowSurprise: true })
   const f2f = resolveFaceToFace(activePool, reactivePool)
   const effect = expectedEffectFromHits({ expectedHits: f2f.expectedActiveHits, mode: withAttackSaveModifiers(mode, attack), defender })
   const returnEffect = aro.mode ? expectedEffectFromHits({ expectedHits: f2f.expectedReactiveHits, mode: aro.mode, defender: attacker }) : { total: 0 }
@@ -333,7 +333,7 @@ function mimetismModifier(defenderSkills, attackerEquipment) {
   return level === 1 ? Math.min(0, mimetism + 3) : 0
 }
 
-function applyOpponentFtfModifier(pool, opponent, opponentAction, protectedProfile) {
+function applyOpponentFtfModifier(pool, opponent, opponentAction, protectedProfile, { allowSurprise = false } = {}) {
   if (!pool || !['shoot', 'smoke', 'eclipse', 'template'].includes(opponentAction)) return pool
   const skills = tokens(opponent.skills)
   const protectedSkills = tokens(protectedProfile?.skills)
@@ -342,7 +342,7 @@ function applyOpponentFtfModifier(pool, opponent, opponentAction, protectedProfi
     const bsAttack = skill.match(/^bs attack\s+-([0-9]+)$/)
     const surprise = skill.match(/^surprise attack\s+-([0-9]+)$/)
     if (bsAttack && !protectedSkills.includes('warhorse')) modifier -= Number(bsAttack[1])
-    if (surprise) modifier -= Number(surprise[1])
+    if (surprise && allowSurprise) modifier -= Number(surprise[1])
   }
   if (!modifier) return pool
   const target = clampTarget(Number(pool.target) + Math.max(-12, modifier))
@@ -352,7 +352,8 @@ function applyOpponentFtfModifier(pool, opponent, opponentAction, protectedProfi
 function dodgePool(profile) {
   const skills = tokens(profile.skills)
   const fixed = skills.find((value) => /^dodge ph=\d+$/.test(value))
-  const target = fixed ? Number(fixed.split('=')[1]) : Number(profile.ph)
+  const dodgeBonus = skills.map((value) => Number(value.match(/^dodge\s*\+(\d+)$/)?.[1] || 0)).reduce((best, value) => Math.max(best, value), 0)
+  const target = (fixed ? Number(fixed.split('=')[1]) : Number(profile.ph)) + dodgeBonus
   return { burst: 1, specialDice: 0, target: clampTarget(target), criticalTarget: clampTarget(target), source: 'Dodge' }
 }
 
