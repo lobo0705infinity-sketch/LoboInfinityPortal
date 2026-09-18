@@ -7,15 +7,18 @@ export function buildGunfighterBenchmarkCatalog({ profiles, defenders, officialD
   if (!officialDataVersion) throw new Error('Gunfighter catalog requires an official Army-data version.')
   if (!benchmarkVersion) throw new Error('Gunfighter catalog requires a benchmark version.')
   if (!Array.isArray(profiles) || !profiles.length) throw new Error('Gunfighter catalog requires canonical profiles.')
-  const entries = profiles.map((profile) => ({
-    key: canonicalProfileKey(profile),
-    unitId: Number(profile.unitId),
-    groupId: Number(profile.groupId),
-    optionId: Number(profile.optionId),
-    profileId: Number(profile.profileId),
-    result: evaluateGunfighterProfile(profile, defenders, options),
-  })).sort((a, b) => a.key.localeCompare(b.key))
-  const fingerprint = sha256({ officialDataVersion, benchmarkVersion, defenders, options, entries })
+  const entries = profiles.map((profile) => {
+    const evaluated = evaluateGunfighterProfile(profile, defenders, options)
+    return {
+      key: canonicalProfileKey(profile),
+      unitId: Number(profile.unitId),
+      groupId: Number(profile.groupId),
+      optionId: Number(profile.optionId),
+      profileId: Number(profile.profileId),
+      result: compactResult(evaluated),
+    }
+  }).sort((a, b) => a.key.localeCompare(b.key))
+  const fingerprint = fingerprintCatalog({ officialDataVersion, benchmarkVersion, defenders, options, entries })
   return {
     schemaVersion: GUNFIGHTER_CATALOG_SCHEMA,
     officialDataVersion,
@@ -74,4 +77,27 @@ function integer(value, label) {
   return number
 }
 
-function sha256(value) { return createHash('sha256').update(JSON.stringify(value)).digest('hex') }
+function compactResult(result) {
+  return {
+    profileId: result.profileId,
+    name: result.name,
+    states: result.states.map((state) => ({
+      id: state.id,
+      fireteamSpecialDice: state.fireteamSpecialDice,
+      rating: state.rating,
+    })),
+  }
+}
+
+function fingerprintCatalog({ officialDataVersion, benchmarkVersion, defenders, options, entries }) {
+  const hash = createHash('sha256')
+  for (const value of [officialDataVersion, benchmarkVersion, defenders, options]) {
+    hash.update(JSON.stringify(value))
+    hash.update('\0')
+  }
+  for (const entry of entries) {
+    hash.update(JSON.stringify(entry))
+    hash.update('\n')
+  }
+  return hash.digest('hex')
+}
