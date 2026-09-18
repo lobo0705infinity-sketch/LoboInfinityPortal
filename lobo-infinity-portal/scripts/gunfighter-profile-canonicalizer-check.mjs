@@ -7,6 +7,7 @@ const dataset = {
     skills: [{ id: 1, name: 'BS Attack' }],
     equips: [{ id: 2, name: 'X Visor' }],
     extras: [{ id: 10, name: '+1SD' }, { id: 11, name: 'SR-1' }],
+    weapons: [{ id: 3, name: 'AP HMG' }, { id: 8, name: 'Pitcher' }],
   },
   units: [{ id: 99, name: 'Test Gunfighter', profileGroups: [{ id: 7, profiles: [{ id: 2, bs: 13, ph: 11, arm: 3, bts: 6, w: 1, skills: [{ id: 1, extra: [11] }], equip: [{ id: 2 }] }], options: [{ id: 4, name: 'AP HMG', weapons: [{ id: 3, extra: [10] }, { id: 8 }] }] }] }],
 }

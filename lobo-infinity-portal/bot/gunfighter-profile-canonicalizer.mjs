@@ -4,6 +4,7 @@ export function buildCanonicalGunfighterProfiles({ dataset, weaponChart, sectori
   if (!Array.isArray(dataset?.units)) throw new Error('Canonical Army dataset has no units.')
   if (!Array.isArray(weaponChart)) throw new Error('Official weapon chart is required.')
   const weaponRecords = indexWeaponChart(weaponChart)
+  const armyWeapons = indexArmyWeapons(dataset.metadata?.weapons)
   const skills = indexById(dataset.metadata?.skills)
   const equips = indexById(dataset.metadata?.equips)
   const extras = indexById(dataset.metadata?.extras)
@@ -13,7 +14,7 @@ export function buildCanonicalGunfighterProfiles({ dataset, weaponChart, sectori
     const physicalProfiles = group.profiles?.length ? group.profiles : [{}]
     for (const profile of physicalProfiles) {
       const references = [...(unit.weapons || []), ...(group.weapons || []), ...(profile.weapons || []), ...(option.weapons || [])]
-      const weapons = resolveWeapons(references, weaponRecords, extras)
+      const weapons = resolveWeapons(references, weaponRecords, extras, armyWeapons)
       if (!weapons.length) continue
       profiles.push({
         id: `${sectorialId}:${unit.id}:${group.id}:${option.id}:${profile.id ?? 1}`,
@@ -51,10 +52,12 @@ function exactFireteamEligibility({ unit, group, option, profile, eligible, fire
   })
 }
 
-function resolveWeapons(references, chart, extras) {
+function resolveWeapons(references, chart, extras, armyWeapons) {
   const resolved = []
   for (const reference of references) {
-    const candidates = chart.byId.get(Number(reference.id)) || chart.byName.get(normalize(reference.name)) || []
+    const officialNames = (armyWeapons.get(Number(reference.id)) || []).map((record) => normalize(record.name)).filter(Boolean)
+    const namedCandidates = officialNames.flatMap((name) => chart.byName.get(name) || [])
+    const candidates = namedCandidates.length ? namedCandidates : chart.byId.get(Number(reference.id)) || chart.byName.get(normalize(reference.name)) || []
     const requestedMode = normalize(reference.mode || reference.variant)
     const selected = requestedMode ? candidates.filter((candidate) => normalize(candidate.mode).includes(requestedMode)) : candidates
     const modifierNames = (reference.extra || reference.extras || []).map((id) => extras.get(Number(id))?.name).filter(Boolean)
@@ -66,6 +69,12 @@ function resolveWeapons(references, chart, extras) {
     }
   }
   return mergeWeapons(resolved)
+}
+
+function indexArmyWeapons(records = []) {
+  const byId = new Map()
+  for (const record of records) append(byId, Number(record.id), record)
+  return byId
 }
 
 function isBenchmarkAttackMode(mode) {
