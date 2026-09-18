@@ -36,6 +36,7 @@ export function normalizeWeaponChartRow(row = {}) {
     nonLethal: traits.some((trait) => /non-lethal/i.test(trait)),
     ignoresCover: traits.some((trait) => /no cover/i.test(trait)),
     continuousDamage: traits.some((trait) => /contin(?:u|ou)ous damage/i.test(trait)),
+    disposableUses: inferDisposableUses(traits),
     state: inferState(traits, row.ammo),
   }
 }
@@ -100,6 +101,7 @@ export function weaponChartRecordToGunfighterWeapon(record) {
       nonLethal: record.nonLethal,
       ignoresCover: record.ignoresCover,
       continuousDamage: record.continuousDamage,
+      disposableUses: record.disposableUses,
       states: record.state ? [record.state] : [],
     }],
   }
@@ -149,6 +151,13 @@ function inferAttackAttribute(name, traits, smoke) {
   if (/flash pulse/i.test(name) || traits.some((trait) => /technical weapon/i.test(trait))) return 'wip'
   if (smoke || traits.some((trait) => /BS Weapon \(PH\)/i.test(trait))) return 'ph'
   return 'bs'
+}
+
+function inferDisposableUses(traits) {
+  const trait = traits.find((value) => /disposable/i.test(value))
+  if (!trait) return null
+  const count = Number(trait.match(/disposable\s*\(?\s*(\d+)/i)?.[1])
+  return Number.isFinite(count) ? count : 1
 }
 
 function parseNullableNumber(value) {

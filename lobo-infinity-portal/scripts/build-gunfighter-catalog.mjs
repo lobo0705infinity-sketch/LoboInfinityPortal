@@ -6,6 +6,7 @@ import { chromium } from 'playwright'
 import { buildGunfighterBenchmarkCatalog } from '../bot/gunfighter-benchmark-catalog.mjs'
 import { buildCanonicalGunfighterProfiles } from '../bot/gunfighter-profile-canonicalizer.mjs'
 import { buildStandardGunfighterDefenders, GUNFIGHTER_BENCHMARK_VERSION } from '../bot/gunfighter-standard-benchmark.mjs'
+import { evaluateGunfighterProfile } from '../bot/gunfighter-rating.mjs'
 import { extractWeaponChartRows, normalizeWeaponChartRows } from '../bot/infinity-weapon-chart.mjs'
 import { buildCanonicalDataset } from './infinity-army-canonical-dataset.mjs'
 
@@ -22,8 +23,12 @@ try {
   const chartRows = normalizeWeaponChartRows(await captureWeaponChart(captured.page))
   const payloads = await captureAllFactionPayloads(captured.page, captured.metadata, captured.payloads)
   const dataset = buildCanonicalDataset({ metadata: captured.metadata, payloads })
-  const { fireteamUnitIds, wildcardUnitIds, fireteamProfiles } = fireteamEligibility(payloads)
-  const profiles = buildCanonicalGunfighterProfiles({ dataset, weaponChart: chartRows, fireteamUnitIds, wildcardUnitIds, fireteamProfiles })
+  const profiles = payloads.flatMap((payload) => {
+    const sectorialId = endpointId(payload.url)
+    const sectorialDataset = buildCanonicalDataset({ metadata: captured.metadata, payloads: [payload] })
+    const { fireteamUnitIds, wildcardUnitIds, fireteamProfiles } = fireteamEligibility([payload])
+    return buildCanonicalGunfighterProfiles({ dataset: sectorialDataset, weaponChart: chartRows, sectorialId, fireteamUnitIds, wildcardUnitIds, fireteamProfiles })
+  })
   const defenders = buildStandardGunfighterDefenders(chartRows)
   const catalog = buildGunfighterBenchmarkCatalog({
     profiles,
@@ -44,6 +49,13 @@ try {
   }
   await mkdir(dirname(output), { recursive: true })
   await writeFile(output, `${JSON.stringify(artifact)}\n`, 'utf8')
+  if (args['audit-keys'] && args['audit-output']) {
+    const keys = new Set(String(args['audit-keys']).split(',').map((value) => value.trim()).filter(Boolean))
+    const audited = profiles.filter((profile) => keys.has(profile.id)).map((profile) => ({ profile, evaluation: evaluateGunfighterProfile(profile, defenders) }))
+    const auditOutput = resolve(args['audit-output'])
+    await mkdir(dirname(auditOutput), { recursive: true })
+    await writeFile(auditOutput, `${JSON.stringify({ benchmarkVersion: GUNFIGHTER_BENCHMARK_VERSION, profiles: audited }, null, 2)}\n`, 'utf8')
+  }
   console.log(JSON.stringify({ output, entries: artifact.entryCount, payloads: payloads.length, weapons: chartRows.length, fingerprint: artifact.fingerprint }))
   await captured.page.close()
 } finally {
@@ -126,9 +138,10 @@ function fireteamEligibility(payloads) {
       const id = Number(member.unitId || unitBySlug.get(member.slug))
       if (!Number.isInteger(id)) continue
       const wildcard = !Array.isArray(team.type) || !team.type.length
+      const core = Array.isArray(team.type) && team.type.some((type) => String(type).toUpperCase() === 'CORE')
       if (wildcard) wildcardUnitIds.add(id)
-      else fireteamUnitIds.add(id)
-      fireteamProfiles.push({ unitId: id, memberName: String(member.name || ''), wildcard })
+      else if (core) fireteamUnitIds.add(id)
+      if (wildcard || core) fireteamProfiles.push({ unitId: id, memberName: String(member.name || ''), wildcard })
     }
   }
   return { fireteamUnitIds: [...fireteamUnitIds], wildcardUnitIds: [...wildcardUnitIds], fireteamProfiles }

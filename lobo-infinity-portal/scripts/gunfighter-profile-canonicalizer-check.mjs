@@ -14,7 +14,7 @@ const chart = normalizeWeaponChartRows([
   { id: 3, name: 'AP HMG', ranges: [{ min: 0, max: 16, modifier: 0 }, { min: 16, max: 32, modifier: 3 }], damage: 5, burst: 4, ammo: 'AP', saving: 'ARM/2', savingRolls: 1 },
   { id: 8, name: 'Pitcher', ranges: [{ min: 0, max: 8, modifier: 0 }], damage: '-', burst: 1, ammo: '', saving: '-', savingRolls: '-' },
 ])
-const [profile] = buildCanonicalGunfighterProfiles({ dataset, weaponChart: chart, wildcardUnitIds: [99] })
+const [profile] = buildCanonicalGunfighterProfiles({ dataset, weaponChart: chart, sectorialId: 502, wildcardUnitIds: [99] })
 assert.equal(profile.fireteamCapable, true)
 assert.equal(profile.equipment[0], 'X Visor')
 assert.equal(profile.skills[0], 'BS Attack SR-1')
@@ -25,7 +25,7 @@ assert.equal(profile.profileId, 2)
 
 const ftoDataset = structuredClone(dataset)
 ftoDataset.units[0].profileGroups[0].options = [{ id: 4, name: 'TEST FTO', weapons: [{ id: 3 }] }, { id: 5, name: 'TEST', weapons: [{ id: 3 }] }]
-const ftoProfiles = buildCanonicalGunfighterProfiles({ dataset: ftoDataset, weaponChart: chart, fireteamProfiles: [{ unitId: 99, memberName: 'TEST FTO', wildcard: false }] })
+const ftoProfiles = buildCanonicalGunfighterProfiles({ dataset: ftoDataset, weaponChart: chart, sectorialId: 502, fireteamProfiles: [{ unitId: 99, memberName: 'TEST FTO', wildcard: false }] })
 assert.equal(ftoProfiles.find((item) => item.optionId === 4).fireteamCapable, true)
 assert.equal(ftoProfiles.find((item) => item.optionId === 5).fireteamCapable, false, 'FTO eligibility must not leak to a non-FTO sibling')
 console.log('PASS - exact Army profiles join to official weapon-chart records and preserve profile/weapon modifiers.')

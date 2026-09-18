@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto'
 import { evaluateGunfighterProfile } from './gunfighter-rating.mjs'
 
-export const GUNFIGHTER_CATALOG_SCHEMA = 'infinity-gunfighter-benchmark-v1'
+export const GUNFIGHTER_CATALOG_SCHEMA = 'infinity-gunfighter-benchmark-v2'
 
 export function buildGunfighterBenchmarkCatalog({ profiles, defenders, officialDataVersion, benchmarkVersion, generatedAt = new Date().toISOString(), options = {} }) {
   if (!officialDataVersion) throw new Error('Gunfighter catalog requires an official Army-data version.')
@@ -11,6 +11,7 @@ export function buildGunfighterBenchmarkCatalog({ profiles, defenders, officialD
     const evaluated = evaluateGunfighterProfile(profile, defenders, options)
     return {
       key: canonicalProfileKey(profile),
+      sectorialId: Number(profile.sectorialId),
       unitId: Number(profile.unitId),
       groupId: Number(profile.groupId),
       optionId: Number(profile.optionId),
@@ -34,7 +35,7 @@ export function lookupGunfighterRatings(catalog, decodedArmy) {
   if (catalog?.schemaVersion !== GUNFIGHTER_CATALOG_SCHEMA) throw new Error('Unsupported gunfighter benchmark catalog.')
   const byKey = new Map(catalog.entries.map((entry) => [entry.key, entry]))
   return decodedArmy.combatGroups.flatMap((group) => group.members || group.entries || []).map((member) => {
-    const key = canonicalProfileKey(member)
+    const key = canonicalProfileKey({ ...member, sectorialId: decodedArmy.sectorialId })
     const match = byKey.get(key)
     return match ? { status: 'matched', key, result: match.result } : { status: 'missing', key, result: null }
   })
@@ -64,11 +65,12 @@ export function rankArmyGunfighters(catalog, decodedArmy, { limit = 4 } = {}) {
 }
 
 export function canonicalProfileKey(profile) {
+  const sectorialId = integer(profile.sectorialId, 'sectorialId')
   const unitId = integer(profile.unitId, 'unitId')
   const groupId = integer(profile.groupId, 'groupId')
   const optionId = integer(profile.optionId, 'optionId')
   const profileId = integer(profile.profileId ?? profile.combinedId?.split('-').at(-1) ?? 1, 'profileId')
-  return `${unitId}:${groupId}:${optionId}:${profileId}`
+  return `${sectorialId}:${unitId}:${groupId}:${optionId}:${profileId}`
 }
 
 function integer(value, label) {

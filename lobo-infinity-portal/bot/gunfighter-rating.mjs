@@ -74,6 +74,7 @@ export function evaluateState(profile, defenders, settings, state) {
 
 export function evaluateAttackCandidate({ attacker, defender, weapon, mode, range, fireteamSpecialDice = 0, settings = DEFAULT_OPTIONS }) {
   validateWeaponMode(weapon, mode)
+  if (mode.smoke || mode.eclipse) return unavailableCandidate(weapon, mode, range, 'non-offensive-smoke')
   const rangeModifier = rangeModifierFor(mode, range, attacker.equipment)
   if (rangeModifier === null) return unavailableCandidate(weapon, mode, range, 'out-of-range')
   if (mode.attackType === 'direct-template' && range.min >= Number(mode.templateRange || 8)) return unavailableCandidate(weapon, mode, range, 'out-of-range')
@@ -194,7 +195,11 @@ function resolveExchange({ attack, aro, attacker, defender, mode }) {
 
 function exchangeResult(attack, aro, roll, effect, returnEffect) {
   const safety = 1 - Number(returnEffect?.total || 0)
-  const attackerScore = round(100 * (0.55 * effect.total + 0.25 * (roll.activeWin / 100) + 0.20 * safety))
+  const availability = attackAvailability(attack)
+  // Expected effect already includes hit/Face-to-Face/Dodge probabilities.
+  // Gate the safety contribution behind meaningful enemy effect so a harmless
+  // exchange can never earn a large gunfighter score merely by surviving it.
+  const attackerScore = round(100 * availability * effect.total * (0.8 + 0.2 * safety))
   return { aro: aro.id, aroType: aro.type, attack, roll, effect, returnEffect, attackerScore }
 }
 
@@ -213,7 +218,12 @@ export function buildAttackPool(attacker, defender, weapon, mode, rangeModifier,
   const burst = nativeBurst + numericModifier(skills, /bs attack\s*\[?\+?(\d+)b\]?/) + Number(mode.burstBonus || 0)
   const specialDice = Number(mode.specialDice || 0) + numericModifier(skills, /bs attack\s*\[?\+?(\d+)sd\]?/) + fireteamSpecialDice
   const savingRollPenalty = Number(mode.savingRollPenalty || 0) + numericModifier(skills, /bs attack\s*sr-(\d+)/)
-  return { burst, specialDice, savingRollPenalty, target: clampTarget(target), criticalTarget: clampTarget(target), source: `${weapon.name}${mode.name ? ` (${mode.name})` : ''}` }
+  return { burst, specialDice, savingRollPenalty, disposableUses: mode.disposableUses, target: clampTarget(target), criticalTarget: clampTarget(target), source: `${weapon.name}${mode.name ? ` (${mode.name})` : ''}` }
+}
+
+function attackAvailability(attack) {
+  if (attack.disposableUses == null) return 1
+  return Math.min(1, Math.max(0, Number(attack.disposableUses)) / 3)
 }
 
 function buildLegalAros(defender, attacker, range, settings, attackingMode) {

@@ -1,6 +1,6 @@
 import { weaponChartRecordToGunfighterWeapon } from './infinity-weapon-chart.mjs'
 
-export const GUNFIGHTER_BENCHMARK_VERSION = 'gunfighter-benchmark-v1'
+export const GUNFIGHTER_BENCHMARK_VERSION = 'gunfighter-benchmark-v2'
 
 export function buildStandardGunfighterDefenders(weaponChart) {
   const weapon = (names, modes) => {

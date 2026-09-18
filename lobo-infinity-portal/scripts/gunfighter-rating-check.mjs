@@ -55,17 +55,19 @@ const msvResult = evaluateGunfighterProfile(msvAttacker, [smokeDefender])
 for (const matchup of msvResult.states[0].matchups) for (const candidate of matchup.candidates.filter((item) => item.status === 'evaluated')) {
   assert.notEqual(candidate.optimalResponse.aroType, 'smoke', 'ordinary Smoke is excluded against MSV1-3')
 }
+const smokeOnly = evaluateGunfighterProfile(profile('smoke-only', { weapons: smokeDefender.weapons.slice(1) }), [profile('smoke-target')])
+assert.equal(smokeOnly.states[0].rating, 0, 'active Smoke cannot damage or neutralize a benchmark target')
 
-const catalogProfile = { ...attacker, unitId: 10, groupId: 2, optionId: 3, profileId: 1 }
+const catalogProfile = { ...attacker, sectorialId: 502, unitId: 10, groupId: 2, optionId: 3, profileId: 1 }
 const catalog = buildGunfighterBenchmarkCatalog({ profiles: [catalogProfile], defenders: [smokeDefender], officialDataVersion: '7.test', benchmarkVersion: 'test-v1' })
 assert.equal(catalog.entryCount, 1)
 assert.match(catalog.fingerprint, /^[a-f0-9]{64}$/)
 assert.equal('matchups' in catalog.entries[0].result.states[0], false, 'persisted catalogs contain ratings rather than enormous per-roll diagnostics')
 const repeatedCatalog = buildGunfighterBenchmarkCatalog({ profiles: [catalogProfile], defenders: [smokeDefender], officialDataVersion: '7.test', benchmarkVersion: 'test-v1', generatedAt: '2099-01-01T00:00:00.000Z' })
 assert.equal(repeatedCatalog.fingerprint, catalog.fingerprint, 'catalog fingerprints are deterministic and exclude generation time')
-const lookup = lookupGunfighterRatings(catalog, { combatGroups: [{ members: [{ unitId: 10, groupId: 2, optionId: 3, combinedId: '604-10-2-3-1' }, { unitId: 99, groupId: 1, optionId: 1, combinedId: '604-99-1-1-1' }] }] })
+const lookup = lookupGunfighterRatings(catalog, { sectorialId: 502, combatGroups: [{ members: [{ unitId: 10, groupId: 2, optionId: 3, combinedId: '604-10-2-3-1' }, { unitId: 99, groupId: 1, optionId: 1, combinedId: '604-99-1-1-1' }] }] })
 assert.deepEqual(lookup.map((item) => item.status), ['matched', 'missing'], 'submitted lists use exact precomputed profile lookup and fail closed on new profiles')
-const ranked = rankArmyGunfighters(catalog, { combatGroups: [{ members: [{ unitId: 10, groupId: 2, optionId: 3, combinedId: '604-10-2-3-1', unitName: 'Attacker' }] }] })
+const ranked = rankArmyGunfighters(catalog, { sectorialId: 502, combatGroups: [{ members: [{ unitId: 10, groupId: 2, optionId: 3, combinedId: '604-10-2-3-1', unitName: 'Attacker' }] }] })
 assert.equal(ranked[0].normal, catalog.entries[0].result.states[0].rating)
 
 console.log('PASS - gunfighter engine covers exact dice, all range bands, X Visor, optimal AROs, Fireteam +1SD, durability fractions, state weights, and Shock/NWI immunity.')

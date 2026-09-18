@@ -1,6 +1,6 @@
 import { weaponChartRecordToGunfighterWeapon } from './infinity-weapon-chart.mjs'
 
-export function buildCanonicalGunfighterProfiles({ dataset, weaponChart, fireteamUnitIds = [], wildcardUnitIds = [], fireteamProfiles = [] } = {}) {
+export function buildCanonicalGunfighterProfiles({ dataset, weaponChart, sectorialId, fireteamUnitIds = [], wildcardUnitIds = [], fireteamProfiles = [] } = {}) {
   if (!Array.isArray(dataset?.units)) throw new Error('Canonical Army dataset has no units.')
   if (!Array.isArray(weaponChart)) throw new Error('Official weapon chart is required.')
   const weaponRecords = indexWeaponChart(weaponChart)
@@ -12,11 +12,12 @@ export function buildCanonicalGunfighterProfiles({ dataset, weaponChart, firetea
   for (const unit of dataset.units) for (const group of unit.profileGroups || []) for (const option of group.options || []) {
     const physicalProfiles = group.profiles?.length ? group.profiles : [{}]
     for (const profile of physicalProfiles) {
-      const references = [...(profile.weapons || []), ...(option.weapons || [])]
+      const references = [...(unit.weapons || []), ...(group.weapons || []), ...(profile.weapons || []), ...(option.weapons || [])]
       const weapons = resolveWeapons(references, weaponRecords, extras)
       if (!weapons.length) continue
       profiles.push({
-        id: `${unit.id}:${group.id}:${option.id}:${profile.id ?? 1}`,
+        id: `${sectorialId}:${unit.id}:${group.id}:${option.id}:${profile.id ?? 1}`,
+        sectorialId: Number(sectorialId),
         unitId: Number(unit.id),
         groupId: Number(group.id),
         optionId: Number(option.id),
@@ -29,8 +30,8 @@ export function buildCanonicalGunfighterProfiles({ dataset, weaponChart, firetea
         bts: stat(profile, unit, 'bts'),
         vitality: stat(profile, unit, 'w') ?? stat(profile, unit, 'vitality'),
         structure: stat(profile, unit, 'str') ?? stat(profile, unit, 'structure'),
-        skills: resolveTraits([...(profile.skills || []), ...(option.skills || [])], skills, extras),
-        equipment: resolveTraits([...(profile.equipment || profile.equip || []), ...(option.equipment || option.equip || [])], equips, extras),
+        skills: resolveTraits([...(unit.skills || []), ...(group.skills || []), ...(profile.skills || []), ...(option.skills || [])], skills, extras),
+        equipment: resolveTraits([...(unit.equipment || unit.equip || []), ...(group.equipment || group.equip || []), ...(profile.equipment || profile.equip || []), ...(option.equipment || option.equip || [])], equips, extras),
         weapons,
         fireteamCapable: exactFireteamEligibility({ unit, group, option, profile, eligible, fireteamProfiles }),
       })
