@@ -47,6 +47,8 @@ assert.deepEqual(normal.states.map((state) => state.id), ['normal', 'fireteam'],
 assert.equal(normal.states[1].fireteamSpecialDice, 1)
 const longRange = normal.states[0].matchups.find((matchup) => matchup.range === '48-96')
 assert.equal(longRange.candidates[0].status, 'unavailable', 'every weapon is recorded in every range, including unavailable results')
+const expectedAllBandRating = Math.round(normal.states[0].matchups.reduce((sum, matchup) => sum + (matchup.selected?.score ?? 0), 0) / normal.states[0].matchups.length * 100) / 100
+assert.equal(normal.states[0].rating, expectedAllBandRating, 'unavailable range bands contribute zero rather than disappearing from the rating')
 
 const msvAttacker = profile('msv', { equipment: ['Multispectral Visor L1'] })
 const msvResult = evaluateGunfighterProfile(msvAttacker, [smokeDefender])

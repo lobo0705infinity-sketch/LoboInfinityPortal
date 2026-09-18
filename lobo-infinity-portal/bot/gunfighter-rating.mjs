@@ -64,11 +64,10 @@ export function evaluateState(profile, defenders, settings, state) {
       })
     }
   }
-  const selected = matchups.map((matchup) => matchup.selected).filter(Boolean)
   return {
     id: state.id,
     fireteamSpecialDice: state.specialDice,
-    rating: selected.length ? round(selected.reduce((sum, item) => sum + item.score, 0) / selected.length) : null,
+    rating: matchups.length ? round(matchups.reduce((sum, matchup) => sum + (matchup.selected?.score ?? 0), 0) / matchups.length) : null,
     matchups,
   }
 }
