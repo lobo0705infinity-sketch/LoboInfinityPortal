@@ -14,7 +14,7 @@ const dataset = {
 const chart = normalizeWeaponChartRows([
   { id: 3, name: 'AP HMG', ranges: [{ min: 0, max: 16, modifier: 0 }, { min: 16, max: 32, modifier: 3 }], damage: 5, burst: 4, ammo: 'AP', saving: 'ARM/2', savingRolls: 1 },
   { id: 8, name: 'Pitcher', ranges: [{ min: 0, max: 8, modifier: 0 }], damage: '-', burst: 1, ammo: '', saving: '-', savingRolls: '-' },
-  { id: 5, name: 'Heavy Flamethrower', damage: 6, burst: 1, ammo: 'N', saving: 'ARM', savingRolls: 1, traits: ['Continuous Damage', 'Direct Template (Large Teardrop)'] },
+  { id: 5, name: 'Heavy Flamethrower', damage: 6, burst: 1, ammo: 'N', saving: 'ARM', savingRolls: 1, traits: ['Continous Damage', 'Direct Template (Large Teardrop)'] },
 ])
 const [profile] = buildCanonicalGunfighterProfiles({ dataset, weaponChart: chart, sectorialId: 502, wildcardUnitIds: [99] })
 assert.equal(profile.fireteamCapable, true)
