@@ -76,7 +76,13 @@ async function captureWeaponChart(page) {
   await page.locator('[title="Weapons Chart"]').click()
   const popup = await popupPromise
   const chartPage = popup || page
-  await chartPage.locator('.imp_armas_nombre').first().waitFor({ state: 'visible', timeout: 60_000 })
+  const chartRows = chartPage.locator('tr').filter({ has: chartPage.locator('.imp_armas_nombre') })
+  await chartRows.nth(1).waitFor({ state: 'attached', timeout: 60_000 })
+
+  const rowCount = await chartRows.count()
+  if (rowCount < 10) {
+    throw new Error(`Weapons chart loaded only ${rowCount} rows; expected the full official chart`)
+  }
   const rows = await extractWeaponChartRows(chartPage)
   if (popup) await popup.close()
   return rows

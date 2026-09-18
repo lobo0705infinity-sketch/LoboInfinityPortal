@@ -7,6 +7,9 @@ on:
       - feature/rules-resource-watcher
     paths:
       - .github/workflows/gunfighter-catalog.yml
+      - lobo-infinity-portal/scripts/build-gunfighter-catalog.mjs
+      - lobo-infinity-portal/bot/gunfighter-*.mjs
+      - lobo-infinity-portal/bot/infinity-weapon-chart.mjs
 
 permissions:
   contents: write
