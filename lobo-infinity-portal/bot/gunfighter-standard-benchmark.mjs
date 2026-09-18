@@ -4,9 +4,15 @@ export const GUNFIGHTER_BENCHMARK_VERSION = 'gunfighter-benchmark-v1'
 
 export function buildStandardGunfighterDefenders(weaponChart) {
   const weapon = (names, modes) => {
-    const aliases = (Array.isArray(names) ? names : [names]).map(normalize)
-    const matches = weaponChart.filter((record) => aliases.includes(normalize(record.name)) && (!modes || modes.includes(record.mode)))
-    if (!matches.length) throw new Error(`Official weapon chart is missing benchmark weapon: ${aliases.join(' / ')}.`)
+    const aliases = (Array.isArray(names) ? names : [names]).map(canonicalWeaponName)
+    const matches = weaponChart.filter((record) => {
+      const officialName = canonicalWeaponName(record.name)
+      return aliases.some((alias) => officialName === alias || officialName.startsWith(`${alias} `)) && (!modes || modes.includes(record.mode))
+    })
+    if (!matches.length) {
+      const candidates = weaponChart.map((record) => record.name).filter((name) => /multi|hmg|machine gun/i.test(name)).slice(0, 20)
+      throw new Error(`Official weapon chart is missing benchmark weapon: ${aliases.join(' / ')}. Candidates: ${candidates.join(', ')}`)
+    }
     const built = matches.map(weaponChartRecordToGunfighterWeapon)
     return { ...built[0], modes: built.flatMap((item) => item.modes) }
   }
@@ -24,3 +30,4 @@ function defender(id, name, stats, weapons) {
   return { id, name, equipment: [], skills: [], ...stats, weapons }
 }
 function normalize(value) { return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim() }
+function canonicalWeaponName(value) { return normalize(value).replace(/heavy machine gun/g, 'hmg') }
