@@ -162,7 +162,7 @@ export function expectedEffectFromHits({ expectedHits, mode, defender }) {
   const failuresPerSave = mode.continuousDamage ? failureProbability / Math.max(0.05, 1 - failureProbability) : failureProbability
   const expectedDamage = expectedHits * savesPerHit * failuresPerSave * woundsPerFailure
   const durability = effectiveDurability(defender, mode)
-  const damageValue = Math.min(expectedDamage / durability, 1)
+  const damageValue = mode.nonLethal ? 0 : Math.min(expectedDamage / durability, 1)
   const stateValue = expectedStateValue(mode, defender, expectedHits, failureProbability)
   return { expectedDamage, damageValue, stateValue, total: Math.min(1, damageValue + stateValue * (1 - damageValue)) }
 }

@@ -19,6 +19,9 @@ assert.ok(Math.abs(threeWound.damageValue - 0.2833333333333333) < 1e-12, 'one wo
 
 const isolated = expectedEffectFromHits({ expectedHits: 1, mode: { ammo: 'E/M', power: 20, save: 'BTS', saves: 1, states: ['isolated'], ignoresCover: true }, defender: profile('target', { bts: 0 }) })
 assert.ok(isolated.stateValue >= 0.85 && isolated.stateValue <= 0.9, 'Isolated uses the configured 0.9 utility before save probability')
+const adhesive = expectedEffectFromHits({ expectedHits: 1, mode: { ammo: 'PARA', power: '-', save: 'PH', saveModifier: -6, saves: 1, states: ['immobilized'], nonLethal: true }, defender: profile('para-target', { ph: 12 }) })
+assert.equal(adhesive.damageValue, 0, 'non-lethal ammunition cannot also score physical damage')
+assert.ok(adhesive.stateValue > 0, 'non-lethal ammunition retains its weighted state value')
 
 const shockTarget = profile('nwi', { vitality: 1, skills: ['No Wound Incapacitation'] })
 const immuneShockTarget = profile('immune-nwi', { vitality: 1, skills: ['No Wound Incapacitation', 'Immunity (Shock)'] })

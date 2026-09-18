@@ -54,7 +54,9 @@ try {
     const audited = profiles.filter((profile) => keys.has(profile.id)).map((profile) => ({ profile, evaluation: evaluateGunfighterProfile(profile, defenders) }))
     const auditOutput = resolve(args['audit-output'])
     await mkdir(dirname(auditOutput), { recursive: true })
-    await writeFile(auditOutput, `${JSON.stringify({ benchmarkVersion: GUNFIGHTER_BENCHMARK_VERSION, profiles: audited }, null, 2)}\n`, 'utf8')
+    const auditedUnitIds = new Set([...keys].map((key) => Number(key.split(':')[1])))
+    const rawUnits = payloads.filter((payload) => endpointId(payload.url) === 502).flatMap((payload) => payload.units || []).filter((unit) => auditedUnitIds.has(Number(unit.id)))
+    await writeFile(auditOutput, `${JSON.stringify({ benchmarkVersion: GUNFIGHTER_BENCHMARK_VERSION, rawUnits, profiles: audited }, null, 2)}\n`, 'utf8')
   }
   console.log(JSON.stringify({ output, entries: artifact.entryCount, payloads: payloads.length, weapons: chartRows.length, fingerprint: artifact.fingerprint }))
   await captured.page.close()
