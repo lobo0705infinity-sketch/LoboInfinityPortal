@@ -14,6 +14,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: gunfighter-catalog-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-catalog:
     runs-on: ubuntu-latest

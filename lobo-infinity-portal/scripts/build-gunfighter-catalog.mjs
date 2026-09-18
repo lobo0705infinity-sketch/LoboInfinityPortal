@@ -146,16 +146,26 @@ function dedupeWeaponChartRows(rows) {
 
 async function captureAllFactionPayloads(page, metadata, seeded) {
   const byId = new Map(seeded.map((payload) => [endpointId(payload.url), payload]))
-  const ids = collectFactionIds(metadata.factions)
-  for (const id of ids) {
-    if (byId.has(id)) continue
-    const result = await page.evaluate(async (sectorialId) => {
+  const ids = collectFactionIds(metadata.factions).filter((id) => !byId.has(id))
+  const batchSize = 8
+  for (let offset = 0; offset < ids.length; offset += batchSize) {
+    const batch = ids.slice(offset, offset + batchSize)
+    const results = await page.evaluate(async (sectorialIds) => Promise.all(sectorialIds.map(async (sectorialId) => {
       const url = `https://api.corvusbelli.com/army/units/en/${sectorialId}`
-      const response = await fetch(url)
-      if (!response.ok) return { ok: false, status: response.status, url }
-      return { ok: true, body: await response.json(), url }
-    }, id)
-    if (result.ok && Array.isArray(result.body?.units)) byId.set(id, { ...result.body, url: result.url })
+      const controller = new AbortController()
+      const timeout = setTimeout(() => controller.abort(), 15_000)
+      try {
+        const response = await fetch(url, { signal: controller.signal })
+        if (!response.ok) return { ok: false, status: response.status, url }
+        return { ok: true, body: await response.json(), url }
+      } catch (error) {
+        return { ok: false, status: String(error?.name || error), url }
+      } finally {
+        clearTimeout(timeout)
+      }
+    })), batch)
+    for (const result of results) if (result.ok && Array.isArray(result.body?.units)) byId.set(endpointId(result.url), { ...result.body, url: result.url })
+    console.log(`Captured faction payloads ${Math.min(offset + batch.length, ids.length)}/${ids.length}`)
   }
   return [...byId.values()]
 }
