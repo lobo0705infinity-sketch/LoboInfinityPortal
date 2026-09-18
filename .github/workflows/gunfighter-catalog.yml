@@ -44,6 +44,7 @@ jobs:
           node scripts/rank-army-gunfighters.mjs \
             --input 'gfYKY29ycmVnaWRvckFJcyB0aGF0IGFuIElndWFuYSBpbiB5b3VyIHBvY2tldCBvciBhcmUgeW91IGp1c3QgaGFwcHkgdG8gc2VlIG1lP4EsAgEBAAkAgaUBBAAAAIGlAQQAAACHaAEJAAAAgSgBAQAAAIYPAAEAAACBiwEGAAAAhisBAwAAAIGUAQMAAACBlAEDAAACAQAFAIGqAQEAAACBfwECAAAAh2UBAQAAAIEoAQoAAACBmgEBAAA%3D' \
             --catalog data/infinity-army/gunfighter-benchmark-catalog.json \
+            --limit 15 \
             > .tmp/corregidor-gunfighter-ratings.json
       - uses: actions/upload-artifact@v4
         with:
