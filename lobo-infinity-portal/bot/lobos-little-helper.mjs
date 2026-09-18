@@ -7,6 +7,7 @@ import { createInfListInteractionHandler, createInfListMessageHandler, ensureInf
 import { createMissionInteractionHandler, ensureMissionCommand } from './mission-command.mjs'
 import { createInfIdInteractionHandler, ensureInfIdCommand } from './inf-id-command.mjs'
 import { createRulesInteractionHandler, ensureRulesCommand } from './rules-command.mjs'
+import { startRulesResourceWatcher } from './rules-resource-watcher.mjs'
 
 export const BOT_NAME = "Lobo's Little Helper"
 export const DISCORD_TOKEN_ENV = 'DISCORD_BOT_TOKEN'
@@ -45,6 +46,26 @@ export async function startLobosLittleHelper({ token = process.env[DISCORD_TOKEN
     const rulesCommands = await ensureRulesCommand(client)
     const guildIds = [...client.guilds.cache.keys()]
     process.stdout.write(`${BOT_NAME} ready: botUserId=${client.user.id} applicationId=${client.application.id} guildIds=${guildIds.join(',') || 'none'} interactionListeners=${client.listenerCount(Events.InteractionCreate)} missionCommands=${commands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} infListCommands=${infListCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} infIdCommands=${infIdCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} rulesCommands=${rulesCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'}\n`)
+    startRulesResourceWatcher({
+      logger: console,
+      onChange: async ({ changes, trustedRulesAdded, snapshot }) => {
+        const channelId = String(process.env.RULES_RESOURCES_ALERT_CHANNEL_ID || '').trim()
+        if (!channelId) return
+        const channel = await client.channels.fetch(channelId)
+        if (!channel?.isTextBased?.()) throw new Error(`Rules resources alert channel is not text-capable: ${channelId}`)
+        const added = changes.added.slice(0, 8).map((item) => `+ ${item.label}: ${item.url}`)
+        const removed = changes.removed.slice(0, 5).map((item) => `- ${item.label}: ${item.url}`)
+        const lines = [
+          `**Infinity resources changed** — source timestamp <t:${snapshot.endpointUpdatedAt}:f>`,
+          ...added,
+          ...removed,
+          trustedRulesAdded.length
+            ? `Trusted official rules candidates: ${trustedRulesAdded.length}. Corpus promotion remains benchmark-gated.`
+            : 'No new trusted official rules document was detected; the active rules corpus was not changed.',
+        ]
+        await channel.send(lines.join('\n').slice(0, 1900))
+      },
+    })
   } catch {
     process.stderr.write(`${BOT_NAME} could not register slash commands.\n`)
   }
