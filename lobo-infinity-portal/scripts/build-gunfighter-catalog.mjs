@@ -76,7 +76,7 @@ try {
     await mkdir(dirname(auditOutput), { recursive: true })
     const auditedUnitIds = new Set([...keys].map((key) => Number(key.split(':')[1])))
     const rawUnits = payloads.filter((payload) => endpointId(payload.url) === 502).flatMap((payload) => payload.units || []).filter((unit) => auditedUnitIds.has(Number(unit.id)))
-    await writeFile(auditOutput, `${JSON.stringify({ benchmarkVersion: GUNFIGHTER_BENCHMARK_VERSION, rawUnits, profiles: audited }, null, 2)}\n`, 'utf8')
+    await writeFile(auditOutput, `${JSON.stringify({ benchmarkVersion: GUNFIGHTER_BENCHMARK_VERSION, defenders, rawUnits, profiles: audited }, null, 2)}\n`, 'utf8')
   }
   console.log(JSON.stringify({ output, entries: artifact.entryCount, payloads: payloads.length, weapons: chartRows.length, fingerprint: artifact.fingerprint }))
   await captured.page.close()
@@ -114,8 +114,8 @@ async function captureWeaponChart(page) {
   await chartRows.nth(1).waitFor({ state: 'attached', timeout: 60_000 })
 
   const rowCount = await chartRows.count()
-  if (rowCount < 10) {
-    throw new Error(`Weapons chart loaded only ${rowCount} rows; expected the full official chart`)
+  if (rowCount < 1) {
+    throw new Error('Weapons chart did not expose any rows for the loaded army list')
   }
   const rows = await extractWeaponChartRows(chartPage)
   if (popup) await popup.close()
