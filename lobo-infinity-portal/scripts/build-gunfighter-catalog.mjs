@@ -10,6 +10,15 @@ import { evaluateGunfighterProfile } from '../bot/gunfighter-rating.mjs'
 import { extractWeaponChartRows, normalizeWeaponChartRows } from '../bot/infinity-weapon-chart.mjs'
 import { buildCanonicalDataset } from './infinity-army-canonical-dataset.mjs'
 
+const BENCHMARK_WEAPON_ARMY_CODES = [
+  // Fusilier, Swiss Guard ML, and Black A.I.R. MSR complete profiles.
+  'ZQpwYW5vY2VhbmlhDkJlbmNobWFyayBQYW5PgSwBAQEAAwABAQEAAAAJAQMAAACHEAEDAAA=',
+  // Riot Grrl ML complete profile.
+  'gfcHYmFrdW5pbhFCZW5jaG1hcmsgQmFrdW5pboEsAQEBAAEAga8BBQAA',
+  // Transductor Zond and Reaktion Zond HMG complete profiles.
+  'gfUGbm9tYWRzEEJlbmNobWFyayBOb21hZHOBLAEBAQACAIGcAQEAAACBmQEBAAA=',
+]
+
 const args = parseArgs(process.argv.slice(2))
 if (!args.input) throw new Error('Usage: npm run gunfighters:catalog -- --input <Army code> [--output <catalog.json>]')
 const output = resolve(args.output || 'data/infinity-army/gunfighter-benchmark-catalog.json')
@@ -23,7 +32,9 @@ const browser = await chromium.launch({
 })
 try {
   const captured = await captureOfficialData(browser, args.input)
-  const chartRows = normalizeWeaponChartRows(await captureWeaponChart(captured.page))
+  const rawWeaponRows = [...await captureWeaponChart(captured.page)]
+  for (const armyCode of BENCHMARK_WEAPON_ARMY_CODES) rawWeaponRows.push(...await captureWeaponChartForArmyCode(browser, armyCode))
+  const chartRows = dedupeWeaponChartRows(normalizeWeaponChartRows(rawWeaponRows))
   const payloads = await captureAllFactionPayloads(captured.page, captured.metadata, captured.payloads)
   const dataset = buildCanonicalDataset({ metadata: captured.metadata, payloads })
   const profiles = payloads.flatMap((payload) => {
@@ -109,6 +120,26 @@ async function captureWeaponChart(page) {
   const rows = await extractWeaponChartRows(chartPage)
   if (popup) await popup.close()
   return rows
+}
+
+async function captureWeaponChartForArmyCode(browser, armyCode) {
+  const page = await browser.newPage({ viewport: { width: 1600, height: 1000 } })
+  try {
+    await page.goto(`https://infinityuniverse.com/army/list/${encodeURIComponent(armyCode)}`, { waitUntil: 'domcontentloaded', timeout: 90_000 })
+    await page.waitForLoadState('networkidle', { timeout: 60_000 }).catch(() => {})
+    return await captureWeaponChart(page)
+  } finally {
+    await page.close()
+  }
+}
+
+function dedupeWeaponChartRows(rows) {
+  const byFingerprint = new Map()
+  for (const row of rows) {
+    const fingerprint = JSON.stringify([row.name, row.mode, row.ranges, row.damage, row.burst, row.ammo, row.save, row.saveDivisor, row.saveFixed, row.saveModifier, row.savingRolls, row.traits])
+    if (!byFingerprint.has(fingerprint)) byFingerprint.set(fingerprint, row)
+  }
+  return [...byFingerprint.values()]
 }
 
 async function captureAllFactionPayloads(page, metadata, seeded) {
