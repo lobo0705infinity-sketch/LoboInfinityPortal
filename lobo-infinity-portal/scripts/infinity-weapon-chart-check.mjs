@@ -30,6 +30,7 @@ assert.equal(weaponChartRecordToGunfighterWeapon(blitzen).modes[0].saves, 2)
 
 const riotstopper = normalizeWeaponChartRow({ name: 'Heavy Riotstopper', damage: 7, burst: 1, ammo: 'PARA', saving: 'PH-6', traits: ['Direct Template (Large Teardrop)', 'Non-lethal'] })
 assert.equal(riotstopper.attackType, 'direct-template')
+assert.deepEqual(riotstopper.ranges, [{ min: 0, max: 8, modifier: 0 }])
 assert.equal(riotstopper.save, 'PH')
 assert.equal(riotstopper.saveModifier, -6)
 assert.equal(riotstopper.state, 'immobilized')

@@ -14,6 +14,7 @@ const dataset = {
 const chart = normalizeWeaponChartRows([
   { id: 3, name: 'AP HMG', ranges: [{ min: 0, max: 16, modifier: 0 }, { min: 16, max: 32, modifier: 3 }], damage: 5, burst: 4, ammo: 'AP', saving: 'ARM/2', savingRolls: 1 },
   { id: 8, name: 'Pitcher', ranges: [{ min: 0, max: 8, modifier: 0 }], damage: '-', burst: 1, ammo: '', saving: '-', savingRolls: '-' },
+  { id: 5, name: 'Heavy Flamethrower', damage: 6, burst: 1, ammo: 'N', saving: 'ARM', savingRolls: 1, traits: ['Continuous Damage', 'Direct Template (Large Teardrop)'] },
 ])
 const [profile] = buildCanonicalGunfighterProfiles({ dataset, weaponChart: chart, sectorialId: 502, wildcardUnitIds: [99] })
 assert.equal(profile.fireteamCapable, true)
@@ -23,6 +24,19 @@ assert.equal(profile.weapons[0].modes[0].specialDice, 1)
 assert.equal(profile.weapons[0].modes[0].saveDivisor, 2)
 assert.equal(profile.weapons.some((weapon) => weapon.name === 'Pitcher'), false, 'utility launchers without a target resolution must be excluded')
 assert.equal(profile.profileId, 2)
+
+const [ttsProfile] = buildCanonicalGunfighterProfiles({
+  dataset,
+  weaponChart: chart,
+  sectorialId: 502,
+  ttsProfiles: [{ id: '502:99:7:4:2', bs: 14, ph: 16, arm: 6, bts: 6, vitality: null, structure: 4, skills: ['BS Attack(-3)', 'BS Attack(SR-1)'], equipment: [], weapons: [{ name: 'AP HMG', modifiers: [] }, { name: 'Heavy Flamethrower', modifiers: ['+1B'] }] }],
+})
+assert.equal(ttsProfile.bs, 14)
+assert.equal(ttsProfile.vitality, null)
+assert.equal(ttsProfile.structure, 4)
+const ttsFlamethrower = ttsProfile.weapons.find((weapon) => weapon.name === 'Heavy Flamethrower')
+assert.equal(ttsFlamethrower.modes[0].burstBonus, 1)
+assert.equal(ttsFlamethrower.modes[0].continuousDamage, true)
 
 const ftoDataset = structuredClone(dataset)
 ftoDataset.units[0].profileGroups[0].options = [{ id: 4, name: 'TEST FTO', weapons: [{ id: 3 }] }, { id: 5, name: 'TEST', weapons: [{ id: 3 }] }]

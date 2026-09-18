@@ -1,6 +1,6 @@
 import { weaponChartRecordToGunfighterWeapon } from './infinity-weapon-chart.mjs'
 
-export function buildCanonicalGunfighterProfiles({ dataset, weaponChart, sectorialId, fireteamUnitIds = [], wildcardUnitIds = [], fireteamProfiles = [] } = {}) {
+export function buildCanonicalGunfighterProfiles({ dataset, weaponChart, sectorialId, fireteamUnitIds = [], wildcardUnitIds = [], fireteamProfiles = [], ttsProfiles = [] } = {}) {
   if (!Array.isArray(dataset?.units)) throw new Error('Canonical Army dataset has no units.')
   if (!Array.isArray(weaponChart)) throw new Error('Official weapon chart is required.')
   const weaponRecords = indexWeaponChart(weaponChart)
@@ -9,36 +9,56 @@ export function buildCanonicalGunfighterProfiles({ dataset, weaponChart, sectori
   const equips = indexById(dataset.metadata?.equips)
   const extras = indexById(dataset.metadata?.extras)
   const eligible = new Set([...fireteamUnitIds, ...wildcardUnitIds].map(Number))
+  const ttsById = new Map(ttsProfiles.map((profile) => [String(profile.id), profile]))
   const profiles = []
   for (const unit of dataset.units) for (const group of unit.profileGroups || []) for (const option of group.options || []) {
     const physicalProfiles = group.profiles?.length ? group.profiles : [{}]
     for (const profile of physicalProfiles) {
+      const id = `${sectorialId}:${unit.id}:${group.id}:${option.id}:${profile.id ?? 1}`
+      const ttsProfile = ttsById.get(id)
       const references = [...(unit.weapons || []), ...(group.weapons || []), ...(profile.weapons || []), ...(option.weapons || [])]
-      const weapons = resolveWeapons(references, weaponRecords, extras, armyWeapons)
+      const weapons = mergeWeapons([
+        ...resolveWeapons(references, weaponRecords, extras, armyWeapons),
+        ...resolveTtsWeapons(ttsProfile?.weapons, weaponRecords),
+      ])
       if (!weapons.length) continue
       profiles.push({
-        id: `${sectorialId}:${unit.id}:${group.id}:${option.id}:${profile.id ?? 1}`,
+        id,
         sectorialId: Number(sectorialId),
         unitId: Number(unit.id),
         groupId: Number(group.id),
         optionId: Number(option.id),
         profileId: Number(profile.id ?? 1),
         name: [unit.name, option.name || profile.name].filter(Boolean).join(' — '),
-        bs: stat(profile, unit, 'bs'),
-        wip: stat(profile, unit, 'wip'),
-        ph: stat(profile, unit, 'ph'),
-        arm: stat(profile, unit, 'arm'),
-        bts: stat(profile, unit, 'bts'),
-        vitality: stat(profile, unit, 'w') ?? stat(profile, unit, 'vitality'),
-        structure: stat(profile, unit, 'str') ?? stat(profile, unit, 'structure'),
-        skills: resolveTraits([...(unit.skills || []), ...(group.skills || []), ...(profile.skills || []), ...(option.skills || [])], skills, extras),
-        equipment: resolveTraits([...(unit.equipment || unit.equip || []), ...(group.equipment || group.equip || []), ...(profile.equipment || profile.equip || []), ...(option.equipment || option.equip || [])], equips, extras),
+        bs: ttsProfile?.bs ?? stat(profile, unit, 'bs'),
+        wip: ttsProfile?.wip ?? stat(profile, unit, 'wip'),
+        ph: ttsProfile?.ph ?? stat(profile, unit, 'ph'),
+        arm: ttsProfile?.arm ?? stat(profile, unit, 'arm'),
+        bts: ttsProfile?.bts ?? stat(profile, unit, 'bts'),
+        vitality: ttsProfile ? ttsProfile.vitality : stat(profile, unit, 'w') ?? stat(profile, unit, 'vitality'),
+        structure: ttsProfile ? ttsProfile.structure : stat(profile, unit, 'str') ?? stat(profile, unit, 'structure'),
+        skills: ttsProfile?.skills?.length ? ttsProfile.skills : resolveTraits([...(unit.skills || []), ...(group.skills || []), ...(profile.skills || []), ...(option.skills || [])], skills, extras),
+        equipment: ttsProfile?.equipment?.length ? ttsProfile.equipment : resolveTraits([...(unit.equipment || unit.equip || []), ...(group.equipment || group.equip || []), ...(profile.equipment || profile.equip || []), ...(option.equipment || option.equip || [])], equips, extras),
         weapons,
         fireteamCapable: exactFireteamEligibility({ unit, group, option, profile, eligible, fireteamProfiles }),
       })
     }
   }
   return profiles
+}
+
+function resolveTtsWeapons(references = [], chart) {
+  const resolved = []
+  for (const reference of references) {
+    const candidates = chart.byName.get(normalize(reference.name)) || []
+    for (const record of candidates) {
+      const weapon = weaponChartRecordToGunfighterWeapon(record)
+      applyWeaponModifiers(weapon.modes[0], reference.modifiers || [])
+      weapon.modes = weapon.modes.filter(isBenchmarkAttackMode)
+      if (weapon.modes.length) resolved.push(weapon)
+    }
+  }
+  return resolved
 }
 
 function exactFireteamEligibility({ unit, group, option, profile, eligible, fireteamProfiles }) {
@@ -122,7 +142,10 @@ function mergeWeapons(weapons) {
   for (const weapon of weapons) {
     const key = `${weapon.id ?? ''}:${normalize(weapon.name)}`
     if (!merged.has(key)) merged.set(key, { ...weapon, modes: [] })
-    merged.get(key).modes.push(...weapon.modes)
+    for (const mode of weapon.modes) {
+      const signature = JSON.stringify(mode)
+      if (!merged.get(key).modes.some((candidate) => JSON.stringify(candidate) === signature)) merged.get(key).modes.push(mode)
+    }
   }
   return [...merged.values()]
 }

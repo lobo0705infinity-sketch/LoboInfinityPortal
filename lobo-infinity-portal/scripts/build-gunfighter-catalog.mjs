@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { mkdir, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { chromium } from 'playwright'
 import { buildGunfighterBenchmarkCatalog } from '../bot/gunfighter-benchmark-catalog.mjs'
@@ -13,6 +13,9 @@ import { buildCanonicalDataset } from './infinity-army-canonical-dataset.mjs'
 const args = parseArgs(process.argv.slice(2))
 if (!args.input) throw new Error('Usage: npm run gunfighters:catalog -- --input <Army code> [--output <catalog.json>]')
 const output = resolve(args.output || 'data/infinity-army/gunfighter-benchmark-catalog.json')
+const ttsCatalogPath = resolve(args['tts-catalog'] || 'data/infinity-army/tts-profile-catalog.json')
+const ttsCatalog = JSON.parse(await readFile(ttsCatalogPath, 'utf8'))
+const ttsProfiles = Array.isArray(ttsCatalog.profiles) ? ttsCatalog.profiles : []
 const executablePath = args['executable-path'] || process.env.PLAYWRIGHT_EXECUTABLE_PATH
 const browser = await chromium.launch({
   headless: true,
@@ -27,7 +30,7 @@ try {
     const sectorialId = endpointId(payload.url)
     const sectorialDataset = buildCanonicalDataset({ metadata: captured.metadata, payloads: [payload] })
     const { fireteamUnitIds, wildcardUnitIds, fireteamProfiles } = fireteamEligibility([payload])
-    return buildCanonicalGunfighterProfiles({ dataset: sectorialDataset, weaponChart: chartRows, sectorialId, fireteamUnitIds, wildcardUnitIds, fireteamProfiles })
+    return buildCanonicalGunfighterProfiles({ dataset: sectorialDataset, weaponChart: chartRows, sectorialId, fireteamUnitIds, wildcardUnitIds, fireteamProfiles, ttsProfiles })
   })
   const defenders = buildStandardGunfighterDefenders(chartRows)
   const catalog = buildGunfighterBenchmarkCatalog({
@@ -45,6 +48,12 @@ try {
       weaponChartSchema: 'infinity-official-weapon-chart-v1',
       payloadCount: payloads.length,
       weaponRecordCount: chartRows.length,
+      ttsProfileCatalog: {
+        schemaVersion: ttsCatalog.schemaVersion || null,
+        profileCount: ttsCatalog.profileCount || ttsProfiles.length,
+        fingerprint: ttsCatalog.fingerprint || null,
+        source: ttsCatalog.source || null,
+      },
     },
   }
   await mkdir(dirname(output), { recursive: true })

@@ -8,10 +8,14 @@ export function normalizeWeaponChartRows(rows = []) {
 export function normalizeWeaponChartRow(row = {}) {
   const name = clean(row.name)
   if (!name) return null
-  const ranges = normalizeRanges(row.ranges)
   const saving = parseSavingAttribute(row.saving)
   const traits = asArray(row.traits).map(clean).filter(Boolean)
   const attackType = traits.some((trait) => /direct template/i.test(trait)) ? 'direct-template' : 'bs-attack'
+  const parsedRanges = normalizeRanges(row.ranges)
+  // Direct Template Weapons do not print BS range bands in the official chart.
+  // Give them the benchmark's close-range availability band so they are tested
+  // against Dodge instead of being discarded as non-attacks.
+  const ranges = attackType === 'direct-template' && !parsedRanges.length ? [{ min: 0, max: 8, modifier: 0 }] : parsedRanges
   const smoke = /(?:^|\+)smoke(?:$|\+)/i.test(clean(row.ammo))
   const eclipse = /eclipse/i.test(clean(row.ammo))
   const attackAttribute = inferAttackAttribute(name, traits, smoke || eclipse)
