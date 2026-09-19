@@ -58,10 +58,20 @@ function combatProfileSignature(profile) {
 export function lookupGunfighterRatings(catalog, decodedArmy) {
   if (catalog?.schemaVersion !== GUNFIGHTER_CATALOG_SCHEMA) throw new Error('Unsupported gunfighter benchmark catalog.')
   const byKey = new Map(catalog.entries.map((entry) => [entry.key, entry]))
-  return decodedArmy.combatGroups.flatMap((group) => group.members || group.entries || []).map((member) => {
+  const members = decodedArmy.combatGroups.flatMap((group) => group.members || group.entries || [])
+  return members.flatMap((member, memberIndex) => {
     const key = canonicalProfileKey({ ...member, sectorialId: decodedArmy.sectorialId })
     const match = byKey.get(key)
-    return match ? { status: 'matched', key, result: match.result } : { status: 'missing', key, result: null }
+    if (match) return [{ status: 'matched', key, result: match.result, memberIndex }]
+    if (Number(member.groupId) === 0) {
+      const expanded = catalog.entries.filter((entry) =>
+        Number(entry.sectorialId) === Number(decodedArmy.sectorialId)
+        && Number(entry.unitId) === Number(member.unitId)
+        && Number(entry.optionId) === Number(member.optionId)
+        && Number(entry.profileId) === Number(member.profileId ?? String(member.combinedId || '').split('-').at(-1) ?? 1))
+      if (expanded.length) return expanded.map((entry) => ({ status: 'matched', key: entry.key, result: entry.result, memberIndex, expandedFromLegacyGroup: true }))
+    }
+    return [{ status: 'missing', key, result: null, memberIndex }]
   })
 }
 
@@ -69,7 +79,7 @@ export function rankArmyGunfighters(catalog, decodedArmy, { limit = 4 } = {}) {
   const members = decodedArmy.combatGroups.flatMap((group) => group.members || group.entries || [])
   const lookups = lookupGunfighterRatings(catalog, decodedArmy)
   return lookups.map((lookup, index) => {
-    const member = members[index]
+    const member = members[lookup.memberIndex ?? index]
     const states = lookup.result?.states || []
     return {
       status: lookup.status,

@@ -43,4 +43,15 @@ ftoDataset.units[0].profileGroups[0].options = [{ id: 4, name: 'TEST FTO', weapo
 const ftoProfiles = buildCanonicalGunfighterProfiles({ dataset: ftoDataset, weaponChart: chart, sectorialId: 502, fireteamProfiles: [{ unitId: 99, memberName: 'TEST FTO', wildcard: false }] })
 assert.equal(ftoProfiles.find((item) => item.optionId === 4).fireteamCapable, true)
 assert.equal(ftoProfiles.find((item) => item.optionId === 5).fireteamCapable, false, 'FTO eligibility must not leak to a non-FTO sibling')
+const weaponlessDataset = structuredClone(dataset)
+weaponlessDataset.units[0].profileGroups[0].options = [{ id: 9, name: 'Repeater', weapons: [] }]
+const [weaponless] = buildCanonicalGunfighterProfiles({ dataset: weaponlessDataset, weaponChart: chart, sectorialId: 502 })
+assert.deepEqual(weaponless.weapons, [], 'profiles without offensive ranged weapons remain in the catalog with a zero rating')
+const [crossSectorTts] = buildCanonicalGunfighterProfiles({
+  dataset,
+  weaponChart: chart,
+  sectorialId: 502,
+  ttsProfiles: [{ id: '501:99:7:4:2', unitId: 99, groupId: 7, optionId: 4, profileId: 2, bs: 15, ph: 12, arm: 4, bts: 6, vitality: 1, structure: null, skills: [], equipment: [], weapons: [{ name: 'AP HMG', modifiers: [] }] }],
+})
+assert.equal(crossSectorTts.bs, 15, 'combat profile enrichment may cross sectorials without sharing Fireteam eligibility')
 console.log('PASS - exact Army profiles join to official weapon-chart records and preserve profile/weapon modifiers.')

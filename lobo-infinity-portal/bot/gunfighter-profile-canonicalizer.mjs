@@ -10,18 +10,18 @@ export function buildCanonicalGunfighterProfiles({ dataset, weaponChart, sectori
   const extras = indexById(dataset.metadata?.extras)
   const eligible = new Set([...fireteamUnitIds, ...wildcardUnitIds].map(Number))
   const ttsById = new Map(ttsProfiles.map((profile) => [String(profile.id), profile]))
+  const ttsByProfileKey = new Map(ttsProfiles.map((profile) => [ttsProfileKey(profile), profile]))
   const profiles = []
   for (const unit of dataset.units) for (const group of unit.profileGroups || []) for (const option of group.options || []) {
     const physicalProfiles = group.profiles?.length ? group.profiles : [{}]
     for (const profile of physicalProfiles) {
       const id = `${sectorialId}:${unit.id}:${group.id}:${option.id}:${profile.id ?? 1}`
-      const ttsProfile = ttsById.get(id)
+      const ttsProfile = ttsById.get(id) || ttsByProfileKey.get(ttsProfileKey({ unitId: unit.id, groupId: group.id, optionId: option.id, profileId: profile.id ?? 1 }))
       const references = [...(unit.weapons || []), ...(group.weapons || []), ...(profile.weapons || []), ...(option.weapons || [])]
       const weapons = mergeWeapons([
         ...resolveWeapons(references, weaponRecords, extras, armyWeapons),
         ...resolveTtsWeapons(ttsProfile?.weapons, weaponRecords),
       ])
-      if (!weapons.length) continue
       profiles.push({
         id,
         sectorialId: Number(sectorialId),
@@ -45,6 +45,10 @@ export function buildCanonicalGunfighterProfiles({ dataset, weaponChart, sectori
     }
   }
   return profiles
+}
+
+function ttsProfileKey(profile) {
+  return [profile.unitId, profile.groupId, profile.optionId, profile.profileId ?? 1].map(Number).join(':')
 }
 
 function resolveTtsWeapons(references = [], chart) {

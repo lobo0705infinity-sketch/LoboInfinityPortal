@@ -90,5 +90,12 @@ const lookup = lookupGunfighterRatings(catalog, { sectorialId: 502, combatGroups
 assert.deepEqual(lookup.map((item) => item.status), ['matched', 'missing'], 'submitted lists use exact precomputed profile lookup and fail closed on new profiles')
 const ranked = rankArmyGunfighters(catalog, { sectorialId: 502, combatGroups: [{ members: [{ unitId: 10, groupId: 2, optionId: 3, combinedId: '604-10-2-3-1', unitName: 'Attacker' }] }] })
 assert.equal(ranked[0].normal, catalog.entries[0].result.states[0].rating)
+const pairedProfiles = [
+  { ...catalogProfile, id: '502:1551:1:1:1', unitId: 1551, groupId: 1, optionId: 1, name: 'JAZZ' },
+  { ...catalogProfile, id: '502:1551:2:1:1', unitId: 1551, groupId: 2, optionId: 1, name: 'BILLIE' },
+]
+const pairedCatalog = buildGunfighterBenchmarkCatalog({ profiles: pairedProfiles, defenders: [smokeDefender], officialDataVersion: '7.test', benchmarkVersion: 'test-v1' })
+const pairedLookup = lookupGunfighterRatings(pairedCatalog, { sectorialId: 502, combatGroups: [{ members: [{ unitId: 1551, groupId: 0, optionId: 1, combinedId: '502-1551-0-1-1' }] }] })
+assert.deepEqual(pairedLookup.map((item) => item.result.name), ['JAZZ', 'BILLIE'], 'legacy combined selections expand into each physical trooper profile')
 
 console.log('PASS - gunfighter engine covers exact dice, all range bands, X Visor, optimal AROs, Fireteam +1SD, durability fractions, state weights, and Shock/NWI immunity.')
