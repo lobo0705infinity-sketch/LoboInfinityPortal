@@ -133,6 +133,22 @@ assert.equal(ratedAnalysis.categories.gunfighters[0].nonLinked.weaponsUsed[0].we
 assert.equal(ratedAnalysis.categories.apex.length, 0, 'catalog ratings replace the legacy Apex section')
 assert.equal(ratedAnalysis.categories.competent.length, 0, 'catalog ratings replace the legacy Competent section')
 
+const closeCombatAnalysis = classifyTacticalBrief(fixtures, { faction: 'Fixture' }, [], [], [{
+  status: 'matched',
+  key: closeCombatKey(fixtures.find((item) => item.combinedId === 'apex-cc').combinedId),
+  rating: 73.4,
+  grade: 'A',
+  percentile: 91.2,
+  states: [
+    { id: 'normal', label: 'Normal active-turn CC', rating: 73.4, grade: 'A', percentile: 91.2, weaponsUsed: [{ weapon: 'EXP CC Weapon' }] },
+    { id: 'ally-1', label: 'One allied Trooper engaged', rating: 78.1, grade: 'S', percentile: 96.4, weaponsUsed: [{ weapon: 'EXP CC Weapon' }] },
+  ],
+}])
+assert.equal(closeCombatAnalysis.closeCombatBenchmark.available, true)
+assert.equal(closeCombatAnalysis.categories.closeCombat[0].grade, 'A')
+assert.equal(closeCombatAnalysis.categories.closeCombat[0].states[1].grade, 'S')
+assert.equal(closeCombatAnalysis.categories.apexCc.length, 0, 'catalog CC ratings replace the legacy Apex Close Combat section')
+
 const aroIdentityFixture = profile('305-1846-1-2-1', { points: 26, skills: ['Neurocinetics'], weapons: [weapon('AP Sniper Rifle', 2)] })
 const aroIdentityAnalysis = classifyTacticalBrief([aroIdentityFixture], { faction: 'TAK' }, [], [{
   status: 'matched',
@@ -263,6 +279,10 @@ const empty = classifyTacticalBrief([], { faction: 'Empty' })
 function canonicalKey(combinedId) {
   const numeric = String(combinedId).replace(/\D/g, '') || '1'
   return `${Number(numeric)}:0:0:1`
+}
+function closeCombatKey(combinedId) {
+  const parts = String(combinedId).split('-').map(Number)
+  return parts.length >= 5 && parts.slice(-4).every(Number.isInteger) ? parts.slice(-4).join(':') : '0:0:0:1'
 }
 if (!process.argv.includes('--logic-only')) {
   const browser = await chromium.launch({ headless: true })

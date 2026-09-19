@@ -4,6 +4,7 @@ import { resolveExactProfileGroup } from '../scripts/infinity-army-profile-resol
 
 const categories = [
   ['gunfighters', 'Top Gunfighter Ratings'],
+  ['closeCombat', 'Top Close Combat Ratings'],
   ['apex', 'Apex Gunfighters'],
   ['competent', 'Competent Gunfighters'],
   ['apexCc', 'Apex Close Combat Fighters'],
@@ -87,11 +88,12 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
   })
 }
 
-export function classifyTacticalBrief(profiles, army = {}, gunfighterRatings = [], aroRatings = []) {
+export function classifyTacticalBrief(profiles, army = {}, gunfighterRatings = [], aroRatings = [], closeCombatRatings = []) {
   const aggregated = aggregateExactProfiles(profiles)
   const eligibleFireteams = legalFireteams(aggregated)
   const result = Object.fromEntries(categories.map(([key]) => [key, []]))
   result.gunfighters = mergeGunfighterRatings(aggregated, gunfighterRatings)
+  result.closeCombat = mergeCloseCombatRatings(aggregated, closeCombatRatings)
   for (const profile of aggregated) {
     const enhancements = preferredMatches(profile.skills, [gunfighterMimetismToken, gunfighterMsvToken, bsAttackMinusThreeToken, albedoToken])
     const parsedBurstBonus = bsAttackBurstBonus(profile.skills)
@@ -154,10 +156,12 @@ export function classifyTacticalBrief(profiles, army = {}, gunfighterRatings = [
     result.apex = []
     result.competent = []
   }
+  if (result.closeCombat.length) result.apexCc = []
   addMultiRoleMetadata(result)
   return {
     army: { faction: army.faction || '', listName: army.listName || '', sectorial: army.sectorial || '' },
     gunfighterBenchmark: { available: result.gunfighters.length > 0, fingerprint: army.gunfighterCatalogFingerprint || null },
+    closeCombatBenchmark: { available: result.closeCombat.length > 0, fingerprint: army.closeCombatCatalogFingerprint || null },
     aroBenchmark: { available: aroRatings.some((rating) => rating?.status === 'matched'), fingerprint: army.aroCatalogFingerprint || null },
     categories: result,
     networkSummary: {
@@ -178,7 +182,11 @@ export async function renderTacticalBrief({ analysis, browser }) {
   const page = await browser.newPage({ deviceScaleFactor: 1, viewport: { width: imageWidth, height: 1_600 } })
   try {
     const categoryBlocks = categories
-      .filter(([key]) => analysis.gunfighterBenchmark?.available ? !['apex', 'competent'].includes(key) : key !== 'gunfighters')
+      .filter(([key]) => {
+        if (analysis.gunfighterBenchmark?.available ? ['apex', 'competent'].includes(key) : key === 'gunfighters') return false
+        if (analysis.closeCombatBenchmark?.available ? key === 'apexCc' : key === 'closeCombat') return false
+        return true
+      })
       .map(([key, title]) => ({ key, title, entries: analysis.categories[key] }))
     const measured = await measureBlocks(page, analysis, categoryBlocks)
     const pages = paginateBlocks(measured, maxImageHeight - 250)
@@ -217,13 +225,14 @@ function markup(analysis, blocks, pageIndex, pageCount) {
 
 function categoryMarkup({ key, title, entries }, analysis) {
   const summary = key === 'hacking' ? `<div class="summary"><b>NETWORK:</b> ${analysis.networkSummary.hackers} Hackers · ${analysis.networkSummary.pitcherCarriers} Pitcher · ${analysis.networkSummary.fastPandaCarriers} FastPanda · ${analysis.networkSummary.deployableRepeaterCarriers} Deployable Repeater · ${analysis.networkSummary.repeaterCarriers} Repeater</div>` : ''
-  const content = entries.length ? `<div class="grid"${key === 'gunfighters' ? ' style="grid-template-columns:1fr 1fr"' : ''}>${entries.map((entry, index) => entryMarkup(key, entry, index)).join('')}</div>` : `<div class="empty">${emptyMessage}</div>`
-  const fullWidth = analysis.gunfighterBenchmark?.available ? ' style="grid-column:1/-1"' : ''
+  const content = entries.length ? `<div class="grid"${['gunfighters', 'closeCombat'].includes(key) ? ' style="grid-template-columns:1fr 1fr"' : ''}>${entries.map((entry, index) => entryMarkup(key, entry, index)).join('')}</div>` : `<div class="empty">${emptyMessage}</div>`
+  const fullWidth = analysis.gunfighterBenchmark?.available || analysis.closeCombatBenchmark?.available ? ' style="grid-column:1/-1"' : ''
   return `<section class="category category-${escapeHtml(key)}"${fullWidth}><h3><span>${escapeHtml(title)}</span><small>${entries.length} exact profile${entries.length === 1 ? '' : 's'}</small></h3>${summary}${content}</section>`
 }
 
 function entryMarkup(key, entry, index = 0) {
   if (key === 'gunfighters') return gunfighterEntryMarkup(entry, index)
+  if (key === 'closeCombat') return closeCombatEntryMarkup(entry, index)
   if (key.endsWith('Aro') && (entry.nonLinked || entry.fireteamLinked)) return aroEntryMarkup(entry, index)
   let detail = ''
   if (['apex', 'competent', 'valuableAro', 'disposableAro'].includes(key)) detail = `${key.endsWith('Aro') ? `${value(entry.points)} pts · ` : ''}BS ${value(entry.bs)} · ${entry.qualifyingWeapons.map((weapon) => [escapeHtml(weaponDisplay(weapon)), formatBurst(weapon)].filter(Boolean).join(' · ')).join(' · ')}`
@@ -267,6 +276,22 @@ function gunfighterEntryMarkup(entry, index) {
   return `<article class="gunfighter-card"><div class="gunfighter-rank">#${index + 1}</div><div class="entry-head"><div><h4>${escapeHtml(displayName)}</h4>${unitDetail}</div><div class="grade grade-${escapeHtml(String(best.grade || 'na').toLowerCase())}"><span>GRADE</span>${escapeHtml(best.grade || '—')}</div></div><div class="weapon-line"><span>WEAPON${visibleWeapons.length === 1 ? '' : 'S'}</span>${weapons}</div><div class="rating-table">${rows}</div></article>`
 }
 
+function closeCombatEntryMarkup(entry, index) {
+  const states = (entry.states || []).filter((state) => state.id !== 'reactive').map((state) => ({
+    ...state,
+    label: state.id === 'normal' ? 'NORMAL ACTIVE' : String(state.label || state.id).toUpperCase(),
+  }))
+  const primary = states.find((state) => state.id === 'normal') || { rating: entry.rating, grade: entry.grade, percentile: entry.percentile, weaponsUsed: [] }
+  const weaponLabels = unique(states.flatMap((state) => (state.weaponsUsed || []).map((weapon) => weapon.weapon).filter(Boolean)))
+  const visibleWeapons = weaponLabels.slice(0, 3)
+  const overflow = weaponLabels.length - visibleWeapons.length
+  const weapons = visibleWeapons.length ? `${visibleWeapons.map(escapeHtml).join(' · ')}${overflow > 0 ? ` · +${overflow} more` : ''}` : 'Weapon data unavailable'
+  const rows = states.map((state) => `<div class="rating-row"><span class="rating-state">${escapeHtml(state.label)}</span><div class="rating-metrics"><b>${escapeHtml(state.grade || '—')}</b><strong>${formatRating(state.rating)}</strong><small>${formatPercentile(state.percentile)}</small></div></div>`).join('')
+  const displayName = entry.profileName || entry.unitName
+  const unitDetail = entry.profileName && normalized(entry.profileName) !== normalized(entry.unitName) ? `<p>${escapeHtml(entry.unitName)}</p>` : ''
+  return `<article class="gunfighter-card close-combat-rating-card"><div class="gunfighter-rank">#${index + 1}</div><div class="entry-head"><div><h4>${escapeHtml(displayName)}</h4>${unitDetail}</div><div class="grade grade-${escapeHtml(String(primary.grade || 'na').toLowerCase())}"><span>GRADE</span>${escapeHtml(primary.grade || '—')}</div></div><div class="weapon-line"><span>CC WEAPON${visibleWeapons.length === 1 ? '' : 'S'}</span>${weapons}</div><div class="rating-table">${rows}</div></article>`
+}
+
 function styles() { return `*{box-sizing:border-box}html,body{margin:0;background:#070b10;color:#eef2f6;font-family:Arial,sans-serif}.brief{width:${imageWidth}px;padding:48px 52px 38px;background:radial-gradient(circle at 90% 0,#263540 0,transparent 32%),#0b1117;border-top:12px solid #a7242b}header{padding:0 4px 30px;border-bottom:3px solid #53616d}.brand{color:#df3942;font-size:20px;font-weight:900;letter-spacing:5px}h1{margin:9px 0 2px;font-size:50px;line-height:1;letter-spacing:2px}header h2{margin:0;color:#aeb8c1;font-size:25px;letter-spacing:3px}header p{margin:12px 0 0;color:#dfe6eb;font-size:21px;font-weight:700}header .role-note{color:#aeb8c1;font-size:16px;font-weight:600}.categories{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px}.category{border:2px solid #53616d;background:#111a22;break-inside:avoid}.category:nth-child(1),.category:nth-child(2){grid-column:span 1}.category:nth-child(n+3){grid-column:1/-1}.category h3{display:flex;align-items:center;justify-content:space-between;margin:0;padding:13px 17px;background:#202c36;border-left:9px solid #c42e37;font-size:26px;letter-spacing:1px;text-transform:uppercase}.category h3 small{color:#aeb8c1;font-size:15px;letter-spacing:0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px}.category:nth-child(-n+2) .grid{grid-template-columns:1fr}.summary{padding:10px 15px;background:#701a20;color:#fff;font-size:17px}.empty{padding:26px 18px;color:#9faab3;font-size:20px;font-style:italic}article{position:relative;min-width:0;padding:13px 15px;border:1px solid #40505d;border-left:6px solid #7f919f;background:#17222b}.entry-head{display:flex;gap:12px;justify-content:space-between}.entry-head div{min-width:0}h4{margin:0;color:#fff;font-size:21px;line-height:1.1;overflow-wrap:anywhere;text-transform:uppercase}.entry-head p{margin:4px 0 0;color:#b9c5cd;font-size:17px;line-height:1.2;overflow-wrap:anywhere}.entry-head strong{flex:none;color:#ef454f;font-size:24px}.detail{margin-top:9px;color:#fff;font-size:17px;font-weight:800;line-height:1.3;overflow-wrap:anywhere}.badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}.badge{padding:4px 8px;border:1px solid #8e9ba5;border-radius:3px;background:#263640;color:#e8edf0;font-size:14px;font-weight:800}.multi-role{border-color:#50c7df;background:#123f49}.fireteam{border-color:#db3942;background:#5e171c}.also{margin-top:8px;color:#9edbe7;font-size:14px;font-weight:700}.gunfighter-card{padding:16px 16px 14px 66px;border-left-color:#df3942;background:linear-gradient(135deg,#1a2832,#111a22)}.gunfighter-rank{position:absolute;left:14px;top:16px;color:#ef454f;font-size:29px;font-weight:950;letter-spacing:-1px}.gunfighter-card .entry-head{min-height:48px}.gunfighter-card .entry-head>div:first-child{padding-right:8px}.gunfighter-card .entry-head p{font-size:13px;color:#91a0aa}.grade{display:flex;flex:none;flex-direction:column;align-items:center;justify-content:center;min-width:60px;width:60px;height:56px;border:2px solid #48c8df;border-radius:4px;background:#0e3943;color:#fff;font-size:28px;font-weight:950;line-height:.8}.grade span{margin-bottom:5px;color:#aeeef8;font-size:10px;letter-spacing:1px}.grade-s{border-color:#f0c44f;background:#624a0b}.grade-a{border-color:#53d18c;background:#155036}.grade-b{border-color:#56bde8;background:#174963}.grade-c{border-color:#b8c35c;background:#464b1d}.grade-d,.grade-f{border-color:#d36a6f;background:#552025}.weapon-line{margin-top:11px;padding:7px 9px;background:#0d151b;color:#f2f5f7;font-size:14px;font-weight:800;line-height:1.25}.weapon-line span{margin-right:8px;color:#ef454f;font-size:11px;letter-spacing:1px}.rating-table{margin-top:8px;border-top:1px solid #40505d}.rating-row{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:39px;padding:7px 2px;border-bottom:1px solid #30404c}.rating-state{min-width:0;color:#b9c5cd;font-size:13px;font-weight:900;letter-spacing:.4px;white-space:nowrap}.rating-metrics{display:grid;grid-template-columns:28px 58px 104px;gap:8px;align-items:center;flex:none}.rating-metrics b{color:#75d7e7;text-align:center;font-size:17px}.rating-metrics strong{color:#fff;text-align:right;font-size:17px}.rating-metrics small{color:#9edbe7;text-align:right;font-size:11px;font-weight:800;white-space:nowrap}footer{padding-top:18px;text-align:right;color:#8e9aa4;font-size:14px;font-weight:800;letter-spacing:2px}` }
 
 function aggregateExactProfiles(profiles) {
@@ -295,6 +320,20 @@ function mergeGunfighterRatings(profiles, ratings) {
   })
 }
 
+function mergeCloseCombatRatings(profiles, ratings) {
+  return (ratings || []).filter((rating) => rating?.status === 'matched' && Number.isFinite(rating.rating)).map((rating) => {
+    const profile = profiles.find((candidate) => closeCombatKeyFromCombinedId(candidate.combinedId) === String(rating.key || ''))
+    return {
+      ...(profile || { combinedId: rating.key, unitName: rating.unitName || 'Profile unavailable', profileName: rating.profileName || '', quantity: 1, weapons: [], skills: [], equipment: [] }),
+      badges: [],
+      rating: rating.rating,
+      grade: rating.grade,
+      percentile: rating.percentile,
+      states: rating.states || [],
+    }
+  })
+}
+
 function attachAroRatings(result, ratings) {
   const byKey = new Map((ratings || []).filter((rating) => rating?.status === 'matched').map((rating) => [String(rating.key), rating]))
   for (const category of ['valuableAro', 'disposableAro']) for (const entry of result[category]) {
@@ -313,6 +352,11 @@ function hasQualifyingAroRating(entry) {
 function canonicalKeyFromCombinedId(value) {
   const parts = String(value || '').split('-').map(Number)
   return parts.length >= 5 && parts.slice(-5).every(Number.isInteger) ? parts.slice(-5).join(':') : ''
+}
+
+function closeCombatKeyFromCombinedId(value) {
+  const parts = String(value || '').split('-').map(Number)
+  return parts.length >= 5 && parts.slice(-4).every(Number.isInteger) ? parts.slice(-4).join(':') : ''
 }
 
 export function filterCanonicalFireteamMembershipsForProfile(memberships, profileNames = []) {
