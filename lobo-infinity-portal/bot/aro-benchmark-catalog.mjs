@@ -3,7 +3,7 @@ import { evaluateAroProfile } from './gunfighter-rating.mjs'
 import { canonicalProfileKey } from './gunfighter-benchmark-catalog.mjs'
 
 export const ARO_CATALOG_SCHEMA = 'infinity-aro-benchmark-v1'
-export const ARO_BENCHMARK_VERSION = 'aro-benchmark-v2-top-30-fireteam-level2'
+export const ARO_BENCHMARK_VERSION = 'aro-benchmark-v3-top-30-shared-state-grading'
 
 export function selectBenchmarkAttackers(profiles, gunfighterCatalog, { limit = 30 } = {}) {
   const catalogByKey = new Map(gunfighterCatalog.entries.map((entry) => [entry.key, entry]))
@@ -140,10 +140,8 @@ function summarizeWeaponsUsed(matchups) {
 }
 
 function applyRelativeRatings(entries, evaluationCache) {
-  const distributions = new Map()
-  for (const states of evaluationCache.values()) for (const state of states) distributions.set(state.id, [...(distributions.get(state.id) || []), Number(state.rating || 0)])
+  const values = [...evaluationCache.values()].flatMap((states) => states.map((state) => Number(state.rating || 0)))
   for (const entry of entries) for (const state of entry.result.states) {
-    const values = distributions.get(state.id) || []
     state.percentile = values.length ? round(100 * values.filter((value) => value <= Number(state.rating || 0)).length / values.length) : null
     state.grade = state.percentile == null ? null : state.percentile >= 95 ? 'S' : state.percentile >= 80 ? 'A' : state.percentile >= 60 ? 'B' : state.percentile >= 40 ? 'C' : state.percentile >= 20 ? 'D' : 'F'
   }

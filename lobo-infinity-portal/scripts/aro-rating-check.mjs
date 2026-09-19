@@ -46,4 +46,17 @@ const ranked = rankArmyAros(catalog, { sectorialId: 502, combatGroups: [{ member
 assert.equal(ranked[0].status, 'matched')
 assert.equal(ranked[0].normal, catalog.entries[0].result.states[0].rating)
 
-console.log('PASS - ARO benchmark uses the top 30 attackers, optimal legal responses, linked +1SD, meaningful enemy effect, and disposable-use limits.')
+const sharedProfiles = [
+  { ...profiles[0], id: '502:101:1:1:1', unitId: 101, bs: 11, fireteamCapable: true },
+  { ...profiles[1], id: '502:102:1:1:1', unitId: 102, bs: 13, fireteamCapable: false },
+  { ...profiles[2], id: '502:103:1:1:1', unitId: 103, bs: 15, fireteamCapable: true, weapons: [weapon('Feuerbach', { burst: 2, power: 14, ammo: 'AP+DA', saves: 2 })] },
+]
+const sharedCatalog = buildAroBenchmarkCatalog({ profiles: sharedProfiles, attackers, officialDataVersion: 'test-shared' })
+const sharedStates = sharedCatalog.entries.flatMap((entry) => entry.result.states).sort((a, b) => a.rating - b.rating)
+for (let index = 1; index < sharedStates.length; index += 1) {
+  assert.ok(sharedStates[index].percentile >= sharedStates[index - 1].percentile, 'shared ARO grading must never assign a lower percentile to a higher raw rating')
+  const grades = ['F', 'D', 'C', 'B', 'A', 'S']
+  assert.ok(grades.indexOf(sharedStates[index].grade) >= grades.indexOf(sharedStates[index - 1].grade), 'shared ARO grading must never assign a worse grade to a higher raw rating')
+}
+
+console.log('PASS - ARO benchmark uses the top 30 attackers, optimal legal responses, linked +1SD, shared-state monotonic grading, meaningful enemy effect, and disposable-use limits.')
