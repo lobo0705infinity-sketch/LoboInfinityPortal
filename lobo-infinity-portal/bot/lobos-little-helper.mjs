@@ -1,5 +1,5 @@
-// Railway deployment marker: gunfighter benchmark v8
 #!/usr/bin/env node
+// Railway deployment marker: gunfighter benchmark v8
 
 import { Client, Events, GatewayIntentBits } from 'discord.js'
 import { fileURLToPath } from 'node:url'
