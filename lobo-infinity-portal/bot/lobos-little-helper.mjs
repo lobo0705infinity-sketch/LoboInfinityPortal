@@ -1,3 +1,4 @@
+// Railway deployment marker: gunfighter benchmark v8
 #!/usr/bin/env node
 
 import { Client, Events, GatewayIntentBits } from 'discord.js'
