@@ -74,19 +74,21 @@ export function rankArmyCloseCombat(catalog, decodedArmy, { limit = 4 } = {}) {
 
 export function rankSubmittedCloseCombat(catalog, profiles, { sectorialId, limit = 4 } = {}) {
   if (catalog?.schemaVersion !== CLOSE_COMBAT_CATALOG_SCHEMA) throw new Error('Unsupported close-combat benchmark catalog.')
-  const sectorialEntries = (catalog.entries || []).filter((entry) => (entry.aliases || []).some((alias) => Number(alias.sectorialId) === Number(sectorialId)))
   return (profiles || []).map((profile) => {
     const expectedKey = closeCombatKeyFromCombinedId(profile.combinedId)
+    const expectedSuffix = expectedKey.split(':').slice(-3).join(':')
     const unitName = normalizedName(profile.unitName)
     const profileName = normalizedName(profile.profileName)
-    const candidates = sectorialEntries.map((entry) => {
-      const aliases = (entry.aliases || []).filter((alias) => Number(alias.sectorialId) === Number(sectorialId))
+    const candidates = (catalog.entries || []).map((entry) => {
+      const aliases = entry.aliases || []
       const aliasMatch = aliases.some((alias) => normalizedName(alias.name) === unitName)
+      const sectorialAliasMatch = aliases.some((alias) => Number(alias.sectorialId) === Number(sectorialId) && normalizedName(alias.name) === unitName)
       const exactKey = String(entry.key) === expectedKey
       if (!exactKey && !aliasMatch) return null
       const entryName = normalizedName(entry.name)
       const points = [entry.points, ...(entry.pointVariants || [])].map(Number)
-      const score = (exactKey ? 1000 : 0) + (aliasMatch ? 100 : 0) + (profileName && entryName.includes(profileName) ? 20 : 0) + (points.includes(Number(profile.points)) ? 10 : 0)
+      const suffixMatch = String(entry.key).split(':').slice(-3).join(':') === expectedSuffix
+      const score = (exactKey ? 1000 : 0) + (suffixMatch ? 500 : 0) + (sectorialAliasMatch ? 100 : 0) + (aliasMatch ? 80 : 0) + (profileName && entryName.includes(profileName) ? 20 : 0) + (points.includes(Number(profile.points)) ? 10 : 0)
       return { entry, score }
     }).filter(Boolean).sort((a, b) => b.score - a.score || b.entry.rating - a.entry.rating)
     const entry = candidates[0]?.entry
