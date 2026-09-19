@@ -100,6 +100,7 @@ try {
   await writeFile(output, serializedArtifact, 'utf8')
   const encodedArtifact = gzipSync(serializedArtifact, { level: 9 }).toString('base64')
   await writeFile(`${output}.gz.b64`, encodedArtifact, 'utf8')
+  await writeArchiveParts(`${output}.gz.b64`, encodedArtifact)
   if (args['audit-keys'] && args['audit-output']) {
     const keys = new Set(String(args['audit-keys']).split(',').map((value) => value.trim()).filter(Boolean))
     const audited = profiles.filter((profile) => keys.has(profile.id)).map((profile) => ({ profile, evaluation: evaluateGunfighterProfile(profile, defenders) }))
@@ -113,6 +114,12 @@ try {
   if (page) await page.close()
 } finally {
   if (browser) await browser.close()
+}
+
+async function writeArchiveParts(path, encoded, partSize = 180_000) {
+  for (let offset = 0, part = 1; offset < encoded.length; offset += partSize, part += 1) {
+    await writeFile(`${path}.part-${String(part).padStart(2, '0')}`, encoded.slice(offset, offset + partSize), 'utf8')
+  }
 }
 
 async function fetchOfficialJson(url) {

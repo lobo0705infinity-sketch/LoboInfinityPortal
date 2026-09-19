@@ -14,7 +14,7 @@ export async function loadGunfighterBenchmarkCatalog(path = BUNDLED_GUNFIGHTER_C
   if (cachedPath === absolute && cachedCatalog) return cachedCatalog
   try {
     const source = absolute === BUNDLED_GUNFIGHTER_CATALOG_PATH
-      ? gunzipSync(Buffer.from(await readFile(BUNDLED_GUNFIGHTER_CATALOG_ARCHIVE_PATH, 'utf8'), 'base64')).toString('utf8')
+      ? gunzipSync(Buffer.from(await readBundledArchive(), 'base64')).toString('utf8')
       : await readFile(absolute, 'utf8')
     const catalog = JSON.parse(source)
     if (catalog?.schemaVersion !== GUNFIGHTER_CATALOG_SCHEMA || !Array.isArray(catalog.entries)) throw new Error('Unsupported gunfighter catalog schema.')
@@ -25,4 +25,13 @@ export async function loadGunfighterBenchmarkCatalog(path = BUNDLED_GUNFIGHTER_C
     if (cachedPath === absolute) cachedCatalog = null
     return null
   }
+}
+
+async function readBundledArchive() {
+  const parts = []
+  for (let index = 1; index <= 99; index += 1) {
+    try { parts.push(await readFile(`${BUNDLED_GUNFIGHTER_CATALOG_ARCHIVE_PATH}.part-${String(index).padStart(2, '0')}`, 'utf8')) }
+    catch { break }
+  }
+  return parts.length ? parts.join('') : readFile(BUNDLED_GUNFIGHTER_CATALOG_ARCHIVE_PATH, 'utf8')
 }
