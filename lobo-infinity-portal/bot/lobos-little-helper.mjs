@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Railway production deployment: gunfighter benchmark v8
 
 import { Client, Events, GatewayIntentBits } from 'discord.js'
 import { fileURLToPath } from 'node:url'
