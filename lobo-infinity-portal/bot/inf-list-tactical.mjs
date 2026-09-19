@@ -212,8 +212,9 @@ function markup(analysis, blocks, pageIndex, pageCount) {
 
 function categoryMarkup({ key, title, entries }, analysis) {
   const summary = key === 'hacking' ? `<div class="summary"><b>NETWORK:</b> ${analysis.networkSummary.hackers} Hackers · ${analysis.networkSummary.pitcherCarriers} Pitcher · ${analysis.networkSummary.fastPandaCarriers} FastPanda · ${analysis.networkSummary.deployableRepeaterCarriers} Deployable Repeater · ${analysis.networkSummary.repeaterCarriers} Repeater</div>` : ''
-  const content = entries.length ? `<div class="grid">${entries.map((entry, index) => entryMarkup(key, entry, index)).join('')}</div>` : `<div class="empty">${emptyMessage}</div>`
-  return `<section class="category"><h3><span>${escapeHtml(title)}</span><small>${entries.length} exact profile${entries.length === 1 ? '' : 's'}</small></h3>${summary}${content}</section>`
+  const content = entries.length ? `<div class="grid"${key === 'gunfighters' ? ' style="grid-template-columns:1fr 1fr"' : ''}>${entries.map((entry, index) => entryMarkup(key, entry, index)).join('')}</div>` : `<div class="empty">${emptyMessage}</div>`
+  const fullWidth = analysis.gunfighterBenchmark?.available ? ' style="grid-column:1/-1"' : ''
+  return `<section class="category category-${escapeHtml(key)}"${fullWidth}><h3><span>${escapeHtml(title)}</span><small>${entries.length} exact profile${entries.length === 1 ? '' : 's'}</small></h3>${summary}${content}</section>`
 }
 
 function entryMarkup(key, entry, index = 0) {
