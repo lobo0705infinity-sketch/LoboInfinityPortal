@@ -18,6 +18,9 @@ export const CANONICAL_MISSIONS = [
   'Cutthroat',
   'Superiority',
   'Uplink Center',
+  'Double Bind',
+  'The Dig',
+  'Data Harvest',
 ] as const
 
 export type CanonicalMission = (typeof CANONICAL_MISSIONS)[number]

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { selectRefreshCandidates } from '../api/army-intelligence-refresh-worker.mjs'
+import { ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION } from './army-intelligence-snapshot-schema.mjs'
 
 const worker = readFileSync('api/army-intelligence-refresh-worker.mjs', 'utf8')
 const api = readFileSync('backend/API.gs', 'utf8')
@@ -17,28 +18,51 @@ const sources = [
 const state = new Map([
   ['known', {
     armyCodeHash: 'known-hash',
-    decoderVersion: 'army-intelligence-decoder-v4',
+    decoderVersion: 'army-intelligence-decoder-v5',
     hasProfileMetadata: true,
+    hasTacticalMetadata: true,
+    pipelineVersion: 'army-intelligence-pipeline-v1',
+    tacticalSchemaVersion: ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION,
     status: 'decoded',
   }],
   ['failed', {
     armyCodeHash: 'failed-hash',
-    decoderVersion: 'army-intelligence-decoder-v4',
+    decoderVersion: 'army-intelligence-decoder-v5',
     hasProfileMetadata: false,
+    status: 'failed',
+  }],
+  ['isolated', {
+    armyCodeHash: 'isolated-hash',
+    error: 'Invalid IDs in Army Code: Infinity-Data deterministically rejected an out-of-date unit option.',
+    pipelineVersion: 'army-intelligence-pipeline-v1',
+    tacticalSchemaVersion: ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION,
     status: 'failed',
   }],
 ])
 
+sources.push({ snapshotKey: 'isolated', armyCodeHash: 'isolated-hash' })
+
 assert.deepEqual(
   selectRefreshCandidates(sources, state).map((source) => source.snapshotKey),
   ['new', 'failed'],
-  'Automatic synchronization must reuse current snapshots and retry only missing/failed snapshots.',
+  'Automatic synchronization must reuse current snapshots and retry missing/older-schema failures.',
 )
 assert.match(worker, /isScheduledRequest\(request\)/)
 assert.match(worker, /ARMY_INTELLIGENCE_WORKER_TOKEN/)
 assert.match(worker, /selectRefreshCandidates\(sources, state\)/)
-assert.match(worker, /postSnapshots\(apiUrl, snapshots, upstreamCredential\)/)
+assert.match(worker, /const DEFAULT_REFRESH_BATCH_LIMIT = 100/)
+assert.match(worker, /postSnapshots\(apiUrl, snapshots, upstreamCredential/)
+assert.match(worker, /scopedBackfill && body\.deferReadModelRebuild === true/)
+assert.match(worker, /scopedBackfill && body\.finalizeMigration === true/)
+assert.match(worker, /body\.set\('deferReadModelRebuild', 'true'\)/)
+assert.match(worker, /body\.set\('finalizeMigration', 'true'\)/)
+assert.match(worker, /url\.searchParams\.set\('action', 'refreshArmyIntelligence'\)/)
+assert.match(worker, /fetchAppsScriptWithRetry\(url,/)
+assert.match(worker, /getAction\(apiUrl, 'armyIntelligenceSnapshotState', credential\)/)
+assert.match(worker, /const durableCandidates = selectRefreshCandidates\(sources, durableState\)/)
+assert.match(worker, /remaining: durableCandidates\.length/)
 assert.match(api, /case "armyIntelligenceSources"[\s\S]*requireArmyIntelligenceWorkerOrPermission/)
+assert.match(api, /case "armyIntelligenceSnapshotState"[\s\S]*requireArmyIntelligenceWorkerOrPermission/)
 assert.match(api, /case "refreshArmyIntelligence"[\s\S]*requireArmyIntelligenceWorkerOrPermission/)
 assert.match(api, /case "installArmyIntelligenceScheduler"[\s\S]*requireArmyIntelligenceWorkerOrPermission/)
 assert.match(intelligence, /requireArmyIntelligenceWorkerOrPermission[\s\S]*requireApiPermission\(e, "manageCache", handler\)/)
@@ -53,7 +77,7 @@ assert.match(scheduler, /runScheduledArmyIntelligenceRefresh/)
 assert.match(scheduler, /runScheduledMaintenanceWorker_\([\s\S]*ARMY_INTELLIGENCE_SCHEDULER_URL/)
 assert.match(scheduler, /runScheduledMaintenanceWorker_\([\s\S]*AUTOMATION_QUEUE_WORKER_URL/)
 assert.match(scheduler, /Authorization: "Bearer " \+ token/)
-assert.match(scheduler, /everyMinutes\(5\)/)
+assert.match(scheduler, /everyMinutes\(30\)/)
 assert.match(scheduler, /getProjectTriggers\(\)[\s\S]*deleteTrigger/)
 assert.match(scheduler, /initialResult = runScheduledArmyIntelligenceRefresh\(\)[\s\S]*newTrigger/)
 assert.match(scheduler, /LockService\.getScriptLock\(\)[\s\S]*tryLock/)

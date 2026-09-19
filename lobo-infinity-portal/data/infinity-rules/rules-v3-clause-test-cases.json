@@ -1,0 +1,26 @@
+{
+  "version": 3,
+  "cases": [
+    {"id":"msv-smoke","question":"Can MSV see through Smoke?","families":["MULTISPECTRAL VISOR LEVEL 1","MULTISPECTRAL VISOR LEVEL 2","MULTISPECTRAL VISOR LEVEL 3","SMOKE AMMUNITION"],"required":["draw LoF through Zero Visibility Zones","draw LoF through Visibility Zones","Smoke Ammunition generates a Zero Visibility Zone"],"forbidden":["automatically a success","Discover against a target in Camouflaged State"]},
+    {"id":"msv2-mimetism","question":"How does MSV2 work against Mimetism?","families":["MULTISPECTRAL VISOR LEVEL 2","MIMETISM"],"required":["Mimetism","reduces MODs"],"forbidden":["Smoke Ammunition","automatically a success"]},
+    {"id":"msv1-zero-visibility","question":"How does MSV1 work in a Zero Visibility Zone?","families":["MULTISPECTRAL VISOR LEVEL 1"],"required":["Zero Visibility Zones","-6 MOD"],"forbidden":["Mimetism (-3)"]},
+    {"id":"mimetism-direct","question":"How does Mimetism work?","families":["MIMETISM"],"required":["BS Attack","Discover","does not apply to CC Attacks"],"forbidden":["MINELAYER"]},
+    {"id":"msv-family-direct","question":"How does Multispectral Visor work?","families":["MULTISPECTRAL VISOR LEVEL 1","MULTISPECTRAL VISOR LEVEL 2","MULTISPECTRAL VISOR LEVEL 3"],"required":["Mimetism (-3)","Visibility Zones","automatically a success"],"forbidden":["NANOSCREEN"]},
+    {"id":"discover-attack","question":"Can I Discover a Camouflaged Marker and shoot it with the same trooper?","families":["DISCOVER","CAMOUFLAGED STATE","ORDER EXPENDITURE SEQUENCE"],"required":["Discover + Attack maneuver","First Skill"],"forbidden":["does not count as the same Marker"]},
+    {"id":"zero-pain-repeater","question":"Does Zero Pain suffer the -3 MOD through an enemy Repeater?","families":["ZERO PAIN","REPEATER","FIREWALL"],"required":["Firewall MODs (-3)","Comms Attack"],"forbidden":[]},
+    {"id":"stealth-aro","question":"How does Stealth affect AROs?","families":["STEALTH","AUTOMATIC REACTION ORDER"],"required":["only grant AROs","declare AROs"],"forbidden":["Smoke Template"]},
+    {"id":"sixth-sense-stealth","question":"How does Sixth Sense interact with Stealth?","families":["SIXTH SENSE","STEALTH"],"required":["Stealth","Sixth Sense"],"forbidden":["Smoke Template"]},
+    {"id":"repeater-area","question":"How does a Repeater extend Hacking Area?","families":["REPEATER","HACKING AREA"],"required":["extend the Hacking Area"],"forbidden":["HoloMask State"]},
+    {"id":"firewall-enemy-repeater","question":"How does Firewall work through an enemy Repeater?","families":["FIREWALL","REPEATER"],"required":["Firewall MODs (-3)","negative MOD"],"forbidden":[]},
+    {"id":"impersonation-discover","question":"How does Impersonation affect Discover?","families":["IMPERSONATION","DISCOVER"],"required":["Discover"],"forbidden":["Deployment Zone"]},
+    {"id":"suppressive-fire","question":"How does Suppressive Fire work?","families":["SUPPRESSIVE FIRE"],"required":["Suppressive Fire Range","full B3"],"forbidden":[]},
+    {"id":"dodge-no-lof","question":"Can I Dodge without LoF?","families":["DODGE"],"required":["outside their LoF"],"forbidden":["SHOT CANCELLED"]},
+    {"id":"coordinated-aro","question":"How do Coordinated Orders affect AROs?","families":["COORDINATED ORDER","AUTOMATIC REACTION ORDER"],"required":["Each reactive Trooper must choose only one"],"forbidden":["reroll"]},
+    {"id":"total-reaction","question":"How does Total Reaction work?","families":["TOTAL REACTION"],"required":["full Burst"],"forbidden":[]},
+    {"id":"camouflage-direct","question":"How does Camouflage work?","families":["CAMOUFLAGED STATE"],"required":["Camouflaged Marker","Discover that Marker first"],"forbidden":["GAME STATES AND GLOSSARY"]},
+    {"id":"smoke-zone","question":"How does Smoke create a Visibility Zone?","families":["SMOKE AMMUNITION"],"required":["generates a Zero Visibility Zone"],"forbidden":["Multispectral Visor"]},
+    {"id":"engineer-direct","question":"How does Engineer work?","families":["ENGINEER"],"required":["Silhouette contact","Normal WIP Roll"],"forbidden":[]},
+    {"id":"faq-total-cover","question":"What happens if an attack hits a Camouflaged Marker whose model is in Total Cover?","families":["FAQ CLARIFICATION"],"required":["Saving Roll","not hit","Total Cover"],"forbidden":["Fireteam Bonuses"]},
+    {"id":"its-specialists","question":"In ITS, which troopers count as Specialist Troops?","families":["SPECIALIST TROOPS"],"required":["Hackers, Doctors, Engineers","Specialist Operative"],"forbidden":["INFINITY TABLES"]}
+  ]
+}

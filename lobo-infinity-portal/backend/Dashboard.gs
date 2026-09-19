@@ -30,22 +30,6 @@ function getDashboard() {
 
   timer =
     startDashboardEndpointSubStage(
-      "dashboard.sheetLookup.mainMan"
-    );
-
-  const standings =
-    ss.getSheetByName(CONFIG.SHEETS.MAIN_MAN);
-
-  endDashboardEndpointSubStage(
-    "dashboard.sheetLookup.mainMan",
-    timer,
-    {
-      sheet: CONFIG.SHEETS.MAIN_MAN
-    }
-  );
-
-  timer =
-    startDashboardEndpointSubStage(
       "dashboard.sheetLookup.factionAnalytics"
     );
 
@@ -59,15 +43,6 @@ function getDashboard() {
       sheet: CONFIG.SHEETS.FACTION_ANALYTICS
     }
   );
-
-  if (!standings) {
-
-    return jsonOutput({
-      success: false,
-      error: "Main Man Standings not found."
-    });
-
-  }
 
   timer =
     startDashboardEndpointSubStage(
@@ -96,72 +71,35 @@ function getDashboard() {
 
   timer =
     startDashboardEndpointSubStage(
-      "dashboard.read.mainManStandings"
+      "dashboard.standings.mainMan"
     );
 
-  const values =
-    standings
-      .getRange(2, 1, standings.getLastRow() - 1, getDashboardStandingsColumnCount())
-      .getValues();
+  const leagueStandings = buildAllLeagueStandingsResponses(
+    EVENT_ENGINE_DEFAULT_EVENT_ID,
+    dashboardContext
+  );
+  const mainManResponse = leagueStandings[0];
 
   endDashboardEndpointSubStage(
-    "dashboard.read.mainManStandings",
+    "dashboard.standings.mainMan",
     timer,
     {
-      sheet: CONFIG.SHEETS.MAIN_MAN,
-      rows: values.length,
-      columns: getDashboardStandingsColumnCount()
+      eventId: mainManResponse.eventId,
+      rows: mainManResponse.standings.length
     }
   );
 
   const leader =
-    values[0] || [];
+    mainManResponse.summary.leader || {};
 
-  let gamesPlayed = 0;
-  let activePlayers = 0;
-  const mainManStandings = [];
+  const mainManStandings =
+    mainManResponse.standings;
 
-  timer =
-    startDashboardEndpointSubStage(
-      "dashboard.loop.mainManStandings"
-    );
+  const gamesPlayed =
+    mainManResponse.summary.gamesPlayed;
 
-  values.forEach(function(r) {
-
-    gamesPlayed +=
-      Number(r[CONFIG.STANDINGS.GAMES]);
-
-    if (Number(r[CONFIG.STANDINGS.GAMES]) > 0)
-      activePlayers++;
-
-    mainManStandings.push({
-      rank: r[CONFIG.STANDINGS.RANK],
-      player: r[CONFIG.STANDINGS.PLAYER],
-      displayName:
-        getDashboardPlayerDisplayName(
-          dashboardContext,
-          r[CONFIG.STANDINGS.PLAYER]
-        ),
-      games: r[CONFIG.STANDINGS.GAMES],
-      wins: r[CONFIG.STANDINGS.WINS],
-      losses: r[CONFIG.STANDINGS.LOSSES],
-      tp: r[CONFIG.STANDINGS.TP],
-      op: r[CONFIG.STANDINGS.OP],
-      vp: r[CONFIG.STANDINGS.VP]
-    });
-
-  });
-
-  endDashboardEndpointSubStage(
-    "dashboard.loop.mainManStandings",
-    timer,
-    {
-      rows: values.length
-    }
-  );
-
-  gamesPlayed =
-    Math.floor(gamesPlayed / 2);
+  const activePlayers =
+    mainManResponse.summary.activePlayers;
 
   let topFaction = "";
 
@@ -198,9 +136,7 @@ function getDashboard() {
     );
 
   const leagueOverview =
-    buildLeagueOverview(
-      dashboardContext
-    );
+    buildLeagueOverview(dashboardContext, leagueStandings);
 
   endDashboardEndpointSubStage(
     "dashboard.calculation.leagueOverview",
@@ -210,19 +146,27 @@ function getDashboard() {
 
   timer =
     startDashboardEndpointSubStage(
-      "dashboard.lookup.leaderDisplayName"
+      "dashboard.read.leagueOperations"
     );
 
-  const leaderDisplayName =
-    getDashboardPlayerDisplayName(
-      dashboardContext,
-      leader[CONFIG.STANDINGS.PLAYER]
-    );
+  const currentOperationsMissions =
+    buildLeagueOperationsPayload(
+      getLeagueOperationsCurrentRow()
+    ).missions
+      .slice(0, 2)
+      .map(function(operation) {
+        return operation.mission;
+      })
+      .filter(function(mission) {
+        return mission !== "";
+      });
 
   endDashboardEndpointSubStage(
-    "dashboard.lookup.leaderDisplayName",
+    "dashboard.read.leagueOperations",
     timer,
-    {}
+    {
+      missions: currentOperationsMissions.length
+    }
   );
 
   endDashboardEndpointSubStage(
@@ -234,21 +178,27 @@ function getDashboard() {
   return jsonOutput({
     success: true,
     leader: {
-      rank: leader[CONFIG.STANDINGS.RANK],
-      player: leader[CONFIG.STANDINGS.PLAYER],
-      displayName: leaderDisplayName,
-      games: leader[CONFIG.STANDINGS.GAMES],
-      wins: leader[CONFIG.STANDINGS.WINS],
-      losses: leader[CONFIG.STANDINGS.LOSSES],
-      tp: leader[CONFIG.STANDINGS.TP],
-      op: leader[CONFIG.STANDINGS.OP],
-      vp: leader[CONFIG.STANDINGS.VP]
+      rank: leader.rank || 0,
+      player: leader.player || "",
+      displayName: leader.displayName || leader.player || "",
+      games: leader.games || 0,
+      wins: leader.wins || 0,
+      losses: leader.losses || 0,
+      draws: leader.draws || 0,
+      tp: leader.tp || 0,
+      op: leader.op || 0,
+      vp: leader.vp || 0,
+      faction: leader.faction || "",
+      favoriteArmy: leader.favoriteArmy || leader.faction || "",
+      favoriteFaction: leader.favoriteFaction || leader.favoriteArmy || leader.faction || "",
+      preferredArmy: leader.preferredArmy || leader.favoriteArmy || leader.faction || ""
     },
     topFaction: topFaction,
     gamesPlayed: gamesPlayed,
     activePlayers: activePlayers,
     mainManStandings: mainManStandings,
-    leagueOverview: leagueOverview
+    leagueOverview: leagueOverview,
+    currentOperationsMissions: currentOperationsMissions
   });
 
 }
@@ -262,7 +212,7 @@ function getDashboardStandingsColumnCount() {
   ) + 1;
 }
 
-function buildLeagueOverview(dashboardContext) {
+function buildLeagueOverview(dashboardContext, preparedDivisions) {
 
   const cachedOverview =
     readDashboardLeagueOverviewCache();
@@ -281,7 +231,7 @@ function buildLeagueOverview(dashboardContext) {
       "dashboard.standings.main"
     );
 
-  const main =
+  const main = preparedDivisions && preparedDivisions[0] ? preparedDivisions[0] :
     buildStandingsResponse({
       key: "main",
       label: CONFIG.DIVISIONS.MAIN_MAN
@@ -300,7 +250,7 @@ function buildLeagueOverview(dashboardContext) {
       "dashboard.standings.pga"
     );
 
-  const pga =
+  const pga = preparedDivisions && preparedDivisions[1] ? preparedDivisions[1] :
     buildStandingsResponse({
       key: "pga",
       label: CONFIG.DIVISIONS.PGA
@@ -319,7 +269,7 @@ function buildLeagueOverview(dashboardContext) {
       "dashboard.standings.pgb"
     );
 
-  const pgb =
+  const pgb = preparedDivisions && preparedDivisions[2] ? preparedDivisions[2] :
     buildStandingsResponse({
       key: "pgb",
       label: CONFIG.DIVISIONS.PGB
@@ -563,43 +513,36 @@ function endDashboardEndpointSubStage(stageName, startTime, details) {
 
 function getLeader() {
 
-  const sheet =
-    lifGetTargetSpreadsheet_()
-      .getSheetByName(CONFIG.SHEETS.MAIN_MAN);
+  const dashboardContext =
+    buildDashboardRequestContext();
 
-  if (!sheet)
-    return jsonOutput({
-      success: false,
-      error: "Standings sheet not found."
-    });
+  const response =
+    buildStandingsResponse(
+      getStandingsDivisionConfig("main"),
+      dashboardContext
+    );
 
-  const values =
-    sheet
-      .getDataRange()
-      .getValues();
+  const leader =
+    response.summary.leader;
 
-  if (values.length < 2)
+  if (!leader)
     return jsonOutput({
       success: false,
       error: "No standings."
     });
 
-  const l = values[1];
-
   return jsonOutput({
     success: true,
-    rank: l[CONFIG.STANDINGS.RANK],
-    player: l[CONFIG.STANDINGS.PLAYER],
-    displayName:
-      getPlayerDisplayName(
-        l[CONFIG.STANDINGS.PLAYER]
-      ),
-    games: l[CONFIG.STANDINGS.GAMES],
-    wins: l[CONFIG.STANDINGS.WINS],
-    losses: l[CONFIG.STANDINGS.LOSSES],
-    tp: l[CONFIG.STANDINGS.TP],
-    op: l[CONFIG.STANDINGS.OP],
-    vp: l[CONFIG.STANDINGS.VP]
+    rank: leader.rank,
+    player: leader.player,
+    displayName: leader.displayName,
+    games: leader.games,
+    wins: leader.wins,
+    losses: leader.losses,
+    draws: leader.draws,
+    tp: leader.tp,
+    op: leader.op,
+    vp: leader.vp
   });
 
 }

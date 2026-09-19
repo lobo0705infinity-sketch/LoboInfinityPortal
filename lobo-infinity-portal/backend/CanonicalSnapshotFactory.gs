@@ -5,6 +5,9 @@
  * decoding, orchestration, persistence, and read-model responsibilities.
  */
 
+var ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION = "army-intelligence-tactical-v8";
+var ARMY_INTELLIGENCE_PIPELINE_VERSION = "army-intelligence-pipeline-v1";
+
 var CanonicalSnapshotFactory = (function() {
 
   function createDeterministicSnapshot(list, decoded) {
@@ -72,6 +75,7 @@ var CanonicalSnapshotFactory = (function() {
       decoded: decoded || null,
       decodedAt: new Date().toISOString(),
       error: error || "",
+      pipelineVersion: ARMY_INTELLIGENCE_PIPELINE_VERSION,
       snapshotKey: snapshotKey,
       status: status
     };
@@ -90,10 +94,12 @@ var CanonicalSnapshotFactory = (function() {
           ? decoded.decoderVersion
           : "",
       error: error || "",
+      pipelineVersion: ARMY_INTELLIGENCE_PIPELINE_VERSION,
       snapshotKey: source.snapshotKey,
       sourceId: source.sourceId,
       sourcePlayer: source.sourcePlayer,
       sourceType: source.sourceType,
+      tacticalSchemaVersion: ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION,
       status: status
     };
 
@@ -166,7 +172,9 @@ var CanonicalSnapshotFactory = (function() {
     createLegacySnapshot: createLegacySnapshot,
     createLegacyStorageSnapshot: createLegacyStorageSnapshot,
     createRefreshSnapshot: createRefreshSnapshot,
-    createSourceRefreshSnapshot: createSourceRefreshSnapshot
+    createSourceRefreshSnapshot: createSourceRefreshSnapshot,
+    pipelineVersion: ARMY_INTELLIGENCE_PIPELINE_VERSION,
+    tacticalSchemaVersion: ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION
   });
 
 })();

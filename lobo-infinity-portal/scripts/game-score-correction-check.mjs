@@ -78,8 +78,9 @@ check(
 )
 
 check(
-  !/FORM\.GAME_RESULT[\s\S]{0,120}\.setValue|setValue[\s\S]{0,120}FORM\.GAME_RESULT/.test(correction),
-  'Score correction must not modify the game result field.',
+  /const correctedResult\s*=\s*getGameScoreCorrectionResult\(after\)[\s\S]*const storedResult\s*=\s*getGameScoreCorrectionStoredResult\(target\.row\)[\s\S]*if \(correctedResult !== storedResult\)[\s\S]*FORM\.GAME_RESULT \+ 1[\s\S]*\.setValue\(correctedResult\)/,
+  'Score correction must reconcile the canonical result only when corrected scores change it.',
+  correction,
 )
 
 check(

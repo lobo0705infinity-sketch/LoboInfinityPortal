@@ -3,11 +3,11 @@ import { Link, useSearchParams } from 'react-router-dom'
 import Skeleton from '../components/Skeleton'
 import { filterCanonicalMissionRecords } from '../config/missions'
 import {
-  apiClient,
   type FactionSummary,
   type LeagueRecordValue,
   type MissionSummary,
 } from '../services/api'
+import { getPublicAnalyticsProjection } from '../services/publicAnalyticsProjection'
 import type { DivisionStandings, Standing } from '../types/dashboard'
 
 type StatisticsState =
@@ -45,15 +45,8 @@ function Analytics() {
 
   useEffect(() => {
     const controller = new AbortController()
-    const options = { eventId, gameType, signal: controller.signal }
-
-    Promise.all([
-      apiClient.getPlayers(options),
-      apiClient.getFactions(options),
-      apiClient.getMissions(options),
-      apiClient.getRecords(options),
-    ])
-      .then(([players, factions, missions, records]) => {
+    getPublicAnalyticsProjection({ eventId, gameType, signal: controller.signal })
+      .then(({ players, factions, missions, records }) => {
         if (!controller.signal.aborted) {
           setState({
             data: {

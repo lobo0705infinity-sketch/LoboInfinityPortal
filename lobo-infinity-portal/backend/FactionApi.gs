@@ -521,13 +521,13 @@ function getFactionMostPlayedMission(games) {
 
 }
 
-function getFactionRecentGames(factionName) {
+function getFactionRecentGames(factionName, allRecentGames) {
 
   const canonicalFactionName =
     canonicalizeArmyName(factionName);
 
   const games =
-    getAllRecentGameObjects()
+    (allRecentGames || getAllRecentGameObjects())
       .filter(function(game) {
 
         return (

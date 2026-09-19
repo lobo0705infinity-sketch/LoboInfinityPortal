@@ -5,6 +5,7 @@ import { getOperatorBadgeDetails } from '../components/operatorBadgeDetails'
 import PrimaryFactionCard from '../components/PrimaryFactionCard'
 import FactionPortraitImage from '../components/FactionPortraitImage'
 import EntityPreviousNext from '../components/EntityPreviousNext'
+import InfinityArmyLink from '../components/InfinityArmyLink'
 import Skeleton from '../components/Skeleton'
 import { getArmyParentFaction } from '../services/armyIdentity'
 import {
@@ -19,7 +20,7 @@ import type {
   PlayerRecordSummary,
   RecentGame,
 } from '../services/api'
-import { request } from '../services/apiCore'
+import { publicDetailProjection } from '../services/publicDetailProjection'
 import {
   formatObjectiveScore,
   formatPlayerName,
@@ -346,6 +347,7 @@ function PublicPlayerFactionPortrait({
     >
       <FactionPortraitImage
         alt={portrait.alt}
+        canonicalSource
         height={600}
         loading="lazy"
         onError={() => setVisible(false)}
@@ -887,9 +889,9 @@ function ArmyListMiniCard({ list }: { list: ArmyList }) {
       </p>
       <strong>Score {list.score}</strong>
       {target.status === 'available' ? (
-        <a href={target.href} rel="noreferrer" target="_blank">
+        <InfinityArmyLink armyCode={list.armyCode} href={target.href}>
           View in Infinity Army
-        </a>
+        </InfinityArmyLink>
       ) : (
         <button
           aria-label={`View in Infinity Army unavailable: ${target.reason}`}
@@ -941,11 +943,8 @@ async function getPlayerProfileForCareer(
   player: PlayerProfileData
   recentGames: RecentGame[]
 }> {
-  const payload = await request(
-    'player',
-    { signal },
-    { name: playerName, ...(eventId ? { profileEventId: eventId } : {}) },
-  )
+  void eventId
+  const payload = await publicDetailProjection.getPlayer(playerName, signal)
 
   return normalizePlayerProfilePayload(payload)
 }

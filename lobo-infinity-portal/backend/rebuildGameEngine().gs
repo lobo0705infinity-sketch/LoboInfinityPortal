@@ -215,6 +215,7 @@ function rebuildGameEngine(importedRowNumber) {
     analytics,
     armyIntelligence
   );
+  validatePersistedGameEngineState_(engine, analytics);
 
   if (tracedRowAccepted) {
     Logger.log(
@@ -308,6 +309,24 @@ function publishLatestGameSubmittedAutomationEvent(game) {
 
   return publishGameSubmittedAutomationEvent(submittedGame);
 
+}
+
+function validatePersistedGameEngineState_(engine, analytics) {
+  const spreadsheet = lifGetTargetSpreadsheet_();
+  const checks = [
+    { name: CONFIG.SHEETS.ENGINE, expected: Math.max(0, engine.length - 1) },
+    { name: CONFIG.SHEETS.GAME_ANALYTICS, expected: Math.max(0, analytics.length - 1) }
+  ];
+
+  checks.forEach(function(check) {
+    const sheet = spreadsheet.getSheetByName(check.name);
+    const actual = sheet ? Math.max(0, sheet.getLastRow() - 1) : -1;
+    if (actual !== check.expected)
+      throw new Error(
+        "Game Engine persistence validation failed for " + check.name +
+        ": expected " + check.expected + " data rows, found " + actual + "."
+      );
+  });
 }
 
 function publishGameSubmittedAutomationEvent(game) {

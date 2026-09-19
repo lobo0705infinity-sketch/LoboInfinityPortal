@@ -151,6 +151,17 @@ function correctGameScore(e, auth) {
   if (typeof invalidatePortalCacheGroup === "function")
     invalidatePortalCacheGroup("all");
 
+  if (typeof markPublicAnalyticsProjectionDirty_ === "function")
+    markPublicAnalyticsProjectionDirty_(target.eventId);
+  if (typeof markPublicTeamTournamentProjectionDirty_ === "function")
+    markPublicTeamTournamentProjectionDirty_(target.eventId);
+  if (typeof markPublicPlayersProjectionDirty_ === "function")
+    markPublicPlayersProjectionDirty_();
+  if (typeof markPublicLeagueWorkspaceProjectionDirty_ === "function")
+    markPublicLeagueWorkspaceProjectionDirty_();
+  if (typeof markPublicDetailProjectionDirty_ === "function")
+    markPublicDetailProjectionDirty_(["games", "players", "factions", "missions"]);
+
   return jsonOutput({
     success: true,
     auditWritten: true,

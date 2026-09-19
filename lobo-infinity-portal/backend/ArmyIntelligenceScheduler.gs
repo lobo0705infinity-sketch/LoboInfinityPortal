@@ -45,11 +45,11 @@ function installArmyIntelligenceRefreshScheduler(e) {
     ScriptApp
       .newTrigger(ARMY_INTELLIGENCE_SCHEDULER_HANDLER)
       .timeBased()
-      .everyMinutes(5)
+      .everyMinutes(30)
       .create();
 
   return {
-    cadenceMinutes: 5,
+    cadenceMinutes: 30,
     handler: ARMY_INTELLIGENCE_SCHEDULER_HANDLER,
     initialResult: initialResult,
     success: true,
@@ -72,52 +72,78 @@ function runScheduledArmyIntelligenceRefresh() {
     return skipped;
   }
 
+  let token = "";
   try {
-    const token = getArmyIntelligenceSchedulerToken_();
+    token = getArmyIntelligenceSchedulerToken_();
 
     if (!token)
       throw new Error("Army Intelligence scheduler credential is not configured.");
-
-    const intelligence = runScheduledMaintenanceWorker_(
-      ARMY_INTELLIGENCE_SCHEDULER_URL,
-      token
-    );
-    const automation = runScheduledMaintenanceWorker_(
-      AUTOMATION_QUEUE_WORKER_URL,
-      token
-    );
-    const payload = intelligence.payload;
-    const result = {
-      automation: automation,
-      decoded: Number(payload.decoded) || 0,
-      failed: Number(payload.failed) || 0,
-      hasMore: payload.hasMore === true,
-      remaining: Number(payload.remaining) || 0,
-      status: intelligence.success && automation.success
-        ? "Succeeded"
-        : "Failed",
-      success: intelligence.success && automation.success,
-      timestamp: new Date().toISOString(),
-      updated: Number(payload.updated) || 0,
-      workerHttpStatus: intelligence.workerHttpStatus
-    };
-
-    Logger.log("ARMY_INTELLIGENCE_SCHEDULER " + JSON.stringify(result));
-
-    if (!result.success)
-      throw new Error(
-        "Scheduled maintenance worker failed."
-      );
-
-    return result;
   }
   finally {
     lock.releaseLock();
   }
 
+  const intelligence = runScheduledMaintenanceWorker_(
+    ARMY_INTELLIGENCE_SCHEDULER_URL,
+    token
+  );
+  const automation = runScheduledMaintenanceWorker_(
+    AUTOMATION_QUEUE_WORKER_URL,
+    token
+  );
+  const payload = intelligence.payload;
+  const result = {
+    automation: automation,
+    decoded: Number(payload.decoded) || 0,
+    failed: Number(payload.failed) || 0,
+    hasMore: payload.hasMore === true,
+    remaining: Number(payload.remaining) || 0,
+    status: intelligence.success && automation.success
+      ? "Succeeded"
+      : "Failed",
+    success: intelligence.success && automation.success,
+    timestamp: new Date().toISOString(),
+    updated: Number(payload.updated) || 0,
+    workerHttpStatus: intelligence.workerHttpStatus
+  };
+
+  Logger.log("ARMY_INTELLIGENCE_SCHEDULER " + JSON.stringify(result));
+
+  if (!result.success)
+    throw new Error(
+      "Scheduled maintenance worker failed."
+    );
+
+  return result;
+
 }
 
-function runScheduledMaintenanceWorker_(url, token) {
+function runPublishOnlyPublicSnapshotRefresh() {
+
+  const token = getArmyIntelligenceSchedulerToken_();
+
+  if (!token)
+    throw new Error("Army Intelligence scheduler credential is not configured.");
+
+  const result = runScheduledMaintenanceWorker_(
+    ARMY_INTELLIGENCE_SCHEDULER_URL,
+    token,
+    {
+      publishPublicSnapshot: true,
+      snapshotKeys: ["__publish_only__"]
+    }
+  );
+
+  Logger.log("PUBLIC_SNAPSHOT_PUBLISH_ONLY " + JSON.stringify(result));
+
+  if (!result.success)
+    throw new Error("Publish-only public snapshot refresh failed.");
+
+  return result;
+
+}
+
+function runScheduledMaintenanceWorker_(url, token, requestPayload) {
 
   try {
     const response = UrlFetchApp.fetch(url, {
@@ -127,7 +153,7 @@ function runScheduledMaintenanceWorker_(url, token) {
       },
       method: "post",
       muteHttpExceptions: true,
-      payload: "{}"
+      payload: JSON.stringify(requestPayload || {})
     });
     const statusCode = response.getResponseCode();
     const payload = parseArmyIntelligenceSchedulerResponse_(response.getContentText());

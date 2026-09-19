@@ -6,7 +6,7 @@ function submitCanonicalGame(command) {
   if (source === "google-form")
     return canonicalSubmitGoogleFormGame_(input, workflow);
 
-  if (source === "portal" && (workflow === "league" || workflow === "casual"))
+  if (source === "portal" && (workflow === "league" || workflow === "casual" || workflow === "top-40"))
     return canonicalSubmitPortalGame_(input, workflow);
 
   if (source === "portal" && workflow === "team-tournament")
@@ -59,6 +59,9 @@ function canonicalSubmitGoogleFormGame_(command, workflow) {
   const row = buildCanonicalGameRow(
     canonicalSubmissionBuildGoogleFormGameCommand_(submission)
   );
+  const rebuildObligation = typeof markCanonicalRebuildRequired_ === "function"
+    ? markCanonicalRebuildRequired_({ reason: "canonical-game-append", workflow: workflow })
+    : null;
   sheet.appendRow(row);
   const targetRow = sheet.getLastRow();
 
@@ -73,7 +76,8 @@ function canonicalSubmitGoogleFormGame_(command, workflow) {
     responseKey: responseKey,
     workflow: workflow,
     targetRow: targetRow,
-    logMissing: true
+    logMissing: true,
+    rebuildObligation: rebuildObligation
   });
 
   if (workflow === "team-tournament")
@@ -112,6 +116,9 @@ function canonicalSubmitPortalGame_(command, workflow) {
     return canonicalSubmissionFailure_("Result datastore was not found.", validation);
 
   ensureResultSubmissionArmyListHeaders(sheet);
+  const rebuildObligation = typeof markCanonicalRebuildRequired_ === "function"
+    ? markCanonicalRebuildRequired_({ reason: "canonical-game-append", workflow: workflow })
+    : null;
   sheet.appendRow(row);
   const targetRow = sheet.getLastRow();
 
@@ -128,7 +135,8 @@ function canonicalSubmitPortalGame_(command, workflow) {
   coordinateCanonicalRebuild({
     workflow: workflow,
     targetRow: null,
-    logMissing: false
+    logMissing: false,
+    rebuildObligation: rebuildObligation
   });
 
   invalidateResultSubmissionCaches();
@@ -142,7 +150,9 @@ function canonicalSubmitPortalGame_(command, workflow) {
       workflow: workflow,
       eventId: validation.value.eventId,
       player: validation.value.player,
-      opponent: validation.value.opponent
+      opponent: validation.value.opponent,
+      gameId: targetRow - 1,
+      bracketMatchId: canonicalSubmissionString_(command.params && command.params.matchId)
     }
   );
 }
@@ -207,6 +217,9 @@ function canonicalSubmitPortalTeamTournamentGame_(command) {
   const row = buildCanonicalGameRow(
     canonicalSubmissionBuildGoogleFormGameCommand_(submission)
   );
+  const rebuildObligation = typeof markCanonicalRebuildRequired_ === "function"
+    ? markCanonicalRebuildRequired_({ reason: "canonical-game-append", workflow: "team-tournament" })
+    : null;
   sheet.appendRow(row);
   const targetRow = sheet.getLastRow();
 
@@ -218,7 +231,8 @@ function canonicalSubmitPortalTeamTournamentGame_(command) {
   coordinateCanonicalRebuild({
     workflow: "team-tournament",
     targetRow: targetRow,
-    logMissing: true
+    logMissing: true,
+    rebuildObligation: rebuildObligation
   });
 
   invalidateTeamTournamentRuntimeCache(validation.value.eventId);
@@ -266,7 +280,7 @@ function canonicalSubmissionEnqueueGameAutomation_(targetRow, context) {
 }
 
 function canonicalSubmissionGameType_(workflow) {
-  if (workflow === "team-tournament")
+  if (workflow === "team-tournament" || workflow === "top-40")
     return "tournament";
 
   return workflow === "casual" ? "casual" : "league";
@@ -317,20 +331,18 @@ function canonicalSubmissionBuildPortalGameCommand_(command, workflow, validated
   const submissionTimestamp = getResultSubmissionTimestamp();
   const submissionDate = getResultSubmissionDate();
   const playerArmyCode = getResultSubmissionArmyCode(
-    params.playerArmyCode ||
+    params.playerArmyCode || params.player1ArmyCode ||
     (validated.playerArmyList.list && validated.playerArmyList.list.armyCode)
   );
   const opponentArmyCode = getResultSubmissionArmyCode(
-    params.opponentArmyCode ||
+    params.opponentArmyCode || params.player2ArmyCode ||
     (validated.opponentArmyList.list && validated.opponentArmyList.list.armyCode)
   );
 
   return {
     timestamp: submissionTimestamp,
     date: submissionDate,
-    division: workflow === "casual"
-      ? "Casual"
-      : getResultSubmissionString(params.division),
+    division: workflow === "casual" ? "Casual" : workflow === "top-40" ? "Top 40" : getResultSubmissionString(params.division),
     mission: getResultSubmissionString(params.mission),
     player: validated.player,
     opponent: validated.opponent,
@@ -345,7 +357,7 @@ function canonicalSubmissionBuildPortalGameCommand_(command, workflow, validated
     opponentFaction: validated.opponentFaction,
     bestMoment: getResultSubmissionString(params.bestMoment),
     eventId: validated.eventId,
-    gameType: workflow,
+    gameType: workflow === "top-40" ? "tournament" : workflow,
     outcome: validated.resultIsDraw
       ? "draw"
       : validated.playerIsWinner

@@ -5,11 +5,12 @@ import EntityPreviousNext from '../components/EntityPreviousNext'
 import Skeleton from '../components/Skeleton'
 import { getCanonicalMissionName } from '../config/missions'
 import {
-  apiClient,
+  normalizeMissionPayload,
   type MissionBestMoment,
   type MissionProfileData,
   type RecentGame,
 } from '../services/api'
+import { publicDetailProjection } from '../services/publicDetailProjection'
 import { formatObjectiveScore } from '../services/formatting'
 import { getGameHeadline } from '../services/gameResults'
 
@@ -46,13 +47,10 @@ function MissionProfile() {
 
     const controller = new AbortController()
 
-    apiClient
-      .getMission(canonicalMissionName, {
-        eventId,
-        gameType,
-        signal: controller.signal,
-      })
-      .then((mission) => {
+    publicDetailProjection
+      .getMission(canonicalMissionName, controller.signal)
+      .then((payload) => {
+        const mission = normalizeMissionPayload(payload)
         setProfileState({
           mission,
           missionName: canonicalMissionName,

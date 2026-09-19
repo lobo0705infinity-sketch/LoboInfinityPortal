@@ -7,6 +7,7 @@ import {
   apiClient,
   type PlayerComparisonData,
 } from '../services/api'
+import { getPublicPlayersComparisonProjection } from '../services/publicPlayersProjection'
 import type { DivisionStandings } from '../types/dashboard'
 
 type ComparisonState =
@@ -33,10 +34,13 @@ function PlayerComparison() {
     const controller = new AbortController()
 
     async function loadComparison() {
-      const divisions = await apiClient.getPlayers({
-        eventId,
-        signal: controller.signal,
-      })
+      const prepared = eventId
+        ? null
+        : await getPublicPlayersComparisonProjection({ signal: controller.signal })
+      const divisions = prepared?.divisions ?? await apiClient.getPlayers({
+          eventId,
+          signal: controller.signal,
+        })
 
       if (!leftParam || !rightParam) {
         setComparisonState({
@@ -48,10 +52,12 @@ function PlayerComparison() {
       }
 
       try {
-        const comparison = await apiClient.getPlayerComparison(leftParam, rightParam, {
-          eventId,
-          signal: controller.signal,
-        })
+        const comparison = prepared
+          ? prepared.getComparison(leftParam, rightParam)
+          : await apiClient.getPlayerComparison(leftParam, rightParam, {
+              eventId,
+              signal: controller.signal,
+            })
 
         if (!controller.signal.aborted) {
           setComparisonState({

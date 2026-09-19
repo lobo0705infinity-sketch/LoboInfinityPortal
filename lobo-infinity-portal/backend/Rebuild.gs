@@ -153,4 +153,37 @@ function onEdit(e) {
   )
     clearPortalCache();
 
+  if (isCanonicalGamesEdit_(e))
+    markCanonicalRebuildRequired_({
+      reason: "manual-authoritative-games-edit",
+      targetRow: Math.max(2, e.range.getRow()),
+      workflow: "manual-edit"
+    });
+
+}
+
+function isCanonicalGamesEdit_(e) {
+
+  if (
+    !e ||
+    !e.range ||
+    !e.range.getSheet ||
+    e.range.getSheet().getName() !== CONFIG.SHEETS.FORM
+  )
+    return false;
+
+  const firstDataRow = 2;
+  const firstCanonicalColumn = 1;
+  const lastCanonicalColumn = FORM.LOSER_ARMY_LIST_ID + 1;
+  const firstEditedRow = Number(e.range.getRow()) || 0;
+  const lastEditedRow = firstEditedRow + Math.max(1, Number(e.range.getNumRows()) || 1) - 1;
+  const firstEditedColumn = Number(e.range.getColumn()) || 0;
+  const lastEditedColumn = firstEditedColumn + Math.max(1, Number(e.range.getNumColumns()) || 1) - 1;
+
+  return (
+    lastEditedRow >= firstDataRow &&
+    lastEditedColumn >= firstCanonicalColumn &&
+    firstEditedColumn <= lastCanonicalColumn
+  );
+
 }

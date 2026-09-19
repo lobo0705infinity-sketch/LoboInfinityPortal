@@ -69,6 +69,7 @@ export const googleSheetsProvider: DataProvider = {
     getTeamTournament: apiClient.getTeamTournament,
     saveInvitation: apiClient.saveTeamTournamentInvitation,
     savePairing: apiClient.saveTeamTournamentPairing,
+    saveRoundManagement: apiClient.saveTeamTournamentRoundManagement,
     saveResult: apiClient.saveTeamTournamentResult,
     saveTeam: apiClient.saveTeamTournamentTeam,
   },

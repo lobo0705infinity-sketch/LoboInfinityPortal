@@ -4,7 +4,6 @@ import { resolve } from 'node:path'
 const root = process.cwd()
 
 const files = {
-  dashboard: read('src/pages/Dashboard.tsx'),
   myProfile: read('src/pages/MyProfile.tsx'),
   playerProfile: read('src/pages/PlayerProfile.tsx'),
   component: read('src/components/PrimaryFactionCard.tsx'),
@@ -59,29 +58,20 @@ const checks = [
       files.navigation.includes("export const armyIntelligenceFactionParam = 'faction'") &&
       files.navigation.includes('URLSearchParams') &&
       files.navigation.includes('readArmyIntelligenceFactionParam') &&
-      files.armyIntelligence.includes("import { Link, useSearchParams } from 'react-router-dom'") &&
+      files.armyIntelligence.includes("import { useSearchParams } from 'react-router-dom'") &&
       files.armyIntelligence.includes("import { readArmyIntelligenceFactionParam } from '../services/armyIntelligenceNavigation'") &&
       files.armyIntelligence.includes('const [searchParams] = useSearchParams()') &&
       files.armyIntelligence.includes('const requestedFaction = readArmyIntelligenceFactionParam(searchParams)') &&
       files.armyIntelligence.includes("const [selectedSectorial, setSelectedSectorial] = useState(requestedFaction)") &&
-      /useEffect\(\(\) => \{[\s\S]*setSelectedSectorial\(requestedFaction\)[\s\S]*\}, \[requestedFaction, selectedSectorial\]\)/.test(files.armyIntelligence),
+      /useEffect\(\(\) => \{[\s\S]*requestedFaction === selectedSectorial[\s\S]*setSelectedSectorial\(requestedFaction\)[\s\S]*\}, \[requestedFaction, selectedSectorial\]\)/.test(files.armyIntelligence),
   },
   {
     label: 'Army Intelligence selector includes parent factions and sectorials from the same loaded data',
     pass:
-      /const sectorials = useMemo\([\s\S]*buildArmyIntelligenceSelectorOptions\(uniqueDecodedLists\)[\s\S]*\[uniqueDecodedLists\]/.test(
-        files.armyIntelligence,
-      ) &&
-      /function buildArmyIntelligenceSelectorOptions[\s\S]*getIntelligenceParentFaction\(list\)[\s\S]*getDecodedSectorial\(list\)/.test(
-        files.armyIntelligence,
-      ),
-  },
-  {
-    label: 'Commander Overview renders Primary Faction through the shared card',
-    pass:
-      files.dashboard.includes("import PrimaryFactionCard from '../components/PrimaryFactionCard'") &&
-      /<PrimaryFactionCard faction=\{leader\?\.faction \|\| leader\?\.favoriteArmy\} \/>/.test(files.dashboard) &&
-      !files.dashboard.includes('<dt>Primary Faction</dt>'),
+      files.armyIntelligence.includes('data: ArmyIntelligenceSummaryData') &&
+      files.armyIntelligence.includes('const sectorials = summary.options') &&
+      files.armyIntelligence.includes("publicArmyWorkspace") &&
+      files.armyIntelligence.includes(".getIntelligenceSummary"),
   },
   {
     label: 'Public Player Profile renders Primary Faction through the shared card',

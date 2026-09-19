@@ -97,6 +97,7 @@ export type LeagueOverview = {
 }
 
 export type DashboardData = {
+  currentOperationsMissions: string[]
   summary: DashboardSummary
   standings: Standing[]
   leagueOverview: LeagueOverview

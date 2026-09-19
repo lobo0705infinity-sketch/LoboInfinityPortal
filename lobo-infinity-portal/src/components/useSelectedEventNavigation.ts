@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useSyncExternalStore } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
   currentEventNavigation,
@@ -7,6 +7,8 @@ import {
 } from '../config/eventNavigation'
 
 const selectedEventStorageKey = 'lobo-selected-event-id'
+let selectedEventSnapshot = ''
+const selectedEventListeners = new Set<() => void>()
 
 function readStoredEventId() {
   if (typeof window === 'undefined') {
@@ -30,6 +32,25 @@ function writeStoredEventId(eventId: string) {
   } catch {
     // Session storage is an enhancement; navigation still works without it.
   }
+}
+
+function readSelectedEventSnapshot() {
+  if (!selectedEventSnapshot) {
+    selectedEventSnapshot = resolveKnownEventId(readStoredEventId()) || currentEventNavigation.id
+  }
+  return selectedEventSnapshot
+}
+
+function subscribeToSelectedEvent(listener: () => void) {
+  selectedEventListeners.add(listener)
+  return () => selectedEventListeners.delete(listener)
+}
+
+function setSelectedEventSnapshot(eventId: string) {
+  if (selectedEventSnapshot === eventId) return
+  selectedEventSnapshot = eventId
+  writeStoredEventId(eventId)
+  selectedEventListeners.forEach((listener) => listener())
 }
 
 function getRouteEventId(pathname: string, search: string) {
@@ -56,22 +77,21 @@ export function useSelectedEventNavigation() {
     () => resolveKnownEventId(getRouteEventId(location.pathname, location.search)),
     [location.pathname, location.search],
   )
-  const [manualEventId, setManualEventId] = useState(() => {
-    return (
-      resolveKnownEventId(readStoredEventId()) ||
-      currentEventNavigation.id
-    )
-  })
+  const storedEventId = useSyncExternalStore(
+    subscribeToSelectedEvent,
+    readSelectedEventSnapshot,
+    () => currentEventNavigation.id,
+  )
 
   useEffect(() => {
     if (!routeEventId) {
       return
     }
 
-    writeStoredEventId(routeEventId)
+    setSelectedEventSnapshot(routeEventId)
   }, [routeEventId])
 
-  const selectedEventId = routeEventId || manualEventId
+  const selectedEventId = storedEventId
 
   const selectedEvent =
     getEventNavigationConfig(selectedEventId) ?? currentEventNavigation
@@ -89,8 +109,7 @@ export function useSelectedEventNavigation() {
       return
     }
 
-    setManualEventId(knownEventId)
-    writeStoredEventId(knownEventId)
+    setSelectedEventSnapshot(knownEventId)
     void loadNavigationHelper().then((helper) => {
       helper.startEventWorkspaceTransition(targetEvent)
       helper.rememberWorkspaceRoute(

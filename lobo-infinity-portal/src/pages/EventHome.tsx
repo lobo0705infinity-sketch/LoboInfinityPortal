@@ -1,10 +1,13 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState, type FormEvent } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import DiscordCommunityLink from '../components/DiscordCommunityLink'
 import PortalIcon from '../components/PortalIcon'
 import Skeleton from '../components/Skeleton'
+import Top40RulesPage from '../components/Top40RulesPage'
+import Top40BracketPage from '../components/Top40BracketPage'
 import { getDiscordCommunityLink } from '../config/communityLinks'
+import { getCanonicalArmyOptions } from '../services/armyIdentity'
 import {
   getEventOverviewKind,
   hasEventCapability,
@@ -15,15 +18,17 @@ import {
   buildCapabilityNavigation,
   getEventNavigationConfig,
 } from '../config/eventNavigation'
-import { type EventHomeData } from '../services/api'
-import { eventRepository } from '../services/data'
+import { apiClient, type EventBracketData, type EventBracketMatch, type EventHomeData } from '../services/api'
+import { eventRepository, playerRepository, registrationRepository } from '../services/data'
+import { getEventResultTimelineItems } from '../services/eventResults'
+import { getPublicEventProjection } from '../services/publicEventProjection'
 import { useSettings } from '../contexts/SettingsContext'
 import type { LeagueEvent } from '../types/dashboard'
 import './EventHome.css'
 
 type EventHomeState =
   | { status: 'loading' }
-  | { data: EventHomeData; status: 'success' }
+  | { bracket?: EventBracketData; data: EventHomeData; status: 'success' }
   | { error: string; status: 'error' }
 
 const defaultEventId = 'event-current-league'
@@ -33,19 +38,32 @@ const CommissionerEventWorkflow = lazy(
 
 function EventHome() {
   const auth = useAuth()
+  const { settings } = useSettings()
   const { eventId, section } = useParams<{ eventId: string; section?: string }>()
   const selectedEventId = eventId ? decodeURIComponent(eventId) : defaultEventId
   const selectedSection = normalizeEventHomeSection(section)
+  const isTop40 = selectedEventId === 'event-lobo-s-american-top-40'
+  const usePreparedPublicProjection = isTop40 && !auth.isAtLeastRole('Commissioner')
   const [state, setState] = useState<EventHomeState>({ status: 'loading' })
 
   useEffect(() => {
     const controller = new AbortController()
 
-    eventRepository
-      .getEventHome(selectedEventId, { signal: controller.signal })
-      .then((data) => {
+    if (isTop40 && (selectedSection === 'rules' || selectedSection === 'bracket')) {
+      return () => controller.abort()
+    }
+
+    const request = usePreparedPublicProjection
+      ? getPublicEventProjection(selectedEventId, { signal: controller.signal })
+          .then((projection) => ({ bracket: projection.bracket, data: projection.home }))
+      : eventRepository
+          .getEventHome(selectedEventId, { signal: controller.signal })
+          .then((data) => ({ data }))
+
+    request
+      .then((result) => {
         setState({
-          data,
+          ...result,
           status: 'success',
         })
       })
@@ -66,7 +84,15 @@ function EventHome() {
     return () => {
       controller.abort()
     }
-  }, [selectedEventId])
+  }, [isTop40, selectedEventId, selectedSection, usePreparedPublicProjection])
+
+  if (isTop40 && selectedSection === 'rules') {
+    return <Top40RulesPage />
+  }
+
+  if (isTop40 && selectedSection === 'bracket') {
+    return <Top40BracketPage />
+  }
 
   if (state.status === 'loading') {
     return (
@@ -94,10 +120,15 @@ function EventHome() {
   const countdown = getCountdownLabel(data.event)
   const capabilities = resolveEventCapabilities(data.event, data.navigation)
   const configuredNavigation = getEventNavigationConfig(data.event.id)
+  const playerNavigationCapabilities =
+    (configuredNavigation?.id === 'event-august-2026-team-tournament' ||
+      configuredNavigation?.id === 'event-lobo-s-american-top-40')
+      ? capabilities.filter((capability) => configuredNavigation.capabilities.includes(capability))
+      : capabilities
   const eventNavigationItems = configuredNavigation
     ? buildCapabilityNavigation({
         ...configuredNavigation,
-        capabilities,
+        capabilities: playerNavigationCapabilities,
       }).map((item) => ({
         href: item.to,
         label: item.label,
@@ -111,7 +142,9 @@ function EventHome() {
     recentTimeline.length > 0 && hasEventTimeline(capabilities)
   const showNews = news.length > 0
   const showPlayerStatus = hasEventCapability(capabilities, 'registration')
-  const showRules = hasEventCapability(capabilities, 'rules')
+  const showRules =
+    hasEventCapability(capabilities, 'rules') &&
+    data.event.id !== 'event-lobo-s-american-top-40'
   const showCommissionerWorkflow = auth.isAtLeastRole('Commissioner')
 
   if (selectedSection === 'registration') {
@@ -120,6 +153,28 @@ function EventHome() {
         data={data}
         eventNavigationItems={eventNavigationItems}
         quickActions={visibleQuickActions}
+      />
+    )
+  }
+
+  if (selectedSection === 'bracket') {
+    return (
+      <EventBracketPage
+        bracket={state.bracket}
+        data={data}
+        eventNavigationItems={eventNavigationItems}
+      />
+    )
+  }
+
+  if (
+    selectedSection === 'results' &&
+    data.event.id === 'event-lobo-s-american-top-40'
+  ) {
+    return (
+      <EventResultsPage
+        data={data}
+        eventNavigationItems={eventNavigationItems}
       />
     )
   }
@@ -157,6 +212,14 @@ function EventHome() {
       </section>
 
       <EventDiscordCallout />
+
+      {data.event.id === 'event-lobo-s-american-top-40' && settings?.top40GameSubmissionFormUrl ? (
+        <section className="panel event-home-panel">
+          <h2>Report a Top 40 Game</h2>
+          <p>Use the dedicated tournament form for a completed Active bracket match.</p>
+          <a className="event-home-primary-action" href={settings.top40GameSubmissionFormUrl} target="_blank" rel="noreferrer">Submit Top 40 Game</a>
+        </section>
+      ) : null}
 
       <nav className="event-home-nav" aria-label="Event navigation">
         {eventNavigationItems.map((item) => (
@@ -292,14 +355,227 @@ function EventDiscordCallout() {
   )
 }
 
-type EventHomeSection = 'overview' | 'registration'
+type EventHomeSection = 'bracket' | 'overview' | 'registration' | 'results' | 'rules'
 
 function normalizeEventHomeSection(section: string | undefined): EventHomeSection {
+  if (section === 'bracket') {
+    return 'bracket'
+  }
+
   if (section === 'registration') {
     return 'registration'
   }
 
+  if (section === 'results') {
+    return 'results'
+  }
+
+  if (section === 'rules') {
+    return 'rules'
+  }
+
   return 'overview'
+}
+
+function EventResultsPage({
+  data,
+  eventNavigationItems,
+}: {
+  data: EventHomeData
+  eventNavigationItems: Array<{ href: string; label: string }>
+}) {
+  const results = getEventResultTimelineItems(data.timeline)
+
+  return (
+    <main className="portal-shell event-overview-shell" data-event-section="results">
+      <section className="page-header" aria-labelledby="event-results-title">
+        <p className="eyebrow">{data.event.name}</p>
+        <h1 id="event-results-title">Results</h1>
+        <p>Completed games reported for this event.</p>
+      </section>
+
+      <nav className="event-home-nav" aria-label="Event navigation">
+        {eventNavigationItems.map((item) => (
+          <Link key={`${item.label}-${item.href}`} to={item.href}>
+            {item.label}
+          </Link>
+        ))}
+      </nav>
+
+      <section className="panel event-home-panel" aria-label="Event results">
+        {results.length === 0 ? (
+          <p>No results have been reported for this event yet.</p>
+        ) : (
+          <div className="event-home-timeline">
+            {results.map((item) => (
+              <article key={`${item.title}-${item.timestamp}`}>
+                <span>{item.type}</span>
+                <strong>{item.title}</strong>
+                <p>{item.body}</p>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+    </main>
+  )
+}
+
+function EventBracketPage({
+  bracket,
+  data,
+  eventNavigationItems,
+}: {
+  bracket?: EventBracketData
+  data: EventHomeData
+  eventNavigationItems: Array<{ href: string; label: string }>
+}) {
+  if (data.event.type !== 'Individual Double Elimination') {
+    return (
+      <main className="portal-shell event-overview-shell" data-event-section="bracket">
+        <section className="page-header" aria-labelledby="event-bracket-title">
+          <p className="eyebrow">{data.event.name}</p>
+          <h1 id="event-bracket-title">Tournament Bracket</h1>
+          <p>The double-elimination bracket will be published here.</p>
+        </section>
+        <nav className="event-home-nav" aria-label="Event navigation">
+          {eventNavigationItems.map((item) => (
+            <Link key={`${item.label}-${item.href}`} to={item.href}>
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+      </main>
+    )
+  }
+
+  return <DoubleEliminationBracketPage initialBracket={bracket} data={data} eventNavigationItems={eventNavigationItems} />
+}
+
+function DoubleEliminationBracketPage({
+  initialBracket,
+  data,
+  eventNavigationItems,
+}: {
+  initialBracket?: EventBracketData
+  data: EventHomeData
+  eventNavigationItems: Array<{ href: string; label: string }>
+}) {
+  const [bracket, setBracket] = useState<EventBracketData | null>(initialBracket ?? null)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    if (initialBracket) return
+
+    const controller = new AbortController()
+    apiClient.getEventBracket(data.event.id, { signal: controller.signal })
+      .then(setBracket)
+      .catch((reason: unknown) => {
+        if (!controller.signal.aborted) setError(reason instanceof Error ? reason.message : 'Bracket could not be loaded.')
+      })
+    return () => controller.abort()
+  }, [data.event.id, initialBracket])
+
+  const readiness = bracket?.readiness
+
+  return (
+    <main className="portal-shell event-overview-shell" data-event-section="bracket">
+      <section className="page-header" aria-labelledby="event-bracket-title">
+        <p className="eyebrow">{data.event.name}</p>
+        <h1 id="event-bracket-title">Tournament Bracket</h1>
+        <p>{bracket?.generated ? 'Seeded double-elimination bracket.' : 'Bracket has not been generated.'}</p>
+      </section>
+
+      <nav className="event-home-nav" aria-label="Event navigation">
+        {eventNavigationItems.map((item) => (
+          <Link key={`${item.label}-${item.href}`} to={item.href}>
+            {item.label}
+          </Link>
+        ))}
+      </nav>
+
+      {!bracket?.generated && readiness ? <section className="event-overview-status-grid" aria-label="Bracket readiness">
+        <EventMetric
+          label="Registered Players"
+          value={`${readiness.registeredCount} / ${readiness.capacity || '—'}`}
+        />
+        <EventMetric
+          label="Seeded Players"
+          value={`${readiness.seededCount} / ${readiness.registeredCount}`}
+        />
+        <EventMetric
+          label="Registration"
+          value={readiness.registrationClosed ? 'Closed' : 'Open'}
+        />
+      </section> : null}
+
+      {error ? <section className="panel event-home-panel"><p role="alert">{error}</p></section> : null}
+      {!bracket ? <Skeleton label="Tournament bracket loading" rows={4} /> : null}
+      {bracket && !bracket.generated ? <section className="panel event-home-panel">
+        <p>Bracket generation is pending completion of registration and seeding.</p>
+      </section> : null}
+      {bracket?.generated ? <>
+        {bracket.tournamentComplete && bracket.champion ? <section className="panel event-home-panel"><h2>Lobo's American Top 40 Champion</h2><p>{bracket.champion}</p></section> : null}
+        <BracketStructure matches={bracket.matches} />
+      </> : null}
+    </main>
+  )
+}
+
+function BracketStructure({ matches }: { matches: EventBracketMatch[] }) {
+  return (
+    <section className="event-bracket-structure" aria-label="Tournament bracket">
+      {(['Winners', 'Losers', 'Grand Final'] as const).map((bracketName) => {
+        const bracketMatches = matches.filter((match) => match.bracket === bracketName)
+        const rounds = [...new Set(bracketMatches.map((match) => match.bracketRound))]
+        return (
+          <section className="panel event-bracket-area" key={bracketName}>
+            <h2>{bracketName === 'Grand Final' ? 'Grand Final' : `${bracketName} Bracket`}</h2>
+            <div className="event-bracket-rounds">
+              {rounds.map((round) => (
+                <div className="event-bracket-round" key={round}>
+                  <h3>{bracketName === 'Grand Final' ? 'Winner Takes All' : `Round ${round}`}</h3>
+                  {bracketMatches.filter((match) => match.bracketRound === round).map((match) => (
+                    <article className="event-bracket-match" key={match.matchId}>
+                      <strong>{match.matchId}</strong>
+                      <span>{formatBracketPlayer(match.playerA, match.playerASource, match.seedA)}</span>
+                      <span>{formatBracketPlayer(match.playerB, match.playerBSource, match.seedB)}</span>
+                      <small>{getBracketMatchStatus(match)}</small>
+                      <small>Mission: {match.mission || 'Not assigned'}</small>
+                      {match.status === 'Completed' && match.winner ? <small>Winner: {match.winner}</small> : null}
+                      {match.status === 'Completed' && match.resolution === 'Forfeit' ? <small>Forfeit</small> : null}
+                      {match.status === 'Active' && match.deadline ? <small>Deadline: {formatBracketDeadline(match.deadline)}</small> : null}
+                    </article>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </section>
+        )
+      })}
+    </section>
+  )
+}
+
+function getBracketMatchStatus(match: EventBracketMatch) {
+  if (match.status === 'Active' && match.deadline) {
+    const deadline = new Date(match.deadline.replace(' ', 'T'))
+    if (!Number.isNaN(deadline.getTime()) && deadline.getTime() < Date.now()) return 'Past Deadline'
+    return 'Active'
+  }
+  if (match.status === 'Pending') return 'Waiting for opponent'
+  return match.status
+}
+
+function formatBracketDeadline(value: string) {
+  const parsed = new Date(value.replace(' ', 'T'))
+  return Number.isNaN(parsed.getTime()) ? value : parsed.toLocaleString()
+}
+
+function formatBracketPlayer(player: string, source: string, seed: number | null) {
+  if (player === 'BYE' || source === 'BYE') return 'BYE'
+  if (player) return seed ? `${seed}. ${player}` : player
+  return source ? `TBD — ${source}` : 'TBD'
 }
 
 function isVisibleEventNavigationItem(item: { href: string; label: string }) {
@@ -456,19 +732,26 @@ function EventStatusCard({ card }: { card: StatusCard }) {
 }
 
 function PlayerStatusCard({ data }: { data: EventHomeData }) {
+  const individualTournament =
+    data.event.type === 'Individual Double Elimination'
+
   return (
     <section className="panel event-home-panel" id="registration">
       <div className="panel-heading">
         <p className="eyebrow">Your Status</p>
         <h2>{data.playerStatus.registrationStatus}</h2>
       </div>
-      <EventMetric label="Team" value={data.playerStatus.currentTeam || 'Not assigned'} />
-      <EventMetric
-        label="Captain"
-        value={data.playerStatus.captain ? 'Yes' : 'No'}
-      />
-      <EventMetric label="Next Match" value={data.playerStatus.upcomingMatch} />
-      <p>{data.playerStatus.outstandingAction}</p>
+      {individualTournament ? null : (
+        <>
+          <EventMetric label="Team" value={data.playerStatus.currentTeam || 'Not assigned'} />
+          <EventMetric
+            label="Captain"
+            value={data.playerStatus.captain ? 'Yes' : 'No'}
+          />
+          <EventMetric label="Next Match" value={data.playerStatus.upcomingMatch} />
+          <p>{data.playerStatus.outstandingAction}</p>
+        </>
+      )}
     </section>
   )
 }
@@ -482,6 +765,15 @@ function EventRegistrationPage({
   eventNavigationItems: Array<{ href: string; label: string }>
   quickActions: EventHomeData['quickActions']
 }) {
+  const individualTournament =
+    data.event.type === 'Individual Double Elimination'
+  const registeredPlayers =
+    individualTournament &&
+    !data.registration.capacity.unlimited &&
+    data.registration.capacity.maximumPlayers > 0
+      ? `${data.registration.registeredCount} / ${data.registration.capacity.maximumPlayers}`
+      : data.registration.registeredCount
+
   return (
     <main className="portal-shell event-overview-shell" data-event-section="registration">
       <section className="page-header" aria-labelledby="event-registration-title">
@@ -505,8 +797,10 @@ function EventRegistrationPage({
             <p className="eyebrow">Registration Window</p>
             <h2>{data.registration.status}</h2>
           </div>
-          <EventMetric label="Registered Players" value={data.registration.registeredCount} />
-          <EventMetric label="Waitlist" value={data.registration.waitlistCount} />
+          <EventMetric label="Registered Players" value={registeredPlayers} />
+          {!individualTournament || data.registration.capacity.waitlistEnabled ? (
+            <EventMetric label="Waitlist" value={data.registration.waitlistCount} />
+          ) : null}
           <EventMetric
             label="Opens"
             value={formatDate(data.registration.registrationWindow.startDate)}
@@ -518,12 +812,154 @@ function EventRegistrationPage({
         </section>
       </section>
 
+      {individualTournament ? (
+        <IndividualDoubleEliminationRegistrationForm
+          eventId={data.event.id}
+          registrationOpen={data.registration.registrationOpen}
+        />
+      ) : null}
+
       {quickActions.length > 0 ? (
         <section className="event-overview-dashboard">
           <QuickActions actions={quickActions} />
         </section>
       ) : null}
     </main>
+  )
+}
+
+function IndividualDoubleEliminationRegistrationForm({
+  eventId,
+  registrationOpen,
+}: {
+  eventId: string
+  registrationOpen: boolean
+}) {
+  const [player, setPlayer] = useState('')
+  const [itsName, setItsName] = useState('')
+  const [faction, setFaction] = useState('')
+  const [players, setPlayers] = useState<string[]>([])
+  const [error, setError] = useState('')
+  const [message, setMessage] = useState('')
+  const [working, setWorking] = useState(false)
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    playerRepository
+      .getAllPlayers({ signal: controller.signal })
+      .then((divisions) => {
+        const canonicalPlayers = new Map<string, string>()
+
+        divisions.forEach((division) => {
+          division.standings.forEach((standing) => {
+            if (standing.canonical !== true) {
+              return
+            }
+
+            const value = standing.player.trim()
+            if (value) {
+              canonicalPlayers.set(value.toLowerCase(), value)
+            }
+          })
+        })
+
+        setPlayers(
+          Array.from(canonicalPlayers.values()).sort((left, right) =>
+            left.localeCompare(right),
+          ),
+        )
+      })
+      .catch((loadError: unknown) => {
+        if (!controller.signal.aborted) {
+          setError(
+            loadError instanceof Error
+              ? loadError.message
+              : 'Community Players could not be loaded.',
+          )
+        }
+      })
+
+    return () => controller.abort()
+  }, [])
+
+  async function submitRegistration(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setWorking(true)
+    setError('')
+    setMessage('')
+
+    try {
+      await registrationRepository.register({
+        eventId,
+        faction,
+        itsName,
+        player,
+      })
+      setMessage('Registration submitted.')
+    } catch (submitError) {
+      setError(
+        submitError instanceof Error
+          ? submitError.message
+          : 'Registration could not be submitted.',
+      )
+    } finally {
+      setWorking(false)
+    }
+  }
+
+  return (
+    <section className="panel event-home-panel">
+      <div className="panel-heading">
+        <p className="eyebrow">American Top 40</p>
+        <h2>Register</h2>
+      </div>
+      <form className="event-manager-form compact" onSubmit={submitRegistration}>
+        <label>
+          Player
+          <select
+            disabled={!registrationOpen || working}
+            onChange={(event) => setPlayer(event.target.value)}
+            required
+            value={player}
+          >
+            <option value="">Select Player</option>
+            {players.map((option) => (
+              <option key={option} value={option}>{option}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Corvus Belli ITS Name
+          <input
+            disabled={!registrationOpen || working}
+            onChange={(event) => setItsName(event.target.value)}
+            required
+            type="text"
+            value={itsName}
+          />
+        </label>
+        <label>
+          Faction
+          <select
+            disabled={!registrationOpen || working}
+            onChange={(event) => setFaction(event.target.value)}
+            required
+            value={faction}
+          >
+            <option value="">Select Faction</option>
+            {getCanonicalArmyOptions().map((option) => (
+              <option key={option} value={option}>{option}</option>
+            ))}
+          </select>
+        </label>
+        <button disabled={!registrationOpen || working || message !== ''} type="submit">
+          {working ? 'Registering…' : 'Register'}
+        </button>
+      </form>
+      {error ? <p role="alert">{error}</p> : null}
+      {message ? <p role="status">{message}</p> : null}
+    </section>
   )
 }
 

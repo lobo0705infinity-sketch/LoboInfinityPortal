@@ -85,7 +85,8 @@ const EVENT_ENGINE_PARTICIPANT_HEADERS = [
   "Captain",
   "Free Agent",
   "Faction",
-  "Updated At"
+  "Updated At",
+  "ITS Name"
 ];
 
 const EVENT_ENGINE_SEASON_HEADERS = [
@@ -116,7 +117,9 @@ const EVENT_ENGINE_ROUND_HEADERS = [
   "Games",
   "Automation",
   "Created At",
-  "Updated At"
+  "Updated At",
+  "Mission",
+  "Mission Geist ID"
 ];
 
 function getEvents(e) {
@@ -139,13 +142,15 @@ function getEvent(e) {
   const params =
     getEventEngineParams(e);
 
-  const eventId =
-    getEventEngineString(params.eventId || params.id) ||
-    EVENT_ENGINE_DEFAULT_EVENT_ID;
+  const requestedEventId = getEventEngineString(params.eventId || params.id);
+  const eventId = requestedEventId || EVENT_ENGINE_DEFAULT_EVENT_ID;
 
   const event =
     getEventByIdSnapshot(eventId) ||
-    getCurrentLeagueEventSnapshot();
+    (requestedEventId ? null : getCurrentLeagueEventSnapshot());
+
+  if (!event)
+    return jsonOutput({ success: false, error: "Event not found." });
 
   return jsonOutput({
     success: true,
@@ -712,7 +717,8 @@ function ensureDefaultTeamTournamentRound(sheet) {
       "Team pairings resolve here until additional rounds are created.",
       "Pairing reminders",
       getEventEngineTimestamp(),
-      getEventEngineTimestamp()
+      getEventEngineTimestamp(),
+      ""
     ]
   );
 
@@ -1006,7 +1012,8 @@ function ensureDefaultCurrentLeagueRound(sheet) {
       "Existing league games resolve here until migration.",
       "Season Command Center reminders",
       getEventEngineTimestamp(),
-      getEventEngineTimestamp()
+      getEventEngineTimestamp(),
+      ""
     ]
   );
 
@@ -1317,7 +1324,8 @@ function mapEventEngineRoundRow(row) {
     games: row["Games"],
     automation: row["Automation"],
     createdAt: row["Created At"],
-    updatedAt: row["Updated At"]
+    updatedAt: row["Updated At"],
+    mission: row["Mission"]
   };
 
 }
@@ -1388,7 +1396,9 @@ function getEventRoundObjects() {
         games: row["Games"],
         automation: row["Automation"],
         createdAt: row["Created At"],
-        updatedAt: row["Updated At"]
+        updatedAt: row["Updated At"],
+        mission: row["Mission"],
+        missionGeistId: row["Mission Geist ID"] || ""
       };
     });
 

@@ -31,6 +31,7 @@ function extractFunction(source, name) {
 }
 
 const analyticsPage = read('src/pages/Analytics.tsx')
+const publicAnalyticsClient = read('src/services/publicAnalyticsProjection.ts')
 const api = read('src/services/api.ts')
 const authApi = read('backend/AuthApi.gs')
 const dashboardTypes = read('src/types/dashboard.ts')
@@ -141,8 +142,14 @@ assert.match(
 
 assert.match(
   analyticsPage,
-  /const options = \{ eventId, gameType, signal: controller\.signal \}[\s\S]*apiClient\.getPlayers\(options\)/,
-  'Analytics page must request casual player standings through the existing players API.',
+  /getPublicAnalyticsProjection\(\{ eventId, gameType, signal: controller\.signal \}\)/,
+  'Analytics page must preserve the selected game type through the prepared public projection.',
+)
+
+assert.match(
+  publicAnalyticsClient,
+  /new URLSearchParams\(\{ gameType \}\)/,
+  'Prepared analytics reads must preserve the selected gameType.',
 )
 
 assert.match(

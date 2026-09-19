@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "basis": "Expected governing rule names were verified against the current N5.3, FAQ v0.1, and ITS Season 18 corpus; expected rulings are intentionally not encoded.",
+  "cases": [
+    {"id":"mimetism","category":"direct","question":"What does Mimetism do?","expected":[{"source":"infinity-rules-n5.3","terms":["MIMETISM"]}]},
+    {"id":"dodge-move","category":"direct","question":"How does Dodge movement work?","expected":[{"source":"infinity-rules-n5.3","terms":["DODGE","MOVEMENT"]}]},
+    {"id":"guts","category":"direct","question":"When do I make a Guts Roll?","expected":[{"source":"infinity-rules-n5.3","terms":["GUTS ROLL"]}]},
+    {"id":"suppressive","category":"direct","question":"What does Suppressive Fire do?","expected":[{"source":"infinity-rules-n5.3","terms":["SUPPRESSIVE FIRE"]}]},
+    {"id":"discover-camo","category":"multi","question":"Can I Discover a camo marker and shoot it with the same trooper?","aliases":["camouflaged state","bs attack","order expenditure sequence"],"expected":[{"source":"infinity-rules-n5.3","terms":["DISCOVER"]},{"source":"infinity-rules-n5.3","terms":["CAMOUFLAGED"]},{"source":"infinity-rules-n5.3","terms":["ORDER EXPENDITURE SEQUENCE"]}]},
+    {"id":"stealth-aro","category":"multi","question":"How does Stealth affect ARO generation inside ZoC?","aliases":["zone of control"],"expected":[{"source":"infinity-rules-n5.3","terms":["STEALTH"]},{"source":"infinity-rules-n5.3","terms":["AUTOMATIC REACTION ORDER"]}]},
+    {"id":"repeater-hacking","category":"multi","question":"Can a Hacker attack through a Repeater and what counts as its Hacking Area?","expected":[{"source":"infinity-rules-n5.3","terms":["REPEATER"]},{"source":"infinity-rules-n5.3","terms":["HACKING AREA"]}]},
+    {"id":"zero-pain-repeater","category":"multi","question":"Does Zero Pain suffer the -3 MOD for using a Repeater?","expected":[{"source":"infinity-rules-n5.3","terms":["ZERO PAIN"]},{"source":"infinity-rules-n5.3","terms":["REPEATER"]},{"source":"infinity-rules-n5.3","terms":["FIREWALL"]}],"expectedConfidence":"INTERPRETATION"},
+    {"id":"impersonation-discover","category":"multi","question":"How do Discover and Impersonation interact?","expected":[{"source":"infinity-rules-n5.3","terms":["DISCOVER"]},{"source":"infinity-rules-n5.3","terms":["IMPERSONATION"]}]},
+    {"id":"coordinated-order","category":"multi","question":"How are AROs resolved against troopers in a Coordinated Order?","expected":[{"source":"infinity-rules-n5.3","terms":["COORDINATED ORDER"]},{"source":"infinity-rules-n5.3","terms":["ARO"]}]},
+    {"id":"deployable-equipment","category":"multi","question":"When is Deployable Equipment placed and what happens if the space becomes occupied?","expected":[{"source":"infinity-rules-n5.3","terms":["PLACE DEPLOYABLE"]},{"source":"infinity-faq-n5-v0.1","terms":["PLACE DEPLOYABLE"]}],"expectedConfidence":"SUPPORTED"},
+    {"id":"lof-zoc","category":"multi","question":"Does being inside Zone of Control automatically give Line of Fire?","expected":[{"source":"infinity-rules-n5.3","terms":["LINE OF FIRE"]},{"source":"infinity-rules-n5.3","terms":["ZONE OF CONTROL"]}]},
+    {"id":"stealth-coordinated-faq","category":"faq","question":"If several troopers generate AROs together, can an ARO target a trooper using Stealth?","expected":[{"source":"infinity-faq-n5-v0.1","terms":["STEALTH"]}],"expectedConfidence":"SUPPORTED"},
+    {"id":"coordinated-sd-faq","category":"faq","question":"Do Special Die MODs change Burst during Coordinated Orders?","expected":[{"source":"infinity-faq-n5-v0.1","terms":["COORDINATED ORDERS"]}],"expectedConfidence":"SUPPORTED"},
+    {"id":"camo-hit-faq","category":"faq","question":"What happens if an attack hits a Camouflaged Marker but the represented model is in Total Cover?","expected":[{"source":"infinity-faq-n5-v0.1","terms":["CAMOUFLAGED"]}],"expectedConfidence":"SUPPORTED"},
+    {"id":"its-specialist","category":"its","question":"In ITS, which troopers count as Specialist Troops?","expected":[{"source":"its-season-18","terms":["SPECIALIST TROOPS"]}]},
+    {"id":"its-classified","category":"its","question":"Can I replace a Classified Objective with Secure HVT in ITS?","expected":[{"source":"its-season-18","terms":["SECURE HVT","CLASSIFIED OBJECTIVE"]}]},
+    {"id":"link-team-slang","category":"slang","question":"What happens if my link team loses coherency?","aliases":["fireteam integrity"],"expected":[{"source":"infinity-rules-n5.3","terms":["FIRETEAM INTEGRITY"]}]},
+    {"id":"shoot-back-slang","category":"slang","question":"When can a model shoot back?","aliases":["aro","bs attack"],"expected":[{"source":"infinity-rules-n5.3","terms":["AUTOMATIC REACTION ORDER"]},{"source":"infinity-rules-n5.3","terms":["BS ATTACK"]}]},
+    {"id":"false-premise","category":"false-premise","question":"Since a Marker always blocks Line of Fire, can I ignore enemies behind it?","expected":[{"source":"infinity-rules-n5.3","terms":["LINE OF FIRE"]},{"source":"infinity-rules-n5.3","terms":["MARKER"]}],"expectedConfidence":"INTERPRETATION"},
+    {"id":"ambiguous","category":"unresolved","question":"Can my special guy do the thing before movement?","expected":[],"expectedConfidence":"UNRESOLVED"},
+    {"id":"community-ruling","category":"unresolved","question":"My local group says repeaters never apply penalties to defensive programs. Is that official?","expected":[{"source":"infinity-rules-n5.3","terms":["REPEATER"]},{"source":"infinity-rules-n5.3","terms":["FIREWALL"]}],"expectedConfidence":"INTERPRETATION"}
+  ]
+}

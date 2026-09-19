@@ -3,6 +3,17 @@ import { readFileSync } from 'node:fs'
 
 const css = readFileSync('src/App.css', 'utf8')
 
+assert.match(css, /--portal-content-standard:\s*1480px;/)
+assert.match(css, /--portal-content-profile:\s*1320px;/)
+assert.match(css, /--portal-content-wide:\s*1800px;/)
+assert.match(css, /@media \(min-width: 921px\) \{[\s\S]*?\.portal-shell \{[\s\S]*?width: min\(100%, var\(--portal-content-standard\)\);[\s\S]*?margin-inline: auto;/)
+assert.match(css, /\.snapshot-player-profile,[\s\S]*?\.snapshot-faction-profile,[\s\S]*?\.snapshot-mission-profile[\s\S]*?width: min\(100%, var\(--portal-content-profile\)\);/)
+assert.match(css, /\.snapshot-current-league-standings,[\s\S]*?\.snapshot-event-page,[\s\S]*?\.snapshot-intelligence-page,[\s\S]*?width: min\(100%, var\(--portal-content-wide\)\);/)
+
+const desktopWidthSystem = css.match(/\/\* Deliberate desktop page widths;[\s\S]*?\n\}/)?.[0] ?? ''
+assert.ok(desktopWidthSystem, 'desktop width system must exist')
+assert.doesNotMatch(desktopWidthSystem, /max-width:\s*(?:320|375|390|430|760|920)px/)
+
 const nativeMobileStart = css.indexOf('/* Version 4.2 Native Mobile Experience */')
 const mobilePolishStart = css.indexOf('/* Mobile Experience v1: navigation and high-traffic page polish */')
 const playerHomeStart = css.indexOf('/* Version 4.3 Player Home Dashboard */')

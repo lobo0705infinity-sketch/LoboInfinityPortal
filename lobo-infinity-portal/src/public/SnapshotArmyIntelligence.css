@@ -1,0 +1,238 @@
+.snapshot-intelligence-page {
+  display: grid;
+  gap: clamp(0.85rem, 1.8vw, 1.2rem);
+  padding-bottom: clamp(1.5rem, 4vw, 3rem);
+}
+
+.snapshot-intelligence-page .army-intelligence-tactical-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.8rem; margin-top:1rem; }
+.snapshot-intelligence-page .army-intelligence-tactical-panel { min-width:0; padding:.9rem; border:1px solid rgba(76,201,240,.25); border-radius:10px; background:rgba(4,12,18,.68); }
+.snapshot-intelligence-page .army-intelligence-tactical-panel h3,.snapshot-intelligence-page .army-intelligence-tactical-panel p { margin:0; }
+.snapshot-intelligence-page .army-intelligence-tactical-panel header p,.snapshot-intelligence-page .army-intelligence-tactical-empty,.snapshot-intelligence-page .army-intelligence-sample-notice { color:var(--text-muted); font-size:.82rem; }
+.snapshot-intelligence-page .army-intelligence-tactical-panel header p,.snapshot-intelligence-page .army-intelligence-sample-notice,.snapshot-intelligence-page .army-intelligence-category-total { margin-top:.5rem; }
+.snapshot-intelligence-page .army-intelligence-role-notice { margin:.6rem 0 0; color:var(--text-muted); font-size:.82rem; }
+.snapshot-intelligence-page .army-intelligence-tactical-profiles { display:grid; gap:.65rem; margin-top:.75rem; }
+.snapshot-intelligence-page .army-intelligence-tactical-profile { display:grid; gap:.4rem; padding-top:.6rem; border-top:1px solid rgba(255,255,255,.08); }
+.snapshot-intelligence-page .army-intelligence-tactical-profile>div:first-child,.snapshot-intelligence-page .army-intelligence-tactical-badges { display:flex; flex-wrap:wrap; gap:.35rem .6rem; }
+.snapshot-intelligence-page .army-intelligence-tactical-badges span { padding:.18rem .42rem; border:1px solid rgba(76,201,240,.28); border-radius:999px; font-size:.7rem; }
+.snapshot-intelligence-page .army-intelligence-tactical-badges .is-verified { color:#8de5ab; border-color:rgba(92,214,133,.5); }
+.snapshot-intelligence-page .army-intelligence-tactical-badges .is-multi-role { color:#8de8fa; border-color:rgba(76,201,240,.75); }
+.snapshot-intelligence-page .army-intelligence-network-lists p { display:flex; flex-direction:column; margin-top:.4rem; font-size:.78rem; }
+@media(max-width:760px){.snapshot-intelligence-page .army-intelligence-tactical-grid{grid-template-columns:1fr}}
+
+.snapshot-intelligence-hero {
+  display: grid;
+  position: relative;
+  grid-template-columns: 1fr;
+  min-height: clamp(470px, 42vw, 540px);
+  overflow: hidden;
+  border: 1px solid rgba(76, 201, 240, 0.3);
+  border-radius: 14px;
+  padding: 0;
+  background: #071018 url("../assets/army-intelligence-hero.png") 50% 18% / cover no-repeat;
+  box-shadow: var(--shadow-panel);
+}
+
+/* The artwork carries the visible page identity; retain the semantic header for assistive technology only. */
+.snapshot-intelligence-hero > div,
+.snapshot-intelligence-hero .snapshot-intelligence-coverage {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.snapshot-intelligence-hero h1 { margin: 0.22rem 0 0.42rem; font-family: "Bebas Neue", Rajdhani, Inter, sans-serif; font-size: clamp(2.25rem, 5.1vw, 4rem); line-height: 0.92; text-transform: uppercase; }
+.snapshot-intelligence-hero > div > p:last-child { max-width: 62ch; margin: 0; color: var(--text-soft); font-size: 0.92rem; font-weight: 700; line-height: 1.52; }
+.snapshot-intelligence-coverage { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.55rem; }
+.snapshot-intelligence-coverage span { min-height: 68px; border: 1px solid rgba(76, 201, 240, 0.2); border-radius: 8px; padding: 0.72rem 0.8rem; color: var(--text-muted); background: rgba(8, 13, 19, 0.72); font-size: 0.64rem; font-weight: 900; text-transform: uppercase; }
+.snapshot-intelligence-coverage strong { display: block; margin-bottom: 0.18rem; color: var(--text); font-family: Rajdhani, Inter, sans-serif; font-size: 1.42rem; }
+
+.snapshot-intelligence-selector, .snapshot-intelligence-controls { display: grid; gap: 0.8rem; border-color: rgba(76, 201, 240, 0.17); padding: clamp(0.9rem, 2vw, 1.15rem); background: linear-gradient(135deg, rgba(76, 201, 240, 0.04), transparent 42%), var(--panel); }
+.snapshot-intelligence-selector { grid-template-columns: minmax(250px, 390px) minmax(0, 1fr); align-items: end; }
+.snapshot-intelligence-selector p { max-width: 62ch; margin: 0.05rem 0; color: var(--text-soft); font-size: 0.9rem; line-height: 1.45; }
+.snapshot-intelligence-selector label, .snapshot-intelligence-controls label { display: grid; gap: 0.42rem; color: var(--text-soft); font-size: 0.64rem; font-weight: 950; letter-spacing: 0.06em; text-transform: uppercase; }
+.snapshot-intelligence-selector select, .snapshot-intelligence-controls select, .snapshot-intelligence-controls input, .snapshot-list-search input { min-height: 42px; border: 1px solid rgba(76, 201, 240, 0.24); border-radius: 8px; padding: 0.5rem 0.65rem; color: var(--text); background: rgba(8, 13, 19, 0.82); font: inherit; }
+.snapshot-intelligence-selector select:focus-visible, .snapshot-intelligence-controls select:focus-visible, .snapshot-intelligence-controls input:focus-visible, .snapshot-list-search input:focus-visible { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.13); outline: 0; }
+.snapshot-intelligence-controls { grid-template-columns: repeat(auto-fit, minmax(172px, 1fr)); }
+
+.snapshot-intelligence-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 0.7rem; }
+.snapshot-intelligence-metrics article { min-height: 94px; border: 1px solid rgba(76, 201, 240, 0.17); border-radius: 10px; padding: 0.84rem 0.9rem; background: linear-gradient(135deg, rgba(76, 201, 240, 0.07), transparent 55%), var(--panel); box-shadow: var(--shadow-card); }
+.snapshot-intelligence-metrics span { display: block; margin-bottom: 0.38rem; color: var(--text-muted); font-size: 0.62rem; font-weight: 950; letter-spacing: 0.08em; text-transform: uppercase; }
+.snapshot-intelligence-metrics strong { font-family: Rajdhani, Inter, sans-serif; font-size: 1.45rem; }
+
+.snapshot-intelligence-layout { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem; }
+.snapshot-intelligence-panel { overflow: hidden; border-color: rgba(76, 201, 240, 0.16); box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2); }
+.snapshot-intelligence-panel .panel-heading { display: grid; min-height: 70px; align-content: center; gap: 3px; border-bottom: 1px solid rgba(76, 201, 240, 0.1); padding: 0.82rem 1rem; background: linear-gradient(90deg, rgba(76, 201, 240, 0.07), transparent 58%); }
+.snapshot-intelligence-panel .panel-heading > * { margin: 0; }
+.snapshot-intelligence-panel-body { padding: 1rem; }
+.snapshot-intelligence-brief { display: grid; gap: 0.78rem; margin: 0; padding-left: 1.05rem; color: var(--text-soft); font-size: 0.91rem; line-height: 1.5; }
+.snapshot-intelligence-brief strong { color: var(--blue); }
+.snapshot-role-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.65rem; }
+.snapshot-role-grid article { min-height: 88px; border: 1px solid rgba(76, 201, 240, 0.14); border-radius: 8px; padding: 0.72rem; background: rgba(8, 13, 19, 0.58); }
+.snapshot-role-grid span, .snapshot-role-grid small { display: block; color: var(--text-muted); font-size: 0.68rem; line-height: 1.35; }
+.snapshot-role-grid strong { display: block; margin: 0.18rem 0; color: var(--text); font-size: 1.16rem; }
+
+.snapshot-intelligence-table { overflow: auto; margin: -1rem; }
+.snapshot-intelligence-table table { width: 100%; min-width: 780px; border-collapse: collapse; }
+.snapshot-intelligence-table th, .snapshot-intelligence-table td { border-bottom: 1px solid rgba(76, 201, 240, 0.12); padding: 0.68rem 0.82rem; color: var(--text-soft); font-size: 0.84rem; line-height: 1.35; text-align: left; vertical-align: top; }
+.snapshot-intelligence-table th { color: var(--text); background: #101823; font-size: 0.62rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.snapshot-intelligence-table tbody tr:nth-child(even) { background: rgba(255, 255, 255, 0.018); }
+.snapshot-intelligence-table tbody tr:hover { background: rgba(76, 201, 240, 0.055); }
+.snapshot-intelligence-table td strong, .snapshot-intelligence-table td small { display: block; }
+.snapshot-intelligence-table td strong { color: var(--text); }
+.snapshot-intelligence-table td small { margin-top: 4px; color: var(--text-muted); }
+.snapshot-intelligence-table a { color: var(--blue); font-weight: 900; }
+
+.snapshot-list-search { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 1rem; border: 1px solid rgba(76, 201, 240, 0.12); border-radius: 10px; padding: 0.7rem; background: rgba(8, 13, 19, 0.48); }
+.snapshot-list-search input { flex: 1; }
+.snapshot-list-search span { min-width: max-content; color: var(--text-muted); font-size: 0.64rem; font-weight: 900; text-transform: uppercase; }
+.snapshot-intelligence-state { display: flex; min-height: 180px; align-items: center; justify-content: center; gap: 15px; border-color: rgba(76, 201, 240, 0.17); border-radius: 12px; padding: 1.5rem; text-align: left; }
+.snapshot-intelligence-state.compact { min-height: 170px; }
+.snapshot-intelligence-state-mark { display: grid; width: 48px; height: 48px; place-items: center; border: 1px solid rgba(76, 201, 240, 0.3); border-radius: 50%; color: var(--blue); font-size: 1.4rem; }
+.snapshot-intelligence-state.error .snapshot-intelligence-state-mark { border-color: rgba(193, 18, 31, 0.5); color: #ff6670; }
+.snapshot-intelligence-state h2, .snapshot-intelligence-state p { margin: 0; }
+.snapshot-intelligence-state p { margin-top: 5px; color: var(--text-soft); }
+.snapshot-intelligence-empty { display: grid; min-height: 132px; place-content: center; padding: 1.25rem; text-align: center; }
+.snapshot-intelligence-empty p { margin: 0.4rem 0 0; color: var(--text-soft); }
+
+@media (max-width: 960px) { .snapshot-intelligence-hero, .snapshot-intelligence-layout { grid-template-columns: 1fr; } }
+@media (max-width: 640px) { .snapshot-intelligence-page { gap: 0.75rem; } .snapshot-intelligence-hero, .snapshot-intelligence-selector, .snapshot-intelligence-controls { padding: 0.9rem; } .snapshot-intelligence-selector, .snapshot-intelligence-controls { grid-template-columns: 1fr; } .snapshot-intelligence-metrics, .snapshot-role-grid { grid-template-columns: 1fr; } .snapshot-intelligence-coverage { grid-template-columns: repeat(2, minmax(0, 1fr)); } .snapshot-intelligence-coverage span { min-height: 60px; } .snapshot-list-search { align-items: stretch; flex-direction: column; } }
+
+/* Presentation-only readability pass. */
+.snapshot-intelligence-page { color: #e8f0f6; }
+.snapshot-intelligence-hero > div > p:last-child,
+.snapshot-intelligence-selector p,
+.snapshot-intelligence-brief,
+.snapshot-intelligence-table td,
+.snapshot-intelligence-state p,
+.snapshot-intelligence-empty p { color: #cbd8e3; }
+.snapshot-intelligence-selector label,
+.snapshot-intelligence-controls label { color: #b9c9d5; font-size: 0.68rem; }
+.snapshot-intelligence-panel .panel-heading h2 { color: #fbfdff; font-size: clamp(1.08rem, 2vw, 1.35rem); }
+.snapshot-intelligence-table th { color: #f8fcff; background: linear-gradient(90deg, rgba(76, 201, 240, 0.14), #101823 72%); }
+.snapshot-intelligence-table td { font-size: 0.88rem; }
+.snapshot-intelligence-table td strong { color: #ffffff; }
+.snapshot-intelligence-table a { color: #6edcff; }
+.snapshot-intelligence-metrics strong { color: #ffffff; font-size: 1.55rem; }
+.snapshot-intelligence-metrics span { color: #9db3c2; font-size: 0.66rem; }
+.snapshot-role-grid strong { color: #ffffff; }
+.snapshot-role-grid span, .snapshot-role-grid small { color: #aac0cd; }
+
+/* Mature Explorer presentation restored on the immutable snapshot data only. */
+.snapshot-intelligence-brief-panel {
+  overflow: hidden;
+  border-color: rgba(76, 201, 240, 0.28);
+  background: linear-gradient(115deg, rgba(76, 201, 240, 0.12), transparent 45%), var(--panel);
+}
+
+.snapshot-intelligence-brief-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(76, 201, 240, 0.16);
+  padding: 1rem 1.1rem 0.85rem;
+}
+
+.snapshot-intelligence-brief-header span {
+  color: var(--blue);
+  font-size: 0.7rem;
+  font-weight: 950;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.snapshot-intelligence-brief-header h2 { margin: 0; color: #fff; font-size: clamp(1.25rem, 2.2vw, 1.7rem); }
+.snapshot-intelligence-brief-panel ul { display: grid; gap: 0.7rem; margin: 0; padding: 1rem 1.1rem 1.1rem; list-style: none; }
+.snapshot-intelligence-brief-panel li { display: grid; grid-template-columns: minmax(130px, 0.8fr) minmax(0, 1.2fr); gap: 0.75rem; border-left: 2px solid rgba(193, 18, 31, 0.72); padding: 0.38rem 0 0.38rem 0.75rem; color: #cbd8e3; font-size: 0.86rem; line-height: 1.45; }
+.snapshot-intelligence-brief-panel li strong { color: #fff; }
+
+.snapshot-intelligence-mature-metrics { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+.snapshot-intelligence-mature-metrics .snapshot-intelligence-metric { min-height: 122px; }
+.snapshot-intelligence-metric {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) 38px;
+  grid-template-rows: auto 1fr auto;
+  gap: 0.18rem 0.72rem;
+  width: 100%;
+  min-height: 112px;
+  border: 1px solid rgba(76, 201, 240, 0.24);
+  border-radius: 10px;
+  padding: 0.85rem;
+  color: #d6e5ef;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(76, 201, 240, 0.09), rgba(8, 13, 19, 0.1) 58%), var(--panel);
+  box-shadow: var(--shadow-card);
+}
+
+.snapshot-intelligence-metric.interactive-metric-card-action { cursor: pointer; }
+.snapshot-intelligence-metric.interactive-metric-card-action:hover,
+.snapshot-intelligence-metric.interactive-metric-card-action:focus-visible { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.13), var(--shadow-card); outline: 0; transform: translateY(-1px); }
+.snapshot-intelligence-metric::after { content: ""; grid-column: 3; grid-row: 1 / span 3; width: 38px; }
+.snapshot-intelligence-metric-icon { grid-column: 1; grid-row: span 3; display: grid; width: 38px; height: 38px; place-items: center; border: 1px solid rgba(76, 201, 240, 0.34); border-radius: 8px; background: rgba(8, 13, 19, 0.82) center / 22px no-repeat; }
+.snapshot-intelligence-metric-icon.is-regular { background-image: url("/army-intelligence/regular-order.svg"); }
+.snapshot-intelligence-metric-icon.is-irregular { background-image: url("/army-intelligence/irregular-order.svg"); }
+.snapshot-intelligence-metric-icon.is-tactical { background-image: url("/army-intelligence/tactical-awareness-order.svg"); }
+.snapshot-intelligence-metric-icon.is-impetuous { background-image: url("/army-intelligence/impetuous-order.svg"); }
+.snapshot-intelligence-metric-icon.is-lieutenant::before { content: "L"; color: var(--blue); font-weight: 950; }
+.snapshot-intelligence-metric-icon.is-wounds::before { content: "+"; color: #ff7b84; font-size: 1.45rem; font-weight: 900; }
+.snapshot-intelligence-metric-icon.is-points::before { content: "P"; color: #f5ce75; font-weight: 950; }
+.snapshot-intelligence-metric-icon.is-lists::before { content: "≡"; color: var(--blue); font-size: 1.5rem; font-weight: 900; }
+.snapshot-intelligence-metric .interactive-metric-card-label { grid-column: 2; grid-row: 1; align-self: end; color: #adc0ce; font-size: 0.62rem; font-weight: 950; letter-spacing: 0.075em; text-transform: uppercase; }
+.snapshot-intelligence-metric .interactive-metric-card-value { grid-column: 2; grid-row: 2; align-self: center; color: #fff; font-family: Rajdhani, Inter, sans-serif; font-size: 2rem; line-height: 1; }
+.snapshot-intelligence-metric .interactive-metric-card-helper { grid-column: 2; grid-row: 3; color: var(--blue); font-size: 0.7rem; font-weight: 850; }
+
+.snapshot-intelligence-panel-wide { overflow: hidden; }
+.snapshot-intelligence-usage-groups { display: grid; gap: 0.55rem; }
+.snapshot-intelligence-usage-group { border: 1px solid rgba(76, 201, 240, 0.15); border-radius: 8px; background: rgba(8, 13, 19, 0.56); }
+.snapshot-intelligence-usage-group[open] { border-color: rgba(76, 201, 240, 0.45); background: rgba(11, 23, 33, 0.78); }
+.snapshot-intelligence-usage-group summary { display: grid; grid-template-columns: minmax(170px, 2fr) repeat(3, minmax(85px, 0.55fr)); align-items: center; gap: 0.75rem; padding: 0.75rem 0.85rem; color: #cbd8e3; cursor: pointer; list-style: none; }
+.snapshot-intelligence-usage-group summary::-webkit-details-marker { display: none; }
+.snapshot-intelligence-usage-group summary > span:not(.snapshot-intelligence-profile-cell) { color: #9eb5c5; font-size: 0.76rem; text-align: right; }
+.snapshot-intelligence-profile-cell strong, .snapshot-intelligence-profile-cell small { display: block; }
+.snapshot-intelligence-profile-cell strong { color: #fff; }
+.snapshot-intelligence-profile-cell small { margin-top: 0.18rem; color: #9eb5c5; font-size: 0.71rem; }
+.snapshot-intelligence-profile-usage { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.55rem 1rem; border-top: 1px solid rgba(76, 201, 240, 0.13); padding: 0.8rem 0.9rem; }
+.snapshot-intelligence-profile-usage p { margin: 0; color: #b9c9d5; font-size: 0.8rem; line-height: 1.42; }
+.snapshot-intelligence-profile-usage strong { color: var(--blue); font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; }
+
+.snapshot-intelligence-role-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(245px, 1fr)); gap: 0.7rem; }
+.snapshot-intelligence-role-disclosure { overflow: hidden; border: 1px solid rgba(76, 201, 240, 0.18); border-radius: 9px; background: var(--panel); }
+.snapshot-intelligence-role-disclosure > summary { display: grid; grid-template-columns: 1fr auto; gap: 0.15rem 0.8rem; padding: 0.85rem; cursor: pointer; list-style: none; }
+.snapshot-intelligence-role-disclosure > summary::-webkit-details-marker { display: none; }
+.snapshot-intelligence-role-disclosure > summary span { grid-column: 1 / -1; color: var(--blue); font-size: 0.64rem; font-weight: 950; letter-spacing: 0.08em; text-transform: uppercase; }
+.snapshot-intelligence-role-disclosure > summary strong { color: #fff; }
+.snapshot-intelligence-role-disclosure > summary small { align-self: end; color: #afc3d0; font-size: 0.72rem; }
+.snapshot-intelligence-role-disclosure .snapshot-intelligence-panel { border: 0; border-top: 1px solid rgba(76, 201, 240, 0.13); border-radius: 0; box-shadow: none; }
+.snapshot-intelligence-role-disclosure .panel-heading { min-height: auto; padding: 0.7rem 0.85rem; }
+
+.snapshot-intelligence-explorer-backdrop { position: fixed; z-index: 80; inset: 0; display: grid; place-items: center; padding: clamp(0.7rem, 2vw, 1.4rem); background: rgba(2, 5, 8, 0.79); backdrop-filter: blur(5px); }
+.snapshot-intelligence-explorer-panel { width: min(1240px, 100%); min-width: 0; max-height: min(820px, 94vh); overflow: auto; border: 1px solid rgba(76, 201, 240, 0.35); border-radius: 13px; background: #0b121a; box-shadow: 0 30px 90px rgba(0, 0, 0, 0.62); }
+.snapshot-intelligence-explorer-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-bottom: 1px solid rgba(76, 201, 240, 0.17); padding: 1rem 1.15rem; background: linear-gradient(90deg, rgba(76, 201, 240, 0.1), transparent 55%); }
+.snapshot-intelligence-explorer-header p, .snapshot-intelligence-explorer-header h2 { margin: 0; }
+.snapshot-intelligence-explorer-header h2 { color: #fff; font-size: 1.45rem; }
+.snapshot-intelligence-explorer-header button { border: 1px solid rgba(193, 18, 31, 0.64); border-radius: 7px; padding: 0.48rem 0.72rem; color: #ffe7e9; background: rgba(193, 18, 31, 0.14); font: inherit; font-weight: 850; cursor: pointer; }
+.snapshot-intelligence-explorer-header button:hover, .snapshot-intelligence-explorer-header button:focus-visible { background: rgba(193, 18, 31, 0.3); outline: 2px solid rgba(255, 123, 132, 0.5); outline-offset: 2px; }
+.snapshot-intelligence-explorer-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.65rem; padding: 0.85rem 1.15rem 0; }
+.snapshot-intelligence-explorer-stats article { border: 1px solid rgba(76, 201, 240, 0.16); border-radius: 7px; padding: 0.62rem 0.7rem; background: rgba(76, 201, 240, 0.045); }
+.snapshot-intelligence-explorer-stats span, .snapshot-intelligence-explorer-stats strong { display: block; }
+.snapshot-intelligence-explorer-stats span { color: #9eb5c5; font-size: 0.62rem; font-weight: 900; letter-spacing: 0.07em; text-transform: uppercase; }
+.snapshot-intelligence-explorer-stats strong { margin-top: 0.18rem; color: #fff; font-size: 1.18rem; }
+.snapshot-intelligence-explorer-controls { display: grid; grid-template-columns: minmax(200px, 1.4fr) repeat(3, minmax(150px, 0.8fr)); gap: 0.7rem; padding: 0.9rem 1.15rem; }
+.snapshot-intelligence-explorer-controls label { display: grid; gap: 0.36rem; color: #adc0ce; font-size: 0.63rem; font-weight: 950; letter-spacing: 0.07em; text-transform: uppercase; }
+.snapshot-intelligence-explorer-controls input, .snapshot-intelligence-explorer-controls select { min-height: 40px; border: 1px solid rgba(76, 201, 240, 0.24); border-radius: 7px; padding: 0.45rem 0.55rem; color: #fff; background: #0a1118; font: inherit; }
+.snapshot-intelligence-explorer-controls input:focus-visible, .snapshot-intelligence-explorer-controls select:focus-visible { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.14); outline: 0; }
+.snapshot-intelligence-explorer-table { margin: 0; border-top: 1px solid rgba(76, 201, 240, 0.14); }
+
+@media (max-width: 720px) {
+  .snapshot-intelligence-hero { min-height: 0; aspect-ratio: 3 / 2; background-position: center; background-size: 100% auto; }
+  .snapshot-intelligence-brief-panel li { grid-template-columns: 1fr; gap: 0.18rem; }
+  .snapshot-intelligence-usage-group summary { grid-template-columns: minmax(125px, 1fr) repeat(2, auto); }
+  .snapshot-intelligence-usage-group summary > span:last-child { display: none; }
+  .snapshot-intelligence-profile-usage { grid-template-columns: 1fr; }
+  .snapshot-intelligence-explorer-controls { grid-template-columns: 1fr; }
+  .snapshot-intelligence-explorer-stats { grid-template-columns: 1fr; }
+}

@@ -10,9 +10,11 @@ import type {
   Standing,
 } from '../types/dashboard'
 import { formatNotificationTimestamp } from './formatting'
+import { publicSnapshotApi } from './publicSnapshotApi'
 import {
   API_URL,
   getActiveNativeSessionToken,
+  invalidateApiCacheGroup,
   postRequest,
   request,
   setApiAuthToken,
@@ -144,6 +146,7 @@ export type FlaggedArmySubmissionsData = {
 }
 
 export type LeagueResultSubmission = {
+  matchId?: string
   eventId: string
   round: string
   division: string
@@ -478,6 +481,12 @@ export type ArmyIntelligenceCount = {
 }
 
 export type ArmyIntelligenceDecodedEntry = {
+  bs?: number | null
+  cc?: number | null
+  canonicalProfile?: string | null
+  canonicalUnitId?: number | null
+  canonicalOptionId?: number | null
+  canonicalSource?: { datasetId?: string | null; payloadVersion: string | null; sectorialId: number | null }
   combatGroup: number
   chainOfCommand: boolean
   combinedId: string
@@ -497,6 +506,9 @@ export type ArmyIntelligenceDecodedEntry = {
   troopType: string
   unit: string
   weapons: string[]
+  weaponProfiles?: Array<{ id?: number | null; burst: number | null; burstStatus?: string; modifiers?: string[]; mode?: string | null; modeResolution?: string | null; name: string; source?: string | null; type?: string }>
+  fireteamEligibility?: { state?: 'verified' | 'verified-false' | 'unknown'; teams: string[]; verified: boolean; memberships?: Array<{ team: string; minSize: number; required: boolean; requiredNames: string[]; memberName: string; countsAs: string }> }
+  fireteamSdBonus?: number
   wounds: number | null
 }
 
@@ -506,6 +518,9 @@ export type ArmyIntelligenceDecodedList = {
     entries: ArmyIntelligenceDecodedEntry[]
   }>
   decoderVersion: string
+  pipelineVersion?: string
+  tacticalSchemaVersion?: string
+  enrichment?: { capturedAt?: string; datasetId?: string; enrichedAt?: string; fireteamStatus?: string; officialUnitVersion?: string | null; payloadVersion?: string | null; provider?: string; sourceUrls?: string[]; status?: string }
   faction: string
   listName: string
   orderCounts: {
@@ -537,12 +552,15 @@ export type ArmyIntelligenceList = {
   opponent: string
   player: string
   result: string
+  results?: string[]
   sectorial: string
   snapshotKey: string
   sourceId: string
   sourcePlayer: string
   sourceType: string
   status: 'decoded' | 'failed' | 'pending'
+  pipelineVersion?: string
+  tacticalSchemaVersion?: string
 }
 
 export type ArmyIntelligenceArmyList = {
@@ -620,6 +638,19 @@ export type ArmyIntelligenceData = {
   summary: ArmyIntelligenceSummary
 }
 
+export type ArmyIntelligenceSummaryData = {
+  decodedLists: number
+  failedLists: number
+  options: string[]
+  pendingLists: number
+}
+
+export type ArmyIntelligenceFactionData = {
+  armyLists: ArmyIntelligenceArmyList[]
+  faction: string
+  lists: ArmyIntelligenceList[]
+}
+
 export type PlayerArmyListSummary = {
   submitted: number
   highestRated: ArmyList | null
@@ -664,6 +695,7 @@ type DashboardApiResponse = {
   activePlayers: number
   mainManStandings: Standing[]
   leagueOverview?: LeagueOverview
+  currentOperationsMissions: string[]
 }
 
 export type PlayerProfileData = {
@@ -792,6 +824,8 @@ export type SubmittedArmyListEntry = {
   id: string
   gameId: number
   armyCode: string
+  armyLink?: string
+  armyName?: string
   battleReportPath: string
   date: string
   eventId: string
@@ -1588,6 +1622,7 @@ export type EventRegistrationEntry = {
   eventId: string
   faction: string
   freeAgent: boolean
+  itsName?: string
   notes: string
   player: string
   preferredTeam: string
@@ -1675,6 +1710,7 @@ export type EventManagerData = {
 export type LeagueOperationsMission = {
   maps: string[]
   mission: string
+  missionGeistId?: string
 }
 
 export type LeagueOperationsData = {
@@ -1769,6 +1805,7 @@ export type TeamTournamentMutationResult =
   | { eventId: string; kind: 'invitation'; invitation: TeamTournamentInvitation }
   | { eventId: string; kind: 'result'; result: TeamTournamentResult }
   | { eventId: string; kind: 'round'; lifecycleStage: string; status: string }
+  | { eventId: string; kind: 'roundManagement'; lifecycleStage: string; pairingsSaved: number; round: Record<string, unknown> }
 
 export type EventRegistrationMutationResult =
   | EventRegistrationData
@@ -1900,6 +1937,7 @@ export type PortalSettings = {
   leagueName: string
   googleFormUrl: string
   joinCommunityFormUrl: string
+  top40GameSubmissionFormUrl: string
   discordInvite: string
   discordServerName: string
   leagueWebsite: string
@@ -2671,6 +2709,11 @@ export type ApiClient = {
   getStreams: (options?: ApiOptions) => Promise<StreamedGame[]>
   getArmyLists: (options?: ApiOptions) => Promise<ArmyListsData>
   getArmyIntelligence: (options?: ApiOptions) => Promise<ArmyIntelligenceData>
+  getArmyIntelligenceSummary: (options?: ApiOptions) => Promise<ArmyIntelligenceSummaryData>
+  getArmyIntelligenceFaction: (
+    faction: string,
+    options?: ApiOptions,
+  ) => Promise<ArmyIntelligenceFactionData>
   getCommunityCommandCenter: (
     options?: ApiOptions,
   ) => Promise<CommunityCommandCenterData>
@@ -2709,6 +2752,11 @@ export type ApiClient = {
     eventId?: string,
     options?: ApiOptions,
   ) => Promise<EventHomeData>
+  getEventBracket: (eventId: string, options?: ApiOptions) => Promise<EventBracketData>
+  generateEventBracket: (eventId: string, options?: ApiOptions) => Promise<EventBracketData>
+  updateEventBracketDeadline: (eventId: string, matchId: string, deadline: string, options?: ApiOptions) => Promise<EventBracketData>
+  awardEventBracketForfeit: (eventId: string, matchId: string, winner: string, options?: ApiOptions) => Promise<EventBracketData>
+  saveEventBracketMissions: (eventId: string, assignments: EventBracketMission[], options?: ApiOptions) => Promise<EventBracketData>
   getEventManager: (
     eventId?: string,
     options?: ApiOptions,
@@ -2770,6 +2818,10 @@ export type ApiClient = {
     params: Record<string, string>,
     options?: ApiOptions,
   ) => Promise<TeamTournamentMutationResult>
+  saveTeamTournamentRoundManagement: (
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ) => Promise<TeamTournamentMutationResult>
   saveTeamTournamentInvitation: (
     params: Record<string, string>,
     options?: ApiOptions,
@@ -2790,6 +2842,10 @@ export type ApiClient = {
     options?: ApiOptions,
   ) => Promise<void>
   submitLeagueResult: (
+    submission: LeagueResultSubmission,
+    options?: ApiOptions,
+  ) => Promise<void>
+  submitTop40Result: (
     submission: LeagueResultSubmission,
     options?: ApiOptions,
   ) => Promise<void>
@@ -2976,6 +3032,21 @@ export async function getSubmittedArmyListLibrary(
     }),
     getEvents(options).catch(() => null),
   ])
+  return buildSubmittedArmyListLibraryFromSources(games, casualGames, tournamentGames, eventCatalog)
+}
+
+export function buildSubmittedArmyListLibraryFromSources(
+  gamesPayload: unknown,
+  casualGamesPayload: unknown,
+  tournamentGamesPayload: unknown,
+  eventCatalogPayload: unknown,
+): SubmittedArmyListEntry[] {
+  const games = Array.isArray(gamesPayload) ? gamesPayload : normalizeRecentGamesPayload(gamesPayload)
+  const casualGames = Array.isArray(casualGamesPayload) ? casualGamesPayload : normalizeRecentGamesPayload(casualGamesPayload)
+  const tournamentGames = Array.isArray(tournamentGamesPayload) ? tournamentGamesPayload : normalizeRecentGamesPayload(tournamentGamesPayload)
+  const eventCatalog = eventCatalogPayload == null
+    ? null
+    : normalizeEventCatalogPayload(eventCatalogPayload)
   const eventNames = new Map<string, string>()
 
   eventCatalog?.events.forEach((event) => {
@@ -3468,6 +3539,90 @@ export async function getArmyIntelligence(
   return normalizeArmyIntelligencePayload(payload)
 }
 
+export type EventBracketReadiness = {
+  capacity: number
+  ready: boolean
+  reasons: string[]
+  registeredCount: number
+  registrationClosed: boolean
+  seededCount: number
+}
+
+export type EventBracketMatch = {
+  activatedAt: string
+  bracket: 'Winners' | 'Losers' | 'Grand Final'
+  bracketRound: number
+  eventId: string
+  loser: string
+  matchId: string
+  mission: string
+  nextLoserMatch: string
+  nextLoserSlot: string
+  nextWinnerMatch: string
+  nextWinnerSlot: string
+  playerA: string
+  playerASource: string
+  playerB: string
+  playerBSource: string
+  position: number
+  seedA: number | null
+  seedB: number | null
+  status: string
+  deadline: string
+  gameId: number | null
+  resolution: string
+  winner: string
+}
+
+export type EventBracketMission = {
+  bracket: EventBracketMatch['bracket']
+  bracketRound: number
+  mission: string
+  missionGeistId?: string
+}
+
+export type EventBracketData = {
+  champion?: string
+  eventId: string
+  generated: boolean
+  matches: EventBracketMatch[]
+  missions: EventBracketMission[]
+  readiness: EventBracketReadiness
+  tournamentComplete?: boolean
+}
+
+export async function getArmyIntelligenceSummary(
+  options: ApiOptions = {},
+): Promise<ArmyIntelligenceSummaryData> {
+  const payload = await request(
+    'armyIntelligence',
+    {
+      ...options,
+      redirect: 'follow',
+    },
+    { scope: 'summary' },
+  )
+  return normalizeArmyIntelligenceSummaryProjection(payload)
+}
+
+export async function getArmyIntelligenceFaction(
+  faction: string,
+  options: ApiOptions = {},
+): Promise<ArmyIntelligenceFactionData> {
+  const payload = await request(
+    'armyIntelligence',
+    {
+      ...options,
+      redirect: 'follow',
+    },
+    {
+      faction,
+      scope: 'faction',
+    },
+  )
+  return normalizeArmyIntelligenceFactionProjection(payload)
+}
+
 export async function validateArmyCode(
   armyCode: string,
   event: string,
@@ -3622,6 +3777,55 @@ export async function getEventHome(
   return normalizeEventHomePayload(payload)
 }
 
+export async function getEventBracket(
+  eventId: string,
+  options: ApiOptions = {},
+): Promise<EventBracketData> {
+  return normalizeEventBracketPayload(await request('eventBracket', options, { eventId }))
+}
+
+export async function generateEventBracket(
+  eventId: string,
+  options: ApiOptions = {},
+): Promise<EventBracketData> {
+  return normalizeEventBracketPayload(await postRequest('eventBracketGenerate', options, { eventId }))
+}
+
+export async function updateEventBracketDeadline(
+  eventId: string,
+  matchId: string,
+  deadline: string,
+  options: ApiOptions = {},
+): Promise<EventBracketData> {
+  return normalizeEventBracketPayload(
+    await postRequest('eventBracketDeadline', options, { eventId, matchId, deadline }),
+  )
+}
+
+export async function awardEventBracketForfeit(
+  eventId: string,
+  matchId: string,
+  winner: string,
+  options: ApiOptions = {},
+): Promise<EventBracketData> {
+  return normalizeEventBracketPayload(
+    await postRequest('eventBracketForfeit', options, { eventId, matchId, winner }),
+  )
+}
+
+export async function saveEventBracketMissions(
+  eventId: string,
+  assignments: EventBracketMission[],
+  options: ApiOptions = {},
+): Promise<EventBracketData> {
+  return normalizeEventBracketPayload(
+    await postRequest('eventBracketMissions', options, {
+      assignments: JSON.stringify(assignments),
+      eventId,
+    }),
+  )
+}
+
 export async function getEventManager(
   eventId = 'event-current-league',
   options: ApiOptions = {},
@@ -3749,6 +3953,14 @@ export async function saveTeamTournamentPairing(
   return normalizeTeamTournamentMutationPayload(payload)
 }
 
+export async function saveTeamTournamentRoundManagement(
+  params: Record<string, string>,
+  options: ApiOptions = {},
+): Promise<TeamTournamentMutationResult> {
+  const payload = await postRequest('teamTournamentRoundManagement', options, params)
+  return normalizeTeamTournamentMutationPayload(payload)
+}
+
 export async function saveTeamTournamentInvitation(
   params: Record<string, string>,
   options: ApiOptions = {},
@@ -3864,6 +4076,19 @@ export async function submitLeagueResult(
   normalizeMutationPayload(payload, 'Result submission failed.')
 }
 
+export async function submitTop40Result(
+  submission: LeagueResultSubmission,
+  options: ApiOptions = {},
+): Promise<void> {
+  normalizeMutationPayload(await postRequest('submitTop40Result', options, {
+    ...submission,
+    matchId: submission.matchId ?? '',
+    commissionerMode: submission.commissionerMode ? 'true' : '',
+    commissionerOverride: submission.commissionerOverride ? 'true' : '',
+    commissionerReason: submission.commissionerReason ?? '',
+  }), 'Top 40 result submission failed.')
+}
+
 export async function submitCasualResult(
   submission: CasualResultSubmission,
   options: ApiOptions = {},
@@ -3958,6 +4183,18 @@ export async function getOperationsContent(
 ): Promise<OperationsDashboardData> {
   const payload = await request('operationsContent', options)
   return normalizeOperationsPayload(payload)
+}
+
+// The Commissioner Streams Manager needs every canonical stream row, including
+// records that are intentionally not yet public. This reuses the existing
+// authenticated operations action with its narrow streams scope.
+export async function getCommissionerStreams(
+  options: ApiOptions = {},
+): Promise<StreamedGame[]> {
+  const payload = await request('operationsContent', options, {
+    scope: 'streams',
+  })
+  return normalizeStreamsPayload(payload)
 }
 
 export async function getOperationsDiscord(
@@ -4125,6 +4362,8 @@ export async function refreshArmyIntelligenceSnapshots(
     throw new Error(getString(payload, 'error') || 'Army Intelligence refresh failed.')
   }
 
+  invalidateApiCacheGroup('armyIntelligence')
+
   return {
     candidateCount: getNumber(payload, 'candidateCount'),
     currentCount: getNumber(payload, 'currentCount'),
@@ -4205,6 +4444,8 @@ export const apiClient: ApiClient = {
   getStreams,
   getArmyLists,
   getArmyIntelligence,
+  getArmyIntelligenceSummary,
+  getArmyIntelligenceFaction,
   validateArmyCode,
   getFlaggedArmySubmissions,
   auditArmyCodeSubmissions,
@@ -4221,6 +4462,11 @@ export const apiClient: ApiClient = {
   getTeamTournament,
   getEventRegistration,
   getEventHome,
+  getEventBracket,
+  generateEventBracket,
+  updateEventBracketDeadline,
+  awardEventBracketForfeit,
+  saveEventBracketMissions,
   getLeagueOperations,
   getEventManager,
   registerForEvent,
@@ -4237,6 +4483,7 @@ export const apiClient: ApiClient = {
   registerTeamTournament,
   saveTeamTournamentTeam,
   saveTeamTournamentPairing,
+  saveTeamTournamentRoundManagement,
   saveTeamTournamentInvitation,
   saveTeamTournamentResult,
   advanceTeamTournamentRound,
@@ -4244,6 +4491,7 @@ export const apiClient: ApiClient = {
   submitArmyList,
   submitCasualResult,
   submitLeagueResult,
+  submitTop40Result,
   linkHistoricalArmyLists,
   voteArmyList,
   getOperations,
@@ -4267,12 +4515,14 @@ export const apiClient: ApiClient = {
   getOperationsSeason,
   operationsAction,
   refreshArmyIntelligenceSnapshots,
+  ...publicSnapshotApi,
 }
 
-function normalizeDashboardPayload(payload: unknown): DashboardData {
+export function normalizeDashboardPayload(payload: unknown): DashboardData {
   const response = parseDashboardApiResponse(payload)
 
   return {
+    currentOperationsMissions: response.currentOperationsMissions,
     summary: {
       leagueLeader: response.leader.displayName || response.leader.player,
       gamesPlayed: response.gamesPlayed,
@@ -4657,6 +4907,9 @@ function parseDashboardApiResponse(payload: unknown): DashboardApiResponse {
     activePlayers: getRequiredNumber(record, 'activePlayers'),
     mainManStandings,
     leagueOverview: overview ? normalizeLeagueOverview(overview) : undefined,
+    currentOperationsMissions: getArray(record, 'currentOperationsMissions').map((mission) =>
+      String(mission ?? '').trim(),
+    ).filter(Boolean),
   }
 }
 
@@ -4852,7 +5105,7 @@ function normalizePlayerProfileRecord(
   }
 }
 
-function normalizePlayersPayload(payload: unknown): DivisionStandings[] {
+export function normalizePlayersPayload(payload: unknown): DivisionStandings[] {
   const record = asRecord(payload, 'Players response')
 
   if (record.success === false) {
@@ -4937,7 +5190,7 @@ function normalizeGameScoreCorrectionScores(record: Record<string, unknown>) {
   }
 }
 
-function normalizeFactionsPayload(payload: unknown): FactionSummary[] {
+export function normalizeFactionsPayload(payload: unknown): FactionSummary[] {
   const record = asRecord(payload, 'Factions response')
 
   if (record.success === false) {
@@ -4947,7 +5200,7 @@ function normalizeFactionsPayload(payload: unknown): FactionSummary[] {
   return getRequiredArray(record, 'factions').map(normalizeFactionSummary)
 }
 
-function normalizeFactionPayload(payload: unknown): FactionProfileData {
+export function normalizeFactionPayload(payload: unknown): FactionProfileData {
   const record = asRecord(payload, 'Faction response')
 
   if (record.success === false) {
@@ -5042,7 +5295,7 @@ function normalizeFactionBestMoment(item: unknown): FactionBestMoment {
   }
 }
 
-function normalizeMissionsPayload(payload: unknown): MissionSummary[] {
+export function normalizeMissionsPayload(payload: unknown): MissionSummary[] {
   const record = asRecord(payload, 'Missions response')
 
   if (record.success === false) {
@@ -5052,7 +5305,7 @@ function normalizeMissionsPayload(payload: unknown): MissionSummary[] {
   return getRequiredArray(record, 'missions').map(normalizeMissionSummary)
 }
 
-function normalizeMissionPayload(payload: unknown): MissionProfileData {
+export function normalizeMissionPayload(payload: unknown): MissionProfileData {
   const record = asRecord(payload, 'Mission response')
 
   if (record.success === false) {
@@ -5270,7 +5523,7 @@ function normalizeRecordsPayload(
   return normalizeLeagueRecords(getRequiredRecord(record, 'records'))
 }
 
-function normalizeHallOfFamePayload(payload: unknown): HallOfFameData {
+export function normalizeHallOfFamePayload(payload: unknown): HallOfFameData {
   const record = asRecord(payload, 'Hall of Fame response')
 
   if (record.success === false) {
@@ -5400,7 +5653,7 @@ function normalizeHallOfFameTimelineItem(item: unknown): HallOfFameTimelineItem 
   }
 }
 
-function normalizePlayerComparisonPayload(
+export function normalizePlayerComparisonPayload(
   payload: unknown,
 ): PlayerComparisonData {
   const record = asRecord(payload, 'Player comparison response')
@@ -5483,6 +5736,7 @@ function normalizeSettingsRecord(settings: Record<string, unknown>): PortalSetti
     leagueName: getString(settings, 'leagueName'),
     googleFormUrl: getString(settings, 'googleFormUrl'),
     joinCommunityFormUrl: getString(settings, 'joinCommunityFormUrl'),
+    top40GameSubmissionFormUrl: getString(settings, 'top40GameSubmissionFormUrl'),
     discordInvite: getString(settings, 'discordInvite'),
     discordServerName:
       getString(settings, 'discordServerName') || 'Lobo Infinity League Discord',
@@ -5794,6 +6048,35 @@ function normalizeArmyIntelligencePayload(payload: unknown): ArmyIntelligenceDat
   }
 }
 
+export function normalizeArmyIntelligenceSummaryProjection(payload: unknown): ArmyIntelligenceSummaryData {
+  const record = asRecord(payload, 'Army Intelligence summary response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Army Intelligence summary failed.')
+  }
+
+  return {
+    decodedLists: getNumber(record, 'decodedLists'),
+    failedLists: getNumber(record, 'failedLists'),
+    options: getRequiredArray(record, 'options').map((option) => String(option)),
+    pendingLists: getNumber(record, 'pendingLists'),
+  }
+}
+
+export function normalizeArmyIntelligenceFactionProjection(payload: unknown): ArmyIntelligenceFactionData {
+  const record = asRecord(payload, 'Army Intelligence faction response')
+
+  if (record.success === false) {
+    throw new Error(getString(record, 'error') || 'Army Intelligence faction failed.')
+  }
+
+  return {
+    armyLists: getArray(record, 'armyLists').map(normalizeArmyIntelligenceArmyList),
+    faction: getRequiredString(record, 'faction'),
+    lists: getRequiredArray(record, 'lists').map(normalizeArmyIntelligenceList),
+  }
+}
+
 function normalizeArmyIntelligenceArmyList(item: unknown): ArmyIntelligenceArmyList {
   const record = asRecord(item, 'Army Intelligence army list')
 
@@ -5832,6 +6115,9 @@ function normalizeArmyIntelligenceList(item: unknown): ArmyIntelligenceList {
     opponent: getString(record, 'opponent'),
     player: getString(record, 'player'),
     result: getString(record, 'result'),
+    results: getArray(record, 'results')
+      .map((result) => String(result).trim().toLowerCase())
+      .filter(Boolean),
     sectorial: getString(record, 'sectorial'),
     snapshotKey: getRequiredString(record, 'snapshotKey'),
     sourceId: getString(record, 'sourceId'),
@@ -5859,6 +6145,10 @@ function normalizeArmyIntelligenceDecodedList(value: unknown): ArmyIntelligenceD
       }
     }),
     decoderVersion: getString(record, 'decoderVersion'),
+    enrichment: record.enrichment ? (() => {
+      const enrichment = asRecord(record.enrichment, 'Army Intelligence enrichment')
+      return { capturedAt: getString(enrichment, 'capturedAt'), datasetId: getString(enrichment, 'datasetId'), enrichedAt: getString(enrichment, 'enrichedAt'), fireteamStatus: getString(enrichment, 'fireteamStatus'), officialUnitVersion: enrichment.officialUnitVersion == null ? null : getString(enrichment, 'officialUnitVersion'), payloadVersion: enrichment.payloadVersion == null ? null : getString(enrichment, 'payloadVersion'), provider: getString(enrichment, 'provider'), sourceUrls: getArray(enrichment, 'sourceUrls').map(String), status: getString(enrichment, 'status') }
+    })() : undefined,
     faction: getString(record, 'faction'),
     listName: getString(record, 'listName'),
     orderCounts: {
@@ -5880,6 +6170,7 @@ function normalizeArmyIntelligenceDecodedEntry(item: unknown): ArmyIntelligenceD
   const record = asRecord(item, 'Decoded army entry')
 
   return {
+    bs: record.bs === null || record.bs === undefined || record.bs === '' ? null : getNumber(record, 'bs'),
     combatGroup: getNumber(record, 'combatGroup'),
     chainOfCommand: getBoolean(record, 'chainOfCommand'),
     combinedId: getString(record, 'combinedId'),
@@ -5901,6 +6192,36 @@ function normalizeArmyIntelligenceDecodedEntry(item: unknown): ArmyIntelligenceD
     troopType: getString(record, 'troopType'),
     unit: getString(record, 'unit'),
     weapons: getArray(record, 'weapons').map((entry) => String(entry)),
+    weaponProfiles: getArray(record, 'weaponProfiles').map((item) => {
+      const weapon = asRecord(item, 'Decoded weapon profile')
+      return {
+        burst: weapon.burst === null || weapon.burst === undefined || weapon.burst === '' ? null : getNumber(weapon, 'burst'),
+        id: weapon.id == null ? null : getNumber(weapon, 'id'),
+        burstStatus: getString(weapon, 'burstStatus'),
+        mode: weapon.mode == null ? null : getString(weapon, 'mode'),
+        modeResolution: weapon.modeResolution == null ? null : getString(weapon, 'modeResolution'),
+        modifiers: getArray(weapon, 'modifiers').map(String),
+        name: getString(weapon, 'name'),
+        source: weapon.source == null ? null : getString(weapon, 'source'),
+        type: getString(weapon, 'type'),
+      }
+    }).filter((weapon) => weapon.name),
+    canonicalProfile: record.canonicalProfile == null ? null : getString(record, 'canonicalProfile'),
+    canonicalUnitId: record.canonicalUnitId == null ? null : getNumber(record, 'canonicalUnitId'),
+    canonicalOptionId: record.canonicalOptionId == null ? null : getNumber(record, 'canonicalOptionId'),
+    canonicalSource: record.canonicalSource ? (() => {
+      const source = asRecord(record.canonicalSource, 'Canonical source')
+      return { datasetId: source.datasetId == null ? null : getString(source, 'datasetId'), payloadVersion: source.payloadVersion == null ? null : getString(source, 'payloadVersion'), sectorialId: source.sectorialId == null ? null : getNumber(source, 'sectorialId') }
+    })() : undefined,
+    fireteamEligibility: record.fireteamEligibility ? (() => {
+      const eligibility = asRecord(record.fireteamEligibility, 'Fireteam eligibility')
+      const state = getString(eligibility, 'state')
+      const memberships = eligibility.memberships == null ? undefined : getArray(eligibility, 'memberships').map((value) => {
+        const membership = asRecord(value, 'Fireteam membership')
+        return { team: getString(membership, 'team'), minSize: getNumber(membership, 'minSize'), required: getBoolean(membership, 'required'), requiredNames: getArray(membership, 'requiredNames').map(String), memberName: getString(membership, 'memberName'), countsAs: getString(membership, 'countsAs') }
+      })
+      return { state: state === 'verified' || state === 'verified-false' || state === 'unknown' ? state : 'unknown', teams: getArray(eligibility, 'teams').map(String), verified: getBoolean(eligibility, 'verified'), memberships }
+    })() : undefined,
     wounds: record.wounds === null || record.wounds === undefined || record.wounds === ''
       ? null
       : getNumber(record, 'wounds'),
@@ -6311,7 +6632,7 @@ function normalizeSchedulingRequest(item: unknown): SchedulingRequest {
   }
 }
 
-function normalizeTeamTournamentPayload(payload: unknown): TeamTournamentData {
+export function normalizeTeamTournamentPayload(payload: unknown): TeamTournamentData {
   const record = asRecord(payload, 'Team tournament response')
 
   if (record.success === false) {
@@ -6436,6 +6757,16 @@ function normalizeTeamTournamentMutationPayload(
       kind,
       lifecycleStage: getString(mutation, 'lifecycleStage'),
       status: getString(mutation, 'status'),
+    }
+  }
+
+  if (kind === 'roundManagement') {
+    return {
+      eventId,
+      kind,
+      lifecycleStage: getString(mutation, 'lifecycleStage'),
+      pairingsSaved: getNumber(mutation, 'pairingsSaved'),
+      round: getRequiredRecord(mutation, 'round'),
     }
   }
 
@@ -6631,7 +6962,7 @@ function normalizeEventManagerPayload(payload: unknown): EventManagerData {
   }
 }
 
-function normalizeLeagueOperationsPayload(payload: unknown): LeagueOperationsData {
+export function normalizeLeagueOperationsPayload(payload: unknown): LeagueOperationsData {
   const record = asRecord(payload, 'League operations response')
 
   if (record.success === false) {
@@ -6715,6 +7046,7 @@ function normalizeEventRegistrationEntry(
     eventId: getString(record, 'eventId'),
     faction: getString(record, 'faction'),
     freeAgent: getOptionalBoolean(record, 'freeAgent') ?? false,
+    itsName: getString(record, 'itsName'),
     notes: getString(record, 'notes'),
     player: getString(record, 'player'),
     preferredTeam: getString(record, 'preferredTeam'),
@@ -8641,6 +8973,64 @@ function normalizeArmyListLinkCandidatesPayload(payload: unknown): ArmyListLinkC
   return {
     games: getRequiredArray(record, 'games').map(normalizeArmyListLinkGame),
     armyLists: getRequiredArray(record, 'armyLists').map(normalizeArmyList),
+  }
+}
+
+function normalizeEventBracketPayload(payload: unknown): EventBracketData {
+  const response = asRecord(payload, 'Event bracket response')
+  if (response.success === false) throw new Error(getString(response, 'error') || 'Bracket request failed.')
+  const bracket = getRequiredRecord(response, 'bracket')
+  const readiness = getRequiredRecord(bracket, 'readiness')
+  return {
+    eventId: getString(bracket, 'eventId'),
+    champion: getString(bracket, 'champion'),
+    generated: getOptionalBoolean(bracket, 'generated') ?? false,
+    tournamentComplete: getOptionalBoolean(bracket, 'tournamentComplete') ?? false,
+    readiness: {
+      capacity: getNumber(readiness, 'capacity'),
+      ready: getOptionalBoolean(readiness, 'ready') ?? false,
+      reasons: getArray(readiness, 'reasons').map(String),
+      registeredCount: getNumber(readiness, 'registeredCount'),
+      registrationClosed: getOptionalBoolean(readiness, 'registrationClosed') ?? false,
+      seededCount: getNumber(readiness, 'seededCount'),
+    },
+    matches: getArray(bracket, 'matches').map((item) => {
+      const match = asRecord(item, 'Event bracket match')
+      return {
+        activatedAt: getString(match, 'activatedAt'),
+        bracket: getString(match, 'bracket') as EventBracketMatch['bracket'],
+        bracketRound: getNumber(match, 'bracketRound'),
+        eventId: getString(match, 'eventId'),
+        loser: getString(match, 'loser'),
+        matchId: getString(match, 'matchId'),
+        mission: getString(match, 'mission'),
+        nextLoserMatch: getString(match, 'nextLoserMatch'),
+        nextLoserSlot: getString(match, 'nextLoserSlot'),
+        nextWinnerMatch: getString(match, 'nextWinnerMatch'),
+        nextWinnerSlot: getString(match, 'nextWinnerSlot'),
+        playerA: getString(match, 'playerA'),
+        playerASource: getString(match, 'playerASource'),
+        playerB: getString(match, 'playerB'),
+        playerBSource: getString(match, 'playerBSource'),
+        position: getNumber(match, 'position'),
+        seedA: getString(match, 'seedA') === '' ? null : getNumber(match, 'seedA'),
+        seedB: getString(match, 'seedB') === '' ? null : getNumber(match, 'seedB'),
+        status: getString(match, 'status'),
+        deadline: getString(match, 'deadline'),
+        gameId: getString(match, 'gameId') === '' ? null : getNumber(match, 'gameId'),
+        resolution: getString(match, 'resolution'),
+        winner: getString(match, 'winner'),
+      }
+    }),
+    missions: getArray(bracket, 'missions').map((item) => {
+      const assignment = asRecord(item, 'Event bracket mission')
+      return {
+        bracket: getString(assignment, 'bracket') as EventBracketMatch['bracket'],
+        bracketRound: getNumber(assignment, 'bracketRound'),
+        missionGeistId: getString(assignment, 'missionGeistId') || undefined,
+        mission: getString(assignment, 'mission'),
+      }
+    }),
   }
 }
 

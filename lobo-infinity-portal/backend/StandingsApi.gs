@@ -43,6 +43,67 @@ function buildStandingsResponse(divisionConfig, dashboardContext) {
 
 function buildEventStandingsResponse(divisionConfig, eventId, dashboardContext) {
 
+  const context = buildLeagueStandingsContext(eventId, dashboardContext);
+  return buildLeagueDivisionStandingsFromContext(divisionConfig, context);
+
+}
+
+function buildAllLeagueStandingsResponses(eventId, dashboardContext) {
+
+  const context = buildLeagueStandingsContext(eventId, dashboardContext);
+  return ["main", "pga", "pgb"].map(function(key) {
+    return buildLeagueDivisionStandingsFromContext(
+      getStandingsDivisionConfig(key),
+      context
+    );
+  });
+
+}
+
+function buildLeagueStandingsContext(eventId, dashboardContext) {
+
+  const resolvedEventId = resolveLeagueEventScope(eventId);
+  const registry = dashboardContext && dashboardContext.playerRegistry
+    ? clonePlayerRegistry(dashboardContext.playerRegistry)
+    : buildPlayerRegistry();
+  updateRegistryStatistics(registry, resolvedEventId);
+
+  return {
+    eventId: resolvedEventId,
+    eventEngineSnapshot: dashboardContext && dashboardContext.eventEngineSnapshot
+      ? dashboardContext.eventEngineSnapshot
+      : getEventEngineSnapshot(),
+    favoriteArmyMaps: dashboardContext && dashboardContext.favoriteArmyMaps
+      ? dashboardContext.favoriteArmyMaps
+      : typeof buildCommunityResolvedFavoriteArmyMaps === "function"
+      ? buildCommunityResolvedFavoriteArmyMaps()
+      : { resolvedFavoriteByPlayerKey: {} },
+    playerDisplayNames: dashboardContext && dashboardContext.playerDisplayNames
+      ? dashboardContext.playerDisplayNames
+      : buildPlayerDisplayNameMapFromRegistry(registry),
+    playerRegistry: registry
+  };
+
+}
+
+function buildLeagueDivisionStandingsFromContext(divisionConfig, context) {
+
+  const rows = buildDivisionTable(context.playerRegistry, divisionConfig.label);
+  const standings = standingsRowsToObjects(rows, context.eventId, context);
+  return {
+    success: true,
+    eventId: context.eventId,
+    event: getStandingsEventSnapshot(context.eventId, context),
+    division: divisionConfig.key,
+    divisionLabel: divisionConfig.label,
+    standings: standings,
+    summary: buildStandingsSummary(standings)
+  };
+
+}
+
+function buildEventStandingsResponseLegacy_(divisionConfig, eventId, dashboardContext) {
+
   let timer =
     startDashboardEndpointSubStage(
       "dashboard.standings.resolveLeagueEventScope"
@@ -210,6 +271,15 @@ function standingsRowsToObjects(rows, eventId, dashboardContext) {
     }
   );
 
+  const favoriteArmyMaps =
+    dashboardContext && dashboardContext.favoriteArmyMaps
+      ? dashboardContext.favoriteArmyMaps
+      : typeof buildCommunityResolvedFavoriteArmyMaps === "function"
+      ? buildCommunityResolvedFavoriteArmyMaps()
+      : {
+          resolvedFavoriteByPlayerKey: {}
+        };
+
   timer =
     startDashboardEndpointSubStage(
       "dashboard.standings.loop.rowsToObjects"
@@ -222,6 +292,15 @@ function standingsRowsToObjects(rows, eventId, dashboardContext) {
 
       const player =
         row[CONFIG.STANDINGS.PLAYER];
+      const playerKey =
+        typeof getCommunityPlayerKey === "function"
+          ? getCommunityPlayerKey(player)
+          : String(player || "")
+              .trim()
+              .toLowerCase();
+      const favoriteArmy =
+        favoriteArmyMaps.resolvedFavoriteByPlayerKey[playerKey] ||
+        "";
 
       return {
         eventId:
@@ -238,7 +317,11 @@ function standingsRowsToObjects(rows, eventId, dashboardContext) {
         draws: row[CONFIG.STANDINGS.DRAWS],
         tp: row[CONFIG.STANDINGS.TP],
         op: row[CONFIG.STANDINGS.OP],
-        vp: row[CONFIG.STANDINGS.VP]
+        vp: row[CONFIG.STANDINGS.VP],
+        faction: favoriteArmy,
+        favoriteArmy: favoriteArmy,
+        favoriteFaction: favoriteArmy,
+        preferredArmy: favoriteArmy
       };
 
     });

@@ -5,8 +5,10 @@ import type {
   PortalUser,
   SearchData,
 } from './api'
-import { postRequest, request, type ApiOptions } from './apiCore'
+import { API_URL, postRequest, request, type ApiOptions } from './apiCore'
+import type { PageAnalyticsKey } from './pageAnalytics'
 import { formatNotificationTimestamp } from './formatting'
+import { getPublicSnapshotDataset } from './publicSnapshot'
 
 let settingsCache: PortalSettings | null = null
 let settingsRequest: Promise<PortalSettings> | null = null
@@ -206,26 +208,80 @@ export async function heartbeat(
   await postRequest('heartbeat', options, params)
 }
 
+export type PageAnalyticsReportRow = {
+  allTime: number
+  displayName: string
+  last30Days: number
+  last7Days: number
+  pageKey: PageAnalyticsKey
+}
+
+export function recordPageView(pageKey: PageAnalyticsKey): void {
+  try {
+    const url = new URL(API_URL)
+    url.searchParams.set('action', 'recordPageView')
+    const body = new URLSearchParams({ pageKey })
+
+    void fetch(url, {
+      body,
+      keepalive: true,
+      method: 'POST',
+    }).catch(() => undefined)
+  } catch {
+    // Analytics must never affect navigation or page rendering.
+  }
+}
+
+export async function getPageAnalytics(
+  options: ApiOptions = {},
+): Promise<PageAnalyticsReportRow[]> {
+  const payload = await request('pageAnalytics', options)
+  return getArray(asRecord(payload), 'pages').map((item) => {
+    const record = asRecord(item)
+    return {
+      allTime: getNumber(record, 'allTime'),
+      displayName: getString(record, 'displayName'),
+      last30Days: getNumber(record, 'last30Days'),
+      last7Days: getNumber(record, 'last7Days'),
+      pageKey: getString(record, 'pageKey') as PageAnalyticsKey,
+    }
+  })
+}
+
 export async function getSearchIndex(
   options: ApiOptions = {},
 ): Promise<SearchData> {
-  const payload = await request('searchIndex', options)
-  const record = asRecord(payload)
-
+  const [rawPlayers, factions, games, missions, armyLists] = await Promise.all([
+    getPublicSnapshotDataset<Array<Record<string, unknown>>>('players', options.signal),
+    getPublicSnapshotDataset<SearchData['factions']>('factions', options.signal),
+    getPublicSnapshotDataset<SearchData['games']>('games', options.signal),
+    getPublicSnapshotDataset<SearchData['missions']>('missions', options.signal),
+    getPublicSnapshotDataset<SearchData['armyLists']>('army-lists', options.signal),
+  ])
+  const grouped = new Map<string, Array<Record<string, unknown>>>()
+  rawPlayers.forEach((player) => {
+    const label = String(player.divisionLabel || player.division || 'Players')
+    grouped.set(label, [...(grouped.get(label) ?? []), player])
+  })
   return {
-    armyLists: getArray(record, 'armyLists') as SearchData['armyLists'],
-    factions: getArray(record, 'factions') as SearchData['factions'],
-    games: getArray(record, 'games') as SearchData['games'],
-    missions: getArray(record, 'missions') as SearchData['missions'],
-    players: getArray(record, 'players') as SearchData['players'],
+    armyLists,
+    factions,
+    games,
+    missions,
+    players: [...grouped].map(([divisionLabel, standings]) => ({
+      division: divisionLabel,
+      divisionLabel,
+      standings,
+      summary: { activePlayers: standings.length, gamesPlayed: 0, leader: standings[0] ?? null, players: standings.length },
+    })) as SearchData['players'],
   }
 }
 
 export async function getNotifications(
   options: ApiOptions = {},
 ): Promise<LeagueNotification[]> {
-  const payload = await request('notifications', options)
-  return getArray(asRecord(payload), 'notifications').map((item) => {
+  const community = await getPublicSnapshotDataset<Array<{ notifications?: unknown[] }>>('community', options.signal)
+  return (community[0]?.notifications ?? []).map((item) => {
     const record = asRecord(item)
 
     return {
@@ -317,6 +373,7 @@ function normalizeSettings(record: Record<string, unknown>): PortalSettings {
     gitCommit: getString(record, 'gitCommit'),
     googleFormUrl: getString(record, 'googleFormUrl'),
     joinCommunityFormUrl: getString(record, 'joinCommunityFormUrl'),
+    top40GameSubmissionFormUrl: getString(record, 'top40GameSubmissionFormUrl'),
     googleOAuthClientId: getString(record, 'googleOAuthClientId'),
     leagueLogo: getString(record, 'leagueLogo'),
     leagueName: getString(record, 'leagueName') || 'Lobo Infinity League',
@@ -355,6 +412,11 @@ function getString(record: Record<string, unknown>, key: string): string {
 
 function getBoolean(record: Record<string, unknown>, key: string): boolean {
   return record[key] === true
+}
+
+function getNumber(record: Record<string, unknown>, key: string): number {
+  const value = Number(record[key])
+  return Number.isFinite(value) ? value : 0
 }
 
 function getStringArray(record: Record<string, unknown>, key: string): string[] {

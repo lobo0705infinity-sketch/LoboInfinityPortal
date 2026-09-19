@@ -1,0 +1,530 @@
+{
+  "version": 1,
+  "faction": "Nomads",
+  "sectorial": "Corregidor Jurisdictional Command",
+  "sectorialId": 502,
+  "source": {
+    "authority": "Corvus Belli Infinity Army",
+    "applicationUrl": "https://infinitytheuniverse.com/army/",
+    "endpoint": "https://api.corvusbelli.com/army/units/en/502",
+    "payloadVersion": "7.26246.158",
+    "retrievedAt": "2026-09-05T22:32:43.816Z",
+    "responseDate": "Sat, 05 Sep 2026 22:32:41 GMT",
+    "etag": "\"4312fea8ccd60bf22ee67e3b26f74503\""
+  },
+  "fireteamChart": {
+    "spec": {
+      "CORE": 1,
+      "HARIS": 1,
+      "DUO": 256
+    },
+    "desc": "",
+    "teams": [
+      {
+        "name": "Corregidor Surface Fireteams",
+        "obs": "",
+        "type": [
+          "HARIS",
+          "CORE",
+          "DUO"
+        ],
+        "units": [
+          {
+            "min": 0,
+            "max": 5,
+            "name": "ALGUACIL",
+            "comment": "(Corregidor)",
+            "required": true,
+            "slug": "corregidor-alguaciles",
+            "unitId": 296,
+            "officialUnitName": "CORREGIDOR ALGUACILES"
+          },
+          {
+            "min": 0,
+            "max": 5,
+            "name": "WILDCAT",
+            "comment": "(Corregidor)",
+            "required": true,
+            "slug": "wildcats",
+            "unitId": 430,
+            "officialUnitName": "WILDCATS, Polyvalent Tactical Unit"
+          },
+          {
+            "min": 0,
+            "max": 5,
+            "name": "MOBILE BRIGADA",
+            "comment": "(Corregidor)",
+            "required": true,
+            "slug": "mobile-brigada",
+            "unitId": 382,
+            "officialUnitName": "MOBILE BRIGADA"
+          },
+          {
+            "min": 0,
+            "max": 3,
+            "name": "TERRITORIAL",
+            "comment": "(Corregidor)",
+            "required": true,
+            "slug": "territorials-territorial-domination-unit",
+            "unitId": 1893,
+            "officialUnitName": "Territorials, Territorial Domination Unit"
+          },
+          {
+            "min": 0,
+            "max": 2,
+            "name": "COYOTE",
+            "comment": "FTO (Corregidor)",
+            "required": true,
+            "slug": "coyotes",
+            "unitId": 1896,
+            "officialUnitName": "Coyotes, Recon and Maneuver Team"
+          },
+          {
+            "min": 0,
+            "max": 2,
+            "name": "BAMBADROID",
+            "comment": "(Corregidor)",
+            "required": false,
+            "slug": "coyotes",
+            "unitId": 1896,
+            "officialUnitName": "Coyotes, Recon and Maneuver Team"
+          },
+          {
+            "min": 0,
+            "max": 1,
+            "name": "VORTEX",
+            "comment": "Spec-Ops",
+            "required": false,
+            "slug": "vortex-spec-ops",
+            "unitId": 1917,
+            "officialUnitName": "VORTEX SPEC-OPS"
+          }
+        ]
+      },
+      {
+        "name": "Geckos Surface Fireteams",
+        "obs": "",
+        "type": [
+          "DUO",
+          "HARIS"
+        ],
+        "units": [
+          {
+            "min": 1,
+            "max": 3,
+            "name": "GECKO",
+            "comment": "",
+            "required": false,
+            "slug": "gecko-squad",
+            "unitId": 432,
+            "officialUnitName": "'GECKO' SQUADRON"
+          },
+          {
+            "min": 0,
+            "max": 1,
+            "name": "WILDCAT",
+            "comment": "",
+            "required": false,
+            "slug": "wildcats",
+            "unitId": 430,
+            "officialUnitName": "WILDCATS, Polyvalent Tactical Unit"
+          }
+        ]
+      },
+      {
+        "name": "Surface Armored Fireteams",
+        "obs": "",
+        "type": [
+          "DUO"
+        ],
+        "units": [
+          {
+            "min": 0,
+            "max": 2,
+            "name": "IGUANA",
+            "comment": "",
+            "required": true,
+            "slug": "iguana-squadron",
+            "unitId": 383,
+            "officialUnitName": "'IGUANA' SQUADRON"
+          },
+          {
+            "min": 0,
+            "max": 1,
+            "name": "WILDCAT",
+            "comment": "",
+            "required": false,
+            "slug": "wildcats",
+            "unitId": 430,
+            "officialUnitName": "WILDCATS, Polyvalent Tactical Unit"
+          },
+          {
+            "min": 0,
+            "max": 1,
+            "name": "BAMBADROID",
+            "comment": "",
+            "required": false,
+            "slug": "coyotes-recon-and-maneuver-team",
+            "unitId": null,
+            "officialUnitName": null
+          }
+        ]
+      },
+      {
+        "name": "Wildcards Surface",
+        "obs": "",
+        "type": [],
+        "units": [
+          {
+            "min": 0,
+            "max": 1,
+            "name": "VOSTOK",
+            "comment": "FTO",
+            "required": false,
+            "slug": "vostok-sputniks",
+            "unitId": 1544,
+            "officialUnitName": "VOSTOK Sputniks"
+          },
+          {
+            "min": 0,
+            "max": 1,
+            "name": "DAKTARI",
+            "comment": "",
+            "required": false,
+            "slug": "daktaris",
+            "unitId": 405,
+            "officialUnitName": "DAKTARIS (Daks, Campaign Doctors)"
+          },
+          {
+            "min": 0,
+            "max": 1,
+            "name": "STEMPLER ZOND",
+            "comment": "",
+            "required": false,
+            "slug": "stempler-zonds",
+            "unitId": 408,
+            "officialUnitName": "STEMPLER ZONDS"
+          },
+          {
+            "min": 0,
+            "max": 2,
+            "name": "SHIFTA",
+            "comment": "",
+            "required": false,
+            "slug": "shifta-insertion-group",
+            "unitId": 1902,
+            "officialUnitName": "Shifta Insertion Group"
+          },
+          {
+            "min": 0,
+            "max": 1,
+            "name": "SEÑOR MASSACRE",
+            "comment": "(Correccional)",
+            "required": false,
+            "slug": "senor-massacre",
+            "unitId": 462,
+            "officialUnitName": "SEÑOR MASSACRE"
+          },
+          {
+            "min": 0,
+            "max": 1,
+            "name": "VALERYA GROMOZ",
+            "comment": "",
+            "required": false,
+            "slug": "valerya-gromoz-mercenary-hacker",
+            "unitId": 464,
+            "officialUnitName": "VALERYA GROMOZ, Mercenary Hacker"
+          },
+          {
+            "min": 0,
+            "max": 1,
+            "name": "LUPE BALBOA",
+            "comment": "(Corregidor)",
+            "required": false,
+            "slug": "alguacil-vortex-lupe-balboa",
+            "unitId": 433,
+            "officialUnitName": "ALGUACIL VORTEX LUPE BALBOA"
+          },
+          {
+            "min": 0,
+            "max": 1,
+            "name": "JAZZ",
+            "comment": "FTO",
+            "required": false,
+            "slug": "jazz-and-billie-tactical-hacking-team",
+            "unitId": 1551,
+            "officialUnitName": "JAZZ & BILLIE, Tactical Hacking Team"
+          }
+        ]
+      },
+      {
+        "name": "Correctional Fireteams",
+        "obs": "",
+        "type": [
+          "DUO",
+          "HARIS",
+          "CORE"
+        ],
+        "units": [
+          {
+            "min": 0,
+            "max": 4,
+            "name": "LOBO",
+            "comment": "(Correctional)",
+            "required": true,
+            "slug": "lobos-correctional-response-group",
+            "unitId": 1579,
+            "officialUnitName": "LOBOS, Correctional Response Group"
+          },
+          {
+            "min": 0,
+            "max": 4,
+            "name": "DIABLO",
+            "comment": "(Correctional)",
+            "required": true,
+            "slug": "the-diablos-of-d-block",
+            "unitId": 1578,
+            "officialUnitName": "The DIABLOS of D-Block"
+          },
+          {
+            "min": 0,
+            "max": 4,
+            "name": "JAGUAR",
+            "comment": "(Correccional)",
+            "required": true,
+            "slug": "corregidor-jaguars",
+            "unitId": 404,
+            "officialUnitName": "CORREGIDOR JAGUARS"
+          }
+        ]
+      },
+      {
+        "name": "Corregidor Deepspace Fireteams",
+        "obs": "",
+        "type": [
+          "HARIS",
+          "CORE",
+          "DUO"
+        ],
+        "units": [
+          {
+            "min": 0,
+            "max": 5,
+            "name": "ALGUACIL",
+            "comment": "(Corregidor)",
+            "required": true,
+            "slug": "corregidor-alguaciles",
+            "unitId": 296,
+            "officialUnitName": "CORREGIDOR ALGUACILES"
+          },
+          {
+            "min": 0,
+            "max": 5,
+            "name": "WILDCAT",
+            "comment": "(Corregidor)",
+            "required": true,
+            "slug": "wildcats",
+            "unitId": 430,
+            "officialUnitName": "WILDCATS, Polyvalent Tactical Unit"
+          },
+          {
+            "min": 0,
+            "max": 5,
+            "name": "MOBILE BRIGADA",
+            "comment": "(Corregidor)",
+            "required": true,
+            "slug": "mobile-brigada",
+            "unitId": 382,
+            "officialUnitName": "MOBILE BRIGADA"
+          },
+          {
+            "min": 0,
+            "max": 3,
+            "name": "EVADER",
+            "comment": "(Corregidor)",
+            "required": true,
+            "slug": "evaders-eva-tactical-group",
+            "unitId": 1543,
+            "officialUnitName": "EVADERS, EVA Tactical Group"
+          },
+          {
+            "min": 0,
+            "max": 4,
+            "name": "LOBO",
+            "comment": "(Corregidor)",
+            "required": false,
+            "slug": "lobos-correctional-response-group",
+            "unitId": 1579,
+            "officialUnitName": "LOBOS, Correctional Response Group"
+          },
+          {
+            "min": 0,
+            "max": 1,
+            "name": "TAG-TREIBER",
+            "comment": "",
+            "required": false,
+            "slug": "tag-treiber-nmf-tag-squadrons-support-pilots",
+            "unitId": 1853,
+            "officialUnitName": "TAG-TREIBER, NMF TAG Squadrons Support Pilots"
+          },
+          {
+            "min": 0,
+            "max": 1,
+            "name": "VORTEX",
+            "comment": "Spec-Ops",
+            "required": false,
+            "slug": "vortex-spec-ops",
+            "unitId": 1917,
+            "officialUnitName": "VORTEX SPEC-OPS"
+          }
+        ]
+      },
+      {
+        "name": "Geckos Deepspace Fireteams",
+        "obs": "",
+        "type": [
+          "DUO",
+          "HARIS"
+        ],
+        "units": [
+          {
+            "min": 1,
+            "max": 3,
+            "name": "GECKO",
+            "comment": "",
+            "required": false,
+            "slug": "gecko-squad",
+            "unitId": 432,
+            "officialUnitName": "'GECKO' SQUADRON"
+          },
+          {
+            "min": 0,
+            "max": 1,
+            "name": "EVADER",
+            "comment": "(Geckos)",
+            "required": false,
+            "slug": "evaders-eva-tactical-group",
+            "unitId": 1543,
+            "officialUnitName": "EVADERS, EVA Tactical Group"
+          }
+        ]
+      },
+      {
+        "name": "Deepspace  Armored Fireteams",
+        "obs": "",
+        "type": [
+          "DUO"
+        ],
+        "units": [
+          {
+            "min": 0,
+            "max": 2,
+            "name": "GATOR",
+            "comment": "",
+            "required": true,
+            "slug": "gator-squadron",
+            "unitId": 1580,
+            "officialUnitName": "'GATOR' SQUADRON"
+          },
+          {
+            "min": 0,
+            "max": 1,
+            "name": "GECKO",
+            "comment": "",
+            "required": false,
+            "slug": "gecko-squad",
+            "unitId": 432,
+            "officialUnitName": "'GECKO' SQUADRON"
+          },
+          {
+            "min": 0,
+            "max": 1,
+            "name": "WILDCAT",
+            "comment": "",
+            "required": false,
+            "slug": "wildcats",
+            "unitId": 430,
+            "officialUnitName": "WILDCATS, Polyvalent Tactical Unit"
+          }
+        ]
+      },
+      {
+        "name": "Wildcards Deepspace",
+        "obs": "",
+        "type": [],
+        "units": [
+          {
+            "min": 0,
+            "max": 1,
+            "name": "VOSTOK",
+            "comment": "FTO",
+            "required": false,
+            "slug": "vostok-sputniks",
+            "unitId": 1544,
+            "officialUnitName": "VOSTOK Sputniks"
+          },
+          {
+            "min": 0,
+            "max": 2,
+            "name": "DAKTARI",
+            "comment": "",
+            "required": false,
+            "slug": "daktaris",
+            "unitId": 405,
+            "officialUnitName": "DAKTARIS (Daks, Campaign Doctors)"
+          },
+          {
+            "min": 0,
+            "max": 1,
+            "name": "STEMPLER ZOND",
+            "comment": "",
+            "required": false,
+            "slug": "stempler-zonds",
+            "unitId": 408,
+            "officialUnitName": "STEMPLER ZONDS"
+          },
+          {
+            "min": 0,
+            "max": 1,
+            "name": "SEÑOR MASSACRE",
+            "comment": "(Correccional)",
+            "required": false,
+            "slug": "senor-massacre",
+            "unitId": 462,
+            "officialUnitName": "SEÑOR MASSACRE"
+          },
+          {
+            "min": 0,
+            "max": 1,
+            "name": "VALERYA GROMOZ",
+            "comment": "",
+            "required": false,
+            "slug": "valerya-gromoz-mercenary-hacker",
+            "unitId": 464,
+            "officialUnitName": "VALERYA GROMOZ, Mercenary Hacker"
+          },
+          {
+            "min": 0,
+            "max": 1,
+            "name": "LUPE BALBOA",
+            "comment": "(Corregidor)",
+            "required": false,
+            "slug": "alguacil-vortex-lupe-balboa",
+            "unitId": 433,
+            "officialUnitName": "ALGUACIL VORTEX LUPE BALBOA"
+          },
+          {
+            "min": 0,
+            "max": 1,
+            "name": "JAZZ",
+            "comment": "FTO",
+            "required": false,
+            "slug": "jazz-and-billie-tactical-hacking-team",
+            "unitId": 1551,
+            "officialUnitName": "JAZZ & BILLIE, Tactical Hacking Team"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -612,6 +612,30 @@ function handleApiGet(e, action) {
     case "eventHome":
       return getEventHome(e);
 
+    case "eventBracket":
+      return getEventBracket(e);
+
+    case "refreshTop40PublicProjection":
+      return refreshTop40PublicProjection(e);
+
+    case "refreshPublicAnalyticsProjection":
+      return refreshPublicAnalyticsProjection(e);
+
+    case "refreshPublicTeamTournamentProjection":
+      return refreshPublicTeamTournamentProjection(e);
+
+    case "refreshPublicPlayersProjection":
+      return refreshPublicPlayersProjection(e);
+
+    case "refreshPublicLeagueWorkspaceProjection":
+      return refreshPublicLeagueWorkspaceProjection(e);
+
+    case "refreshPublicArmyWorkspaceProjection":
+      return refreshPublicArmyWorkspaceProjection(e);
+
+    case "refreshPublicDetailProjection":
+      return refreshPublicDetailProjection(e);
+
     case "eventManager":
       return getEventManager(e);
 
@@ -697,9 +721,19 @@ function handleApiGet(e, action) {
     case "armyIntelligence":
       return getArmyIntelligence(e);
 
+    case "pageAnalytics":
+      return requireApiPermission(e, "manageSettings", function() {
+        return getPageAnalytics();
+      });
+
     case "armyIntelligenceSources":
       return requireArmyIntelligenceWorkerOrPermission(e, function() {
         return getArmyIntelligenceSources();
+      });
+
+    case "armyIntelligenceSnapshotState":
+      return requireArmyIntelligenceWorkerOrPermission(e, function() {
+        return getArmyIntelligenceSnapshotState();
       });
 
     case "diagnoseArmyList":
@@ -750,7 +784,7 @@ function handleApiGet(e, action) {
 
     case "operationsContent":
       return requireApiPermission(e, "viewOperations", function() {
-        return getOperationsContentDashboard();
+        return getOperationsContentDashboard(e);
       });
 
     case "operationsDiscord":
@@ -855,6 +889,9 @@ function handleApiGet(e, action) {
     case "eventManagerEvent":
       return saveEventManagerEvent(e);
 
+    case "provisionEvent":
+      return provisionEvent(e);
+
     case "eventManagerRegistration":
       return setEventManagerRegistration(e);
 
@@ -866,6 +903,15 @@ function handleApiGet(e, action) {
 
     case "eventManagerParticipant":
       return saveEventManagerParticipant(e);
+
+    case "eventBracketGenerate":
+      return generateEventBracket(e);
+
+    case "eventBracketDeadline":
+      return updateEventBracketDeadline(e);
+
+    case "eventBracketForfeit":
+      return awardEventBracketForfeit(e);
 
     case "eventManagerTeam":
       return saveEventManagerTeam(e);
@@ -911,6 +957,9 @@ function handleApiGet(e, action) {
     case "submitCasualResult":
       return submitCasualResult(e);
 
+    case "submitTop40Result":
+      return submitTop40Result(e);
+
     case "updateProfile":
       return updateMyProfile(e);
 
@@ -940,6 +989,9 @@ function handleApiGet(e, action) {
 
     case "teamTournamentPairing":
       return saveTeamTournamentPairing(e);
+
+    case "teamTournamentRoundManagement":
+      return saveTeamTournamentRoundManagement(e);
 
     case "teamTournamentInvitation":
       return saveTeamTournamentInvitation(e);
@@ -986,22 +1038,22 @@ function handleApiGet(e, action) {
 
     case "saveStream":
       return requireApiPermission(e, "manageStreams", function() {
-        return saveOperationsStream(e);
+        return savePublicDetailStream_(e);
       });
 
     case "deleteStream":
       return requireApiPermission(e, "manageStreams", function() {
-        return deleteOperationsStream(e);
+        return deletePublicDetailStream_(e);
       });
 
     case "saveNews":
       return requireApiPermission(e, "manageNews", function() {
-        return saveOperationsNews(e);
+        return savePublicDetailNews_(e);
       });
 
     case "deleteNews":
       return requireApiPermission(e, "manageNews", function() {
-        return deleteOperationsNews(e);
+        return deletePublicDetailNews_(e);
       });
 
     case "saveAlert":
@@ -1293,6 +1345,9 @@ function handleApiPost(e, action) {
     case "submitCasualResult":
       return submitCasualResult(e);
 
+    case "submitTop40Result":
+      return submitTop40Result(e);
+
     case "voteArmyList":
       return requireApiPermission(e, "vote", function() {
         return voteArmyList(e);
@@ -1303,6 +1358,9 @@ function handleApiPost(e, action) {
 
     case "heartbeat":
       return updateHeartbeat(e);
+
+    case "recordPageView":
+      return recordPageView(e);
 
     case "notificationState":
       return updateNotificationState(e);
@@ -1331,6 +1389,9 @@ function handleApiPost(e, action) {
     case "eventManagerEvent":
       return saveEventManagerEvent(e);
 
+    case "provisionEvent":
+      return provisionEvent(e);
+
     case "eventManagerRegistration":
       return setEventManagerRegistration(e);
 
@@ -1342,6 +1403,39 @@ function handleApiPost(e, action) {
 
     case "eventManagerParticipant":
       return saveEventManagerParticipant(e);
+
+    case "eventBracketGenerate":
+      return generateEventBracket(e);
+
+    case "eventBracketDeadline":
+      return updateEventBracketDeadline(e);
+
+    case "eventBracketForfeit":
+      return awardEventBracketForfeit(e);
+
+    case "eventBracketMissions":
+      return saveEventBracketMissions(e);
+
+    case "refreshTop40PublicProjection":
+      return refreshTop40PublicProjection(e);
+
+    case "refreshPublicAnalyticsProjection":
+      return refreshPublicAnalyticsProjection(e);
+
+    case "refreshPublicTeamTournamentProjection":
+      return refreshPublicTeamTournamentProjection(e);
+
+    case "refreshPublicPlayersProjection":
+      return refreshPublicPlayersProjection(e);
+
+    case "refreshPublicLeagueWorkspaceProjection":
+      return refreshPublicLeagueWorkspaceProjection(e);
+
+    case "refreshPublicArmyWorkspaceProjection":
+      return refreshPublicArmyWorkspaceProjection(e);
+
+    case "refreshPublicDetailProjection":
+      return refreshPublicDetailProjection(e);
 
     case "eventManagerTeam":
       return saveEventManagerTeam(e);
@@ -1363,6 +1457,9 @@ function handleApiPost(e, action) {
 
     case "teamTournamentPairing":
       return saveTeamTournamentPairing(e);
+
+    case "teamTournamentRoundManagement":
+      return saveTeamTournamentRoundManagement(e);
 
     case "teamTournamentInvitation":
       return saveTeamTournamentInvitation(e);
@@ -1402,22 +1499,22 @@ function handleApiPost(e, action) {
 
     case "saveStream":
       return requireApiPermission(e, "manageStreams", function() {
-        return saveOperationsStream(e);
+        return savePublicDetailStream_(e);
       });
 
     case "deleteStream":
       return requireApiPermission(e, "manageStreams", function() {
-        return deleteOperationsStream(e);
+        return deletePublicDetailStream_(e);
       });
 
     case "saveNews":
       return requireApiPermission(e, "manageNews", function() {
-        return saveOperationsNews(e);
+        return savePublicDetailNews_(e);
       });
 
     case "deleteNews":
       return requireApiPermission(e, "manageNews", function() {
-        return deleteOperationsNews(e);
+        return deletePublicDetailNews_(e);
       });
 
     case "saveAlert":
@@ -1459,6 +1556,15 @@ function handleApiPost(e, action) {
       return requireArmyIntelligenceWorkerOrPermission(e, function() {
         return processAutomationQueueBatch(e);
       });
+
+    case "requestCanonicalRebuildRecovery":
+      return requireArmyIntelligenceWorkerOrPermission(e, function() {
+        return requestCanonicalRebuildRecovery(e);
+      });
+    case "requestPreparedProjectionRecovery":
+      return requestPreparedProjectionRecovery(e);
+    case "getPreparedProjectionReliabilityStatus":
+      return getPreparedProjectionReliabilityStatus(e);
 
     case "installArmyIntelligenceScheduler":
       return requireArmyIntelligenceWorkerOrPermission(e, function() {

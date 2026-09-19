@@ -7,6 +7,7 @@ import { getEventNavigationConfig } from '../config/eventNavigation'
 import { standingsRepository } from '../services/data'
 import { recordStandingsDiagnostic } from '../services/diagnostics'
 import { formatPlayerName } from '../services/formatting'
+import { publicLeagueWorkspace } from '../services/publicLeagueWorkspaceProjection'
 import type {
   DivisionKey,
   DivisionStandings,
@@ -122,11 +123,14 @@ function Standings() {
       selectedEventType: selectedEvent?.type ?? 'unknown',
     })
 
-    standingsRepository
-      .getStandings(activeDivision, {
-        eventId: activeEventId,
-        signal: controller.signal,
-      })
+    const standingsRequest = activeEventId === 'event-current-league'
+      ? publicLeagueWorkspace.getStandings(activeDivision, controller.signal)
+      : standingsRepository.getStandings(activeDivision, {
+          eventId: activeEventId,
+          signal: controller.signal,
+        })
+
+    standingsRequest
       .then((data) => {
         recordStandingsDiagnostic({
           activeDivision,

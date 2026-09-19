@@ -38,6 +38,19 @@ async function fetchBuffer(pathname) {
   }
 }
 
+async function fetchJsonApi(pathname, options = {}) {
+  const url = new URL(pathname, `${normalizeBaseUrl(productionUrl)}/`).toString()
+  const response = await fetch(url, { cache: 'no-store', ...options })
+  const text = await response.text()
+  let payload = null
+  try {
+    payload = JSON.parse(text)
+  } catch {
+    // Reported below with the route-specific failure.
+  }
+  return { payload, response, text, url }
+}
+
 function inspectAlias() {
   if (dryRun) {
     return {
@@ -103,6 +116,31 @@ if (fingerprintJson?.frontendCommit !== expectedCommit) {
   failures.push(`fingerprint commit is ${fingerprintJson?.frontendCommit}; expected ${expectedCommit}`)
 }
 
+const commissionerLogin = await fetchJsonApi('/api/commissioner-login', {
+  body: JSON.stringify({ password: '' }),
+  headers: { 'content-type': 'application/json' },
+  method: 'POST',
+})
+if (!commissionerLogin.response.headers.get('content-type')?.includes('application/json')) {
+  failures.push(`/api/commissioner-login content-type is ${commissionerLogin.response.headers.get('content-type')}`)
+}
+if (!commissionerLogin.payload || typeof commissionerLogin.payload !== 'object') {
+  failures.push('/api/commissioner-login did not return JSON')
+}
+if (commissionerLogin.response.status === 405 && commissionerLogin.text === '') {
+  failures.push('/api/commissioner-login was swallowed by the SPA fallback')
+}
+
+for (const workerPath of ['/api/army-intelligence-refresh-worker', '/api/automation-queue-worker']) {
+  const worker = await fetchJsonApi(workerPath)
+  if (!worker.response.headers.get('content-type')?.includes('application/json')) {
+    failures.push(`${workerPath} content-type is ${worker.response.headers.get('content-type')}`)
+  }
+  if (!worker.payload || typeof worker.payload !== 'object') {
+    failures.push(`${workerPath} did not return JSON`)
+  }
+}
+
 const players = await fetchBuffer('/players')
 const playersHtml = players.buffer.toString('utf8')
 const bundlePath = playersHtml.match(/\/assets\/index-[^"']+\.js/)?.[0]
@@ -148,5 +186,7 @@ if (failures.length) {
 pass(`alias ${productionUrl} points to ${alias.id}`)
 pass(`fingerprint commit ${expectedCommit}`)
 pass(`/players serves bundle ${bundlePath}`)
+pass('/api/commissioner-login is handled by the JSON serverless proxy')
+pass('Army Intelligence and automation queue worker routes are present')
 pass(`kosmoflot portrait sha256 ${liveKosmoflotSha256}`)
 pass('missing static assets do not return fake PNG responses')

@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import Skeleton from '../components/Skeleton'
+import { useApiCacheRevalidation } from '../hooks/useApiCacheRevalidation'
 import { apiClient, type FactionSummary } from '../services/api'
+import { publicLeagueWorkspace } from '../services/publicLeagueWorkspaceProjection'
 
 type FactionsState =
   | {
@@ -22,15 +24,23 @@ function Factions() {
   const [factionsState, setFactionsState] = useState<FactionsState>({
     status: 'idle',
   })
+  const readFactions = useCallback((signal?: AbortSignal) => eventId
+    ? apiClient.getFactions({ cacheMode: 'stale-while-revalidate', eventId, signal })
+    : publicLeagueWorkspace.getFactions(signal), [eventId])
+
+  useApiCacheRevalidation({
+    action: 'factions',
+    params: eventId ? { eventId } : {},
+    read: () => readFactions(),
+    apply: (factions) => {
+      setFactionsState({ factions, status: 'success' })
+    },
+  })
 
   useEffect(() => {
     const controller = new AbortController()
 
-    apiClient
-      .getFactions({
-        eventId,
-        signal: controller.signal,
-      })
+    readFactions(controller.signal)
       .then((factions) => {
         setFactionsState({
           factions,
@@ -54,7 +64,7 @@ function Factions() {
     return () => {
       controller.abort()
     }
-  }, [eventId])
+  }, [readFactions])
 
   if (factionsState.status === 'idle') {
     return (

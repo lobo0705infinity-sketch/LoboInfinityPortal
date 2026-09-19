@@ -15,12 +15,13 @@ import { createHash } from 'node:crypto'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { ARMY_INTELLIGENCE_PIPELINE_VERSION } from './army-intelligence-snapshot-schema.mjs'
 
 const portalRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const defaultOutputDir = resolve(portalRoot, '.tmp', 'army-decode')
 const infinityDataBaseUrl =
   process.env.INFINITY_DATA_BASE_URL || 'https://infinity.2nirwana.de/cards'
-export const ARMY_INTELLIGENCE_DECODER_VERSION = 'army-intelligence-decoder-v4'
+export const ARMY_INTELLIGENCE_DECODER_VERSION = 'army-intelligence-decoder-v5'
 
 const parentFactionBySectorialSlug = new Map([
   ['operations', 'ALEPH'],
@@ -32,20 +33,13 @@ export async function decodeArmyListToFiles({
   jsonPath,
   csvPath,
   outputDir = defaultOutputDir,
+  signal,
 } = {}) {
-  if (!input) {
-    throw new Error('Missing required --input value.')
-  }
-
-  const armyCode = normalizeArmyCodeInput(input)
-  const codeData = decodeArmyCode(armyCode)
-  const html = await fetchInfinityDataOverview(armyCode)
-  const resolved = parseInfinityDataOverview(html)
-  const list = buildStructuredList(armyCode, codeData, resolved)
+  const list = await decodeArmyList({ input, signal })
   const csv = toCsv(list)
 
   const safeName = slugify(list.listName || list.sectorial || 'army-list')
-  const codeHash = createHash('sha256').update(armyCode).digest('hex').slice(0, 12)
+  const codeHash = createHash('sha256').update(list.armyCode).digest('hex').slice(0, 12)
   const finalJsonPath = resolve(jsonPath || outputDir, jsonPath ? '' : `${safeName}-${codeHash}.json`)
   const finalCsvPath = resolve(csvPath || outputDir, csvPath ? '' : `${safeName}-${codeHash}.csv`)
 
@@ -59,6 +53,18 @@ export async function decodeArmyListToFiles({
     jsonPath: finalJsonPath,
     list,
   }
+}
+
+export async function decodeArmyList({ input, signal } = {}) {
+  if (!input) {
+    throw new Error('Missing required --input value.')
+  }
+
+  const armyCode = normalizeArmyCodeInput(input)
+  const codeData = decodeArmyCode(armyCode)
+  const html = await fetchInfinityDataOverview(armyCode, signal)
+  const resolved = parseInfinityDataOverview(html)
+  return buildStructuredList(armyCode, codeData, resolved)
 }
 
 export function normalizeArmyCodeInput(input) {
@@ -113,6 +119,38 @@ export function decodeArmyCode(input) {
     return value
   }
 
+  function nextBytesAre(expected) {
+    if (offset + expected.length > bytes.length) return false
+    return expected.every((value, index) => bytes[offset + index] === value)
+  }
+
+  function parseMemberModifiers(hasFollowingMember) {
+    if (nextBytesAre([0, 1])) {
+      offset += 2
+      const modifierCount = readVli()
+      const modifiers = []
+
+      for (let index = 0; index < modifierCount; index += 1) {
+        modifiers.push(readString())
+      }
+
+      return modifiers
+    }
+
+    const zeroOnlyFraming = hasFollowingMember ? [0, 0, 0] : [0, 0]
+    if (nextBytesAre(zeroOnlyFraming)) {
+      offset += 2
+      return []
+    }
+
+    if (nextBytesAre([0])) {
+      offset += 1
+      return []
+    }
+
+    throw new Error(`Unsupported Army code member framing at byte ${offset}.`)
+  }
+
   const sectorialId = readVli()
   const sectorialSlug = readString()
   const armyNameLength = bytes.readUInt8(offset)
@@ -138,18 +176,18 @@ export function decodeArmyCode(input) {
       const unitId = readVli()
       const groupId = readVli()
       const optionId = readVli()
-      const trailingZero = bytes.readUInt8(offset)
-      offset += 1
+      const hasFollowingMember = memberIndex < size - 1 && versionSwitch === 1
+      const modifiers = parseMemberModifiers(hasFollowingMember)
 
       members.push({
         combinedId: `${sectorialId}-${unitId}-${groupId}-${optionId}-1`,
         groupId,
+        modifiers,
         optionId,
-        trailingZero,
         unitId,
       })
 
-      if (memberIndex < size - 1 && versionSwitch === 1) {
+      if (hasFollowingMember) {
         readVli()
       }
     }
@@ -179,7 +217,7 @@ export function decodeArmyCode(input) {
   }
 }
 
-async function fetchInfinityDataOverview(armyCode) {
+async function fetchInfinityDataOverview(armyCode, signal) {
   const url = new URL(`${infinityDataBaseUrl.replace(/\/+$/, '')}/generate`)
   url.searchParams.set('armyData', normalizeArmyCodeForInfinityDataTransport(armyCode))
   url.searchParams.set('unit', 'inch')
@@ -189,6 +227,7 @@ async function fetchInfinityDataOverview(armyCode) {
 
   const response = await fetch(url, {
     redirect: 'follow',
+    signal,
     headers: {
       accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     },
@@ -196,10 +235,23 @@ async function fetchInfinityDataOverview(armyCode) {
 
   const body = await response.text()
   if (!response.ok || !body.includes('Army List:')) {
+    if (isDeterministicInvalidArmyCodeResponse(response.status, body)) {
+      throw new Error('Invalid IDs in Army Code: Infinity-Data deterministically rejected an out-of-date unit option.')
+    }
     throw new Error(`Infinity-Data decode failed with HTTP ${response.status}: ${body.slice(0, 180)}`)
   }
 
   return body
+}
+
+export function isDeterministicInvalidArmyCodeResponse(status, body) {
+  const html = String(body || '')
+  return Number(status) === 200 &&
+    !html.includes('Army List:') &&
+    /<title>\s*Errors in Army Code\s*<\/title>/i.test(html) &&
+    /could not resolved\.\s*Most likely it is out of date\./i.test(html) &&
+    /<t[hd][^>]*>[\s\S]*?\bID\b[\s\S]*?<\/t[hd]>[\s\S]*?<t[hd][^>]*>[\s\S]*?\bName\b[\s\S]*?<\/t[hd]>[\s\S]*?<t[hd][^>]*>[\s\S]*?\bError\b[\s\S]*?<\/t[hd]>/i.test(html) &&
+    /<td[^>]*>\s*\d+-\d+-\d+\s*<\/td>[\s\S]*<td[^>]*>[\s\S]*<\/td>[\s\S]*<td[^>]*>\s*Unit option not found in sectorial\s*<\/td>/i.test(html)
 }
 
 export function normalizeArmyCodeForInfinityDataTransport(armyCode) {
@@ -366,6 +418,7 @@ function buildStructuredList(armyCode, codeData, resolved) {
       entries: entries.filter((entry) => entry.combatGroup === group.combatGroup),
     })),
     decoderVersion: ARMY_INTELLIGENCE_DECODER_VERSION,
+    pipelineVersion: ARMY_INTELLIGENCE_PIPELINE_VERSION,
     faction: parentFactionBySectorialSlug.get(codeData.sectorialSlug) || codeData.sectorialSlug,
     incomplete: warnings.length > 0,
     listName: codeData.listName,

@@ -135,6 +135,18 @@ function ensureStreamsSheet() {
 
 }
 
+// Commissioner listing reads must not create/migrate/enforce the Streams
+// schema. Those responsibilities belong to the existing CRUD write path
+// above. This helper deliberately opens only the canonical Streams sheet.
+function getStreamsSheetForRead_() {
+
+  const spreadsheet =
+    lifGetTargetSpreadsheet_();
+
+  return spreadsheet.getSheetByName(CONFIG.SHEETS.STREAMS);
+
+}
+
 function migrateLegacyStreamsSheet(sheet) {
 
   const lastColumn =
@@ -240,7 +252,8 @@ function getStreamColumns(headers) {
 function buildStream(
   row,
   sourceIndex,
-  columns
+  columns,
+  options
 ) {
 
   const rawDate =
@@ -270,6 +283,12 @@ function buildStream(
     gameId: getStreamNumber(row[columns.gameId]),
     streamType: getStreamString(row[columns.streamType]) || "Standalone Stream"
   };
+
+  if (
+    options &&
+    options.enrichFromRecentGames === false
+  )
+    return stream;
 
   return enrichStreamFromRecentGames(stream);
 

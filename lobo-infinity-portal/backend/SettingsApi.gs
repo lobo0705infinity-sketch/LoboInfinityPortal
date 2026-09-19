@@ -32,6 +32,7 @@ const DEFAULT_SETTINGS = [
     "",
     "Public new-player community onboarding form URL."
   ],
+  ["top40GameSubmissionFormUrl", "", "Dedicated Top 40 game submission form URL."],
   [
     "discordInvite",
     "",

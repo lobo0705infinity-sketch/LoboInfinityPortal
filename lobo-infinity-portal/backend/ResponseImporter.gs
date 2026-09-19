@@ -15,10 +15,17 @@ function handleLoboFormSubmit(e) {
       return;
     }
 
+    const namedValues = formType === LIF_FORMS.TYPES.CASUAL || formType === LIF_FORMS.TYPES.TOP40
+      ? lifBuildCasualNamedValuesFromResponseRow_(e)
+      : e.namedValues;
+    if (formType === LIF_FORMS.TYPES.TOP40) {
+      importTop40FormSubmission_(namedValues, e.values && e.values[0], responseKey, log, target, e.range.getRow());
+      return;
+    }
     const command = createSubmissionCommand({
       source: "google-form",
       workflow: formType,
-      namedValues: e.namedValues,
+      namedValues: namedValues,
       timestamp: e.values && e.values[0],
       targetSpreadsheet: target,
       importLog: log,
@@ -39,6 +46,7 @@ function lifResolveFormType_(sheet) {
     [LIF_FORMS.PROPERTIES.LEAGUE_FORM_ID, LIF_FORMS.TYPES.LEAGUE],
     [LIF_FORMS.PROPERTIES.TEAM_FORM_ID, LIF_FORMS.TYPES.TEAM],
     [LIF_FORMS.PROPERTIES.CASUAL_FORM_ID, LIF_FORMS.TYPES.CASUAL],
+    [LIF_FORMS.PROPERTIES.TOP40_FORM_ID, LIF_FORMS.TYPES.TOP40],
     [LIF_FORMS.PROPERTIES.JOIN_FORM_ID, LIF_FORMS.TYPES.JOIN]
   ];
   for (let i = 0; i < mappings.length; i += 1) {
@@ -76,9 +84,45 @@ function lifImportCommunityPlayer_(e, log, responseKey) {
       refreshCasualSubmissionForm();
     }
     catch (err) {
-      Logger.log("Casual form player refresh skipped: " + err);
+      const safeMessage = "Casual Form player synchronization failed: " + String(err && err.message || err || "Unknown error");
+      lifWriteImportLog_(
+        log,
+        responseKey + ":casual-form-sync",
+        LIF_FORMS.TYPES.CASUAL,
+        result.row || "",
+        "Sync Failed",
+        safeMessage
+      );
+      Logger.log(safeMessage);
     }
   }
+}
+
+function lifBuildCasualNamedValuesFromResponseRow_(e) {
+  const sheet = e.range.getSheet();
+  const lastColumn = sheet.getLastColumn();
+  const headers = sheet.getRange(1, 1, 1, lastColumn).getDisplayValues()[0];
+  const values = sheet.getRange(e.range.getRow(), 1, 1, lastColumn).getDisplayValues()[0];
+  return lifCollapseCasualResponseColumns_(headers, values);
+}
+
+function lifCollapseCasualResponseColumns_(headers, values) {
+  const grouped = {};
+  (headers || []).forEach(function(header, index) {
+    const title = String(header || "").trim();
+    if (!title) return;
+    const value = String((values || [])[index] || "").trim();
+    if (!grouped[title]) grouped[title] = [];
+    if (value && grouped[title].indexOf(value) < 0) grouped[title].push(value);
+  });
+  const namedValues = {};
+  Object.keys(grouped).forEach(function(title) {
+    if (grouped[title].length > 1) {
+      throw new Error("Casual response has conflicting values for duplicate header: " + title + ".");
+    }
+    namedValues[title] = [grouped[title][0] || ""];
+  });
+  return namedValues;
 }
 
 function lifReadSubmission_(named, formType, timestamp, targetSpreadsheet) {
@@ -93,7 +137,7 @@ function lifReadSubmission_(named, formType, timestamp, targetSpreadsheet) {
     : null;
   return {
     timestamp: timestamp || new Date(), formType: formType,
-    eventId: formType === LIF_FORMS.TYPES.CASUAL ? "" : leagueContext ? leagueContext.eventId : teamTournamentContext.eventId,
+    eventId: formType === LIF_FORMS.TYPES.CASUAL ? "" : leagueContext ? leagueContext.eventId : teamTournamentContext ? teamTournamentContext.eventId : "",
     division: formType === LIF_FORMS.TYPES.CASUAL ? "Casual" : leagueContext ? leagueContext.division : get(f.DIVISION) || "Team Tournament",
     round: get(f.ROUND), team: get(f.TEAM) || get("Your Team"), opponentTeam: get(f.OPPONENT_TEAM),
     mission: get(f.MISSION), player: leagueContext ? leagueContext.player : teamTournamentContext ? teamTournamentContext.player : selectedPlayer, opponent: get(f.OPPONENT),

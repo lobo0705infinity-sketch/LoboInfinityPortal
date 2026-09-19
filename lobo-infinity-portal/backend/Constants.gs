@@ -10,13 +10,15 @@ const LIF_FORMS = Object.freeze({
     LEAGUE_FORM_ID: "LIF_LEAGUE_FORM_ID",
     TEAM_FORM_ID: "LIF_TEAM_FORM_ID",
     CASUAL_FORM_ID: "LIF_CASUAL_FORM_ID",
+    TOP40_FORM_ID: "LIF_TOP40_FORM_ID",
     JOIN_FORM_ID: "LIF_JOIN_FORM_ID"
   }),
-  TYPES: Object.freeze({ LEAGUE: "league", TEAM: "team-tournament", CASUAL: "casual", JOIN: "join-community" }),
+  TYPES: Object.freeze({ LEAGUE: "league", TEAM: "team-tournament", CASUAL: "casual", TOP40: "top-40", JOIN: "join-community" }),
   FORM_TITLES: Object.freeze({
     LEAGUE: "Lobo Infinity League Game Submission",
     TEAM: "Lobo Infinity Team Tournament Game Submission",
     CASUAL: "Lobo Infinity Casual Game Submission",
+    TOP40: "Lobo's American Top 40 — Game Submission",
     JOIN: "Join the Lobo Infinity Community"
   }),
   FIELDS: Object.freeze({

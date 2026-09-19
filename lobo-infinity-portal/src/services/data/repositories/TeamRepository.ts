@@ -14,6 +14,10 @@ export interface TeamRepository {
     params: Record<string, string>,
     options?: ApiOptions,
   ): Promise<TeamTournamentMutationResult>
+  saveRoundManagement(
+    params: Record<string, string>,
+    options?: ApiOptions,
+  ): Promise<TeamTournamentMutationResult>
   saveInvitation(
     params: Record<string, string>,
     options?: ApiOptions,

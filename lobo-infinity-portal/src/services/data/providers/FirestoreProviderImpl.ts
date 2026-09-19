@@ -359,6 +359,7 @@ export const firestoreProviderImpl: DataProvider = {
       const allRows = standings.flatMap((division) => division.standings)
 
       return {
+        currentOperationsMissions: [],
         leagueOverview: {
           divisions: standings.map((division) => ({
             activePlayers: division.summary.activePlayers,
@@ -696,6 +697,9 @@ export const firestoreProviderImpl: DataProvider = {
     savePairing: async (params) => {
       await savePairingDocument(params)
       return buildTeamTournamentData(params.eventId)
+    },
+    saveRoundManagement: async () => {
+      throw new Error('Atomic Team Tournament round management requires the canonical Google Sheets provider.')
     },
     saveResult: async (params) => {
       const db = await getDb()
@@ -1234,6 +1238,7 @@ function emptySettings() {
     gitCommit: '',
     googleFormUrl: '',
     joinCommunityFormUrl: '',
+    top40GameSubmissionFormUrl: '',
     googleOAuthClientId: '',
     leagueLogo: '',
     leagueName: 'Lobo Infinity League',

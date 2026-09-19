@@ -137,6 +137,7 @@ export const dualCompareProvider: DataProvider = {
     getTeamTournament: wrapRead('teams', 'getTeamTournament'),
     saveInvitation: wrapWrite('teams', 'saveInvitation'),
     savePairing: wrapWrite('teams', 'savePairing'),
+    saveRoundManagement: wrapWrite('teams', 'saveRoundManagement'),
     saveResult: wrapWrite('teams', 'saveResult'),
     saveTeam: wrapWrite('teams', 'saveTeam'),
   },

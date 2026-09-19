@@ -20,7 +20,7 @@ const PORTAL_CACHE_GROUPS = {
   players: ["players", "player", "searchData", "home", "dashboard", "comparison"],
   factions: ["factions", "faction", "searchData", "home", "intelligence"],
   missions: ["missions", "mission", "searchData", "home", "intelligence"],
-  leagueOperations: ["leagueOperations", "home", "eventHome", "eventManager"],
+  leagueOperations: ["leagueOperations", "home", "dashboard", "eventHome", "eventManager"],
   hallOfFame: ["hallOfFame", "records", "home"],
   analytics: ["intelligence", "records", "home", "notifications", "timeline"],
   armyLists: ["armyLists", "player", "faction", "searchData", "home"],

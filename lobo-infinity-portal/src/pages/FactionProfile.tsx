@@ -2,16 +2,18 @@ import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import BarChart from '../components/BarChart'
 import EntityPreviousNext from '../components/EntityPreviousNext'
+import InfinityArmyLink from '../components/InfinityArmyLink'
 import Skeleton from '../components/Skeleton'
 import { getCanonicalMissionName } from '../config/missions'
 import {
-  apiClient,
+  normalizeFactionPayload,
   type ArmyList,
   type FactionBestMoment,
   type FactionMatchup,
   type FactionProfileData,
   type RecentGame,
 } from '../services/api'
+import { publicDetailProjection } from '../services/publicDetailProjection'
 import { formatObjectiveScore, formatPlayerName } from '../services/formatting'
 import { getGameHeadline } from '../services/gameResults'
 import { getInfinityArmyTarget } from '../services/infinityArmyLinks'
@@ -47,12 +49,10 @@ function FactionProfile() {
 
     const controller = new AbortController()
 
-    apiClient
-      .getFaction(decodedFactionName, {
-        eventId,
-        signal: controller.signal,
-      })
-      .then((faction) => {
+    publicDetailProjection
+      .getFaction(decodedFactionName, controller.signal)
+      .then((payload) => {
+        const faction = normalizeFactionPayload(payload)
         setProfileState({
           faction,
           factionName: decodedFactionName,
@@ -524,9 +524,9 @@ function ArmyListMiniCard({ list }: { list: ArmyList }) {
       <p>{getCanonicalMissionName(list.mission) || 'Mission not recorded'}</p>
       <strong>Score {list.score}</strong>
       {target.status === 'available' ? (
-        <a href={target.href} rel="noreferrer" target="_blank">
+        <InfinityArmyLink armyCode={list.armyCode} href={target.href}>
           View in Infinity Army
-        </a>
+        </InfinityArmyLink>
       ) : (
         <button
           aria-label={`View in Infinity Army unavailable: ${target.reason}`}

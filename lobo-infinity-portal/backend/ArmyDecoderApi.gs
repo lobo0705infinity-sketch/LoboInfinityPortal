@@ -7,40 +7,17 @@
 
 function testDecodeArmyCode() {
 
-  const armyListId =
-    "4190960343";
+  const result = {
+    success: false,
+    status: "Retired",
+    error:
+      "Apps Script external Army decoding is retired. " +
+      "Use the Vercel Army Intelligence refresh workflow."
+  };
 
-  const source =
-    getArmyIntelligenceSourceListLookup()[armyListId];
+  Logger.log(JSON.stringify(result));
 
-  if (!source)
-    throw new Error("Canonical Army Intelligence source not found for Army List ID " + armyListId + ".");
-
-  const armyCode =
-    source.armyCode;
-
-  const decoded =
-    CanonicalDecoderGateway.decode(armyCode);
-
-  Logger.log(
-    JSON.stringify(decoded)
-  );
-
-  Logger.log(
-    JSON.stringify({
-      exceptions: decoded.exceptions,
-      faction: decoded.faction,
-      parserFailure: decoded.parserFailure,
-      parserWarnings: decoded.parserWarnings,
-      points: decoded.points,
-      sectorial: decoded.sectorial,
-      unitCount: decoded.unitCount,
-      valid: decoded.valid,
-      validation: decoded.validation
-    })
-  );
-
-  return decoded;
+  return result;
 
 }
 
@@ -241,71 +218,9 @@ function resolveArmyCodeProfiles(armyCode) {
     swc: 0
   };
 
-  if (typeof UrlFetchApp === "undefined") {
-    result.parserWarnings.push("Decoder warning: Infinity-Data resolver is unavailable in this runtime.");
-    return result;
-  }
-
-  const url =
-    ARMY_CODE_VALIDATION_DEFAULTS.resolverUrl +
-    "/generate?armyData=" +
-    encodeURIComponent(armyCode) +
-    "&unit=inch&style=a4_overview&showEquipmentWeapons=on&showSkillWeapon=on";
-
-  const response =
-    UrlFetchApp.fetch(url, {
-      followRedirects: true,
-      muteHttpExceptions: true
-    });
-
-  const body =
-    response.getContentText();
-
-  if (response.getResponseCode() < 200 || response.getResponseCode() >= 300 || body.indexOf("Army List:") === -1) {
-    result.parserWarnings.push("Decoder warning: Infinity-Data resolver returned HTTP " + response.getResponseCode() + ".");
-    return result;
-  }
-
-  result.armyName =
-    textContent(matchArmyDecoderFirst(body, /<h2 class="card-header-title">Army List:\s*([\s\S]*?)<\/h2>/));
-
-  const profileCards =
-    parseArmyDecoderProfileCards(body);
-
-  let profileCardIndex =
-    0;
-
-  const groupPattern =
-    /<div class="army-group-title">Group:\s*(\d+)<\/div>([\s\S]*?)(?=<div class="army-group-title">|<div class="army-list-footer">)/g;
-
-  let groupMatch =
-    groupPattern.exec(body);
-
-  while (groupMatch) {
-    const combatGroup =
-      Number(groupMatch[1]) || 0;
-
-    result.combatGroups =
-      Math.max(result.combatGroups, combatGroup);
-
-    parseArmyDecoderRows(groupMatch[2], combatGroup).forEach(function(profile) {
-      const profileCardMatch =
-        findArmyDecoderProfileCard(profileCards, profileCardIndex, profile);
-
-      const enrichedProfile =
-        mergeArmyDecoderProfileCard(profile, profileCardMatch.card);
-
-      profileCardIndex =
-        profileCardMatch.nextIndex;
-
-      result.points += profile.points;
-      result.swc += profile.swc;
-      result.roster.push(enrichedProfile);
-    });
-
-    groupMatch =
-      groupPattern.exec(body);
-  }
+  result.parserWarnings.push(
+    "External profile decoding is retired in Apps Script; use the Vercel Army Intelligence worker."
+  );
 
   return result;
 

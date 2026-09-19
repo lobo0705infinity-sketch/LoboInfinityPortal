@@ -58,6 +58,7 @@ const PERMISSION_MIN_ROLE = {
   manageSettings: USER_ROLES.COMMISSIONER,
   runSeasonControl: USER_ROLES.COMMISSIONER,
   runLeagueAudit: USER_ROLES.COMMISSIONER,
+  dataCorrections: USER_ROLES.COMMISSIONER,
   manageCache: USER_ROLES.COMMISSIONER,
   viewOperations: USER_ROLES.ASSISTANT
 };

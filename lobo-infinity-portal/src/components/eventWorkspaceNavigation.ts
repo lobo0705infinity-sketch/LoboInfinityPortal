@@ -84,6 +84,14 @@ export function resolveEventWorkspacePath(
     return buildCapabilityNavigationItem(event, preferredCapability).to
   }
 
+  if (preferredCapability) {
+    return buildCapabilityNavigationItem(event, 'overview').to
+  }
+
+  if (/^\/event\/[^/?#]+\//.test(pathname)) {
+    return buildCapabilityNavigationItem(event, 'overview').to
+  }
+
   const rememberedWorkspace = readWorkspaceMemory()[event.id]
   if (
     rememberedWorkspace &&
@@ -294,6 +302,11 @@ function getRouteCapability(
     return 'submitResult'
   }
 
+  const eventSectionMatch = pathname.match(/^\/event\/[^/?#]+\/([^/?#]+)$/)
+  if (eventSectionMatch) {
+    return getTournamentSectionCapability(eventSectionMatch[1])
+  }
+
   const tournamentSectionMatch = pathname.match(/^\/event\/[^/?#]+\/tournament\/([^/?#]+)$/)
   if (tournamentSectionMatch) {
     return getTournamentSectionCapability(tournamentSectionMatch[1])
@@ -328,6 +341,9 @@ function getTournamentSectionCapability(section: string): EventCapability | null
   if (section === 'results') return 'results'
   if (section === 'standings') return 'standings'
   if (section === 'teams') return 'teams'
+  if (section === 'bracket') return 'bracket'
+  if (section === 'rules') return 'rules'
+  if (section === 'schedule') return 'schedule'
 
   return null
 }

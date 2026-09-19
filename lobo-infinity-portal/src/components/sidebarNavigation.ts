@@ -18,15 +18,14 @@ export const topLevelItems: NavigationItem[] = [
     label: 'Submit Game',
     to: '/submit-game',
   },
-]
-
-export const authenticatedTopLevelItems: NavigationItem[] = [
   {
     icon: 'missions',
     label: 'Mission & Map',
     to: '/league-operations',
   },
 ]
+
+export const authenticatedTopLevelItems: NavigationItem[] = []
 
 export function getJoinCommunityNavigationItem(
   joinCommunityFormUrl: string,
@@ -50,14 +49,9 @@ export const communityItems: NavigationItem[] = [
     to: '/players',
   },
   {
-    icon: 'hall',
-    label: 'Hall of Fame',
-    to: '/hall-of-fame',
-  },
-  {
-    icon: 'compare',
-    label: 'Compare',
-    to: '/compare',
+    icon: 'factions',
+    label: 'Factions',
+    to: '/factions',
   },
   {
     icon: 'missions',
@@ -84,27 +78,27 @@ export const commissionerItems: NavigationItem[] = [
   },
   {
     icon: 'standings',
-    label: 'Game Center',
-    to: '/commissioner/game-center',
-  },
-  {
-    icon: 'standings',
     label: 'Events',
     to: '/commissioner/events',
   },
   {
+    icon: 'standings',
+    label: 'Games & Army Lists',
+    to: '/commissioner/game-center',
+  },
+  {
     icon: 'players',
-    label: 'Players',
+    label: 'Players & Access',
     to: '/commissioner/players',
   },
   {
     icon: 'bell',
-    label: 'Automation',
-    to: '/commissioner/automation',
+    label: 'Community',
+    to: '/commissioner/community-manager',
   },
   {
     icon: 'analytics',
-    label: 'System',
+    label: 'System & Recovery',
     to: '/commissioner/system',
   },
 ]

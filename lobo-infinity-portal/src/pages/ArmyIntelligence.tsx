@@ -2,19 +2,23 @@ import { type KeyboardEvent, type ReactNode, useCallback, useEffect, useMemo, us
 import { useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import InteractiveMetricCard from '../components/InteractiveMetricCard'
+import InfinityArmyLink from '../components/InfinityArmyLink'
 import Skeleton from '../components/Skeleton'
 import lieutenantOrderReference from '../../docs/mockups/lieutenant-order-reference.png'
 import { CANONICAL_ARMY_REGISTRY } from '../config/armies'
 import { readArmyIntelligenceFactionParam } from '../services/armyIntelligenceNavigation'
+import { publicArmyWorkspace } from '../services/publicArmyWorkspaceProjection'
 import { getCanonicalArmyListForIntelligenceSource } from '../services/armyIntelligenceExplorer'
 import { getArmyParentFaction, normalizeArmyForDisplay } from '../services/armyIdentity'
 import { getInfinityArmyTarget } from '../services/infinityArmyLinks'
+import { buildTacticalAnalysis, type TacticalAnalysis, type TacticalProfile } from '../services/armyIntelligenceTacticalAnalysis'
 import {
   apiClient,
   type ArmyIntelligenceArmyList,
-  type ArmyIntelligenceData,
   type ArmyIntelligenceDecodedEntry,
+  type ArmyIntelligenceFactionData,
   type ArmyIntelligenceList,
+  type ArmyIntelligenceSummaryData,
   type OperationsQueueData,
   type OperationsQueueItem,
   type OperationsStateData,
@@ -25,13 +29,19 @@ type ArmyIntelligenceState =
       status: 'loading'
     }
   | {
-      data: ArmyIntelligenceData
+      data: ArmyIntelligenceSummaryData
       status: 'success'
     }
   | {
       error: string
       status: 'error'
     }
+
+type ArmyIntelligenceFactionState =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { data: ArmyIntelligenceFactionData; status: 'success' }
+  | { error: string; status: 'error' }
 
 type AnalysisResultFilter = 'all' | 'winning' | 'losing'
 type ArmyListExplorerSort = 'submissionDate' | 'player' | 'sectorial' | 'points'
@@ -168,8 +178,8 @@ function ArmyIntelligence() {
   })
 
   const loadArmyIntelligence = useCallback((signal?: AbortSignal) =>
-    apiClient
-      .getArmyIntelligence(signal ? { signal } : {})
+    publicArmyWorkspace
+      .getIntelligenceSummary(signal)
       .then((data) => {
         setState({
           data,
@@ -229,13 +239,16 @@ function ArmyIntelligence() {
 }
 
 function ArmyIntelligenceContent({
-  data,
+  data: summary,
 }: {
-  data: ArmyIntelligenceData
+  data: ArmyIntelligenceSummaryData
 }) {
   const [searchParams] = useSearchParams()
   const requestedFaction = readArmyIntelligenceFactionParam(searchParams)
   const [selectedSectorial, setSelectedSectorial] = useState(requestedFaction)
+  const [factionState, setFactionState] = useState<ArmyIntelligenceFactionState>(
+    requestedFaction ? { status: 'loading' } : { status: 'idle' },
+  )
   const [resultFilter, setResultFilter] = useState<AnalysisResultFilter>('all')
   const [modelEquipmentFilter, setModelEquipmentFilter] = useState('')
   const [modelSearchFilter, setModelSearchFilter] = useState('')
@@ -248,18 +261,17 @@ function ArmyIntelligenceContent({
   const [explorerSearch, setExplorerSearch] = useState('')
   const [explorerSectorialFilter, setExplorerSectorialFilter] = useState('')
   const [explorerSort, setExplorerSort] = useState<ArmyListExplorerSort>('submissionDate')
+
+  const factionData = factionState.status === 'success' ? factionState.data : null
   const decodedLists = useMemo(
-    () => data.lists.filter(isDecodedList),
-    [data.lists],
+    () => (factionData?.lists ?? []).filter(isDecodedList),
+    [factionData?.lists],
   )
   const uniqueDecodedLists = useMemo(
     () => deduplicateSubmittedArmyLists(decodedLists),
     [decodedLists],
   )
-  const sectorials = useMemo(
-    () => buildArmyIntelligenceSelectorOptions(uniqueDecodedLists),
-    [uniqueDecodedLists],
-  )
+  const sectorials = summary.options
   const selectedExplorerScope = useMemo(
     () => getSelectedExplorerScope(selectedSectorial),
     [selectedSectorial],
@@ -276,8 +288,8 @@ function ArmyIntelligenceContent({
     [resultFilter, selectedScopeLists],
   )
   const selectedArmyListExplorerRows = useMemo(
-    () => buildExplorerRowsFromSelectedLists(matchingLists, data.armyLists),
-    [data.armyLists, matchingLists],
+    () => buildExplorerRowsFromSelectedLists(matchingLists, factionData?.armyLists ?? []),
+    [factionData?.armyLists, matchingLists],
   )
   const selectedKnownArmyLists = selectedArmyListExplorerRows.length
   const explorerPlayerOptions = useMemo(
@@ -312,10 +324,7 @@ function ArmyIntelligenceContent({
     [selectedArmyListExplorerRows, selectedExplorerScope],
   )
   const analysis = useMemo(() => buildArmyAnalysis(matchingLists), [matchingLists])
-  const intelligenceBrief = useMemo(
-    () => buildIntelligenceBrief(matchingLists, analysis, selectedExplorerScope.label || selectedSectorial),
-    [analysis, matchingLists, selectedExplorerScope.label, selectedSectorial],
-  )
+  const tacticalAnalysis = useMemo(() => buildTacticalAnalysis(matchingLists), [matchingLists])
   const equipmentOptions = useMemo(() => buildEquipmentOptions(matchingLists), [matchingLists])
   const skillOptions = useMemo(() => buildSkillOptions(matchingLists), [matchingLists])
   const weaponOptions = useMemo(() => buildWeaponOptions(matchingLists), [matchingLists])
@@ -342,6 +351,37 @@ function ArmyIntelligenceContent({
 
     setSelectedSectorial(requestedFaction)
   }, [requestedFaction, selectedSectorial])
+
+  useEffect(() => {
+    if (!selectedSectorial) {
+      setFactionState({ status: 'idle' })
+      return
+    }
+
+    const controller = new AbortController()
+    const requestedSectorial = selectedSectorial
+
+    setFactionState({ status: 'loading' })
+    void publicArmyWorkspace
+      .getIntelligenceFaction(requestedSectorial, controller.signal)
+      .then((data) => {
+        if (!controller.signal.aborted && requestedSectorial === selectedSectorial) {
+          setFactionState({ data, status: 'success' })
+        }
+      })
+      .catch((error: unknown) => {
+        if (controller.signal.aborted) {
+          return
+        }
+
+        setFactionState({
+          error: error instanceof Error ? error.message : 'Army Intelligence faction data could not be loaded.',
+          status: 'error',
+        })
+      })
+
+    return () => controller.abort()
+  }, [selectedSectorial])
 
   useEffect(() => {
     if (modelSkillFilter && !skillOptions.includes(modelSkillFilter)) {
@@ -406,19 +446,6 @@ function ArmyIntelligenceContent({
             ))}
           </select>
         </label>
-        <label>
-          <span>Analyze</span>
-          <select
-            onChange={(event) => setResultFilter(event.target.value as AnalysisResultFilter)}
-            value={resultFilter}
-          >
-            {resultFilterOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
         <ArmyIntelligenceOperationsStatus />
       </section>
 
@@ -426,14 +453,20 @@ function ArmyIntelligenceContent({
         <section className="panel army-intelligence-empty" aria-label="Choose a sectorial">
           <p>Choose a sectorial to view army-list analysis.</p>
         </section>
+      ) : factionState.status === 'loading' ? (
+        <section className="army-intelligence-summary" aria-label="Selected Army Intelligence loading">
+          <Skeleton label={`${selectedSectorial} intelligence loading`} rows={5} />
+        </section>
+      ) : factionState.status === 'error' ? (
+        <section className="dashboard-state" aria-label="Selected Army Intelligence error">
+          <p role="alert">{factionState.error}</p>
+        </section>
       ) : matchingLists.length === 0 ? (
         <section className="panel army-intelligence-empty" aria-label="No matching army lists">
           <p>No decoded army lists match the selected sectorial and result filter.</p>
         </section>
       ) : (
         <>
-          <IntelligenceBrief observations={intelligenceBrief} />
-
           <section className="army-intelligence-summary" aria-label="Army Intelligence analysis summary">
             <MetricCard
               actionLabel="Browse submitted army lists"
@@ -474,6 +507,19 @@ function ArmyIntelligenceContent({
           />
 
           <section className="panel army-intelligence-selector army-intelligence-model-controls" aria-label="Model Usage filters">
+            <label>
+              <span>Analyze</span>
+              <select
+                onChange={(event) => setResultFilter(event.target.value as AnalysisResultFilter)}
+                value={resultFilter}
+              >
+                {resultFilterOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
             <label>
               <span>Type</span>
               <select onChange={(event) => setModelTypeFilter(event.target.value)} value={modelTypeFilter}>
@@ -538,6 +584,8 @@ function ArmyIntelligenceContent({
               </select>
             </label>
           </section>
+
+          <IntelligenceBrief analysis={tacticalAnalysis} faction={selectedExplorerScope.label || selectedSectorial} />
 
           <UsagePanel
             items={filteredModelUsage}
@@ -984,14 +1032,14 @@ function ArmyListExplorer({
               <tbody>
                 {lists.map((list) => (
                   <tr key={`${list.source}:${list.id}:${list.armyCode}`}>
-                    <td>{formatExplorerPlayer(list)}</td>
-                    <td>{getExplorerSectorial(list) || 'Not recorded'}</td>
-                    <td>{list.armyName || 'Untitled Army List'}</td>
-                    <td>{formatNumber(list.points)}</td>
-                    <td>{formatNumber(list.swc)}</td>
-                    <td>{formatExplorerDate(list.submissionDate)}</td>
-                    <td>{list.source || 'Community Library'}</td>
-                    <td>
+                    <td data-label="Player">{formatExplorerPlayer(list)}</td>
+                    <td data-label="Sectorial">{getExplorerSectorial(list) || 'Not recorded'}</td>
+                    <td data-label="Army Name">{list.armyName || 'Untitled Army List'}</td>
+                    <td data-label="Points">{formatNumber(list.points)}</td>
+                    <td data-label="SWC">{formatNumber(list.swc)}</td>
+                    <td data-label="Submission Date">{formatExplorerDate(list.submissionDate)}</td>
+                    <td data-label="Source">{list.source || 'Community Library'}</td>
+                    <td className="army-intelligence-copy-cell" data-label="Army Code">
                       <ArmyIntelligenceOpenList armyCode={list.armyCode} />
                     </td>
                   </tr>
@@ -1005,27 +1053,45 @@ function ArmyListExplorer({
   )
 }
 
-function IntelligenceBrief({ observations }: { observations: IntelligenceBriefObservation[] }) {
+function IntelligenceBrief({ analysis, faction }: { analysis: TacticalAnalysis; faction: string }) {
   return (
     <section className="panel army-intelligence-brief" aria-labelledby="army-intelligence-brief-title">
       <div className="army-intelligence-brief-header">
         <span aria-hidden="true">INTEL</span>
-        <h2 id="army-intelligence-brief-title">Intelligence Brief</h2>
+        <div><h2 id="army-intelligence-brief-title">{faction}</h2><p>{analysis.mode}</p></div>
       </div>
-      {observations.length > 0 ? (
-        <ul>
-          {observations.map((observation) => (
-            <li key={observation.id}>
-              <strong>{observation.heading}</strong>
-              <span>{observation.text}</span>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>Additional Army Lists are needed before meaningful intelligence can be generated.</p>
-      )}
+      {analysis.listCount < 3 ? <p className="army-intelligence-sample-notice">Only {analysis.listCount} decoded {analysis.listCount === 1 ? 'list is' : 'lists are'} available. These are observed capabilities, not reliable faction trends.</p> : null}
+      <p className="army-intelligence-role-notice">Profiles may appear in multiple sections when they perform multiple tactical roles. Quantities represent models, not classifications.</p>
+      <div className="army-intelligence-tactical-grid">
+        {analysis.categories.map((category) => <article className="army-intelligence-tactical-panel" key={category.id}>
+          <header><h3>{category.title}</h3><p>{category.description}</p></header>
+          {category.id === 'hacking' ? <p className="army-intelligence-category-total"><strong>{analysis.hackerListCount}</strong> of {analysis.listCount} decoded lists contain at least one Hacker.</p> : null}
+          {category.profiles.length ? <div className="army-intelligence-tactical-profiles">{category.profiles.map((profile) => <TacticalProfileRow category={category.id} key={profile.profileId} profile={profile} />)}</div> : <p className="army-intelligence-tactical-empty">{category.unavailableReason || 'No qualifying profiles were found in the submitted decoded sample.'}</p>}
+          {category.id === 'hacking' && analysis.perListNetworks.length ? <div className="army-intelligence-network-lists">{analysis.perListNetworks.map((row, index) => <p key={`${index}:${row.components.join('|')}`}><span>{row.components.join(' · ')}</span></p>)}</div> : null}
+        </article>)}
+      </div>
     </section>
   )
+}
+
+function TacticalProfileRow({ category, profile }: { category: string; profile: TacticalProfile }) {
+  const relevantWeapons = profile.weapons.filter((weapon, index) => category === 'apex' ? (weapon.effectiveBurst ?? 0) >= 4 : category === 'competent' ? (weapon.effectiveDice ?? 0) >= 4 : category === 'valuableAro' || category === 'disposableAro' ? /sniper rifle|missile launcher|portable autocannon|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach|flash pulse/i.test(weapon.name) : category === 'defensive' ? /mine|deployable/i.test(weapon.name) : category === 'alternative' ? index === 0 : false)
+  return <div className="army-intelligence-tactical-profile">
+    <div><strong>{profile.unit}</strong><span>{profile.profile}</span></div>
+    <div className="army-intelligence-tactical-badges">
+      {profile.bs !== null ? <span>BS {profile.bs}</span> : null}
+      {relevantWeapons.map((weapon) => <span key={`${weapon.name}:${weapon.burst}`}>{weapon.name}{weapon.effectiveBurst === null ? ' · Burst unavailable' : category === 'competent' && weapon.effectiveDice !== weapon.effectiveBurst ? ` · Effective dice ${weapon.effectiveDice} (Burst ${weapon.effectiveBurst} + SD)` : ` · Burst ${weapon.effectiveBurst}${weapon.burst !== weapon.effectiveBurst ? ` (base ${weapon.burst} + BS Attack)` : ''}`}</span>)}
+      {profile.roles.length > 1 ? <span className="is-multi-role">MULTI-ROLE</span> : null}
+      {profile.badges.map((badge) => <span key={badge}>{badge}</span>)}
+      {profile.linkability === 'verified' ? <span className="is-verified">Verified linkable</span> : profile.linkability === 'verified-false' ? <span>Verified not linkable</span> : <span>Fireteam status unknown</span>}
+    </div>
+    {profile.roles.length > 1 ? <small>Also classified as: {profile.roles.filter((role) => role !== category).map(tacticalRoleTitle).join(' · ')}</small> : null}
+    <small>{profile.listCount} {profile.listCount === 1 ? 'list' : 'lists'} · {Math.round(profile.percentage)}%</small>
+  </div>
+}
+
+function tacticalRoleTitle(role: string) {
+  return ({ apex: 'Apex Gunfighters', competent: 'Competent Gunfighters', hacking: 'Hacking Network', valuableAro: 'Valuable ARO Pieces', disposableAro: 'Disposable ARO Pieces', alternative: 'Alternative Attack Vectors', defensive: 'Defensive Network' } as Record<string, string>)[role] || role
 }
 
 function UsagePanel({
@@ -1273,12 +1339,16 @@ function deduplicateSubmittedArmyLists(lists: ArmyIntelligenceList[]): UniqueArm
       const existing = uniqueByKey.get(key)
       if (existing) {
         normalizeResultValue(list.result).forEach((result) => existing.resultSet.add(result))
+        ;(list.results ?? []).forEach((result) => existing.resultSet.add(result))
         return
       }
 
+      const resultSet = normalizeResultValue(list.result)
+      ;(list.results ?? []).forEach((result) => resultSet.add(result))
+
       uniqueByKey.set(key, {
         ...list,
-        resultSet: normalizeResultValue(list.result),
+        resultSet,
       })
     })
 
@@ -1308,31 +1378,6 @@ function normalizeResultValue(value: string) {
 
 function getDecodedSectorial(list: ArmyIntelligenceList) {
   return normalizeSectorialDisplayName(normalizeArmyForDisplay(list.decoded?.sectorial || list.sectorial || ''))
-}
-
-function buildArmyIntelligenceSelectorOptions(lists: UniqueArmyIntelligenceList[]) {
-  const optionsByKey = new Map<string, string>()
-
-  lists.forEach((list) => {
-    addArmyIntelligenceSelectorOption(optionsByKey, getIntelligenceParentFaction(list))
-    addArmyIntelligenceSelectorOption(optionsByKey, getDecodedSectorial(list))
-  })
-
-  return Array.from(optionsByKey.values()).sort((left, right) => left.localeCompare(right))
-}
-
-function addArmyIntelligenceSelectorOption(optionsByKey: Map<string, string>, value: string) {
-  const displayName = normalizeSectorialDisplayName(normalizeArmyForDisplay(value))
-  const registryEntry = CANONICAL_ARMY_REGISTRY.find((army) => army.active && army.name === displayName)
-  const key = getArmyIntelligenceSelectorOptionKey(displayName)
-
-  if (registryEntry && key && !optionsByKey.has(key)) {
-    optionsByKey.set(key, displayName)
-  }
-}
-
-function getArmyIntelligenceSelectorOptionKey(value: string) {
-  return value.trim().toLowerCase().replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim()
 }
 
 function getSelectedExplorerScope(selectedItem: string): ArmyIntelligenceSelectionScope {
@@ -1602,20 +1647,20 @@ function ArmyIntelligenceOpenList({ armyCode }: { armyCode: string }) {
 
   if (target.status === 'available') {
     return (
-      <a href={target.href} rel="noreferrer" target="_blank">
-        Open List
-      </a>
+      <InfinityArmyLink armyCode={armyCode} copyOnly href={target.href}>
+        Copy Army Code
+      </InfinityArmyLink>
     )
   }
 
   return (
     <button
-      aria-label={`Open List unavailable: ${target.reason}`}
+      aria-label={`Copy Army Code unavailable: ${target.reason}`}
       disabled
       title={target.reason}
       type="button"
     >
-      Open List
+      Copy Army Code
     </button>
   )
 }
@@ -1654,7 +1699,7 @@ function buildArmyAnalysis(lists: ArmyIntelligenceList[]): ArmyAnalysis {
   }
 }
 
-function buildIntelligenceBrief(
+export function buildIntelligenceBrief(
   lists: ArmyIntelligenceList[],
   analysis: ArmyAnalysis,
   selectedScope: string,

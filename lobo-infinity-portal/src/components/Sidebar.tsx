@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { getDiscordCommunityLink } from '../config/communityLinks'
@@ -8,6 +7,7 @@ import {
 } from '../config/eventNavigation'
 import LeagueCrest from './LeagueCrest'
 import PortalIcon from './PortalIcon'
+import SponsorCredit from './SponsorCredit'
 import {
   authenticatedTopLevelItems,
   commissionerItems,
@@ -19,24 +19,6 @@ import {
 import { useSelectedEventNavigation } from './useSelectedEventNavigation'
 import { useSettings } from '../contexts/SettingsContext'
 
-const expandedEventStorageKey = 'le'
-
-function readExpandedEventId() {
-  try {
-    return window.sessionStorage.getItem(expandedEventStorageKey) || ''
-  } catch {
-    return ''
-  }
-}
-
-function writeExpandedEventId(eventId: string) {
-  try {
-    window.sessionStorage.setItem(expandedEventStorageKey, eventId)
-  } catch {
-    // Navigation memory is an enhancement; links remain deterministic.
-  }
-}
-
 function Sidebar() {
   const auth = useAuth()
   const { settings } = useSettings()
@@ -46,12 +28,7 @@ function Sidebar() {
     selectEvent,
     selectedEventId,
   } = useSelectedEventNavigation()
-  const [expandedEventId, setExpandedEventId] = useState(() =>
-    selectedEventId || readExpandedEventId(),
-  )
-  const knownExpandedEvent = eventOptions.some((event) => event.id === expandedEventId)
-  const resolvedExpandedEventId =
-    knownExpandedEvent ? expandedEventId : selectedEventId
+  const selectedEvent = eventOptions.find((event) => event.id === selectedEventId)
   const discordLink = getDiscordCommunityLink(settings)
   const joinCommunityItem = getJoinCommunityNavigationItem(
     settings?.joinCommunityFormUrl ?? '',
@@ -68,24 +45,21 @@ function Sidebar() {
       ]
     : communityItems
 
-  function expandEvent(eventId: string) {
-    setExpandedEventId(eventId)
-    writeExpandedEventId(eventId)
-  }
-
   function changeSelectedEvent(eventId: string) {
-    expandEvent(eventId)
     selectEvent(eventId)
   }
 
   return (
     <aside className="sidebar" aria-label="Portal navigation">
-      <div className="sidebar-brand">
-        <LeagueCrest compact />
-        <div>
-          <strong>Lobo</strong>
-          <small>Infinity League</small>
+      <div className="sidebar-brand-stack">
+        <div className="sidebar-brand">
+          <LeagueCrest compact />
+          <div>
+            <strong>Lobo</strong>
+            <small>Infinity League</small>
+          </div>
         </div>
+        <SponsorCredit placement="sidebar" />
       </div>
 
       <nav className="sidebar-nav" aria-label="Portal sections">
@@ -113,16 +87,7 @@ function Sidebar() {
           ) : null}
           {eventOptions.length === 0 ? (
             <NoEventsNavigation commissioner={auth.isAtLeastRole('Commissioner')} />
-          ) : (
-            eventOptions.map((event) => (
-              <EventGroup
-                event={event}
-                expanded={resolvedExpandedEventId === event.id}
-                key={event.id}
-                onToggle={() => expandEvent(event.id)}
-              />
-            ))
-          )}
+          ) : selectedEvent ? <EventGroup event={selectedEvent} /> : null}
         </section>
 
         <SidebarSection
@@ -206,35 +171,24 @@ function SidebarSection({
 
 function EventGroup({
   event,
-  expanded,
   onNavigate,
-  onToggle,
 }: {
   event: EventNavigationConfig
-  expanded: boolean
   onNavigate?: () => void
-  onToggle: () => void
 }) {
   const items = buildCapabilityNavigation(event)
 
   return (
     <div className="sidebar-event-group">
-      <button
-        aria-expanded={expanded}
-        className="sidebar-event-summary"
-        onClick={onToggle}
-        type="button"
-      >
+      <div className="sidebar-event-summary sidebar-event-summary-static">
           <span>{event.label}</span>
           <small>{event.type}</small>
-      </button>
-      {expanded ? (
-        <div className="sidebar-subnav">
-          {items.map((item) => (
-            <SidebarLink item={item} key={`${event.id}-${item.label}`} onNavigate={onNavigate} />
-          ))}
-        </div>
-      ) : null}
+      </div>
+      <div className="sidebar-subnav">
+        {items.map((item) => (
+          <SidebarLink item={item} key={`${event.id}-${item.label}`} onNavigate={onNavigate} />
+        ))}
+      </div>
     </div>
   )
 }

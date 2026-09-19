@@ -1,9 +1,16 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import {
+  apiClient,
+  type EventBracketData,
   type EventManagerData,
   type EventRegistrationEntry,
 } from '../services/api'
-import { eventRepository } from '../services/data'
+import { eventRepository, teamRepository } from '../services/data'
+import { isCanonicalMission } from '../config/missions'
+import {
+  getPublicMissionGeistCatalog,
+  type MissionGeistCatalogMission,
+} from '../services/publicSnapshot'
 import Skeleton from './Skeleton'
 import TeamPairingEditor from './TeamPairingEditor'
 
@@ -36,10 +43,20 @@ type ParticipantForm = {
   team: string
 }
 
-function EventManagerPanel({ canManage }: { canManage: boolean }) {
+export type EventManagerFocus = 'all' | 'league' | 'top40' | 'team'
+
+function EventManagerPanel({
+  canManage,
+  focus = 'all',
+  initialEventId = 'event-current-league',
+}: {
+  canManage: boolean
+  focus?: EventManagerFocus
+  initialEventId?: string
+}) {
   const [state, setState] = useState<EventManagerState>({ status: 'loading' })
-  const [selectedEventId, setSelectedEventId] = useState('event-current-league')
-  const initialEventId = useRef('event-current-league')
+  const [selectedEventId, setSelectedEventId] = useState(initialEventId)
+  const initialEventIdRef = useRef(initialEventId)
   const [workingAction, setWorkingAction] = useState('')
   const [actionError, setActionError] = useState('')
   const [actionMessage, setActionMessage] = useState('')
@@ -55,15 +72,6 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     startDate: '',
     status: '',
     type: 'League',
-  })
-  const [newEventForm, setNewEventForm] = useState({
-    description: '',
-    endDate: '',
-    name: '',
-    registration: 'Registration Closed',
-    rules: '',
-    startDate: '',
-    type: 'Custom',
   })
   const [participantForm, setParticipantForm] = useState({
     captain: 'false',
@@ -87,13 +95,50 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
   })
   const [leagueOperationsForm, setLeagueOperationsForm] = useState({
     mission1: '',
+    mission1GeistId: '',
     mission1MapA: '',
     mission1MapB: '',
     mission2: '',
+    mission2GeistId: '',
     mission2MapA: '',
     mission2MapB: '',
     weekNumber: '',
   })
+  const [leagueMissionCatalog, setLeagueMissionCatalog] = useState<MissionGeistCatalogMission[]>([])
+  const [leagueMissionCatalogError, setLeagueMissionCatalogError] = useState('')
+  const selectedEventType = state.status === 'success' ? state.data.selectedEvent.type : ''
+
+  useEffect(() => {
+    const needsLeagueMissionCatalog =
+      focus === 'league' ||
+      (focus === 'all' && selectedEventType === 'League')
+    if (!needsLeagueMissionCatalog) return
+
+    const controller = new AbortController()
+    setLeagueMissionCatalogError('')
+    getPublicMissionGeistCatalog(controller.signal)
+      .then((catalog) => {
+        if (!controller.signal.aborted) {
+          setLeagueMissionCatalog(
+            catalog.missions.filter((mission) => isCanonicalMission(mission.name)).sort((left, right) =>
+              left.sourceCollectionName.localeCompare(right.sourceCollectionName)
+              || left.name.localeCompare(right.name)
+              || left.id.localeCompare(right.id)),
+          )
+        }
+      })
+      .catch((error: unknown) => {
+        if (!controller.signal.aborted) {
+          setLeagueMissionCatalogError(
+            error instanceof Error
+              ? error.message
+              : 'Mission catalog could not be loaded.',
+          )
+        }
+      })
+
+    return () => controller.abort()
+  }, [focus, selectedEventType])
 
   function applyManagerData(data: EventManagerData) {
     setSelectedEventId(data.selectedEvent.id)
@@ -112,9 +157,11 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     })
     setLeagueOperationsForm({
       mission1: data.leagueOperations.missions[0]?.mission ?? '',
+      mission1GeistId: data.leagueOperations.missions[0]?.missionGeistId ?? '',
       mission1MapA: data.leagueOperations.missions[0]?.maps[0] ?? '',
       mission1MapB: data.leagueOperations.missions[0]?.maps[1] ?? '',
       mission2: data.leagueOperations.missions[1]?.mission ?? '',
+      mission2GeistId: data.leagueOperations.missions[1]?.missionGeistId ?? '',
       mission2MapA: data.leagueOperations.missions[1]?.maps[0] ?? '',
       mission2MapB: data.leagueOperations.missions[1]?.maps[1] ?? '',
       weekNumber: data.leagueOperations.weekNumber,
@@ -143,7 +190,7 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
     const controller = new AbortController()
 
     eventRepository
-      .getEventManager(initialEventId.current, { signal: controller.signal })
+      .getEventManager(initialEventIdRef.current, { signal: controller.signal })
       .then(applyManagerData)
       .catch((error: unknown) => {
         if (controller.signal.aborted) {
@@ -167,17 +214,20 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
   async function runManagerAction(
     action: string,
     handler: () => Promise<EventManagerData>,
+    successMessage = 'Event Manager updated.',
+    pendingMessage = '',
   ) {
     setWorkingAction(action)
     setActionError('')
-    setActionMessage('')
+    setActionMessage(pendingMessage)
 
     try {
       const data = await handler()
       applyManagerData(data)
-      setActionMessage('Event Manager updated.')
+      setActionMessage(successMessage)
       return data
     } catch (error) {
+      setActionMessage('')
       setActionError(
         error instanceof Error
           ? error.message
@@ -209,24 +259,32 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
   async function saveSelectedEvent(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    await runManagerAction('saveEvent', () =>
-      eventRepository.saveEvent({
-        ...eventForm,
-        eventId: selectedEventId,
-      }),
-    )
-  }
+    if (!eventForm.name.trim()) {
+      setActionMessage('')
+      setActionError('Event name is required.')
+      return
+    }
 
-  async function createEvent(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
+    if (!eventForm.type.trim()) {
+      setActionMessage('')
+      setActionError('Event type is required.')
+      return
+    }
 
-    await runManagerAction('createEvent', () =>
-      eventRepository.saveEvent({
-        ...newEventForm,
-        lifecycleStage: 'Planning',
-        status: 'Planning',
-      }),
-    )
+    try {
+      await runManagerAction(
+        'saveEvent',
+        () =>
+          eventRepository.saveEvent({
+            ...eventForm,
+            eventId: selectedEventId,
+          }),
+        'Event saved.',
+        'Saving event...',
+      )
+    } catch {
+      // runManagerAction has already rendered the safe backend error.
+    }
   }
 
   async function saveLeagueOperations(event: FormEvent<HTMLFormElement>) {
@@ -239,9 +297,11 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
       const operations = await eventRepository.saveLeagueOperations(leagueOperationsForm)
       setLeagueOperationsForm({
         mission1: operations.missions[0]?.mission ?? '',
+        mission1GeistId: operations.missions[0]?.missionGeistId ?? '',
         mission1MapA: operations.missions[0]?.maps[0] ?? '',
         mission1MapB: operations.missions[0]?.maps[1] ?? '',
         mission2: operations.missions[1]?.mission ?? '',
+        mission2GeistId: operations.missions[1]?.missionGeistId ?? '',
         mission2MapA: operations.missions[1]?.maps[0] ?? '',
         mission2MapB: operations.missions[1]?.maps[1] ?? '',
         weekNumber: operations.weekNumber,
@@ -317,10 +377,28 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
         freeAgent: String(participant.freeAgent),
         player: participant.player,
         preferredTeam: participant.preferredTeam,
+        seed: participant.seed,
         status,
         team: participant.team,
       }),
     )
+  }
+
+  async function saveSeeding(assignments: Array<{ player: string; seed: number }>) {
+    try {
+      await runManagerAction(
+        'seeding',
+        () =>
+          eventRepository.saveParticipant({
+            eventId: selectedEventId,
+            seedAssignments: JSON.stringify(assignments),
+          }),
+        'Seeding saved.',
+        'Saving seeding...',
+      )
+    } catch {
+      // runManagerAction has already rendered the safe backend error.
+    }
   }
 
   async function saveTeam(event: FormEvent<HTMLFormElement>) {
@@ -340,12 +418,22 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
   }
 
   async function savePairing(params: Record<string, string>) {
-    await runManagerAction('pairing', () =>
-      eventRepository.savePairing({
+    setWorkingAction('pairing')
+    setActionError('')
+    setActionMessage('')
+    try {
+      await teamRepository.saveRoundManagement({
         ...params,
         eventId: selectedEventId,
-      }),
-    )
+      })
+      await loadManager(selectedEventId)
+      setActionMessage('Round and pairings published.')
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : 'Round publication failed.')
+      throw error
+    } finally {
+      setWorkingAction('')
+    }
   }
 
   if (state.status === 'loading') {
@@ -366,6 +454,62 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
 
   const { data } = state
   const isTeamTournament = data.selectedEvent.type === 'Team Tournament'
+  const isIndividualDoubleElimination =
+    data.selectedEvent.type === 'Individual Double Elimination'
+
+  if (focus === 'league') {
+    return (
+      <div className="event-manager">
+        <div className="panel-heading"><p className="eyebrow">League Operations</p><h2>Mission &amp; Map</h2></div>
+        {data.selectedEvent.type === 'League' ? (
+          <form className="event-manager-form" onSubmit={saveLeagueOperations}>
+            <label>Week Number<input disabled={!canManage} onChange={(event) => setLeagueOperationsForm((current) => ({ ...current, weekNumber: event.target.value }))} value={leagueOperationsForm.weekNumber} /></label>
+            <LeagueOperationsSelect
+              disabled={!canManage || leagueMissionCatalog.length === 0}
+              label="Mission 1"
+              missionGeistId={leagueOperationsForm.mission1GeistId}
+              onChange={(selection) => setLeagueOperationsForm((current) => ({ ...current, mission1: selection.mission, mission1GeistId: selection.missionGeistId }))}
+              options={leagueMissionCatalog}
+              value={leagueOperationsForm.mission1}
+            />
+            <LeagueOperationsMapInput disabled={!canManage} label="Mission 1 Map 1" onChange={(mission1MapA) => setLeagueOperationsForm((current) => ({ ...current, mission1MapA }))} value={leagueOperationsForm.mission1MapA} />
+            <LeagueOperationsMapInput disabled={!canManage} label="Mission 1 Map 2" onChange={(mission1MapB) => setLeagueOperationsForm((current) => ({ ...current, mission1MapB }))} value={leagueOperationsForm.mission1MapB} />
+            <LeagueOperationsSelect
+              disabled={!canManage || leagueMissionCatalog.length === 0}
+              label="Mission 2"
+              missionGeistId={leagueOperationsForm.mission2GeistId}
+              onChange={(selection) => setLeagueOperationsForm((current) => ({ ...current, mission2: selection.mission, mission2GeistId: selection.missionGeistId }))}
+              options={leagueMissionCatalog}
+              value={leagueOperationsForm.mission2}
+            />
+            <LeagueOperationsMapInput disabled={!canManage} label="Mission 2 Map 1" onChange={(mission2MapA) => setLeagueOperationsForm((current) => ({ ...current, mission2MapA }))} value={leagueOperationsForm.mission2MapA} />
+            <LeagueOperationsMapInput disabled={!canManage} label="Mission 2 Map 2" onChange={(mission2MapB) => setLeagueOperationsForm((current) => ({ ...current, mission2MapB }))} value={leagueOperationsForm.mission2MapB} />
+            <div className="event-manager-actions event-manager-wide"><button disabled={!canManage || workingAction !== ''} type="submit">Save Mission &amp; Map</button><a className="button-link" href="/league-operations">View Public Page</a></div>
+            {leagueMissionCatalogError ? <p className="form-error event-manager-wide" role="alert">{leagueMissionCatalogError}</p> : null}
+            <div aria-live="polite" className="event-manager-wide">{actionError ? <p className="form-error" role="alert">{actionError}</p> : null}{actionMessage ? <p className="form-success" role="status">{actionMessage}</p> : null}</div>
+          </form>
+        ) : <p>This tool is available for League events only.</p>}
+      </div>
+    )
+  }
+
+  if (focus === 'top40') {
+    return (
+      <div className="event-manager">
+        <div className="panel-heading"><p className="eyebrow">Tournament Operations</p><h2>Top 40 Operations</h2></div>
+        {isIndividualDoubleElimination ? <><TournamentSeedingPanel canManage={canManage} key={`${data.selectedEvent.id}-${data.generatedAt}`} onSave={saveSeeding} participants={data.participants} working={workingAction !== ''} /><BracketGenerationPanel canManage={canManage} eventId={data.selectedEvent.id} /></> : <p>This tool is available for the Top 40 event only.</p>}
+      </div>
+    )
+  }
+
+  if (focus === 'team') {
+    return (
+      <div className="event-manager">
+        <div className="panel-heading"><p className="eyebrow">Tournament Operations</p><h2>Team Tournament Operations</h2></div>
+        {isTeamTournament ? <TeamOperationsPanel canManage={canManage} onPairingSubmit={savePairing} onTeamChange={setTeamForm} onTeamSubmit={saveTeam} pairings={data.pairings} rounds={data.rounds} currentRound={data.events.find((event) => event.event.id === data.selectedEvent.id)?.currentRound ?? data.rounds[0] ?? null} teamForm={teamForm} teams={data.teams} working={workingAction !== ''} /> : <p>This tool is available for Team Tournament events only.</p>}
+      </div>
+    )
+  }
 
   return (
     <div className="event-manager">
@@ -378,16 +522,6 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
         participants, teams, pairings, archive state, and the current active
         event.
       </p>
-      {actionError ? (
-        <p className="form-error" role="alert">
-          {actionError}
-        </p>
-      ) : null}
-      {actionMessage ? (
-        <p className="form-success" role="status">
-          {actionMessage}
-        </p>
-      ) : null}
       <div className="event-manager-toolbar">
         <label>
           Current Active Event
@@ -618,6 +752,23 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
                 Archive
               </button>
             </div>
+            <div aria-live="polite" className="event-manager-wide">
+              {actionError ? (
+                <p className="form-error" role="alert">
+                  {actionError}
+                </p>
+              ) : null}
+              {actionMessage ? (
+                <p className="form-success" role="status">
+                  {actionMessage}
+                </p>
+              ) : null}
+              {!canManage ? (
+                <p className="form-error" role="alert">
+                  Commissioner event permission is required.
+                </p>
+              ) : null}
+            </div>
           </form>
 
           {data.selectedEvent.type === 'League' ? (
@@ -637,12 +788,17 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
                 />
               </label>
               <LeagueOperationsSelect
-                disabled={!canManage}
+                disabled={!canManage || leagueMissionCatalog.length === 0}
                 label="Mission 1"
-                onChange={(mission1) =>
-                  setLeagueOperationsForm((current) => ({ ...current, mission1 }))
+                missionGeistId={leagueOperationsForm.mission1GeistId}
+                onChange={(selection) =>
+                  setLeagueOperationsForm((current) => ({
+                    ...current,
+                    mission1: selection.mission,
+                    mission1GeistId: selection.missionGeistId,
+                  }))
                 }
-                options={data.leagueOperations.missionOptions}
+                options={leagueMissionCatalog}
                 value={leagueOperationsForm.mission1}
               />
               <LeagueOperationsMapInput
@@ -668,12 +824,17 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
                 value={leagueOperationsForm.mission1MapB}
               />
               <LeagueOperationsSelect
-                disabled={!canManage}
+                disabled={!canManage || leagueMissionCatalog.length === 0}
                 label="Mission 2"
-                onChange={(mission2) =>
-                  setLeagueOperationsForm((current) => ({ ...current, mission2 }))
+                missionGeistId={leagueOperationsForm.mission2GeistId}
+                onChange={(selection) =>
+                  setLeagueOperationsForm((current) => ({
+                    ...current,
+                    mission2: selection.mission,
+                    mission2GeistId: selection.missionGeistId,
+                  }))
                 }
-                options={data.leagueOperations.missionOptions}
+                options={leagueMissionCatalog}
                 value={leagueOperationsForm.mission2}
               />
               <LeagueOperationsMapInput
@@ -706,6 +867,11 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
                   View Public Page
                 </a>
               </div>
+              {leagueMissionCatalogError ? (
+                <p className="form-error event-manager-wide" role="alert">
+                  {leagueMissionCatalogError}
+                </p>
+              ) : null}
             </form>
           ) : null}
 
@@ -718,6 +884,22 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
             participants={data.participants}
             working={workingAction !== ''}
           />
+
+          {isIndividualDoubleElimination ? (
+            <>
+              <TournamentSeedingPanel
+                canManage={canManage}
+                key={`${data.selectedEvent.id}-${data.generatedAt}`}
+                onSave={saveSeeding}
+                participants={data.participants}
+                working={workingAction !== ''}
+              />
+              <BracketGenerationPanel
+                canManage={canManage}
+                eventId={data.selectedEvent.id}
+              />
+            </>
+          ) : null}
 
           {isTeamTournament ? (
             <TeamOperationsPanel
@@ -739,83 +921,317 @@ function EventManagerPanel({ canManage }: { canManage: boolean }) {
             />
           ) : null}
 
-          <form className="event-manager-form" onSubmit={createEvent}>
-            <h3>Create Event</h3>
-            <label>
-              Event Name
-              <input
-                disabled={!canManage}
-                onChange={(event) =>
-                  setNewEventForm((current) => ({
-                    ...current,
-                    name: event.target.value,
-                  }))
-                }
-                value={newEventForm.name}
-              />
-            </label>
-            <label>
-              Type
-              <EventTypeSelect
-                disabled={!canManage}
-                onChange={(type) =>
-                  setNewEventForm((current) => ({
-                    ...current,
-                    type,
-                  }))
-                }
-                value={newEventForm.type}
-              />
-            </label>
-            <label>
-              Start Date
-              <input
-                disabled={!canManage}
-                onChange={(event) =>
-                  setNewEventForm((current) => ({
-                    ...current,
-                    startDate: event.target.value,
-                  }))
-                }
-                type="date"
-                value={newEventForm.startDate}
-              />
-            </label>
-            <label>
-              End Date
-              <input
-                disabled={!canManage}
-                onChange={(event) =>
-                  setNewEventForm((current) => ({
-                    ...current,
-                    endDate: event.target.value,
-                  }))
-                }
-                type="date"
-                value={newEventForm.endDate}
-              />
-            </label>
-            <label className="event-manager-wide">
-              Description
-              <textarea
-                disabled={!canManage}
-                onChange={(event) =>
-                  setNewEventForm((current) => ({
-                    ...current,
-                    description: event.target.value,
-                  }))
-                }
-                rows={2}
-                value={newEventForm.description}
-              />
-            </label>
-            <button disabled={!canManage || workingAction !== ''} type="submit">
-              Create Event
-            </button>
-          </form>
         </section>
       </div>
     </div>
+  )
+}
+
+function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; eventId: string }) {
+  const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
+  const [generating, setGenerating] = useState(false)
+  const [bracket, setBracket] = useState<EventBracketData | null>(null)
+  const [deadlineDrafts, setDeadlineDrafts] = useState<Record<string, string>>({})
+  const [savingDeadline, setSavingDeadline] = useState('')
+  const [forfeitWinners, setForfeitWinners] = useState<Record<string, string>>({})
+  const [awardingForfeit, setAwardingForfeit] = useState('')
+  const [missionDrafts, setMissionDrafts] = useState<Record<string, { mission: string; missionGeistId: string }>>({})
+  const [missionCatalog, setMissionCatalog] = useState<MissionGeistCatalogMission[]>([])
+  const [savingMissions, setSavingMissions] = useState(false)
+  const loadBracket = useCallback(() => {
+    apiClient.getEventBracket(eventId).then((nextBracket) => {
+      setBracket(nextBracket)
+      setMissionDrafts(Object.fromEntries(nextBracket.missions.map((assignment) => [
+        `${assignment.bracket}:${assignment.bracketRound}`,
+        { mission: assignment.mission, missionGeistId: assignment.missionGeistId || '' },
+      ])))
+    }).catch((reason: unknown) =>
+      setError(reason instanceof Error ? reason.message : 'Bracket status could not be loaded.'),
+    )
+  }, [eventId])
+  useEffect(loadBracket, [loadBracket])
+  useEffect(() => {
+    const controller = new AbortController()
+    getPublicMissionGeistCatalog(controller.signal).then((catalog) => {
+      setMissionCatalog(catalog.missions.filter((mission) => isCanonicalMission(mission.name)))
+    }).catch((reason: unknown) => setError(reason instanceof Error ? reason.message : 'Mission catalog could not be loaded.'))
+    return () => controller.abort()
+  }, [])
+
+  async function generateBracket() {
+    setGenerating(true)
+    setMessage('Generating bracket...')
+    setError('')
+    try {
+      setBracket(await apiClient.generateEventBracket(eventId))
+      setMessage('Bracket generated.')
+    } catch (reason) {
+      setMessage('')
+      setError(reason instanceof Error ? reason.message : 'Bracket could not be generated.')
+    } finally {
+      setGenerating(false)
+    }
+  }
+
+  async function saveDeadline(matchId: string) {
+    const deadline = deadlineDrafts[matchId]
+    if (!deadline) {
+      setError('Enter a valid deadline.')
+      return
+    }
+    setSavingDeadline(matchId)
+    setMessage('Saving deadline...')
+    setError('')
+    try {
+      setBracket(await apiClient.updateEventBracketDeadline(eventId, matchId, deadline.replace('T', ' ') + ':00'))
+      setMessage('Deadline saved.')
+    } catch (reason) {
+      setMessage('')
+      setError(reason instanceof Error ? reason.message : 'Deadline could not be saved.')
+    } finally {
+      setSavingDeadline('')
+    }
+  }
+
+  async function saveMissions() {
+    if (!bracket) return
+    setSavingMissions(true)
+    setMessage('Saving missions...')
+    setError('')
+    try {
+      const rounds = discoverBracketRounds(bracket)
+      setBracket(await apiClient.saveEventBracketMissions(eventId, rounds.map((round) => ({
+        bracket: round.bracket,
+        bracketRound: round.bracketRound,
+        mission: missionDrafts[round.key]?.mission || '',
+        missionGeistId: missionDrafts[round.key]?.missionGeistId || '',
+      }))))
+      setMessage('Missions saved.')
+    } catch (reason) {
+      setMessage('')
+      setError(reason instanceof Error ? reason.message : 'Missions could not be saved.')
+    } finally {
+      setSavingMissions(false)
+    }
+  }
+
+  async function awardForfeit(match: EventBracketData['matches'][number]) {
+    const winner = forfeitWinners[match.matchId]
+    if (!winner) {
+      setError('Choose Player A or Player B as the forfeit winner.')
+      return
+    }
+    if (!window.confirm(`Award this match to ${winner} by forfeit?`)) return
+    setAwardingForfeit(match.matchId)
+    setMessage('Awarding forfeit...')
+    setError('')
+    try {
+      setBracket(await apiClient.awardEventBracketForfeit(eventId, match.matchId, winner))
+      setMessage('Forfeit awarded.')
+    } catch (reason) {
+      setMessage('')
+      setError(reason instanceof Error ? reason.message : 'Forfeit could not be awarded.')
+    } finally {
+      setAwardingForfeit('')
+    }
+  }
+
+  const readiness = bracket?.readiness
+  const activeMatches = bracket?.matches.filter((match) => match.status === 'Active') ?? []
+  return (
+    <section className="event-manager-subpanel">
+      <h3>Bracket Generation</h3>
+      <div className="event-manager-summary" aria-label="Bracket readiness">
+        <Metric label="Registered Players" value={readiness ? `${readiness.registeredCount} / ${readiness.capacity || '—'}` : 'Loading'} />
+        <Metric label="Seeded Players" value={readiness ? `${readiness.seededCount} / ${readiness.registeredCount}` : 'Loading'} />
+        <Metric label="Registration" value={readiness ? (readiness.registrationClosed ? 'Closed' : 'Open') : 'Loading'} />
+        <Metric label="Bracket" value={bracket?.generated ? 'Generated' : 'Not Generated'} />
+      </div>
+      <div aria-live="polite">
+        {bracket?.generated ? <p>Bracket Generated</p> : readiness?.ready ? <p>Ready to generate bracket.</p> : readiness?.reasons.map((reason) => <p key={reason}>{reason}</p>)}
+        {message ? <p className="form-success" role="status">{message}</p> : null}
+        {error ? <p className="form-error" role="alert">{error}</p> : null}
+      </div>
+      {!bracket?.generated ? <div className="event-manager-actions">
+        <button disabled={!canManage || !readiness?.ready || generating} onClick={generateBracket} type="button">
+          {generating ? 'Generating bracket...' : 'Generate Bracket'}
+        </button>
+      </div> : null}
+      <section aria-labelledby="bracket-missions-title">
+        <h4 id="bracket-missions-title">Bracket Missions</h4>
+        {!bracket?.generated ? <p>Generate the bracket before assigning missions.</p> : (
+          <>
+            {(['Winners', 'Losers', 'Grand Final'] as const).map((bracketName) => {
+              const rounds = discoverBracketRounds(bracket).filter((round) => round.bracket === bracketName)
+              return rounds.length ? <div key={bracketName} className="event-manager-mission-group">
+                <strong>{bracketName === 'Grand Final' ? 'Grand Final' : `${bracketName} Bracket`}</strong>
+                {rounds.map((round) => <div key={round.key}>
+                  <LeagueOperationsSelect
+                    disabled={!canManage || savingMissions}
+                    label={bracketName === 'Grand Final' ? 'Mission' : `Round ${round.bracketRound}`}
+                    missionGeistId={missionDrafts[round.key]?.missionGeistId || ''}
+                    onChange={(selection) => setMissionDrafts((current) => ({ ...current, [round.key]: selection }))}
+                    options={missionCatalog}
+                    value={missionDrafts[round.key]?.mission || ''}
+                  />
+                </div>)}
+              </div> : null
+            })}
+            <div className="event-manager-actions">
+              <button disabled={!canManage || savingMissions} onClick={() => void saveMissions()} type="button">
+                {savingMissions ? 'Saving missions...' : 'Save Missions'}
+              </button>
+            </div>
+          </>
+        )}
+      </section>
+      {bracket ? <section aria-labelledby="active-bracket-matches-title">
+        <h4 id="active-bracket-matches-title">Active Matches</h4>
+        {activeMatches.length === 0 ? <p>No active bracket matches.</p> : activeMatches.map((match) => (
+          <div className="event-manager-row" key={match.matchId}>
+            <div>
+              <strong>{match.matchId}</strong>
+              <span>{match.playerA} vs {match.playerB}</span>
+              <small>Activated At: {formatBracketTimestamp(match.activatedAt)}</small>
+            </div>
+            <label>
+              Deadline
+              <input
+                disabled={!canManage || savingDeadline !== ''}
+                onChange={(event) => setDeadlineDrafts((current) => ({ ...current, [match.matchId]: event.target.value }))}
+                type="datetime-local"
+                value={deadlineDrafts[match.matchId] ?? match.deadline.replace(' ', 'T').slice(0, 16)}
+              />
+            </label>
+            <button disabled={!canManage || savingDeadline !== ''} onClick={() => saveDeadline(match.matchId)} type="button">
+              {savingDeadline === match.matchId ? 'Saving...' : 'Edit Deadline'}
+            </button>
+            <label>
+              Forfeit Winner
+              <select
+                disabled={!canManage || awardingForfeit !== ''}
+                onChange={(event) => setForfeitWinners((current) => ({ ...current, [match.matchId]: event.target.value }))}
+                value={forfeitWinners[match.matchId] || ''}
+              >
+                <option value="">Choose winner</option>
+                <option value={match.playerA}>{match.playerA}</option>
+                <option value={match.playerB}>{match.playerB}</option>
+              </select>
+            </label>
+            <button disabled={!canManage || awardingForfeit !== ''} onClick={() => void awardForfeit(match)} type="button">
+              {awardingForfeit === match.matchId ? 'Awarding...' : 'Award Forfeit'}
+            </button>
+          </div>
+        ))}
+      </section> : null}
+    </section>
+  )
+}
+
+function discoverBracketRounds(bracket: EventBracketData) {
+  const seen = new Set<string>()
+  return bracket.matches.flatMap((match) => {
+    const key = `${match.bracket}:${match.bracketRound}`
+    if (seen.has(key)) return []
+    seen.add(key)
+    return [{ bracket: match.bracket, bracketRound: match.bracketRound, key }]
+  })
+}
+
+function formatBracketTimestamp(value: string) {
+  return value ? value.replace('T', ' ') : 'Not set'
+}
+
+function TournamentSeedingPanel({
+  canManage,
+  onSave,
+  participants,
+  working,
+}: {
+  canManage: boolean
+  onSave: (assignments: Array<{ player: string; seed: number }>) => Promise<void>
+  participants: EventRegistrationEntry[]
+  working: boolean
+}) {
+  const registered = participants.filter((participant) => participant.status === 'Registered')
+  const [seeds, setSeeds] = useState<Record<string, string>>(() =>
+    Object.fromEntries(registered.map((participant) => [participant.player, participant.seed])),
+  )
+  const [validationError, setValidationError] = useState('')
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const values = registered.map((participant) => Number(seeds[participant.player]))
+    const valid =
+      values.length > 0 &&
+      values.every(
+        (seed) => Number.isInteger(seed) && seed >= 1 && seed <= registered.length,
+      ) &&
+      new Set(values).size === registered.length
+
+    if (!valid) {
+      setValidationError(
+        `Every registered player must have a unique seed from 1 to ${registered.length}.`,
+      )
+      return
+    }
+
+    setValidationError('')
+    await onSave(
+      registered.map((participant, index) => ({
+        player: participant.player,
+        seed: values[index],
+      })),
+    )
+  }
+
+  return (
+    <section className="event-manager-subpanel">
+      <h3>Tournament Seeding</h3>
+      {registered.length === 0 ? (
+        <p>No registered players to seed.</p>
+      ) : (
+        <form onSubmit={submit}>
+          <div className="event-manager-table" role="table" aria-label="Tournament seeding">
+            <div className="event-manager-row event-manager-seeding-header" role="row">
+              <strong>Seed</strong>
+              <strong>Player</strong>
+              <strong>ITS Name</strong>
+              <strong>Faction</strong>
+            </div>
+            {registered.map((participant) => (
+              <div className="event-manager-row event-manager-seeding-row" key={participant.player} role="row">
+                <input
+                  aria-label={`Seed for ${participant.displayName || participant.player}`}
+                  disabled={!canManage || working}
+                  max={registered.length}
+                  min={1}
+                  onChange={(event) =>
+                    setSeeds((current) => ({
+                      ...current,
+                      [participant.player]: event.target.value,
+                    }))
+                  }
+                  step={1}
+                  type="number"
+                  value={seeds[participant.player] ?? ''}
+                />
+                <span>{participant.displayName || participant.player}</span>
+                <span>{participant.itsName || '—'}</span>
+                <span>{participant.faction || '—'}</span>
+              </div>
+            ))}
+          </div>
+          {validationError ? <p role="alert">{validationError}</p> : null}
+          <div className="event-manager-actions">
+            <button disabled={!canManage || working} type="submit">
+              Save Seeding
+            </button>
+          </div>
+        </form>
+      )}
+    </section>
   )
 }
 
@@ -845,6 +1261,7 @@ function EventTypeSelect({
     >
       <option>League</option>
       <option>Team Tournament</option>
+      <option>Individual Double Elimination</option>
       <option>ITS Tournament</option>
       <option>Narrative Campaign</option>
       <option>Casual Event</option>
@@ -879,28 +1296,42 @@ function RegistrationSelect({
 function LeagueOperationsSelect({
   disabled,
   label,
+  missionGeistId,
   onChange,
   options,
   value,
 }: {
   disabled: boolean
   label: string
-  onChange: (value: string) => void
-  options: string[]
+  missionGeistId: string
+  onChange: (selection: { mission: string; missionGeistId: string }) => void
+  options: MissionGeistCatalogMission[]
   value: string
 }) {
+  const selectedValue = missionGeistId || (value ? `legacy:${value}` : '')
+
   return (
     <label>
       {label}
       <select
         disabled={disabled}
-        onChange={(event) => onChange(event.target.value)}
-        value={value}
+        onChange={(event) => {
+          const mission = options.find((option) => option.id === event.target.value)
+          onChange(mission
+            ? { mission: mission.name, missionGeistId: mission.id }
+            : { mission: '', missionGeistId: '' })
+        }}
+        value={selectedValue}
       >
         <option value="">Select {label}</option>
+        {!missionGeistId && value ? (
+          <option disabled value={`legacy:${value}`}>
+            Legacy — {value} (identity not recorded)
+          </option>
+        ) : null}
         {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
+          <option key={option.id} value={option.id}>
+            {option.sourceCollectionName || option.sourceCollectionId} — {option.name}
           </option>
         ))}
       </select>

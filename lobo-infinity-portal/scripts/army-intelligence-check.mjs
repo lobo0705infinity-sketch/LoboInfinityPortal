@@ -10,11 +10,32 @@ const armies = read('src/config/armies.ts')
 const armyIdentity = read('src/services/armyIdentity.ts')
 const interactiveMetricCard = read('src/components/InteractiveMetricCard.tsx')
 const page = read('src/pages/ArmyIntelligence.tsx')
+const pageLayout = page.slice(page.indexOf('<main className="portal-shell army-intelligence-page">'), page.indexOf('type ArmyIntelligenceOperationsStatusState'))
+const pageFactionSelector = pageLayout.indexOf('aria-label="Army Intelligence analysis controls"')
+const pageSummary = pageLayout.indexOf('aria-label="Army Intelligence analysis summary"')
+const pageFilters = pageLayout.indexOf('aria-label="Model Usage filters"')
+const pageCapabilities = pageLayout.indexOf('<IntelligenceBrief')
+assert.ok(pageFactionSelector < pageSummary && pageSummary < pageFilters && pageFilters < pageCapabilities,
+  'Army Intelligence summary row must follow the faction selector and precede filters and Observed Capabilities.')
+assert.equal((pageLayout.match(/aria-label="Army Intelligence analysis summary"/g) || []).length, 1,
+  'Army Intelligence page must render exactly one summary row.')
 const commissioner = read('src/pages/CommissionerDashboard.tsx')
 const commissionerSystem = read('src/pages/CommissionerSystem.tsx')
 const decoder = read('scripts/infinity-army-decode.mjs')
 const refresh = read('scripts/refresh-army-intelligence.mjs')
 const worker = read('api/army-intelligence-refresh-worker.mjs')
+const selectedFactionResults = page.slice(page.indexOf('matchingLists.length === 0'), page.indexOf('type ArmyIntelligenceOperationsStatusState'))
+const selectedFactionSummary = selectedFactionResults.indexOf('aria-label="Army Intelligence analysis summary"')
+const selectedFactionFilters = selectedFactionResults.indexOf('aria-label="Model Usage filters"')
+const selectedFactionCapabilities = selectedFactionResults.indexOf('<IntelligenceBrief')
+assert(selectedFactionSummary >= 0 && selectedFactionSummary < selectedFactionFilters && selectedFactionFilters < selectedFactionCapabilities,
+  'Every selected faction must render summary statistics before filters and Observed Capabilities.')
+assert.equal((selectedFactionResults.match(/aria-label="Army Intelligence analysis summary"/g) || []).length, 1,
+  'Every selected faction must render exactly one summary-statistics row.')
+assert.match(appCss, /\.army-intelligence-summary\s*\{[\s\S]*?grid-template-columns:\s*repeat\(8, minmax\(0, 1fr\)\)/,
+  'Army Intelligence summary must retain one eight-card desktop row.')
+assert.match(appCss, /@media \(min-width: 721px\) and \(max-width: 1200px\)[\s\S]*?\.army-intelligence-summary[\s\S]*?repeat\(4, minmax\(0, 1fr\)\)/,
+  'Army Intelligence summary must wrap cleanly on tablet widths.')
 const canonicalArmyFixtureNames = [
   'Ariadna',
   'Combined Army',
@@ -141,18 +162,18 @@ assert.match(
 )
 assert.match(
   page,
-  /buildIntelligenceBrief\(matchingLists, analysis, selectedExplorerScope\.label \|\| selectedSectorial\)/,
-  'Army Intelligence Brief must be generated from the selected-scope list collection and its shared analysis.',
+  /buildTacticalAnalysis\(matchingLists\)/,
+  'Tactical intelligence must be generated from the selected-scope decoded list collection.',
 )
 assert.match(
   page,
-  /function buildIntelligenceBrief[\s\S]*decodedListCount < 2[\s\S]*return \[\]/,
-  'Army Intelligence Brief must suppress weak observations when too few lists are available.',
+  /analysis\.mode[\s\S]*analysis\.listCount < 3/,
+  'Tactical intelligence must label small samples as observed capabilities.',
 )
 assert.match(
   page,
-  /Additional Army Lists are needed before meaningful intelligence can be generated/,
-  'Army Intelligence Brief must expose the required low-data empty state.',
+  /observed capabilities, not reliable faction trends/,
+  'Tactical intelligence must expose the required low-data notice.',
 )
 assert.doesNotMatch(
   page,
@@ -221,8 +242,8 @@ assert.match(
 )
 assert.match(
   page,
-  /getArmyIntelligence/,
-  'Army Intelligence page must read decoded snapshot data.',
+  /publicArmyWorkspace[\s\S]*getIntelligenceSummary[\s\S]*getIntelligenceFaction/,
+  'Army Intelligence page must read prepared decoded snapshot projections.',
 )
 assert.match(
   page,
@@ -286,13 +307,13 @@ assert.doesNotMatch(
 )
 assert.match(
   page,
-  /selectedExplorerScope[\s\S]*getSelectedExplorerScope\(selectedSectorial\)[\s\S]*selectedScopeLists[\s\S]*intelligenceListMatchesSelectedScope\(list, selectedExplorerScope\)[\s\S]*matchingLists[\s\S]*selectedScopeLists\.filter\(\(list\) => matchesResultFilter\(list, resultFilter\)\)[\s\S]*selectedArmyListExplorerRows[\s\S]*buildExplorerRowsFromSelectedLists\(matchingLists, data\.armyLists\)[\s\S]*selectedFaction=\{selectedExplorerScope\.label \|\| selectedSectorial\}/,
+  /selectedExplorerScope[\s\S]*getSelectedExplorerScope\(selectedSectorial\)[\s\S]*selectedScopeLists[\s\S]*intelligenceListMatchesSelectedScope\(list, selectedExplorerScope\)[\s\S]*matchingLists[\s\S]*selectedScopeLists\.filter\(\(list\) => matchesResultFilter\(list, resultFilter\)\)[\s\S]*selectedArmyListExplorerRows[\s\S]*buildExplorerRowsFromSelectedLists\(matchingLists, factionData\?\.armyLists \?\? \[\]\)[\s\S]*selectedFaction=\{selectedExplorerScope\.label \|\| selectedSectorial\}/,
   'Army Intelligence Explorer must use the selected item scope for both rows and modal title.',
 )
 assert.match(
   page,
-  /sectorials = useMemo\([\s\S]*buildArmyIntelligenceSelectorOptions\(uniqueDecodedLists\)[\s\S]*function buildArmyIntelligenceSelectorOptions[\s\S]*addArmyIntelligenceSelectorOption[\s\S]*normalizeArmyForDisplay[\s\S]*getArmyIntelligenceSelectorOptionKey/,
-  'Army Intelligence selector options must canonicalize and de-duplicate decoded faction and sectorial values before rendering.',
+  /getIntelligenceSummary[\s\S]*const sectorials = summary\.options/,
+  'Army Intelligence selector options must come from the bounded canonical summary projection.',
 )
 assert.match(
   armyIdentity,
@@ -306,7 +327,7 @@ assert.match(
 )
 assert.match(
   page,
-  /selectedArmyListExplorerRows[\s\S]*buildExplorerRowsFromSelectedLists\(matchingLists, data\.armyLists\)[\s\S]*selectedKnownArmyLists = selectedArmyListExplorerRows\.length[\s\S]*buildArmyListExplorerSummary\(selectedArmyListExplorerRows, selectedExplorerScope\)[\s\S]*buildArmyAnalysis\(matchingLists\)/,
+  /selectedArmyListExplorerRows[\s\S]*buildExplorerRowsFromSelectedLists\(matchingLists, factionData\?\.armyLists \?\? \[\]\)[\s\S]*selectedKnownArmyLists = selectedArmyListExplorerRows\.length[\s\S]*buildArmyListExplorerSummary\(selectedArmyListExplorerRows, selectedExplorerScope\)[\s\S]*buildArmyAnalysis\(matchingLists\)/,
   'Army Intelligence summary metrics and explorer rows must derive from the same filtered Army Intelligence collection.',
 )
 assert.match(
@@ -341,8 +362,8 @@ assert.match(
 )
 assert.match(
   page,
-  /ArmyIntelligenceOpenList[\s\S]*getInfinityArmyTarget\(armyCode\)[\s\S]*target="_blank"/,
-  'Army List Explorer rows must use the shared Infinity Army target in a new tab.',
+  /ArmyIntelligenceOpenList[\s\S]*getInfinityArmyTarget\(armyCode\)[\s\S]*InfinityArmyLink armyCode=\{armyCode\} copyOnly href=\{target\.href\}/,
+  'Army List Explorer rows must use the shared Infinity Army link behavior.',
 )
 assert.match(
   appCss,
@@ -476,7 +497,7 @@ assert.match(
 )
 assert.match(
   decoder,
-  /ARMY_INTELLIGENCE_DECODER_VERSION = 'army-intelligence-decoder-v4'/,
+  /ARMY_INTELLIGENCE_DECODER_VERSION = 'army-intelligence-decoder-v5'/,
   'Standalone decoder must define the current Army Intelligence decoder version.',
 )
 assert.match(
@@ -2485,7 +2506,7 @@ function isCurrentSnapshot(snapshot, armyCodeHash) {
   return (
     snapshot.armyCodeHash === armyCodeHash &&
     snapshot.status === 'decoded' &&
-    snapshot.decoded?.decoderVersion === 'army-intelligence-decoder-v4' &&
+    snapshot.decoded?.decoderVersion === 'army-intelligence-decoder-v5' &&
     snapshotHasCompleteProfileMetadata(snapshot)
   )
 }

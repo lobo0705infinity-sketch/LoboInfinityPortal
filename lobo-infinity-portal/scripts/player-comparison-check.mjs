@@ -82,13 +82,13 @@ async function runChecks() {
       text: 'Select another player to compare head-to-head performance.',
     }, browser))
     checks.push(await checkScenario('/compare?left=Sam&right=Alex', {
-      comparisonRequests: 1,
+      comparisonRequests: 0,
       left: 'Sam',
       right: 'Alex',
       text: 'HEAD TO HEAD',
     }, browser))
     checks.push(await checkScenario('/compare?left=LegacyName&right=Alex', {
-      comparisonRequests: 1,
+      comparisonRequests: 0,
       left: 'LegacyName',
       right: 'Alex',
       text: 'One or both players could not be found.',
@@ -177,6 +177,14 @@ async function checkRecovery(browser) {
 
 async function newMockedPage(browser) {
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } })
+
+  await page.route('**/api/public-players-projection', async (route) => {
+    await route.fulfill({
+      body: JSON.stringify(playersProjectionResponse()),
+      contentType: 'application/json',
+      status: 200,
+    })
+  })
 
   await page.route('https://script.google.com/**', async (route) => {
     await route.fulfill({
@@ -276,6 +284,27 @@ function playersResponse() {
     event: null,
     eventId: '',
     success: true,
+  }
+}
+
+function playersProjectionResponse() {
+  const response = playersResponse()
+  return {
+    ...response,
+    comparison: {
+      players: ['Sam', 'Alex', 'xtapro'].map((name, index) => comparisonPlayer(name, index + 1)),
+      headToHead: [
+        {
+          draws: 0,
+          games: 1,
+          left: 'Alex',
+          leftWins: 0,
+          right: 'Sam',
+          rightWins: 1,
+        },
+      ],
+    },
+    generatedAt: '2026-08-29T00:00:00.000Z',
   }
 }
 

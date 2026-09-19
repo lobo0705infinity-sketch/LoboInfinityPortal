@@ -46,6 +46,8 @@ assert.match(
 )
 
 const context = {
+  ARMY_INTELLIGENCE_PIPELINE_VERSION: 'army-intelligence-pipeline-v1',
+  ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION: 'army-intelligence-tactical-v6',
   Utilities: {
     Charset: { UTF_8: 'UTF_8' },
     DigestAlgorithm: { SHA_256: 'SHA_256' },
@@ -70,9 +72,18 @@ const source = {
 }
 const snapshot = {
   ...source,
-  decoded: { armyCode, decoderVersion: 'army-intelligence-decoder-v4' },
+  decoded: {
+    armyCode,
+    combatGroups: [{ entries: [{ bs: 12, skills: [], weapons: [], weaponProfiles: [] }] }],
+    decoderVersion: 'army-intelligence-decoder-v4',
+    enrichment: { status: 'complete' },
+    pipelineVersion: 'army-intelligence-pipeline-v1',
+    tacticalSchemaVersion: 'army-intelligence-tactical-v6',
+  },
   decoderVersion: 'army-intelligence-decoder-v4',
+  pipelineVersion: 'army-intelligence-pipeline-v1',
   status: 'decoded',
+  tacticalSchemaVersion: 'army-intelligence-tactical-v6',
 }
 
 assert.doesNotThrow(() => context.validateArmyIntelligenceRefreshSnapshot(source, snapshot))

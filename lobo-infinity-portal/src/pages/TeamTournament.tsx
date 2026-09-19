@@ -10,6 +10,8 @@ import {
   getCanonicalArmyOptions,
 } from '../services/armyIdentity'
 import { getDiscordCommunityLink } from '../config/communityLinks'
+import { isCanonicalMission } from '../config/missions'
+import { getPublicMissionGeistCatalog, type MissionGeistCatalogMission } from '../services/publicSnapshot'
 import { useSettings } from '../contexts/SettingsContext'
 import {
   type EventRegistrationData,
@@ -21,6 +23,7 @@ import {
 import { registrationRepository, teamRepository } from '../services/data'
 import { formatPlayerName } from '../services/formatting'
 import { getGameHeadline } from '../services/gameResults'
+import { getPublicTeamTournamentProjection } from '../services/publicTeamTournamentProjection'
 import './TeamTournament.css'
 
 type TournamentState =
@@ -57,8 +60,11 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
   useEffect(() => {
     const controller = new AbortController()
 
-    teamRepository
-      .getTeamTournament(activeEventId, { signal: controller.signal })
+    const load = auth.authenticated
+      ? teamRepository.getTeamTournament(activeEventId, { signal: controller.signal })
+      : getPublicTeamTournamentProjection({ eventId: activeEventId, signal: controller.signal })
+
+    load
       .then((data) => setState({ data, status: 'success' }))
       .catch((error: unknown) => {
         if (controller.signal.aborted) {
@@ -77,7 +83,7 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
     return () => {
       controller.abort()
     }
-  }, [activeEventId])
+  }, [activeEventId, auth.authenticated])
 
   async function register(params: Record<string, string>) {
     setWorking('register')
@@ -231,11 +237,12 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
   async function savePairing(params: Record<string, string>) {
     setWorking('pairing')
     try {
-      const result = await teamRepository.savePairing({
+      await teamRepository.saveRoundManagement({
         ...params,
         eventId: activeEventId,
       })
-      setState((current) => applyTeamTournamentMutationState(current, result))
+      const data = await teamRepository.getTeamTournament(activeEventId)
+      setState({ data, status: 'success' })
     } finally {
       setWorking('')
     }
@@ -257,11 +264,12 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
   async function advanceRound(params: Record<string, string>) {
     setWorking('round')
     try {
-      const result = await teamRepository.advanceRound({
+      await teamRepository.advanceRound({
         ...params,
         eventId: activeEventId,
       })
-      setState((current) => applyTeamTournamentMutationState(current, result))
+      const data = await teamRepository.getTeamTournament(activeEventId)
+      setState({ data, status: 'success' })
     } finally {
       setWorking('')
     }
@@ -365,7 +373,7 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
         <TeamStandings standings={data.standings} />
         ) : null}
         {showOverview || activeSection === 'pairings' ? (
-        <PairingsPanel pairings={data.pairings} />
+        <PairingsPanel currentRound={data.currentRound} pairings={data.pairings} />
         ) : null}
       </section>
       ) : null}
@@ -423,7 +431,7 @@ function TeamTournament({ eventId: experienceEventId }: { eventId?: string }) {
         ) : activeSection === 'pairings' ? (
           <section className="team-tournament-grid" id="team-tournament-commissioner">
             <TeamPairingEditor currentRound={data.currentRound} disabled={working !== ''} onSubmit={(params) => void savePairing(params)} pairings={data.pairings} rounds={data.rounds} teams={activeTeams} />
-            <RoundControlForm disabled={working !== ''} onSubmit={(params) => void advanceRound(params)} />
+            <RoundControlForm currentRound={data.currentRound} disabled={working !== ''} onSubmit={(params) => void advanceRound(params)} />
           </section>
         ) : (
           <CommissionerTournamentTools
@@ -752,7 +760,10 @@ function TeamStandings({
   )
 }
 
-function PairingsPanel({ pairings }: { pairings: TeamTournamentPairing[] }) {
+function PairingsPanel({ currentRound, pairings }: { currentRound: Record<string, unknown> | null; pairings: TeamTournamentPairing[] }) {
+  const currentRoundId = String(currentRound?.['id'] ?? '')
+  const visiblePairings = currentRoundId ? pairings.filter((pairing) => pairing.roundId === currentRoundId) : pairings
+  const mission = String(currentRound?.['mission'] ?? '')
   return (
     <section
       className="panel team-tournament-panel"
@@ -763,11 +774,12 @@ function PairingsPanel({ pairings }: { pairings: TeamTournamentPairing[] }) {
         <p className="eyebrow">Pairings</p>
         <h2>Current Matches</h2>
       </div>
-      {pairings.length === 0 ? (
+      {mission ? <p><strong>Mission:</strong> {mission}</p> : null}
+      {visiblePairings.length === 0 ? (
         <p>No pairings posted yet.</p>
       ) : (
         <div className="team-pairing-list">
-          {pairings.map((pairing) => (
+          {visiblePairings.map((pairing) => (
             <article
               className="team-pairing-card"
               key={`${pairing.roundId}-${pairing.teamA}-${pairing.teamB}`}
@@ -1235,7 +1247,7 @@ function CommissionerTournamentTools({
         teams={teams}
       />
       <TeamPairingEditor currentRound={currentRound} disabled={disabled} onSubmit={onPairing} pairings={pairings} rounds={rounds} teams={teams.filter((team) => team.status !== 'Deleted')} />
-      <RoundControlForm disabled={disabled} onSubmit={onRound} />
+      <RoundControlForm currentRound={currentRound} disabled={disabled} onSubmit={onRound} />
     </section>
   )
 }
@@ -2009,45 +2021,41 @@ function normalizeTournamentPlayer(player: string) {
 }
 
 function RoundControlForm({
+  currentRound,
   disabled,
   onSubmit,
 }: {
+  currentRound: Record<string, unknown> | null
   disabled: boolean
   onSubmit: (params: Record<string, string>) => void
 }) {
+  const [missions, setMissions] = useState<MissionGeistCatalogMission[]>([])
+  const [selection, setSelection] = useState({ mission: '', missionGeistId: '' })
+  useEffect(() => {
+    const controller = new AbortController()
+    getPublicMissionGeistCatalog(controller.signal).then((catalog) => {
+      setMissions(catalog.missions.filter((mission) => isCanonicalMission(mission.name)))
+    }).catch(() => setMissions([]))
+    return () => controller.abort()
+  }, [])
+  const currentNumber = Number(currentRound?.['number'] ?? 0)
+  const currentName = String(currentRound?.['name'] ?? 'Round setup pending')
+  const nextName = currentNumber > 0 ? `Round ${currentNumber + 1}` : 'Next round'
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const form = new FormData(event.currentTarget)
-    onSubmit(Object.fromEntries(form.entries()) as Record<string, string>)
+    onSubmit({ ...(Object.fromEntries(form.entries()) as Record<string, string>), ...selection })
   }
 
   return (
     <form className="panel team-tournament-form" data-tournament-section="pairings" onSubmit={submit}>
       <p className="eyebrow">Commissioner</p>
-      <h2>Round Lifecycle</h2>
-      <select name="lifecycleStage" defaultValue="Round 1">
-        <option>Registration Open</option>
-        <option>Registration Closed</option>
-        <option>Roster Locked</option>
-        <option>Round 1</option>
-        <option>Round 2</option>
-        <option>Round 3</option>
-        <option>Final Round</option>
-        <option>Awards</option>
-        <option>Archived</option>
-      </select>
-      <select name="status" defaultValue="Round 1">
-        <option>Registration Open</option>
-        <option>Registration Closed</option>
-        <option>Roster Locked</option>
-        <option>Pairings Published</option>
-        <option>Accepting Results</option>
-        <option>Round Complete</option>
-        <option>Champion</option>
-        <option>Archived</option>
-      </select>
+      <h2>Create Next Round</h2>
+      <p>Current Round: <strong>{currentName}</strong></p>
+      <p>Next Round: <strong>{nextName}</strong></p>
+      <label>Mission<select required value={selection.missionGeistId} onChange={(event) => { const mission = missions.find((item) => item.id === event.target.value); setSelection(mission ? { mission: mission.name, missionGeistId: mission.id } : { mission: '', missionGeistId: '' }) }}><option value="">Select Mission</option>{missions.map((mission) => <option key={mission.id} value={mission.id}>{mission.sourceCollectionName || mission.sourceCollectionId} — {mission.name}</option>)}</select></label>
       <button disabled={disabled} type="submit">
-        Update Round State
+        Create {nextName}
       </button>
     </form>
   )

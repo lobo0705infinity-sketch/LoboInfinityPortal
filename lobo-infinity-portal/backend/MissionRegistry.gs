@@ -22,7 +22,10 @@ const CANONICAL_MISSIONS = [
   "Battleground",
   "Cutthroat",
   "Superiority",
-  "Uplink Center"
+  "Uplink Center",
+  "Double Bind",
+  "The Dig",
+  "Data Harvest"
 ];
 
 function getCanonicalMissionName(value) {

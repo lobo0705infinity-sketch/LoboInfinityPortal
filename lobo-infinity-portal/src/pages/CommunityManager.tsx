@@ -1,49 +1,19 @@
-import { useCallback, useEffect, useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react'
 import { useAuth } from '../auth/AuthContext'
 import Loading from '../components/Loading'
-import Skeleton from '../components/Skeleton'
 import {
   apiClient,
-  type OperationsAlertItem,
-  type OperationsDashboardData,
-  type OperationsNewsItem,
-  type OperationsTimelineItem,
+  getCommissionerStreams,
   type RecentGame,
   type StreamedGame,
 } from '../services/api'
 
-type CommunityManagerState =
-  | {
-      status: 'loading'
-    }
-  | {
-      data: OperationsDashboardData
-      status: 'success'
-    }
-  | {
-      error: string
-      status: 'error'
-    }
+type StreamsState =
+  | { status: 'loading' }
+  | { streams: StreamedGame[]; status: 'success' }
+  | { error: string; status: 'error' }
 
-type ContentAction = (
-  action: string,
-  params?: Record<string, string | number | boolean>,
-) => Promise<void>
-
-const defaultNews: OperationsNewsItem = {
-  id: 0,
-  body: '',
-  date: '',
-  expiration: '',
-  featured: false,
-  link: '',
-  relatedFaction: '',
-  relatedMission: '',
-  relatedPlayer: '',
-  title: '',
-  pinned: false,
-  archived: false,
-}
+type EditorMode = 'create' | 'edit' | null
 
 const defaultStream: StreamedGame = {
   id: 0,
@@ -66,53 +36,36 @@ const defaultStream: StreamedGame = {
   youtubeUrl: '',
 }
 
-const defaultAlert: OperationsAlertItem = {
-  id: 0,
-  active: true,
-  body: '',
-  expiration: '',
-  featured: false,
-  portalWide: true,
-  priority: 'normal',
-  publishDate: '',
-  title: '',
-}
-
-const defaultTimeline: OperationsTimelineItem = {
-  id: 0,
-  active: true,
-  category: 'Portal Update',
-  date: '',
-  description: '',
-  featured: false,
-  link: '',
-  title: '',
-}
-
 function CommunityManager() {
   const auth = useAuth()
-  const [state, setState] = useState<CommunityManagerState>({
+  const [streamsState, setStreamsState] = useState<StreamsState>({
     status: 'loading',
   })
+  const [editorMode, setEditorMode] = useState<EditorMode>(null)
+  const [draft, setDraft] = useState(defaultStream)
+  const [gameQuery, setGameQuery] = useState('')
+  const [gamesState, setGamesState] = useState<{
+    games: RecentGame[]
+    status: 'idle' | 'loading' | 'success' | 'error'
+  }>({ games: [], status: 'idle' })
   const [workingAction, setWorkingAction] = useState('')
   const [message, setMessage] = useState('')
-  const canManageContent =
-    auth.hasPermission('manageNews') || auth.hasPermission('manageStreams')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [platformFilter, setPlatformFilter] = useState('all')
+  const [visibilityFilter, setVisibilityFilter] = useState('all')
+  const canManageStreams = auth.hasPermission('manageStreams')
 
-  const loadContent = useCallback(async (signal?: AbortSignal) => {
+  const loadStreams = useCallback(async (signal?: AbortSignal) => {
     try {
-      const data = await apiClient.getOperationsContent({ signal })
-      setState({
-        data,
-        status: 'success',
-      })
+      const streams = await getCommissionerStreams({ signal })
+      setStreamsState({ status: 'success', streams })
     } catch (error) {
       if (!signal?.aborted) {
-        setState({
+        setStreamsState({
           error:
             error instanceof Error
               ? error.message
-              : 'Community content could not be loaded.',
+              : 'Streams could not be loaded.',
           status: 'error',
         })
       }
@@ -120,85 +73,133 @@ function CommunityManager() {
   }, [])
 
   useEffect(() => {
+    if (auth.status !== 'ready' || !auth.authenticated || !canManageStreams) {
+      return
+    }
+
+    const controller = new AbortController()
+    void loadStreams(controller.signal)
+    return () => controller.abort()
+  }, [auth.authenticated, auth.status, canManageStreams, loadStreams])
+
+  useEffect(() => {
     if (
-      auth.status !== 'ready' ||
-      !auth.authenticated ||
-      !canManageContent
+      !editorMode ||
+      draft.streamType !== 'Battle Report' ||
+      gamesState.status !== 'idle'
     ) {
       return
     }
 
     const controller = new AbortController()
-    void Promise.resolve().then(() => loadContent(controller.signal))
+    setGamesState((current) => ({ ...current, status: 'loading' }))
+    void apiClient
+      .getRecentGames({ signal: controller.signal })
+      .then((games) => setGamesState({ games, status: 'success' }))
+      .catch(() => {
+        if (!controller.signal.aborted) {
+          setGamesState((current) => ({ ...current, status: 'error' }))
+        }
+      })
 
-    return () => {
-      controller.abort()
-    }
-  }, [auth.authenticated, auth.status, canManageContent, loadContent])
+    return () => controller.abort()
+  }, [draft.streamType, editorMode, gamesState.status])
 
-  async function runAction(
-    action: string,
-    params: Record<string, string | number | boolean> = {},
-  ) {
-    setWorkingAction(action)
+  async function saveStream(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setWorkingAction('saveStream')
     setMessage('')
 
     try {
-      await apiClient.operationsAction(action, params)
-      await loadContent()
-      setMessage(getSuccessMessage(action))
+      await apiClient.operationsAction('saveStream', draft)
+      await loadStreams()
+      setDraft(defaultStream)
+      setEditorMode(null)
+      setGameQuery('')
+      setMessage('Stream saved.')
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Stream could not be saved.')
     } finally {
       setWorkingAction('')
     }
+  }
+
+  async function deleteStream() {
+    if (!draft.id) {
+      return
+    }
+
+    await deleteStreamRecord(draft)
+  }
+
+  async function deleteStreamRecord(stream: StreamedGame) {
+    if (!window.confirm(`Delete “${getStreamTitle(stream)}”? This cannot be undone.`)) return
+
+    setWorkingAction(`delete-${stream.id}`)
+    setMessage('')
+
+    try {
+      await apiClient.operationsAction('deleteStream', { id: stream.id })
+      await loadStreams()
+      if (draft.id === stream.id) {
+        setDraft(defaultStream)
+        setEditorMode(null)
+        setGameQuery('')
+      }
+      setMessage('Stream deleted.')
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Stream could not be deleted.')
+    } finally {
+      setWorkingAction('')
+    }
+  }
+
+  async function setStreamVisibility(stream: StreamedGame) {
+    setWorkingAction(`visibility-${stream.id}`)
+    setMessage('')
+
+    try {
+      await apiClient.operationsAction('saveStream', { ...stream, active: !stream.active })
+      await loadStreams()
+      setMessage(`Stream ${stream.active ? 'hidden' : 'shown'}.`)
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Stream visibility could not be changed.')
+    } finally {
+      setWorkingAction('')
+    }
+  }
+
+  function openCreate() {
+    setDraft(defaultStream)
+    setGameQuery('')
+    setEditorMode('create')
+  }
+
+  function openEdit(stream: StreamedGame) {
+    setDraft(stream)
+    setGameQuery('')
+    setEditorMode('edit')
   }
 
   if (auth.status === 'loading') {
     return (
       <main className="portal-shell">
         <PageHeader />
-        <section className="dashboard-state" aria-label="Community manager loading">
+        <section className="dashboard-state" aria-label="Streams Manager loading">
           <Loading />
         </section>
       </main>
     )
   }
 
-  if (!auth.authenticated || !canManageContent) {
+  if (!auth.authenticated || !canManageStreams) {
     return (
       <main className="portal-shell">
         <PageHeader />
         <section className="panel operations-access-card">
           <p className="eyebrow">Commissioner Access</p>
-          <h2>Community Manager is commissioner-only.</h2>
-          <p>
-            Sign in with an Assistant Commissioner or Commissioner account to
-            create and publish community content.
-          </p>
-        </section>
-      </main>
-    )
-  }
-
-  if (state.status === 'loading') {
-    return (
-      <main className="portal-shell">
-        <PageHeader />
-        <section className="operations-grid two-column" aria-label="Community manager loading">
-          <Skeleton label="News manager loading" rows={7} />
-          <Skeleton label="Streams manager loading" rows={7} />
-          <Skeleton label="Alerts manager loading" rows={7} />
-          <Skeleton label="Timeline manager loading" rows={7} />
-        </section>
-      </main>
-    )
-  }
-
-  if (state.status === 'error') {
-    return (
-      <main className="portal-shell">
-        <PageHeader />
-        <section className="dashboard-state" aria-label="Community manager error">
-          <p role="alert">{state.error}</p>
+          <h2>Streams Manager is commissioner-only.</h2>
+          <p>Sign in with a Commissioner account that can manage Streams.</p>
         </section>
       </main>
     )
@@ -212,29 +213,51 @@ function CommunityManager() {
           <p className="operations-empty">{message}</p>
         </section>
       ) : null}
-      <section className="operations-grid two-column" aria-label="Community manager modules">
-        <NewsManager
-          items={state.data.news}
-          onAction={runAction}
-          workingAction={workingAction}
-        />
-        <StreamsManager
-          items={state.data.streams}
-          onAction={runAction}
-          recentGames={state.data.summary.recentMatchSubmissions}
-          workingAction={workingAction}
-        />
-        <AlertsManager
-          items={state.data.alerts}
-          onAction={runAction}
-          workingAction={workingAction}
-        />
-        <TimelineManager
-          items={state.data.timeline}
-          onAction={runAction}
-          workingAction={workingAction}
-        />
+      <section className="panel operations-panel" aria-labelledby="streams-list-title">
+        <div className="panel-title">
+          <div>
+            <p className="eyebrow">Canonical Streams</p>
+            <h2 id="streams-list-title">Existing Streams</h2>
+          </div>
+          <button className="streams-manager-primary" onClick={openCreate} type="button">Add Stream</button>
+        </div>
+        {streamsState.status === 'loading' ? (
+          <p className="operations-empty" aria-live="polite">Loading Streams…</p>
+        ) : null}
+        {streamsState.status === 'error' ? (
+          <p className="operations-empty" role="alert">{streamsState.error}</p>
+        ) : null}
+        {streamsState.status === 'success' ? (
+          <StreamList
+            items={streamsState.streams}
+            onDelete={deleteStreamRecord}
+            onEdit={openEdit}
+            onVisibilityChange={setStreamVisibility}
+            platformFilter={platformFilter}
+            searchQuery={searchQuery}
+            setPlatformFilter={setPlatformFilter}
+            setSearchQuery={setSearchQuery}
+            setVisibilityFilter={setVisibilityFilter}
+            visibilityFilter={visibilityFilter}
+            workingAction={workingAction}
+          />
+        ) : null}
       </section>
+      {editorMode ? (
+        <StreamEditor
+          draft={draft}
+          games={gamesState.games}
+          gamesStatus={gamesState.status}
+          gameQuery={gameQuery}
+          mode={editorMode}
+          onCancel={() => setEditorMode(null)}
+          onChange={setDraft}
+          onDelete={editorMode === 'edit' ? deleteStream : undefined}
+          onGameQueryChange={setGameQuery}
+          onSubmit={saveStream}
+          workingAction={workingAction}
+        />
+      ) : null}
     </main>
   )
 }
@@ -242,142 +265,195 @@ function CommunityManager() {
 function PageHeader() {
   return (
     <section className="page-header" aria-labelledby="community-manager-title">
-      <p className="eyebrow">Commissioner</p>
-      <h1 id="community-manager-title">Community Manager</h1>
-      <p>Manage portal-wide News, Streams, Alerts, and Timeline entries.</p>
+      <p className="eyebrow">Commissioner / Community</p>
+      <h1 id="community-manager-title">Streams Manager</h1>
+      <p>Manage canonical Stream records.</p>
     </section>
   )
 }
 
-function NewsManager({
+function StreamList({
   items,
-  onAction,
-  workingAction,
-}: {
-  items: OperationsNewsItem[]
-  onAction: ContentAction
-  workingAction: string
-}) {
-  const [draft, setDraft] = useState(defaultNews)
-
-  function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    void onAction('saveNews', draft).then(() => setDraft(defaultNews))
-  }
-
-  return (
-    <section className="panel operations-panel">
-      <PanelTitle count={items.length} eyebrow="News" title="News Manager" />
-      <form className="operations-form" onSubmit={submit}>
-        <Input label="Title" onChange={(value) => setDraft({ ...draft, title: value })} value={draft.title} />
-        <Input label="Publish Date" onChange={(value) => setDraft({ ...draft, date: value })} type="date" value={draft.date} />
-        <Input label="Expiration" onChange={(value) => setDraft({ ...draft, expiration: value })} type="date" value={draft.expiration} />
-        <Input label="Link" onChange={(value) => setDraft({ ...draft, link: value })} value={draft.link} />
-        <Textarea label="Body" onChange={(value) => setDraft({ ...draft, body: value })} value={draft.body} />
-        <Checkbox label="Featured" onChange={(value) => setDraft({ ...draft, featured: value })} value={draft.featured} />
-        <Checkbox label="Pin" onChange={(value) => setDraft({ ...draft, pinned: value })} value={draft.pinned} />
-        <Checkbox label="Archive" onChange={(value) => setDraft({ ...draft, archived: value })} value={draft.archived} />
-        <button disabled={workingAction !== ''} type="submit">
-          {draft.id ? 'Save News' : 'Create News'}
-        </button>
-      </form>
-      <RecordList
-        empty="No manual news configured."
-        items={items}
-        onDelete={(id) => onAction('deleteNews', { id })}
-        onEdit={setDraft}
-        renderDetail={(item) => item.body}
-        renderMeta={(item) =>
-          getStatusLine([
-            item.date,
-            item.pinned ? 'Pinned' : '',
-            item.featured ? 'Featured' : '',
-            item.archived ? 'Archived' : 'Published',
-          ])
-        }
-        renderTitle={(item) => item.title || 'Untitled news'}
-      />
-    </section>
-  )
-}
-
-function StreamsManager({
-  items,
-  onAction,
-  recentGames,
+  onDelete,
+  onEdit,
+  onVisibilityChange,
+  platformFilter,
+  searchQuery,
+  setPlatformFilter,
+  setSearchQuery,
+  setVisibilityFilter,
+  visibilityFilter,
   workingAction,
 }: {
   items: StreamedGame[]
-  onAction: ContentAction
-  recentGames: RecentGame[]
+  onDelete: (stream: StreamedGame) => void
+  onEdit: (stream: StreamedGame) => void
+  onVisibilityChange: (stream: StreamedGame) => void
+  platformFilter: string
+  searchQuery: string
+  setPlatformFilter: (value: string) => void
+  setSearchQuery: (value: string) => void
+  setVisibilityFilter: (value: string) => void
+  visibilityFilter: string
   workingAction: string
 }) {
-  const [draft, setDraft] = useState(defaultStream)
-  const [gameQuery, setGameQuery] = useState('')
-
-  function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    void onAction('saveStream', draft).then(() => setDraft(defaultStream))
+  if (items.length === 0) {
+    return <p className="operations-empty">No Streams configured.</p>
   }
 
-  const gameOptions = filterGameOptions(recentGames, gameQuery)
+  const platforms = Array.from(new Set(items.map((stream) => stream.platform).filter(Boolean)))
+  const normalizedQuery = searchQuery.trim().toLowerCase()
+  const filteredItems = items.filter((stream) => {
+    const title = getStreamTitle(stream).toLowerCase()
+    return (!normalizedQuery || title.includes(normalizedQuery))
+      && (platformFilter === 'all' || stream.platform === platformFilter)
+      && (visibilityFilter === 'all' || (stream.active ? 'visible' : 'hidden') === visibilityFilter)
+  })
+
+  return <>
+    <div className="streams-manager-toolbar" aria-label="Stream filters">
+      <label>
+        <span>Search streams</span>
+        <input onChange={(event) => setSearchQuery(event.target.value)} placeholder="Search by title" type="search" value={searchQuery} />
+      </label>
+      <label>
+        <span>Platform</span>
+        <select onChange={(event) => setPlatformFilter(event.target.value)} value={platformFilter}>
+          <option value="all">All platforms</option>
+          {platforms.map((platform) => <option key={platform} value={platform}>{platform}</option>)}
+        </select>
+      </label>
+      <label>
+        <span>Visibility</span>
+        <select onChange={(event) => setVisibilityFilter(event.target.value)} value={visibilityFilter}>
+          <option value="all">All visibility</option>
+          <option value="visible">Visible</option>
+          <option value="hidden">Hidden</option>
+        </select>
+      </label>
+      <strong>{filteredItems.length} of {items.length}</strong>
+    </div>
+    {filteredItems.length ? (
+      <div className="streams-manager-table-wrap">
+        <table className="streams-manager-table">
+          <thead><tr><th>Stream</th><th>Platform</th><th>Visibility</th><th>Category</th><th>Date</th><th>Actions</th></tr></thead>
+          <tbody>{filteredItems.map((stream) => {
+            const safeUrl = getSafeStreamUrl(stream.youtubeUrl)
+            return <tr key={stream.id}>
+              <td data-label="Stream"><strong>{getStreamTitle(stream)}</strong>{safeUrl ? <a href={safeUrl} target="_blank" rel="noopener noreferrer">Open video</a> : <small>No valid video URL</small>}</td>
+              <td data-label="Platform"><span className="streams-manager-badge platform">{stream.platform || 'Unspecified'}</span></td>
+              <td data-label="Visibility"><span className={`streams-manager-badge ${stream.active ? 'visible' : 'hidden'}`}>{stream.active ? 'Visible' : 'Hidden'}</span></td>
+              <td data-label="Category"><strong>{stream.streamType || 'Standalone Stream'}</strong><small>{getStatusLine([stream.division, stream.mission])}</small></td>
+              <td data-label="Date">{formatManagerDate(stream.date)}</td>
+              <td data-label="Actions"><div className="streams-manager-actions">
+                <button onClick={() => onEdit(stream)} type="button">Edit</button>
+                <button disabled={workingAction !== ''} onClick={() => onVisibilityChange(stream)} type="button">{stream.active ? 'Hide' : 'Show'}</button>
+                <button className="danger" disabled={workingAction !== ''} onClick={() => onDelete(stream)} type="button">Delete</button>
+              </div></td>
+            </tr>
+          })}</tbody>
+        </table>
+      </div>
+    ) : <p className="operations-empty">No streams match the active search and filters.</p>}
+  </>
+}
+
+function getStreamTitle(stream: StreamedGame) {
+  return stream.title || stream.streamer || `${stream.player1 || 'Player 1'} vs ${stream.player2 || 'Player 2'}`
+}
+
+function getSafeStreamUrl(value: string) {
+  try {
+    const url = new URL(value)
+    return url.protocol === 'https:' || url.protocol === 'http:' ? url.toString() : ''
+  } catch {
+    return ''
+  }
+}
+
+function formatManagerDate(value: string) {
+  if (!value) return 'Not set'
+  const parsed = new Date(`${value}T00:00:00`)
+  return Number.isNaN(parsed.getTime()) ? value : parsed.toLocaleDateString()
+}
+
+function StreamEditor({
+  draft,
+  games,
+  gamesStatus,
+  gameQuery,
+  mode,
+  onCancel,
+  onChange,
+  onDelete,
+  onGameQueryChange,
+  onSubmit,
+  workingAction,
+}: {
+  draft: StreamedGame
+  games: RecentGame[]
+  gamesStatus: 'idle' | 'loading' | 'success' | 'error'
+  gameQuery: string
+  mode: Exclude<EditorMode, null>
+  onCancel: () => void
+  onChange: (stream: StreamedGame) => void
+  onDelete?: () => void
+  onGameQueryChange: (value: string) => void
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void
+  workingAction: string
+}) {
+  const gameOptions = useMemo(() => filterGameOptions(games, gameQuery), [games, gameQuery])
 
   return (
-    <section className="panel operations-panel">
-      <PanelTitle count={items.length} eyebrow="Streams" title="Stream Manager" />
-      <form className="operations-form" onSubmit={submit}>
+    <section className="panel operations-panel" aria-labelledby="stream-editor-title">
+      <div className="panel-title">
+        <div>
+          <p className="eyebrow">{mode === 'edit' ? 'Selected Stream' : 'New Stream'}</p>
+          <h2 id="stream-editor-title">{mode === 'edit' ? 'Edit Stream' : 'Add Stream'}</h2>
+        </div>
+        <button onClick={onCancel} type="button">Cancel</button>
+      </div>
+      <form className="operations-form" onSubmit={onSubmit}>
         <SelectInput
           label="Stream Type"
-          onChange={(value) =>
-            setDraft({
-              ...draft,
-              gameId: value === 'Battle Report' ? draft.gameId : 0,
-              streamType: value,
-            })
-          }
+          onChange={(value) => onChange({
+            ...draft,
+            gameId: value === 'Battle Report' ? draft.gameId : 0,
+            streamType: value,
+          })}
           options={['Battle Report', 'Standalone Stream']}
           value={draft.streamType || 'Standalone Stream'}
         />
         {draft.streamType === 'Battle Report' ? (
           <>
-            <Input
-              label="Search Battle Reports"
-              onChange={setGameQuery}
-              value={gameQuery}
-            />
+            <Input label="Search Battle Reports" onChange={onGameQueryChange} value={gameQuery} />
+            {gamesStatus === 'loading' ? <p className="operations-empty">Loading Battle Reports…</p> : null}
+            {gamesStatus === 'error' ? <p className="operations-empty" role="alert">Battle Reports could not be loaded.</p> : null}
             <SelectInput
               label="Battle Report"
               onChange={(value) => {
-                const game = recentGames.find((candidate) => String(candidate.id) === value)
-                setDraft(game ? applyGameToStreamDraft(draft, game) : { ...draft, gameId: 0 })
+                const game = games.find((candidate) => String(candidate.id) === value)
+                onChange(game ? applyGameToStreamDraft(draft, game) : { ...draft, gameId: 0 })
               }}
-              options={gameOptions.map((game) => ({
-                label: getGameOptionLabel(game),
-                value: String(game.id),
-              }))}
+              options={gameOptions.map((game) => ({ label: getGameOptionLabel(game), value: String(game.id) }))}
               value={draft.gameId ? String(draft.gameId) : ''}
             />
           </>
         ) : null}
-        <Input label="Stream Title" onChange={(value) => setDraft({ ...draft, title: value })} value={draft.title} />
-        <Input label="Streamer" onChange={(value) => setDraft({ ...draft, streamer: value })} value={draft.streamer} />
-        <SelectInput
-          label="Platform"
-          onChange={(value) => setDraft({ ...draft, platform: value })}
-          options={['YouTube', 'Twitch', 'Kick', 'Other']}
-          value={draft.platform}
-        />
-        <Input label="URL" onChange={(value) => setDraft({ ...draft, youtubeUrl: value })} value={draft.youtubeUrl} />
-        <Input label="Thumbnail" onChange={(value) => setDraft({ ...draft, thumbnailUrl: value })} value={draft.thumbnailUrl} />
-        <Input label="Date" onChange={(value) => setDraft({ ...draft, date: value })} type="date" value={draft.date} />
+        <Input label="Stream Title" onChange={(value) => onChange({ ...draft, title: value })} value={draft.title} />
+        <Input label="Streamer" onChange={(value) => onChange({ ...draft, streamer: value })} value={draft.streamer} />
+        <SelectInput label="Platform" onChange={(value) => onChange({ ...draft, platform: value })} options={['YouTube', 'Twitch', 'Kick', 'Other']} value={draft.platform} />
+        <Input label="URL" onChange={(value) => onChange({ ...draft, youtubeUrl: value })} value={draft.youtubeUrl} />
+        <Input label="Thumbnail" onChange={(value) => onChange({ ...draft, thumbnailUrl: value })} value={draft.thumbnailUrl} />
+        <Input label="Date" onChange={(value) => onChange({ ...draft, date: value })} type="date" value={draft.date} />
         {draft.streamType !== 'Battle Report' ? (
           <>
-            <Input label="Player 1" onChange={(value) => setDraft({ ...draft, player1: value })} value={draft.player1} />
-            <Input label="Player 1 Army" onChange={(value) => setDraft({ ...draft, player1Faction: value })} value={draft.player1Faction} />
-            <Input label="Player 2" onChange={(value) => setDraft({ ...draft, player2: value })} value={draft.player2} />
-            <Input label="Player 2 Army" onChange={(value) => setDraft({ ...draft, player2Faction: value })} value={draft.player2Faction} />
-            <Input label="Mission" onChange={(value) => setDraft({ ...draft, mission: value })} value={draft.mission} />
-            <Input label="Division" onChange={(value) => setDraft({ ...draft, division: value })} value={draft.division} />
+            <Input label="Player 1" onChange={(value) => onChange({ ...draft, player1: value })} value={draft.player1} />
+            <Input label="Player 1 Army" onChange={(value) => onChange({ ...draft, player1Faction: value })} value={draft.player1Faction} />
+            <Input label="Player 2" onChange={(value) => onChange({ ...draft, player2: value })} value={draft.player2} />
+            <Input label="Player 2 Army" onChange={(value) => onChange({ ...draft, player2Faction: value })} value={draft.player2Faction} />
+            <Input label="Mission" onChange={(value) => onChange({ ...draft, mission: value })} value={draft.mission} />
+            <Input label="Division" onChange={(value) => onChange({ ...draft, division: value })} value={draft.division} />
           </>
         ) : (
           <div className="operations-form-wide operations-empty">
@@ -386,164 +462,19 @@ function StreamsManager({
               : 'Select a Battle Report to populate matchup fields.'}
           </div>
         )}
-        <Textarea label="Description" onChange={(value) => setDraft({ ...draft, description: value })} value={draft.description} />
-        <Checkbox label="Featured / Pin" onChange={(value) => setDraft({ ...draft, featured: value })} value={draft.featured} />
-        <Checkbox label="Active" onChange={(value) => setDraft({ ...draft, active: value })} value={draft.active} />
-        <button disabled={workingAction !== ''} type="submit">
-          {draft.id ? 'Save Stream' : 'Add Stream'}
-        </button>
+        <Textarea label="Description" onChange={(value) => onChange({ ...draft, description: value })} value={draft.description} />
+        <Checkbox label="Featured / Pin" onChange={(value) => onChange({ ...draft, featured: value })} value={draft.featured} />
+        <Checkbox label="Active" onChange={(value) => onChange({ ...draft, active: value })} value={draft.active} />
+        <div className="operations-actions operations-form-wide">
+          <button disabled={workingAction !== ''} type="submit">
+            {mode === 'edit' ? 'Save Stream' : 'Add Stream'}
+          </button>
+          {onDelete ? (
+            <button disabled={workingAction !== ''} onClick={onDelete} type="button">Delete Stream</button>
+          ) : null}
+        </div>
       </form>
-      <RecordList
-        empty="No streams configured."
-        items={items}
-        onDelete={(id) => onAction('deleteStream', { id })}
-        onEdit={setDraft}
-        renderDetail={(item) =>
-          item.description ||
-          `${item.player1 || 'Player 1'} vs ${item.player2 || 'Player 2'}`
-        }
-        renderMeta={(item) =>
-          getStatusLine([
-            item.platform,
-            item.featured ? 'Pinned' : '',
-            item.active ? 'Active' : 'Hidden',
-          ])
-        }
-        renderTitle={(item) => item.title || item.mission || 'Untitled stream'}
-      />
     </section>
-  )
-}
-
-function AlertsManager({
-  items,
-  onAction,
-  workingAction,
-}: {
-  items: OperationsAlertItem[]
-  onAction: ContentAction
-  workingAction: string
-}) {
-  const [draft, setDraft] = useState(defaultAlert)
-
-  function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    void onAction('saveAlert', draft).then(() => setDraft(defaultAlert))
-  }
-
-  return (
-    <section className="panel operations-panel">
-      <PanelTitle count={items.length} eyebrow="Alerts" title="Alert Manager" />
-      <form className="operations-form" onSubmit={submit}>
-        <Input label="Title" onChange={(value) => setDraft({ ...draft, title: value })} value={draft.title} />
-        <SelectInput
-          label="Priority"
-          onChange={(value) => setDraft({ ...draft, priority: value })}
-          options={['normal', 'high', 'critical']}
-          value={draft.priority}
-        />
-        <Input label="Publish Date" onChange={(value) => setDraft({ ...draft, publishDate: value })} type="date" value={draft.publishDate} />
-        <Input label="Expiration" onChange={(value) => setDraft({ ...draft, expiration: value })} type="date" value={draft.expiration} />
-        <Textarea label="Body" onChange={(value) => setDraft({ ...draft, body: value })} value={draft.body} />
-        <Checkbox label="Portal-wide" onChange={(value) => setDraft({ ...draft, portalWide: value })} value={draft.portalWide} />
-        <Checkbox label="Featured" onChange={(value) => setDraft({ ...draft, featured: value })} value={draft.featured} />
-        <Checkbox label="Active" onChange={(value) => setDraft({ ...draft, active: value })} value={draft.active} />
-        <button disabled={workingAction !== ''} type="submit">
-          {draft.id ? 'Save Alert' : 'Create Alert'}
-        </button>
-      </form>
-      <RecordList
-        empty="No portal-wide alerts configured."
-        items={items}
-        onDelete={(id) => onAction('deleteAlert', { id })}
-        onEdit={setDraft}
-        renderDetail={(item) => item.body}
-        renderMeta={(item) =>
-          getStatusLine([
-            item.priority,
-            item.portalWide ? 'Portal-wide' : '',
-            item.active ? 'Active' : 'Expired',
-          ])
-        }
-        renderTitle={(item) => item.title || 'Untitled alert'}
-      />
-    </section>
-  )
-}
-
-function TimelineManager({
-  items,
-  onAction,
-  workingAction,
-}: {
-  items: OperationsTimelineItem[]
-  onAction: ContentAction
-  workingAction: string
-}) {
-  const [draft, setDraft] = useState(defaultTimeline)
-
-  function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    void onAction('saveTimelineEntry', draft).then(() => setDraft(defaultTimeline))
-  }
-
-  return (
-    <section className="panel operations-panel">
-      <PanelTitle count={items.length} eyebrow="Timeline" title="Timeline Manager" />
-      <form className="operations-form" onSubmit={submit}>
-        <Input label="Title" onChange={(value) => setDraft({ ...draft, title: value })} value={draft.title} />
-        <Input label="Date" onChange={(value) => setDraft({ ...draft, date: value })} type="date" value={draft.date} />
-        <SelectInput
-          label="Category"
-          onChange={(value) => setDraft({ ...draft, category: value })}
-          options={['Portal Update', 'Community Milestone', 'Tournament Completed', 'New Season Begins', 'Achievement Added']}
-          value={draft.category}
-        />
-        <Input label="Link" onChange={(value) => setDraft({ ...draft, link: value })} value={draft.link} />
-        <Textarea label="Description" onChange={(value) => setDraft({ ...draft, description: value })} value={draft.description} />
-        <Checkbox label="Featured" onChange={(value) => setDraft({ ...draft, featured: value })} value={draft.featured} />
-        <Checkbox label="Active" onChange={(value) => setDraft({ ...draft, active: value })} value={draft.active} />
-        <button disabled={workingAction !== ''} type="submit">
-          {draft.id ? 'Save Timeline Entry' : 'Create Timeline Entry'}
-        </button>
-      </form>
-      <RecordList
-        empty="No manual timeline entries configured."
-        items={items}
-        onDelete={(id) => onAction('deleteTimelineEntry', { id })}
-        onEdit={setDraft}
-        renderDetail={(item) => item.description}
-        renderMeta={(item) =>
-          getStatusLine([
-            item.date,
-            item.category,
-            item.featured ? 'Featured' : '',
-            item.active ? 'Published' : 'Hidden',
-          ])
-        }
-        renderTitle={(item) => item.title || 'Untitled timeline entry'}
-      />
-    </section>
-  )
-}
-
-function PanelTitle({
-  count,
-  eyebrow,
-  title,
-}: {
-  count: number
-  eyebrow: string
-  title: string
-}) {
-  return (
-    <div className="panel-title">
-      <div>
-        <p className="eyebrow">{eyebrow}</p>
-        <h2>{title}</h2>
-      </div>
-      <span>{count} items</span>
-    </div>
   )
 }
 
@@ -583,50 +514,46 @@ function SelectInput({
       <select onChange={(event) => onChange(event.target.value)} value={value}>
         <option value="">Select</option>
         {options.map((option) => {
-          const value = typeof option === 'string' ? option : option.value
-          const label = typeof option === 'string' ? option : option.label
-
-          return (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          )
+          const optionValue = typeof option === 'string' ? option : option.value
+          const optionLabel = typeof option === 'string' ? option : option.label
+          return <option key={optionValue} value={optionValue}>{optionLabel}</option>
         })}
       </select>
     </label>
   )
 }
 
-function filterGameOptions(games: RecentGame[], query: string) {
-  const normalizedQuery = query.trim().toLowerCase()
-
-  if (!normalizedQuery) {
-    return games
-  }
-
-  return games.filter((game) =>
-    [
-      String(game.id),
-      game.winner,
-      game.winnerDisplayName,
-      game.loser,
-      game.loserDisplayName,
-      game.winnerFaction,
-      game.loserFaction,
-      game.mission,
-      game.division,
-      game.date,
-    ]
-      .join(' ')
-      .toLowerCase()
-      .includes(normalizedQuery),
+function Textarea({ label, onChange, value }: { label: string; onChange: (value: string) => void; value: string }) {
+  return (
+    <label className="operations-form-wide">
+      <span>{label}</span>
+      <textarea onChange={(event) => onChange(event.target.value)} rows={4} value={value} />
+    </label>
   )
 }
 
+function Checkbox({ label, onChange, value }: { label: string; onChange: (value: boolean) => void; value: boolean }) {
+  return (
+    <label className="operations-check">
+      <input checked={value} onChange={(event) => onChange(event.target.checked)} type="checkbox" />
+      {label}
+    </label>
+  )
+}
+
+function filterGameOptions(games: RecentGame[], query: string) {
+  const normalizedQuery = query.trim().toLowerCase()
+  if (!normalizedQuery) return games
+
+  return games.filter((game) => [
+    String(game.id), game.winner, game.winnerDisplayName, game.loser,
+    game.loserDisplayName, game.winnerFaction, game.loserFaction,
+    game.mission, game.division, game.date,
+  ].join(' ').toLowerCase().includes(normalizedQuery))
+}
+
 function getGameOptionLabel(game: RecentGame) {
-  return `#${game.id} ${game.winnerDisplayName || game.winner} vs ${
-    game.loserDisplayName || game.loser
-  } / ${game.mission} / ${game.division || 'No division'}`
+  return `#${game.id} ${game.winnerDisplayName || game.winner} vs ${game.loserDisplayName || game.loser} / ${game.mission} / ${game.division || 'No division'}`
 }
 
 function applyGameToStreamDraft(draft: StreamedGame, game: RecentGame): StreamedGame {
@@ -641,120 +568,12 @@ function applyGameToStreamDraft(draft: StreamedGame, game: RecentGame): Streamed
     player2: game.loserDisplayName || game.loser,
     player2Faction: game.loserFaction,
     streamType: 'Battle Report',
-    title:
-      draft.title ||
-      `${game.winnerDisplayName || game.winner} vs ${game.loserDisplayName || game.loser}`,
+    title: draft.title || `${game.winnerDisplayName || game.winner} vs ${game.loserDisplayName || game.loser}`,
   }
-}
-
-function Textarea({
-  label,
-  onChange,
-  value,
-}: {
-  label: string
-  onChange: (value: string) => void
-  value: string
-}) {
-  return (
-    <label className="operations-form-wide">
-      <span>{label}</span>
-      <textarea onChange={(event) => onChange(event.target.value)} rows={4} value={value} />
-    </label>
-  )
-}
-
-function Checkbox({
-  label,
-  onChange,
-  value,
-}: {
-  label: string
-  onChange: (value: boolean) => void
-  value: boolean
-}) {
-  return (
-    <label className="operations-check">
-      <input checked={value} onChange={(event) => onChange(event.target.checked)} type="checkbox" />
-      {label}
-    </label>
-  )
-}
-
-function RecordList<T extends { id: number }>({
-  empty,
-  items,
-  onDelete,
-  onEdit,
-  renderDetail,
-  renderMeta,
-  renderTitle,
-}: {
-  empty: string
-  items: T[]
-  onDelete: (id: number) => Promise<void>
-  onEdit: (item: T) => void
-  renderDetail: (item: T) => string
-  renderMeta: (item: T) => string
-  renderTitle: (item: T) => string
-}) {
-  if (items.length === 0) {
-    return <p className="operations-empty">{empty}</p>
-  }
-
-  return (
-    <div className="operations-stack">
-      {items.map((item) => (
-        <article className="operations-record" key={item.id}>
-          <span>{renderMeta(item)}</span>
-          <h3>{renderTitle(item)}</h3>
-          <p>{renderDetail(item)}</p>
-          <div className="operations-actions">
-            <button onClick={() => onEdit(item)} type="button">
-              Edit
-            </button>
-            <button
-              onClick={() => {
-                if (window.confirm('Delete this community content item?')) {
-                  void onDelete(item.id)
-                }
-              }}
-              type="button"
-            >
-              Delete
-            </button>
-          </div>
-        </article>
-      ))}
-    </div>
-  )
 }
 
 function getStatusLine(parts: string[]) {
   return parts.filter(Boolean).join(' / ') || 'Draft'
-}
-
-function getSuccessMessage(action: string) {
-  switch (action) {
-    case 'saveNews':
-      return 'News saved.'
-    case 'deleteNews':
-      return 'News deleted.'
-    case 'saveStream':
-      return 'Stream saved.'
-    case 'deleteStream':
-      return 'Stream deleted.'
-    case 'saveAlert':
-      return 'Alert saved.'
-    case 'deleteAlert':
-      return 'Alert deleted.'
-    case 'saveTimelineEntry':
-      return 'Timeline entry saved.'
-    case 'deleteTimelineEntry':
-      return 'Timeline entry deleted.'
-    default:
-      return 'Community content updated.'
-  }
 }
 
 export default CommunityManager

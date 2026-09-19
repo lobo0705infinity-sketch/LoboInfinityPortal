@@ -18,7 +18,13 @@ type SettingsContextValue = {
 
 const SettingsContext = createContext<SettingsContextValue | null>(null)
 
-export function SettingsProvider({ children }: { children: ReactNode }) {
+export function SettingsProvider({
+  children,
+  enabled = true,
+}: {
+  children: ReactNode
+  enabled?: boolean
+}) {
   const [state, setState] = useState<SettingsContextValue>({
     error: null,
     settings: null,
@@ -26,6 +32,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   })
 
   useEffect(() => {
+    if (!enabled) {
+      return
+    }
+
     let isActive = true
 
     getSettings()
@@ -58,7 +68,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     return () => {
       isActive = false
     }
-  }, [])
+  }, [enabled])
 
   const value = useMemo(
     () => state,

@@ -156,9 +156,9 @@ assert(
 )
 
 assert(
-  dashboardPageSource.includes('<PrimaryFactionCard faction={leader?.faction || leader?.favoriteArmy} />') &&
-    !dashboardPageSource.includes('<dt>Favorite Army</dt>'),
-  'Commander Overview must render the resolved play-history faction through PrimaryFactionCard.',
+  !dashboardPageSource.includes('Commander Overview') &&
+    !dashboardPageSource.includes('dashboard-commander'),
+  'Dashboard must not render the removed Commander Overview panel.',
 )
 
 assert(
@@ -167,7 +167,7 @@ assert(
     /favoriteArmy:\s*favoriteArmy/.test(standingsSource) &&
     /favoriteFaction:\s*favoriteArmy/.test(standingsSource) &&
     /preferredArmy:\s*favoriteArmy/.test(standingsSource),
-  'Standings rows must expose the shared resolved favorite army for Commander Overview.',
+  'Standings rows must preserve the shared resolved favorite army contract.',
 )
 
 assert(

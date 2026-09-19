@@ -4,7 +4,6 @@ import { useAuth } from '../auth/AuthContext'
 import DiscordCommunityLink from '../components/DiscordCommunityLink'
 import Loading from '../components/Loading'
 import PortalIcon from '../components/PortalIcon'
-import PrimaryFactionCard from '../components/PrimaryFactionCard'
 import Skeleton from '../components/Skeleton'
 import {
   type ArmyListCommunitySummary,
@@ -15,11 +14,8 @@ import {
   type StreamedGame,
 } from '../services/api'
 import type { DashboardDeferredKey } from '../contexts/DashboardDataContext'
-import type { LeagueOverview, Standing } from '../types/dashboard'
-import {
-  formatObjectiveScore,
-  formatPlayerName,
-} from '../services/formatting'
+import type { LeagueOverview } from '../types/dashboard'
+import { formatObjectiveScore } from '../services/formatting'
 import { getGameHeadline, isDrawGame } from '../services/gameResults'
 import { resolvePlayerLeagueModel } from '../services/playerLeagueModel'
 import loboCrest from '../assets/lobo-crest.svg'
@@ -29,11 +25,11 @@ import {
 } from '../contexts/DashboardDataContext'
 import { useSettings } from '../contexts/SettingsContext'
 import { getDiscordCommunityLink } from '../config/communityLinks'
+import { getCanonicalMissionName } from '../config/missions'
 import '../App.css'
 import './Dashboard.css'
 
 const dashboardHero = '/dashboard/dashboard-hero.webp'
-const deferredObserverDelayMs = 3200
 const deferredObserverRootMargin = '80px 0px'
 
 preloadDashboardHero()
@@ -100,13 +96,6 @@ function DashboardContent({
   const hallOfFame = homeData.hallOfFame
   const intelligence = homeData.intelligence
   const armyListCommunity = homeData.armyListCommunity
-  const featuredGame = games[0]
-  const mostPlayedMission =
-    intelligence?.records.mostActiveMission &&
-    !('winner' in intelligence.records.mostActiveMission)
-      ? intelligence.records.mostActiveMission.name
-      : ''
-  const currentLeader = data.standings[0] ?? null
   const authenticatedCanonicalPlayer = auth.user.canonicalPlayer || auth.user.leaguePlayer
   const currentPlayerModel = resolvePlayerLeagueModel(
     homeData.allStandings,
@@ -184,11 +173,9 @@ function DashboardContent({
 
       <section className="dashboard-ops-grid" aria-label="Command operations">
         <LiveTransmissions games={games} />
-        <CommanderOverview intelligence={intelligence} leader={currentLeader} leaderName={data.summary.leagueLeader} />
         <WeeklyOperations
-          featuredGame={featuredGame}
+          currentOperationsMissions={data.currentOperationsMissions}
           intelligence={intelligence}
-          mostPlayedMission={mostPlayedMission || featuredGame?.mission || ''}
         />
         <CommunityIntelligence
           armyListCommunity={armyListCommunity}
@@ -425,17 +412,27 @@ function formatTransmissionGameType(gameType?: string) {
 }
 
 function WeeklyOperations({
-  featuredGame,
+  currentOperationsMissions,
   intelligence,
-  mostPlayedMission,
 }: {
-  featuredGame?: RecentGame
+  currentOperationsMissions: string[]
   intelligence: LeagueIntelligenceData | null
-  mostPlayedMission: string
 }) {
   const ref = useDashboardDeferredOnDemand(['recentGames', 'intelligence'])
-  const missionTrend = intelligence?.missionTrends[0]
-  const secondTrend = intelligence?.missionTrends[1]
+  const [alphaMission = '', bravoMission = ''] = currentOperationsMissions
+  const findMissionTrend = (mission: string) => {
+    const canonicalMission = getCanonicalMissionName(mission)
+
+    if (!canonicalMission) {
+      return undefined
+    }
+
+    return intelligence?.missionTrends.find(
+      (trend) => getCanonicalMissionName(trend.mission) === canonicalMission,
+    )
+  }
+  const missionTrend = findMissionTrend(alphaMission)
+  const secondTrend = findMissionTrend(bravoMission)
 
   return (
     <section ref={ref} className="panel dashboard-weekly-ops" aria-labelledby="weekly-ops-title">
@@ -446,15 +443,15 @@ function WeeklyOperations({
       <div className="dashboard-operation-list">
         <DashboardOperation
           label="Mission Alpha"
-          mission={missionTrend?.mission || featuredGame?.mission || mostPlayedMission}
-          notes={missionTrend?.story || 'Mission briefing pending from current dashboard activity.'}
-          to={missionTrend?.mission ? `/missions/${encodeURIComponent(missionTrend.mission)}` : '/missions'}
+          mission={alphaMission}
+          notes={missionTrend?.story || 'No games recorded yet.'}
+          to={alphaMission ? `/missions/${encodeURIComponent(alphaMission)}` : '/missions'}
         />
         <DashboardOperation
           label="Mission Bravo"
-          mission={secondTrend?.mission || mostPlayedMission}
-          notes={secondTrend?.story || 'Secondary mission signal pending from current dashboard activity.'}
-          to={secondTrend?.mission ? `/missions/${encodeURIComponent(secondTrend.mission)}` : '/missions'}
+          mission={bravoMission}
+          notes={secondTrend?.story || 'No games recorded yet.'}
+          to={bravoMission ? `/missions/${encodeURIComponent(bravoMission)}` : '/missions'}
         />
       </div>
       <Link className="dashboard-operation-action" to="/missions">View All Missions</Link>
@@ -479,60 +476,6 @@ function DashboardOperation({
       <strong>{formatMissionLabel(mission)}</strong>
       <p>{notes}</p>
     </Link>
-  )
-}
-
-function CommanderOverview({
-  intelligence,
-  leader,
-  leaderName,
-}: {
-  intelligence: LeagueIntelligenceData | null
-  leader: Standing | null
-  leaderName: string
-}) {
-  const ref = useDashboardDeferredOnDemand(['intelligence'])
-  const name = leader ? formatPlayerName(leader.player, leader.displayName) : leaderName
-  const profilePath = leader ? `/players/${encodeURIComponent(leader.player)}` : '/standings'
-  const leaderStreak = leader
-    ? intelligence?.winStreaks.find((streak) => streak.player === leader.player)
-    : null
-
-  return (
-    <section ref={ref} className="panel dashboard-commander" aria-labelledby="commander-title">
-      <div className="panel-heading">
-        <p className="eyebrow">Commander Overview</p>
-        <h2 id="commander-title">Commander Overview</h2>
-      </div>
-      <div className="dashboard-commander-body">
-        <img alt="" aria-hidden="true" decoding="async" loading="lazy" src={loboCrest} />
-        <div>
-          <span>Current Leader</span>
-          <strong>{name}</strong>
-          <small>Main Man Division</small>
-        </div>
-        <dl>
-          <div>
-            <dt>W - L - D</dt>
-            <dd>{leader ? `${leader.wins} - ${leader.losses} - ${leader.draws}` : 'N/A'}</dd>
-          </div>
-          <div>
-            <dt>Tournament Points</dt>
-            <dd>{leader ? `${leader.tp} TP` : 'N/A'}</dd>
-          </div>
-          <div>
-            <dt>Objective Points</dt>
-            <dd>{leader ? `${leader.op} OP` : 'N/A'}</dd>
-          </div>
-          <div>
-            <dt>Win Streak</dt>
-            <dd>{leaderStreak ? `${leaderStreak.games} wins` : `${leader?.currentWinStreak ?? 0} wins`}</dd>
-          </div>
-          <PrimaryFactionCard faction={leader?.faction || leader?.favoriteArmy} />
-        </dl>
-        <Link to={profilePath}>View Profile</Link>
-      </div>
-    </section>
   )
 }
 
@@ -682,31 +625,23 @@ function useDashboardDeferredOnDemand(
       return
     }
 
-    let observer: IntersectionObserver | null = null
-    const timeout = window.setTimeout(() => {
-      if (requested.current) {
-        return
-      }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting || requested.current) {
+          return
+        }
 
-      observer = new IntersectionObserver(
-        ([entry]) => {
-          if (!entry?.isIntersecting || requested.current) {
-            return
-          }
+        requested.current = true
+        loadDeferredSections(sections)
+        observer.disconnect()
+      },
+      { rootMargin: deferredObserverRootMargin },
+    )
 
-          requested.current = true
-          loadDeferredSections(sections)
-          observer?.disconnect()
-        },
-        { rootMargin: deferredObserverRootMargin },
-      )
-
-      observer.observe(element)
-    }, deferredObserverDelayMs)
+    observer.observe(element)
 
     return () => {
-      window.clearTimeout(timeout)
-      observer?.disconnect()
+      observer.disconnect()
     }
   }, [enabled, loadDeferredSections, sections])
 

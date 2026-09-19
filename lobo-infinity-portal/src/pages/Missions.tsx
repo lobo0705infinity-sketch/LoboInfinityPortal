@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import Skeleton from '../components/Skeleton'
 import { filterCanonicalMissionRecords } from '../config/missions'
-import { apiClient, type MissionSummary } from '../services/api'
+import { useApiCacheRevalidation } from '../hooks/useApiCacheRevalidation'
+import type { MissionSummary } from '../services/api'
+import { publicLeagueWorkspace } from '../services/publicLeagueWorkspaceProjection'
 
 const currentLeagueEventId = 'event-current-league'
 const teamTournamentEventId = 'event-august-2026-team-tournament'
@@ -60,16 +62,29 @@ function Missions() {
   const [missionsState, setMissionsState] = useState<MissionsState>({
     status: 'idle',
   })
+  const requestParams = {
+    ...(eventId ? { eventId } : {}),
+    ...(gameType ? { gameType } : {}),
+  }
+  const readMissions = useCallback((signal?: AbortSignal) =>
+    publicLeagueWorkspace.getMissions(activeScope.id, signal), [activeScope.id])
+
+  useApiCacheRevalidation({
+    action: 'missions',
+    params: requestParams,
+    read: () => readMissions(),
+    apply: (missions) => {
+      setMissionsState({
+        missions: filterCanonicalMissionRecords(missions),
+        status: 'success',
+      })
+    },
+  })
 
   useEffect(() => {
     const controller = new AbortController()
 
-    apiClient
-      .getMissions({
-        eventId,
-        gameType,
-        signal: controller.signal,
-      })
+    readMissions(controller.signal)
       .then((missions) => {
         setMissionsState({
           missions: filterCanonicalMissionRecords(missions),
@@ -93,7 +108,7 @@ function Missions() {
     return () => {
       controller.abort()
     }
-  }, [eventId, gameType])
+  }, [readMissions])
 
   function selectScope(scopeId: MissionScopeId) {
     const nextScope = missionScopes.find((scope) => scope.id === scopeId)

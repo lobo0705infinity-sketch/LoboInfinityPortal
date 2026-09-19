@@ -6,7 +6,9 @@ import PlayerCard from '../components/PlayerCard'
 import Skeleton from '../components/Skeleton'
 import { getDiscordCommunityLink } from '../config/communityLinks'
 import { useSettings } from '../contexts/SettingsContext'
-import { apiClient } from '../services/api'
+import { useApiCacheRevalidation } from '../hooks/useApiCacheRevalidation'
+import { apiClient, type EventRegistrationData } from '../services/api'
+import { getPublicPlayersProjection } from '../services/publicPlayersProjection'
 import {
   getStandingClassifications,
   statusFilterMatches,
@@ -37,6 +39,11 @@ type PlayersState =
       status: 'error'
     }
 
+type EventTypeState =
+  | { eventId: string; status: 'loading' }
+  | { eventId: string; eventType: string; registration: EventRegistrationData; status: 'success' }
+  | { error: string; eventId: string; status: 'error' }
+
 function Players() {
   const [searchParams] = useSearchParams()
   const eventId = searchParams.get('eventId') || ''
@@ -49,15 +56,33 @@ function Players() {
   const [playersState, setPlayersState] = useState<PlayersState>({
     status: 'loading',
   })
+  const [eventTypeState, setEventTypeState] = useState<EventTypeState>(
+    { eventId: '', status: 'loading' },
+  )
+
+  useApiCacheRevalidation({
+    action: 'players',
+    params: eventId ? { eventId } : {},
+    read: () => eventScoped
+      ? apiClient.getPlayers({ cacheMode: 'stale-while-revalidate', eventId })
+      : getPublicPlayersProjection(),
+    apply: (divisions) => {
+      setPlayersState({ divisions, status: 'success' })
+    },
+  })
 
   useEffect(() => {
     const controller = new AbortController()
 
-    apiClient
-      .getPlayers({
-        eventId,
-        signal: controller.signal,
-      })
+    const load = eventScoped
+      ? apiClient.getPlayers({
+          cacheMode: 'stale-while-revalidate',
+          eventId,
+          signal: controller.signal,
+        })
+      : getPublicPlayersProjection({ signal: controller.signal })
+
+    load
       .then((divisions) => {
         setPlayersState({
           divisions,
@@ -81,7 +106,62 @@ function Players() {
     return () => {
       controller.abort()
     }
-  }, [eventId])
+  }, [eventId, eventScoped])
+
+  useEffect(() => {
+    if (!eventScoped) {
+      return
+    }
+
+    const controller = new AbortController()
+
+    apiClient
+      .getEventRegistration(eventId, { signal: controller.signal })
+      .then((registration) => {
+        setEventTypeState({
+          eventId,
+          eventType: registration.eventType,
+          registration,
+          status: 'success',
+        })
+      })
+      .catch((error: unknown) => {
+        if (!controller.signal.aborted) {
+          setEventTypeState({
+            error: error instanceof Error ? error.message : 'Event context could not be loaded.',
+            eventId,
+            status: 'error',
+          })
+        }
+      })
+
+    return () => controller.abort()
+  }, [eventId, eventScoped])
+
+  const individualTournament =
+    eventTypeState.status === 'success' &&
+    eventTypeState.eventId === eventId &&
+    eventTypeState.eventType === 'Individual Double Elimination'
+  const individualParticipants = useMemo(() => {
+    if (!individualTournament || eventTypeState.status !== 'success') {
+      return []
+    }
+
+    return eventTypeState.registration.registrations
+      .filter((participant) => participant.status === 'Registered')
+      .slice()
+      .sort((left, right) => {
+        const leftSeed = Number(left.seed)
+        const rightSeed = Number(right.seed)
+        const leftSeeded = Number.isInteger(leftSeed) && leftSeed > 0
+        const rightSeeded = Number.isInteger(rightSeed) && rightSeed > 0
+
+        if (leftSeeded && rightSeeded) return leftSeed - rightSeed
+        if (leftSeeded) return -1
+        if (rightSeeded) return 1
+        return (left.displayName || left.player).localeCompare(right.displayName || right.player)
+      })
+  }, [eventTypeState, individualTournament])
 
   const players = useMemo(() => {
     if (playersState.status !== 'success') {
@@ -91,15 +171,23 @@ function Players() {
     return playersState.divisions.flatMap((division) =>
       division.standings.map((player) => ({
         ...player,
-        division: player.division || (eventScoped ? division.division : ''),
-        divisionLabel: player.division || (eventScoped ? division.divisionLabel : ''),
+        division: individualTournament
+          ? ''
+          : player.division || (eventScoped ? division.division : ''),
+        divisionLabel: individualTournament
+          ? ''
+          : player.division || (eventScoped ? division.divisionLabel : ''),
         statusBadges: getStandingClassifications(player),
       })),
     )
-  }, [eventScoped, playersState])
+  }, [eventScoped, individualTournament, playersState])
 
   const filterOptions = useMemo(() => {
     if (playersState.status !== 'success') {
+      return []
+    }
+
+    if (individualTournament) {
       return []
     }
 
@@ -108,10 +196,10 @@ function Players() {
       id: division.division,
       identity: getDivisionIdentity(division.division),
     }))
-  }, [playersState])
+  }, [individualTournament, playersState])
 
   const filteredPlayers =
-    activeFilter === 'all'
+    individualTournament || activeFilter === 'all'
       ? players
       : players.filter((player) => player.division === activeFilter)
   const communityDivisions = useMemo(
@@ -170,25 +258,35 @@ function Players() {
       .sort((left, right) => sortCommunityPlayers(left, right, sortBy))
   }, [divisionFilter, players, query, sortBy, statusFilter])
 
-  if (playersState.status === 'loading') {
+  if (
+    playersState.status === 'loading' ||
+    (eventScoped && eventTypeState.eventId !== eventId)
+  ) {
     return (
       <main className="portal-shell">
         <PageHeader eventScoped={eventScoped} />
-        <section className="division-tabs" aria-label="Player filters loading">
-          <button className="division-tab active" disabled type="button">
-            All Players
-          </button>
-          <button className="division-tab" disabled type="button">
-            Alpha
-          </button>
-          <button className="division-tab" disabled type="button">
-            Beta
-          </button>
-        </section>
+        {!eventScoped ? (
+          <section className="division-tabs" aria-label="Player filters loading">
+            <button className="division-tab active" disabled type="button">
+              All Players
+            </button>
+          </section>
+        ) : null}
         <section className="players-grid" aria-label="Players loading">
           <Skeleton label="Player cards loading" rows={8} />
           <Skeleton label="Player cards loading" rows={8} />
           <Skeleton label="Player cards loading" rows={8} />
+        </section>
+      </main>
+    )
+  }
+
+  if (eventTypeState.status === 'error' && eventTypeState.eventId === eventId) {
+    return (
+      <main className="portal-shell">
+        <PageHeader eventScoped={eventScoped} />
+        <section className="dashboard-state" aria-label="Event context error">
+          <p role="alert">{eventTypeState.error}</p>
         </section>
       </main>
     )
@@ -209,7 +307,7 @@ function Players() {
     <main className="portal-shell">
       <PageHeader eventScoped={eventScoped} />
 
-      {eventScoped ? (
+      {eventScoped && !individualTournament ? (
         <section className="division-tabs" aria-label="Player filters">
           <button
             className={activeFilter === 'all' ? 'division-tab active' : 'division-tab'}
@@ -232,7 +330,7 @@ function Players() {
             </button>
           ))}
         </section>
-      ) : (
+      ) : !eventScoped ? (
         <>
           <CommunityHubSection />
 
@@ -288,18 +386,47 @@ function Players() {
             />
           </section>
         </>
-      )}
+      ) : null}
 
-      <section className="players-grid" aria-label="Portal players">
-        {(eventScoped ? filteredPlayers : communityPlayers).map((player) => (
+      {individualTournament ? (
+        <section className="tournament-player-table" aria-label="Tournament players">
+          {individualParticipants.length > 0 ? (
+            <>
+              <div className="tournament-player-row tournament-player-header">
+                <strong>Seed</strong>
+                <strong>Player</strong>
+                <strong>ITS Name</strong>
+                <strong>Faction</strong>
+              </div>
+              {individualParticipants.map((participant) => (
+                <div className="tournament-player-row" key={participant.player}>
+                  <span>{participant.seed || '—'}</span>
+                  <strong>{participant.displayName || participant.player}</strong>
+                  <span>{participant.itsName || '—'}</span>
+                  <span>{participant.faction || '—'}</span>
+                </div>
+              ))}
+            </>
+          ) : null}
+        </section>
+      ) : (
+        <section className="players-grid" aria-label="Portal players">
+          {(eventScoped ? filteredPlayers : communityPlayers).map((player) => (
           <PlayerCard
-            divisionLabel={player.divisionLabel}
+            divisionLabel={individualTournament ? undefined : player.divisionLabel}
             eventId={eventId}
             key={`${player.division}-${player.player}`}
             player={player}
           />
-        ))}
-      </section>
+          ))}
+        </section>
+      )}
+
+      {eventScoped && (individualTournament ? individualParticipants.length === 0 : filteredPlayers.length === 0) ? (
+        <section className="dashboard-state" aria-label="No event participants">
+          <p>No players are registered for this event.</p>
+        </section>
+      ) : null}
 
       {!eventScoped && communityPlayers.length === 0 ? (
         <section className="dashboard-state" aria-label="No players found">

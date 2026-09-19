@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "unitId": 1896,
+      "profileGroupId": 1,
+      "optionId": 9,
+      "profileId": 1,
+      "unitName": "COYOTE FTO",
+      "physicalMiniature": "Coyote with MULTI Marksman Rifle from Beyond Operation: Mazebreaker",
+      "image": {
+        "url": "https://www.brueckenkopf-online.com/wp-content/uploads/2026/05/infinity-beyondmaze-07.jpg",
+        "source": "Corvus Belli announcement photograph mirrored by Brückenkopf Online",
+        "sourceUrl": "https://www.brueckenkopf-online.com/2026/infinity-beyond-operation-mazebreaker/",
+        "matchType": "representative-official-sculpt"
+      }
+    },
+    {
+      "unitId": 383,
+      "profileGroupId": 1,
+      "optionId": 2,
+      "profileId": 1,
+      "unitName": "IGUANA",
+      "physicalMiniature": "Iguana TAG from the Corvus Belli Iguana Squadron box, ref. 281547-1176",
+      "image": {
+        "url": "https://cdn.1001hobbies.nl/2880329-large_default/corvus-belli-ld-281547-1176-infinity-iguana-squadron.jpg",
+        "source": "Corvus Belli product imagery via 1001Hobbies",
+        "sourceUrl": "https://www.1001hobbies.nl/miniaturen-spelen/829708-corvus-belli-ld-281547-1176-infinity-iguana-squadron.html",
+        "matchType": "exact-troop-sculpt"
+      }
+    }
+  ]
+}

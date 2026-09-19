@@ -143,6 +143,7 @@ function PlayerCardPortrait({
     >
       <FactionPortraitImage
         alt={portrait.alt}
+        canonicalSource
         height={432}
         loading="lazy"
         onError={onError}

@@ -26,6 +26,7 @@ const rows = []
 let googleSubmission = null
 let validationFailure = ''
 let automationFailure = false
+const scriptProperties = new Map()
 
 const string = (value) => String(value ?? '').trim()
 const normalizeArmyCode = (value) => string(value).replace(/\s+/g, '').replace(/[-_]/g, '')
@@ -94,6 +95,15 @@ const context = vm.createContext({
   Utilities: { formatDate },
   SpreadsheetApp: { flush: () => events.push('flush') },
   Logger: { log: () => events.push('missing-rebuild-log') },
+  LockService: {
+    getScriptLock: () => ({ waitLock() {}, releaseLock() {} }),
+  },
+  PropertiesService: {
+    getScriptProperties: () => ({
+      getProperty: (key) => scriptProperties.get(key) ?? null,
+      setProperty: (key, value) => scriptProperties.set(key, value),
+    }),
+  },
   canonicalizeArmyName,
   buildCanonicalArmyCodeArmyListId: armyListId,
   validateCanonicalGame(command) {
@@ -141,6 +151,9 @@ const context = vm.createContext({
     events.push('audit')
   },
   coordinateCanonicalRebuild() {
+    events.push('rebuild')
+  },
+  rebuildEverything() {
     events.push('rebuild')
   },
   enqueueGameSubmittedAutomationEvent() {

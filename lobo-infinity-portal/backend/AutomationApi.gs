@@ -468,6 +468,19 @@ function enqueueGameSubmittedAutomationEvent(identity) {
 
   const eventId = "gameSubmitted-game-" + gameId;
 
+  if (typeof markPublicAnalyticsProjectionDirty_ === "function")
+    markPublicAnalyticsProjectionDirty_(identity && identity.eventId);
+  if (typeof markPublicTeamTournamentProjectionDirty_ === "function")
+    markPublicTeamTournamentProjectionDirty_(identity && identity.eventId);
+  if (typeof markPublicPlayersProjectionDirty_ === "function")
+    markPublicPlayersProjectionDirty_();
+  if (typeof markPublicLeagueWorkspaceProjectionDirty_ === "function")
+    markPublicLeagueWorkspaceProjectionDirty_();
+  if (typeof markPublicArmyWorkspaceProjectionDirty_ === "function")
+    markPublicArmyWorkspaceProjectionDirty_(["armyLists"]);
+  if (typeof markPublicDetailProjectionDirty_ === "function")
+    markPublicDetailProjectionDirty_(["games", "players", "factions", "missions"]);
+
   if (hasRecentAutomationEventId_(eventId))
     return {
       duplicate: true,
@@ -579,6 +592,11 @@ function hasRecentAutomationEventId_(eventId) {
 
 function processAutomationQueueBatch(e) {
 
+  const canonicalRebuildRecovery =
+    typeof recoverPendingCanonicalRebuildBestEffort_ === "function"
+      ? recoverPendingCanonicalRebuildBestEffort_()
+      : { attempted: false, required: false, success: true };
+
   const parameters = getApiParameters(e);
   const requestedLimit = Number(getApiParameter(parameters, "batchLimit"));
   const batchLimit = Math.max(
@@ -606,14 +624,90 @@ function processAutomationQueueBatch(e) {
     }
   });
 
+  const analyticsProjection =
+    typeof publishDirtyPublicAnalyticsProjectionsBestEffort_ === "function"
+      ? publishDirtyPublicAnalyticsProjectionsBestEffort_()
+      : { refreshed: false, success: true };
+
+  const teamTournamentProjection =
+    typeof publishDirtyPublicTeamTournamentProjectionBestEffort_ === "function"
+      ? publishDirtyPublicTeamTournamentProjectionBestEffort_()
+      : { refreshed: false, success: true };
+
+  const top40Projection =
+    typeof publishDirtyTop40PublicProjectionBestEffort_ === "function"
+      ? publishDirtyTop40PublicProjectionBestEffort_()
+      : { refreshed: false, success: true };
+
+  const playersProjection =
+    typeof publishDirtyPublicPlayersProjectionBestEffort_ === "function"
+      ? publishDirtyPublicPlayersProjectionBestEffort_()
+      : { refreshed: false, success: true };
+
+  const leagueWorkspaceProjection =
+    typeof publishDirtyPublicLeagueWorkspaceProjectionBestEffort_ === "function"
+      ? publishDirtyPublicLeagueWorkspaceProjectionBestEffort_()
+      : { refreshed: false, success: true };
+
+  const armyWorkspaceProjection =
+    typeof publishDirtyPublicArmyWorkspaceProjectionBestEffort_ === "function"
+      ? publishDirtyPublicArmyWorkspaceProjectionBestEffort_()
+      : { refreshed: false, success: true };
+
+  const detailProjection =
+    typeof publishDirtyPublicDetailProjectionBestEffort_ === "function"
+      ? publishDirtyPublicDetailProjectionBestEffort_()
+      : { refreshed: false, success: true };
+
   return jsonOutput({
+    canonicalRebuildRecovery: canonicalRebuildRecovery,
+    analyticsProjection: analyticsProjection,
+    armyWorkspaceProjection: armyWorkspaceProjection,
+    detailProjection: detailProjection,
     attempted: items.length,
     batchLimit: batchLimit,
     failed: results.filter(function(result) { return result.success === false; }).length,
     results: results,
+    leagueWorkspaceProjection: leagueWorkspaceProjection,
+    playersProjection: playersProjection,
+    teamTournamentProjection: teamTournamentProjection,
+    top40Projection: top40Projection,
     success: true
   });
 
+}
+
+function markCanonicalRebuildRecoveryProjectionsDirty_() {
+  if (typeof markPublicAnalyticsProjectionDirty_ === "function")
+    markPublicAnalyticsProjectionDirty_(EVENT_ENGINE_DEFAULT_EVENT_ID);
+  if (typeof markPublicPlayersProjectionDirty_ === "function")
+    markPublicPlayersProjectionDirty_();
+  if (typeof markPublicLeagueWorkspaceProjectionDirty_ === "function")
+    markPublicLeagueWorkspaceProjectionDirty_();
+  if (typeof markPublicArmyWorkspaceProjectionDirty_ === "function")
+    markPublicArmyWorkspaceProjectionDirty_(["armyLists"]);
+  if (typeof markPublicDetailProjectionDirty_ === "function")
+    markPublicDetailProjectionDirty_(["games", "players", "factions", "missions"]);
+}
+
+function runPreparedProjectionRecoveryMaintenance() {
+  const marked = markPublicProjectionRecoveryBatch_([
+    { propertyName: PUBLIC_ANALYTICS_DIRTY_EVENTS_PROPERTY, keys: [EVENT_ENGINE_DEFAULT_EVENT_ID] },
+    { propertyName: PUBLIC_PLAYERS_PROJECTION_DIRTY_PROPERTY, keys: ["players"] },
+    { propertyName: PUBLIC_LEAGUE_WORKSPACE_PROJECTION_DIRTY_PROPERTY, keys: ["dashboard"] }
+  ]);
+  const result = {
+    success: true,
+    recoveryRequested: true,
+    maintenanceRun: false,
+    obligationsMarked: Object.keys(marked),
+    publicationsAttempted: 0,
+    publicationsSucceeded: 0,
+    publicationsPending: 3,
+    obligations: getPreparedProjectionReliabilityStatus_()
+  };
+  Logger.log(JSON.stringify(result));
+  return result;
 }
 
 function selectPendingAutomationQueueItems_(limit) {

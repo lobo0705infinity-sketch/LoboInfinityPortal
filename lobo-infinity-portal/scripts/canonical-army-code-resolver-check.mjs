@@ -81,7 +81,7 @@ pass('Snapshot input unchanged')
 
 assert.equal(
   functionHash(backend, 'mergeArmyIntelligenceSourceAndSnapshot'),
-  '9ec6b947c0e82b9fb9d80e1a8c3bb2bc2a6b028991e02dcbc992146ea27acd33',
+  'd5ef4cfda88d590f8146f74d8aaa42f4f3530f50a4f5f3c2f74e559ce0442a85',
 )
 assert.equal(
   functionHash(backend, 'buildArmyIntelligenceSummary'),

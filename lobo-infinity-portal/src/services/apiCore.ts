@@ -1,4 +1,5 @@
 export type ApiOptions = {
+  cacheMode?: 'fresh-required' | 'stale-while-revalidate'
   eventId?: string
   gameId?: number
   gameType?: string
@@ -18,6 +19,8 @@ import {
 import { buildInfo } from './buildInfo'
 
 type RequestParams = Record<string, string>
+
+export const apiCacheRevalidatedEvent = 'lobo:cache-revalidated'
 
 type CacheEntry = {
   action: string
@@ -274,6 +277,7 @@ async function requestInternal(
   const duplicate = apiRequestHistory.some((entry) => entry.cacheKey === cacheKey)
   const cached = frontendResponseCache.get(cacheKey)
   const canShareInFlightRequest = !options.signal
+  const staleWhileRevalidate = options.cacheMode === 'stale-while-revalidate'
 
   if (!bypassCache && cached && cached.expiresAt > Date.now()) {
     const now = performance.now()
@@ -281,9 +285,21 @@ async function requestInternal(
     return cached.payload
   }
 
+  if (
+    !bypassCache &&
+    staleWhileRevalidate &&
+    cached &&
+    cached.staleUntil > Date.now()
+  ) {
+    const now = performance.now()
+    recordApiTiming(action, 'stale', 0, true, now, now, cacheKey, routePath, caller, duplicate)
+    revalidateCachedRequest(action, options, params, sessionCacheKey, cacheKey, eventId)
+    return cached.payload
+  }
+
   const sessionCached = bypassCache ? null : readSessionResponseCache(sessionCacheKey)
 
-  if (sessionCached) {
+  if (sessionCached && (sessionCached.expiresAt > Date.now() || staleWhileRevalidate)) {
     frontendResponseCache.set(cacheKey, {
       action,
       eventId: sessionCached.eventId,
@@ -337,6 +353,7 @@ async function requestInternal(
 
   const start = performance.now()
   const requestRevision = cacheRevision
+  const requestAuthTokenVersion = activeAuthTokenVersion
   let requestFinished = false
   const pending = fetch(url, {
     redirect: options.redirect,
@@ -385,7 +402,10 @@ async function requestInternal(
         throw new Error(friendlySessionExpiredMessage)
       }
 
-      if (requestRevision === cacheRevision) {
+      if (
+        requestRevision === cacheRevision &&
+        requestAuthTokenVersion === activeAuthTokenVersion
+      ) {
         const timestamp = Date.now()
         frontendResponseCache.set(cacheKey, {
           action,
@@ -1043,10 +1063,18 @@ function revalidateCachedRequest(
   backgroundRefreshCount += 1
   requestInternal(action, { eventId }, params, true, true)
     .then((payload) => {
+      const refreshed = frontendResponseCache.get(cacheKey)
+
+      // A mutation or auth transition may invalidate an in-flight refresh. In that
+      // case requestInternal deliberately does not cache it, so it must not update UI.
+      if (!refreshed || refreshed.expiresAt <= Date.now()) {
+        return
+      }
+
       lastRevalidationTimestamp = new Date().toISOString()
       if (typeof window !== 'undefined') {
         window.dispatchEvent(
-          new CustomEvent('lobo:cache-revalidated', {
+          new CustomEvent(apiCacheRevalidatedEvent, {
             detail: { action, cacheKey: sessionCacheKey, eventId, payload },
           }),
         )
@@ -1065,6 +1093,30 @@ function revalidateCachedRequest(
     })
 }
 
+export function isApiCacheRevalidation(
+  event: Event,
+  action: string,
+  params: RequestParams = {},
+) {
+  if (!(event instanceof CustomEvent)) {
+    return false
+  }
+
+  const detail = event.detail as {
+    action?: unknown
+    cacheKey?: unknown
+  } | null
+
+  return (
+    detail?.action === action &&
+    detail.cacheKey === buildSessionCacheKey(action, params)
+  )
+}
+
+export function invalidateApiCacheGroup(group: string) {
+  invalidateCacheGroups([group], '', `manual:${group}`)
+}
+
 function invalidateAffectedCaches(action: string, params: RequestParams) {
   const groups = getMutationInvalidationGroups(action)
   const eventId = params.eventId ?? ''
@@ -1078,8 +1130,12 @@ function invalidateAffectedCaches(action: string, params: RequestParams) {
     return
   }
 
+  invalidateCacheGroups(groups, eventId, `mutation:${action}`)
+}
+
+function invalidateCacheGroups(groups: string[], eventId: string, reason: string) {
   cacheRevision += 1
-  lastInvalidationReason = `mutation:${action}:${groups.join(',')}`
+  lastInvalidationReason = `${reason}:${groups.join(',')}`
   inFlightRequests.clear()
   const match = (entry: Pick<CacheEntry, 'eventId' | 'group'>) =>
     groups.includes(entry.group) &&
@@ -1092,7 +1148,7 @@ function invalidateAffectedCaches(action: string, params: RequestParams) {
   })
 
   clearSessionResponseCacheByPredicate(
-    `mutation:${action}`,
+    reason,
     (entry) =>
       groups.includes(entry.group) &&
       (!eventId || !entry.eventId || entry.eventId === eventId),
@@ -1191,6 +1247,7 @@ function getMutationInvalidationGroups(action: string) {
     case 'teamTournamentResult':
       return ['dashboard', 'eventHome', 'teamTournament', 'standings', 'analytics', 'records', 'players']
     case 'submitCasualResult':
+    case 'submitTop40Result':
       return ['dashboard', 'analytics', 'records', 'players']
     case 'teamTournamentTeam':
     case 'teamTournamentPairing':
@@ -1204,12 +1261,19 @@ function getMutationInvalidationGroups(action: string) {
       return ['eventHome', 'registration', 'teamTournament', 'players', 'schedule']
     case 'eventManagerEvent':
     case 'eventManagerLifecycle':
-    case 'eventManagerCurrentEvent':
     case 'eventManagerRegistration':
     case 'eventManagerParticipant':
+    case 'eventBracketGenerate':
+    case 'eventBracketDeadline':
+    case 'eventBracketForfeit':
+    case 'eventBracketMissions':
     case 'eventManagerTeam':
     case 'eventManagerPairing':
       return ['events', 'eventHome', 'eventManager', 'registration', 'teamTournament', 'standings', 'analytics', 'schedule']
+    case 'eventManagerCurrentEvent':
+      return ['events', 'eventHome', 'eventManager', 'registration', 'teamTournament', 'standings', 'analytics', 'schedule', 'dashboard']
+    case 'leagueOperationsSave':
+      return ['leagueOperations', 'dashboard']
     case 'seasonAvailability':
     case 'schedulingAvailability':
     case 'createSchedulingRequest':

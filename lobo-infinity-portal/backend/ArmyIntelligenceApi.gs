@@ -8,7 +8,7 @@
 const ARMY_INTELLIGENCE_READ_MODEL_KEY = "armyIntelligence:v4";
 const ARMY_INTELLIGENCE_READ_MODEL_CHUNK_SIZE = 45000;
 const ARMY_INTELLIGENCE_WORKER_TOKEN_HASH =
-  "05aae22c06c0b29ebbd95a271cea53e5e9df46783288e0afd2e85083391647f4";
+  "d7f5f3b0ac7b579da01c271143fd1103a282f5aa1996d547c4b946b0c78d5e4f";
 const ARMY_INTELLIGENCE_READ_MODEL_HEADERS = [
   "Key",
   "Generated At",
@@ -100,6 +100,43 @@ function refreshArmyIntelligence(e) {
   if (!Array.isArray(snapshots))
     throw new Error("snapshots must be a JSON array.");
 
+  const publishPublicSnapshot =
+    getApiParameter(parameters, "publishPublicSnapshot") === "true";
+
+  const deferReadModelRebuild =
+    getApiParameter(parameters, "deferReadModelRebuild") === "true";
+
+  const finalizeMigration =
+    getApiParameter(parameters, "finalizeMigration") === "true";
+
+  if (!snapshots.length && finalizeMigration) {
+    rebuildArmyIntelligenceReadModelPayloadAndPersist();
+    rebuildArmyListsReadModelPayloadAndPersist();
+    invalidatePortalCacheGroup("armyIntelligence");
+
+    const finalizedPublication = publishPublicSnapshot
+      ? runFullPublicSnapshotRefresh()
+      : null;
+    return jsonOutput({
+      success: !publishPublicSnapshot || (finalizedPublication && finalizedPublication.success === true),
+      publication: finalizedPublication,
+      status: !publishPublicSnapshot || (finalizedPublication && finalizedPublication.success === true) ? "Migration finalized" : "Publication failed",
+      updated: 0
+    });
+  }
+
+  if (!snapshots.length && publishPublicSnapshot) {
+    const triggerConfiguration = reconcileTwiceDailyPublicSnapshotTriggers();
+    const publication = runFullPublicSnapshotRefresh();
+    return jsonOutput({
+      success: publication && publication.success === true,
+      publication: publication,
+      triggerConfiguration: triggerConfiguration,
+      status: publication && publication.success === true ? "Published" : "Publication failed",
+      updated: 0
+    });
+  }
+
   const authoritativeSources =
     buildArmyIntelligenceSources();
 
@@ -108,6 +145,9 @@ function refreshArmyIntelligence(e) {
   authoritativeSources.forEach(function(source) {
     sourcesByKey[source.snapshotKey] = source;
   });
+
+  const persistedSnapshots =
+    getPersistedArmyIntelligenceSnapshotLookup();
 
   const rows =
     snapshots.map(function(snapshot) {
@@ -121,19 +161,60 @@ function refreshArmyIntelligence(e) {
 
       validateArmyIntelligenceRefreshSnapshot(source, snapshot);
 
+      const persisted =
+        findPersistedArmyIntelligenceSnapshot(
+          source,
+          persistedSnapshots
+        );
+
+      if (
+        snapshot.status === "failed" &&
+        persisted &&
+        persisted.status === "decoded" &&
+        !isDeterministicInvalidArmyIntelligenceFailure_(snapshot)
+      )
+        return null;
+
       return buildPersistedArmyIntelligenceSnapshotRow(source, snapshot);
-    });
+    })
+    .filter(Boolean);
 
   upsertPersistedArmyIntelligenceSnapshotRows(rows);
+
+  if (deferReadModelRebuild)
+    return jsonOutput({
+      deferredReadModelRebuild: true,
+      sourceCount: authoritativeSources.length,
+      status: "Persisted",
+      success: true,
+      updated: rows.length
+    });
+
   rebuildArmyIntelligenceReadModelPayloadAndPersist();
+  rebuildArmyListsReadModelPayloadAndPersist();
   invalidatePortalCacheGroup("armyIntelligence");
+
+  const publication = publishPublicSnapshot ? runFullPublicSnapshotRefresh() : null;
 
   return jsonOutput({
     success: true,
+    publication: publication,
     sourceCount: authoritativeSources.length,
     status: "Refreshed",
     updated: rows.length
   });
+
+}
+
+function isDeterministicInvalidArmyIntelligenceFailure_(snapshot) {
+
+  return Boolean(
+    snapshot &&
+    snapshot.status === "failed" &&
+    getArmyIntelligenceString(snapshot.pipelineVersion) === ARMY_INTELLIGENCE_PIPELINE_VERSION &&
+    getArmyIntelligenceString(snapshot.tacticalSchemaVersion) === ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION &&
+    /Invalid IDs in Army Code/i.test(getArmyIntelligenceString(snapshot.error))
+  );
 
 }
 
@@ -174,7 +255,44 @@ function validateArmyIntelligenceRefreshSnapshot(source, snapshot) {
 
     if (getArmyIntelligenceHash(snapshot.decoded.armyCode) !== expected.armyCodeHash)
       throw new Error("Army Intelligence snapshot Army Code mismatch.");
+
+    if (
+      getArmyIntelligenceString(snapshot.pipelineVersion) !== ARMY_INTELLIGENCE_PIPELINE_VERSION ||
+      getArmyIntelligenceString(snapshot.decoded.pipelineVersion) !== ARMY_INTELLIGENCE_PIPELINE_VERSION ||
+      getArmyIntelligenceString(snapshot.tacticalSchemaVersion) !== ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION ||
+      getArmyIntelligenceString(snapshot.decoded.tacticalSchemaVersion) !== ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION
+    ) throw new Error("Army Intelligence tactical snapshot schema mismatch.");
+
+    validateArmyIntelligenceTacticalMetadata_(snapshot.decoded);
   }
+
+}
+
+function validateArmyIntelligenceTacticalMetadata_(decoded) {
+
+  if (!decoded.enrichment || decoded.enrichment.status !== "complete")
+    throw new Error("Army Intelligence tactical enrichment is incomplete.");
+
+  const entries = getPersistedArmyIntelligenceDecodedEntries(decoded);
+  if (!entries.length)
+    throw new Error("Army Intelligence tactical snapshot has no profiles.");
+
+  entries.forEach(function(entry) {
+    if (entry.bs == null || !isFinite(Number(entry.bs)) || entry.cc == null || !isFinite(Number(entry.cc)) || !Array.isArray(entry.skills))
+      throw new Error("Army Intelligence profile BS, CC, or skills are incomplete.");
+
+    const sourceWeapons = Array.isArray(entry.weapons) ? entry.weapons : [];
+    const canonicalWeapons = Array.isArray(entry.weaponProfiles) ? entry.weaponProfiles : [];
+    if (sourceWeapons.length && !canonicalWeapons.length)
+      throw new Error("Army Intelligence canonical weapon metadata is incomplete.");
+
+    canonicalWeapons.forEach(function(weapon) {
+      const canonicalBurst = weapon.burstStatus === "canonical" && weapon.burst != null && isFinite(Number(weapon.burst));
+      const notApplicable = weapon.burstStatus === "not-applicable" && weapon.burst == null;
+      if (!getArmyIntelligenceString(weapon.name) || (!canonicalBurst && !notApplicable))
+        throw new Error("Army Intelligence canonical weapon Burst is incomplete.");
+    });
+  });
 
 }
 
@@ -198,10 +316,12 @@ function buildPersistedArmyIntelligenceSnapshotRow(source, snapshot) {
     decodedAt: snapshot.decodedAt || new Date().toISOString(),
     decoderVersion: snapshot.decoderVersion || "",
     error: snapshot.error || "",
+    pipelineVersion: snapshot.pipelineVersion || "",
     snapshotKey: source.snapshotKey,
     sourceId: source.sourceId,
     sourcePlayer: source.sourcePlayer,
     sourceType: source.sourceType,
+    tacticalSchemaVersion: snapshot.tacticalSchemaVersion || "",
     status: snapshot.status
   };
 
@@ -290,8 +410,41 @@ function upsertPersistedArmyIntelligenceSnapshotRows(rows) {
 
 function getArmyIntelligence(e) {
 
+  const parameters =
+    getApiParameters(e);
+
+  const scope =
+    getApiParameter(parameters, "scope")
+      .toLowerCase();
+
   const readModel =
     readArmyIntelligenceReadModelPayload();
+
+  if (scope) {
+    if (!readModel)
+      return jsonOutput({
+        success: false,
+        error: "Army Intelligence read model is temporarily unavailable."
+      });
+
+    if (scope === "summary")
+      return jsonOutput(
+        buildArmyIntelligencePublicSummaryProjection(readModel)
+      );
+
+    if (scope === "faction")
+      return jsonOutput(
+        buildArmyIntelligencePublicFactionProjection(
+          readModel,
+          getApiParameter(parameters, "faction")
+        )
+      );
+
+    return jsonOutput({
+      success: false,
+      error: "Unsupported Army Intelligence scope."
+    });
+  }
 
   if (readModel)
     return jsonOutput(readModel);
@@ -299,6 +452,229 @@ function getArmyIntelligence(e) {
   return jsonOutput(
     rebuildArmyIntelligenceReadModelPayloadAndPersist()
   );
+
+}
+
+function getArmyIntelligenceSnapshotState() {
+
+  const registry = buildKnownArmyListRegistry();
+
+  return jsonOutput({
+    success: true,
+    lists: buildArmyIntelligenceListsFromCanonicalSources(registry.counts)
+  });
+
+}
+
+function buildArmyIntelligencePublicSummaryProjection(readModel) {
+
+  const summary =
+    readModel && readModel.summary || {};
+
+  const optionsByKey = {};
+
+  (Array.isArray(readModel.lists) ? readModel.lists : [])
+    .filter(isArmyIntelligencePublicDecodedSource)
+    .forEach(function(list) {
+      const decoded = list.decoded || {};
+      const faction =
+        canonicalizeArmyParentFaction(
+          normalizeArmyIntelligencePublicArmyName(
+            decoded.faction || list.faction
+          )
+        );
+
+      [
+        faction,
+        normalizeArmyIntelligencePublicArmyName(
+          decoded.sectorial || list.sectorial
+        )
+      ].forEach(function(name) {
+        const key =
+          normalizeArmyIntelligencePublicIdentity(name);
+
+        if (
+          key &&
+          Object.prototype.hasOwnProperty.call(ARMY_REGISTRY_PARENT_MAP, name) &&
+          !optionsByKey[key]
+        )
+          optionsByKey[key] = name;
+      });
+    });
+
+  return {
+    success: true,
+    scope: "summary",
+    options: Object.keys(optionsByKey)
+      .map(function(key) {
+        return optionsByKey[key];
+      })
+      .sort(function(left, right) {
+        return left.localeCompare(right);
+      }),
+    decodedLists: Number(summary.decodedLists) || 0,
+    pendingLists: Number(summary.pendingLists) || 0,
+    failedLists: Number(summary.failedLists) || 0
+  };
+
+}
+
+function buildArmyIntelligencePublicFactionProjection(readModel, requestedFaction) {
+
+  const faction =
+    normalizeArmyIntelligencePublicArmyName(requestedFaction);
+
+  if (!faction)
+    return {
+      success: false,
+      error: "A faction or sectorial is required."
+    };
+
+  const uniqueByIdentity = {};
+  const uniqueLists = [];
+
+  (Array.isArray(readModel.lists) ? readModel.lists : [])
+    .filter(function(list) {
+      return isArmyIntelligencePublicDecodedSource(list) &&
+        normalizeArmyIntelligencePublicArmyName(
+          list.decoded && list.decoded.sectorial || list.sectorial
+        ) === faction;
+    })
+    .forEach(function(list) {
+      const identity =
+        buildArmyIntelligencePublicListIdentity(list);
+
+      if (!identity)
+        return;
+
+      const result =
+        getArmyIntelligenceString(list.result)
+          .toLowerCase();
+
+      const existing =
+        uniqueByIdentity[identity];
+
+      if (existing) {
+        if (result && existing.results.indexOf(result) === -1)
+          existing.results.push(result);
+
+        return;
+      }
+
+      const projection =
+        Object.assign({}, list, {
+          results: result ? [result] : []
+        });
+
+      uniqueByIdentity[identity] = projection;
+      uniqueLists.push(projection);
+    });
+
+  return {
+    success: true,
+    scope: "faction",
+    faction: faction,
+    lists: uniqueLists,
+    armyLists: buildArmyIntelligencePublicFactionArmyLists(
+      uniqueLists,
+      Array.isArray(readModel.armyLists) ? readModel.armyLists : []
+    )
+  };
+
+}
+
+function isArmyIntelligencePublicDecodedSource(list) {
+
+  const sourceType =
+    getArmyIntelligenceString(list && list.sourceType)
+      .toLowerCase();
+
+  return Boolean(
+    list &&
+    list.status === "decoded" &&
+    list.decoded &&
+    ["league", "casual", "tournament"].indexOf(sourceType) !== -1
+  );
+
+}
+
+function buildArmyIntelligencePublicListIdentity(list) {
+
+  const player =
+    normalizeArmyIntelligencePublicIdentity(list && list.player);
+
+  const armyCodeHash =
+    getArmyIntelligenceString(list && list.armyCodeHash)
+      .toLowerCase();
+
+  return player && armyCodeHash
+    ? player + ":" + armyCodeHash
+    : "";
+
+}
+
+function buildArmyIntelligencePublicFactionArmyLists(lists, armyLists) {
+
+  const projected = [];
+
+  lists.forEach(function(list) {
+    const sourceId =
+      getArmyIntelligenceString(list.sourceId);
+
+    const armyCode =
+      getArmyIntelligenceString(list.armyCode);
+
+    const match =
+      armyLists.find(function(candidate) {
+        return sourceId &&
+          getArmyIntelligenceString(candidate.id) === sourceId;
+      }) ||
+      armyLists.find(function(candidate) {
+        return armyCode &&
+          getArmyIntelligenceString(candidate.armyCode) === armyCode;
+      });
+
+    if (match)
+      projected.push(match);
+  });
+
+  return projected;
+
+}
+
+function normalizeArmyIntelligencePublicArmyName(value) {
+
+  const canonical =
+    canonicalizeArmyName(value);
+
+  const key =
+    normalizeArmyIntelligencePublicIdentity(canonical);
+
+  const explicitNames = {
+    "force de reponse rapide merovingienne": "Force de Réponse Rapide Merovingienne",
+    "starco free company of the star": "StarCo"
+  };
+
+  if (explicitNames[key])
+    return explicitNames[key];
+
+  const registryName =
+    Object.keys(ARMY_REGISTRY_PARENT_MAP)
+      .find(function(name) {
+        return normalizeArmyIntelligencePublicIdentity(name) === key;
+      });
+
+  return registryName || canonical;
+
+}
+
+function normalizeArmyIntelligencePublicIdentity(value) {
+
+  return getArmyIntelligenceString(value)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 
 }
 
@@ -333,6 +709,9 @@ function rebuildArmyIntelligenceReadModelPayloadAndPersist() {
     CONFIG.SHEETS.ARMY_INTELLIGENCE_READ_MODEL,
     rows
   );
+
+  if (typeof markPublicArmyWorkspaceProjectionDirty_ === "function")
+    markPublicArmyWorkspaceProjectionDirty_(["intelligence"]);
 
   return payload;
 
@@ -545,12 +924,16 @@ function buildArmyIntelligenceListsFromCanonicalSources(knownArmyListCounts) {
                 ? JSON.stringify(snapshot.decoded)
                 : "",
               error: snapshot.error || "",
+              pipelineVersion: snapshot.pipelineVersion || "",
+              tacticalSchemaVersion: snapshot.tacticalSchemaVersion || "",
               status: snapshot.status
             }
           : {
               decodedAt: "",
               decodedJson: "",
               error: "Persisted Army Intelligence snapshot is missing.",
+              pipelineVersion: "",
+              tacticalSchemaVersion: "",
               status: "pending"
             },
         knownArmyListCounts
@@ -1048,6 +1431,8 @@ function mergeArmyIntelligenceSourceAndSnapshot(source, snapshot, knownArmyListC
     sourceId: source.sourceId,
     sourcePlayer: source.sourcePlayer,
     sourceType: source.sourceType,
+    pipelineVersion: snapshot.pipelineVersion || "",
+    tacticalSchemaVersion: snapshot.tacticalSchemaVersion || "",
     status: snapshot.status || "pending"
   };
 

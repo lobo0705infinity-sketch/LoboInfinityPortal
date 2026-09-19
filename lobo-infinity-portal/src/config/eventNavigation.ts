@@ -2,6 +2,7 @@ import type { PortalIconName } from '../components/PortalIcon'
 
 export type EventCapability =
   | 'overview'
+  | 'bracket'
   | 'registration'
   | 'submitResult'
   | 'standings'
@@ -21,6 +22,7 @@ export type EventNavigationConfig = {
   capabilities: EventCapability[]
   id: string
   label: string
+  registrationUrl?: string
   routeOverrides?: Partial<Record<EventCapability, string>>
   type: string
 }
@@ -36,6 +38,7 @@ export type EventCapabilityNavigationItem = {
 type NavigableEventCapability = Exclude<EventCapability, 'submitResult'>
 
 export const capabilityLabels: Record<NavigableEventCapability, string> = {
+  bracket: 'Bracket',
   factions: 'Factions',
   map: 'Map',
   objectives: 'Objectives',
@@ -53,6 +56,7 @@ export const capabilityLabels: Record<NavigableEventCapability, string> = {
 }
 
 const capabilityIcons: Record<NavigableEventCapability, PortalIconName> = {
+  bracket: 'compare',
   factions: 'factions',
   map: 'timeline',
   objectives: 'missions',
@@ -70,6 +74,7 @@ const capabilityIcons: Record<NavigableEventCapability, PortalIconName> = {
 }
 
 const defaultCapabilityRoutes: Record<NavigableEventCapability, string> = {
+  bracket: '/event/:eventId/bracket',
   factions: '/factions?eventId=:eventId',
   map: '/event/:eventId#map',
   objectives: '/event/:eventId#objectives',
@@ -96,11 +101,14 @@ export const currentEventNavigation: EventNavigationConfig = {
     'registration',
     'standings',
     'schedule',
-    'statistics',
     'rules',
   ],
   id: 'event-current-league',
   label: 'July 2026 League',
+  registrationUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSerLRnrnHyT7O0euglu_drx1yFzfvU2OdlidMXCDIt0ZYOp6Q/viewform?usp=dialog',
+  routeOverrides: {
+    schedule: '/event/:eventId/schedule',
+  },
   type: 'League',
 }
 
@@ -108,24 +116,35 @@ export const eventNavigation: EventNavigationConfig[] = [
   {
     capabilities: [
       'overview',
-      'registration',
-      'teams',
-      'pairings',
       'standings',
       'results',
-      'statistics',
       'rules',
     ],
     id: 'event-august-2026-team-tournament',
     label: 'Team Tournament',
     routeOverrides: {
       pairings: '/event/:eventId/tournament/pairings',
-      registration: '/event/:eventId/tournament/registration',
       results: '/event/:eventId/tournament/results',
       standings: '/event/:eventId/tournament/standings',
-      teams: '/event/:eventId/tournament/teams',
     },
     type: 'Team Tournament',
+  },
+  {
+    capabilities: [
+      'overview',
+      'registration',
+      'bracket',
+      'results',
+      'rules',
+    ],
+    id: 'event-lobo-s-american-top-40',
+    label: "Lobo's American Top 40",
+    registrationUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSfCyQ-oaLlZf8-utdWm0Y2iWrU8QZiHLVBhWzmxaCUZj2cMqg/viewform',
+    routeOverrides: {
+      results: '/event/:eventId/results',
+      rules: '/event/:eventId/rules',
+    },
+    type: 'Individual Double Elimination',
   },
 ]
 

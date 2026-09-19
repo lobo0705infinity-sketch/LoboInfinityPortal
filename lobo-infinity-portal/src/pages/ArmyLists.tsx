@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import OperatorBadge from '../components/OperatorBadge'
 import FactionPortraitImage from '../components/FactionPortraitImage'
+import InfinityArmyLink from '../components/InfinityArmyLink'
 import Skeleton from '../components/Skeleton'
 import { normalizeArmyForDisplay } from '../services/armyIdentity'
 import {
@@ -14,6 +15,7 @@ import {
 import { formatPlayerName } from '../services/formatting'
 import { getInfinityArmyTarget } from '../services/infinityArmyLinks'
 import { resolvePlayerFactionIdentity } from '../services/playerFactionIdentity'
+import { publicArmyWorkspace } from '../services/publicArmyWorkspaceProjection'
 
 type ArmyListFilter = {
   event: string
@@ -69,10 +71,8 @@ function ArmyLists() {
   useEffect(() => {
     const controller = new AbortController()
 
-    apiClient
-      .getSubmittedArmyListLibrary({
-        signal: controller.signal,
-      })
+    publicArmyWorkspace
+      .getArmyLists(controller.signal)
       .then((lists) => {
         setState({
           lists,
@@ -416,7 +416,7 @@ function ArmyListCard({
           </div>
         </dl>
         <div className="army-list-actions army-list-library-actions">
-          <ArmyListExternalLink armyCode={list.armyCode} />
+          <ArmyListExternalLink armyCode={list.armyCode} armyLink={list.armyLink} />
           <Link to={list.battleReportPath}>View Battle Report</Link>
           {canDiagnose ? (
             <button
@@ -544,14 +544,17 @@ function DiagnosticList({ title, values }: { title: string; values: string[] }) 
   )
 }
 
-function ArmyListExternalLink({ armyCode }: { armyCode: string }) {
+function ArmyListExternalLink({ armyCode, armyLink }: { armyCode: string; armyLink?: string }) {
+  if (armyLink) {
+    return <InfinityArmyLink armyCode={armyCode} href={armyLink}>View in Infinity Army</InfinityArmyLink>
+  }
   const target = getInfinityArmyTarget(armyCode)
 
   if (target.status === 'available') {
     return (
-      <a href={target.href} rel="noreferrer" target="_blank">
+      <InfinityArmyLink armyCode={armyCode} href={target.href}>
         View in Infinity Army
-      </a>
+      </InfinityArmyLink>
     )
   }
 

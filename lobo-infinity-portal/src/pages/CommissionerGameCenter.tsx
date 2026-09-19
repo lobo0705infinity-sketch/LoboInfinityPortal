@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import Loading from '../components/Loading'
 import { apiClient, type GameCenterGame } from '../services/api'
@@ -128,6 +128,18 @@ function CommissionerGameCenter() {
         <div className="game-center-count" aria-live="polite">
           <strong>{visibleGames.length.toLocaleString()}</strong>
           <span>{visibleGames.length === 1 ? 'Game' : 'Games'}</span>
+        </div>
+      </section>
+
+      <section className="panel operations-panel" aria-label="Games and Army Lists tools">
+        <div className="panel-heading">
+          <p className="eyebrow">Games & Army Lists</p>
+          <h2>Canonical Corrections</h2>
+          <p>Score corrections remain available from individual game rows. Use the dedicated tools for historical Army List links and Army Code exceptions.</p>
+        </div>
+        <div className="operations-actions wrap">
+          <Link to="/commissioner/army-list-links">Historical Army List Links</Link>
+          <Link to="/commissioner/army-code-validation">Army Code Validation</Link>
         </div>
       </section>
 

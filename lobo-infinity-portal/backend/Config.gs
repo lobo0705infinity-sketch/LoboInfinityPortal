@@ -84,6 +84,10 @@ const CONFIG = {
 
     EVENT_ROUNDS: "Event Rounds",
 
+    EVENT_BRACKET_MATCHES: "Event Bracket Matches",
+
+    EVENT_BRACKET_MISSIONS: "Event Bracket Missions",
+
     EVENT_LIFECYCLE_AUDIT: "Event Lifecycle Audit",
 
     TEAM_TOURNAMENT_TEAMS: "Team Tournament Teams",
@@ -100,7 +104,9 @@ const CONFIG = {
 
     ARMY_INTELLIGENCE: "Army Intelligence",
 
-    ARMY_INTELLIGENCE_READ_MODEL: "Army Intelligence Read Model"
+    ARMY_INTELLIGENCE_READ_MODEL: "Army Intelligence Read Model",
+
+    PAGE_ANALYTICS: "Page Analytics"
 
   },
 
