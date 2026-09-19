@@ -71,7 +71,10 @@ const berserker = fighter('berserker', { skills: ['Berserk (+3)'] })
 const states = evaluateCloseCombatProfile(berserker, buildStandardCloseCombatDefenders()).states
 assert.ok(states.some((state) => state.id === 'berserk'))
 assert.ok(states.some((state) => state.id === 'reactive'))
-assert.notEqual(states.find((state) => state.id === 'berserk').rating, states.find((state) => state.id === 'normal').rating, 'Berserk is evaluated separately from normal CC')
+const berserkState = states.find((state) => state.id === 'berserk')
+assert.notEqual(berserkState.rating, states.find((state) => state.id === 'normal').rating, 'Berserk is evaluated separately from normal CC')
+assert.equal(berserkState.matchups[0].selected.response.roll.simultaneous, undefined, 'N5 Berserk is resolved as a Face-to-Face Roll, not simultaneous Normal Rolls')
+assert.ok(berserkState.matchups[0].selected.response.roll.noEffect > 0, 'N5 Berserk permits opposing successes to cancel the Berserk user\'s successes')
 const protheionStates = evaluateCloseCombatProfile(protheion, buildStandardCloseCombatDefenders()).states
 assert.deepEqual(protheionStates.filter((state) => /^protheion-/.test(state.id)).map((state) => state.id), ['protheion-1', 'protheion-2'])
 

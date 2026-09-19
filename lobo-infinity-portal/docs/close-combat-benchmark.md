@@ -1,4 +1,4 @@
-# Close-Combat Benchmark v1
+# Close-Combat Benchmark v3
 
 The close-combat benchmark is a deterministic N5.3 combat model built from the official Infinity Army payloads. It ranks canonical CC loadouts by their normal active-turn performance and reports conditional states separately.
 
@@ -24,7 +24,7 @@ The close-combat benchmark is a deterministic N5.3 combat model built from the o
 
 Every d20 result is enumerated. The engine handles Burst, Special Dice and discarded dice, Face-to-Face cancellation, Success Values over 20, Criticals, Saving Rolls, repeated Continuous Damage saves, AP, DA, EXP, T2, Shock, Monofilament, PARA, E/M states, NWI/Dogged, and Immunities represented by the profile data.
 
-The engine applies Martial Arts 1–5, Natural Born Warrior, CC Attack positive and negative MODs, CC Attack (+B)/(+SD), Surprise Attack, Berserk, allied-Trooper CC Burst, and weapon-imposed MODs. Guard is retained as a profile access trait; once the attack is legal, Guard does not change the opposed dice calculation.
+The engine applies Martial Arts 1–5, Natural Born Warrior, CC Attack positive and negative MODs, CC Attack (+B)/(+SD), Surprise Attack, Berserk, allied-Trooper CC Burst, and weapon-imposed MODs. In N5, Berserk remains a Face-to-Face Roll and applies its listed MOD to the user's CC Attack; it does not create simultaneous Normal Rolls. Guard is retained as a profile access trait; once the attack is legal, Guard does not change the opposed dice calculation.
 
 ## Reported states
 

@@ -10,7 +10,7 @@ const DEFAULT_STATES = Object.freeze([
   { id: 'normal', label: 'Normal active-turn CC', type: 'face-to-face' },
   { id: 'reactive', label: 'Reactive-turn CC', type: 'reactive' },
   { id: 'surprise', label: 'Surprise Attack', type: 'face-to-face', requires: 'surprise' },
-  { id: 'berserk', label: 'Berserk', type: 'normal-rolls', requires: 'berserk' },
+  { id: 'berserk', label: 'Berserk', type: 'face-to-face', requires: 'berserk' },
   { id: 'ally-1', label: 'One allied Trooper engaged', type: 'face-to-face', alliedBurst: 1 },
   { id: 'ally-2', label: 'Two allied Troopers engaged', type: 'face-to-face', alliedBurst: 2 },
   { id: 'protheion-1', label: 'Protheion Power-Up 1', type: 'face-to-face', requires: 'protheion', powerUp: 1 },
