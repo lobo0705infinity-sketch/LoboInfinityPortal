@@ -23,7 +23,8 @@ const BENCHMARK_WEAPON_ARMY_CODES = [
 
 const args = parseArgs(process.argv.slice(2))
 const apiOnly = args['api-only'] === 'true'
-if (!apiOnly && !args.input) throw new Error('Usage: npm run gunfighters:catalog -- --input <Army code> [--output <catalog.json>] [--api-only true]')
+const officialInput = args['official-input']
+if (!apiOnly && !officialInput && !args.input) throw new Error('Usage: npm run gunfighters:catalog -- --input <Army code> [--output <catalog.json>] [--api-only true] [--official-input <capture.json>]')
 const output = resolve(args.output || 'data/infinity-army/gunfighter-benchmark-catalog.json')
 const ttsCatalogPath = resolve(args['tts-catalog'] || 'data/infinity-army/tts-profile-catalog.json.gz.b64')
 const ttsCatalogRaw = await readFile(ttsCatalogPath, 'utf8')
@@ -38,7 +39,13 @@ try {
   let payloads
   let chartRows
   let page = null
-  if (apiOnly) {
+  if (officialInput) {
+    const capture = JSON.parse(await readFile(resolve(officialInput), 'utf8'))
+    metadata = capture.metadata
+    payloads = capture.payloads
+    const weaponInput = JSON.parse(await readFile(resolve(args['weapon-chart'] || 'data/infinity-army/benchmark-weapon-chart-v8.json'), 'utf8'))
+    chartRows = dedupeWeaponChartRows(normalizeWeaponChartRows(weaponInput.rows || weaponInput))
+  } else if (apiOnly) {
     metadata = await fetchOfficialJson('https://api.corvusbelli.com/army/infinity/en/metadata')
     payloads = await captureAllFactionPayloadsFromApi(metadata)
     const weaponInput = JSON.parse(await readFile(resolve(args['weapon-chart'] || 'data/infinity-army/benchmark-weapon-chart-v8.json'), 'utf8'))

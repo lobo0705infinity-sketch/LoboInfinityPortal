@@ -24,6 +24,12 @@ for (const entry of catalog.entries) {
     assert.ok(entry.states.some((state) => state.id === 'protheion-2'))
   }
 }
+const allStates = catalog.entries.flatMap((entry) => entry.states).sort((a, b) => a.rating - b.rating)
+const gradeOrder = ['F', 'D', 'C', 'B', 'A', 'S']
+for (let index = 1; index < allStates.length; index += 1) {
+  assert.ok(allStates[index].percentile >= allStates[index - 1].percentile, 'CC state percentiles must be monotonic across one shared population')
+  assert.ok(gradeOrder.indexOf(allStates[index].grade) >= gradeOrder.indexOf(allStates[index - 1].grade), 'CC state grades must be monotonic across one shared population')
+}
 const rankingIdentities = catalog.entries.map((entry) => JSON.stringify([
   normalizeName(entry.name),
   entry.rating,

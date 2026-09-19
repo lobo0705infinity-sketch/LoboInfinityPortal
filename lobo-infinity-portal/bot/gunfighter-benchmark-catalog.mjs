@@ -150,12 +150,8 @@ function summarizeWeaponsUsed(matchups = []) {
 }
 
 function applyRelativeRatings(entries, evaluationCache) {
-  const distributions = new Map()
-  for (const states of evaluationCache.values()) for (const state of states) {
-    distributions.set(state.id, [...(distributions.get(state.id) || []), Number(state.rating || 0)])
-  }
+  const values = [...evaluationCache.values()].flatMap((states) => states.map((state) => Number(state.rating || 0)))
   for (const entry of entries) for (const state of entry.result.states) {
-    const values = distributions.get(state.id) || []
     const percentile = values.length
       ? round(100 * values.filter((value) => value <= Number(state.rating || 0)).length / values.length)
       : null

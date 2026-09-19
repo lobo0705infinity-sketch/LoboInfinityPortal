@@ -1,6 +1,6 @@
 import { gunfighterWeaponsFromTtsProfile } from './gunfighter-profile-canonicalizer.mjs'
 
-export const GUNFIGHTER_BENCHMARK_VERSION = 'gunfighter-benchmark-v9-31-defenders-fireteam-level2'
+export const GUNFIGHTER_BENCHMARK_VERSION = 'gunfighter-benchmark-v10-31-defenders-shared-state-grading-fireteam-level2'
 
 export const DEFENSIVE_ARCHETYPE_WEIGHTS = Object.freeze({
   'ordinary-linked': 0.20,

@@ -138,7 +138,9 @@ export function resolveWeaponEffect(outcomes, weapon, target) {
   for (const [key, probability] of outcomes) {
     const { hits, criticals } = parseOutcomeKey(key)
     if (!hits) continue
-    const savingRolls = hits * Number(weapon.savingRolls || 1) + criticals
+    const viralAffectsVitality = Boolean(weapon.viralBioweapon) && Number(target.vitality || 0) > 0
+    const savingRollsPerHit = viralAffectsVitality ? 2 : Number(weapon.savingRolls || 1)
+    const savingRolls = hits * savingRollsPerHit + criticals
     const distribution = savingFailureDistribution(savingRolls, failureProbability, weapon.continuousDamage, durability)
     for (let failures = 0; failures < distribution.length; failures += 1) {
       const branch = probability * distribution[failures]
@@ -272,7 +274,9 @@ function savingRollFailureProbability(weapon, target) {
 
 function effectiveDurability(profile, weapon) {
   let durability = Math.max(1, Number(profile.vitality || profile.structure || 1))
-  if (hasSkill(profile, /no wound incapacitation|dogged/) && !(weapon.shock && !hasSkill(profile, /immunity\s*\(?shock\)?/))) durability += 1
+  const hasVitality = Number(profile.vitality || 0) > 0
+  const shockApplies = Boolean(weapon.shock) || (Boolean(weapon.viralBioweapon) && hasVitality)
+  if (hasSkill(profile, /no wound incapacitation|dogged/) && !(shockApplies && !hasSkill(profile, /immunity\s*\(?shock\)?/))) durability += 1
   return durability
 }
 
@@ -297,7 +301,7 @@ function exchangeKey({ active, reactive, attacker, defender, weapon, defenderWea
 }
 
 function effectKey(weapon, target) {
-  return [weapon.power, weapon.ammo, weapon.save, weapon.saveFixed, weapon.saveModifier, weapon.savingRolls, weapon.ap, weapon.shock, weapon.continuousDamage, weapon.nonLethal, weapon.deadState, weapon.woundsPerFailure, weapon.states, target.ph, target.arm, target.bts, target.vitality, target.structure, (target.skills || []).slice().sort()]
+  return [weapon.power, weapon.ammo, weapon.save, weapon.saveFixed, weapon.saveModifier, weapon.savingRolls, weapon.ap, weapon.shock, weapon.viralBioweapon, weapon.continuousDamage, weapon.nonLethal, weapon.deadState, weapon.woundsPerFailure, weapon.states, target.ph, target.arm, target.bts, target.vitality, target.structure, (target.skills || []).slice().sort()]
 }
 
 function binomialDistribution(trials, failureProbability) {

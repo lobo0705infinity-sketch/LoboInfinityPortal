@@ -60,6 +60,7 @@ function resolveCloseCombatWeapons(references, catalog, extras, ammunitions) {
       const opponentMod = modifiers.map((modifier) => String(modifier).match(/^-(3|6|9)$/)?.[1]).filter(Boolean).map(Number)
       const properties = (record.properties || []).map(String)
       const ammo = ammunitionName(record, ammunitions)
+      const viralBioweapon = properties.some((property) => /bioweapon\s*\(\s*da\s*\+\s*shock\s*\)/i.test(property))
       resolved.push({
         name: [record.name, record.mode].filter(Boolean).join(' — '),
         power,
@@ -73,6 +74,7 @@ function resolveCloseCombatWeapons(references, catalog, extras, ammunitions) {
         attackMod: properties.some((property) => /improvised/i.test(property)) ? -6 : 0,
         ap: /(?:^|\+)AP(?:$|\+)/i.test(ammo) || /\/2/.test(saving),
         shock: /shock/i.test(ammo) || properties.some((property) => /shock/i.test(property)),
+        viralBioweapon,
         nonLethal: properties.some((property) => /non-lethal/i.test(property)) || /PARA/i.test(ammo),
         deadState: properties.some((property) => /state:\s*dead/i.test(property)),
         states: properties.filter((property) => /state:/i.test(property)).map((property) => property.replace(/^.*state:\s*/i, '')),

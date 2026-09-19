@@ -132,7 +132,7 @@ function compactResult(profile, result) {
     points: profile.points,
     cc: profile.cc,
     skills: profile.skills,
-    weapons: profile.weapons.map((weapon) => ({ name: weapon.name, power: weapon.power, ammo: weapon.ammo, save: weapon.save, savingRolls: weapon.savingRolls, attackMod: weapon.attackMod, opponentMod: weapon.opponentMod })),
+    weapons: profile.weapons.map((weapon) => ({ name: weapon.name, power: weapon.power, ammo: weapon.ammo, save: weapon.save, savingRolls: weapon.savingRolls, viralBioweapon: Boolean(weapon.viralBioweapon), attackMod: weapon.attackMod, opponentMod: weapon.opponentMod })),
     aliases: profile.aliases.map((alias) => ({ ...alias })),
     rating: result.rating,
     states: result.states.map((state) => ({
@@ -185,15 +185,9 @@ function mergeStates(first, second) {
 }
 
 function applyStateRelativeRatings(entries) {
-  const valuesByState = new Map()
+  const values = entries.flatMap((entry) => (entry.states || []).map((state) => state.rating)).sort((a, b) => a - b)
   for (const entry of entries) for (const state of entry.states || []) {
-    const values = valuesByState.get(state.id) || []
-    values.push(state.rating)
-    valuesByState.set(state.id, values)
-  }
-  for (const values of valuesByState.values()) values.sort((a, b) => a - b)
-  for (const entry of entries) for (const state of entry.states || []) {
-    state.percentile = percentile(state.rating, valuesByState.get(state.id) || [])
+    state.percentile = percentile(state.rating, values)
     state.grade = grade(state.percentile)
   }
 }

@@ -113,4 +113,17 @@ const pairedCatalog = buildGunfighterBenchmarkCatalog({ profiles: pairedProfiles
 const pairedLookup = lookupGunfighterRatings(pairedCatalog, { sectorialId: 502, combatGroups: [{ members: [{ unitId: 1551, groupId: 0, optionId: 1, combinedId: '502-1551-0-1-1' }] }] })
 assert.deepEqual(pairedLookup.map((item) => item.result.name), ['JAZZ', 'BILLIE'], 'legacy combined selections expand into each physical trooper profile')
 
+const sharedProfiles = [
+  { ...catalogProfile, id: '502:101:1:1:1', unitId: 101, bs: 10, fireteamCapable: true },
+  { ...catalogProfile, id: '502:102:1:1:1', unitId: 102, bs: 13, fireteamCapable: false },
+  { ...catalogProfile, id: '502:103:1:1:1', unitId: 103, bs: 16, fireteamCapable: true },
+]
+const sharedCatalog = buildGunfighterBenchmarkCatalog({ profiles: sharedProfiles, defenders: [smokeDefender], officialDataVersion: '7.shared', benchmarkVersion: 'test-shared' })
+const sharedStates = sharedCatalog.entries.flatMap((entry) => entry.result.states).sort((a, b) => a.rating - b.rating)
+const gradeOrder = ['F', 'D', 'C', 'B', 'A', 'S']
+for (let index = 1; index < sharedStates.length; index += 1) {
+  assert.ok(sharedStates[index].percentile >= sharedStates[index - 1].percentile, 'shared gunfighter grading must never assign a lower percentile to a higher raw rating')
+  assert.ok(gradeOrder.indexOf(sharedStates[index].grade) >= gradeOrder.indexOf(sharedStates[index - 1].grade), 'shared gunfighter grading must never assign a worse grade to a higher raw rating')
+}
+
 console.log('PASS - gunfighter engine covers exact dice, all range bands, X Visor, optimal AROs, Fireteam +1SD, durability fractions, state weights, and Shock/NWI immunity.')
