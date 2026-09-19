@@ -133,6 +133,16 @@ assert.equal(ratedAnalysis.categories.gunfighters[0].nonLinked.weaponsUsed[0].we
 assert.equal(ratedAnalysis.categories.apex.length, 0, 'catalog ratings replace the legacy Apex section')
 assert.equal(ratedAnalysis.categories.competent.length, 0, 'catalog ratings replace the legacy Competent section')
 
+const aroIdentityFixture = profile('305-1846-1-2-1', { points: 26, skills: ['Neurocinetics'], weapons: [weapon('AP Sniper Rifle', 2)] })
+const aroIdentityAnalysis = classifyTacticalBrief([aroIdentityFixture], { faction: 'TAK' }, [], [{
+  status: 'matched',
+  key: '305:1846:1:2:1',
+  nonLinked: { rating: 24.5, grade: 'A', percentile: 91, weaponsUsed: [{ weapon: 'AP Sniper Rifle' }] },
+  fireteamLinked: { rating: 32.5, grade: 'S', percentile: 98, weaponsUsed: [{ weapon: 'AP Sniper Rifle' }] },
+}])
+assert.equal(aroIdentityAnalysis.categories.valuableAro[0].nonLinked.rating, 24.5, 'ARO catalog identity includes the sectorial ID')
+assert.equal(aroIdentityAnalysis.categories.valuableAro[0].fireteamLinked.rating, 32.5)
+
 const fireteamAnalysis = classifyTacticalBrief([
   profile('orc', { bs: 14, unitName: 'ORC', points: 35, fireteamTeams: ['White Company'], weapons: [weapon('Feuerbach', 2)] }),
   profile('hannibal', { bs: 13, unitName: 'Hannibal', points: 33, fireteamTeams: ['White Company'], skills: ['BS Attack (+1SD)'], weapons: [weapon('MULTI Marksman Rifle', 3)] }),

@@ -306,7 +306,7 @@ function bestAroRating(entry) { return Math.max(Number(entry.nonLinked?.rating ?
 
 function canonicalKeyFromCombinedId(value) {
   const parts = String(value || '').split('-').map(Number)
-  return parts.length >= 5 && parts.slice(-4).every(Number.isInteger) ? parts.slice(-4).join(':') : ''
+  return parts.length >= 5 && parts.slice(-5).every(Number.isInteger) ? parts.slice(-5).join(':') : ''
 }
 
 export function filterCanonicalFireteamMembershipsForProfile(memberships, profileNames = []) {
