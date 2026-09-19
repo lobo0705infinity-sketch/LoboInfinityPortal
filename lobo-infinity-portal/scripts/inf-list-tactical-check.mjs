@@ -117,9 +117,19 @@ assert.equal(analysis.categories.defensive.find((item) => item.combinedId === 'd
 assert.equal(analysis.categories.defensive.some((item) => item.combinedId === 'mim-only'), false)
 assert.equal(analysis.categories.defensive.some((item) => item.combinedId === 'same-unit-b'), false)
 
-const ratedAnalysis = classifyTacticalBrief(fixtures, { faction: 'Fixture' }, [{ status: 'matched', key: canonicalKey(fixtures[0].combinedId), normal: 61.25, fireteam: 66.5 }])
+const ratedAnalysis = classifyTacticalBrief(fixtures, { faction: 'Fixture' }, [{
+  status: 'matched',
+  key: canonicalKey(fixtures[0].combinedId),
+  normal: 61.25,
+  nonLinked: { rating: 61.25, grade: 'A', percentile: 88.4, weaponsUsed: [{ weapon: 'Heavy Machine Gun', selections: 31, scoreContribution: 280 }] },
+  fireteam: 66.5,
+  fireteamLinked: { rating: 66.5, grade: 'S', percentile: 96.1, weaponsUsed: [{ weapon: 'Heavy Machine Gun', selections: 34, scoreContribution: 310 }] },
+}])
 assert.equal(ratedAnalysis.gunfighterBenchmark.available, true)
 assert.equal(ratedAnalysis.categories.gunfighters[0].normal, 61.25)
+assert.equal(ratedAnalysis.categories.gunfighters[0].nonLinked.grade, 'A')
+assert.equal(ratedAnalysis.categories.gunfighters[0].fireteamLinked.grade, 'S')
+assert.equal(ratedAnalysis.categories.gunfighters[0].nonLinked.weaponsUsed[0].weapon, 'Heavy Machine Gun')
 assert.equal(ratedAnalysis.categories.apex.length, 0, 'catalog ratings replace the legacy Apex section')
 assert.equal(ratedAnalysis.categories.competent.length, 0, 'catalog ratings replace the legacy Competent section')
 
