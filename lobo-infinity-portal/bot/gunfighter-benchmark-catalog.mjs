@@ -28,6 +28,7 @@ export function buildGunfighterBenchmarkCatalog({ profiles, defenders, officialD
       result: { profileId: profile.id, name: profile.name, states },
     }
   }).sort((a, b) => a.key.localeCompare(b.key))
+  applyRelativeRatings(entries, evaluationCache)
   const fingerprint = fingerprintCatalog({ officialDataVersion, benchmarkVersion, defenders, options, entries })
   return {
     schemaVersion: GUNFIGHTER_CATALOG_SCHEMA,
@@ -81,14 +82,18 @@ export function rankArmyGunfighters(catalog, decodedArmy, { limit = 4 } = {}) {
   return lookups.map((lookup, index) => {
     const member = members[lookup.memberIndex ?? index]
     const states = lookup.result?.states || []
+    const nonLinkedState = states.find((state) => state.id === 'normal')
+    const fireteamState = states.find((state) => state.id === 'fireteam')
     return {
       status: lookup.status,
       key: lookup.key,
       rosterPosition: member?.rosterPosition || null,
       unitName: member?.unitName || member?.unit || lookup.result?.name || null,
       profileName: member?.profileName || member?.profile || null,
-      normal: states.find((state) => state.id === 'normal')?.rating ?? null,
-      fireteam: states.find((state) => state.id === 'fireteam')?.rating ?? null,
+      normal: nonLinkedState?.rating ?? null,
+      nonLinked: nonLinkedState ? { rating: nonLinkedState.rating, grade: nonLinkedState.grade, percentile: nonLinkedState.percentile, weaponsUsed: nonLinkedState.weaponsUsed || [] } : null,
+      fireteam: fireteamState?.rating ?? null,
+      fireteamLinked: fireteamState ? { rating: fireteamState.rating, grade: fireteamState.grade, percentile: fireteamState.percentile, weaponsUsed: fireteamState.weaponsUsed || [] } : null,
       result: lookup.result,
     }
   }).sort((left, right) => {
@@ -121,9 +126,45 @@ function compactResult(result) {
       id: state.id,
       fireteamSpecialDice: state.fireteamSpecialDice,
       rating: state.rating,
+      weaponsUsed: summarizeWeaponsUsed(state.matchups),
     })),
   }
 }
+
+function summarizeWeaponsUsed(matchups = []) {
+  const totals = new Map()
+  for (const matchup of matchups) {
+    const selected = matchup.selected
+    if (!selected?.weapon) continue
+    const label = selected.mode && !['normal', 'default'].includes(String(selected.mode).toLowerCase())
+      ? `${selected.weapon} (${selected.mode})`
+      : selected.weapon
+    const current = totals.get(label) || { weapon: label, selections: 0, scoreContribution: 0 }
+    current.selections += 1
+    current.scoreContribution += Number(selected.score || 0)
+    totals.set(label, current)
+  }
+  return [...totals.values()]
+    .sort((a, b) => b.scoreContribution - a.scoreContribution || b.selections - a.selections || a.weapon.localeCompare(b.weapon))
+    .map((item) => ({ weapon: item.weapon, selections: item.selections, scoreContribution: round(item.scoreContribution) }))
+}
+
+function applyRelativeRatings(entries, evaluationCache) {
+  const distributions = new Map()
+  for (const states of evaluationCache.values()) for (const state of states) {
+    distributions.set(state.id, [...(distributions.get(state.id) || []), Number(state.rating || 0)])
+  }
+  for (const entry of entries) for (const state of entry.result.states) {
+    const values = distributions.get(state.id) || []
+    const percentile = values.length
+      ? round(100 * values.filter((value) => value <= Number(state.rating || 0)).length / values.length)
+      : null
+    state.percentile = percentile
+    state.grade = percentile == null ? null : percentile >= 95 ? 'S' : percentile >= 80 ? 'A' : percentile >= 60 ? 'B' : percentile >= 40 ? 'C' : percentile >= 20 ? 'D' : 'F'
+  }
+}
+
+function round(value) { return Math.round(Number(value) * 100) / 100 }
 
 function fingerprintCatalog({ officialDataVersion, benchmarkVersion, defenders, options, entries }) {
   const hash = createHash('sha256')
