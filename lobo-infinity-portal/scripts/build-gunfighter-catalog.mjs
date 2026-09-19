@@ -44,7 +44,7 @@ try {
     return buildCanonicalGunfighterProfiles({ dataset: sectorialDataset, weaponChart: chartRows, sectorialId, fireteamUnitIds, wildcardUnitIds, fireteamProfiles, ttsProfiles })
   })
   console.log(`Built ${profiles.length} canonical catalog profiles; starting benchmark evaluation`)
-  const defenders = buildStandardGunfighterDefenders(chartRows)
+  const defenders = buildStandardGunfighterDefenders(chartRows, ttsProfiles)
   const catalog = buildGunfighterBenchmarkCatalog({
     profiles,
     defenders,
@@ -193,10 +193,17 @@ function fireteamEligibility(payloads) {
       const id = Number(member.unitId || unitBySlug.get(member.slug))
       if (!Number.isInteger(id)) continue
       const wildcard = !Array.isArray(team.type) || !team.type.length
-      const core = Array.isArray(team.type) && team.type.some((type) => String(type).toUpperCase() === 'CORE')
+      // Any profile that can legally join a Fireteam can receive the linked
+      // +1SD benchmark state. This is not limited to Core teams: Duo, Haris,
+      // special named teams, and Wildcards all qualify.
+      const linkable = Array.isArray(team.type) && team.type.length > 0
       if (wildcard) wildcardUnitIds.add(id)
-      else if (core) fireteamUnitIds.add(id)
-      if (wildcard || core) fireteamProfiles.push({ unitId: id, memberName: String(member.name || ''), wildcard })
+      else if (linkable) fireteamUnitIds.add(id)
+      if (wildcard || linkable) fireteamProfiles.push({
+        unitId: id,
+        memberName: [member.name, member.comment].filter(Boolean).join(' '),
+        wildcard,
+      })
     }
   }
   return { fireteamUnitIds: [...fireteamUnitIds], wildcardUnitIds: [...wildcardUnitIds], fireteamProfiles }
