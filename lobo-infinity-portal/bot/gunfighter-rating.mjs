@@ -100,24 +100,13 @@ export function resolveFaceToFace(active, reactive) {
   if (cached) return cached
   const activeDistribution = retainedRollDistribution(active)
   const reactiveDistribution = retainedRollDistribution(reactive)
-  let activeWin = 0
-  let reactiveWin = 0
-  let noEffect = 0
-  let expectedActiveHits = 0
-  let expectedReactiveHits = 0
-  for (const [activeKey, activeProbability] of activeDistribution) {
-    const activeRolls = JSON.parse(activeKey)
-    for (const [reactiveKey, reactiveProbability] of reactiveDistribution) {
-      const probability = activeProbability * reactiveProbability
-      const reactiveRolls = JSON.parse(reactiveKey)
-      const result = compareRolls(activeRolls, reactiveRolls)
-      if (result.activeHits) activeWin += probability
-      else if (result.reactiveHits) reactiveWin += probability
-      else noEffect += probability
-      expectedActiveHits += probability * result.activeHits
-      expectedReactiveHits += probability * result.reactiveHits
-    }
-  }
+  const activeSummary = summarizeRollDistribution(activeDistribution)
+  const reactiveSummary = summarizeRollDistribution(reactiveDistribution)
+  const activeWin = winProbability(activeSummary, reactiveSummary)
+  const reactiveWin = winProbability(reactiveSummary, activeSummary)
+  const noEffect = Math.max(0, 1 - activeWin - reactiveWin)
+  const expectedActiveHits = expectedWinningHits(activeSummary, reactiveSummary)
+  const expectedReactiveHits = expectedWinningHits(reactiveSummary, activeSummary)
   const result = {
     activeWin: round(activeWin * 100),
     reactiveWin: round(reactiveWin * 100),
@@ -127,6 +116,36 @@ export function resolveFaceToFace(active, reactive) {
   }
   faceToFaceCache.set(cacheKey, result)
   return result
+}
+
+function summarizeRollDistribution(distribution) {
+  const states = []
+  const bestRankProbability = new Map()
+  for (const [key, probability] of distribution) {
+    const successes = JSON.parse(key).filter((roll) => roll.success)
+    const bestRank = successes.length ? Math.max(...successes.map(rollRank)) : 0
+    const weightedRanks = successes.map((roll) => ({ rank: rollRank(roll), hits: 1 + (roll.critical ? 1 : 0) }))
+    states.push({ probability, bestRank, weightedRanks })
+    bestRankProbability.set(bestRank, (bestRankProbability.get(bestRank) || 0) + probability)
+  }
+  const below = new Map()
+  let cumulative = 0
+  for (let rank = 0; rank <= 120; rank += 1) {
+    below.set(rank, cumulative)
+    cumulative += bestRankProbability.get(rank) || 0
+  }
+  return { states, below }
+}
+
+function winProbability(own, opposing) {
+  return own.states.reduce((sum, state) => state.bestRank > 0
+    ? sum + state.probability * (opposing.below.get(state.bestRank) || 0)
+    : sum, 0)
+}
+
+function expectedWinningHits(own, opposing) {
+  return own.states.reduce((sum, state) => sum + state.probability * state.weightedRanks.reduce((hits, roll) =>
+    hits + roll.hits * (opposing.below.get(roll.rank) || 0), 0), 0)
 }
 
 export function resolveNormalRoll(pool) {
