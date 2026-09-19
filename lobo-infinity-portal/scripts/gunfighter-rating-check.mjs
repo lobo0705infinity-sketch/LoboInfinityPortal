@@ -84,6 +84,8 @@ for (const matchup of msvResult.states[0].matchups) for (const candidate of matc
 }
 const smokeOnly = evaluateGunfighterProfile(profile('smoke-only', { weapons: smokeDefender.weapons.slice(1) }), [profile('smoke-target')])
 assert.equal(smokeOnly.states[0].rating, 0, 'active Smoke cannot damage or neutralize a benchmark target')
+const mineOnly = evaluateGunfighterProfile(profile('mine-only', { weapons: [rifle({ attackType: 'direct-template', deployable: true, disposableUses: 3 })] }), [profile('mine-target')])
+assert.equal(mineOnly.states[0].rating, 0, 'Deployable weapons cannot be used as direct active attacks or AROs')
 
 const catalogProfile = { ...attacker, sectorialId: 502, unitId: 10, groupId: 2, optionId: 3, profileId: 1 }
 const catalog = buildGunfighterBenchmarkCatalog({ profiles: [catalogProfile], defenders: [smokeDefender], officialDataVersion: '7.test', benchmarkVersion: 'test-v1' })

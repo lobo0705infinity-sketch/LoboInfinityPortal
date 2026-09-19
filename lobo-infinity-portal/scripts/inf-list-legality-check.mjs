@@ -44,6 +44,15 @@ const fifteenTrooperLimit = validateInfListLegality({
 })
 assert.ok(fifteenTrooperLimit.violations.some((issue) => issue.includes('16 Troopers exceeds the 15-Trooper limit')))
 
+const elektronik = unit(41, 410, 'T', [option(1, 3, 0, 'ELEKTRONIK')])
+elektronik.profileGroups[0].profiles[0].skills = [{ name: 'Peripheral (Servant)' }]
+const elektronikLimit = validateInfListLegality({
+  decoded: decoded(300, [...Array.from({ length: 14 }, () => member(10, 1)), member(20, 1), member(41, 1)]),
+  payload: { ...payload, units: [unit(10, 100, 'T', [option(1, 5, 0, 'LINE TROOPER')]), payload.units[1], elektronik] },
+})
+assert.equal(elektronikLimit.totals.troopers, 15, 'Elektronik is a Peripheral and does not consume a Trooper slot')
+assert.equal(elektronikLimit.violations.some((issue) => issue.includes('15-Trooper limit')), false)
+
 const unavailable = validateInfListLegality({ decoded: decoded(300, [member(999, 1)]), payload })
 assert.equal(unavailable.status, 'unavailable')
 assert.match(formatInfListLegality(unavailable), /VALIDATION UNAVAILABLE/)

@@ -11,6 +11,8 @@ import { resolveExactProfileGroup } from './infinity-army-profile-resolution.mjs
 import { validateInfListLegality } from '../bot/inf-list-legality.mjs'
 import { loadGunfighterBenchmarkCatalog } from '../bot/gunfighter-catalog-store.mjs'
 import { rankArmyGunfighters } from '../bot/gunfighter-benchmark-catalog.mjs'
+import { loadAroBenchmarkCatalog } from '../bot/aro-catalog-store.mjs'
+import { rankArmyAros } from '../bot/aro-benchmark-catalog.mjs'
 
 const rendererOrigin = 'https://infinity.2nirwana.de'
 const rendererPath = '/cards/generate'
@@ -340,12 +342,15 @@ export async function renderInfListPng({ input, outputPath, browserType = chromi
     })
     const gunfighterCatalog = await loadGunfighterBenchmarkCatalog()
     const gunfighterRatings = gunfighterCatalog ? rankArmyGunfighters(gunfighterCatalog, decoded, { limit: 4 }) : []
+    const aroCatalog = await loadAroBenchmarkCatalog()
+    const aroRatings = aroCatalog ? rankArmyAros(aroCatalog, decoded) : []
     const tacticalAnalysis = classifyTacticalBrief(submittedProfiles, {
+      aroCatalogFingerprint: aroCatalog?.fingerprint,
       faction: faction?.name,
       gunfighterCatalogFingerprint: gunfighterCatalog?.fingerprint,
       listName: decoded.listName,
       sectorial: faction?.name,
-    }, gunfighterRatings)
+    }, gunfighterRatings, aroRatings)
     const tacticalPages = await renderTacticalBrief({ analysis: tacticalAnalysis, browser })
     const legality = validateInfListLegality({ decoded, payload: classificationData.payload })
 

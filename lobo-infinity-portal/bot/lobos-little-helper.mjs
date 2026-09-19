@@ -10,6 +10,7 @@ import { createInfIdInteractionHandler, ensureInfIdCommand } from './inf-id-comm
 import { createRulesInteractionHandler, ensureRulesCommand } from './rules-command.mjs'
 import { startRulesResourceWatcher } from './rules-resource-watcher.mjs'
 import { loadGunfighterBenchmarkCatalog } from './gunfighter-catalog-store.mjs'
+import { loadAroBenchmarkCatalog } from './aro-catalog-store.mjs'
 
 export const BOT_NAME = "Lobo's Little Helper"
 export const DISCORD_TOKEN_ENV = 'DISCORD_BOT_TOKEN'
@@ -41,6 +42,8 @@ export async function startLobosLittleHelper({ token = process.env[DISCORD_TOKEN
   if (!token) throw new Error(`${DISCORD_TOKEN_ENV} is required to connect ${BOT_NAME}.`)
   const gunfighterCatalog = await loadGunfighterBenchmarkCatalog()
   if (!gunfighterCatalog) throw new Error('The bundled gunfighter benchmark catalog could not be loaded.')
+  const aroCatalog = await loadAroBenchmarkCatalog()
+  if (!aroCatalog) throw new Error('The bundled ARO benchmark catalog could not be loaded.')
   const client = createLobosLittleHelper()
   await client.login(token)
   try {
@@ -49,7 +52,7 @@ export async function startLobosLittleHelper({ token = process.env[DISCORD_TOKEN
     const infIdCommands = await ensureInfIdCommand(client)
     const rulesCommands = await ensureRulesCommand(client)
     const guildIds = [...client.guilds.cache.keys()]
-    process.stdout.write(`${BOT_NAME} ready: botUserId=${client.user.id} applicationId=${client.application.id} guildIds=${guildIds.join(',') || 'none'} interactionListeners=${client.listenerCount(Events.InteractionCreate)} missionCommands=${commands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} infListCommands=${infListCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} infIdCommands=${infIdCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} rulesCommands=${rulesCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} gunfighterBenchmark=${gunfighterCatalog.benchmarkVersion || 'unknown'} gunfighterCatalog=${gunfighterCatalog.fingerprint || 'unknown'}\n`)
+    process.stdout.write(`${BOT_NAME} ready: botUserId=${client.user.id} applicationId=${client.application.id} guildIds=${guildIds.join(',') || 'none'} interactionListeners=${client.listenerCount(Events.InteractionCreate)} missionCommands=${commands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} infListCommands=${infListCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} infIdCommands=${infIdCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} rulesCommands=${rulesCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} gunfighterBenchmark=${gunfighterCatalog.benchmarkVersion || 'unknown'} gunfighterCatalog=${gunfighterCatalog.fingerprint || 'unknown'} aroBenchmark=${aroCatalog.benchmarkVersion || 'unknown'} aroCatalog=${aroCatalog.fingerprint || 'unknown'}\n`)
     startRulesResourceWatcher({
       logger: console,
       onChange: async ({ changes }) => {

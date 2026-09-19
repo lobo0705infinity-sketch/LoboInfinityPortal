@@ -54,6 +54,7 @@ export function validateInfListLegality({ decoded, payload } = {}) {
         points: Number(legalityOption.points),
         swc: swcValue.cost,
         swcBonus: swcValue.bonus,
+        trooperSlots: isPeripheralSelection(unit, group, option, profile, legalityOption) ? 0 : positiveInteger(legalityOption.minis, 1),
         trooperPoolKey: countsAsOneTrooper(unit)
           ? `${Number(combatGroup.combatGroup)}:${Number(unit.id)}`
           : null,
@@ -150,12 +151,17 @@ function countsAsOneTrooper(unit) {
   return /counted\s+as\s+only\s+one\s+trooper/i.test(String(unit?.notes || ''))
 }
 
+function isPeripheralSelection(...records) {
+  const text = records.map((record) => JSON.stringify(record || {})).join(' ')
+  return /\belektronik\b/i.test(text) || /\bperipheral\s*\(?\s*(?:servant|synchronized|control)\s*\)?/i.test(text)
+}
+
 function countTroopers(selections) {
   const sharedPools = new Set()
   let total = 0
   for (const selection of selections) {
     if (selection.trooperPoolKey) sharedPools.add(selection.trooperPoolKey)
-    else total += selection.minis
+    else total += selection.trooperSlots
   }
   return total + sharedPools.size
 }

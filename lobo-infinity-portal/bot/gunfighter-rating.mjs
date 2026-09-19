@@ -42,6 +42,56 @@ export function evaluateGunfighterProfile(profile, defenders, options = {}) {
   }
 }
 
+export function evaluateAroProfile(profile, attackers, options = {}) {
+  const settings = { ...DEFAULT_OPTIONS, ...options }
+  assertProfile(profile)
+  if (!Array.isArray(attackers) || !attackers.length) throw new Error('ARO evaluation requires at least one attacker.')
+  const states = [{ id: 'normal', specialDice: 0 }]
+  if (profile.fireteamCapable) states.push({ id: 'fireteam', specialDice: 1 })
+  return {
+    profileId: profile.id,
+    name: profile.name,
+    states: states.map((state) => evaluateAroState(profile, attackers, settings, state)),
+  }
+}
+
+function evaluateAroState(profile, attackers, settings, state) {
+  const matchups = []
+  for (const benchmark of attackers) {
+    const attacker = benchmark.profile || benchmark
+    const attackerSpecialDice = Number(benchmark.specialDice || 0)
+    assertProfile(attacker)
+    for (const range of settings.ranges) {
+      const candidates = attacker.weapons.flatMap((weapon) => weapon.modes.map((mode) => evaluateAttackCandidate({
+        attacker,
+        defender: profile,
+        weapon,
+        mode,
+        range,
+        fireteamSpecialDice: attackerSpecialDice,
+        defenderFireteamSpecialDice: state.specialDice,
+        responseObjective: 'aro',
+        settings,
+      })))
+      const available = candidates.filter((candidate) => candidate.status === 'evaluated')
+      const selected = available.sort(compareAttackerResults)[0] || null
+      matchups.push({
+        attackerId: attacker.id,
+        attackerName: attacker.name,
+        range: range.id,
+        selected,
+        candidates,
+      })
+    }
+  }
+  return {
+    id: state.id,
+    fireteamSpecialDice: state.specialDice,
+    rating: weightedAroMatchupRating(matchups, settings.ranges),
+    matchups,
+  }
+}
+
 export function evaluateState(profile, defenders, settings, state) {
   const matchups = []
   for (const defender of defenders) {
@@ -75,6 +125,18 @@ export function evaluateState(profile, defenders, settings, state) {
   }
 }
 
+function weightedAroMatchupRating(matchups, ranges) {
+  if (!matchups.length) return null
+  const weights = new Map(ranges.map((range) => [range.id, Math.max(0, Number(range.weight ?? 1))]))
+  const totalWeight = matchups.reduce((sum, matchup) => sum + (weights.get(matchup.range) ?? 1), 0)
+  if (!totalWeight) return 0
+  const weightedScore = matchups.reduce((sum, matchup) => {
+    const weight = weights.get(matchup.range) ?? 1
+    return sum + Number(matchup.selected?.optimalResponse?.defenderScore || 0) * weight
+  }, 0)
+  return round(weightedScore / totalWeight)
+}
+
 function weightedMatchupRating(matchups, ranges) {
   if (!matchups.length) return null
   const weights = new Map(ranges.map((range) => [range.id, Math.max(0, Number(range.weight ?? 1))]))
@@ -87,17 +149,18 @@ function weightedMatchupRating(matchups, ranges) {
   return round(weightedScore / totalWeight)
 }
 
-export function evaluateAttackCandidate({ attacker, defender, weapon, mode, range, fireteamSpecialDice = 0, settings = DEFAULT_OPTIONS }) {
+export function evaluateAttackCandidate({ attacker, defender, weapon, mode, range, fireteamSpecialDice = 0, defenderFireteamSpecialDice = 0, responseObjective = 'gunfighter', settings = DEFAULT_OPTIONS }) {
   validateWeaponMode(weapon, mode)
+  if (mode.deployable) return unavailableCandidate(weapon, mode, range, 'deployable-not-direct-attack')
   if (mode.smoke || mode.eclipse) return unavailableCandidate(weapon, mode, range, 'non-offensive-smoke')
   const rangeModifier = rangeModifierFor(mode, range, attacker.equipment)
   if (rangeModifier === null) return unavailableCandidate(weapon, mode, range, 'out-of-range')
   if (mode.attackType === 'direct-template' && range.min >= Number(mode.templateRange || 8)) return unavailableCandidate(weapon, mode, range, 'out-of-range')
   const attack = buildAttackPool(attacker, defender, weapon, mode, rangeModifier, fireteamSpecialDice, settings)
-  const legalAros = buildLegalAros(defender, attacker, range, settings, mode)
+  const legalAros = buildLegalAros(defender, attacker, range, settings, mode, defenderFireteamSpecialDice)
   if (!legalAros.length) legalAros.push({ id: 'no-aro', type: 'none' })
   const responses = legalAros.map((aro) => resolveExchange({ attack, aro, attacker, defender, weapon, mode, range, settings }))
-  const optimalResponse = responses.sort(compareDefenderResults)[0]
+  const optimalResponse = responses.sort(responseObjective === 'aro' ? compareAroResults : compareDefenderResults)[0]
   return {
     status: 'evaluated',
     weapon: weapon.name,
@@ -266,7 +329,12 @@ function exchangeResult(attack, aro, roll, effect, returnEffect) {
   // Gate the safety contribution behind meaningful enemy effect so a harmless
   // exchange can never earn a large gunfighter score merely by surviving it.
   const attackerScore = round(100 * availability * effect.total * (0.8 + 0.2 * safety))
-  return { aro: aro.id, aroType: aro.type, attack, roll, effect, returnEffect, attackerScore }
+  const defenderSafety = 1 - Number(effect?.total || 0)
+  const defenderAvailability = attackAvailability(aro.pool || {})
+  const defenderScore = ['smoke', 'eclipse', 'dodge', 'none'].includes(aro.type)
+    ? 0
+    : round(100 * defenderAvailability * Number(returnEffect?.total || 0) * (0.8 + 0.2 * defenderSafety))
+  return { aro: aro.id, aroType: aro.type, attack, roll, effect, returnEffect, attackerScore, defenderScore }
 }
 
 export function buildAttackPool(attacker, defender, weapon, mode, rangeModifier, fireteamSpecialDice, settings, { aro = false } = {}) {
@@ -292,15 +360,16 @@ function attackAvailability(attack) {
   return Math.min(1, Math.max(0, Number(attack.disposableUses)) / 3)
 }
 
-function buildLegalAros(defender, attacker, range, settings, attackingMode) {
+function buildLegalAros(defender, attacker, range, settings, attackingMode, fireteamSpecialDice = 0) {
   if (attackingMode.attackType === 'direct-template') return [{ id: 'dodge', type: 'dodge', pool: dodgePool(defender) }]
   const results = [{ id: 'dodge', type: 'dodge', pool: dodgePool(defender) }]
   const attackerHasMsv = tokens(attacker.equipment).some((value) => /^multispectral visor l[123]$/.test(value))
   for (const weapon of defender.weapons) for (const mode of weapon.modes) {
+    if (mode.deployable) continue
     const modifier = rangeModifierFor(mode, range, defender.equipment)
     if (modifier === null) continue
     if (mode.smoke && attackerHasMsv && !mode.eclipse) continue
-    const pool = buildAttackPool(defender, attacker, weapon, mode, modifier, 0, settings, { aro: true })
+    const pool = buildAttackPool(defender, attacker, weapon, mode, modifier, fireteamSpecialDice, settings, { aro: true })
     results.push({ id: `${weapon.name}:${mode.name || mode.ammo || 'default'}`, type: mode.smoke ? (mode.eclipse ? 'eclipse' : 'smoke') : mode.attackType === 'direct-template' ? 'template' : 'shoot', pool, mode })
   }
   return results
@@ -395,6 +464,7 @@ function dodgePool(profile) {
 
 function compareAttackerResults(a, b) { return b.score - a.score || a.weapon.localeCompare(b.weapon) }
 function compareDefenderResults(a, b) { return a.attackerScore - b.attackerScore || a.aro.localeCompare(b.aro) }
+function compareAroResults(a, b) { return b.defenderScore - a.defenderScore || a.attackerScore - b.attackerScore || a.aro.localeCompare(b.aro) }
 function withAttackSaveModifiers(mode, attack) { return { ...mode, savingRollPenalty: Number(mode.savingRollPenalty || 0) + Number(attack.savingRollPenalty || 0) } }
 function unavailableCandidate(weapon, mode, range, reason) { return { status: 'unavailable', reason, weapon: weapon.name, mode: mode.name || mode.ammo || '', range: range.id } }
 function clampTarget(value) { return Math.max(1, Math.min(20, Number(value))) }

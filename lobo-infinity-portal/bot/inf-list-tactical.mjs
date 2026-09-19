@@ -9,8 +9,8 @@ const categories = [
   ['apexCc', 'Apex Close Combat Fighters'],
   ['hacking', 'Hacking Network'],
   ['vision', 'Vision Control'],
-  ['valuableAro', 'Valuable ARO Pieces'],
-  ['disposableAro', 'Disposable ARO Pieces'],
+  ['valuableAro', 'Valuable ARO Ratings'],
+  ['disposableAro', 'Disposable ARO Ratings'],
   ['alternative', 'Alternative Attack Vectors'],
   ['defensive', 'Defensive Network'],
 ]
@@ -87,7 +87,7 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
   })
 }
 
-export function classifyTacticalBrief(profiles, army = {}, gunfighterRatings = []) {
+export function classifyTacticalBrief(profiles, army = {}, gunfighterRatings = [], aroRatings = []) {
   const aggregated = aggregateExactProfiles(profiles)
   const eligibleFireteams = legalFireteams(aggregated)
   const result = Object.fromEntries(categories.map(([key]) => [key, []]))
@@ -143,8 +143,9 @@ export function classifyTacticalBrief(profiles, army = {}, gunfighterRatings = [
       result.defensive.push({ ...profile, badges: defenses, deployables })
     }
   }
+  attachAroRatings(result, aroRatings)
   result.apex.sort((a, b) => b.badges.length - a.badges.length || b.bs - a.bs || profileSort(a, b))
-  for (const key of ['valuableAro', 'disposableAro']) result[key].sort((a, b) => linkRank(a) - linkRank(b) || profileSort(a, b))
+  for (const key of ['valuableAro', 'disposableAro']) result[key].sort((a, b) => bestAroRating(b) - bestAroRating(a) || linkRank(a) - linkRank(b) || profileSort(a, b))
   for (const key of ['competent', 'apexCc', 'hacking', 'vision', 'alternative', 'defensive']) result[key].sort(profileSort)
   if (result.gunfighters.length) {
     result.apex = []
@@ -154,6 +155,7 @@ export function classifyTacticalBrief(profiles, army = {}, gunfighterRatings = [
   return {
     army: { faction: army.faction || '', listName: army.listName || '', sectorial: army.sectorial || '' },
     gunfighterBenchmark: { available: result.gunfighters.length > 0, fingerprint: army.gunfighterCatalogFingerprint || null },
+    aroBenchmark: { available: aroRatings.some((rating) => rating?.status === 'matched'), fingerprint: army.aroCatalogFingerprint || null },
     categories: result,
     networkSummary: {
       deployableRepeaterCarriers: countQuantity(result.hacking.filter((item) => item.delivery.some(deployableRepeaterToken))),
@@ -219,6 +221,7 @@ function categoryMarkup({ key, title, entries }, analysis) {
 
 function entryMarkup(key, entry, index = 0) {
   if (key === 'gunfighters') return gunfighterEntryMarkup(entry, index)
+  if (key.endsWith('Aro') && (entry.nonLinked || entry.fireteamLinked)) return aroEntryMarkup(entry, index)
   let detail = ''
   if (['apex', 'competent', 'valuableAro', 'disposableAro'].includes(key)) detail = `${key.endsWith('Aro') ? `${value(entry.points)} pts · ` : ''}BS ${value(entry.bs)} · ${entry.qualifyingWeapons.map((weapon) => [escapeHtml(weaponDisplay(weapon)), formatBurst(weapon)].filter(Boolean).join(' · ')).join(' · ')}`
   if (key === 'apexCc') detail = `CC ${value(entry.cc)}`
@@ -230,6 +233,17 @@ function entryMarkup(key, entry, index = 0) {
   const multiRole = entry.roles?.length > 1 ? `<span class="badge multi-role">MULTI-ROLE</span>` : ''
   const otherRoles = entry.roles?.filter((role) => role !== key) || []
   return `<article><div class="entry-head"><div><h4>${escapeHtml(entry.unitName)}</h4><p>${escapeHtml(entry.profileName)}</p></div><strong>×${entry.quantity}</strong></div>${secondary ? `<div class="detail">${secondary}</div>` : ''}<div class="badges">${multiRole}${entry.badges.map((badge) => `<span class="badge">${escapeHtml(badge)}</span>`).join('')}${fireteam}</div>${otherRoles.length ? `<div class="also">Also classified as: ${otherRoles.map((role) => escapeHtml(categories.find(([candidate]) => candidate === role)?.[1] || role)).join(' · ')}</div>` : ''}</article>`
+}
+
+function aroEntryMarkup(entry, index) {
+  const states = [
+    entry.nonLinked ? { label: 'NON-LINKED', ...entry.nonLinked } : null,
+    entry.fireteamLinked ? { label: 'LINKED +1SD', ...entry.fireteamLinked } : null,
+  ].filter(Boolean)
+  const best = [...states].sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0))[0] || {}
+  const weapons = unique(states.flatMap((state) => (state.weaponsUsed || []).map((weapon) => weapon.weapon).filter(Boolean))).slice(0, 3)
+  const rows = states.map((state) => `<div class="rating-row"><span class="rating-state">${state.label}</span><div class="rating-metrics"><b>${escapeHtml(state.grade || '—')}</b><strong>${formatRating(state.rating)}</strong><small>${formatPercentile(state.percentile)}</small></div></div>`).join('')
+  return `<article class="gunfighter-card aro-rating-card"><div class="gunfighter-rank">#${index + 1}</div><div class="entry-head"><div><h4>${escapeHtml(entry.unitName)}</h4><p>${escapeHtml(entry.profileName)} · ${value(entry.points)} pts · ×${entry.quantity}</p></div><div class="grade grade-${escapeHtml(String(best.grade || 'na').toLowerCase())}"><span>GRADE</span>${escapeHtml(best.grade || '—')}</div></div><div class="weapon-line"><span>ARO WEAPON${weapons.length === 1 ? '' : 'S'}</span>${weapons.length ? weapons.map(escapeHtml).join(' · ') : 'Dodge/no-effect response selected most often'}</div><div class="rating-table">${rows}</div></article>`
 }
 
 function gunfighterEntryMarkup(entry, index) {
@@ -277,6 +291,18 @@ function mergeGunfighterRatings(profiles, ratings) {
     }
   })
 }
+
+function attachAroRatings(result, ratings) {
+  const byKey = new Map((ratings || []).filter((rating) => rating?.status === 'matched').map((rating) => [String(rating.key), rating]))
+  for (const category of ['valuableAro', 'disposableAro']) for (const entry of result[category]) {
+    const rating = byKey.get(canonicalKeyFromCombinedId(entry.combinedId))
+    if (!rating) continue
+    entry.nonLinked = rating.nonLinked || null
+    entry.fireteamLinked = rating.fireteamLinked || null
+  }
+}
+
+function bestAroRating(entry) { return Math.max(Number(entry.nonLinked?.rating ?? -1), Number(entry.fireteamLinked?.rating ?? -1)) }
 
 function canonicalKeyFromCombinedId(value) {
   const parts = String(value || '').split('-').map(Number)
