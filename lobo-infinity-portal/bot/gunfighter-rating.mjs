@@ -286,7 +286,8 @@ export function expectedEffectFromHits({ expectedHits, mode, defender }) {
     ? reduced - savingRollPenalty
     : reduced + cover + Number(mode.power) - savingRollPenalty
   const failureProbability = 1 - Math.min(1, Math.max(0, successValue / 20))
-  const savesPerHit = Number(mode.saves || (/EXP/i.test(String(mode.ammo)) ? 3 : /DA/i.test(String(mode.ammo)) ? 2 : 1))
+  const viralAffectsVitality = Boolean(mode.viralBioweapon) && Number(defender.vitality || 0) > 0
+  const savesPerHit = viralAffectsVitality ? 2 : Number(mode.saves || (/EXP/i.test(String(mode.ammo)) ? 3 : /DA/i.test(String(mode.ammo)) ? 2 : 1))
   const woundsPerFailure = Number(mode.woundsPerFailure || (/T2/i.test(String(mode.ammo)) ? 2 : 1))
   const failuresPerSave = mode.continuousDamage ? failureProbability / Math.max(0.05, 1 - failureProbability) : failureProbability
   const expectedDamage = expectedHits * savesPerHit * failuresPerSave * woundsPerFailure
@@ -426,7 +427,7 @@ function effectiveDurability(profile, mode) {
   const base = Math.max(1, Number(profile.vitality || profile.structure || 1))
   const skills = tokens(profile.skills).concat(tokens(profile.equipment))
   const hasVitality = Number(profile.vitality || 0) > 0
-  const hasShock = Boolean(mode.shock) || /(?:^|\+)SHOCK(?:$|\+)/i.test(String(mode.ammo))
+  const hasShock = Boolean(mode.shock) || (Boolean(mode.viralBioweapon) && hasVitality) || /(?:^|\+)SHOCK(?:$|\+)/i.test(String(mode.ammo))
   const shockVulnerable = hasShock && hasVitality && base === 1 && !skills.includes('immunity shock')
   if (shockVulnerable) return 1
   return base + (skills.includes('no wound incapacitation') || skills.includes('dogged') ? 1 : 0)

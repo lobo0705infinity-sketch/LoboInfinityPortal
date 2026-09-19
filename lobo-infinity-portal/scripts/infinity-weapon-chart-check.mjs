@@ -39,11 +39,13 @@ const exp = normalizeWeaponChartRow({ name: 'Missile Launcher', ammo: 'EXP', sav
 assert.equal(exp.savingRolls, 3)
 
 const viral = normalizeWeaponChartRow({ name: 'VIRAL Sniper Rifle', damage: 5, burst: 2, ammo: 'N', saving: 'BTS', savingRolls: 1, traits: ['Bioweapon (DA+SHOCK)'] })
-assert.equal(viral.savingRolls, 2, 'Viral Bioweapon must apply DA even when Army prints one raw Saving Roll')
-assert.equal(viral.shock, true, 'Viral Bioweapon must carry Shock')
+assert.equal(viral.savingRolls, 1, 'Viral remains Normal ammunition against Structure targets')
+assert.equal(viral.shock, false, 'Viral must not carry unconditional Shock')
+assert.equal(viral.viralBioweapon, true, 'Viral Bioweapon must be resolved against the target stat type')
 const viralMode = weaponChartRecordToGunfighterWeapon(viral).modes[0]
-assert.equal(viralMode.saves, 2)
-assert.equal(viralMode.shock, true)
+assert.equal(viralMode.saves, 1)
+assert.equal(viralMode.shock, false)
+assert.equal(viralMode.viralBioweapon, true)
 
 const flashPulse = normalizeWeaponChartRow({ name: 'Flash Pulse', damage: 13, burst: 1, ammo: 'Stun', saving: 'BTS', traits: ['Technical Weapon', 'Non-lethal'] })
 assert.equal(flashPulse.attackAttribute, 'wip')
