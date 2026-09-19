@@ -9,7 +9,7 @@ export function buildCanonicalCloseCombatProfiles({ official }) {
   for (const payload of official.payloads) for (const unit of payload.units || []) for (const group of unit.profileGroups || []) for (const option of group.options || []) {
     const physicalProfiles = group.profiles?.length ? group.profiles : [{}]
     for (const profile of physicalProfiles) {
-      const id = [unit.canonical || unit.id, group.id, option.id, profile.id ?? 1].map(Number).join(':')
+      const id = [unit.id, group.id, option.id, profile.id ?? 1].map(Number).join(':')
       const references = [...(unit.weapons || []), ...(group.weapons || []), ...(profile.weapons || []), ...(option.weapons || [])]
       const ccWeapons = resolveCloseCombatWeapons(references, weapons, extras, ammunitions)
       if (!ccWeapons.length) continue
@@ -17,7 +17,7 @@ export function buildCanonicalCloseCombatProfiles({ official }) {
       applyCcAttackEnhancements(ccWeapons, skillNames)
       const entry = {
         id,
-        unitId: Number(unit.canonical || unit.id),
+        unitId: Number(unit.id),
         groupId: Number(group.id),
         optionId: Number(option.id),
         profileId: Number(profile.id ?? 1),

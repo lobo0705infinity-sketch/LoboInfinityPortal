@@ -72,11 +72,55 @@ export function rankArmyCloseCombat(catalog, decodedArmy, { limit = 4 } = {}) {
     .slice(0, Math.max(0, Number(limit) || 0))
 }
 
+export function rankSubmittedCloseCombat(catalog, profiles, { sectorialId, limit = 4 } = {}) {
+  if (catalog?.schemaVersion !== CLOSE_COMBAT_CATALOG_SCHEMA) throw new Error('Unsupported close-combat benchmark catalog.')
+  const sectorialEntries = (catalog.entries || []).filter((entry) => (entry.aliases || []).some((alias) => Number(alias.sectorialId) === Number(sectorialId)))
+  return (profiles || []).map((profile) => {
+    const expectedKey = closeCombatKeyFromCombinedId(profile.combinedId)
+    const unitName = normalizedName(profile.unitName)
+    const profileName = normalizedName(profile.profileName)
+    const candidates = sectorialEntries.map((entry) => {
+      const aliases = (entry.aliases || []).filter((alias) => Number(alias.sectorialId) === Number(sectorialId))
+      const aliasMatch = aliases.some((alias) => normalizedName(alias.name) === unitName)
+      const exactKey = String(entry.key) === expectedKey
+      if (!exactKey && !aliasMatch) return null
+      const entryName = normalizedName(entry.name)
+      const points = [entry.points, ...(entry.pointVariants || [])].map(Number)
+      const score = (exactKey ? 1000 : 0) + (aliasMatch ? 100 : 0) + (profileName && entryName.includes(profileName) ? 20 : 0) + (points.includes(Number(profile.points)) ? 10 : 0)
+      return { entry, score }
+    }).filter(Boolean).sort((a, b) => b.score - a.score || b.entry.rating - a.entry.rating)
+    const entry = candidates[0]?.entry
+    return {
+      status: entry ? 'matched' : 'missing',
+      key: expectedKey,
+      unitName: profile.unitName || entry?.name || null,
+      profileName: profile.profileName || null,
+      rating: entry?.rating ?? null,
+      grade: entry?.grade ?? null,
+      percentile: entry?.percentile ?? null,
+      states: entry?.states || [],
+      weapons: entry?.weapons || [],
+      result: entry || null,
+    }
+  }).filter((entry) => entry.status === 'matched' && Number.isFinite(entry.rating))
+    .sort((a, b) => b.rating - a.rating || String(a.unitName).localeCompare(String(b.unitName)))
+    .slice(0, Math.max(0, Number(limit) || 0))
+}
+
 function closeCombatKey(member) {
   const parts = String(member?.combinedId || '').split('-').map(Number)
   if (parts.length >= 5 && parts.slice(-4).every(Number.isInteger)) return parts.slice(-4).join(':')
   const values = [member?.unitId, member?.groupId, member?.optionId, member?.profileId ?? 1].map(Number)
   return values.every(Number.isInteger) ? values.join(':') : ''
+}
+
+function closeCombatKeyFromCombinedId(value) {
+  const parts = String(value || '').split('-').map(Number)
+  return parts.length >= 5 && parts.slice(-4).every(Number.isInteger) ? parts.slice(-4).join(':') : ''
+}
+
+function normalizedName(value) {
+  return String(value || '').toLowerCase().replace(/[_—–-]+/g, ' ').replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim()
 }
 
 function compactResult(profile, result) {

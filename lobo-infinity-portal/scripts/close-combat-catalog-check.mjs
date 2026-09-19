@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
-import { CLOSE_COMBAT_CATALOG_SCHEMA, rankArmyCloseCombat } from '../bot/close-combat-catalog.mjs'
+import { CLOSE_COMBAT_CATALOG_SCHEMA, rankArmyCloseCombat, rankSubmittedCloseCombat } from '../bot/close-combat-catalog.mjs'
 import { CLOSE_COMBAT_BENCHMARK_VERSION } from '../bot/close-combat-standard-benchmark.mjs'
 
 const catalog = JSON.parse(await readFile(new URL('../data/infinity-army/close-combat-benchmark.json', import.meta.url), 'utf8'))
@@ -35,6 +35,15 @@ const tierFixture = { schemaVersion: CLOSE_COMBAT_CATALOG_SCHEMA, entries: [{ ke
 const ranked = rankArmyCloseCombat(tierFixture, { sectorialId: 502, combatGroups: [{ members: [{ combinedId: '502-99-2-3-1', unitId: 99, groupId: 2, optionId: 3, profileId: 1, unitName: 'Test CC' }] }] })
 assert.equal(ranked[0].grade, 'A')
 assert.equal(ranked[0].states[0].percentile, 88)
+const collisionFixture = { schemaVersion: CLOSE_COMBAT_CATALOG_SCHEMA, entries: [
+  { key: '701:1:1:1', name: 'KINNARA Scoutbots — KINNARA Scoutbots', points: 23, rating: 50.23, grade: 'A', percentile: 91.97, aliases: [{ sectorialId: 703, name: 'KINNARA Scoutbots' }], weapons: [], states: [] },
+  { key: '701:1:1:1', name: 'SHARVARA HoundBots — SHARVARA', points: 18, rating: 37.34, grade: 'A', percentile: 83.57, aliases: [{ sectorialId: 703, name: 'SHARVARA HoundBots' }], weapons: [], states: [] },
+] }
+const collisionRanked = rankSubmittedCloseCombat(collisionFixture, [
+  { combinedId: '703-1901-1-1-1', unitName: 'KINNARA Scoutbots', profileName: 'KINNARA Scoutbots', points: 23 },
+  { combinedId: '703-1899-1-1-1', unitName: 'SHARVARA HoundBots', profileName: 'SHARVARA', points: 18 },
+], { sectorialId: 703 })
+assert.deepEqual(collisionRanked.map((entry) => entry.result.name), ['KINNARA Scoutbots — KINNARA Scoutbots', 'SHARVARA HoundBots — SHARVARA'])
 console.log(`PASS - close-combat catalog ${catalog.fingerprint} contains ${catalog.entryCount} unique ranked CC identities from ${catalog.sourceAliasCount} official aliases.`)
 
 function normalizeName(value) { return String(value).toLowerCase().replace(/^reinf(?:orcements?)?[:.]?\s*/i, '').replace(/\s+(?:reinf\.?|fto)\s*$/i, '').replace(/\s+/g, ' ').trim() }

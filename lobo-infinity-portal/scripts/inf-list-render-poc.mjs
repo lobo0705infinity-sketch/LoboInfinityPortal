@@ -14,7 +14,7 @@ import { rankArmyGunfighters } from '../bot/gunfighter-benchmark-catalog.mjs'
 import { loadAroBenchmarkCatalog } from '../bot/aro-catalog-store.mjs'
 import { rankArmyAros } from '../bot/aro-benchmark-catalog.mjs'
 import { loadCloseCombatCatalog } from '../bot/close-combat-catalog-store.mjs'
-import { rankArmyCloseCombat } from '../bot/close-combat-catalog.mjs'
+import { rankSubmittedCloseCombat } from '../bot/close-combat-catalog.mjs'
 
 const rendererOrigin = 'https://infinity.2nirwana.de'
 const rendererPath = '/cards/generate'
@@ -347,7 +347,7 @@ export async function renderInfListPng({ input, outputPath, browserType = chromi
     const aroCatalog = await loadAroBenchmarkCatalog()
     const aroRatings = aroCatalog ? rankArmyAros(aroCatalog, decoded) : []
     const closeCombatCatalog = await loadCloseCombatCatalog()
-    const closeCombatRatings = closeCombatCatalog ? rankArmyCloseCombat(closeCombatCatalog, decoded, { limit: 4 }) : []
+    const closeCombatRatings = closeCombatCatalog ? rankSubmittedCloseCombat(closeCombatCatalog, submittedProfiles, { sectorialId: decoded.sectorialId, limit: 4 }) : []
     const tacticalAnalysis = classifyTacticalBrief(submittedProfiles, {
       aroCatalogFingerprint: aroCatalog?.fingerprint,
       closeCombatCatalogFingerprint: closeCombatCatalog?.fingerprint,
