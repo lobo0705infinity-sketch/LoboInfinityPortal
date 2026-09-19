@@ -64,6 +64,10 @@ const dodgePlain = evaluateGunfighterProfile(profile('vs-dodge-plain'), [profile
 assert.ok(dodgePlusThree.states[0].rating < dodgePlain.states[0].rating, 'Dodge (+3) improves the target Dodge ARO')
 const compositeShock = expectedEffectFromHits({ expectedHits: 1, mode: { ammo: 'AP+Shock', power: 1, save: 'ARM', saveDivisor: 2, saves: 1, states: [] }, defender: shockTarget })
 assert.equal(compositeShock.damageValue, expectedEffectFromHits({ expectedHits: 1, mode: { ...shockMode, saveDivisor: 2 }, defender: shockTarget }).damageValue, 'Shock applies when combined with another ammunition effect')
+const viralMode = { ammo: 'N', power: 5, save: 'BTS', saves: 2, shock: true, states: [] }
+assert.ok(expectedEffectFromHits({ expectedHits: 1, mode: viralMode, defender: shockTarget }).damageValue > expectedEffectFromHits({ expectedHits: 1, mode: { ...viralMode, shock: false }, defender: shockTarget }).damageValue, 'Viral applies Shock against Vitality models')
+const structureTarget = profile('structure', { vitality: null, structure: 1, skills: ['No Wound Incapacitation'] })
+assert.equal(expectedEffectFromHits({ expectedHits: 1, mode: viralMode, defender: structureTarget }).damageValue, expectedEffectFromHits({ expectedHits: 1, mode: { ...viralMode, shock: false }, defender: structureTarget }).damageValue, 'Viral Shock does not apply against Structure models')
 const continuous = expectedEffectFromHits({ expectedHits: 1, mode: { ammo: 'N', power: 13, save: 'ARM', saves: 1, states: [], continuousDamage: true }, defender: profile('continuous-target', { vitality: 3, arm: 3 }) })
 assert.ok(continuous.expectedDamage > normalSave.expectedDamage, 'Continuous Damage repeats failed Saving Rolls')
 

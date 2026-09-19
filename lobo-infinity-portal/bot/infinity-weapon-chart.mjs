@@ -10,6 +10,7 @@ export function normalizeWeaponChartRow(row = {}) {
   if (!name) return null
   const saving = parseSavingAttribute(row.saving)
   const traits = asArray(row.traits).map(clean).filter(Boolean)
+  const bioweaponDaShock = traits.some((trait) => /bioweapon\s*\(\s*da\s*\+\s*shock\s*\)/i.test(trait))
   const attackType = traits.some((trait) => /direct template/i.test(trait)) ? 'direct-template' : 'bs-attack'
   const parsedRanges = normalizeRanges(row.ranges)
   // Direct Template Weapons do not print BS range bands in the official chart.
@@ -31,7 +32,9 @@ export function normalizeWeaponChartRow(row = {}) {
     saveDivisor: saving.divisor,
     saveFixed: saving.fixed,
     saveModifier: saving.modifier,
-    savingRolls: parseNullableNumber(row.savingRolls) ?? inferSavingRolls(row.ammo),
+    // Army prints Viral/Bioweapon (DA+Shock) as one Saving Roll in the raw
+    // column, but the trait upgrades the hit to DA: two BTS Saving Rolls.
+    savingRolls: bioweaponDaShock ? 2 : parseNullableNumber(row.savingRolls) ?? inferSavingRolls(row.ammo),
     traits,
     attackType,
     attackAttribute,
@@ -41,6 +44,7 @@ export function normalizeWeaponChartRow(row = {}) {
     deployable: traits.some((trait) => /^deployable$/i.test(trait)),
     ignoresCover: traits.some((trait) => /no cover/i.test(trait)),
     continuousDamage: traits.some((trait) => /continu?ous damage/i.test(trait)),
+    shock: bioweaponDaShock || /(?:^|\+)shock(?:$|\+)/i.test(clean(row.ammo)),
     disposableUses: inferDisposableUses(traits),
     state: inferState(traits, row.ammo),
   }
@@ -111,6 +115,7 @@ export function weaponChartRecordToGunfighterWeapon(record) {
       deployable: record.deployable,
       ignoresCover: record.ignoresCover,
       continuousDamage: record.continuousDamage,
+      shock: record.shock,
       disposableUses: record.disposableUses,
       states: record.state ? [record.state] : [],
     }],

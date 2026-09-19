@@ -425,7 +425,9 @@ function expectedStateValue(mode, defender, expectedHits, failureProbability) {
 function effectiveDurability(profile, mode) {
   const base = Math.max(1, Number(profile.vitality || profile.structure || 1))
   const skills = tokens(profile.skills).concat(tokens(profile.equipment))
-  const shockVulnerable = /(?:^|\+)SHOCK(?:$|\+)/i.test(String(mode.ammo)) && base === 1 && !skills.includes('immunity shock')
+  const hasVitality = Number(profile.vitality || 0) > 0
+  const hasShock = Boolean(mode.shock) || /(?:^|\+)SHOCK(?:$|\+)/i.test(String(mode.ammo))
+  const shockVulnerable = hasShock && hasVitality && base === 1 && !skills.includes('immunity shock')
   if (shockVulnerable) return 1
   return base + (skills.includes('no wound incapacitation') || skills.includes('dogged') ? 1 : 0)
 }

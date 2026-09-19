@@ -38,6 +38,13 @@ assert.equal(riotstopper.state, 'immobilized')
 const exp = normalizeWeaponChartRow({ name: 'Missile Launcher', ammo: 'EXP', saving: 'ARM' })
 assert.equal(exp.savingRolls, 3)
 
+const viral = normalizeWeaponChartRow({ name: 'VIRAL Sniper Rifle', damage: 5, burst: 2, ammo: 'N', saving: 'BTS', savingRolls: 1, traits: ['Bioweapon (DA+SHOCK)'] })
+assert.equal(viral.savingRolls, 2, 'Viral Bioweapon must apply DA even when Army prints one raw Saving Roll')
+assert.equal(viral.shock, true, 'Viral Bioweapon must carry Shock')
+const viralMode = weaponChartRecordToGunfighterWeapon(viral).modes[0]
+assert.equal(viralMode.saves, 2)
+assert.equal(viralMode.shock, true)
+
 const flashPulse = normalizeWeaponChartRow({ name: 'Flash Pulse', damage: 13, burst: 1, ammo: 'Stun', saving: 'BTS', traits: ['Technical Weapon', 'Non-lethal'] })
 assert.equal(flashPulse.attackAttribute, 'wip')
 const smoke = normalizeWeaponChartRow({ name: 'Smoke Grenades', damage: '-', burst: 1, ammo: 'Smoke', saving: '-', traits: ['Targetless'] })
