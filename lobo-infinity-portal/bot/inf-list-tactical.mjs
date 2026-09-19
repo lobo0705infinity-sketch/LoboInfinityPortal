@@ -144,6 +144,9 @@ export function classifyTacticalBrief(profiles, army = {}, gunfighterRatings = [
     }
   }
   attachAroRatings(result, aroRatings)
+  if (aroRatings.length) for (const key of ['valuableAro', 'disposableAro']) {
+    result[key] = result[key].filter(hasQualifyingAroRating)
+  }
   result.apex.sort((a, b) => b.badges.length - a.badges.length || b.bs - a.bs || profileSort(a, b))
   for (const key of ['valuableAro', 'disposableAro']) result[key].sort((a, b) => bestAroRating(b) - bestAroRating(a) || linkRank(a) - linkRank(b) || profileSort(a, b))
   for (const key of ['competent', 'apexCc', 'hacking', 'vision', 'alternative', 'defensive']) result[key].sort(profileSort)
@@ -303,6 +306,9 @@ function attachAroRatings(result, ratings) {
 }
 
 function bestAroRating(entry) { return Math.max(Number(entry.nonLinked?.rating ?? -1), Number(entry.fireteamLinked?.rating ?? -1)) }
+function hasQualifyingAroRating(entry) {
+  return [entry.nonLinked, entry.fireteamLinked].some((state) => ['S', 'A', 'B'].includes(String(state?.grade || '').toUpperCase()))
+}
 
 function canonicalKeyFromCombinedId(value) {
   const parts = String(value || '').split('-').map(Number)

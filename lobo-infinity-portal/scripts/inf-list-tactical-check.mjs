@@ -143,6 +143,15 @@ const aroIdentityAnalysis = classifyTacticalBrief([aroIdentityFixture], { factio
 assert.equal(aroIdentityAnalysis.categories.valuableAro[0].nonLinked.rating, 24.5, 'ARO catalog identity includes the sectorial ID')
 assert.equal(aroIdentityAnalysis.categories.valuableAro[0].fireteamLinked.rating, 32.5)
 
+const belowGradeFixture = profile('305-227-1-6-1', { points: 10, weapons: [weapon('Flash Pulse', 1)] })
+const belowGradeAnalysis = classifyTacticalBrief([belowGradeFixture], { faction: 'TAK' }, [], [{
+  status: 'matched',
+  key: '305:227:1:6:1',
+  nonLinked: { rating: 2.11, grade: 'F', percentile: 9, weaponsUsed: [{ weapon: 'Flash Pulse' }] },
+  fireteamLinked: { rating: 3.79, grade: 'F', percentile: 8, weaponsUsed: [{ weapon: 'Flash Pulse' }] },
+}])
+assert.equal(belowGradeAnalysis.categories.disposableAro.length, 0, 'C, D, and F benchmark profiles must not be classified as ARO pieces')
+
 const fireteamAnalysis = classifyTacticalBrief([
   profile('orc', { bs: 14, unitName: 'ORC', points: 35, fireteamTeams: ['White Company'], weapons: [weapon('Feuerbach', 2)] }),
   profile('hannibal', { bs: 13, unitName: 'Hannibal', points: 33, fireteamTeams: ['White Company'], skills: ['BS Attack (+1SD)'], weapons: [weapon('MULTI Marksman Rifle', 3)] }),

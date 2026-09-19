@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { gzipSync } from 'node:zlib'
+import { gunzipSync, gzipSync } from 'node:zlib'
 import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { buildAroBenchmarkCatalog, selectBenchmarkAttackers } from '../bot/aro-benchmark-catalog.mjs'
@@ -10,7 +10,8 @@ import { normalizeWeaponChartRows, weaponChartRecordToGunfighterWeapon } from '.
 const args = parseArgs(process.argv.slice(2))
 const sourceDir = resolve(args['source-dir'] || 'data/infinity-army')
 const output = resolve(args.output || 'data/infinity-army/aro-benchmark-catalog.json.gz.b64')
-const tts = JSON.parse(await readFile(resolve(sourceDir, 'tts-profile-catalog.json'), 'utf8'))
+const ttsArchive = await readFile(resolve(sourceDir, 'tts-profile-catalog.json.gz.b64'), 'utf8')
+const tts = JSON.parse(gunzipSync(Buffer.from(ttsArchive, 'base64')).toString('utf8'))
 const weaponInput = JSON.parse(await readFile(resolve(sourceDir, 'benchmark-weapon-chart-v8.json'), 'utf8'))
 const weaponChart = normalizeWeaponChartRows(weaponInput.rows)
 
@@ -27,13 +28,13 @@ for (const row of weaponChart) {
 }
 let unresolvedAliases = 0
 const profiles = gunfighterCatalog.entries.flatMap((entry) => {
-  const source = resolveTtsProfile(entry, ttsById, ttsByUnit, tts.profiles)
+  const source = resolveTtsProfile(entry, ttsById, ttsByUnit)
   if (!source) { unresolvedAliases += 1; return [] }
   return [canonicalProfile(entry, source, chartByName)]
 })
 console.log(`Resolved ${profiles.length}/${gunfighterCatalog.entries.length} official aliases (${unresolvedAliases} unavailable in the TTS source)`)
 const attackerProfiles = gunfighterCatalog.entries.flatMap((entry) => {
-  const source = resolveTtsProfile(entry, ttsById, ttsByUnit, tts.profiles)
+  const source = resolveTtsProfile(entry, ttsById, ttsByUnit)
   return source ? [canonicalProfile(entry, source, chartByName)] : []
 })
 const attackers = selectBenchmarkAttackers(attackerProfiles, gunfighterCatalog, { limit: 30 })
@@ -79,7 +80,7 @@ function canonicalProfile(entry, source, chartByName) {
   }
 }
 
-function resolveTtsProfile(entry, ttsById, ttsByUnit, allProfiles) {
+function resolveTtsProfile(entry, ttsById, ttsByUnit) {
   const exact = ttsById.get(entry.key)
   if (exact) return exact
   const unitId = Number(entry.unitId)
@@ -88,12 +89,9 @@ function resolveTtsProfile(entry, ttsById, ttsByUnit, allProfiles) {
     ...(unitId >= 10_000 ? (ttsByUnit.get(unitId % 10_000) || []) : []),
   ]
   const usedWeapons = (entry.result.states || []).flatMap((state) => state.weaponsUsed || []).map((weapon) => normalize(weapon.weapon))
-  const pool = candidates.length ? candidates : allProfiles.filter((profile) => (
-    (profile.weapons || []).some((weapon) => usedWeapons.some((used) => used.startsWith(normalize(weapon.name))))
-  ))
-  if (!pool.length) return null
-  const ranked = [...pool].map((profile) => ({ profile, score: profileMatchScore(profile, entry, usedWeapons) })).sort((left, right) => right.score - left.score)
-  const minimum = candidates.length ? 0 : 21
+  if (!candidates.length) return null
+  const ranked = [...candidates].map((profile) => ({ profile, score: profileMatchScore(profile, entry, usedWeapons) })).sort((left, right) => right.score - left.score)
+  const minimum = usedWeapons.length ? 20 : 7
   return ranked[0].score >= minimum ? ranked[0].profile : null
 }
 
