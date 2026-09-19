@@ -91,7 +91,7 @@ assert.equal(analysis.categories.hacking.length, 1)
 assert.equal(analysis.categories.valuableAro.some((item) => item.combinedId === 'pheroware'), true)
 assert.equal(analysis.categories.valuableAro.some((item) => item.combinedId === 'pt'), true)
 assert.equal(analysis.categories.disposableAro.some((item) => item.combinedId === 'sd-rifle'), false)
-assert.equal(analysis.categories.disposableAro.some((item) => item.combinedId === 'aro-pzf'), false)
+assert.equal(analysis.categories.disposableAro.some((item) => item.combinedId === 'aro-pzf'), true, '14-point profiles are included in the Disposable ARO band')
 assert.equal(analysis.categories.disposableAro.some((item) => item.combinedId === 'cheap-sd'), true)
 assert.equal(analysis.categories.vision.some((item) => item.combinedId === 'vision'), true)
 assert.equal(analysis.categories.apexCc.some((item) => item.combinedId === 'apex-cc'), true)
@@ -106,7 +106,7 @@ assert.deepEqual(new Set(analysis.categories.valuableAro.flatMap((item) => item.
 assert.deepEqual(analysis.categories.valuableAro.find((item) => item.combinedId === 'tankhunter')?.badges, ['Portable Autocannon (+1SD)'])
 assert.equal(analysis.categories.competent.some((item) => item.combinedId === 'tankhunter'), true, 'Portable Autocannon +1SD and Mimetism qualifies')
 assert.equal(analysis.categories.competent.some((item) => item.combinedId === 'pac-near-miss'), false, 'Portable Autocannon +1SD alone is insufficient')
-assert.deepEqual(new Set(analysis.categories.disposableAro.flatMap((item) => item.qualifyingWeapons.map((item) => item.name))), new Set(['Flash Pulse', 'Submachine Gun']))
+assert.deepEqual(new Set(analysis.categories.disposableAro.flatMap((item) => item.qualifyingWeapons.map((item) => item.name))), new Set(['Flash Pulse', 'Submachine Gun', 'Panzerfaust', 'Flammenspeer']))
 assert.equal(analysis.categories.valuableAro[0].linkability, 'verified-linkable')
 assert.equal(analysis.categories.alternative.length, 1)
 assert.equal(analysis.categories.alternative[0].badges.length, 4)
@@ -151,6 +151,18 @@ const belowGradeAnalysis = classifyTacticalBrief([belowGradeFixture], { faction:
   fireteamLinked: { rating: 3.79, grade: 'F', percentile: 8, weaponsUsed: [{ weapon: 'Flash Pulse' }] },
 }])
 assert.equal(belowGradeAnalysis.categories.disposableAro.length, 0, 'C, D, and F benchmark profiles must not be classified as ARO pieces')
+
+const aroBandAnalysis = classifyTacticalBrief([
+  profile('502-1896-1-9-1', { unitName: 'COYOTE FTO', points: 17, skills: ['BS Attack (+1SD)'], weapons: [weapon('E/Mitter', 1), weapon('Submachine Gun', 3)] }),
+  profile('502-209-1-1-1', { unitName: 'CORREGIDOR JAGUARS', points: 13, skills: ['BS Attack (+1SD)'], weapons: [weapon('Panzerfaust', 1), weapon('Chain Rifle', 1)] }),
+], { faction: 'Corregidor' }, [], [
+  { status: 'matched', key: '502:1896:1:9:1', nonLinked: { rating: 9.04, grade: 'B', percentile: 75.17, weaponsUsed: [{ weapon: 'E/Mitter' }] }, fireteamLinked: { rating: 10.88, grade: 'B', percentile: 61.74, weaponsUsed: [{ weapon: 'E/Mitter' }] } },
+  { status: 'matched', key: '502:209:1:1:1', nonLinked: { rating: 6.85, grade: 'C', percentile: 57, weaponsUsed: [{ weapon: 'Panzerfaust' }] }, fireteamLinked: { rating: 12.73, grade: 'B', percentile: 72, weaponsUsed: [{ weapon: 'Panzerfaust' }] } },
+])
+assert.equal(aroBandAnalysis.categories.valuableAro.some((item) => item.combinedId === '502-1896-1-9-1'), true, '15+ point E/Mitter profiles with a B rating qualify as Valuable AROs')
+assert.equal(aroBandAnalysis.categories.disposableAro.some((item) => item.combinedId === '502-1896-1-9-1'), false, 'Valuable Coyote does not leak into Disposable AROs')
+assert.equal(aroBandAnalysis.categories.valuableAro.some((item) => item.combinedId === '502-209-1-1-1'), false, '13-point Jaguar does not leak into Valuable AROs')
+assert.equal(aroBandAnalysis.categories.disposableAro.some((item) => item.combinedId === '502-209-1-1-1'), true, '13-point Jaguar remains a Disposable ARO when its best state is B')
 
 const fireteamAnalysis = classifyTacticalBrief([
   profile('orc', { bs: 14, unitName: 'ORC', points: 35, fireteamTeams: ['White Company'], weapons: [weapon('Feuerbach', 2)] }),

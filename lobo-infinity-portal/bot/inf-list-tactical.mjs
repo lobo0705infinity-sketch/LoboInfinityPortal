@@ -128,11 +128,11 @@ export function classifyTacticalBrief(profiles, army = {}, gunfighterRatings = [
     const pheroware = preferredMatches([...profile.skills, ...profile.equipment, ...profile.weapons.map(weaponDisplay)], [pherowareToken])
     const fireteamSdBadges = fireteamSdBonus ? ['Fireteam (+1SD)'] : []
     const proxyMkIvException = isProxyMkIv(profile)
-    if (proxyMkIvException || ((pheroware.length || aroWeapons.length) && (aroSkills.length || weaponSdBadges.length || fireteamSdBonus))) result.valuableAro.push({ ...profile, badges: unique([...pheroware, ...aroSkills, ...weaponSdBadges, ...fireteamSdBadges, ...(proxyMkIvException ? ['Proxy Mk IV exception'] : [])]), qualifyingFireteams, qualifyingWeapons: aroWeapons.length ? aroWeapons : profile.weapons.filter(isRangedWeapon) })
+    if (proxyMkIvException || (profile.points >= 15 && (pheroware.length || aroWeapons.length) && (aroSkills.length || weaponSdBadges.length || fireteamSdBonus))) result.valuableAro.push({ ...profile, badges: unique([...pheroware, ...aroSkills, ...weaponSdBadges, ...fireteamSdBadges, ...(proxyMkIvException ? ['Proxy Mk IV exception'] : [])]), qualifyingFireteams, qualifyingWeapons: aroWeapons.length ? aroWeapons : profile.weapons.filter(isRangedWeapon) })
     const disposableWeapons = profile.weapons.filter((weapon) => aroWeaponToken(weaponDisplay(weapon)) || flashPulseToken(weaponDisplay(weapon)))
     const sdWeapons = profile.weapons.filter((weapon) => weaponSdBonus(weapon) > 0)
     const qualifyingDisposableWeapons = dedupeWeapons([...disposableWeapons, ...sdWeapons, ...(nativeSdBonus ? profile.weapons.filter(isRangedWeapon) : [])])
-    if (Number.isFinite(profile.points) && profile.points < 14 && (disposableWeapons.length || sdWeapons.length || nativeSdBonus)) result.disposableAro.push({ ...profile, badges: unique([...(nativeSdBonus ? preferredMatches(profile.skills, [bsAttackSdToken]) : []), ...sdWeapons.map((weapon) => `${weaponDisplay(weapon)} (+${weaponSdBonus(weapon)}SD)`)]), qualifyingWeapons: qualifyingDisposableWeapons })
+    if (Number.isFinite(profile.points) && profile.points <= 14 && (disposableWeapons.length || sdWeapons.length || nativeSdBonus)) result.disposableAro.push({ ...profile, badges: unique([...(nativeSdBonus ? preferredMatches(profile.skills, [bsAttackSdToken]) : []), ...sdWeapons.map((weapon) => `${weaponDisplay(weapon)} (+${weaponSdBonus(weapon)}SD)`)]), qualifyingWeapons: qualifyingDisposableWeapons })
 
     const deployments = preferredMatches(profile.skills, [parachutistToken, combatJumpToken, hiddenDeploymentToken, impersonationToken])
     if (deployments.length && !excludedAlternativeAttackVector(profile.unitName)) result.alternative.push({ ...profile, badges: deployments })
@@ -440,7 +440,7 @@ function impersonationToken(v) { return /^impersonation(?:\s+\d+)?$/.test(normal
 function camouflageToken(v) { return /^camouflage(?:\s+(?:l(?:evel\s*)?)?\d+)?$/.test(normalized(v)) }
 function decoyToken(v) { return /^decoy(?:\s+\d+)?$/.test(normalized(v)) }
 function minelayerToken(v) { return /^minelayer$/.test(normalized(v)) }
-function aroWeaponToken(v) { return /^(?:(?:ap|viral|multi|plasma|k1)\s+)?sniper rifle(?:\s+(?:burst|anti materiel|hit|blast) mode)?$|^(?:missile launcher|portable autocannon|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach)(?:\s+(?:burst|anti materiel|hit|blast) mode)?$/.test(normalized(v)) }
+function aroWeaponToken(v) { return /^(?:(?:ap|viral|multi|plasma|k1)\s+)?sniper rifle(?:\s+(?:burst|anti materiel|hit|blast) mode)?$|^(?:missile launcher|portable autocannon|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach|e mitter)(?:\s+(?:burst|anti materiel|hit|blast) mode)?$/.test(normalized(v)) }
 function flashPulseToken(v) { return /^flash pulse$/.test(normalized(v)) }
 function isRangedWeapon(w) { return normalized(w.type) !== 'cc' && !/\bcc weapon\b/.test(normalized(w.name)) }
 function minelayerAssociated(weapons, equipment) { return unique([...weapons.map(weaponDisplay), ...equipment].filter((v) => /(?:^|\s)(?:mine|mines)(?:\s|$)|deployable/i.test(normalized(v)))) }
