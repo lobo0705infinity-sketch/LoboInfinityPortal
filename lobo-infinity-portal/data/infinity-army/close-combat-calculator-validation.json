@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "infinity-close-combat-calculator-validation-v1",
+  "calculator": "https://infinitythecalculator.com/",
+  "observedAt": "2026-09-19",
+  "notes": [
+    "The public N5 calculator identifies itself as beta software.",
+    "Only interactions supported directly by its UI are cross-checked here. Protheion and skill activation are resolved by the benchmark engine and official-rule regressions."
+  ],
+  "cases": [
+    {
+      "id": "baseline-b1-sv20-vs-b1-sv18",
+      "active": { "burst": 1, "specialDice": 0, "successValue": 20, "weaponPs": 7, "arm": 2, "ammunition": "N" },
+      "reactive": { "burst": 1, "specialDice": 0, "successValue": 18, "weaponPs": 7, "arm": 2, "ammunition": "N" },
+      "calculator": { "activeExpectedWounds": 0.34, "reactiveExpectedWounds": 0.24 },
+      "engine": { "activeExpectedWounds": 0.341, "reactiveExpectedWounds": 0.2393 }
+    },
+    {
+      "id": "martial-arts-l3-special-die",
+      "active": { "burst": 1, "specialDice": 1, "successValue": 23, "weaponPs": 6, "arm": 2, "ammunition": "N" },
+      "reactive": { "burst": 1, "specialDice": 0, "successValue": 18, "weaponPs": 7, "arm": 2, "ammunition": "N" },
+      "calculator": { "activeExpectedWounds": 0.70 },
+      "engine": { "activeExpectedWounds": 0.7049 }
+    }
+  ]
+}
