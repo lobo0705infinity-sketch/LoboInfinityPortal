@@ -5,7 +5,10 @@ export const STANDARD_RANGE_BANDS = Object.freeze([
   { id: '24-32', min: 24, max: 32 },
   { id: '32-40', min: 32, max: 40 },
   { id: '40-48', min: 40, max: 48 },
-  { id: '48-96', min: 48, max: 96 },
+  // Fire lanes beyond 48 inches are legal but uncommon on a standard table.
+  // Keep testing every weapon in this band while reducing its contribution to
+  // the aggregate rating to one quarter of a typical engagement band.
+  { id: '48-96', min: 48, max: 96, weight: 0.25 },
 ])
 
 export const STATE_VALUES = Object.freeze({
@@ -67,9 +70,21 @@ export function evaluateState(profile, defenders, settings, state) {
   return {
     id: state.id,
     fireteamSpecialDice: state.specialDice,
-    rating: matchups.length ? round(matchups.reduce((sum, matchup) => sum + (matchup.selected?.score ?? 0), 0) / matchups.length) : null,
+    rating: weightedMatchupRating(matchups, settings.ranges),
     matchups,
   }
+}
+
+function weightedMatchupRating(matchups, ranges) {
+  if (!matchups.length) return null
+  const weights = new Map(ranges.map((range) => [range.id, Math.max(0, Number(range.weight ?? 1))]))
+  const totalWeight = matchups.reduce((sum, matchup) => sum + (weights.get(matchup.range) ?? 1), 0)
+  if (!totalWeight) return 0
+  const weightedScore = matchups.reduce((sum, matchup) => {
+    const weight = weights.get(matchup.range) ?? 1
+    return sum + (matchup.selected?.score ?? 0) * weight
+  }, 0)
+  return round(weightedScore / totalWeight)
 }
 
 export function evaluateAttackCandidate({ attacker, defender, weapon, mode, range, fireteamSpecialDice = 0, settings = DEFAULT_OPTIONS }) {

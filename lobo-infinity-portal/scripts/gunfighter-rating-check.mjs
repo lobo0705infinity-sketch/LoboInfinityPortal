@@ -71,8 +71,11 @@ assert.deepEqual(normal.states.map((state) => state.id), ['normal', 'fireteam'],
 assert.equal(normal.states[1].fireteamSpecialDice, 1)
 const longRange = normal.states[0].matchups.find((matchup) => matchup.range === '48-96')
 assert.equal(longRange.candidates[0].status, 'unavailable', 'every weapon is recorded in every range, including unavailable results')
-const expectedAllBandRating = Math.round(normal.states[0].matchups.reduce((sum, matchup) => sum + (matchup.selected?.score ?? 0), 0) / normal.states[0].matchups.length * 100) / 100
-assert.equal(normal.states[0].rating, expectedAllBandRating, 'unavailable range bands contribute zero rather than disappearing from the rating')
+const rangeWeight = (rangeId) => STANDARD_RANGE_BANDS.find((range) => range.id === rangeId)?.weight ?? 1
+const totalRangeWeight = normal.states[0].matchups.reduce((sum, matchup) => sum + rangeWeight(matchup.range), 0)
+const expectedAllBandRating = Math.round(normal.states[0].matchups.reduce((sum, matchup) => sum + (matchup.selected?.score ?? 0) * rangeWeight(matchup.range), 0) / totalRangeWeight * 100) / 100
+assert.equal(normal.states[0].rating, expectedAllBandRating, 'unavailable range bands contribute zero and every range uses its configured frequency weight')
+assert.equal(rangeWeight('48-96'), 0.25, 'engagements beyond 48 inches receive one-quarter weight')
 
 const msvAttacker = profile('msv', { equipment: ['Multispectral Visor L1'] })
 const msvResult = evaluateGunfighterProfile(msvAttacker, [smokeDefender])
