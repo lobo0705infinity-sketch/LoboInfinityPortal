@@ -50,7 +50,11 @@ catalog.source = {
   ttsFingerprint: tts.fingerprint,
   gunfighterCatalogFingerprint: gunfighterCatalog.fingerprint,
 }
-await writeFile(output, gzipSync(`${JSON.stringify(catalog)}\n`, { level: 9 }).toString('base64'), 'utf8')
+const encodedCatalog = gzipSync(`${JSON.stringify(catalog)}\n`, { level: 9 }).toString('base64')
+await writeFile(output, encodedCatalog, 'utf8')
+for (let offset = 0, part = 1; offset < encodedCatalog.length; offset += 180_000, part += 1) {
+  await writeFile(`${output}.part-${String(part).padStart(2, '0')}`, encodedCatalog.slice(offset, offset + 180_000), 'utf8')
+}
 console.log(JSON.stringify({ benchmarkVersion: catalog.benchmarkVersion, entries: catalog.entryCount, fingerprint: catalog.fingerprint, output }))
 
 function canonicalProfile(entry, source, chartByName) {
