@@ -1,6 +1,6 @@
 import { weaponChartRecordToGunfighterWeapon } from './infinity-weapon-chart.mjs'
 
-export const GUNFIGHTER_BENCHMARK_VERSION = 'gunfighter-benchmark-v5'
+export const GUNFIGHTER_BENCHMARK_VERSION = 'gunfighter-benchmark-v6'
 
 export function buildStandardGunfighterDefenders(weaponChart) {
   const weapon = (names, modes) => {
@@ -37,11 +37,11 @@ export function buildStandardGunfighterDefenders(weaponChart) {
       skills: ['Combat Instinct', 'Mimetism (-3)', 'Number 2', 'Terrain (Total)', 'Neurocinetics'],
       equipment: ['Multispectral Visor L2'],
     }, [weapon('MULTI Sniper Rifle'), weapon('Nanopulser'), weapon('Pistol')]),
-    defender('riot-grrrl-core-ml', 'Riot Grrl Core Missile Launcher', {
-      bs: 13, wip: 13, ph: 13, arm: 3, bts: 3, vitality: 2,
-      skills: ['Combat Instinct', 'Dodge (+3)', 'BS Attack (SR-1)', 'Frenzy', 'BS Attack (+1SD)'],
-      equipment: ['Multispectral Visor L1'],
-    }, [weapon('Missile Launcher'), weapon('Boarding Pistol')]),
+    defender('rudra-fto-k1-mmr', 'Linked Rudra FTO K1 Marksman Rifle', {
+      bs: 13, wip: 13, ph: 11, arm: 4, bts: 6, structure: 2,
+      skills: ['Climbing Plus', 'Tech-recovery', 'BS Attack (-3)', 'Courage', 'BS Attack (SR-1)', 'Immunity (AP)', 'Remote Presence', 'BS Attack (+1SD)'],
+      equipment: ['ECM: Hacker (-3)', 'Repeater'],
+    }, [weapon('K1 Marksman Rifle'), weapon('Pulzar'), weapon('Panzerfaust'), weapon('Heavy Pistol')]),
     defender('reaktion-zond-hmg', 'Reaktion Zond HMG', {
       bs: 11, wip: 13, ph: 10, arm: 0, bts: 3, structure: 1,
       skills: ['Climbing Plus', 'Courage', 'Remote Presence', 'Total Reaction'], equipment: ['360º Visor'],

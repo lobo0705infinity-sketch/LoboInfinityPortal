@@ -13,8 +13,8 @@ import { buildCanonicalDataset } from './infinity-army-canonical-dataset.mjs'
 const BENCHMARK_WEAPON_ARMY_CODES = [
   // Fusilier, Swiss Guard ML, and Black A.I.R. MSR complete profiles.
   'ZQpwYW5vY2VhbmlhDkJlbmNobWFyayBQYW5PgSwBAQEAAwABAQEAAAAJAQMAAACHEAEDAAA=',
-  // Riot Grrl ML complete profile.
-  'gfcHYmFrdW5pbhFCZW5jaG1hcmsgQmFrdW5pboEsAQEBAAEAga8BBQAA',
+  // Rudra FTO K1 Marksman Rifle and Panzerfaust complete profile.
+  'gr0FYWxlcGgPQmVuY2htYXJrIEFMRVBIgSwBAQEAAQCErQECAAA=',
   // Transductor Zond and Reaktion Zond HMG complete profiles.
   'gfUGbm9tYWRzEEJlbmNobWFyayBOb21hZHOBLAEBAQACAIGcAQEAAACBmQEBAAA=',
 ]

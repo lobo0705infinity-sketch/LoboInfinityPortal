@@ -192,8 +192,10 @@ export function expectedEffectFromHits({ expectedHits, mode, defender }) {
   const printedAttribute = mode.save === 'BTS' ? Number(defender.bts || 0) : mode.save === 'PH' ? Number(defender.ph || 0) : Number(defender.arm || 0)
   const fixedAttribute = mode.saveFixed == null ? null : Number(mode.saveFixed)
   const baseAttribute = Number.isFinite(fixedAttribute) ? fixedAttribute : printedAttribute
-  const inferredDivisor = /(?:^|\+)AP(?:$|\+)/i.test(String(mode.ammo)) || mode.ammo === 'BREAKER' ? 2 : 1
-  const divisor = Math.max(1, Number(mode.saveDivisor || inferredDivisor))
+  const apAmmunition = /(?:^|\+)AP(?:$|\+)/i.test(String(mode.ammo))
+  const apImmunity = [...(defender.skills || []), ...(defender.equipment || [])].some((value) => /immunity\s*\(?\s*ap\s*\)?/i.test(String(value)))
+  const inferredDivisor = apAmmunition || mode.ammo === 'BREAKER' ? 2 : 1
+  const divisor = apAmmunition && apImmunity ? 1 : Math.max(1, Number(mode.saveDivisor || inferredDivisor))
   const reduced = Math.ceil(baseAttribute / divisor) + Number(mode.saveModifier || 0)
   const cover = mode.ignoresCover || mode.attackType === 'direct-template' ? 0 : 3
   // BS Attack (SR-1) subtracts one from each target Saving Roll.  Increasing

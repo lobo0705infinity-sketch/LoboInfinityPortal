@@ -37,6 +37,9 @@ const srMinusOne = expectedEffectFromHits({ expectedHits: 1, mode: { ammo: 'N', 
 assert.ok(srMinusOne.expectedDamage > normalSave.expectedDamage, 'BS Attack (SR-1) increases the chance that every affected Saving Roll fails')
 const apHmgVsArmFive = expectedEffectFromHits({ expectedHits: 1, mode: { ammo: 'AP', power: 5, save: 'ARM', saveDivisor: 2, saves: 1, states: [], savingRollPenalty: 1 }, defender: profile('arm-five', { arm: 5 }) })
 assert.equal(apHmgVsArmFive.expectedDamage, 0.5, 'AP HMG PS5 vs ARM5 in Cover with SR-1 fails on 11-20')
+const apVsImmune = expectedEffectFromHits({ expectedHits: 1, mode: { ammo: 'AP', power: 5, save: 'ARM', saveDivisor: 2, saves: 1, states: [] }, defender: profile('ap-immune', { arm: 4, skills: ['Immunity (AP)'] }) })
+const apVsOrdinary = expectedEffectFromHits({ expectedHits: 1, mode: { ammo: 'AP', power: 5, save: 'ARM', saveDivisor: 2, saves: 1, states: [] }, defender: profile('ap-ordinary', { arm: 4 }) })
+assert.ok(apVsImmune.expectedDamage < apVsOrdinary.expectedDamage, 'Immunity (AP) prevents AP ammunition from halving ARM')
 assert.equal(adhesive.expectedDamage, 0.7, 'PH12 with a PH-6 Saving Roll fails on 7-20')
 assert.equal(adhesive.stateValue, 0.35, 'Immobilized applies its 0.5 value after the PH-6 failure chance')
 
