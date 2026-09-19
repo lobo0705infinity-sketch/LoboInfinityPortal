@@ -66,7 +66,7 @@ function resolveTtsWeapons(references = [], chart) {
 }
 
 function exactFireteamEligibility({ unit, group, option, profile, eligible, fireteamProfiles }) {
-  const records = fireteamProfiles.filter((entry) => Number(entry.unitId) === Number(unit.id))
+  const records = fireteamProfiles.filter((entry) => Number(entry.unitId) === Number(unit.id) && entry.level2Capable !== false)
   if (!records.length) return eligible.has(Number(unit.id))
   const selectedNames = [unit.name, unit.isc, group.isc, option.name, profile.name].map(normalize).filter(Boolean)
   return records.some((entry) => {

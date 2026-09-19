@@ -120,7 +120,7 @@
     "test:lobos-little-helper": "node scripts/lobos-little-helper-check.mjs",
     "test:inf-id-caledonian": "node scripts/inf-id-caledonian-check.mjs",
     "test:inf-list-tactical": "node scripts/inf-list-tactical-check.mjs",
-    "test:gunfighter-rating": "node scripts/gunfighter-rating-check.mjs && node scripts/aro-rating-check.mjs && node scripts/infinity-weapon-chart-check.mjs && node scripts/tts-workshop-profile-catalog-check.mjs && node scripts/gunfighter-profile-canonicalizer-check.mjs",
+    "test:gunfighter-rating": "node scripts/gunfighter-rating-check.mjs && node scripts/aro-rating-check.mjs && node scripts/infinity-weapon-chart-check.mjs && node scripts/tts-workshop-profile-catalog-check.mjs && node scripts/gunfighter-profile-canonicalizer-check.mjs && node scripts/fireteam-bonus-eligibility-check.mjs",
     "gunfighters:catalog": "node scripts/build-gunfighter-catalog.mjs",
     "gunfighters:rank": "node scripts/rank-army-gunfighters.mjs",
     "aros:catalog": "node scripts/build-official-aro-catalog.mjs",

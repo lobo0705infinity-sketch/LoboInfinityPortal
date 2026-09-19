@@ -9,6 +9,7 @@ import { buildStandardGunfighterDefenders, GUNFIGHTER_BENCHMARK_VERSION } from '
 import { evaluateGunfighterProfile } from '../bot/gunfighter-rating.mjs'
 import { extractWeaponChartRows, normalizeWeaponChartRows } from '../bot/infinity-weapon-chart.mjs'
 import { buildCanonicalDataset } from './infinity-army-canonical-dataset.mjs'
+import { buildFireteamBonusEligibility } from '../bot/fireteam-bonus-eligibility.mjs'
 
 const BENCHMARK_WEAPON_ARMY_CODES = [
   // Fusilier, Swiss Guard ML, and Black A.I.R. MSR complete profiles.
@@ -20,27 +21,42 @@ const BENCHMARK_WEAPON_ARMY_CODES = [
 ]
 
 const args = parseArgs(process.argv.slice(2))
-if (!args.input) throw new Error('Usage: npm run gunfighters:catalog -- --input <Army code> [--output <catalog.json>]')
+const apiOnly = args['api-only'] === 'true'
+if (!apiOnly && !args.input) throw new Error('Usage: npm run gunfighters:catalog -- --input <Army code> [--output <catalog.json>] [--api-only true]')
 const output = resolve(args.output || 'data/infinity-army/gunfighter-benchmark-catalog.json')
 const ttsCatalogPath = resolve(args['tts-catalog'] || 'data/infinity-army/tts-profile-catalog.json')
 const ttsCatalog = JSON.parse(await readFile(ttsCatalogPath, 'utf8'))
 const ttsProfiles = Array.isArray(ttsCatalog.profiles) ? ttsCatalog.profiles : []
 const executablePath = args['executable-path'] || process.env.PLAYWRIGHT_EXECUTABLE_PATH
-const browser = await chromium.launch({
-  headless: true,
-  ...(executablePath ? { executablePath, args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu', '--disable-webgl'] } : {}),
-})
+let browser = null
 try {
-  const captured = await captureOfficialData(browser, args.input)
-  const rawWeaponRows = [...await captureWeaponChart(captured.page)]
-  for (const armyCode of BENCHMARK_WEAPON_ARMY_CODES) rawWeaponRows.push(...await captureWeaponChartForArmyCode(browser, armyCode))
-  const chartRows = dedupeWeaponChartRows(normalizeWeaponChartRows(rawWeaponRows))
-  const payloads = await captureAllFactionPayloads(captured.page, captured.metadata, captured.payloads)
-  const dataset = buildCanonicalDataset({ metadata: captured.metadata, payloads })
+  let metadata
+  let payloads
+  let chartRows
+  let page = null
+  if (apiOnly) {
+    metadata = await fetchOfficialJson('https://api.corvusbelli.com/army/infinity/en/metadata')
+    payloads = await captureAllFactionPayloadsFromApi(metadata)
+    const weaponInput = JSON.parse(await readFile(resolve(args['weapon-chart'] || 'data/infinity-army/benchmark-weapon-chart-v8.json'), 'utf8'))
+    chartRows = dedupeWeaponChartRows(normalizeWeaponChartRows(weaponInput.rows || weaponInput))
+  } else {
+    browser = await chromium.launch({
+      headless: true,
+      ...(executablePath ? { executablePath, args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu', '--disable-webgl'] } : {}),
+    })
+    const captured = await captureOfficialData(browser, args.input)
+    page = captured.page
+    metadata = captured.metadata
+    const rawWeaponRows = [...await captureWeaponChart(page)]
+    for (const armyCode of BENCHMARK_WEAPON_ARMY_CODES) rawWeaponRows.push(...await captureWeaponChartForArmyCode(browser, armyCode))
+    chartRows = dedupeWeaponChartRows(normalizeWeaponChartRows(rawWeaponRows))
+    payloads = await captureAllFactionPayloads(page, metadata, captured.payloads)
+  }
+  const dataset = buildCanonicalDataset({ metadata, payloads })
   const profiles = payloads.flatMap((payload) => {
     const sectorialId = endpointId(payload.url)
-    const sectorialDataset = buildCanonicalDataset({ metadata: captured.metadata, payloads: [payload] })
-    const { fireteamUnitIds, wildcardUnitIds, fireteamProfiles } = fireteamEligibility([payload])
+    const sectorialDataset = buildCanonicalDataset({ metadata, payloads: [payload] })
+    const { fireteamUnitIds, wildcardUnitIds, fireteamProfiles } = buildFireteamBonusEligibility([payload])
     return buildCanonicalGunfighterProfiles({ dataset: sectorialDataset, weaponChart: chartRows, sectorialId, fireteamUnitIds, wildcardUnitIds, fireteamProfiles, ttsProfiles })
   })
   console.log(`Built ${profiles.length} canonical catalog profiles; starting benchmark evaluation`)
@@ -80,9 +96,34 @@ try {
     await writeFile(auditOutput, `${JSON.stringify({ benchmarkVersion: GUNFIGHTER_BENCHMARK_VERSION, defenders, rawUnits, profiles: audited }, null, 2)}\n`, 'utf8')
   }
   console.log(JSON.stringify({ output, entries: artifact.entryCount, payloads: payloads.length, weapons: chartRows.length, fingerprint: artifact.fingerprint }))
-  await captured.page.close()
+  if (page) await page.close()
 } finally {
-  await browser.close()
+  if (browser) await browser.close()
+}
+
+async function fetchOfficialJson(url) {
+  const response = await fetch(url, { headers: { 'user-agent': 'Mozilla/5.0', origin: 'https://infinityuniverse.com', referer: 'https://infinityuniverse.com/army/' } })
+  if (!response.ok) throw new Error(`Official Infinity Army request failed (${response.status}) for ${url}`)
+  const body = await response.json()
+  if (body?.message === 'Forbidden') throw new Error(`Official Infinity Army request was forbidden for ${url}`)
+  return body
+}
+
+async function captureAllFactionPayloadsFromApi(metadata) {
+  const ids = collectFactionIds(metadata.factions)
+  const payloads = []
+  const batchSize = 8
+  for (let offset = 0; offset < ids.length; offset += batchSize) {
+    const batch = ids.slice(offset, offset + batchSize)
+    const results = await Promise.all(batch.map(async (sectorialId) => {
+      const url = `https://api.corvusbelli.com/army/units/en/${sectorialId}`
+      const body = await fetchOfficialJson(url)
+      return Array.isArray(body?.units) ? { ...body, url } : null
+    }))
+    payloads.push(...results.filter(Boolean))
+    console.log(`Captured faction payloads ${Math.min(offset + batch.length, ids.length)}/${ids.length}`)
+  }
+  return payloads
 }
 
 async function captureOfficialData(browser, armyCode) {
@@ -181,32 +222,6 @@ function collectFactionIds(factions) {
   }
   visit(factions)
   return [...ids].filter((id) => id > 0 && id < 10_000).sort((a, b) => a - b)
-}
-
-function fireteamEligibility(payloads) {
-  const fireteamUnitIds = new Set()
-  const wildcardUnitIds = new Set()
-  const fireteamProfiles = []
-  for (const payload of payloads) {
-    const unitBySlug = new Map((payload.units || []).map((unit) => [unit.slug, Number(unit.id)]))
-    for (const team of payload.fireteamChart?.teams || []) for (const member of team.units || []) {
-      const id = Number(member.unitId || unitBySlug.get(member.slug))
-      if (!Number.isInteger(id)) continue
-      const wildcard = !Array.isArray(team.type) || !team.type.length
-      // Any profile that can legally join a Fireteam can receive the linked
-      // +1SD benchmark state. This is not limited to Core teams: Duo, Haris,
-      // special named teams, and Wildcards all qualify.
-      const linkable = Array.isArray(team.type) && team.type.length > 0
-      if (wildcard) wildcardUnitIds.add(id)
-      else if (linkable) fireteamUnitIds.add(id)
-      if (wildcard || linkable) fireteamProfiles.push({
-        unitId: id,
-        memberName: [member.name, member.comment].filter(Boolean).join(' '),
-        wildcard,
-      })
-    }
-  }
-  return { fireteamUnitIds: [...fireteamUnitIds], wildcardUnitIds: [...wildcardUnitIds], fireteamProfiles }
 }
 
 function endpointId(url) { const match = String(url || '').match(/\/(\d+)$/); return match ? Number(match[1]) : null }
