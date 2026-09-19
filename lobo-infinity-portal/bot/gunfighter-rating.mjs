@@ -23,8 +23,8 @@ const DEFAULT_OPTIONS = Object.freeze({
   stateValues: STATE_VALUES,
 })
 
-const rollDistributionCache = new Map()
 const faceToFaceCache = new Map()
+const poolSummaryCache = new Map()
 
 export function evaluateGunfighterProfile(profile, defenders, options = {}) {
   const settings = { ...DEFAULT_OPTIONS, ...options }
@@ -98,10 +98,8 @@ export function resolveFaceToFace(active, reactive) {
   const cacheKey = [active.burst, active.specialDice, active.target, active.criticalTarget, reactive.burst, reactive.specialDice, reactive.target, reactive.criticalTarget].join(':')
   const cached = faceToFaceCache.get(cacheKey)
   if (cached) return cached
-  const activeDistribution = retainedRollDistribution(active)
-  const reactiveDistribution = retainedRollDistribution(reactive)
-  const activeSummary = summarizeRollDistribution(activeDistribution)
-  const reactiveSummary = summarizeRollDistribution(reactiveDistribution)
+  const activeSummary = summarizePool(active)
+  const reactiveSummary = summarizePool(reactive)
   const activeWin = winProbability(activeSummary, reactiveSummary)
   const reactiveWin = winProbability(reactiveSummary, activeSummary)
   const noEffect = Math.max(0, 1 - activeWin - reactiveWin)
@@ -118,47 +116,75 @@ export function resolveFaceToFace(active, reactive) {
   return result
 }
 
-function summarizeRollDistribution(distribution) {
-  const states = []
-  const bestRankProbability = new Map()
-  for (const [key, probability] of distribution) {
-    const successes = JSON.parse(key).filter((roll) => roll.success)
-    const bestRank = successes.length ? Math.max(...successes.map(rollRank)) : 0
-    const weightedRanks = successes.map((roll) => ({ rank: rollRank(roll), hits: 1 + (roll.critical ? 1 : 0) }))
-    states.push({ probability, bestRank, weightedRanks })
-    bestRankProbability.set(bestRank, (bestRankProbability.get(bestRank) || 0) + probability)
+function summarizePool(pool) {
+  const burst = Math.max(1, Number(pool.burst || 1))
+  const dice = burst + Math.max(0, Number(pool.specialDice || 0))
+  const cacheKey = `${burst}:${dice}:${pool.target}:${pool.criticalTarget}`
+  const cached = poolSummaryCache.get(cacheKey)
+  if (cached) return cached
+  const raw = new Map()
+  for (let face = 1; face <= 20; face += 1) {
+    const roll = describeRoll(face, pool)
+    const rank = roll.success ? rollRank(roll) : 0
+    raw.set(rank, (raw.get(rank) || 0) + 0.05)
   }
-  const below = new Map()
-  let cumulative = 0
-  for (let rank = 0; rank <= 120; rank += 1) {
-    below.set(rank, cumulative)
-    cumulative += bestRankProbability.get(rank) || 0
+  const successRanks = [...raw.keys()].filter((rank) => rank > 0).sort((a, b) => a - b)
+  const ranks = successRanks.map((rank) => {
+    const equal = raw.get(rank) || 0
+    const lower = [...raw].reduce((sum, [candidate, probability]) => candidate < rank ? sum + probability : sum, 0)
+    const higher = Math.max(0, 1 - lower - equal)
+    const bestProbability = Math.pow(lower + equal, dice) - Math.pow(lower, dice)
+    const expectedRetained = expectedRetainedRankCount({ dice, burst, higher, equal, lower })
+    return { rank, bestProbability, expectedHits: expectedRetained * (rank > 100 ? 2 : 1) }
+  })
+  const summary = {
+    ranks,
+    below: (rank) => {
+      const probability = [...raw].reduce((sum, [candidate, value]) => candidate < rank ? sum + value : sum, 0)
+      return Math.pow(probability, dice)
+    },
   }
-  return { states, below }
+  poolSummaryCache.set(cacheKey, summary)
+  return summary
 }
 
 function winProbability(own, opposing) {
-  return own.states.reduce((sum, state) => state.bestRank > 0
-    ? sum + state.probability * (opposing.below.get(state.bestRank) || 0)
-    : sum, 0)
+  return own.ranks.reduce((sum, state) => sum + state.bestProbability * opposing.below(state.rank), 0)
 }
 
 function expectedWinningHits(own, opposing) {
-  return own.states.reduce((sum, state) => sum + state.probability * state.weightedRanks.reduce((hits, roll) =>
-    hits + roll.hits * (opposing.below.get(roll.rank) || 0), 0), 0)
+  return own.ranks.reduce((sum, state) => sum + state.expectedHits * opposing.below(state.rank), 0)
 }
 
 export function resolveNormalRoll(pool) {
-  const distribution = retainedRollDistribution(pool)
-  let success = 0
-  let expectedHits = 0
-  for (const [key, probability] of distribution) {
-    const rolls = JSON.parse(key)
-    const hits = rolls.reduce((sum, roll) => sum + (roll.success ? 1 + (roll.critical ? 1 : 0) : 0), 0)
-    if (hits) success += probability
-    expectedHits += probability * hits
-  }
+  const summary = summarizePool(pool)
+  const success = summary.ranks.reduce((sum, state) => sum + state.bestProbability, 0)
+  const expectedHits = summary.ranks.reduce((sum, state) => sum + state.expectedHits, 0)
   return { success: round(success * 100), expectedHits }
+}
+
+function expectedRetainedRankCount({ dice, burst, higher, equal, lower }) {
+  let expected = 0
+  for (let highCount = 0; highCount <= dice; highCount += 1) {
+    for (let equalCount = 0; equalCount <= dice - highCount; equalCount += 1) {
+      const lowerCount = dice - highCount - equalCount
+      const retained = Math.min(equalCount, Math.max(0, burst - highCount))
+      if (!retained) continue
+      expected += retained * multinomial3(dice, highCount, equalCount, lowerCount)
+        * Math.pow(higher, highCount) * Math.pow(equal, equalCount) * Math.pow(lower, lowerCount)
+    }
+  }
+  return expected
+}
+
+function multinomial3(total, first, second, third) {
+  return factorial(total) / (factorial(first) * factorial(second) * factorial(third))
+}
+
+function factorial(value) {
+  let result = 1
+  for (let index = 2; index <= value; index += 1) result *= index
+  return result
 }
 
 export function expectedEffectFromHits({ expectedHits, mode, defender }) {
@@ -263,35 +289,9 @@ function buildLegalAros(defender, attacker, range, settings, attackingMode) {
   return results
 }
 
-function retainedRollDistribution(pool) {
-  const burst = Math.max(1, Number(pool.burst || 1))
-  const dice = burst + Math.max(0, Number(pool.specialDice || 0))
-  const cacheKey = `${burst}:${dice}:${pool.target}:${pool.criticalTarget}`
-  const cached = rollDistributionCache.get(cacheKey)
-  if (cached) return cached
-  let states = new Map([['[]', 1]])
-  for (let index = 0; index < dice; index += 1) {
-    const next = new Map()
-    for (const [key, probability] of states) for (let face = 1; face <= 20; face += 1) {
-      const rolls = [...JSON.parse(key), describeRoll(face, pool)].sort(rollPreference).slice(0, burst)
-      const nextKey = JSON.stringify(rolls)
-      next.set(nextKey, (next.get(nextKey) || 0) + probability / 20)
-    }
-    states = next
-  }
-  rollDistributionCache.set(cacheKey, states)
-  return states
-}
-
 function describeRoll(face, pool) {
   const success = face <= pool.target
   return { face, success, critical: success && face === pool.criticalTarget }
-}
-
-function rollPreference(a, b) {
-  const av = a.critical ? 100 + a.face : a.success ? a.face : 0
-  const bv = b.critical ? 100 + b.face : b.success ? b.face : 0
-  return bv - av
 }
 
 function compareRolls(active, reactive) {
