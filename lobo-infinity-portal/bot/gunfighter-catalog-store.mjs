@@ -5,7 +5,9 @@ import { GUNFIGHTER_CATALOG_SCHEMA } from './gunfighter-benchmark-catalog.mjs'
 let cachedPath = null
 let cachedCatalog = null
 
-export async function loadGunfighterBenchmarkCatalog(path = process.env.GUNFIGHTER_CATALOG_PATH || 'data/infinity-army/gunfighter-benchmark-catalog.json') {
+export const BUNDLED_GUNFIGHTER_CATALOG_PATH = resolve(import.meta.dirname, '..', 'data', 'infinity-army', 'gunfighter-benchmark-catalog.json')
+
+export async function loadGunfighterBenchmarkCatalog(path = BUNDLED_GUNFIGHTER_CATALOG_PATH) {
   const absolute = resolve(path)
   if (cachedPath === absolute && cachedCatalog) return cachedCatalog
   try {
