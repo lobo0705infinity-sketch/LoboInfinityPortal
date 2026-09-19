@@ -3,6 +3,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { chromium } from 'playwright'
+import { gzipSync, gunzipSync } from 'node:zlib'
 import { buildGunfighterBenchmarkCatalog } from '../bot/gunfighter-benchmark-catalog.mjs'
 import { buildCanonicalGunfighterProfiles } from '../bot/gunfighter-profile-canonicalizer.mjs'
 import { buildStandardGunfighterDefenders, GUNFIGHTER_BENCHMARK_VERSION } from '../bot/gunfighter-standard-benchmark.mjs'
@@ -24,8 +25,11 @@ const args = parseArgs(process.argv.slice(2))
 const apiOnly = args['api-only'] === 'true'
 if (!apiOnly && !args.input) throw new Error('Usage: npm run gunfighters:catalog -- --input <Army code> [--output <catalog.json>] [--api-only true]')
 const output = resolve(args.output || 'data/infinity-army/gunfighter-benchmark-catalog.json')
-const ttsCatalogPath = resolve(args['tts-catalog'] || 'data/infinity-army/tts-profile-catalog.json')
-const ttsCatalog = JSON.parse(await readFile(ttsCatalogPath, 'utf8'))
+const ttsCatalogPath = resolve(args['tts-catalog'] || 'data/infinity-army/tts-profile-catalog.json.gz.b64')
+const ttsCatalogRaw = await readFile(ttsCatalogPath, 'utf8')
+const ttsCatalog = JSON.parse(ttsCatalogPath.endsWith('.gz.b64')
+  ? gunzipSync(Buffer.from(ttsCatalogRaw, 'base64')).toString('utf8')
+  : ttsCatalogRaw)
 const ttsProfiles = Array.isArray(ttsCatalog.profiles) ? ttsCatalog.profiles : []
 const executablePath = args['executable-path'] || process.env.PLAYWRIGHT_EXECUTABLE_PATH
 let browser = null
@@ -85,7 +89,10 @@ try {
     },
   }
   await mkdir(dirname(output), { recursive: true })
-  await writeFile(output, `${JSON.stringify(artifact)}\n`, 'utf8')
+  const serializedArtifact = `${JSON.stringify(artifact)}\n`
+  await writeFile(output, serializedArtifact, 'utf8')
+  const encodedArtifact = gzipSync(serializedArtifact, { level: 9 }).toString('base64')
+  await writeFile(`${output}.gz.b64`, encodedArtifact, 'utf8')
   if (args['audit-keys'] && args['audit-output']) {
     const keys = new Set(String(args['audit-keys']).split(',').map((value) => value.trim()).filter(Boolean))
     const audited = profiles.filter((profile) => keys.has(profile.id)).map((profile) => ({ profile, evaluation: evaluateGunfighterProfile(profile, defenders) }))

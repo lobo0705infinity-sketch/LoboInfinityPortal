@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict'
 import { buildAttackPool, evaluateGunfighterProfile, expectedEffectFromHits, resolveFaceToFace, STANDARD_RANGE_BANDS } from '../bot/gunfighter-rating.mjs'
 import { buildGunfighterBenchmarkCatalog, lookupGunfighterRatings, rankArmyGunfighters } from '../bot/gunfighter-benchmark-catalog.mjs'
+import { DEFENDER_SPECS } from '../bot/gunfighter-standard-benchmark.mjs'
+
+assert.equal(DEFENDER_SPECS.length, 31, 'the production gunfighter benchmark must retain all 31 defensive profiles')
 
 const ranges = STANDARD_RANGE_BANDS.map((range) => ({ ...range, modifier: range.id === '8-16' ? 3 : range.id === '48-96' ? null : -3 }))
 const rifle = (overrides = {}) => ({ name: 'Rifle', modes: [{ name: 'Normal', ammo: 'N', attackType: 'bs', burst: 3, power: 13, save: 'ARM', ranges, ...overrides }] })

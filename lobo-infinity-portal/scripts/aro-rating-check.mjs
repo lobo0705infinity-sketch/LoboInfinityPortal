@@ -28,6 +28,17 @@ const profiles = Array.from({ length: 30 }, (_, index) => ({ ...profile(`p${inde
 const gunfighterCatalog = { entries: profiles.map((item, index) => ({ key: item.id, result: { states: [{ id: 'normal', fireteamSpecialDice: 0, rating: 100 - index }] } })) }
 const attackers = selectBenchmarkAttackers(profiles, gunfighterCatalog)
 assert.equal(attackers.length, 30)
+const reactiveVariant = { ...profiles[0], id: '503:1:1:1:1', sectorialId: 503, skills: ['Neurocinetics'] }
+const dedupedAttackers = selectBenchmarkAttackers(
+  [profiles[0], reactiveVariant, ...profiles.slice(1)],
+  { entries: [
+    gunfighterCatalog.entries[0],
+    { key: reactiveVariant.id, result: { states: [{ id: 'normal', fireteamSpecialDice: 0, rating: 99.5 }] } },
+    ...gunfighterCatalog.entries.slice(1),
+  ] },
+)
+assert.equal(dedupedAttackers.length, 30)
+assert.equal(dedupedAttackers.filter((item) => item.profile.unitId === profiles[0].unitId).length, 1, 'reactive-only skill variants must not consume multiple active-attacker slots')
 const catalog = buildAroBenchmarkCatalog({ profiles: [profiles[0]], attackers, officialDataVersion: 'test' })
 assert.equal(catalog.entryCount, 1)
 assert.equal(catalog.benchmarkAttackers.length, 30)

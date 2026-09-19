@@ -480,5 +480,6 @@ function assertProfile(profile) {
 
 function validateWeaponMode(weapon, mode) {
   if (!weapon?.name || !mode || !Array.isArray(mode.ranges)) throw new Error(`Incomplete canonical weapon data for ${weapon?.name || 'unknown weapon'}.`)
-  for (const field of ['burst', 'power', 'ammo', 'save', 'attackType']) if (mode[field] == null) throw new Error(`Incomplete ${field} for ${weapon.name}.`)
+  for (const field of ['burst', 'power', 'ammo', 'attackType']) if (mode[field] == null) throw new Error(`Incomplete ${field} for ${weapon.name}.`)
+  if (!mode.smoke && !mode.eclipse && mode.save == null) throw new Error(`Incomplete save for ${weapon.name}.`)
 }

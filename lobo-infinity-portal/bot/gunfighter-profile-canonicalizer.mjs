@@ -65,6 +65,10 @@ function resolveTtsWeapons(references = [], chart) {
   return resolved
 }
 
+export function gunfighterWeaponsFromTtsProfile(profile, weaponChart = []) {
+  return mergeWeapons(resolveTtsWeapons(profile?.weapons || [], indexWeaponChart(weaponChart)))
+}
+
 function exactFireteamEligibility({ unit, group, option, profile, eligible, fireteamProfiles }) {
   const records = fireteamProfiles.filter((entry) => Number(entry.unitId) === Number(unit.id) && entry.level2Capable !== false)
   if (!records.length) return eligible.has(Number(unit.id))
@@ -107,7 +111,8 @@ function indexArmyWeapons(records = []) {
 
 function isBenchmarkAttackMode(mode) {
   return Array.isArray(mode?.ranges) && mode.ranges.length > 0
-    && ['burst', 'power', 'ammo', 'save', 'attackType'].every((field) => mode[field] != null)
+    && ['burst', 'power', 'ammo', 'attackType'].every((field) => mode[field] != null)
+    && (mode.smoke || mode.eclipse || mode.save != null)
 }
 
 function applyWeaponModifiers(mode, modifiers) {

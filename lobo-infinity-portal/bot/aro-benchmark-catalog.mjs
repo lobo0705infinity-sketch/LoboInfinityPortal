@@ -160,7 +160,9 @@ function combatSignature(profile, specialDice) {
 }
 
 function attackerSignature(profile, specialDice) {
-  const relevant = (values = []) => values.filter((value) => /bs attack|mimetism|marksmanship|warhorse|total reaction|neurocinetics|surprise attack|dodge|no wound incapacitation|dogged|immunity|multispectral visor|x visor|albedo/i.test(String(value)))
+  // The suite represents active-turn attackers. Reactive-only skills such as
+  // Total Reaction and Neurocinetics must not create duplicate attackers.
+  const relevant = (values = []) => values.filter((value) => /bs attack|mimetism|marksmanship|warhorse|surprise attack|dodge|no wound incapacitation|dogged|immunity|multispectral visor|x visor|albedo/i.test(String(value)))
   return JSON.stringify({
     bs: profile.bs, ph: profile.ph, arm: profile.arm, bts: profile.bts,
     vitality: profile.vitality, structure: profile.structure,
