@@ -7,8 +7,17 @@ export function buildGunfighterBenchmarkCatalog({ profiles, defenders, officialD
   if (!officialDataVersion) throw new Error('Gunfighter catalog requires an official Army-data version.')
   if (!benchmarkVersion) throw new Error('Gunfighter catalog requires a benchmark version.')
   if (!Array.isArray(profiles) || !profiles.length) throw new Error('Gunfighter catalog requires canonical profiles.')
-  const entries = profiles.map((profile) => {
-    const evaluated = evaluateGunfighterProfile(profile, defenders, options)
+  const evaluationCache = new Map()
+  const entries = profiles.map((profile, index) => {
+    const signature = combatProfileSignature(profile)
+    let states = evaluationCache.get(signature)
+    if (!states) {
+      states = compactResult(evaluateGunfighterProfile(profile, defenders, options)).states
+      evaluationCache.set(signature, states)
+    }
+    if ((index + 1) % 100 === 0 || index + 1 === profiles.length) {
+      console.log(`Evaluated catalog profiles ${index + 1}/${profiles.length} (${evaluationCache.size} unique combat profiles)`)
+    }
     return {
       key: canonicalProfileKey(profile),
       sectorialId: Number(profile.sectorialId),
@@ -16,7 +25,7 @@ export function buildGunfighterBenchmarkCatalog({ profiles, defenders, officialD
       groupId: Number(profile.groupId),
       optionId: Number(profile.optionId),
       profileId: Number(profile.profileId),
-      result: compactResult(evaluated),
+      result: { profileId: profile.id, name: profile.name, states },
     }
   }).sort((a, b) => a.key.localeCompare(b.key))
   const fingerprint = fingerprintCatalog({ officialDataVersion, benchmarkVersion, defenders, options, entries })
@@ -29,6 +38,21 @@ export function buildGunfighterBenchmarkCatalog({ profiles, defenders, officialD
     entryCount: entries.length,
     entries,
   }
+}
+
+function combatProfileSignature(profile) {
+  return JSON.stringify({
+    bs: profile.bs,
+    ph: profile.ph,
+    arm: profile.arm,
+    bts: profile.bts,
+    vitality: profile.vitality,
+    structure: profile.structure,
+    skills: profile.skills,
+    equipment: profile.equipment,
+    weapons: profile.weapons,
+    fireteamCapable: Boolean(profile.fireteamCapable),
+  })
 }
 
 export function lookupGunfighterRatings(catalog, decodedArmy) {

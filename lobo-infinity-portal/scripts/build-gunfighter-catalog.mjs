@@ -43,6 +43,7 @@ try {
     const { fireteamUnitIds, wildcardUnitIds, fireteamProfiles } = fireteamEligibility([payload])
     return buildCanonicalGunfighterProfiles({ dataset: sectorialDataset, weaponChart: chartRows, sectorialId, fireteamUnitIds, wildcardUnitIds, fireteamProfiles, ttsProfiles })
   })
+  console.log(`Built ${profiles.length} canonical catalog profiles; starting benchmark evaluation`)
   const defenders = buildStandardGunfighterDefenders(chartRows)
   const catalog = buildGunfighterBenchmarkCatalog({
     profiles,
