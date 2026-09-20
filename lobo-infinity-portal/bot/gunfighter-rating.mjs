@@ -422,7 +422,8 @@ function compareRolls(active, reactive) {
   }
 }
 
-function rollRank(roll) { return roll.critical ? 100 + roll.face : roll.face }
+// All Criticals tie, regardless of their Success Values or opposing counts.
+function rollRank(roll) { return roll.critical ? 120 : roll.face }
 
 function rangeModifierFor(mode, range, equipment = []) {
   const entry = mode.ranges.find((candidate) => candidate.min <= range.min && candidate.max >= range.max)
