@@ -1,20 +1,27 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { gzipSync } from 'node:zlib'
+import { createHash } from 'node:crypto'
 import { buildMobilityProfiles, MOBILITY_VERSION } from '../bot/mobility-rating.mjs'
+import { validateMobilityCapture, validateMobilityEntries, MOBILITY_CATALOG_SCHEMA } from '../bot/mobility-catalog-validation.mjs'
 
 const [input, output] = process.argv.slice(2)
 if (!input || !output) throw Error('Usage: node scripts/build-mobility-catalog.mjs <official-capture.json|--api> <output.json|output.json.gz.b64>')
 const capture = input === '--api' ? await captureOfficialData() : JSON.parse(await readFile(input, 'utf8'))
-if (capture.failures?.length) throw Error('Refusing an incomplete official capture')
+const coverage = validateMobilityCapture(capture)
 const entries = buildMobilityProfiles(capture)
-if (!entries.length) throw Error('Official capture contains no profiles')
+const validation = validateMobilityEntries(entries)
 const artifact = {
-  schemaVersion: MOBILITY_VERSION,
+  schemaVersion: MOBILITY_CATALOG_SCHEMA,
+  ratingVersion: MOBILITY_VERSION,
   generatedAt: new Date().toISOString(),
   source: 'Official Infinity Army API',
   officialVersions: [...new Set(capture.payloads.map(x => x.version))],
   payloadCount: capture.payloads.length,
+  coverage,
+  validation,
+  captureFingerprint: createHash('sha256').update(JSON.stringify(capture)).digest('hex'),
+  factionVersions: capture.payloads.map(x => ({ sectorialId: x.sectorialId ?? Number(x.url?.split('/').pop()), version: x.version })),
   entryCount: entries.length,
   missingMovement: entries.filter(x => x.mobility.status === 'missing-movement').length,
   noMovementAttribute: entries.filter(x => x.mobility.status === 'no-movement-attribute').length,

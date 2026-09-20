@@ -1,0 +1,1850 @@
+{
+  "schemaVersion": "mobility-scenarios-v1",
+  "catalogCaptureFingerprint": "93b509477c35f2d861b823d743b22fb0b99ede126b4b896da2f96d5b316fa3ee",
+  "officialVersions": [
+    "7.26246.158",
+    "7.26246.159"
+  ],
+  "generatedAt": "2026-09-20T03:05:42.180Z",
+  "coverage": {
+    "entries": 13166,
+    "evaluated": 13150,
+    "unrankedNoMovement": 16,
+    "normalDodgeMissingPh": 0,
+    "terrainNeedsChoiceOrType": 23
+  },
+  "assumptions": [
+    "Distances are inches. Movement actions begin standing, unengaged, with unrestricted clear paths and no enemy interference.",
+    "Best open travel compares Move+Move, a Long Jump, and Super-Jump+Move. Jumping is permitted on this clear route; no extra Orders or deployment bonuses are assumed.",
+    "Jump/ascent paths are premeasured legal trajectories with sufficiently large landing surfaces for each base. No collision, vaulting, silhouette-clearance or landing-footprint simulation.",
+    "Gap test is a single horizontal 11-inch Jump trajectory. Ascent test is one 9-inch upward Jump or Climb trajectory with no intermediate landing.",
+    "Bent-air test is a 10-inch upward/turning trajectory without intermediate surfaces, requiring Jet Propulsion and a follow-up BS Attack.",
+    "A follow-up attack means an action remains available, not that a target is in range/LoF or that the shooter survives an ARO.",
+    "12-inch Difficult Terrain travel starts inside and remains inside the specified zone. Entry-boundary stopping is deliberately excluded.",
+    "Terrain choices are not optimized separately for each test: a multi-type choice remains unresolved until selected. An unqualified Terrain label is reported as unspecified.",
+    "Dodge is an eligible Normal Roll with no situational penalties, not a face-to-face survival estimate. Expected distance includes failure probability.",
+    "Scores are still the original provisional v1 weights. Scenario measurements are separate; no new aggregate score or combat blend is introduced."
+  ],
+  "sources": [
+    "https://infinitythewiki.com/Super-Jump",
+    "https://infinitythewiki.com/Jump",
+    "https://infinitythewiki.com/Climb",
+    "https://infinitythewiki.com/Climbing_Plus",
+    "https://infinitythewiki.com/Terrain",
+    "https://infinitythewiki.com/Difficult_Terrain",
+    "https://infinitythewiki.com/Dodge",
+    "https://infinitythewiki.com/Motorcycle",
+    "https://infinitythewiki.com/AI_Motorcycle",
+    "https://infinitythewiki.com/Aerial",
+    "https://infinitythewiki.com/Modifiers_Explained"
+  ],
+  "samples": [
+    {
+      "label": "Redeye",
+      "id": "107:1816:1:1:1",
+      "name": "REDEYE Close Air Support Squad — REDEYE",
+      "mov": [
+        8,
+        2
+      ],
+      "ph": 13,
+      "silhouette": 7,
+      "skills": [
+        "Aerial",
+        "Courage",
+        "Dodge(-3)",
+        "Gizmokit(PH=14)",
+        "Mimetism(-6)",
+        "Remote Presence",
+        "Super-Jump(Jet Propulsion)",
+        "Terrain(Total)",
+        "No Cover",
+        "Super-Jump(+3\")",
+        "Tech-recovery",
+        "Sensor"
+      ],
+      "equipment": [],
+      "provisionalScore": 60,
+      "scenarios": {
+        "status": "ok",
+        "openMoveAndShoot": 8,
+        "openMoveMove": 10,
+        "openBestTravel": 13,
+        "open12Orders": 1,
+        "horizontalJumpAndShoot": 11,
+        "horizontalLongJump": 12,
+        "climbLongSkill": null,
+        "climbAndShoot": null,
+        "upwardJumpAndShoot": 11,
+        "gap11AndShoot": true,
+        "gap11OneOrder": true,
+        "ascent9AndShoot": true,
+        "bentAirPath10AndShoot": true,
+        "normalDodge": {
+          "status": "ok",
+          "target": 13,
+          "extraDice": 0,
+          "distance": 2,
+          "successProbability": 0.65,
+          "expectedDistance": 1.3
+        },
+        "difficultTerrain": {
+          "Aquatic": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Desert": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Mountain": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Jungle": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Zero-G": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          }
+        }
+      }
+    },
+    {
+      "label": "Fēiquán",
+      "id": "202:1842:1:1:1",
+      "name": "FĒIQUÁN Imperial Tactical Wing — FĒIQUÁN",
+      "mov": [
+        8,
+        2
+      ],
+      "ph": 12,
+      "silhouette": 7,
+      "skills": [
+        "Aerial",
+        "Courage",
+        "Dodge(-3)",
+        "Gizmokit(PH=13)",
+        "Mimetism(-6)",
+        "No Cover",
+        "Sensor",
+        "Super-Jump(Jet Propulsion)",
+        "Terrain(Total)",
+        "Super-Jump(+3\")",
+        "Tech-recovery",
+        "BS Attack(+1SD)"
+      ],
+      "equipment": [],
+      "provisionalScore": 60,
+      "scenarios": {
+        "status": "ok",
+        "openMoveAndShoot": 8,
+        "openMoveMove": 10,
+        "openBestTravel": 13,
+        "open12Orders": 1,
+        "horizontalJumpAndShoot": 11,
+        "horizontalLongJump": 12,
+        "climbLongSkill": null,
+        "climbAndShoot": null,
+        "upwardJumpAndShoot": 11,
+        "gap11AndShoot": true,
+        "gap11OneOrder": true,
+        "ascent9AndShoot": true,
+        "bentAirPath10AndShoot": true,
+        "normalDodge": {
+          "status": "ok",
+          "target": 12,
+          "extraDice": 0,
+          "distance": 2,
+          "successProbability": 0.6,
+          "expectedDistance": 1.2
+        },
+        "difficultTerrain": {
+          "Aquatic": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Desert": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Mountain": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Jungle": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Zero-G": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          }
+        }
+      }
+    },
+    {
+      "label": "Haytham",
+      "id": "401:1851:1:1:1",
+      "name": "HAYTHAM Aero-unit — HAYTHAM",
+      "mov": [
+        8,
+        2
+      ],
+      "ph": 13,
+      "silhouette": 7,
+      "skills": [
+        "Aerial",
+        "Courage",
+        "Dodge(-3)",
+        "Mimetism(-6)",
+        "No Cover",
+        "Super-Jump(Jet Propulsion)",
+        "Terrain(Total)",
+        "Super-Jump(+3\")",
+        "BS Attack(Continous Damage)",
+        "Tech-recovery"
+      ],
+      "equipment": [
+        "Multispectral Visor L1"
+      ],
+      "provisionalScore": 60,
+      "scenarios": {
+        "status": "ok",
+        "openMoveAndShoot": 8,
+        "openMoveMove": 10,
+        "openBestTravel": 13,
+        "open12Orders": 1,
+        "horizontalJumpAndShoot": 11,
+        "horizontalLongJump": 12,
+        "climbLongSkill": null,
+        "climbAndShoot": null,
+        "upwardJumpAndShoot": 11,
+        "gap11AndShoot": true,
+        "gap11OneOrder": true,
+        "ascent9AndShoot": true,
+        "bentAirPath10AndShoot": true,
+        "normalDodge": {
+          "status": "ok",
+          "target": 13,
+          "extraDice": 0,
+          "distance": 2,
+          "successProbability": 0.65,
+          "expectedDistance": 1.3
+        },
+        "difficultTerrain": {
+          "Aquatic": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Desert": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Mountain": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Jungle": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Zero-G": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          }
+        }
+      }
+    },
+    {
+      "label": "Zeybek",
+      "id": "403:1852:1:1:1",
+      "name": "ZEYBEK Aero-unit — ZEYBEK",
+      "mov": [
+        8,
+        2
+      ],
+      "ph": 12,
+      "silhouette": 7,
+      "skills": [
+        "Aerial",
+        "Courage",
+        "Dodge(-3)",
+        "No Cover",
+        "Super-Jump(Jet Propulsion)",
+        "Transmutation(Escape System -2)",
+        "Terrain(Total)",
+        "Super-Jump(+3\")",
+        "BS Attack(-3)",
+        "Tech-recovery"
+      ],
+      "equipment": [
+        "Albedo(-6)"
+      ],
+      "provisionalScore": 60,
+      "scenarios": {
+        "status": "ok",
+        "openMoveAndShoot": 8,
+        "openMoveMove": 10,
+        "openBestTravel": 13,
+        "open12Orders": 1,
+        "horizontalJumpAndShoot": 11,
+        "horizontalLongJump": 12,
+        "climbLongSkill": null,
+        "climbAndShoot": null,
+        "upwardJumpAndShoot": 11,
+        "gap11AndShoot": true,
+        "gap11OneOrder": true,
+        "ascent9AndShoot": true,
+        "bentAirPath10AndShoot": true,
+        "normalDodge": {
+          "status": "ok",
+          "target": 12,
+          "extraDice": 0,
+          "distance": 2,
+          "successProbability": 0.6,
+          "expectedDistance": 1.2
+        },
+        "difficultTerrain": {
+          "Aquatic": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Desert": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Mountain": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Jungle": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Zero-G": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          }
+        }
+      }
+    },
+    {
+      "label": "Go-Pod",
+      "id": "501:1854:1:1:1",
+      "name": "GO-POD — GO-POD",
+      "mov": [
+        8,
+        2
+      ],
+      "ph": 13,
+      "silhouette": 7,
+      "skills": [
+        "BS Attack(-3)",
+        "BS Attack(+1B)",
+        "Aerial",
+        "Courage",
+        "Dodge(-3)",
+        "Mimetism(-3)",
+        "No Cover",
+        "Super-Jump(Jet Propulsion)",
+        "Terrain(Total)",
+        "Super-Jump(+3\")",
+        "Tech-recovery"
+      ],
+      "equipment": [],
+      "provisionalScore": 60,
+      "scenarios": {
+        "status": "ok",
+        "openMoveAndShoot": 8,
+        "openMoveMove": 10,
+        "openBestTravel": 13,
+        "open12Orders": 1,
+        "horizontalJumpAndShoot": 11,
+        "horizontalLongJump": 12,
+        "climbLongSkill": null,
+        "climbAndShoot": null,
+        "upwardJumpAndShoot": 11,
+        "gap11AndShoot": true,
+        "gap11OneOrder": true,
+        "ascent9AndShoot": true,
+        "bentAirPath10AndShoot": true,
+        "normalDodge": {
+          "status": "ok",
+          "target": 13,
+          "extraDice": 0,
+          "distance": 2,
+          "successProbability": 0.65,
+          "expectedDistance": 1.3
+        },
+        "difficultTerrain": {
+          "Aquatic": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Desert": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Mountain": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Jungle": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Zero-G": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          }
+        }
+      }
+    },
+    {
+      "label": "Skyhound",
+      "id": "605:1889:1:1:1",
+      "name": "SKYHOUNDS, Combat and Recon Air Squadron — SKYHOUND",
+      "mov": [
+        8,
+        2
+      ],
+      "ph": 13,
+      "silhouette": 7,
+      "skills": [
+        "Remote Presence",
+        "Aerial",
+        "Tech-recovery",
+        "Courage",
+        "Discover(+6)",
+        "Dodge(-3)",
+        "Gizmokit(PH=14)",
+        "Mimetism(-6)",
+        "No Cover",
+        "Super-Jump(+3\")",
+        "Super-Jump(Jet Propulsion)",
+        "Terrain(Total)",
+        "BS Attack(+1B)"
+      ],
+      "equipment": [],
+      "provisionalScore": 60,
+      "scenarios": {
+        "status": "ok",
+        "openMoveAndShoot": 8,
+        "openMoveMove": 10,
+        "openBestTravel": 13,
+        "open12Orders": 1,
+        "horizontalJumpAndShoot": 11,
+        "horizontalLongJump": 12,
+        "climbLongSkill": null,
+        "climbAndShoot": null,
+        "upwardJumpAndShoot": 11,
+        "gap11AndShoot": true,
+        "gap11OneOrder": true,
+        "ascent9AndShoot": true,
+        "bentAirPath10AndShoot": true,
+        "normalDodge": {
+          "status": "ok",
+          "target": 13,
+          "extraDice": 0,
+          "distance": 2,
+          "successProbability": 0.65,
+          "expectedDistance": 1.3
+        },
+        "difficultTerrain": {
+          "Aquatic": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Desert": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Mountain": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Jungle": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Zero-G": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          }
+        }
+      }
+    },
+    {
+      "label": "Tarksia",
+      "id": "701:1904:1:1:1",
+      "name": "Tarksia Interception Wing — TARKSIA",
+      "mov": [
+        8,
+        2
+      ],
+      "ph": 12,
+      "silhouette": 7,
+      "skills": [
+        "Remote Presence",
+        "Aerial",
+        "BS Attack(SR-1)",
+        "Courage",
+        "Dodge(-3)",
+        "Mimetism(-6)",
+        "No Cover",
+        "Super-Jump(+3\")",
+        "Super-Jump(Jet Propulsion)",
+        "Tech-recovery",
+        "Terrain(Total)",
+        "Transmutation(Escape System -2)",
+        "Gizmokit(PH=13)"
+      ],
+      "equipment": [
+        "ECM: Hacker(-3)",
+        "Multispectral Visor L1"
+      ],
+      "provisionalScore": 60,
+      "scenarios": {
+        "status": "ok",
+        "openMoveAndShoot": 8,
+        "openMoveMove": 10,
+        "openBestTravel": 13,
+        "open12Orders": 1,
+        "horizontalJumpAndShoot": 11,
+        "horizontalLongJump": 12,
+        "climbLongSkill": null,
+        "climbAndShoot": null,
+        "upwardJumpAndShoot": 11,
+        "gap11AndShoot": true,
+        "gap11OneOrder": true,
+        "ascent9AndShoot": true,
+        "bentAirPath10AndShoot": true,
+        "normalDodge": {
+          "status": "ok",
+          "target": 12,
+          "extraDice": 0,
+          "distance": 2,
+          "successProbability": 0.6,
+          "expectedDistance": 1.2
+        },
+        "difficultTerrain": {
+          "Aquatic": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Desert": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Mountain": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Jungle": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Zero-G": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          }
+        }
+      }
+    },
+    {
+      "label": "Firebat",
+      "id": "1003:1857:1:1:1",
+      "name": "FIREBAT Attack Wing — FIREBAT",
+      "mov": [
+        8,
+        2
+      ],
+      "ph": 12,
+      "silhouette": 7,
+      "skills": [
+        "Aerial",
+        "Courage",
+        "Dodge(-3)",
+        "Gizmokit(PH=13)",
+        "Mimetism(-6)",
+        "No Cover",
+        "Super-Jump(Jet Propulsion)",
+        "Terrain(Total)",
+        "Super-Jump(+3\")",
+        "BS Attack(+1SD)",
+        "NCO",
+        "Tech-recovery"
+      ],
+      "equipment": [],
+      "provisionalScore": 60,
+      "scenarios": {
+        "status": "ok",
+        "openMoveAndShoot": 8,
+        "openMoveMove": 10,
+        "openBestTravel": 13,
+        "open12Orders": 1,
+        "horizontalJumpAndShoot": 11,
+        "horizontalLongJump": 12,
+        "climbLongSkill": null,
+        "climbAndShoot": null,
+        "upwardJumpAndShoot": 11,
+        "gap11AndShoot": true,
+        "gap11OneOrder": true,
+        "ascent9AndShoot": true,
+        "bentAirPath10AndShoot": true,
+        "normalDodge": {
+          "status": "ok",
+          "target": 12,
+          "extraDice": 0,
+          "distance": 2,
+          "successProbability": 0.6,
+          "expectedDistance": 1.2
+        },
+        "difficultTerrain": {
+          "Aquatic": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Desert": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Mountain": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Jungle": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          },
+          "Zero-G": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 14,
+            "ordersFor12": 1
+          }
+        }
+      }
+    },
+    {
+      "label": "Garuda",
+      "id": "104:110:1:3:1",
+      "name": "GARUDA Tacbots — GARUDA",
+      "mov": [
+        8,
+        2
+      ],
+      "ph": 11,
+      "silhouette": 2,
+      "skills": [
+        "Remote Presence",
+        "Courage",
+        "Mimetism(-3)",
+        "Parachutist",
+        "Combat Jump",
+        "Super-Jump(Jet Propulsion)"
+      ],
+      "equipment": [],
+      "provisionalScore": 58,
+      "scenarios": {
+        "status": "ok",
+        "openMoveAndShoot": 8,
+        "openMoveMove": 10,
+        "openBestTravel": 12,
+        "open12Orders": 1,
+        "horizontalJumpAndShoot": 10,
+        "horizontalLongJump": 12,
+        "climbLongSkill": 10,
+        "climbAndShoot": null,
+        "upwardJumpAndShoot": 10,
+        "gap11AndShoot": false,
+        "gap11OneOrder": true,
+        "ascent9AndShoot": true,
+        "bentAirPath10AndShoot": true,
+        "normalDodge": {
+          "status": "ok",
+          "target": 11,
+          "extraDice": 0,
+          "distance": 2,
+          "successProbability": 0.55,
+          "expectedDistance": 1.1
+        },
+        "difficultTerrain": {
+          "Aquatic": {
+            "status": "ok",
+            "matches": false,
+            "first": 7,
+            "second": 1,
+            "moveMove": 8,
+            "bestTravel": 11,
+            "ordersFor12": 2
+          },
+          "Desert": {
+            "status": "ok",
+            "matches": false,
+            "first": 7,
+            "second": 1,
+            "moveMove": 8,
+            "bestTravel": 11,
+            "ordersFor12": 2
+          },
+          "Mountain": {
+            "status": "ok",
+            "matches": false,
+            "first": 7,
+            "second": 1,
+            "moveMove": 8,
+            "bestTravel": 11,
+            "ordersFor12": 2
+          },
+          "Jungle": {
+            "status": "ok",
+            "matches": false,
+            "first": 7,
+            "second": 1,
+            "moveMove": 8,
+            "bestTravel": 11,
+            "ordersFor12": 2
+          },
+          "Zero-G": {
+            "status": "ok",
+            "matches": false,
+            "first": 7,
+            "second": 1,
+            "moveMove": 8,
+            "bestTravel": 11,
+            "ordersFor12": 2
+          }
+        }
+      }
+    },
+    {
+      "label": "Shikami",
+      "id": "1101:773:1:1:1",
+      "name": "SHIKAMI — SHIKAMI",
+      "mov": [
+        6,
+        2
+      ],
+      "ph": 14,
+      "silhouette": 2,
+      "skills": [
+        "Martial Arts L3",
+        "Courage",
+        "Forward Deployment(+4\")",
+        "Dodge(+2\")",
+        "Mimetism(-6)",
+        "Specialist Operative",
+        "Stealth",
+        "Climbing Plus",
+        "Super-Jump(+3\")"
+      ],
+      "equipment": [],
+      "provisionalScore": 44.5,
+      "scenarios": {
+        "status": "ok",
+        "openMoveAndShoot": 6,
+        "openMoveMove": 8,
+        "openBestTravel": 11,
+        "open12Orders": 2,
+        "horizontalJumpAndShoot": 9,
+        "horizontalLongJump": 10,
+        "climbLongSkill": 8,
+        "climbAndShoot": 8,
+        "upwardJumpAndShoot": 9,
+        "gap11AndShoot": false,
+        "gap11OneOrder": false,
+        "ascent9AndShoot": true,
+        "bentAirPath10AndShoot": false,
+        "normalDodge": {
+          "status": "ok",
+          "target": 14,
+          "extraDice": 0,
+          "distance": 4,
+          "successProbability": 0.7,
+          "expectedDistance": 2.8
+        },
+        "difficultTerrain": {
+          "Aquatic": {
+            "status": "ok",
+            "matches": false,
+            "first": 5,
+            "second": 1,
+            "moveMove": 6,
+            "bestTravel": 9,
+            "ordersFor12": 2
+          },
+          "Desert": {
+            "status": "ok",
+            "matches": false,
+            "first": 5,
+            "second": 1,
+            "moveMove": 6,
+            "bestTravel": 9,
+            "ordersFor12": 2
+          },
+          "Mountain": {
+            "status": "ok",
+            "matches": false,
+            "first": 5,
+            "second": 1,
+            "moveMove": 6,
+            "bestTravel": 9,
+            "ordersFor12": 2
+          },
+          "Jungle": {
+            "status": "ok",
+            "matches": false,
+            "first": 5,
+            "second": 1,
+            "moveMove": 6,
+            "bestTravel": 9,
+            "ordersFor12": 2
+          },
+          "Zero-G": {
+            "status": "ok",
+            "matches": false,
+            "first": 5,
+            "second": 1,
+            "moveMove": 6,
+            "bestTravel": 9,
+            "ordersFor12": 2
+          }
+        }
+      }
+    },
+    {
+      "label": "Nisse",
+      "id": "106:3:1:2:1",
+      "name": "Svalarheima NISSES — NISSE",
+      "mov": [
+        6,
+        2
+      ],
+      "ph": 12,
+      "silhouette": 2,
+      "skills": [
+        "Mimetism(-3)",
+        "Terrain(Total)",
+        "Climb(+3\")"
+      ],
+      "equipment": [
+        "Multispectral Visor L2"
+      ],
+      "provisionalScore": 26,
+      "scenarios": {
+        "status": "ok",
+        "openMoveAndShoot": 6,
+        "openMoveMove": 8,
+        "openBestTravel": 8,
+        "open12Orders": 2,
+        "horizontalJumpAndShoot": null,
+        "horizontalLongJump": 8,
+        "climbLongSkill": 9,
+        "climbAndShoot": null,
+        "upwardJumpAndShoot": null,
+        "gap11AndShoot": false,
+        "gap11OneOrder": false,
+        "ascent9AndShoot": false,
+        "bentAirPath10AndShoot": false,
+        "normalDodge": {
+          "status": "ok",
+          "target": 12,
+          "extraDice": 0,
+          "distance": 2,
+          "successProbability": 0.6,
+          "expectedDistance": 1.2
+        },
+        "difficultTerrain": {
+          "Aquatic": {
+            "status": "ok",
+            "matches": true,
+            "first": 7,
+            "second": 2,
+            "moveMove": 9,
+            "bestTravel": 9,
+            "ordersFor12": 2
+          },
+          "Desert": {
+            "status": "ok",
+            "matches": true,
+            "first": 7,
+            "second": 2,
+            "moveMove": 9,
+            "bestTravel": 9,
+            "ordersFor12": 2
+          },
+          "Mountain": {
+            "status": "ok",
+            "matches": true,
+            "first": 7,
+            "second": 2,
+            "moveMove": 9,
+            "bestTravel": 9,
+            "ordersFor12": 2
+          },
+          "Jungle": {
+            "status": "ok",
+            "matches": true,
+            "first": 7,
+            "second": 2,
+            "moveMove": 9,
+            "bestTravel": 9,
+            "ordersFor12": 2
+          },
+          "Zero-G": {
+            "status": "ok",
+            "matches": true,
+            "first": 7,
+            "second": 2,
+            "moveMove": 9,
+            "bestTravel": 9,
+            "ordersFor12": 2
+          }
+        }
+      }
+    },
+    {
+      "label": "Locust",
+      "id": "106:769:1:3:1",
+      "name": "LOCUST, Clandestine Action Team — LOCUST",
+      "mov": [
+        4,
+        4
+      ],
+      "ph": 12,
+      "silhouette": 2,
+      "skills": [
+        "Surprise Attack(-3)",
+        "Hidden Deployment",
+        "Mimetism(-6)",
+        "Forward Deployment(+8\")",
+        "Stealth",
+        "Terrain(Total)",
+        "Climb(+3\")",
+        "Specialist Operative"
+      ],
+      "equipment": [
+        "Bangbomb(+4)"
+      ],
+      "provisionalScore": 20,
+      "scenarios": {
+        "status": "ok",
+        "openMoveAndShoot": 4,
+        "openMoveMove": 8,
+        "openBestTravel": 8,
+        "open12Orders": 2,
+        "horizontalJumpAndShoot": null,
+        "horizontalLongJump": 6,
+        "climbLongSkill": 7,
+        "climbAndShoot": null,
+        "upwardJumpAndShoot": null,
+        "gap11AndShoot": false,
+        "gap11OneOrder": false,
+        "ascent9AndShoot": false,
+        "bentAirPath10AndShoot": false,
+        "normalDodge": {
+          "status": "ok",
+          "target": 12,
+          "extraDice": 0,
+          "distance": 2,
+          "successProbability": 0.6,
+          "expectedDistance": 1.2
+        },
+        "difficultTerrain": {
+          "Aquatic": {
+            "status": "ok",
+            "matches": true,
+            "first": 5,
+            "second": 4,
+            "moveMove": 9,
+            "bestTravel": 9,
+            "ordersFor12": 2
+          },
+          "Desert": {
+            "status": "ok",
+            "matches": true,
+            "first": 5,
+            "second": 4,
+            "moveMove": 9,
+            "bestTravel": 9,
+            "ordersFor12": 2
+          },
+          "Mountain": {
+            "status": "ok",
+            "matches": true,
+            "first": 5,
+            "second": 4,
+            "moveMove": 9,
+            "bestTravel": 9,
+            "ordersFor12": 2
+          },
+          "Jungle": {
+            "status": "ok",
+            "matches": true,
+            "first": 5,
+            "second": 4,
+            "moveMove": 9,
+            "bestTravel": 9,
+            "ordersFor12": 2
+          },
+          "Zero-G": {
+            "status": "ok",
+            "matches": true,
+            "first": 5,
+            "second": 4,
+            "moveMove": 9,
+            "bestTravel": 9,
+            "ordersFor12": 2
+          }
+        }
+      }
+    },
+    {
+      "label": "Roadbot mobility form",
+      "id": "1001:1609:1:1:1",
+      "name": "ROADBOTS Highway Patrol — ROADBOT — HIGH MOBILITY FORM",
+      "mov": [
+        8,
+        4
+      ],
+      "ph": 11,
+      "silhouette": 3,
+      "skills": [
+        "Remote Presence",
+        "Courage",
+        "Dodge(+3)",
+        "Dodge(+2\")",
+        "Mimetism(-3)",
+        "No Wound Incapacitation",
+        "Terrain(Total)",
+        "Climbing Plus",
+        "Transmutation(Auto)"
+      ],
+      "equipment": [],
+      "provisionalScore": 48,
+      "scenarios": {
+        "status": "ok",
+        "openMoveAndShoot": 8,
+        "openMoveMove": 12,
+        "openBestTravel": 12,
+        "open12Orders": 1,
+        "horizontalJumpAndShoot": null,
+        "horizontalLongJump": 10,
+        "climbLongSkill": 10,
+        "climbAndShoot": 10,
+        "upwardJumpAndShoot": null,
+        "gap11AndShoot": false,
+        "gap11OneOrder": false,
+        "ascent9AndShoot": true,
+        "bentAirPath10AndShoot": false,
+        "normalDodge": {
+          "status": "ok",
+          "target": 14,
+          "extraDice": 0,
+          "distance": 4,
+          "successProbability": 0.7,
+          "expectedDistance": 2.8
+        },
+        "difficultTerrain": {
+          "Aquatic": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 4,
+            "moveMove": 13,
+            "bestTravel": 13,
+            "ordersFor12": 1
+          },
+          "Desert": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 4,
+            "moveMove": 13,
+            "bestTravel": 13,
+            "ordersFor12": 1
+          },
+          "Mountain": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 4,
+            "moveMove": 13,
+            "bestTravel": 13,
+            "ordersFor12": 1
+          },
+          "Jungle": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 4,
+            "moveMove": 13,
+            "bestTravel": 13,
+            "ordersFor12": 1
+          },
+          "Zero-G": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 4,
+            "moveMove": 13,
+            "bestTravel": 13,
+            "ordersFor12": 1
+          }
+        }
+      }
+    },
+    {
+      "label": "Roadbot combat form",
+      "id": "1001:1609:1:1:2",
+      "name": "ROADBOTS Highway Patrol — ROADBOT — COMBAT FORM",
+      "mov": [
+        4,
+        4
+      ],
+      "ph": 11,
+      "silhouette": 5,
+      "skills": [
+        "Remote Presence",
+        "Courage",
+        "Mimetism(-3)",
+        "No Wound Incapacitation",
+        "Transmutation(Auto)"
+      ],
+      "equipment": [],
+      "provisionalScore": 20,
+      "scenarios": {
+        "status": "ok",
+        "openMoveAndShoot": 4,
+        "openMoveMove": 8,
+        "openBestTravel": 8,
+        "open12Orders": 2,
+        "horizontalJumpAndShoot": null,
+        "horizontalLongJump": 6,
+        "climbLongSkill": 6,
+        "climbAndShoot": null,
+        "upwardJumpAndShoot": null,
+        "gap11AndShoot": false,
+        "gap11OneOrder": false,
+        "ascent9AndShoot": false,
+        "bentAirPath10AndShoot": false,
+        "normalDodge": {
+          "status": "ok",
+          "target": 11,
+          "extraDice": 0,
+          "distance": 2,
+          "successProbability": 0.55,
+          "expectedDistance": 1.1
+        },
+        "difficultTerrain": {
+          "Aquatic": {
+            "status": "ok",
+            "matches": false,
+            "first": 3,
+            "second": 3,
+            "moveMove": 6,
+            "bestTravel": 6,
+            "ordersFor12": 2
+          },
+          "Desert": {
+            "status": "ok",
+            "matches": false,
+            "first": 3,
+            "second": 3,
+            "moveMove": 6,
+            "bestTravel": 6,
+            "ordersFor12": 2
+          },
+          "Mountain": {
+            "status": "ok",
+            "matches": false,
+            "first": 3,
+            "second": 3,
+            "moveMove": 6,
+            "bestTravel": 6,
+            "ordersFor12": 2
+          },
+          "Jungle": {
+            "status": "ok",
+            "matches": false,
+            "first": 3,
+            "second": 3,
+            "moveMove": 6,
+            "bestTravel": 6,
+            "ordersFor12": 2
+          },
+          "Zero-G": {
+            "status": "ok",
+            "matches": false,
+            "first": 3,
+            "second": 3,
+            "moveMove": 6,
+            "bestTravel": 6,
+            "ordersFor12": 2
+          }
+        }
+      }
+    },
+    {
+      "label": "Su-Jian mobility form",
+      "id": "202:155:1:554:1",
+      "name": "SÙ-JIÀN Immediate Action Unit — SÙ-JIÀN — HIGH MOBILITY FORM",
+      "mov": [
+        8,
+        2
+      ],
+      "ph": 14,
+      "silhouette": 3,
+      "skills": [
+        "Courage",
+        "Dodge(+2\")",
+        "No Wound Incapacitation",
+        "Terrain(Total)",
+        "Climbing Plus",
+        "Transmutation(Auto)",
+        "Remote Presence",
+        "Dodge(-3)"
+      ],
+      "equipment": [],
+      "provisionalScore": 46,
+      "scenarios": {
+        "status": "ok",
+        "openMoveAndShoot": 8,
+        "openMoveMove": 10,
+        "openBestTravel": 10,
+        "open12Orders": 2,
+        "horizontalJumpAndShoot": null,
+        "horizontalLongJump": 10,
+        "climbLongSkill": 10,
+        "climbAndShoot": 10,
+        "upwardJumpAndShoot": null,
+        "gap11AndShoot": false,
+        "gap11OneOrder": false,
+        "ascent9AndShoot": true,
+        "bentAirPath10AndShoot": false,
+        "normalDodge": {
+          "status": "ok",
+          "target": 14,
+          "extraDice": 0,
+          "distance": 4,
+          "successProbability": 0.7,
+          "expectedDistance": 2.8
+        },
+        "difficultTerrain": {
+          "Aquatic": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 11,
+            "ordersFor12": 2
+          },
+          "Desert": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 11,
+            "ordersFor12": 2
+          },
+          "Mountain": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 11,
+            "ordersFor12": 2
+          },
+          "Jungle": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 11,
+            "ordersFor12": 2
+          },
+          "Zero-G": {
+            "status": "ok",
+            "matches": true,
+            "first": 9,
+            "second": 2,
+            "moveMove": 11,
+            "bestTravel": 11,
+            "ordersFor12": 2
+          }
+        }
+      }
+    },
+    {
+      "label": "Su-Jian combat form",
+      "id": "202:155:1:554:2",
+      "name": "SÙ-JIÀN Immediate Action Unit — SÙ-JIÀN — COMBAT FORM",
+      "mov": [
+        4,
+        4
+      ],
+      "ph": 14,
+      "silhouette": 5,
+      "skills": [
+        "Courage",
+        "No Wound Incapacitation",
+        "Transmutation(Auto)",
+        "Remote Presence",
+        "BS Attack(SR-1)"
+      ],
+      "equipment": [],
+      "provisionalScore": 20,
+      "scenarios": {
+        "status": "ok",
+        "openMoveAndShoot": 4,
+        "openMoveMove": 8,
+        "openBestTravel": 8,
+        "open12Orders": 2,
+        "horizontalJumpAndShoot": null,
+        "horizontalLongJump": 6,
+        "climbLongSkill": 6,
+        "climbAndShoot": null,
+        "upwardJumpAndShoot": null,
+        "gap11AndShoot": false,
+        "gap11OneOrder": false,
+        "ascent9AndShoot": false,
+        "bentAirPath10AndShoot": false,
+        "normalDodge": {
+          "status": "ok",
+          "target": 14,
+          "extraDice": 0,
+          "distance": 2,
+          "successProbability": 0.7,
+          "expectedDistance": 1.4
+        },
+        "difficultTerrain": {
+          "Aquatic": {
+            "status": "ok",
+            "matches": false,
+            "first": 3,
+            "second": 3,
+            "moveMove": 6,
+            "bestTravel": 6,
+            "ordersFor12": 2
+          },
+          "Desert": {
+            "status": "ok",
+            "matches": false,
+            "first": 3,
+            "second": 3,
+            "moveMove": 6,
+            "bestTravel": 6,
+            "ordersFor12": 2
+          },
+          "Mountain": {
+            "status": "ok",
+            "matches": false,
+            "first": 3,
+            "second": 3,
+            "moveMove": 6,
+            "bestTravel": 6,
+            "ordersFor12": 2
+          },
+          "Jungle": {
+            "status": "ok",
+            "matches": false,
+            "first": 3,
+            "second": 3,
+            "moveMove": 6,
+            "bestTravel": 6,
+            "ordersFor12": 2
+          },
+          "Zero-G": {
+            "status": "ok",
+            "matches": false,
+            "first": 3,
+            "second": 3,
+            "moveMove": 6,
+            "bestTravel": 6,
+            "ordersFor12": 2
+          }
+        }
+      }
+    },
+    {
+      "label": "Penthesilea",
+      "id": "701:611:1:2145:1",
+      "name": "PENTHESILEA, Amazon Warrioress — PENTHESILEA",
+      "mov": [
+        8,
+        6
+      ],
+      "ph": 11,
+      "silhouette": 4,
+      "skills": [
+        "Impetuous",
+        "CC Attack(-6)",
+        "Courage",
+        "Dodge(+2\")",
+        "Mimetism(-3)",
+        "Specialist Operative",
+        "Limited Cover",
+        "Immunity(ARM)"
+      ],
+      "equipment": [
+        "Motorcycle"
+      ],
+      "provisionalScore": 38,
+      "scenarios": {
+        "status": "ok",
+        "openMoveAndShoot": 8,
+        "openMoveMove": 14,
+        "openBestTravel": 14,
+        "open12Orders": 1,
+        "horizontalJumpAndShoot": null,
+        "horizontalLongJump": 10,
+        "climbLongSkill": null,
+        "climbAndShoot": null,
+        "upwardJumpAndShoot": null,
+        "gap11AndShoot": false,
+        "gap11OneOrder": false,
+        "ascent9AndShoot": false,
+        "bentAirPath10AndShoot": false,
+        "normalDodge": {
+          "status": "ok",
+          "target": 11,
+          "extraDice": 0,
+          "distance": 4,
+          "successProbability": 0.55,
+          "expectedDistance": 2.2
+        },
+        "difficultTerrain": {
+          "Aquatic": {
+            "status": "ok",
+            "matches": false,
+            "first": 7,
+            "second": 5,
+            "moveMove": 12,
+            "bestTravel": 12,
+            "ordersFor12": 1
+          },
+          "Desert": {
+            "status": "ok",
+            "matches": false,
+            "first": 7,
+            "second": 5,
+            "moveMove": 12,
+            "bestTravel": 12,
+            "ordersFor12": 1
+          },
+          "Mountain": {
+            "status": "ok",
+            "matches": false,
+            "first": 7,
+            "second": 5,
+            "moveMove": 12,
+            "bestTravel": 12,
+            "ordersFor12": 1
+          },
+          "Jungle": {
+            "status": "ok",
+            "matches": false,
+            "first": 7,
+            "second": 5,
+            "moveMove": 12,
+            "bestTravel": 12,
+            "ordersFor12": 1
+          },
+          "Zero-G": {
+            "status": "ok",
+            "matches": false,
+            "first": 7,
+            "second": 5,
+            "moveMove": 12,
+            "bestTravel": 12,
+            "ordersFor12": 1
+          }
+        }
+      }
+    },
+    {
+      "label": "Motorized Bounty Hunter",
+      "id": "107:11565:1:1:1",
+      "name": "Motorized Bounty Hunters — MOTORIZED BOUNTY HUNTER",
+      "mov": [
+        8,
+        6
+      ],
+      "ph": 10,
+      "silhouette": 4,
+      "skills": [
+        "Booty(ReRoll)",
+        "Limited Cover",
+        "Dodge(+2\")",
+        "Mimetism(-3)",
+        "Impetuous"
+      ],
+      "equipment": [
+        "Motorcycle"
+      ],
+      "provisionalScore": 38,
+      "scenarios": {
+        "status": "ok",
+        "openMoveAndShoot": 8,
+        "openMoveMove": 14,
+        "openBestTravel": 14,
+        "open12Orders": 1,
+        "horizontalJumpAndShoot": null,
+        "horizontalLongJump": 10,
+        "climbLongSkill": null,
+        "climbAndShoot": null,
+        "upwardJumpAndShoot": null,
+        "gap11AndShoot": false,
+        "gap11OneOrder": false,
+        "ascent9AndShoot": false,
+        "bentAirPath10AndShoot": false,
+        "normalDodge": {
+          "status": "ok",
+          "target": 10,
+          "extraDice": 0,
+          "distance": 4,
+          "successProbability": 0.5,
+          "expectedDistance": 2
+        },
+        "difficultTerrain": {
+          "Aquatic": {
+            "status": "ok",
+            "matches": false,
+            "first": 7,
+            "second": 5,
+            "moveMove": 12,
+            "bestTravel": 12,
+            "ordersFor12": 1
+          },
+          "Desert": {
+            "status": "ok",
+            "matches": false,
+            "first": 7,
+            "second": 5,
+            "moveMove": 12,
+            "bestTravel": 12,
+            "ordersFor12": 1
+          },
+          "Mountain": {
+            "status": "ok",
+            "matches": false,
+            "first": 7,
+            "second": 5,
+            "moveMove": 12,
+            "bestTravel": 12,
+            "ordersFor12": 1
+          },
+          "Jungle": {
+            "status": "ok",
+            "matches": false,
+            "first": 7,
+            "second": 5,
+            "moveMove": 12,
+            "bestTravel": 12,
+            "ordersFor12": 1
+          },
+          "Zero-G": {
+            "status": "ok",
+            "matches": false,
+            "first": 7,
+            "second": 5,
+            "moveMove": 12,
+            "bestTravel": 12,
+            "ordersFor12": 1
+          }
+        }
+      }
+    },
+    {
+      "label": "Fusilier",
+      "id": "106:1:1:1:1",
+      "name": "FUSILIERS — FUSILIER",
+      "mov": [
+        4,
+        4
+      ],
+      "ph": 10,
+      "silhouette": 2,
+      "skills": [],
+      "equipment": [],
+      "provisionalScore": 20,
+      "scenarios": {
+        "status": "ok",
+        "openMoveAndShoot": 4,
+        "openMoveMove": 8,
+        "openBestTravel": 8,
+        "open12Orders": 2,
+        "horizontalJumpAndShoot": null,
+        "horizontalLongJump": 6,
+        "climbLongSkill": 6,
+        "climbAndShoot": null,
+        "upwardJumpAndShoot": null,
+        "gap11AndShoot": false,
+        "gap11OneOrder": false,
+        "ascent9AndShoot": false,
+        "bentAirPath10AndShoot": false,
+        "normalDodge": {
+          "status": "ok",
+          "target": 10,
+          "extraDice": 0,
+          "distance": 2,
+          "successProbability": 0.5,
+          "expectedDistance": 1
+        },
+        "difficultTerrain": {
+          "Aquatic": {
+            "status": "ok",
+            "matches": false,
+            "first": 3,
+            "second": 3,
+            "moveMove": 6,
+            "bestTravel": 6,
+            "ordersFor12": 2
+          },
+          "Desert": {
+            "status": "ok",
+            "matches": false,
+            "first": 3,
+            "second": 3,
+            "moveMove": 6,
+            "bestTravel": 6,
+            "ordersFor12": 2
+          },
+          "Mountain": {
+            "status": "ok",
+            "matches": false,
+            "first": 3,
+            "second": 3,
+            "moveMove": 6,
+            "bestTravel": 6,
+            "ordersFor12": 2
+          },
+          "Jungle": {
+            "status": "ok",
+            "matches": false,
+            "first": 3,
+            "second": 3,
+            "moveMove": 6,
+            "bestTravel": 6,
+            "ordersFor12": 2
+          },
+          "Zero-G": {
+            "status": "ok",
+            "matches": false,
+            "first": 3,
+            "second": 3,
+            "moveMove": 6,
+            "bestTravel": 6,
+            "ordersFor12": 2
+          }
+        }
+      }
+    }
+  ]
+}

@@ -49,6 +49,9 @@ export function buildMobilityProfiles({ metadata, payloads }) {
   const equipmentNames = new Map((metadata.equips || []).map(x => [x.id, x.name]))
   const result = []
   for (const payload of payloads) {
+    // Some official traits (e.g. Exrah and Commlink) exist only in faction filters.
+    const factionSkills = new Map([...skillNames, ...(payload.filters?.skills || []).map(x => [x.id, x.name])])
+    const factionEquipment = new Map([...equipmentNames, ...(payload.filters?.equip || []).map(x => [x.id, x.name])])
     const sectorialId = payload.sectorialId ?? Number(payload.url?.split('/').pop())
     const extras = new Map((payload.filters?.extras || []).map(x => [x.id, x]))
     const resolve = (references, names) => references.map(ref => {
@@ -66,8 +69,8 @@ export function buildMobilityProfiles({ metadata, payloads }) {
         if (option.disabled) continue
         for (const profile of group.profiles || []) {
           const layers = [unit, group, profile, option]
-          const skills = [...new Set(resolve(layers.flatMap(x => x.skills || []), skillNames))]
-          const equipment = [...new Set(resolve(layers.flatMap(x => x.equip || x.equipment || []), equipmentNames))]
+          const skills = [...new Set(resolve(layers.flatMap(x => x.skills || []), factionSkills))]
+          const equipment = [...new Set(resolve(layers.flatMap(x => x.equip || x.equipment || []), factionEquipment))]
           const mov = officialMovementInches(profile.move)
           const noMovement = Array.isArray(profile.move) && profile.move.length === 2 && profile.move.every(x => x === -1)
           const mobility = noMovement
@@ -77,7 +80,9 @@ export function buildMobilityProfiles({ metadata, payloads }) {
             id: `${sectorialId}:${unit.id}:${group.id}:${option.id}:${profile.id}`,
             sectorialId, unitId: unit.id, groupId: group.id, optionId: option.id, profileId: profile.id,
             name: [unit.name, option.name, group.profiles.length > 1 ? profile.name : null].filter(Boolean).join(' — '),
-            mov, officialMove: profile.move ?? null, silhouette: profile.s ?? null, skills, equipment,
+            mov, officialMove: profile.move ?? null, silhouette: profile.s ?? null,
+            ph: Number.isFinite(profile.ph) && profile.ph > 0 ? profile.ph : null,
+            skills, equipment,
             mobility,
           })
         }
