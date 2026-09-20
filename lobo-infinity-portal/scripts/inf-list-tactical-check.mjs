@@ -3,7 +3,7 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { tmpdir } from 'node:os'
 import { chromium } from 'playwright'
-import { buildSubmittedProfiles, classifyTacticalBrief, filterCanonicalFireteamMembershipsForProfile, renderTacticalBrief, TACTICAL_EMPTY_MESSAGE } from '../bot/inf-list-tactical.mjs'
+import { buildSubmittedProfiles, classifyTacticalBrief, closeCombatEntryMarkup, filterCanonicalFireteamMembershipsForProfile, renderTacticalBrief, TACTICAL_EMPTY_MESSAGE } from '../bot/inf-list-tactical.mjs'
 import { createInfListResponse } from '../bot/inf-list-command.mjs'
 import { validateExactSectorialData } from './inf-list-render-poc.mjs'
 import { resolveExactProfileGroup } from './infinity-army-profile-resolution.mjs'
@@ -148,6 +148,10 @@ assert.equal(closeCombatAnalysis.closeCombatBenchmark.available, true)
 assert.equal(closeCombatAnalysis.categories.closeCombat[0].grade, 'A')
 assert.equal(closeCombatAnalysis.categories.closeCombat[0].states[1].grade, 'S')
 assert.equal(closeCombatAnalysis.categories.apexCc.length, 0, 'catalog CC ratings replace the legacy Apex Close Combat section')
+const closeCombatCard = closeCombatEntryMarkup({ ...closeCombatAnalysis.categories.closeCombat[0], mobility: { status: 'rated', score: 62.4, mov: [6, 2] } }, 0)
+assert.match(closeCombatCard, /NORMAL ACTIVE/)
+assert.match(closeCombatCard, /MOBILITY<\/span>62\.4\/100 · MOV 6–2″/)
+assert.doesNotMatch(closeCombatCard, /ONE ALLIED|TWO ALLIED|One allied|Two allied/)
 
 const aroIdentityFixture = profile('305-1846-1-2-1', { points: 26, skills: ['Neurocinetics'], weapons: [weapon('AP Sniper Rifle', 2)] })
 const aroIdentityAnalysis = classifyTacticalBrief([aroIdentityFixture], { faction: 'TAK' }, [], [{
