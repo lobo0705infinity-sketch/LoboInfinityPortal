@@ -8,7 +8,7 @@ if (!g || !m) throw Error('Both source catalogs are required')
 const audited = JSON.parse(await readFile('src/data/profile-audit.json', 'utf8'))
 const catalog = buildMobileGunfighterCatalog(g, m, key => {
   const index = audited.keys[key]
-  return index === undefined || audited.memberships[audited.profiles[index].m].length > 0
+  return index !== undefined && audited.memberships[audited.profiles[index].m].length > 0
 })
 catalog.profileAuditFingerprint = audited.fingerprint
 catalog.fingerprint = createHash('sha256').update(JSON.stringify(catalog)).digest('hex')

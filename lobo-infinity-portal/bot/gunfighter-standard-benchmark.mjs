@@ -1,6 +1,6 @@
 import { gunfighterWeaponsFromTtsProfile } from './gunfighter-profile-canonicalizer.mjs'
 
-export const GUNFIGHTER_BENCHMARK_VERSION = 'gunfighter-benchmark-v12-critical-cancellation'
+export const GUNFIGHTER_BENCHMARK_VERSION = 'gunfighter-benchmark-v13-shared-rules'
 
 export const DEFENSIVE_ARCHETYPE_WEIGHTS = Object.freeze({
   'ordinary-linked': 0.20,
@@ -46,12 +46,12 @@ export const DEFENDER_SPECS = Object.freeze([
   spec('karakuri-mk12-linked', '904:154:1:4:1', 'durable-targets', { linked: true }),
 ])
 
-export function buildStandardGunfighterDefenders(weaponChart, ttsProfiles = []) {
-  const profiles = new Map(ttsProfiles.map((profile) => [String(profile.id), profile]))
+export function buildStandardGunfighterDefenders(weaponChart, ttsProfiles = [], { canonicalProfiles = null } = {}) {
+  const profiles = new Map((canonicalProfiles || ttsProfiles).map((profile) => [String(profile.id), profile]))
   return DEFENDER_SPECS.map((definition) => {
     const source = profiles.get(definition.sourceId)
     if (!source) throw new Error(`TTS catalog is missing defensive benchmark profile ${definition.sourceId} (${definition.id}).`)
-    const weapons = gunfighterWeaponsFromTtsProfile(source, weaponChart)
+    const weapons = canonicalProfiles ? source.weapons : gunfighterWeaponsFromTtsProfile(source, weaponChart)
     const unresolved = source.weapons.map((weapon) => weapon.name).filter((name) => !isNonRangedAroWeapon(name) && !weapons.some((candidate) => normalize(candidate.name) === normalize(name)))
     if (unresolved.length) throw new Error(`Official weapon chart is missing ${definition.id} weapon data: ${unresolved.join(', ')}.`)
     return {

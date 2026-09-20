@@ -78,7 +78,7 @@ assert.equal(apHmgVsArmFive.expectedDamage, 0.5, 'AP HMG PS5 vs ARM5 in Cover wi
 const apVsImmune = expectedEffectFromHits({ expectedHits: 1, mode: { ammo: 'AP', power: 5, save: 'ARM', saveDivisor: 2, saves: 1, states: [] }, defender: profile('ap-immune', { arm: 4, skills: ['Immunity (AP)'] }) })
 const apVsOrdinary = expectedEffectFromHits({ expectedHits: 1, mode: { ammo: 'AP', power: 5, save: 'ARM', saveDivisor: 2, saves: 1, states: [] }, defender: profile('ap-ordinary', { arm: 4 }) })
 assert.ok(apVsImmune.expectedDamage < apVsOrdinary.expectedDamage, 'Immunity (AP) prevents AP ammunition from halving ARM')
-assert.equal(adhesive.expectedDamage, 0.7, 'PH12 with a PH-6 Saving Roll fails on 7-20')
+assert.equal(adhesive.expectedDamage, 0, 'Non-lethal PH saves do not inflict physical damage')
 assert.equal(adhesive.stateValue, 0.35, 'Immobilized applies its 0.5 value after the PH-6 failure chance')
 
 const aroShooter = profile('aro-shooter')

@@ -1,0 +1,781 @@
+{
+  "baselineCommit": "ab7f355a109ebed2a15c6bb487578b75001a9bff",
+  "rulesVersion": "n5.3-combat-audit-v1",
+  "datasetId": "iad-e848a2412f08bb9e8864c430",
+  "captureFingerprint": "41dacaf9534c8e0be66ccd2d08e3ac3818e1e37710f538e4adb2a8e30238b702",
+  "codeHashes": {
+    "bot/combat-rules.mjs": "a087d9c6173a7f35d35163f3ef2247377b4920f275630f831fa8a189a2b2ac37",
+    "bot/official-combat-source.mjs": "e20a2d3142d68196ce9226367b6254dc5860f1efd06664bbc0a2c54ef03349da",
+    "bot/gunfighter-rating.mjs": "677538e2397f904ed5d658e644c062c0819cd4e7004a1960f958ca1398b1c5a3",
+    "bot/gunfighter-profile-canonicalizer.mjs": "16692adb77298b35e145d843d1c868c586ae69acc209c79885536b342f1e887c",
+    "bot/gunfighter-standard-benchmark.mjs": "9794ce1474d632d5a863aa3831a94e6e0706845a4e12cd86dffaf3dadd00290a",
+    "bot/gunfighter-benchmark-catalog.mjs": "fea5a2a04e8e68a805bc5bb95d76e9eef48ee2d9c6511a990946d05265103aea",
+    "bot/aro-benchmark-catalog.mjs": "be76be4ff734f3ca68ff9da76abc31756e36d1f88769657d738373b9fcd1a908",
+    "bot/infinity-weapon-chart.mjs": "ea39ef0cbc39914175de9be3aa97f0ce205ec12db02ee66e273aa803d0e91cc9",
+    "bot/close-combat-benchmark.mjs": "7c42b1a26c16d4f7312cd967d972342fe635f7eb29f990464c311ed2db040196",
+    "bot/close-combat-canonicalizer.mjs": "46c3a706cdd75bb0e6621193d68dda1433b1cde0387e031975e27646c5c412df",
+    "bot/close-combat-catalog.mjs": "465cddd9fee282c612a885deea23cbea862271b6ba30ad566cf439753aec950b",
+    "bot/close-combat-standard-benchmark.mjs": "69dc728f60d2bfbf40c22724f3e46b3ead591c766f05b8c030a811fa54a69a56",
+    "bot/mobile-gunfighter.mjs": "a17781b775774619c21ec916b1916b95c1db381bbfe0d6809c2fedb5159eb5bd",
+    "bot/mobility-index.mjs": "32ac6fd0526afa915368297913325f449dde598910f94113743f7f6e689950f2",
+    "bot/mobility-scenarios.mjs": "0561c1eca2b6741c0efdeef21ff1a0bffad3c7b5bf8f2f166244ae434a4158aa",
+    "bot/mobility-rating.mjs": "f5af5627cf522380d52510feb7e06b9de369ee6245b7b5ea0731e6472b7bd14f",
+    "scripts/benchmark-artifacts.mjs": "96b35e08dea8b60deeb0be934fed3ea361be106b3805cbd8aad92c7b6ba15484",
+    "scripts/rebuild-combat-benchmarks.mjs": "7c2b686efbb836feaf6136a23d89b92a9992713f4e59f3a6d653af900f91413b",
+    "scripts/build-gunfighter-catalog.mjs": "4f1db19a1792ef6f24f4a8d5c2645f05b5e7d8bceff9c690d6876463f6712b17",
+    "scripts/build-official-aro-catalog.mjs": "c25d60d0e1f5c55aa442ca2a67ee74f1782a2c0fbc896584a8fd6dfb7941a6fc",
+    "scripts/build-close-combat-benchmark.mjs": "8ffe7d16de35faa4d9accb3d8ee12959c01ce43c49ea656bee8adcd1bbf77a45"
+  },
+  "changes": {
+    "gunfighter": {
+      "before": 13921,
+      "after": 13554,
+      "added": 0,
+      "removed": 367,
+      "changedExistingStateScores": 16880
+    },
+    "aro": {
+      "before": 12557,
+      "after": 13554,
+      "added": 1268,
+      "removed": 271,
+      "changedExistingStateScores": 15245
+    },
+    "closeCombat": {
+      "before": 923,
+      "after": 2554,
+      "aliasesBefore": 11386,
+      "aliasesAfter": 13345
+    },
+    "mobile": {
+      "normal": 13534,
+      "fireteam": 3614
+    }
+  },
+  "fingerprints": {
+    "gunfighter": "57d40972651e983d99e513d6718991427c1bdab25feeb0a6b13cc5fe3d73807f",
+    "aro": "6cef065ac3aac8edf031273b8b5e8cf6c43617d2e29dea8bcaf567c84f5ada3f",
+    "closeCombat": "44ffcb59b95cd6227c8a9129decd8e7f64f355f4f984bcefce6d059dfd0f033e",
+    "mobility": "b267dcec0e9a8b2e1cd5275f953569a1ed81b9f78ec8feb4a6800bcb3c732be0",
+    "mobile": "1f5a8ceec96a112fe56876265b2b0c7363f65da2d5249637053225615f9be44d"
+  },
+  "comparison": [
+    {
+      "key": "501:395:1:6:1",
+      "name": "INTRUDERS, Corregidor Assault Commandos — INTRUDER",
+      "before": [
+        {
+          "state": "normal",
+          "rating": 37.93
+        }
+      ],
+      "after": [
+        {
+          "state": "normal",
+          "rating": 40.99
+        }
+      ]
+    },
+    {
+      "key": "501:393:1:8:1",
+      "name": "GRENZERS, Grenz Security Team — GRENZER",
+      "before": [
+        {
+          "state": "normal",
+          "rating": 39.26
+        },
+        {
+          "state": "fireteam",
+          "rating": 48.13
+        }
+      ],
+      "after": [
+        {
+          "state": "normal",
+          "rating": 37.62
+        },
+        {
+          "state": "fireteam",
+          "rating": 46.56
+        }
+      ]
+    }
+  ],
+  "mobilityCoverage": {
+    "entries": 13554,
+    "rated": 13534,
+    "noMovement": 16,
+    "unresolved": [
+      {
+        "id": "103:1927:2:1:1",
+        "name": "CONFESSOR TEAM OPS — CONFESSOR HEAVY",
+        "status": "terrain-unresolved"
+      },
+      {
+        "id": "103:1927:2:2:1",
+        "name": "CONFESSOR TEAM OPS — CONFESSOR HEAVY",
+        "status": "terrain-unresolved"
+      },
+      {
+        "id": "103:1927:2:3:1",
+        "name": "CONFESSOR TEAM OPS — CONFESSOR HEAVY",
+        "status": "terrain-unresolved"
+      },
+      {
+        "id": "103:1927:2:4:1",
+        "name": "CONFESSOR TEAM OPS — CONFESSOR HEAVY",
+        "status": "terrain-unresolved"
+      }
+    ]
+  },
+  "top30Scope": "Normal/unlinked, TAGs excluded. Equivalent named gunfighting loadouts are collapsed across faction, Lieutenant, FTO and reinforcement variants only when combat inputs and movement match; descriptive name suffixes are ignored for this display grouping. Exact profile aliases remain in the JSON report and catalogs. 85% gunfighter score anchored at 50 plus 15% mobility. Ranged/deployable weapons are shown; deployables are not scored as direct attacks. CC equipment is not listed.",
+  "top30": [
+    {
+      "key": "702:605:1:1:1",
+      "profileKeys": [
+        "702:605:1:1:1",
+        "702:605:1:2:1"
+      ],
+      "name": "ATALANTA, Agêma's NCO — ATALANTA",
+      "type": "MI",
+      "gunfighter": 44.42,
+      "mobility": 28.3,
+      "combined": 79.76,
+      "weapons": [
+        "MULTI Sniper Rifle",
+        "Pistol"
+      ]
+    },
+    {
+      "key": "101:10939:1:1:1",
+      "profileKeys": [
+        "101:10939:1:1:1",
+        "102:10939:1:1:1",
+        "103:10939:1:1:1",
+        "104:10939:1:1:1",
+        "105:10939:1:1:1",
+        "106:10939:1:1:1",
+        "107:939:1:1:1",
+        "201:10939:1:1:1",
+        "202:10939:1:1:1",
+        "204:10939:1:1:1",
+        "205:10939:1:1:1",
+        "301:939:1:1:1",
+        "302:10939:1:1:1",
+        "303:939:1:1:1",
+        "303:939:1:2:1",
+        "304:10939:1:1:1",
+        "305:10939:1:1:1",
+        "306:10939:1:1:1",
+        "401:939:1:1:1",
+        "402:10939:1:1:1",
+        "403:10939:1:1:1",
+        "404:10939:1:1:1",
+        "501:10939:1:1:1",
+        "502:10939:1:1:1",
+        "503:10939:1:1:1",
+        "504:10939:1:1:1",
+        "601:10939:1:1:1",
+        "602:10939:1:1:1",
+        "603:10939:1:1:1",
+        "604:10939:1:1:1",
+        "605:10939:1:1:1",
+        "701:939:1:1:1",
+        "702:10939:1:1:1",
+        "703:10939:1:1:1",
+        "801:10939:1:1:1",
+        "901:10939:1:1:1",
+        "902:10939:1:1:1",
+        "904:10939:1:1:1",
+        "905:939:1:1:1",
+        "905:939:1:2:1",
+        "908:10939:1:1:1",
+        "909:10939:1:1:1",
+        "1001:10939:1:1:1",
+        "1002:10939:1:1:1",
+        "1003:10939:1:1:1",
+        "1101:10939:1:1:1",
+        "1102:10939:1:1:1",
+        "1103:10939:1:1:1"
+      ],
+      "name": "KNAUF, Outlaw Sniper — KNAUF",
+      "type": "LI",
+      "gunfighter": 41.33,
+      "mobility": 30.3,
+      "combined": 74.81,
+      "weapons": [
+        "MULTI Sniper Rifle",
+        "AP Heavy Pistol"
+      ]
+    },
+    {
+      "key": "501:1854:1:1:1",
+      "profileKeys": [
+        "501:1854:1:1:1",
+        "503:1854:1:1:1",
+        "504:1854:1:1:1"
+      ],
+      "name": "GO-POD — GO-POD",
+      "type": "VH",
+      "gunfighter": 35.77,
+      "mobility": 92.6,
+      "combined": 74.7,
+      "weapons": [
+        "MULTI Rifle",
+        "E/Mitter"
+      ]
+    },
+    {
+      "key": "501:395:1:6:1",
+      "profileKeys": [
+        "501:395:1:6:1",
+        "502:395:1:6:1"
+      ],
+      "name": "INTRUDERS, Corregidor Assault Commandos — INTRUDER",
+      "type": "MI",
+      "gunfighter": 40.99,
+      "mobility": 30.4,
+      "combined": 74.24,
+      "weapons": [
+        "MULTI Sniper Rifle (+1SD)",
+        "Heavy Pistol"
+      ]
+    },
+    {
+      "key": "605:1860:1:1:1",
+      "profileKeys": [
+        "605:1860:1:1:1"
+      ],
+      "name": "TEUCER, Team Achilles' shooter — TEUCER",
+      "type": "MI",
+      "gunfighter": 41.06,
+      "mobility": 28.3,
+      "combined": 74.05,
+      "weapons": [
+        "Plasma Sniper Rifle",
+        "Zapper",
+        "Heavy Pistol"
+      ]
+    },
+    {
+      "key": "1003:1782:1:1:1",
+      "profileKeys": [
+        "1003:1782:1:1:1",
+        "1003:1782:1:2:1"
+      ],
+      "name": "SILVERSTAR PRIME — PRIME",
+      "type": "HI",
+      "gunfighter": 39.53,
+      "mobility": 34.8,
+      "combined": 72.42,
+      "weapons": [
+        "Heavy Pistol",
+        "Heavy Machine Gun",
+        "Heavy Riotstopper"
+      ]
+    },
+    {
+      "key": "601:498:1:2:1",
+      "profileKeys": [
+        "601:498:1:2:1",
+        "601:498:1:6:1"
+      ],
+      "name": "THE CHARONTIDS — CHARONTID",
+      "type": "HI",
+      "gunfighter": 39.33,
+      "mobility": 35.5,
+      "combined": 72.19,
+      "weapons": [
+        "AP Heavy Machine Gun",
+        "Pulzar",
+        "AP Heavy Pistol"
+      ]
+    },
+    {
+      "key": "701:587:1:3:1",
+      "profileKeys": [
+        "701:587:1:3:1",
+        "703:587:1:3:1"
+      ],
+      "name": "DASYUS — DASYU",
+      "type": "SK",
+      "gunfighter": 39.03,
+      "mobility": 36.7,
+      "combined": 71.86,
+      "weapons": [
+        "MULTI Sniper Rifle",
+        "Pulzar",
+        "Silenced Pistol"
+      ]
+    },
+    {
+      "key": "605:1889:1:1:1",
+      "profileKeys": [
+        "605:1889:1:1:1"
+      ],
+      "name": "SKYHOUNDS, Combat and Recon Air Squadron — SKYHOUND",
+      "type": "VH",
+      "gunfighter": 33.72,
+      "mobility": 92.6,
+      "combined": 71.21,
+      "weapons": [
+        "Plasma Carbine",
+        "Thunderbolt"
+      ]
+    },
+    {
+      "key": "201:128:1:2:1",
+      "profileKeys": [
+        "201:128:1:2:1",
+        "204:128:1:2:1"
+      ],
+      "name": "YĀN HUǑ Invincibles, Fire Support Heavy Regiment — YĀN HUǑ",
+      "type": "HI",
+      "gunfighter": 38.94,
+      "mobility": 28.5,
+      "combined": 70.47,
+      "weapons": [
+        "Hyper-Rapid Magnetic Cannon",
+        "Heavy Pistol"
+      ]
+    },
+    {
+      "key": "601:498:1:1:1",
+      "profileKeys": [
+        "601:498:1:1:1",
+        "601:498:1:5:1"
+      ],
+      "name": "THE CHARONTIDS — CHARONTID",
+      "type": "HI",
+      "gunfighter": 38.29,
+      "mobility": 35.5,
+      "combined": 70.42,
+      "weapons": [
+        "Plasma Rifle",
+        "Pulzar",
+        "AP Heavy Pistol"
+      ]
+    },
+    {
+      "key": "306:1521:1:1:1",
+      "profileKeys": [
+        "306:1521:1:1:1"
+      ],
+      "name": "Armata-4 Proyekt \"KOSMOSOLDAT\" — KOSMOSOLDAT",
+      "type": "HI",
+      "gunfighter": 38.77,
+      "mobility": 28.8,
+      "combined": 70.23,
+      "weapons": [
+        "AP Heavy Machine Gun",
+        "AP Heavy Pistol",
+        "Chain Rifle"
+      ]
+    },
+    {
+      "key": "501:1855:1:2:1",
+      "profileKeys": [
+        "501:1855:1:2:1",
+        "504:1855:1:2:1"
+      ],
+      "name": "Tunguska TRIGGERMEN — TRIGGERMEN",
+      "type": "HI",
+      "gunfighter": 37.89,
+      "mobility": 34.7,
+      "combined": 69.62,
+      "weapons": [
+        "MULTI Sniper Rifle",
+        "E/Marat",
+        "Pulzar",
+        "MULTI Pistol"
+      ]
+    },
+    {
+      "key": "101:10947:1:1:1",
+      "profileKeys": [
+        "101:10947:1:1:1",
+        "102:10947:1:1:1",
+        "103:10947:1:1:1",
+        "104:10947:1:1:1",
+        "105:10947:1:1:1",
+        "106:10947:1:1:1",
+        "107:10947:1:1:1",
+        "201:947:1:1:1",
+        "202:947:1:1:1",
+        "204:10947:1:1:1",
+        "205:10947:1:1:1",
+        "301:10947:1:1:1",
+        "302:10947:1:1:1",
+        "303:10947:1:1:1",
+        "304:10947:1:1:1",
+        "305:10947:1:1:1",
+        "306:10947:1:1:1",
+        "401:10947:1:1:1",
+        "402:10947:1:1:1",
+        "403:10947:1:1:1",
+        "404:10947:1:1:1",
+        "501:10947:1:1:1",
+        "502:10947:1:1:1",
+        "503:10947:1:1:1",
+        "504:10947:1:1:1",
+        "601:10947:1:1:1",
+        "602:10947:1:1:1",
+        "603:10947:1:1:1",
+        "604:10947:1:1:1",
+        "605:10947:1:1:1",
+        "701:10947:1:1:1",
+        "702:10947:1:1:1",
+        "703:10947:1:1:1",
+        "801:10947:1:1:1",
+        "901:10947:1:1:1",
+        "902:10947:1:1:1",
+        "904:10947:1:1:1",
+        "905:10947:1:1:1",
+        "908:10947:1:1:1",
+        "909:10947:1:1:1",
+        "1001:10947:1:1:1",
+        "1002:10947:1:1:1",
+        "1003:10947:1:1:1",
+        "1101:10947:1:1:1",
+        "1102:10947:1:1:1",
+        "1103:10947:1:1:1"
+      ],
+      "name": "MAJOR LUNAH, ex-Aristeia! Sniper — MAJOR LUNAH",
+      "type": "LI",
+      "gunfighter": 38.26,
+      "mobility": 30.2,
+      "combined": 69.57,
+      "weapons": [
+        "Boarding Pistol",
+        "VIRAL Sniper Rifle (+1SD)"
+      ]
+    },
+    {
+      "key": "501:1931:2:2:1",
+      "profileKeys": [
+        "501:1931:2:2:1",
+        "502:1931:2:2:1",
+        "503:1931:2:2:1",
+        "504:1931:2:2:1"
+      ],
+      "name": "NOMADS TEAM-OPS — VORTEX HEAVY",
+      "type": "HI",
+      "gunfighter": 37.64,
+      "mobility": 36.8,
+      "combined": 69.51,
+      "weapons": [
+        "MULTI Sniper Rifle",
+        "Pistol"
+      ]
+    },
+    {
+      "key": "501:1854:1:2:1",
+      "profileKeys": [
+        "501:1854:1:2:1",
+        "503:1854:1:2:1",
+        "504:1854:1:2:1"
+      ],
+      "name": "GO-POD — GO-POD",
+      "type": "VH",
+      "gunfighter": 32.56,
+      "mobility": 92.6,
+      "combined": 69.24,
+      "weapons": [
+        "Heavy Rocket Launcher",
+        "AP Submachine Gun"
+      ]
+    },
+    {
+      "key": "101:9:1:3:1",
+      "profileKeys": [
+        "101:9:1:3:1",
+        "104:9:1:3:1"
+      ],
+      "name": "SWISS GUARD — SWISS GUARD",
+      "type": "HI",
+      "gunfighter": 37.81,
+      "mobility": 28.6,
+      "combined": 68.57,
+      "weapons": [
+        "Light Shotgun",
+        "Heavy Pistol",
+        "Missile Launcher (+1SD)",
+        "Pulzar"
+      ]
+    },
+    {
+      "key": "501:393:1:8:1",
+      "profileKeys": [
+        "501:393:1:8:1",
+        "504:393:1:8:1"
+      ],
+      "name": "GRENZERS, Grenz Security Team — GRENZER",
+      "type": "MI",
+      "gunfighter": 37.62,
+      "mobility": 28.3,
+      "combined": 68.2,
+      "weapons": [
+        "MULTI Sniper Rifle",
+        "Pistol",
+        "Breaker Pistol"
+      ]
+    },
+    {
+      "key": "601:1863:1:2:1",
+      "profileKeys": [
+        "601:1863:1:2:1",
+        "605:1863:1:4:1",
+        "605:1863:1:6:1"
+      ],
+      "name": "ACHILLES — ACHILLES",
+      "type": "HI",
+      "gunfighter": 36.59,
+      "mobility": 40,
+      "combined": 68.2,
+      "weapons": [
+        "Plasma Rifle",
+        "Pulzar",
+        "Pistol"
+      ]
+    },
+    {
+      "key": "101:4:1:10:1",
+      "profileKeys": [
+        "101:4:1:10:1",
+        "104:4:1:10:1",
+        "199:1643:1:10:1"
+      ],
+      "name": "NEOTERRA BOLTS — BOLT",
+      "type": "MI",
+      "gunfighter": 37.26,
+      "mobility": 30.3,
+      "combined": 67.89,
+      "weapons": [
+        "MULTI Sniper Rifle",
+        "Pistol"
+      ]
+    },
+    {
+      "key": "602:522:1:2:1",
+      "profileKeys": [
+        "602:522:1:2:1",
+        "602:522:1:4:1",
+        "602:522:1:6:1"
+      ],
+      "name": "SOGARAT Tempest Regiment — SOGARAT",
+      "type": "HI",
+      "gunfighter": 37,
+      "mobility": 28.6,
+      "combined": 67.19,
+      "weapons": [
+        "Feuerbach",
+        "Pulzar",
+        "Heavy Pistol"
+      ]
+    },
+    {
+      "key": "101:10051:1:3:1",
+      "profileKeys": [
+        "101:10051:1:3:1",
+        "102:10051:1:3:1",
+        "103:10051:1:3:1",
+        "104:10051:1:3:1",
+        "105:10051:1:3:1",
+        "106:10051:1:3:1",
+        "107:10051:1:3:1",
+        "201:10051:1:3:1",
+        "202:51:1:3:1",
+        "204:10051:1:3:1",
+        "205:10051:1:3:1",
+        "301:10051:1:3:1",
+        "302:10051:1:3:1",
+        "303:10051:1:3:1",
+        "304:10051:1:3:1",
+        "305:10051:1:3:1",
+        "306:10051:1:3:1",
+        "401:10051:1:3:1",
+        "402:10051:1:3:1",
+        "403:10051:1:3:1",
+        "404:10051:1:3:1",
+        "501:10051:1:3:1",
+        "502:10051:1:3:1",
+        "503:10051:1:3:1",
+        "504:51:1:3:1",
+        "601:10051:1:3:1",
+        "602:10051:1:3:1",
+        "603:10051:1:3:1",
+        "604:10051:1:3:1",
+        "605:10051:1:3:1",
+        "701:10051:1:3:1",
+        "702:10051:1:3:1",
+        "703:51:1:3:1",
+        "801:10051:1:3:1",
+        "901:10051:1:3:1",
+        "902:10051:1:3:1",
+        "904:10051:1:3:1",
+        "905:10051:1:3:1",
+        "908:51:1:3:1",
+        "909:10051:1:3:1",
+        "998:1693:1:3:1",
+        "999:1693:1:3:1",
+        "1001:10051:1:3:1",
+        "1002:10051:1:3:1",
+        "1003:10051:1:3:1",
+        "1101:10051:1:3:1",
+        "1102:10051:1:3:1",
+        "1103:10051:1:3:1"
+      ],
+      "name": "MIRANDA ASHCROFT, Authorized Bounty Hunter — MIRANDA ASHCROFT",
+      "type": "LI",
+      "gunfighter": 37.01,
+      "mobility": 28.2,
+      "combined": 67.15,
+      "weapons": [
+        "Combi Rifle",
+        "E/Mitter",
+        "PARA Mine",
+        "Boarding Pistol"
+      ]
+    },
+    {
+      "key": "101:1811:1:2:1",
+      "profileKeys": [
+        "101:1811:1:2:1",
+        "101:1811:1:4:1",
+        "107:1811:1:2:1",
+        "107:1811:1:4:1"
+      ],
+      "name": "Hetkari Shooters — HETKARI",
+      "type": "HI",
+      "gunfighter": 36.42,
+      "mobility": 34.9,
+      "combined": 67.15,
+      "weapons": [
+        "MULTI Red Fury",
+        "Breaker Pistol",
+        "E/Marat"
+      ]
+    },
+    {
+      "key": "101:1806:2:2:1",
+      "profileKeys": [
+        "101:1806:2:2:1",
+        "107:1806:2:2:1"
+      ],
+      "name": "DRUMMERS, Mobile Support Section — DRUMBOT_2",
+      "type": "REM",
+      "gunfighter": 36.15,
+      "mobility": 37.9,
+      "combined": 67.14,
+      "weapons": [
+        "Hyper-Rapid Magnetic Cannon"
+      ]
+    },
+    {
+      "key": "101:8:1:3:1",
+      "profileKeys": [
+        "101:8:1:3:1",
+        "104:8:1:3:1",
+        "199:1646:1:2:1"
+      ],
+      "name": "AQUILA GUARD — AQUILA",
+      "type": "HI",
+      "gunfighter": 35.78,
+      "mobility": 36.9,
+      "combined": 66.36,
+      "weapons": [
+        "Heavy Machine Gun",
+        "MULTI Pistol"
+      ]
+    },
+    {
+      "key": "601:518:1:3:1",
+      "profileKeys": [
+        "601:518:1:3:1",
+        "602:518:1:3:1"
+      ],
+      "name": "YAOGAT Strike Infantry — YAOGAT",
+      "type": "MI",
+      "gunfighter": 36.44,
+      "mobility": 28.4,
+      "combined": 66.21,
+      "weapons": [
+        "MULTI Sniper Rifle",
+        "Heavy Pistol"
+      ]
+    },
+    {
+      "key": "101:1926:2:1:1",
+      "profileKeys": [
+        "101:1926:2:1:1",
+        "102:1926:2:1:1",
+        "104:1926:2:1:1",
+        "105:1926:2:1:1",
+        "106:1926:2:1:1",
+        "107:1926:2:1:1"
+      ],
+      "name": "INDIGO TEAM-OPS — INDIGO HEAVY",
+      "type": "HI",
+      "gunfighter": 35.65,
+      "mobility": 36.7,
+      "combined": 66.11,
+      "weapons": [
+        "Heavy Machine Gun",
+        "Pistol"
+      ]
+    },
+    {
+      "key": "101:1485:1:3:1",
+      "profileKeys": [
+        "101:1485:1:3:1",
+        "106:1485:1:3:1",
+        "909:1485:1:3:1"
+      ],
+      "name": "KARHU Special Group — KARHU",
+      "type": "MI",
+      "gunfighter": 34.57,
+      "mobility": 46.7,
+      "combined": 65.77,
+      "weapons": [
+        "Feuerbach",
+        "AP Mine",
+        "Pistol"
+      ]
+    },
+    {
+      "key": "501:954:1:2:1",
+      "profileKeys": [
+        "501:954:1:2:1",
+        "501:954:1:5:1",
+        "504:954:1:2:1",
+        "504:954:1:5:1"
+      ],
+      "name": "KRIZA BORACS, Special Crisis Unit — KRIZA BORAC",
+      "type": "HI",
+      "gunfighter": 35.89,
+      "mobility": 30.5,
+      "combined": 65.59,
+      "weapons": [
+        "Heavy Machine Gun",
+        "Heavy Pistol"
+      ]
+    },
+    {
+      "key": "101:9:1:2:1",
+      "profileKeys": [
+        "101:9:1:2:1",
+        "104:9:1:2:1"
+      ],
+      "name": "SWISS GUARD — SWISS GUARD",
+      "type": "HI",
+      "gunfighter": 35.84,
+      "mobility": 28.6,
+      "combined": 65.22,
+      "weapons": [
+        "Heavy Machine Gun",
+        "Pulzar",
+        "Heavy Pistol"
+      ]
+    }
+  ]
+}

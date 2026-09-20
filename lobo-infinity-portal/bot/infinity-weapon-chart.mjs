@@ -1,4 +1,20 @@
-export const WEAPON_CHART_SCHEMA_VERSION = 'infinity-official-weapon-chart-v1'
+import { canonicalState } from './combat-rules.mjs'
+export const WEAPON_CHART_SCHEMA_VERSION = 'infinity-official-weapon-chart-v2'
+
+// Use the same captured Army metadata as the profile references, including real
+// weapon IDs and every mode. API distances use game centimetres (10cm = 4in).
+export function weaponChartFromArmyMetadata(metadata) {
+  const ammo = new Map((metadata.ammunitions || []).map(a => [Number(a.id), a.name]))
+  return normalizeWeaponChartRows((metadata.weapons || []).map(w => {
+    let previous = 0
+    const ranges = Object.values(w.distance || {}).filter(r => r && Number.isFinite(Number(r.max))).sort((a, b) => a.max - b.max).map(r => {
+      const row = { min: previous, max: Number(r.max) / 2.5, modifier: Number(r.mod) }
+      previous = row.max
+      return row
+    })
+    return { id: w.id, name: w.name, mode: w.mode, ranges, damage: w.damage, burst: w.burst, ammo: typeof w.ammunition === 'string' ? w.ammunition : ammo.get(Number(w.ammunition)), saving: w.saving, savingRolls: w.savingNum, traits: w.properties }
+  }))
+}
 
 export function normalizeWeaponChartRows(rows = []) {
   if (!Array.isArray(rows)) throw new Error('Weapon chart rows must be an array.')
@@ -9,6 +25,9 @@ export function normalizeWeaponChartRow(row = {}) {
   const name = clean(row.name)
   if (!name) return null
   const saving = parseSavingAttribute(row.saving)
+  const saveComponents = /ARM\s*(?:and|\+)\s*BTS/i.test(clean(row.saving)) ? [
+    { attribute: 'ARM', saves: 1 }, { attribute: 'BTS', saves: 1 },
+  ] : null
   const traits = asArray(row.traits).map(clean).filter(Boolean)
   const bioweaponDaShock = traits.some((trait) => /bioweapon\s*\(\s*da\s*\+\s*shock\s*\)/i.test(trait))
   const attackType = traits.some((trait) => /direct template/i.test(trait)) ? 'direct-template' : 'bs-attack'
@@ -29,6 +48,7 @@ export function normalizeWeaponChartRow(row = {}) {
     burst: parseNullableNumber(row.burst),
     ammo: clean(row.ammo) || null,
     save: saving.attribute,
+    saveComponents,
     saveDivisor: saving.divisor,
     saveFixed: saving.fixed,
     saveModifier: saving.modifier,
@@ -41,6 +61,7 @@ export function normalizeWeaponChartRow(row = {}) {
     nonLethal: traits.some((trait) => /non-lethal/i.test(trait)),
     deployable: traits.some((trait) => /^deployable$/i.test(trait)),
     ignoresCover: traits.some((trait) => /no cover/i.test(trait)),
+    ignoresSaveCover: traits.some((trait) => /(?:direct|impact) template/i.test(trait)),
     continuousDamage: traits.some((trait) => /continu?ous damage/i.test(trait)),
     shock: /(?:^|\+)shock(?:$|\+)/i.test(clean(row.ammo)),
     viralBioweapon: bioweaponDaShock,
@@ -101,6 +122,7 @@ export function weaponChartRecordToGunfighterWeapon(record) {
       burst: record.burst,
       ammo: record.ammo,
       save: record.save,
+      saveComponents: record.saveComponents,
       saveDivisor: record.saveDivisor,
       saveFixed: record.saveFixed,
       saveModifier: record.saveModifier,
@@ -113,6 +135,7 @@ export function weaponChartRecordToGunfighterWeapon(record) {
       nonLethal: record.nonLethal,
       deployable: record.deployable,
       ignoresCover: record.ignoresCover,
+      ignoresSaveCover: record.ignoresSaveCover,
       continuousDamage: record.continuousDamage,
       shock: record.shock,
       viralBioweapon: record.viralBioweapon,
@@ -154,7 +177,7 @@ function inferSavingRolls(ammo) {
 
 function inferState(traits, ammo) {
   const explicit = traits.map((trait) => trait.match(/State:\s*([^\s-]+(?:-[A-Z])?)/i)?.[1]).find(Boolean)
-  if (explicit) return explicit.toLowerCase()
+  if (explicit) return canonicalState(explicit)
   const value = clean(ammo).toUpperCase()
   if (value.includes('E/M')) return 'isolated'
   if (value.includes('PARA')) return 'immobilized'
@@ -163,7 +186,7 @@ function inferState(traits, ammo) {
 }
 
 function inferAttackAttribute(name, traits, smoke) {
-  if (/flash pulse/i.test(name) || traits.some((trait) => /technical weapon/i.test(trait))) return 'wip'
+  if (/flash pulse/i.test(name) || traits.some((trait) => /technical weapon|BS Weapon \(WIP\)/i.test(trait))) return 'wip'
   if (smoke || traits.some((trait) => /BS Weapon \(PH\)/i.test(trait))) return 'ph'
   return 'bs'
 }

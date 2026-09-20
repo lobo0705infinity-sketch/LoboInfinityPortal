@@ -31,12 +31,11 @@ const [ttsProfile] = buildCanonicalGunfighterProfiles({
   sectorialId: 502,
   ttsProfiles: [{ id: '502:99:7:4:2', bs: 14, ph: 16, arm: 6, bts: 6, vitality: null, structure: 4, skills: ['BS Attack(-3)', 'BS Attack(SR-1)'], equipment: [], weapons: [{ name: 'AP HMG', modifiers: [] }, { name: 'Heavy Flamethrower', modifiers: ['+1B'] }] }],
 })
-assert.equal(ttsProfile.bs, 14)
-assert.equal(ttsProfile.vitality, null)
-assert.equal(ttsProfile.structure, 4)
+assert.equal(ttsProfile.bs, 13, 'Official stats cannot be overwritten by stale TTS data')
+assert.equal(ttsProfile.vitality, 1)
+assert.equal(ttsProfile.structure, null)
 const ttsFlamethrower = ttsProfile.weapons.find((weapon) => weapon.name === 'Heavy Flamethrower')
-assert.equal(ttsFlamethrower.modes[0].burstBonus, 1)
-assert.equal(ttsFlamethrower.modes[0].continuousDamage, true)
+assert.equal(ttsFlamethrower, undefined, 'TTS may not add weapons absent from this official selection')
 
 const ftoDataset = structuredClone(dataset)
 ftoDataset.units[0].profileGroups[0].options = [{ id: 4, name: 'TEST FTO', weapons: [{ id: 3 }] }, { id: 5, name: 'TEST', weapons: [{ id: 3 }] }]
@@ -53,5 +52,5 @@ const [crossSectorTts] = buildCanonicalGunfighterProfiles({
   sectorialId: 502,
   ttsProfiles: [{ id: '501:99:7:4:2', unitId: 99, groupId: 7, optionId: 4, profileId: 2, bs: 15, ph: 12, arm: 4, bts: 6, vitality: 1, structure: null, skills: [], equipment: [], weapons: [{ name: 'AP HMG', modifiers: [] }] }],
 })
-assert.equal(crossSectorTts.bs, 15, 'combat profile enrichment may cross sectorials without sharing Fireteam eligibility')
+assert.equal(crossSectorTts.bs, 13, 'Cross-sectorial TTS matches cannot override official profiles')
 console.log('PASS - exact Army profiles join to official weapon-chart records and preserve profile/weapon modifiers.')

@@ -3,7 +3,7 @@ import { evaluateAroProfile } from './gunfighter-rating.mjs'
 import { canonicalProfileKey } from './gunfighter-benchmark-catalog.mjs'
 
 export const ARO_CATALOG_SCHEMA = 'infinity-aro-benchmark-v1'
-export const ARO_BENCHMARK_VERSION = 'aro-benchmark-v5-critical-cancellation'
+export const ARO_BENCHMARK_VERSION = 'aro-benchmark-v6-shared-rules'
 
 export function selectBenchmarkAttackers(profiles, gunfighterCatalog, { limit = 30 } = {}) {
   const catalogByKey = new Map(gunfighterCatalog.entries.map((entry) => [entry.key, entry]))
@@ -74,12 +74,7 @@ export function lookupAroRatings(catalog, decodedArmy) {
   const members = decodedArmy.combatGroups.flatMap((group) => group.members || group.entries || [])
   return members.flatMap((member, memberIndex) => {
     const key = canonicalProfileKey({ ...member, sectorialId: decodedArmy.sectorialId })
-    const match = byKey.get(key) || catalog.entries.find((entry) => (
-      Number(entry.unitId) === Number(member.unitId)
-      && Number(entry.groupId) === Number(member.groupId)
-      && Number(entry.optionId) === Number(member.optionId)
-      && Number(entry.profileId) === Number(member.profileId ?? String(member.combinedId || '').split('-').at(-1) ?? 1)
-    ))
+    const match = byKey.get(key)
     if (match) return [{ status: 'matched', key, result: match.result, memberIndex }]
     if (Number(member.groupId) === 0) {
       const expanded = catalog.entries.filter((entry) => (
@@ -149,7 +144,8 @@ function applyRelativeRatings(entries, evaluationCache) {
 
 function combatSignature(profile, specialDice) {
   return JSON.stringify({
-    bs: profile.bs, ph: profile.ph, arm: profile.arm, bts: profile.bts,
+    bs: profile.bs, wip: profile.wip, ph: profile.ph, arm: profile.arm, bts: profile.bts,
+    troopType: profile.troopType, coverEligible: profile.coverEligible, markerState: profile.markerState, hiddenDeploymentState: profile.hiddenDeploymentState,
     vitality: profile.vitality, structure: profile.structure,
     skills: profile.skills, equipment: profile.equipment, weapons: profile.weapons,
     fireteamCapable: Boolean(profile.fireteamCapable),
@@ -158,11 +154,11 @@ function combatSignature(profile, specialDice) {
 }
 
 function attackerSignature(profile, specialDice) {
-  // The suite represents active-turn attackers. Reactive-only skills such as
-  // Total Reaction and Neurocinetics must not create duplicate attackers.
-  const relevant = (values = []) => values.filter((value) => /bs attack|mimetism|marksmanship|warhorse|surprise attack|dodge|no wound incapacitation|dogged|immunity|multispectral visor|x visor|albedo/i.test(String(value)))
+  // Total Reaction is reactive-only, but Neurocinetics also restricts active B.
+  const relevant = (values = []) => values.filter((value) => /bs attack|mimetism|marksmanship|warhorse|surprise attack|dodge|no wound incapacitation|dogged|immunity|multispectral visor|x visor|albedo|neurocinetics|cover/i.test(String(value))).sort()
   return JSON.stringify({
-    bs: profile.bs, ph: profile.ph, arm: profile.arm, bts: profile.bts,
+    bs: profile.bs, wip: profile.wip, ph: profile.ph, arm: profile.arm, bts: profile.bts,
+    troopType: profile.troopType, coverEligible: profile.coverEligible,
     vitality: profile.vitality, structure: profile.structure,
     skills: relevant(profile.skills), equipment: relevant(profile.equipment), weapons: profile.weapons,
     specialDice,

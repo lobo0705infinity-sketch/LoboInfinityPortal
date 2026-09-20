@@ -44,11 +44,16 @@ export function buildGunfighterBenchmarkCatalog({ profiles, defenders, officialD
 function combatProfileSignature(profile) {
   return JSON.stringify({
     bs: profile.bs,
+    wip: profile.wip,
     ph: profile.ph,
     arm: profile.arm,
     bts: profile.bts,
     vitality: profile.vitality,
     structure: profile.structure,
+    troopType: profile.troopType,
+    coverEligible: profile.coverEligible,
+    markerState: profile.markerState,
+    hiddenDeploymentState: profile.hiddenDeploymentState,
     skills: profile.skills,
     equipment: profile.equipment,
     weapons: profile.weapons,
@@ -141,7 +146,7 @@ function summarizeWeaponsUsed(matchups = []) {
       : selected.weapon
     const current = totals.get(label) || { weapon: label, selections: 0, scoreContribution: 0 }
     current.selections += 1
-    current.scoreContribution += Number(selected.score || 0)
+    current.scoreContribution += Number(selected.score || 0) * Number(matchup.defenderWeight ?? 1) * Number(matchup.rangeWeight ?? 1)
     totals.set(label, current)
   }
   return [...totals.values()]

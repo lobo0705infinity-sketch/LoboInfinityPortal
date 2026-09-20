@@ -11,7 +11,7 @@ assert.equal(catalog.defenders.length, 8)
 assert.equal(catalog.entryCount, catalog.entries.length)
 assert.ok(catalog.entryCount > 900)
 assert.ok(catalog.sourceAliasCount > catalog.entryCount)
-assert.equal(new Set(catalog.entries.map((entry) => entry.key)).size <= catalog.entryCount, true)
+assert.equal(new Set(catalog.entries.map((entry) => entry.key)).size, catalog.entryCount)
 for (const entry of catalog.entries) {
   assert.ok(Number.isFinite(entry.rating), entry.name)
   assert.ok(entry.weapons.length, entry.name)
@@ -32,7 +32,7 @@ for (let index = 1; index < allStates.length; index += 1) {
 }
 const rankingIdentities = catalog.entries.map((entry) => JSON.stringify([
   normalizeName(entry.name),
-  entry.rating,
+  entry.combatIdentity,
 ]))
 assert.equal(new Set(rankingIdentities).size, rankingIdentities.length, 'Exact repeated ranking identities must be collapsed')
 assert.ok(catalog.entries.some((entry) => entry.skills.some((skill) => /natural born warrior/i.test(skill))))
@@ -49,7 +49,7 @@ const collisionRanked = rankSubmittedCloseCombat(collisionFixture, [
   { combinedId: '703-1901-1-1-1', unitName: 'KINNARA Scoutbots', profileName: 'KINNARA Scoutbots', points: 23 },
   { combinedId: '703-1899-1-1-1', unitName: 'SHARVARA HoundBots', profileName: 'SHARVARA', points: 18 },
 ], { sectorialId: 703 })
-assert.deepEqual(collisionRanked.map((entry) => entry.result.name), ['KINNARA Scoutbots — KINNARA Scoutbots', 'SHARVARA HoundBots — SHARVARA'])
+assert.deepEqual(collisionRanked, [], 'Do not recover broken identities using names or points')
 const missingSectorialAliasFixture = { schemaVersion: CLOSE_COMBAT_CATALOG_SCHEMA, entries: [
   { key: '1:1:2:1', name: 'BEASTHUNTERS Free Guild — BEASTHUNTERS', points: 15, pointVariants: [15, 17], rating: 25.07, grade: 'B', percentile: 73.92, aliases: [{ sectorialId: 305, name: 'BEASTHUNTERS Free Guild' }], weapons: [{ name: 'DA CC Weapon' }], states: [] },
   { key: '1:1:5:1', name: 'BEASTHUNTERS Free Guild — BEASTHUNTERS', points: 17, rating: 30.12, grade: 'B', percentile: 77.87, aliases: [{ sectorialId: 205, name: 'BEASTHUNTERS Free Guild' }], weapons: [{ name: 'EXP CC Weapon' }], states: [] },
@@ -57,7 +57,7 @@ const missingSectorialAliasFixture = { schemaVersion: CLOSE_COMBAT_CATALOG_SCHEM
 const missingAliasRanked = rankSubmittedCloseCombat(missingSectorialAliasFixture, [
   { combinedId: '201-1570-1-2-1', unitName: 'BEASTHUNTERS FREE GUILD', profileName: 'BEASTHUNTERS', points: 17 },
 ], { sectorialId: 201 })
-assert.equal(missingAliasRanked[0].result.weapons[0].name, 'DA CC Weapon', 'exact option suffix must select the correct Beasthunter CC loadout even when the sectorial alias is missing')
+assert.deepEqual(missingAliasRanked, [], 'An absent sectorial alias must not borrow another faction loadout')
 console.log(`PASS - close-combat catalog ${catalog.fingerprint} contains ${catalog.entryCount} unique ranked CC identities from ${catalog.sourceAliasCount} official aliases.`)
 
 function normalizeName(value) { return String(value).toLowerCase().replace(/^reinf(?:orcements?)?[:.]?\s*/i, '').replace(/\s+(?:reinf\.?|fto)\s*$/i, '').replace(/\s+/g, ' ').trim() }

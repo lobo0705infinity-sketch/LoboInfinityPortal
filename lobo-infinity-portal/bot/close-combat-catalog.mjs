@@ -26,7 +26,7 @@ export function buildCloseCombatCatalog({ profiles, defenders, officialDataVersi
       conditionalStates: ['Surprise Attack', 'Berserk', 'one allied Trooper engaged', 'two allied Troopers engaged'],
       weaponPower: 'Exact fixed PS from the weapon/profile record; never inferred from PH.',
       protheion: 'Post-resolution Power-Up only, capped by wounds that can affect the target before Dead.',
-      validation: 'Exact d20 enumeration with supported reference cases cross-checked against Infinity the Calculator.',
+      validation: 'Live engine regression tests against independent exhaustive d20 enumeration and hand-calculated saving-roll fixtures.',
     },
     defenders: defenders.map(compactDefender),
     entryCount: unique.length,
@@ -39,13 +39,13 @@ export function lookupCloseCombatRatings(catalog, decodedArmy) {
   if (catalog?.schemaVersion !== CLOSE_COMBAT_CATALOG_SCHEMA) throw new Error('Unsupported close-combat benchmark catalog.')
   const byKey = new Map()
   for (const entry of catalog.entries || []) {
-    byKey.set(String(entry.key), entry)
-    for (const alias of entry.aliases || []) byKey.set(`${Number(alias.sectorialId)}:${entry.key}`, entry)
+    if (String(entry.key).split(':').length === 5) byKey.set(String(entry.key), entry)
+    for (const alias of entry.aliases || []) byKey.set(alias.key || `${Number(alias.sectorialId)}:${entry.key}`, entry)
   }
   const members = decodedArmy.combatGroups.flatMap((group) => group.members || group.entries || [])
   return members.map((member, memberIndex) => {
     const key = closeCombatKey(member)
-    const match = byKey.get(`${Number(decodedArmy.sectorialId)}:${key}`) || byKey.get(key)
+    const match = byKey.get(`${Number(decodedArmy.sectorialId)}:${key}`)
     return { status: match ? 'matched' : 'missing', key, result: match || null, memberIndex }
   })
 }
@@ -73,40 +73,7 @@ export function rankArmyCloseCombat(catalog, decodedArmy, { limit = 4 } = {}) {
 }
 
 export function rankSubmittedCloseCombat(catalog, profiles, { sectorialId, limit = 4 } = {}) {
-  if (catalog?.schemaVersion !== CLOSE_COMBAT_CATALOG_SCHEMA) throw new Error('Unsupported close-combat benchmark catalog.')
-  return (profiles || []).map((profile) => {
-    const expectedKey = closeCombatKeyFromCombinedId(profile.combinedId)
-    const expectedSuffix = expectedKey.split(':').slice(-3).join(':')
-    const unitName = normalizedName(profile.unitName)
-    const profileName = normalizedName(profile.profileName)
-    const candidates = (catalog.entries || []).map((entry) => {
-      const aliases = entry.aliases || []
-      const aliasMatch = aliases.some((alias) => normalizedName(alias.name) === unitName)
-      const sectorialAliasMatch = aliases.some((alias) => Number(alias.sectorialId) === Number(sectorialId) && normalizedName(alias.name) === unitName)
-      const exactKey = String(entry.key) === expectedKey
-      if (!exactKey && !aliasMatch) return null
-      const entryName = normalizedName(entry.name)
-      const points = [entry.points, ...(entry.pointVariants || [])].map(Number)
-      const suffixMatch = String(entry.key).split(':').slice(-3).join(':') === expectedSuffix
-      const score = (exactKey ? 1000 : 0) + (suffixMatch ? 500 : 0) + (sectorialAliasMatch ? 100 : 0) + (aliasMatch ? 80 : 0) + (profileName && entryName.includes(profileName) ? 20 : 0) + (points.includes(Number(profile.points)) ? 10 : 0)
-      return { entry, score }
-    }).filter(Boolean).sort((a, b) => b.score - a.score || b.entry.rating - a.entry.rating)
-    const entry = candidates[0]?.entry
-    return {
-      status: entry ? 'matched' : 'missing',
-      key: expectedKey,
-      unitName: profile.unitName || entry?.name || null,
-      profileName: profile.profileName || null,
-      rating: entry?.rating ?? null,
-      grade: entry?.grade ?? null,
-      percentile: entry?.percentile ?? null,
-      states: entry?.states || [],
-      weapons: entry?.weapons || [],
-      result: entry || null,
-    }
-  }).filter((entry) => entry.status === 'matched' && Number.isFinite(entry.rating))
-    .sort((a, b) => b.rating - a.rating || String(a.unitName).localeCompare(String(b.unitName)))
-    .slice(0, Math.max(0, Number(limit) || 0))
+  return rankArmyCloseCombat(catalog, { sectorialId, combatGroups: [{ members: profiles || [] }] }, { limit })
 }
 
 function closeCombatKey(member) {
@@ -116,18 +83,10 @@ function closeCombatKey(member) {
   return values.every(Number.isInteger) ? values.join(':') : ''
 }
 
-function closeCombatKeyFromCombinedId(value) {
-  const parts = String(value || '').split('-').map(Number)
-  return parts.length >= 5 && parts.slice(-4).every(Number.isInteger) ? parts.slice(-4).join(':') : ''
-}
-
-function normalizedName(value) {
-  return String(value || '').toLowerCase().replace(/[_—–-]+/g, ' ').replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim()
-}
-
 function compactResult(profile, result) {
   return {
-    key: profile.id,
+    key: profile.aliases[0]?.key || profile.id,
+    combatIdentity: JSON.stringify([profile.cc, profile.ph, profile.arm, profile.bts, profile.vitality, profile.structure, profile.troopType, profile.skills.slice().sort(), profile.equipment?.slice().sort(), profile.weapons]),
     name: profile.name,
     points: profile.points,
     cc: profile.cc,
@@ -160,7 +119,7 @@ function summarizeWeapons(matchups) {
 function dedupeCanonical(entries) {
   const result = new Map()
   for (const entry of entries) {
-    const identity = JSON.stringify([rankingName(entry.name), entry.rating])
+    const identity = JSON.stringify([rankingName(entry.name), entry.combatIdentity])
     if (!result.has(identity)) result.set(identity, entry)
     else {
       const kept = result.get(identity)

@@ -1,4 +1,5 @@
 import { weaponChartRecordToGunfighterWeapon } from './infinity-weapon-chart.mjs'
+import { includedMobilityOptions } from './mobility-rating.mjs'
 
 export function buildCanonicalGunfighterProfiles({ dataset, weaponChart, sectorialId, fireteamUnitIds = [], wildcardUnitIds = [], fireteamProfiles = [], ttsProfiles = [] } = {}) {
   if (!Array.isArray(dataset?.units)) throw new Error('Canonical Army dataset has no units.')
@@ -9,19 +10,19 @@ export function buildCanonicalGunfighterProfiles({ dataset, weaponChart, sectori
   const equips = indexById(dataset.metadata?.equips)
   const extras = indexById(dataset.metadata?.extras)
   const eligible = new Set([...fireteamUnitIds, ...wildcardUnitIds].map(Number))
-  const ttsById = new Map(ttsProfiles.map((profile) => [String(profile.id), profile]))
-  const ttsByProfileKey = new Map(ttsProfiles.map((profile) => [ttsProfileKey(profile), profile]))
   const profiles = []
   for (const unit of dataset.units) for (const group of unit.profileGroups || []) for (const option of group.options || []) {
+    if (option.disabled && !includedMobilityOptions(unit).has(`${group.id}:${option.id}`)) continue
     const physicalProfiles = group.profiles?.length ? group.profiles : [{}]
     for (const profile of physicalProfiles) {
       const id = `${sectorialId}:${unit.id}:${group.id}:${option.id}:${profile.id ?? 1}`
-      const ttsProfile = ttsById.get(id) || ttsByProfileKey.get(ttsProfileKey({ unitId: unit.id, groupId: group.id, optionId: option.id, profileId: profile.id ?? 1 }))
-      const references = [...(unit.weapons || []), ...(group.weapons || []), ...(profile.weapons || []), ...(option.weapons || [])]
-      const weapons = mergeWeapons([
-        ...resolveWeapons(references, weaponRecords, extras, armyWeapons),
-        ...resolveTtsWeapons(ttsProfile?.weapons, weaponRecords),
-      ])
+      // Unit/group weapon arrays describe alternatives, not this loadout.
+      // Older TTS data must never override or add to an official selection.
+      const references = [...(profile.weapons || []), ...(option.weapons || [])]
+      const weapons = resolveWeapons(references, weaponRecords, extras, armyWeapons)
+      const skillNames = resolveTraits([...(unit.skills || []), ...(group.skills || []), ...(profile.skills || []), ...(option.skills || [])], skills, extras)
+      const structure = (profile.str ?? unit.str) === true
+      const wounds = stat(profile, unit, 'w') ?? stat(profile, unit, 'vitality') ?? 1
       profiles.push({
         id,
         sectorialId: Number(sectorialId),
@@ -30,25 +31,23 @@ export function buildCanonicalGunfighterProfiles({ dataset, weaponChart, sectori
         optionId: Number(option.id),
         profileId: Number(profile.id ?? 1),
         name: [unit.name, option.name || profile.name].filter(Boolean).join(' — '),
-        bs: ttsProfile?.bs ?? stat(profile, unit, 'bs'),
-        wip: ttsProfile?.wip ?? stat(profile, unit, 'wip'),
-        ph: ttsProfile?.ph ?? stat(profile, unit, 'ph'),
-        arm: ttsProfile?.arm ?? stat(profile, unit, 'arm'),
-        bts: ttsProfile?.bts ?? stat(profile, unit, 'bts'),
-        vitality: ttsProfile ? ttsProfile.vitality : stat(profile, unit, 'w') ?? stat(profile, unit, 'vitality'),
-        structure: ttsProfile ? ttsProfile.structure : stat(profile, unit, 'str') ?? stat(profile, unit, 'structure'),
-        skills: ttsProfile?.skills?.length ? ttsProfile.skills : resolveTraits([...(unit.skills || []), ...(group.skills || []), ...(profile.skills || []), ...(option.skills || [])], skills, extras),
-        equipment: ttsProfile?.equipment?.length ? ttsProfile.equipment : resolveTraits([...(unit.equipment || unit.equip || []), ...(group.equipment || group.equip || []), ...(profile.equipment || profile.equip || []), ...(option.equipment || option.equip || [])], equips, extras),
+        bs: stat(profile, unit, 'bs'),
+        cc: stat(profile, unit, 'cc'),
+        wip: stat(profile, unit, 'wip'),
+        ph: stat(profile, unit, 'ph'),
+        arm: stat(profile, unit, 'arm'),
+        bts: stat(profile, unit, 'bts'),
+        vitality: structure ? null : wounds,
+        structure: structure ? wounds : (typeof profile.str === 'number' ? profile.str : stat(profile, unit, 'structure')),
+        troopType: dataset.metadata?.types?.find(t => Number(t.id) === Number(profile.type))?.name || null,
+        skills: [...new Set(skillNames)].sort(),
+        equipment: [...new Set(resolveTraits([...(unit.equipment || unit.equip || []), ...(group.equipment || group.equip || []), ...(profile.equipment || profile.equip || []), ...(option.equipment || option.equip || [])], equips, extras))].sort(),
         weapons,
-        fireteamCapable: exactFireteamEligibility({ unit, group, option, profile, eligible, fireteamProfiles }),
+        fireteamCapable: !skillNames.some(s => /^Peripheral(?:\s|\(|$)/i.test(s)) && exactFireteamEligibility({ unit, group, option, profile, eligible, fireteamProfiles }),
       })
     }
   }
   return profiles
-}
-
-function ttsProfileKey(profile) {
-  return [profile.unitId, profile.groupId, profile.optionId, profile.profileId ?? 1].map(Number).join(':')
 }
 
 function resolveTtsWeapons(references = [], chart) {
@@ -70,9 +69,10 @@ export function gunfighterWeaponsFromTtsProfile(profile, weaponChart = []) {
 }
 
 function exactFireteamEligibility({ unit, group, option, profile, eligible, fireteamProfiles }) {
-  const records = fireteamProfiles.filter((entry) => Number(entry.unitId) === Number(unit.id) && entry.level2Capable !== false)
-  if (!records.length) return eligible.has(Number(unit.id))
-  const selectedNames = [unit.name, unit.isc, group.isc, option.name, profile.name].map(normalize).filter(Boolean)
+  const allRecords = fireteamProfiles.filter((entry) => Number(entry.unitId) === Number(unit.id))
+  if (!allRecords.length) return eligible.has(Number(unit.id))
+  const records = allRecords.filter(entry => entry.level2Capable !== false)
+  const selectedNames = [group.isc, option.name, profile.name].map(normalize).filter(Boolean)
   return records.some((entry) => {
     const chartName = normalize(entry.memberName)
     if (/(?:^|\s)fto(?:\s|$)/.test(chartName)) return selectedNames.some((name) => /(?:^|\s)fto(?:\s|$)/.test(name))

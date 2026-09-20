@@ -28,7 +28,7 @@ const profiles = Array.from({ length: 30 }, (_, index) => ({ ...profile(`p${inde
 const gunfighterCatalog = { entries: profiles.map((item, index) => ({ key: item.id, result: { states: [{ id: 'normal', fireteamSpecialDice: 0, rating: 100 - index }] } })) }
 const attackers = selectBenchmarkAttackers(profiles, gunfighterCatalog)
 assert.equal(attackers.length, 30)
-const reactiveVariant = { ...profiles[0], id: '503:1:1:1:1', sectorialId: 503, skills: ['Neurocinetics'] }
+const reactiveVariant = { ...profiles[0], id: '503:1:1:1:1', sectorialId: 503, skills: ['Total Reaction'] }
 const dedupedAttackers = selectBenchmarkAttackers(
   [profiles[0], reactiveVariant, ...profiles.slice(1)],
   { entries: [

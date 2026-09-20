@@ -1,3 +1,5 @@
+import { traitTokens, criticalRank, successValue, coverBenefits, resolveSavingEffects } from './combat-rules.mjs'
+
 export const STANDARD_RANGE_BANDS = Object.freeze([
   { id: '0-8', min: 0, max: 8 },
   { id: '8-16', min: 8, max: 16 },
@@ -24,6 +26,7 @@ const DEFAULT_OPTIONS = Object.freeze({
   cover: true,
   ranges: STANDARD_RANGE_BANDS,
   stateValues: STATE_VALUES,
+  surpriseAttack: false,
 })
 
 const faceToFaceCache = new Map()
@@ -94,6 +97,7 @@ function evaluateAroState(profile, attackers, settings, state) {
 
 export function evaluateState(profile, defenders, settings, state) {
   const matchups = []
+  const defenderWeights = benchmarkDefenderWeights(defenders)
   for (const defender of defenders) {
     assertProfile(defender)
     for (const range of settings.ranges) {
@@ -104,6 +108,7 @@ export function evaluateState(profile, defenders, settings, state) {
         mode,
         range,
         fireteamSpecialDice: state.specialDice,
+        defenderFireteamSpecialDice: Number(defender.fireteamSpecialDice || 0),
         settings,
       })))
       const available = candidates.filter((candidate) => candidate.status === 'evaluated')
@@ -111,6 +116,8 @@ export function evaluateState(profile, defenders, settings, state) {
       matchups.push({
         defenderId: defender.id,
         defenderName: defender.name,
+        defenderWeight: defenderWeights.get(defender.id),
+        rangeWeight: Number(range.weight ?? 1),
         range: range.id,
         selected,
         candidates,
@@ -140,13 +147,30 @@ function weightedAroMatchupRating(matchups, ranges) {
 function weightedMatchupRating(matchups, ranges) {
   if (!matchups.length) return null
   const weights = new Map(ranges.map((range) => [range.id, Math.max(0, Number(range.weight ?? 1))]))
-  const totalWeight = matchups.reduce((sum, matchup) => sum + (weights.get(matchup.range) ?? 1), 0)
+  const totalWeight = matchups.reduce((sum, matchup) => sum + (weights.get(matchup.range) ?? 1) * (matchup.defenderWeight ?? 1), 0)
   if (!totalWeight) return 0
   const weightedScore = matchups.reduce((sum, matchup) => {
-    const weight = weights.get(matchup.range) ?? 1
+    const weight = (weights.get(matchup.range) ?? 1) * (matchup.defenderWeight ?? 1)
     return sum + (matchup.selected?.score ?? 0) * weight
   }, 0)
   return round(weightedScore / totalWeight)
+}
+
+export function benchmarkDefenderWeights(defenders) {
+  const categories = new Map()
+  for (const defender of defenders) {
+    const key = defender.archetype || defender.id
+    if (!categories.has(key)) categories.set(key, { weight: Number(defender.archetypeWeight ?? 1), variants: new Map() })
+    const category = categories.get(key)
+    if (!Number.isFinite(category.weight) || category.weight < 0) throw Error('Invalid defender weight')
+    const group = defender.variantGroup || defender.id
+    category.variants.set(group, [...(category.variants.get(group) || []), defender.id])
+  }
+  const total = [...categories.values()].reduce((sum, c) => sum + c.weight, 0)
+  if (!(total > 0)) throw Error('Benchmark requires positive defender weight')
+  const weights = new Map()
+  for (const c of categories.values()) for (const ids of c.variants.values()) for (const id of ids) weights.set(id, c.weight / total / c.variants.size / ids.length)
+  return weights
 }
 
 export function evaluateAttackCandidate({ attacker, defender, weapon, mode, range, fireteamSpecialDice = 0, defenderFireteamSpecialDice = 0, responseObjective = 'gunfighter', settings = DEFAULT_OPTIONS }) {
@@ -238,17 +262,13 @@ function winProbability(own, opposing) {
   return own.ranks.reduce((sum, state) => sum + state.bestProbability * opposing.below(state.rank), 0)
 }
 
-function expectedWinningHits(own, opposing) {
-  return own.ranks.reduce((sum, state) => sum + state.expectedHits * opposing.below(state.rank), 0)
-}
-
 export function resolveNormalRoll(pool) {
   const summary = summarizePool(pool)
   const success = summary.ranks.reduce((sum, state) => sum + state.bestProbability, 0)
   const outcomes = winningOutcomeDistribution(pool, null)
   const expectedHits = expectedOutcomeValue(outcomes, 'hits')
   const expectedCriticals = expectedOutcomeValue(outcomes, 'criticals')
-  return { success: round(success * 100), expectedHits, expectedCriticals, outcomes }
+  return { success: round(success * 100), successProbability: success, expectedHits, expectedCriticals, outcomes }
 }
 
 function expectedRetainedRankCount({ dice, burst, higher, equal, lower }) {
@@ -275,79 +295,45 @@ function factorial(value) {
   return result
 }
 
-export function expectedEffectFromHits({ expectedHits, expectedCriticals = 0, outcomes = null, mode, defender }) {
+export function expectedEffectFromHits({ expectedHits, expectedCriticals = 0, outcomes = null, mode, defender, cover = true, stateValues = STATE_VALUES }) {
   const resolvedOutcomes = outcomes || fractionalOutcomeDistribution(expectedHits, expectedCriticals)
-  if (!resolvedOutcomes.size || probabilityOfDamagingHits(resolvedOutcomes) === 0) return { expectedDamage: 0, damageValue: 0, stateValue: 0, total: 0 }
-  const printedAttribute = mode.save === 'BTS' ? Number(defender.bts || 0) : mode.save === 'PH' ? Number(defender.ph || 0) : Number(defender.arm || 0)
-  const fixedAttribute = mode.saveFixed == null ? null : Number(mode.saveFixed)
-  const baseAttribute = Number.isFinite(fixedAttribute) ? fixedAttribute : printedAttribute
-  const apAmmunition = /(?:^|\+)AP(?:$|\+)/i.test(String(mode.ammo))
-  const apImmunity = [...(defender.skills || []), ...(defender.equipment || [])].some((value) => /immunity\s*\(?\s*ap\s*\)?/i.test(String(value)))
-  const inferredDivisor = apAmmunition || mode.ammo === 'BREAKER' ? 2 : 1
-  const divisor = apAmmunition && apImmunity ? 1 : Math.max(1, Number(mode.saveDivisor || inferredDivisor))
-  const reduced = Math.ceil(baseAttribute / divisor) + Number(mode.saveModifier || 0)
-  const cover = mode.ignoresCover || mode.attackType === 'direct-template' ? 0 : 3
-  // BS Attack (SR-1) subtracts one from each target Saving Roll.  Increasing
-  // the failure threshold by one is the equivalent probability operation.
-  const savingRollPenalty = Math.max(0, Number(mode.savingRollPenalty || 0))
-  // N5 PS is added to the target's ARM/BTS (and Cover) to establish the
-  // Saving Roll Success Value. A roll above that value fails, so lower PS is
-  // more lethal. SR-X subtracts from the Success Value.
-  const successValue = mode.save === 'PH'
-    ? reduced - savingRollPenalty
-    : reduced + cover + Number(mode.power) - savingRollPenalty
-  const failureProbability = 1 - Math.min(1, Math.max(0, successValue / 20))
-  const viralAffectsVitality = Boolean(mode.viralBioweapon) && Number(defender.vitality || 0) > 0
-  const savesPerHit = viralAffectsVitality ? 2 : Number(mode.saves || (/EXP/i.test(String(mode.ammo)) ? 3 : /DA/i.test(String(mode.ammo)) ? 2 : 1))
-  const woundsPerFailure = Number(mode.woundsPerFailure || (/T2/i.test(String(mode.ammo)) ? 2 : 1))
-  const durability = effectiveDurability(defender, mode)
-  let expectedDamage = 0
-  let expectedCappedDamage = 0
-  let stateTriggerProbability = 0
-  for (const [key, outcomeProbability] of resolvedOutcomes) {
-    const { hits, criticals } = parseOutcomeKey(key)
-    if (!hits) continue
-    // A Critical adds exactly one additional Saving Roll. It is not a second
-    // hit that repeats all DA/EXP/Viral saves.
-    const savingRolls = hits * savesPerHit + criticals
-    const failureDistribution = savingFailureDistribution(savingRolls, failureProbability, Boolean(mode.continuousDamage), durability)
-    for (let failures = 0; failures < failureDistribution.length; failures += 1) {
-      const branch = outcomeProbability * failureDistribution[failures]
-      const damage = failures * woundsPerFailure
-      expectedDamage += branch * damage
-      expectedCappedDamage += branch * Math.min(damage, durability)
-      if (failures > 0) stateTriggerProbability += branch
-    }
-  }
-  const damageValue = mode.nonLethal ? 0 : Math.min(expectedCappedDamage / durability, 1)
-  const stateValue = expectedStateValue(mode, defender, stateTriggerProbability)
-  return { expectedDamage, damageValue, stateValue, total: Math.min(1, damageValue + stateValue * (1 - damageValue)) }
+  const effect = resolveSavingEffects(resolvedOutcomes, mode, defender, { cover })
+  const damageValue = Math.min(effect.expectedCappedWounds / effect.durability, 1)
+  const states = effect.states
+  const combined = states.includes('isolated') && states.includes('immobilized')
+    ? Math.max(stateValues.isolated || 0, stateValues.immobilized || 0)
+    : 1 - states.reduce((p, state) => p * (1 - (stateValues[state] || 0)), 1)
+  const stateValue = combined * effect.stateProbability
+  return { expectedDamage: effect.expectedWounds, damageValue, stateValue, total: Math.min(1, damageValue + stateValue * (1 - damageValue)) }
 }
 
-function resolveExchange({ attack, aro, attacker, defender, mode }) {
+function resolveExchange({ attack, aro, attacker, defender, mode, settings }) {
+  const effectFor = (outcomes, m, pool, target) => expectedEffectFromHits({ outcomes, mode: withAttackSaveModifiers(m, pool), defender: target, cover: settings.cover, stateValues: settings.stateValues || STATE_VALUES })
   if (mode.attackType === 'direct-template') {
     const dodge = aro.type === 'dodge' ? resolveNormalRoll(aro.pool) : { success: 0 }
-    const hitProbability = 1 - dodge.success / 100
-    const outcomes = binomialHitOutcomes(attack.burst, hitProbability)
-    const effect = expectedEffectFromHits({ expectedHits: attack.burst * hitProbability, outcomes, mode: withAttackSaveModifiers(mode, attack), defender })
-    return exchangeResult(attack, aro, { activeWin: 100 - dodge.success, reactiveWin: 0, noEffect: dodge.success, expectedActiveHits: attack.burst * hitProbability, expectedReactiveHits: 0 }, effect, null)
+    const hitProbability = 1 - (dodge.successProbability ?? 0)
+    const outcomes = new Map([['0:0', 1 - hitProbability], [`${attack.burst}:0`, hitProbability]])
+    const effect = effectFor(outcomes, mode, attack, defender)
+    const retaliation = aro.type === 'template' ? { success: 100, expectedHits: aro.pool.burst, outcomes: new Map([[`${aro.pool.burst}:0`, 1]]) } : aro.type === 'shoot' ? resolveNormalRoll(aro.pool) : null
+    const returnEffect = retaliation ? effectFor(retaliation.outcomes, aro.mode, aro.pool, attacker) : null
+    return exchangeResult(attack, aro, { activeWin: 100 - dodge.success, reactiveWin: retaliation?.success || 0, noEffect: dodge.success, expectedActiveHits: attack.burst * hitProbability, expectedReactiveHits: retaliation?.expectedHits || 0, simultaneous: !!retaliation }, effect, returnEffect)
   }
   if (aro.type === 'none') {
     const roll = resolveNormalRoll(attack)
-    const effect = expectedEffectFromHits({ expectedHits: roll.expectedHits, expectedCriticals: roll.expectedCriticals, outcomes: roll.outcomes, mode: withAttackSaveModifiers(mode, attack), defender })
+    const effect = effectFor(roll.outcomes, mode, attack, defender)
     return exchangeResult(attack, aro, { activeWin: roll.success, reactiveWin: 0, noEffect: 100 - roll.success, expectedActiveHits: roll.expectedHits, expectedReactiveHits: 0 }, effect, null)
   }
   if (aro.type === 'template') {
     const roll = resolveNormalRoll(attack)
-    const effect = expectedEffectFromHits({ expectedHits: roll.expectedHits, expectedCriticals: roll.expectedCriticals, outcomes: roll.outcomes, mode: withAttackSaveModifiers(mode, attack), defender })
-    const returnEffect = expectedEffectFromHits({ expectedHits: Math.max(1, Number(aro.pool?.burst || 1)), mode: aro.mode, defender: attacker })
-    return exchangeResult(attack, aro, { activeWin: roll.success, reactiveWin: 100, noEffect: 0, expectedActiveHits: roll.expectedHits, expectedReactiveHits: 1 }, effect, returnEffect)
+    const effect = effectFor(roll.outcomes, mode, attack, defender)
+    const returnEffect = effectFor(new Map([[`${aro.pool.burst}:0`, 1]]), aro.mode, aro.pool, attacker)
+    return exchangeResult(attack, aro, { activeWin: roll.success, reactiveWin: 100, noEffect: 0, expectedActiveHits: roll.expectedHits, expectedReactiveHits: aro.pool.burst, simultaneous: true }, effect, returnEffect)
   }
   const activePool = applyOpponentFtfModifier(attack, defender, aro.type, attacker, { allowSurprise: false })
-  const reactivePool = applyOpponentFtfModifier(aro.pool, attacker, 'shoot', defender, { allowSurprise: true })
+  const reactivePool = applyOpponentFtfModifier(aro.pool, attacker, 'shoot', defender, { allowSurprise: settings.surpriseAttack === true && Boolean(attacker.markerState || attacker.hiddenDeploymentState) })
   const f2f = resolveFaceToFace(activePool, reactivePool)
-  const effect = expectedEffectFromHits({ expectedHits: f2f.expectedActiveHits, expectedCriticals: f2f.expectedActiveCriticals, outcomes: f2f.activeOutcomes, mode: withAttackSaveModifiers(mode, attack), defender })
-  const returnEffect = aro.mode ? expectedEffectFromHits({ expectedHits: f2f.expectedReactiveHits, expectedCriticals: f2f.expectedReactiveCriticals, outcomes: f2f.reactiveOutcomes, mode: aro.mode, defender: attacker }) : { total: 0 }
+  const effect = effectFor(f2f.activeOutcomes, mode, attack, defender)
+  const returnEffect = aro.mode && !aro.mode.smoke && !aro.mode.eclipse ? effectFor(f2f.reactiveOutcomes, aro.mode, aro.pool, attacker) : { total: 0 }
   return exchangeResult(attack, aro, f2f, effect, returnEffect)
 }
 
@@ -371,17 +357,23 @@ export function buildAttackPool(attacker, defender, weapon, mode, rangeModifier,
   const equipment = tokens(attacker.equipment)
   const defenderSkills = tokens(defender.skills)
   const attackAttribute = String(mode.attackAttribute || 'bs').toLowerCase()
-  let target = Number(attacker[attackAttribute] ?? attacker.bs)
-  target += rangeModifier
-  if (settings.cover && !has(skills, 'marksmanship') && !mode.ignoresCover) target -= 3
-  target += mimetismModifier(defenderSkills, equipment)
-  target += numericModifier(skills, /bs attack\s*\[?\+?(\d+)\s*bs\]?/)
+  const baseTarget = Number(attacker[attackAttribute] ?? attacker.bs)
+  let modifiers = rangeModifier
+  // Smoke targets a table point, not the enemy Trooper.
+  if (!mode.smoke && !mode.eclipse) {
+    if (!has(skills, 'marksmanship') && !mode.ignoresCover) modifiers += coverBenefits(defender, settings.cover).hit
+    modifiers += mimetismModifier(defenderSkills, equipment)
+  }
+  modifiers += numericModifier(skills, /^bs attack\s*\+(\d+)(?:\s*bs)?$/)
   const fullBurstAro = has(skills, 'total reaction') || has(skills, 'neurocinetics')
-  const nativeBurst = aro && !fullBurstAro ? 1 : Number(mode.burst)
-  const burst = nativeBurst + numericModifier(skills, /bs attack\s*\[?\+?(\d+)b\]?/) + Number(mode.burstBonus || 0)
-  const specialDice = Number(mode.specialDice || 0) + numericModifier(skills, /bs attack\s*\[?\+?(\d+)sd\]?/) + fireteamSpecialDice
+  const neuroActive = !aro && has(skills, 'neurocinetics')
+  const nativeBurst = (aro && !fullBurstAro) || neuroActive ? 1 : Number(mode.burst)
+  const burstBonus = (!aro || fullBurstAro) && !neuroActive ? numericModifier(skills, /bs attack\s*\+?(\d+)\s*b$/) + Number(mode.burstBonus || 0) : 0
+  const burst = Math.max(1, Math.min(6, nativeBurst + burstBonus))
+  const specialDice = mode.attackType === 'direct-template' || mode.longSkill ? 0 : Number(mode.specialDice || 0) + numericModifier(skills, /bs attack\s*\+?(\d+)\s*sd$/) + fireteamSpecialDice
   const savingRollPenalty = Number(mode.savingRollPenalty || 0) + numericModifier(skills, /bs attack\s*sr-(\d+)/)
-  return { burst, specialDice, savingRollPenalty, disposableUses: mode.disposableUses, target: clampTarget(target), criticalTarget: clampTarget(target), source: `${weapon.name}${mode.name ? ` (${mode.name})` : ''}` }
+  const target = successValue(baseTarget, modifiers)
+  return { burst, specialDice, savingRollPenalty, shock: has(skills, 'bs attack shock'), continuousDamage: has(skills, 'bs attack continuous damage'), baseTarget, modifiers, disposableUses: mode.disposableUses, target, criticalTarget: target, source: `${weapon.name}${mode.name ? ` (${mode.name})` : ''}` }
 }
 
 function attackAvailability(attack) {
@@ -390,12 +382,15 @@ function attackAvailability(attack) {
 }
 
 function buildLegalAros(defender, attacker, range, settings, attackingMode, fireteamSpecialDice = 0) {
-  if (attackingMode.attackType === 'direct-template') return [{ id: 'dodge', type: 'dodge', pool: dodgePool(defender) }]
   const results = [{ id: 'dodge', type: 'dodge', pool: dodgePool(defender) }]
   const attackerHasMsv = tokens(attacker.equipment).some((value) => /^multispectral visor l[123]$/.test(value))
   for (const weapon of defender.weapons) for (const mode of weapon.modes) {
     if (mode.deployable) continue
-    const modifier = rangeModifierFor(mode, range, defender.equipment)
+    if (mode.attackType === 'direct-template' && range.min >= Number(mode.templateRange || 8)) continue
+    // Benchmark assumption: legal close placement around the user blocks LoF.
+    // Enemy distance is not the distance to that targetless placement point.
+    const responseRange = mode.smoke || mode.eclipse ? { min: 0, max: 1 } : range
+    const modifier = rangeModifierFor(mode, responseRange, defender.equipment)
     if (modifier === null) continue
     if (mode.smoke && attackerHasMsv && !mode.eclipse) continue
     const pool = buildAttackPool(defender, attacker, weapon, mode, modifier, fireteamSpecialDice, settings, { aro: true })
@@ -405,21 +400,8 @@ function buildLegalAros(defender, attacker, range, settings, attackingMode, fire
 }
 
 function describeRoll(face, pool) {
-  const success = face <= pool.target
-  return { face, success, critical: success && face === pool.criticalTarget }
-}
-
-function compareRolls(active, reactive) {
-  const a = active.filter((roll) => roll.success)
-  const r = reactive.filter((roll) => roll.success)
-  const bestA = Math.max(0, ...a.map(rollRank))
-  const bestR = Math.max(0, ...r.map(rollRank))
-  const activeWinners = a.filter((roll) => rollRank(roll) > bestR)
-  const reactiveWinners = r.filter((roll) => rollRank(roll) > bestA)
-  return {
-    activeHits: activeWinners.reduce((sum, roll) => sum + 1 + (roll.critical ? 1 : 0), 0),
-    reactiveHits: reactiveWinners.reduce((sum, roll) => sum + 1 + (roll.critical ? 1 : 0), 0),
-  }
+  const rank = criticalRank(face, pool.target)
+  return { face, success: rank > 0, critical: rank === 120 }
 }
 
 // All Criticals tie, regardless of their Success Values or opposing counts.
@@ -431,25 +413,6 @@ function rangeModifierFor(mode, range, equipment = []) {
   const modifier = Number(entry.modifier)
   if (!tokens(equipment).includes('x visor') || modifier >= 0) return modifier
   return Math.min(0, modifier + 3)
-}
-
-function expectedStateValue(mode, defender, triggerProbability) {
-  const states = Array.isArray(mode.states) ? mode.states : []
-  if (!states.length) return 0
-  const immunity = tokens(defender.skills).concat(tokens(defender.equipment))
-  const applicableStates = states.map((state) => state.toLowerCase()).filter((state) => {
-    if (state === 'isolated' && immunity.includes('warhorse')) return false
-    return !immunity.includes(`immunity ${state}`)
-  })
-  if (applicableStates.includes('isolated') && applicableStates.includes('immobilized')) {
-    return 0.9 * triggerProbability
-  }
-  let combined = 0
-  for (const state of applicableStates) {
-    const value = STATE_VALUES[state] || 0
-    combined = 1 - (1 - combined) * (1 - value)
-  }
-  return Math.min(1, combined) * triggerProbability
 }
 
 function winningOutcomeDistribution(pool, opposingSummary) {
@@ -495,42 +458,9 @@ function fractionalOutcomeDistribution(expectedHits, expectedCriticals) {
   return outcomes
 }
 
-function binomialHitOutcomes(trials, hitProbability) {
-  const outcomes = new Map()
-  for (let hits = 0; hits <= trials; hits += 1) addOutcome(outcomes, hits, 0, choose(trials, hits) * Math.pow(hitProbability, hits) * Math.pow(1 - hitProbability, trials - hits))
-  return outcomes
-}
-
-function savingFailureDistribution(trials, failureProbability, continuousDamage, durability) {
-  if (!continuousDamage) return Array.from({ length: trials + 1 }, (_, failures) => choose(trials, failures) * Math.pow(failureProbability, failures) * Math.pow(1 - failureProbability, trials - failures))
-  const maximum = Math.max(4, Number(durability) + 2)
-  const perSave = Array(maximum + 1).fill(0)
-  for (let failures = 0; failures < maximum; failures += 1) perSave[failures] = Math.pow(failureProbability, failures) * (1 - failureProbability)
-  perSave[maximum] = Math.pow(failureProbability, maximum)
-  let combined = [1]
-  for (let trial = 0; trial < trials; trial += 1) {
-    const next = Array(combined.length + maximum).fill(0)
-    for (let left = 0; left < combined.length; left += 1) for (let right = 0; right < perSave.length; right += 1) next[left + right] += combined[left] * perSave[right]
-    combined = next
-  }
-  return combined
-}
-
 function addOutcome(map, hits, criticals, probability) { const key = `${hits}:${criticals}`; map.set(key, (map.get(key) || 0) + probability) }
 function parseOutcomeKey(key) { const [hits, criticals] = String(key).split(':').map(Number); return { hits, criticals } }
 function expectedOutcomeValue(outcomes, field) { return [...outcomes].reduce((sum, [key, probability]) => sum + parseOutcomeKey(key)[field] * probability, 0) }
-function probabilityOfDamagingHits(outcomes) { return [...outcomes].reduce((sum, [key, probability]) => sum + (parseOutcomeKey(key).hits ? probability : 0), 0) }
-function choose(n, k) { return factorial(n) / (factorial(k) * factorial(n - k)) }
-
-function effectiveDurability(profile, mode) {
-  const base = Math.max(1, Number(profile.vitality || profile.structure || 1))
-  const skills = tokens(profile.skills).concat(tokens(profile.equipment))
-  const hasVitality = Number(profile.vitality || 0) > 0
-  const hasShock = Boolean(mode.shock) || (Boolean(mode.viralBioweapon) && hasVitality) || /(?:^|\+)SHOCK(?:$|\+)/i.test(String(mode.ammo))
-  const shockVulnerable = hasShock && hasVitality && base === 1 && !skills.includes('immunity shock')
-  if (shockVulnerable) return 1
-  return base + (skills.includes('no wound incapacitation') || skills.includes('dogged') ? 1 : 0)
-}
 
 function mimetismModifier(defenderSkills, attackerEquipment) {
   const mimetism = defenderSkills.includes('mimetism -6') ? -6 : defenderSkills.includes('mimetism -3') ? -3 : 0
@@ -541,37 +471,42 @@ function mimetismModifier(defenderSkills, attackerEquipment) {
 }
 
 function applyOpponentFtfModifier(pool, opponent, opponentAction, protectedProfile, { allowSurprise = false } = {}) {
-  if (!pool || !['shoot', 'smoke', 'eclipse', 'template'].includes(opponentAction)) return pool
+  if (!pool) return pool
   const skills = tokens(opponent.skills)
   const protectedSkills = tokens(protectedProfile?.skills)
+  // Sixth Sense protects Dodge, not BS/CC Surprise responses (Combat Instinct does that).
+  if (pool.source === 'Dodge' && protectedSkills.includes('sixth sense')) return pool
   let modifier = 0
   for (const skill of skills) {
     const bsAttack = skill.match(/^bs attack\s+-([0-9]+)$/)
     const surprise = skill.match(/^surprise attack\s+-([0-9]+)$/)
-    if (bsAttack && !protectedSkills.includes('warhorse')) modifier -= Number(bsAttack[1])
-    if (surprise && allowSurprise) modifier -= Number(surprise[1])
+    if (bsAttack && opponentAction !== 'dodge' && !protectedSkills.includes('warhorse')) modifier -= Number(bsAttack[1])
+    const dodge = skill.match(/^dodge\s+-([0-9]+)$/)
+    if (dodge && opponentAction === 'dodge') modifier -= Number(dodge[1])
+    if (surprise && allowSurprise && !protectedSkills.includes('combat instinct') && !tokens(protectedProfile?.equipment).includes('multispectral visor l3')) modifier -= Number(surprise[1])
   }
   if (!modifier) return pool
-  const target = clampTarget(Number(pool.target) + Math.max(-12, modifier))
-  return { ...pool, target, criticalTarget: target }
+  const modifiers = Number(pool.modifiers || 0) + modifier
+  const target = successValue(pool.baseTarget ?? pool.target, modifiers)
+  return { ...pool, modifiers, target, criticalTarget: target }
 }
 
 function dodgePool(profile) {
   const skills = tokens(profile.skills)
   const fixed = skills.find((value) => /^dodge ph=\d+$/.test(value))
   const dodgeBonus = skills.map((value) => Number(value.match(/^dodge\s*\+(\d+)$/)?.[1] || 0)).reduce((best, value) => Math.max(best, value), 0)
-  const target = (fixed ? Number(fixed.split('=')[1]) : Number(profile.ph)) + dodgeBonus
-  return { burst: 1, specialDice: 0, target: clampTarget(target), criticalTarget: clampTarget(target), source: 'Dodge' }
+  const target = successValue(fixed ? Number(fixed.split('=')[1]) : Number(profile.ph), dodgeBonus)
+  const specialDice = numericModifier(skills, /^dodge\s*\+(\d+)\s*sd$/)
+  return { burst: 1, specialDice, baseTarget: fixed ? Number(fixed.split('=')[1]) : Number(profile.ph), modifiers: dodgeBonus, target, criticalTarget: target, source: 'Dodge' }
 }
 
 function compareAttackerResults(a, b) { return b.score - a.score || a.weapon.localeCompare(b.weapon) }
 function compareDefenderResults(a, b) { return a.attackerScore - b.attackerScore || a.aro.localeCompare(b.aro) }
 function compareAroResults(a, b) { return b.defenderScore - a.defenderScore || a.attackerScore - b.attackerScore || a.aro.localeCompare(b.aro) }
-function withAttackSaveModifiers(mode, attack) { return { ...mode, savingRollPenalty: Number(mode.savingRollPenalty || 0) + Number(attack.savingRollPenalty || 0) } }
+function withAttackSaveModifiers(mode, attack) { return { ...mode, savingRollPenalty: Number(attack.savingRollPenalty || 0), shock: mode.shock || attack.shock, continuousDamage: mode.continuousDamage || attack.continuousDamage } }
 function unavailableCandidate(weapon, mode, range, reason) { return { status: 'unavailable', reason, weapon: weapon.name, mode: mode.name || mode.ammo || '', range: range.id } }
-function clampTarget(value) { return Math.max(1, Math.min(20, Number(value))) }
-function numericModifier(values, pattern) { const match = values.map(String).join(' ').toLowerCase().match(pattern); return match ? Number(match[1]) : 0 }
-function tokens(values = []) { return values.map((value) => String(value).toLowerCase().replace(/[()[\]]/g, '').replace(/\s+/g, ' ').trim()) }
+function numericModifier(values, pattern) { return values.reduce((sum, value) => sum + Number(String(value).match(pattern)?.[1] || 0), 0) }
+const tokens = traitTokens
 function has(values, token) { return values.includes(token) }
 function round(value) { return Math.round(Number(value) * 100) / 100 }
 

@@ -1,6 +1,6 @@
 {
   "version": "mobility-index-v2",
-  "fingerprint": "10267a015942326777b2ff34188376dcfeaf84ab62daf41285d733ad002d9dae",
+  "fingerprint": "b267dcec0e9a8b2e1cd5275f953569a1ed81b9f78ec8feb4a6800bcb3c732be0",
   "weights": {
     "attackReach": 25,
     "travel": 15,
@@ -81,7 +81,7 @@
       }
     },
     {
-      "id": "104:1816:1:2:1",
+      "id": "107:1816:1:2:1",
       "name": "REDEYE Close Air Support Squad — REDEYE",
       "mov": [
         8,
@@ -141,7 +141,7 @@
       }
     },
     {
-      "id": "1002:1857:1:2:1",
+      "id": "1003:1857:1:2:1",
       "name": "FIREBAT Attack Wing — FIREBAT",
       "mov": [
         8,
@@ -181,7 +181,7 @@
       }
     },
     {
-      "id": "401:1852:1:1:1",
+      "id": "403:1852:1:1:1",
       "name": "ZEYBEK Aero-unit — ZEYBEK",
       "mov": [
         8,
@@ -301,8 +301,8 @@
       }
     },
     {
-      "id": "1001:1897:1:2:1",
-      "name": "KYRA SHARMA, The  Iron Maiden of the Optimates — KYRA SHARMA",
+      "id": "1003:1897:1:1:1",
+      "name": "KYRA SHARMA, The  Iron Maiden of the Optimates — KYRA SHARMA FTO",
       "mov": [
         6,
         4
@@ -657,7 +657,7 @@
           "score": 92.2
         },
         {
-          "id": "104:1816:1:2:1",
+          "id": "107:1816:1:2:1",
           "name": "REDEYE Close Air Support Squad — REDEYE",
           "score": 92.2
         },
@@ -672,7 +672,7 @@
           "score": 92.1
         },
         {
-          "id": "1002:1857:1:2:1",
+          "id": "1003:1857:1:2:1",
           "name": "FIREBAT Attack Wing — FIREBAT",
           "score": 92.1
         },
@@ -682,7 +682,7 @@
           "score": 92.1
         },
         {
-          "id": "401:1852:1:1:1",
+          "id": "403:1852:1:1:1",
           "name": "ZEYBEK Aero-unit — ZEYBEK",
           "score": 92.1
         },
@@ -713,7 +713,7 @@
           "score": 92.9
         },
         {
-          "id": "104:1816:1:2:1",
+          "id": "107:1816:1:2:1",
           "name": "REDEYE Close Air Support Squad — REDEYE",
           "score": 92.9
         },
@@ -728,7 +728,7 @@
           "score": 92.8
         },
         {
-          "id": "1002:1857:1:2:1",
+          "id": "1003:1857:1:2:1",
           "name": "FIREBAT Attack Wing — FIREBAT",
           "score": 92.8
         },
@@ -738,7 +738,7 @@
           "score": 92.8
         },
         {
-          "id": "401:1852:1:1:1",
+          "id": "403:1852:1:1:1",
           "name": "ZEYBEK Aero-unit — ZEYBEK",
           "score": 92.8
         },
@@ -769,7 +769,7 @@
           "score": 92.6
         },
         {
-          "id": "104:1816:1:2:1",
+          "id": "107:1816:1:2:1",
           "name": "REDEYE Close Air Support Squad — REDEYE",
           "score": 92.6
         },
@@ -784,7 +784,7 @@
           "score": 92.4
         },
         {
-          "id": "1002:1857:1:2:1",
+          "id": "1003:1857:1:2:1",
           "name": "FIREBAT Attack Wing — FIREBAT",
           "score": 92.4
         },
@@ -794,7 +794,7 @@
           "score": 92.4
         },
         {
-          "id": "401:1852:1:1:1",
+          "id": "403:1852:1:1:1",
           "name": "ZEYBEK Aero-unit — ZEYBEK",
           "score": 92.4
         },
@@ -825,7 +825,7 @@
           "score": 92.6
         },
         {
-          "id": "104:1816:1:2:1",
+          "id": "107:1816:1:2:1",
           "name": "REDEYE Close Air Support Squad — REDEYE",
           "score": 92.6
         },
@@ -840,7 +840,7 @@
           "score": 92.5
         },
         {
-          "id": "1002:1857:1:2:1",
+          "id": "1003:1857:1:2:1",
           "name": "FIREBAT Attack Wing — FIREBAT",
           "score": 92.5
         },
@@ -850,7 +850,7 @@
           "score": 92.5
         },
         {
-          "id": "401:1852:1:1:1",
+          "id": "403:1852:1:1:1",
           "name": "ZEYBEK Aero-unit — ZEYBEK",
           "score": 92.5
         },
@@ -881,7 +881,7 @@
           "score": 92.4
         },
         {
-          "id": "104:1816:1:2:1",
+          "id": "107:1816:1:2:1",
           "name": "REDEYE Close Air Support Squad — REDEYE",
           "score": 92.4
         },
@@ -896,7 +896,7 @@
           "score": 92.3
         },
         {
-          "id": "1002:1857:1:2:1",
+          "id": "1003:1857:1:2:1",
           "name": "FIREBAT Attack Wing — FIREBAT",
           "score": 92.3
         },
@@ -906,7 +906,7 @@
           "score": 92.3
         },
         {
-          "id": "401:1852:1:1:1",
+          "id": "403:1852:1:1:1",
           "name": "ZEYBEK Aero-unit — ZEYBEK",
           "score": 92.3
         },
@@ -937,7 +937,7 @@
           "score": 92.7
         },
         {
-          "id": "104:1816:1:2:1",
+          "id": "107:1816:1:2:1",
           "name": "REDEYE Close Air Support Squad — REDEYE",
           "score": 92.7
         },
@@ -952,7 +952,7 @@
           "score": 92.6
         },
         {
-          "id": "1002:1857:1:2:1",
+          "id": "1003:1857:1:2:1",
           "name": "FIREBAT Attack Wing — FIREBAT",
           "score": 92.6
         },
@@ -962,7 +962,7 @@
           "score": 92.6
         },
         {
-          "id": "401:1852:1:1:1",
+          "id": "403:1852:1:1:1",
           "name": "ZEYBEK Aero-unit — ZEYBEK",
           "score": 92.6
         },
@@ -993,7 +993,7 @@
           "score": 92.4
         },
         {
-          "id": "104:1816:1:2:1",
+          "id": "107:1816:1:2:1",
           "name": "REDEYE Close Air Support Squad — REDEYE",
           "score": 92.4
         },
@@ -1008,7 +1008,7 @@
           "score": 92.3
         },
         {
-          "id": "1002:1857:1:2:1",
+          "id": "1003:1857:1:2:1",
           "name": "FIREBAT Attack Wing — FIREBAT",
           "score": 92.3
         },
@@ -1018,7 +1018,7 @@
           "score": 92.3
         },
         {
-          "id": "401:1852:1:1:1",
+          "id": "403:1852:1:1:1",
           "name": "ZEYBEK Aero-unit — ZEYBEK",
           "score": 92.3
         },
@@ -1049,7 +1049,7 @@
           "score": 92.7
         },
         {
-          "id": "104:1816:1:2:1",
+          "id": "107:1816:1:2:1",
           "name": "REDEYE Close Air Support Squad — REDEYE",
           "score": 92.7
         },
@@ -1064,7 +1064,7 @@
           "score": 92.6
         },
         {
-          "id": "1002:1857:1:2:1",
+          "id": "1003:1857:1:2:1",
           "name": "FIREBAT Attack Wing — FIREBAT",
           "score": 92.6
         },
@@ -1074,7 +1074,7 @@
           "score": 92.6
         },
         {
-          "id": "401:1852:1:1:1",
+          "id": "403:1852:1:1:1",
           "name": "ZEYBEK Aero-unit — ZEYBEK",
           "score": 92.6
         },
@@ -1105,7 +1105,7 @@
           "score": 92.4
         },
         {
-          "id": "104:1816:1:2:1",
+          "id": "107:1816:1:2:1",
           "name": "REDEYE Close Air Support Squad — REDEYE",
           "score": 92.4
         },
@@ -1120,7 +1120,7 @@
           "score": 92.3
         },
         {
-          "id": "1002:1857:1:2:1",
+          "id": "1003:1857:1:2:1",
           "name": "FIREBAT Attack Wing — FIREBAT",
           "score": 92.3
         },
@@ -1130,7 +1130,7 @@
           "score": 92.3
         },
         {
-          "id": "401:1852:1:1:1",
+          "id": "403:1852:1:1:1",
           "name": "ZEYBEK Aero-unit — ZEYBEK",
           "score": 92.3
         },
@@ -1161,7 +1161,7 @@
           "score": 92.7
         },
         {
-          "id": "104:1816:1:2:1",
+          "id": "107:1816:1:2:1",
           "name": "REDEYE Close Air Support Squad — REDEYE",
           "score": 92.7
         },
@@ -1176,7 +1176,7 @@
           "score": 92.6
         },
         {
-          "id": "1002:1857:1:2:1",
+          "id": "1003:1857:1:2:1",
           "name": "FIREBAT Attack Wing — FIREBAT",
           "score": 92.6
         },
@@ -1186,7 +1186,7 @@
           "score": 92.6
         },
         {
-          "id": "401:1852:1:1:1",
+          "id": "403:1852:1:1:1",
           "name": "ZEYBEK Aero-unit — ZEYBEK",
           "score": 92.6
         },
@@ -1217,7 +1217,7 @@
           "score": 92.5
         },
         {
-          "id": "104:1816:1:2:1",
+          "id": "107:1816:1:2:1",
           "name": "REDEYE Close Air Support Squad — REDEYE",
           "score": 92.5
         },
@@ -1232,7 +1232,7 @@
           "score": 92.4
         },
         {
-          "id": "1002:1857:1:2:1",
+          "id": "1003:1857:1:2:1",
           "name": "FIREBAT Attack Wing — FIREBAT",
           "score": 92.4
         },
@@ -1242,7 +1242,7 @@
           "score": 92.4
         },
         {
-          "id": "401:1852:1:1:1",
+          "id": "403:1852:1:1:1",
           "name": "ZEYBEK Aero-unit — ZEYBEK",
           "score": 92.4
         },
@@ -1273,7 +1273,7 @@
           "score": 92.6
         },
         {
-          "id": "104:1816:1:2:1",
+          "id": "107:1816:1:2:1",
           "name": "REDEYE Close Air Support Squad — REDEYE",
           "score": 92.6
         },
@@ -1288,7 +1288,7 @@
           "score": 92.5
         },
         {
-          "id": "1002:1857:1:2:1",
+          "id": "1003:1857:1:2:1",
           "name": "FIREBAT Attack Wing — FIREBAT",
           "score": 92.5
         },
@@ -1298,7 +1298,7 @@
           "score": 92.5
         },
         {
-          "id": "401:1852:1:1:1",
+          "id": "403:1852:1:1:1",
           "name": "ZEYBEK Aero-unit — ZEYBEK",
           "score": 92.5
         },
@@ -1329,7 +1329,7 @@
           "score": 92.4
         },
         {
-          "id": "104:1816:1:2:1",
+          "id": "107:1816:1:2:1",
           "name": "REDEYE Close Air Support Squad — REDEYE",
           "score": 92.4
         },
@@ -1344,7 +1344,7 @@
           "score": 92.3
         },
         {
-          "id": "1002:1857:1:2:1",
+          "id": "1003:1857:1:2:1",
           "name": "FIREBAT Attack Wing — FIREBAT",
           "score": 92.3
         },
@@ -1354,7 +1354,7 @@
           "score": 92.3
         },
         {
-          "id": "401:1852:1:1:1",
+          "id": "403:1852:1:1:1",
           "name": "ZEYBEK Aero-unit — ZEYBEK",
           "score": 92.3
         },
@@ -1385,7 +1385,7 @@
           "score": 92.7
         },
         {
-          "id": "104:1816:1:2:1",
+          "id": "107:1816:1:2:1",
           "name": "REDEYE Close Air Support Squad — REDEYE",
           "score": 92.7
         },
@@ -1400,7 +1400,7 @@
           "score": 92.6
         },
         {
-          "id": "1002:1857:1:2:1",
+          "id": "1003:1857:1:2:1",
           "name": "FIREBAT Attack Wing — FIREBAT",
           "score": 92.6
         },
@@ -1410,7 +1410,7 @@
           "score": 92.6
         },
         {
-          "id": "401:1852:1:1:1",
+          "id": "403:1852:1:1:1",
           "name": "ZEYBEK Aero-unit — ZEYBEK",
           "score": 92.6
         },
@@ -1441,7 +1441,7 @@
           "score": 93
         },
         {
-          "id": "104:1816:1:2:1",
+          "id": "107:1816:1:2:1",
           "name": "REDEYE Close Air Support Squad — REDEYE",
           "score": 93
         },
@@ -1456,7 +1456,7 @@
           "score": 92.9
         },
         {
-          "id": "1002:1857:1:2:1",
+          "id": "1003:1857:1:2:1",
           "name": "FIREBAT Attack Wing — FIREBAT",
           "score": 92.9
         },
@@ -1466,7 +1466,7 @@
           "score": 92.9
         },
         {
-          "id": "401:1852:1:1:1",
+          "id": "403:1852:1:1:1",
           "name": "ZEYBEK Aero-unit — ZEYBEK",
           "score": 92.9
         },
@@ -1497,7 +1497,7 @@
           "score": 92.2
         },
         {
-          "id": "104:1816:1:2:1",
+          "id": "107:1816:1:2:1",
           "name": "REDEYE Close Air Support Squad — REDEYE",
           "score": 92.2
         },
@@ -1512,7 +1512,7 @@
           "score": 92.1
         },
         {
-          "id": "1002:1857:1:2:1",
+          "id": "1003:1857:1:2:1",
           "name": "FIREBAT Attack Wing — FIREBAT",
           "score": 92.1
         },
@@ -1522,7 +1522,7 @@
           "score": 92.1
         },
         {
-          "id": "401:1852:1:1:1",
+          "id": "403:1852:1:1:1",
           "name": "ZEYBEK Aero-unit — ZEYBEK",
           "score": 92.1
         },
@@ -1548,7 +1548,7 @@
           "score": 93.2
         },
         {
-          "id": "1002:1857:1:2:1",
+          "id": "1003:1857:1:2:1",
           "name": "FIREBAT Attack Wing — FIREBAT",
           "score": 93.2
         },
@@ -1563,7 +1563,7 @@
           "score": 93.2
         },
         {
-          "id": "104:1816:1:2:1",
+          "id": "107:1816:1:2:1",
           "name": "REDEYE Close Air Support Squad — REDEYE",
           "score": 93.2
         },
@@ -1578,7 +1578,7 @@
           "score": 93.2
         },
         {
-          "id": "401:1852:1:1:1",
+          "id": "403:1852:1:1:1",
           "name": "ZEYBEK Aero-unit — ZEYBEK",
           "score": 93.2
         },
@@ -1609,7 +1609,7 @@
           "score": 91.9
         },
         {
-          "id": "104:1816:1:2:1",
+          "id": "107:1816:1:2:1",
           "name": "REDEYE Close Air Support Squad — REDEYE",
           "score": 91.9
         },
@@ -1624,7 +1624,7 @@
           "score": 91.8
         },
         {
-          "id": "1002:1857:1:2:1",
+          "id": "1003:1857:1:2:1",
           "name": "FIREBAT Attack Wing — FIREBAT",
           "score": 91.8
         },
@@ -1634,7 +1634,7 @@
           "score": 91.8
         },
         {
-          "id": "401:1852:1:1:1",
+          "id": "403:1852:1:1:1",
           "name": "ZEYBEK Aero-unit — ZEYBEK",
           "score": 91.8
         },

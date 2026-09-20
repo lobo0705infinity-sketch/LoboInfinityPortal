@@ -1,3 +1,5 @@
+import { criticalRank, resolveSavingEffects, profileTraits, effectiveDurability as sharedDurability } from './combat-rules.mjs'
+
 const MARTIAL_ARTS = Object.freeze({
   1: { attack: 0, opponent: -3, burst: 0, specialDice: 0 },
   2: { attack: 3, opponent: -3, burst: 0, specialDice: 0 },
@@ -69,8 +71,8 @@ export function buildCloseCombatPool(fighter, opponent, weapon, state = DEFAULT_
   if (!ignoresNegative) successValue += opponentNegative
   const modifierTotal = clamp(successValue - Number(fighter.cc), -12, 12)
   successValue = Number(fighter.cc) + modifierTotal
-  const burst = Math.max(1, Number(weapon.burst || 1) + martial.burst + ccBurstBonus(fighter) + Number(state.alliedBurst || 0))
-  const specialDice = Math.max(0, martial.specialDice + ccSpecialDiceBonus(fighter))
+  const burst = Math.min(6, Math.max(1, (active ? Number(weapon.burst || 1) : 1) + martial.burst + (active ? ccBurstBonus(fighter) + Number(weapon.burstBonus || 0) : 0) + Number(state.alliedBurst || 0)))
+  const specialDice = Math.max(0, martial.specialDice + ccSpecialDiceBonus(fighter) + Number(weapon.specialDice || 0))
   return {
     burst,
     specialDice,
@@ -129,33 +131,7 @@ export function resolveUnopposedPools(active, reactive) {
 }
 
 export function resolveWeaponEffect(outcomes, weapon, target) {
-  const durability = effectiveDurability(target, weapon)
-  const failureProbability = savingRollFailureProbability(weapon, target)
-  let expectedWounds = 0
-  let expectedCappedWounds = 0
-  let neutralizeProbability = 0
-  let stateProbability = 0
-  for (const [key, probability] of outcomes) {
-    const { hits, criticals } = parseOutcomeKey(key)
-    if (!hits) continue
-    const viralAffectsVitality = Boolean(weapon.viralBioweapon) && Number(target.vitality || 0) > 0
-    const savingRollsPerHit = viralAffectsVitality ? 2 : Number(weapon.savingRolls || 1)
-    const savingRolls = hits * savingRollsPerHit + criticals
-    const distribution = savingFailureDistribution(savingRolls, failureProbability, weapon.continuousDamage, durability)
-    for (let failures = 0; failures < distribution.length; failures += 1) {
-      const branch = probability * distribution[failures]
-      const wounds = failures * Number(weapon.woundsPerFailure || (/T2/i.test(weapon.ammo) ? 2 : 1))
-      expectedWounds += branch * wounds
-      expectedCappedWounds += branch * Math.min(wounds, durability)
-      if (weapon.deadState && failures > 0) neutralizeProbability += branch
-      else if (weapon.nonLethal) {
-        if (failures > 0) stateProbability += branch
-      } else if (wounds >= durability) neutralizeProbability += branch
-      if (weapon.states?.length && failures > 0) stateProbability += branch
-    }
-  }
-  neutralizeProbability = clamp(neutralizeProbability, 0, 1)
-  stateProbability = clamp(stateProbability, 0, 1)
+  const { durability, failureProbability, expectedWounds, expectedCappedWounds, neutralizeProbability, stateProbability } = resolveSavingEffects(outcomes, weapon, target)
   const damageFraction = clamp(expectedCappedWounds / durability, 0, 1)
   const stateWeight = weapon.nonLethal ? 0.65 : /E\/M/i.test(weapon.ammo) ? 0.8 : 0.5
   const utility = clamp(neutralizeProbability * 0.75 + damageFraction * 0.25 + stateProbability * stateWeight * (1 - neutralizeProbability) * 0.5, 0, 1)
@@ -234,10 +210,7 @@ function multinomialProbability(faces) {
 }
 
 function rollRank(face, successValue) {
-  if (successValue < 1 || face > Math.min(20, successValue)) return 0
-  const overflow = Math.max(0, successValue - 20)
-  const critical = successValue <= 20 ? face === successValue : face === 20 || face <= overflow
-  return critical ? 100 + face : face
+  return criticalRank(face, successValue)
 }
 
 function winningHits(ownRanks, opposingRanks) {
@@ -257,27 +230,13 @@ function unopposedOutcomes(pool) {
 
 function imposedNegativeModifier(fighter, opponent, { surprise, weapon }) {
   const martial = MARTIAL_ARTS[martialArtsLevel(fighter)] || { opponent: 0 }
-  return martial.opponent + ccOpponentModifier(fighter) + Number(weapon?.opponentMod || 0) + (surprise ? surpriseModifier(fighter) : 0)
-}
-
-function savingRollFailureProbability(weapon, target) {
-  if (weapon.save === 'PH') {
-    const modifier = Number(weapon.saveModifier || 0)
-    return clamp((20 - clamp(Number(target.ph || 0) + modifier, 0, 20)) / 20, 0, 1)
-  }
-  let attribute = weapon.save === 'BTS' ? Number(target.bts || 0) : Number(target.arm || 0)
-  if (weapon.saveFixed != null) attribute = Number(weapon.saveFixed)
-  if (weapon.ap && !hasSkill(target, /immunity\s*\(?ap\)?/)) attribute = Math.ceil(attribute / 2)
-  const successValue = clamp(attribute + Number(weapon.power), 0, 20)
-  return clamp((20 - successValue) / 20, 0, 1)
+  const protectedTraits = profileTraits(opponent)
+  const surpriseImmune = protectedTraits.includes('combat instinct') || protectedTraits.includes('multispectral visor l3')
+  return martial.opponent + ccOpponentModifier(fighter) + Number(weapon?.opponentMod || 0) + (surprise && !surpriseImmune ? surpriseModifier(fighter) : 0)
 }
 
 function effectiveDurability(profile, weapon) {
-  let durability = Math.max(1, Number(profile.vitality || profile.structure || 1))
-  const hasVitality = Number(profile.vitality || 0) > 0
-  const shockApplies = Boolean(weapon.shock) || (Boolean(weapon.viralBioweapon) && hasVitality)
-  if (hasSkill(profile, /no wound incapacitation|dogged/) && !(shockApplies && !hasSkill(profile, /immunity\s*\(?shock\)?/))) durability += 1
-  return durability
+  return sharedDurability(profile, weapon)
 }
 
 function protheionResult(effect, target) {
@@ -301,28 +260,7 @@ function exchangeKey({ active, reactive, attacker, defender, weapon, defenderWea
 }
 
 function effectKey(weapon, target) {
-  return [weapon.power, weapon.ammo, weapon.save, weapon.saveFixed, weapon.saveModifier, weapon.savingRolls, weapon.ap, weapon.shock, weapon.viralBioweapon, weapon.continuousDamage, weapon.nonLethal, weapon.deadState, weapon.woundsPerFailure, weapon.states, target.ph, target.arm, target.bts, target.vitality, target.structure, (target.skills || []).slice().sort()]
-}
-
-function binomialDistribution(trials, failureProbability) {
-  const result = Array(trials + 1).fill(0)
-  for (let failures = 0; failures <= trials; failures += 1) result[failures] = choose(trials, failures) * Math.pow(failureProbability, failures) * Math.pow(1 - failureProbability, trials - failures)
-  return result
-}
-
-function savingFailureDistribution(trials, failureProbability, continuousDamage, durability) {
-  if (!continuousDamage) return binomialDistribution(trials, failureProbability)
-  const maximum = Math.max(4, Number(durability) + 2)
-  const perSave = Array(maximum + 1).fill(0)
-  for (let failures = 0; failures < maximum; failures += 1) perSave[failures] = Math.pow(failureProbability, failures) * (1 - failureProbability)
-  perSave[maximum] = Math.pow(failureProbability, maximum)
-  let combined = [1]
-  for (let trial = 0; trial < trials; trial += 1) {
-    const next = Array(combined.length + maximum).fill(0)
-    for (let left = 0; left < combined.length; left += 1) for (let right = 0; right < perSave.length; right += 1) next[left + right] += combined[left] * perSave[right]
-    combined = next
-  }
-  return combined
+  return [weapon, target.ph, target.arm, target.bts, target.vitality, target.structure, target.troopType, (target.skills || []).slice().sort(), (target.equipment || []).slice().sort()]
 }
 
 function stateAvailable(profile, state) {
@@ -370,7 +308,6 @@ function hasSkill(profile, pattern) { return (profile.skills || []).some((skill)
 function probabilityOfHits(outcomes) { return [...outcomes].reduce((sum, [key, probability]) => sum + (parseOutcomeKey(key).hits ? probability : 0), 0) }
 function addOutcome(map, outcome, probability) { const key = `${outcome.hits}:${outcome.criticals}`; map.set(key, (map.get(key) || 0) + probability) }
 function parseOutcomeKey(key) { const [hits, criticals] = String(key).split(':').map(Number); return { hits, criticals } }
-function choose(n, k) { return factorial(n) / (factorial(k) * factorial(n - k)) }
 function factorial(value) { let result = 1; for (let n = 2; n <= value; n += 1) result *= n; return result }
 function percent(value) { return round(value * 100, 4) }
 function round(value, digits = 2) { const factor = 10 ** digits; return Math.round((Number(value) + Number.EPSILON) * factor) / factor }

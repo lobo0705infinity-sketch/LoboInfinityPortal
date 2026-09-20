@@ -1,5 +1,4 @@
 import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
 import { buildCloseCombatPool, evaluateCloseCombatExchange, evaluateCloseCombatProfile, resolveOpposedPools } from '../bot/close-combat-benchmark.mjs'
 import { buildStandardCloseCombatDefenders } from '../bot/close-combat-standard-benchmark.mjs'
 
@@ -7,12 +6,7 @@ const weapon = (name = 'CC Weapon', power = 7, options = {}) => ({ name, power, 
 const fighter = (id, options = {}) => ({ id, name: id, cc: 20, ph: 12, arm: 2, bts: 3, vitality: 1, skills: [], weapons: [weapon()], ...options })
 const plain = fighter('plain')
 const target = fighter('target', { cc: 18 })
-const calculatorValidation = JSON.parse(await readFile(new URL('../data/infinity-army/close-combat-calculator-validation.json', import.meta.url), 'utf8'))
-for (const validation of calculatorValidation.cases) for (const side of ['activeExpectedWounds', 'reactiveExpectedWounds']) {
-  if (validation.calculator[side] == null) continue
-  assert.ok(Math.abs(validation.calculator[side] - validation.engine[side]) <= 0.01, `${validation.id} ${side} must remain within 0.01 of Infinity the Calculator`)
-}
-
+// Live independent oracle coverage is in benchmark-audit-regression-check.mjs.
 const ma = [1, 2, 3, 4, 5].map((level) => buildCloseCombatPool(fighter(`ma${level}`, { skills: [`Martial Arts L${level}`] }), target, weapon(), { id: 'normal', type: 'face-to-face' }, { active: true }))
 assert.deepEqual(ma.map((pool) => [pool.successValue, pool.burst, pool.specialDice, pool.imposedOpponentMod]), [
   [20, 1, 0, -3], [23, 1, 0, -3], [23, 1, 1, -3], [23, 2, 0, -3], [23, 2, 1, -3],
