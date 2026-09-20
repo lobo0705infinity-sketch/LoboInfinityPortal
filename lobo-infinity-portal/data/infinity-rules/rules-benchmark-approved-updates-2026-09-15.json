@@ -725,6 +725,548 @@
           "style": "PLAYER_SHORTHAND"
         }
       ]
+    },
+    {
+      "id": "new-topic-2-515",
+      "category": "NEW_MULTI_RULE_INTERACTIONS",
+      "canonicalQuestion": "what is the interaction of a msv1 shooting and msv1 through smoke? And what modifiers to both parties get?",
+      "approvedAnswer": "It depends on the response. If both MSV1 troopers shoot at each other through ordinary Smoke, each takes a -3 Visibility MOD: each is targeted by a BS Attack, treats the Smoke as Poor Visibility when drawing LoF to the attacker, and MSV1 reduces its -6 MOD to -3. If the target Dodges instead, the MSV1 shooter takes -6; Dodge is not a return BS Attack. Dodge takes no Visibility Zone MOD, although other Dodge MODs may apply. Merely having MSV1 on both models does not remove the Smoke penalty. These are visibility modifiers only; apply Range, Cover and other applicable MODs separately. This assumes no special exception such as Sixth Sense, and does not apply to Eclipse or White Noise.",
+      "approvedConclusion": "DEPENDS",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "reviewStatus": "APPROVED",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 125,
+          "section": "MULTISPECTRAL VISOR LEVEL 1"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 144,
+          "section": "VISIBILITY CONDITIONS — ZERO AND POOR VISIBILITY"
+        }
+      ],
+      "fuzzyRequiredTerms": [
+        "msv1",
+        "smoke"
+      ],
+      "fuzzyExcludedTerms": [
+        "msv2",
+        "msv3",
+        "eclipse",
+        "white noise",
+        "sixth sense",
+        "albedo",
+        "speculative",
+        "intuitive",
+        "no visor",
+        "without msv",
+        "no msv",
+        "not have msv",
+        "not msv"
+      ],
+      "queryVariants": [
+        {
+          "id": "new-topic-2-515-q001",
+          "question": "Two MSV1 troopers shoot at each other through smoke. What penalties do they both take?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q002",
+          "question": "MSV1 versus MSV1 through smoke, both firing: is it minus three each?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q003",
+          "question": "If my MSV1 model shoots through smoke and their MSV1 model shoots back, what are our modifiers?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q004",
+          "question": "An MSV1 attacker and an MSV1 defender exchange fire through a smoke template. What visibility MOD applies to each?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q005",
+          "question": "Both of us have MSV1 and declare BS Attack through smoke. Are we both on -3?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q006",
+          "question": "Does the active MSV1 shooter get -6 while the reactive MSV1 shooter gets -3 through smoke?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q007",
+          "question": "When two MSV1 models trade shots across smoke, does the return shot reduce the attacker's penalty?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q008",
+          "question": "My MSV1 guy fires through smoke at another MSV1 guy who returns fire. Who gets minus six?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q009",
+          "question": "Are both MSV1 shooters at minus three if they fire through the same smoke cloud?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q010",
+          "question": "MSV1 shooting MSV1 through smoke with a BS Attack ARO: modifiers for both sides?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q011",
+          "question": "Why would both MSV1 models get -3 rather than -6 when shooting through smoke at each other?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q012",
+          "question": "Can you explain the dice modifiers when MSV1 shoots MSV1 through smoke and gets shot back?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q013",
+          "question": "We both have visor level 1 and shoot one another through smoke; what do we subtract from BS?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q014",
+          "question": "Multispectral Visor Level 1 versus Multispectral Visor Level 1, smoke between them, both shooting: what MODs?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q015",
+          "question": "Does shooting back through smoke change an MSV1 attacker's visibility penalty when both models have MSV1?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q016",
+          "question": "I declare shoot with MSV1 through smoke; my opponent also has MSV1 and declares shoot. What numbers apply?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q017",
+          "question": "If two MSV 1 troopers fire at one another through smoke, do they suffer the same penalty?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q018",
+          "question": "Both models have MSV-1 and exchange BS Attacks through smoke. Is the visibility modifier symmetrical?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q019",
+          "question": "MSV1 vs MSV1 shooting through smoke: -3/-3 or -6/-3?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q020",
+          "question": "Is it -6 for both when MSV1 models shoot each other through smoke?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q021",
+          "question": "What makes smoke count as poor visibility for two MSV1 troopers exchanging fire?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q022",
+          "question": "If my opponent returns fire with MSV1 through smoke, does my own MSV1 attack become -3?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q023",
+          "question": "Two level-one multispectral visors, two BS Attacks, one smoke template: what visibility penalties?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q024",
+          "question": "MSV1 gunfight through smoke with both sides shooting: how does the zero visibility rule resolve?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q025",
+          "question": "Does the active turn player keep the -6 smoke penalty in an MSV1-on-MSV1 firefight?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q026",
+          "question": "Can the reactive MSV1 model force the active MSV1 shooter down to a -3 smoke MOD by shooting back?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q027",
+          "question": "We're rolling face to face, both with MSV1, shooting through smoke. What is each visibility modifier?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q028",
+          "question": "When both MSV1 troopers shoot through smoke, do the modifiers depend on whose turn it is?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q029",
+          "question": "Does an MSV1 ARO shot through smoke make the attacking MSV1 trooper a target too?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q030",
+          "question": "My MSV1 sniper and his MSV1 rifleman shoot each other through smoke. Ignoring range, what smoke MODs apply?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q031",
+          "question": "If both shooters have MSV1, why isn't the smoke penalty still -6 for the active one?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q032",
+          "question": "Are MSV1 return shots and initial shots both at -3 through smoke?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q033",
+          "question": "I have MSV1, you have MSV1, and we shoot through smoke at each other. Is that -3 to each BS roll?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q034",
+          "question": "Does simultaneous return fire let both MSV1 users treat smoke as poor visibility?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q035",
+          "question": "An MSV1 unit fires through smoke and receives an MSV1 BS Attack ARO. How are both attacks modified?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q036",
+          "question": "What is the final visibility MOD for each side of an MSV1 versus MSV1 face-to-face shooting roll through smoke?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q037",
+          "question": "MSV1 attacking across smoke into an MSV1 shoot ARO: do I recalculate the active shooter's modifier?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q038",
+          "question": "If both MSV1 models shoot, can one apply -3 and the other -6 for the same smoke?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q039",
+          "question": "For an MSV1 duel through ordinary smoke, with both declaring BS Attack, what penalty does each get?",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q040",
+          "question": "Two MSV1 units are firing through smoke at one another; explain why their visibility penalties match.",
+          "style": "BOTH_SHOOT"
+        },
+        {
+          "id": "new-topic-2-515-q041",
+          "question": "If MSV1 shoots another MSV1 trooper through smoke and the target Dodges, what modifiers apply?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q042",
+          "question": "Both models have MSV1, but one Dodges the other's shot through smoke. Is the shooter at -6?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q043",
+          "question": "MSV1 versus MSV1 through smoke with a Dodge ARO: what happens to the shooting modifier?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q044",
+          "question": "Does my MSV1 shot through smoke become -3 if the enemy MSV1 model Dodges instead of firing?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q045",
+          "question": "My MSV1 trooper fires across smoke and the other MSV1 trooper chooses Dodge. What is my visibility MOD?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q046",
+          "question": "If the defender has MSV1 and Dodges through smoke, does that help the attacking MSV1 model shoot?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q047",
+          "question": "Are there any smoke visibility penalties on the Dodge when an MSV1 model Dodges an MSV1 shot?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q048",
+          "question": "MSV1 shooting MSV1 through smoke: target dodges rather than shoots, so is the attack -3 or -6?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q049",
+          "question": "Does a Dodge ARO count as shooting back for the MSV1 smoke penalty?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q050",
+          "question": "Can the target's MSV1 reduce my MSV1 shooting penalty through smoke if the target only Dodges?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q051",
+          "question": "My opponent Dodges my MSV1 attack through smoke despite having MSV1. Do I still take minus six?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q052",
+          "question": "Why is an MSV1 shooter at -6 through smoke when the other MSV1 model declares Dodge?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q053",
+          "question": "Two MSV1 models separated by smoke: active shoots, reactive Dodges. What are the visibility modifiers?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q054",
+          "question": "If the reactive MSV1 trooper elects to Dodge, is the active MSV1 shot through smoke at -6?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q055",
+          "question": "Both of us have visor level 1; I shoot through smoke and you Dodge. What MODs do we use?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q056",
+          "question": "Multispectral Visor Level 1 firing through smoke at a dodging Multispectral Visor Level 1 target: explain the penalties.",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q057",
+          "question": "Does smoke give a -6 visibility MOD to a Dodge against an MSV1 shooter when the dodger also has MSV1?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q058",
+          "question": "Would Dodging instead of shooting back keep the opposing MSV1 smoke shot at minus six?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q059",
+          "question": "An MSV1 defender Dodges an MSV1 sniper shooting through smoke. Is there a visibility modifier to PH?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q060",
+          "question": "Is an MSV1 Dodge ARO through smoke enough to turn the attacking MSV1 model's zero visibility into poor visibility?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q061",
+          "question": "MSV 1 shot through smoke against an MSV 1 Dodge: which roll takes the smoke modifier?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q062",
+          "question": "Can an MSV1 target make the enemy MSV1 shooter suffer -6 through smoke by choosing Dodge?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q063",
+          "question": "When I Dodge an MSV1 shot through smoke with my MSV1 unit, does the shooter lose the -3 return-fire benefit?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q064",
+          "question": "Do two MSV1 models still both get -3 through smoke if one is Dodging rather than shooting?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q065",
+          "question": "If my MSV1 target does not return fire and Dodges, what smoke penalty applies to my MSV1 attack?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q066",
+          "question": "Is the Dodge visibility penalty zero in an MSV1 shoot versus MSV1 Dodge through smoke?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q067",
+          "question": "MSV1 into smoke against a dodging MSV1 opponent: please separate the BS and PH visibility MODs.",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q068",
+          "question": "Does the defending MSV1 visor matter to the attacker's smoke MOD when the defender declares Dodge?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q069",
+          "question": "Two MSV-1 models, smoke in between, shooting against Dodge: what does each player apply?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q070",
+          "question": "My MSV1 gunner shoots through ordinary smoke at an MSV1 model that evades with Dodge. What are the visibility effects?",
+          "style": "TARGET_DODGES"
+        },
+        {
+          "id": "new-topic-2-515-q071",
+          "question": "what is the interaction of a msv1 shooting and msv1 through smoke? And what modifiers to both parties get?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q072",
+          "question": "MSV1 versus MSV1 through smoke: what modifiers do both get?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q073",
+          "question": "How does shooting through smoke work when both troopers have MSV1?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q074",
+          "question": "What are the smoke penalties for an MSV1 attacker and an MSV1 target?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q075",
+          "question": "Does MSV1 against MSV1 through smoke mean -3 or -6?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q076",
+          "question": "Both units have MSV1 and there's smoke between them. How do we work out the shooting modifiers?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q077",
+          "question": "Can you walk through MSV1 shooting another MSV1 unit through smoke?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q078",
+          "question": "MSV1 on both sides of a smoke shot: does the ARO choice change the modifiers?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q079",
+          "question": "What happens if an MSV1 model attacks an MSV1 model through smoke?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q080",
+          "question": "How much does smoke modify the attack and reaction when both models have MSV1?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q081",
+          "question": "With two MSV1 troopers and a smoke cloud between them, who gets which penalty?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q082",
+          "question": "What's the difference between shooting back and Dodging in an MSV1 versus MSV1 smoke interaction?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q083",
+          "question": "MSV1 v MSV1 smoke shooting interaction, mods for attacker and defender please.",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q084",
+          "question": "If everyone involved has MSV1, do you still suffer penalties for shooting through smoke?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q085",
+          "question": "How do the smoke modifiers change when the MSV1 defender shoots back or Dodges an MSV1 attacker?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q086",
+          "question": "Do both MSV1 troopers always take the same modifier through smoke?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q087",
+          "question": "I'm confused about MSV1 shooting MSV1 through smoke: when is it minus three and when is it minus six?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q088",
+          "question": "We each have a level 1 multispectral visor. How does smoke affect our attack and ARO?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q089",
+          "question": "MSV 1 vs MSV 1 through smoke, what modifiers do both parties get?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q090",
+          "question": "MSV-1 versus MSV-1 with smoke blocking sight: explain the shooting and response modifiers.",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q091",
+          "question": "Can you give both sides of the MSV1 through smoke ruling when the target also has MSV1?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q092",
+          "question": "Why does the response matter when an MSV1 trooper shoots another MSV1 trooper through smoke?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q093",
+          "question": "Two models with Multispectral Visor Level 1 and smoke between them: how is shooting resolved?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q094",
+          "question": "Does the opposing MSV1 automatically make my MSV1 smoke shot only minus three?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q095",
+          "question": "Does having MSV1 on both models cancel the smoke penalty altogether?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q096",
+          "question": "When MSV1 attacks MSV1 through smoke, what information about the ARO do you need?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q097",
+          "question": "MSV1 smoke duel: can you compare the target shooting back with the target Dodging?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q098",
+          "question": "What does each player subtract for smoke when an MSV1 model shoots at another MSV1 model?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q099",
+          "question": "How do zero visibility and poor visibility apply to MSV1 shooting MSV1 through smoke?",
+          "style": "RESPONSE_UNSPECIFIED"
+        },
+        {
+          "id": "new-topic-2-515-q100",
+          "question": "An MSV1 attacker shoots through smoke at an MSV1 defender. Explain both possible shoot and Dodge responses.",
+          "style": "RESPONSE_UNSPECIFIED"
+        }
+      ]
     }
   ]
 }

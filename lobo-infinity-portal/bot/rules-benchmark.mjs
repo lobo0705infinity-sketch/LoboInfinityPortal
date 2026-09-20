@@ -78,6 +78,7 @@ export async function findApprovedRulesAnswer(question, { minimumScore = 0.86, m
   if (queryTokens.size < 2) return null
   const families = new Map()
   for (const entry of index.entries) {
+    if (entry.fuzzyRequiredTerms?.some((term) => !normalized.includes(term)) || entry.fuzzyExcludedTerms?.some((term) => normalized.includes(term))) continue
     const score = similarity(queryTokens, entry.tokens)
     const existing = families.get(entry.familyId)
     if (!existing || score > existing.score) families.set(entry.familyId, { entry, score })
@@ -88,7 +89,7 @@ export async function findApprovedRulesAnswer(question, { minimumScore = 0.86, m
 }
 
 function answerRecord(item, values) {
-  return Object.freeze({ id: item.id, category: item.category, ...values })
+  return Object.freeze({ id: item.id, category: item.category, fuzzyRequiredTerms: item.fuzzyRequiredTerms, fuzzyExcludedTerms: item.fuzzyExcludedTerms, ...values })
 }
 
 function indexed(record, question) {
@@ -118,6 +119,8 @@ function similarity(left, right) {
 export function normalizeQuestion(value) {
   return String(value || '')
     .toLowerCase()
+    .replace(/\b(?:multispectral visor(?: level)?|visor level|msv)\s*[- ]?\s*([123])\b/g, 'msv$1')
+    .replace(/\blevel[ -]?(one|1) multispectral visors?\b|\bmultispectral visors? level[ -]?one\b/g, 'msv1')
     .replace(/\bwhen is ([a-z0-9 -]+?) (?:allowed|permitted)(?:\?|$)/g, 'when can a trooper use $1')
     .replace(/\bwhat (?:are the rules for|is the rule for) ([a-z0-9 -]+?)(?:\?|$)/g, 'what does $1 do')
     .replace(/\bhow does ([a-z0-9 -]+?) work(?:\?|$)/g, 'what does $1 do')

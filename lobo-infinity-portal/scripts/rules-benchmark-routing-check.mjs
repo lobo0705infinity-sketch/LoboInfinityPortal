@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { findApprovedRulesAnswer, loadRulesBenchmark } from '../bot/rules-benchmark.mjs'
+import { findApprovedRulesAnswer, loadRulesBenchmark, normalizeQuestion } from '../bot/rules-benchmark.mjs'
 import { retrieveRulesReference, formatRulesDiscordResponse } from '../bot/rules-command.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1394)
+assert.equal(index.canonicalCases, 1395)
 
 for (const file of ['rules-adjudicator-benchmark.json', 'rules-adjudicator-expansion-400.json', 'rules-adjudicator-new-topics-400.json', 'rules-adjudicator-new-topics-500.json', 'rules-benchmark-approved-updates-2026-09-15.json']) {
   const document = JSON.parse(await readFile(resolve(root, 'data/infinity-rules', file), 'utf8'))
@@ -284,5 +284,48 @@ for (const question of [
   assert.equal(result.status, 'FALLBACK', question)
 }
 assert.equal(calls, 3)
+
+
+const smokeCase = impetuousDocument.cases.find((item) => item.id === 'new-topic-2-515')
+assert.equal(smokeCase.queryVariants.length, 100)
+assert.equal(new Set(smokeCase.queryVariants.map((item) => normalizeQuestion(item.question))).size, 100, 'All 100 must remain distinct after normalization')
+assert.deepEqual(['BOTH_SHOOT', 'TARGET_DODGES', 'RESPONSE_UNSPECIFIED'].map((style) => smokeCase.queryVariants.filter((item) => item.style === style).length), [40, 30, 30])
+for (const { question } of smokeCase.queryVariants) {
+  const result = await retrieveRulesReference({ question, deepSeek: fallback })
+  assert.equal(result.answerSource, 'APPROVED_BENCHMARK', question)
+  assert.equal(result.benchmark.id, 'new-topic-2-515', question)
+  assert.equal(result.deepSeek.conclusion, 'DEPENDS', question)
+  assert.match(result.deepSeek.answer, /both MSV1 troopers shoot at each other.*each takes a -3 Visibility MOD/, question)
+  assert.match(result.deepSeek.answer, /target Dodges instead, the MSV1 shooter takes -6/, question)
+  assert.match(result.deepSeek.answer, /Dodge takes no Visibility Zone MOD/, question)
+  assert.match(result.deepSeek.answer, /other Dodge MODs may apply/, question)
+  assert.match(result.deepSeek.answer, /Range, Cover and other applicable MODs separately/, question)
+  assert.deepEqual(result.deepSeek.sources.map((source) => source.page), ['p. 125', 'p. 144'], question)
+  const answerField = formatRulesDiscordResponse(result).embeds[0].fields.find((field) => field.name === 'ANSWER').value
+  assert.ok(answerField.length <= 1024)
+  assert.match(answerField, /does not apply to Eclipse or White Noise/, 'All conditions must fit the Discord answer')
+}
+assert.equal(calls, 3, 'None of the 100 MSV1 phrasings may call the AI provider')
+// Equipment changes and special exceptions must not inherit the ordinary-smoke answer.
+for (const question of [
+  'MSV2 versus MSV1 through smoke: what modifiers do both get?',
+  'MSV3 versus MSV1 through smoke: what modifiers do both get?',
+  'MSV1 versus MSV1 through Eclipse smoke: what modifiers do both get?',
+  'MSV1 versus MSV1 through smoke and White Noise: what modifiers do both get?',
+  'MSV1 versus MSV1 through smoke with Sixth Sense: what modifiers do both get?',
+  'MSV1 versus MSV1 through smoke with Albedo: what modifiers do both get?',
+  'MSV1 versus a model without MSV1 through smoke: what modifiers do both get?',
+  'MSV1 versus MSV1 through smoke using Speculative Attack: what modifiers do both get?',
+  'MSV1 versus MSV1 through smoke using Intuitive Attack: what modifiers do both get?',
+]) {
+  assert.notEqual((await findApprovedRulesAnswer(question))?.id, 'new-topic-2-515', question)
+}
+// Formatting variants not copied into the 100 questions still normalize to the right family.
+for (const question of [
+  'MSV 1 versus MSV 1 through smoke: what modifiers do both get?',
+  'MSV-1 versus MSV-1 through smoke: what modifiers do both get?',
+  'Multispectral Visor Level 1 versus Multispectral Visor Level 1 through smoke: what modifiers do both get?',
+]) assert.equal((await findApprovedRulesAnswer(question))?.id, 'new-topic-2-515', question)
+console.log('PASS - 100 distinct MSV1/smoke phrasings, 9 exception boundaries, spelling normalization, complete Discord output, and zero AI calls.')
 
 console.log(`PASS - ${index.canonicalCases} trusted benchmark rulings route before DeepSeek; unmatched questions fall back exactly once.`)
