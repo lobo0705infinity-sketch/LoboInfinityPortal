@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { extractTtsWorkshopProfiles } from '../bot/tts-workshop-profile-catalog.mjs'
+import { extractTtsWorkshopProfiles, parseMovement } from '../bot/tts-workshop-profile-catalog.mjs'
 
 const description = `[b]TAG[/b] ● Regular ● Hackable
 [sub]---------Attributes-------
@@ -27,6 +27,9 @@ BS Attack(-3) ● BS Attack(SR-1) ● No Wound Incapacitation[-]
 const [iguana] = extractTtsWorkshopProfiles({ ObjectStates: [{ ContainedObjects: [{ Nickname: '[ce181f]IGUANA[-] AP HMG, HFT(+1B)', Description: description }] }] })
 assert.equal(iguana.id, '502:383:1:2:1')
 assert.equal(iguana.bs, 14)
+assert.deepEqual(iguana.mov, [6, 4])
+for (const text of ['8-2', '8–2', '8—2', '8"-2"']) assert.deepEqual(parseMovement(text), [8, 2])
+for (const text of ['', '8', 'unknown', '8-x']) assert.equal(parseMovement(text), null)
 assert.equal(iguana.structure, 4)
 assert.equal(iguana.vitality, null)
 assert.deepEqual(iguana.weapons.find((weapon) => weapon.name === 'Heavy Flamethrower').modifiers, ['+1B'])

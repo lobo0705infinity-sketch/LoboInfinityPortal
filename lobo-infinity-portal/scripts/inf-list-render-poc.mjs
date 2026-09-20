@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { loadMobilityCatalog } from '../bot/mobility-catalog-store.mjs'
 
 import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
@@ -348,6 +349,7 @@ export async function renderInfListPng({ input, outputPath, browserType = chromi
     const aroRatings = aroCatalog ? rankArmyAros(aroCatalog, decoded) : []
     const closeCombatCatalog = await loadCloseCombatCatalog()
     const closeCombatRatings = closeCombatCatalog ? rankSubmittedCloseCombat(closeCombatCatalog, submittedProfiles, { sectorialId: decoded.sectorialId, limit: 4 }) : []
+    const mobilityCatalog = await loadMobilityCatalog()
     const tacticalAnalysis = classifyTacticalBrief(submittedProfiles, {
       aroCatalogFingerprint: aroCatalog?.fingerprint,
       closeCombatCatalogFingerprint: closeCombatCatalog?.fingerprint,
@@ -355,7 +357,7 @@ export async function renderInfListPng({ input, outputPath, browserType = chromi
       gunfighterCatalogFingerprint: gunfighterCatalog?.fingerprint,
       listName: decoded.listName,
       sectorial: faction?.name,
-    }, gunfighterRatings, aroRatings, closeCombatRatings)
+    }, gunfighterRatings, aroRatings, closeCombatRatings, mobilityCatalog)
     const tacticalPages = await renderTacticalBrief({ analysis: tacticalAnalysis, browser })
     const legality = validateInfListLegality({ decoded, payload: classificationData.payload })
 
