@@ -181,14 +181,22 @@ export function resolveFaceToFace(active, reactive) {
   const activeWin = winProbability(activeSummary, reactiveSummary)
   const reactiveWin = winProbability(reactiveSummary, activeSummary)
   const noEffect = Math.max(0, 1 - activeWin - reactiveWin)
-  const expectedActiveHits = expectedWinningHits(activeSummary, reactiveSummary)
-  const expectedReactiveHits = expectedWinningHits(reactiveSummary, activeSummary)
+  const activeOutcomes = winningOutcomeDistribution(active, reactiveSummary)
+  const reactiveOutcomes = winningOutcomeDistribution(reactive, activeSummary)
+  const expectedActiveHits = expectedOutcomeValue(activeOutcomes, 'hits')
+  const expectedReactiveHits = expectedOutcomeValue(reactiveOutcomes, 'hits')
+  const expectedActiveCriticals = expectedOutcomeValue(activeOutcomes, 'criticals')
+  const expectedReactiveCriticals = expectedOutcomeValue(reactiveOutcomes, 'criticals')
   const result = {
     activeWin: round(activeWin * 100),
     reactiveWin: round(reactiveWin * 100),
     noEffect: round(noEffect * 100),
     expectedActiveHits,
     expectedReactiveHits,
+    expectedActiveCriticals,
+    expectedReactiveCriticals,
+    activeOutcomes,
+    reactiveOutcomes,
   }
   faceToFaceCache.set(cacheKey, result)
   return result
@@ -237,8 +245,10 @@ function expectedWinningHits(own, opposing) {
 export function resolveNormalRoll(pool) {
   const summary = summarizePool(pool)
   const success = summary.ranks.reduce((sum, state) => sum + state.bestProbability, 0)
-  const expectedHits = summary.ranks.reduce((sum, state) => sum + state.expectedHits, 0)
-  return { success: round(success * 100), expectedHits }
+  const outcomes = winningOutcomeDistribution(pool, null)
+  const expectedHits = expectedOutcomeValue(outcomes, 'hits')
+  const expectedCriticals = expectedOutcomeValue(outcomes, 'criticals')
+  return { success: round(success * 100), expectedHits, expectedCriticals, outcomes }
 }
 
 function expectedRetainedRankCount({ dice, burst, higher, equal, lower }) {
@@ -265,8 +275,9 @@ function factorial(value) {
   return result
 }
 
-export function expectedEffectFromHits({ expectedHits, mode, defender }) {
-  if (!expectedHits) return { expectedDamage: 0, damageValue: 0, stateValue: 0, total: 0 }
+export function expectedEffectFromHits({ expectedHits, expectedCriticals = 0, outcomes = null, mode, defender }) {
+  const resolvedOutcomes = outcomes || fractionalOutcomeDistribution(expectedHits, expectedCriticals)
+  if (!resolvedOutcomes.size || probabilityOfDamagingHits(resolvedOutcomes) === 0) return { expectedDamage: 0, damageValue: 0, stateValue: 0, total: 0 }
   const printedAttribute = mode.save === 'BTS' ? Number(defender.bts || 0) : mode.save === 'PH' ? Number(defender.ph || 0) : Number(defender.arm || 0)
   const fixedAttribute = mode.saveFixed == null ? null : Number(mode.saveFixed)
   const baseAttribute = Number.isFinite(fixedAttribute) ? fixedAttribute : printedAttribute
@@ -289,11 +300,27 @@ export function expectedEffectFromHits({ expectedHits, mode, defender }) {
   const viralAffectsVitality = Boolean(mode.viralBioweapon) && Number(defender.vitality || 0) > 0
   const savesPerHit = viralAffectsVitality ? 2 : Number(mode.saves || (/EXP/i.test(String(mode.ammo)) ? 3 : /DA/i.test(String(mode.ammo)) ? 2 : 1))
   const woundsPerFailure = Number(mode.woundsPerFailure || (/T2/i.test(String(mode.ammo)) ? 2 : 1))
-  const failuresPerSave = mode.continuousDamage ? failureProbability / Math.max(0.05, 1 - failureProbability) : failureProbability
-  const expectedDamage = expectedHits * savesPerHit * failuresPerSave * woundsPerFailure
   const durability = effectiveDurability(defender, mode)
-  const damageValue = mode.nonLethal ? 0 : Math.min(expectedDamage / durability, 1)
-  const stateValue = expectedStateValue(mode, defender, expectedHits, failureProbability)
+  let expectedDamage = 0
+  let expectedCappedDamage = 0
+  let stateTriggerProbability = 0
+  for (const [key, outcomeProbability] of resolvedOutcomes) {
+    const { hits, criticals } = parseOutcomeKey(key)
+    if (!hits) continue
+    // A Critical adds exactly one additional Saving Roll. It is not a second
+    // hit that repeats all DA/EXP/Viral saves.
+    const savingRolls = hits * savesPerHit + criticals
+    const failureDistribution = savingFailureDistribution(savingRolls, failureProbability, Boolean(mode.continuousDamage), durability)
+    for (let failures = 0; failures < failureDistribution.length; failures += 1) {
+      const branch = outcomeProbability * failureDistribution[failures]
+      const damage = failures * woundsPerFailure
+      expectedDamage += branch * damage
+      expectedCappedDamage += branch * Math.min(damage, durability)
+      if (failures > 0) stateTriggerProbability += branch
+    }
+  }
+  const damageValue = mode.nonLethal ? 0 : Math.min(expectedCappedDamage / durability, 1)
+  const stateValue = expectedStateValue(mode, defender, stateTriggerProbability)
   return { expectedDamage, damageValue, stateValue, total: Math.min(1, damageValue + stateValue * (1 - damageValue)) }
 }
 
@@ -301,25 +328,26 @@ function resolveExchange({ attack, aro, attacker, defender, mode }) {
   if (mode.attackType === 'direct-template') {
     const dodge = aro.type === 'dodge' ? resolveNormalRoll(aro.pool) : { success: 0 }
     const hitProbability = 1 - dodge.success / 100
-    const effect = expectedEffectFromHits({ expectedHits: attack.burst * hitProbability, mode: withAttackSaveModifiers(mode, attack), defender })
+    const outcomes = binomialHitOutcomes(attack.burst, hitProbability)
+    const effect = expectedEffectFromHits({ expectedHits: attack.burst * hitProbability, outcomes, mode: withAttackSaveModifiers(mode, attack), defender })
     return exchangeResult(attack, aro, { activeWin: 100 - dodge.success, reactiveWin: 0, noEffect: dodge.success, expectedActiveHits: attack.burst * hitProbability, expectedReactiveHits: 0 }, effect, null)
   }
   if (aro.type === 'none') {
     const roll = resolveNormalRoll(attack)
-    const effect = expectedEffectFromHits({ expectedHits: roll.expectedHits, mode: withAttackSaveModifiers(mode, attack), defender })
+    const effect = expectedEffectFromHits({ expectedHits: roll.expectedHits, expectedCriticals: roll.expectedCriticals, outcomes: roll.outcomes, mode: withAttackSaveModifiers(mode, attack), defender })
     return exchangeResult(attack, aro, { activeWin: roll.success, reactiveWin: 0, noEffect: 100 - roll.success, expectedActiveHits: roll.expectedHits, expectedReactiveHits: 0 }, effect, null)
   }
   if (aro.type === 'template') {
     const roll = resolveNormalRoll(attack)
-    const effect = expectedEffectFromHits({ expectedHits: roll.expectedHits, mode: withAttackSaveModifiers(mode, attack), defender })
+    const effect = expectedEffectFromHits({ expectedHits: roll.expectedHits, expectedCriticals: roll.expectedCriticals, outcomes: roll.outcomes, mode: withAttackSaveModifiers(mode, attack), defender })
     const returnEffect = expectedEffectFromHits({ expectedHits: Math.max(1, Number(aro.pool?.burst || 1)), mode: aro.mode, defender: attacker })
     return exchangeResult(attack, aro, { activeWin: roll.success, reactiveWin: 100, noEffect: 0, expectedActiveHits: roll.expectedHits, expectedReactiveHits: 1 }, effect, returnEffect)
   }
   const activePool = applyOpponentFtfModifier(attack, defender, aro.type, attacker, { allowSurprise: false })
   const reactivePool = applyOpponentFtfModifier(aro.pool, attacker, 'shoot', defender, { allowSurprise: true })
   const f2f = resolveFaceToFace(activePool, reactivePool)
-  const effect = expectedEffectFromHits({ expectedHits: f2f.expectedActiveHits, mode: withAttackSaveModifiers(mode, attack), defender })
-  const returnEffect = aro.mode ? expectedEffectFromHits({ expectedHits: f2f.expectedReactiveHits, mode: aro.mode, defender: attacker }) : { total: 0 }
+  const effect = expectedEffectFromHits({ expectedHits: f2f.expectedActiveHits, expectedCriticals: f2f.expectedActiveCriticals, outcomes: f2f.activeOutcomes, mode: withAttackSaveModifiers(mode, attack), defender })
+  const returnEffect = aro.mode ? expectedEffectFromHits({ expectedHits: f2f.expectedReactiveHits, expectedCriticals: f2f.expectedReactiveCriticals, outcomes: f2f.reactiveOutcomes, mode: aro.mode, defender: attacker }) : { total: 0 }
   return exchangeResult(attack, aro, f2f, effect, returnEffect)
 }
 
@@ -404,7 +432,7 @@ function rangeModifierFor(mode, range, equipment = []) {
   return Math.min(0, modifier + 3)
 }
 
-function expectedStateValue(mode, defender, expectedHits, failureProbability) {
+function expectedStateValue(mode, defender, triggerProbability) {
   const states = Array.isArray(mode.states) ? mode.states : []
   if (!states.length) return 0
   const immunity = tokens(defender.skills).concat(tokens(defender.equipment))
@@ -413,15 +441,85 @@ function expectedStateValue(mode, defender, expectedHits, failureProbability) {
     return !immunity.includes(`immunity ${state}`)
   })
   if (applicableStates.includes('isolated') && applicableStates.includes('immobilized')) {
-    return 0.9 * Math.min(1, expectedHits * failureProbability)
+    return 0.9 * triggerProbability
   }
   let combined = 0
   for (const state of applicableStates) {
     const value = STATE_VALUES[state] || 0
     combined = 1 - (1 - combined) * (1 - value)
   }
-  return Math.min(1, combined) * Math.min(1, expectedHits * failureProbability)
+  return Math.min(1, combined) * triggerProbability
 }
+
+function winningOutcomeDistribution(pool, opposingSummary) {
+  const thresholds = opposingSummary
+    ? [{ rank: 0, probability: opposingSummary.below(1) }, ...opposingSummary.ranks.map((state) => ({ rank: state.rank, probability: state.bestProbability }))]
+    : [{ rank: 0, probability: 1 }]
+  const outcomes = new Map()
+  const dice = Math.max(1, Number(pool.burst || 1)) + Math.max(0, Number(pool.specialDice || 0))
+  const retained = Math.max(1, Number(pool.burst || 1))
+  for (const threshold of thresholds) {
+    if (!threshold.probability) continue
+    let criticalProbability = 0
+    let ordinaryProbability = 0
+    for (let face = 1; face <= 20; face += 1) {
+      const roll = describeRoll(face, pool)
+      if (!roll.success || rollRank(roll) <= threshold.rank) continue
+      if (roll.critical) criticalProbability += 0.05
+      else ordinaryProbability += 0.05
+    }
+    const otherProbability = Math.max(0, 1 - criticalProbability - ordinaryProbability)
+    for (let criticals = 0; criticals <= dice; criticals += 1) for (let ordinary = 0; ordinary <= dice - criticals; ordinary += 1) {
+      const other = dice - criticals - ordinary
+      const probability = threshold.probability * multinomial3(dice, criticals, ordinary, other)
+        * Math.pow(criticalProbability, criticals) * Math.pow(ordinaryProbability, ordinary) * Math.pow(otherProbability, other)
+      if (!probability) continue
+      const keptCriticals = Math.min(criticals, retained)
+      const keptOrdinary = Math.min(ordinary, retained - keptCriticals)
+      addOutcome(outcomes, keptCriticals + keptOrdinary, keptCriticals, probability)
+    }
+  }
+  return outcomes
+}
+
+function fractionalOutcomeDistribution(expectedHits, expectedCriticals) {
+  const hits = Math.max(0, Number(expectedHits || 0))
+  if (!hits) return new Map()
+  const whole = Math.floor(hits)
+  const fraction = hits - whole
+  const criticals = Math.min(whole, Math.max(0, Math.round(Number(expectedCriticals || 0))))
+  const outcomes = new Map()
+  addOutcome(outcomes, whole, criticals, 1 - fraction)
+  if (fraction) addOutcome(outcomes, whole + 1, criticals, fraction)
+  return outcomes
+}
+
+function binomialHitOutcomes(trials, hitProbability) {
+  const outcomes = new Map()
+  for (let hits = 0; hits <= trials; hits += 1) addOutcome(outcomes, hits, 0, choose(trials, hits) * Math.pow(hitProbability, hits) * Math.pow(1 - hitProbability, trials - hits))
+  return outcomes
+}
+
+function savingFailureDistribution(trials, failureProbability, continuousDamage, durability) {
+  if (!continuousDamage) return Array.from({ length: trials + 1 }, (_, failures) => choose(trials, failures) * Math.pow(failureProbability, failures) * Math.pow(1 - failureProbability, trials - failures))
+  const maximum = Math.max(4, Number(durability) + 2)
+  const perSave = Array(maximum + 1).fill(0)
+  for (let failures = 0; failures < maximum; failures += 1) perSave[failures] = Math.pow(failureProbability, failures) * (1 - failureProbability)
+  perSave[maximum] = Math.pow(failureProbability, maximum)
+  let combined = [1]
+  for (let trial = 0; trial < trials; trial += 1) {
+    const next = Array(combined.length + maximum).fill(0)
+    for (let left = 0; left < combined.length; left += 1) for (let right = 0; right < perSave.length; right += 1) next[left + right] += combined[left] * perSave[right]
+    combined = next
+  }
+  return combined
+}
+
+function addOutcome(map, hits, criticals, probability) { const key = `${hits}:${criticals}`; map.set(key, (map.get(key) || 0) + probability) }
+function parseOutcomeKey(key) { const [hits, criticals] = String(key).split(':').map(Number); return { hits, criticals } }
+function expectedOutcomeValue(outcomes, field) { return [...outcomes].reduce((sum, [key, probability]) => sum + parseOutcomeKey(key)[field] * probability, 0) }
+function probabilityOfDamagingHits(outcomes) { return [...outcomes].reduce((sum, [key, probability]) => sum + (parseOutcomeKey(key).hits ? probability : 0), 0) }
+function choose(n, k) { return factorial(n) / (factorial(k) * factorial(n - k)) }
 
 function effectiveDurability(profile, mode) {
   const base = Math.max(1, Number(profile.vitality || profile.structure || 1))

@@ -3,7 +3,7 @@ import { evaluateAroProfile } from './gunfighter-rating.mjs'
 import { canonicalProfileKey } from './gunfighter-benchmark-catalog.mjs'
 
 export const ARO_CATALOG_SCHEMA = 'infinity-aro-benchmark-v1'
-export const ARO_BENCHMARK_VERSION = 'aro-benchmark-v3-top-30-shared-state-grading'
+export const ARO_BENCHMARK_VERSION = 'aro-benchmark-v4-exact-capped-damage-critical-saves'
 
 export function selectBenchmarkAttackers(profiles, gunfighterCatalog, { limit = 30 } = {}) {
   const catalogByKey = new Map(gunfighterCatalog.entries.map((entry) => [entry.key, entry]))
