@@ -1,8 +1,8 @@
 import { mobilityKey, lookupMobility } from './mobility-lookup.mjs'
 
-export const MOBILE_GUNFIGHTER_VERSION = 'mobile-gunfighter-v2-anchored-raw'
+export const MOBILE_GUNFIGHTER_VERSION = 'mobile-gunfighter-v3-preferred-range-anchor75'
 export const MOBILE_WEIGHT = 0.15
-export const GUNFIGHTER_ANCHOR = 50
+export const GUNFIGHTER_ANCHOR = 75
 
 export function anchoredGunfighterScore(rating) {
   if (!Number.isFinite(rating)) throw Error('Nonfinite gunfighter rating')

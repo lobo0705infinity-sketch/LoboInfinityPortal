@@ -1,6 +1,6 @@
 // Shared N5.3 primitives: keep BS and CC critical/save semantics identical.
 // Sources: infinitythewiki.com/{Rolls,Immunity,Combined_Saving_Roll}.
-export const COMBAT_RULES_VERSION = 'n5.3-combat-audit-v1'
+export const COMBAT_RULES_VERSION = 'n5.3-combat-audit-v2-continuous'
 export const clamp = (x, low, high) => Math.max(low, Math.min(high, Number(x)))
 export const normalizeTrait = value => String(value).toLowerCase().replace(/[−–]/g, '-').replace(/[()[\]]/g, ' ').replace(/\s+/g, ' ').trim()
 export const traitTokens = (values = []) => values.map(normalizeTrait)

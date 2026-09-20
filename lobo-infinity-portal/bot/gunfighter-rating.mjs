@@ -1,16 +1,16 @@
 import { traitTokens, criticalRank, successValue, coverBenefits, resolveSavingEffects } from './combat-rules.mjs'
 
 export const STANDARD_RANGE_BANDS = Object.freeze([
-  { id: '0-8', min: 0, max: 8 },
-  { id: '8-16', min: 8, max: 16 },
-  { id: '16-24', min: 16, max: 24 },
-  { id: '24-32', min: 24, max: 32 },
-  { id: '32-40', min: 32, max: 40 },
-  { id: '40-48', min: 40, max: 48 },
+  { id: '0-8', min: 0, max: 8, weight: 0.05 },
+  { id: '8-16', min: 8, max: 16, weight: 0.20 },
+  { id: '16-24', min: 16, max: 24, weight: 0.30 },
+  { id: '24-32', min: 24, max: 32, weight: 0.25 },
+  { id: '32-40', min: 32, max: 40, weight: 0.12 },
+  { id: '40-48', min: 40, max: 48, weight: 0.06 },
   // Fire lanes beyond 48 inches are legal but uncommon on a standard table.
   // Keep testing every weapon in this band while reducing its contribution to
   // the aggregate rating to one quarter of a typical engagement band.
-  { id: '48-96', min: 48, max: 96, weight: 0.25 },
+  { id: '48-96', min: 48, max: 96, weight: 0.02 },
 ])
 
 export const STATE_VALUES = Object.freeze({
@@ -100,6 +100,7 @@ export function evaluateState(profile, defenders, settings, state) {
   const defenderWeights = benchmarkDefenderWeights(defenders)
   for (const defender of defenders) {
     assertProfile(defender)
+    const byWeapon = new Map()
     for (const range of settings.ranges) {
       const candidates = profile.weapons.flatMap((weapon) => weapon.modes.map((mode) => evaluateAttackCandidate({
         attacker: profile,
@@ -111,17 +112,29 @@ export function evaluateState(profile, defenders, settings, state) {
         defenderFireteamSpecialDice: Number(defender.fireteamSpecialDice || 0),
         settings,
       })))
-      const available = candidates.filter((candidate) => candidate.status === 'evaluated')
-      const selected = available.sort(compareAttackerResults)[0] || null
       matchups.push({
         defenderId: defender.id,
         defenderName: defender.name,
         defenderWeight: defenderWeights.get(defender.id),
         rangeWeight: Number(range.weight ?? 1),
         range: range.id,
-        selected,
+        selected: null,
         candidates,
       })
+      for (const candidate of candidates) {
+        if (candidate.status !== 'evaluated') continue
+        const key = `${candidate.weapon}\u0000${candidate.mode}`
+        const record = byWeapon.get(key) || { key, weapon: candidate.weapon, mode: candidate.mode, score: 0 }
+        record.score += Number(candidate.score || 0) * Number(range.weight ?? 1)
+        byWeapon.set(key, record)
+      }
+    }
+    const primary = [...byWeapon.values()].sort((a, b) => b.score - a.score || a.weapon.localeCompare(b.weapon) || a.mode.localeCompare(b.mode))[0] || null
+    for (const matchup of matchups.filter((entry) => entry.defenderId === defender.id)) {
+      matchup.primaryWeapon = primary ? (primary.mode && !['normal', 'default'].includes(primary.mode.toLowerCase()) ? `${primary.weapon} (${primary.mode})` : primary.weapon) : null
+      matchup.selected = primary
+        ? matchup.candidates.find(candidate => candidate.status === 'evaluated' && candidate.weapon === primary.weapon && candidate.mode === primary.mode) || null
+        : null
     }
   }
   return {

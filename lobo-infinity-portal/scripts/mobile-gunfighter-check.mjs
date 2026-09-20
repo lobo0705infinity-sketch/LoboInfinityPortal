@@ -13,15 +13,15 @@ assert.deepEqual(midrankPercentiles([]), [])
 assert.deepEqual(midrankPercentiles([9]), [50])
 assert.throws(() => midrankPercentiles([NaN]))
 assert.equal(anchoredGunfighterScore(0),0)
-assert.equal(anchoredGunfighterScore(25),50)
-assert.equal(anchoredGunfighterScore(50),100)
+assert.equal(anchoredGunfighterScore(25),100/3)
+assert.equal(anchoredGunfighterScore(50),200/3)
 assert.equal(anchoredGunfighterScore(75),100)
 assert.throws(() => anchoredGunfighterScore(NaN))
 const keys = ['1:2:1:1:1','1:2:1:2:1','1:2:1:3:1']
 const sampleG = { entries: keys.map((key,i) => ({ key, result: { states: [{ id:'normal', rating:(i+1)*10 }, ...(i<2 ? [{ id:'fireteam', rating:100-i*10 }] : [])] } })) }
 const sampleM = { version:'mobility-index-v2', keys:Object.fromEntries(keys.map((k,i)=>[k,i])), profiles:[30,20,10].map(score=>({ status:'rated',score })) }
 const sample = buildMobileGunfighterCatalog(sampleG, sampleM)
-assert.deepEqual(keys.map(k=>lookupMobileGunfighter(sample,k).score), [21.5,37,52.5])
+assert.deepEqual(keys.map(k=>lookupMobileGunfighter(sample,k).score), [15.833333333333334,25.666666666666668,35.5])
 assert.equal(lookupMobileGunfighter(sample,keys[0],'fireteam').score,89.5)
 assert.equal(lookupMobileGunfighter(sample,keys[1],'fireteam').score,88)
 assert.equal(lookupMobileGunfighter(sample,keys[2],'fireteam'),null)
@@ -53,7 +53,7 @@ const profile={combinedId:keys[0].replaceAll(':','-'),unitName:'Fixture',profile
 const plain=classifyTacticalBrief([profile])
 const enabled=classifyTacticalBrief([profile],{},[],[],[],null,sample)
 assert.equal(plain.categories.mobileGunfighters.length,0)
-assert.equal(enabled.categories.mobileGunfighters[0].mobileRating.score,21.5)
+assert.equal(enabled.categories.mobileGunfighters[0].mobileRating.score,15.833333333333334)
 assert.equal(enabled.categories.mobileLinked.length,0,'No legal Fireteam: no linked suggestion')
 const team = classifyTacticalBrief([{...profile,fireteamTeams:['Test Duo']},{...profile,combinedId:keys[1].replaceAll(':','-'),fireteamTeams:['Test Duo']}],{},[],[],[],null,sample)
 assert.equal(team.categories.mobileLinked.length,2)
@@ -62,7 +62,7 @@ for(const key of Object.keys(plain.categories).filter(k=>!k.startsWith('mobile')
 let html='';const png=Buffer.alloc(24);png.writeUInt32BE(1440,16);png.writeUInt32BE(1000,20)
 const page={setContent:async s=>{html+=s},evaluate:async()=>{},close:async()=>{},locator:()=>({evaluateAll:async(_,blocks)=>blocks.map(b=>({...b,height:200})),screenshot:async()=>png})}
 await renderTacticalBrief({analysis:enabled,browser:{newPage:async()=>page}})
-assert.match(html,/85% anchored Gunfighter/);assert.match(html,/Gunfighter 10.00 \(20.0\/100 anchored\) · Mobility 30.0/)
+assert.match(html,/85% anchored Gunfighter/);assert.match(html,/Gunfighter 10.00 \(13.3\/100 anchored\) · Mobility 30.0/)
 let rendered
 const render=async args=>{rendered=args;return {officialArmyUrl:'https://example.test',tacticalPages:[]}}
 await createInfListResponse({armyCode:'QUJDRA==',render,withRenderSlot:fn=>fn()})

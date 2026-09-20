@@ -124,7 +124,9 @@ const rangeWeight = (rangeId) => STANDARD_RANGE_BANDS.find((range) => range.id =
 const totalRangeWeight = normal.states[0].matchups.reduce((sum, matchup) => sum + rangeWeight(matchup.range), 0)
 const expectedAllBandRating = Math.round(normal.states[0].matchups.reduce((sum, matchup) => sum + (matchup.selected?.score ?? 0) * rangeWeight(matchup.range), 0) / totalRangeWeight * 100) / 100
 assert.equal(normal.states[0].rating, expectedAllBandRating, 'unavailable range bands contribute zero and every range uses its configured frequency weight')
-assert.equal(rangeWeight('48-96'), 0.25, 'engagements beyond 48 inches receive one-quarter weight')
+assert.equal(rangeWeight('0-8'), 0.05, 'point-blank range is a small part of primary gunfights')
+assert.equal(rangeWeight('16-24'), 0.30, 'the central primary engagement band is weighted most heavily')
+assert.equal(rangeWeight('48-96'), 0.02, 'very long fire lanes remain possible but uncommon')
 
 const msvAttacker = profile('msv', { equipment: ['Multispectral Visor L1'] })
 const msvResult = evaluateGunfighterProfile(msvAttacker, [smokeDefender])
