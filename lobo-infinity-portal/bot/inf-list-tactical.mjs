@@ -205,7 +205,7 @@ export async function renderTacticalBrief({ analysis, browser }) {
       })
       .map(([key, title]) => ({ key, title, entries: analysis.categories[key] }))
     const measured = await measureBlocks(page, analysis, categoryBlocks)
-    const pages = paginateBlocks(measured, maxImageHeight - 250)
+    const pages = paginateBlocks(measured, maxImageHeight - 250, measured.length > 1 ? 2 : 1)
     const results = []
     for (let index = 0; index < pages.length; index += 1) {
       await page.setContent(markup(analysis, pages[index], index, pages.length), { waitUntil: 'load' })
@@ -223,7 +223,21 @@ async function measureBlocks(page, analysis, blocks) {
   return await page.locator('.category').evaluateAll((nodes, source) => nodes.map((node, index) => ({ ...source[index], height: Math.ceil(node.getBoundingClientRect().height) + 18 })), blocks)
 }
 
-function paginateBlocks(blocks, availableHeight) {
+function paginateBlocks(blocks, availableHeight, minimumPages = 1) {
+  if (minimumPages >= 2 && blocks.length > 1) {
+    const heights = blocks.map((block) => block.height)
+    const total = heights.reduce((sum, height) => sum + height, 0)
+    let used = 0
+    let best = null
+    for (let index = 1; index < blocks.length; index += 1) {
+      used += heights[index - 1]
+      const remaining = total - used
+      if (used > availableHeight || remaining > availableHeight) continue
+      const difference = Math.abs(used - remaining)
+      if (!best || difference < best.difference) best = { index, difference }
+    }
+    if (best) return [blocks.slice(0, best.index), blocks.slice(best.index)]
+  }
   const pages = [[]]
   let used = 0
   for (const block of blocks) {

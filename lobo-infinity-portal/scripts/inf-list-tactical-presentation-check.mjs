@@ -20,6 +20,6 @@ assert.ok(loadoutDetail(different).includes('Panzerfaust'))
 const browser = await chromium.launch({ headless: true })
 try {
   const pages = await renderTacticalBrief({ analysis, browser })
-  assert.ok(pages.length >= 1)
+  assert.equal(pages.length, 2)
 } finally { await browser.close() }
 console.log('Tactical presentation checks passed.')

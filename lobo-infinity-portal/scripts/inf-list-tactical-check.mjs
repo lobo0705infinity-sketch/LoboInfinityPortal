@@ -291,7 +291,7 @@ if (!process.argv.includes('--logic-only')) {
   try {
   const pages = await renderTacticalBrief({ analysis, browser })
   const emptyPages = await renderTacticalBrief({ analysis: empty, browser })
-  assert.ok(pages.length >= 1 && pages.length <= 5)
+  assert.ok(pages.length >= 2 && pages.length <= 5)
   assert.equal(emptyPages.length, 1)
   assert.equal(pages.every((page) => page.width === 1440 && page.height <= 7500), true)
   await Promise.all(pages.map((page, index) => writeFile(join(output, `brief-${index + 1}.png`), page.imageBuffer)))
