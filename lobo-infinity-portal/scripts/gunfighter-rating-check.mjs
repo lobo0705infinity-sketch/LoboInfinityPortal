@@ -11,6 +11,41 @@ const profile = (id, overrides = {}) => ({ id, name: id, bs: 12, ph: 11, arm: 1,
 
 const strong = resolveFaceToFace({ burst: 4, specialDice: 0, target: 14, criticalTarget: 14 }, { burst: 1, specialDice: 0, target: 11, criticalTarget: 11 })
 assert.ok(strong.activeWin > strong.reactiveWin, 'high-Burst active shooter should outperform a weaker single-die ARO')
+// Independent enumeration covers unequal Critical values, multiple Criticals,
+// and retained special dice for both the active shooter and the ARO.
+function enumeratePool(pool) {
+  let rolls = [[]]
+  for (let i = 0; i < pool.burst + pool.specialDice; i += 1) {
+    rolls = rolls.flatMap((roll) => Array.from({ length: 20 }, (_, n) => [...roll, n + 1]))
+  }
+  return rolls.map((faces) => faces.map((face) => ({
+    success: face <= pool.target, critical: face === pool.criticalTarget && face <= pool.target, face,
+  })).sort((a, b) => Number(b.success) - Number(a.success) || Number(b.critical) - Number(a.critical) || b.face - a.face).slice(0, pool.burst))
+}
+for (const [activeBurst, activeSd, reactiveBurst, reactiveSd] of [[1, 0, 1, 0], [2, 0, 1, 0], [1, 0, 2, 0], [1, 1, 1, 0], [1, 0, 1, 1]]) {
+  const active = { burst: activeBurst, specialDice: activeSd, target: 14, criticalTarget: 14 }
+  const reactive = { burst: reactiveBurst, specialDice: reactiveSd, target: 11, criticalTarget: 11 }
+  const aRolls = enumeratePool(active), rRolls = enumeratePool(reactive)
+  const expected = [new Map(), new Map()]
+  for (const a of aRolls) for (const r of rRolls) {
+    const ac = a.some((x) => x.critical), rc = r.some((x) => x.critical)
+    const winners = (own, other, enemyCritical) => enemyCritical ? [] : own.filter((x) => x.success && (x.critical || x.face > Math.max(0, ...other.filter((y) => y.success).map((y) => y.face))))
+    for (const [side, hits] of [winners(a, r, rc), winners(r, a, ac)].entries()) {
+      const key = `${hits.length}:${hits.filter((x) => x.critical).length}`
+      expected[side].set(key, (expected[side].get(key) || 0) + 1 / (aRolls.length * rRolls.length))
+    }
+  }
+  const actual = resolveFaceToFace(active, reactive)
+  for (const [side, outcomes] of [actual.activeOutcomes, actual.reactiveOutcomes].entries()) {
+    for (const key of new Set([...outcomes.keys(), ...expected[side].keys()])) {
+      assert.ok(Math.abs((outcomes.get(key) || 0) - (expected[side].get(key) || 0)) < 1e-10, `Critical cancellation outcome ${side}/${key} for ${JSON.stringify([active, reactive])}`)
+    }
+  }
+}
+const unequalCriticals = resolveFaceToFace({ burst: 1, specialDice: 0, target: 14, criticalTarget: 14 }, { burst: 1, specialDice: 0, target: 11, criticalTarget: 11 })
+assert.equal(unequalCriticals.activeWin, 52.75)
+assert.equal(unequalCriticals.reactiveWin, 31)
+assert.equal(unequalCriticals.noEffect, 16.25)
 const withSd = resolveFaceToFace({ burst: 3, specialDice: 1, target: 12, criticalTarget: 12 }, { burst: 1, specialDice: 0, target: 12, criticalTarget: 12 })
 const withoutSd = resolveFaceToFace({ burst: 3, specialDice: 0, target: 12, criticalTarget: 12 }, { burst: 1, specialDice: 0, target: 12, criticalTarget: 12 })
 assert.ok(withSd.activeWin > withoutSd.activeWin, '+1SD must improve the active result without changing Burst')
