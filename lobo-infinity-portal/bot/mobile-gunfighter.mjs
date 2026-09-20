@@ -19,11 +19,12 @@ export function midrankPercentiles(values) {
   return result
 }
 
-export function buildMobileGunfighterCatalog(gunfighter, mobility) {
+export function buildMobileGunfighterCatalog(gunfighter, mobility, fireteamEligible = () => true) {
   const entries = new Map(), coverage = {}
   for (const state of ['normal', 'fireteam']) {
     const cohort = []
     for (const entry of gunfighter.entries) {
+      if (state === 'fireteam' && !fireteamEligible(entry.key)) continue
       const combat = entry.result.states.find(s => s.id === state)
       const movement = lookupMobility(mobility, entry.key)
       if (!Number.isFinite(combat?.rating) || movement?.status !== 'rated') continue

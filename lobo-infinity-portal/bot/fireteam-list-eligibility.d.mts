@@ -1,0 +1,2 @@
+export type FireteamMembership = { team: string; minSize: number; maxSize?: number; required?: boolean; requiredNames?: string[]; memberName: string; countsAs?: string; compositionTags?: string[]; memberKey?: string; max?: number }
+export function eligibleLevel2Teams(profiles: Array<{ combinedId: string; unitName: string; combatGroup?: number; quantity?: number; fireteamMemberships?: FireteamMembership[]; fireteamTeams?: string[] }>): Map<string, Set<string>>

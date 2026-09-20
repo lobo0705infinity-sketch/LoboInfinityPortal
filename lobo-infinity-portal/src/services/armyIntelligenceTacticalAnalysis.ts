@@ -1,3 +1,4 @@
+import { eligibleLevel2Teams } from '../../bot/fireteam-list-eligibility.mjs'
 import type { ArmyIntelligenceDecodedEntry, ArmyIntelligenceList } from './api'
 
 export type TacticalCategoryId = 'apex' | 'competent' | 'apexCc' | 'hacking' | 'vision' | 'valuableAro' | 'disposableAro' | 'alternative' | 'defensive'
@@ -219,18 +220,8 @@ function bsAttackSdBonus(skills: string[]) {
 }
 
 function withFireteamSdBonuses(entries: ArmyIntelligenceDecodedEntry[]) {
-  const byTeam = new Map<string, Array<{ team: string; minSize: number; required: boolean; requiredNames: string[]; memberName: string; countsAs: string }>>()
-  for (const entry of entries) {
-    const memberships = entry.fireteamEligibility?.memberships || (entry.fireteamEligibility?.teams || []).map((team) => ({ team, minSize: 2, required: false, requiredNames: [], memberName: entry.unit, countsAs: '' }))
-    for (const membership of memberships) byTeam.set(membership.team, [...(byTeam.get(membership.team) || []), membership])
-  }
-  const legal = new Set<string>()
-  for (const [team, rows] of byTeam) {
-    const requiredNames = (rows[0]?.requiredNames || []).map((name) => normalize(name).toLowerCase())
-    const hasRequired = !requiredNames.length || rows.some((row) => row.required || (row.countsAs && requiredNames.some((name) => normalize(row.countsAs).toLowerCase().startsWith(name) || name.startsWith(normalize(row.countsAs).toLowerCase()))))
-    if (rows.length >= (rows[0]?.minSize || 2) && hasRequired) legal.add(team)
-  }
-  return entries.map((entry) => ({ ...entry, fireteamSdBonus: (entry.fireteamEligibility?.teams || []).some((team) => legal.has(team)) ? 1 : 0 }))
+  const eligible = eligibleLevel2Teams(entries.map(entry => ({ combinedId: entry.combinedId, unitName: entry.unit, combatGroup: entry.combatGroup, fireteamMemberships: entry.fireteamEligibility?.memberships, fireteamTeams: entry.fireteamEligibility?.teams })))
+  return entries.map(entry => ({ ...entry, fireteamSdBonus: eligible.get(entry.combinedId)?.size ? 1 : 0 }))
 }
 
 function addMultiRoleMetadata(categories: TacticalCategory[]) {

@@ -90,7 +90,7 @@ assert.equal(observed.perListNetworks.length, 1)
 assert.deepEqual(observed.perListNetworks[0], { components: ['Fast-Panda', 'Hacker', 'Killer Hacking Device', 'Pitcher'] })
 assert.ok(!JSON.stringify(observed).includes(observedListName), 'player-entered list names must not enter tactical capability presentation data')
 
-const fireteam = { state: 'verified', verified: true, teams: ['Orcs'] }
+const fireteam = { state: 'verified', verified: true, teams: ['Orcs'], memberships: [{ team: 'Orcs', minSize: 2, maxSize: 3, required: false, requiredNames: [], memberName: 'Fixture', countsAs: 'orc' }] }
 const fireteamAnalysis = buildTacticalAnalysis([decodedList('Fireteam', [
   entry('orc', 'ORC', 'Feuerbach', { bs: 14, points: 35, weapons: ['Feuerbach'], weaponProfiles: [canonicalBurst('Feuerbach', 2)], fireteamEligibility: fireteam }),
   entry('hannibal', 'HANNIBAL', 'Marksman', { bs: 13, points: 33, skills: ['BS Attack (+1SD)'], weapons: ['MULTI Marksman Rifle'], weaponProfiles: [canonicalBurst('MULTI Marksman Rifle', 3)], fireteamEligibility: fireteam }),

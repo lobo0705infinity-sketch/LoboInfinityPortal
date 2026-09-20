@@ -14,7 +14,7 @@ assert.deepEqual(midrankPercentiles([9]), [50])
 assert.throws(() => midrankPercentiles([NaN]))
 const keys = ['1:2:1:1:1','1:2:1:2:1','1:2:1:3:1']
 const sampleG = { entries: keys.map((key,i) => ({ key, result: { states: [{ id:'normal', rating:(i+1)*10 }, ...(i<2 ? [{ id:'fireteam', rating:100-i*10 }] : [])] } })) }
-const sampleM = { version:'mobility-index-v1', keys:Object.fromEntries(keys.map((k,i)=>[k,i])), profiles:[30,20,10].map(score=>({ status:'rated',score })) }
+const sampleM = { version:'mobility-index-v2', keys:Object.fromEntries(keys.map((k,i)=>[k,i])), profiles:[30,20,10].map(score=>({ status:'rated',score })) }
 const sample = buildMobileGunfighterCatalog(sampleG, sampleM)
 assert.deepEqual(keys.map(k=>lookupMobileGunfighter(sample,k).score), [15,50,85])
 assert.equal(lookupMobileGunfighter(sample,keys[0],'fireteam').score,100)
@@ -28,7 +28,7 @@ const { fingerprint, ...unsigned } = catalog
 assert.equal(fingerprint,createHash('sha256').update(JSON.stringify(unsigned)).digest('hex'))
 assert.equal(catalog.gunfighterFingerprint,g.fingerprint)
 assert.equal(catalog.mobilityFingerprint,m.fingerprint)
-assert.deepEqual(catalog.coverage,{normal:13146,fireteam:3606})
+assert.deepEqual(catalog.coverage,{normal:13534,fireteam:3614})
 for(const state of ['normal','fireteam']) {
   const source = g.entries.map(e=>({e,r:lookupMobileGunfighter(catalog,e.key,state)})).filter(x=>x.r)
   assert.equal(source.length,catalog.coverage[state])

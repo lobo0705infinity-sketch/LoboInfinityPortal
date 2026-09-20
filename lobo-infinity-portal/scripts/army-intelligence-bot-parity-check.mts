@@ -3,7 +3,7 @@ import { classifyTacticalBrief } from '../bot/inf-list-tactical.mjs'
 import { buildTacticalAnalysis, type TacticalCategoryId } from '../src/services/armyIntelligenceTacticalAnalysis.ts'
 
 const membership = (memberName: string) => ({
-  team: 'Caledonian Fireteam', minSize: 3, required: false, requiredNames: [], memberName, countsAs: '',
+  team: 'Caledonian Fireteam', minSize: 3, required: false, requiredNames: [], memberName, countsAs: 'fixture composition',
 })
 const weapon = (name: string, burst: number, modifiers: string[] = []) => ({ name, mode: '', type: 'WEAPON', burst, burstStatus: 'canonical', modifiers })
 const source = [

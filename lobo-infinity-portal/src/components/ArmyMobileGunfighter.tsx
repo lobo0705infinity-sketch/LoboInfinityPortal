@@ -1,3 +1,4 @@
+import { repairArmyProfile } from '../../bot/profile-audit.mjs'
 import { useEffect, useMemo, useState } from 'react'
 import { lookupMobileGunfighter, type MobileGunfighterCatalog, type MobileGunfighterRating } from '../../bot/mobile-gunfighter.mjs'
 import { mobilityKey } from '../../bot/mobility-lookup.mjs'
@@ -21,7 +22,7 @@ export default function ArmyMobileGunfighter({ lists }: { lists: ArmyIntelligenc
       const id = mobilityKey(entry.combinedId)!
       const row = rows.get(id)
       if (row) row.count++
-      else rows.set(id, { id, unit: entry.unit, profile: entry.profile, weapons: entry.weapons.join(' · '), rating, count: 1 })
+      else rows.set(id, { id, unit: entry.unit, profile: entry.profile, weapons: repairArmyProfile(entry).weapons.join(' · '), rating, count: 1 })
     }
     return { rows: [...rows.values()].sort((a, b) => b.rating.score - a.rating.score || a.id.localeCompare(b.id)).slice(0, 12), unavailable }
   }, [catalog, lists, state])

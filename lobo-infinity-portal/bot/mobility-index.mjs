@@ -1,6 +1,6 @@
 import { evaluateMobilityScenarios, terrainMovement } from './mobility-scenarios.mjs'
 
-export const MOBILITY_INDEX_VERSION = 'mobility-index-v1'
+export const MOBILITY_INDEX_VERSION = 'mobility-index-v2'
 export const MOBILITY_WEIGHTS = Object.freeze({ attackReach: 25, travel: 15, verticalAttack: 12, verticalTravel: 8, gapAttack: 12, gapTravel: 3, turningJump: 10, terrain: 10, dodge: 5 })
 const fraction = (value, reference) => Math.max(0, Math.min(1, (value ?? 0) / reference))
 
@@ -30,7 +30,7 @@ export function mobilityIndex(profile, weights = MOBILITY_WEIGHTS) {
     attackReach: fraction(Math.max(s.openMoveAndShoot, s.horizontalJumpAndShoot ?? 0), 11),
     travel: fraction(s.openBestTravel, 14),
     verticalAttack: fraction(Math.max(s.upwardJumpAndShoot ?? 0, s.climbAndShoot ?? 0), 11),
-    verticalTravel: fraction(mounted ? 0 : Math.max(s.horizontalLongJump, aerial ? 0 : s.climbLongSkill ?? 0), 12),
+    verticalTravel: fraction(mounted ? 0 : Math.max(s.horizontalLongJump, aerial ? 0 : s.climbWholeOrder ?? 0), 12),
     gapAttack: fraction(s.horizontalJumpAndShoot, 11),
     gapTravel: fraction(s.horizontalLongJump, 12),
     turningJump: s.bentAirPath10AndShoot ? 1 : 0,

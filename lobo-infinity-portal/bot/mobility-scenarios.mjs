@@ -1,4 +1,4 @@
-export const MOBILITY_SCENARIO_VERSION = 'mobility-scenarios-v1'
+export const MOBILITY_SCENARIO_VERSION = 'mobility-scenarios-v2'
 
 const normalizedTraits = profile => [...new Set([...(profile.skills || []), ...(profile.equipment || [])].map(s => s.replace(/\s+/g, ' ').trim()))]
 const distance = (traits, skill, fallback) => {
@@ -76,6 +76,7 @@ export function evaluateMobilityScenarios(profile) {
     horizontalJumpAndShoot: shortJump,
     horizontalLongJump: longJump,
     climbLongSkill: climb,
+    climbWholeOrder: climb === null ? null : climbingPlus ? Math.max(climb + b, a + b) : climb,
     climbAndShoot: climbingPlus ? climb : null,
     upwardJumpAndShoot: motorcycle ? null : shortJump,
     // All paths are already measured, clear and have legal landings for this base.
