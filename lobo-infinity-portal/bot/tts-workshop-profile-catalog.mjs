@@ -17,7 +17,7 @@ export function parseTtsProfileObject(object = {}) {
   const codes = [...description.matchAll(/\[([0-9a-f]{6})\]\[-\]/gi)].map((match) => Number.parseInt(match[1], 16))
   if (codes.length < 5) return null
   const [sectorialId, unitId, groupId, profileId, optionId] = codes.slice(-5)
-  const attributes = Object.fromEntries([...description.matchAll(/\[b\](MOV|CC|BS|PH|WIP|ARM|BTS)\[\/b\]:\s*([^\r\n]+)/gi)].map((match) => [match[1].toLowerCase(), parseStat(match[2])]))
+  const attributes = Object.fromEntries([...description.matchAll(/\[b\](MOV|CC|BS|PH|WIP|ARM|BTS)\[\/b\]:\s*([^\r\n]+)/gi)].map((match) => [match[1].toLowerCase(), match[1].toUpperCase() === 'MOV' ? parseMovement(match[2]) : parseStat(match[2])]))
   const vitality = sectionStat(description, 'V')
   const structure = sectionStat(description, 'STR')
   const weapons = splitItems(section(description, 'Weapons', ['Equipment', 'Skills'])).map(parseWeaponLabel)
@@ -79,6 +79,13 @@ function sectionStat(description, label) {
 function parseStat(value) {
   const number = Number(String(value).replace(/\[[^\]]*\]/g, '').trim())
   return Number.isFinite(number) ? number : null
+}
+
+// Workshop profile descriptions express MOV as two values in inches.
+export function parseMovement(value) {
+  const text = String(value ?? '').replace(/\[[^\]]*\]/g, '').trim()
+  const match = text.match(/^(\d+(?:\.\d+)?)\s*["″]?\s*[-–—]\s*(\d+(?:\.\d+)?)\s*["″]?$/)
+  return match ? [Number(match[1]), Number(match[2])] : null
 }
 
 function stripFormatting(value) {
