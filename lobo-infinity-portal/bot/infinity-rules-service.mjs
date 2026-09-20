@@ -15,11 +15,51 @@ const aliases = new Map([
   ['khd', ['killer hacking device']], ['smoke', ['smoke ammunition','visibility zones']],
 ])
 const stopWords = new Set('a an and are as at be before by can do does for from how i if in into is it my of on or same say since that the this through to what when which with'.split(' '))
-const officialTerms = ['zero pain','discover','camouflaged state','camouflaged marker','order expenditure sequence','stealth','repeater','hacking area','firewall','dodge','impetuous','impersonation','coordinated order','place deployable','deployable weapon','line of fire','zone of control','fireteam','fireteam integrity','mimetism','guts roll','suppressive fire','specialist troops','classified objective','secure hvt','bs attack','automatic reaction order','lieutenant','direct template weapon','panoply','peripheral']
+const officialTerms = ['zero pain','discover','camouflaged state','camouflaged marker','order expenditure sequence','stealth','repeater','hacking area','firewall','mines','dodge','impetuous','impersonation','coordinated order','place deployable','deployable weapon','line of fire','zone of control','fireteam','fireteam integrity','mimetism','guts roll','suppressive fire','specialist troops','classified objective','secure hvt','bs attack','automatic reaction order','lieutenant','direct template weapon','panoply','peripheral']
 
 // Restore bounded PDF excerpts checked against the official N5.3 Impetuous and Dodge rules.
 // https://infinitythewiki.com/Impetuous | https://infinitythewiki.com/Dodge
+// Mine trigger and close-combat clauses checked against the official N5.3 wiki:
+// https://infinitythewiki.com/Mines | https://infinitythewiki.com/Template_Weapons_and_Equipment
 const rulesSupplements = Object.freeze([
+{
+  "sourceId": "infinity-rules-n5.3",
+  "title": "Infinity Rules",
+  "version": "5.3",
+  "authority": 1,
+  "scope": "core",
+  "pdfPage": 72,
+  "printedPage": "72",
+  "section": "MINES",
+  "headings": [
+    "MINES"
+  ],
+  "structuredBlockTypes": [
+    "EFFECTS",
+    "REMEMBER"
+  ],
+  "canonicalTerm": "mines",
+  "text": "MINES\nEFFECTS\nThe Small Teardrop Template must be placed so that it affects the enemy Model or Marker that triggered the Mine.\nRestriction: A Mine never triggers if the Small Teardrop Template would affect an ally, even if that ally is Unconscious.\nOnce on the game table, Mines must trigger when an enemy Model or Marker declares or executes a Skill or ARO inside their Trigger Area, checking it at that moment by placing the Small Teardrop Template. If it is determined that the Model or Marker is not within the Trigger Area, the Mine will neither detonate nor be revealed.\nThe Trigger Area of a Mine is the area within the radius of the Small Teardrop Template, extended out from the edge of the base of the Mine. The Trigger Area excludes any areas in Total Cover from the Blast Focus of the Small Teardrop Template.\nREMEMBER\nDodge movement and movement from failed Guts Rolls does not generate AROs or trigger Deployable Weapons or Equipment."
+},
+{
+  "sourceId": "infinity-rules-n5.3",
+  "title": "Infinity Rules",
+  "version": "5.3",
+  "authority": 1,
+  "scope": "core",
+  "pdfPage": 45,
+  "printedPage": "45",
+  "section": "TEMPLATE WEAPONS INTO CLOSE COMBAT",
+  "headings": [
+    "TEMPLATE WEAPONS INTO CLOSE COMBAT"
+  ],
+  "structuredBlockTypes": [
+    "EFFECTS",
+    "REMEMBER"
+  ],
+  "canonicalTerm": "template weapons into close combat",
+  "text": "TEMPLATE WEAPONS INTO CLOSE COMBAT\nTemplate Weapons placed on a group of Troopers engaged in Close Combat will always affect every Trooper involved, even if, due to the Template's placement, it contacts only some of them. Players must take this into account, since Attacks cannot be performed against Allied Troopers."
+},
 {
   "sourceId": "infinity-rules-n5.3",
   "title": "Infinity Rules",

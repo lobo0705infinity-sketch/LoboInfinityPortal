@@ -81,6 +81,20 @@ for (const question of [
 }
 assert.ok(!productionCorpus.chunks.some((chunk) => chunk.canonicalTerm === 'impetuous' && chunk.pdfPage === 88))
 
+for (const question of [
+  'Do mines trigger against engaged models?',
+  'Can my mine catch a trooper before it reaches melee?',
+  'Does Dodge movement into close combat trigger mines?',
+]) {
+  const evidence = buildRulesEvidencePrompt(productionCorpus, question)
+  const { entries } = JSON.parse(evidence.text.split('\n').at(-1))
+  const mine = entries.find((entry) => entry.page === '72' && /A Mine never triggers/.test(entry.text))
+  assert.ok(mine, question)
+  assert.match(mine.text, /declares or executes a Skill or ARO/, question)
+  assert.match(mine.text, /Dodge movement.*does not generate AROs or trigger/, question)
+  assert.ok(entries.some((entry) => entry.page === '45' && /will always affect every Trooper involved/.test(entry.text)), question)
+}
+
 process.env.DEEPSEEK_API_KEY = 'invalid-placeholder-key'
 process.env.DEEPSEEK_HOURLY_LIMIT_USD = '1'
 process.env.DEEPSEEK_MONTHLY_LIMIT_USD = '10'

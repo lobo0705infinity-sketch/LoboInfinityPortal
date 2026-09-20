@@ -22,6 +22,11 @@ export function buildRulesEvidencePrompt(corpus, question) {
   const originals = new Map(corpus.chunks.map((chunk, index) => [key(chunk), { chunk, index }]))
   const selected = new Map()
   const add = (candidate) => { const original = originals.get(key(candidate)); if (original) selected.set(original.index, original.chunk) }
+  // Keep both controlling rules together for Mine/Engaged timing questions.
+  // Ranking either in isolation can omit the friendly-fire restriction.
+  if (/\bmines?\b/i.test(question) && /engag|melee|close combat|base contact|silhouette contact|b2b|hand.to.hand/i.test(question)) {
+    corpus.chunks.filter((chunk) => ['mines', 'template weapons into close combat'].includes(chunk.canonicalTerm)).forEach(add)
+  }
   ranked.slice(0, 10).forEach((candidate) => {
     add(candidate)
     corpus.chunks.filter((chunk) => chunk.sourceId === candidate.sourceId && chunk.pdfPage === candidate.pdfPage).forEach(add)

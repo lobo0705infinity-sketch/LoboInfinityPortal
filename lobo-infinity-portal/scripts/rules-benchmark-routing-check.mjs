@@ -6,7 +6,7 @@ import { retrieveRulesReference, formatRulesDiscordResponse } from '../bot/rules
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1395)
+assert.equal(index.canonicalCases, 1396)
 
 for (const file of ['rules-adjudicator-benchmark.json', 'rules-adjudicator-expansion-400.json', 'rules-adjudicator-new-topics-400.json', 'rules-adjudicator-new-topics-500.json', 'rules-benchmark-approved-updates-2026-09-15.json']) {
   const document = JSON.parse(await readFile(resolve(root, 'data/infinity-rules', file), 'utf8'))
@@ -327,5 +327,34 @@ for (const question of [
   'Multispectral Visor Level 1 versus Multispectral Visor Level 1 through smoke: what modifiers do both get?',
 ]) assert.equal((await findApprovedRulesAnswer(question))?.id, 'new-topic-2-515', question)
 console.log('PASS - 100 distinct MSV1/smoke phrasings, 9 exception boundaries, spelling normalization, complete Discord output, and zero AI calls.')
+
+
+const mineCase = impetuousDocument.cases.find((item) => item.id === 'new-topic-2-516')
+assert.equal(mineCase.queryVariants.length, 40)
+assert.equal(new Set(mineCase.queryVariants.map((item) => normalizeQuestion(item.question))).size, 40)
+for (const { question } of mineCase.queryVariants) {
+  const result = await retrieveRulesReference({ question, deepSeek: fallback })
+  assert.equal(result.answerSource, 'APPROVED_BENCHMARK', question)
+  assert.equal(result.benchmark.id, 'new-topic-2-516', question)
+  assert.equal(result.deepSeek.conclusion, 'DEPENDS', question)
+  assert.match(result.deepSeek.answer, /Already Engaged with the Mine owner's ally: no trigger/, question)
+  assert.match(result.deepSeek.answer, /valid position before contact/, question)
+  assert.match(result.deepSeek.answer, /without affecting any ally/, question)
+  assert.match(result.deepSeek.answer, /does not undo that earlier legal trigger/, question)
+  assert.match(result.deepSeek.answer, /LoF alone is insufficient/, question)
+  assert.match(result.deepSeek.answer, /Dodge movement itself does not trigger Mines/, question)
+  assert.match(result.deepSeek.answer, /declaring Dodge while already inside the Trigger Area can trigger/, question)
+  assert.deepEqual(result.deepSeek.sources.map((source) => source.page), ['p. 72', 'p. 45', 'p. 14'], question)
+  const field = formatRulesDiscordResponse(result).embeds[0].fields.find((item) => item.name === 'ANSWER').value
+  assert.ok(field.length <= 1024)
+  assert.match(field, /These distinctions assume/, 'Discord must retain the ownership qualification')
+}
+assert.equal(calls, 3, 'All 40 Mine cases must bypass the provider')
+for (const question of [
+  'Do Chest Mines trigger against engaged models?',
+  'Do Cybermines trigger against engaged models?',
+  'Do mines trigger against engaged models in multiplayer with no allies involved?',
+]) assert.notEqual((await findApprovedRulesAnswer(question))?.id, 'new-topic-2-516', question)
+console.log('PASS - 40 Mine/Engaged phrasings, timing and friendly-fire conditions, Dodge movement versus declaration, full Discord output, and zero AI calls.')
 
 console.log(`PASS - ${index.canonicalCases} trusted benchmark rulings route before DeepSeek; unmatched questions fall back exactly once.`)

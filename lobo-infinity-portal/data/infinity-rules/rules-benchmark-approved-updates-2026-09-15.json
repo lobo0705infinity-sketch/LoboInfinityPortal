@@ -1267,6 +1267,247 @@
           "style": "RESPONSE_UNSPECIFIED"
         }
       ]
+    },
+    {
+      "id": "new-topic-2-516",
+      "category": "NEW_MULTI_RULE_INTERACTIONS",
+      "canonicalQuestion": "do Mines trigger against engaged models?",
+      "approvedAnswer": "Already Engaged with the Mine owner's ally: no trigger, because a template on that combat affects everyone involved, including the ally. Moving into contact: the Mine triggers at a valid position before contact if the enemy is inside its Trigger Area and the template can hit it without affecting any ally. Ending the Move Engaged does not undo that earlier legal trigger. If the only valid position is after contact, or every template would affect an ally, it does not trigger. LoF alone is insufficient: the enemy must be within the Trigger Area and not in Total Cover from the template's Blast Focus. Dodge movement itself does not trigger Mines; however, declaring Dodge while already inside the Trigger Area can trigger one if the normal conditions are met. These distinctions assume the close combat includes an ally of the Mine's owner.",
+      "approvedConclusion": "DEPENDS",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "reviewStatus": "APPROVED",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 72,
+          "section": "MINES \u2014 TRIGGER CONDITIONS, ALLIES AND DODGE MOVEMENT"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 45,
+          "section": "TEMPLATE WEAPONS INTO CLOSE COMBAT"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 14,
+          "section": "ALL AT ONCE"
+        }
+      ],
+      "fuzzyRequiredTerms": [
+        "mine"
+      ],
+      "fuzzyExcludedTerms": [
+        "cybermine",
+        "chest mine",
+        "perimeter",
+        "crazykoala",
+        "multiplayer",
+        "neutral",
+        "no allies",
+        "without allies"
+      ],
+      "queryVariants": [
+        {
+          "id": "new-topic-2-516-q01",
+          "question": "do Mines trigger against engaged models?",
+          "style": "ALREADY_ENGAGED"
+        },
+        {
+          "id": "new-topic-2-516-q02",
+          "question": "Can a mine go off against someone in close combat?",
+          "style": "ALREADY_ENGAGED"
+        },
+        {
+          "id": "new-topic-2-516-q03",
+          "question": "Does being engaged stop a mine from detonating?",
+          "style": "ALREADY_ENGAGED"
+        },
+        {
+          "id": "new-topic-2-516-q04",
+          "question": "What happens when a mine can hit a model in melee?",
+          "style": "ALREADY_ENGAGED"
+        },
+        {
+          "id": "new-topic-2-516-q05",
+          "question": "Will a mine trigger on a trooper fighting one of my models?",
+          "style": "ALREADY_ENGAGED"
+        },
+        {
+          "id": "new-topic-2-516-q06",
+          "question": "Can mines hit an enemy already in base contact with a friendly trooper?",
+          "style": "ALREADY_ENGAGED"
+        },
+        {
+          "id": "new-topic-2-516-q07",
+          "question": "Does a mine explode if the enemy is already engaged with its owner's ally?",
+          "style": "ALREADY_ENGAGED"
+        },
+        {
+          "id": "new-topic-2-516-q08",
+          "question": "Can I angle a mine template to only hit the enemy in close combat?",
+          "style": "ALREADY_ENGAGED"
+        },
+        {
+          "id": "new-topic-2-516-q09",
+          "question": "If the template only touches one engaged model, can my mine go off?",
+          "style": "ALREADY_ENGAGED"
+        },
+        {
+          "id": "new-topic-2-516-q10",
+          "question": "Are models already in hand to hand combat protected from my mine?",
+          "style": "ALREADY_ENGAGED"
+        },
+        {
+          "id": "new-topic-2-516-q11",
+          "question": "Can an enemy avoid a mine by moving into base contact with my trooper?",
+          "style": "MOVING_INTO_CONTACT"
+        },
+        {
+          "id": "new-topic-2-516-q12",
+          "question": "Does a mine still trigger if the enemy ends its Move engaged?",
+          "style": "MOVING_INTO_CONTACT"
+        },
+        {
+          "id": "new-topic-2-516-q13",
+          "question": "My opponent walks through a mine's trigger area and reaches close combat. Does the mine detonate?",
+          "style": "MOVING_INTO_CONTACT"
+        },
+        {
+          "id": "new-topic-2-516-q14",
+          "question": "Can a mine catch a charging model before it reaches b2b?",
+          "style": "MOVING_INTO_CONTACT"
+        },
+        {
+          "id": "new-topic-2-516-q15",
+          "question": "The enemy starts unengaged and moves into melee past my mine. What happens?",
+          "style": "MOVING_INTO_CONTACT"
+        },
+        {
+          "id": "new-topic-2-516-q16",
+          "question": "Does entering Engaged State cancel a mine that triggered earlier in the Move?",
+          "style": "MOVING_INTO_CONTACT"
+        },
+        {
+          "id": "new-topic-2-516-q17",
+          "question": "If a mine can legally hit the enemy before base contact, does ending in combat save them?",
+          "style": "MOVING_INTO_CONTACT"
+        },
+        {
+          "id": "new-topic-2-516-q18",
+          "question": "My mine sees the enemy on the way into close combat. When do I check its trigger?",
+          "style": "MOVING_INTO_CONTACT"
+        },
+        {
+          "id": "new-topic-2-516-q19",
+          "question": "A trooper crosses the mine template before touching my model. Can the mine go off there?",
+          "style": "MOVING_INTO_CONTACT"
+        },
+        {
+          "id": "new-topic-2-516-q20",
+          "question": "Do I check mine triggering before or after a moving enemy reaches silhouette contact?",
+          "style": "MOVING_INTO_CONTACT"
+        },
+        {
+          "id": "new-topic-2-516-q21",
+          "question": "Can a model Dodge into base contact without setting off a mine along the Dodge path?",
+          "style": "DODGE_MOVEMENT"
+        },
+        {
+          "id": "new-topic-2-516-q22",
+          "question": "Does Dodge movement into close combat trigger mines?",
+          "style": "DODGE_MOVEMENT"
+        },
+        {
+          "id": "new-topic-2-516-q23",
+          "question": "If I Dodge through a mine's trigger area into melee, does the mine explode?",
+          "style": "DODGE_MOVEMENT"
+        },
+        {
+          "id": "new-topic-2-516-q24",
+          "question": "Can a mine trigger from the movement of a successful Dodge that ends engaged?",
+          "style": "DODGE_MOVEMENT"
+        },
+        {
+          "id": "new-topic-2-516-q25",
+          "question": "Does Dodging into b2b contact set off a nearby mine?",
+          "style": "DODGE_MOVEMENT"
+        },
+        {
+          "id": "new-topic-2-516-q26",
+          "question": "Is Dodge movement into engagement different from a Move for mine triggering?",
+          "style": "DODGE_MOVEMENT"
+        },
+        {
+          "id": "new-topic-2-516-q27",
+          "question": "Do mines trigger if an enemy evades into close combat using Dodge movement?",
+          "style": "DODGE_MOVEMENT"
+        },
+        {
+          "id": "new-topic-2-516-q28",
+          "question": "Can I use the movement from a successful Dodge to cross a mine's area and engage?",
+          "style": "DODGE_MOVEMENT"
+        },
+        {
+          "id": "new-topic-2-516-q29",
+          "question": "Does the Dodge movement exception still work when I end in melee?",
+          "style": "DODGE_MOVEMENT"
+        },
+        {
+          "id": "new-topic-2-516-q30",
+          "question": "Will a mine explode because a dodging enemy moves into base contact with its owner's model?",
+          "style": "DODGE_MOVEMENT"
+        },
+        {
+          "id": "new-topic-2-516-q31",
+          "question": "A mine only sees the enemy once it reaches base contact with my model. Can it trigger?",
+          "style": "TRIGGER_BOUNDARIES"
+        },
+        {
+          "id": "new-topic-2-516-q32",
+          "question": "Can my mine detonate if its template would also catch my trooper before the enemy reaches melee?",
+          "style": "TRIGGER_BOUNDARIES"
+        },
+        {
+          "id": "new-topic-2-516-q33",
+          "question": "Is line of fire enough for a mine to trigger against a model moving into combat?",
+          "style": "TRIGGER_BOUNDARIES"
+        },
+        {
+          "id": "new-topic-2-516-q34",
+          "question": "What if the charging model stays outside the mine's trigger area until it is engaged?",
+          "style": "TRIGGER_BOUNDARIES"
+        },
+        {
+          "id": "new-topic-2-516-q35",
+          "question": "Does a mine fail to trigger if every legal template would hit an ally?",
+          "style": "TRIGGER_BOUNDARIES"
+        },
+        {
+          "id": "new-topic-2-516-q36",
+          "question": "Can a mine hit an enemy charging my model if the only visible position is already in close combat?",
+          "style": "TRIGGER_BOUNDARIES"
+        },
+        {
+          "id": "new-topic-2-516-q37",
+          "question": "How do mine triggers differ for an already-engaged enemy and one moving into engagement?",
+          "style": "TRIGGER_BOUNDARIES"
+        },
+        {
+          "id": "new-topic-2-516-q38",
+          "question": "An enemy moves towards my ally but is in total cover from the mine until contact. Does it go off?",
+          "style": "TRIGGER_BOUNDARIES"
+        },
+        {
+          "id": "new-topic-2-516-q39",
+          "question": "Can a mine trigger on an enemy moving into melee when the template can avoid all allies before contact?",
+          "style": "TRIGGER_BOUNDARIES"
+        },
+        {
+          "id": "new-topic-2-516-q40",
+          "question": "What conditions must a mine meet to detonate before an enemy reaches my trooper?",
+          "style": "TRIGGER_BOUNDARIES"
+        }
+      ]
     }
   ]
 }
