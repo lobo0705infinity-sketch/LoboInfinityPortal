@@ -1,3 +1,4 @@
+import { repairArmyList } from '../../bot/profile-audit.mjs'
 import ArmyMobility from '../components/ArmyMobility'
 import { type KeyboardEvent, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
@@ -265,7 +266,7 @@ function ArmyIntelligenceContent({
 
   const factionData = factionState.status === 'success' ? factionState.data : null
   const decodedLists = useMemo(
-    () => (factionData?.lists ?? []).filter(isDecodedList),
+    () => (factionData?.lists ?? []).filter(isDecodedList).map(repairArmyList),
     [factionData?.lists],
   )
   const uniqueDecodedLists = useMemo(

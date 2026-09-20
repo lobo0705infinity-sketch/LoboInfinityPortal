@@ -6,7 +6,7 @@ export function mobilityKey(combinedId) {
 }
 
 export function lookupMobility(catalog, combinedId) {
-  if (catalog?.version !== 'mobility-index-v1') return null
+  if (catalog?.version !== 'mobility-index-v2') return null
   const key = mobilityKey(combinedId)
   if (!key) return null
   const index = catalog.keys[key]

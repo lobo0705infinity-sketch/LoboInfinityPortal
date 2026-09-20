@@ -1,3 +1,4 @@
+import { canonicalMemberships, eligibleLevel2Teams } from './fireteam-list-eligibility.mjs'
 import { lookupMobileGunfighter } from './mobile-gunfighter.mjs'
 import { lookupMobility } from './mobility-lookup.mjs'
 import { decodeArmyCode } from '../scripts/infinity-army-decode.mjs'
@@ -26,7 +27,7 @@ const imageWidth = 1_440
 
 export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads = [], metadata = {}, canonicalDataset = null }) {
   const decoded = decodeArmyCode(armyCode)
-  const members = decoded.combatGroups.flatMap((group) => group.members)
+  const members = decoded.combatGroups.flatMap((group) => group.members.map(member => ({ ...member, combatGroup: group.combatGroup })))
   const cardQueues = new Map()
   for (const card of cards) {
     const queue = cardQueues.get(card.combinedId) || []
@@ -50,11 +51,12 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
     const option = group?.options?.find((item) => Number(item.id) === Number(member.optionId))
     const profileId = Number(member.combinedId.split('-').at(-1))
     const base = group?.profiles?.find((item) => Number(item.id) === profileId) || group?.profiles?.[0]
-    const fireteamMemberships = filterCanonicalFireteamMembershipsForProfile(
+    let fireteamMemberships = filterCanonicalFireteamMembershipsForProfile(
       fireteamMembershipsByUnitId.get(Number(member.unitId)) || [],
       [option?.name, card.profileName, base?.name, group?.isc],
     )
     const skills = mergeNamedRefs(base?.skills, option?.skills, names.skills, card.skills, names.extras)
+    if (skills.some(s => /^Peripheral(?:\s*\(|$)/i.test(s))) fireteamMemberships = []
     const equipment = mergeNamedRefs(base?.equip, option?.equip, names.equipment, card.equipment, names.extras)
     const weaponRefs = [...(base?.weapons || []), ...(option?.weapons || [])]
     const weapons = dedupeWeapons(resolveCanonicalWeaponRecords(dataset, weaponRefs, { expandAmbiguousModes: true }).map((weapon) => ({
@@ -69,13 +71,14 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
     // Infinity-Data can expose inherited weapons that are absent from the selected
     // option's official weapon references. Recover those weapons only through an
     // exact canonical name match; otherwise retain the name with unverified Burst.
-    for (const name of card.weapons || []) {
+    for (const name of (base && option ? [] : card.weapons || [])) {
       const existingIndex = weapons.findIndex((weapon) => sameToken(weaponDisplay(weapon), name) || sameToken(weapon.name, name))
       const recovered = resolveCanonicalCardWeapon(dataset, name)
       if (existingIndex < 0) weapons.push(recovered || { burst: null, mode: '', name, type: '' })
       else if (weapons[existingIndex].burst === null && recovered) weapons[existingIndex] = { ...recovered, modifiers: weapons[existingIndex].modifiers || recovered.modifiers }
     }
     return {
+      combatGroup: member.combatGroup,
       bs: finiteNumber(base?.bs ?? card.bs),
       cc: finiteNumber(base?.cc ?? card.cc),
       combinedId: member.combinedId,
@@ -95,20 +98,20 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
 
 export function classifyTacticalBrief(profiles, army = {}, gunfighterRatings = [], aroRatings = [], closeCombatRatings = [], mobilityCatalog = null, mobileCatalog = null) {
   const aggregated = aggregateExactProfiles(profiles).map(profile => ({ ...profile, mobility: lookupMobility(mobilityCatalog, profile.combinedId) }))
-  const eligibleFireteams = legalFireteams(aggregated)
+  const eligibleFireteams = eligibleLevel2Teams(profiles)
   const result = Object.fromEntries(categories.map(([key]) => [key, []]))
   result.gunfighters = mergeGunfighterRatings(aggregated, gunfighterRatings)
   result.closeCombat = mergeCloseCombatRatings(aggregated, closeCombatRatings)
   result.mobility = aggregated.filter(profile => profile.mobility?.status === 'rated').sort((a, b) => b.mobility.score - a.mobility.score || profileSort(a, b)).slice(0, 6)
   for (const [key, state] of [['mobileGunfighters', 'normal'], ['mobileLinked', 'fireteam']]) {
-    result[key] = mobileCatalog ? aggregated.map(profile => ({ ...profile, mobileRating: lookupMobileGunfighter(mobileCatalog, profile.combinedId, state) })).filter(profile => profile.mobileRating && (state === 'normal' || (profile.fireteamTeams || []).some(team => eligibleFireteams.has(team)))).sort((a, b) => b.mobileRating.score - a.mobileRating.score || profileSort(a, b)).slice(0, 4) : []
+    result[key] = mobileCatalog ? aggregated.map(profile => ({ ...profile, mobileRating: lookupMobileGunfighter(mobileCatalog, profile.combinedId, state) })).filter(profile => profile.mobileRating && (state === 'normal' || (profile.fireteamTeams || []).some(team => eligibleFireteams.get(profile.combinedId)?.has(team)))).sort((a, b) => b.mobileRating.score - a.mobileRating.score || profileSort(a, b)).slice(0, 4) : []
   }
   for (const profile of aggregated) {
     const enhancements = preferredMatches(profile.skills, [gunfighterMimetismToken, gunfighterMsvToken, bsAttackMinusThreeToken, albedoToken])
     const parsedBurstBonus = bsAttackBurstBonus(profile.skills)
     const burstBonus = parsedBurstBonus
     const nativeSdBonus = bsAttackSdBonus(profile.skills)
-    const qualifyingFireteams = (profile.fireteamTeams || []).filter((team) => eligibleFireteams.has(team))
+    const qualifyingFireteams = (profile.fireteamTeams || []).filter((team) => eligibleFireteams.get(profile.combinedId)?.has(team))
     const fireteamSdBonus = qualifyingFireteams.length ? 1 : 0
     const activeWeapons = profile.weapons.map((weapon) => ({ ...weapon, baseBurst: weapon.burst, burst: weapon.burst === null ? null : weapon.burst + burstBonus + weaponBurstBonus(weapon) }))
     const effectiveWeapons = activeWeapons.map((weapon) => ({ ...weapon, burst: weapon.burst === null ? null : weapon.burst + nativeSdBonus + fireteamSdBonus + weaponSdBonus(weapon) }))
@@ -398,47 +401,8 @@ export function filterCanonicalFireteamMembershipsForProfile(memberships, profil
 }
 function canonicalFireteamMembershipsByUnitId(payloads) {
   const result = new Map()
-  for (const payload of payloads) {
-    const units = new Map((payload?.units || []).map((unit) => [unit.slug, Number(unit.id)]))
-    const teams = (payload?.fireteamChart?.teams || []).filter((team) => Array.isArray(team.type) && team.type.length)
-    for (const team of teams) {
-      const requiredNames = (team.units || []).filter((member) => member.required).map((member) => String(member.name || ''))
-      for (const member of team.units || []) {
-      const id = Number(member.unitId || units.get(member.slug))
-      if (!Number.isInteger(id)) continue
-      const memberships = result.get(id) || []
-      memberships.push({ team: String(team.name || ''), minSize: fireteamMinimumSize(team.type), required: Boolean(member.required), requiredNames, memberName: String(member.name || ''), countsAs: '' })
-      result.set(id, memberships)
-      }
-    }
-    const wildcards = (payload?.fireteamChart?.teams || []).filter((team) => !Array.isArray(team.type) || !team.type.length).flatMap((team) => team.units || [])
-    for (const wildcard of wildcards) {
-      const id = Number(wildcard.unitId || units.get(wildcard.slug))
-      if (!Number.isInteger(id)) continue
-      const countsAs = String(wildcard.comment || '').replace(/[()]/g, '').trim()
-      const memberships = result.get(id) || []
-      for (const team of teams) memberships.push({ team: String(team.name || ''), minSize: fireteamMinimumSize(team.type), required: false, requiredNames: (team.units || []).filter((member) => member.required).map((member) => String(member.name || '')), memberName: String(wildcard.name || ''), countsAs })
-      result.set(id, memberships)
-    }
-  }
+  for (const payload of payloads) for (const [id, rows] of canonicalMemberships(payload)) result.set(id, [...(result.get(id) || []), ...rows])
   return result
-}
-function fireteamMinimumSize(types) { return types.includes('DUO') ? 2 : types.includes('HARIS') ? 3 : 3 }
-function legalFireteams(profiles) {
-  const byTeam = new Map()
-  for (const profile of profiles) for (const membership of profile.fireteamMemberships || (profile.fireteamTeams || []).map((team) => ({ team, minSize: 2, required: false, requiredNames: [], memberName: profile.unitName, countsAs: '' }))) {
-    const rows = byTeam.get(membership.team) || []
-    for (let index = 0; index < profile.quantity; index += 1) rows.push(membership)
-    byTeam.set(membership.team, rows)
-  }
-  const legal = new Set()
-  for (const [team, rows] of byTeam) {
-    const minimum = rows[0]?.minSize || 2
-    const requiredNames = unique((rows[0]?.requiredNames || []).map(normalized))
-    const hasRequired = !requiredNames.length || rows.some((row) => row.required || (normalized(row.countsAs) && requiredNames.some((name) => normalized(row.countsAs).startsWith(name) || name.startsWith(normalized(row.countsAs)))))
-    if (rows.length >= minimum && hasRequired) legal.add(team)
-  }
-  return legal
 }
 function mergeNamedRefs(base = [], option = [], lookup, fallback = [], extras = new Map()) {
   const official = [...base, ...option].map((ref) => {

@@ -1,3 +1,4 @@
+import { repairArmyList } from '../../bot/profile-audit.mjs'
 import ArmyMobility from '../components/ArmyMobility'
 import { type ReactNode, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
@@ -172,7 +173,7 @@ function ArmyIntelligenceDetail({ selected }: { selected: string }) {
   const scope = selectScope(detail.data, selected)
   if (!scope.length) return <PageState compact title="No intelligence" message={`${selected} has no persisted intelligence group in this snapshot.`} />
 
-  const allLists = scope.flatMap((group) => group.lists).filter((list) => list.decoded)
+  const allLists = scope.flatMap((group) => group.lists).filter((list) => list.decoded).map(repairArmyList)
   const lists = allLists.filter((list) => matchesResult(list, resultFilter))
   const publicLists = scope.flatMap((group) => group.armyLists)
   const usage = buildUsage(lists)

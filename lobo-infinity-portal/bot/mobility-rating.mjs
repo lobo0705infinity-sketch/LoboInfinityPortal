@@ -64,30 +64,50 @@ export function buildMobilityProfiles({ metadata, payloads }) {
       })
       return name + (mods.length ? `(${mods.join(', ')})` : '')
     })
-    for (const unit of payload.units || []) for (const group of unit.profileGroups || []) {
-      for (const option of group.options || []) {
-        if (option.disabled) continue
-        for (const profile of group.profiles || []) {
-          const layers = [unit, group, profile, option]
-          const skills = [...new Set(resolve(layers.flatMap(x => x.skills || []), factionSkills))]
-          const equipment = [...new Set(resolve(layers.flatMap(x => x.equip || x.equipment || []), factionEquipment))]
-          const mov = officialMovementInches(profile.move)
-          const noMovement = Array.isArray(profile.move) && profile.move.length === 2 && profile.move.every(x => x === -1)
-          const mobility = noMovement
-            ? { version: MOBILITY_VERSION, status: 'no-movement-attribute', score: null }
-            : scoreMobility({ mov, skills: [...skills, ...equipment] })
-          result.push({
-            id: `${sectorialId}:${unit.id}:${group.id}:${option.id}:${profile.id}`,
-            sectorialId, unitId: unit.id, groupId: group.id, optionId: option.id, profileId: profile.id,
-            name: [unit.name, option.name, group.profiles.length > 1 ? profile.name : null].filter(Boolean).join(' — '),
-            mov, officialMove: profile.move ?? null, silhouette: profile.s ?? null,
-            ph: Number.isFinite(profile.ph) && profile.ph > 0 ? profile.ph : null,
-            skills, equipment,
-            mobility,
-          })
+    for (const unit of payload.units || []) {
+      const included = includedMobilityOptions(unit)
+      for (const group of unit.profileGroups || []) {
+        for (const option of group.options || []) {
+          if (option.disabled && !included.has(`${group.id}:${option.id}`)) continue
+          for (const profile of group.profiles || []) {
+            const layers = [unit, group, profile, option]
+            const skills = [...new Set(resolve(layers.flatMap(x => x.skills || []), factionSkills))]
+            const equipment = [...new Set(resolve(layers.flatMap(x => x.equip || x.equipment || []), factionEquipment))]
+            const mov = officialMovementInches(profile.move)
+            const noMovement = Array.isArray(profile.move) && profile.move.length === 2 && profile.move.every(x => x === -1)
+            const mobility = noMovement
+              ? { version: MOBILITY_VERSION, status: 'no-movement-attribute', score: null }
+              : scoreMobility({ mov, skills: [...skills, ...equipment] })
+            result.push({
+              id: `${sectorialId}:${unit.id}:${group.id}:${option.id}:${profile.id}`,
+              sectorialId, unitId: unit.id, groupId: group.id, optionId: option.id, profileId: profile.id,
+              name: [unit.name, option.name, group.profiles.length > 1 ? profile.name : null].filter(Boolean).join(' — '),
+              mov, officialMove: profile.move ?? null, silhouette: profile.s ?? null,
+              ph: Number.isFinite(profile.ph) && profile.ph > 0 ? profile.ph : null,
+              skills, equipment,
+              mobility,
+            })
+          }
         }
       }
     }
   }
   return result
+}
+
+// Disabled options can be compulsory companions or operators, not standalone
+// purchases. Traverse includes from selectable options, including nested links.
+export function includedMobilityOptions(unit) {
+  const options = new Map((unit.profileGroups || []).flatMap(group =>
+    (group.options || []).map(option => [`${group.id}:${option.id}`, option])))
+  const reachable = new Set()
+  const visit = key => {
+    if (reachable.has(key)) return
+    const option = options.get(key)
+    if (!option) throw Error(`Missing included option: ${unit.id}:${key}`)
+    reachable.add(key)
+    for (const ref of option.includes || []) visit(`${ref.group}:${ref.option}`)
+  }
+  for (const [key, option] of options) if (!option.disabled) visit(key)
+  return reachable
 }

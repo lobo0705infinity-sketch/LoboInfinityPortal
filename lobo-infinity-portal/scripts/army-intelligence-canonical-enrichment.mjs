@@ -1,3 +1,4 @@
+import { canonicalMemberships } from '../bot/fireteam-list-eligibility.mjs'
 import { getFireteamReference } from '../bot/inf-id-fireteams.mjs'
 import { buildCanonicalDataset, resolveCanonicalWeaponRecords } from './infinity-army-canonical-dataset.mjs'
 import { ARMY_INTELLIGENCE_PIPELINE_VERSION, ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION } from './army-intelligence-snapshot-schema.mjs'
@@ -21,26 +22,7 @@ export async function createCanonicalEnricher({ browser, cacheDir } = {}) {
 export function enrichDecodedList(list, reference) {
   const units = Array.isArray(reference?.units) ? reference.units : []
   const dataset = buildCanonicalDataset({ metadata: { weapons: reference?.weapons || [], extras: reference?.extras || [] }, payloads: [{ version: reference?.payloadVersion, units }] })
-  const chartUnits = new Map()
-  const typedTeams = (reference?.fireteamChart?.teams || []).filter((team) => Array.isArray(team.type) && team.type.length)
-  for (const team of typedTeams) {
-    const requiredNames = (team.units || []).filter((member) => member.required).map((member) => String(member.name || ''))
-    for (const unit of team.units || []) {
-    const id = Number(unit.unitId)
-    if (!Number.isInteger(id)) continue
-    const teams = chartUnits.get(id) || []
-    teams.push({ team: String(team.name || ''), minSize: fireteamMinimumSize(team.type), required: Boolean(unit.required), requiredNames, memberName: String(unit.name || ''), countsAs: '' })
-    chartUnits.set(id, teams)
-    }
-  }
-  for (const wildcard of (reference?.fireteamChart?.teams || []).filter((team) => !Array.isArray(team.type) || !team.type.length).flatMap((team) => team.units || [])) {
-    const id = Number(wildcard.unitId)
-    if (!Number.isInteger(id)) continue
-    const memberships = chartUnits.get(id) || []
-    const countsAs = String(wildcard.comment || '').replace(/[()]/g, '').trim()
-    for (const team of typedTeams) memberships.push({ team: String(team.name || ''), minSize: fireteamMinimumSize(team.type), required: false, requiredNames: (team.units || []).filter((member) => member.required).map((member) => String(member.name || '')), memberName: String(wildcard.name || ''), countsAs })
-    chartUnits.set(id, memberships)
-  }
+  const chartUnits = canonicalMemberships({ units, fireteamChart: reference?.fireteamChart })
   return {
     ...list,
     tacticalSchemaVersion: ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION,
@@ -73,7 +55,7 @@ function enrichEntry(entry, units, dataset, chartUnits, reference) {
   const option = group?.options?.find((candidate) => candidate.id === optionId)
   const weaponReferences = [...(profile?.weapons || []), ...(option?.weapons || [])]
   const weaponProfiles = resolveCanonicalWeaponRecords(dataset, weaponReferences, { expandAmbiguousModes: true }).filter((weapon) => weapon.name).map((weapon) => ({ id: weapon.id, name: weapon.name, modifiers: weapon.modifiers || [], mode: weapon.mode, variant: weapon.variant, modeResolution: weapon.modeResolution, type: weapon.type, burst: weapon.burst, burstStatus: weapon.burstStatus, source: weapon.sourceDatasetId }))
-  const memberships = filterCanonicalFireteamMembershipsForProfile(
+  const memberships = (entry.skills || []).some(s => /^Peripheral(?:\s*\(|$)/i.test(s)) ? [] : filterCanonicalFireteamMembershipsForProfile(
     chartUnits.get(unitId) || [],
     [option?.name, entry.profile, profile?.name, group?.isc],
   )
@@ -81,7 +63,7 @@ function enrichEntry(entry, units, dataset, chartUnits, reference) {
   const fireteamEligibility = reference?.status === 'available' || reference?.status === 'none'
     ? { state: teams.length ? 'verified' : 'verified-false', verified: Boolean(teams.length), teams, memberships }
     : { state: 'unknown', verified: false, teams: [] }
-  return { ...entry, bs: profile?.bs ?? null, cc: profile?.cc ?? null, weaponProfiles, fireteamEligibility, canonicalProfile: profile?.name || null, canonicalUnitId: unitId, canonicalOptionId: optionId, canonicalSource: { datasetId: dataset.datasetId, payloadVersion: reference?.payloadVersion || null, sectorialId } }
+  return { ...entry, weapons: profile && option ? [...new Set(weaponProfiles.map(w => w.name + (w.modifiers.length ? ` (${w.modifiers.join(', ')})` : '')))] : entry.weapons, bs: profile?.bs ?? null, cc: profile?.cc ?? null, weaponProfiles, fireteamEligibility, canonicalProfile: profile?.name || null, canonicalUnitId: unitId, canonicalOptionId: optionId, canonicalSource: { datasetId: dataset.datasetId, payloadVersion: reference?.payloadVersion || null, sectorialId } }
 }
 
 export function filterCanonicalFireteamMembershipsForProfile(memberships, profileNames = []) {
@@ -97,8 +79,6 @@ export function filterCanonicalFireteamMembershipsForProfile(memberships, profil
 function normalizeCanonicalProfileName(value) {
   return String(value || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/gi, ' ').trim().toLowerCase()
 }
-
-function fireteamMinimumSize(types) { return types.includes('DUO') ? 2 : types.includes('HARIS') ? 3 : 3 }
 
 function applyUnknownEnrichment(list) {
   return enrichDecodedList(list, { status: 'unknown', units: [], weapons: [], fireteamChart: [], payloadVersion: null })
