@@ -6,7 +6,7 @@ import { retrieveRulesReference } from '../bot/rules-command.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1392)
+assert.equal(index.canonicalCases, 1393)
 
 for (const file of ['rules-adjudicator-benchmark.json', 'rules-adjudicator-expansion-400.json', 'rules-adjudicator-new-topics-400.json', 'rules-adjudicator-new-topics-500.json', 'rules-benchmark-approved-updates-2026-09-15.json']) {
   const document = JSON.parse(await readFile(resolve(root, 'data/infinity-rules', file), 'utf8'))
@@ -53,6 +53,9 @@ const naturalParaphrases = [
   ['Can part of a model\'s base hang off the board while it moves past terrain?', 'new-topic-2-510'],
   ['Can half my base hang past the board edge while Climbing?', 'new-topic-2-511'],
   ['Can a model squeeze through a gap if it is along the table edge if it is jumping', 'new-topic-2-512'],
+  ['What saves do you roll for a plasma crit save (ARM + BTS)?', 'new-topic-2-513'],
+  ['How many saves does a Plasma critical cause?', 'new-topic-2-513'],
+  ['Is a Plasma crit 2 ARM and 1 BTS?', 'new-topic-2-513'],
 ]
 for (const [question, expectedId] of naturalParaphrases) {
   assert.equal((await findApprovedRulesAnswer(question))?.id, expectedId, question)
@@ -114,6 +117,25 @@ assert.equal(calls, 1)
 const matchedMisspelledPanoply = await retrieveRulesReference({ question: 'Can a unit and their syncronize peripheral pik up from the same panopaly on the same order?', deepSeek: fallback })
 assert.equal(matchedMisspelledPanoply.answerSource, 'APPROVED_BENCHMARK')
 assert.equal(matchedMisspelledPanoply.benchmark.id, 'new-topic-2-507')
+assert.equal(calls, 1)
+for (const question of [
+  'What Saving Rolls does a target make for a Critical hit from a Plasma weapon?',
+  'What saves do you roll for a plasma crit save (ARM + BTS)?',
+  'How many saves does a Plasma critical cause?',
+  'Does a Plasma crit cause two ARM saves and one BTS save?',
+  'Which attribute is used for the extra Saving Roll from a Plasma Critical?',
+  'I was hit by a critical Plasma shot. What saves do I make?',
+  'Is a Plasma crit 2 ARM and 1 BTS?',
+  'For Plasma ammunition, does the Critical add an ARM roll or a BTS roll?',
+]) {
+  const result = await retrieveRulesReference({ question, deepSeek: fallback })
+  assert.equal(result.answerSource, 'APPROVED_BENCHMARK', question)
+  assert.equal(result.benchmark.id, 'new-topic-2-513', question)
+  assert.equal(result.deepSeek.certainty, 'EXPLICIT RULES ANSWER', question)
+  assert.match(result.deepSeek.answer || '', /three Saving Rolls: two ARM Saving Rolls and one BTS Saving Roll/i, question)
+  assert.match(result.deepSeek.answer || '', /Critical adds one additional ARM Saving Roll/i, question)
+  assert.deepEqual(result.deepSeek.sources.map((source) => source.page), ['p. 37', 'p. 47', 'p. 96'], question)
+}
 assert.equal(calls, 1)
 for (const question of [
   'Can a model squeeze through a gap if it is along the table edge?',

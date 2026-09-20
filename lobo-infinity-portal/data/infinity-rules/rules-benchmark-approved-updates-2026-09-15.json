@@ -628,6 +628,30 @@
         { "id": "new-topic-2-512-q7", "question": "Can you squeeze by terrain at the board edge using Jump instead of Move?", "style": "TABLE_SCENARIO" },
         { "id": "new-topic-2-512-q8", "question": "Can Super-Jump leave the physical table boundary during its trajectory?", "style": "RULES_CHECK" }
       ]
+    },
+    {
+      "id": "new-topic-2-513",
+      "category": "NEW_MULTI_RULE_INTERACTIONS",
+      "canonicalQuestion": "What Saving Rolls does a target make for a Critical hit from a Plasma weapon?",
+      "approvedAnswer": "A Critical hit from a Plasma weapon requires three Saving Rolls: two ARM Saving Rolls and one BTS Saving Roll. The Plasma hit normally causes one ARM Saving Roll and one BTS Saving Roll. The Critical adds one additional ARM Saving Roll.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCitations": [
+        { "sourceId": "infinity-rules-n5.3", "page": 37, "section": "CRITICALS" },
+        { "sourceId": "infinity-rules-n5.3", "page": 47, "section": "SAVING ROLL (SR)" },
+        { "sourceId": "infinity-rules-n5.3", "page": 96, "section": "PLASMA WEAPONS — SAVING ROLLS" }
+      ],
+      "reviewStatus": "APPROVED",
+      "queryVariants": [
+        { "id": "new-topic-2-513-q1", "question": "What Saving Rolls does a target make for a Critical hit from a Plasma weapon?", "style": "CANONICAL" },
+        { "id": "new-topic-2-513-q2", "question": "What saves do you roll for a plasma crit save (ARM + BTS)?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-513-q3", "question": "How many saves does a Plasma critical cause?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-513-q4", "question": "Does a Plasma crit cause two ARM saves and one BTS save?", "style": "RULES_CHECK" },
+        { "id": "new-topic-2-513-q5", "question": "Which attribute is used for the extra Saving Roll from a Plasma Critical?", "style": "RULEBOOK_WORDING" },
+        { "id": "new-topic-2-513-q6", "question": "I was hit by a critical Plasma shot. What saves do I make?", "style": "TABLE_SCENARIO" },
+        { "id": "new-topic-2-513-q7", "question": "Is a Plasma crit 2 ARM and 1 BTS?", "style": "PLAYER_SHORTHAND" },
+        { "id": "new-topic-2-513-q8", "question": "For Plasma ammunition, does the Critical add an ARM roll or a BTS roll?", "style": "RULES_CHECK" }
+      ]
     }
   ]
 }
