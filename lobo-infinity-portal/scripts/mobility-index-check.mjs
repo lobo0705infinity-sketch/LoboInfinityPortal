@@ -55,6 +55,6 @@ const page = {
   locator: () => ({ evaluateAll: async (_, blocks) => blocks.map(block => ({ ...block, height: 200 })), screenshot: async () => image }),
 }
 await renderTacticalBrief({ analysis: ratedAnalysis, browser: { newPage: async () => page } })
-assert.ok(markup.some(html => html.includes('Top Mobility') && html.includes('independent of combat ratings')))
+assert.ok(markup.every(html => !html.includes('Top Mobility') && !html.includes('independent of combat ratings')))
 assert.ok(markup.some(html => html.includes('<span>MOBILITY</span>')))
-console.log(`PASS - ${source.entries.length} exact profile scores, fingerprint, movement invariants, ambiguous lookup rejection, combat isolation, and bot markup.`)
+console.log(`PASS - ${source.entries.length} exact profile scores, fingerprint, movement invariants, ambiguous lookup rejection, combat isolation, embedded combat mobility, and no standalone bot section.`)

@@ -197,8 +197,8 @@ export async function renderTacticalBrief({ analysis, browser }) {
   try {
     const categoryBlocks = categories
       .filter(([key]) => {
+        if (key === 'mobility') return false
         if (['mobileGunfighters', 'mobileLinked'].includes(key) && !analysis.mobileGunfighterBenchmark?.requested) return false
-        if (key === 'mobility' && !analysis.mobilityBenchmark?.available) return false
         if (analysis.gunfighterBenchmark?.available ? ['apex', 'competent'].includes(key) : key === 'gunfighters') return false
         if (analysis.closeCombatBenchmark?.available ? key === 'apexCc' : key === 'closeCombat') return false
         return true
