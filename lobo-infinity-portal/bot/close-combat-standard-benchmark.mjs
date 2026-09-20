@@ -1,4 +1,4 @@
-export const CLOSE_COMBAT_BENCHMARK_VERSION = 'close-combat-benchmark-v2-viral-target-type-shared-state-grading'
+export const CLOSE_COMBAT_BENCHMARK_VERSION = 'close-combat-benchmark-v3-berserk-face-to-face'
 
 const weapon = (name, power, options = {}) => ({
   name,
