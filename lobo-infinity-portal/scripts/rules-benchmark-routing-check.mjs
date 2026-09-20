@@ -2,11 +2,11 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { findApprovedRulesAnswer, loadRulesBenchmark } from '../bot/rules-benchmark.mjs'
-import { retrieveRulesReference } from '../bot/rules-command.mjs'
+import { retrieveRulesReference, formatRulesDiscordResponse } from '../bot/rules-command.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1393)
+assert.equal(index.canonicalCases, 1394)
 
 for (const file of ['rules-adjudicator-benchmark.json', 'rules-adjudicator-expansion-400.json', 'rules-adjudicator-new-topics-400.json', 'rules-adjudicator-new-topics-500.json', 'rules-benchmark-approved-updates-2026-09-15.json']) {
   const document = JSON.parse(await readFile(resolve(root, 'data/infinity-rules', file), 'utf8'))
@@ -251,4 +251,38 @@ for (const question of [
   assert.equal(result.deepSeek.conclusion, 'NO', question)
 }
 assert.equal(calls, 1)
+
+const impetuousDocument = JSON.parse(await readFile(resolve(root, 'data/infinity-rules/rules-benchmark-approved-updates-2026-09-15.json'), 'utf8'))
+const impetuousCase = impetuousDocument.cases.find((item) => item.id === 'new-topic-2-514')
+assert.equal(impetuousCase.queryVariants.length, 10)
+assert.equal(new Set(impetuousCase.queryVariants.map((item) => item.question.toLowerCase())).size, 10)
+for (const { question } of impetuousCase.queryVariants) {
+  const result = await retrieveRulesReference({ question, deepSeek: fallback })
+  assert.equal(result.answerSource, 'APPROVED_BENCHMARK', question)
+  assert.equal(result.benchmark.id, 'new-topic-2-514', question)
+  assert.equal(result.deepSeek.conclusion, 'DEPENDS', question)
+  assert.match(result.deepSeek.answer, /Dodge has the Movement label/, question)
+  assert.match(result.deepSeek.answer, /Impetuous movement restrictions apply/, question)
+  assert.match(result.deepSeek.answer, /First reach Silhouette contact/, question)
+  assert.match(result.deepSeek.answer, /without doubling back/, question)
+  assert.match(result.deepSeek.answer, /Once inside the enemy Deployment Zone/, question)
+  assert.match(result.deepSeek.answer, /ARO or during a regular Order/, question)
+  assert.doesNotMatch(result.deepSeek.answer, /Dodge allows movement with no directional restriction/, question)
+  assert.deepEqual(result.deepSeek.sources.map((source) => source.page), ['p. 79', 'p. 97'], question)
+  const payload = formatRulesDiscordResponse(result)
+  const answer = payload.embeds[0].fields.find((field) => field.name === 'ANSWER').value
+  assert.ok(answer.length <= 1024)
+  assert.match(answer, /ARO or during a regular Order/, 'Discord must preserve the exceptions, not truncate them')
+}
+assert.equal(calls, 1, 'All ten Impetuous phrasings must bypass the AI provider')
+// Similar vocabulary must not turn reactive/regular Dodge into an Impetuous activation.
+for (const question of [
+  'Can an Impetuous trooper Dodge sideways in ARO?',
+  'Can I Dodge sideways during a regular Order with an Impetuous trooper?',
+]) {
+  const result = await retrieveRulesReference({ question, deepSeek: fallback })
+  assert.equal(result.status, 'FALLBACK', question)
+}
+assert.equal(calls, 3)
+
 console.log(`PASS - ${index.canonicalCases} trusted benchmark rulings route before DeepSeek; unmatched questions fall back exactly once.`)

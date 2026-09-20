@@ -58,6 +58,29 @@ for (const question of [
   assert.match(evidence.text, /Page 29 of 139/i, question)
 }
 
+// Verify the evidence itself contains the missing label and complete restrictions.
+// These unregistered phrasings exercise retrieval independently of benchmark matching.
+for (const question of [
+  'Can I dodge sideways during an impetuous activation?',
+  'Does dodging in the impetuous phase let me move laterally?',
+  'My Impetuous model wants to dodge around the corner instead of heading forward. Is that legal?',
+  'Can an Impetuous trooper Dodge sideways in ARO?',
+  'Can I Dodge sideways during a regular Order with an Impetuous trooper?',
+]) {
+  const evidence = buildRulesEvidencePrompt(productionCorpus, question)
+  const { entries } = JSON.parse(evidence.text.split('\n').at(-1))
+  assert.ok(entries.some((entry) => entry.page === '79' && /SHORT SKILL \/ ARO\nMovement/.test(entry.text)), question)
+  const restriction = entries.find((entry) => entry.page === '97' && /Once inside the enemy Deployment Zone/.test(entry.text))
+  assert.ok(restriction, question)
+  assert.match(restriction.text, /Skill with the Movement Label/, question)
+  assert.match(restriction.text, /Silhouette contact/, question)
+  assert.match(restriction.text, /without doubling back/, question)
+  assert.match(restriction.text, /as close to the Enemy Deployment Zone as possible/, question)
+  assert.match(restriction.text, /Trooper performs an Idle/, question)
+  assert.match(evidence.text, /Permission to declare a Skill combination does not waive its movement restrictions/, question)
+}
+assert.ok(!productionCorpus.chunks.some((chunk) => chunk.canonicalTerm === 'impetuous' && chunk.pdfPage === 88))
+
 process.env.DEEPSEEK_API_KEY = 'invalid-placeholder-key'
 process.env.DEEPSEEK_HOURLY_LIMIT_USD = '1'
 process.env.DEEPSEEK_MONTHLY_LIMIT_USD = '10'

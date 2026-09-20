@@ -652,6 +652,79 @@
         { "id": "new-topic-2-513-q7", "question": "Is a Plasma crit 2 ARM and 1 BTS?", "style": "PLAYER_SHORTHAND" },
         { "id": "new-topic-2-513-q8", "question": "For Plasma ammunition, does the Critical add an ARM roll or a BTS roll?", "style": "RULES_CHECK" }
       ]
+    },
+    {
+      "id": "new-topic-2-514",
+      "category": "NEW_MULTI_RULE_INTERACTIONS",
+      "canonicalQuestion": "Can I dodge sideways during an impetuous activation?",
+      "approvedAnswer": "It depends on the route; Dodge is not unrestricted during an Impetuous activation. Dodge has the Movement label, so Impetuous movement restrictions apply even though Move + Dodge is allowed. First reach Silhouette contact with an enemy if possible; otherwise move towards the enemy Deployment Zone without doubling back, following the Impetuous movement priorities. A sideways Dodge is legal only if it satisfies those restrictions, for example by reaching an enemy beside you. Once inside the enemy Deployment Zone, movement is normal provided you stay inside it. Dodge uses its own movement allowance, not the Move Skill distance. These Impetuous Phase restrictions do not apply merely because a trooper has Impetuous when Dodging in ARO or during a regular Order.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "DEPENDS",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 79,
+          "section": "DODGE — MOVEMENT LABEL AND EFFECTS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 97,
+          "section": "IMPETUOUS — MOVEMENT RESTRICTIONS"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "queryVariants": [
+        {
+          "id": "new-topic-2-514-q1",
+          "question": "Can I dodge sideways during an impetuous activation?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-2-514-q2",
+          "question": "Can an Impetuous trooper Dodge to the side during its Impetuous Order?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-514-q3",
+          "question": "Am I allowed to Dodge laterally in the Impetuous Phase?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-514-q4",
+          "question": "If I declare Move plus Dodge for my Impetuous activation, can the Dodge go sideways?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-514-q5",
+          "question": "During an Impetuous activation, can I use Dodge to sidestep instead of advancing?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-514-q6",
+          "question": "Can my model Dodge left or right when spending its Impetuous token?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-514-q7",
+          "question": "Does Dodge let me ignore the direction restrictions of an Impetuous move?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-514-q8",
+          "question": "Is sideways Dodge movement unrestricted during an Impetuous activation?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-514-q9",
+          "question": "Can I Dodge in any direction during the Impetuous Phase?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-514-q10",
+          "question": "Impetuous Move + Dodge: can the Dodge movement go sideways?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ]
     }
   ]
 }

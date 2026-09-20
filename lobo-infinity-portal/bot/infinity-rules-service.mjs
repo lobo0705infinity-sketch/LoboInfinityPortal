@@ -7,6 +7,7 @@ export const RULES_MANIFEST_PATH = resolve(root, 'data/infinity-rules/sources.js
 export const RULES_INDEX_PATH = resolve(root, 'data/infinity-rules/rules-search-index.json')
 
 const aliases = new Map([
+  ['dodging', ['dodge']], ['dodged', ['dodge']],
   ['aro', ['automatic reaction order']], ['camo', ['camouflaged state', 'camouflage']],
   ['link team', ['fireteam', 'fireteam integrity']], ['shoot back', ['automatic reaction order', 'bs attack']],
   ['repeater penalty', ['repeater', 'firewall', 'hacking area']], ['zoc', ['zone of control']], ['lof', ['line of fire']],
@@ -14,9 +15,51 @@ const aliases = new Map([
   ['khd', ['killer hacking device']], ['smoke', ['smoke ammunition','visibility zones']],
 ])
 const stopWords = new Set('a an and are as at be before by can do does for from how i if in into is it my of on or same say since that the this through to what when which with'.split(' '))
-const officialTerms = ['zero pain','discover','camouflaged state','camouflaged marker','order expenditure sequence','stealth','repeater','hacking area','firewall','dodge','impersonation','coordinated order','place deployable','deployable weapon','line of fire','zone of control','fireteam','fireteam integrity','mimetism','guts roll','suppressive fire','specialist troops','classified objective','secure hvt','bs attack','automatic reaction order','lieutenant','direct template weapon','panoply','peripheral']
+const officialTerms = ['zero pain','discover','camouflaged state','camouflaged marker','order expenditure sequence','stealth','repeater','hacking area','firewall','dodge','impetuous','impersonation','coordinated order','place deployable','deployable weapon','line of fire','zone of control','fireteam','fireteam integrity','mimetism','guts roll','suppressive fire','specialist troops','classified objective','secure hvt','bs attack','automatic reaction order','lieutenant','direct template weapon','panoply','peripheral']
 
+// Restore bounded PDF excerpts checked against the official N5.3 Impetuous and Dodge rules.
+// https://infinitythewiki.com/Impetuous | https://infinitythewiki.com/Dodge
 const rulesSupplements = Object.freeze([
+{
+  "sourceId": "infinity-rules-n5.3",
+  "title": "Infinity Rules",
+  "version": "5.3",
+  "authority": 1,
+  "scope": "core",
+  "pdfPage": 97,
+  "printedPage": "97",
+  "section": "IMPETUOUS",
+  "headings": [
+    "IMPETUOUS",
+    "EFFECTS"
+  ],
+  "structuredBlockTypes": [
+    "REQUIREMENTS",
+    "EFFECTS"
+  ],
+  "canonicalTerm": "impetuous",
+  "text": "IMPETUOUS\nAUTOMATIC SKILL\nImpetuous Phase, Obligatory.\nEFFECTS\nDuring the Turn's Impetuous Phase, the player may activate each Impetuous Trooper once, without spending an Order. Removing the Impetuous Token to activate the Trooper counts as spending an Order on them, applying the Order Expenditure Sequence normally.\nRestriction: Impetuous activations only allow a fixed set of Skill combinations: Move + CC Attack; Move + BS Attack; Move + Dodge; Move + Idle; Move + Move; Jump; Climb; Berserk; Skills with the Airborne Deployment Label; those Skills that specify they can be used during the Impetuous Phase.\nRestriction: In the Impetuous Phase, when declaring a Skill with the Movement Label, the Trooper must always move the full corresponding MOV value, attempting to perform the first of these options that the Trooper can complete:\nEnter Silhouette contact with an Enemy Trooper during this move.\nGo towards the Enemy Deployment Zone without doubling back from the movement's starting position, applying the following priorities:\n1. Use their complete MOV value.\n2. End their movement as close to the Enemy Deployment Zone as possible.\n3. If they cannot end their movement closer to the enemy Deployment Zone, the Trooper performs an Idle.\nOnce inside the enemy Deployment Zone, the Trooper can move normally as long as they stay inside it.\nTroopers may only move a shorter distance if they reach Silhouette contact with an Enemy or a Special Terrain area hinders their Movement or forces them to declare Jump or Climb.\nIn the Impetuous Phase, when declaring Move, Jump, or Climb, the Trooper must cancel Prone State, move the full corresponding MOV value, and cannot enter Prone State at the end of the movement.\nRestriction: Impetuous Troopers cannot enter Marker States (Camouflaged, Impersonation...), or any other States that say so. Furthermore, they cannot enter Prone state at the end of the Order."
+},
+{
+  "sourceId": "infinity-rules-n5.3",
+  "title": "Infinity Rules",
+  "version": "5.3",
+  "authority": 1,
+  "scope": "core",
+  "pdfPage": 79,
+  "printedPage": "79",
+  "section": "DODGE",
+  "headings": [
+    "DODGE",
+    "EFFECTS"
+  ],
+  "structuredBlockTypes": [
+    "REQUIREMENTS",
+    "EFFECTS"
+  ],
+  "canonicalTerm": "dodge",
+  "text": "DODGE\nSHORT SKILL / ARO\nMovement\nREQUIREMENTS\nTroopers can only Dodge if at least one of these is true: They are the Active Trooper; in the Reactive Turn, if they are allowed to declare an ARO.\nEFFECTS\nA successful Normal or Face to Face Dodge Roll allows the user to move up to 2 inches. This movement is measured, declared, and the Trooper moves, during the Effects step of the Order Expenditure Sequence. If both players have Troopers that successfully Dodged, the Active Player will move their Troopers first, then the Reactive Player will move theirs.\nThis movement does not generate AROs or trigger Deployable Weapons or Equipment.\nDodge follows the General Movement Rules as well as the Moving and Measuring sidebar.\nDodge allows the user to enter Engaged State with an enemy, as long as the movement is enough to reach Silhouette contact with that enemy."
+},
   {
     sourceId: 'its-season-18',
     title: 'ITS Season 18: Overheat',
@@ -90,7 +133,8 @@ export async function loadProductionRulesCorpus({manifestPath=RULES_MANIFEST_PAT
   if(!manifest.derivedIndex?.sha256||sha256(indexRaw)!==manifest.derivedIndex.sha256)throw new Error('Infinity rules search index checksum mismatch')
   for(const source of manifest.sources){const indexed=index.sources.find((item)=>item.id===source.id);if(!indexed||indexed.version!==source.version||indexed.sourceSha256!==source.sha256)throw new Error(`Infinity rules index source mismatch: ${source.id}`)}
   const trustedUrls=new Map(manifest.sources.map((source)=>[source.id,source.officialUrl]))
-  const chunks=[...index.chunks,...rulesSupplements.map((chunk)=>({...chunk,sourceUrl:trustedUrls.get(chunk.sourceId)}))].map((chunk)=>{const source=manifest.sources.find((item)=>item.id===chunk.sourceId);if(!source)throw new Error(`Unknown indexed source: ${chunk.sourceId}`);if(chunk.sourceUrl!==trustedUrls.get(chunk.sourceId))throw new Error(`Untrusted indexed URL: ${chunk.sourceId}`);if(!Number.isInteger(chunk.pdfPage)||chunk.pdfPage<1||chunk.pdfPage>source.pageCount)throw new Error(`Invalid indexed page: ${chunk.sourceId}`);if(chunk.printedPage!==printedPageForSource(source,chunk.pdfPage))throw new Error(`Invalid printed page mapping: ${chunk.sourceId}:${chunk.pdfPage}`);return{...chunk,normalized:normalizeRuleText(`${chunk.section} ${chunk.headings.join(' ')} ${chunk.text}`)}})
+  const indexedChunks=index.chunks.map((chunk)=>chunk.canonicalTerm==='impetuous'&&chunk.pdfPage===88?{...chunk,canonicalTerm:'climbing plus'}:chunk)
+  const chunks=[...indexedChunks,...rulesSupplements.map((chunk)=>({...chunk,sourceUrl:trustedUrls.get(chunk.sourceId)}))].map((chunk)=>{const source=manifest.sources.find((item)=>item.id===chunk.sourceId);if(!source)throw new Error(`Unknown indexed source: ${chunk.sourceId}`);if(chunk.sourceUrl!==trustedUrls.get(chunk.sourceId))throw new Error(`Untrusted indexed URL: ${chunk.sourceId}`);if(!Number.isInteger(chunk.pdfPage)||chunk.pdfPage<1||chunk.pdfPage>source.pageCount)throw new Error(`Invalid indexed page: ${chunk.sourceId}`);if(chunk.printedPage!==printedPageForSource(source,chunk.pdfPage))throw new Error(`Invalid printed page mapping: ${chunk.sourceId}:${chunk.pdfPage}`);return{...chunk,normalized:normalizeRuleText(`${chunk.section} ${chunk.headings.join(' ')} ${chunk.text}`)}})
   const ruleCatalog=(index.ruleCatalog??[]).map((item)=>({...item,normalizedName:normalizeRuleText(item.normalizedName??item.canonicalName),family:normalizeRuleText(item.family??item.canonicalName)}))
   const corpus={manifest,chunks,ruleCatalog,indexMetadata:{generatedAt:index.generatedAt,sourceCount:index.sources.length,chunkCount:chunks.length,catalogCount:ruleCatalog.length}}
   if(manifestPath===RULES_MANIFEST_PATH&&indexPath===RULES_INDEX_PATH)cachedCorpus=corpus
