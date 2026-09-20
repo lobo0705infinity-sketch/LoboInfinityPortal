@@ -1,3 +1,4 @@
+import { lookupMobileGunfighter } from './mobile-gunfighter.mjs'
 import { lookupMobility } from './mobility-lookup.mjs'
 import { decodeArmyCode } from '../scripts/infinity-army-decode.mjs'
 import { buildCanonicalDataset, resolveCanonicalWeaponRecords } from '../scripts/infinity-army-canonical-dataset.mjs'
@@ -7,6 +8,8 @@ const categories = [
   ['gunfighters', 'Top Gunfighter Ratings'],
   ['closeCombat', 'Top Close Combat Ratings'],
   ['mobility', 'Top Mobility'],
+  ['mobileGunfighters', 'Mobile Gunfighter · Non-linked'],
+  ['mobileLinked', 'Mobile Gunfighter · Linked +1SD Potential'],
   ['apex', 'Apex Gunfighters'],
   ['competent', 'Competent Gunfighters'],
   ['apexCc', 'Apex Close Combat Fighters'],
@@ -90,13 +93,16 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
   })
 }
 
-export function classifyTacticalBrief(profiles, army = {}, gunfighterRatings = [], aroRatings = [], closeCombatRatings = [], mobilityCatalog = null) {
+export function classifyTacticalBrief(profiles, army = {}, gunfighterRatings = [], aroRatings = [], closeCombatRatings = [], mobilityCatalog = null, mobileCatalog = null) {
   const aggregated = aggregateExactProfiles(profiles).map(profile => ({ ...profile, mobility: lookupMobility(mobilityCatalog, profile.combinedId) }))
   const eligibleFireteams = legalFireteams(aggregated)
   const result = Object.fromEntries(categories.map(([key]) => [key, []]))
   result.gunfighters = mergeGunfighterRatings(aggregated, gunfighterRatings)
   result.closeCombat = mergeCloseCombatRatings(aggregated, closeCombatRatings)
   result.mobility = aggregated.filter(profile => profile.mobility?.status === 'rated').sort((a, b) => b.mobility.score - a.mobility.score || profileSort(a, b)).slice(0, 6)
+  for (const [key, state] of [['mobileGunfighters', 'normal'], ['mobileLinked', 'fireteam']]) {
+    result[key] = mobileCatalog ? aggregated.map(profile => ({ ...profile, mobileRating: lookupMobileGunfighter(mobileCatalog, profile.combinedId, state) })).filter(profile => profile.mobileRating && (state === 'normal' || (profile.fireteamTeams || []).some(team => eligibleFireteams.has(team)))).sort((a, b) => b.mobileRating.score - a.mobileRating.score || profileSort(a, b)).slice(0, 4) : []
+  }
   for (const profile of aggregated) {
     const enhancements = preferredMatches(profile.skills, [gunfighterMimetismToken, gunfighterMsvToken, bsAttackMinusThreeToken, albedoToken])
     const parsedBurstBonus = bsAttackBurstBonus(profile.skills)
@@ -166,6 +172,7 @@ export function classifyTacticalBrief(profiles, army = {}, gunfighterRatings = [
     gunfighterBenchmark: { available: result.gunfighters.length > 0, fingerprint: army.gunfighterCatalogFingerprint || null },
     closeCombatBenchmark: { available: result.closeCombat.length > 0, fingerprint: army.closeCombatCatalogFingerprint || null },
     aroBenchmark: { available: aroRatings.some((rating) => rating?.status === 'matched'), fingerprint: army.aroCatalogFingerprint || null },
+    mobileGunfighterBenchmark: { requested: Boolean(mobileCatalog), fingerprint: mobileCatalog?.fingerprint || null },
     mobilityBenchmark: { available: result.mobility.length > 0, fingerprint: mobilityCatalog?.fingerprint || null },
     categories: result,
     networkSummary: {
@@ -187,6 +194,7 @@ export async function renderTacticalBrief({ analysis, browser }) {
   try {
     const categoryBlocks = categories
       .filter(([key]) => {
+        if (['mobileGunfighters', 'mobileLinked'].includes(key) && !analysis.mobileGunfighterBenchmark?.requested) return false
         if (key === 'mobility' && !analysis.mobilityBenchmark?.available) return false
         if (analysis.gunfighterBenchmark?.available ? ['apex', 'competent'].includes(key) : key === 'gunfighters') return false
         if (analysis.closeCombatBenchmark?.available ? key === 'apexCc' : key === 'closeCombat') return false
@@ -229,13 +237,14 @@ function markup(analysis, blocks, pageIndex, pageCount) {
 }
 
 function categoryMarkup({ key, title, entries }, analysis) {
-  const summary = key === 'mobility' ? '<div class="summary">0–100 movement index · independent of combat ratings · legal paths and landings assumed</div>' : key === 'hacking' ? `<div class="summary"><b>NETWORK:</b> ${analysis.networkSummary.hackers} Hackers · ${analysis.networkSummary.pitcherCarriers} Pitcher · ${analysis.networkSummary.fastPandaCarriers} FastPanda · ${analysis.networkSummary.deployableRepeaterCarriers} Deployable Repeater · ${analysis.networkSummary.repeaterCarriers} Repeater</div>` : ''
+  const summary = ['mobileGunfighters', 'mobileLinked'].includes(key) ? `<div class="summary">85% Gunfighter percentile + 15% Mobility percentile · not a win probability${key === 'mobileLinked' ? ' · requires an active legal Fireteam' : ''}</div>` : key === 'mobility' ? '<div class="summary">0–100 movement index · independent of combat ratings · legal paths and landings assumed</div>' : key === 'hacking' ? `<div class="summary"><b>NETWORK:</b> ${analysis.networkSummary.hackers} Hackers · ${analysis.networkSummary.pitcherCarriers} Pitcher · ${analysis.networkSummary.fastPandaCarriers} FastPanda · ${analysis.networkSummary.deployableRepeaterCarriers} Deployable Repeater · ${analysis.networkSummary.repeaterCarriers} Repeater</div>` : ''
   const content = entries.length ? `<div class="grid"${['gunfighters', 'closeCombat'].includes(key) ? ' style="grid-template-columns:1fr 1fr"' : ''}>${entries.map((entry, index) => entryMarkup(key, entry, index)).join('')}</div>` : `<div class="empty">${emptyMessage}</div>`
   const fullWidth = analysis.gunfighterBenchmark?.available || analysis.closeCombatBenchmark?.available ? ' style="grid-column:1/-1"' : ''
   return `<section class="category category-${escapeHtml(key)}"${fullWidth}><h3><span>${escapeHtml(title)}</span><small>${entries.length} exact profile${entries.length === 1 ? '' : 's'}</small></h3>${summary}${content}</section>`
 }
 
 function entryMarkup(key, entry, index = 0) {
+  if (['mobileGunfighters', 'mobileLinked'].includes(key)) return mobileGunfighterMarkup(entry, index)
   if (key === 'mobility') return mobilityEntryMarkup(entry, index)
   if (key === 'gunfighters') return gunfighterEntryMarkup(entry, index)
   if (key === 'closeCombat') return closeCombatEntryMarkup(entry, index)
@@ -262,6 +271,11 @@ function aroEntryMarkup(entry, index) {
   const weapons = unique(states.flatMap((state) => (state.weaponsUsed || []).map((weapon) => weapon.weapon).filter(Boolean))).slice(0, 3)
   const rows = states.map((state) => `<div class="rating-row"><span class="rating-state">${state.label}</span><div class="rating-metrics"><b>${escapeHtml(state.grade || '—')}</b><strong>${formatRating(state.rating)}</strong><small>${formatPercentile(state.percentile)}</small></div></div>`).join('')
   return `<article class="gunfighter-card aro-rating-card"><div class="gunfighter-rank">#${index + 1}</div><div class="entry-head"><div><h4>${escapeHtml(entry.unitName)}</h4><p>${escapeHtml(entry.profileName)} · ${value(entry.points)} pts · ×${entry.quantity}</p></div><div class="grade grade-${escapeHtml(String(best.grade || 'na').toLowerCase())}"><span>GRADE</span>${escapeHtml(best.grade || '—')}</div></div><div class="weapon-line"><span>ARO WEAPON${weapons.length === 1 ? '' : 'S'}</span>${weapons.length ? weapons.map(escapeHtml).join(' · ') : 'Dodge/no-effect response selected most often'}</div><div class="rating-table">${rows}</div></article>`
+}
+
+function mobileGunfighterMarkup(entry, index) {
+  const r = entry.mobileRating
+  return `<article><div class="entry-head"><div><h4>#${index + 1} ${escapeHtml(entry.unitName)}</h4><p>${escapeHtml(entry.profileName)}</p></div><strong>${r.score.toFixed(1)}<small>/100</small></strong></div><div class="detail">Gunfighter ${r.gunfighter.toFixed(2)} · Mobility ${r.mobility.toFixed(1)}/100</div><div class="also">Percentiles: Gunfighter ${r.gunfighterPercentile.toFixed(1)} · Mobility ${r.mobilityPercentile.toFixed(1)}</div><p>×${entry.quantity}</p></article>`
 }
 
 function mobilityEntryMarkup(entry, index) {
@@ -538,7 +552,7 @@ function loadoutSignature(profile) {
 }
 function addMultiRoleMetadata(result) {
   const memberships = new Map()
-  for (const [key] of categories.filter(([id]) => id !== 'mobility')) for (const profile of result[key]) {
+  for (const [key] of categories.filter(([id]) => !['mobility', 'mobileGunfighters', 'mobileLinked'].includes(id))) for (const profile of result[key]) {
     const id = `${profile.combinedId}|${loadoutSignature(profile)}`
     const roles = memberships.get(id) || []
     roles.push(key)

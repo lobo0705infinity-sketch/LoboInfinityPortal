@@ -1,3 +1,4 @@
+import ArmyMobileGunfighter from './ArmyMobileGunfighter'
 import { useEffect, useMemo, useState } from 'react'
 import { lookupMobility, mobilityKey, type MobilityCatalog, type MobilityRecord } from '../../bot/mobility-lookup.mjs'
 import type { ArmyIntelligenceList } from '../services/api'
@@ -5,6 +6,7 @@ import type { ArmyIntelligenceList } from '../services/api'
 export default function ArmyMobility({ lists }: { lists: ArmyIntelligenceList[] }) {
   const [catalog, setCatalog] = useState<MobilityCatalog | null>(null)
   const [failed, setFailed] = useState(false)
+  const [showMobileGunfighter, setShowMobileGunfighter] = useState(false)
   useEffect(() => {
     let active = true
     import('../data/mobility-index.json').then(module => { if (active) setCatalog(module.default) }).catch(() => { if (active) setFailed(true) })
@@ -42,6 +44,8 @@ export default function ArmyMobility({ lists }: { lists: ArmyIntelligenceList[] 
       {result.unavailable > 0 ? <p>{result.unavailable} model entries have no resolved mobility rating.</p> : null}
       {result.stationary > 0 ? <p>{result.stationary} model entries have no MOV and are excluded.</p> : null}
     </>}
+    <label><input type="checkbox" checked={showMobileGunfighter} onChange={event => setShowMobileGunfighter(event.target.checked)} /> Show Mobile Gunfighter ranking (85/15)</label>
+    {showMobileGunfighter ? <ArmyMobileGunfighter lists={lists} /> : null}
     <details><summary>How Mobility is scored</summary>
       <p>Move or jump before an action: 25%. Open travel: 15%. Vertical movement with an action: 12%; whole-order vertical movement: 8%. Gaps with an action: 12%; whole-order gaps: 3%. A turning 10″ jump with an action: 10%. Difficult Terrain: 10%. Expected Normal Dodge movement: 5%.</p>
       <p>Distances are inches. Travel is the best legal open-ground distance in one order. Scenarios assume clear paths and legal landings, with equal frequency of the five Difficult Terrain types. Deployment skills, enemy reactions, cover and mission objectives are outside this index. Weights are design choices, not measured win probabilities.</p>

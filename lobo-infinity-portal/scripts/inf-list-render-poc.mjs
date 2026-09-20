@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { loadMobileGunfighterCatalog } from '../bot/mobile-gunfighter-store.mjs'
 import { loadMobilityCatalog } from '../bot/mobility-catalog-store.mjs'
 
 import { mkdir, writeFile } from 'node:fs/promises'
@@ -312,7 +313,7 @@ export async function requestRendererView(armyCode, { fetchImpl = fetch, timeout
   }
 }
 
-export async function renderInfListPng({ input, outputPath, browserType = chromium, fetchImpl } = {}) {
+export async function renderInfListPng({ input, outputPath, mobileGunfighter = false, browserType = chromium, fetchImpl } = {}) {
   const armyCode = validateArmyCode(input)
   const decoded = decodeArmyCode(armyCode)
   const rendererViewUrl = await requestRendererView(armyCode, { fetchImpl })
@@ -350,6 +351,8 @@ export async function renderInfListPng({ input, outputPath, browserType = chromi
     const closeCombatCatalog = await loadCloseCombatCatalog()
     const closeCombatRatings = closeCombatCatalog ? rankSubmittedCloseCombat(closeCombatCatalog, submittedProfiles, { sectorialId: decoded.sectorialId, limit: 4 }) : []
     const mobilityCatalog = await loadMobilityCatalog()
+    const mobileCatalog = mobileGunfighter ? await loadMobileGunfighterCatalog() : null
+    if (mobileGunfighter && (!mobileCatalog || mobileCatalog.gunfighterFingerprint !== gunfighterCatalog?.fingerprint || mobileCatalog.mobilityFingerprint !== mobilityCatalog?.fingerprint)) throw new InfListRenderError('classification_unavailable', 'Mobile Gunfighter catalog is unavailable or out of date.')
     const tacticalAnalysis = classifyTacticalBrief(submittedProfiles, {
       aroCatalogFingerprint: aroCatalog?.fingerprint,
       closeCombatCatalogFingerprint: closeCombatCatalog?.fingerprint,
@@ -357,7 +360,7 @@ export async function renderInfListPng({ input, outputPath, browserType = chromi
       gunfighterCatalogFingerprint: gunfighterCatalog?.fingerprint,
       listName: decoded.listName,
       sectorial: faction?.name,
-    }, gunfighterRatings, aroRatings, closeCombatRatings, mobilityCatalog)
+    }, gunfighterRatings, aroRatings, closeCombatRatings, mobilityCatalog, mobileCatalog)
     const tacticalPages = await renderTacticalBrief({ analysis: tacticalAnalysis, browser })
     const legality = validateInfListLegality({ decoded, payload: classificationData.payload })
 
