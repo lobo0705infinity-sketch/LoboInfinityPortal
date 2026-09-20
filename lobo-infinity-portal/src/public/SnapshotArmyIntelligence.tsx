@@ -1,3 +1,4 @@
+import ArmyMobility from '../components/ArmyMobility'
 import { type ReactNode, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import InteractiveMetricCard from '../components/InteractiveMetricCard'
@@ -228,6 +229,8 @@ function ArmyIntelligenceDetail({ selected }: { selected: string }) {
 
     {lists.length ? <>
       <IntelligenceBrief analysis={buildTacticalAnalysis(lists)} faction={selected} />
+
+      <ArmyMobility lists={lists} />
 
       <UsagePanel items={visibleUsage} listCount={lists.length} title="Model Usage" wide />
 
