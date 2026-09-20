@@ -8,6 +8,8 @@
     "npm": ">=11"
   },
   "scripts": {
+    "mobility:build": "node scripts/build-mobility-index.mjs",
+    "test:mobility": "node scripts/mobility-rating-check.mjs && node scripts/mobility-audit-check.mjs && node scripts/mobility-index-check.mjs",
     "test:top-40-form": "node scripts/top-40-form-check.mjs",
     "test:top-40-results": "node --experimental-strip-types scripts/top-40-results-check.mts",
     "test:top-40-public-projection": "node scripts/top-40-public-projection-check.mjs",

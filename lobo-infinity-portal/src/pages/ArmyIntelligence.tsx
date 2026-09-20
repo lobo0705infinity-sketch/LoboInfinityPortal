@@ -1,3 +1,4 @@
+import ArmyMobility from '../components/ArmyMobility'
 import { type KeyboardEvent, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
@@ -586,6 +587,8 @@ function ArmyIntelligenceContent({
           </section>
 
           <IntelligenceBrief analysis={tacticalAnalysis} faction={selectedExplorerScope.label || selectedSectorial} />
+
+          <ArmyMobility lists={matchingLists} />
 
           <UsagePanel
             items={filteredModelUsage}

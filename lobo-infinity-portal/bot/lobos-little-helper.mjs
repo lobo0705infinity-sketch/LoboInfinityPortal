@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { loadMobilityCatalog } from './mobility-catalog-store.mjs'
 // Railway production deployment: gunfighter benchmark v8
 
 import { Client, Events, GatewayIntentBits } from 'discord.js'
@@ -45,6 +46,7 @@ export async function startLobosLittleHelper({ token = process.env[DISCORD_TOKEN
   if (!gunfighterCatalog) throw new Error('The bundled gunfighter benchmark catalog could not be loaded.')
   const aroCatalog = await loadAroBenchmarkCatalog()
   if (!aroCatalog) throw new Error('The bundled ARO benchmark catalog could not be loaded.')
+  const mobilityCatalog = await loadMobilityCatalog()
   const closeCombatCatalog = await loadCloseCombatCatalog()
   if (!closeCombatCatalog) throw new Error('The bundled close-combat benchmark catalog could not be loaded.')
   const client = createLobosLittleHelper()
@@ -55,7 +57,7 @@ export async function startLobosLittleHelper({ token = process.env[DISCORD_TOKEN
     const infIdCommands = await ensureInfIdCommand(client)
     const rulesCommands = await ensureRulesCommand(client)
     const guildIds = [...client.guilds.cache.keys()]
-    process.stdout.write(`${BOT_NAME} ready: botUserId=${client.user.id} applicationId=${client.application.id} guildIds=${guildIds.join(',') || 'none'} interactionListeners=${client.listenerCount(Events.InteractionCreate)} missionCommands=${commands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} infListCommands=${infListCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} infIdCommands=${infIdCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} rulesCommands=${rulesCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} gunfighterBenchmark=${gunfighterCatalog.benchmarkVersion || 'unknown'} gunfighterCatalog=${gunfighterCatalog.fingerprint || 'unknown'} aroBenchmark=${aroCatalog.benchmarkVersion || 'unknown'} aroCatalog=${aroCatalog.fingerprint || 'unknown'} closeCombatBenchmark=${closeCombatCatalog.benchmarkVersion || 'unknown'} closeCombatCatalog=${closeCombatCatalog.fingerprint || 'unknown'}\n`)
+    process.stdout.write(`${BOT_NAME} ready: botUserId=${client.user.id} applicationId=${client.application.id} guildIds=${guildIds.join(',') || 'none'} interactionListeners=${client.listenerCount(Events.InteractionCreate)} missionCommands=${commands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} infListCommands=${infListCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} infIdCommands=${infIdCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} rulesCommands=${rulesCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} gunfighterBenchmark=${gunfighterCatalog.benchmarkVersion || 'unknown'} gunfighterCatalog=${gunfighterCatalog.fingerprint || 'unknown'} aroBenchmark=${aroCatalog.benchmarkVersion || 'unknown'} aroCatalog=${aroCatalog.fingerprint || 'unknown'} mobilityCatalog=${mobilityCatalog?.fingerprint || 'unavailable'} closeCombatBenchmark=${closeCombatCatalog.benchmarkVersion || 'unknown'} closeCombatCatalog=${closeCombatCatalog.fingerprint || 'unknown'}\n`)
     startRulesResourceWatcher({
       logger: console,
       onChange: async ({ changes }) => {
