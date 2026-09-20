@@ -5,6 +5,7 @@ import { formatInfListLegality } from './inf-list-legality.mjs'
 export const INF_LIST_COMMAND = '!!inf-list'
 export const INF_LIST_SLASH_COMMAND = 'inf-list'
 export const INF_LIST_OPTION = 'army-code'
+export const INF_LIST_MOBILE_OPTION = 'mobile-gunfighter'
 export const SUCCESS_TEXT = 'Here is a link to your army list'
 export const USAGE_TEXT = 'Usage: !!inf-list <army code>'
 export const INF_LIST_COMMAND_DEFINITION = Object.freeze({
@@ -16,6 +17,11 @@ export const INF_LIST_COMMAND_DEFINITION = Object.freeze({
     required: true,
     type: ApplicationCommandOptionType.String,
     max_length: 4096,
+  }, {
+    name: INF_LIST_MOBILE_OPTION,
+    description: 'Include the optional 85/15 Mobile Gunfighter ranking',
+    required: false,
+    type: ApplicationCommandOptionType.Boolean,
   }],
 })
 
@@ -71,11 +77,12 @@ const sharedRenderLimiter = createConcurrencyLimiter(2)
 
 export async function createInfListResponse({
   armyCode,
+  mobileGunfighter = false,
   render = renderInfListPng,
   withRenderSlot = sharedRenderLimiter,
 } = {}) {
   const validatedArmyCode = validateArmyCode(armyCode)
-  const result = await withRenderSlot(() => render({ input: validatedArmyCode }))
+  const result = await withRenderSlot(() => render({ input: validatedArmyCode, ...(mobileGunfighter ? { mobileGunfighter: true } : {}) }))
   const files = []
   if (result.readableImageBuffer) {
     files.push({ attachment: result.readableImageBuffer, name: 'infinity-army-list-readable.png' })
@@ -125,7 +132,8 @@ export function createInfListInteractionHandler({
     try {
       await interaction.deferReply()
       const armyCode = interaction.options.getString(INF_LIST_OPTION, true)
-      await interaction.editReply(await createInfListResponse({ armyCode, render, withRenderSlot }))
+      const mobileGunfighter = interaction.options.getBoolean?.(INF_LIST_MOBILE_OPTION) === true
+      await interaction.editReply(await createInfListResponse({ armyCode, mobileGunfighter, render, withRenderSlot }))
     } catch (error) {
       logger.error?.('Infinity Army list slash-command request failed:', error)
       try {
@@ -159,11 +167,14 @@ export async function ensureInfListCommand(client) {
 function slashCommandMatches(command) {
   const option = command.options?.[0]
   return command.description === INF_LIST_COMMAND_DEFINITION.description
-    && command.options?.length === 1
+    && command.options?.length === 2
     && option?.name === INF_LIST_OPTION
     && option?.required === true
     && option?.type === ApplicationCommandOptionType.String
     && option?.maxLength === 4096
+    && command.options[1]?.name === INF_LIST_MOBILE_OPTION
+    && command.options[1]?.type === ApplicationCommandOptionType.Boolean
+    && !command.options[1]?.required
 }
 
 export function messageForError(error) {

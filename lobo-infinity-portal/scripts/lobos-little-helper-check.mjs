@@ -84,13 +84,15 @@ assert.equal(RULES_COMMAND_DEFINITION.options[0].required, true)
 assert.equal(INF_LIST_COMMAND_DEFINITION.name, 'inf-list')
 assert.equal(INF_LIST_COMMAND_DEFINITION.options[0].name, 'army-code')
 assert.equal(INF_LIST_COMMAND_DEFINITION.options[0].required, true)
+assert.equal(INF_LIST_COMMAND_DEFINITION.options[1].name, 'mobile-gunfighter')
+assert.equal(INF_LIST_COMMAND_DEFINITION.options[1].required, false)
 const registeredSlashCommands = []
 const commandClient = {
   application: { commands: { fetch: async () => [] } },
   guilds: { cache: new Map([['guild-1', { id: 'guild-1', commands: {
     fetch: async () => registeredSlashCommands,
     create: async (definition) => {
-      const command = { id: 'inf-list-1', name: definition.name, applicationId: 'app-1', guildId: 'guild-1', description: definition.description, options: [{ ...definition.options[0], maxLength: definition.options[0].max_length }] }
+      const command = { id: 'inf-list-1', name: definition.name, applicationId: 'app-1', guildId: 'guild-1', description: definition.description, options: definition.options.map(option => ({ ...option, ...(option.max_length ? { maxLength: option.max_length } : {}) })) }
       registeredSlashCommands.push(command)
       return command
     },
@@ -99,6 +101,17 @@ const commandClient = {
 assert.equal((await ensureInfListCommand(commandClient)).length, 1)
 assert.equal((await ensureInfListCommand(commandClient)).length, 1)
 assert.equal(registeredSlashCommands.filter((command) => command.id === 'inf-list-1').length, 1)
+let infListEdits = 0
+registeredSlashCommands[0].options = registeredSlashCommands[0].options.slice(0, 1)
+registeredSlashCommands[0].edit = async definition => {
+  infListEdits++
+  registeredSlashCommands[0].options = definition.options.map(option => ({ ...option, ...(option.max_length ? { maxLength: option.max_length } : {}) }))
+  return registeredSlashCommands[0]
+}
+await ensureInfListCommand(commandClient)
+await ensureInfListCommand(commandClient)
+assert.equal(infListEdits, 1)
+assert.equal(registeredSlashCommands[0].options[1].name, 'mobile-gunfighter')
 assert.deepEqual(parseInfListCommand(`!!inf-list\r\n ${testCode}\r\n`), { armyCode: testCode })
 assert.equal(parseInfListCommand('!!inf-list-c anything'), null)
 assert.equal(parseInfListCommand('!!inf anything'), null)
