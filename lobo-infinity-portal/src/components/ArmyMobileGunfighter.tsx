@@ -28,7 +28,7 @@ export default function ArmyMobileGunfighter({ lists }: { lists: ArmyIntelligenc
   }, [catalog, lists, state])
   return <section aria-labelledby="mobile-gunfighter-title">
     <h3 id="mobile-gunfighter-title">Mobile Gunfighter · 85/15</h3>
-    <p>85% Gunfighter percentile + 15% Mobility percentile. Each percentile uses the same eligible exact-profile pool for the selected combat state. The combined score is not a win probability.</p>
+    <p>85% anchored Gunfighter rating + 15% raw Mobility. A Gunfighter rating of 50 maps to 100; higher ratings stay capped at 100. Percentiles are informational only, and the combined score is not a win probability.</p>
     <label>Combat state <select value={state} onChange={event => setState(event.target.value as 'normal' | 'fireteam')}>
       <option value="normal">Non-linked</option><option value="fireteam">Linked +1SD potential</option>
     </select></label>
@@ -36,7 +36,7 @@ export default function ArmyMobileGunfighter({ lists }: { lists: ArmyIntelligenc
     {!catalog ? <p>{failed ? 'Mobile Gunfighter ratings are unavailable.' : 'Loading Mobile Gunfighter ratings…'}</p> : <>
       <div className="army-intelligence-tactical-grid">{result.rows.map((row, index) => <article className="army-intelligence-tactical-panel" key={row.id}>
         <header><h3>#{index + 1} {row.unit} · {row.rating.score.toFixed(1)}/100</h3><p>{row.profile}</p><p>{row.weapons}</p></header>
-        <div className="army-intelligence-tactical-badges"><span>Gunfighter {row.rating.gunfighter.toFixed(2)}</span><span>Mobility {row.rating.mobility.toFixed(1)}/100</span></div>
+        <div className="army-intelligence-tactical-badges"><span>Gunfighter {row.rating.gunfighter.toFixed(2)} ({row.rating.gunfighterNormalized.toFixed(1)}/100 anchored)</span><span>Mobility {row.rating.mobility.toFixed(1)}/100</span></div>
         <p>Gunfighter percentile {row.rating.gunfighterPercentile.toFixed(1)} · Mobility percentile {row.rating.mobilityPercentile.toFixed(1)}</p>
         <p>{row.count} {row.count === 1 ? 'model' : 'models'} across selected lists</p>
       </article>)}</div>

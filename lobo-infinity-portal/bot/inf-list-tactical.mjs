@@ -240,7 +240,7 @@ function markup(analysis, blocks, pageIndex, pageCount) {
 }
 
 function categoryMarkup({ key, title, entries }, analysis) {
-  const summary = ['mobileGunfighters', 'mobileLinked'].includes(key) ? `<div class="summary">85% Gunfighter percentile + 15% Mobility percentile · not a win probability${key === 'mobileLinked' ? ' · requires an active legal Fireteam' : ''}</div>` : key === 'mobility' ? '<div class="summary">0–100 movement index · independent of combat ratings · legal paths and landings assumed</div>' : key === 'hacking' ? `<div class="summary"><b>NETWORK:</b> ${analysis.networkSummary.hackers} Hackers · ${analysis.networkSummary.pitcherCarriers} Pitcher · ${analysis.networkSummary.fastPandaCarriers} FastPanda · ${analysis.networkSummary.deployableRepeaterCarriers} Deployable Repeater · ${analysis.networkSummary.repeaterCarriers} Repeater</div>` : ''
+  const summary = ['mobileGunfighters', 'mobileLinked'].includes(key) ? `<div class="summary">85% anchored Gunfighter + 15% raw Mobility · Gunfighter 50 = 100 · not a win probability${key === 'mobileLinked' ? ' · requires an active legal Fireteam' : ''}</div>` : key === 'mobility' ? '<div class="summary">0–100 movement index · independent of combat ratings · legal paths and landings assumed</div>' : key === 'hacking' ? `<div class="summary"><b>NETWORK:</b> ${analysis.networkSummary.hackers} Hackers · ${analysis.networkSummary.pitcherCarriers} Pitcher · ${analysis.networkSummary.fastPandaCarriers} FastPanda · ${analysis.networkSummary.deployableRepeaterCarriers} Deployable Repeater · ${analysis.networkSummary.repeaterCarriers} Repeater</div>` : ''
   const content = entries.length ? `<div class="grid"${['gunfighters', 'closeCombat'].includes(key) ? ' style="grid-template-columns:1fr 1fr"' : ''}>${entries.map((entry, index) => entryMarkup(key, entry, index)).join('')}</div>` : `<div class="empty">${emptyMessage}</div>`
   const fullWidth = analysis.gunfighterBenchmark?.available || analysis.closeCombatBenchmark?.available ? ' style="grid-column:1/-1"' : ''
   return `<section class="category category-${escapeHtml(key)}"${fullWidth}><h3><span>${escapeHtml(title)}</span><small>${entries.length} exact profile${entries.length === 1 ? '' : 's'}</small></h3>${summary}${content}</section>`
@@ -278,7 +278,7 @@ function aroEntryMarkup(entry, index) {
 
 function mobileGunfighterMarkup(entry, index) {
   const r = entry.mobileRating
-  return `<article><div class="entry-head"><div><h4>#${index + 1} ${escapeHtml(entry.unitName)}</h4><p>${escapeHtml(entry.profileName)}</p></div><strong>${r.score.toFixed(1)}<small>/100</small></strong></div><div class="detail">Gunfighter ${r.gunfighter.toFixed(2)} · Mobility ${r.mobility.toFixed(1)}/100</div><div class="also">Percentiles: Gunfighter ${r.gunfighterPercentile.toFixed(1)} · Mobility ${r.mobilityPercentile.toFixed(1)}</div><p>×${entry.quantity}</p></article>`
+  return `<article><div class="entry-head"><div><h4>#${index + 1} ${escapeHtml(entry.unitName)}</h4><p>${escapeHtml(entry.profileName)}</p></div><strong>${r.score.toFixed(1)}<small>/100</small></strong></div><div class="detail">Gunfighter ${r.gunfighter.toFixed(2)} (${r.gunfighterNormalized.toFixed(1)}/100 anchored) · Mobility ${r.mobility.toFixed(1)}/100</div><div class="also">Percentiles (informational): Gunfighter ${r.gunfighterPercentile.toFixed(1)} · Mobility ${r.mobilityPercentile.toFixed(1)}</div><p>×${entry.quantity}</p></article>`
 }
 
 function mobilityEntryMarkup(entry, index) {

@@ -1,7 +1,13 @@
 import { mobilityKey, lookupMobility } from './mobility-lookup.mjs'
 
-export const MOBILE_GUNFIGHTER_VERSION = 'mobile-gunfighter-v1'
+export const MOBILE_GUNFIGHTER_VERSION = 'mobile-gunfighter-v2-anchored-raw'
 export const MOBILE_WEIGHT = 0.15
+export const GUNFIGHTER_ANCHOR = 50
+
+export function anchoredGunfighterScore(rating) {
+  if (!Number.isFinite(rating)) throw Error('Nonfinite gunfighter rating')
+  return Math.max(0, Math.min(100, 100 * rating / GUNFIGHTER_ANCHOR))
+}
 
 export function midrankPercentiles(values) {
   if (!values.length) return []
@@ -34,7 +40,8 @@ export function buildMobileGunfighterCatalog(gunfighter, mobility, fireteamEligi
     coverage[state] = cohort.length
     cohort.forEach((row, index) => {
       if (!entries.has(row.key)) entries.set(row.key, { normal: null, fireteam: null })
-      entries.get(row.key)[state] = { gunfighter: row.gunfighter, mobility: row.mobility, gunfighterPercentile: gp[index], mobilityPercentile: mp[index], score: (1 - MOBILE_WEIGHT) * gp[index] + MOBILE_WEIGHT * mp[index] }
+      const gunfighterNormalized = anchoredGunfighterScore(row.gunfighter)
+      entries.get(row.key)[state] = { gunfighter: row.gunfighter, mobility: row.mobility, gunfighterNormalized, gunfighterPercentile: gp[index], mobilityPercentile: mp[index], score: (1 - MOBILE_WEIGHT) * gunfighterNormalized + MOBILE_WEIGHT * row.mobility }
     })
   }
   const profiles = [], keys = {}, signatures = new Map()
@@ -43,7 +50,7 @@ export function buildMobileGunfighterCatalog(gunfighter, mobility, fireteamEligi
     if (!signatures.has(signature)) { signatures.set(signature, profiles.length); profiles.push(record) }
     keys[key] = signatures.get(signature)
   }
-  return { version: MOBILE_GUNFIGHTER_VERSION, mobilityWeight: MOBILE_WEIGHT, gunfighterFingerprint: gunfighter.fingerprint, mobilityFingerprint: mobility.fingerprint, coverage, profiles, keys }
+  return { version: MOBILE_GUNFIGHTER_VERSION, mobilityWeight: MOBILE_WEIGHT, gunfighterAnchor: GUNFIGHTER_ANCHOR, gunfighterFingerprint: gunfighter.fingerprint, mobilityFingerprint: mobility.fingerprint, coverage, profiles, keys }
 }
 
 // Deliberately exact: no cross-faction, group, option or form borrowing.
