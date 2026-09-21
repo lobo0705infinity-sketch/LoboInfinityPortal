@@ -22,6 +22,14 @@ export const STATE_VALUES = Object.freeze({
   targeted: 0.25,
 })
 
+// A successful Stun ARO ends the immediate attack run and forces the active
+// trooper to deal with the State. Its reactive-turn value is therefore higher
+// than its active-turn/CC utility, without changing those other benchmarks.
+export const ARO_STATE_VALUES = Object.freeze({
+  ...STATE_VALUES,
+  stunned: 0.5,
+})
+
 const DEFAULT_OPTIONS = Object.freeze({
   cover: true,
   ranges: STANDARD_RANGE_BANDS,
@@ -46,7 +54,7 @@ export function evaluateGunfighterProfile(profile, defenders, options = {}) {
 }
 
 export function evaluateAroProfile(profile, attackers, options = {}) {
-  const settings = { ...DEFAULT_OPTIONS, ...options }
+  const settings = { ...DEFAULT_OPTIONS, stateValues: ARO_STATE_VALUES, ...options }
   assertProfile(profile)
   if (!Array.isArray(attackers) || !attackers.length) throw new Error('ARO evaluation requires at least one attacker.')
   const states = [{ id: 'normal', specialDice: 0 }]

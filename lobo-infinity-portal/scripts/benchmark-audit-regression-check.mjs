@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { buildAttackPool, evaluateGunfighterProfile, evaluateAroProfile, evaluateAttackCandidate, expectedEffectFromHits, benchmarkDefenderWeights, resolveFaceToFace } from '../bot/gunfighter-rating.mjs'
+import { ARO_STATE_VALUES, STATE_VALUES, buildAttackPool, evaluateGunfighterProfile, evaluateAroProfile, evaluateAttackCandidate, expectedEffectFromHits, benchmarkDefenderWeights, resolveFaceToFace } from '../bot/gunfighter-rating.mjs'
 import { resolveOpposedPools, resolveWeaponEffect, buildCloseCombatPool } from '../bot/close-combat-benchmark.mjs'
 import { buildGunfighterBenchmarkCatalog } from '../bot/gunfighter-benchmark-catalog.mjs'
 import { buildAroBenchmarkCatalog, selectBenchmarkAttackers } from '../bot/aro-benchmark-catalog.mjs'
@@ -19,6 +19,9 @@ const rating = (a = p, ds = [p]) => evaluateGunfighterProfile(a, ds, options).st
 const near = (a, b, message) => assert.ok(Math.abs(a - b) < 1e-10, `${message}: ${a} != ${b}`)
 const hit = new Map([['1:0', 1]])
 const effect = (m = mode, d = p, extra = {}) => expectedEffectFromHits({ outcomes: hit, mode: m, defender: d, ...extra })
+
+assert.equal(STATE_VALUES.stunned, .35, 'Gunfighter and close-combat Stun utility remains unchanged')
+assert.equal(ARO_STATE_VALUES.stunned, .5, 'ARO Stun utility reflects its reactive-turn disruption')
 
 // Grammar invariance, including exact TTS and official-API formats.
 for (const spelling of ['Mimetism(-3)', 'Mimetism (-3)', 'Mimetism -3', 'Mimetism[−3]']) assert.equal(pool(p, { ...p, skills: [spelling] }).target, 6)
