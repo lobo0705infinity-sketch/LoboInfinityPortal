@@ -367,7 +367,7 @@ function resolveExchange({ attack, aro, attacker, defender, mode, settings }) {
   const f2f = resolveFaceToFace(activePool, reactivePool)
   const effect = effectFor(f2f.activeOutcomes, mode, attack, defender)
   const returnEffect = aro.mode && !aro.mode.smoke && !aro.mode.eclipse ? effectFor(f2f.reactiveOutcomes, aro.mode, aro.pool, attacker) : { total: 0 }
-  return exchangeResult(attack, aro, f2f, effect, returnEffect)
+  return exchangeResult(activePool, { ...aro, pool: reactivePool }, f2f, effect, returnEffect)
 }
 
 function exchangeResult(attack, aro, roll, effect, returnEffect) {
