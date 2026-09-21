@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { loadMobilityCatalog } from './mobility-catalog-store.mjs'
-// Railway production deployment: gunfighter benchmark v8
+// Railway production deployment: matchup command release 2026-09-21
 
 import { Client, Events, GatewayIntentBits } from 'discord.js'
 import { fileURLToPath } from 'node:url'
