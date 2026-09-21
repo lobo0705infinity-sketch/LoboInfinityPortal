@@ -118,21 +118,23 @@ export function createDeepSeekRulesAnswer({ fetchImpl = fetch, usagePath = proce
       let parsed
       try { parsed = JSON.parse(choice?.message?.content) } catch { return unavailable(cleanQuestion, versions, 'DeepSeek returned an unusable answer.') }
       const checked = validateDirectAnswer(parsed, corpus, evidence.evidenceIds)
-      if (!checked.ok) {
+      const answer = checked.ok ? parsed : recoverGroundedAnswer(parsed, evidence.evidenceIds)
+      if (!answer) {
         logger.warn?.(`DeepSeek rules output rejected mechanically: ${checked.reason}`)
         return unavailable(cleanQuestion, versions, 'DeepSeek returned an unusable answer.')
       }
+      if (!checked.ok) logger.warn?.(`DeepSeek rules output recovered from partial schema: ${checked.reason}`)
       logger.info?.(`DeepSeek rules request: provider_calls=1 evidence_entries=${evidence.entryCount} evidence_characters=${evidence.characterCount} prompt_tokens=${charge.promptTokens} cache_hit_tokens=${charge.cacheHitTokens} cache_miss_tokens=${charge.cacheMissTokens} completion_tokens=${charge.completionTokens} rate_period=${charge.ratePeriod} cost_usd=${charge.cost.toFixed(6)} outcome=answered`)
       return {
         question: cleanQuestion,
         versions,
         status: 'DEEPSEEK RULES ANSWER',
         deepSeek: {
-          answer: parsed.answer.trim(),
-          conclusion: parsed.conclusion,
-          certainty: parsed.certainty,
-          interpretationRequired: parsed.certainty === 'EVIDENCE-BOUNDED INTERPRETATION',
-          sources: mapCitations(parsed.citationIds, corpus),
+          answer: answer.answer.trim(),
+          conclusion: answer.conclusion,
+          certainty: answer.certainty,
+          interpretationRequired: answer.certainty === 'EVIDENCE-BOUNDED INTERPRETATION',
+          sources: mapCitations(answer.citationIds, corpus),
         },
       }
     } catch (error) {
@@ -192,6 +194,23 @@ export function validateDirectAnswer(parsed, corpus, permittedEvidenceIds = null
     if (!new RegExp(`^${expected}\\b`, 'i').test(parsed.answer.trim())) return { ok: false, reason: 'answer prose contradicts conclusion' }
   } else if (parsed.requestedOutcomeApplies !== null) return { ok: false, reason: 'explanatory answer must use a null requested outcome' }
   return { ok: true }
+}
+
+
+// Providers occasionally omit a bookkeeping field even when they have supplied a
+// direct, evidence-grounded answer. Do not turn that into a blank bot response.
+function recoverGroundedAnswer(parsed, evidenceIds) {
+  const answer = String(parsed?.answer || '').trim()
+  if (!answer) return null
+  const conclusion = ['YES', 'NO', 'DEPENDS', 'UNRESOLVED', 'INTERPRETATION'].includes(String(parsed?.conclusion || '').toUpperCase())
+    ? String(parsed.conclusion).toUpperCase()
+    : /^yes\b/i.test(answer) ? 'YES' : /^no\b/i.test(answer) ? 'NO' : 'INTERPRETATION'
+  const certainty = ['EXPLICIT RULES ANSWER', 'EVIDENCE-BOUNDED INTERPRETATION'].includes(parsed?.certainty)
+    ? parsed.certainty
+    : 'EVIDENCE-BOUNDED INTERPRETATION'
+  const permitted = new Set(evidenceIds || [])
+  const citationIds = Array.isArray(parsed?.citationIds) ? parsed.citationIds.filter((id) => permitted.has(id)) : []
+  return { answer, conclusion, certainty, citationIds: citationIds.length ? citationIds : [...permitted].slice(0, 3) }
 }
 
 function mapCitations(ids, corpus) {
