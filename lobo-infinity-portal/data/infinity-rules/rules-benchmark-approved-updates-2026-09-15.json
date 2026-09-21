@@ -557,6 +557,21 @@
           "id": "new-topic-2-506-q15",
           "question": "How do Team-Ops troops deploy their Tacball?",
           "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-506-q16",
+          "question": "Does Request a Tacball require a PH test?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-506-q17",
+          "question": "Do I roll PH to request a Tacball?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-506-q18",
+          "question": "Does Request Tacball need a roll?",
+          "style": "RULES_CHECK"
         }
       ]
     },
