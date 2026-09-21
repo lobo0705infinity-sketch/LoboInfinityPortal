@@ -216,6 +216,8 @@ function formatRow({ profile, state }, range) {
   const matchups = selectMatchups(state, range)
   const bands = matchups.map((matchup) => ({
     range: matchup.range,
+    targetWeapon: matchup.selected?.optimalResponse?.attack?.source || 'No legal attack',
+    aroWeapon: matchup.selected?.optimalResponse?.aro || 'No ARO',
     reactiveWin: Number(matchup.selected?.optimalResponse?.roll?.reactiveWin || 0),
     meaningfulEffect: 100 * Number(matchup.selected?.optimalResponse?.returnEffect?.meaningfulEffectProbability || 0),
     survival: 100 * (1 - Number(matchup.selected?.optimalResponse?.effect?.neutralizeProbability || 0)),
