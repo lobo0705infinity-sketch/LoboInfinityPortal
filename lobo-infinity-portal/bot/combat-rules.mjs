@@ -94,6 +94,7 @@ export function resolveSavingEffects(outcomes, weapon, target, settings = {}) {
   const w = savingProfile(weapon, target, settings)
   const cap = Math.max(1, Math.ceil(w.durability))
   let expectedWounds = 0, expectedCappedWounds = 0, neutralizeProbability = 0, stateProbability = 0, failureProbability = 0
+  const woundDistribution = Array(cap + 1).fill(0)
   for (const [key, probability] of outcomes) {
     const [hits, criticals] = String(key).split(':').map(Number)
     if (!hits || !probability) continue
@@ -122,10 +123,12 @@ export function resolveSavingEffects(outcomes, weapon, target, settings = {}) {
       expectedWounds += probability * rawWounds
       distribution.forEach((p, wounds) => {
         const damage = wounds && w.deadState ? w.durability : wounds
+        woundDistribution[Math.min(cap, damage)] += probability * p
         expectedCappedWounds += probability * p * Math.min(damage, w.durability)
         if (damage >= w.durability) neutralizeProbability += probability * p
       })
     }
   }
-  return { expectedWounds, expectedCappedWounds, neutralizeProbability, stateProbability, failureProbability, nonLethal: w.nonLethal, durability: w.durability, states: w.states }
+  if (w.nonLethal) woundDistribution[0] = 1
+  return { expectedWounds, expectedCappedWounds, neutralizeProbability, stateProbability, failureProbability, woundDistribution, nonLethal: w.nonLethal, durability: w.durability, states: w.states }
 }
