@@ -127,5 +127,5 @@ export function resolveSavingEffects(outcomes, weapon, target, settings = {}) {
       })
     }
   }
-  return { expectedWounds, expectedCappedWounds, neutralizeProbability, stateProbability, failureProbability, durability: w.durability, states: w.states }
+  return { expectedWounds, expectedCappedWounds, neutralizeProbability, stateProbability, failureProbability, nonLethal: w.nonLethal, durability: w.durability, states: w.states }
 }

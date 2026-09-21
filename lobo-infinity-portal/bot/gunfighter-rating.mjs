@@ -325,7 +325,16 @@ export function expectedEffectFromHits({ expectedHits, expectedCriticals = 0, ou
     ? Math.max(stateValues.isolated || 0, stateValues.immobilized || 0)
     : 1 - states.reduce((p, state) => p * (1 - (stateValues[state] || 0)), 1)
   const stateValue = combined * effect.stateProbability
-  return { expectedDamage: effect.expectedWounds, damageValue, stateValue, total: Math.min(1, damageValue + stateValue * (1 - damageValue)) }
+  return {
+    expectedDamage: effect.expectedWounds,
+    damageProbability: effect.nonLethal ? 0 : effect.failureProbability,
+    stateProbability: effect.stateProbability,
+    meaningfulEffectProbability: effect.nonLethal ? effect.stateProbability : Math.max(effect.failureProbability, effect.stateProbability),
+    neutralizeProbability: effect.neutralizeProbability,
+    damageValue,
+    stateValue,
+    total: Math.min(1, damageValue + stateValue * (1 - damageValue)),
+  }
 }
 
 function resolveExchange({ attack, aro, attacker, defender, mode, settings }) {
