@@ -13,11 +13,11 @@ const REQUEST_TIMEOUT_MS = 60000
 const ESTIMATED_TOKENS_PER_CHARACTER = 0.3
 const MAX_EVIDENCE_CHARACTERS = 60000
 
-export function buildRulesEvidencePrompt(corpus, question) {
+export function buildRulesEvidencePrompt(corpus, question, { limit = 18, maxEvidenceCharacters = MAX_EVIDENCE_CHARACTERS } = {}) {
   if (!corpus?.manifest?.sources?.length || !corpus?.chunks?.length) throw new Error('The complete rules corpus is unavailable.')
   const sources = corpus.manifest.sources.map((source) => ({ id: source.id, title: source.title, version: source.version, officialUrl: source.officialUrl }))
   const searchable = corpus.chunks.map((chunk) => chunk.normalized ? chunk : { ...chunk, normalized: normalizeRuleText(`${chunk.section || ''} ${(chunk.headings || []).join(' ')} ${chunk.text || ''}`), headings: chunk.headings || [], authority: chunk.authority ?? 99, scope: chunk.scope || 'CORE' })
-  const ranked = searchRules(searchable, question, { limit: 18 })
+  const ranked = searchRules(searchable, question, { limit })
   const key = (chunk) => `${chunk.sourceId}:${chunk.pdfPage}:${chunk.text}`
   const originals = new Map(corpus.chunks.map((chunk, index) => [key(chunk), { chunk, index }]))
   const selected = new Map()
@@ -36,7 +36,7 @@ export function buildRulesEvidencePrompt(corpus, question) {
   const entries = []
   let characters = 0
   for (const [index, chunk] of selected) {
-    if (characters + String(chunk.text || '').length > MAX_EVIDENCE_CHARACTERS && entries.length >= 12) continue
+    if (characters + String(chunk.text || '').length > maxEvidenceCharacters && entries.length >= Math.min(12, limit)) continue
     characters += String(chunk.text || '').length
     entries.push({
     id: `C${String(index + 1).padStart(4, '0')}`,
@@ -109,22 +109,37 @@ export function createDeepSeekRulesAnswer({ fetchImpl = fetch, usagePath = proce
       if (!String(response.headers?.get?.('content-type') || '').toLowerCase().includes('application/json') || !responseText.trim()) return unavailable(cleanQuestion, versions, 'DeepSeek returned an unusable response.')
       let payload
       try { payload = JSON.parse(responseText) } catch { return unavailable(cleanQuestion, versions, 'DeepSeek returned an unusable response.') }
+      let activeEvidence = evidence
+      let choice = payload?.choices?.[0]
+      let finishReason = String(choice?.finish_reason || 'missing')
+      // A long reasoning trace must not turn a rules answer into a blank Discord
+      // response. Retry once with only the top clauses and reasoning disabled.
+      if (finishReason === 'length') {
+        activeEvidence = buildRulesEvidencePrompt(corpus, cleanQuestion, { limit: 6, maxEvidenceCharacters: 12000 })
+        const retry = await fetchWithHardTimeout(fetchImpl, 'https://api.deepseek.com/chat/completions', {
+          method: 'POST', headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json' },
+          body: JSON.stringify({ model, temperature: 0, max_tokens: 1200, response_format: { type: 'json_object' }, thinking: { type: 'disabled' }, reasoning_effort: 'low', messages: [{ role: 'system', content: activeEvidence.text }, { role: 'user', content: cleanQuestion }] }),
+        }, requestTimeoutMs)
+        const retryText = await retry.text()
+        if (!retry.ok || !String(retry.headers?.get?.('content-type') || '').toLowerCase().includes('application/json') || !retryText.trim()) return unavailable(cleanQuestion, versions, 'DeepSeek was unavailable.')
+        try { payload = JSON.parse(retryText) } catch { return unavailable(cleanQuestion, versions, 'DeepSeek returned an unusable response.') }
+        choice = payload?.choices?.[0]
+        finishReason = String(choice?.finish_reason || 'missing')
+      }
       const charge = await recordProviderUsage({ payload, usage, usagePath, now: timestamp, model })
-      const choice = payload?.choices?.[0]
-      const finishReason = String(choice?.finish_reason || 'missing')
       logger.info?.(`DeepSeek rules provider completion: finish_reason=${finishReason} content_length=${String(choice?.message?.content || '').length} reasoning_content_present=${Boolean(choice?.message?.reasoning_content)}`)
-      if (finishReason === 'length') return unavailable(cleanQuestion, versions, 'DeepSeek exhausted its answer budget before completing the response.')
+      if (finishReason === 'length') return unavailable(cleanQuestion, versions, 'DeepSeek could not complete the answer after a compact retry.')
       if (choice?.message?.tool_calls?.length) return unavailable(cleanQuestion, versions, 'DeepSeek returned an unsupported tool request.')
       let parsed
       try { parsed = JSON.parse(choice?.message?.content) } catch { return unavailable(cleanQuestion, versions, 'DeepSeek returned an unusable answer.') }
-      const checked = validateDirectAnswer(parsed, corpus, evidence.evidenceIds)
-      const answer = checked.ok ? parsed : recoverGroundedAnswer(parsed, evidence.evidenceIds)
+      const checked = validateDirectAnswer(parsed, corpus, activeEvidence.evidenceIds)
+      const answer = checked.ok ? parsed : recoverGroundedAnswer(parsed, activeEvidence.evidenceIds)
       if (!answer) {
         logger.warn?.(`DeepSeek rules output rejected mechanically: ${checked.reason}`)
         return unavailable(cleanQuestion, versions, 'DeepSeek returned an unusable answer.')
       }
       if (!checked.ok) logger.warn?.(`DeepSeek rules output recovered from partial schema: ${checked.reason}`)
-      logger.info?.(`DeepSeek rules request: provider_calls=1 evidence_entries=${evidence.entryCount} evidence_characters=${evidence.characterCount} prompt_tokens=${charge.promptTokens} cache_hit_tokens=${charge.cacheHitTokens} cache_miss_tokens=${charge.cacheMissTokens} completion_tokens=${charge.completionTokens} rate_period=${charge.ratePeriod} cost_usd=${charge.cost.toFixed(6)} outcome=answered`)
+      logger.info?.(`DeepSeek rules request: evidence_entries=${activeEvidence.entryCount} evidence_characters=${activeEvidence.characterCount} prompt_tokens=${charge.promptTokens} cache_hit_tokens=${charge.cacheHitTokens} cache_miss_tokens=${charge.cacheMissTokens} completion_tokens=${charge.completionTokens} rate_period=${charge.ratePeriod} cost_usd=${charge.cost.toFixed(6)} outcome=answered`)
       return {
         question: cleanQuestion,
         versions,
@@ -196,9 +211,10 @@ export function validateDirectAnswer(parsed, corpus, permittedEvidenceIds = null
   return { ok: true }
 }
 
-
 // Providers occasionally omit a bookkeeping field even when they have supplied a
-// direct, evidence-grounded answer. Do not turn that into a blank bot response.
+// direct, evidence-grounded answer.  Do not turn that into a blank bot response.
+// We retain only answer text, normalize the display fields, and attach the selected
+// official evidence when the provider omitted valid citation IDs.
 function recoverGroundedAnswer(parsed, evidenceIds) {
   const answer = String(parsed?.answer || '').trim()
   if (!answer) return null
@@ -209,7 +225,9 @@ function recoverGroundedAnswer(parsed, evidenceIds) {
     ? parsed.certainty
     : 'EVIDENCE-BOUNDED INTERPRETATION'
   const permitted = new Set(evidenceIds || [])
-  const citationIds = Array.isArray(parsed?.citationIds) ? parsed.citationIds.filter((id) => permitted.has(id)) : []
+  const citationIds = Array.isArray(parsed?.citationIds)
+    ? parsed.citationIds.filter((id) => permitted.has(id))
+    : []
   return { answer, conclusion, certainty, citationIds: citationIds.length ? citationIds : [...permitted].slice(0, 3) }
 }
 
