@@ -380,21 +380,81 @@
         }
       ],
       "queryVariants": [
-        { "id": "new-topic-2-505-q1", "question": "What is a Tacball and how does it work?", "style": "CANONICAL" },
-        { "id": "new-topic-2-505-q2", "question": "What is a TacBall and how it works", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-505-q3", "question": "What is a Tacball?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-505-q4", "question": "How does Tacball work?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-505-q5", "question": "Explain the Tacball rules", "style": "RULES_CHECK" },
-        { "id": "new-topic-2-505-q6", "question": "How do I use a Tacball?", "style": "TABLE_SCENARIO" },
-        { "id": "new-topic-2-505-q7", "question": "What does the Tacball do?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-505-q8", "question": "Is a Tacball a deployable weapon?", "style": "RULES_CHECK" },
-        { "id": "new-topic-2-505-q9", "question": "Can the Tacball move?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-505-q10", "question": "What size token represents a Tacball?", "style": "RULEBOOK_WORDING" },
-        { "id": "new-topic-2-505-q11", "question": "Does a Tacball react to enemy orders?", "style": "TABLE_SCENARIO" },
-        { "id": "new-topic-2-505-q12", "question": "Can a Tacball attack a marker?", "style": "RULES_CHECK" },
-        { "id": "new-topic-2-505-q13", "question": "Does a Tacball trigger other deployables?", "style": "RULES_CHECK" },
-        { "id": "new-topic-2-505-q14", "question": "What weapons does the Tacball have?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-505-q15", "question": "Tell me how the ITS Tacball functions", "style": "PLAYER_SHORTHAND" }
+        {
+          "id": "new-topic-2-505-q1",
+          "question": "What is a Tacball and how does it work?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-2-505-q2",
+          "question": "What is a TacBall and how it works",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-505-q3",
+          "question": "What is a Tacball?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-505-q4",
+          "question": "How does Tacball work?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-505-q5",
+          "question": "Explain the Tacball rules",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-505-q6",
+          "question": "How do I use a Tacball?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-505-q7",
+          "question": "What does the Tacball do?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-505-q8",
+          "question": "Is a Tacball a deployable weapon?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-505-q9",
+          "question": "Can the Tacball move?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-505-q10",
+          "question": "What size token represents a Tacball?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-2-505-q11",
+          "question": "Does a Tacball react to enemy orders?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-505-q12",
+          "question": "Can a Tacball attack a marker?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-505-q13",
+          "question": "Does a Tacball trigger other deployables?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-505-q14",
+          "question": "What weapons does the Tacball have?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-505-q15",
+          "question": "Tell me how the ITS Tacball functions",
+          "style": "PLAYER_SHORTHAND"
+        }
       ]
     },
     {
@@ -423,21 +483,81 @@
         }
       ],
       "queryVariants": [
-        { "id": "new-topic-2-506-q1", "question": "How does Request a Tacball work?", "style": "CANONICAL" },
-        { "id": "new-topic-2-506-q2", "question": "how does request tacball work?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-506-q3", "question": "What does Request a Tacball do?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-506-q4", "question": "Explain the Request a Tacball skill", "style": "RULES_CHECK" },
-        { "id": "new-topic-2-506-q5", "question": "When can I request a Tacball?", "style": "TABLE_SCENARIO" },
-        { "id": "new-topic-2-506-q6", "question": "Who can use Request a Tacball?", "style": "RULES_CHECK" },
-        { "id": "new-topic-2-506-q7", "question": "Does Request a Tacball require a roll?", "style": "RULEBOOK_WORDING" },
-        { "id": "new-topic-2-506-q8", "question": "Where do I place the Tacball token when I request it?", "style": "TABLE_SCENARIO" },
-        { "id": "new-topic-2-506-q9", "question": "Can I use Request a Tacball outside round two?", "style": "RULES_CHECK" },
-        { "id": "new-topic-2-506-q10", "question": "How often may a player Request a Tacball?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-506-q11", "question": "When does the Tacball item take effect?", "style": "TABLE_SCENARIO" },
-        { "id": "new-topic-2-506-q12", "question": "Are Tacball items transferable?", "style": "RULES_CHECK" },
-        { "id": "new-topic-2-506-q13", "question": "What happens to the Tacball token after deployment?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-506-q14", "question": "Is Request a Tacball an Attack Short Skill?", "style": "RULEBOOK_WORDING" },
-        { "id": "new-topic-2-506-q15", "question": "How do Team-Ops troops deploy their Tacball?", "style": "PLAYER_SHORTHAND" }
+        {
+          "id": "new-topic-2-506-q1",
+          "question": "How does Request a Tacball work?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-2-506-q2",
+          "question": "how does request tacball work?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-506-q3",
+          "question": "What does Request a Tacball do?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-506-q4",
+          "question": "Explain the Request a Tacball skill",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-506-q5",
+          "question": "When can I request a Tacball?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-506-q6",
+          "question": "Who can use Request a Tacball?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-506-q7",
+          "question": "Does Request a Tacball require a roll?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-2-506-q8",
+          "question": "Where do I place the Tacball token when I request it?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-506-q9",
+          "question": "Can I use Request a Tacball outside round two?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-506-q10",
+          "question": "How often may a player Request a Tacball?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-506-q11",
+          "question": "When does the Tacball item take effect?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-506-q12",
+          "question": "Are Tacball items transferable?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-506-q13",
+          "question": "What happens to the Tacball token after deployment?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-506-q14",
+          "question": "Is Request a Tacball an Attack Short Skill?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-2-506-q15",
+          "question": "How do Team-Ops troops deploy their Tacball?",
+          "style": "PLAYER_SHORTHAND"
+        }
       ]
     },
     {
@@ -461,26 +581,106 @@
       ],
       "reviewStatus": "APPROVED",
       "queryVariants": [
-        { "id": "new-topic-2-507-q1", "question": "Can a Controller and its Peripheral (Synchronized) both use the same Panoply in the same Order?", "style": "CANONICAL" },
-        { "id": "new-topic-2-507-q2", "question": "Can a unit and their synchronize peripheral pick up from the same panoply on the same order?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-507-q3", "question": "Can a unit and its synchronized peripheral use the same Panoply in one Order?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-507-q4", "question": "Can both a controller and synchronized peripheral roll on one Panoply during the same Order?", "style": "TABLE_SCENARIO" },
-        { "id": "new-topic-2-507-q5", "question": "Do a controller and its synchronized peripheral each make a WIP Roll when using the same Panoply?", "style": "RULES_CHECK" },
-        { "id": "new-topic-2-507-q6", "question": "Can synchronized models both get equipment from the same Panoply with one Order?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-507-q7", "question": "Does a Panoply allow a controller and Peripheral (Synchronized) to use it simultaneously?", "style": "RULEBOOK_WORDING" },
-        { "id": "new-topic-2-507-q8", "question": "Can a unit and their syncronize peripheral pik up from the same panopaly on the same order?", "style": "PLAYER_TYPO" },
-        { "id": "new-topic-2-507-q9", "question": "Can my trooper and sync bot both use the same Panoply with one Order?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-507-q10", "question": "Can a Controller and synchronized Peripheral each get an item from one Panoply in the same Order?", "style": "TABLE_SCENARIO" },
-        { "id": "new-topic-2-507-q11", "question": "If both the Controller and Peripheral are touching a Panoply, can they both roll on it?", "style": "TABLE_SCENARIO" },
-        { "id": "new-topic-2-507-q12", "question": "Does a synchronized Peripheral have to use a different Panoply from its Controller?", "style": "RULES_CHECK" },
-        { "id": "new-topic-2-507-q13", "question": "Can two synchronized Models loot the same Panoply during one Order?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-507-q14", "question": "Can a Peripheral (Synchronized) use a Panoply at the same time as its Controller?", "style": "RULEBOOK_WORDING" },
-        { "id": "new-topic-2-507-q15", "question": "Do the Controller and its synchronized Peripheral make separate WIP Rolls on the same Panoply?", "style": "RULES_CHECK" },
-        { "id": "new-topic-2-507-q16", "question": "Can a unit and its synced remote both take equipment from the same Panoply?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-507-q17", "question": "Does one Order let a Controller and synchronized Peripheral both declare Use Panoplies?", "style": "RULEBOOK_WORDING" },
-        { "id": "new-topic-2-507-q18", "question": "Can the Controller and sync peripheral use the same scenery Panoply together?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-507-q19", "question": "One Panoply, two synchronized Models: can both receive equipment in the same Order?", "style": "TABLE_SCENARIO" },
-        { "id": "new-topic-2-507-q20", "question": "Can both members of a Controller and Peripheral (Synchronized) pair successfully use one Panoply at once?", "style": "RULES_CHECK" }
+        {
+          "id": "new-topic-2-507-q1",
+          "question": "Can a Controller and its Peripheral (Synchronized) both use the same Panoply in the same Order?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-2-507-q2",
+          "question": "Can a unit and their synchronize peripheral pick up from the same panoply on the same order?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-507-q3",
+          "question": "Can a unit and its synchronized peripheral use the same Panoply in one Order?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-507-q4",
+          "question": "Can both a controller and synchronized peripheral roll on one Panoply during the same Order?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-507-q5",
+          "question": "Do a controller and its synchronized peripheral each make a WIP Roll when using the same Panoply?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-507-q6",
+          "question": "Can synchronized models both get equipment from the same Panoply with one Order?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-507-q7",
+          "question": "Does a Panoply allow a controller and Peripheral (Synchronized) to use it simultaneously?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-2-507-q8",
+          "question": "Can a unit and their syncronize peripheral pik up from the same panopaly on the same order?",
+          "style": "PLAYER_TYPO"
+        },
+        {
+          "id": "new-topic-2-507-q9",
+          "question": "Can my trooper and sync bot both use the same Panoply with one Order?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-507-q10",
+          "question": "Can a Controller and synchronized Peripheral each get an item from one Panoply in the same Order?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-507-q11",
+          "question": "If both the Controller and Peripheral are touching a Panoply, can they both roll on it?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-507-q12",
+          "question": "Does a synchronized Peripheral have to use a different Panoply from its Controller?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-507-q13",
+          "question": "Can two synchronized Models loot the same Panoply during one Order?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-507-q14",
+          "question": "Can a Peripheral (Synchronized) use a Panoply at the same time as its Controller?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-2-507-q15",
+          "question": "Do the Controller and its synchronized Peripheral make separate WIP Rolls on the same Panoply?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-507-q16",
+          "question": "Can a unit and its synced remote both take equipment from the same Panoply?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-507-q17",
+          "question": "Does one Order let a Controller and synchronized Peripheral both declare Use Panoplies?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-2-507-q18",
+          "question": "Can the Controller and sync peripheral use the same scenery Panoply together?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-507-q19",
+          "question": "One Panoply, two synchronized Models: can both receive equipment in the same Order?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-507-q20",
+          "question": "Can both members of a Controller and Peripheral (Synchronized) pair successfully use one Panoply at once?",
+          "style": "RULES_CHECK"
+        }
       ]
     },
     {
@@ -504,21 +704,81 @@
       ],
       "reviewStatus": "APPROVED",
       "queryVariants": [
-        { "id": "new-topic-2-508-q1", "question": "Does FT Master override Loss of Lieutenant and keep the Fireteam Regular?", "style": "CANONICAL" },
-        { "id": "new-topic-2-508-q2", "question": "silly won but does fireteam master override the loss of lt irregular orders", "style": "PLAYER_TYPO" },
-        { "id": "new-topic-2-508-q3", "question": "Does Fireteam Master override the loss of irregular orders?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-508-q4", "question": "Does FT Master stop Loss of Lieutenant from making the link Irregular?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-508-q5", "question": "Are members of a Fireteam with an FT Master Regular during Loss of Lieutenant?", "style": "TABLE_SCENARIO" },
-        { "id": "new-topic-2-508-q6", "question": "If my army is in Loss of Lieutenant, does Fireteam Master still make its members Regular?", "style": "TABLE_SCENARIO" },
-        { "id": "new-topic-2-508-q7", "question": "Can FT Master cancel the Irregular effect of Loss of Lieutenant?", "style": "RULES_CHECK" },
-        { "id": "new-topic-2-508-q8", "question": "Which takes precedence, FT Master or Loss of Lieutenant?", "style": "RULES_CHECK" },
-        { "id": "new-topic-2-508-q9", "question": "Does a Fireteam Master preserve Regular Orders in Loss of Lieutenant?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-508-q10", "question": "Do troops in an FT Master link become Irregular when the Lieutenant is lost?", "style": "TABLE_SCENARIO" },
-        { "id": "new-topic-2-508-q11", "question": "Does the FT Master Order Count effect supersede Loss of Lieutenant?", "style": "RULEBOOK_WORDING" },
-        { "id": "new-topic-2-508-q12", "question": "Can a Fireteam with FT Master contribute Regular Orders while in LoL?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-508-q13", "question": "Are FT Master Fireteam members exempt from Loss of Lieutenant?", "style": "RULES_CHECK" },
-        { "id": "new-topic-2-508-q14", "question": "My Lieutenant died but I have FT Master. Is that Fireteam still Regular?", "style": "TABLE_SCENARIO" },
-        { "id": "new-topic-2-508-q15", "question": "Does Fireteam Master prevent its members from suffering Loss of Lieutenant?", "style": "RULEBOOK_WORDING" }
+        {
+          "id": "new-topic-2-508-q1",
+          "question": "Does FT Master override Loss of Lieutenant and keep the Fireteam Regular?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-2-508-q2",
+          "question": "silly won but does fireteam master override the loss of lt irregular orders",
+          "style": "PLAYER_TYPO"
+        },
+        {
+          "id": "new-topic-2-508-q3",
+          "question": "Does Fireteam Master override the loss of irregular orders?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-508-q4",
+          "question": "Does FT Master stop Loss of Lieutenant from making the link Irregular?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-508-q5",
+          "question": "Are members of a Fireteam with an FT Master Regular during Loss of Lieutenant?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-508-q6",
+          "question": "If my army is in Loss of Lieutenant, does Fireteam Master still make its members Regular?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-508-q7",
+          "question": "Can FT Master cancel the Irregular effect of Loss of Lieutenant?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-508-q8",
+          "question": "Which takes precedence, FT Master or Loss of Lieutenant?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-508-q9",
+          "question": "Does a Fireteam Master preserve Regular Orders in Loss of Lieutenant?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-508-q10",
+          "question": "Do troops in an FT Master link become Irregular when the Lieutenant is lost?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-508-q11",
+          "question": "Does the FT Master Order Count effect supersede Loss of Lieutenant?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-2-508-q12",
+          "question": "Can a Fireteam with FT Master contribute Regular Orders while in LoL?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-508-q13",
+          "question": "Are FT Master Fireteam members exempt from Loss of Lieutenant?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-508-q14",
+          "question": "My Lieutenant died but I have FT Master. Is that Fireteam still Regular?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-508-q15",
+          "question": "Does Fireteam Master prevent its members from suffering Loss of Lieutenant?",
+          "style": "RULEBOOK_WORDING"
+        }
       ]
     },
     {
@@ -557,11 +817,31 @@
       ],
       "reviewStatus": "APPROVED",
       "queryVariants": [
-        { "id": "new-topic-2-509-q1", "question": "Can a model squeeze through a gap if it is along the table edge?", "style": "CANONICAL" },
-        { "id": "new-topic-2-509-q2", "question": "Can a trooper squeeze between terrain and the table edge?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-509-q4", "question": "Does a model's entire base have to fit through a gap beside the table edge?", "style": "RULES_CHECK" },
-        { "id": "new-topic-2-509-q17", "question": "Can I move jump or climb past terrain using the edge of the board?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-509-q18", "question": "Does a trooper need its whole base supported when moving, jumping, or climbing near the table edge?", "style": "RULES_CHECK" }
+        {
+          "id": "new-topic-2-509-q1",
+          "question": "Can a model squeeze through a gap if it is along the table edge?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-2-509-q2",
+          "question": "Can a trooper squeeze between terrain and the table edge?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-509-q4",
+          "question": "Does a model's entire base have to fit through a gap beside the table edge?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-509-q17",
+          "question": "Can I move jump or climb past terrain using the edge of the board?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-509-q18",
+          "question": "Does a trooper need its whole base supported when moving, jumping, or climbing near the table edge?",
+          "style": "RULES_CHECK"
+        }
       ]
     },
     {
@@ -572,17 +852,49 @@
       "approvedCertainty": "EXPLICIT RULES ANSWER",
       "approvedConclusion": "YES",
       "approvedCitations": [
-        { "sourceId": "infinity-rules-n5.3", "page": 28, "section": "MOVE — REQUIREMENTS" },
-        { "sourceId": "infinity-rules-n5.3", "page": 31, "section": "GENERAL MOVEMENT RULES — SIBYLLA EXPLAINS" }
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 28,
+          "section": "MOVE — REQUIREMENTS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 31,
+          "section": "GENERAL MOVEMENT RULES — SIBYLLA EXPLAINS"
+        }
       ],
       "reviewStatus": "APPROVED",
       "queryVariants": [
-        { "id": "new-topic-2-510-q1", "question": "Can a Trooper squeeze between terrain and the table edge using Move?", "style": "CANONICAL" },
-        { "id": "new-topic-2-510-q2", "question": "Can I move through a narrow gap at the board edge if half the base stays supported?", "style": "RULEBOOK_WORDING" },
-        { "id": "new-topic-2-510-q3", "question": "Can my base overhang the table edge during a Move?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-510-q4", "question": "Can part of a model's base hang off the board while it moves past terrain?", "style": "TABLE_SCENARIO" },
-        { "id": "new-topic-2-510-q5", "question": "How much of a trooper's base must remain on the table while moving along the edge?", "style": "RULES_CHECK" },
-        { "id": "new-topic-2-510-q6", "question": "Can a model Move past a building at the board edge when the whole base does not fit?", "style": "TABLE_SCENARIO" }
+        {
+          "id": "new-topic-2-510-q1",
+          "question": "Can a Trooper squeeze between terrain and the table edge using Move?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-2-510-q2",
+          "question": "Can I move through a narrow gap at the board edge if half the base stays supported?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-2-510-q3",
+          "question": "Can my base overhang the table edge during a Move?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-510-q4",
+          "question": "Can part of a model's base hang off the board while it moves past terrain?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-510-q5",
+          "question": "How much of a trooper's base must remain on the table while moving along the edge?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-510-q6",
+          "question": "Can a model Move past a building at the board edge when the whole base does not fit?",
+          "style": "TABLE_SCENARIO"
+        }
       ]
     },
     {
@@ -593,17 +905,49 @@
       "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
       "approvedConclusion": "YES",
       "approvedCitations": [
-        { "sourceId": "infinity-rules-n5.3", "page": 32, "section": "CLIMB — REQUIREMENTS" },
-        { "sourceId": "infinity-rules-n5.3", "page": 10, "section": "SILHOUETTES" }
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 32,
+          "section": "CLIMB — REQUIREMENTS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 10,
+          "section": "SILHOUETTES"
+        }
       ],
       "reviewStatus": "APPROVED",
       "queryVariants": [
-        { "id": "new-topic-2-511-q1", "question": "Can a Trooper squeeze at the table edge using Climb or Climbing Plus?", "style": "CANONICAL" },
-        { "id": "new-topic-2-511-q2", "question": "Can a trooper Climb through a narrow gap at the table edge?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-511-q3", "question": "Can half my base hang past the board edge while Climbing?", "style": "TABLE_SCENARIO" },
-        { "id": "new-topic-2-511-q4", "question": "How much base contact does Climb require beside the table edge?", "style": "RULES_CHECK" },
-        { "id": "new-topic-2-511-q5", "question": "Can Climbing Plus move along a narrow table-edge surface with only half the base supported?", "style": "RULEBOOK_WORDING" },
-        { "id": "new-topic-2-511-q6", "question": "Is it legal to climb around terrain when part of the base is off the table?", "style": "PLAYER_SHORTHAND" }
+        {
+          "id": "new-topic-2-511-q1",
+          "question": "Can a Trooper squeeze at the table edge using Climb or Climbing Plus?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-2-511-q2",
+          "question": "Can a trooper Climb through a narrow gap at the table edge?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-511-q3",
+          "question": "Can half my base hang past the board edge while Climbing?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-511-q4",
+          "question": "How much base contact does Climb require beside the table edge?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-511-q5",
+          "question": "Can Climbing Plus move along a narrow table-edge surface with only half the base supported?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-2-511-q6",
+          "question": "Is it legal to climb around terrain when part of the base is off the table?",
+          "style": "PLAYER_SHORTHAND"
+        }
       ]
     },
     {
@@ -614,19 +958,59 @@
       "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
       "approvedConclusion": "UNRESOLVED",
       "approvedCitations": [
-        { "sourceId": "infinity-rules-n5.3", "page": 34, "section": "JUMP — REQUIREMENTS AND EFFECTS" },
-        { "sourceId": "infinity-rules-n5.3", "page": 10, "section": "SILHOUETTES" }
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 34,
+          "section": "JUMP — REQUIREMENTS AND EFFECTS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 10,
+          "section": "SILHOUETTES"
+        }
       ],
       "reviewStatus": "APPROVED",
       "queryVariants": [
-        { "id": "new-topic-2-512-q1", "question": "Can a Trooper squeeze between terrain and the table edge while Jumping?", "style": "CANONICAL" },
-        { "id": "new-topic-2-512-q2", "question": "Can a model squeeze through a gap if it is along the table edge if it is jumping", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-512-q3", "question": "Can a trooper Jump across a gap beside the table edge?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-512-q4", "question": "Can I jump through the narrow space between terrain and the board edge?", "style": "TABLE_SCENARIO" },
-        { "id": "new-topic-2-512-q5", "question": "Does the base need support while a model is Jumping over an edge gap?", "style": "RULES_CHECK" },
-        { "id": "new-topic-2-512-q6", "question": "Can a model leap over a gap along the edge of the table if its landing spot fits the whole base?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-512-q7", "question": "Can you squeeze by terrain at the board edge using Jump instead of Move?", "style": "TABLE_SCENARIO" },
-        { "id": "new-topic-2-512-q8", "question": "Can Super-Jump leave the physical table boundary during its trajectory?", "style": "RULES_CHECK" }
+        {
+          "id": "new-topic-2-512-q1",
+          "question": "Can a Trooper squeeze between terrain and the table edge while Jumping?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-2-512-q2",
+          "question": "Can a model squeeze through a gap if it is along the table edge if it is jumping",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-512-q3",
+          "question": "Can a trooper Jump across a gap beside the table edge?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-512-q4",
+          "question": "Can I jump through the narrow space between terrain and the board edge?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-512-q5",
+          "question": "Does the base need support while a model is Jumping over an edge gap?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-512-q6",
+          "question": "Can a model leap over a gap along the edge of the table if its landing spot fits the whole base?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-512-q7",
+          "question": "Can you squeeze by terrain at the board edge using Jump instead of Move?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-512-q8",
+          "question": "Can Super-Jump leave the physical table boundary during its trajectory?",
+          "style": "RULES_CHECK"
+        }
       ]
     },
     {
@@ -637,20 +1021,64 @@
       "approvedCertainty": "EXPLICIT RULES ANSWER",
       "approvedConclusion": "INTERPRETATION",
       "approvedCitations": [
-        { "sourceId": "infinity-rules-n5.3", "page": 37, "section": "CRITICALS" },
-        { "sourceId": "infinity-rules-n5.3", "page": 47, "section": "SAVING ROLL (SR)" },
-        { "sourceId": "infinity-rules-n5.3", "page": 96, "section": "PLASMA WEAPONS — SAVING ROLLS" }
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 37,
+          "section": "CRITICALS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 47,
+          "section": "SAVING ROLL (SR)"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 96,
+          "section": "PLASMA WEAPONS — SAVING ROLLS"
+        }
       ],
       "reviewStatus": "APPROVED",
       "queryVariants": [
-        { "id": "new-topic-2-513-q1", "question": "What Saving Rolls does a target make for a Critical hit from a Plasma weapon?", "style": "CANONICAL" },
-        { "id": "new-topic-2-513-q2", "question": "What saves do you roll for a plasma crit save (ARM + BTS)?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-513-q3", "question": "How many saves does a Plasma critical cause?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-513-q4", "question": "Does a Plasma crit cause two ARM saves and one BTS save?", "style": "RULES_CHECK" },
-        { "id": "new-topic-2-513-q5", "question": "Which attribute is used for the extra Saving Roll from a Plasma Critical?", "style": "RULEBOOK_WORDING" },
-        { "id": "new-topic-2-513-q6", "question": "I was hit by a critical Plasma shot. What saves do I make?", "style": "TABLE_SCENARIO" },
-        { "id": "new-topic-2-513-q7", "question": "Is a Plasma crit 2 ARM and 1 BTS?", "style": "PLAYER_SHORTHAND" },
-        { "id": "new-topic-2-513-q8", "question": "For Plasma ammunition, does the Critical add an ARM roll or a BTS roll?", "style": "RULES_CHECK" }
+        {
+          "id": "new-topic-2-513-q1",
+          "question": "What Saving Rolls does a target make for a Critical hit from a Plasma weapon?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-2-513-q2",
+          "question": "What saves do you roll for a plasma crit save (ARM + BTS)?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-513-q3",
+          "question": "How many saves does a Plasma critical cause?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-513-q4",
+          "question": "Does a Plasma crit cause two ARM saves and one BTS save?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-513-q5",
+          "question": "Which attribute is used for the extra Saving Roll from a Plasma Critical?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-2-513-q6",
+          "question": "I was hit by a critical Plasma shot. What saves do I make?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-513-q7",
+          "question": "Is a Plasma crit 2 ARM and 1 BTS?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-513-q8",
+          "question": "For Plasma ammunition, does the Critical add an ARM roll or a BTS roll?",
+          "style": "RULES_CHECK"
+        }
       ]
     },
     {
@@ -1280,7 +1708,7 @@
         {
           "sourceId": "infinity-rules-n5.3",
           "page": 72,
-          "section": "MINES \u2014 TRIGGER CONDITIONS, ALLIES AND DODGE MOVEMENT"
+          "section": "MINES — TRIGGER CONDITIONS, ALLIES AND DODGE MOVEMENT"
         },
         {
           "sourceId": "infinity-rules-n5.3",
@@ -1506,6 +1934,59 @@
           "id": "new-topic-2-516-q40",
           "question": "What conditions must a mine meet to detonate before an enemy reaches my trooper?",
           "style": "TRIGGER_BOUNDARIES"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-2-517",
+      "category": "ITS_INTERACTION",
+      "canonicalQuestion": "Can a player Request a Tacball if only one player has Team-Ops?",
+      "approvedAnswer": "Yes. Request a Tacball is available to a Trooper with Infinity Team-Ops and does not require the opponent to have Team-Ops. It may be used only in the second Game Round and only once per player per game. However, Tacball Classified Objectives are a separate ITS Extra: they are used only if both players have Team-Ops Units in their Army Lists. Therefore, with Team-Ops on only one side, that player may Request and deploy a Tacball, but neither player rolls or replaces a Classified Objective from the Tacball Classified Objectives Chart.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "YES",
+      "approvedCitations": [
+        {
+          "sourceId": "its-season-18",
+          "page": 29,
+          "section": "REQUEST A TACBALL"
+        },
+        {
+          "sourceId": "its-season-18",
+          "page": 30,
+          "section": "TACBALL CLASSIFIED OBJECTIVES"
+        }
+      ],
+      "reviewStatus": "AUTO_VERIFIED_EXPLICIT",
+      "queryVariants": [
+        {
+          "id": "new-topic-2-517-q1",
+          "question": "can u drop tacball if only one player has tacops",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-517-q2",
+          "question": "Can I drop a Tacball if only I have Team-Ops?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-517-q3",
+          "question": "Does Request a Tacball require both players to have Team-Ops?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-517-q4",
+          "question": "Can one-sided Team-Ops deploy a Tacball?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-517-q5",
+          "question": "If my opponent has no Team-Ops, can my Team-Ops trooper request a Tacball?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-517-q6",
+          "question": "Do Tacball Classified Objectives need both players to have Team-Ops?",
+          "style": "RULES_CHECK"
         }
       ]
     }
