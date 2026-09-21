@@ -330,6 +330,7 @@ export function expectedEffectFromHits({ expectedHits, expectedCriticals = 0, ou
     expectedDamage: effect.expectedWounds,
     damageProbability: effect.nonLethal ? 0 : effect.failureProbability,
     woundDistribution: effect.woundDistribution,
+    nonLethal: effect.nonLethal,
     stateProbability: effect.stateProbability,
     meaningfulEffectProbability: effect.nonLethal ? effect.stateProbability : Math.max(effect.failureProbability, effect.stateProbability),
     neutralizeProbability: effect.neutralizeProbability,

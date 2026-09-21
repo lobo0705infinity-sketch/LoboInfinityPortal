@@ -91,13 +91,14 @@ function evaluateDirection(attacker, defender) {
       const selected = [...matchup.candidates].filter((entry) => entry.status === 'evaluated').sort((a, b) => Number(b.score || 0) - Number(a.score || 0) || String(a.weapon).localeCompare(String(b.weapon)))[0]
       const effect = selected?.optimalResponse?.effect
       const distribution = effect?.woundDistribution || []
+      const stateEffect = Boolean(effect?.nonLethal) ? Number(effect?.stateProbability || 0) : 0
       return {
         range: matchup.range,
         weapon: selected ? `${selected.weapon}${selected.mode ? ` (${selected.mode})` : ''}` : 'No legal attack',
         f2fWin: Number(selected?.optimalResponse?.roll?.activeWin || 0),
-        oneWound: 100 * Number(distribution[1] || 0),
-        twoWounds: 100 * Number(distribution[2] || 0),
-        threePlusWounds: 100 * distribution.slice(3).reduce((sum, probability) => sum + Number(probability || 0), 0),
+        oneEffect: 100 * (stateEffect || Number(distribution[1] || 0)),
+        twoEffects: 100 * (effect?.nonLethal ? 0 : Number(distribution[2] || 0)),
+        threePlusEffects: 100 * (effect?.nonLethal ? 0 : distribution.slice(3).reduce((sum, probability) => sum + Number(probability || 0), 0)),
         defenderSurvival: 100 * (1 - Number(effect?.neutralizeProbability || 0)),
       }
     }),
