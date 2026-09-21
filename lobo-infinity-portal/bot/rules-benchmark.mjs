@@ -173,6 +173,12 @@ export function normalizeQuestion(value) {
     .replace(/\bn\s*5\s*\.\s*3\b/g, 'n5.3')
     .replace(/\bline of fire\b/g, 'lof')
     .replace(/\bzone of control\b/g, 'zoc')
+    // Translate ordinary table language into the rules vocabulary before matching.
+    .replace(/\b(?:base[- ]?to[- ]?base|base contact|b2b|btb|touching (?:bases|base)|in melee|close combat|in combat|already fighting|engaged)\b/g, 'silhouette contact')
+    .replace(/\b(?:use|using|activate|activating|do)\s+(berserk|dodge|climb|jump|discover|stealth)\b/g, 'declare $1')
+    // Infinity Army and the rulebook use CrazyKoala, while players commonly type
+    // "Crazy Koala".  Treat both spellings as the same named piece of Equipment
+    // before doing exact benchmark routing.
     .replace(/\bcrazy\s*koalas?\b/g, 'crazykoala')
     .replace(/\bautomatic reaction orders?\b/g, 'aro')
     .replace(/\baros\b/g, 'aro')
