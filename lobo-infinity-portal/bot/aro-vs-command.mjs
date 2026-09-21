@@ -3,6 +3,7 @@ import { resolve } from 'node:path'
 import { readArtifact } from '../scripts/benchmark-artifacts.mjs'
 import { buildOfficialCombatSource } from './official-combat-source.mjs'
 import { evaluateAroProfile } from './gunfighter-rating.mjs'
+import { renderAroCounterImages } from './aro-counter-renderer.mjs'
 
 export const ARO_VS_COMMAND = 'aro-counter'
 export const TARGET_OPTION = 'target'
@@ -45,7 +46,7 @@ export async function rankArosAgainst({ target, range = 'all', limit = 10 } = {}
   const attacker = resolveTarget(source.profiles, target)
   const candidates = uniqueAroCandidates(source.profiles)
   const rows = candidates.map((profile) => {
-    const states = evaluateAroProfile(profile, [attacker]).states
+    const states = evaluateAroProfile(profile, [attacker], { excludeDirectTemplates: true }).states
     const state = states.map((entry) => ({ entry, score: scoreState(entry, range) })).sort((a, b) => b.score - a.score)[0].entry
     return { profile, state, score: scoreState(state, range) }
   }).sort((a, b) => b.score - a.score || a.profile.name.localeCompare(b.profile.name))
@@ -61,7 +62,7 @@ export async function rankArosAgainst({ target, range = 'all', limit = 10 } = {}
   return { target: attacker, range, results }
 }
 
-export function createAroVsInteractionHandler({ rank = rankArosAgainst, logger = console } = {}) {
+export function createAroVsInteractionHandler({ rank = rankArosAgainst, render = renderAroCounterImages, logger = console } = {}) {
   return async function handleAroVs(interaction) {
     if (!interaction?.isChatInputCommand?.() || interaction.commandName !== ARO_VS_COMMAND) return false
     try {
@@ -69,7 +70,8 @@ export function createAroVsInteractionHandler({ rank = rankArosAgainst, logger =
       const target = interaction.options.getString(TARGET_OPTION, true).trim()
       const range = interaction.options.getString(RANGE_OPTION) || 'all'
       const result = await rank({ target, range })
-      await interaction.editReply(formatAroVsDiscordResponse(result))
+      const images = await render({ result })
+      await interaction.editReply({ content: `**ARO Counter · ${shortName(result.target.name)}**`, files: images.map((image) => ({ attachment: image.imageBuffer, name: image.name })), allowedMentions: { parse: [] } })
     } catch (error) {
       logger.error?.('ARO comparison request failed:', error)
       const message = { content: error?.code === 'target_not_found' ? error.message : 'The ARO comparison engine is temporarily unavailable.' }
@@ -107,21 +109,22 @@ export async function searchTargetProfiles(query) {
 export function formatAroVsDiscordResponse(result) {
   const rangeLabel = result.range === 'all' ? 'all standard ranges' : `${result.range}″`
   const fields = result.results.map((entry, index) => {
-    const bands = entry.bands.map((band) => `**${band.range}″**  🎯 ${band.reactiveWin.toFixed(1)}%  ·  ⚡ ${band.meaningfulEffect.toFixed(1)}%  ·  🛡️ ${band.survival.toFixed(1)}%`).join('\n')
+    const rows = entry.bands.map((band) => `${band.range.padEnd(6)} ${band.reactiveWin.toFixed(1).padStart(5)}%  ${band.meaningfulEffect.toFixed(1).padStart(5)}%  ${band.survival.toFixed(1).padStart(5)}%`).join('\n')
     return {
       name: `#${index + 1}  ${shortName(entry.name)}${entry.state === 'fireteam' ? '  •  Fireteam +1SD' : ''}`.slice(0, 256),
-      value: `▸ **${cleanWeaponName(entry.weapon)}**\n${bands}`.slice(0, 1024),
-      inline: entry.bands.length <= 2,
+      value: `**${cleanWeaponName(entry.weapon)}**\n\`\`\`Range    F2F   Effect  Survive\n${rows}\`\`\``.slice(0, 1024),
+      inline: false,
     }
   })
+  const pages = chunk(fields, 5)
   return {
-    embeds: [{
-      title: `ARO Counter  •  ${shortName(result.target.name)}`,
-      description: `**Top 10 counters at ${rangeLabel}**\n🎯 **F2F** win  ·  ⚡ **Effect** (Wound/STR or state)  ·  🛡️ **Survives** the exchange`,
+    embeds: pages.map((page, index) => ({
+      title: `ARO Counter  •  ${shortName(result.target.name)}${pages.length > 1 ? `  (${index * 5 + 1}–${Math.min((index + 1) * 5, fields.length)})` : ''}`,
+      description: index === 0 ? `**Top 10 counters at ${rangeLabel}**\nF2F = win the Face-to-Face roll · Effect = Wound/STR or meaningful state · Survive = remains on table` : undefined,
       color: 0x00b8e6,
-      fields: fields.length ? fields : [{ name: 'Best responses', value: 'No legal direct AROs found.' }],
+      fields: page.length ? page : [{ name: 'Best responses', value: 'No legal direct AROs found.' }],
       footer: { text: 'Direct Template Weapons excluded • +1SD requires the legal Fireteam condition' },
-    }],
+    })),
     allowedMentions: { parse: [] },
   }
 }
@@ -185,4 +188,5 @@ function selectMatchups(state, range) {
 function normalize(value) { return String(value || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim() }
 function shortName(value) { return String(value || '').split('—').at(-1).trim() || String(value || '').trim() }
 function cleanWeaponName(value) { return String(value || '').replace(/:[^:]+\s*—\s*/, ' · ').replace(/\s*—\s*/g, ' · ') }
+function chunk(values, size) { const pages = []; for (let index = 0; index < values.length; index += size) pages.push(values.slice(index, index + size)); return pages }
 function matches(command) { return command.description === ARO_VS_COMMAND_DEFINITION.description && command.options?.length === 2 && command.options?.[0]?.name === TARGET_OPTION && command.options?.[0]?.required === true && command.options?.[0]?.autocomplete === true && command.options?.[1]?.name === RANGE_OPTION }

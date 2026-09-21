@@ -32,6 +32,7 @@ export const ARO_STATE_VALUES = Object.freeze({
 
 const DEFAULT_OPTIONS = Object.freeze({
   cover: true,
+  excludeDirectTemplates: false,
   ranges: STANDARD_RANGE_BANDS,
   stateValues: STATE_VALUES,
   surpriseAttack: false,
@@ -416,6 +417,7 @@ function buildLegalAros(defender, attacker, range, settings, attackingMode, fire
   const attackerHasMsv = tokens(attacker.equipment).some((value) => /^multispectral visor l[123]$/.test(value))
   for (const weapon of defender.weapons) for (const mode of weapon.modes) {
     if (mode.deployable) continue
+    if (settings.excludeDirectTemplates && mode.attackType === 'direct-template') continue
     if (mode.attackType === 'direct-template' && range.min >= Number(mode.templateRange || 8)) continue
     // Benchmark assumption: legal close placement around the user blocks LoF.
     // Enemy distance is not the distance to that targetless placement point.
