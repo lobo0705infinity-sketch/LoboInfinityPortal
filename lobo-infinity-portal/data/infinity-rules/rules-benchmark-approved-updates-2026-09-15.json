@@ -2004,6 +2004,72 @@
           "style": "RULES_CHECK"
         }
       ]
+    },
+    {
+      "id": "new-topic-2-518",
+      "category": "PERIMETER_WEAPONS",
+      "canonicalQuestion": "Can a CrazyKoala trigger on a Camouflage Marker?",
+      "approvedAnswer": "No. CrazyKoalas are Perimeter Weapons, and Perimeter Weapons do not trigger on Camouflage Markers (CAMO), Impersonation Markers (IMP-1 or IMP-2), or any Marker whose rules say so. The CrazyKoala can trigger only after the trooper is no longer represented by one of those protected Markers and otherwise meets its normal trigger conditions.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "NO",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 69,
+          "section": "PERIMETER WEAPONS — EFFECTS"
+        }
+      ],
+      "fuzzyRequiredTerms": [
+        "koala"
+      ],
+      "fuzzyExcludedTerms": [
+        "deploy",
+        "place",
+        "minelayer"
+      ],
+      "reviewStatus": "AUTO_VERIFIED_EXPLICIT",
+      "queryVariants": [
+        {
+          "id": "new-topic-2-518-q1",
+          "question": "Can a CrazyKoala trigger on a Camouflage Marker?",
+          "style": "CANONICAL"
+        },
+        {
+          "id": "new-topic-2-518-q2",
+          "question": "Does a Crazy Koala go off on a camo marker?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-518-q3",
+          "question": "Can koalas activate against camouflage?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-518-q4",
+          "question": "Will my CrazyKoala trigger if a CAMO marker enters its area?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-518-q5",
+          "question": "Do perimeter weapons trigger on camouflaged markers?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-518-q6",
+          "question": "Can a CrazyKoala hit an unrevealed camo token?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-518-q7",
+          "question": "Does a CrazyKoala wait until the camo trooper reveals?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-518-q8",
+          "question": "Will a Crazy Koala trigger on an IMP marker?",
+          "style": "RULES_CHECK"
+        }
+      ]
     }
   ]
 }
