@@ -137,7 +137,7 @@ for (const [name, response] of [
 ]) {
   let branchCalls = 0
   const result = await createDeepSeekRulesAnswer({ usagePath: join(dir, `${name}.json`), logger: { info() {}, warn() {} }, fetchImpl: async () => { branchCalls++; return response } })({ question: `${name} complete rule`, corpus })
-  assert.equal(branchCalls, 1); assert.equal(result.deepSeek, undefined); assert.ok(result.limitation)
+  assert.equal(branchCalls, name === 'truncated' ? 2 : 1); assert.equal(result.deepSeek, undefined); assert.ok(result.limitation)
 }
 
 assert.equal(validateDirectAnswer(validAnswer, corpus).ok, true)
@@ -155,6 +155,18 @@ for (const invalid of [
   { ...validAnswer, assumptions: ['Assume Reactive Turn'] },
   { ...ambiguousStealth, conclusion: 'NO', requestedOutcomeApplies: false, answer: 'No. Dodge does not break Stealth.' },
 ]) assert.equal(validateDirectAnswer(invalid, corpus).ok, false)
+
+// A partial provider response must still reach the player when it contains a
+// grounded answer; the command attaches the selected official evidence itself.
+const partialAnswer = { answer: 'Yes. The cited rule permits it.', conclusion: 'YES' }
+const recovered = await createDeepSeekRulesAnswer({
+  usagePath: join(dir, 'partial.json'), logger: { info() {}, warn() {} },
+  fetchImpl: async () => ({ ok: true, status: 200, headers: { get: () => 'application/json' }, text: async () => JSON.stringify({ choices: [{ finish_reason: 'stop', message: { content: JSON.stringify(partialAnswer) } }], usage: { prompt_tokens: 1, completion_tokens: 1 } }) }),
+})({ question: 'Does the rule apply?', corpus })
+assert.equal(recovered.deepSeek.answer, partialAnswer.answer)
+assert.equal(recovered.deepSeek.conclusion, 'YES')
+assert.ok(recovered.deepSeek.sources.length >= 1)
+assert.ok(recovered.deepSeek.sources.every((source) => ['MSV1', 'FAQ', 'ITS'].includes(source.section)))
 
 assert.deepEqual((await readUsage(join(dir, 'missing.json'))).records, [])
 for (const [index, raw] of ['', ' ', '{bad', '{"records":{}}'].entries()) { const path = join(dir, `bad-${index}.json`); await writeFile(path, raw); assert.deepEqual((await readUsage(path, { warn() {} })).records, []) }
