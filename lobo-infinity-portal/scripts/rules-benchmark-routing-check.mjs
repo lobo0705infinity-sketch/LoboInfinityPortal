@@ -369,3 +369,12 @@ for (const question of [
 console.log('PASS - 40 Mine/Engaged phrasings, timing and friendly-fire conditions, Dodge movement versus declaration, full Discord output, and zero AI calls.')
 
 console.log(`PASS - ${index.canonicalCases} trusted benchmark rulings route before DeepSeek; unmatched questions fall back exactly once.`)
+
+
+// CrazyKoala spelling regression: both official and player shorthand route to the approved ruling.
+for (const question of ['can a crazy koala trigger on a camouflage marker?', 'Can a Crazy Koala trigger on a Camouflage Marker?']) {
+  const result = await retrieveRulesReference({ question, deepSeek: fallback })
+  assert.equal(result.answerSource, 'APPROVED_BENCHMARK', question)
+  assert.equal(result.benchmark.id, 'new-topic-2-518', question)
+  assert.equal(result.deepSeek.conclusion, 'NO', question)
+}
