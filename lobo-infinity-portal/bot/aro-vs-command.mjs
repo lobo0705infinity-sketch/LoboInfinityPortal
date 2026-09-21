@@ -27,6 +27,23 @@ export const ARO_VS_COMMAND_DEFINITION = Object.freeze({
 
 let combatSourcePromise = null
 
+// The official metadata feed also contains reinforcements, legacy placeholders, and
+// internal/orphan entries.  The counter picker intentionally exposes only the
+// current, normal Army choices shown in the League portal.
+const COUNTER_ARMY_IDS = new Set([
+  101, 102, 103, 104, 105, 106, 107, // PanOceania
+  201, 202, 204, 205,                // Yu Jing
+  301, 302, 303, 304, 305, 306,      // Ariadna
+  401, 402, 403, 404,                // Haqqislam
+  501, 502, 503, 504,                // Nomads
+  601, 602, 603, 604, 605,           // Combined Army
+  701, 702, 703,                     // ALEPH
+  801,                               // Tohaa
+  901, 902, 904, 905, 908, 909,      // Non-Aligned Armies
+  1001, 1002, 1003,                  // O-12
+  1101, 1102, 1103,                  // JSA
+])
+
 export async function ensureAroVsCommand(client) {
   if (!client?.guilds?.cache) return []
   const registered = []
@@ -114,6 +131,7 @@ export async function searchArmies(query) {
   const source = await loadCombatSource()
   const needle = normalize(query)
   return source.factions
+    .filter((army) => COUNTER_ARMY_IDS.has(Number(army.id)))
     .filter((army) => !needle || normalize(army.name).includes(needle))
     .map((army) => ({ name: `${army.name} · ${Number(army.parent) === Number(army.id) ? 'Vanilla faction' : 'Sectorial'}`.slice(0, 100), value: String(army.id) }))
     .slice(0, 25)
@@ -178,9 +196,9 @@ function uniqueAroCandidates(profiles) {
 
 function resolveArmy(factions, query) {
   const text = String(query || '').trim()
-  const exactId = factions.find((army) => Number(army.id) === Number(text))
+  const exactId = factions.find((army) => COUNTER_ARMY_IDS.has(Number(army.id)) && Number(army.id) === Number(text))
   if (exactId) return exactId
-  const matches = factions.filter((army) => normalize(army.name) === normalize(text))
+  const matches = factions.filter((army) => COUNTER_ARMY_IDS.has(Number(army.id)) && normalize(army.name) === normalize(text))
   if (matches.length === 1) return matches[0]
   const error = new Error(`I couldn't identify the Army “${query}”. Start typing it and select an autocomplete option.`)
   error.code = 'army_not_found'
