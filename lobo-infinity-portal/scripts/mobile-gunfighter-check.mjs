@@ -74,5 +74,6 @@ await handler({isChatInputCommand:()=>true,commandName:'inf-list',deferReply:asy
 assert.equal(rendered.mobileGunfighter,true)
 assert.equal(INF_LIST_COMMAND_DEFINITION.options[1].required,false)
 const publicSource=await readFile('src/public/SnapshotArmyIntelligence.tsx','utf8')
-assert.match(publicSource,/<ArmyMobility lists=\{lists\}/)
+assert.doesNotMatch(publicSource,/<ArmyMobility lists=\{lists\}/)
+assert.match(publicSource,/profile\.mobility[\s\S]*Mobility \{profile\.mobility\.score\.toFixed\(1\)\}\/100/)
 console.log('PASS: anchored raw blend, informational percentiles, separate cohorts, all source scores, fingerprint, exact forms, opt-in command plumbing, Fireteam guard, unchanged classifications, bot markup and public route.')

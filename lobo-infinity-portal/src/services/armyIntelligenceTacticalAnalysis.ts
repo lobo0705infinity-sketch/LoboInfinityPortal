@@ -1,5 +1,7 @@
 import { eligibleLevel2Teams } from '../../bot/fireteam-list-eligibility.mjs'
+import { lookupMobility, type MobilityCatalog } from '../../bot/mobility-lookup.mjs'
 import portalGunfighterRatings from '../data/portal-gunfighter-ratings.json' with { type: 'json' }
+import mobilityCatalog from '../data/mobility-index.json' with { type: 'json' }
 import type { ArmyIntelligenceDecodedEntry, ArmyIntelligenceList } from './api'
 
 export type TacticalCategoryId = 'apex' | 'competent' | 'apexCc' | 'hacking' | 'vision' | 'valuableAro' | 'disposableAro' | 'alternative' | 'defensive'
@@ -16,6 +18,7 @@ export type TacticalProfile = {
   unit: string
   weapons: Array<{ burst: number | null; effectiveBurst: number | null; effectiveDice: number | null; name: string }>
   gunfighter?: { grade: string; percentile: number; rating: number; state: 'fireteam' | 'normal'; weapon: string }
+  mobility?: { mov: number[] | null; score: number; travel: number | null }
   linkability: 'verified' | 'verified-false' | 'unknown'
   roles: TacticalCategoryId[]
 }
@@ -156,12 +159,16 @@ function toProfile(entry: ArmyIntelligenceDecodedEntry, listCount: number, denom
   const skills = entry.skills.map(normalize).filter((skill) => alternativeSkill.test(skill) || defensiveSkill.test(skill) || enhancement.test(skill) || valuableAroSkill.test(skill) || bsAttackBurstBonus([skill]) > 0)
   const burstBonus = bsAttackBurstBonus(entry.skills)
   const sdBonus = bsAttackSdBonus(entry.skills) + Number(entry.fireteamSdBonus || 0)
+  const mobility = lookupMobility(mobilityCatalog as MobilityCatalog, entry.combinedId)
   return {
     badges: unique([...skills, ...canonicalWeapons(entry).filter((weapon) => weaponSdBonus(weapon) > 0).map((weapon) => `${weapon.name} (+${weaponSdBonus(weapon)}SD)`), ...canonicalWeapons(entry).filter((weapon) => weaponBurstBonus(weapon) > 0).map((weapon) => `${weapon.name} (+${weaponBurstBonus(weapon)}B)`), ...(entry.fireteamSdBonus ? ['Fireteam (+1SD)'] : []), ...(isProxyMkIv(entry) ? ['Proxy Mk IV exception'] : []), ...hackingComponents(entry)]),
     bs: entry.bs ?? null,
     cc: entry.cc ?? null,
     equipment: entry.equipment.filter((item) => deliveryEquipment.test(normalize(item)) || hackingDevice.test(normalize(item))),
     gunfighter,
+    mobility: mobility?.status === 'rated' && mobility.score !== null
+      ? { mov: mobility.mov, score: mobility.score, travel: mobility.travel }
+      : undefined,
     linkability: entry.fireteamEligibility?.state === 'verified' ? 'verified' : entry.fireteamEligibility?.state === 'verified-false' ? 'verified-false' : 'unknown',
     listCount,
     percentage: denominator ? (listCount / denominator) * 100 : 0,

@@ -1,5 +1,4 @@
 import { repairArmyList } from '../../bot/profile-audit.mjs'
-import ArmyMobility from '../components/ArmyMobility'
 import { type ReactNode, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import InteractiveMetricCard from '../components/InteractiveMetricCard'
@@ -231,8 +230,6 @@ function ArmyIntelligenceDetail({ selected }: { selected: string }) {
     {lists.length ? <>
       <IntelligenceBrief analysis={buildTacticalAnalysis(lists)} faction={selected} />
 
-      <ArmyMobility lists={lists} />
-
       <UsagePanel items={visibleUsage} listCount={lists.length} title="Model Usage" wide />
 
       <section className="snapshot-intelligence-role-grid" aria-label="Role usage breakdowns">
@@ -259,11 +256,14 @@ function ArmyIntelligenceDetail({ selected }: { selected: string }) {
 }
 
 function IntelligenceBrief({ analysis, faction }: { analysis: ReturnType<typeof buildTacticalAnalysis>; faction: string }) {
+  const [view, setView] = useState<IntelligenceBriefView>('combat')
+  const visibleCategories = analysis.categories.filter((category) => view === 'all' || intelligenceBriefGroups[view].includes(category.id))
   return <section className="panel snapshot-intelligence-brief-panel" aria-labelledby="snapshot-intelligence-brief-title">
     <div className="snapshot-intelligence-brief-header"><span>{analysis.mode}</span><h2 id="snapshot-intelligence-brief-title">{faction}</h2></div>
     {analysis.listCount < 3 ? <p className="army-intelligence-sample-notice">Only {analysis.listCount} decoded {analysis.listCount === 1 ? 'list is' : 'lists are'} available. These are observed capabilities, not reliable faction trends.</p> : null}
     <p className="army-intelligence-role-notice">Profiles may appear in multiple sections when they perform multiple tactical roles. Quantities represent models, not classifications.</p>
-    <div className="army-intelligence-tactical-grid">{analysis.categories.map((category) => <article className="army-intelligence-tactical-panel" key={category.id}>
+    <SnapshotBriefNavigator analysis={analysis} onChange={setView} value={view} />
+    <div className="army-intelligence-tactical-grid">{visibleCategories.map((category) => <article className="army-intelligence-tactical-panel" id={`snapshot-intelligence-${category.id}`} key={category.id}>
       <header><h3>{category.title}</h3><p>{category.description}</p></header>
       {category.id === 'hacking' ? <p className="army-intelligence-category-total"><strong>{analysis.hackerListCount}</strong> of {analysis.listCount} decoded lists contain at least one Hacker.</p> : null}
       {category.profiles.length ? <div className="army-intelligence-tactical-profiles">{category.profiles.map((profile) => <SnapshotTacticalProfile category={category.id} key={profile.profileId} profile={profile} />)}</div> : <p className="army-intelligence-tactical-empty">{category.unavailableReason || 'No qualifying profiles were found in the submitted decoded sample.'}</p>}
@@ -275,7 +275,15 @@ function IntelligenceBrief({ analysis, faction }: { analysis: ReturnType<typeof 
 function SnapshotTacticalProfile({ category, profile }: { category: string; profile: TacticalProfile }) {
   const weapons = profile.weapons.filter((weapon, index) => category === 'competent' ? (weapon.effectiveDice ?? 0) >= 4 : category === 'valuableAro' || category === 'disposableAro' ? /sniper rifle|missile launcher|portable autocannon|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach|flash pulse/i.test(weapon.name) : category === 'defensive' ? /mine|deployable/i.test(weapon.name) : category === 'alternative' ? index === 0 : false)
   const benchmark = category === 'apex' ? profile.gunfighter : undefined
-  return <div className="army-intelligence-tactical-profile"><div><strong>{profile.unit}</strong><span>{profile.profile}</span></div><div className="army-intelligence-tactical-badges">{benchmark ? <><span>{benchmark.weapon}</span><span>{benchmark.rating.toFixed(2)} · Grade {benchmark.grade}</span><span>{Math.round(benchmark.percentile)}th percentile · {benchmark.state === 'fireteam' ? 'Fireteam +1SD' : 'Non-linked'}</span></> : <>{profile.bs !== null ? <span>BS {profile.bs}</span> : null}{weapons.map((weapon) => <span key={`${weapon.name}:${weapon.burst}`}>{weapon.name}{weapon.effectiveBurst === null ? ' · Burst unavailable' : category === 'competent' && weapon.effectiveDice !== weapon.effectiveBurst ? ` · Effective dice ${weapon.effectiveDice} (Burst ${weapon.effectiveBurst} + SD)` : ` · Burst ${weapon.effectiveBurst}${weapon.burst !== weapon.effectiveBurst ? ` (base ${weapon.burst} + BS Attack)` : ''}`}</span>)}</>}{profile.roles.length > 1 ? <span className="is-multi-role">MULTI-ROLE</span> : null}{profile.badges.map((badge) => <span key={badge}>{badge}</span>)}{!benchmark && (profile.linkability === 'verified' ? <span className="is-verified">Verified linkable</span> : profile.linkability === 'verified-false' ? <span>Verified not linkable</span> : <span>Fireteam status unknown</span>)}</div>{profile.roles.length > 1 ? <small>Also classified as: {profile.roles.filter((role) => role !== category).map(snapshotTacticalRoleTitle).join(' · ')}</small> : null}<small>{profile.listCount} {profile.listCount === 1 ? 'list' : 'lists'} · {Math.round(profile.percentage)}%</small></div>
+  return <div className="army-intelligence-tactical-profile"><div><strong>{profile.unit}</strong><span>{profile.profile}</span></div><div className="army-intelligence-tactical-badges">{benchmark ? <><span>{benchmark.weapon}</span><span>{benchmark.rating.toFixed(2)} · Grade {benchmark.grade}</span><span>{Math.round(benchmark.percentile)}th percentile · {benchmark.state === 'fireteam' ? 'Fireteam +1SD' : 'Non-linked'}</span>{profile.mobility ? <span>Mobility {profile.mobility.score.toFixed(1)}/100{profile.mobility.mov ? ` · MOV ${profile.mobility.mov.join('-')}″` : ''}{profile.mobility.travel !== null ? ` · Travel ${profile.mobility.travel}″` : ''}</span> : null}</> : <>{profile.bs !== null ? <span>BS {profile.bs}</span> : null}{weapons.map((weapon) => <span key={`${weapon.name}:${weapon.burst}`}>{weapon.name}{weapon.effectiveBurst === null ? ' · Burst unavailable' : category === 'competent' && weapon.effectiveDice !== weapon.effectiveBurst ? ` · Effective dice ${weapon.effectiveDice} (Burst ${weapon.effectiveBurst} + SD)` : ` · Burst ${weapon.effectiveBurst}${weapon.burst !== weapon.effectiveBurst ? ` (base ${weapon.burst} + BS Attack)` : ''}`}</span>)}</>}{profile.roles.length > 1 ? <span className="is-multi-role">MULTI-ROLE</span> : null}{profile.badges.map((badge) => <span key={badge}>{badge}</span>)}{!benchmark && (profile.linkability === 'verified' ? <span className="is-verified">Verified linkable</span> : profile.linkability === 'verified-false' ? <span>Verified not linkable</span> : <span>Fireteam status unknown</span>)}</div>{profile.roles.length > 1 ? <small>Also classified as: {profile.roles.filter((role) => role !== category).map(snapshotTacticalRoleTitle).join(' · ')}</small> : null}<small>{profile.listCount} {profile.listCount === 1 ? 'list' : 'lists'} · {Math.round(profile.percentage)}%</small></div>
+}
+
+type IntelligenceBriefView = 'combat' | 'defense' | 'control' | 'all'
+const intelligenceBriefGroups: Record<Exclude<IntelligenceBriefView, 'all'>, ReturnType<typeof buildTacticalAnalysis>['categories'][number]['id'][]> = { combat: ['apex', 'apexCc'], defense: ['valuableAro', 'disposableAro', 'defensive'], control: ['hacking', 'vision', 'alternative'] }
+function SnapshotBriefNavigator({ analysis, onChange, value }: { analysis: ReturnType<typeof buildTacticalAnalysis>; onChange: (value: IntelligenceBriefView) => void; value: IntelligenceBriefView }) {
+  const options: Array<{ label: string; value: IntelligenceBriefView }> = [{ label: 'Combat', value: 'combat' }, { label: 'Defense', value: 'defense' }, { label: 'Control', value: 'control' }, { label: 'All', value: 'all' }]
+  const count = (candidate: IntelligenceBriefView) => analysis.categories.filter((category) => candidate === 'all' || intelligenceBriefGroups[candidate].includes(category.id)).reduce((sum, category) => sum + category.profiles.length, 0)
+  return <nav className="army-intelligence-brief-nav" aria-label="Intelligence briefing sections"><label><span>Briefing view</span><select value={value} onChange={(event) => onChange(event.target.value as IntelligenceBriefView)}>{options.map((option) => <option key={option.value} value={option.value}>{option.label} ({count(option.value)})</option>)}</select></label><div className="army-intelligence-brief-tabs">{options.map((option) => <button aria-pressed={value === option.value} className={value === option.value ? 'is-active' : ''} key={option.value} onClick={() => onChange(option.value)} type="button"><span>{option.label}</span><strong>{count(option.value)}</strong></button>)}</div><div className="army-intelligence-section-jumps">{analysis.categories.filter((category) => value === 'all' || intelligenceBriefGroups[value].includes(category.id)).map((category) => <a href={`#snapshot-intelligence-${category.id}`} key={category.id}>{category.title} <span>{category.profiles.length}</span></a>)}</div></nav>
 }
 
 function snapshotTacticalRoleTitle(role: string) {

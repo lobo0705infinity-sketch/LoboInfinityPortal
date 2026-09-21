@@ -4932,11 +4932,13 @@
   border-radius: 8px;
   color: var(--text);
   display: grid;
-  gap: 0.35rem 0.75rem;
-  grid-template-columns: 3.4rem minmax(0, 1fr);
-  min-height: 7rem;
-  padding: 0.95rem;
-  text-align: left;
+  gap: 0.42rem;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 3.5rem auto auto minmax(0, auto);
+  justify-items: center;
+  min-height: 10.5rem;
+  padding: 1rem 0.8rem;
+  text-align: center;
   transition:
     background 160ms ease,
     border-color 160ms ease,
@@ -4988,12 +4990,13 @@
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  text-wrap: balance;
 }
 
 .army-intelligence-metric strong {
   display: block;
   font-size: 1.75rem;
-  grid-column: 2;
+  grid-column: 1;
   line-height: 1.1;
   margin-top: 0;
 }
@@ -5003,7 +5006,7 @@
   display: block;
   font-size: 0.72rem;
   font-weight: 800;
-  grid-column: 2;
+  grid-column: 1;
   line-height: 1.2;
 }
 
@@ -5014,7 +5017,7 @@
   background-size: contain;
   border-radius: 999px;
   display: block;
-  grid-row: 1 / span 2;
+  grid-row: 1;
   height: 3.5rem;
   justify-self: center;
   position: relative;
@@ -6816,12 +6819,36 @@
   margin-top: 1rem;
 }
 
+.army-intelligence-brief-nav {
+  position: sticky;
+  top: 0.65rem;
+  z-index: 8;
+  display: grid;
+  gap: 0.55rem;
+  margin: 1rem 0 0;
+  padding: 0.65rem;
+  border: 1px solid rgba(76, 201, 240, 0.28);
+  border-radius: 12px;
+  background: rgba(6, 12, 18, 0.96);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(14px);
+}
+.army-intelligence-brief-nav > label { display: none; }
+.army-intelligence-brief-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.45rem; }
+.army-intelligence-brief-tabs button { display: flex; align-items: center; justify-content: center; gap: 0.55rem; min-height: 42px; border: 1px solid rgba(148, 163, 184, 0.24); border-radius: 9px; padding: 0.5rem 0.75rem; color: var(--text-soft); background: rgba(14, 23, 32, 0.82); font: inherit; font-weight: 900; cursor: pointer; }
+.army-intelligence-brief-tabs button strong { min-width: 1.7rem; padding: 0.08rem 0.38rem; border-radius: 999px; color: #071018; background: var(--blue); font-size: 0.72rem; }
+.army-intelligence-brief-tabs button.is-active { border-color: var(--blue); color: #fff; background: linear-gradient(135deg, rgba(76, 201, 240, 0.2), rgba(14, 23, 32, 0.9)); }
+.army-intelligence-section-jumps { display: flex; gap: 0.4rem; overflow-x: auto; scrollbar-width: thin; }
+.army-intelligence-section-jumps a { flex: none; padding: 0.3rem 0.55rem; border-radius: 999px; color: var(--text-muted); background: rgba(255,255,255,0.055); font-size: 0.72rem; font-weight: 850; text-decoration: none; }
+.army-intelligence-section-jumps a span { color: var(--blue); }
+
 .army-intelligence-tactical-panel {
   min-width: 0;
   padding: 1rem;
   border: 1px solid rgba(76, 201, 240, 0.24);
   border-radius: 10px;
   background: rgba(4, 12, 18, 0.66);
+  scroll-margin-top: 9rem;
 }
 
 .army-intelligence-tactical-panel header h3,
@@ -6842,7 +6869,7 @@
 .army-intelligence-role-notice { margin: 0.75rem 0 0; color: var(--text-muted); font-size: 0.82rem; }
 .army-intelligence-category-total { margin-top: 0.75rem; }
 .army-intelligence-tactical-profiles { display: grid; gap: 0.65rem; margin-top: 0.85rem; }
-.army-intelligence-tactical-profile { display: grid; gap: 0.42rem; padding-top: 0.65rem; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+.army-intelligence-tactical-profile { display: grid; gap: 0.5rem; padding: 0.7rem; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; background: rgba(10, 19, 27, 0.72); }
 .army-intelligence-tactical-profile > div:first-child { display: flex; flex-wrap: wrap; gap: 0.35rem 0.65rem; }
 .army-intelligence-tactical-badges { display: flex; flex-wrap: wrap; gap: 0.35rem; }
 .army-intelligence-tactical-badges > span { padding: 0.2rem 0.45rem; border: 1px solid rgba(76, 201, 240, 0.28); border-radius: 999px; font-size: 0.7rem; }
@@ -6855,6 +6882,11 @@
 @media (max-width: 760px) {
   .army-intelligence-tactical-grid { grid-template-columns: 1fr; }
   .army-intelligence-tactical-panel { padding: 0.85rem; }
+  .army-intelligence-brief-nav { top: 0.35rem; }
+  .army-intelligence-brief-nav > label { display: grid; gap: 0.3rem; color: var(--text-muted); font-size: 0.72rem; font-weight: 900; }
+  .army-intelligence-brief-nav > label select { min-height: 42px; }
+  .army-intelligence-brief-tabs { display: none; }
+  .army-intelligence-section-jumps { padding-bottom: 0.15rem; }
 }
 
 .streams-manager-primary {

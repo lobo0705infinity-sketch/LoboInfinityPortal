@@ -24,6 +24,12 @@ const commissionerSystem = read('src/pages/CommissionerSystem.tsx')
 const decoder = read('scripts/infinity-army-decode.mjs')
 const refresh = read('scripts/refresh-army-intelligence.mjs')
 const worker = read('api/army-intelligence-refresh-worker.mjs')
+
+assert.doesNotMatch(page, /<ArmyMobility|import ArmyMobility/, 'Army Intelligence must not render standalone Mobility cards.')
+assert.match(page, /Combat[\s\S]*Defense[\s\S]*Control[\s\S]*All[\s\S]*army-intelligence-brief-nav/, 'Army Intelligence must expose grouped briefing navigation.')
+assert.match(page, /Mobility \{profile\.mobility\.score\.toFixed\(1\)\}\/100/, 'Mobility must remain embedded in ranked profile information.')
+assert.match(appCss, /\.army-intelligence-brief-nav\s*\{[\s\S]*position:\s*sticky/, 'Briefing navigation must remain sticky.')
+assert.match(appCss, /\.army-intelligence-metric\s*\{[\s\S]*grid-template-columns:\s*minmax\(0, 1fr\)[\s\S]*justify-items:\s*center/, 'Army Intelligence summary cards must use centered vertical stacks.')
 const selectedFactionResults = page.slice(page.indexOf('matchingLists.length === 0'), page.indexOf('type ArmyIntelligenceOperationsStatusState'))
 const selectedFactionSummary = selectedFactionResults.indexOf('aria-label="Army Intelligence analysis summary"')
 const selectedFactionFilters = selectedFactionResults.indexOf('aria-label="Model Usage filters"')
@@ -282,8 +288,8 @@ assert.match(
 )
 assert.match(
   appCss,
-  /\.army-intelligence-metric small[\s\S]*grid-column: 2[\s\S]*line-height: 1\.2[\s\S]*@media[\s\S]*\.army-intelligence-metric small/,
-  'Clickable metric helper text must render in the card and remain available in the mobile layout.',
+  /\.army-intelligence-metric small[\s\S]*display:\s*block[\s\S]*grid-column:\s*1[\s\S]*line-height:\s*1\.2/,
+  'Clickable metric helper text must remain visible in the centered card layout.',
 )
 assert.match(
   appCss,

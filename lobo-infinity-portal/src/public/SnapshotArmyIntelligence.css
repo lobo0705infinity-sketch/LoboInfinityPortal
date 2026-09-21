@@ -19,6 +19,19 @@
 .snapshot-intelligence-page .army-intelligence-network-lists p { display:flex; flex-direction:column; margin-top:.4rem; font-size:.78rem; }
 @media(max-width:760px){.snapshot-intelligence-page .army-intelligence-tactical-grid{grid-template-columns:1fr}}
 
+.snapshot-intelligence-page .army-intelligence-brief-nav { position:sticky; top:.5rem; z-index:8; display:grid; gap:.5rem; margin:1rem 0 0; padding:.65rem; border:1px solid rgba(76,201,240,.28); border-radius:12px; background:rgba(6,12,18,.96); box-shadow:0 12px 28px rgba(0,0,0,.3); backdrop-filter:blur(14px); }
+.snapshot-intelligence-page .army-intelligence-brief-nav>label { display:none; }
+.snapshot-intelligence-page .army-intelligence-brief-tabs { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.45rem; }
+.snapshot-intelligence-page .army-intelligence-brief-tabs button { display:flex; align-items:center; justify-content:center; gap:.5rem; min-height:42px; border:1px solid rgba(148,163,184,.24); border-radius:9px; padding:.5rem; color:var(--text-soft); background:rgba(14,23,32,.82); font:inherit; font-weight:900; cursor:pointer; }
+.snapshot-intelligence-page .army-intelligence-brief-tabs button strong { min-width:1.7rem; padding:.08rem .38rem; border-radius:999px; color:#071018; background:var(--blue); font-size:.72rem; }
+.snapshot-intelligence-page .army-intelligence-brief-tabs button.is-active { border-color:var(--blue); color:#fff; background:linear-gradient(135deg,rgba(76,201,240,.2),rgba(14,23,32,.9)); }
+.snapshot-intelligence-page .army-intelligence-section-jumps { display:flex; gap:.4rem; overflow-x:auto; }
+.snapshot-intelligence-page .army-intelligence-section-jumps a { flex:none; padding:.3rem .55rem; border-radius:999px; color:var(--text-muted); background:rgba(255,255,255,.055); font-size:.72rem; font-weight:850; text-decoration:none; }
+.snapshot-intelligence-page .army-intelligence-section-jumps a span { color:var(--blue); }
+.snapshot-intelligence-page .army-intelligence-tactical-panel { scroll-margin-top:9rem; }
+.snapshot-intelligence-page .army-intelligence-tactical-profile { padding:.7rem; border:1px solid rgba(255,255,255,.08); border-radius:8px; background:rgba(10,19,27,.72); }
+@media(max-width:760px){.snapshot-intelligence-page .army-intelligence-brief-nav>label{display:grid;gap:.3rem;color:var(--text-muted);font-size:.72rem;font-weight:900}.snapshot-intelligence-page .army-intelligence-brief-nav>label select{min-height:42px}.snapshot-intelligence-page .army-intelligence-brief-tabs{display:none}}
+
 .snapshot-intelligence-hero {
   display: grid;
   position: relative;
@@ -154,9 +167,10 @@
 .snapshot-intelligence-mature-metrics .snapshot-intelligence-metric { min-height: 122px; }
 .snapshot-intelligence-metric {
   display: grid;
-  grid-template-columns: 38px minmax(0, 1fr) 38px;
-  grid-template-rows: auto 1fr auto;
-  gap: 0.18rem 0.72rem;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 42px auto auto minmax(0, auto);
+  justify-items: center;
+  gap: 0.36rem;
   width: 100%;
   min-height: 112px;
   border: 1px solid rgba(76, 201, 240, 0.24);
@@ -171,8 +185,8 @@
 .snapshot-intelligence-metric.interactive-metric-card-action { cursor: pointer; }
 .snapshot-intelligence-metric.interactive-metric-card-action:hover,
 .snapshot-intelligence-metric.interactive-metric-card-action:focus-visible { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.13), var(--shadow-card); outline: 0; transform: translateY(-1px); }
-.snapshot-intelligence-metric::after { content: ""; grid-column: 3; grid-row: 1 / span 3; width: 38px; }
-.snapshot-intelligence-metric-icon { grid-column: 1; grid-row: span 3; display: grid; width: 38px; height: 38px; place-items: center; border: 1px solid rgba(76, 201, 240, 0.34); border-radius: 8px; background: rgba(8, 13, 19, 0.82) center / 22px no-repeat; }
+.snapshot-intelligence-metric::after { display: none; }
+.snapshot-intelligence-metric-icon { grid-column: 1; grid-row: 1; display: grid; width: 42px; height: 42px; place-items: center; border: 1px solid rgba(76, 201, 240, 0.34); border-radius: 10px; background: rgba(8, 13, 19, 0.82) center / 24px no-repeat; }
 .snapshot-intelligence-metric-icon.is-regular { background-image: url("/army-intelligence/regular-order.svg"); }
 .snapshot-intelligence-metric-icon.is-irregular { background-image: url("/army-intelligence/irregular-order.svg"); }
 .snapshot-intelligence-metric-icon.is-tactical { background-image: url("/army-intelligence/tactical-awareness-order.svg"); }
@@ -181,9 +195,9 @@
 .snapshot-intelligence-metric-icon.is-wounds::before { content: "+"; color: #ff7b84; font-size: 1.45rem; font-weight: 900; }
 .snapshot-intelligence-metric-icon.is-points::before { content: "P"; color: #f5ce75; font-weight: 950; }
 .snapshot-intelligence-metric-icon.is-lists::before { content: "≡"; color: var(--blue); font-size: 1.5rem; font-weight: 900; }
-.snapshot-intelligence-metric .interactive-metric-card-label { grid-column: 2; grid-row: 1; align-self: end; color: #adc0ce; font-size: 0.62rem; font-weight: 950; letter-spacing: 0.075em; text-transform: uppercase; }
-.snapshot-intelligence-metric .interactive-metric-card-value { grid-column: 2; grid-row: 2; align-self: center; color: #fff; font-family: Rajdhani, Inter, sans-serif; font-size: 2rem; line-height: 1; }
-.snapshot-intelligence-metric .interactive-metric-card-helper { grid-column: 2; grid-row: 3; color: var(--blue); font-size: 0.7rem; font-weight: 850; }
+.snapshot-intelligence-metric .interactive-metric-card-label { grid-column: 1; grid-row: 2; color: #adc0ce; font-size: 0.62rem; font-weight: 950; letter-spacing: 0.075em; text-align: center; text-transform: uppercase; text-wrap: balance; }
+.snapshot-intelligence-metric .interactive-metric-card-value { grid-column: 1; grid-row: 3; color: #fff; font-family: Rajdhani, Inter, sans-serif; font-size: 2rem; line-height: 1; }
+.snapshot-intelligence-metric .interactive-metric-card-helper { grid-column: 1; grid-row: 4; color: var(--blue); font-size: 0.7rem; font-weight: 850; text-align: center; }
 
 .snapshot-intelligence-panel-wide { overflow: hidden; }
 .snapshot-intelligence-usage-groups { display: grid; gap: 0.55rem; }
