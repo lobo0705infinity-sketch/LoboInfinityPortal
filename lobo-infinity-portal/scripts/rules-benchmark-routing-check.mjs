@@ -6,7 +6,7 @@ import { retrieveRulesReference, formatRulesDiscordResponse } from '../bot/rules
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1397)
+assert.equal(index.canonicalCases, 1399)
 
 for (const file of ['rules-adjudicator-benchmark.json', 'rules-adjudicator-expansion-400.json', 'rules-adjudicator-new-topics-400.json', 'rules-adjudicator-new-topics-500.json', 'rules-benchmark-approved-updates-2026-09-15.json']) {
   const document = JSON.parse(await readFile(resolve(root, 'data/infinity-rules', file), 'utf8'))
@@ -368,13 +368,39 @@ for (const question of [
 ]) assert.notEqual((await findApprovedRulesAnswer(question))?.id, 'new-topic-2-516', question)
 console.log('PASS - 40 Mine/Engaged phrasings, timing and friendly-fire conditions, Dodge movement versus declaration, full Discord output, and zero AI calls.')
 
-console.log(`PASS - ${index.canonicalCases} trusted benchmark rulings route before DeepSeek; unmatched questions fall back exactly once.`)
-
-
-// CrazyKoala spelling regression: both official and player shorthand route to the approved ruling.
-for (const question of ['can a crazy koala trigger on a camouflage marker?', 'Can a Crazy Koala trigger on a Camouflage Marker?']) {
+const perimeterCase = impetuousDocument.cases.find((item) => item.id === 'new-topic-2-518')
+assert.equal(perimeterCase.queryVariants.length, 8)
+for (const { question } of perimeterCase.queryVariants) {
+  const result = await retrieveRulesReference({ question, deepSeek: fallback })
+  assert.equal(result.answerSource, 'APPROVED_BENCHMARK', question)
+  assert.equal(result.benchmark.id, 'new-topic-2-518', question)
+  assert.equal(result.deepSeek.conclusion, 'NO', question)
+  assert.match(result.deepSeek.answer, /do not trigger on Camouflage Markers/i, question)
+  assert.deepEqual(result.deepSeek.sources.map((source) => source.page), ['p. 69'], question)
+}
+for (const question of [
+  'can a crazy koala trigger on a camouflage marker?',
+  'Can a Crazy Koala trigger on a Camouflage Marker?',
+]) {
   const result = await retrieveRulesReference({ question, deepSeek: fallback })
   assert.equal(result.answerSource, 'APPROVED_BENCHMARK', question)
   assert.equal(result.benchmark.id, 'new-topic-2-518', question)
   assert.equal(result.deepSeek.conclusion, 'NO', question)
 }
+assert.equal(calls, 3, 'All CrazyKoala/Camouflage phrasings must bypass the provider')
+console.log('PASS - CrazyKoala and Perimeter Weapon marker triggers route directly from the approved rules benchmark.')
+
+const perimeterPlacementCase = impetuousDocument.cases.find((item) => item.id === 'new-topic-2-519')
+assert.equal(perimeterPlacementCase.queryVariants.length, 12)
+for (const { question } of perimeterPlacementCase.queryVariants) {
+  const result = await retrieveRulesReference({ question, deepSeek: fallback })
+  assert.equal(result.answerSource, 'APPROVED_BENCHMARK', question)
+  assert.equal(result.benchmark.id, 'new-topic-2-519', question)
+  assert.equal(result.deepSeek.conclusion, 'DEPENDS', question)
+  assert.match(result.deepSeek.answer, /valid, non-Camouflaged enemy/i, question)
+  assert.deepEqual(result.deepSeek.sources.map((source) => source.page), ['p. 82', 'p. 69'], question)
+}
+assert.equal(calls, 3, 'CrazyKoala placement questions must bypass the provider')
+console.log('PASS - CrazyKoala placement near Camouflage Markers routes directly from the approved rules benchmark.')
+
+console.log(`PASS - ${index.canonicalCases} trusted benchmark rulings route before DeepSeek; unmatched questions fall back exactly once.`)
