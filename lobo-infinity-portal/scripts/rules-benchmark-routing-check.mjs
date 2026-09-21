@@ -6,7 +6,7 @@ import { retrieveRulesReference, formatRulesDiscordResponse } from '../bot/rules
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1399)
+assert.equal(index.canonicalCases, 1400)
 
 for (const file of ['rules-adjudicator-benchmark.json', 'rules-adjudicator-expansion-400.json', 'rules-adjudicator-new-topics-400.json', 'rules-adjudicator-new-topics-500.json', 'rules-benchmark-approved-updates-2026-09-15.json']) {
   const document = JSON.parse(await readFile(resolve(root, 'data/infinity-rules', file), 'utf8'))
@@ -62,6 +62,9 @@ const naturalParaphrases = [
   ['What saves do you roll for a plasma crit save (ARM + BTS)?', 'new-topic-2-513'],
   ['How many saves does a Plasma critical cause?', 'new-topic-2-513'],
   ['Is a Plasma crit 2 ARM and 1 BTS?', 'new-topic-2-513'],
+  ['Can you use berserk when you are in base to base contact?', 'new-topic-2-520'],
+  ['Can I Berserk while engaged?', 'new-topic-2-520'],
+  ['can i berzerk whille in btb', 'new-topic-2-520'],
 ]
 for (const [question, expectedId] of naturalParaphrases) {
   assert.equal((await findApprovedRulesAnswer(question))?.id, expectedId, question)
