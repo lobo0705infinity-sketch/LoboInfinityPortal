@@ -7,6 +7,7 @@ import { canonicalMemberships } from './fireteam-list-eligibility.mjs'
 import { weaponChartFromArmyMetadata } from './infinity-weapon-chart.mjs'
 import { COMBAT_RULES_VERSION } from './combat-rules.mjs'
 import { validateMobilityCapture } from './mobility-catalog-validation.mjs'
+import { isInLiveArmyRoster } from './official-army-rosters.mjs'
 
 export function buildOfficialCombatSource(capture) {
   if (!capture?.metadata?.weapons?.length || !capture.payloads?.length) throw Error('Complete official Army capture required')
@@ -21,6 +22,9 @@ export function buildOfficialCombatSource(capture) {
     local.metadata.types = payload.filters?.type || []
     const memberships = canonicalMemberships(payload)
     const sectorialId = Number(payload.sectorialId ?? payload.url?.split('/').at(-1))
+    // The endpoint includes inactive/cross-army profiles.  Retain only units
+    // exposed by the live Army roster for the selected army.
+    local.units = local.units.filter((unit) => isInLiveArmyRoster(sectorialId, unit.slug))
     const eligibility = buildFireteamBonusEligibility([payload])
     const entries = buildCanonicalGunfighterProfiles({ dataset: local, weaponChart, sectorialId, ...eligibility })
     for (const entry of entries) {
