@@ -4,6 +4,8 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import {
   checkRulesResources,
+  diffWorkshopItems,
+  fetchWorkshopItems,
   diffResourceLinks,
   parseResourceLinks,
 } from '../bot/rules-resource-watcher.mjs'
@@ -21,7 +23,10 @@ const directory = await mkdtemp(join(tmpdir(), 'rules-resource-watcher-'))
 const statePath = join(directory, 'state.json')
 let body = first
 let changed = null
-const fetchImpl = async () => ({ ok: true, json: async () => ({ body_md: body, updated_at: 1 }) })
+let workshopUpdatedAt = 1
+const fetchImpl = async (url) => String(url).includes('GetPublishedFileDetails')
+  ? { ok: true, json: async () => ({ response: { publishedfiledetails: [{ result: 1, publishedfileid: '3719263238', title: 'Workshop Fixture', time_updated: workshopUpdatedAt }] } }) }
+  : { ok: true, json: async () => ({ body_md: body, updated_at: 1 }) }
 const silent = { info() {}, error() {} }
 assert.equal((await checkRulesResources({ statePath, fetchImpl, logger: silent })).status, 'BASELINED')
 assert.equal((await checkRulesResources({ statePath, fetchImpl, logger: silent })).status, 'UNCHANGED')
@@ -30,5 +35,11 @@ const result = await checkRulesResources({ statePath, fetchImpl, logger: silent,
 assert.equal(result.status, 'CHANGED')
 assert.equal(changed.changes.added.length, 1)
 assert.equal(JSON.parse(await readFile(statePath, 'utf8')).links.length, 3)
+assert.equal((await fetchWorkshopItems(['3719263238'], fetchImpl))[0].title, 'Workshop Fixture')
+assert.equal(diffWorkshopItems([{ id: '3719263238', title: 'Workshop Fixture', updatedAt: 1 }], [{ id: '3719263238', title: 'Workshop Fixture', updatedAt: 2 }]).length, 1)
+workshopUpdatedAt = 2
+const workshopResult = await checkRulesResources({ statePath, fetchImpl, logger: silent, onChange: async (event) => { changed = event } })
+assert.equal(workshopResult.status, 'CHANGED')
+assert.equal(changed.changes.workshops[0].id, '3719263238')
 
 console.log('Rules resource watcher checks passed.')

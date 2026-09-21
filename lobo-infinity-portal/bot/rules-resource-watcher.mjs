@@ -3,6 +3,8 @@ import { mkdir, readFile, rename, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 
 export const DEFAULT_RESOURCES_URL = 'http://51.255.44.29/infinity/api/ressources'
+export const DEFAULT_WORKSHOP_ITEM_IDS = Object.freeze(['3719263238'])
+export const STEAM_WORKSHOP_DETAILS_URL = 'https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/'
 export const DEFAULT_CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000
 export const DEFAULT_STATE_PATH = resolve(import.meta.dirname, '..', '.tmp', 'rules-resource-watcher.json')
 
@@ -35,6 +37,45 @@ export function diffResourceLinks(previous = [], current = []) {
   }
 }
 
+export function parseWorkshopItemIds(value = DEFAULT_WORKSHOP_ITEM_IDS) {
+  const raw = Array.isArray(value) ? value : String(value || '').split(',')
+  return [...new Set(raw.map((item) => String(item).trim()).filter((item) => /^\d+$/.test(item)))].sort()
+}
+
+export function diffWorkshopItems(previous = [], current = []) {
+  const before = new Map(previous.map((item) => [item.id, item]))
+  return current.filter((item) => {
+    const prior = before.get(item.id)
+    return prior && (prior.updatedAt !== item.updatedAt || prior.title !== item.title)
+  }).map((item) => ({ ...item, previous: before.get(item.id) }))
+}
+
+export async function fetchWorkshopItems(itemIds, fetchImpl = globalThis.fetch) {
+  if (!itemIds.length) return []
+  const body = new URLSearchParams({ itemcount: String(itemIds.length) })
+  itemIds.forEach((id, index) => body.set(`publishedfileids[${index}]`, id))
+  const response = await fetchImpl(STEAM_WORKSHOP_DETAILS_URL, {
+    method: 'POST',
+    headers: { accept: 'application/json', 'content-type': 'application/x-www-form-urlencoded' },
+    body: body.toString(),
+    signal: AbortSignal.timeout(30_000),
+  })
+  if (!response.ok) throw new Error(`Steam Workshop endpoint returned HTTP ${response.status}`)
+  const details = (await response.json())?.response?.publishedfiledetails
+  if (!Array.isArray(details)) throw new Error('Steam Workshop endpoint returned an invalid payload')
+  const found = new Map(details.map((item) => [String(item?.publishedfileid || ''), item]))
+  return itemIds.map((id) => {
+    const item = found.get(id)
+    if (!item || Number(item.result) !== 1 || !Number.isFinite(Number(item.time_updated))) throw new Error(`Steam Workshop item ${id} was unavailable`)
+    return {
+      id,
+      title: String(item.title || `Steam Workshop item ${id}`).trim(),
+      updatedAt: Number(item.time_updated),
+      url: `https://steamcommunity.com/sharedfiles/filedetails/?id=${id}`,
+    }
+  })
+}
+
 async function readState(path) {
   try { return JSON.parse(await readFile(path, 'utf8')) } catch (error) {
     if (error?.code === 'ENOENT') return null
@@ -53,6 +94,7 @@ export async function checkRulesResources({
   url = process.env.INFINITY_RESOURCES_API_URL || DEFAULT_RESOURCES_URL,
   statePath = process.env.INFINITY_RESOURCES_STATE_PATH || DEFAULT_STATE_PATH,
   fetchImpl = globalThis.fetch,
+  workshopItemIds = parseWorkshopItemIds(process.env.INFINITY_WORKSHOP_ITEM_IDS || DEFAULT_WORKSHOP_ITEM_IDS),
   onChange,
   logger = console,
 } = {}) {
@@ -64,27 +106,31 @@ export async function checkRulesResources({
   }
 
   const links = parseResourceLinks(payload.body_md)
+  const workshops = await fetchWorkshopItems(parseWorkshopItemIds(workshopItemIds), fetchImpl)
   const snapshot = {
     endpointUpdatedAt: Number(payload.updated_at),
     bodySha256: sha256(payload.body_md),
     checkedAt: new Date().toISOString(),
     links,
+    workshops,
   }
   const previous = await readState(statePath)
   if (!previous) {
     await writeState(statePath, snapshot)
     logger.info?.(`Infinity resources baseline saved: links=${links.length} updated_at=${snapshot.endpointUpdatedAt}`)
-    return { status: 'BASELINED', snapshot, changes: { added: [], removed: [], renamed: [] } }
+    return { status: 'BASELINED', snapshot, changes: { added: [], removed: [], renamed: [], workshops: [] } }
   }
-  if (previous.bodySha256 === snapshot.bodySha256) {
+  const workshopChanges = Array.isArray(previous.workshops) ? diffWorkshopItems(previous.workshops, workshops) : []
+  if (previous.bodySha256 === snapshot.bodySha256 && !workshopChanges.length) {
     await writeState(statePath, { ...previous, checkedAt: snapshot.checkedAt, endpointUpdatedAt: snapshot.endpointUpdatedAt })
-    return { status: 'UNCHANGED', snapshot, changes: { added: [], removed: [], renamed: [] } }
+    return { status: 'UNCHANGED', snapshot, changes: { added: [], removed: [], renamed: [], workshops: [] } }
   }
 
   const changes = diffResourceLinks(previous.links || [], links)
-  if (changes.added.length && onChange) await onChange({ previous, snapshot, changes })
+  changes.workshops = workshopChanges
+  if ((changes.added.length || changes.workshops.length) && onChange) await onChange({ previous, snapshot, changes })
   await writeState(statePath, snapshot)
-  logger.info?.(`Infinity resources changed: added=${changes.added.length} removed=${changes.removed.length} renamed=${changes.renamed.length}`)
+  logger.info?.(`Infinity resources changed: added=${changes.added.length} removed=${changes.removed.length} renamed=${changes.renamed.length} workshops=${changes.workshops.length}`)
   return { status: 'CHANGED', snapshot, changes }
 }
 

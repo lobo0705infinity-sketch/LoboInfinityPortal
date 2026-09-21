@@ -69,7 +69,8 @@ export async function startLobosLittleHelper({ token = process.env[DISCORD_TOKEN
         if (!channel?.isTextBased?.()) throw new Error(`Infinity resources announcement channel was not found: ${channelId || `#${channelName}`}`)
         const added = changes.added.slice(0, 10).map((item) => `• **[${item.label}](${item.url})**`)
         const remaining = changes.added.length - added.length
-        const lines = ['**New Infinity Resource Available**', '', ...added]
+        const workshops = (changes.workshops || []).slice(0, 10).map((item) => `• **[Workshop updated: ${item.title}](${item.url})**`)
+        const lines = ['**Infinity Resource Update**', '', ...added, ...workshops]
         if (remaining > 0) lines.push(`• …and ${remaining} more`)
         lines.push('', `[View all resources](${process.env.RULES_RESOURCES_PAGE_URL || 'http://51.255.44.29/infinity/ressources'})`)
         await channel.send(lines.join('\n').slice(0, 1900))
