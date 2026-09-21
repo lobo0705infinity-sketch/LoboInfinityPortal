@@ -7,12 +7,14 @@ import { renderAroCounterImages } from './aro-counter-renderer.mjs'
 
 export const ARO_VS_COMMAND = 'aro-counter'
 export const TARGET_OPTION = 'target'
+export const ARMY_OPTION = 'army'
 export const RANGE_OPTION = 'range'
 export const ARO_VS_COMMAND_DEFINITION = Object.freeze({
   name: ARO_VS_COMMAND,
   description: 'Rank the best AROs against a target profile',
   options: [
     { name: TARGET_OPTION, description: 'Start typing a profile name, then select its exact loadout', required: true, type: ApplicationCommandOptionType.String, autocomplete: true },
+    { name: ARMY_OPTION, description: 'Optional: restrict counters to an Army or sectorial', required: false, type: ApplicationCommandOptionType.String, autocomplete: true },
     { name: RANGE_OPTION, description: 'Engagement range to rank', required: false, type: ApplicationCommandOptionType.String, choices: [
       { name: 'All standard ranges', value: 'all' },
       { name: '16–32 inches', value: '16-32' },
@@ -41,10 +43,11 @@ export async function ensureAroVsCommand(client) {
   return registered
 }
 
-export async function rankArosAgainst({ target, range = 'all', limit = 10 } = {}) {
+export async function rankArosAgainst({ target, army = null, range = 'all', limit = 10 } = {}) {
   const source = await loadCombatSource()
   const attacker = resolveTarget(source.profiles, target)
-  const candidates = uniqueAroCandidates(source.profiles)
+  const selectedArmy = army ? resolveArmy(source.factions, army) : null
+  const candidates = uniqueAroCandidates(selectedArmy ? source.profiles.filter((profile) => belongsToArmy(profile, selectedArmy, source.factions)) : source.profiles)
   const rows = candidates.map((profile) => {
     const states = evaluateAroProfile(profile, [attacker], { excludeDirectTemplates: true }).states
     const state = states.map((entry) => ({ entry, score: scoreState(entry, range) })).sort((a, b) => b.score - a.score)[0].entry
@@ -59,7 +62,7 @@ export async function rankArosAgainst({ target, range = 'all', limit = 10 } = {}
     results.push(formatRow(row, range))
     if (results.length >= limit) break
   }
-  return { target: attacker, range, results }
+  return { target: attacker, army: selectedArmy, range, results }
 }
 
 export function createAroVsInteractionHandler({ rank = rankArosAgainst, render = renderAroCounterImages, logger = console } = {}) {
@@ -68,8 +71,9 @@ export function createAroVsInteractionHandler({ rank = rankArosAgainst, render =
     try {
       await interaction.deferReply()
       const target = interaction.options.getString(TARGET_OPTION, true).trim()
+      const army = interaction.options.getString(ARMY_OPTION)
       const range = interaction.options.getString(RANGE_OPTION) || 'all'
-      const result = await rank({ target, range })
+      const result = await rank({ target, army, range })
       const images = await render({ result })
       await interaction.editReply({ content: `**ARO Counter · ${shortName(result.target.name)}**`, files: images.map((image) => ({ attachment: image.imageBuffer, name: image.name })), allowedMentions: { parse: [] } })
     } catch (error) {
@@ -85,8 +89,8 @@ export function createAroCounterAutocompleteHandler({ search = searchTargetProfi
   return async function handleAroCounterAutocomplete(interaction) {
     if (!interaction?.isAutocomplete?.() || interaction.commandName !== ARO_VS_COMMAND) return false
     try {
-      const focused = interaction.options.getFocused() || ''
-      await interaction.respond(await search(focused))
+      const focused = interaction.options.getFocused(true)
+      await interaction.respond(focused.name === ARMY_OPTION ? await searchArmies(focused.value) : await search(focused.value))
     } catch (error) {
       logger.error?.('ARO counter autocomplete failed:', error)
       try { await interaction.respond([]) } catch {}
@@ -103,6 +107,15 @@ export async function searchTargetProfiles(query) {
     .filter((profile) => profile.weapons?.some((weapon) => weapon.modes?.length) && (!needle || normalize(profile.name).includes(needle)))
     .map((profile) => ({ name: `${profile.name} · ${profile.weapons.map((weapon) => weapon.name).join(', ')}`.slice(0, 100), value: profile.id }))
     .filter((choice) => !seen.has(choice.name) && seen.add(choice.name))
+    .slice(0, 25)
+}
+
+export async function searchArmies(query) {
+  const source = await loadCombatSource()
+  const needle = normalize(query)
+  return source.factions
+    .filter((army) => !needle || normalize(army.name).includes(needle))
+    .map((army) => ({ name: `${army.name} · ${Number(army.parent) === Number(army.id) ? 'Vanilla faction' : 'Sectorial'}`.slice(0, 100), value: String(army.id) }))
     .slice(0, 25)
 }
 
@@ -130,7 +143,7 @@ export function formatAroVsDiscordResponse(result) {
 }
 
 async function loadCombatSource() {
-  combatSourcePromise ||= readArtifact(resolve(import.meta.dirname, '..', 'data', 'infinity-army', 'benchmark-official-source.json.gz.b64')).then(buildOfficialCombatSource)
+  combatSourcePromise ||= readArtifact(resolve(import.meta.dirname, '..', 'data', 'infinity-army', 'benchmark-official-source.json.gz.b64')).then((capture) => ({ ...buildOfficialCombatSource(capture), factions: capture.metadata.factions || [] }))
   return combatSourcePromise
 }
 
@@ -163,6 +176,19 @@ function uniqueAroCandidates(profiles) {
   return [...unique.values()]
 }
 
+function resolveArmy(factions, query) {
+  const text = String(query || '').trim()
+  const exactId = factions.find((army) => Number(army.id) === Number(text))
+  if (exactId) return exactId
+  const matches = factions.filter((army) => normalize(army.name) === normalize(text))
+  if (matches.length === 1) return matches[0]
+  const error = new Error(`I couldn't identify the Army “${query}”. Start typing it and select an autocomplete option.`)
+  error.code = 'army_not_found'
+  throw error
+}
+
+function belongsToArmy(profile, army) { return Number(profile.sectorialId) === Number(army.id) }
+
 function scoreState(state, range) {
   const matchups = selectMatchups(state, range)
   return matchups.reduce((sum, matchup) => sum + Number(matchup.selected?.optimalResponse?.defenderScore || 0), 0) / Math.max(1, matchups.length)
@@ -189,4 +215,4 @@ function normalize(value) { return String(value || '').normalize('NFKD').replace
 function shortName(value) { return String(value || '').split('—').at(-1).trim() || String(value || '').trim() }
 function cleanWeaponName(value) { return String(value || '').replace(/:[^:]+\s*—\s*/, ' · ').replace(/\s*—\s*/g, ' · ') }
 function chunk(values, size) { const pages = []; for (let index = 0; index < values.length; index += size) pages.push(values.slice(index, index + size)); return pages }
-function matches(command) { return command.description === ARO_VS_COMMAND_DEFINITION.description && command.options?.length === 2 && command.options?.[0]?.name === TARGET_OPTION && command.options?.[0]?.required === true && command.options?.[0]?.autocomplete === true && command.options?.[1]?.name === RANGE_OPTION }
+function matches(command) { return command.description === ARO_VS_COMMAND_DEFINITION.description && command.options?.length === 3 && command.options?.[0]?.name === TARGET_OPTION && command.options?.[0]?.required === true && command.options?.[0]?.autocomplete === true && command.options?.[1]?.name === ARMY_OPTION && command.options?.[1]?.autocomplete === true && command.options?.[2]?.name === RANGE_OPTION }

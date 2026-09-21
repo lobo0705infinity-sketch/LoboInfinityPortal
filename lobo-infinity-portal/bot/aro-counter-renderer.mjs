@@ -24,7 +24,8 @@ export async function renderAroCounterImages({ result, browserFactory = () => ch
 function markup({ result, entries, pageIndex, totalPages }) {
   const target = shortName(result.target.name)
   const range = result.range === 'all' ? 'ALL STANDARD RANGE BANDS' : `${result.range} INCHES`
-  return `<!doctype html><html><head><meta charset="utf-8"><style>${styles()}</style></head><body><main class="sheet"><header><div class="brand">LOBO'S LITTLE HELPER <span>•</span> ARO COUNTER</div><div class="title"><h1>COUNTERS TO ${esc(target)}</h1><p>${esc(range)} · BOTH TROOPERS IN COVER WHERE ELIGIBLE</p></div><div class="legend"><b>F2F</b> WIN FACE-TO-FACE <i>•</i> <b>EFFECT</b> WOUND / STR OR STATE <i>•</i> <b>SURVIVE</b> REMAINS ON TABLE</div></header><section class="cards">${entries.map((entry, index) => card(entry, pageIndex * 5 + index + 1)).join('')}</section><footer><span>DIRECT TEMPLATE WEAPONS EXCLUDED</span><span>PAGE ${pageIndex + 1} / ${totalPages}</span><span>FIRETEAM +1SD ONLY WHEN LEGAL</span></footer></main></body></html>`
+  const army = result.army ? ` · ${String(result.army.name).toUpperCase()}` : ''
+  return `<!doctype html><html><head><meta charset="utf-8"><style>${styles()}</style></head><body><main class="sheet"><header><div class="brand">LOBO'S LITTLE HELPER <span>•</span> ARO COUNTER</div><div class="title"><h1>COUNTERS TO ${esc(target)}</h1><p>${esc(range)}${esc(army)} · BOTH TROOPERS IN COVER WHERE ELIGIBLE</p></div><div class="legend"><b>F2F</b> WIN FACE-TO-FACE <i>•</i> <b>EFFECT</b> WOUND / STR OR STATE <i>•</i> <b>SURVIVE</b> REMAINS ON TABLE</div></header><section class="cards">${entries.map((entry, index) => card(entry, pageIndex * 5 + index + 1)).join('')}</section><footer><span>DIRECT TEMPLATE WEAPONS EXCLUDED</span><span>PAGE ${pageIndex + 1} / ${totalPages}</span><span>FIRETEAM +1SD ONLY WHEN LEGAL</span></footer></main></body></html>`
 }
 
 function card(entry, rank) {
