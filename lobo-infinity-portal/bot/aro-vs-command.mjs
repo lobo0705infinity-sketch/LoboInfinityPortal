@@ -107,20 +107,20 @@ export async function searchTargetProfiles(query) {
 export function formatAroVsDiscordResponse(result) {
   const rangeLabel = result.range === 'all' ? 'all standard ranges' : `${result.range}″`
   const fields = result.results.map((entry, index) => {
-    const bands = entry.bands.map((band) => `${band.range}″  F2F **${band.reactiveWin.toFixed(1)}%** · effect **${band.meaningfulEffect.toFixed(1)}%** · survives **${band.survival.toFixed(1)}%**`).join('\n')
+    const bands = entry.bands.map((band) => `**${band.range}″**  🎯 ${band.reactiveWin.toFixed(1)}%  ·  ⚡ ${band.meaningfulEffect.toFixed(1)}%  ·  🛡️ ${band.survival.toFixed(1)}%`).join('\n')
     return {
-      name: `#${index + 1} ${entry.name}${entry.state === 'fireteam' ? ' (+1SD)' : ''}`.slice(0, 256),
-      value: `${entry.weapon}\n${bands}`.slice(0, 1024),
-      inline: false,
+      name: `#${index + 1}  ${shortName(entry.name)}${entry.state === 'fireteam' ? '  •  Fireteam +1SD' : ''}`.slice(0, 256),
+      value: `▸ **${cleanWeaponName(entry.weapon)}**\n${bands}`.slice(0, 1024),
+      inline: entry.bands.length <= 2,
     }
   })
   return {
     embeds: [{
-      title: `Top AROs vs ${result.target.name.replace(/^.*?—\s*/, '')}`,
-      description: `Ranked for **${rangeLabel}**. **Effect** = chance to inflict at least one Wound/STR, or the weapon’s meaningful state (such as E/M). **Survives** = chance the ARO remains on the table after that exchange.`,
-      color: 0x8b1e2d,
+      title: `ARO Counter  •  ${shortName(result.target.name)}`,
+      description: `**Top 10 counters at ${rangeLabel}**\n🎯 **F2F** win  ·  ⚡ **Effect** (Wound/STR or state)  ·  🛡️ **Survives** the exchange`,
+      color: 0x00b8e6,
       fields: fields.length ? fields : [{ name: 'Best responses', value: 'No legal direct AROs found.' }],
-      footer: { text: '+1SD entries require the benchmark’s legal Fireteam condition.' },
+      footer: { text: 'Direct Template Weapons excluded • +1SD requires the legal Fireteam condition' },
     }],
     allowedMentions: { parse: [] },
   }
@@ -153,7 +153,7 @@ function resolveTarget(profiles, query) {
 function uniqueAroCandidates(profiles) {
   const unique = new Map()
   for (const profile of profiles) {
-    if (!profile.weapons?.some((weapon) => weapon.modes?.some((mode) => !mode.deployable && !mode.smoke && !mode.eclipse))) continue
+    if (!profile.weapons?.some((weapon) => weapon.modes?.some((mode) => !mode.deployable && !mode.smoke && !mode.eclipse && mode.attackType !== 'direct-template'))) continue
     const key = JSON.stringify({ bs: profile.bs, wip: profile.wip, ph: profile.ph, arm: profile.arm, bts: profile.bts, vitality: profile.vitality, structure: profile.structure, troopType: profile.troopType, skills: profile.skills, equipment: profile.equipment, weapons: profile.weapons, fireteamCapable: profile.fireteamCapable })
     if (!unique.has(key)) unique.set(key, profile)
   }
@@ -183,4 +183,6 @@ function selectMatchups(state, range) {
 }
 
 function normalize(value) { return String(value || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim() }
+function shortName(value) { return String(value || '').split('—').at(-1).trim() || String(value || '').trim() }
+function cleanWeaponName(value) { return String(value || '').replace(/:[^:]+\s*—\s*/, ' · ').replace(/\s*—\s*/g, ' · ') }
 function matches(command) { return command.description === ARO_VS_COMMAND_DEFINITION.description && command.options?.length === 2 && command.options?.[0]?.name === TARGET_OPTION && command.options?.[0]?.required === true && command.options?.[0]?.autocomplete === true && command.options?.[1]?.name === RANGE_OPTION }
