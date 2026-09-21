@@ -173,6 +173,7 @@ export function normalizeQuestion(value) {
     .replace(/\bn\s*5\s*\.\s*3\b/g, 'n5.3')
     .replace(/\bline of fire\b/g, 'lof')
     .replace(/\bzone of control\b/g, 'zoc')
+    .replace(/\bcrazy\s*koalas?\b/g, 'crazykoala')
     .replace(/\bautomatic reaction orders?\b/g, 'aro')
     .replace(/\baros\b/g, 'aro')
     .replace(/\bballistic skill attacks?\b/g, 'bs attack')
