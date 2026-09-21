@@ -228,7 +228,9 @@ function formatRow({ profile, state }, range) {
 
 function selectMatchups(state, range) {
   const desired = range === '16-32' ? new Set(['16-24', '24-32']) : range === 'all' ? null : new Set([range])
-  return state.matchups.filter((matchup) => !desired || desired.has(matchup.range))
+  // The ARO Counter is intended to compare practical table engagements.  Do
+  // not display or score the exceptional 48–96″ fire lane in its "all" view.
+  return state.matchups.filter((matchup) => matchup.range !== '48-96' && (!desired || desired.has(matchup.range)))
 }
 
 function normalize(value) { return String(value || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim() }
