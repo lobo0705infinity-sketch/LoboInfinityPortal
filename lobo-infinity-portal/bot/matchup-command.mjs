@@ -83,25 +83,40 @@ export async function searchMatchupProfiles(query) {
 }
 
 function evaluateDirection(attacker, defender) {
-  const state = evaluateGunfighterProfile(attacker, [defender]).states.find((entry) => entry.id === 'normal')
+  const attackerStates = attacker.fireteamCapable ? [{ id: 'normal', specialDice: 0 }, { id: 'fireteam', specialDice: 1 }] : [{ id: 'normal', specialDice: 0 }]
+  const defenderStates = defender.fireteamCapable ? [{ id: 'normal', specialDice: 0 }, { id: 'fireteam', specialDice: 1 }] : [{ id: 'normal', specialDice: 0 }]
   return {
     attacker,
     defender,
-    bands: state.matchups.map((matchup) => {
-      const selected = [...matchup.candidates].filter((entry) => entry.status === 'evaluated').sort((a, b) => Number(b.score || 0) - Number(a.score || 0) || String(a.weapon).localeCompare(String(b.weapon)))[0]
-      const effect = selected?.optimalResponse?.effect
-      const distribution = effect?.woundDistribution || []
-      const stateEffect = Boolean(effect?.nonLethal) ? Number(effect?.stateProbability || 0) : 0
+    variants: attackerStates.flatMap((attackerState) => defenderStates.map((defenderState) => {
+      const linkedDefender = { ...defender, fireteamSpecialDice: defenderState.specialDice }
+      const state = evaluateGunfighterProfile(attacker, [linkedDefender]).states.find((entry) => entry.id === attackerState.id)
       return {
-        range: matchup.range,
-        weapon: selected ? `${selected.weapon}${selected.mode ? ` (${selected.mode})` : ''}` : 'No legal attack',
-        f2fWin: Number(selected?.optimalResponse?.roll?.activeWin || 0),
-        oneEffect: 100 * (stateEffect || Number(distribution[1] || 0)),
-        twoEffects: 100 * (effect?.nonLethal ? 0 : Number(distribution[2] || 0)),
-        threePlusEffects: 100 * (effect?.nonLethal ? 0 : distribution.slice(3).reduce((sum, probability) => sum + Number(probability || 0), 0)),
-        defenderSurvival: 100 * (1 - Number(effect?.neutralizeProbability || 0)),
+        attackerState: attackerState.id,
+        defenderState: defenderState.id,
+        bands: state.matchups.map(formatBand),
       }
-    }),
+    })),
+  }
+}
+
+function formatBand(matchup) {
+  const selected = [...matchup.candidates].filter((entry) => entry.status === 'evaluated').sort((a, b) => Number(b.score || 0) - Number(a.score || 0) || String(a.weapon).localeCompare(String(b.weapon)))[0]
+  const response = selected?.optimalResponse
+  const effect = response?.effect
+  const distribution = effect?.woundDistribution || []
+  const stateEffect = Boolean(effect?.nonLethal) ? Number(effect?.stateProbability || 0) : 0
+  return {
+    range: matchup.range,
+    attackerAction: selected ? [selected.weapon, selected.mode && `(${selected.mode})`].filter(Boolean).join(' ') : 'No legal attack',
+    attackerPool: response?.roll?.attack || response?.attack || null,
+    defenderAction: response?.aro || 'No ARO',
+    defenderPool: response?.roll?.reactive || null,
+    f2fWin: Number(response?.roll?.activeWin || 0),
+    oneEffect: 100 * (stateEffect || Number(distribution[1] || 0)),
+    twoEffects: 100 * (effect?.nonLethal ? 0 : Number(distribution[2] || 0)),
+    threePlusEffects: 100 * (effect?.nonLethal ? 0 : distribution.slice(3).reduce((sum, probability) => sum + Number(probability || 0), 0)),
+    defenderSurvival: 100 * (1 - Number(effect?.neutralizeProbability || 0)),
   }
 }
 
