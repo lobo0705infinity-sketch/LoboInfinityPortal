@@ -65,6 +65,9 @@ const naturalParaphrases = [
   ['Can you use berserk when you are in base to base contact?', 'new-topic-2-520'],
   ['Can I Berserk while engaged?', 'new-topic-2-520'],
   ['can i berzerk whille in btb', 'new-topic-2-520'],
+  ['Can I activate Berserk while engaged?', 'new-topic-2-520'],
+  ['Can I use Berserk in close combat?', 'new-topic-2-520'],
+  ['Can I do Berserk after touching bases?', 'new-topic-2-520'],
 ]
 for (const [question, expectedId] of naturalParaphrases) {
   assert.equal((await findApprovedRulesAnswer(question))?.id, expectedId, question)
