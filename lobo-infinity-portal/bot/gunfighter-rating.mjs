@@ -382,7 +382,7 @@ function exchangeResult(attack, aro, roll, effect, returnEffect) {
   const defenderScore = ['smoke', 'eclipse', 'dodge', 'none'].includes(aro.type)
     ? 0
     : round(100 * defenderAvailability * Number(returnEffect?.total || 0) * (0.8 + 0.2 * defenderSafety))
-  return { aro: aro.id, aroType: aro.type, attack, roll, effect, returnEffect, attackerScore, defenderScore }
+  return { aro: aro.id, aroType: aro.type, attack, roll: { ...roll, attack, reactive: aro.pool || null }, effect, returnEffect, attackerScore, defenderScore }
 }
 
 export function buildAttackPool(attacker, defender, weapon, mode, rangeModifier, fireteamSpecialDice, settings, { aro = false } = {}) {
@@ -392,22 +392,31 @@ export function buildAttackPool(attacker, defender, weapon, mode, rangeModifier,
   const attackAttribute = String(mode.attackAttribute || 'bs').toLowerCase()
   const baseTarget = Number(attacker[attackAttribute] ?? attacker.bs)
   let modifiers = rangeModifier
+  const modifierSources = [formatModifier('Range', rangeModifier)]
   // Smoke targets a table point, not the enemy Trooper.
   if (!mode.smoke && !mode.eclipse) {
-    if (!has(skills, 'marksmanship') && !mode.ignoresCover) modifiers += coverBenefits(defender, settings.cover).hit
-    modifiers += mimetismModifier(defenderSkills, equipment)
+    const cover = !has(skills, 'marksmanship') && !mode.ignoresCover ? coverBenefits(defender, settings.cover).hit : 0
+    const mimetism = mimetismModifier(defenderSkills, equipment)
+    modifiers += cover + mimetism
+    if (cover) modifierSources.push(formatModifier('Cover', cover))
+    if (mimetism) modifierSources.push(formatModifier('Mimetism / MSV', mimetism))
   }
-  modifiers += numericModifier(skills, /^bs attack\s*\+(\d+)(?:\s*bs)?$/)
+  const nativeBs = numericModifier(skills, /^bs attack\s*\+(\d+)(?:\s*bs)?$/)
+  modifiers += nativeBs
+  if (nativeBs) modifierSources.push(formatModifier('BS Attack', nativeBs))
   const fullBurstAro = has(skills, 'total reaction') || has(skills, 'neurocinetics')
   const neuroActive = !aro && has(skills, 'neurocinetics')
   const nativeBurst = (aro && !fullBurstAro) || neuroActive ? 1 : Number(mode.burst)
   const burstBonus = (!aro || fullBurstAro) && !neuroActive ? numericModifier(skills, /bs attack\s*\+?(\d+)\s*b$/) + Number(mode.burstBonus || 0) : 0
   const burst = Math.max(1, Math.min(6, nativeBurst + burstBonus))
   const specialDice = mode.attackType === 'direct-template' || mode.longSkill ? 0 : Number(mode.specialDice || 0) + numericModifier(skills, /bs attack\s*\+?(\d+)\s*sd$/) + fireteamSpecialDice
+  if (fireteamSpecialDice) modifierSources.push('Fireteam +1SD')
   const savingRollPenalty = Number(mode.savingRollPenalty || 0) + numericModifier(skills, /bs attack\s*sr-(\d+)/)
   const target = successValue(baseTarget, modifiers)
-  return { burst, specialDice, savingRollPenalty, shock: has(skills, 'bs attack shock'), continuousDamage: has(skills, 'bs attack continuous damage'), baseTarget, modifiers, disposableUses: mode.disposableUses, target, criticalTarget: target, source: `${weapon.name}${mode.name ? ` (${mode.name})` : ''}` }
+  return { burst, specialDice, savingRollPenalty, shock: has(skills, 'bs attack shock'), continuousDamage: has(skills, 'bs attack continuous damage'), baseTarget, modifiers, modifierSources: modifierSources.filter(Boolean), disposableUses: mode.disposableUses, target, criticalTarget: target, source: [weapon.name, mode.name && '(' + mode.name + ')'].filter(Boolean).join(' ') }
 }
+
+function formatModifier(label, value) { return Number(value) ? label + ' ' + (Number(value) > 0 ? '+' : '') + Number(value) : '' }
 
 function attackAvailability(attack) {
   if (attack.disposableUses == null) return 1
@@ -529,7 +538,8 @@ function applyOpponentFtfModifier(pool, opponent, opponentAction, protectedProfi
   if (!modifier) return pool
   const modifiers = Number(pool.modifiers || 0) + modifier
   const target = successValue(pool.baseTarget ?? pool.target, modifiers)
-  return { ...pool, modifiers, target, criticalTarget: target }
+  const modifierSources = [...(pool.modifierSources || []), formatModifier('Opponent MOD', modifier)]
+  return { ...pool, modifiers, modifierSources, target, criticalTarget: target }
 }
 
 function dodgePool(profile) {
