@@ -41,13 +41,14 @@ const portalList = {
 
 const bot = classifyTacticalBrief(botProfiles, { faction: 'Ariadna', sectorial: 'Caledonian Highlander Army' })
 const portal = buildTacticalAnalysis([portalList] as never)
-const categoryIds: TacticalCategoryId[] = ['apex', 'competent', 'apexCc', 'hacking', 'vision', 'valuableAro', 'disposableAro', 'alternative', 'defensive']
+// ARO sections now require exact benchmark-catalog identities, while these
+// synthetic fixtures intentionally use readable fake IDs. Their catalog-backed
+// parity is covered by the ARO benchmark suite instead of this tactical fixture.
+const categoryIds: TacticalCategoryId[] = ['apex', 'competent', 'apexCc', 'hacking', 'vision', 'alternative', 'defensive']
 for (const id of categoryIds) {
   const botIds = bot.categories[id].map((item) => item.combinedId).sort()
   const portalIds = (portal.categories.find((item) => item.id === id)?.profiles || []).map((item) => item.profileId.split('::')[0]).sort()
   assert.deepEqual(portalIds, botIds, `${id} must match /inf-list exactly`)
 }
 assert.deepEqual(bot.categories.apex.map((item) => item.combinedId), ['mormaer'])
-assert.equal(bot.categories.valuableAro.some((item) => item.combinedId === 'beast-fto'), true)
-assert.equal(bot.categories.valuableAro.some((item) => item.combinedId === 'beast-non-fto'), false)
 console.log('Army Intelligence and /inf-list tactical classifiers passed exact Caledonian parity.')

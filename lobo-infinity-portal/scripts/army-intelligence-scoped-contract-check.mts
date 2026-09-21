@@ -72,13 +72,25 @@ for (const [faction, maximumBytes] of targets) {
   assert.ok(scoped.lists.every((list: any) => decodedSectorial(list) === faction), `${faction} response leaked another scope.`)
 }
 
-assert.match(page, /getArmyIntelligenceSummary/)
+const alephLabel = oldOptions.find((option) => normalizePart(option) === 'aleph')
+assert.ok(alephLabel, 'Aleph must be available as an exact selectable scope.')
+const aleph = JSON.parse(JSON.stringify(buildFaction(full, alephLabel)))
+assert.ok(
+  aleph.lists.every((list: any) => decodedSectorial(list) === alephLabel),
+  'Aleph metrics and submitted-list trends must exclude Operations Subsection lists.',
+)
+assert.ok(
+  aleph.armyLists.every((list: any) => normalizeDisplay(normalizeArmyForDisplay(list.sectorial || list.faction || '')) === alephLabel),
+  'Aleph Submitted Forces must exclude Operations Subsection rows.',
+)
+
+assert.match(page, /getIntelligenceSummary/)
 assert.match(
   page,
-  /getArmyIntelligenceFaction\(requestedSectorial, \{[\s\S]*?cacheMode: 'stale-while-revalidate',[\s\S]*?signal: controller\.signal,[\s\S]*?\}\)/,
+  /getIntelligenceFaction\(requestedSectorial, controller\.signal\)/,
 )
 assert.match(page, /return \(\) => controller\.abort\(\)/, 'Selection changes must cancel stale faction requests.')
-assert.doesNotMatch(page, /\.getArmyIntelligence\(signal/)
+assert.doesNotMatch(page, /apiClient\.getArmyIntelligence\(signal/)
 assert.match(api, /getArmyIntelligence[\s\S]*getArmyIntelligenceSummary[\s\S]*getArmyIntelligenceFaction/)
 assert.match(backend, /if \(scope\)[\s\S]*scope === "summary"[\s\S]*scope === "faction"/)
 assert.match(backend, /if \(readModel\)[\s\S]*return jsonOutput\(readModel\);[\s\S]*rebuildArmyIntelligenceReadModelPayloadAndPersist/, 'Legacy unscoped fallback must remain compatible.')
