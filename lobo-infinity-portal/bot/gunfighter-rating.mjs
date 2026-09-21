@@ -506,6 +506,7 @@ function mimetismModifier(defenderSkills, attackerEquipment) {
 function applyOpponentFtfModifier(pool, opponent, opponentAction, protectedProfile, { allowSurprise = false } = {}) {
   if (!pool) return pool
   const skills = tokens(opponent.skills)
+  const equipment = tokens(opponent.equipment)
   const protectedSkills = tokens(protectedProfile?.skills)
   // Sixth Sense protects Dodge, not BS/CC Surprise responses (Combat Instinct does that).
   if (pool.source === 'Dodge' && protectedSkills.includes('sixth sense')) return pool
@@ -517,6 +518,12 @@ function applyOpponentFtfModifier(pool, opponent, opponentAction, protectedProfi
     const dodge = skill.match(/^dodge\s+-([0-9]+)$/)
     if (dodge && opponentAction === 'dodge') modifier -= Number(dodge[1])
     if (surprise && allowSurprise && !protectedSkills.includes('combat instinct') && !tokens(protectedProfile?.equipment).includes('multispectral visor l3')) modifier -= Number(surprise[1])
+  }
+  // Albedo is printed as equipment by Army data, but imposes a BS Attack MOD
+  // on an opposing shooting roll just like the corresponding skill notation.
+  for (const item of equipment) {
+    const albedo = item.match(/^albedo\s*-([0-9]+)$/)
+    if (albedo && opponentAction !== 'dodge') modifier -= Number(albedo[1])
   }
   if (!modifier) return pool
   const modifiers = Number(pool.modifiers || 0) + modifier

@@ -124,6 +124,8 @@ assert.equal(response(camo, { ...p, skills: ['Combat Instinct'] }, { ...options,
 assert.ok(response(camo, { ...p, skills: ['Sixth Sense'] }, { ...options, surpriseAttack: true }).roll.reactiveWin < response(p, p).roll.reactiveWin, 'Sixth Sense is not general Surprise immunity in N5')
 const noWeapons = { ...p, weapons: [], skills: ['Sixth Sense'] }
 assert.equal(candidate({ ...p, skills: ['BS Attack (-3)'] }, noWeapons).score, candidate(p, noWeapons).score, 'Sixth Sense Dodge ignores BS Attack penalties')
+const albedoDefender = { ...p, equipment: ['Albedo -3'] }
+assert.ok(response(p, albedoDefender).roll.reactiveWin > response(p, p).roll.reactiveWin, 'Albedo equipment applies its -3 BS Attack MOD in Face-to-Face shooting')
 const sdDodge = { ...p, ph: 13, weapons: [], skills: ['Dodge (+2SD)'] }
 near(candidate(p, sdDodge, template).optimalResponse.effect.total, .35 ** 3 * (1 - .35 ** 2), 'No rounded probability is fed back into template damage')
 
