@@ -63,7 +63,10 @@ export async function loadRulesBenchmark({ force = false } = {}) {
     else if (!existing) exact.set(entry.normalized, entry)
   }
   for (const normalized of exactCollisions) exact.delete(normalized)
-  cachedIndex = Object.freeze({ entries, exact, canonicalCases: new Set(entries.map((entry) => entry.id)).size })
+  const vocabulary = Object.freeze([...new Set(entries.flatMap((entry) => [...entry.tokens, ...rawTokenSet(entry.matchedQuestion)]))]
+    .filter((token) => token.length >= 3)
+    .sort())
+  cachedIndex = Object.freeze({ entries, exact, vocabulary, canonicalCases: new Set(entries.map((entry) => entry.id)).size })
   return cachedIndex
 }
 
@@ -71,14 +74,15 @@ export async function findApprovedRulesAnswer(question, { minimumScore = 0.86, m
   const normalized = normalizeQuestion(question)
   if (!normalized) return null
   const index = await loadRulesBenchmark()
-  const exact = index.exact.get(normalized)
-  if (exact) return result(exact, 1, 'EXACT')
+  const corrected = normalizeQuestion(correctUnambiguousTypos(normalized, index.vocabulary))
+  const exact = index.exact.get(normalized) || index.exact.get(corrected)
+  if (exact) return result(exact, 1, corrected === normalized ? 'EXACT' : 'TYPO_CORRECTED_EXACT')
 
-  const queryTokens = tokenSet(normalized)
+  const queryTokens = tokenSet(corrected)
   if (queryTokens.size < 2) return null
   const families = new Map()
   for (const entry of index.entries) {
-    if (entry.fuzzyRequiredTerms?.some((term) => !normalized.includes(term)) || entry.fuzzyExcludedTerms?.some((term) => normalized.includes(term))) continue
+    if (entry.fuzzyRequiredTerms?.some((term) => !corrected.includes(term)) || entry.fuzzyExcludedTerms?.some((term) => corrected.includes(term))) continue
     const score = similarity(queryTokens, entry.tokens)
     const existing = families.get(entry.familyId)
     if (!existing || score > existing.score) families.set(entry.familyId, { entry, score })
@@ -103,6 +107,48 @@ function result(entry, score, matchType) {
 
 function tokenSet(value) {
   return new Set(value.split(' ').filter((token) => token.length > 1 && !STOP_WORDS.has(token)))
+}
+
+function rawTokenSet(value) {
+  return new Set(String(value || '').toLowerCase().match(/[a-z0-9]+/g) || [])
+}
+
+function correctUnambiguousTypos(value, vocabulary) {
+  const known = new Set(vocabulary)
+  return value.split(' ').map((token) => {
+    if (token.length < 3 || STOP_WORDS.has(token) || known.has(token)) return token
+    const maximumDistance = token.length >= 7 ? 2 : 1
+    let best
+    let bestDistance = maximumDistance + 1
+    let tied = false
+    for (const candidate of vocabulary) {
+      if (Math.abs(candidate.length - token.length) > maximumDistance) continue
+      const distance = levenshteinDistance(token, candidate)
+      if (distance < bestDistance) {
+        best = candidate
+        bestDistance = distance
+        tied = false
+      } else if (distance === bestDistance && candidate !== best) {
+        tied = true
+      }
+    }
+    return best && !tied ? best : token
+  }).join(' ')
+}
+
+function levenshteinDistance(left, right) {
+  let previous = Array.from({ length: right.length + 1 }, (_, index) => index)
+  for (let row = 1; row <= left.length; row++) {
+    const current = [row]
+    for (let column = 1; column <= right.length; column++) {
+      const value = left[row - 1] === right[column - 1]
+        ? previous[column - 1]
+        : Math.min(previous[column - 1], previous[column], current[column - 1]) + 1
+      current[column] = value
+    }
+    previous = current
+  }
+  return previous[right.length]
 }
 
 function similarity(left, right) {
