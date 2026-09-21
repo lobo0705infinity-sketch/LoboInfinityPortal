@@ -45,7 +45,11 @@ const naturalParaphrases = [
   ['how does request tacball work?', 'new-topic-2-506'],
   ['When can I request a Tacball?', 'new-topic-2-506'],
   ['Does Request a Tacball require a PH test?', 'new-topic-2-506'],
-  ['Do I roll PH to request a Tacball?', 'new-topic-2-506'],\n  ['can u drop tacball if only one player has tacops', 'new-topic-2-517'],\n  ['Can I drop a Tacball if only I have Team-Ops?', 'new-topic-2-517'],
+  ['Do I roll PH to request a Tacball?', 'new-topic-2-506'],
+  ['can u drop tacball if only one player has tacops', 'new-topic-2-517'],
+  ['can u dropp tacbal if only one player has tacopps', 'new-topic-2-517'],
+  ['Can I drop a Tacball if only I have Team-Ops?', 'new-topic-2-517'],
+  ['does reqest tacbal require a ph tst', 'new-topic-2-506'],
   ['Can a unit and their synchronize peripheral pick up from the same panoply on the same order?', 'new-topic-2-507'],
   ['Can a unit and their syncronize peripheral pik up from the same panopaly on the same order?', 'new-topic-2-507'],
   ['silly won but does fireteam master override the loss of lt irregular orders', 'new-topic-2-508'],
@@ -78,7 +82,12 @@ assert.equal(requestTacball?.conclusion, 'INTERPRETATION')
 assert.match(requestTacball?.answer || '', /second Game Round/i)
 assert.match(requestTacball?.answer || '', /requires no Roll/i)
 assert.match(requestTacball?.answer || '', /only once per game/i)
-assert.deepEqual(requestTacball?.citations.map((citation) => citation.page), [29])\nconst oneSidedTacball = await findApprovedRulesAnswer('can u drop tacball if only one player has tacops')\nassert.equal(oneSidedTacball?.conclusion, 'YES')\nassert.match(oneSidedTacball?.answer || '', /does not require the opponent to have Team-Ops/i)\nassert.match(oneSidedTacball?.answer || '', /only if both players have Team-Ops Units/i)\nassert.deepEqual(oneSidedTacball?.citations.map((citation) => citation.page), [29, 30])
+assert.deepEqual(requestTacball?.citations.map((citation) => citation.page), [29])
+const oneSidedTacball = await findApprovedRulesAnswer('can u drop tacball if only one player has tacops')
+assert.equal(oneSidedTacball?.conclusion, 'YES')
+assert.match(oneSidedTacball?.answer || '', /does not require the opponent to have Team-Ops/i)
+assert.match(oneSidedTacball?.answer || '', /only if both players have Team-Ops Units/i)
+assert.deepEqual(oneSidedTacball?.citations.map((citation) => citation.page), [29, 30])
 const synchronizedPanoply = await findApprovedRulesAnswer('Can a unit and their synchronize peripheral pick up from the same panoply on the same order?')
 assert.equal(synchronizedPanoply?.conclusion, 'YES')
 assert.match(synchronizedPanoply?.answer || '', /both Models are in Silhouette contact/i)
