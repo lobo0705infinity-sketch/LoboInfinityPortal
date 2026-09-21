@@ -136,17 +136,11 @@ export function classifyTacticalBrief(profiles, army = {}, gunfighterRatings = [
     const visionControl = preferredMatches([...profile.weapons.map(weaponDisplay), ...profile.equipment, ...profile.skills], [smokeGrenadeToken, smokeGrenadeLauncherToken, discoballerToken, pherowareMirrorballToken, eclipseToken])
     if (visionControl.length) result.vision.push({ ...profile, badges: visionControl })
 
-    const aroWeapons = profile.weapons.filter((weapon) => aroWeaponToken(weaponDisplay(weapon)))
-    const aroSkills = preferredMatches(profile.skills, [totalReactionToken, neurocineticsToken, bsAttackSdToken])
-    const weaponSdBadges = aroWeapons.filter((weapon) => weaponSdBonus(weapon)).map((weapon) => `${weaponDisplay(weapon)} (+${weaponSdBonus(weapon)}SD)`)
-    const pheroware = preferredMatches([...profile.skills, ...profile.equipment, ...profile.weapons.map(weaponDisplay)], [pherowareToken])
-    const fireteamSdBadges = fireteamSdBonus ? ['Fireteam (+1SD)'] : []
-    const proxyMkIvException = isProxyMkIv(profile)
-    if (proxyMkIvException || (profile.points >= 15 && (pheroware.length || aroWeapons.length) && (aroSkills.length || weaponSdBadges.length || fireteamSdBonus))) result.valuableAro.push({ ...profile, badges: unique([...pheroware, ...aroSkills, ...weaponSdBadges, ...fireteamSdBadges, ...(proxyMkIvException ? ['Proxy Mk IV exception'] : [])]), qualifyingFireteams, qualifyingWeapons: aroWeapons.length ? aroWeapons : profile.weapons.filter(isRangedWeapon) })
-    const disposableWeapons = profile.weapons.filter((weapon) => aroWeaponToken(weaponDisplay(weapon)) || flashPulseToken(weaponDisplay(weapon)))
-    const sdWeapons = profile.weapons.filter((weapon) => weaponSdBonus(weapon) > 0)
-    const qualifyingDisposableWeapons = dedupeWeapons([...disposableWeapons, ...sdWeapons, ...(nativeSdBonus ? profile.weapons.filter(isRangedWeapon) : [])])
-    if (Number.isFinite(profile.points) && profile.points <= 14 && (disposableWeapons.length || sdWeapons.length || nativeSdBonus)) result.disposableAro.push({ ...profile, badges: unique([...(nativeSdBonus ? preferredMatches(profile.skills, [bsAttackSdToken]) : []), ...sdWeapons.map((weapon) => `${weaponDisplay(weapon)} (+${weaponSdBonus(weapon)}SD)`)]), qualifyingWeapons: qualifyingDisposableWeapons })
+    if (Number.isFinite(profile.points)) {
+      const aroEntry = { ...profile, badges: [], qualifyingWeapons: profile.weapons.filter(isRangedWeapon), qualifyingFireteams }
+      if (profile.points >= 15) result.valuableAro.push(aroEntry)
+      else if (profile.points <= 14) result.disposableAro.push(aroEntry)
+    }
 
     const deployments = preferredMatches(profile.skills, [parachutistToken, combatJumpToken, hiddenDeploymentToken, impersonationToken])
     if (deployments.length && !excludedAlternativeAttackVector(profile.unitName)) result.alternative.push({ ...profile, badges: deployments })
@@ -158,11 +152,9 @@ export function classifyTacticalBrief(profiles, army = {}, gunfighterRatings = [
     }
   }
   attachAroRatings(result, aroRatings)
-  if (aroRatings.length) for (const key of ['valuableAro', 'disposableAro']) {
-    result[key] = result[key].filter(hasQualifyingAroRating)
-  }
+  result.valuableAro = result.valuableAro.filter(entry => hasQualifyingAroRating(entry)).sort((a, b) => bestAroRating(b) - bestAroRating(a) || linkRank(a) - linkRank(b) || profileSort(a, b)).slice(0, 3)
+  result.disposableAro = result.disposableAro.filter(entry => Number.isFinite(bestAroRating(entry))).sort((a, b) => bestAroRating(b) - bestAroRating(a) || linkRank(a) - linkRank(b) || profileSort(a, b)).slice(0, 3)
   result.apex.sort((a, b) => b.badges.length - a.badges.length || b.bs - a.bs || profileSort(a, b))
-  for (const key of ['valuableAro', 'disposableAro']) result[key].sort((a, b) => bestAroRating(b) - bestAroRating(a) || linkRank(a) - linkRank(b) || profileSort(a, b))
   for (const key of ['competent', 'apexCc', 'hacking', 'vision', 'alternative', 'defensive']) result[key].sort(profileSort)
   if (result.gunfighters.length) {
     result.apex = []
