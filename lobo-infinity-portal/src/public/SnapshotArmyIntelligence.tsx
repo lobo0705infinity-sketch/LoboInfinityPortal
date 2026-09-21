@@ -273,8 +273,9 @@ function IntelligenceBrief({ analysis, faction }: { analysis: ReturnType<typeof 
 }
 
 function SnapshotTacticalProfile({ category, profile }: { category: string; profile: TacticalProfile }) {
-  const weapons = profile.weapons.filter((weapon, index) => category === 'apex' ? (weapon.effectiveBurst ?? 0) >= 4 : category === 'competent' ? (weapon.effectiveDice ?? 0) >= 4 : category === 'valuableAro' || category === 'disposableAro' ? /sniper rifle|missile launcher|portable autocannon|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach|flash pulse/i.test(weapon.name) : category === 'defensive' ? /mine|deployable/i.test(weapon.name) : category === 'alternative' ? index === 0 : false)
-  return <div className="army-intelligence-tactical-profile"><div><strong>{profile.unit}</strong><span>{profile.profile}</span></div><div className="army-intelligence-tactical-badges">{profile.bs !== null ? <span>BS {profile.bs}</span> : null}{weapons.map((weapon) => <span key={`${weapon.name}:${weapon.burst}`}>{weapon.name}{weapon.effectiveBurst === null ? ' · Burst unavailable' : category === 'competent' && weapon.effectiveDice !== weapon.effectiveBurst ? ` · Effective dice ${weapon.effectiveDice} (Burst ${weapon.effectiveBurst} + SD)` : ` · Burst ${weapon.effectiveBurst}${weapon.burst !== weapon.effectiveBurst ? ` (base ${weapon.burst} + BS Attack)` : ''}`}</span>)}{profile.roles.length > 1 ? <span className="is-multi-role">MULTI-ROLE</span> : null}{profile.badges.map((badge) => <span key={badge}>{badge}</span>)}{profile.linkability === 'verified' ? <span className="is-verified">Verified linkable</span> : profile.linkability === 'verified-false' ? <span>Verified not linkable</span> : <span>Fireteam status unknown</span>}</div>{profile.roles.length > 1 ? <small>Also classified as: {profile.roles.filter((role) => role !== category).map(snapshotTacticalRoleTitle).join(' · ')}</small> : null}<small>{profile.listCount} {profile.listCount === 1 ? 'list' : 'lists'} · {Math.round(profile.percentage)}%</small></div>
+  const weapons = profile.weapons.filter((weapon, index) => category === 'competent' ? (weapon.effectiveDice ?? 0) >= 4 : category === 'valuableAro' || category === 'disposableAro' ? /sniper rifle|missile launcher|portable autocannon|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach|flash pulse/i.test(weapon.name) : category === 'defensive' ? /mine|deployable/i.test(weapon.name) : category === 'alternative' ? index === 0 : false)
+  const benchmark = category === 'apex' ? profile.gunfighter : undefined
+  return <div className="army-intelligence-tactical-profile"><div><strong>{profile.unit}</strong><span>{profile.profile}</span></div><div className="army-intelligence-tactical-badges">{benchmark ? <><span>{benchmark.weapon}</span><span>{benchmark.rating.toFixed(2)} · Grade {benchmark.grade}</span><span>{Math.round(benchmark.percentile)}th percentile · {benchmark.state === 'fireteam' ? 'Fireteam +1SD' : 'Non-linked'}</span></> : <>{profile.bs !== null ? <span>BS {profile.bs}</span> : null}{weapons.map((weapon) => <span key={`${weapon.name}:${weapon.burst}`}>{weapon.name}{weapon.effectiveBurst === null ? ' · Burst unavailable' : category === 'competent' && weapon.effectiveDice !== weapon.effectiveBurst ? ` · Effective dice ${weapon.effectiveDice} (Burst ${weapon.effectiveBurst} + SD)` : ` · Burst ${weapon.effectiveBurst}${weapon.burst !== weapon.effectiveBurst ? ` (base ${weapon.burst} + BS Attack)` : ''}`}</span>)}</>}{profile.roles.length > 1 ? <span className="is-multi-role">MULTI-ROLE</span> : null}{profile.badges.map((badge) => <span key={badge}>{badge}</span>)}{!benchmark && (profile.linkability === 'verified' ? <span className="is-verified">Verified linkable</span> : profile.linkability === 'verified-false' ? <span>Verified not linkable</span> : <span>Fireteam status unknown</span>)}</div>{profile.roles.length > 1 ? <small>Also classified as: {profile.roles.filter((role) => role !== category).map(snapshotTacticalRoleTitle).join(' · ')}</small> : null}<small>{profile.listCount} {profile.listCount === 1 ? 'list' : 'lists'} · {Math.round(profile.percentage)}%</small></div>
 }
 
 function snapshotTacticalRoleTitle(role: string) {
@@ -369,11 +370,10 @@ function PageState({ title, message, compact = false, error = false }: { title: 
 
 function selectScope(groups: DetailGroup[], selected: string) {
   const exact = groups.find((group) => normalize(group.faction) === normalize(selected))
-  if (!exact) return []
-  const parent = exact.lists.find((list) => list.decoded)?.decoded?.faction
-  const selectedIsParent = parent && normalize(parent) === normalize(selected)
-  if (!selectedIsParent) return [exact]
-  return groups.filter((group) => group.lists.some((list) => normalize(list.decoded?.faction ?? list.faction) === normalize(selected)))
+  // A selected selector value is an exact sectorial scope. Parent factions and
+  // their sectorials are separate submitted-list populations (for example,
+  // ALEPH and Operations Subsection) and must never bleed into one another.
+  return exact ? [exact] : []
 }
 
 function matchesResult(list: DecodedList, filter: ResultFilter) {

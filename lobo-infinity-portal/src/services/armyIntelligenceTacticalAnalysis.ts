@@ -1,4 +1,5 @@
 import { eligibleLevel2Teams } from '../../bot/fireteam-list-eligibility.mjs'
+import portalGunfighterRatings from '../data/portal-gunfighter-ratings.json' with { type: 'json' }
 import type { ArmyIntelligenceDecodedEntry, ArmyIntelligenceList } from './api'
 
 export type TacticalCategoryId = 'apex' | 'competent' | 'apexCc' | 'hacking' | 'vision' | 'valuableAro' | 'disposableAro' | 'alternative' | 'defensive'
@@ -14,6 +15,7 @@ export type TacticalProfile = {
   profileId: string
   unit: string
   weapons: Array<{ burst: number | null; effectiveBurst: number | null; effectiveDice: number | null; name: string }>
+  gunfighter?: { grade: string; percentile: number; rating: number; state: 'fireteam' | 'normal'; weapon: string }
   linkability: 'verified' | 'verified-false' | 'unknown'
   roles: TacticalCategoryId[]
 }
@@ -66,17 +68,16 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
 
   const rows = Array.from(appearances.values()).map(({ entry, lists: listIndexes }) => ({
     entry,
-    profile: toProfile(entry, listIndexes.size, decoded.length),
+    profile: toProfile(entry, listIndexes.size, decoded.length, gunfighterRating(entry)),
   }))
   const category = (id: TacticalCategoryId, title: string, description: string, predicate: (entry: ArmyIntelligenceDecodedEntry) => boolean, unavailableReason?: string): TacticalCategory => ({
     description,
     id,
-    profiles: rows.filter(({ entry }) => predicate(entry)).map(({ profile }) => profile).sort(compareProfiles),
+    profiles: rows.filter(({ entry }) => predicate(entry)).map(({ profile }) => profile).sort(id === 'apex' ? compareGunfighters : compareProfiles),
     title,
     unavailableReason,
   })
 
-  const hasApexMetadata = rows.some(({ entry }) => entry.bs !== null && entry.bs !== undefined && canonicalWeapons(entry).some((weapon) => weapon.burstStatus === 'canonical'))
   const hackerLists = new Set<number>()
   const perListNetworks = decoded.map((list, listIndex) => {
     const components = new Set<string>()
@@ -86,11 +87,12 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
     }
     return { components: Array.from(components).sort() }
   }).filter((row) => row.components.length > 0)
-
+  const hasBenchmarkRatings = rows.some(({ profile }) => Boolean(profile.gunfighter))
+  const hasApexMetadata = rows.some(({ entry }) => entry.bs !== null && entry.bs !== undefined && canonicalWeapons(entry).some((weapon) => weapon.burstStatus === 'canonical'))
   const qualifiesAsApex = (entry: ArmyIntelligenceDecodedEntry) => {
-        const enhanced = entry.skills.some((skill) => gunfighterEnhancement.test(normalize(skill)))
-        return effectiveSdWeapons(entry).some((weapon) => isRangedWeapon(weapon) && apexGunfighterWeapon(weapon) && weapon.burst !== null && (weapon.burst >= 5 || (Number(entry.bs) >= 14 && weapon.burst >= 4) || (Number(entry.bs) === 13 && weapon.burst >= 4 && enhanced)))
-      }
+    const enhanced = entry.skills.some((skill) => gunfighterEnhancement.test(normalize(skill)))
+    return effectiveSdWeapons(entry).some((weapon) => isRangedWeapon(weapon) && apexGunfighterWeapon(weapon) && weapon.burst !== null && (weapon.burst >= 5 || (Number(entry.bs) >= 14 && weapon.burst >= 4) || (Number(entry.bs) === 13 && weapon.burst >= 4 && enhanced)))
+  }
   const qualifiesAsCompetent = (entry: ArmyIntelligenceDecodedEntry) => {
     const weapons = effectiveSdWeapons(entry)
     const bs = Number(entry.bs)
@@ -101,9 +103,15 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
     const portableAutocannon = portableAutocannonEnhancement && weapons.some((weapon) => isRangedWeapon(weapon) && portableAutocannonWeapon(weapon) && sdBonus + weaponSdBonus(weapon) >= 1)
     return standard || heavyRocketLauncher || portableAutocannon
   }
+  const gunfighterCategories = hasBenchmarkRatings
+    ? [category('apex', 'Gunfighter Rankings', 'Benchmark-ranked against the shared defensive suite. Each profile shows its best legal state, selected weapon, score, grade, and percentile.', (entry) => Boolean(gunfighterRating(entry)), 'This profile has no exact match in the current benchmark catalog.')]
+    : [
+        category('apex', 'Apex Gunfighters', 'Effective dice include native Burst, BS Attack (+Burst), native +SD, verified Fireteam +1SD, and valid combinations. Qualifies at effective B5; BS 14+ with effective B4+; or BS 13 with effective B4+ plus MSV 1–3, Mimetism (-3/-6), BS Attack (-3), or Albedo (-3/-6).', qualifiesAsApex, hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
+        category('competent', 'Competent Gunfighters', 'BS 12 or 13 profiles whose effective dice reach 4 through an approved gunfighter weapon, BS Attack (+Burst), native +SD, Fireteam +1SD, or a combination. Heavy Rocket Launchers and enhanced Portable Autocannons use their verified special cases; Apex Gunfighters are excluded.', (entry) => !qualifiesAsApex(entry) && qualifiesAsCompetent(entry), hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
+      ]
+
   const categories: TacticalCategory[] = [
-      category('apex', 'Apex Gunfighters', 'Effective dice include native Burst, BS Attack (+Burst), native +SD, verified Fireteam +1SD, and valid combinations. Qualifies at effective B5; BS 14+ with effective B4+; or BS 13 with effective B4+ plus MSV 1–3, Mimetism (-3/-6), BS Attack (-3), or Albedo (-3/-6).', qualifiesAsApex, hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
-      category('competent', 'Competent Gunfighters', 'BS 12 or 13 profiles whose effective dice reach 4 through an approved gunfighter weapon, BS Attack (+Burst), native +SD, Fireteam +1SD, or a combination. Heavy Rocket Launchers and enhanced Portable Autocannons use their verified special cases; Apex Gunfighters are excluded.', (entry) => !qualifiesAsApex(entry) && qualifiesAsCompetent(entry), hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
+      ...gunfighterCategories,
       category('apexCc', 'Apex Close Combat Fighters', 'CC 22+ profiles with Martial Arts, Natural Born Warrior, Berserk (+3), or CC Attack (+B).', (entry) => Number(entry.cc) >= 22 && entry.skills.some((skill) => [martialArts, naturalBornWarrior, berserkPlusThree, ccAttackBurst].some((rule) => rule.test(normalize(skill))))),
       category('hacking', 'Hacking Networks', 'Exact Hacker profiles, Hacking Devices, Repeaters, and verified repeater-delivery equipment.', (entry) => hackingComponents(entry).length > 0),
       category('vision', 'Vision Control', 'Profiles with Smoke Grenades, Smoke Grenade Launchers, Discoballer, Pheroware Mirrorball, or Eclipse.', (entry) => [...entry.skills, ...entry.equipment, ...entry.weapons].some((item) => visionControl.test(normalize(item)))),
@@ -126,11 +134,25 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
   }
 }
 
+function gunfighterRating(entry: ArmyIntelligenceDecodedEntry): TacticalProfile['gunfighter'] {
+  const key = String(entry.combinedId || '').replaceAll('-', ':')
+  const states = (portalGunfighterRatings.ratings as Record<string, Record<string, { grade: string; percentile: number; rating: number; weaponsUsed: Array<{ weapon: string; scoreContribution: number }> }>>)[key]
+  if (!states) return undefined
+  const [state, rating] = Object.entries(states).sort(([, left], [, right]) => right.rating - left.rating)[0] || []
+  if (!rating || (state !== 'normal' && state !== 'fireteam')) return undefined
+  const weapon = [...rating.weaponsUsed].sort((left, right) => right.scoreContribution - left.scoreContribution || left.weapon.localeCompare(right.weapon))[0]?.weapon || 'No selected weapon'
+  return { grade: rating.grade, percentile: rating.percentile, rating: rating.rating, state, weapon }
+}
+
+function compareGunfighters(left: TacticalProfile, right: TacticalProfile) {
+  return Number(right.gunfighter?.rating || 0) - Number(left.gunfighter?.rating || 0) || compareProfiles(left, right)
+}
+
 function excludedAlternativeAttackVector(unitName: string) {
   return /^(?:netrods?|imetrons?)(?:\s|$)/i.test(normalize(unitName))
 }
 
-function toProfile(entry: ArmyIntelligenceDecodedEntry, listCount: number, denominator: number): TacticalProfile {
+function toProfile(entry: ArmyIntelligenceDecodedEntry, listCount: number, denominator: number, gunfighter: TacticalProfile['gunfighter']): TacticalProfile {
   const skills = entry.skills.map(normalize).filter((skill) => alternativeSkill.test(skill) || defensiveSkill.test(skill) || enhancement.test(skill) || valuableAroSkill.test(skill) || bsAttackBurstBonus([skill]) > 0)
   const burstBonus = bsAttackBurstBonus(entry.skills)
   const sdBonus = bsAttackSdBonus(entry.skills) + Number(entry.fireteamSdBonus || 0)
@@ -139,6 +161,7 @@ function toProfile(entry: ArmyIntelligenceDecodedEntry, listCount: number, denom
     bs: entry.bs ?? null,
     cc: entry.cc ?? null,
     equipment: entry.equipment.filter((item) => deliveryEquipment.test(normalize(item)) || hackingDevice.test(normalize(item))),
+    gunfighter,
     linkability: entry.fireteamEligibility?.state === 'verified' ? 'verified' : entry.fireteamEligibility?.state === 'verified-false' ? 'verified-false' : 'unknown',
     listCount,
     percentage: denominator ? (listCount / denominator) * 100 : 0,
