@@ -409,7 +409,10 @@ export function buildAttackPool(attacker, defender, weapon, mode, rangeModifier,
   const nativeBurst = (aro && !fullBurstAro) || neuroActive ? 1 : Number(mode.burst)
   const burstBonus = (!aro || fullBurstAro) && !neuroActive ? numericModifier(skills, /bs attack\s*\+?(\d+)\s*b$/) + Number(mode.burstBonus || 0) : 0
   const burst = Math.max(1, Math.min(6, nativeBurst + burstBonus))
-  const specialDice = mode.attackType === 'direct-template' || mode.longSkill ? 0 : Number(mode.specialDice || 0) + numericModifier(skills, /bs attack\s*\+?(\d+)\s*sd$/) + fireteamSpecialDice
+  const nativeSpecialDice = numericModifier(skills, /bs attack\s*\(?\s*\+?(\d+)\s*sd\s*\)?$/)
+  const specialDice = mode.attackType === 'direct-template' || mode.longSkill ? 0 : Number(mode.specialDice || 0) + nativeSpecialDice + fireteamSpecialDice
+  if (Number(mode.specialDice || 0)) modifierSources.push('Weapon +' + Number(mode.specialDice) + 'SD')
+  if (nativeSpecialDice) modifierSources.push('Native BS Attack +' + nativeSpecialDice + 'SD')
   if (fireteamSpecialDice) modifierSources.push('Fireteam +1SD')
   const savingRollPenalty = Number(mode.savingRollPenalty || 0) + numericModifier(skills, /bs attack\s*sr-(\d+)/)
   const target = successValue(baseTarget, modifiers)
