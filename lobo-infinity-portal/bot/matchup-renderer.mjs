@@ -35,7 +35,11 @@ function row(band) {
 function action(name, pool) {
   if (!pool) return `<b>${esc(cleanWeaponName(name))}</b><em>No roll</em>`
   const modifierText = (pool.modifierSources || []).filter(Boolean).join(' · ') || 'No MOD'
-  const dice = `BS ${pool.baseTarget}${Number(pool.modifiers) ? (Number(pool.modifiers) > 0 ? ' + ' : ' − ') + Math.abs(Number(pool.modifiers)) : ''} = ${pool.target} · B${pool.burst}${Number(pool.specialDice) ? ' + ' + pool.specialDice + 'SD' : ''}`
+  const baseBurst = Number(pool.burst || 0)
+  const specialDice = Math.max(0, Number(pool.specialDice || 0))
+  const resolvedBurst = baseBurst + specialDice
+  const burstBreakdown = specialDice ? `base B${baseBurst} + ${specialDice}SD` : `base B${baseBurst}`
+  const dice = `BS ${pool.baseTarget}${Number(pool.modifiers) ? (Number(pool.modifiers) > 0 ? ' + ' : ' − ') + Math.abs(Number(pool.modifiers)) : ''} = ${pool.target} · B${resolvedBurst} (${burstBreakdown})`
   return `<b>${esc(cleanWeaponName(name || pool.source))}</b><small>${esc(dice)}</small><em>${esc(modifierText)}</em>`
 }
 
