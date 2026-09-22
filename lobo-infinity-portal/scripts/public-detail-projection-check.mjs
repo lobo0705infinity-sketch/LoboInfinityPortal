@@ -6,6 +6,7 @@ const backend = read('backend/PublicDetailProjection.gs')
 const endpoint = read('api/public-detail-projection.mjs')
 const service = read('src/services/publicDetailProjection.ts')
 const gameDetails = read('src/pages/GameDetails.tsx')
+const snapshotPublicApp = read('src/public/SnapshotPublicApp.tsx')
 const pages = [
   'src/pages/Rivalries.tsx',
   'src/pages/PlayerProfile.tsx',
@@ -41,5 +42,9 @@ assert.match(gameDetails, /Submitted forces/)
 assert.match(gameDetails, /Generated from the official result, submitted lists, and player note\. It does not reconstruct unreported orders or table state\./)
 assert.match(gameDetails, /\.split\(\/\[-–—\]\//)
 assert.doesNotMatch(gameDetails, /at the death/i)
+assert.match(snapshotPublicApp, /const PublicGameDetails = lazy\(\(\) => import\('\.\.\/pages\/GameDetails'\)\)/)
+assert.match(snapshotPublicApp, /<Route path="\/games\/:id" element=\{<PublicGameDetails \/>\} \/>/)
+assert.match(snapshotPublicApp, /<Route path="\/game\/:id" element=\{<PublicGameDetails \/>\} \/>/)
+assert.doesNotMatch(snapshotPublicApp, /function GameDetail\(/)
 
 console.log('Snapshot-backed public detail/community and Game Review regression passed.')
