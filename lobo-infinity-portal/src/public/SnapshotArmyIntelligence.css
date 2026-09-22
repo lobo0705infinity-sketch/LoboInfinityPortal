@@ -284,3 +284,5 @@
   .snapshot-intelligence-page .army-intelligence-ranking-score { grid-column: 1; }
   .snapshot-intelligence-page .army-intelligence-ranking-grade { grid-column: 2; }
 }
+
+.snapshot-intelligence-page .army-intelligence-tactical-panel.is-ranking-panel { grid-column: 1 / -1; }
