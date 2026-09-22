@@ -2229,6 +2229,91 @@
           "style": "MISSPELLING"
         }
       ]
+    },
+    {
+      "id": "new-topic-2-521",
+      "category": "AERIAL_AND_DEPLOYABLE_COVER",
+      "canonicalQuestion": "Can a Trooper with Aerial benefit from Deployable Cover?",
+      "approvedAnswer": "No. While Aerial is active, the Trooper is never in Silhouette contact with scenery or other game elements, even if it is physically touching them. Partial Cover requires contact with the scenery that obscures the Trooper, and Deployable Cover applies that Partial Cover rule. The Vitroferro Saving Roll bonus also expressly requires Silhouette contact. Therefore an active Aerial Trooper cannot claim either Deployable Cover variant's Cover benefits.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "NO",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 86,
+          "section": "AERIAL — EFFECTS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 41,
+          "section": "COVER — PARTIAL COVER"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 122,
+          "section": "DEPLOYABLE COVER — EFFECTS"
+        }
+      ],
+      "fuzzyRequiredTerms": [
+        "aerial",
+        "cover"
+      ],
+      "fuzzyExcludedTerms": [
+        "unconscious"
+      ],
+      "reviewStatus": "AUTO_VERIFIED_EXPLICIT",
+      "queryVariants": [
+        {
+          "id": "new-topic-2-521-q1",
+          "question": "Can an aerial unit benefit from deployable cover",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "new-topic-2-521-q2",
+          "question": "Can a unit with the Aerial skill gain cover from deployable cover?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-521-q3",
+          "question": "Can an Aerial Trooper claim Partial Cover from Deployable Cover?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-2-521-q4",
+          "question": "Does deployable cover protect a flying unit?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "new-topic-2-521-q5",
+          "question": "Can my aerial model use the deployed cover?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-521-q6",
+          "question": "Does an Aerial troop get the Vitroferro saving roll bonus?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-521-q7",
+          "question": "Can Aerial benefit from Deployable Cover (Cutting Foam)?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-521-q8",
+          "question": "can areial units use deployble covr",
+          "style": "MISSPELLING"
+        },
+        {
+          "id": "new-topic-2-521-q9",
+          "question": "If an Aerial model is physically touching Deployable Cover, does it receive Cover?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-521-q10",
+          "question": "Can a flyer get the +6 Saving Roll MOD from Vitroferro Deployable Cover?",
+          "style": "PLAYER_WORDING"
+        }
+      ]
     }
   ]
 }

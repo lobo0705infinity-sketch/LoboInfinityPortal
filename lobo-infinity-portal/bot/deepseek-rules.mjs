@@ -1,6 +1,7 @@
 import { readFile, writeFile, mkdir, rename } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { normalizeRuleText, searchRules } from './infinity-rules-service.mjs'
+import { formatTerminologyContext, resolveRulesTerminology, selectTerminologyEvidence } from './rules-terminology.mjs'
 
 const DEFAULT_USAGE_PATH = resolve(import.meta.dirname, '..', '.tmp', 'deepseek-rules-usage.json')
 const V4_PRO_PRICING = Object.freeze({
@@ -17,11 +18,16 @@ export function buildRulesEvidencePrompt(corpus, question, { limit = 18, maxEvid
   if (!corpus?.manifest?.sources?.length || !corpus?.chunks?.length) throw new Error('The complete rules corpus is unavailable.')
   const sources = corpus.manifest.sources.map((source) => ({ id: source.id, title: source.title, version: source.version, officialUrl: source.officialUrl }))
   const searchable = corpus.chunks.map((chunk) => chunk.normalized ? chunk : { ...chunk, normalized: normalizeRuleText(`${chunk.section || ''} ${(chunk.headings || []).join(' ')} ${chunk.text || ''}`), headings: chunk.headings || [], authority: chunk.authority ?? 99, scope: chunk.scope || 'CORE' })
-  const ranked = searchRules(searchable, question, { limit })
+  const terminology = resolveRulesTerminology(corpus, question)
+  const ranked = searchRules(searchable, terminology.correctedQuestion || question, { limit, extraAliases: terminology.searchTerms })
   const key = (chunk) => `${chunk.sourceId}:${chunk.pdfPage}:${chunk.text}`
   const originals = new Map(corpus.chunks.map((chunk, index) => [key(chunk), { chunk, index }]))
   const selected = new Map()
   const add = (candidate) => { const original = originals.get(key(candidate)); if (original) selected.set(original.index, original.chunk) }
+  // A lexical ranker can otherwise omit the controlling page when ordinary
+  // language mentions several rules at once. Always activate the best official
+  // evidence for every confidently resolved concept and dependency first.
+  selectTerminologyEvidence(corpus, terminology).forEach(add)
   // Keep both controlling rules together for Mine/Engaged timing questions.
   // Ranking either in isolation can omit the friendly-fire restriction.
   if (/\bmines?\b/i.test(question) && /engag|melee|close combat|base contact|silhouette contact|b2b|hand.to.hand/i.test(question)) {
@@ -50,6 +56,8 @@ export function buildRulesEvidencePrompt(corpus, question, { limit = 18, maxEvid
   const text = [
     'You are the rules assistant for Corvus Belli Infinity. A deterministic search selected the official evidence below; the search did not answer or interpret the question.',
     'Answer the user question from this evidence only. Apply FAQ precedence and ITS rules only in ITS contexts.',
+    formatTerminologyContext(terminology),
+    'Treat synonymous player wording, singular/plural forms, abbreviations, and unambiguous spelling corrections that resolve to the same official concepts consistently. Do not reinterpret a recognized official term as an ordinary adjective or generic noun.',
     'Read across every relevant rule and exception yourself. Do not ask the caller to search, retrieve, validate, or interpret rules for you.',
     'Check each declared Skill’s labels and apply every restriction that targets those labels. Permission to declare a Skill combination does not waive its movement restrictions. In particular, Dodge has the Movement label: during an Impetuous activation its movement must obey Impetuous priorities, including the enemy Deployment Zone exception. Do not extend Impetuous Phase restrictions to an ordinary Order or a reactive Dodge merely because the Trooper has Impetuous.',
     'Before answering, silently translate informal player wording into the practical rules question. For example, "breaks Stealth" means the declaration causes the Trooper to lose Stealth protection and permits an otherwise-suppressed ARO; it does not mean permanently removing the Skill.',
@@ -63,7 +71,7 @@ export function buildRulesEvidencePrompt(corpus, question, { limit = 18, maxEvid
     'Cite only entry IDs that directly support the answer. Never mention entry IDs in the prose answer.',
     JSON.stringify({ sources, entries }),
   ].join('\n')
-  return { text, evidenceIds: new Set(entries.map((entry) => entry.id)), entryCount: entries.length, characterCount: characters }
+  return { text, evidenceIds: new Set(entries.map((entry) => entry.id)), entryCount: entries.length, characterCount: characters, terminology }
 }
 
 export function createDeepSeekRulesAnswer({ fetchImpl = fetch, usagePath = process.env.DEEPSEEK_USAGE_PATH || DEFAULT_USAGE_PATH, now = () => Date.now(), logger = console, requestTimeoutMs = REQUEST_TIMEOUT_MS } = {}) {
@@ -144,6 +152,7 @@ export function createDeepSeekRulesAnswer({ fetchImpl = fetch, usagePath = proce
         question: cleanQuestion,
         versions,
         status: 'DEEPSEEK RULES ANSWER',
+        terminology: publicTerminology(activeEvidence.terminology),
         deepSeek: {
           answer: answer.answer.trim(),
           conclusion: answer.conclusion,
@@ -157,6 +166,16 @@ export function createDeepSeekRulesAnswer({ fetchImpl = fetch, usagePath = proce
       if (error?.code === 'DEEPSEEK_TIMEOUT') return unavailable(cleanQuestion, versions, 'DeepSeek timed out after 60 seconds. Please try again later.')
       return unavailable(cleanQuestion, versions, 'DeepSeek was unavailable.')
     }
+  }
+}
+
+function publicTerminology(resolution) {
+  if (!resolution) return undefined
+  return {
+    intent: resolution.intent,
+    conceptSignature: resolution.conceptSignature,
+    concepts: resolution.entities.map((item) => item.canonicalName),
+    correctionsApplied: resolution.correctedQuestion !== resolution.normalized,
   }
 }
 

@@ -6,7 +6,7 @@ import { retrieveRulesReference, formatRulesDiscordResponse } from '../bot/rules
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1400)
+assert.equal(index.canonicalCases, 1401)
 
 for (const file of ['rules-adjudicator-benchmark.json', 'rules-adjudicator-expansion-400.json', 'rules-adjudicator-new-topics-400.json', 'rules-adjudicator-new-topics-500.json', 'rules-benchmark-approved-updates-2026-09-15.json']) {
   const document = JSON.parse(await readFile(resolve(root, 'data/infinity-rules', file), 'utf8'))
@@ -68,6 +68,9 @@ const naturalParaphrases = [
   ['Can I activate Berserk while engaged?', 'new-topic-2-520'],
   ['Can I use Berserk in close combat?', 'new-topic-2-520'],
   ['Can I do Berserk after touching bases?', 'new-topic-2-520'],
+  ['Can an aerial unit benefit from deployable cover', 'new-topic-2-521'],
+  ['Can a unit with the Aerial skill gain cover from deployable cover?', 'new-topic-2-521'],
+  ['can areial units use deployble covr', 'new-topic-2-521'],
 ]
 for (const [question, expectedId] of naturalParaphrases) {
   assert.equal((await findApprovedRulesAnswer(question))?.id, expectedId, question)
