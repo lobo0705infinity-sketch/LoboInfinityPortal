@@ -1,4 +1,4 @@
-import type { CommissionerNewsItem, RecentGame, StreamedGame, SubmittedArmyListEntry } from './api'
+import type { ArmyIntelligenceFactionData, ArmyIntelligenceList, CommissionerNewsItem, RecentGame, StreamedGame, SubmittedArmyListEntry } from './api'
 import { getPublicSnapshotDataset } from './publicSnapshot'
 
 export type PublicSubmittedArmyList = SubmittedArmyListEntry & {
@@ -7,6 +7,7 @@ export type PublicSubmittedArmyList = SubmittedArmyListEntry & {
 
 export type PublicGameCommunityData = {
   armyLists: PublicSubmittedArmyList[]
+  intelligenceLists: ArmyIntelligenceList[]
   games: RecentGame[]
   rivalryGames: RecentGame[]
   news: CommissionerNewsItem[]
@@ -30,13 +31,15 @@ function hydrateRecentGames(references: Array<{ id: number }> = [], games: Recen
 
 export const publicDetailProjection = {
   getGames: async (signal?: AbortSignal): Promise<PublicGameCommunityData> => {
-    const [games, community, armyLists] = await Promise.all([
+    const [games, community, armyLists, intelligence] = await Promise.all([
       readGames(signal),
       getPublicSnapshotDataset<Community[]>('community', signal),
       getPublicSnapshotDataset<PublicSubmittedArmyList[]>('army-lists', signal),
+      getPublicSnapshotDataset<ArmyIntelligenceFactionData[]>('army-intelligence-detail', signal),
     ])
     return {
       armyLists,
+      intelligenceLists: intelligence.flatMap((faction) => faction.lists),
       games,
       rivalryGames: games,
       news: community[0]?.news ?? [],
