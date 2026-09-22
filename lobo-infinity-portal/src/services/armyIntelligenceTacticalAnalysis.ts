@@ -1,10 +1,18 @@
 import { eligibleLevel2Teams } from '../../bot/fireteam-list-eligibility.mjs'
 import { lookupMobility, type MobilityCatalog } from '../../bot/mobility-lookup.mjs'
+import portalAroRatings from '../data/portal-aro-ratings.json' with { type: 'json' }
 import portalGunfighterRatings from '../data/portal-gunfighter-ratings.json' with { type: 'json' }
 import mobilityCatalog from '../data/mobility-index.json' with { type: 'json' }
 import type { ArmyIntelligenceDecodedEntry, ArmyIntelligenceList } from './api'
 
 export type TacticalCategoryId = 'apex' | 'competent' | 'apexCc' | 'hacking' | 'vision' | 'valuableAro' | 'disposableAro' | 'alternative' | 'defensive'
+
+type BenchmarkState = {
+  grade: string
+  percentile: number
+  rating: number
+  weaponsUsed: Array<{ scoreContribution: number; selections?: number; weapon: string }>
+}
 
 export type TacticalProfile = {
   badges: string[]
@@ -17,6 +25,7 @@ export type TacticalProfile = {
   profileId: string
   unit: string
   weapons: Array<{ burst: number | null; effectiveBurst: number | null; effectiveDice: number | null; name: string }>
+  aro?: { fireteam?: BenchmarkState; normal?: BenchmarkState }
   gunfighter?: { grade: string; percentile: number; rating: number; state: 'fireteam' | 'normal'; weapon: string }
   mobility?: { mov: number[] | null; score: number; travel: number | null }
   linkability: 'verified' | 'verified-false' | 'unknown'
@@ -71,12 +80,12 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
 
   const rows = Array.from(appearances.values()).map(({ entry, lists: listIndexes }) => ({
     entry,
-    profile: toProfile(entry, listIndexes.size, decoded.length, gunfighterRating(entry)),
+    profile: toProfile(entry, listIndexes.size, decoded.length, gunfighterRating(entry), aroRating(entry)),
   }))
   const category = (id: TacticalCategoryId, title: string, description: string, predicate: (entry: ArmyIntelligenceDecodedEntry) => boolean, unavailableReason?: string): TacticalCategory => ({
     description,
     id,
-    profiles: rows.filter(({ entry }) => predicate(entry)).map(({ profile }) => profile).sort(id === 'apex' ? compareGunfighters : compareProfiles),
+    profiles: rows.filter(({ entry }) => predicate(entry)).map(({ profile }) => profile).sort(id === 'apex' ? compareGunfighters : id === 'valuableAro' || id === 'disposableAro' ? compareAros : compareProfiles),
     title,
     unavailableReason,
   })
@@ -91,6 +100,7 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
     return { components: Array.from(components).sort() }
   }).filter((row) => row.components.length > 0)
   const hasBenchmarkRatings = rows.some(({ profile }) => Boolean(profile.gunfighter))
+  const hasAroBenchmarkRatings = rows.some(({ profile }) => Boolean(profile.aro))
   const hasApexMetadata = rows.some(({ entry }) => entry.bs !== null && entry.bs !== undefined && canonicalWeapons(entry).some((weapon) => weapon.burstStatus === 'canonical'))
   const qualifiesAsApex = (entry: ArmyIntelligenceDecodedEntry) => {
     const enhanced = entry.skills.some((skill) => gunfighterEnhancement.test(normalize(skill)))
@@ -113,17 +123,26 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
         category('competent', 'Competent Gunfighters', 'BS 12 or 13 profiles whose effective dice reach 4 through an approved gunfighter weapon, BS Attack (+Burst), native +SD, Fireteam +1SD, or a combination. Heavy Rocket Launchers and enhanced Portable Autocannons use their verified special cases; Apex Gunfighters are excluded.', (entry) => !qualifiesAsApex(entry) && qualifiesAsCompetent(entry), hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
       ]
 
+  const aroCategories: TacticalCategory[] = hasAroBenchmarkRatings
+    ? [
+        category('valuableAro', 'Valuable ARO Ratings', 'Profiles costing at least 15 points whose best valid non-linked or submitted-list Fireteam state is Grade B or higher in the current ARO benchmark.', (entry) => entry.points >= 15 && hasQualifyingAroRating(aroRating(entry)), 'No exact Grade B-or-better ARO benchmark matches were found in this sample.'),
+        category('disposableAro', 'Disposable ARO Ratings', 'Profiles costing 14 points or less whose best valid non-linked or submitted-list Fireteam state is Grade B or higher in the current ARO benchmark.', (entry) => entry.points <= 14 && hasQualifyingAroRating(aroRating(entry)), 'No exact Grade B-or-better ARO benchmark matches were found in this sample.'),
+      ]
+    : [
+        category('valuableAro', 'Valuable ARO Pieces', 'Profiles costing at least 15 points with an approved ARO weapon or Pheroware capability, plus Total Reaction, Neurocinetics, native BS Attack (+SD), weapon-specific +SD, or a verified legal Fireteam +1SD. Proxy Mk IV is an explicit exception.', (entry) => {
+          const hasAroCapability = canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name))) || [...entry.skills, ...entry.equipment, ...entry.weapons].some((item) => pheroware.test(normalize(item)))
+          const hasValuableModifier = entry.skills.some((skill) => valuableAroSkill.test(normalize(skill))) || canonicalWeapons(entry).some((weapon) => weaponSdBonus(weapon) > 0) || Number(entry.fireteamSdBonus || 0) > 0
+          return isProxyMkIv(entry) || (entry.points >= 15 && hasAroCapability && hasValuableModifier)
+        }),
+        category('disposableAro', 'Disposable ARO Pieces', 'Profiles costing 14 points or less with an approved ARO weapon, Flash Pulse, weapon-specific +SD, or native BS Attack (+SD).', (entry) => entry.points <= 14 && (canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name)) || /^flash pulse$/i.test(normalize(weapon.name)) || weaponSdBonus(weapon) > 0) || bsAttackSdBonus(entry.skills) > 0)),
+      ]
+
   const categories: TacticalCategory[] = [
       ...gunfighterCategories,
       category('apexCc', 'Apex Close Combat Fighters', 'CC 22+ profiles with Martial Arts, Natural Born Warrior, Berserk (+3), or CC Attack (+B).', (entry) => Number(entry.cc) >= 22 && entry.skills.some((skill) => [martialArts, naturalBornWarrior, berserkPlusThree, ccAttackBurst].some((rule) => rule.test(normalize(skill))))),
       category('hacking', 'Hacking Networks', 'Exact Hacker profiles, Hacking Devices, Repeaters, and verified repeater-delivery equipment.', (entry) => hackingComponents(entry).length > 0),
       category('vision', 'Vision Control', 'Profiles with Smoke Grenades, Smoke Grenade Launchers, Discoballer, Pheroware Mirrorball, or Eclipse.', (entry) => [...entry.skills, ...entry.equipment, ...entry.weapons].some((item) => visionControl.test(normalize(item)))),
-      category('valuableAro', 'Valuable ARO Pieces', 'Profiles costing at least 15 points with an approved ARO weapon or Pheroware capability, plus Total Reaction, Neurocinetics, native BS Attack (+SD), weapon-specific +SD, or a verified legal Fireteam +1SD. Proxy Mk IV is an explicit exception.', (entry) => {
-        const hasAroCapability = canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name))) || [...entry.skills, ...entry.equipment, ...entry.weapons].some((item) => pheroware.test(normalize(item)))
-        const hasValuableModifier = entry.skills.some((skill) => valuableAroSkill.test(normalize(skill))) || canonicalWeapons(entry).some((weapon) => weaponSdBonus(weapon) > 0) || Number(entry.fireteamSdBonus || 0) > 0
-        return isProxyMkIv(entry) || (entry.points >= 15 && hasAroCapability && hasValuableModifier)
-      }),
-      category('disposableAro', 'Disposable ARO Pieces', 'Profiles costing 14 points or less with an approved ARO weapon, Flash Pulse, weapon-specific +SD, or native BS Attack (+SD).', (entry) => entry.points <= 14 && (canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name)) || /^flash pulse$/i.test(normalize(weapon.name)) || weaponSdBonus(weapon) > 0) || bsAttackSdBonus(entry.skills) > 0)),
+      ...aroCategories,
       category('alternative', 'Alternative Attack Vectors', 'Profiles with Parachutist, Combat Jump, Hidden Deployment, or Impersonation; Netrods and Imetrons are excluded.', (entry) => !excludedAlternativeAttackVector(entry.unit) && entry.skills.some((skill) => alternativeSkill.test(normalize(skill)))),
       category('defensive', 'Defensive Network', 'Profiles with Camouflage, Decoy, or Minelayer; Mimetism alone does not qualify.', (entry) => entry.skills.some((skill) => defensiveSkill.test(normalize(skill)))),
     ]
@@ -147,20 +166,43 @@ function gunfighterRating(entry: ArmyIntelligenceDecodedEntry): TacticalProfile[
   return { grade: rating.grade, percentile: rating.percentile, rating: rating.rating, state, weapon }
 }
 
+function aroRating(entry: ArmyIntelligenceDecodedEntry): TacticalProfile['aro'] {
+  const key = String(entry.combinedId || '').replaceAll('-', ':')
+  const states = (portalAroRatings.ratings as Record<string, Record<string, BenchmarkState>>)[key]
+  if (!states?.normal) return undefined
+  return {
+    normal: states.normal,
+    ...(entry.fireteamSdBonus && states.fireteam ? { fireteam: states.fireteam } : {}),
+  }
+}
+
+function hasQualifyingAroRating(rating: TacticalProfile['aro']) {
+  return Boolean(rating && Object.values(rating).some((state) => ['S', 'A', 'B'].includes(String(state?.grade || '').toUpperCase())))
+}
+
 function compareGunfighters(left: TacticalProfile, right: TacticalProfile) {
   return Number(right.gunfighter?.rating || 0) - Number(left.gunfighter?.rating || 0) || compareProfiles(left, right)
+}
+
+function compareAros(left: TacticalProfile, right: TacticalProfile) {
+  return bestAroRating(right) - bestAroRating(left) || compareProfiles(left, right)
+}
+
+function bestAroRating(profile: TacticalProfile) {
+  return Math.max(...Object.values(profile.aro || {}).map((state) => Number(state?.rating ?? -1)), -1)
 }
 
 function excludedAlternativeAttackVector(unitName: string) {
   return /^(?:netrods?|imetrons?)(?:\s|$)/i.test(normalize(unitName))
 }
 
-function toProfile(entry: ArmyIntelligenceDecodedEntry, listCount: number, denominator: number, gunfighter: TacticalProfile['gunfighter']): TacticalProfile {
+function toProfile(entry: ArmyIntelligenceDecodedEntry, listCount: number, denominator: number, gunfighter: TacticalProfile['gunfighter'], aro: TacticalProfile['aro']): TacticalProfile {
   const skills = entry.skills.map(normalize).filter((skill) => alternativeSkill.test(skill) || defensiveSkill.test(skill) || enhancement.test(skill) || valuableAroSkill.test(skill) || bsAttackBurstBonus([skill]) > 0)
   const burstBonus = bsAttackBurstBonus(entry.skills)
   const sdBonus = bsAttackSdBonus(entry.skills) + Number(entry.fireteamSdBonus || 0)
   const mobility = lookupMobility(mobilityCatalog as MobilityCatalog, entry.combinedId)
   return {
+    aro,
     badges: unique([...skills, ...canonicalWeapons(entry).filter((weapon) => weaponSdBonus(weapon) > 0).map((weapon) => `${weapon.name} (+${weaponSdBonus(weapon)}SD)`), ...canonicalWeapons(entry).filter((weapon) => weaponBurstBonus(weapon) > 0).map((weapon) => `${weapon.name} (+${weaponBurstBonus(weapon)}B)`), ...(entry.fireteamSdBonus ? ['Fireteam (+1SD)'] : []), ...(isProxyMkIv(entry) ? ['Proxy Mk IV exception'] : []), ...hackingComponents(entry)]),
     bs: entry.bs ?? null,
     cc: entry.cc ?? null,

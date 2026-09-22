@@ -45,7 +45,8 @@ const apex = analysis.categories.find((category) => category.id === 'apex')!.pro
 const aro = analysis.categories.find((category) => category.id === 'disposableAro')!.profiles
 assert.ok(apex.some((item) => item.unit === 'UNKNOWN RANGER' && item.gunfighter && item.weapons.some((item) => item.name === 'AP Spitfire' && item.burst === 4)))
 assert.equal(analysis.categories.some((category) => category.id === 'competent'), false, 'Benchmark rankings replace the legacy Competent Gunfighters section')
-for (const expected of ['BLACKJACK AP HMG', 'BLACKJACK T2 SNIPER', 'MINUTEMAN', 'GRUNT']) assert.ok(aro.some((item) => item.unit === expected), `${expected} must be restored as a Disposable ARO piece`)
+for (const expected of ['BLACKJACK AP HMG', 'BLACKJACK T2 SNIPER', 'MINUTEMAN']) assert.ok(aro.some((item) => item.unit === expected), `${expected} must retain its Grade B-or-better ARO rating`)
+assert.ok(!aro.some((item) => item.unit === 'GRUNT'), 'a non-linkable Grade D Grunt must not be presented as a benchmark-qualified ARO piece')
 const hiddenAnalysis = buildTacticalAnalysis([{ ...list, decoded: { ...decoded, combatGroups: [{ combatGroup: 1, entries: [profile('hidden', 'HIDDEN SCOUT', 11, [{ name: 'Rifle', burst: 3 }], ['Hidden Deployment'])] }] } }] as never)
 assert.ok(hiddenAnalysis.categories.find((category) => category.id === 'alternative')!.profiles.some((item) => item.unit === 'HIDDEN SCOUT'), 'Hidden Deployment categorization remains intact')
 
