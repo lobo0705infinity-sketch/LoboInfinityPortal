@@ -12799,3 +12799,37 @@ a {
     width: min(100%, var(--portal-content-wide));
   }
 }
+
+
+.army-intelligence-tactical-profile.is-ranked {
+  grid-template-columns: 92px minmax(220px, 1fr) minmax(150px, .34fr) minmax(170px, .38fr);
+  gap: 0;
+  align-items: stretch;
+  overflow: hidden;
+  padding: 0;
+  border-color: rgba(76, 201, 240, .35);
+  background: linear-gradient(110deg, rgba(8, 24, 34, .98), rgba(5, 13, 20, .96));
+}
+.army-intelligence-tactical-profile.is-ranked > div { display: grid; align-content: center; gap: .25rem; min-width: 0; padding: 1rem 1.1rem; border-right: 1px solid rgba(76, 201, 240, .18); }
+.army-intelligence-ranking-rank { justify-items: center; background: rgba(76, 201, 240, .09); }
+.army-intelligence-ranking-rank span,
+.army-intelligence-ranking-score span,
+.army-intelligence-ranking-grade span { color: var(--text-muted); font-size: .66rem; font-weight: 950; letter-spacing: .1em; text-transform: uppercase; }
+.army-intelligence-ranking-rank strong { color: var(--blue); font-size: 1.8rem; line-height: 1; }
+.army-intelligence-ranking-identity strong { font-size: 1.02rem; text-transform: capitalize; }
+.army-intelligence-ranking-identity > span { color: #dce8f2; }
+.army-intelligence-ranking-identity small { color: var(--text-muted); }
+.army-intelligence-ranking-score strong { color: #fff; font-size: 1.65rem; line-height: 1; }
+.army-intelligence-ranking-grade { justify-items: start; }
+.army-intelligence-ranking-grade strong { font-size: 2rem; line-height: 1; }
+.army-intelligence-ranking-grade.is-grade-s strong { color: #ffd166; }
+.army-intelligence-ranking-grade.is-grade-a strong { color: #69e6a6; }
+.army-intelligence-ranking-grade.is-grade-b strong { color: #62cef4; }
+.army-intelligence-tactical-profile.is-ranked > footer { display: flex; justify-content: space-between; grid-column: 1 / -1; gap: .75rem; padding: .55rem 1rem; color: var(--text-muted); background: rgba(255,255,255,.025); font-size: .72rem; }
+@media (max-width: 760px) {
+  .army-intelligence-tactical-profile.is-ranked { grid-template-columns: 76px 1fr; }
+  .army-intelligence-ranking-score,
+  .army-intelligence-ranking-grade { border-top: 1px solid rgba(76, 201, 240, .18); }
+  .army-intelligence-ranking-score { grid-column: 1; }
+  .army-intelligence-ranking-grade { grid-column: 2; }
+}
