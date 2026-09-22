@@ -2314,6 +2314,96 @@
           "style": "PLAYER_WORDING"
         }
       ]
+    },
+    {
+      "id": "new-topic-2-522",
+      "category": "WILDPARROT_AND_WAIVED_ARO",
+      "canonicalQuestion": "Does a WildParrot trigger when an enemy Camouflaged Marker inside its Trigger Area chooses not to declare an ARO?",
+      "approvedAnswer": "No. A deployed WildParrot works like an E/M Mine. A Mine triggers when an enemy Model or Marker declares or executes a Skill or ARO inside its Trigger Area. Merely being eligible for an ARO and choosing not to declare one is not a declared or executed Skill or ARO; the Marker instead loses its ARO against that Order. Therefore the WildParrot does not trigger from the waived ARO alone. If the Marker actually declares or executes a Skill or ARO in the Trigger Area, the WildParrot must trigger if its template can legally affect that enemy without affecting an ally.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "NO",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 74,
+          "section": "WILDPARROT — EFFECTS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 72,
+          "section": "MINES — EFFECTS"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 13,
+          "section": "ARO: AUTOMATIC REACTION ORDER"
+        }
+      ],
+      "fuzzyRequiredTerms": [
+        "wildparrot",
+        "no aro"
+      ],
+      "fuzzyExcludedTerms": [
+        "deploy",
+        "place",
+        "intuitive attack",
+        "move",
+        "dodge",
+        "reset"
+      ],
+      "reviewStatus": "AUTO_VERIFIED_EXPLICIT",
+      "queryVariants": [
+        {
+          "id": "new-topic-2-522-q1",
+          "question": "if a camo marker declares no aro in the trigger area of a wild parrot, does the wild parrot trigger?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "new-topic-2-522-q2",
+          "question": "If a Camouflaged Marker declares no ARO inside a WildParrot's Trigger Area, does it detonate?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-522-q3",
+          "question": "Does a Wild Parrot go off when a camo marker chooses not to react?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-522-q4",
+          "question": "My camo token is inside a WildParrot area and waives its ARO. Does the bird trigger?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-522-q5",
+          "question": "Will a WildParrot trigger just because a Marker had an ARO opportunity but did not declare one?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-522-q6",
+          "question": "Does failing to declare an ARO count as an ARO for a deployed WildParrot?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-2-522-q7",
+          "question": "Camo marker in the WildParrot template says no ARO. Does it explode?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-522-q8",
+          "question": "Does a WildParrot activate if the enemy marker declines its reaction?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "new-topic-2-522-q9",
+          "question": "wild parot in range of camo marker, marker declars no aro, dose it trigger",
+          "style": "MISSPELLING"
+        },
+        {
+          "id": "new-topic-2-522-q10",
+          "question": "A camouflage marker had an ARO against an Order but chose not to declare it while inside a WildParrot Trigger Area. Is the WildParrot triggered?",
+          "style": "TABLE_SCENARIO"
+        }
+      ]
     }
   ]
 }

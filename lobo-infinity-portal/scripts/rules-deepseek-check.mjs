@@ -32,6 +32,7 @@ for (const [question, required] of [
   ['Can a unit and their synchronized Peripheral both use the same Panoply in the same Order?', [/USE PANOPLIES/i, /PERIPHERAL/i]],
   ['can a Sukeul benefit from a SymbioBomb?', [/SYMBIOBOMB/i, /ASSIGNABLE \(TRANSMUTATION\)/i]],
   ['Can my Sukeul receive a Symbio Bomb?', [/SYMBIOBOMB/i, /ASSIGNABLE \(TRANSMUTATION\)/i]],
+  ['if a camo marker declares no aro in the trigger area of a wild parrot, does the wild parrot trigger?', [/WILDPARROT/i, /declares or executes a Skill or ARO/i]],
 ]) {
   const evidence = buildRulesEvidencePrompt(productionCorpus, question)
   assert.ok(evidence.entryCount >= 1 && evidence.characterCount <= 60000)

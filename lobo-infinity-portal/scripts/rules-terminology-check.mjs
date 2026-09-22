@@ -13,7 +13,7 @@ for (const term of [
   'smoke ammunition', 'repeater', 'firewall', 'carbonite', 'camouflaged state',
   'engaged state', 'line of fire', 'zone of control', 'silhouette contact',
   'partial cover', 'total cover', 'automatic reaction order', 'specialist troops',
-  'panoply', 'direct template weapon', 'symbiobomb', 'assignable transmutation',
+  'panoply', 'direct template weapon', 'symbiobomb', 'assignable transmutation', 'wildparrot',
 ]) assert.ok(catalog.entries.some((entry) => entry.normalizedName === term), `Missing official terminology: ${term}`)
 
 const equivalentPairs = [
@@ -71,6 +71,22 @@ for (const question of [
   const entries = JSON.parse(prompt.text.split('\n').at(-1)).entries
   assert.ok(entries.some((entry) => entry.page === '74' && entry.section === 'SYMBIOBOMB' && /single-use weapon/i.test(entry.text)), question)
   assert.ok(entries.some((entry) => entry.page === '174' && entry.section === 'ASSIGNABLE (TRANSMUTATION)' && /possess the Transmutation \(X\)/i.test(entry.text)), question)
+}
+
+for (const question of [
+  'if a camo marker declares no aro in the trigger area of a wild parrot, does the wild parrot trigger?',
+  'If a Camouflaged Marker waives its ARO inside a WildParrot Trigger Area, does it detonate?',
+]) {
+  const resolution = resolveRulesTerminology(corpus, question)
+  assert.ok(resolution.entities.some((item) => item.normalizedName === 'wildparrot'), question)
+  assert.ok(resolution.entities.some((item) => item.normalizedName === 'camouflaged state'), question)
+  assert.ok(resolution.entities.some((item) => item.normalizedName === 'automatic reaction order'), question)
+  assert.ok(resolution.dependencies.some((item) => item.normalizedName === 'mines' && item.matchType === 'CONTROLLING_REFERENCE'), question)
+  const prompt = buildRulesEvidencePrompt(corpus, question)
+  const entries = JSON.parse(prompt.text.split('\n').at(-1)).entries
+  assert.ok(entries.some((entry) => entry.page === '74' && entry.section === 'WILDPARROT' && /work like E\/M Mines/i.test(entry.text)), question)
+  assert.ok(entries.some((entry) => entry.page === '72' && entry.section === 'MINES' && /declares or executes a Skill or ARO/i.test(entry.text)), question)
+  assert.ok(entries.some((entry) => entry.page === '13' && /fail to do so lose their ARO/i.test(entry.text)), question)
 }
 
 const aerialQuestions = equivalentPairs[0].slice(0, 2)

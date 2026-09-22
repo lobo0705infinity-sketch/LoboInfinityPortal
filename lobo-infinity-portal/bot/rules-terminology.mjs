@@ -25,7 +25,7 @@ const RELATION_TERM_ENDINGS = new Set(['area', 'contact', 'control', 'cover', 'f
 const COMMUNITY_ALIASES = Object.freeze({
   'automatic reaction order': ['aro', 'reaction order', 'reactive order', 'shoot back'],
   'ballistic skill attack': ['bs attack', 'shoot', 'shooting'],
-  'camouflaged state': ['camo', 'camo state', 'camouflage marker', 'camo marker'],
+  'camouflaged state': ['camo', 'camo state', 'camouflage marker', 'camouflaged marker', 'camo marker'],
   'fireteam': ['link', 'link team', 'linked team'],
   'killer hacking device': ['khd'],
   'line of fire': ['lof', 'line of sight', 'los'],
@@ -37,6 +37,7 @@ const COMMUNITY_ALIASES = Object.freeze({
   'silhouette contact': ['base contact', 'base to base', 'base-to-base', 'b2b', 'btb', 'touching bases'],
   'smoke ammunition': ['smoke', 'smoke ammo'],
   'symbiobomb': ['symbio bomb'],
+  'wildparrot': ['wild parrot', 'wild parrots'],
   'zone of control': ['zoc'],
 })
 

@@ -180,6 +180,7 @@ export function normalizeQuestion(value) {
     // "Crazy Koala".  Treat both spellings as the same named piece of Equipment
     // before doing exact benchmark routing.
     .replace(/\bcrazy\s*koalas?\b/g, 'crazykoala')
+    .replace(/\bwild\s*parrots?\b/g, 'wildparrot')
     .replace(/\bautomatic reaction orders?\b/g, 'aro')
     .replace(/\baros\b/g, 'aro')
     .replace(/\bballistic skill attacks?\b/g, 'bs attack')

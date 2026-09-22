@@ -69,6 +69,28 @@ const rulesSupplements = Object.freeze([
   "version": "5.3",
   "authority": 1,
   "scope": "core",
+  "pdfPage": 74,
+  "printedPage": "74",
+  "section": "WILDPARROT",
+  "headings": [
+    "WILDPARROT",
+    "EFFECTS"
+  ],
+  "structuredBlockTypes": [
+    "EFFECTS"
+  ],
+  "canonicalTerm": "wildparrot",
+  "controllingTerms": [
+    "mines"
+  ],
+  "text": "WILDPARROT\nThis mobile weapons platform has been designed to be deployed on the battlefield at a distance, acting as a Mine with E/M Special Ammunition.\nEFFECTS\nThese weapons are placed with the Place Deployable or Intuitive Attack Common Skills, always applying the Deployable and Perimeter rule.\nTherefore, when players deploy this weapon, they place the WildParrot totally inside the Zone of Control of the Trooper, instead of placing it in Silhouette contact.\nDeployed WildParrots work like E/M Mines, except that a WildParrot Token or Model is placed instead of a Camouflage Marker."
+},
+{
+  "sourceId": "infinity-rules-n5.3",
+  "title": "Infinity Rules",
+  "version": "5.3",
+  "authority": 1,
+  "scope": "core",
   "pdfPage": 72,
   "printedPage": "72",
   "section": "MINES",

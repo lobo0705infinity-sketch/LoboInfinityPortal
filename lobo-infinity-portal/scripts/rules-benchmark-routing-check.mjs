@@ -6,7 +6,7 @@ import { retrieveRulesReference, formatRulesDiscordResponse } from '../bot/rules
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1401)
+assert.equal(index.canonicalCases, 1402)
 
 for (const file of ['rules-adjudicator-benchmark.json', 'rules-adjudicator-expansion-400.json', 'rules-adjudicator-new-topics-400.json', 'rules-adjudicator-new-topics-500.json', 'rules-benchmark-approved-updates-2026-09-15.json']) {
   const document = JSON.parse(await readFile(resolve(root, 'data/infinity-rules', file), 'utf8'))
@@ -71,6 +71,9 @@ const naturalParaphrases = [
   ['Can an aerial unit benefit from deployable cover', 'new-topic-2-521'],
   ['Can a unit with the Aerial skill gain cover from deployable cover?', 'new-topic-2-521'],
   ['can areial units use deployble covr', 'new-topic-2-521'],
+  ['if a camo marker declares no aro in the trigger area of a wild parrot, does the wild parrot trigger?', 'new-topic-2-522'],
+  ['Does a Wild Parrot go off when a camo marker chooses not to react?', 'new-topic-2-522'],
+  ['wild parot in range of camo marker, marker declars no aro, dose it trigger', 'new-topic-2-522'],
 ]
 for (const [question, expectedId] of naturalParaphrases) {
   assert.equal((await findApprovedRulesAnswer(question))?.id, expectedId, question)
@@ -411,5 +414,27 @@ for (const { question } of perimeterPlacementCase.queryVariants) {
 }
 assert.equal(calls, 3, 'CrazyKoala placement questions must bypass the provider')
 console.log('PASS - CrazyKoala placement near Camouflage Markers routes directly from the approved rules benchmark.')
+
+const wildParrotCase = impetuousDocument.cases.find((item) => item.id === 'new-topic-2-522')
+assert.equal(wildParrotCase.queryVariants.length, 10)
+for (const { question } of wildParrotCase.queryVariants) {
+  const result = await retrieveRulesReference({ question, deepSeek: fallback })
+  assert.equal(result.answerSource, 'APPROVED_BENCHMARK', question)
+  assert.equal(result.benchmark.id, 'new-topic-2-522', question)
+  assert.equal(result.deepSeek.conclusion, 'NO', question)
+  assert.match(result.deepSeek.answer, /choosing not to declare one is not a declared or executed Skill or ARO/i, question)
+  assert.match(result.deepSeek.answer, /does not trigger from the waived ARO alone/i, question)
+  assert.match(result.deepSeek.answer, /actually declares or executes a Skill or ARO/i, question)
+  assert.deepEqual(result.deepSeek.sources.map((source) => source.page), ['p. 74', 'p. 72', 'p. 13'], question)
+  const answerField = formatRulesDiscordResponse(result).embeds[0].fields.find((field) => field.name === 'ANSWER').value
+  assert.ok(answerField.length <= 1024, question)
+}
+assert.equal(calls, 3, 'All WildParrot/waived-ARO phrasings must bypass the provider')
+for (const question of [
+  'Does a WildParrot trigger when a Camouflage Marker declares an ARO?',
+  'Does a WildParrot trigger when a camo marker declares Dodge?',
+  'Will a WildParrot detonate when a Marker executes Move inside its Trigger Area?',
+]) assert.notEqual((await findApprovedRulesAnswer(question))?.id, 'new-topic-2-522', question)
+console.log('PASS - WildParrot waived-ARO interactions route directly from the approved rules benchmark.')
 
 console.log(`PASS - ${index.canonicalCases} trusted benchmark rulings route before DeepSeek; unmatched questions fall back exactly once.`)
