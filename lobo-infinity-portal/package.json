@@ -95,6 +95,7 @@
     "test:rules-model-context": "node scripts/rules-model-context-check.mjs",
     "test:rules-benchmark-routing": "node scripts/rules-benchmark-routing-check.mjs && node scripts/rules-model-context-check.mjs",
     "test:rules-resource-watcher": "node scripts/rules-resource-watcher-check.mjs",
+    "test:workshop-map-catalog": "node scripts/workshop-map-catalog-check.mjs",
     "team-tournament:routing": "node scripts/team-tournament-routing-check.mjs",
     "test:team-tournament-rounds": "node scripts/team-tournament-rounds-check.mjs",
     "test:team-tournament-round-number": "node --experimental-strip-types scripts/team-tournament-round-number-check.mts",
@@ -207,6 +208,7 @@
   "dependencies": {
     "@sparticuz/chromium": "^149.0.0",
     "@vercel/blob": "^2.8.0",
+    "bson": "7.3.3",
     "discord.js": "^14.27.0",
     "firebase": "^12.15.0",
     "playwright-core": "^1.63.0",

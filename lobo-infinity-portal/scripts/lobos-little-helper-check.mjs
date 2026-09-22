@@ -97,6 +97,23 @@ assert.equal(mapMarker, 'tts-map:27:0123456789ABCDEF')
 assert.match(formatMapAnnouncement({ item: mapFixture, kind: 'added' }), /New Infinity TTS Map/)
 assert.match(formatMapAnnouncement({ item: mapFixture, kind: 'added' }), /Download TTS JSON/)
 assert.match(formatMapAnnouncement({ item: mapFixture, kind: 'updated' }), /Infinity TTS Map Updated/)
+const workshopMapFixture = {
+  id: '3719263238:abc123',
+  source: 'lobo-workshop',
+  workshopId: '3719263238',
+  name: 'LL Map 15 The Dig/Provisioning',
+  createdAt: '2026-09-22T03:48:37.000Z',
+  pageUrl: workshopFixture.url,
+  previewUrl: 'https://images.steamusercontent.com/workshop-preview.jpg',
+  objectCount: 142,
+  contentSignature: 'ABCDEF0123456789ABCDEF0123456789',
+}
+const workshopMapAnnouncement = formatMapAnnouncement({ item: workshopMapFixture, kind: 'added' })
+assert.match(workshopMapAnnouncement, /New Lobo Workshop Map/)
+assert.match(workshopMapAnnouncement, /142 table objects/)
+assert.match(workshopMapAnnouncement, /Open Lobo's Infinity Maps workshop/)
+assert.doesNotMatch(workshopMapAnnouncement, /Download TTS JSON/)
+assert.match(formatMapAnnouncement({ item: workshopMapFixture, kind: 'updated' }), /Lobo Workshop Map Updated/)
 const priorAnnouncements = new Map([
   ['message-1', { author: { id: 'bot-1' }, content: `-# ${workshopMarker}` }],
   ['message-2', { author: { id: 'bot-1' }, content: `-# ${mapMarker}` }],

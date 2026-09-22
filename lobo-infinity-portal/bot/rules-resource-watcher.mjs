@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto'
 import { mkdir, readFile, rename, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
+import { fetchWorkshopMapCatalog } from './workshop-map-catalog.mjs'
 
 export const DEFAULT_MAPS_API_URL = 'http://51.255.44.29/infinity/api/maps'
 export const DEFAULT_MAPS_PAGE_URL = 'http://51.255.44.29/infinity/maps'
@@ -10,7 +11,7 @@ export const STEAM_WORKSHOP_DETAILS_URL = 'https://api.steampowered.com/ISteamRe
 export const DEFAULT_CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000
 export const DEFAULT_BASELINE_LOOKBACK_MS = 72 * 60 * 60 * 1000
 export const DEFAULT_STATE_PATH = resolve(import.meta.dirname, '..', '.tmp', 'rules-resource-watcher.json')
-export const MAP_WATCHER_STATE_VERSION = 2
+export const MAP_WATCHER_STATE_VERSION = 3
 
 export function sha256(value) {
   return createHash('sha256').update(value).digest('hex').toUpperCase()
@@ -122,7 +123,11 @@ export function diffWorkshopItems(previous = [], current = []) {
   const before = new Map(previous.map((item) => [item.id, item]))
   return current.filter((item) => {
     const prior = before.get(item.id)
-    return prior && (prior.updatedAt !== item.updatedAt || prior.title !== item.title)
+    return prior && (
+      prior.updatedAt !== item.updatedAt
+      || prior.title !== item.title
+      || (prior.contentId && item.contentId && prior.contentId !== item.contentId)
+    )
   }).map((item) => ({ ...item, previous: before.get(item.id) }))
 }
 
@@ -143,10 +148,20 @@ export async function fetchWorkshopItems(itemIds, fetchImpl = globalThis.fetch) 
   return itemIds.map((id) => {
     const item = found.get(id)
     if (!item || Number(item.result) !== 1 || !Number.isFinite(Number(item.time_updated))) throw new Error(`Steam Workshop item ${id} was unavailable`)
+    const fileSize = Number(item.file_size)
+    const fileUrl = String(item.file_url || '').trim()
+    const contentId = String(item.hcontent_file || '').trim()
+    if (!contentId || !Number.isFinite(fileSize) || fileSize <= 0 || !fileUrl) {
+      throw new Error(`Steam Workshop item ${id} did not provide downloadable content metadata`)
+    }
     return {
       id,
       title: String(item.title || `Steam Workshop item ${id}`).trim(),
       updatedAt: Number(item.time_updated),
+      contentId,
+      fileSize,
+      fileUrl,
+      previewUrl: String(item.preview_url || '').trim(),
       url: `https://steamcommunity.com/sharedfiles/filedetails/?id=${id}`,
     }
   })
@@ -167,7 +182,28 @@ async function writeState(path, state) {
 }
 
 function hasAnnounceableChanges(changes) {
-  return Boolean(changes.added.length || changes.updated.length || changes.workshops.length)
+  return Boolean(
+    changes.added.length
+    || changes.updated.length
+    || changes.workshops.length
+    || changes.workshopMaps.added.length
+    || changes.workshopMaps.updated.length
+  )
+}
+
+async function resolveWorkshopMaps(workshops, previous, fetchImpl) {
+  const hasPreviousCatalog = Array.isArray(previous?.workshopMaps)
+  const priorWorkshops = new Map((previous?.workshops || []).map((item) => [String(item.id), item]))
+  const priorMaps = previous?.workshopMaps || []
+  const catalogs = await Promise.all(workshops.map(async (workshop) => {
+    const priorWorkshop = priorWorkshops.get(workshop.id)
+    const canReuse = hasPreviousCatalog
+      && priorWorkshop?.contentId
+      && priorWorkshop.contentId === workshop.contentId
+    if (canReuse) return priorMaps.filter((map) => String(map.workshopId) === workshop.id)
+    return (await fetchWorkshopMapCatalog(workshop, fetchImpl)).maps
+  }))
+  return catalogs.flat()
 }
 
 export async function checkRulesResources({
@@ -181,10 +217,12 @@ export async function checkRulesResources({
   onChange,
   logger = console,
 } = {}) {
+  const previous = await readState(statePath)
   const response = await fetchImpl(url, { headers: { accept: 'application/json' }, signal: AbortSignal.timeout(30_000) })
   if (!response.ok) throw new Error(`Maps endpoint returned HTTP ${response.status}`)
   const maps = parseMapCatalog(await response.json(), { mapsApiUrl: url, mapsPageUrl })
   const workshops = await fetchWorkshopItems(parseWorkshopItemIds(workshopItemIds), fetchImpl)
+  const workshopMaps = await resolveWorkshopMaps(workshops, previous, fetchImpl)
   const checkedAt = new Date(now()).toISOString()
   const snapshot = {
     version: MAP_WATCHER_STATE_VERSION,
@@ -192,33 +230,45 @@ export async function checkRulesResources({
     checkedAt,
     maps,
     workshops,
+    workshopMaps,
   }
-  const previous = await readState(statePath)
   const hasPreviousMapCatalog = Array.isArray(previous?.maps)
+  const hasPreviousWorkshopMapCatalog = Array.isArray(previous?.workshopMaps)
   const mapChanges = hasPreviousMapCatalog
     ? diffMapCatalog(previous.maps, maps)
     : { added: selectRecentBaselineMaps(maps, { nowMs: now(), lookbackMs: baselineLookbackMs }), removed: [], updated: [] }
+  const workshopMapChanges = hasPreviousWorkshopMapCatalog
+    ? diffMapCatalog(previous.workshopMaps, workshopMaps)
+    : { added: [], removed: [], updated: [] }
   const workshopChanges = hasPreviousMapCatalog && Array.isArray(previous?.workshops)
     ? diffWorkshopItems(previous.workshops, workshops)
     : workshops
-  const changes = { ...mapChanges, workshops: workshopChanges }
+  const changes = { ...mapChanges, workshops: workshopChanges, workshopMaps: workshopMapChanges }
 
   if (hasAnnounceableChanges(changes) && onChange) await onChange({ previous, snapshot, changes })
   await writeState(statePath, snapshot)
 
   if (!previous) {
-    logger.info?.(`Infinity maps baseline saved: maps=${maps.length} recent=${changes.added.length} workshops=${workshops.length}`)
+    logger.info?.(`Infinity maps baseline saved: maps=${maps.length} recent=${changes.added.length} workshops=${workshops.length} workshopMaps=${workshopMaps.length}`)
     return { status: 'BASELINED', snapshot, changes }
   }
   if (!hasPreviousMapCatalog) {
-    logger.info?.(`Infinity maps watcher migrated: maps=${maps.length} recent=${changes.added.length} workshops=${changes.workshops.length}`)
+    logger.info?.(`Infinity maps watcher migrated: maps=${maps.length} recent=${changes.added.length} workshops=${changes.workshops.length} workshopMaps=${workshopMaps.length}`)
     return { status: 'MIGRATED', snapshot, changes }
   }
-  if (!changes.added.length && !changes.removed.length && !changes.updated.length && !changes.workshops.length) {
+  if (
+    !changes.added.length
+    && !changes.removed.length
+    && !changes.updated.length
+    && !changes.workshops.length
+    && !changes.workshopMaps.added.length
+    && !changes.workshopMaps.removed.length
+    && !changes.workshopMaps.updated.length
+  ) {
     return { status: 'UNCHANGED', snapshot, changes }
   }
 
-  logger.info?.(`Infinity maps changed: added=${changes.added.length} removed=${changes.removed.length} updated=${changes.updated.length} workshops=${changes.workshops.length}`)
+  logger.info?.(`Infinity maps changed: added=${changes.added.length} removed=${changes.removed.length} updated=${changes.updated.length} workshops=${changes.workshops.length} workshopMapsAdded=${changes.workshopMaps.added.length} workshopMapsRemoved=${changes.workshopMaps.removed.length} workshopMapsUpdated=${changes.workshopMaps.updated.length}`)
   return { status: 'CHANGED', snapshot, changes }
 }
 

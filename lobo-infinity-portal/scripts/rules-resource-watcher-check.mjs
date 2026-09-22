@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { serialize } from 'bson'
 import {
   checkRulesResources,
   diffMapCatalog,
@@ -53,12 +54,44 @@ const statePath = join(directory, 'state.json')
 let mapsPayload = [oldMap, oilRefinery]
 let changed = null
 let workshopUpdatedAt = 1_790_034_517
+let workshopContentId = 'content-1'
+const workshopFileUrl = 'https://cdn.steamusercontent.com/workshop-fixture'
+const workshopMapBag = {
+  Name: 'Bag',
+  GUID: 'abc123',
+  Nickname: 'SET_LL Map 15 The Dig/Provisioning',
+  Description: 'League table',
+  GMNotes: '',
+  Tags: [],
+  ContainedObjects: [{ Name: 'BlockSquare', GUID: '000001', Transform: { posX: 1, posY: 2, posZ: 3 } }],
+}
+let workshopFile = serialize({ SaveName: "Lobo's Infinity Maps", ObjectStates: [workshopMapBag] })
 const requestedUrls = []
 const fetchImpl = async (url) => {
   requestedUrls.push(String(url))
-  return String(url).includes('GetPublishedFileDetails')
-    ? { ok: true, json: async () => ({ response: { publishedfiledetails: [{ result: 1, publishedfileid: '3719263238', title: "Lobo's Infinity Maps", time_updated: workshopUpdatedAt }] } }) }
-    : { ok: true, json: async () => mapsPayload }
+  if (String(url).includes('GetPublishedFileDetails')) {
+    return {
+      ok: true,
+      json: async () => ({ response: { publishedfiledetails: [{
+        result: 1,
+        publishedfileid: '3719263238',
+        title: "Lobo's Infinity Maps",
+        time_updated: workshopUpdatedAt,
+        hcontent_file: workshopContentId,
+        file_size: workshopFile.length,
+        file_url: workshopFileUrl,
+        preview_url: 'https://images.steamusercontent.com/workshop-preview.jpg',
+      }] } }),
+    }
+  }
+  if (String(url) === workshopFileUrl) {
+    return {
+      ok: true,
+      headers: { get: (name) => name === 'content-length' ? String(workshopFile.length) : null },
+      arrayBuffer: async () => workshopFile,
+    }
+  }
+  return { ok: true, json: async () => mapsPayload }
 }
 const silent = { info() {}, error() {} }
 const checkOptions = {
@@ -74,8 +107,12 @@ const baselineResult = await checkRulesResources(checkOptions)
 assert.equal(baselineResult.status, 'BASELINED')
 assert.deepEqual(changed.changes.added.map((map) => map.id), ['27'])
 assert.equal(changed.changes.workshops[0].id, '3719263238')
+assert.equal(changed.changes.workshopMaps.added.length, 0)
+assert.equal(baselineResult.snapshot.workshopMaps[0].name, 'LL Map 15 The Dig/Provisioning')
 assert.equal(requestedUrls[0], mapsApiUrl)
+assert.equal(requestedUrls.filter((requestedUrl) => requestedUrl === workshopFileUrl).length, 1)
 assert.equal((await checkRulesResources(checkOptions)).status, 'UNCHANGED')
+assert.equal(requestedUrls.filter((requestedUrl) => requestedUrl === workshopFileUrl).length, 1)
 
 mapsPayload = [...mapsPayload, {
   id: 28,
@@ -91,13 +128,31 @@ assert.equal(JSON.parse(await readFile(statePath, 'utf8')).maps.length, 3)
 assert.equal(Object.hasOwn(JSON.parse(await readFile(statePath, 'utf8')).maps[0], 'json'), false)
 
 workshopUpdatedAt += 1
+workshopContentId = 'content-2'
+workshopFile = serialize({
+  SaveName: "Lobo's Infinity Maps",
+  ObjectStates: [
+    {
+      ...workshopMapBag,
+      ContainedObjects: [{ ...workshopMapBag.ContainedObjects[0], Transform: { posX: 9, posY: 2, posZ: 3 } }],
+    },
+    {
+      ...workshopMapBag,
+      GUID: 'def456',
+      Nickname: 'SET_New Tournament Table',
+    },
+  ],
+})
 const workshopResult = await checkRulesResources(checkOptions)
 assert.equal(workshopResult.status, 'CHANGED')
 assert.equal(changed.changes.workshops[0].id, '3719263238')
+assert.equal(changed.changes.workshopMaps.added[0].name, 'New Tournament Table')
+assert.equal(changed.changes.workshopMaps.updated[0].name, 'LL Map 15 The Dig/Provisioning')
+assert.equal(requestedUrls.filter((requestedUrl) => requestedUrl === workshopFileUrl).length, 2)
 assert.equal((await fetchWorkshopItems(['3719263238'], fetchImpl))[0].title, "Lobo's Infinity Maps")
 assert.equal(diffWorkshopItems(
-  [{ id: '3719263238', title: "Lobo's Infinity Maps", updatedAt: 1 }],
-  [{ id: '3719263238', title: "Lobo's Infinity Maps", updatedAt: 2 }],
+  [{ id: '3719263238', title: "Lobo's Infinity Maps", updatedAt: 1, contentId: 'one' }],
+  [{ id: '3719263238', title: "Lobo's Infinity Maps", updatedAt: 2, contentId: 'two' }],
 ).length, 1)
 
 const legacyStatePath = join(directory, 'legacy-state.json')

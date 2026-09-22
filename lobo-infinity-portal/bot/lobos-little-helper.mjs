@@ -12,6 +12,7 @@ import { createRulesInteractionHandler, ensureRulesCommand } from './rules-comma
 import { createAroCounterAutocompleteHandler, createAroVsInteractionHandler, ensureAroVsCommand } from './aro-vs-command.mjs'
 import { createMatchupAutocompleteHandler, createMatchupInteractionHandler, ensureMatchupCommand } from './matchup-command.mjs'
 import { startRulesResourceWatcher } from './rules-resource-watcher.mjs'
+import { WORKSHOP_MAP_SOURCE } from './workshop-map-catalog.mjs'
 import { loadGunfighterBenchmarkCatalog } from './gunfighter-catalog-store.mjs'
 import { loadAroBenchmarkCatalog } from './aro-catalog-store.mjs'
 import { loadCloseCombatCatalog } from './close-combat-catalog-store.mjs'
@@ -61,6 +62,18 @@ export async function filterUnannouncedWorkshopChanges(channel, workshops = [], 
 
 export function formatMapAnnouncement({ item, kind = 'added' }) {
   const createdAt = Math.floor(Date.parse(item.createdAt) / 1000)
+  if (item.source === WORKSHOP_MAP_SOURCE) {
+    const headline = kind === 'updated' ? 'Lobo Workshop Map Updated' : 'New Lobo Workshop Map'
+    const timing = Number.isFinite(createdAt) ? ` · Workshop updated <t:${createdAt}:R>` : ''
+    const preview = item.previewUrl ? ` · [Workshop preview](${item.previewUrl})` : ''
+    return [
+      `**${headline}**`,
+      `## [${item.name}](${item.pageUrl})`,
+      `${Number(item.objectCount || 0).toLocaleString('en-US')} table objects${timing}`,
+      `[Open Lobo's Infinity Maps workshop](${item.pageUrl})${preview}`,
+      `-# ${mapAnnouncementMarker(item)}`,
+    ].join('\n')
+  }
   const headline = kind === 'updated' ? 'Infinity TTS Map Updated' : 'New Infinity TTS Map'
   const timing = Number.isFinite(createdAt) ? ` · added <t:${createdAt}:R>` : ''
   const preview = item.images?.[0] ? ` · [Preview image](${item.images[0]})` : ''
@@ -145,9 +158,16 @@ export async function startLobosLittleHelper({ token = process.env[DISCORD_TOKEN
       const mapChanges = [
         ...changes.added.map((item) => ({ kind: 'added', item })),
         ...changes.updated.map((item) => ({ kind: 'updated', item })),
+        ...(changes.workshopMaps?.added || []).map((item) => ({ kind: 'added', item })),
+        ...(changes.workshopMaps?.updated || []).map((item) => ({ kind: 'updated', item })),
       ]
       const unannouncedMaps = await filterUnannouncedMapChanges(channel, mapChanges, client.user.id)
-      const unannouncedWorkshops = await filterUnannouncedWorkshopChanges(channel, changes.workshops || [], client.user.id)
+      const changedWorkshopIds = new Set(mapChanges
+        .map(({ item }) => String(item.workshopId || ''))
+        .filter(Boolean))
+      const genericWorkshopChanges = (changes.workshops || [])
+        .filter((item) => !changedWorkshopIds.has(String(item.id)))
+      const unannouncedWorkshops = await filterUnannouncedWorkshopChanges(channel, genericWorkshopChanges, client.user.id)
       for (const change of unannouncedMaps.slice(0, 10)) {
         await channel.send(formatMapAnnouncement(change))
       }
