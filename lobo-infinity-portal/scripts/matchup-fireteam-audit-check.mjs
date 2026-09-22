@@ -62,9 +62,11 @@ assert.ok(nativeBurstProfiles > 0, 'catalog-wide audit exercised native BS Attac
 assert.ok(nativeSpecialDiceProfiles > 0, 'catalog-wide audit exercised native BS Attack +SD profiles')
 
 const result = await compareMatchup({ modelOne: '1001:1779:1:3:1', modelTwo: '501:1896:1:9:1' })
-assert.deepEqual(result.directions.map((direction) => direction.variants.length), [4, 4], 'Nimrod and Coyote each show unlinked and linked combinations in both attack directions')
+assert.deepEqual(result.directions.map((direction) => direction.variants.length), [1, 1], 'matchup renders one automatically resolved Fireteam state per attack direction')
 
-const linked = result.directions[0].variants.find((variant) => variant.attackerState === 'fireteam' && variant.defenderState === 'fireteam')
+const linked = result.directions[0].variants[0]
+assert.equal(linked.attackerState, 'fireteam', 'eligible Nimrod automatically receives Fireteam +1SD')
+assert.equal(linked.defenderState, 'fireteam', 'eligible Coyote automatically receives Fireteam +1SD')
 const linkedBand = linked.bands.find((band) => band.range === '16-24')
 assert.match(linkedBand.attackerAction, /Thunderbolt/)
 assert.equal(linkedBand.attackerPool.baseBurst, 2)

@@ -84,20 +84,18 @@ export async function searchMatchupProfiles(query) {
 }
 
 function evaluateDirection(attacker, defender) {
-  const attackerStates = isMatchupLinkable(attacker) ? [{ id: 'normal', specialDice: 0 }, { id: 'fireteam', specialDice: 1 }] : [{ id: 'normal', specialDice: 0 }]
-  const defenderStates = isMatchupLinkable(defender) ? [{ id: 'normal', specialDice: 0 }, { id: 'fireteam', specialDice: 1 }] : [{ id: 'normal', specialDice: 0 }]
+  const attackerState = isMatchupLinkable(attacker) ? { id: 'fireteam', specialDice: 1 } : { id: 'normal', specialDice: 0 }
+  const defenderState = isMatchupLinkable(defender) ? { id: 'fireteam', specialDice: 1 } : { id: 'normal', specialDice: 0 }
+  const linkedDefender = { ...defender, fireteamSpecialDice: defenderState.specialDice }
+  const state = evaluateGunfighterProfile(attacker, [linkedDefender]).states.find((entry) => entry.id === attackerState.id)
   return {
     attacker,
     defender,
-    variants: attackerStates.flatMap((attackerState) => defenderStates.map((defenderState) => {
-      const linkedDefender = { ...defender, fireteamSpecialDice: defenderState.specialDice }
-      const state = evaluateGunfighterProfile(attacker, [linkedDefender]).states.find((entry) => entry.id === attackerState.id)
-      return {
-        attackerState: attackerState.id,
-        defenderState: defenderState.id,
-        bands: state.matchups.map((matchup) => formatBand(matchup, attacker, defender)),
-      }
-    })),
+    variants: [{
+      attackerState: attackerState.id,
+      defenderState: defenderState.id,
+      bands: state.matchups.map((matchup) => formatBand(matchup, attacker, defender)),
+    }],
   }
 }
 
