@@ -28,6 +28,8 @@ assert.doesNotMatch(backend, /CanonicalDecoderGateway|decode\(|getCanonicalGameS
 assert.match(endpoint, /stale-while-revalidate=86400/)
 assert.match(service, /getPublicSnapshotDataset<PublicSubmittedArmyList\[]>\('army-lists', signal\)/)
 assert.match(service, /getPublicSnapshotDataset<ArmyIntelligenceFactionData\[]>\('army-intelligence-detail', signal\)/)
+assert.match(service, /getGameIntelligenceLists:/)
+assert.match(gameDetails, /publicDetailProjection\.getGameIntelligenceLists\(controller\.signal\)/)
 assert.match(service, /return \{[\s\S]*armyLists,[\s\S]*games,[\s\S]*rivalryGames: games/)
 assert.match(pages, /publicDetailProjection/)
 assert.doesNotMatch(pages, /\.getHome\(/)
