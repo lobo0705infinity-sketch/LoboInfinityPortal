@@ -2,6 +2,7 @@ import fs from 'node:fs'
 
 const base = 'https://ecwefvuvauaqpary.public.blob.vercel-storage.com/public-snapshots/20260831T045141Z/'
 const source = fs.readFileSync(new URL('../src/public/SnapshotArmyIntelligence.tsx', import.meta.url), 'utf8')
+const authenticatedSource = fs.readFileSync(new URL('../src/pages/ArmyIntelligence.tsx', import.meta.url), 'utf8')
 const css = fs.readFileSync(new URL('../src/public/SnapshotArmyIntelligence.css', import.meta.url), 'utf8')
 const app = fs.readFileSync(new URL('../src/public/SnapshotPublicApp.tsx', import.meta.url), 'utf8')
 
@@ -41,6 +42,10 @@ for (const required of ['Select sectorial', 'Army Lists with a Winning Record', 
 assert(app.includes('<SnapshotArmyIntelligence />'), 'snapshot-native route component')
 assert(source.indexOf("useSnapshotData<Summary[]>('army-intelligence-summary')") < source.indexOf('<ArmyIntelligenceDetail'), 'summary loads before detail component')
 assert(source.includes("useSnapshotData<DetailGroup[]>('army-intelligence-detail')"), 'detail uses immutable cached snapshot client')
+assert(source.includes('<span>{rankedBenchmark.weapon}</span>'), 'ranking headline uses the benchmark weapon')
+assert(!/<span>\{profile\.profile\}<\/span>\s*<small>\{rankedBenchmark\.weapon\}/.test(source), 'ranking headline does not use the decoded profile label')
+assert(authenticatedSource.includes('<span>{rankedBenchmark.weapon}</span>'), 'authenticated ranking headline uses the benchmark weapon')
+assert(!/<span>\{profile\.profile\}<\/span>\s*<small>\{rankedBenchmark\.weapon\}/.test(authenticatedSource), 'authenticated ranking headline does not use the decoded profile label')
 const detailLayout = source.slice(source.indexOf('function ArmyIntelligenceDetail'), source.indexOf('function IntelligenceBrief'))
 const summaryPosition = detailLayout.indexOf('snapshot-intelligence-mature-metrics')
 const filtersPosition = detailLayout.indexOf('aria-label="Model Usage filters"')
