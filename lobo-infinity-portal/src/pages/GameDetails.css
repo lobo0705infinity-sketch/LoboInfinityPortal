@@ -574,8 +574,61 @@
 
 .battle-report-game-review-grid {
   display: grid;
-  grid-template-columns: minmax(190px, 0.7fr) minmax(240px, 1fr) minmax(300px, 1.35fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+}
+
+.battle-report-game-review-narrative > section:nth-child(n + 3) {
+  grid-column: 1 / -1;
+}
+
+.battle-report-game-review-narrative > section > p {
+  margin: 0;
+  color: #dce6ed;
+  font-size: 0.96rem;
+  line-height: 1.68;
+}
+
+.battle-report-game-review-coaching > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.battle-report-game-review-coaching article {
+  border-left: 2px solid #4cc9f0;
+  background: rgba(76, 201, 240, 0.05);
+  padding: 12px 14px;
+}
+
+.battle-report-game-review-coaching article:last-child {
+  border-left-color: #ef3340;
+  background: rgba(239, 51, 64, 0.05);
+}
+
+.battle-report-game-review-coaching article > strong {
+  color: #fff;
+}
+
+.battle-report-game-review-coaching article p {
+  margin: 6px 0 0;
+  color: #c9d5dd;
+  line-height: 1.6;
+}
+
+.battle-report-game-review-bottom-line {
+  border-color: rgba(242, 182, 50, 0.42) !important;
+  background: rgba(242, 182, 50, 0.06) !important;
+}
+
+.battle-report-game-review-bottom-line > strong {
+  color: #f4f6f8;
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+
+.battle-report-game-review-submitted-forces {
+  grid-column: 1 / -1;
 }
 
 .battle-report-game-review-grid > section {
@@ -696,6 +749,10 @@
   }
 
   .battle-report-game-review-forces {
+    grid-template-columns: 1fr;
+  }
+
+  .battle-report-game-review-coaching > div {
     grid-template-columns: 1fr;
   }
 }
