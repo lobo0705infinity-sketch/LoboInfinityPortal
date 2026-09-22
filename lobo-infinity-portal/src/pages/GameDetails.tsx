@@ -4,7 +4,8 @@ import EntityPreviousNext from '../components/EntityPreviousNext'
 import InfinityArmyLink from '../components/InfinityArmyLink'
 import Skeleton from '../components/Skeleton'
 import { getCanonicalMissionName } from '../config/missions'
-import { type CommissionerNewsItem, type RecentGame, type StreamedGame } from '../services/api'
+import { type ArmyIntelligenceList, type CommissionerNewsItem, type RecentGame, type StreamedGame } from '../services/api'
+import { buildGameReviewAnalysis } from '../services/gameReviewAnalysis'
 import { publicDetailProjection, type PublicSubmittedArmyList } from '../services/publicDetailProjection'
 import { formatPlayerName } from '../services/formatting'
 import { getGameTimelineResult, isDrawGame } from '../services/gameResults'
@@ -20,6 +21,7 @@ type GameDetailsState =
       status: 'success'
       stream: StreamedGame | null
       armyLists: PublicSubmittedArmyList[]
+      intelligenceLists: ArmyIntelligenceList[]
     }
   | {
       gameId: number
@@ -55,6 +57,7 @@ function GameDetails() {
         if (game) {
           setGameState({
             armyLists: getGameArmyLists(game, data.armyLists),
+            intelligenceLists: getGameIntelligenceLists(game, data.intelligenceLists),
             game,
             gameId,
             status: 'success',
@@ -67,7 +70,7 @@ function GameDetails() {
         const linkedGame = buildNewsLinkedGame(gameId, data.news)
 
         if (linkedGame) {
-          setGameState({ armyLists: getGameArmyLists(linkedGame, data.armyLists), game: linkedGame, gameId, status: 'success', stream: null })
+          setGameState({ armyLists: getGameArmyLists(linkedGame, data.armyLists), intelligenceLists: getGameIntelligenceLists(linkedGame, data.intelligenceLists), game: linkedGame, gameId, status: 'success', stream: null })
           applyLinkedStream(gameId, data.streams, setGameState)
           return
         }
@@ -120,7 +123,7 @@ function GameDetails() {
     return <GameNotFound />
   }
 
-  return <BattleReport armyLists={gameState.armyLists} game={gameState.game} stream={gameState.stream} />
+  return <BattleReport armyLists={gameState.armyLists} game={gameState.game} intelligenceLists={gameState.intelligenceLists} stream={gameState.stream} />
 }
 
 function applyLinkedStream(
@@ -184,7 +187,7 @@ function parseNewsLinkedGame(body: string) {
   }
 }
 
-function BattleReport({ armyLists, game, stream }: { armyLists: PublicSubmittedArmyList[]; game: RecentGame; stream: StreamedGame | null }) {
+function BattleReport({ armyLists, game, intelligenceLists, stream }: { armyLists: PublicSubmittedArmyList[]; game: RecentGame; intelligenceLists: ArmyIntelligenceList[]; stream: StreamedGame | null }) {
   const mission = getCanonicalMissionName(game.mission)
   const isDraw = isDrawGame(game)
   const participants = useMemo(() => buildParticipants(game, isDraw), [game, isDraw])
@@ -292,7 +295,7 @@ function BattleReport({ armyLists, game, stream }: { armyLists: PublicSubmittedA
           </BattleCard>
         </section>
 
-        <GameReview armyLists={armyLists} game={game} />
+        <GameReview armyLists={armyLists} game={game} intelligenceLists={intelligenceLists} />
 
         <section className="battle-report-grid battle-report-grid-secondary">
           <BattleCard title="Mission Objectives" eyebrow="Scoring">
@@ -353,13 +356,10 @@ function ParticipantPanel({ participant }: { participant: BattleParticipant }) {
   )
 }
 
-function GameReview({ armyLists, game }: { armyLists: PublicSubmittedArmyList[]; game: RecentGame }) {
-  const objectiveScore = formatScorePair(game.op)
-  const victoryScore = formatScorePair(game.vp)
-  const submittedNote = game.bestMoment.trim()
-  const summary = isDrawGame(game)
-    ? `Objective draw ${objectiveScore}.`
-    : `${formatPlayerName(game.winner, game.winnerDisplayName)} won the objective score ${objectiveScore}.`
+function GameReview({ armyLists, game, intelligenceLists }: { armyLists: PublicSubmittedArmyList[]; game: RecentGame; intelligenceLists: ArmyIntelligenceList[] }) {
+  const review = useMemo(() => buildGameReviewAnalysis(game, intelligenceLists), [game, intelligenceLists])
+  const winner = formatPlayerName(game.winner, game.winnerDisplayName)
+  const loser = formatPlayerName(game.loser, game.loserDisplayName)
 
   return (
     <section className="battle-report-game-review" aria-labelledby="battle-report-game-review-title">
@@ -368,27 +368,39 @@ function GameReview({ armyLists, game }: { armyLists: PublicSubmittedArmyList[];
           <p>Snapshot Review</p>
           <h2 id="battle-report-game-review-title">Game Review</h2>
         </div>
-        <strong>{summary}</strong>
+        <strong>{review.summary}</strong>
       </header>
 
-      <div className="battle-report-game-review-grid">
+      <div className="battle-report-game-review-grid battle-report-game-review-narrative">
         <section aria-labelledby="game-review-result-title">
           <h3 id="game-review-result-title">What the result says</h3>
-          <dl>
-            <Fact label="Objective score" value={objectiveScore} />
-            <Fact label="VP score" value={victoryScore} />
-            <Fact label="First player" value={formatGameParticipant(game, game.firstTurn) || 'Not recorded'} />
-          </dl>
+          <p>{review.result}</p>
+        </section>
+
+        <section aria-labelledby="game-review-deciding-title">
+          <h3 id="game-review-deciding-title">What likely decided it</h3>
+          <p>{review.decidingFactors}</p>
         </section>
 
         <section aria-labelledby="game-review-turning-point-title">
-          <h3 id="game-review-turning-point-title">Submitted turning point</h3>
-          {submittedNote
-            ? <blockquote>{submittedNote}</blockquote>
-            : <p className="battle-report-game-review-empty">No player note was submitted for this game.</p>}
+          <h3 id="game-review-turning-point-title">The turning point</h3>
+          <p>{review.turningPoint}</p>
         </section>
 
-        <section aria-labelledby="game-review-forces-title">
+        <section className="battle-report-game-review-coaching" aria-labelledby="game-review-coaching-title">
+          <h3 id="game-review-coaching-title">Coaching notes</h3>
+          <div>
+            <article><strong>For {winner}</strong><p>{review.winnerCoaching}</p></article>
+            <article><strong>For {loser}</strong><p>{review.loserCoaching}</p></article>
+          </div>
+        </section>
+
+        <section className="battle-report-game-review-bottom-line" aria-labelledby="game-review-bottom-line-title">
+          <h3 id="game-review-bottom-line-title">Bottom line</h3>
+          <strong>{review.bottomLine}</strong>
+        </section>
+
+        <section className="battle-report-game-review-submitted-forces" aria-labelledby="game-review-forces-title">
           <h3 id="game-review-forces-title">Submitted forces</h3>
           {armyLists.length ? <div className="battle-report-game-review-forces">
             {armyLists.map((list) => <article key={list.id}>
@@ -401,7 +413,7 @@ function GameReview({ armyLists, game }: { armyLists: PublicSubmittedArmyList[];
         </section>
       </div>
 
-      <p className="battle-report-game-review-source">Generated from the official result, submitted lists, and player note. It does not reconstruct unreported orders or table state.</p>
+      <p className="battle-report-game-review-source">{review.evidenceNote}</p>
     </section>
   )
 }
@@ -625,11 +637,6 @@ function splitScoreValue(value: number | string | undefined) {
   }
 }
 
-function formatScorePair(value: number | string | undefined) {
-  const score = splitScoreValue(value)
-  return `${score.left}–${score.right}`
-}
-
 function normalizeScoreText(value: string) {
   if (value === '-0' || Object.is(Number(value), -0)) {
     return '0'
@@ -655,6 +662,11 @@ function getGameArmyLists(game: RecentGame, armyLists: PublicSubmittedArmyList[]
     const rightIndex = linkedIds.indexOf(String(right.id))
     return (leftIndex < 0 ? linkedIds.length : leftIndex) - (rightIndex < 0 ? linkedIds.length : rightIndex)
   })
+}
+
+function getGameIntelligenceLists(game: RecentGame, lists: ArmyIntelligenceList[]) {
+  const players = new Set([game.winner, game.loser].map((player) => player.trim().toLowerCase().replace(/[^a-z0-9]+/g, '')))
+  return lists.filter((list) => String(list.sourceId) === String(game.id) && players.has((list.player || list.sourcePlayer).trim().toLowerCase().replace(/[^a-z0-9]+/g, '')))
 }
 
 function GameNotFound() {
