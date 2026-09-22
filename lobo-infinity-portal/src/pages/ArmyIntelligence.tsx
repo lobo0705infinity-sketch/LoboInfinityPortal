@@ -1067,7 +1067,7 @@ function IntelligenceBrief({ analysis, faction }: { analysis: TacticalAnalysis; 
       <p className="army-intelligence-role-notice">Profiles may appear in multiple sections when they perform multiple tactical roles. Quantities represent models, not classifications.</p>
       <BriefNavigator analysis={analysis} onChange={setView} value={view} />
       <div className="army-intelligence-tactical-grid">
-        {visibleCategories.map((category) => <article className={`army-intelligence-tactical-panel ${category.id === 'apex' || category.id === 'apexCc' ? 'is-ranking-panel' : ''}`} id={`intelligence-${category.id}`} key={category.id}>
+        {visibleCategories.map((category) => <article className={`army-intelligence-tactical-panel ${category.id === 'apex' || category.id === 'apexCc' || category.id === 'valuableAro' || category.id === 'disposableAro' ? 'is-ranking-panel' : ''}`} id={`intelligence-${category.id}`} key={category.id}>
           <header><h3>{category.title}</h3><p>{category.description}</p></header>
           {category.id === 'hacking' ? <p className="army-intelligence-category-total"><strong>{analysis.hackerListCount}</strong> of {analysis.listCount} decoded lists contain at least one Hacker.</p> : null}
           {category.profiles.length ? <div className="army-intelligence-tactical-profiles">{category.profiles.map((profile, index) => <TacticalProfileRow category={category.id} key={profile.profileId} profile={profile} rank={index + 1} />)}</div> : <p className="army-intelligence-tactical-empty">{category.unavailableReason || 'No qualifying profiles were found in the submitted decoded sample.'}</p>}
@@ -1092,15 +1092,41 @@ function formatRankingPercentile(value: number) {
 }
 
 function TacticalProfileRow({ category, profile, rank }: { category: string; profile: TacticalProfile; rank: number }) {
-  const rankedBenchmark = category === 'apex' ? profile.gunfighter : category === 'apexCc' ? profile.closeCombat : undefined
+  const directBenchmark = category === 'apex' ? profile.gunfighter : category === 'apexCc' ? profile.closeCombat : undefined
+  const aroBenchmark = category === 'valuableAro' || category === 'disposableAro' ? profile.aro : undefined
+  const aroStates = aroBenchmark ? [
+    aroBenchmark.normal ? { label: 'Non-linked', ...aroBenchmark.normal } : null,
+    aroBenchmark.fireteam ? { label: 'Linked +1SD', ...aroBenchmark.fireteam } : null,
+  ].filter((state): state is NonNullable<typeof state> => Boolean(state)) : []
+  const bestAroState = [...aroStates].sort((left, right) => right.rating - left.rating)[0]
+  const bestAroWeapons = bestAroState ? Array.from(new Set(bestAroState.weaponsUsed.map((weapon) => weapon.weapon).filter(Boolean))).slice(0, 3) : []
+  const rankedBenchmark = directBenchmark
+    ? {
+        grade: directBenchmark.grade,
+        percentile: directBenchmark.percentile,
+        rating: directBenchmark.rating,
+        state: 'state' in directBenchmark ? (directBenchmark.state === 'fireteam' ? 'Fireteam +1SD' : 'Non-linked') : 'Normal active turn',
+        weapon: directBenchmark.weapon,
+      }
+    : bestAroState
+      ? {
+          grade: bestAroState.grade,
+          percentile: bestAroState.percentile,
+          rating: bestAroState.rating,
+          state: bestAroState.label,
+          weapon: bestAroWeapons.length ? bestAroWeapons.join(' · ') : 'Dodge / no-effect response',
+        }
+      : undefined
+
   if (rankedBenchmark) {
-    const state = 'state' in rankedBenchmark ? (rankedBenchmark.state === 'fireteam' ? 'Fireteam +1SD' : 'Non-linked') : 'Normal active turn'
+    const otherAroStates = aroStates.filter((state) => state.label !== rankedBenchmark.state)
     return <article className="army-intelligence-tactical-profile is-ranked">
       <div className="army-intelligence-ranking-rank"><span>List rank</span><strong>#{rank}</strong></div>
       <div className="army-intelligence-ranking-identity">
         <strong>{formatTacticalUnitName(profile.unit)}</strong>
         <span>{profile.profile}</span>
-        <small>{rankedBenchmark.weapon} · {state}</small>
+        <small>{rankedBenchmark.weapon} · {rankedBenchmark.state}</small>
+        {otherAroStates.map((state) => <small key={state.label}>{state.label}: {state.rating.toFixed(2)} · Grade {state.grade} · {formatRankingPercentile(state.percentile)} percentile</small>)}
         {profile.mobility && category === 'apex' ? <small>Mobility {profile.mobility.score.toFixed(1)}/100{profile.mobility.mov ? ` · MOV ${profile.mobility.mov.join('-')}″` : ''}{profile.mobility.travel !== null ? ` · Travel ${profile.mobility.travel}″` : ''}</small> : null}
       </div>
       <div className="army-intelligence-ranking-score"><span>Benchmark rating</span><strong>{rankedBenchmark.rating.toFixed(2)}</strong></div>
@@ -1109,22 +1135,15 @@ function TacticalProfileRow({ category, profile, rank }: { category: string; pro
     </article>
   }
 
-  const relevantWeapons = profile.weapons.filter((weapon, index) => category === 'competent' ? (weapon.effectiveDice ?? 0) >= 4 : category === 'valuableAro' || category === 'disposableAro' ? /sniper rifle|missile launcher|portable autocannon|panzerfaust|flammenspeer|heavy rocket launcher|feuerbach|flash pulse/i.test(weapon.name) : category === 'defensive' ? /mine|deployable/i.test(weapon.name) : category === 'alternative' ? index === 0 : false)
-  const aroBenchmark = category === 'valuableAro' || category === 'disposableAro' ? profile.aro : undefined
-  const aroStates = aroBenchmark ? [
-    aroBenchmark.normal ? { label: 'Non-linked', ...aroBenchmark.normal } : null,
-    aroBenchmark.fireteam ? { label: 'Linked +1SD', ...aroBenchmark.fireteam } : null,
-  ].filter((state): state is NonNullable<typeof state> => Boolean(state)) : []
-  const aroWeapons = Array.from(new Set(aroStates.flatMap((state) => state.weaponsUsed.map((weapon) => weapon.weapon).filter(Boolean)))).slice(0, 3)
+  const relevantWeapons = profile.weapons.filter((weapon, index) => category === 'competent' ? (weapon.effectiveDice ?? 0) >= 4 : category === 'defensive' ? /mine|deployable/i.test(weapon.name) : category === 'alternative' ? index === 0 : false)
   return <div className="army-intelligence-tactical-profile">
     <div><strong>{formatTacticalUnitName(profile.unit)}</strong><span>{profile.profile}</span></div>
     <div className="army-intelligence-tactical-badges">
-      {profile.bs !== null && !aroBenchmark ? <span>BS {profile.bs}</span> : null}
-      {aroBenchmark ? <><span>ARO {aroWeapons.length === 1 ? 'weapon' : 'weapons'}: {aroWeapons.length ? aroWeapons.join(' · ') : 'Dodge / no-effect response'}</span>{aroStates.map((state) => <span key={state.label}>{state.label}: {state.rating.toFixed(2)} · Grade {state.grade} · {Math.round(state.percentile)}th percentile</span>)}</> : null}
-      {!aroBenchmark ? relevantWeapons.map((weapon) => <span key={`${weapon.name}:${weapon.burst}`}>{weapon.name}{weapon.effectiveBurst === null ? ' · Burst unavailable' : category === 'competent' && weapon.effectiveDice !== weapon.effectiveBurst ? ` · Effective dice ${weapon.effectiveDice} (Burst ${weapon.effectiveBurst} + SD)` : ` · Burst ${weapon.effectiveBurst}${weapon.burst !== weapon.effectiveBurst ? ` (base ${weapon.burst} + BS Attack)` : ''}`}</span>) : null}
+      {profile.bs !== null ? <span>BS {profile.bs}</span> : null}
+      {relevantWeapons.map((weapon) => <span key={`${weapon.name}:${weapon.burst}`}>{weapon.name}{weapon.effectiveBurst === null ? ' · Burst unavailable' : category === 'competent' && weapon.effectiveDice !== weapon.effectiveBurst ? ` · Effective dice ${weapon.effectiveDice} (Burst ${weapon.effectiveBurst} + SD)` : ` · Burst ${weapon.effectiveBurst}${weapon.burst !== weapon.effectiveBurst ? ` (base ${weapon.burst} + BS Attack)` : ''}`}</span>)}
       {profile.roles.length > 1 ? <span className="is-multi-role">MULTI-ROLE</span> : null}
       {profile.badges.map((badge) => <span key={badge}>{badge}</span>)}
-      {!aroBenchmark && (profile.linkability === 'verified' ? <span className="is-verified">Verified linkable</span> : profile.linkability === 'verified-false' ? <span>Verified not linkable</span> : <span>Fireteam status unknown</span>)}
+      {profile.linkability === 'verified' ? <span className="is-verified">Verified linkable</span> : profile.linkability === 'verified-false' ? <span>Verified not linkable</span> : <span>Fireteam status unknown</span>}
     </div>
     {profile.roles.length > 1 ? <small>Also classified as: {profile.roles.filter((role) => role !== category).map(tacticalRoleTitle).join(' · ')}</small> : null}
     <small>{profile.listCount} {profile.listCount === 1 ? 'list' : 'lists'} · {Math.round(profile.percentage)}%</small>
