@@ -83,8 +83,8 @@ export async function searchMatchupProfiles(query) {
 }
 
 function evaluateDirection(attacker, defender) {
-  const attackerStates = attacker.fireteamCapable ? [{ id: 'normal', specialDice: 0 }, { id: 'fireteam', specialDice: 1 }] : [{ id: 'normal', specialDice: 0 }]
-  const defenderStates = defender.fireteamCapable ? [{ id: 'normal', specialDice: 0 }, { id: 'fireteam', specialDice: 1 }] : [{ id: 'normal', specialDice: 0 }]
+  const attackerStates = isMatchupLinkable(attacker) ? [{ id: 'normal', specialDice: 0 }, { id: 'fireteam', specialDice: 1 }] : [{ id: 'normal', specialDice: 0 }]
+  const defenderStates = isMatchupLinkable(defender) ? [{ id: 'normal', specialDice: 0 }, { id: 'fireteam', specialDice: 1 }] : [{ id: 'normal', specialDice: 0 }]
   return {
     attacker,
     defender,
@@ -119,6 +119,8 @@ function formatBand(matchup) {
     defenderSurvival: 100 * (1 - Number(effect?.neutralizeProbability || 0)),
   }
 }
+
+function isMatchupLinkable(profile) { return Boolean(profile?.fireteamCapable) || /(?:^|\\s)fto(?:\\s|$)/i.test(String(profile?.name || '')) }
 
 async function loadCombatSource() {
   combatSourcePromise ||= readArtifact(resolve(import.meta.dirname, '..', 'data', 'infinity-army', 'benchmark-official-source.json.gz.b64')).then(buildOfficialCombatSource)
