@@ -17,6 +17,7 @@ import {
   normalizeClockTime,
   normalizeTimeZone,
   supportedTimeZones,
+  timeZoneAutocompleteChoices,
 } from './matchmaking-time.mjs'
 
 export const AVAILABILITY_COMMAND = 'availability'
@@ -67,7 +68,7 @@ const SET_OPTIONS = Object.freeze([
   { name: 'weekday', description: 'Day in your own time zone', required: true, type: ApplicationCommandOptionType.String, choices: WEEKDAY_CHOICES },
   { name: 'start', description: 'Local start time in 24-hour HH:MM format', required: true, type: ApplicationCommandOptionType.String },
   { name: 'end', description: 'Local end time in 24-hour HH:MM format', required: true, type: ApplicationCommandOptionType.String },
-  { name: 'timezone', description: 'Your IANA time zone; start typing a city or region', required: true, type: ApplicationCommandOptionType.String, autocomplete: true },
+  { name: 'timezone', description: 'Select a common zone or start typing your city or region', required: true, type: ApplicationCommandOptionType.String, autocomplete: true },
   { name: 'format', description: 'How you want to play; defaults to TTS', required: false, type: ApplicationCommandOptionType.String, choices: FORMAT_CHOICES },
   { name: 'points', description: 'Game size; defaults to 300', required: false, type: ApplicationCommandOptionType.Integer, min_value: 1, max_value: 500 },
   { name: 'need', description: 'What kind of game you need', required: false, type: ApplicationCommandOptionType.String, choices: NEED_CHOICES },
@@ -108,7 +109,7 @@ export const FIND_GAME_COMMAND_DEFINITION = Object.freeze({
         { name: 'date', description: 'Date in your time zone (YYYY-MM-DD)', required: true, type: ApplicationCommandOptionType.String },
         { name: 'start', description: 'Local start time in 24-hour HH:MM format', required: true, type: ApplicationCommandOptionType.String },
         { name: 'end', description: 'Local end time in 24-hour HH:MM format', required: true, type: ApplicationCommandOptionType.String },
-        { name: 'timezone', description: 'Your IANA time zone; start typing a city or region', required: true, type: ApplicationCommandOptionType.String, autocomplete: true },
+        { name: 'timezone', description: 'Select a common zone or start typing your city or region', required: true, type: ApplicationCommandOptionType.String, autocomplete: true },
         { name: 'format', description: 'How you want to play; defaults to TTS', required: false, type: ApplicationCommandOptionType.String, choices: FORMAT_CHOICES },
         { name: 'points', description: 'Game size; defaults to 300', required: false, type: ApplicationCommandOptionType.Integer, min_value: 1, max_value: 500 },
         { name: 'need', description: 'What kind of game you need', required: false, type: ApplicationCommandOptionType.String, choices: NEED_CHOICES },
@@ -164,12 +165,7 @@ export function createMatchmakingAutocompleteHandler({ zones = supportedTimeZone
     try {
       const focused = interaction.options.getFocused(true)
       if (focused.name !== 'timezone') return false
-      const needle = normalizeSearch(focused.value)
-      const choices = zones
-        .filter((zone) => !needle || normalizeSearch(zone).includes(needle))
-        .slice(0, 25)
-        .map((zone) => ({ name: zone, value: zone }))
-      await interaction.respond(choices)
+      await interaction.respond(timeZoneAutocompleteChoices(focused.value, zones))
     } catch (error) {
       logger.error?.('Matchmaking autocomplete failed:', error)
       try { await interaction.respond([]) } catch {}
@@ -713,12 +709,23 @@ function compactDigestOptions(options) {
 
 function commandMatchesDefinition(command, definition) {
   if (command.description !== definition.description || command.options?.length !== definition.options.length) return false
-  return definition.options.every((expected, index) => {
-    const actual = command.options?.[index]
-    if (!actual || actual.name !== expected.name || actual.type !== expected.type) return false
-    if ((actual.options?.length || 0) !== (expected.options?.length || 0)) return false
-    return (expected.options || []).every((option, optionIndex) => actual.options?.[optionIndex]?.name === option.name)
-  })
+  return definition.options.every((expected, index) => commandOptionMatches(command.options?.[index], expected))
+}
+
+function commandOptionMatches(actual, expected) {
+  if (!actual || actual.name !== expected.name || actual.type !== expected.type || actual.description !== expected.description) return false
+  if (Boolean(actual.required) !== Boolean(expected.required) || Boolean(actual.autocomplete) !== Boolean(expected.autocomplete)) return false
+  for (const [apiKey, definitionKey] of [['minValue', 'min_value'], ['maxValue', 'max_value'], ['minLength', 'min_length'], ['maxLength', 'max_length']]) {
+    if ((actual[apiKey] ?? actual[definitionKey] ?? null) !== (expected[definitionKey] ?? null)) return false
+  }
+  const actualChoices = actual.choices || []
+  const expectedChoices = expected.choices || []
+  if (actualChoices.length !== expectedChoices.length) return false
+  if (!expectedChoices.every((choice, index) => actualChoices[index]?.name === choice.name && actualChoices[index]?.value === choice.value)) return false
+  const actualOptions = actual.options || []
+  const expectedOptions = expected.options || []
+  return actualOptions.length === expectedOptions.length
+    && expectedOptions.every((option, index) => commandOptionMatches(actualOptions[index], option))
 }
 
 function supportsMatchmakingChannel(channel) {

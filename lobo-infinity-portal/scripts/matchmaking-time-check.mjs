@@ -10,6 +10,7 @@ import {
   normalizeClockTime,
   normalizeIsoDate,
   normalizeTimeZone,
+  timeZoneAutocompleteChoices,
   weekdayForDate,
   zonedDateTimeToEpoch,
 } from '../bot/matchmaking-time.mjs'
@@ -17,9 +18,22 @@ import {
 assert.equal(normalizeClockTime('7:05'), '07:05')
 assert.equal(normalizeIsoDate('2026-09-22'), '2026-09-22')
 assert.equal(normalizeTimeZone('Europe/Warsaw'), 'Europe/Warsaw')
+assert.equal(normalizeTimeZone('Eastern'), 'America/New_York')
+assert.equal(normalizeTimeZone('Atlanta'), 'America/New_York')
+assert.equal(normalizeTimeZone('Pacific Time'), 'America/Los_Angeles')
+assert.equal(normalizeTimeZone('america new york'), 'America/New_York')
 assert.equal(weekdayForDate('2026-09-22'), 'tuesday')
 await assert.rejects(async () => normalizeClockTime('7pm'), /HH:MM/)
 await assert.rejects(async () => normalizeIsoDate('2026-02-30'), /YYYY-MM-DD/)
+
+const defaultTimeZones = timeZoneAutocompleteChoices('')
+assert.equal(defaultTimeZones.length, 25)
+assert.equal(defaultTimeZones[0].name, 'UTC / GMT')
+assert.equal(defaultTimeZones.some((choice) => choice.name === 'Eastern Time (New York / Atlanta)'), true)
+assert.equal(defaultTimeZones.some((choice) => choice.name.startsWith('Africa/')), false)
+assert.equal(timeZoneAutocompleteChoices('Atlanta')[0].value, 'America/New_York')
+assert.equal(timeZoneAutocompleteChoices('Pacific')[0].value, 'America/Los_Angeles')
+assert.equal(timeZoneAutocompleteChoices('Perth').some((choice) => choice.value === 'Australia/Perth'), true)
 
 const warsawEvening = buildTimeWindow({
   date: '2026-09-22',

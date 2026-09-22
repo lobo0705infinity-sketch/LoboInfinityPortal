@@ -2,6 +2,34 @@ export const MATCHMAKING_TIME_ZONE = 'Europe/Warsaw'
 export const MATCHMAKING_DIGEST_HOUR = 7
 export const MINIMUM_MATCH_OVERLAP_MS = 90 * 60 * 1000
 
+export const COMMON_TIME_ZONE_CHOICES = Object.freeze([
+  { name: 'UTC / GMT', value: 'UTC', aliases: ['utc', 'gmt', 'universal'] },
+  { name: 'Eastern Time (New York / Atlanta)', value: 'America/New_York', aliases: ['eastern', 'eastern time', 'et', 'est', 'edt', 'new york', 'nyc', 'atlanta', 'miami'] },
+  { name: 'Central Time (Chicago / Dallas)', value: 'America/Chicago', aliases: ['central', 'central time', 'ct', 'cst', 'cdt', 'chicago', 'dallas', 'houston'] },
+  { name: 'Mountain Time (Denver)', value: 'America/Denver', aliases: ['mountain', 'mountain time', 'mt', 'mst', 'mdt', 'denver'] },
+  { name: 'Arizona Time (Phoenix)', value: 'America/Phoenix', aliases: ['arizona', 'phoenix', 'arizona time'] },
+  { name: 'Pacific Time (Los Angeles / Seattle)', value: 'America/Los_Angeles', aliases: ['pacific', 'pacific time', 'pt', 'pst', 'pdt', 'los angeles', 'la', 'seattle', 'san francisco'] },
+  { name: 'Alaska Time (Anchorage)', value: 'America/Anchorage', aliases: ['alaska', 'alaska time', 'akst', 'akdt', 'anchorage'] },
+  { name: 'Hawaii Time (Honolulu)', value: 'Pacific/Honolulu', aliases: ['hawaii', 'hawaii time', 'hst', 'honolulu'] },
+  { name: 'Atlantic Time (Halifax)', value: 'America/Halifax', aliases: ['atlantic', 'atlantic time', 'ast', 'adt', 'halifax'] },
+  { name: 'Newfoundland Time (St. John’s)', value: 'America/St_Johns', aliases: ['newfoundland', 'newfoundland time', 'nst', 'ndt', 'st johns'] },
+  { name: 'Mexico City', value: 'America/Mexico_City', aliases: ['mexico', 'mexico city'] },
+  { name: 'Brazil Time (São Paulo)', value: 'America/Sao_Paulo', aliases: ['brazil', 'brasil', 'sao paulo', 'são paulo'] },
+  { name: 'Argentina Time (Buenos Aires)', value: 'America/Argentina/Buenos_Aires', aliases: ['argentina', 'buenos aires'] },
+  { name: 'United Kingdom (London)', value: 'Europe/London', aliases: ['uk', 'united kingdom', 'britain', 'england', 'london', 'bst'] },
+  { name: 'Ireland (Dublin)', value: 'Europe/Dublin', aliases: ['ireland', 'dublin'] },
+  { name: 'Central Europe (Berlin / Paris / Rome)', value: 'Europe/Berlin', aliases: ['central europe', 'cet', 'cest', 'berlin', 'paris', 'rome', 'madrid', 'amsterdam', 'brussels', 'vienna', 'prague'] },
+  { name: 'Poland (Warsaw)', value: 'Europe/Warsaw', aliases: ['poland', 'warsaw'] },
+  { name: 'Eastern Europe (Athens / Helsinki)', value: 'Europe/Athens', aliases: ['eastern europe', 'eet', 'eest', 'athens', 'helsinki', 'bucharest'] },
+  { name: 'Turkey (Istanbul)', value: 'Europe/Istanbul', aliases: ['turkey', 'türkiye', 'istanbul'] },
+  { name: 'India (Kolkata)', value: 'Asia/Kolkata', aliases: ['india', 'ist', 'kolkata', 'calcutta', 'mumbai', 'delhi'] },
+  { name: 'China (Shanghai)', value: 'Asia/Shanghai', aliases: ['china', 'shanghai', 'beijing'] },
+  { name: 'Japan (Tokyo)', value: 'Asia/Tokyo', aliases: ['japan', 'jst', 'tokyo'] },
+  { name: 'Singapore', value: 'Asia/Singapore', aliases: ['singapore', 'sgt'] },
+  { name: 'Australia Eastern (Sydney / Melbourne)', value: 'Australia/Sydney', aliases: ['australia eastern', 'aest', 'aedt', 'sydney', 'melbourne'] },
+  { name: 'New Zealand (Auckland)', value: 'Pacific/Auckland', aliases: ['new zealand', 'nzst', 'nzdt', 'auckland'] },
+])
+
 export const WEEKDAYS = Object.freeze([
   'sunday',
   'monday',
@@ -14,6 +42,11 @@ export const WEEKDAYS = Object.freeze([
 
 const timeZoneFormatterCache = new Map()
 
+const commonTimeZoneAliases = new Map(COMMON_TIME_ZONE_CHOICES.flatMap((choice) => (
+  [choice.name, choice.value, ...choice.aliases]
+    .map((alias) => [normalizeTimeZoneSearch(alias), choice.value])
+)))
+
 export function supportedTimeZones() {
   const zones = typeof Intl.supportedValuesOf === 'function'
     ? Intl.supportedValuesOf('timeZone')
@@ -21,14 +54,44 @@ export function supportedTimeZones() {
   return ['UTC', ...zones.filter((zone) => zone !== 'UTC')]
 }
 
+export function timeZoneAutocompleteChoices(value, zones = supportedTimeZones()) {
+  const needle = normalizeTimeZoneSearch(value)
+  if (!needle) return COMMON_TIME_ZONE_CHOICES.slice(0, 25).map(({ name, value: zone }) => ({ name, value: zone }))
+
+  const commonValues = new Set(COMMON_TIME_ZONE_CHOICES.map((choice) => choice.value))
+  const candidates = [
+    ...COMMON_TIME_ZONE_CHOICES.map((choice) => ({
+      name: choice.name,
+      value: choice.value,
+      score: bestTimeZoneSearchScore([choice.name, choice.value, ...choice.aliases], needle),
+      common: true,
+    })),
+    ...zones.filter((zone) => !commonValues.has(zone)).map((zone) => ({
+      name: zone.replaceAll('_', ' '),
+      value: zone,
+      score: bestTimeZoneSearchScore([zone], needle),
+      common: false,
+    })),
+  ]
+  return candidates
+    .filter((choice) => Number.isFinite(choice.score))
+    .sort((left, right) => left.score - right.score || Number(right.common) - Number(left.common) || left.name.localeCompare(right.name))
+    .slice(0, 25)
+    .map(({ name, value: zone }) => ({ name: name.slice(0, 100), value: zone }))
+}
+
 export function normalizeTimeZone(value) {
   const candidate = String(value || '').trim()
   if (!candidate) throw new Error('Choose a time zone, such as Europe/Warsaw or America/New_York.')
+  const normalizedCandidate = normalizeTimeZoneSearch(candidate)
+  const resolvedCandidate = commonTimeZoneAliases.get(normalizedCandidate)
+    || supportedTimeZones().find((zone) => normalizeTimeZoneSearch(zone) === normalizedCandidate)
+    || candidate
   try {
-    new Intl.DateTimeFormat('en-US', { timeZone: candidate }).format(new Date())
-    return candidate
+    new Intl.DateTimeFormat('en-US', { timeZone: resolvedCandidate }).format(new Date())
+    return resolvedCandidate
   } catch {
-    throw new Error(`“${candidate}” is not a supported IANA time zone.`)
+    throw new Error(`I could not recognize “${candidate}”. Start typing a city, country, or familiar zone such as Eastern or Pacific.`)
   }
 }
 
@@ -221,4 +284,27 @@ function formatDateParts(parts) {
 
 function formatUtcDate(epochMs) {
   return new Date(epochMs).toISOString().slice(0, 10)
+}
+
+function bestTimeZoneSearchScore(values, needle) {
+  let best = Number.POSITIVE_INFINITY
+  for (const value of values) {
+    const normalized = normalizeTimeZoneSearch(value)
+    if (!normalized) continue
+    if (normalized === needle) best = Math.min(best, 0)
+    else if (normalized.endsWith(` ${needle}`)) best = Math.min(best, 1)
+    else if (normalized.startsWith(needle)) best = Math.min(best, 2)
+    else if (normalized.split(' ').some((part) => part.startsWith(needle))) best = Math.min(best, 3)
+    else if (normalized.includes(needle)) best = Math.min(best, 4)
+  }
+  return best
+}
+
+function normalizeTimeZoneSearch(value) {
+  return String(value || '')
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
 }

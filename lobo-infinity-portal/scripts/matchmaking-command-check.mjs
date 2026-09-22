@@ -4,6 +4,7 @@ import {
   FIND_GAME_COMMAND_DEFINITION,
   buildDailyMatchmakingDigest,
   buildFindGameMessage,
+  createMatchmakingAutocompleteHandler,
   ensureMatchmakingCommands,
   matchmakingDigestAlreadyPosted,
   parseAvailabilityRecord,
@@ -16,6 +17,20 @@ assert.equal(AVAILABILITY_COMMAND_DEFINITION.name, 'availability')
 assert.deepEqual(AVAILABILITY_COMMAND_DEFINITION.options.map((option) => option.name), ['set', 'clear', 'show'])
 assert.equal(FIND_GAME_COMMAND_DEFINITION.name, 'find-game')
 assert.deepEqual(FIND_GAME_COMMAND_DEFINITION.options.map((option) => option.name), ['now', 'close'])
+
+let autocompleteChoices = []
+const autocomplete = createMatchmakingAutocompleteHandler({ logger: { error() {} } })
+const autocompleteInteraction = (value) => ({
+  commandName: 'availability',
+  isAutocomplete: () => true,
+  options: { getFocused: () => ({ name: 'timezone', value }) },
+  async respond(choices) { autocompleteChoices = choices },
+})
+assert.equal(await autocomplete(autocompleteInteraction('')), true)
+assert.equal(autocompleteChoices.some((choice) => choice.name === 'Eastern Time (New York / Atlanta)'), true)
+assert.equal(autocompleteChoices.some((choice) => choice.name.startsWith('Africa/')), false)
+assert.equal(await autocomplete(autocompleteInteraction('Atlanta')), true)
+assert.equal(autocompleteChoices[0].value, 'America/New_York')
 
 const lobo = {
   version: 1,
@@ -74,6 +89,7 @@ assert.match(oneOffMessage.embeds[0].fields[0].value, /<t:\d+:F>/)
 assert.equal(oneOffPayload.components[0].components.length, 2)
 
 const registeredCommands = []
+let commandEdits = 0
 const commandClient = {
   application: { commands: { fetch: async () => [] } },
   guilds: { cache: new Map([['guild-1', { id: 'guild-1', commands: {
@@ -84,7 +100,7 @@ const commandClient = {
         id: `${definition.name}-id`,
         applicationId: 'app-1',
         guildId: 'guild-1',
-        async edit(replacement) { Object.assign(this, replacement); return this },
+        async edit(replacement) { commandEdits += 1; Object.assign(this, replacement); return this },
       }
       registeredCommands.push(command)
       return command
@@ -94,6 +110,11 @@ const commandClient = {
 assert.equal((await ensureMatchmakingCommands(commandClient)).length, 2)
 assert.equal((await ensureMatchmakingCommands(commandClient)).length, 2)
 assert.deepEqual(registeredCommands.map((command) => command.name), ['availability', 'find-game'])
+registeredCommands[0].options = registeredCommands[0].options.map((option) => option.name === 'set'
+  ? { ...option, options: option.options.map((nested) => nested.name === 'timezone' ? { ...nested, description: 'Old time-zone help' } : nested) }
+  : option)
+await ensureMatchmakingCommands(commandClient)
+assert.equal(commandEdits, 1)
 
 const sentMessages = new Map()
 const channel = {
