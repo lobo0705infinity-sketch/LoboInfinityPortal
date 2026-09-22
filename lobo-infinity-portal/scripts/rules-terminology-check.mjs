@@ -13,7 +13,7 @@ for (const term of [
   'smoke ammunition', 'repeater', 'firewall', 'carbonite', 'camouflaged state',
   'engaged state', 'line of fire', 'zone of control', 'silhouette contact',
   'partial cover', 'total cover', 'automatic reaction order', 'specialist troops',
-  'panoply', 'direct template weapon',
+  'panoply', 'direct template weapon', 'symbiobomb', 'assignable transmutation',
 ]) assert.ok(catalog.entries.some((entry) => entry.normalizedName === term), `Missing official terminology: ${term}`)
 
 const equivalentPairs = [
@@ -58,6 +58,20 @@ const unrelated = resolveRulesTerminology(corpus, 'purple bananas orbit a quantu
 assert.equal(unrelated.intent, 'BROAD_SEARCH')
 assert.deepEqual(unrelated.entities, [])
 assert.equal(unrelated.correctedQuestion, unrelated.normalized)
+
+for (const question of [
+  'can a Sukeul benefit from a SymbioBomb?',
+  'Can my Sukeul receive a Symbio Bomb?',
+]) {
+  const resolution = resolveRulesTerminology(corpus, question)
+  assert.deepEqual(resolution.entities.map((item) => item.normalizedName), ['symbiobomb'], question)
+  assert.deepEqual(resolution.dependencies.map((item) => item.normalizedName), ['assignable transmutation'], question)
+  assert.equal(resolution.dependencies[0].matchType, 'CONTROLLING_REFERENCE', question)
+  const prompt = buildRulesEvidencePrompt(corpus, question)
+  const entries = JSON.parse(prompt.text.split('\n').at(-1)).entries
+  assert.ok(entries.some((entry) => entry.page === '74' && entry.section === 'SYMBIOBOMB' && /single-use weapon/i.test(entry.text)), question)
+  assert.ok(entries.some((entry) => entry.page === '174' && entry.section === 'ASSIGNABLE (TRANSMUTATION)' && /possess the Transmutation \(X\)/i.test(entry.text)), question)
+}
 
 const aerialQuestions = equivalentPairs[0].slice(0, 2)
 const prompts = aerialQuestions.map((question) => buildRulesEvidencePrompt(corpus, question))

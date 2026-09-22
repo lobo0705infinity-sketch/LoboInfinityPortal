@@ -14,7 +14,7 @@ import {
 } from '../bot/rules-model-context.mjs'
 
 const catalog = await loadRulesModelCatalog({ force: true })
-assert.equal(catalog.schemaVersion, 'rules-model-context-v1')
+assert.equal(catalog.schemaVersion, 'rules-model-context-v2')
 assert.equal(catalog.exactProfileCount, 6850)
 assert.equal(catalog.exactProfiles.length, 6850)
 assert.ok(catalog.canonicalProfileCount >= 3000)
@@ -63,6 +63,25 @@ assert.ok(leiGong.models[0].variants.every((profile) => profile.equipment.some((
 const leiGongFto = await resolveRulesModelMentions('Can Léi Gōng FTO use Albedo?', { catalog })
 assert.ok(leiGongFto.models[0].variants.every((profile) => /FTO/i.test(profile.profileName)))
 
+const sukeul = await resolveRulesModelMentions('can a Sukeul benefit from a SymbioBomb?', { catalog })
+assert.equal(sukeul.models.length, 1)
+assert.equal(sukeul.models[0].loadoutCount, 5)
+assert.equal(sukeul.models[0].variantCount, 5)
+assert.equal(sukeul.models[0].formProfileCount, 10)
+assert.equal(sukeul.models[0].loadouts.length, 5)
+assert.ok(sukeul.models[0].loadouts.every((loadout) => loadout.forms.length === 2))
+assert.ok(sukeul.models[0].loadouts.every((loadout) => loadout.initialForm.skills.includes('Transmutation 1')))
+assert.ok(sukeul.models[0].loadouts.every((loadout) => loadout.alternateForms.some((profile) => profile.physicalName === 'Inactive Symbiont Armor')))
+assert.ok(rulesModelSearchTerms(sukeul).includes('Transmutation 1'))
+const sukeulContext = formatRulesModelContext(sukeul)
+assert.match(sukeulContext, /5 official loadouts, represented by 10 physical\/state profiles/)
+assert.match(sukeulContext, /initial\/deployment form:.*Transmutation 1/)
+assert.match(sukeulContext, /Alternate state form \(Inactive Symbiont Armor\)/)
+const publicSukeul = publicRulesModelResolution(sukeul).models[0]
+assert.equal(publicSukeul.loadoutCount, 5)
+assert.equal(publicSukeul.formProfileCount, 10)
+assert.ok(publicSukeul.commonSkills.includes('Transmutation 1'))
+
 const crabbot = await resolveRulesModelMentions('What can a Crabbot do?', { catalog })
 assert.ok(crabbot.models[0].variantCount >= 7)
 assert.ok(new Set(crabbot.models[0].variants.map((profile) => profile.unitName)).size >= 7)
@@ -105,6 +124,20 @@ const evidenceEntries = JSON.parse(evidence.text.split('\n').at(-1)).entries
 assert.ok(evidenceEntries.some((entry) => /Aerial/i.test(entry.text)))
 assert.ok(evidenceEntries.some((entry) => /Cover/i.test(entry.text)))
 
+for (const question of [
+  'can a Sukeul benefit from a SymbioBomb?',
+  'Can my Sukeul receive a Symbio Bomb?',
+]) {
+  const resolution = await resolveRulesModelMentions(question, { catalog })
+  const result = buildRulesEvidencePrompt(corpus, question, { modelResolution: resolution })
+  const entries = JSON.parse(result.text.split('\n').at(-1)).entries
+  assert.ok(result.modelSearchTerms.includes('Transmutation 1'), question)
+  assert.match(result.text, /Sukeul Commandos/, question)
+  assert.match(result.text, /initial\/deployment form:.*Transmutation 1/, question)
+  assert.ok(entries.some((entry) => entry.page === '74' && entry.section === 'SYMBIOBOMB'), question)
+  assert.ok(entries.some((entry) => entry.page === '174' && entry.section === 'ASSIGNABLE (TRANSMUTATION)'), question)
+}
+
 let providerArguments
 const routed = await retrieveRulesReference({
   question: 'Can a Redeye benefit from Cover?',
@@ -123,7 +156,7 @@ assert.equal(providerArguments.modelResolution.models[0].matchedAlias, 'redeye')
 assert.equal(routed.modelContext.models[0].name, 'Redeye Close Air Support Squad')
 const discord = formatRulesDiscordResponse(routed)
 assert.equal(discord.embeds[0].fields[0].name, 'OFFICIAL ARMY PROFILE')
-assert.match(discord.embeds[0].fields[0].value, /2 official profile variants/)
+assert.match(discord.embeds[0].fields[0].value, /2 official loadouts/)
 assert.match(discord.embeds[0].fields[0].value, /Aerial/)
 assert.equal(discord.embeds[0].fields[1].name, 'ANSWER')
 

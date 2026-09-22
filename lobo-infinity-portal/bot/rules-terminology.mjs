@@ -36,6 +36,7 @@ const COMMUNITY_ALIASES = Object.freeze({
   'no wound incapacitation': ['nwi'],
   'silhouette contact': ['base contact', 'base to base', 'base-to-base', 'b2b', 'btb', 'touching bases'],
   'smoke ammunition': ['smoke', 'smoke ammo'],
+  'symbiobomb': ['symbio bomb'],
   'zone of control': ['zoc'],
 })
 
@@ -361,6 +362,7 @@ function resolveDependencies(corpus, entities, catalog, question) {
     const entityMentions = new Set()
     for (const chunk of chunks) {
       const normalized = normalizeTerminologyText(chunk.text)
+      for (const term of chunk.controllingTerms || []) entityMentions.add(`${cleanCandidate(term)}:controlling`)
       for (const candidate of catalog.entries) {
         if (candidate.normalizedName === entity.normalizedName || candidate.normalizedName.length < 5 || NON_TERMS.has(candidate.normalizedName) || !containsPhrase(normalized, candidate.normalizedName)) continue
         const formal = new RegExp(`\\b${escapeRegex(candidate.normalizedName).replace(/\\ /g, '\\s+')}\\s+(?:rule|skill|state|equipment|trait|program|weapon)\\b`, 'i').test(normalized)
@@ -370,9 +372,10 @@ function resolveDependencies(corpus, entities, catalog, question) {
     }
     for (const value of entityMentions) {
       const [name, marker] = value.split(':')
-      const current = mentions.get(name) || { count: 0, formal: false }
+      const current = mentions.get(name) || { count: 0, formal: false, controlling: false }
       current.count++
       current.formal ||= marker === 'formal'
+      current.controlling ||= marker === 'controlling'
       mentions.set(name, current)
     }
   }
@@ -381,17 +384,17 @@ function resolveDependencies(corpus, entities, catalog, question) {
       const queryRelated = name.split(' ').some((token) => questionTokens.has(token))
       const words = name.split(' ')
       const sharedRelationship = value.count >= 2 && words.length > 1 && RELATION_TERM_ENDINGS.has(words.at(-1))
-      return sharedRelationship || value.formal && queryRelated
+      return value.controlling || sharedRelationship || value.formal && queryRelated
     })
-    .map(([name, value]) => ({ ...catalog.entries.find((entry) => entry.normalizedName === name), surface: name, alias: name, start: Number.MAX_SAFE_INTEGER, end: Number.MAX_SAFE_INTEGER, matchType: value.formal ? 'FORMAL_REFERENCE' : 'SHARED_DEPENDENCY' }))
+    .map(([name, value]) => ({ ...catalog.entries.find((entry) => entry.normalizedName === name), surface: name, alias: name, start: Number.MAX_SAFE_INTEGER, end: Number.MAX_SAFE_INTEGER, matchType: value.controlling ? 'CONTROLLING_REFERENCE' : value.formal ? 'FORMAL_REFERENCE' : 'SHARED_DEPENDENCY' }))
     .filter((item) => item.normalizedName)
     .sort((left, right) => dependencyPriority(right, mentions) - dependencyPriority(left, mentions) || left.normalizedName.localeCompare(right.normalizedName))
     .slice(0, 6)
 }
 
 function dependencyPriority(item, mentions) {
-  const value = mentions.get(item.normalizedName) || { count: 0, formal: false }
-  return value.count * 10 + (value.formal ? 30 : 0) + (/(?:silhouette contact|partial cover|line of fire|zone of control|order expenditure sequence)/.test(item.normalizedName) ? 8 : 0)
+  const value = mentions.get(item.normalizedName) || { count: 0, formal: false, controlling: false }
+  return value.count * 10 + (value.controlling ? 60 : 0) + (value.formal ? 30 : 0) + (/(?:silhouette contact|partial cover|line of fire|zone of control|order expenditure sequence)/.test(item.normalizedName) ? 8 : 0)
 }
 
 function bestConceptChunks(corpus, concept, limit) {

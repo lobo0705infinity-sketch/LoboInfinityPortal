@@ -4,7 +4,7 @@ import { isInLiveArmyRoster } from './official-army-rosters.mjs'
 import { includedMobilityOptions, officialMovementInches } from './mobility-rating.mjs'
 
 const OFFICIAL_ARMY_SOURCE = resolve(import.meta.dirname, '..', 'data', 'infinity-army', 'benchmark-official-source.json.gz.b64')
-const MODEL_CONTEXT_SCHEMA = 'rules-model-context-v1'
+const MODEL_CONTEXT_SCHEMA = 'rules-model-context-v2'
 const MAX_PROMPT_CONTEXT_CHARACTERS = 24000
 const CONTEXTUAL_SINGLE_ALIASES = new Set(['alpha', 'bit', 'blade', 'blink', 'bolt', 'bronze', 'delta', 'handler', 'mentor', 'operator', 'prime', 'regular', 'switcher', 'territorial', 'vector', 'zero'])
 const STRICT_CONTEXT_ALIASES = new Set(['regular', 'zero'])
@@ -87,25 +87,32 @@ export function formatRulesModelContext(resolution, { maxCharacters = MAX_PROMPT
   const header = [
     'OFFICIAL INFINITY ARMY MODEL CONTEXT:',
     'This section is authoritative only for the named model profiles, statistics, Characteristics, Skills, Equipment, and Weapons. It is not rules authority and cannot replace the cited rules evidence.',
-    'Use every listed profile that the question leaves possible. If their relevant facts differ, treat the unspecified profile or loadout as a material ambiguity; never silently select the most convenient profile.',
+    'Use every listed loadout that the question leaves possible. Physical profiles grouped beneath one loadout are state forms, not separate loadout choices. Use the initial/deployment form for Deployment Phase eligibility, and account for alternate state forms when the timing or current state makes them relevant.',
+    'If relevant facts differ between possible loadouts, treat the unspecified loadout as a material ambiguity; never silently select the most convenient loadout.',
   ]
   const lines = [...header]
   let used = lines.join('\n').length
   for (const model of resolution.models) {
-    const modelHeader = `${model.displayName} (matched “${model.matchedAlias}”): ${model.variantCount} distinct official profile variant${model.variantCount === 1 ? '' : 's'} across ${model.exactProfileCount} live-roster occurrence${model.exactProfileCount === 1 ? '' : 's'}.`
+    const modelHeader = `${model.displayName} (matched “${model.matchedAlias}”): ${model.loadoutCount} official loadout${model.loadoutCount === 1 ? '' : 's'}, represented by ${model.formProfileCount} physical/state profile${model.formProfileCount === 1 ? '' : 's'} across ${model.exactProfileCount} live Army record${model.exactProfileCount === 1 ? '' : 's'}.`
     if (used + modelHeader.length + 1 > maxCharacters) break
     lines.push(modelHeader)
     used += modelHeader.length + 1
     let included = 0
-    for (const profile of model.variants) {
-      const line = `- ${formatPromptProfile(profile)}`
-      if (used + line.length + 1 > maxCharacters) break
-      lines.push(line)
-      used += line.length + 1
+    for (const [index, loadout] of model.loadouts.entries()) {
+      const initial = `- Loadout ${index + 1}, initial/deployment form: ${formatPromptProfile(loadout.initialForm)}`
+      if (used + initial.length + 1 > maxCharacters) break
+      lines.push(initial)
+      used += initial.length + 1
+      for (const alternate of loadout.alternateForms) {
+        const state = `  Alternate state form (${alternate.physicalName || `profile ${alternate.profileId}`}): ${formatPromptProfile(alternate)}`
+        if (used + state.length + 1 > maxCharacters) break
+        lines.push(state)
+        used += state.length + 1
+      }
       included += 1
     }
-    if (included < model.variants.length) {
-      const omitted = `- ${model.variants.length - included} additional official variants were omitted only because of the prompt-size limit. Their loadout must be treated as unresolved, not assumed.`
+    if (included < model.loadouts.length) {
+      const omitted = `- ${model.loadouts.length - included} additional official loadouts were omitted only because of the prompt-size limit. Their loadout must be treated as unresolved, not assumed.`
       if (used + omitted.length + 1 <= maxCharacters) {
         lines.push(omitted)
         used += omitted.length + 1
@@ -119,7 +126,7 @@ export function rulesModelSearchTerms(resolution) {
   if (!resolution?.models?.length) return []
   const terms = []
   for (const model of resolution.models) {
-    const variants = model.variants || []
+    const variants = referenceProfiles(model)
     for (const field of ['characteristics', 'skills', 'equipment']) terms.push(...intersection(variants.map((profile) => profile[field] || [])))
     const commonWeapons = intersection(variants.map((profile) => profile.weapons || []))
     terms.push(...commonWeapons)
@@ -139,10 +146,12 @@ export function publicRulesModelResolution(resolution) {
       name: model.displayName,
       matchedAs: model.matchedAlias,
       variantCount: model.variantCount,
+      loadoutCount: model.loadoutCount,
+      formProfileCount: model.formProfileCount,
       exactProfileCount: model.exactProfileCount,
-      sharedStats: sharedStats(model.variants),
-      commonSkills: intersection(model.variants.map((profile) => profile.skills || [])).slice(0, 8),
-      commonEquipment: intersection(model.variants.map((profile) => profile.equipment || [])).slice(0, 6),
+      sharedStats: sharedStats(referenceProfiles(model)),
+      commonSkills: intersection(referenceProfiles(model).map((profile) => profile.skills || [])).slice(0, 8),
+      commonEquipment: intersection(referenceProfiles(model).map((profile) => profile.equipment || [])).slice(0, 6),
     })),
   }
 }
@@ -165,14 +174,14 @@ function buildOfficialRulesProfiles(capture) {
       for (const group of unit.profileGroups || []) for (const option of group.options || []) {
         if (option.disabled && !included.has(`${group.id}:${option.id}`)) continue
         const physicalProfiles = group.profiles?.length ? group.profiles : [{}]
-        for (const profile of physicalProfiles) result.push(buildRulesProfile({ payload, sectorialId, unit, group, option, profile, names }))
+        for (const [physicalIndex, profile] of physicalProfiles.entries()) result.push(buildRulesProfile({ payload, sectorialId, unit, group, option, profile, physicalIndex, names }))
       }
     }
   }
   return result
 }
 
-function buildRulesProfile({ payload, sectorialId, unit, group, option, profile: physical, names }) {
+function buildRulesProfile({ payload, sectorialId, unit, group, option, profile: physical, physicalIndex, names }) {
   const movement = officialMovementInches(physical.move ?? unit.move)
   const characteristics = resolveNamedReferences([
     ...(unit.chars || []), ...(group.chars || []), ...(physical.chars || []), ...(option.chars || []),
@@ -205,6 +214,9 @@ function buildRulesProfile({ payload, sectorialId, unit, group, option, profile:
     groupId: Number(group.id),
     optionId: Number(option.id),
     profileId: Number(physical.id ?? 1),
+    loadoutId: `${unit.id}:${group.id}:${option.id}`,
+    physicalIndex,
+    isInitialForm: physicalIndex === 0,
     canonicalId: `${unit.id}:${group.id}:${option.id}:${physical.id ?? 1}`,
     name: [unit.name || unit.isc, option.name || physical.name].filter(Boolean).join(' — '),
     unitName,
@@ -268,15 +280,37 @@ function buildAliasIndex(profiles) {
 
 function buildMatch(alias, exactProfiles, variants, start, end) {
   const unitNames = uniqueStrings(variants.map((profile) => profile.unitName))
+  const loadouts = groupLoadouts(variants)
   return {
     start,
     end,
     matchedAlias: alias,
     displayName: unitNames.length === 1 ? unitNames[0] : titleFromAlias(alias),
     exactProfileCount: exactProfiles.length,
-    variantCount: variants.length,
+    variantCount: loadouts.length,
+    loadoutCount: loadouts.length,
+    formProfileCount: variants.length,
+    loadouts,
     variants,
   }
+}
+
+function groupLoadouts(variants) {
+  const grouped = new Map()
+  for (const profile of variants) {
+    const id = profile.loadoutId || `${profile.unitId}:${profile.groupId}:${profile.optionId}`
+    if (!grouped.has(id)) grouped.set(id, [])
+    grouped.get(id).push(profile)
+  }
+  return [...grouped.entries()].map(([id, profiles]) => {
+    const forms = [...profiles].sort((left, right) => left.physicalIndex - right.physicalIndex || left.profileId - right.profileId || left.canonicalId.localeCompare(right.canonicalId))
+    const initialForm = forms.find((profile) => profile.isInitialForm) || forms[0]
+    return { id, initialForm, alternateForms: forms.filter((profile) => profile !== initialForm), forms }
+  }).sort((left, right) => (left.initialForm.points ?? 999) - (right.initialForm.points ?? 999) || left.initialForm.profileName.localeCompare(right.initialForm.profileName) || left.id.localeCompare(right.id))
+}
+
+function referenceProfiles(model) {
+  return model?.loadouts?.length ? model.loadouts.map((loadout) => loadout.initialForm).filter(Boolean) : model?.variants || []
 }
 
 function dedupeCanonicalProfiles(profiles) {

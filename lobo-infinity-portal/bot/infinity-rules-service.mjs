@@ -17,11 +17,52 @@ const aliases = new Map([
 const stopWords = new Set('a an and are as at be before by can do does for from how i if in into is it my of on or same say since that the this through to what when which with'.split(' '))
 const officialTerms = ['zero pain','discover','camouflaged state','camouflaged marker','order expenditure sequence','stealth','repeater','hacking area','firewall','mines','dodge','impetuous','impersonation','coordinated order','place deployable','deployable weapon','line of fire','zone of control','fireteam','fireteam integrity','mimetism','guts roll','suppressive fire','specialist troops','classified objective','secure hvt','bs attack','automatic reaction order','lieutenant','direct template weapon','panoply','peripheral']
 
-// Restore bounded PDF excerpts checked against the official N5.3 Impetuous and Dodge rules.
-// https://infinitythewiki.com/Impetuous | https://infinitythewiki.com/Dodge
-// Mine trigger and close-combat clauses checked against the official N5.3 wiki:
-// https://infinitythewiki.com/Mines | https://infinitythewiki.com/Template_Weapons_and_Equipment
+// Restore bounded PDF excerpts whose two-column source layout does not survive
+// plain-text extraction reliably. Each excerpt is checked against the matching
+// official N5.3 wiki page as well as the activated PDF.
 const rulesSupplements = Object.freeze([
+{
+  "sourceId": "infinity-rules-n5.3",
+  "title": "Infinity Rules",
+  "version": "5.3",
+  "authority": 1,
+  "scope": "core",
+  "pdfPage": 74,
+  "printedPage": "74",
+  "section": "SYMBIOBOMB",
+  "headings": [
+    "SYMBIOBOMB",
+    "EFFECTS"
+  ],
+  "structuredBlockTypes": [
+    "LABELS",
+    "EFFECTS",
+    "EXAMPLE"
+  ],
+  "canonicalTerm": "symbiobomb",
+  "controllingTerms": [
+    "assignable (transmutation)"
+  ],
+  "text": "SYMBIOBOMB\nThe SymbioBomb is a single-use weapon that allows its owner, a Trooper whose Unit Profile must list the SymbioBomb, to assign it to another Trooper in the same army, who is known as the user, in order to grant the latter additional attack and support advantages.\nAssignable (Transmutation), Comms Attack, Optional.\nEFFECTS\nBy expending one Short Skill/ARO, the user can use one Pheroware Tactic: Endgame, Eraser, or Mirrorball (see Weapons Chart).\nWhen using the Endgame or Eraser Pheroware Tactics with a SymbioBomb, a -3 MOD is applied to the target of the Comms Attack in any Face to Face Roll.\nThe SymbioBomb is removed from the game table at the end of the Order in which it was used.\nEXAMPLE OF SYMBIOBOMB\nDuring the Deployment Phase, the Tohaa Player assigns its Kaeltar Specialist's SymbioBombs to a Sakiel and to a Gorgos, who already had a SymbioMate."
+},
+{
+  "sourceId": "infinity-rules-n5.3",
+  "title": "Infinity Rules",
+  "version": "5.3",
+  "authority": 1,
+  "scope": "core",
+  "pdfPage": 174,
+  "printedPage": "174",
+  "section": "ASSIGNABLE (TRANSMUTATION)",
+  "headings": [
+    "ASSIGNABLE (TRANSMUTATION)"
+  ],
+  "structuredBlockTypes": [
+    "LABEL"
+  ],
+  "canonicalTerm": "assignable (transmutation)",
+  "text": "ASSIGNABLE (TRANSMUTATION)\nWhen deploying its owner during the Deployment Phase, and only then, this weapon or piece of Equipment can be assigned to Troopers who possess the Transmutation (X) Special Skill, and are present on the game table as a Model (excluding Troopers using Airborne Deployment, Hidden Deployment, Impersonation State, etc.).\nA Trooper possessing the Transmutation (X) Special Skill cannot receive more than one weapon or piece of Equipment of the same type with the Assignable (Transmutation) Label.\nWeapons and pieces of Equipment with the Assignable Label must be placed and remain in base contact with their user, the assigned Trooper, moving along with them.\nThese weapons and pieces of Equipment are Game State Tokens rather than Models."
+},
 {
   "sourceId": "infinity-rules-n5.3",
   "title": "Infinity Rules",

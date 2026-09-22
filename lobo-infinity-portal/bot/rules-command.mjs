@@ -81,13 +81,15 @@ function formatCitations(sources) { return sources.slice(0, 8).map((source) => {
 function formatModelContext(context) {
   if (!context?.models?.length) return ''
   return context.models.map((model) => {
-    const variants = model.variantCount === 1 ? '1 exact profile' : `${model.variantCount} official profile variants; no loadout silently selected`
+    const loadoutCount = model.loadoutCount ?? model.variantCount
+    const variants = loadoutCount === 1 ? '1 official loadout' : `${loadoutCount} official loadouts; no loadout silently selected`
+    const forms = model.formProfileCount > loadoutCount ? ` · ${model.formProfileCount} listed state profiles` : ''
     const details = [
       model.sharedStats?.length ? `Shared stats: ${model.sharedStats.join(' · ')}` : null,
       model.commonSkills?.length ? `Common Skills: ${model.commonSkills.join(', ')}` : null,
       model.commonEquipment?.length ? `Common Equipment: ${model.commonEquipment.join(', ')}` : null,
     ].filter(Boolean).join('\n')
-    return `**${model.name}** — ${variants}${details ? `\n${details}` : ''}`
+    return `**${model.name}** — ${variants}${forms}${details ? `\n${details}` : ''}`
   }).join('\n\n')
 }
 function scrubInternalIds(value) { return String(value ?? '').replace(/\bC\d{4}\b/g, '').replace(/\s{2,}/g, ' ').trim() }
