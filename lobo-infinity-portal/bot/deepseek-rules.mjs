@@ -1,6 +1,7 @@
 import { readFile, writeFile, mkdir, rename } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { normalizeRuleText, searchRules } from './infinity-rules-service.mjs'
+import { formatRulesModelContext, publicRulesModelResolution, rulesModelSearchTerms } from './rules-model-context.mjs'
 import { formatTerminologyContext, resolveRulesTerminology, selectTerminologyEvidence } from './rules-terminology.mjs'
 
 const DEFAULT_USAGE_PATH = resolve(import.meta.dirname, '..', '.tmp', 'deepseek-rules-usage.json')
@@ -14,12 +15,14 @@ const REQUEST_TIMEOUT_MS = 60000
 const ESTIMATED_TOKENS_PER_CHARACTER = 0.3
 const MAX_EVIDENCE_CHARACTERS = 60000
 
-export function buildRulesEvidencePrompt(corpus, question, { limit = 18, maxEvidenceCharacters = MAX_EVIDENCE_CHARACTERS } = {}) {
+export function buildRulesEvidencePrompt(corpus, question, { limit = 18, maxEvidenceCharacters = MAX_EVIDENCE_CHARACTERS, modelResolution = null } = {}) {
   if (!corpus?.manifest?.sources?.length || !corpus?.chunks?.length) throw new Error('The complete rules corpus is unavailable.')
   const sources = corpus.manifest.sources.map((source) => ({ id: source.id, title: source.title, version: source.version, officialUrl: source.officialUrl }))
   const searchable = corpus.chunks.map((chunk) => chunk.normalized ? chunk : { ...chunk, normalized: normalizeRuleText(`${chunk.section || ''} ${(chunk.headings || []).join(' ')} ${chunk.text || ''}`), headings: chunk.headings || [], authority: chunk.authority ?? 99, scope: chunk.scope || 'CORE' })
   const terminology = resolveRulesTerminology(corpus, question)
-  const ranked = searchRules(searchable, terminology.correctedQuestion || question, { limit, extraAliases: terminology.searchTerms })
+  const modelSearchTerms = rulesModelSearchTerms(modelResolution)
+  const searchTerms = [...new Set([...terminology.searchTerms, ...modelSearchTerms])]
+  const ranked = searchRules(searchable, terminology.correctedQuestion || question, { limit, extraAliases: searchTerms })
   const key = (chunk) => `${chunk.sourceId}:${chunk.pdfPage}:${chunk.text}`
   const originals = new Map(corpus.chunks.map((chunk, index) => [key(chunk), { chunk, index }]))
   const selected = new Map()
@@ -55,8 +58,10 @@ export function buildRulesEvidencePrompt(corpus, question, { limit = 18, maxEvid
   if (!entries.length) throw new Error('No relevant rules evidence was found.')
   const text = [
     'You are the rules assistant for Corvus Belli Infinity. A deterministic search selected the official evidence below; the search did not answer or interpret the question.',
-    'Answer the user question from this evidence only. Apply FAQ precedence and ITS rules only in ITS contexts.',
+    'Derive every rules conclusion from the official rules evidence only. You may use the separately labeled official Army model context only as factual profile data about a named model. Apply FAQ precedence and ITS rules only in ITS contexts.',
     formatTerminologyContext(terminology),
+    formatRulesModelContext(modelResolution),
+    modelResolution?.models?.length ? 'A model name does not identify a single loadout unless the Army context lists exactly one variant or the question explicitly identifies one. When relevant profile variants differ, report DEPENDS and describe the differing outcomes.' : '',
     'Treat synonymous player wording, singular/plural forms, abbreviations, and unambiguous spelling corrections that resolve to the same official concepts consistently. Do not reinterpret a recognized official term as an ordinary adjective or generic noun.',
     'Read across every relevant rule and exception yourself. Do not ask the caller to search, retrieve, validate, or interpret rules for you.',
     'Check each declared Skill’s labels and apply every restriction that targets those labels. Permission to declare a Skill combination does not waive its movement restrictions. In particular, Dodge has the Movement label: during an Impetuous activation its movement must obey Impetuous priorities, including the enemy Deployment Zone exception. Do not extend Impetuous Phase restrictions to an ordinary Order or a reactive Dodge merely because the Trooper has Impetuous.',
@@ -70,22 +75,24 @@ export function buildRulesEvidencePrompt(corpus, question, { limit = 18, maxEvid
     'Use EXPLICIT RULES ANSWER when the corpus directly states the answer, even if supporting context spans several entries. Use EVIDENCE-BOUNDED INTERPRETATION when the exact result must be inferred. Use UNRESOLVED when the corpus cannot answer.',
     'Cite only entry IDs that directly support the answer. Never mention entry IDs in the prose answer.',
     JSON.stringify({ sources, entries }),
-  ].join('\n')
-  return { text, evidenceIds: new Set(entries.map((entry) => entry.id)), entryCount: entries.length, characterCount: characters, terminology }
+  ].filter(Boolean).join('\n')
+  return { text, evidenceIds: new Set(entries.map((entry) => entry.id)), entryCount: entries.length, characterCount: characters, terminology, modelResolution, modelSearchTerms }
 }
 
 export function createDeepSeekRulesAnswer({ fetchImpl = fetch, usagePath = process.env.DEEPSEEK_USAGE_PATH || DEFAULT_USAGE_PATH, now = () => Date.now(), logger = console, requestTimeoutMs = REQUEST_TIMEOUT_MS } = {}) {
-  return async function answerRulesQuestion({ question, corpus }) {
+  return async function answerRulesQuestion({ question, corpus, modelResolution = null }) {
     const cleanQuestion = String(question || '').trim()
     if (!cleanQuestion) throw new Error('A rules question is required.')
     if (cleanQuestion.length > 1000) throw new Error('Rules question exceeds 1000 characters.')
     const key = String(process.env.DEEPSEEK_API_KEY || '')
     const model = DEEPSEEK_RULES_MODEL
     const versions = buildVersions(corpus)
-    if (!key) return unavailable(cleanQuestion, versions, 'DeepSeek is not configured.')
+    const modelContext = publicRulesModelResolution(modelResolution)
+    const fail = (limitation) => ({ ...unavailable(cleanQuestion, versions, limitation), modelContext })
+    if (!key) return fail('DeepSeek is not configured.')
 
     let evidence
-    try { evidence = buildRulesEvidencePrompt(corpus, cleanQuestion) } catch { return unavailable(cleanQuestion, versions, 'No relevant official rules evidence was found.') }
+    try { evidence = buildRulesEvidencePrompt(corpus, cleanQuestion, { modelResolution }) } catch { return fail('No relevant official rules evidence was found.') }
     const corpusPrompt = evidence.text
     const usage = await readUsage(usagePath, logger)
     const timestamp = now()
@@ -96,7 +103,7 @@ export function createDeepSeekRulesAnswer({ fetchImpl = fetch, usagePath = proce
     const estimatedInputTokens = Math.ceil((corpusPrompt.length + cleanQuestion.length) * ESTIMATED_TOKENS_PER_CHARACTER)
     // Cache hits are best-effort, so admission control assumes a peak-rate cache miss.
     const preflightCost = estimatedInputTokens / 1e6 * V4_PRO_PRICING.peak.cacheMissInput + MAX_OUTPUT_TOKENS / 1e6 * V4_PRO_PRICING.peak.output
-    if (hourly + preflightCost > limits.hourly || monthly + preflightCost > limits.monthly) return unavailable(cleanQuestion, versions, 'DeepSeek spending limit reached.')
+    if (hourly + preflightCost > limits.hourly || monthly + preflightCost > limits.monthly) return fail('DeepSeek spending limit reached.')
 
     try {
       const response = await fetchWithHardTimeout(fetchImpl, 'https://api.deepseek.com/chat/completions', {
@@ -113,38 +120,38 @@ export function createDeepSeekRulesAnswer({ fetchImpl = fetch, usagePath = proce
         }),
       }, requestTimeoutMs)
       const responseText = await response.text()
-      if (!response.ok) return unavailable(cleanQuestion, versions, `DeepSeek was unavailable (HTTP ${response.status}).`)
-      if (!String(response.headers?.get?.('content-type') || '').toLowerCase().includes('application/json') || !responseText.trim()) return unavailable(cleanQuestion, versions, 'DeepSeek returned an unusable response.')
+      if (!response.ok) return fail(`DeepSeek was unavailable (HTTP ${response.status}).`)
+      if (!String(response.headers?.get?.('content-type') || '').toLowerCase().includes('application/json') || !responseText.trim()) return fail('DeepSeek returned an unusable response.')
       let payload
-      try { payload = JSON.parse(responseText) } catch { return unavailable(cleanQuestion, versions, 'DeepSeek returned an unusable response.') }
+      try { payload = JSON.parse(responseText) } catch { return fail('DeepSeek returned an unusable response.') }
       let activeEvidence = evidence
       let choice = payload?.choices?.[0]
       let finishReason = String(choice?.finish_reason || 'missing')
       // A long reasoning trace must not turn a rules answer into a blank Discord
       // response. Retry once with only the top clauses and reasoning disabled.
       if (finishReason === 'length') {
-        activeEvidence = buildRulesEvidencePrompt(corpus, cleanQuestion, { limit: 6, maxEvidenceCharacters: 12000 })
+        activeEvidence = buildRulesEvidencePrompt(corpus, cleanQuestion, { limit: 6, maxEvidenceCharacters: 12000, modelResolution })
         const retry = await fetchWithHardTimeout(fetchImpl, 'https://api.deepseek.com/chat/completions', {
           method: 'POST', headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json' },
           body: JSON.stringify({ model, temperature: 0, max_tokens: 1200, response_format: { type: 'json_object' }, thinking: { type: 'disabled' }, reasoning_effort: 'low', messages: [{ role: 'system', content: activeEvidence.text }, { role: 'user', content: cleanQuestion }] }),
         }, requestTimeoutMs)
         const retryText = await retry.text()
-        if (!retry.ok || !String(retry.headers?.get?.('content-type') || '').toLowerCase().includes('application/json') || !retryText.trim()) return unavailable(cleanQuestion, versions, 'DeepSeek was unavailable.')
-        try { payload = JSON.parse(retryText) } catch { return unavailable(cleanQuestion, versions, 'DeepSeek returned an unusable response.') }
+        if (!retry.ok || !String(retry.headers?.get?.('content-type') || '').toLowerCase().includes('application/json') || !retryText.trim()) return fail('DeepSeek was unavailable.')
+        try { payload = JSON.parse(retryText) } catch { return fail('DeepSeek returned an unusable response.') }
         choice = payload?.choices?.[0]
         finishReason = String(choice?.finish_reason || 'missing')
       }
       const charge = await recordProviderUsage({ payload, usage, usagePath, now: timestamp, model })
       logger.info?.(`DeepSeek rules provider completion: finish_reason=${finishReason} content_length=${String(choice?.message?.content || '').length} reasoning_content_present=${Boolean(choice?.message?.reasoning_content)}`)
-      if (finishReason === 'length') return unavailable(cleanQuestion, versions, 'DeepSeek could not complete the answer after a compact retry.')
-      if (choice?.message?.tool_calls?.length) return unavailable(cleanQuestion, versions, 'DeepSeek returned an unsupported tool request.')
+      if (finishReason === 'length') return fail('DeepSeek could not complete the answer after a compact retry.')
+      if (choice?.message?.tool_calls?.length) return fail('DeepSeek returned an unsupported tool request.')
       let parsed
-      try { parsed = JSON.parse(choice?.message?.content) } catch { return unavailable(cleanQuestion, versions, 'DeepSeek returned an unusable answer.') }
+      try { parsed = JSON.parse(choice?.message?.content) } catch { return fail('DeepSeek returned an unusable answer.') }
       const checked = validateDirectAnswer(parsed, corpus, activeEvidence.evidenceIds)
       const answer = checked.ok ? parsed : recoverGroundedAnswer(parsed, activeEvidence.evidenceIds)
       if (!answer) {
         logger.warn?.(`DeepSeek rules output rejected mechanically: ${checked.reason}`)
-        return unavailable(cleanQuestion, versions, 'DeepSeek returned an unusable answer.')
+        return fail('DeepSeek returned an unusable answer.')
       }
       if (!checked.ok) logger.warn?.(`DeepSeek rules output recovered from partial schema: ${checked.reason}`)
       logger.info?.(`DeepSeek rules request: evidence_entries=${activeEvidence.entryCount} evidence_characters=${activeEvidence.characterCount} prompt_tokens=${charge.promptTokens} cache_hit_tokens=${charge.cacheHitTokens} cache_miss_tokens=${charge.cacheMissTokens} completion_tokens=${charge.completionTokens} rate_period=${charge.ratePeriod} cost_usd=${charge.cost.toFixed(6)} outcome=answered`)
@@ -153,6 +160,7 @@ export function createDeepSeekRulesAnswer({ fetchImpl = fetch, usagePath = proce
         versions,
         status: 'DEEPSEEK RULES ANSWER',
         terminology: publicTerminology(activeEvidence.terminology),
+        modelContext,
         deepSeek: {
           answer: answer.answer.trim(),
           conclusion: answer.conclusion,
@@ -163,8 +171,8 @@ export function createDeepSeekRulesAnswer({ fetchImpl = fetch, usagePath = proce
       }
     } catch (error) {
       logger.warn?.(`DeepSeek rules provider error: ${error instanceof Error ? error.message : 'request failed'}`)
-      if (error?.code === 'DEEPSEEK_TIMEOUT') return unavailable(cleanQuestion, versions, 'DeepSeek timed out after 60 seconds. Please try again later.')
-      return unavailable(cleanQuestion, versions, 'DeepSeek was unavailable.')
+      if (error?.code === 'DEEPSEEK_TIMEOUT') return fail('DeepSeek timed out after 60 seconds. Please try again later.')
+      return fail('DeepSeek was unavailable.')
     }
   }
 }

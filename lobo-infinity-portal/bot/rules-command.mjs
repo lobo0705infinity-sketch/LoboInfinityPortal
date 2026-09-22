@@ -2,6 +2,7 @@ import { ApplicationCommandOptionType } from 'discord.js'
 import { loadProductionRulesCorpus } from './infinity-rules-service.mjs'
 import { createDeepSeekRulesAnswer } from './deepseek-rules.mjs'
 import { findApprovedRulesAnswer } from './rules-benchmark.mjs'
+import { resolveRulesModelMentions } from './rules-model-context.mjs'
 
 export const RULES_COMMAND = 'rules'
 export const RULES_OPTION = 'question'
@@ -20,10 +21,13 @@ export async function ensureRulesCommand(client) {
 }
 
 export async function retrieveRulesReference({ question, deepSeek = createDeepSeekRulesAnswer() }) {
-  const corpus = await loadProductionRulesCorpus()
-  const benchmark = await findApprovedRulesAnswer(question)
+  const [corpus, modelResolution] = await Promise.all([loadProductionRulesCorpus(), resolveRulesModelMentions(question)])
+  // Approved benchmark answers describe rules concepts, not the selected Army
+  // profile. A named model must take the evidence-bounded path so its actual
+  // profile facts participate in the answer.
+  const benchmark = modelResolution.models.length ? null : await findApprovedRulesAnswer(question)
   if (benchmark) return benchmarkResult(question, benchmark, corpus)
-  return deepSeek({ question, corpus })
+  return deepSeek({ question, corpus, modelResolution })
 }
 
 export function createRulesInteractionHandler({ retrieve = retrieveRulesReference, logger = console } = {}) {
@@ -43,6 +47,8 @@ export function createRulesInteractionHandler({ retrieve = retrieveRulesReferenc
 
 export function formatRulesDiscordResponse(result) {
   const fields = []
+  const modelContext = formatModelContext(result.modelContext)
+  if (modelContext) fields.push({ name: 'OFFICIAL ARMY PROFILE', value: truncate(modelContext, 1024), inline: false })
   if (result.deepSeek) {
     const conclusion = normalizeConclusion(result.deepSeek.conclusion)
     const certainty = result.deepSeek.certainty === 'EVIDENCE-BOUNDED INTERPRETATION' ? 'EVIDENCE-BOUNDED INTERPRETATION' : 'EXPLICIT RULES ANSWER'
@@ -52,7 +58,7 @@ export function formatRulesDiscordResponse(result) {
     const citations = formatCitations(result.deepSeek.sources || []); if (citations) fields.push({ name: 'OFFICIAL SOURCES', value: truncate(citations, 1024), inline: false })
   } else fields.push({ name: 'STATUS', value: `**${result.status || 'AI RULES ANSWER UNAVAILABLE'}**\n${result.limitation || 'No answer was returned.'}`, inline: false })
   const versions = (result.versions || []).map((item) => item.label).join(' • ')
-  const method = result.answerSource === 'APPROVED_BENCHMARK' ? 'Approved answer matched before AI; no provider call.' : 'AI answer from selected official evidence.'
+  const method = result.answerSource === 'APPROVED_BENCHMARK' ? 'Approved answer matched before AI; no provider call.' : result.modelContext?.models?.length ? 'AI answer from official Army profile data and selected official rules evidence.' : 'AI answer from selected official evidence.'
   return scrubDiscordPayload({ embeds: [{ title: 'Infinity Rules Assistant', description: truncate(`**Question**\n${result.question}`, 1000), color: 0x8b1e2d, fields, footer: { text: truncate(`Activated corpus: ${versions} • ${method}`, 2048) } }], allowedMentions: { parse: [] } })
 }
 
@@ -72,6 +78,18 @@ function benchmarkResult(question, benchmark, corpus) {
 }
 
 function formatCitations(sources) { return sources.slice(0, 8).map((source) => { const label = [source.title, source.version, source.page, source.section].filter(Boolean).join(' — '); return source.url ? `• [${label}](${source.url})` : `• ${label}` }).join('\n') }
+function formatModelContext(context) {
+  if (!context?.models?.length) return ''
+  return context.models.map((model) => {
+    const variants = model.variantCount === 1 ? '1 exact profile' : `${model.variantCount} official profile variants; no loadout silently selected`
+    const details = [
+      model.sharedStats?.length ? `Shared stats: ${model.sharedStats.join(' · ')}` : null,
+      model.commonSkills?.length ? `Common Skills: ${model.commonSkills.join(', ')}` : null,
+      model.commonEquipment?.length ? `Common Equipment: ${model.commonEquipment.join(', ')}` : null,
+    ].filter(Boolean).join('\n')
+    return `**${model.name}** — ${variants}${details ? `\n${details}` : ''}`
+  }).join('\n\n')
+}
 function scrubInternalIds(value) { return String(value ?? '').replace(/\bC\d{4}\b/g, '').replace(/\s{2,}/g, ' ').trim() }
 function scrubDiscordPayload(value, key = '') { if (Array.isArray(value)) return value.map((item) => scrubDiscordPayload(item)).filter((item) => item !== undefined); if (value && typeof value === 'object') { const out = {}; for (const [name, item] of Object.entries(value)) { const clean = scrubDiscordPayload(item, name); if (clean === undefined) continue; if (typeof clean === 'string' && !clean.trim() && ['name', 'value', 'url', 'text'].includes(name)) continue; out[name] = clean } return out } if (value === undefined || value === null) return undefined; return value }
 function truncate(value, max) { const text = String(value ?? ''); return text.length <= max ? text : `${text.slice(0, Math.max(0, max - 1)).replace(/\s+\S*$/, '').trim()}…` }
