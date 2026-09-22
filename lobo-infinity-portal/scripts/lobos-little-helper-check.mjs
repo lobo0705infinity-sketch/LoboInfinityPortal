@@ -31,9 +31,11 @@ import {
   workshopAnnouncementMarker,
 } from '../bot/lobos-little-helper.mjs'
 import { GatewayIntentBits } from 'discord.js'
+import { Events } from 'discord.js'
 import { MISSION_COMMAND_DEFINITION } from '../bot/mission-command.mjs'
 import { INF_ID_COMMAND_DEFINITION } from '../bot/inf-id-command.mjs'
 import { RULES_COMMAND_DEFINITION } from '../bot/rules-command.mjs'
+import { AVAILABILITY_COMMAND_DEFINITION, FIND_GAME_COMMAND_DEFINITION } from '../bot/matchmaking-command.mjs'
 
 const testCode = 'QUJDRA=='
 const readableImageBuffer = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x02])
@@ -141,6 +143,8 @@ assert.equal(INF_LIST_COMMAND_DEFINITION.options[0].name, 'army-code')
 assert.equal(INF_LIST_COMMAND_DEFINITION.options[0].required, true)
 assert.equal(INF_LIST_COMMAND_DEFINITION.options[1].name, 'mobile-gunfighter')
 assert.equal(INF_LIST_COMMAND_DEFINITION.options[1].required, false)
+assert.equal(AVAILABILITY_COMMAND_DEFINITION.name, 'availability')
+assert.equal(FIND_GAME_COMMAND_DEFINITION.name, 'find-game')
 const registeredSlashCommands = []
 const commandClient = {
   application: { commands: { fetch: async () => [] } },
@@ -245,6 +249,7 @@ await Promise.all(Array.from({ length: 5 }, () => withSlot(async () => {
 assert.equal(maximumActive, 2)
 
 const client = createLobosLittleHelper()
+assert.equal(client.listenerCount(Events.InteractionCreate), 10)
 client.destroy()
 
 if (process.argv.includes('--live')) {
@@ -287,7 +292,7 @@ if (process.argv.includes('--live')) {
   assert.deepEqual(slashRendered.profilePages.map((page) => [page.width, page.height]), legacyRendered.profilePages.map((page) => [page.width, page.height]))
 }
 
-console.log(`PASS - ${BOT_NAME} preserves !!inf-list and registers /inf-list, /mission, /inf-id, and /rules${process.argv.includes('--live') ? ' with live renderer coverage' : ''}.`)
+console.log(`PASS - ${BOT_NAME} preserves !!inf-list and registers its slash-command handlers, including /availability and /find-game${process.argv.includes('--live') ? ' with live renderer coverage' : ''}.`)
 
 function mockMessage(content, author = { bot: false }) {
   return {

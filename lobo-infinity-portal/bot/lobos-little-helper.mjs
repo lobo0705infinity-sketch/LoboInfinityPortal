@@ -11,6 +11,12 @@ import { createInfIdInteractionHandler, ensureInfIdCommand } from './inf-id-comm
 import { createRulesInteractionHandler, ensureRulesCommand } from './rules-command.mjs'
 import { createAroCounterAutocompleteHandler, createAroVsInteractionHandler, ensureAroVsCommand } from './aro-vs-command.mjs'
 import { createMatchupAutocompleteHandler, createMatchupInteractionHandler, ensureMatchupCommand } from './matchup-command.mjs'
+import {
+  createMatchmakingAutocompleteHandler,
+  createMatchmakingInteractionHandler,
+  ensureMatchmakingCommands,
+  startMatchmakingScheduler,
+} from './matchmaking-command.mjs'
 import { startRulesResourceWatcher } from './rules-resource-watcher.mjs'
 import { WORKSHOP_MAP_SOURCE } from './workshop-map-catalog.mjs'
 import { loadGunfighterBenchmarkCatalog } from './gunfighter-catalog-store.mjs'
@@ -108,6 +114,8 @@ export function createLobosLittleHelper() {
   const handleAroCounterAutocomplete = createAroCounterAutocompleteHandler()
   const handleMatchup = createMatchupInteractionHandler()
   const handleMatchupAutocomplete = createMatchupAutocompleteHandler()
+  const handleMatchmaking = createMatchmakingInteractionHandler()
+  const handleMatchmakingAutocomplete = createMatchmakingAutocompleteHandler()
   client.on(Events.MessageCreate, handleMessage)
   client.on(Events.InteractionCreate, handleInfList)
   client.on(Events.InteractionCreate, handleMission)
@@ -117,6 +125,8 @@ export function createLobosLittleHelper() {
   client.on(Events.InteractionCreate, handleAroCounterAutocomplete)
   client.on(Events.InteractionCreate, handleMatchup)
   client.on(Events.InteractionCreate, handleMatchupAutocomplete)
+  client.on(Events.InteractionCreate, handleMatchmaking)
+  client.on(Events.InteractionCreate, handleMatchmakingAutocomplete)
   client.on(Events.Error, () => {
     process.stderr.write(`${BOT_NAME} encountered a Discord client error.\n`)
   })
@@ -141,8 +151,9 @@ export async function startLobosLittleHelper({ token = process.env[DISCORD_TOKEN
     const rulesCommands = await ensureRulesCommand(client)
     const aroVsCommands = await ensureAroVsCommand(client)
     const matchupCommands = await ensureMatchupCommand(client)
+    const matchmakingCommands = await ensureMatchmakingCommands(client)
     const guildIds = [...client.guilds.cache.keys()]
-    process.stdout.write(`${BOT_NAME} ready: botUserId=${client.user.id} applicationId=${client.application.id} guildIds=${guildIds.join(',') || 'none'} interactionListeners=${client.listenerCount(Events.InteractionCreate)} missionCommands=${commands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} infListCommands=${infListCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} infIdCommands=${infIdCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} rulesCommands=${rulesCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} aroVsCommands=${aroVsCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} matchupCommands=${matchupCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} gunfighterBenchmark=${gunfighterCatalog.benchmarkVersion || 'unknown'} gunfighterCatalog=${gunfighterCatalog.fingerprint || 'unknown'} aroBenchmark=${aroCatalog.benchmarkVersion || 'unknown'} aroCatalog=${aroCatalog.fingerprint || 'unknown'} mobilityCatalog=${mobilityCatalog?.fingerprint || 'unavailable'} closeCombatBenchmark=${closeCombatCatalog.benchmarkVersion || 'unknown'} closeCombatCatalog=${closeCombatCatalog.fingerprint || 'unknown'}\n`)
+    process.stdout.write(`${BOT_NAME} ready: botUserId=${client.user.id} applicationId=${client.application.id} guildIds=${guildIds.join(',') || 'none'} interactionListeners=${client.listenerCount(Events.InteractionCreate)} missionCommands=${commands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} infListCommands=${infListCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} infIdCommands=${infIdCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} rulesCommands=${rulesCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} aroVsCommands=${aroVsCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} matchupCommands=${matchupCommands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} matchmakingCommands=${matchmakingCommands.map((command) => `${command.guildId}:${command.name}:${command.id}`).join(',') || 'none'} gunfighterBenchmark=${gunfighterCatalog.benchmarkVersion || 'unknown'} gunfighterCatalog=${gunfighterCatalog.fingerprint || 'unknown'} aroBenchmark=${aroCatalog.benchmarkVersion || 'unknown'} aroCatalog=${aroCatalog.fingerprint || 'unknown'} mobilityCatalog=${mobilityCatalog?.fingerprint || 'unavailable'} closeCombatBenchmark=${closeCombatCatalog.benchmarkVersion || 'unknown'} closeCombatCatalog=${closeCombatCatalog.fingerprint || 'unknown'}\n`)
   } catch {
     process.stderr.write(`${BOT_NAME} could not register slash commands.\n`)
   }
@@ -176,6 +187,7 @@ export async function startLobosLittleHelper({ token = process.env[DISCORD_TOKEN
       }
     },
   })
+  startMatchmakingScheduler(client, { logger: console })
   return client
 }
 
@@ -189,7 +201,7 @@ async function run() {
   await startLobosLittleHelper()
 }
 
-const INF_LIST_DESCRIPTION = 'ready for !!inf-list, /inf-list, /mission, /inf-id, /rules, /aro-counter, and /matchup (not connected in dry-run mode)'
+const INF_LIST_DESCRIPTION = 'ready for !!inf-list, /inf-list, /mission, /inf-id, /rules, /aro-counter, /matchup, /availability, and /find-game (not connected in dry-run mode)'
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
   await run()
