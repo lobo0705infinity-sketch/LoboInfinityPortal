@@ -4,12 +4,14 @@ import { gzipSync } from 'node:zlib'
 import { createHash } from 'node:crypto'
 import { buildMobilityProfiles, MOBILITY_VERSION } from '../bot/mobility-rating.mjs'
 import { validateMobilityCapture, validateMobilityEntries, MOBILITY_CATALOG_SCHEMA } from '../bot/mobility-catalog-validation.mjs'
+import { buildOfficialCombatSource } from '../bot/official-combat-source.mjs'
 
 const [input, output] = process.argv.slice(2)
 if (!input || !output) throw Error('Usage: node scripts/build-mobility-catalog.mjs <official-capture.json|--api> <output.json|output.json.gz.b64>')
 const capture = input === '--api' ? await captureOfficialData() : JSON.parse(await readFile(input, 'utf8'))
 const coverage = validateMobilityCapture(capture)
-const entries = buildMobilityProfiles(capture)
+const officialProfileIds = new Set(buildOfficialCombatSource(capture).profiles.map((profile) => profile.id))
+const entries = buildMobilityProfiles(capture).filter((entry) => officialProfileIds.has(entry.id))
 const validation = validateMobilityEntries(entries)
 const artifact = {
   schemaVersion: MOBILITY_CATALOG_SCHEMA,

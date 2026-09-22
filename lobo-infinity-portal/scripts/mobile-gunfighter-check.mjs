@@ -33,7 +33,9 @@ const { fingerprint, ...unsigned } = catalog
 assert.equal(fingerprint,createHash('sha256').update(JSON.stringify(unsigned)).digest('hex'))
 assert.equal(catalog.gunfighterFingerprint,g.fingerprint)
 assert.equal(catalog.mobilityFingerprint,m.fingerprint)
-assert.ok(catalog.coverage.normal > 13000)
+const expectedCoverage = state => g.entries.filter(entry => m.profiles[m.keys[entry.key]]?.status === 'rated' && entry.result.states.some(result => result.id === state)).length
+assert.equal(catalog.coverage.normal,expectedCoverage('normal'))
+assert.equal(catalog.coverage.fireteam,expectedCoverage('fireteam'))
 assert.ok(catalog.coverage.fireteam > 0 && catalog.coverage.fireteam < catalog.coverage.normal)
 for(const state of ['normal','fireteam']) {
   const source = g.entries.map(e=>({e,r:lookupMobileGunfighter(catalog,e.key,state)})).filter(x=>x.r)

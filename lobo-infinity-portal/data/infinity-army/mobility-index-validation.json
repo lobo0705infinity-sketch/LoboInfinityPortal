@@ -1,6 +1,6 @@
 {
   "version": "mobility-index-v2",
-  "fingerprint": "b267dcec0e9a8b2e1cd5275f953569a1ed81b9f78ec8feb4a6800bcb3c732be0",
+  "fingerprint": "56af66f2ee371a6976ce3223eba79a9365605c36f40cb16a1cc524382db22dce",
   "weights": {
     "attackReach": 25,
     "travel": 15,
@@ -13,31 +13,10 @@
     "dodge": 5
   },
   "coverage": {
-    "entries": 13554,
-    "rated": 13534,
+    "entries": 6850,
+    "rated": 6834,
     "noMovement": 16,
-    "unresolved": [
-      {
-        "id": "103:1927:2:1:1",
-        "name": "CONFESSOR TEAM OPS — CONFESSOR HEAVY",
-        "status": "terrain-unresolved"
-      },
-      {
-        "id": "103:1927:2:2:1",
-        "name": "CONFESSOR TEAM OPS — CONFESSOR HEAVY",
-        "status": "terrain-unresolved"
-      },
-      {
-        "id": "103:1927:2:3:1",
-        "name": "CONFESSOR TEAM OPS — CONFESSOR HEAVY",
-        "status": "terrain-unresolved"
-      },
-      {
-        "id": "103:1927:2:4:1",
-        "name": "CONFESSOR TEAM OPS — CONFESSOR HEAVY",
-        "status": "terrain-unresolved"
-      }
-    ]
+    "unresolved": []
   },
   "top30": [
     {
@@ -461,26 +440,6 @@
       }
     },
     {
-      "id": "1199:1795:1:2:1",
-      "name": "REINF: SHIKAMI — SHIKAMI REINF.",
-      "mov": [
-        6,
-        2
-      ],
-      "score": 67.8,
-      "components": {
-        "attackReach": 0.8181818181818182,
-        "travel": 0.7857142857142857,
-        "verticalAttack": 0.8181818181818182,
-        "verticalTravel": 0.8333333333333334,
-        "gapAttack": 0.8181818181818182,
-        "gapTravel": 0.8333333333333334,
-        "turningJump": 0,
-        "terrain": 0.4,
-        "dodge": 0.5599999999999999
-      }
-    },
-    {
       "id": "1103:773:1:2:1",
       "name": "SHIKAMI — SHIKAMI",
       "mov": [
@@ -581,26 +540,6 @@
       }
     },
     {
-      "id": "1103:10283:1:1:1",
-      "name": "McMURROUGH, Mercenary Dog-Warrior — McMURROUGH",
-      "mov": [
-        6,
-        4
-      ],
-      "score": 66.2,
-      "components": {
-        "attackReach": 0.7272727272727273,
-        "travel": 0.8571428571428571,
-        "verticalAttack": 0.7272727272727273,
-        "verticalTravel": 0.8333333333333334,
-        "gapAttack": 0.7272727272727273,
-        "gapTravel": 0.8333333333333334,
-        "turningJump": 0,
-        "terrain": 0.5333333333333333,
-        "dodge": 0.64
-      }
-    },
-    {
       "id": "908:283:1:1:1",
       "name": "McMURROUGH, Mercenary Dog-Warrior — McMURROUGH",
       "mov": [
@@ -638,6 +577,46 @@
         "turningJump": 0,
         "terrain": 0.4,
         "dodge": 0.22000000000000003
+      }
+    },
+    {
+      "id": "1001:1453:2:1:1",
+      "name": "DELTA UNIT — YUDBOT-B",
+      "mov": [
+        6,
+        4
+      ],
+      "score": 66,
+      "components": {
+        "attackReach": 0.7272727272727273,
+        "travel": 0.8571428571428571,
+        "verticalAttack": 0.7272727272727273,
+        "verticalTravel": 0.8333333333333334,
+        "gapAttack": 0.7272727272727273,
+        "gapTravel": 0.8333333333333334,
+        "turningJump": 0,
+        "terrain": 0.7333333333333333,
+        "dodge": 0.2
+      }
+    },
+    {
+      "id": "503:1607:1:1:2",
+      "name": "ROBIN HOOK, OUTLAW AI — ROBIN HOOK — BATTLE-RAVAGED",
+      "mov": [
+        6,
+        2
+      ],
+      "score": 66,
+      "components": {
+        "attackReach": 0.8181818181818182,
+        "travel": 0.7857142857142857,
+        "verticalAttack": 0.8181818181818182,
+        "verticalTravel": 0.8333333333333334,
+        "gapAttack": 0.8181818181818182,
+        "gapTravel": 0.8333333333333334,
+        "turningJump": 0,
+        "terrain": 0.4,
+        "dodge": 0.2
       }
     }
   ],

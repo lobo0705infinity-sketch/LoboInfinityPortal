@@ -1,10 +1,12 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 import { buildMobilityProfiles } from '../bot/mobility-rating.mjs'
+import { buildOfficialCombatSource } from '../bot/official-combat-source.mjs'
 import { canonicalMemberships } from '../bot/fireteam-list-eligibility.mjs'
 import { filterCanonicalFireteamMembershipsForProfile } from './army-intelligence-canonical-enrichment.mjs'
 import { buildCanonicalDataset, resolveCanonicalWeaponRecords } from './infinity-army-canonical-dataset.mjs'
 const capture = JSON.parse(await readFile(process.argv[2], 'utf8'))
+const officialProfileIds = new Set(buildOfficialCombatSource(capture).profiles.map((profile) => profile.id))
 const keys = {}, profiles = [], signatures = new Map()
 const weapons = [], membershipsTable = []
 const weaponSignatures = new Map(), membershipSignatures = new Map()
@@ -17,6 +19,7 @@ for (const payload of capture.payloads) {
   const dataset = buildCanonicalDataset({ metadata: capture.metadata, payloads: [payload] })
   const memberships = canonicalMemberships(payload)
   for (const entry of buildMobilityProfiles({ metadata: capture.metadata, payloads: [payload] })) {
+    if (!officialProfileIds.has(entry.id)) continue
     const unit = payload.units.find(u => u.id === entry.unitId)
     const group = unit.profileGroups.find(g => g.id === entry.groupId)
     const option = group.options.find(o => o.id === entry.optionId)
