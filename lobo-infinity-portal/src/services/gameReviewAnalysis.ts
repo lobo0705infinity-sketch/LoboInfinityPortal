@@ -317,7 +317,20 @@ function entryText(entry: ArmyIntelligenceDecodedEntry) {
 }
 
 function names(entries: ArmyIntelligenceDecodedEntry[]) {
-  return [...new Set(entries.map((entry) => entry.unit.trim()).filter(Boolean))].slice(0, 3)
+  return [...new Set(entries.map((entry) => formatUnitName(entry.unit)).filter(Boolean))].slice(0, 3)
+}
+
+export function formatUnitName(value: string) {
+  return value.trim().split(/(\s+)/).map((token) => {
+    if (!/\p{Lu}/u.test(token) || /\p{Ll}/u.test(token)) return token
+    if (/^(?:\p{Lu}\.){2,}$/u.test(token) || /^\p{Lu}\.$/u.test(token) || /^\p{Lu}-\d+$/u.test(token)) return token
+
+    return token.split(/([-'’])/).map((part) => {
+      if (/^[-'’]$/.test(part) || /^[IVXLCDM]+$/.test(part)) return part
+      const lower = part.toLocaleLowerCase('en-US')
+      return lower ? `${lower[0].toLocaleUpperCase('en-US')}${lower.slice(1)}` : lower
+    }).join('')
+  }).join('')
 }
 
 function joinNames(values: string[]) {
