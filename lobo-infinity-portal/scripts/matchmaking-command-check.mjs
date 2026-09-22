@@ -2,10 +2,13 @@ import assert from 'node:assert/strict'
 import {
   AVAILABILITY_COMMAND_DEFINITION,
   FIND_GAME_COMMAND_DEFINITION,
+  WEEKDAY_SELECTION_CHOICES,
+  buildAvailabilityRecords,
   buildDailyMatchmakingDigest,
   buildFindGameMessage,
   createMatchmakingAutocompleteHandler,
   ensureMatchmakingCommands,
+  expandWeekdaySelection,
   matchmakingDigestAlreadyPosted,
   parseAvailabilityRecord,
   parseFindGameMarker,
@@ -17,6 +20,34 @@ assert.equal(AVAILABILITY_COMMAND_DEFINITION.name, 'availability')
 assert.deepEqual(AVAILABILITY_COMMAND_DEFINITION.options.map((option) => option.name), ['set', 'clear', 'show'])
 assert.equal(FIND_GAME_COMMAND_DEFINITION.name, 'find-game')
 assert.deepEqual(FIND_GAME_COMMAND_DEFINITION.options.map((option) => option.name), ['now', 'close'])
+assert.deepEqual(expandWeekdaySelection('weekdays'), ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'])
+assert.deepEqual(expandWeekdaySelection('weekends'), ['saturday', 'sunday'])
+assert.equal(WEEKDAY_SELECTION_CHOICES.some((choice) => choice.value === 'weekdays'), true)
+assert.equal(WEEKDAY_SELECTION_CHOICES.some((choice) => choice.value === 'weekends'), true)
+
+const groupedAvailabilityInteraction = {
+  user: { id: '100', username: 'Lobo' },
+  member: { displayName: 'Lobo' },
+  options: {
+    getString(name) {
+      return {
+        weekday: 'weekdays',
+        start: '7pm',
+        end: '2230',
+        timezone: 'Eastern',
+        format: null,
+        need: null,
+        note: null,
+      }[name]
+    },
+    getInteger: () => null,
+    getBoolean: () => null,
+  },
+}
+const groupedAvailability = buildAvailabilityRecords(groupedAvailabilityInteraction)
+assert.deepEqual(groupedAvailability.map((record) => record.weekday), ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'])
+assert.equal(groupedAvailability.every((record) => record.start === '19:00' && record.end === '22:30'), true)
+assert.equal(new Set(groupedAvailability.map((record) => record.updatedAt)).size, 1)
 
 let autocompleteChoices = []
 const autocomplete = createMatchmakingAutocompleteHandler({ logger: { error() {} } })

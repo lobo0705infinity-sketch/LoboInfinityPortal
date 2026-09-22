@@ -96,13 +96,27 @@ export function normalizeTimeZone(value) {
 }
 
 export function normalizeClockTime(value, label = 'Time') {
-  const match = /^(\d{1,2}):(\d{2})$/.exec(String(value || '').trim())
-  const hour = Number(match?.[1])
-  const minute = Number(match?.[2])
-  if (!match || hour < 0 || hour > 23 || minute < 0 || minute > 59) {
-    throw new Error(`${label} must use 24-hour HH:MM format, such as 19:30.`)
+  const candidate = String(value || '').trim().toLowerCase().replaceAll('.', '').replace(/\s+/g, '')
+  const meridiemMatch = /(am|pm)$/.exec(candidate)
+  const meridiem = meridiemMatch?.[1] || ''
+  const clock = meridiem ? candidate.slice(0, -meridiem.length) : candidate
+  const match = /^(\d{1,2})(?::?(\d{2}))?$/.exec(clock)
+  let hour = Number(match?.[1])
+  const minute = Number(match?.[2] || 0)
+
+  if (meridiem) {
+    if (!match || hour < 1 || hour > 12 || minute > 59) throw invalidClockTimeError(label)
+    if (hour === 12) hour = 0
+    if (meridiem === 'pm') hour += 12
+  } else if (!match || hour < 0 || hour > 23 || minute > 59) {
+    throw invalidClockTimeError(label)
   }
+
   return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`
+}
+
+function invalidClockTimeError(label) {
+  return new Error(`${label} must be a standard or 24-hour time, such as 7 PM, 7:30 PM, 1900, or 19:30.`)
 }
 
 export function normalizeIsoDate(value) {

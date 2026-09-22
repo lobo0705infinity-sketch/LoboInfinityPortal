@@ -39,6 +39,18 @@ export const WEEKDAY_CHOICES = Object.freeze([
   { name: 'Sunday', value: 'sunday' },
 ])
 
+export const WEEKDAY_SELECTION_CHOICES = Object.freeze([
+  ...WEEKDAY_CHOICES,
+  { name: 'All weekdays (Monday–Friday)', value: 'weekdays' },
+  { name: 'Weekends (Saturday–Sunday)', value: 'weekends' },
+])
+
+const WEEKDAY_GROUPS = Object.freeze({
+  weekdays: Object.freeze(['monday', 'tuesday', 'wednesday', 'thursday', 'friday']),
+  weekends: Object.freeze(['saturday', 'sunday']),
+  all: Object.freeze(WEEKDAY_CHOICES.map((choice) => choice.value)),
+})
+
 export const FORMAT_CHOICES = Object.freeze([
   { name: 'TTS (default)', value: 'tts' },
   { name: 'In person', value: 'in-person' },
@@ -65,9 +77,9 @@ export const AUDIENCE_CHOICES = Object.freeze([
 ])
 
 const SET_OPTIONS = Object.freeze([
-  { name: 'weekday', description: 'Day in your own time zone', required: true, type: ApplicationCommandOptionType.String, choices: WEEKDAY_CHOICES },
-  { name: 'start', description: 'Local start time in 24-hour HH:MM format', required: true, type: ApplicationCommandOptionType.String },
-  { name: 'end', description: 'Local end time in 24-hour HH:MM format', required: true, type: ApplicationCommandOptionType.String },
+  { name: 'weekday', description: 'One day, all weekdays, or weekends in your own time zone', required: true, type: ApplicationCommandOptionType.String, choices: WEEKDAY_SELECTION_CHOICES },
+  { name: 'start', description: 'Local start time, such as 7 PM, 7:30 PM, 1900, or 19:30', required: true, type: ApplicationCommandOptionType.String },
+  { name: 'end', description: 'Local end time, such as 10 PM, 10:30 PM, 2200, or 22:30', required: true, type: ApplicationCommandOptionType.String },
   { name: 'timezone', description: 'Select a common zone or start typing your city or region', required: true, type: ApplicationCommandOptionType.String, autocomplete: true },
   { name: 'format', description: 'How you want to play; defaults to TTS', required: false, type: ApplicationCommandOptionType.String, choices: FORMAT_CHOICES },
   { name: 'points', description: 'Game size; defaults to 300', required: false, type: ApplicationCommandOptionType.Integer, min_value: 1, max_value: 500 },
@@ -90,7 +102,7 @@ export const AVAILABILITY_COMMAND_DEFINITION = Object.freeze({
         description: 'Day to remove',
         required: true,
         type: ApplicationCommandOptionType.String,
-        choices: [...WEEKDAY_CHOICES, { name: 'All days', value: 'all' }],
+        choices: [...WEEKDAY_SELECTION_CHOICES, { name: 'All days', value: 'all' }],
       }],
     },
     { name: 'show', description: 'Show your saved recurring availability', type: ApplicationCommandOptionType.Subcommand },
@@ -107,8 +119,8 @@ export const FIND_GAME_COMMAND_DEFINITION = Object.freeze({
       type: ApplicationCommandOptionType.Subcommand,
       options: [
         { name: 'date', description: 'Date in your time zone (YYYY-MM-DD)', required: true, type: ApplicationCommandOptionType.String },
-        { name: 'start', description: 'Local start time in 24-hour HH:MM format', required: true, type: ApplicationCommandOptionType.String },
-        { name: 'end', description: 'Local end time in 24-hour HH:MM format', required: true, type: ApplicationCommandOptionType.String },
+        { name: 'start', description: 'Local start time, such as 7 PM, 7:30 PM, 1900, or 19:30', required: true, type: ApplicationCommandOptionType.String },
+        { name: 'end', description: 'Local end time, such as 10 PM, 10:30 PM, 2200, or 22:30', required: true, type: ApplicationCommandOptionType.String },
         { name: 'timezone', description: 'Select a common zone or start typing your city or region', required: true, type: ApplicationCommandOptionType.String, autocomplete: true },
         { name: 'format', description: 'How you want to play; defaults to TTS', required: false, type: ApplicationCommandOptionType.String, choices: FORMAT_CHOICES },
         { name: 'points', description: 'Game size; defaults to 300', required: false, type: ApplicationCommandOptionType.Integer, min_value: 1, max_value: 500 },
@@ -207,11 +219,13 @@ async function handleAvailabilityCommand(interaction, store) {
   const subcommand = interaction.options.getSubcommand(true)
   const userId = String(interaction.user.id)
   if (subcommand === 'set') {
-    const record = buildAvailabilityRecord(interaction)
-    await store.upsert(record)
+    const selection = interaction.options.getString('weekday', true)
+    const records = buildAvailabilityRecords(interaction)
+    for (const record of records) await store.upsert(record)
+    const record = records[0]
     await interaction.editReply({
       content: [
-        `Saved **${capitalize(record.weekday)}** availability.`,
+        `Saved **${weekdaySelectionLabel(selection)}** availability.`,
         `${record.start}–${record.end} · ${record.timeZone}`,
         `${formatLabel(record.format)} · ${record.points} points · ${needLabel(record.need)}`,
         record.note ? `Note: ${record.note}` : '',
@@ -222,9 +236,9 @@ async function handleAvailabilityCommand(interaction, store) {
     return
   }
   if (subcommand === 'clear') {
-    const weekday = interaction.options.getString('weekday', true)
-    const removed = await store.remove(userId, weekday)
-    await interaction.editReply({ content: removed ? `Removed ${weekday === 'all' ? 'all of your' : `your ${capitalize(weekday)}`} availability.` : 'No matching availability was saved.', allowedMentions: { parse: [] } })
+    const selection = interaction.options.getString('weekday', true)
+    const removed = await store.remove(userId, selection)
+    await interaction.editReply({ content: removed ? `Removed ${clearSelectionLabel(selection)} availability.` : 'No matching availability was saved.', allowedMentions: { parse: [] } })
     return
   }
   const records = (await store.load()).filter((record) => String(record.userId) === userId)
@@ -259,12 +273,27 @@ async function handleFindGameCommand(interaction, channel, nowMs) {
   })
 }
 
-export function buildAvailabilityRecord(interaction) {
+export function expandWeekdaySelection(value) {
+  const selection = String(value || '').trim().toLowerCase()
+  const group = WEEKDAY_GROUPS[selection]
+  if (group) return [...group]
+  if (WEEKDAY_CHOICES.some((choice) => choice.value === selection)) return [selection]
+  throw new Error('Choose one day, All weekdays, or Weekends.')
+}
+
+export function buildAvailabilityRecords(interaction) {
+  const selection = interaction.options.getString('weekday', true)
+  const updatedAt = new Date().toISOString()
+  return expandWeekdaySelection(selection).map((weekday) => buildAvailabilityRecord(interaction, weekday, updatedAt))
+}
+
+export function buildAvailabilityRecord(interaction, weekday = interaction.options.getString('weekday', true), updatedAt = new Date().toISOString()) {
+  if (!WEEKDAY_CHOICES.some((choice) => choice.value === weekday)) throw new Error(`Unsupported weekday: ${weekday}`)
   return {
     version: 1,
     userId: String(interaction.user.id),
     displayName: String(interaction.member?.displayName || interaction.user.globalName || interaction.user.username || 'Player').trim(),
-    weekday: interaction.options.getString('weekday', true),
+    weekday,
     start: normalizeClockTime(interaction.options.getString('start', true), 'Start time'),
     end: normalizeClockTime(interaction.options.getString('end', true), 'End time'),
     timeZone: normalizeTimeZone(interaction.options.getString('timezone', true)),
@@ -273,7 +302,7 @@ export function buildAvailabilityRecord(interaction) {
     need: interaction.options.getString('need') || 'open',
     note: String(interaction.options.getString('note') || '').trim().slice(0, 300),
     mention: interaction.options.getBoolean('mention-me') ?? true,
-    updatedAt: new Date().toISOString(),
+    updatedAt,
   }
 }
 
@@ -478,11 +507,12 @@ export async function createDiscordAvailabilityStore(channel, client, logger = c
       return record
     },
     async remove(userId, weekday) {
+      const selectedWeekdays = new Set(expandWeekdaySelection(weekday))
       const messages = await readMessages()
       const targets = messages.filter((message) => {
         if (botUserId && String(message.author?.id || '') !== botUserId) return false
         const record = parseAvailabilityRecord(message.content)
-        return record && String(record.userId) === String(userId) && (weekday === 'all' || record.weekday === weekday)
+        return record && String(record.userId) === String(userId) && selectedWeekdays.has(record.weekday)
       })
       for (const message of targets) await message.delete()
       return targets.length
@@ -678,6 +708,19 @@ function formatSavedAvailability(records) {
       `  ${formatLabel(record.format)} · ${record.points || 300} points · ${needLabel(record.need)}${record.note ? ` · ${record.note}` : ''}`,
     ].join('\n')),
   ].join('\n')
+}
+
+function weekdaySelectionLabel(value) {
+  if (value === 'all') return 'All days'
+  return [...WEEKDAY_SELECTION_CHOICES, { name: 'All days', value: 'all' }]
+    .find((choice) => choice.value === value)?.name || capitalize(value)
+}
+
+function clearSelectionLabel(value) {
+  if (value === 'all') return 'all of your'
+  if (value === 'weekdays') return 'your Monday–Friday'
+  if (value === 'weekends') return 'your Saturday–Sunday'
+  return `your ${capitalize(value)}`
 }
 
 function uniquePlayerMatches(matches) {
