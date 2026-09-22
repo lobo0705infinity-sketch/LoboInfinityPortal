@@ -49,15 +49,17 @@ function GameDetails() {
 
     const controller = new AbortController()
 
-    publicDetailProjection
-      .getGames(controller.signal)
-      .then((data) => {
+    Promise.all([
+      publicDetailProjection.getGames(controller.signal),
+      publicDetailProjection.getGameIntelligenceLists(controller.signal),
+    ])
+      .then(([data, intelligenceLists]) => {
         const game = data.games.find((candidate) => candidate.id === gameId)
 
         if (game) {
           setGameState({
             armyLists: getGameArmyLists(game, data.armyLists),
-            intelligenceLists: getGameIntelligenceLists(game, data.intelligenceLists),
+            intelligenceLists: getGameIntelligenceLists(game, intelligenceLists),
             game,
             gameId,
             status: 'success',
@@ -70,7 +72,7 @@ function GameDetails() {
         const linkedGame = buildNewsLinkedGame(gameId, data.news)
 
         if (linkedGame) {
-          setGameState({ armyLists: getGameArmyLists(linkedGame, data.armyLists), intelligenceLists: getGameIntelligenceLists(linkedGame, data.intelligenceLists), game: linkedGame, gameId, status: 'success', stream: null })
+          setGameState({ armyLists: getGameArmyLists(linkedGame, data.armyLists), intelligenceLists: getGameIntelligenceLists(linkedGame, intelligenceLists), game: linkedGame, gameId, status: 'success', stream: null })
           applyLinkedStream(gameId, data.streams, setGameState)
           return
         }
