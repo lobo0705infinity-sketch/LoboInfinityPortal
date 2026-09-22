@@ -263,7 +263,7 @@ function IntelligenceBrief({ analysis, faction }: { analysis: ReturnType<typeof 
     {analysis.listCount < 3 ? <p className="army-intelligence-sample-notice">Only {analysis.listCount} decoded {analysis.listCount === 1 ? 'list is' : 'lists are'} available. These are observed capabilities, not reliable faction trends.</p> : null}
     <p className="army-intelligence-role-notice">Profiles may appear in multiple sections when they perform multiple tactical roles. Quantities represent models, not classifications.</p>
     <SnapshotBriefNavigator analysis={analysis} onChange={setView} value={view} />
-    <div className="army-intelligence-tactical-grid">{visibleCategories.map((category) => <article className={`army-intelligence-tactical-panel ${category.id === 'apex' || category.id === 'apexCc' ? 'is-ranking-panel' : ''}` } id={`snapshot-intelligence-${category.id}`} key={category.id}>
+    <div className="army-intelligence-tactical-grid">{visibleCategories.map((category) => <article className={`army-intelligence-tactical-panel ${category.id === 'apex' || category.id === 'apexCc' ? 'is-ranking-panel' : ''}`} id={`snapshot-intelligence-${category.id}`} key={category.id}>
       <header><h3>{category.title}</h3><p>{category.description}</p></header>
       {category.id === 'hacking' ? <p className="army-intelligence-category-total"><strong>{analysis.hackerListCount}</strong> of {analysis.listCount} decoded lists contain at least one Hacker.</p> : null}
       {category.profiles.length ? <div className="army-intelligence-tactical-profiles">{category.profiles.map((profile, index) => <SnapshotTacticalProfile category={category.id} key={profile.profileId} profile={profile} rank={index + 1} />)}</div> : <p className="army-intelligence-tactical-empty">{category.unavailableReason || 'No qualifying profiles were found in the submitted decoded sample.'}</p>}
@@ -274,7 +274,7 @@ function IntelligenceBrief({ analysis, faction }: { analysis: ReturnType<typeof 
 
 function formatTacticalUnitName(value: string) {
   return value === value.toLocaleUpperCase()
-    ? value.toLocaleLowerCase().replace(/(^|[\\s-])\\p{L}/gu, (letter) => letter.toLocaleUpperCase())
+    ? value.toLocaleLowerCase().replace(/(^|[\s-])\p{L}/gu, (letter) => letter.toLocaleUpperCase())
     : value
 }
 
