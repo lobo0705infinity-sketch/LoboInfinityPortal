@@ -2,6 +2,7 @@ import { eligibleLevel2Teams } from '../../bot/fireteam-list-eligibility.mjs'
 import { lookupMobility, type MobilityCatalog } from '../../bot/mobility-lookup.mjs'
 import portalAroRatings from '../data/portal-aro-ratings.json' with { type: 'json' }
 import portalGunfighterRatings from '../data/portal-gunfighter-ratings.json' with { type: 'json' }
+import portalCloseCombatRatings from '../data/portal-close-combat-ratings.json' with { type: 'json' }
 import mobilityCatalog from '../data/mobility-index.json' with { type: 'json' }
 import type { ArmyIntelligenceDecodedEntry, ArmyIntelligenceList } from './api'
 
@@ -27,6 +28,7 @@ export type TacticalProfile = {
   weapons: Array<{ burst: number | null; effectiveBurst: number | null; effectiveDice: number | null; name: string }>
   aro?: { fireteam?: BenchmarkState; normal?: BenchmarkState }
   gunfighter?: { grade: string; percentile: number; rating: number; state: 'fireteam' | 'normal'; weapon: string }
+  closeCombat?: { grade: string; percentile: number; rating: number; weapon: string }
   mobility?: { mov: number[] | null; score: number; travel: number | null }
   linkability: 'verified' | 'verified-false' | 'unknown'
   roles: TacticalCategoryId[]
@@ -56,10 +58,6 @@ const gunfighterEnhancement = /^(?:mimetism|albedo)\s*[\[(]\s*-(?:3|6)\s*[\])]$|
 const valuableAroSkill = /^(?:total reaction|neurocinetics)$|^bs attack\s*[\[(]\s*\+\s*(?:\d+\s*)?sd\s*[\])]$/i
 const deliveryEquipment = /^(?:pitcher|fast\s*-?\s*panda|deployable\s*-?\s*repeater|repeater)$/i
 const hackingDevice = /^(?:hacking device(?: plus)?|killer hacking device|evo hacking device)$/i
-const martialArts = /^martial arts(?:\s+(?:l|level)?\s*\d+)?$/i
-const naturalBornWarrior = /^natural born warrior$/i
-const berserkPlusThree = /^berserk\s*\+?3$/i
-const ccAttackBurst = /^cc attack\s*\+(?:(?:\d+\s*)?b|burst)$/i
 const visionControl = /^(?:smoke grenades?|smoke grenade launchers?|discoballer|(?:pheroware(?:\s+tactics)?|pt)\s*:?\s*(?:mirroball|mirrorball)|eclipse(?:\s+.*)?)$/i
 const pheroware = /^(?:pheroware(?:\s+tactics)?|pt)(?:\s*:?\s+.*)?$/i
 
@@ -80,12 +78,12 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
 
   const rows = Array.from(appearances.values()).map(({ entry, lists: listIndexes }) => ({
     entry,
-    profile: toProfile(entry, listIndexes.size, decoded.length, gunfighterRating(entry), aroRating(entry)),
+    profile: toProfile(entry, listIndexes.size, decoded.length, gunfighterRating(entry), closeCombatRating(entry), aroRating(entry)),
   }))
   const category = (id: TacticalCategoryId, title: string, description: string, predicate: (entry: ArmyIntelligenceDecodedEntry) => boolean, unavailableReason?: string): TacticalCategory => ({
     description,
     id,
-    profiles: rows.filter(({ entry }) => predicate(entry)).map(({ profile }) => profile).sort(id === 'apex' ? compareGunfighters : id === 'valuableAro' || id === 'disposableAro' ? compareAros : compareProfiles),
+    profiles: rows.filter(({ entry }) => predicate(entry)).map(({ profile }) => profile).sort(id === 'apex' ? compareGunfighters : id === 'apexCc' ? compareCloseCombat : id === 'valuableAro' || id === 'disposableAro' ? compareAros : compareProfiles),
     title,
     unavailableReason,
   })
@@ -101,6 +99,7 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
   }).filter((row) => row.components.length > 0)
   const hasBenchmarkRatings = rows.some(({ profile }) => Boolean(profile.gunfighter))
   const hasAroBenchmarkRatings = rows.some(({ profile }) => Boolean(profile.aro))
+  const hasCloseCombatRatings = rows.some(({ profile }) => Boolean(profile.closeCombat))
   const hasApexMetadata = rows.some(({ entry }) => entry.bs !== null && entry.bs !== undefined && canonicalWeapons(entry).some((weapon) => weapon.burstStatus === 'canonical'))
   const qualifiesAsApex = (entry: ArmyIntelligenceDecodedEntry) => {
     const enhanced = entry.skills.some((skill) => gunfighterEnhancement.test(normalize(skill)))
@@ -117,7 +116,7 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
     return standard || heavyRocketLauncher || portableAutocannon
   }
   const gunfighterCategories = hasBenchmarkRatings
-    ? [category('apex', 'Gunfighter Rankings', 'Benchmark-ranked against the shared defensive suite. Each profile shows its best legal state, selected weapon, score, grade, and percentile.', (entry) => Boolean(gunfighterRating(entry)), 'This profile has no exact match in the current benchmark catalog.')]
+    ? [category('apex', 'Gunfighter Rankings', 'Benchmark-ranked against the shared defensive suite. Showing Grade B or higher, with list rank, rating, grade, and global percentile.', (entry) => hasQualifyingBenchmark(gunfighterRating(entry)), 'No exact Grade B-or-better gunfighter benchmark matches were found in this sample.')]
     : [
         category('apex', 'Apex Gunfighters', 'Effective dice include native Burst, BS Attack (+Burst), native +SD, verified Fireteam +1SD, and valid combinations. Qualifies at effective B5; BS 14+ with effective B4+; or BS 13 with effective B4+ plus MSV 1–3, Mimetism (-3/-6), BS Attack (-3), or Albedo (-3/-6).', qualifiesAsApex, hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
         category('competent', 'Competent Gunfighters', 'BS 12 or 13 profiles whose effective dice reach 4 through an approved gunfighter weapon, BS Attack (+Burst), native +SD, Fireteam +1SD, or a combination. Heavy Rocket Launchers and enhanced Portable Autocannons use their verified special cases; Apex Gunfighters are excluded.', (entry) => !qualifiesAsApex(entry) && qualifiesAsCompetent(entry), hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
@@ -139,7 +138,7 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
 
   const categories: TacticalCategory[] = [
       ...gunfighterCategories,
-      category('apexCc', 'Apex Close Combat Fighters', 'CC 22+ profiles with Martial Arts, Natural Born Warrior, Berserk (+3), or CC Attack (+B).', (entry) => Number(entry.cc) >= 22 && entry.skills.some((skill) => [martialArts, naturalBornWarrior, berserkPlusThree, ccAttackBurst].some((rule) => rule.test(normalize(skill))))),
+      category('apexCc', 'Close Combat Rankings', 'Benchmark-ranked against the shared close-combat defender suite. Showing Grade B or higher, with list rank, rating, grade, and global percentile.', (entry) => hasCloseCombatRatings && hasQualifyingBenchmark(closeCombatRating(entry)), 'No exact Grade B-or-better close-combat benchmark matches were found in this sample.'),
       category('hacking', 'Hacking Networks', 'Exact Hacker profiles, Hacking Devices, Repeaters, and verified repeater-delivery equipment.', (entry) => hackingComponents(entry).length > 0),
       category('vision', 'Vision Control', 'Profiles with Smoke Grenades, Smoke Grenade Launchers, Discoballer, Pheroware Mirrorball, or Eclipse.', (entry) => [...entry.skills, ...entry.equipment, ...entry.weapons].some((item) => visionControl.test(normalize(item)))),
       ...aroCategories,
@@ -166,6 +165,16 @@ function gunfighterRating(entry: ArmyIntelligenceDecodedEntry): TacticalProfile[
   return { grade: rating.grade, percentile: rating.percentile, rating: rating.rating, state, weapon }
 }
 
+function closeCombatRating(entry: ArmyIntelligenceDecodedEntry): TacticalProfile['closeCombat'] {
+  const key = String(entry.combinedId || '').replaceAll('-', ':')
+  const rating = (portalCloseCombatRatings.ratings as Record<string, { grade: string; percentile: number; rating: number; weapon: string }>)[key]
+  return rating ? { grade: rating.grade, percentile: rating.percentile, rating: rating.rating, weapon: rating.weapon } : undefined
+}
+
+function hasQualifyingBenchmark(rating: { grade?: string } | undefined) {
+  return Boolean(rating && ['S', 'A', 'B'].includes(String(rating.grade || '').toUpperCase()))
+}
+
 function aroRating(entry: ArmyIntelligenceDecodedEntry): TacticalProfile['aro'] {
   const key = String(entry.combinedId || '').replaceAll('-', ':')
   const states = (portalAroRatings.ratings as Record<string, Record<string, BenchmarkState>>)[key]
@@ -184,6 +193,10 @@ function compareGunfighters(left: TacticalProfile, right: TacticalProfile) {
   return Number(right.gunfighter?.rating || 0) - Number(left.gunfighter?.rating || 0) || compareProfiles(left, right)
 }
 
+function compareCloseCombat(left: TacticalProfile, right: TacticalProfile) {
+  return Number(right.closeCombat?.rating || 0) - Number(left.closeCombat?.rating || 0) || compareProfiles(left, right)
+}
+
 function compareAros(left: TacticalProfile, right: TacticalProfile) {
   return bestAroRating(right) - bestAroRating(left) || compareProfiles(left, right)
 }
@@ -196,7 +209,7 @@ function excludedAlternativeAttackVector(unitName: string) {
   return /^(?:netrods?|imetrons?)(?:\s|$)/i.test(normalize(unitName))
 }
 
-function toProfile(entry: ArmyIntelligenceDecodedEntry, listCount: number, denominator: number, gunfighter: TacticalProfile['gunfighter'], aro: TacticalProfile['aro']): TacticalProfile {
+function toProfile(entry: ArmyIntelligenceDecodedEntry, listCount: number, denominator: number, gunfighter: TacticalProfile['gunfighter'], closeCombat: TacticalProfile['closeCombat'], aro: TacticalProfile['aro']): TacticalProfile {
   const skills = entry.skills.map(normalize).filter((skill) => alternativeSkill.test(skill) || defensiveSkill.test(skill) || enhancement.test(skill) || valuableAroSkill.test(skill) || bsAttackBurstBonus([skill]) > 0)
   const burstBonus = bsAttackBurstBonus(entry.skills)
   const sdBonus = bsAttackSdBonus(entry.skills) + Number(entry.fireteamSdBonus || 0)
@@ -206,6 +219,7 @@ function toProfile(entry: ArmyIntelligenceDecodedEntry, listCount: number, denom
     badges: unique([...skills, ...canonicalWeapons(entry).filter((weapon) => weaponSdBonus(weapon) > 0).map((weapon) => `${weapon.name} (+${weaponSdBonus(weapon)}SD)`), ...canonicalWeapons(entry).filter((weapon) => weaponBurstBonus(weapon) > 0).map((weapon) => `${weapon.name} (+${weaponBurstBonus(weapon)}B)`), ...(entry.fireteamSdBonus ? ['Fireteam (+1SD)'] : []), ...(isProxyMkIv(entry) ? ['Proxy Mk IV exception'] : []), ...hackingComponents(entry)]),
     bs: entry.bs ?? null,
     cc: entry.cc ?? null,
+    closeCombat,
     equipment: entry.equipment.filter((item) => deliveryEquipment.test(normalize(item)) || hackingDevice.test(normalize(item))),
     gunfighter,
     mobility: mobility?.status === 'rated' && mobility.score !== null
