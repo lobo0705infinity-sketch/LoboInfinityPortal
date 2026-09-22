@@ -12833,3 +12833,5 @@ a {
   .army-intelligence-ranking-score { grid-column: 1; }
   .army-intelligence-ranking-grade { grid-column: 2; }
 }
+
+.army-intelligence-tactical-panel.is-ranking-panel { grid-column: 1 / -1; }
