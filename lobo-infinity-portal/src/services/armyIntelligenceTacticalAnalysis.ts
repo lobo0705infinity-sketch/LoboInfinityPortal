@@ -55,6 +55,10 @@ const alternativeSkill = /^(?:parachutist|combat jump|hidden deployment|imperson
 const defensiveSkill = /^(?:camouflage|decoy|minelayer)(?:\s*[\[(].*[\])])?$/i
 const enhancement = /^(?:mimetism|multispectral visor|msv)(?:\s+(?:l|level)\s*\d+)?(?:\s*[\[(].*[\])])?$|^bs attack\s*\(\s*-3\s*\)$/i
 const gunfighterEnhancement = /^(?:mimetism|albedo)\s*[\[(]\s*-(?:3|6)\s*[\])]$|^(?:multispectral visor|msv)(?:\s+(?:l|level))?\s*[123]$|^bs attack\s*[\[(]\s*-3\s*[\])]$/i
+const martialArts = /^martial arts(?:\s+(?:l|level)?\s*\d+)?$/i
+const naturalBornWarrior = /^natural born warrior$/i
+const berserkPlusThree = /^berserk\s*\+?3$/i
+const ccAttackBurst = /^cc attack\s*\+(?:(?:\d+\s*)?b|burst)$/i
 const valuableAroSkill = /^(?:total reaction|neurocinetics)$|^bs attack\s*[\[(]\s*\+\s*(?:\d+\s*)?sd\s*[\])]$/i
 const deliveryEquipment = /^(?:pitcher|fast\s*-?\s*panda|deployable\s*-?\s*repeater|repeater)$/i
 const hackingDevice = /^(?:hacking device(?: plus)?|killer hacking device|evo hacking device)$/i
@@ -122,6 +126,11 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
         category('competent', 'Competent Gunfighters', 'BS 12 or 13 profiles whose effective dice reach 4 through an approved gunfighter weapon, BS Attack (+Burst), native +SD, Fireteam +1SD, or a combination. Heavy Rocket Launchers and enhanced Portable Autocannons use their verified special cases; Apex Gunfighters are excluded.', (entry) => !qualifiesAsApex(entry) && qualifiesAsCompetent(entry), hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
       ]
 
+  const closeCombatCategory = hasCloseCombatRatings
+    ? category('apexCc', 'Close Combat Rankings', 'Benchmark-ranked against the shared close-combat defender suite. Showing Grade B or higher, with list rank, rating, grade, and global percentile.', (entry) => hasQualifyingBenchmark(closeCombatRating(entry)), 'No exact Grade B-or-better close-combat benchmark matches were found in this sample.')
+    : category('apexCc', 'Apex Close Combat Fighters', 'CC 22+ profiles with Martial Arts, Natural Born Warrior, Berserk (+3), or CC Attack (+B).', (entry) => Number(entry.cc) >= 22 && entry.skills.some((skill) => [martialArts, naturalBornWarrior, berserkPlusThree, ccAttackBurst].some((rule) => rule.test(normalize(skill)))))
+
+
   const aroCategories: TacticalCategory[] = hasAroBenchmarkRatings
     ? [
         category('valuableAro', 'Valuable ARO Ratings', 'Profiles costing at least 15 points whose best valid non-linked or submitted-list Fireteam state is Grade B or higher in the current ARO benchmark.', (entry) => entry.points >= 15 && hasQualifyingAroRating(aroRating(entry)), 'No exact Grade B-or-better ARO benchmark matches were found in this sample.'),
@@ -138,7 +147,7 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
 
   const categories: TacticalCategory[] = [
       ...gunfighterCategories,
-      category('apexCc', 'Close Combat Rankings', 'Benchmark-ranked against the shared close-combat defender suite. Showing Grade B or higher, with list rank, rating, grade, and global percentile.', (entry) => hasCloseCombatRatings && hasQualifyingBenchmark(closeCombatRating(entry)), 'No exact Grade B-or-better close-combat benchmark matches were found in this sample.'),
+      closeCombatCategory,
       category('hacking', 'Hacking Networks', 'Exact Hacker profiles, Hacking Devices, Repeaters, and verified repeater-delivery equipment.', (entry) => hackingComponents(entry).length > 0),
       category('vision', 'Vision Control', 'Profiles with Smoke Grenades, Smoke Grenade Launchers, Discoballer, Pheroware Mirrorball, or Eclipse.', (entry) => [...entry.skills, ...entry.equipment, ...entry.weapons].some((item) => visionControl.test(normalize(item)))),
       ...aroCategories,
