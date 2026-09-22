@@ -47,16 +47,15 @@ const game85 = {
 const drawPayload = context.buildDiscordGamePayload(game85)
 const drawEmbed = drawPayload.embeds[0]
 assert.equal(drawEmbed.title, 'Chainsaw vs ADangerousFrog')
-assert.match(drawEmbed.description, /ended in a draw/i)
+assert.match(drawEmbed.description, /Dispatch from the Front/)
 assert.match(drawEmbed.description, /Mission: Neutralization/)
 assert.doesNotMatch(JSON.stringify(drawPayload), /Draw vs Draw|defeated|Winner|Loser/i)
 assert.deepEqual(fieldValues(drawEmbed), {
-  Open: '[View Match](https://lobo-infinity-portal.vercel.app/games/85)',
-  'Tournament Points': '3–3 TP',
-  'Objective Points': '5–5 OP',
-  'Victory Points': '111–205 VP',
+  'Final Score': '**TP:** 3–3 TP  •  **OP:** 5–5 OP  •  **VP:** 111–205 VP',
+  'Tactical Bottom Line': 'Neither commander fully closed the other’s scoring route; this was a contested mission, not a failed attrition race.',
   Event: 'August 2026 Team Tournament',
   Date: '9/5/2026',
+  'Read the Full Report': '[Open Game Review](https://lobo-infinity-portal.vercel.app/games/85)',
 })
 
 const player1Win = standardGame({
@@ -66,7 +65,8 @@ const player1Win = standardGame({
 })
 const player1Payload = context.buildDiscordGamePayload(player1Win)
 assert.equal(player1Payload.embeds[0].title, 'Alpha defeated Bravo')
-assert.equal(player1Payload.embeds[0].description, 'Mission: Supplies')
+assert.match(player1Payload.embeds[0].description, /Dispatch from the Front/)
+assert.match(player1Payload.embeds[0].description, /unfolded as a contest of timing/)
 assert.equal(fieldValues(player1Payload.embeds[0])['Winner Faction'], 'Nomads')
 assert.equal(fieldValues(player1Payload.embeds[0])['Loser Faction'], 'Combined Army')
 
@@ -80,7 +80,22 @@ const player2Win = standardGame({
 })
 const player2Payload = context.buildDiscordGamePayload(player2Win)
 assert.equal(player2Payload.embeds[0].title, 'Bravo defeated Alpha')
-assert.equal(player2Payload.embeds[0].description, 'Mission: Supplies')
+assert.match(player2Payload.embeds[0].description, /Dispatch from the Front/)
+
+const missionOverMaterial = context.buildDiscordGamePayload(standardGame({
+  id: 110,
+  winner: 'Lobo', winnerDisplayName: 'Lobo',
+  loser: 'Snakes / Lucas', loserDisplayName: 'Snakes / Lucas',
+  winnerFaction: 'Kosmoflot', loserFaction: 'Yu Jing',
+  mission: 'Provisioning', op: '6–2', vp: '91–217',
+  bestMoment: 'Johnny trying his best to save the game',
+}))
+assert.match(missionOverMaterial.embeds[0].description, /battlefield told two different stories/)
+assert.match(missionOverMaterial.embeds[0].description, /Johnny trying his best/)
+assert.match(
+  fieldValues(missionOverMaterial.embeds[0])['Tactical Bottom Line'],
+  /Snakes \/ Lucas won the material battle; Lobo won Provisioning/,
+)
 
 const legacyDraw = context.buildDiscordGamePayload({
   ...game85,

@@ -1,5 +1,5 @@
-import type { RecentGame } from './api'
-import { formatPlayerName } from './formatting'
+import type { RecentGame } from './api.ts'
+import { formatPlayerName } from './formatting.ts'
 
 export function isDrawGame(game: Pick<RecentGame, 'gameResult' | 'op' | 'tp' | 'vp'>) {
   if ((game.gameResult ?? '').toLowerCase() === 'draw') {
@@ -7,7 +7,7 @@ export function isDrawGame(game: Pick<RecentGame, 'gameResult' | 'op' | 'tp' | '
   }
 
   return [game.tp, game.op, game.vp].every((score) => {
-    const [left, right] = String(score ?? '').split('-').map((part) => Number(part))
+    const [left, right] = String(score ?? '').split(/[-–—]/).map((part) => Number(part))
     return Number.isFinite(left) && Number.isFinite(right) && left === right
   })
 }

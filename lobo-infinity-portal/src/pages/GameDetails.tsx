@@ -359,7 +359,7 @@ function ParticipantPanel({ participant }: { participant: BattleParticipant }) {
 }
 
 function GameReview({ armyLists, game, intelligenceLists }: { armyLists: PublicSubmittedArmyList[]; game: RecentGame; intelligenceLists: ArmyIntelligenceList[] }) {
-  const review = useMemo(() => buildGameReviewAnalysis(game, intelligenceLists), [game, intelligenceLists])
+  const review = useMemo(() => buildGameReviewAnalysis(game, intelligenceLists, armyLists), [armyLists, game, intelligenceLists])
   const winner = formatPlayerName(game.winner, game.winnerDisplayName)
   const loser = formatPlayerName(game.loser, game.loserDisplayName)
 
@@ -382,6 +382,12 @@ function GameReview({ armyLists, game, intelligenceLists }: { armyLists: PublicS
         <section aria-labelledby="game-review-deciding-title">
           <h3 id="game-review-deciding-title">What likely decided it</h3>
           <p>{review.decidingFactors}</p>
+        </section>
+
+        <section className="battle-report-game-review-story" aria-labelledby="game-review-story-title">
+          <h3 id="game-review-story-title">Dispatch from the Front</h3>
+          <p>{review.story}</p>
+          <small>A dramatized account based on the submitted highlight, mission, result, and army lists. It does not invent unreported orders or dice results.</small>
         </section>
 
         <section aria-labelledby="game-review-turning-point-title">

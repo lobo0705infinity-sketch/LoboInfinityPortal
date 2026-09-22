@@ -589,6 +589,37 @@
   line-height: 1.68;
 }
 
+.battle-report-game-review-story {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(242, 182, 50, 0.4) !important;
+  background:
+    linear-gradient(120deg, rgba(242, 182, 50, 0.09), transparent 62%),
+    rgba(5, 6, 8, 0.68) !important;
+}
+
+.battle-report-game-review-story::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: #f2b632;
+  content: '';
+}
+
+.battle-report-game-review-story > p {
+  max-width: 100ch;
+  color: #f1f4f6 !important;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1rem, 1.7vw, 1.12rem) !important;
+  line-height: 1.75 !important;
+}
+
+.battle-report-game-review-story > small {
+  color: #91a1ad;
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
 .battle-report-game-review-coaching > div {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

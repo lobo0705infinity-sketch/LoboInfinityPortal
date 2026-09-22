@@ -477,6 +477,9 @@ function buildDiscordGamePayload(game) {
   const link =
     buildDeepLink("game", game);
 
+  const review =
+    buildDiscordGameReview(game, result);
+
   if (isDiscordDrawGame(game)) {
     const participants =
       getDiscordGameParticipants(game);
@@ -485,11 +488,14 @@ function buildDiscordGamePayload(game) {
       getDiscordGameEventName(game);
 
     const fields = [
-      buildDiscordField("Open", "[View Match](" + link.url + ")", false),
-      buildDiscordField("Tournament Points", result.tp, true),
-      buildDiscordField("Objective Points", result.op, true),
-      buildDiscordField("Victory Points", result.vp, true)
+      buildDiscordField("Final Score", buildDiscordGameScoreLine(result), false),
+      buildDiscordField("Tactical Bottom Line", review.bottomLine, false)
     ];
+
+    if (review.turningPoint !== "")
+      fields.push(
+        buildDiscordField("Submitted Turning Point", review.turningPoint, false)
+      );
 
     if (eventName !== "")
       fields.push(
@@ -497,7 +503,8 @@ function buildDiscordGamePayload(game) {
       );
 
     fields.push(
-      buildDiscordField("Date", game.date || "Not recorded", true)
+      buildDiscordField("Date", game.date || "Not recorded", true),
+      buildDiscordField("Read the Full Report", "[Open Game Review](" + link.url + ")", false)
     );
 
     return {
@@ -512,8 +519,10 @@ function buildDiscordGamePayload(game) {
             " vs " +
             participants.player2,
           description:
-            "The game ended in a draw.\nMission: " +
-            result.mission,
+            "**Mission: " +
+            result.mission +
+            "**\n\n**Dispatch from the Front**\n" +
+            review.dispatch,
           fields: fields,
           url:
             link.url
@@ -534,22 +543,245 @@ function buildDiscordGamePayload(game) {
           " defeated " +
           result.loser,
         description:
-          "Mission: " +
-          result.mission,
-        fields: [
-          buildDiscordField("Open", "[View Match](" + link.url + ")", false),
-          buildDiscordField("Tournament Points", result.tp, true),
-          buildDiscordField("Objective Points", result.op, true),
-          buildDiscordField("Victory Points", result.vp, true),
-          buildDiscordField("Winner Faction", game.winnerFaction || "Not recorded", true),
-          buildDiscordField("Loser Faction", game.loserFaction || "Not recorded", true),
-          buildDiscordField("Date", game.date || "Not recorded", true)
-        ],
+          "**Mission: " +
+          result.mission +
+          "**\n\n**Dispatch from the Front**\n" +
+          review.dispatch,
+        fields:
+          buildDiscordGameReviewFields(game, result, review, link.url),
         url:
           link.url
       })
     ]
   };
+
+}
+
+function buildDiscordGameReviewFields(game, result, review, url) {
+
+  const fields = [
+    buildDiscordField("Final Score", buildDiscordGameScoreLine(result), false),
+    buildDiscordField("Tactical Bottom Line", review.bottomLine, false)
+  ];
+
+  if (review.turningPoint !== "")
+    fields.push(
+      buildDiscordField("Submitted Turning Point", review.turningPoint, false)
+    );
+
+  fields.push(
+    buildDiscordField("Winner Faction", game.winnerFaction || "Not recorded", true),
+    buildDiscordField("Loser Faction", game.loserFaction || "Not recorded", true),
+    buildDiscordField("Date", game.date || "Not recorded", true),
+    buildDiscordField("Read the Full Report", "[Open Game Review](" + url + ")", false)
+  );
+
+  return fields;
+
+}
+
+function buildDiscordGameScoreLine(result) {
+
+  return (
+    "**TP:** " + result.tp +
+    "  •  **OP:** " + result.op +
+    "  •  **VP:** " + result.vp
+  );
+
+}
+
+function buildDiscordGameReview(game, result) {
+
+  const objective =
+    parseDiscordGameScore(result.op);
+
+  const victory =
+    parseDiscordGameScore(result.vp);
+
+  const objectiveEdge =
+    getDiscordGameScoreEdge(objective);
+
+  const victoryEdge =
+    getDiscordGameScoreEdge(victory);
+
+  const objectiveMargin =
+    objectiveEdge === null
+      ? null
+      : Math.abs(objectiveEdge);
+
+  const winner =
+    result.winner || "The winner";
+
+  const loser =
+    result.loser || "The opponent";
+
+  const mission =
+    result.mission || "the mission";
+
+  const note =
+    truncateDiscordReviewText(
+      getDiscordString(game && game.bestMoment)
+        .replace(/^['“”"]+|['“”"]+$/g, "")
+        .replace(/\s+/g, " "),
+      360
+    );
+
+  const rememberedMoment =
+    note !== ""
+      ? " The submitted account remembers one moment above all: “" + note + "”"
+      : "";
+
+  if (isDiscordDrawGame(game))
+    return {
+      dispatch:
+        mission +
+        " never produced a clean break. Both sides kept a route into the scoring fight, and neither managed to close the final window." +
+        rememberedMoment +
+        " When the battle ended, the table remained contested and the score reflected it.",
+      bottomLine:
+        "Neither commander fully closed the other’s scoring route; this was a contested mission, not a failed attrition race.",
+      turningPoint: note
+    };
+
+  if (
+    objectiveMargin !== null &&
+    objectiveMargin >= 4 &&
+    victoryEdge !== null &&
+    victoryEdge <= -75
+  )
+    return {
+      dispatch:
+        "By the final scoring window, the battlefield told two different stories. " +
+        loser +
+        " still had " +
+        Math.abs(victoryEdge) +
+        " more surviving Victory Points, but " +
+        winner +
+        " held the advantage that mattered in " +
+        mission +
+        ". Rather than chase a lost attrition fight, " +
+        winner +
+        " kept the remaining effort tied to the objective." +
+        rememberedMoment +
+        " When the shooting stopped, " +
+        loser +
+        " held more of the army; " +
+        winner +
+        " held the result.",
+      bottomLine:
+        loser +
+        " won the material battle; " +
+        winner +
+        " won " +
+        mission +
+        ". The " +
+        Math.abs(victoryEdge) +
+        "-point deficit did not prevent the mission win.",
+      turningPoint: note
+    };
+
+  if (
+    objectiveMargin !== null &&
+    objectiveMargin >= 4 &&
+    victoryEdge !== null &&
+    victoryEdge >= 75
+  )
+    return {
+      dispatch:
+        winner +
+        " tightened control one exchange at a time. The mission route narrowed, the material gap widened, and " +
+        loser +
+        " was forced to search for an increasingly unlikely way back into the game." +
+        rememberedMoment +
+        " By the end, the objective score and the surviving forces told the same story: " +
+        winner +
+        " had denied both the battlefield and the mission.",
+      bottomLine:
+        winner +
+        " won both the table and the mission; " +
+        loser +
+        " needed an earlier route back into the objectives.",
+      turningPoint: note
+    };
+
+  if (
+    objectiveEdge !== null &&
+    Math.abs(objectiveEdge) <= 2
+  )
+    return {
+      dispatch:
+        "The battle remained balanced on a single scoring swing. Neither side needed to conquer the entire table; each needed one surviving piece, one safe route, and enough orders to make the final attempt." +
+        rememberedMoment +
+        " When the last opportunity passed, " +
+        winner +
+        " had converted one more meaningful moment—and that was enough.",
+      bottomLine:
+        winner +
+        " found the final scoring edge; " +
+        loser +
+        " remained one meaningful objective swing away.",
+      turningPoint: note
+    };
+
+  return {
+    dispatch:
+      mission +
+      " unfolded as a contest of timing rather than a clean sweep. " +
+      winner +
+      " kept a scoring route alive long enough to create the decisive window, while " +
+      loser +
+      " searched for the order sequence that could close it." +
+      rememberedMoment +
+      " The final score records the separation; the story is how little room there was before it appeared.",
+    bottomLine:
+      winner +
+      " converted the available mission opportunities more efficiently and kept " +
+      loser +
+      " from finding an equal scoring position.",
+    turningPoint: note
+  };
+
+}
+
+function parseDiscordGameScore(value) {
+
+  const matches =
+    getDiscordString(value)
+      .match(/\d+(?:\.\d+)?/g) || [];
+
+  if (matches.length < 2)
+    return [null, null];
+
+  const left = Number(matches[0]);
+  const right = Number(matches[1]);
+
+  return [
+    Number.isFinite(left) ? left : null,
+    Number.isFinite(right) ? right : null
+  ];
+
+}
+
+function getDiscordGameScoreEdge(score) {
+
+  return (
+    score[0] === null ||
+    score[1] === null
+  )
+    ? null
+    : score[0] - score[1];
+
+}
+
+function truncateDiscordReviewText(value, maximum) {
+
+  const text =
+    getDiscordString(value);
+
+  if (text.length <= maximum)
+    return text;
+
+  return text.slice(0, maximum - 1).trim() + "…";
 
 }
 
