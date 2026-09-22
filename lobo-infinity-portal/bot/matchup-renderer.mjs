@@ -35,11 +35,15 @@ function row(band) {
 function action(name, pool) {
   if (!pool) return `<b>${esc(cleanWeaponName(name))}</b><em>No roll</em>`
   const modifierText = (pool.modifierSources || []).filter(Boolean).join(' · ') || 'No MOD'
-  const baseBurst = Number(pool.burst || 0)
+  const baseBurst = Number(pool.baseBurst ?? pool.burst ?? 0)
+  const resolvedBurst = Number(pool.burst || 0)
   const specialDice = Math.max(0, Number(pool.specialDice || 0))
-  const resolvedBurst = baseBurst + specialDice
-  const burstBreakdown = specialDice ? `base B${baseBurst} + ${specialDice}SD` : `base B${baseBurst}`
-  const dice = `BS ${pool.baseTarget}${Number(pool.modifiers) ? (Number(pool.modifiers) > 0 ? ' + ' : ' − ') + Math.abs(Number(pool.modifiers)) : ''} = ${pool.target} · B${resolvedBurst} (${burstBreakdown})`
+  const totalDice = resolvedBurst + specialDice
+  const diceSources = (pool.diceSources || []).filter(Boolean)
+  const fallbackBurstBonus = Math.max(0, resolvedBurst - baseBurst)
+  const fallbackSources = [...(fallbackBurstBonus ? [`Native +${fallbackBurstBonus}B`] : []), ...(specialDice ? [`Native +${specialDice}SD`] : [])]
+  const burstBreakdown = [`base B${baseBurst}`, ...(diceSources.length ? diceSources : fallbackSources)].join(' + ')
+  const dice = `BS ${pool.baseTarget}${Number(pool.modifiers) ? (Number(pool.modifiers) > 0 ? ' + ' : ' − ') + Math.abs(Number(pool.modifiers)) : ''} = ${pool.target} · B${totalDice} (${burstBreakdown})`
   return `<b>${esc(cleanWeaponName(name || pool.source))}</b><small>${esc(dice)}</small><em>${esc(modifierText)}</em>`
 }
 

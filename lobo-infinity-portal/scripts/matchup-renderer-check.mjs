@@ -16,13 +16,13 @@ const browserFactory = async () => ({
 
 const nativeSources = ['Native BS Attack +1SD']
 const linkedSources = ['Native BS Attack +1SD', 'Fireteam +1SD']
-const pool = (specialDice, modifierSources) => ({ baseTarget: 12, burst: 1, modifierSources, modifiers: 0, specialDice, target: 12 })
-const band = (range, specialDice, modifierSources) => ({
+const pool = ({ baseBurst = 1, burst = 1, specialDice = 0, diceSources = [] }) => ({ baseBurst, baseTarget: 12, burst, diceSources, modifierSources: diceSources, modifiers: 0, specialDice, target: 12 })
+const band = (range, attackerPool, defenderPool) => ({
   range,
   attackerAction: 'E/Mitter',
-  attackerPool: pool(specialDice, modifierSources),
+  attackerPool,
   defenderAction: 'Boarding Pistol',
-  defenderPool: pool(specialDice, modifierSources),
+  defenderPool,
   f2fWin: 50,
   oneEffect: 25,
   twoEffects: 10,
@@ -37,24 +37,30 @@ await renderMatchupImages({
       attacker: { name: 'COYOTE FTO' },
       defender: { name: 'COYOTE FTO' },
       variants: [
-        { attackerState: 'normal', defenderState: 'normal', bands: [band('0-8', 1, nativeSources), band('8-16', 1, nativeSources)] },
-        { attackerState: 'fireteam', defenderState: 'fireteam', bands: [band('0-8', 2, linkedSources), band('8-16', 2, linkedSources)] },
+        { attackerState: 'normal', defenderState: 'normal', bands: [band('0-8', pool({ specialDice: 1, diceSources: nativeSources }), pool({ specialDice: 1, diceSources: nativeSources }))] },
+        { attackerState: 'fireteam', defenderState: 'fireteam', bands: [band('0-8', pool({ specialDice: 2, diceSources: linkedSources }), pool({ specialDice: 2, diceSources: linkedSources }))] },
       ],
+    }, {
+      attacker: { name: 'NIMROD FTO' },
+      defender: { name: 'COYOTE FTO' },
+      variants: [{
+        attackerState: 'fireteam',
+        defenderState: 'fireteam',
+        bands: [band('16-24', pool({ baseBurst: 2, burst: 3, specialDice: 1, diceSources: ['Native Weapon +1B', 'Fireteam +1SD'] }), pool({ specialDice: 2, diceSources: linkedSources }))],
+      }],
     }],
   },
 })
 
-assert.equal(pages.length, 2)
-assert.match(pages[0], /E\/Mitter[\s\S]*B2 \(base B1 \+ 1SD\)/)
-assert.match(pages[0], /Boarding Pistol[\s\S]*B2 \(base B1 \+ 1SD\)/)
+assert.equal(pages.length, 3)
+assert.match(pages[0], /E\/Mitter[\s\S]*B2 \(base B1 \+ Native BS Attack \+1SD\)/)
+assert.match(pages[0], /Boarding Pistol[\s\S]*B2 \(base B1 \+ Native BS Attack \+1SD\)/)
 assert.doesNotMatch(pages[0], /· B1 \+ 1SD/)
-assert.match(pages[1], /E\/Mitter[\s\S]*B3 \(base B1 \+ 2SD\)/)
-assert.match(pages[1], /Boarding Pistol[\s\S]*B3 \(base B1 \+ 2SD\)/)
+assert.match(pages[1], /E\/Mitter[\s\S]*B3 \(base B1 \+ Native BS Attack \+1SD \+ Fireteam \+1SD\)/)
+assert.match(pages[1], /Boarding Pistol[\s\S]*B3 \(base B1 \+ Native BS Attack \+1SD \+ Fireteam \+1SD\)/)
 assert.match(pages[1], /Native BS Attack \+1SD · Fireteam \+1SD/)
 assert.doesNotMatch(pages[1], /· B1 \+ 2SD/)
+assert.match(pages[2], /B4 \(base B2 \+ Native Weapon \+1B \+ Fireteam \+1SD\)/)
+assert.match(pages[2], /B3 \(base B1 \+ Native BS Attack \+1SD \+ Fireteam \+1SD\)/)
 
-for (const html of pages) {
-  assert.equal((html.match(/base B1/g) || []).length, 4, 'both combatants show resolved Burst in every range band')
-}
-
-console.log('PASS - matchup renderer shows resolved Coyote Burst with native and Fireteam +SD sources.')
+console.log('PASS - matchup renderer separately shows native +B, native +SD, and Fireteam +SD sources.')

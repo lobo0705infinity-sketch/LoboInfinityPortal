@@ -1,6 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js'
 import { resolve } from 'node:path'
 import { readArtifact } from '../scripts/benchmark-artifacts.mjs'
+import { normalizeTrait } from './combat-rules.mjs'
 import { buildOfficialCombatSource } from './official-combat-source.mjs'
 import { evaluateGunfighterProfile } from './gunfighter-rating.mjs'
 import { renderMatchupImages } from './matchup-renderer.mjs'
@@ -94,13 +95,20 @@ function evaluateDirection(attacker, defender) {
       return {
         attackerState: attackerState.id,
         defenderState: defenderState.id,
-        bands: state.matchups.map(formatBand),
+        bands: state.matchups.map((matchup) => formatBand(matchup, attacker, defender)),
       }
     })),
   }
 }
 
-function formatBand(matchup) {
+export function markMatchupFireteamCapabilities(profiles = []) {
+  const capableIdentities = new Set(profiles.filter((profile) => profile.fireteamCapable).map(matchupProfileIdentity))
+  return profiles.map((profile) => capableIdentities.has(matchupProfileIdentity(profile)) && !profile.fireteamCapable
+    ? { ...profile, fireteamCapable: true }
+    : profile)
+}
+
+function formatBand(matchup, attacker, defender) {
   const selected = [...matchup.candidates].filter((entry) => entry.status === 'evaluated').sort((a, b) => Number(b.score || 0) - Number(a.score || 0) || String(a.weapon).localeCompare(String(b.weapon)))[0]
   const response = selected?.optimalResponse
   const effect = response?.effect
@@ -109,9 +117,9 @@ function formatBand(matchup) {
   return {
     range: matchup.range,
     attackerAction: selected ? [selected.weapon, selected.mode && `(${selected.mode})`].filter(Boolean).join(' ') : 'No legal attack',
-    attackerPool: response?.roll?.attack || response?.attack || null,
+    attackerPool: annotateMatchupPool(response?.roll?.attack || response?.attack || null, attacker),
     defenderAction: response?.aro || 'No ARO',
-    defenderPool: response?.roll?.reactive || null,
+    defenderPool: annotateMatchupPool(response?.roll?.reactive || null, defender, { aro: true }),
     f2fWin: Number(response?.roll?.activeWin || 0),
     oneEffect: 100 * (stateEffect || Number(distribution[1] || 0)),
     twoEffects: 100 * (effect?.nonLethal ? 0 : Number(distribution[2] || 0)),
@@ -120,10 +128,64 @@ function formatBand(matchup) {
   }
 }
 
-function isMatchupLinkable(profile) { return Boolean(profile?.fireteamCapable) || /(?:^|\\s)fto(?:\\s|$)/i.test(String(profile?.name || '')) }
+export function annotateMatchupPool(pool, profile, { aro = false } = {}) {
+  if (!pool) return null
+  const entry = findPoolWeaponMode(profile, pool.source)
+  if (!entry) {
+    const specialDice = Math.max(0, Number(pool.specialDice || 0))
+    return {
+      ...pool,
+      baseBurst: Number(pool.burst || 0),
+      diceSources: specialDice && normalizeTrait(pool.source) === 'dodge' ? [`Native Dodge +${specialDice}SD`] : [],
+    }
+  }
+
+  const skills = (profile?.skills || []).map(normalizeTrait)
+  const fullBurstAro = skills.includes('total reaction') || skills.includes('neurocinetics')
+  const neuroActive = !aro && skills.includes('neurocinetics')
+  const baseBurst = (aro && !fullBurstAro) || neuroActive ? 1 : Number(entry.mode.burst || 1)
+  let remainingBurstBonus = Math.max(0, Number(pool.burst || 0) - baseBurst)
+  const diceSources = []
+  const nativeBurstBonus = numericSkillModifier(skills, /bs attack\s*\+?(\d+)\s*b$/)
+  const appliedNativeBurst = Math.min(remainingBurstBonus, nativeBurstBonus)
+  if (appliedNativeBurst) diceSources.push(`Native BS Attack +${appliedNativeBurst}B`)
+  remainingBurstBonus -= appliedNativeBurst
+  const appliedWeaponBurst = Math.min(remainingBurstBonus, Math.max(0, Number(entry.mode.burstBonus || 0)))
+  if (appliedWeaponBurst) diceSources.push(`Native Weapon +${appliedWeaponBurst}B`)
+
+  let remainingSpecialDice = Math.max(0, Number(pool.specialDice || 0))
+  for (const source of pool.modifierSources || []) {
+    const match = String(source).match(/^(Weapon|Native BS Attack|Fireteam) \+(\d+)SD$/)
+    if (!match || remainingSpecialDice <= 0) continue
+    const applied = Math.min(remainingSpecialDice, Number(match[2]))
+    diceSources.push(`${match[1] === 'Weapon' ? 'Native Weapon' : match[1]} +${applied}SD`)
+    remainingSpecialDice -= applied
+  }
+  if (remainingSpecialDice) diceSources.push(`Native +${remainingSpecialDice}SD`)
+
+  return { ...pool, baseBurst, diceSources }
+}
+
+function isMatchupLinkable(profile) { return Boolean(profile?.fireteamCapable) }
+
+function matchupProfileIdentity(profile) {
+  const parts = [profile?.unitId, profile?.groupId, profile?.optionId, profile?.profileId].map(Number)
+  return parts.every(Number.isFinite) ? parts.join(':') : `id:${String(profile?.id || '')}`
+}
+
+function findPoolWeaponMode(profile, source) {
+  return (profile?.weapons || []).flatMap((weapon) => (weapon.modes || []).map((mode) => ({ weapon, mode })))
+    .find(({ weapon, mode }) => [weapon.name, mode.name && `(${mode.name})`].filter(Boolean).join(' ') === source)
+}
+
+function numericSkillModifier(skills, pattern) {
+  return skills.reduce((sum, skill) => sum + Number(String(skill).match(pattern)?.[1] || 0), 0)
+}
 
 async function loadCombatSource() {
-  combatSourcePromise ||= readArtifact(resolve(import.meta.dirname, '..', 'data', 'infinity-army', 'benchmark-official-source.json.gz.b64')).then(buildOfficialCombatSource)
+  combatSourcePromise ||= readArtifact(resolve(import.meta.dirname, '..', 'data', 'infinity-army', 'benchmark-official-source.json.gz.b64'))
+    .then(buildOfficialCombatSource)
+    .then((source) => ({ ...source, profiles: markMatchupFireteamCapabilities(source.profiles) }))
   return combatSourcePromise
 }
 
