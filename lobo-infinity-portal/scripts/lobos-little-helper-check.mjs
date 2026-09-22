@@ -23,6 +23,9 @@ import {
   DISCORD_TOKEN_ENV,
   REQUIRED_INTENTS,
   createLobosLittleHelper,
+  filterUnannouncedWorkshopChanges,
+  formatWorkshopAnnouncement,
+  workshopAnnouncementMarker,
 } from '../bot/lobos-little-helper.mjs'
 import { GatewayIntentBits } from 'discord.js'
 import { MISSION_COMMAND_DEFINITION } from '../bot/mission-command.mjs'
@@ -72,6 +75,16 @@ assert.deepEqual(REQUIRED_INTENTS, [
   GatewayIntentBits.GuildMessages,
   GatewayIntentBits.MessageContent,
 ])
+const workshopFixture = { id: '3719263238', title: "Lobo's Infinity Maps", updatedAt: 1_795_464_480, url: 'https://steamcommunity.com/sharedfiles/filedetails/?id=3719263238' }
+const workshopMarker = workshopAnnouncementMarker(workshopFixture)
+assert.equal(workshopMarker, 'steam-workshop:3719263238:1795464480')
+assert.match(formatWorkshopAnnouncement(workshopFixture), new RegExp(workshopMarker))
+const priorAnnouncements = new Map([
+  ['message-1', { author: { id: 'bot-1' }, content: `-# ${workshopMarker}` }],
+])
+const announcementChannel = { messages: { fetch: async () => priorAnnouncements } }
+assert.deepEqual(await filterUnannouncedWorkshopChanges(announcementChannel, [workshopFixture], 'bot-1'), [])
+assert.deepEqual(await filterUnannouncedWorkshopChanges(announcementChannel, [{ ...workshopFixture, updatedAt: workshopFixture.updatedAt + 1 }], 'bot-1'), [{ ...workshopFixture, updatedAt: workshopFixture.updatedAt + 1 }])
 assert.equal(MISSION_COMMAND_DEFINITION.name, 'mission')
 assert.equal(MISSION_COMMAND_DEFINITION.options[0].name, 'scenario')
 assert.equal(MISSION_COMMAND_DEFINITION.options[0].required, true)

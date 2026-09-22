@@ -116,9 +116,11 @@ export async function checkRulesResources({
   }
   const previous = await readState(statePath)
   if (!previous) {
+    const changes = { added: [], removed: [], renamed: [], workshops }
+    if (workshops.length && onChange) await onChange({ previous: null, snapshot, changes })
     await writeState(statePath, snapshot)
-    logger.info?.(`Infinity resources baseline saved: links=${links.length} updated_at=${snapshot.endpointUpdatedAt}`)
-    return { status: 'BASELINED', snapshot, changes: { added: [], removed: [], renamed: [], workshops: [] } }
+    logger.info?.(`Infinity resources baseline saved: links=${links.length} workshops=${workshops.length} updated_at=${snapshot.endpointUpdatedAt}`)
+    return { status: 'BASELINED', snapshot, changes }
   }
   const workshopChanges = Array.isArray(previous.workshops) ? diffWorkshopItems(previous.workshops, workshops) : []
   if (previous.bodySha256 === snapshot.bodySha256 && !workshopChanges.length) {

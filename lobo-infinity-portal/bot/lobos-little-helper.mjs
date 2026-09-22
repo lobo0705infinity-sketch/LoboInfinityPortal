@@ -24,6 +24,25 @@ export const REQUIRED_INTENTS = Object.freeze([
   GatewayIntentBits.MessageContent,
 ])
 
+export function workshopAnnouncementMarker(item) {
+  return `steam-workshop:${String(item?.id || '').trim()}:${Number(item?.updatedAt)}`
+}
+
+export async function filterUnannouncedWorkshopChanges(channel, workshops = [], botUserId = '') {
+  if (!workshops.length) return []
+  const recent = await channel.messages.fetch({ limit: 100 })
+  const messages = [...recent.values()]
+  return workshops.filter((item) => {
+    const marker = workshopAnnouncementMarker(item)
+    return !messages.some((message) => message.author?.id === botUserId && String(message.content || '').includes(marker))
+  })
+}
+
+export function formatWorkshopAnnouncement(item) {
+  const updatedAt = Number(item.updatedAt)
+  return `• **[Workshop updated: ${item.title}](${item.url})** · updated <t:${updatedAt}:R>\n-# ${workshopAnnouncementMarker(item)}`
+}
+
 export function createLobosLittleHelper() {
   const client = new Client({ intents: REQUIRED_INTENTS })
   const handleMessage = createInfListMessageHandler()
@@ -81,7 +100,9 @@ export async function startLobosLittleHelper({ token = process.env[DISCORD_TOKEN
         if (!channel?.isTextBased?.()) throw new Error(`Infinity resources announcement channel was not found: ${channelId || `#${channelName}`}`)
         const added = changes.added.slice(0, 10).map((item) => `• **[${item.label}](${item.url})**`)
         const remaining = changes.added.length - added.length
-        const workshops = (changes.workshops || []).slice(0, 10).map((item) => `• **[Workshop updated: ${item.title}](${item.url})**`)
+        const unannouncedWorkshops = await filterUnannouncedWorkshopChanges(channel, changes.workshops || [], client.user.id)
+        const workshops = unannouncedWorkshops.slice(0, 10).map(formatWorkshopAnnouncement)
+        if (!added.length && !workshops.length) return
         const lines = ['**Infinity Resource Update**', '', ...added, ...workshops]
         if (remaining > 0) lines.push(`• …and ${remaining} more`)
         lines.push('', `[View all resources](${process.env.RULES_RESOURCES_PAGE_URL || 'http://51.255.44.29/infinity/ressources'})`)

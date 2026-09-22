@@ -28,7 +28,9 @@ const fetchImpl = async (url) => String(url).includes('GetPublishedFileDetails')
   ? { ok: true, json: async () => ({ response: { publishedfiledetails: [{ result: 1, publishedfileid: '3719263238', title: 'Workshop Fixture', time_updated: workshopUpdatedAt }] } }) }
   : { ok: true, json: async () => ({ body_md: body, updated_at: 1 }) }
 const silent = { info() {}, error() {} }
-assert.equal((await checkRulesResources({ statePath, fetchImpl, logger: silent })).status, 'BASELINED')
+const baselineResult = await checkRulesResources({ statePath, fetchImpl, logger: silent, onChange: async (event) => { changed = event } })
+assert.equal(baselineResult.status, 'BASELINED')
+assert.equal(changed.changes.workshops[0].id, '3719263238')
 assert.equal((await checkRulesResources({ statePath, fetchImpl, logger: silent })).status, 'UNCHANGED')
 body = second
 const result = await checkRulesResources({ statePath, fetchImpl, logger: silent, onChange: async (event) => { changed = event } })
