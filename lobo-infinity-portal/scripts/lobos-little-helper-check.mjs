@@ -23,8 +23,11 @@ import {
   DISCORD_TOKEN_ENV,
   REQUIRED_INTENTS,
   createLobosLittleHelper,
+  filterUnannouncedMapChanges,
   filterUnannouncedWorkshopChanges,
+  formatMapAnnouncement,
   formatWorkshopAnnouncement,
+  mapAnnouncementMarker,
   workshopAnnouncementMarker,
 } from '../bot/lobos-little-helper.mjs'
 import { GatewayIntentBits } from 'discord.js'
@@ -79,12 +82,34 @@ const workshopFixture = { id: '3719263238', title: "Lobo's Infinity Maps", updat
 const workshopMarker = workshopAnnouncementMarker(workshopFixture)
 assert.equal(workshopMarker, 'steam-workshop:3719263238:1795464480')
 assert.match(formatWorkshopAnnouncement(workshopFixture), new RegExp(workshopMarker))
+assert.match(formatWorkshopAnnouncement(workshopFixture), /Infinity TTS Workshop Updated/)
+const mapFixture = {
+  id: '27',
+  name: 'Oil Refinery',
+  createdAt: '2026-09-21T11:12:59.000Z',
+  pageUrl: 'http://51.255.44.29/infinity/maps?map=oil-refinery',
+  jsonUrl: 'http://51.255.44.29/infinity/api/tts-maps/27/json',
+  images: ['http://51.255.44.29/infinity/api/tts-maps/27/pictures/oil_refinery_01.jpg'],
+  contentSignature: '0123456789ABCDEF0123456789ABCDEF',
+}
+const mapMarker = mapAnnouncementMarker(mapFixture)
+assert.equal(mapMarker, 'tts-map:27:0123456789ABCDEF')
+assert.match(formatMapAnnouncement({ item: mapFixture, kind: 'added' }), /New Infinity TTS Map/)
+assert.match(formatMapAnnouncement({ item: mapFixture, kind: 'added' }), /Download TTS JSON/)
+assert.match(formatMapAnnouncement({ item: mapFixture, kind: 'updated' }), /Infinity TTS Map Updated/)
 const priorAnnouncements = new Map([
   ['message-1', { author: { id: 'bot-1' }, content: `-# ${workshopMarker}` }],
+  ['message-2', { author: { id: 'bot-1' }, content: `-# ${mapMarker}` }],
 ])
 const announcementChannel = { messages: { fetch: async () => priorAnnouncements } }
 assert.deepEqual(await filterUnannouncedWorkshopChanges(announcementChannel, [workshopFixture], 'bot-1'), [])
 assert.deepEqual(await filterUnannouncedWorkshopChanges(announcementChannel, [{ ...workshopFixture, updatedAt: workshopFixture.updatedAt + 1 }], 'bot-1'), [{ ...workshopFixture, updatedAt: workshopFixture.updatedAt + 1 }])
+assert.deepEqual(await filterUnannouncedMapChanges(announcementChannel, [{ kind: 'added', item: mapFixture }], 'bot-1'), [])
+const revisedMap = { ...mapFixture, contentSignature: 'FEDCBA98765432100123456789ABCDEF' }
+assert.deepEqual(await filterUnannouncedMapChanges(announcementChannel, [{ kind: 'updated', item: revisedMap }], 'bot-1'), [{ kind: 'updated', item: revisedMap }])
+const noHistoryChannel = { messages: { fetch: async () => { throw new Error('Missing Read Message History') } } }
+assert.deepEqual(await filterUnannouncedMapChanges(noHistoryChannel, [{ kind: 'added', item: mapFixture }], 'bot-1'), [{ kind: 'added', item: mapFixture }])
+assert.deepEqual(await filterUnannouncedWorkshopChanges(noHistoryChannel, [workshopFixture], 'bot-1'), [workshopFixture])
 assert.equal(MISSION_COMMAND_DEFINITION.name, 'mission')
 assert.equal(MISSION_COMMAND_DEFINITION.options[0].name, 'scenario')
 assert.equal(MISSION_COMMAND_DEFINITION.options[0].required, true)
