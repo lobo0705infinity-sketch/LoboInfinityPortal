@@ -1067,7 +1067,7 @@ function IntelligenceBrief({ analysis, faction }: { analysis: TacticalAnalysis; 
       <p className="army-intelligence-role-notice">Profiles may appear in multiple sections when they perform multiple tactical roles. Quantities represent models, not classifications.</p>
       <BriefNavigator analysis={analysis} onChange={setView} value={view} />
       <div className="army-intelligence-tactical-grid">
-        {visibleCategories.map((category) => <article className="army-intelligence-tactical-panel" id={`intelligence-${category.id}`} key={category.id}>
+        {visibleCategories.map((category) => <article className={`army-intelligence-tactical-panel ${category.id === 'apex' || category.id === 'apexCc' ? 'is-ranking-panel' : ''}` } id={`intelligence-${category.id}`} key={category.id}>
           <header><h3>{category.title}</h3><p>{category.description}</p></header>
           {category.id === 'hacking' ? <p className="army-intelligence-category-total"><strong>{analysis.hackerListCount}</strong> of {analysis.listCount} decoded lists contain at least one Hacker.</p> : null}
           {category.profiles.length ? <div className="army-intelligence-tactical-profiles">{category.profiles.map((profile, index) => <TacticalProfileRow category={category.id} key={profile.profileId} profile={profile} rank={index + 1} />)}</div> : <p className="army-intelligence-tactical-empty">{category.unavailableReason || 'No qualifying profiles were found in the submitted decoded sample.'}</p>}
@@ -1078,6 +1078,19 @@ function IntelligenceBrief({ analysis, faction }: { analysis: TacticalAnalysis; 
   )
 }
 
+function formatTacticalUnitName(value: string) {
+  return value === value.toLocaleUpperCase()
+    ? value.toLocaleLowerCase().replace(/(^|[\\s-])\\p{L}/gu, (letter) => letter.toLocaleUpperCase())
+    : value
+}
+
+function formatRankingPercentile(value: number) {
+  const rounded = Math.round(value)
+  const mod100 = rounded % 100
+  const suffix = mod100 >= 11 && mod100 <= 13 ? 'th' : rounded % 10 === 1 ? 'st' : rounded % 10 === 2 ? 'nd' : rounded % 10 === 3 ? 'rd' : 'th'
+  return `${rounded}${suffix}`
+}
+
 function TacticalProfileRow({ category, profile, rank }: { category: string; profile: TacticalProfile; rank: number }) {
   const rankedBenchmark = category === 'apex' ? profile.gunfighter : category === 'apexCc' ? profile.closeCombat : undefined
   if (rankedBenchmark) {
@@ -1085,13 +1098,13 @@ function TacticalProfileRow({ category, profile, rank }: { category: string; pro
     return <article className="army-intelligence-tactical-profile is-ranked">
       <div className="army-intelligence-ranking-rank"><span>List rank</span><strong>#{rank}</strong></div>
       <div className="army-intelligence-ranking-identity">
-        <strong>{profile.unit}</strong>
+        <strong>{formatTacticalUnitName(profile.unit)}</strong>
         <span>{profile.profile}</span>
         <small>{rankedBenchmark.weapon} · {state}</small>
         {profile.mobility && category === 'apex' ? <small>Mobility {profile.mobility.score.toFixed(1)}/100{profile.mobility.mov ? ` · MOV ${profile.mobility.mov.join('-')}″` : ''}{profile.mobility.travel !== null ? ` · Travel ${profile.mobility.travel}″` : ''}</small> : null}
       </div>
       <div className="army-intelligence-ranking-score"><span>Benchmark rating</span><strong>{rankedBenchmark.rating.toFixed(2)}</strong></div>
-      <div className={`army-intelligence-ranking-grade is-grade-${rankedBenchmark.grade.toLowerCase()}`}><span>Grade</span><strong>{rankedBenchmark.grade}</strong><small>Global: {Math.round(rankedBenchmark.percentile)}th percentile</small></div>
+      <div className={`army-intelligence-ranking-grade is-grade-${rankedBenchmark.grade.toLowerCase()}`}><span>Grade</span><strong>{rankedBenchmark.grade}</strong><small>Global: {formatRankingPercentile(rankedBenchmark.percentile)} percentile</small></div>
       <footer><span>{profile.listCount} {profile.listCount === 1 ? 'list' : 'lists'} · {Math.round(profile.percentage)}% usage</span>{profile.roles.length > 1 ? <span>MULTI-ROLE</span> : null}</footer>
     </article>
   }
@@ -1104,7 +1117,7 @@ function TacticalProfileRow({ category, profile, rank }: { category: string; pro
   ].filter((state): state is NonNullable<typeof state> => Boolean(state)) : []
   const aroWeapons = Array.from(new Set(aroStates.flatMap((state) => state.weaponsUsed.map((weapon) => weapon.weapon).filter(Boolean)))).slice(0, 3)
   return <div className="army-intelligence-tactical-profile">
-    <div><strong>{profile.unit}</strong><span>{profile.profile}</span></div>
+    <div><strong>{formatTacticalUnitName(profile.unit)}</strong><span>{profile.profile}</span></div>
     <div className="army-intelligence-tactical-badges">
       {profile.bs !== null && !aroBenchmark ? <span>BS {profile.bs}</span> : null}
       {aroBenchmark ? <><span>ARO {aroWeapons.length === 1 ? 'weapon' : 'weapons'}: {aroWeapons.length ? aroWeapons.join(' · ') : 'Dodge / no-effect response'}</span>{aroStates.map((state) => <span key={state.label}>{state.label}: {state.rating.toFixed(2)} · Grade {state.grade} · {Math.round(state.percentile)}th percentile</span>)}</> : null}
