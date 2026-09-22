@@ -183,7 +183,7 @@ const gammaFeuerbach = entry('1001-1457-1-2-1', 'GAMMA UNIT', 'Feuerbach', {
 const benchmarkAro = buildTacticalAnalysis([decodedList('ARO benchmark', [gammaFeuerbach])] as never)
 const benchmarkGamma = benchmarkAro.categories.find((item) => item.id === 'valuableAro')?.profiles[0]
 assert.equal(benchmarkAro.categories.find((item) => item.id === 'valuableAro')?.title, 'Valuable ARO Ratings')
-assert.equal(benchmarkGamma?.aro?.normal?.rating, 4.94, 'portal ARO cards use the exact current benchmark rating')
+assert.equal(benchmarkGamma?.aro?.normal?.rating, 6.36, 'portal ARO cards use the exact current benchmark rating')
 assert.equal(benchmarkGamma?.aro?.normal?.grade, 'A')
 assert.equal(benchmarkGamma?.aro?.normal?.weaponsUsed[0]?.weapon, 'Feuerbach')
 assert.equal(benchmarkGamma?.aro?.fireteam, undefined, 'a catalog Fireteam state is hidden unless the submitted list earns +1SD')
@@ -193,7 +193,7 @@ const linkedBenchmarkAro = buildTacticalAnalysis([decodedList('Linked ARO benchm
   { ...gammaFeuerbach, fireteamEligibility: gammaFireteam },
   { ...gammaFeuerbach, fireteamEligibility: gammaFireteam },
 ])] as never)
-assert.equal(linkedBenchmarkAro.categories.find((item) => item.id === 'valuableAro')?.profiles[0]?.aro?.fireteam?.rating, 8.81, 'a legal same-model submitted Fireteam exposes the linked +1SD benchmark state')
+assert.equal(linkedBenchmarkAro.categories.find((item) => item.id === 'valuableAro')?.profiles[0]?.aro?.fireteam?.rating, 10.98, 'a legal same-model submitted Fireteam exposes the linked +1SD benchmark state')
 
 const gammaHmg = entry('1001-1457-1-1-1', 'GAMMA UNIT', 'Heavy Machine Gun', {
   bs: 14,

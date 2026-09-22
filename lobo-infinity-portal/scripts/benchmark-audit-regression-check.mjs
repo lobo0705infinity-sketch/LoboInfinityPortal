@@ -125,7 +125,11 @@ assert.ok(response(camo, { ...p, skills: ['Sixth Sense'] }, { ...options, surpri
 const noWeapons = { ...p, weapons: [], skills: ['Sixth Sense'] }
 assert.equal(candidate({ ...p, skills: ['BS Attack (-3)'] }, noWeapons).score, candidate(p, noWeapons).score, 'Sixth Sense Dodge ignores BS Attack penalties')
 const albedoDefender = { ...p, equipment: ['Albedo -3'] }
-assert.ok(response(p, albedoDefender).roll.reactiveWin > response(p, p).roll.reactiveWin, 'Albedo equipment applies its -3 BS Attack MOD in Face-to-Face shooting')
+assert.equal(response(p, albedoDefender).roll.reactiveWin, response(p, p).roll.reactiveWin, 'Albedo does not affect a Trooper without MSV or Marksmanship')
+const msvAttacker = { ...p, equipment: ['Multispectral Visor L1'] }
+assert.ok(response(msvAttacker, albedoDefender).roll.reactiveWin > response(msvAttacker, p).roll.reactiveWin, 'Albedo applies its BS Attack MOD against a Multispectral Visor user')
+const marksmanAttacker = { ...p, skills: ['Marksmanship'] }
+assert.ok(response(marksmanAttacker, albedoDefender).roll.reactiveWin > response(marksmanAttacker, p).roll.reactiveWin, 'Albedo applies its BS Attack MOD against a Marksmanship user')
 const sdDodge = { ...p, ph: 13, weapons: [], skills: ['Dodge (+2SD)'] }
 near(candidate(p, sdDodge, template).optimalResponse.effect.total, .35 ** 3 * (1 - .35 ** 2), 'No rounded probability is fed back into template damage')
 

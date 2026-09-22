@@ -521,6 +521,7 @@ function applyOpponentFtfModifier(pool, opponent, opponentAction, protectedProfi
   const skills = tokens(opponent.skills)
   const equipment = tokens(opponent.equipment)
   const protectedSkills = tokens(protectedProfile?.skills)
+  const protectedEquipment = tokens(protectedProfile?.equipment)
   // Sixth Sense protects Dodge, not BS/CC Surprise responses (Combat Instinct does that).
   if (pool.source === 'Dodge' && protectedSkills.includes('sixth sense')) return pool
   let modifier = 0
@@ -532,11 +533,14 @@ function applyOpponentFtfModifier(pool, opponent, opponentAction, protectedProfi
     if (dodge && opponentAction === 'dodge') modifier -= Number(dodge[1])
     if (surprise && allowSurprise && !protectedSkills.includes('combat instinct') && !tokens(protectedProfile?.equipment).includes('multispectral visor l3')) modifier -= Number(surprise[1])
   }
-  // Albedo is printed as equipment by Army data, but imposes a BS Attack MOD
-  // on an opposing shooting roll just like the corresponding skill notation.
+  // Albedo only affects the Troopers its rule names: users of a
+  // Multispectral Visor or Marksmanship. Army data prints Albedo as equipment,
+  // so gate its BS Attack MOD against the profile making the current roll.
+  const albedoApplies = protectedSkills.includes('marksmanship')
+    || protectedEquipment.some((value) => /^multispectral visor(?:\s|$)/.test(value))
   for (const item of equipment) {
     const albedo = item.match(/^albedo\s*-([0-9]+)$/)
-    if (albedo && opponentAction !== 'dodge') modifier -= Number(albedo[1])
+    if (albedo && albedoApplies && opponentAction !== 'dodge') modifier -= Number(albedo[1])
   }
   if (!modifier) return pool
   const modifiers = Number(pool.modifiers || 0) + modifier
