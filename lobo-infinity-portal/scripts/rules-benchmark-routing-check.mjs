@@ -3,6 +3,8 @@ import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { findApprovedRulesAnswer, loadRulesBenchmark, normalizeQuestion } from '../bot/rules-benchmark.mjs'
 import { retrieveRulesReference, formatRulesDiscordResponse } from '../bot/rules-command.mjs'
+import { buildRulesEvidencePrompt } from '../bot/deepseek-rules.mjs'
+import { loadProductionRulesCorpus } from '../bot/infinity-rules-service.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
@@ -125,6 +127,32 @@ assert.equal(calls, 0)
 const unmatched = await retrieveRulesReference({ question: 'purple bananas orbit a quantum teapot', deepSeek: fallback })
 assert.equal(unmatched.status, 'FALLBACK')
 assert.equal(calls, 1)
+const fireteamQuestions = [
+  'is the fireteam name public information?',
+  'Is the type of fireteam, duo, haris, core, public information?',
+  'is the fireteam chart name you use to make a fireteam public information?',
+  'Do I have to tell my opponent which Fireteams Chart entry formed my Fireteam?',
+]
+let identityCalls = 0
+const identityFallback = async ({ question }) => { identityCalls++; return { question, status: 'FALLBACK' } }
+for (const question of fireteamQuestions) {
+  const result = await retrieveRulesReference({ question, deepSeek: identityFallback })
+  assert.equal(result.answerSource, 'EVIDENCE_BOUNDED_RULES', question)
+  assert.equal(result.deepSeek.conclusion, 'YES', question)
+  assert.equal(result.deepSeek.certainty, 'EVIDENCE-BOUNDED INTERPRETATION', question)
+  assert.deepEqual(result.deepSeek.sources.map((source) => source.page), ['p. 7', 'p. 132', 'p. 133'])
+  assert.match(result.deepSeek.answer, /Bonuses.*Private/i)
+  const embed = formatRulesDiscordResponse(result).embeds[0]
+  assert.match(embed.fields.find((field) => field.name === 'ANSWER').value, /\*\*YES\*\*/)
+  assert.match(embed.footer.text, /no provider call/)
+}
+assert.equal(identityCalls, 0, 'public Fireteam identity questions must not depend on provider output')
+const bonuses = await retrieveRulesReference({ question: 'Are Fireteam bonuses public information?', deepSeek: identityFallback })
+assert.equal(bonuses.status, 'FALLBACK', 'private Fireteam bonuses must not be classified as public identity')
+assert.equal(identityCalls, 1)
+const fireteamEvidence = buildRulesEvidencePrompt(await loadProductionRulesCorpus(), fireteamQuestions[2])
+assert.match(fireteamEvidence.text, /must declare which Troopers are members/)
+assert.match(fireteamEvidence.text, /Army List information not explicitly designated Private is Open/)
 const matchedTacball = await retrieveRulesReference({ question: 'What is a TacBall and how it works', deepSeek: fallback })
 assert.equal(matchedTacball.answerSource, 'APPROVED_BENCHMARK')
 assert.equal(matchedTacball.benchmark.id, 'new-topic-2-505')

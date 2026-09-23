@@ -22,6 +22,30 @@ const officialTerms = ['zero pain','discover','camouflaged state','camouflaged m
 // official N5.3 wiki page as well as the activated PDF.
 const rulesSupplements = Object.freeze([
 {
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 7, printedPage: '7',
+  section: 'OPEN AND PRIVATE INFORMATION',
+  headings: ['OPEN AND PRIVATE INFORMATION', 'FIRETEAM BONUSES'],
+  structuredBlockTypes: ['IMPORTANT'], canonicalTerm: 'open and private information',
+  controllingTerms: ['fireteam bonuses'],
+  text: 'OPEN AND PRIVATE INFORMATION\nArmy List information not explicitly designated Private is Open and knowable to all. Open Information must be shared while deploying and whenever the opponent asks during the game. Private Information stays secret until an event requires disclosure.\nIMPORTANT: A Fireteam\'s Bonuses are Private Information until a player declares a BS Attack, Discover, or another Skill that benefits from those Bonuses.',
+},
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 132, printedPage: '132',
+  section: 'INFINITY FIRETEAMS — FIRETEAM CREATION AND TYPES',
+  headings: ['FIRETEAM CREATION', 'FIRETEAM TYPES'],
+  structuredBlockTypes: ['IMPORTANT'], canonicalTerm: 'fireteam creation',
+  text: 'FIRETEAM CREATION\nEach Army has a Fireteams Chart specifying the number and types of Fireteams it may create. When a Fireteam is created, the player must declare which Troopers are members and follow all the rules and instructions in the Army\'s Fireteams Chart. Fireteam types are Duo, Haris, and Core. At creation a Duo has two Troopers, a Haris three, and a Core three to five, subject to the Sectorial Fireteams Chart.',
+},
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 133, printedPage: '133',
+  section: 'FIRETEAMS CHART', headings: ['FIRETEAMS CHART'],
+  structuredBlockTypes: ['EXAMPLE'], canonicalTerm: 'fireteams chart',
+  text: 'FIRETEAMS CHART\nThe official current Fireteams Charts are in the Infinity Army app. Their named Fireteam entries specify which type or types may be created, how many Troopers may join, required Troopers, and any special creation conditions. The chart example names Rodoks and Hungries Fireteams and explains that a Rodoks Fireteam can be Duo or Haris.',
+},
+{
   "sourceId": "infinity-rules-n5.3",
   "title": "Infinity Rules",
   "version": "5.3",

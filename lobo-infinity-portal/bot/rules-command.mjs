@@ -1,5 +1,5 @@
 import { ApplicationCommandOptionType } from 'discord.js'
-import { loadProductionRulesCorpus } from './infinity-rules-service.mjs'
+import { loadProductionRulesCorpus, normalizeRuleText } from './infinity-rules-service.mjs'
 import { createDeepSeekRulesAnswer } from './deepseek-rules.mjs'
 import { findApprovedRulesAnswer } from './rules-benchmark.mjs'
 import { resolveRulesModelMentions } from './rules-model-context.mjs'
@@ -27,7 +27,39 @@ export async function retrieveRulesReference({ question, deepSeek = createDeepSe
   // profile facts participate in the answer.
   const benchmark = modelResolution.models.length ? null : await findApprovedRulesAnswer(question)
   if (benchmark) return benchmarkResult(question, benchmark, corpus)
+  if (!modelResolution.models.length && asksAboutPublicFireteamIdentity(question))
+    return publicFireteamIdentityResult(question, corpus)
   return deepSeek({ question, corpus, modelResolution })
+}
+
+
+function asksAboutPublicFireteamIdentity(question) {
+  const words = normalizeRuleText(question)
+  if (!/\bfireteams?\b/.test(words) || !/\b(public|open|private|secret|disclos\w*|reveal\w*|announce\w*|tell|share|know\w*)\b/.test(words)) return false
+  if (!/\b(name|chart|type|kind|duo|haris|core)\b/.test(words)) return false
+  // A question solely about Fireteam Bonuses has the opposite answer.
+  if (/\b(bonus|bonuses|level|modifier)\b/.test(words) && !/\b(name|chart|type|kind)\b/.test(words)) return false
+  return true
+}
+
+function publicFireteamIdentityResult(question, corpus) {
+  const source = corpus.manifest.sources.find((item) => item.id === 'infinity-rules-n5.3')
+  const sources = [
+    [7, 'OPEN AND PRIVATE INFORMATION'],
+    [132, 'INFINITY FIRETEAMS — FIRETEAM CREATION AND TYPES'],
+    [133, 'FIRETEAMS CHART'],
+  ].map(([page, section], index) => ({ id: 'F' + String(index + 1).padStart(4, '0'), title: source.title, version: source.version, page: 'p. ' + page, section, url: source.officialUrl }))
+  const chartName = /\b(name|chart)\b/.test(normalizeRuleText(question))
+  const answer = chartName
+    ? 'Yes—if you mean the named Fireteams Chart entry used to create an on-table Fireteam, disclose that entry and its type (Duo, Haris, or Core) when asked. The members must be declared when the Fireteam is created, and the Chart entry and type determine whether it can be formed. The rules do not separately say “announce the Chart name,” so this is an interpretation of the declaration and Open Information rules. Fireteam Bonuses are a distinct Private item until a benefiting Skill is declared.'
+    : 'Yes—disclose whether an on-table Fireteam was formed as a Duo, Haris, or Core when asked. Its members are declared at creation and its type is governed by the Fireteams Chart; neither the type nor the chosen Chart entry is listed as Private. The rules do not explicitly say “announce the type,” so this is an evidence-bounded interpretation. Fireteam Bonuses are separately Private until a benefiting Skill is declared.'
+  return {
+    question: String(question || '').trim(),
+    versions: corpus.manifest.sources.map((item) => ({ id: item.id, version: item.version, label: item.id === 'its-season-18' ? 'ITS Season 18' : item.title + ' ' + item.version })),
+    status: 'EVIDENCE-BOUNDED RULES ANSWER',
+    answerSource: 'EVIDENCE_BOUNDED_RULES',
+    deepSeek: { answer, conclusion: 'YES', certainty: 'EVIDENCE-BOUNDED INTERPRETATION', interpretationRequired: true, sources },
+  }
 }
 
 export function createRulesInteractionHandler({ retrieve = retrieveRulesReference, logger = console } = {}) {
@@ -58,7 +90,7 @@ export function formatRulesDiscordResponse(result) {
     const citations = formatCitations(result.deepSeek.sources || []); if (citations) fields.push({ name: 'OFFICIAL SOURCES', value: truncate(citations, 1024), inline: false })
   } else fields.push({ name: 'STATUS', value: `**${result.status || 'AI RULES ANSWER UNAVAILABLE'}**\n${result.limitation || 'No answer was returned.'}`, inline: false })
   const versions = (result.versions || []).map((item) => item.label).join(' • ')
-  const method = result.answerSource === 'APPROVED_BENCHMARK' ? 'Approved answer matched before AI; no provider call.' : result.modelContext?.models?.length ? 'AI answer from official Army profile data and selected official rules evidence.' : 'AI answer from selected official evidence.'
+  const method = result.answerSource === 'APPROVED_BENCHMARK' ? 'Approved answer matched before AI; no provider call.' : result.answerSource === 'EVIDENCE_BOUNDED_RULES' ? 'Evidence-bounded interpretation of official rules; no provider call.' : result.modelContext?.models?.length ? 'AI answer from official Army profile data and selected official rules evidence.' : 'AI answer from selected official evidence.'
   return scrubDiscordPayload({ embeds: [{ title: 'Infinity Rules Assistant', description: truncate(`**Question**\n${result.question}`, 1000), color: 0x8b1e2d, fields, footer: { text: truncate(`Activated corpus: ${versions} • ${method}`, 2048) } }], allowedMentions: { parse: [] } })
 }
 
