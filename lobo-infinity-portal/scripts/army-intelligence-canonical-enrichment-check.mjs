@@ -59,4 +59,5 @@ const johnny = enrichDecodedList(johnnyList, official).combatGroups[0].entries[0
 assert.equal(johnny.equipmentSource, 'official')
 assert.deepEqual(johnny.equipment.map((item) => item.split(' (')[0]), ['Deactivator', 'GizmoKit', 'X Visor'])
 assert.equal(johnny.equipment.includes('Deployable Repeater'), false, 'stale card equipment must not create a false Hacking Network capability')
+assert.equal(johnny.weapons.includes('Deployable Repeater'), false, 'an equipment ID collision must not create a false weapon')
 console.log('Army Intelligence canonical enrichment passed (exact combinedId profile/options, source metadata, Fireteam true/unknown, and loadout isolation).')

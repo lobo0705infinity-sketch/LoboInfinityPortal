@@ -37,6 +37,7 @@ for (const sectorial of [201, 204, 205, 701, 703]) {
   const johnny = repairArmyProfile({combinedId:`${sectorial}-1892-1-1-1`,unit:'Johnny Kao',profile:'Deployable Repeater',equipment:['Deployable Repeater'],weapons:['Plasma Carbine']})
   assert.deepEqual(johnny.equipment,['Deactivator (ReRoll)','GizmoKit (+1B)','X Visor'], 'stale Johnny Kao equipment must be replaced in public snapshots')
   assert.equal(johnny.profile,'Johnny Kao', 'stale equipment must not remain the displayed loadout name')
+  assert.equal(johnny.weapons.includes('Deployable Repeater'), false, 'a colliding equipment ID must not appear as a weapon')
 }
 assert.deepEqual(repairArmyProfile({combinedId:'201-1892-1-1-1',unit:'Johnny Kao',profile:'Johnny Kao',equipment:['X Visor']}).equipment,['X Visor'], 'current official equipment must remain unchanged')
 const unknown = {combinedId:'999-999-1-1-1',weapons:['Unknown']}

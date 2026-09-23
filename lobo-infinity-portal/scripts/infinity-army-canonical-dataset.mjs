@@ -59,9 +59,14 @@ export function resolveCanonicalWeaponRecords(dataset, references = [], { expand
   const catalog = dataset?.metadata?.weapons || []
   return references.flatMap((reference) => {
     const id = Number(reference?.id)
-    const candidates = catalog.filter((weapon) => weapon.id === id)
+    const sameId = catalog.filter((weapon) => weapon.id === id)
     const modifiers = resolveExtraNames(dataset, reference?.extra ?? reference?.extras)
     const mode = reference?.mode ?? reference?.variant ?? reference?.name ?? null
+    const named = mode == null ? [] : sameId.filter((weapon) => weapon.mode === String(mode) || weapon.variant === String(mode) || weapon.name === String(mode))
+    // Army metadata can reuse one ID for a weapon and a piece of equipment.
+    // A weapon reference without a name means the weapon, not both records.
+    const weaponCandidates = sameId.filter((weapon) => weapon.type.toUpperCase() === 'WEAPON')
+    const candidates = named.length ? named : weaponCandidates.length ? weaponCandidates : sameId
     const matched = mode == null ? candidates : candidates.filter((weapon) => weapon.mode === String(mode) || weapon.variant === String(mode) || weapon.name === String(mode))
     const selected = matched.length === 1 ? matched[0] : candidates.length === 1 ? candidates[0] : null
     if (!selected) {
