@@ -38,9 +38,17 @@ const state = new Map([
     tacticalSchemaVersion: ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION,
     status: 'failed',
   }],
+  ['malformed', {
+    armyCodeHash: 'malformed-hash',
+    error: 'Invalid Army Code: malformed or contaminated source value.',
+    pipelineVersion: 'army-intelligence-pipeline-v1',
+    tacticalSchemaVersion: ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION,
+    status: 'failed',
+  }],
 ])
 
 sources.push({ snapshotKey: 'isolated', armyCodeHash: 'isolated-hash' })
+sources.push({ snapshotKey: 'malformed', armyCodeHash: 'malformed-hash' })
 
 assert.deepEqual(
   selectRefreshCandidates(sources, state).map((source) => source.snapshotKey),

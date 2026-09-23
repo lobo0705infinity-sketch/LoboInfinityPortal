@@ -60,11 +60,37 @@ export async function decodeArmyList({ input, signal } = {}) {
     throw new Error('Missing required --input value.')
   }
 
-  const armyCode = normalizeArmyCodeInput(input)
-  const codeData = decodeArmyCode(armyCode)
+  let armyCode = normalizeArmyCodeInput(input)
+  let codeData
+  try {
+    codeData = decodeArmyCode(armyCode)
+  } catch (error) {
+    const repaired = repairAppendedScoreSuffix(armyCode)
+    if (!repaired) {
+      throw new Error('Invalid Army Code: malformed or contaminated source value.', { cause: error })
+    }
+    armyCode = repaired.armyCode
+    codeData = repaired.codeData
+  }
   const html = await fetchInfinityDataOverview(armyCode, signal)
   const resolved = parseInfinityDataOverview(html)
   return buildStructuredList(armyCode, codeData, resolved)
+}
+
+export function repairAppendedScoreSuffix(armyCode) {
+  if (!/\d$/.test(armyCode)) return null
+  const repairs = []
+  for (let count = 1; count <= Math.min(6, armyCode.length); count += 1) {
+    const suffix = armyCode.slice(-count)
+    if (!/^\d+$/.test(suffix)) break
+    const candidate = armyCode.slice(0, -count)
+    try {
+      repairs.push({ armyCode: candidate, codeData: decodeArmyCode(candidate), suffix })
+    } catch {
+      // Keep looking for the unique structurally complete Army Code prefix.
+    }
+  }
+  return repairs.length === 1 ? repairs[0] : null
 }
 
 export function normalizeArmyCodeInput(input) {

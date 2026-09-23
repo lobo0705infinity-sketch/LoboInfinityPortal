@@ -9,6 +9,7 @@ import {
   decodeArmyListToFiles,
   hasExactSkillToken,
   normalizeArmyCodeForInfinityDataTransport,
+  repairAppendedScoreSuffix,
 } from './infinity-army-decode.mjs'
 
 const forWorkCode =
@@ -23,6 +24,8 @@ const legacyCompatibleSteelPhalanxCode =
   'gr4Nc3RlZWwtcGhhbGFueACBLAEBAAoBgtEBAQACglwBAgADglkBAQAEgkwBBAAFgkwBAgAGgkwBBgAHgkwBAwAIgmEBAQAJhjkBBAAKgmABAgA%3D'
 const tartaryPercentEncodedCode =
   'gTEHdGFydGFyeRtUYWNrc3NzIHRlYW1zICAzIG1vcmUgZGlzY2%2BBLAIBAAcBhH4BBAAChzYBAwADhfQBAQAEgPIBg0UABYDuAQUABoRuAZBWAAeA5QEDAAIACAGA5wECAAKA8AECAAOA8AECAASA8QEBAAWHNQEEAAaBCQECAAeA8gGDRQAIh1IBAQA%3D7'
+const qapuCodeWithScoreSuffix =
+  'gZMLcWFwdS1raGFscWkRVGhyZWUgTXVza2V0ZWVycyCBLAIBAQAJAIc5AQEAAACGCgEBAAAAgX8BAgAAAIc8AQEAAACBLQETAAAAg1EBAQAAAIFGAQIAAACBRQEFAAAAgToBAQAAAgEABgCBPgEBAAAAgT4BAQAAAIbeAQcAAACBegECAAAAgXoBAgAAADIBAQAA152'
 
 const require = createRequire(import.meta.url)
 const CanonicalArmyCodeResolver = require('../backend/CanonicalArmyCodeResolver.gs')
@@ -79,6 +82,9 @@ assert.equal(legacyCompatibleResult.list.combatGroups.flatMap((group) => group.e
 assert.equal(legacyCompatibleResult.list.incomplete, false)
 
 const tartaryStructure = decodeArmyCode(tartaryPercentEncodedCode)
+const repairedQapu = repairAppendedScoreSuffix(qapuCodeWithScoreSuffix)
+assert.equal(repairedQapu?.suffix, '152')
+assert.equal(repairedQapu?.codeData.listName, 'Three Musketeers ')
 assert.equal(tartaryStructure.sectorialSlug, 'tartary')
 assert.equal(normalizeArmyCodeForInfinityDataTransport(tartaryPercentEncodedCode).endsWith('=7'), false)
 assert.equal(normalizeArmyCodeForInfinityDataTransport('ordinaryArmyCode'), 'ordinaryArmyCode')

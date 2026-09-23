@@ -283,7 +283,7 @@ export function selectRefreshCandidates(sources, state) {
       current.status === 'failed' &&
       current.pipelineVersion === ARMY_INTELLIGENCE_PIPELINE_VERSION &&
       current.tacticalSchemaVersion === ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION &&
-      /^Invalid IDs in Army Code: Infinity-Data deterministically rejected an out-of-date unit option\.$/.test(current.error)
+      /^(?:Invalid IDs in Army Code: Infinity-Data deterministically rejected an out-of-date unit option\.|Invalid Army Code: malformed or contaminated source value\.)$/.test(current.error)
     )
     if (unchangedCurrentSchemaFailure) return false
     return (
