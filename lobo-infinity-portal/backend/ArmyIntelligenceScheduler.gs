@@ -95,9 +95,12 @@ function runScheduledArmyIntelligenceRefresh() {
   const result = {
     automation: automation,
     decoded: Number(payload.decoded) || 0,
+    error: intelligence.success
+      ? ""
+      : String(payload.error || intelligence.error || "Army Intelligence worker failed."),
     failed: Number(payload.failed) || 0,
     hasMore: payload.hasMore === true,
-    remaining: Number(payload.remaining) || 0,
+    remaining: intelligence.success ? Number(payload.remaining) || 0 : null,
     status: intelligence.success && automation.success
       ? "Succeeded"
       : "Failed",
@@ -111,10 +114,34 @@ function runScheduledArmyIntelligenceRefresh() {
 
   if (!result.success)
     throw new Error(
-      "Scheduled maintenance worker failed."
+      result.error || String(automation.payload.error || automation.error || "Scheduled maintenance worker failed.")
     );
 
   return result;
+
+}
+
+function runArmyIntelligenceRefreshSmallBatch() {
+
+  const token = getArmyIntelligenceSchedulerToken_();
+
+  if (!token)
+    throw new Error("Army Intelligence scheduler credential is not configured.");
+
+  const result = runScheduledMaintenanceWorker_(
+    ARMY_INTELLIGENCE_SCHEDULER_URL,
+    token,
+    { batchLimit: 5 }
+  );
+
+  Logger.log("ARMY_INTELLIGENCE_SMALL_BATCH " + JSON.stringify(result));
+
+  if (!result.success)
+    throw new Error(
+      String(result.payload.error || result.error || "Army Intelligence worker failed.")
+    );
+
+  return result.payload;
 
 }
 
