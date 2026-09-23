@@ -49,11 +49,20 @@ const state = new Map([
 
 sources.push({ snapshotKey: 'isolated', armyCodeHash: 'isolated-hash' })
 sources.push({ snapshotKey: 'malformed', armyCodeHash: 'malformed-hash' })
+const scoreSuffixCode = 'gZMLcWFwdS1raGFscWkRVGhyZWUgTXVza2V0ZWVycyCBLAIBAQAJAIc5AQEAAACGCgEBAAAAgX8BAgAAAIc8AQEAAACBLQETAAAAg1EBAQAAAIFGAQIAAACBRQEFAAAAgToBAQAAAgEABgCBPgEBAAAAgT4BAQAAAIbeAQcAAACBegECAAAAgXoBAgAAADIBAQAA152'
+sources.push({ snapshotKey: 'score-suffix', armyCodeHash: 'score-suffix-hash', armyCode: scoreSuffixCode })
+state.set('score-suffix', {
+  armyCodeHash: 'score-suffix-hash',
+  error: 'Invalid Army Code: malformed or contaminated source value.',
+  pipelineVersion: 'army-intelligence-pipeline-v1',
+  tacticalSchemaVersion: ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION,
+  status: 'failed',
+})
 
 assert.deepEqual(
   selectRefreshCandidates(sources, state).map((source) => source.snapshotKey),
-  ['new', 'failed'],
-  'Automatic synchronization must reuse current snapshots and retry missing/older-schema failures.',
+  ['new', 'failed', 'score-suffix'],
+  'Automatic synchronization must retry repairable numeric-score suffixes without retrying unrelated terminal failures.',
 )
 assert.match(worker, /isScheduledRequest\(request\)/)
 assert.match(worker, /ARMY_INTELLIGENCE_WORKER_TOKEN/)

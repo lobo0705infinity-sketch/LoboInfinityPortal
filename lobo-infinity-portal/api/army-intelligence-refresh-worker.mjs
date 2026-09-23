@@ -8,6 +8,7 @@ import { timingSafeEqual } from 'node:crypto'
 import {
   ARMY_INTELLIGENCE_DECODER_VERSION,
   decodeArmyListToFiles,
+  repairAppendedScoreSuffix,
 } from '../scripts/infinity-army-decode.mjs'
 import { createCanonicalEnricher } from '../scripts/army-intelligence-canonical-enrichment.mjs'
 import {
@@ -285,6 +286,11 @@ export function selectRefreshCandidates(sources, state) {
       current.tacticalSchemaVersion === ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION &&
       /^(?:Invalid IDs in Army Code: Infinity-Data deterministically rejected an out-of-date unit option\.|Invalid Army Code: malformed or contaminated source value\.)$/.test(current.error)
     )
+    // An appended numeric game score can now be removed deterministically.
+    // Retry only those previously terminal failures, without reprocessing healthy lists.
+    if (unchangedCurrentSchemaFailure &&
+        current.error === 'Invalid Army Code: malformed or contaminated source value.' &&
+        repairAppendedScoreSuffix(String(source.armyCode || ''))) return true
     if (unchangedCurrentSchemaFailure) return false
     return (
       !current ||
