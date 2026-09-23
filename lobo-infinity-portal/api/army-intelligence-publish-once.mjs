@@ -15,10 +15,13 @@ export default async function handler(request, response) {
   }
   const workerToken = String(process.env.ARMY_INTELLIGENCE_WORKER_TOKEN || '').trim()
   const origin = `https://${request.headers.host}`
+  const refreshOnly = String(request.headers?.['x-maintenance-action'] || '') === 'refresh'
   const upstream = await fetch(`${origin}/api/army-intelligence-refresh-worker`, {
     method: 'POST',
     headers: { authorization: `Bearer ${workerToken}`, 'content-type': 'application/json' },
-    body: JSON.stringify({ publishPublicSnapshot: true, snapshotKeys: ['__publish_only__'] }),
+    body: JSON.stringify(refreshOnly
+      ? { batchLimit: 5 }
+      : { publishPublicSnapshot: true, snapshotKeys: ['__publish_only__'] }),
   })
   const text = await upstream.text()
   response.status(upstream.status).send(text)
