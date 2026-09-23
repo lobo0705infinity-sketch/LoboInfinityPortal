@@ -33,6 +33,12 @@ const vertigo = repairArmyProfile({ combinedId:'502-410-1-1-1',weapons:['Crazyko
 assert.ok(vertigo.weapons.includes('Missile Launcher'))
 assert.ok(!vertigo.weapons.some(w=>/Crazykoala|Cybermine|Pitcher/.test(w)))
 assert.equal(repairArmyProfile({combinedId:'102-33-2-1-1'}).fireteamEligibility.teams.length, 0, 'Crabbot must not inherit Tikbalang Fireteam membership')
+for (const sectorial of [201, 204, 205, 701, 703]) {
+  const johnny = repairArmyProfile({combinedId:`${sectorial}-1892-1-1-1`,unit:'Johnny Kao',profile:'Deployable Repeater',equipment:['Deployable Repeater'],weapons:['Plasma Carbine']})
+  assert.deepEqual(johnny.equipment,['Deactivator (ReRoll)','GizmoKit (+1B)','X Visor'], 'stale Johnny Kao equipment must be replaced in public snapshots')
+  assert.equal(johnny.profile,'Johnny Kao', 'stale equipment must not remain the displayed loadout name')
+}
+assert.deepEqual(repairArmyProfile({combinedId:'201-1892-1-1-1',unit:'Johnny Kao',profile:'Johnny Kao',equipment:['X Visor']}).equipment,['X Visor'], 'current official equipment must remain unchanged')
 const unknown = {combinedId:'999-999-1-1-1',weapons:['Unknown']}
 assert.equal(repairArmyProfile(unknown),unknown)
 const source = JSON.parse(gunzipSync(Buffer.from(await readFile('data/infinity-army/mobility-provisional-catalog.json.gz.b64','utf8'),'base64')))

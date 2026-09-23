@@ -9,7 +9,20 @@ export function repairArmyProfile(entry) {
   const weaponProfiles = record.w.map(index => catalog.weapons[index])
   const weapons = [...new Set(weaponProfiles.map(w => w.name + (w.modifiers.length ? ` (${w.modifiers.join(', ')})` : '')))]
   const teams = [...new Set(memberships.map(m => m.team))]
-  return { ...entry, weapons, weaponProfiles, fireteamEligibility: { state: teams.length ? 'verified' : 'verified-false', verified: !!teams.length, teams, memberships } }
+  // The public snapshot can predate the official equipment enrichment. The
+  // exact Johnny Kao profile used an incorrect Infinity-Data equipment label.
+  // Repair only that stale entry while the persisted snapshot is refreshed.
+  const staleJohnnyKao = /^(?:201|204|205|701|703):1892:1:[1-3]:1$/.test(key) &&
+    (entry.equipment || []).some(item => /^Deployable Repeater$/i.test(item))
+  return {
+    ...entry,
+    ...(staleJohnnyKao ? {
+      equipment: ['Deactivator (ReRoll)', 'GizmoKit (+1B)', 'X Visor'],
+      profile: /^Deployable Repeater$/i.test(entry.profile) ? entry.unit : entry.profile,
+    } : {}),
+    weapons, weaponProfiles,
+    fireteamEligibility: { state: teams.length ? 'verified' : 'verified-false', verified: !!teams.length, teams, memberships },
+  }
 }
 export function repairArmyList(list) {
   if (!list.decoded) return list
