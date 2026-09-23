@@ -60,6 +60,7 @@ assert.match(worker, /url\.searchParams\.set\('action', 'refreshArmyIntelligence
 assert.match(worker, /fetchAppsScriptWithRetry\(url,/)
 assert.match(worker, /getAction\(apiUrl, 'armyIntelligenceSnapshotState', credential\)/)
 assert.match(worker, /const durableCandidates = selectRefreshCandidates\(sources, durableState\)/)
+assert.match(worker, /reason: item\.status === 'failed' \? item\.reason : ''/)
 assert.match(worker, /remaining: durableCandidates\.length/)
 assert.match(api, /case "armyIntelligenceSources"[\s\S]*requireArmyIntelligenceWorkerOrPermission/)
 assert.match(api, /case "armyIntelligenceSnapshotState"[\s\S]*requireArmyIntelligenceWorkerOrPermission/)

@@ -219,6 +219,7 @@ export default async function handler(request, response) {
       invocationSource: getInvocationSource(request),
       outcomes: processed.map((item) => ({
         persisted: durableState.has(item.snapshotKey),
+        reason: item.status === 'failed' ? item.reason : '',
         snapshotKey: item.snapshotKey,
         status: durableState.get(item.snapshotKey)?.status || item.status,
       })),
