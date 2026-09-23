@@ -14,6 +14,9 @@ const metadata = { weapons: [
   { id: 8, name: 'Armed Turret', mode: 'Missile Launcher', burst: '1' },
   { id: 4, name: 'Deployable Device', burst: '-' },
   { id: 5, name: 'Unknown Weapon' },
+  { id: 111, name: 'Deployable Repeater', type: 'EQUIPMENT', burst: '1' },
+  { id: 111, name: 'Plasma Carbine', type: 'WEAPON', mode: 'Blast Mode', burst: '2' },
+  { id: 111, name: 'Plasma Carbine', type: 'WEAPON', mode: 'Hit Mode', burst: '2' },
 ] }
 const payload = { version: '7.test', url: 'https://infinitytheuniverse.com/army/units/en/10', units: [{ id: 10 }], filters: { extras: [{ id: 308, name: '+1SD' }] }, fireteamChart: { teams: [] } }
 const dataset = buildCanonicalDataset({ metadata, payloads: [payload], capturedAt: '2026-01-01T00:00:00.000Z' })
@@ -31,6 +34,12 @@ assert.equal(resolveCanonicalWeaponRecords(dataset, [{ id: 6 }])[0].modeResoluti
 assert.equal(resolveCanonicalWeaponRecords(dataset, [{ id: 7 }])[0].burst, 2)
 assert.equal(resolveCanonicalWeaponRecords(dataset, [{ id: 8 }])[0].burstStatus, 'ambiguous')
 assert.equal(resolveCanonicalWeaponRecords(dataset, [{ id: 3, mode: 'AP Rifle' }])[0].burst, 3)
+assert.deepEqual(
+  resolveCanonicalWeaponRecords(dataset, [{ id: 111 }], { expandAmbiguousModes: true }).map(({ name }) => name),
+  ['Plasma Carbine', 'Plasma Carbine'],
+  'a colliding equipment ID must not appear as an extra weapon',
+)
+assert.equal(resolveCanonicalWeaponRecords(dataset, [{ id: 111, name: 'Deployable Repeater' }])[0].type, 'EQUIPMENT')
 const same = buildCanonicalDataset({ metadata, payloads: [payload], capturedAt: 'different' })
 assert.equal(dataset.datasetId, same.datasetId)
 const changed = buildCanonicalDataset({ metadata: { weapons: [...metadata.weapons, { id: 6, name: 'New', burst: '1' }] }, payloads: [payload] })
