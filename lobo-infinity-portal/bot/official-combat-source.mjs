@@ -24,7 +24,7 @@ export function buildOfficialCombatSource(capture) {
     const sectorialId = Number(payload.sectorialId ?? payload.url?.split('/').at(-1))
     // The endpoint includes inactive/cross-army profiles.  Retain only units
     // exposed by the live Army roster for the selected army.
-    local.units = local.units.filter((unit) => isInLiveArmyRoster(sectorialId, unit.slug))
+    local.units = local.units.filter((unit) => isInLiveArmyRoster(sectorialId, unit.slug, unit))
     const eligibility = buildFireteamBonusEligibility([payload])
     const entries = buildCanonicalGunfighterProfiles({ dataset: local, weaponChart, sectorialId, ...eligibility })
     for (const entry of entries) {

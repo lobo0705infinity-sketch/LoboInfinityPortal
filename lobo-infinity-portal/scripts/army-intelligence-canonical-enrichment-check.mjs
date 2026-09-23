@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict'
+import { normalizeOfficialPayload } from '../bot/inf-id-fireteams.mjs'
+import { readArtifact } from './benchmark-artifacts.mjs'
 import { enrichDecodedList, filterCanonicalFireteamMembershipsForProfile } from './army-intelligence-canonical-enrichment.mjs'
 
 const list = { armyCode: 'x', combatGroups: [{ combatGroup: 1, entries: [
@@ -46,4 +48,15 @@ assert.equal(noChart.combatGroups[0].entries[0].fireteamEligibility.state, 'veri
 const beasthunterMemberships = [{ team: 'Caledonian Fireteam', memberName: 'BEASTHUNTER FTO' }]
 assert.equal(filterCanonicalFireteamMembershipsForProfile(beasthunterMemberships, ['BEASTHUNTER FTO']).length, 1)
 assert.equal(filterCanonicalFireteamMembershipsForProfile(beasthunterMemberships, ['BEASTHUNTERS']).length, 0, 'non-FTO profile must not inherit sibling FTO eligibility')
+const capture = await readArtifact('data/infinity-army/benchmark-official-source.json.gz.b64')
+const yuJing = capture.payloads.find((payload) => Number(payload.sectorialId ?? payload.url?.split('/').at(-1)) === 201)
+const official = normalizeOfficialPayload({ body: yuJing, headers: {}, metadata: capture.metadata }, Date.now(), 201)
+const johnnyList = { armyCode: 'fixture', combatGroups: [{ combatGroup: 1, entries: [{
+  combinedId: '201-1892-1-1-1', unit: 'Johnny Kao', profile: 'Johnny Kao',
+  equipment: ['Deployable Repeater'], weapons: ['Plasma Carbine'], skills: [],
+}] }] }
+const johnny = enrichDecodedList(johnnyList, official).combatGroups[0].entries[0]
+assert.equal(johnny.equipmentSource, 'official')
+assert.deepEqual(johnny.equipment.map((item) => item.split(' (')[0]), ['Deactivator', 'GizmoKit', 'X Visor'])
+assert.equal(johnny.equipment.includes('Deployable Repeater'), false, 'stale card equipment must not create a false Hacking Network capability')
 console.log('Army Intelligence canonical enrichment passed (exact combinedId profile/options, source metadata, Fireteam true/unknown, and loadout isolation).')

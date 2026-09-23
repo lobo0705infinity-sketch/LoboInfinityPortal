@@ -9,7 +9,8 @@ export function snapshotHasCompleteTacticalMetadata(list) {
     list.decoded.pipelineVersion !== ARMY_INTELLIGENCE_PIPELINE_VERSION ||
     list.tacticalSchemaVersion !== ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION ||
     list.decoded.tacticalSchemaVersion !== ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION ||
-    list.decoded.enrichment?.status !== 'complete'
+    list.decoded.enrichment?.status !== 'complete' ||
+    list.decoded.enrichment?.equipmentNormalizationVersion !== 2
   ) return false
 
   const groups = Array.isArray(list.decoded.combatGroups) ? list.decoded.combatGroups : []

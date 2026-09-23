@@ -1,6 +1,6 @@
 {
   "version": "mobility-index-v2",
-  "fingerprint": "56af66f2ee371a6976ce3223eba79a9365605c36f40cb16a1cc524382db22dce",
+  "fingerprint": "8e74198a98e96af9889f00cb5892b11956f8850ea74847cbf2dcdd6b66e8e330",
   "weights": {
     "attackReach": 25,
     "travel": 15,
@@ -13,10 +13,31 @@
     "dodge": 5
   },
   "coverage": {
-    "entries": 6850,
-    "rated": 6834,
+    "entries": 7418,
+    "rated": 7398,
     "noMovement": 16,
-    "unresolved": []
+    "unresolved": [
+      {
+        "id": "103:1927:2:1:1",
+        "name": "CONFESSOR TEAM OPS — CONFESSOR HEAVY",
+        "status": "terrain-unresolved"
+      },
+      {
+        "id": "103:1927:2:2:1",
+        "name": "CONFESSOR TEAM OPS — CONFESSOR HEAVY",
+        "status": "terrain-unresolved"
+      },
+      {
+        "id": "103:1927:2:3:1",
+        "name": "CONFESSOR TEAM OPS — CONFESSOR HEAVY",
+        "status": "terrain-unresolved"
+      },
+      {
+        "id": "103:1927:2:4:1",
+        "name": "CONFESSOR TEAM OPS — CONFESSOR HEAVY",
+        "status": "terrain-unresolved"
+      }
+    ]
   },
   "top30": [
     {

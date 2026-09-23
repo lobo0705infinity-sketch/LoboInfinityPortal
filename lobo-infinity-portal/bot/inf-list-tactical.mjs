@@ -57,7 +57,11 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
     )
     const skills = mergeNamedRefs(base?.skills, option?.skills, names.skills, card.skills, names.extras)
     if (skills.some(s => /^Peripheral(?:\s*\(|$)/i.test(s))) fireteamMemberships = []
-    const equipment = mergeNamedRefs(base?.equip, option?.equip, names.equipment, card.equipment, names.extras)
+    const equipmentRefs = [...(unit?.equip || unit?.equipment || []), ...(group?.equip || group?.equipment || []), ...(base?.equip || base?.equipment || []), ...(option?.equip || option?.equipment || [])]
+    const verifiedEquipment = base && option && names.equipment.size && equipmentRefs.every((ref) => names.equipment.has(Number(ref.id)))
+    const equipment = verifiedEquipment
+      ? mergeNamedRefs(equipmentRefs, [], names.equipment, [], names.extras)
+      : mergeNamedRefs(base?.equip, option?.equip, names.equipment, card.equipment, names.extras)
     const weaponRefs = [...(base?.weapons || []), ...(option?.weapons || [])]
     const weapons = dedupeWeapons(resolveCanonicalWeaponRecords(dataset, weaponRefs, { expandAmbiguousModes: true }).map((weapon) => ({
       burst: weapon.burstStatus === 'canonical' ? finiteNumber(weapon.burst) : null,

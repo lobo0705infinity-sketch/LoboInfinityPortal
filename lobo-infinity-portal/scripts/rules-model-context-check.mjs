@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 import assert from 'node:assert/strict'
+import { readArtifact } from './benchmark-artifacts.mjs'
+import { isInLiveArmyRoster } from '../bot/official-army-rosters.mjs'
 import { buildRulesEvidencePrompt } from '../bot/deepseek-rules.mjs'
 import { loadProductionRulesCorpus } from '../bot/infinity-rules-service.mjs'
 import { formatRulesDiscordResponse, retrieveRulesReference } from '../bot/rules-command.mjs'
@@ -15,10 +17,23 @@ import {
 
 const catalog = await loadRulesModelCatalog({ force: true })
 assert.equal(catalog.schemaVersion, 'rules-model-context-v2')
-assert.equal(catalog.exactProfileCount, 6850)
-assert.equal(catalog.exactProfiles.length, 6850)
+assert.equal(catalog.exactProfileCount, 7418)
+assert.equal(catalog.exactProfiles.length, 7418)
 assert.ok(catalog.canonicalProfileCount >= 3000)
 assert.ok(catalog.aliases.size >= 1800)
+
+const officialCapture = await readArtifact('data/infinity-army/benchmark-official-source.json.gz.b64')
+const teamOps = officialCapture.payloads.flatMap((payload) => {
+  const sectorialId = Number(payload.sectorialId ?? payload.url?.split('/').at(-1))
+  return payload.units.filter((unit) => /team-ops$/.test(unit.slug)).map((unit) => ({ sectorialId, unit }))
+})
+assert.equal(teamOps.length, 45, 'Official source includes Team-Ops across all eligible faction rosters')
+assert.equal(new Set(teamOps.map(({ unit }) => unit.slug)).size, 15)
+for (const { sectorialId, unit } of teamOps) {
+  assert.ok(isInLiveArmyRoster(sectorialId, unit.slug, unit), `${unit.slug} missing in ${sectorialId}`)
+  assert.ok(catalog.exactProfiles.some((profile) => profile.sectorialId === sectorialId && profile.unitId === unit.id), `${unit.slug} profiles missing in ${sectorialId}`)
+  assert.equal(isInLiveArmyRoster(9999, unit.slug, unit), false, `${unit.slug} must not leak into another faction`)
+}
 
 // This is deliberately exhaustive rather than a hand-selected model list.
 // Every live exact Army profile must be reachable through at least one model

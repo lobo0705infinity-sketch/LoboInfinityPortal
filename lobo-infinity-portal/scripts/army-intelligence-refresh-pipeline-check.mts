@@ -13,7 +13,7 @@ const profile = (combinedId: string, unit: string, bs: number, weapons: Array<{ 
 })
 const decoded = {
   armyCode: 'fixture', decoderVersion: 'army-intelligence-decoder-v5', pipelineVersion: ARMY_INTELLIGENCE_PIPELINE_VERSION, tacticalSchemaVersion: ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION,
-  enrichment: { status: 'complete' }, faction: 'Ariadna', sectorial: 'USAriadna Ranger Force', listName: 'Bald Burgers',
+  enrichment: { status: 'complete', equipmentNormalizationVersion: 2 }, faction: 'Ariadna', sectorial: 'USAriadna Ranger Force', listName: 'Bald Burgers',
   totals: { combatGroups: 1, points: 300, swc: 5 }, orderCounts: { regular: 10, irregular: 0, impetuous: 0, lieutenant: 1 },
   combatGroups: [{ combatGroup: 1, entries: [
     profile('304-777-1-4-1', 'UNKNOWN RANGER', 13, [{ name: 'AP Spitfire', burst: 4 }], ['Courage', 'Mimetism [-3]', 'Tactical Awareness']),
@@ -37,6 +37,7 @@ assert.deepEqual(selectRefreshCandidates([source], new Map([[source.snapshotKey,
 
 const list = { ...source, pipelineVersion: ARMY_INTELLIGENCE_PIPELINE_VERSION, tacticalSchemaVersion: ARMY_INTELLIGENCE_TACTICAL_SCHEMA_VERSION, status: 'decoded', decoded }
 assert.equal(snapshotHasCompleteTacticalMetadata(list), true)
+assert.equal(snapshotHasCompleteTacticalMetadata({ ...list, decoded: { ...decoded, enrichment: { status: 'complete' } } }), false, 'previously enriched equipment must be refreshed from the official profile')
 assert.equal(snapshotHasCompleteTacticalMetadata({ ...list, decoded: { ...decoded, combatGroups: [{ combatGroup: 1, entries: [{ ...decoded.combatGroups[0].entries[0], bs: null }] }] } }), false)
 assert.equal(snapshotHasCompleteTacticalMetadata({ ...list, decoded: { ...decoded, combatGroups: [{ combatGroup: 1, entries: [{ ...decoded.combatGroups[0].entries[0], weaponProfiles: [{ name: 'AP Spitfire', burst: null, burstStatus: 'unknown' }] }] }] } }), false)
 

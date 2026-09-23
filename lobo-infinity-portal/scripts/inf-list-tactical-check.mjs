@@ -236,6 +236,15 @@ const ajaxProfiles = buildSubmittedProfiles({
     units: [{ id: 610, isc: 'Ajax the Great, Myrmidon Officer', profileGroups: [{ id: 1, profiles: [{ id: 1, bs: 13, skills: [{ id: 201, extra: [8] }], weapons: [] }], options: [{ id: 2, name: 'AJAX', weapons: [{ id: 41 }] }] }] }],
   }],
 })
+const verifiedEquipment = buildSubmittedProfiles({
+  armyCode: ajaxCode,
+  cards: [{ combinedId: '702-610-1-2-1', profileName: 'AJAX', equipment: ['Deployable Repeater'] }],
+  metadata: { equips: [{ id: 117, name: 'X Visor' }] },
+  officialPayloads: [{ units: [{ id: 610, isc: 'Ajax', profileGroups: [{ id: 1,
+    profiles: [{ id: 1, equip: [{ id: 117 }] }], options: [{ id: 2, name: 'AJAX' }],
+  }] }] }],
+}).find((item) => item.combinedId === '702-610-1-2-1')
+assert.deepEqual(verifiedEquipment?.equipment, ['X Visor'], 'exact official equipment replaces stale scraped repeater badges')
 const ajaxAnalysis = classifyTacticalBrief(ajaxProfiles)
 const ajaxCompetent = ajaxAnalysis.categories.competent.find((item) => item.combinedId === '702-610-1-2-1')
 assert.ok(ajaxCompetent, 'Ajax qualifies through official BS Attack (+1B), not an identity exception')

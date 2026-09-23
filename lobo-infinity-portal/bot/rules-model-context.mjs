@@ -169,7 +169,7 @@ function buildOfficialRulesProfiles(capture) {
       weapons: indexWeaponNames([...(capture.metadata?.weapons || []), ...(payload.filters?.weapons || [])]),
     }
     for (const unit of payload.units || []) {
-      if (!isInLiveArmyRoster(sectorialId, unit.slug)) continue
+      if (!isInLiveArmyRoster(sectorialId, unit.slug, unit)) continue
       const included = includedMobilityOptions(unit)
       for (const group of unit.profileGroups || []) for (const option of group.options || []) {
         if (option.disabled && !included.has(`${group.id}:${option.id}`)) continue
