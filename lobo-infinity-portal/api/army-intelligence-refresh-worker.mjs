@@ -19,7 +19,9 @@ import {
 const require = createRequire(import.meta.url)
 const CanonicalSnapshotFactory = require('../backend/CanonicalSnapshotFactory.gs')
 
-const DEFAULT_REFRESH_BATCH_LIMIT = 100
+// Canonical enrichment launches a real browser and may need several minutes per
+// list. Keep automatic runs comfortably inside Vercel's execution ceiling.
+const DEFAULT_REFRESH_BATCH_LIMIT = 5
 const APPS_SCRIPT_FETCH_ATTEMPTS = 3
 
 export default async function handler(request, response) {

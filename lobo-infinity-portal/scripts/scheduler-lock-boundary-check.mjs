@@ -61,7 +61,7 @@ assert.equal(held, false)
 
 // HTTP failures happen after release and cannot leak the scheduler lock.
 responseCode = 502
-assert.throws(() => context.runScheduledArmyIntelligenceRefresh(), /Scheduled maintenance worker failed/)
+assert.throws(() => context.runScheduledArmyIntelligenceRefresh(), /Army Intelligence worker failed/)
 assert.equal(held, false)
 
 // A thrown remote call is converted to failure only after the lock was released.
@@ -69,7 +69,7 @@ context.UrlFetchApp.fetch = () => {
   assert.equal(held, false)
   throw new Error('remote unavailable')
 }
-assert.throws(() => context.runScheduledArmyIntelligenceRefresh(), /Scheduled maintenance worker failed/)
+assert.throws(() => context.runScheduledArmyIntelligenceRefresh(), /remote unavailable/)
 assert.equal(held, false)
 
 assert.doesNotMatch(source, /try\s*\{[\s\S]*runScheduledMaintenanceWorker_[\s\S]*finally\s*\{\s*lock\.releaseLock/)
