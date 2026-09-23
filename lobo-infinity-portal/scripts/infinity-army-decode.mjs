@@ -90,7 +90,11 @@ export function repairAppendedScoreSuffix(armyCode) {
       // Keep looking for the unique structurally complete Army Code prefix.
     }
   }
-  return repairs.length === 1 ? repairs[0] : null
+  // Text fields commonly append a numeric game score directly to the code.
+  // Prefer the longest numeric suffix whose removal yields a complete payload;
+  // shorter removals can decode to the same bytes because Node tolerates a
+  // dangling Base64 character.
+  return repairs.at(-1) || null
 }
 
 export function normalizeArmyCodeInput(input) {
