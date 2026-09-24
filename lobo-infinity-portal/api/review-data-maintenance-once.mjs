@@ -21,7 +21,7 @@ export default async function handler(request, response) {
   }
 
   const action = String(request.headers?.['x-maintenance-action'] || '')
-  if (action !== 'refresh' && action !== 'publish') {
+  if (action !== 'refresh' && action !== 'publish' && action !== 'probe') {
     response.status(400).json({ success: false, error: 'Unsupported action.' })
     return
   }
@@ -37,8 +37,10 @@ export default async function handler(request, response) {
       method: 'POST',
       headers: { authorization: `Bearer ${workerToken}`, 'content-type': 'application/json' },
       body: JSON.stringify(action === 'refresh'
-        ? { batchLimit: 5 }
-        : { publishPublicSnapshot: true, snapshotKeys: ['__publish_only__'] }),
+        ? { batchLimit: 1 }
+        : action === 'probe'
+          ? { snapshotKeys: ['__probe_only__'] }
+          : { publishPublicSnapshot: true, snapshotKeys: ['__publish_only__'] }),
     })
     response.status(upstream.status).send(await upstream.text())
   } catch (error) {
