@@ -8,6 +8,7 @@ The review tries a written story for a concrete player highlight first. When the
 
 - `src/data/gameHighlightStories.ts`: four individually written submitted moments (games 109, 114, 116, 117).
 - `src/data/gameStoryCatalog.ts`: two individually written The Dig matchups, including game 105's Next Wave versus Operations Subsection.
+- `public/game-stories/the-dig.json`: eighteen more individually written The Dig matchups, for **20 of 22,770** mission-matchup stories in total.
 - `src/services/gameStoryRouting.ts`: highlight-first routing and on-demand loading of generated mission shards.
 - Open reports waiting on submitted lists check newer public snapshots; once an additional list decodes and links to that game, the report reloads with the new pinned generation.
 - `src/data/storyCharacters.json`: 201 named-character identities classified by the bundled official Army dataset; `npm run game-stories:characters` regenerates it. The Sāchā is classified as a unit type, so story text calls it “the Sāchā.”
@@ -16,7 +17,7 @@ The review tries a written story for a concrete player highlight first. When the
 
 ## Authoring the remaining entries
 
-`node --experimental-strip-types scripts/prepare-game-story-batch.mts --model MODEL --output .tmp/game-story-batch.jsonl` prepares one independent Responses API Batch request for each missing mission and pair. `--mission 'The Dig'` prepares one mission for a smaller pilot. The script only writes local request JSONL; it does not submit or bill for API requests. The actual model must be available in the project's API account, and a credential is required to run the batch. A model can write several stories with similar scenes even when their text differs, so generated content needs human sampling for plot and faction variety.
+`node --experimental-strip-types scripts/prepare-game-story-batch.mts --model MODEL --output .tmp/game-story-batch.jsonl` prepares one independent Responses API Batch request for each missing mission and pair. `--mission 'The Dig'` prepares one mission for a smaller pilot and skips both the inline stories and the authored mission shard. The script only writes local request JSONL; it does not submit or bill for API requests. The actual model must be available in the project's API account, and a credential is required to run the batch. A model can write several stories with similar scenes even when their text differs, so generated content needs human sampling for plot and faction variety.
 
 After a completed batch, `node --experimental-strip-types scripts/ingest-game-story-batch.mts --input PATH --dry-run` validates its response JSONL. Remove `--dry-run` to add valid stories as JSON files under `public/game-stories/` and update `src/data/storyManifest.json`. The browser fetches only the mission file it needs. The importer rejects duplicate keys, wrong missions or factions, missing roster hero tokens, short scenes, and result summaries. It does not substitute for editorial review. Run `npm run test:game-center`, `npm run test:game-stories:complete`, and the normal release checks after the final import.
 

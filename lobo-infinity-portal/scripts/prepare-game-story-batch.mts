@@ -1,8 +1,9 @@
-import { mkdir, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname } from 'node:path'
 import { CANONICAL_ARMY_REGISTRY } from '../src/config/armies.ts'
 import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
 import { GAME_STORY_CATALOG } from '../src/data/gameStoryCatalog.ts'
+import storyManifest from '../src/data/storyManifest.json' with { type: 'json' }
 import { storyTemplateKey } from '../src/services/gameStoryTemplate.ts'
 
 const value = (flag: string) => {
@@ -19,6 +20,11 @@ if (selectedMission && !CANONICAL_MISSIONS.some((mission) => mission === selecte
 const missions = selectedMission ? [selectedMission] : CANONICAL_MISSIONS
 const armies = CANONICAL_ARMY_REGISTRY.filter((army) => army.active)
 const written = new Set(GAME_STORY_CATALOG.map((story) => storyTemplateKey(story.mission, ...story.factions)))
+for (const mission of storyManifest.missions as string[]) {
+  const slug = mission.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+  const stories = JSON.parse(await readFile(`public/game-stories/${slug}.json`, 'utf8')) as typeof GAME_STORY_CATALOG[number][]
+  for (const story of stories) written.add(storyTemplateKey(story.mission, ...story.factions))
+}
 const instructions = `Write an original, dramatic three-paragraph fictional battle scene for the specified Infinity mission and unordered army matchup. One independently written story is needed for every mission and army pair, including mirror games. The player-submitted highlight, when useful, has its own higher-priority story; this request supplies only the no-highlight fallback.
 
 Write a small plot with a concrete opening, an escalating complication, a model's hero moment, and an image that closes the scene. Let the mission and both armies materially shape that plot. Never simply swap faction names in a generic story, and never make a faction's name the subject of an action verb. Use a person, a trooper, or a machine as the actor. This is openly fictional: do not claim to know actual turns, list contents, kills, scores, final objectives, or exact mission mechanics. Avoid invented named characters or specific unit types: the app will supply actual models from the submitted list.
