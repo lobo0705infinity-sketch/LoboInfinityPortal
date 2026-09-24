@@ -1,0 +1,322 @@
+[
+  {
+    "mission": "Hardlock",
+    "factions": ["Kosmoflot", "Next Wave"],
+    "heroFaction": "Kosmoflot",
+    "role": "objective",
+    "paragraphs": [
+      "An ice road crossed three islands of exposed stone. {{heroPlayer}}’s survey crew needed to hold the middle island until the last supply sled passed, but {{otherPlayer}}’s scouts had raised a flag there before dawn. Under the ice, something larger than a sled moved against the current.",
+      "{{hero}} came in from the low bank with a rangefinder and a coil of rope. The trooper found the flagpole anchored through a crack and used the same crack to secure a line for the sled drivers. A scout appeared on the high bank as the first sled crept across.",
+      "The ice rose beneath the middle island. The crew could retreat with the drivers or stay long enough to anchor the final sled, whose runners had caught in the crack. The trooper tightened the rope while the shape below passed under both forces without breaking the surface."
+    ],
+    "endings": {
+      "heroWins": "The last sled crossed, and {{heroPlayer}}’s crew kept the middle island until the drivers reached shore.",
+      "heroLoses": "{{otherPlayer}}’s scouts held the island; the drivers abandoned the caught sled and took the long road home.",
+      "draw": "Both crews left the island when the ice split, with the last sled still balanced between the banks."
+    }
+  },
+  {
+    "mission": "Hardlock",
+    "factions": ["Next Wave", "Operations Subsection"],
+    "heroFaction": "Operations Subsection",
+    "role": "gunfighting",
+    "paragraphs": [
+      "The city’s emergency towers each displayed a different evacuation route. {{heroPlayer}}’s patrol held the tower above the market; {{otherPlayer}}’s team held the one across the canal. Civilians at both ends waited for someone to decide which crossing was still open.",
+      "{{hero}} watched the canal from a shuttered apartment and fired when a figure tried to turn the market tower’s sign. A child carrying a paper route map slipped through the doorway below. The map showed the same crossing on both sides, though one tower now pointed elsewhere.",
+      "The trooper lowered the weapon long enough to read the map. A boat was already pushing away from the far bank, full of people following the wrong sign. {{hero}} stepped onto the balcony, signaled the boat with the muzzle light, and kept the tower in sight as return fire struck the shutters."
+    ],
+    "endings": {
+      "heroWins": "The boat turned toward the open crossing while {{heroPlayer}}’s patrol kept the market tower lit.",
+      "heroLoses": "{{otherPlayer}}’s team held both signs; the civilians had to find their own crossing.",
+      "draw": "The boat reached shore, but both towers went dark before either patrol could claim them."
+    }
+  },
+  {
+    "mission": "Hardlock",
+    "factions": ["Next Wave", "StarCo"],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A transit platform had been sold twice, once to a rescue agency and once to the people dismantling its tracks. {{heroPlayer}}’s contractors arrived with both invoices in hand. {{otherPlayer}}’s guards had already occupied the ticket hall, where a train full of passengers sat behind a closed barrier.",
+      "{{hero}} crossed the service passage to the barrier controls. The trooper found that the station clock ran several minutes ahead of the train’s, and the doors would open only when both showed the same time. Above, an argument over ownership became a gunfight among the empty kiosks.",
+      "The train rolled a few inches toward the sealed barrier. Its driver shouted that the brakes had stopped answering. The trooper could reset the station clock and risk opening every platform door, or hold the passage while the passengers climbed out one window at a time."
+    ],
+    "endings": {
+      "heroWins": "The barrier opened, and {{heroPlayer}}’s crew guided the passengers past the disputed ticket hall.",
+      "heroLoses": "{{otherPlayer}}’s guards kept the hall while the contractors helped the passengers out by the service passage.",
+      "draw": "The passengers escaped, but the station clock and both invoices remained behind the locked barrier."
+    }
+  },
+  {
+    "mission": "Hardlock",
+    "factions": ["Next Wave", "Next Wave"],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "Two patrols received orders to defend opposite ends of a narrow checkpoint. Both orders carried the same command signature and described the other patrol as an impostor. {{heroPlayer}}’s squad kept the west booth while {{otherPlayer}}’s squad watched from the east, neither willing to abandon the road between them.",
+      "{{hero}} found a message scratched beneath the west counter: an evacuation convoy would arrive after nightfall, and the gate must stay open for it. The ink on the official orders was still wet. The trooper climbed onto the barrier to show the message to the other booth.",
+      "Headlights appeared in the distance. From the east booth came an identical warning, scratched in the same hand but naming a different convoy. The trooper held the barrier as both groups approached the road to see which lights were real."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s squad kept the barrier open and identified the convoy before it crossed.",
+      "heroLoses": "{{otherPlayer}}’s squad held the checkpoint as the west booth fell quiet.",
+      "draw": "The headlights vanished in the dark; neither patrol left its booth."
+    }
+  },
+  {
+    "mission": "Hardlock",
+    "factions": ["PanOceania", "Yu Jing"],
+    "heroFaction": "PanOceania",
+    "role": "gunfighting",
+    "paragraphs": [
+      "The orchard sat between two flood barriers, its rows of trees the only dry route to the farmhouse. {{heroPlayer}}’s relief column needed that route for the families sheltering there. {{otherPlayer}}’s soldiers held the raised walkway, trying to keep everyone away from a cracked gate beneath it.",
+      "{{hero}} took a position among the trees and fired across the walkway whenever a defender leaned over the rail. An old farmer came out of the house with a ladder, saying the gate could be braced from the orchard side. The gunfighter shifted cover from trunk to trunk while the farmer carried it forward.",
+      "Water began washing the fallen fruit toward their boots. The ladder was still short of the gate when the first brace gave way. {{hero}} stepped into the open to cover the farmer, hearing voices from the farmhouse count how many children had reached the upper floor."
+    ],
+    "endings": {
+      "heroWins": "The farmer braced the gate, and the relief column reached the farmhouse through the trees.",
+      "heroLoses": "{{otherPlayer}}’s soldiers kept the walkway while the column withdrew to find another path.",
+      "draw": "The orchard flooded, and both forces carried families to higher ground."
+    }
+  },
+  {
+    "mission": "Hardlock",
+    "factions": ["Ariadna", "Morat Aggression Force"],
+    "heroFaction": "Ariadna",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A radio mast on the ridge was the only point from which the lost survey party could be reached. {{heroPlayer}}’s rangers climbed the western trail with a hand-built receiver. {{otherPlayer}}’s soldiers held the stone steps on the other side, waiting for a transmission from their own missing patrol.",
+      "{{hero}} watched the steps from a patch of heather while a ranger mounted the receiver. The first signal came through as tapping, too slow for a distress code. The gunfighter kept the stair clear until a second ranger recognized the taps as the rhythm of a song heard around last night’s fire.",
+      "The receiver answered with the same rhythm from the valley below. A flare rose there, far from the survey party’s last reported position. {{hero}} changed cover, opening a sightline toward the valley as the soldiers on the steps began moving toward the mast."
+    ],
+    "endings": {
+      "heroWins": "The rangers held the mast long enough to guide the survey party toward the flare.",
+      "heroLoses": "{{otherPlayer}}’s soldiers claimed the ridge before the receiver could fix the party’s position.",
+      "draw": "Both forces left the ridge following the same distant flare."
+    }
+  },
+  {
+    "mission": "Hardlock",
+    "factions": ["Haqqislam", "Shasvastii Expeditionary Force"],
+    "heroFaction": "Haqqislam",
+    "role": "objective",
+    "paragraphs": [
+      "The quarantine ward occupied the crossroads between two evacuation routes. {{heroPlayer}}’s medical team stayed with its patients; {{otherPlayer}}’s infiltrators entered the deserted administration wing and began calling for the doors to be opened. Every patient in the ward claimed the voices sounded familiar.",
+      "{{hero}} checked the corridor cameras and found one door had been opened from inside. A patient sat beyond it, looking at a visitor who wore the patient’s face. The trooper guided the patient back without raising an alarm, then marked the door for the team outside.",
+      "The lights failed in the administration wing. From the dark came a request for medicine in the voice of the team’s missing orderly. The trooper stood between the ward and the crossroads, holding the door while the patients were moved farther inside."
+    ],
+    "endings": {
+      "heroWins": "The medical team kept the ward secure and brought every patient through the night.",
+      "heroLoses": "{{otherPlayer}}’s infiltrators took the crossroads, forcing the team to leave the ward by its rear entrance.",
+      "draw": "The ward stayed closed; both sides listened to footsteps receding in the unlit wing."
+    }
+  },
+  {
+    "mission": "Hardlock",
+    "factions": ["Bakunin Jurisdictional Command", "Military Orders"],
+    "heroFaction": "Military Orders",
+    "role": "closeCombat",
+    "paragraphs": [
+      "The city gate was older than the walls around it, and the keeper refused to leave his post when the streets emptied. {{heroPlayer}}’s escort came to relieve him. {{otherPlayer}}’s performers occupied the archway, painting new directions over the evacuation signs as people approached from three roads.",
+      "{{hero}} fought through the tight space beneath the arch to reach the keeper. The trooper pushed an attacker away from the gate wheel and turned it enough for the first family to pass. The painted signs above began changing color in the rain, revealing older arrows beneath them.",
+      "The keeper recognized the oldest arrow and pointed toward an alley behind the wall. The trooper held the wheel against its weight while families chose between the gate and the narrow alley, with another attacker approaching through the arch."
+    ],
+    "endings": {
+      "heroWins": "The escort kept the gate open until the last family had crossed into the old alley.",
+      "heroLoses": "{{otherPlayer}}’s performers held the archway; the keeper led the families by the hidden alley instead.",
+      "draw": "The gate jammed half open, leaving both groups helping people through one at a time."
+    }
+  },
+  {
+    "mission": "Hardlock",
+    "factions": ["O-12", "Tohaa"],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "An embassy courtyard had grown a living barricade overnight. Its roots divided the compound into three rooms without roofs, each holding a different group of stranded visitors. {{heroPlayer}}’s investigators entered to count them; {{otherPlayer}}’s envoys insisted the barricade was keeping the visitors safe.",
+      "{{hero}} approached the roots with a portable scanner. The first room held six people and six shadows; the second held five people and six shadows. The trooper found the extra shadow belonged to a figure standing behind the living wall, visible only when a cloud passed over the courtyard.",
+      "The wall began closing the gap between the rooms. The envoys offered to guide the visitors out one group at a time, but the extra figure had crossed to the third room. The trooper kept the passage open and called each visitor by name, waiting to hear who answered twice."
+    ],
+    "endings": {
+      "heroWins": "Every visitor crossed the passage, and {{heroPlayer}}’s investigators identified the extra voice.",
+      "heroLoses": "{{otherPlayer}}’s envoys kept the courtyard while the investigators withdrew without a complete count.",
+      "draw": "The living wall separated the last two rooms before either group could finish its count."
+    }
+  },
+  {
+    "mission": "Hardlock",
+    "factions": ["Corregidor Jurisdictional Command", "Torchlight Brigade"],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "Three cargo berths could still take incoming ships; the fourth had begun to flood. {{heroPlayer}}’s dockworkers needed to keep the central berth clear while {{otherPlayer}}’s boarding team secured the control room above it. A transport carrying evacuees called for a berth with enough room to turn.",
+      "{{hero}} found the central berth’s guidance lamps dark and traced their power cable beneath the rising water. The trooper spliced a portable cell into the circuit. The first lamp lit, then the next, laying out a path for the transport as a security shutter began descending across the dock.",
+      "The transport’s pilot saw the lamps and committed to the turn. The trooper had to hold the cell against a sparking contact while dockworkers shouted for the shutter to stop. Above them, the boarding team reached the control room window and looked down on the ship already inside."
+    ],
+    "endings": {
+      "heroWins": "The shutter stopped, and {{heroPlayer}}’s workers brought the transport safely into the central berth.",
+      "heroLoses": "{{otherPlayer}}’s team kept the control room; the transport backed away toward the open berths.",
+      "draw": "The transport landed beyond the shutter, with both teams claiming they had kept the berth open."
+    }
+  },
+  {
+    "mission": "Hardlock",
+    "factions": ["Ramah Taskforce", "Steel Phalanx"],
+    "heroFaction": "Ramah Taskforce",
+    "role": "objective",
+    "paragraphs": [
+      "The mobile clinic stopped at a crossroads because the patients could not survive another ride. {{heroPlayer}}’s medics set up beneath the traffic lights; {{otherPlayer}}’s fighters held the rooftops overlooking the intersection, waiting for a convoy coming from the opposite direction.",
+      "{{hero}} carried a battery from ambulance to ambulance, keeping the respirators running while a colleague cleared space for new arrivals. One patient pointed toward the rooftop and said someone there had treated them before. The trooper followed the patient’s gaze and saw a stretcher being lowered on a rope.",
+      "The convoy appeared at the far end of the street. The medics could move the clinic and lose the people on the stretchers, or stay at the crossroads while the fighters above argued over which vehicles should pass. The trooper plugged the battery into the last ambulance and waved the convoy to a stop."
+    ],
+    "endings": {
+      "heroWins": "The clinic held the crossroads long enough to receive the convoy’s wounded.",
+      "heroLoses": "{{otherPlayer}}’s fighters took the intersection; the medics carried their patients through a side street.",
+      "draw": "The convoy divided around the clinic, and both groups helped clear the road after dark."
+    }
+  },
+  {
+    "mission": "Hardlock",
+    "factions": ["Imperial Service", "Shindenbutai"],
+    "heroFaction": "Shindenbutai",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A narrow garden linked the embassy’s two occupied wings. Whoever held its stone bridge could keep the staff from crossing between them. {{heroPlayer}}’s escort entered by the koi pond while {{otherPlayer}}’s officers stood beneath the covered walkway, counting people as they came out of the western wing.",
+      "{{hero}} met the first officer on the bridge. Water made the stones slick; neither fighter could step aside without giving up the passage. The trooper drove the officer back far enough for an embassy clerk to carry a locked ledger across, then saw another clerk emerge with the same ledger from the opposite wing.",
+      "Both clerks stopped at the bridge, each insisting the other held a copy. The trooper kept the walkway clear as the covers were opened. One ledger contained names; the other contained blank pages, except for a fresh ink mark spreading across the first sheet."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort kept the bridge and brought both clerks and their ledgers together.",
+      "heroLoses": "{{otherPlayer}}’s officers held the bridge; the clerk with the names returned to the western wing.",
+      "draw": "The bridge emptied, with one ledger left on each side of the pond."
+    }
+  },
+  {
+    "mission": "Hardlock",
+    "factions": ["ALEPH", "Tunguska Jurisdictional Command"],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "The clock tower’s three faces showed three different times. At each chime, the doors on one side of the square locked while the others opened. {{heroPlayer}}’s surveyors held the north arcade; {{otherPlayer}}’s auditors controlled the room beneath the clock and claimed the tower was working as intended.",
+      "{{hero}} reached the gears through a service stair and found a fourth clock hidden inside the wall. It carried no hands, only a list of names engraved around the rim. Every time the trooper read one aloud, a door in the square opened a moment earlier.",
+      "Below, people began crossing at the wrong chime. The auditors called for the tower to be left alone. The trooper could stop the gears and strand everyone halfway through the square, or keep reading names until the last door had opened for the people waiting there."
+    ],
+    "endings": {
+      "heroWins": "The last door opened, and {{heroPlayer}}’s surveyors guided the crowd through the north arcade.",
+      "heroLoses": "{{otherPlayer}}’s auditors kept the tower room and restored its three competing times.",
+      "draw": "The clocks stopped together, leaving the square open and the fourth face hidden again."
+    }
+  },
+  {
+    "mission": "Hardlock",
+    "factions": ["Kosmoflot", "Kosmoflot"],
+    "heroFaction": "Kosmoflot",
+    "role": "objective",
+    "paragraphs": [
+      "Two patrols climbed toward the same radio circle on a windswept plateau. {{heroPlayer}}’s crew carried a damaged distress beacon; {{otherPlayer}}’s crew brought its missing battery. Neither side knew why the beacon had been separated, and both had orders to keep the plateau until someone answered.",
+      "{{hero}} fitted a spare contact beneath the radio dish while the other crew approached across the stones. The beacon woke with a voice asking the patrols to report their positions. When the trooper answered, the voice repeated the coordinates of an outpost abandoned long before the plateau had a name.",
+      "Snow swept through the dish and covered the footprints between the crews. The outpost’s coordinates were only a short walk away, but the signal weakened whenever anyone stepped outside the circle. The trooper held the contact in place and asked the voice who was still there."
+    ],
+    "endings": {
+      "heroWins": "The answer reached {{heroPlayer}}’s crew, who kept the dish steady until its last word came through.",
+      "heroLoses": "{{otherPlayer}}’s crew held the radio circle while the first patrol set out toward the abandoned outpost.",
+      "draw": "Both crews heard the same last word and left the plateau together to find its source."
+    }
+  },
+  {
+    "mission": "Hardlock",
+    "factions": ["Caledonian Highlander Army", "USAriadna Ranger Force"],
+    "heroFaction": "Caledonian Highlander Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "The old dam divided a valley that neither map marked correctly. {{heroPlayer}}’s scouts held the upper spillway to guide shepherds across; {{otherPlayer}}’s rangers had orders to keep the gate closed until the lower settlement could evacuate. Rain made both routes harder with every minute.",
+      "{{hero}} fired from a maintenance hut to keep the far bank clear for a shepherd and two dogs. Across the concrete, a ranger signaled that the spillway had begun to crack. The gunfighter lowered the weapon just long enough to see water threading through the seam beneath the shepherd’s feet.",
+      "The shepherd turned back for a stray dog. A shout from the lower valley warned that the gate was moving. {{hero}} left the hut, firing toward the empty far parapet to draw eyes away from the shepherd while a scout ran to the spillway wheel."
+    ],
+    "endings": {
+      "heroWins": "The scouts held the crossing until the shepherd and both dogs reached the upper path.",
+      "heroLoses": "{{otherPlayer}}’s rangers kept the spillway closed; the shepherd took the long ridge trail.",
+      "draw": "The crossing emptied before the crack widened, and both groups helped close the failing gate."
+    }
+  },
+  {
+    "mission": "Hardlock",
+    "factions": ["Combined Army", "Onyx Contact Force"],
+    "heroFaction": "Onyx Contact Force",
+    "role": "objective",
+    "paragraphs": [
+      "Three command pylons guarded the approach to a silent fortress. {{heroPlayer}}’s unit occupied the eastern pylon; {{otherPlayer}}’s force secured the west and issued contradictory instructions over the shared channel. At the center, a fourth pylon rose slowly from the ground whenever either side transmitted.",
+      "{{hero}} reached the eastern access port and found a record of every order spoken that morning. One command had no speaker. It asked both forces to abandon their positions and protect the central pylon instead. The trooper copied the voiceprint while dust fell from the rising structure.",
+      "The center stopped rising when the radio went quiet. Soldiers across the approach looked toward each other, unable to tell which side had given the last instruction. The trooper held the access port open with one hand and signaled the nearby squad to stay where it was."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s unit kept the eastern approach and carried the unknown voiceprint away.",
+      "heroLoses": "{{otherPlayer}}’s force took the eastern pylon as the central one rose above them all.",
+      "draw": "Neither force spoke again before nightfall; the fourth pylon remained halfway out of the ground."
+    }
+  },
+  {
+    "mission": "Hardlock",
+    "factions": ["Qapu Khalqi", "Varuna Immediate Reaction Division"],
+    "heroFaction": "Qapu Khalqi",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An island breakwater was the only dry way to the lighthouse. {{heroPlayer}}’s harbor guards held its landward end; {{otherPlayer}}’s divers had surfaced near the light and were moving back along the stones. A small fishing boat waited in the channel for the beam to return.",
+      "{{hero}} took position behind a stack of storm buoys and fired across the narrow stones to keep the divers from the lighthouse door. The keeper emerged with a cracked lens in both hands. The beam could be restored if someone carried a replacement from the harbor stores, but the tide was already covering the path.",
+      "The fishing boat sounded its horn twice. The keeper stepped onto the wet stones, lens held high, and {{hero}} moved forward to cover him. At the edge of the light, a diver raised a hand toward the keeper rather than a weapon."
+    ],
+    "endings": {
+      "heroWins": "The new lens caught the beam, and {{heroPlayer}}’s guards guided the fishing boat into harbor.",
+      "heroLoses": "{{otherPlayer}}’s divers held the lighthouse while the guards signaled the boat from shore.",
+      "draw": "The keeper relit the tower, and both groups retreated along the flooding stones."
+    }
+  },
+  {
+    "mission": "Hardlock",
+    "factions": ["Ikari Company", "Oban"],
+    "heroFaction": "Oban",
+    "role": "closeCombat",
+    "paragraphs": [
+      "The apartment tower’s lifts had stopped between floors with residents still inside. {{heroPlayer}}’s team held the service stair above the trapped cars; {{otherPlayer}}’s hired fighters occupied the lobby and refused to let the rescue crew enter. The only open path ran through a narrow landing beside the lift machinery.",
+      "{{hero}} reached the landing and fought past a guard who blocked the machinery room. Inside, an old mechanic was holding a manual lever down with both hands. The trooper took the lever while the mechanic climbed into the shaft to release the first car.",
+      "The car began to move. Voices called from below that another lift was dropping toward it. The trooper could hold the lever and trust the mechanic to stop the collision, or leave the landing to reach the second car. Boots sounded on the stair behind them."
+    ],
+    "endings": {
+      "heroWins": "The mechanic stopped both cars, and {{heroPlayer}}’s team brought the residents down the service stair.",
+      "heroLoses": "{{otherPlayer}}’s fighters kept the lobby while the rescue crew led the residents out above it.",
+      "draw": "Both lifts stopped safely, but neither group left the landing until the last resident was out."
+    }
+  },
+  {
+    "mission": "Hardlock",
+    "factions": ["Kestrel Colonial Force", "Neoterra Capitaline Army"],
+    "heroFaction": "Kestrel Colonial Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "The colony’s raised harvest road ended at a platform above a field of tall grain. {{heroPlayer}}’s defenders needed the platform for incoming trucks; {{otherPlayer}}’s soldiers held the far ramp and warned that the field below was being cleared. A family harvesting the last row had not heard either warning.",
+      "{{hero}} fired from the platform rail whenever a soldier approached the near ramp. Between shots, the trooper watched a small figure emerge from the grain and wave toward the trucks. The drivers slowed, but a clearing machine started moving across the field behind the family.",
+      "The gunfighter turned the platform lamps toward the machine. Its operator could not see the family through the stalks. {{hero}} left cover to guide the drivers onto the road, holding the far ramp in sight while the family ran between the trucks."
+    ],
+    "endings": {
+      "heroWins": "The family and the harvest trucks reached the platform under {{heroPlayer}}’s protection.",
+      "heroLoses": "{{otherPlayer}}’s soldiers held the ramp; the family escaped through the field without the trucks.",
+      "draw": "The clearing machine stopped, and both sides helped the family off the harvest road."
+    }
+  },
+  {
+    "mission": "Hardlock",
+    "factions": ["Druze Bayram Security", "White Company"],
+    "heroFaction": "White Company",
+    "role": "objective",
+    "paragraphs": [
+      "An armistice had divided the village along its single market street. {{heroPlayer}}’s escorts held the north end for a food convoy; {{otherPlayer}}’s guards kept the south end for the people who had drawn the line. A shopkeeper continued setting out bread exactly where the two claims met.",
+      "{{hero}} walked the convoy papers to the shop, stopping beside the bread table. The trooper discovered that both sides’ maps placed the shop on their own half of the street. The shopkeeper had been giving each side the same bread and asking them to leave their rifles outside.",
+      "The first truck reached the market as a guard approached from the south. The shopkeeper put down a loaf and asked both groups to hold the street long enough for the truck to pass. The trooper laid the disputed maps on the table and stepped aside to make room."
+    ],
+    "endings": {
+      "heroWins": "The convoy crossed the market, and {{heroPlayer}}’s escorts kept the road open until the last truck passed.",
+      "heroLoses": "{{otherPlayer}}’s guards held the south end; the convoy turned back with its food still aboard.",
+      "draw": "The trucks stopped beside the shop, and people from both sides carried bread down the street."
+    }
+  }
+]
