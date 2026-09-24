@@ -540,6 +540,7 @@ export type ArmyIntelligenceDecodedList = {
 export type ArmyIntelligenceList = {
   armyCode: string
   armyCodeHash: string
+  armyListId?: string
   date: string
   decoded: ArmyIntelligenceDecodedList | null
   decodedAt: string
@@ -814,6 +815,8 @@ export type RecentGame = {
   vp: string
   bestMoment: string
   firstTurn: string
+  reviewNarratives?: Array<{ id: number; angle: string }>
+  reviewShapeIndex?: number
   teamAId?: string
   teamBId?: string
   teamAName?: string

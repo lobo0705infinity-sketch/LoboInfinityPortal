@@ -1042,6 +1042,8 @@ function buildDeterministicArmyIntelligenceList(row) {
       ),
     armyCodeHash:
       getArmyIntelligenceString(identity.armyCodeHash) || armyListId,
+    armyListId:
+      getArmyIntelligenceString(identity.armyListId),
     date: getArmyIntelligenceString(row[1]),
     decoded: decoded,
     decodedAt: getArmyIntelligenceString(row[1]),
@@ -1411,6 +1413,7 @@ function mergeArmyIntelligenceSourceAndSnapshot(source, snapshot, knownArmyListC
   return {
     armyCode: source.armyCode,
     armyCodeHash: source.armyCodeHash,
+    armyListId: source.armyListId || "",
     date: source.date,
     decodedAt: snapshot.decodedAt,
     decoded: decoded,

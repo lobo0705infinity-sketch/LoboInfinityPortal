@@ -1,0 +1,926 @@
+{
+  "Area of Interest": [
+    {
+      "id": 1,
+      "angle": "Area of Interest makes the final location of surviving models as relevant as the casualties."
+    },
+    {
+      "id": 2,
+      "angle": "A scoring area can be threatened by a small surviving force even after the wider exchange turns against it."
+    },
+    {
+      "id": 3,
+      "angle": "The shape of this mission is territorial: reach the areas, remain there, and still have models to contest the answer."
+    },
+    {
+      "id": 4,
+      "angle": "A force may have the better guns yet leave the important part of the table open at the scoring moment."
+    },
+    {
+      "id": 5,
+      "angle": "Area of Interest rewards a reserve that can change an area count after the first exchanges."
+    },
+    {
+      "id": 6,
+      "angle": "The important contrast is between a force that can clear a lane and one that can occupy it at the end."
+    },
+    {
+      "id": 7,
+      "angle": "Losing a piece on a flank matters here when it also removes the last way to contest that area."
+    },
+    {
+      "id": 8,
+      "angle": "Deployment pressure and late movement offer different routes to the same territorial score."
+    },
+    {
+      "id": 9,
+      "angle": "The mission asks whether the models that survive are in the areas that actually score."
+    },
+    {
+      "id": 10,
+      "angle": "A narrow result in Area of Interest leaves open the question of which single contestable area remained in reach."
+    }
+  ],
+  "B-Pong": [
+    {
+      "id": 1,
+      "angle": "B-Pong puts a moving scoring opportunity in front of forces built for very different kinds of reach."
+    },
+    {
+      "id": 2,
+      "angle": "A piece that can answer a changing objective can matter more than one that only holds a fixed lane."
+    },
+    {
+      "id": 3,
+      "angle": "The mission rewards keeping orders and movement available after the first objective state changes."
+    },
+    {
+      "id": 4,
+      "angle": "B-Pong can make a force with a strong opening position rethink where its last mobile model must finish."
+    },
+    {
+      "id": 5,
+      "angle": "The useful comparison is between early commitment and the ability to redirect a surviving reserve."
+    },
+    {
+      "id": 6,
+      "angle": "A defensive roster must still have a way to touch the next relevant part of the table."
+    },
+    {
+      "id": 7,
+      "angle": "A fast roster can threaten repeated changes to the scoring state, provided it survives long enough to use them."
+    },
+    {
+      "id": 8,
+      "angle": "The final B-Pong score says who answered the objective; it does not show every route that was available."
+    },
+    {
+      "id": 9,
+      "angle": "An initiative advantage helps only if the resulting board position can adapt when the objective moves."
+    },
+    {
+      "id": 10,
+      "angle": "This mission turns the location of the last useful order into a sharper question than raw damage alone."
+    }
+  ],
+  "Corporate Appropriation": [
+    {
+      "id": 1,
+      "angle": "Corporate Appropriation puts access to mission systems beside the problem of defending the models that use them."
+    },
+    {
+      "id": 2,
+      "angle": "A roster with several specialists can threaten more than one route into the mission systems."
+    },
+    {
+      "id": 3,
+      "angle": "The system itself is only one part of the task; a force also needs a safe approach and a way to retain the result."
+    },
+    {
+      "id": 4,
+      "angle": "An enemy control piece can matter by making a specialist route expensive without ever scoring directly."
+    },
+    {
+      "id": 5,
+      "angle": "The mission invites a comparison between a direct systems push and a slower plan to protect access."
+    },
+    {
+      "id": 6,
+      "angle": "A shooting advantage may open a lane, but the objective still needs an eligible piece to turn that access into points."
+    },
+    {
+      "id": 7,
+      "angle": "Corporate Appropriation can reward preserving a second specialist after the first opportunity passes."
+    },
+    {
+      "id": 8,
+      "angle": "The most telling roster contrast is how each force protects its path to the mission systems."
+    },
+    {
+      "id": 9,
+      "angle": "A late systems contest is possible only while both orders and an appropriate model remain."
+    },
+    {
+      "id": 10,
+      "angle": "The score captures control of the mission; the army lists show which different approaches could have supported it."
+    }
+  ],
+  "Critical Intervention": [
+    {
+      "id": 1,
+      "angle": "Critical Intervention makes the route to mission systems a contest between access and denial."
+    },
+    {
+      "id": 2,
+      "angle": "A specialist package gives one force options only if the rest of the roster can make those options reachable."
+    },
+    {
+      "id": 3,
+      "angle": "The mission can reward a patient force that keeps an eligible model for a later scoring window."
+    },
+    {
+      "id": 4,
+      "angle": "Control tools shape the risk of crossing to the systems, even when they never perform the objective themselves."
+    },
+    {
+      "id": 5,
+      "angle": "There is a difference between winning a firefight near a system and being able to interact with it."
+    },
+    {
+      "id": 6,
+      "angle": "Critical Intervention makes the surviving specialist count more informative than the total unit count."
+    },
+    {
+      "id": 7,
+      "angle": "An early push and a protected reserve are two distinct ways a list can threaten the same systems."
+    },
+    {
+      "id": 8,
+      "angle": "The opponent can disrupt this mission by removing routes instead of defeating every eligible model."
+    },
+    {
+      "id": 9,
+      "angle": "A close objective result calls attention to the last route each list could still plausibly defend."
+    },
+    {
+      "id": 10,
+      "angle": "The score records the intervention result; the rosters describe the opportunities each player brought."
+    }
+  ],
+  "Data Harvest": [
+    {
+      "id": 1,
+      "angle": "Data Harvest rewards specialists that can reach mission systems and stay useful through the scoring windows."
+    },
+    {
+      "id": 2,
+      "angle": "A hacking network may shape access to the data even when the score does not reveal individual activations."
+    },
+    {
+      "id": 3,
+      "angle": "The useful question is how each roster could protect the route between deployment and the systems."
+    },
+    {
+      "id": 4,
+      "angle": "A list with one specialist has a very different margin for error from a list with several."
+    },
+    {
+      "id": 5,
+      "angle": "Long-range pressure can open space for a data run, but only eligible models can finish the scoring task."
+    },
+    {
+      "id": 6,
+      "angle": "The mission can turn a surviving low-cost specialist into a more relevant asset than a remaining gunfighter."
+    },
+    {
+      "id": 7,
+      "angle": "A contested data point calls for both an approach plan and a plan to deny the opponent a return trip."
+    },
+    {
+      "id": 8,
+      "angle": "The final score cannot identify the sequence of system interactions without a submitted account."
+    },
+    {
+      "id": 9,
+      "angle": "The two rosters can reveal whether the data fight favored repeated access or a single protected opening."
+    },
+    {
+      "id": 10,
+      "angle": "Data Harvest turns the quality of safe routes into a better story than an unsupported list of kills."
+    }
+  ],
+  "Dead Man's Switch": [
+    {
+      "id": 1,
+      "angle": "Dead Man's Switch lets a surviving mission piece matter even when the wider table is lost."
+    },
+    {
+      "id": 2,
+      "angle": "The mission-system fight asks which roster can keep a specialist and an approach available late."
+    },
+    {
+      "id": 3,
+      "angle": "A screening force can make a direct switch attempt costly without removing every eligible model."
+    },
+    {
+      "id": 4,
+      "angle": "The final mission score may differ sharply from the material score when one route remains open."
+    },
+    {
+      "id": 5,
+      "angle": "An early lead is vulnerable if the other roster can still assemble one protected systems run."
+    },
+    {
+      "id": 6,
+      "angle": "The two submitted forces show different ways to guard a switch or threaten it from another angle."
+    },
+    {
+      "id": 7,
+      "angle": "The score cannot tell whether the decisive switch pressure came early or on a final order."
+    },
+    {
+      "id": 8,
+      "angle": "A late specialist reserve can keep Dead Man’s Switch alive after an opening attack fails."
+    },
+    {
+      "id": 9,
+      "angle": "The real tension is between closing the opponent’s route and keeping your own route usable."
+    },
+    {
+      "id": 10,
+      "angle": "This mission gives a recorded final attempt more weight than an imagined sequence of earlier trades."
+    }
+  ],
+  "Double Bind": [
+    {
+      "id": 1,
+      "angle": "Double Bind asks for a force that can respond when the objective state changes."
+    },
+    {
+      "id": 2,
+      "angle": "A fixed defensive position can be strong until the next scoring demand falls outside its reach."
+    },
+    {
+      "id": 3,
+      "angle": "A mobile reserve has value because it gives the roster another answer after the first commitment."
+    },
+    {
+      "id": 4,
+      "angle": "The mission makes order efficiency part of the matchup: two routes can be available but only one affordable."
+    },
+    {
+      "id": 5,
+      "angle": "A force that preserves flexible pieces can threaten a different scoring path late."
+    },
+    {
+      "id": 6,
+      "angle": "A close Double Bind score can hide very different surviving options on each side."
+    },
+    {
+      "id": 7,
+      "angle": "The list comparison starts with who can pivot and who must protect a narrower route."
+    },
+    {
+      "id": 8,
+      "angle": "Attrition matters here when it takes away the model able to answer the changed objective."
+    },
+    {
+      "id": 9,
+      "angle": "First turn can shape the opening state without proving who controlled the final one."
+    },
+    {
+      "id": 10,
+      "angle": "Double Bind rewards an answer to the second problem, not merely a strong first move."
+    }
+  ],
+  "Hardlock": [
+    {
+      "id": 1,
+      "angle": "Hardlock makes holding and contesting the scoring parts of the table the central problem."
+    },
+    {
+      "id": 2,
+      "angle": "A durable model can anchor an area, but it still needs a route to the area that matters."
+    },
+    {
+      "id": 3,
+      "angle": "A roster with several mobile pieces can threaten multiple scoring areas without winning every firefight."
+    },
+    {
+      "id": 4,
+      "angle": "The useful contrast is between reaching an area early and contesting it when points are counted."
+    },
+    {
+      "id": 5,
+      "angle": "The final VP difference cannot by itself explain which zone produced the mission gap."
+    },
+    {
+      "id": 6,
+      "angle": "A control network can deny entry even when it does not add a scoring model of its own."
+    },
+    {
+      "id": 7,
+      "angle": "A late reposition can change a territorial count while leaving the casualty picture mostly unchanged."
+    },
+    {
+      "id": 8,
+      "angle": "Hardlock rewards the side that keeps relevant bodies available for the scoring window."
+    },
+    {
+      "id": 9,
+      "angle": "The two armies may divide their threats differently across the table; the score only records the final conversion."
+    },
+    {
+      "id": 10,
+      "angle": "An apparent material lead is less secure if it cannot be turned into a defensible scoring position."
+    }
+  ],
+  "Last Launch": [
+    {
+      "id": 1,
+      "angle": "Last Launch makes the survival and movement of mission assets the measure of a successful attack."
+    },
+    {
+      "id": 2,
+      "angle": "A fast piece can threaten an extraction route, while a resilient escort can keep that route usable."
+    },
+    {
+      "id": 3,
+      "angle": "The list comparison turns on which side can still reach the asset after the first engagements."
+    },
+    {
+      "id": 4,
+      "angle": "An early extraction threat is different from an asset that can actually remain safe through the end."
+    },
+    {
+      "id": 5,
+      "angle": "The mission can punish a force that wins the flank but loses the carrier or its protected route."
+    },
+    {
+      "id": 6,
+      "angle": "A second approach to the launch point can be valuable when the obvious path becomes exposed."
+    },
+    {
+      "id": 7,
+      "angle": "The VP score describes the remaining force, not the precise moment an asset changed hands."
+    },
+    {
+      "id": 8,
+      "angle": "Last Launch rewards having orders available after securing the objective, not just reaching it."
+    },
+    {
+      "id": 9,
+      "angle": "A screen that survives can be as relevant as the model that directly handles the asset."
+    },
+    {
+      "id": 10,
+      "angle": "The battle account is strongest when it names an actual extraction moment rather than inventing one."
+    }
+  ],
+  "Neutralization": [
+    {
+      "id": 1,
+      "angle": "Neutralization makes target selection the bridge between winning exchanges and winning the mission."
+    },
+    {
+      "id": 2,
+      "angle": "A long-range threat can change the opponent’s options even when the final score does not identify each shot."
+    },
+    {
+      "id": 3,
+      "angle": "The two rosters invite a comparison between a hard target and the tools brought to remove or avoid it."
+    },
+    {
+      "id": 4,
+      "angle": "The best material exchange is not always the one that removes the mission-relevant target."
+    },
+    {
+      "id": 5,
+      "angle": "An expensive survivor can preserve VP without resolving the actual objective pressure."
+    },
+    {
+      "id": 6,
+      "angle": "The mission rewards identifying which opposing piece matters most to the scoring plan."
+    },
+    {
+      "id": 7,
+      "angle": "A controlled approach can matter more than a broad advance when the target is specific."
+    },
+    {
+      "id": 8,
+      "angle": "Neutralization gives a small specialist or support model unusual importance if it enables the right attack."
+    },
+    {
+      "id": 9,
+      "angle": "The final VP gap cannot establish which individual target fell first without a reported highlight."
+    },
+    {
+      "id": 10,
+      "angle": "A roster can threaten several targets at once; the score only shows which plan converted."
+    }
+  ],
+  "Outbreak": [
+    {
+      "id": 1,
+      "angle": "Outbreak asks for movement plans that can change with the objective state."
+    },
+    {
+      "id": 2,
+      "angle": "A mobile reserve is valuable when the important part of the table is not fixed all game."
+    },
+    {
+      "id": 3,
+      "angle": "A defensive list may control an opening lane yet still need orders to answer the next scoring position."
+    },
+    {
+      "id": 4,
+      "angle": "The mission makes flexibility a form of protection: keeping one option uncommitted can matter later."
+    },
+    {
+      "id": 5,
+      "angle": "An early casualty can remove a force’s best answer to a changing objective."
+    },
+    {
+      "id": 6,
+      "angle": "The VP score does not show how many times an objective became reachable or unsafe."
+    },
+    {
+      "id": 7,
+      "angle": "Outbreak can reward multiple small routes over a single protected march."
+    },
+    {
+      "id": 8,
+      "angle": "The two rosters suggest different ways to follow the mission as it develops."
+    },
+    {
+      "id": 9,
+      "angle": "First-turn initiative matters only alongside a plan to respond after the opening state changes."
+    },
+    {
+      "id": 10,
+      "angle": "The final objective edge should be read against the mobile tools each player still had available."
+    }
+  ],
+  "Panic Room": [
+    {
+      "id": 1,
+      "angle": "Panic Room compresses the territorial fight into the models able to contest the scoring area."
+    },
+    {
+      "id": 2,
+      "angle": "A strong shooting position outside the scoring area is useful only if it opens entry at the right time."
+    },
+    {
+      "id": 3,
+      "angle": "A durable anchor can hold space, but a mobile reserve may still threaten the last contest."
+    },
+    {
+      "id": 4,
+      "angle": "The key roster question is how each army can reach, clear, or remain in the room."
+    },
+    {
+      "id": 5,
+      "angle": "Panic Room can turn one surviving body into the difference between uncontested and contested space."
+    },
+    {
+      "id": 6,
+      "angle": "A material advantage may not tell the whole story when scoring depends on where survivors finish."
+    },
+    {
+      "id": 7,
+      "angle": "Control tools can shape the doorway without themselves becoming the final scoring piece."
+    },
+    {
+      "id": 8,
+      "angle": "The first entrant and the last relevant model play different roles in a room-control mission."
+    },
+    {
+      "id": 9,
+      "angle": "A close score leaves the timing of the final contest unresolved unless a player recorded it."
+    },
+    {
+      "id": 10,
+      "angle": "The mission invites a contrast between denying an approach and being able to occupy the room yourself."
+    }
+  ],
+  "Provisioning": [
+    {
+      "id": 1,
+      "angle": "Provisioning ties the result to reaching and retaining mission assets, not just winning trades."
+    },
+    {
+      "id": 2,
+      "angle": "A low-cost model can matter enormously if it remains able to move an asset into safety."
+    },
+    {
+      "id": 3,
+      "angle": "A force that protects a carrier has a different task from one that only clears an approach."
+    },
+    {
+      "id": 4,
+      "angle": "The match can turn on whether either roster can pressure the asset after the first exchange."
+    },
+    {
+      "id": 5,
+      "angle": "Provisioning rewards saving orders for the part of the plan that happens after contact."
+    },
+    {
+      "id": 6,
+      "angle": "A broad material lead does not guarantee that a surviving piece can still complete the asset run."
+    },
+    {
+      "id": 7,
+      "angle": "A mobile specialist and a durable escort provide different answers to the same delivery problem."
+    },
+    {
+      "id": 8,
+      "angle": "The scoreboard does not say when the asset became secure or who carried it."
+    },
+    {
+      "id": 9,
+      "angle": "A second route matters when the direct path to the objective becomes difficult."
+    },
+    {
+      "id": 10,
+      "angle": "The two submitted armies can show which tools might keep an asset relevant to the last scoring window."
+    }
+  ],
+  "The Dig": [
+    {
+      "id": 1,
+      "angle": "The Dig asks who can reach a mission asset and keep a usable route to it."
+    },
+    {
+      "id": 2,
+      "angle": "A surviving escort and a surviving carrier solve different parts of the extraction problem."
+    },
+    {
+      "id": 3,
+      "angle": "The Dig can turn a final asset move into a larger scoring swing than the casualty count suggests."
+    },
+    {
+      "id": 4,
+      "angle": "A force with several approaches can threaten the asset even after the direct route closes."
+    },
+    {
+      "id": 5,
+      "angle": "The first engagement changes access, but the mission still requires an answer at the scoring window."
+    },
+    {
+      "id": 6,
+      "angle": "The list comparison starts with who could clear a route and who could use it afterward."
+    },
+    {
+      "id": 7,
+      "angle": "A material advantage is most relevant when it also protects the mission asset or denies a return trip."
+    },
+    {
+      "id": 8,
+      "angle": "An early carrier threat is not evidence of a successful extraction without a recorded action."
+    },
+    {
+      "id": 9,
+      "angle": "The Dig rewards a reserve of orders for the move after securing an asset."
+    },
+    {
+      "id": 10,
+      "angle": "A submitted highlight can explain one actual exchange; the rest of the Dig remains a matchup inference."
+    }
+  ],
+  "Akial Interference": [
+    {
+      "id": 1,
+      "angle": "Akial Interference can be read through the contrast between access to mission systems and the force protecting that access."
+    },
+    {
+      "id": 2,
+      "angle": "The useful roster question in Akial Interference is which specialists could reach a system while other units covered their route."
+    },
+    {
+      "id": 3,
+      "angle": "An objective lead in Akial Interference says who scored; it does not identify the specialist or the exchange that opened the approach."
+    },
+    {
+      "id": 4,
+      "angle": "The two armies may offer very different ways to contest systems: direct access, denial, or support from range."
+    },
+    {
+      "id": 5,
+      "angle": "A surviving heavy weapon can shape the approach in Akial Interference, but its presence alone cannot explain the final OP."
+    },
+    {
+      "id": 6,
+      "angle": "The first player could plan an early system route, while the other could reserve a counter; the record must show which occurred."
+    },
+    {
+      "id": 7,
+      "angle": "Where VP and OP diverge, Akial Interference asks how the mission outcome differs from the remaining material."
+    },
+    {
+      "id": 8,
+      "angle": "A submitted highlight can anchor one real moment in Akial Interference; the unreported system interactions remain unknown."
+    },
+    {
+      "id": 9,
+      "angle": "Compare the armies' available specialist coverage before inferring what either commander was able to score."
+    },
+    {
+      "id": 10,
+      "angle": "Akial Interference makes protected access a useful lens for a rematch, without treating a plausible plan as a battle report."
+    }
+  ],
+  "Crossing Lines": [
+    {
+      "id": 1,
+      "angle": "Crossing Lines puts the final scoring positions beside the two armies' different ways to contest space."
+    },
+    {
+      "id": 2,
+      "angle": "A force can have tools to threaten an area without the record showing that it occupied the area."
+    },
+    {
+      "id": 3,
+      "angle": "In Crossing Lines, compare durable bodies with mobile reserves as possible answers to the same territorial demand."
+    },
+    {
+      "id": 4,
+      "angle": "The remaining VP matter, but they cannot identify which scoring area either player held."
+    },
+    {
+      "id": 5,
+      "angle": "A first-turn advantage in Crossing Lines is an opening option, not proof of where models ended the game."
+    },
+    {
+      "id": 6,
+      "angle": "The submitted armies can reveal who brought models suited to contest space and who had to use a thinner reserve."
+    },
+    {
+      "id": 7,
+      "angle": "When the OP gap is small, Crossing Lines invites a closer look at what could challenge the last scoring position."
+    },
+    {
+      "id": 8,
+      "angle": "A dramatic exchange may remove a model, yet the final territorial score needs its own evidence."
+    },
+    {
+      "id": 9,
+      "angle": "The final board state is unknown; discuss the available area-control tools as possibilities."
+    },
+    {
+      "id": 10,
+      "angle": "Crossing Lines can be approached as a contest between early occupation and late repositioning without inventing either turn."
+    }
+  ],
+  "Evacuation": [
+    {
+      "id": 1,
+      "angle": "Evacuation raises the question of how each roster might reach, carry, or protect a mission asset."
+    },
+    {
+      "id": 2,
+      "angle": "An asset plan has more than one step: access, movement, and a position that still scores."
+    },
+    {
+      "id": 3,
+      "angle": "The recorded OP in Evacuation shows which plan paid off, while leaving the actual extraction route unreported."
+    },
+    {
+      "id": 4,
+      "angle": "Compare mobile pieces with protective support in the two submitted forces as possible asset tools."
+    },
+    {
+      "id": 5,
+      "angle": "A material lead cannot alone establish whether an asset was secure when scoring occurred."
+    },
+    {
+      "id": 6,
+      "angle": "Evacuation makes saved orders and a protected route useful possibilities to examine, not facts to assert."
+    },
+    {
+      "id": 7,
+      "angle": "First turn may open an asset route; the final score cannot prove whether that opening was used."
+    },
+    {
+      "id": 8,
+      "angle": "A submitted highlight can identify a real threat to an asset without supplying every later move."
+    },
+    {
+      "id": 9,
+      "angle": "The armies can differ in how they shield a carrier even when the surviving VP totals are similar."
+    },
+    {
+      "id": 10,
+      "angle": "Evacuation rewards asking what could keep an asset relevant at the last scoring opportunity."
+    }
+  ],
+  "Annihilation": [
+    {
+      "id": 1,
+      "angle": "Annihilation invites a comparison between the targets each roster could threaten and the actual recorded points."
+    },
+    {
+      "id": 2,
+      "angle": "The final VP in Annihilation measure surviving material, but do not reveal the target order or trades."
+    },
+    {
+      "id": 3,
+      "angle": "A strong long-range piece can offer target pressure without proving it fired the deciding shot."
+    },
+    {
+      "id": 4,
+      "angle": "Compare the armies' attack tools with their ability to protect models that still matter to the mission."
+    },
+    {
+      "id": 5,
+      "angle": "Where OP and VP split in Annihilation, material advantage and mission advantage need separate explanations."
+    },
+    {
+      "id": 6,
+      "angle": "The first turn presents target choices, though no report identifies which choice was made."
+    },
+    {
+      "id": 7,
+      "angle": "A submitted highlight can establish one real elimination while leaving the broader exchange unknown."
+    },
+    {
+      "id": 8,
+      "angle": "The armies may threaten different ranges or lanes; the final scores cannot locate those lanes."
+    },
+    {
+      "id": 9,
+      "angle": "The more useful question is which losses would change the mission, not merely which units cost the most."
+    },
+    {
+      "id": 10,
+      "angle": "Annihilation gives a rematch a target-selection lens without inventing a winning sequence."
+    }
+  ],
+  "Battleground": [
+    {
+      "id": 1,
+      "angle": "Battleground puts the final scoring positions beside the two armies' different ways to contest space."
+    },
+    {
+      "id": 2,
+      "angle": "A force can have tools to threaten an area without the record showing that it occupied the area."
+    },
+    {
+      "id": 3,
+      "angle": "In Battleground, compare durable bodies with mobile reserves as possible answers to the same territorial demand."
+    },
+    {
+      "id": 4,
+      "angle": "The remaining VP matter, but they cannot identify which scoring area either player held."
+    },
+    {
+      "id": 5,
+      "angle": "A first-turn advantage in Battleground is an opening option, not proof of where models ended the game."
+    },
+    {
+      "id": 6,
+      "angle": "The submitted armies can reveal who brought models suited to contest space and who had to use a thinner reserve."
+    },
+    {
+      "id": 7,
+      "angle": "When the OP gap is small, Battleground invites a closer look at what could challenge the last scoring position."
+    },
+    {
+      "id": 8,
+      "angle": "A dramatic exchange may remove a model, yet the final territorial score needs its own evidence."
+    },
+    {
+      "id": 9,
+      "angle": "The final board state is unknown; discuss the available area-control tools as possibilities."
+    },
+    {
+      "id": 10,
+      "angle": "Battleground can be approached as a contest between early occupation and late repositioning without inventing either turn."
+    }
+  ],
+  "Cutthroat": [
+    {
+      "id": 1,
+      "angle": "Cutthroat invites a comparison between the targets each roster could threaten and the actual recorded points."
+    },
+    {
+      "id": 2,
+      "angle": "The final VP in Cutthroat measure surviving material, but do not reveal the target order or trades."
+    },
+    {
+      "id": 3,
+      "angle": "A strong long-range piece can offer target pressure without proving it fired the deciding shot."
+    },
+    {
+      "id": 4,
+      "angle": "Compare the armies' attack tools with their ability to protect models that still matter to the mission."
+    },
+    {
+      "id": 5,
+      "angle": "Where OP and VP split in Cutthroat, material advantage and mission advantage need separate explanations."
+    },
+    {
+      "id": 6,
+      "angle": "The first turn presents target choices, though no report identifies which choice was made."
+    },
+    {
+      "id": 7,
+      "angle": "A submitted highlight can establish one real elimination while leaving the broader exchange unknown."
+    },
+    {
+      "id": 8,
+      "angle": "The armies may threaten different ranges or lanes; the final scores cannot locate those lanes."
+    },
+    {
+      "id": 9,
+      "angle": "The more useful question is which losses would change the mission, not merely which units cost the most."
+    },
+    {
+      "id": 10,
+      "angle": "Cutthroat gives a rematch a target-selection lens without inventing a winning sequence."
+    }
+  ],
+  "Superiority": [
+    {
+      "id": 1,
+      "angle": "Superiority puts the final scoring positions beside the two armies' different ways to contest space."
+    },
+    {
+      "id": 2,
+      "angle": "A force can have tools to threaten an area without the record showing that it occupied the area."
+    },
+    {
+      "id": 3,
+      "angle": "In Superiority, compare durable bodies with mobile reserves as possible answers to the same territorial demand."
+    },
+    {
+      "id": 4,
+      "angle": "The remaining VP matter, but they cannot identify which scoring area either player held."
+    },
+    {
+      "id": 5,
+      "angle": "A first-turn advantage in Superiority is an opening option, not proof of where models ended the game."
+    },
+    {
+      "id": 6,
+      "angle": "The submitted armies can reveal who brought models suited to contest space and who had to use a thinner reserve."
+    },
+    {
+      "id": 7,
+      "angle": "When the OP gap is small, Superiority invites a closer look at what could challenge the last scoring position."
+    },
+    {
+      "id": 8,
+      "angle": "A dramatic exchange may remove a model, yet the final territorial score needs its own evidence."
+    },
+    {
+      "id": 9,
+      "angle": "The final board state is unknown; discuss the available area-control tools as possibilities."
+    },
+    {
+      "id": 10,
+      "angle": "Superiority can be approached as a contest between early occupation and late repositioning without inventing either turn."
+    }
+  ],
+  "Uplink Center": [
+    {
+      "id": 1,
+      "angle": "Uplink Center can be read through the contrast between access to mission systems and the force protecting that access."
+    },
+    {
+      "id": 2,
+      "angle": "The useful roster question in Uplink Center is which specialists could reach a system while other units covered their route."
+    },
+    {
+      "id": 3,
+      "angle": "An objective lead in Uplink Center says who scored; it does not identify the specialist or the exchange that opened the approach."
+    },
+    {
+      "id": 4,
+      "angle": "The two armies may offer very different ways to contest systems: direct access, denial, or support from range."
+    },
+    {
+      "id": 5,
+      "angle": "A surviving heavy weapon can shape the approach in Uplink Center, but its presence alone cannot explain the final OP."
+    },
+    {
+      "id": 6,
+      "angle": "The first player could plan an early system route, while the other could reserve a counter; the record must show which occurred."
+    },
+    {
+      "id": 7,
+      "angle": "Where VP and OP diverge, Uplink Center asks how the mission outcome differs from the remaining material."
+    },
+    {
+      "id": 8,
+      "angle": "A submitted highlight can anchor one real moment in Uplink Center; the unreported system interactions remain unknown."
+    },
+    {
+      "id": 9,
+      "angle": "Compare the armies' available specialist coverage before inferring what either commander was able to score."
+    },
+    {
+      "id": 10,
+      "angle": "Uplink Center makes protected access a useful lens for a rematch, without treating a plausible plan as a battle report."
+    }
+  ]
+}
