@@ -6,6 +6,7 @@ import Skeleton from '../components/Skeleton'
 import { getCanonicalMissionName } from '../config/missions'
 import { type ArmyIntelligenceList, type CommissionerNewsItem, type RecentGame, type StreamedGame } from '../services/api'
 import { getGameIntelligenceLists } from '../services/gameIntelligenceLinks'
+import { getGameArmyLists } from '../services/gameArmyListLinks'
 import { buildGameReviewAnalysis } from '../services/gameReviewAnalysis'
 import { publicDetailProjection, type PublicSubmittedArmyList } from '../services/publicDetailProjection'
 import { formatPlayerName } from '../services/formatting'
@@ -658,19 +659,6 @@ function normalizeScoreText(value: string) {
       return trimmed === '-0' || Object.is(Number(trimmed), -0) ? '0' : trimmed
     })
     .join('-')
-}
-
-function getGameArmyLists(game: RecentGame, armyLists: PublicSubmittedArmyList[]) {
-  const linkedIds = [game.winnerArmyListId, game.loserArmyListId].filter(Boolean).map(String)
-  const linkedIdSet = new Set(linkedIds)
-  const matches = armyLists.filter((list) => list.gameId === game.id || linkedIdSet.has(String(list.id)))
-  const unique = new Map(matches.map((list) => [String(list.id), list]))
-
-  return [...unique.values()].sort((left, right) => {
-    const leftIndex = linkedIds.indexOf(String(left.id))
-    const rightIndex = linkedIds.indexOf(String(right.id))
-    return (leftIndex < 0 ? linkedIds.length : leftIndex) - (rightIndex < 0 ? linkedIds.length : rightIndex)
-  })
 }
 
 function GameNotFound() {

@@ -58,7 +58,7 @@ export function buildGameReviewAnalysis(game: RecentGame, lists: ArmyIntelligenc
   const victoryEdge = scoreEdge(victory)
   const draw = isDrawGame(game)
   const missionLens = getMissionLens(game.mission)
-  const angle = selectMissionNarrative(game)
+  const narrative = selectMissionNarrative(game)
 
   return {
     summary: draw
@@ -77,7 +77,7 @@ export function buildGameReviewAnalysis(game: RecentGame, lists: ArmyIntelligenc
       winnerProfile,
       victoryEdge,
     }),
-    story: buildBattleStory({ angle, draw, firstPlayer, game, loser, loserProfile, objectiveEdge, victoryEdge, winner, winnerProfile }),
+    story: buildBattleStory({ narrative, draw, firstPlayer, game, loser, loserProfile, objectiveEdge, victoryEdge, winner, winnerProfile }),
     turningPoint: buildTurningPoint(game),
     winnerCoaching: buildWinnerCoaching(winner, winnerProfile, missionLens, objectiveMargin, victoryEdge, victoryMargin),
     loserCoaching: buildLoserCoaching(loser, loserProfile, missionLens, objectiveMargin, victoryEdge),
@@ -93,9 +93,9 @@ function selectMissionNarrative(game: RecentGame) {
   const rows = game.reviewNarratives?.length ? game.reviewNarratives : fallback
   const angles = rows.filter((row) => Number.isInteger(row.id) && typeof row.angle === 'string' && row.angle.length <= 500)
     .sort((left, right) => left.id - right.id)
-  if (!angles.length) return `${game.mission || 'The mission'} puts the recorded objective score beside the two submitted armies.`
+  if (!angles.length) return { id: 1, angle: `${game.mission || 'The mission'} puts the recorded objective score beside the two submitted armies.` }
   const index = game.reviewShapeIndex ?? game.id - 1
-  return angles[((index % angles.length) + angles.length) % angles.length].angle
+  return angles[((index % angles.length) + angles.length) % angles.length]
 }
 
 function buildGame109Review(game: RecentGame): GameReviewAnalysis {
@@ -211,9 +211,9 @@ function describeForce(profile: ForceProfile | null, label: string) {
 }
 
 function buildBattleStory({
-  angle, draw, firstPlayer, game, loser, loserProfile, objectiveEdge, victoryEdge, winner, winnerProfile,
+  narrative, draw, firstPlayer, game, loser, loserProfile, objectiveEdge, victoryEdge, winner, winnerProfile,
 }: {
-  angle: string
+  narrative: { id: number; angle: string }
   draw: boolean
   firstPlayer: string
   game: RecentGame
@@ -224,6 +224,7 @@ function buildBattleStory({
   winner: string
   winnerProfile: ForceProfile | null
 }) {
+  const mission = game.mission || 'The mission'
   const winnerOptions = winnerProfile ? `The decoded ${winner} roster includes ${strongestTrait(winnerProfile)}.` : `${winner}’s roster has not yet been decoded in this public snapshot.`
   const loserOptions = loserProfile ? `The decoded ${loser} roster includes ${strongestTrait(loserProfile)}.` : `${loser}’s roster has not yet been decoded in this public snapshot.`
   const result = draw
@@ -235,7 +236,22 @@ function buildBattleStory({
   const initiative = firstPlayer ? `${firstPlayer} is recorded as the first player.` : ''
   const note = cleanStoryNote(game.bestMoment)
   const highlight = note ? `The submitted highlight says: “${note}”` : 'No player highlight records a specific exchange.'
-  return [`${game.mission || 'Mission'}:`, angle, winnerOptions, loserOptions, result, contrast, initiative, highlight].filter(Boolean).join(' ')
+  const angle = `${mission}: ${narrative.angle}`
+  // The sheet selects both the mission angle and the paragraph shape. Each
+  // structure stays inside recorded results, roster capabilities, and notes.
+  const shapes = [
+    [`${mission}:`, angle, winnerOptions, loserOptions, result, highlight],
+    [result, `For ${mission}, one useful angle is: ${angle}`, loserOptions, winnerOptions, highlight],
+    [winnerOptions, loserOptions, `One angle in ${mission}: ${angle}`, result, highlight],
+    [highlight, `${mission}: ${angle}`, result, winnerOptions, loserOptions],
+    [contrast, angle, loserOptions, winnerOptions, result, highlight],
+    [initiative, `${mission}: ${angle}`, winnerOptions, result, loserOptions, highlight],
+    [loserOptions, winnerOptions, angle, highlight, result],
+    [`For ${mission}, start with the available tools.`, winnerOptions, loserOptions, angle, result, highlight],
+    [result, angle, highlight, loserOptions, winnerOptions, 'The order in which those tools were used is not recorded.'],
+    [highlight, winnerOptions, loserOptions, angle, result],
+  ]
+  return shapes[((narrative.id - 1) % shapes.length + shapes.length) % shapes.length].filter(Boolean).join(' ')
 }
 
 function cleanStoryNote(value: string) {

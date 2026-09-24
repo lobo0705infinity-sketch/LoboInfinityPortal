@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict'
 import { buildGameReviewAnalysis } from '../src/services/gameReviewAnalysis.ts'
 import { getGameIntelligenceLists } from '../src/services/gameIntelligenceLinks.ts'
+import { getGameArmyLists } from '../src/services/gameArmyListLinks.ts'
 import type { ArmyIntelligenceList, RecentGame } from '../src/services/api.ts'
+import type { PublicSubmittedArmyList } from '../src/services/publicDetailProjection.ts'
 import narrativeCatalog from '../src/data/gameReviewNarratives.json' with { type: 'json' }
 import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
 
@@ -14,6 +16,7 @@ const consecutive = Array.from({ length: 10 }, (_, index) => buildGameReviewAnal
   id: 200 + index, mission: 'The Dig', reviewShapeIndex: index,
 }), []).story)
 assert.equal(new Set(consecutive).size, 10)
+assert(new Set(consecutive.map((story) => story.split(' ').slice(0, 5).join(' '))).size >= 7, 'narrative shapes must change paragraph structure')
 assert(consecutive.every((story) => /has not yet been decoded/.test(story)))
 
 const missionOverMaterial = game({
@@ -67,6 +70,10 @@ const matched = getGameIntelligenceLists(linkedGame, [staleSourceId])
 assert.equal(matched.length, 1)
 assert.match(buildGameReviewAnalysis(linkedGame, matched).decidingFactors, /decoded roster/)
 assert.doesNotMatch(buildGameReviewAnalysis(linkedGame, matched).decidingFactors, /Without decoded lists/)
+const winnerSubmission = { id: '2555913601', player: linkedGame.winner, opponent: linkedGame.loser, mission: linkedGame.mission, date: '2026-09-22', gameId: 114 } as PublicSubmittedArmyList
+const unrelatedSubmission = { id: '3382380291', player: 'Defuser', opponent: 'Arg', mission: 'Neutralization', date: '2026-09-06', gameId: 115 } as PublicSubmittedArmyList
+assert.deepEqual(getGameArmyLists(linkedGame, [unrelatedSubmission, winnerSubmission]), [winnerSubmission])
+assert.deepEqual(getGameArmyLists({ ...linkedGame, winnerArmyListId: '', loserArmyListId: '' }, [winnerSubmission, unrelatedSubmission]), [winnerSubmission])
 
 const nextGame = game({ id: 116, winner: 'Jqam1', loser: 'Igor Your Humble Servant', winnerArmyListId: '3983751212', loserArmyListId: '5071712090', mission: 'The Dig' })
 assert.deepEqual(getGameIntelligenceLists(nextGame, [staleSourceId]), [])
