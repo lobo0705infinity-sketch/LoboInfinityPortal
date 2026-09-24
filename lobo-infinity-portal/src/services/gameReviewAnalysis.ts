@@ -1,6 +1,7 @@
 import type { ArmyIntelligenceDecodedEntry, ArmyIntelligenceList, RecentGame } from './api.ts'
 import { formatPlayerName } from './formatting.ts'
 import { getGameSides, isDrawGame } from './gameResults.ts'
+import { getAuthoredBattleStory } from './gameStoryRouting.ts'
 import fallbackNarratives from '../data/gameReviewNarratives.json' with { type: 'json' }
 
 export type GameReviewAnalysis = {
@@ -39,7 +40,7 @@ type MissionLens = {
 }
 
 export function buildGameReviewAnalysis(game: RecentGame, lists: ArmyIntelligenceList[], linkedLists: LinkedGameList[] = []): GameReviewAnalysis {
-  if (game.id === 109) return buildGame109Review(game)
+  if (game.id === 109) return buildGame109Review(game, lists)
 
   const [left, right] = getGameSides(game)
   const winner = formatPlayerName(left.player, left.displayName)
@@ -75,7 +76,7 @@ export function buildGameReviewAnalysis(game: RecentGame, lists: ArmyIntelligenc
       winnerFaction,
       winnerProfile,
     }),
-    story: buildBattleStory({ narrative, draw, firstPlayer, game, loser, loserProfile, objectiveEdge, victoryEdge, winner, winnerProfile }),
+    story: getAuthoredBattleStory(game, lists) ?? buildBattleStory({ narrative, draw, firstPlayer, game, loser, loserProfile, objectiveEdge, victoryEdge, winner, winnerProfile }),
     turningPoint: buildTurningPoint(game),
     winnerCoaching: buildWinnerCoaching(winner, winnerProfile, missionLens, objectiveMargin, victoryEdge, victoryMargin),
     loserCoaching: buildLoserCoaching(loser, loserProfile, missionLens, objectiveMargin, victoryEdge),
@@ -96,7 +97,7 @@ function selectMissionNarrative(game: RecentGame) {
   return angles[((index % angles.length) + angles.length) % angles.length]
 }
 
-function buildGame109Review(game: RecentGame): GameReviewAnalysis {
+function buildGame109Review(game: RecentGame, lists: ArmyIntelligenceList[]): GameReviewAnalysis {
   const winner = formatPlayerName(game.winner, game.winnerDisplayName) || 'Lobo'
   const loser = formatPlayerName(game.loser, game.loserDisplayName) || 'Chainsaw'
 
@@ -104,7 +105,7 @@ function buildGame109Review(game: RecentGame): GameReviewAnalysis {
     summary: `${winner} defeated ${loser} ${formatScore(game.tp)} TP · ${formatScore(game.op)} OP · ${formatScore(game.vp)} VP.`,
     result: `This was a decisive win on both mission and attrition. ${winner} finished with 221 points on the table to ${loser}’s 75, so the game was not merely a late objective steal: Corregidor controlled the table and preserved a much stronger end-state. Dead Man’s Switch still rewarded keeping a live route to the objectives, which explains why the scenario remained in play after the material battle had swung so heavily.`,
     decidingFactors: `${winner}’s list combined overlapping board control—two Morans, CrazyKoalas, mines, Jazz’s hacking and Pitcher coverage, an Intruder MULTI Sniper, and the Iguana—with a Territorial engineer to support the TAG. The dense, vertical table offered protected staging areas, but its narrow streets, roof approaches, and limited long fire lanes also let that network make Torchlight’s advance expensive. Against two Striders, two Moonrakers, Waverider hacking, Raveneye, and several close-range or Super-Jump attack pieces, going first probably let Corregidor establish the pace: cover the central approaches, pressure the few useful long lanes, and deny Torchlight a clean route to the mission.`,
-    story: `Corregidor turned the streets into a chain of traps. Repeaters watched the approaches, CrazyKoalas threatened the corners, and the Iguana and Intruder made every exposed lane expensive. Torchlight lost ground and bodies trying to break that network, but Dead Man’s Switch never quite slipped beyond reach. In the final moments, Raveneye found the route the rest of the force had been searching for. On its second order, the small scenario piece made one last run at stealing the game. It came close enough to expose the tension hidden by the scoreline, but the opening closed before Torchlight could reverse the result. ${winner} had won the battlefield; ${loser} had nearly stolen the mission at the death.`,
+    story: getAuthoredBattleStory(game, lists) ?? `Corregidor turned the streets into a chain of traps. Repeaters watched the approaches, CrazyKoalas threatened the corners, and the Iguana and Intruder made every exposed lane expensive. Torchlight lost ground and bodies trying to break that network, but Dead Man’s Switch never quite slipped beyond reach. In the final moments, Raveneye found the route the rest of the force had been searching for. On its second order, the small scenario piece made one last run at stealing the game. It came close enough to expose the tension hidden by the scoreline, but the opening closed before Torchlight could reverse the result. ${winner} had won the battlefield; ${loser} had nearly stolen the mission at the death.`,
     turningPoint: `The submitted note says it “came down to the last moment,” when ${loser}’s Raveneye, on its second order, nearly won the game by itself. That is the key story: Torchlight still found a live objective route late despite being badly behind on material. The table’s broken sightlines preserved a protected approach, and one low-cost scenario piece nearly reversed a game ${winner} otherwise controlled.`,
     winnerCoaching: `The list’s board-control plan clearly worked. The lesson is to identify the opponent’s last viable scenario piece earlier—here, Raveneye—and reserve a Koala, repeater threat, or direct ARO for its protected approach, even when it looks less dangerous than the larger attackers.`,
     loserCoaching: `The list had the right ingredients for a late mission play: forward-deployed Striders and Moonrakers, mines, Waverider hacking, mobile attack pieces, and Raveneye. The priority against Corregidor’s repeaters, mines, and overwatch should be preserving one protected specialist route rather than trading the whole midfield package into the control net. Raveneye’s final run showed that route existed.`,

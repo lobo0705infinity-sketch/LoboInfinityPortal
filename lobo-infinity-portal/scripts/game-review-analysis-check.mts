@@ -113,6 +113,37 @@ assert.match(freshReview.story, /only two points, far narrower than the 116-poin
 assert.doesNotMatch(freshReview.story, /reserve of orders|carrier|extraction/i)
 assert.equal(freshReview.story.split('\n\n').length, 2)
 
+const reviewedHighlight = buildGameReviewAnalysis(game({
+  id: 114, mission: "Dead Man's Switch", winner: 'Lobo', winnerFaction: 'Shindenbutai',
+  loser: 'Nighthawkmk2', loserFaction: 'Operations Subsection',
+  bestMoment: "Hatamoto used Quantum Resonance and stole the box and then dodged his way back from Sacha's E/M Grenade",
+}), [])
+assert.match(reviewedHighlight.story, /The Sāchā’s E\/M grenade/)
+assert.doesNotMatch(reviewedHighlight.story, /\b(?:OP|VP)\b|the record does not|roster capabilities/i)
+
+const reviewedNoHighlight = game({
+  id: 105, mission: 'The Dig', date: '2026-09-16', winner: 'Brooke', winnerFaction: 'Next Wave',
+  loser: 'Blitchga', loserFaction: 'Operations Subsection', bestMoment: 'Mad dice, great game.',
+})
+const nextWaveRoster = decodedList({
+  player: 'Brooke', opponent: 'Blitchga', date: reviewedNoHighlight.date, mission: reviewedNoHighlight.mission,
+  sectorial: 'Next Wave', decoded: { combatGroups: [{ entries: [
+    { unit: 'IRONSIDE', points: 34, canonicalUnitId: 1881, skills: ['Hacker'], equipment: [], weapons: ['Submachine Gun'] },
+    { unit: 'TEUCER', points: 37, canonicalUnitId: 1860, skills: [], equipment: [], weapons: ['Plasma Sniper Rifle'], bs: 14 },
+  ] }] } as ArmyIntelligenceList['decoded'],
+})
+const operationsRoster = decodedList({
+  player: 'Blitchga', opponent: 'Brooke', date: reviewedNoHighlight.date, mission: reviewedNoHighlight.mission,
+  sectorial: 'Operations Subsection', decoded: { combatGroups: [{ entries: [
+    { unit: 'ASURA', points: 67, canonicalUnitId: 584, skills: [], equipment: [], weapons: ['MULTI Marksman Rifle'], bs: 14 },
+  ] }] } as ArmyIntelligenceList['decoded'],
+})
+const matchupReview = buildGameReviewAnalysis(reviewedNoHighlight, [nextWaveRoster, operationsRoster])
+assert.match(matchupReview.story, /the Ironside to descend/)
+assert.match(matchupReview.story, /Teucer’s fire/)
+assert.doesNotMatch(matchupReview.story, /Mad dice|\b(?:OP|VP)\b|record does not/i)
+assert.match(buildGameReviewAnalysis(reviewedNoHighlight, [nextWaveRoster]).story, /waiting for both submitted lists to be decoded/)
+
 const publicDraw = game({
   id: 112, winner: 'Draw', winnerDisplayName: 'Draw', loser: 'Draw', loserDisplayName: 'Draw',
   player1: 'Retrofuturist', player1DisplayName: 'Retrofuturist', player2: 'Blitchga', player2DisplayName: 'Blitchga',

@@ -4,13 +4,15 @@ import EntityPreviousNext from '../components/EntityPreviousNext'
 import InfinityArmyLink from '../components/InfinityArmyLink'
 import Skeleton from '../components/Skeleton'
 import { getCanonicalMissionName } from '../config/missions'
-import { type ArmyIntelligenceList, type CommissionerNewsItem, type RecentGame, type StreamedGame } from '../services/api'
+import { type ArmyIntelligenceFactionData, type ArmyIntelligenceList, type CommissionerNewsItem, type RecentGame, type StreamedGame } from '../services/api'
 import { getGameIntelligenceLists } from '../services/gameIntelligenceLinks'
 import { getGameArmyLists } from '../services/gameArmyListLinks'
 import { buildGameReviewAnalysis } from '../services/gameReviewAnalysis'
 import { publicDetailProjection, type PublicSubmittedArmyList } from '../services/publicDetailProjection'
+import { getNewerPublicSnapshotDataset } from '../services/publicSnapshot'
 import { formatPlayerName } from '../services/formatting'
 import { getGameSides, getGameTimelineResult, isDrawGame } from '../services/gameResults'
+import { loadAuthoredBattleStory } from '../services/gameStoryRouting'
 import './GameDetails.css'
 
 type GameDetailsState =
@@ -94,6 +96,38 @@ function GameDetails() {
       controller.abort()
     }
   }, [gameId])
+
+  useEffect(() => {
+    if (gameState.status !== 'success' ||
+      gameState.intelligenceLists.length >= 2 ||
+      ![gameState.game.winnerArmyListId, gameState.game.loserArmyListId].some(Boolean)) return
+
+    const controller = new AbortController()
+    let lastCheckedSnapshot = ''
+    let checking = false
+    const checkForDecodedLists = async () => {
+      if (checking || controller.signal.aborted) return
+      checking = true
+      try {
+        const newer = await getNewerPublicSnapshotDataset<ArmyIntelligenceFactionData[]>(
+          'army-intelligence-detail', lastCheckedSnapshot, controller.signal,
+        )
+        if (!newer || controller.signal.aborted) return
+        lastCheckedSnapshot = newer.snapshotId
+        const newlyLinked = getGameIntelligenceLists(gameState.game, newer.data.flatMap((faction) => faction.lists))
+        if (newlyLinked.length > gameState.intelligenceLists.length) window.location.reload()
+      } catch { /* A later focus or interval can try again. */ }
+      finally { checking = false }
+    }
+    void checkForDecodedLists()
+    const timer = window.setInterval(checkForDecodedLists, 60_000)
+    window.addEventListener('focus', checkForDecodedLists)
+    return () => {
+      controller.abort()
+      window.clearInterval(timer)
+      window.removeEventListener('focus', checkForDecodedLists)
+    }
+  }, [gameState])
 
   if (!Number.isInteger(gameId)) {
     return <GameNotFound />
@@ -362,6 +396,15 @@ function ParticipantPanel({ participant }: { participant: BattleParticipant }) {
 
 function GameReview({ armyLists, game, intelligenceLists }: { armyLists: PublicSubmittedArmyList[]; game: RecentGame; intelligenceLists: ArmyIntelligenceList[] }) {
   const review = useMemo(() => buildGameReviewAnalysis(game, intelligenceLists, armyLists), [armyLists, game, intelligenceLists])
+  const [loadedStory, setLoadedStory] = useState<string | null>(null)
+  useEffect(() => {
+    const controller = new AbortController()
+    setLoadedStory(null)
+    loadAuthoredBattleStory(game, intelligenceLists, controller.signal)
+      .then((story) => { if (!controller.signal.aborted) setLoadedStory(story) })
+      .catch(() => { /* The regular review remains available if a story shard cannot load. */ })
+    return () => controller.abort()
+  }, [game, intelligenceLists])
   const [left, right] = getGameSides(game)
   const winner = formatPlayerName(left.player, left.displayName)
   const loser = formatPlayerName(right.player, right.displayName)
@@ -379,8 +422,8 @@ function GameReview({ armyLists, game, intelligenceLists }: { armyLists: PublicS
       <div className="battle-report-game-review-grid battle-report-game-review-narrative">
         <section className="battle-report-game-review-story" aria-labelledby="game-review-story-title">
           <h3 id="game-review-story-title">Battle story</h3>
-          {review.story.split(/\n\n+/).map((paragraph, index) => <p key={index}>{paragraph}</p>)}
-          <small>Reported moments come from the player’s note. The scores and decoded lists provide context.</small>
+          {(loadedStory ?? review.story).split(/\n\n+/).map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+          <small>Stories are fictionalized scenes inspired by player highlights or by the mission and submitted armies.</small>
         </section>
 
         <section aria-labelledby="game-review-result-title">

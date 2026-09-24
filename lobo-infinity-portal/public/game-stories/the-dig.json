@@ -1,0 +1,290 @@
+[
+  {
+    "mission": "The Dig",
+    "factions": ["Next Wave", "StarCo"],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "The contractors had been promised an empty excavation and a clean retrieval fee. Then a shape moved behind the glass of the buried chamber. {{heroPlayer}}’s crew set a lamp beside the access hatch; across the pit, {{otherPlayer}}’s fighters answered with a light that followed the lamp instead of the ground.",
+      "{{hero}} crawled through the maintenance duct toward the console while a gunfight broke out above. The chamber had no windows on this side, only a strip of symbols crawling across the door. The trooper found a manual contact beneath the dust and held it down long enough for a reading to begin.",
+      "A second shadow appeared inside the chamber, exactly where the trooper’s reflection should have been. The contact grew hot beneath a gloved hand. Above, the crew shouted for a retreat, but the final line of data had not crossed the transmitter. The trooper stayed until the lamp outside went dark."
+    ],
+    "endings": {
+      "heroWins": "The crew pulled {{hero}} from the duct with the reading still transmitting to their ship.",
+      "heroLoses": "The crew saved the trooper, but {{otherPlayer}}’s fighters sealed the chamber before the last transmission escaped.",
+      "draw": "Both crews carried fragments away, and neither could say what had watched them from behind the glass."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": ["Operations Subsection", "Ramah Taskforce"],
+    "heroFaction": "Ramah Taskforce",
+    "role": "objective",
+    "paragraphs": [
+      "Someone had left a field hospital at the edge of the excavation, its cots empty and its power still running. {{heroPlayer}}’s people followed the cables underground, looking for the source before the emergency generator failed. {{otherPlayer}}’s sentries had already reached the machinery and would not let them pass.",
+      "{{hero}} went down the narrow service stairs with a portable reader. The trooper reached the lowest landing as the lights died, found the console by touch, and brought the screen back with a battery from the medical kit. Lines of strange diagnostic data ran across a display built for something else entirely.",
+      "A warning sounded upstairs: the route out was closing. The trooper could carry the reader or stay to copy one last encrypted segment, the only part that seemed to explain why the hospital had been abandoned. The battery flickered. The trooper chose to wait for the final transfer."
+    ],
+    "endings": {
+      "heroWins": "The reader cleared its last segment, and {{heroPlayer}}’s people reached daylight with an answer.",
+      "heroLoses": "The transfer broke, and {{otherPlayer}}’s sentries held the machinery while the medical team withdrew.",
+      "draw": "The team escaped with a damaged reader; the chamber and its remaining data belonged to neither side."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": ["Next Wave", "Next Wave"],
+    "heroFaction": "Next Wave",
+    "role": "gunfighting",
+    "paragraphs": [
+      "Two teams bearing the same insignia arrived at the excavation with different access codes. Neither commander would explain who had changed the orders. When {{heroPlayer}}’s squad opened the outer gate, {{otherPlayer}}’s squad was already inside, setting a receiver beside the deepest shaft.",
+      "{{hero}} held the upper bridge while the engineers argued over the console below. Shots struck the railing from a position the trooper knew well: the other squad had chosen the same cover and the same approach. The trooper broke that symmetry by moving onto the exposed grating and firing down through it.",
+      "The receiver’s light changed from green to amber. Somewhere in the shaft, one machine began answering two commands at once. Both squads scrambled to pull their people away from the edge as the bridge shook. The trooper kept the far end covered until the last technician cleared the span."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team left with the receiver; the duplicate orders remained unexplained.",
+      "heroLoses": "{{otherPlayer}}’s team carried the receiver out, while {{hero}} led the technicians away from the collapsing bridge.",
+      "draw": "The bridge fell between the two teams, leaving each with half a set of orders and no receiver."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": ["Kosmoflot", "Kosmoflot"],
+    "heroFaction": "Kosmoflot",
+    "role": "objective",
+    "paragraphs": [
+      "A thaw had opened two entrances to the same buried station. {{heroPlayer}}’s expedition came down the north lift with a drilling rig; {{otherPlayer}}’s crew reached the south shaft carrying a map drawn before either commander had been born. Both maps marked the console beneath the ice as their own discovery.",
+      "{{hero}} clipped a safety line to the north wall and crossed the flooded floor toward the console. A broken turbine turned under the water, pulling the line taut. The trooper climbed onto the housing, freed the cable, and set a scanner against the only panel still giving off heat.",
+      "From the south shaft came the scrape of another crew descending. Water rose around the console as the turbine began to spin faster. The trooper could leave with an incomplete scan or hold the scanner until its green light came on. The line shivered in the current."
+    ],
+    "endings": {
+      "heroWins": "The light turned green, and {{heroPlayer}}’s crew hauled {{hero}} out with the complete reading.",
+      "heroLoses": "The rising water took the scanner, and {{otherPlayer}}’s crew secured the station above it.",
+      "draw": "Both crews escaped the flood with different pieces of the station’s buried record."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": ["Next Wave", "Military Orders"],
+    "heroFaction": "Military Orders",
+    "role": "closeCombat",
+    "paragraphs": [
+      "The first drill struck a vaulted roof beneath the excavation. A knight descended through the new opening and found a chamber full of severed cables, each one leading toward a lit console. {{otherPlayer}}’s fighters entered from the far passage before {{heroPlayer}}’s engineers could learn what the machine had been built to hold.",
+      "{{hero}} met the first attacker between two rows of dead terminals. There was no room to bring a rifle to bear. The trooper drove forward, knocked the attacker away from the console, and made a narrow space for an engineer to kneel beside the exposed contacts.",
+      "The chamber door began closing without anyone touching it. On the other side, a second light had come alive. The engineer called out a sequence of numbers while the trooper braced against the narrowing gap, keeping it open just long enough for the reading to leave the room."
+    ],
+    "endings": {
+      "heroWins": "The engineer emerged with the reading as {{hero}} finally let the door shut.",
+      "heroLoses": "{{hero}} held the passage, but {{otherPlayer}}’s fighters cut the transmission and kept the chamber.",
+      "draw": "The door divided the forces with the engineers outside and the unresolved signal still inside."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": ["Next Wave", "Yu Jing"],
+    "heroFaction": "Yu Jing",
+    "role": "objective",
+    "paragraphs": [
+      "The excavation maps showed one buried transmitter. The survey team found three, all broadcasting the same coordinates from different depths. {{heroPlayer}}’s officer ordered a cautious descent while {{otherPlayer}}’s fighters spread through the upper galleries, waiting to see which signal the humans would follow.",
+      "{{hero}} chose the middle shaft because the dust there had been disturbed recently. The trooper lowered a sensor into the dark, found a warm cable beneath the soil, and traced it to a console hidden behind a false wall. A warning light came on before the first reading finished.",
+      "The other two transmitters began answering. Their signals overlapped until the screen showed a map of the dig that no surveyor had drawn. The trooper had seconds to copy it before the galleries filled with interference and footsteps closed on the middle shaft."
+    ],
+    "endings": {
+      "heroWins": "{{hero}} carried the impossible map back to {{heroPlayer}}’s survey team.",
+      "heroLoses": "The map vanished from the screen as {{otherPlayer}}’s fighters secured the middle shaft.",
+      "draw": "Both teams left the dig with different coordinates and the uneasy knowledge that neither set was complete."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": ["Next Wave", "Haqqislam"],
+    "heroFaction": "Haqqislam",
+    "role": "objective",
+    "paragraphs": [
+      "A medical caravan reached the excavation after receiving a distress call with no voice attached. The tents beside the pit were empty, but every monitor carried the same rising pulse. {{heroPlayer}}’s team followed it below ground, where {{otherPlayer}}’s sentries stood guard around a sealed research station.",
+      "{{hero}} found an unattended console behind the triage wall. The trooper connected a field diagnostic kit and discovered that the pulse was data, timed to sound like a heartbeat. As a gunfight drew the sentries away, the trooper copied the pattern onto a small medical recorder.",
+      "The recorder began speaking in the voice of the missing caller. It named a chamber deeper in the dig and then fell silent. The trooper had no time to follow the warning; the caravan was pulling out, and someone had just reopened the door to the station."
+    ],
+    "endings": {
+      "heroWins": "The caravan escaped with the recorder and a route to the chamber below.",
+      "heroLoses": "{{otherPlayer}}’s sentries recovered the recorder, leaving the caravan with only the caller’s last words.",
+      "draw": "The caravan kept the warning while the sentries retained the station that had sent it."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": ["Next Wave", "Ariadna"],
+    "heroFaction": "Ariadna",
+    "role": "gunfighting",
+    "paragraphs": [
+      "The miners had dug through the wrong wall and found a passage older than the colony. {{heroPlayer}}’s militia came to bring them out; {{otherPlayer}}’s fighters arrived at the far end before the evacuation could begin. With the tunnel too narrow for vehicles, everyone heard the first shots echo from the same bend.",
+      "{{hero}} took the bend and fired from behind a broken ore cart. The trooper could not see the miners, only their helmet lamps moving toward the exit. Each time a lamp disappeared around the turn, the gunfighter shifted position to keep the far passage covered.",
+      "Then the wall behind the cart lit up with writing the miners had exposed. The oldest worker stopped to copy a line. Boots sounded from the far end, and the trooper had to choose between pulling the worker away and holding the tunnel for one more breath."
+    ],
+    "endings": {
+      "heroWins": "The worker escaped with the copied line while {{hero}} brought up the rear.",
+      "heroLoses": "The miners reached daylight, but {{otherPlayer}}’s fighters kept the passage and its hidden writing.",
+      "draw": "The militia saved the miners; the passage and the message remained contested."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": ["Next Wave", "O-12"],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "The dig was under seal when a second warrant arrived with the same signature and a later timestamp. {{heroPlayer}}’s investigators carried the first order down to the chamber. {{otherPlayer}}’s people held the lift with the second, certain that someone below had made a copy before either side reached the site.",
+      "{{hero}} found the original authorization embedded in the console’s maintenance log. The trooper placed a scanner against the screen, but the log began rewriting itself as the readout advanced. A voice on the radio offered a new warrant if the investigator would step away and leave the machine untouched.",
+      "The signature on the new warrant belonged to an officer who had died that morning. The trooper pulled the scanner’s cable from the console, preserving the last intact page in its memory. At the lift, both groups were waiting to see which order would be obeyed."
+    ],
+    "endings": {
+      "heroWins": "{{hero}} brought the intact page into the light and forced the argument into the open.",
+      "heroLoses": "{{otherPlayer}}’s people took the lift and the console; the scanner held only an unfinished copy.",
+      "draw": "Each group kept a warrant, and the one surviving page made both signatures suspect."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": ["Next Wave", "PanOceania"],
+    "heroFaction": "PanOceania",
+    "role": "objective",
+    "paragraphs": [
+      "The excavation had cut into the hull of a research vessel nobody remembered losing. Its navigation lamps still blinked beneath the stone. {{heroPlayer}}’s salvage team came for the flight recorder; {{otherPlayer}}’s scouts reached the vessel first and warned them away from the open hatch.",
+      "{{hero}} slipped into the cramped bridge and found the recorder running backward through the ship’s last minute. An image of the excavation appeared on its display, though the ship had vanished before anyone dug this pit. The trooper connected a field terminal as footsteps moved along the corridor outside.",
+      "On the final frame, the bridge camera showed someone opening the hatch from the inside. The figure wore the same salvage markings now visible on the trooper’s sleeve. The recorder clicked back to the beginning, ready to erase the image unless the transfer finished first."
+    ],
+    "endings": {
+      "heroWins": "The team carried the last frame away and began looking for the person who had worn their markings.",
+      "heroLoses": "{{otherPlayer}}’s scouts took the bridge before the transfer ended; the recorder started its loop again.",
+      "draw": "Both teams left with part of the recording, each missing the frame the other refused to share."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": ["ALEPH", "Next Wave"],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "A survey program predicted the exact minute a buried antenna would wake. When it did, the signal carried tomorrow’s casualty list. {{heroPlayer}}’s team went down to verify the source. {{otherPlayer}}’s crew followed, hoping to keep the names from reaching the surface.",
+      "{{hero}} connected a portable interface to the antenna’s control bank. The first names came through clearly, then the order changed each time someone on the radio reported a new position. The trooper realized the prediction was still being written and asked everyone above to fall silent.",
+      "Silence held for eleven seconds. One name remained, a technician standing beside the trooper. A service hatch opened behind them, and a light swept the chamber floor. The trooper left the interface attached, took the technician by the collar, and started toward a tunnel the program had not shown."
+    ],
+    "endings": {
+      "heroWins": "They found daylight by the unmarked tunnel; the last name disappeared from the recording.",
+      "heroLoses": "{{otherPlayer}}’s crew secured the control bank, leaving {{heroPlayer}}’s team with a list they could no longer test.",
+      "draw": "The antenna fell silent, but both crews remembered a name that had appeared on its last page."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": ["Next Wave", "Tohaa"],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "The first drill bit came up wrapped in living fibers. By nightfall, the fibers had woven a narrow stair down the side of the excavation. {{heroPlayer}}’s visitors recognized the growth and descended before it could close. {{otherPlayer}}’s guards followed the movement of their lamps through the soil.",
+      "{{hero}} placed a sensor against the root that held the buried console. The growth drew back, revealing a socket made for a hand rather than a tool. The trooper put a palm against it, and the console answered with a recording of people speaking inside a chamber still sealed beneath their feet.",
+      "One of the voices was giving directions to the guards above. The root tightened around the trooper’s wrist as the voice came closer over the radio. To carry the recording out, the trooper had to leave the sensor in place and trust the living stair to remain open."
+    ],
+    "endings": {
+      "heroWins": "The root released {{hero}}, and the recording reached the surface before the stair folded shut.",
+      "heroLoses": "The guards kept the console and its strange witness while {{heroPlayer}}’s visitors climbed out empty-handed.",
+      "draw": "The stair closed between the teams, leaving the voice on the recording with no one to answer it."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": ["Corregidor Jurisdictional Command", "Next Wave"],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "The lift had stopped with six dockworkers underground and the shaft filling with warm dust. {{heroPlayer}}’s rescue crew reached the pit as {{otherPlayer}}’s surveyors tried to restart the machinery from a different control panel. Every attempt sent the trapped car a little farther down.",
+      "{{hero}} climbed through the counterweight channel and found a manual brake beside the buried console. The trooper secured the brake with a cable, then coaxed an old maintenance screen into showing the car’s position. A voice from below counted six workers and asked why the rescue crew had stopped moving.",
+      "The screen showed a seventh weight inside the car. The trooper could release the brake and bring everyone up, but the unexplained load might drag the car into the lowest chamber. The workers began pulling at their hatch while the cable strained against the trooper’s hands."
+    ],
+    "endings": {
+      "heroWins": "The car reached the surface with all six workers; no one admitted carrying the seventh load.",
+      "heroLoses": "{{otherPlayer}}’s surveyors took control of the lift, and the workers waited below for another rescue attempt.",
+      "draw": "The crew reached the car, but its mysterious weight kept the lift grounded until morning."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": ["Next Wave", "Shindenbutai"],
+    "heroFaction": "Shindenbutai",
+    "role": "objective",
+    "paragraphs": [
+      "A lacquered mask lay beside the excavation’s deepest console. The archivist accompanying {{heroPlayer}}’s patrol said it had been stolen from a shrine a century ago. {{otherPlayer}}’s crew had already tagged it for transport, and the two groups confronted each other beneath a ceiling that shed dust with every word.",
+      "{{hero}} checked the artifact with a field scanner and found a transmission hidden in the lacquer. Its final line was a set of instructions for the console. The trooper read the first command aloud; lights came on across the chamber, and a shutter began to cover the only exit.",
+      "The archivist reached for the mask. Across the floor, a rival technician shouted that the next command would stop the shutter but destroy the message. The trooper had enough time to copy one more line or obey the warning. A narrow strip of daylight still showed above the descending door."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol escaped with the mask and the line that explained who had hidden it here.",
+      "heroLoses": "{{otherPlayer}}’s crew took the mask as the shutter sealed the chamber behind them.",
+      "draw": "The shutter caught the mask between the groups; each left with half of its broken message."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": ["Morat Aggression Force", "Next Wave"],
+    "heroFaction": "Morat Aggression Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A drilling charge cracked open a cavern full of suspended metal plates. Each plate began to ring as {{heroPlayer}}’s soldiers entered, giving away their positions to {{otherPlayer}}’s people waiting near the buried machinery. An engineer needed a clear path to the console before the charge brought the roof down.",
+      "{{hero}} advanced between the plates, firing only when a vibration gave the enemy’s position away. A round punched through one disk and sent it swinging into the next. The clamor covered the engineer’s crossing, but it also woke a low hum under the stone floor.",
+      "The plates started falling in sequence, drawing a line toward the console. The engineer called that the reading needed a few more seconds. {{hero}} stayed in the open, watching the last hanging disk and the passage from which another shot could come."
+    ],
+    "endings": {
+      "heroWins": "The engineer finished the reading as the last disk fell, and {{hero}} led the way out.",
+      "heroLoses": "{{otherPlayer}}’s people cut off the engineer; the soldiers escaped with only the echo of the machine.",
+      "draw": "The cavern collapsed between the forces, preserving the console and ending the contest for now."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": ["Bakunin Jurisdictional Command", "Next Wave"],
+    "heroFaction": "Bakunin Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "The workers thought the voice under the pit was a singer trapped in a maintenance tunnel. At dusk, it began repeating a childhood song known to one member of {{heroPlayer}}’s crew. {{otherPlayer}}’s scouts posted themselves at the shaft mouth, determined to keep anyone from following it.",
+      "{{hero}} descended with a receiver instead of a rescue stretcher. Each verse opened another channel on the buried console; the last verse carried the coordinates of a chamber missing from every map. The trooper hummed the melody into the receiver, and a wall of dark glass lit up with faces from the crew’s past.",
+      "One face asked to be brought home. The voice above warned that the scouts were coming down. The trooper stopped singing, saved the coordinates, and left the glass unanswered as boots sounded on the ladder."
+    ],
+    "endings": {
+      "heroWins": "The coordinates reached {{heroPlayer}}’s crew, who could now search for the room behind the glass.",
+      "heroLoses": "{{otherPlayer}}’s scouts claimed the shaft and silenced the receiver before the coordinates escaped.",
+      "draw": "The song ended, but each side carried a different verse back into the night."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": ["Next Wave", "Torchlight Brigade"],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "The rescue beacon started transmitting from beneath solid rock, using a call sign assigned to a ship still in orbit. {{heroPlayer}}’s squad dug through the floor of the excavation while {{otherPlayer}}’s team guarded the equipment that had found the signal. When the wall opened, air rushed into an intact ship’s corridor.",
+      "{{hero}} crossed the pressure door with a diagnostic unit and found a console counting down to a launch that had never happened. A handprint marked the glass from the other side. The trooper read the beacon’s coordinates twice: they pointed here and to the vessel above, with the same timestamp.",
+      "A warning klaxon began to sound in both places at once. The trooper copied the signal and called for the squad to clear the corridor. Behind the sealed bridge door, someone struck the glass three times, then waited for an answer."
+    ],
+    "endings": {
+      "heroWins": "The squad secured the beacon recording and withdrew before the two countdowns reached zero.",
+      "heroLoses": "{{otherPlayer}}’s team held the pressure door; the squad reached daylight without the beacon recording.",
+      "draw": "The signal went silent on both ships, leaving the two squads with the same unanswered knock."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": ["Next Wave", "Shasvastii Expeditionary Force"],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "objective",
+    "paragraphs": [
+      "A surveyor disappeared in the pit and returned carrying a map that showed tunnels no one had opened. {{heroPlayer}}’s infiltrators followed those passages into the lower dig. {{otherPlayer}}’s guards were searching for the surveyor too; they had noticed that the returning figure cast a shadow in the wrong direction.",
+      "{{hero}} reached the buried console through a crack too small for the guards. The trooper copied its thermal map and saw that the passages were warming from the inside. In the upper gallery, the surveyor calmly led the guards toward a blank wall, promising a safe way out.",
+      "The wall split along a seam the map had predicted. Air from a deeper chamber made every sensor blink at once. The trooper could warn the guards and reveal the hidden route, or remain silent long enough to finish copying what lay beyond it."
+    ],
+    "endings": {
+      "heroWins": "The infiltrators escaped with the thermal map as the new passage closed behind them.",
+      "heroLoses": "{{otherPlayer}}’s guards sealed the seam and seized the console before {{hero}} could finish the copy.",
+      "draw": "Both groups reached the surface, and the surveyor vanished before anyone could ask what was below."
+    }
+  }
+]
