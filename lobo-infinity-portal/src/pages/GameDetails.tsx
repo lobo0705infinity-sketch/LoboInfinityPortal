@@ -5,6 +5,7 @@ import InfinityArmyLink from '../components/InfinityArmyLink'
 import Skeleton from '../components/Skeleton'
 import { getCanonicalMissionName } from '../config/missions'
 import { type ArmyIntelligenceList, type CommissionerNewsItem, type RecentGame, type StreamedGame } from '../services/api'
+import { getGameIntelligenceLists } from '../services/gameIntelligenceLinks'
 import { buildGameReviewAnalysis } from '../services/gameReviewAnalysis'
 import { publicDetailProjection, type PublicSubmittedArmyList } from '../services/publicDetailProjection'
 import { formatPlayerName } from '../services/formatting'
@@ -380,18 +381,18 @@ function GameReview({ armyLists, game, intelligenceLists }: { armyLists: PublicS
         </section>
 
         <section aria-labelledby="game-review-deciding-title">
-          <h3 id="game-review-deciding-title">What likely decided it</h3>
+          <h3 id="game-review-deciding-title">Matchup and evidence</h3>
           <p>{review.decidingFactors}</p>
         </section>
 
         <section className="battle-report-game-review-story" aria-labelledby="game-review-story-title">
-          <h3 id="game-review-story-title">Dispatch from the Front</h3>
+          <h3 id="game-review-story-title">Mission and matchup</h3>
           <p>{review.story}</p>
-          <small>A dramatized account based on the submitted highlight, mission, result, and army lists. It does not invent unreported orders or dice results.</small>
+          <small>A mission angle grounded in the submitted forces, scores, and any player highlight. It does not assert unreported actions.</small>
         </section>
 
         <section aria-labelledby="game-review-turning-point-title">
-          <h3 id="game-review-turning-point-title">The turning point</h3>
+          <h3 id="game-review-turning-point-title">Recorded highlight</h3>
           <p>{review.turningPoint}</p>
         </section>
 
@@ -404,7 +405,7 @@ function GameReview({ armyLists, game, intelligenceLists }: { armyLists: PublicS
         </section>
 
         <section className="battle-report-game-review-bottom-line" aria-labelledby="game-review-bottom-line-title">
-          <h3 id="game-review-bottom-line-title">Bottom line</h3>
+          <h3 id="game-review-bottom-line-title">Result in context</h3>
           <strong>{review.bottomLine}</strong>
         </section>
 
@@ -670,11 +671,6 @@ function getGameArmyLists(game: RecentGame, armyLists: PublicSubmittedArmyList[]
     const rightIndex = linkedIds.indexOf(String(right.id))
     return (leftIndex < 0 ? linkedIds.length : leftIndex) - (rightIndex < 0 ? linkedIds.length : rightIndex)
   })
-}
-
-function getGameIntelligenceLists(game: RecentGame, lists: ArmyIntelligenceList[]) {
-  const players = new Set([game.winner, game.loser].map((player) => player.trim().toLowerCase().replace(/[^a-z0-9]+/g, '')))
-  return lists.filter((list) => String(list.sourceId) === String(game.id) && players.has((list.player || list.sourcePlayer).trim().toLowerCase().replace(/[^a-z0-9]+/g, '')))
 }
 
 function GameNotFound() {

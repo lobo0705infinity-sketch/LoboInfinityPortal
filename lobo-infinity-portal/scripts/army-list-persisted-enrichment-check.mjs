@@ -11,6 +11,22 @@ const selected = [
   'buildCanonicalGameSubmittedArmyListValidation',
 ].map((name) => extractFunction(source, name)).join('\n')
 
+const gameIdentitySandbox = {
+  CONFIG: { SHEETS: { FORM: 'Form Responses' } },
+  lifGetTargetSpreadsheet_: () => ({ getSheetByName: () => ({ getDataRange: () => ({
+    getValues: () => [['Header'], ['first game'], ['invalidated game'], ['third game']],
+  }) }) }),
+  validateGame: (row) => row[0] !== 'invalidated game',
+  buildCanonicalArmyListGameSubmission: (_row, index) => ({ id: index }),
+}
+vm.createContext(gameIdentitySandbox)
+vm.runInContext(extractFunction(source, 'getCanonicalArmyListRecentGames'), gameIdentitySandbox)
+assert.deepEqual(
+  Array.from(gameIdentitySandbox.getCanonicalArmyListRecentGames(), (game) => game.id),
+  [1, 3],
+  'Invalidated games must not shift later submitted Army List source game IDs.',
+)
+
 const games = [{
   date: '2026-09-03',
   eventId: 'event-current-league',

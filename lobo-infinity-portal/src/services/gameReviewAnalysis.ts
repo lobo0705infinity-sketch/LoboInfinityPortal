@@ -1,6 +1,7 @@
 import type { ArmyIntelligenceDecodedEntry, ArmyIntelligenceList, RecentGame } from './api.ts'
 import { formatPlayerName } from './formatting.ts'
 import { isDrawGame } from './gameResults.ts'
+import fallbackNarratives from '../data/gameReviewNarratives.json' with { type: 'json' }
 
 export type GameReviewAnalysis = {
   bottomLine: string
@@ -57,6 +58,7 @@ export function buildGameReviewAnalysis(game: RecentGame, lists: ArmyIntelligenc
   const victoryEdge = scoreEdge(victory)
   const draw = isDrawGame(game)
   const missionLens = getMissionLens(game.mission)
+  const angle = selectMissionNarrative(game)
 
   return {
     summary: draw
@@ -75,15 +77,25 @@ export function buildGameReviewAnalysis(game: RecentGame, lists: ArmyIntelligenc
       winnerProfile,
       victoryEdge,
     }),
-    story: buildBattleStory({ draw, firstPlayer, game, loser, loserProfile, objectiveEdge, victoryEdge, winner, winnerProfile }),
-    turningPoint: buildTurningPoint(game, winner, loser, objectiveMargin, victoryEdge, victoryMargin),
+    story: buildBattleStory({ angle, draw, firstPlayer, game, loser, loserProfile, objectiveEdge, victoryEdge, winner, winnerProfile }),
+    turningPoint: buildTurningPoint(game),
     winnerCoaching: buildWinnerCoaching(winner, winnerProfile, missionLens, objectiveMargin, victoryEdge, victoryMargin),
     loserCoaching: buildLoserCoaching(loser, loserProfile, missionLens, objectiveMargin, victoryEdge),
     bottomLine: buildBottomLine(game, winner, loser, objectiveMargin, victoryEdge, draw),
-    evidenceNote: winnerList || loserList
-      ? 'Review based on the official result, first turn, submitted note, and decoded submitted lists. It does not reconstruct unreported orders.'
-      : 'Review based on the official result, first turn, submitted note, and available list metadata. It does not reconstruct unreported orders.',
+    evidenceNote: winnerList && loserList
+      ? 'Both submitted rosters are decoded in this snapshot. Roster capabilities do not prove which models acted during the game.'
+      : 'One or both submitted rosters are awaiting a decoded entry in this public snapshot. The matchup will gain roster detail when those entries are published.',
   }
+}
+
+function selectMissionNarrative(game: RecentGame) {
+  const fallback = (fallbackNarratives as Record<string, Array<{ id: number; angle: string }>>)[game.mission] ?? []
+  const rows = game.reviewNarratives?.length ? game.reviewNarratives : fallback
+  const angles = rows.filter((row) => Number.isInteger(row.id) && typeof row.angle === 'string' && row.angle.length <= 500)
+    .sort((left, right) => left.id - right.id)
+  if (!angles.length) return `${game.mission || 'The mission'} puts the recorded objective score beside the two submitted armies.`
+  const index = game.reviewShapeIndex ?? game.id - 1
+  return angles[((index % angles.length) + angles.length) % angles.length].angle
 }
 
 function buildGame109Review(game: RecentGame): GameReviewAnalysis {
@@ -125,31 +137,31 @@ function buildResultParagraph({
   winner: string
 }) {
   if (draw) {
-    return `${game.mission || 'The mission'} ended level at ${displayPair(objective)} OP${hasScores(victory) ? ` and ${displayPair(victory)} VP` : ''}. This mission ${missionLens.focus}. Neither player converted that demand into a decisive edge, so the most useful reading is where each side still had a scoring route at the end.`
+    return `${game.mission || 'The mission'} ended level at ${displayPair(objective)} OP${hasScores(victory) ? ` and ${displayPair(victory)} VP` : ''}. This mission ${missionLens.focus}. The recorded scores do not show which actions kept the result level.`
   }
 
   if (objectiveMargin !== null && objectiveMargin >= 4 && victoryEdge !== null && victoryEdge <= -75) {
-    return `${winner} won the mission while ${loser} won the material battle. ${winner} took the objective score ${displayPair(objective)} despite finishing ${displayPair(victory)} in surviving Victory Points—a ${Math.abs(victoryEdge)}-point deficit. ${game.mission || 'The mission'} ${missionLens.focus}; this was a scenario victory built by preserving the right scoring pieces, not by controlling more of the table at the end.`
+    return `${winner} won the mission while ${loser} finished with more surviving Victory Points. ${winner} took the objective score ${displayPair(objective)} despite a ${Math.abs(victoryEdge)}-point VP deficit (${displayPair(victory)}). The scores establish a split between mission and material; they do not show how the scoring pieces survived.`
   }
 
   if (objectiveMargin !== null && objectiveMargin >= 4 && victoryEdge !== null && victoryEdge >= 75) {
-    return `This was a decisive win on both mission and attrition. ${game.mission || 'The mission'} ${missionLens.focus}, and ${winner} took the objective score ${displayPair(objective)} while finishing ${displayPair(victory)} in surviving Victory Points. The result was more than a late scoring swing: ${winner} controlled the mission while preserving a much stronger end-state than ${loser}.`
+    return `${winner} finished ahead in both objective points (${displayPair(objective)}) and surviving Victory Points (${displayPair(victory)}). The result was decisive on the recorded scores. The data do not identify the exchanges that produced those margins.`
   }
 
   if (objectiveMargin !== null && objectiveMargin >= 4) {
-    return `${winner} created a clear ${game.mission || 'mission'} advantage, winning the objective score ${displayPair(objective)}${hasScores(victory) ? ` while the final ${displayPair(victory)} VP count shows how much material remained` : ''}. Because this mission ${missionLens.focus}, the separation is primarily in scenario execution: ${loser} could not turn the surviving force into comparable objective points.`
+    return `${winner} took a clear ${game.mission || 'mission'} objective lead at ${displayPair(objective)} OP${hasScores(victory) ? `; the final surviving VP were ${displayPair(victory)}` : ''}. ${game.mission || 'The mission'} ${missionLens.focus}. The score records the difference in points, without explaining the sequence of scoring actions.`
   }
 
   if (victoryEdge !== null && victoryEdge >= 75) {
-    return `${winner} finished with a large material advantage at ${displayPair(victory)} VP, but the ${displayPair(objective)} objective score stayed comparatively close. ${game.mission || 'The mission'} ${missionLens.focus}; ${loser} kept enough of that scoring pressure alive to stop the attrition gap becoming a runaway objective result.`
+    return `${winner} finished with a large surviving VP advantage at ${displayPair(victory)}, but the objective score stayed closer at ${displayPair(objective)}. The scores show that the material and mission margins differed; the record does not establish why.`
   }
 
 
   if (victoryEdge !== null && victoryEdge <= -75) {
-    return `${winner} claimed the ${displayPair(objective)} objective result despite ${loser} finishing ahead ${displayPair(victory)} in surviving Victory Points. ${game.mission || 'The mission'} ${missionLens.focus}; the result turned on converting the surviving force into points, and ${winner} did that more effectively even while losing the material exchange.`
+    return `${winner} claimed the ${displayPair(objective)} objective result despite ${loser} finishing ahead in surviving VP (${displayPair(victory)}). The recorded objective and material scores point in opposite directions; the record does not show the actions behind that difference.`
   }
 
-  return `${winner} won a close ${game.mission || 'mission'}, with a ${displayPair(objective)} objective score${hasScores(victory) ? ` and ${displayPair(victory)} VP remaining` : ''}. Because the mission ${missionLens.focus}, the narrow separation suggests the result hinged on converting one more relevant scoring opportunity, not on one side simply removing the other from the table.`
+  return `${winner} won a close ${game.mission || 'mission'} result at ${displayPair(objective)} OP${hasScores(victory) ? ` and ${displayPair(victory)} surviving VP` : ''}. The final scores alone cannot identify a decisive order or turning point.`
 }
 
 function buildDecidingFactors({
@@ -175,28 +187,19 @@ function buildDecidingFactors({
   winnerProfile: ForceProfile | null
   victoryEdge: number | null
 }) {
-  if (!winnerProfile && !loserProfile) {
-    const initiative = firstPlayer
-      ? `${firstPlayer} had the first opportunity to establish the engagement pattern.`
-      : 'The first player was not recorded, so initiative cannot be weighed confidently.'
-    return `${game.mission || 'The mission'} ${missionLens.focus}. ${initiative} Without decoded lists, the safest conclusion is that ${winner} converted those mission demands more efficiently while ${loser} and ${loserFaction} could not recover enough objective tempo.`
-  }
-
+  const initiative = firstPlayer ? `${firstPlayer} was recorded as taking the first turn.` : 'The first turn was not recorded.'
   const winnerPlan = describeForce(winnerProfile, `${winner}’s ${winnerFaction} list`)
   const loserPlan = describeForce(loserProfile, `${loser}’s ${loserFaction} list`)
-  const initiative = firstPlayer
-    ? `${firstPlayer} went first, which likely helped that player set the initial lanes and force the first difficult trades.`
-    : 'The first turn was not recorded, so the list interaction matters more than any claim about initiative.'
   const conversion = victoryEdge !== null && victoryEdge <= -75
-    ? `${loser} preserved substantially more material, but ${winner} preserved the pieces and orders that could still alter the objective score. The decisive difference was mission conversion, not attrition.`
+    ? `${loser} finished with more surviving VP, while ${winner} led on objectives.`
     : victoryEdge !== null && victoryEdge >= 75
-      ? `The result suggests ${winner} kept the relevant pieces functioning longer and forced ${loser} to spend more orders creating safe approaches.`
-      : `${winner} converted the available mission tools more efficiently without either final force state completely explaining the result.`
-  return `${game.mission || 'The mission'} ${missionLens.focus}. ${winnerPlan} ${loserPlan} ${initiative} ${conversion}`
+      ? `${winner} finished with more surviving VP as well as the recorded win.`
+      : 'The final VP totals do not explain the turn sequence.'
+  return `${game.mission || 'The mission'} ${missionLens.focus}. ${winnerPlan} ${loserPlan} ${initiative} ${conversion} These rosters describe available tools, not which pieces were actually used in each scoring action.`
 }
 
 function describeForce(profile: ForceProfile | null, label: string) {
-  if (!profile) return `${label} is not decoded, so its exact tactical package cannot be assessed.`
+  if (!profile) return `${label} has no decoded roster in this public snapshot yet; its exact tools cannot be assessed here.`
   const traits: string[] = []
   if (profile.control.length) traits.push(`board control from ${joinNames(profile.control)}`)
   if (profile.hackers.length) traits.push(`hacking through ${joinNames(profile.hackers)}`)
@@ -204,20 +207,13 @@ function describeForce(profile: ForceProfile | null, label: string) {
   if (profile.mobile.length) traits.push(`mobile attack options in ${joinNames(profile.mobile)}`)
   if (profile.anchors.length) traits.push(`durable anchors such as ${joinNames(profile.anchors)}`)
   if (profile.specialists.length) traits.push(`mission coverage from ${joinNames(profile.specialists)}`)
-  return `${label} brought ${joinTraits(traits.slice(0, 3)) || 'a mixed tactical package'}.`
+  return `${label} includes ${joinTraits(traits.slice(0, 3)) || 'no classified tactical traits in the decoded entries'}.`
 }
 
 function buildBattleStory({
-  draw,
-  firstPlayer,
-  game,
-  loser,
-  loserProfile,
-  objectiveEdge,
-  victoryEdge,
-  winner,
-  winnerProfile,
+  angle, draw, firstPlayer, game, loser, loserProfile, objectiveEdge, victoryEdge, winner, winnerProfile,
 }: {
+  angle: string
   draw: boolean
   firstPlayer: string
   game: RecentGame
@@ -228,81 +224,53 @@ function buildBattleStory({
   winner: string
   winnerProfile: ForceProfile | null
 }) {
+  const winnerOptions = winnerProfile ? `The decoded ${winner} roster includes ${strongestTrait(winnerProfile)}.` : `${winner}’s roster has not yet been decoded in this public snapshot.`
+  const loserOptions = loserProfile ? `The decoded ${loser} roster includes ${strongestTrait(loserProfile)}.` : `${loser}’s roster has not yet been decoded in this public snapshot.`
+  const result = draw
+    ? `The official result is a draw at ${formatScore(game.op)} OP.`
+    : `${winner} defeated ${loser}; the recorded scores are ${formatScore(game.op)} OP and ${formatScore(game.vp)} surviving VP.`
+  const contrast = objectiveEdge !== null && victoryEdge !== null && objectiveEdge * victoryEdge < 0
+    ? 'The objective and surviving VP margins point in different directions.'
+    : 'The final scores show the result, not the turn-by-turn cause.'
+  const initiative = firstPlayer ? `${firstPlayer} is recorded as the first player.` : ''
   const note = cleanStoryNote(game.bestMoment)
-  const rememberedMoment = note ? `The surviving account fixes on one moment: “${note}”` : ''
-  const initiative = firstPlayer ? `${firstPlayer} had the first chance to shape the engagement, but the battle would ultimately be measured at the scoring window.` : ''
-  const winnerTool = winnerProfile ? strongestTrait(winnerProfile) : 'the pieces still able to reach the mission'
-  const loserTool = loserProfile ? strongestTrait(loserProfile) : 'the force still standing at the end'
-
-  if (draw) {
-    return `${game.mission || 'The mission'} never produced a clean break. Each side found a route into the scoring fight, and each left enough resistance in place to deny the other a final claim. ${rememberedMoment || 'No single exchange survived as the defining scene; the battle was decided by everything neither side could quite finish.'} When the last scoring window closed, the field remained contested and the result reflected it: neither commander had managed to shut the other out.`
-  }
-
-  if (objectiveEdge !== null && objectiveEdge >= 4 && victoryEdge !== null && victoryEdge <= -75) {
-    return `By the final scoring window, the battlefield told two different stories. ${loser} still had ${Math.abs(victoryEdge)} more surviving Victory Points, but ${winner} held the advantage that mattered in ${game.mission || 'the mission'}. Rather than trying to repair a losing attrition fight, ${winner} relied on ${winnerTool} and kept the remaining effort tied to the objective. ${rememberedMoment || `${loser} had more force left to answer with, but ${loserTool} could not turn that material edge into enough points.`} When the shooting stopped, ${loser} held more of the army; ${winner} held the result.`
-  }
-
-  if (objectiveEdge !== null && objectiveEdge >= 4 && victoryEdge !== null && victoryEdge >= 75) {
-    return `${winner} tightened control one exchange at a time. The mission route narrowed, the material gap widened, and ${loser} was forced to search for an increasingly unlikely way back into the game. ${initiative} ${rememberedMoment || `${winnerTool} remained available while ${loserTool} lost the freedom to attack the mission on favorable terms.`} By the end, the objective score and the surviving forces told the same story: ${winner} had denied both the battlefield and the mission.`
-  }
-
-  if (objectiveEdge !== null && Math.abs(objectiveEdge) <= 2) {
-    return `The battle remained balanced on a single scoring swing. Neither side needed to conquer the entire table; each needed one surviving piece, one safe route, and enough orders to make the final attempt. ${rememberedMoment || `${winner} found that opening before ${loser} could close it.`} The margin stayed narrow because ${loser} never lost every path back into the game. When the last opportunity passed, ${winner} had converted one more meaningful moment—and that was enough.`
-  }
-
-  if (victoryEdge !== null && victoryEdge >= 75) {
-    return `${winner} emerged from the exchanges with the stronger force, but ${game.mission || 'the mission'} refused to become a simple casualty count. ${loser} kept enough pressure alive to make the surviving material work for every objective point. ${rememberedMoment || `${winnerTool} gradually reduced the options available to ${loserTool}.`} The battle ended with ${winner} in control, though the objective score shows that ${loser} continued fighting for the mission after the wider table had begun to slip away.`
-  }
-
-  return `${game.mission || 'The mission'} unfolded as a contest of timing rather than a clean sweep. ${initiative} ${winner} kept ${winnerTool} relevant long enough to create the decisive scoring window, while ${loser} searched for an answer through ${loserTool}. ${rememberedMoment || `The decisive action was not total destruction, but the moment ${winner} turned access to the table into points.`} The final score records the separation; the story is how little room there was before that separation appeared.`
+  const highlight = note ? `The submitted highlight says: “${note}”` : 'No player highlight records a specific exchange.'
+  return [`${game.mission || 'Mission'}:`, angle, winnerOptions, loserOptions, result, contrast, initiative, highlight].filter(Boolean).join(' ')
 }
 
 function cleanStoryNote(value: string) {
   return String(value || '').trim().replace(/^['“”"]+|['“”"]+$/g, '').replace(/\s+/g, ' ')
 }
 
-function buildTurningPoint(game: RecentGame, winner: string, loser: string, objectiveMargin: number | null, victoryEdge: number | null, victoryMargin: number | null) {
-  const note = game.bestMoment.trim()
-  if (!note) {
-    return `No player note identifies a single order or exchange. The score instead points to the decisive phase: ${winner} established an advantage that ${loser} could not convert back into objective points${victoryMargin !== null && victoryMargin >= 75 ? ', while also widening the material gap' : ''}.`
-  }
-
-  const consequence = objectiveMargin !== null && objectiveMargin <= 2
-    ? 'In a result this close, that moment likely separated the final scoring opportunity from the one that never materialized.'
-    : victoryEdge !== null && victoryEdge <= -75
-      ? `It captures the central tension of the game: ${winner} was losing the material fight but still found the route that decided the mission.`
-    : victoryMargin !== null && victoryMargin >= 75
-      ? `It stands out because it remained memorable even though ${winner} had built a substantial material advantage.`
-      : `It is the clearest recorded moment where the game’s momentum or scoring path changed.`
-  return `The submitted note identifies the turning point: “${note}” ${consequence}`
+function buildTurningPoint(game: RecentGame) {
+  const note = cleanStoryNote(game.bestMoment)
+  return note
+    ? `The submitted highlight records: “${note}” The report does not establish whether that moment changed the final score.`
+    : 'No player highlight identifies a turning point. A final score cannot establish which order or exchange decided the game.'
 }
 
 function buildWinnerCoaching(player: string, profile: ForceProfile | null, missionLens: MissionLens, objectiveMargin: number | null, victoryEdge: number | null, victoryMargin: number | null) {
-  const strength = profile ? strongestTrait(profile) : 'scoring pieces'
-  if (victoryEdge !== null && victoryEdge <= -75) {
-    return `${player} correctly treated the objective score as the win condition even while the force was being reduced. ${missionLens.winnerPriority} The next improvement is to protect ${strength} earlier, so the same scoring plan does not have to survive such a severe material deficit.`
-  }
-  if (objectiveMargin !== null && objectiveMargin <= 2) {
-    return `${player} converted the decisive objective opportunity, but the small margin left little room for error. ${missionLens.winnerPriority} Preserve ${strength} for that scoring window and identify the opponent’s last live mission piece before committing orders to optional fights.`
-  }
-  if (victoryMargin !== null && victoryMargin >= 75) {
-    return `${player}’s plan protected its value while steadily removing the opponent’s options. ${missionLens.winnerPriority} Once the material lead was secure, use ${strength} to close every remaining mission route rather than continue trading for attrition alone.`
-  }
-  return `${player} balanced attrition and mission play well enough to keep the scoring lead. ${missionLens.winnerPriority} Preserve ${strength} until that objective state is safe, then spend the remaining orders denying the opponent’s final route back into the game.`
+  const option = profile ? `The decoded roster offers ${strongestTrait(profile)} as one option to assess.` : 'Check the submitted roster when its decoded entry becomes available.'
+  const context = victoryEdge !== null && victoryEdge <= -75
+    ? 'The objective win came despite a deficit in surviving VP.'
+    : objectiveMargin !== null && objectiveMargin <= 2
+      ? 'The recorded OP margin was narrow.'
+      : victoryMargin !== null && victoryMargin >= 75
+        ? 'The surviving VP advantage was substantial.'
+        : 'The recorded result establishes the win without a turn-by-turn account.'
+  return `${player}: ${context} For a future game, ${missionLens.winnerPriority.toLowerCase()} ${option}`
 }
 
 function buildLoserCoaching(player: string, profile: ForceProfile | null, missionLens: MissionLens, objectiveMargin: number | null, victoryEdge: number | null) {
-  const strength = profile ? strongestTrait(profile) : 'the surviving specialists'
-  if (victoryEdge !== null && victoryEdge <= -75) {
-    return `${player} won the material exchange but did not convert that advantage into the mission score. ${missionLens.loserPriority} Once the attrition lead existed, redirect ${strength} toward denying the opponent’s last scoring route instead of continuing exchanges that no longer changed the result.`
-  }
-  if (victoryEdge !== null && victoryEdge >= 75) {
-    return `${player} needed to protect more of the force through the opening exchanges. ${missionLens.loserPriority} Use ${strength} to create that defended scoring lane, and avoid feeding separate pieces into the opponent’s strongest area when the mission can still be attacked from another angle.`
-  }
-  if (objectiveMargin !== null && objectiveMargin <= 2) {
-    return `${player} remained within one meaningful scoring swing. ${missionLens.loserPriority} Reserve ${strength} and enough orders to attempt that objective instead of spending the resource on a trade that does not alter the score.`
-  }
-  return `${player} had tools to contest the mission but did not convert enough of them into points. ${missionLens.loserPriority} Build the turn around ${strength}, open one safe route first, and make every supporting attack serve that route rather than treating attrition as the objective.`
+  const option = profile ? `The decoded roster offers ${strongestTrait(profile)} as one option to assess.` : 'Check the submitted roster when its decoded entry becomes available.'
+  const context = victoryEdge !== null && victoryEdge <= -75
+    ? 'The recorded VP lead did not produce an OP win.'
+    : victoryEdge !== null && victoryEdge >= 75
+      ? 'The final surviving VP were substantially lower.'
+      : objectiveMargin !== null && objectiveMargin <= 2
+        ? 'The recorded OP margin was narrow.'
+        : 'The record does not identify which opportunity was missed.'
+  return `${player}: ${context} For a future game, ${missionLens.loserPriority.toLowerCase()} ${option}`
 }
 
 function getMissionLens(mission: string): MissionLens {
@@ -356,17 +324,17 @@ function getMissionLens(mission: string): MissionLens {
 }
 
 function buildBottomLine(game: RecentGame, winner: string, loser: string, objectiveMargin: number | null, victoryEdge: number | null, draw: boolean) {
-  if (draw) return `${winner} and ${loser} finished level because neither side fully closed the other’s scoring route. The game is best understood as a contested mission, not a failed attrition race.`
+  if (draw) return `${winner} and ${loser} finished level on the recorded ${game.mission || 'mission'} score. The record does not identify a decisive exchange.`
   if (objectiveMargin !== null && objectiveMargin >= 4 && victoryEdge !== null && victoryEdge <= -75) {
-    return `${loser} won the material battle; ${winner} won ${game.mission || 'the mission'}. A ${Math.abs(victoryEdge)}-point deficit did not matter because ${winner} preserved and converted the pieces that could still score.`
+    return `${winner} won ${game.mission || 'the mission'} while ${loser} finished with ${Math.abs(victoryEdge)} more surviving VP. The armies suggest possible approaches; the scores do not reveal the order sequence.`
   }
   if (objectiveMargin !== null && objectiveMargin >= 4 && victoryEdge !== null && victoryEdge >= 75) {
-    return `${winner} won both the table and the mission. ${loser} needed an earlier protected route to the objectives before the material deficit made recovery too expensive.`
+    return `${winner} finished ahead in both OP and surviving VP. The result is clear; the battle sequence is unreported.`
   }
   if (objectiveMargin !== null && objectiveMargin <= 2) {
-    return `${winner} found the final scoring edge; ${loser} remained one meaningful objective swing away. The scoreline reflects conversion under pressure more than total table control.`
+    return `${winner} won with a ${objectiveMargin}-point OP margin over ${loser}. The submitted highlight, if any, is the only recorded specific exchange.`
   }
-  return `${winner} executed ${game.mission || 'the mission'} more efficiently and kept ${loser} from turning the available tools into an equal scoring position.`
+  return `${winner} won ${game.mission || 'the mission'} over ${loser}. The matchup shows what the armies could do; the result shows who scored.`
 }
 
 function profileList(list: ArmyIntelligenceList | undefined): ForceProfile | null {
@@ -397,8 +365,8 @@ function strongestTrait(profile: ForceProfile) {
 function findPlayerList(game: RecentGame, player: string, lists: ArmyIntelligenceList[], linkedLists: LinkedGameList[]) {
   const key = normalize(player)
   const targetListId = normalize(player) === normalize(game.winner) ? game.winnerArmyListId : game.loserArmyListId
-  const bySourceId = targetListId ? lists.find((list) => String(list.sourceId) === String(targetListId)) : undefined
-  if (bySourceId) return bySourceId
+  const byListId = targetListId ? lists.find((list) => String(list.armyListId) === String(targetListId) && normalize(list.player) === key) : undefined
+  if (byListId) return byListId
 
   const linked = linkedLists.find((list) => String(list.id) === String(targetListId))
     || linkedLists.find((list) => normalize(list.player) === key)
@@ -408,7 +376,7 @@ function findPlayerList(game: RecentGame, player: string, lists: ArmyIntelligenc
     if (byArmyCode) return byArmyCode
   }
 
-  return lists.find((list) => normalize(list.player) === key || normalize(list.sourcePlayer) === key)
+  return lists.find((list) => normalize(list.player) === key)
 }
 
 function normalizeArmyCode(value: string) {

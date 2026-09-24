@@ -1673,16 +1673,15 @@ function getCanonicalArmyListRecentGames() {
 
   values.shift();
 
+  // An invalid response must not renumber later game identities.
+  // Public games retain their original Form Responses row positions.
   return values
-    .filter(function(row) {
-      return validateGame(row);
-    })
     .map(function(row, index) {
-      return buildCanonicalArmyListGameSubmission(
-        row,
-        index + 1
-      );
-    });
+      return validateGame(row)
+        ? buildCanonicalArmyListGameSubmission(row, index + 1)
+        : null;
+    })
+    .filter(Boolean);
 
 }
 

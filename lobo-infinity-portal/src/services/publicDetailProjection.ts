@@ -16,7 +16,11 @@ export type PublicGameCommunityData = {
 type Community = { news: CommissionerNewsItem[]; streams: StreamedGame[] }
 type SnapshotPlayer = Record<string, unknown> & { player: string }
 type SnapshotFaction = Record<string, unknown> & { name: string; recentGames: Array<{ id: number }> }
-type SnapshotMission = Record<string, unknown> & { mission: string; recentGames: Array<{ id: number }> }
+type SnapshotMission = Record<string, unknown> & {
+  mission: string
+  recentGames: Array<{ id: number }>
+  reviewNarratives?: Array<{ id: number; angle: string }>
+}
 type SnapshotStatistics = { playerCareers?: Array<Record<string, unknown> & { player?: string }> }
 
 async function readGames(signal?: AbortSignal) {
@@ -30,15 +34,29 @@ function hydrateRecentGames(references: Array<{ id: number }> = [], games: Recen
 
 export const publicDetailProjection = {
   getGames: async (signal?: AbortSignal): Promise<PublicGameCommunityData> => {
-    const [games, community, armyLists] = await Promise.all([
+    const [games, community, armyLists, missions] = await Promise.all([
       readGames(signal),
       getPublicSnapshotDataset<Community[]>('community', signal),
       getPublicSnapshotDataset<PublicSubmittedArmyList[]>('army-lists', signal),
+      getPublicSnapshotDataset<SnapshotMission[]>('missions', signal),
     ])
+    const narrativesByMission = new Map(missions.map((mission) => [mission.mission, mission.reviewNarratives ?? []]))
+    const missionCounts = new Map<string, number>()
+    const shapeIndices = new Map<number, number>()
+    for (const game of [...games].sort((left, right) => left.id - right.id)) {
+      const index = missionCounts.get(game.mission) ?? 0
+      shapeIndices.set(game.id, index)
+      missionCounts.set(game.mission, index + 1)
+    }
+    const gamesWithNarratives = games.map((game) => ({
+      ...game,
+      reviewNarratives: narrativesByMission.get(game.mission) ?? [],
+      reviewShapeIndex: shapeIndices.get(game.id) ?? 0,
+    }))
     return {
       armyLists,
-      games,
-      rivalryGames: games,
+      games: gamesWithNarratives,
+      rivalryGames: gamesWithNarratives,
       news: community[0]?.news ?? [],
       streams: community[0]?.streams ?? [],
     }
