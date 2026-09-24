@@ -18,6 +18,15 @@ const consecutive = Array.from({ length: 10 }, (_, index) => buildGameReviewAnal
 assert.equal(new Set(consecutive).size, 10)
 assert(new Set(consecutive.map((story) => story.split(' ').slice(0, 5).join(' '))).size >= 7, 'narrative shapes must change paragraph structure')
 assert(consecutive.every((story) => /has not yet been decoded/.test(story)))
+assert(consecutive.every((story) => !/The Dig: The Dig:/.test(story)), 'mission name must not be doubled in the story')
+const sheetNarrative = buildGameReviewAnalysis(game({
+  id: 250,
+  mission: 'The Dig',
+  reviewShapeIndex: 0,
+  reviewNarratives: [{ id: 1, angle: 'A sheet-authored angle for this mission.' }],
+}), []).story
+assert.match(sheetNarrative, /A sheet-authored angle for this mission\./)
+assert.doesNotMatch(sheetNarrative, /The Dig asks who can reach a mission asset/)
 
 const missionOverMaterial = game({
   id: 110,

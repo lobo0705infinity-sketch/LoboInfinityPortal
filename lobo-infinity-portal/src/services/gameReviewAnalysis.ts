@@ -236,20 +236,21 @@ function buildBattleStory({
   const initiative = firstPlayer ? `${firstPlayer} is recorded as the first player.` : ''
   const note = cleanStoryNote(game.bestMoment)
   const highlight = note ? `The submitted highlight says: “${note}”` : 'No player highlight records a specific exchange.'
-  const angle = `${mission}: ${narrative.angle}`
+  const angle = narrative.angle.trim()
+  const missionAngle = angle.toLowerCase().includes(mission.toLowerCase()) ? angle : `${mission}: ${angle}`
   // The sheet selects both the mission angle and the paragraph shape. Each
   // structure stays inside recorded results, roster capabilities, and notes.
   const shapes = [
-    [`${mission}:`, angle, winnerOptions, loserOptions, result, highlight],
-    [result, `For ${mission}, one useful angle is: ${angle}`, loserOptions, winnerOptions, highlight],
-    [winnerOptions, loserOptions, `One angle in ${mission}: ${angle}`, result, highlight],
-    [highlight, `${mission}: ${angle}`, result, winnerOptions, loserOptions],
-    [contrast, angle, loserOptions, winnerOptions, result, highlight],
-    [initiative, `${mission}: ${angle}`, winnerOptions, result, loserOptions, highlight],
-    [loserOptions, winnerOptions, angle, highlight, result],
+    [missionAngle, winnerOptions, loserOptions, result, highlight],
+    [result, `One mission angle: ${missionAngle}`, loserOptions, winnerOptions, highlight],
+    [winnerOptions, loserOptions, `The mission lens: ${missionAngle}`, result, highlight],
+    [highlight, missionAngle, result, winnerOptions, loserOptions],
+    [contrast, missionAngle, loserOptions, winnerOptions, result, highlight],
+    [initiative, missionAngle, winnerOptions, result, loserOptions, highlight],
+    [loserOptions, winnerOptions, missionAngle, highlight, result],
     [`For ${mission}, start with the available tools.`, winnerOptions, loserOptions, angle, result, highlight],
-    [result, angle, highlight, loserOptions, winnerOptions, 'The order in which those tools were used is not recorded.'],
-    [highlight, winnerOptions, loserOptions, angle, result],
+    [result, missionAngle, highlight, loserOptions, winnerOptions, 'The order in which those tools were used is not recorded.'],
+    [highlight, winnerOptions, loserOptions, missionAngle, result],
   ]
   return shapes[((narrative.id - 1) % shapes.length + shapes.length) % shapes.length].filter(Boolean).join(' ')
 }
