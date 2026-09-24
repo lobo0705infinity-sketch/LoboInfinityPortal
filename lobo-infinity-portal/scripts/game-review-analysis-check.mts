@@ -6,19 +6,18 @@ import type { ArmyIntelligenceList, RecentGame } from '../src/services/api.ts'
 import type { PublicSubmittedArmyList } from '../src/services/publicDetailProjection.ts'
 import narrativeCatalog from '../src/data/gameReviewNarratives.json' with { type: 'json' }
 import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
+import { getGameSides, isDrawGame } from '../src/services/gameResults.ts'
 
 assert.deepEqual(Object.keys(narrativeCatalog).sort(), [...CANONICAL_MISSIONS].sort())
 for (const [mission, angles] of Object.entries(narrativeCatalog)) {
   assert.equal(angles.length, 10, `${mission}: ten narrative angles`)
   assert.equal(new Set(angles.map((row) => row.angle)).size, 10, `${mission}: distinct angles`)
 }
-const consecutive = Array.from({ length: 10 }, (_, index) => buildGameReviewAnalysis(game({
-  id: 200 + index, mission: 'The Dig', reviewShapeIndex: index,
-}), []).story)
-assert.equal(new Set(consecutive).size, 10)
-assert(new Set(consecutive.map((story) => story.split(' ').slice(0, 5).join(' '))).size >= 7, 'narrative shapes must change paragraph structure')
-assert(consecutive.every((story) => /has not yet been decoded/.test(story)))
-assert(consecutive.every((story) => !/The Dig: The Dig:/.test(story)), 'mission name must not be doubled in the story')
+const noNote = buildGameReviewAnalysis(game({ id: 200, mission: 'The Dig', bestMoment: '' }), [])
+assert.match(noNote.story, /No submitted highlight describes a particular exchange/)
+assert.match(noNote.story, /both submitted armies decoded/)
+assert.doesNotMatch(noNote.story, /The Dig: The Dig:/)
+assert.doesNotMatch(noNote.story, /carrier|extraction|reserve of orders/i, 'do not invent mission actions')
 const sheetNarrative = buildGameReviewAnalysis(game({
   id: 250,
   mission: 'The Dig',
@@ -94,6 +93,38 @@ assert.deepEqual(getGameIntelligenceLists(nextGame, [staleSourceId]), [])
 assert.match(buildGameReviewAnalysis(nextGame, []).decidingFactors, /no decoded roster in this public snapshot yet/)
 assert.doesNotMatch(buildGameReviewAnalysis(nextGame, []).decidingFactors, /Without decoded lists/)
 assert.match(buildGameReviewAnalysis({ ...nextGame, bestMoment: 'Yadu HRL Taking out Tariq on opponents turn 1' }, []).turningPoint, /does not establish whether that moment changed the final score/)
+
+const yadu = decodedList({
+  player: 'Blitchga',
+  decoded: { combatGroups: [{ entries: [{ unit: 'YADU', profile: 'YADU', troopType: 'MI', weapons: ['Heavy Rocket Launcher'], skills: [], equipment: [] }] }] } as ArmyIntelligenceList['decoded'],
+})
+const tarik = decodedList({
+  player: 'Zhukov2',
+  decoded: { combatGroups: [{ entries: [{ unit: 'TARIK MANSURI', profile: 'TARIK MANSURI', troopType: 'MI', wounds: 2, weapons: ['AP Spitfire'], skills: [], equipment: [] }] }] } as ArmyIntelligenceList['decoded'],
+})
+const freshReview = buildGameReviewAnalysis(game({
+  id: 117, mission: 'The Dig', winner: 'Blitchga', winnerDisplayName: 'Blitchga',
+  loser: 'Zhukov2', loserDisplayName: 'Zhukov2', firstTurn: 'Zhukov2',
+  op: '8–6', vp: '198–82', bestMoment: 'Yadu HRL Taking out Tariq on opponents turn 1',
+}), [yadu, tarik])
+assert.match(freshReview.story, /Yadu heavy rocket launcher took out Tariq/)
+assert.match(freshReview.story, /Tarik Mansuri with Zhukov2/)
+assert.match(freshReview.story, /only two points, far narrower than the 116-point gap/)
+assert.doesNotMatch(freshReview.story, /reserve of orders|carrier|extraction/i)
+assert.equal(freshReview.story.split('\n\n').length, 2)
+
+const publicDraw = game({
+  id: 112, winner: 'Draw', winnerDisplayName: 'Draw', loser: 'Draw', loserDisplayName: 'Draw',
+  player1: 'Retrofuturist', player1DisplayName: 'Retrofuturist', player2: 'Blitchga', player2DisplayName: 'Blitchga',
+  firstTurn: 'Retrofuturist', mission: 'The Dig', op: '5–5', tp: '2–2', vp: '151–27',
+  winnerArmyListId: '1246210687', loserArmyListId: '2490556041',
+} as Partial<RecentGame>)
+assert.equal(isDrawGame(publicDraw), true, 'drawn OP and TP remain a draw when VP differ')
+assert.deepEqual(getGameSides(publicDraw).map((side) => side.player), ['Retrofuturist', 'Blitchga'])
+assert.match(buildGameReviewAnalysis(publicDraw, []).story, /The Dig finished level at 5–5 objective points/)
+assert.doesNotMatch(buildGameReviewAnalysis(publicDraw, []).story, /Draw had a/)
+const drawSubmission = { ...winnerSubmission, id: publicDraw.winnerArmyListId, player: 'Retrofuturist', opponent: 'Blitchga', mission: 'The Dig', date: publicDraw.date } as PublicSubmittedArmyList
+assert.deepEqual(getGameArmyLists(publicDraw, [drawSubmission]), [drawSubmission])
 
 const legacy = { ...staleSourceId, armyListId: undefined }
 assert.equal(getGameIntelligenceLists(linkedGame, [legacy]).length, 1)

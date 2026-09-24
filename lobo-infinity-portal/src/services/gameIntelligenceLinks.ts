@@ -1,11 +1,13 @@
 import type { ArmyIntelligenceList, RecentGame } from './api'
+import { getGameSides } from './gameResults.ts'
 
 const playerKey = (value: string) => String(value || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '')
 
 export function getGameIntelligenceLists(game: RecentGame, lists: ArmyIntelligenceList[]): ArmyIntelligenceList[] {
+  const [left, right] = getGameSides(game)
   const sides = [
-    { player: game.winner, opponent: game.loser, listId: game.winnerArmyListId },
-    { player: game.loser, opponent: game.winner, listId: game.loserArmyListId },
+    { player: left.player, opponent: right.player, listId: left.listId },
+    { player: right.player, opponent: left.player, listId: right.listId },
   ]
   const matched: ArmyIntelligenceList[] = []
 

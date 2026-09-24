@@ -10,7 +10,7 @@ import { getGameArmyLists } from '../services/gameArmyListLinks'
 import { buildGameReviewAnalysis } from '../services/gameReviewAnalysis'
 import { publicDetailProjection, type PublicSubmittedArmyList } from '../services/publicDetailProjection'
 import { formatPlayerName } from '../services/formatting'
-import { getGameTimelineResult, isDrawGame } from '../services/gameResults'
+import { getGameSides, getGameTimelineResult, isDrawGame } from '../services/gameResults'
 import './GameDetails.css'
 
 type GameDetailsState =
@@ -362,8 +362,9 @@ function ParticipantPanel({ participant }: { participant: BattleParticipant }) {
 
 function GameReview({ armyLists, game, intelligenceLists }: { armyLists: PublicSubmittedArmyList[]; game: RecentGame; intelligenceLists: ArmyIntelligenceList[] }) {
   const review = useMemo(() => buildGameReviewAnalysis(game, intelligenceLists, armyLists), [armyLists, game, intelligenceLists])
-  const winner = formatPlayerName(game.winner, game.winnerDisplayName)
-  const loser = formatPlayerName(game.loser, game.loserDisplayName)
+  const [left, right] = getGameSides(game)
+  const winner = formatPlayerName(left.player, left.displayName)
+  const loser = formatPlayerName(right.player, right.displayName)
 
   return (
     <section className="battle-report-game-review" aria-labelledby="battle-report-game-review-title">
@@ -376,39 +377,29 @@ function GameReview({ armyLists, game, intelligenceLists }: { armyLists: PublicS
       </header>
 
       <div className="battle-report-game-review-grid battle-report-game-review-narrative">
+        <section className="battle-report-game-review-story" aria-labelledby="game-review-story-title">
+          <h3 id="game-review-story-title">Battle story</h3>
+          {review.story.split(/\n\n+/).map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+          <small>Reported moments come from the player’s note. The scores and decoded lists provide context.</small>
+        </section>
+
         <section aria-labelledby="game-review-result-title">
-          <h3 id="game-review-result-title">What the result says</h3>
+          <h3 id="game-review-result-title">Reading the result</h3>
           <p>{review.result}</p>
         </section>
 
         <section aria-labelledby="game-review-deciding-title">
-          <h3 id="game-review-deciding-title">Matchup and evidence</h3>
+          <h3 id="game-review-deciding-title">What the lists brought</h3>
           <p>{review.decidingFactors}</p>
         </section>
 
-        <section className="battle-report-game-review-story" aria-labelledby="game-review-story-title">
-          <h3 id="game-review-story-title">Mission and matchup</h3>
-          <p>{review.story}</p>
-          <small>A mission angle grounded in the submitted forces, scores, and any player highlight. It does not assert unreported actions.</small>
-        </section>
-
-        <section aria-labelledby="game-review-turning-point-title">
-          <h3 id="game-review-turning-point-title">Recorded highlight</h3>
-          <p>{review.turningPoint}</p>
-        </section>
-
-        <section className="battle-report-game-review-coaching" aria-labelledby="game-review-coaching-title">
+        {!isDrawGame(game) ? <section className="battle-report-game-review-coaching" aria-labelledby="game-review-coaching-title">
           <h3 id="game-review-coaching-title">Coaching notes</h3>
           <div>
             <article><strong>For {winner}</strong><p>{review.winnerCoaching}</p></article>
             <article><strong>For {loser}</strong><p>{review.loserCoaching}</p></article>
           </div>
-        </section>
-
-        <section className="battle-report-game-review-bottom-line" aria-labelledby="game-review-bottom-line-title">
-          <h3 id="game-review-bottom-line-title">Result in context</h3>
-          <strong>{review.bottomLine}</strong>
-        </section>
+        </section> : null}
 
         <section className="battle-report-game-review-submitted-forces" aria-labelledby="game-review-forces-title">
           <h3 id="game-review-forces-title">Submitted forces</h3>
@@ -506,13 +497,8 @@ function Fact({ label, value }: { label: string; value: string }) {
 }
 
 function formatGameParticipant(game: RecentGame, player: string) {
-  if (player === game.winner) {
-    return formatPlayerName(game.winner, game.winnerDisplayName)
-  }
-
-  if (player === game.loser) {
-    return formatPlayerName(game.loser, game.loserDisplayName)
-  }
+  const side = getGameSides(game).find((item) => item.player === player)
+  if (side) return formatPlayerName(side.player, side.displayName)
 
   return player
 }
@@ -534,16 +520,17 @@ function formatReportType(game: RecentGame) {
 type ScoreLabel = 'TP' | 'OP' | 'VP'
 
 function buildParticipants(game: RecentGame, isDraw: boolean): [BattleParticipant, BattleParticipant] {
+  const [left, right] = getGameSides(game)
   return [
     {
-      displayName: formatPlayerName(game.winner, game.winnerDisplayName),
-      faction: game.winnerFaction,
+      displayName: formatPlayerName(left.player, left.displayName),
+      faction: left.faction,
       result: isDraw ? 'Draw' : 'Winner',
       scoreTone: 'cyan',
     },
     {
-      displayName: formatPlayerName(game.loser, game.loserDisplayName),
-      faction: game.loserFaction,
+      displayName: formatPlayerName(right.player, right.displayName),
+      faction: right.faction,
       result: isDraw ? 'Draw' : 'Defeated',
       scoreTone: 'red',
     },

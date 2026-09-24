@@ -1,12 +1,14 @@
 import type { RecentGame } from './api'
 import type { PublicSubmittedArmyList } from './publicDetailProjection'
+import { getGameSides } from './gameResults.ts'
 
 const key = (value: string) => String(value || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '')
 
 export function getGameArmyLists(game: RecentGame, armyLists: PublicSubmittedArmyList[]): PublicSubmittedArmyList[] {
+  const [left, right] = getGameSides(game)
   const sides = [
-    { player: game.winner, opponent: game.loser, id: game.winnerArmyListId },
-    { player: game.loser, opponent: game.winner, id: game.loserArmyListId },
+    { player: left.player, opponent: right.player, id: left.listId },
+    { player: right.player, opponent: left.player, id: right.listId },
   ]
 
   return sides.flatMap((side) => {

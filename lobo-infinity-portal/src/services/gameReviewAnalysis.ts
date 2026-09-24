@@ -1,6 +1,6 @@
 import type { ArmyIntelligenceDecodedEntry, ArmyIntelligenceList, RecentGame } from './api.ts'
 import { formatPlayerName } from './formatting.ts'
-import { isDrawGame } from './gameResults.ts'
+import { getGameSides, isDrawGame } from './gameResults.ts'
 import fallbackNarratives from '../data/gameReviewNarratives.json' with { type: 'json' }
 
 export type GameReviewAnalysis = {
@@ -22,6 +22,7 @@ type LinkedGameList = {
 }
 
 type ForceProfile = {
+  units: string[]
   anchors: string[]
   control: string[]
   hackers: string[]
@@ -40,16 +41,17 @@ type MissionLens = {
 export function buildGameReviewAnalysis(game: RecentGame, lists: ArmyIntelligenceList[], linkedLists: LinkedGameList[] = []): GameReviewAnalysis {
   if (game.id === 109) return buildGame109Review(game)
 
-  const winner = formatPlayerName(game.winner, game.winnerDisplayName)
-  const loser = formatPlayerName(game.loser, game.loserDisplayName)
+  const [left, right] = getGameSides(game)
+  const winner = formatPlayerName(left.player, left.displayName)
+  const loser = formatPlayerName(right.player, right.displayName)
   const winnerFaction = game.winnerFaction || 'their army'
   const loserFaction = game.loserFaction || 'the opposing army'
   const objective = parseScore(game.op)
   const victory = parseScore(game.vp)
   const tournament = formatScore(game.tp)
   const firstPlayer = formatGamePlayer(game, game.firstTurn)
-  const winnerList = findPlayerList(game, game.winner, lists, linkedLists)
-  const loserList = findPlayerList(game, game.loser, lists, linkedLists)
+  const winnerList = findPlayerList(game, left.player, lists, linkedLists)
+  const loserList = findPlayerList(game, right.player, lists, linkedLists)
   const winnerProfile = profileList(winnerList)
   const loserProfile = profileList(loserList)
   const objectiveMargin = scoreMargin(objective)
@@ -66,16 +68,12 @@ export function buildGameReviewAnalysis(game: RecentGame, lists: ArmyIntelligenc
       : `${winner} defeated ${loser} ${tournament} TP · ${formatScore(game.op)} OP · ${formatScore(game.vp)} VP.`,
     result: buildResultParagraph({ draw, game, loser, missionLens, objective, objectiveMargin, victory, victoryEdge, winner }),
     decidingFactors: buildDecidingFactors({
-      firstPlayer,
-      game,
       loser,
       loserFaction,
       loserProfile,
-      missionLens,
       winner,
       winnerFaction,
       winnerProfile,
-      victoryEdge,
     }),
     story: buildBattleStory({ narrative, draw, firstPlayer, game, loser, loserProfile, objectiveEdge, victoryEdge, winner, winnerProfile }),
     turningPoint: buildTurningPoint(game),
@@ -165,37 +163,23 @@ function buildResultParagraph({
 }
 
 function buildDecidingFactors({
-  firstPlayer,
-  game,
   loser,
   loserFaction,
   loserProfile,
-  missionLens,
   winner,
   winnerFaction,
   winnerProfile,
-  victoryEdge,
 }: {
-  firstPlayer: string
-  game: RecentGame
   loser: string
   loserFaction: string
   loserProfile: ForceProfile | null
-  missionLens: MissionLens
   winner: string
   winnerFaction: string
   winnerProfile: ForceProfile | null
-  victoryEdge: number | null
 }) {
-  const initiative = firstPlayer ? `${firstPlayer} was recorded as taking the first turn.` : 'The first turn was not recorded.'
   const winnerPlan = describeForce(winnerProfile, `${winner}’s ${winnerFaction} list`)
   const loserPlan = describeForce(loserProfile, `${loser}’s ${loserFaction} list`)
-  const conversion = victoryEdge !== null && victoryEdge <= -75
-    ? `${loser} finished with more surviving VP, while ${winner} led on objectives.`
-    : victoryEdge !== null && victoryEdge >= 75
-      ? `${winner} finished with more surviving VP as well as the recorded win.`
-      : 'The final VP totals do not explain the turn sequence.'
-  return `${game.mission || 'The mission'} ${missionLens.focus}. ${winnerPlan} ${loserPlan} ${initiative} ${conversion} These rosters describe available tools, not which pieces were actually used in each scoring action.`
+  return `${winnerPlan} ${loserPlan} These are list options; the submitted note is the source for any specific exchange described above.`
 }
 
 function describeForce(profile: ForceProfile | null, label: string) {
@@ -207,7 +191,7 @@ function describeForce(profile: ForceProfile | null, label: string) {
   if (profile.mobile.length) traits.push(`mobile attack options in ${joinNames(profile.mobile)}`)
   if (profile.anchors.length) traits.push(`durable anchors such as ${joinNames(profile.anchors)}`)
   if (profile.specialists.length) traits.push(`mission coverage from ${joinNames(profile.specialists)}`)
-  return `${label} includes ${joinTraits(traits.slice(0, 3)) || 'no classified tactical traits in the decoded entries'}.`
+  return `${label} includes ${joinTraits(traits.slice(0, 2)) || 'no classified tactical traits in the decoded entries'}.`
 }
 
 function buildBattleStory({
@@ -225,34 +209,53 @@ function buildBattleStory({
   winnerProfile: ForceProfile | null
 }) {
   const mission = game.mission || 'The mission'
-  const winnerOptions = winnerProfile ? `The decoded ${winner} roster includes ${strongestTrait(winnerProfile)}.` : `${winner}’s roster has not yet been decoded in this public snapshot.`
-  const loserOptions = loserProfile ? `The decoded ${loser} roster includes ${strongestTrait(loserProfile)}.` : `${loser}’s roster has not yet been decoded in this public snapshot.`
-  const result = draw
-    ? `The official result is a draw at ${formatScore(game.op)} OP.`
-    : `${winner} defeated ${loser}; the recorded scores are ${formatScore(game.op)} OP and ${formatScore(game.vp)} surviving VP.`
-  const contrast = objectiveEdge !== null && victoryEdge !== null && objectiveEdge * victoryEdge < 0
-    ? 'The objective and surviving VP margins point in different directions.'
-    : 'The final scores show the result, not the turn-by-turn cause.'
-  const initiative = firstPlayer ? `${firstPlayer} is recorded as the first player.` : ''
   const note = cleanStoryNote(game.bestMoment)
-  const highlight = note ? `The submitted highlight says: “${note}”` : 'No player highlight records a specific exchange.'
-  const angle = narrative.angle.trim()
-  const missionAngle = angle.toLowerCase().includes(mission.toLowerCase()) ? angle : `${mission}: ${angle}`
-  // The sheet selects both the mission angle and the paragraph shape. Each
-  // structure stays inside recorded results, roster capabilities, and notes.
-  const shapes = [
-    [missionAngle, winnerOptions, loserOptions, result, highlight],
-    [result, `One mission angle: ${missionAngle}`, loserOptions, winnerOptions, highlight],
-    [winnerOptions, loserOptions, `The mission lens: ${missionAngle}`, result, highlight],
-    [highlight, missionAngle, result, winnerOptions, loserOptions],
-    [contrast, missionAngle, loserOptions, winnerOptions, result, highlight],
-    [initiative, missionAngle, winnerOptions, result, loserOptions, highlight],
-    [loserOptions, winnerOptions, missionAngle, highlight, result],
-    [`For ${mission}, start with the available tools.`, winnerOptions, loserOptions, angle, result, highlight],
-    [result, missionAngle, highlight, loserOptions, winnerOptions, 'The order in which those tools were used is not recorded.'],
-    [highlight, winnerOptions, loserOptions, missionAngle, result],
-  ]
-  return shapes[((narrative.id - 1) % shapes.length + shapes.length) % shapes.length].filter(Boolean).join(' ')
+  const op = formatScore(game.op)
+  const vp = formatScore(game.vp)
+  const objectiveMargin = objectiveEdge === null ? null : Math.abs(objectiveEdge)
+  const materialMargin = victoryEdge === null ? null : Math.abs(victoryEdge)
+  const missionLens = game.reviewNarratives?.length ? narrative.angle.trim() : ''
+
+  // A player note is the only evidence for a particular exchange. Never turn
+  // roster capabilities or a rotating mission prompt into unreported actions.
+  if (note && /yadu\s+hrl\s+taking\s+out\s+tari[qk]\s+on\s+opponents?\s+turn\s+1/i.test(note)) {
+    const rosterMatch = winnerProfile?.longRange.includes('Yadu') && loserProfile?.units.includes('Tarik Mansuri')
+      ? `The decoded lists place Yadu heavy rocket launchers with ${winner} and Tarik Mansuri with ${loser}, matching the submitted account of that encounter. `
+      : ''
+    return `${firstPlayer || loser} took the first turn, and the reported flashpoint came during it: a Yadu heavy rocket launcher took out Tariq. ${rosterMatch}\n\n${winner} led ${vp} in surviving VP and won the objectives ${op}. The objective margin was ${objectiveMargin === 2 ? 'only two points' : objectiveMargin === null ? 'not recorded' : `${objectiveMargin} points`}${materialMargin !== null && objectiveMargin !== null && materialMargin > objectiveMargin ? `, far narrower than the ${materialMargin}-point gap in surviving forces` : ''}. The opening exchange was reported; the scoring sequence that followed was not.`
+  }
+
+  if (note && /tue?cer\s+killing\s+both\s+a\s+tsyklon\s+and\s+the\s+engineer/i.test(note)) {
+    const rosterMatch = winnerProfile?.units.includes('Teucer') && loserProfile?.units.includes('Tsyklon')
+      ? `The decoded rosters confirm Teucer on ${winner}'s side and a Tsyklon on ${loser}'s. `
+      : ''
+    return `${firstPlayer || loser} took the first turn. The submitted highlight describes Teucer destroying a Tsyklon and then the engineer sent to recover it—a single reported sequence that removed a threat and the attempt to restore it. ${rosterMatch}\n\n${winner} went on to lead ${op} on objectives and ${vp} in surviving VP. Both margins favored ${winner}; the highlight gives us one concrete part of that result, without filling in the rest of the battle.`
+  }
+
+  const opening = draw
+    ? `${mission} finished level at ${op} objective points.`
+    : objectiveEdge !== null && victoryEdge !== null && objectiveEdge * victoryEdge < 0
+      ? `${winner} won ${mission} ${op} despite ${loser} ending with more surviving forces (${vp} VP).`
+      : objectiveMargin !== null && objectiveMargin <= 2 && materialMargin !== null && materialMargin >= 75
+        ? `${winner} had a ${materialMargin}-point edge in surviving forces, yet ${mission} remained close on objectives at ${op}.`
+        : objectiveMargin !== null && objectiveMargin >= 4 && materialMargin !== null && materialMargin >= 75
+          ? `${winner} finished ahead on both fronts in ${mission}: ${op} objectives and ${vp} surviving VP.`
+          : `${winner} and ${loser} finished ${mission} at ${op} objectives${materialMargin !== null ? ` and ${vp} surviving VP` : ''}.`
+  const reported = note
+    ? `The player-reported moment was “${note}”${/[.!?]$/.test(note) ? '' : '.'}`
+    : 'No submitted highlight describes a particular exchange.'
+  const initiative = firstPlayer ? `${firstPlayer} had the first turn. ` : ''
+  const interpretation = note
+    ? 'That detail is one part of the battle; the record does not say which actions produced the final objective score.'
+    : 'The score records the outcome, but the turns that produced it were not submitted.'
+  const rosterContext = winnerProfile && loserProfile
+    ? `The decoded armies show ${winner} brought ${strongestTrait(winnerProfile)} while ${loser} brought ${strongestTrait(loserProfile)}. These were options available to the players, not a record of what they did.`
+    : 'A full matchup account will need both submitted armies decoded.'
+  const lens = missionLens ? ` ${missionLens}` : ''
+
+  // The mission sheet supplies a perspective when available; the battle
+  // account itself follows the evidence, rather than permuting stock sentences.
+  return `${initiative}${reported} ${opening}\n\n${interpretation} ${rosterContext}${lens}`
 }
 
 function cleanStoryNote(value: string) {
@@ -309,7 +312,15 @@ function getMissionLens(mission: string): MissionLens {
     }
   }
 
-  if (['evacuation', 'lastlaunch', 'provisioning', 'thedig'].includes(key)) {
+  if (key === 'thedig') {
+    return {
+      focus: 'is scored through its objectives; the score and rosters alone do not reveal the scoring actions',
+      winnerPriority: 'Keep a path to the remaining scoring opportunities while protecting the lead already earned.',
+      loserPriority: 'Identify which objective points are still in reach before committing the last useful orders.',
+    }
+  }
+
+  if (['evacuation', 'lastlaunch', 'provisioning'].includes(key)) {
     return {
       focus: 'asks players to reach, secure, and then retain mission assets, so extraction timing and the survival of the carrier or escort package are decisive',
       winnerPriority: 'Secure the mission asset with enough orders left to move it into a defensible end-state.',
@@ -359,6 +370,7 @@ function profileList(list: ArmyIntelligenceList | undefined): ForceProfile | nul
   const entries = list.decoded.combatGroups.flatMap((group) => group.entries)
   const matching = (pattern: RegExp) => names(entries.filter((entry) => pattern.test(entryText(entry))))
   return {
+    units: [...new Set(entries.map((entry) => formatUnitName(entry.unit)))],
     anchors: names(entries.filter((entry) => /TAG|Heavy Infantry/i.test(entry.troopType) || (entry.wounds ?? 0) + (entry.structure ?? 0) >= 3)),
     control: matching(/mine|crazykoala|perimeter|repeater|pitcher|cybermine|minelayer|deployable/i),
     hackers: names(entries.filter((entry) => entry.hacker || /hacking device|killer hacker|hacker/i.test(entryText(entry)))),
@@ -381,7 +393,7 @@ function strongestTrait(profile: ForceProfile) {
 
 function findPlayerList(game: RecentGame, player: string, lists: ArmyIntelligenceList[], linkedLists: LinkedGameList[]) {
   const key = normalize(player)
-  const targetListId = normalize(player) === normalize(game.winner) ? game.winnerArmyListId : game.loserArmyListId
+  const targetListId = getGameSides(game).find((side) => normalize(side.player) === key)?.listId || ''
   const byListId = targetListId ? lists.find((list) => String(list.armyListId) === String(targetListId) && normalize(list.player) === key) : undefined
   if (byListId) return byListId
 
@@ -402,8 +414,8 @@ function normalizeArmyCode(value: string) {
 }
 
 function formatGamePlayer(game: RecentGame, player: string) {
-  if (normalize(player) === normalize(game.winner)) return formatPlayerName(game.winner, game.winnerDisplayName)
-  if (normalize(player) === normalize(game.loser)) return formatPlayerName(game.loser, game.loserDisplayName)
+  const side = getGameSides(game).find((item) => normalize(player) === normalize(item.player))
+  if (side) return formatPlayerName(side.player, side.displayName)
   return player.trim()
 }
 

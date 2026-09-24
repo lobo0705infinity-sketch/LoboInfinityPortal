@@ -578,7 +578,9 @@
   gap: 12px;
 }
 
-.battle-report-game-review-narrative > section:nth-child(n + 3) {
+.battle-report-game-review-story,
+.battle-report-game-review-coaching,
+.battle-report-game-review-submitted-forces {
   grid-column: 1 / -1;
 }
 
@@ -608,10 +610,15 @@
 
 .battle-report-game-review-story > p {
   max-width: 100ch;
+  margin-top: 12px !important;
   color: #f1f4f6 !important;
   font-family: Georgia, 'Times New Roman', serif;
   font-size: clamp(1rem, 1.7vw, 1.12rem) !important;
   line-height: 1.75 !important;
+}
+
+.battle-report-game-review-story > p:first-of-type {
+  margin-top: 14px !important;
 }
 
 .battle-report-game-review-story > small {
