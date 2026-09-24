@@ -75,7 +75,12 @@ const unrelatedSubmission = { id: '3382380291', player: 'Defuser', opponent: 'Ar
 assert.deepEqual(getGameArmyLists(linkedGame, [unrelatedSubmission, winnerSubmission]), [winnerSubmission])
 assert.deepEqual(getGameArmyLists({ ...linkedGame, winnerArmyListId: '', loserArmyListId: '' }, [winnerSubmission, unrelatedSubmission]), [winnerSubmission])
 
-const nextGame = game({ id: 116, winner: 'Jqam1', loser: 'Igor Your Humble Servant', winnerArmyListId: '3983751212', loserArmyListId: '5071712090', mission: 'The Dig' })
+const nextGame = game({ id: 116, winner: 'Jqam1', loser: 'Igor Your Humble Servant', winnerArmyListId: '3983751212', loserArmyListId: '5071712090', mission: 'The Dig', date: '2026-09-23T04:00:00.000Z' })
+const nextWinnerSubmission = { ...winnerSubmission, id: nextGame.winnerArmyListId, player: nextGame.winner, opponent: '', mission: nextGame.mission, date: nextGame.date, gameId: 0 } as PublicSubmittedArmyList
+const nextLoserSubmission = { ...nextWinnerSubmission, id: nextGame.loserArmyListId, player: nextGame.loser } as PublicSubmittedArmyList
+assert.deepEqual(getGameArmyLists(nextGame, [nextWinnerSubmission, nextLoserSubmission]), [nextWinnerSubmission, nextLoserSubmission])
+assert.deepEqual(getGameArmyLists(nextGame, [{ ...nextWinnerSubmission, opponent: 'Somebody else' }]), [])
+assert.deepEqual(getGameArmyLists({ ...nextGame, winnerArmyListId: '', loserArmyListId: '' }, [nextWinnerSubmission, nextLoserSubmission]), [])
 assert.deepEqual(getGameIntelligenceLists(nextGame, [staleSourceId]), [])
 assert.match(buildGameReviewAnalysis(nextGame, []).decidingFactors, /no decoded roster in this public snapshot yet/)
 assert.doesNotMatch(buildGameReviewAnalysis(nextGame, []).decidingFactors, /Without decoded lists/)

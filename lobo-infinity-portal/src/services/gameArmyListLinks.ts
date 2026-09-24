@@ -12,14 +12,21 @@ export function getGameArmyLists(game: RecentGame, armyLists: PublicSubmittedArm
   return sides.flatMap((side) => {
     const matching = armyLists.filter((list) =>
       key(list.player) === key(side.player) &&
-      key(list.opponent) === key(side.opponent) &&
       key(list.mission) === key(game.mission) &&
       Boolean(list.date && game.date && list.date.slice(0, 10) === game.date.slice(0, 10)),
     )
-    const linked = matching.find((list) => String(list.id) === String(side.id || ''))
+    // A newly submitted list can have its game ID while its opponent is still
+    // blank. Trust the explicit list ID only when player, mission and day also
+    // agree, and never accept an opponent that conflicts with this game.
+    const linked = matching.find((list) =>
+      String(side.id || '').trim() &&
+      String(list.id) === String(side.id || '') &&
+      (!key(list.opponent) || key(list.opponent) === key(side.opponent)),
+    )
     if (linked) return [linked]
     // Older Form rows can reference a list from a different player. Only use
     // a full, unambiguous matchup match if the explicit ID does not fit.
-    return matching.length === 1 ? matching : []
+    const fullMatch = matching.filter((list) => key(list.opponent) === key(side.opponent))
+    return fullMatch.length === 1 ? fullMatch : []
   }).filter((list, index, all) => all.findIndex((item) => String(item.id) === String(list.id)) === index)
 }
