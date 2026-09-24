@@ -1,0 +1,322 @@
+[
+  {
+    "mission": "Dead Man's Switch",
+    "factions": ["Corregidor Jurisdictional Command", "Torchlight Brigade"],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "The signal came from a freight car that had been welded shut before launch. {{heroPlayer}}’s dock crew found it sliding slowly along an abandoned rail, its transmitter reporting that someone inside was still holding the safety switch. {{otherPlayer}}’s patrol reached the junction first and ordered the car stopped there.",
+      "{{hero}} climbed onto the moving car and cut through a maintenance panel. Inside, a hand had been painted around the switch, fingers carefully outlined in white. The transmitter was wired to the rail beneath the car; stopping it at the junction would send the signal to every nearby station.",
+      "The trooper called for the crew to change the points. The car picked up speed as the junction approached, and boots sounded on the track behind it. With one hand on the painted switch and the other on the wiring, the trooper had only the length of the car to decide which connection to break."
+    ],
+    "endings": {
+      "heroWins": "The car rolled past the junction in silence, and {{heroPlayer}}’s crew kept the transmitter.",
+      "heroLoses": "{{otherPlayer}}’s patrol stopped the car at the junction and took charge of its still-active signal.",
+      "draw": "The car vanished down the dark rail; both crews heard the signal return from somewhere ahead."
+    }
+  },
+  {
+    "mission": "Dead Man's Switch",
+    "factions": ["Operations Subsection", "Shindenbutai"],
+    "heroFaction": "Shindenbutai",
+    "role": "objective",
+    "paragraphs": [
+      "The switch had been hidden inside a theater prop: a painted box that applauded when its lid opened. {{heroPlayer}}’s patrol found it among the abandoned costumes, just as {{otherPlayer}}’s search team entered through the stage door. On the box was a note naming an audience that had disappeared years earlier.",
+      "{{hero}} lifted the false bottom and found a small transmitter beneath the music mechanism. One wire was tied to the lid, another to a chair in the front row. The trooper eased the lid shut, then followed the second wire under a carpet that had been nailed down for the final performance.",
+      "A figure sat in the darkened audience with one hand on the chair. When the search team turned on its lamps, the figure did not move. The trooper pulled up the carpet, saw the wire tighten, and realized the applause would start again if either side tried to take the chair."
+    ],
+    "endings": {
+      "heroWins": "{{hero}} quieted the mechanism and carried the box out through the wings.",
+      "heroLoses": "{{otherPlayer}}’s team kept the theater while the patrol withdrew without the box.",
+      "draw": "The lights went out again; nobody in the audience moved, and the box remained onstage."
+    }
+  },
+  {
+    "mission": "Dead Man's Switch",
+    "factions": ["Kosmoflot", "Next Wave"],
+    "heroFaction": "Kosmoflot",
+    "role": "gunfighting",
+    "paragraphs": [
+      "The old observatory had been abandoned with its dish aimed at an empty patch of sky. Every twelve minutes a pulse crossed the valley and woke the switch in the weather station below. {{heroPlayer}}’s expedition needed that pulse interrupted; {{otherPlayer}}’s defenders occupied the only walkway to the dish.",
+      "{{hero}} settled behind a frostbound telescope and fired whenever a silhouette crossed the walkway. The shots bought a technician time to crawl toward the dish controls, but a bank of mirrors began turning toward the telescope. The trooper could see the muzzle flash reflected from three directions at once.",
+      "A voice from the weather station counted down to the next pulse. The technician was still a few steps short of the controls. {{hero}} broke cover, drew the defenders’ fire across the open platform, and watched the great dish begin to move a fraction of a degree."
+    ],
+    "endings": {
+      "heroWins": "The dish turned away before the pulse, and the technician came back under {{hero}}’s cover.",
+      "heroLoses": "{{otherPlayer}}’s defenders kept the walkway, and the weather station answered the next pulse.",
+      "draw": "The dish stalled between two stars; both teams waited to learn where its next signal would fall."
+    }
+  },
+  {
+    "mission": "Dead Man's Switch",
+    "factions": ["Kosmoflot", "Kosmoflot"],
+    "heroFaction": "Kosmoflot",
+    "role": "objective",
+    "paragraphs": [
+      "Two recovery crews answered the same distress call from a satellite that had fallen into the snow. Each brought an order signed by the same dispatcher; each insisted the other order was a forgery. Beneath the ice, the satellite continued broadcasting a signal that would stop only when its damaged switch was held down.",
+      "{{hero}} crawled into the wreck and found the switch beneath a sheet of bent foil. The trooper held it with one hand and copied the satellite’s last transmission with the other. The opening words were the dispatcher’s voice, followed by an argument between the two crews that had not yet happened.",
+      "Outside, {{otherPlayer}}’s people began cutting through the opposite side. The recording reached the sound of a door opening. The trooper heard a cutter bite through the hull, then a voice on the recording speak the name of the person waiting outside."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew recovered the recording and left the switch quiet beneath the snow.",
+      "heroLoses": "{{otherPlayer}}’s crew took the satellite while {{heroPlayer}}’s people withdrew with an unfinished recording.",
+      "draw": "The satellite went silent; neither crew could explain how its recording knew their voices."
+    }
+  },
+  {
+    "mission": "Dead Man's Switch",
+    "factions": ["Next Wave", "Next Wave"],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "The security door required two fingerprints, and both patrols brought the same pair. {{heroPlayer}}’s team reached the vault first but could not open it without letting {{otherPlayer}}’s team into the corridor. Behind the door, a switch was sending out orders in both commanders’ voices.",
+      "{{hero}} pressed a hand to the reader while a second print appeared on the glass from the other side. The mechanism opened a narrow gap. Inside, the trooper saw rows of identical keycards, each marked with a different time. The active card showed a minute that had already passed.",
+      "The voice in the vault instructed both patrols to leave. Neither commander gave the order. The trooper pulled the active card and found the switch still ticking; somewhere else in the vault, another card had begun counting down."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team found the second card and closed the vault on its own terms.",
+      "heroLoses": "{{otherPlayer}}’s team held the open door and took the cards before the search could finish.",
+      "draw": "Both patrols left with a keycard, and the voice behind the door kept issuing orders."
+    }
+  },
+  {
+    "mission": "Dead Man's Switch",
+    "factions": ["Ariadna", "Morat Aggression Force"],
+    "heroFaction": "Ariadna",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A mining convoy had abandoned its bridge with the engines running and a switch clamped beneath the lead truck. {{heroPlayer}}’s rangers approached from the west; {{otherPlayer}}’s soldiers took the eastern bank. Any shot into the cab might release the clamp and send the convoy into the gorge.",
+      "{{hero}} took cover behind a road sign and picked off the lamps that marked the far bank. In the darkness, a mechanic crossed under the trucks toward the clamp. Each shot from the ranger’s position made the bridge cables sing, and the mechanic had to pause whenever the sound came back along the span.",
+      "The lead truck lurched forward. The mechanic shouted that the clamp was slipping. {{hero}} stood where the far bank could see the muzzle flash and fired at the road above the soldiers, buying one final moment for a hand to reach the switch."
+    ],
+    "endings": {
+      "heroWins": "The mechanic caught the switch, and the convoy remained on the bridge until {{heroPlayer}}’s rangers could move it.",
+      "heroLoses": "The trucks stopped short of the gorge, but {{otherPlayer}}’s soldiers held the bridge and its cargo.",
+      "draw": "The clamp fell into the gorge while both forces pulled back from the swaying bridge."
+    }
+  },
+  {
+    "mission": "Dead Man's Switch",
+    "factions": ["ALEPH", "Tohaa"],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "The archive door opened only while a small organism inside it remained alive. {{heroPlayer}}’s envoys arrived carrying a nutrient vial; {{otherPlayer}}’s observers brought a sterile key and a warning that the organism’s pulse controlled more than the door. Neither group trusted the other near the switch.",
+      "{{hero}} placed the vial against a membrane in the frame. The organism reached for it, and a line of script appeared on the archive glass. The trooper read the first sentence before it faded: the door had been keeping something inside, rather than keeping visitors out.",
+      "The glass clouded as an alarm began to sound. The envoys could withdraw with the sentence, or feed the organism and let the rest of the message appear. Across the room, an observer set the sterile key against the frame and waited for the trooper’s hand to move."
+    ],
+    "endings": {
+      "heroWins": "The membrane brightened long enough for {{hero}} to copy the warning and close the door.",
+      "heroLoses": "{{otherPlayer}}’s observers kept the archive as the envoys withdrew with one fading sentence.",
+      "draw": "The organism slept again; each group left believing the other had read more of the warning."
+    }
+  },
+  {
+    "mission": "Dead Man's Switch",
+    "factions": ["Bakunin Jurisdictional Command", "Military Orders"],
+    "heroFaction": "Military Orders",
+    "role": "closeCombat",
+    "paragraphs": [
+      "The monastery bells had been wired to a transmitter. When the last bell stopped, a hidden switch would send a distress call in the voice of the missing abbot. {{heroPlayer}}’s search party found {{otherPlayer}}’s performers in the bell tower, each insisting they had come to prevent the broadcast.",
+      "{{hero}} met an armed figure on the narrow stair and fought past them toward the rope. There was hardly room to swing, and the bell above was already losing speed. The trooper caught the rope as another set of footsteps sounded from the tower’s roof.",
+      "Below, the search party shouted that the abbot was alive in the cloister. The voice on the transmitter began repeating his plea anyway. Holding the rope kept the bell sounding; letting go would free both hands for the figure descending from the roof."
+    ],
+    "endings": {
+      "heroWins": "The bell rang until the search party found the transmitter and brought the abbot into the tower.",
+      "heroLoses": "{{otherPlayer}}’s performers held the tower as the final toll released the abbot’s borrowed voice.",
+      "draw": "The bell fell silent without a final note, and nobody could tell where the abbot’s voice had gone."
+    }
+  },
+  {
+    "mission": "Dead Man's Switch",
+    "factions": ["O-12", "Shasvastii Expeditionary Force"],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "The hospital reported its evacuation complete, then called again using the voice of a patient who had never been admitted. {{heroPlayer}}’s investigators found the ward empty except for a switch strapped to an occupied bed. {{otherPlayer}}’s shadows moved behind the privacy curtains as the emergency broadcast kept resetting.",
+      "{{hero}} checked the patient’s wristband. The name matched a surgeon who was standing outside the hospital, demanding that the ward be sealed. Beneath the blanket, a hand tightened around the switch whenever the trooper spoke that name. The investigator stopped asking questions and listened instead.",
+      "A second voice answered from the bed, this time the investigator’s own. The curtains stirred though the ventilation was off. The trooper disconnected the ward microphone while a partner held the door; the next broadcast would reveal whether the voice needed a patient at all."
+    ],
+    "endings": {
+      "heroWins": "The ward fell quiet, and {{heroPlayer}}’s investigators took the switch out in a sealed case.",
+      "heroLoses": "{{otherPlayer}}’s infiltrators kept the ward; the broadcast resumed after the investigators withdrew.",
+      "draw": "The broadcast stopped, but a voice answered from an empty bed in the next ward."
+    }
+  },
+  {
+    "mission": "Dead Man's Switch",
+    "factions": ["Ramah Taskforce", "StarCo"],
+    "heroFaction": "Ramah Taskforce",
+    "role": "objective",
+    "paragraphs": [
+      "The courier collapsed beside a clinic with a switch held tight in a splint. Every time the medic loosened the splint, a message began playing from somewhere inside the building. {{heroPlayer}}’s relief team needed to move the courier; {{otherPlayer}}’s contractors had been paid to bring back the message intact.",
+      "{{hero}} examined the splint and discovered that its pressure pad was attached to an old medical pager. The patient had used it to keep a locked cabinet closed. Inside the cabinet was a list of names, each with a time beside it. The next time was only minutes away.",
+      "A contractor reached the clinic door as the patient’s grip weakened. The trooper asked a colleague to hold the pressure pad and opened the cabinet with the other hand. The first name on the list belonged to the courier, and the pager began ringing from inside the splint."
+    ],
+    "endings": {
+      "heroWins": "The team stabilized the courier and carried the list out before its next time arrived.",
+      "heroLoses": "{{otherPlayer}}’s contractors took the cabinet while the relief team evacuated the living patient.",
+      "draw": "The patient survived, but the pager rang once more after the cabinet was empty."
+    }
+  },
+  {
+    "mission": "Dead Man's Switch",
+    "factions": ["PanOceania", "Yu Jing"],
+    "heroFaction": "PanOceania",
+    "role": "objective",
+    "paragraphs": [
+      "A tide gate had locked half the harbor beneath rising water. The operator’s hand remained on the emergency switch, though the operator had left hours ago. {{heroPlayer}}’s response team approached through the pump room; {{otherPlayer}}’s engineers came by boat with a different plan for which side of the harbor to save.",
+      "{{hero}} reached the switch and found a photograph taped to its housing. It showed the operator with a child standing on the lower quay. The trooper checked the pressure gauges: releasing the switch would drain the quay but flood the boats tied beyond the gate.",
+      "Someone began pounding on the far side of the pump-room door. The child’s name came over the radio, called from the quay that was already disappearing. The trooper held the switch in place while a teammate searched for a second valve the operator had marked on the photograph."
+    ],
+    "endings": {
+      "heroWins": "The second valve opened, and {{heroPlayer}}’s team brought the child and the boats clear of the water.",
+      "heroLoses": "{{otherPlayer}}’s engineers took the gate controls and chose which channel would remain open.",
+      "draw": "The gate held between two tides; the boats and the quay both waited for morning."
+    }
+  },
+  {
+    "mission": "Dead Man's Switch",
+    "factions": ["Combined Army", "Onyx Contact Force"],
+    "heroFaction": "Onyx Contact Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "The warning relay should have recognized both patrols. Instead, it marked each as an intruder and began counting down to a transmission neither commander had ordered. {{heroPlayer}}’s unit took the lower corridor; {{otherPlayer}}’s unit held the gantry above the relay, certain the fault had been planted below.",
+      "{{hero}} fired through a row of hanging cables to keep the gantry clear for a technician. A return shot cut the cable holding the relay’s cover, and the metal panel swung down like a gate. The technician ducked beneath it and found two switches wired to the same clock.",
+      "One switch carried the unit’s own recognition code. The other was blank. The countdown stopped whenever the trooper’s gunfire held the far corridor, then resumed as soon as the silence returned. The technician called for another few seconds while the panel swayed between the two patrols."
+    ],
+    "endings": {
+      "heroWins": "The technician isolated the blank switch, and {{heroPlayer}}’s patrol carried the faulty relay away.",
+      "heroLoses": "{{otherPlayer}}’s patrol held the gantry and recovered the relay with its countdown still running.",
+      "draw": "The relay fell from its mount; both patrols heard the unfinished count through their own radios."
+    }
+  },
+  {
+    "mission": "Dead Man's Switch",
+    "factions": ["Haqqislam", "Hassassin Bahram"],
+    "heroFaction": "Haqqislam",
+    "role": "objective",
+    "paragraphs": [
+      "The seed bank’s caretaker had arranged for every greenhouse door to lock if the irrigation stopped. When the first pump failed, {{heroPlayer}}’s scientists came to keep the collection alive. {{otherPlayer}}’s visitors stood among the seedlings, looking for one plant whose label had been cut away.",
+      "{{hero}} found the caretaker’s switch beneath a bed of warm soil. Its timer was set to close the vents before dawn. The trooper traced the hidden irrigation line to an unmarked tray, where one seedling was drawing water faster than the others and turning toward the locked doors.",
+      "A visitor offered to take the tray outside. The scientist on the radio warned that opening the vent would dry out everything else. The trooper cupped the seedling, reached for the timer, and felt the roots tighten around the buried switch."
+    ],
+    "endings": {
+      "heroWins": "The timer stopped, and {{heroPlayer}}’s scientists carried the living collection into daylight.",
+      "heroLoses": "{{otherPlayer}}’s visitors took the unmarked tray while the scientists saved what remained behind the doors.",
+      "draw": "The vents remained shut; both groups left the caretaker’s unmarked plant in its bed."
+    }
+  },
+  {
+    "mission": "Dead Man's Switch",
+    "factions": ["Imperial Service", "Oban"],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "The prisoner’s transport arrived at the station without a prisoner. A switch in the empty restraint still registered a steady grip, and the carriage doors refused to open. {{heroPlayer}}’s scouts slipped aboard between the cars while {{otherPlayer}}’s officers formed a cordon on the platform.",
+      "{{hero}} found a paper bird folded around the switch. It carried the prisoner’s name and a seat number in the public carriage, where a crowd of travelers sat unaware of the cordon. The trooper lifted the bird and saw the pressure reading change on the restraint display.",
+      "A whistle sounded for departure. One officer stepped toward the public carriage; a traveler there raised a matching paper bird against the window. The trooper held the switch down with a tool and moved toward the crowd before the train could carry the second bird away."
+    ],
+    "endings": {
+      "heroWins": "{{hero}} found the matching bird before the train left, and the scouts took both messages with them.",
+      "heroLoses": "{{otherPlayer}}’s officers kept the station and the restraint while the public carriage pulled away.",
+      "draw": "The train departed with one bird; the other remained on the empty restraint."
+    }
+  },
+  {
+    "mission": "Dead Man's Switch",
+    "factions": ["Starmada", "White Company"],
+    "heroFaction": "Starmada",
+    "role": "objective",
+    "paragraphs": [
+      "An escape pod drifted into customs carrying a manifest for cargo that had not yet arrived. Its hatch would open only while a switch in the vacant pilot’s seat remained pressed. {{heroPlayer}}’s boarding party secured the dock as {{otherPlayer}}’s contractors came to claim the names printed on the manifest.",
+      "{{hero}} entered the pod through an inspection port and found a boot fixed to the pilot’s switch. The manifest listed the boot’s owner as a passenger, with a departure time twenty minutes in the future. The trooper checked the pod’s navigation memory and saw a second vessel approaching the dock without lights.",
+      "The contractors called for the hatch to be opened. Behind them, the dark vessel touched the outer ring, and the pod began filling its own manifest with new names. The trooper kept the boot in place while the boarding party counted how many people were now missing from the dock."
+    ],
+    "endings": {
+      "heroWins": "The boarding party kept the pod closed until the dark vessel could be searched.",
+      "heroLoses": "{{otherPlayer}}’s contractors took the manifest as the pod’s hatch finally opened.",
+      "draw": "The vessel left without lights; both groups held a different copy of the manifest."
+    }
+  },
+  {
+    "mission": "Dead Man's Switch",
+    "factions": ["Neoterra Capitaline Army", "Tunguska Jurisdictional Command"],
+    "heroFaction": "Tunguska Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A bank had frozen its own accounts after receiving a withdrawal request from a client declared dead that morning. The transaction would complete when a desk switch was released. {{heroPlayer}}’s auditors reached the vault floor through a service lift; {{otherPlayer}}’s security detail held the public entrance.",
+      "{{hero}} opened the terminal and found the dead client’s signature changing with every new camera image. On one screen, the client stood in the empty lobby. On another, the client wore the trooper’s coat. The auditor unplugged the cameras, but the signature kept moving across the transaction line.",
+      "The bank clock struck the hour. A teller behind the locked counter raised a hand and asked who had been holding the switch since the building opened. The trooper looked down at the desk: a fresh fingerprint lay beneath the glass, pressed from the inside."
+    ],
+    "endings": {
+      "heroWins": "{{hero}} froze the transfer and brought the fingerprint out with the bank’s records.",
+      "heroLoses": "{{otherPlayer}}’s security detail held the vault floor while the auditors lost access to the terminal.",
+      "draw": "The bank remained locked, its final transaction still waiting for someone to lift a hand."
+    }
+  },
+  {
+    "mission": "Dead Man's Switch",
+    "factions": ["Kestrel Colonial Force", "USAriadna Ranger Force"],
+    "heroFaction": "USAriadna Ranger Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A dust storm uncovered a pipeline valve with a human handprint baked into its casing. If the pressure switch released, the nearby settlement would lose its only water supply. {{heroPlayer}}’s rangers came along the dry channel; {{otherPlayer}}’s patrol arrived from the pumping station with orders to isolate the line.",
+      "{{hero}} fired across the channel to keep the patrol away from a mechanic working at the valve. Dust swallowed every second shot. The mechanic discovered that the switch had been held down with a stone, carved with the name of a settler missing since the last storm.",
+      "The pressure gauge rose as a second storm wall approached. The mechanic needed another minute to bypass the switch, and the patrol’s lights appeared through the dust. {{hero}} moved onto the exposed pipe, where each shot could be seen before its sound reached the channel."
+    ],
+    "endings": {
+      "heroWins": "The bypass held, and the rangers reached the settlement with its water still running.",
+      "heroLoses": "{{otherPlayer}}’s patrol took the valve; the rangers withdrew while the settlement waited for water.",
+      "draw": "Both patrols lost sight of the valve in the storm, but the water kept flowing."
+    }
+  },
+  {
+    "mission": "Dead Man's Switch",
+    "factions": ["Caledonian Highlander Army", "Steel Phalanx"],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A museum alarm had been tied to an ancient exhibition of dueling weapons. The case would transmit a distress signal if the pressure plate under its central blade was released. {{heroPlayer}}’s escort found the gallery occupied by {{otherPlayer}}’s raiders, who had already opened the case.",
+      "{{hero}} fought through the narrow aisle to the display while a curator crawled beneath it. The raider closest to the blade tried to pull it free; the trooper caught the raider’s arm and held both of them against the glass. The curator called out that the plate was still carrying weight.",
+      "A crack ran across the case. The curator slid a metal weight beneath the blade, but it caught on an inscription hidden under the hilt. The trooper could let the raider go and help with the weight, or keep the arm pinned while the plate began to lift."
+    ],
+    "endings": {
+      "heroWins": "The weight settled onto the plate, and the escort carried the blade’s inscription out of the gallery.",
+      "heroLoses": "{{otherPlayer}}’s raiders kept the case and its blade as the escort fell back.",
+      "draw": "The glass broke around the plate; both sides left the blade where it lay."
+    }
+  },
+  {
+    "mission": "Dead Man's Switch",
+    "factions": ["Qapu Khalqi", "Varuna Immediate Reaction Division"],
+    "heroFaction": "Varuna Immediate Reaction Division",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A harbor buoy began flashing the code for a vessel that had sunk years before. The switch inside the buoy was keeping the channel’s warning lights alive. {{heroPlayer}}’s divers needed to reach it before the tide turned; {{otherPlayer}}’s boat crew circled the buoy, insisting that its signal belonged to them.",
+      "{{hero}} covered the divers from a half-submerged breakwater. Spray erased the sightline after every shot, and a return burst struck the chain holding the buoy in place. One diver reached the housing just as it began drifting toward the shipping lane.",
+      "The warning lights went dark. From beneath the water came three taps on the buoy’s shell, then a fourth that did not match the diver’s agreed signal. The trooper shifted fire away from the boat and toward a second shape rising under the chain."
+    ],
+    "endings": {
+      "heroWins": "The divers secured the buoy and restored the lights before another vessel entered the channel.",
+      "heroLoses": "{{otherPlayer}}’s boat crew took the buoy while {{heroPlayer}}’s divers returned without its signal.",
+      "draw": "The tide carried the buoy away; both crews followed its lights into open water."
+    }
+  },
+  {
+    "mission": "Dead Man's Switch",
+    "factions": ["Druze Bayram Security", "Ikari Company"],
+    "heroFaction": "Druze Bayram Security",
+    "role": "gunfighting",
+    "paragraphs": [
+      "The auctioneer promised the switch would stay pressed until bidding ended. Then the lights failed and the bidder with the highest offer disappeared. {{heroPlayer}}’s guards held the upper balcony; {{otherPlayer}}’s hired fighters blocked the exits below, each claiming their employer had already paid for the case.",
+      "{{hero}} fired past the chandeliers to keep the fighters away from the auction table. Beneath it, an assistant searched for the missing bidder’s transmitter. The bids kept rising on the dark screens though nobody in the room was speaking, and the switch grew warm under the auctioneer’s palm.",
+      "A final offer appeared: the name of everyone still inside. The assistant found the transmitter sewn into the tablecloth. {{hero}} stepped down from the balcony, watching the exits while the auctioneer lifted a shaking hand just far enough to let the assistant reach the wire."
+    ],
+    "endings": {
+      "heroWins": "The assistant cut the wire, and {{heroPlayer}}’s guards carried the case out of the auction hall.",
+      "heroLoses": "{{otherPlayer}}’s fighters took the case before the guards could secure the table.",
+      "draw": "The bids vanished with the lights; neither employer could prove who owned the case."
+    }
+  }
+]
