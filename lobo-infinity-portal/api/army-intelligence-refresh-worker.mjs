@@ -21,7 +21,7 @@ const require = createRequire(import.meta.url)
 const CanonicalSnapshotFactory = require('../backend/CanonicalSnapshotFactory.gs')
 
 // Canonical enrichment launches a real browser and may need several minutes per
-// list. Keep automatic runs comfortably inside Vercel's execution ceiling.
+// list. Scheduled runs are capped at one list below to fit Vercel's ceiling.
 const DEFAULT_REFRESH_BATCH_LIMIT = 5
 const APPS_SCRIPT_FETCH_ATTEMPTS = 3
 
@@ -41,7 +41,11 @@ export default async function handler(request, response) {
     const sessionToken = String(body.sessionToken || '').trim()
     const workerToken = String(process.env.ARMY_INTELLIGENCE_WORKER_TOKEN || '').trim()
     const backfillToken = String(process.env.ARMY_INTELLIGENCE_BACKFILL_TOKEN || '').trim()
-    const batchLimit = Math.max(1, Number(body.batchLimit) || DEFAULT_REFRESH_BATCH_LIMIT)
+    const requestedBatchLimit = Math.max(1, Number(body.batchLimit) || DEFAULT_REFRESH_BATCH_LIMIT)
+    // One enriched list can take minutes. Scheduled five-list calls have timed
+    // out before persistence; let each scheduled invocation finish one list.
+    // Explicit backfills retain their requested batch size.
+    const batchLimit = automatic && !scopedBackfill ? 1 : requestedBatchLimit
     const requestedSectorial = String(body.sectorial || '').trim()
     const publishPublicSnapshot = automatic && body.publishPublicSnapshot === true
     const deferReadModelRebuild = scopedBackfill && body.deferReadModelRebuild === true

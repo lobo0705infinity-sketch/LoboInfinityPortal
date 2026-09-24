@@ -93,7 +93,7 @@ assert.doesNotMatch(
 assert.equal(vercel.crons, undefined, 'Vercel Hobby deployment must not require cron support.')
 assert.match(scheduler, /runScheduledArmyIntelligenceRefresh/)
 assert.match(scheduler, /runScheduledMaintenanceWorker_\([\s\S]*ARMY_INTELLIGENCE_SCHEDULER_URL/)
-assert.match(scheduler, /ARMY_INTELLIGENCE_SCHEDULER_URL,[\s\S]*\{ batchLimit: 5 \}/)
+assert.match(scheduler, /ARMY_INTELLIGENCE_SCHEDULER_URL,[\s\S]*\{ batchLimit: 1 \}/)
 assert.match(scheduler, /runScheduledMaintenanceWorker_\([\s\S]*AUTOMATION_QUEUE_WORKER_URL/)
 assert.match(scheduler, /Authorization: "Bearer " \+ token/)
 assert.match(scheduler, /everyMinutes\(30\)/)
