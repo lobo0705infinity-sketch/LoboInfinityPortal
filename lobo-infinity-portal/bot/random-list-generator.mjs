@@ -76,9 +76,10 @@ export function generateRandomArmyList({ payload, metadata, sectorialId, rosterS
   const lieutenants = profiles.filter(item => item.lieutenant && canAdd([], item, limits))
   if (!lieutenants.length) throw new ListBuilderError('No Lieutenant fits those points and SWC limits in this faction.')
 
-  // Reroll only when official Army validation rejects the randomly drawn roster.
-  // Do not rank models, seek roles, or optimize Fireteams or combat groups.
-  for (let attempt = 0; attempt < 40; attempt++) {
+  // Draw independent random rosters and keep the legal one that uses the most points.
+  // Point utilization is the only preference; models are still picked at random.
+  let best = null
+  for (let attempt = 0; attempt < 64; attempt++) {
     const selected = [chooseProfile(lieutenants, pickIndex)]
     for (let step = 0; step < 15; step++) {
       const eligible = profiles.filter(item => canAdd(selected, item, limits))
@@ -92,11 +93,14 @@ export function generateRandomArmyList({ payload, metadata, sectorialId, rosterS
       listName: `Random ${faction.name}`, maxPoints: points, combatGroups })
     const legality = validateInfListLegality({ decoded: decodeArmyCode(code), payload })
     if (legality.status !== 'legal' || legality.totals.swc > swc + 1e-9) continue
-    return { faction: faction.name, profiles: arranged, points: legality.totals.points,
+    if (best && legality.totals.points <= best.points) continue
+    best = { faction: faction.name, profiles: arranged, points: legality.totals.points,
       swc: legality.totals.swc, pointsLimit: points, swcLimit: swc,
       legality, code, url: `https://infinitytheuniverse.com/army/list/${encodeURIComponent(code)}`,
       payloadVersion: payload.version }
+    if (best.points === points) break
   }
+  if (best) return best
   throw new ListBuilderError('No verified legal random list was found for those limits. Try a higher points or SWC limit.')
 }
 
