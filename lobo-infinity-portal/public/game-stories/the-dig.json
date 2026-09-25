@@ -295,7 +295,7 @@
     "paragraphs": [
       "The workers thought the voice under the pit was a singer trapped in a maintenance tunnel. At dusk, it began repeating a childhood song known to one member of {{heroPlayer}}’s crew. {{otherPlayer}}’s scouts posted themselves at the shaft mouth, determined to keep anyone from following it.",
       "{{hero}} descended with a receiver instead of a rescue stretcher. Each verse opened another channel on the buried console; the last verse carried the coordinates of a chamber missing from every map. The trooper hummed the melody into the receiver, and a wall of dark glass lit up with faces from the crew’s past.",
-      "One face asked to be brought home. The voice above warned that the scouts were coming down. The trooper stopped singing, saved the coordinates, and left the glass unanswered as boots sounded on the ladder."
+      "One face asked to be brought home. The voice above warned that the scouts were coming down. The trooper stopped singing, saved the coordinates, and left the glass unanswered as boots sounded on the ladder and another remembered face began forming behind the first."
     ],
     "endings": {
       "heroWins": "The coordinates reached {{heroPlayer}}’s crew, who could now search for the room behind the glass.",

@@ -8,6 +8,7 @@ import { GAME_HIGHLIGHT_STORIES, renderSubmittedHighlightStory } from '../src/da
 import { getAuthoredBattleStory, PENDING_BATTLE_STORY } from '../src/services/gameStoryRouting.ts'
 import { renderGameStoryTemplate, selectStoryHero, storyModelReference, storyTemplateKey } from '../src/services/gameStoryTemplate.ts'
 import type { ArmyIntelligenceDecodedEntry, ArmyIntelligenceList, RecentGame } from '../src/services/api.ts'
+import { assertGameStoryQuality } from './game-story-quality.mts'
 
 const activeArmies = CANONICAL_ARMY_REGISTRY.filter((army) => army.active)
 const expected = CANONICAL_MISSIONS.length * activeArmies.length * (activeArmies.length + 1) / 2
@@ -26,11 +27,7 @@ for (const story of stories) {
   assert.ok(key, `invalid story identity: ${story.mission}/${story.factions.join('/')}`)
   assert.ok(!keys.has(key), `duplicate story identity: ${key}`)
   keys.add(key)
-  assert.ok(story.factions.includes(story.heroFaction), `${key}: hero faction must be in the matchup`)
-  assert.ok(story.paragraphs.join(' ').includes('{{hero}}'), `${key}: missing roster hero`)
-  assert.ok(story.paragraphs.join(' ').split(/\s+/).length >= 75, `${key}: story needs a scene`)
-  assert.ok(story.factions.every((faction) => activeArmies.some((army) => army.name === faction)), `${key}: inactive or alias faction`)
-  assert.ok(CANONICAL_MISSIONS.some((mission) => mission === story.mission), `${key}: noncanonical mission`)
+  assertGameStoryQuality(story, key)
   const scene = story.paragraphs.join(' ').replaceAll(/\{\{\w+\}\}/g, 'HERO').replaceAll(/\s+/g, ' ')
   assert.ok(!distinctScenes.has(scene), `${key}: repeated story scene`)
   distinctScenes.add(scene)

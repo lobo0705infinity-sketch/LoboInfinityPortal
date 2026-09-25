@@ -53,7 +53,7 @@
     "heroFaction": "Kosmoflot",
     "role": "objective",
     "paragraphs": [
-      "Two recovery crews answered the same distress call from a satellite that had fallen into the snow. Each brought an order signed by the same dispatcher; each insisted the other order was a forgery. Beneath the ice, the satellite continued broadcasting a signal that would stop only when its damaged switch was held down.",
+      "{{heroPlayer}}’s recovery crew and its rival answered the same distress call from a satellite that had fallen into the snow. Each brought an order signed by the same dispatcher; each insisted the other order was a forgery. Beneath the ice, the satellite continued broadcasting a signal that would stop only when its damaged switch was held down.",
       "{{hero}} crawled into the wreck and found the switch beneath a sheet of bent foil. The trooper held it with one hand and copied the satellite’s last transmission with the other. The opening words were the dispatcher’s voice, followed by an argument between the two crews that had not yet happened.",
       "Outside, {{otherPlayer}}’s people began cutting through the opposite side. The recording reached the sound of a door opening. The trooper heard a cutter bite through the hull, then a voice on the recording speak the name of the person waiting outside."
     ],
@@ -71,7 +71,7 @@
     "paragraphs": [
       "The security door required two fingerprints, and both patrols brought the same pair. {{heroPlayer}}’s team reached the vault first but could not open it without letting {{otherPlayer}}’s team into the corridor. Behind the door, a switch was sending out orders in both commanders’ voices.",
       "{{hero}} pressed a hand to the reader while a second print appeared on the glass from the other side. The mechanism opened a narrow gap. Inside, the trooper saw rows of identical keycards, each marked with a different time. The active card showed a minute that had already passed.",
-      "The voice in the vault instructed both patrols to leave. Neither commander gave the order. The trooper pulled the active card and found the switch still ticking; somewhere else in the vault, another card had begun counting down."
+      "The voice in the vault instructed both patrols to leave. Neither commander gave the order. The trooper pulled the active card and found the switch still ticking; somewhere else in the vault, another card had begun counting down toward a time printed on no keycard."
     ],
     "endings": {
       "heroWins": "{{heroPlayer}}’s team found the second card and closed the vault on its own terms.",

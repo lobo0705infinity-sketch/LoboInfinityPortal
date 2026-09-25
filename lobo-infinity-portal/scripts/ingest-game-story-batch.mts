@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { CANONICAL_ARMY_REGISTRY } from '../src/config/armies.ts'
 import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
 import { GAME_STORY_CATALOG } from '../src/data/gameStoryCatalog.ts'
 import { storyTemplateKey } from '../src/services/gameStoryTemplate.ts'
 import type { GameStoryTemplate } from '../src/services/gameStoryTemplate.ts'
+import { assertGameStoryQuality } from './game-story-quality.mts'
 
 const position = process.argv.indexOf('--input')
 const input = position >= 0 ? process.argv[position + 1] : ''
@@ -13,7 +13,6 @@ if (!input) throw new Error('Pass --input path to a completed Responses Batch ou
 const dryRun = process.argv.includes('--dry-run')
 const directory = 'public/game-stories'
 const slug = (mission: string) => mission.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
-const active = new Set(CANONICAL_ARMY_REGISTRY.filter((army) => army.active).map((army) => army.name))
 const existing = new Map<string, GameStoryTemplate>()
 for (const story of GAME_STORY_CATALOG) existing.set(storyTemplateKey(story.mission, ...story.factions)!, story)
 for (const mission of CANONICAL_MISSIONS) {
@@ -44,14 +43,7 @@ for (const [index, line] of source.trim().split('\n').entries()) {
   const key = storyTemplateKey(story.mission, ...story.factions)
   assert.equal(key, item.custom_id, `Batch row ${index + 1}: mismatched mission and armies`)
   assert.ok(!existing.has(key) && !incoming.has(key), `Duplicate story: ${key}`)
-  assert.ok(CANONICAL_MISSIONS.some((mission) => mission === story.mission), `${key}: unknown mission`)
-  assert.ok(Array.isArray(story.factions) && story.factions.length === 2 && story.factions.every((faction) => active.has(faction)), `${key}: invalid pair`)
-  assert.ok(story.factions.includes(story.heroFaction), `${key}: hero army must belong to the matchup`)
-  assert.ok(['gunfighting', 'closeCombat', 'objective'].includes(story.role), `${key}: invalid hero role`)
-  assert.ok(Array.isArray(story.paragraphs) && story.paragraphs.length === 3, `${key}: expected three paragraphs`)
-  assert.ok(story.paragraphs.every((paragraph) => typeof paragraph === 'string' && paragraph.trim().split(/\s+/).length >= 35), `${key}: scene too thin`)
-  assert.ok(story.paragraphs.join(' ').includes('{{hero}}'), `${key}: missing roster-selected hero`)
-  assert.ok(story.endings && ['heroWins', 'heroLoses', 'draw'].every((ending) => typeof story.endings[ending as keyof GameStoryTemplate['endings']] === 'string'), `${key}: missing endings`)
+  assertGameStoryQuality(story, key!)
   assert.ok(!/\b(?:OP|VP|TP)\b|the record (?:shows|does not)|submitted highlight/i.test(story.paragraphs.join(' ')), `${key}: factual review instead of fiction`)
   incoming.set(key!, story)
 }
