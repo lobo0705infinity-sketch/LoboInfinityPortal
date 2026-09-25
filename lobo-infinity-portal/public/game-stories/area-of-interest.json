@@ -5318,5 +5318,385 @@
       "heroLoses": "{{otherPlayer}}’s dock workers retained the quay and relied on their own observations.",
       "draw": "The quay stayed safe, and both groups checked the new forecast against the evening swell."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "objective",
+    "paragraphs": [
+      "An underwater botanical lab lost oxygen circulation during a coastal power dip. {{heroPlayer}}’s technicians swam down to restore it; {{otherPlayer}}’s divers could see bubbles escaping from a seam above the kelp beds. A small school of fish had gathered at the lab’s sealed observation window.",
+      "{{hero}} reached the valve panel and found the circulation line shut by a loose inspection tag. The specialist removed it and restarted the pump while divers patched the seam from outside. Within minutes, the fish scattered through the kelp instead of crowding the window.",
+      "A researcher brought the inspection tag to the surface and saw a date older than the lab itself. It had come from a ship once used to survey the same reef. The divers placed it in a clear sleeve beside the lab’s new maintenance log."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians restored circulation and secured the botanical lab.",
+      "heroLoses": "{{otherPlayer}}’s divers retained the lab and directed repairs from outside.",
+      "draw": "The kelp beds recovered, and both teams kept watch over the patched seam."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A submerged memorial carried names carved along a stone passage revealed only at low tide. {{heroPlayer}}’s escorts accompanied a restorer to copy them; {{otherPlayer}}’s coastal wardens feared a storm would flood the passage early. The last name disappeared beneath a layer of fresh sand.",
+      "{{hero}} caught the restorer as a stranger tried to shove them through a broken railing into the water. The fighter held the narrow passage while the restorer brushed the sand away. Beneath it was a short line naming not a person but the village that had built the memorial together.",
+      "The wardens called everyone up before the next wave covered the stones. On dry ground, the restorer read the final line aloud to residents waiting with their own family lists. For a moment, no one argued over whose name should have come first."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts secured the memorial and recorded its final line.",
+      "heroLoses": "{{otherPlayer}}’s wardens closed the passage and retained the restoration site.",
+      "draw": "The inscription was copied, and both parties left before the tide returned."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A fishing village checkpoint collected identity tags from children evacuated before a cyclone. {{heroPlayer}}’s coordinators arrived to match them with arriving families; {{otherPlayer}}’s boat crew reported that one tag had washed into the wrong crate. The children were gathered under the school awning, counting boats.",
+      "{{hero}} laid the tags out by their handwritten symbols instead of their smudged numbers. The specialist found the misplaced one marked with a little sail and traced it to a child holding a toy boat with the same painted sail. The child pointed to a family stepping off the next launch.",
+      "The family recognized the toy before they saw the tag. After the reunion, a teacher tied the tags to a board beneath the awning so everyone could check the remaining names. The last boat came in as the rain began."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s coordinators secured the checkpoint and reunited the families.",
+      "heroLoses": "{{otherPlayer}}’s boat crew retained the landing and managed arrivals directly.",
+      "draw": "The children were accounted for, and both groups shared the tag board beneath the awning."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A high orbital lookout tracked the coast’s storm fronts, but its downward camera turned toward the station’s dark side. {{heroPlayer}}’s watch brought a camera operator to the mount; {{otherPlayer}}’s weather crew was issuing warnings from old images. Below them, one bright square remained visible through cloud.",
+      "{{hero}} covered the observation deck while the operator reset the camera’s orientation. A figure approached its control housing, and the fighter kept them away until the image steadied. The bright square resolved into a schoolyard with floodlights on, where residents were gathering above rising water.",
+      "The weather crew sent the new image and the school’s coordinates to the coast. One by one, smaller lights appeared around the square as people reached it. The operator left the camera on the schoolyard until the storm had moved beyond the shore."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s watch secured the lookout and restored the coastal storm feed.",
+      "heroLoses": "{{otherPlayer}}’s weather crew retained the station and issued warnings by alternate channels.",
+      "draw": "The schoolyard was located, and both teams shared its live image with rescuers."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "Beneath a coastal city, a storm drain carried music from a busker who had gone missing during the rain. {{heroPlayer}}’s tunnel crew followed the sound; {{otherPlayer}}’s flood wardens watched the rising street grates. The melody paused whenever water struck a loose iron plate.",
+      "{{hero}} reached the plate and freed a trapped maintenance gate behind it. The specialist sent a dry rescue line down the passage while the wardens controlled the runoff above. The busker climbed out with an instrument case held over their head, its battered corner still dripping.",
+      "At street level, the busker played the last few notes beneath a shelter roof. People waiting for the rain to end recognized the tune from the drain and laughed in relief. The tunnel crew left the gate open for inspection until the water fell."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew secured the tunnel and brought the busker out safely.",
+      "heroLoses": "{{otherPlayer}}’s wardens retained the drainage system and directed the rescue.",
+      "draw": "The busker reached shelter, and both teams kept the runoff away from the open gate."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An island teahouse opened for travelers stranded by a typhoon warning. {{heroPlayer}}’s escorts brought its caretaker back from the ferry; {{otherPlayer}}’s storm watchers checked the shutters around the dining room. A hand-painted screen at the entrance showed a path through tall reeds.",
+      "{{hero}} caught a visitor as a stranger tried to push them out through the windward door. The fighter held the doorway while the caretaker fastened the shutters. Behind the screen, a dry storage passage gave everyone room to wait, its walls covered in sketches of earlier storms.",
+      "When the wind eased, the caretaker served tea in the storage passage. One visitor noticed the newest sketch was unfinished and added the dark shape of a ferry waiting beyond the reeds. The screen at the entrance remained standing after the storm."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts secured the teahouse and sheltered its visitors.",
+      "heroLoses": "{{otherPlayer}}’s watchers retained the building and managed its storm shutters.",
+      "draw": "The visitors waited safely, and both teams helped reopen the teahouse after the wind."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "A quiet island garden began sounding its bronze bell whenever koi crossed the pond. {{heroPlayer}}’s gardeners came to investigate before a public visit; {{otherPlayer}}’s water stewards said the pond level had fallen since morning. A narrow cord ran from the bell toward a stone beneath the surface.",
+      "{{hero}} lifted the stone and discovered a float tied to the cord, meant to signal when the pond grew too shallow. The specialist opened a blocked inlet and reset the float at its proper level. The koi moved into deeper water, and the bell stopped after one last soft note.",
+      "Visitors arrived to find the fish resting beneath flowering branches. The oldest gardener said the bell had been installed for people who might forget to look at the pond. A child watched the float while everyone else admired the flowers."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s gardeners restored the pond and kept the garden open.",
+      "heroLoses": "{{otherPlayer}}’s stewards retained the inlet and restricted the public visit.",
+      "draw": "The koi had enough water, and both groups kept the old warning bell in service."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A ferry terminal went dark while its final crossing approached through rain. {{heroPlayer}}’s escort brought an electrician to the landing; {{otherPlayer}}’s crew tried to guide the ferry with an old brass whistle. Its three short notes were answered from the vessel, but the landing ramp remained invisible.",
+      "{{hero}} covered the terminal stairs while the electrician reached an emergency light above the ramp. A figure moved toward the switch with a tool, and the fighter kept them clear until the lamp came on. The ferry’s pilot followed its narrow beam toward the now-visible landing.",
+      "The passengers stepped ashore one at a time, listening for the brass whistle between thunderclaps. The crew member who had used it said the pattern came from a predecessor who had worked there before electric lights. They placed the whistle beside the new lamp."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort secured the terminal and lit the ferry landing.",
+      "heroLoses": "{{otherPlayer}}’s crew retained the ramp and guided the crossing by whistle.",
+      "draw": "The ferry docked safely, and both parties kept the emergency light ready."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "At the edge of a tidal forest, seed pods began opening before the seasonal birds arrived to carry them. {{heroPlayer}}’s ecologists came to protect the grove; {{otherPlayer}}’s rangers noted warmer water entering through a new channel. The first pods were falling into a patch of salt grass.",
+      "{{hero}} traced the warm flow to a loose gate and eased it shut without stranding fish in the channel. The specialist collected the early pods in a mesh tray and hung it above the waterline. By morning, a few birds had arrived and were testing the tray with careful beaks.",
+      "The rangers left a shallow path from the grove to open water for the fish. The birds took the first seeds inland, following a route the ecologists had marked with small flags. Beneath the trees, the remaining pods stayed closed for their proper season."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s ecologists secured the grove and saved its early seeds.",
+      "heroLoses": "{{otherPlayer}}’s rangers retained the channel and managed the water flow.",
+      "draw": "The fish and seeds were protected while both crews watched the birds return."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An aquarium kept its doors open for a late-night school visit when an octopus entered the plumbing beneath its display. {{heroPlayer}}’s security team came to help the keeper; {{otherPlayer}}’s maintenance crew could see a valve turning slowly on its own. Water began running across the floor.",
+      "{{hero}} reached the service hatch as a stranger tried to force it closed on the keeper’s hand. The fighter pulled them clear and held the hatch while the keeper guided the octopus back into a covered tank. The valve stopped moving once its wandering arm was free.",
+      "The children returned to the dry side of the display and watched the octopus settle beneath a rock. Its keeper wrote the night’s escape on a small sign, adding that the animal had found the handle before anyone else. One child drew it turning the valve like a ship’s wheel."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team secured the hatch and returned the octopus to its tank.",
+      "heroLoses": "{{otherPlayer}}’s maintenance crew retained the aquarium and repaired the valve.",
+      "draw": "The display reopened safely, and both crews checked the plumbing around the tank."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A storm refuge above the harbor kept a great pendulum clock whose hourly chime guided boats in fog. {{heroPlayer}}’s guards accompanied a clockmaker after its chime stopped; {{otherPlayer}}’s shelter staff were preparing beds. Each minute, the pendulum brushed against something inside its wooden case.",
+      "{{hero}} covered the refuge stair while the clockmaker opened the case. A figure moved from behind the machinery with a metal tool, and the fighter held them away until the clockmaker removed a loose wooden peg. The pendulum swung free, but beneath the peg lay a folded drawing of the harbor.",
+      "The clock chimed before the drawing could be opened fully. It showed the refuge as it had stood before a second floor was added, with a ramp where the steep stairs now began. Shelter staff studied it while a boat answered the chime from the fog."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards secured the refuge and restored the clock’s warning chime.",
+      "heroLoses": "{{otherPlayer}}’s staff retained the shelter and managed the repair.",
+      "draw": "The chime returned, and both groups kept the old drawing for a future access ramp."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A seaside film studio left its underwater set standing after the actors went home. {{heroPlayer}}’s escorts came to recover a camera; {{otherPlayer}}’s safety crew found its set wall drifting toward the public swim area. The camera light was still on beneath the surface.",
+      "{{hero}} reached the set winch as someone tried to release the last retaining cable. The fighter forced them from the handle and held the wall steady while divers lifted the camera. Its final recording showed a visitor trapped behind the set, waving just outside the frame of the finished scene.",
+      "The divers found the visitor clinging to a ledge behind the wall and brought them to shore. They had followed the camera light after losing sight of the beach. Later, the director watched that final recording once and ordered the set taken apart."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts secured the set and recovered the missing visitor.",
+      "heroLoses": "{{otherPlayer}}’s safety crew retained the beach and removed the floating wall.",
+      "draw": "The visitor returned safely, and both groups helped dismantle the set."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A pedestrian bridge over a tidal creek hosted street musicians until a spring tide rattled its deck. {{heroPlayer}}’s repairers came to inspect the joints; {{otherPlayer}}’s local stewards wanted the musicians off the bridge. A cello case had been left beside the loose railing.",
+      "{{hero}} braced the damaged railing and found a split fastener beneath the deck. The specialist fitted a temporary clamp while the stewards brought everyone across. Inside the cello case was no instrument, only a set of handbells that sounded whenever someone carried it over a joint.",
+      "The bells belonged to a musician who used them to teach children the bridge’s changing rhythm through the seasons. She played them on the safe bank while the repairers finished their survey. The tide rose below without shaking the temporary clamp."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s repairers secured the bridge and cleared it for careful passage.",
+      "heroLoses": "{{otherPlayer}}’s stewards closed the bridge and managed a crossing farther upstream.",
+      "draw": "Everyone reached shore, and both teams kept the bridge closed until its fasteners were replaced."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A tsunami warning tower showed a yellow flag after a strong offshore tremor, though the alert line had gone silent. {{heroPlayer}}’s guards escorted a signaler up the steps; {{otherPlayer}}’s beach patrol was moving visitors inland. Beneath the tower, a tide pool had begun to drain unnaturally fast.",
+      "{{hero}} covered the ladder while the signaler checked the flag winch. A figure tried to lower it, and the fighter held the platform while the signaler hoisted the red warning. The beach patrol saw the change immediately and cleared the last visitors from the sand.",
+      "A wave reached the seawall below the empty beach, then broke against its steps. From high ground, the visitors watched the tide pool fill again. The signaler kept the red flag up until the patrol reported that the shore was safe to inspect."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards held the tower and kept its warning visible.",
+      "heroLoses": "{{otherPlayer}}’s patrol retained the beach and directed evacuation by its own signals.",
+      "draw": "The beach cleared before the wave, and both groups watched from high ground."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Yu Jing"
+    ],
+    "heroFaction": "Yu Jing",
+    "role": "objective",
+    "paragraphs": [
+      "Two relief crews met at a bamboo footbridge while a grassfire crossed the dry hills behind them. {{heroPlayer}}’s crew brought water pumps; {{otherPlayer}}’s team carried a map of the paths used by the nearest village. The bridge’s shallow stream was the only water for either pump.",
+      "{{hero}} found a gate beneath the bridge that could divert the stream into a broad firebreak. The specialist opened it gradually while both crews moved the pumps into position. Water ran along the edge of the bamboo grove, turning smoke to steam before the flames reached the bridge.",
+      "Villagers came across after the wind changed, carrying baskets of cuttings from the grove. One child replanted a green shoot in wet earth beside the firebreak. The two crews left their maps together on the bridge for the people rebuilding the paths."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew secured the water gate and protected the village crossing.",
+      "heroLoses": "{{otherPlayer}}’s crew retained the bridge and directed the fire response.",
+      "draw": "The crossing survived, and both teams kept the pumps running until the smoke cleared."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Imperial Service"
+    ],
+    "heroFaction": "Imperial Service",
+    "role": "objective",
+    "paragraphs": [
+      "The municipal lost-parcel office closed its doors after a leaking roof soaked every address label. {{heroPlayer}}’s clerks arrived to preserve the contents; {{otherPlayer}}’s neighborhood volunteers had been searching for a missing wedding gift. One package played music faintly whenever it was moved.",
+      "{{hero}} separated the wet parcels by the seals pressed into their wrapping, matching one to a return receipt beneath the counter. The specialist carried the musical package into a dry room and opened its outer cover with the intended recipient present. Inside was a small clockwork dancer, still turning despite the water.",
+      "The recipient recognized the dancer from a photograph of their family’s first celebration together. The volunteers found the missing gift in the next parcel, packed with clean towels for the ceremony. Outside, rain drummed on the roof until repairs could begin."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s clerks secured the office and reunited the parcels with their recipients.",
+      "heroLoses": "{{otherPlayer}}’s volunteers retained the packages and arranged a neighborhood delivery.",
+      "draw": "The packages were saved, and both groups kept the clockwork dancer dry."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Invincible Army"
+    ],
+    "heroFaction": "Invincible Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A mining elevator stopped between levels with several families returning from an underground tour. {{heroPlayer}}’s rescue detail took the upper machinery room; {{otherPlayer}}’s mine workers reached the lower landing with a hand crank. The passengers could hear both groups through the shaft.",
+      "{{hero}} covered the machinery door while a mechanic released the emergency brake. A figure reached for the power lead, and the fighter held them back until the hand crank engaged. The elevator moved a few feet at a time, guided by voices from above and below.",
+      "When the doors opened, the youngest passenger stepped out with a pebble gathered on the tour. A mine worker recognized it as a piece of the painted ceiling from an older tunnel, exposed by the elevator’s long descent. The families went home while the workers mapped where it had fallen."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s detail secured the machinery room and brought the passengers up safely.",
+      "heroLoses": "{{otherPlayer}}’s workers controlled the shaft and operated the manual rescue.",
+      "draw": "The passengers left safely, and both teams inspected the elevator before another ride."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "White Banner"
+    ],
+    "heroFaction": "White Banner",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A hillside teahouse caught rain through its roof just before a gathering of distant relatives. {{heroPlayer}}’s escorts brought a carpenter; {{otherPlayer}}’s local staff were moving tables away from the leak. On a rafter hung a long paper strip with names written across several generations.",
+      "{{hero}} climbed to the roof as a stranger tried to shove the carpenter from the narrow repair plank. The fighter caught the carpenter and held the plank while a replacement tile was fitted. Below, the paper strip stayed dry under an umbrella held by the youngest guest.",
+      "When the family gathered, the youngest guest asked why one name was written twice. An elder said it belonged to someone who had returned home after years away and been welcomed all over again. Rain ran off the new tile while tea was poured beneath it."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts secured the roof and kept the gathering inside.",
+      "heroLoses": "{{otherPlayer}}’s staff retained the teahouse and moved the family to dry rooms.",
+      "draw": "The paper names stayed dry, and both parties finished the roof before serving tea."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Ariadna"
+    ],
+    "heroFaction": "Ariadna",
+    "role": "objective",
+    "paragraphs": [
+      "A mountain fossil room opened a new drawer and found its oldest specimen missing. {{heroPlayer}}’s researchers searched the storage alcoves; {{otherPlayer}}’s trail crew had come to reinforce a wall after a small landslip. A pale cast of the missing fossil remained on the back of the drawer.",
+      "{{hero}} traced the drawer’s rails beneath the wall and found a second compartment built into the stone. The specialist slid it open while the trail crew supported the loose masonry. Inside lay the specimen, moved years before to protect it from a leak, with its original sketch folded underneath.",
+      "The researchers laid fossil and sketch together in the daylight. The drawing included a note about the person who had found it as a child along the same mountain trail. A trail worker recognized the name and offered to carry a copy down to the family."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s researchers secured the fossil and repaired its storage room.",
+      "heroLoses": "{{otherPlayer}}’s trail crew retained the site and closed the room until the wall was sound.",
+      "draw": "The specimen was saved, and both groups carried the finder’s sketch to the village."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Caledonian Highlander Army"
+    ],
+    "heroFaction": "Caledonian Highlander Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A river stone tower marked the site of an old community crossing, now threatened by a fast spring current. {{heroPlayer}}’s bridge crew came to save its foundation; {{otherPlayer}}’s local stewards were asking visitors to leave the riverbank. Someone had tied fresh flowers to the lowest stone.",
+      "{{hero}} reached the base as a stranger tried to wrench out the stone holding a work rope. The fighter grappled them away and kept the rope anchored while a mason braced the tower. When the current dropped, the mason found a child’s small handprint pressed into mortar behind the flowers.",
+      "A steward said the child was now an elderly neighbor who left flowers there every spring. The mason photographed the handprint before closing the gap against the water. That evening, the neighbor came to see the tower still standing."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew secured the stone tower and protected the crossing.",
+      "heroLoses": "{{otherPlayer}}’s stewards retained the riverbank and closed it until repairs were complete.",
+      "draw": "The tower held, and both groups preserved the hidden handprint in the repair record."
+    }
   }
 ]
