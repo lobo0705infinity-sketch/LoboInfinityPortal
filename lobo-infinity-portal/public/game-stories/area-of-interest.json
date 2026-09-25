@@ -15198,5 +15198,385 @@
       "heroLoses": "{{otherPlayer}}’s technicians preserved the artifact and found the photograph’s owner.",
       "draw": "The compass returned to cold storage while both teams checked the map."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Corregidor Jurisdictional Command",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "objective",
+    "paragraphs": [
+      "A shipyard’s subcontract records showed a painter paid to coat a vessel no one had commissioned. Its hull sat half finished behind a privacy screen. {{heroPlayer}}’s investigators came with the unsigned contract; {{otherPlayer}}’s yard crew held the screen and insisted the painter had been working from an older authorized plan.",
+      "{{hero}} matched a wet paint sample to the contract and found the color was reserved for rescue craft. The specialist peeled back a loose strip to reveal a ship’s name underneath, belonging to a vessel reported lost years earlier. Inside the half finished hull, a small nameplate bore the same name with a different home port.",
+      "The investigators could seize the vessel before the paint dried, or let the crew finish it to learn who planned to claim the old name. The yard crew wanted a witness present before anyone moved the nameplate. The specialist held the sample beside both versions of the name as a painter returned with a brush."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s investigators secured the hull and traced the vessel’s borrowed name.",
+      "heroLoses": "{{otherPlayer}}’s yard crew protected the nameplate and identified the painter’s employer.",
+      "draw": "Work stopped while both parties checked the lost vessel’s records."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Corregidor Jurisdictional Command",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An abandoned passenger terminal reopened for a reunion of the crew who built it. The central escalator ran upward with no power, carrying a sealed lunchbox toward a locked mezzanine. {{heroPlayer}}’s escorts entered through the ticket hall; {{otherPlayer}}’s repair workers held the lower steps and looked for the old operator’s manual.",
+      "{{hero}} pushed past a defender at the narrow upper landing and caught the lunchbox before it reached a gap in the railing. Inside was the operator’s badge and a fresh photograph of the reunion guests standing where they were now. The fighter looked down to find the photographer’s position on the mezzanine empty.",
+      "The escorts could search the locked mezzanine for the photographer, but the repair workers needed the escalator stopped before the guests used it. One worker recognized a manual switch behind the landing wall. The fighter kept hold of the lunchbox while footsteps came from the other side of that wall."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts secured the mezzanine and found the photographer.",
+      "heroLoses": "{{otherPlayer}}’s workers stopped the escalator and recovered the operator’s badge.",
+      "draw": "The reunion moved outside while the terminal’s upper landing was searched."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Corregidor Jurisdictional Command",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A neighborhood recycling workshop began sending newly mended furniture to an address cleared for demolition. Its driver said someone there had signed every receipt, always in the same careful hand. {{heroPlayer}}’s outreach team followed the deliveries; {{otherPlayer}}’s mechanics checked the workshop’s cargo bikes and the signatures in the dispatch book.",
+      "{{hero}} reached the condemned building and found a workshop set up in its basement, repairing things the neighbors thought they had lost. The specialist compared a receipt with the handwritten label on a mended chair: both bore the name of a missing carpenter. Behind a stacked screen lay a fresh order for supplies due the next morning.",
+      "The outreach team could announce the workshop and protect its maker from demolition, but the mechanics worried the carpenter might be hiding for a reason. A removal crew was already on its way. The specialist held the chair’s label beside the order as a light came on deeper in the basement."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s outreach team found the carpenter and saved the hidden workshop.",
+      "heroLoses": "{{otherPlayer}}’s mechanics secured the building and traced the unusual deliveries.",
+      "draw": "Demolition paused while both groups tried to contact the carpenter."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Corregidor Jurisdictional Command",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A pressure test on an outer hull panel began before the repair crew had cleared the work cage. Their foreman called through a narrow access hatch, asking for the cycle to stop. {{heroPlayer}}’s guards reached the test control room; {{otherPlayer}}’s welders held the cage rail and tried to release its stuck safety latch.",
+      "{{hero}} covered a controller as shots struck the room’s observation glass. The fighter kept the panel in view while the controller traced the test command to a portable timer clipped to the foreman’s workbench. On its display, another test was scheduled for a panel beside a crowded maintenance corridor.",
+      "The guards could cut power to the whole test rig, leaving the work cage without its powered release, or reset each timer as the welders opened the stuck latch. The foreman had found a manual tool inside. The fighter watched the panel flex while the controller called out the next countdown."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards stopped both tests and cleared the work cage.",
+      "heroLoses": "{{otherPlayer}}’s welders freed the foreman and isolated the portable timer.",
+      "draw": "The hull tests remained suspended while both crews checked every panel."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tunguska Jurisdictional Command",
+      "Tunguska Jurisdictional Command"
+    ],
+    "heroFaction": "Tunguska Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "Two audit teams arrived at a private vault with identical instructions to recover a sealed record. Each possessed half a combination, but the halves opened different doors. {{heroPlayer}}’s auditors took the north alcove; {{otherPlayer}}’s auditors searched the south wall for the deposit slip showing who had paid for both visits.",
+      "{{hero}} tried the first combination and found an empty drawer lined with fresh velvet. Its underside carried a pencil rubbing of the other combination, now crossed out. The specialist aligned both sets of numbers against the vault clock and uncovered a third sequence: the hour the original depositor had asked to be present.",
+      "The first team could open the remaining door immediately, but the other auditors wanted to wait for the depositor and preserve the chain of custody. The clock was approaching the marked hour. The specialist held the rubbing beside the empty drawer as footsteps paused outside the vault."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s auditors secured the record and identified the original depositor.",
+      "heroLoses": "{{otherPlayer}}’s auditors verified both combinations and protected the sealed vault.",
+      "draw": "The doors stayed closed until the depositor’s identity was confirmed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tunguska Jurisdictional Command",
+      "Combined Army"
+    ],
+    "heroFaction": "Combined Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A cold data center began printing receipts for a deposit box it did not contain. Each receipt included a tide time and an address on the flooded waterfront. {{heroPlayer}}’s retrieval unit reached the server hall; {{otherPlayer}}’s record keepers held the print room with its day’s genuine transaction slips.",
+      "{{hero}} covered a technician moving toward the noisy printer as shots struck the glass divider. The fighter kept the room clear while the technician discovered a spool of waterproof paper feeding from beneath the floor. Its end led into an old drainage pipe, where a small sealed deposit box was caught against the grate.",
+      "The retrieval unit could pull the box free before the tide filled the pipe, but the record keepers wanted to verify its seal against the receipts. Water was already rising past the grate. The fighter watched the technician tie a line to the box while the printer issued one more tide time."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s retrieval unit secured the deposit box before the pipe flooded.",
+      "heroLoses": "{{otherPlayer}}’s keepers verified the seal and traced the false receipts.",
+      "draw": "The pipe was closed while both groups checked the box’s depositor."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tunguska Jurisdictional Command",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A disused mint offered to reopen for a single demonstration using the city’s retired coin dies. Before the public arrived, the press stamped a coin naming a district that did not exist. {{heroPlayer}}’s security party reached the press room; {{otherPlayer}}’s auditors held the old die register and guarded the viewing gallery.",
+      "{{hero}} drove a defender off the narrow press platform and caught the machine’s handle before it could stamp again. A companion pulled out the unfamiliar die and found an engraved street plan on its back. One street ended at the mint’s cellar wall, where an old service door had been bricked over.",
+      "The security party could break through the cellar wall and see what the street plan marked, or stop the demonstration and preserve the die for inspection. The auditors knew the public was waiting outside. The fighter kept the press locked while the companion held the warm coin beside the engraved plan."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s party secured the mint and found the hidden service street.",
+      "heroLoses": "{{otherPlayer}}’s auditors recovered the die and protected the public demonstration.",
+      "draw": "The demonstration was postponed while the old cellar wall was examined."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tunguska Jurisdictional Command",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "A greenhouse attached to a trading house began changing its plant labels in response to market prices. The growers had entered no new data, yet the next harvest was already listed as sold. {{heroPlayer}}’s researchers tested the greenhouse sensors; {{otherPlayer}}’s brokers held the purchase terminal and the grower’s original contracts.",
+      "{{hero}} found that a moisture probe was transmitting contract numbers instead of soil readings. The specialist followed its cable to a crate of dormant seeds marked for another settlement. Inside lay a handwritten instruction to plant them only after a particular frost date, which the market system had ignored in its forecast.",
+      "The researchers could disconnect the probe and lose the evidence of who placed the order, or keep it running while the brokers canceled the false sale. The growers needed the greenhouse schedule restored before planting. The specialist held the unopened seed crate while the terminal displayed another impossible harvest."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s researchers restored the planting schedule and protected the seed shipment.",
+      "heroLoses": "{{otherPlayer}}’s brokers canceled the false contracts and secured the purchase terminal.",
+      "draw": "The seeds stayed dormant while both groups checked the unauthorized sale."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tunguska Jurisdictional Command",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An armored mail train stopped at a station that had been removed from its route decades earlier. Its only passenger carried an unopened letter addressed to the train itself. {{heroPlayer}}’s intercept team approached the platform; {{otherPlayer}}’s couriers held the luggage car with the official route ledger.",
+      "{{hero}} covered a conductor walking along the train as fire struck a station clock. The fighter held the platform while the conductor opened the letter beside a witness. It contained a timetable for a second train, due at the same disused platform in minutes, with a handwritten warning that their paths would cross.",
+      "The intercept team could move the mail train before the other arrived, but the couriers wanted the timetable checked against the signal board. The old station had only one clear track. The fighter watched the conductor hold the letter against the wind as a distant horn sounded through the empty hall."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s intercept team cleared the platform and traced the warning’s source.",
+      "heroLoses": "{{otherPlayer}}’s couriers secured the train and corrected the signal board.",
+      "draw": "Both trains halted while the conflicting timetables were investigated."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tunguska Jurisdictional Command",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "objective",
+    "paragraphs": [
+      "A licensing office issued two portraits for the same permit, one showing its applicant and one showing an empty chair. The applicant insisted they had posed only once. {{heroPlayer}}’s examiners reached the portrait booth; {{otherPlayer}}’s clerks held the permit and checked who had used the camera after the applicant left.",
+      "{{hero}} opened the booth’s flash housing and found a second exposure made through a narrow slit in the back wall. The specialist aligned both negatives and saw someone standing just outside the frame with the permit in hand. The person’s reflection appeared in a small metal badge, though their face remained hidden.",
+      "The examiners could follow the slit to the next room or preserve the negatives until the clerks verified the badge. The applicant waited for a permit needed that day. The specialist held the two portraits up to the booth light while footsteps crossed behind the wall."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s examiners traced the hidden camera and protected the applicant.",
+      "heroLoses": "{{otherPlayer}}’s clerks secured the permit and identified the reflected badge.",
+      "draw": "The portrait process paused while the second exposure was examined."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tunguska Jurisdictional Command",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "A neighborhood credit vault began paying small sums into the accounts of people who had cared for a retired teacher. She denied ordering the transfers but recognized every name. {{heroPlayer}}’s analysts inspected the payment engine; {{otherPlayer}}’s bankers held the account ledger and stayed with the teacher through the inquiry.",
+      "{{hero}} traced the payments to an old savings instruction timed to a classroom bell that had not rung for years. The specialist followed the bell signal through a wall to a small recorder carrying the teacher’s voice and a list of former students. The last name belonged to someone the teacher had never found again.",
+      "The analysts could let the instruction finish, but the bankers worried other hidden payments might exhaust the teacher’s savings. She wanted to hear the recorder before anyone erased it. The specialist held a hand over the transfer control while the distant bell sounded in the empty classroom."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts traced the old instruction and found the missing student.",
+      "heroLoses": "{{otherPlayer}}’s bankers protected the teacher’s account and preserved the recording.",
+      "draw": "The transfers paused while the teacher reviewed the list of names."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tunguska Jurisdictional Command",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "objective",
+    "paragraphs": [
+      "A public map of the old canal showed one new crossing each time the museum lights flickered. The newest crossing joined the bank to a parcel owned by a family still arguing over it. {{heroPlayer}}’s surveyors inspected the display; {{otherPlayer}}’s archivists guarded the original paper map and contacted the family.",
+      "{{hero}} opened the display case and found a projector tied to a humidity sensor beneath the map. The specialist followed its cable into the floor and found a metal plaque from a demolished footbridge. On its reverse, a dedication named the person who had paid for the crossing, long before either family claimed the parcel.",
+      "The surveyors could share the plaque with the family at once, or first locate the bridge’s remaining supports in the canal. The archivists warned that the dedication alone might not settle ownership. The specialist placed the plaque beside the changing map as another crossing appeared in the flicker."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s surveyors found the crossing and established the bridge’s history.",
+      "heroLoses": "{{otherPlayer}}’s archivists secured the plaque and protected the family’s records.",
+      "draw": "The disputed parcel remained open while both groups traced the canal supports."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tunguska Jurisdictional Command",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A debt settlement ceremony filled an old banking hall with workers waiting to receive their final wages. An accountant carrying the release codes vanished between the vault and the dais. {{heroPlayer}}’s escorts checked the narrow record passage; {{otherPlayer}}’s staff held the main hall and kept the workers from crowding the vault.",
+      "{{hero}} forced a defender away from a locked cabinet in the passage and held the door as a clerk searched it. Inside were the accountant’s coat and a handwritten list showing that some wages had been paid twice while others had vanished. The fighter heard the accountant calling from a room behind the cabinet wall.",
+      "The escorts could break through to the accountant, but the staff wanted the workers told about the missing payments before the ceremony continued. The vault had begun issuing payment slips. The fighter kept the passage clear while the clerk copied the list and found a release latch behind the coat hook."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts freed the accountant and recovered the missing wages.",
+      "heroLoses": "{{otherPlayer}}’s staff secured the hall and corrected the payment slips.",
+      "draw": "The ceremony paused while both groups checked every worker’s balance."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tunguska Jurisdictional Command",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A public fund paid for the restoration of a neighborhood sculpture, but the finished work arrived without the artist’s signature. Its dedication had also been changed to name a private buyer. {{heroPlayer}}’s mediators came to the unveiling; {{otherPlayer}}’s account holders brought the original receipt book and waited beside the covered pedestal.",
+      "{{hero}} checked the base before its cover came off and found a second bronze plate tucked inside. The specialist read the artist’s true dedication, written to the workers who had raised the restoration fund. A small key taped behind the plate opened a storage locker containing the first cast, unfinished but unmistakably signed.",
+      "The mediators could unveil the unsigned copy while explaining the dispute, but the account holders wanted the signed cast shown instead. The crowd was gathering with flowers. The specialist kept both plates in view of the fund’s stewards while the fabric stirred against the sculpture’s base."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s mediators restored the public dedication and protected the artist’s work.",
+      "heroLoses": "{{otherPlayer}}’s account holders recovered the signed cast and the original receipts.",
+      "draw": "The unveiling was delayed while both versions were placed under joint care."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tunguska Jurisdictional Command",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A station’s emergency air reserve reported a withdrawal charged to a traveler who had never arrived. Its canister was missing, though the pressure line remained full. {{heroPlayer}}’s patrol reached the supply room; {{otherPlayer}}’s account clerks secured the withdrawal terminal and searched the traveler’s booking record.",
+      "{{hero}} covered a technician at the canister rack when fire struck the supply room’s outer door. The fighter held that line while the technician found a narrow tube connected to an empty fitting. It led behind the wall to a shelter where several passengers had gathered after an unannounced pressure drill.",
+      "The patrol could bring the travelers through the supply room before tracing the false charge, but the clerks wanted proof that the canister reached them safely. A warning tone sounded on the shelter door. The fighter watched the technician test the tube while the passengers waited beyond the wall."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol secured the air reserve and reached the shelter passengers.",
+      "heroLoses": "{{otherPlayer}}’s clerks traced the charge and restored the missing canister record.",
+      "draw": "The shelter stayed supplied while both parties checked the withdrawal."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tunguska Jurisdictional Command",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "A subterranean tram stopped outside a bank’s secure platform with a sealed case of disaster relief cards. Its doors would not open because the platform sensor claimed a flood. {{heroPlayer}}’s engineers entered through the service tunnel; {{otherPlayer}}’s cashiers held the platform stair and warned waiting families about the delay.",
+      "{{hero}} tested the sensor and found a bead of water trapped inside its housing, enough to trip the alarm. The specialist dried it, then noticed a fresh line of damp footprints heading away from the platform to a locked records room. Inside the tram, the case’s seal was intact but its tag had been replaced.",
+      "The engineers could open the doors and deliver the cards at once, but the cashiers wanted the mismatched tag checked before anyone distributed them. Families were gathering at the stair. The specialist held the dry sensor cover while the tram’s door light changed from red to green."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s engineers opened the platform and protected the relief cards.",
+      "heroLoses": "{{otherPlayer}}’s cashiers verified the case and traced the altered tag.",
+      "draw": "The families waited while the locked records room was searched."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tunguska Jurisdictional Command",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A family deposited a lacquered memory cylinder in a bank for safekeeping. On the anniversary of its maker’s death, the cylinder began playing a conversation that had never been recorded. {{heroPlayer}}’s guardians entered the listening room; {{otherPlayer}}’s custodians held the vault passage and brought the original deposit envelope.",
+      "{{hero}} fought a defender at the listening room’s narrow threshold and held it while an elder opened the cylinder. Inside was a second spindle carrying the missing half of the conversation. The elder recognized a voice naming a riverside house sold after the family left, with a promise that something had been kept there.",
+      "The guardians could take the cylinder to the house, but the custodians wanted the second spindle sealed as part of the deposit. The bank was about to close for the night. The fighter stood at the threshold while the elder replayed the promise, listening for a name after the last pause."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guardians recovered the recording and traced the riverside house.",
+      "heroLoses": "{{otherPlayer}}’s custodians secured both spindles and verified the deposit envelope.",
+      "draw": "The cylinder stayed in safekeeping while the family examined the old sale."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tunguska Jurisdictional Command",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "A conservatory’s rare night flowers were insured against theft, yet the daily inventory showed one blossom missing before it ever opened. Its keeper feared the insurer would close the collection. {{heroPlayer}}’s horticulturists watched the buds; {{otherPlayer}}’s assessors held the inventory station and checked the room’s access log.",
+      "{{hero}} examined a bare stem and found a delicate cut beneath its leaf, made before the last count. The specialist followed a trail of pollen to the conservatory’s air shaft, where a small paper packet held the missing bud alive in damp cloth. On the packet was a request to return it after a planned ceremony.",
+      "The horticulturists could replant the bud and preserve the collection, but the assessors wanted to know who had taken it and why. The ceremony was listed for dawn, with no location. The specialist held the packet under a growing lamp while the night flowers began to unfold."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s horticulturists saved the bud and found its intended ceremony.",
+      "heroLoses": "{{otherPlayer}}’s assessors secured the collection and identified who altered the inventory.",
+      "draw": "The bud stayed under light while both groups checked the ceremony notice."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tunguska Jurisdictional Command",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A row of street lamps outside a bank switched on in daylight, one at a time, pointing toward a closed branch office. Its last manager had disappeared with an unsigned property transfer. {{heroPlayer}}’s patrol followed the lights; {{otherPlayer}}’s clerks secured the bank’s main entrance and fetched the branch’s paper ledger.",
+      "{{hero}} held the lit street as shots struck a lamp post. The fighter kept the route clear while an electrician opened the final lamp and found a key taped inside. It fit a desk at the closed branch, where the unsigned transfer lay beneath a photograph of the manager standing beside the property’s longtime tenant.",
+      "The patrol could carry the transfer to the tenant, but the clerks wanted to confirm whether the manager had intended to sign it. The lights began turning off in the same order. The fighter watched the electrician copy the key number before the last lamp went dark."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol secured the branch and found the missing manager’s trail.",
+      "heroLoses": "{{otherPlayer}}’s clerks preserved the transfer and contacted the longtime tenant.",
+      "draw": "The branch stayed closed while both groups checked the unsigned deed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tunguska Jurisdictional Command",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A botanical archive grew a living record of an island’s extinct trees from preserved cells. One specimen developed a leaf with a series of dots matching a current bank account number. {{heroPlayer}}’s biologists checked its growth chamber; {{otherPlayer}}’s auditors held the specimen register and asked who had entered the new label.",
+      "{{hero}} found the dots were marks made by a light strip mounted too close to the leaf. The specialist opened its housing and discovered a paper instruction for a donation to the island’s restoration fund. The listed account was real, but the name of its beneficiary had been scratched out before the strip was installed.",
+      "The biologists could turn off the light and protect the tree, while the auditors followed the donation to learn who hid the beneficiary. A caretaker remembered the original donor visiting the island as a child. The specialist held the leaf out of the glare as another line of dots began to form."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s biologists protected the specimen and traced the island donation.",
+      "heroLoses": "{{otherPlayer}}’s auditors secured the account and identified the hidden beneficiary.",
+      "draw": "The chamber lights were reset while both groups examined the scratched instruction."
+    }
   }
 ]
