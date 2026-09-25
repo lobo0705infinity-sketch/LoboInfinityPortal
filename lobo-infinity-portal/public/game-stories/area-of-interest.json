@@ -1138,5 +1138,385 @@
       "heroLoses": "{{otherPlayer}}’s caretakers retook the boiler room and closed the gate.",
       "draw": "Both groups left after the pressure eased; the siren sounded again at the next sunrise."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "USAriadna Ranger Force"
+    ],
+    "heroFaction": "USAriadna Ranger Force",
+    "role": "objective",
+    "paragraphs": [
+      "An orchard divided two settlements, and its irrigation tower was the only place their radios could reach one another. {{heroPlayer}}’s rangers came to replace the tower battery before the evening freeze; {{otherPlayer}}’s sentries guarded it for a funeral procession passing beneath the trees. Every gate in the orchard stood open except the one leading home.",
+      "{{hero}} climbed the lattice with the new battery strapped to a line. From above, the specialist saw a wagon wheel sunk in the muddy lane and mourners trying to move the coffin by hand. The old battery began to spark against the tower rail, threatening the radio and everyone directly below it.",
+      "A wind shook the ladder while {{hero}} pulled the dead battery clear. The funeral party reached the locked gate and asked for help. The specialist could restore the signal first or lower the battery line to lift the heavy gate; either choice left the other job exposed as darkness settled over the orchard."
+    ],
+    "endings": {
+      "heroWins": "The gate opened and the tower came back to life, leaving {{heroPlayer}}’s rangers with the orchard crossing.",
+      "heroLoses": "{{otherPlayer}}’s sentries kept the tower while the funeral party found another road through the trees.",
+      "draw": "The procession crossed safely, but the radio fell silent and both crews remained to repair it."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Haqqislam"
+    ],
+    "heroFaction": "Haqqislam",
+    "role": "objective",
+    "paragraphs": [
+      "A traveling blood bank stopped in the square just as its refrigeration unit failed. {{heroPlayer}}’s medical team wanted the generator beneath the neighboring assembly hall; {{otherPlayer}}’s wardens had claimed the hall for a night shelter. The portable fridges held a match for a patient already waiting on the other side of town.",
+      "{{hero}} found the hall generator running its lights at full strength, with no spare outlet and a damaged transfer switch. The specialist bridged the switch using an insulated lead from the clinic, then shut down the stage lights one circuit at a time. Families in the hall watched their sleeping area darken as the fridge motors caught.",
+      "The patient’s ambulance arrived while the generator began to knock. {{hero}} held the new connection in place and asked the wardens to bring lamps to the families. A medic carried the matching case through the square, but the hall’s emergency alarm tripped before they reached the vehicle."
+    ],
+    "endings": {
+      "heroWins": "The matching blood stayed cold, and {{heroPlayer}}’s medics left the hall lit for its guests.",
+      "heroLoses": "{{otherPlayer}}’s wardens kept the generator while the medics took the last chilled case elsewhere.",
+      "draw": "The ambulance departed with its case; both groups spent the night rationing power in the hall."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Hassassin Bahram"
+    ],
+    "heroFaction": "Hassassin Bahram",
+    "role": "objective",
+    "paragraphs": [
+      "A treaty signed a century ago gave safe passage through the old quarter, but its only surviving copy was being moved from a shuttered library. {{heroPlayer}}’s messengers arrived with the librarian’s key; {{otherPlayer}}’s escorts held the entrance for a delegation. The delegation would have to cross the quarter before sundown.",
+      "{{hero}} found the treaty inside a hollow atlas, its pages folded around a pressed sprig of rosemary. The specialist photographed the signature while the librarian listened for footsteps in the reading room. One seal belonged to a family now represented on both sides of the delegation, and each side disputed which name should be read aloud.",
+      "The escorts began closing the library shutters. {{hero}} carried the atlas into the narrow hall as the librarian pointed to a second passage, once used by students to reach the public square. The delegation was gathering outside, and the document mattered only if someone could bring it into their hearing."
+    ],
+    "endings": {
+      "heroWins": "The treaty was read in the square, and {{heroPlayer}}’s messengers kept the passage open.",
+      "heroLoses": "{{otherPlayer}}’s escorts held the library and delayed the crossing until the delegation withdrew.",
+      "draw": "Both sides heard the treaty; neither accepted who had the right to enforce its passage."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Qapu Khalqi"
+    ],
+    "heroFaction": "Qapu Khalqi",
+    "role": "objective",
+    "paragraphs": [
+      "A pilgrim ship reached the orbital customs ring with one more passenger than its launch record showed. {{heroPlayer}}’s harbor officers sought the original manifest; {{otherPlayer}}’s escorts wanted their passengers through the airlock before the ring closed for inspection. The extra traveler insisted they had boarded with a ticket, not a name.",
+      "{{hero}} checked the cargo terminal and found a single seat assigned to a sealed crate. Its mass reading had changed halfway through the voyage. The specialist brought the crate to the inspection bay as the passenger identified a childhood drawing pasted beneath its shipping label, visible only where the paper had torn.",
+      "The ring’s lockdown began with the crate still sealed. {{hero}} could break its customs seal and risk delaying every pilgrim, or record the extra traveler without explaining how they arrived. The passenger set the ticket on the inspection table and asked the escorts not to open the crate without them."
+    ],
+    "endings": {
+      "heroWins": "The manifest was corrected, and {{heroPlayer}}’s officers kept the inspection bay open for the traveler.",
+      "heroLoses": "{{otherPlayer}}’s escorts took the passengers and crate beyond the ring before the review ended.",
+      "draw": "The pilgrims continued their journey, but the unclaimed ticket remained in the customs ledger."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Ramah Taskforce"
+    ],
+    "heroFaction": "Ramah Taskforce",
+    "role": "objective",
+    "paragraphs": [
+      "A rescue aircraft landed beside an isolated chapel with four incubators and fuel for one more flight. {{heroPlayer}}’s relief crew needed the building’s sheltered courtyard to stabilize the infants; {{otherPlayer}}’s caretakers had turned it into a gathering place for families searching for missing children. The pilot kept the engines warm.",
+      "{{hero}} moved a portable monitor into the courtyard and found its power lead too short to reach the chapel outlet. The specialist ran a spare cable through an open window while parents carried tables aside. A handwritten list of missing names hung beside the socket, and one of them matched a tag on an incubator.",
+      "The aircraft’s fuel warning sounded. {{hero}} held the monitor steady as the infant’s parent pushed through the crowded entrance, unable to say where they had been during the evacuation. The crew needed a clear path back to the plane, yet no one wanted to separate the family again."
+    ],
+    "endings": {
+      "heroWins": "The family boarded together, and {{heroPlayer}}’s crew kept the courtyard ready for the next rescue.",
+      "heroLoses": "{{otherPlayer}}’s caretakers controlled the chapel while the aircraft departed with the incubators.",
+      "draw": "The infants left safely; both parties agreed to keep the missing-name list in the courtyard."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Nomads"
+    ],
+    "heroFaction": "Nomads",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A mural celebrating the city’s founding covered the wall of an abandoned transit terminal. {{heroPlayer}}’s preservation crew came to lift its painted panels; {{otherPlayer}}’s guardians claimed the terminal as the last intact memorial to the original settlers. A demolition vehicle waited at the far entrance with its engine running.",
+      "{{hero}} watched from the ticket balcony and fired at the vehicle’s front tire as it rolled toward the crew. It slewed against a pillar without reaching the mural. A loose panel fell away from the wall and revealed a painted second scene beneath: the settlers leaving the city, not entering it.",
+      "The crew tried to carry the fallen panel outside while the guardians crossed the hall. {{hero}} held the balcony and kept a clear path past the stalled vehicle. Beneath the last sheet of paint, a date appeared that was older than any record of the terminal’s construction."
+    ],
+    "endings": {
+      "heroWins": "The preservation crew saved both paintings, and {{heroPlayer}}’s people held the terminal for their study.",
+      "heroLoses": "{{otherPlayer}}’s guardians kept the wall while the crew escaped with a single damaged panel.",
+      "draw": "The vehicle was stopped, but neither side would move the mural until its date was explained."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Bakunin Jurisdictional Command"
+    ],
+    "heroFaction": "Bakunin Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "An outdoor mask festival had taken over the observatory steps just as a once-in-a-century eclipse approached. {{heroPlayer}}’s festival crew needed the rooftop screen to share the event; {{otherPlayer}}’s keepers wanted the steps cleared so their instruments could track it. The crowd refused to leave while the masks still had no faces.",
+      "{{hero}} found a safe route for the screen cables along the closed stairwell. The specialist patched the observatory feed into the festival projector and drew a view of the darkening sky across every blank mask. A keeper called from the roof: the main telescope was turning toward an object well away from the sun.",
+      "The projector flickered when the eclipse reached its peak. {{hero}} climbed to the distribution box and held a failing connector while the crowd lifted their faces toward the screen. On the roof, the telescope stopped. Whatever it had followed now occupied the edge of the projected image."
+    ],
+    "endings": {
+      "heroWins": "The screen stayed lit through the eclipse, and {{heroPlayer}}’s crew kept the steps open to everyone.",
+      "heroLoses": "{{otherPlayer}}’s keepers reclaimed the observatory and ended the festival projection.",
+      "draw": "The crowd saw the eclipse; neither group could recover the image that appeared beside it."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Corregidor Jurisdictional Command"
+    ],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A maintenance lift stopped between the floors of a domed cathedral with a worker still inside. {{heroPlayer}}’s riggers climbed in to bring the lift down; {{otherPlayer}}’s custodians refused to let them cut the load-bearing cable above a crowded vigil. The worker tapped a wrench against the shaft in steady threes.",
+      "{{hero}} reached the machinery room and found the lift’s counterweight held by a bent pin. The specialist secured a second line to the drum while the riggers called to the trapped worker below. Each turn of the drum shifted weight through the dome, sending plaster dust across the people at prayer.",
+      "The pin slid another inch. {{hero}} locked the drum with both hands as the custodians guided the crowd away from the center aisle. From the shaft came three more taps, then a pause, then a fourth. The lift had moved, and the worker was trying to tell them where."
+    ],
+    "endings": {
+      "heroWins": "The lift reached the floor, and {{heroPlayer}}’s riggers kept the machinery room safe for repairs.",
+      "heroLoses": "{{otherPlayer}}’s custodians kept the building closed as the riggers sought another way into the shaft.",
+      "draw": "The worker escaped, but both crews left the damaged lift suspended until the vigil ended."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Tunguska Jurisdictional Command"
+    ],
+    "heroFaction": "Tunguska Jurisdictional Command",
+    "role": "gunfighting",
+    "paragraphs": [
+      "Someone had bought the debt on a neighborhood clinic and sent collectors to close its doors at noon. {{heroPlayer}}’s security contractors came with proof the loan had been paid; {{otherPlayer}}’s wardens guarded the sealed accounting room. Patients waited outside with treatment numbers written on their hands.",
+      "{{hero}} took cover beside the waiting area and fired at a lockbox trolley as it rolled toward the exit. The trolley tipped without striking the patients. A payment receipt slipped free, bearing the clinic’s stamp beside a signature nobody in the room recognized.",
+      "The collectors returned for the box while the nurse tried to match the signature to an old payroll sheet. {{hero}} held the corridor, turning every shot away from the treatment rooms. The clock above admissions approached noon, and one patient’s number was being called for surgery."
+    ],
+    "endings": {
+      "heroWins": "The receipt kept the clinic open, and {{heroPlayer}}’s contractors held the doors for its patients.",
+      "heroLoses": "{{otherPlayer}}’s wardens retained the accounting room and locked the clinic pending review.",
+      "draw": "The patient received treatment; neither party settled the clinic’s debt before nightfall."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Combined Army"
+    ],
+    "heroFaction": "Combined Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A ring of standing stones had acquired a new stone overnight, smooth and warm in the cold field. {{heroPlayer}}’s survey party came to study it; {{otherPlayer}}’s keepers held the entrance to a nearby sanctuary. During the morning chant, every stone cast a shadow toward the new arrival.",
+      "{{hero}} covered the ring from a broken terrace and fired across the path when a team tried to carry a measuring device away. The device struck the ground and began recording a heartbeat from inside the smooth stone. The fighter saw its surface flex, then become still when the chant stopped.",
+      "The keepers resumed the chant to test what they had heard. {{hero}} kept the terrace clear while the survey party reached the stone with a portable reader. Its display showed the heartbeat following the voices exactly, and a hand-shaped mark appeared beneath the surface as the final verse began."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s party held the ring and preserved the reader’s recording of the heartbeat.",
+      "heroLoses": "{{otherPlayer}}’s keepers sealed the field before the survey party could finish its measurements.",
+      "draw": "The final verse ended; both parties left the new stone where it stood, warm and silent."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A cable station on the plateau kept the villages below in touch with the outside world. {{heroPlayer}}’s repair column arrived after its signal failed; {{otherPlayer}}’s watch occupied the upper gantry, convinced someone had been using the line to summon an armed convoy. A damaged insulator swung above the only safe path to the controls.",
+      "{{hero}} covered the approach while two repairers climbed toward the insulator. A shot from the gantry struck the cable housing; the fighter fired back, making room for the repairers to reach the loose fitting. Below them, a trapped operator signaled through the station window that the line still carried power.",
+      "A wind gust pulled the live cable across the ladder. {{hero}} kept the gantry under watch as a repairer hooked it away with an insulated pole. The operator wrote a number on the window: the minutes before the lower villages lost their emergency transmitters entirely."
+    ],
+    "endings": {
+      "heroWins": "The signal returned, and {{heroPlayer}}’s column held the station while the villages called for help.",
+      "heroLoses": "{{otherPlayer}}’s watch kept the gantry and closed the path to the damaged line.",
+      "draw": "The villages got one brief warning through before both parties disconnected the unsafe cable."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "A traveling fair had abandoned its carousel in the plaza, leaving every wooden mount turned toward a chapel door. {{heroPlayer}}’s investigators came to recover the ticket ledger; {{otherPlayer}}’s attendants held the plaza for a vigil. No one could explain why the carousel had kept turning after its power was cut.",
+      "{{hero}} opened the control box and found a hand-cranked music roll beneath the motor. Each note lifted a different mount, revealing a number burned into its saddle. The specialist matched the numbers to the ledger and discovered one ticket had been sold for the vigil before the fair arrived.",
+      "The carousel slowed when {{hero}} removed the roll. A child stepped forward holding that ticket and asked to ride to the chapel door, as they had been promised. The investigators waited beside the control box while the attendants made room, and the last wooden mount stopped directly in front of the child."
+    ],
+    "endings": {
+      "heroWins": "The child reached the door, and {{heroPlayer}}’s investigators kept the roll and ledger together.",
+      "heroLoses": "{{otherPlayer}}’s attendants closed the plaza after the vigil, leaving the investigators outside.",
+      "draw": "The vigil ended with the carousel still; the ticket stayed with the child instead of either crew."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A signal relay had been built into the roof of an old stone hospital. {{heroPlayer}}’s recovery team came for its transmitter; {{otherPlayer}}’s orderlies guarded the wards below, where failing equipment still sustained several patients. Every relay burst made the monitors skip the same second.",
+      "{{hero}} watched the roof approach from a broken stairwell and fired when a defender rushed the transmitter platform. The fighter kept the shots above the ward windows. A recovery worker reached the relay and found its power feed woven through the hospital’s oldest life-support circuit.",
+      "Unplugging the transmitter would stop its signal, but the ward monitors would go dark as well. {{hero}} held the stair while the worker ran a bypass cable down toward the orderlies, who had to decide whether to accept it. One patient’s monitor missed its second and did not restart."
+    ],
+    "endings": {
+      "heroWins": "The bypass held, and {{heroPlayer}}’s team carried the transmitter away without silencing the ward.",
+      "heroLoses": "{{otherPlayer}}’s orderlies kept the relay connected while the recovery team withdrew.",
+      "draw": "The patients remained stable; the relay stayed in place under a watch shared by both groups."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "objective",
+    "paragraphs": [
+      "A row of farms disappeared from the cadastral map, though their houses still stood along the road. {{heroPlayer}}’s field team came to locate the boundary marker; {{otherPlayer}}’s keepers guarded the last farm’s well. Each family remembered a different date for the day the land had been surveyed.",
+      "{{hero}} found a buried survey pin beneath the well cover. Its serial number belonged to a later survey, one completed after the fields had vanished from official records. The specialist copied the number while a farmer unfolded a deed whose ink changed color whenever it crossed the well’s shadow.",
+      "The pump started without anyone touching it, sending muddy water over the deed. {{hero}} lifted the paper out of reach and read an address exposed where the color had washed away. It named a house just beyond the field, visible to both teams but empty when the farmer called home."
+    ],
+    "endings": {
+      "heroWins": "The field team carried the pin and deed away, leaving {{heroPlayer}}’s people in control of the disputed well.",
+      "heroLoses": "{{otherPlayer}}’s keepers held the well and refused to release the survey pin.",
+      "draw": "The families kept the deed; both teams agreed the missing house needed a new survey."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "A city’s flood barriers began closing against a storm that had not yet reached the coast. {{heroPlayer}}’s control team came to inspect the forecast engine; {{otherPlayer}}’s guardians held the pump station to keep its lower neighborhood dry. Boats loaded along the canal while the sky stayed blue.",
+      "{{hero}} found the engine using an old map on which an entire street had been replaced by a river. The specialist corrected the map and watched the barrier schedule change, then found a handwritten note under the console warning that this error had saved lives once before.",
+      "The canal level rose while {{hero}} compared the new schedule to the note. A drainage crew called from the endangered street: water was seeping up through basement floors rather than arriving from the sea. The specialist left the barriers half closed, holding the decision until the crew could reach higher ground."
+    ],
+    "endings": {
+      "heroWins": "The barriers held where they were needed, and {{heroPlayer}}’s team kept the pump station running.",
+      "heroLoses": "{{otherPlayer}}’s guardians took the controls and followed the old flood schedule.",
+      "draw": "The residents escaped the basements; both groups remained to watch a river that was not on the map."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "objective",
+    "paragraphs": [
+      "A public memory wall had stopped showing the names of workers who built the city’s first shelter. {{heroPlayer}}’s archivists came to restore the display; {{otherPlayer}}’s caretakers held the plaza during an anniversary gathering. The missing names had been replaced by photographs of faces turned away from the camera.",
+      "{{hero}} followed the display cable to a maintenance alcove and found a second memory card with the names intact. Its timestamp was tomorrow’s date. The specialist connected it to a spare screen for the caretakers to inspect, but the photographs changed as soon as the first name appeared.",
+      "A woman in the gathering recognized her father’s coat in one of the photographs. {{hero}} kept the spare screen powered while she looked for his face, turning through the names one by one. The anniversary speech began, and the crowd faced the wall, waiting to see whether its missing builders would return."
+    ],
+    "endings": {
+      "heroWins": "The names returned to the wall, and {{heroPlayer}}’s archivists kept the plaza display working.",
+      "heroLoses": "{{otherPlayer}}’s caretakers held the wall while the archivists left with the undated card.",
+      "draw": "The crowd read the names on the spare screen; the main wall remained blank after the gathering."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A field of white tents marked the ground where two armies once agreed to exchange their wounded. {{heroPlayer}}’s honor party arrived with a memorial stone; {{otherPlayer}}’s wardens claimed the tents were still needed for living patients. A stretcher lay at the center of the field, unattended but moving slightly beneath its sheet.",
+      "{{hero}} met a fighter at the rope line and struggled blade to blade for a clear path to the stretcher. Neither could step aside without entering the occupied tents. The sheet stirred again; someone beneath it called a name recognized by the oldest medic in the camp.",
+      "The medic pushed between the fighters. {{hero}} lowered the blade and held the rope line while the sheet came back to reveal a wounded courier still clutching a delivery tube. The tube bore the date of the original ceasefire, and the courier asked whether the exchange had finally begun."
+    ],
+    "endings": {
+      "heroWins": "The courier reached care, and {{heroPlayer}}’s honor party placed the stone beside the living tents.",
+      "heroLoses": "{{otherPlayer}}’s wardens kept the field and delayed the memorial.",
+      "draw": "The courier was treated; both parties carried the stone to the edge of the tents together."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A small embassy stood between two jurisdictions, its front door on one street and its back door on another. {{heroPlayer}}’s inspectors arrived to protect a witness waiting inside; {{otherPlayer}}’s guards had orders to keep the building sealed until a transfer warrant could be checked. The witness would only speak before sunset.",
+      "{{hero}} examined the warrant against the embassy’s boundary plan and found that its seal covered a handwritten correction. Under the seal was the wrong street. The specialist photographed the correction in the witness’s presence while a clerk tried to contact the judge who had signed it.",
+      "At sunset the back door began closing on a timer. {{hero}} held the hinge with a portable brace so the witness could see both streets from the threshold. The clerk returned with an answer: the judge had never seen the corrected address, and someone outside was already trying to remove the brace."
+    ],
+    "endings": {
+      "heroWins": "The witness gave a statement, and {{heroPlayer}}’s inspectors kept the embassy open under a valid order.",
+      "heroLoses": "{{otherPlayer}}’s guards sealed the building while the warrant was disputed.",
+      "draw": "The witness spoke to both groups at the threshold; jurisdiction remained unsettled after dark."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An evacuation shuttle reached the station’s oldest docking arm with one engine still burning. {{heroPlayer}}’s dock patrol came to clear a path for its passengers; {{otherPlayer}}’s custodians held the gate to an infirmary already beyond capacity. The shuttle hatch would open before anyone could bring another stretcher.",
+      "{{hero}} covered the gangway from a maintenance recess, firing at a barricade wheel to keep it from rolling across the passengers’ route. The wheel jammed against a rail. An injured pilot stepped out and pointed back toward the engine, where a thin line of coolant was creeping toward the air intake.",
+      "The dock patrol moved the passengers past the stopped barricade. {{hero}} kept the gangway clear while a mechanic reached the engine valve. From the infirmary came a request for beds the station did not have, and the shuttle’s final passenger emerged carrying a folded stretcher rather than lying on it."
+    ],
+    "endings": {
+      "heroWins": "The engine was made safe, and {{heroPlayer}}’s patrol brought every passenger through the dock.",
+      "heroLoses": "{{otherPlayer}}’s custodians closed the infirmary gate while the patrol sought shelter elsewhere.",
+      "draw": "The passengers escaped the shuttle, but both groups had to build a ward on the gangway."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A rescue train stopped inside the mountain tunnel with its lamps still lit but no radio contact. {{heroPlayer}}’s search patrol entered from the lower portal; {{otherPlayer}}’s sentries controlled the ventilation station above. Passengers had marked arrows on the windows, all pointing toward a locked service door.",
+      "{{hero}} covered the platform cut into the tunnel wall while a mechanic worked the door. A figure moved behind the upper vents, and the fighter fired at the grate to hold it back. The grate fell open, letting in cold air and the distant sound of someone calling from a shaft beyond the tracks.",
+      "The mechanic freed the lock as smoke gathered near the rear carriage. {{hero}} held the open grate under watch while passengers stepped through the service door one at a time. The last person refused to leave, insisting a companion was still in the shaft where the voice had called."
+    ],
+    "endings": {
+      "heroWins": "The search patrol found the missing passenger and held the tunnel until {{heroPlayer}}’s rescue train could leave.",
+      "heroLoses": "{{otherPlayer}}’s sentries kept the ventilation station while the patrol withdrew with those it had rescued.",
+      "draw": "The passengers escaped, but neither group found the voice in the dark shaft."
+    }
   }
 ]
