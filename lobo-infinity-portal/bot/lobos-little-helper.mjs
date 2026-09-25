@@ -6,7 +6,7 @@ import { Client, Events, GatewayIntentBits } from 'discord.js'
 import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
 import { createInfListInteractionHandler, createInfListMessageHandler, ensureInfListCommand } from './inf-list-command.mjs'
-import { createBuildListInteractionHandler, ensureBuildListCommand } from './build-list-command.mjs'
+import { createBuildListAutocompleteHandler, createBuildListInteractionHandler, ensureBuildListCommand } from './build-list-command.mjs'
 import { createMissionInteractionHandler, ensureMissionCommand } from './mission-command.mjs'
 import { createInfIdInteractionHandler, ensureInfIdCommand } from './inf-id-command.mjs'
 import { createRulesInteractionHandler, ensureRulesCommand } from './rules-command.mjs'
@@ -106,9 +106,11 @@ export function formatWorkshopAnnouncement(item) {
 
 export function createLobosLittleHelper() {
   const client = new Client({ intents: REQUIRED_INTENTS })
+  client.setMaxListeners(12)
   const handleMessage = createInfListMessageHandler()
   const handleInfList = createInfListInteractionHandler()
   const handleBuildList = createBuildListInteractionHandler()
+  const handleBuildListAutocomplete = createBuildListAutocompleteHandler()
   const handleMission = createMissionInteractionHandler()
   const handleInfId = createInfIdInteractionHandler()
   const handleRules = createRulesInteractionHandler()
@@ -121,6 +123,7 @@ export function createLobosLittleHelper() {
   client.on(Events.MessageCreate, handleMessage)
   client.on(Events.InteractionCreate, handleInfList)
   client.on(Events.InteractionCreate, handleBuildList)
+  client.on(Events.InteractionCreate, handleBuildListAutocomplete)
   client.on(Events.InteractionCreate, handleMission)
   client.on(Events.InteractionCreate, handleInfId)
   client.on(Events.InteractionCreate, handleRules)

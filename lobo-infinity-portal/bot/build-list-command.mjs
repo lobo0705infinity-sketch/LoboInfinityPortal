@@ -1,4 +1,6 @@
 import { ApplicationCommandOptionType } from 'discord.js'
+import { resolve } from 'node:path'
+import { readArtifact } from '../scripts/benchmark-artifacts.mjs'
 import { LIVE_ROSTER_UNIT_SLUGS } from './official-army-rosters.mjs'
 import { loadGunfighterBenchmarkCatalog } from './gunfighter-catalog-store.mjs'
 import { loadAroBenchmarkCatalog } from './aro-catalog-store.mjs'
@@ -7,11 +9,12 @@ import { loadMobilityCatalog } from './mobility-catalog-store.mjs'
 import { buildArmyListOptions, ListBuilderError } from './build-list-generator.mjs'
 
 export const BUILD_LIST_COMMAND = 'build-list'
+export const BUILD_LIST_FACTION_OPTION = 'faction'
 export const BUILD_LIST_COMMAND_DEFINITION = Object.freeze({
   name: BUILD_LIST_COMMAND,
   description: 'Build legal Infinity Army lists for a faction and mission',
   options: [
-    { name: 'faction', description: 'Faction or sectorial, such as Corregidor', required: true, type: ApplicationCommandOptionType.String },
+    { name: BUILD_LIST_FACTION_OPTION, description: 'Start typing a faction or sectorial, then select it', required: true, type: ApplicationCommandOptionType.String, autocomplete: true },
     { name: 'mission', description: 'Mission, such as Hardlock', required: true, type: ApplicationCommandOptionType.String },
     { name: 'must-include', description: 'Required units separated by commas, such as Jazz, Iguana', required: false, type: ApplicationCommandOptionType.String },
     { name: 'points', description: 'Army points (default: 300)', required: false, type: ApplicationCommandOptionType.Integer,
@@ -20,6 +23,7 @@ export const BUILD_LIST_COMMAND_DEFINITION = Object.freeze({
 })
 
 const cache = new Map()
+let bundledFactionsPromise = null
 const cacheAge = 20 * 60 * 1000
 const headers = { accept: 'application/json, text/plain, */*', origin: 'https://infinityuniverse.com', referer: 'https://infinityuniverse.com/' }
 const normalize = value => String(value || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
@@ -28,7 +32,7 @@ export async function getCurrentArmySource(factionName, fetchImpl = fetch) {
   const metadata = await cachedJson('metadata', 'https://api.corvusbelli.com/army/infinity/en/metadata', fetchImpl)
   const query = normalize(factionName)
   if (!query || query.length > 70) throw new ListBuilderError('Enter a faction or sectorial name.')
-  const candidates = (metadata.factions || []).filter(item => normalize(item.slug) === query || normalize(item.name) === query)
+  const candidates = (metadata.factions || []).filter(item => String(item.id) === String(factionName).trim() || normalize(item.slug) === query || normalize(item.name) === query)
   const broad = candidates.length ? candidates : (metadata.factions || []).filter(item => normalize(item.slug).includes(query) || normalize(item.name).includes(query))
   if (broad.length !== 1) throw new ListBuilderError(broad.length ? 'That faction name matches several armies; use the sectorial name.' : `Unknown faction: ${factionName}.`)
   const faction = broad[0]
@@ -37,6 +41,39 @@ export async function getCurrentArmySource(factionName, fetchImpl = fetch) {
   if (!Array.isArray(payload?.units)) throw new ListBuilderError('Current Army unit data are unavailable.')
   if (payload.fireteamChart && !Array.isArray(payload.fireteamChart.teams)) throw new ListBuilderError('Current Army Fireteam data are unavailable.')
   return { faction, metadata, payload: payload.fireteamChart ? payload : { ...payload, fireteamChart: { teams: [], spec: {} } } }
+}
+
+async function loadBundledFactions() {
+  bundledFactionsPromise ||= readArtifact(resolve(import.meta.dirname, '..', 'data', 'infinity-army', 'benchmark-official-source.json.gz.b64'))
+    .then(source => source.metadata.factions)
+  return bundledFactionsPromise
+}
+
+export async function searchBuildListFactions(query, loadFactions = loadBundledFactions) {
+  const needle = normalize(query)
+  return (await loadFactions())
+    .filter(faction => LIVE_ROSTER_UNIT_SLUGS.has(Number(faction.id)))
+    .filter(faction => !needle || normalize(faction.slug).includes(needle) || normalize(faction.name).includes(needle))
+    .sort((a, b) => {
+      const rank = faction => !needle || normalize(faction.slug).startsWith(needle) ? 0 : normalize(faction.name).startsWith(needle) ? 1 : 2
+      return rank(a) - rank(b) || a.name.localeCompare(b.name)
+    })
+    .slice(0, 25)
+    .map(faction => ({ name: String(faction.name).slice(0, 100), value: String(faction.id) }))
+}
+
+export function createBuildListAutocompleteHandler({ search = searchBuildListFactions, logger = console } = {}) {
+  return async interaction => {
+    if (!interaction?.isAutocomplete?.() || interaction.commandName !== BUILD_LIST_COMMAND) return false
+    const focused = interaction.options.getFocused(true)
+    if (focused.name !== BUILD_LIST_FACTION_OPTION) return false
+    try { await interaction.respond(await search(focused.value)) }
+    catch (error) {
+      logger.error?.('Army list faction autocomplete failed:', error)
+      try { await interaction.respond([]) } catch {}
+    }
+    return true
+  }
 }
 
 async function cachedJson(key, url, fetchImpl) {
@@ -115,6 +152,7 @@ export async function ensureBuildListCommand(client) {
     const existing = commands.find(command => command.name === BUILD_LIST_COMMAND)
     const matches = existing?.description === BUILD_LIST_COMMAND_DEFINITION.description
       && existing.options?.map(option => option.name).join(',') === BUILD_LIST_COMMAND_DEFINITION.options.map(option => option.name).join(',')
+      && existing.options?.[0]?.autocomplete === true
     const command = !existing ? await guild.commands.create(BUILD_LIST_COMMAND_DEFINITION)
       : matches ? existing : await existing.edit(BUILD_LIST_COMMAND_DEFINITION)
     registered.push({ applicationId: command.applicationId, guildId: guild.id, id: command.id })

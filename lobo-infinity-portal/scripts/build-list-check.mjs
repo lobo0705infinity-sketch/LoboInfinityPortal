@@ -4,7 +4,9 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { gunzipSync } from 'node:zlib'
 import { buildArmyListOptions, availableProfiles, ListBuilderError, proposedFireteams } from '../bot/build-list-generator.mjs'
-import { buildListResponses, createBuildListInteractionHandler } from '../bot/build-list-command.mjs'
+import { BUILD_LIST_COMMAND_DEFINITION, buildListResponses, createBuildListAutocompleteHandler,
+  createBuildListInteractionHandler, ensureBuildListCommand, getCurrentArmySource,
+  searchBuildListFactions } from '../bot/build-list-command.mjs'
 import { LIVE_ROSTER_UNIT_SLUGS } from '../bot/official-army-rosters.mjs'
 import { decodeArmyCode } from './infinity-army-decode.mjs'
 import { encodeArmyCode } from './infinity-army-encode.mjs'
@@ -86,4 +88,32 @@ const handled = await handler({
 assert.equal(handled, true)
 assert.equal(calls.length, 4, 'defer, initial result, and two follow-up list options')
 
-console.log('PASS - build-list creates three legal, distinct Corregidor/Hardlock lists with explicit Level 2+ fireteams.')
+assert.equal(BUILD_LIST_COMMAND_DEFINITION.options[0].autocomplete, true)
+const suggestions = await searchBuildListFactions('corr')
+assert.deepEqual(suggestions, [{ name: 'Jurisdictional Command of Corregidor', value: '502' }])
+assert.equal((await searchBuildListFactions('nomads'))[0].value, '501')
+const initialSuggestions = await searchBuildListFactions('')
+assert.equal(initialSuggestions.length, 25, 'Discord limits autocomplete results to 25')
+assert.ok(initialSuggestions.every(choice => LIVE_ROSTER_UNIT_SLUGS.has(Number(choice.value))))
+
+let repliedChoices
+const autocomplete = createBuildListAutocompleteHandler({ logger: { error() {} } })
+assert.equal(await autocomplete({ isAutocomplete: () => true, commandName: 'build-list',
+  options: { getFocused: () => ({ name: 'faction', value: 'corr' }) },
+  respond: async choices => { repliedChoices = choices } }), true)
+assert.deepEqual(repliedChoices, suggestions)
+
+const chosenFaction = await getCurrentArmySource('502', async url => ({ ok: true,
+  json: async () => url.endsWith('/metadata') ? source.metadata : payload }))
+assert.equal(chosenFaction.faction.id, 502, 'the selected autocomplete ID must resolve against live metadata')
+assert.equal(chosenFaction.payload, payload)
+
+let edited = false
+const existing = { name: 'build-list', description: BUILD_LIST_COMMAND_DEFINITION.description,
+  options: BUILD_LIST_COMMAND_DEFINITION.options.map(option => ({ name: option.name, autocomplete: false })),
+  edit: async definition => { edited = true; return { ...existing, options: definition.options, applicationId: 'app', guildId: 'guild', id: 'cmd' } } }
+await ensureBuildListCommand({ guilds: { cache: new Map([['guild', { id: 'guild', commands: { fetch: async () => [existing] } }]]) },
+  application: { commands: { fetch: async () => [] } } })
+assert.ok(edited, 'an existing slash command must be re-registered to enable autocomplete')
+
+console.log('PASS - build-list creates three legal Corregidor/Hardlock lists, Level 2+ fireteams, and faction autocomplete.')
