@@ -17478,5 +17478,385 @@
       "heroLoses": "{{otherPlayer}}’s analysts traced the slide and protected the classroom.",
       "draw": "Class moved elsewhere while both groups examined the maintenance hatch."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "ALEPH",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "A weather buoy washed ashore outside a tunnel construction camp, transmitting pressure readings from deep underground. The tunnel’s own gauges showed nothing unusual, even at the lowest shaft. {{heroPlayer}}’s engineers retrieved the buoy; {{otherPlayer}}’s analysts held the control room and compared its message with the camp’s planned drilling route.",
+      "{{hero}} opened the buoy and found a cable spool wound with soil instead of seaweed. The specialist followed its tagged end to a collapsed test shaft, where a crew member had lowered the buoy to send readings through the rock. A voice came up the shaft, asking for the air pump to remain on.",
+      "The engineers could pull the crew member up now, but the analysts warned the shaft’s rim needed bracing first. A second worker was still missing from the test team. The specialist held the cable steady as the voice below called out the second worker’s position behind a fallen beam."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s engineers braced the shaft and rescued both workers.",
+      "heroLoses": "{{otherPlayer}}’s analysts located the second worker and secured the drilling route.",
+      "draw": "The air pump stayed on while both crews reinforced the test shaft."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "ALEPH",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A festival archive exhibited a scroll recording the first bridge built between two villages. One village claimed its final page had been copied incorrectly. {{heroPlayer}}’s guardians reached the display room; {{otherPlayer}}’s historians held the cabinet key and brought a photograph of the scroll made before its restoration.",
+      "{{hero}} wrestled a defender away from the narrow exhibit case and held its door while a conservator unrolled the scroll. The last page was genuine, but a thin thread connected it to a hidden fold beneath the wooden roller. That fold carried a drawing of a second bridge, one still visible across the valley.",
+      "The guardians could show the fold to the villagers immediately, but the historians wanted the fragile thread preserved until it was documented. Festival visitors were already waiting at the door. The fighter held the case steady while the conservator traced the drawing without touching the ink."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guardians protected the scroll and found the second bridge.",
+      "heroLoses": "{{otherPlayer}}’s historians documented the hidden fold and resolved the copy.",
+      "draw": "The exhibit stayed closed while both villages examined the new drawing."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "ALEPH",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "A farm’s automated pollination calendar began scheduling work through winter, when its orchard would be bare. The grower suspected a faulty sensor, but one hive had already stirred. {{heroPlayer}}’s naturalists reached the orchard; {{otherPlayer}}’s analysts checked the calendar and compared it with the last three harvests.",
+      "{{hero}} examined the waking hive and found a single branch flowering early beneath a warm air vent. The specialist followed the vent to a storage shed where a heater had been left running over a box of dormant seeds. Its lid was marked for another farm across the ridge, whose owner had asked for the box back.",
+      "The naturalists could move the hive away from the early blossom, but the analysts wanted to know who had changed the calendar before resetting it. The grower brought an unheated box for the seeds. The specialist held the flowering branch while the hive’s first workers circled back through the cold air."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s naturalists protected the hive and returned the dormant seeds.",
+      "heroLoses": "{{otherPlayer}}’s analysts corrected the calendar and traced the warm vent.",
+      "draw": "The orchard stayed quiet while both groups watched the early bloom."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "ALEPH",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A public safety drill sent residents toward an evacuation route that ended at a fenced research field. The field gate was closed, but the drill signs pointed straight through it. {{heroPlayer}}’s patrol reached the fence; {{otherPlayer}}’s safety officers held the crowded junction and looked for the person who posted the signs.",
+      "{{hero}} covered a guide crossing to the gate as shots struck its warning board. The fighter held the path while the guide found a second map attached behind the sign, directing residents toward an open lane along the field’s edge. A penciled note said the route had changed after a recent excavation uncovered unstable ground.",
+      "The patrol could move the crowd to the edge lane, but the officers wanted that ground checked before people entered it. A real alarm had begun sounding from the field station. The fighter watched the guide raise the corrected sign as residents waited under the hot afternoon sun."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol guided the residents through a verified safe lane.",
+      "heroLoses": "{{otherPlayer}}’s officers secured the junction and corrected every drill sign.",
+      "draw": "The residents sheltered nearby while both routes were checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "ALEPH",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A living archive kept a record of an extinct forest in woven stems that grew a new ring each season. This year’s ring formed an open gap with no matching weather record. {{heroPlayer}}’s botanists examined the stems; {{otherPlayer}}’s archivists held the old climate logs and checked the archive’s light cycle.",
+      "{{hero}} inspected the open gap and found a single fiber dyed blue beneath the living weave. The specialist traced it to a repair made after a storm, when a caretaker had tied the stems around a hidden paper seed list. One name on the list belonged to a tree still growing in a protected courtyard.",
+      "The botanists could retrieve the list and compare it with the courtyard tree, but the archivists warned that untying the fiber might damage the annual ring. The caretaker offered to show the original knot. The specialist held the stem with a soft clamp as the archive lights dimmed for evening."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s botanists preserved the weave and verified the surviving tree.",
+      "heroLoses": "{{otherPlayer}}’s archivists secured the seed list and restored the missing ring.",
+      "draw": "The blue fiber remained in place while the caretaker’s knot was documented."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "ALEPH",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A mountain research lab promised a trial battery to the caravan that carried its supplies through winter. When the caravan arrived, another party presented a receipt for the same battery. {{heroPlayer}}’s escorts reached the loading platform; {{otherPlayer}}’s analysts held the lab’s inventory cabinet and looked for the original agreement.",
+      "{{hero}} pushed a defender away from the narrow freight lift and held it while a driver checked the battery case. Its connectors were made for the caravan’s heater, but a second adapter had been packed inside for an unfamiliar vehicle. A note from the lab’s absent chief asked both claimants to test it together before delivery.",
+      "The escorts could take the battery to the caravan, but the analysts warned that the test had not been completed. Snow was falling over the pass, and the caravan needed heat before night. The fighter steadied the lift as the driver placed both adapters beside the chief’s old testing notes."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts secured the tested battery and warmed the caravan.",
+      "heroLoses": "{{otherPlayer}}’s analysts completed the trial and reconciled the two receipts.",
+      "draw": "The caravan stayed at the lab while both claimants witnessed the test."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "ALEPH",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "objective",
+    "paragraphs": [
+      "A mapping office insured a survey crew against the loss of its original charts. When a chart vanished, its replacement showed a new road straight through an occupied farmhouse. {{heroPlayer}}’s investigators reached the map vault; {{otherPlayer}}’s surveyors held the field notebooks and contacted the farmer before any contractor saw the new route.",
+      "{{hero}} compared the replacement with a tracing left beneath the vault glass and found that the road had been drawn around the farmhouse first. The specialist followed the later erasure to a note folded into the tracing. It requested a route to a nearby well for a family whose path had been blocked by construction.",
+      "The investigators could restore the old route immediately, but the surveyors wanted the well access protected too. The farmer came to the office with a photograph of the path before construction began. The specialist laid both versions under the glass and measured room for a shared crossing."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s investigators restored the chart and protected both properties.",
+      "heroLoses": "{{otherPlayer}}’s surveyors documented the crossing and secured the missing original.",
+      "draw": "Work on the road paused while the farmer and family reviewed the route."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "ALEPH",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A hospital research annex received a crate of old mechanical limbs for restoration. One unit began moving before it was plugged in, tapping a steady rhythm on the packing table. {{heroPlayer}}’s salvage team reached the annex; {{otherPlayer}}’s specialists held the workroom and called the former owner’s family.",
+      "{{hero}} shoved a defender back from the narrow workbench and held its loose frame as a technician opened the limb. Inside was a wound spring attached to a tiny photograph. The rhythm stopped when the photograph was removed. It showed the former owner standing beside an inventor whose name was missing from the restoration record.",
+      "The salvage team could return the photograph to the family, but the specialists wanted to document the spring before the limb was reassembled. The family was already waiting outside the annex. The fighter kept the frame stable while the technician found a second photograph tucked beneath the spring."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team secured the limb and restored its owner’s history.",
+      "heroLoses": "{{otherPlayer}}’s specialists documented the device and located the inventor.",
+      "draw": "The unit stayed on the bench while the family examined the photographs."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "ALEPH",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A public learning center lost access to the files students had created after a new indexing system reorganized the archive. The children’s project concerned an old neighborhood footpath about to be closed. {{heroPlayer}}’s advocates reached the classroom; {{otherPlayer}}’s technicians held the archive server and its backup log.",
+      "{{hero}} looked through the remaining paper sketches and found one with a small code the students had chosen for the footpath. The specialist entered it into the system and recovered a folder of interviews with residents who had maintained the path for years. A recording described a hidden step needed when the river rose.",
+      "The advocates could submit the interviews to keep the path open, but the technicians wanted its archive restored for all the other projects too. The closure crew would arrive that afternoon. The specialist carried the recovered folder toward the river while the classroom teacher gathered the students’ original sketches."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s advocates preserved the footpath and returned the students’ work.",
+      "heroLoses": "{{otherPlayer}}’s technicians restored the archive and located the hidden step.",
+      "draw": "The path remained open temporarily while every interview was checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "ALEPH",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A rooftop sensor array monitored the safety of the city’s oldest pedestrian bridge. Its screen reported a dangerous vibration while the bridge itself appeared perfectly still. {{heroPlayer}}’s guards reached the sensor tower; {{otherPlayer}}’s analysts held the bridge approaches and asked commuters to use another crossing.",
+      "{{hero}} covered a technician climbing the array as shots struck the tower bracing. The fighter held the roof while the technician found a loose panel shaking in the wind above the sensor. Beneath it was a recent maintenance photograph of the bridge, showing a support pin set beside the joint rather than through it.",
+      "The guards could secure the array, but the analysts needed the bridge inspected before reopening it. Another gust moved the loose panel against the sensor. The fighter watched the technician strap it down while a bridge worker below reached the joint shown in the photograph."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards secured the array and helped repair the bridge support.",
+      "heroLoses": "{{otherPlayer}}’s analysts protected commuters and found the displaced pin.",
+      "draw": "The bridge stayed closed while both the panel and joint were fixed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Operations Subsection",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "objective",
+    "paragraphs": [
+      "Two laboratory teams arrived to study a small machine that sorted stones by an unknown property. Each carried one half of the field notebook that described its discovery. {{heroPlayer}}’s researchers took the testing bench; {{otherPlayer}}’s researchers held the sample cabinet and refused to mix the stones before the notes were compared.",
+      "{{hero}} aligned the torn notebook pages and found the machine had been sorting stones by the sound they made when gently struck. The specialist tested a sample from the cabinet and heard a note that matched a recorded chime from a long-closed observatory. Another stone was missing from the tray where it had been set.",
+      "The first team could follow the sound to the observatory, but the other researchers wanted the lost stone accounted for before anyone moved the machine. A lab assistant remembered lending it to a nearby school. The specialist kept the halves of the notebook together while the assistant called the teacher."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team recovered the stone and identified the sorting principle.",
+      "heroLoses": "{{otherPlayer}}’s team secured the samples and traced the observatory chime.",
+      "draw": "The machine remained still while the school returned its borrowed stone."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Operations Subsection",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A cultural archive beneath an aqueduct opened for a community reading just as water began spilling through its roof. A guide remained below to save the first edition of a local history. {{heroPlayer}}’s rescuers entered through the lower courtyard; {{otherPlayer}}’s researchers held the upper valve house and searched for a safe way to stop the flow.",
+      "{{hero}} forced a defender away from the archive’s narrow doorway and held it for the guide. Behind a shelf, the fighter found a stone channel directing the leak into a second room filled with old scrolls. The guide carried the first edition beneath a coat while a companion pulled a wooden sluice handle from the wall.",
+      "The rescuers could close the sluice immediately, but the researchers warned it might send water back through the crowded courtyard. The reading group was already gathering there. The fighter held the doorway clear while the guide called up which scrolls could still be moved before the roof gave way."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rescuers cleared the archive and saved the local history.",
+      "heroLoses": "{{otherPlayer}}’s researchers controlled the water and protected the courtyard.",
+      "draw": "The reading moved outdoors while both teams dried the recovered books."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Operations Subsection",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A municipal registry listed a retired teacher as the owner of a school building donated long before their birth. Its planned renovation was due to begin that morning. {{heroPlayer}}’s mediators reached the records office; {{otherPlayer}}’s analysts held the school entrance with the original donation plaque and a set of old photographs.",
+      "{{hero}} examined the registry and found the teacher’s name was copied from a scholarship awarded by the original donor. The specialist compared the scholarship date with the plaque and identified the real owner: a neighborhood trust still meeting every month. Its current chair was already inside the school, watching the renovation crew arrive.",
+      "The mediators could stop the work and ask the trust for its decision, but the analysts wanted the building’s safety inspection completed before pupils returned. The teacher came to the office carrying the scholarship letter. The specialist laid it beside the registry as the trust chair called from the school."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s mediators restored the trust’s ownership and protected the school.",
+      "heroLoses": "{{otherPlayer}}’s analysts secured the building and corrected the registry.",
+      "draw": "Renovation paused while the trust reviewed the donation documents."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Operations Subsection",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A station research module reported a broken seal on a case of meteor dust. No particles appeared outside the sample room, yet its alarm kept sounding. {{heroPlayer}}’s patrol reached the module; {{otherPlayer}}’s analysts held the lab controls and checked the air filters for any escape.",
+      "{{hero}} covered a technician crossing the outer hatch when shots struck the door frame. The fighter held the passage while the technician found the sample case untouched and a second empty case hidden beneath the workbench. Its label matched an earlier shipment that had been sent to a school exhibit on another deck.",
+      "The patrol could check the exhibit at once, but the analysts wanted the module cleared before the alarm was silenced. Children were visiting the school display that afternoon. The fighter watched the technician test the empty case as a message came through from the exhibit’s curator."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol secured both cases and protected the school exhibit.",
+      "heroLoses": "{{otherPlayer}}’s analysts verified containment and traced the older shipment.",
+      "draw": "The module stayed sealed while the exhibit’s case was inspected."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Operations Subsection",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "A tunnel ventilation test made a line of signal flags on the surface rise in reverse order. The tunnel had been cleared, but one work light still shone deep inside. {{heroPlayer}}’s engineers approached the intake shaft; {{otherPlayer}}’s analysts held the test console and checked which fan had started first.",
+      "{{hero}} lowered a pressure probe and found a side duct carrying air toward the abandoned work light. The specialist opened its grille to discover a maintenance kit left beside a fresh footprint. In its lid was a diagram for a short bypass that could keep the tunnel ventilated if the main fan failed.",
+      "The engineers could build the bypass before another test, but the analysts wanted the footprint identified in case someone remained below. Rain was moving toward the surface intakes. The specialist set the kit on dry ground while the flags rose again, this time beginning at the correct end."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s engineers restored ventilation and installed the safer bypass.",
+      "heroLoses": "{{otherPlayer}}’s analysts located the worker and corrected the fan sequence.",
+      "draw": "Testing paused while the side duct and footprint were examined."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Operations Subsection",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A hillside pharmacy preserved a notebook of old remedies beside its modern research equipment. During an open day, a page vanished and a visitor began searching the garden for a plant drawn there. {{heroPlayer}}’s guardians followed the visitor; {{otherPlayer}}’s researchers held the pharmacy door and checked which page had been removed.",
+      "{{hero}} wrestled a defender away from a narrow garden stair and kept it clear while a gardener reached the visitor. In the visitor’s hand was a photocopy, not the missing original. It showed a plant growing beside an old stone fountain; the fountain had been moved years earlier to another corner of the garden.",
+      "The guardians could guide the visitor to the relocated fountain, but the researchers wanted the original page found before anyone gathered specimens. The gardener remembered who moved the stone. The fighter held the stair as the visitor explained that the plant might belong to a relative’s lost garden."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guardians found the plant and returned the visitor safely.",
+      "heroLoses": "{{otherPlayer}}’s researchers recovered the original page and verified the remedy.",
+      "draw": "The garden remained open while the notebook and fountain history were checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Operations Subsection",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "A museum terrarium grew moss around a fossil believed to come from a forest lost to fire. Overnight the moss formed a narrow trail toward the terrarium door. {{heroPlayer}}’s naturalists inspected the habitat; {{otherPlayer}}’s analysts held the collection log and checked whether the fossil had ever been moved.",
+      "{{hero}} lifted a loose patch of moss and found a line of mineral powder beneath it. The specialist traced the powder to a cracked sample jar stored by the door, whose label named a different forest. The curator recalled combining soil from both sites during an exhibition change and had forgotten to update the log.",
+      "The naturalists could replace the soil and let the moss settle, but the analysts wanted the fossil’s origin confirmed before another label was printed. A school group was arriving soon. The specialist set both soil samples beneath a magnifier while the curator prepared to explain the discovery to the children."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s naturalists preserved the moss and identified the correct forest.",
+      "heroLoses": "{{otherPlayer}}’s analysts corrected the collection log and verified the fossil.",
+      "draw": "The exhibit remained unlabeled until the soil samples were compared."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Operations Subsection",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A river clinic received a weather warning that its supply launch had been diverted into a closed channel. The pilot sent no distress call. {{heroPlayer}}’s patrol reached the channel gate; {{otherPlayer}}’s researchers held the clinic pier with a receiving team and studied the warning’s source.",
+      "{{hero}} covered a guide crossing the lock as shots struck its wet railing. The fighter held the approach while the guide found the gate’s indicator reversed by a loose cable. Beyond it, the supply launch was safely moored beside a family home, delivering an urgent package for a patient who could not travel to the clinic.",
+      "The patrol could open the channel for the launch to continue, but the researchers wanted to know whether the cable would misdirect another boat. The pilot called that the package had been received. The fighter kept watch at the gate while the guide marked the correct channel with a temporary lamp."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol corrected the gate and guided the launch onward.",
+      "heroLoses": "{{otherPlayer}}’s researchers secured the pier and repaired the warning system.",
+      "draw": "The launch waited downstream while both teams checked the lock cable."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Operations Subsection",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A living water filter serving a hill settlement changed color overnight, turning its observation window pale blue. The outlet still passed clean water, but its caretaker closed the tap. {{heroPlayer}}’s biologists reached the filter bed; {{otherPlayer}}’s analysts held a set of samples from before the color change and counted the settlement’s reserve.",
+      "{{hero}} examined the filter’s upper layer and found a harmless blue dye carried in by a temporary repair pipe. The specialist traced that pipe to a school garden, where children had used the dye to follow water through their own small irrigation model. Their teacher had no idea the model shared a feed with the filter bed.",
+      "The biologists could reroute the repair pipe and reopen the tap, but the analysts wanted repeated tests before the settlement used the water. The reserve was enough for the evening. The specialist held a clear sample beside the blue window while the caretaker prepared a notice for the homes."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s biologists isolated the dye and restored clean water service.",
+      "heroLoses": "{{otherPlayer}}’s analysts verified the samples and protected the settlement reserve.",
+      "draw": "The tap stayed closed briefly while independent tests were completed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Operations Subsection",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An old signal archive offered a reward for a lost field transmitter found near a border road. A salvage driver arrived with a transmitter bearing the correct mark, but a different frequency dial. {{heroPlayer}}’s escorts reached the archive gate; {{otherPlayer}}’s analysts held the listening room and compared the device with its original service sheet.",
+      "{{hero}} pushed a defender away from the narrow gate and kept it open while the driver carried the transmitter inside. Beneath its handle lay a folded message giving the location of a still active relay station. The analysts heard a faint reply on the mismatched dial, one repeating the driver’s name in a steady voice.",
+      "The escorts could follow the message to the relay, but the analysts wanted the frequency recorded before the transmitter moved. The driver said no one had known he would bring it there. The fighter held the gate as the device repeated the name once more and then fell silent."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts secured the transmitter and reached the active relay.",
+      "heroLoses": "{{otherPlayer}}’s analysts decoded the reply and protected the archive.",
+      "draw": "The transmitter remained under guard while its new frequency was traced."
+    }
   }
 ]
