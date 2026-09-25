@@ -53,6 +53,34 @@ const elektronikLimit = validateInfListLegality({
 assert.equal(elektronikLimit.totals.troopers, 15, 'Elektronik is a Peripheral and does not consume a Trooper slot')
 assert.equal(elektronikLimit.violations.some((issue) => issue.includes('15-Trooper limit')), false)
 
+const yudbot = unit(192, 192, 4, [{ ...option(1, 3, 0, 'YUDBOT'), minis: 0, orders: [] }])
+yudbot.isc = 'Yudbots'
+yudbot.profileGroups[0].profiles[0].skills = [{ id: 243, extra: [41] }]
+const yudbotResult = validateInfListLegality({
+  decoded: decoded(300, [...Array.from({ length: 9 }, () => member(10, 1)), member(20, 1), member(192, 1)]),
+  payload: {
+    ...payload,
+    filters: { skills: [{ id: 243, name: 'Peripheral' }] },
+    units: [unit(10, 100, 'T', [option(1, 5, 0, 'LINE TROOPER')]), payload.units[1], yudbot],
+  },
+})
+assert.equal(yudbotResult.status, 'legal', 'ten Troopers plus a Yudbot fit in one Combat Group')
+assert.equal(yudbotResult.totals.troopers, 10, 'Yudbot costs points but uses no Trooper slot')
+assert.equal(yudbotResult.totals.points, 78, 'Yudbot points still count toward the list total')
+assert.equal(yudbotResult.violations.some((issue) => issue.includes('Combat Group 1 contains 11 Troopers')), false)
+
+const delta = unit(1453, 1453, 4, [option(1, 20, 0, 'DELTA')])
+delta.profileGroups.push({
+  id: 2, isc: 'Yudbot-B', profiles: [{ id: 1, ava: 4, skills: [{ id: 243 }] }],
+  options: [{ ...option(1, 5, 0, 'YUDBOT-B'), minis: 0 }],
+})
+const controllerResult = validateInfListLegality({
+  decoded: decoded(300, [member(1453, 1), member(20, 1)]),
+  payload: { ...payload, filters: { skills: [{ id: 243, name: 'Peripheral' }] }, units: [delta, payload.units[1]] },
+})
+assert.equal(controllerResult.status, 'legal')
+assert.equal(controllerResult.totals.troopers, 2, 'a Peripheral in a different profile group must not hide its Controller')
+
 const unavailable = validateInfListLegality({ decoded: decoded(300, [member(999, 1)]), payload })
 assert.equal(unavailable.status, 'unavailable')
 assert.match(formatInfListLegality(unavailable), /VALIDATION UNAVAILABLE/)

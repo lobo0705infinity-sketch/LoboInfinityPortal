@@ -15,6 +15,7 @@ export function validateInfListLegality({ decoded, payload } = {}) {
   if (unavailable.length) return report(LEGALITY_STATUS.UNAVAILABLE, { unavailable })
 
   const unitById = new Map(units.map((unit) => [Number(unit.id), unit]))
+  const skillById = new Map((payload.filters?.skills || []).map((skill) => [Number(skill.id), skill.name]))
   const selections = []
 
   for (const combatGroup of decoded.combatGroups) {
@@ -43,6 +44,7 @@ export function validateInfListLegality({ decoded, payload } = {}) {
         continue
       }
 
+      const peripheral = isPeripheralSelection({ unit, group, option, profile, legalityOption, skillById })
       selections.push({
         ava: profile.ava,
         avaKey: `${Number(unit.id)}:${Number(group.id)}:${Number(profile.id)}`,
@@ -54,8 +56,8 @@ export function validateInfListLegality({ decoded, payload } = {}) {
         points: Number(legalityOption.points),
         swc: swcValue.cost,
         swcBonus: swcValue.bonus,
-        trooperSlots: isPeripheralSelection(unit, group, option, profile, legalityOption) ? 0 : positiveInteger(legalityOption.minis, 1),
-        trooperPoolKey: countsAsOneTrooper(unit)
+        trooperSlots: peripheral ? 0 : positiveInteger(legalityOption.minis, 1),
+        trooperPoolKey: !peripheral && countsAsOneTrooper(unit)
           ? `${Number(combatGroup.combatGroup)}:${Number(unit.id)}`
           : null,
       })
@@ -151,9 +153,20 @@ function countsAsOneTrooper(unit) {
   return /counted\s+as\s+only\s+one\s+trooper/i.test(String(unit?.notes || ''))
 }
 
-function isPeripheralSelection(...records) {
-  const text = records.map((record) => JSON.stringify(record || {})).join(' ')
-  return /\belektronik\b/i.test(text) || /\bperipheral\s*\(?\s*(?:servant|synchronized|control)\s*\)?/i.test(text)
+function isPeripheralSelection({ unit, group, option, profile, legalityOption, skillById }) {
+  // Only inspect the selected profile. A unit can also contain ordinary
+  // controllers in other profile groups (for example, Delta and Yudbot-B).
+  const skills = [unit, group, profile, option, legalityOption]
+    .flatMap((record) => Array.isArray(record?.skills) ? record.skills : [])
+  if (skills.some((skill) => {
+    const name = typeof skill === 'string' ? skill
+      : skill?.name || skillById.get(Number(skill?.id ?? skill)) || ''
+    return /^peripheral(?:\s|\(|$)/i.test(String(name).trim())
+  })) return true
+
+  // Retain the older named Elektronik fallback for payloads without skill metadata.
+  return [unit?.isc, group?.isc, profile?.name, option?.name]
+    .some((name) => /\belektronik\b/i.test(String(name || '')))
 }
 
 function countTroopers(selections) {
