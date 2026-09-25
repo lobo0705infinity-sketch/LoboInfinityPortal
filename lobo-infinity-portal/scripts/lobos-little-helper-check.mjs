@@ -249,7 +249,7 @@ await Promise.all(Array.from({ length: 5 }, () => withSlot(async () => {
 assert.equal(maximumActive, 2)
 
 const client = createLobosLittleHelper()
-assert.equal(client.listenerCount(Events.InteractionCreate), 10)
+assert.equal(client.listenerCount(Events.InteractionCreate), 14)
 client.destroy()
 
 if (process.argv.includes('--live')) {
