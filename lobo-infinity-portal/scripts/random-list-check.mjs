@@ -43,16 +43,28 @@ assert.equal(drawn[2].swc, 0, 'a zero-SWC request is honored')
 // Subsequent random draws can fill the requested allotment without rating models.
 const ariadna = source.metadata.factions.find(item => item.name === 'Ariadna')
 const ariadnaPayload = source.payloads.find(item => item.url?.endsWith(`/units/en/${ariadna.id}`))
-let randomState = 7
-const seededPickIndex = length => {
-  randomState = (Math.imul(randomState, 1664525) + 1013904223) >>> 0
-  return Math.floor(randomState / 4294967296 * length)
+const seededPicker = seed => {
+  let randomState = seed
+  return length => {
+    randomState = (Math.imul(randomState, 1664525) + 1013904223) >>> 0
+    return Math.floor(randomState / 4294967296 * length)
+  }
 }
 const filled = generateRandomArmyList({ payload: ariadnaPayload, metadata: source.metadata,
   sectorialId: ariadna.id, rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(ariadna.id),
-  points: 300, swc: 5, pickIndex: seededPickIndex })
+  points: 300, swc: 5, pickIndex: seededPicker(7) })
 assert.equal(filled.points, 300, 'random legal rosters are compared to fill the points limit')
 assert.ok(filled.swc <= 5 && filled.legality.status === 'legal')
+
+// With this seed, stopping at 300 points used to return only 0.5 of 6 SWC.
+const usa = source.metadata.factions.find(item => item.name === 'USAriadna Ranger Force')
+const usaPayload = source.payloads.find(item => item.url?.endsWith(`/units/en/${usa.id}`))
+const usaFilled = generateRandomArmyList({ payload: usaPayload, metadata: source.metadata,
+  sectorialId: usa.id, rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(usa.id),
+  points: 300, swc: 6, pickIndex: seededPicker(26) })
+assert.equal(usaFilled.points, 300)
+assert.equal(usaFilled.swc, 6, 'random legal rosters are also compared to fill the SWC limit')
+assert.equal(usaFilled.legality.status, 'legal')
 
 assert.throws(() => generateRandomArmyList({ ...input, swc: 6.25 }), ListBuilderError)
 assert.throws(() => generateRandomArmyList({ ...input, swc: 7 }), ListBuilderError)
@@ -106,4 +118,4 @@ assert.equal((await ensureRandomListCommand({ guilds: { cache: new Map([['guild-
   application: { commands: { fetch: async () => [] } } })).length, 1)
 assert.equal(created, true, 'a new guild receives the slash command')
 
-console.log('PASS - /random-list fills points with legal random profiles, respects custom SWC, and exposes faction autocomplete.')
+console.log('PASS - /random-list fills points and SWC with legal random profiles and exposes faction autocomplete.')
