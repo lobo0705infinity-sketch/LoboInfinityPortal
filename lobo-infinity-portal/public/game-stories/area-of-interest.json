@@ -4178,5 +4178,385 @@
       "heroLoses": "{{otherPlayer}}’s station crew controlled the pass and directed the descent from below.",
       "draw": "The surveyor reached shelter, and both crews stayed clear of the slope until it settled."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "White Banner"
+    ],
+    "heroFaction": "White Banner",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A mountain shrine kept a heated handrail for travelers crossing its icy steps. {{heroPlayer}}’s guides brought a stranded group toward it; {{otherPlayer}}’s caretakers were testing why the rail had gone cold. In the snow beside the shrine, six sets of prints arrived but only five continued.",
+      "{{hero}} reached the stair landing as a stranger shoved a caretaker toward its open hatch. The fighter pulled the caretaker back, kept the hatch clear, and sent a guide below to check the heating line. There, beneath the steps, the missing traveler sat with frozen hands wrapped around a warm pipe.",
+      "The rail grew warm again before the group climbed down. The traveler had followed the pipe after noticing its steam and had left the hatch ajar to mark the way. At the bottom step, six sets of prints turned together toward the village."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guides secured the shrine stair and brought the traveler home.",
+      "heroLoses": "{{otherPlayer}}’s caretakers retained the shrine and directed the evacuation.",
+      "draw": "The rail was repaired, and both groups walked the six travelers down together."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Ariadna"
+    ],
+    "heroFaction": "Ariadna",
+    "role": "objective",
+    "paragraphs": [
+      "At the edge of a frozen lake, an ice lantern festival had been canceled because the lake was cracking. {{heroPlayer}}’s safety crew came to remove the lanterns; {{otherPlayer}}’s village musicians wanted to retrieve a harp left on the island. From the far shore came a single plucked note.",
+      "{{hero}} tested the old rope crossing and found its anchor buried in soft snow. The specialist shifted it onto bare rock and sent a light sled toward the island. The musicians brought the harp back without stepping onto the lake, its strings sounding whenever the wind caught them.",
+      "On shore, the musicians tuned the harp beneath one rescued lantern. Its owner, who had believed it lost, arrived to hear a tune made strange by the cold. The first ice crack sounded again in the distance as the last lantern was put out."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew secured the rope crossing and recovered the instrument.",
+      "heroLoses": "{{otherPlayer}}’s musicians retained the festival site and retrieved the harp under their direction.",
+      "draw": "The lake was closed, and both parties listened to one final song on shore."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Caledonian Highlander Army"
+    ],
+    "heroFaction": "Caledonian Highlander Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A wool dye house above the snowline was running its last winter batch when its drive belt snapped. {{heroPlayer}}’s escorts came for blankets promised to an isolated clinic; {{otherPlayer}}’s dyers feared the exposed wheel would tear their cloth. Red yarn trailed across the floor toward a jammed spindle.",
+      "{{hero}} pulled a dyer away as someone shoved the spindle toward the turning wheel. The fighter held the intruder back and braced the wheel while workers cut the belt. Freed from the machine, the cloth opened into a half-finished blanket stitched with a patient’s name.",
+      "The dyers finished the edge by hand beside a stove. By nightfall, the named blanket and the others were folded onto a sled, still warm from the room. A child at the clinic door recognized the stitching before the escort read the tag."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts secured the blankets and carried them to the clinic.",
+      "heroLoses": "{{otherPlayer}}’s dyers held the dye house and arranged their own delivery.",
+      "draw": "The wheel stopped safely, and both crews helped finish the blankets by hand."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Force de Réponse Rapide Merovingienne"
+    ],
+    "heroFaction": "Force de Réponse Rapide Merovingienne",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A roadside bakery kept its oven burning through a blizzard so passing convoys could find the village. {{heroPlayer}}’s scouts came to mark its location; {{otherPlayer}}’s bakers worried that the wood store had been emptied. The oven still glowed, and floury footprints led into the storm.",
+      "{{hero}} covered the outer door while a scout followed the footprints to the buried woodshed. A figure appeared between the shed and the oven, but the fighter held the line until the scout came back with a sled of fuel. In the shed was a stack of bread wrapped for travelers who had never arrived.",
+      "The bakers loaded the bread beside the fire and waited for a horn from the road. It sounded faintly before dawn. When the first convoy stopped, each traveler was handed a loaf still warm enough to steam in the snow."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s scouts secured the bakery as a guide point for the convoy.",
+      "heroLoses": "{{otherPlayer}}’s bakers kept control of the oven and directed arrivals from the road.",
+      "draw": "The oven stayed lit, and both parties helped feed the travelers who followed its glow."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Kosmoflot"
+    ],
+    "heroFaction": "Kosmoflot",
+    "role": "objective",
+    "paragraphs": [
+      "A survey shuttle needed an emergency runway across a snowfield where old runway lamps lay buried. {{heroPlayer}}’s ground crew came to uncover them; {{otherPlayer}}’s avalanche watchers warned that digging along the slope would disturb the crust. In the sky, the shuttle’s descent light blinked faster.",
+      "{{hero}} traced the lamp cable beneath the snow without cutting into the crust and connected a portable power cell at the lowest marker. A row of small lights emerged through the drift one by one, pointing away from the dangerous slope. The pilot altered course toward the new line.",
+      "The shuttle slid to a halt in a cloud of powder. Inside, a surveyor held a bundle of field notes against a fogged window and smiled when the lamps came into view. The avalanche watchers kept their eyes on the upper slope until the passengers reached shelter."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew lit the runway and brought the shuttle down safely.",
+      "heroLoses": "{{otherPlayer}}’s watchers controlled the snowfield and selected another landing approach.",
+      "draw": "The shuttle landed beyond the unstable crust, and both crews marked the lamps for future flights."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Tartary Army Corps"
+    ],
+    "heroFaction": "Tartary Army Corps",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A weather balloon had snagged on the mast of an isolated school, pulling at the only radio aerial for miles. {{heroPlayer}}’s patrol came to recover the balloon; {{otherPlayer}}’s teachers kept their pupils indoors as ice fell from the mast. A message could be seen inside the balloon’s clear instrument pouch.",
+      "{{hero}} covered the schoolyard while a technician climbed to free the snag. A figure moved behind the mast and reached for the aerial cable, but the fighter kept them from the technician’s ladder. The balloon floated down with its pouch intact, its message written on the back of a weather chart.",
+      "The chart came from another school on the far side of the pass, where children had drawn a sun and asked whether anyone had seen it that week. The local pupils drew their own answer beside the radio and waited for the aerial to carry it."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol secured the school mast and returned the balloon safely.",
+      "heroLoses": "{{otherPlayer}}’s teachers kept the schoolyard closed and directed the aerial repair.",
+      "draw": "The aerial stayed intact, and both groups helped send the children’s reply."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "USAriadna Ranger Force"
+    ],
+    "heroFaction": "USAriadna Ranger Force",
+    "role": "objective",
+    "paragraphs": [
+      "A herd of elk gathered at a frozen river crossing just as a snowplow reached its narrow bridge. {{heroPlayer}}’s rangers wanted a safe path for the animals; {{otherPlayer}}’s road crew needed the bridge open for medicine deliveries. The elk would not approach the ice beneath the bridge.",
+      "{{hero}} followed the bank and found a shallow gravel ford hidden by snow. The specialist tested its footing, placed bright markers, and led the first elk across without bringing it onto the bridge. The road crew held the plow still while the rest of the herd followed.",
+      "The plow crossed after the last animal had climbed the far bank. In its wake came a small delivery sled, its driver carrying medicine to the next town. The rangers watched one young elk turn back toward the marked ford, then vanish after the herd."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rangers secured the ford and reopened the bridge for deliveries.",
+      "heroLoses": "{{otherPlayer}}’s road crew retained the bridge and controlled the timing of the crossing.",
+      "draw": "The herd and medicine both crossed safely, and the markers stayed until the thaw."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Haqqislam"
+    ],
+    "heroFaction": "Haqqislam",
+    "role": "objective",
+    "paragraphs": [
+      "A cliffside infirmary used a narrow sunroom to help patients recover through the long dark season. {{heroPlayer}}’s medical team came to restore its failed shutters; {{otherPlayer}}’s mountain workers warned that daylight reflecting off the snow could overheat the glass. A patient had painted a blue horizon across the lowest pane.",
+      "{{hero}} reset the shutter stops to admit a thin band of afternoon light, then measured the room’s temperature beside the patient’s chair. The specialist adjusted the last slat until the light fell exactly along the painted horizon. The patient held a hand in it and asked for a brush.",
+      "By evening, a second horizon ran above the first, this one gold. The workers left the shutters at their careful angle, and patients took turns sitting in the band of warmth. Outside, the real horizon had already disappeared behind the cliff."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s medical team reopened the sunroom at a safe temperature.",
+      "heroLoses": "{{otherPlayer}}’s workers retained the shutters and kept the room closed for inspection.",
+      "draw": "The sunroom warmed gently, and both teams agreed to check the glass each afternoon."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Hassassin Bahram"
+    ],
+    "heroFaction": "Hassassin Bahram",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A bell rang beneath the ice of a disused memorial garden, though the bell tower had been empty for years. {{heroPlayer}}’s searchers followed the sound across the path; {{otherPlayer}}’s gardeners feared the thawing soil would swallow the old markers. The bell rang again when everyone stood still.",
+      "{{hero}} reached a frozen maintenance grate as someone tried to shove a searcher into its open shaft. The fighter caught the searcher, drove the person back, and held the grate steady while a rope was lowered. Below, a caretaker pulled twice on a bell cord and called out through the dark.",
+      "The caretaker emerged carrying an armful of fallen nameplates, collected before meltwater could wash them away. Gardeners set the plates along the path in order. When the last was replaced, the caretaker rang the bell once from aboveground."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s searchers rescued the caretaker and secured the grate.",
+      "heroLoses": "{{otherPlayer}}’s gardeners retained the memorial garden and directed the recovery.",
+      "draw": "The caretaker returned safely, and both groups reset the rescued nameplates."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Qapu Khalqi"
+    ],
+    "heroFaction": "Qapu Khalqi",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An icebound cargo ship began sounding its foghorn on a day without fog. {{heroPlayer}}’s boarding team came to inspect the bridge; {{otherPlayer}}’s harbor crew had seen a cable trailing from its stern toward the shore. Children at the quay recognized the horn’s unusual three-note pattern.",
+      "{{hero}} covered the wheelhouse door while a mechanic traced the cable. A figure tried to pull the ship’s power lead loose, but the fighter held the passage until the mechanic found a battery connected to the horn. It had been wired to a small clock set to sound every hour.",
+      "An older harbor worker listened to the next three notes and remembered them from ships that had carried families out of the port during a winter evacuation. The children copied the pattern on a piece of paper while the crew made the clock safe."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team secured the wheelhouse and brought the ship’s horn under control.",
+      "heroLoses": "{{otherPlayer}}’s harbor crew retained the ship and disconnected the cable from shore.",
+      "draw": "The harbor stayed safe while both parties recorded the old horn pattern."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Ramah Taskforce"
+    ],
+    "heroFaction": "Ramah Taskforce",
+    "role": "objective",
+    "paragraphs": [
+      "A heated transit tent at the mountain pass filled with travelers after snow closed the road. {{heroPlayer}}’s medics arrived to check their supplies; {{otherPlayer}}’s pass wardens counted beds for the night. One cot remained made up with a blanket folded over a pillow, though nobody claimed it.",
+      "{{hero}} discovered that the tent’s second heater had been disconnected and its fuel diverted to a buried kettle. The specialist restored the heater, then lifted the kettle to find broth still warm inside. A traveler said the missing cot belonged to the cook, who had gone out to meet a late bus.",
+      "The bus arrived with its lights dim under snow, and the cook stepped in carrying three more passengers’ bags. They shared the broth before lying down. In the morning, the cot was empty again: its blanket had been moved to the bus for the next stranded traveler."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s medics kept the tent warm and treated its new arrivals.",
+      "heroLoses": "{{otherPlayer}}’s wardens controlled the tent and assigned the remaining beds.",
+      "draw": "Every traveler found warmth, and both teams helped prepare the tent for the next bus."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Nomads"
+    ],
+    "heroFaction": "Nomads",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An ice sculpture hall kept its doors open through a rolling blackout so children could see the annual lantern exhibition. {{heroPlayer}}’s gallery crew came to guard the emergency generator; {{otherPlayer}}’s maintenance staff found its fuel line exposed. A lantern inside the tallest sculpture still burned.",
+      "{{hero}} reached the generator as a stranger tried to slam its service hatch on a technician’s arm. The fighter forced the hatch open and pulled the technician clear while the fuel line was capped. By the lantern’s light, a child found the way out through the exhibition’s twisting corridors.",
+      "When power returned, the child asked the artist why the tallest sculpture showed an empty chair. The artist answered that it was meant for the person who had never made it to the first exhibition. The lantern was left burning beside the chair until closing."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew secured the generator and reopened the hall to visitors.",
+      "heroLoses": "{{otherPlayer}}’s staff took charge of the hall and completed the generator repair.",
+      "draw": "The children left safely, and both groups checked the lanterns before the exhibition resumed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Bakunin Jurisdictional Command"
+    ],
+    "heroFaction": "Bakunin Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A cinema cut into a snowbank was screening a silent film when its projector began throwing a second image onto the ceiling. {{heroPlayer}}’s projectionists went to the booth; {{otherPlayer}}’s safety crew feared heat from the lamp was melting the roof. In the upper image, a person seemed to wave from an empty street.",
+      "{{hero}} lowered the lamp power and found a second reel threaded behind the first. The specialist separated them without tearing either strip, letting the ceiling image settle onto the screen. It showed footage of the street outside the cinema on its opening night, with a crowd waving into the camera.",
+      "The audience recognized a younger version of the ticket seller near the front of that crowd. She stood beneath the screen with her stub in hand and counted faces until she found the friend who had once dragged her inside. Outside, snow kept falling over the same street."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s projectionists secured the booth and finished the recovered screening.",
+      "heroLoses": "{{otherPlayer}}’s safety crew closed the cinema until the lamp and roof were checked.",
+      "draw": "The reels were preserved, and both parties stayed to watch the opening-night footage."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Corregidor Jurisdictional Command"
+    ],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A cable lift stopped halfway up a glacier with a single passenger waving from its window. {{heroPlayer}}’s rescue crew reached the lower station; {{otherPlayer}}’s lift operators had found a frayed guide line. Through the cabin glass, the passenger held up a small white flag.",
+      "{{hero}} reached the maintenance platform as a stranger tried to force the brake release with a crowbar. The fighter pulled them away from the lever and held it steady while an operator lowered the cabin by hand. Inside, the passenger used the flag to wrap a cracked window so blowing snow could not enter.",
+      "Back at the station, the passenger unfolded the flag. It carried a child’s drawing of the glacier as it looked before the lift was built. The operator hung it beside the route map while the cabin’s guide line was replaced."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew secured the lift and brought its passenger down safely.",
+      "heroLoses": "{{otherPlayer}}’s operators retained the station and ran the manual descent.",
+      "draw": "The passenger returned, and both teams kept the lift closed until its line was replaced."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Tunguska Jurisdictional Command"
+    ],
+    "heroFaction": "Tunguska Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A shelter directory began directing walkers to cabins buried by an overnight drift. {{heroPlayer}}’s data team came to correct it; {{otherPlayer}}’s trail wardens had already placed hand-painted signs at the junction. The directory’s screen showed a shelter moving slowly across the map.",
+      "{{hero}} traced the shelter’s beacon to a sled parked beneath snow beside the junction. The specialist switched its tag from a fixed building to a mobile rescue station and updated the public map. The trail wardens uncovered the sled and found its heaters working, with a thermos waiting inside.",
+      "A walker arrived as the new map appeared, confused to find a shelter that had come to meet them. The wardens gave the walker tea before explaining the change. On the screen, the shelter’s little icon stayed beside the junction while the drift grew deeper."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team repaired the directory and deployed the sled as a safe shelter.",
+      "heroLoses": "{{otherPlayer}}’s wardens retained the junction and guided walkers using their signs.",
+      "draw": "The route was corrected, and both groups kept the heated sled at the junction."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Combined Army"
+    ],
+    "heroFaction": "Combined Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A glacial prism inside a cliffside observatory began splitting moonlight into colors that appeared on the valley floor. {{heroPlayer}}’s researchers came to examine it; {{otherPlayer}}’s patrol worried that people were crossing the ice to follow the lights. At the far end, a cluster of lanterns was moving toward open water.",
+      "{{hero}} covered the observatory threshold while a researcher shifted the prism away from the lake. Someone reached for the mount, and the fighter held the entrance until it was locked. The colored path withdrew from the ice; across the valley, the lanterns stopped and turned toward shore.",
+      "When the lantern carriers arrived, they showed the researchers a photograph taken from below. The prism had cast a pattern like a road complete with bright crossings. An old map on the observatory wall showed a road there once, long before the lake spread over it."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s researchers secured the prism and guided the lantern carriers to shore.",
+      "heroLoses": "{{otherPlayer}}’s patrol controlled the observatory and closed the lake approach.",
+      "draw": "The lantern carriers returned safely, and both groups kept the prism turned from the ice."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An avalanche had buried the haul line of a hillside stone quarry. {{heroPlayer}}’s laborers arrived to retrieve a trapped tool cart; {{otherPlayer}}’s road crew wanted the quarry sealed until the slope settled. A red ribbon tied to the cart showed through the snow like a warning.",
+      "{{hero}} reached the haul lever as another person pulled at it from the far side, risking the cart’s plunge. The fighter grappled them away from the handle and held the brake while the laborers dug the cart free. Beneath its tarp lay a carved stone bench intended for the village school.",
+      "The road crew cleared a path below the slope, and the bench was carried out without using the line. Children brushed snow from its seat when it reached the schoolyard. Someone had carved a small ruler along the edge for measuring how much they grew each year."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s laborers secured the cart and delivered the bench to the school.",
+      "heroLoses": "{{otherPlayer}}’s road crew retained the quarry and postponed the recovery.",
+      "draw": "The bench reached the school while both groups kept the unstable haul line closed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "A lighthouse above a frozen harbor began flashing toward the inland hills instead of the sea. {{heroPlayer}}’s signal crew came to find the fault; {{otherPlayer}}’s harbor workers needed the beam back before a supply convoy crossed the ice. The lamps had been aimed by hand, not by the automatic drive.",
+      "{{hero}} opened the drive casing and found a second switch labeled with the name of a former keeper. The specialist tested it and watched the beam strike a narrow road beyond the hills. There, a stranded truck answered with its headlights, then began following the light toward the harbor.",
+      "The harbor workers took over the seaward warning while the truck came down the hill. Its driver said the keeper had once promised a light for anyone lost on that road. When the truck reached shore, the beam was turned back to the ice route."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew controlled the lighthouse and guided both the truck and convoy safely.",
+      "heroLoses": "{{otherPlayer}}’s workers retained the light and prioritized the ice crossing.",
+      "draw": "Both routes received a warning beam in turn, and the truck and convoy reached shelter."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "objective",
+    "paragraphs": [
+      "A meteor survey crew discovered an exposed sheet of black glass at the center of a snowy crater. {{heroPlayer}}’s analysts wanted to scan it before the next storm; {{otherPlayer}}’s rangers kept curious visitors behind a ridge. In reflected sunlight, the glass showed a grove where the crater now lay.",
+      "{{hero}} stabilized the scanning frame on uneven snow and captured the reflected grove before cloud shadow covered the glass. The specialist noticed one tree bearing a white ribbon in every frame. A ranger brought an old landscape photograph from the station; the ribbon marked the family picnic tree.",
+      "The clouds opened once more and the grove returned for a breath, superimposed on the crater’s bare stone. The family who owned the photograph stood silently beside the ridge. Then the sunlight shifted and the glass reflected only their faces."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts secured the crater and preserved the image for the family.",
+      "heroLoses": "{{otherPlayer}}’s rangers closed the crater and retained its survey records.",
+      "draw": "The image was recorded, and both groups agreed to protect the glass from the storm."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A ski gondola stopped above an empty slope with a passenger pressing both palms against the window. {{heroPlayer}}’s rescue team reached the upper station; {{otherPlayer}}’s mechanics were lowering a service cradle from below. Snow hid the point where the main cable had slipped from its guide.",
+      "{{hero}} reached the guide housing as a stranger tried to force its lock while the cable was loaded. The fighter dragged them clear, kept the housing closed, and gave the mechanics time to ease the gondola onto the service cradle. The passenger stepped out carrying a violin case held tight beneath a coat.",
+      "At the station, the passenger opened the case and found the instrument unharmed. They played a few notes while the mechanics checked the cable, more to steady their hands than to entertain anyone. The snow carried the sound down to the empty slope."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rescuers secured the cable and brought the passenger to the upper station.",
+      "heroLoses": "{{otherPlayer}}’s mechanics retained the lift and completed the recovery from below.",
+      "draw": "The passenger returned safely, and both teams kept the gondola idle for repair."
+    }
   }
 ]
